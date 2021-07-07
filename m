@@ -2,95 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E9C23BF08A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 21:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B4C3BF08F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 21:58:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232712AbhGGTyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 15:54:50 -0400
-Received: from mail-ed1-f46.google.com ([209.85.208.46]:46000 "EHLO
-        mail-ed1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230359AbhGGTyt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 15:54:49 -0400
-Received: by mail-ed1-f46.google.com with SMTP id t3so4952192edt.12;
-        Wed, 07 Jul 2021 12:52:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=URduaW50lsVABZMTcWqniUjdimmoK+Mx3tzbD4O0S0c=;
-        b=tp7LDq7q84kwrouqsTlh5IG8bskNwTRRGMlKD+B86oeVds6X8Rta0STLCkCzVP7rlH
-         rZT/B696cba7p3B3lbQXTxopJY6V7EHKSxxIVm+q6V+KTXblUn++jjswea1nvYlWQiGg
-         CEA57KAG+c+XPKUkJkiZFOJiDFMIfoO9nreVHeL3jE02sZMy/5mqI8FDI7xNQGOOWpDj
-         V03tGmlM2M2NW9beIuMTsjriqHruAzzb8jn92HBLqvUd9c84W9pxvqfLT4NBm5PL+Bji
-         0LFPe1Z8LKBNwJq096yZnDseesKeC/XrjL8CI9kM1K947+2JrcuUmVHw6wMRnsXSmMTv
-         cLaw==
-X-Gm-Message-State: AOAM5306xeZqKoa8pZ0kdpzS4A4fnuIgOi0aJa+Esadwxp7+1u6+rn7c
-        r46j6lzPrnAFUb4SOE92kts=
-X-Google-Smtp-Source: ABdhPJwczzpgZW/l6CYw6xMSEcrMRQzjEX1rXbOx0YnkNsKZDpnFuKYfvJLKK5FguvXS8xtQAKUuUQ==
-X-Received: by 2002:a05:6402:30af:: with SMTP id df15mr3080906edb.19.1625687527405;
-        Wed, 07 Jul 2021 12:52:07 -0700 (PDT)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id f9sm24949edw.88.2021.07.07.12.52.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 12:52:06 -0700 (PDT)
-Date:   Wed, 7 Jul 2021 21:52:05 +0200
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     thierry.reding@gmail.com, lorenzo.pieralisi@arm.com,
-        robh@kernel.org, bhelgaas@google.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH 3/3] PCI: tegra: make const array err_msg static
-Message-ID: <20210707195205.GA6952@rocinante>
-References: <55b11e9a7fa2987fbc0869d68ae59888954d65e2.1620148539.git.christophe.jaillet@wanadoo.fr>
- <5f3f35296b944b94546cc7d1e9cc6186484620d8.1620148539.git.christophe.jaillet@wanadoo.fr>
- <20210705223152.GA142312@rocinante>
- <a3d48884-9e47-8623-6fc5-6c52f4ca0568@wanadoo.fr>
+        id S233094AbhGGUBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 16:01:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38032 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230296AbhGGUBc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 16:01:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C0DE261CC2;
+        Wed,  7 Jul 2021 19:58:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625687931;
+        bh=K6SJBq8axw4PnEQMuifWYXHlsiKcVtzF3zIRp1rgNiM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Q1Qnn5WVNaZpO3l9oefa9G1ot72DNnltpLUhpi2fdbixeTcQXeCg2XzPmWeBP75GP
+         1uRGeCCdbFPa2Q0Qlst2T0g0RTyv42B+AS3Xm2v7ZDaT7J+XdX7qFFwFivmk2ZHGoN
+         xhqpnbcEpnabqjt7j9aJPTtWcMs0yFv1/Gi/pwv8cw1KwtvQ9CpPO9yocflVEJyIIL
+         6UZytxxVIOPirul/3pZPgKxSgYpLA/iiqHRycCZ0XyNqQ/Z8/IeuV0/wbn1tKgirvi
+         fMBNDJjDR1Fn5jq/i9ZTdiCMRyqpCnkcLoCc50ink5JfJE60kE3yHhiImu2bKysq/u
+         IPi4OLUpFHLZQ==
+Date:   Wed, 7 Jul 2021 12:58:50 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux F2FS Dev Mailing List 
+        <linux-f2fs-devel@lists.sourceforge.net>
+Subject: [GIT PULL] f2fs for 5.14-rc1
+Message-ID: <YOYHejl3CgABOnhP@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a3d48884-9e47-8623-6fc5-6c52f4ca0568@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
+Hi Linus,
 
-[...]
-> > These should be trivial to fix.  The two pertaining to "quoted string
-> > split across lines" would be something that we might or might not decide
-> > to do anything about this - technically, as per the Linux kernel coding
-> > style [1], we ought to fix this... but, this particular case is not
-> > a terrible example, so I will leave this at your discretion.
-> > 
-> > What do you think?
-> 
-> Hi,
-> I don't think it worth it.
-> 
-> Even for patch 2/3 about 'seq_printf' --> 'seq_puts' conversion, I'm not
-> fully convinced myself that is useful.
+Could you please consider this pull request?
 
-I personally believe it's a good change.
+Thanks,
 
-For a literal string without any formatting using the seq_printf() is
-much more involved for no reason, but aside of this small performance
-improvement, it also has some value in demonstrating the correct usage
-patterns - people spent more time reading kernel code and looking at how
-to do things and use things to base their work on, so setting some
-example is not a bad idea.
+The following changes since commit bd3c9cdb21a2674dd0db70199df884828e37abd4:
 
-Albeit, it's a matter of point of view too, I suppose.
+  Merge tag 'arm64-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux (2021-05-14 10:52:47 -0700)
 
-> Too trivial clean-ups only mess-up 'git blame' for no real added value.
+are available in the Git repository at:
 
-Yes, there is a fine line with these.
+  git://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git tags/f2fs-for-5.14-rc1
 
-> If you want these clean-ups, I can send a patch for it, but checkpatch
-> output need sometimes to be ignored on files already in the tree. At least,
-> this is my point of view.
+for you to fetch changes up to 28607bf3aa6f9762b32dc7f1ed0488823c0651b8:
 
-No worries!  Thank you for giving it some thought!  I appreciate it. :)
+  f2fs: drop dirty node pages when cp is in error status (2021-07-06 22:05:06 -0700)
 
-	Krzysztof
+----------------------------------------------------------------
+f2fs-for-5.14-rc1
+
+In this round, we've improved the compression support especially for Android
+such as allowing compression for mmap files, replacing the immutable bit with
+internal bit to prohibits data writes explicitly, and adding a mount option,
+"compress_cache", to improve random reads. And, we added "readonly" feature to
+compact the partition w/ compression enabled, which will be useful for Android
+RO partitions.
+
+Enhancement:
+ - support compression for mmap file
+ - use an f2fs flag instead of IMMUTABLE bit for compression
+ - support RO feature w/ extent_cache
+ - fully support swapfile with file pinning
+ - improve atgc tunability
+ - add nocompress extensions to unselect files for compression
+
+Bug fix:
+ - fix false alaram on iget failure during GC
+ - fix race condition on global pointers when there are multiple f2fs instances
+ - add MODULE_SOFTDEP for initramfs
+
+As usual, we've also cleaned up some places for better code readability.
+(e.g., sysfs/feature, debugging messages, slab cache name, and docs)
+
+----------------------------------------------------------------
+Chao Yu (17):
+      f2fs: compress: rename __cluster_may_compress
+      f2fs: add cp_error check in f2fs_write_compressed_pages
+      f2fs: restructure f2fs page.private layout
+      f2fs: fix to avoid racing on fsync_entry_slab by multi filesystem instances
+      f2fs: atgc: fix to set default age threshold
+      f2fs: compress: remove unneeded f2fs_put_dnode()
+      f2fs: compress: clean up parameter of __f2fs_cluster_blocks()
+      f2fs: add MODULE_SOFTDEP to ensure crc32 is included in the initramfs
+      f2fs: compress: fix to disallow temp extension
+      f2fs: atgc: export entries for better tunability via sysfs
+      f2fs: compress: remove unneeded preallocation
+      f2fs: compress: add compress_inode to cache compressed blocks
+      f2fs: swap: remove dead codes
+      f2fs: swap: support migrating swapfile in aligned write mode
+      f2fs: introduce f2fs_casefolded_name slab cache
+      f2fs: fix to avoid adding tab before doc section
+      MAINTAINERS: f2fs: update my email address
+
+Daeho Jeong (1):
+      f2fs: enable extent cache for compression files in read-only
+
+Daniel Rosenberg (2):
+      f2fs: Show casefolding support only when supported
+      f2fs: Advertise encrypted casefolding in sysfs
+
+Fengnan Chang (1):
+      f2fs: compress: add nocompress extensions support
+
+Jaegeuk Kim (8):
+      f2fs: let's allow compression for mmap files
+      f2fs: introduce FI_COMPRESS_RELEASED instead of using IMMUTABLE bit
+      f2fs: support RO feature
+      f2fs: add pin_file in feature list
+      f2fs: clean up /sys/fs/f2fs/<disk>/features
+      f2fs: remove false alarm on iget failure during GC
+      f2fs: initialize page->private when using for our internal use
+      f2fs: drop dirty node pages when cp is in error status
+
+Joe Perches (1):
+      f2fs: logging neatening
+
+Shin'ichiro Kawasaki (1):
+      f2fs: Prevent swap file in LFS mode
+
+Tom Rix (1):
+      f2fs: return success if there is no work to do
+
+ Documentation/ABI/testing/sysfs-fs-f2fs |  57 ++++-
+ Documentation/filesystems/f2fs.rst      |  50 ++++-
+ MAINTAINERS                             |   2 +-
+ fs/f2fs/checkpoint.c                    |   4 +-
+ fs/f2fs/compress.c                      | 255 +++++++++++++++++-----
+ fs/f2fs/data.c                          | 360 ++++++++++++++------------------
+ fs/f2fs/debug.c                         |  13 ++
+ fs/f2fs/dir.c                           |  25 ++-
+ fs/f2fs/f2fs.h                          | 228 ++++++++++++++++----
+ fs/f2fs/file.c                          |  37 ++--
+ fs/f2fs/gc.c                            |  16 +-
+ fs/f2fs/inline.c                        |   4 +-
+ fs/f2fs/inode.c                         |  23 +-
+ fs/f2fs/namei.c                         |  36 +++-
+ fs/f2fs/node.c                          |  35 ++--
+ fs/f2fs/node.h                          |  33 +--
+ fs/f2fs/recovery.c                      |  29 ++-
+ fs/f2fs/segment.c                       |  34 ++-
+ fs/f2fs/super.c                         | 188 ++++++++++++++++-
+ fs/f2fs/sysfs.c                         | 232 +++++++++++++++-----
+ include/linux/f2fs_fs.h                 |   2 +
+ 21 files changed, 1168 insertions(+), 495 deletions(-)
