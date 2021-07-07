@@ -2,302 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D6353BEFC9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 20:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8603BEFCA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 20:45:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232728AbhGGSsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 14:48:00 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:56280 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232698AbhGGSr6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 14:47:58 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 167IjFuY067182;
-        Wed, 7 Jul 2021 13:45:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1625683515;
-        bh=tWgI7bMv30cwLm4AMxCi2mKn+XnvRkStE6pNANqbgB4=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=WiY4H3ZgyFJVB7ZiIrqSEDDPUSmjoX8ttssARStT9ONKYibahishCCPFsM8WvYYgk
-         fCEhFznIbWVMMQpYcvWQnUgiooBTiL1RGdEZt5SGC2xJ/oKuC+X0dNJeSdqiE+GkA7
-         epl38JRvZYq4j5vgTFw2eU2eT8EvFiedxY2bJoO0=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 167IjF8d038815
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 7 Jul 2021 13:45:15 -0500
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 7 Jul
- 2021 13:45:15 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 7 Jul 2021 13:45:15 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 167IjEEC077875;
-        Wed, 7 Jul 2021 13:45:14 -0500
-Date:   Thu, 8 Jul 2021 00:15:13 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Nikhil Devshatwar <nikhil.nd@ti.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-media@vger.kernel.org>
-Subject: Re: [PATCH v3 11/11] media: dt-bindings: Convert Cadence CSI2RX
- binding to YAML
-Message-ID: <20210707184511.wukejfbzguwsk2fx@ti.com>
-References: <20210624192200.22559-1-p.yadav@ti.com>
- <20210624192200.22559-12-p.yadav@ti.com>
- <20210701185509.GA2653882@robh.at.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210701185509.GA2653882@robh.at.kernel.org>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        id S232725AbhGGSsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 14:48:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49682 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232698AbhGGSsF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 14:48:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 1F74761CCC;
+        Wed,  7 Jul 2021 18:45:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625683525;
+        bh=kdfpLu1SsHBuIdOzsEkc8SEq6yaCdkgmUWedy83UZdI=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=tacU79ggiYoCmccnpL7d5ZnPbXlKbuqXdL/LE2YfFfvk5zjIbzM1wkTChNmUfkWAA
+         JtsPKxPckrARc7w1mt/kHjjMB64lSu60OCiCIXrZleXLwUr2C/QdXaHHSbba10Ba/r
+         lyHpAm7rdbMQ3Blp+YxI0aR0Wje1rGuGMvCjk9JzXTtz49NDtvKapDz3pj1xJ2a5gT
+         GrvLXGjRlFuwvTDqqVaWd6MDOD+aPe0PGA7AHM+AA1yen4gxOIN5d25M8TnMpbvj2X
+         nJN0DhVupvd7Mm70s8Ini2XFUvb8aAZM7qgQbX+0n2V2UiXb/CqsmT53uF9XBswbw5
+         dOoHwq18JJ8Aw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 199346094F;
+        Wed,  7 Jul 2021 18:45:25 +0000 (UTC)
+Subject: Re: [GIT PULL] xen: branch for v5.14-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210707070139.27901-1-jgross@suse.com>
+References: <20210707070139.27901-1-jgross@suse.com>
+X-PR-Tracked-List-Id: Xen developer discussion <xen-devel.lists.xenproject.org>
+X-PR-Tracked-Message-Id: <20210707070139.27901-1-jgross@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.14-rc1-tag
+X-PR-Tracked-Commit-Id: 629a5d87e26fe96bcaab44cbb81f5866af6f7008
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 4ea90317956718e0648e1f87e56530db809a5a04
+Message-Id: <162568352509.3837.16922329777846284070.pr-tracker-bot@kernel.org>
+Date:   Wed, 07 Jul 2021 18:45:25 +0000
+To:     Juergen Gross <jgross@suse.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        xen-devel@lists.xenproject.org, boris.ostrovsky@oracle.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/07/21 12:55PM, Rob Herring wrote:
-> On Fri, Jun 25, 2021 at 12:52:00AM +0530, Pratyush Yadav wrote:
-> > Convert the Cadence CSI2RX binding to use YAML schema.
-> > 
-> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> > 
-> > ---
-> > 
-> > Changes in v3:
-> > - Add compatible: contains: const: cdns,csi2rx to allow SoC specific
-> >   compatible.
-> > - Add more constraints for data-lanes property.
-> > 
-> > Changes in v2:
-> > - New in v2.
-> > 
-> >  .../devicetree/bindings/media/cdns,csi2rx.txt | 100 -----------
-> >  .../bindings/media/cdns,csi2rx.yaml           | 169 ++++++++++++++++++
-> >  2 files changed, 169 insertions(+), 100 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/media/cdns,csi2rx.txt
-> >  create mode 100644 Documentation/devicetree/bindings/media/cdns,csi2rx.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/media/cdns,csi2rx.txt b/Documentation/devicetree/bindings/media/cdns,csi2rx.txt
-> > deleted file mode 100644
-> > index 6b02a0657ad9..000000000000
-> > --- a/Documentation/devicetree/bindings/media/cdns,csi2rx.txt
-> > +++ /dev/null
-> > @@ -1,100 +0,0 @@
-> > -Cadence MIPI-CSI2 RX controller
-> > -===============================
-> > -
-> > -The Cadence MIPI-CSI2 RX controller is a CSI-2 bridge supporting up to 4 CSI
-> > -lanes in input, and 4 different pixel streams in output.
-> > -
-> > -Required properties:
-> > -  - compatible: must be set to "cdns,csi2rx" and an SoC-specific compatible
-> > -  - reg: base address and size of the memory mapped region
-> > -  - clocks: phandles to the clocks driving the controller
-> > -  - clock-names: must contain:
-> > -    * sys_clk: main clock
-> > -    * p_clk: register bank clock
-> > -    * pixel_if[0-3]_clk: pixel stream output clock, one for each stream
-> > -                         implemented in hardware, between 0 and 3
-> > -
-> > -Optional properties:
-> > -  - phys: phandle to the external D-PHY, phy-names must be provided
-> > -  - phy-names: must contain "dphy", if the implementation uses an
-> > -               external D-PHY
-> > -
-> > -Required subnodes:
-> > -  - ports: A ports node with one port child node per device input and output
-> > -           port, in accordance with the video interface bindings defined in
-> > -           Documentation/devicetree/bindings/media/video-interfaces.txt. The
-> > -           port nodes are numbered as follows:
-> > -
-> > -           Port Description
-> > -           -----------------------------
-> > -           0    CSI-2 input
-> > -           1    Stream 0 output
-> > -           2    Stream 1 output
-> > -           3    Stream 2 output
-> > -           4    Stream 3 output
-> > -
-> > -           The stream output port nodes are optional if they are not
-> > -           connected to anything at the hardware level or implemented
-> > -           in the design.Since there is only one endpoint per port,
-> > -           the endpoints are not numbered.
-> > -
-> > -
-> > -Example:
-> > -
-> > -csi2rx: csi-bridge@0d060000 {
-> > -	compatible = "cdns,csi2rx";
-> > -	reg = <0x0d060000 0x1000>;
-> > -	clocks = <&byteclock>, <&byteclock>
-> > -		 <&coreclock>, <&coreclock>,
-> > -		 <&coreclock>, <&coreclock>;
-> > -	clock-names = "sys_clk", "p_clk",
-> > -		      "pixel_if0_clk", "pixel_if1_clk",
-> > -		      "pixel_if2_clk", "pixel_if3_clk";
-> > -
-> > -	ports {
-> > -		#address-cells = <1>;
-> > -		#size-cells = <0>;
-> > -
-> > -		port@0 {
-> > -			reg = <0>;
-> > -
-> > -			csi2rx_in_sensor: endpoint {
-> > -				remote-endpoint = <&sensor_out_csi2rx>;
-> > -				clock-lanes = <0>;
-> > -				data-lanes = <1 2>;
-> > -			};
-> > -		};
-> > -
-> > -		port@1 {
-> > -			reg = <1>;
-> > -
-> > -			csi2rx_out_grabber0: endpoint {
-> > -				remote-endpoint = <&grabber0_in_csi2rx>;
-> > -			};
-> > -		};
-> > -
-> > -		port@2 {
-> > -			reg = <2>;
-> > -
-> > -			csi2rx_out_grabber1: endpoint {
-> > -				remote-endpoint = <&grabber1_in_csi2rx>;
-> > -			};
-> > -		};
-> > -
-> > -		port@3 {
-> > -			reg = <3>;
-> > -
-> > -			csi2rx_out_grabber2: endpoint {
-> > -				remote-endpoint = <&grabber2_in_csi2rx>;
-> > -			};
-> > -		};
-> > -
-> > -		port@4 {
-> > -			reg = <4>;
-> > -
-> > -			csi2rx_out_grabber3: endpoint {
-> > -				remote-endpoint = <&grabber3_in_csi2rx>;
-> > -			};
-> > -		};
-> > -	};
-> > -};
-> > diff --git a/Documentation/devicetree/bindings/media/cdns,csi2rx.yaml b/Documentation/devicetree/bindings/media/cdns,csi2rx.yaml
-> > new file mode 100644
-> > index 000000000000..8e42c9fdaaa3
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/media/cdns,csi2rx.yaml
-> > @@ -0,0 +1,169 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/media/cdns,csi2rx.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Cadence MIPI-CSI2 RX controller
-> > +
-> > +description: |
-> > +  The Cadence MIPI-CSI2 RX controller is a CSI-2 bridge supporting up to 4 CSI
-> > +  lanes in input, and 4 different pixel streams in output.
-> > +
-> > +maintainers:
-> > +  - Pratyush Yadav <p.yadav@ti.com>
-> > +
-> > +properties:
-> > +  compatible:
-> > +    contains:
-> > +      const: cdns,csi2rx
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  clocks:
-> > +    minItems: 3
-> > +    maxItems: 6
-> > +
-> > +  clock-names:
-> > +    minItems: 3
-> > +    maxItems: 6
-> 
-> maxItems can be dropped here. Implied by items length.
+The pull request you sent on Wed,  7 Jul 2021 09:01:39 +0200:
 
-Ok.
+> git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.14-rc1-tag
 
-> 
-> > +    items:
-> > +      - const: sys_clk # main clock
-> > +      - const: p_clk # register bank clock
-> > +      - const: pixel_if0_clk # pixel stream 0 output clock
-> > +      - const: pixel_if1_clk # pixel stream 1 output clock
-> > +      - const: pixel_if2_clk # pixel stream 2 output clock
-> > +      - const: pixel_if3_clk # pixel stream 3 output clock
-> > +
-> > +  phys:
-> > +    maxItems: 1
-> > +    description: phandle to the external D-PHY
-> > +
-> > +  phy-names:
-> > +    items:
-> > +      - const: dphy
-> > +
-> > +  ports:
-> > +    $ref: /schemas/graph.yaml#/properties/ports
-> > +
-> > +    properties:
-> > +      port@0:
-> > +        $ref: /schemas/graph.yaml#/$defs/port-base
-> > +        unevaluatedProperties: false
-> > +        description: CSI-2 input
-> > +
-> > +        properties:
-> > +          endpoint:
-> > +            $ref: video-interfaces.yaml#
-> > +            unevaluatedProperties: false
-> > +
-> > +            properties:
-> > +              clock-lanes:
-> > +                maxItems: 1
-> > +
-> > +              data-lanes:
-> > +                $ref: /schemas/types.yaml#/definitions/uint32-array
-> 
-> Don't need a type here.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/4ea90317956718e0648e1f87e56530db809a5a04
 
-Ok.
-
-> 
-> > +                minItems: 1
-> > +                maxItems: 4
-> > +                uniqueItems: true
-> 
-> uniqueItems should be added in video-interfaces.yaml.
-
-Ok. I will send that change as a separate patch independent of this 
-series.
-
-Thanks for reviewing.
-
-> 
-> > +                items:
-> > +                  maximum: 4
-> > +
-> > +            required:
-> > +              - clock-lanes
-> > +              - data-lanes
-> > +
-[...]
+Thank you!
 
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
