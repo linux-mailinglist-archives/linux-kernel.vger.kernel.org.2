@@ -2,621 +2,339 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC873BE76F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 13:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A503BE784
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 13:57:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231449AbhGGLy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 07:54:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33372 "EHLO
+        id S231452AbhGGMA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 08:00:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231358AbhGGLy0 (ORCPT
+        with ESMTP id S231358AbhGGMAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 07:54:26 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 019AAC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 04:51:46 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id x3so922270pll.5
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 04:51:45 -0700 (PDT)
+        Wed, 7 Jul 2021 08:00:25 -0400
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C7AC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 04:57:44 -0700 (PDT)
+Received: by mail-vs1-xe2c.google.com with SMTP id r24so1422709vsg.4
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 04:57:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oqyImscKIGHZdWry/NO6O15x9HwF7lH+KNgTMvp4IP0=;
-        b=nbjaO/HS0vRkQUSzhOQo9OGmH9xkCc9dGZpPoV3gE/kGsalVhEFP8DqSM3ZS72N06C
-         qHTWo46p/T+D1LLDr2KOYgCDAo6ybCAIFjTUcbofaIEyw4V60P6obGnOQdme2OjLBw1v
-         ifxVbix1no0tLjRBnPpMxH1REEt4UI68aCE5to70vjO0sdEETxocHhkhCeTyr52mL2IX
-         r8T49p4tjDZFOiA9Q0vvmbrsx79H0cdgHBD5glF6MGZyq2cog+i67iwfkIIsJ5rtYs5/
-         AKr5tvIgFDPqDG2O0Qo5RupZsG8li/fSoDlcu/Sb0GPJLeI8tpHBMBPNQiBfQMH+HgpE
-         C51A==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=O3GY2fEQnMWGEIJc61SHZMVxw1rzAtXQZu5zS1i7KN4=;
+        b=zEkq6kuvDpttg+PECmsCahXUVcdX3MfVDpcfMsz1yDEslJX7uR+l24k6qX4F1pgJT2
+         naXQ8WV0/jqWfgFQ2aExdJexyM0Rqf7Yas197mi5RZVziC1f8R36dlCK7b1EkzkajgjD
+         Mb8NWN+62jc68bQy5wMZpIq76BaeLPPx7RTBFvf+NgFHDehLIoCuzw7XrWmrOlTNwjxz
+         eLN4N5Rm0ayxq2VOcN5LSoOYk4HG5aVy4KpcrRF8w2F6KSsD8u42RjtW2Mw1FxsdNT2G
+         owICGR7G5CfanycfPknlop6l1D2bvC+evqRNpCZn5Xq33BJARhQKXcW0iAlv7GllMOvH
+         TU/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oqyImscKIGHZdWry/NO6O15x9HwF7lH+KNgTMvp4IP0=;
-        b=SngaOi9zKZvR0vAehTw5zgxdIpCXnJibSdPCY8Ll5SXyvxuh7ygF+rRQSW/Yc3VHNp
-         exSl4BfGa9IcG9j3wKOQwKfL6tru+nyU7zIJhmFTQaIm9q4L2gWJmarCzmnpMBpbxwN9
-         Bj/Rx2UOkt3iwA+iEpTdaZAm7JGk+STW2XFVqhqjbVA/KQQsttYIWWdA5NVwRRtKk0z7
-         TFkZeuj+peTwHfpttHXL3i1y2gAPwYEwW5Mqv3rHQMeJDlrTsVINntTMWTUsMEk0fQQa
-         he46dOp/wCZ6HeV42HGTdGoZlcrz2kYydAZTse/pdZGcc718qignlvm4fyeQF/wqlcg8
-         6YlQ==
-X-Gm-Message-State: AOAM531QL6zJ89gzCo5WwzGjz4FnQ8kgLEPNubhMOge2YkyKeMcrxu20
-        03gAyKBDz+hoBX56FBBgxXU=
-X-Google-Smtp-Source: ABdhPJwCqWNYOYzIehnlB6QDB9F908y6VC7TdG0vhGLlJW0hfnDzf08sbaJiDGmxvy3A7PITrAtuuQ==
-X-Received: by 2002:a17:902:b7c2:b029:128:c1cd:241e with SMTP id v2-20020a170902b7c2b0290128c1cd241emr21172571plz.14.1625658705391;
-        Wed, 07 Jul 2021 04:51:45 -0700 (PDT)
-Received: from ubuntu.localdomain ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id i24sm17795473pfr.56.2021.07.07.04.51.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 04:51:44 -0700 (PDT)
-From:   Gu Shengxian <gushengxian507419@gmail.com>
-To:     perex@perex.cz, tiwai@suse.com, james.schulman@cirrus.com,
-        david.rhodes@cirrus.com, matthias.bgg@gmail.com
-Cc:     linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
-        Gu Shengxian <gushengxian@yulong.com>
-Subject: [PATCH] ASoC: codecs: remove unneeded variable: "ret"
-Date:   Wed,  7 Jul 2021 19:51:30 +0800
-Message-Id: <20210707115131.9060-1-gushengxian507419@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=O3GY2fEQnMWGEIJc61SHZMVxw1rzAtXQZu5zS1i7KN4=;
+        b=DCBw9hpErcx2AgAQSihkiG/c0JwfetqYXfJVwGQEwprJlRDX33cnQxcCzYNbokvUaD
+         3NGqgPnP0cpa9sm7lfa3vf6lNqz/Qxr7rlb1r9ID59nIVh373IDmJwAPm6SkGuTFmdu5
+         rDFKHwinZ6zb4HPsvFERLwyIBSCTTYz0d7GdJEnyyuXn0laqCMgF+1DK0kOcisMVsHBg
+         Wmp/32+vape7eWhCS711Hq2RzjpVO50y83xpYTiLJcFcax8RT9JbpmbHbmG3Vck5G4HV
+         5HWDmIM7+2skRt/7KDek88GEy5NK6CivTheberkDmJO/wb6DONe46IUTn5k2sMDLkGw3
+         lSFQ==
+X-Gm-Message-State: AOAM5327Bb3Al665OfjOYRiBOOu58O5KieO+PhQBbAyfTg1kdeBZDzKw
+        JBB729kO3TaCfLjvfhCE1/UKUyQY27IdnycimiAprg==
+X-Google-Smtp-Source: ABdhPJxuS1nIy8es5nnvzwBpklq1CgC7HcO0aABRfqnbYWVWBpgtaLZhphDhqCH+Z5tU0MYozHNbz2X0lZVQXW8CMrY=
+X-Received: by 2002:a67:bd0f:: with SMTP id y15mr20279260vsq.19.1625659063379;
+ Wed, 07 Jul 2021 04:57:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CWXP265MB268049D9AB181062DA7F6DDBC4009@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+ <CWXP265MB26807AC3C130772D789D0AABC41B9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+ <CAPDyKFq44ZuXXUDQV34NSW-ixB9GAZfDx+dx-Kb8O7=LQ1TSHQ@mail.gmail.com>
+ <CWXP265MB26803EFAC659676EC0914F97C41B9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+ <DM6PR04MB6575B0049B98254E77BA447EFC1A9@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <CWXP265MB2680575489E508DC75D84857C41A9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+In-Reply-To: <CWXP265MB2680575489E508DC75D84857C41A9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 7 Jul 2021 13:57:06 +0200
+Message-ID: <CAPDyKFrCtRTHZYRjUecvrqr=YyhrTw+HXtdLRHeOTxoK94iSRg@mail.gmail.com>
+Subject: Re: [PATCHv2] mmc: block: Differentiate busy and PROG state
+To:     =?UTF-8?Q?Christian_L=C3=B6hle?= <CLoehle@hyperstone.com>
+Cc:     Avri Altman <Avri.Altman@wdc.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "hch@infradead.org" <hch@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gu Shengxian <gushengxian@yulong.com>
+On Wed, 7 Jul 2021 at 10:27, Christian L=C3=B6hle <CLoehle@hyperstone.com> =
+wrote:
+>
+> Prevent race condition with ioctl commands
+>
+> To fully prevent a race condition where the next
+> issued command will be rejected as the card is no
+> longer signalling busy but not yet back in TRAN state.
+> The card may be in PROG state without signalling busy,
+> for some of the commands that are only R1, but also
+> for R1b commands, the card will signal non-busy as soon
+> as receive buffers are free again, but the card has
+> not finished handling the command and may therefore be
+> in PROG.
 
-The variable: "ret" is only defined and returned.
-So it could be removed.
-Fix some spelling mistakes.
+Can you please point me to the corresponding information in the spec
+that states that the above behavior is correct?
 
-Signed-off-by: Gu Shengxian <gushengxian@yulong.com>
----
- sound/soc/codecs/ad1836.c        |  2 +-
- sound/soc/codecs/adau1372.c      |  2 +-
- sound/soc/codecs/adau1701.c      |  2 +-
- sound/soc/codecs/adau17x1.c      |  2 +-
- sound/soc/codecs/adau1977.c      |  2 +-
- sound/soc/codecs/ak4554.c        |  2 +-
- sound/soc/codecs/ak4613.c        |  2 +-
- sound/soc/codecs/alc5632.c       |  2 +-
- sound/soc/codecs/arizona.c       |  2 +-
- sound/soc/codecs/cpcap.c         |  2 +-
- sound/soc/codecs/cs35l33.c       |  2 +-
- sound/soc/codecs/cs35l34.c       |  2 +-
- sound/soc/codecs/cs35l36.c       |  2 +-
- sound/soc/codecs/cs4270.c        |  2 +-
- sound/soc/codecs/cs42l42.c       |  2 +-
- sound/soc/codecs/cs42l73.c       |  2 +-
- sound/soc/codecs/cs42xx8.c       |  2 +-
- sound/soc/codecs/cx20442.c       |  4 ++--
- sound/soc/codecs/cx2072x.c       |  6 +++---
- sound/soc/codecs/cx2072x.h       |  2 +-
- sound/soc/codecs/da7210.c        |  2 +-
- sound/soc/codecs/da7213.c        |  2 +-
- sound/soc/codecs/hdac_hda.c      |  2 +-
- sound/soc/codecs/hdac_hdmi.c     |  6 +++---
- sound/soc/codecs/max98088.c      |  2 +-
- sound/soc/codecs/max98373.c      |  2 +-
- sound/soc/codecs/max98390.c      |  2 +-
- sound/soc/codecs/max98927.c      |  4 ++--
- sound/soc/codecs/mt6359-accdet.c |  2 +-
- sound/soc/codecs/mt6359.c        | 10 +++++-----
- sound/soc/codecs/wcd938x.c       |  6 ++----
- 31 files changed, 42 insertions(+), 44 deletions(-)
+In principle what you are saying is that busy signalling on DAT0 is
+*entirely* broken, at least for some cards and some commands.
 
-diff --git a/sound/soc/codecs/ad1836.c b/sound/soc/codecs/ad1836.c
-index 08a5651bed9f..2db3e42fc6c1 100644
---- a/sound/soc/codecs/ad1836.c
-+++ b/sound/soc/codecs/ad1836.c
-@@ -265,7 +265,7 @@ static int ad1836_probe(struct snd_soc_component *component)
- 	regmap_write(ad1836->regmap, AD1836_DAC_CTRL2, 0x0);
- 	/* high-pass filter enable, power-on adc */
- 	regmap_write(ad1836->regmap, AD1836_ADC_CTRL1, 0x100);
--	/* unmute adc channles, adc aux mode */
-+	/* unmute adc channels, adc aux mode */
- 	regmap_write(ad1836->regmap, AD1836_ADC_CTRL2, 0x180);
- 	/* volume */
- 	for (i = 1; i <= num_dacs; ++i) {
-diff --git a/sound/soc/codecs/adau1372.c b/sound/soc/codecs/adau1372.c
-index 6811a8b3866d..6e9061c60f9f 100644
---- a/sound/soc/codecs/adau1372.c
-+++ b/sound/soc/codecs/adau1372.c
-@@ -684,7 +684,7 @@ static int adau1372_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
- 
- 	/* I2S mode */
- 	if (slots == 0) {
--		/* The other settings dont matter in I2S mode */
-+		/* The other settings don't matter in I2S mode */
- 		regmap_update_bits(adau1372->regmap, ADAU1372_REG_SAI0,
- 				   ADAU1372_SAI0_SAI_MASK, ADAU1372_SAI0_SAI_I2S);
- 		adau1372->rate_constraints.mask = ADAU1372_RATE_MASK_TDM2;
-diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
-index 5ce74697564a..ab6fcfca7506 100644
---- a/sound/soc/codecs/adau1701.c
-+++ b/sound/soc/codecs/adau1701.c
-@@ -689,7 +689,7 @@ static int adau1701_probe(struct snd_soc_component *component)
- 	 */
- 	adau1701->pll_clkdiv = ADAU1707_CLKDIV_UNSET;
- 
--	/* initalize with pre-configured pll mode settings */
-+	/* initialize with pre-configured pll mode settings */
- 	ret = adau1701_reset(component, adau1701->pll_clkdiv, 0);
- 	if (ret < 0)
- 		goto exit_regulators_disable;
-diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
-index 8aae7ab74091..c6df4272363c 100644
---- a/sound/soc/codecs/adau17x1.c
-+++ b/sound/soc/codecs/adau17x1.c
-@@ -876,7 +876,7 @@ static int adau17x1_setup_firmware(struct snd_soc_component *component,
- 	 * point in performing the below steps as the call to
- 	 * sigmadsp_setup(...) will return directly when it finds the sample
- 	 * rate to be the same as before. By checking this we can prevent an
--	 * audiable popping noise which occours when toggling DSP_RUN.
-+	 * audible popping noise which occurs when toggling DSP_RUN.
- 	 */
- 	if (adau->sigmadsp->current_samplerate == rate)
- 		return 0;
-diff --git a/sound/soc/codecs/adau1977.c b/sound/soc/codecs/adau1977.c
-index e347a48131d1..9e40a223a7fa 100644
---- a/sound/soc/codecs/adau1977.c
-+++ b/sound/soc/codecs/adau1977.c
-@@ -241,7 +241,7 @@ static int adau1977_reset(struct adau1977 *adau1977)
- }
- 
- /*
-- * Returns the appropriate setting for ths FS field in the CTRL0 register
-+ * Returns the appropriate setting for the FS field in the CTRL0 register
-  * depending on the rate.
-  */
- static int adau1977_lookup_fs(unsigned int rate)
-diff --git a/sound/soc/codecs/ak4554.c b/sound/soc/codecs/ak4554.c
-index 8e60e2b56ad6..1e79ac831f69 100644
---- a/sound/soc/codecs/ak4554.c
-+++ b/sound/soc/codecs/ak4554.c
-@@ -19,7 +19,7 @@
-  *
-  * CPU/Codec DAI image
-  *
-- * CPU-DAI1 (plaback only fmt = RIGHT_J) --+-- ak4554
-+ * CPU-DAI1 (playback only fmt = RIGHT_J) --+-- ak4554
-  *					   |
-  * CPU-DAI2 (capture only fmt = LEFT_J) ---+
-  */
-diff --git a/sound/soc/codecs/ak4613.c b/sound/soc/codecs/ak4613.c
-index 4d2e78101f28..ed8a069129a5 100644
---- a/sound/soc/codecs/ak4613.c
-+++ b/sound/soc/codecs/ak4613.c
-@@ -521,7 +521,7 @@ static int ak4613_dai_trigger(struct snd_pcm_substream *substream, int cmd,
- 	 *
- 	 * Calling ak4613_dummy_write() function might be delayed.
- 	 * In such case, ak4613 volume might be temporarily 0dB when
--	 * beggining of playback.
-+	 * beginning of playback.
- 	 * see also
- 	 *	ak4613_dummy_write()
- 	 */
-diff --git a/sound/soc/codecs/alc5632.c b/sound/soc/codecs/alc5632.c
-index 79813882a955..df6a6da681cf 100644
---- a/sound/soc/codecs/alc5632.c
-+++ b/sound/soc/codecs/alc5632.c
-@@ -149,7 +149,7 @@ static const DECLARE_TLV_DB_RANGE(boost_tlv,
- );
- /* 0db min scale, 6 db steps, no mute */
- static const DECLARE_TLV_DB_SCALE(dig_tlv, 0, 600, 0);
--/* 0db min scalem 0.75db steps, no mute */
-+/* 0db min scale 0.75db steps, no mute */
- static const DECLARE_TLV_DB_SCALE(vdac_tlv, -3525, 75, 0);
- 
- static const struct snd_kcontrol_new alc5632_vol_snd_controls[] = {
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index e32871b3f68a..f7f6c5925a41 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -2261,7 +2261,7 @@ static int arizona_calc_fll(struct arizona_fll *fll,
- 
- 	arizona_fll_dbg(fll, "Fref=%u Fout=%u\n", Fref, fll->fout);
- 
--	/* Fvco should be over the targt; don't check the upper bound */
-+	/* Fvco should be over the target; don't check the upper bound */
- 	div = ARIZONA_FLL_MIN_OUTDIV;
- 	while (fll->fout * div < ARIZONA_FLL_MIN_FVCO * fll->vco_mult) {
- 		div++;
-diff --git a/sound/soc/codecs/cpcap.c b/sound/soc/codecs/cpcap.c
-index 05bbacd0d174..fa4e024804a5 100644
---- a/sound/soc/codecs/cpcap.c
-+++ b/sound/soc/codecs/cpcap.c
-@@ -800,7 +800,7 @@ static const struct snd_soc_dapm_widget cpcap_dapm_widgets[] = {
- 	SND_SOC_DAPM_PGA("EMU Left PGA",
- 		CPCAP_REG_RXOA, CPCAP_BIT_EMU_SPKR_L_EN, 0, NULL, 0),
- 
--	/* Headet Charge Pump */
-+	/* Headset Charge Pump */
- 	SND_SOC_DAPM_SUPPLY("Headset Charge Pump",
- 		CPCAP_REG_RXOA, CPCAP_BIT_ST_HS_CP_EN, 0, NULL, 0),
- 
-diff --git a/sound/soc/codecs/cs35l33.c b/sound/soc/codecs/cs35l33.c
-index 2a6f5e46d031..7dd80cb8cae6 100644
---- a/sound/soc/codecs/cs35l33.c
-+++ b/sound/soc/codecs/cs35l33.c
-@@ -581,7 +581,7 @@ static int cs35l33_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
- 			| CS35L33_X_LOC);
- 	}
- 
--	/* disconnect {vp,vbst}_mon routes: eanble later if set in tx_mask*/
-+	/* disconnect {vp,vbst}_mon routes: enable later if set in tx_mask*/
- 	snd_soc_dapm_del_routes(dapm, cs35l33_vp_vbst_mon_route,
- 		ARRAY_SIZE(cs35l33_vp_vbst_mon_route));
- 
-diff --git a/sound/soc/codecs/cs35l34.c b/sound/soc/codecs/cs35l34.c
-index ed678241c22b..b8f19a5d1c10 100644
---- a/sound/soc/codecs/cs35l34.c
-+++ b/sound/soc/codecs/cs35l34.c
-@@ -298,7 +298,7 @@ static int cs35l34_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
- 				CS35L34_X_STATE | CS35L34_X_LOC,
- 				CS35L34_X_STATE | CS35L34_X_LOC);
- 
--	/* disconnect {vp,vbst}_mon routes: eanble later if set in tx_mask*/
-+	/* disconnect {vp,vbst}_mon routes: enable later if set in tx_mask*/
- 	while (slot >= 0) {
- 		/* configure VMON_TX_LOC */
- 		if (slot_num == 0)
-diff --git a/sound/soc/codecs/cs35l36.c b/sound/soc/codecs/cs35l36.c
-index d83c1b318c1c..8bfc680a1177 100644
---- a/sound/soc/codecs/cs35l36.c
-+++ b/sound/soc/codecs/cs35l36.c
-@@ -1246,7 +1246,7 @@ static int cs35l36_component_probe(struct snd_soc_component *component)
- 	 * L37 is 12V
- 	 * If L36 we need to clamp some values for safety
- 	 * after probe has setup dt values. We want to make
--	 * sure we dont miss any values set in probe
-+	 * sure we don't miss any values set in probe
- 	 */
- 	if (cs35l36->chip_version == CS35L36_10V_L36) {
- 		regmap_update_bits(cs35l36->regmap,
-diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
-index 2d239e983a83..20c33e7edb22 100644
---- a/sound/soc/codecs/cs4270.c
-+++ b/sound/soc/codecs/cs4270.c
-@@ -176,7 +176,7 @@ static const struct snd_soc_dapm_route cs4270_dapm_routes[] = {
-  * @speed_mode is the corresponding bit pattern to be written to the
-  * MODE bits of the Mode Control Register
-  *
-- * @mclk is the corresponding bit pattern to be wirten to the MCLK bits of
-+ * @mclk is the corresponding bit pattern to be written to the MCLK bits of
-  * the Mode Control Register.
-  *
-  * In situations where a single ratio is represented by multiple speed
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index eff013f295be..111fc0c04015 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -1410,7 +1410,7 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
- 	int report = 0;
- 
- 
--	/* Read sticky registers to clear interurpt */
-+	/* Read sticky registers to clear interrupt */
- 	for (i = 0; i < ARRAY_SIZE(stickies); i++) {
- 		regmap_read(cs42l42->regmap, irq_params_table[i].status_addr,
- 				&(stickies[i]));
-diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
-index 018463f34e12..95d50fa22274 100644
---- a/sound/soc/codecs/cs42l73.c
-+++ b/sound/soc/codecs/cs42l73.c
-@@ -1118,7 +1118,7 @@ static int cs42l73_set_bias_level(struct snd_soc_component *component,
- 			mdelay(cs42l73->shutdwn_delay);
- 			cs42l73->shutdwn_delay = 0;
- 		} else {
--			mdelay(15); /* Min amount of time requred to power
-+			mdelay(15); /* Min amount of time required to power
- 				     * down.
- 				     */
- 		}
-diff --git a/sound/soc/codecs/cs42xx8.c b/sound/soc/codecs/cs42xx8.c
-index 5d6ef660f851..bbfe7651b469 100644
---- a/sound/soc/codecs/cs42xx8.c
-+++ b/sound/soc/codecs/cs42xx8.c
-@@ -184,7 +184,7 @@ struct cs42xx8_ratios {
- };
- 
- /*
-- * According to reference mannual, define the cs42xx8_ratio struct
-+ * According to reference manual, define the cs42xx8_ratio struct
-  * MFreq2 | MFreq1 | MFreq0 |     Description     | SSM | DSM | QSM |
-  * 0      | 0      | 0      |1.029MHz to 12.8MHz  | 256 | 128 |  64 |
-  * 0      | 0      | 1      |1.536MHz to 19.2MHz  | 384 | 192 |  96 |
-diff --git a/sound/soc/codecs/cx20442.c b/sound/soc/codecs/cx20442.c
-index ec8d6e74b467..824c09f3fd1a 100644
---- a/sound/soc/codecs/cx20442.c
-+++ b/sound/soc/codecs/cx20442.c
-@@ -197,10 +197,10 @@ static int cx20442_write(struct snd_soc_component *component, unsigned int reg,
- }
- 
- /*
-- * Line discpline related code
-+ * Line discipline related code
-  *
-  * Any of the callback functions below can be used in two ways:
-- * 1) registerd by a machine driver as one of line discipline operations,
-+ * 1) registered by a machine driver as one of line discipline operations,
-  * 2) called from a machine's provided line discipline callback function
-  *    in case when extra machine specific code must be run as well.
-  */
-diff --git a/sound/soc/codecs/cx2072x.c b/sound/soc/codecs/cx2072x.c
-index 1f5c57fab1d8..2691d747692f 100644
---- a/sound/soc/codecs/cx2072x.c
-+++ b/sound/soc/codecs/cx2072x.c
-@@ -565,7 +565,7 @@ static int cx2072x_reg_read(void *context, unsigned int reg,
- 	return 0;
- }
- 
--/* get suggested pre_div valuce from mclk frequency */
-+/* get suggested pre_div value from mclk frequency */
- static unsigned int get_div_from_mclk(unsigned int mclk)
- {
- 	unsigned int div = 8;
-@@ -1571,7 +1571,7 @@ static struct snd_soc_dai_driver soc_codec_cx2072x_dai[] = {
- 		.ops = &cx2072x_dai_ops,
- 		.symmetric_rate = 1,
- 	},
--	{ /* plabayck only, return echo reference to Conexant DSP chip */
-+	{ /* playback only, return echo reference to Conexant DSP chip */
- 		.name = "cx2072x-dsp",
- 		.id	= CX2072X_DAI_DSP,
- 		.probe = cx2072x_dsp_dai_probe,
-@@ -1584,7 +1584,7 @@ static struct snd_soc_dai_driver soc_codec_cx2072x_dai[] = {
- 		},
- 		.ops = &cx2072x_dai_ops,
- 	},
--	{ /* plabayck only, return echo reference through I2S TX */
-+	{ /* playback only, return echo reference through I2S TX */
- 		.name = "cx2072x-aec",
- 		.id	= 3,
- 		.capture = {
-diff --git a/sound/soc/codecs/cx2072x.h b/sound/soc/codecs/cx2072x.h
-index ebdd567fa225..09e3a92b184f 100644
---- a/sound/soc/codecs/cx2072x.h
-+++ b/sound/soc/codecs/cx2072x.h
-@@ -177,7 +177,7 @@
- #define CX2072X_PLBK_DRC_PARM_LEN	9
- #define CX2072X_CLASSD_AMP_LEN		6
- 
--/* DAI interfae type */
-+/* DAI interface type */
- #define CX2072X_DAI_HIFI	1
- #define CX2072X_DAI_DSP		2
- #define CX2072X_DAI_DSP_PWM	3 /* 4 ch, including mic and AEC */
-diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
-index 8af344b2fdbf..2b6ed0a5a697 100644
---- a/sound/soc/codecs/da7210.c
-+++ b/sound/soc/codecs/da7210.c
-@@ -1151,7 +1151,7 @@ static int da7210_probe(struct snd_soc_component *component)
- 	snd_soc_component_write(component, DA7210_PLL_DIV3, DA7210_MCLK_RANGE_10_20_MHZ |
- 					      DA7210_PLL_BYP);
- 
--	/* Diable PLL and bypass it */
-+	/* Disable PLL and bypass it */
- 	snd_soc_component_write(component, DA7210_PLL, DA7210_PLL_FS_48000);
- 
- 	/* Activate all enabled subsystem */
-diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
-index 3ab89387b4e6..5c3af89ff21e 100644
---- a/sound/soc/codecs/da7213.c
-+++ b/sound/soc/codecs/da7213.c
-@@ -778,7 +778,7 @@ static int da7213_dai_event(struct snd_soc_dapm_widget *w,
- 
- 		return 0;
- 	case SND_SOC_DAPM_POST_PMD:
--		/* Revert 32KHz PLL lock udpates if applied previously */
-+		/* Revert 32KHz PLL lock updates if applied previously */
- 		pll_ctrl = snd_soc_component_read(component, DA7213_PLL_CTRL);
- 		if (pll_ctrl & DA7213_PLL_32K_MODE) {
- 			snd_soc_component_write(component, 0xF0, 0x8B);
-diff --git a/sound/soc/codecs/hdac_hda.c b/sound/soc/codecs/hdac_hda.c
-index 390dd6c7f6a5..7298244ba92d 100644
---- a/sound/soc/codecs/hdac_hda.c
-+++ b/sound/soc/codecs/hdac_hda.c
-@@ -487,7 +487,7 @@ static int hdac_hda_codec_probe(struct snd_soc_component *component)
- 	/*
- 	 * hdac_device core already sets the state to active and calls
- 	 * get_noresume. So enable runtime and set the device to suspend.
--	 * pm_runtime_enable is also called during codec registeration
-+	 * pm_runtime_enable is also called during codec registration
- 	 */
- 	pm_runtime_put(&hdev->dev);
- 	pm_runtime_suspend(&hdev->dev);
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 66408a98298b..36b194a51fed 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -1051,7 +1051,7 @@ static void hdac_hdmi_add_pinmux_cvt_route(struct hdac_device *hdev,
-  * Widgets are added in the below sequence
-  *	Converter widgets for num converters enumerated
-  *	Pin-port widgets for num ports for Pins enumerated
-- *	Pin-port mux widgets to represent connenction list of pin widget
-+ *	Pin-port mux widgets to represent connection list of pin widget
-  *
-  * For each port, one Mux and One output widget is added
-  * Total widgets elements = num_cvt + (num_ports * 2);
-@@ -1256,7 +1256,7 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin,
- 		return;
- 
- 	/*
--	 * In case of non MST pin, get_eld info API expectes port
-+	 * In case of non MST pin, get_eld info API expects port
- 	 * to be -1.
- 	 */
- 	mutex_lock(&hdmi->pin_mutex);
-@@ -2039,7 +2039,7 @@ static int hdmi_codec_resume(struct device *dev)
- 	/*
- 	 * As the ELD notify callback request is not entertained while the
- 	 * device is in suspend state. Need to manually check detection of
--	 * all pins here. pin capablity change is not support, so use the
-+	 * all pins here. pin capability change is not support, so use the
- 	 * already set pin caps.
- 	 *
- 	 * NOTE: this is safe to call even if the codec doesn't actually resume.
-diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
-index f8e49e45ce33..a4923601dd72 100644
---- a/sound/soc/codecs/max98088.c
-+++ b/sound/soc/codecs/max98088.c
-@@ -95,7 +95,7 @@ static const struct reg_default max98088_reg[] = {
- 
- 	{ 0x30, 0x00 }, /* 30 DAI1 playback level */
- 	{ 0x31, 0x00 }, /* 31 DAI2 playback level */
--	{ 0x32, 0x00 }, /* 32 DAI2 playbakc level */
-+	{ 0x32, 0x00 }, /* 32 DAI2 playback level */
- 	{ 0x33, 0x00 }, /* 33 left ADC level */
- 	{ 0x34, 0x00 }, /* 34 right ADC level */
- 	{ 0x35, 0x00 }, /* 35 MIC1 level */
-diff --git a/sound/soc/codecs/max98373.c b/sound/soc/codecs/max98373.c
-index e14fe98349a5..8eaba126f534 100644
---- a/sound/soc/codecs/max98373.c
-+++ b/sound/soc/codecs/max98373.c
-@@ -307,7 +307,7 @@ SOC_ENUM("Limiter Release Rate", max98373_limiter_release_rate_enum),
- };
- 
- static const struct snd_soc_dapm_route max98373_audio_map[] = {
--	/* Plabyack */
-+	/* Playback */
- 	{"DAI Sel Mux", "Left", "Amp Enable"},
- 	{"DAI Sel Mux", "Right", "Amp Enable"},
- 	{"DAI Sel Mux", "LeftRight", "Amp Enable"},
-diff --git a/sound/soc/codecs/max98390.c b/sound/soc/codecs/max98390.c
-index 94773ccee9d5..1c8e81499378 100644
---- a/sound/soc/codecs/max98390.c
-+++ b/sound/soc/codecs/max98390.c
-@@ -686,7 +686,7 @@ static const struct snd_soc_dapm_widget max98390_dapm_widgets[] = {
- };
- 
- static const struct snd_soc_dapm_route max98390_audio_map[] = {
--	/* Plabyack */
-+	/* Playback */
- 	{"DAI Sel Mux", "Left", "Amp Enable"},
- 	{"DAI Sel Mux", "Right", "Amp Enable"},
- 	{"DAI Sel Mux", "LeftRight", "Amp Enable"},
-diff --git a/sound/soc/codecs/max98927.c b/sound/soc/codecs/max98927.c
-index 8b206ee77709..8846b99218f6 100644
---- a/sound/soc/codecs/max98927.c
-+++ b/sound/soc/codecs/max98927.c
-@@ -696,7 +696,7 @@ static int max98927_probe(struct snd_soc_component *component)
- 	regmap_write(max98927->regmap,
- 		MAX98927_R0026_PCM_TO_SPK_MONOMIX_B,
- 		0x1);
--	/* Set inital volume (+13dB) */
-+	/* Set initial volume (+13dB) */
- 	regmap_write(max98927->regmap,
- 		MAX98927_R0036_AMP_VOL_CTRL,
- 		0x38);
-@@ -911,7 +911,7 @@ static int max98927_i2c_probe(struct i2c_client *i2c,
- 	/* voltage/current slot configuration */
- 	max98927_slot_config(i2c, max98927);
- 
--	/* codec registeration */
-+	/* codec registration */
- 	ret = devm_snd_soc_register_component(&i2c->dev,
- 		&soc_component_dev_max98927,
- 		max98927_dai, ARRAY_SIZE(max98927_dai));
-diff --git a/sound/soc/codecs/mt6359-accdet.c b/sound/soc/codecs/mt6359-accdet.c
-index 78314187d37e..ad3cf4b35488 100644
---- a/sound/soc/codecs/mt6359-accdet.c
-+++ b/sound/soc/codecs/mt6359-accdet.c
-@@ -752,7 +752,7 @@ static void config_eint_init_by_mode(struct mt6359_accdet *priv)
- 	/* ESD switches on */
- 	regmap_update_bits(priv->regmap, RG_ACCDETSPARE_ADDR,
- 			   1 << 8, 1 << 8);
--	/* before playback, set NCP pull low before nagative voltage */
-+	/* before playback, set NCP pull low before negative voltage */
- 	regmap_update_bits(priv->regmap, RG_NCP_PDDIS_EN_ADDR,
- 			   RG_NCP_PDDIS_EN_MASK_SFT, BIT(RG_NCP_PDDIS_EN_SFT));
- 
-diff --git a/sound/soc/codecs/mt6359.c b/sound/soc/codecs/mt6359.c
-index 2d6a4a29b850..89ff46374f1f 100644
---- a/sound/soc/codecs/mt6359.c
-+++ b/sound/soc/codecs/mt6359.c
-@@ -68,7 +68,7 @@ static void mt6359_reset_capture_gpio(struct mt6359_priv *priv)
- 			   0x3 << 0, 0x0);
- }
- 
--/* use only when doing mtkaif calibraiton at the boot time */
-+/* use only when doing mtkaif calibration at the boot time */
- static void mt6359_set_dcxo(struct mt6359_priv *priv, bool enable)
- {
- 	regmap_update_bits(priv->regmap, MT6359_DCXO_CW12,
-@@ -76,7 +76,7 @@ static void mt6359_set_dcxo(struct mt6359_priv *priv, bool enable)
- 			   (enable ? 1 : 0) << RG_XO_AUDIO_EN_M_SFT);
- }
- 
--/* use only when doing mtkaif calibraiton at the boot time */
-+/* use only when doing mtkaif calibration at the boot time */
- static void mt6359_set_clksq(struct mt6359_priv *priv, bool enable)
- {
- 	/* Enable/disable CLKSQ 26MHz */
-@@ -85,7 +85,7 @@ static void mt6359_set_clksq(struct mt6359_priv *priv, bool enable)
- 			   (enable ? 1 : 0) << RG_CLKSQ_EN_SFT);
- }
- 
--/* use only when doing mtkaif calibraiton at the boot time */
-+/* use only when doing mtkaif calibration at the boot time */
- static void mt6359_set_aud_global_bias(struct mt6359_priv *priv, bool enable)
- {
- 	regmap_update_bits(priv->regmap, MT6359_AUDDEC_ANA_CON13,
-@@ -93,7 +93,7 @@ static void mt6359_set_aud_global_bias(struct mt6359_priv *priv, bool enable)
- 			   (enable ? 0 : 1) << RG_AUDGLB_PWRDN_VA32_SFT);
- }
- 
--/* use only when doing mtkaif calibraiton at the boot time */
-+/* use only when doing mtkaif calibration at the boot time */
- static void mt6359_set_topck(struct mt6359_priv *priv, bool enable)
- {
- 	regmap_update_bits(priv->regmap, MT6359_AUD_TOP_CKPDN_CON0,
-@@ -1731,7 +1731,7 @@ static int mt_pga_3_event(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
- 
--/* It is based on hw's control sequenece to add some delay when PMU/PMD */
-+/* It is based on hw's control sequence to add some delay when PMU/PMD */
- static int mt_delay_250_event(struct snd_soc_dapm_widget *w,
- 			      struct snd_kcontrol *kcontrol,
- 			      int event)
-diff --git a/sound/soc/codecs/wcd938x.c b/sound/soc/codecs/wcd938x.c
-index 78b76eceff8f..5fd708e013f9 100644
---- a/sound/soc/codecs/wcd938x.c
-+++ b/sound/soc/codecs/wcd938x.c
-@@ -1623,7 +1623,6 @@ static int wcd938x_codec_aux_dac_event(struct snd_soc_dapm_widget *w,
- {
- 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
- 	struct wcd938x_priv *wcd938x = snd_soc_component_get_drvdata(component);
--	int ret = 0;
- 
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
-@@ -1651,7 +1650,7 @@ static int wcd938x_codec_aux_dac_event(struct snd_soc_dapm_widget *w,
- 				WCD938X_ANA_RX_DIV4_CLK_EN_MASK, 0);
- 		break;
- 	}
--	return ret;
-+	return 0;
- 
- }
- 
-@@ -1866,7 +1865,6 @@ static int wcd938x_codec_enable_aux_pa(struct snd_soc_dapm_widget *w,
- 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
- 	struct wcd938x_priv *wcd938x = snd_soc_component_get_drvdata(component);
- 	int hph_mode = wcd938x->hph_mode;
--	int ret = 0;
- 
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
-@@ -1902,7 +1900,7 @@ static int wcd938x_codec_enable_aux_pa(struct snd_soc_dapm_widget *w,
- 						      WCD938X_EN_CUR_DET_MASK, 1);
- 		break;
- 	}
--	return ret;
-+	return 0;
- }
- 
- static int wcd938x_codec_enable_ear_pa(struct snd_soc_dapm_widget *w,
--- 
-2.25.1
+> Since the next command is not known at the time of
+> completion we must assume that it may be one that can
+> only be accepted in TRAN state.
+> Therefore we only consider a PROG command completed
+> when we have polled for TRAN.
 
+Right. See more comments about this further below.
+
+>
+> Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
+> ---
+>  drivers/mmc/core/block.c   | 86 ++++++++++++++++++++++++++++++++++----
+>  drivers/mmc/core/mmc_ops.c |  2 +-
+>  include/linux/mmc/mmc.h    | 10 +++--
+>  include/linux/mmc/sd.h     |  3 ++
+>  4 files changed, 87 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+> index 88f4c215caa6..cb78690647bf 100644
+> --- a/drivers/mmc/core/block.c
+> +++ b/drivers/mmc/core/block.c
+> @@ -411,7 +411,34 @@ static int mmc_blk_ioctl_copy_to_user(struct mmc_ioc=
+_cmd __user *ic_ptr,
+>         return 0;
+>  }
+>
+> -static int card_busy_detect(struct mmc_card *card, unsigned int timeout_=
+ms,
+> +static int is_prog_cmd(struct mmc_command *cmd)
+> +{
+> +       /*
+> +        * Cards will move to programming state (PROG) after these comman=
+ds.
+> +        * So we must not consider the command as completed until the car=
+d
+> +        * has actually returned back to TRAN state.
+> +        */
+> +       switch (cmd->opcode) {
+> +       case MMC_STOP_TRANSMISSION:
+
+This has an R1B response, hence we already do the proper polling that is ne=
+eded.
+
+In other words, we don't need to explicitly check for this command
+here, as we are already checking the response type (R1B) in
+__mmc_blk_ioctl_cmd().
+
+> +       case MMC_WRITE_DAT_UNTIL_STOP:
+
+What's this used for? It's obsolete, at least in the eMMC spec. Please drop=
+ it.
+
+> +       case MMC_WRITE_BLOCK:
+> +       case MMC_WRITE_MULTIPLE_BLOCK:
+
+These are already supported via the generic block interface, please
+drop the checks.
+
+> +       case MMC_PROGRAM_CID:
+> +       case MMC_PROGRAM_CSD:
+
+Let's discuss these, since they have R1 responses.
+
+Although, according to the eMMC spec, the card moves to rcv state, not
+the prg state as you refer to in the commit message. Normally, we
+don't need to poll for busy/tran completion of these commands.
+
+Have you observed through proper tests that this is actually needed?
+
+> +       case MMC_SET_WRITE_PROT:
+> +       case MMC_CLR_WRITE_PROT:
+> +       case MMC_ERASE:
+
+The three above have R1B, please drop them from here as they are
+already supported correctly.
+
+> +       case MMC_LOCK_UNLOCK:
+
+Again, this has an R1 response and the card moves to rcv state.
+Normally we shouldn't need to poll, but I have to admit that the eMMC
+spec isn't really clear on what will happen when using the "forced
+erase" argument. The spec mentions a 3 minute timeout....
+
+> +       case MMC_SET_TIME: /* Also covers SD_WRITE_EXTR_SINGLE */
+> +       case MMC_GEN_CMD:
+> +       case SD_WRITE_EXTR_MULTI:
+
+Are these actually being used? If not, please drop them from being
+supported. I don't want to encourage crazy operations being issued
+from userspace.
+
+> +               return true;
+> +       default:
+> +               return false;
+> +       }
+> +}
+
+Overall, it looks like we need to add a check for MMC_LOCK_UNLOCK to
+poll for busy, but that's it, I think.
+
+> +
+> +static int card_poll_until_tran(struct mmc_card *card, unsigned int time=
+out_ms,
+>                             u32 *resp_errs)
+>  {
+>         unsigned long timeout =3D jiffies + msecs_to_jiffies(timeout_ms);
+> @@ -433,8 +460,7 @@ static int card_busy_detect(struct mmc_card *card, un=
+signed int timeout_ms,
+>                         *resp_errs |=3D status;
+>
+>                 /*
+> -                * Timeout if the device never becomes ready for data and=
+ never
+> -                * leaves the program state.
+> +                * Timeout if the device never returns to TRAN state.
+>                  */
+>                 if (done) {
+>                         dev_err(mmc_dev(card->host),
+> @@ -442,6 +468,41 @@ static int card_busy_detect(struct mmc_card *card, u=
+nsigned int timeout_ms,
+>                                  __func__, status);
+>                         return -ETIMEDOUT;
+>                 }
+> +       } while (R1_CURRENT_STATE(status) !=3D R1_STATE_TRAN);
+> +
+> +       return err;
+> +}
+> +
+> +static int card_busy_detect(struct mmc_card *card, unsigned int timeout_=
+ms,
+> +                           u32 *resp_errs)
+> +{
+> +       unsigned long timeout =3D jiffies + msecs_to_jiffies(timeout_ms);
+> +       int err =3D 0;
+> +       u32 status;
+> +
+> +       do {
+> +               bool done =3D time_after(jiffies, timeout);
+> +
+> +               err =3D __mmc_send_status(card, &status, 5);
+> +               if (err) {
+> +                       dev_err(mmc_dev(card->host),
+> +                               "error %d requesting status\n", err);
+> +                       return err;
+> +               }
+> +
+> +               /* Accumulate any response error bits seen */
+> +               if (resp_errs)
+> +                       *resp_errs |=3D status;
+> +
+> +               /*
+> +                * Timeout if the device never becomes ready for data.
+> +                */
+> +               if (done) {
+> +                       dev_err(mmc_dev(card->host),
+> +                               "Card remained busy! %s status: %#x\n",
+> +                                __func__, status);
+> +                       return -ETIMEDOUT;
+> +               }
+>         } while (!mmc_ready_for_data(status));
+
+I don't quite understand what we accomplish with polling for TRAN
+state in one case and in the other case, both TRAN and READY_FOR_DATA.
+Why can't we always poll for TRAN and READY_FOR_DATA? It should work
+for all cases, no?
+
+>
+>         return err;
+> @@ -596,12 +657,19 @@ static int __mmc_blk_ioctl_cmd(struct mmc_card *car=
+d, struct mmc_blk_data *md,
+>
+>         if (idata->rpmb || (cmd.flags & MMC_RSP_R1B) =3D=3D MMC_RSP_R1B) =
+{
+>                 /*
+> -                * Ensure RPMB/R1B command has completed by polling CMD13
+> -                * "Send Status".
+> +                * Ensure card is no longer signalling busy by polling CM=
+D13.
+>                  */
+>                 err =3D card_busy_detect(card, MMC_BLK_TIMEOUT_MS, NULL);
+>         }
+>
+> +       if (is_prog_cmd(&cmd)) {
+> +               /*
+> +                * Ensure card has returned back to TRAN state
+> +                * and is ready to accept a new command.
+> +                */
+> +               err =3D card_poll_until_tran(card, MMC_BLK_TIMEOUT_MS, NU=
+LL);
+> +       }
+> +
+>         return err;
+>  }
+>
+> @@ -1630,7 +1698,7 @@ static int mmc_blk_fix_state(struct mmc_card *card,=
+ struct request *req)
+>
+>         mmc_blk_send_stop(card, timeout);
+>
+> -       err =3D card_busy_detect(card, timeout, NULL);
+> +       err =3D card_poll_until_tran(card, timeout, NULL);
+>
+>         mmc_retune_release(card->host);
+>
+> @@ -1662,7 +1730,7 @@ static void mmc_blk_read_single(struct mmc_queue *m=
+q, struct request *req)
+>                         goto error_exit;
+>
+>                 if (!mmc_host_is_spi(host) &&
+> -                   !mmc_ready_for_data(status)) {
+> +                   !mmc_tran_and_ready_for_data(status)) {
+>                         err =3D mmc_blk_fix_state(card, req);
+>                         if (err)
+>                                 goto error_exit;
+> @@ -1784,7 +1852,7 @@ static void mmc_blk_mq_rw_recovery(struct mmc_queue=
+ *mq, struct request *req)
+>
+>         /* Try to get back to "tran" state */
+>         if (!mmc_host_is_spi(mq->card->host) &&
+> -           (err || !mmc_ready_for_data(status)))
+> +           (err || !mmc_tran_and_ready_for_data(status)))
+>                 err =3D mmc_blk_fix_state(mq->card, req);
+>
+>         /*
+> @@ -1854,7 +1922,7 @@ static int mmc_blk_card_busy(struct mmc_card *card,=
+ struct request *req)
+>         if (mmc_host_is_spi(card->host) || rq_data_dir(req) =3D=3D READ)
+>                 return 0;
+>
+> -       err =3D card_busy_detect(card, MMC_BLK_TIMEOUT_MS, &status);
+> +       err =3D card_poll_until_tran(card, MMC_BLK_TIMEOUT_MS, &status);
+>
+>         /*
+>          * Do not assume data transferred correctly if there are any erro=
+r bits
+> diff --git a/drivers/mmc/core/mmc_ops.c b/drivers/mmc/core/mmc_ops.c
+> index 973756ed4016..a0be45118a93 100644
+> --- a/drivers/mmc/core/mmc_ops.c
+> +++ b/drivers/mmc/core/mmc_ops.c
+> @@ -465,7 +465,7 @@ static int mmc_busy_cb(void *cb_data, bool *busy)
+>         if (err)
+>                 return err;
+>
+> -       *busy =3D !mmc_ready_for_data(status);
+> +       *busy =3D !mmc_tran_and_ready_for_data(status);
+>         return 0;
+>  }
+
+Kind regards
+Uffe
