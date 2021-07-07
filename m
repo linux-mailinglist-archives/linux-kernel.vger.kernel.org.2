@@ -2,85 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0E083BEDAA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 20:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C53533BEDA5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 20:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231267AbhGGSFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 14:05:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbhGGSFg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 14:05:36 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF3DC061574;
-        Wed,  7 Jul 2021 11:02:55 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id c28so6137051lfp.11;
-        Wed, 07 Jul 2021 11:02:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WdK02twy8pyO9wtpquNhBoO1ciKpkv+L2J5dgsFFjAI=;
-        b=IWT3gQxefwyakiP00/D+lm+LIGY9jtFE7/cqwyQPVOZ7Y53aW7h9eD2uOr9AKLMx2S
-         iShcjfYIlhkE39PvOBzpL++wwIVkqsamo0hKgk/ndFh6ec85GF23RT55NQULhVD5G7Nb
-         SckKLmMeVIHfnXVsFKUBpNDahra++ElkdnocbmnDKFoDIEb9d7pLFR42F6c7eAavC2mi
-         G52XiJ2DmjOZfUr8KgBeHPfN0h9NMDv+sDOSWrqgnXNpuH5NCpwHrmxBej5Q+ndij7TD
-         u5X/twSz/+bET0F250cNx2DXQBAywiVBs9WIuRERzBh/8uVPwMl2mSAB/v6OY6PPYTKw
-         JflQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WdK02twy8pyO9wtpquNhBoO1ciKpkv+L2J5dgsFFjAI=;
-        b=UvchVsVzdlqlL2yao1NqPGtxWlhsVvgeyYgtWYOUrn7d9nzDTKWQ2KjDAl5HTyxy+F
-         JcijJ4y5R50OWyhOin8BOtER9EOKKxTnGZFe3lurlDKKNjn4E4ucFoOqpkCwFR8AJ1mH
-         SsEhG0F2cWgeSksVij2R84rS6hC2+XA/FAecCSVI0c3TD1Nbpe1Pw+eRDygLXwDADh+q
-         5LuoIpb1O3VJF1kZhG4gRlHAM67jONgTfUBvmfiu51pv8od+44gPdRcWUabszpPUq0n0
-         OB0JI1Dxa5foKbEi38NlVKn1Pdi5wIv8ojew23z+WtWmKbwtSNGAvjKIBEh/0VQNN2Bd
-         2nOQ==
-X-Gm-Message-State: AOAM530sK+Ugrrh+ai4C4HtjasimXdx6+s1w671FppWXzX+UlMJWd/Za
-        0PABM5qVfjGD1y+kgbO/0ii6oTeNreY=
-X-Google-Smtp-Source: ABdhPJzsyUmcaHOcFZvqbMBc9bFOsQRLPYXTQaY0nN+NxeE247XE0Fu6V2mcrEgVFT0LVtNPhoh63Q==
-X-Received: by 2002:ac2:435a:: with SMTP id o26mr19414441lfl.216.1625680973581;
-        Wed, 07 Jul 2021 11:02:53 -0700 (PDT)
-Received: from [192.168.1.102] ([178.176.76.61])
-        by smtp.gmail.com with ESMTPSA id y14sm1099130lfk.81.2021.07.07.11.02.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jul 2021 11:02:53 -0700 (PDT)
-Subject: Re: [PATCH v2 6/9] pinctrl: pistachio: Make it as a option
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org
-Cc:     tsbogend@alpha.franken.de, mturquette@baylibre.com,
-        daniel.lezcano@linaro.org, linus.walleij@linaro.org,
-        vkoul@kernel.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-phy@lists.infradead.org, devicetree@vger.kernel.org
-References: <20210707031552.20166-1-jiaxun.yang@flygoat.com>
- <20210707031552.20166-7-jiaxun.yang@flygoat.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Message-ID: <22db9cb2-0439-7ef0-6379-ce104755a1c6@gmail.com>
-Date:   Wed, 7 Jul 2021 21:02:51 +0300
+        id S231144AbhGGSFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 14:05:35 -0400
+Received: from mga04.intel.com ([192.55.52.120]:29716 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229519AbhGGSFe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 14:05:34 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10037"; a="207529865"
+X-IronPort-AV: E=Sophos;i="5.84,221,1620716400"; 
+   d="scan'208";a="207529865"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2021 11:02:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,221,1620716400"; 
+   d="scan'208";a="628102843"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
+  by orsmga005.jf.intel.com with ESMTP; 07 Jul 2021 11:02:48 -0700
+Subject: Re: [PATCH V2] mmc: sdhci: Update the software timeout value for sdhc
+To:     sbhanu@codeaurora.org
+Cc:     ulf.hansson@linaro.org, asutoshd@codeaurora.org,
+        stummala@codeaurora.org, vbadigan@codeaurora.org,
+        rampraka@codeaurora.org, sayalil@codeaurora.org,
+        sartgarg@codeaurora.org, rnayak@codeaurora.org,
+        cang@codeaurora.org, pragalla@codeaurora.org,
+        nitirawa@codeaurora.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org
+References: <1624804840-3479-1-git-send-email-sbhanu@codeaurora.org>
+ <3217c101-534b-bfcb-7ba9-5749d73cf242@intel.com>
+ <467960e793b39ffd13e8d5c5c3b87057@codeaurora.org>
+ <1d574e4cfc4c793166027d008948a0a5@codeaurora.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <e68593c2-bd4f-b4e6-e562-fc10223c750a@intel.com>
+Date:   Wed, 7 Jul 2021 21:03:02 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210707031552.20166-7-jiaxun.yang@flygoat.com>
+In-Reply-To: <1d574e4cfc4c793166027d008948a0a5@codeaurora.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/7/21 6:15 AM, Jiaxun Yang wrote:
+On 5/07/21 5:09 pm, sbhanu@codeaurora.org wrote:
+> On 2021-07-01 22:28, sbhanu@codeaurora.org wrote:
+>> On 2021-06-30 19:38, Adrian Hunter wrote:
+>>> On 27/06/21 5:40 pm, Shaik Sajida Bhanu wrote:
+>>>> Whenever SDHC run at clock rate 50MHZ or below, the hardware data
+>>>> timeout value will be 21.47secs, which is approx. 22secs and we have
+>>>> a current software timeout value as 10secs. We have to set software
+>>>> timeout value more than the hardware data timeout value to avioid seeing
+>>>> the below register dumps.
+>>>>
+>>>> [  332.953670] mmc2: Timeout waiting for hardware interrupt.
+>>>> [  332.959608] mmc2: sdhci: ============ SDHCI REGISTER DUMP ===========
+>>>> [  332.966450] mmc2: sdhci: Sys addr:  0x00000000 | Version:  0x00007202
+>>>> [  332.973256] mmc2: sdhci: Blk size:  0x00000200 | Blk cnt:  0x00000001
+>>>> [  332.980054] mmc2: sdhci: Argument:  0x00000000 | Trn mode: 0x00000027
+>>>> [  332.986864] mmc2: sdhci: Present:   0x01f801f6 | Host ctl: 0x0000001f
+>>>> [  332.993671] mmc2: sdhci: Power:     0x00000001 | Blk gap:  0x00000000
+>>>> [  333.000583] mmc2: sdhci: Wake-up:   0x00000000 | Clock:    0x00000007
+>>>> [  333.007386] mmc2: sdhci: Timeout:   0x0000000e | Int stat: 0x00000000
+>>>> [  333.014182] mmc2: sdhci: Int enab:  0x03ff100b | Sig enab: 0x03ff100b
+>>>> [  333.020976] mmc2: sdhci: ACmd stat: 0x00000000 | Slot int: 0x00000000
+>>>> [  333.027771] mmc2: sdhci: Caps:      0x322dc8b2 | Caps_1:   0x0000808f
+>>>> [  333.034561] mmc2: sdhci: Cmd:       0x0000183a | Max curr: 0x00000000
+>>>> [  333.041359] mmc2: sdhci: Resp[0]:   0x00000900 | Resp[1]:  0x00000000
+>>>> [  333.048157] mmc2: sdhci: Resp[2]:   0x00000000 | Resp[3]:  0x00000000
+>>>> [  333.054945] mmc2: sdhci: Host ctl2: 0x00000000
+>>>> [  333.059657] mmc2: sdhci: ADMA Err:  0x00000000 | ADMA Ptr:
+>>>> 0x0000000ffffff218
+>>>> [  333.067178] mmc2: sdhci_msm: ----------- VENDOR REGISTER DUMP
+>>>> -----------
+>>>> [  333.074343] mmc2: sdhci_msm: DLL sts: 0x00000000 | DLL cfg:
+>>>> 0x6000642c | DLL cfg2: 0x0020a000
+>>>> [  333.083417] mmc2: sdhci_msm: DLL cfg3: 0x00000000 | DLL usr ctl:
+>>>> 0x00000000 | DDR cfg: 0x80040873
+>>>> [  333.092850] mmc2: sdhci_msm: Vndr func: 0x00008a9c | Vndr func2 :
+>>>> 0xf88218a8 Vndr func3: 0x02626040
+>>>> [  333.102371] mmc2: sdhci: ============================================
+>>>>
+>>>> So, set software timeout value more than hardware timeout value.
+>>>>
+>>>> Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+>>>> ---
+>>>>
+>>>> Changes since V1:
+>>>>     - Moved software data timeout update part to qcom specific file as
+>>>>       suggested by Veerabhadrarao Badiganti.
+>>>> ---
+>>>>  drivers/mmc/host/sdhci-msm.c | 9 +++++++++
+>>>>  1 file changed, 9 insertions(+)
+>>>>
+>>>> diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
+>>>> index e44b7a6..58e651e 100644
+>>>> --- a/drivers/mmc/host/sdhci-msm.c
+>>>> +++ b/drivers/mmc/host/sdhci-msm.c
+>>>> @@ -2089,6 +2089,14 @@ static void sdhci_msm_cqe_disable(struct mmc_host *mmc, bool recovery)
+>>>>      sdhci_cqe_disable(mmc, recovery);
+>>>>  }
+>>>>
+>>>> +static void sdhci_msm_set_timeout(struct sdhci_host *host, struct mmc_command *cmd)
+>>>> +{
+>>>> +
+>>>> +    __sdhci_set_timeout(host, cmd);
+>>>> +    if (cmd && (cmd->data) && (host->clock > 400000) && (host->clock <= 50000000))
+>>>
+>>> There are some redundant parenthesis there and cmd is never NULL i.e. could be:
+>>>
+>>>     if (cmd->data && host->clock > 400000 && host->clock <= 50000000)
+>> Sure
+> Hi,
+> 
+> We are passing cmd as NULL in sdhci_cqe_enable( ) for eMMC so, i think we should check cmd.
 
-    s/a/an/ in the subject.
-
-> So it will be avilable for generic MIPS kernel.
-
-   3d time's a charm -- no typo in kernel this time! :-)
-
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-[...]
-
-MBR, Sergei
+Very true.
