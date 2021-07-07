@@ -2,162 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 398223BE1DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 06:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4EF33BE1D8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 06:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230188AbhGGEKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 00:10:02 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:1352 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230024AbhGGEKB (ORCPT
+        id S230108AbhGGEJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 00:09:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230024AbhGGEJ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 00:10:01 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16744259002258;
-        Wed, 7 Jul 2021 00:06:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=GFeJKiJWa7bQJv3rBT5hH61E7T3/C9ZSWX5cnfGt7fY=;
- b=eIto6F8W2FoYX25iQ0G1IR3ztldnrTJuYRdA7kRRABPUjOEdttC3WGyYAtW3gLElVBNs
- 8nWLgsBieM35Ue8VyqwUk4KG3fvr8Rtew65LNYIpIg1PV3zYdAd+d8uwb31h631o3/m9
- 6B0r9ivFFUkBSfoUJAoR1FHaBH2FvcwGcnNDB1OIy6Wii7DzZiBoUUsFcC67OHU/lHo5
- wGtRIDX5duZAaab9CElORMZFKHtecTCO2gb3YOsHBtR5AhCbQdeJMzGhf7YWxWSNC78e
- N0oVYtg0LGy/fNcsOUovttemxLjGCpZrNJHZNIDxoObEyGGfOSB7udtTEZJeY7nzhos5 7A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39mc15n29e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Jul 2021 00:06:46 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 167446qY002647;
-        Wed, 7 Jul 2021 00:06:46 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39mc15n28r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Jul 2021 00:06:46 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16742s95009581;
-        Wed, 7 Jul 2021 04:06:44 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03ams.nl.ibm.com with ESMTP id 39jfh8sh1w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Jul 2021 04:06:44 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16746f7V20054332
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 7 Jul 2021 04:06:41 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 177BCAE064;
-        Wed,  7 Jul 2021 04:06:41 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EABD0AE055;
-        Wed,  7 Jul 2021 04:06:34 +0000 (GMT)
-Received: from [9.199.33.242] (unknown [9.199.33.242])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  7 Jul 2021 04:06:34 +0000 (GMT)
-Subject: Re: [PATCH 4/4] bpf powerpc: Add addr > TASK_SIZE_MAX explicit check
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     naveen.n.rao@linux.ibm.com, mpe@ellerman.id.au, ast@kernel.org,
-        daniel@iogearbox.net, songliubraving@fb.com,
-        netdev@vger.kernel.org, john.fastabend@gmail.com,
-        andrii@kernel.org, kpsingh@kernel.org, paulus@samba.org,
-        sandipan@linux.ibm.com, yhs@fb.com, bpf@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kafai@fb.com,
-        linux-kernel@vger.kernel.org,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-References: <20210706073211.349889-1-ravi.bangoria@linux.ibm.com>
- <20210706073211.349889-5-ravi.bangoria@linux.ibm.com>
- <74f55f12-c7da-a06d-c3a5-6869b907e3f6@csgroup.eu>
-From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Message-ID: <8c4fb89e-626e-fd0d-5703-e3916924785a@linux.ibm.com>
-Date:   Wed, 7 Jul 2021 09:36:33 +0530
+        Wed, 7 Jul 2021 00:09:26 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9515C061574;
+        Tue,  6 Jul 2021 21:06:45 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id 75-20020a9d08510000b02904acfe6bcccaso969017oty.12;
+        Tue, 06 Jul 2021 21:06:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=L9KXBAdgUdwykMSnUuubLWVOFEmtbnfz6/mlcwzGsLY=;
+        b=il07f4nS6JlA7KEIX9Jys5epGzx2NbrpnxrJImLWmbIxA+dZk0+cotlvZRBw1eQlxT
+         5EaWD0MUT/+u4JDF37OrD4tWPQQKMrDTtPjplpREebDVEe6M0Lk8IEgETFsDj59PlGEq
+         M3SveBp+dFN/nJbsJKL2qdJYEgPyAuXvJSHm8EHnIVBKDpEoLC6IjL+kyPVSB10M10ZG
+         uXI3HrfYrEttdnrRgSll0HvHtWMjIYbxwLjSew60ud3DelMzT6xrRbxUCwXXPPh+UqLe
+         CTeMZFv/QlvRznYhihQbDMjw/wsLMiscsi0I2/u53p0LFucqETQD0jEYupMBZDa9X34R
+         0YNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=L9KXBAdgUdwykMSnUuubLWVOFEmtbnfz6/mlcwzGsLY=;
+        b=OXw8sh7WfMcx2YV8ETW9/lce1Lofb9muWcP6vCVWI0KOahaiSOJ9n+t4PQiTIQ+LZp
+         aKbWUEhTeTa6Ve08hfBhlczuTFqdjOLZzYGHHG2kFVIKwTeUuXJpgyZ5F0XCRh7zdkMk
+         u90ZawO/5MZXkJumtnCRvs21uDsiW1hjVvUfrhAtv5UEeD+85Vzwmkae9DjUoS5OY52K
+         RhhU6rb1ofbeW9n78pZh+1/6pwzTyTLNr4b9ZKeeXxF1yGyRonfaLpdhy+qKiO/XC2a8
+         zPjlZTd78Zv+a/RuemqDSKw1pRkoTWOCz6XkwgGY0YPJsHBIIy4FaC1qFbmgUFLYdAma
+         cx4Q==
+X-Gm-Message-State: AOAM530ltD1NqZKmLL3UKbyn5d5Hlkz9flqyDxQqbPbMwg3YmJrgiCBc
+        V8SnZDAF6Jp1QfO/4joqrtm0e3qJiwg=
+X-Google-Smtp-Source: ABdhPJxa04pXBzuyZvNsWeQzYBspUwVL/EpCAtFtpEcrc4Y8XGzeed5fIqvuBA2TXEvkKL9Um1WsOg==
+X-Received: by 2002:a9d:63ca:: with SMTP id e10mr17776891otl.320.1625630805121;
+        Tue, 06 Jul 2021 21:06:45 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id l11sm3251068oou.0.2021.07.06.21.06.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Jul 2021 21:06:44 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [tip: sched/core] sched/core: Initialize the idle task with
+ preemption disabled
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-tip-commits@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
+References: <20210512094636.2958515-1-valentin.schneider@arm.com>
+ <162081815405.29796.14574924529325899839.tip-bot2@tip-bot2>
+ <20210706194456.GA1823793@roeck-us.net> <87fswr6lqv.mognet@arm.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <0d792e69-8ba3-5658-16ea-c1090bffa410@roeck-us.net>
+Date:   Tue, 6 Jul 2021 21:06:40 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <74f55f12-c7da-a06d-c3a5-6869b907e3f6@csgroup.eu>
+In-Reply-To: <87fswr6lqv.mognet@arm.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: PwGFivFaXsb3nk0x2dNo-AfGBlnVCkyB
-X-Proofpoint-GUID: pEoMI7pagvFrmIKaTZwYxAqfCIUbkP6E
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-07_01:2021-07-06,2021-07-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 lowpriorityscore=0 adultscore=0 malwarescore=0 mlxlogscore=999
- phishscore=0 impostorscore=0 mlxscore=0 spamscore=0 clxscore=1015
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107070020
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
->> @@ -763,6 +771,14 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
->>           /* dst = *(u16 *)(ul) (src + off) */
->>           case BPF_LDX | BPF_MEM | BPF_H:
->>           case BPF_LDX | BPF_PROBE_MEM | BPF_H:
->> +            if (BPF_MODE(code) == BPF_PROBE_MEM) {
->> +                EMIT(PPC_RAW_ADDI(b2p[TMP_REG_1], src_reg, off));
->> +                PPC_LI64(b2p[TMP_REG_2], TASK_SIZE_MAX);
->> +                EMIT(PPC_RAW_CMPLD(b2p[TMP_REG_1], b2p[TMP_REG_2]));
->> +                PPC_BCC(COND_GT, (ctx->idx + 4) * 4);
->> +                EMIT(PPC_RAW_XOR(dst_reg, dst_reg, dst_reg));
->> +                PPC_JMP((ctx->idx + 2) * 4);
->> +            }
+On 7/6/21 4:55 PM, Valentin Schneider wrote:
 > 
-> That code seems strictly identical to the previous one and the next one.
-> Can you refactor in a function ?
-
-I'll check this.
-
+> Hi Guenter,
 > 
->>               EMIT(PPC_RAW_LHZ(dst_reg, src_reg, off));
->>               if (insn_is_zext(&insn[i + 1]))
->>                   addrs[++i] = ctx->idx * 4;
->> @@ -773,6 +789,14 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
->>           /* dst = *(u32 *)(ul) (src + off) */
->>           case BPF_LDX | BPF_MEM | BPF_W:
->>           case BPF_LDX | BPF_PROBE_MEM | BPF_W:
->> +            if (BPF_MODE(code) == BPF_PROBE_MEM) {
->> +                EMIT(PPC_RAW_ADDI(b2p[TMP_REG_1], src_reg, off));
->> +                PPC_LI64(b2p[TMP_REG_2], TASK_SIZE_MAX);
->> +                EMIT(PPC_RAW_CMPLD(b2p[TMP_REG_1], b2p[TMP_REG_2]));
->> +                PPC_BCC(COND_GT, (ctx->idx + 4) * 4);
->> +                EMIT(PPC_RAW_XOR(dst_reg, dst_reg, dst_reg));
->> +                PPC_JMP((ctx->idx + 2) * 4);
->> +            }
->>               EMIT(PPC_RAW_LWZ(dst_reg, src_reg, off));
->>               if (insn_is_zext(&insn[i + 1]))
->>                   addrs[++i] = ctx->idx * 4;
->> @@ -783,6 +807,20 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
->>           /* dst = *(u64 *)(ul) (src + off) */
->>           case BPF_LDX | BPF_MEM | BPF_DW:
->>           case BPF_LDX | BPF_PROBE_MEM | BPF_DW:
->> +            if (BPF_MODE(code) == BPF_PROBE_MEM) {
->> +                EMIT(PPC_RAW_ADDI(b2p[TMP_REG_1], src_reg, off));
->> +                PPC_LI64(b2p[TMP_REG_2], TASK_SIZE_MAX);
->> +                EMIT(PPC_RAW_CMPLD(b2p[TMP_REG_1], b2p[TMP_REG_2]));
->> +                if (off % 4)
+> On 06/07/21 12:44, Guenter Roeck wrote:
+>> This patch results in several messages similar to the following
+>> when booting s390 images in qemu.
+>>
+>> [    1.690807] BUG: sleeping function called from invalid context at include/linux/percpu-rwsem.h:49
+>> [    1.690925] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 1, name: swapper/0
+>> [    1.691053] no locks held by swapper/0/1.
+>> [    1.691310] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.13.0-11788-g79160a603bdb #1
+>> [    1.691469] Hardware name: QEMU 2964 QEMU (KVM/Linux)
+>> [    1.691612] Call Trace:
+>> [    1.691718]  [<0000000000d98bb0>] show_stack+0x90/0xf8
+>> [    1.692040]  [<0000000000da894c>] dump_stack_lvl+0x74/0xa8
+>> [    1.692134]  [<0000000000187e52>] ___might_sleep+0x15a/0x170
+>> [    1.692228]  [<000000000014f588>] cpus_read_lock+0x38/0xc0
+>> [    1.692320]  [<0000000000182e8a>] smpboot_register_percpu_thread+0x2a/0x160
+>> [    1.692412]  [<00000000014814b8>] cpuhp_threads_init+0x28/0x60
+>> [    1.692505]  [<0000000001487a30>] smp_init+0x28/0x90
+>> [    1.692597]  [<00000000014779a6>] kernel_init_freeable+0x1f6/0x270
+>> [    1.692689]  [<0000000000db7466>] kernel_init+0x2e/0x160
+>> [    1.692779]  [<0000000000103618>] __ret_from_fork+0x40/0x58
+>> [    1.692870]  [<0000000000dc6e12>] ret_from_fork+0xa/0x30
+>>
+>> Reverting this patch fixes the problem.
+>> Bisect log is attached.
+>>
+>> Guenter
+>>
 > 
-> That test is worth a comment.
-
-(off % 4) test is based on how PPC_BPF_LL() emits instruction.
-
+> Thanks for the report.
 > 
-> And I'd prefer
+> So somehow the init task ends up with a non-zero preempt_count()? Per
+> FORK_PREEMPT_COUNT we should exit __ret_from_fork() with a zero count, are
+> you hitting the WARN_ONCE() in finish_task_switch()?
 > 
->      if (off & 3) {
->          PPC_BCC(COND_GT, (ctx->idx + 5) * 4);
->          EMIT(PPC_RAW_XOR(dst_reg, dst_reg, dst_reg));
->          PPC_JMP((ctx->idx + 3) * 4);
->      } else {
->          PPC_BCC(COND_GT, (ctx->idx + 4) * 4);
->          EMIT(PPC_RAW_XOR(dst_reg, dst_reg, dst_reg));
->          PPC_JMP((ctx->idx + 2) * 4);
->      }
+> Does CONFIG_DEBUG_PREEMPT=y yield anything interesting?
+> 
 
-Yes this is neat.
+My configuration doesn't have CONFIG_PREEMPT enabled.
 
-Thanks for the review,
-Ravi
+Guenter
