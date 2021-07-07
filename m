@@ -2,177 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6E733BF12F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 23:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77C863BF133
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 23:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232492AbhGGVHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 17:07:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55028 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230033AbhGGVG7 (ORCPT
+        id S231628AbhGGVIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 17:08:52 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:34236 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230032AbhGGVIv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 17:06:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625691855;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YrJy4UHSk+c2CDfCsqdlIfZ8qHIfqAAEAO452kGCeq0=;
-        b=RYI6zDKLczO9+R0c5cUqcbksFMn/SwykI4EjeAfUvIULYj8y44SAz9ijwQB0dVzHF+wItL
-        G/2X0DBcsipaIs6TNDrQpXJfs8EXg5juRuM/DD2SyUixzyky+3zoZpmSUD+3S/6a3mb2/k
-        qfWx6LFF7LqMk0/LqOIr7VFXqjmkZNU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-275-2RYEWKD7PJ-d3UPp1Ipz5Q-1; Wed, 07 Jul 2021 17:04:13 -0400
-X-MC-Unique: 2RYEWKD7PJ-d3UPp1Ipz5Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 82AB61005E46;
-        Wed,  7 Jul 2021 21:04:12 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-115-221.rdu2.redhat.com [10.10.115.221])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5CA79189C7;
-        Wed,  7 Jul 2021 21:04:05 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id E65F822054F; Wed,  7 Jul 2021 17:04:04 -0400 (EDT)
-Date:   Wed, 7 Jul 2021 17:04:04 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org, virtio-fs@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Virtio-fs] [PATCH 3/2] fs: simplify get_filesystem_list /
- get_all_fs_names
-Message-ID: <20210707210404.GB244500@redhat.com>
-References: <20210621062657.3641879-1-hch@lst.de>
- <20210622081217.GA2975@lst.de>
- <YNGhERcnLuzjn8j9@stefanha-x1.localdomain>
- <20210629205048.GE5231@redhat.com>
- <20210630053601.GA29241@lst.de>
+        Wed, 7 Jul 2021 17:08:51 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 167L64BT123290;
+        Wed, 7 Jul 2021 16:06:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1625691964;
+        bh=cBdek8vW38iLskZ5uj04DHrfr+HzrGMK3kExFl48NHk=;
+        h=From:To:CC:Subject:Date;
+        b=FVZhsIn4emD1AsiQnUpSveuG2cQ66eTt5jBT3RcuVcrasjv6QGDs+YTDLuCKLi4tF
+         7aY/qLmgfd5O03U6gPnW6sAKjzUREmawwMVR/rPCw7YZYYtNe7tvO3h6+yFw5WM4jp
+         6XcpJtw95FW21PQYZ+HKINJI58xnEbL0XlfabRNY=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 167L63t1114961
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 7 Jul 2021 16:06:04 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 7 Jul
+ 2021 16:06:03 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 7 Jul 2021 16:06:03 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 167L63wR061298;
+        Wed, 7 Jul 2021 16:06:03 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+CC:     <linux-kernel@vger.kernel.org>, <linux-spdx@vger.kernel.org>,
+        Nishanth Menon <nm@ti.com>, Bert Vermeulen <bert@biot.com>
+Subject: [PATCH] scripts/spdxcheck-test.sh: Drop python2
+Date:   Wed, 7 Jul 2021 16:06:00 -0500
+Message-ID: <20210707210600.7266-1-nm@ti.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210630053601.GA29241@lst.de>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 07:36:01AM +0200, Christoph Hellwig wrote:
-> On Tue, Jun 29, 2021 at 04:50:48PM -0400, Vivek Goyal wrote:
-> > May be we should modify mount_block_root() code so that it does not
-> > require that extra "\0". Possibly zero initialize page and that should
-> > make sure list_bdev_fs_names() does not have to worry about it.
-> > 
-> > It is possible that a page gets full from the list of filesystems, and
-> > last byte on page is terminating null. In that case just zeroing page
-> > will not help. We can keep track of some sort of end pointer and make
-> > sure we are not searching beyond that for valid filesystem types.
-> > 
-> > end = page + PAGE_SIZE - 1;
-> > 
-> > mount_block_root()
-> > {
-> > 	for (p = fs_names; p < end && *p; p += strlen(p)+1) {
-> > 	}
-> > }
-> 
-> Maybe.  To honest I'd prefer to not even touch this unrelated code given
-> how full of landmines it is :)
+Since commit d0259c42abff ("spdxcheck.py: Use Python 3"), spdxcheck.py
+explicitly expects to run as python3 script, there is no further point
+in attempting to test with python2.
 
-Hi Christoph,
-
-How about following patch. This applies on top of your patches. I noticed
-that Al had suggested to return number of filesystems from helper
-functions. I just did that and used that to iterate in the loop.
-
-I tested it with a virtual block device (root=/dev/vda1) and it works.
-I also filled page with garbage after allocation to make sure natually
-occurring null is not there in the middle of page to terminate string.
-
-If you like it, can you please incorporate it in your patches.
-
-Thanks
-Vivek
-
+Cc: Bert Vermeulen <bert@biot.com>
+Signed-off-by: Nishanth Menon <nm@ti.com>
 ---
- fs/filesystems.c   |    5 ++++-
- include/linux/fs.h |    2 +-
- init/do_mounts.c   |    7 ++++---
- 3 files changed, 9 insertions(+), 5 deletions(-)
 
-Index: redhat-linux/fs/filesystems.c
-===================================================================
---- redhat-linux.orig/fs/filesystems.c	2021-07-07 16:12:08.890562576 -0400
-+++ redhat-linux/fs/filesystems.c	2021-07-07 16:27:51.197620063 -0400
-@@ -209,10 +209,11 @@ SYSCALL_DEFINE3(sysfs, int, option, unsi
- }
- #endif
- 
--void __init list_bdev_fs_names(char *buf, size_t size)
-+int __init list_bdev_fs_names(char *buf, size_t size)
- {
- 	struct file_system_type *p;
- 	size_t len;
-+	int count = 0;
- 
- 	read_lock(&file_systems_lock);
- 	for (p = file_systems; p; p = p->next) {
-@@ -226,8 +227,10 @@ void __init list_bdev_fs_names(char *buf
- 		memcpy(buf, p->name, len);
- 		buf += len;
- 		size -= len;
-+		count++;
- 	}
- 	read_unlock(&file_systems_lock);
-+	return count;
- }
- 
- #ifdef CONFIG_PROC_FS
-Index: redhat-linux/include/linux/fs.h
-===================================================================
---- redhat-linux.orig/include/linux/fs.h	2021-07-07 15:36:43.224418935 -0400
-+++ redhat-linux/include/linux/fs.h	2021-07-07 16:12:18.232949807 -0400
-@@ -3622,7 +3622,7 @@ int proc_nr_dentry(struct ctl_table *tab
- 		  void *buffer, size_t *lenp, loff_t *ppos);
- int proc_nr_inodes(struct ctl_table *table, int write,
- 		   void *buffer, size_t *lenp, loff_t *ppos);
--void __init list_bdev_fs_names(char *buf, size_t size);
-+int __init list_bdev_fs_names(char *buf, size_t size);
- 
- #define __FMODE_EXEC		((__force int) FMODE_EXEC)
- #define __FMODE_NONOTIFY	((__force int) FMODE_NONOTIFY)
-Index: redhat-linux/init/do_mounts.c
-===================================================================
---- redhat-linux.orig/init/do_mounts.c	2021-07-07 16:12:08.890562576 -0400
-+++ redhat-linux/init/do_mounts.c	2021-07-07 16:23:32.308889444 -0400
-@@ -391,15 +391,16 @@ void __init mount_block_root(char *name,
- 	char *fs_names = page_address(page);
- 	char *p;
- 	char b[BDEVNAME_SIZE];
-+	int num_fs, i;
- 
- 	scnprintf(b, BDEVNAME_SIZE, "unknown-block(%u,%u)",
- 		  MAJOR(ROOT_DEV), MINOR(ROOT_DEV));
- 	if (root_fs_names)
- 		split_fs_names(fs_names, root_fs_names);
- 	else
--		list_bdev_fs_names(fs_names, PAGE_SIZE);
-+		num_fs = list_bdev_fs_names(fs_names, PAGE_SIZE);
- retry:
--	for (p = fs_names; *p; p += strlen(p)+1) {
-+	for (p = fs_names, i = 0; i < num_fs; p += strlen(p)+1, i++) {
- 		int err = do_mount_root(name, p, flags, root_mount_data);
- 		switch (err) {
- 			case 0:
-@@ -432,7 +433,7 @@ retry:
- 	printk("List of all partitions:\n");
- 	printk_all_partitions();
- 	printk("No filesystem could mount root, tried: ");
--	for (p = fs_names; *p; p += strlen(p)+1)
-+	for (p = fs_names, i = 0; i < num_fs; p += strlen(p)+1, i++)
- 		printk(" %s", p);
- 	printk("\n");
- 	panic("VFS: Unable to mount root fs on %s", b);
+Also see checkpatch.pl patch
+https://lore.kernel.org/lkml/20210505211720.447111-1-linux@roeck-us.net/
 
+PS: While it may be debatable if *ever* there is going to be a python4
+and hence leave the for loop alone (in addition to reducing the
+diffstat). I just took the path where I hope if we ever see that day,
+we pick one version.
+
+ scripts/spdxcheck-test.sh | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
+
+diff --git a/scripts/spdxcheck-test.sh b/scripts/spdxcheck-test.sh
+index cfea6a0d1cc0..cb76324756bd 100644
+--- a/scripts/spdxcheck-test.sh
++++ b/scripts/spdxcheck-test.sh
+@@ -1,12 +1,10 @@
+ #!/bin/sh
+ 
+-for PYTHON in python2 python3; do
+-	# run check on a text and a binary file
+-	for FILE in Makefile Documentation/logo.gif; do
+-		$PYTHON scripts/spdxcheck.py $FILE
+-		$PYTHON scripts/spdxcheck.py - < $FILE
+-	done
+-
+-	# run check on complete tree to catch any other issues
+-	$PYTHON scripts/spdxcheck.py > /dev/null
++# run check on a text and a binary file
++for FILE in Makefile Documentation/logo.gif; do
++	python3 scripts/spdxcheck.py $FILE
++	python3 scripts/spdxcheck.py - < $FILE
+ done
++
++# run check on complete tree to catch any other issues
++python3 scripts/spdxcheck.py > /dev/null
+-- 
+2.32.0
 
