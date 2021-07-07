@@ -2,195 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4CE93BF143
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 23:11:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB2243BF147
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 23:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232705AbhGGVOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 17:14:08 -0400
-Received: from mga03.intel.com ([134.134.136.65]:4322 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231493AbhGGVOB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 17:14:01 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10037"; a="209428757"
-X-IronPort-AV: E=Sophos;i="5.84,221,1620716400"; 
-   d="scan'208";a="209428757"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2021 14:11:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,221,1620716400"; 
-   d="scan'208";a="628152124"
-Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 07 Jul 2021 14:11:19 -0700
-Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1m1EpC-000Dnz-Kg; Wed, 07 Jul 2021 21:11:18 +0000
-Date:   Thu, 08 Jul 2021 05:11:16 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 5a9105c89dc34600c63d043bbc3636d45fad5d75
-Message-ID: <60e61874.yLLzvQN1KqRep6sJ%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S232672AbhGGVRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 17:17:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229829AbhGGVRQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 17:17:16 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD08C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 14:14:34 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id k184so5351459ybf.12
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 14:14:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=loWkjzY4e1q1zoZHIoGMbkPYSZPWyE4TminLeGzRfZ0=;
+        b=JYYnHEW7ZNH43ntTgEZBKHhzqpowBI6y3rHjrmF5uvkQzSK4HhKY0mp3BfQMD3/Me/
+         6OXpZA7yQkqZkYGTvHRXjbdhgH8yUWMeVMJpNs13YFwpbsqeka2BQtk/TqKJe+7Mx9fj
+         2pgDhA88Y7yo0+4F2gl69EALQnn5KkkyHqDfpPbOaeKXV0r+RxcDC49qXe9BXJ+0Hne3
+         MrW64UATyDb00486dDYc2Lm6aktcqib+A4x3UUSTjrqjrN0DS5ytMkoOInQNvYIDgmG0
+         ucPCheNEKs6Hnzo3s3bKKEuXk4xj70d1LmyhuXmaK+DF9djnGA2617HjbhhUOtMAFVc4
+         uUXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=loWkjzY4e1q1zoZHIoGMbkPYSZPWyE4TminLeGzRfZ0=;
+        b=eDrXvGvLatKzrKhPDvOkclKtpjDr7nY04kL7CNYFM729XBHwJd2+AerRJcD6wrUxOM
+         PVoVfpqnfh1aRDfMXeu8Fsel2tYp1zoOW58FBTeb5FbD7P5jy8bq5ZDYJ1qrnlImLcQF
+         vWPZDslav/+W/FTkpe2d/aFc3O4zsDWo7BUAUqRa3LpKM9AzqNGxXoVVxfigHPjVpux/
+         aD8SCnjXl13E0rBBGoijDLVkPd98qXHcvmkBsBsOFMx5X/cJbwhIMlb6DUUIJyRkZI7L
+         xFCCm+dDoWjxuyBKzshmWeNmuGfxa0AaNREVvrsmG30xQwWXCQuXOv6R4+MSwRRqwf/Y
+         tBMw==
+X-Gm-Message-State: AOAM530upAZEnlUwLdoc0u1Qd9f7/Q4RBPp6Y/XeX+cKMsHsnBT/rMPc
+        JqHqVgJAoA3yZ8BSf8newZBS+hYVLNgEF1un02OjRQ==
+X-Google-Smtp-Source: ABdhPJwM1mTHA+Yqp9+iHV/qUeiY6igQYDtZUXENSPDMhTdqNdCJj848vaMBr7B12VFjkhhekQQQBKu5fJF0P0TR+Gc=
+X-Received: by 2002:a25:83ca:: with SMTP id v10mr35894945ybm.84.1625692473923;
+ Wed, 07 Jul 2021 14:14:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20210623192822.3072029-1-surenb@google.com> <CALCETrU577MD59P-+9sMYtS3t2sZYx-zi=VirhQpZLnhEck1vg@mail.gmail.com>
+ <CAJuCfpFMTP-g9CFELMqNawX0FhF4vBNtRDP_R=WAi_RiuGW8-Q@mail.gmail.com>
+ <YNzl6XNu2vxyCJu8@cmpxchg.org> <CALCETrWsVw4+jT_Z1uxidRAZ0SQbngYe7E2m-8iyX6qRbug6zA@mail.gmail.com>
+ <CAJuCfpG5Ua7C4usJGEqTm6_UUd6VyRd0BsPgT97LWOzjb4Ry+g@mail.gmail.com>
+ <20210702152724.7fv5tnik4qlap6do@wittgenstein> <af8e76f1-6625-25d1-98d2-a3c8a9bf2fd6@redhat.com>
+ <YOWcj0+P238W1y+t@dhcp22.suse.cz>
+In-Reply-To: <YOWcj0+P238W1y+t@dhcp22.suse.cz>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 7 Jul 2021 14:14:23 -0700
+Message-ID: <CAJuCfpH8QQyxivztkC2-_Kk1MqA0mJVs91XXpvVsL=NzNebshw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm: introduce process_reap system call
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 5a9105c89dc34600c63d043bbc3636d45fad5d75  Merge branch 'locking/urgent'
+On Wed, Jul 7, 2021 at 5:38 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Mon 05-07-21 09:41:54, David Hildenbrand wrote:
+> > On 02.07.21 17:27, Christian Brauner wrote:
+> [...]
+> > > That one was my favorite from the list I gave too but maybe we can
+> > > satisfy Andy too if we use one of:
+> > > - process_mfree()
+> > > - process_mrelease()
+> > >
+> >
+> > FWIW, I tend to like process_mrelease(), due to the implied "release" ("free
+> > the memory if there are no other references") semantics.
+>
+> Agreed.
 
-elapsed time: 726m
+Ok, sounds like process_mrelease() would be an acceptable compromise.
 
-configs tested: 137
-configs skipped: 3
+>
+> > Further, a new
+> > syscall feels cleaner than some magic sysfs/procfs toggle. Just my 2 cents.
+>
+> Yeah, proc based interface is both tricky to use and kinda ugly now that
+> pidfd can solve all at in once.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Sounds good. Will keep it as is then.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                      arches_defconfig
-arm                          pcm027_defconfig
-powerpc                       holly_defconfig
-m68k                       bvme6000_defconfig
-sh                             shx3_defconfig
-riscv                    nommu_k210_defconfig
-parisc                           alldefconfig
-arm                            lart_defconfig
-sh                         ecovec24_defconfig
-sh                           se7721_defconfig
-sh                      rts7751r2d1_defconfig
-powerpc                     sequoia_defconfig
-arm                           spitz_defconfig
-powerpc                     skiroot_defconfig
-s390                                defconfig
-mips                         tb0219_defconfig
-powerpc                    amigaone_defconfig
-x86_64                           alldefconfig
-m68k                       m5275evb_defconfig
-arm                             ezx_defconfig
-arm                         bcm2835_defconfig
-mips                        qi_lb60_defconfig
-mips                           rs90_defconfig
-openrisc                 simple_smp_defconfig
-arm                         orion5x_defconfig
-powerpc                   bluestone_defconfig
-mips                          rb532_defconfig
-sh                              ul2_defconfig
-mips                      maltaaprp_defconfig
-sh                          lboxre2_defconfig
-arc                        vdk_hs38_defconfig
-powerpc                 mpc8272_ads_defconfig
-arm                      tct_hammer_defconfig
-sparc                               defconfig
-sh                           se7343_defconfig
-sh                           se7206_defconfig
-arc                           tb10x_defconfig
-sh                   rts7751r2dplus_defconfig
-riscv                          rv32_defconfig
-powerpc                     ppa8548_defconfig
-m68k                             allyesconfig
-mips                  maltasmvp_eva_defconfig
-mips                            ar7_defconfig
-arm                            xcep_defconfig
-arm                       multi_v4t_defconfig
-mips                           ip27_defconfig
-powerpc               mpc834x_itxgp_defconfig
-m68k                          amiga_defconfig
-arm                       netwinder_defconfig
-powerpc                   currituck_defconfig
-powerpc                           allnoconfig
-mips                         rt305x_defconfig
-xtensa                generic_kc705_defconfig
-sh                           se7751_defconfig
-arm                       versatile_defconfig
-m68k                        stmark2_defconfig
-arc                              allyesconfig
-um                             i386_defconfig
-arm                      footbridge_defconfig
-mips                       rbtx49xx_defconfig
-sh                        apsh4ad0a_defconfig
-arm                         lpc32xx_defconfig
-xtensa                           alldefconfig
-mips                malta_qemu_32r6_defconfig
-powerpc                      cm5200_defconfig
-powerpc                          g5_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-nios2                               defconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-x86_64               randconfig-a004-20210707
-x86_64               randconfig-a002-20210707
-x86_64               randconfig-a005-20210707
-x86_64               randconfig-a006-20210707
-x86_64               randconfig-a003-20210707
-x86_64               randconfig-a001-20210707
-i386                 randconfig-a004-20210707
-i386                 randconfig-a006-20210707
-i386                 randconfig-a001-20210707
-i386                 randconfig-a003-20210707
-i386                 randconfig-a005-20210707
-i386                 randconfig-a002-20210707
-i386                 randconfig-a015-20210707
-i386                 randconfig-a016-20210707
-i386                 randconfig-a012-20210707
-i386                 randconfig-a011-20210707
-i386                 randconfig-a014-20210707
-i386                 randconfig-a013-20210707
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                            kunit_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+> My original preference was a more generic kill syscall to allow flags
+> but a dedicated syscall doesn't look really bad either.
 
-clang tested configs:
-x86_64               randconfig-b001-20210707
-x86_64               randconfig-a015-20210707
-x86_64               randconfig-a014-20210707
-x86_64               randconfig-a012-20210707
-x86_64               randconfig-a011-20210707
-x86_64               randconfig-a016-20210707
-x86_64               randconfig-a013-20210707
+Yeah, I have tried that direction unsuccessfully before arriving at
+this one. Hopefully it represents the right compromise which can
+satisfy everyone's usecase.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> --
+> Michal Hocko
+> SUSE Labs
