@@ -2,136 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E9463BECF0
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 19:18:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BC703BECE4
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 19:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230497AbhGGRUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 13:20:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229954AbhGGRUq (ORCPT
+        id S230476AbhGGRTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 13:19:47 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:34490 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229519AbhGGRTp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 13:20:46 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC084C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 10:18:05 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id u11so4231419oiv.1
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 10:18:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2zlDFOGjXouTQIFi23PupdbcwNOzhZtlzVmn1XuDDG0=;
-        b=KFMEQm7oSGE9cUX1bSsKrSdUQjpO8T0fqel95+e8ch2aPHqeA2NDtztXqpJxWJHl7P
-         AipuvkgagJDT8Tvsb4DEi6oznXKwOIPyw5kq9Ds6oJde6rNnY4aFliHzbJQwpIAHjm4x
-         s5QdpalknK7w+dHh9eooWixJRjsfu52gcqn+JiwQV0gJ6cM8qyvCQBmUmXbZnhNjLvNe
-         i1hYnteonDAXK9gpW0JS+RrggleUMLieo1lHLRANKUd/FKZHcoOVpJFgQlduDJ6jmk2f
-         r9P0E7yKFQU5Mtp3zvsPJ0UAG5pkBHotRmhT5kqQbM9hVUsrnAB5dH61KJVjnIxMIrZ8
-         V2Gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2zlDFOGjXouTQIFi23PupdbcwNOzhZtlzVmn1XuDDG0=;
-        b=FrKRp12PA8wShzLxrI0LgpMxYxRBJDFxqir/mYwtb5o3jXJFhSdioyJscmBV+g5yPE
-         r7UJJP6p9zVeCzzwfl1tcxFjO7dNBqkhvDNONC3x9/lCb3l89I5KKP9QI4XHumBX2cV8
-         fqlAs93wdKSRYlEMdQwKNRfU6r9D/IneDL6aX8JYTSF2wdcmfH2/pSh2WsPq2Gqw63Ai
-         KTd/aYmTy5ixcO2KtArBcTy1p3NVBRGdf3qi5rr8GN9L6x1P284TuNVJmHouT2TBqb2d
-         S/GnX5zE/qEfTooMy5SK2uQ0WNfdio+d+UJZiKfkFLDyNdDM+u8GLpCD1bLtWLUkoXzD
-         f35Q==
-X-Gm-Message-State: AOAM532ttw/vWUsAASzF2M4Wi6ogkUUcbMgvNca50lqk8AlVoWPRvW0D
-        DBFiNv3mmS1FB1cztyASqtkyuPHTFNf3f4wBFvT44w==
-X-Google-Smtp-Source: ABdhPJzkwIV2dAw6OuD+6NjV5UuwBbAnbwKElq0XwqOdq7Eh1qd+Ppn7pXFjfDc4uEzf0QLJR61ZUBmRS9h5pnNULJc=
-X-Received: by 2002:aca:1e07:: with SMTP id m7mr18873358oic.28.1625678285069;
- Wed, 07 Jul 2021 10:18:05 -0700 (PDT)
+        Wed, 7 Jul 2021 13:19:45 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 167H5Cp2001712;
+        Wed, 7 Jul 2021 13:17:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=iTPIlJcDi+QcKrtPLGq5b7lyXQ7r/sjKRcBvPlCojjs=;
+ b=TOv2bwc4q+rjLPbUmLbfD+I0Qo+0qV+5jkPcGhgm/1opytKmXUSmM+NS8uyNpptw7vbf
+ UsABF79iEzopa1/KyQj8mj5N62inziOgTvKXgw/Ep8jDu+Kneej/oRPI/2eVa7w8mMCd
+ WUwcbbhOJw/Yr6HVECNneL4wRrDI3UhKEEm1VSNvpESMRgfsd3BHNNl1ZLuJ/3167Qj8
+ XVQS9ckneQtb2XYeNdv2GqybZtSNEMOShP8ZxpyquEyeUpn4zcPnYWGpq5UheCMTQsJP
+ ovjrn7Op2aYSwL0cIHIi2hsxWJ9b1tKG2zr23BKm5Bti4Ft8S6ierBkGVq/+H4fOMvAa gQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39nc7xg3m5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Jul 2021 13:17:04 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 167H5JQU002357;
+        Wed, 7 Jul 2021 13:17:03 -0400
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39nc7xg3km-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Jul 2021 13:17:03 -0400
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 167HC6DZ012056;
+        Wed, 7 Jul 2021 17:17:02 GMT
+Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
+        by ppma02wdc.us.ibm.com with ESMTP id 39jfhc16s1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Jul 2021 17:17:02 +0000
+Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
+        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 167HH13T24117622
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 7 Jul 2021 17:17:01 GMT
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 110B86A04D;
+        Wed,  7 Jul 2021 17:17:01 +0000 (GMT)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EC5ED6A054;
+        Wed,  7 Jul 2021 17:16:59 +0000 (GMT)
+Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.163.230])
+        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed,  7 Jul 2021 17:16:59 +0000 (GMT)
+Subject: Re: [PATCH v6 2/2] s390/vfio-ap: r/w lock for PQAP interception
+ handler function pointer
+To:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
+        jgg@nvidia.com, alex.williamson@redhat.com, kwankhede@nvidia.com,
+        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
+        hca@linux.ibm.com
+References: <20210621155714.1198545-1-akrowiak@linux.ibm.com>
+ <20210621155714.1198545-3-akrowiak@linux.ibm.com>
+ <8936a637-68cd-91f0-85da-f0fce99315cf@linux.ibm.com>
+ <53181dcb-cabc-d6a1-3bbe-7eba298f06fe@de.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <d6389aab-f6ad-1f48-5997-783c57201f3d@linux.ibm.com>
+Date:   Wed, 7 Jul 2021 13:16:59 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <cover.2d906c322f72ec1420955136ebaa7a4c5073917c.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
- <de6b97a567e273adff1f5268998692bad548aa10.1623272033.git-series.pawan.kumar.gupta@linux.intel.com>
- <20210706195233.h6w4cm73oktfqpgz@habkost.net> <4cc2c5fe-2153-05c5-dedd-8cb650753740@redhat.com>
- <CAOpTY_qdbbnauTkbjkz+cZmo8=Hz6qqLNY6i6uamqhcty=Q1sw@mail.gmail.com>
- <671be35f-220a-f583-aa31-3a2da7dae93a@redhat.com> <CAOpTY_paTO=xqfGXPCC2Paty5ptJ6Dqpo4Tzb4C2hrO_t=vS8w@mail.gmail.com>
- <CALMp9eSJyvU1=FndZyR+hZMtKPWwgibKisBqp0Xcx4jxjrWn2w@mail.gmail.com> <CAOpTY_pefOmJ0zJjUzitgTGxqgX6XxwTP0fMKoiyuBCHrh+AWg@mail.gmail.com>
-In-Reply-To: <CAOpTY_pefOmJ0zJjUzitgTGxqgX6XxwTP0fMKoiyuBCHrh+AWg@mail.gmail.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Wed, 7 Jul 2021 10:15:09 -0700
-Message-ID: <CALMp9eSNS+yKsDgS3TXH6bSf4eUM2sJaRrLxZa+Y8e0FqVhRJA@mail.gmail.com>
-Subject: Re: [PATCH 4/4] x86/tsx: Add cmdline tsx=fake to not clear CPUID bits
- RTM and HLE
-To:     Eduardo Habkost <ehabkost@redhat.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tony Luck <tony.luck@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kyung Min Park <kyung.min.park@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Victor Ding <victording@google.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Anthony Steinhauser <asteinhauser@google.com>,
-        Anand K Mistry <amistry@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Joe Perches <joe@perches.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        kvm@vger.kernel.org, Jiri Denemark <jdenemar@redhat.com>,
-        "libvir-list@redhat.com" <libvir-list@redhat.com>,
-        Michal Privoznik <mprivozn@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <53181dcb-cabc-d6a1-3bbe-7eba298f06fe@de.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: -rnAUq6t2YNOnvue8oV47CsWLoA9zhPh
+X-Proofpoint-ORIG-GUID: i9FPZsDxryJ_R4FmNm533GzyPdTKD4jw
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-07_08:2021-07-06,2021-07-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
+ phishscore=0 spamscore=0 suspectscore=0 impostorscore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107070099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 7, 2021 at 10:08 AM Eduardo Habkost <ehabkost@redhat.com> wrote:
->
-> On Wed, Jul 7, 2021 at 12:42 PM Jim Mattson <jmattson@google.com> wrote:
-> >
-> > On Wed, Jul 7, 2021 at 8:09 AM Eduardo Habkost <ehabkost@redhat.com> wrote:
-> > >
-> > > CCing libvir-list, Jiri Denemark, Michal Privoznik, so they are aware
-> > > that the definition of "supported CPU features" will probably become a
-> > > bit more complex in the future.
-> >
-> > Has there ever been a clear definition? Family, model, and stepping,
-> > for instance: are these the only values supported? That would make
-> > cross-platform migration impossible. What about the vendor string? Is
-> > that the only value supported? That would make cross-vendor migration
-> > impossible. For the maximum input value for basic CPUID information
-> > (CPUID.0H:EAX), is that the only value supported, or is it the maximum
-> > value supported? On the various individual feature bits, does a '1'
-> > imply that '0' is also supported, or is '1' the only value supported?
-> > What about the feature bits with reversed polarity (e.g.
-> > CPUID.(EAX=07H,ECX=0):EBX.FDP_EXCPTN_ONLY[bit 6])?
-> >
-> > This API has never made sense to me. I have no idea how to interpret
-> > what it is telling me.
->
-> Is this about GET_SUPPORTED_CPUID, QEMU's query-cpu-model-expansion &
-> related commands, or the libvirt CPU APIs?
 
-This is my ongoing rant about KVM_GET_SUPPORTED_CPUID.
+
+On 7/1/21 11:25 AM, Christian Borntraeger wrote:
+> On 30.06.21 17:18, Tony Krowiak wrote:
+>> I assumed that this patch would get queued along with the other one 
+>> in this series,
+>> but it looks like that was an erroneous assumption. Should this also 
+>> be queued?
+>
+> Sorry, this is on my todo list.
+
+
+I rolled this up into the patch I posted today:
+Message ID: <20210707154156.297139-1-akrowiak@linux.ibm.com>
+s390/vfio-ap: do not open code locks for VFIO_GROUP_NOTIFY_SET_KVM 
+notification
+
