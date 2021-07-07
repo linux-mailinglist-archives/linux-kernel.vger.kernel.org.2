@@ -2,247 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 653693BE392
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 09:31:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E7D73BE394
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 09:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230382AbhGGHdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 03:33:44 -0400
-Received: from mail-dm6nam08on2126.outbound.protection.outlook.com ([40.107.102.126]:19808
-        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230312AbhGGHdn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 03:33:43 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CIofSbvwoEkormVYuqsaqjc/+riDQKusgjvc0UGrF1PiN43d4Ol8GBngS9eaERyolC3zJLRl4MdJDi5IhpR3YBQx3CcgEhblpgujuNNxLyYkXPqdAPFm7f6kPEdAdbeK7L/kosmiCKiqA2eSeu6wsJPgLWYE7fezvWkOcSVKF2L7IAcuIzpXIDsPF0FfCrd+opQVCsfBXoFYlmaGRT+o7N5ounSQ6RzrW/hsFYi1sPOeL/RCKMpgViS0AR3yjA9juC/UfiOLQRuzFqUdonL2KJ47CngSJrQztR2Q3B2ZkJYlWOtE0T9BLvXlZtVQwIEEcaTwahayictvyJgoXGpSKA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pcemODJHVVkgM/gxIQWeDNUkCMcFkj5qvaXOEx5uRe0=;
- b=l4v7YEFO6Y04tuMIdXzhzFgNktBrPIefVGc9azL+z/bB+SCMcUxqjI2immh0Z2TzDRKPawsZ/v54fdaPt97IfZkIPG6PvD0YgHdBbFtlKPofOSBovKjpiLxznU+2MUkBmRf+Zi07eQ/EBuozkMmgEfrJzSY7SEXmiPuQrVDW/uHZOZM+HZEmRs4toBewf/A8M7oMNQPbMJZhd7rYRxxP1HSrVO/xbI64atEwIxa/NOQZMcYrSxM/LKsp8/aYPtFAeifQlo8T7rpZ/mtExYRj4H8ZLCrptMD5aMH13g7/mecmA+4+IhliGZaZ0o3Wd6k9Ak7LitiyKqno4pBZvdyThg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
- header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pcemODJHVVkgM/gxIQWeDNUkCMcFkj5qvaXOEx5uRe0=;
- b=mDTskpIHmubDtHhba5lxGJTGc5hkHtxCHvpdXnl1aNSiKm3J8cU3JVQEDVB1gKNZlyu9movmYy2UGAHlWNO2CuBXVzalWHf2/gcLm3Gi8CQ8Q2Xhw+WPP+/JL0ep7+xbBG941UE5Ff/6lThQE6yTBp4PjSb324SigQjCG5AyV/Y=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=analogixsemi.com;
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
- by BYAPR04MB5749.namprd04.prod.outlook.com (2603:10b6:a03:106::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.23; Wed, 7 Jul
- 2021 07:31:00 +0000
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::5c0e:fbe5:2bd6:ec6]) by BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::5c0e:fbe5:2bd6:ec6%3]) with mapi id 15.20.4308.020; Wed, 7 Jul 2021
- 07:31:00 +0000
-Date:   Wed, 7 Jul 2021 15:30:51 +0800
-From:   Xin Ji <xji@analogixsemi.com>
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, David Airlie <airlied@linux.ie>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Ricardo =?iso-8859-1?Q?Ca=F1uelo?= 
-        <ricardo.canuelo@collabora.com>, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, Bernie Liang <bliang@analogixsemi.com>,
-        Sheng Pan <span@analogixsemi.com>,
-        Zhen Li <zhenli@analogixsemi.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 1/4] dt-bindings:drm/bridge:anx7625:add vendor define
- flags
-Message-ID: <20210707073051.GA936385@anxtwsw-Precision-3640-Tower>
-References: <cover.1624349479.git.xji@analogixsemi.com>
- <308427448195e2db37a32997c6d32905c96ca876.1624349480.git.xji@analogixsemi.com>
- <CAG3jFys6D=-L-Aez4aWuE4nM7qJCtn4wPws3TKxbkRzcAoFR0A@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAG3jFys6D=-L-Aez4aWuE4nM7qJCtn4wPws3TKxbkRzcAoFR0A@mail.gmail.com>
-X-ClientProxiedBy: TYAP286CA0034.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:404:8014::21) To BY5PR04MB6739.namprd04.prod.outlook.com
- (2603:10b6:a03:229::8)
+        id S230396AbhGGHfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 03:35:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22357 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230312AbhGGHe6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 03:34:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625643138;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=nUiesUcA0XvjRpX84M1tcKVMHGxkRN9jKPnpDjfpfoY=;
+        b=Fh2UI1EEzIk3YSX6dQrynsx1dsU/j6t+b1L8JRoZgP9M+kZU7vBvdmr7NWt5i2haeKKBmX
+        uxtJtwKnG/bouTwtvkZhty+oyOWCxiwrabLuSsCgukcuBTDt76sCJ20KgClfgNNn9eneVw
+        ITfl5lexa6Fb8Q4Om98xjMinqQ4OhFk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-399-FK33FKdXOQG7z7vaQrtkHg-1; Wed, 07 Jul 2021 03:32:17 -0400
+X-MC-Unique: FK33FKdXOQG7z7vaQrtkHg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AB2D7801107;
+        Wed,  7 Jul 2021 07:32:14 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-114-110.ams2.redhat.com [10.36.114.110])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 38D4C60CC9;
+        Wed,  7 Jul 2021 07:32:05 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: [PATCH resend v3 0/2] memory-hotplug.rst: complete admin-guide overhaul
+Date:   Wed,  7 Jul 2021 09:32:03 +0200
+Message-Id: <20210707073205.3835-1-david@redhat.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from anxtwsw-Precision-3640-Tower (60.251.58.79) by TYAP286CA0034.JPNP286.PROD.OUTLOOK.COM (2603:1096:404:8014::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend Transport; Wed, 7 Jul 2021 07:30:59 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8807c75f-3bd3-4f5a-31d1-08d941192b0d
-X-MS-TrafficTypeDiagnostic: BYAPR04MB5749:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR04MB5749EE49101A38E03BB8461DC71A9@BYAPR04MB5749.namprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kcSP6n5yZSYS1ZyKjRxQkQpUmfuMOA1RwqEBVohkaVqzLRzKV+BSp4yYVkDCIgsCkYyvQ8mzhO2BHUWVSyAbzgmXxbJ8bnUe+Wi8JotPHgTNAQGLwKTKCjUPSdjIyshU8vfyXM+opSxjibGcYAFRV18yvsmXRtsEWLe7BgYjndTDg3IAmBfuNiLn23cgtmEyZkGYbIG06z4FllaO3GWxFUeoM91mUA09Mx3VYJFx7BZgSb4yiYPj4njCOPiU7qMJSgn6+i8Ggejz54cBrB+fENuzs8ncYvQrKMua4Ad0wQJbNklPzTFrJvUGFUv/xiIqB9DJwiIQJJCwQG4ubKdzQK69DgxIq1Rwhq36nqAap7y1GbqZvrvoEMqq+6q87TzlNEnhkgUOqBc/2higQsivzslkf29S1bSfXeXyMMo6nwHcOYtFAMpUStWB21qqPH0dCeRv9I7SOLwhXkEHytnweGKp20uXCINxBO4aGDVTRWo1x4OzZ2Xq5IXnPkjMXyMKXnHfBDOIFCbVLv20UDBNbP926B+KXSuL4tuy3XEoQSCynKHHizvgo5DvbXdLLWrtyWHmDy77giIPRs+XVXuNb/ozD4+hSzQvWzjzdStrprdCtwAlspqep30FOQyxqfQE1MEyJmith3ytMbkg0CpPE2GWzP7tThIIJ+D2lsSIs9LEJKdikynOWaEeZWNtzt+jY13/YcIas6EGRgNzLsRM2g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(39840400004)(366004)(396003)(136003)(55016002)(956004)(6496006)(26005)(9686003)(54906003)(52116002)(4326008)(33716001)(33656002)(8936002)(1076003)(5660300002)(7416002)(83380400001)(316002)(6916009)(8676002)(55236004)(86362001)(478600001)(38100700002)(66556008)(66946007)(38350700002)(2906002)(66476007)(186003)(6666004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JUQj3jyxlV4lIGUFVtaKshFh/XPPSVWxobu/3pfo8GowmM3h7/WTMvYY4Xzi?=
- =?us-ascii?Q?YjEvuQScf6la5PdxtmEen04S/NrkNUekim2yP1+R/QZDBU+1WfupK6YTBrSs?=
- =?us-ascii?Q?LtzxmwRJwU2TOL6BHxowYevn5+712L3i4sNHJ8hmPxO6SG85PkRutuMzhCQn?=
- =?us-ascii?Q?RTIJGdY+UVo6Tls1AUBIMa8i61uckfhfB+W+nZDdLKV2ft1dwq7i6qT8nk13?=
- =?us-ascii?Q?fcSK0sQVGCW6WOkRrb/tleY36648IEmIYhSZk6P88OVf8YKIcUjPzNkiMc2o?=
- =?us-ascii?Q?lwH6wBR41qzxmztenCnPgsZooi/9a8V4DAz2Dog/o24rFLAnHQ7vYLCSWm8a?=
- =?us-ascii?Q?P3VINIyqzTKtfndEK52YAajFog06tTs4t0zGQu7bgjxFnawVSJ00znbaez8/?=
- =?us-ascii?Q?0UZx+61aH7qqU8BkMpvD2bYiJ6DxnJco6P790lDDIZGMUhSwYLS0269RS2um?=
- =?us-ascii?Q?oj3BdRBAYJPEEi/c1flIO20QlVM5QNArAwgHTHgHszUgJUZU5KE7DkKswgsi?=
- =?us-ascii?Q?oTEsveHryWv1UP35eMH9Qbp6wj6EHZqoZ5mLKaHjAgUy/2rkI/ySuKkcHe+e?=
- =?us-ascii?Q?wdRIhP7Ozfw9Q3LQbZxAU1gz5PZcY3NKh8tPL/dWsnVOajEAofqs9TXXWYqt?=
- =?us-ascii?Q?k5tnYZSLoYlE5v60t3MTRbhwAhtldP+ivB0AivmNlioKufrQoSufB+jyhYhF?=
- =?us-ascii?Q?DWrVGfRYrhcGCttiW7THKpQlDI6hm7CyasjqR8qHXF3wWwAtwxvf6U1wc6OI?=
- =?us-ascii?Q?NlLnSvc12xs0PPpbAGnc8ZECKucxpLmjcMvVcAZqo68DsnCHMAW4Pa9/znkw?=
- =?us-ascii?Q?v4I/u+enlMvGE/n2mjoAjiEGNvGTJKNaTc+l0PnrDhn4xRU2Fwu1t5h78yz0?=
- =?us-ascii?Q?rYzr2qbNFPeh12wPhhYnhXxGEI5SSkE09p37tBSQVLrSpMGBx8rAwYtVf9vY?=
- =?us-ascii?Q?yTXgBjc+omRIUsjHmI2HelRn2Qs412ayCKOjXCP+EvO96ZCUaplqXzXsmeoX?=
- =?us-ascii?Q?FJGELYjtG+sQbsKkLz7p308d7ud+yH81HK3DsfDeuMtrkrSYEerF4QhKfSGq?=
- =?us-ascii?Q?Tqrh5d+S/U0178LSFm4YGd9fddoJVCazto332wLL1xRedIHSc0nVTE+1OqhG?=
- =?us-ascii?Q?OUyi7MSNeN3FqyBOEqtkLcBQVEj3KLBCRZl1sQ+HZe/W3BiUACLUIqc3IOQC?=
- =?us-ascii?Q?aEt/cSL5CrsyCSaTN7cCTVDP8IyhL/lSk1oqucIGs8yqmuNQlgAIo3cJhYPP?=
- =?us-ascii?Q?Z8iCxG1+H/DzMnbTVNPbHODakRGowFZvk13qPCS+VFnxJLY149vLXp+noUfn?=
- =?us-ascii?Q?oLPt37XSde1ZRCD3Ux1ns16m?=
-X-OriginatorOrg: analogixsemi.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8807c75f-3bd3-4f5a-31d1-08d941192b0d
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jul 2021 07:31:00.4437
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 76/hPqzHXsE/q1ydTnM0wlr7vrO8AGhJwr5C4rZ3Eji8C0TPnMenlHCKMZQKfybWXqxv3yP/dg+GJbVnnMEBgw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB5749
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 01:57:22PM +0200, Robert Foss wrote:
-> Hey Xin,
-> 
-> I would like to merge this series now, but this patch needs a review
-> first. Maybe Laurent/Rob Herring are good candidates.
-> 
-> 
-> Rob.
-Hi Rob, I get Laurent/Rob comments before, and explained why we needs
-these DT properties, so far, I didn't get any response.
+This is v3 of the memory hot(un)plug admin-guide overhaul, rebased to
+current mainline -- it's a simple resend, because all prereq patches are
+now upstream.
 
-Hi Rob Herring and Laurent, for the DT property lane0/1-swing, Google
-engineer has strong demond for them, they don't want to move DP swing
-adjusting to kernel, thus may cause change the driver code in each
-project, so config them in DT is a best option.
+v2 -> v3:
+- Added ACKs and RBs (thanks!)
+- s/aarch64/arm64/
+- Refine error handling when onlining/offlining
+- s/memory hotplug/memory offlining/ in the vmemmap optimization section
+  for huge pages
 
-Thanks,
-Xin
-> 
-> On Tue, 22 Jun 2021 at 14:31, Xin Ji <xji@analogixsemi.com> wrote:
-> >
-> > Add 'bus-type' and 'data-lanes' define for port0. Define DP tx lane0,
-> > lane1 swing register array define, and audio enable flag.
-> >
-> > Signed-off-by: Xin Ji <xji@analogixsemi.com>
-> > ---
-> >  .../display/bridge/analogix,anx7625.yaml      | 57 ++++++++++++++++++-
-> >  1 file changed, 56 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-> > index ab48ab2f4240..9e604d19a3d5 100644
-> > --- a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-> > +++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-> > @@ -43,6 +43,26 @@ properties:
-> >    vdd33-supply:
-> >      description: Regulator that provides the supply 3.3V power.
-> >
-> > +  analogix,lane0-swing:
-> > +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> > +    minItems: 1
-> > +    maxItems: 20
-> > +    description:
-> > +      an array of swing register setting for DP tx lane0 PHY, please don't
-> > +      add this property, or contact vendor.
-> > +
-> > +  analogix,lane1-swing:
-> > +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> > +    minItems: 1
-> > +    maxItems: 20
-> > +    description:
-> > +      an array of swing register setting for DP tx lane1 PHY, please don't
-> > +      add this property, or contact vendor.
-> > +
-> > +  analogix,audio-enable:
-> > +    type: boolean
-> > +    description: let the driver enable audio HDMI codec function or not.
-> > +
-> >    ports:
-> >      $ref: /schemas/graph.yaml#/properties/ports
-> >
-> > @@ -50,13 +70,43 @@ properties:
-> >        port@0:
-> >          $ref: /schemas/graph.yaml#/properties/port
-> >          description:
-> > -          Video port for MIPI DSI input.
-> > +          MIPI DSI/DPI input.
-> > +
-> > +        properties:
-> > +          endpoint:
-> > +            $ref: /schemas/media/video-interfaces.yaml#
-> > +            type: object
-> > +            additionalProperties: false
-> > +
-> > +            properties:
-> > +              remote-endpoint: true
-> > +              bus-type: true
-> > +              data-lanes: true
-> > +
-> > +            required:
-> > +              - remote-endpoint
-> > +
-> > +        required:
-> > +          - endpoint
-> > +
-> >
-> >        port@1:
-> >          $ref: /schemas/graph.yaml#/properties/port
-> >          description:
-> >            Video port for panel or connector.
-> >
-> > +        properties:
-> > +          endpoint:
-> > +            $ref: /schemas/media/video-interfaces.yaml#
-> > +            type: object
-> > +            additionalProperties: false
-> > +
-> > +            properties:
-> > +              remote-endpoint: true
-> > +
-> > +            required:
-> > +              - remote-endpoint
-> > +
-> >      required:
-> >        - port@0
-> >        - port@1
-> > @@ -87,6 +137,9 @@ examples:
-> >              vdd10-supply = <&pp1000_mipibrdg>;
-> >              vdd18-supply = <&pp1800_mipibrdg>;
-> >              vdd33-supply = <&pp3300_mipibrdg>;
-> > +            analogix,audio-enable;
-> > +            analogix,lane0-swing = <0x14 0x54 0x64 0x74 0x29 0x7b 0x77 0x5b>;
-> > +            analogix,lane1-swing = <0x14 0x54 0x64 0x74 0x29 0x7b 0x77 0x5b>;
-> >
-> >              ports {
-> >                  #address-cells = <1>;
-> > @@ -96,6 +149,8 @@ examples:
-> >                      reg = <0>;
-> >                      anx7625_in: endpoint {
-> >                          remote-endpoint = <&mipi_dsi>;
-> > +                        bus-type = <5>;
-> > +                        data-lanes = <0 1 2 3>;
-> >                      };
-> >                  };
-> >
-> > --
-> > 2.25.1
-> >
+v1 -> v2:
+- Added "memory-hotplug.rst: remove locking details from admin-guide"
+- Incorporated all feedback from Mike and Michal (thanks!)
+- Compressed some lines to make full use of 80 chars.
+- Added details regarding 64bit/supported archs to the introduction.
+- Added KASAN to the list of sizing considerations.
+
+
+David Hildenbrand (2):
+  memory-hotplug.rst: remove locking details from admin-guide
+  memory-hotplug.rst: complete admin-guide overhaul
+
+ .../admin-guide/mm/memory-hotplug.rst         | 800 ++++++++++--------
+ 1 file changed, 455 insertions(+), 345 deletions(-)
+
+
+base-commit: 77d34a4683b053108ecd466cc7c4193b45805528
+-- 
+2.31.1
+
