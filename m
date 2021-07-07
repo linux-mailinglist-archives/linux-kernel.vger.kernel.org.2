@@ -2,144 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 937293BE48E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:43:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DCB13BE48F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:47:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbhGGIqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 04:46:04 -0400
-Received: from mail-vk1-f182.google.com ([209.85.221.182]:46011 "EHLO
-        mail-vk1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230109AbhGGIqD (ORCPT
+        id S230431AbhGGItt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 04:49:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30859 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230109AbhGGItt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 04:46:03 -0400
-Received: by mail-vk1-f182.google.com with SMTP id j190so416563vkg.12;
-        Wed, 07 Jul 2021 01:43:23 -0700 (PDT)
+        Wed, 7 Jul 2021 04:49:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625647628;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+xC52iUltU3WfDcC93OlrlUwk4UlGcvIsBeHwLS8jT0=;
+        b=TIDDveMkcBGMkTyr8ovfiXjUw6PIMU+lDszaCtxcgEAn3TV6p4TeC96Azri0lIEZe9ptnc
+        HQpuvkwJPHclXXqZLAl9evAwGbKgASa/eDGFMOP6dx9n7qPYN7MXHqMlbvEXEdgL+kBPkM
+        O9G4FJvQPasTtsPQDS7QYzfFV86aq8g=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-574-NnYsBaf6OdOjLVkrtv6HuQ-1; Wed, 07 Jul 2021 04:47:06 -0400
+X-MC-Unique: NnYsBaf6OdOjLVkrtv6HuQ-1
+Received: by mail-wr1-f70.google.com with SMTP id r11-20020a5d52cb0000b02901309f5e7298so544956wrv.0
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 01:47:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g/NUV0k0sKL15rnH03t063q9JhylHeH6MXLj7AK83z8=;
-        b=hGRzyERd1Ifu5U2xCx+uvaOeg+Gs4rSORmty/w3GQgjVSi+RVWdU9G9dyYQYAb+zyR
-         JpwBfSl9ZzYEBqOzRhYELZUCcXGxln4QU9gv7ShLkTfCSywDByg18ltgjwcq551unoiK
-         JuBxP3+aZArVDKvK1TUwHSF2xFIo86W2wmnE+cpcM4Z7R4hY1YT+So4aDqtvkLNHu58W
-         sM0D/cpcRpiokO8V36rn2Mld1lvubjvEbTfIL2dfXTYB90vowqcjC7DfV2rYKO91dGKc
-         Xd31hcB3N7LQD7kjUUlykRt3Pc2q4PkhtkMV3xm0YAOWwVJhBa/3D9t6K3YF+TjKqWlj
-         zHNg==
-X-Gm-Message-State: AOAM533dxEZxOBLC4/IfpEPiqxI8p6cl8xafjIB3Mmld2xXg85Tp+Ojt
-        BKfcMa9AEXC6XU+yr8TrfVib7UD5sfw9gNSI0Ss=
-X-Google-Smtp-Source: ABdhPJzgLJIgx7W1jbaDRxib8S/xT/cP8DYEWlpRrWLGM3rELD5iehuQGXyHOsv5HLOH75vCH9WGhY83DuluoiFFbkA=
-X-Received: by 2002:a1f:1207:: with SMTP id 7mr520916vks.1.1625647403340; Wed,
- 07 Jul 2021 01:43:23 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+xC52iUltU3WfDcC93OlrlUwk4UlGcvIsBeHwLS8jT0=;
+        b=WOkEx6x6kEnj4GIHpyXfQF0TD25R0ieBFPN4CID4x5F59hKr7HJfsxZISrT7Lqsc/P
+         L1MTcf6Dfu6c/sUruwiM0F9cX7FcjJXzW4dZ/D2KgXHkRnXW+bwjZaJe9Ef6QAeADsg7
+         FHFqHa8Us2KJSDgy1dKaSeTfJkV6p/rWcxTxxfnYTqDEGyHd+xdDybFlWndBqssPvmv7
+         ZZSkUG4kiEbzhoLjn7N5Lj/lVrClvolvksQzewzhwP8Fufirt8NOwwmimsSZ+ODVpwqR
+         zaRiro4qKKrW8rnpMyCfNFBfNYXKHBuhMwqszSjDYD8kekIlPxsm9qYEyJ5WNY7Msn0u
+         fxxg==
+X-Gm-Message-State: AOAM531DkubQpeFuNFo+J/Mr/HoRCAej/RUZ/ZDuKpTsgPJOqBUkENEQ
+        aTwRN7449fjiekS9vKmGcG6krBf8Hod6J2mJQdtfwXoam9+eR2ayvV2ACZwAu8ZSWH3WYyrddeY
+        8HivyHBtRSPxJocs6EcvCKZzO
+X-Received: by 2002:adf:e40e:: with SMTP id g14mr7839454wrm.413.1625647625712;
+        Wed, 07 Jul 2021 01:47:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx/m+ox20wlHKwpedk2TuGSMVCIHIs0dcMOW7G+D6Yy/Fykl5ck9j7qt5o6X0pubxsheRtmfQ==
+X-Received: by 2002:adf:e40e:: with SMTP id g14mr7839429wrm.413.1625647625517;
+        Wed, 07 Jul 2021 01:47:05 -0700 (PDT)
+Received: from localhost.localdomain ([151.29.51.230])
+        by smtp.gmail.com with ESMTPSA id t15sm7394311wrx.17.2021.07.07.01.47.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 01:47:05 -0700 (PDT)
+Date:   Wed, 7 Jul 2021 10:47:03 +0200
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org, vincent.guittot@linaro.org,
+        rostedt@goodmis.org, bristot@redhat.com, bsegall@google.com,
+        mgorman@suse.de, Mark Simmons <msimmons@redhat.com>
+Subject: Re: [PATCH] sched/rt: Fix double enqueue caused by rt_effective_prio
+Message-ID: <YOVqB1XKdoZYnn4m@localhost.localdomain>
+References: <20210701091431.256457-1-juri.lelli@redhat.com>
+ <29c071b5-5dd9-42df-9e00-f3df644eeccc@arm.com>
 MIME-Version: 1.0
-References: <20210215111619.2385030-1-geert+renesas@glider.be>
- <CAJZ5v0ikVbMX0R9e_=wOxKfJX5X322AipmpWy-7wVnWE7Ogc9A@mail.gmail.com>
- <CAGETcx94nNjduOuYKVBZOC9Gm4yfyb9x92ddznyxK4BnDby4PA@mail.gmail.com>
- <CAMuHMdWm9FiJHWTzGqqNa-ggt9WTpS6Hg2WthNW86p_WpvPUtw@mail.gmail.com>
- <CAGETcx8N5QmR5V_mrv5tHmARsnWrLbH+N_Ay_pBqV9HJkpHJzQ@mail.gmail.com> <CAGETcx8nD7Ak8z7JEM1jUVdRRpUt=8BwGMix0ghv1QeDBLaGwA@mail.gmail.com>
-In-Reply-To: <CAGETcx8nD7Ak8z7JEM1jUVdRRpUt=8BwGMix0ghv1QeDBLaGwA@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 7 Jul 2021 10:43:12 +0200
-Message-ID: <CAMuHMdX-cZO-tsj6T9av79d_bELihBfFGmB1=F+6YRNmUBWs9g@mail.gmail.com>
-Subject: Re: [PATCH] driver core: Fix double failed probing with fw_devlink=on
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <29c071b5-5dd9-42df-9e00-f3df644eeccc@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
+Hi,
 
-(going over old patch I still have in my local tree)
+On 06/07/21 16:48, Dietmar Eggemann wrote:
+> On 01/07/2021 11:14, Juri Lelli wrote:
+> > Double enqueues in rt runqueues (list) have been reported while running
+> > a simple test that spawns a number of threads doing a short sleep/run
+> > pattern while being concurrently setscheduled between rt and fair class.
+> 
+> I tried to recreate this in rt-app (with `pi-mutex` resource and
+> `pi_enabled=true` but I can't bring the system into hitting this warning.
 
-On Tue, Feb 16, 2021 at 6:08 PM Saravana Kannan <saravanak@google.com> wrote:
-> On Mon, Feb 15, 2021 at 12:59 PM Saravana Kannan <saravanak@google.com> wrote:
-> > On Mon, Feb 15, 2021 at 11:08 AM Geert Uytterhoeven
-> > <geert@linux-m68k.org> wrote:
-> > > On Mon, Feb 15, 2021 at 7:27 PM Saravana Kannan <saravanak@google.com> wrote:
-> > > > On Mon, Feb 15, 2021 at 6:59 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> > > > > On Mon, Feb 15, 2021 at 12:16 PM Geert Uytterhoeven
-> > > > > <geert+renesas@glider.be> wrote:
-> > > > > > With fw_devlink=permissive, devices are added to the deferred probe
-> > > > > > pending list if their driver's .probe() method returns -EPROBE_DEFER.
-> > > > > >
-> > > > > > With fw_devlink=on, devices are added to the deferred probe pending list
-> > > > > > if they are determined to be a consumer,
-> > > >
-> > > > If they are determined to be a consumer or if they are determined to
-> > > > have a supplier that hasn't probed yet?
-> > >
-> > > When the supplier has probed:
-> > >
-> > >     bus: 'platform': driver_probe_device: matched device
-> > > e6150000.clock-controller with driver renesas-cpg-mssr
-> > >     bus: 'platform': really_probe: probing driver renesas-cpg-mssr
-> > > with device e6150000.clock-controller
-> > >     PM: Added domain provider from /soc/clock-controller@e6150000
-> > >     driver: 'renesas-cpg-mssr': driver_bound: bound to device
-> > > 'e6150000.clock-controller'
-> > >     platform e6055800.gpio: Added to deferred list
-> > >     [...]
-> > >     platform e6020000.watchdog: Added to deferred list
-> > >     [...]
-> > >     platform fe000000.pcie: Added to deferred list
-> > >
-> > > > > > which happens before their
-> > > > > > driver's .probe() method is called.  If the actual probe fails later
-> > > > > > (real failure, not -EPROBE_DEFER), the device will still be on the
-> > > > > > deferred probe pending list, and it will be probed again when deferred
-> > > > > > probing kicks in, which is futile.
-> > > > > >
-> > > > > > Fix this by explicitly removing the device from the deferred probe
-> > > > > > pending list in case of probe failures.
-> > > > > >
-> > > > > > Fixes: e590474768f1cc04 ("driver core: Set fw_devlink=on by default")
-> > > > > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > > > >
-> > > > > Good catch:
-> > > > >
-> > > > > Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > > >
-> > > > The issue is real and needs to be fixed. But I'm confused how this can
-> > > > happen. We won't even enter really_probe() if the driver isn't ready.
-> > > > We also won't get to run the driver's .probe() if the suppliers aren't
-> > > > ready. So how does the device get added to the deferred probe list
-> > > > before the driver is ready? Is this due to device_links_driver_bound()
-> > > > on the supplier?
-> > > >
-> > > > Can you give a more detailed step by step on the case you are hitting?
-> > >
-> > > The device is added to the list due to device_links_driver_bound()
-> > > calling driver_deferred_probe_add() on all consumer devices.
-> >
-> > Thanks for the explanation. Maybe add more details like this to the
-> > commit text or in the code?
-> >
-> > For the code:
-> > Reviewed-by: Saravana Kanna <saravanak@google.com>
->
-> Ugh... I just realized that I might have to give this a Nak because of
-> bad locking in deferred_probe_work_func(). The unlock/lock inside the
-> loop is a terrible hack. If we add this patch, we can end up modifying
-> a linked list while it's being traversed and cause a crash or busy
-> loop (you'll accidentally end up on an "empty list"). I ran into a
-> similar issue during one of my unrelated refactors.
+So, this is a bit hard to reproduce. I'm attaching the reproducer we
+have been using to test the fix. Note that we have seen this on RT (thus
+why the repro doesn't need to explicitly use mutexes), but I'm not
+seeing why this couldn't in principle happen on !RT as well.
 
-Turns out the issue I was seeing went away due to commit
-f2db85b64f0af141 ("driver core: Avoid pointless deferred probe
-attempts"), so there is no need to apply this patch.
+> [...]
+> 
+> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > index 0c22cd026440..c84ac1d675f4 100644
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > @@ -6823,7 +6823,8 @@ static void __setscheduler_params(struct task_struct *p,
+> >  
+> >  /* Actually do priority change: must hold pi & rq lock. */
+> >  static void __setscheduler(struct rq *rq, struct task_struct *p,
+> > -			   const struct sched_attr *attr, bool keep_boost)
+> > +			   const struct sched_attr *attr, bool keep_boost,
+> > +			   int new_effective_prio)
+> >  {
+> >  	/*
+> >  	 * If params can't change scheduling class changes aren't allowed
+> > @@ -6840,7 +6841,7 @@ static void __setscheduler(struct rq *rq, struct task_struct *p,
+> >  	 */
+> >  	p->prio = normal_prio(p);
+> >  	if (keep_boost)
+> > -		p->prio = rt_effective_prio(p, p->prio);
+> > +		p->prio = new_effective_prio;
+> 
+> So in case __sched_setscheduler() is called for p (SCHED_NORMAL, NICE0)
+> you want to avoid that this 2. rt_effective_prio() call returns
+> p->prio=120 in case the 1. call (in __sched_setscheduler()) did return 0
+> (due to pi_task->prio=0 (FIFO rt_priority=99 task))?
+
+Not sure I completely follow your question. But what I'm seeing is that
+the top_task prio/class can change (by a concurrent setscheduler call,
+for example) between two consecutive rt_effective_prio() calls and this
+eventually causes the double enqueue in the rt list.
+
+Now, what I'm not sure about is if this is fine (as we always eventually
+converge to correctness in the PI chain(s)), and thus the proposed fix,
+or if we need to fix this differently.
+
+> >  
+> >  	if (dl_prio(p->prio))
+> >  		p->sched_class = &dl_sched_class;
+> > @@ -6873,7 +6874,7 @@ static int __sched_setscheduler(struct task_struct *p,
+> >  	int newprio = dl_policy(attr->sched_policy) ? MAX_DL_PRIO - 1 :
+> >  		      MAX_RT_PRIO - 1 - attr->sched_priority;
+> >  	int retval, oldprio, oldpolicy = -1, queued, running;
+> > -	int new_effective_prio, policy = attr->sched_policy;
+> > +	int new_effective_prio = newprio, policy = attr->sched_policy;
+> >  	const struct sched_class *prev_class;
+> >  	struct callback_head *head;
+> >  	struct rq_flags rf;
+> > @@ -7072,6 +7073,9 @@ static int __sched_setscheduler(struct task_struct *p,
+> >  	oldprio = p->prio;
+> >  
+> >  	if (pi) {
+> > +		newprio = fair_policy(attr->sched_policy) ?
+> > +			NICE_TO_PRIO(attr->sched_nice) : newprio;
+> > +
+> 
+> Why is this necessary? p (SCHED_NORMAL) would get newprio=99 now and
+> with this it gets [100...120...139] which is still greater than any RT
+> (0-98)/DL (-1) prio?
+
+It's needed because we might be going to use newprio (returned in
+new_effective_prio) with __setscheduler() and that needs to be the
+"final" nice scaled value.
+
+Reproducer (on RT) follows.
+
+Best,
+Juri
+
+---
+# cat load.c
+#include <unistd.h>
+#include <time.h>
 
 
-Gr{oetje,eeting}s,
+int main(){
 
-                        Geert
+        struct timespec t, t2;
+        t.tv_sec = 0;
+        t.tv_nsec = 100000;
+        int i;
+        while (1){
+                // sleep(1);
+                nanosleep(&t, &t2);
+                i = 0;
+                while(i < 100000){
+                        i++;
+                }
+        }
+}
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+--->8---
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+# cat setsched.c
+#include <sched.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+int main(int argc, char *argv[]){
+
+        int ret;
+        pid_t p;
+        p = atoi(argv[1]);
+        struct sched_param spr = { .sched_priority = 50};
+        struct sched_param spo = { .sched_priority = 0};
+
+        while(1){
+
+                ret = sched_setscheduler(p, SCHED_RR, &spr);
+                ret = sched_setscheduler(p, SCHED_OTHER, &spo);
+        }
+}
+
+--->8---
+
+# cat run.sh
+#!/bin/bash
+
+gcc -o load ./load.c
+gcc -o setsched ./setsched.c
+cp load rt_pid
+mkdir TMP
+
+for AUX in $(seq 36); do
+    cp load TMP/load__${AUX}
+    ./TMP/load__${AUX} &
+done
+
+sleep 1
+for AUX in $(seq 18); do
+    cp rt_pid TMP/rt_pid__${AUX}
+    cp setsched TMP/setsched__${AUX}
+    ./TMP/rt_pid__${AUX} &
+    ./TMP/setsched__${AUX} $!&
+done
+
+--->8---
+
+# cat destroy.sh
+pkill load
+pkill setsched
+pkill rt_pid
+
+rm load setsched rt_pid
+rm -rf TMP
+
