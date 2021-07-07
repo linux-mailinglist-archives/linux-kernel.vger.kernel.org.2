@@ -2,99 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 614CA3BE952
+	by mail.lfdr.de (Postfix) with ESMTP id CCF813BE953
 	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 16:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232002AbhGGOHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 10:07:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44036 "EHLO mail.kernel.org"
+        id S231702AbhGGOHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 10:07:36 -0400
+Received: from relay.sw.ru ([185.231.240.75]:57012 "EHLO relay.sw.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231720AbhGGOHc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 10:07:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C810C61C92;
-        Wed,  7 Jul 2021 14:04:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625666692;
-        bh=X05+giyFKsVT+sh0hnEHJ5D9wx29IQi/oJ6RZCCiYdc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jw9QDbboQVZmhJTdpYKUBDl5Urg8AOtcJ1QcxY+8FidTj0Qsdc6Ya7EXPDznObwfU
-         jkeLZzQ7OE4HyTFk4vUuIEDUv757Vf7BcEpdhCI3EjpWwzCn0pzJUrLGqrXFDhGjNs
-         OvAOFNolWWTIED7BlLP4MI+QgazZICx1UIirNIRa4P1lKUq+pcEFJxQgX89jqu3ovQ
-         Fd5zgVv6ROfuCjczgWuRMLt5STOmLgPBSeEnZTpT34aFunQlzZd6lCPJT5UA321LxL
-         jJijpFNGL2n4xTOvo/UPFmqQGRPFYOjkGn1lWbzOzPU2FFLzOYkBP9w1fc+FMddedL
-         rJIcTENISNdOg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 1A48F40B1A; Wed,  7 Jul 2021 11:04:49 -0300 (-03)
-Date:   Wed, 7 Jul 2021 11:04:49 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     kajoljain <kjain@linux.ibm.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, maddy@linux.vnet.ibm.com,
-        atrajeev@linux.vnet.ibm.com, linux-kernel@vger.kernel.org,
-        ravi.bangoria@linux.ibm.com, linux-perf-users@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, rnsastry@linux.ibm.com,
-        "Paul A. Clarke" <pc@us.ibm.com>
-Subject: Re: [PATCH] perf script python: Fix buffer size to report iregs in
- perf script
-Message-ID: <YOW0gU4yNpgN8MjB@kernel.org>
-References: <20210628062341.155839-1-kjain@linux.ibm.com>
- <20210628144937.GE142768@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
- <ee98968a-f343-a68e-9a3e-58e97dc130c8@linux.ibm.com>
- <c6fb2136-21e1-325a-f7f7-9745dbe29661@linux.ibm.com>
- <YOSr25+a+r3MF2Ob@kernel.org>
- <d59266da-2aa6-69ff-646b-144ba874ee2f@linux.ibm.com>
+        id S231877AbhGGOHe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 10:07:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
+        :From; bh=UA4eL064EWjYVJxhdfiFHZrrUTsuuc3X79KNj3RlB34=; b=mbqTa1AZhorrLPl+by3
+        0sC3kglVlC5BOS/53A7iEG3tVvLuPQYHZiPxaOcB+dpJOtPRqdPm70KyjTwm2ioYkDSO6m8Hu7lIM
+        CEoVucmPvAT0pfRAUzonf62MhYkYFIk7BE9qvxy/K7AJrapvd9JzFjGbPvDnGw60Bj7r8rzteXc=;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1m18AW-003ClR-Ck; Wed, 07 Jul 2021 17:04:52 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH IPV6 1/1] ipv6: allocate enough headroom in
+ ip6_finish_output2()
+To:     "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1625665132.git.vvs@virtuozzo.com>
+Message-ID: <3cb5a2e5-4e4c-728a-252d-4757b6c9612d@virtuozzo.com>
+Date:   Wed, 7 Jul 2021 17:04:51 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d59266da-2aa6-69ff-646b-144ba874ee2f@linux.ibm.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <cover.1625665132.git.vvs@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Jul 07, 2021 at 11:16:20AM +0530, kajoljain escreveu:
-> On 7/7/21 12:45 AM, Arnaldo Carvalho de Melo wrote:
-> > Em Tue, Jul 06, 2021 at 05:26:12PM +0530, kajoljain escreveu:
-> >> On 6/29/21 12:39 PM, kajoljain wrote:
-> >>> On 6/28/21 8:19 PM, Paul A. Clarke wrote:
-> >>>> On Mon, Jun 28, 2021 at 11:53:41AM +0530, Kajol Jain wrote:
-> >>>>> @@ -713,7 +711,16 @@ static void set_regs_in_dict(PyObject *dict,
-> >>>>>  			     struct evsel *evsel)
-> >>>>>  {
-> >>>>>  	struct perf_event_attr *attr = &evsel->core.attr;
-> >>>>> -	char bf[512];
-> >>>>> +
-> >>>>> +	/*
-> >>>>> +	 * Here value 28 is a constant size which can be used to print
-> >>>>> +	 * one register value and its corresponds to:
-> >>>>> +	 * 16 chars is to specify 64 bit register in hexadecimal.
-> >>>>> +	 * 2 chars is for appending "0x" to the hexadecimal value and
-> >>>>> +	 * 10 chars is for register name.
-> >>>>> +	 */
-> >>>>> +	int size = __sw_hweight64(attr->sample_regs_intr) * 28;
-> >>>>> +	char bf[size];
+When TEE target mirrors traffic to another interface, sk_buff may
+not have enough headroom to be processed correctly.
+ip_finish_output2() detect this situation for ipv4 and allocates
+new skb with enogh headroom. However ipv6 lacks this logic in
+ip_finish_output2 and it leads to skb_under_panic:
 
-> >>>> I propose using a template rather than a magic number here. Something like:
-> >>>> const char reg_name_tmpl[] = "10 chars  ";
-> >>>> const char reg_value_tmpl[] = "0x0123456789abcdef";
-> >>>> const int size = __sw_hweight64(attr->sample_regs_intr) +
-> >>>>                  sizeof reg_name_tmpl + sizeof reg_value_tmpl;
+ skbuff: skb_under_panic: text:ffffffffc0866ad4 len:96 put:24
+ head:ffff97be85e31800 data:ffff97be85e317f8 tail:0x58 end:0xc0 dev:gre0
+ ------------[ cut here ]------------
+ kernel BUG at net/core/skbuff.c:110!
+ invalid opcode: 0000 [#1] SMP PTI
+ CPU: 2 PID: 393 Comm: kworker/2:2 Tainted: G           OE     5.13.0 #13
+ Hardware name: Virtuozzo KVM, BIOS 1.11.0-2.vz7.4 04/01/2014
+ Workqueue: ipv6_addrconf addrconf_dad_work
+ RIP: 0010:skb_panic+0x48/0x4a
+ Call Trace:
+  skb_push.cold.111+0x10/0x10
+  ipgre_header+0x24/0xf0 [ip_gre]
+  neigh_connected_output+0xae/0xf0
+  ip6_finish_output2+0x1a8/0x5a0
+  ip6_output+0x5c/0x110
+  nf_dup_ipv6+0x158/0x1000 [nf_dup_ipv6]
+  tee_tg6+0x2e/0x40 [xt_TEE]
+  ip6t_do_table+0x294/0x470 [ip6_tables]
+  nf_hook_slow+0x44/0xc0
+  nf_hook.constprop.34+0x72/0xe0
+  ndisc_send_skb+0x20d/0x2e0
+  ndisc_send_ns+0xd1/0x210
+  addrconf_dad_work+0x3c8/0x540
+  process_one_work+0x1d1/0x370
+  worker_thread+0x30/0x390
+  kthread+0x116/0x130
+  ret_from_fork+0x22/0x30
 
-> >>>    Thanks for reviewing the patch. Yes these are
-> >>> some standardization we can do by creating macros for different
-> >>> fields.
-> >>> The basic idea is, we want to provide significant buffer size
-> >>> based on number of registers present in sample_regs_intr to accommodate
-> >>> all data.
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+---
+ net/ipv6/ip6_output.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-> >>    Is the approach used in this patch looks fine to you?
-
-> > Yeah, and the comment you provide right above it explains it, so I think
-> > that is enough, ok?
+diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
+index ff4f9eb..e5af740 100644
+--- a/net/ipv6/ip6_output.c
++++ b/net/ipv6/ip6_output.c
+@@ -61,9 +61,24 @@ static int ip6_finish_output2(struct net *net, struct sock *sk, struct sk_buff *
+ 	struct dst_entry *dst = skb_dst(skb);
+ 	struct net_device *dev = dst->dev;
+ 	const struct in6_addr *nexthop;
++	unsigned int hh_len = LL_RESERVED_SPACE(dev);
+ 	struct neighbour *neigh;
+ 	int ret;
  
->     Thanks for reviewing it. As you said added comment already explains
-> why we are taking size constant as 28, should we skip adding macros part?
-> Can you pull this patch.
++	/* Be paranoid, rather than too clever. */
++	if (unlikely(skb_headroom(skb) < hh_len && dev->header_ops)) {
++		struct sk_buff *skb2;
++
++		skb2 = skb_realloc_headroom(skb, LL_RESERVED_SPACE(dev));
++		if (!skb2) {
++			kfree_skb(skb);
++			return -ENOMEM;
++		}
++		if (skb->sk)
++			skb_set_owner_w(skb2, skb->sk);
++		consume_skb(skb);
++		skb = skb2;
++	}
+ 	if (ipv6_addr_is_multicast(&ipv6_hdr(skb)->daddr)) {
+ 		struct inet6_dev *idev = ip6_dst_idev(skb_dst(skb));
+ 
+-- 
+1.8.3.1
 
-Sure.
-
-- Arnaldo
