@@ -2,383 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9BB53BF0CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 22:37:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FF903BF0DE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 22:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232662AbhGGUkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 16:40:07 -0400
-Received: from mga07.intel.com ([134.134.136.100]:58887 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232238AbhGGUkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 16:40:05 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10037"; a="273221895"
-X-IronPort-AV: E=Sophos;i="5.84,221,1620716400"; 
-   d="scan'208";a="273221895"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2021 13:37:23 -0700
-X-IronPort-AV: E=Sophos;i="5.84,221,1620716400"; 
-   d="scan'208";a="411053186"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2021 13:37:20 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id 5D1EB201A2;
-        Wed,  7 Jul 2021 23:37:18 +0300 (EEST)
-Date:   Wed, 7 Jul 2021 23:37:18 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Nikhil Devshatwar <nikhil.nd@ti.com>,
-        Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Martina Krasteva <martinax.krasteva@intel.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Raag Jadav <raagjadav@gmail.com>,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH v3 01/11] media: ov5640: Use runtime PM to control sensor
- power
-Message-ID: <20210707203718.GX3@paasikivi.fi.intel.com>
-References: <20210624192200.22559-1-p.yadav@ti.com>
- <20210624192200.22559-2-p.yadav@ti.com>
+        id S232972AbhGGUm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 16:42:57 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:43209 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232893AbhGGUmx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 16:42:53 -0400
+Received: from mail-wm1-f50.google.com ([209.85.128.50]) by
+ mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1N5FxN-1l13Og0AFR-0118yd; Wed, 07 Jul 2021 22:40:11 +0200
+Received: by mail-wm1-f50.google.com with SMTP id u8-20020a7bcb080000b02901e44e9caa2aso2527548wmj.4;
+        Wed, 07 Jul 2021 13:40:10 -0700 (PDT)
+X-Gm-Message-State: AOAM530U7WKuuH7jtqH1QT94meDJldyPPnBEuko0ZP796ICuFNSCPCZV
+        MWO+9nXvtZgkPnsweyMOb+KrY16wkPYtnZj0X20=
+X-Google-Smtp-Source: ABdhPJxVhxtjWfZENqb3qvXdchtUZVs1vrewX7U1cQSc9Fj2KhtkQ4WGJ9YiQMCY07djksJd1iz9gKY3FqcUV7dSneo=
+X-Received: by 2002:a1c:c90f:: with SMTP id f15mr1030507wmb.142.1625690410658;
+ Wed, 07 Jul 2021 13:40:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210624192200.22559-2-p.yadav@ti.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <CAK8P3a2mAQOnTxBhVzVA8q8O-uVrdidCN5h5-T2dc0=Wet2uPQ@mail.gmail.com>
+ <20210706205927.4407-1-abd.masalkhi@gmail.com> <CAK8P3a23=tcWx8iWNAKXcT9TRgPrZbEVVy9a_ad29hSde_jkKg@mail.gmail.com>
+ <YOWt2swxONAvhesH@ls3530>
+In-Reply-To: <YOWt2swxONAvhesH@ls3530>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 7 Jul 2021 22:39:54 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1EFuqgZGdpWzib3RxFf6TXCy_CUTZx2ekd0wTbdNdoxg@mail.gmail.com>
+Message-ID: <CAK8P3a1EFuqgZGdpWzib3RxFf6TXCy_CUTZx2ekd0wTbdNdoxg@mail.gmail.com>
+Subject: Re: div_u64/do_div stack size usage, was Re: [v3] block: Removed a
+ warning while compiling with a cross compiler for parisc
+To:     Helge Deller <deller@gmx.de>
+Cc:     Abd-Alrhman Masalkhi <abd.masalkhi@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Bernardo Innocenti <bernie@develer.com>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:YjQw2VVw6gmdv/M8o6CCNhN/4FZCpRizx+SBpO+cI4W9e51x779
+ j1Uz3KIdiVzD2/tMF+POr8Le36PzJijuOp+YlZx5X0Pci5LqDDubQu2hsX+Hmq4b0eNs1RU
+ KpnWNzsF+isGDaV8ux7vNb3IgIU3OFWmEYI5UaBk99xLf0JyPUA+4onytNqm6C99R+E+Z97
+ 8mLWPqcfXJLdQL2/O2H9Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:pYDxCV0MjDg=:aPOinCfYTKz16Qxj89APz1
+ 2k/Ag0pfhxWd8/klk/zD3jTzJtvutll7rohtWwmVLvl9vc2ecLKORjo4MWKph/ntF/DGeiTKl
+ /1+wGPjRNA7t+EBN/J5W8PWXunMkTIvtCna8KglfBYVb9yKQUeQWFCLoagK5sSD8FgsEO5H9h
+ NMu3Zkhe4Mesyr/NksCikiSK9Ro1Xp99CQtaPcgEeFGbGl07hBoduuvF6Yofodi9wCiKuTqHg
+ J1qHNWd0Q+HzudrXWBZfWr+8rUTVWHQwVtw69ddlEOMdC60ZZFrnLOtiIswYTIvkkYSpZp9l3
+ 468lMFVooEn8DrQpIYDkuLDRQsUhcADhhmTduXfMkYGv2AuH2WQ8TNqtj4HtcvwVmTy0zQE2+
+ GqrUqkQpej+Zq09Q/CuHQrW/YsuuAjkAgrckYYkb/icjya8X1MPBdBkeUXtqyVe55mqXdji2k
+ IYocjwFJzC88xN+a8SJW8JJ8tdlZzQhlQGroPsR8x5D5uiAIUgbBtbu6yGA192Zoa0Q0CEyHc
+ +dieaIhOo15a4GFZRSWi2Y/fJI8QNRofdZyofhUY+wLrz10XdZf64UudX96r/b1qVbDJXwGci
+ njZouAYfWDjTcBwXJxGq6BTr9lcI/vUZs8vrHeVc098Zxfw4RBOUTnvNnY6P2qEGyXD6b3KSL
+ 8AdPlAoqIke9ChnobmAQMGErHq9qwKm+POYMiUe4OumgV+s4l+MgC9EJW8YzcF/NKJYuRSWUR
+ qLsCpUCOHVwUm5O7q84P2rQ1MqTiDzWmMODxiODqduZUL0kqWtbdtlo2NWkigZOnWEhZ23Qzr
+ S6VkHaNCHvCV3EKSFX6OQ1PY1r+ULJdUPhuw18KK8f/OKTuJOFveMWLLANOR1xIded/3f0/LB
+ b/a+tK85FYEH+xYQ4X2vicBo5wjRIXOR7wIaAH7ZSqOy8Br3kxt/Ri9Dyv81qd2tTH/e95gr7
+ xnGKB4yoxb2piw+i3VRbKBO27k4M/xNSALkbMHxS64aDKum+AIjnb
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pratyush,
+On Wed, Jul 7, 2021 at 3:36 PM Helge Deller <deller@gmx.de> wrote:
+> * Arnd Bergmann <arnd@arndb.de>:
+> > My first thought was this was a result of -finline-functions getting
+> > enabled by default in gcc-10, but enabling it on gcc-9 did not
+> > help here. It's likely that the gcc behavior was fixed in the process
+> > of enabling the more aggressive inliner by default though.
+> >
+> > I also tried building genhd.o for every architecture that has
+> > gcc-9.4 support and did not find the problem anywhere except
+> > on parisc.
+> >
+> > Using CONFIG_CC_OPTIMIZE_FOR_SIZE did solve the
+> > problem for me (frame size down to 164 bytes), but I could not
+> > pinpoint a specific -f option that fixes it for -O2. Maybe we can
+> > simply change the defconfig here? 32-bit parisc systems are
+> > probably memory limited enough that building a -Os kernel
+> > is a good idea anyway. 64-bit parisc already builds with -Os
+> > but does not see the warning with -O2 either.
+>
+> I agree that the simplest solution is to increase the default value for
+> parisc here.
+> On parisc we have a 32k stack (either 1x32k or 2x16k when using IRQ
+> stacks). I increased the default value to 1280 in 2017, but as can be
+> seen here this isn't sufficient. Either way, we have an active runtime
+> check for stack overflows which has never triggered yet, so let's just
+> remove the compiler warning by increasing the value to 2048. Patch is
+> below.
+>
+> [PATCH] parisc: Increase gcc stack frame check to 2048 for 32- and 64-bit
+>
+> parisc uses much bigger frames than other architectures, so increase the
+> stack frame check value to 2048 to avoid compiler warnings.
 
-Thanks for the patch.
+I think setting it to 2048 is rather excessive, and it would make you miss
+other real bugs. What I suggested was to change the defconfig to use
+CONFIG_CC_OPTIMIZE_FOR_SIZE instead.
 
-On Fri, Jun 25, 2021 at 12:51:50AM +0530, Pratyush Yadav wrote:
-> Calling s_power subdev callback is discouraged. Instead, the subdevs
-> should use runtime PM to control its power. Use runtime PM callbacks to
-> control sensor power. The pm counter is incremented when the stream is
-> started and decremented when the stream is stopped.
-> 
-> Refactor s_stream() a bit to make this new control flow easier. Add a
-> helper to choose whether mipi or dvp set_stream needs to be called. The
-> logic flow is also changed to make it a bit clearer.
-> 
-> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> 
-> ---
-> 
-> Changes in v3:
-> - Clean up the logic in ov5640_s_stream() a bit.
-> - Use pm_runtime_resume_and_get() instead of pm_runtime_get_sync().
-> - Rename the label error_pm to disable_pm.
-> 
-> Changes in v2:
-> - New in v2.
-> 
->  drivers/media/i2c/Kconfig  |   2 +-
->  drivers/media/i2c/ov5640.c | 127 +++++++++++++++++++++++--------------
->  2 files changed, 79 insertions(+), 50 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
-> index 588f8eb95984..8f43a4d7bcc1 100644
-> --- a/drivers/media/i2c/Kconfig
-> +++ b/drivers/media/i2c/Kconfig
-> @@ -929,7 +929,7 @@ config VIDEO_OV2740
->  
->  config VIDEO_OV5640
->  	tristate "OmniVision OV5640 sensor support"
-> -	depends on OF
-> +	depends on OF && PM
+The reasoning for the 1280 byte limit on parisc is that it needs a few extra
+bytes for its larger stack frames, and 1024 for the other 32-bit architectures
+is only there because anything smaller warns for a handful of functions
+that are fine-tuned to need slightly less than that, when the call chain
+is predictable and using less would impact performance.
 
-Could you add support for runtime PM without requiring CONFIG_PM?
+I actually think we should reduce the warning limit for 64-bit architectures
+to 1280 bytes as well, but that triggers a couple of warnings that still
+need to be resolved first. In almost all cases, a kernel function needing
+more than 512 bytes is an indication of either a bug in the kernel, or
+(rarely) in the compiler.
 
-Essentially you'll need to power on the device in probe and power it off in
-probe, and make sure the runtime PM nop variant functions return the value
-you'd expect.
-
-The ov5640_check_chip_id() function also calls ov5640_set_power() directly.
-That needs to be changed, too.
-
->  	depends on GPIOLIB && VIDEO_V4L2 && I2C
->  	select MEDIA_CONTROLLER
->  	select VIDEO_V4L2_SUBDEV_API
-> diff --git a/drivers/media/i2c/ov5640.c b/drivers/media/i2c/ov5640.c
-> index f6e1e51e0375..2b7fd8631ad1 100644
-> --- a/drivers/media/i2c/ov5640.c
-> +++ b/drivers/media/i2c/ov5640.c
-> @@ -15,6 +15,7 @@
->  #include <linux/init.h>
->  #include <linux/module.h>
->  #include <linux/of_device.h>
-> +#include <linux/pm_runtime.h>
->  #include <linux/regulator/consumer.h>
->  #include <linux/slab.h>
->  #include <linux/types.h>
-> @@ -238,8 +239,6 @@ struct ov5640_dev {
->  	/* lock to protect all members below */
->  	struct mutex lock;
->  
-> -	int power_count;
-> -
->  	struct v4l2_mbus_framefmt fmt;
->  	bool pending_fmt_change;
->  
-> @@ -1277,6 +1276,14 @@ static int ov5640_set_stream_mipi(struct ov5640_dev *sensor, bool on)
->  				on ? 0x00 : 0x0f);
->  }
->  
-> +static int ov5640_set_stream(struct ov5640_dev *sensor, bool on)
-> +{
-> +	if (sensor->ep.bus_type == V4L2_MBUS_CSI2_DPHY)
-> +		return ov5640_set_stream_mipi(sensor, on);
-> +	else
-> +		return ov5640_set_stream_dvp(sensor, on);
-> +}
-> +
->  static int ov5640_get_sysclk(struct ov5640_dev *sensor)
->  {
->  	 /* calculate sysclk */
-> @@ -2155,37 +2162,6 @@ static int ov5640_set_power(struct ov5640_dev *sensor, bool on)
->  
->  /* --------------- Subdev Operations --------------- */
->  
-> -static int ov5640_s_power(struct v4l2_subdev *sd, int on)
-> -{
-> -	struct ov5640_dev *sensor = to_ov5640_dev(sd);
-> -	int ret = 0;
-> -
-> -	mutex_lock(&sensor->lock);
-> -
-> -	/*
-> -	 * If the power count is modified from 0 to != 0 or from != 0 to 0,
-> -	 * update the power state.
-> -	 */
-> -	if (sensor->power_count == !on) {
-> -		ret = ov5640_set_power(sensor, !!on);
-> -		if (ret)
-> -			goto out;
-> -	}
-> -
-> -	/* Update the power count. */
-> -	sensor->power_count += on ? 1 : -1;
-> -	WARN_ON(sensor->power_count < 0);
-> -out:
-> -	mutex_unlock(&sensor->lock);
-> -
-> -	if (on && !ret && sensor->power_count == 1) {
-> -		/* restore controls */
-> -		ret = v4l2_ctrl_handler_setup(&sensor->ctrls.handler);
-> -	}
-> -
-> -	return ret;
-> -}
-> -
->  static int ov5640_try_frame_interval(struct ov5640_dev *sensor,
->  				     struct v4l2_fract *fi,
->  				     u32 width, u32 height)
-> @@ -2681,6 +2657,7 @@ static int ov5640_s_ctrl(struct v4l2_ctrl *ctrl)
->  {
->  	struct v4l2_subdev *sd = ctrl_to_sd(ctrl);
->  	struct ov5640_dev *sensor = to_ov5640_dev(sd);
-> +	struct device *dev = &sensor->i2c_client->dev;
->  	int ret;
->  
->  	/* v4l2_ctrl_lock() locks our own mutex */
-> @@ -2690,7 +2667,7 @@ static int ov5640_s_ctrl(struct v4l2_ctrl *ctrl)
->  	 * not apply any controls to H/W at this time. Instead
->  	 * the controls will be restored right after power-up.
->  	 */
-> -	if (sensor->power_count == 0)
-> +	if (pm_runtime_suspended(dev))
-
-The problem with this is that it does not prevent powering the device off
-while you're here. Please use pm_runtime_get_if_active() instead (see other
-drivers for examples).
-
->  		return 0;
->  
->  	switch (ctrl->id) {
-> @@ -2939,39 +2916,57 @@ static int ov5640_enum_mbus_code(struct v4l2_subdev *sd,
->  static int ov5640_s_stream(struct v4l2_subdev *sd, int enable)
->  {
->  	struct ov5640_dev *sensor = to_ov5640_dev(sd);
-> +	struct device *dev = &sensor->i2c_client->dev;
->  	int ret = 0;
->  
->  	mutex_lock(&sensor->lock);
->  
-> -	if (sensor->streaming == !enable) {
-> -		if (enable && sensor->pending_mode_change) {
-> +	if (sensor->streaming == enable) {
-> +		mutex_unlock(&sensor->lock);
-> +		return 0;
-> +	}
-> +
-> +	if (enable) {
-> +		ret = pm_runtime_resume_and_get(dev);
-> +		if (ret < 0)
-> +			goto err;
-> +
-> +		if (sensor->pending_mode_change) {
->  			ret = ov5640_set_mode(sensor);
->  			if (ret)
-> -				goto out;
-> +				goto put_pm;
->  		}
->  
-> -		if (enable && sensor->pending_fmt_change) {
-> +		if (sensor->pending_fmt_change) {
->  			ret = ov5640_set_framefmt(sensor, &sensor->fmt);
->  			if (ret)
-> -				goto out;
-> +				goto put_pm;
->  			sensor->pending_fmt_change = false;
->  		}
->  
-> -		if (sensor->ep.bus_type == V4L2_MBUS_CSI2_DPHY)
-> -			ret = ov5640_set_stream_mipi(sensor, enable);
-> -		else
-> -			ret = ov5640_set_stream_dvp(sensor, enable);
-> +		ret = ov5640_set_stream(sensor, true);
-> +		if (ret)
-> +			goto put_pm;
-> +	} else {
-> +		ret = ov5640_set_stream(sensor, false);
-> +		if (ret)
-> +			goto err;
->  
-> -		if (!ret)
-> -			sensor->streaming = enable;
-> +		pm_runtime_put(dev);
->  	}
-> -out:
-> +
-> +	sensor->streaming = enable;
-> +	mutex_unlock(&sensor->lock);
-> +	return 0;
-> +
-> +put_pm:
-> +	pm_runtime_put(dev);
-> +err:
->  	mutex_unlock(&sensor->lock);
->  	return ret;
->  }
->  
->  static const struct v4l2_subdev_core_ops ov5640_core_ops = {
-> -	.s_power = ov5640_s_power,
-
-Nice!
-
->  	.log_status = v4l2_ctrl_subdev_log_status,
->  	.subscribe_event = v4l2_ctrl_subdev_subscribe_event,
->  	.unsubscribe_event = v4l2_event_subdev_unsubscribe,
-> @@ -3037,6 +3032,29 @@ static int ov5640_check_chip_id(struct ov5640_dev *sensor)
->  	return ret;
->  }
->  
-> +static int ov5640_suspend(struct device *dev)
-> +{
-> +	struct i2c_client *client = to_i2c_client(dev);
-> +	struct v4l2_subdev *subdev = i2c_get_clientdata(client);
-> +	struct ov5640_dev *sensor = to_ov5640_dev(subdev);
-> +
-> +	return ov5640_set_power(sensor, false);
-> +}
-> +
-> +static int ov5640_resume(struct device *dev)
-> +{
-> +	struct i2c_client *client = to_i2c_client(dev);
-> +	struct v4l2_subdev *subdev = i2c_get_clientdata(client);
-> +	struct ov5640_dev *sensor = to_ov5640_dev(subdev);
-> +	int ret = 0;
-> +
-> +	ret = ov5640_set_power(sensor, true);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return __v4l2_ctrl_handler_setup(&sensor->ctrls.handler);
-
-This should be done by the ov5640_set_power() function --- there's no
-guarantee the sensor will be powered off after probe before someone tries
-to use it.
-
-In fact, it would be nicer to split ov5640_set_power() in two. There's
-little need for the convoluted calling of power management functions in
-this driver. (Almost all sensor drivers have one to power the sensor off
-and another to power it on.)
-
-> +}
-> +
->  static int ov5640_probe(struct i2c_client *client)
->  {
->  	struct device *dev = &client->dev;
-> @@ -3162,13 +3180,17 @@ static int ov5640_probe(struct i2c_client *client)
->  	if (ret)
->  		goto entity_cleanup;
->  
-> +	pm_runtime_enable(dev);
-> +	pm_runtime_set_suspended(dev);
-
-You could also do this after registering the subdev below --- less error
-handling that way.
-
-See e.g. the imx355 driver for an example in what to do at the end of
-probe. The idea is runtime PM is used to turn the sensor off if it's
-enabled while the driver turns it on independently of runtime PM.
-
-> +
->  	ret = v4l2_async_register_subdev_sensor(&sensor->sd);
->  	if (ret)
-> -		goto free_ctrls;
-> +		goto pm_disable;
->  
->  	return 0;
->  
-> -free_ctrls:
-> +pm_disable:
-> +	pm_runtime_disable(dev);
->  	v4l2_ctrl_handler_free(&sensor->ctrls.handler);
->  entity_cleanup:
->  	media_entity_cleanup(&sensor->sd.entity);
-> @@ -3178,17 +3200,23 @@ static int ov5640_probe(struct i2c_client *client)
->  
->  static int ov5640_remove(struct i2c_client *client)
->  {
-> +	struct device *dev = &client->dev;
->  	struct v4l2_subdev *sd = i2c_get_clientdata(client);
->  	struct ov5640_dev *sensor = to_ov5640_dev(sd);
->  
->  	v4l2_async_unregister_subdev(&sensor->sd);
->  	media_entity_cleanup(&sensor->sd.entity);
-> +	pm_runtime_disable(dev);
->  	v4l2_ctrl_handler_free(&sensor->ctrls.handler);
->  	mutex_destroy(&sensor->lock);
->  
->  	return 0;
->  }
->  
-> +static const struct dev_pm_ops ov5640_pm_ops = {
-> +	SET_RUNTIME_PM_OPS(ov5640_suspend, ov5640_resume, NULL)
-> +};
-> +
->  static const struct i2c_device_id ov5640_id[] = {
->  	{"ov5640", 0},
->  	{},
-> @@ -3205,6 +3233,7 @@ static struct i2c_driver ov5640_i2c_driver = {
->  	.driver = {
->  		.name  = "ov5640",
->  		.of_match_table	= ov5640_dt_ids,
-> +		.pm = &ov5640_pm_ops,
->  	},
->  	.id_table = ov5640_id,
->  	.probe_new = ov5640_probe,
-
--- 
-Kind regards,
-
-Sakari Ailus
+        Arnd
