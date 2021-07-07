@@ -2,131 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFDD33BECC2
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 19:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F763BECCA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 19:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbhGGRFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 13:05:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46890 "EHLO
+        id S230418AbhGGRIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 13:08:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230012AbhGGRFR (ORCPT
+        with ESMTP id S230109AbhGGRIn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 13:05:17 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 396AEC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 10:02:36 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id y38so4250689ybi.1
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 10:02:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Nvt17DC+0V0vDNtkCundvZnkSWcUic46kjkyGHinAVw=;
-        b=Ae0a52BSY3240NlXOn9VTQD/j3EZgVypicQrCdtTwLUvb3YFMLxg4gudqyryj9pTdZ
-         PV8a4D9s8yKvDhS0OX/NoFMkj1weo6/rOxZACtDgo3+masXCMmxGRH2ra8x50dFulqzd
-         OEwlw6slgyGYQ1vb/F1X/4Go6FUKxKmmBco2wehmzPVRUsdqeKBRgajb4MascRslbUPv
-         IMMlHLE+AZktRbPkHTXQVhvnmV9fZQAuEzfPF1x3lfeANsUShYuQUhkrMNueVVm7+U1K
-         VkL5OzO/HC1K+rUTstP/luufafCIH7p1FWOB36KFmy/GqrjU1aUO3Hf6tNwioZrY2ULZ
-         XwVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Nvt17DC+0V0vDNtkCundvZnkSWcUic46kjkyGHinAVw=;
-        b=sHVUdZDrZgyrQoYBGqNpwUDYNKvhmD3lHTSKW+ooau8/k+wyGQvJ1bFYxMz6fvCADG
-         6as4lDSXa5ZRtWZQka1idjnYagpQ7wk6QmgbxJTGYkpv2LK7cLHCzavxITz0dGp4Gofg
-         i0jzEGG/lINCX5SVL0/FHiL6ncFG7py5yNEWuWvft5kfd36V+1NtAu5/tFf8DhdzSq0R
-         6ZHK2hujAIfDWKtWjrsOGlX96ziw8MaZLUEE+GP3K0qYLtKij7bfygdahXu0mU2kWOmh
-         SYQVYesUZxOLRXEprOAIR3OPsRaDeFuxYbuXjVPWPIeGc9TQsxvOTWIZlC7ZEYBS9Zh7
-         /ULw==
-X-Gm-Message-State: AOAM5333rz94fi10BjFPZ1wfzGQZAGt2LFC+/wzGi9OWR5oIisbKdwJz
-        mifLebcUfAWRZiV8RshTJ4nZXR2bpMeqb090snMwlA==
-X-Google-Smtp-Source: ABdhPJzlRgwilrrNJz8HGx/b4iVPfJuGy8Z2rljlJ8d6eC9eLLYWKI3FFeEhjkxao9u6Nr3f9DXBJCOuQOrKGWgmciw=
-X-Received: by 2002:a25:7085:: with SMTP id l127mr35127383ybc.293.1625677355105;
- Wed, 07 Jul 2021 10:02:35 -0700 (PDT)
+        Wed, 7 Jul 2021 13:08:43 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9111C061574;
+        Wed,  7 Jul 2021 10:06:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=d3VM6WT6D5YL/WJ5V7RszIEGS7pxSO5TS9NGv7itCmU=; b=gPlz2ujtqcODOZy73CeHy4SqNb
+        pEeMt2zOH/pBPwn43VYADVC5ffumABTnaxNJFHq7Rbqqs8WsM3xtimmi5bVvpouDVdyF0JMDxnDnR
+        pKnDbtzl28dWqF8iNqZNjHJqlyQ3aHnJoWoywLAK/i/TxK9+V2aJemZjNx20YlhvseFxN4Vjimrqz
+        u+Fd8Cdeu8/8lrMaaUnbCclH9/soUbf+n741MsHiofGmkodZ/LJA79HepwZ8VUtb3WSpua5fa2OiK
+        xwZy9qrmpyyv3XbE0WzFmmdhQNKY7VK5zyIvYuobRjaW7BJbkLOuHIzLclTONAzeHVPWmB4m4l4uv
+        +1HXYCwg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m1Azi-00CcFj-GQ; Wed, 07 Jul 2021 17:05:56 +0000
+Date:   Wed, 7 Jul 2021 18:05:54 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Yang Shi <shy828301@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, uclinux-dev@uclinux.org
+Subject: Re: [PATCH] mm: try_to_unmap() is now void
+Message-ID: <YOXe8jb3uOXFq0j7@casper.infradead.org>
+References: <20210707161614.13001-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-References: <CABCJKudYQV6Nt=Qq+zY=9JF1WmLVLnx+--3mJA9dkhLMhMvuFg@mail.gmail.com>
- <20210706090607.19421-1-lecopzer.chen@mediatek.com>
-In-Reply-To: <20210706090607.19421-1-lecopzer.chen@mediatek.com>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Wed, 7 Jul 2021 10:02:24 -0700
-Message-ID: <CABCJKufWcp6Hx=8btz6pDNcKvQ21n4BSPZ7cp1Tzhxt0+pQOmw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] Kbuild: lto: add CONFIG_MAKE_VERSION
-To:     Lecopzer Chen <lecopzer.chen@mediatek.com>
-Cc:     clang-built-linux@googlegroups.com, keescook@chromium.org,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        masahiroy@kernel.org, michal.lkml@markovi.net, nathan@kernel.org,
-        ndesaulniers@google.com, yj.chiang@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210707161614.13001-1-rdunlap@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 6, 2021 at 2:06 AM Lecopzer Chen <lecopzer.chen@mediatek.com> wrote:
->
-> > On Sun, Jul 4, 2021 at 7:03 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> > >
-> > > On Fri, Jul 2, 2021 at 12:29 PM Lecopzer Chen
-> > > <lecopzer.chen@mediatek.com> wrote:
-> > > >
-> > > > To check the GNU make version. Used by the LTO Kconfig.
-> > > >
-> > > > LTO with MODVERSIONS will fail in generating correct CRC because
-> > > > the makefile rule doesn't work for make with version 3.8X.[1]
-> > > >
-> > > > Thus we need to check make version during selecting on LTO Kconfig.
-> > > > Add CONFIG_MAKE_VERSION which means MAKE_VERSION in canonical digits
-> > > > for arithmetic comparisons.
-> > > >
-> > > > [1] https://lore.kernel.org/lkml/20210616080252.32046-1-lecopzer.chen@mediatek.com/
-> > > > Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
-> > > > ---
-> > >
-> > >
-> > > NACK.
-> > >
-> > > "Let's add MAKE_VERSION >= 40200 restriction
-> > > just because I cannot write correct code that
-> > > works for older Make" is a horrible idea.
-> > >
-> > > Also, Kconfig is supposed to check the compiler
-> > > (or toolchains) capability, not host tool versions.
-> >
-> > I feel like requiring a Make that's half a decade old for a feature
-> > that also requires a toolchain released last October ago isn't
-> > entirely unreasonable.
-> >
-> > That being said, if Masahiro prefers not to rely on the wildcard
-> > function's behavior here, which is a reasonable request, we could
-> > simply use the shell to test for the file's existence:
-> >
-> > diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-> > index 34d257653fb4..c6bd62f518ff 100644
-> > --- a/scripts/Makefile.build
-> > +++ b/scripts/Makefile.build
-> > @@ -388,7 +388,7 @@ ifeq ($(CONFIG_LTO_CLANG) $(CONFIG_MODVERSIONS),y y)
-> >        cmd_update_lto_symversions =                                     \
-> >         rm -f $@.symversions                                            \
-> >         $(foreach n, $(filter-out FORCE,$^),                            \
-> > -               $(if $(wildcard $(n).symversions),                      \
-> > +               $(if $(shell test -s $(n).symversions && echo y),       \
-> >                         ; cat $(n).symversions >> $@.symversions))
-> >  else
-> >        cmd_update_lto_symversions = echo >/dev/null
-> >
-> > This is not quite as efficient as using wildcard, but should work with
-> > older Make versions too. Thoughts?
-> >
->
->
-> I've tested this in both make-4.3 and 3.81, and the CRC is correct.
-> But I'm not sure if anyone would have the "arg list too long" issue.
->
-> Tested-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+On Wed, Jul 07, 2021 at 09:16:14AM -0700, Randy Dunlap wrote:
+> Fix the "CONFIG_MMU is not set" case of converting
+> try_to_unmap() from bool to void.
+> (as seen on m68k/coldfire)
 
-Thank you for testing. This should produce a command identical to the
-wildcard version (with newer Make versions), so that shouldn't be an
-issue. If nobody objects to this approach, would you mind putting this
-into a proper patch and sending it as v4?
-
-Sami
+hch sent basically the same patch on Monday
