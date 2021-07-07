@@ -2,216 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3143BE87E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 15:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5FB63BE87F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 15:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231641AbhGGNDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 09:03:22 -0400
-Received: from mail-io1-f44.google.com ([209.85.166.44]:34306 "EHLO
-        mail-io1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231328AbhGGNDV (ORCPT
+        id S231684AbhGGNE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 09:04:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229709AbhGGNEZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 09:03:21 -0400
-Received: by mail-io1-f44.google.com with SMTP id g22so3284056iom.1
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 06:00:41 -0700 (PDT)
+        Wed, 7 Jul 2021 09:04:25 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 195BAC061574;
+        Wed,  7 Jul 2021 06:01:45 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id i94so2978045wri.4;
+        Wed, 07 Jul 2021 06:01:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=vmLjLRUq+yxP/wkZQjOT0KYjSuiMk+aQDBKUpNKnec0=;
+        b=s30GPeJdYb31qcdMOnJ9YMQCmMkL3LDeziK0NbNDxiSIcBhFjsPAyszDZpRls1MPUM
+         F0e0Ft/iEeLB5bvekHv5WEa9cbq4raEQ86XNyIuAtn2ly1vGaoKwHVBUFpuVY/tAcQfz
+         8xrxz8YGkHzBVpGXE5Am1D+tbjQ2Ekau+6I9KD3HuWxVOoaI7JVE5BuagyV5fAoEfD6r
+         BnuBNRkwy2GdYKFfjGWcE1AjFsHJphVhVRqyJHFe70h4D0tQw6MqPc8nDNCisS3BC2Fj
+         wQu5aAHiJnmrkkOr2tBXGzl0Yp63WnhY+JsJU1w9CZvif4La+828skgEfHr22i/YUjy1
+         pY5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=2kmKBpXwA1RSdHcldobA4OeqQNfsQiFqigDRPNTPVWI=;
-        b=M1HVxG5p2BG1VmFogcG0XWXdlJZCF/ukx5hAIzXmNXdpYXVr2NbXtx2+K6aU2Yelbp
-         3omAxkQHd90dZVKTco6NXNe+JL3CLeSqztYFbs6LMjBN4dk60zGunFNA7zuT6zj9NgYR
-         PudmzzhHrll6OKbV6acH3Uku1+gTrah48XwBpxJKe0AcPG5svDtdO1Expj5xljkGHoFb
-         R/otxLonQd4i+wS1j8HFCheogPAoCL1tnjRSITkPufqUwKB10THR/6nJfyuXZKY4gjRD
-         oxnvqkZSh9gHIJqM/TSFHqYmhBJDQfqQ/gylR9V3d/fesb30hSMNwJb3cbPr5frR00QI
-         CvNw==
-X-Gm-Message-State: AOAM533Ul8KQOB6zB9jBoc8dOaiweHsezTFB71DMMfiOg7cAGwZhSsLK
-        rHcL38HPPZJuEweYLkX+qB39TKvfbQA=
-X-Google-Smtp-Source: ABdhPJzxIK3zkvRIMZSpAYrwTyFFWkfTGRkQnBpOtJJrhD6wgtymb/nFS+COLfCq5hpGiD6nsKRu3g==
-X-Received: by 2002:a5e:9703:: with SMTP id w3mr19707384ioj.118.1625662840936;
-        Wed, 07 Jul 2021 06:00:40 -0700 (PDT)
-Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
-        by smtp.gmail.com with ESMTPSA id a1sm9653175ilj.54.2021.07.07.06.00.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 06:00:40 -0700 (PDT)
-Date:   Wed, 7 Jul 2021 13:00:39 +0000
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] percpu fixes for v5.14-rc1
-Message-ID: <YOWld9O5CZpzOUKA@google.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to:user-agent;
+        bh=vmLjLRUq+yxP/wkZQjOT0KYjSuiMk+aQDBKUpNKnec0=;
+        b=rF+EwX5yh7KJ5+8gFUvXmA552fiJgzHrAUMnlVitImD7GAEBKfzDh6vxlAXndiXtyr
+         jAUH6pdD1lKOOubAmiBBGuOtNlfEG9MWARMA4vz0kM56OQoOfuHgdsVnw/pXK82Qyz1p
+         iRSP6AXwu53vRgk0DK6bJw7KymuNGJIg67bAMSgW1L42Xv+Ey8xYycwAph3vpEwV9ToR
+         ikZrZ2eB+4HYOr71cJLaxPZNJiSmVb9H2i6mrYQ0tO5GC0TPcc+Q38bFEUZHUn0v674s
+         2+YIOSTIrwTlR6O75U4FmDi6opSJgqzFx2H52pgTtIx1BkysJqUY433JCehgHnlMcJ9m
+         zt4w==
+X-Gm-Message-State: AOAM530VLQW6cDe1+HT1rq0bK+S6rd7WLVL2Z6CIcC81kfYe8O6b/+HQ
+        Ta9By9uxLP9GOzUOPEh73eg=
+X-Google-Smtp-Source: ABdhPJwhNY8EFVwptl+H8Sfq6Ur8SsvKFyOcFUyTyT1UYqZXBElcJVCZgz+W3MY0sNKdUtgMcmWLYg==
+X-Received: by 2002:adf:f850:: with SMTP id d16mr27640485wrq.258.1625662903761;
+        Wed, 07 Jul 2021 06:01:43 -0700 (PDT)
+Received: from gmail.com ([81.168.73.77])
+        by smtp.gmail.com with ESMTPSA id v1sm21532097wre.20.2021.07.07.06.01.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 07 Jul 2021 06:01:43 -0700 (PDT)
+Date:   Wed, 7 Jul 2021 14:01:40 +0100
+From:   Martin Habets <habetsm.xilinx@gmail.com>
+To:     =?iso-8859-1?B?zfFpZ28=?= Huguet <ihuguet@redhat.com>
+Cc:     Edward Cree <ecree.xilinx@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, ivan@cloudflare.com,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] sfc: revert "reduce the number of requested xdp ev
+ queues"
+Message-ID: <20210707130140.rgbbhvboozzvfoe3@gmail.com>
+Mail-Followup-To: =?iso-8859-1?B?zfFpZ28=?= Huguet <ihuguet@redhat.com>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, ivan@cloudflare.com,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210707081642.95365-1-ihuguet@redhat.com>
+ <0e6a7c74-96f6-686f-5cf5-cd30e6ca25f8@gmail.com>
+ <CACT4oudw=usQQNO0dL=xhJw9TN+9V3o=TsKGvGh7extu+JWCqA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACT4oudw=usQQNO0dL=xhJw9TN+9V3o=TsKGvGh7extu+JWCqA@mail.gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Wed, Jul 07, 2021 at 01:49:40PM +0200, Íñigo Huguet wrote:
+> > And on line 184 probably we need to set efx->xdp_tx_per_channel to the
+> >  same thing, rather than blindly to EFX_MAX_TXQ_PER_CHANNEL as at
+> >  present — I suspect the issue you mention in patch #2 stemmed from
+> >  that.
+> > Note that if we are in fact hitting this limitation (i.e. if
+> >  tx_per_ev > EFX_MAX_TXQ_PER_CHANNEL), we could readily increase
+> >  EFX_MAX_TXQ_PER_CHANNEL at the cost of a little host memory, enabling
+> >  us to make more efficient use of our EVQs and thus retain XDP TX
+> >  support up to a higher number of CPUs.
+> 
+> Yes, that was a possibility I was thinking of as long term solution,
+> or even allocate the queues dynamically. Would this be a problem?
+> What's the reason for them being statically allocated? Also, what's
+> the reason for the channels being limited to 32? The hardware can be
+> configured to provide more than that, but the driver has this constant
+> limit.
 
-This is just a single change to fix percpu depopulation. The code relied
-on depopulation code written specifically for the free path and relied
-on vmalloc to do the tlb flush lazily. As we're modifying the backing
-pages during the lifetime of a chunk, we need to also flush the tlb
-accordingly.
+The static defines in this area are historic only. We have wanted to
+remove them for a number of years. With newer hardware the reasons to
+do so are ever increasing, so we are more actively working on this now.
 
-Guenter Roeck reported this issue in [1] on mips. I believe we just
-happen to be lucky given the much larger chunk sizes on x86 and
-consequently less churning of this memory.
+> Another question I have, thinking about the long term solution: would
+> it be a problem to use the standard TX queues for XDP_TX/REDIRECT? At
+> least in the case that we're hitting the resources limits, I think
+> that they could be enqueued to these queues. I think that just taking
+> netif_tx_lock would avoid race conditions, or a per-queue lock.
 
-[1] https://lore.kernel.org/lkml/20210702191140.GA3166599@roeck-us.net/
+We considered this but did not want normal traffic to get delayed for
+XDP traffic. The perceived performance drop on a normal queue would
+be tricky to diagnose, and the only way to prevent it would be to
+disable XDP on the interface all together. There is no way to do the
+latter per interface, and we felt the "solution" of disabling XDP
+was not a good way forward.
+Off course our design of this was all done several years ago.
 
-Thanks,
-Dennis
-
-The following changes since commit d6b63b5b7d7f363c6a54421533791e9849adf2e0:
-
-  Merge tag 'sound-5.14-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound (2021-07-02 15:25:23 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/dennis/percpu.git for-5.14-fixes
-
-for you to fetch changes up to 93274f1dd6b0a615b299beddf99871fe81f91275:
-
-  percpu: flush tlb in pcpu_reclaim_populated() (2021-07-04 18:30:17 +0000)
-
-----------------------------------------------------------------
-Dennis Zhou (1):
-      percpu: flush tlb in pcpu_reclaim_populated()
-
- mm/percpu-km.c |  6 ++++++
- mm/percpu-vm.c |  5 +++--
- mm/percpu.c    | 32 ++++++++++++++++++++++++++------
- 3 files changed, 35 insertions(+), 8 deletions(-)
-
-diff --git a/mm/percpu-km.c b/mm/percpu-km.c
-index c9d529dc7651..fe31aa19db81 100644
---- a/mm/percpu-km.c
-+++ b/mm/percpu-km.c
-@@ -32,6 +32,12 @@
- 
- #include <linux/log2.h>
- 
-+static void pcpu_post_unmap_tlb_flush(struct pcpu_chunk *chunk,
-+				      int page_start, int page_end)
-+{
-+	/* nothing */
-+}
-+
- static int pcpu_populate_chunk(struct pcpu_chunk *chunk,
- 			       int page_start, int page_end, gfp_t gfp)
- {
-diff --git a/mm/percpu-vm.c b/mm/percpu-vm.c
-index ee5d89fcd66f..2054c9213c43 100644
---- a/mm/percpu-vm.c
-+++ b/mm/percpu-vm.c
-@@ -303,6 +303,9 @@ static int pcpu_populate_chunk(struct pcpu_chunk *chunk,
-  * For each cpu, depopulate and unmap pages [@page_start,@page_end)
-  * from @chunk.
-  *
-+ * Caller is required to call pcpu_post_unmap_tlb_flush() if not returning the
-+ * region back to vmalloc() which will lazily flush the tlb.
-+ *
-  * CONTEXT:
-  * pcpu_alloc_mutex.
-  */
-@@ -324,8 +327,6 @@ static void pcpu_depopulate_chunk(struct pcpu_chunk *chunk,
- 
- 	pcpu_unmap_pages(chunk, pages, page_start, page_end);
- 
--	/* no need to flush tlb, vmalloc will handle it lazily */
--
- 	pcpu_free_pages(chunk, pages, page_start, page_end);
- }
- 
-diff --git a/mm/percpu.c b/mm/percpu.c
-index b4cebeca4c0c..7f2e0151c4e2 100644
---- a/mm/percpu.c
-+++ b/mm/percpu.c
-@@ -1572,6 +1572,7 @@ static void pcpu_chunk_depopulated(struct pcpu_chunk *chunk,
-  *
-  * pcpu_populate_chunk		- populate the specified range of a chunk
-  * pcpu_depopulate_chunk	- depopulate the specified range of a chunk
-+ * pcpu_post_unmap_tlb_flush	- flush tlb for the specified range of a chunk
-  * pcpu_create_chunk		- create a new chunk
-  * pcpu_destroy_chunk		- destroy a chunk, always preceded by full depop
-  * pcpu_addr_to_page		- translate address to physical address
-@@ -1581,6 +1582,8 @@ static int pcpu_populate_chunk(struct pcpu_chunk *chunk,
- 			       int page_start, int page_end, gfp_t gfp);
- static void pcpu_depopulate_chunk(struct pcpu_chunk *chunk,
- 				  int page_start, int page_end);
-+static void pcpu_post_unmap_tlb_flush(struct pcpu_chunk *chunk,
-+				      int page_start, int page_end);
- static struct pcpu_chunk *pcpu_create_chunk(gfp_t gfp);
- static void pcpu_destroy_chunk(struct pcpu_chunk *chunk);
- static struct page *pcpu_addr_to_page(void *addr);
-@@ -2137,11 +2140,12 @@ static void pcpu_reclaim_populated(void)
- {
- 	struct pcpu_chunk *chunk;
- 	struct pcpu_block_md *block;
-+	int freed_page_start, freed_page_end;
- 	int i, end;
-+	bool reintegrate;
- 
- 	lockdep_assert_held(&pcpu_lock);
- 
--restart:
- 	/*
- 	 * Once a chunk is isolated to the to_depopulate list, the chunk is no
- 	 * longer discoverable to allocations whom may populate pages.  The only
-@@ -2157,6 +2161,9 @@ static void pcpu_reclaim_populated(void)
- 		 * Scan chunk's pages in the reverse order to keep populated
- 		 * pages close to the beginning of the chunk.
- 		 */
-+		freed_page_start = chunk->nr_pages;
-+		freed_page_end = 0;
-+		reintegrate = false;
- 		for (i = chunk->nr_pages - 1, end = -1; i >= 0; i--) {
- 			/* no more work to do */
- 			if (chunk->nr_empty_pop_pages == 0)
-@@ -2164,8 +2171,8 @@ static void pcpu_reclaim_populated(void)
- 
- 			/* reintegrate chunk to prevent atomic alloc failures */
- 			if (pcpu_nr_empty_pop_pages < PCPU_EMPTY_POP_PAGES_HIGH) {
--				pcpu_reintegrate_chunk(chunk);
--				goto restart;
-+				reintegrate = true;
-+				goto end_chunk;
- 			}
- 
- 			/*
-@@ -2194,16 +2201,29 @@ static void pcpu_reclaim_populated(void)
- 			spin_lock_irq(&pcpu_lock);
- 
- 			pcpu_chunk_depopulated(chunk, i + 1, end + 1);
-+			freed_page_start = min(freed_page_start, i + 1);
-+			freed_page_end = max(freed_page_end, end + 1);
- 
- 			/* reset the range and continue */
- 			end = -1;
- 		}
- 
--		if (chunk->free_bytes == pcpu_unit_size)
-+end_chunk:
-+		/* batch tlb flush per chunk to amortize cost */
-+		if (freed_page_start < freed_page_end) {
-+			spin_unlock_irq(&pcpu_lock);
-+			pcpu_post_unmap_tlb_flush(chunk,
-+						  freed_page_start,
-+						  freed_page_end);
-+			cond_resched();
-+			spin_lock_irq(&pcpu_lock);
-+		}
-+
-+		if (reintegrate || chunk->free_bytes == pcpu_unit_size)
- 			pcpu_reintegrate_chunk(chunk);
- 		else
--			list_move(&chunk->list,
--				  &pcpu_chunk_lists[pcpu_sidelined_slot]);
-+			list_move_tail(&chunk->list,
-+				       &pcpu_chunk_lists[pcpu_sidelined_slot]);
- 	}
- }
- 
+Regards,
+Martin Habets
