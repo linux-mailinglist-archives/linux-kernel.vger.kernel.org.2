@@ -2,104 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0D123BE5CC
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66B233BE5CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231262AbhGGJrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 05:47:45 -0400
-Received: from foss.arm.com ([217.140.110.172]:33016 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230498AbhGGJro (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 05:47:44 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8CEDAED1;
-        Wed,  7 Jul 2021 02:45:04 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 04D773F694;
-        Wed,  7 Jul 2021 02:45:01 -0700 (PDT)
-Subject: Re: [PATCH 1/3] sched/fair: Prepare variables for increased precision
- of EAS estimated energy
-To:     Lukasz Luba <lukasz.luba@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Chris Redpath <Chris.Redpath@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        CCj.Yeh@mediatek.com
-References: <20210625152603.25960-1-lukasz.luba@arm.com>
- <20210625152603.25960-2-lukasz.luba@arm.com>
- <CAKfTPtAV9GjQaXc2FV0OuEzTGQw9hFiKpwMfAxP-JQ_QFCUC3w@mail.gmail.com>
- <a6a49480-7d5d-fd0e-3940-0b6baac5acc0@arm.com>
- <CAKfTPtAbck=mTR4g9L1hVGzN2dz4PjKNXoDZeMH19HGwpW3Buw@mail.gmail.com>
- <2f43b211-da86-9d48-4e41-1c63359865bb@arm.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <9b0ea7bc-934a-43bd-7dd8-9fe33dec97bc@arm.com>
-Date:   Wed, 7 Jul 2021 11:45:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230489AbhGGJtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 05:49:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26047 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230429AbhGGJtm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 05:49:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625651222;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cRhesyWUivXLxczgsLtk6gE/w390EMKhBeqxLadHP1U=;
+        b=cqbAN+WbGaGqRtPAni1xAPDUAS5e7UcDrspMkcMfoPMQefM2zuOBBmFXNAJVpytF+vidKl
+        FEv7X5FiOz7QaBNzUDYig0FetT8BVe5rvJ9Qm8O9LIKGOL0LVOJEYK1sfBBJtwfYBHwGJW
+        4/YE5GYO+FWQDIc9bWVeOA9MEfnVb5w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-352-LC5DqymDMWaVfVngzz1ueg-1; Wed, 07 Jul 2021 05:46:58 -0400
+X-MC-Unique: LC5DqymDMWaVfVngzz1ueg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 37D34804140;
+        Wed,  7 Jul 2021 09:46:56 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (ovpn-115-5.ams2.redhat.com [10.36.115.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id F0C9319C44;
+        Wed,  7 Jul 2021 09:46:43 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     akpm@linux-foundation.org, mhocko@kernel.org, mhocko@suse.com,
+        rientjes@google.com, willy@infradead.org, hannes@cmpxchg.org,
+        guro@fb.com, riel@surriel.com, minchan@kernel.org,
+        christian@brauner.io, hch@infradead.org, oleg@redhat.com,
+        david@redhat.com, jannh@google.com, shakeelb@google.com,
+        timmurray@google.com, linux-api@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH 1/1] mm: introduce process_reap system call
+References: <20210623192822.3072029-1-surenb@google.com>
+Date:   Wed, 07 Jul 2021 11:46:42 +0200
+In-Reply-To: <20210623192822.3072029-1-surenb@google.com> (Suren
+        Baghdasaryan's message of "Wed, 23 Jun 2021 12:28:22 -0700")
+Message-ID: <87sg0qa22l.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <2f43b211-da86-9d48-4e41-1c63359865bb@arm.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/07/2021 10:23, Lukasz Luba wrote:
->  
-> On 7/7/21 9:00 AM, Vincent Guittot wrote:
->> On Wed, 7 Jul 2021 at 09:49, Lukasz Luba <lukasz.luba@arm.com> wrote:
->>>
->>>
->>>
->>> On 7/7/21 8:07 AM, Vincent Guittot wrote:
->>>> On Fri, 25 Jun 2021 at 17:26, Lukasz Luba <lukasz.luba@arm.com> wrote:
+* Suren Baghdasaryan:
 
-[...]
+> The API is as follows,
+>
+>           int process_reap(int pidfd, unsigned int flags);
+>
+>         DESCRIPTION
+>           The process_reap() system call is used to free the memory of a
+>           dying process.
+>
+>           The pidfd selects the process referred to by the PID file
+>           descriptor.
+>           (See pidofd_open(2) for further information)
+>
+>           The flags argument is reserved for future use; currently, this
+>           argument must be specified as 0.
+>
+>         RETURN VALUE
+>           On success, process_reap() returns 0. On error, -1 is returned
+>           and errno is set to indicate the error.
 
->>>> Could you explain why 32bits results are not enough and you need to
->>>> move to 64bits ?
->>>>
->>>> Right now the result is in the range [0..2^32[ mW. If you need more
->>>> precision and you want to return uW instead, you will have a result in
->>>> the range  [0..4kW[ which seems to be still enough
->>>>
->>>
->>> Currently we have the max value limit for 'power' in EM which is
->>> EM_MAX_POWER 0xffff (64k - 1). We allow to register such big power
->>> values ~64k mW (~64Watts) for an OPP. Then based on 'power' we
->>> pre-calculate 'cost' fields:
->>> cost[i] = power[i] * freq_max / freq[i]
->>> So, for max freq the cost == power. Let's use that in the example.
->>>
->>> Then the em_cpu_energy() calculates as follow:
->>> cost * sum_util / scale_cpu
->>> We are interested in the first part - the value of multiplication.
->>
->> But all these are internal computations of the energy model. At the
->> end, the computed energy that is returned by compute_energy() and
->> em_cpu_energy(), fits in a long
-> 
-> Let's take a look at existing *10000 precision for x CPUs:
-> cost * sum_util / scale_cpu =
-> (64k *10000) * (x * 800) / 1024
-> which is:
-> x * ~500mln
-> 
-> So to be close to overflowing u32 the 'x' has to be > (?=) 8
-> (depends on sum_util).
+I think the manual page should mention what it means for a process to be
+=E2=80=9Cdying=E2=80=9D, and how to move a process to this state.
 
-I assume the worst case is `x * 1024` (max return value of
-effective_cpu_util = effective_cpu_util()) so x ~ 6.7.
+Thanks,
+Florian
 
-I'm not aware of any arm32 b.L. systems with > 4 CPUs in a PD.
