@@ -2,121 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C3F3BE5F8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 812E63BE600
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:54:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231383AbhGGJyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 05:54:19 -0400
-Received: from mail-m118208.qiye.163.com ([115.236.118.208]:35846 "EHLO
-        mail-m118208.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231362AbhGGJyN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 05:54:13 -0400
-Received: from [0.0.0.0] (unknown [113.118.122.203])
-        by mail-m118208.qiye.163.com (Hmail) with ESMTPA id 0C072E0335;
-        Wed,  7 Jul 2021 17:51:28 +0800 (CST)
-Subject: Re: [PATCH v2] x86/mce: Fix endless loop when run task works after
- #MC
-From:   Ding Hui <dinghui@sangfor.com.cn>
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     bp@alien8.de, bp@suse.de, naoya.horiguchi@nec.com,
-        osalvador@suse.de, peterz@infradead.org,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        hpa@zytor.com, youquan.song@intel.com, huangcun@sangfor.com.cn,
-        stable@vger.kernel.org
-References: <20210706121606.15864-1-dinghui@sangfor.com.cn>
- <20210706164451.GA1289248@agluck-desk2.amr.corp.intel.com>
- <6a1b1371-50e4-f0f6-1ebd-0a91fc9d7bcc@sangfor.com.cn>
-Message-ID: <fffec03b-2601-a0c0-5954-ee05fe046ba1@sangfor.com.cn>
-Date:   Wed, 7 Jul 2021 17:51:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231176AbhGGJ5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 05:57:03 -0400
+Received: from foss.arm.com ([217.140.110.172]:33236 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229949AbhGGJ5C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 05:57:02 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CDC10ED1;
+        Wed,  7 Jul 2021 02:54:21 -0700 (PDT)
+Received: from [10.57.1.129] (unknown [10.57.1.129])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 068573F694;
+        Wed,  7 Jul 2021 02:54:18 -0700 (PDT)
+Subject: Re: [PATCH 1/3] sched/fair: Prepare variables for increased precision
+ of EAS estimated energy
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Chris Redpath <Chris.Redpath@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        CCj.Yeh@mediatek.com
+References: <20210625152603.25960-1-lukasz.luba@arm.com>
+ <20210625152603.25960-2-lukasz.luba@arm.com>
+ <CAKfTPtAV9GjQaXc2FV0OuEzTGQw9hFiKpwMfAxP-JQ_QFCUC3w@mail.gmail.com>
+ <a6a49480-7d5d-fd0e-3940-0b6baac5acc0@arm.com>
+ <CAKfTPtAbck=mTR4g9L1hVGzN2dz4PjKNXoDZeMH19HGwpW3Buw@mail.gmail.com>
+ <2f43b211-da86-9d48-4e41-1c63359865bb@arm.com>
+ <9b0ea7bc-934a-43bd-7dd8-9fe33dec97bc@arm.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <730a57b2-e36f-6b69-5e9d-c27e8a3003bb@arm.com>
+Date:   Wed, 7 Jul 2021 10:54:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <6a1b1371-50e4-f0f6-1ebd-0a91fc9d7bcc@sangfor.com.cn>
+In-Reply-To: <9b0ea7bc-934a-43bd-7dd8-9fe33dec97bc@arm.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGU9LTFYZQk1OGRpPTUJNHkJVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PRQ6Pxw4ND9RKh08ORg6Fks5
-        MjMaCUpVSlVKTUlOTU5KT0NDQkNPVTMWGhIXVR8SFRwTDhI7CBoVHB0UCVUYFBZVGBVFWVdZEgtZ
-        QVlKSkhVSkpDVUpJSVVJS0hZV1kIAVlBT05ISTcG
-X-HM-Tid: 0a7a806127a32c17kusn0c072e0335
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/7 11:39, Ding Hui wrote:
-> On 2021/7/7 0:44, Luck, Tony wrote:
->> On Tue, Jul 06, 2021 at 08:16:06PM +0800, Ding Hui wrote:
->>> Recently we encounter multi #MC on the same task when it's
->>> task_work_run() has not been called, current->mce_kill_me was
->>> added to task_works list more than once, that make a circular
->>> linked task_works, so task_work_run() will do a endless loop.
+
+
+On 7/7/21 10:45 AM, Dietmar Eggemann wrote:
+> On 07/07/2021 10:23, Lukasz Luba wrote:
+>>   
+>> On 7/7/21 9:00 AM, Vincent Guittot wrote:
+>>> On Wed, 7 Jul 2021 at 09:49, Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 7/7/21 8:07 AM, Vincent Guittot wrote:
+>>>>> On Fri, 25 Jun 2021 at 17:26, Lukasz Luba <lukasz.luba@arm.com> wrote:
+> 
+> [...]
+> 
+>>>>> Could you explain why 32bits results are not enough and you need to
+>>>>> move to 64bits ?
+>>>>>
+>>>>> Right now the result is in the range [0..2^32[ mW. If you need more
+>>>>> precision and you want to return uW instead, you will have a result in
+>>>>> the range  [0..4kW[ which seems to be still enough
+>>>>>
+>>>>
+>>>> Currently we have the max value limit for 'power' in EM which is
+>>>> EM_MAX_POWER 0xffff (64k - 1). We allow to register such big power
+>>>> values ~64k mW (~64Watts) for an OPP. Then based on 'power' we
+>>>> pre-calculate 'cost' fields:
+>>>> cost[i] = power[i] * freq_max / freq[i]
+>>>> So, for max freq the cost == power. Let's use that in the example.
+>>>>
+>>>> Then the em_cpu_energy() calculates as follow:
+>>>> cost * sum_util / scale_cpu
+>>>> We are interested in the first part - the value of multiplication.
+>>>
+>>> But all these are internal computations of the energy model. At the
+>>> end, the computed energy that is returned by compute_energy() and
+>>> em_cpu_energy(), fits in a long
 >>
->> I saw the same and posted a similar fix a while back:
+>> Let's take a look at existing *10000 precision for x CPUs:
+>> cost * sum_util / scale_cpu =
+>> (64k *10000) * (x * 800) / 1024
+>> which is:
+>> x * ~500mln
 >>
->> https://www.spinics.net/lists/linux-mm/msg251006.html
->>
->> It didn't get merged because some validation tests began failing
->> around the same time.  I'm now pretty sure I understand what happened
->> with those other tests.
->>
->> I'll post my updated version (second patch in a three part series)
->> later today.
->>
+>> So to be close to overflowing u32 the 'x' has to be > (?=) 8
+>> (depends on sum_util).
 > 
-> Thanks for your fixes.
+> I assume the worst case is `x * 1024` (max return value of
+> effective_cpu_util = effective_cpu_util()) so x ~ 6.7.
 > 
-> After digging my original problem, maybe I find out why I met #MC flood.
-> 
-> My test case:
-> 1. run qemu-kvm guest VM, OS is memtest86+.iso
-> 2. inject SRAR UE to VM memory and wait #MC
-> When VM trigger #MC, I expect that qemu will receive SIGBUS signal ASAP, 
-> and with the modifed qemu, I will kill VM.
-> 
-> In this case, do_machine_check() maybe called by kvm_machine_check() in 
-> vmx.c.
-> 
-> Before [1], memory_failure() is called in do_machine_check(), so 
-> TIF_SIGPENDING is set on due to SIGBUS signal, vcpu_run() checked the 
-> pending singal, so return to qemu to handle SIGBUS.
-> 
-> After [1], do_machine_check() only add task work but not send SIGBUS 
-> directly, vcpu_run() will not break the for-loop because 
-> vcpu_enter_guest() return 1 and not set TIF_SIGPENDING on, task works 
-> never executed until sth else happen. So the kvm enter guest repeatedly 
-> and the #MC is triggered repeatedly.
+> I'm not aware of any arm32 b.L. systems with > 4 CPUs in a PD.
 > 
 
-Sorry for my incorrect description.
+True, arm32 didn't support bigger number than 4 CPUs in the cluster.
+We would be safe for them, but I don't want to break with this
+assumption any other 32bit platform from competitors, which might
+create such 32bit 16cores clusters.
 
-I figure out that my test kernel is not the lastest, it's without [2] 
-commit 72c3c0fe54a3 （"x86/kvm: Use generic xfer to guest work 
-function"), so vcpu_run() only care about signal_pending but not 
-TIF_NOTIFY_RESUME which set on in task_work_add().
+If Peter, Vincent and you are OK to put this assumption about
+max safe CPUs number, then we can get rid of patch 1/3.
 
-After [2], #MC flood should not exist.
-
-Also thank Thomas Gleixner.
-
-> Can you consider to fix cases like this?
-> 
-> And do you mind to give me some advice for my temporary workaround about 
-> this #MC flood:
-> I want to check the context of do_machine_check() is exception or kvm, 
-> and fallback to call kill_me_xxx directly when in kvm context. (I 
-> already tested simply and met my expection)
-> 
-
-So ignore my ask, please.
-
-> [1]: commit 5567d11c21a1 ("x86/mce: Send #MC singal from task work")
-
-
--- 
-Thanks,
-- Ding Hui
+But the temporary division of u64 must stay, because there is
+arm32 platform which need it. So returning also u64 is not a big
+harm and looks more consistent.
