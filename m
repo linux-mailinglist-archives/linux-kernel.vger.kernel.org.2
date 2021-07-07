@@ -2,184 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFEC93BE389
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 09:27:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 281FD3BE387
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 09:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230428AbhGGHaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 03:30:00 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:35394 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230327AbhGGH36 (ORCPT
+        id S230401AbhGGH3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 03:29:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33304 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230327AbhGGH3k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 03:29:58 -0400
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1677MSJ4004811;
-        Wed, 7 Jul 2021 07:26:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : content-type : in-reply-to : mime-version;
- s=corp-2020-01-29; bh=/6jmmIyR5Cfs+FRGnafueR8vJJJTgPHYCb1Jdx+g7ks=;
- b=SedGYvcwQxuJfI/XAJm30vPfxChWM1fqKJ3VM4BudZ6VuCzr5HdLrIES/xDIST+RGbtb
- 4LBvggxJaNLopb+/55JZLz+vdYk41nzhG88hu3/qsIEuHcm8xUuMRh9//Y4PwmponoWw
- 6u1QrlTsAHp9AwItNR87950LmrXu/mRjkphBwjH02gv/X97CdatutBmIdrlmAQSRro25
- QvT7nKXBLEXAtRgJ+l7v5jaBxhAunVbyqfluoB8JRxWv5zVKDK4+alFRIm2ThAzHImLk
- b3ci3u3Zx9mLrjga9aWZorC7TBPTxu/3E8UT3KehccJrzpfxVi0Yto8NmMToUVt3Dz/9 ug== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39kw5k48n3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 07 Jul 2021 07:26:52 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1677Q6a8089597;
-        Wed, 7 Jul 2021 07:26:51 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2176.outbound.protection.outlook.com [104.47.58.176])
-        by userp3030.oracle.com with ESMTP id 39jd12v4xw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 07 Jul 2021 07:26:51 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EBNXppuNsBWQx3FMVoS72bzyf7gLezgn56NNBbte2JcZvVnMLsGubx+xUIVu1KXAxXNW/7IC4jX8n1LGNV8ZJWQBlT+zgR70nmhuG+69cvpfZORMo0KHdhvEvAoISkaOYXt19DLT+URYB2NXuttmKU/xjaYphJr1/s4oTwpCO0TJzdM91gEZQEGlfI29LtFElW0NF2+I5KKdBWmwY30V/zgJrYrms4BwsUln8BqwfkFAwIJXICKQ0vxgJeXxuqQqH/E7mIK5C9OwR3DTT3EWvAuD0tOA5zS4j6D+sdOnzyVzxicT0s09HNJUVb8nidpH/NCs/kQHU6/ajGtg8X9+2g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/6jmmIyR5Cfs+FRGnafueR8vJJJTgPHYCb1Jdx+g7ks=;
- b=LOhIxdN397/VKjEHoHFG5BeJzmz80Vc3L75qWcNPo/vavvpCTJAf2qlpFTJ7CZkjZ6r7HCu5eZ8CvIdeBF8pVGMWu4xnxObEL4Rl4NcsQ9kV9ap6OBi0qeSYfXzTgE42Sxz58ZHJm1tyxXUUIaDw00AOwrJjiQ1URAinnytXd+Y+WEl8UD6b2ttr5lPYx2cP/OP7g/i6c8Ss/V5FJb9dYpieLqjIGWy/cX7CuHA4yREPsJkB7zKsgFY/5ekS9IdE15SvlDVKi2LCRPOdPogNa91XI0jHotsV88pA5zKMVt3eF8ncAhLl+5OKzCh0J66+zCvs3ZFjrEJHoakBxQJ5VA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/6jmmIyR5Cfs+FRGnafueR8vJJJTgPHYCb1Jdx+g7ks=;
- b=T1EVry6U1YIQjO7S3H4pWU+Ib1aUSI+LBr1sq15E4XkEAulqPuQun8t9IZrBANZq1FxHzNbpHp3z/zNzh5kjzSzFevVk9oI1+4G9Mba661SVDSetwR9f6cMfZVmEB0FNMK76crqIs9yK9npQ0tz28z2QQPilBKZcHySGLJMym98=
-Authentication-Results: lists.01.org; dkim=none (message not signed)
- header.d=none;lists.01.org; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by CO1PR10MB4466.namprd10.prod.outlook.com
- (2603:10b6:303:9b::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20; Wed, 7 Jul
- 2021 07:26:49 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::3413:3c61:5067:ba73]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::3413:3c61:5067:ba73%5]) with mapi id 15.20.4287.033; Wed, 7 Jul 2021
- 07:26:49 +0000
-Date:   Wed, 7 Jul 2021 10:26:35 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     kbuild@lists.01.org,
-        Callum Sinclair <callum.sinclair@alliedtelesis.co.nz>,
-        dsahern@kernel.org, nikolay@nvidia.com
-Cc:     lkp@intel.com, kbuild-all@lists.01.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linus.luessing@c0d3.blue,
-        Callum Sinclair <callum.sinclair@alliedtelesis.co.nz>
-Subject: [kbuild] Re: [PATCH] net: Allow any address multicast join for IP
- sockets
-Message-ID: <202107070208.yXD584kP-lkp@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210706011548.2201-2-callum.sinclair@alliedtelesis.co.nz>
-Message-ID-Hash: 4WP6TBKLK3TRXLK5CYY6B7WK3WKDC45P
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: MR2P264CA0173.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501::12)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+        Wed, 7 Jul 2021 03:29:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625642820;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uGQVNsdhqGpbhjnmA9wt9C+nuF+WZ2jtK2PCyQyMaTw=;
+        b=dZ+h8Yrc0nuwtsI+sQGsb4uOwiiuohe1uU5AVE0Jm7rSuITt0z4cfUczFnSGx//Jg/3kRP
+        H4cladGi5CTNeP1pdzKnR6aSIt6kfIZLBewtjtTiTgb9RmV0n/eAcr7sEhPo9kTgs6hnD4
+        XEZ8tA2p1u+Lgh8W5DO0dWt70uqziF8=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-569-Ay6T7YXUNtiTaKKqzZu0Nw-1; Wed, 07 Jul 2021 03:26:59 -0400
+X-MC-Unique: Ay6T7YXUNtiTaKKqzZu0Nw-1
+Received: by mail-wm1-f72.google.com with SMTP id k5-20020a7bc3050000b02901e081f69d80so361666wmj.8
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 00:26:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=uGQVNsdhqGpbhjnmA9wt9C+nuF+WZ2jtK2PCyQyMaTw=;
+        b=jSEfmxRVBy/ecVIPHEShO+lTJULij0yzHGpyl9r9ywMb/tcumIUww/a1JbTHfC7MAV
+         yXIOMLgAbudy27xaoWCq9aJGmIvPotxdVve4mR4HRvxYx6FkyQdc3QahL8uEJxHU4qVA
+         gJGZMJlT0uAaYca4SXihy5OWzGXy9YcHYa1CflTXZRjfx6vEhwBgIIivu598jZn+V7Mw
+         /hA40x2X/JSDDGXYldko0ZNil1xUNdBemwenwkTwDaSvYAN3i0kwrmRtmcURgowrqgyH
+         6evjCz600FMb+nL2M06nvCZjbaJ8TfRII69tXyhdewVuFmbohVO3tKJu9hmbs8TryWSA
+         8Qlw==
+X-Gm-Message-State: AOAM530gvDyPfurHiJWvn5nruiV6YWbNnulmVZuncMHgK7tL2+FWdipF
+        aMbuu7jnaQOOx7Wtw7VVE9K76YVRgzX/COA16NTGZ4MxciT2nOT8NEk/O6JYNtsa/SbuqrkwKkL
+        aj5f/5/htoEb0lJPn70ECd2HC40YOoAc5JDyrJJKCNpX5tVKTe89IVloaeKTqR0pMnIeQDusH
+X-Received: by 2002:a5d:4e43:: with SMTP id r3mr26182448wrt.132.1625642817976;
+        Wed, 07 Jul 2021 00:26:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyXzjDOByijfL4qxxu9KcSZ+lwMlHGRoG/CutlyDuR3ettXOe6oHRButoxNujMzOd/reUvdrg==
+X-Received: by 2002:a5d:4e43:: with SMTP id r3mr26182419wrt.132.1625642817687;
+        Wed, 07 Jul 2021 00:26:57 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23579.dip0.t-ipconnect.de. [79.242.53.121])
+        by smtp.gmail.com with ESMTPSA id 12sm5657418wme.28.2021.07.07.00.26.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Jul 2021 00:26:57 -0700 (PDT)
+Subject: Re: [PATCH] KVM: s390: Enable specification exception interpretation
+To:     Janis Schoetterl-Glausch <scgl@linux.vnet.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Janis Schoetterl-Glausch <scgl@linux.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        "open list:KERNEL VIRTUAL MACHINE for s390 (KVM/s390)" 
+        <kvm@vger.kernel.org>,
+        "open list:S390" <linux-s390@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210706114714.3936825-1-scgl@linux.ibm.com>
+ <87k0m3hd7h.fsf@redhat.com> <194128c1-8886-5b8b-2249-5ec58b8e7adb@de.ibm.com>
+ <be78ce5d-92e4-36bd-aa28-e32db0342a44@redhat.com>
+ <45690e80-5c7c-1e11-99d5-c0d1482755ad@de.ibm.com>
+ <c7d61761-3426-6e44-99a8-7aa9e1cad5b6@redhat.com>
+ <8318ce18-65ea-8b4d-4df1-9f9ba79f2bb7@linux.vnet.ibm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <ba9069e5-04ed-4172-71fd-c029ba7f9f63@redhat.com>
+Date:   Wed, 7 Jul 2021 09:26:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kadam (102.222.70.252) by MR2P264CA0173.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.19 via Frontend Transport; Wed, 7 Jul 2021 07:26:44 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ecbc477f-ba05-4cd4-7514-08d9411894fa
-X-MS-TrafficTypeDiagnostic: CO1PR10MB4466:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CO1PR10MB4466C66AA4E95B2A96F9F7CE8E1A9@CO1PR10MB4466.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HXmF9HtrhFwFuxJYrEqxjxWHoaX8wW7B57v7JeFfkfT2FAD5vMO3IRImhGEhjEyBtW/PuTwEoxSnpruYiBL9BLKEQnE7MdmvLyqridQPEFcBx8sBCM5ElvOb/BzPO8mYrvSguh2GOjElBtv4Fg5jMxVgtsu6Ob5YN44ktY611vgmD1grbPfHXIWnGSp7jEPUj6rYts0m7HcBTtkFpj0m3UVhdkQBgxtAdjUeefRyXAZCU2D7Liw0H6xY1A7IfhflI8gFLJHYwS6Ut4cOYt0IZQxB1RycI4oE6lCIDhBsWWZvRmddvTTWAioxNAR02dw/9kjaCRFGcJnTZe6oHw09ItBjIvqLPJjngPUIrd62JVu7McGYesytITrioy5wh5yj7yqzEfnrv4CJpHcZubSRNm0Kk3Y7DghbDU4Bnrx5buVsUjwshiTNX+kRbsdG8c+6wQYdvJHQj9+LL+QaBvHqxKSCYLSZ8Z43C1dk1z5aASGclC/eeuWP1fV1eFzeGIiZ/okkgYoTvaITmaGut73RdL7qSdRoq4tmQuxXlr7XO0Bf6dI3ZMd3xN92Awy3WnIkFuYD3Y+esS4dCxOM9uUHjyKM/jpVCtrGn3D92RVTGQVZr2DF8Jal6WnTtWZWMJWvcFiG5PlUPr7AiEaiFlieotv45q5+1uiczLJYgE+PtpF860u1HVsqIlGtbIWM3sFHSXHPITrpXJ2BPc7uLDaQEVngB7ZOR7RJyjfQsS80c+QXZEUmAog7xk9lkO0GH2p4CVItDeLBe8fkpBNjwLGmddfbxyBBGc94nokwzCPVCznfYpxC41Zr64BpopArWjy5
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(39860400002)(136003)(346002)(376002)(478600001)(956004)(44832011)(26005)(1076003)(186003)(9686003)(83380400001)(8676002)(6666004)(966005)(8936002)(38100700002)(38350700002)(5660300002)(316002)(6496006)(66946007)(66476007)(66556008)(36756003)(6486002)(86362001)(52116002)(4326008)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?DTrMmJlxlg1GwUObrjT8KCA7LX8emyEJDEApn1AmSWAgnChE1yq5mEj9PeRZ?=
- =?us-ascii?Q?p2v4rIG4t05Vmpz+YwS8IUqHBSCdQrZFxSSos5ICgJmSZACJ/pIEct6aykKx?=
- =?us-ascii?Q?b82XwR5Zhcx6WjMAz44KtdrPFzeTMtNbHgkaYpivDFBNRK2xHBg23e66FwT8?=
- =?us-ascii?Q?rUdWl79sZyD/SMoUoF0d/NFhVNrx2mM9ZRE7VotjzywBRBmy4fy55BpYsz7Q?=
- =?us-ascii?Q?3GZUoMjzgyprYcIL48ngY8uEFaJVLUkYQLTQBjQThAqpa9m/h3DjZIygHHi1?=
- =?us-ascii?Q?1GWWLF5OUykGkN2DVU48fuszjXOeCf4zlLjoKmHNoCAZ297OI9pnp6PSBQH4?=
- =?us-ascii?Q?l02QzBhuD0o9L5137s4vttVoqkeDgX5M1bCrf4l1kFMgEUEsu+9TI7UTLAgS?=
- =?us-ascii?Q?qGJtG3Dskz0ZcoPzDnZWbKbCyyTbWEwtc8nNFvgYSmmi81hqZ1+l7FQuiO0l?=
- =?us-ascii?Q?mmvvP2vnPpgbzC5/zj7vCEdG/pOaoxfgb81QzbrQeRc3GHqzQR8BP5lFKQIF?=
- =?us-ascii?Q?HdeDabhYZQ2bdRlRWk3mDCYAwfmJKRkHcMNnR+sEQSt24SstEHzx8FM4MXXT?=
- =?us-ascii?Q?jaXMaAe3XNeu+O1N5zTxS9Ycdw41WKVxqDGAVtRwlVg2xxxxpKZtGqwLod1l?=
- =?us-ascii?Q?MXZ23ZLB32G4gKx2QCvcJel/eDeIIwK2dDtd60IY7FT6bIJPpDU47GRMkANd?=
- =?us-ascii?Q?LcSDV7XjLLn2RTR1QjVOQPI2IUjYV4c7FDOrwzkwDXfCEtn4mB3Gbbs5d2gj?=
- =?us-ascii?Q?NRW/S934h9hSmm1AAV4Kr8VeEqjKcFrVH3WPyKMoc2mxriclfbLBLazL7t6i?=
- =?us-ascii?Q?SOANp5j1RwxxYMH7RefVLc3mY+J2FB7d43YUShWz3hza5QvMNn3FScBKu5Xo?=
- =?us-ascii?Q?rhemL0tCPuaKyW3w9jEmbLq3g0XUufHszBeMD04q+u5wqGvIJlS2pqn5+31C?=
- =?us-ascii?Q?U6gd/8oohX1Ksmx0FfgW7hjZiP44U4RaZ2r6RWrvd3LjcM2B0o3bcwnp7c4b?=
- =?us-ascii?Q?FW9Qimk2HsYD4Z7HTvLnIaiZJ/3UmYAmPq4GiwoWqg55E/l+LzdFwt+f1Vhe?=
- =?us-ascii?Q?XBVF4JIDRGatXyCQY65W50A89L+UWaBtyikz2Uy6sg2nFLX1jop0nA7KLC5M?=
- =?us-ascii?Q?kIWyeS9/JBIullSGRaRRkOJl9Q7MhobwrMZ3szJsmn0LgQZKr9i3CgAoKbn6?=
- =?us-ascii?Q?dKARaEW4tY0gggvbqNx436PfRxuPoVEKVebXQpz7ASonELHLWV3TY9LG68Ro?=
- =?us-ascii?Q?/FCHGrDXRuPo2uaiCwGn1DePgtT/ooE/+R1xhVoxXqNtAk2QP9vk4yla9tvY?=
- =?us-ascii?Q?jhG3RdcNB9DgepxGXwhf6L/F?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ecbc477f-ba05-4cd4-7514-08d9411894fa
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jul 2021 07:26:48.9145
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KwGbZjlKigZeVI6aW+yXVDiof5Z1TyTU1gPrPnvVl9Q0OOootP8y4lSfKB9M/P29MiTtQfRxl6gzMvEwGnUaY4VpZmNgYoDaPfJ1uJqvj7s=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4466
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10037 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0
- suspectscore=0 phishscore=0 mlxscore=0 bulkscore=0 adultscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107070042
-X-Proofpoint-GUID: paaS6AugzUnnI42WnRqQecLl3YChi6Dw
-X-Proofpoint-ORIG-GUID: paaS6AugzUnnI42WnRqQecLl3YChi6Dw
+In-Reply-To: <8318ce18-65ea-8b4d-4df1-9f9ba79f2bb7@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Callum,
+On 06.07.21 17:27, Janis Schoetterl-Glausch wrote:
+> On 7/6/21 5:16 PM, David Hildenbrand wrote:
+>> On 06.07.21 14:02, Christian Borntraeger wrote:
+>>>
+>>>
+>>> On 06.07.21 13:59, David Hildenbrand wrote:
+>>>> On 06.07.21 13:56, Christian Borntraeger wrote:
+>>>>>
+>>>>>
+>>>>> On 06.07.21 13:52, Cornelia Huck wrote:
+>>>>>> On Tue, Jul 06 2021, Janis Schoetterl-Glausch <scgl@linux.ibm.com> wrote:
+>>>>>>
+>>>>>>> When this feature is enabled the hardware is free to interpret
+>>>>>>> specification exceptions generated by the guest, instead of causing
+>>>>>>> program interruption interceptions.
+>>>>>>>
+>>>>>>> This benefits (test) programs that generate a lot of specification
+>>>>>>> exceptions (roughly 4x increase in exceptions/sec).
+>>>>>>>
+>>>>>>> Interceptions will occur as before if ICTL_PINT is set,
+>>>>>>> i.e. if guest debug is enabled.
+>>>>>>>
+>>>>>>> Signed-off-by: Janis Schoetterl-Glausch <scgl@linux.ibm.com>
+>>>>>>> ---
+>>>>>>> I'll additionally send kvm-unit-tests for testing this feature.
+>>>>>>>
+>>>>>>>      arch/s390/include/asm/kvm_host.h | 1 +
+>>>>>>>      arch/s390/kvm/kvm-s390.c         | 2 ++
+>>>>>>>      arch/s390/kvm/vsie.c             | 2 ++
+>>>>>>>      3 files changed, 5 insertions(+)
+>>>>>>
+>>>>>> (...)
+>>>>>>
+>>>>>>> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+>>>>>>> index b655a7d82bf0..aadd589a3755 100644
+>>>>>>> --- a/arch/s390/kvm/kvm-s390.c
+>>>>>>> +++ b/arch/s390/kvm/kvm-s390.c
+>>>>>>> @@ -3200,6 +3200,8 @@ static int kvm_s390_vcpu_setup(struct kvm_vcpu *vcpu)
+>>>>>>>              vcpu->arch.sie_block->ecb |= ECB_SRSI;
+>>>>>>>          if (test_kvm_facility(vcpu->kvm, 73))
+>>>>>>>              vcpu->arch.sie_block->ecb |= ECB_TE;
+>>>>>>> +    if (!kvm_is_ucontrol(vcpu->kvm))
+>>>>>>> +        vcpu->arch.sie_block->ecb |= ECB_SPECI;
+>>>>>>
+>>>>>> Does this exist for any hardware version (i.e. not guarded by a cpu
+>>>>>> feature?)
+>>>>>
+>>>>> Not for all hardware versions, but also no indication. The architecture
+>>>>> says that the HW is free to do this or not. (which makes the vsie code
+>>>>> simpler).
+>>>>
+>>>> I remember the architecture said at some point to never set undefined bits - and this bit is undefined on older HW generations. I might be wrong, though.
+>>>
+>>> I can confirm that this bit will be ignored on older machines. The notion of
+>>> never setting undefined bits comes from "you never know what this bit will
+>>> change in future machines". Now we know :-)
+>>
+>> Well, okay then :)
+>>
+>> So the plan for vSIE is to always keep it disabled? IIUC, one could similarly always forward the bit of set.
+> 
+> The bit does get copied for vSIE.
 
-url:    https://github.com/0day-ci/linux/commits/Callum-Sinclair/net-Allow-any-address-multicast-join-for-IP-sockets/20210706-091734 
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  79160a603bdb51916226caf4a6616cc4e1c58a58
-compiler: m68k-linux-gcc (GCC) 9.3.0
+... and I missed that hunk :)
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+LGTM then
 
-cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
->> net/ipv4/igmp.c:1432:9: warning: Uninitialized variable: im [uninitvar]
-    return im;
-           ^
 
-vim +1432 net/ipv4/igmp.c
+-- 
+Thanks,
 
-b05967ad8bde7d Callum Sinclair 2021-07-06  1416  static struct ip_mc_list *ip_mc_hash_lookup(struct ip_mc_list __rcu **mc_hash,
-b05967ad8bde7d Callum Sinclair 2021-07-06  1417  					    __be32 mc_addr)
-b05967ad8bde7d Callum Sinclair 2021-07-06  1418  {
-b05967ad8bde7d Callum Sinclair 2021-07-06  1419  	struct ip_mc_list *im;
-b05967ad8bde7d Callum Sinclair 2021-07-06  1420  	u32 hash;
-b05967ad8bde7d Callum Sinclair 2021-07-06  1421  
-b05967ad8bde7d Callum Sinclair 2021-07-06  1422  	if (mc_hash) {
-b05967ad8bde7d Callum Sinclair 2021-07-06  1423  		hash = hash_32((__force u32)mc_addr, MC_HASH_SZ_LOG);
-b05967ad8bde7d Callum Sinclair 2021-07-06  1424  		for (im = rcu_dereference(mc_hash[hash]);
-b05967ad8bde7d Callum Sinclair 2021-07-06  1425  		     im != NULL;
-b05967ad8bde7d Callum Sinclair 2021-07-06  1426  		     im = rcu_dereference(im->next_hash)) {
-b05967ad8bde7d Callum Sinclair 2021-07-06  1427  			if (im->multiaddr == mc_addr)
-b05967ad8bde7d Callum Sinclair 2021-07-06  1428  				break;
-b05967ad8bde7d Callum Sinclair 2021-07-06  1429  			}
-b05967ad8bde7d Callum Sinclair 2021-07-06  1430  	}
-
-"im" not intialized on else path.
-
-b05967ad8bde7d Callum Sinclair 2021-07-06  1431  
-b05967ad8bde7d Callum Sinclair 2021-07-06 @1432  	return im;
-b05967ad8bde7d Callum Sinclair 2021-07-06  1433  }
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org 
-_______________________________________________
-kbuild mailing list -- kbuild@lists.01.org
-To unsubscribe send an email to kbuild-leave@lists.01.org
+David / dhildenb
 
