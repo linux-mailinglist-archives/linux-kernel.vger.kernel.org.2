@@ -2,128 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 901C63BE49A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:48:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4D93BE491
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:47:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbhGGIuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 04:50:35 -0400
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:52683 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231162AbhGGIue (ORCPT
+        id S230522AbhGGIuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 04:50:24 -0400
+Received: from lucky1.263xmail.com ([211.157.147.130]:44336 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230109AbhGGIuU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 04:50:34 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.west.internal (Postfix) with ESMTP id 910572B00936;
-        Wed,  7 Jul 2021 04:47:53 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Wed, 07 Jul 2021 04:47:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=iCWmC2ecLLuxN
-        n3QZCajyh2Iu29eugrlpzbybb0pnSM=; b=H13zsr83PaNYCAedcFECZwcwa9uMr
-        O/7aKTy1XCu8saNq8iu1usbldMWuAtVGLZ3nMEo0QNVkEDjDqQ/proGe3pWOqXv3
-        MtY+T0e0rIxJFlwzdOzGCajaunAOSHz/NCNPAKXJyuO036fsNfswnHhHlVltd1Fl
-        Q8UdcYQI6x9H3Is+NH8UYxMr57B8PskIGr9u2HJEt1+NZcDy+J1x5sAK3Pz/Joll
-        gCvn1P9wRi1qli8qyq67ZVFk2dLTiOfysRH5/LOhU/uFBfI8N/7XHJ76smYS5V6r
-        BcdyRs8WrXkiOONYYy2De3r03Y2uDTKA1r8340+6bq41bt0T7ZI0yTx2w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=iCWmC2ecLLuxNn3QZCajyh2Iu29eugrlpzbybb0pnSM=; b=CHDYwvUo
-        MCv+DAweF+pzaFm2eQ7/gWQk2BLvxkUHG2RlCSCGcxwcBrNI1j+04SZbpxjVibLW
-        108oORqXhqvqi5T5iPCh+gysa7JYIba5FY7Qv2lWGd0Y9W8xOgVEzUH+fygdFtXw
-        zxS+48wM+Aq/3K82jaZsyTVDaUBjrBO1MVg/e/GQSf1ExN4IsXBu7ML8QsiPOcqP
-        WA44zEzloe5xlFskzwJ6UZhG51UfrUkTAX6KilJpr4QMRj2j3BSScruSV8pSu6EK
-        tMo3VCV2VyVXQ0e62Ctfric/qevwJmut3xX5dwTIOfzS7P9LcEzxYHIwfMKlXj5g
-        SrQdZP8cgOHgvw==
-X-ME-Sender: <xms:OWrlYBDe4NST5c1AlG4qUqO-ruC5EyvTSF_QmtxSU1BYxm0Ox4xoMg>
-    <xme:OWrlYPgI94kWRa-FP-PMSV9PWnqcJkMTABb0VoWyPgJrIGsikzw0ZsikLgCEj0cel
-    X4VwmvVjd7_p15HElQ>
-X-ME-Received: <xmr:OWrlYMn5PfxzIr4oPvwhleSXJl73aSxrCFJ5DJVwof4yuwiaQlNUuVlZIDjX-Ow6_xmHgGQJF5UnLCRNX5UGgOXVF5OniugS92wg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrtddvgddtiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpedvkeelveefffekjefhffeuleetleefudeifeehuddugffghffhffehveevheeh
-    vdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
-    igihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:OWrlYLxc_ez8iP0RhBolr9MdTJPVajTWdfZT4Z5lc45OrHJqa_p5Ww>
-    <xmx:OWrlYGQoxUrXMzPOkSC1StRQfY0Qkrx_hIO3Ngo8D91h3HWpFX45kA>
-    <xmx:OWrlYOamUm1yzcS9ZqomFi-KrcLSOxaR8OTlAUvuJLW9yZ3V8cXhnQ>
-    <xmx:OWrlYCoIEuTEir6P1z52PGAQysvWIKudH1VegeK5aPJS772nhYhI-F15E9g>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 7 Jul 2021 04:47:52 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>
-Cc:     linux-rpi-kernel@lists.infradead.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>,
-        Emma Anholt <emma@anholt.net>,
-        bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org
-Subject: [PATCH v6 01/10] drm/vc4: hdmi: Remove the DDC probing for status detection
-Date:   Wed,  7 Jul 2021 10:47:36 +0200
-Message-Id: <20210707084745.1365390-2-maxime@cerno.tech>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210707084745.1365390-1-maxime@cerno.tech>
-References: <20210707084745.1365390-1-maxime@cerno.tech>
+        Wed, 7 Jul 2021 04:50:20 -0400
+Received: from localhost (unknown [192.168.167.69])
+        by lucky1.263xmail.com (Postfix) with ESMTP id CFE02D5D0F;
+        Wed,  7 Jul 2021 16:47:38 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED: 0
+X-SKE-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [111.207.172.18])
+        by smtp.263.net (postfix) whith ESMTP id P12345T139824290686720S1625647658082957_;
+        Wed, 07 Jul 2021 16:47:38 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <8bb40e571c070238cc02cdc94e353cc6>
+X-RL-SENDER: zhaoxiao@uniontech.com
+X-SENDER: zhaoxiao@uniontech.com
+X-LOGIN-NAME: zhaoxiao@uniontech.com
+X-FST-TO: airlied@linux.ie
+X-RCPT-COUNT: 16
+X-SENDER-IP: 111.207.172.18
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   zhaoxiao <zhaoxiao@uniontech.com>
+To:     airlied@linux.ie, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, venkata.s.dhanalakota@intel.com
+Cc:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, chris@chris-wilson.co.uk,
+        tvrtko.ursulin@intel.com, daniele.ceraolospurio@intel.com,
+        matthew.brost@intel.com, lucas.demarchi@intel.com,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, zhaoxiao <zhaoxiao@uniontech.com>
+Subject: [PATCH 1/2] drivers/gpu/drm/i915/gt/intel_engine_cs.c: Repair typo in function name
+Date:   Wed,  7 Jul 2021 16:47:36 +0800
+Message-Id: <9ee149b983a05be6789147f96cb884ff30e9c92c.1625646947.git.zhaoxiao@uniontech.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <cover.1625646947.git.zhaoxiao@uniontech.com>
+References: <cover.1625646947.git.zhaoxiao@uniontech.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 9d44abbbb8d5 ("drm/vc4: Fall back to using an EDID probe in the
-absence of a GPIO.") added some code to read the EDID through DDC in the
-HDMI driver detect hook since the Pi3 had no HPD GPIO back then.
-However, commit b1b8f45b3130 ("ARM: dts: bcm2837: Add missing GPIOs of
-Expander") changed that a couple of years later.
+Fixes the following W=1 kernel build warning(s):
 
-This causes an issue though since some TV (like the LG 55C8) when it
-comes out of standy will deassert the HPD line, but the EDID will
-remain readable.
+drivers/gpu/drm/i915/gt/intel_engine_cs.c:882: warning: expecting prototype for intel_engines_init_common(). Prototype was for engine_init_common() instead
+drivers/gpu/drm/i915/gt/intel_engine_cs.c:959: warning: expecting prototype for intel_engines_cleanup_common(). Prototype was for intel_engine_cleanup_common() instead
 
-It causes an issues nn platforms without an HPD GPIO, like the Pi4,
-where the DDC probing will be our primary mean to detect a display, and
-thus we will never detect the HPD pulse. This was fine before since the
-pulse was small enough that we would never detect it, and we also didn't
-have anything (like the scrambler) that needed to be set up in the
-display.
-
-However, now that we have both, the display during the HPD pulse will
-clear its scrambler status, and since we won't detect the
-disconnect/reconnect cycle we will never enable the scrambler back.
-
-As our main reason for that DDC probing is gone, let's just remove it.
-
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
 ---
- drivers/gpu/drm/vc4/vc4_hdmi.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/gpu/drm/i915/gt/intel_engine_cs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index 3c4cc133e3df..8779cef13f52 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@ -169,8 +169,6 @@ vc4_hdmi_connector_detect(struct drm_connector *connector, bool force)
- 	if (vc4_hdmi->hpd_gpio &&
- 	    gpiod_get_value_cansleep(vc4_hdmi->hpd_gpio)) {
- 		connected = true;
--	} else if (drm_probe_ddc(vc4_hdmi->ddc)) {
--		connected = true;
- 	} else if (HDMI_READ(HDMI_HOTPLUG) & VC4_HDMI_HOTPLUG_CONNECTED) {
- 		connected = true;
- 	}
+diff --git a/drivers/gpu/drm/i915/gt/intel_engine_cs.c b/drivers/gpu/drm/i915/gt/intel_engine_cs.c
+index 7f03df236613..01b4dc041a72 100644
+--- a/drivers/gpu/drm/i915/gt/intel_engine_cs.c
++++ b/drivers/gpu/drm/i915/gt/intel_engine_cs.c
+@@ -868,7 +868,7 @@ create_kernel_context(struct intel_engine_cs *engine)
+ }
+ 
+ /**
+- * intel_engines_init_common - initialize cengine state which might require hw access
++ * engine_init_common - initialize cengine state which might require hw access
+  * @engine: Engine to initialize.
+  *
+  * Initializes @engine@ structure members shared between legacy and execlists
+@@ -949,7 +949,7 @@ int intel_engines_init(struct intel_gt *gt)
+ }
+ 
+ /**
+- * intel_engines_cleanup_common - cleans up the engine state created by
++ * intel_engine_cleanup_common - cleans up the engine state created by
+  *                                the common initiailizers.
+  * @engine: Engine to cleanup.
+  *
 -- 
-2.31.1
+2.20.1
+
+
 
