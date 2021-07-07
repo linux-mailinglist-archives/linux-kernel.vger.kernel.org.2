@@ -2,115 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C7E63BE4B8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDA743BE4C0
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231245AbhGGIyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 04:54:04 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:52266 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231185AbhGGIyE (ORCPT
+        id S231274AbhGGIzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 04:55:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49795 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230446AbhGGIzo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 04:54:04 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 749EC225C9;
-        Wed,  7 Jul 2021 08:51:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1625647883; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Wed, 7 Jul 2021 04:55:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625647984;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Na5evhOsPxdyk72/iMdkQgvxgJL+H66b/attKNc3EDA=;
-        b=MgtFim01IVbQXdnFPyFxUGGjIy5X8tThXCwGmxd/3aH5jzoQCkgj9zlFPa5l1xQD0rIba2
-        /R3+FBCiv5ZlQpNzbPM2TdtlJnuGxxYnkrYs5gddR7bdB6JUIq1bAy1go1tkryf1+bP7fy
-        oborxHQ6IgFSKtyAN/6ZneEuKFxFhHo=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        bh=RSGta0qNpB6QcJ/llRMjKtAhvAPIvAnC+iGh3rJx/qg=;
+        b=hJtnXPMJIcE5o8NZgK0nnNYUwrB/6eLhIX1CQcKNw/EZqNPt4cXqHG8in8yY7OfXwdXMBD
+        EFxLHaFVFpjcbkSXbtajKDTSiRScTnwz4QbCpTZiB2IlygToNIGPMsyN7ChEM7ITdTNSGy
+        r1dwppbklqiEsBN/O6dKbYXg1Yvoo4w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-68-v1nUrO-5Ov24IW-5AspE9w-1; Wed, 07 Jul 2021 04:53:03 -0400
+X-MC-Unique: v1nUrO-5Ov24IW-5AspE9w-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 3765BA3B9C;
-        Wed,  7 Jul 2021 08:51:23 +0000 (UTC)
-Date:   Wed, 7 Jul 2021 10:51:22 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v2 2/2] mm/vmalloc: Remove gfpflags_allow_blocking() check
-Message-ID: <YOVrCs9Uxt8zcHgR@dhcp22.suse.cz>
-References: <20210705170537.43060-1-urezki@gmail.com>
- <20210705170537.43060-2-urezki@gmail.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4831F1800D41;
+        Wed,  7 Jul 2021 08:53:00 +0000 (UTC)
+Received: from localhost (ovpn-114-152.ams2.redhat.com [10.36.114.152])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A3E7719C44;
+        Wed,  7 Jul 2021 08:52:55 +0000 (UTC)
+Date:   Wed, 7 Jul 2021 09:52:54 +0100
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Xie Yongji <xieyongji@bytedance.com>
+Cc:     mst@redhat.com, jasowang@redhat.com, sgarzare@redhat.com,
+        parav@nvidia.com, hch@infradead.org,
+        christian.brauner@canonical.com, rdunlap@infradead.org,
+        willy@infradead.org, viro@zeniv.linux.org.uk, axboe@kernel.dk,
+        bcrl@kvack.org, corbet@lwn.net, mika.penttila@nextfour.com,
+        dan.carpenter@oracle.com, joro@8bytes.org,
+        gregkh@linuxfoundation.org, songmuchun@bytedance.com,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 09/10] vduse: Introduce VDUSE - vDPA Device in
+ Userspace
+Message-ID: <YOVrZtGIEjZZSSoU@stefanha-x1.localdomain>
+References: <20210615141331.407-1-xieyongji@bytedance.com>
+ <20210615141331.407-10-xieyongji@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="FCq4Eu07/ej1hAmI"
 Content-Disposition: inline
-In-Reply-To: <20210705170537.43060-2-urezki@gmail.com>
+In-Reply-To: <20210615141331.407-10-xieyongji@bytedance.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 05-07-21 19:05:37, Uladzislau Rezki (Sony) wrote:
-> Get rid of gfpflags_allow_blocking() check from the vmalloc() path
-> as it is supposed to be sleepable anyway. Thus remove it from the
-> alloc_vmap_area() as well as from the vm_area_alloc_pages().
-> 
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+--FCq4Eu07/ej1hAmI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> ---
->  mm/vmalloc.c | 18 ++++++++----------
->  1 file changed, 8 insertions(+), 10 deletions(-)
-> 
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index 5297958ac7c5..93a9cbdba905 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -1479,6 +1479,7 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
->  				int node, gfp_t gfp_mask)
->  {
->  	struct vmap_area *va;
-> +	unsigned long freed;
->  	unsigned long addr;
->  	int purged = 0;
->  	int ret;
-> @@ -1542,13 +1543,12 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
->  		goto retry;
->  	}
->  
-> -	if (gfpflags_allow_blocking(gfp_mask)) {
-> -		unsigned long freed = 0;
-> -		blocking_notifier_call_chain(&vmap_notify_list, 0, &freed);
-> -		if (freed > 0) {
-> -			purged = 0;
-> -			goto retry;
-> -		}
-> +	freed = 0;
-> +	blocking_notifier_call_chain(&vmap_notify_list, 0, &freed);
+On Tue, Jun 15, 2021 at 10:13:30PM +0800, Xie Yongji wrote:
+> +static bool vduse_validate_config(struct vduse_dev_config *config)
+> +{
+
+The name field needs to be NUL terminated?
+
+> +	case VDUSE_CREATE_DEV: {
+> +		struct vduse_dev_config config;
+> +		unsigned long size = offsetof(struct vduse_dev_config, config);
+> +		void *buf;
 > +
-> +	if (freed > 0) {
-> +		purged = 0;
-> +		goto retry;
->  	}
->  
->  	if (!(gfp_mask & __GFP_NOWARN) && printk_ratelimit())
-> @@ -2834,9 +2834,7 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
->  		for (i = 0; i < (1U << order); i++)
->  			pages[nr_allocated + i] = page + i;
->  
-> -		if (gfpflags_allow_blocking(gfp))
-> -			cond_resched();
-> -
-> +		cond_resched();
->  		nr_allocated += 1U << order;
->  	}
->  
-> -- 
-> 2.20.1
+> +		ret = -EFAULT;
+> +		if (copy_from_user(&config, argp, size))
+> +			break;
+> +
+> +		ret = -EINVAL;
+> +		if (vduse_validate_config(&config) == false)
+> +			break;
+> +
+> +		buf = vmemdup_user(argp + size, config.config_size);
+> +		if (IS_ERR(buf)) {
+> +			ret = PTR_ERR(buf);
+> +			break;
+> +		}
+> +		ret = vduse_create_dev(&config, buf, control->api_version);
+> +		break;
+> +	}
+> +	case VDUSE_DESTROY_DEV: {
+> +		char name[VDUSE_NAME_MAX];
+> +
+> +		ret = -EFAULT;
+> +		if (copy_from_user(name, argp, VDUSE_NAME_MAX))
+> +			break;
 
--- 
-Michal Hocko
-SUSE Labs
+Is this missing a NUL terminator?
+
+--FCq4Eu07/ej1hAmI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmDla2YACgkQnKSrs4Gr
+c8iwDwgAklDinwoNdcTKlrJAeuzd7lkg6g0pp6GgPOoSoPbIEzizyjezLIi98oHV
+vF5TkSJ9SmhwrTkrfniJQf7czNd+oWvB/PeLW+YOTNYnHkS4AlS4z4/Z48sAiees
+bjx0y6rK8AKEd1d2F5lOEbHr1hyPAEuA5j1trgrHzaUhKLKiRfCYQI0mJIaWYUTT
+5AJ6lKidGWNOayzU4/GQ+PfEPahMie3/T2g+ivR4j0E6YLNvJs7CFFerZYRNGLXQ
+D5MqzXxvgHF75J7QuXmOOYTRhRMzWoYI4K6EfwzZJHWIJrBhVeXogKJ0Z4tnp82W
+f66VauRbMPZNCJ5g0gXGzczBzlXh0A==
+=aR1n
+-----END PGP SIGNATURE-----
+
+--FCq4Eu07/ej1hAmI--
+
