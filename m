@@ -2,250 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D104D3BE850
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 14:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A9F3BE851
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 14:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231773AbhGGMwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 08:52:35 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:65064 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231383AbhGGMwe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 08:52:34 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 167CY4LQ080304;
-        Wed, 7 Jul 2021 08:49:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : mime-version : content-type; s=pp1;
- bh=gKtpeRMJEm+77yyfTj9L2Usx71ZqL3rAulVDbToGx+o=;
- b=DOzDIQ4pjIe2m63swdIPIGE5YAYyGtrMcX+plq/s+B+QQh+U4b8PE+WkuoJ4Q76YyPfN
- 0kgM8AjZAYBB2ojwJjau09/qFOOfLf5UJeaAjfPyM9xrAZxfCY31n661h6fwbTIwwJ91
- 3YWR/R3V789ipPU7EkrQaKmJY3RfaqWyausqfpZ2LaUSzhi0pH6v6OLVDJu6v5QMfH+I
- DPU+yHnG1dnMw4jbrZfKvhiwGW7O/X2UrvXtM/y8SxKwIW7wIk9IcYgspvu3k3C/y+Cd
- LhMaOUhjzG5G6lTJ4iJaDFRjiiN5d8oelwayveGMHEAnRJIH4dxG+nx6PvurgwDyXGRa Rg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39mc161eya-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Jul 2021 08:49:48 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 167CaI72090035;
-        Wed, 7 Jul 2021 08:49:48 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39mc161exr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Jul 2021 08:49:48 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 167ClJds029650;
-        Wed, 7 Jul 2021 12:49:46 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 39jfh8srpr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Jul 2021 12:49:46 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 167ClndO29098484
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 7 Jul 2021 12:47:49 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 65EF24204B;
-        Wed,  7 Jul 2021 12:49:43 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CE42542041;
-        Wed,  7 Jul 2021 12:49:42 +0000 (GMT)
-Received: from localhost (unknown [9.171.25.238])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed,  7 Jul 2021 12:49:42 +0000 (GMT)
-Date:   Wed, 7 Jul 2021 14:49:41 +0200
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>, Petr Mladek <pmladek@suse.com>
-Cc:     Joe Lawrence <joe.lawrence@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] livepatch: Speed up transition retries
-Message-ID: <patch.git-3127eb42c636.your-ad-here.call-01625661963-ext-4010@work.hours>
+        id S231775AbhGGMwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 08:52:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51074 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231383AbhGGMws (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 08:52:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 887AC61CBA;
+        Wed,  7 Jul 2021 12:50:06 +0000 (UTC)
+Date:   Wed, 7 Jul 2021 13:50:03 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Chen Huang <chenhuang5@huawei.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-mm <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [BUG] arm64: an infinite loop in generic_perform_write()
+Message-ID: <20210707125003.GA24397@arm.com>
+References: <YNQuZ8ykN7aR+1MP@infradead.org>
+ <YNRpYli/5/GWvaTT@casper.infradead.org>
+ <27fbb8c1-2a65-738f-6bec-13f450395ab7@arm.com>
+ <YNSyZaZtPTmTa5P8@zeniv-ca.linux.org.uk>
+ <20210624185554.GC25097@arm.com>
+ <e8e87aba-22f7-d039-ceaa-a93591b04b1e@arm.com>
+ <20210625103905.GA20835@arm.com>
+ <7f14271a-9b2f-1afc-3caf-c4e5b36efa73@arm.com>
+ <20210706175052.GD15218@arm.com>
+ <dd30df30-5271-2724-48eb-9f47c5f3e1aa@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Patchwork-Bot: notify
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: -1YjJE9Qg-Cux2EQbapppd3tBbEmvGIv
-X-Proofpoint-GUID: PCLPGIHlsc-88_vMkNw7pZiJo_4nUjtI
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-07_06:2021-07-06,2021-07-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 lowpriorityscore=0 adultscore=0 malwarescore=0 mlxlogscore=999
- phishscore=0 impostorscore=0 mlxscore=0 spamscore=0 clxscore=1015
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107070075
+In-Reply-To: <dd30df30-5271-2724-48eb-9f47c5f3e1aa@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-That's just a racy hack for now for demonstration purposes.
+On Tue, Jul 06, 2021 at 08:15:47PM +0100, Robin Murphy wrote:
+> On 2021-07-06 18:50, Catalin Marinas wrote:
+> > On Mon, Jun 28, 2021 at 05:22:30PM +0100, Robin Murphy wrote:
+> > > @@ -62,6 +64,12 @@ EXPORT_SYMBOL(__arch_copy_to_user)
+> > >   	.section .fixup,"ax"
+> > >   	.align	2
+> > > +9997:	cmp	dst, dstin
+> > > +	b.ne	9998f
+> > > +	// Before being absolutely sure we couldn't copy anything, try harder
+> > > +	ldrb	tmp1w, [srcin]
+> > > +USER(9998f, sttrb tmp1w, [dstin])
+> > > +	add	dst, dstin, #1
+> > >   9998:	sub	x0, end, dst			// bytes not copied
+> > >   	ret
+> > >   	.previous
+> > 
+> > I think it's worth doing the copy_to_user() fallback in a loop until it
+> > faults or hits the end of the buffer. This would solve the problem we
+> > currently have with writing more bytes than actually reported. The
+> > copy_from_user() is not necessary, a byte would suffice.
+> 
+> The thing is, we don't really have that problem since the set_fs cleanup
+> removed IMP-DEF STP behaviour from the picture - even with the current mess
+> we could perfectly well know which of the two STTRs faulted if we just put a
+> little more effort in.
 
-On a s390 system with large amount of cpus
-klp_try_complete_transition() often cannot be "complete" from the first
-attempt. klp_try_complete_transition() schedules itself as delayed work
-after a second delay. This accumulates to significant amount of time when
-there are large number of livepatching transitions.
+I think there are some corner cases: STTR across a page boundary,
+faulting on the second page. The architecture allows some data to be
+written (or not) in the first page, so we'd under-report if we use the
+destination update. If we use the fault address it's even worse as we
+may over-report in case the instruction did not write anything.
 
-This patch tries to minimize this delay to counting processes which still
-need to be transitioned and then scheduling
-klp_try_complete_transition() right away.
+> But yuck... If you think the potential under-reporting is worth fixing right
+> now, rather than just letting it disappear in a future rewrite, then I'd
+> still rather do it by passing the actual fault address to the current
+> copy_to_user fixup.
 
-For s390 LPAR with 128 cpu this reduces livepatch kselftest run time
-from
-real    1m11.837s
-user    0m0.603s
-sys     0m10.940s
+After some more digging in the ARM ARM, I don't think that's fixable by
+using the actual fault address. B2.2.1 and D1.13.5 in version G.a
+(thanks to Will for digging them out) mean that for an interrupted store
+(exception, interrupt), any bytes stored by the instruction become
+UNKNOWN. In practice, this means left unchanged or written.
 
-to
-real    0m14.550s
-user    0m0.420s
-sys     0m5.779s
+So I think a byte-wise write loop is the only chance we have at a
+more precise reporting, unless we change the loops to align the writes.
 
-And qa_test_klp run time from
-real    5m15.950s
-user    0m34.447s
-sys     15m11.345s
+> A retry loop could still technically under-report if the
+> page disappears (or tag changes) between faulting on the second word of a
+> pair and retrying from the first, so we'd want to pin the initial fault down
+> to a single access anyway. All the loop would achieve after that is
+> potentially fill in an extra 1-7 bytes right up to the offending page/tag
+> boundary for the sake of being nice, which I remain unconvinced is worth the
+> bother :)
 
-to
-real    3m51.987s
-user    0m27.074s
-sys     9m37.301s
+There is indeed the risk of a race but we can blame the user for
+concurrently changing the permissions or tag. The kernel wouldn't
+normally do this.
 
-Would smth like that be useful for production use cases?
-Any ideas how to approach that more gracefully?
-
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
----
- kernel/livepatch/transition.c | 41 +++++++++++++++++++++++++----------
- 1 file changed, 30 insertions(+), 11 deletions(-)
-
-diff --git a/kernel/livepatch/transition.c b/kernel/livepatch/transition.c
-index 793eba46e970..fc4bb7a4a116 100644
---- a/kernel/livepatch/transition.c
-+++ b/kernel/livepatch/transition.c
-@@ -26,6 +26,8 @@ static int klp_target_state = KLP_UNDEFINED;
- 
- static unsigned int klp_signals_cnt;
- 
-+static atomic_t klp_procs;
-+
- /*
-  * This work can be performed periodically to finish patching or unpatching any
-  * "straggler" tasks which failed to transition in the first attempt.
-@@ -181,8 +183,15 @@ void klp_update_patch_state(struct task_struct *task)
- 	 *    of func->transition, if klp_ftrace_handler() is called later on
- 	 *    the same CPU.  See __klp_disable_patch().
- 	 */
--	if (test_and_clear_tsk_thread_flag(task, TIF_PATCH_PENDING))
-+	if (test_and_clear_tsk_thread_flag(task, TIF_PATCH_PENDING)) {
- 		task->patch_state = READ_ONCE(klp_target_state);
-+		if (atomic_read(&klp_procs) == 0)
-+			pr_err("klp_procs misaccounting\n");
-+		else if (atomic_sub_return(1, &klp_procs) == 0) {
-+			if (delayed_work_pending(&klp_transition_work))
-+				mod_delayed_work(system_wq, &klp_transition_work, 0);
-+		}
-+	}
- 
- 	preempt_enable_notrace();
- }
-@@ -320,7 +329,8 @@ static bool klp_try_switch_task(struct task_struct *task)
- 
- 	success = true;
- 
--	clear_tsk_thread_flag(task, TIF_PATCH_PENDING);
-+	if (test_and_clear_tsk_thread_flag(task, TIF_PATCH_PENDING))
-+		atomic_sub(1, &klp_procs);
- 	task->patch_state = klp_target_state;
- 
- done:
-@@ -402,11 +412,6 @@ void klp_try_complete_transition(void)
- 	 * Usually this will transition most (or all) of the tasks on a system
- 	 * unless the patch includes changes to a very common function.
- 	 */
--	read_lock(&tasklist_lock);
--	for_each_process_thread(g, task)
--		if (!klp_try_switch_task(task))
--			complete = false;
--	read_unlock(&tasklist_lock);
- 
- 	/*
- 	 * Ditto for the idle "swapper" tasks.
-@@ -424,10 +429,17 @@ void klp_try_complete_transition(void)
- 			/* offline idle tasks can be switched immediately */
- 			clear_tsk_thread_flag(task, TIF_PATCH_PENDING);
- 			task->patch_state = klp_target_state;
-+			atomic_sub(1, &klp_procs);
- 		}
- 	}
- 	put_online_cpus();
- 
-+	read_lock(&tasklist_lock);
-+	for_each_process_thread(g, task)
-+		if (!klp_try_switch_task(task))
-+			complete = false;
-+	read_unlock(&tasklist_lock);
-+
- 	if (!complete) {
- 		if (klp_signals_cnt && !(klp_signals_cnt % SIGNALS_TIMEOUT))
- 			klp_send_signals();
-@@ -438,8 +450,8 @@ void klp_try_complete_transition(void)
- 		 * later and/or wait for other methods like kernel exit
- 		 * switching.
- 		 */
--		schedule_delayed_work(&klp_transition_work,
--				      round_jiffies_relative(HZ));
-+		schedule_delayed_work(&klp_transition_work, atomic_read(&klp_procs) ?
-+				      round_jiffies_relative(HZ) : 0);
- 		return;
- 	}
- 
-@@ -473,6 +485,7 @@ void klp_start_transition(void)
- 		  klp_transition_patch->mod->name,
- 		  klp_target_state == KLP_PATCHED ? "patching" : "unpatching");
- 
-+	atomic_set(&klp_procs, 0);
- 	/*
- 	 * Mark all normal tasks as needing a patch state update.  They'll
- 	 * switch either in klp_try_complete_transition() or as they exit the
-@@ -480,8 +493,10 @@ void klp_start_transition(void)
- 	 */
- 	read_lock(&tasklist_lock);
- 	for_each_process_thread(g, task)
--		if (task->patch_state != klp_target_state)
-+		if (task->patch_state != klp_target_state) {
- 			set_tsk_thread_flag(task, TIF_PATCH_PENDING);
-+			atomic_inc(&klp_procs);
-+		}
- 	read_unlock(&tasklist_lock);
- 
- 	/*
-@@ -491,8 +506,10 @@ void klp_start_transition(void)
- 	 */
- 	for_each_possible_cpu(cpu) {
- 		task = idle_task(cpu);
--		if (task->patch_state != klp_target_state)
-+		if (task->patch_state != klp_target_state) {
- 			set_tsk_thread_flag(task, TIF_PATCH_PENDING);
-+			atomic_inc(&klp_procs);
-+		}
- 	}
- 
- 	klp_signals_cnt = 0;
-@@ -614,6 +631,8 @@ void klp_reverse_transition(void)
- void klp_copy_process(struct task_struct *child)
- {
- 	child->patch_state = current->patch_state;
-+	if (child->patch_state != klp_target_state)
-+		atomic_add(1, &klp_procs);
- 
- 	/* TIF_PATCH_PENDING gets copied in setup_thread_stack() */
- }
 -- 
-2.25.4
+Catalin
