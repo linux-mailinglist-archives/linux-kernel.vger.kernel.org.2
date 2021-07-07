@@ -2,148 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2233BE4B5
+	by mail.lfdr.de (Postfix) with ESMTP id E80FF3BE4B6
 	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231126AbhGGIx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 04:53:27 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:40484 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230310AbhGGIx0 (ORCPT
+        id S231183AbhGGIxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 04:53:34 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:43430 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231132AbhGGIxd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 04:53:26 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id B6B732003F;
-        Wed,  7 Jul 2021 08:50:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1625647845; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Wed, 7 Jul 2021 04:53:33 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1625647852;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=CjPSVe+JcATwl+mTh/cMUbmmA1jVuqsHEJ4EAY3GkiA=;
-        b=XMQs/DbKNkbKMcxhmLfss1zUa8YfEzWzVpaNPi7qSx8Dih7G0NRpDUx35I7gbXiuTBFqb1
-        xilQjZarez3shhtEJ1psvee8XY7guo+ujiDKIi/S7Sb6QLM7uDaMz5kXESsUJO46kobrRo
-        TOx7J2jHfZlQ1Rus80MeoSInJY4oNzo=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 4B308A3B8A;
-        Wed,  7 Jul 2021 08:50:45 +0000 (UTC)
-Date:   Wed, 7 Jul 2021 10:50:44 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v2 1/2] mm/vmalloc: Use batched page requests in
- bulk-allocator
-Message-ID: <YOVq5EEOEemvZiOi@dhcp22.suse.cz>
-References: <20210705170537.43060-1-urezki@gmail.com>
+        bh=s9L+NhrAVyih3jbZMP9vTTphcf3rwJymWrt3VSsoaNI=;
+        b=GMSJvpeP32mWrQFfvpc0lQIBgOB7/zTTl4wPG9hGJqi3nypg4B42eH9WU6GX8PtDkQ6LS1
+        urNezaLlW/cuUba8xtnz9yEXYmd6b9Sg9lzk9W6KKzclgcHVrjVHgMElh7XZpAM8eRTcKA
+        zqFgTfVzH11hCTRPd3xFTmzJXQgqxNY4nv4Aq0T4Ih1CeXQthZzRHyyB+isyM6TDepXrzY
+        KkdEfz2zPKq0gbQEA/mqf3fxRkXo6HkWsxGYZmrok/uw34rdTYSVGJgUDJtf+qLnpE758a
+        T5BOZEOQElnHOsvLXyrmEnNddRAqtr1g72T3FKSX2rgVM9VTGVVo0eCYTBbmow==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1625647852;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=s9L+NhrAVyih3jbZMP9vTTphcf3rwJymWrt3VSsoaNI=;
+        b=wUa/ve+UavwLOtzOPXMQ+CoR7aT4ibRaKid85YzCWQWU3UK9Pdo1DfIEwgvcLS7dsI8WRi
+        OaFbH2JGv1oPhMAA==
+To:     "Dey\, Megha" <megha.dey@intel.com>
+Cc:     linux-kernel@vger.kernel.org, "Raj\, Ashok" <ashok.raj@intel.com>,
+        "Jiang\, Dave" <dave.jiang@intel.com>,
+        "Tian\, Kevin" <kevin.tian@intel.com>,
+        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Liu\, Yi L" <yi.l.liu@intel.com>, jgg@mellanox.com,
+        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "Van De Ven\, Arjan" <arjan.van.de.ven@intel.com>,
+        "Williams\, Dan J" <dan.j.williams@intel.com>,
+        "Shankar\, Ravi V" <ravi.v.shankar@intel.com>
+Subject: Re: Programming PASID in IMS entries
+In-Reply-To: <bd509e3d-f59d-1200-44ce-93cf9132bd8c@intel.com>
+References: <bd509e3d-f59d-1200-44ce-93cf9132bd8c@intel.com>
+Date:   Wed, 07 Jul 2021 10:50:52 +0200
+Message-ID: <87k0m2qzgz.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210705170537.43060-1-urezki@gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 05-07-21 19:05:36, Uladzislau Rezki (Sony) wrote:
-> In case of simultaneous vmalloc allocations, for example it is 1GB and
-> 12 CPUs my system is able to hit "BUG: soft lockup" for !CONFIG_PREEMPT
-> kernel.
-> 
-> <snip>
-> [   62.512621] RIP: 0010:__alloc_pages_bulk+0xa9f/0xbb0
-> [   62.512628] Code: ff 8b 44 24 48 44 29 f8 83 f8 01 0f 84 ea fe ff ff e9 07 f6 ff ff 48 8b 44 24 60 48 89 28 e9 00 f9 ff ff fb 66 0f 1f 44 00 00 <e9> e8 fd ff ff 65 48 01 51 10 e9 3e fe ff ff 48 8b 44 24 78 4d 89
-> [   62.512629] RSP: 0018:ffffa7bfc29ffd20 EFLAGS: 00000206
-> [   62.512631] RAX: 0000000000000200 RBX: ffffcd5405421888 RCX: ffff8c36ffdeb928
-> [   62.512632] RDX: 0000000000040000 RSI: ffffa896f06b2ff8 RDI: ffffcd5405421880
-> [   62.512633] RBP: ffffcd5405421880 R08: 000000000000007d R09: ffffffffffffffff
-> [   62.512634] R10: ffffffff9d63c084 R11: 00000000ffffffff R12: ffff8c373ffaeb80
-> [   62.512635] R13: ffff8c36ffdf65f8 R14: ffff8c373ffaeb80 R15: 0000000000040000
-> [   62.512637] FS:  0000000000000000(0000) GS:ffff8c36ffdc0000(0000) knlGS:0000000000000000
-> [   62.512638] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   62.512639] CR2: 000055c8e2fe8610 CR3: 0000000c13e10000 CR4: 00000000000006e0
-> [   62.512641] Call Trace:
-> [   62.512646]  __vmalloc_node_range+0x11c/0x2d0
-> [   62.512649]  ? full_fit_alloc_test+0x140/0x140 [test_vmalloc]
-> [   62.512654]  __vmalloc_node+0x4b/0x70
-> [   62.512656]  ? fix_size_alloc_test+0x44/0x60 [test_vmalloc]
-> [   62.512659]  fix_size_alloc_test+0x44/0x60 [test_vmalloc]
-> [   62.512662]  test_func+0xe7/0x1f0 [test_vmalloc]
-> [   62.512666]  ? fix_align_alloc_test+0x50/0x50 [test_vmalloc]
-> [   62.512668]  kthread+0x11a/0x140
-> [   62.512671]  ? set_kthread_struct+0x40/0x40
-> [   62.512672]  ret_from_fork+0x22/0x30
-> <snip>
-> 
-> To address this issue invoke a bulk-allocator many times until all pages
-> are obtained, i.e. do batched page requests adding cond_resched() meanwhile
-> to reschedule. Batched value is hard-coded and is 100 pages per call.
+Megha,
 
-Yes, this makes perfect sense to me. I would just be more explicit that
-this is an artificially created problem likely not being a problem at
-the moment but why not to prepare for a future.
+On Wed, Jul 07 2021 at 09:49, Megha Dey wrote:
+> Per your suggestions during the last meeting, we wanted to confirm the 
+> sequence to program the PASID into the IMS entries:
+>
+> 1. Add a PASID member to struct msi_desc (Add as part of a union. Other 
+> source-id's such as Jason's vm-id can be added to it)
 
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Yes. Though we also discussed storing the default PASID in struct device
+to begin with which is then copied to the msi_desc entries during
+allocation.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+> 2. Create an API which device drivers can call, to program the PASID 
+> (PASID provided by the driver) on a per-irq basis. This API is to be 
+> called after msi_domain_alloc_irqs and will write to the corresponding 
+> msi_desc->pasid entry. (Assumption: For now, all devices will have the 
+> same IMS format). for e.g:
+>
+> msi_desc_set_pasid (irq, pasid) {
+>
+> struct msi_desc *desc = irq_get_msi_desc(irq);
+>
+> desc->pasid = pasid;
+>
+> }
 
+That interface should be opaque probably with an u64 argument so it can
+be reused for Jason's VM-id. Jason?
 
-Thanks!
-> ---
->  mm/vmalloc.c | 30 ++++++++++++++++++++++++++----
->  1 file changed, 26 insertions(+), 4 deletions(-)
-> 
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index aaad569e8963..5297958ac7c5 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -2785,10 +2785,32 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
->  	 * to fails, fallback to a single page allocator that is
->  	 * more permissive.
->  	 */
-> -	if (!order)
-> -		nr_allocated = alloc_pages_bulk_array_node(
-> -			gfp, nid, nr_pages, pages);
-> -	else
-> +	if (!order) {
-> +		while (nr_allocated < nr_pages) {
-> +			int nr, nr_pages_request;
-> +
-> +			/*
-> +			 * A maximum allowed request is hard-coded and is 100
-> +			 * pages per call. That is done in order to prevent a
-> +			 * long preemption off scenario in the bulk-allocator
-> +			 * so the range is [1:100].
-> +			 */
-> +			nr_pages_request = min(100, (int)(nr_pages - nr_allocated));
-> +
-> +			nr = alloc_pages_bulk_array_node(gfp, nid,
-> +				nr_pages_request, pages + nr_allocated);
-> +
-> +			nr_allocated += nr;
-> +			cond_resched();
-> +
-> +			/*
-> +			 * If zero or pages were obtained partly,
-> +			 * fallback to a single page allocator.
-> +			 */
-> +			if (nr != nr_pages_request)
-> +				break;
-> +		}
-> +	} else
->  		/*
->  		 * Compound pages required for remap_vmalloc_page if
->  		 * high-order pages.
-> -- 
-> 2.20.1
+> 3. In request_irq, add a irq_chip callback (in __setup_irq maybe??) to 
+> automatically write the pasid into the corresponding IMS entry:
 
--- 
-Michal Hocko
-SUSE Labs
+Why? There is no need for yet another callback. The PASID or whatever ID
+is required can be written as part of e.g. irq_unmask().
+
+> Is this the correct approach?
+
+No.
+
+> Also, from a previous discussion [1], we want to make IMS more dynamic:
+>
+> Given the QEMU behavior it doesn't ask for all IRQs upfront. It only 
+> allocates 1, and when it unmasks the 2nd, it wants to dynamically add a 
+> second. This will allow adding a second IRQ without having to free all 
+> the old irqs and reacquire the new number (as it is done today).
+>
+> This dynamic behavior is only for MSIx/IMS backed entries. For legacy
+> MSI, QEMU will allocate everything upfront. Since it has a
+> "num_vectors" enabled, nothing can be dynamically done for MSI. Kevin
+> is looking to have this fixed for legacy to stop the dynamic part for
+> MSI. We are pursuing this change just for IMS first, and once it
+> works, we can replicate the same for MSIx too.
+
+No. Fix the existing stuff first and then IMS just works.
+
+> In order to make IMS dynamic, we were thinking of the following 
+> enhancements to the IMS core:
+>
+> 1. Device Driver specifies maximum number of interrupts the sub device 
+> is allowed to request, while creating the dev-msi domain. E.g. in the 
+> case of DSA, Driver can specify that each mdev created can have upto X
+
+Why would this be mdev specific? IIRC the sub devices can be used on
+bare metal as well.
+
+> number of IMS interrupts. If device asks for more than this number,it 
+> will behave like how current IRQ allocation works i.e. give what is 
+> available.
+>
+> 2. Driver can ask for more interrupts after probe as well as long as the 
+> request has not exceeded the maximum permitted for it and the physical 
+> device has the requested number available.
+
+Ok.
+
+> We are still working on the virtualization flows: when guest updates 
+> PASID, and how it flows to host IMS update. But we will come to that 
+> once the above pieces are agreed upon.
+
+Hypercall?
+
+Thanks,
+
+        tglx
