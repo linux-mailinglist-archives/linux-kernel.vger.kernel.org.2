@@ -2,159 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A83A23BE06A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 02:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 408AB3BE06C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 02:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhGGBAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 6 Jul 2021 21:00:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230018AbhGGBAn (ORCPT
+        id S230086AbhGGBA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 6 Jul 2021 21:00:58 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:36513 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230015AbhGGBA5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 6 Jul 2021 21:00:43 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36579C061574;
-        Tue,  6 Jul 2021 17:58:03 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 7-20020a9d0d070000b0290439abcef697so656136oti.2;
-        Tue, 06 Jul 2021 17:58:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Fybc0l0BejJcIFY8fwu+SVn+voPfUoUte83g/+XuDRw=;
-        b=fFdeea/u0a8L+8LfgEpEdj4I5NpEYA7Iv6zTbi2dhOkCly6uY8eBQrbqwn1qPVHOoJ
-         cIp5QMkC+WU853+FM6yZURWyn6xRYYnhd1CcI/Hx4mdIMRS5BR4fJgd+DsA+YQsYuvAB
-         VUvFcrDGY2TfFUikuq6tpkBroSc8z+lPYvqfPveNs+yJAOwotHZPZcLm3ECIOhZaNfeC
-         odCtIyTSqIwWHg2DbI1ruF1uUPidBvqP379GkYhcP1HxW4ToNIXgoo6QKHZ5SdTWCgoJ
-         6EznXm4aflerqKAjXYD2xBlE2g+bjXv7sG2iLPh6BRWOswZrj4meeiF9oZtcGdU5bhTu
-         ztRA==
+        Tue, 6 Jul 2021 21:00:57 -0400
+Received: by mail-il1-f198.google.com with SMTP id h17-20020a056e021d91b02902004a17fb0aso400295ila.3
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 17:58:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Fybc0l0BejJcIFY8fwu+SVn+voPfUoUte83g/+XuDRw=;
-        b=X3abiVWjqmD62UNDdtlYmpiewFMNE4URw/xmmM9v94VEvMbC5UMvvRKl1hrygxI/L6
-         6dzhoFwNvz8f073ESrCCmqGYkyp82+JkwuC+9y3RT5qvERtABuh7MZMmx8nt2TIUbhoF
-         MX+iNTyRzf8t5D8p4SFYREBo7Sdc+Upw3BzQmvBDCHPOG7gG4FqWxi/RFvIiCGgBdwih
-         q7KdGmUBHP1pHI5mFdD2KKjREpkM4PKaPHVLj6tAw+WDtzvsIcS5PLcxSlue1UXETtvW
-         XNFNUowX5Jvj2IeKITRN6vd/MpA8CMQWU++z1izIPQ6NAAwitlKPK5bajhnhSbpyLtjj
-         6eig==
-X-Gm-Message-State: AOAM531/vD7wnOrUqJvypKUzaFEnZ41AIOtomzQUQVAS/bdaCTX0ESf0
-        neAxzeTwVOWfUnP3hER293s=
-X-Google-Smtp-Source: ABdhPJyG3or29pjedbdSe1M8jdSs12vndtOgNQg+JdVFcoY04Ysbndjg7L00DU/+3DOJbEMOVZFtnQ==
-X-Received: by 2002:a05:6830:4022:: with SMTP id i2mr12363346ots.9.1625619482567;
-        Tue, 06 Jul 2021 17:58:02 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id q5sm1247891otm.1.2021.07.06.17.58.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 17:58:01 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 6 Jul 2021 17:58:00 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Vincent Pelletier <plr.vincent@gmail.com>
-Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Opensource [Steve Twiss]" <stwiss.opensource@diasemi.com>
-Subject: Re: [PATCH 2/3] hwmon: da9063: HWMON driver
-Message-ID: <20210707005800.GA2221519@roeck-us.net>
-References: <850a353432cd676f96889cede291232abf58918d.1625581991.git.plr.vincent@gmail.com>
- <dff04323fc1b0177c1c08d3670333a839af4c268.1625581991.git.plr.vincent@gmail.com>
- <20210706174201.GC943349@roeck-us.net>
- <20210707002045.571694b2@gmail.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=vZf3B/GjtO0uXvqJJFjh6duuRg13nY/82mtz/5bn2eg=;
+        b=gaLETbi3XwLfoPOY/Piz3bVtdcnNw0/rjVLByFrmoF/SWPPr1O5ZXTZHOryHvZaXpA
+         X/12ZfOyYEGtpvaDcgAVaqEvAfuRZ8dpd0wIU8XfmuqAnmpU1+YnhEP0g9J1Vuv2o2xd
+         vIof06l5YxD6zJ4hYZt4+mSPiiC8DeFg5Smii98Hmg0UqcO6VGVms6btv9GqGsE2VOuV
+         ajK5D/2k3f8EZHcmkm5ROT1DVwFKaG1ALYr5nzDjPajy6gComLRDyPNwkfVdMeIfe18c
+         uF2udP1uK+wqAwlcKwedGxAMm9Q6pzntREVuIvhvLUuoDszPiNbt/XnXGqst97jY7T8k
+         eTIQ==
+X-Gm-Message-State: AOAM532GKA8MHmxtoDeX4o95yoKPhPY9qQcuohhc9qhLo08uIgYmyguk
+        DrsBDXOq72JgK5Efkb2R4FvjmhZA8Gx+54Q48OHp/UUNxg1U
+X-Google-Smtp-Source: ABdhPJwm2ePla3rrFtaa4iOlr2iUMjHQkWvskTQkD18HW6EikIG57prs40cLm6Y/FzoM9vD86lMI0gFmYpxwWR59rZ000J861lFA
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210707002045.571694b2@gmail.com>
+X-Received: by 2002:a92:db4b:: with SMTP id w11mr16165638ilq.194.1625619497084;
+ Tue, 06 Jul 2021 17:58:17 -0700 (PDT)
+Date:   Tue, 06 Jul 2021 17:58:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a9ed6205c67e08c6@google.com>
+Subject: [syzbot] INFO: task hung in set_current_rng
+From:   syzbot <syzbot+681da20be7291be15dca@syzkaller.appspotmail.com>
+To:     colin.king@canonical.com, f.fangjian@huawei.com,
+        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mpm@selenic.com,
+        syzkaller-bugs@googlegroups.com, tangzihao1@hisilicon.com,
+        yuehaibing@huawei.com, zhangshaokun@hisilicon.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 12:20:45AM +0000, Vincent Pelletier wrote:
-> Hello,
-> 
-> Thanks a lot for your reviews.
-> 
-> On Tue, 6 Jul 2021 10:42:01 -0700, Guenter Roeck <linux@roeck-us.net> wrote:
-> > -EINVAL seems wrong. Maybe -EIO or -ETIMEDOUT.
-> 
-> On this topic, I've been hesitating to change this code to the
-> following. Would it be acceptable ?
-> 
->   ret = wait_for_completion_timeout(...)
->   if (ret == 0)
->     warn[_once](...)
->   ...
->   if (adc_man & DA9063_ADC_MAN) {
->     ret = -ETIMEDOUT;
->     goto err_mread;
->   }
-> 
-> The warn is to make it easier to debug in case of IRQ issue. The reason
+Hello,
 
-"to debug". Then make it a debug message.
+syzbot found the following issue on:
 
-> I'm caring is that I happen to have triggered such issue while testing
-> this driver, as the GPIO and PLIC on the hifive-unmatched seem to
-> disagree with each other. I debugged this and reported to linux-riscv,
-> and I believe the issue is not in da9063-hwmon: it also affects
-> da9063-onkey, and my GPIO-level workaround fixes both.
-> 
-> On a tangential topic: this chip is supposed to complete an ADC cycle
-> in 10ms, so 1s timeout seems a lot to me. On the one hand it made the
-> IRQ issue obvious, but on the other hand a safety factor of 100 seems
-> enormous to me. What would be a usual/reasonable safety factor ? 10 ?
-> 2 ?
+HEAD commit:    3dbdb38e Merge branch 'for-5.14' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=145c4c9c300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1700b0b2b41cd52c
+dashboard link: https://syzkaller.appspot.com/bug?extid=681da20be7291be15dca
+compiler:       Debian clang version 11.0.1-2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15a472e4300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15c51a28300000
 
-Your call, really.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+681da20be7291be15dca@syzkaller.appspotmail.com
 
-Guenter
+INFO: task kworker/1:0:20 blocked for more than 143 seconds.
+      Tainted: G        W         5.13.0-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/1:0     state:D stack:22328 pid:   20 ppid:     2 flags:0x00004000
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ context_switch kernel/sched/core.c:4683 [inline]
+ __schedule+0xc07/0x11f0 kernel/sched/core.c:5940
+ schedule+0x14b/0x210 kernel/sched/core.c:6019
+ schedule_timeout+0x98/0x2f0 kernel/time/timer.c:1868
+ do_wait_for_common+0x2da/0x480 kernel/sched/completion.c:85
+ __wait_for_common kernel/sched/completion.c:106 [inline]
+ wait_for_common kernel/sched/completion.c:117 [inline]
+ wait_for_completion+0x48/0x60 kernel/sched/completion.c:138
+ cleanup_rng drivers/char/hw_random/core.c:81 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ drop_current_rng drivers/char/hw_random/core.c:109 [inline]
+ set_current_rng+0x421/0x610 drivers/char/hw_random/core.c:96
+ hwrng_register+0x38f/0x720 drivers/char/hw_random/core.c:499
+ chaoskey_probe+0x755/0xb30 drivers/usb/misc/chaoskey.c:205
+ usb_probe_interface+0x633/0xb40 drivers/usb/core/driver.c:396
+ really_probe+0x3cb/0x1020 drivers/base/dd.c:580
+ driver_probe_device+0x175/0x340 drivers/base/dd.c:763
+ bus_for_each_drv+0x16a/0x1f0 drivers/base/bus.c:431
+ __device_attach+0x301/0x560 drivers/base/dd.c:938
+ bus_probe_device+0xb8/0x1f0 drivers/base/bus.c:491
+ device_add+0x11fc/0x1670 drivers/base/core.c:3324
+ usb_set_configuration+0x1a86/0x2100 drivers/usb/core/message.c:2164
+ usb_generic_driver_probe+0x83/0x140 drivers/usb/core/generic.c:238
+ usb_probe_device+0x13a/0x260 drivers/usb/core/driver.c:293
+ really_probe+0x3cb/0x1020 drivers/base/dd.c:580
+ driver_probe_device+0x175/0x340 drivers/base/dd.c:763
+ bus_for_each_drv+0x16a/0x1f0 drivers/base/bus.c:431
+ __device_attach+0x301/0x560 drivers/base/dd.c:938
+ bus_probe_device+0xb8/0x1f0 drivers/base/bus.c:491
+ device_add+0x11fc/0x1670 drivers/base/core.c:3324
+ usb_new_device+0xd45/0x1790 drivers/usb/core/hub.c:2558
+ hub_port_connect+0x1055/0x27a0 drivers/usb/core/hub.c:5278
+ hub_port_connect_change+0x5d0/0xbf0 drivers/usb/core/hub.c:5418
+ port_event+0xaee/0x1140 drivers/usb/core/hub.c:5564
+ hub_event+0x48d/0xd80 drivers/usb/core/hub.c:5646
+ process_one_work+0x833/0x10c0 kernel/workqueue.c:2276
+ worker_thread+0xac1/0x1320 kernel/workqueue.c:2422
+ kthread+0x453/0x480 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+INFO: lockdep is turned off.
+NMI backtrace for cpu 0
+CPU: 0 PID: 1638 Comm: khungtaskd Tainted: G        W         5.13.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack_lvl+0x1d3/0x29f lib/dump_stack.c:96
+ nmi_cpu_backtrace+0x16c/0x190 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x191/0x2f0 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:209 [inline]
+ watchdog+0xd06/0xd50 kernel/hung_task.c:294
+ kthread+0x453/0x480 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 PID: 4857 Comm: systemd-journal Tainted: G        W         5.13.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__seccomp_filter+0x551/0x1f90 kernel/seccomp.c:1208
+Code: 80 3c 28 00 74 08 48 89 df e8 eb 6e 48 00 4c 89 33 4c 89 e7 4c 8b 74 24 38 e9 bf 10 00 00 81 fb 00 00 f0 7f 0f 84 3c 02 00 00 <81> fb 00 00 fc 7f 0f 85 c5 03 00 00 8b 1d 6d 31 75 0b 89 de 83 e6
+RSP: 0018:ffffc9000af4fbc0 EFLAGS: 00000206
+RAX: 0000000000000000 RBX: 000000007fff0000 RCX: 0000000000000003
+RDX: 0000000000000006 RSI: ffffffff8cf558e0 RDI: 000000007fff0000
+RBP: ffffc9000af4fee8 R08: 0000000000000005 R09: ffffffff81802512
+R10: 0000000000000006 R11: ffff888017249c40 R12: ffffc9000af4fdc0
+R13: dffffc0000000000 R14: 0000000000000000 R15: ffffc9000af4fde0
+FS:  00007fb81e94f8c0(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fb81bd45018 CR3: 00000000163fa000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ syscall_trace_enter kernel/entry/common.c:68 [inline]
+ __syscall_enter_from_user_work kernel/entry/common.c:90 [inline]
+ syscall_enter_from_user_mode+0xf0/0x1b0 kernel/entry/common.c:108
+ do_syscall_64+0x1e/0xb0 arch/x86/entry/common.c:76
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fb81dbe7f17
+Code: ff ff ff 48 8b 4d a0 0f b7 51 fe 48 8b 4d a8 66 89 54 08 fe e9 1a ff ff ff 66 2e 0f 1f 84 00 00 00 00 00 b8 27 00 00 00 0f 05 <c3> 0f 1f 84 00 00 00 00 00 b8 6e 00 00 00 0f 05 c3 0f 1f 84 00 00
+RSP: 002b:00007ffce70946e8 EFLAGS: 00000202 ORIG_RAX: 0000000000000027
+RAX: ffffffffffffffda RBX: 00005601e1e091e0 RCX: 00007fb81dbe7f17
+RDX: 0000000000000000 RSI: 00007ffce7094800 RDI: 00005601e1e091e0
+RBP: 00007ffce7094800 R08: 82fc88903cbe97aa R09: 0000000000000010
+R10: 0000000000000000 R11: 0000000000000202 R12: 00000000000012f9
+R13: 00007ffce70947a8 R14: 00007ffce7094800 R15: 00007ffce7094d98
 
-> 
-> > > +	ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
-> > > +					da9063_hwmon_irq_handler,
-> > > +					IRQF_TRIGGER_LOW | IRQF_ONESHOT,  
-> > 
-> > Is that correct ? The trigger condition is normally provided by
-> > devicetree.
-> 
-> At least it is consistent with the existing and related da9063-onkey:
-> 
-> 	irq = platform_get_irq_byname(pdev, "ONKEY");
-> 	if (irq < 0)
-> 		return irq;
-> 
-> 	error = devm_request_threaded_irq(&pdev->dev, irq,
-> 					  NULL, da9063_onkey_irq_handler,
-> 					  IRQF_TRIGGER_LOW | IRQF_ONESHOT,
-> 					  "ONKEY", onkey);
-> 
-> I am not familiar enough with IRQ handling to tell if IRQF_TRIGGER_LOW
-> has an actual meaning here: in my understanding the regmap handler
-> decides how to clear an interrupt based on regmap_irq_chip content, and
-> this is coming from mfd/da9063-irq.c .
-> 
-> Are both devm_request_threaded_irq() equally wrong ?
-> 
-No idea. My understanding is that devicetree data is used unless
-an explicit method is specified. That is why I was asking _if_ this
-is correct, and did not claim that it is wrong.
 
-> > > +	/* set trim temperature offset to value read at startup */
-> > > +	hwmon->tjunc_offset = (signed char)hwmon->da9063->t_offset;  
-> > 
-> > Can you explain why this is read in and passed from the mfd driver
-> > and not here ?
-> 
-> I cannot, at least not with something other than "this is how I found
-> the code", which I realise is not satisfactory.
-> I've been holding back on changes as I felt constrained by preserving
-> the original author's name on the changes (both Author and
-> Signed-off-by), but this split was indeed bothering me.
-> 
-Sorry, that is not a good argument. On the contrary, if I have to assume
-that the code has non-technical constraints, I am inclined to just reject
-it for that very reason.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Guenter
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
