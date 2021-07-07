@@ -2,339 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A503BE784
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 13:57:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53F9F3BE785
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 13:58:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231452AbhGGMA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 08:00:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34658 "EHLO
+        id S231458AbhGGMBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 08:01:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231358AbhGGMAZ (ORCPT
+        with ESMTP id S231358AbhGGMBN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 08:00:25 -0400
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C7AC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 04:57:44 -0700 (PDT)
-Received: by mail-vs1-xe2c.google.com with SMTP id r24so1422709vsg.4
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 04:57:44 -0700 (PDT)
+        Wed, 7 Jul 2021 08:01:13 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D993C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 04:58:33 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id w1so316566ilg.10
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 04:58:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=O3GY2fEQnMWGEIJc61SHZMVxw1rzAtXQZu5zS1i7KN4=;
-        b=zEkq6kuvDpttg+PECmsCahXUVcdX3MfVDpcfMsz1yDEslJX7uR+l24k6qX4F1pgJT2
-         naXQ8WV0/jqWfgFQ2aExdJexyM0Rqf7Yas197mi5RZVziC1f8R36dlCK7b1EkzkajgjD
-         Mb8NWN+62jc68bQy5wMZpIq76BaeLPPx7RTBFvf+NgFHDehLIoCuzw7XrWmrOlTNwjxz
-         eLN4N5Rm0ayxq2VOcN5LSoOYk4HG5aVy4KpcrRF8w2F6KSsD8u42RjtW2Mw1FxsdNT2G
-         owICGR7G5CfanycfPknlop6l1D2bvC+evqRNpCZn5Xq33BJARhQKXcW0iAlv7GllMOvH
-         TU/Q==
+        bh=Gz2SvUlCs2AXE2RQDr8qkXptmWjvi19lXYHyzodzOTc=;
+        b=G1HxIi6tdpX67gmIqCI9QUKycAiMTOuhvEOSMdSAdZnfZQEZ4Wh5JWI6SZyzdeTRAO
+         DGH/9RshAxFKGTTm882PV+U+Vo70BsEqmlV6RhPDmL0gWyBAOEgXuPMfjZ6ArDPPpSEj
+         PwFFqxubu4ldPuIIbsf+HRcwbQKGOIUKQlMw8NgR2dhItxYV6i1LBOyzfvv+sp8vtxxz
+         wgdrdVy55hi2uwYyezfir4BVnCTY57gsggzbxGvvoig48uJ68mflZdqw5f+FZXUPnRmm
+         dMkkGSKNqGfAyqLmZZdKQm8gm34qkUO12i4l2GuoYh5a0PTK+4WcuZQQDWbx+IYVzwEC
+         nCEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=O3GY2fEQnMWGEIJc61SHZMVxw1rzAtXQZu5zS1i7KN4=;
-        b=DCBw9hpErcx2AgAQSihkiG/c0JwfetqYXfJVwGQEwprJlRDX33cnQxcCzYNbokvUaD
-         3NGqgPnP0cpa9sm7lfa3vf6lNqz/Qxr7rlb1r9ID59nIVh373IDmJwAPm6SkGuTFmdu5
-         rDFKHwinZ6zb4HPsvFERLwyIBSCTTYz0d7GdJEnyyuXn0laqCMgF+1DK0kOcisMVsHBg
-         Wmp/32+vape7eWhCS711Hq2RzjpVO50y83xpYTiLJcFcax8RT9JbpmbHbmG3Vck5G4HV
-         5HWDmIM7+2skRt/7KDek88GEy5NK6CivTheberkDmJO/wb6DONe46IUTn5k2sMDLkGw3
-         lSFQ==
-X-Gm-Message-State: AOAM5327Bb3Al665OfjOYRiBOOu58O5KieO+PhQBbAyfTg1kdeBZDzKw
-        JBB729kO3TaCfLjvfhCE1/UKUyQY27IdnycimiAprg==
-X-Google-Smtp-Source: ABdhPJxuS1nIy8es5nnvzwBpklq1CgC7HcO0aABRfqnbYWVWBpgtaLZhphDhqCH+Z5tU0MYozHNbz2X0lZVQXW8CMrY=
-X-Received: by 2002:a67:bd0f:: with SMTP id y15mr20279260vsq.19.1625659063379;
- Wed, 07 Jul 2021 04:57:43 -0700 (PDT)
+        bh=Gz2SvUlCs2AXE2RQDr8qkXptmWjvi19lXYHyzodzOTc=;
+        b=U0PUCrhqKDPevejse2zSiQ9QvfHJVrFa2FFYnq3/VunAZA5YztLI46IpGZc1rsvwhY
+         PlCkXimBOMQOmL8ktFAXGa4BsXayjVLRZrfRm0er3H4ebCDi2NvyajtWePD0p6uhYXgz
+         TM8D5VVRq+dbYumJ5N/1Hy2MaGgQqjFXjFDTKpLcvaYiTrfp+MrSX6bKKYJX8cALJCCc
+         810V7N1DYWUfp4Qv2IQzrJhMcA864iDYG3TIfQFtC8OgFYnN6fv6wumnhp5WNTYrQ+L+
+         akVCx151Ep6L6ej1hK1Z/6oxCwnv9Due7lu309u5HWp+PvxFWFx1LdtHsKo4CH4oQCmB
+         0z7A==
+X-Gm-Message-State: AOAM532RjMsWkpcd6C1wdBghz3x1R2TWvRXpTuAPclog4tcy0o58KP35
+        39CyUxprvsVoY7RSX28C31ehLXrbK1QZukcM0fI=
+X-Google-Smtp-Source: ABdhPJy7CJ8rw6SS4Lx4DcNFplYdKa9xI3gp69S2JE4ODF5WW8bsIFThi1PSjURjQX+1nsW6m/nHnH+tfFsaM4qBABI=
+X-Received: by 2002:a92:ce12:: with SMTP id b18mr17622075ilo.96.1625659112717;
+ Wed, 07 Jul 2021 04:58:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <CWXP265MB268049D9AB181062DA7F6DDBC4009@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
- <CWXP265MB26807AC3C130772D789D0AABC41B9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
- <CAPDyKFq44ZuXXUDQV34NSW-ixB9GAZfDx+dx-Kb8O7=LQ1TSHQ@mail.gmail.com>
- <CWXP265MB26803EFAC659676EC0914F97C41B9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
- <DM6PR04MB6575B0049B98254E77BA447EFC1A9@DM6PR04MB6575.namprd04.prod.outlook.com>
- <CWXP265MB2680575489E508DC75D84857C41A9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
-In-Reply-To: <CWXP265MB2680575489E508DC75D84857C41A9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 7 Jul 2021 13:57:06 +0200
-Message-ID: <CAPDyKFrCtRTHZYRjUecvrqr=YyhrTw+HXtdLRHeOTxoK94iSRg@mail.gmail.com>
-Subject: Re: [PATCHv2] mmc: block: Differentiate busy and PROG state
-To:     =?UTF-8?Q?Christian_L=C3=B6hle?= <CLoehle@hyperstone.com>
-Cc:     Avri Altman <Avri.Altman@wdc.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "hch@infradead.org" <hch@infradead.org>
+References: <20210707101628.GA27472@pn10-Veriton-X4610> <35c2e5faa770e228bd16a2186c8caf78@walle.cc>
+In-Reply-To: <35c2e5faa770e228bd16a2186c8caf78@walle.cc>
+From:   MODEL WORK LST <lstfazz@gmail.com>
+Date:   Wed, 7 Jul 2021 19:58:22 +0800
+Message-ID: <CALEtjnoT1BP5OHmf3xGBGV4o-Xc-vfGR8eLzdM5-Udc_ujxokA@mail.gmail.com>
+Subject: Re: [PATCH] mtd:spi-nor:Update Winbond SPI NOR Flash device ID
+To:     Michael Walle <michael@walle.cc>
+Cc:     tudor.ambarus@microchip.com, p.yadav@ti.com,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 7 Jul 2021 at 10:27, Christian L=C3=B6hle <CLoehle@hyperstone.com> =
-wrote:
+Shame on me, I don't use the plain text to reply.
+Please allow me send again.
+
+Dear Michael sir:
+
+Many thanks for your prompt response.
+It is my first time update patch for Linux, please advise me if I do wrong.
+We are testing these device by the NXP evaluation board.
+But the running Linux revision for that board is still 4.x. To update
+the latest ID,
+should we prepare the system that can work with latest Linux revision?
+For the test process, I was wondering to ask mount the device to UBIFS
+is a good way for test?
+
+For the ID, this time we add new ID that is not include in the flash_info[]=
+.
+And we would keep our device who share the same ID have compatible
+with each other.
+Make sure the FW or SW only need to maintain an unique for each density.
+If the same density device have different behavior, Winbond would apply new=
+ ID.
+Or have application note for customer to aware the difference.
+
+For the SFDP, I would check how to work and fill the information.
+
+Thanks again for your reply and information share.
+
+Sincerely
+
+Steam Lin
+
+
+Michael Walle <michael@walle.cc> =E6=96=BC 2021=E5=B9=B47=E6=9C=887=E6=97=
+=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=887:31=E5=AF=AB=E9=81=93=EF=BC=9A
 >
-> Prevent race condition with ioctl commands
+> Hi,
 >
-> To fully prevent a race condition where the next
-> issued command will be rejected as the card is no
-> longer signalling busy but not yet back in TRAN state.
-> The card may be in PROG state without signalling busy,
-> for some of the commands that are only R1, but also
-> for R1b commands, the card will signal non-busy as soon
-> as receive buffers are free again, but the card has
-> not finished handling the command and may therefore be
-> in PROG.
-
-Can you please point me to the corresponding information in the spec
-that states that the above behavior is correct?
-
-In principle what you are saying is that busy signalling on DAT0 is
-*entirely* broken, at least for some cards and some commands.
-
-> Since the next command is not known at the time of
-> completion we must assume that it may be one that can
-> only be accepted in TRAN state.
-> Therefore we only consider a PROG command completed
-> when we have polled for TRAN.
-
-Right. See more comments about this further below.
-
+> Am 2021-07-07 12:16, schrieb Steam Lin:
+> > This patch is to update Winbond SPI NOR device
+> > ID information.
+> > Add new 3.3V and 1.8V device in the ID table.
+> >
+> > Signed-off-by: Steam Lin <Stlin2@winbond.com>
+> > ---
+> >  drivers/mtd/spi-nor/winbond.c | 14 ++++++++++++++
+> >  1 file changed, 14 insertions(+)
+> >
+> > diff --git a/drivers/mtd/spi-nor/winbond.c
+> > b/drivers/mtd/spi-nor/winbond.c
+> > index 9a81c67a60c6..01aa49954793 100644
+> > --- a/drivers/mtd/spi-nor/winbond.c
+> > +++ b/drivers/mtd/spi-nor/winbond.c
+> > @@ -102,6 +102,20 @@ static const struct flash_info winbond_parts[] =3D=
+ {
+> >                           SECT_4K | SPI_NOR_QUAD_READ | SPI_NOR_DUAL_RE=
+AD) },
+> >       { "w25q512jvq", INFO(0xef4020, 0, 64 * 1024, 1024,
+> >                            SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_R=
+EAD) },
+> > +     { "w25h512jvm", INFO(0xef9020, 0, 64 * 1024, 1024,
+> > +                          SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_R=
+EAD) },
+> > +     { "w25q01jvq", INFO(0xef4021, 0, 64 * 1024, 2048,
+> > +                          SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_R=
+EAD) },
+> > +     { "w25q02jvq", INFO(0xef4022, 0, 64 * 1024, 4096,
+> > +                          SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_R=
+EAD) },
+> > +     { "w25h01jvm", INFO(0xef9021, 0, 64 * 1024, 2048,
+> > +                          SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_R=
+EAD) },
+> > +     { "w25h02jvm", INFO(0xef9022, 0, 64 * 1024, 4096,
+> > +                          SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_R=
+EAD) },
+> > +     { "w25q512nwq", INFO(0xef6020, 0, 64 * 1024, 1024,
+> > +                          SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_R=
+EAD) },
+> > +     { "w25q512nwm", INFO(0xef8020, 0, 64 * 1024, 1024,
+> > +                          SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_R=
+EAD) },
+> >  };
 >
-> Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
-> ---
->  drivers/mmc/core/block.c   | 86 ++++++++++++++++++++++++++++++++++----
->  drivers/mmc/core/mmc_ops.c |  2 +-
->  include/linux/mmc/mmc.h    | 10 +++--
->  include/linux/mmc/sd.h     |  3 ++
->  4 files changed, 87 insertions(+), 14 deletions(-)
+> Nice to see patches from the vendor! Did you test these devices? We
+> only accept new IDs which are actually tested. And are you aware of any
+> ID collisions of these chips? Eg. sometimes the JWM reused the ID of the
+> FW variant. How can we distinguish these?
 >
-> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-> index 88f4c215caa6..cb78690647bf 100644
-> --- a/drivers/mmc/core/block.c
-> +++ b/drivers/mmc/core/block.c
-> @@ -411,7 +411,34 @@ static int mmc_blk_ioctl_copy_to_user(struct mmc_ioc=
-_cmd __user *ic_ptr,
->         return 0;
->  }
+> Also, you will have to supply SFDP data for all these chips, please have
+> a look at [1] how to do that.
 >
-> -static int card_busy_detect(struct mmc_card *card, unsigned int timeout_=
-ms,
-> +static int is_prog_cmd(struct mmc_command *cmd)
-> +{
-> +       /*
-> +        * Cards will move to programming state (PROG) after these comman=
-ds.
-> +        * So we must not consider the command as completed until the car=
-d
-> +        * has actually returned back to TRAN state.
-> +        */
-> +       switch (cmd->opcode) {
-> +       case MMC_STOP_TRANSMISSION:
-
-This has an R1B response, hence we already do the proper polling that is ne=
-eded.
-
-In other words, we don't need to explicitly check for this command
-here, as we are already checking the response type (R1B) in
-__mmc_blk_ioctl_cmd().
-
-> +       case MMC_WRITE_DAT_UNTIL_STOP:
-
-What's this used for? It's obsolete, at least in the eMMC spec. Please drop=
- it.
-
-> +       case MMC_WRITE_BLOCK:
-> +       case MMC_WRITE_MULTIPLE_BLOCK:
-
-These are already supported via the generic block interface, please
-drop the checks.
-
-> +       case MMC_PROGRAM_CID:
-> +       case MMC_PROGRAM_CSD:
-
-Let's discuss these, since they have R1 responses.
-
-Although, according to the eMMC spec, the card moves to rcv state, not
-the prg state as you refer to in the commit message. Normally, we
-don't need to poll for busy/tran completion of these commands.
-
-Have you observed through proper tests that this is actually needed?
-
-> +       case MMC_SET_WRITE_PROT:
-> +       case MMC_CLR_WRITE_PROT:
-> +       case MMC_ERASE:
-
-The three above have R1B, please drop them from here as they are
-already supported correctly.
-
-> +       case MMC_LOCK_UNLOCK:
-
-Again, this has an R1 response and the card moves to rcv state.
-Normally we shouldn't need to poll, but I have to admit that the eMMC
-spec isn't really clear on what will happen when using the "forced
-erase" argument. The spec mentions a 3 minute timeout....
-
-> +       case MMC_SET_TIME: /* Also covers SD_WRITE_EXTR_SINGLE */
-> +       case MMC_GEN_CMD:
-> +       case SD_WRITE_EXTR_MULTI:
-
-Are these actually being used? If not, please drop them from being
-supported. I don't want to encourage crazy operations being issued
-from userspace.
-
-> +               return true;
-> +       default:
-> +               return false;
-> +       }
-> +}
-
-Overall, it looks like we need to add a check for MMC_LOCK_UNLOCK to
-poll for busy, but that's it, I think.
-
-> +
-> +static int card_poll_until_tran(struct mmc_card *card, unsigned int time=
-out_ms,
->                             u32 *resp_errs)
->  {
->         unsigned long timeout =3D jiffies + msecs_to_jiffies(timeout_ms);
-> @@ -433,8 +460,7 @@ static int card_busy_detect(struct mmc_card *card, un=
-signed int timeout_ms,
->                         *resp_errs |=3D status;
+> [1]
+> https://lore.kernel.org/linux-mtd/7038f037de3e224016d269324517400d@walle.=
+cc/
 >
->                 /*
-> -                * Timeout if the device never becomes ready for data and=
- never
-> -                * leaves the program state.
-> +                * Timeout if the device never returns to TRAN state.
->                  */
->                 if (done) {
->                         dev_err(mmc_dev(card->host),
-> @@ -442,6 +468,41 @@ static int card_busy_detect(struct mmc_card *card, u=
-nsigned int timeout_ms,
->                                  __func__, status);
->                         return -ETIMEDOUT;
->                 }
-> +       } while (R1_CURRENT_STATE(status) !=3D R1_STATE_TRAN);
-> +
-> +       return err;
-> +}
-> +
-> +static int card_busy_detect(struct mmc_card *card, unsigned int timeout_=
-ms,
-> +                           u32 *resp_errs)
-> +{
-> +       unsigned long timeout =3D jiffies + msecs_to_jiffies(timeout_ms);
-> +       int err =3D 0;
-> +       u32 status;
-> +
-> +       do {
-> +               bool done =3D time_after(jiffies, timeout);
-> +
-> +               err =3D __mmc_send_status(card, &status, 5);
-> +               if (err) {
-> +                       dev_err(mmc_dev(card->host),
-> +                               "error %d requesting status\n", err);
-> +                       return err;
-> +               }
-> +
-> +               /* Accumulate any response error bits seen */
-> +               if (resp_errs)
-> +                       *resp_errs |=3D status;
-> +
-> +               /*
-> +                * Timeout if the device never becomes ready for data.
-> +                */
-> +               if (done) {
-> +                       dev_err(mmc_dev(card->host),
-> +                               "Card remained busy! %s status: %#x\n",
-> +                                __func__, status);
-> +                       return -ETIMEDOUT;
-> +               }
->         } while (!mmc_ready_for_data(status));
-
-I don't quite understand what we accomplish with polling for TRAN
-state in one case and in the other case, both TRAN and READY_FOR_DATA.
-Why can't we always poll for TRAN and READY_FOR_DATA? It should work
-for all cases, no?
-
 >
->         return err;
-> @@ -596,12 +657,19 @@ static int __mmc_blk_ioctl_cmd(struct mmc_card *car=
-d, struct mmc_blk_data *md,
->
->         if (idata->rpmb || (cmd.flags & MMC_RSP_R1B) =3D=3D MMC_RSP_R1B) =
-{
->                 /*
-> -                * Ensure RPMB/R1B command has completed by polling CMD13
-> -                * "Send Status".
-> +                * Ensure card is no longer signalling busy by polling CM=
-D13.
->                  */
->                 err =3D card_busy_detect(card, MMC_BLK_TIMEOUT_MS, NULL);
->         }
->
-> +       if (is_prog_cmd(&cmd)) {
-> +               /*
-> +                * Ensure card has returned back to TRAN state
-> +                * and is ready to accept a new command.
-> +                */
-> +               err =3D card_poll_until_tran(card, MMC_BLK_TIMEOUT_MS, NU=
-LL);
-> +       }
-> +
->         return err;
->  }
->
-> @@ -1630,7 +1698,7 @@ static int mmc_blk_fix_state(struct mmc_card *card,=
- struct request *req)
->
->         mmc_blk_send_stop(card, timeout);
->
-> -       err =3D card_busy_detect(card, timeout, NULL);
-> +       err =3D card_poll_until_tran(card, timeout, NULL);
->
->         mmc_retune_release(card->host);
->
-> @@ -1662,7 +1730,7 @@ static void mmc_blk_read_single(struct mmc_queue *m=
-q, struct request *req)
->                         goto error_exit;
->
->                 if (!mmc_host_is_spi(host) &&
-> -                   !mmc_ready_for_data(status)) {
-> +                   !mmc_tran_and_ready_for_data(status)) {
->                         err =3D mmc_blk_fix_state(card, req);
->                         if (err)
->                                 goto error_exit;
-> @@ -1784,7 +1852,7 @@ static void mmc_blk_mq_rw_recovery(struct mmc_queue=
- *mq, struct request *req)
->
->         /* Try to get back to "tran" state */
->         if (!mmc_host_is_spi(mq->card->host) &&
-> -           (err || !mmc_ready_for_data(status)))
-> +           (err || !mmc_tran_and_ready_for_data(status)))
->                 err =3D mmc_blk_fix_state(mq->card, req);
->
->         /*
-> @@ -1854,7 +1922,7 @@ static int mmc_blk_card_busy(struct mmc_card *card,=
- struct request *req)
->         if (mmc_host_is_spi(card->host) || rq_data_dir(req) =3D=3D READ)
->                 return 0;
->
-> -       err =3D card_busy_detect(card, MMC_BLK_TIMEOUT_MS, &status);
-> +       err =3D card_poll_until_tran(card, MMC_BLK_TIMEOUT_MS, &status);
->
->         /*
->          * Do not assume data transferred correctly if there are any erro=
-r bits
-> diff --git a/drivers/mmc/core/mmc_ops.c b/drivers/mmc/core/mmc_ops.c
-> index 973756ed4016..a0be45118a93 100644
-> --- a/drivers/mmc/core/mmc_ops.c
-> +++ b/drivers/mmc/core/mmc_ops.c
-> @@ -465,7 +465,7 @@ static int mmc_busy_cb(void *cb_data, bool *busy)
->         if (err)
->                 return err;
->
-> -       *busy =3D !mmc_ready_for_data(status);
-> +       *busy =3D !mmc_tran_and_ready_for_data(status);
->         return 0;
->  }
-
-Kind regards
-Uffe
+> -michael
