@@ -2,127 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 769303BE474
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 761223BE477
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230481AbhGGIdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 04:33:18 -0400
-Received: from foss.arm.com ([217.140.110.172]:59714 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230109AbhGGIdR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 04:33:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B58CBED1;
-        Wed,  7 Jul 2021 01:30:37 -0700 (PDT)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id CF5683F694;
-        Wed,  7 Jul 2021 01:30:36 -0700 (PDT)
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     linux-kernel@vger.kernel.org, peterz@lists.infradead.org,
-        davem@davemloft.net
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Ingo Molnar <mingo@kernel.org>, sparclinux@vger.kernel.org
-Subject: [PATCH] locking/atomic: sparc: fix arch_cmpxchg64_local()
-Date:   Wed,  7 Jul 2021 09:30:32 +0100
-Message-Id: <20210707083032.567-1-mark.rutland@arm.com>
-X-Mailer: git-send-email 2.11.0
+        id S231165AbhGGIdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 04:33:45 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:31442 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230109AbhGGIdn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 04:33:43 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 167842Ur050730;
+        Wed, 7 Jul 2021 04:31:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=q6p3Uu8XXPiR1yO3TuBzoxSTC08J9NsacLDx/7ChigA=;
+ b=tutfvHWbwL8sSqjYRrE0Qxp8SlRw9EgIKWcBlRcgpvGodHozkG6402UEcK/jTdHXiHj7
+ U+LdpOS8Ke991QB2Kwc9gaIHNqAbw3OcveJIV3iqV3jfoGe+iUjhY/2JiEEmU4f+5dU8
+ WDsS9TVOzZ4E3UWOaMsA8UP5aUO9tQr49qlJm1h0PW0aBiw2lAxZ93TrPFSlBYE2iTJp
+ fACMPg2+Rz+93f/EuWBnCuJVp6Je+fnL5PRmv8oLFQnEsIXMB2d8bByMe5G0Ct8NIry0
+ zjjl1RA/GKPOcJVaSYIKURyBsr4VU8zTdGPPJMgZ6jeh83MXxIEMyTotVm1VWJYYj90D wQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39mc15ts1d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Jul 2021 04:31:03 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16785u00060134;
+        Wed, 7 Jul 2021 04:31:02 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39mc15ts0d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Jul 2021 04:31:02 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1678Rdw1017528;
+        Wed, 7 Jul 2021 08:31:00 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 39jfh8smw6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Jul 2021 08:31:00 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1678T31p31392192
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 7 Jul 2021 08:29:03 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0F606AE05D;
+        Wed,  7 Jul 2021 08:30:57 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 896D7AE061;
+        Wed,  7 Jul 2021 08:30:56 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.89.68])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  7 Jul 2021 08:30:56 +0000 (GMT)
+Subject: Re: [PATCH] KVM: s390: Enable specification exception interpretation
+To:     Janis Schoetterl-Glausch <scgl@linux.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        "open list:KERNEL VIRTUAL MACHINE for s390 (KVM/s390)" 
+        <kvm@vger.kernel.org>,
+        "open list:S390" <linux-s390@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210706114714.3936825-1-scgl@linux.ibm.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <05430c91-6a84-0fc9-0af4-89f408eb691f@de.ibm.com>
+Date:   Wed, 7 Jul 2021 10:30:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210706114714.3936825-1-scgl@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Q4pBwqXdtnCML2A60p96duplFt6B2Ltv
+X-Proofpoint-GUID: -7MLDd5yQqExhVoX0xLmJuLp5JqS90cB
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-07_02:2021-07-06,2021-07-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 lowpriorityscore=0 adultscore=0 malwarescore=0 mlxlogscore=999
+ phishscore=0 impostorscore=0 mlxscore=0 spamscore=0 clxscore=1015
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107070047
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Anatoly reports that since commit:
 
-  ff5b4f1ed580c59d ("locking/atomic: sparc: move to ARCH_ATOMIC")
 
-... it's possible to reliably trigger an oops by running:
+On 06.07.21 13:47, Janis Schoetterl-Glausch wrote:
+> When this feature is enabled the hardware is free to interpret
+> specification exceptions generated by the guest, instead of causing
+> program interruption interceptions.
+> 
+> This benefits (test) programs that generate a lot of specification
+> exceptions (roughly 4x increase in exceptions/sec).
+> 
+> Interceptions will occur as before if ICTL_PINT is set,
+> i.e. if guest debug is enabled.
 
-  stress-ng -v --mmap 1 -t 30s
+I think I will add
 
-... which results in a NULL pointer dereference in
-__split_huge_pmd_locked().
+There is no indication if this feature is available or not and the hardware
+is free to interpret or not. So we can simply set this bit and if the
+hardware ignores it we fall back to intercept 8 handling.
 
-The underlying problem is that commit ff5b4f1ed580c59d left
-arch_cmpxchg64_local() defined in terms of cmpxchg_local() rather than
-arch_cmpxchg_local(). In <asm-generic/atomic-instrumented.h> we wrap
-these with macros which use identically-named variables. When
-cmpxchg_local() nests inside cmpxchg64_local(), this casues it to use an
-unitialized variable as the pointer, which can be NULL.
 
-This can also be seen in pmdp_establish(), where the compiler can
-generate the pointer with a `clr` instruction:
+With that
 
-0000000000000360 <pmdp_establish>:
- 360:   9d e3 bf 50     save  %sp, -176, %sp
- 364:   fa 5e 80 00     ldx  [ %i2 ], %i5
- 368:   82 10 00 1b     mov  %i3, %g1
- 36c:   84 10 20 00     clr  %g2
- 370:   c3 f0 90 1d     casx  [ %g2 ], %i5, %g1
- 374:   80 a7 40 01     cmp  %i5, %g1
- 378:   32 6f ff fc     bne,a   %xcc, 368 <pmdp_establish+0x8>
- 37c:   fa 5e 80 00     ldx  [ %i2 ], %i5
- 380:   d0 5e 20 40     ldx  [ %i0 + 0x40 ], %o0
- 384:   96 10 00 1b     mov  %i3, %o3
- 388:   94 10 00 1d     mov  %i5, %o2
- 38c:   92 10 00 19     mov  %i1, %o1
- 390:   7f ff ff 84     call  1a0 <__set_pmd_acct>
- 394:   b0 10 00 1d     mov  %i5, %i0
- 398:   81 cf e0 08     return  %i7 + 8
- 39c:   01 00 00 00     nop
-
-This patch fixes the problem by defining arch_cmpxchg64_local() in terms
-of arch_cmpxchg_local(), avoiding potential shadowing, and resulting in
-working cmpxchg64_local() and variants, e.g.
-
-0000000000000360 <pmdp_establish>:
- 360:   9d e3 bf 50     save  %sp, -176, %sp
- 364:   fa 5e 80 00     ldx  [ %i2 ], %i5
- 368:   82 10 00 1b     mov  %i3, %g1
- 36c:   c3 f6 90 1d     casx  [ %i2 ], %i5, %g1
- 370:   80 a7 40 01     cmp  %i5, %g1
- 374:   32 6f ff fd     bne,a   %xcc, 368 <pmdp_establish+0x8>
- 378:   fa 5e 80 00     ldx  [ %i2 ], %i5
- 37c:   d0 5e 20 40     ldx  [ %i0 + 0x40 ], %o0
- 380:   96 10 00 1b     mov  %i3, %o3
- 384:   94 10 00 1d     mov  %i5, %o2
- 388:   92 10 00 19     mov  %i1, %o1
- 38c:   7f ff ff 85     call  1a0 <__set_pmd_acct>
- 390:   b0 10 00 1d     mov  %i5, %i0
- 394:   81 cf e0 08     return  %i7 + 8
- 398:   01 00 00 00     nop
- 39c:   01 00 00 00     nop
-
-Link: https://lore.kernel.org/r/CADxRZqzcrnSMzy50T+kWb_mQVguWDCMu6RoXsCc+-fNDPYXbaw@mail.gmail.com
-Fixes: ff5b4f1ed580c59d ("locking/atomic: sparc: move to ARCH_ATOMIC")
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Reported-by: Anatoly Pugachev <matorola@gmail.com>
-Tested-by: Anatoly Pugachev <matorola@gmail.com>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Peter Zijlstra <peterz@lists.infradead.org>
-Cc: sparclinux@vger.kernel.org
----
- arch/sparc/include/asm/cmpxchg_64.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-Peter, David, could one of you please apply this? It's an urgent fix for
-fallout from the ARCH_ATOMIC conversion, and it'd be good to fix before -rc1.
-
-Thanks,
-Mark.
-
-diff --git a/arch/sparc/include/asm/cmpxchg_64.h b/arch/sparc/include/asm/cmpxchg_64.h
-index 8c39a9981187..12d00a42c0a3 100644
---- a/arch/sparc/include/asm/cmpxchg_64.h
-+++ b/arch/sparc/include/asm/cmpxchg_64.h
-@@ -201,7 +201,7 @@ static inline unsigned long __cmpxchg_local(volatile void *ptr,
- #define arch_cmpxchg64_local(ptr, o, n)					\
-   ({									\
- 	BUILD_BUG_ON(sizeof(*(ptr)) != 8);				\
--	cmpxchg_local((ptr), (o), (n));					\
-+	arch_cmpxchg_local((ptr), (o), (n));					\
-   })
- #define arch_cmpxchg64(ptr, o, n)	arch_cmpxchg64_local((ptr), (o), (n))
- 
--- 
-2.11.0
-
+Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+> 
+> Signed-off-by: Janis Schoetterl-Glausch <scgl@linux.ibm.com>
+> ---
+> I'll additionally send kvm-unit-tests for testing this feature.
+> 
+>   arch/s390/include/asm/kvm_host.h | 1 +
+>   arch/s390/kvm/kvm-s390.c         | 2 ++
+>   arch/s390/kvm/vsie.c             | 2 ++
+>   3 files changed, 5 insertions(+)
+> 
+> diff --git a/arch/s390/include/asm/kvm_host.h b/arch/s390/include/asm/kvm_host.h
+> index 9b4473f76e56..3a5b5084cdbe 100644
+> --- a/arch/s390/include/asm/kvm_host.h
+> +++ b/arch/s390/include/asm/kvm_host.h
+> @@ -244,6 +244,7 @@ struct kvm_s390_sie_block {
+>   	__u8	fpf;			/* 0x0060 */
+>   #define ECB_GS		0x40
+>   #define ECB_TE		0x10
+> +#define ECB_SPECI	0x08
+>   #define ECB_SRSI	0x04
+>   #define ECB_HOSTPROTINT	0x02
+>   	__u8	ecb;			/* 0x0061 */
+> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+> index b655a7d82bf0..aadd589a3755 100644
+> --- a/arch/s390/kvm/kvm-s390.c
+> +++ b/arch/s390/kvm/kvm-s390.c
+> @@ -3200,6 +3200,8 @@ static int kvm_s390_vcpu_setup(struct kvm_vcpu *vcpu)
+>   		vcpu->arch.sie_block->ecb |= ECB_SRSI;
+>   	if (test_kvm_facility(vcpu->kvm, 73))
+>   		vcpu->arch.sie_block->ecb |= ECB_TE;
+> +	if (!kvm_is_ucontrol(vcpu->kvm))
+> +		vcpu->arch.sie_block->ecb |= ECB_SPECI;
+> 
+>   	if (test_kvm_facility(vcpu->kvm, 8) && vcpu->kvm->arch.use_pfmfi)
+>   		vcpu->arch.sie_block->ecb2 |= ECB2_PFMFI;
+> diff --git a/arch/s390/kvm/vsie.c b/arch/s390/kvm/vsie.c
+> index 4002a24bc43a..acda4b6fc851 100644
+> --- a/arch/s390/kvm/vsie.c
+> +++ b/arch/s390/kvm/vsie.c
+> @@ -510,6 +510,8 @@ static int shadow_scb(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
+>   			prefix_unmapped(vsie_page);
+>   		scb_s->ecb |= ECB_TE;
+>   	}
+> +	/* specification exception interpretation */
+> +	scb_s->ecb |= scb_o->ecb & ECB_SPECI;
+>   	/* branch prediction */
+>   	if (test_kvm_facility(vcpu->kvm, 82))
+>   		scb_s->fpf |= scb_o->fpf & FPF_BPBC;
+> 
