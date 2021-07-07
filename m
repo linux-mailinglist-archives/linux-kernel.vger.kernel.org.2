@@ -2,204 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 394B43BEFD9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 20:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B953BEFD8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 20:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233051AbhGGSyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 14:54:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43526 "EHLO
+        id S230341AbhGGSx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 14:53:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbhGGSx6 (ORCPT
+        with ESMTP id S229993AbhGGSx4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 14:53:58 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C916C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 11:51:18 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id z1-20020a17090a1701b0290172f4a773b4so2222576pjd.8
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 11:51:18 -0700 (PDT)
+        Wed, 7 Jul 2021 14:53:56 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 501DBC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 11:51:15 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id u18so6610957lff.9
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 11:51:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=cTXCexUCBYLjSq8WLV6y4Psori5M9mLAKAHZFzbkUxE=;
-        b=OrPI9jXSGASdQUDl6kI263sh5Mio1Rf8HCJNzHaY7NR6DEFJ3YeuqF5/9uDfdzGfZa
-         pDvpAF5aTDBe+jxgDpRWBf2K+TI2SEjDxQWIuy2I5oHyieVUyk15cYxdQYG/R4YCHSmb
-         XjZALcdD2m4k09rgUsNoE90XsHZvm7TMgxJJ0AVOwh8lBK84XKfrlyqYhxLCfGn2PvXd
-         RYskLuggttGWUJ8KhjZYewVj4x/iz0m6/zxgKFlefBhb0SiXC/5KrwByKDVdk9cCf+ye
-         y41AbslvwMS/8IIUmDhuV6iutMgcqYP55AX5dZ2TI91UAtQlfHMF2PR7kK6eLsG1FZ6K
-         ulEg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JUWgrVFh2/qFHv+c7cx9WrsAZfLxb2SYVIzx1ikmyn4=;
+        b=XttfrQzllZ5hfvz+r8DOgpYrpWtvyB5t0PHEX1Y2eNOFgk5dUY3OuvXI0CqDFd/pgI
+         A+N9rMBzTUNYTkONuNy9MPqR+5kve6+bLqTDIaqBl7rsEvwwWqE6ExgQ8cBU3khvcl/e
+         +/3nzatZ9yAdZ2XqcA9KwWC10g+fcc8ThxqtUVC7DNCMNKlhCaIg30MVE1dnpapPxHCL
+         sTzVs/nE0VCBbZcpxwwveFhqivFSVMiy1OzhvYAGX7nApIOBMfoM6aRlb9loMSSy2cga
+         b0n+QYDRmWy5/CqVjVUb+UlAoYhKUWSo+uqmXKIvCut32wSjXRQEgPg/Wl338+C1ChUn
+         64aQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=cTXCexUCBYLjSq8WLV6y4Psori5M9mLAKAHZFzbkUxE=;
-        b=JCnYJg9TmGtxq95YIWVhSB2DD96Bn4Z7QpK/Sn4kW35M/EPRcCiPTN1ShZVmgFsNm/
-         2P8H3NRQ4sbVvSkojG+iz4b1s4aUgwCqM46QuSEks7+ykXzA5X6BWUlop9d+AGqOJFSk
-         kmOY3E//2xQtFdnkIvdiZaQ7NHKS070aRtWHiCGyMCs5SOb6JVqb7gMEOh1MUODnpa43
-         r0jZGnEofCQ8aVFENhHSLhZjSUs7Oy/yKJzB52iVUqSvUy94EpJfRvPapVfOlmnLFaLw
-         4JF6aBFCcezljppKtUk3cmN6FjbkeJo+fN9zrQ/LOncSPstW/P6xFLBSFgmyc6kuuQRq
-         ouzQ==
-X-Gm-Message-State: AOAM532dSV17LuDAVMDeA/DQXD185aasFeau/CxWITE4sl2CiXRwb45Y
-        VzwCUXz659IOyWZa9+hqOcfec8qVnHLJpw==
-X-Google-Smtp-Source: ABdhPJykBvcRyNzdtBhE2SdtWe6ckhl0TLkLvtHmT/DPg7RRqbFnKZnyUzQuLHzYvDOrJcuyKi49Nvn4teXU6w==
-X-Received: from abdulras.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:41e1])
- (user=abdulras job=sendgmr) by 2002:a05:6a00:2145:b029:30b:127:e0a3 with SMTP
- id o5-20020a056a002145b029030b0127e0a3mr26856522pfk.34.1625683877901; Wed, 07
- Jul 2021 11:51:17 -0700 (PDT)
-Date:   Wed,  7 Jul 2021 18:51:05 +0000
-Message-Id: <20210707185105.1180526-1-abdulras@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-Subject: [PATCH] riscv: explicitly use symbol offsets for VDSO
-From:   Saleem Abdulrasool <abdulras@google.com>
-To:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Bill Wendling <morbo@google.com>, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Saleem Abdulrasool <abdulras@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JUWgrVFh2/qFHv+c7cx9WrsAZfLxb2SYVIzx1ikmyn4=;
+        b=IyTDn+OWWLf1lU29m+k50T2vpjU5LvdkeDuiv9hwMcKEfSL7v5ZUljbvh26/KRUadC
+         fU1XfX0a5rpDei5xFG+emR4wuczKm5vg6kjovITv2eHgfDHefuhZzXWsUrTliTaSFl1X
+         K/47zHuTwlz17XPaeHEkqbdSDxu7uqv+0g95Ej1z0A1FCgGG2bs3WDml8hB2/eMR5NFs
+         eSNjKFavKWgob74bLFeryGgDDfV6RqRs0PN+S8cMnf41PCbtutSMl5z5e83hzgemPNEt
+         0WJbyaGIaV0+GF8YHY+LRzdBxpPo65BdwSB3KC9ceuOLIGmxbJGE6nqy+7pfuIZr/TZ1
+         ld5g==
+X-Gm-Message-State: AOAM533xzZlVJFoJ3c0WLKqnw/K7+0LNVf1d8L6VK5a5AiZv5iHnKA0u
+        eZcEsQ0u1O1TgPKOsTZ4vMEUbwVfAoVZwQ==
+X-Google-Smtp-Source: ABdhPJyY0sPA6voeOdJpmUyMRS+n1X52MH+w/yjUa9d9/HKQaGQd3HPJAjrNlVGOH8HfguGmgEMwfQ==
+X-Received: by 2002:ac2:4191:: with SMTP id z17mr19370786lfh.457.1625683873605;
+        Wed, 07 Jul 2021 11:51:13 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.225.155])
+        by smtp.gmail.com with ESMTPSA id w21sm1919021lfu.80.2021.07.07.11.51.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 11:51:13 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     christian.koenig@amd.com, ray.huang@amd.com, airlied@linux.ie
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>
+Subject: [PATCH] gpu: ttm: fix GPF in ttm_bo_release
+Date:   Wed,  7 Jul 2021 21:51:08 +0300
+Message-Id: <20210707185108.3798-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current implementation of the `__rt_sigaction` reference computed an
-absolute offset relative to the mapped base of the VDSO.  While this can
-be handled in the medlow model, the medany model cannot handle this as
-it is meant to be position independent.  The current implementation
-relied on the BFD linker relaxing the PC-relative relocation into an
-absolute relocation as it was a near-zero address allowing it to be
-referenced relative to `zero`.
+My local syzbot instance hit GPF in ttm_bo_release().
+Unfortunately, syzbot didn't produce a reproducer for this, but I
+found out possible scenario:
 
-We now extract the offsets and create a generated header allowing the
-build with LLVM and lld to succeed as we no longer depend on the linker
-rewriting address references near zero.  This change was largely
-modelled after the ARM64 target which does something similar.
+drm_gem_vram_create()            <-- drm_gem_vram_object kzalloced
+				     (bo embedded in this object)
+  ttm_bo_init()
+    ttm_bo_init_reserved()
+      ttm_resource_alloc()
+        man->func->alloc()       <-- allocation failure
+      ttm_bo_put()
+	ttm_bo_release()
+	  ttm_mem_io_free()      <-- bo->resource == NULL passed
+				     as second argument
+	     *GPF*
 
-Signed-off-by: Saleem Abdulrasool <abdulras@google.com>
+So, I've added check in ttm_bo_release() to avoid passing
+NULL as second argument to ttm_mem_io_free().
+
+Fail log:
+
+KASAN: null-ptr-deref in range [0x0000000000000020-0x0000000000000027]
+CPU: 1 PID: 10419 Comm: syz-executor.3 Not tainted 5.13.0-rc7-next-20210625 #7
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
+RIP: 0010:ttm_mem_io_free+0x28/0x170 drivers/gpu/drm/ttm/ttm_bo_util.c:66
+Code: b1 90 41 56 41 55 41 54 55 48 89 fd 53 48 89 f3 e8 cd 19 24 fd 4c 8d 6b 20 48 b8 00 00 00 00 00 fc ff df 4c 89 ea 48 c1 ea 03 <80> 3c 02 00 0f 85 2a 01 00 00 4c 8b 63 20 31 ff 4c 89 e6 e8 00 1f
+RSP: 0018:ffffc900141df968 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc90010da0000
+RDX: 0000000000000004 RSI: ffffffff84513ea3 RDI: ffff888041fbc010
+RBP: ffff888041fbc010 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000020 R14: ffff88806b258800 R15: ffff88806b258a38
+FS:  00007fa6e9845640(0000) GS:ffff88807ec00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fad61265e18 CR3: 000000005ad79000 CR4: 0000000000350ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ ttm_bo_release+0xd94/0x10a0 drivers/gpu/drm/ttm/ttm_bo.c:422
+ kref_put include/linux/kref.h:65 [inline]
+ ttm_bo_put drivers/gpu/drm/ttm/ttm_bo.c:470 [inline]
+ ttm_bo_init_reserved+0x7cb/0x960 drivers/gpu/drm/ttm/ttm_bo.c:1050
+ ttm_bo_init+0x105/0x270 drivers/gpu/drm/ttm/ttm_bo.c:1074
+ drm_gem_vram_create+0x332/0x4c0 drivers/gpu/drm/drm_gem_vram_helper.c:228
+
+Fixes: d3116756a710 ("drm/ttm: rename bo->mem and make it a pointer")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 ---
- arch/riscv/Makefile                        |  4 ++++
- arch/riscv/include/asm/vdso.h              | 11 ++---------
- arch/riscv/kernel/vdso/Makefile            | 21 +++++++++------------
- arch/riscv/kernel/vdso/gen_vdso_offsets.sh |  5 +++++
- arch/riscv/kernel/vdso/so2s.sh             |  6 ------
- 5 files changed, 20 insertions(+), 27 deletions(-)
- create mode 100755 arch/riscv/kernel/vdso/gen_vdso_offsets.sh
- delete mode 100755 arch/riscv/kernel/vdso/so2s.sh
+ drivers/gpu/drm/ttm/ttm_bo.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-index e241e0e85ac8..f2beaa3c9fcb 100644
---- a/arch/riscv/Makefile
-+++ b/arch/riscv/Makefile
-@@ -92,6 +92,10 @@ PHONY += vdso_install
- vdso_install:
- 	$(Q)$(MAKE) $(build)=arch/riscv/kernel/vdso $@
+diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
+index 1b950b45cf4b..15eb97459eab 100644
+--- a/drivers/gpu/drm/ttm/ttm_bo.c
++++ b/drivers/gpu/drm/ttm/ttm_bo.c
+@@ -419,7 +419,8 @@ static void ttm_bo_release(struct kref *kref)
+ 			bo->bdev->funcs->release_notify(bo);
  
-+prepare: vdso_prepare
-+vdso_prepare: prepare0
-+	$(Q)$(MAKE) $(build)=arch/riscv/kernel/vdso include/generated/vdso-offsets.h
-+
- ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_SOC_KENDRYTE),yy)
- KBUILD_IMAGE := $(boot)/loader.bin
- else
-diff --git a/arch/riscv/include/asm/vdso.h b/arch/riscv/include/asm/vdso.h
-index 8454f746bbfd..a72c4093d1c7 100644
---- a/arch/riscv/include/asm/vdso.h
-+++ b/arch/riscv/include/asm/vdso.h
-@@ -9,24 +9,17 @@
- #define _ASM_RISCV_VDSO_H
+ 		drm_vma_offset_remove(bdev->vma_manager, &bo->base.vma_node);
+-		ttm_mem_io_free(bdev, bo->resource);
++		if (bo->resource)
++			ttm_mem_io_free(bdev, bo->resource);
+ 	}
  
- #include <linux/types.h>
-+#include <generated/vdso-offsets.h>
- 
- #ifndef GENERIC_TIME_VSYSCALL
- struct vdso_data {
- };
- #endif
- 
--/*
-- * The VDSO symbols are mapped into Linux so we can just use regular symbol
-- * addressing to get their offsets in userspace.  The symbols are mapped at an
-- * offset of 0, but since the linker must support setting weak undefined
-- * symbols to the absolute address 0 it also happens to support other low
-- * addresses even when the code model suggests those low addresses would not
-- * otherwise be availiable.
-- */
- #define VDSO_SYMBOL(base, name)							\
- ({										\
- 	extern const char __vdso_##name[];					\
--	(void __user *)((unsigned long)(base) + __vdso_##name);			\
-+	(void __user *)((unsigned long)(base) + __vdso_##name##_offset);	\
- })
- 
- asmlinkage long sys_riscv_flush_icache(uintptr_t, uintptr_t, uintptr_t);
-diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
-index f001ae91ef46..17cb755cf282 100644
---- a/arch/riscv/kernel/vdso/Makefile
-+++ b/arch/riscv/kernel/vdso/Makefile
-@@ -42,20 +42,22 @@ $(obj)/vdso.o: $(obj)/vdso.so
- # link rule for the .so file, .lds has to be first
- $(obj)/vdso.so.dbg: $(src)/vdso.lds $(obj-vdso) FORCE
- 	$(call if_changed,vdsold)
--LDFLAGS_vdso.so.dbg = -shared -s -soname=linux-vdso.so.1 \
-+LDFLAGS_vdso.so.dbg = -shared -S -soname=linux-vdso.so.1 \
- 	--build-id=sha1 --hash-style=both --eh-frame-hdr
- 
--# We also create a special relocatable object that should mirror the symbol
--# table and layout of the linked DSO. With ld --just-symbols we can then
--# refer to these symbols in the kernel code rather than hand-coded addresses.
--$(obj)/vdso-syms.S: $(obj)/vdso.so FORCE
--	$(call if_changed,so2s)
--
- # strip rule for the .so file
- $(obj)/%.so: OBJCOPYFLAGS := -S
- $(obj)/%.so: $(obj)/%.so.dbg FORCE
- 	$(call if_changed,objcopy)
- 
-+# Generate VDSO offsets using helper script
-+gen-vdsosym := $(srctree)/$(src)/gen_vdso_offsets.sh
-+quiet_cmd_vdsosym = VDSOSYM $@
-+	cmd_vdsosym = $(NM) $< | $(gen-vdsosym) | LC_ALL=C sort > $@
-+
-+include/generated/vdso-offsets.h: $(obj)/vdso.so.dbg FORCE
-+	$(call if_changed,vdsosym)
-+
- # actual build commands
- # The DSO images are built using a special linker script
- # Make sure only to export the intended __vdso_xxx symbol offsets.
-@@ -64,11 +66,6 @@ quiet_cmd_vdsold = VDSOLD  $@
-                    $(OBJCOPY) $(patsubst %, -G __vdso_%, $(vdso-syms)) $@.tmp $@ && \
-                    rm $@.tmp
- 
--# Extracts symbol offsets from the VDSO, converting them into an assembly file
--# that contains the same symbols at the same offsets.
--quiet_cmd_so2s = SO2S    $@
--      cmd_so2s = $(NM) -D $< | $(srctree)/$(src)/so2s.sh > $@
--
- # install commands for the unstripped file
- quiet_cmd_vdso_install = INSTALL $@
-       cmd_vdso_install = cp $(obj)/$@.dbg $(MODLIB)/vdso/$@
-diff --git a/arch/riscv/kernel/vdso/gen_vdso_offsets.sh b/arch/riscv/kernel/vdso/gen_vdso_offsets.sh
-new file mode 100755
-index 000000000000..c2e5613f3495
---- /dev/null
-+++ b/arch/riscv/kernel/vdso/gen_vdso_offsets.sh
-@@ -0,0 +1,5 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+
-+LC_ALL=C
-+sed -n -e 's/^[0]\+\(0[0-9a-fA-F]*\) . \(__vdso_[a-zA-Z0-9_]*\)$/\#define \2_offset\t0x\1/p'
-diff --git a/arch/riscv/kernel/vdso/so2s.sh b/arch/riscv/kernel/vdso/so2s.sh
-deleted file mode 100755
-index e64cb6d9440e..000000000000
---- a/arch/riscv/kernel/vdso/so2s.sh
-+++ /dev/null
-@@ -1,6 +0,0 @@
--#!/bin/sh
--# SPDX-License-Identifier: GPL-2.0+
--# Copyright 2020 Palmer Dabbelt <palmerdabbelt@google.com>
--
--sed 's!\([0-9a-f]*\) T \([a-z0-9_]*\)\(@@LINUX_4.15\)*!.global \2\n.set \2,0x\1!' \
--| grep '^\.'
+ 	if (!dma_resv_test_signaled(bo->base.resv, true) ||
 -- 
-2.32.0.93.g670b81a890-goog
+2.32.0
 
