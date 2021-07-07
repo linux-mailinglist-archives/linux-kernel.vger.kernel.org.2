@@ -2,187 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B6013BE34F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 08:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A82FE3BE352
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 08:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230367AbhGGG5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 02:57:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51164 "EHLO
+        id S230378AbhGGG5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 02:57:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230263AbhGGG4r (ORCPT
+        with ESMTP id S230305AbhGGG5M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 02:56:47 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B3FFC061574;
-        Tue,  6 Jul 2021 23:54:08 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id c15so510017pls.13;
-        Tue, 06 Jul 2021 23:54:08 -0700 (PDT)
+        Wed, 7 Jul 2021 02:57:12 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFF62C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 23:54:31 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id b14-20020a1c1b0e0000b02901fc3a62af78so3348224wmb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 23:54:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=29KlgInZ2jmDSdyaEuadEo1RRyP0XOU3F3wxMJ4gF08=;
-        b=PIYRoDp9e45o2tqbnJDez56Ho6obbPuxHHPEF/IatZSzIYPH0i+N2/b1x4X+XWreCZ
-         9yAcfanBPwYXOv47Y0ypjZMuNVkc6gIP3QVLTvmCLhJrpL4tjqaHHFAAtv/tuP9+vRg0
-         yVMQObvdG80Sg1cFsxPq2XdWMT5zLd8HZHKkLT4zxIXKUd+NeHYuv4wtB41u92BjBjfv
-         vQXM/2Qln3DCNdrCrj1Y9pHxvwwYucGYgTX2vpwjwhkyiKdoNchesCny/zptsAEggYRQ
-         Vg8xLrkV3xwBoNpejL5cGxSA3Y0W+V+I9d8RYWMVJQT61W9EnZNusopKuBBXn5GrBcK5
-         1kqQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tUE8wev4VkWfjOiCPCyu/GqgRwGG7gs7uHBEzTIZe3c=;
+        b=HO5A4MDpkx13VC3Yw2cptgr73MkV2G5xH8GcIHQMD2ep1iOn3CS8VoF9o3sz43+71+
+         +R3aWRgRdYsGc6k3/64PPRrYJD21oDybN4rqEhpKo01JhMlzSsZO7a8AA9DtJ2BXuujx
+         c0clc8S636KiUYaSY0FYeM3+kPfaJyglcf4WULX91rK5G+Ro3gKLyhZetCrXWUeVW75Q
+         9BgGYbV10cmt9K9NMzE3gPVjlh5YklXD5+L+dtzEhOS+JPnIYcUslFn69z82ZRbmriW1
+         ljQbYX9t34JqSYy11CaSfLUYiyr0FBIn0f9gUvE74yfUhGspGvfKQP7V9EeJRc8IrIQb
+         0ZfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=29KlgInZ2jmDSdyaEuadEo1RRyP0XOU3F3wxMJ4gF08=;
-        b=ryzPP5TSSvwnS3bQg6C43gik5iGFcDQVO6Yp2osQBEeBfoARHLa3BD5n6SE3FufgHC
-         KuvUUTOFp9kpog4vY1CUAsla098zbMKBc1g/cueVymI6FBBCrBQ+9PJa9DuOjj9jLtDq
-         xPwbb8Od+6LRdQ+WThKXL+QOYmS3jJr3s5ar0Tro7t6WmyvUrBOWc4ipfjug6N4LWXyK
-         1DnIRL+CmBOGqbIOMS/IEWJsPgqhDbkTQBY/ZC5TK1ChjTTpOAtl8Cf1DzJVGJm9i3de
-         5355hbaPjXpnp8aCaEBppJKHhDbrA6Zzrf9awQiHnPpIXOKg2Yf2PAfxCPdhHjDeAXAR
-         7i6Q==
-X-Gm-Message-State: AOAM530MklQCBlW3n8lHDkyufOPWIeee4toi4BRK+bwzde8dr9LRfHNY
-        tGpwDBKhhBtjVMeXxSyRFmE=
-X-Google-Smtp-Source: ABdhPJxZ1zdoUYOr/tVPvI2iKEfjV06YlGwS0CcDb679eyGv3+xgPB6ouNFj5g4/DI/XO9X/+SOqBQ==
-X-Received: by 2002:a17:902:c981:b029:129:afe:8e30 with SMTP id g1-20020a170902c981b02901290afe8e30mr19863712plc.73.1625640847825;
-        Tue, 06 Jul 2021 23:54:07 -0700 (PDT)
-Received: from [192.168.1.237] ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id q17sm7934444pfk.186.2021.07.06.23.54.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jul 2021 23:54:07 -0700 (PDT)
-Subject: Re: [PATCH v2 1/2] fcntl: fix potential deadlocks for
- &fown_struct.lock
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     jlayton@kernel.org, bfields@fieldses.org, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+e6d5398a02c516ce5e70@syzkaller.appspotmail.com
-References: <20210707023548.15872-1-desmondcheongzx@gmail.com>
- <20210707023548.15872-2-desmondcheongzx@gmail.com>
- <YOVENb3X/m/pNrYt@kroah.com>
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Message-ID: <6bc70605-2ed3-98e8-cc48-9bb565cb05bd@gmail.com>
-Date:   Wed, 7 Jul 2021 14:54:03 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tUE8wev4VkWfjOiCPCyu/GqgRwGG7gs7uHBEzTIZe3c=;
+        b=pm7sf7kPT6uEDgSqC/ILvofyFcH/XPsjxlfMfiHV6DKjLM8jX7AAv8oKMMdQDRCZ4l
+         13jLvV8JVV80k0ay3KINmbbHEyRQaYsnSvb4wx3omw7zley5DJo8JVwbrxmmGX2j9+fb
+         B67kqLIvAal1UL7jjLoLBgKAs7Ope6fF6jlOLyIBuXVqIUG3ZNxCaD0DtaNtRPyhaM1C
+         E8Dtdgsmfq7YjNDrFNEafCrBu2IMybAh9iUoo5HgHsbF4IQvCjRN1jD4oNEbIcgSGBMj
+         pLLfs97Kfe7zeOo2eSJJYqO8ERMPzV6HSYSoA5N2lWhhbYHL5EWqm8B8OaO19w9/iANp
+         pSzA==
+X-Gm-Message-State: AOAM5323RPgZ0ZfTkfGVaOjoFmiGAYXgWJR7IjDNwTSsOOqKEL2xRsSW
+        aYd4i8iWZOEvr4+AYyKOyJ2OddG7OMWcb/S4Ackgow==
+X-Google-Smtp-Source: ABdhPJystGdZsA+nB5gQafyHzssXeyJUm/HUE9cWQIs/s/XU88ED35qV7XIB+cBbpx80emEOfYRUo2JXYOLR4W96FtE=
+X-Received: by 2002:a7b:ce82:: with SMTP id q2mr4888352wmj.60.1625640870431;
+ Tue, 06 Jul 2021 23:54:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YOVENb3X/m/pNrYt@kroah.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210616103649.2662395-1-jens.wiklander@linaro.org>
+ <CAFA6WYMrxNfR09doWQgYKCQSYKyUMVKqSTPuRYn=-nueY9pSvQ@mail.gmail.com>
+ <CAHUa44EeAENHv+CxtXeLuqX_NGWW6w-6P8D-BLsb69+XmGaqEQ@mail.gmail.com>
+ <CAFA6WYMSAM2MDOXnhjuZFov3BtF8-nihZRUpR8ciUWsL4_nCWA@mail.gmail.com>
+ <87czrv91b2.wl-maz@kernel.org> <CAFA6WYPVA5yP3trumfz=_oXzxKtfobQXRzDwZ1og8UXwaA1rkQ@mail.gmail.com>
+ <87a6mz8vaj.wl-maz@kernel.org> <CAFA6WYMsjxYBw_0xzWMtHf=LtXzG+D113WSFuHCR7KhC1RuWYg@mail.gmail.com>
+In-Reply-To: <CAFA6WYMsjxYBw_0xzWMtHf=LtXzG+D113WSFuHCR7KhC1RuWYg@mail.gmail.com>
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+Date:   Wed, 7 Jul 2021 08:54:19 +0200
+Message-ID: <CAHUa44GEPDYj6A9jOB8sHbbs_mSk1oiREywP6Z8s0vOhbpajpw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/7] Asynchronous notifications from secure world
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jerome Forissier <jerome@forissier.org>,
+        Etienne Carriere <etienne.carriere@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ard Biesheuvel <ardb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/7/21 2:05 pm, Greg KH wrote:
-> On Wed, Jul 07, 2021 at 10:35:47AM +0800, Desmond Cheong Zhi Xi wrote:
->> Syzbot reports a potential deadlock in do_fcntl:
->>
->> ========================================================
->> WARNING: possible irq lock inversion dependency detected
->> 5.12.0-syzkaller #0 Not tainted
->> --------------------------------------------------------
->> syz-executor132/8391 just changed the state of lock:
->> ffff888015967bf8 (&f->f_owner.lock){.+..}-{2:2}, at: f_getown_ex fs/fcntl.c:211 [inline]
->> ffff888015967bf8 (&f->f_owner.lock){.+..}-{2:2}, at: do_fcntl+0x8b4/0x1200 fs/fcntl.c:395
->> but this lock was taken by another, HARDIRQ-safe lock in the past:
->>   (&dev->event_lock){-...}-{2:2}
->>
->> and interrupts could create inverse lock ordering between them.
->>
->> other info that might help us debug this:
->> Chain exists of:
->>    &dev->event_lock --> &new->fa_lock --> &f->f_owner.lock
->>
->>   Possible interrupt unsafe locking scenario:
->>
->>         CPU0                    CPU1
->>         ----                    ----
->>    lock(&f->f_owner.lock);
->>                                 local_irq_disable();
->>                                 lock(&dev->event_lock);
->>                                 lock(&new->fa_lock);
->>    <Interrupt>
->>      lock(&dev->event_lock);
->>
->>   *** DEADLOCK ***
->>
->> This happens because there is a lock hierarchy of
->> &dev->event_lock --> &new->fa_lock --> &f->f_owner.lock
->> from the following call chain:
->>
->>    input_inject_event():
->>      spin_lock_irqsave(&dev->event_lock,...);
->>      input_handle_event():
->>        input_pass_values():
->>          input_to_handler():
->>            evdev_events():
->>              evdev_pass_values():
->>                spin_lock(&client->buffer_lock);
->>                __pass_event():
->>                  kill_fasync():
->>                    kill_fasync_rcu():
->>                      read_lock(&fa->fa_lock);
->>                      send_sigio():
->>                        read_lock_irqsave(&fown->lock,...);
->>
->> However, since &dev->event_lock is HARDIRQ-safe, interrupts have to be
->> disabled while grabbing &f->f_owner.lock, otherwise we invert the lock
->> hierarchy.
->>
->> Hence, we replace calls to read_lock/read_unlock on &f->f_owner.lock,
->> with read_lock_irq/read_unlock_irq.
->>
->> Here read_lock_irq/read_unlock_irq should be safe to use because the
->> functions f_getown_ex and f_getowner_uids are only called from
->> do_fcntl, and f_getown is only called from do_fnctl and
->> sock_ioctl. do_fnctl itself is only called from syscalls.
->>
->> For sock_ioctl, the chain is
->>    compat_sock_ioctl():
->>      compat_sock_ioctl_trans():
->>        sock_ioctl()
->>
->> And interrupts are not disabled on either path. We assert this
->> assumption with WARN_ON_ONCE(irqs_disabled()). This check is also
->> inserted into another use of write_lock_irq in f_modown.
->>
->> Reported-and-tested-by: syzbot+e6d5398a02c516ce5e70@syzkaller.appspotmail.com
->> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
->> ---
->>   fs/fcntl.c | 17 +++++++++++------
->>   1 file changed, 11 insertions(+), 6 deletions(-)
->>
->> diff --git a/fs/fcntl.c b/fs/fcntl.c
->> index dfc72f15be7f..262235e02c4b 100644
->> --- a/fs/fcntl.c
->> +++ b/fs/fcntl.c
->> @@ -88,6 +88,7 @@ static int setfl(int fd, struct file * filp, unsigned long arg)
->>   static void f_modown(struct file *filp, struct pid *pid, enum pid_type type,
->>                        int force)
->>   {
->> +	WARN_ON_ONCE(irqs_disabled());
-> 
-> If this triggers, you just rebooted the box :(
-> 
-> Please never do this, either properly handle the problem and return an
-> error, or do not check for this.  It is not any type of "fix" at all,
-> and at most, a debugging aid while you work on the root problem.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Hi,
 
-Hi Greg,
+On Wed, Jul 7, 2021 at 7:52 AM Sumit Garg <sumit.garg@linaro.org> wrote:
+>
+> On Tue, 6 Jul 2021 at 18:16, Marc Zyngier <maz@kernel.org> wrote:
+> >
+[snip]
+> > > > - Is there any case where you would instead need a level interrupt
+> > > >   (which a SGI cannot provide)?
+> > >
+> > > I think SGI should be sufficient to suffice OP-TEE notifications use-case.
+> >
+> > I don't care about OP-TEE. If you are proposing a contract between S
+> > and NS, it has to be TEE and OS independent. That's how the
+> > architecture works.
+> >
+>
+> Agree, here we are not proposing a common contract among the S and NS
+> world that every TEE (based on Arm TrustZone) will use to communicate
+> with REE (Linux in our case) but rather an OP-TEE specific
+> notifications feature that is built on top of OP-TEE specific ABIs.
+>
+> And I can see your arguments coming from an FFA perspective but there
+> are platforms like the ones based on Armv7 which don't support FFA
+> ABI. Maybe Jens can elaborate how this feature will fit in when FFA
+> comes into picture?
 
-Thanks for the feedback. My bad, I was under the impression that 
-WARN_ON_ONCE could be used to document assumptions for other developers, 
-but I'll stick to using it for debugging in the future.
+OP-TEE has one official ABI at the moment, the SMC based one. It's
+about to get another one based on FF-A instead. The two ABIs will
+never be used at the same time. It's a build time option for the
+OP-TEE firmware to either use SMC or FF-A based communication.
 
-I think then in this case it would be best to keep the reasoning for why 
-the *_irq() locks are safe to use in the commit message. I'll update the 
-patch accordingly.
+The patches I've posted here concern the SMC based ABI. Asynchronous
+notification in OP-TEE with a FF-A based ABI will use the notification
+framework provided by FF-A instead to implement that counterpart
+provided by these patches. So the OP-TEE driver here in the kernel
+will use the FF-A framework in the kernel instead of registering an
+interrupt handler directly.
 
-Best wishes,
-Desmond
+Cheers,
+Jens
