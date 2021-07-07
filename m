@@ -2,254 +2,506 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CACF3BE9D9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 16:36:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A25223BE9DA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 16:36:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232052AbhGGOip convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 7 Jul 2021 10:38:45 -0400
-Received: from de-smtp-delivery-105.mimecast.com ([194.104.111.105]:59898 "EHLO
-        de-smtp-delivery-105.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231737AbhGGOio (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 10:38:44 -0400
-Received: from GBR01-LO2-obe.outbound.protection.outlook.com
- (mail-lo2gbr01lp2056.outbound.protection.outlook.com [104.47.21.56]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-26-uJ57HpaDM66CVp4f0KSwog-1; Wed, 07 Jul 2021 16:36:01 +0200
-X-MC-Unique: uJ57HpaDM66CVp4f0KSwog-1
-Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:89::10)
- by CWLP265MB3828.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:110::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.31; Wed, 7 Jul
- 2021 14:36:01 +0000
-Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
- ([fe80::259d:65ac:ae6d:409d]) by CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
- ([fe80::259d:65ac:ae6d:409d%9]) with mapi id 15.20.4287.033; Wed, 7 Jul 2021
- 14:36:01 +0000
-From:   =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
-CC:     Avri Altman <Avri.Altman@wdc.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "hch@infradead.org" <hch@infradead.org>
-Subject: Re: [PATCHv2] mmc: block: Differentiate busy and PROG state
-Thread-Topic: [PATCHv2] mmc: block: Differentiate busy and PROG state
-Thread-Index: AQHXcwny68++j12etUaztO/Yg7lHlas3aFYAgAAVZiM=
-Date:   Wed, 7 Jul 2021 14:36:00 +0000
-Message-ID: <CWXP265MB26804E1F676F532D08A9BBFBC41A9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
-References: <CWXP265MB268049D9AB181062DA7F6DDBC4009@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
- <CWXP265MB26807AC3C130772D789D0AABC41B9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
- <CAPDyKFq44ZuXXUDQV34NSW-ixB9GAZfDx+dx-Kb8O7=LQ1TSHQ@mail.gmail.com>
- <CWXP265MB26803EFAC659676EC0914F97C41B9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
- <DM6PR04MB6575B0049B98254E77BA447EFC1A9@DM6PR04MB6575.namprd04.prod.outlook.com>
- <CWXP265MB2680575489E508DC75D84857C41A9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>,<CAPDyKFrCtRTHZYRjUecvrqr=YyhrTw+HXtdLRHeOTxoK94iSRg@mail.gmail.com>
-In-Reply-To: <CAPDyKFrCtRTHZYRjUecvrqr=YyhrTw+HXtdLRHeOTxoK94iSRg@mail.gmail.com>
-Accept-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 95cc116b-e3d7-4cbf-cff4-08d941548aca
-x-ms-traffictypediagnostic: CWLP265MB3828:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CWLP265MB3828C706E56B8A2164AF8DA5C41A9@CWLP265MB3828.GBRP265.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:10000
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0
-x-microsoft-antispam-message-info: lKc8vMnqXpLcwkdZejwBnu278Uirr+aEbJ6MVBKobacyFBYV78BtBdVIwkPTgvNFRK5ngyKZzb5U64aHp3IM64+5qHpCj1dyYkrDjM71IT6WS+Myw+AdJfpV8lliZ502dVkD9Plz5WmBj79doTLFV4P3gqQPR9jNEXsOisYWJMEGdmYEk5Pa3c+crjdTLLMi9AAR2UJYlqDqex/55x75dYANyTqyzQhwcT3JEmDVl1dndUAH+WvqqK29OqDICbYaqRBLkj7jwH36WUBIXVk91LcyxK1hS1ckwB7ZdRPZQ1AGF5UdsnEBAJaMgEZ65cB4hSq43YQgNahSiofWw2iaUQFF3g/HaR73Sv+d9Mo6TvNhCMmXy4QI0se/KWHlRVxWPvSh3BznQjSTQySOgir6oP72i7Sy8NLvIAc93cV0jKrnymFz7RmDsy+9L7Z93D073V1pJw3cv+g+odWF/Hh4d4sCGgEHbb6QIEAwOtl2bP+wyVFvSWFDHCslRpXHgCSq7a7/mbF5s4Bklbwr9yPxgzIW94bhgb8QetVqzfanhBrGv4Frbv7BKHe8+p7PE3Zd8Ov/IAgwLUvcR57tT5Oax5NUpjIua7bQVy5AansJN86mYSnWCOBR59JWKpe9wwAz+1Eyrwh+KSzVOFm/rNMh3Q==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(366004)(39830400003)(346002)(396003)(376002)(136003)(83380400001)(110136005)(33656002)(122000001)(55016002)(71200400001)(38100700002)(86362001)(26005)(91956017)(6506007)(76116006)(8676002)(316002)(66946007)(64756008)(4326008)(66556008)(66476007)(2906002)(9686003)(478600001)(7696005)(5660300002)(66446008)(8936002)(186003)(54906003)(52536014);DIR:OUT;SFP:1101
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?e7WEYSuN+gO4q+naQQn1V9Wp/IGfrZPrlGGCBzavOYTRlASUSW9Dd1lnOE?=
- =?iso-8859-1?Q?mkV5DoQd2kTUVzPyfVuZUl9b2A2mbx0PepENLKQwyX/9kHXlRrQ3kzbmGB?=
- =?iso-8859-1?Q?LP6Ei6ToP8TmE8MKtkUhowzlJzHKHI3ziYR+jyyCwtuRIaxYD00zeTonK9?=
- =?iso-8859-1?Q?DjliCfhck20oP5QC9I2Vy51EC3uISEkrRWmXjugEJGq3vHlO7YdF2HSUXK?=
- =?iso-8859-1?Q?Tv9YXG0duf5SscbHO48w/mxhDjTe3umWSw9sdfyFxTh/xen/WBUKcG1Vpc?=
- =?iso-8859-1?Q?vEkA5t1d5uOABFM0VKIjKq797le/jDbF3zWimP/A/VWOY4VeCf19BnKYOL?=
- =?iso-8859-1?Q?BgvXwxfcHwr0gBXhJGe0NT7BJY1iKI4CdEAMwmFBmbMkLjr/i+f9XfdxWC?=
- =?iso-8859-1?Q?TAvfGbMTKr8bE1TBSUrIsZ/1IGOVpLFA23b1/Uslh4bhh8pWmEZdAOEM75?=
- =?iso-8859-1?Q?mOv4cnqZsolnuS1nOsLwdZd1Q31hoB/cdAxz3nPVpSuOkE4Hey9wJKVUDE?=
- =?iso-8859-1?Q?t/+9ywTEdfEO3EofOsAAUvJhvi3TX+3rhhQGwA+oXj825qGq+AECrZJWsY?=
- =?iso-8859-1?Q?PNZAzjpGT7ErsnEDtY1+8bBB0u/hnthVn05RJ5wec09lziEX5ScP97+d/u?=
- =?iso-8859-1?Q?ll+Vmyp0lgzxJwop+kb/zWZ/M5s8/XjhH5TL65qLtjpEP23+eUJ5TU+I4j?=
- =?iso-8859-1?Q?6HRHtrQjahv1lIlgwpueprUuboFJX98cAzEXNo7YUIYROwQhBsrA/hlfWt?=
- =?iso-8859-1?Q?cgxWxZ+mFG2+Hpf+hR9uo36o9MRQPnRZ/CzkP6r68oIYb5H1CJSuCsdcmu?=
- =?iso-8859-1?Q?NvBeavSalOiKMVqSqzvG1md0KbiflLz1lAtkSt/IH2XiQdDyJpz/3kclmR?=
- =?iso-8859-1?Q?Mi+e8id+UWNUdwzbXnFKFcdDWqt/jpOCL805htiefoBf8MKvmxMlmJMwmp?=
- =?iso-8859-1?Q?VWIzG32PGDNniU6AcDeqbRz7VJv3QbvOZPqbjqdYFF6MGjSPnebtHlhww7?=
- =?iso-8859-1?Q?mX3tRM19/a2roBWpUJpj4X2uIrDDtr5lofAht25ETRdzHFwH6nQLkxES7x?=
- =?iso-8859-1?Q?lcNt8QFxpwELa7QyMEQsDuPLVo4pe64NuYk72KEi2JJ1MojOFYIcNo6vdR?=
- =?iso-8859-1?Q?2IqtoRzn3aCKpcDGbHXicGzmmZx66YjfEK6CouH7H14i4eKLnvRs/xz8uU?=
- =?iso-8859-1?Q?ohukK33OzpCyPxzEt4FTezCe+iKIkhATujT32/DKEzCrb+yKFOBnbk0veg?=
- =?iso-8859-1?Q?dLV+a1XjAyiM0rnz/6H7Dum0Iv+/mgIrjeLJuXnrspfwxnlFciQfpzJirf?=
- =?iso-8859-1?Q?JqwbUcwItwPNC5B2rVkbXVSs0rEti8sW/1ZzoStXgTnfWTM=3D?=
+        id S232017AbhGGOiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 10:38:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53536 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231737AbhGGOir (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 10:38:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BAFD661C60;
+        Wed,  7 Jul 2021 14:36:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625668567;
+        bh=EQsNabBMoo2k2ahg/QNiKZmpAvyb9rvIwghYcImCqfI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p7R7RCZhlaQAnoPNrclT+r96DK+Ior2oHG5Efo+AkBJA/NvVriAQ1TTR9On1bexq2
+         4/2EhxZhLkW8TJcVngW2Bv85TlfC4KYYYOAn1eVaS4jO8uzQ97NFoOifANwR+575fc
+         PgSawDaJu2WOlQb3K4Bik/4hFc6PUllV7BE0riT9ziaxm7HzVXTyU4K/hVtaSPLPyC
+         sUXE55yAGhqJy8TXS3fExUplkJvug5Iw5l9bsebEWLx+Njfqi94EHCQjCu2L6BSGZr
+         3VuV4u9mSSlQT7WjInzPnGBp2EQzV9CJLw7PPLKYNu/tINmfHklce0ck3iwUWalrQJ
+         vXCVNd2cGwA5A==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 148B340B1A; Wed,  7 Jul 2021 11:36:04 -0300 (-03)
+Date:   Wed, 7 Jul 2021 11:36:04 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Kajol Jain <kjain@linux.ibm.com>
+Cc:     maddy@linux.vnet.ibm.com, atrajeev@linux.vnet.ibm.com,
+        pc@us.ibm.com, linux-kernel@vger.kernel.org, jolsa@redhat.com,
+        mpe@ellerman.id.au, ravi.bangoria@linux.ibm.com,
+        linux-perf-users@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        rnsastry@linux.ibm.com
+Subject: Re: [PATCH v2] perf vendor events power10: Adds 24x7 nest metric
+ events for power10 platform
+Message-ID: <YOW71D28ADTwUgMI@kernel.org>
+References: <20210628064935.163465-1-kjain@linux.ibm.com>
 MIME-Version: 1.0
-X-OriginatorOrg: hyperstone.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 95cc116b-e3d7-4cbf-cff4-08d941548aca
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jul 2021 14:36:01.0106
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 86f203eb-e878-4188-b297-34c118c18b11
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4fbTkQRvZixSN8p9+xfqe8AvabnFUV3pOjCvavWGJ8w9megajrMfqVF9WCZ4sGNdU8R+1FXWNdD2XP9A3kVAkA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWLP265MB3828
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CDE5A68 smtp.mailfrom=cloehle@hyperstone.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: hyperstone.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210628064935.163465-1-kjain@linux.ibm.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>
->> Prevent race condition with ioctl commands
->>
->> To fully prevent a race condition where the next
->> issued command will be rejected as the card is no
->> longer signalling busy but not yet back in TRAN state.
->> The card may be in PROG state without signalling busy,
->> for some of the commands that are only R1, but also
->> for R1b commands, the card will signal non-busy as soon
->> as receive buffers are free again, but the card has
->> not finished handling the command and may therefore be
->> in PROG.
->
->Can you please point me to the corresponding information in the spec
->that states that the above behavior is correct?
+Em Mon, Jun 28, 2021 at 12:19:35PM +0530, Kajol Jain escreveu:
+> Patch adds 24x7 nest metric events for POWER10.
 
-Sure, unfortunately it is blanked in the simplified spec so I (think I) cannot simply cite it now.
-If access to the full spec is a problem for many contributors of the list, I would reconsider the legal aspects.
-The part I'm referring to is the last (two) sentence(s) of the section "Single Block Write" in 4.12.3 Data Write.
-(Single Block Write is the correct section as all R1 (no b) commands with data behave like Single Block Write.
-This info itself is scattered throughout the (simplified) spec, but for CMD42 it is:
-"The card lock/unlock command has the structure and bus transaction type of a regular single block write command."
-For some other commands it is in the command description column of the 4.7.4)
+Thanks, applied.
 
->
->In principle what you are saying is that busy signalling on DAT0 is
->*entirely* broken, at least for some cards and some commands.
+- Arnaldo
 
-I wouldn't say broken, it seems to do what is described.
-But right now busy polling is essentially CMD13 polling, right? at least for card_busy_detect.
-So it doesn't hurt polling for TRAN.
+ 
+> Tested-by: Nageswara R Sastry <rnsastry@linux.ibm.com>
+> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+> ---
+>  .../arch/powerpc/power10/nest_metrics.json    | 424 ++++++++++++++++++
+>  1 file changed, 424 insertions(+)
+>  create mode 100644 tools/perf/pmu-events/arch/powerpc/power10/nest_metrics.json
+> 
+> ---
+> Changelog:
+> v1 -> v2
+> - Removed "BriefDescription" field as its value was same as "MetricName"
+>   field as suggested by Paul A. Clarke
+> - Added Tested-by tag.
+> ---
+> diff --git a/tools/perf/pmu-events/arch/powerpc/power10/nest_metrics.json b/tools/perf/pmu-events/arch/powerpc/power10/nest_metrics.json
+> new file mode 100644
+> index 000000000000..8ba3e81c9808
+> --- /dev/null
+> +++ b/tools/perf/pmu-events/arch/powerpc/power10/nest_metrics.json
+> @@ -0,0 +1,424 @@
+> +[
+> +    {
+> +      "MetricName": "VEC_GROUP_PUMP_RETRY_RATIO_P01",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RTY_VG_PUMP01\\,chip\\=?@ / hv_24x7@PM_PB_VG_PUMP01\\,chip\\=?@) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "VEC_GROUP_PUMP_RETRY_RATIO_P23",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RTY_VG_PUMP23\\,chip\\=?@ / hv_24x7@PM_PB_VG_PUMP23\\,chip\\=?@) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "LOCAL_NODE_PUMP_RETRY_RATIO_P01",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RTY_LNS_PUMP01\\,chip\\=?@ / hv_24x7@PM_PB_LNS_PUMP01\\,chip\\=?@) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "LOCAL_NODE_PUMP_RETRY_RATIO_P23",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RTY_LNS_PUMP23\\,chip\\=?@ / hv_24x7@PM_PB_LNS_PUMP23\\,chip\\=?@) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "GROUP_PUMP_RETRY_RATIO_P01",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RTY_GROUP_PUMP01\\,chip\\=?@ / hv_24x7@PM_PB_GROUP_PUMP01\\,chip\\=?@) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "GROUP_PUMP_RETRY_RATIO_P23",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RTY_GROUP_PUMP23\\,chip\\=?@ / hv_24x7@PM_PB_GROUP_PUMP23\\,chip\\=?@) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_GROUP_PUMPS_P01",
+> +      "MetricExpr": "(hv_24x7@PM_PB_GROUP_PUMP01\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_GROUP_PUMPS_P23",
+> +      "MetricExpr": "(hv_24x7@PM_PB_GROUP_PUMP23\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_GROUP_PUMPS_RETRIES_P01",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RTY_GROUP_PUMP01\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_GROUP_PUMPS_RETRIES_P23",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RTY_GROUP_PUMP23\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "REMOTE_NODE_PUMPS_RETRIES_RATIO_P01",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RTY_RNS_PUMP01\\,chip\\=?@ / hv_24x7@PM_PB_RNS_PUMP01\\,chip\\=?@) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "REMOTE_NODE_PUMPS_RETRIES_RATIO_P23",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RTY_RNS_PUMP23\\,chip\\=?@ / hv_24x7@PM_PB_RNS_PUMP23\\,chip\\=?@) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_VECTOR_GROUP_PUMPS_P01",
+> +      "MetricExpr": "(hv_24x7@PM_PB_VG_PUMP01\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_VECTOR_GROUP_PUMPS_P23",
+> +      "MetricExpr": "(hv_24x7@PM_PB_VG_PUMP23\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_LOCAL_NODE_PUMPS_P01",
+> +      "MetricExpr": "(hv_24x7@PM_PB_LNS_PUMP01\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_LOCAL_NODE_PUMPS_P23",
+> +      "MetricExpr": "(hv_24x7@PM_PB_LNS_PUMP23\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_VECTOR_GROUP_PUMPS_RETRIES_P01",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RTY_VG_PUMP01\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_VECTOR_GROUP_PUMPS_RETRIES_P23",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RTY_VG_PUMP23\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_LOCAL_NODE_PUMPS_RETRIES_P01",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RTY_LNS_PUMP01\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_LOCAL_NODE_PUMPS_RETRIES_P23",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RTY_LNS_PUMP23\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_REMOTE_NODE_PUMPS_P01",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RNS_PUMP01\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_REMOTE_NODE_PUMPS_P23",
+> +      "MetricExpr": "(hv_24x7@PM_PB_RNS_PUMP23\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_NEAR_NODE_PUMPS_P01",
+> +      "MetricExpr": "(hv_24x7@PM_PB_NNS_PUMP01\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_NEAR_NODE_PUMPS_P23",
+> +      "MetricExpr": "(hv_24x7@PM_PB_NNS_PUMP23\\,chip\\=?@ / hv_24x7@PM_PAU_CYC\\,chip\\=?@)",
+> +      "ScaleUnit": "4",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_INT_PB_BW",
+> +      "MetricExpr": "(hv_24x7@PM_PB_INT_DATA_XFER\\,chip\\=?@)",
+> +      "ScaleUnit": "2.09MB",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK0_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK0_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_XLINK0_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_XLINK0_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK0_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK1_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK1_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_XLINK1_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_XLINK1_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK1_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK2_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK2_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_XLINK2_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_XLINK2_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK2_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK3_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK3_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_XLINK3_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_XLINK3_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK3_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK4_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK4_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_XLINK4_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_XLINK4_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK4_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK5_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK5_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_XLINK5_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_XLINK5_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK5_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK6_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK6_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_XLINK6_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_XLINK6_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK6_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK7_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK7_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_XLINK7_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_XLINK7_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK7_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK0_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK0_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_XLINK0_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_XLINK0_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK0_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK1_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK1_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_XLINK1_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_XLINK1_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK1_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK2_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK2_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_XLINK2_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_XLINK2_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK2_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK3_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK3_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_XLINK3_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_XLINK3_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK3_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK4_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK4_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_XLINK4_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_XLINK4_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK4_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK5_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK5_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_XLINK5_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_XLINK5_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK5_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK6_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK6_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_XLINK6_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_XLINK6_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK6_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "XLINK7_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_XLINK7_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_XLINK7_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_XLINK7_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_XLINK7_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK0_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK0_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_ALINK0_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_ALINK0_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK0_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK1_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK1_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_ALINK1_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_ALINK1_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK1_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK2_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK2_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_ALINK2_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_ALINK2_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK2_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK3_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK3_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_ALINK3_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_ALINK3_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK3_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK4_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK4_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_ALINK4_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_ALINK4_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK4_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK5_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK5_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_ALINK5_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_ALINK5_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK5_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK6_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK6_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_ALINK6_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_ALINK6_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK6_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK7_OUT_TOTAL_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK7_OUT_ODD_TOTAL_UTIL\\,chip\\=?@ + hv_24x7@PM_ALINK7_OUT_EVEN_TOTAL_UTIL\\,chip\\=?@) / (hv_24x7@PM_ALINK7_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK7_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK0_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK0_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_ALINK0_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_ALINK0_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK0_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK1_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK1_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_ALINK1_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_ALINK1_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK1_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK2_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK2_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_ALINK2_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_ALINK2_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK2_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK3_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK3_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_ALINK3_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_ALINK3_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK3_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK4_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK4_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_ALINK4_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_ALINK4_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK4_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK5_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK5_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_ALINK5_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_ALINK5_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK5_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK6_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK6_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_ALINK6_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_ALINK6_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK6_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "ALINK7_OUT_DATA_UTILIZATION",
+> +      "MetricExpr": "((hv_24x7@PM_ALINK7_OUT_ODD_DATA\\,chip\\=?@ + hv_24x7@PM_ALINK7_OUT_EVEN_DATA\\,chip\\=?@) / (hv_24x7@PM_ALINK7_OUT_ODD_AVLBL_CYCLES\\,chip\\=?@ + hv_24x7@PM_ALINK7_OUT_EVEN_AVLBL_CYCLES\\,chip\\=?@)) * 100",
+> +      "ScaleUnit": "1.063%",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_DATA_BANDWIDTH_TRANSFERRED_OVER_PB_PCI1",
+> +      "MetricExpr": "(hv_24x7@PM_PCI1_32B_INOUT\\,chip\\=?@)",
+> +      "ScaleUnit": "3.28e-2MB",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_DATA_BANDWIDTH_TRANSFERRED_OVER_PB_PCI0",
+> +      "MetricExpr": "(hv_24x7@PM_PCI0_32B_INOUT\\,chip\\=?@)",
+> +      "ScaleUnit": "3.28e-2MB",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_MCS_READ_BW_MC0_CHAN01",
+> +      "MetricExpr": "(hv_24x7@PM_MCS_128B_RD_DATA_BLOCKS_MC0_CHAN01\\,chip\\=?@)",
+> +      "ScaleUnit": "5.24e-1MB",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_MCS_READ_BW_MC1_CHAN01",
+> +      "MetricExpr": "(hv_24x7@PM_MCS_128B_RD_DATA_BLOCKS_MC1_CHAN01\\,chip\\=?@)",
+> +      "ScaleUnit": "5.24e-1MB",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_MCS_READ_BW_MC2_CHAN01",
+> +      "MetricExpr": "(hv_24x7@PM_MCS_128B_RD_DATA_BLOCKS_MC2_CHAN01\\,chip\\=?@)",
+> +      "ScaleUnit": "5.24e-1MB",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_MCS_READ_BW_MC3_CHAN01",
+> +      "MetricExpr": "(hv_24x7@PM_MCS_128B_RD_DATA_BLOCKS_MC3_CHAN01\\,chip\\=?@)",
+> +      "ScaleUnit": "5.24e-1MB",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_MCS_WRITE_BW_MC0_CHAN01",
+> +      "MetricExpr": "(hv_24x7@PM_MCS_64B_WR_DATA_BLOCKS_MC0_CHAN01\\,chip\\=?@)",
+> +      "ScaleUnit": "2.6e-1MB",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_MCS_WRITE_BW_MC1_CHAN01",
+> +      "MetricExpr": "(hv_24x7@PM_MCS_64B_WR_DATA_BLOCKS_MC1_CHAN01\\,chip\\=?@)",
+> +      "ScaleUnit": "2.6e-1MB",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_MCS_WRITE_BW_MC2_CHAN01",
+> +      "MetricExpr": "(hv_24x7@PM_MCS_64B_WR_DATA_BLOCKS_MC2_CHAN01\\,chip\\=?@)",
+> +      "ScaleUnit": "2.6e-1MB",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "TOTAL_MCS_WRITE_BW_MC3_CHAN01",
+> +      "MetricExpr": "(hv_24x7@PM_MCS_64B_WR_DATA_BLOCKS_MC3_CHAN01\\,chip\\=?@)",
+> +      "ScaleUnit": "2.6e-1MB",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "Memory_RD_BW_Chip",
+> +      "MetricExpr": "(hv_24x7@PM_MCS_128B_RD_DATA_BLOCKS_MC0_CHAN01\\,chip\\=?@ + hv_24x7@PM_MCS_128B_RD_DATA_BLOCKS_MC1_CHAN01\\,chip\\=?@ + hv_24x7@PM_MCS_128B_RD_DATA_BLOCKS_MC2_CHAN01\\,chip\\=?@ + hv_24x7@PM_MCS_128B_RD_DATA_BLOCKS_MC3_CHAN01\\,chip\\=?@)",
+> +      "MetricGroup": "Memory_BW",
+> +      "ScaleUnit": "5.24e-1MB",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "Memory_WR_BW_Chip",
+> +      "MetricExpr": "(hv_24x7@PM_MCS_64B_WR_DATA_BLOCKS_MC0_CHAN01\\,chip\\=?@ + hv_24x7@PM_MCS_64B_WR_DATA_BLOCKS_MC1_CHAN01\\,chip\\=?@ + hv_24x7@PM_MCS_64B_WR_DATA_BLOCKS_MC2_CHAN01\\,chip\\=?@ + hv_24x7@PM_MCS_64B_WR_DATA_BLOCKS_MC3_CHAN01\\,chip\\=?@ )",
+> +      "MetricGroup": "Memory_BW",
+> +      "ScaleUnit": "2.6e-1MB",
+> +      "AggregationMode": "PerChip"
+> +    },
+> +    {
+> +      "MetricName": "PowerBUS_Frequency",
+> +      "MetricExpr": "(hv_24x7@PM_PAU_CYC\\,chip\\=?@ )",
+> +      "ScaleUnit": "2.56e-7GHz",
+> +      "AggregationMode": "PerChip"
+> +    }
+> +]
+> -- 
+> 2.31.1
+> 
 
-But not for all commands busy signalling <=> PROG state is true:
-"The card may provide buffering for block write. This means that the next block can be sent to the card while the previous is being programmed." (4.3)
-"There is no buffering option for write CSD, write protection and erase. This means that while the card is busy servicing any one of these commands, no other data transfer commands will be accepted. DAT0 line will be kept low as long as the card is busy and in the Programming State." (4.3)
-Definitely leaves us with MMC_PROGRAM_CID, CMD20, CMD42, MMC_SET_TIME, MMC_GEN_CMD and both SD_WRITE_EXTR.
-Furthermore I think the cleaner solution is to poll for TRAN anyway. Just in theory there does not seem to be a timing constraint for when the card starts signalling busy for R1 (non-b) commands.
-Just in theory the ioctl handling could be done BEFORE the card ever moves to PROG and starts signalling busy. (Im not sure about this though)
+-- 
 
->>
->> -static int card_busy_detect(struct mmc_card *card, unsigned int timeout_ms,
->> +static int is_prog_cmd(struct mmc_command *cmd)
->> +{
->> +       /*
->> +        * Cards will move to programming state (PROG) after these commands.
->> +        * So we must not consider the command as completed until the card
->> +        * has actually returned back to TRAN state.
->> +        */
->> +       switch (cmd->opcode) {
->> +       case MMC_STOP_TRANSMISSION:
->
->This has an R1B response, hence we already do the proper polling that is needed.
->
->In other words, we don't need to explicitly check for this command
->here, as we are already checking the response type (R1B) in
->__mmc_blk_ioctl_cmd().
-
-Fair. I will happily remove any multi block write commands.
-Just seemed like the safer way to do so, but I have not specifically checked if any cards violate this here.
-
->
->> +       case MMC_WRITE_DAT_UNTIL_STOP:
->
->What's this used for? It's obsolete, at least in the eMMC spec. Please drop it.
-
-Okay.
-
->> +       case MMC_WRITE_BLOCK:
->> +       case MMC_WRITE_MULTIPLE_BLOCK:
->
->These are already supported via the generic block interface, please
->drop the checks.
-
-Might make sense to let userspace issue read/write, too.
-But I understand if this is not desired.
-
->> +       case MMC_PROGRAM_CID:
->> +       case MMC_PROGRAM_CSD:
->
->Let's discuss these, since they have R1 responses.
->
->Although, according to the eMMC spec, the card moves to rcv state, not
->the prg state as you refer to in the commit message. Normally, we
->don't need to poll for busy/tran completion of these commands.
-
-Why not? Sure they move to rcv first, but if data stops they move to PROG.
->
->Have you observed through proper tests that this is actually needed?
-
-No, seems unlikely to hit this, as PROG will likely be shorter than getting a second command through.
->
->> +       case MMC_SET_WRITE_PROT:
->> +       case MMC_CLR_WRITE_PROT:
->> +       case MMC_ERASE:
->
->The three above have R1B, please drop them from here as they are
->already supported correctly.
->
->> +       case MMC_LOCK_UNLOCK:
->
->Again, this has an R1 response and the card moves to rcv state.
->Normally we shouldn't need to poll, but I have to admit that the eMMC
->spec isn't really clear on what will happen when using the "forced
->erase" argument. The spec mentions a 3 minute timeout....
-
-Again I don't know why you would not need to poll.
-The force erase has a good reason to remain in PROG for long, but whatever, a card may decide to just take 5 seconds in unlock PROG. (to prevent bruteforcing passwords lets say)(Not anything I have seen or expect to see)
-
->
->> +       case MMC_SET_TIME: /* Also covers SD_WRITE_EXTR_SINGLE */
->> +       case MMC_GEN_CMD:
->> +       case SD_WRITE_EXTR_MULTI:
->
->Are these actually being used? If not, please drop them from being
->supported. I don't want to encourage crazy operations being issued
->from userspace.
-
-GEN_CMD is extremly interesting for issuing vendor commands from user-space.
-Not sure if anyone uses it (yet), but if so it's unlikely to be seen in the wild.
-SD_WRITE_EXTR_MULTI is simply too new to really say.
-MMC_SET_TIME probably not used.
-
-
->
->Overall, it looks like we need to add a check for MMC_LOCK_UNLOCK to
->poll for busy, but that's it, I think.
-
-See above.
-
-
->>         } while (!mmc_ready_for_data(status));
->
->I don't quite understand what we accomplish with polling for TRAN
->state in one case and in the other case, both TRAN and READY_FOR_DATA.
->Why can't we always poll for TRAN and READY_FOR_DATA? It should work
->for all cases, no?
->
-
-Well in theory you're then dropping the buffered writing feature of the SD spec if waiting for TRAN, too.
-I'm fine with that, especially since it is not desired to be used through ioctl anyway?
-
-
-Kind Regards,
-Christian
-Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
-Managing Directors: Dr. Jan Peter Berns.
-Commercial register of local courts: Freiburg HRB381782
-
+- Arnaldo
