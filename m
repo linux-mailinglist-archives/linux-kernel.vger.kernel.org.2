@@ -2,94 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 666C73BE809
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 14:34:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C25063BE815
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 14:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231593AbhGGMhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 08:37:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231790AbhGGMg4 (ORCPT
+        id S231600AbhGGMhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 08:37:33 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36162 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231452AbhGGMha (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 08:36:56 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39522C061765;
-        Wed,  7 Jul 2021 05:34:09 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id l5so3093034iok.7;
-        Wed, 07 Jul 2021 05:34:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=chmQa5IpeIt4IXkO2YYlm4kIQAbHAUBT40W34N6HK+c=;
-        b=FP3iUiQfP/icEI4LbjBSI3DkoLml9ckJxyc3w37066XsHA2hBFKv0vpOp9C6DKCxho
-         Z4Vjfii2LyVLsjfCJ8u5FQawVcj+A0f/1VQF3sgThoUYad8xOAY+QL7ArDizjgI4edP6
-         cgHxw5nj6fO5yn8OIWb6OjbCm0TvBokvL/qsj14b2dPgausuhyHtdlVf9C4ayvPCR0NT
-         UrnX0scoQOt0ICkCnenl6NfddAYfvgxn+VQs0BrEweAk/j/v/hEJzWrMVKAjousYkLmJ
-         FWXw0qA4i++fd3BFeBc3qlH7+A4QKI1TN0TbDdzlKf5qldDbHDC7J1jUAS48Kxrbyt5B
-         SC5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=chmQa5IpeIt4IXkO2YYlm4kIQAbHAUBT40W34N6HK+c=;
-        b=gj2MRW8IrTR/6C0r+L+NXFpAEMPwuqjtxphZPXrpIE2DCi6nSBUhMfZ8biWK+NKP5B
-         2D/lRn9xXhXJXO72MHmAxinZZSrFWOLD8keA6e+G3T36Az3YyWoJX8ogacwHV1Wc/j7w
-         wBrzUABCe/UkssfcdCLJgyTAp3eMoIvqJQAekve/yd0NRHqqlIxno0dY9/HPbTfpLXUm
-         2SI3EB2se+Axk5JkZGEoSgmB0yUcQleJV47h0z/q8DE+HMjTIpjghHDsUE49c7jnFQ5A
-         +UjZmZYZqbXGG+sng8xUeUVUJokzsNMxP0gcOYAACbRhQZNzfs1mkIv0gca/ywdVDp5l
-         AOXQ==
-X-Gm-Message-State: AOAM533N6NU/3hHtIfe9U3us/FAli0hk1hB25O3arF7951jq8IV55+VH
-        WyEQbr2rsoNjSjg8DLlKNmaj2odbN6lDFSlbDdg=
-X-Google-Smtp-Source: ABdhPJxL3YLMtrMJcDPXmd0E/oNsIRCPtEGtMJDT6uaORil50lerHGgUucLM4nPUYLTm0OKfWDkk2TWjYDIeI2rYa48=
-X-Received: by 2002:a5d:8c9a:: with SMTP id g26mr11524818ion.121.1625661248643;
- Wed, 07 Jul 2021 05:34:08 -0700 (PDT)
+        Wed, 7 Jul 2021 08:37:30 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 167CXr5A100912;
+        Wed, 7 Jul 2021 08:34:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=dpgIKtDcn8zrecEuBSEe1Ts+6aPIYw5UAjR+mQFVNKo=;
+ b=Ch75lnsoXqtWSgNYIkyodTJtc64/w4/bbMLW9Uq2rJYiGTT1myR+NPPxtCziK4DeWhVe
+ sG9+KLN1j+BaVQzCVuzAQlLAmTbIB12NOSIqNHc4xjc7WoufllNiPTLoa21kREj4qirr
+ 6iMmzldcyhZ1SVLn5mkSs71DU697foyMssrB0Y6Hc0DjBe9qQKJpHRpluTt8cXEEV5UA
+ uPhy41fKYpI+ina7TDOL9fAY7Oo3lWMzeZyDDeQy7phJXf9yFnUrZ2blSuaM9qtPdsR7
+ 6bI13H61jntzxJgG7Xrky2e6BLzxSVv3HyHsrJ3xa5JrxqFekROfo+diKhS+dx1u3XuD Bw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39n28jf2j8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Jul 2021 08:34:09 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 167CY95i101949;
+        Wed, 7 Jul 2021 08:34:09 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39n28jf2h2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Jul 2021 08:34:08 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 167CI8Fl029258;
+        Wed, 7 Jul 2021 12:34:06 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06ams.nl.ibm.com with ESMTP id 39jf5h9rad-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Jul 2021 12:34:05 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 167CWC0E31588798
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 7 Jul 2021 12:32:12 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B809611C052;
+        Wed,  7 Jul 2021 12:34:03 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A3CF411C04C;
+        Wed,  7 Jul 2021 12:34:03 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed,  7 Jul 2021 12:34:03 +0000 (GMT)
+Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 25651)
+        id 4C591E07F4; Wed,  7 Jul 2021 14:34:03 +0200 (CEST)
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+To:     peterz@infradead.org
+Cc:     borntraeger@de.ibm.com, bristot@redhat.com, bsegall@google.com,
+        dietmar.eggemann@arm.com, joshdon@google.com,
+        juri.lelli@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux@rasmusvillemoes.dk, mgorman@suse.de, mingo@kernel.org,
+        rostedt@goodmis.org, valentin.schneider@arm.com,
+        vincent.guittot@linaro.org
+Subject: [PATCH 0/1] Improve yield (was: sched: Move SCHED_DEBUG sysctl to debugfs)
+Date:   Wed,  7 Jul 2021 14:34:01 +0200
+Message-Id: <20210707123402.13999-1-borntraeger@de.ibm.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <YIlXQ43b6+7sUl+f@hirez.programming.kicks-ass.net>
+References: <YIlXQ43b6+7sUl+f@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20210704202756.29107-1-ojeda@kernel.org> <YOVNJuA0ojmeLvKa@infradead.org>
-In-Reply-To: <YOVNJuA0ojmeLvKa@infradead.org>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 7 Jul 2021 14:33:57 +0200
-Message-ID: <CANiq72mKPFtB4CtHcc94a_y1V4bEOXXN2CwttQFvyzwXJv62kw@mail.gmail.com>
-Subject: Re: [PATCH 00/17] Rust support
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux <rust-for-linux@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Uy4gkWTNOJy0ybSoKjspsd4ECeo2iRLs
+X-Proofpoint-ORIG-GUID: ocIIzvYN2ltTj-8JPMka8KdU9wHs2rop
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-07_06:2021-07-06,2021-07-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
+ bulkscore=0 spamscore=0 adultscore=0 priorityscore=1501 impostorscore=0
+ suspectscore=0 phishscore=0 malwarescore=0 clxscore=1015 mlxlogscore=830
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107070075
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 7, 2021 at 8:44 AM Christoph Hellwig <hch@infradead.org> wrote:
->
-> Not sure if this is just a state of the union post or if you actually
-> want to submit it.  If the later I strongly disagree with merging it,
-
-We are submitting it.
-
-> as you should refined it and prove it actually is useful first.  Where
-> useful would be a real-life driver like say nvme or a usb host
-> controller driver that actually works and shows benefits over the
-> existing one.  Until it shows such usefulness it will just drag
-> everyone else down.
-
-It is "proven" in the sense we are already starting to get users
-downstream and other interested parties have shown support.
-
-However, others are more conservative and will only start investing
-into it if we are in mainline, i.e. if the decision of having Rust or
-not is already taken.
-
-But it is fair to ask for a hardware driver to see how it looks like,
-which is why the cover letter mentions we are working on one.
-
-Now, if you are OK with non-hardware modules, you can take a look at
-Rust Binder (last patch in the series) which is a non-trivial module
-and it is already working.
-
-Cheers,
-Miguel
+I did a reduced testcase and assuming that the reduced testcase has the
+same issue, it turns out that a lower sched_migration_cost_ns does not
+solve a specific problem, instead it seems to make a different problem
+less problematic. In the end the problem seemed to be worse on KVM hosts
+(guest changes did also help but much less so). In the end what did help
+was to improve the behaviour of yield_to from KVM.
+See the patch for more details. The problem seems to be real, my
+solution might not be the best one - I am open for better ways to
+code things.
