@@ -2,139 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F1D03BE2EE
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 08:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB5E3BE2F1
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 08:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbhGGGI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 02:08:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38334 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230235AbhGGGI0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 02:08:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 823E661C84;
-        Wed,  7 Jul 2021 06:05:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1625637946;
-        bh=YuttRsFslnO6zMeDLZoiEywP0tDcwd9vflEFA2RQoTQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rxHRds6kXesSsBVKJ9st+0mm8fSfwZ/EtjqyU6dX4trTAUZAqWEIlMtj5qEig6PMm
-         2QQhAuno+AkuY9JrLCcNwKP5bRKNxg/4+/MqUu02s3zSDMYjRX8NghaULMSKmq4UuG
-         7o8MNlQ+1pK+tcs93pUBS//rCg3uCKLxmu1mq3hw=
-Date:   Wed, 7 Jul 2021 08:05:41 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Cc:     jlayton@kernel.org, bfields@fieldses.org, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+e6d5398a02c516ce5e70@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2 1/2] fcntl: fix potential deadlocks for
- &fown_struct.lock
-Message-ID: <YOVENb3X/m/pNrYt@kroah.com>
-References: <20210707023548.15872-1-desmondcheongzx@gmail.com>
- <20210707023548.15872-2-desmondcheongzx@gmail.com>
+        id S230280AbhGGGLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 02:11:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230226AbhGGGLj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 02:11:39 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD78FC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 23:08:59 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id n99-20020a9d206c0000b029045d4f996e62so1233160ota.4
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 23:08:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rhjFQjqsGps5ZLlP2FObo/mUu7sdKPBCFwRRv8flp0I=;
+        b=HnHAGY/BGoCWIMjdGWbx+dxNATDMwDxp9FNflMwM6WZ6MW9p6hpHiA+wz0LC9ypuBb
+         oaxm0rYPFr1PGlPo0sL2Lz143Cl2gDsSbFJVc653MHvNDhaVhb9evSGpEuCo9aaGSb+u
+         Ek0QyCr9gWGACIGZH0AiI/WUmoUaA4WjAOoJspTOa17qKV8RjbHCHbxA7W+nwDnFg0xU
+         UMmE29EiHQJqwlT+Ohuq6qD9BtgrpP9juhs3lTBtPki8y8tRDv6FnEK8kUbvgqvIJ/ls
+         XJtd3ez7urfWq0ZzY071SN9Rtr2VGFqNBJU6K1xfFEVv7Hl4a8Tb5jd6coqFGZper883
+         +vAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rhjFQjqsGps5ZLlP2FObo/mUu7sdKPBCFwRRv8flp0I=;
+        b=rcmqABIFe1vT96T9B1A/nBKq9Tawph1OemUs8FE8tLVCEmyMGoS1sWfctmz97hYhFt
+         yAa0HkYxrr1sTzKywM+7HzjiWVONjGO5vN1KszhGm7LtK8py7jyfDLEiQroFgaCuHxYr
+         gRGt2/0wam/1XQnEJ2gLThIKQlo7XSvl3czawKIDnDU4gIPms2koTxKbH+yDaimL5TOE
+         mBEOlUQE13LazoRWBXJarSFDI22i0IzeX+RX/i2DFOxoqjhcc5NUFijfv/OaOpzKD2oC
+         PqMSVVNtwNkaYsWe/vfz1l+LbdCyK4EGYNbHKGUDfcAuTkof7VaUooINk7dh/N376vds
+         ofrg==
+X-Gm-Message-State: AOAM531swwyutqfzKzPQrNO052x4CMWhplkpB/Xj1yHkND2idyXqzs/v
+        l1n5tQlSFTjL3QQ+KcgSjTm1AVAS+XWKLipQl+NOb45DRam2zg==
+X-Google-Smtp-Source: ABdhPJzFVujca29EKUrscpso4yd7YoRynU8e+9xXIXLI7nVX0k6Jt7n2M5lc+GaYsVL8MCmdIIgVTfQzeX6rJQjVADg=
+X-Received: by 2002:a05:6830:544:: with SMTP id l4mr18151718otb.164.1625638139237;
+ Tue, 06 Jul 2021 23:08:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210707023548.15872-2-desmondcheongzx@gmail.com>
+References: <1623844402-4731-1-git-send-email-zhenguo6858@gmail.com> <CAGGV+3LgLdohhYhH+qJTokeNU_WdV9oRNHMc9a_5YTTVA3U8ow@mail.gmail.com>
+In-Reply-To: <CAGGV+3LgLdohhYhH+qJTokeNU_WdV9oRNHMc9a_5YTTVA3U8ow@mail.gmail.com>
+From:   =?UTF-8?B?6LW15oyv5Zu9?= <zhenguo6858@gmail.com>
+Date:   Wed, 7 Jul 2021 14:08:40 +0800
+Message-ID: <CAGGV+3L+VgU75kKt30EoThQ3yhyfFDhkEvoK9N-hAQrv8XxiUA@mail.gmail.com>
+Subject: Re: [PATCH v2] tty: n_gsm: CR bit value should be 0 when config "initiator=0"
+To:     =?UTF-8?B?6LW15oyv5Zu9?= <zhenguo6858@gmail.com>
+Cc:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 10:35:47AM +0800, Desmond Cheong Zhi Xi wrote:
-> Syzbot reports a potential deadlock in do_fcntl:
-> 
-> ========================================================
-> WARNING: possible irq lock inversion dependency detected
-> 5.12.0-syzkaller #0 Not tainted
-> --------------------------------------------------------
-> syz-executor132/8391 just changed the state of lock:
-> ffff888015967bf8 (&f->f_owner.lock){.+..}-{2:2}, at: f_getown_ex fs/fcntl.c:211 [inline]
-> ffff888015967bf8 (&f->f_owner.lock){.+..}-{2:2}, at: do_fcntl+0x8b4/0x1200 fs/fcntl.c:395
-> but this lock was taken by another, HARDIRQ-safe lock in the past:
->  (&dev->event_lock){-...}-{2:2}
-> 
-> and interrupts could create inverse lock ordering between them.
-> 
-> other info that might help us debug this:
-> Chain exists of:
->   &dev->event_lock --> &new->fa_lock --> &f->f_owner.lock
-> 
->  Possible interrupt unsafe locking scenario:
-> 
->        CPU0                    CPU1
->        ----                    ----
->   lock(&f->f_owner.lock);
->                                local_irq_disable();
->                                lock(&dev->event_lock);
->                                lock(&new->fa_lock);
->   <Interrupt>
->     lock(&dev->event_lock);
-> 
->  *** DEADLOCK ***
-> 
-> This happens because there is a lock hierarchy of
-> &dev->event_lock --> &new->fa_lock --> &f->f_owner.lock
-> from the following call chain:
-> 
->   input_inject_event():
->     spin_lock_irqsave(&dev->event_lock,...);
->     input_handle_event():
->       input_pass_values():
->         input_to_handler():
->           evdev_events():
->             evdev_pass_values():
->               spin_lock(&client->buffer_lock);
->               __pass_event():
->                 kill_fasync():
->                   kill_fasync_rcu():
->                     read_lock(&fa->fa_lock);
->                     send_sigio():
->                       read_lock_irqsave(&fown->lock,...);
-> 
-> However, since &dev->event_lock is HARDIRQ-safe, interrupts have to be
-> disabled while grabbing &f->f_owner.lock, otherwise we invert the lock
-> hierarchy.
-> 
-> Hence, we replace calls to read_lock/read_unlock on &f->f_owner.lock,
-> with read_lock_irq/read_unlock_irq.
-> 
-> Here read_lock_irq/read_unlock_irq should be safe to use because the
-> functions f_getown_ex and f_getowner_uids are only called from
-> do_fcntl, and f_getown is only called from do_fnctl and
-> sock_ioctl. do_fnctl itself is only called from syscalls.
-> 
-> For sock_ioctl, the chain is
->   compat_sock_ioctl():
->     compat_sock_ioctl_trans():
->       sock_ioctl()
-> 
-> And interrupts are not disabled on either path. We assert this
-> assumption with WARN_ON_ONCE(irqs_disabled()). This check is also
-> inserted into another use of write_lock_irq in f_modown.
-> 
-> Reported-and-tested-by: syzbot+e6d5398a02c516ce5e70@syzkaller.appspotmail.com
-> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-> ---
->  fs/fcntl.c | 17 +++++++++++------
->  1 file changed, 11 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/fcntl.c b/fs/fcntl.c
-> index dfc72f15be7f..262235e02c4b 100644
-> --- a/fs/fcntl.c
-> +++ b/fs/fcntl.c
-> @@ -88,6 +88,7 @@ static int setfl(int fd, struct file * filp, unsigned long arg)
->  static void f_modown(struct file *filp, struct pid *pid, enum pid_type type,
->                       int force)
->  {
-> +	WARN_ON_ONCE(irqs_disabled());
+Dear Jiri,Greg
 
-If this triggers, you just rebooted the box :(
+ 1:   our development board uses linux kernel , uart dev node is "/dev/ttyGS2"
+ 2:   config uart "/dev/ttyGS2" ,we use ngsm ldisc,and config
+"c.initiator = 0;" code is as follows
 
-Please never do this, either properly handle the problem and return an
-error, or do not check for this.  It is not any type of "fix" at all,
-and at most, a debugging aid while you work on the root problem.
+  #include <stdio.h>
+  #include <stdint.h>
+  #include <linux/gsmmux.h>
+  #include <linux/tty.h>
+  #define DEFAULT_SPEED      B115200
+  #define SERIAL_PORT        /dev/ttyGS2
 
-thanks,
+     int ldisc = N_GSM0710;
+     struct gsm_config c;
+     struct termios configuration;
+     uint32_t first;
 
-greg k-h
+     /* open the serial port */
+     fd = open(SERIAL_PORT, O_RDWR | O_NOCTTY | O_NDELAY);
+
+     /* configure the serial port : speed, flow control ... */
+
+     /* use n_gsm line discipline */
+     ioctl(fd, TIOCSETD, &ldisc);
+
+     /* get n_gsm configuration */
+     ioctl(fd, GSMIOC_GETCONF, &c);
+     /* we are responter and need encoding 0 (basic) */
+     c.initiator = 0;
+     c.encapsulation = 0;
+     /* our modem defaults to a maximum size of 127 bytes */
+     c.mru = 127;
+     c.mtu = 127;
+    /* set the new configuration */
+     ioctl(fd, GSMIOC_SETCONF, &c);
+     /* get first gsmtty device node */
+     ioctl(fd, GSMIOC_GETFIRST, &first);
+     printf("first muxed line: /dev/gsmtty%i\n", first);
+
+     /* and wait for ever to keep the line discipline enabled */
+     daemon(0,0);
+     pause();
+
+3:  connect to ubuntu by uart serial port cable,ubuntu uart dev node
+is /"dev/ttyUSB0"
+send  DLC0 SABM command by "/dev/ttyUSB0",but linux development board
+can't response,code is as follows
+
+int main(int argc, char **argv)
+{
+    int fd;
+fd = open("/dev/ttyUSB0,O_RDWR | O_NOCTTY | O_NDELAY);
+char buf[256]={0xf9,0x03,0x3f,0x01,0x1c,0xf9};
+write(fd,buf,6);
+close(fd);
+}
+
+4:  linux development board receive data,by uart,gsm_queue will check
+CR,find CR=1.so go to invalid,pls check again.
+static void gsm_queue(struct gsm_mux *gsm)
+{
+cr ^= 1 - gsm->initiator; /* Flip so 1 always means command */
+dlci = gsm->dlci[address];
+
+switch (gsm->control) {
+case SABM|PF:
+if (cr == 0)
+goto invalid;
+if (dlci == NULL)
+dlci = gsm_dlci_alloc(gsm, address);
+if (dlci == NULL)
+return;
+if (dlci->dead)
+gsm_response(gsm, address, DM);
+else {
+gsm_response(gsm, address, UA);
+gsm_dlci_open(dlci);
+}
+break;
