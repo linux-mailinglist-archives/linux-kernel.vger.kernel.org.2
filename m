@@ -2,155 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78BA23BEC98
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 18:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36E2E3BEC59
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 18:36:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230351AbhGGQxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 12:53:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230262AbhGGQxf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 12:53:35 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E98C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 09:50:54 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id s5-20020aa78d450000b02902ace63a7e93so1919443pfe.8
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 09:50:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=mDncmzLGteyPekcgzGwrNHHfMFLg/jutBeeWKGXX5js=;
-        b=oWvob/cudwepk3+0arpOzuwpuOl7y7/Cwn3yeUIUhviDXyy3ELCDMKL6GciEA6KbAB
-         qzzc4MUCUdYuQULE+1HJI7iXox7J9HKzTt+R5mpnuDjQl9D/EyaF8ymvT8xSA4Hks/0u
-         VNibIWxLxz4jPTjL26KXT7cPgSIuzUKkBEFnmFE3Mdw6HJRf1Se2TtewEqfr9tGPIoHp
-         GYTWWc4urqUqaie5ZQeiiBcO5ywbx3zz80GHFHcGgTZ5ggb5ZobX7sSaU1DnwPFmRBwc
-         5hzx3JaZg3UpwxWUw0eiOVkSHRDFW2zF+mneNqot8Sx0RQWI5VMsvPo77KhD8DaL2aVr
-         vjbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=mDncmzLGteyPekcgzGwrNHHfMFLg/jutBeeWKGXX5js=;
-        b=CHxjIwK/CMyFFcOAlVPVbXJM/OxyYXK3CWKlZ9Vc69rQmzdqWPTZtJtRCzIxosMgby
-         KWc27rQ4id0+3jG0CvpCPUh8KZawrWVXxoLB1zAbuw++mp9xrUqTjAIe7YH2J2urq6TN
-         uEgFpn5Bl0J/oiizQTwF4nZyqYt+Dgsg+TmzpqqMnayuLaWC02UBq+imjdkPySiye6mP
-         uA7t+bBgohl4YhjKCa0eBBJ+HK4kfWtFcfYoJZwglyWhFIDAE0jr771zImZveF4gZD13
-         7isUZyLPk0HFecf4+sOQL3IJSSf1ELfkpjGYu/h8msaCAwGNpJz/9BtDhzlBXAndbhuH
-         HnKQ==
-X-Gm-Message-State: AOAM533RStsWrsKVMKzUPDwrisfcTCaxVOReBXWUZ+Y7De6uooWnWVyl
-        6H6eFPoH48vwxALRzZKiEoKJmOdpSAJhMw==
-X-Google-Smtp-Source: ABdhPJxXcRjS1V2NMcW7S3JYOAGGh0CTsus8BeF6UjvhTDX7Az6NbMK+TIfiXlu5Ldj0EWP5O667VCvqM8NKmQ==
-X-Received: from xllamas.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:b1])
- (user=cmllamas job=sendgmr) by 2002:aa7:9517:0:b029:314:1313:227 with SMTP id
- b23-20020aa795170000b029031413130227mr26415260pfp.47.1625676654233; Wed, 07
- Jul 2021 09:50:54 -0700 (PDT)
-Date:   Wed,  7 Jul 2021 16:24:19 +0000
-Message-Id: <20210707162419.15510-1-cmllamas@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-Subject: [PATCH] ANDROID: binderfs: add capabilities support
-From:   Carlos Llamas <cmllamas@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "=?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Christian Brauner <christian@brauner.io>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Steven Moreland <smoreland@google.com>,
-        kernel-team@android.com, linux-kernel@vger.kernel.org,
-        Carlos Llamas <cmllamas@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S230310AbhGGQic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 12:38:32 -0400
+Received: from mga17.intel.com ([192.55.52.151]:55266 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230280AbhGGQia (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 12:38:30 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10037"; a="189718249"
+X-IronPort-AV: E=Sophos;i="5.84,220,1620716400"; 
+   d="scan'208";a="189718249"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2021 09:35:36 -0700
+X-IronPort-AV: E=Sophos;i="5.84,220,1620716400"; 
+   d="scan'208";a="645442795"
+Received: from cmcarran-mobl.amr.corp.intel.com (HELO [10.213.189.140]) ([10.213.189.140])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2021 09:35:35 -0700
+Subject: Re: [PATCH 07/12] ASoC: amd: add ACP5x pcm dma driver ops
+To:     Vijendar Mukunda <vijendar.mukunda@amd.com>, broonie@kernel.org,
+        alsa-devel@alsa-project.org
+Cc:     Sunil-kumar.Dommati@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Takashi Iwai <tiwai@suse.com>, Alexander.Deucher@amd.com
+References: <20210707055623.27371-1-vijendar.mukunda@amd.com>
+ <20210707055623.27371-8-vijendar.mukunda@amd.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <c2ca7755-9a28-792f-78b1-5be62474672a@linux.intel.com>
+Date:   Wed, 7 Jul 2021 11:27:22 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210707055623.27371-8-vijendar.mukunda@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide userspace with a mechanism to discover binder driver
-capabilities to refrain from using these unsupported features
-in the first place. Note that older capabilities are assumed
-to be supported and only new ones will be added.
 
-Signed-off-by: Carlos Llamas <cmllamas@google.com>
----
- drivers/android/binderfs.c | 45 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
 
-diff --git a/drivers/android/binderfs.c b/drivers/android/binderfs.c
-index e80ba93c62a9..f793887f6dc8 100644
---- a/drivers/android/binderfs.c
-+++ b/drivers/android/binderfs.c
-@@ -58,6 +58,10 @@ enum binderfs_stats_mode {
- 	binderfs_stats_mode_global,
- };
- 
-+struct binder_capabilities {
-+	bool oneway_spam;
-+};
-+
- static const struct constant_table binderfs_param_stats[] = {
- 	{ "global", binderfs_stats_mode_global },
- 	{}
-@@ -69,6 +73,10 @@ static const struct fs_parameter_spec binderfs_fs_parameters[] = {
- 	{}
- };
- 
-+static struct binder_capabilities binder_caps = {
-+	.oneway_spam = true,
-+};
-+
- static inline struct binderfs_info *BINDERFS_SB(const struct super_block *sb)
- {
- 	return sb->s_fs_info;
-@@ -583,6 +591,39 @@ static struct dentry *binderfs_create_dir(struct dentry *parent,
- 	return dentry;
- }
- 
-+static int binder_caps_show(struct seq_file *m, void *unused)
-+{
-+	bool *cap = m->private;
-+
-+	seq_printf(m, "%d\n", *cap);
-+
-+	return 0;
-+}
-+DEFINE_SHOW_ATTRIBUTE(binder_caps);
-+
-+static int init_binder_caps(struct super_block *sb)
-+{
-+	struct dentry *dentry, *root;
-+	int ret = 0;
-+
-+	root = binderfs_create_dir(sb->s_root, "caps");
-+	if (IS_ERR(root)) {
-+		ret = PTR_ERR(root);
-+		goto out;
-+	}
-+
-+	dentry = binderfs_create_file(root, "oneway_spam",
-+				      &binder_caps_fops,
-+				      &binder_caps.oneway_spam);
-+	if (IS_ERR(dentry)) {
-+		ret = PTR_ERR(dentry);
-+		goto out;
-+	}
-+
-+out:
-+	return ret;
-+}
-+
- static int init_binder_logs(struct super_block *sb)
- {
- 	struct dentry *binder_logs_root_dir, *dentry, *proc_log_dir;
-@@ -723,6 +764,10 @@ static int binderfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 			name++;
- 	}
- 
-+	ret = init_binder_caps(sb);
-+	if (ret)
-+		return ret;
-+
- 	if (info->mount_opts.stats_mode == binderfs_stats_mode_global)
- 		return init_binder_logs(sb);
- 
--- 
-2.32.0.93.g670b81a890-goog
+On 7/7/21 12:56 AM, Vijendar Mukunda wrote:
+> This patch adds ACP5x PCM driver DMA operations.
+> 
+> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+> ---
+>  sound/soc/amd/vangogh/acp5x-pcm-dma.c | 306 +++++++++++++++++++++++++-
+>  sound/soc/amd/vangogh/acp5x.h         | 106 +++++++++
+>  2 files changed, 410 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/amd/vangogh/acp5x-pcm-dma.c b/sound/soc/amd/vangogh/acp5x-pcm-dma.c
+> index d79712587d30..a4235cf33548 100644
+> --- a/sound/soc/amd/vangogh/acp5x-pcm-dma.c
+> +++ b/sound/soc/amd/vangogh/acp5x-pcm-dma.c
+> @@ -17,8 +17,42 @@
+>  
+>  #define DRV_NAME "acp5x_i2s_dma"
+>  
+> -static const struct snd_soc_component_driver acp5x_i2s_component = {
+> -	.name		= DRV_NAME,
+> +static const struct snd_pcm_hardware acp5x_pcm_hardware_playback = {
+> +	.info = SNDRV_PCM_INFO_INTERLEAVED |
+> +		SNDRV_PCM_INFO_BLOCK_TRANSFER |
+> +		SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
+> +		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME,
+> +	.formats = SNDRV_PCM_FMTBIT_S16_LE |  SNDRV_PCM_FMTBIT_S8 |
+> +		   SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S32_LE,
 
+is S24_4LE supported? seems more useful than 8-bit audio these days, no?
+
+> +static void config_acp5x_dma(struct i2s_stream_instance *rtd, int direction)
+> +{
+> +	u16 page_idx;
+> +	u32 low, high, val, acp_fifo_addr, reg_fifo_addr;
+> +	u32 reg_dma_size, reg_fifo_size;
+> +	dma_addr_t addr;
+> +
+> +	addr = rtd->dma_addr;
+> +	if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
+> +		switch (rtd->i2s_instance) {
+> +		case I2S_HS_INSTANCE:
+> +			val = ACP_SRAM_HS_PB_PTE_OFFSET;
+> +			break;
+> +		case I2S_SP_INSTANCE:
+> +		default:
+> +			val = ACP_SRAM_SP_PB_PTE_OFFSET;
+> +		}
+> +	} else {
+> +		switch (rtd->i2s_instance) {
+> +		case I2S_HS_INSTANCE:
+> +			val = ACP_SRAM_HS_CP_PTE_OFFSET;
+> +			break;
+> +		case I2S_SP_INSTANCE:
+> +		default:
+> +			val = ACP_SRAM_SP_CP_PTE_OFFSET;
+> +		}
+> +	}
+> +	/* Group Enable */
+> +	acp_writel(ACP_SRAM_PTE_OFFSET | BIT(31), rtd->acp5x_base +
+> +		   ACPAXI2AXI_ATU_BASE_ADDR_GRP_1);
+> +	acp_writel(PAGE_SIZE_4K_ENABLE, rtd->acp5x_base +
+> +		   ACPAXI2AXI_ATU_PAGE_SIZE_GRP_1);
+> +
+> +	for (page_idx = 0; page_idx < rtd->num_pages; page_idx++) {
+> +		/* Load the low address of page int ACP SRAM through SRBM */
+> +		low = lower_32_bits(addr);
+> +		high = upper_32_bits(addr);
+> +
+> +		acp_writel(low, rtd->acp5x_base + ACP_SCRATCH_REG_0 + val);
+> +		high |= BIT(31);
+> +		acp_writel(high, rtd->acp5x_base + ACP_SCRATCH_REG_0 + val
+> +			   + 4);
+
+use single line? I find the indentation style quite an eyesore...
+
+
+> +		/* Move to next physically contiguous page */
+> +		val += 8;
+> +		addr += PAGE_SIZE;
+> +	}
+> +
+> +	if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
+> +		switch (rtd->i2s_instance) {
+> +		case I2S_HS_INSTANCE:
+> +			reg_dma_size = ACP_HS_TX_DMA_SIZE;
+> +			acp_fifo_addr = ACP_SRAM_PTE_OFFSET +
+> +					HS_PB_FIFO_ADDR_OFFSET;
+> +			reg_fifo_addr = ACP_HS_TX_FIFOADDR;
+> +			reg_fifo_size = ACP_HS_TX_FIFOSIZE;
+> +			acp_writel(I2S_HS_TX_MEM_WINDOW_START,
+> +				   rtd->acp5x_base + ACP_HS_TX_RINGBUFADDR);
+> +			break;
+> +
+> +		case I2S_SP_INSTANCE:
+> +		default:
+> +			reg_dma_size = ACP_I2S_TX_DMA_SIZE;
+> +			acp_fifo_addr = ACP_SRAM_PTE_OFFSET +
+> +					SP_PB_FIFO_ADDR_OFFSET;
+> +			reg_fifo_addr =	ACP_I2S_TX_FIFOADDR;
+> +			reg_fifo_size = ACP_I2S_TX_FIFOSIZE;
+> +			acp_writel(I2S_SP_TX_MEM_WINDOW_START,
+> +				   rtd->acp5x_base + ACP_I2S_TX_RINGBUFADDR);
+> +		}
+> +	} else {
+> +		switch (rtd->i2s_instance) {
+> +		case I2S_HS_INSTANCE:
+> +			reg_dma_size = ACP_HS_RX_DMA_SIZE;
+> +			acp_fifo_addr = ACP_SRAM_PTE_OFFSET +
+> +					HS_CAPT_FIFO_ADDR_OFFSET;
+> +			reg_fifo_addr = ACP_HS_RX_FIFOADDR;
+> +			reg_fifo_size = ACP_HS_RX_FIFOSIZE;
+> +			acp_writel(I2S_HS_RX_MEM_WINDOW_START,
+> +				   rtd->acp5x_base + ACP_HS_RX_RINGBUFADDR);
+> +			break;
+> +
+> +		case I2S_SP_INSTANCE:
+> +		default:
+> +			reg_dma_size = ACP_I2S_RX_DMA_SIZE;
+> +			acp_fifo_addr = ACP_SRAM_PTE_OFFSET +
+> +					SP_CAPT_FIFO_ADDR_OFFSET;
+> +			reg_fifo_addr = ACP_I2S_RX_FIFOADDR;
+> +			reg_fifo_size = ACP_I2S_RX_FIFOSIZE;
+> +			acp_writel(I2S_SP_RX_MEM_WINDOW_START,
+> +				   rtd->acp5x_base + ACP_I2S_RX_RINGBUFADDR);
+> +		}
+> +	}
+> +	acp_writel(DMA_SIZE, rtd->acp5x_base + reg_dma_size);
+> +	acp_writel(acp_fifo_addr, rtd->acp5x_base + reg_fifo_addr);
+> +	acp_writel(FIFO_SIZE, rtd->acp5x_base + reg_fifo_size);
+> +	acp_writel(BIT(I2S_RX_THRESHOLD) | BIT(HS_RX_THRESHOLD)
+> +		   | BIT(I2S_TX_THRESHOLD) | BIT(HS_TX_THRESHOLD),
+> +		   rtd->acp5x_base + ACP_EXTERNAL_INTR_CNTL);
+> +}
+> +
+
+> +static int acp5x_dma_hw_params(struct snd_soc_component *component,
+> +			       struct snd_pcm_substream *substream,
+> +			       struct snd_pcm_hw_params *params)
+> +{
+> +	struct i2s_stream_instance *rtd;
+> +	struct snd_soc_pcm_runtime *prtd;
+> +	struct snd_soc_card *card;
+> +	struct acp5x_platform_info *pinfo;
+> +	struct i2s_dev_data *adata;
+> +	u64 size;
+> +
+> +	prtd = asoc_substream_to_rtd(substream);
+> +	card = prtd->card;
+> +	pinfo = snd_soc_card_get_drvdata(card);
+> +	adata = dev_get_drvdata(component->dev);
+> +	rtd = substream->runtime->private_data;
+> +
+> +	if (!rtd)
+> +		return -EINVAL;
+> +
+> +	if (pinfo) {
+> +		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+> +			rtd->i2s_instance = pinfo->play_i2s_instance;
+> +			switch (rtd->i2s_instance) {
+> +			case I2S_HS_INSTANCE:
+> +				adata->play_stream = substream;
+> +				break;
+> +			case I2S_SP_INSTANCE:
+> +			default:
+> +				adata->i2ssp_play_stream = substream;
+> +			}
+> +		} else {
+> +			rtd->i2s_instance = pinfo->cap_i2s_instance;
+> +			switch (rtd->i2s_instance) {
+> +			case I2S_HS_INSTANCE:
+> +				adata->capture_stream = substream;
+> +				break;
+> +			case I2S_SP_INSTANCE:
+> +			default:
+> +				adata->i2ssp_capture_stream = substream;
+> +			}
+> +		}
+> +	} else {
+> +		pr_err("pinfo failed\n");
+
+that seems like a rather useless message. if you want a log at least use dev_err(component->dev
+
+> +	}
+> +	size = params_buffer_bytes(params);
+> +	rtd->dma_addr = substream->dma_buffer.addr;
+> +	rtd->num_pages = (PAGE_ALIGN(size) >> PAGE_SHIFT);
+> +	config_acp5x_dma(rtd, substream->stream);
+> +	return 0;
+> +}
+> +
