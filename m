@@ -2,201 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E851A3BEA32
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 17:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD0533BEA60
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 17:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232169AbhGGPEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 11:04:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33686 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232135AbhGGPEF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 11:04:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 140F061CCB
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 14:59:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625669951;
-        bh=Ld0W/CO5KSH5eewJQxSXvg+l75fMEAzgdAszdXdVTd8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ntguiwzcJYY3n/YJQHFdemX2SZy4jLgEc2m+XLtWj2yf+mglGmuj7yGVYwsotMVHY
-         4YX+jk2yx/4W3i/vU5uS/k0DIi2TO1ibA2yJPhdTUFek21HiuOLsFBzYfafnoO/FmZ
-         EPKV2wOyHIVaC9cyG0qQk8G204epqC0hbqzNewR7EjTF1idF85IktL4xfl+QUm02qE
-         jCfDdxX9HoAhqSfNvRM0kYOMetpYQtX63nl5F0rfpd19sWwCSjoiMxXom6MgzuWNuH
-         Vyiz56KknKW3QcGds6h39hMxcnnmqPGwjB7wbn5Z6MQhk+s+ba8LMzODsbDnOgSmCg
-         4KtsrUEpijVDA==
-Received: by mail-ej1-f49.google.com with SMTP id gb6so3747349ejc.5
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 07:59:11 -0700 (PDT)
-X-Gm-Message-State: AOAM533bMFN9iMNq/cmAXMKrp2etcs7L8NeTNMhqEEmk4SSLerq2ZrzM
-        BNXLx46yVDXUAetHPM46PuIkSgQmiyMfwbwgqg==
-X-Google-Smtp-Source: ABdhPJzBfvKCM1iiYyRCcQ9GQgMtxZexYRJ/jKRyf1Zi5QywB3sD6sNRI8uKuDJN/UVBK3R1sNbCiyOPXTZKczUd5YA=
-X-Received: by 2002:a17:906:4745:: with SMTP id j5mr4539593ejs.75.1625669949495;
- Wed, 07 Jul 2021 07:59:09 -0700 (PDT)
+        id S232050AbhGGPKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 11:10:55 -0400
+Received: from mslow1.mail.gandi.net ([217.70.178.240]:58171 "EHLO
+        mslow1.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232017AbhGGPKy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 11:10:54 -0400
+Received: from relay6-d.mail.gandi.net (unknown [217.70.183.198])
+        by mslow1.mail.gandi.net (Postfix) with ESMTP id 1C8BDD0DE3;
+        Wed,  7 Jul 2021 15:01:50 +0000 (UTC)
+Received: (Authenticated sender: jacopo@jmondi.org)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id EF615C000E;
+        Wed,  7 Jul 2021 14:59:04 +0000 (UTC)
+Date:   Wed, 7 Jul 2021 16:59:52 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 3/7] media: i2c: max9286: Use "maxim,gpio-poc" property
+Message-ID: <20210707145952.74dlual3zzwk3wow@uno.localdomain>
+References: <20210419142345.53152-1-jacopo+renesas@jmondi.org>
+ <20210419142345.53152-4-jacopo+renesas@jmondi.org>
+ <fea0f6e4-cd24-4c2e-1470-d86957408254@ideasonboard.com>
+ <20210617081906.7g32j7bh6wletvet@uno.localdomain>
 MIME-Version: 1.0
-References: <trinity-cc8f5927-9aaf-43ae-a107-6a6229f1b481-1625565279264@3c-app-gmx-bs60>
- <YOQ8ktv1MypezrEy@phenom.ffwll.local> <trinity-9886112a-f7f2-4ae8-8e09-39c73c04b751-1625571632221@3c-app-gmx-bs60>
-In-Reply-To: <trinity-9886112a-f7f2-4ae8-8e09-39c73c04b751-1625571632221@3c-app-gmx-bs60>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Wed, 7 Jul 2021 22:58:58 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__Qkqx0Ex1ezfWb+55+T1eytJrZXP=J-fwCe_g1U=4qBw@mail.gmail.com>
-Message-ID: <CAAOTY__Qkqx0Ex1ezfWb+55+T1eytJrZXP=J-fwCe_g1U=4qBw@mail.gmail.com>
-Subject: Re: Re: BUG: MTK DRM/HDMI broken on 5.13 (mt7623/bpi-r2)
-To:     Frank Wunderlich <frank-w@public-files.de>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210617081906.7g32j7bh6wletvet@uno.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Frank:
+Hi Kieran,
 
-Frank Wunderlich <frank-w@public-files.de> =E6=96=BC 2021=E5=B9=B47=E6=9C=
-=886=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=887:54=E5=AF=AB=E9=81=93=
-=EF=BC=9A
+On Thu, Jun 17, 2021 at 10:19:06AM +0200, Jacopo Mondi wrote:
+> Hi Kieran
 >
-> Hi Daniel
->
-> > Gesendet: Dienstag, 06. Juli 2021 um 13:20 Uhr
-> > Von: "Daniel Vetter" <daniel@ffwll.ch>
-> > An: "Frank Wunderlich" <frank-w@public-files.de>
-> > Cc: "Maarten Lankhorst" <maarten.lankhorst@linux.intel.com>, "Maxime Ri=
-pard" <mripard@kernel.org>, "Thomas Zimmermann" <tzimmermann@suse.de>, "Dav=
-id Airlie" <airlied@linux.ie>, "Daniel Vetter" <daniel@ffwll.ch>, dri-devel=
-@lists.freedesktop.org, linux-kernel@vger.kernel.org, "Chun-Kuang Hu" <chun=
-kuang.hu@kernel.org>, "Philipp Zabel" <p.zabel@pengutronix.de>, linux-media=
-tek@lists.infradead.org, "Matthias Brugger" <matthias.bgg@gmail.com>
-> > Betreff: Re: BUG: MTK DRM/HDMI broken on 5.13 (mt7623/bpi-r2)
+> On Thu, Jun 17, 2021 at 01:02:36AM +0100, Kieran Bingham wrote:
+> > Hi Jacopo,
 > >
-> > On Tue, Jul 06, 2021 at 11:54:39AM +0200, Frank Wunderlich wrote:
-> > > Hi,
+> > On 19/04/2021 15:23, Jacopo Mondi wrote:
+> > > The 'maxim,gpio-poc' property is used when the remote camera
+> > > power-over-coax is controlled by one of the MAX9286 gpio lines,
+> > > to instruct the driver about which line to use and what the line
+> > > polarity is.
 > > >
-> > > i've noticed that HDMI is broken at least on my board (Bananapi-r2,mt=
-7623) on 5.13.
+> > > Add to the max9286 driver support for parsing the newly introduced
+> > > property and use it if available in place of the usual supply, as it is
+> > > not possible to establish one as consumer of the max9286 gpio
+> > > controller.
 > > >
-> > > after some research i noticed that it is working till
+> > > If the new property is present, no gpio controller is registered and
+> > > 'poc-supply' is ignored.
 > > >
-> > > commit 2e477391522354e763aa62ee3e281c1ad9e8eb1b
-> > > Author: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-> > > Date:   Tue Mar 30 13:09:02 2021 +0200
+> > > In order to maximize code re-use, break out the max9286 gpio handling
+> > > function so that they can be used by the gpio controller through the
+> > > gpio-consumer API, or directly by the driver code.
 > > >
-> > >     drm/mediatek: Don't support hdmi connector creation
-> > >
-> > >
-> > > which is the last of mtk-drm-next-5.13 [1] so i guess a problem with =
-core-patches
-> > >
-> > > dmesg shows the following:
-> > >
-> > > [    7.071342] mediatek-drm mediatek-drm.1.auto: bound 14007000.ovl (=
-ops mtk_dis
-> > > p_ovl_component_ops)
-> > > [    7.080330] mediatek-drm mediatek-drm.1.auto: bound 14008000.rdma =
-(ops mtk_di
-> > > sp_rdma_component_ops)
-> > > [    7.089429] mediatek-drm mediatek-drm.1.auto: bound 1400b000.color=
- (ops mtk_d
-> > > isp_color_component_ops)
-> > > [    7.098689] mediatek-drm mediatek-drm.1.auto: bound 14012000.rdma =
-(ops mtk_di
-> > > sp_rdma_component_ops)
-> > > [    7.107814] mediatek-drm mediatek-drm.1.auto: bound 14014000.dpi (=
-ops mtk_dpi
-> > > _component_ops)
-> > > [    7.116338] mediatek-drm mediatek-drm.1.auto: Not creating crtc 1 =
-because com
-> > > ponent 9 is disabled or missing
-> > > ....
-> > > [   38.403957] Console: switching to colour frame buffer device 160x6=
-4
-> > > [   48.516398] [drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
-> > > [   48.516422] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* =
-[CRTC:41:cr
-> > > tc-0] commit wait timed out
-> > > [   58.756384] [drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
-> > > [   58.756399] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* =
-[CONNECTOR:
-> > > 32:HDMI-A-1] commit wait timed out
-> > > [   68.996384] [drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
-> > > [   68.996399] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* =
-[PLANE:33:p
-> > > lane-0] commit wait timed out
-> > > [   68.996423] [drm:mtk_drm_crtc_atomic_begin] *ERROR* new event whil=
-e there is
-> > > still a pending event
-> > > [   69.106385] ------------[ cut here ]------------
-> > > [   69.106392] WARNING: CPU: 2 PID: 7 at drivers/gpu/drm/drm_atomic_h=
-elper.c:151
-> > > 1 drm_atomic_helper_wait_for_vblanks.part.0+0x2a0/0x2a8
-> > > [   69.106414] [CRTC:41:crtc-0] vblank wait timed out
-> > >
-> > > so i guess the breaking commit may be this:
-> > >
-> > > $ git logone -S"drm_crtc_commit_wait" -- drivers/gpu/drm/
-> > > b99c2c95412c 2021-01-11 drm: Introduce a drm_crtc_commit_wait helper
-> > >
-> > > in drivers/gpu/drm/drm_atomic{,_helper}.c
-> > >
-> > > but i cannot confirm it because my git bisect does strange things (af=
-ter
-> > > defining 5.13 as bad and the 2e4773915223 as good, second step is bef=
-ore
-> > > the good commit till the end, last steps are 5.11...). sorry, i'm sti=
-ll
-> > > new to bisect.
+> > > Wrap the power up and power down routines to their own function to
+> > > be able to use either the gpio line directly or the supply. This will
+> > > make it easier to control the remote camera power at run time.
 > >
-> > drm history runs in parallel with the main tree, so occasionally the
-> > version that's reported as baseline is confusing and older than what yo=
-u
-> > might expect. Just trust git bisect, it's doing the right thing, and ma=
-ke
-> > sure you test exactly the kernel you're supposed to test. Compiling wit=
-h
-> > CONFIG_LOCALVERSION_AUTO helps a lot to make sure you're really booting
-> > into the right sha1.
->
-> my build-script adds sha1 to filename (for tftp-usage) and kernelinfo (un=
-ame -a)
->
-> > > the fix is targeting to 5.12-rc2, is guess because CK Hu's tree is ba=
-sed
-> > > on this...but the fix was not included in 5.12-rc2 (only after
-> > > 5.12.0...got it by merging 5.12.14)
+> > I think I've seen Laurent's despair at the auxillary device bus already,
+> > but I can't help but feel it might be a way to register the gpio and
+> > regulator fully without having to handle any probe deferrals and allow
+> > the GPIO chip to be used as it's own regulator. (I.e. solve the issues I
+> > was facing last time I looked at it)
 > >
-> > Yeah that can also happen because of all the non-linear trees involved =
-in
-> > linux development.
+> > But that said however, it's only a hypothesis having not yet fully
+> > investigated the option. It seems a shame to have to expose multiple
+> > ways of powering up the cameras, but I guess ultimately it's how the
+> > hardware is connected.
 >
-> how to find the real breaking commit?
+> I can't really comment as I don't know what auxillary bus is, but I
+> guess this simple solution is enough to unblock eagle upstreaming and
+> doesn't tie our hands if we want to switch to something completely
+> different in future.
 >
-> > > maybe you can help me?
 > >
-> > So now I'm confused, you're talking about a fix, or is it still broken =
-in
-> > latest upstream?
-> > -Daniel
+> > Have we confirmed that the start up delays are no longer needed for the
+> > RDACM20 cameras? (which we've previously exposed as a regulator power up
+> > delay?)
 >
-> it is still broken, as i did not found the root cause...only a guess base=
-d on errors in dmesg...git bisect points me afair to mt76 wifi-driver which=
- is completely unrelated...as i said, the fix i defined as "last good" was =
-no more there after 2nd bisect step.
+> Yes, not delay needed as long as
+> https://patchwork.linuxtv.org/project/linux-media/patch/20210616124616.49249-12-jacopo+renesas@jmondi.org/
+> is applied
 >
-> The fix i set as last good was fixing 5.12 issue (handling connector/crea=
-ting bridge without it), but 5.13 has a new one (atomic timeout,drivers/gpu=
-/drm/drm_atomic{,_helper}.c) which i cannot trace to the breaking commit.
->
-> regards Frank
->
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+
+Let me (again) correct myself about the RDACM20.
+
+While the above mentioned patch solves all issues at boot time, it still
+doesn't guarantee stability of the capture operations.
+
+I blame write collision or rather the MCU changing our programming
+after the boot phase. I get an error when accessing the max9271 at
+s_stream() time, while during boot I can read its id consistently.
+
+I'm afraid we somehow need that delay to let the MCU boot complete and
+overwrite its settings, in this way I get a 100% success of the
+capture operations.
+
+> >
+> > How would this handle those delays if required?
+> >
+> >
+> > > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> > > ---
+> > >  drivers/media/i2c/max9286.c | 125 +++++++++++++++++++++++++++---------
+> > >  1 file changed, 94 insertions(+), 31 deletions(-)
+> > >
+> > > diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
+> > > index 6fd4d59fcc72..99160aa68a5f 100644
+> > > --- a/drivers/media/i2c/max9286.c
+> > > +++ b/drivers/media/i2c/max9286.c
+> > > @@ -15,6 +15,7 @@
+> > >  #include <linux/fwnode.h>
+> > >  #include <linux/gpio/consumer.h>
+> > >  #include <linux/gpio/driver.h>
+> > > +#include <linux/gpio/machine.h>
+> > >  #include <linux/i2c.h>
+> > >  #include <linux/i2c-mux.h>
+> > >  #include <linux/module.h>
+> > > @@ -165,6 +166,9 @@ struct max9286_priv {
+> > >
+> > >  	u32 reverse_channel_mv;
+> > >
+> > > +	u32 gpio_poc;
+> > > +	u32 gpio_poc_flags;
+> > > +
+> > >  	struct v4l2_ctrl_handler ctrls;
+> > >  	struct v4l2_ctrl *pixelrate;
+> > >
+> > > @@ -1022,20 +1026,27 @@ static int max9286_setup(struct max9286_priv *priv)
+> > >  	return 0;
+> > >  }
+> > >
+> > > -static void max9286_gpio_set(struct gpio_chip *chip,
+> > > -			     unsigned int offset, int value)
+> > > +static int max9286_gpio_set(struct max9286_priv *priv, unsigned int offset,
+> > > +			    int value)
+> > >  {
+> > > -	struct max9286_priv *priv = gpiochip_get_data(chip);
+> > > -
+> > >  	if (value)
+> > >  		priv->gpio_state |= BIT(offset);
+> > >  	else
+> > >  		priv->gpio_state &= ~BIT(offset);
+> > >
+> > > -	max9286_write(priv, 0x0f, MAX9286_0X0F_RESERVED | priv->gpio_state);
+> > > +	return max9286_write(priv, 0x0f,
+> > > +			     MAX9286_0X0F_RESERVED | priv->gpio_state);
+> > > +}
+> > > +
+> > > +static void max9286_gpiochip_set(struct gpio_chip *chip,
+> > > +				 unsigned int offset, int value)
+> > > +{
+> > > +	struct max9286_priv *priv = gpiochip_get_data(chip);
+> > > +
+> > > +	max9286_gpio_set(priv, offset, value);
+> > >  }
+> > >
+> > > -static int max9286_gpio_get(struct gpio_chip *chip, unsigned int offset)
+> > > +static int max9286_gpiochip_get(struct gpio_chip *chip, unsigned int offset)
+> > >  {
+> > >  	struct max9286_priv *priv = gpiochip_get_data(chip);
+> > >
+> > > @@ -1055,16 +1066,81 @@ static int max9286_register_gpio(struct max9286_priv *priv)
+> > >  	gpio->of_node = dev->of_node;
+> > >  	gpio->ngpio = 2;
+> > >  	gpio->base = -1;
+> > > -	gpio->set = max9286_gpio_set;
+> > > -	gpio->get = max9286_gpio_get;
+> > > +	gpio->set = max9286_gpiochip_set;
+> > > +	gpio->get = max9286_gpiochip_get;
+> > >  	gpio->can_sleep = true;
+> > >
+> > > +	ret = devm_gpiochip_add_data(dev, gpio, priv);
+> > > +	if (ret)
+> > > +		dev_err(dev, "Unable to create gpio_chip\n");
+> > > +
+> > > +	return ret;
+> > > +}
+> > > +
+> > > +static int max9286_parse_gpios(struct max9286_priv *priv)
+> > > +{
+> > > +	struct device *dev = &priv->client->dev;
+> > > +	u32 gpio_poc[2];
+> > > +	int ret;
+> > > +
+> > >  	/* GPIO values default to high */
+> > >  	priv->gpio_state = BIT(0) | BIT(1);
+> > >
+> > > -	ret = devm_gpiochip_add_data(dev, gpio, priv);
+> > > +	/*
+> > > +	 * Parse the "gpio-poc" vendor property. If the camera power is
+> > > +	 * controlled by one of the MAX9286 gpio lines, do not register
+> > > +	 * the gpio controller and ignore 'poc-supply'.
+> > > +	 */
+> > > +	ret = of_property_read_u32_array(dev->of_node,
+> > > +					 "maxim,gpio-poc", gpio_poc, 2);
+> > > +	if (!ret) {
+> > > +		priv->gpio_poc = gpio_poc[0];
+> > > +		priv->gpio_poc_flags = gpio_poc[1];
+> > > +		if (priv->gpio_poc > 1 ||
+> > > +		    (priv->gpio_poc_flags != GPIO_ACTIVE_HIGH &&
+> > > +		     priv->gpio_poc_flags != GPIO_ACTIVE_LOW)) {
+> > > +			dev_err(dev, "Invalid 'gpio-poc': (%u %u)\n",
+> > > +				priv->gpio_poc, priv->gpio_poc_flags);
+> > > +			return -EINVAL;
+> > > +		}
+> > > +
+> > > +		return 0;
+> > > +	}
+> > > +
+> > > +	ret = max9286_register_gpio(priv);
+> > >  	if (ret)
+> > > -		dev_err(dev, "Unable to create gpio_chip\n");
+> > > +		return ret;
+> > > +
+> > > +	priv->regulator = devm_regulator_get(dev, "poc");
+> > > +	if (IS_ERR(priv->regulator)) {
+> > > +		if (PTR_ERR(priv->regulator) != -EPROBE_DEFER)
+> > > +			dev_err(dev, "Unable to get PoC regulator (%ld)\n",
+> > > +				PTR_ERR(priv->regulator));
+> > > +		return PTR_ERR(priv->regulator);
+> > > +	}
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static int max9286_poc_enable(struct max9286_priv *priv, bool enable)
+> > > +{
+> > > +	int ret;
+> > > +
+> > > +	/* If "poc-gpio" is used, toggle the line and do not use regulator. */
+> > > +	if (enable)
+> > > +		ret = priv->regulator
+> > > +		    ? regulator_enable(priv->regulator)
+> > > +		    : max9286_gpio_set(priv, priv->gpio_poc,
+> > > +				       enable ^ priv->gpio_poc_flags);
+> > > +	else
+> > > +		ret = priv->regulator
+> > > +		    ? regulator_disable(priv->regulator)
+> > > +		    : max9286_gpio_set(priv, priv->gpio_poc,
+> > > +				       enable ^ priv->gpio_poc_flags);
+> > > +
+> > > +	if (ret < 0)
+> > > +		dev_err(&priv->client->dev, "Unable to turn PoC %s\n",
+> > > +			enable ? "on" : "off");
+> > >
+> > >  	return ret;
+> > >  }
+> > > @@ -1078,17 +1154,14 @@ static int max9286_init(struct device *dev)
+> > >  	client = to_i2c_client(dev);
+> > >  	priv = i2c_get_clientdata(client);
+> > >
+> > > -	/* Enable the bus power. */
+> > > -	ret = regulator_enable(priv->regulator);
+> > > -	if (ret < 0) {
+> > > -		dev_err(&client->dev, "Unable to turn PoC on\n");
+> > > +	ret = max9286_poc_enable(priv, true);
+> > > +	if (ret)
+> > >  		return ret;
+> > > -	}
+> > >
+> > >  	ret = max9286_setup(priv);
+> > >  	if (ret) {
+> > >  		dev_err(dev, "Unable to setup max9286\n");
+> > > -		goto err_regulator;
+> > > +		goto err_poc_disable;
+> > >  	}
+> > >
+> > >  	/*
+> > > @@ -1098,7 +1171,7 @@ static int max9286_init(struct device *dev)
+> > >  	ret = max9286_v4l2_register(priv);
+> > >  	if (ret) {
+> > >  		dev_err(dev, "Failed to register with V4L2\n");
+> > > -		goto err_regulator;
+> > > +		goto err_poc_disable;
+> > >  	}
+> > >
+> > >  	ret = max9286_i2c_mux_init(priv);
+> > > @@ -1114,8 +1187,8 @@ static int max9286_init(struct device *dev)
+> > >
+> > >  err_v4l2_register:
+> > >  	max9286_v4l2_unregister(priv);
+> > > -err_regulator:
+> > > -	regulator_disable(priv->regulator);
+> > > +err_poc_disable:
+> > > +	max9286_poc_enable(priv, false);
+> > >
+> > >  	return ret;
+> > >  }
+> > > @@ -1286,20 +1359,10 @@ static int max9286_probe(struct i2c_client *client)
+> > >  	 */
+> > >  	max9286_configure_i2c(priv, false);
+> > >
+> > > -	ret = max9286_register_gpio(priv);
+> > > +	ret = max9286_parse_gpios(priv);
+> > >  	if (ret)
+> > >  		goto err_powerdown;
+> > >
+> > > -	priv->regulator = devm_regulator_get(&client->dev, "poc");
+> > > -	if (IS_ERR(priv->regulator)) {
+> > > -		if (PTR_ERR(priv->regulator) != -EPROBE_DEFER)
+> > > -			dev_err(&client->dev,
+> > > -				"Unable to get PoC regulator (%ld)\n",
+> > > -				PTR_ERR(priv->regulator));
+> > > -		ret = PTR_ERR(priv->regulator);
+> > > -		goto err_powerdown;
+> > > -	}
+> > > -
+> > >  	ret = max9286_parse_dt(priv);
+> > >  	if (ret)
+> > >  		goto err_powerdown;
+> > > @@ -1326,7 +1389,7 @@ static int max9286_remove(struct i2c_client *client)
+> > >
+> > >  	max9286_v4l2_unregister(priv);
+> > >
+> > > -	regulator_disable(priv->regulator);
+> > > +	max9286_poc_enable(priv, false);
+> > >
+> > >  	gpiod_set_value_cansleep(priv->gpiod_pwdn, 0);
+> > >
+> > >
+> >
+> > --
+> > Regards
+> > --
+> > Kieran
