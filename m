@@ -2,58 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 928C43BEFCB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 20:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1594E3BEFCC
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 20:45:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232741AbhGGSsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 14:48:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49824 "EHLO mail.kernel.org"
+        id S232778AbhGGSsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 14:48:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49858 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231727AbhGGSsO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232006AbhGGSsO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 7 Jul 2021 14:48:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 902A661CC8;
-        Wed,  7 Jul 2021 18:45:33 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id 17C4761CD4;
+        Wed,  7 Jul 2021 18:45:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625683533;
-        bh=zy17eyU3LXkjAAOFAYVJtsanJlpLQbOGZIfnrB9wG/g=;
+        s=k20201202; t=1625683534;
+        bh=u/BBX5cqEHNvlw7yAtrZhH+iIu9hxaAFwXsbXaFnCSU=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=BAqp89zAam196n4WaLWdWS4ky3Xh3NAI632uO62+mPUm/aciYCi2LhNVMpeUULVz2
-         8LSm4iRNTMzt+i44Ix4CmhYEjcD54go4BNzMApMu4i4v2p/ten6RAqJSODq+jdOVrR
-         gJqJ9EqE9XmZk5pkGjuPMXs6aBY/Klk9HMH6VCbMrVlzMpMMBGIKT539EgPRGPV1tK
-         OBDsms0ID7Ap3C/o1QwHKnMQXN9o2ahDI+peluaaXs3KYsqmSgPYWW+qnROu22v+UF
-         Xj0E9Hl8QYRbERNdE3M3IHhjiSMmbX4KUiMAOc0U4NPOF1nweQkFDXUk8yUeQ/SPJ0
-         x7kiNP6wrjojQ==
+        b=XUQLl/zP/VKyLQ6+Eg7hcFGI+hLtfLVUW37nvSXd1u3JCfB7WHWS5rNB0OaRy4ccD
+         VidlyBWjYmMlFkScD3CU9RBvZ0CDYTOmh0tcnuPh01Sru76eYhZ0mq/b3u3biLFp/0
+         u0am/8nTMkkSWPG6wFQUOrAGnqeG/VHGB/icYJVPZHv5+kKjbL9+FzfyzwODb4L1sf
+         UO5dNm70AsBlqXHajCWQyiiIQwHPP2c0k4pbrTgZJmVKeJ0NgEDwtGfNtRwPysQl2p
+         Wgy/VdTBl6u+460wNfWetmwjNy7y9rvdUAXAnuEavA8RPLewDwsxZ+VewIDvaq9IWE
+         PVgx4ORpxyVXg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 89A9E604EB;
-        Wed,  7 Jul 2021 18:45:33 +0000 (UTC)
-Subject: Re: [GIT PULL] More fallthrough fixes for Clang for 5.14-rc1
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 121EC604EB;
+        Wed,  7 Jul 2021 18:45:34 +0000 (UTC)
+Subject: Re: [GIT PULL] Modules updates for v5.14
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210707052822.GA35094@embeddedor>
-References: <20210707052822.GA35094@embeddedor>
+In-Reply-To: <YOW5w/4Gr3IPHj8c@p200300cbcf044300404ca642de146c7c.dip0.t-ipconnect.de>
+References: <YOW5w/4Gr3IPHj8c@p200300cbcf044300404ca642de146c7c.dip0.t-ipconnect.de>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210707052822.GA35094@embeddedor>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git tags/Wimplicit-fallthrough-clang-5.14-rc1
-X-PR-Tracked-Commit-Id: f1469e568bf6dcbdff9fd7cd7d2cc9ca9d06efeb
+X-PR-Tracked-Message-Id: <YOW5w/4Gr3IPHj8c@p200300cbcf044300404ca642de146c7c.dip0.t-ipconnect.de>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jeyu/linux.git tags/modules-for-v5.14
+X-PR-Tracked-Commit-Id: 2c0f0f3639562d6e38ee9705303c6457c4936eac
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 383df634f14778302879e41d985958070e8f2320
-Message-Id: <162568353355.3837.1960809537113979896.pr-tracker-bot@kernel.org>
-Date:   Wed, 07 Jul 2021 18:45:33 +0000
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+X-PR-Merge-Commit-Id: a931dd33d370896a683236bba67c0d6f3d01144d
+Message-Id: <162568353406.3837.17140356889911857632.pr-tracker-bot@kernel.org>
+Date:   Wed, 07 Jul 2021 18:45:34 +0000
+To:     Jessica Yu <jeyu@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 7 Jul 2021 00:28:22 -0500:
+The pull request you sent on Wed, 7 Jul 2021 16:27:15 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git tags/Wimplicit-fallthrough-clang-5.14-rc1
+> git://git.kernel.org/pub/scm/linux/kernel/git/jeyu/linux.git tags/modules-for-v5.14
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/383df634f14778302879e41d985958070e8f2320
+https://git.kernel.org/torvalds/c/a931dd33d370896a683236bba67c0d6f3d01144d
 
 Thank you!
 
