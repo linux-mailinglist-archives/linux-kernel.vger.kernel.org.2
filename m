@@ -2,98 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 774C53BF455
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 05:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 891C53BF457
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 05:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230412AbhGHDyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 23:54:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49104 "EHLO
+        id S230437AbhGHD4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 23:56:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230376AbhGHDyo (ORCPT
+        with ESMTP id S230417AbhGHD4o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 23:54:44 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1452FC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 20:52:01 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id a13so5609137wrf.10
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 20:52:01 -0700 (PDT)
+        Wed, 7 Jul 2021 23:56:44 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D2FFC06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 20:54:02 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id u8-20020a7bcb080000b02901e44e9caa2aso3032568wmj.4
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 20:54:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=brainfault-org.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=duMlAvykKtJsd1YyxKA8stEOfpUjQ4ZLog6TaI0hHCQ=;
-        b=VUUXccn1x1bPJmxS+l1ZGcBft3knuFXtb9bL6VTB42ta7crZCYR2qLrHYQ6r0V14il
-         5EpGqSTGZ70YuPKT3+69ZfvzQRfIrqk7GwZw72aQEPtIeng50mXiqXGZrxrzjtck4qtU
-         n/RCbhL9NDJRIFFaY1gpcN9dYtW5Z6PsnNnBkppqCtyMuZjzoBQvQFKMdbKHoJUNGd2+
-         mDF2m9FhRAaOTSlWAlAq7kitJQoMfjYZRq0z2JVk1o6eoSZniODz0EswikwHVD1u/WZU
-         EtmdNa5uLhkTNfXrjI5Pj4EZctNSy+/Skf1zmhIMVwAjHT2nudxKZwtYO4ofKb0hD2kZ
-         +nsg==
+        bh=ZWa3MSZDHv15RjZ0z5EeC98vQiHtGeO/uXKzI8GzBFw=;
+        b=XTCFr7170JgT/QHOQKK4OIXt9x5YcaLpXvKfdNAjUQNxxHB4+We8I/BYK5sweWKUdx
+         Khde29SVANgVGQ07/jlLHi3Ly55pBIp8Ua3RStYF8B1eijhyS191g1LYWDJQ/q36y1CM
+         Wes7FduTI10HEzdpBC2LDQpPCXfEcdbbUquQiuQ/8ElzBvkZP/4kiAXg2NAowGpEU46V
+         eWawf+2L92tBhiinHxhQDUhPvQyGpuA/OR2mlD1+GBPqpY9lI9GParrCwTjfEnN1A50h
+         r/bIRHfzvU9DpzKoEw0USBUyKhBe3k1N3As3CrGHEGCIiEqjXJJjf2MwSyx0mDfwRFZ4
+         QGGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=duMlAvykKtJsd1YyxKA8stEOfpUjQ4ZLog6TaI0hHCQ=;
-        b=fOOD3AzeM3BE8mWE2IuINA1n2ZGcdhAgUGMZURVK1aYJWutk+GrisH1hx8SOSxwtVw
-         Zq7Lp079eqh/VkkPwhxZJOgOvhcduM/9qBP//Ehfvj8jev7XxxRbQJYv6baISCUrOeBe
-         /YFHudQSqzHdqH6+sk1Er0ChZsoqjWR6Ksm9OakUA2Id1dI1yMF5qyiUAARha+2Sz6TM
-         TEs3w+rN3q0EvHgIHbcfqflKs5ZwuT/+LHJzPlE8OkHnqSgchxa1BdbXfvBN4/K+TWNJ
-         PN7M78nfcMdtdmHPrQ1IK5hEDoLNcWHRlqTRXsR50Wfx1PNxJ2gUqfoc4sP+ZJEgJfmf
-         R59g==
-X-Gm-Message-State: AOAM533Y79sT5VQkOnBRDijAPGSpcy0dVKzbwUaHn6qYLi4Z7EYfFGDv
-        WNLVKkws2NAFW25iUpK4zQwdni0JpbyFpwhDS5J4DA==
-X-Google-Smtp-Source: ABdhPJy1YpF8rafiUI7/iw1GjU67ogfuTO6JIWE6V8Bp6LLJMFIngdHJNtQzAPFvXBi71daTyLbohMmteyX9oPwCsIQ=
-X-Received: by 2002:a5d:4d4b:: with SMTP id a11mr7735425wru.325.1625716320438;
- Wed, 07 Jul 2021 20:52:00 -0700 (PDT)
+        bh=ZWa3MSZDHv15RjZ0z5EeC98vQiHtGeO/uXKzI8GzBFw=;
+        b=gZcCRyF5z9MJM6WKUlAlzWRy9Z31xuviOnTuCyR30NAXR0wLU0IX0RsmScsCFcSs+/
+         VQOGB6IOjj53pa5sjoOJZXQZmqiWUPVa9UhWXEUYXm1/Ined9//KpaRwEA2t7fbPHT3g
+         PgEHLKFa7akCA/z53YOX91J4MCgzat4X/AiLwAwhJTdz5P46Lej7JpPADT2JbNLzuke6
+         e/Bx3FxFbSYYEkNY6KK3Zjjdoy/hNTm8z4kDTEAHX/TfwdMi5lgKq+gXuttiY/fyMqdt
+         +Ipg3qjGs7at/Z9A4pEmc216fZrGAw1mKqnPAvH9jsYgBZNa/1arTLBjJ5v8QOtxq9X8
+         nzOQ==
+X-Gm-Message-State: AOAM531kihzDMIiK05QZLm6ExrWeQ+QLULBzlSwypRSL0qcpeMJkHMLj
+        e5fdqVe1q2kwHoX3au3a0zYqMwjo5eSui24BLzBwJQ==
+X-Google-Smtp-Source: ABdhPJx5pjQOButJOiL0ZDCL2KfyzjM7GnKT+FRKBaTw9/Vh+a8HUsBlndetR7xxCwd82zoAhU9bMDNtRcpg2p3RqNQ=
+X-Received: by 2002:a05:600c:3399:: with SMTP id o25mr30069191wmp.3.1625716440637;
+ Wed, 07 Jul 2021 20:54:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAAhSdy0=XANwm4Vr5qbpvJdqwYNCfDRNTDf3cyAOGp-NuqF_Ag@mail.gmail.com>
- <mhng-b2af24ea-608a-4e2c-af51-6dc7e415bf30@palmerdabbelt-glaptop>
-In-Reply-To: <mhng-b2af24ea-608a-4e2c-af51-6dc7e415bf30@palmerdabbelt-glaptop>
+References: <CAAhSdy00KAqg37PCAGwNXt_2HTpxGY68yTPNHDEbrSwdiLa2jw@mail.gmail.com>
+ <mhng-baa27714-d293-409b-9c07-6b2d1043bfad@palmerdabbelt-glaptop>
+In-Reply-To: <mhng-baa27714-d293-409b-9c07-6b2d1043bfad@palmerdabbelt-glaptop>
 From:   Anup Patel <anup@brainfault.org>
-Date:   Wed, 7 Jul 2021 21:19:46 +0530
-Message-ID: <CAAhSdy2TcESa_zfO28VGPuOH6+7T+U-Pa25G959LvMCmU49pJA@mail.gmail.com>
-Subject: Re: [PATCH v7 1/1] RISC-V: Use SBI SRST extension when available
+Date:   Wed, 7 Jul 2021 21:21:47 +0530
+Message-ID: <CAAhSdy21kOR8f8=9R-1HQW4ncmVcJEFRjNWU1N+mLejAHgBcHg@mail.gmail.com>
+Subject: Re: [PATCH v7 0/8] RISC-V CPU Idle Support
 To:     Palmer Dabbelt <palmerdabbelt@google.com>
 Cc:     Anup Patel <Anup.Patel@wdc.com>,
         Paul Walmsley <paul.walmsley@sifive.com>,
         Albert Ou <aou@eecs.berkeley.edu>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Sandeep Tripathy <milun.tripathy@gmail.com>,
         Atish Patra <Atish.Patra@wdc.com>,
         Alistair Francis <Alistair.Francis@wdc.com>,
+        liush <liush@allwinnertech.com>,
+        DTML <devicetree@vger.kernel.org>,
         linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 7, 2021 at 1:57 AM Palmer Dabbelt <palmerdabbelt@google.com> wrote:
+On Wed, Jul 7, 2021 at 2:29 AM Palmer Dabbelt <palmerdabbelt@google.com> wrote:
 >
-> On Mon, 21 Jun 2021 21:46:46 PDT (-0700), anup@brainfault.org wrote:
+> On Mon, 21 Jun 2021 21:49:11 PDT (-0700), anup@brainfault.org wrote:
 > > Hi Palmer,
 > >
-> > On Wed, Jun 9, 2021 at 5:43 PM Anup Patel <anup.patel@wdc.com> wrote:
+> > On Thu, Jun 10, 2021 at 10:52 AM Anup Patel <anup.patel@wdc.com> wrote:
 > >>
-> >> The SBI SRST extension provides a standard way to poweroff and
-> >> reboot the system irrespective to whether Linux RISC-V S-mode
-> >> is running natively (HS-mode) or inside Guest/VM (VS-mode).
+> >> This series adds RISC-V CPU Idle support using SBI HSM suspend function.
+> >> The RISC-V SBI CPU idle driver added by this series is highly inspired
+> >> from the ARM PSCI CPU idle driver.
 > >>
-> >> The SBI SRST extension is available in the SBI v0.3 specification.
-> >> (Refer, https://github.com/riscv/riscv-sbi-doc/releases/tag/v0.3.0-rc1)
+> >> At high-level, this series includes the following changes:
+> >> 1) Preparatory arch/riscv patches (Patches 1 to 3)
+> >> 2) Defines for RISC-V SBI HSM suspend (Patch 4)
+> >> 3) Preparatory patch to share code between RISC-V SBI CPU idle driver
+> >>    and ARM PSCI CPU idle driver (Patch 5)
+> >> 4) RISC-V SBI CPU idle driver and related DT bindings (Patches 6 to 7)
+> >>
+> >> These patches can be found in riscv_sbi_hsm_suspend_v7 branch at
+> >> https://github.com/avpatel/linux
+> >>
+> >> Special thanks Sandeep Tripathy for providing early feeback on SBI HSM
+> >> support in all above projects (RISC-V SBI specification, OpenSBI, and
+> >> Linux RISC-V).
+> >>
+> >> Changes since v6:
+> >>  - Fixed error reported by "make DT_CHECKER_FLAGS=-m dt_binding_check"
+> >>
+> >> Changes since v5:
+> >>  - Rebased on Linux-5.13-rc5
+> >>  - Removed unnecessary exports from PATCH5
+> >>  - Removed stray ";" from PATCH5
+> >>  - Moved sbi_cpuidle_pd_power_off() under "#ifdef CONFIG_DT_IDLE_GENPD"
+> >>    in PATCH6
+> >>
+> >> Changes since v4:
+> >>  - Rebased on Linux-5.13-rc2
+> >>  - Renamed all dt_idle_genpd functions to have "dt_idle_" prefix
+> >>  - Added MAINTAINERS file entry for dt_idle_genpd
+> >>
+> >> Changes since v3:
+> >>  - Rebased on Linux-5.13-rc2
+> >>  - Fixed __cpu_resume_enter() which was broken due to XIP kernel support
+> >>  - Removed "struct dt_idle_genpd_ops" abstraction which simplifies code
+> >>    sharing between ARM PSCI and RISC-V SBI drivers in PATCH5
+> >>
+> >> Changes since v2:
+> >>  - Rebased on Linux-5.12-rc3
+> >>  - Updated PATCH7 to add common DT bindings for both ARM and RISC-V
+> >>    idle states
+> >>  - Added "additionalProperties = false" for both idle-states node and
+> >>    child nodes in PATCH7
+> >>
+> >> Changes since v1:
+> >>  - Fixex minor typo in PATCH1
+> >>  - Use just "idle-states" as DT node name for CPU idle states
+> >>  - Added documentation for "cpu-idle-states" DT property in
+> >>    devicetree/bindings/riscv/cpus.yaml
+> >>  - Added documentation for "riscv,sbi-suspend-param" DT property in
+> >>    devicetree/bindings/riscv/idle-states.yaml
+> >>
+> >> Anup Patel (8):
+> >>   RISC-V: Enable CPU_IDLE drivers
+> >>   RISC-V: Rename relocate() and make it global
+> >>   RISC-V: Add arch functions for non-retentive suspend entry/exit
+> >>   RISC-V: Add SBI HSM suspend related defines
+> >>   cpuidle: Factor-out power domain related code from PSCI domain driver
+> >>   cpuidle: Add RISC-V SBI CPU idle driver
+> >>   dt-bindings: Add common bindings for ARM and RISC-V idle states
+> >>   RISC-V: Enable RISC-V SBI CPU Idle driver for QEMU virt machine
 > >
-> > Can you please consider this patch for Linux-5.14-rc1 ?
+> > Can you please review this series ?
 > >
-> > The SBI v0.3 spec is already frozen and this patch has been
-> > floating on LKML for quite a few months now.
+> > It would be nice to consider this series for Linux-5.14.
 >
-> I didn't realize that SBI-0.3 had been frozed.  That link is to a RC,
-> the cooresponding v0.3.0 tag isn't in that repo.  Can you give me a
-> pointer to the frozen spec?
+> I'd assumed this one was part of the 0.3.0 freeze.
 
-Here's the link to SBI v0.3.0 tag:
-https://github.com/riscv/riscv-sbi-doc/releases/tag/v0.3.0
-
-We treat RC tags as frozen in SBI spec because no functional
-changes are done in SBI spec after it is tagged as RC. We only
-do typo fixes and clarifications on SBI spec RC release.
+Yes, SBI HSM suspend call is part of SBI v0.3.0 release.
+(Refer, https://github.com/riscv/riscv-sbi-doc/releases/tag/v0.3.0)
 
 Regards,
 Anup
@@ -104,125 +163,46 @@ Anup
 > > Anup
 > >
 > >>
-> >> This patch extends Linux RISC-V SBI implementation to detect
-> >> and use SBI SRST extension.
+> >>  .../bindings/arm/msm/qcom,idle-state.txt      |   2 +-
+> >>  .../devicetree/bindings/arm/psci.yaml         |   2 +-
+> >>  .../bindings/{arm => cpu}/idle-states.yaml    | 228 ++++++-
+> >>  .../devicetree/bindings/riscv/cpus.yaml       |   6 +
+> >>  MAINTAINERS                                   |  14 +
+> >>  arch/riscv/Kconfig                            |   7 +
+> >>  arch/riscv/Kconfig.socs                       |   3 +
+> >>  arch/riscv/configs/defconfig                  |  13 +-
+> >>  arch/riscv/configs/rv32_defconfig             |   6 +-
+> >>  arch/riscv/include/asm/asm.h                  |  17 +
+> >>  arch/riscv/include/asm/cpuidle.h              |  24 +
+> >>  arch/riscv/include/asm/sbi.h                  |  27 +-
+> >>  arch/riscv/include/asm/suspend.h              |  35 +
+> >>  arch/riscv/kernel/Makefile                    |   2 +
+> >>  arch/riscv/kernel/asm-offsets.c               |   3 +
+> >>  arch/riscv/kernel/cpu_ops_sbi.c               |   2 +-
+> >>  arch/riscv/kernel/head.S                      |  18 +-
+> >>  arch/riscv/kernel/process.c                   |   3 +-
+> >>  arch/riscv/kernel/suspend.c                   |  86 +++
+> >>  arch/riscv/kernel/suspend_entry.S             | 123 ++++
+> >>  drivers/cpuidle/Kconfig                       |   9 +
+> >>  drivers/cpuidle/Kconfig.arm                   |   1 +
+> >>  drivers/cpuidle/Kconfig.riscv                 |  15 +
+> >>  drivers/cpuidle/Makefile                      |   5 +
+> >>  drivers/cpuidle/cpuidle-psci-domain.c         | 138 +---
+> >>  drivers/cpuidle/cpuidle-psci.h                |  15 +-
+> >>  drivers/cpuidle/cpuidle-sbi.c                 | 626 ++++++++++++++++++
+> >>  drivers/cpuidle/dt_idle_genpd.c               | 177 +++++
+> >>  drivers/cpuidle/dt_idle_genpd.h               |  50 ++
+> >>  29 files changed, 1472 insertions(+), 185 deletions(-)
+> >>  rename Documentation/devicetree/bindings/{arm => cpu}/idle-states.yaml (74%)
+> >>  create mode 100644 arch/riscv/include/asm/cpuidle.h
+> >>  create mode 100644 arch/riscv/include/asm/suspend.h
+> >>  create mode 100644 arch/riscv/kernel/suspend.c
+> >>  create mode 100644 arch/riscv/kernel/suspend_entry.S
+> >>  create mode 100644 drivers/cpuidle/Kconfig.riscv
+> >>  create mode 100644 drivers/cpuidle/cpuidle-sbi.c
+> >>  create mode 100644 drivers/cpuidle/dt_idle_genpd.c
+> >>  create mode 100644 drivers/cpuidle/dt_idle_genpd.h
 > >>
-> >> Signed-off-by: Anup Patel <anup.patel@wdc.com>
-> >> Reviewed-by: Atish Patra <atish.patra@wdc.com>
-> >> ---
-> >>  arch/riscv/include/asm/sbi.h | 24 ++++++++++++++++++++++++
-> >>  arch/riscv/kernel/sbi.c      | 35 +++++++++++++++++++++++++++++++++++
-> >>  2 files changed, 59 insertions(+)
-> >>
-> >> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-> >> index 0d42693cb65e..289621da4a2a 100644
-> >> --- a/arch/riscv/include/asm/sbi.h
-> >> +++ b/arch/riscv/include/asm/sbi.h
-> >> @@ -27,6 +27,7 @@ enum sbi_ext_id {
-> >>         SBI_EXT_IPI = 0x735049,
-> >>         SBI_EXT_RFENCE = 0x52464E43,
-> >>         SBI_EXT_HSM = 0x48534D,
-> >> +       SBI_EXT_SRST = 0x53525354,
-> >>  };
-> >>
-> >>  enum sbi_ext_base_fid {
-> >> @@ -70,6 +71,21 @@ enum sbi_hsm_hart_status {
-> >>         SBI_HSM_HART_STATUS_STOP_PENDING,
-> >>  };
-> >>
-> >> +enum sbi_ext_srst_fid {
-> >> +       SBI_EXT_SRST_RESET = 0,
-> >> +};
-> >> +
-> >> +enum sbi_srst_reset_type {
-> >> +       SBI_SRST_RESET_TYPE_SHUTDOWN = 0,
-> >> +       SBI_SRST_RESET_TYPE_COLD_REBOOT,
-> >> +       SBI_SRST_RESET_TYPE_WARM_REBOOT,
-> >> +};
-> >> +
-> >> +enum sbi_srst_reset_reason {
-> >> +       SBI_SRST_RESET_REASON_NONE = 0,
-> >> +       SBI_SRST_RESET_REASON_SYS_FAILURE,
-> >> +};
-> >> +
-> >>  #define SBI_SPEC_VERSION_DEFAULT       0x1
-> >>  #define SBI_SPEC_VERSION_MAJOR_SHIFT   24
-> >>  #define SBI_SPEC_VERSION_MAJOR_MASK    0x7f
-> >> @@ -148,6 +164,14 @@ static inline unsigned long sbi_minor_version(void)
-> >>         return sbi_spec_version & SBI_SPEC_VERSION_MINOR_MASK;
-> >>  }
-> >>
-> >> +/* Make SBI version */
-> >> +static inline unsigned long sbi_mk_version(unsigned long major,
-> >> +                                           unsigned long minor)
-> >> +{
-> >> +       return ((major & SBI_SPEC_VERSION_MAJOR_MASK) <<
-> >> +               SBI_SPEC_VERSION_MAJOR_SHIFT) | minor;
-> >> +}
-> >> +
-> >>  int sbi_err_map_linux_errno(int err);
-> >>  #else /* CONFIG_RISCV_SBI */
-> >>  static inline int sbi_remote_fence_i(const unsigned long *hart_mask) { return -1; }
-> >> diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
-> >> index 7402a417f38e..9a84f0cb5175 100644
-> >> --- a/arch/riscv/kernel/sbi.c
-> >> +++ b/arch/riscv/kernel/sbi.c
-> >> @@ -7,6 +7,7 @@
-> >>
-> >>  #include <linux/init.h>
-> >>  #include <linux/pm.h>
-> >> +#include <linux/reboot.h>
-> >>  #include <asm/sbi.h>
-> >>  #include <asm/smp.h>
-> >>
-> >> @@ -501,6 +502,32 @@ int sbi_remote_hfence_vvma_asid(const unsigned long *hart_mask,
-> >>  }
-> >>  EXPORT_SYMBOL(sbi_remote_hfence_vvma_asid);
-> >>
-> >> +static void sbi_srst_reset(unsigned long type, unsigned long reason)
-> >> +{
-> >> +       sbi_ecall(SBI_EXT_SRST, SBI_EXT_SRST_RESET, type, reason,
-> >> +                 0, 0, 0, 0);
-> >> +       pr_warn("%s: type=0x%lx reason=0x%lx failed\n",
-> >> +               __func__, type, reason);
-> >> +}
-> >> +
-> >> +static int sbi_srst_reboot(struct notifier_block *this,
-> >> +                          unsigned long mode, void *cmd)
-> >> +{
-> >> +       sbi_srst_reset((mode == REBOOT_WARM || mode == REBOOT_SOFT) ?
-> >> +                      SBI_SRST_RESET_TYPE_WARM_REBOOT :
-> >> +                      SBI_SRST_RESET_TYPE_COLD_REBOOT,
-> >> +                      SBI_SRST_RESET_REASON_NONE);
-> >> +       return NOTIFY_DONE;
-> >> +}
-> >> +
-> >> +static struct notifier_block sbi_srst_reboot_nb;
-> >> +
-> >> +static void sbi_srst_power_off(void)
-> >> +{
-> >> +       sbi_srst_reset(SBI_SRST_RESET_TYPE_SHUTDOWN,
-> >> +                      SBI_SRST_RESET_REASON_NONE);
-> >> +}
-> >> +
-> >>  /**
-> >>   * sbi_probe_extension() - Check if an SBI extension ID is supported or not.
-> >>   * @extid: The extension ID to be probed.
-> >> @@ -608,6 +635,14 @@ void __init sbi_init(void)
-> >>                 } else {
-> >>                         __sbi_rfence    = __sbi_rfence_v01;
-> >>                 }
-> >> +               if ((sbi_spec_version >= sbi_mk_version(0, 3)) &&
-> >> +                   (sbi_probe_extension(SBI_EXT_SRST) > 0)) {
-> >> +                       pr_info("SBI SRST extension detected\n");
-> >> +                       pm_power_off = sbi_srst_power_off;
-> >> +                       sbi_srst_reboot_nb.notifier_call = sbi_srst_reboot;
-> >> +                       sbi_srst_reboot_nb.priority = 192;
-> >> +                       register_restart_handler(&sbi_srst_reboot_nb);
-> >> +               }
-> >>         } else {
-> >>                 __sbi_set_timer = __sbi_set_timer_v01;
-> >>                 __sbi_send_ipi  = __sbi_send_ipi_v01;
 > >> --
 > >> 2.25.1
 > >>
