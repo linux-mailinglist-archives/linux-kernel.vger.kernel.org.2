@@ -2,94 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395C33BF160
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 23:25:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E403BF166
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 23:26:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232782AbhGGV2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 17:28:05 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:54040 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232603AbhGGV2E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 17:28:04 -0400
-Received: by mail-il1-f199.google.com with SMTP id j6-20020a926e060000b02901f2f7ba704aso2211779ilc.20
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 14:25:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=cxeYjJOcGKZ3Ilg0y/wGG0iG5oaNEsfRZrcenrSywx0=;
-        b=rAfUcfPRJ7TLWAlgh3Xvvbcen+c2XmfoIAcvqUrce/gT5LkXF02mnIEOzalmdywR2B
-         Tp9bx0auORaaN8s7qLM9i0Tyo2IUkMnqEKhmOTiEcFcQAiMk30uLx1+lzr26b92YZItF
-         0eLlFy7Nqi32j4X8ZIdEXFdkw9fNBnFI9mnl3/Sp2amcek27oY6DirtyxoSm7dCO/Dfq
-         bRssYBMXU15WTgEWlf94B+4oz6zxk2Ph0R72J1eh5YAPJ171mrj70PWld4Cmx8n9Tnoo
-         doubnfc3qnqA/Rf2dffsfqyW+88FUMyvwLh/E8GfZ5GrbqmC5DvMqksi3NueU0md72rn
-         fmpQ==
-X-Gm-Message-State: AOAM5320au8gDK74xp+PFJcHjlFuhqcY5a0qouQ4Adl/zQve4me/S4GJ
-        T0I9Z4vwKNGthv/AtUfDBm8pUIMuzOqNsHSCq4eFnAyvynvL
-X-Google-Smtp-Source: ABdhPJweavEUv1o7B0dzQOSdY1m51vITRIW/yHxRBE7JiMl8YlM7YrxD8D+qhR45MBXDdhkY8/4etJdME0TF6n5xsUgWX3H/WGy4
+        id S232920AbhGGV27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 17:28:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42636 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230312AbhGGV2y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 17:28:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2606D619CB;
+        Wed,  7 Jul 2021 21:26:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625693173;
+        bh=/pVy166dfy+UrmpILZTvgIelpcvDiZkfwT6maygMI/s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tbKfcOA64mpmf+AGiUavBt1B1NVDwqFMS6+zQUbbhUqwGaoOGsOJ/Ok5fCMXIUbgy
+         7YSLAzBg/uu7pkeLxWnHmRHpyldzZK/D9MmS53D0vZjCxEuBk+eNGlFKFcMWIOAAJ7
+         eOqYIKKWJ4r7zfKeQWUVn+DN3T67mYzZrzVwRFdH98KkmjFs4SERirmFaAgHYPQYj+
+         3XdjnGjrQ5AYqGhXHHMwX+wXH1W7PuLap8pIB2lU/t6XLK9hfDvHygvpRqW5hBEkMv
+         /rK9GWJHE1ySC3pOPXX6mcAaose2oadoQWgtB0kAxMahQo32o5wVza3rs/HK52ThDT
+         1RNdJyn4LWSDg==
+Date:   Thu, 8 Jul 2021 00:26:11 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Eric Snowberg <eric.snowberg@oracle.com>, keyrings@vger.kernel.org,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        David Miller <davem@davemloft.net>,
+        James Morris James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        scott.branden@broadcom.com, Wei Yongjun <weiyongjun1@huawei.com>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>, nramas@linux.microsoft.com,
+        Lenny Szubowicz <lszubowi@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Peter Jones <pjones@redhat.com>, Gary Lin <glin@suse.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Subject: Re: [PATCH RFC 05/12] integrity: Introduce mok keyring
+Message-ID: <20210707212611.pdkmkxhqomkf4ngg@kernel.org>
+References: <20210707024403.1083977-1-eric.snowberg@oracle.com>
+ <20210707024403.1083977-6-eric.snowberg@oracle.com>
+ <CAHk-=wgEncBgRdv0FZjmZGQP5tzcdYA0XJrxmBEOevi06dimtw@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1606:: with SMTP id x6mr14928032jas.98.1625693123157;
- Wed, 07 Jul 2021 14:25:23 -0700 (PDT)
-Date:   Wed, 07 Jul 2021 14:25:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001ea57305c68f2db6@google.com>
-Subject: [syzbot] WARNING in dec_ucount
-From:   syzbot <syzbot+493df5f976efd79b9b66@syzkaller.appspotmail.com>
-To:     ebiederm@xmission.com, legion@kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgEncBgRdv0FZjmZGQP5tzcdYA0XJrxmBEOevi06dimtw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Jul 07, 2021 at 12:31:23PM -0700, Linus Torvalds wrote:
+> On Tue, Jul 6, 2021 at 7:45 PM Eric Snowberg <eric.snowberg@oracle.com> wrote:
+> >
+> > Introduce a new keyring called mok.  This keyring will be used during
+> > boot. Afterwards it will be destroyed.
+> 
+> Already discussed elsewhere, but yeah, when using TLA's, unless they
+> are universally understood (like "CPU" or "TLB" or whatever), please
+> spell them out somewhere for people who don't have the background.
+> 
+> I saw that you said elsewhere that MOK is "Machine Owner Key", but
+> please let's just have that in the sources and commit messages at
+> least for the original new code cases.
+> 
+> Maybe it becomes obvious over time as there is more history to the
+> code, but when you literally introduce a new concept, please spell it
+> out.
+> 
+>            Linus
+> 
+I'd suggest for the short summary:
 
-syzbot found the following issue on:
+"integrity: Introduce a Linux keyring for the Machine Owner Key (MOK)"
 
-HEAD commit:    3dbdb38e Merge branch 'for-5.14' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1023db52300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a1fcf15a09815757
-dashboard link: https://syzkaller.appspot.com/bug?extid=493df5f976efd79b9b66
+Given that "keyring" is such a saturated and ambiguous word, and this not a
+subsystem patch for keyring itself, it should be explicit what is meant by
+a keyring.
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+493df5f976efd79b9b66@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 22176 at kernel/ucount.c:246 dec_ucount+0x10d/0x130 kernel/ucount.c:246
-Modules linked in:
-CPU: 1 PID: 22176 Comm: kworker/u4:3 Tainted: G        W         5.13.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: netns cleanup_net
-RIP: 0010:dec_ucount+0x10d/0x130 kernel/ucount.c:246
-Code: 4d 85 e4 0f 85 52 ff ff ff e8 0f f7 26 00 48 8b 3c 24 48 83 c4 08 5b 5d 41 5c 41 5d 41 5e 41 5f e9 28 f5 ff ff e8 f3 f6 26 00 <0f> 0b eb 99 48 89 ef e8 97 b4 6c 00 e9 48 ff ff ff e8 8d b4 6c 00
-RSP: 0018:ffffc90023a1fc38 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff8881626354c0 RSI: ffffffff814e933d RDI: 0000000000000003
-RBP: ffff8880192d3240 R08: 0000000000000000 R09: ffff8880192d3247
-R10: ffffffff814e92ad R11: 0000000000000000 R12: ffff8880192d3200
-R13: dffffc0000000000 R14: 0000000000000040 R15: ffffffffffffffff
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 000000014a401000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- dec_net_namespaces net/core/net_namespace.c:394 [inline]
- cleanup_net+0x6f3/0xb10 net/core/net_namespace.c:611
- process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+/Jarkko
