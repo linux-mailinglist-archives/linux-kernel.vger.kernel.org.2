@@ -2,99 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D32823BEC49
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 18:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69AED3BEC4F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 18:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbhGGQeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 12:34:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34068 "EHLO mail.kernel.org"
+        id S230166AbhGGQg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 12:36:26 -0400
+Received: from foss.arm.com ([217.140.110.172]:40622 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229519AbhGGQeN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 12:34:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37BEF61CAC;
-        Wed,  7 Jul 2021 16:31:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625675493;
-        bh=q3UZp4Bb5WE6sKUFwga1SnOoXIo6qLfr7YAeANlc1jY=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=IL3ImziBya+z2bYsK2ayEYkWoBMzZ36yHVR78MHkjK9j+zVSlURfh39Uz6M1S4PZr
-         HGGIwMn3n5mz6xlhbhih1ZM5eW3ZcTde2OZyd/1Lc8R6i254Tv5DjJMEBHjOjauB2Q
-         RDRkupuwaTPXgHk7PuZQ5B4utDhuSx0nKMqt5UiJ7He0LazxvP0AqL1AAmplHfjbz4
-         0gB0dhK8S3uHVoZ4zgDe7x2aB5rVL47pyX82cAxGMUmy415kHmTAiSjQEVDwvvz3XD
-         CbbLDdaFqr0M0jRgu3HOqab4LZDII2+4MFxQKrAQhe/xPzFTxBRm3xtcswqLuoOmSk
-         oLe27Gyc/dF9Q==
-Message-ID: <816bf11b48928351b3e6003ba32efd9baf8b0442.camel@kernel.org>
-Subject: Re: [PATCH] tracing/selftests: Add tests to test histogram sym and
- sym-offset modifiers
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Date:   Wed, 07 Jul 2021 11:31:31 -0500
-In-Reply-To: <20210707121451.101a1002@oasis.local.home>
-References: <20210707121451.101a1002@oasis.local.home>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S229975AbhGGQgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 12:36:24 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 236511042;
+        Wed,  7 Jul 2021 09:33:44 -0700 (PDT)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id AB1CE3F694;
+        Wed,  7 Jul 2021 09:33:42 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: [PATCH] s390: preempt: Fix preempt_count initialization
+Date:   Wed,  7 Jul 2021 17:33:38 +0100
+Message-Id: <20210707163338.1623014-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-07-07 at 12:14 -0400, Steven Rostedt wrote:
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-> 
-> Add a test to the tracing selftests that will catch if the .sym or
-> .sym-offset modifiers break in the future.
-> 
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
->  .../ftrace/test.d/trigger/trigger-hist.tc      | 18
-> ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/ftrace/test.d/trigger/trigger-
-> hist.tc b/tools/testing/selftests/ftrace/test.d/trigger/trigger-
-> hist.tc
-> index 2950bfbc6fce..adae72665500 100644
-> --- a/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist.tc
-> +++ b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist.tc
-> @@ -39,6 +39,24 @@ grep "parent_comm: $COMM"
-> events/sched/sched_process_fork/hist > /dev/null || \
->  
->  reset_trigger
->  
-> +echo "Test histogram with sym modifier"
-> +
-> +echo 'hist:keys=call_site.sym' > events/kmem/kmalloc/trigger
-> +for i in `seq 1 10` ; do ( echo "forked" > /dev/null); done
-> +grep '{ call_site: \[[0-9a-f][0-9a-f]*\] [_a-zA-Z][_a-zA-Z]* *}'
-> events/kmem/kmalloc/hist > /dev/null || \
-> +    fail "sym modifier on kmalloc call_site did not work"
-> +
-> +reset_trigger
-> +
-> +echo "Test histogram with sym-offset modifier"
-> +
-> +echo 'hist:keys=call_site.sym-offset' > events/kmem/kmalloc/trigger
-> +for i in `seq 1 10` ; do ( echo "forked" > /dev/null); done
-> +grep '{ call_site: \[[0-9a-f][0-9a-f]*\] [_a-zA-Z][_a-zA-Z]*+0x[0-
-> 9a-f][0-9a-f]*' events/kmem/kmalloc/hist > /dev/null || \
-> +    fail "sym-offset modifier on kmalloc call_site did not work"
-> +
-> +reset_trigger
-> +
->  echo "Test histogram with sort key"
->  
->  echo 'hist:keys=parent_pid,child_pid:sort=child_pid.ascending' >
-> events/sched/sched_process_fork/trigger
+S390's init_idle_preempt_count(p, cpu) doesn't actually let us initialize the
+preempt_count of the requested CPU's idle task: it unconditionally writes
+to the current CPU's. This clearly conflicts with idle_threads_init(),
+which intends to initialize *all* the idle tasks, including their
+preempt_count (or their CPU's, if the arch uses a per-CPU preempt_count).
 
-Acked-by: Tom Zanussi <zanussi@kernel.org>
+Unfortunately, it seems the way s390 does things doesn't let us initialize
+every possible CPU's preempt_count early on, as the pages where this
+resides are only allocated when a CPU is brought up and are freed when it
+is brought down.
 
+Let the arch-specific code set a CPU's preempt_count when its lowcore is
+allocated, and turn init_idle_preempt_count() into an empty stub.
+
+Fixes: f1a0a376ca0c ("sched/core: Initialize the idle task with preemption disabled")
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+---
+ arch/s390/include/asm/preempt.h | 16 ++++------------
+ arch/s390/kernel/setup.c        |  1 +
+ arch/s390/kernel/smp.c          |  1 +
+ 3 files changed, 6 insertions(+), 12 deletions(-)
+
+diff --git a/arch/s390/include/asm/preempt.h b/arch/s390/include/asm/preempt.h
+index 23ff51be7e29..d9d5350cc3ec 100644
+--- a/arch/s390/include/asm/preempt.h
++++ b/arch/s390/include/asm/preempt.h
+@@ -29,12 +29,6 @@ static inline void preempt_count_set(int pc)
+ 				  old, new) != old);
+ }
+ 
+-#define init_task_preempt_count(p)	do { } while (0)
+-
+-#define init_idle_preempt_count(p, cpu)	do { \
+-	S390_lowcore.preempt_count = PREEMPT_DISABLED; \
+-} while (0)
+-
+ static inline void set_preempt_need_resched(void)
+ {
+ 	__atomic_and(~PREEMPT_NEED_RESCHED, &S390_lowcore.preempt_count);
+@@ -88,12 +82,6 @@ static inline void preempt_count_set(int pc)
+ 	S390_lowcore.preempt_count = pc;
+ }
+ 
+-#define init_task_preempt_count(p)	do { } while (0)
+-
+-#define init_idle_preempt_count(p, cpu)	do { \
+-	S390_lowcore.preempt_count = PREEMPT_DISABLED; \
+-} while (0)
+-
+ static inline void set_preempt_need_resched(void)
+ {
+ }
+@@ -130,6 +118,10 @@ static inline bool should_resched(int preempt_offset)
+ 
+ #endif /* CONFIG_HAVE_MARCH_Z196_FEATURES */
+ 
++#define init_task_preempt_count(p)	do { } while (0)
++/* Deferred to CPU bringup time */
++#define init_idle_preempt_count(p, cpu)	do { } while (0)
++
+ #ifdef CONFIG_PREEMPTION
+ extern void preempt_schedule(void);
+ #define __preempt_schedule() preempt_schedule()
+diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
+index 5aab59ad5688..382d73da134c 100644
+--- a/arch/s390/kernel/setup.c
++++ b/arch/s390/kernel/setup.c
+@@ -466,6 +466,7 @@ static void __init setup_lowcore_dat_off(void)
+ 	lc->br_r1_trampoline = 0x07f1;	/* br %r1 */
+ 	lc->return_lpswe = gen_lpswe(__LC_RETURN_PSW);
+ 	lc->return_mcck_lpswe = gen_lpswe(__LC_RETURN_MCCK_PSW);
++	lc->preempt_count = PREEMPT_DISABLED;
+ 
+ 	set_prefix((u32)(unsigned long) lc);
+ 	lowcore_ptr[0] = lc;
+diff --git a/arch/s390/kernel/smp.c b/arch/s390/kernel/smp.c
+index 111909aeb8d2..1fb483e06a64 100644
+--- a/arch/s390/kernel/smp.c
++++ b/arch/s390/kernel/smp.c
+@@ -219,6 +219,7 @@ static int pcpu_alloc_lowcore(struct pcpu *pcpu, int cpu)
+ 	lc->br_r1_trampoline = 0x07f1;	/* br %r1 */
+ 	lc->return_lpswe = gen_lpswe(__LC_RETURN_PSW);
+ 	lc->return_mcck_lpswe = gen_lpswe(__LC_RETURN_MCCK_PSW);
++	lc->preempt_count = PREEMPT_DISABLED;
+ 	if (nmi_alloc_per_cpu(lc))
+ 		goto out_stack;
+ 	lowcore_ptr[cpu] = lc;
+-- 
+2.25.1
 
