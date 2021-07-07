@@ -2,123 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C84F3BE5B5
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:36:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD82B3BE5B8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 11:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231363AbhGGJjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 05:39:21 -0400
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:43149 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231354AbhGGJjU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 05:39:20 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.west.internal (Postfix) with ESMTP id B09992B007EC;
-        Wed,  7 Jul 2021 05:36:39 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Wed, 07 Jul 2021 05:36:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=wVBBzFCHibvTl
-        8Q5E+ycDHlkR8pOTwe/HKyytHOGfpI=; b=DpQdUOi9VX0cus6fLgI1F1c811SIS
-        JXdyu7zfyRo510SFJ/+xpaA3Qxc1dzMj9y7Mb/IAxV0ipqCXeHw0hlYER14O3Up8
-        W7Ca9c/vM0+ciYE6b9kiPFs+iKwY/oD/0hnU1zya9czk52IBrHafHv8uZvoo8yx/
-        DK5gvYNuZPB7beoKRqISVCWMS0kUvy1Z2AOQ6uNkqPXyrrjPBjY6/BHe/07EeTQN
-        ev0cXlxDma2m2TL37dd+bKozYONq4Pe/7PKVUcbigkXOSSRekvwt+ZljfY/WdG+8
-        PVd2utOSHTqAD6I9f8zQtH8WLv4CsoQvIJ/G6hybV1jezUcEAL6qsPICQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=wVBBzFCHibvTl8Q5E+ycDHlkR8pOTwe/HKyytHOGfpI=; b=mLwGomye
-        GpVlbvWeEmnWdyhaUXD1RemQf/Vo4G+OflWYFCuWgBySIDVBnqLRMOW69nr7gf/K
-        XI/CYcjywOdICiD59VoAibqH1bkd70apCOArwDEVVjZO0GEFqltCfvzGsZ29Qr5q
-        B+dLpUS1WbsPdWJH+rqi6K54Rek+wffi0pMnF4NB1DBLZW15DWsBV0P6Hnl7QnMi
-        /iTVCj77WG/AW5l8dRHyWrymQL9f5/yv7CilugRLf7dcdeVvzt4Jry8g0vKqScPo
-        zmLiFdRKo5hVwgKR51Q76J2Mw4B8D5ZsQ/5uN0hlrc12GXZ00u7B4ZEOjlBLe0sD
-        dDwDmJqHbyOVng==
-X-ME-Sender: <xms:p3XlYJMhvwExupWRU1pSwRBf7kos0tTqFAyIv51tQqY3XLVjh8tfxA>
-    <xme:p3XlYL95BSw8VjvJSRosqdlGLlm8hmti6Z3G2VYwP7MYZFwIhIxgEIV-I3wD-VCni
-    gV56lVXSzx7uwC71ZY>
-X-ME-Received: <xmr:p3XlYITIKn9KU8YSVrBTYCfIIwTmeE_BYrQplc2Xa7wGn8CslFFfBtO3swO02ttBStkF20mJBZNeznz_XYmLHNVcx1Aoqau5q6di>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrtddvgddujecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpedvkeelveefffekjefhffeuleetleefudeifeehuddugffghffhffehveevheeh
-    vdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
-    igihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:p3XlYFtk8SsVOaEGqRbcX8r58j051ikVFaZFG9jU7PqLW9v8VeHu9w>
-    <xmx:p3XlYBdBGUDH_VP5PuG95_EakxzjDJGZmsNnmFjTREnqbMu_yKjSfw>
-    <xmx:p3XlYB39VW-j2omhZ_0iNvT6NDfqPzCb2KK2aVDFdB7nVCRRny3_7w>
-    <xmx:p3XlYMv5VwUcnT8G3Gy7czcg0iY0ZGCjS1F96XeTO7kqVj-jqOvzsa6ckjQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 7 Jul 2021 05:36:38 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>
-Cc:     bcm-kernel-feedback-list@broadcom.com,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>,
-        Emma Anholt <emma@anholt.net>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        Maxime Ripard <mripard@kernel.org>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH 2/2] drm/vc4: hdmi: Remove unused struct
-Date:   Wed,  7 Jul 2021 11:36:32 +0200
-Message-Id: <20210707093632.1468127-2-maxime@cerno.tech>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210707093632.1468127-1-maxime@cerno.tech>
-References: <20210707093632.1468127-1-maxime@cerno.tech>
+        id S231267AbhGGJkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 05:40:31 -0400
+Received: from mga07.intel.com ([134.134.136.100]:20659 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230502AbhGGJka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 05:40:30 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10037"; a="273116192"
+X-IronPort-AV: E=Sophos;i="5.83,331,1616482800"; 
+   d="scan'208";a="273116192"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2021 02:37:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,331,1616482800"; 
+   d="scan'208";a="410492209"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 07 Jul 2021 02:37:44 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1m13zz-000DVi-NL; Wed, 07 Jul 2021 09:37:43 +0000
+Date:   Wed, 07 Jul 2021 17:37:07 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:for-next/kspp] BUILD SUCCESS
+ f1469e568bf6dcbdff9fd7cd7d2cc9ca9d06efeb
+Message-ID: <60e575c3.EwHKGJn3ukxM6A+H%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 91e99e113929 ("drm/vc4: hdmi: Register HDMI codec") removed the
-references to the vc4_hdmi_audio_component_drv structure, but not the
-structure itself resulting in a warning. Remove it.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/kspp
+branch HEAD: f1469e568bf6dcbdff9fd7cd7d2cc9ca9d06efeb  Input: Fix fall-through warning for Clang
 
-Fixes: 91e99e113929 ("drm/vc4: hdmi: Register HDMI codec")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+elapsed time: 721m
+
+configs tested: 145
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm64                            allyesconfig
+arm64                               defconfig
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                       maple_defconfig
+mips                        omega2p_defconfig
+arm                            hisi_defconfig
+xtensa                           alldefconfig
+sh                           se7721_defconfig
+sh                          rsk7203_defconfig
+powerpc                 xes_mpc85xx_defconfig
+arm                           h5000_defconfig
+h8300                            alldefconfig
+m68k                       bvme6000_defconfig
+powerpc                     tqm8560_defconfig
+sh                        sh7757lcr_defconfig
+powerpc                 mpc85xx_cds_defconfig
+sh                           se7206_defconfig
+ia64                      gensparse_defconfig
+powerpc                    ge_imp3a_defconfig
+xtensa                       common_defconfig
+arm                      jornada720_defconfig
+sh                      rts7751r2d1_defconfig
+powerpc                     sequoia_defconfig
+arm                           spitz_defconfig
+powerpc                     skiroot_defconfig
+s390                                defconfig
+arm                          moxart_defconfig
+powerpc                      walnut_defconfig
+sh                          sdk7780_defconfig
+m68k                          atari_defconfig
+xtensa                  cadence_csp_defconfig
+sh                               alldefconfig
+arm                            pleb_defconfig
+alpha                               defconfig
+sh                            shmin_defconfig
+sh                          polaris_defconfig
+mips                      fuloong2e_defconfig
+mips                          malta_defconfig
+arm                      integrator_defconfig
+arc                          axs101_defconfig
+sh                          landisk_defconfig
+sh                           se7724_defconfig
+powerpc                     pseries_defconfig
+powerpc                 canyonlands_defconfig
+powerpc                       ppc64_defconfig
+arm                        vexpress_defconfig
+powerpc                         wii_defconfig
+powerpc                        icon_defconfig
+powerpc                 mpc837x_rdb_defconfig
+powerpc                   motionpro_defconfig
+sh                           se7750_defconfig
+microblaze                      mmu_defconfig
+m68k                        stmark2_defconfig
+sh                           se7722_defconfig
+m68k                        m5407c3_defconfig
+powerpc                    klondike_defconfig
+arm                      pxa255-idp_defconfig
+mips                        nlm_xlp_defconfig
+m68k                          amiga_defconfig
+sh                ecovec24-romimage_defconfig
+arm                           omap1_defconfig
+mips                         mpc30x_defconfig
+arm                        multi_v5_defconfig
+parisc                              defconfig
+arm                          pcm027_defconfig
+mips                          rb532_defconfig
+arm                         lpc32xx_defconfig
+nds32                            alldefconfig
+mips                          rm200_defconfig
+sh                         microdev_defconfig
+powerpc                          g5_defconfig
+arm                        mvebu_v7_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20210706
+i386                 randconfig-a006-20210706
+i386                 randconfig-a001-20210706
+i386                 randconfig-a003-20210706
+i386                 randconfig-a005-20210706
+i386                 randconfig-a002-20210706
+x86_64               randconfig-a015-20210706
+x86_64               randconfig-a014-20210706
+x86_64               randconfig-a012-20210706
+x86_64               randconfig-a011-20210706
+x86_64               randconfig-a016-20210706
+x86_64               randconfig-a013-20210706
+i386                 randconfig-a015-20210706
+i386                 randconfig-a016-20210706
+i386                 randconfig-a012-20210706
+i386                 randconfig-a011-20210706
+i386                 randconfig-a014-20210706
+i386                 randconfig-a013-20210706
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                            kunit_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-b001-20210706
+x86_64               randconfig-a002-20210706
+x86_64               randconfig-a003-20210706
+x86_64               randconfig-a001-20210706
+x86_64               randconfig-a004-20210706
+x86_64               randconfig-a005-20210706
+x86_64               randconfig-a006-20210706
+
 ---
- drivers/gpu/drm/vc4/vc4_hdmi.c | 12 ------------
- 1 file changed, 12 deletions(-)
-
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index 3165f39a4557..1bb06c872175 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@ -1403,18 +1403,6 @@ static const struct snd_soc_dapm_route vc4_hdmi_audio_routes[] = {
- 	{ "TX", NULL, "Playback" },
- };
- 
--static const struct snd_soc_component_driver vc4_hdmi_audio_component_drv = {
--	.name			= "vc4-hdmi-codec-dai-component",
--	.dapm_widgets		= vc4_hdmi_audio_widgets,
--	.num_dapm_widgets	= ARRAY_SIZE(vc4_hdmi_audio_widgets),
--	.dapm_routes		= vc4_hdmi_audio_routes,
--	.num_dapm_routes	= ARRAY_SIZE(vc4_hdmi_audio_routes),
--	.idle_bias_on		= 1,
--	.use_pmdown_time	= 1,
--	.endianness		= 1,
--	.non_legacy_dai_naming	= 1,
--};
--
- static const struct snd_soc_component_driver vc4_hdmi_audio_cpu_dai_comp = {
- 	.name = "vc4-hdmi-cpu-dai-component",
- };
--- 
-2.31.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
