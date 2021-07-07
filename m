@@ -2,82 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66CF63BF067
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 21:42:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58C583BF069
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 21:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232471AbhGGTou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 15:44:50 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:43869 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230388AbhGGTot (ORCPT
+        id S232565AbhGGTpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 15:45:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230388AbhGGTpP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 15:44:49 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 7DC16200003;
-        Wed,  7 Jul 2021 19:42:06 +0000 (UTC)
-Date:   Wed, 7 Jul 2021 21:42:06 +0200
-From:   Alexandre Belloni <alexandre.belloni@free-electrons.com>
-To:     Codrin.Ciubotariu@microchip.com
-Cc:     rdunlap@infradead.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, lgirdwood@gmail.com,
-        broonie@kernel.org, mirq-linux@rere.qmqm.pl
-Subject: Re: [PATCH v2] ASoC: atmel: ATMEL drivers depend on HAS_DMA
-Message-ID: <YOYDjtStnw9CO5dR@piout.net>
-References: <20210628211158.30273-1-rdunlap@infradead.org>
- <5613542b-a530-ebd8-11c6-ea515cb3f8a9@microchip.com>
+        Wed, 7 Jul 2021 15:45:15 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE2AC061574;
+        Wed,  7 Jul 2021 12:42:33 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id t24-20020a9d7f980000b029046f4a1a5ec4so3428895otp.1;
+        Wed, 07 Jul 2021 12:42:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=86K7g6xk1w1rzYS0KSqb5hgP7+OyClopI7gZPdUQgbI=;
+        b=PMWxYxFk4kMyuAJ9tresyY9N/+YWoX+ChH8bdDXlNe8+7VtNxuhhhPnb+mDUq+0O79
+         OvWhR5kTRH5djowXPdZ7hzprz5EFURsT4M7nUv7SXenjjpUyzdL7XrqvloPMlPK8PFTl
+         CGju4ZoO6IDrsGYtejKRYBpnHbJBevm7DZiWvpepJLWFCApaK+WGB37VCeUAoZn+1nmW
+         2WEIg44ZadrGBNX8cO/1KY2l98VMKT3EKN4gJyzqkvsLxrgQK2vtSHr1AAiFTlh7pNZM
+         PWqzUD3Qs453iSGxkiDnYEWc1qoe63sTuKNX6el6d3aAf/CNxUPMebyGzE7C4MMgXsfW
+         gifg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=86K7g6xk1w1rzYS0KSqb5hgP7+OyClopI7gZPdUQgbI=;
+        b=YwFBhIFK533F5uwnL8thCMFm8EbiGAv0tM2kCPFlC32oTRcA5AM75l5PHDhTLcQVhu
+         t5oCUu/AaS9QAHlldI5Z+g2hi7g3En0AvZZNBnPS2F8EbD0N8gGrXyEQNkxb9VdgZgRK
+         kNunIN5jtJmBIfAW92DlX0ZRWMv5tyh2h8GZ+e45za0Xh1C4AukgzTpsjx/zQWDsCi8G
+         lbGIIxt7crJh9kh58itzlrGt6Cfits3TVypaligx/56aGMiDW00JJLpXEJEgiM016Bxu
+         ASqqH2ZyhV0Ywx/gpQDeKRjp/hiPKZfO2Vw3GvVwEEbn9QAudSu9eSzRMQXz9iJBMlBP
+         7cSQ==
+X-Gm-Message-State: AOAM530mWVxJHZ4JZT7fWR1NQvbXh1IYdi6iS45sY9oWLbb2JlkIsZsA
+        xv21EwpTCqiX6MexYrgwJbE=
+X-Google-Smtp-Source: ABdhPJwec+PsmiC8fiA6YcocAv6d877eOPASCrTPx/0uMZx2+q3keJZkElyNpFLBj/k3NjBvOSqclA==
+X-Received: by 2002:a9d:2aa5:: with SMTP id e34mr13122111otb.366.1625686952982;
+        Wed, 07 Jul 2021 12:42:32 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id k67sm6849oia.8.2021.07.07.12.42.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 12:42:28 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 7 Jul 2021 12:42:26 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH] s390: preempt: Fix preempt_count initialization
+Message-ID: <20210707194226.GA2318012@roeck-us.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5613542b-a530-ebd8-11c6-ea515cb3f8a9@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/07/2021 16:40:34+0000, Codrin.Ciubotariu@microchip.com wrote:
-> On 29.06.2021 00:11, Randy Dunlap wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > 
-> > On a config (such as arch/sh/) which does not set HAS_DMA when MMU
-> > is not set, several ATMEL ASoC drivers select symbols that cause
-> > kconfig warnings. There is one "depends on HAS_DMA" here but several
-> > more are needed to prevent kconfig warnings since 'select' does not
-> > recognize any dependencies.
-> > 
-> > Fix the following kconfig warnings:
-> > 
-> > WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_PDC
-> >    Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
-> >    Selected by [m]:
-> >    - SND_ATMEL_SOC_SSC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m]
-> >    - SND_ATMEL_SOC_SSC_PDC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
-> > 
-> > WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_PDC
-> >    Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
-> >    Selected by [m]:
-> >    - SND_AT91_SOC_SAM9G20_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
-> > 
-> > WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC
-> >    Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
-> >    Selected by [m]:
-> >    - SND_ATMEL_SOC_SSC_DMA [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
-> > 
-> > WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_DMA
-> >    Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
-> >    Selected by [m]:
-> >    - SND_ATMEL_SOC_WM8904 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && I2C [=m]
-> >    - SND_AT91_SOC_SAM9X5_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
+On Wed, Jul 07, 2021 at 05:33:38PM +0100, Valentin Schneider wrote:
+> S390's init_idle_preempt_count(p, cpu) doesn't actually let us initialize the
+> preempt_count of the requested CPU's idle task: it unconditionally writes
+> to the current CPU's. This clearly conflicts with idle_threads_init(),
+> which intends to initialize *all* the idle tasks, including their
+> preempt_count (or their CPU's, if the arch uses a per-CPU preempt_count).
 > 
-> Hi Randy,
+> Unfortunately, it seems the way s390 does things doesn't let us initialize
+> every possible CPU's preempt_count early on, as the pages where this
+> resides are only allocated when a CPU is brought up and are freed when it
+> is brought down.
 > 
-> Sorry about my delayed response. I think it would be better to just 
-> remove HAS_DMA from SND_ATMEL_SOC_PDC, since it seems to compile fine 
-> without it. This should fix all the problems...
+> Let the arch-specific code set a CPU's preempt_count when its lowcore is
+> allocated, and turn init_idle_preempt_count() into an empty stub.
 > 
+> Fixes: f1a0a376ca0c ("sched/core: Initialize the idle task with preemption disabled")
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 
-I bet this is correct since m32r is gone.
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Guenter
