@@ -2,67 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F37243BE978
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 16:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 292943BE97C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 16:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231827AbhGGOQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 10:16:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36900 "EHLO
+        id S231848AbhGGOQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 10:16:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230509AbhGGOQE (ORCPT
+        with ESMTP id S231730AbhGGOQW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 10:16:04 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04FE9C061574;
-        Wed,  7 Jul 2021 07:13:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=1beiS8DyOGB4mPJMRb5VvAAAysTju3B6A9C01iJQHKs=; b=rFQ3w5Ja82VoyWKPejP7LFvo0O
-        C2O/iPJuJG/H9n7vUa/VKqV1nhTUNbYCTKttBM/5V0XxtJWMoj8Q70ALih5kdZZl5mMw8B5kVWSp/
-        p3BlZ1U2JoIa4j/EttU3J6fTKXohRIWqqX/oC1pxW7wYkqRE2eDAVEkX/nWqEm1cJLOqBZ9/46VgO
-        5sKmb+xuyBv5BY6aATpcwbMeroYHHu4/H+t39h5kbUABcg4GJL9/QP3A0PDGBukQ1tEJTQvK7gE/q
-        rMG43cIDoxKm8cpeMjfbIU3U5qHKwCc09OHXOHU6sYhbYretKRw0aWgJtxzLlyQSwERh32L93C+eF
-        itr/f/8A==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m18IM-00CT5V-Fq; Wed, 07 Jul 2021 14:12:59 +0000
-Date:   Wed, 7 Jul 2021 15:12:58 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Wedson Almeida Filho <wedsonaf@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        rust-for-linux <rust-for-linux@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 00/17] Rust support
-Message-ID: <YOW2auE24e888TBE@infradead.org>
-References: <20210704202756.29107-1-ojeda@kernel.org>
- <YOVNJuA0ojmeLvKa@infradead.org>
- <CANiq72mKPFtB4CtHcc94a_y1V4bEOXXN2CwttQFvyzwXJv62kw@mail.gmail.com>
- <YOWjLmg/Z7kr2+tx@kroah.com>
- <YOW1Nj8+a2Yth2++@google.com>
+        Wed, 7 Jul 2021 10:16:22 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C1E1C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 07:13:41 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id k8so2884467lja.4
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 07:13:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=phystech-edu.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g5y2U6uok/0so0eFkpqI39QSbZF7lC9EfSeNA/R2eiU=;
+        b=b69y5epbfVrMskok7SBd1fb6b+hS2UNHIjBQpCvisPd9gFak1ZIcM1t+CCpoHXjx48
+         AYqnzcVvvaYeOw5tbYaLmdMEmNJ9epDabUQTTJxMY6CkFbF4Af3SXV3nQ3XQ3QuPuOLx
+         wjW0pncMm8r57xkk0W14y2f/V4kfTptIqomWgvad66QefRyb5ZFIjfyCcgxnaP4tX4Jn
+         5oLRPogaJswJY0tBQ8mLfaxN4Tw4R00hZibCFs5IAd/Z4NrRVsc8I5Z5lxpYWMP+duiJ
+         qbDG0vkhPcmo8sl3NI2eEZx9L4H7bxYsVcCg6dLHzkGliujExF0U2bdlgRjhx/EKi+wc
+         Nc3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g5y2U6uok/0so0eFkpqI39QSbZF7lC9EfSeNA/R2eiU=;
+        b=Dvt6b+NJhht0APbtpQMcsiioKzNGkdTxGFrB2SPsOiLTQ8mlfK7BiYqovxDSZHmF/C
+         KaGMlf15Wiho+4XR8bPIU+jFT3M6lN3TTAPp/Z/ne7z8Dz2dSMD/70P1IgR1PBI8Xpro
+         j+Mmnfk7nrtumOekU98Wo/z78cyJOy3SR0Gd/1+6uwcFSUXgSuUtiQe0VTUU3I7bW4N5
+         HP5Zzwv4qo6ugtaiKydf/PQAi20jcwZO2OoE+mrkaTWyknPA3D+RC/vHT6yzTNjK/jN0
+         2IvbcpucsjCDVdXoC9s2lUumGiAx0jFmRDPEr1j9RzcVE2/fa39Zb71JCHXHRzg2bmTB
+         EO2Q==
+X-Gm-Message-State: AOAM533ulW1kKkYy9aGpiwHi4k5Afy5g7fubF42ZwFO+zhEsOGSpPt55
+        8VbO2lU0kUGITnkU9eyM/cr0GQ==
+X-Google-Smtp-Source: ABdhPJwFZTZe2iloQ3VAroTCsguHeU1FjVUp8cYQVAbXI7WPISb1E0nxwT/5jQC8Z9Ebykwsatgwgw==
+X-Received: by 2002:a2e:6c10:: with SMTP id h16mr19473010ljc.234.1625667218555;
+        Wed, 07 Jul 2021 07:13:38 -0700 (PDT)
+Received: from 192.168.1.3 ([2a00:1370:810e:abfe:9c62:44e3:b0ab:76fd])
+        by smtp.gmail.com with ESMTPSA id a26sm205077ljq.120.2021.07.07.07.13.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 07:13:37 -0700 (PDT)
+From:   Viktor Prutyanov <viktor.prutyanov@phystech.edu>
+To:     sean@mess.org, mchehab@kernel.org, robh+dt@kernel.org,
+        khilman@baylibre.com, narmstrong@baylibre.com
+Cc:     jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, rockosov@gmail.com,
+        Viktor Prutyanov <viktor.prutyanov@phystech.edu>
+Subject: [PATCH v2 0/2] media: rc: add support for Amlogic Meson IR blaster
+Date:   Wed,  7 Jul 2021 17:13:21 +0300
+Message-Id: <20210707141323.20757-1-viktor.prutyanov@phystech.edu>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YOW1Nj8+a2Yth2++@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 03:07:50PM +0100, Wedson Almeida Filho wrote:
-> Miguel's point is that it does implement the vast majority of binder features
-> and is non-trivial, so it could be used as evidence that useful kernel drivers
-> can be built with Rust; not just "transpiled" from C, but written with the Rust
-> safety guarantees.
+Hi,
 
-binder is not a kernel driver.  It is a ill design IPC mechanism
-absolutely no representative for other kernel code.
+this is a driver for the IR transmitter (also called IR blaster)
+available in some Amlogic Meson SoCs.
 
-Please write an actual real driver dealing with real (and common) hardware
-and come back with the results.
+Viktor Prutyanov (2):
+  media: rc: meson-irblaster: document device tree bindings
+  media: rc: introduce Meson IR blaster driver
+
+ .../media/amlogic,meson-irblaster.yaml        |  62 +++
+ drivers/media/rc/Kconfig                      |  10 +
+ drivers/media/rc/Makefile                     |   1 +
+ drivers/media/rc/meson-irblaster.c            | 433 ++++++++++++++++++
+ 4 files changed, 506 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/amlogic,meson-irblaster.yaml
+ create mode 100644 drivers/media/rc/meson-irblaster.c
+
+-- 
+2.21.0
+
