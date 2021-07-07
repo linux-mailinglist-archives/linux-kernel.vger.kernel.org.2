@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 862FF3BF262
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 01:20:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF63F3BF265
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 01:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230336AbhGGXWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 19:22:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46218 "EHLO
+        id S230457AbhGGXZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 19:25:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230029AbhGGXWu (ORCPT
+        with ESMTP id S230029AbhGGXZc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 19:22:50 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA26C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 16:20:10 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id h4so3942163pgp.5
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 16:20:10 -0700 (PDT)
+        Wed, 7 Jul 2021 19:25:32 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 292EEC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 16:22:50 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id y4so1472598pgl.10
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 16:22:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=R8rdLFZzl8soE/vbDXvznl/oWc7Zde3z5S9I562dGps=;
-        b=v9lbd2SBb2lEjgqXRJ4glMfd5IXQBpVWEbyUHmpFqRUmP7nvdpuLopgf8sLPMqUcE/
-         Nef9/qL6QCncg+T4BxAmPczeb2riAXkcHbbr6n8d6lhLtHXFBx/CFABZNreJfYJsWmqj
-         ynC+tY2tACgJtZ3rQa31AkKjVqZoiY13ZaFZ+mG+bGMtd16w7K2AnYsKWN24mw6iKgYh
-         s1wj/PNjujyeU7+m5wlFYSFUYcKhMLOIfkXt69OhwERkKoyMX4BrUAMzYIKxofOMMYZI
-         ArXJ5nOMLbhuRlX7jSYBYV+rA08Zd8X/tv96cSo2JzK0dpZK+TdS9IdZ/Zyj4S6Gf4A3
-         nlSg==
+        bh=iKd8HDMrjBFzk0VAe0M8v1m4ouhHl4ySw1cEWElJcmo=;
+        b=Er5fM8T7T1Q/k5rScY29CLM72/C2mVp6/IuOE2sL3+ynyAkqXl+OqtmcGoryLo3xH6
+         nmgM2zQeQJ6Nvi6x0SZZ2TUaTrUJ6CYQ316Tv0MdHI2cOe4uRG7XzBHt3YluxiW1tEpD
+         D330D6W/kSyivKd5O4tzPi/E/6Vq0woMdaMbLxCucEuxMvlB/jX8aYHbMlFHJLiWOkCg
+         NJFrg5bMTWkSacvpRXspojqxjmEVrdUhjyY8OTdiie5sewZQI2aNhpuoEBEYPl9AEmvB
+         K60041p4jIk9NqOqOxyqOETbMFjByP9IKKrWVLAsBbugikVQ5Z5TxTClNkYAlYkhhw8z
+         rzhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=R8rdLFZzl8soE/vbDXvznl/oWc7Zde3z5S9I562dGps=;
-        b=m6NW2371Fn5stMeMrLnhBYdbEHBTKnk0sUnkyyY3VVXvOkHBSFsLn1tRKNU97t9rS9
-         dtt4r5XdEhhjECKCGSlcCCxwE99uQM13yl3nNaMjtBxushXI/UoVADkiEM+uZno4wwJv
-         4qHpxcuXjXSF2tmsFn2MN9T14v1LoFu+O9TkDkkuPMnouoznOndMwuNqUZVv6WA7co1w
-         krPcbZOX+9SMzrCFmKVszTl0IoaNuePKie/2VXtKJSp97wDQH2klTgDBmzfZ4RqZEv9B
-         V4AYWObPrn+mVeKCk4hHrmvuvl1dXHmmCpj5lUmWTvP0gYqv/Rn7fwrgLp/GChZf0f93
-         YMmA==
-X-Gm-Message-State: AOAM532U6xU1Ld640tG02oP/cZy70tsbULgkbUCrMgNy+s/0XuGG/wsi
-        xpxlnsUUVpGNoXl0yrY8hB1bhw==
-X-Google-Smtp-Source: ABdhPJytVWWZQOwm+QTA8XO1kepG6J2Hz8iocVD0Zh3m1q0t92PKY9yVjJ0ftDspEPsM5unYzzlaqw==
-X-Received: by 2002:a63:5450:: with SMTP id e16mr28082816pgm.50.1625700009374;
-        Wed, 07 Jul 2021 16:20:09 -0700 (PDT)
+        bh=iKd8HDMrjBFzk0VAe0M8v1m4ouhHl4ySw1cEWElJcmo=;
+        b=hDPCD5M4Xi5xbwY1s4hziCRsmAu9tyf4pC5kgfgcFJMrGzif0/aE8UHgIk7HGncB8C
+         iiK1phSTMlFEQ5qxxUDlM+a7nd3SFY5xRuzopv79dkZGb7iNdwwlWJttkGkv5eYbkRLQ
+         nZPu50k9rq/WclAJggfwUGPQaazC9f58VynnJbuUONKjHeZwY6fO+kmnFeehpJVV6mrM
+         B5IqPM5uShsiDoFT/8Dmro8LMXoE5GlVjwIDhgOwXZkLodLeJ67EtyfcIvTN7a/kX4zH
+         VgxucgJc7520Flx0eOYquB5WFSGDy4Zegf34FDj0RVr06Poa9AV48Iv9Ryk4/mI5scGi
+         MD6g==
+X-Gm-Message-State: AOAM532XpWKE2XCQboVt3LRYV3g2QaY2gUr/q/JlgSgpcV8YEDIziYzl
+        m/nUWHzW3DZLHQuj+jiFaNv2DQ==
+X-Google-Smtp-Source: ABdhPJzh9BGFbFuxvGs7no5halNClQJ4ARXKZ11cDaqJQcr3A1ELX4x6t3WE8OWICjaRF3XoWpfe/Q==
+X-Received: by 2002:aa7:9d1a:0:b029:30f:df6a:77aa with SMTP id k26-20020aa79d1a0000b029030fdf6a77aamr27238659pfp.35.1625700169406;
+        Wed, 07 Jul 2021 16:22:49 -0700 (PDT)
 Received: from google.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
-        by smtp.gmail.com with ESMTPSA id x18sm292148pfc.76.2021.07.07.16.20.08
+        by smtp.gmail.com with ESMTPSA id w5sm284204pfu.121.2021.07.07.16.22.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 16:20:08 -0700 (PDT)
-Date:   Wed, 7 Jul 2021 23:20:04 +0000
+        Wed, 07 Jul 2021 16:22:48 -0700 (PDT)
+Date:   Wed, 7 Jul 2021 23:22:44 +0000
 From:   David Matlack <dmatlack@google.com>
 To:     David Edmondson <david.edmondson@oracle.com>
 Cc:     linux-kernel@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
@@ -63,7 +63,7 @@ Cc:     linux-kernel@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
         "H. Peter Anvin" <hpa@zytor.com>
 Subject: Re: [PATCH v2 0/2] kvm: x86: Convey the exit reason to user-space on
  emulation failure
-Message-ID: <YOY2pLoXQ8ePXu0W@google.com>
+Message-ID: <YOY3RP8iLuWl1Zwh@google.com>
 References: <20210706101207.2993686-1-david.edmondson@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -77,10 +77,6 @@ On Tue, Jul 06, 2021 at 11:12:05AM +0100, David Edmondson wrote:
 > To help when debugging failures in the field, if instruction emulation
 > fails, report the VM exit reason to userspace in order that it can be
 > recorded.
-
-What is the benefit of seeing the VM-exit reason that led to an
-emulation failure?
-
 > 
 > I'm unsure whether sgx_handle_emulation_failure() needs to be adapted
 > to use the emulation_failure part of the exit union in struct kvm_run
@@ -89,6 +85,12 @@ emulation failure?
 > v2:
 > - Improve patch comments (dmatlack)
 > - Intel should provide the full exit reason (dmatlack)
+
+I just asked if Intel should provide the full exit reason, I do not have
+an opinion either way. It really comes down to your usecase for wanting
+the exit reason. Would the full exit reason be useful or do you just
+need the basic exit number?
+
 > - Pass a boolean rather than flags (dmatlack)
 > - Use the helper in kvm_task_switch() and kvm_handle_memory_failure()
 >   (dmatlack)
