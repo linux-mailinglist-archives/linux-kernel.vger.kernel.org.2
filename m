@@ -2,182 +2,339 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 920593BE46D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61ED43BE456
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231235AbhGGIar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 04:30:47 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:60468 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230496AbhGGIaf (ORCPT
+        id S230463AbhGGIaY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 7 Jul 2021 04:30:24 -0400
+Received: from de-smtp-delivery-105.mimecast.com ([194.104.111.105]:46269 "EHLO
+        de-smtp-delivery-105.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230086AbhGGIaW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 04:30:35 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1678Mna7024407;
-        Wed, 7 Jul 2021 10:27:44 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=qU0WX1c5atYHnfCgyCLb4HvKRNUahZQXZ2p9BujTCwY=;
- b=ekSn5kVk+D0oXZnGKGvvkK67zpS1Qjkcz34XgLU+Sn9n+CujnQRT6xM/u7SRAsLH1dfB
- vDYnm7NQ7bAwoshu4156WcGlyskaXCRRUMplcHRAgy5aGYVQKtCaIaePG6b35Aoz3pW3
- m4ANtkH+HMIa1G4tHUWcyF5FmRU+K+Gg/H7v1UiIzlnF0zqgi6kZASJztTp0wMCDxs2O
- 8sDRHn5bsM76wlbH4wsEJJusE3UQDYTbqOCHOpNhwzWINtE+Dbf8JxZh3vn6ohHdp1Le
- DWLOwYOUQOV1TwKo+RTdZgtMe/kDRilMA3C7T2z//S1UrVmXKOQWQgg51VY7UZHHqoPx hg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 39mnebdasu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 07 Jul 2021 10:27:44 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id ED68A10002A;
-        Wed,  7 Jul 2021 10:27:43 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E0E01215125;
-        Wed,  7 Jul 2021 10:27:43 +0200 (CEST)
-Received: from localhost (10.75.127.48) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 7 Jul 2021 10:27:43
- +0200
-From:   Alain Volmat <alain.volmat@foss.st.com>
-To:     <broonie@kernel.org>, <amelie.delaunay@foss.st.com>
-CC:     <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
-        <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@foss.st.com>,
-        <alain.volmat@foss.st.com>
-Subject: [PATCH v2 7/7] spi: stm32: finalize message either on dma callback or EOT
-Date:   Wed, 7 Jul 2021 10:27:06 +0200
-Message-ID: <1625646426-5826-8-git-send-email-alain.volmat@foss.st.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1625646426-5826-1-git-send-email-alain.volmat@foss.st.com>
-References: <1625646426-5826-1-git-send-email-alain.volmat@foss.st.com>
+        Wed, 7 Jul 2021 04:30:22 -0400
+Received: from GBR01-CWL-obe.outbound.protection.outlook.com
+ (mail-cwlgbr01lp2052.outbound.protection.outlook.com [104.47.20.52]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-16-Rz8xZl7APh6xepANG2cEYg-1; Wed, 07 Jul 2021 10:27:40 +0200
+X-MC-Unique: Rz8xZl7APh6xepANG2cEYg-1
+Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:89::10)
+ by CWXP265MB3829.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:102::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20; Wed, 7 Jul
+ 2021 08:27:39 +0000
+Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::259d:65ac:ae6d:409d]) by CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::259d:65ac:ae6d:409d%9]) with mapi id 15.20.4287.033; Wed, 7 Jul 2021
+ 08:27:39 +0000
+From:   =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
+CC:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "hch@infradead.org" <hch@infradead.org>
+Subject: [PATCHv2] mmc: block: Differentiate busy and PROG state
+Thread-Topic: [PATCHv2] mmc: block: Differentiate busy and PROG state
+Thread-Index: AQHXcwny68++j12etUaztO/Yg7lHlQ==
+Date:   Wed, 7 Jul 2021 08:27:39 +0000
+Message-ID: <CWXP265MB2680575489E508DC75D84857C41A9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+References: <CWXP265MB268049D9AB181062DA7F6DDBC4009@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+ <CWXP265MB26807AC3C130772D789D0AABC41B9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>,<CAPDyKFq44ZuXXUDQV34NSW-ixB9GAZfDx+dx-Kb8O7=LQ1TSHQ@mail.gmail.com>
+ <CWXP265MB26803EFAC659676EC0914F97C41B9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>,<DM6PR04MB6575B0049B98254E77BA447EFC1A9@DM6PR04MB6575.namprd04.prod.outlook.com>
+In-Reply-To: <DM6PR04MB6575B0049B98254E77BA447EFC1A9@DM6PR04MB6575.namprd04.prod.outlook.com>
+Accept-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8a0de482-636a-41a5-a74f-08d94121152e
+x-ms-traffictypediagnostic: CWXP265MB3829:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CWXP265MB3829379AF8335A113F48DFB2C41A9@CWXP265MB3829.GBRP265.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:8882
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0
+x-microsoft-antispam-message-info: jaNolaUSE3JurlE9OA1o1ZU8hMVRljrGhZJIoFzh3FQxAURA+n1FWm+Av9+lVoOp0PnJd45ZuIpff7bj+iOhJtuhFlzGvXSmU3wn6u+uWPk1YCAz5r4H2iqHppzxMtrB0oo5whJFuzBUydLncWqCMUBYCn/y1wM4HsnxuQjq46w/ba/EEvvYu2SgWTTszP7WnYj1kX+Hx2+QRB4S5tBKz1xw3fe/CWaMgqHqeoyXdM5zZNOYDQaU18C/8KYqxjtPr8kP3tKtT0Ob2fYU4oOOhHPs4gWbByIoBKheCJgKJAR6z1UkbEvf+453pkKoZ0eTEBF2s7jVhipQTl3QKHRdcawDtQZOLFD6I6d7TJ+CP3MNNHWucW83kBCQI6gVoTZebeUa0PWZ0fGS7z1hykRRHURCLe6P/GbbzygY5irYBvEYDhJbIUMVVmSa/Mc1AyPPYwowbap3BM07RFh1E8wsMBNisG7WuQaxRAhH7/jP09hZ9Fcp48jzBef6nLB4LrLHlMUM8LCD+lbgI5qndXRfUlyYDXInyCcftzM9x48keyUtqK1d0x9+H/FOEn33BaHo9BU/3W48tUpqdQegA+w9hpIu7mYl1YtLK8weIwkQ5cY4MqZuxYCOGJ58bGoNDc0AGbyVn7n0UapV/D8JFWPWag==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(136003)(366004)(396003)(376002)(346002)(39840400004)(66476007)(66946007)(6506007)(52536014)(8936002)(76116006)(91956017)(83380400001)(26005)(38100700002)(66446008)(86362001)(66556008)(64756008)(186003)(9686003)(110136005)(122000001)(7696005)(478600001)(316002)(54906003)(4326008)(8676002)(33656002)(5660300002)(71200400001)(2906002)(55016002);DIR:OUT;SFP:1101
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?b5sLmpxi8RPcMiIxptrJCIp1Os1avkgZ87V5DDYHg4m+7DR8L/Zstkw4Ee?=
+ =?iso-8859-1?Q?ddAmVMHowSwU8ostViSjcoCbNegU2bBYAyaLgrj/VKiaRxC/ckQ/KCAZAQ?=
+ =?iso-8859-1?Q?cBT6bXKl2gtK60ziqIO4dvh5i+vAsqMdKj36lOg9yTByst3itdev2S62se?=
+ =?iso-8859-1?Q?wBu/YbCiOUfN2ifSbYNlSEK2aYu8Eg/rDnWbBtzYpuUJbO2m+4XMURZB2z?=
+ =?iso-8859-1?Q?jhkhioJdm7G7VEMV3fhnS4YRNbrlyKg2xGmHglhd19QpgiVHNCyy+fcavH?=
+ =?iso-8859-1?Q?5eShTO6xFekjw3eGx46mhSPZl0GR+tHTJsG4HAlaOCUg5pjCgdNqumDSy8?=
+ =?iso-8859-1?Q?26U40785Xi1d05i1peuZZyQ3FWxShc84eBwNk4vozR0srjmQTOB8kf2utf?=
+ =?iso-8859-1?Q?LVvuRaXJ9Lti64PnHAsfme8wcfzUMqGfSCBTAM99JY2Tv6S8qYlAWvHocH?=
+ =?iso-8859-1?Q?/ZvHxWQ6OcqBrxKCn3cYQh71RfkDJvoktzdlQXIKmXAYueH8gXH9L1/EUO?=
+ =?iso-8859-1?Q?KtwRGkWP8IieL3kIUhkze6jH4fqLA0kf2S97YVKUrV8qToM+Dhjv4aWkaG?=
+ =?iso-8859-1?Q?ZKkYmdVvgnnu2np9KqpMX79S9idAiokRvIc2yiOM847GDcBN0wd0rILsSA?=
+ =?iso-8859-1?Q?n4av/iEyAMtJL5oi7y5Syj72wTP3wBag2LuKaJHJAz76UN4ni030spdNQQ?=
+ =?iso-8859-1?Q?sw4dd2a6oPxtRRuExP257XXoP0iYa1Jn3aIk39odzhbsnxcpuR7prFYchb?=
+ =?iso-8859-1?Q?CVtVOA+SH7IhyxpoFbqKaMV0FeqIbRRt914OpX3YViBAKrm0a3Q8CSU7L/?=
+ =?iso-8859-1?Q?GRR2fSRrwokwqjhoVFPmV64wc6gvjK/EnpN3Af/5fQ4kPbRqpnDB3UrsN6?=
+ =?iso-8859-1?Q?cnOe+FvQ8Hh0FtG2zRYMubJy29rQAnSYTmO4ReVphOFboalXPdWNmoNyJS?=
+ =?iso-8859-1?Q?09Fj05wtC/lDFAcaq453UYyNOwfHJyiF+6Fz+df0vvAF2U7GNcRo/xUcnA?=
+ =?iso-8859-1?Q?3LIUdtLh06+oRoQ/PJ8tsys2DlfIpuSHB9w7eASPJL2N+pCDjpdaiNTudX?=
+ =?iso-8859-1?Q?sOKTarRQCRR2bQb2SIg3vtYzEOGenXy14w7S9tFLc1vse4OipZmgH6dKov?=
+ =?iso-8859-1?Q?ENnNO0YbCyJUyJScGV5faTbvUwfDMsQTgwr/MmSHBnZeeZ9YoJ7nKq9ylI?=
+ =?iso-8859-1?Q?Hx61oKWHMR8d+y3oqoFwv4xlaFSugZeCE6sgD/FDkAt5vWASnv0s0/1TJN?=
+ =?iso-8859-1?Q?cTAtSTb/CRZF9nNbQpPiU8nGZuoqnnAuMJmoIVSHAgegzgKOUhTRgKdybG?=
+ =?iso-8859-1?Q?3q09JF5m11fHS2ydqF+0NSgrT9CuFZQFMnqfkvtVuqdMQs4=3D?=
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-07_05:2021-07-06,2021-07-07 signatures=0
+X-OriginatorOrg: hyperstone.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8a0de482-636a-41a5-a74f-08d94121152e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jul 2021 08:27:39.1286
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 86f203eb-e878-4188-b297-34c118c18b11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Gp0X7ecw9uDFEw2onCR0AaPQsTwGMzKRTIh7GX/B70XgpzJRJ6Rn3zQkTo0KXkLQP63xS3puT8w25mA9UBY7QQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWXP265MB3829
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CDE5A68 smtp.mailfrom=cloehle@hyperstone.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: hyperstone.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Depending on the usage, it is necessary to perform the finalize
-message operation either upon receiving the EOT interruption,
-eiher upon receiving the DMA callback. Indeed, when relying
-on DMA, even if the SPI EOT IT has been received, it is
-necessary to wait for the end of the DMA RX transaction before
-accessing to the data.
+Prevent race condition with ioctl commands
 
-Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+To fully prevent a race condition where the next
+issued command will be rejected as the card is no
+longer signalling busy but not yet back in TRAN state.
+The card may be in PROG state without signalling busy,
+for some of the commands that are only R1, but also
+for R1b commands, the card will signal non-busy as soon
+as receive buffers are free again, but the card has
+not finished handling the command and may therefore be
+in PROG.
+Since the next command is not known at the time of
+completion we must assume that it may be one that can
+only be accepted in TRAN state.
+Therefore we only consider a PROG command completed
+when we have polled for TRAN.
+
+Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
 ---
- drivers/spi/spi-stm32.c | 57 +++++++++++++++--------------------------
- 1 file changed, 20 insertions(+), 37 deletions(-)
+ drivers/mmc/core/block.c   | 86 ++++++++++++++++++++++++++++++++++----
+ drivers/mmc/core/mmc_ops.c |  2 +-
+ include/linux/mmc/mmc.h    | 10 +++--
+ include/linux/mmc/sd.h     |  3 ++
+ 4 files changed, 87 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index 535f4bebc010..14ca7ea04e47 100644
---- a/drivers/spi/spi-stm32.c
-+++ b/drivers/spi/spi-stm32.c
-@@ -911,7 +911,10 @@ static irqreturn_t stm32h7_spi_irq_thread(int irq, void *dev_id)
- 	if (sr & STM32H7_SPI_SR_EOT) {
- 		if (!spi->cur_usedma && (spi->rx_buf && (spi->rx_len > 0)))
- 			stm32h7_spi_read_rxfifo(spi);
--		end = true;
-+		if (!spi->cur_usedma ||
-+		    (spi->cur_usedma && (spi->cur_comm == SPI_SIMPLEX_TX ||
-+		     spi->cur_comm == SPI_3WIRE_TX)))
-+			end = true;
+diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+index 88f4c215caa6..cb78690647bf 100644
+--- a/drivers/mmc/core/block.c
++++ b/drivers/mmc/core/block.c
+@@ -411,7 +411,34 @@ static int mmc_blk_ioctl_copy_to_user(struct mmc_ioc_cmd __user *ic_ptr,
+ 	return 0;
+ }
+ 
+-static int card_busy_detect(struct mmc_card *card, unsigned int timeout_ms,
++static int is_prog_cmd(struct mmc_command *cmd)
++{
++	/*
++	 * Cards will move to programming state (PROG) after these commands.
++	 * So we must not consider the command as completed until the card
++	 * has actually returned back to TRAN state.
++	 */
++	switch (cmd->opcode) {
++	case MMC_STOP_TRANSMISSION:
++	case MMC_WRITE_DAT_UNTIL_STOP:
++	case MMC_WRITE_BLOCK:
++	case MMC_WRITE_MULTIPLE_BLOCK:
++	case MMC_PROGRAM_CID:
++	case MMC_PROGRAM_CSD:
++	case MMC_SET_WRITE_PROT:
++	case MMC_CLR_WRITE_PROT:
++	case MMC_ERASE:
++	case MMC_LOCK_UNLOCK:
++	case MMC_SET_TIME: /* Also covers SD_WRITE_EXTR_SINGLE */
++	case MMC_GEN_CMD:
++	case SD_WRITE_EXTR_MULTI:
++		return true;
++	default:
++		return false;
++	}
++}
++
++static int card_poll_until_tran(struct mmc_card *card, unsigned int timeout_ms,
+ 			    u32 *resp_errs)
+ {
+ 	unsigned long timeout = jiffies + msecs_to_jiffies(timeout_ms);
+@@ -433,8 +460,7 @@ static int card_busy_detect(struct mmc_card *card, unsigned int timeout_ms,
+ 			*resp_errs |= status;
+ 
+ 		/*
+-		 * Timeout if the device never becomes ready for data and never
+-		 * leaves the program state.
++		 * Timeout if the device never returns to TRAN state.
+ 		 */
+ 		if (done) {
+ 			dev_err(mmc_dev(card->host),
+@@ -442,6 +468,41 @@ static int card_busy_detect(struct mmc_card *card, unsigned int timeout_ms,
+ 				 __func__, status);
+ 			return -ETIMEDOUT;
+ 		}
++	} while (R1_CURRENT_STATE(status) != R1_STATE_TRAN);
++
++	return err;
++}
++
++static int card_busy_detect(struct mmc_card *card, unsigned int timeout_ms,
++			    u32 *resp_errs)
++{
++	unsigned long timeout = jiffies + msecs_to_jiffies(timeout_ms);
++	int err = 0;
++	u32 status;
++
++	do {
++		bool done = time_after(jiffies, timeout);
++
++		err = __mmc_send_status(card, &status, 5);
++		if (err) {
++			dev_err(mmc_dev(card->host),
++				"error %d requesting status\n", err);
++			return err;
++		}
++
++		/* Accumulate any response error bits seen */
++		if (resp_errs)
++			*resp_errs |= status;
++
++		/*
++		 * Timeout if the device never becomes ready for data.
++		 */
++		if (done) {
++			dev_err(mmc_dev(card->host),
++				"Card remained busy! %s status: %#x\n",
++				 __func__, status);
++			return -ETIMEDOUT;
++		}
+ 	} while (!mmc_ready_for_data(status));
+ 
+ 	return err;
+@@ -596,12 +657,19 @@ static int __mmc_blk_ioctl_cmd(struct mmc_card *card, struct mmc_blk_data *md,
+ 
+ 	if (idata->rpmb || (cmd.flags & MMC_RSP_R1B) == MMC_RSP_R1B) {
+ 		/*
+-		 * Ensure RPMB/R1B command has completed by polling CMD13
+-		 * "Send Status".
++		 * Ensure card is no longer signalling busy by polling CMD13.
+ 		 */
+ 		err = card_busy_detect(card, MMC_BLK_TIMEOUT_MS, NULL);
  	}
  
- 	if (sr & STM32H7_SPI_SR_TXP)
-@@ -1019,42 +1022,17 @@ static void stm32f4_spi_dma_tx_cb(void *data)
++	if (is_prog_cmd(&cmd)) {
++		/*
++		 * Ensure card has returned back to TRAN state
++		 * and is ready to accept a new command.
++		 */
++		err = card_poll_until_tran(card, MMC_BLK_TIMEOUT_MS, NULL);
++	}
++
+ 	return err;
  }
  
- /**
-- * stm32f4_spi_dma_rx_cb - dma callback
-+ * stm32_spi_dma_rx_cb - dma callback
-  * @data: pointer to the spi controller data structure
-  *
-  * DMA callback is called when the transfer is complete for DMA RX channel.
-  */
--static void stm32f4_spi_dma_rx_cb(void *data)
-+static void stm32_spi_dma_rx_cb(void *data)
- {
- 	struct stm32_spi *spi = data;
+@@ -1630,7 +1698,7 @@ static int mmc_blk_fix_state(struct mmc_card *card, struct request *req)
  
- 	spi_finalize_current_transfer(spi->master);
--	stm32f4_spi_disable(spi);
--}
--
--/**
-- * stm32h7_spi_dma_cb - dma callback
-- * @data: pointer to the spi controller data structure
-- *
-- * DMA callback is called when the transfer is complete or when an error
-- * occurs. If the transfer is complete, EOT flag is raised.
-- */
--static void stm32h7_spi_dma_cb(void *data)
--{
--	struct stm32_spi *spi = data;
--	unsigned long flags;
--	u32 sr;
--
--	spin_lock_irqsave(&spi->lock, flags);
--
--	sr = readl_relaxed(spi->base + STM32H7_SPI_SR);
--
--	spin_unlock_irqrestore(&spi->lock, flags);
--
--	if (!(sr & STM32H7_SPI_SR_EOT))
--		dev_warn(spi->dev, "DMA error (sr=0x%08x)\n", sr);
--
--	/* Now wait for EOT, or SUSP or OVR in case of error */
-+	spi->cfg->disable(spi);
+ 	mmc_blk_send_stop(card, timeout);
+ 
+-	err = card_busy_detect(card, timeout, NULL);
++	err = card_poll_until_tran(card, timeout, NULL);
+ 
+ 	mmc_retune_release(card->host);
+ 
+@@ -1662,7 +1730,7 @@ static void mmc_blk_read_single(struct mmc_queue *mq, struct request *req)
+ 			goto error_exit;
+ 
+ 		if (!mmc_host_is_spi(host) &&
+-		    !mmc_ready_for_data(status)) {
++		    !mmc_tran_and_ready_for_data(status)) {
+ 			err = mmc_blk_fix_state(card, req);
+ 			if (err)
+ 				goto error_exit;
+@@ -1784,7 +1852,7 @@ static void mmc_blk_mq_rw_recovery(struct mmc_queue *mq, struct request *req)
+ 
+ 	/* Try to get back to "tran" state */
+ 	if (!mmc_host_is_spi(mq->card->host) &&
+-	    (err || !mmc_ready_for_data(status)))
++	    (err || !mmc_tran_and_ready_for_data(status)))
+ 		err = mmc_blk_fix_state(mq->card, req);
+ 
+ 	/*
+@@ -1854,7 +1922,7 @@ static int mmc_blk_card_busy(struct mmc_card *card, struct request *req)
+ 	if (mmc_host_is_spi(card->host) || rq_data_dir(req) == READ)
+ 		return 0;
+ 
+-	err = card_busy_detect(card, MMC_BLK_TIMEOUT_MS, &status);
++	err = card_poll_until_tran(card, MMC_BLK_TIMEOUT_MS, &status);
+ 
+ 	/*
+ 	 * Do not assume data transferred correctly if there are any error bits
+diff --git a/drivers/mmc/core/mmc_ops.c b/drivers/mmc/core/mmc_ops.c
+index 973756ed4016..a0be45118a93 100644
+--- a/drivers/mmc/core/mmc_ops.c
++++ b/drivers/mmc/core/mmc_ops.c
+@@ -465,7 +465,7 @@ static int mmc_busy_cb(void *cb_data, bool *busy)
+ 	if (err)
+ 		return err;
+ 
+-	*busy = !mmc_ready_for_data(status);
++	*busy = !mmc_tran_and_ready_for_data(status);
+ 	return 0;
  }
  
- /**
-@@ -1220,11 +1198,13 @@ static void stm32f4_spi_transfer_one_dma_start(struct stm32_spi *spi)
-  */
- static void stm32h7_spi_transfer_one_dma_start(struct stm32_spi *spi)
+diff --git a/include/linux/mmc/mmc.h b/include/linux/mmc/mmc.h
+index d9a65c6a8816..72a82aa89b27 100644
+--- a/include/linux/mmc/mmc.h
++++ b/include/linux/mmc/mmc.h
+@@ -64,6 +64,7 @@
+ #define MMC_WRITE_MULTIPLE_BLOCK 25   /* adtc                    R1  */
+ #define MMC_PROGRAM_CID          26   /* adtc                    R1  */
+ #define MMC_PROGRAM_CSD          27   /* adtc                    R1  */
++#define MMC_SET_TIME             49   /* adtc                    R1  */
+ 
+   /* class 6 */
+ #define MMC_SET_WRITE_PROT       28   /* ac   [31:0] data addr   R1b */
+@@ -163,10 +164,11 @@ static inline bool mmc_op_multi(u32 opcode)
+ 
+ static inline bool mmc_ready_for_data(u32 status)
  {
--	/* Enable the interrupts relative to the end of transfer */
--	stm32_spi_set_bits(spi, STM32H7_SPI_IER, STM32H7_SPI_IER_EOTIE |
--						 STM32H7_SPI_IER_TXTFIE |
--						 STM32H7_SPI_IER_OVRIE |
--						 STM32H7_SPI_IER_MODFIE);
-+	uint32_t ier = STM32H7_SPI_IER_OVRIE | STM32H7_SPI_IER_MODFIE;
+-	/*
+-	 * Some cards mishandle the status bits, so make sure to check both the
+-	 * busy indication and the card state.
+-	 */
++	return status & R1_READY_FOR_DATA;
++}
 +
-+	/* Enable the interrupts */
-+	if (spi->cur_comm == SPI_SIMPLEX_TX || spi->cur_comm == SPI_3WIRE_TX)
-+		ier |= STM32H7_SPI_IER_EOTIE | STM32H7_SPI_IER_TXTFIE;
++static inline bool mmc_tran_and_ready_for_data(u32 status)
++{
+ 	return status & R1_READY_FOR_DATA &&
+ 	       R1_CURRENT_STATE(status) == R1_STATE_TRAN;
+ }
+diff --git a/include/linux/mmc/sd.h b/include/linux/mmc/sd.h
+index 6727576a8755..9f57da673dfd 100644
+--- a/include/linux/mmc/sd.h
++++ b/include/linux/mmc/sd.h
+@@ -32,6 +32,9 @@
+   /* class 11 */
+ #define SD_READ_EXTR_SINGLE      48   /* adtc [31:0]             R1  */
+ #define SD_WRITE_EXTR_SINGLE     49   /* adtc [31:0]             R1  */
++#define SD_READ_EXTR_MULTI       58   /* adtc [31:0]             R1  */
++#define SD_WRITE_EXTR_MULTI      59   /* adtc [31:0]             R1  */
 +
-+	stm32_spi_set_bits(spi, STM32H7_SPI_IER, ier);
  
- 	stm32_spi_enable(spi);
- 
-@@ -1736,7 +1716,7 @@ static const struct stm32_spi_cfg stm32f4_spi_cfg = {
- 	.set_mode = stm32f4_spi_set_mode,
- 	.transfer_one_dma_start = stm32f4_spi_transfer_one_dma_start,
- 	.dma_tx_cb = stm32f4_spi_dma_tx_cb,
--	.dma_rx_cb = stm32f4_spi_dma_rx_cb,
-+	.dma_rx_cb = stm32_spi_dma_rx_cb,
- 	.transfer_one_irq = stm32f4_spi_transfer_one_irq,
- 	.irq_handler_event = stm32f4_spi_irq_event,
- 	.irq_handler_thread = stm32f4_spi_irq_thread,
-@@ -1756,8 +1736,11 @@ static const struct stm32_spi_cfg stm32h7_spi_cfg = {
- 	.set_data_idleness = stm32h7_spi_data_idleness,
- 	.set_number_of_data = stm32h7_spi_number_of_data,
- 	.transfer_one_dma_start = stm32h7_spi_transfer_one_dma_start,
--	.dma_rx_cb = stm32h7_spi_dma_cb,
--	.dma_tx_cb = stm32h7_spi_dma_cb,
-+	.dma_rx_cb = stm32_spi_dma_rx_cb,
-+	/*
-+	 * dma_tx_cb is not necessary since in case of TX, dma is followed by
-+	 * SPI access hence handling is performed within the SPI interrupt
-+	 */
- 	.transfer_one_irq = stm32h7_spi_transfer_one_irq,
- 	.irq_handler_thread = stm32h7_spi_irq_thread,
- 	.baud_rate_div_min = STM32H7_SPI_MBR_DIV_MIN,
+ /* OCR bit definitions */
+ #define SD_OCR_S18R		(1 << 24)    /* 1.8V switching request */
 -- 
-2.25.1
+2.32.0
+Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
+Managing Directors: Dr. Jan Peter Berns.
+Commercial register of local courts: Freiburg HRB381782
 
