@@ -2,128 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 729DF3BF09D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 22:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 521713BF0A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 22:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233114AbhGGULk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 16:11:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230296AbhGGULj (ORCPT
+        id S233128AbhGGULy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 16:11:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55164 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230296AbhGGULx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 16:11:39 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9998C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 13:08:57 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id s24so4882544oiw.2
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 13:08:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=AEUjbJEHgjwZH84O8/yOmL96IkupdJt703GIG/Lw/Sw=;
-        b=aIfEXDg7X8c6i6RMt2XjPCogxnvkLnZWUZiLZ79qAP2eZuzQiThqTe/Wt23LFK/d7N
-         k5hF8xQNkmVcxNu3wCGxN8L3VJungjMW9tWj0G+iUEcY6hZlHdjRSKfQzIIf+z+y9Jzh
-         QNficFcQho0jB2dIVnAssiHtmbwVSgh8cAQI56fRqelW/syOtyiwPFHRwF9M86BFkIFW
-         QvQXm/BAjmg/ClC5HPMT/QsmFc1D5/6INGIn9IUq4Yq2yLZOr+9X116mQy+W8Hzar+qh
-         QieIJ96JHJlqH6Wnxd7BDUWPkIvipTfS9+3awv6YTUQ438T23gxjXb/F2y3VlzRa5z/j
-         ZgGQ==
+        Wed, 7 Jul 2021 16:11:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625688552;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=dlshEtXmc0jULoT3N3z0USnZgLOuwGT8Sv+EBVGoygU=;
+        b=AJG2gy1vkoS3umtam0n1LyX9R2skXspuf6lfglh+epckGgmYTyLHDahaLm6THmeyFq9+1D
+        ISMDuCM3CRMosB5lhUfR94C5K2L6hrXYJeMVYVHYnVipJkdhqj9KdsEs5B9sOmCzHeiR5e
+        rrfs+elc9TA5gukwS8Wqzmjl1R82Sv4=
+Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
+ [209.85.161.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-491-e2ds078tPeW3AyOXDJlniw-1; Wed, 07 Jul 2021 16:09:11 -0400
+X-MC-Unique: e2ds078tPeW3AyOXDJlniw-1
+Received: by mail-oo1-f70.google.com with SMTP id g1-20020a4ad3010000b0290256cae2a050so2149446oos.8
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 13:09:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=AEUjbJEHgjwZH84O8/yOmL96IkupdJt703GIG/Lw/Sw=;
-        b=YTqV+CcJbmtsh4bF0atJgLtOFU7e5YaOy+td7AfhRnpkf3KVkL4n65n3dO37WFccun
-         EnNMWfE5k7tUQ50rYl/UzzMjMIXfsSDW2WJB58vOZgQrrN78s3iAHIbcLUca/bmTWwX3
-         OAWNjI7p7XfVcQ0ZuYezXu7PmYGNqZ7DBQkhpxPztOACWvWXPknXFF/QkL/S+JvWCrDk
-         3q/zpMyNhK6TuSCJe2QTo+vsQUq0XIc8+me2nnLzbGe2cHHSDI0SeKoOdt8U1SAg8/f+
-         R5LGn2XRpoBmsGx+S6VxAOPiJDR1AHLNL0ibc4wEGD4iZIObOvp2CBHFvbcOPssck9zE
-         KBIg==
-X-Gm-Message-State: AOAM533VBe7vXgihSC3cJ9oiPQ3RIDnd86sh86zqMwUJNT/50Hop/ot7
-        mjsH9tDRnb6AntMq+z+v0XMoOQ==
-X-Google-Smtp-Source: ABdhPJwtImQxt1QzEcdZdsVyVe8aD+gMiqiWoksjK7o9JOc9vBTzXLdVlrO6UFB4z710wRyFTr0zXQ==
-X-Received: by 2002:aca:db44:: with SMTP id s65mr11399367oig.139.1625688536945;
-        Wed, 07 Jul 2021 13:08:56 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id 25sm3729500oir.58.2021.07.07.13.08.55
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dlshEtXmc0jULoT3N3z0USnZgLOuwGT8Sv+EBVGoygU=;
+        b=TkhQ1JEIpLqMmNT8nl7FQpeq4Zp0rvHFE9Y13FzNcWkeo6pc5iyyoOWl20MwbOTlHW
+         TjGFHHv8hg2V0QjibqCqsTAbRsNe3+8/8zjCKoTikvFFk/Mjb+BkaOFwiHb/02gOIcsp
+         +Ods8igpQvC20gdeY79lkT2W2H1StzCXKzGqPQrvNNVFVxvQwR4bU3ND/QylfFqTK4gz
+         lbeUZ2lJ0HWLIJIVx0EaMxIZWiK6YNZ5vCT2gPGZvEenbRlFC5CQckxRua6DgA91agei
+         BgtDVPJWXVAiyEzI5/mdOjl5HmBdh8Zvcqs4hF/J/KWZw5uzHuktD7Yaya5Po723ItKz
+         /igw==
+X-Gm-Message-State: AOAM530HycSrM9DYFDa86W8YpdkcwkoZf5cxUU2lGw7U4KTlwKht1v9B
+        A2VKvCrGlNO1VihLP/ciclqzVjsK4sm9t8TqEt91J3VpWC0X9F2fULnsWQ3G4UJZ2SdbIBuiAdl
+        prxkCDTKdHs8vk2B/4+OUi88Z
+X-Received: by 2002:a9d:7745:: with SMTP id t5mr15270476otl.238.1625688550333;
+        Wed, 07 Jul 2021 13:09:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx7qwGWm/U4gW1eYCu8Dc6/bKY7zSqKx7DPkB/Yal/mVK9AoivmyxsN5blfdZNhtsck51EjYA==
+X-Received: by 2002:a9d:7745:: with SMTP id t5mr15270458otl.238.1625688550079;
+        Wed, 07 Jul 2021 13:09:10 -0700 (PDT)
+Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id b80sm28951oii.3.2021.07.07.13.09.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 13:08:56 -0700 (PDT)
-Date:   Wed, 7 Jul 2021 13:08:53 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.anvils
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>, Yang Shi <shy828301@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH 2/4] mm/rmap: fix old bug: munlocking THP missed other
- mlocks
-In-Reply-To: <563ce5b2-7a44-5b4d-1dfd-59a0e65932a9@google.com>
-Message-ID: <cfa154c-d595-406-eb7d-eb9df730f944@google.com>
-References: <563ce5b2-7a44-5b4d-1dfd-59a0e65932a9@google.com>
+        Wed, 07 Jul 2021 13:09:09 -0700 (PDT)
+From:   trix@redhat.com
+To:     hao.wu@intel.com, mdf@kernel.org, corbet@lwn.net
+Cc:     linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org,
+        linux-doc@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] fpga: fpga-mgr: move compat_id from fpga_mgr to dfl
+Date:   Wed,  7 Jul 2021 13:09:02 -0700
+Message-Id: <20210707200902.2014298-1-trix@redhat.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel recovers in due course from missing Mlocked pages: but there
-was no point in calling page_mlock() (formerly known as try_to_munlock())
-on a THP, because nothing got done even when it was found to be mapped in
-another VM_LOCKED vma.
+From: Tom Rix <trix@redhat.com>
 
-It's true that we need to be careful: Mlocked accounting of pte-mapped
-THPs is too difficult (so consistently avoided); but Mlocked accounting
-of only-pmd-mapped THPs is supposed to work, even when multiple mappings
-are mlocked and munlocked or munmapped.  Refine the tests.
+fpga_mgr's element compat_id is only used by dfl.
+Implementation specific data should not be stored
+in common structures.  So move it to dfl.
 
-There is already a VM_BUG_ON_PAGE(PageDoubleMap) in page_mlock(), so
-page_mlock_one() does not even have to worry about that complication.
+dfl_fme_mgr reads its compat_id register and makes a copy.
+dfl_fme_region reads dfl_fme_mgr's value and makes a copy,
+then region outputs the value to sysfs.  There is no other
+use.  Instead of making copies and passing them around, output
+the compat_id directly in dfl_fme_mgr.
 
-(I said the kernel recovers: but would page reclaim be likely to split
-THP before rediscovering that it's VM_LOCKED? I've not followed that up.)
+The sysfs change is from
+/sys/class/fpga_region/region0/compat_id
+to
+/sys/class/fpga_region/region0/dfl-fme.0/dfl-fme-mgr.0/compat_id
 
-Fixes: 9a73f61bdb8a ("thp, mlock: do not mlock PTE-mapped file huge pages")
-Signed-off-by: Hugh Dickins <hughd@google.com>
+Signed-off-by: Tom Rix <trix@redhat.com>
 ---
- mm/rmap.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ .../ABI/testing/sysfs-class-fpga-region       |  9 -----
+ Documentation/fpga/dfl.rst                    |  2 +-
+ drivers/fpga/dfl-fme-mgr.c                    | 34 ++++++++++++-------
+ drivers/fpga/dfl-fme-region.c                 |  1 -
+ drivers/fpga/fpga-region.c                    | 22 ------------
+ include/linux/fpga/fpga-mgr.h                 | 13 -------
+ include/linux/fpga/fpga-region.h              |  2 --
+ 7 files changed, 22 insertions(+), 61 deletions(-)
+ delete mode 100644 Documentation/ABI/testing/sysfs-class-fpga-region
 
-diff --git a/mm/rmap.c b/mm/rmap.c
-index 746013e282c3..0e83c3be8568 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -1442,8 +1442,9 @@ static bool try_to_unmap_one(struct page *page, struct vm_area_struct *vma,
- 		 */
- 		if (!(flags & TTU_IGNORE_MLOCK)) {
- 			if (vma->vm_flags & VM_LOCKED) {
--				/* PTE-mapped THP are never mlocked */
--				if (!PageTransCompound(page)) {
-+				/* PTE-mapped THP are never marked as mlocked */
-+				if (!PageTransCompound(page) ||
-+				    (PageHead(page) && !PageDoubleMap(page))) {
- 					/*
- 					 * Holding pte lock, we do *not* need
- 					 * mmap_lock here
-@@ -1984,9 +1985,11 @@ static bool page_mlock_one(struct page *page, struct vm_area_struct *vma,
- 		 * munlock_vma_pages_range().
- 		 */
- 		if (vma->vm_flags & VM_LOCKED) {
--			/* PTE-mapped THP are never mlocked */
--			if (!PageTransCompound(page))
--				mlock_vma_page(page);
-+			/*
-+			 * PTE-mapped THP are never marked as mlocked, but
-+			 * this function is never called when PageDoubleMap().
-+			 */
-+			mlock_vma_page(page);
- 			page_vma_mapped_walk_done(&pvmw);
- 		}
+diff --git a/Documentation/ABI/testing/sysfs-class-fpga-region b/Documentation/ABI/testing/sysfs-class-fpga-region
+deleted file mode 100644
+index bc7ec644acc9..000000000000
+--- a/Documentation/ABI/testing/sysfs-class-fpga-region
++++ /dev/null
+@@ -1,9 +0,0 @@
+-What:		/sys/class/fpga_region/<region>/compat_id
+-Date:		June 2018
+-KernelVersion:	4.19
+-Contact:	Wu Hao <hao.wu@intel.com>
+-Description:	FPGA region id for compatibility check, e.g. compatibility
+-		of the FPGA reconfiguration hardware and image. This value
+-		is defined or calculated by the layer that is creating the
+-		FPGA region. This interface returns the compat_id value or
+-		just error code -ENOENT in case compat_id is not used.
+diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
+index 75df90d1e54c..bca36060de29 100644
+--- a/Documentation/fpga/dfl.rst
++++ b/Documentation/fpga/dfl.rst
+@@ -246,7 +246,7 @@ generated for the exact static FPGA region and targeted reconfigurable region
+ (port) of the FPGA, otherwise, the reconfiguration operation will fail and
+ possibly cause system instability. This compatibility can be checked by
+ comparing the compatibility ID noted in the header of PR bitstream file against
+-the compat_id exposed by the target FPGA region. This check is usually done by
++the compat_id exposed by the target FME. This check is usually done by
+ userspace before calling the reconfiguration IOCTL.
  
+ 
+diff --git a/drivers/fpga/dfl-fme-mgr.c b/drivers/fpga/dfl-fme-mgr.c
+index d5861d13b306..62d558b44ae6 100644
+--- a/drivers/fpga/dfl-fme-mgr.c
++++ b/drivers/fpga/dfl-fme-mgr.c
+@@ -272,17 +272,31 @@ static const struct fpga_manager_ops fme_mgr_ops = {
+ 	.status = fme_mgr_status,
+ };
+ 
+-static void fme_mgr_get_compat_id(void __iomem *fme_pr,
+-				  struct fpga_compat_id *id)
++static ssize_t compat_id_show(struct device *dev,
++			      struct device_attribute *attr, char *buf)
+ {
+-	id->id_l = readq(fme_pr + FME_PR_INTFC_ID_L);
+-	id->id_h = readq(fme_pr + FME_PR_INTFC_ID_H);
++	struct dfl_fme_mgr_pdata *pdata = dev_get_platdata(dev);
++	u64 l, h;
++
++	l = readq(pdata->ioaddr + FME_PR_INTFC_ID_L);
++	h = readq(pdata->ioaddr + FME_PR_INTFC_ID_H);
++
++	return sysfs_emit(buf, "%016llx%016llx\n",
++			  (unsigned long long)h,
++			  (unsigned long long)l);
+ }
+ 
++static DEVICE_ATTR_RO(compat_id);
++
++static struct attribute *fme_mgr_attrs[] = {
++	&dev_attr_compat_id.attr,
++	NULL,
++};
++ATTRIBUTE_GROUPS(fme_mgr);
++
+ static int fme_mgr_probe(struct platform_device *pdev)
+ {
+ 	struct dfl_fme_mgr_pdata *pdata = dev_get_platdata(&pdev->dev);
+-	struct fpga_compat_id *compat_id;
+ 	struct device *dev = &pdev->dev;
+ 	struct fme_mgr_priv *priv;
+ 	struct fpga_manager *mgr;
+@@ -300,27 +314,21 @@ static int fme_mgr_probe(struct platform_device *pdev)
+ 		priv->ioaddr = devm_ioremap_resource(dev, res);
+ 		if (IS_ERR(priv->ioaddr))
+ 			return PTR_ERR(priv->ioaddr);
++		pdata->ioaddr = priv->ioaddr;
+ 	}
+ 
+-	compat_id = devm_kzalloc(dev, sizeof(*compat_id), GFP_KERNEL);
+-	if (!compat_id)
+-		return -ENOMEM;
+-
+-	fme_mgr_get_compat_id(priv->ioaddr, compat_id);
+-
+ 	mgr = devm_fpga_mgr_create(dev, "DFL FME FPGA Manager",
+ 				   &fme_mgr_ops, priv);
+ 	if (!mgr)
+ 		return -ENOMEM;
+ 
+-	mgr->compat_id = compat_id;
+-
+ 	return devm_fpga_mgr_register(dev, mgr);
+ }
+ 
+ static struct platform_driver fme_mgr_driver = {
+ 	.driver	= {
+ 		.name    = DFL_FPGA_FME_MGR,
++		.dev_groups = fme_mgr_groups,
+ 	},
+ 	.probe   = fme_mgr_probe,
+ };
+diff --git a/drivers/fpga/dfl-fme-region.c b/drivers/fpga/dfl-fme-region.c
+index 1eeb42af1012..4825639a3845 100644
+--- a/drivers/fpga/dfl-fme-region.c
++++ b/drivers/fpga/dfl-fme-region.c
+@@ -46,7 +46,6 @@ static int fme_region_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	region->priv = pdata;
+-	region->compat_id = mgr->compat_id;
+ 	platform_set_drvdata(pdev, region);
+ 
+ 	ret = fpga_region_register(region);
+diff --git a/drivers/fpga/fpga-region.c b/drivers/fpga/fpga-region.c
+index a4838715221f..c971f76ca61a 100644
+--- a/drivers/fpga/fpga-region.c
++++ b/drivers/fpga/fpga-region.c
+@@ -158,27 +158,6 @@ int fpga_region_program_fpga(struct fpga_region *region)
+ }
+ EXPORT_SYMBOL_GPL(fpga_region_program_fpga);
+ 
+-static ssize_t compat_id_show(struct device *dev,
+-			      struct device_attribute *attr, char *buf)
+-{
+-	struct fpga_region *region = to_fpga_region(dev);
+-
+-	if (!region->compat_id)
+-		return -ENOENT;
+-
+-	return sprintf(buf, "%016llx%016llx\n",
+-		       (unsigned long long)region->compat_id->id_h,
+-		       (unsigned long long)region->compat_id->id_l);
+-}
+-
+-static DEVICE_ATTR_RO(compat_id);
+-
+-static struct attribute *fpga_region_attrs[] = {
+-	&dev_attr_compat_id.attr,
+-	NULL,
+-};
+-ATTRIBUTE_GROUPS(fpga_region);
+-
+ /**
+  * fpga_region_create - alloc and init a struct fpga_region
+  * @parent: device parent
+@@ -328,7 +307,6 @@ static int __init fpga_region_init(void)
+ 	if (IS_ERR(fpga_region_class))
+ 		return PTR_ERR(fpga_region_class);
+ 
+-	fpga_region_class->dev_groups = fpga_region_groups;
+ 	fpga_region_class->dev_release = fpga_region_dev_release;
+ 
+ 	return 0;
+diff --git a/include/linux/fpga/fpga-mgr.h b/include/linux/fpga/fpga-mgr.h
+index ec2cd8bfceb0..ebdea215a864 100644
+--- a/include/linux/fpga/fpga-mgr.h
++++ b/include/linux/fpga/fpga-mgr.h
+@@ -143,24 +143,12 @@ struct fpga_manager_ops {
+ #define FPGA_MGR_STATUS_IP_PROTOCOL_ERR		BIT(3)
+ #define FPGA_MGR_STATUS_FIFO_OVERFLOW_ERR	BIT(4)
+ 
+-/**
+- * struct fpga_compat_id - id for compatibility check
+- *
+- * @id_h: high 64bit of the compat_id
+- * @id_l: low 64bit of the compat_id
+- */
+-struct fpga_compat_id {
+-	u64 id_h;
+-	u64 id_l;
+-};
+-
+ /**
+  * struct fpga_manager - fpga manager structure
+  * @name: name of low level fpga manager
+  * @dev: fpga manager device
+  * @ref_mutex: only allows one reference to fpga manager
+  * @state: state of fpga manager
+- * @compat_id: FPGA manager id for compatibility check.
+  * @mops: pointer to struct of fpga manager ops
+  * @priv: low level driver private date
+  */
+@@ -169,7 +157,6 @@ struct fpga_manager {
+ 	struct device dev;
+ 	struct mutex ref_mutex;
+ 	enum fpga_mgr_states state;
+-	struct fpga_compat_id *compat_id;
+ 	const struct fpga_manager_ops *mops;
+ 	void *priv;
+ };
+diff --git a/include/linux/fpga/fpga-region.h b/include/linux/fpga/fpga-region.h
+index 27cb706275db..b008d5a300fd 100644
+--- a/include/linux/fpga/fpga-region.h
++++ b/include/linux/fpga/fpga-region.h
+@@ -14,7 +14,6 @@
+  * @bridge_list: list of FPGA bridges specified in region
+  * @mgr: FPGA manager
+  * @info: FPGA image info
+- * @compat_id: FPGA region id for compatibility check.
+  * @priv: private data
+  * @get_bridges: optional function to get bridges to a list
+  */
+@@ -24,7 +23,6 @@ struct fpga_region {
+ 	struct list_head bridge_list;
+ 	struct fpga_manager *mgr;
+ 	struct fpga_image_info *info;
+-	struct fpga_compat_id *compat_id;
+ 	void *priv;
+ 	int (*get_bridges)(struct fpga_region *region);
+ };
 -- 
-2.26.2
+2.26.3
 
