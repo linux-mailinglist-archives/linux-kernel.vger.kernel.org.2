@@ -2,116 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A82FE3BE352
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 08:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 128103BE353
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 08:55:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230378AbhGGG5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 02:57:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230305AbhGGG5M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 02:57:12 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFF62C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  6 Jul 2021 23:54:31 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id b14-20020a1c1b0e0000b02901fc3a62af78so3348224wmb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Jul 2021 23:54:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tUE8wev4VkWfjOiCPCyu/GqgRwGG7gs7uHBEzTIZe3c=;
-        b=HO5A4MDpkx13VC3Yw2cptgr73MkV2G5xH8GcIHQMD2ep1iOn3CS8VoF9o3sz43+71+
-         +R3aWRgRdYsGc6k3/64PPRrYJD21oDybN4rqEhpKo01JhMlzSsZO7a8AA9DtJ2BXuujx
-         c0clc8S636KiUYaSY0FYeM3+kPfaJyglcf4WULX91rK5G+Ro3gKLyhZetCrXWUeVW75Q
-         9BgGYbV10cmt9K9NMzE3gPVjlh5YklXD5+L+dtzEhOS+JPnIYcUslFn69z82ZRbmriW1
-         ljQbYX9t34JqSYy11CaSfLUYiyr0FBIn0f9gUvE74yfUhGspGvfKQP7V9EeJRc8IrIQb
-         0ZfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tUE8wev4VkWfjOiCPCyu/GqgRwGG7gs7uHBEzTIZe3c=;
-        b=pm7sf7kPT6uEDgSqC/ILvofyFcH/XPsjxlfMfiHV6DKjLM8jX7AAv8oKMMdQDRCZ4l
-         13jLvV8JVV80k0ay3KINmbbHEyRQaYsnSvb4wx3omw7zley5DJo8JVwbrxmmGX2j9+fb
-         B67kqLIvAal1UL7jjLoLBgKAs7Ope6fF6jlOLyIBuXVqIUG3ZNxCaD0DtaNtRPyhaM1C
-         E8Dtdgsmfq7YjNDrFNEafCrBu2IMybAh9iUoo5HgHsbF4IQvCjRN1jD4oNEbIcgSGBMj
-         pLLfs97Kfe7zeOo2eSJJYqO8ERMPzV6HSYSoA5N2lWhhbYHL5EWqm8B8OaO19w9/iANp
-         pSzA==
-X-Gm-Message-State: AOAM5323RPgZ0ZfTkfGVaOjoFmiGAYXgWJR7IjDNwTSsOOqKEL2xRsSW
-        aYd4i8iWZOEvr4+AYyKOyJ2OddG7OMWcb/S4Ackgow==
-X-Google-Smtp-Source: ABdhPJystGdZsA+nB5gQafyHzssXeyJUm/HUE9cWQIs/s/XU88ED35qV7XIB+cBbpx80emEOfYRUo2JXYOLR4W96FtE=
-X-Received: by 2002:a7b:ce82:: with SMTP id q2mr4888352wmj.60.1625640870431;
- Tue, 06 Jul 2021 23:54:30 -0700 (PDT)
+        id S230390AbhGGG5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 02:57:39 -0400
+Received: from mga05.intel.com ([192.55.52.43]:57030 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230293AbhGGG5h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 02:57:37 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10037"; a="294891331"
+X-IronPort-AV: E=Sophos;i="5.83,331,1616482800"; 
+   d="scan'208";a="294891331"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2021 23:54:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,331,1616482800"; 
+   d="scan'208";a="647775783"
+Received: from nntpdsd52-165.inn.intel.com ([10.125.52.165])
+  by fmsmga005.fm.intel.com with ESMTP; 06 Jul 2021 23:54:56 -0700
+From:   alexander.antonov@linux.intel.com
+To:     peterz@infradead.org, linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     kan.liang@linux.intel.com, ak@linux.intel.com,
+        alexander.antonov@linux.intel.com,
+        alexey.v.bayduraev@linux.intel.com
+Subject: [RESEND PATCH] perf/x86/intel/uncore: Fix IIO cleanup mapping procedure for SNR/ICX
+Date:   Wed,  7 Jul 2021 09:54:55 +0300
+Message-Id: <20210707065455.10271-1-alexander.antonov@linux.intel.com>
+X-Mailer: git-send-email 2.21.3
 MIME-Version: 1.0
-References: <20210616103649.2662395-1-jens.wiklander@linaro.org>
- <CAFA6WYMrxNfR09doWQgYKCQSYKyUMVKqSTPuRYn=-nueY9pSvQ@mail.gmail.com>
- <CAHUa44EeAENHv+CxtXeLuqX_NGWW6w-6P8D-BLsb69+XmGaqEQ@mail.gmail.com>
- <CAFA6WYMSAM2MDOXnhjuZFov3BtF8-nihZRUpR8ciUWsL4_nCWA@mail.gmail.com>
- <87czrv91b2.wl-maz@kernel.org> <CAFA6WYPVA5yP3trumfz=_oXzxKtfobQXRzDwZ1og8UXwaA1rkQ@mail.gmail.com>
- <87a6mz8vaj.wl-maz@kernel.org> <CAFA6WYMsjxYBw_0xzWMtHf=LtXzG+D113WSFuHCR7KhC1RuWYg@mail.gmail.com>
-In-Reply-To: <CAFA6WYMsjxYBw_0xzWMtHf=LtXzG+D113WSFuHCR7KhC1RuWYg@mail.gmail.com>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Wed, 7 Jul 2021 08:54:19 +0200
-Message-ID: <CAHUa44GEPDYj6A9jOB8sHbbs_mSk1oiREywP6Z8s0vOhbpajpw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/7] Asynchronous notifications from secure world
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jerome Forissier <jerome@forissier.org>,
-        Etienne Carriere <etienne.carriere@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ard Biesheuvel <ardb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Alexander Antonov <alexander.antonov@linux.intel.com>
 
-On Wed, Jul 7, 2021 at 7:52 AM Sumit Garg <sumit.garg@linaro.org> wrote:
->
-> On Tue, 6 Jul 2021 at 18:16, Marc Zyngier <maz@kernel.org> wrote:
-> >
-[snip]
-> > > > - Is there any case where you would instead need a level interrupt
-> > > >   (which a SGI cannot provide)?
-> > >
-> > > I think SGI should be sufficient to suffice OP-TEE notifications use-case.
-> >
-> > I don't care about OP-TEE. If you are proposing a contract between S
-> > and NS, it has to be TEE and OS independent. That's how the
-> > architecture works.
-> >
->
-> Agree, here we are not proposing a common contract among the S and NS
-> world that every TEE (based on Arm TrustZone) will use to communicate
-> with REE (Linux in our case) but rather an OP-TEE specific
-> notifications feature that is built on top of OP-TEE specific ABIs.
->
-> And I can see your arguments coming from an FFA perspective but there
-> are platforms like the ones based on Armv7 which don't support FFA
-> ABI. Maybe Jens can elaborate how this feature will fit in when FFA
-> comes into picture?
+Cleanup mapping procedure for IIO PMU is needed to free memory which was
+allocated for topology data and for attributes in IIO mapping
+attribute_group.
+Current implementation of this procedure for Snowridge and Icelake Server
+platforms doesn't free allocated memory that can be a reason for memory
+leak issue.
+Fix the issue with IIO cleanup mapping procedure for these platforms
+to release allocated memory.
 
-OP-TEE has one official ABI at the moment, the SMC based one. It's
-about to get another one based on FF-A instead. The two ABIs will
-never be used at the same time. It's a build time option for the
-OP-TEE firmware to either use SMC or FF-A based communication.
+Fixes: 10337e95e04c ("perf/x86/intel/uncore: Enable I/O stacks to IIO PMON mapping on ICX")
 
-The patches I've posted here concern the SMC based ABI. Asynchronous
-notification in OP-TEE with a FF-A based ABI will use the notification
-framework provided by FF-A instead to implement that counterpart
-provided by these patches. So the OP-TEE driver here in the kernel
-will use the FF-A framework in the kernel instead of registering an
-interrupt handler directly.
+Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Alexander Antonov <alexander.antonov@linux.intel.com>
+---
+ arch/x86/events/intel/uncore_snbep.c | 40 +++++++++++++++++++---------
+ 1 file changed, 28 insertions(+), 12 deletions(-)
 
-Cheers,
-Jens
+diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
+index bb6eb1e5569c..54cdbb96e628 100644
+--- a/arch/x86/events/intel/uncore_snbep.c
++++ b/arch/x86/events/intel/uncore_snbep.c
+@@ -3836,26 +3836,32 @@ pmu_iio_set_mapping(struct intel_uncore_type *type, struct attribute_group *ag)
+ 	return ret;
+ }
+ 
+-static int skx_iio_set_mapping(struct intel_uncore_type *type)
+-{
+-	return pmu_iio_set_mapping(type, &skx_iio_mapping_group);
+-}
+-
+-static void skx_iio_cleanup_mapping(struct intel_uncore_type *type)
++static void
++pmu_iio_cleanup_mapping(struct intel_uncore_type *type, struct attribute_group *ag)
+ {
+-	struct attribute **attr = skx_iio_mapping_group.attrs;
++	struct attribute **attr = ag->attrs;
+ 
+ 	if (!attr)
+ 		return;
+ 
+ 	for (; *attr; attr++)
+ 		kfree((*attr)->name);
+-	kfree(attr_to_ext_attr(*skx_iio_mapping_group.attrs));
+-	kfree(skx_iio_mapping_group.attrs);
+-	skx_iio_mapping_group.attrs = NULL;
++	kfree(attr_to_ext_attr(*ag->attrs));
++	kfree(ag->attrs);
++	ag->attrs = NULL;
+ 	kfree(type->topology);
+ }
+ 
++static int skx_iio_set_mapping(struct intel_uncore_type *type)
++{
++	return pmu_iio_set_mapping(type, &skx_iio_mapping_group);
++}
++
++static void skx_iio_cleanup_mapping(struct intel_uncore_type *type)
++{
++	pmu_iio_cleanup_mapping(type, &skx_iio_mapping_group);
++}
++
+ static struct intel_uncore_type skx_uncore_iio = {
+ 	.name			= "iio",
+ 	.num_counters		= 4,
+@@ -4499,6 +4505,11 @@ static int snr_iio_set_mapping(struct intel_uncore_type *type)
+ 	return pmu_iio_set_mapping(type, &snr_iio_mapping_group);
+ }
+ 
++static void snr_iio_cleanup_mapping(struct intel_uncore_type *type)
++{
++	pmu_iio_cleanup_mapping(type, &snr_iio_mapping_group);
++}
++
+ static struct intel_uncore_type snr_uncore_iio = {
+ 	.name			= "iio",
+ 	.num_counters		= 4,
+@@ -4515,7 +4526,7 @@ static struct intel_uncore_type snr_uncore_iio = {
+ 	.attr_update		= snr_iio_attr_update,
+ 	.get_topology		= snr_iio_get_topology,
+ 	.set_mapping		= snr_iio_set_mapping,
+-	.cleanup_mapping	= skx_iio_cleanup_mapping,
++	.cleanup_mapping	= snr_iio_cleanup_mapping,
+ };
+ 
+ static struct intel_uncore_type snr_uncore_irp = {
+@@ -5090,6 +5101,11 @@ static int icx_iio_set_mapping(struct intel_uncore_type *type)
+ 	return pmu_iio_set_mapping(type, &icx_iio_mapping_group);
+ }
+ 
++static void icx_iio_cleanup_mapping(struct intel_uncore_type *type)
++{
++	pmu_iio_cleanup_mapping(type, &icx_iio_mapping_group);
++}
++
+ static struct intel_uncore_type icx_uncore_iio = {
+ 	.name			= "iio",
+ 	.num_counters		= 4,
+@@ -5107,7 +5123,7 @@ static struct intel_uncore_type icx_uncore_iio = {
+ 	.attr_update		= icx_iio_attr_update,
+ 	.get_topology		= icx_iio_get_topology,
+ 	.set_mapping		= icx_iio_set_mapping,
+-	.cleanup_mapping	= skx_iio_cleanup_mapping,
++	.cleanup_mapping	= icx_iio_cleanup_mapping,
+ };
+ 
+ static struct intel_uncore_type icx_uncore_irp = {
+
+base-commit: 3dbdb38e286903ec220aaf1fb29a8d94297da246
+-- 
+2.21.3
+
