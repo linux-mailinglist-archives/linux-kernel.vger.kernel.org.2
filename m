@@ -2,116 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E40C3BE47F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B505D3BE483
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Jul 2021 10:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230431AbhGGIiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 04:38:13 -0400
-Received: from verein.lst.de ([213.95.11.211]:36073 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230109AbhGGIiK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 04:38:10 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id A40D268BEB; Wed,  7 Jul 2021 10:35:28 +0200 (CEST)
-Date:   Wed, 7 Jul 2021 10:35:28 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        kernel test robot <oliver.sang@intel.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>
-Subject: Re: [ide] b7fb14d3ac: EIP:ioread32_rep
-Message-ID: <20210707083528.GA353@lst.de>
-References: <20210704150025.GC21572@xsang-OptiPlex-9020> <20210705125756.GA25141@lst.de> <CAHk-=wj_Gfqkdp+K3iCiqMjAZQK_BrRWDs2eOS_BAw=bB=CdRw@mail.gmail.com> <20210706143647.GA28289@lst.de> <CAHk-=wgPyx7tHFNaO2N6bsaB_E6gL+t1uDAmrD91jJw+hiTvrQ@mail.gmail.com> <20210707081220.GA31179@lst.de>
+        id S230484AbhGGIje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 04:39:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230109AbhGGIjc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 04:39:32 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC697C061574;
+        Wed,  7 Jul 2021 01:36:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=JBNHLBALM9UU1Je7M8kW2VY0g6MP+oLBuN5BGCPLZEc=; b=BAfWSkBhcBARgj6LUYUIuZnc7R
+        60ifflEb+GoYtSGsar1MTPhtOfdoBzWxJkNijyLGQpLeUEUCazc0Z/Mru4EGHlnPvbSa6QNtN30X7
+        k4VK9ELPgT68yILG3m8O9xtj2a7gxkNd2zIHovu51PfRAXlmPdNMFUb68RMem8+Mb/cp30YX/rRYs
+        cMpwSgZC2fhdb1eNQ1M7tuFCpW5h2HsvkuAWv5wx6c3C5VRgK4ejjlEQOGT0WhbPY7eA4hC761PQE
+        3NY1vZj8a07PyqikHL5MQVqMexh7xOqy42nC3vr1JGzdyRg5J0gMtBRvIKh6ZxGi2RSVWRYSgceQy
+        O0oZJGuw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m132j-00FIcj-MI; Wed, 07 Jul 2021 08:36:29 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B630F30007E;
+        Wed,  7 Jul 2021 10:36:28 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A17A12CB20D82; Wed,  7 Jul 2021 10:36:28 +0200 (CEST)
+Date:   Wed, 7 Jul 2021 10:36:28 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, kernel-team@fb.com, yhs@fb.com,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        wuqiang.matt@bytedance.com
+Subject: Re: [PATCH -tip v8 11/13] x86/unwind: Recover kretprobe trampoline
+ entry
+Message-ID: <YOVnjCxOORB4epjr@hirez.programming.kicks-ass.net>
+References: <162399992186.506599.8457763707951687195.stgit@devnote2>
+ <162400002631.506599.2413605639666466945.stgit@devnote2>
+ <YOLurg5mGHdBc+fz@hirez.programming.kicks-ass.net>
+ <20210706004257.9e282b98f447251a380f658f@kernel.org>
+ <YOQMV8uE/2bVkPOY@hirez.programming.kicks-ass.net>
+ <20210706111136.7c5e9843@oasis.local.home>
+ <YOVj2VoyrcOvJfEB@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210707081220.GA31179@lst.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <YOVj2VoyrcOvJfEB@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 10:12:20AM +0200, Christoph Hellwig wrote:
-> On Tue, Jul 06, 2021 at 12:08:42PM -0700, Linus Torvalds wrote:
-> > On Tue, Jul 6, 2021 at 7:36 AM Christoph Hellwig <hch@lst.de> wrote:
-> > >
-> > > Yeah, there's usually a huge offset into the page.  The otherwise
-> > > similar ATAPI code actually has checks to chunk it up and not cross
-> > > page boundaries, and copying that over fixes the problem.
+On Wed, Jul 07, 2021 at 10:20:41AM +0200, Peter Zijlstra wrote:
+
+> > > Steve, can you clarify the ftrace side here? Afaict return_to_handler()
+> > > is similarly affected.
 > > 
-> > Ok.
-> > 
-> > Your patch made me go "I think it should loop until it has transferred
-> > the full 512 bytes", but maybe the caller loops properly?
+> > I'm not exactly sure what the issue is. As Masami stated, kretprobe
+> > uses a ret to return to the calling function, but ftrace uses a jmp.
 > 
-> Yes, the callers (ata_read_pio_sectors) does).
+> I'll have to re-read the ftrace bits, but from the top of my head you
+> cannot do an indirect jump and preserve all registers at the same time,
+> so a return stub must use jump from stack aka. ret.
 
-Actually, not it doesn't. Sorry.  So for a non-aligned large request
-this won't work.  So we'll need to actually loop here.
-
-This is probably better and fixes the issue as well (and ATAPI
-probably needs the same treatment):
-
-
-diff --git a/drivers/ata/libata-sff.c b/drivers/ata/libata-sff.c
-index ae7189d1a568..40d2dc3b2989 100644
---- a/drivers/ata/libata-sff.c
-+++ b/drivers/ata/libata-sff.c
-@@ -637,6 +637,20 @@ unsigned int ata_sff_data_xfer32(struct ata_queued_cmd *qc, unsigned char *buf,
- }
- EXPORT_SYMBOL_GPL(ata_sff_data_xfer32);
- 
-+static void ata_pio_xfer(struct ata_queued_cmd *qc, struct page *page,
-+		unsigned int offset, size_t xfer_size)
-+{
-+	bool do_write = (qc->tf.flags & ATA_TFLAG_WRITE);
-+	unsigned char *buf;
-+
-+	buf = kmap_atomic(page);
-+	qc->ap->ops->sff_data_xfer(qc, buf + offset, xfer_size, do_write);
-+	kunmap_atomic(buf);
-+
-+	if (!do_write && !PageSlab(page))
-+		flush_dcache_page(page);
-+}
-+
- /**
-  *	ata_pio_sector - Transfer a sector of data.
-  *	@qc: Command on going
-@@ -648,11 +662,9 @@ EXPORT_SYMBOL_GPL(ata_sff_data_xfer32);
-  */
- static void ata_pio_sector(struct ata_queued_cmd *qc)
- {
--	int do_write = (qc->tf.flags & ATA_TFLAG_WRITE);
- 	struct ata_port *ap = qc->ap;
- 	struct page *page;
- 	unsigned int offset;
--	unsigned char *buf;
- 
- 	if (!qc->cursg) {
- 		qc->curbytes = qc->nbytes;
-@@ -670,13 +682,15 @@ static void ata_pio_sector(struct ata_queued_cmd *qc)
- 
- 	DPRINTK("data %s\n", qc->tf.flags & ATA_TFLAG_WRITE ? "write" : "read");
- 
--	/* do the actual data transfer */
--	buf = kmap_atomic(page);
--	ap->ops->sff_data_xfer(qc, buf + offset, qc->sect_size, do_write);
--	kunmap_atomic(buf);
-+	if (offset + qc->sect_size > PAGE_SIZE) {
-+		unsigned int split_len = PAGE_SIZE - offset;
- 
--	if (!do_write && !PageSlab(page))
--		flush_dcache_page(page);
-+		ata_pio_xfer(qc, page, offset, split_len);
-+		ata_pio_xfer(qc, nth_page(page, 1), 0,
-+			     qc->sect_size - split_len);
-+	} else {
-+		ata_pio_xfer(qc, page, offset, qc->sect_size);
-+	}
- 
- 	qc->curbytes += qc->sect_size;
- 	qc->cursg_ofs += qc->sect_size;
+Hmm... there's callee clobbered regs ofcourse, which don't need to be
+preserved. And that's exactly what ftrace seems to be doing, and I don't
+think there's any reason why kretprobe cannot do the same. Lemme try.
