@@ -2,142 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D27CE3C174F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 18:46:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A3A3C1754
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 18:47:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229644AbhGHQsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 12:48:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbhGHQsq (ORCPT
+        id S229742AbhGHQtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 12:49:40 -0400
+Received: from smtprelay0002.hostedemail.com ([216.40.44.2]:59658 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229468AbhGHQtj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 12:48:46 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53764C06175F
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 09:46:04 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id k184so9939562ybf.12
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 09:46:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C8aJuBtMFzTRHA7lVP8ggKa6+OtDRqlwkTJ4zp7YVbA=;
-        b=m2cxjbPU1NSMTUyOORYLxJ0yJPmYYSMS6OxzDvZTtFbsnMH+Ot23bNJpv/3h/PvsAQ
-         wuwOcPYtcx6bb3PqzxripTgjY7O8QhK6TnU4eirzRoxxY9lkHe9/yd7KWl8PkzQz4bg1
-         WyDnUViuKF6FwO293DmW0zD8F2DYITDltL2xKkvQ7lNXVnP3u8sYNKCEp2/32TqTsKdb
-         K6yPK3jse7H4m6YIYrN/UQk8SN8WuncPaGo+YjCoRqzPcDReF1P19QMIngBA0daWQgBp
-         LhXNeajwwiA8v21pGlYcMVWqSVLUjINqCp5UndIBta85cMU7iLxVbyfw6CQIfAX8owma
-         hISg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C8aJuBtMFzTRHA7lVP8ggKa6+OtDRqlwkTJ4zp7YVbA=;
-        b=mZF9xhTozK37F2LpIyjW6KMqxtc+t3H/zKDmB4ef+gQnLSkz4daUlVD/bReEjIXsYN
-         FYF1FCi+Iwel9Hqo37unpCMSeM1L+WGntjEtHtSSjJT7Hl8oBZwCVopmP1YXAI7jZ9Kt
-         lAZp33HYSljqzUfFURiq7KPL0EYmyQfkD7L94t8t5/vJ1qZV6Z2AkJuS0BAw+itvMqk+
-         BEAU64JjyJTW9Ek7qFN02zDNaed6jJASU4lvZpVgPGlUPZY4XLPcW7wx+pXX8E/bf/lw
-         gu5XPUzxUXb2MH5F+1sxsu97MFD/4rbuczqyrZKX5CFzZaTDwHN5p/y3ifOtIZbc/0YN
-         Uf8w==
-X-Gm-Message-State: AOAM5308+bYA7EVbfAvowVlddXu2xj6Fu/xXpCutMXq02dkpPUgo9i3m
-        bmjKq6rjBALucbHNN1ZILpZZs/9WoKA3OQyXML7cvw==
-X-Google-Smtp-Source: ABdhPJwB3mFvuPjBuouBnVJ2WKh37PWsmDCUs7owmMr3YwI4DjL6FalRU/lXkkhreClSaM5YzUR6kZbEGVtXz4mx4b8=
-X-Received: by 2002:a25:b3c8:: with SMTP id x8mr41042585ybf.466.1625762763268;
- Thu, 08 Jul 2021 09:46:03 -0700 (PDT)
+        Thu, 8 Jul 2021 12:49:39 -0400
+Received: from omf09.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id DDF9118481CC3;
+        Thu,  8 Jul 2021 16:46:56 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf09.hostedemail.com (Postfix) with ESMTPA id C71191E04D6;
+        Thu,  8 Jul 2021 16:46:55 +0000 (UTC)
+Message-ID: <39a7b7c455c6c23f0bfe7403b4957d2c92196d46.camel@perches.com>
+Subject: Re: [PATCH] drivers: parisc: Follow the indentation coding standard
+ on printks
+From:   Joe Perches <joe@perches.com>
+To:     Carlos Bilbao <bilbao@vt.edu>,
+        James.Bottomley@hansenpartnership.com
+Cc:     deller@gmx.de, linux-parisc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, andrew@lunn.ch
+Date:   Thu, 08 Jul 2021 09:46:54 -0700
+In-Reply-To: <1793924.CQOukoFCf9@iron-maiden>
+References: <1793924.CQOukoFCf9@iron-maiden>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-References: <20210707172948.1025-1-adrian.hunter@intel.com>
- <20210707172948.1025-3-adrian.hunter@intel.com> <YOXm4FuL/CW4lYDZ@kroah.com>
- <66130101-b0c5-a9a3-318a-468c6f3b380f@intel.com> <CAJZ5v0hfEE=ney1tH5MtQm0KWs4U2yzy_DqAAW7hTyxxx2-cNg@mail.gmail.com>
- <c3ec3ca2-220f-9e5a-e2ce-b1c2be86c97c@intel.com>
-In-Reply-To: <c3ec3ca2-220f-9e5a-e2ce-b1c2be86c97c@intel.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 8 Jul 2021 09:45:27 -0700
-Message-ID: <CAGETcx_D9KvxEK689ggF6xViiC_yXaCWdL0KoW8uJwiNPhxy8w@mail.gmail.com>
-Subject: Re: [PATCH RFC 2/2] scsi: ufshcd: Fix device links when BOOT WLUN
- fails to probe
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "open list:TARGET SUBSYSTEM" <linux-scsi@vger.kernel.org>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.88
+X-Stat-Signature: bf5x7hu4qzo6ebqrqu3zoqskqspn4eqn
+X-Rspamd-Server: rspamout02
+X-Rspamd-Queue-Id: C71191E04D6
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+3oypUb4+2pFpKdBOrW8q0uE0T83Ec5xw=
+X-HE-Tag: 1625762815-113199
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 8, 2021 at 7:17 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
->
-> On 8/07/21 3:31 pm, Rafael J. Wysocki wrote:
-> > On Wed, Jul 7, 2021 at 7:49 PM Adrian Hunter <adrian.hunter@intel.com> wrote:
-> >>
-> >> On 7/07/21 8:39 pm, Greg Kroah-Hartman wrote:
-> >>> On Wed, Jul 07, 2021 at 08:29:48PM +0300, Adrian Hunter wrote:
-> >>>> If a LUN fails to probe (e.g. absent BOOT WLUN), the device will not have
-> >>>> been registered but can still have a device link holding a reference to the
-> >>>> device. The unwanted device link will prevent runtime suspend indefinitely,
-> >>>> and cause some warnings if the supplier is ever deleted (e.g. by unbinding
-> >>>> the UFS host controller). Fix by explicitly deleting the device link when
-> >>>> SCSI destroys the SCSI device.
-> >>>>
-> >>>> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-> >>>> ---
-> >>>>  drivers/scsi/ufs/ufshcd.c | 7 +++++++
-> >>>>  1 file changed, 7 insertions(+)
-> >>>>
-> >>>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> >>>> index 708b3b62fc4d..483aa74fe2c8 100644
-> >>>> --- a/drivers/scsi/ufs/ufshcd.c
-> >>>> +++ b/drivers/scsi/ufs/ufshcd.c
-> >>>> @@ -5029,6 +5029,13 @@ static void ufshcd_slave_destroy(struct scsi_device *sdev)
-> >>>>              spin_lock_irqsave(hba->host->host_lock, flags);
-> >>>>              hba->sdev_ufs_device = NULL;
-> >>>>              spin_unlock_irqrestore(hba->host->host_lock, flags);
-> >>>> +    } else {
-> >>>> +            /*
-> >>>> +             * If a LUN fails to probe (e.g. absent BOOT WLUN), the device
-> >>>> +             * will not have been registered but can still have a device
-> >>>> +             * link holding a reference to the device.
-> >>>> +             */
-> >>>> +            device_links_scrap(&sdev->sdev_gendev);
-> >>>
-> >>> What created that link?  And why did it do that before probe happened
-> >>> successfully?
-> >>
-> >> The same driver created the link.
-> >>
-> >> The documentation seems to say it is allowed to, if it is the consumer.
-> >> From Documentation/driver-api/device_link.rst
-> >>
-> >>   Usage
-> >>   =====
-> >>
-> >>   The earliest point in time when device links can be added is after
-> >>   :c:func:`device_add()` has been called for the supplier and
-> >>   :c:func:`device_initialize()` has been called for the consumer.
-> >
-> > Yes, this is allowed, but if you've added device links to a device
-> > object that is not going to be registered after all, you are
-> > responsible for doing the cleanup.
-> >
-> > Why can't you call device_link_del() directly on those links?
-> >
-> > Or device_link_remove() if you don't want to deal with link pointers?
-> >
->
-> Those only work for DL_FLAG_STATELESS device links, but we use only
-> DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE flags.
+On Thu, 2021-07-08 at 11:25 -0400, Carlos Bilbao wrote:
+> Fix indentation of printks that start at the beginning of the line. Change this 
+> for the right number of space characters, or tabs if the file uses them. 
 
-Is there a reason you can't use DL_FLAG_STATELESS? It doesn't preclude
-you from using RPM_ACTIVE as far as I can tell.
+These are ancient codes, but:
 
--Saravana
+> diff --git a/drivers/parisc/iosapic.c b/drivers/parisc/iosapic.c
+[]
+> @@ -633,7 +633,7 @@ static void iosapic_unmask_irq(struct irq_data *d)
+>  	printk("\n");
+>  }
+>  
+> 
+> -printk("iosapic_enable_irq(): sel ");
+> +	printk("iosapic_enable_irq(): sel ");
+>  {
+>  	struct iosapic_info *isp = vi->iosapic;
+>  
+> 
+> @@ -642,7 +642,7 @@ printk("iosapic_enable_irq(): sel ");
+>  		printk(" %x", d1);
+>  	}
+>  }
+> -printk("\n");
+> +	printk("\n");
+>  #endif
+
+This is in an undefined #ifdef block and the block could be deleted.
+
+> diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
+[]
+> @@ -1550,7 +1550,7 @@ static void sba_hw_init(struct sba_device *sba_dev)
+>  
+> 
+>  
+> 
+>  #if 0
+
+#if 0 blocks can be removed.
+
+> -printk("sba_hw_init(): mem_boot 0x%x 0x%x 0x%x 0x%x\n", PAGE0->mem_boot.hpa,
+> +	printk("sba_hw_init(): mem_boot 0x%x 0x%x 0x%x 0x%x\n", PAGE0->mem_boot.hpa,
+>  	PAGE0->mem_boot.spa, PAGE0->mem_boot.pad, PAGE0->mem_boot.cl_class);
+>  
+> 
+>  	/*
 
 
--Saravana
