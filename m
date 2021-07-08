@@ -2,248 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4E33C1902
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 20:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 672FA3C190A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 20:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbhGHSML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 14:12:11 -0400
-Received: from foss.arm.com ([217.140.110.172]:36026 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230365AbhGHSL4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 14:11:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C84471477;
-        Thu,  8 Jul 2021 11:09:13 -0700 (PDT)
-Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E26693F66F;
-        Thu,  8 Jul 2021 11:09:12 -0700 (PDT)
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Jassi Brar <jassisinghbrar@gmail.com>
-Subject: [PATCH 13/13] mailbox: pcc: Move bulk of PCCT parsing into pcc_mbox_probe
-Date:   Thu,  8 Jul 2021 19:08:51 +0100
-Message-Id: <20210708180851.2311192-14-sudeep.holla@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210708180851.2311192-1-sudeep.holla@arm.com>
-References: <20210708180851.2311192-1-sudeep.holla@arm.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S230081AbhGHSPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 14:15:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229650AbhGHSPs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 14:15:48 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBF57C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 11:13:04 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id w13so5585344qtc.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 11:13:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vt-edu.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:mime-version:subject:from:in-reply-to:cc
+         :date:message-id:references:to;
+        bh=nz61/2ipllgpvLpgCGgX7r1d8pgsxg1IoMqza7C5vTI=;
+        b=CcXG3sVPOSKXoFF+gaKVYgWrb8DR1EijPlJrLmlONIiTDa4P2vT11TLlDFjg69+uPt
+         QHsex7kF/9kXGYrMJyOh/ab2f13XBz/jktm0MTRyl4eBUQiYh1UWGZXRDWEIN6YN7Up8
+         SRsVYZPe3EvshEITV376tINcoQP64hpMURWixn3JcJdLQbRyAhSdTTGYZKt7lO3GX1IQ
+         ux6X4oh/b8cl2YnLV6xgqpm/h5xJXm66Z9TqYoiqMfDHNaRDJ2IFs37Q7EUwVL6HRIpO
+         S1Jg/KOIkgiNy5RZO2uOu1sitvNnHg3/b7d4pa5Pels9Gu76hSw+nd/mDHOMDb+JzuFM
+         5TAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:mime-version:subject
+         :from:in-reply-to:cc:date:message-id:references:to;
+        bh=nz61/2ipllgpvLpgCGgX7r1d8pgsxg1IoMqza7C5vTI=;
+        b=FxXECTPIv0ZtO5d7/IzZpmmANFNLAsZZ+ln3UHPyHyDUjt2w4R+LnmTtj7ODjxyT6g
+         fcIADWIsyEUvbt99jWq/thWguvl5dJnAT5Kcaur9gHPhK+hytq4POoDMwDipqBD2znvk
+         TeDAANSmO5I5xTwreQchHbIAQyqC+XuaigWRSrf9+CqPFWJatnflyxBJamOrhSP3Ctkq
+         b1c/eI/PuFVMUAv7KNfKVa02KJUsx8HJ3Ol6oJPpVix8TwPWVjBi/y2woZDu8FShFbQu
+         NGvfxXb1yvO0By8VsNQvFt0n6vO+hsaAIHIqFglM/Zj7+FMyKI0NpFOwt8ipKWg5PYgf
+         uUnQ==
+X-Gm-Message-State: AOAM5319YIB+PmAqQjEd/UUNidmjDqgbnrZdPZrZd2iszG5IDyy8npG8
+        t3uCbhpu0SKLkAQsNwjVYcnq+w==
+X-Google-Smtp-Source: ABdhPJxsKhx6k4o/ZjQtYmK/8qame8teaN4j1+lWv0q+KTN5pW0nVqWR8OgdwYOLslpoaE3pEYXJcg==
+X-Received: by 2002:ac8:4b69:: with SMTP id g9mr23819103qts.123.1625767983994;
+        Thu, 08 Jul 2021 11:13:03 -0700 (PDT)
+Received: from smtpclient.apple ([50.225.136.98])
+        by smtp.gmail.com with ESMTPSA id l6sm1330221qkk.117.2021.07.08.11.13.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Jul 2021 11:13:03 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH net-next v2] drivers: parisc: Remove unnecessary #if blocks
+From:   bilbao@vt.edu
+In-Reply-To: <YOc+EWQQUMJDZRCE@lunn.ch>
+Cc:     James.Bottomley@hansenpartnership.com,
+        Joe Perches <joe@perches.com>, deller@gmx.de,
+        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 8 Jul 2021 14:13:02 -0400
+Message-Id: <695234B5-445C-43F8-A438-29D644A56291@vt.edu>
+References: <YOc+EWQQUMJDZRCE@lunn.ch>
+To:     Andrew Lunn <andrew@lunn.ch>
+X-Mailer: iPhone Mail (18F72)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the PCCT subspace parsing and allocation into pcc_mbox_probe so
-that we can get rid of global PCC channel and mailbox controller data.
-It also helps to make use of devm_* APIs for all the allocations.
+Hello Andrew, following your suggestions I will just abandon this and resubm=
+it next week with proper Subjects, etc.=20
 
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
----
- drivers/mailbox/pcc.c | 119 ++++++++++++++++++++++--------------------
- 1 file changed, 63 insertions(+), 56 deletions(-)
-
-diff --git a/drivers/mailbox/pcc.c b/drivers/mailbox/pcc.c
-index 22d1c7691887..c915b915e039 100644
---- a/drivers/mailbox/pcc.c
-+++ b/drivers/mailbox/pcc.c
-@@ -63,8 +63,6 @@
- 
- #define MBOX_IRQ_NAME		"pcc-mbox"
- 
--static struct mbox_chan *pcc_mbox_channels;
--
- /**
-  * struct pcc_chan_reg - PCC register bundle
-  *
-@@ -106,7 +104,7 @@ struct pcc_chan_info {
- 
- #define to_pcc_chan_info(c) container_of(c, struct pcc_chan_info, chan)
- static struct pcc_chan_info *chan_info;
--static struct mbox_controller pcc_mbox_ctrl = {};
-+static int pcc_chan_count;
- 
- /*
-  * PCC can be used with perf critical drivers such as CPPC
-@@ -281,8 +279,8 @@ struct pcc_mbox_chan *
- pcc_mbox_request_channel(struct mbox_client *cl, int subspace_id)
- {
- 	struct pcc_chan_info *pchan = chan_info + subspace_id;
--	struct device *dev = pcc_mbox_ctrl.dev;
- 	struct mbox_chan *chan = pchan->chan.mchan;
-+	struct device *dev = chan->mbox->dev;
- 	unsigned long flags;
- 
- 	if (IS_ERR(chan) || chan->cl) {
-@@ -570,16 +568,12 @@ static void pcc_parse_subspace_shmem(struct pcc_chan_info *pchan,
-  */
- static int __init acpi_pcc_probe(void)
- {
-+	int count, i, rc = 0;
-+	acpi_status status;
- 	struct acpi_table_header *pcct_tbl;
--	struct acpi_subtable_header *pcct_entry;
--	struct acpi_table_pcct *acpi_pcct_tbl;
- 	struct acpi_subtable_proc proc[ACPI_PCCT_TYPE_RESERVED];
--	int count, i, rc;
--	acpi_status status = AE_OK;
- 
--	/* Search for PCCT */
- 	status = acpi_get_table(ACPI_SIG_PCCT, 0, &pcct_tbl);
--
- 	if (ACPI_FAILURE(status) || !pcct_tbl)
- 		return -ENODEV;
- 
-@@ -601,21 +595,60 @@ static int __init acpi_pcc_probe(void)
- 			pr_warn("Invalid PCCT: %d PCC subspaces\n", count);
- 
- 		rc = -EINVAL;
--		goto err_put_pcct;
-+	} else {
-+		pcc_chan_count = count;
- 	}
- 
--	pcc_mbox_channels = kcalloc(count, sizeof(struct mbox_chan),
--				    GFP_KERNEL);
-+	acpi_put_table(pcct_tbl);
-+
-+	return rc;
-+}
-+
-+/**
-+ * pcc_mbox_probe - Called when we find a match for the
-+ *	PCCT platform device. This is purely used to represent
-+ *	the PCCT as a virtual device for registering with the
-+ *	generic Mailbox framework.
-+ *
-+ * @pdev: Pointer to platform device returned when a match
-+ *	is found.
-+ *
-+ *	Return: 0 for Success, else errno.
-+ */
-+static int pcc_mbox_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct mbox_controller *pcc_mbox_ctrl;
-+	struct mbox_chan *pcc_mbox_channels;
-+	struct acpi_table_header *pcct_tbl;
-+	struct acpi_subtable_header *pcct_entry;
-+	struct acpi_table_pcct *acpi_pcct_tbl;
-+	acpi_status status = AE_OK;
-+	int i, rc, count = pcc_chan_count;
-+
-+	/* Search for PCCT */
-+	status = acpi_get_table(ACPI_SIG_PCCT, 0, &pcct_tbl);
-+
-+	if (ACPI_FAILURE(status) || !pcct_tbl)
-+		return -ENODEV;
-+
-+	pcc_mbox_channels = devm_kcalloc(dev, count, sizeof(*pcc_mbox_channels),
-+					 GFP_KERNEL);
- 	if (!pcc_mbox_channels) {
--		pr_err("Could not allocate space for PCC mbox channels\n");
- 		rc = -ENOMEM;
--		goto err_put_pcct;
-+		goto err;
- 	}
- 
--	chan_info = kcalloc(count, sizeof(*chan_info), GFP_KERNEL);
-+	chan_info = devm_kcalloc(dev, count, sizeof(*chan_info), GFP_KERNEL);
- 	if (!chan_info) {
- 		rc = -ENOMEM;
--		goto err_free_mbox;
-+		goto err;
-+	}
-+
-+	pcc_mbox_ctrl = devm_kmalloc(dev, sizeof(*pcc_mbox_ctrl), GFP_KERNEL);
-+	if (!pcc_mbox_ctrl) {
-+		rc = -ENOMEM;
-+		goto err;
- 	}
- 
- 	/* Point to the first PCC subspace entry */
-@@ -624,7 +657,7 @@ static int __init acpi_pcc_probe(void)
- 
- 	acpi_pcct_tbl = (struct acpi_table_pcct *) pcct_tbl;
- 	if (acpi_pcct_tbl->flags & ACPI_PCCT_DOORBELL)
--		pcc_mbox_ctrl.txdone_irq = true;
-+		pcc_mbox_ctrl->txdone_irq = true;
- 
- 	for (i = 0; i < count; i++) {
- 		struct pcc_chan_info *pchan = chan_info + i;
-@@ -632,7 +665,7 @@ static int __init acpi_pcc_probe(void)
- 		pcc_mbox_channels[i].con_priv = pchan;
- 		pchan->chan.mchan = &pcc_mbox_channels[i];
- 
--		if (pcc_mbox_ctrl.txdone_irq) {
-+		if (pcc_mbox_ctrl->txdone_irq) {
- 			rc = pcc_parse_subspace_irq(pchan, pcct_entry);
- 			if (rc < 0)
- 				goto err;
-@@ -647,51 +680,25 @@ static int __init acpi_pcc_probe(void)
- 			((unsigned long) pcct_entry + pcct_entry->length);
- 	}
- 
--	pcc_mbox_ctrl.num_chans = count;
-+	pcc_mbox_ctrl->num_chans = count;
- 
--	pr_info("Detected %d PCC Subspaces\n", pcc_mbox_ctrl.num_chans);
-+	pr_info("Detected %d PCC Subspaces\n", pcc_mbox_ctrl->num_chans);
- 
--	return 0;
-+	pcc_mbox_ctrl->chans = pcc_mbox_channels;
-+	pcc_mbox_ctrl->ops = &pcc_chan_ops;
-+	pcc_mbox_ctrl->dev = dev;
- 
-+	pr_info("Registering PCC driver as Mailbox controller\n");
-+	rc = mbox_controller_register(pcc_mbox_ctrl);
-+	if (rc)
-+		pr_err("Err registering PCC as Mailbox controller: %d\n", rc);
-+	else
-+		return 0;
- err:
--	kfree(chan_info);
--err_free_mbox:
--	kfree(pcc_mbox_channels);
--err_put_pcct:
- 	acpi_put_table(pcct_tbl);
- 	return rc;
- }
- 
--/**
-- * pcc_mbox_probe - Called when we find a match for the
-- *	PCCT platform device. This is purely used to represent
-- *	the PCCT as a virtual device for registering with the
-- *	generic Mailbox framework.
-- *
-- * @pdev: Pointer to platform device returned when a match
-- *	is found.
-- *
-- *	Return: 0 for Success, else errno.
-- */
--static int pcc_mbox_probe(struct platform_device *pdev)
--{
--	int ret = 0;
--
--	pcc_mbox_ctrl.chans = pcc_mbox_channels;
--	pcc_mbox_ctrl.ops = &pcc_chan_ops;
--	pcc_mbox_ctrl.dev = &pdev->dev;
--
--	pr_info("Registering PCC driver as Mailbox controller\n");
--	ret = mbox_controller_register(&pcc_mbox_ctrl);
--
--	if (ret) {
--		pr_err("Err registering PCC as Mailbox controller: %d\n", ret);
--		ret = -ENODEV;
--	}
--
--	return ret;
--}
--
- static struct platform_driver pcc_mbox_driver = {
- 	.probe = pcc_mbox_probe,
- 	.driver = {
--- 
-2.25.1
-
+> On Jul 8, 2021, at 2:04 PM, Andrew Lunn <andrew@lunn.ch> wrote:
+>=20
+> =EF=BB=BFOn Thu, Jul 08, 2021 at 01:40:54PM -0400, Carlos Bilbao wrote:
+>> Remove undefined #ifdefs and #if 0 from these two files.
+>=20
+> Hi Carlos
+>=20
+> This is not a network driver, so putting net-next in the subject is
+> not useful.
+>=20
+> Also, at the moment, we are in the merge window. It is unlikely that
+> any maintainer will accept your patches until the merge window closes,
+> which should be this weekend. You can whoever still send patches, but
+> please mark them RFC, and send them just to the appropriate list, not
+> the maintainer.
+>=20
+>      Andrew
