@@ -2,92 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3EB43C1649
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 17:48:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 667A43C169E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 17:50:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232115AbhGHPuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 11:50:52 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:46408 "EHLO vps0.lunn.ch"
+        id S232154AbhGHPxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 11:53:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232073AbhGHPuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 11:50:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=idm2824af4WvDweWDAByXt9zmw699TMPDqruecxrjVQ=; b=33ssX0aPQkjpRTibNDxYyAJUEF
-        Ma5327BtIUPyz40/ZSKrFWwiFFVNUeYEvTz3rrN+iZDS79niDj6c4+/RmeJLjymkev/EPkPjZJLJB
-        LYMzsvQmYm9fWgJFerv1+QSDrgB2OlecLABrsQO32Agg/OnKqg834JfqbwZtyonl2024=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1m1WFw-00CeiP-V6; Thu, 08 Jul 2021 17:48:04 +0200
-Date:   Thu, 8 Jul 2021 17:48:04 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Carlos Bilbao <bilbao@vt.edu>
-Cc:     3chas3@gmail.com, linux-atm-general@lists.sourceforge.net,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers: atm: Follow the indentation coding standard on
- printks
-Message-ID: <YOceNJYQJiPh3qhc@lunn.ch>
-References: <2784471.e9J7NaK4W3@iron-maiden>
- <YOcOWDqlONm69zwo@kroah.com>
- <5630870.MhkbZ0Pkbq@iron-maiden>
+        id S231944AbhGHPxF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 11:53:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 956D2616ED;
+        Thu,  8 Jul 2021 15:50:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625759423;
+        bh=oa74Tybu5HedvZVZTqYR2f9HSos8k6RTN9dJvzTphn4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Q+O6ZDdGEBnkFEr6zQrynCPAe2CjViex2if/DDrh7a8iGMB4gdkfvP6M3dVr6JW5R
+         8s5YsA4HU1SJdXiBy2tMuflJey6gHdoldMCk8C3bApOjZB5rStVCKcTNlsHOy17bpP
+         cp+dTsNdPnAg0OiONG3gCYPPeW+17PCHGW91Rci53M4lml7E5uU0mhTjpfOXfx9Hpy
+         A2k/iaQgivlMcqDUnqttw893u4QmH4yNHNxn4J5EGDXyxck3XG47wEpLWm/9eG7NNd
+         1gQTrJI8xy0VEs8p2Eg+Xve2jljhJWPhE6u8L8+/MzGLUZL/LU2y+n7u8hRzb3qoW1
+         NWV28/c0V41tw==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1m1WI4-008VV0-Bs; Thu, 08 Jul 2021 17:50:16 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Manivannan Sadhasivam <mani@kernel.org>,
+        Rob Herring <robh@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-phy@lists.infradead.org
+Subject: [PATCH RFC 0/7] Add support for Hikey 970 PCIe
+Date:   Thu,  8 Jul 2021 17:50:07 +0200
+Message-Id: <cover.1625758732.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5630870.MhkbZ0Pkbq@iron-maiden>
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 08, 2021 at 11:19:19AM -0400, Carlos Bilbao wrote:
-> Fix indentation of printks that start at the beginning of the line. Change this 
-> for the right number of space characters, or tabs if the file uses them. 
-> 
-> Signed-off-by: Carlos Bilbao <bilbao@vt.edu>
-> ---
-> Changelog: Replaced printk for DPRINTK on suni.c
-> ---
->  drivers/atm/eni.c                      | 2 +-
->  drivers/atm/iphase.c                   | 2 +-
->  drivers/atm/suni.c                     | 4 ++--
->  drivers/atm/zatm.c                     | 8 ++++----
->  4 files changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/atm/eni.c b/drivers/atm/eni.c
-> index 422753d52244..6d10fd62ba7e 100644
-> --- a/drivers/atm/eni.c
-> +++ b/drivers/atm/eni.c
-> @@ -1456,7 +1456,7 @@ static int start_tx(struct atm_dev *dev)
->  
->  static void foo(void)
->  {
-> -printk(KERN_INFO
-> +  printk(KERN_INFO
->    "tx_complete=%d,dma_complete=%d,queued=%d,requeued=%d,sub=%d,\n"
->    "backlogged=%d,rx_enqueued=%d,rx_dequeued=%d,putting=%d,pushed=%d\n",
->    tx_complete,dma_complete,queued,requeued,submitted,backlogged,
+That's the third attempt of adding PCIe support for Hikey 970 from my side.
+The past attempt was this one:
 
-Did you just blindly fix the warning, or look at the surrounding code
-and think a bit?
+	https://lore.kernel.org/lkml/cover.1612335031.git.mchehab+huawei@kernel.org/
 
-There is the comment:
+As requested by Rob Herring, this series use a different approach than
+the past attempt: it first splits the PHY part into a separate driver. Then, it
+adds support for Kirin 970.
 
-/* may become useful again when tuning things */
+Due to such change, the DT bindings had to change, as several properties moved
+from the PCIe driver to the PHY. IMO, it makes a lot more sense now.
 
-What does git log show? When was the last tuning? When was the last
-serious change made to this driver which was not an automated/manual
-cleanup? My guess is, you need to go back to at least 2005.
+This is is currently a work in progress. There are still a few things to be solved,
+but let me send what I have so far for a quick review if this approach is
+acceptable.
 
-So maybe it is time to remove this #if 0 code?
+Manivannan,
 
-Please also read
+Please notice that this patch:
 
-https://www.kernel.org/doc/Documentation/process/submitting-patches.rst
+  PCI: kirin: split PHY interface from the driver
 
-and
+Contains the code written by you, on your attempt to upstream this.
+If you're OK, please send your SoB. I should likely add a Co-authored-by:
+tag at the final version.
 
-https://www.kernel.org/doc/html/latest/networking/netdev-FAQ.html
+The same somewhat applies to this patch:
 
-	Andrew
+  arm64: dts: hisilicon: Add support for HiKey 970 PCIe controller hardware
+
+but at the reverse direction, as I had to shift some properties from the 
+PCIe binding to the PCIe PHY one.
+
+Also, if this approach is OK, I'm considering to move all clock lines to the
+PHY driver, as it makes more sense there, and the device is *very* sensitive
+to the clock order. Any change at the sequence may cause the SoC to generate
+a  NMI interrupt (SError), which, in turn, causes a kernel panic.
+
+Manivannan Sadhasivam (1):
+  arm64: dts: hisilicon: Add support for HiKey 970 PCIe controller
+    hardware
+
+Mauro Carvalho Chehab (6):
+  PCI: kirin: split PHY interface from the driver
+  PCI: kirin: use regmap for APB registers
+  bindings: kirin-pcie.txt: fix compatible string
+  bindings: kirin-pcie.txt: drop PHY properties
+  bindings: phy: add bindings for Hikey 960 PCIe PHY
+  phy: add driver for Kirin 970 PCIe PHY
+
+ .../devicetree/bindings/pci/kirin-pcie.txt    |  24 +-
+ .../phy/hisilicon,phy-hi3660-pcie.yaml        |  70 ++
+ arch/arm64/boot/dts/hisilicon/hi3660.dtsi     |  29 +-
+ arch/arm64/boot/dts/hisilicon/hi3670.dtsi     |  72 ++
+ .../boot/dts/hisilicon/hikey970-pmic.dtsi     |   1 -
+ drivers/pci/controller/dwc/pcie-kirin.c       | 254 ++----
+ drivers/phy/hisilicon/Kconfig                 |  20 +
+ drivers/phy/hisilicon/Makefile                |   2 +
+ drivers/phy/hisilicon/phy-hi3660-pcie.c       | 273 ++++++
+ drivers/phy/hisilicon/phy-hi3670-pcie.c       | 844 ++++++++++++++++++
+ 10 files changed, 1370 insertions(+), 219 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/phy/hisilicon,phy-hi3660-pcie.yaml
+ create mode 100644 drivers/phy/hisilicon/phy-hi3660-pcie.c
+ create mode 100644 drivers/phy/hisilicon/phy-hi3670-pcie.c
+
+-- 
+2.31.1
+
+
