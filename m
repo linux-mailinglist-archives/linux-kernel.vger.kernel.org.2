@@ -2,126 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A92703BF34E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 03:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 992913BF356
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 03:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230208AbhGHBLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 21:11:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbhGHBLk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 21:11:40 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D803C061574;
-        Wed,  7 Jul 2021 18:08:59 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GKyqD1dNdz9sXV;
-        Thu,  8 Jul 2021 11:08:56 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1625706536;
-        bh=CwzLaLJFQta8XP/3MzpUVxU8qh6XLSGsGRQ8AbnxOJ4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=eAZR58XkE/254gZi5CHOMW51msvS5ePHuqiADs4Un8U2vvYpUqRi/FK1bi1GnPIzs
-         LgEzeJZUAdxkD+hYRLgCG/YUDJowUidTtWoUYEnd1BEIEbZC3B9MfVZ4S3/EOEiLzR
-         lwJFO09f4rPE2XR6+W3mV62f0QJMFo01ceYGW3NDTrJq4fLKbXoOyDrUUvvbSs6fpT
-         ZoTWX2V2Cr5fUT0srrceOFBuPsqmCkq+3aagkgpvhdhuQ62WW5RrIQWUCzCwf0/eqz
-         knkugdc68wTZRvncwgTosbohVXT2m0hoIWLZoITslbIzsyZ6v2gyqWaSRNjBbFSdif
-         Kc8DPGdVhgTug==
-Date:   Thu, 8 Jul 2021 11:08:54 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the vhost tree
-Message-ID: <20210708110854.1a1ab200@canb.auug.org.au>
+        id S230155AbhGHBOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 21:14:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230106AbhGHBO3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 21:14:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5847761C77;
+        Thu,  8 Jul 2021 01:11:47 +0000 (UTC)
+Subject: Re: [PATCH] m68k/coldfire: change pll var. to clk_pll
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        uclinux-dev@uclinux.org
+References: <20210704230137.28915-1-rdunlap@infradead.org>
+ <024360ce-41b2-c072-f399-7e87f516bfd0@linux-m68k.org>
+ <CAK8P3a3sqC4nFsP=3cnz-zYjKRLHun5NSgSF31ZJErsYX7yP=g@mail.gmail.com>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Message-ID: <2d31fb13-818b-7a90-4071-9c36b50527d1@linux-m68k.org>
+Date:   Thu, 8 Jul 2021 11:11:45 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/3lBgu5OH9pGs.64MVF7/kQN";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <CAK8P3a3sqC4nFsP=3cnz-zYjKRLHun5NSgSF31ZJErsYX7yP=g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/3lBgu5OH9pGs.64MVF7/kQN
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On 8/7/21 6:32 am, Arnd Bergmann wrote:
+> On Wed, Jul 7, 2021 at 2:30 PM Greg Ungerer <gerg@linux-m68k.org> wrote:
+>> On 5/7/21 9:01 am, Randy Dunlap wrote:
+>>> DEFINE_CLK() makes the variable name be clk_xyz, so variable
+>>> 'pll' should instead be 'clk_pll'.
+>>>
+>>> In file included from ../arch/m68k/coldfire/m525x.c:12:
+>>> ../arch/m68k/coldfire/m525x.c:29:30: error: 'pll' undeclared here (not in a function)
+>>>      29 |  CLKDEV_INIT(NULL, "pll.0", &pll),
+>>>         |                              ^~~
+>>> ../include/linux/clkdev.h:30:10: note: in definition of macro 'CLKDEV_INIT'
+>>>      30 |   .clk = c, \
+>>>         |          ^
+>>> In file included from ../arch/m68k/coldfire/m525x.c:21:
+>>> ../arch/m68k/include/asm/mcfclk.h:43:27: warning: 'clk_pll' defined but not used [-Wunused-variable]
+>>>      43 |         static struct clk clk_##clk_ref = { \
+>>>         |                           ^~~~
+>>> ../arch/m68k/coldfire/m525x.c:25:1: note: in expansion of macro 'DEFINE_CLK'
+>>>      25 | DEFINE_CLK(pll, "pll.0", MCF_CLK);
+>>>         | ^~~~~~~~~~
+>>>
+>>> Fixes: 63aadb77669a ("m68k: coldfire: use clkdev_lookup on most coldfire")
+>>> Reported-by: kernel test robot <lkp@intel.com>
+>>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>>> Cc: Greg Ungerer <gerg@linux-m68k.org>
+>>> Cc: linux-m68k@lists.linux-m68k.org
+>>> Cc: uclinux-dev@uclinux.org
+>>> Cc: Arnd Bergmann <arnd@arndb.de>
+>>
+>> Thanks Randy.
+>>
+>> Arnd: since this has hit mainline do you want me to pick it up
+>> in the m68knommu git tree and push to Linus from there?
+> 
+> Yes, that would be good. Sorry I completely missed the bug report and the
+> earlier fix.
 
-After merging the vhost tree, today's linux-next build (powerpc
-ppc64_defconfig) failed like this:
+No worries. I'll take care of it.
 
-drivers/block/virtio_blk.c:986:14: error: initialization of 'int (*)(struct=
- virtio_device *, void *)' from incompatible pointer type 'int (*)(struct v=
-irtio_device *)' [-Werror=3Dincompatible-pointer-types]
-  986 |  .probe    =3D virtblk_probe,
-      |              ^~~~~~~~~~~~~
-drivers/block/virtio_blk.c:986:14: note: (near initialization for 'virtio_b=
-lk.probe')
-drivers/char/virtio_console.c:2213:11: error: initialization of 'int (*)(st=
-ruct virtio_device *, void *)' from incompatible pointer type 'int (*)(stru=
-ct virtio_device *)' [-Werror=3Dincompatible-pointer-types]
- 2213 |  .probe =3D virtcons_probe,
-      |           ^~~~~~~~~~~~~~
-drivers/char/virtio_console.c:2213:11: note: (near initialization for 'virt=
-io_console.probe')
-drivers/char/virtio_console.c:2228:11: error: initialization of 'int (*)(st=
-ruct virtio_device *, void *)' from incompatible pointer type 'int (*)(stru=
-ct virtio_device *)' [-Werror=3Dincompatible-pointer-types]
- 2228 |  .probe =3D virtcons_probe,
-      |           ^~~~~~~~~~~~~~
-drivers/char/virtio_console.c:2228:11: note: (near initialization for 'virt=
-io_rproc_serial.probe')
-drivers/scsi/virtio_scsi.c:983:11: error: initialization of 'int (*)(struct=
- virtio_device *, void *)' from incompatible pointer type 'int (*)(struct v=
-irtio_device *)' [-Werror=3Dincompatible-pointer-types]
-  983 |  .probe =3D virtscsi_probe,
-      |           ^~~~~~~~~~~~~~
-drivers/scsi/virtio_scsi.c:983:11: note: (near initialization for 'virtio_s=
-csi_driver.probe')
-drivers/net/virtio_net.c: At top level:
-drivers/net/virtio_net.c:3387:14: error: initialization of 'void * (*)(stru=
-ct virtio_device *)' from incompatible pointer type 'int (*)(struct virtio_=
-device *)' [-Werror=3Dincompatible-pointer-types]
- 3387 |  .validate =3D virtnet_validate,
-      |              ^~~~~~~~~~~~~~~~
-drivers/net/virtio_net.c:3387:14: note: (near initialization for 'virtio_ne=
-t_driver.validate')
-drivers/net/virtio_net.c:3388:11: error: initialization of 'int (*)(struct =
-virtio_device *, void *)' from incompatible pointer type 'int (*)(struct vi=
-rtio_device *)' [-Werror=3Dincompatible-pointer-types]
- 3388 |  .probe =3D virtnet_probe,
-      |           ^~~~~~~~~~~~~
-drivers/net/virtio_net.c:3388:11: note: (near initialization for 'virtio_ne=
-t_driver.probe')
+Regards
+Greg
 
-Caused by commit
-
-  e397242b72e2 ("virtio: allow passing config data from validate callback")
-
-I have used the vhost tree from next-20210707 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/3lBgu5OH9pGs.64MVF7/kQN
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDmUCYACgkQAVBC80lX
-0GwEoggAj1uyG0upb7RIhZWYeg0FyaTOP05DhjfCXE2TzelDHig+R8kY0cBtQuAv
-CpBfHqnpNiX3BHflgsIiF9X5PTnBqY7ZqO6Zr9Hz7iZl6nxok256r5YWphiepT27
-oFMcF0TE4z19BhQN8i5UMk/omiCYh7Np0IT89dhCYzdVpN0I/8Yga4DyYzXwBrmp
-JLqt3dzIv8aLn0+tpkjAPNiOaGbLNHsf+LwPAjiySgcVLqkr290OxGadXAsa6Cr9
-SllzN71cRPL1O1LZ05emtUL5h8HkfYuoeUJ+FqA9gWA1Axb1mI+/8jjXK6ymNCD9
-nyzTCNYqZXBDkL8gmgCXVXzy/jU1WA==
-=J6h9
------END PGP SIGNATURE-----
-
---Sig_/3lBgu5OH9pGs.64MVF7/kQN--
