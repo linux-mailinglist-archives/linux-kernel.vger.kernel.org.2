@@ -2,114 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E07563C1C51
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 01:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2CF33C1C55
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 01:57:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230031AbhGHX7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 19:59:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229780AbhGHX7V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 19:59:21 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E34AAC061574;
-        Thu,  8 Jul 2021 16:56:37 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id v17so3720410qvw.12;
-        Thu, 08 Jul 2021 16:56:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=OfWmtWC1DQCyuvoSdz/5o8vZ+brkrmb+OabgpXUg65w=;
-        b=juL5qIUy0bfdYwZCznZUKEyzGNE4GhlTBlCgMHQAzu7+bM/AhDwHcHS2jpSbvLYCOu
-         4QKjyXgXIw1Ra0K7S3HjlW+xeORXgVK2OEaxzt/lCBVzoDE3u0NGdElgMDTDVy7IcBOX
-         3scFIUuRZTIXCFl2ZAYbnK65S7aIJTu5NCn2RT0/VkOt2cP/d8I7KJNj8KOQkCngcbMW
-         zmHqigWJ1ArFllFhRWqsf1V9uxwL1cf6fGE8NRPz655d6gqDZbaDGx03o4MTbMOA/qTf
-         TSBp+Pv8uhqiOBsMGrZuU6CQ9+xHwGb7fBWivdGrGww9nC2FHvPGB3044EyEiOnUlWdp
-         qdYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OfWmtWC1DQCyuvoSdz/5o8vZ+brkrmb+OabgpXUg65w=;
-        b=ceWDdQ1PFonhtvx2HN24Konc6b9lZ3EGN+VS7Z+F+VYPYKHQ7v2gKq5gomOwTNyeOM
-         QzLUrllZmFABhoY64oimrUuKRV6gPMc725LEzCdgxPsH5YqDoQ2w1CkemSAuTQCG/Oq4
-         gj0oXTaA3ooF8wqbGOMCu2fgAqJ8I/Tf3VRSco/RnF/AQI48maSfCfMJVebJbzTydP3F
-         IOXqSpqEYnppS0uYd6URIMYkzaE1TZUcrqnnnwMhjrR3sw6EaQ6IxwfO+7DQjTgBzH1L
-         mL51PZIzDXIsDreVpxAPfOsPS7cY9BnF60d2po5TFkG7HZ1NhlvAYs59/94kKQd+xdm1
-         ViUw==
-X-Gm-Message-State: AOAM532ig1uW7175v6HcIQkOoXCo1zHMVK+2KVSrsAzoCv9C4XhRb7Wt
-        6RVX5DeBbIMlV8iQHknzzDI=
-X-Google-Smtp-Source: ABdhPJzlpahJYZqrm2XcpeaARoi6Vly8KeK1CjQ71DPGoy7NXsKfxwGEln8j/+8GxpwhJ/Pd0ZRCVQ==
-X-Received: by 2002:a0c:db01:: with SMTP id d1mr17923670qvk.38.1625788597126;
-        Thu, 08 Jul 2021 16:56:37 -0700 (PDT)
-Received: from shaak.xiphos.ca (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id m68sm1733234qkc.109.2021.07.08.16.56.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jul 2021 16:56:36 -0700 (PDT)
-From:   Liam Beguin <liambeguin@gmail.com>
-To:     liambeguin@gmail.com, lars@metafoo.de,
-        Michael.Hennerich@analog.com, jic23@kernel.org,
-        charles-antoine.couret@essensium.com
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-Subject: [PATCH v1 4/4] dt-bindings: iio: adc: ad7949: add adi,reference-source
-Date:   Thu,  8 Jul 2021 19:56:18 -0400
-Message-Id: <20210708235618.1541335-5-liambeguin@gmail.com>
-X-Mailer: git-send-email 2.30.1.489.g328c10930387
-In-Reply-To: <20210708235618.1541335-1-liambeguin@gmail.com>
-References: <20210708235618.1541335-1-liambeguin@gmail.com>
+        id S230015AbhGIAAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 20:00:13 -0400
+Received: from mga09.intel.com ([134.134.136.24]:6504 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229600AbhGIAAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 20:00:11 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10039"; a="209582193"
+X-IronPort-AV: E=Sophos;i="5.84,225,1620716400"; 
+   d="scan'208";a="209582193"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 16:57:27 -0700
+X-IronPort-AV: E=Sophos;i="5.84,225,1620716400"; 
+   d="scan'208";a="564724399"
+Received: from npujari-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.213.167.42])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 16:57:26 -0700
+Subject: Re: [PATCH v2 5/6] platform/x86: intel_tdx_attest: Add TDX Guest
+ attestation interface driver
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org, bpf@vger.kernel.org,
+        Netdev <netdev@vger.kernel.org>
+References: <20210707204249.3046665-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210707204249.3046665-6-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAPcyv4h8SaVL_QGLv1DT0JuoyKmSBvxJQw0aamMuzarexaU7VA@mail.gmail.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <24d8fd58-36c1-0e89-4142-28f29e2c434b@linux.intel.com>
+Date:   Thu, 8 Jul 2021 16:57:24 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPcyv4h8SaVL_QGLv1DT0JuoyKmSBvxJQw0aamMuzarexaU7VA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liam Beguin <lvb@xiphos.com>
 
-Add bindings documentation for the adi,reference-source property.
-This property is required to properly configure the ADC sample request
-based on which reference source should be used for the calculation.
 
-Signed-off-by: Liam Beguin <lvb@xiphos.com>
----
- .../bindings/iio/adc/adi,ad7949.yaml          | 22 +++++++++++++++++++
- 1 file changed, 22 insertions(+)
+On 7/8/21 4:36 PM, Dan Williams wrote:
+>> +static int tdg_attest_open(struct inode *inode, struct file *file)
+>> +{
+>> +       /*
+>> +        * Currently tdg_event_notify_handler is only used in attestation
+>> +        * driver. But, WRITE_ONCE is used as benign data race notice.
+>> +        */
+>> +       WRITE_ONCE(tdg_event_notify_handler, attestation_callback_handler);
+> Why is this ioctl not part of the driver that registered the interrupt
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
-index 9b56bd4d5510..3f4629281cc8 100644
---- a/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
-+++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
-@@ -35,6 +35,28 @@ properties:
-   "#io-channel-cells":
-     const: 1
- 
-+  adi,reference-select:
-+    allOf:
-+      - $ref: /schemas/types.yaml#/definitions/uint32
-+      - enum: [0, 1, 2, 3, 6, 7]
-+
-+    default: 7
-+    description: |
-+      Select the reference voltage source to use when converting samples.
-+      Acceptable values are:
-+      - 0: Internal reference and temperature sensor enabled.
-+           Vref=2.5V, buffered output
-+      - 1: Internal reference and temperature sensor enabled.
-+           Vref=4.096V, buffered output
-+      - 2: Use external reference, temperature sensor enabled.
-+           Internal buffer disabled
-+      - 3: Use external reference, internal buffer and temperature sensor
-+           enabled.
-+      - 6: Use external reference, internal buffer and temperature sensor
-+           disabled.
-+      - 7: Use external reference, internal buffer enabled.
-+           Internal reference and temperature sensor disabled.
-+
- required:
-   - compatible
-   - reg
+We cannot club them because they are not functionally related. Even notification
+is a separate common feature supported by TDX and configured using
+SetupEventNotifyInterrupt hypercall. It is not related to TDX attestation.
+Attestation just uses event notification interface to get the quote
+completion event.
+
+> handler for this callback in the first instance? I've never seen this
+> style of cross-driver communication before.
+
+This is similar to x86_platform_ipi_callback() acrn_setup_intr_handler()
+use cases.
+
+> 
+>> +
+>> +       file->private_data = (void *)__get_free_pages(GFP_KERNEL | __GFP_ZERO,
+>> +                                                     get_order(QUOTE_SIZE));
+> Why does this driver abandon all semblance of type-safety and use
+> ->private_data directly? This also seems an easy way to consume
+> memory, just keep opening this device over and over again.
+> 
+> AFAICS this buffer is only used ephemerally. I see no reason it needs
+> to be allocated once per open file. Unless you need several threads to
+> be running the attestation process in parallel just allocate a single
+> buffer at module init (statically defined or on the heap) and use a
+> lock to enforce only one user of this buffer at a time. That would
+> also solve your direct-map fracturing problem.
+
+Theoretically attestation requests can be sent in parallel. I have
+allocated the memory in open() call mainly for this reason. But current
+TDX ABI specification does not clearly specify this possibility and I am
+not sure whether TDX KVM supports it. Let me confirm about it again with
+TDX KVM owner. If such model is not currently supported, then I will move
+the memory allocation to init code.
+
+> 
+> All that said, this new user ABI for passing blobs in and out of the
+> kernel is something that the keyutils API already does. Did you
+> consider add_key() / request_key() for this case? That would also be
+> the natural path for the end step of requesting the drive decrypt key.
+> I.e. a chain of key payloads starting with establishing the
+> attestation blob.
+
+I am not sure whether we can use keyutil interface for attestation. AFAIK,
+there are other use cases for attestation other than  getting keys for
+encrypted drives.
+
 -- 
-2.30.1.489.g328c10930387
-
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
