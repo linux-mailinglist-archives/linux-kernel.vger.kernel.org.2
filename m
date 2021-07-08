@@ -2,118 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF94E3C195D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 20:45:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C293C1968
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 20:51:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbhGHSsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 14:48:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhGHSsd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 14:48:33 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C5C1C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 11:45:51 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1625769949;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SldBbRL1As6HH2M61BP/ubphyI2dj2XqtlsppF+Xl4Q=;
-        b=05maXRbVnoMnncjd+n3nI80cb9PMpyto6MNDRX76X4aZSwtmykUGITG3mxpqrFSIaxhde3
-        W/fwU2kSrLAzzE1b0dGsHgNDJYoWGstMmXBZ/c+YwT/2F3FwW3PV2HK5MdkpDQ14Bz/dGD
-        PYnsJ+bMauWnjdlL5Ort4QLKWG6a23ekQH2eHe+a37614F16h16+5+AF5HS9K2PXOEY3b0
-        GPWM66Dbw2XtA570v2xwT7egqsJE4QpxBVg8cggwpBIKiITiGZexVKx+ESUbO6wFDZqsYD
-        v/4LzoTyms5bm2ENUlaEJiwLhdq/MQsaXG13/+6JxaZwuekfd3yTosJNQEEdFw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1625769949;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SldBbRL1As6HH2M61BP/ubphyI2dj2XqtlsppF+Xl4Q=;
-        b=SVWqV/oyKYTmODZ7FmPa7CtEG5lKr9FGR+ben8tsLurWtZK1DKjp8+T5Ud6ekQ1bV70Ard
-        dLd0LV+IeSkLoCAA==
-To:     "Raj\, Ashok" <ashok.raj@intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Dey\, Megha" <megha.dey@intel.com>, linux-kernel@vger.kernel.org,
-        "Jiang\, Dave" <dave.jiang@intel.com>,
-        "Tian\, Kevin" <kevin.tian@intel.com>,
-        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Liu\, Yi L" <yi.l.liu@intel.com>,
-        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Van De Ven\, Arjan" <arjan.van.de.ven@intel.com>,
-        "Williams\, Dan J" <dan.j.williams@intel.com>,
-        "Shankar\, Ravi V" <ravi.v.shankar@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: Programming PASID in IMS entries
-In-Reply-To: <20210708143657.GA70042@otc-nc-03>
-References: <bd509e3d-f59d-1200-44ce-93cf9132bd8c@intel.com> <87k0m2qzgz.ffs@nanos.tec.linutronix.de> <20210707221216.GA56594@otc-nc-03> <20210707235822.GB4459@nvidia.com> <20210708003335.GC56594@otc-nc-03> <20210708120846.GD4459@nvidia.com> <20210708143657.GA70042@otc-nc-03>
-Date:   Thu, 08 Jul 2021 20:45:48 +0200
-Message-ID: <87v95kod9f.ffs@nanos.tec.linutronix.de>
+        id S229986AbhGHSyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 14:54:18 -0400
+Received: from mail-sn1anam02on2083.outbound.protection.outlook.com ([40.107.96.83]:42615
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229497AbhGHSyS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 14:54:18 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CJkWv3KIAlWHi4ljt6bjpS3cvLWcqqVefcdo3e14MnyuLWwcYG/qadT1k1w8zZl5DHzpsxxkMH18UOwjOv+inBWMrsCF5/3OZEB1rOBh9Zh68MkH/atBm2u4qaaQ6gt8DEi/HZmWG+4RXoaYh1hAqyaKXTwJ8GPs/FwtsQa8JV2yhuFF+pJBXnzDjUk0VToANcNjT53H+jZBW3vAggcLAgI77hdat8kuRog5zWoQxmhmsCDfXrM9ClT8evvBXEwboCsuIbw3e/o1YPVrdec9x/jSi6R6wwZIvEbIjljUvxHPPeYvwRlwSPikqJpiqPH2Gj+o03SeKwuieOIRhKkLxg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5s07dK1jW8U0nnAGP3v46WAsnuceVJFhPefLyDb9IZE=;
+ b=J0PNZ6URp3aH1PdfZh1ufAfqYxHfDo0Y9UvnSRa9WCgFDBBQI8aywJfot3SeHbMVwkSRM4YW+IGM4th1v1MWaw3Hhjc4lHA/qR+vtSg6TS1TTqpUFtfxorKT4YgRBnJTjRLpFTuZKgtcif02IgKdimOcLQMc3RuzFDhL20feUjEuAy8c0j+Eddlw42DNjis3TuPK4ZAYG5yK77BK7rNYcS+JuuJNUwUsH3AB535V69UzB5psM3deIAaILtpM2ecJCRQ5EnYwpykrLckU/HADM7mXUt2Lf8X+kmZ+SOgjJWJWRzdIS0x6PAQleTZBnSsrYzUI2BWRPKeeWsbdpx1QCQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5s07dK1jW8U0nnAGP3v46WAsnuceVJFhPefLyDb9IZE=;
+ b=CDkdx/pYw/PKxjRoeSmN6wsfsaOdeHCh0liGm0rj9qzZdJ89GQA2r0xEWvvvuoT9Ge4s9w/dtsNJxs/NkU9RCFAGfnBswSidqlOUS5Lp2lIMCBO3Xxqg540VaLJ8w4ZpLl15BOlaX2Kvp5fAWXCI3GOn9OSwrcAsOi1osGFOBnI=
+Received: from BL1PR12MB5144.namprd12.prod.outlook.com (2603:10b6:208:316::6)
+ by BL1PR12MB5176.namprd12.prod.outlook.com (2603:10b6:208:311::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.22; Thu, 8 Jul
+ 2021 18:51:34 +0000
+Received: from BL1PR12MB5144.namprd12.prod.outlook.com
+ ([fe80::8cb6:59d6:24d0:4dc3]) by BL1PR12MB5144.namprd12.prod.outlook.com
+ ([fe80::8cb6:59d6:24d0:4dc3%9]) with mapi id 15.20.4308.023; Thu, 8 Jul 2021
+ 18:51:34 +0000
+From:   "Deucher, Alexander" <Alexander.Deucher@amd.com>
+To:     "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+CC:     "amistry@google.com" <amistry@google.com>,
+        "nartemiev@google.com" <nartemiev@google.com>,
+        "Hiregoudar, Basavaraj" <Basavaraj.Hiregoudar@amd.com>,
+        "Dommati, Sunil-kumar" <Sunil-kumar.Dommati@amd.com>,
+        "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Chuhong Yuan <hslester96@gmail.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH V3] ASoC: add a flag to reverse the stop sequence
+Thread-Topic: [PATCH V3] ASoC: add a flag to reverse the stop sequence
+Thread-Index: AQHXdB/6HEHmc54rmk+tVDXa3KeHvas5a2nA
+Date:   Thu, 8 Jul 2021 18:51:33 +0000
+Message-ID: <BL1PR12MB51449540FAC514FC19EE115EF7199@BL1PR12MB5144.namprd12.prod.outlook.com>
+References: <20210708175529.13313-1-vijendar.mukunda@amd.com>
+In-Reply-To: <20210708175529.13313-1-vijendar.mukunda@amd.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Enabled=true;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_SetDate=2021-07-08T18:51:30Z;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Method=Privileged;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Name=Public_0;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_ActionId=72815fa9-2c5f-4d3b-9ebc-b81447d54a8d;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_ContentBits=1
+authentication-results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 488ac769-885c-45ff-1277-08d942416852
+x-ms-traffictypediagnostic: BL1PR12MB5176:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BL1PR12MB51764A6912140086C994D1A4F7199@BL1PR12MB5176.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4714;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: mumReqmDUmpTFETaXm4Wf5Cbmr5/olVxsCGElx4gEjFq6eQoC60wkUsHDTxYc8KhotQoUA/rmsJc6YxwM5E/Jw8HqkDNHlBBhC3E5GTgLgdwHryjZTigcWpMlRjtn9+eTpA5XEUIDsmJws42vawfFeUkKsbnMvh4eI53FYc4Xkit/ZgOzKFXlealmRFxSCQ33WmFpQMMKMw/szUxT4cwkmfPwwxJVqX013D5mb2JHjXR+TpO2O52H46m+io6Qr1vHpTzUsCrsoiACUgs2RqkyBRIjkpgI0l/aT1xtxVZB5+cEMAhUqX3fpeNB8kycd8256EpbS8QSFx9K/kZ2i5o6lALqh7PsaWJWFax+95qfHLTqYEodJsn/qaqOh4tOQ8+Zr/jvrAca7OMHlvzgNg57dBQOEOEaygzUcMbwtsaRVWvEofBVCtRY2Mhy9q5SpML5Esc9i9WeBln7edql86Ploj00Pwklhsi8VbPnsHbb+e54WXyHv6laQWMw6XYkMxLWK2DdXbEfVOVpZ4TK/JbQw9/x3OD7FX3wL1obIh6HLvFg3Y87XwHAV1XJjP13rRx8JhoZp1BA6//vZ2M1bIPip6ZMY7zuVvG6Y19ZQ8bFvA0yVFeeSkFfAVPc278pjYZFnpyBdZDV3uDC46D3xIIjw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5144.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(396003)(39860400002)(136003)(366004)(7696005)(2906002)(5660300002)(71200400001)(83380400001)(110136005)(54906003)(55016002)(53546011)(8936002)(8676002)(6506007)(316002)(64756008)(66476007)(66556008)(66446008)(478600001)(66946007)(7416002)(76116006)(9686003)(122000001)(26005)(33656002)(4326008)(186003)(52536014)(38100700002)(86362001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Jbog7hr4tpXPFLg+6X9SDxiXa5Hiw/9J7RJC9mNF3ir5ze4CGyrnrg+Xyc0b?=
+ =?us-ascii?Q?SfSfyG5nXbAGMOvXBVpwFDVyx6jcS7GEwtXOzh3oZy1QHEx25jgakyGTox9A?=
+ =?us-ascii?Q?hFfDEcSQNTHglb4Mu3KdphOqVYVS9aKp/n96djoMPhFZqoWG1JPwtM7M67sf?=
+ =?us-ascii?Q?N/UlqUZU3kMHMLsrNHM2LyMvnlMIQthmQ5ge7tghmpT9vFOBHI4v6HGZyy9W?=
+ =?us-ascii?Q?xlFyH2drPk9o/EKvCebt454lVNkZ50ta8hzZRJc++cufagjooFtZTf+WvAFs?=
+ =?us-ascii?Q?Zk+vS9peyCHhuDWSr1e8loTz/GreKf3S38CyxrZ7z95mK/j9tXMy8nNQIIcT?=
+ =?us-ascii?Q?RDtuaOq5js3Th16QWwnfJeD+lEYd4ONQR68ky5Kt7TQYPJgGaLOsg2od0L/s?=
+ =?us-ascii?Q?qL2oM00GL35Mc5y2bWgs9mZPq88kmPdfI6CgPDpjgWMaVkzDkaxEmx+hq2B6?=
+ =?us-ascii?Q?uGzPAmH4/JSBR2qZ0wM0jmdBdrJuKThCws08keD4F/eZ95cSgCfIF5qmdQ91?=
+ =?us-ascii?Q?+AFXhuCj7jk3v/ZZA0CWHDTbUVFbxjaIAwUzuTf2H51Y/QTksEUlUdwY04eZ?=
+ =?us-ascii?Q?k6sXXPLPZvhWZvvvjbxFFLn5bt7flrbroKMh0xJJbmmNZ7T8tRPkrkuMubht?=
+ =?us-ascii?Q?iZhTCe58QD2LRgJ6MHufBWyZB9ozWHuMN95mEgVdskdtg6UIuLABWn2f+Kzj?=
+ =?us-ascii?Q?VQc0i0jV6BPjlbmgZbP5sdhsb7VV6lAWZ1/smk0CceUF/Jsbh6kq+BKtPT19?=
+ =?us-ascii?Q?Tqw6QnlnS3LimYBCj2KaC0mMz2M+2D7FbMqvNbOpUFH9igV1f8NmgUCeNhYu?=
+ =?us-ascii?Q?0xydR/3N3AIoySe/DAextSEaElrm0CBByluD8kyVvptXB2UrU9jJyr8CtVRN?=
+ =?us-ascii?Q?9PArwemHl5P8+4PNvlyLHDyo6Whc+Zr9/VgYHP0Haf9udfEETY5z20Tpm+aP?=
+ =?us-ascii?Q?Wr5RQT4d8bIJTv9eO9qb/n2unBpZ5hOsj6eO566MFGNFczt1T08yCikKhCp9?=
+ =?us-ascii?Q?5sFIrNIykjF7bPtzPZWkFIApvHLVoK1JKIPQNflELTOncCfEtWw0JC/q17oc?=
+ =?us-ascii?Q?3j9HuAIyJ2F47aleyIamn/9AXtxogxYMkin+LVS0VCBdwZZrMbiZV9rfwDXj?=
+ =?us-ascii?Q?F+FfxcdVLs0nwAmUsfz5Al2OGVQViZwXcd858vwdfWXZspDrB4f7bu2tT1gk?=
+ =?us-ascii?Q?/2Os39MXtgoKgL//p9vkqIs47BlXNs3rwuttdZ5STfSQicwgcLVFNsgo0lgA?=
+ =?us-ascii?Q?UZ3a7Z2aKVXLpOWXwZByBSa2y4Wv0s18T3Mq4rOnWdVW2JPtGz+G356UfUCI?=
+ =?us-ascii?Q?F78zmlsBYe8zIwrR72djgq/t?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5144.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 488ac769-885c-45ff-1277-08d942416852
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jul 2021 18:51:33.8907
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +qh3Eaw+o2DjhyI7ENqoqFdRLW7A5w/iP3TksU1of4dOMvQ9zOSL1LT/A5sTrBIc74jOvXXeWGosm1QoYTFWlA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5176
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ashok,
+[AMD Public Use]
 
-On Thu, Jul 08 2021 at 07:36, Ashok Raj wrote:
-> On Thu, Jul 08, 2021 at 09:08:46AM -0300, Jason Gunthorpe wrote:
->> On Wed, Jul 07, 2021 at 05:33:35PM -0700, Raj, Ashok wrote:
->> > On Wed, Jul 07, 2021 at 08:58:22PM -0300, Jason Gunthorpe wrote:
->> > > > Using default PASID in struct device will work for sub-devices until the
->> > > > guest needs to enable ENQCMD support. Since the guest kernel can ask for an
->> > > > interrupt by specifying something in the descriptor submitted via ENQCMD.
->> > > > Using the PASID in struct device won't be sufficient.
->> > > 
->> > > Could you could store a pasid table in the struct device and index it
->> > > by vector?
->> > 
->> > Possibly... what ever Thomas things is clean. The device specific driver
->> > would have this already. So providing some call to get this filled in vs
->> > storing that in struct device. Someone close at heart to the driver model
->> > is best to comment :-)
->> > 
->> > IMS core owns the format of the entries right now vs device specific driver. 
->> > I suppose your use case requiring a vm_id might have a different format. 
->> > So this is yet another one the core needs to learn and adapt?
->> 
->> All entry format stuff is device specific, it shouldn't be in "core"
->> code.
->
-> Well, this is how it started way back last year. 
->
-> https://lore.kernel.org/lkml/158751209583.36773.15917761221672315662.stgit@djiang5-desk3.ch.intel.com/
+> -----Original Message-----
+> From: Vijendar Mukunda <vijendar.mukunda@amd.com>
+> Sent: Thursday, July 8, 2021 1:55 PM
+> To: broonie@kernel.org; alsa-devel@alsa-project.org
+> Cc: amistry@google.com; nartemiev@google.com; Deucher, Alexander
+> <Alexander.Deucher@amd.com>; Hiregoudar, Basavaraj
+> <Basavaraj.Hiregoudar@amd.com>; Dommati, Sunil-kumar <Sunil-
+> kumar.Dommati@amd.com>; Mukunda, Vijendar
+> <Vijendar.Mukunda@amd.com>; Liam Girdwood <lgirdwood@gmail.com>;
+> Jaroslav Kysela <perex@perex.cz>; Takashi Iwai <tiwai@suse.com>;
+> Chuhong Yuan <hslester96@gmail.com>; Kuninori Morimoto
+> <kuninori.morimoto.gx@renesas.com>; open list <linux-
+> kernel@vger.kernel.org>
+> Subject: [PATCH V3] ASoC: add a flag to reverse the stop sequence
+>=20
+> From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+>=20
+> On stream stop, currently CPU DAI stop sequence invoked first followed by
+> DMA. For Few platforms, it is required to stop the DMA first before stopp=
+ing
+> CPU DAI.
+>=20
+> For Stoneyridge platform, it is required to invoke DMA driver stop first =
+rather
+> than invoking DWC I2S controller stop.
+> Introduced new flag in dai_link structure for reordering stop sequence.
+> Based on flag check, ASoC core will re-order the stop sequence.
+>=20
 
-Which is wrong on so many levels as we all know.
+You should add a fixes tag as well for stable:
+Fixes: 4378f1fbe92405 ("ASoC: soc-pcm: Use different sequence for start/sto=
+p trigger")
 
-> Where the driver functions for mask/unmask/write_msg etc. So the core
-> needs
+Alex
 
-Needs what?
-
-> So the format or layout is device specific, but core can dictate the exact
-> message that needs to be written.
-
-Sorry, I don't grok what you want to say here.
-
->> It is is the same reason that the IRQ chip driver for IDXD should have
->> IDXD in the name, it is not a generic "IMS core" thing.
->> 
->> The question mark is probably the locking model, but if IDXD
->> guarentees the pasid table doesn't change while the irq is active then
->> maybe it works out well enough.
->
-> I think this must be gauranteed at a min? changing things underneath when
-> the interrupts are unmasked would be bad usage.
-
-That's one way to look at it. OTOH, _if_ the association of some
-arbitrary information to interrupts becomes a common scheme, then we are
-surely better off to have some enforcement at the irq core level.
-
-Thanks,
-
-        tglx
+> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+> ---
+> v2 -> v3: moved "stop_dma_first" flag from card structure
+> 	  to dai_link structure and modified code to use
+>           "stop_dma_first" flag.
+> v1 -> v2: renamed flag as "stop_dma_fist"
+>           fixed build error by removing extra + symbol
+>           sound/soc/soc-pcm.c:1019:3: error: expected expression before '=
+struct'
+>           1019 | + struct snd_soc_card *card =3D rtd->card;
+>=20
+>  include/sound/soc.h                  |  6 ++++++
+>  sound/soc/amd/acp-da7219-max98357a.c |  5 +++++
+>  sound/soc/soc-pcm.c                  | 22 ++++++++++++++++------
+>  3 files changed, 27 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/include/sound/soc.h b/include/sound/soc.h index
+> 675849d07284..8e6dd8a257c5 100644
+> --- a/include/sound/soc.h
+> +++ b/include/sound/soc.h
+> @@ -712,6 +712,12 @@ struct snd_soc_dai_link {
+>  	/* Do not create a PCM for this DAI link (Backend link) */
+>  	unsigned int ignore:1;
+>=20
+> +	/* This flag will reorder stop sequence. By enabling this flag
+> +	 * DMA controller stop sequence will be invoked first followed by
+> +	 * CPU DAI driver stop sequence
+> +	 */
+> +	unsigned int stop_dma_first:1;
+> +
+>  #ifdef CONFIG_SND_SOC_TOPOLOGY
+>  	struct snd_soc_dobj dobj; /* For topology */  #endif diff --git
+> a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-
+> max98357a.c
+> index 84e3906abd4f..9449fb40a956 100644
+> --- a/sound/soc/amd/acp-da7219-max98357a.c
+> +++ b/sound/soc/amd/acp-da7219-max98357a.c
+> @@ -576,6 +576,7 @@ static struct snd_soc_dai_link cz_dai_5682_98357[] =
+=3D {
+>  				| SND_SOC_DAIFMT_CBM_CFM,
+>  		.init =3D cz_rt5682_init,
+>  		.dpcm_playback =3D 1,
+> +		.stop_dma_first =3D 1,
+>  		.ops =3D &cz_rt5682_play_ops,
+>  		SND_SOC_DAILINK_REG(designware1, rt5682, platform),
+>  	},
+> @@ -585,6 +586,7 @@ static struct snd_soc_dai_link cz_dai_5682_98357[] =
+=3D {
+>  		.dai_fmt =3D SND_SOC_DAIFMT_I2S |
+> SND_SOC_DAIFMT_NB_NF
+>  				| SND_SOC_DAIFMT_CBM_CFM,
+>  		.dpcm_capture =3D 1,
+> +		.stop_dma_first =3D 1,
+>  		.ops =3D &cz_rt5682_cap_ops,
+>  		SND_SOC_DAILINK_REG(designware2, rt5682, platform),
+>  	},
+> @@ -594,6 +596,7 @@ static struct snd_soc_dai_link cz_dai_5682_98357[] =
+=3D {
+>  		.dai_fmt =3D SND_SOC_DAIFMT_I2S |
+> SND_SOC_DAIFMT_NB_NF
+>  				| SND_SOC_DAIFMT_CBM_CFM,
+>  		.dpcm_playback =3D 1,
+> +		.stop_dma_first =3D 1,
+>  		.ops =3D &cz_rt5682_max_play_ops,
+>  		SND_SOC_DAILINK_REG(designware3, mx, platform),
+>  	},
+> @@ -604,6 +607,7 @@ static struct snd_soc_dai_link cz_dai_5682_98357[] =
+=3D {
+>  		.dai_fmt =3D SND_SOC_DAIFMT_I2S |
+> SND_SOC_DAIFMT_NB_NF
+>  				| SND_SOC_DAIFMT_CBM_CFM,
+>  		.dpcm_capture =3D 1,
+> +		.stop_dma_first =3D 1,
+>  		.ops =3D &cz_rt5682_dmic0_cap_ops,
+>  		SND_SOC_DAILINK_REG(designware3, adau, platform),
+>  	},
+> @@ -614,6 +618,7 @@ static struct snd_soc_dai_link cz_dai_5682_98357[] =
+=3D {
+>  		.dai_fmt =3D SND_SOC_DAIFMT_I2S |
+> SND_SOC_DAIFMT_NB_NF
+>  				| SND_SOC_DAIFMT_CBM_CFM,
+>  		.dpcm_capture =3D 1,
+> +		.stop_dma_first =3D 1,
+>  		.ops =3D &cz_rt5682_dmic1_cap_ops,
+>  		SND_SOC_DAILINK_REG(designware2, adau, platform),
+>  	},
+> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c index
+> 46513bb97904..d1c570ca21ea 100644
+> --- a/sound/soc/soc-pcm.c
+> +++ b/sound/soc/soc-pcm.c
+> @@ -1015,6 +1015,7 @@ static int soc_pcm_hw_params(struct
+> snd_pcm_substream *substream,
+>=20
+>  static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+> {
+> +	struct snd_soc_pcm_runtime *rtd =3D
+> asoc_substream_to_rtd(substream);
+>  	int ret =3D -EINVAL, _ret =3D 0;
+>  	int rollback =3D 0;
+>=20
+> @@ -1055,14 +1056,23 @@ static int soc_pcm_trigger(struct
+> snd_pcm_substream *substream, int cmd)
+>  	case SNDRV_PCM_TRIGGER_STOP:
+>  	case SNDRV_PCM_TRIGGER_SUSPEND:
+>  	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+> -		ret =3D snd_soc_pcm_dai_trigger(substream, cmd, rollback);
+> -		if (ret < 0)
+> -			break;
+> +		if (rtd->dai_link->stop_dma_first) {
+> +			ret =3D snd_soc_pcm_component_trigger(substream,
+> cmd, rollback);
+> +			if (ret < 0)
+> +				break;
+>=20
+> -		ret =3D snd_soc_pcm_component_trigger(substream, cmd,
+> rollback);
+> -		if (ret < 0)
+> -			break;
+> +			ret =3D snd_soc_pcm_dai_trigger(substream, cmd,
+> rollback);
+> +			if (ret < 0)
+> +				break;
+> +		} else {
+> +			ret =3D snd_soc_pcm_dai_trigger(substream, cmd,
+> rollback);
+> +			if (ret < 0)
+> +				break;
+>=20
+> +			ret =3D snd_soc_pcm_component_trigger(substream,
+> cmd, rollback);
+> +			if (ret < 0)
+> +				break;
+> +		}
+>  		ret =3D snd_soc_link_trigger(substream, cmd, rollback);
+>  		break;
+>  	}
+> --
+> 2.17.1
