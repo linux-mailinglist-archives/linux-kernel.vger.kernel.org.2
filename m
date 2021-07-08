@@ -2,183 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C1783BF5B2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 08:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6F2B3BF5B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 08:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbhGHGkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 02:40:22 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:52968 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229608AbhGHGkU (ORCPT
+        id S229843AbhGHGm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 02:42:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229654AbhGHGm2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 02:40:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1625726258;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=m/kSj1tXjJ7vYVzsCUDen7mAWc2/k5eNogbkEDG9GK4=;
-        b=mp9b1t9cgD/mb/VJzClLBe4uN9DQ+gH7C+EEa2bSoPdZjjOwDPtE+e5p6s1W67Lzm0+Ml5
-        Uhwxo8QWWwoHEOtHXAm3IY+uGbBttL+Imb+tP6Aa8HAk0KY550ZYi9MpFq/2TbsN4bVDQK
-        cnQXUNTo847GAUVEeRuMwaoN+G8D4GA=
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com
- (mail-vi1eur05lp2172.outbound.protection.outlook.com [104.47.17.172])
- (Using TLS) by relay.mimecast.com with ESMTP id
- de-mta-16-i6Sl78y1O9q5FFSMDd1U-g-1; Thu, 08 Jul 2021 08:37:37 +0200
-X-MC-Unique: i6Sl78y1O9q5FFSMDd1U-g-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RBPdQQSUT/f04poBiESzn3XkN/SbstgM/nOTj33bGzKmTzBVes3bvKSPmuCfqN+PWF/bcWNjAlONQpDqsxPyolCzoggZdAFYgQTykpn85uwICD40ysnK3gQZEg8M6+ZsmqfaHV2EYq2RsEEaTBA0fHd4UpIiUgYkmevbFgqMnYDQXbhF1EB8lhMhEtP7wWX2BjocgEsoa+Gxc2+3F7nOgjDy+THVNwE1Jw3aVP52q/ypIIUBjAw0b1ALbuBUtqcSI1HvGB+mzRs6rIota7Iw9pYkl0qgvpCE7V9k2uFO7jxj9zuYl/E15lTWrTee88WfOIRNUfk6xnRvF8FPsUFkXw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m/kSj1tXjJ7vYVzsCUDen7mAWc2/k5eNogbkEDG9GK4=;
- b=dZrAqqsoM72rDYx32dg0FZ2RzR6H/Yydr5wWONPjFGPrdsz5RZB21MkxclMMXB1aSR+zraCYE2auBGU72XGiRIKLTrzuEN8hJ2Dd9zd/bE6oHizxTPe5h8POV4qTDm5mozD66MSJIRc/6zLxGSw9vHBm2W4QFhs4bXNEAygVMl/hhHjUudNA4Q+T9a26fU4hqlig7shm4JYQ1PQe9bMv15qIAmogb9mD/6qLx3qBqhGg9hyKta0I8bB/OJXMPZle7gbBVFHC4LWRom6p6ZJTW6+bYUVwTMQF15B0eQOzpToabwKtxJGzhBVhFPlttVC6prmmeG/bDOGytVgtKnQ6bQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
- by VE1PR04MB7360.eurprd04.prod.outlook.com (2603:10a6:800:1a3::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20; Thu, 8 Jul
- 2021 06:37:34 +0000
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::99d3:99cd:8adf:3eea]) by VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::99d3:99cd:8adf:3eea%5]) with mapi id 15.20.4308.022; Thu, 8 Jul 2021
- 06:37:34 +0000
-Subject: Re: [PATCH 4/8] xen/blkfront: don't trust the backend response data
- blindly
-To:     Juergen Gross <jgross@suse.com>
-Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, xen-devel@lists.xenproject.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210513100302.22027-1-jgross@suse.com>
- <20210513100302.22027-5-jgross@suse.com>
- <315ad8b9-8a98-8d3e-f66c-ab32af2731a8@suse.com>
- <6095c4b9-a9bb-8a38-fb6c-a5483105b802@suse.com>
- <a19a13ba-a386-2808-ad85-338d47085fa6@suse.com>
- <030ef85e-b5af-f46e-c8dc-88b8d195c4e1@suse.com>
- <477f01cd-8793-705c-10f9-cf0c0cd6ed84@suse.com>
- <dca55162-ec2e-682a-824d-b657a6407249@suse.com>
-From:   Jan Beulich <jbeulich@suse.com>
-Message-ID: <5a9dcc69-385a-eda5-6974-cb962ae62601@suse.com>
-Date:   Thu, 8 Jul 2021 08:37:32 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <dca55162-ec2e-682a-824d-b657a6407249@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PR3P189CA0039.EURP189.PROD.OUTLOOK.COM
- (2603:10a6:102:53::14) To VI1PR04MB5600.eurprd04.prod.outlook.com
- (2603:10a6:803:e7::16)
+        Thu, 8 Jul 2021 02:42:28 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1F78C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 23:39:46 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id k184so7227384ybf.12
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 23:39:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=27in3H3NG/Vl86S0tsNdE2x7qDRib9u0Z+T9F2j/CEQ=;
+        b=Q8SVvr1jTKOq3j1BCslRCPLWmaQMXyTeDdBuyUrjxBV79g3niuwJsDTUD9ZUUaHJ0s
+         CmDeMucSyAQQbZ+j+xfAsykJJ8181J+14rDNbhmGr15mWq/jW0X4JmmPGq0ampUTCFLj
+         Ih+mINskcgfLLx4uGScvhz3uXISFAHbElucLnlFNBHUtgsdR0E6XhwibmnKO4OTFmRkV
+         efPB+obV4e8RgQ32aCvcY3hJ7ndU45iGFw+PGvbVEaIq3vSFen6pNbrsoOgfi0UqzvfW
+         sqyAwULvJamzlS1Cj6xjhtRamBFLl80h2AQTm2OBtFA+kI3OxMaiY20J/kelIl8MGSJu
+         zkGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=27in3H3NG/Vl86S0tsNdE2x7qDRib9u0Z+T9F2j/CEQ=;
+        b=HeChCU0j3BoiRAeqPjDYLyLJPR9WLxh75Wl+hsxLYiiN7yeRjDs2XdghnhxUXhlDcZ
+         PCPJdFnyGOrIpNDn4I25wd8tjK3DpJYfU+io2UDxWnk84dz+fSGAtxwh45LKO41awh5O
+         J0SMTX5/MywTYvnIgvg4sj6U9Vooihwqt+X/cCZUciufvNCkhLy2ZkgZe+ZFzHsZwzFp
+         qRAlMI6AIHFADhyqY42fTTwXuEjS/7meIXLIGISDkQgW8ii/yEKFz40V29fe6ZHkXrRb
+         RILp1ng202RsQME2KgS47Vw3k64C5P+ExkL7eBTie94rKT7L6UQ0rFKe1enkipQTh4TW
+         Pt6g==
+X-Gm-Message-State: AOAM5304c4UNsNa8vRwcfyxqg4R8hc4KVc+s4mh/ZESwFFb20gTUc5sZ
+        rGqAHm+7kfQhXS5Eni0myznQEGub3JjfZL/Tt4TnIQ==
+X-Google-Smtp-Source: ABdhPJydDNpP10FuMf7vtQWnSXkxu7Hqff+2qGL2BpHgm1W1RGB/mrktTIT/F59XFDxVt4zCP/5eFl+K0CtXXxtblYY=
+X-Received: by 2002:a25:4102:: with SMTP id o2mr35358941yba.23.1625726385748;
+ Wed, 07 Jul 2021 23:39:45 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.156.60.236] (37.24.206.209) by PR3P189CA0039.EURP189.PROD.OUTLOOK.COM (2603:10a6:102:53::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.19 via Frontend Transport; Thu, 8 Jul 2021 06:37:33 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0496e8e4-f5a7-4bb0-d7a5-08d941dade59
-X-MS-TrafficTypeDiagnostic: VE1PR04MB7360:
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VE1PR04MB73606589C82195C039B9CA6EB3199@VE1PR04MB7360.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: t/7Q9m+JE7JqNl+bSvJeZh0aC9FkViIj3OWF5ZF/5Vp+f81i07uzBF0QK+Sbtc2zigoxMIlg29hbgZyoA0gvfEZHWtUkjADKK8ZivChUln0AKV3Q55OTexxTWknifBZBWO+qsiBo+1xsEFKijOrdPv7sMAttVu3s8kWn7HuX9Le7LPM3xgMCY8150/mtiPb5Rc94IDFSXwEQWStU7hWD+KJsJngFONEMr15uv2afcUULMTIKP8qAwLkJo+ow1Hu81GiSbuL00mTDS1Dc1yn3HyAKaQCxFu0FFrkOCeK4gLDmc5HilvIL3YbQvyce9P4jkfJkmAK5v91IhvBmqaUOjWi3LnbGjrx5ycpGigD7WYoKpApni/aHhZ0RaoYCJE2vwH7HrwsITK2MKrAAnJeoGupOwMEzQMCDQ7P/hZ9C0tcA8GgrfQQwzA1caZ2HFofSAPEE5iGfXOg3wBdO7KSyXrY/bs5tKyCnpzjAbAP7tzxe6Lv08pl9KnZ1+x+b8vyD33+D/4SPfGzM+cLQlM6NEJSVRDicNyLTeoWqa8OSzcNDt0hrA+cazqJFYIm7Z/OHSxbuTN35I4crmJAcL/56PXjnFNO8JH4oZFc/YiFgHL8r2mbvrVy8ugeEIWJtAIzGyrVllQ02kioqDJBMd2C8KlboG4ZYiMwsmTx7IKNYo1aFGXa5yv2XNJEis2FVrNSEnQTrTSDTs2gz5GDNonlh4e/53+FgnbkBTR9jb8GAI58=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(366004)(136003)(396003)(39850400004)(6486002)(26005)(6636002)(2616005)(956004)(5660300002)(6862004)(186003)(16576012)(8676002)(4326008)(37006003)(2906002)(54906003)(316002)(66556008)(478600001)(31686004)(66946007)(53546011)(66476007)(8936002)(36756003)(83380400001)(31696002)(86362001)(38100700002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZUNkRTRJNXQ1d2psWEFxdG8vb25PZjRrMFdVODZZeVptOFhlMDh1aGp1R3Bj?=
- =?utf-8?B?OE5pUERETTNHc0poUmhQR216NHdVUHZPbDU0Z3dtbzhYSnhObEVlUHJEdGlS?=
- =?utf-8?B?WXplb08zMzRGRnZrZGJCcFBaM3Y5ZEFiaDQ3NmZOUktQVWZZQlpENXNjc0py?=
- =?utf-8?B?aVE1dVk2ek02d1FqSWVISFlWWWdENWtxT2JObEFuK004SmRGUTJJNHE0TzFl?=
- =?utf-8?B?VXl0THpwVkVnakgzeEZpMkNwV2FlLytZajdYUHcvamZ3ZXFsWkQxbXJZVjVt?=
- =?utf-8?B?djNwTU1OaGlseVVRQldDTWJ4OGloVkpLZXdpSEFNb2xadTBLbE9xNW1GSjZj?=
- =?utf-8?B?QXc2YUVuZTl5WjhWUHBrRUNheFF2RkNYYXpnbE9Xd2UyMVZUeWcyMTMxclhM?=
- =?utf-8?B?djQ1a2R4SDRLa1FGOXlJUnpBRFBSS0dJak5YRUFoNEoyUEFiQ3pBcXo0c2dT?=
- =?utf-8?B?SWgwNW1icGNzQ0dpQ1dPTEE0aGhJSjRTMDFoQmJyZk55NlZ3RU1ibDdSUlg4?=
- =?utf-8?B?N1lmVkxrUXMzRVN3bWMrWVkxL0F2dFlCTjZlTytKZVhld1FYN2VQYU05WHp3?=
- =?utf-8?B?VlVrOVpURHhiaEFGUlNUVDNiUVVNeG1vYi9pWEhhVXhKMWxOUTNvRHhvbmRV?=
- =?utf-8?B?bVcwenB4blNlQ20rUDRNSG5IaEs3My85TzZBcFBzZHZiS0k3SmpsbkNudnJ0?=
- =?utf-8?B?T0UxUElOMHQyOUppbUdCY1RQMDR6N1R5WU11emRZT1krVFd0NGR2R2Fzc2NB?=
- =?utf-8?B?ZmpGZWNhU2gvWkxlVERiWU5UM0hsU21NME1rOE9tbkR3ZjBxMjBaYlZZdGIw?=
- =?utf-8?B?a1NZRU9OdmRFRDdhVVdkak04SWNRRFRlbisxQVJGMmQ4bXZZZG1MbTczRURJ?=
- =?utf-8?B?VXlZZ3BRRi80MEwyc1lLR0dZWmhENlFpeFZ1ZG1SbVV3MUpnMm9VUWFZeWM2?=
- =?utf-8?B?Sk9zaUhUUkN6dGVrdVVmZW9LTXd3WnFjNGYzLzdBRUlnTWs3SXpSK25qbWtq?=
- =?utf-8?B?WkhMUmxJRmw3bUlMQXcydCt2Vi8rWWVUeFRvbnM5U3hYaDMvWlgzeTcrNGJL?=
- =?utf-8?B?TnFqVnhnbUM2UjZDUmNZcHFaRThrTC9pU3Y1TFREYkZWU1A0OFlIcHhJUFNX?=
- =?utf-8?B?QW0wZHVsYStYeXh2YVFXTjlQeERyRCtvN3pLM2xkNFFjVzRqZ0VtVXVoTThU?=
- =?utf-8?B?dEZJRUhvNW1Ick9TM0tOekh5VkRORjJ0dm1mcXY5Rk14VFdIaTdYNi96aEtI?=
- =?utf-8?B?UjN1YnZpMXBia1RBby85alFrdVd2UTJkRkVob3NtbjZSZXJQeHA0cXZjUkRR?=
- =?utf-8?B?YjBXdHppV0pUMHFMY2grcmw0bzRIbjMwdCtjeEhxMS9WZVBLN0loZFVqeVZt?=
- =?utf-8?B?cUVuWWdlZFVWQUlqK05aWG4wK1VvVU1haEVmR2tIUGxscXNtUUNLdVNHZktO?=
- =?utf-8?B?cHB0RFRLOUZVdmJBYmZocW9OV3JadnoxL2plZWpUNDNIdVRZMHEyNTN4ZjJS?=
- =?utf-8?B?OEJJL3BpWnY2Z1ZrL0pXdVp1MzJWWVRjTWFJSzV0d21qWk8xRDVxK0srZ3pa?=
- =?utf-8?B?L3FCdmUxWmdpV2tZOE9TT010RmE1M1hqc2JRSUNLWXpEL2hxM1NnWE5rYU9U?=
- =?utf-8?B?VlBqeTdHM3d2cVZWc2R0VW9BcS9DaW1kdUprcHBxd0E5WHhQc1FiQXNRTHkv?=
- =?utf-8?B?bVlCUlNXajNLTXg2Q0JDZ0FYUENER0VtVWRTV0g2TlpmdlBEVjh2RmwwT0Mx?=
- =?utf-8?Q?mH752lUbTOGZWeQeGLwRgeT0mHH9IhmLQYJxbUz?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0496e8e4-f5a7-4bb0-d7a5-08d941dade59
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jul 2021 06:37:34.0350
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Z8IJENMingx6r0rJhp8n8AlHpwP0uregUxA9rp5LTHFZny6oIFarRBKDBsz7MAiZTs6lVyDzt3GsipRNdACHTA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7360
+References: <20210623192822.3072029-1-surenb@google.com> <87sg0qa22l.fsf@oldenburg.str.redhat.com>
+ <CAJuCfpEWpvw+gW+NvBPOdGqUOEyucFoT8gdC2uk18dMBQFbhqw@mail.gmail.com>
+ <87wnq1z7kl.fsf@oldenburg.str.redhat.com> <CAJuCfpFt55Dw1uW3S6_AincNfPaAtwdi6iXYVvFr7x3fvt4uzw@mail.gmail.com>
+ <87zguxxrfl.fsf@oldenburg.str.redhat.com>
+In-Reply-To: <87zguxxrfl.fsf@oldenburg.str.redhat.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 7 Jul 2021 23:39:34 -0700
+Message-ID: <CAJuCfpEUXz-oHi5Ho8nGAKtFV6ArQDx9yQwrdTzYgHr5+6=YaQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm: introduce process_reap system call
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.07.2021 07:47, Juergen Gross wrote:
-> On 17.05.21 17:33, Jan Beulich wrote:
->> On 17.05.2021 17:22, Juergen Gross wrote:
->>> On 17.05.21 17:12, Jan Beulich wrote:
->>>> On 17.05.2021 16:23, Juergen Gross wrote:
->>>>> On 17.05.21 16:11, Jan Beulich wrote:
->>>>>> On 13.05.2021 12:02, Juergen Gross wrote:
->>>>>>> @@ -1574,10 +1580,16 @@ static irqreturn_t blkif_interrupt(int irq, void *dev_id)
->>>>>>>     	spin_lock_irqsave(&rinfo->ring_lock, flags);
->>>>>>>      again:
->>>>>>>     	rp = rinfo->ring.sring->rsp_prod;
->>>>>>> +	if (RING_RESPONSE_PROD_OVERFLOW(&rinfo->ring, rp)) {
->>>>>>> +		pr_alert("%s: illegal number of responses %u\n",
->>>>>>> +			 info->gd->disk_name, rp - rinfo->ring.rsp_cons);
->>>>>>> +		goto err;
->>>>>>> +	}
->>>>>>>     	rmb(); /* Ensure we see queued responses up to 'rp'. */
->>>>>>
->>>>>> I think you want to insert after the barrier.
->>>>>
->>>>> Why? The relevant variable which is checked is "rp". The result of the
->>>>> check is in no way depending on the responses themselves. And any change
->>>>> of rsp_cons is protected by ring_lock, so there is no possibility of
->>>>> reading an old value here.
->>>>
->>>> But this is a standard double read situation: You might check a value
->>>> and then (via a separate read) use a different one past the barrier.
->>>
->>> Yes and no.
->>>
->>> rsp_cons should never be written by the other side, and additionally
->>> it would be read multiple times anyway.
->>
->> But I'm talking about rsp_prod, as that's what rp gets loaded from.
-> 
-> Oh, now I get your problem.
-> 
-> But shouldn't that better be solved by using READ_ONCE() for reading rp
-> instead?
+On Wed, Jul 7, 2021 at 11:15 PM Florian Weimer <fweimer@redhat.com> wrote:
+>
+> * Suren Baghdasaryan:
+>
+> > On Wed, Jul 7, 2021 at 10:41 PM Florian Weimer <fweimer@redhat.com> wro=
+te:
+> >>
+> >> * Suren Baghdasaryan:
+> >>
+> >> > On Wed, Jul 7, 2021 at 2:47 AM Florian Weimer <fweimer@redhat.com> w=
+rote:
+> >> >>
+> >> >> * Suren Baghdasaryan:
+> >> >>
+> >> >> > The API is as follows,
+> >> >> >
+> >> >> >           int process_reap(int pidfd, unsigned int flags);
+> >> >> >
+> >> >> >         DESCRIPTION
+> >> >> >           The process_reap() system call is used to free the memo=
+ry of a
+> >> >> >           dying process.
+> >> >> >
+> >> >> >           The pidfd selects the process referred to by the PID fi=
+le
+> >> >> >           descriptor.
+> >> >> >           (See pidofd_open(2) for further information)
+> >> >> >
+> >> >> >           The flags argument is reserved for future use; currentl=
+y, this
+> >> >> >           argument must be specified as 0.
+> >> >> >
+> >> >> >         RETURN VALUE
+> >> >> >           On success, process_reap() returns 0. On error, -1 is r=
+eturned
+> >> >> >           and errno is set to indicate the error.
+> >> >>
+> >> >> I think the manual page should mention what it means for a process =
+to be
+> >> >> =E2=80=9Cdying=E2=80=9D, and how to move a process to this state.
+> >> >
+> >> > Thanks for the suggestion, Florian! Would replacing "dying process"
+> >> > with "process which was sent a SIGKILL signal" be sufficient?
+> >>
+> >> That explains very clearly the requirement, but it raises the question
+> >> why this isn't an si_code flag for rt_sigqueueinfo, reusing the existi=
+ng
+> >> system call.
+> >
+> > I think you are suggesting to use sigqueue() to deliver the signal and
+> > perform the reaping when a special value accompanies it. This would be
+> > somewhat similar to my early suggestion to use a flag in
+> > pidfd_send_signal() (see:
+> > https://lore.kernel.org/patchwork/patch/1060407) to implement memory
+> > reaping which has another advantage of operation on PIDFDs instead of
+> > PIDs which can be recycled.
+> > kill()/pidfd_send_signal()/sigqueue() are supposed to deliver the
+> > signal and return without blocking. Changing that behavior was
+> > considered unacceptable in these discussions.
+>
+> Does this mean that you need two threads, one that sends SIGKILL, and
+> one that calls process_reap?  Given that sending SIGKILL is blocking
+> with the existing interfaces?
 
-Not sure - the rmb() is needed anyway aiui, and hence you could as well
-move your code addition.
+Sending SIGKILL is blocking in terms of delivering the signal, but it
+does not block waiting for SIGKILL to be processed by the signal
+recipient and memory to be released. When I was talking about
+"blocking", I meant that current kill() and friends do not block to
+wait for SIGKILL to be processed.
+process_reap() will block until the memory is released. Whether the
+userspace caller is using it right after sending a SIGKILL to reclaim
+the memory synchronously or spawns a separate thread to reclaim memory
+asynchronously is up to the user. Both patterns are supported.
 
-Jan
+> Please also note that asynchronous deallocation of resources leads to
+> bugs and can cause unrelated workloads to fail.  For example, in some
+> configurations, clone can fail with EAGAIN even in cases where the total
+> number of tasks is clearly bounded because the kernel signals task exit
+> to applications before all resources are deallocated.  I'm worried that
+> the new interface makes things quite a bit worse in this regard.
 
+The process_reap() releases memory synchronously, no kthreads are
+being used. If asynchronous release is required, the userspace would
+need to spawn a userspace thread and issue this syscall from it. I
+hope this clears your concerns, which I think are about asynchronous
+deallocations within the kernel.
+Thanks!
+
+>
+> Thanks,
+> Florian
+>
