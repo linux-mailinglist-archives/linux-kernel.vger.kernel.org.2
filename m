@@ -2,236 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F364B3BF8CA
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 13:17:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD5CE3BF8C8
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 13:17:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231643AbhGHLUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 07:20:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231576AbhGHLUB (ORCPT
+        id S231623AbhGHLT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 07:19:58 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:50930 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231576AbhGHLT6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 07:20:01 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A25C061574;
-        Thu,  8 Jul 2021 04:17:18 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id d9so7689156ioo.2;
-        Thu, 08 Jul 2021 04:17:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=/V0elM834a3OKW2H0FfBYwtSWYinhNp/Aw2J7DdF6JE=;
-        b=YVaM3v+UJmsKu4L/OKfHU6cqxnysUL1XuA0lgUzxSwdK4BP1g6NZaFDD18VrRI3nHN
-         WEcPtBhK1JAUUudushpzmspqLHG4HU15ghiar1z0CdsXx4zsVl2Z/zokf926dUTc85Z9
-         vBZM/NYNphVEDZ1UqjX6RDVg7u+tiyY2tleZY8GOcaQXqIH0MusSIK3IXR7f9Um61KI2
-         Zogsjs+erxLhjyxyIL7ofovkkoRFrGxdlg+PfUVWj7Y+TTpuu0uvWHuj0JPo/O2gklJq
-         +8BCpibj8R9a4laEI7uiJRrFhD8Cn5AD1hAJsKPjynoRu+3lukSnv9K5NuItAu5QzI1V
-         3mVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=/V0elM834a3OKW2H0FfBYwtSWYinhNp/Aw2J7DdF6JE=;
-        b=pxVufJrFlWef+PSraO4UkLM3J9Gnhcst47uq3msGsJuie5ITLSapg1gA+KuPqIkUAT
-         wzI1xsUYPBJDhPm68VvIbQCLsefupNms5a5eEoffK2TBz1JyBxZTZnpxP0G9rBc6nVHn
-         ToNg3YMQza9D3tMoASq69mxluNE8CzjtqdJYHpw7d1PPgwV/+7BD7tl8SVK7AHRG40mr
-         arA69bkQ4hy56XG4EtjmkZNjcq+oYGM1jH4aB82fJY8TsJ6xYcGlDCNhHVzf5gVIHYmV
-         HSD5K7BqRJEeN5ZibeQxYNDhDVMbbx6ILK+Z2yGFww35lBa7jMeSoK1jDTkAxeLU3u+5
-         RjSQ==
-X-Gm-Message-State: AOAM533VYHWuz3eowAWTrF2hHy3G1HAnZR1UhNN7tHCSQz4wmU+FF/Qe
-        8zt8+zqOjgnzIetzROpq38OSmIrrY7fcrHGHD+w=
-X-Google-Smtp-Source: ABdhPJwWQy40NEsahulV5SZWonn4O9HZMSFGb0vJbBJG80figt1i33BmoUWxSe7/QuxODEm3LjI/hSTtCmJsfDYZ+OQ=
-X-Received: by 2002:a02:3781:: with SMTP id r123mr26311239jar.26.1625743037997;
- Thu, 08 Jul 2021 04:17:17 -0700 (PDT)
+        Thu, 8 Jul 2021 07:19:58 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1625743035;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NcpsbVMpIl7rwujvGTZxy9jB4Ph0ZDxg+aiwErH2oWs=;
+        b=AJcSXUwqSB8MZcqc8T6juuyshncxwjo0+jIlwJ4Npc0DIAxf8aKgtLLBKP2I0HNFgq/HSz
+        mUpthfjbwy8zksYt09xRyp1bE/g8K7VY2opN47Scp7135vcdQGJD5ST0K+YDFy6Sejdbek
+        EsAXQZbuwSNOKd6UigJQay7iv5u/OApr/PV3wqOxCgtt/SM3WuICNHqCi1Y0qnOuLHnJC9
+        ze70dyP6sFHN9jxynV717d6JItIL85ImBvTsL5aCgn57TZ9t+7d+lXjjlj3vM1Ul3xv/px
+        pPiHOWva5/6FuWeqY7Dprm4SED7hwUBGjX/a9Yy/jmo38Xln9x9SUhH/6WBgDw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1625743035;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NcpsbVMpIl7rwujvGTZxy9jB4Ph0ZDxg+aiwErH2oWs=;
+        b=VH5MlYMZqy1lDOFWqOJ+eWAVctvO7vcuUeef4LYRuey/UtQuFVEy6cYQE9pRrxzLvrCmUD
+        FxUfPiz5tmK3I5Bg==
+To:     Linux <zhaoyan.liao@linux.alibaba.com>
+Cc:     mingo@redhat.com, hpa@zytor.com, dwmw@amazon.co.uk,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        songmuchun@bytedance.com, likunkun@bytedance.com,
+        guancheng.rjk@alibaba-inc.com, duanxiongchun@bytedance.com,
+        wenan.mao@linux.alibaba.com
+Subject: Re: [PATCH] use 64bit timer for hpet
+In-Reply-To: <8A96C0F7-FBE4-4B23-8565-E814401BF927@linux.alibaba.com>
+References: <1625213625-25745-1-git-send-email-zhaoyan.liao@linux.alibaba.com> <875yxmqw2s.ffs@nanos.tec.linutronix.de> <8A96C0F7-FBE4-4B23-8565-E814401BF927@linux.alibaba.com>
+Date:   Thu, 08 Jul 2021 13:17:14 +0200
+Message-ID: <87o8bdoy11.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20210615103400.946-1-alistair@alistair23.me> <20210615103400.946-2-alistair@alistair23.me>
- <YMnY7RLW6ml4Tq0g@dell> <CAKmqyKNs+Ebvd5MwtoKfKhNrMJVhTsBLjDhLXRuK8C+gs5MCcQ@mail.gmail.com>
- <YMsTy3QnYzjrFSFg@dell>
-In-Reply-To: <YMsTy3QnYzjrFSFg@dell>
-From:   Alistair Francis <alistair23@gmail.com>
-Date:   Thu, 8 Jul 2021 21:16:51 +1000
-Message-ID: <CAKmqyKODRkahuUL+SFj8RQYq2rvj=nLgseozAyiwkDmtD8JE+g@mail.gmail.com>
-Subject: Re: [PATCH v6 2/5] mfd: sy7636a: Initial commit
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Alistair Francis <alistair@alistair23.me>,
-        Rob Herring <robh+dt@kernel.org>, lgirdwood@gmail.com,
-        Mark Brown <broonie@kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 7:20 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> On Thu, 17 Jun 2021, Alistair Francis wrote:
->
-> > On Wed, Jun 16, 2021 at 8:56 PM Lee Jones <lee.jones@linaro.org> wrote:
-> > >
-> > > On Tue, 15 Jun 2021, Alistair Francis wrote:
-> > >
-> > > > Initial support for the Silergy SY7636A Power Management chip.
-> > > >
-> > > > Signed-off-by: Alistair Francis <alistair@alistair23.me>
-> > > > ---
-> > > >  drivers/mfd/Kconfig         |  9 ++++
-> > > >  drivers/mfd/Makefile        |  1 +
-> > > >  drivers/mfd/sy7636a.c       | 82 +++++++++++++++++++++++++++++++++=
-++++
-> > > >  include/linux/mfd/sy7636a.h | 47 +++++++++++++++++++++
-> > > >  4 files changed, 139 insertions(+)
-> > > >  create mode 100644 drivers/mfd/sy7636a.c
-> > > >  create mode 100644 include/linux/mfd/sy7636a.h
-> > > >
-> > > > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> > > > index 5c7f2b100191..7d6cf32b1549 100644
-> > > > --- a/drivers/mfd/Kconfig
-> > > > +++ b/drivers/mfd/Kconfig
-> > > > @@ -1339,6 +1339,15 @@ config MFD_SYSCON
-> > > >         Select this option to enable accessing system control regis=
-ters
-> > > >         via regmap.
-> > > >
-> > > > +config MFD_SY7636A
-> > > > +     tristate "Silergy SY7636A Power Management chip"
-> > > > +     select MFD_CORE
-> > > > +     select REGMAP_I2C
-> > > > +     depends on I2C
-> > > > +     help
-> > > > +       Select this option to enable support for the Silergy SY7636=
-A
-> > > > +       Power Management chip.
-> > > > +
-> > > >  config MFD_DAVINCI_VOICECODEC
-> > > >       tristate
-> > > >       select MFD_CORE
-> > > > diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-> > > > index 4f6d2b8a5f76..f95e1e725a95 100644
-> > > > --- a/drivers/mfd/Makefile
-> > > > +++ b/drivers/mfd/Makefile
-> > > > @@ -265,6 +265,7 @@ obj-$(CONFIG_MFD_STMFX)   +=3D stmfx.o
-> > > >  obj-$(CONFIG_MFD_KHADAS_MCU)         +=3D khadas-mcu.o
-> > > >  obj-$(CONFIG_MFD_ACER_A500_EC)       +=3D acer-ec-a500.o
-> > > >
-> > > > +obj-$(CONFIG_MFD_SY7636A)    +=3D sy7636a.o
-> > > >  obj-$(CONFIG_SGI_MFD_IOC3)   +=3D ioc3.o
-> > > >  obj-$(CONFIG_MFD_SIMPLE_MFD_I2C)     +=3D simple-mfd-i2c.o
-> > > >  obj-$(CONFIG_MFD_INTEL_M10_BMC)   +=3D intel-m10-bmc.o
-> > > > diff --git a/drivers/mfd/sy7636a.c b/drivers/mfd/sy7636a.c
-> > > > new file mode 100644
-> > > > index 000000000000..e08f29ea63f8
-> > > > --- /dev/null
-> > > > +++ b/drivers/mfd/sy7636a.c
-> > > > @@ -0,0 +1,82 @@
-> > > > +// SPDX-License-Identifier: GPL-2.0+
-> > > > +//
-> > >
-> > > Only the SPDX with C++ style comments please.
-> > >
-> > > > +// MFD parent driver for SY7636A chip
-> > >
-> > > Drop the MFD part.  It's a Linuxisum that doesn't really exist.
-> > >
-> > > > +// Copyright (C) 2021 reMarkable AS - http://www.remarkable.com/
-> > > > +//
-> > > > +// Authors: Lars Ivar Miljeteig <lars.ivar.miljeteig@remarkable.co=
-m>
-> > > > +//          Alistair Francis <alistair@alistair23.me>
-> > > > +//
-> > > > +// Based on the lp87565 driver by Keerthy <j-keerthy@ti.com>
-> > > > +
-> > > > +#include <linux/interrupt.h>
-> > > > +#include <linux/mfd/core.h>
-> > > > +#include <linux/module.h>
-> > > > +#include <linux/of_device.h>
-> > > > +
-> > > > +#include <linux/mfd/sy7636a.h>
-> > > > +
-> > > > +static const struct regmap_config sy7636a_regmap_config =3D {
-> > > > +     .reg_bits =3D 8,
-> > > > +     .val_bits =3D 8,
-> > > > +};
-> > > > +
-> > > > +static const struct mfd_cell sy7636a_cells[] =3D {
-> > > > +     { .name =3D "sy7636a-regulator", },
-> > > > +     { .name =3D "sy7636a-temperature", },
-> > > > +     { .name =3D "sy7636a-thermal", },
-> > > > +};
-> > > > +
-> > > > +static const struct of_device_id of_sy7636a_match_table[] =3D {
-> > > > +     { .compatible =3D "silergy,sy7636a", },
-> > > > +     {}
-> > > > +};
-> > > > +MODULE_DEVICE_TABLE(of, of_sy7636a_match_table);
-> > >
-> > > Hold on.  This driver doesn't really do anything.  If you create OF
-> > > nodes for all the sub-devices, you can use simple-mfd-i2c.
-> > >
-> > > Any reason you can't do that?
-> >
-> > Just to confirm, you mean something like this?
-> >
-> > diff --git a/arch/arm/boot/dts/imx7d-remarkable2.dts
-> > b/arch/arm/boot/dts/imx7d-remarkable2.dts
-> > index 9327d1c06c96..3577104b3853 100644
-> > --- a/arch/arm/boot/dts/imx7d-remarkable2.dts
-> > +++ b/arch/arm/boot/dts/imx7d-remarkable2.dts
-> > @@ -382,6 +382,21 @@ epd_pmic: sy7636a@62 {
-> >                 pinctrl-0 =3D <&pinctrl_epdpmic>;
-> >                 #thermal-sensor-cells =3D <0>;
-> >
-> > +               regulator@0 {
-> > +                       compatible =3D "sy7636a-regulator";
-> > +                       reg =3D <0>;
-> > +               };
-> > +
-> > +               temperature@0 {
-> > +                       compatible =3D "sy7636a-temperature";
-> > +                       reg =3D <0>;
-> > +               };
-> > +
-> > +               thermal@0 {
-> > +                       compatible =3D "sy7636a-thermal";
-> > +                       reg =3D <0>;
-> > +               };
-> > +
-> >                 regulators {
-> >                         compatible =3D "silergy,sy7636a-regulator";
-> > diff --git a/drivers/mfd/simple-mfd-i2c.c b/drivers/mfd/simple-mfd-i2c.=
-c
-> > index 87f684cff9a1..622a05318cff 100644
-> > --- a/drivers/mfd/simple-mfd-i2c.c
-> > +++ b/drivers/mfd/simple-mfd-i2c.c
-> > @@ -39,6 +39,7 @@ static int simple_mfd_i2c_probe(struct i2c_client *i2=
-c)
-> >
-> >  static const struct of_device_id simple_mfd_i2c_of_match[] =3D {
-> >         { .compatible =3D "kontron,sl28cpld" },
-> > +       { .compatible =3D "silergy,sy7636a" },
-> >         {}
-> >  };
-> >  MODULE_DEVICE_TABLE(of, simple_mfd_i2c_of_match);
->
-> Essentially.  Take a look at how the other users are implementing.
->
-> The reg entries look bogus to me though.  Maybe just leave them out?
+Liao!
 
-So I tried this and didn't have any luck.
-
-After some Kconfig changes to allow it to build, I managed to get it
-probing, but I never got it to power up. It doesn't seem to be the
-same.
-
-Alistair
-
+On Thu, Jul 08 2021 at 11:11, Linux wrote:
+>> 2021=E5=B9=B47=E6=9C=887=E6=97=A5 =E4=B8=8B=E5=8D=886:04=EF=BC=8CThomas =
+Gleixner <tglx@linutronix.de> =E5=86=99=E9=81=93=EF=BC=9A
+>> Seriously? The wrap-around time for 32bit HPET @24MHz is ~3 minutes.
 >
-> --
-> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
-> Senior Technical Lead - Developer Services
-> Linaro.org =E2=94=82 Open source software for Arm SoCs
-> Follow Linaro: Facebook | Twitter | Blog
+> In some cases, our system will be very busy, and the timeout of 3 minutes=
+=20
+> is not an exaggeration. Then, the system considers that the tsc clock is=
+=20
+> inaccurate and switches the tsc clock to the hpet clock, which brings=20
+> greater performance overhead.
+
+Sorry, keeping the softirq from running for 3 minutes is simply out of
+spec. If the sysadmin decides to do so, then he can keep the pieces.
+
+>> Aside of that the reason why the kernel does not support 64bit HPET is
+>> that there are HPETs which advertise 64bit support, but the
+>> implementation is buggy.
+>
+> Can you tell me what is the buggy with the 64-bit hpet clock?
+
+I forgot the details, but when I tried moving HPET to 64bit it did not
+work on one of my machines due to an erratum and other people reported
+similar issues on different CPUs/chipsets.
+
+TBH, I'm not interested at all to chase down these buggy implementations
+and have yet another pile of quirks.
+
+> In my opinion, it is unreasonable to use a lower-bit width clock to
+> calibrate a higher-bit width clock, and the hardware already supports
+> the higher-bit width.
+
+There is nothing unreasonable with that, really:
+
+   1) This is not about calibration. It's a sanity check to catch
+      broken TSC implementations.
+
+      Aside of that it _IS_ very reasonable for calibration. We even
+      calibrate TSC via the PIT if we can't get the frequency from
+      the firmware.
+
+   2) Expecting that the softirq runs within 3 minutes is very
+      reasonable.
+
+   3) On modern machines this is usually not longer necessary. If you
+      are confident that the TSC on your system is stable then you
+      can disable the watchdog via the kernel command line.
+
+      There is also effort underway to come up with reasonable
+      conditions to avoid the watchdog on those CPUs in the first place.
+
+   4) For any system which actually has to use HPET the 64bit HPET is
+      overhead. HPET access is slow enough already.
+
+   5) 32bit HPET has to be supported as well and just claiming that a
+      64bit access on 32bit HPET does not matter is just wishful
+      thinking. Aside of breaking 32bit kernels along the way which
+      is just a NONO.
+=20=20=20=20=20=20
+#4 and #5 were the main reason why I gave up on it - aside of the
+discovery that there are broken implementations out there.
+
+So no, there is really no compelling reason to support 64bit HPETs.
+
+Thanks,
+
+        tglx
+---
+P.S: Please trim your replies.
