@@ -2,83 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1223C146E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 15:38:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7D73C1471
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 15:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231849AbhGHNlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 09:41:21 -0400
-Received: from mga09.intel.com ([134.134.136.24]:2879 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231817AbhGHNlU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 09:41:20 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10038"; a="209467995"
-X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
-   d="scan'208";a="209467995"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 06:38:38 -0700
-X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
-   d="scan'208";a="487606704"
-Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.214.103]) ([10.254.214.103])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 06:38:36 -0700
-Cc:     baolu.lu@linux.intel.com,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        iommu@lists.linux-foundation.org,
-        David Stevens <stevensd@google.com>,
-        Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org
-To:     David Stevens <stevensd@chromium.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-References: <20210707075505.2896824-1-stevensd@google.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Subject: Re: [PATCH 0/4] Add dynamic iommu backed bounce buffers
-Message-ID: <f6541f4e-648e-d9a0-eda7-b2a117978ebb@linux.intel.com>
-Date:   Thu, 8 Jul 2021 21:38:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231854AbhGHNmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 09:42:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231152AbhGHNmK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 09:42:10 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA451C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 06:39:27 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id i18so8946870yba.13
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 06:39:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aOjj479tAYR8htOT6wsMXzX39R4Q2+skOoeED/e4V8E=;
+        b=f9FeASktmqEXsl27jvJ/icNdiB5gBFDRI6giCnBn3E46WmIwA6qyfcA9rhmGtjocs5
+         IW8VrM9fGHG6ut5Y7xdyZUe10Dn6iWRTxS0cctcDbdLuoQqTx9ap0jwgAYsRTnnFdx6E
+         Ev0G/N7M+ARnmzWpH9PsUnxUfTpa9O0t1vLL4F7yZePreti0Rqx1PcCLZeFr3FXsMqGX
+         Px1Vi6hfE5lEJnvpY7VEY0RZAGk6hfZ2Q68Ia9Go1+xmlbGC1ZgcuK//AclHAUzyhT0E
+         SMCURuNz/gKtADQ+paxOmpjb6K10Z2w6cHz0bBtIo0Q9pCblUeoUCwzdny1SHgtT+AUm
+         cHuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aOjj479tAYR8htOT6wsMXzX39R4Q2+skOoeED/e4V8E=;
+        b=WqiSvqqOeYlyY+CnzgNlOZcqPnuKBZ4VfjGvv5MDrFvG6XzLSfTht0HmgYVcjCyrZd
+         igcvOPMqNw1hcGP6z/AJUT+qwiYy4w4e2xHCojKVGfwZ5ytHASDNkIXX0d+CubPFIi4b
+         7Q4EG74ubHNdItRHe1nMWwaIdo58m2ydM0QS3KUdHJTNR3SqV9dwqb8CyPGWGx28AzJA
+         U+uGMhUxkqAr9nHB8v63q4uk5W9XYIBq6LK+wg+vQfM6fZQkNBpaeN+9/q7itbx7OSvh
+         48Xd7x2i0ZQHRiQD8u3VkAUuOxfdzYIoeJhFpMTJLQyiwyQFtEkrfdQijMg9Rl7Sz0w/
+         mMoA==
+X-Gm-Message-State: AOAM533u+Yy0HBEnaIiLU73dt2SsUYfMJdhLwGacqix456rTLTTAfXxk
+        j6B9brFtCAbAcOL2xwLQyCyJrgzmuZuRIlAv1+k=
+X-Google-Smtp-Source: ABdhPJxmyb5IyWJwnoebDxK7rCDnXHMCtTgKVmOTLA/UwSVVH7FDS6Qdg4j6epHs/5AZwAzfDniEIzUVNRyz3tF0cZs=
+X-Received: by 2002:a25:b701:: with SMTP id t1mr36852054ybj.517.1625751567354;
+ Thu, 08 Jul 2021 06:39:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210707075505.2896824-1-stevensd@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210616060251.398444-1-bmeng.cn@gmail.com>
+In-Reply-To: <20210616060251.398444-1-bmeng.cn@gmail.com>
+From:   Bin Meng <bmeng.cn@gmail.com>
+Date:   Thu, 8 Jul 2021 21:39:16 +0800
+Message-ID: <CAEUhbmXQt0pnqvzCGwGU38_U0qRZRmgGA4qgaFT_HevbSZRDBg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] riscv: dts: microchip: Drop "clock-frequency"
+ property of cpu nodes
+To:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Cc:     Bin Meng <bin.meng@windriver.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+On Wed, Jun 16, 2021 at 2:02 PM Bin Meng <bmeng.cn@gmail.com> wrote:
+>
+> From: Bin Meng <bin.meng@windriver.com>
+>
+> The "clock-frequency" property of cpu nodes isn't required. Drop it.
+>
+> Signed-off-by: Bin Meng <bin.meng@windriver.com>
+> ---
+>
+>  arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi | 5 -----
+>  1 file changed, 5 deletions(-)
+>
 
-I like this idea. Thanks for proposing this.
-
-On 2021/7/7 15:55, David Stevens wrote:
-> Add support for per-domain dynamic pools of iommu bounce buffers to the
-> dma-iommu API. This allows iommu mappings to be reused while still
-> maintaining strict iommu protection. Allocating buffers dynamically
-> instead of using swiotlb carveouts makes per-domain pools more amenable
-> on systems with large numbers of devices or where devices are unknown.
-
-Have you ever considered leveraging the per-device swiotlb memory pool
-added by below series?
-
-https://lore.kernel.org/linux-iommu/20210625123004.GA3170@willie-the-truck/
-
-> 
-> When enabled, all non-direct streaming mappings below a configurable
-> size will go through bounce buffers. Note that this means drivers which
-> don't properly use the DMA API (e.g. i915) cannot use an iommu when this
-> feature is enabled. However, all drivers which work with swiotlb=force
-> should work.
-
-If so, why not making it more scalable by adding a callback into vendor
-iommu drivers? The vendor iommu drivers have enough information to tell
-whether the bounce buffer is feasible for a specific domain.
-
-> 
-> Bounce buffers serve as an optimization in situations where interactions
-> with the iommu are very costly. For example, virtio-iommu operations in
-
-The simulated IOMMU does the same thing.
-
-It's also an optimization for bare metal in cases where the strict mode
-of cache invalidation is used. CPU moving data is faster than IOMMU
-cache invalidation if the buffer is small.
-
-Best regards,
-baolu
+Ping?
