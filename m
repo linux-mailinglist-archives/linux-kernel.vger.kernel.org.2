@@ -2,150 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4E13C13DC
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 15:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF0533C13DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 15:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231783AbhGHNKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 09:10:17 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:37254 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230080AbhGHNKP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 09:10:15 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R941e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=chengshuyi@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Uf7.lIJ_1625749643;
-Received: from localhost(mailfrom:chengshuyi@linux.alibaba.com fp:SMTPD_---0Uf7.lIJ_1625749643)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 08 Jul 2021 21:07:31 +0800
-From:   Shuyi Cheng <chengshuyi@linux.alibaba.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Shuyi Cheng <chengshuyi@linux.alibaba.com>
-Subject: [PATCH bpf-next v2] libbpf: Introduce 'btf_custom_path' to 'bpf_obj_open_opts'.
-Date:   Thu,  8 Jul 2021 21:07:02 +0800
-Message-Id: <1625749622-119334-1-git-send-email-chengshuyi@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S231785AbhGHNLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 09:11:08 -0400
+Received: from mail-mw2nam12on2055.outbound.protection.outlook.com ([40.107.244.55]:10497
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230080AbhGHNLH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 09:11:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=D7egHVXUMIcnjE7/PABKZnDAJh5XVoYfUCxGYMiYr+E/K3evyVvtYhVald5YcVy6NqIAqur46VBiVeFQe6WB2t6zjbFKD0pxJr0tHMZ33+wv8EHzG6QAiqJvDyE/uqBN7XME9dh5SR2fgHfV84XfnIxkRqVXzlQGPiY0JRLo9N0vpCxvvM1MZEsrwgsSuHpTTKow2Zam2wl/4uVLFET45PK4W/I1S9RnhnR3OaFly5iLYmvJNbF3J0EfFPwx1VvLGr6Q2RnK8hAO0AymvjTe64r/7VnJ7UHi7U/y/TbEcHFzoY7pYhQ6t7A6oRzER79uJzDZpaxAAsfL1136CTSgbw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0WVFEalV1weFqyCc15w8kCWK08wITdLwN3E5U59GA1c=;
+ b=b2U8KdMgYitTjosp/IHLPXIeljYc0W7kdVpTKQ/h8cJnjnaNk1N2b4zLstH/pUX83C029JXNSDTERbzc5d35/UDHE4uCT2dqeQJMJd4KPMwOY9qgkSamiIEvrGuV/Qe8Z2aY/MCehnPM6SqpEdT/zsOuTFu6Pmbsz1pV5y8tJa8tEy2DBFuDxmuc0OSCA20OmUNflEmtW6qFGri8G8UiNfiLxz0Y0nzvjouJFFGn4eicAAzSLZzlAEOXU2XiL1Pw6xLI8udweSuIYEbUzRq/iuGGRjEFBAhFjl1QBJzshTyJmfsgChxqpDFx9sF1n1KLcQfMgDNS9pU+VOjIqBGDyw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=linaro.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0WVFEalV1weFqyCc15w8kCWK08wITdLwN3E5U59GA1c=;
+ b=iTPGNKC1XUBVeufOsGwt2qbOQz6EAUke0HDDL2S+OcBQW9xx1uZsGD//ReP10yw6ghwe6H985trQFPogUzbrB9Q53WPAlBNaPVWgEVfqYnQTOipViejBd70aSh2NjSG/bcEibj2ICJ7OjLa3Aff2cZj1LXWj0gHLuQkH3hjfnjKBDfac5rblnjH8aDwqwTSjGkDDMcaQYjmOVMlqxOpH3aqGKCJJIfqJsJYLV+DGkzECuYSQt15GNAkVFxF76jB+22NZYsUbpPL5r8PfEmfC9IiZc4/jN0X3q98u9W3MfZq2Cng7WLZ6876O9iC5ddN2z7Lr7/2NZ5HviMtQSMCW5g==
+Received: from BN9PR03CA0553.namprd03.prod.outlook.com (2603:10b6:408:138::18)
+ by BN8PR12MB3027.namprd12.prod.outlook.com (2603:10b6:408:64::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.22; Thu, 8 Jul
+ 2021 13:08:23 +0000
+Received: from BN8NAM11FT047.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:138:cafe::f4) by BN9PR03CA0553.outlook.office365.com
+ (2603:10b6:408:138::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend
+ Transport; Thu, 8 Jul 2021 13:08:23 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT047.mail.protection.outlook.com (10.13.177.220) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4308.20 via Frontend Transport; Thu, 8 Jul 2021 13:08:22 +0000
+Received: from [10.26.49.10] (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 8 Jul
+ 2021 13:08:19 +0000
+Subject: Re: [PATCH v5] gpio: tegra186: Add ACPI support
+To:     Akhil R <akhilrajeev@nvidia.com>
+CC:     <andy.shevchenko@gmail.com>, <bgolaszewski@baylibre.com>,
+        <kyarlagadda@nvidia.com>, <ldewangan@nvidia.com>,
+        <linus.walleij@linaro.org>, <linux-gpio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <mperttunen@nvidia.com>, <smangipudi@nvidia.com>,
+        <thierry.reding@gmail.com>
+References: <2a8eb285-3b71-199c-1bf4-39fb47fac77e@nvidia.com>
+ <1625130054-22947-1-git-send-email-akhilrajeev@nvidia.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <5010ac2c-bfd0-1a79-d470-a1c601207f28@nvidia.com>
+Date:   Thu, 8 Jul 2021 14:08:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <1625130054-22947-1-git-send-email-akhilrajeev@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5c2cba67-b6df-4f3a-5a8c-08d94211773e
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3027:
+X-Microsoft-Antispam-PRVS: <BN8PR12MB3027873D11FC90047009076CD9199@BN8PR12MB3027.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1360;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jL/eqd3bmbneteElPHHDlOyyPto0MTmgkA5V17WckIVuhxKK4g/Yp1f0S7+JosXJOcPzQvtGwuD+5flY4HRnrC8GoAcVrxBzY7jcaJzPB4XYByri1/PfwxC6oyt0J6h0e27cdnmE/Se+d2NFsPVVP07N68qtU0CywhKJ9sx7acl0KCMr+6cx/yZ+FSyS5jEzRa0YjvaGKrDWJQE7CmiAMR5gEcBszM/cvZ919cgT287E4St0Y/Aqg7Y78kAwJlPWyFlI/vnLOsNmw51yfHHDWlHncIpc7mZomJXHLcLr96plBrwLexs5/7Q5pmCLpPSzSqVt4DBBLPSMR7fBwL4iq0cu0oVN2NDzFsKzJRF1vGtVpNKQT36otfwL2Rd/1r5zi9rO/fTx4ApoOiCcYNx+w0EVkPe+9X219cr14u89LnpU3m6uRIfG7J5az7vOzvqpERvK3YI93jzLzAsHdKtN9YQZ3/ge9n3Q6a+rNy765FwIut3v/7qG/0EXlUg3IYBY+BH1UK61hdKafYo4Kk1NlMRchTAhJoM7A3uAdAW2EYGqvdqyvoQiANHFcF7Xh4V4N2tVKlUFVv07SqnfoTqG/IGl5qlCtx8jfrxHDbyj2DX+I0LBX4ZaGcJWjweLHJggMr/wdoBwV76YXHjwxpiYNLvc581UGwuUyKfUNGppdgMMinY77c0zRt4GPUUk4UrsvTK04PXrwIeGi/lLoqpwr16SKjNVRVTPx2ka1/xyNIw=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(396003)(136003)(376002)(346002)(46966006)(36840700001)(6862004)(70586007)(16526019)(82740400003)(36756003)(426003)(7636003)(2616005)(47076005)(26005)(356005)(186003)(336012)(4326008)(83380400001)(8676002)(70206006)(8936002)(37006003)(2906002)(316002)(53546011)(86362001)(54906003)(31686004)(16576012)(6636002)(36860700001)(31696002)(5660300002)(478600001)(36906005)(82310400003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jul 2021 13:08:22.9879
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5c2cba67-b6df-4f3a-5a8c-08d94211773e
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT047.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3027
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to enable the older kernel to use the CO-RE feature, load the
-vmlinux btf of the specified path.
 
-Learn from Andrii's comments in [0], add the btf_custom_path parameter
-to bpf_obj_open_opts, you can directly use the skeleton's
-<objname>_bpf__open_opts function to pass in the btf_custom_path
-parameter.
+On 01/07/2021 10:00, Akhil R wrote:
+> Add ACPI module ID to probe the driver from the ACPI based bootloader
+> firmware.
+> 
+> Signed-off-by: Akhil R <akhilrajeev@nvidia.com>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> ---
+> v5 changes:
+> 	* Updated ioremap_resource check as per Jon's comments.
+> 
+>  drivers/gpio/gpio-tegra186.c | 30 ++++++++++++++++++++++++------
+>  1 file changed, 24 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/gpio/gpio-tegra186.c b/drivers/gpio/gpio-tegra186.c
+> index 1bd9e44..8a64dcb 100644
+> --- a/drivers/gpio/gpio-tegra186.c
+> +++ b/drivers/gpio/gpio-tegra186.c
+> @@ -620,15 +620,21 @@ static int tegra186_gpio_probe(struct platform_device *pdev)
+>  	if (!gpio)
+>  		return -ENOMEM;
+>  
+> -	gpio->soc = of_device_get_match_data(&pdev->dev);
+> +	gpio->soc = device_get_match_data(&pdev->dev);
+>  
+>  	gpio->secure = devm_platform_ioremap_resource_byname(pdev, "security");
+> -	if (IS_ERR(gpio->secure))
+> -		return PTR_ERR(gpio->secure);
+> +	if (IS_ERR(gpio->secure)) {
+> +		gpio->secure = devm_platform_ioremap_resource(pdev, 0);
+> +		if (IS_ERR(gpio->secure))
+> +			return PTR_ERR(gpio->secure);
+> +	}
+>  
+>  	gpio->base = devm_platform_ioremap_resource_byname(pdev, "gpio");
+> -	if (IS_ERR(gpio->base))
+> -		return PTR_ERR(gpio->base);
+> +	if (IS_ERR(gpio->base)) {
+> +		gpio->base = devm_platform_ioremap_resource(pdev, 1);
+> +		if (IS_ERR(gpio->base))
+> +			return PTR_ERR(gpio->base);
+> +	}
+>  
+>  	err = platform_irq_count(pdev);
+>  	if (err < 0)
+> @@ -690,11 +696,13 @@ static int tegra186_gpio_probe(struct platform_device *pdev)
+>  
+>  	gpio->gpio.names = (const char * const *)names;
+>  
+> +#if defined(CONFIG_OF_GPIO)
+>  	gpio->gpio.of_node = pdev->dev.of_node;
+>  	gpio->gpio.of_gpio_n_cells = 2;
+>  	gpio->gpio.of_xlate = tegra186_gpio_of_xlate;
+> +#endif /* CONFIG_OF_GPIO */
+>  
+> -	gpio->intc.name = pdev->dev.of_node->name;
+> +	gpio->intc.name = dev_name(&pdev->dev);
+>  	gpio->intc.irq_ack = tegra186_irq_ack;
+>  	gpio->intc.irq_mask = tegra186_irq_mask;
+>  	gpio->intc.irq_unmask = tegra186_irq_unmask;
+> @@ -918,10 +926,20 @@ static const struct of_device_id tegra186_gpio_of_match[] = {
+>  };
+>  MODULE_DEVICE_TABLE(of, tegra186_gpio_of_match);
+>  
+> +static const struct acpi_device_id  tegra186_gpio_acpi_match[] = {
+> +	{ .id = "NVDA0108", .driver_data = (kernel_ulong_t)&tegra186_main_soc },
+> +	{ .id = "NVDA0208", .driver_data = (kernel_ulong_t)&tegra186_aon_soc },
+> +	{ .id = "NVDA0308", .driver_data = (kernel_ulong_t)&tegra194_main_soc },
+> +	{ .id = "NVDA0408", .driver_data = (kernel_ulong_t)&tegra194_aon_soc },
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(acpi, tegra186_gpio_acpi_match);
+> +
+>  static struct platform_driver tegra186_gpio_driver = {
+>  	.driver = {
+>  		.name = "tegra186-gpio",
+>  		.of_match_table = tegra186_gpio_of_match,
+> +		.acpi_match_table = tegra186_gpio_acpi_match,
+>  	},
+>  	.probe = tegra186_gpio_probe,
+>  	.remove = tegra186_gpio_remove,
+> 
 
-Prior to this, there was also a developer who provided a patch with
-similar functions. It is a pity that the follow-up did not continue to
-advance. See [1].
+Looks good to me.
 
-	[0]https://lore.kernel.org/bpf/CAEf4BzbJZLjNoiK8_VfeVg_Vrg=9iYFv+po-38SMe=UzwDKJ=Q@mail.gmail.com/#t
-	[1]https://yhbt.net/lore/all/CAEf4Bzbgw49w2PtowsrzKQNcxD4fZRE6AKByX-5-dMo-+oWHHA@mail.gmail.com/
+Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
 
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Signed-off-by: Shuyi Cheng <chengshuyi@linux.alibaba.com>
----
-v1: https://lore.kernel.org/bpf/CAEf4BzaGjEC4t1OefDo11pj2-HfNy0BLhs_G2UREjRNTmb2u=A@mail.gmail.com/t/#m4d9f7c6761fbd2b436b5dfe491cd864b70225804
-v1->v2:
--- Change custom_btf_path to btf_custom_path.
--- If the length of btf_custom_path of bpf_obj_open_opts is too long, 
-   return ERR_PTR(-ENAMETOOLONG).
--- Add `custom BTF is in addition to vmlinux BTF`
-   with btf_custom_path field.
+Cheers
+Jon
 
- tools/lib/bpf/libbpf.c | 27 ++++++++++++++++++++++++---
- tools/lib/bpf/libbpf.h |  6 +++++-
- 2 files changed, 29 insertions(+), 4 deletions(-)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 1e04ce7..aed156c 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -494,6 +494,10 @@ struct bpf_object {
- 	struct btf *btf;
- 	struct btf_ext *btf_ext;
- 
-+	/* custom BTF is in addition to vmlinux BTF (i.e., Use the CO-RE
-+	 * feature in the old kernel).
-+	 */
-+	char *btf_custom_path;
- 	/* Parse and load BTF vmlinux if any of the programs in the object need
- 	 * it at load time.
- 	 */
-@@ -2679,8 +2683,15 @@ static int bpf_object__load_vmlinux_btf(struct bpf_object *obj, bool force)
- 	if (!force && !obj_needs_vmlinux_btf(obj))
- 		return 0;
- 
--	obj->btf_vmlinux = libbpf_find_kernel_btf();
--	err = libbpf_get_error(obj->btf_vmlinux);
-+	if (obj->btf_custom_path) {
-+		obj->btf_vmlinux = btf__parse(obj->btf_custom_path, NULL);
-+		err = libbpf_get_error(obj->btf_vmlinux);
-+		pr_debug("loading custom vmlinux BTF '%s': %d\n", obj->btf_custom_path, err);
-+	} else {
-+		obj->btf_vmlinux = libbpf_find_kernel_btf();
-+		err = libbpf_get_error(obj->btf_vmlinux);
-+	}
-+
- 	if (err) {
- 		pr_warn("Error loading vmlinux BTF: %d\n", err);
- 		obj->btf_vmlinux = NULL;
-@@ -7554,7 +7565,7 @@ int bpf_program__load(struct bpf_program *prog, char *license, __u32 kern_ver)
- __bpf_object__open(const char *path, const void *obj_buf, size_t obj_buf_sz,
- 		   const struct bpf_object_open_opts *opts)
- {
--	const char *obj_name, *kconfig;
-+	const char *obj_name, *kconfig, *btf_tmp_path;
- 	struct bpf_program *prog;
- 	struct bpf_object *obj;
- 	char tmp_name[64];
-@@ -7584,6 +7595,15 @@ int bpf_program__load(struct bpf_program *prog, char *license, __u32 kern_ver)
- 	obj = bpf_object__new(path, obj_buf, obj_buf_sz, obj_name);
- 	if (IS_ERR(obj))
- 		return obj;
-+
-+	btf_tmp_path = OPTS_GET(opts, btf_custom_path, NULL);
-+	if (btf_tmp_path) {
-+		if (strlen(btf_tmp_path) >= PATH_MAX)
-+			return ERR_PTR(-ENAMETOOLONG);
-+		obj->btf_custom_path = strdup(btf_tmp_path);
-+		if (!obj->btf_custom_path)
-+			return ERR_PTR(-ENOMEM);
-+	}
- 
- 	kconfig = OPTS_GET(opts, kconfig, NULL);
- 	if (kconfig) {
-@@ -8702,6 +8722,7 @@ void bpf_object__close(struct bpf_object *obj)
- 	for (i = 0; i < obj->nr_maps; i++)
- 		bpf_map__destroy(&obj->maps[i]);
- 
-+	zfree(&obj->btf_custom_path);
- 	zfree(&obj->kconfig);
- 	zfree(&obj->externs);
- 	obj->nr_extern = 0;
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 6e61342..5002d1f 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -94,8 +94,12 @@ struct bpf_object_open_opts {
- 	 * system Kconfig for CONFIG_xxx externs.
- 	 */
- 	const char *kconfig;
-+	/* custom BTF is in addition to vmlinux BTF (i.e., Use the CO-RE
-+	 * feature in the old kernel).
-+	 */
-+	char *btf_custom_path;
- };
--#define bpf_object_open_opts__last_field kconfig
-+#define bpf_object_open_opts__last_field btf_custom_path
- 
- LIBBPF_API struct bpf_object *bpf_object__open(const char *path);
- LIBBPF_API struct bpf_object *
 -- 
-1.8.3.1
-
+nvpublic
