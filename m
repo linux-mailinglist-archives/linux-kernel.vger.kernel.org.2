@@ -2,131 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F9143BF633
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 09:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1B03BF639
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 09:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230463AbhGHHZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 03:25:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229780AbhGHHY7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 03:24:59 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD54C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 00:22:18 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: dafna)
-        with ESMTPSA id 1F3F31F437E4
-Subject: Re: BUG: MTK DRM/HDMI broken on 5.13 (mt7623/bpi-r2)
-To:     Frank Wunderlich <frank-w@public-files.de>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-mediatek@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Collabora Kernel ML <kernel@collabora.com>
-References: <trinity-cc8f5927-9aaf-43ae-a107-6a6229f1b481-1625565279264@3c-app-gmx-bs60>
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Message-ID: <25d61873-38ae-5648-faab-03431b74f777@collabora.com>
-Date:   Thu, 8 Jul 2021 09:22:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230458AbhGHH11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 03:27:27 -0400
+Received: from smtp-34-i2.italiaonline.it ([213.209.12.34]:39495 "EHLO
+        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229819AbhGHH10 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 03:27:26 -0400
+Received: from oxapps-11-062.iol.local ([10.101.8.72])
+        by smtp-34.iol.local with ESMTPA
+        id 1OOpmO9WMLCum1OOpmcB8O; Thu, 08 Jul 2021 09:24:44 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1625729084; bh=ZFcvfYIu04Jwk1y4dAI4qU91JWbmprdVROAPFA3RXWc=;
+        h=From;
+        b=C33kLZ1+HYZH+/R5yvH7LKvjTfTKfgR8RAYMZfvuD8k646ZgEurp2uW26AMssQPjI
+         5E190UzuZED8k8ryFx1Pf+tR3qEabAGTMv/En+PzynC1vYpTyO74wFMMtHgScW+Sfj
+         R8JW2s2ZqRhphg348n1uMc3H+zeWgYU7kYUThl4tUIM92ngZMS412fcJEyM5nst+3B
+         RUjT8gN744QiBujwWYE+WZX79atRp3sl9HZpJ3/0S6guVkReWFkjqVSDcHLm2a/G/Y
+         xoSD5rNGdHGKY9b+4GxOZu7QTUJSPfcshpboD0lLKFumEf7RPQ8+z1REP3JrFlZS68
+         GM5ACjtmy54Lg==
+X-CNFS-Analysis: v=2.4 cv=a8D1SWeF c=1 sm=1 tr=0 ts=60e6a83c cx=a_exe
+ a=ArCppHiS2LX9rvfu7+HyXQ==:117 a=C-c6dMTymFoA:10 a=IkcTkHD0fZMA:10
+ a=vesc6bHxzc4A:10 a=J1Y8HTJGAAAA:8 a=NRFWTJTpNJUI3RitD60A:9 a=QEXdDO2ut3YA:10
+ a=y1Q9-5lHfBjTkpIzbSAN:22
+Date:   Thu, 8 Jul 2021 09:24:43 +0200 (CEST)
+From:   dariobin@libero.it
+To:     David Miller <davem@davemloft.net>
+Cc:     linux-kernel@vger.kernel.org, jonathan.lemon@gmail.com,
+        richardcochran@gmail.com, netdev@vger.kernel.org
+Message-ID: <48220229.92708.1625729083880@mail1.libero.it>
+In-Reply-To: <20210708.001404.122934424143086559.davem@davemloft.net>
+References: <20210708050849.11959-1-dariobin@libero.it>
+ <20210708.001404.122934424143086559.davem@davemloft.net>
+Subject: Re: [PATCH] ptp: fix PTP PPS source's lookup cookie set
 MIME-Version: 1.0
-In-Reply-To: <trinity-cc8f5927-9aaf-43ae-a107-6a6229f1b481-1625565279264@3c-app-gmx-bs60>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.3-Rev34
+X-Originating-IP: 185.33.57.41
+X-Originating-Client: open-xchange-appsuite
+x-libjamsun: 3PyYk19zG1o8mnI2s2jZE59u2Tz78qKN
+x-libjamv: DavxN2eeZiI=
+X-CMAE-Envelope: MS4xfFCSJpA/OjFfBSSRErxdbTy+ce/E1c56GUHbCXQanXQOj0xvzrKIfkeubhPvW1Cj9OqhN6Wgro42DVt77NMDAJWbGw5p/svNATW8J9Z6K9VA0h+0vef7
+ 3G/zfkLv4vJLqLsnMZfpbvp3bZDCtz6IhryfDkLDFS0RGbFExP2l6wVlfvDd8iND91A8f+3NpP9BJVF7UGj1WMvcbdXtVKnBleNcFF8tPZB733+GaYMv2PAS
+ NHkqmrUhbCALPh3keEPPo6dhZop+KVFMq8tL9xr9wj4u8hoKTy8iJLXAs8qm3L+V9PcHtsktxC572SrelGWoUIG5ThJybzrsXT4EkRI52ROFEt/qBsTQHvyL
+ coOdS5eR
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Frank,
+Hi David,
 
+> Il 08/07/2021 09:14 David Miller <davem@davemloft.net> ha scritto:
+> 
+>  
+> this pastch does not apply to the current net tree, that is why I keep marking it "Not Applicable"
+> in patchwork.
 
-On 06.07.21 11:54, Frank Wunderlich wrote:
-> Hi,
-> 
-> i've noticed that HDMI is broken at least on my board (Bananapi-r2,mt7623) on 5.13.
-> 
-> after some research i noticed that it is working till
-> 
-> commit 2e477391522354e763aa62ee3e281c1ad9e8eb1b
-> Author: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-> Date:   Tue Mar 30 13:09:02 2021 +0200
-> 
->      drm/mediatek: Don't support hdmi connector creation
-> 
-> 
-> which is the last of mtk-drm-next-5.13 [1] so i guess a problem with core-patches
-> 
-> dmesg shows the following:
-> 
-> [    7.071342] mediatek-drm mediatek-drm.1.auto: bound 14007000.ovl (ops mtk_dis
-> p_ovl_component_ops)
-> [    7.080330] mediatek-drm mediatek-drm.1.auto: bound 14008000.rdma (ops mtk_di
-> sp_rdma_component_ops)
-> [    7.089429] mediatek-drm mediatek-drm.1.auto: bound 1400b000.color (ops mtk_d
-> isp_color_component_ops)
-> [    7.098689] mediatek-drm mediatek-drm.1.auto: bound 14012000.rdma (ops mtk_di
-> sp_rdma_component_ops)
-> [    7.107814] mediatek-drm mediatek-drm.1.auto: bound 14014000.dpi (ops mtk_dpi
-> _component_ops)
-> [    7.116338] mediatek-drm mediatek-drm.1.auto: Not creating crtc 1 because com
-> ponent 9 is disabled or missing
-> ....
-> [   38.403957] Console: switching to colour frame buffer device 160x64
-> [   48.516398] [drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
-> [   48.516422] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [CRTC:41:cr
-> tc-0] commit wait timed out
-> [   58.756384] [drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
-> [   58.756399] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [CONNECTOR:
-> 32:HDMI-A-1] commit wait timed out
-> [   68.996384] [drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
-> [   68.996399] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [PLANE:33:p
-> lane-0] commit wait timed out
-> [   68.996423] [drm:mtk_drm_crtc_atomic_begin] *ERROR* new event while there is
-> still a pending event
-> [   69.106385] ------------[ cut here ]------------
-> [   69.106392] WARNING: CPU: 2 PID: 7 at drivers/gpu/drm/drm_atomic_helper.c:151
-> 1 drm_atomic_helper_wait_for_vblanks.part.0+0x2a0/0x2a8
-> [   69.106414] [CRTC:41:crtc-0] vblank wait timed out
+I applied and tested the patch this morning on the mainline kernel. What am I missing?
+Should I wait for the merge windows to end?
 
-We also encountered that warning on mt8173 device - Acer Chromebook R13. It happen after resuming from suspend to ram.
-We could not find a version that works and we were not able to find the fix of the bug.
-It seems like the irq isr is not called after resuming from suspend.
-Please share if you have new findings regarding that bug.
-
-Thanks,
-Dafna
-
-
-> 
-> so i guess the breaking commit may be this:
-> 
-> $ git logone -S"drm_crtc_commit_wait" -- drivers/gpu/drm/
-> b99c2c95412c 2021-01-11 drm: Introduce a drm_crtc_commit_wait helper
-> 
-> in drivers/gpu/drm/drm_atomic{,_helper}.c
-> 
-> but i cannot confirm it because my git bisect does strange things (after defining 5.13 as bad and the 2e4773915223 as good, second step is before the good commit till the end, last steps are 5.11...). sorry, i'm still new to bisect.
-> 
-> the fix is targeting to 5.12-rc2, is guess because CK Hu's tree is based on this...but the fix was not included in 5.12-rc2 (only after 5.12.0...got it by merging 5.12.14)
-> 
-> maybe you can help me?
-> 
-> regards Frank
-> 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/log/?h=mediatek-drm-next-5.13
-> 
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
-> 
+Thanks and regards,
+Dario
