@@ -2,236 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6AEA3C13E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 15:10:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C91D03C13E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 15:10:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231631AbhGHNMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 09:12:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230080AbhGHNMo (ORCPT
+        id S231843AbhGHNNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 09:13:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51888 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230080AbhGHNNL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 09:12:44 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2611DC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 06:10:03 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id 77so3782804qkk.11
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 06:10:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:organization:mime-version
-         :content-transfer-encoding;
-        bh=0gWa5OAetARENJ/C2A+ypYSxjA1n75Wtbf8cIeVt5lw=;
-        b=rVpqeS3ADm4epyS1551pFg7IVyjQMyOeHU0pqBt9vhTHyoEjam9cabNZiCh81qZbYr
-         6i8HPNamfdtZN4vthwnXgk7a3MYgo8JrRFbvh9Nw+MHz4nuDMZVNZmxE28WAnDVLCCSS
-         ESpUD0dm+ZQ5Zt2GolDEbwGoVJvwxv6jD2UwrEIIEzXyUYuQe+AkaGkCTOqa/E+EjRlp
-         DJIEB0RhcW5JdBN/rilZvvakEEzRwl4rV4lejFp1g74/PGf65kpO7lb4aU0rhw/dJ2Yo
-         llVDDf9Yo3RdtQYHsTkjCS/vsLWm1KjjTTpgUPnA2fuRtmFgqeRyQ91LksLHI2sUv+CK
-         C5uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:organization
-         :mime-version:content-transfer-encoding;
-        bh=0gWa5OAetARENJ/C2A+ypYSxjA1n75Wtbf8cIeVt5lw=;
-        b=uSmoH1sHXJlcTS1Sd/av3zb8ID9A0GncVPrHybhlIv9ignIysvstWXuWbFGlV0YV9R
-         WZW+DK9UZ3v0jS6ifJl4k6n40LLinWxsh6LAV7cQiTVMIcVjfhZB6HiuL62EjqqzV5yP
-         kBq5zOxQWX+VMarK4DU6YzTRQ0mkqXMgSU+OUHKAe1IA4JWxJ3D+gz1/PEZxc7UeXuxn
-         6VzecG7O7hdYMRY8k9TphpI/JrUfzbU+WXSzS3LkbzcWP49BcM4xhfZtTpzoltJ67UFw
-         fs+pwd/iNRszFN7EnnG7ONht46TolN+Aw4ePhAmPEeqWCUowSsXI/0XQpUQzmjEs85cw
-         l8yA==
-X-Gm-Message-State: AOAM531D4tmxioSJIw5te5DNrWTakEefNMenCoCec3irfwgDoEvqH+Ys
-        IMdr9bxafObErcJm+9jZKwoALQ==
-X-Google-Smtp-Source: ABdhPJxwni2+Rg+Xd/d8J/l4eMGB7XpS0gH0BWTx9TyALUC9kwCBwF6z1zM95wWWL9QVmLb17JemgA==
-X-Received: by 2002:a05:620a:1998:: with SMTP id bm24mr18790901qkb.422.1625749802194;
-        Thu, 08 Jul 2021 06:10:02 -0700 (PDT)
-Received: from iron-maiden.localnet ([50.225.136.98])
-        by smtp.gmail.com with ESMTPSA id o126sm951685qka.74.2021.07.08.06.10.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jul 2021 06:10:01 -0700 (PDT)
-From:   Carlos Bilbao <bilbao@vt.edu>
-To:     gregkh@linuxfoundation.org
-Cc:     alexander.deucher@amd.com, davem@davemloft.net,
-        mchehab+huawei@kernel.org, kuba@kernel.org,
-        James.Bottomley@hansenpartnership.com, netdev@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drivers: Follow the indentation coding standard on printks
-Date:   Thu, 08 Jul 2021 09:10:01 -0400
-Message-ID: <2784471.e9J7NaK4W3@iron-maiden>
-Organization: Virginia Tech
+        Thu, 8 Jul 2021 09:13:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625749829;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Su19WDhoU/YXgcv3TtubE0a9+gNAyxVy+Jnc8J4aC5U=;
+        b=JxmLJoVKxFTxguND4YNL6NuuiGGZbXAh8OWgN3HHrJ6b8A0y8c4IYsCAeq7DfipnsdaJt3
+        1U2a58crcCslIZAIGMYr3BqJ9ydd7khfMvb8LAud4Kt8w7gSGP/hOhqZwJ0mkEAge4ABAJ
+        AqfJWfr1r1DUmhRWQSQj5ZgRE7dBaSo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-584-GX00-M0UPyaJOTd3kjjI3A-1; Thu, 08 Jul 2021 09:10:26 -0400
+X-MC-Unique: GX00-M0UPyaJOTd3kjjI3A-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 690E5192CC6B;
+        Thu,  8 Jul 2021 13:10:24 +0000 (UTC)
+Received: from optiplex-fbsd (unknown [10.3.128.11])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D9231E2F7;
+        Thu,  8 Jul 2021 13:10:21 +0000 (UTC)
+Date:   Thu, 8 Jul 2021 09:10:18 -0400
+From:   Rafael Aquini <aquini@redhat.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
+        Zqiang <qiang.zhang@windriver.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+127fd7828d6eeb611703@syzkaller.appspotmail.com
+Subject: Re: [PATCH] mm/page_alloc: Avoid page allocator recursion with
+ pagesets.lock held
+Message-ID: <YOb5OrkqjWu4TODN@optiplex-fbsd>
+References: <20210708081434.GV3840@techsingularity.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210708081434.GV3840@techsingularity.net>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix indentation of printks that start at the beginning of the line. Change this 
-for the right number of space characters, or tabs if the file uses them. 
+On Thu, Jul 08, 2021 at 09:14:34AM +0100, Mel Gorman wrote:
+> Syzbot is reporting potential deadlocks due to pagesets.lock when
+> PAGE_OWNER is enabled. One example from Desmond Cheong Zhi Xi is
+> as follows
+> 
+>   __alloc_pages_bulk()
+>     local_lock_irqsave(&pagesets.lock, flags) <---- outer lock here
+>     prep_new_page():
+>       post_alloc_hook():
+>         set_page_owner():
+>           __set_page_owner():
+>             save_stack():
+>               stack_depot_save():
+>                 alloc_pages():
+>                   alloc_page_interleave():
+>                     __alloc_pages():
+>                       get_page_from_freelist():
+>                         rm_queue():
+>                           rm_queue_pcplist():
+>                             local_lock_irqsave(&pagesets.lock, flags);
+>                             *** DEADLOCK ***
+> 
+> Zhang, Qiang also reported
+> 
+>   BUG: sleeping function called from invalid context at mm/page_alloc.c:5179
+>   in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 1, name: swapper/0
+>   .....
+>   __dump_stack lib/dump_stack.c:79 [inline]
+>   dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
+>   ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:9153
+>   prepare_alloc_pages+0x3da/0x580 mm/page_alloc.c:5179
+>   __alloc_pages+0x12f/0x500 mm/page_alloc.c:5375
+>   alloc_page_interleave+0x1e/0x200 mm/mempolicy.c:2147
+>   alloc_pages+0x238/0x2a0 mm/mempolicy.c:2270
+>   stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
+>   save_stack+0x15e/0x1e0 mm/page_owner.c:120
+>   __set_page_owner+0x50/0x290 mm/page_owner.c:181
+>   prep_new_page mm/page_alloc.c:2445 [inline]
+>   __alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5313
+>   alloc_pages_bulk_array_node include/linux/gfp.h:557 [inline]
+>   vm_area_alloc_pages mm/vmalloc.c:2775 [inline]
+>   __vmalloc_area_node mm/vmalloc.c:2845 [inline]
+>   __vmalloc_node_range+0x39d/0x960 mm/vmalloc.c:2947
+>   __vmalloc_node mm/vmalloc.c:2996 [inline]
+>   vzalloc+0x67/0x80 mm/vmalloc.c:3066
+> 
+> There are a number of ways it could be fixed. The page owner code could
+> be audited to strip GFP flags that allow sleeping but it'll impair the
+> functionality of PAGE_OWNER if allocations fail. The bulk allocator
+> could add a special case to release/reacquire the lock for prep_new_page
+> and lookup PCP after the lock is reacquired at the cost of performance.
+> The patches requiring prep could be tracked using the least significant
+> bit and looping through the array although it is more complicated for
+> the list interface. The options are relatively complex and the second
+> one still incurs a performance penalty when PAGE_OWNER is active so this
+> patch takes the simple approach -- disable bulk allocation of PAGE_OWNER is
+                                                            ^^^^
+Minor nit: s/of/if
 
-Signed-off-by: Carlos Bilbao <bilbao@vt.edu>
----
- drivers/atm/eni.c                      | 2 +-
- drivers/atm/iphase.c                   | 2 +-
- drivers/atm/suni.c                     | 4 ++--
- drivers/atm/zatm.c                     | 8 ++++----
- drivers/net/ethernet/dec/tulip/de4x5.c | 2 +-
- drivers/net/sb1000.c                   | 4 ++--
- drivers/parisc/iosapic.c               | 4 ++--
- drivers/parisc/sba_iommu.c             | 2 +-
- 8 files changed, 14 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/atm/eni.c b/drivers/atm/eni.c
-index 422753d52244..6d10fd62ba7e 100644
---- a/drivers/atm/eni.c
-+++ b/drivers/atm/eni.c
-@@ -1456,7 +1456,7 @@ static int start_tx(struct atm_dev *dev)
- 
- static void foo(void)
- {
--printk(KERN_INFO
-+  printk(KERN_INFO
-   "tx_complete=%d,dma_complete=%d,queued=%d,requeued=%d,sub=%d,\n"
-   "backlogged=%d,rx_enqueued=%d,rx_dequeued=%d,putting=%d,pushed=%d\n",
-   tx_complete,dma_complete,queued,requeued,submitted,backlogged,
-diff --git a/drivers/atm/iphase.c b/drivers/atm/iphase.c
-index bc8e8d9f176b..65bb700cd5af 100644
---- a/drivers/atm/iphase.c
-+++ b/drivers/atm/iphase.c
-@@ -1246,7 +1246,7 @@ static void rx_intr(struct atm_dev *dev)
-                ((iadev->rx_pkt_cnt - iadev->rx_tmp_cnt) == 0)) {
-         for (i = 1; i <= iadev->num_rx_desc; i++)
-                free_desc(dev, i);
--printk("Test logic RUN!!!!\n");
-+        printk("Test logic RUN!!!!\n");
-         writew( ~(RX_FREEQ_EMPT|RX_EXCP_RCVD),iadev->reass_reg+REASS_MASK_REG);
-         iadev->rxing = 1;
-      }
-diff --git a/drivers/atm/suni.c b/drivers/atm/suni.c
-index 21e5acc766b8..149605cdb859 100644
---- a/drivers/atm/suni.c
-+++ b/drivers/atm/suni.c
-@@ -328,8 +328,8 @@ static int suni_start(struct atm_dev *dev)
- 		timer_setup(&poll_timer, suni_hz, 0);
- 		poll_timer.expires = jiffies+HZ;
- #if 0
--printk(KERN_DEBUG "[u] p=0x%lx,n=0x%lx\n",(unsigned long) poll_timer.list.prev,
--    (unsigned long) poll_timer.list.next);
-+	printk(KERN_DEBUG "[u] p=0x%lx,n=0x%lx\n",(unsigned long) poll_timer.list.prev,
-+	    (unsigned long) poll_timer.list.next);
- #endif
- 		add_timer(&poll_timer);
- 	}
-diff --git a/drivers/atm/zatm.c b/drivers/atm/zatm.c
-index cf5fffcf98a1..4fb89ed47311 100644
---- a/drivers/atm/zatm.c
-+++ b/drivers/atm/zatm.c
-@@ -380,7 +380,7 @@ static void poll_rx(struct atm_dev *dev,int mbx)
- 			pos = zatm_dev->mbx_start[mbx];
- 		cells = here[0] & uPD98401_AAL5_SIZE;
- #if 0
--printk("RX IND: 0x%x, 0x%x, 0x%x, 0x%x\n",here[0],here[1],here[2],here[3]);
-+		printk("RX IND: 0x%x, 0x%x, 0x%x, 0x%x\n",here[0],here[1],here[2],here[3]);
- {
- unsigned long *x;
- 		printk("POOL: 0x%08x, 0x%08x\n",zpeekl(zatm_dev,
-@@ -403,14 +403,14 @@ EVENT("error code 0x%x/0x%x\n",(here[3] & uPD98401_AAL5_ES) >>
- 		skb = ((struct rx_buffer_head *) bus_to_virt(here[2]))->skb;
- 		__net_timestamp(skb);
- #if 0
--printk("[-3..0] 0x%08lx 0x%08lx 0x%08lx 0x%08lx\n",((unsigned *) skb->data)[-3],
-+		printk("[-3..0] 0x%08lx 0x%08lx 0x%08lx 0x%08lx\n",((unsigned *) skb->data)[-3],
-   ((unsigned *) skb->data)[-2],((unsigned *) skb->data)[-1],
-   ((unsigned *) skb->data)[0]);
- #endif
- 		EVENT("skb 0x%lx, here 0x%lx\n",(unsigned long) skb,
- 		    (unsigned long) here);
- #if 0
--printk("dummy: 0x%08lx, 0x%08lx\n",dummy[0],dummy[1]);
-+		printk("dummy: 0x%08lx, 0x%08lx\n",dummy[0],dummy[1]);
- #endif
- 		size = error ? 0 : ntohs(((__be16 *) skb->data)[cells*
- 		    ATM_CELL_PAYLOAD/sizeof(u16)-3]);
-@@ -664,7 +664,7 @@ static int do_tx(struct sk_buff *skb)
- 		EVENT("dsc (0x%lx)\n",(unsigned long) dsc,0);
- 	}
- 	else {
--printk("NONONONOO!!!!\n");
-+		printk("NONONONOO!!!!\n");
- 		dsc = NULL;
- #if 0
- 		u32 *put;
-diff --git a/drivers/net/ethernet/dec/tulip/de4x5.c b/drivers/net/ethernet/dec/tulip/de4x5.c
-index b125d7faefdf..155cfe8800cd 100644
---- a/drivers/net/ethernet/dec/tulip/de4x5.c
-+++ b/drivers/net/ethernet/dec/tulip/de4x5.c
-@@ -3169,7 +3169,7 @@ dc2114x_autoconf(struct net_device *dev)
- 
-     default:
- 	lp->tcount++;
--printk("Huh?: media:%02x\n", lp->media);
-+	printk("Huh?: media:%02x\n", lp->media);
- 	lp->media = INIT;
- 	break;
-     }
-diff --git a/drivers/net/sb1000.c b/drivers/net/sb1000.c
-index e88af978f63c..54a7c7613434 100644
---- a/drivers/net/sb1000.c
-+++ b/drivers/net/sb1000.c
-@@ -760,7 +760,7 @@ sb1000_rx(struct net_device *dev)
- 
- 	insw(ioaddr, (unsigned short*) st, 1);
- #ifdef XXXDEBUG
--printk("cm0: received: %02x %02x\n", st[0], st[1]);
-+	printk("cm0: received: %02x %02x\n", st[0], st[1]);
- #endif /* XXXDEBUG */
- 	lp->rx_frames++;
- 
-@@ -805,7 +805,7 @@ printk("cm0: received: %02x %02x\n", st[0], st[1]);
- 		/* get data length */
- 		insw(ioaddr, buffer, NewDatagramHeaderSize / 2);
- #ifdef XXXDEBUG
--printk("cm0: IP identification: %02x%02x  fragment offset: %02x%02x\n", buffer[30], buffer[31], buffer[32], buffer[33]);
-+		printk("cm0: IP identification: %02x%02x  fragment offset: %02x%02x\n", buffer[30], buffer[31], buffer[32], buffer[33]);
- #endif /* XXXDEBUG */
- 		if (buffer[0] != NewDatagramHeaderSkip) {
- 			if (sb1000_debug > 1)
-diff --git a/drivers/parisc/iosapic.c b/drivers/parisc/iosapic.c
-index 8a3b0c3a1e92..5d27c23e6429 100644
---- a/drivers/parisc/iosapic.c
-+++ b/drivers/parisc/iosapic.c
-@@ -633,7 +633,7 @@ static void iosapic_unmask_irq(struct irq_data *d)
- 	printk("\n");
- }
- 
--printk("iosapic_enable_irq(): sel ");
-+	printk("iosapic_enable_irq(): sel ");
- {
- 	struct iosapic_info *isp = vi->iosapic;
- 
-@@ -642,7 +642,7 @@ printk("iosapic_enable_irq(): sel ");
- 		printk(" %x", d1);
- 	}
- }
--printk("\n");
-+	printk("\n");
- #endif
- 
- 	/*
-diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
-index dce4cdf786cd..c3381facdfc5 100644
---- a/drivers/parisc/sba_iommu.c
-+++ b/drivers/parisc/sba_iommu.c
-@@ -1550,7 +1550,7 @@ static void sba_hw_init(struct sba_device *sba_dev)
- 
- 
- #if 0
--printk("sba_hw_init(): mem_boot 0x%x 0x%x 0x%x 0x%x\n", PAGE0->mem_boot.hpa,
-+	printk("sba_hw_init(): mem_boot 0x%x 0x%x 0x%x 0x%x\n", PAGE0->mem_boot.hpa,
- 	PAGE0->mem_boot.spa, PAGE0->mem_boot.pad, PAGE0->mem_boot.cl_class);
- 
- 	/*
--- 
-2.25.1
-
-
+> active. The caller will be forced to allocate one page at a time incurring
+> a performance penalty but PAGE_OWNER is already a performance penalty.
+> 
+> Fixes: dbbee9d5cd83 ("mm/page_alloc: convert per-cpu list protection to local_lock")
+> Reported-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+> Reported-by: "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+> Reported-and-tested-by: syzbot+127fd7828d6eeb611703@syzkaller.appspotmail.com
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> ---
+>  mm/page_alloc.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 3b97e17806be..6ef86f338151 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -5239,6 +5239,18 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>  	if (nr_pages - nr_populated == 1)
+>  		goto failed;
+>  
+> +#ifdef CONFIG_PAGE_OWNER
+> +	/*
+> +	 * PAGE_OWNER may recurse into the allocator to allocate space to
+> +	 * save the stack with pagesets.lock held. Releasing/reacquiring
+> +	 * removes much of the performance benefit of bulk allocation so
+> +	 * force the caller to allocate one page at a time as it'll have
+> +	 * similar performance to added complexity to the bulk allocator.
+> +	 */
+> +	if (static_branch_unlikely(&page_owner_inited))
+> +		goto failed;
+> +#endif
+> +
+>  	/* May set ALLOC_NOFRAGMENT, fragmentation will return 1 page. */
+>  	gfp &= gfp_allowed_mask;
+>  	alloc_gfp = gfp;
+> 
+Acked-by: Rafael Aquini <aquini@redhat.com>
 
