@@ -2,119 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D8E3BF4D1
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 06:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1737C3BF4D3
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 06:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229605AbhGHEhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 00:37:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58266 "EHLO
+        id S229624AbhGHEih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 00:38:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhGHEhE (ORCPT
+        with ESMTP id S229482AbhGHEih (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 00:37:04 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35851C061574;
-        Wed,  7 Jul 2021 21:34:23 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id b2so7166918ejg.8;
-        Wed, 07 Jul 2021 21:34:23 -0700 (PDT)
+        Thu, 8 Jul 2021 00:38:37 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA05C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 21:35:55 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id z18-20020a9d7a520000b02904b28bda1885so3148283otm.7
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 21:35:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=DZpADzPkllhB2f2eevjE66dy2/DnKutR4bBIj2mC0zE=;
-        b=HJ07gHdCtEklVmkp4xRYgIPUAD1HZjREgIW3OpJHgt4qXJpC5lFaYD8Ws1nxl82O5t
-         v+y2PCjnxaCmhCXhyDcryaFWrUajiTKSJIl/VIPLcpNHBUULHgfShO101pFa0wZmridA
-         h78fPgrFXJQ+2f8AwVKD/DIDdmECtjJpoPDmQdztLiHHI7eOT3s9Cacqr8BdZQyZoF4L
-         qNzftyyDdT0fBg+eSuJ0VNf5v6saBnI4k3iVC9vAEKXmW10KQQh94LY1gI6dQaBVbHZR
-         RxMKoBfID8csPYIXn+512I/Yt+qGGzF702arAv/fUMLqIrLOEQo665o9OquAWkUkEJMM
-         jndA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IfQ8PSVhuZ6L8Wdvtm/o1xt0WVv9JVjQWBs6sIfflpw=;
+        b=czj3Bg3UkwAJ2FaKsXlvtboq/0UeWCjH+oJ7zB7j5BstzyX9WhzCvWnhb2S7es2gf/
+         qDYrKfpA1nCggf6H1R5Bx6DWE5jMNvHeIiWuet8vmoUGB6t3+JsdZbQom+aQhFirYIlw
+         lk5k94QPLJXXCSi9P3ZutSP7sC4+t6g39imBzZcY/TKdeDUEkg2AXjYD9zj1A5HLQgTq
+         cvTYB9hlVkZ7VN9Rhg/HJtIrSoGMzVIjOc7YDQkNmAqGdyZgJrXTcAlbhd6Z1KWjNLVv
+         odpNJfg1EFnQcdJFvXpCKm19UXyToFmeNmvTEf9KM7qSyLa3ccLHvJzQTl2ndJNgd6ri
+         csNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=DZpADzPkllhB2f2eevjE66dy2/DnKutR4bBIj2mC0zE=;
-        b=EsHRFWP46FONEJbQafzMXsXIc3dfCIAiSuuRAsAO1Gi5Bfe7DnZ7T8dNMBdhSESC3N
-         dm17sjySRkTvy9MaEI/DOiiMXrPkLKFUhZqKQD5ekJ38/dg1WAc+3dbmpjcBmNFrpID+
-         nLOsm04FbvE6HK1hm1DV0NFaQcsbtomMtgAgIGn+60lQX4XNBQgrO8h34Mdco89mGuXb
-         8z6O+/5EcsZJWMcOi8Tnwg/Eovv9FbmoB8avc/Khv2w3mi3bhtrKlmON8drteRdLEY4h
-         vPeHKilom4uF5tPZdVViRyxrlSm0CgJd7NOR9m36MtxtqrIL3TBxfslMMKEtd9EUr/cR
-         ltqQ==
-X-Gm-Message-State: AOAM533zYdDj7h4f7v42D6K0Zce2bAnd/wvWu5slurWc2V8lkuOhKy6R
-        doFB3IH/EwWJ0Bjyl4lqWcAXqSisJC4WeJtX9Q5d4SzhZY+fWK76
-X-Google-Smtp-Source: ABdhPJzssqKIKBytGh1QuCXAmejrZd+4ZlIpiWHBYBOqgXdru/TvdJxgKsfMyuHooVJ4FOFPDIFjx5btkZqfgludPPs=
-X-Received: by 2002:a17:906:3699:: with SMTP id a25mr22145621ejc.452.1625718861821;
- Wed, 07 Jul 2021 21:34:21 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IfQ8PSVhuZ6L8Wdvtm/o1xt0WVv9JVjQWBs6sIfflpw=;
+        b=G2SbMhPbuwKPUItHmZ2r5jjAq79syTrDjQIJtmKtSS3JufFhVI6cVK0/MttpMvpvWJ
+         i+muE3O9cdW0XFYx8EbIv27PcagfzTsuukHPSMsZ2x41dGEUDE5ZAHnzuJirc/TEyqMo
+         6bDc/d24ECXuOPl9xm7Tlyz6lGWwCXVqnnL0r3lm2hgpqLG2SeAKMpiWgQiXtdwvxYUN
+         DYPpCv68OCgxJFNvGxorvh/RfA+JI/dcWP6S2kBXGPlhSdrVXDSmHprhWZIU2lJ8sOvw
+         O9W5qqvqdvNzbpL0SR0IhtmFip7DzemJKp5gOZR6J87hftuv+tPUi+Hf0qOXE5jxPgea
+         fjAg==
+X-Gm-Message-State: AOAM531g5SvOUxkrEss1PX3uvaagxztynZLsvq0cgb/SYvBTkQaNpQ9G
+        0UAEMo3ybCr7t28l1sA/XpJcXYmNKAU2tA==
+X-Google-Smtp-Source: ABdhPJwGRenAwOfhQnQ3yXcVmV5j8ioSMHQoRYSsO/3D4uWIpOMW3epdehI1Q6E9f8QSvQueuTvkkQ==
+X-Received: by 2002:a9d:634d:: with SMTP id y13mr22566972otk.294.1625718955094;
+        Wed, 07 Jul 2021 21:35:55 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id o26sm325734oic.12.2021.07.07.21.35.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 21:35:54 -0700 (PDT)
+Date:   Wed, 7 Jul 2021 23:35:52 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] soc: qcom: rpmhpd: Use corner in power_off
+Message-ID: <YOaAqAqldq3Hyiva@yoga>
+References: <20210703005416.2668319-1-bjorn.andersson@linaro.org>
+ <20210703005416.2668319-2-bjorn.andersson@linaro.org>
+ <CAE-0n50EvG4qV0n+Ag+dvFxKKasnUzwH=MA+f-jsgDdBqaqziQ@mail.gmail.com>
 MIME-Version: 1.0
-From:   iLifetruth <yixiaonn@gmail.com>
-Date:   Thu, 8 Jul 2021 12:33:47 +0800
-Message-ID: <CABv53a8jyUXns9yu3xyd71_R+nNerU+Xj4i7a4rcZUH0bd52kw@mail.gmail.com>
-Subject: crypto: prefix additional module autoloading with "crypto-"
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Qiang Liu <cyruscyliu@gmail.com>, yajin@vm-kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAE-0n50EvG4qV0n+Ag+dvFxKKasnUzwH=MA+f-jsgDdBqaqziQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, in the latest version of linux kernel, we may have found some
-additional incomplete fixed crypto-related modules related to
-CVE-2013-7421.
+On Wed 07 Jul 19:21 CDT 2021, Stephen Boyd wrote:
 
-==========
-The upstream commit 5d26a105b5a7 ("crypto: prefix module autoloading
-with "crypto-"")  provided the fixing patch for CVE-2013-7421 about 7
-years ago on 2014-11-24.
+> Quoting Bjorn Andersson (2021-07-02 17:54:15)
+> > rpmhpd_aggregate_corner() takes a corner as parameter, but in
+> > rpmhpd_power_off() the code requests the level of the first corner
+> > instead.
+> >
+> > In all (known) current cases the first corner has level 0, so this
+> > change should be a nop, but in case that there's a power domain with a
+> > non-zero lowest level this makes sure that rpmhpd_power_off() actually
+> > requests the lowest level - which is the closest to "power off" we can
+> > get.
+> >
+> > While touching the code, also skip the unnecessary zero-initialization
+> > of "ret".
+> >
+> > Fixes: 279b7e8a62cc ("soc: qcom: rpmhpd: Add RPMh power domain driver")
+> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > ---
+> 
+> I think this is why qcom folks talk about "virtual corner" and "physical
+> corner" because there's the one in command DB and the one in hardware.
 
-This patch changed the automatic module loading when requesting crypto
-algorithms to prefix all module requests with "crypto-", so we can
-never run the risk of exposing module auto-loading to userspace via a
-crypto API, as demonstrated by Mathias Krause:
-        https://lkml.org/lkml/2013/3/4/70
+I think the driver uses "level" and "corner" to denote the two different
+number spaces, so I think we're good...now that we after this patch
+don't pass a "level" as "corner" during power_off ;)
 
-=========
-And the common fix pattern we found in each crypto-related module is as follows:
-1. linux/drivers/crypto/padlock-aes.c
-       -MODULE_ALIAS("aes");
-       +MODULE_ALIAS_CRYPTO("aes");
+> Maybe we should change rpmhpd_aggregate_corner() to call the argument
+> 'vcorner'?
 
-or in another module:
+So "virtual corner" is "corner" and "physical corner" is level? I.e. 256
+is a "physical corner"?
 
-2. linux/drivers/crypto/qat/qat_common/adf_ctl_drv.c
-      -MODULE_ALIAS("intel_qat");
-      +MODULE_ALIAS_CRYPTO("intel_qat");
-...
+Or did you get the suggestion backwards?
 
-==========
-Even though commit 5d26a105b5a7 added those aliases for a large number
-of modules,  it is still missing some newly added crypto-related
-modules.
-For example:
-1. for file linux/drivers/crypto/amcc/crypto4xx_trng.c in line 129,
-Module_ALIAS is used instead of MODULE_ALIAS_CRYPTO
-           MODULE_ALIAS("ppc4xx_rng");
-     In fact, ppc4xx-rng was integrated into crypto4xx on 2016-04-18
-by commit 5343e674f32fb8, which was committed about 2 years later than
-the security bug fixing patch(5d26a105b5a7) committed on 2014-11-24
+> Unfortunately we can't really build a type system here to
+> make this problem easy to catch with a mismatched type, unless there's
+> some sort of typedef trick we can play?
+> 
 
-More modules that may not have been fixed are as follows:
-2. linux/crypto/crypto_user_base.c
-        MODULE_ALIAS("net-pf-16-proto-21");
-3. linux/drivers/crypto/mxs-dcp.c
-        MODULE_ALIAS("platform:mxs-dcp");
-4. linux/drivers/crypto/omap-sham.c
-        MODULE_ALIAS("platform:omap-sham");
-5. linux/drivers/crypto/qcom-rng.c
-        MODULE_ALIAS("platform:" KBUILD_MODNAME);
-6. linux/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-core.c
-        MODULE_ALIAS("platform:sun4i-ss");
-7. linux/drivers/crypto/marvell/cesa/cesa.c
-        MODULE_ALIAS("platform:mv_crypto");
-8. linux/drivers/crypto/qce/core.c
-        MODULE_ALIAS("platform:" KBUILD_MODNAME);
+s/i/corner/ in rpmhpd_set_performance_state() would further enforce the
+naming scheme used and reduce the risk for future confusion.
 
-==========
-Now, shall we port the fix pattern to these modules from the patch of
-CVE-2013-7421?
-We would like to contact you to confirm this problem.
+But we did just squash the final bug... ;)
 
-Thank you!
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+
+Thanks,
+Bjorn
