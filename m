@@ -2,44 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A503C1AA3
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 22:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 794B93C1AA1
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 22:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231290AbhGHUmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 16:42:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34936 "EHLO mail.kernel.org"
+        id S231256AbhGHUms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 16:42:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230475AbhGHUmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230461AbhGHUmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 8 Jul 2021 16:42:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 40DD86190A;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 32BEA616E9;
         Thu,  8 Jul 2021 20:40:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1625776804;
-        bh=HxXM0BT8B6n5Hg+8DWnwAPmAzW1TaFIxFUzbeyloznk=;
+        bh=+5neBRC3/ETp/zdUfgyRaV6iyujCORLImXx5nfaB2ag=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=eaYUhbOFfMioEmaf6uYdxTueSOlcpxYgVZ5caNAsTmdSAMoK8HhtgCJ04f230MKvc
-         qq8/ZucgAM6XsLFt5uJDncPqLWXfROMTTb6fhLa1RNQzga0rgGW8xEm58+1XHoW8db
-         qAhiXA3n6cwHGIKztywDiMWZ5gjhUnH8SEPv+qI4JTmGo4sLKRFnvwKXSjeJUQAkrE
-         /JH0GbwKEoHGEDPk7iVacQ7bCYajPavIwmNrro99GVqPDTvGreFDssIhPkemYceX9m
-         1ZsdC8VOgMzjxS7uFiaBGQdyKiyeFS6Dt2/1OdPRoc05Jooe5hPs9kB/kcikZ8lsuf
-         Mkxr4l0KmXxsQ==
+        b=Kuc0VWlqirRzd32TEuGkew1Q/GwXjWstMEpmJcChNqvVisRGqIbvT5lEG6xCmXiW4
+         wggIkxfG5+N5j3sJ2lNPOB8LVdEt5T3cyzkbsHIdFuyy+PDpIWfFH3DotoYMp5rpiG
+         GKkLn/jOHIiXJaAWFBYV1CqSnqzCL1WDfLXk4UjdBQpBmXwzi4/aG60r27Y0poIRR2
+         OPPSueoa/VZCIYhzH1VTt1Do+h3Ka90WKqQKBK+N/KBfO9np93jn7SKQwJqHldQEJl
+         xp1A1ra//y1GAx3HrSmFSBRfdD0jsZcwWjIXlGdeoSdmJUW6OlbDMOg3/KEvvzc17D
+         BXUZlQs0DHyEg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2A4DA60A4D;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1F95F60A69;
         Thu,  8 Jul 2021 20:40:04 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] atl1c: fix Mikrotik 10/25G NIC detection
+Subject: Re: [PATCH] mt76: mt7921: continue to probe driver when fw already
+ downloaded
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162577680416.12322.10574184464851941517.git-patchwork-notify@kernel.org>
+Message-Id: <162577680412.12322.7727150066013328820.git-patchwork-notify@kernel.org>
 Date:   Thu, 08 Jul 2021 20:40:04 +0000
-References: <20210708094904.3613365-1-gatis@mikrotik.com>
-In-Reply-To: <20210708094904.3613365-1-gatis@mikrotik.com>
-To:     Gatis Peisenieks <gatis@mikrotik.com>
-Cc:     chris.snook@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        hkallweit1@gmail.com, jesse.brandeburg@intel.com,
-        dchickles@marvell.com, tully@mikrotik.com, eric.dumazet@gmail.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210708131710.695595-1-aaron.ma@canonical.com>
+In-Reply-To: <20210708131710.695595-1-aaron.ma@canonical.com>
+To:     Aaron Ma <aaron.ma@canonical.com>
+Cc:     nbd@nbd.name, lorenzo.bianconi83@gmail.com, ryder.lee@mediatek.com,
+        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
+        matthias.bgg@gmail.com, sean.wang@mediatek.com,
+        Soul.Huang@mediatek.com, deren.wu@mediatek.com,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -48,19 +52,20 @@ Hello:
 
 This patch was applied to netdev/net.git (refs/heads/master):
 
-On Thu,  8 Jul 2021 12:49:04 +0300 you wrote:
-> Since Mikrotik 10/25G NIC MDIO op emulation is not 100% reliable,
-> on rare occasions it can happen that some physical functions of
-> the NIC do not get initialized due to timeouted early MDIO op.
+On Thu,  8 Jul 2021 21:17:10 +0800 you wrote:
+> When reboot system, no power cycles, firmware is already downloaded,
+> return -EIO will break driver as error:
+> mt7921e: probe of 0000:03:00.0 failed with error -5
 > 
-> This changes the atl1c probe on Mikrotik 10/25G NIC not to
-> depend on MDIO op emulation.
+> Skip firmware download and continue to probe.
+> 
+> Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
 > 
 > [...]
 
 Here is the summary with links:
-  - [net] atl1c: fix Mikrotik 10/25G NIC detection
-    https://git.kernel.org/netdev/net/c/b9d233ea21f1
+  - mt76: mt7921: continue to probe driver when fw already downloaded
+    https://git.kernel.org/netdev/net/c/c34269041185
 
 You are awesome, thank you!
 --
