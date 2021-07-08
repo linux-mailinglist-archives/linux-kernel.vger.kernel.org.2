@@ -2,182 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 241143C1BF5
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 01:22:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B09C3C1BF9
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 01:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229662AbhGHXYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 19:24:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54902 "EHLO
+        id S229701AbhGHXZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 19:25:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhGHXYv (ORCPT
+        with ESMTP id S229595AbhGHXZi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 19:24:51 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92DBDC061574;
-        Thu,  8 Jul 2021 16:22:08 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id x21-20020a17090aa395b029016e25313bfcso5027423pjp.2;
-        Thu, 08 Jul 2021 16:22:08 -0700 (PDT)
+        Thu, 8 Jul 2021 19:25:38 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 213F0C06175F
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 16:22:55 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id i5-20020a9d68c50000b02904b41fa91c97so3184199oto.5
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 16:22:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1F9dKEEJP5rMuVUz8hE/v38l0ggRQbQaXsZHB7Gt43A=;
-        b=QR+A/5b5j6EJa6bKuInDO3GhKDoEsSTDTrdSSN1t8SvnPtZXAuSWHKNhV4q5CGmPmH
-         Y0bOYL0YWUjEKRRPxQ0F1FINpEXluOtsVShQlQ3kau1ECjhjGybbefut6aKQ9mkLOS/G
-         vtqooQNf1y6VBa1O/iNDcZecHaIX/dprjwdQFgTdTYDxjMm3vfFzWwwkqJeEpRPYOwL1
-         8/cxe2viy7bb4znbwn7rdO4VDH3Z/Dt40IB0IMfrGSTHtfa4ec9aMdm6xTvuFDbk3cDP
-         P70XWlZKStia0oWrsf8QDqYppHCeBaffTw9yxBJBAqR8Ljnf5p4n4M03JOwXNhlkatsd
-         vKsg==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=erPEQ5qusFdUetma23ocZGx6VyJVWOGasdNhx9ZlPas=;
+        b=bbkWaV/PVCApTEkLGIr7Q6qml+NjjkYBHxxln82BTmc9cUbq9U+InpMo+ndTTLI3re
+         WL7Wm7LTmXSpuVv4gxUVcRuj5nSDvJsiyxWOIsevLHq2HUmjbY2xoSTbSTrwGzGaqCrP
+         GtK3nYsSsgjONgyB6ATgfpYs96JQF0wQPjR38=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1F9dKEEJP5rMuVUz8hE/v38l0ggRQbQaXsZHB7Gt43A=;
-        b=mq6Fra4dQad1cvipHc03dNv8plZOfPNrwUz3eWh5MJh7iPvxXkmYFVUisT1IpYd7kG
-         bRZ73fvDTLI4tUFf5ij4A3kT+aYhFejDC8iCKdfDTQtgP+GTA4SslN5PKqYPWRosenPJ
-         zFMYGXCFi0YPrs0m3B0KWJHn3Gj/uC5uGQWT9deQYzkQZHPzfDv0xPA2LEtb6gPdnGKv
-         WgZa73pdRR7XjTklWqpVZsGwMsynDFIVM//S1h7A6dcdmpyUqS7b91OKHjcOkmHEsqPF
-         DgJwFMoq8d5v4b6tALU3gyx+/nKOR3xdDMTdXmmFuoVybtFr+JliKeb9+FSOOX3YV07g
-         YmJQ==
-X-Gm-Message-State: AOAM532lwNNur+sY2VhBlqzHTtQuDbpBQIIJ4iznGdJ7GrcVNT77i+wZ
-        8+BiowW/VzTya27WRdUzFKmrYUMfd2x52A==
-X-Google-Smtp-Source: ABdhPJyjESjFMCPgWKYtRqMbUx//a1oD0Jh7tFwr0IzCJXpnAg/lKtNz7EviGNzKI38GfjJY3q3+zA==
-X-Received: by 2002:a17:902:a986:b029:129:dcf5:b585 with SMTP id bh6-20020a170902a986b0290129dcf5b585mr4705917plb.30.1625786527768;
-        Thu, 08 Jul 2021 16:22:07 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id y32sm3901121pfa.208.2021.07.08.16.22.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Jul 2021 16:22:07 -0700 (PDT)
-Subject: Re: [PATCH net] net: phy: reconfigure PHY WOL in resume if WOL option
- still enabled
-To:     "Ismail, Mohammad Athari" <mohammad.athari.ismail@intel.com>,
-        Andrew Lunn <andrew@lunn.ch>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210708004253.6863-1-mohammad.athari.ismail@intel.com>
- <YOZTmfvVTj9eo+to@lunn.ch> <4e159b98-ec02-33b7-862a-0e35832c3a5f@gmail.com>
- <CO1PR11MB477144A2A055B390825A9FF4D5199@CO1PR11MB4771.namprd11.prod.outlook.com>
- <9871a015-bcfb-0bdb-c481-5e8f2356e5ba@gmail.com>
- <CO1PR11MB47719C284F178753C916519FD5199@CO1PR11MB4771.namprd11.prod.outlook.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <f167de1d-94cc-7465-2e6f-e1e71b66b009@gmail.com>
-Date:   Thu, 8 Jul 2021 16:22:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=erPEQ5qusFdUetma23ocZGx6VyJVWOGasdNhx9ZlPas=;
+        b=ui4MHUiWzDR7Ce4BcOP6h/lr2F+OAdcPdJxH11vsWjo9Hk01MeQtnpGGVF/Rt3L+7u
+         UTvvz1T8LEJaH1HPLn2F6oz6Dxifzmh7QIXAicbMBlF2pNjWaAupxcAkxHpYCO1mbU6F
+         h/Wloha+Gxx0a0xdKHv8XT9hVSoQmEg4QqBsqLFnQiINEcpUSj9IpiIWbXDvGqJ5gHIY
+         t2NleBzLo/pNAQw/oENaZZE+HeJojQFjnBme3IEpVV8NBKYdFRjusr6jd3pJLvOUwXLC
+         VDaO9qqWClHmyUVmZKUOXz+gGeAtBdovapsBNlX8Vwo3vdc+tI814PAKvwgQ+ZcRff0r
+         cnHw==
+X-Gm-Message-State: AOAM533FZMdFUgW0rDIchjkHNAUFpNE1HWibLmmx3y9Z0MlSXkCAnu8l
+        1ihRVvHOPLetmubESijyq/oEM5gGz2plo6Y9MF5DCw==
+X-Google-Smtp-Source: ABdhPJwzNo2G5Ic4IAhAIUd0OQNH7pT10e/9fRFyYaiHj2yruNoCtHSEn6HGIP/M+B0rBbuqWBW4dXscBlQUrVRZXuM=
+X-Received: by 2002:a9d:8c7:: with SMTP id 65mr26143667otf.25.1625786574524;
+ Thu, 08 Jul 2021 16:22:54 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 8 Jul 2021 23:22:54 +0000
 MIME-Version: 1.0
-In-Reply-To: <CO1PR11MB47719C284F178753C916519FD5199@CO1PR11MB4771.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1624015734-16778-2-git-send-email-okukatla@codeaurora.org>
+References: <1624015734-16778-1-git-send-email-okukatla@codeaurora.org> <1624015734-16778-2-git-send-email-okukatla@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 8 Jul 2021 23:22:54 +0000
+Message-ID: <CAE-0n51btkt9ehEFrm+WucP90ZufKw1PEQqzNGVDRy51jByXkw@mail.gmail.com>
+Subject: Re: [V4 1/3] dt-bindings: interconnect: Add EPSS L3 DT binding on SC7280
+To:     Andy Gross <agross@kernel.org>, Georgi Djakov <djakov@kernel.org>,
+        Odelu Kukatla <okukatla@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sibi Sankar <sibis@codeaurora.org>, bjorn.andersson@linaro.org,
+        devicetree@vger.kernel.org, evgreen@google.com,
+        georgi.djakov@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Cc:     seansw@qti.qualcomm.com, elder@linaro.org,
+        linux-arm-msm-owner@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/8/21 4:20 PM, Ismail, Mohammad Athari wrote:
-> 
-> 
->> -----Original Message-----
->> From: Florian Fainelli <f.fainelli@gmail.com>
->> Sent: Friday, July 9, 2021 12:42 AM
->> To: Ismail, Mohammad Athari <mohammad.athari.ismail@intel.com>;
->> Andrew Lunn <andrew@lunn.ch>
->> Cc: Heiner Kallweit <hkallweit1@gmail.com>; David S . Miller
->> <davem@davemloft.net>; Russell King <linux@armlinux.org.uk>; Jakub
->> Kicinski <kuba@kernel.org>; netdev@vger.kernel.org; linux-
->> kernel@vger.kernel.org
->> Subject: Re: [PATCH net] net: phy: reconfigure PHY WOL in resume if WOL
->> option still enabled
->>
->> On 7/8/21 3:10 AM, Ismail, Mohammad Athari wrote:
->>>
->>>
->>>> -----Original Message-----
->>>> From: Florian Fainelli <f.fainelli@gmail.com>
->>>> Sent: Thursday, July 8, 2021 10:49 AM
->>>> To: Andrew Lunn <andrew@lunn.ch>; Ismail, Mohammad Athari
->>>> <mohammad.athari.ismail@intel.com>
->>>> Cc: Heiner Kallweit <hkallweit1@gmail.com>; David S . Miller
->>>> <davem@davemloft.net>; Russell King <linux@armlinux.org.uk>; Jakub
->>>> Kicinski <kuba@kernel.org>; netdev@vger.kernel.org;
->>>> linux-kernel@vger.kernel.org
->>>> Subject: Re: [PATCH net] net: phy: reconfigure PHY WOL in resume if
->>>> WOL option still enabled
->>>>
->>>>
->>>>
->>>> On 7/7/2021 6:23 PM, Andrew Lunn wrote:
->>>>> On Thu, Jul 08, 2021 at 08:42:53AM +0800,
->>>> mohammad.athari.ismail@intel.com wrote:
->>>>>> From: Mohammad Athari Bin Ismail
->> <mohammad.athari.ismail@intel.com>
->>>>>>
->>>>>> When the PHY wakes up from suspend through WOL event, there is a
->>>>>> need to reconfigure the WOL if the WOL option still enabled. The
->>>>>> main operation is to clear the WOL event status. So that,
->>>>>> subsequent WOL event can be triggered properly.
->>>>>>
->>>>>> This fix is needed especially for the PHY that operates in PHY_POLL
->>>>>> mode where there is no handler (such as interrupt handler)
->>>>>> available to clear the WOL event status.
->>>>>
->>>>> I still think this architecture is wrong.
->>>>>
->>>>> The interrupt pin is wired to the PMIC. Can the PMIC be modelled as
->>>>> an interrupt controller? That would allow the interrupt to be
->>>>> handled as normal, and would mean you don't need polling, and you
->>>>> don't need this hack.
->>>>
->>>> I have to agree with Andrew here, and if the answer is that you
->>>> cannot model this PMIC as an interrupt controller, cannot the
->>>> config_init() callback of the driver acknowledge then disable the
->>>> interrupts as it normally would if you were cold booting the system?
->>>> This would also allow you to properly account for the PHY having woken-
->> up the system.
->>>
->>> Hi Florian,
->>>
->>> Thank you for the suggestion.
->>> If I understand correctly, you are suggesting to acknowledge and clear the
->> WOL status in config_init() callback function. Am I correct?
->>> If yes, I did try to add a code to clear WOL status in marvell_config_init()
->> function (we are using Marvell Alaska 88E1512). But, I found that, if the
->> platform wake up from S3(mem) or S4(disk), the config_init() callback
->> function is not called. As the result, WOL status not able to be cleared in
->> config_init().
->>>
->>> Please advice if you any suggestion.
->>
->> This is presumably that you are seeing with stmmac along with phylink?
->>
->> During S3 resume you should be going back to the kernel provided re-entry
->> point and resume where we left (warm boot) so
->> mdio_bus_phy_resume() should call phy_init_hw() which calls config_init(),
->> have you traced if that is somehow not happening?
->>
->> During S4 resume (disk), I suppose that you have to involve the boot loader
->> to restore the DRAM image from the storage disk, and so that does
->> effectively look like a quasi cold boot from the kernel? If so, that should still
->> lead to config_init() being called when the PHY is attached, no?
-> 
-> Hi Florian,
-> 
-> This what I understand from the code flow.
-> 
-> With WOL enabled through ethtool, when the system is put into S3 or S4,
-> this flag netdev->wol_enabled is set true and cause  mdio_bus_phy_may_suspend()
-> to return false. So, the  phydev->suspended_by_mdio_bus remain as 0 when
-> exiting from mdio_bus_phy_suspend().
-> 
-> During wake up from S3 or S4, as phydev->suspended_by_mdio_bus remain as 0/false
-> when mdio_bus_phy_resume() is called, it will jump to no_resume skipping
-> phy_init_hw() as well as phy_resume().
+Quoting Odelu Kukatla (2021-06-18 04:28:52)
+> Add Epoch Subsystem (EPSS) L3 interconnect provider binding on SC7280
+> SoCs.
+>
+> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
+> ---
+>  .../devicetree/bindings/interconnect/qcom,osm-l3.yaml          |  9 ++++++++-
+>  include/dt-bindings/interconnect/qcom,osm-l3.h                 | 10 +++++++++-
+>  2 files changed, 17 insertions(+), 2 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml b/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml
+> index d6a95c3..9f67c8e 100644
+> --- a/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml
+> +++ b/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml
+> @@ -18,12 +18,19 @@ properties:
+>    compatible:
+>      enum:
+>        - qcom,sc7180-osm-l3
+> +      - qcom,sc7280-epss-l3
+>        - qcom,sdm845-osm-l3
+>        - qcom,sm8150-osm-l3
+>        - qcom,sm8250-epss-l3
+>
+>    reg:
+> -    maxItems: 1
+> +    minItems: 1
+> +    maxItems: 4
 
-Ah yes you are right, we just skip resume in that case. OK let me think
-about it some more.
--- 
-Florian
+Can we base this on the compatible string so that only sc7280-epss-l3
+requires 4 items? and then the others require 1 reg property?
+
+> +    items:
+> +      - description: OSM clock domain-0 base address and size
+> +      - description: OSM clock domain-1 base address and size
+> +      - description: OSM clock domain-2 base address and size
+> +      - description: OSM clock domain-3 base address and size
+>
+>    clocks:
+>      items:
