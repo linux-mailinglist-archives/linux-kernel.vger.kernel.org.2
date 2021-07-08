@@ -2,93 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB0B23C1B0D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 23:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C0A3C1B0A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 23:34:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231344AbhGHVg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 17:36:59 -0400
-Received: from mga03.intel.com ([134.134.136.65]:49848 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231338AbhGHVg5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 17:36:57 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10039"; a="209643870"
-X-IronPort-AV: E=Sophos;i="5.84,225,1620716400"; 
-   d="scan'208";a="209643870"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 14:34:11 -0700
-X-IronPort-AV: E=Sophos;i="5.84,225,1620716400"; 
-   d="scan'208";a="482685301"
-Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 14:34:10 -0700
-Date:   Thu, 8 Jul 2021 14:33:44 -0700
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        "Dey, Megha" <megha.dey@intel.com>, linux-kernel@vger.kernel.org,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Van De Ven, Arjan" <arjan.van.de.ven@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: Programming PASID in IMS entries
-Message-ID: <20210708213344.GA347913@otc-nc-03>
-References: <bd509e3d-f59d-1200-44ce-93cf9132bd8c@intel.com>
- <87k0m2qzgz.ffs@nanos.tec.linutronix.de>
- <20210707221216.GA56594@otc-nc-03>
- <20210707235822.GB4459@nvidia.com>
- <20210708003335.GC56594@otc-nc-03>
- <20210708120846.GD4459@nvidia.com>
- <20210708143657.GA70042@otc-nc-03>
- <87v95kod9f.ffs@nanos.tec.linutronix.de>
+        id S231327AbhGHVgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 17:36:43 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:23257 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230508AbhGHVgm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 17:36:42 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1625780040; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=xpgLql9IbuvMj4f8z+D1UneOTXpQth+qs7ZN6prUSAk=;
+ b=U/Xu3QlGKYwg3Exf4n9yGalUJ/wTs1Pjxcmpr69aIJr4nLfg/072Y6dfbSn3rnvu84u9gUBa
+ BJOPWYlR++HvWwZKmCfIU4ZMYjVDWd3SHmIUt2FZ1gCtw/26MzBLExG84Jd8KXrGFpF8bmkj
+ YdtAa5FwGDiThq+zGNUq3QQd+Pg=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 60e76f405d0d101e386de309 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 08 Jul 2021 21:33:52
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B5ADBC433F1; Thu,  8 Jul 2021 21:33:52 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4E930C433D3;
+        Thu,  8 Jul 2021 21:33:51 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87v95kod9f.ffs@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 08 Jul 2021 14:33:51 -0700
+From:   khsieh@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run, abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        airlied@linux.ie, daniel@ffwll.ch, bjorn.andersson@linaro.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/7] drm/msm/dp: use dp_ctrl_off_link_stream during PHY
+ compliance test run
+In-Reply-To: <CAE-0n52SxJx8kOwQddWF096PsPy-0f8bDq_ss=u6i-hisD54Hg@mail.gmail.com>
+References: <1625592020-22658-1-git-send-email-khsieh@codeaurora.org>
+ <1625592020-22658-2-git-send-email-khsieh@codeaurora.org>
+ <CAE-0n52SxJx8kOwQddWF096PsPy-0f8bDq_ss=u6i-hisD54Hg@mail.gmail.com>
+Message-ID: <3492b578fdf4e59fe594fb9207782aa1@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
-
-On Thu, Jul 08, 2021 at 08:45:48PM +0200, Thomas Gleixner wrote:
-> Ashok,
+On 2021-07-08 00:03, Stephen Boyd wrote:
+> Quoting Kuogee Hsieh (2021-07-06 10:20:14)
+>> DP cable should always connect to DPU during the entire PHY compliance
+>> testing run. Since DP PHY compliance test is executed at irq_hpd event
+>> context, dp_ctrl_off_link_stream() should be used instead of 
+>> dp_ctrl_off().
+>> dp_ctrl_off() is used for unplug event which is triggered when DP 
+>> cable is
+>> dis connected.
+>> 
+>> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+>> ---
 > 
-> >> > IMS core owns the format of the entries right now vs device specific driver. 
-> >> > I suppose your use case requiring a vm_id might have a different format. 
-> >> > So this is yet another one the core needs to learn and adapt?
-> >> 
-> >> All entry format stuff is device specific, it shouldn't be in "core"
-> >> code.
-> >
-> > Well, this is how it started way back last year. 
-> >
-> > https://lore.kernel.org/lkml/158751209583.36773.15917761221672315662.stgit@djiang5-desk3.ch.intel.com/
+> Is this
 > 
-> Which is wrong on so many levels as we all know.
+> Fixes: f21c8a276c2d ("drm/msm/dp: handle irq_hpd with sink_count = 0 
+> correctly")
+> 
+> or
+> 
+> Fixes: c943b4948b58 ("drm/msm/dp: add displayPort driver support")
 
-Sorry, I was just trying to point to Jason, that its how things started.
-Since he was suggesting to have them as device specific. 
-
+should be fixes at f21c8a276c2d ("drm/msm/dp: handle irq_hpd with 
+sink_count = 0 correctly")
 
 > 
-> > Where the driver functions for mask/unmask/write_msg etc. So the core
-> > needs
-> 
-> Needs what?
+> ? It's not clear how dp_ctrl_off() was working for compliance tests
+> before commit f21c8a276c2d.
+both dp_ctrl_off() and dp_ctrl_off_link_strea() are work for 
+dp_ctrl_process_phy_test_request()
+The problem is after dp_ctrl_off(), aux channel is down, hence next phy 
+test will failed due to dpcd read failed.
+So that cable unplugged and replug back to required to run next test 
+case.
+dp_ctrl_off_link_stream() will keep aux channel up and other phy test 
+case can be continued.
 
-Fat fingered that reply.. I completed it partially but moved to a different
-sentence formation :-(
-> 
-> > So the format or layout is device specific, but core can dictate the exact
-> > message that needs to be written.
-> 
-> Sorry, I don't grok what you want to say here.
 
-Sorry it was unclear.. I meant things like compose_msg() 
 
-Cheers,
-Ashok
+>>  drivers/gpu/drm/msm/dp/dp_ctrl.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>> 
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c 
+>> b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+>> index caf71fa..27fb0f0 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
+>> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+>> @@ -1530,7 +1530,7 @@ static int 
+>> dp_ctrl_process_phy_test_request(struct dp_ctrl_private *ctrl)
+>>          * running. Add the global reset just before disabling the
+>>          * link clocks and core clocks.
+>>          */
+>> -       ret = dp_ctrl_off(&ctrl->dp_ctrl);
+>> +       ret = dp_ctrl_off_link_stream(&ctrl->dp_ctrl);
+>>         if (ret) {
+>>                 DRM_ERROR("failed to disable DP controller\n");
+>>                 return ret;
