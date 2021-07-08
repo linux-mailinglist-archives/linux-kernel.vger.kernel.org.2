@@ -2,224 +2,449 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDE8F3C1BEF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 01:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB4C63C1BF3
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 01:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbhGHXXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 19:23:38 -0400
-Received: from mga07.intel.com ([134.134.136.100]:40838 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229553AbhGHXXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 19:23:38 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10039"; a="273452102"
-X-IronPort-AV: E=Sophos;i="5.84,225,1620716400"; 
-   d="scan'208";a="273452102"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 16:20:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,225,1620716400"; 
-   d="scan'208";a="646118798"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by fmsmga006.fm.intel.com with ESMTP; 08 Jul 2021 16:20:54 -0700
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Thu, 8 Jul 2021 16:20:54 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10 via Frontend Transport; Thu, 8 Jul 2021 16:20:54 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.171)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.4; Thu, 8 Jul 2021 16:20:53 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OK45bZk022i9XIFoNZuVju1Fafrx6AJaK64mGhzCoGPzhRn4bfhH93wzdALZy1w4pVNRPTUjdGwmodza6viE2VctvsHFuVFcW4jheGKgrUmsil2Z3drSkoKHezRivLa2a2zTVrBZxOZO16DH1jJ6vB0zDjl2J491fGM+qkmBT+qDH/7Y5J/rxXcPZSJQl7EaEkz8QO3LRnoOrs1Hcw5GNxegYucIZvgE8qNJayobYrATSzfQIFIrwdDL+GDy7JNarDWHq05N5J6LVLCHhklWidutMq8CflK8dpL2PUOAOndzPayo547SBBkO0UjJs4Fpc0tvybXL/+bfQhND+SZXaw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hwe1Te685pG9C0e4IYRB7m3oo7NFyOppdZNDYQ8shak=;
- b=TRrRUoUe/zSAvTsC1b6StVfLGCzISelSHN9jZeDc3x07Pb9Lq3svaUn1deogRlCd/Oa+west0IRxMf+xqPdZSy6BcAB9rHyPj9iezBnNM9VxOp7X5zgamXI7U3D8Y4JMYdFQgB/EfET5eBGFme7/C+RXsQTw0aIaorbqBrwY/FNgBqul9iKLVbYu01JCyTHT/Q9mpVbrl5Pud6m27g5DRfSJV6r1GpT53B5Lj3QIpIWECdoQhsK8V2TgjZrOG4+QK2evZVbVexsuSZLpnVo/Dwn9Akg+3MNysuxv2J92GWIC9ddkFtzvF6jaHYqO2weRzw7ojeLaX+K53oAqFNZ+6w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hwe1Te685pG9C0e4IYRB7m3oo7NFyOppdZNDYQ8shak=;
- b=r9bZHhKqP2G/BSddVOZmt6cMbXScZvC6LL0kms/TsUHQIBC8UMLbQmACr4WWOP8UMOOh1fsIXClaVHP4/8e9pF3qxbRWioj06yrG0RSCB8RjhVFumNLcVuuvvTRRiC6XSOqrYByDlxMHiAdzAX8Ul00mYtAklrpNpg3L3+aoIXE=
-Received: from CO1PR11MB4771.namprd11.prod.outlook.com (2603:10b6:303:9f::9)
- by CO1PR11MB5170.namprd11.prod.outlook.com (2603:10b6:303:95::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20; Thu, 8 Jul
- 2021 23:20:52 +0000
-Received: from CO1PR11MB4771.namprd11.prod.outlook.com
- ([fe80::cd48:e076:4def:2290]) by CO1PR11MB4771.namprd11.prod.outlook.com
- ([fe80::cd48:e076:4def:2290%5]) with mapi id 15.20.4308.023; Thu, 8 Jul 2021
- 23:20:52 +0000
-From:   "Ismail, Mohammad Athari" <mohammad.athari.ismail@intel.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>
-CC:     Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH net] net: phy: reconfigure PHY WOL in resume if WOL option
- still enabled
-Thread-Topic: [PATCH net] net: phy: reconfigure PHY WOL in resume if WOL
- option still enabled
-Thread-Index: AQHXc5JVSuHoO6yBxk2FsVeJf8muoas4SJuAgAAXwoCAAHlYsIAAb2yAgABs+XA=
-Date:   Thu, 8 Jul 2021 23:20:52 +0000
-Message-ID: <CO1PR11MB47719C284F178753C916519FD5199@CO1PR11MB4771.namprd11.prod.outlook.com>
-References: <20210708004253.6863-1-mohammad.athari.ismail@intel.com>
- <YOZTmfvVTj9eo+to@lunn.ch> <4e159b98-ec02-33b7-862a-0e35832c3a5f@gmail.com>
- <CO1PR11MB477144A2A055B390825A9FF4D5199@CO1PR11MB4771.namprd11.prod.outlook.com>
- <9871a015-bcfb-0bdb-c481-5e8f2356e5ba@gmail.com>
-In-Reply-To: <9871a015-bcfb-0bdb-c481-5e8f2356e5ba@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1c008d0e-9a69-4c38-871a-08d9426707af
-x-ms-traffictypediagnostic: CO1PR11MB5170:
-x-microsoft-antispam-prvs: <CO1PR11MB5170CE0F16B249A011AE76DBD5199@CO1PR11MB5170.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: oXmScuHE9+LFmS2kp5K7deG5WoFbMKxONTINdRPu8CaecCeFOEmv1mZWzWFC2YSmHFlNrZoqQvutTBPtSzbHeyf2WOGYq7bN1pnOFWhlc9x7dy77ZB9dOIKzCGjRPG9KWudHQeNaQeqFIvDIFFvoqjg4NQAiCz4JmJVE8mplboo7j4zHgDYXrP3FVApGD2fHyAQ/0+5yyba+eqNmRKqABIpChRihybucYSSvVa90A9taykEjhBmMHxkBQ3MLiicjQ1P3JVj5kzE1D3wjNHuhhFSbDfECnprvP3XJ+TPAQhE2K3UAPlQgsBNEDYsNCVOFN2024AtBhFsHsLe33+R2Iz4Ko4SjH+8D4xBSebhbSpUCatV2CP/pYJSB7WIXSGVrQHLzFR43aBCzF6KHE/yievKzUwmhxpt2VSx2ga2iPsmCABLtR17ZjQ9X0Kgnh8xQ1YQXtv6RtOLC98YCg1M+4r/JQKG1lh+EEEbpEKoYmXm+yGMIP+yHrCU3XH4ttut09nwmd2cFvMjdT0QMjjPjVTNHwxKbWnWWBQhkPQJEA1INISj6DD8Pt2+Utw6yFHqbIrZPHvUIFXS7KkNjuDHKKZ9vWG17oyCGzx7CLdNal8xOGdb+uOCjm+ZWoc4MFudW0DAaWguYlevx/1izpCN88g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4771.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(376002)(366004)(346002)(396003)(26005)(66476007)(7696005)(6506007)(122000001)(71200400001)(9686003)(83380400001)(478600001)(53546011)(52536014)(316002)(38100700002)(110136005)(4326008)(33656002)(55236004)(66446008)(66946007)(55016002)(186003)(64756008)(66556008)(76116006)(86362001)(54906003)(5660300002)(2906002)(8676002)(8936002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?M3VpV2ZRRzJLRFpXbWhqaTFzSlJFSXh1SnpPR0xVY0NUWER4ZE1DbjlUdWp1?=
- =?utf-8?B?N0RuRFkxVlN0VnNyWGZvQjdwVGRoZ2VkS012VVNyV3pJR2gwbFM5OVBzOUdQ?=
- =?utf-8?B?b1dIWk5RV08yd0lyWkkxRXp2TmU1QS9sTGJ2YTZYcWQxY3ZGOWthRTZxbWMr?=
- =?utf-8?B?WnJ5aVpFeThoVXhQWEFISGpGY1JzdWcxR0NzWmpGNjBvYVZvRmxuQmY4ZENi?=
- =?utf-8?B?UXEydDNzODBvcEVwdEsrRlFCMlgweHU4ejNobGlxa3ZsS3JLNzMycWI2MkZi?=
- =?utf-8?B?dmhBa1JHVmVXeUt4VTNLWkJsaHdPa2pHcEpXQWp6S0ZCNnJpRGtpVGc5V2d2?=
- =?utf-8?B?OUxKdWFIemRNalIyNXVldnhFdUdaRzRhejVmN2tJNXNJb2tLZWxVanNacGJu?=
- =?utf-8?B?Z3ArN3lzeDNHN2JRTlFDbHhLMGxDOUVHTjl6TzFHRVpjZ3F6dE9leVNwNmJ6?=
- =?utf-8?B?cjVVYXFPRGN2V2t0cUEzSnUvV01VMlZ3NklHVVhSdnZuR2RmOXN3RHJpNzFF?=
- =?utf-8?B?NU8rRmZ4VCtXZU1iMkt5S3FzcE5FdHViNTZtMzZNYjYyYmpicUpnTDU0ejFY?=
- =?utf-8?B?Ukx3S3p1eVRZSjRRU2lDckhNSGRiTmlKTU1XSWkzOERoWDlkVlA5R0xPcy9G?=
- =?utf-8?B?eGJTQ2k4UGoxRmhsYWtRemltbzZwUk0xekozY25hVUxwWlBPZmhpWWVhdUo4?=
- =?utf-8?B?amtSemVTTW0yblNQNG9UdCtxU2pnbThtQU1pdTZtUkUvWmdXRUFiNnNnbWph?=
- =?utf-8?B?YXJGWWQrSlVXMVhjeFB5b2hkQm5oMWU2ekQ1NHpGNC94U25XVEJ6TTNxalp2?=
- =?utf-8?B?UEZ6cDhSOHZ3WFc5cmZGekNrZXkzOHBaSWFRa0p6ZHNuZmpQQXJpK1hnTjNL?=
- =?utf-8?B?dU1KaEdVaHR6MzVsakl4dmR2SC80dDd2UXVWWStxM252V201NmZmcGxocUQ5?=
- =?utf-8?B?K1YwK3dxMU5Ia2FCY2ZpU0xoQzZBUFkyV1lqYjh0UkFWQXczeTRYU2ZPRTdr?=
- =?utf-8?B?aEIvQ1Zmc0hRZ2F5ZlZBZ1dtdGNkWHdad3ZFUUhPeUt0UjhOSUhleGQrd2hl?=
- =?utf-8?B?dVpibkFRZjdOTGtlSWlaVXBpbDZZNlRCNVVhcXhaaGNOODBma0ZKTDlVYlNR?=
- =?utf-8?B?NFVYQ3FWYURMYnVlWjhMV1VIcmFsdkRhaFc3ODdKNDFwblV4dDA0S3ZWY3Rx?=
- =?utf-8?B?VlJZdDluM3hjVDkraHJaTGE5aUtGVlpmbCtDTDJzeGU5VHZvTFVrRnZEbzVU?=
- =?utf-8?B?UUp1ZW1oNW9xWFlPUFk1UmFSZUtmS1VKMDNadHgwZWx5Nk55N0RVaEZSNHJ0?=
- =?utf-8?B?QUJ6Nzd1d2N6bmZrRHhYNzNET1pRMCszc213ZU1laGVEOFFwNjhrblpiRHFP?=
- =?utf-8?B?Q1pzWVhyUHVOZXNEaHR5UGpUNzBDTWFpMWFvZHVWOEovWGQxeVVCcEVsYk1D?=
- =?utf-8?B?YXpvalp2WFRxYnAxOTJESkNzWnRQaDNtcEdZcWVESjVlRTVrUklvTkhSQ2dB?=
- =?utf-8?B?RjMyMFJWVXFjV3IwMk5aMDlya1Myb1pDSlhFeUtXSEZINGxweUJhNEJjWFk2?=
- =?utf-8?B?K1MvQWdkRFJmNENTZE41OG1aQWdZQ0VHc2IxQ2tTMGI1ODFnMVFPYVpBRldM?=
- =?utf-8?B?NmlHVi92d0o2Y01IRSsxaGg1RW9kWUZKcm0ycklQRzVMaUJsc21MbTNtRjh1?=
- =?utf-8?B?VUZGdU55ZFZkalBNbU8xSzMzbVA1L3RHZzVDamlwem9JRDVkL0pCdk9ZNjdh?=
- =?utf-8?Q?owt+gHvd4u0wW27tJTrqb74cHYpu/Vmmou1sj8+?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S229637AbhGHXYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 19:24:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhGHXX7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 19:23:59 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D93BDC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 16:21:16 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id 65so7954057oie.11
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 16:21:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=4Xv+vwWPP4XvpM0oggp9+c1YaNGTtJDggdMP6woCtMI=;
+        b=l2vgyoeu1ppWDEOLBVbyvEZnWIWqRIfBspvrHMSP7JNiYjudEKsrnQH0ukM7ZLDL1G
+         3q6ASKeA0YaEZIebYlZAxl+cBJi1fvI06r1kUAtr1IKq/UZ5EtTJSCqEnlnuSTSqCJIg
+         UCRtBnuDyYOlduTaP0I6lKJ1ZmXM8gJus2+uU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=4Xv+vwWPP4XvpM0oggp9+c1YaNGTtJDggdMP6woCtMI=;
+        b=aPHfQFbFrffFfM4HP+gL8T+S0iaYADg+SfeiMymZAY6ioeE5u7H6aBP99CUN2uXZmI
+         6ROrNLL/0UYMlouNhtnVL4KRlglcqXblfp2p53lhfjYpHpij+/MwdgeySo54zgAiXWe8
+         gMMLdOavFwuEbJv7UkfYPDrZ10l93XqraJegE/5zaMxiQo/kGPZwEyBMdQj1sHKEX1Z+
+         Ag9eviUXY15KGcIMgRecWMc6cXTX+DlnOS5901TlhVIND0++ol8dwcj6r7a6XL/rSTSQ
+         bcsPcYTNGRqDAOAsYFCThb93+zl1sw9aeMj/NLNq6j2R1HCPhfUMq5i4iZbBOla24guH
+         nRyg==
+X-Gm-Message-State: AOAM533Bf7ps+CeEy3BMVVsNlhbtWN0e3kmK25BPPMWz+Aj1NPJ/Diub
+        qIktnFszlc330niqkDLhTPjOVDqhNgkkqK8DaUvFsA==
+X-Google-Smtp-Source: ABdhPJzDW8kzSMECNFtw722b7c8l9Dwwad2HDq0lzUl0lEKUUl986aXW7sqrCGhMDCq+ns1YlLGdwgf1hjfGb39JLaI=
+X-Received: by 2002:aca:3012:: with SMTP id w18mr5654740oiw.125.1625786476216;
+ Thu, 08 Jul 2021 16:21:16 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 8 Jul 2021 23:21:15 +0000
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4771.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1c008d0e-9a69-4c38-871a-08d9426707af
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jul 2021 23:20:52.6190
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Z9JSALjcZk7ibOqqyklAtXVj97EV81gpuqTUYW30jBnCF8PEz+WQp9Gy/kiB048RdfpnU1Cn0CP9hOKXJoBjUPSlp0WDZZvzBKlbeVsqYYvgnl71WTSYevY8pLaK3YpK
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB5170
-X-OriginatorOrg: intel.com
+In-Reply-To: <1624015734-16778-3-git-send-email-okukatla@codeaurora.org>
+References: <1624015734-16778-1-git-send-email-okukatla@codeaurora.org> <1624015734-16778-3-git-send-email-okukatla@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 8 Jul 2021 23:21:15 +0000
+Message-ID: <CAE-0n52Hvf_b_bLBz3d-Ts8VyVM_1ydgHud=6LA-kS5+0++oqQ@mail.gmail.com>
+Subject: Re: [V4 2/3] interconnect: qcom: Add EPSS L3 support on SC7280
+To:     Andy Gross <agross@kernel.org>, Georgi Djakov <djakov@kernel.org>,
+        Odelu Kukatla <okukatla@codeaurora.org>,
+        bjorn.andersson@linaro.org, evgreen@google.com,
+        georgi.djakov@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Cc:     seansw@qti.qualcomm.com, elder@linaro.org,
+        linux-arm-msm-owner@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogRmxvcmlhbiBGYWluZWxs
-aSA8Zi5mYWluZWxsaUBnbWFpbC5jb20+DQo+IFNlbnQ6IEZyaWRheSwgSnVseSA5LCAyMDIxIDEy
-OjQyIEFNDQo+IFRvOiBJc21haWwsIE1vaGFtbWFkIEF0aGFyaSA8bW9oYW1tYWQuYXRoYXJpLmlz
-bWFpbEBpbnRlbC5jb20+Ow0KPiBBbmRyZXcgTHVubiA8YW5kcmV3QGx1bm4uY2g+DQo+IENjOiBI
-ZWluZXIgS2FsbHdlaXQgPGhrYWxsd2VpdDFAZ21haWwuY29tPjsgRGF2aWQgUyAuIE1pbGxlcg0K
-PiA8ZGF2ZW1AZGF2ZW1sb2Z0Lm5ldD47IFJ1c3NlbGwgS2luZyA8bGludXhAYXJtbGludXgub3Jn
-LnVrPjsgSmFrdWINCj4gS2ljaW5za2kgPGt1YmFAa2VybmVsLm9yZz47IG5ldGRldkB2Z2VyLmtl
-cm5lbC5vcmc7IGxpbnV4LQ0KPiBrZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJl
-OiBbUEFUQ0ggbmV0XSBuZXQ6IHBoeTogcmVjb25maWd1cmUgUEhZIFdPTCBpbiByZXN1bWUgaWYg
-V09MDQo+IG9wdGlvbiBzdGlsbCBlbmFibGVkDQo+IA0KPiBPbiA3LzgvMjEgMzoxMCBBTSwgSXNt
-YWlsLCBNb2hhbW1hZCBBdGhhcmkgd3JvdGU6DQo+ID4NCj4gPg0KPiA+PiAtLS0tLU9yaWdpbmFs
-IE1lc3NhZ2UtLS0tLQ0KPiA+PiBGcm9tOiBGbG9yaWFuIEZhaW5lbGxpIDxmLmZhaW5lbGxpQGdt
-YWlsLmNvbT4NCj4gPj4gU2VudDogVGh1cnNkYXksIEp1bHkgOCwgMjAyMSAxMDo0OSBBTQ0KPiA+
-PiBUbzogQW5kcmV3IEx1bm4gPGFuZHJld0BsdW5uLmNoPjsgSXNtYWlsLCBNb2hhbW1hZCBBdGhh
-cmkNCj4gPj4gPG1vaGFtbWFkLmF0aGFyaS5pc21haWxAaW50ZWwuY29tPg0KPiA+PiBDYzogSGVp
-bmVyIEthbGx3ZWl0IDxoa2FsbHdlaXQxQGdtYWlsLmNvbT47IERhdmlkIFMgLiBNaWxsZXINCj4g
-Pj4gPGRhdmVtQGRhdmVtbG9mdC5uZXQ+OyBSdXNzZWxsIEtpbmcgPGxpbnV4QGFybWxpbnV4Lm9y
-Zy51az47IEpha3ViDQo+ID4+IEtpY2luc2tpIDxrdWJhQGtlcm5lbC5vcmc+OyBuZXRkZXZAdmdl
-ci5rZXJuZWwub3JnOw0KPiA+PiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+ID4+IFN1
-YmplY3Q6IFJlOiBbUEFUQ0ggbmV0XSBuZXQ6IHBoeTogcmVjb25maWd1cmUgUEhZIFdPTCBpbiBy
-ZXN1bWUgaWYNCj4gPj4gV09MIG9wdGlvbiBzdGlsbCBlbmFibGVkDQo+ID4+DQo+ID4+DQo+ID4+
-DQo+ID4+IE9uIDcvNy8yMDIxIDY6MjMgUE0sIEFuZHJldyBMdW5uIHdyb3RlOg0KPiA+Pj4gT24g
-VGh1LCBKdWwgMDgsIDIwMjEgYXQgMDg6NDI6NTNBTSArMDgwMCwNCj4gPj4gbW9oYW1tYWQuYXRo
-YXJpLmlzbWFpbEBpbnRlbC5jb20gd3JvdGU6DQo+ID4+Pj4gRnJvbTogTW9oYW1tYWQgQXRoYXJp
-IEJpbiBJc21haWwNCj4gPG1vaGFtbWFkLmF0aGFyaS5pc21haWxAaW50ZWwuY29tPg0KPiA+Pj4+
-DQo+ID4+Pj4gV2hlbiB0aGUgUEhZIHdha2VzIHVwIGZyb20gc3VzcGVuZCB0aHJvdWdoIFdPTCBl
-dmVudCwgdGhlcmUgaXMgYQ0KPiA+Pj4+IG5lZWQgdG8gcmVjb25maWd1cmUgdGhlIFdPTCBpZiB0
-aGUgV09MIG9wdGlvbiBzdGlsbCBlbmFibGVkLiBUaGUNCj4gPj4+PiBtYWluIG9wZXJhdGlvbiBp
-cyB0byBjbGVhciB0aGUgV09MIGV2ZW50IHN0YXR1cy4gU28gdGhhdCwNCj4gPj4+PiBzdWJzZXF1
-ZW50IFdPTCBldmVudCBjYW4gYmUgdHJpZ2dlcmVkIHByb3Blcmx5Lg0KPiA+Pj4+DQo+ID4+Pj4g
-VGhpcyBmaXggaXMgbmVlZGVkIGVzcGVjaWFsbHkgZm9yIHRoZSBQSFkgdGhhdCBvcGVyYXRlcyBp
-biBQSFlfUE9MTA0KPiA+Pj4+IG1vZGUgd2hlcmUgdGhlcmUgaXMgbm8gaGFuZGxlciAoc3VjaCBh
-cyBpbnRlcnJ1cHQgaGFuZGxlcikNCj4gPj4+PiBhdmFpbGFibGUgdG8gY2xlYXIgdGhlIFdPTCBl
-dmVudCBzdGF0dXMuDQo+ID4+Pg0KPiA+Pj4gSSBzdGlsbCB0aGluayB0aGlzIGFyY2hpdGVjdHVy
-ZSBpcyB3cm9uZy4NCj4gPj4+DQo+ID4+PiBUaGUgaW50ZXJydXB0IHBpbiBpcyB3aXJlZCB0byB0
-aGUgUE1JQy4gQ2FuIHRoZSBQTUlDIGJlIG1vZGVsbGVkIGFzDQo+ID4+PiBhbiBpbnRlcnJ1cHQg
-Y29udHJvbGxlcj8gVGhhdCB3b3VsZCBhbGxvdyB0aGUgaW50ZXJydXB0IHRvIGJlDQo+ID4+PiBo
-YW5kbGVkIGFzIG5vcm1hbCwgYW5kIHdvdWxkIG1lYW4geW91IGRvbid0IG5lZWQgcG9sbGluZywg
-YW5kIHlvdQ0KPiA+Pj4gZG9uJ3QgbmVlZCB0aGlzIGhhY2suDQo+ID4+DQo+ID4+IEkgaGF2ZSB0
-byBhZ3JlZSB3aXRoIEFuZHJldyBoZXJlLCBhbmQgaWYgdGhlIGFuc3dlciBpcyB0aGF0IHlvdQ0K
-PiA+PiBjYW5ub3QgbW9kZWwgdGhpcyBQTUlDIGFzIGFuIGludGVycnVwdCBjb250cm9sbGVyLCBj
-YW5ub3QgdGhlDQo+ID4+IGNvbmZpZ19pbml0KCkgY2FsbGJhY2sgb2YgdGhlIGRyaXZlciBhY2tu
-b3dsZWRnZSB0aGVuIGRpc2FibGUgdGhlDQo+ID4+IGludGVycnVwdHMgYXMgaXQgbm9ybWFsbHkg
-d291bGQgaWYgeW91IHdlcmUgY29sZCBib290aW5nIHRoZSBzeXN0ZW0/DQo+ID4+IFRoaXMgd291
-bGQgYWxzbyBhbGxvdyB5b3UgdG8gcHJvcGVybHkgYWNjb3VudCBmb3IgdGhlIFBIWSBoYXZpbmcg
-d29rZW4tDQo+IHVwIHRoZSBzeXN0ZW0uDQo+ID4NCj4gPiBIaSBGbG9yaWFuLA0KPiA+DQo+ID4g
-VGhhbmsgeW91IGZvciB0aGUgc3VnZ2VzdGlvbi4NCj4gPiBJZiBJIHVuZGVyc3RhbmQgY29ycmVj
-dGx5LCB5b3UgYXJlIHN1Z2dlc3RpbmcgdG8gYWNrbm93bGVkZ2UgYW5kIGNsZWFyIHRoZQ0KPiBX
-T0wgc3RhdHVzIGluIGNvbmZpZ19pbml0KCkgY2FsbGJhY2sgZnVuY3Rpb24uIEFtIEkgY29ycmVj
-dD8NCj4gPiBJZiB5ZXMsIEkgZGlkIHRyeSB0byBhZGQgYSBjb2RlIHRvIGNsZWFyIFdPTCBzdGF0
-dXMgaW4gbWFydmVsbF9jb25maWdfaW5pdCgpDQo+IGZ1bmN0aW9uICh3ZSBhcmUgdXNpbmcgTWFy
-dmVsbCBBbGFza2EgODhFMTUxMikuIEJ1dCwgSSBmb3VuZCB0aGF0LCBpZiB0aGUNCj4gcGxhdGZv
-cm0gd2FrZSB1cCBmcm9tIFMzKG1lbSkgb3IgUzQoZGlzayksIHRoZSBjb25maWdfaW5pdCgpIGNh
-bGxiYWNrDQo+IGZ1bmN0aW9uIGlzIG5vdCBjYWxsZWQuIEFzIHRoZSByZXN1bHQsIFdPTCBzdGF0
-dXMgbm90IGFibGUgdG8gYmUgY2xlYXJlZCBpbg0KPiBjb25maWdfaW5pdCgpLg0KPiA+DQo+ID4g
-UGxlYXNlIGFkdmljZSBpZiB5b3UgYW55IHN1Z2dlc3Rpb24uDQo+IA0KPiBUaGlzIGlzIHByZXN1
-bWFibHkgdGhhdCB5b3UgYXJlIHNlZWluZyB3aXRoIHN0bW1hYyBhbG9uZyB3aXRoIHBoeWxpbms/
-DQo+IA0KPiBEdXJpbmcgUzMgcmVzdW1lIHlvdSBzaG91bGQgYmUgZ29pbmcgYmFjayB0byB0aGUg
-a2VybmVsIHByb3ZpZGVkIHJlLWVudHJ5DQo+IHBvaW50IGFuZCByZXN1bWUgd2hlcmUgd2UgbGVm
-dCAod2FybSBib290KSBzbw0KPiBtZGlvX2J1c19waHlfcmVzdW1lKCkgc2hvdWxkIGNhbGwgcGh5
-X2luaXRfaHcoKSB3aGljaCBjYWxscyBjb25maWdfaW5pdCgpLA0KPiBoYXZlIHlvdSB0cmFjZWQg
-aWYgdGhhdCBpcyBzb21laG93IG5vdCBoYXBwZW5pbmc/DQo+IA0KPiBEdXJpbmcgUzQgcmVzdW1l
-IChkaXNrKSwgSSBzdXBwb3NlIHRoYXQgeW91IGhhdmUgdG8gaW52b2x2ZSB0aGUgYm9vdCBsb2Fk
-ZXINCj4gdG8gcmVzdG9yZSB0aGUgRFJBTSBpbWFnZSBmcm9tIHRoZSBzdG9yYWdlIGRpc2ssIGFu
-ZCBzbyB0aGF0IGRvZXMNCj4gZWZmZWN0aXZlbHkgbG9vayBsaWtlIGEgcXVhc2kgY29sZCBib290
-IGZyb20gdGhlIGtlcm5lbD8gSWYgc28sIHRoYXQgc2hvdWxkIHN0aWxsDQo+IGxlYWQgdG8gY29u
-ZmlnX2luaXQoKSBiZWluZyBjYWxsZWQgd2hlbiB0aGUgUEhZIGlzIGF0dGFjaGVkLCBubz8NCg0K
-SGkgRmxvcmlhbiwNCg0KVGhpcyB3aGF0IEkgdW5kZXJzdGFuZCBmcm9tIHRoZSBjb2RlIGZsb3cu
-DQoNCldpdGggV09MIGVuYWJsZWQgdGhyb3VnaCBldGh0b29sLCB3aGVuIHRoZSBzeXN0ZW0gaXMg
-cHV0IGludG8gUzMgb3IgUzQsDQp0aGlzIGZsYWcgbmV0ZGV2LT53b2xfZW5hYmxlZCBpcyBzZXQg
-dHJ1ZSBhbmQgY2F1c2UgIG1kaW9fYnVzX3BoeV9tYXlfc3VzcGVuZCgpDQp0byByZXR1cm4gZmFs
-c2UuIFNvLCB0aGUgIHBoeWRldi0+c3VzcGVuZGVkX2J5X21kaW9fYnVzIHJlbWFpbiBhcyAwIHdo
-ZW4NCmV4aXRpbmcgZnJvbSBtZGlvX2J1c19waHlfc3VzcGVuZCgpLg0KDQpEdXJpbmcgd2FrZSB1
-cCBmcm9tIFMzIG9yIFM0LCBhcyBwaHlkZXYtPnN1c3BlbmRlZF9ieV9tZGlvX2J1cyByZW1haW4g
-YXMgMC9mYWxzZQ0Kd2hlbiBtZGlvX2J1c19waHlfcmVzdW1lKCkgaXMgY2FsbGVkLCBpdCB3aWxs
-IGp1bXAgdG8gbm9fcmVzdW1lIHNraXBwaW5nDQpwaHlfaW5pdF9odygpIGFzIHdlbGwgYXMgcGh5
-X3Jlc3VtZSgpLg0KDQotQXRoYXJpLQ0KDQoNCj4gLS0NCj4gRmxvcmlhbg0K
+Quoting Odelu Kukatla (2021-06-18 04:28:53)
+> diff --git a/drivers/interconnect/qcom/osm-l3.c b/drivers/interconnect/qc=
+om/osm-l3.c
+> index 695f287..a8c0ee8 100644
+> --- a/drivers/interconnect/qcom/osm-l3.c
+> +++ b/drivers/interconnect/qcom/osm-l3.c
+> @@ -15,6 +15,7 @@
+>  #include <dt-bindings/interconnect/qcom,osm-l3.h>
+>
+>  #include "sc7180.h"
+> +#include "sc7280.h"
+>  #include "sdm845.h"
+>  #include "sm8150.h"
+>  #include "sm8250.h"
+> @@ -32,17 +33,33 @@
+>
+>  /* EPSS Register offsets */
+>  #define EPSS_LUT_ROW_SIZE              4
+> +#define EPSS_REG_L3_VOTE               0x90
+>  #define EPSS_REG_FREQ_LUT              0x100
+>  #define EPSS_REG_PERF_STATE            0x320
+> +#define EPSS_CORE_OFFSET               0x4
+> +#define EPSS_L3_VOTE_REG(base, cpu)\
+> +                       (((base) + EPSS_REG_L3_VOTE) +\
+> +                       ((cpu) * EPSS_CORE_OFFSET))
+>
+> -#define OSM_L3_MAX_LINKS               1
+> +#define L3_DOMAIN_CNT          4
+> +#define L3_MAX_LINKS           9
+>
+>  #define to_qcom_provider(_provider) \
+>         container_of(_provider, struct qcom_osm_l3_icc_provider, provider=
+)
+>
+> +/**
+> + * @domain_base: an array of base address for each clock domain
+> + * @max_state: max supported frequency level
+> + * @per_core_dcvs: flag used to indicate whether the frequency scaling
+> + * for each core is enabled
+> + * @reg_perf_state: requested frequency level
+> + * @lut_tables: an array of supported frequency levels
+> + * @provider: interconnect provider of this node
+> + */
+>  struct qcom_osm_l3_icc_provider {
+> -       void __iomem *base;
+> +       void __iomem *domain_base[L3_DOMAIN_CNT];
+>         unsigned int max_state;
+> +       bool per_core_dcvs;
+>         unsigned int reg_perf_state;
+>         unsigned long lut_tables[LUT_MAX_ENTRIES];
+>         struct icc_provider provider;
+> @@ -55,34 +72,41 @@ struct qcom_osm_l3_icc_provider {
+>   * @id: a unique node identifier
+>   * @num_links: the total number of @links
+>   * @buswidth: width of the interconnect between a node and the bus
+> + * @domain: clock domain of the cpu node
+> + * @cpu: cpu instance within its clock domain
+>   */
+>  struct qcom_icc_node {
+>         const char *name;
+> -       u16 links[OSM_L3_MAX_LINKS];
+> +       u16 links[L3_MAX_LINKS];
+>         u16 id;
+>         u16 num_links;
+>         u16 buswidth;
+> +       u16 domain;
+> +       int cpu;
+
+unsigned int? Or is -1 intended for no cpu? If we keep int, please
+document -1 as special.
+
+>  };
+>
+>  struct qcom_icc_desc {
+>         const struct qcom_icc_node **nodes;
+>         size_t num_nodes;
+> +       bool per_core_dcvs;
+>         unsigned int lut_row_size;
+>         unsigned int reg_freq_lut;
+>         unsigned int reg_perf_state;
+>  };
+>
+> -#define DEFINE_QNODE(_name, _id, _buswidth, ...)                       \
+> -       static const struct qcom_icc_node _name =3D {                    =
+ \
+> -               .name =3D #_name,                                        =
+ \
+> -               .id =3D _id,                                             =
+ \
+> -               .buswidth =3D _buswidth,                                 =
+ \
+> -               .num_links =3D ARRAY_SIZE(((int[]){ __VA_ARGS__ })),     =
+ \
+> -               .links =3D { __VA_ARGS__ },                              =
+ \
+> +#define DEFINE_QNODE(_name, _id, _buswidth, _domain, _cpu, ...)         =
+               \
+> +       static const struct qcom_icc_node _name =3D {                    =
+         \
+> +               .name =3D #_name,                                        =
+         \
+> +               .id =3D _id,                                             =
+         \
+> +               .buswidth =3D _buswidth,                                 =
+         \
+> +               .domain =3D _domain,                                     =
+         \
+> +               .cpu =3D _cpu,                                           =
+ \
+> +               .num_links =3D ARRAY_SIZE(((int[]){ __VA_ARGS__ })),     =
+         \
+> +               .links =3D { __VA_ARGS__ },                              =
+         \
+>         }
+>
+> -DEFINE_QNODE(sdm845_osm_apps_l3, SDM845_MASTER_OSM_L3_APPS, 16, SDM845_S=
+LAVE_OSM_L3);
+> -DEFINE_QNODE(sdm845_osm_l3, SDM845_SLAVE_OSM_L3, 16);
+> +DEFINE_QNODE(sdm845_osm_apps_l3, SDM845_MASTER_OSM_L3_APPS, 16, 0, 0, SD=
+M845_SLAVE_OSM_L3);
+> +DEFINE_QNODE(sdm845_osm_l3, SDM845_SLAVE_OSM_L3, 16, 0, 0);
+
+Please avoid making these changes. Instead, have a common macro
+__DEFINE_QNODE() that takes all the arguments and then leave
+DEFINE_QNODE alone and have it pass 0 by default for the ones that are
+new and make a new define for newer SoCs like DEFINE_DOMAIN_QNODE (or a
+better name) that takes the new arguments. Then we don't have to review
+the older SoCs and figure out what changed.
+
+>
+>  static const struct qcom_icc_node *sdm845_osm_l3_nodes[] =3D {
+>         [MASTER_OSM_L3_APPS] =3D &sdm845_osm_apps_l3,
+> @@ -97,8 +121,8 @@ static const struct qcom_icc_desc sdm845_icc_osm_l3 =
+=3D {
+>         .reg_perf_state =3D OSM_REG_PERF_STATE,
+>  };
+>
+> -DEFINE_QNODE(sc7180_osm_apps_l3, SC7180_MASTER_OSM_L3_APPS, 16, SC7180_S=
+LAVE_OSM_L3);
+> -DEFINE_QNODE(sc7180_osm_l3, SC7180_SLAVE_OSM_L3, 16);
+> +DEFINE_QNODE(sc7180_osm_apps_l3, SC7180_MASTER_OSM_L3_APPS, 16, 0, 0, SC=
+7180_SLAVE_OSM_L3);
+> +DEFINE_QNODE(sc7180_osm_l3, SC7180_SLAVE_OSM_L3, 16, 0, 0);
+>
+>  static const struct qcom_icc_node *sc7180_osm_l3_nodes[] =3D {
+>         [MASTER_OSM_L3_APPS] =3D &sc7180_osm_apps_l3,
+> @@ -113,8 +137,8 @@ static const struct qcom_icc_desc sc7180_icc_osm_l3 =
+=3D {
+>         .reg_perf_state =3D OSM_REG_PERF_STATE,
+>  };
+>
+> -DEFINE_QNODE(sm8150_osm_apps_l3, SM8150_MASTER_OSM_L3_APPS, 32, SM8150_S=
+LAVE_OSM_L3);
+> -DEFINE_QNODE(sm8150_osm_l3, SM8150_SLAVE_OSM_L3, 32);
+> +DEFINE_QNODE(sm8150_osm_apps_l3, SM8150_MASTER_OSM_L3_APPS, 32, 0, 0, SM=
+8150_SLAVE_OSM_L3);
+> +DEFINE_QNODE(sm8150_osm_l3, SM8150_SLAVE_OSM_L3, 32, 0, 0);
+>
+>  static const struct qcom_icc_node *sm8150_osm_l3_nodes[] =3D {
+>         [MASTER_OSM_L3_APPS] =3D &sm8150_osm_apps_l3,
+> @@ -129,8 +153,8 @@ static const struct qcom_icc_desc sm8150_icc_osm_l3 =
+=3D {
+>         .reg_perf_state =3D OSM_REG_PERF_STATE,
+>  };
+>
+> -DEFINE_QNODE(sm8250_epss_apps_l3, SM8250_MASTER_EPSS_L3_APPS, 32, SM8250=
+_SLAVE_EPSS_L3);
+> -DEFINE_QNODE(sm8250_epss_l3, SM8250_SLAVE_EPSS_L3, 32);
+> +DEFINE_QNODE(sm8250_epss_apps_l3, SM8250_MASTER_EPSS_L3_APPS, 32, 0, 0, =
+SM8250_SLAVE_EPSS_L3);
+> +DEFINE_QNODE(sm8250_epss_l3, SM8250_SLAVE_EPSS_L3, 32, 0, 0);
+>
+>  static const struct qcom_icc_node *sm8250_epss_l3_nodes[] =3D {
+>         [MASTER_EPSS_L3_APPS] =3D &sm8250_epss_apps_l3,
+
+Because it is quite a few!
+
+> @@ -145,6 +169,39 @@ static const struct qcom_icc_desc sm8250_icc_epss_l3=
+ =3D {
+>         .reg_perf_state =3D EPSS_REG_PERF_STATE,
+>  };
+>
+> +DEFINE_QNODE(sc7280_epss_apps_l3, SC7280_MASTER_EPSS_L3_APPS, 32, 0, 0, =
+SC7280_SLAVE_EPSS_L3_SHARED, SC7280_SLAVE_EPSS_L3_CPU0, SC7280_SLAVE_EPSS_L=
+3_CPU1, SC7280_SLAVE_EPSS_L3_CPU2, SC7280_SLAVE_EPSS_L3_CPU3, SC7280_SLAVE_=
+EPSS_L3_CPU4, SC7280_SLAVE_EPSS_L3_CPU5, SC7280_SLAVE_EPSS_L3_CPU6, SC7280_=
+SLAVE_EPSS_L3_CPU7);
+
+Surely this line can be split up?
+
+> +DEFINE_QNODE(sc7280_epss_l3_shared, SC7280_SLAVE_EPSS_L3_SHARED, 32, 0, =
+0);
+> +DEFINE_QNODE(sc7280_epss_l3_cpu0, SC7280_SLAVE_EPSS_L3_CPU0, 32, 1, 0);
+> +DEFINE_QNODE(sc7280_epss_l3_cpu1, SC7280_SLAVE_EPSS_L3_CPU1, 32, 1, 1);
+> +DEFINE_QNODE(sc7280_epss_l3_cpu2, SC7280_SLAVE_EPSS_L3_CPU2, 32, 1, 2);
+> +DEFINE_QNODE(sc7280_epss_l3_cpu3, SC7280_SLAVE_EPSS_L3_CPU3, 32, 1, 3);
+> +DEFINE_QNODE(sc7280_epss_l3_cpu4, SC7280_SLAVE_EPSS_L3_CPU4, 32, 2, 0);
+> +DEFINE_QNODE(sc7280_epss_l3_cpu5, SC7280_SLAVE_EPSS_L3_CPU5, 32, 2, 1);
+> +DEFINE_QNODE(sc7280_epss_l3_cpu6, SC7280_SLAVE_EPSS_L3_CPU6, 32, 2, 2);
+> +DEFINE_QNODE(sc7280_epss_l3_cpu7, SC7280_SLAVE_EPSS_L3_CPU7, 32, 3, 0);
+> +
+> +static const struct qcom_icc_node *sc7280_epss_l3_nodes[] =3D {
+> +       [MASTER_EPSS_L3_APPS] =3D &sc7280_epss_apps_l3,
+> +       [SLAVE_EPSS_L3_SHARED] =3D &sc7280_epss_l3_shared,
+> +       [SLAVE_EPSS_L3_CPU0] =3D &sc7280_epss_l3_cpu0,
+> +       [SLAVE_EPSS_L3_CPU1] =3D &sc7280_epss_l3_cpu1,
+> +       [SLAVE_EPSS_L3_CPU2] =3D &sc7280_epss_l3_cpu2,
+> +       [SLAVE_EPSS_L3_CPU3] =3D &sc7280_epss_l3_cpu3,
+> +       [SLAVE_EPSS_L3_CPU4] =3D &sc7280_epss_l3_cpu4,
+> +       [SLAVE_EPSS_L3_CPU5] =3D &sc7280_epss_l3_cpu5,
+> +       [SLAVE_EPSS_L3_CPU6] =3D &sc7280_epss_l3_cpu6,
+> +       [SLAVE_EPSS_L3_CPU7] =3D &sc7280_epss_l3_cpu7,
+> +};
+> +
+> +static const struct qcom_icc_desc sc7280_icc_epss_l3 =3D {
+> +       .nodes =3D sc7280_epss_l3_nodes,
+> +       .num_nodes =3D ARRAY_SIZE(sc7280_epss_l3_nodes),
+> +       .per_core_dcvs =3D true,
+> +       .lut_row_size =3D EPSS_LUT_ROW_SIZE,
+> +       .reg_freq_lut =3D EPSS_REG_FREQ_LUT,
+> +       .reg_perf_state =3D EPSS_REG_PERF_STATE,
+> +};
+> +
+>  static int qcom_icc_set(struct icc_node *src, struct icc_node *dst)
+>  {
+>         struct qcom_osm_l3_icc_provider *qp;
+> @@ -156,13 +213,18 @@ static int qcom_icc_set(struct icc_node *src, struc=
+t icc_node *dst)
+>         u32 agg_avg =3D 0;
+>         u64 rate;
+>
+> -       qn =3D src->data;
+> +       qn =3D dst->data;
+>         provider =3D src->provider;
+>         qp =3D to_qcom_provider(provider);
+>
+> -       list_for_each_entry(n, &provider->nodes, node_list)
+> -               provider->aggregate(n, 0, n->avg_bw, n->peak_bw,
+> -                                   &agg_avg, &agg_peak);
+> +       /* Skip aggregation when per core l3 scaling is enabled */
+> +       if (qp->per_core_dcvs) {
+> +               agg_peak =3D dst->peak_bw;
+> +       } else {
+> +               list_for_each_entry(n, &provider->nodes, node_list)
+> +                       provider->aggregate(n, 0, n->avg_bw, n->peak_bw,
+> +                                               &agg_avg, &agg_peak);
+> +       }
+
+Maybe make this a function like
+
+	agg_peak =3D qcom_icc_calc_aggregate_peak();
+
+so the indenting of the list_for_each_entry can be avoided
+
+
+	if (qp->per_core_dcvs)
+		return dst->peak_bw;
+
+
+        list_for_each_entry(n, &provider->nodes, node_list)
+	      provider->aggregate(n, 0, n->avg_bw, n->peak_bw, &agg_avg,
+	      			  &agg_peak);
+
+	return agg_peak;
+
+
+you get the idea.
+
+> @@ -173,7 +235,10 @@ static int qcom_icc_set(struct icc_node *src, struct=
+ icc_node *dst)
+
+This function name really should be different. There are other
+qcom_icc_set()s already so the tag space is cluttered.
+
+>                         break;
+>         }
+>
+> -       writel_relaxed(index, qp->base + qp->reg_perf_state);
+> +       if (qp->per_core_dcvs)
+> +               writel_relaxed(index, EPSS_L3_VOTE_REG(qp->domain_base[qn=
+->domain], qn->cpu));
+> +       else
+> +               writel_relaxed(index, qp->domain_base[qn->domain] + qp->r=
+eg_perf_state);
+>
+>         return 0;
+>  }
+> @@ -194,11 +259,12 @@ static int qcom_osm_l3_probe(struct platform_device=
+ *pdev)
+>         const struct qcom_icc_desc *desc;
+>         struct icc_onecell_data *data;
+>         struct icc_provider *provider;
+> +       struct property *prop;
+>         const struct qcom_icc_node **qnodes;
+>         struct icc_node *node;
+>         size_t num_nodes;
+>         struct clk *clk;
+> -       int ret;
+> +       int ret, index, domain_count;
+>
+>         clk =3D clk_get(&pdev->dev, "xo");
+>         if (IS_ERR(clk))
+> @@ -218,12 +284,21 @@ static int qcom_osm_l3_probe(struct platform_device=
+ *pdev)
+>         if (!qp)
+>                 return -ENOMEM;
+>
+> -       qp->base =3D devm_platform_ioremap_resource(pdev, 0);
+> -       if (IS_ERR(qp->base))
+> -               return PTR_ERR(qp->base);
+> +       prop =3D of_find_property(pdev->dev.of_node, "reg", NULL);
+> +       if (!prop)
+> +               return -EINVAL;
+> +       domain_count =3D prop->length / (4 * sizeof(prop->length));
+> +       if (!domain_count)
+> +               return -EINVAL;
+
+This is counting reg properties? Most definitely this is wrong as
+#address-cells or #size-cells could be different than what this code is
+expecting. Maybe roll a loop over of_get_address() and then consider
+using that? Or just hardcode the expected number of reg properties based
+on the compatible string.
+
+> +
+> +       for (index =3D 0; index < domain_count ; index++) {
+> +               qp->domain_base[index] =3D devm_platform_ioremap_resource=
+(pdev, index);
+> +               if (IS_ERR(qp->domain_base[index]))
+> +                       return PTR_ERR(qp->domain_base[index]);
+> +       }
+>
+>         /* HW should be in enabled state to proceed */
+> -       if (!(readl_relaxed(qp->base + REG_ENABLE) & 0x1)) {
+> +       if (!(readl_relaxed(qp->domain_base[0] + REG_ENABLE) & 0x1)) {
+>                 dev_err(&pdev->dev, "error hardware not enabled\n");
+>                 return -ENODEV;
+>         }
+> @@ -235,7 +310,7 @@ static int qcom_osm_l3_probe(struct platform_device *=
+pdev)
+>         qp->reg_perf_state =3D desc->reg_perf_state;
+>
+>         for (i =3D 0; i < LUT_MAX_ENTRIES; i++) {
+> -               info =3D readl_relaxed(qp->base + desc->reg_freq_lut +
+> +               info =3D readl_relaxed(qp->domain_base[0] + desc->reg_fre=
+q_lut +
+
+So is the first address a special "global" IO region that hols the LUT
+for everyone?
+
+>                                      i * desc->lut_row_size);
+>                 src =3D FIELD_GET(LUT_SRC, info);
+>                 lval =3D FIELD_GET(LUT_L_VAL, info);
+> @@ -254,6 +329,7 @@ static int qcom_osm_l3_probe(struct platform_device *=
+pdev)
+>                 prev_freq =3D freq;
+>         }
+>         qp->max_state =3D i;
+> +       qp->per_core_dcvs =3D desc->per_core_dcvs;
+>
+>         qnodes =3D desc->nodes;
+>         num_nodes =3D desc->num_nodes;
+> diff --git a/drivers/interconnect/qcom/sc7280.h b/drivers/interconnect/qc=
+om/sc7280.h
+> index 175e400..5df7600 100644
+> --- a/drivers/interconnect/qcom/sc7280.h
+> +++ b/drivers/interconnect/qcom/sc7280.h
+> @@ -150,5 +150,15 @@
+>  #define SC7280_SLAVE_PCIE_1                    139
+>  #define SC7280_SLAVE_QDSS_STM                  140
+>  #define SC7280_SLAVE_TCU                       141
+> +#define SC7280_MASTER_EPSS_L3_APPS                     142
+> +#define SC7280_SLAVE_EPSS_L3_SHARED                    143
+> +#define SC7280_SLAVE_EPSS_L3_CPU0                      144
+> +#define SC7280_SLAVE_EPSS_L3_CPU1                      145
+> +#define SC7280_SLAVE_EPSS_L3_CPU2                      146
+> +#define SC7280_SLAVE_EPSS_L3_CPU3                      147
+> +#define SC7280_SLAVE_EPSS_L3_CPU4                      148
+> +#define SC7280_SLAVE_EPSS_L3_CPU5                      149
+> +#define SC7280_SLAVE_EPSS_L3_CPU6                      150
+> +#define SC7280_SLAVE_EPSS_L3_CPU7                      151
+
+Can we stop using master and slave here? I know it's part of AXI
+terminology but I'm hoping they've come up with some better terms to use
+now.
