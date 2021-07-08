@@ -2,197 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42B1A3C1542
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 16:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3CAA3C1547
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 16:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231851AbhGHOj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S231965AbhGHOje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 10:39:34 -0400
+Received: from mga06.intel.com ([134.134.136.31]:44691 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231872AbhGHOj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 8 Jul 2021 10:39:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231779AbhGHOj0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 10:39:26 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55A69C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 07:36:44 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id o17-20020a9d76510000b02903eabfc221a9so6082792otl.0
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 07:36:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=72Nulo0ReEKh1o09njcEPjT3ZEsb/u/uPS+kUmVy8sU=;
-        b=FWRbODpJvUDW1Hvvw6jBbIxh3B4HQaPFbePSQUSLSnU3oLIOtqDyL5r0r30yICdLR5
-         yPDKdQ08N64edmb3D42lPuwAt1byFqGLzD6Q9oAWRnvo2NBTHJameLigCEbX0UTLUCUf
-         YeA2vARMIdIU5/CZ+Oz55gYoydq3XkuhCgH0U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=72Nulo0ReEKh1o09njcEPjT3ZEsb/u/uPS+kUmVy8sU=;
-        b=HGXSxIpWcJ9pboheFpfkQ0gYfvi7ukhDmM+l4C7d6eBdZJZ0ZiYFkX1ytY1OovQXOk
-         tiqR0zE0Y0RrJd42lbvSPWLIXZYQBOwVh7WgsrEfZvDXn5AAWUYa65P/e3g6RGiArkb9
-         iFBg6cPdycB+0EYK18me/mJIh4P0jRE8qGltO/q9d/9lX0rpLHhB76+IEgN7ij9pfgUa
-         BNxIYbopVd/1dPd9+XnLn+l5dES9RgImi9k0Qvg+56zdBNJefVam0eZAMBRFbXsYD6+n
-         ejYeEasgjoKW69KTDh+roYcYJA+Uw6/ZffBk3ulinu7BSFs6DcYcYZc8ezcMIoxvHEEq
-         +uiQ==
-X-Gm-Message-State: AOAM531wQ+sWR+wGjRMkUuVL308Xd0hV6xA34UqGWafgh+1ASqn15+8b
-        to9JLJBZAQ76NFJ5bJdUevSh5xcSE+FIDA==
-X-Google-Smtp-Source: ABdhPJxxjNxUxY4J4VuocfijMuG6jxbCS8pqypZoPVmMFrNVe1vJkN09EMSImjia+mgvShBbzs0oWA==
-X-Received: by 2002:a9d:7457:: with SMTP id p23mr20664668otk.85.1625755003614;
-        Thu, 08 Jul 2021 07:36:43 -0700 (PDT)
-Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com. [209.85.210.52])
-        by smtp.gmail.com with ESMTPSA id u22sm554233oie.26.2021.07.08.07.36.43
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Jul 2021 07:36:43 -0700 (PDT)
-Received: by mail-ot1-f52.google.com with SMTP id 59-20020a9d0ac10000b0290462f0ab0800so6006409otq.11
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 07:36:43 -0700 (PDT)
-X-Received: by 2002:a25:6088:: with SMTP id u130mr41384789ybb.257.1625754992872;
- Thu, 08 Jul 2021 07:36:32 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6200,9189,10038"; a="270628632"
+X-IronPort-AV: E=Sophos;i="5.84,224,1620716400"; 
+   d="scan'208";a="270628632"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 07:36:45 -0700
+X-IronPort-AV: E=Sophos;i="5.84,224,1620716400"; 
+   d="scan'208";a="645929650"
+Received: from kezheong-mobl.gar.corp.intel.com (HELO [10.212.152.178]) ([10.212.152.178])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 07:36:44 -0700
+Subject: Re: x86 CPU features detection for applications (and AMX)
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     libc-alpha@sourceware.org, linux-api@vger.kernel.org,
+        x86@kernel.org, linux-arch@vger.kernel.org,
+        "H.J. Lu" <hjl.tools@gmail.com>, linux-kernel@vger.kernel.org
+References: <87tulo39ms.fsf@oldenburg.str.redhat.com>
+ <e376bcb9-cd79-7665-5859-ae808dd286f1@intel.com>
+ <878s2hz6g3.fsf@oldenburg.str.redhat.com>
+ <b3b104cd-72d9-7f5c-116b-414c6ebf448d@intel.com>
+ <87sg0oswqn.fsf@oldenburg.str.redhat.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <ba004c50-a630-27f4-5fb0-c6ad2b1f1e06@intel.com>
+Date:   Thu, 8 Jul 2021 07:36:44 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210624171759.4125094-1-dianders@chromium.org>
- <YNXXwvuErVnlHt+s@8bytes.org> <CAD=FV=UFxZH7g8gH5+M=Fv4Y-e1bsLkNkPGJhNwhvVychcGQcQ@mail.gmail.com>
- <CAD=FV=W=HmgH3O3z+nThWL6U+X4Oh37COe-uTzVB9SanP2n86w@mail.gmail.com> <YOaymBHc4g2cIfRn@8bytes.org>
-In-Reply-To: <YOaymBHc4g2cIfRn@8bytes.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 8 Jul 2021 07:36:20 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=U_mKPaGfWyN1SVi9S2hPBpG=rE_p89+Jvjr95d0TvgsA@mail.gmail.com>
-Message-ID: <CAD=FV=U_mKPaGfWyN1SVi9S2hPBpG=rE_p89+Jvjr95d0TvgsA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] iommu: Enable non-strict DMA on QCom SD/MMC
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        John Garry <john.garry@huawei.com>,
-        Rob Clark <robdclark@chromium.org>, quic_c_gdjako@quicinc.com,
-        Saravana Kannan <saravanak@google.com>,
-        Rajat Jain <rajatja@google.com>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-pci@vger.kernel.org,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        Sonny Rao <sonnyrao@chromium.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87sg0oswqn.fsf@oldenburg.str.redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 7/8/21 7:31 AM, Florian Weimer wrote:
+>> OK, so if I call CPU_FEATURE_USABLE(PKS) on a system *WITH* PKS
+>> supported in the operating system, I'll get false from an interface that
+>> claims to be:
+>>
+>>> This macro returns a nonzero value (true) if the processor has the
+>>> feature name and the feature is supported by the operating system.
+>> The interface just seems buggy by *design*.
+> Yes, but that is largely a documentation matter.  We should have said
+> something about “userspace” there, and that the bit needs to be known to
+> glibc.  There is another exception: FSGSBASE, and that's a real bug we
+> need to fix (it has to go through AT_HWCAP2).
+> 
+> If we want to avoid that, we need to go down the road of a curated set
+> of CPUID bits, where a bit only exists if we have taught glibc its
+> semantics.  You still might get a false negative by running against an
+> older glibc than the application was built for.  (We are not going to
+> force applications that e.g. look for FSGSBASE only run with a glibc
+> that is at least of that version which implemented semantics for the
+> FSGSBASE bit.)
 
-On Thu, Jul 8, 2021 at 1:09 AM Joerg Roedel <joro@8bytes.org> wrote:
->
-> On Wed, Jul 07, 2021 at 01:00:13PM -0700, Doug Anderson wrote:
-> > a) Nothing is inherently broken with my current approach.
-> >
-> > b) My current approach doesn't make anybody terribly upset even if
-> > nobody is totally in love with it.
->
-> Well, no, sorry :)
->
-> I don't think it is a good idea to allow drivers to opt-out of the
-> strict-setting. This is a platform or user decision, and the driver
-> should accept whatever it gets.
+That's kinda my whole point.
 
-Sure, I agree with you there. The driver shouldn't ever be able to
-override and make things less strict than the user or platform wants.
-It feels like that can be accomplished. See below.
+These *MUST* be curated to be meaningful.  Right now, someone just
+dumped a set of CPUID bits into the documentation.
 
+The interface really needs *three* modes:
 
-> So the real question is still why strict is the default setting and how
-> to change that.
-
-I guess there are two strategies if we agree that there's a benefit to
-running some devices in strict and others in non-strict:
-
-* opt-in to strict: default is non-strict and we have to explicitly
-list what we want to be strict.
-
-* opt-out of strict: default is strict and we have to explicitly list
-what we want to be non-strict.
-
-I guess the question is: do we allow both strategies or only one of
-them? I think you are suggesting that the kernel should support
-"opt-in" to strict and that that matches the status quo with PCI on
-x86. I'm pushing for some type of "opt-out" of strict support. I have
-heard from security folks that they'd prefer "opt-out" of strict as
-well. If we're willing to accept more complex config options we could
-support both choosable by KConfig. How it'd all work in my mind:
-
-Command line:
-
-* iommu.strict=0 - suggest non-strict by default
-* iommu.strict=1 - force strict for all drivers
-* iommu.strict not specified - no opinion
-
-Kconfig:
-
-* IOMMU_DEFAULT_LAZY - suggest non-strict by default; drivers can
-opt-in to strict
-* IOMMU_DEFAULT_STRICT - force strict for all drivers
-* IOMMU_DEFAULT_LOOSE_STRICT - allow explicit suggestions for laziness
-but default to strict if no votes.
-
-Drivers:
-* suggest lazy - suggest non-strict
-* force strict - force strict
-* no vote
-
-
-How the above work together:
-
-* if _any_ of the three things wants strict then it's strict.
-
-* if _all_ of the three things want lazy then it's lazy.
-
-* If the KConfig is "loose strict" and the command line is set to
-"lazy" then it's equivalent to the KConfig saying "lazy". In other
-words drivers could still "opt-in" to strict but otherwise we'd be
-lazy.
-
-* The only way for a driver's "suggest lazy" vote to have any effect
-at all is if "iommu.strict" wasn't specified on the command line _and_
-if the KConfig was "loose strict". This is effectively the "opt-out"
-of lazy.
-
-
-If you think the strategy I describe above is garbage then would you
-be OK if I re-worked my patchset to at least allow non-PCI drivers to
-"opt-in" to strict? Effectively I'd change patch #3 to list all of the
-peripherals on my SoC _except_ the USB and SD/MMC and request that
-they all be strict. If other people expressed their preference for the
-"opt-out" of strict strategy would that change your mind?
-
-
-> Or document for the users that want performance how to
-> change the setting, so that they can decide.
-
-Pushing this to the users can make sense for a Linux distribution but
-probably less sense for an embedded platform. So I'm happy to make
-some way for a user to override this (like via kernel command line),
-but I also strongly believe there should be a default that users don't
-have to futz with that we think is correct.
-
--Doug
+1. Yes, the CPU/OS supports this feature
+2. No, the CPU/OS doesn't support this feature
+3. Hell if I know, never heard of this feature
+	
+The interface really conflates 2 and 3.  To me, that makes it
+fundamentally flawed.
