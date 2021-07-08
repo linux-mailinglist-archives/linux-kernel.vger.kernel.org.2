@@ -2,135 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD82E3BF4E9
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 07:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 558F73BF4EF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 07:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229637AbhGHFGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 01:06:42 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:28358 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbhGHFGl (ORCPT
+        id S229687AbhGHFLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 01:11:15 -0400
+Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:50533 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229595AbhGHFLO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 01:06:41 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1625720640; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=Bmtb2+dcXVz0RPexDRJ8WNuL5FB2CDC6OCQ8750mwHo=; b=LQg+/SnrZtYtT1a6rbgukWm+UUWKuRhOhaBdNfwiM6hxigJMbppC32Lp+nK9AI8w/d5rQS0u
- D790KJvB+kF7eRxnlVFESVaWawyIoZ11z7Xtw30hAiNQKzsLPqTkuqcCVCjHvNvlHA4gGv9U
- mIhlPfCLzxU2+7PsHpw4xw5D1lM=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 60e68740ec0b18a7452eff86 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 08 Jul 2021 05:04:00
- GMT
-Sender: rnayak=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4B7F6C433D3; Thu,  8 Jul 2021 05:03:59 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.50.35.89] (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 464CFC433D3;
-        Thu,  8 Jul 2021 05:03:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 464CFC433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
-Subject: Re: [PATCH 1/2] soc: qcom: rpmhpd: Use corner in power_off
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210703005416.2668319-1-bjorn.andersson@linaro.org>
- <20210703005416.2668319-2-bjorn.andersson@linaro.org>
- <CAE-0n50EvG4qV0n+Ag+dvFxKKasnUzwH=MA+f-jsgDdBqaqziQ@mail.gmail.com>
- <YOaAqAqldq3Hyiva@yoga>
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-Message-ID: <8da6e99f-ae80-b9a5-4fe9-6cc467ea65d0@codeaurora.org>
-Date:   Thu, 8 Jul 2021 10:33:53 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 8 Jul 2021 01:11:14 -0400
+Received: from localhost.localdomain ([86.243.172.93])
+        by mwinf5d71 with ME
+        id SV8U2500221Fzsu03V8UiH; Thu, 08 Jul 2021 07:08:32 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 08 Jul 2021 07:08:32 +0200
+X-ME-IP: 86.243.172.93
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     dave.jiang@intel.com, vkoul@kernel.org
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] dmaengine: idxd: Simplify code and axe the use of a deprecated API
+Date:   Thu,  8 Jul 2021 07:08:26 +0200
+Message-Id: <70c8a3bc67e41c5fefb526ecd64c5174c1e2dc76.1625720835.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <YOaAqAqldq3Hyiva@yoga>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
+Replace 'pci_set_dma_mask/pci_set_consistent_dma_mask' by an equivalent
+and less verbose 'dma_set_mask_and_coherent()' call.
 
-On 7/8/2021 10:05 AM, Bjorn Andersson wrote:
-> On Wed 07 Jul 19:21 CDT 2021, Stephen Boyd wrote:
-> 
->> Quoting Bjorn Andersson (2021-07-02 17:54:15)
->>> rpmhpd_aggregate_corner() takes a corner as parameter, but in
->>> rpmhpd_power_off() the code requests the level of the first corner
->>> instead.
->>>
->>> In all (known) current cases the first corner has level 0, so this
->>> change should be a nop, but in case that there's a power domain with a
->>> non-zero lowest level this makes sure that rpmhpd_power_off() actually
->>> requests the lowest level - which is the closest to "power off" we can
->>> get.
->>>
->>> While touching the code, also skip the unnecessary zero-initialization
->>> of "ret".
->>>
->>> Fixes: 279b7e8a62cc ("soc: qcom: rpmhpd: Add RPMh power domain driver")
->>> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
->>> ---
->>
->> I think this is why qcom folks talk about "virtual corner" and "physical
->> corner" because there's the one in command DB and the one in hardware.
-> 
-> I think the driver uses "level" and "corner" to denote the two different
-> number spaces, so I think we're good...now that we after this patch
-> don't pass a "level" as "corner" during power_off ;)
-> 
->> Maybe we should change rpmhpd_aggregate_corner() to call the argument
->> 'vcorner'?
-> 
-> So "virtual corner" is "corner" and "physical corner" is level? I.e. 256
-> is a "physical corner"?
+Even if the code may look different, it should have exactly the same
+run-time behavior.
+If pci_set_dma_mask(64) fails and pci_set_dma_mask(32) succeeds, then
+pci_set_consistent_dma_mask(64) will also fail.
 
-I haven't heard of anything called a 'physical corner'. These were always
-referred to as virtual corners, on older platforms it was just one contiguous
-number space, on newer ones we added another higher level sparse number space
-just for more fun :)
-Command DB refers to these as hlvl and vlvl, I haven;t yet figured out what their
-full forms are :/
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+---
+ drivers/dma/idxd/init.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
-> 
-> Or did you get the suggestion backwards?
-> 
->> Unfortunately we can't really build a type system here to
->> make this problem easy to catch with a mismatched type, unless there's
->> some sort of typedef trick we can play?
->>
-> 
-> s/i/corner/ in rpmhpd_set_performance_state() would further enforce the
-> naming scheme used and reduce the risk for future confusion.
-> 
-> But we did just squash the final bug... ;)
-> 
->> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> 
-> Thanks,
-> Bjorn
-> 
-
+diff --git a/drivers/dma/idxd/init.c b/drivers/dma/idxd/init.c
+index c8ae41d36040..de300ba38b14 100644
+--- a/drivers/dma/idxd/init.c
++++ b/drivers/dma/idxd/init.c
+@@ -637,15 +637,9 @@ static int idxd_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	}
+ 
+ 	dev_dbg(dev, "Set DMA masks\n");
+-	rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
++	rc = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
+ 	if (rc)
+-		rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
+-	if (rc)
+-		goto err;
+-
+-	rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
+-	if (rc)
+-		rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
++		rc = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+ 	if (rc)
+ 		goto err;
+ 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.30.2
+
