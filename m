@@ -2,110 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EA5A3BFAD5
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 15:00:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D3683C13C3
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 15:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231756AbhGHND1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 09:03:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57512 "EHLO
+        id S231749AbhGHNGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 09:06:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231550AbhGHND0 (ORCPT
+        with ESMTP id S231550AbhGHNGt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 09:03:26 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22220C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 06:00:45 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1625749243;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XSB3tWPHPLoXXP571FN3OwytnCWtwq7P5shrf9i3W5E=;
-        b=179A/gqmtepq18Nl3EuX65uw8Z0BfoTXl/2cGXjGFNjaGGfJXttCd1CVDT4RrA5olnuPkP
-        MBk6Jxzxaw+JplZM2YfjdToLEDG+X3wIV1wyQbf/0Sljhe94fdsENUwfbNo+Ia+HNXCthP
-        L7pFcjei9lsTRckNjNZvMYhJ+JmxE4Ha3Se+jhucWEvBk2PoCashE8E3PtArCdZQxVBJ4G
-        BT+qTjFhEY05dhaTbASZVI4+Xe9VGLWnMCZFVq8L2S3MLKPUdlp2xgMIt70IW/JO2vc72n
-        Og7wasWxqFpYXHl8vkignxhu0Y+7EdyvjMGMkQnexXzBGebs4Soxbtg4XPSO1w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1625749243;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XSB3tWPHPLoXXP571FN3OwytnCWtwq7P5shrf9i3W5E=;
-        b=lTyEFjM5aLx2WzuyOHaIEDTryCh6K4fUnIq5pjKDppc9QRKNmuLFR+OfVngRfQLpvstlRX
-        DL7UDNikKy76g9CA==
-To:     "Raj\, Ashok" <ashok.raj@intel.com>
-Cc:     "Dey\, Megha" <megha.dey@intel.com>, linux-kernel@vger.kernel.org,
-        "Jiang\, Dave" <dave.jiang@intel.com>,
-        "Tian\, Kevin" <kevin.tian@intel.com>,
-        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Liu\, Yi L" <yi.l.liu@intel.com>, jgg@mellanox.com,
-        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Van De Ven\, Arjan" <arjan.van.de.ven@intel.com>,
-        "Williams\, Dan J" <dan.j.williams@intel.com>,
-        "Shankar\, Ravi V" <ravi.v.shankar@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: Programming PASID in IMS entries
-In-Reply-To: <20210707221216.GA56594@otc-nc-03>
-References: <bd509e3d-f59d-1200-44ce-93cf9132bd8c@intel.com> <87k0m2qzgz.ffs@nanos.tec.linutronix.de> <20210707221216.GA56594@otc-nc-03>
-Date:   Thu, 08 Jul 2021 15:00:42 +0200
-Message-ID: <87im1lot8l.ffs@nanos.tec.linutronix.de>
+        Thu, 8 Jul 2021 09:06:49 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05955C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 06:04:07 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id h5so3511300vsg.12
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 06:04:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KEHvtk/qDbB4blO1SCEyQUaWYrL3oXULeK/saz6CTeE=;
+        b=AoVRYb45kt0ltweZhxP5zSUmqreVyxGzhf0gfCOx5WHPtiPAeuuN2aeLc5WfwYke3G
+         KCG5DghU1Hp3un1DSxPPc+BCmXKhndrA5ZfJU+LP+oSptOxPEOqzFdZEpKAhS+Wc81sz
+         vKJgu6XBA/mWwzrEYesOipfqr+E3OpPg3DTWDEr9LbVpljtpI2bUyI5avGDqMoPMofb+
+         QEzR9gpXS9XIpuiKfojrj1xM9LWCT1S83yT0/gNiJYt+yO5P1DSSBXH367plz4y/FLs8
+         cLluvRJ8zgdIoDHf1H7lmrd1E4I+i6q42vNx/XbZ5CZ0JubHDui5MtOOPaaSxi9JZI3f
+         Z9wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KEHvtk/qDbB4blO1SCEyQUaWYrL3oXULeK/saz6CTeE=;
+        b=MgIXVoTG2VPDiTmT/zY7992jR6Pp7Q+djfOi94kU9eE+p0CmVoZrCvNQlF6WXyB2JY
+         kJIMTKk2iAm85+hpgmGZIebVOYzInyP8qjWJFKor3ueZCSMHFBwlsoqDFZ3rHQam9KWW
+         93BJM5XLK18MErTRSXPXQ2X7J95+lmL6DZ9ShF8xqGwHmTvuGnOmxqmstUtSQqnz8RW0
+         0W25cau19+ssiFqZ77CeMeARHC4674EzsSypGSFiACTZ7HZb5WXigsJh8tHPChR5EGb9
+         C4yI/EUb1h87Pf/yzJ4bksy4SMuZ1mvLmfxIvjaz4cVVg4djsLLv+tX4RIJmkIYxw150
+         nxvw==
+X-Gm-Message-State: AOAM530GRib2Nx7AUAqQgFv+X+L2RMidKF1UwrNqBAv+SyH0a1eKLYzI
+        IoZrFwSocagqR/C29+J7/A1cZEEt1Bdh8Sh3iCOZcA==
+X-Google-Smtp-Source: ABdhPJxXd15HTOj1S79pKDlOlKLm6vFjRSvtykjfTPrGVEJUaYx/vzhhBQjyJBbp+A/154EsGOxphqSdkkg0KisQ/yE=
+X-Received: by 2002:a67:ee54:: with SMTP id g20mr27739180vsp.55.1625749446193;
+ Thu, 08 Jul 2021 06:04:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210623101731.87885-1-andriy.shevchenko@linux.intel.com>
+ <CAPDyKFoM-gkFPoFePbHS62r-HUpk6ipA5J-qPbQ8NWL9Mm_N2Q@mail.gmail.com> <CAHp75VfdDXwboZWZgRdFNXLpONy8UgDryeZWd6UD2RaCXo=uOw@mail.gmail.com>
+In-Reply-To: <CAHp75VfdDXwboZWZgRdFNXLpONy8UgDryeZWd6UD2RaCXo=uOw@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 8 Jul 2021 15:03:30 +0200
+Message-ID: <CAPDyKFqmswO9a-Sv6Wk5x4XA0P-idT1zZwRvjVbK7oS=J2cesg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] mmc: mmc_spi: Simplify busy loop in mmc_spi_skip()
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ashok,
-
-On Wed, Jul 07 2021 at 15:12, Ashok Raj wrote:
-> On Wed, Jul 07, 2021 at 10:50:52AM +0200, Thomas Gleixner wrote:
->> On Wed, Jul 07 2021 at 09:49, Megha Dey wrote:
->> > Per your suggestions during the last meeting, we wanted to confirm the 
->> > sequence to program the PASID into the IMS entries:
->> >
->> > 1. Add a PASID member to struct msi_desc (Add as part of a union. Other 
->> > source-id's such as Jason's vm-id can be added to it)
->> 
->> Yes. Though we also discussed storing the default PASID in struct device
->> to begin with which is then copied to the msi_desc entries during
->> allocation.
+On Thu, 8 Jul 2021 at 14:50, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
 >
-> Using default PASID in struct device will work for sub-devices until the
-> guest needs to enable ENQCMD support. Since the guest kernel can ask for an
-> interrupt by specifying something in the descriptor submitted via ENQCMD.
-> Using the PASID in struct device won't be sufficient.
-
-I'm well aware of that, but can we solve step 1 before step 2 please?
-
->> > In order to make IMS dynamic, we were thinking of the following 
->> > enhancements to the IMS core:
->> >
->> > 1. Device Driver specifies maximum number of interrupts the sub device 
->> > is allowed to request, while creating the dev-msi domain. E.g. in the 
->> > case of DSA, Driver can specify that each mdev created can have upto X
->> 
->> Why would this be mdev specific? IIRC the sub devices can be used on
->> bare metal as well.
+> On Thu, Jul 8, 2021 at 3:33 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > On Wed, 23 Jun 2021 at 12:17, Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
 >
-> I guess so. I thought for bare metal we don't need to play these games
-> since native abstraction is provided with things like uaccel for e.g. For
-> things like SRIOV its much different.
+> ...
 >
-> What the above limit accomplishes is telling the guest, you can request
-> upto the limit, but you aren't guaranteed to get them. This avoids the
-> static partitioning and becomes best effort by the host driver.
+> > This certainly is an improvement.
+> >
+> > Although, what do you think of moving to readx_poll_timeout(), that
+> > should allow even a better cleanup, don't you think?
+>
+> I believe you meant rather read_poll_timeout(). Either way I don't see
+> the benefit of using that macro when you have to customize its body a
+> lot. Besides that the macro doesn't use cond_sched() or even
+> schedule() and I'm not sure it will be an equivalent change.
+>
+> That said, I prefer going this patch as is for the time being. We may
+> adjust it later on.
 
-That's fine.
+Okay, no strong opinion from my side. Queued for v5.15 on my devel
+branch, thanks!
 
-> Ideally we want to tell the guest it can have upto say 1k interrupts, but
-> unlike MSIx where resources are commited in HW, we want to allow guest
-> allocations to fail. 
-
-Which as discussed requires a hypercall because silent fail is not an
-option.
-
-Thanks,
-
-        tglx
+Kind regards
+Uffe
