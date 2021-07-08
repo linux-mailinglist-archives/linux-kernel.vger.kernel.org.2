@@ -2,391 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A2003C1990
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 21:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C82473C1993
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 21:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbhGHTFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 15:05:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229768AbhGHTFb (ORCPT
+        id S230187AbhGHTHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 15:07:11 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:59784 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhGHTHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 15:05:31 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F141FC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 12:02:48 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id v14so18280938lfb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 12:02:48 -0700 (PDT)
+        Thu, 8 Jul 2021 15:07:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1625771067; x=1657307067;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=N+KX1Iwb2cTXXRV4ZnpsSP2nxEg+7gwvhZEQ8K5NypE=;
+  b=Nf9dBg6VokVgYDhZAvw65LlxY+BIJC9OmSP1jjOcBxwDk0cJaKpoquai
+   O8fS7fESBjoPaw3kJnkI/4enEg+q5bMvQ0ZkpRVsgBvUAKQa+E0yp8t/5
+   a9UuuZdoaT62H/WnJ90PL7/Y4jAW2iBPUj32c0TpNbPPBl0wWF3jE1DGE
+   6vU0I4ZXhQ8O14ZYTzHMKIEMkr/fdX/SE8l2vQ8UK5EwOy+3x8eFaIwMm
+   nbxeV4BgLiXrvJq2l7+uVKsZbgYaMTr0roOw4ZrDyxG2V2ev5oMjLNXhZ
+   L/Ids7rByiCMDVN6HdT4zF2xdsA6gXIQZErpsNHfMgiXTm46rpkFWXMlN
+   w==;
+IronPort-SDR: Rq6aNefVJ+tTYM7CYZ9EzduugkpuiETJU5vnH9+elW44V1mW7TwPH/m7V10Ah5ieIIxejfgwkE
+ CjYnmGAFfn96r0+46aG1LtuHX3LXpwyHWTRivp1c19+DpjRHQABhCYwa0hKX454HuwTJJOYBJk
+ XAdkJVDjNO+jSc8drlNoTJGFxKtwC+bt/Z8+trgA1bE+XrpTQy7HgksbPRXGciKLa1YEr6rqth
+ KHsMeErjxQcY+oiBBUGtaLEdAGX4zG+4O7s4am4WCULxww1D+uyrLlvLZaZjB2UP4KCAbdemxP
+ coM=
+X-IronPort-AV: E=Sophos;i="5.84,224,1620716400"; 
+   d="scan'208";a="128148805"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 08 Jul 2021 12:04:26 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 8 Jul 2021 12:04:27 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2
+ via Frontend Transport; Thu, 8 Jul 2021 12:04:26 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HIRDOr9GS6ILuho5/EZBmHHSNl977iWwz+M0efoIW4gOUNDmTki259r9pfOcRn8rWe2gulH048F75kDm/hYLL1wBxG00+8uUYuPX69sT2pe6y2SnkUObujc2+zAwg0Y6KFlIMGhRzWrLRKQ2j3fZfpBHL3wspLl7gQ6GB08qvwBfqFl0L4pqrsIeaswLcO8ughROJ3Ydg4iWENEvUEKf8AecGtYz+hUNL2QcTU0N55cMQj7fay5HMCl3kUlEK70sZjjNykI7guSOQqSOiO3198BhoKdjnmvrOZ5t/Sq2/KIz/RmQyDQh7ocsg7NpAHQ4Whd+cyDFQK5238CYAHXqHQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N+KX1Iwb2cTXXRV4ZnpsSP2nxEg+7gwvhZEQ8K5NypE=;
+ b=ZvLNznGzpSyyCfoHyvJzGwpuhSoFPznMcU5qXefqMJQVNjLzzNrCA9kK1a2nOOXY8UPqtN/0J0e511qLJa/SaOq3qab2hoPAevQCennz2dEp79vRH78ZoTfi4FY28h0sps7+Cr2ijvHYKDLm05qJNYhdcPzfxlANSxDX/uJ0GW2Pj6BhJnNrutr1HFjorfIPUXPKFXjOwXr9hX69bnuR43ZjlsYDhk62bPj7i4sOjb3AL/YJwC1D9GXiF2P7788YTpMNczYD8AgFHNcrC9/rgCtQZmkrJL79qPJnKts3Q/CXmdxY9ZOt4aJ52usQxByiB4S72q48qwbkyk19lPp7MQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iCjglDRVYYfDMnEWeZjnuRPIHpWzdHVzJbk3D4IPcVA=;
-        b=SWRi6RCpKFn1brXJUTFOICgSd+8S+zpaDoVWVu17HzUaaNaOhIAzNsXkbkDvGWwtN0
-         G7Ieq4ztDHwuPiJ8ssKtde4YIs+u2ezDe2PHi+EpInhZDgXSVoHN/znuHPlSndf0P2by
-         RH31XOcagMhFIV+X6LHK4j3f5kEHMl5c6UAp6KmW2ES+DKY8fRsrI/b8Stk/8yFBCWcS
-         ZaMjxrcxskgZ7o35ej2XXBMrGk0CbcOETzLZPvZ3YU5ckCnVOUTxxam8iNukqMRsl68N
-         phwCS3eb9iHVL6N2u905XQ2+/PvK3k8yr/rJqkCbDJ3qlYJhyk9JHM6joWLNhAAwoM6n
-         uf5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iCjglDRVYYfDMnEWeZjnuRPIHpWzdHVzJbk3D4IPcVA=;
-        b=DoZOJFyyhGd4KQNsJNXZZsM4ANMiLIsbb5BYoZM5aAm1R0I4/rkdgVzCtNnfGKtYUJ
-         qKaw56hkztayzYScLBOKRacXhdiaseO3mUbxfHsfzYUW5w6dB1J1JmVSyPKqffD8heEb
-         fV8ViOnSRGmXvOREEJJo4WuAbGjQncOSfzgLAQfUCgVyYhy59IeIi0HUZNwFKR8NlUn2
-         Bj9YrCPmq1giJxWd8o44hDYxUdF88nqZf4fTo6REzipqU9p2HjrZchaFreAbSomBHrZM
-         J6BzzXzqUpQsctlCS1wA7fKPTqQlZsjgK5Lh4Bp0KMAJm5HcVT9ELg/zpJK9wUSJyZHu
-         1wkw==
-X-Gm-Message-State: AOAM532SqSDhgWHv8r0RutvyYnS1Mh2/wRzEiZhyUhfmpRZ3kVXHguUc
-        OHLAz+mU2YkuLjQmIKXG6D7EH++HjvgbOANrPoZk5Q==
-X-Google-Smtp-Source: ABdhPJyxbNSW17npdAMGIwokCciI1J6kaWl1ZamNZWgSDQNp1S5vgqAfQ2D6dK2pzfZFjzOtDWrx+SIergf/rBwJYMw=
-X-Received: by 2002:a05:6512:3884:: with SMTP id n4mr24859969lft.547.1625770966574;
- Thu, 08 Jul 2021 12:02:46 -0700 (PDT)
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N+KX1Iwb2cTXXRV4ZnpsSP2nxEg+7gwvhZEQ8K5NypE=;
+ b=Tr68v3nzVMmEVhV9vrLqlvrU/htqo3+kzYhDIiFxacg6WO9DijO/e+xRA4T4ygP9FRbHM/HVIgrw1gwrGWX89Mf9BMQMx7nOuVpxZOtvB3a8Oul9ChuK+Llb7EeVm826rpNgqsbB6jaGng2EZKLDOe8WI/0MXfeVwLXzWvIb7Lg=
+Received: from SN6PR11MB2848.namprd11.prod.outlook.com (2603:10b6:805:5d::20)
+ by SA2PR11MB4921.namprd11.prod.outlook.com (2603:10b6:806:115::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.31; Thu, 8 Jul
+ 2021 19:04:25 +0000
+Received: from SN6PR11MB2848.namprd11.prod.outlook.com
+ ([fe80::e0af:535:1998:c7ac]) by SN6PR11MB2848.namprd11.prod.outlook.com
+ ([fe80::e0af:535:1998:c7ac%3]) with mapi id 15.20.4287.033; Thu, 8 Jul 2021
+ 19:04:25 +0000
+From:   <Don.Brace@microchip.com>
+To:     <pmenzel@molgen.mpg.de>, <Kevin.Barnett@microchip.com>
+CC:     <Scott.Teel@microchip.com>, <Justin.Lindley@microchip.com>,
+        <Scott.Benesh@microchip.com>, <Gerry.Morong@microchip.com>,
+        <Mahesh.Rajashekhara@microchip.com>, <Mike.McGowen@microchip.com>,
+        <Murthy.Bhat@microchip.com>, <Balsundar.P@microchip.com>,
+        <joseph.szczypek@hpe.com>, <jeff@canonical.com>,
+        <POSWALD@suse.com>, <john.p.donnelly@oracle.com>,
+        <mwilck@suse.com>, <linux-kernel@vger.kernel.org>,
+        <hch@infradead.org>, <martin.peterson@oracle.com>,
+        <jejb@linux.vnet.ibm.com>, <linux-scsi@vger.kernel.org>
+Subject: RE: [smartpqi updates PATCH 2/9] smartpqi: rm unsupported controller
+ features msgs
+Thread-Topic: [smartpqi updates PATCH 2/9] smartpqi: rm unsupported controller
+ features msgs
+Thread-Index: AQHXcwHAUDlfVz7mEUGnZ/7ayWT+AKs5cWuw
+Date:   Thu, 8 Jul 2021 19:04:25 +0000
+Message-ID: <SN6PR11MB284877FDAB929F223AEC14B5E1199@SN6PR11MB2848.namprd11.prod.outlook.com>
+References: <20210706181618.27960-1-don.brace@microchip.com>
+ <20210706181618.27960-3-don.brace@microchip.com>
+ <17eeaf22-4625-d733-dcfb-ec2322dd0ca6@molgen.mpg.de>
+In-Reply-To: <17eeaf22-4625-d733-dcfb-ec2322dd0ca6@molgen.mpg.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: molgen.mpg.de; dkim=none (message not signed)
+ header.d=none;molgen.mpg.de; dmarc=none action=none
+ header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 709896f7-ab61-4358-09f6-08d94243344d
+x-ms-traffictypediagnostic: SA2PR11MB4921:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SA2PR11MB4921BEB210303B2435AA8A50E1199@SA2PR11MB4921.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: H1esEdzTMx9MzNOA02i5Z4CyLgjMhGCfdDz38QZ33fk1Wx8l1JdteOBdyho0XnFVQrDYwuhd7STkShQj3xkEGU9bzG7BDErr9kb9P+lHLyBGWmOVKr887FI0r5GwV1XjulRsC4jmOaEcVzp4sbPU9J7KU0vnRdPJi/lLAsfWWLpLXZaHX+m4Opc9r+Gc50Jgk4aKO8LUMvCc4AcbyEG0x1kb1AsZjxD/AhGFOs+Pjp0U9dKzgQ0s3wzHpr23fZ8Hx0P6TIOqbRsaipUvJUCcFrIB/qAOlPS01ig7XB/8545ihMdX7DaT/JxWIvXmx5f2jC6KvZteiq9gEM1WQMAUMUToM9satjjG/LKgvLmtrmjaF8aEDO81C295/6i4hCevcB5SjGElPcFED7z12FajY7luKoHRnAwvVctiNY0JP/2BRWAuf0yPSixpRctzE0FE+4FnTr5X9+KB6CF8QIBQaiqdcXIKDtFPk6KM3YlZRVP6P21z5aePIfsvVK+oM9dwtTfEGLOrRtJLye5UvO6vKDg9biWTJqDjlpJ/Wq3YW6ihFlhPy8YBXZXQGhmLyjk0sElSFAqfhw9+5VqbNQOUJkoOlBGXly2+W3BQXKJIDnvoW6Aonjjh9GkJXFqtG9D6+kWh0npibs3tQ0A4zgO8vw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB2848.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(39860400002)(396003)(366004)(376002)(33656002)(8936002)(4326008)(38100700002)(122000001)(2906002)(186003)(76116006)(55016002)(6506007)(7696005)(316002)(53546011)(8676002)(71200400001)(52536014)(7416002)(9686003)(83380400001)(6636002)(54906003)(110136005)(15650500001)(26005)(86362001)(64756008)(66556008)(5660300002)(478600001)(66476007)(66446008)(66946007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Q1Q2YTNkQWNIYlNhRFpCWU1sVDB0NWJVRkp6dUIzenR0L0xGUkRrZmFSbGxo?=
+ =?utf-8?B?KzBiemZnS01rMUtQV1hpNXJkU1JQWFdUVFVKVE8zRy8xSFBVUm9wWkNMTElj?=
+ =?utf-8?B?TTIwOEFWa0M3dWFJUm92a2RTcnVSbk5XN0IxeFlsbUlRQXBOaVFvVXMvSjJl?=
+ =?utf-8?B?aXRnTXlWbWNEWVQyZ3liSkRSUW9RUkE1OVk2KzJmNEtuN1p6b2dBUmpPQzlz?=
+ =?utf-8?B?U1dCT2JSUUNTd1lUbmpXc3g5RGlvMVBrYkc1OVRoT3NYdjJXbTFtSDd4S0ts?=
+ =?utf-8?B?RkNlcm94MVFsaThaTlVxS3I0Z0ZQbGlpU1JsUVFjTHk0VnJrSjlZMlY1ZEd6?=
+ =?utf-8?B?MzllRCtoTVQrQkhxVDI1ZlZGbG1rWGxWRDZaNjJPU0ZXcEhaUXBwYkV6OVhJ?=
+ =?utf-8?B?STVvaGhLYUo2SEdSaTRGSjdkSGgzYnZNZGluL3hIQ2RxRVp0ZUd0Q01qWERp?=
+ =?utf-8?B?SmQ0ZmtvVVRwT09TdlQ1OE9IcERGQS95WlpIVlB4V1k0SElQUTNyOHBoeko0?=
+ =?utf-8?B?TW9LQzNTNTNKZFBFWGczVGlCODJiVXJ6a1lKYUx3eVZpWXF0akFacXQ4aTYx?=
+ =?utf-8?B?azlUOHpTRU5NdzVZOXhkODdmb3NoK3p6QjJCdVJXRzNNSXc5YytNR3RyWVVY?=
+ =?utf-8?B?bThEOUZEbG5qTVgySzVEYWJxVzA0bnhpZEpGODJwVSszTFFXSDZRek9vb0dN?=
+ =?utf-8?B?Zm1nQ01uVnpSN3VTdUFLYjBuK2R0SklHU3Npb0lxK3RiNVA2YWF4MDZYczVH?=
+ =?utf-8?B?MC9TYWp3YWtnQkZIdmw0b2liU2d5akZaZWJWcjdPc3dSZlR3UkNwZld2WUJT?=
+ =?utf-8?B?VUtDdUZUNDAvRTV4ZWZsZGViZEFPRnYyUTNKVG9yem5YZlg4c3Jmd3JyNEpE?=
+ =?utf-8?B?MElFN1pjYnNoQjZHbkEydE03NU9OdU5yS0Rpcmk3czlCTWRvemVRSFdxMUZJ?=
+ =?utf-8?B?cytCaTBSQkF5WU1peHVyMXRhdURsTk9hanpybW4xeWlZSzU2TWV1TFZIRXpk?=
+ =?utf-8?B?WEtmRWFrSkprTlhUTys0K2dyYUFVU0tGeW5ZUjlDb1BSd2Q0dWtLd3l6akpr?=
+ =?utf-8?B?NTR1OVVEUFVzNUYvbTU1N0VQNEhOS2w1SHV0NUJveUJIbElqN1ZvZnRPclJt?=
+ =?utf-8?B?MmhnRWluQW8zZFNtYzFRQ0NPS1A2cytORzNwWWNZMDYxUmhtWVlrUTFCOVJ2?=
+ =?utf-8?B?eVFPOTczRHpKRmcySU8xMVJSWGlHUW9oOG1IR0tQWnVudmpDZUpWcHdnMmdw?=
+ =?utf-8?B?ZlU5Z3AxMnRIL1ljc1M3M0gyenRVSXlDaGZCOENYRzZFeUVYZmpkY0gyaXhy?=
+ =?utf-8?B?Q2VhenVGVHk4V2UvbklJK2ZYcHh4MzNTUHdSditIMkdETHBKQVd0TmNZS2xi?=
+ =?utf-8?B?ZUg0dGk4S1BuKzJIdHRpQ3Z2eHhNYXAza1h4SlMyY2h0bHBVdFN5S3NiU0ZI?=
+ =?utf-8?B?TlpITHdUYnVJeDJpcm52VTlFeFhwWi9ENDIzNjI4eTQvNkxpQ0NJQnRwTUo2?=
+ =?utf-8?B?VUlpckpoYkU4YW1MejYvNU84NmMyYjlCYW41T1VYUldHQ25CSXo3QmJYcU4y?=
+ =?utf-8?B?UlR1Y3N3M0U3dVRKbVRBR3hXUXFZWDVTQUdrSDRHQ09LRVpTNVRmQ3M3VXNO?=
+ =?utf-8?B?WitnR3V3QVVjSnJ4NnFEU2RMSkkyN25wUVdHb0w1VnhzODgwSkhPSGtJcU1E?=
+ =?utf-8?B?VHpmYzZkYis5RnJUT2JRaHRhRFNsT2JYZXRrYVVqcVNLZmR1WnV6R3lxci9I?=
+ =?utf-8?Q?MMqmdSZrI9af8GJUY5QD3MIiG5O/DO9XhzCnOGY?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20210707224310.1403944-1-ndesaulniers@google.com>
- <20210707224310.1403944-3-ndesaulniers@google.com> <CAK7LNAR66iE0w4bjpMVEz6W==mnc59MEnRWm1MXrqApP0aE4Qw@mail.gmail.com>
-In-Reply-To: <CAK7LNAR66iE0w4bjpMVEz6W==mnc59MEnRWm1MXrqApP0aE4Qw@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 8 Jul 2021 12:02:35 -0700
-Message-ID: <CAKwvOdmufESjYQVZmaPdTXgZO5Ogz+OppVSUGAn6BZaC+YZhbw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] Makefile: drop CROSS_COMPILE for LLVM=1 LLVM_IAS=1
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Fangrui Song <maskray@google.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <nathan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB2848.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 709896f7-ab61-4358-09f6-08d94243344d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jul 2021 19:04:25.5772
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wA3nZE1+HCxa3gaeIBZohOGWpIHNFJMxzHO21265B3SSn7WBnZmUSc3tcbKdqOIzWuVvAQrcU81eoHWL3GCdzg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB4921
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 8, 2021 at 3:23 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> On Thu, Jul 8, 2021 at 7:43 AM 'Nick Desaulniers' via Clang Built
-> Linux <clang-built-linux@googlegroups.com> wrote:
-> >
-> > We get constant feedback that the command line invocation of make is too
-> > long. CROSS_COMPILE is helpful when a toolchain has a prefix of the
-> > target triple, or is an absolute path outside of $PATH, but it's mostly
-> > redundant for a given ARCH.
-> >
-> > If CROSS_COMPILE is not set, simply set --target= for CLANG_FLAGS,
-> > KBUILD_CFLAGS, and KBUILD_AFLAGS based on $ARCH.
-> >
-> > Previously, we'd cross compile via:
-> > $ ARCH=arm64 CROSS_COMPILE=aarch64-linxu-gnu make LLVM=1 LLVM_IAS=1
-> > Now:
-> > $ ARCH=arm64 make LLVM=1 LLVM_IAS=1
-> >
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/1399
-> > Suggested-by: Arnd Bergmann <arnd@kernel.org>
-> > Suggested-by: Nathan Chancellor <nathan@kernel.org>
-> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> > ---
-> > Changes RFC -> v1:
-> > * Rebase onto linux-kbuild/for-next
-> > * Keep full target triples since missing the gnueabi suffix messes up
-> >   32b ARM. Drop Fangrui's sugguested by tag. Update commit message to
-> >   drop references to arm64.
-> > * Flush out TODOS.
-> > * Add note about -EL/-EB, -m32/-m64.
-> > * Add note to Documentation/.
-> >
-> >  Documentation/kbuild/llvm.rst |  5 +++++
-> >  scripts/Makefile.clang        | 38 +++++++++++++++++++++++++++++++++--
-> >  2 files changed, 41 insertions(+), 2 deletions(-)
->
->
->
->
->
->
->
->
-> When I was considering a similar idea, my plan was
-> to implement this in Kconfig instead of in Makefile
-> because that will pass the compiler information
-> in one direction (only from Kconfig to Kbuild), but
-> that is not so important. We can change it later
-> if needed.
->
-> I did not complete it because I was investigating
-> some issues (especially [3] below), but maybe
-> that is something we don't care about.
->
-> Can you address [2] below at least?
-
-Sure!
-
-> If we do not have any concern, I can merge it.
-> It is likely so because people are only discussing
-> "We want to omit omit CROSS_COMPILE".
->
->
->
->
->
->
->
-> [1] explicit target triple for native builds
->
-> The default target of my distro clang
-> is x86_64-pc-linux-gnu.
->
-> $ clang --version
-> Ubuntu clang version 11.0.0-2
-> Target: x86_64-pc-linux-gnu
-> Thread model: posix
-> InstalledDir: /usr/bin
->
-> So, previously, the kernel was built with
-> implied --target=x86_64-pc-linux-gnu.
->
->
-> With this patch, --target=x86_64-linux-gnu will be
-> explicitly specified.
-
-Correct. We've been doing this for x86 builds of Android kernels for a
-while without issue.
-
-I can add this note to the commit message:
-```
-For native builds (not involving cross compilation) we now explicitly
-specify a target triple
-rather than rely on the implicit host triple.
-```
-The only downside I can think of now is that we've encountered E2BIG
-for excessively long command line arguments in the past (mostly for
-out of tree drivers in Android).  I'm having trouble imagining how the
-implicit host triple could differ in a way from these explicit ones
-that would break native compilation.  Then again, someone did just
-submit patches for building Linux on BSD.
-
-If we don't want to do that, perhaps we could check `cross_compiling`.
-Why did you make that variable lowercase in
-commit f02aa48dde8b ("kconfig: use /boot/config-* etc. as
-DEFCONFIG_LIST only for native build")?
-Because the "origin" is not the environment?
-
-> The same applies to native-builds of other architectures.
-> For example, when a user builds the arm64 kernel on
-> an arm64 server, --target=aarch64-linux-gnu is
-> explicitly forced.
->
-> I guess, this is a good direction because the produced
-> code will be more deterministic, irrespective of the
-> Clang's configuration.
->
->
->
-> [2] 32/64-bit configuration is toggled in Kconfig time.
->
-> Initially, you submitted only arm64. Maybe, it was intentional
-> since arm64 is the simplest case.
->
-> In the kernel tree, arch/arm and arch/arm64 are very special
-> cases where 32-bit and 64-bit are separated by directory.
->
-> Some of the other architectures are bi-arch, and
-> 32-bit/64-bit is specified by CONFIG_64BIT in Kconfig time.
->
-> When Makefiles are being parsed, we actually do not know
-> whether the user is planning to configure the kernel
-> for 32-bit or 64-bit because CONFIG_64BIT is not
-> specified at this point.
->
-> ARCH=x86 + CONFIG_64BIT=y
-> will build the x86_64 kernel, and
-> ARCH=x86 + CONFIG_64BIT=n
-> will build the i386 kernel.
->
->
-> Then, you may wonder
->
->   else ifeq ($(ARCH),x86)
->   CLANG_FLAGS    += --target=x86_64-linux-gnu
->
-> ... works?
->
-> Yes, it does fortunately.
->
-> -m32/-m64 takes precedence over the
-> {x86_64,i386} part of the target triple.
->
-> As far as I tested,
->
->       clang --target=x86_64-linux-gnu -m32
->
-> produced i386 code.
->
-> Interestingly,
->
->     clang --target=i386-linux-gnu  -m64
->
-> produced x86_64 code.
-
-Correct. -m32/-m64 and -LE/-BE refine the target triple that the
-driver builds up.
-
-> We must rely on this behavior of Clang because
-> --target (which is contained in CLANG_FLAGS)
-> must be specified before the Kconfig time.
-> Then, a user can toggle CONFIG_64BIT any time
-> from menuconfig etc.
-
-Correct. So we can't quite move all clang flags into one Makefile
-under scripts/ if they rely on Kconfig being run first. This new
-makefile is a "pre-kconfig" set of flags.
-
-> With this in mind, using $(ARCH) as if-else
-> switches is pointless.
-> $(SRCARCH) is the only meaningful input.
->
->
->   else ifeq ($(ARCH),i386)
->   CLANG_FLAGS    += --target=i686-linux-gnu
->   else ifeq ($(ARCH),x86)
->   CLANG_FLAGS    += --target=x86_64-linux-gnu
->   else ifeq ($(ARCH),x86_64)
->   CLANG_FLAGS    += --target=x86_64-linux-gnu
->
-> should be replaced with:
->
->   else ifeq ($(SRCARCH),x86_64)
->   CLANG_FLAGS    += --target=x86_64-linux-gnu
-
-Sure, it looks like this would simplify the i386 vs x86_64 handling,
-and the use of SRCARCH does seem more prevalent throughout the
-codebase. I will fix in v2.
-
-> Some architectures are not only bi-arch, but also bi-endian.
->
->
-> You hardcoded 64bit little endian for ppc:
->
->    else ifeq ($(ARCH),powerpc)
->    CLANG_FLAGS    += --target=powerpc64le-linux-gnu
->
->
-> But, we must rely on the fact that
->
->    clang  --target=powerpc64le-linux-gnu -mbig-endian -m32
->
-> produces big-endian 32-bit code.
->
-> This makes the "64le" part meaningless.
->
->
-> This should be noted. Otherwise it is difficult
-
-It is noted; in the top part of the newly added make file.
-```
-  1 # Individual arch/{arch}/Makfiles should use -EL/-EB to set
-intended endianness
-  2 # and -m32/-m64 to set word size based on Kconfigs instead of
-relying on the
-  3 # target triple.
-```
-Is there somewhere/somehow else you'd like me to note that?
-
-> to understand why --target=x86_64-linux-gnu works fine
-> with building the i386 kernel.
->
->
->
-> [3] User-space compilation
->
-> This does not matter to the kernel itself, but
-> Kbuild compiles some userspace programs for
-> the target architecture.
-> See the samples/ directory for example.
->
-> Another example is net/bpfilter/Makefile, which
-> embeds the user mode helper when
-> CONFIG_BPFILTER_UMH=y.
->
-> For this purpose, Kconfig checks if $(CC) is
-> capable of linking the userspace.
-> (CONFIG_CC_CAN_LINK).
->
-> When cross-building with Clang, I cannot see
-> CONFIG_CC_CAN_LINK set.
-
-Yes, that is a known issue.
-https://github.com/ClangBuiltLinux/linux/issues/1290
-
->
-> If we care about CONFIG_CC_CAN_LINK, probably,
-> --sysroot or something should be set according to:
->
-> https://clang.llvm.org/docs/CrossCompilation.html
->
-> This is an existing issue, but I have no time
-> for looking into this.
->
-> On debian systems, sysroot for cross-compilation
-> are located in /usr/aarch64-linux-gnu,
-> /usr/arm-linux-gnueabi, /usr/arm-linux-gnueabihf,
-> /usr/i686-linux-gnu/ etc. but I do not know if it
-> is the same across distros.
-
-Right. If I remember the glibc/binutils/gcc bootstrap dance, I thought
-gcc was configured with a known path to a particular version of glibc.
-So a cross toolchain knew where to look for its cross libc.
-
-Clang doesn't have such configure time step; it can cross compile
-easily with one binary, but cross linking a working executable is
-still a PITA due to not knowing which cross libc to link against.  I'm
-not sure whether we need to improve Clang's logic when cross compiling
-to look in "sane default" paths for a cross libc, or if we should just
-add some flag when cross compiling with clang in Kbuild (such as
---sysroot) in order for CONFIG_CC_CAN_LINK to work as expected.
-Fangrui probably has a good opinion about this.
-
-Zig (the compiler, but also the language name) can do this quite
-nicely. I'm envious.
-https://twitter.com/andy_kelley/status/1241409388532948992?lang=en
-https://www.youtube.com/watch?v=pq1XqP4-qOo
-
-But this is also somewhat orthogonal to the goal of "infer
-CROSS_COMPILE (or really, --target=) from ARCH (or really, SRCARCH)" I
-think.  It's still interesting for us all to discuss on-list though.
-
->
->
->
->
->
-> [4] What is the best target if we hard-code it?
->
-> Currently, we require the correct CROSS_COMPILE
-> is provided by users.
->
-> The target might impact the performance
-> or the ABI.
-> It was difficult for me to define
-> which one is better than another.
->
-> For example for ARCH=arm, which is better
-> --target=arm-linux-gnueabi or
-> --target=arm-lnux-gnueabihf or
-> something we don't care about?
-
-Yes, this is a case I was interested in.  I've used either
-interchangeably without issue for years.  That's not to say we get the
-same binary image with either.
-
-I get the same .config for the defconfig target with either.
-
-If I zero out KBUILD_BUILD_TIMESTAMP and the build number, I still get
-different sha1sums.  Though that assumes clang, lld, and kbuild are
-all deterministic, which I also haven't spent time to verify.
--- 
-Thanks,
-~Nick Desaulniers
+LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IFBhdWwgTWVuemVsIFttYWlsdG86cG1l
+bnplbEBtb2xnZW4ubXBnLmRlXSANClNlbnQ6IFdlZG5lc2RheSwgSnVseSA3LCAyMDIxIDI6Mjkg
+QU0NClN1YmplY3Q6IFJlOiBbc21hcnRwcWkgdXBkYXRlcyBQQVRDSCAyLzldIHNtYXJ0cHFpOiBy
+bSB1bnN1cHBvcnRlZCBjb250cm9sbGVyIGZlYXR1cmVzIG1zZ3MNCg0KRGVhciBLZXZpbiwgZGVh
+ciBEb24sDQoNCg0KQW0gMDYuMDcuMjEgdW0gMjA6MTYgc2NocmllYiBEb24gQnJhY2U6DQo+IEZy
+b206IEtldmluIEJhcm5ldHQgPGtldmluLmJhcm5ldHRAbWljcm9jaGlwLmNvbT4NCj4NCj4gUmVt
+b3ZlICJGZWF0dXJlIFhZWiBub3Qgc3VwcG9ydGVkIGJ5IGNvbnRyb2xsZXIiIG1lc3NhZ2VzLg0K
+Pg0KPiBEdXJpbmcgZHJpdmVyIGluaXRpYWxpemF0aW9uLCB0aGUgZHJpdmVyIGV4YW1pbmVzIHRo
+ZSBQUUkgVGFibGUgRmVhdHVyZSBiaXRzLg0KPiBUaGVzZSBiaXRzIGFyZSB1c2VkIGJ5IHRoZSBj
+b250cm9sbGVyIHRvIGFkdmVydGlzZSBmZWF0dXJlcyBzdXBwb3J0ZWQgDQo+IGJ5IHRoZSBjb250
+cm9sbGVyLiBGb3IgYW55IGZlYXR1cmVzIG5vdCBzdXBwb3J0ZWQgYnkgdGhlIGNvbnRyb2xsZXIs
+IA0KPiB0aGUgZHJpdmVyIHdvdWxkIGRpc3BsYXkgYSBtZXNzYWdlIGluIHRoZSBmb3JtOg0KPiAg
+ICAgICAgICAiRmVhdHVyZSBYWVogbm90IHN1cHBvcnRlZCBieSBjb250cm9sbGVyIg0KPiBTb21l
+IG9mIHRoZXNlICJuZWdhdGl2ZSIgbWVzc2FnZXMgd2VyZSBjYXVzaW5nIGN1c3RvbWVyIGNvbmZ1
+c2lvbi4NCg0KQXMgaXTigJlzIGluZm8gbG9nIGxldmVsIGFuZCBub3Qgd2FybmluZyBvciBub3Rp
+Y2UsIHRoZXNlIG1lc3NhZ2UgYXJlIHVzZWZ1bCBpbiBteSBvcGluaW9uLiBZb3UgY291bGQgZG93
+bmdyYWRlIHRoZW0gdG8gZGVidWcsIGJ1dCBJIGRvIG5vdCBzZWUgd2h5LiBJZiBjdXN0b21lcnMg
+ZG8gbm90IHdhbnQgdG8gc2VlIHRoZXNlIGluZm8gbWVzc2FnZXMsIHRoZXkgc2hvdWxkIGZpbHRl
+ciB0aGVtIG91dC4NCg0KRm9yIGNvbXBsZXRlbmVzcywgaXMgdGhlcmUgYW4gYWx0ZXJuYXRpdmUg
+dG8gbGlzdCB0aGUgdW5zdXBwb3J0ZWQgZmVhdHVyZXMgZnJvbSB0aGUgZmlybXdhcmUgZm9yIGV4
+YW1wbGUgZnJvbSBzeXNmcz8NCg0KDQpLaW5kIHJlZ2FyZHMsDQoNClBhdWwNCg0KRG9uPiBUaGFu
+a3MgZm9yIHlvdXIgUmV2aWV3Lg0KQXQgdGhpcyB0aW1lIHdlIHdvdWxkIHByZWZlciB0byBub3Qg
+cHJvdmlkZSBtZXNzYWdlcyBhYm91dCB1bnN1cHBvcnRlZCBmZWF0dXJlcy4gV2UgbWF5IGFkZCB0
+aGVtIGJhY2sgYXQgc29tZSBwb2ludCBidXQgd2UgaGF2ZSB0YWtlbiB0aGVtIG91dCBvZiBvdXIg
+b3V0LW9mLWJveCBkcml2ZXIgYWxzbyBzbyB3ZSBob3BlIHRvIGtlZXAgdGhlIGRyaXZlciBjb2Rl
+IGluIHN5bmMuDQoNCj4gUmV2aWV3ZWQtYnk6IE1pa2UgTWNHb3dlbiA8bWlrZS5tY2dvd2VuQG1p
+Y3JvY2hpcC5jb20+DQo+IFJldmlld2VkLWJ5OiBTY290dCBCZW5lc2ggPHNjb3R0LmJlbmVzaEBt
+aWNyb2NoaXAuY29tPg0KPiBSZXZpZXdlZC1ieTogU2NvdHQgVGVlbCA8c2NvdHQudGVlbEBtaWNy
+b2NoaXAuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBLZXZpbiBCYXJuZXR0IDxrZXZpbi5iYXJuZXR0
+QG1pY3JvY2hpcC5jb20+DQo+IFNpZ25lZC1vZmYtYnk6IERvbiBCcmFjZSA8ZG9uLmJyYWNlQG1p
+Y3JvY2hpcC5jb20+DQo+IC0tLQ0KPiAgIGRyaXZlcnMvc2NzaS9zbWFydHBxaS9zbWFydHBxaV9p
+bml0LmMgfCA1ICstLS0tDQo+ICAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCA0IGRl
+bGV0aW9ucygtKQ0KPg0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9zY3NpL3NtYXJ0cHFpL3NtYXJ0
+cHFpX2luaXQuYyANCj4gYi9kcml2ZXJzL3Njc2kvc21hcnRwcWkvc21hcnRwcWlfaW5pdC5jDQo+
+IGluZGV4IGQ5NzdjN2IzMGQ1Yy4uNzk1ODMxNjg0MWE0IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJz
+L3Njc2kvc21hcnRwcWkvc21hcnRwcWlfaW5pdC5jDQo+ICsrKyBiL2RyaXZlcnMvc2NzaS9zbWFy
+dHBxaS9zbWFydHBxaV9pbml0LmMNCj4gQEAgLTcyNTUsMTEgKzcyNTUsOCBAQCBzdHJ1Y3QgcHFp
+X2Zpcm13YXJlX2ZlYXR1cmUgew0KPiAgIHN0YXRpYyB2b2lkIHBxaV9maXJtd2FyZV9mZWF0dXJl
+X3N0YXR1cyhzdHJ1Y3QgcHFpX2N0cmxfaW5mbyAqY3RybF9pbmZvLA0KPiAgICAgICBzdHJ1Y3Qg
+cHFpX2Zpcm13YXJlX2ZlYXR1cmUgKmZpcm13YXJlX2ZlYXR1cmUpDQo+ICAgew0KPiAtICAgICBp
+ZiAoIWZpcm13YXJlX2ZlYXR1cmUtPnN1cHBvcnRlZCkgew0KPiAtICAgICAgICAgICAgIGRldl9p
+bmZvKCZjdHJsX2luZm8tPnBjaV9kZXYtPmRldiwgIiVzIG5vdCBzdXBwb3J0ZWQgYnkgY29udHJv
+bGxlclxuIiwNCj4gLSAgICAgICAgICAgICAgICAgICAgIGZpcm13YXJlX2ZlYXR1cmUtPmZlYXR1
+cmVfbmFtZSk7DQo+ICsgICAgIGlmICghZmlybXdhcmVfZmVhdHVyZS0+c3VwcG9ydGVkKQ0KPiAg
+ICAgICAgICAgICAgIHJldHVybjsNCj4gLSAgICAgfQ0KPg0KPiAgICAgICBpZiAoZmlybXdhcmVf
+ZmVhdHVyZS0+ZW5hYmxlZCkgew0KPiAgICAgICAgICAgICAgIGRldl9pbmZvKCZjdHJsX2luZm8t
+PnBjaV9kZXYtPmRldiwNCj4NCg==
