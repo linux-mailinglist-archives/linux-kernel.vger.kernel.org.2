@@ -2,241 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 775893BF763
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 11:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E7743BF766
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 11:18:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231310AbhGHJU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 05:20:29 -0400
-Received: from 8bytes.org ([81.169.241.247]:33256 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231236AbhGHJU2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 05:20:28 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 56C6F312; Thu,  8 Jul 2021 11:17:46 +0200 (CEST)
-Date:   Thu, 8 Jul 2021 11:17:41 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     David Stevens <stevensd@chromium.org>,
-        Robin Murphy <robin.murphy@arm.com>
-Cc:     Will Deacon <will@kernel.org>, Lu Baolu <baolu.lu@linux.intel.com>,
-        Tom Murphy <murphyt7@tcd.ie>, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dma-iommu: fix swiotlb SKIP_CPU_SYNC and arch sync
-Message-ID: <YObCtaW2UPii7mUL@8bytes.org>
-References: <20210702053742.842850-1-stevensd@google.com>
+        id S231320AbhGHJVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 05:21:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20924 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231190AbhGHJVT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 05:21:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625735918;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KHU1Vmvm7F12r1PAslF5dEr4adP4DAjY+fw1RfKa6y0=;
+        b=aaMDZFVgPUQpwaABvphhaAiKYlyPd6jGTMxe3GUaitzMTkLMrPU41AfKZ3y7Mo/orC9DDQ
+        Ttp89+jnetxloE6i0X0c8RwqyT34fmSg9/YLHquLCgEBvskUw1QYRtKzuZZQ9XAtDYpLwV
+        Kl7gvDvFUQ4ZuJ5zozHi/P0DTd4UXWg=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-563-cZLgfcrvPAS2z4j59fRWag-1; Thu, 08 Jul 2021 05:18:37 -0400
+X-MC-Unique: cZLgfcrvPAS2z4j59fRWag-1
+Received: by mail-ej1-f71.google.com with SMTP id 16-20020a1709063010b029037417ca2d43so1547653ejz.5
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 02:18:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KHU1Vmvm7F12r1PAslF5dEr4adP4DAjY+fw1RfKa6y0=;
+        b=PhyvEkNi35o5CEVPVwhNvGWTqadkrBgYiYF3IBkfEGGmHsxz0nrlSrvqMpxySzMFq7
+         ow7xQr0majL6SNSu3VFY8zhqGmMKUBfLKlZzv9X0/FyxqdA69RktgX4jy5ytHoTuGVZg
+         DWgt3FrLXZsvb0WyHf7Jqa1AFQUX5teGQpQYy9rlqmgI7Mv/0ZQruqw06iYcdAB0Hl6u
+         i3CUCIa3VLt0QAxLXALMtP07VjT/3EQB9vAjO/dzSxBLnil69UzWSsWJvqzK34ef+JTc
+         3tCKTC48s0uMj8cHSEJJOHTXCfq3oOtxSx2e7UJ2CogGmy+SpQgqP13l4cjLF79M9/s0
+         KzMQ==
+X-Gm-Message-State: AOAM532RQb5HCZFBVdWcgckopTqhq7bBW/EmUdZkumd++gsLPlgqsJNP
+        x/3B6EZXJvX57HD6/DbZ7h0f8chNYKkIOt0yLta/GNKfPzQdR2vj3jK4sYFjsJiFOdw8W7anJiB
+        XKhB5F0B6PoIKhjkyVUxaSKNZC7GzlIEpwHx8ArjG/KP34rn5VWAgqEPod2SPGH6EC/rLb3JUeM
+        oK
+X-Received: by 2002:a17:906:e0e:: with SMTP id l14mr9138394eji.501.1625735915619;
+        Thu, 08 Jul 2021 02:18:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxifn4rGSLVNiWgp2jP6bilACMyMlJDH3BLCSzTzOMJEiHwS01lRdGsL3R/9D4VvMBOp99ILA==
+X-Received: by 2002:a17:906:e0e:: with SMTP id l14mr9138354eji.501.1625735915367;
+        Thu, 08 Jul 2021 02:18:35 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id q24sm940031edc.82.2021.07.08.02.18.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Jul 2021 02:18:34 -0700 (PDT)
+Subject: Re: [PATCH V2] x86/kvmclock: Stop kvmclocks for hibernate restore
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Lenny Szubowicz <lszubowi@redhat.com>, seanjc@google.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210326024143.279941-1-lszubowi@redhat.com>
+ <YOawSzWrNtUIlSuE@8bytes.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <ee8c4344-b6b2-07b4-bb5c-48f6462f0931@redhat.com>
+Date:   Thu, 8 Jul 2021 11:18:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210702053742.842850-1-stevensd@google.com>
+In-Reply-To: <YOawSzWrNtUIlSuE@8bytes.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding Robin.
+On 08/07/21 09:59, Joerg Roedel wrote:
+> Hi Paolo,
+> 
+> On Thu, Mar 25, 2021 at 10:41:43PM -0400, Lenny Szubowicz wrote:
+>> Reported-by: Xiaoyi Chen <cxiaoyi@amazon.com>
+>> Tested-by: Mohamed Aboubakr <mabouba@amazon.com>
+>> Signed-off-by: Lenny Szubowicz <lszubowi@redhat.com>
+>> ---
+>>   arch/x86/kernel/kvmclock.c | 40 ++++++++++++++++++++++++++++++++++----
+>>   1 file changed, 36 insertions(+), 4 deletions(-)
+> 
+> What is the status of this patch? Are there any objections?
 
-On Fri, Jul 02, 2021 at 02:37:41PM +0900, David Stevens wrote:
-> From: David Stevens <stevensd@chromium.org>
-> 
-> Make map_swiotlb and unmap_swiotlb only for mapping, and consistently
-> use sync_single_for and sync_sg_for functions for swiotlb sync and arch
-> sync. This ensures that the same code path is responsible for syncing
-> regardless of whether or not SKIP_CPU_SYNC is set. In the process, fix
-> various places where the original physical address and swiotlb tlb_addr
-> are mixed up:
->   - Make sync_sg functions call sync_single functions for untrusted
->     devices, so they use tlb_addr when checking is_swiotlb_buffer and
->     when doing arch sync if necessary.
->   - Use tlb_addr for arch sync in map_page if necessary.
->   - In map_sg, map before syncing so that arch sync can target the
->     bounce buffer if necessary.
->   - Pass SKIP_CPU_SYNC to swiotlb map and unmap to avoid double syncing
->     the swiotlb. This had previously only happened in the unmap_page
->     case, but is now necessary for all swiotlb cases.
-> 
-> Fixes: 82612d66d51d ("iommu: Allow the dma-iommu api to use bounce buffers")
-> Signed-off-by: David Stevens <stevensd@chromium.org>
-> ---
->  drivers/iommu/dma-iommu.c | 82 ++++++++++++++++++++++++---------------
->  1 file changed, 51 insertions(+), 31 deletions(-)
-> 
-> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-> index 7bcdd1205535..24d1042cd052 100644
-> --- a/drivers/iommu/dma-iommu.c
-> +++ b/drivers/iommu/dma-iommu.c
-> @@ -505,7 +505,8 @@ static void __iommu_dma_unmap_swiotlb(struct device *dev, dma_addr_t dma_addr,
->  	__iommu_dma_unmap(dev, dma_addr, size);
->  
->  	if (unlikely(is_swiotlb_buffer(phys)))
-> -		swiotlb_tbl_unmap_single(dev, phys, size, dir, attrs);
-> +		swiotlb_tbl_unmap_single(dev, phys, size, dir,
-> +					 attrs | DMA_ATTR_SKIP_CPU_SYNC);
->  }
->  
->  static dma_addr_t __iommu_dma_map(struct device *dev, phys_addr_t phys,
-> @@ -536,7 +537,8 @@ static dma_addr_t __iommu_dma_map(struct device *dev, phys_addr_t phys,
->  
->  static dma_addr_t __iommu_dma_map_swiotlb(struct device *dev, phys_addr_t phys,
->  		size_t org_size, dma_addr_t dma_mask, bool coherent,
-> -		enum dma_data_direction dir, unsigned long attrs)
-> +		enum dma_data_direction dir, unsigned long attrs,
-> +		phys_addr_t *adj_phys)
->  {
->  	int prot = dma_info_to_prot(dir, coherent, attrs);
->  	struct iommu_domain *domain = iommu_get_dma_domain(dev);
-> @@ -555,7 +557,8 @@ static dma_addr_t __iommu_dma_map_swiotlb(struct device *dev, phys_addr_t phys,
->  	    iova_offset(iovad, phys | org_size)) {
->  		aligned_size = iova_align(iovad, org_size);
->  		phys = swiotlb_tbl_map_single(dev, phys, org_size,
-> -					      aligned_size, dir, attrs);
-> +					      aligned_size, dir,
-> +					      attrs | DMA_ATTR_SKIP_CPU_SYNC);
->  
->  		if (phys == DMA_MAPPING_ERROR)
->  			return DMA_MAPPING_ERROR;
-> @@ -573,6 +576,8 @@ static dma_addr_t __iommu_dma_map_swiotlb(struct device *dev, phys_addr_t phys,
->  
->  		memset(padding_start, 0, padding_size);
->  	}
-> +	if (adj_phys)
-> +		*adj_phys = phys;
->  
->  	iova = __iommu_dma_map(dev, phys, aligned_size, prot, dma_mask);
->  	if (iova == DMA_MAPPING_ERROR && is_swiotlb_buffer(phys))
-> @@ -785,15 +790,17 @@ static void iommu_dma_sync_single_for_cpu(struct device *dev,
->  		swiotlb_sync_single_for_cpu(dev, phys, size, dir);
->  }
->  
-> -static void iommu_dma_sync_single_for_device(struct device *dev,
-> -		dma_addr_t dma_handle, size_t size, enum dma_data_direction dir)
-> +static void __iommu_dma_sync_single_for_device(struct device *dev,
-> +		dma_addr_t dma_handle, size_t size,
-> +		enum dma_data_direction dir, phys_addr_t phys)
->  {
-> -	phys_addr_t phys;
-> -
->  	if (dev_is_dma_coherent(dev) && !dev_is_untrusted(dev))
->  		return;
->  
-> -	phys = iommu_iova_to_phys(iommu_get_dma_domain(dev), dma_handle);
-> +	if (phys == 0)
-> +		phys = iommu_iova_to_phys(iommu_get_dma_domain(dev),
-> +					  dma_handle);
-> +
->  	if (is_swiotlb_buffer(phys))
->  		swiotlb_sync_single_for_device(dev, phys, size, dir);
->  
-> @@ -801,6 +808,12 @@ static void iommu_dma_sync_single_for_device(struct device *dev,
->  		arch_sync_dma_for_device(phys, size, dir);
->  }
->  
-> +static void iommu_dma_sync_single_for_device(struct device *dev,
-> +		dma_addr_t dma_handle, size_t size, enum dma_data_direction dir)
-> +{
-> +	__iommu_dma_sync_single_for_device(dev, dma_handle, size, dir, 0);
-> +}
-> +
->  static void iommu_dma_sync_sg_for_cpu(struct device *dev,
->  		struct scatterlist *sgl, int nelems,
->  		enum dma_data_direction dir)
-> @@ -811,14 +824,13 @@ static void iommu_dma_sync_sg_for_cpu(struct device *dev,
->  	if (dev_is_dma_coherent(dev) && !dev_is_untrusted(dev))
->  		return;
->  
-> -	for_each_sg(sgl, sg, nelems, i) {
-> -		if (!dev_is_dma_coherent(dev))
-> +	if (dev_is_untrusted(dev))
-> +		for_each_sg(sgl, sg, nelems, i)
-> +			iommu_dma_sync_single_for_cpu(dev, sg_dma_address(sg),
-> +						      sg->length, dir);
-> +	else
-> +		for_each_sg(sgl, sg, nelems, i)
->  			arch_sync_dma_for_cpu(sg_phys(sg), sg->length, dir);
-> -
-> -		if (is_swiotlb_buffer(sg_phys(sg)))
-> -			swiotlb_sync_single_for_cpu(dev, sg_phys(sg),
-> -						    sg->length, dir);
-> -	}
->  }
->  
->  static void iommu_dma_sync_sg_for_device(struct device *dev,
-> @@ -831,29 +843,30 @@ static void iommu_dma_sync_sg_for_device(struct device *dev,
->  	if (dev_is_dma_coherent(dev) && !dev_is_untrusted(dev))
->  		return;
->  
-> -	for_each_sg(sgl, sg, nelems, i) {
-> -		if (is_swiotlb_buffer(sg_phys(sg)))
-> -			swiotlb_sync_single_for_device(dev, sg_phys(sg),
-> -						       sg->length, dir);
-> -
-> -		if (!dev_is_dma_coherent(dev))
-> +	if (dev_is_untrusted(dev))
-> +		for_each_sg(sgl, sg, nelems, i)
-> +			__iommu_dma_sync_single_for_device(dev,
-> +							   sg_dma_address(sg),
-> +							   sg->length, dir, 0);
-> +	else
-> +		for_each_sg(sgl, sg, nelems, i)
->  			arch_sync_dma_for_device(sg_phys(sg), sg->length, dir);
-> -	}
->  }
->  
->  static dma_addr_t iommu_dma_map_page(struct device *dev, struct page *page,
->  		unsigned long offset, size_t size, enum dma_data_direction dir,
->  		unsigned long attrs)
->  {
-> -	phys_addr_t phys = page_to_phys(page) + offset;
-> +	phys_addr_t phys = page_to_phys(page) + offset, adj_phys;
->  	bool coherent = dev_is_dma_coherent(dev);
->  	dma_addr_t dma_handle;
->  
-> -	dma_handle = __iommu_dma_map_swiotlb(dev, phys, size, dma_get_mask(dev),
-> -			coherent, dir, attrs);
-> -	if (!coherent && !(attrs & DMA_ATTR_SKIP_CPU_SYNC) &&
-> +	dma_handle = __iommu_dma_map_swiotlb(dev, phys, size,
-> +			dma_get_mask(dev), coherent, dir, attrs, &adj_phys);
-> +	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC) &&
->  	    dma_handle != DMA_MAPPING_ERROR)
-> -		arch_sync_dma_for_device(phys, size, dir);
-> +		__iommu_dma_sync_single_for_device(dev, dma_handle, size,
-> +						   dir, adj_phys);
->  	return dma_handle;
->  }
->  
-> @@ -960,7 +973,7 @@ static int iommu_dma_map_sg_swiotlb(struct device *dev, struct scatterlist *sg,
->  	for_each_sg(sg, s, nents, i) {
->  		sg_dma_address(s) = __iommu_dma_map_swiotlb(dev, sg_phys(s),
->  				s->length, dma_get_mask(dev),
-> -				dev_is_dma_coherent(dev), dir, attrs);
-> +				dev_is_dma_coherent(dev), dir, attrs, NULL);
->  		if (sg_dma_address(s) == DMA_MAPPING_ERROR)
->  			goto out_unmap;
->  		sg_dma_len(s) = s->length;
-> @@ -991,17 +1004,24 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
->  	dma_addr_t iova;
->  	size_t iova_len = 0;
->  	unsigned long mask = dma_get_seg_boundary(dev);
-> -	int i;
-> +	int i, early_mapped = 0;
->  
->  	if (static_branch_unlikely(&iommu_deferred_attach_enabled) &&
->  	    iommu_deferred_attach(dev, domain))
->  		return 0;
->  
-> +	if (dev_is_untrusted(dev)) {
-> +		early_mapped = iommu_dma_map_sg_swiotlb(dev, sg, nents,
-> +							dir, attrs);
-> +		if (!early_mapped)
-> +			return 0;
-> +	}
-> +
->  	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
->  		iommu_dma_sync_sg_for_device(dev, sg, nents, dir);
->  
-> -	if (dev_is_untrusted(dev))
-> -		return iommu_dma_map_sg_swiotlb(dev, sg, nents, dir, attrs);
-> +	if (early_mapped)
-> +		return early_mapped;
->  
->  	/*
->  	 * Work out how much IOVA space we need, and align the segments to
-> -- 
-> 2.32.0.93.g670b81a890-goog
+It was replaced by these:
+
+0a269a008f83 x86/kvm: Fix pr_info() for async PF setup/teardown
+8b79feffeca2 x86/kvm: Teardown PV features on boot CPU as well
+c02027b5742b x86/kvm: Disable kvmclock on all CPUs on shutdown
+3d6b84132d2a x86/kvm: Disable all PV features on crash
+384fc672f528 x86/kvm: Unify kvm_pv_guest_cpu_reboot() with kvm_guest_cpu_offline()
+
+Thanks,
+
+Paolo
+
