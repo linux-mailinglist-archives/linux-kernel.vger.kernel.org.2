@@ -2,297 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3B13C1637
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 17:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6829F3C163F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 17:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232016AbhGHPpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 11:45:50 -0400
-Received: from foss.arm.com ([217.140.110.172]:33418 "EHLO foss.arm.com"
+        id S232035AbhGHPsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 11:48:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229592AbhGHPpt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 11:45:49 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1ECAAED1;
-        Thu,  8 Jul 2021 08:43:07 -0700 (PDT)
-Received: from [10.57.35.192] (unknown [10.57.35.192])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E3B433F66F;
-        Thu,  8 Jul 2021 08:43:05 -0700 (PDT)
-Subject: Re: [PATCH 1/2] dma-iommu: fix swiotlb SKIP_CPU_SYNC and arch sync
-To:     Joerg Roedel <joro@8bytes.org>,
-        David Stevens <stevensd@chromium.org>
-Cc:     iommu@lists.linux-foundation.org, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org, Tom Murphy <murphyt7@tcd.ie>
-References: <20210702053742.842850-1-stevensd@google.com>
- <YObCtaW2UPii7mUL@8bytes.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <3f63e831-72a2-6482-aeea-7c8e84228b8c@arm.com>
-Date:   Thu, 8 Jul 2021 16:43:01 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229592AbhGHPse (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 11:48:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E64661483;
+        Thu,  8 Jul 2021 15:45:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625759152;
+        bh=is2esSXTGi4HPbNrzyvxZE08UDJJDrKAa6KsWAWVLfM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=GX8McskDedTlTLJrVfjZb34JA8f5rdAJlKwE8m37vzrTJw9iA7vgMYepWYnsNnMsH
+         0kACvi25IB6lVrfJJdKmiEVWplYdtYj9UY0gA5OC9MaeRoLK9GNiFMADkxtS8g3yFB
+         GFnfz7UpqLQOnLACPm2SU+LdDawagvbYCpG2LLSGg8nJaOYa04GD1PIy9W2XL7h5yb
+         t/pY3XBm0TWCaz62S7rhF/VXfTPo3BWvcpbNN7EPNXmmkaBmkHaa6MnXEGih6F6/QQ
+         TOOKHQ1iV1cl1qdbiQHEfPlHKLT0T9da4NKyQM5MpP93odHDdHFbRksZNH3lJr0VeT
+         FULhHpIlib+fA==
+Date:   Thu, 8 Jul 2021 10:45:50 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Oliver O'Halloran <oohall@gmail.com>
+Cc:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        Aaron Ma <aaron.ma@canonical.com>, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        linux-pci <linux-pci@vger.kernel.org>
+Subject: Re: [PATCH 1/2] igc: don't rd/wr iomem when PCI is removed
+Message-ID: <20210708154550.GA1019947@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <YObCtaW2UPii7mUL@8bytes.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOSf1CGVpogQGAatuY_N0db6OL2BFegGtj6VTLA9KFz0TqYBQg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-08 10:17, Joerg Roedel wrote:
-> Adding Robin.
+On Thu, Jul 08, 2021 at 12:04:02PM +1000, Oliver O'Halloran wrote:
+> On Thu, Jul 8, 2021 at 8:40 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> >
+> > If we add the check as proposed in this patch, I think people will
+> > read it and think this is the correct way to avoid MMIO errors.  It
+> > does happen to avoid some MMIO errors, but it cannot avoid them all,
+> > so it's not a complete solution and it gives a false sense of
+> > security.
 > 
-> On Fri, Jul 02, 2021 at 02:37:41PM +0900, David Stevens wrote:
->> From: David Stevens <stevensd@chromium.org>
->>
->> Make map_swiotlb and unmap_swiotlb only for mapping, and consistently
->> use sync_single_for and sync_sg_for functions for swiotlb sync and arch
->> sync. This ensures that the same code path is responsible for syncing
->> regardless of whether or not SKIP_CPU_SYNC is set. In the process, fix
->> various places where the original physical address and swiotlb tlb_addr
->> are mixed up:
->>    - Make sync_sg functions call sync_single functions for untrusted
->>      devices, so they use tlb_addr when checking is_swiotlb_buffer and
->>      when doing arch sync if necessary.
->>    - Use tlb_addr for arch sync in map_page if necessary.
->>    - In map_sg, map before syncing so that arch sync can target the
->>      bounce buffer if necessary.
->>    - Pass SKIP_CPU_SYNC to swiotlb map and unmap to avoid double syncing
->>      the swiotlb. This had previously only happened in the unmap_page
->>      case, but is now necessary for all swiotlb cases.
->>
->> Fixes: 82612d66d51d ("iommu: Allow the dma-iommu api to use bounce buffers")
+> I think it's helpful to classify MMIO errors as either benign or
+> poisonous with the poison MMIOs causing some kind of crash. Most of
+> the discussions about pci_dev_is_disconnected(), including this one,
+> seem to stem from people trying to use it to avoid the poison case. I
+> agree that using pci_dev_is_disconnected() that way is hacky and
+> doesn't really fix the problem, but considering poison MMIOs usually
+> stem from broken hardware or firmware maybe we should allow it
+> anyway. We can't do anything better and it's an improvement compared
+> to crashing.
 
-Hmm, there's a lot going on here, and it's not really clear to me what's 
-what, especially WRT the comment about addresses being mixed up. Is 
-there an actual correctness bug anywhere, i.e. an address which *should* 
-be synced *isn't*? If so, please fix that minimally in a standalone 
-patch without all the additional complication. If it's purely an 
-efficiency improvement - i.e. the bounce page getting synced twice 
-(which shouldn't have *too* much impact) or the original copy geting 
-redundantly synced *as well* as the bounce page, then please clarify 
-whether you've measured significant impact in practice or if this is 
-just an observation from code inspection.
+Apologies for rehashing what's probably obvious to everybody but me.
+I'm trying to get a better handle on benign vs poisonous errors.
 
-TBH I don't find the overall justification in the commit message 
-particularly convincing - to a less generous reading it kind of comes 
-across as "move things around for the sake of it". Yes one can argue for 
-keeping all the cache maintenance in one place, but one can equally 
-argue for the keeping all the low-level practicalities of bouncing under 
-SWIOTLB's umbrella such that it doesn't clutter up the IOMMU-focused 
-code. The point of utilising the SWIOTLB machinery in the first place 
-was to share and reuse as much of its "normal" flow as possible to keep 
-things simple (see the thread at [1] for where the history began).
+MMIO means CPU reads or writes to the device.  In PCI, writes are
+posted and don't receive a response, so a driver will never see
+writel() return an error (although an error may be reported
+asynchronously via AER or similar).
 
-Now, what is true is that the integration into iommu-dma is a bit rough 
-and bolted-on in places. IIRC it was done expediently to un-block 
-further development on the Intel driver, and it was always the plan to 
-come back and improve it later (like only bouncing the unaligned start 
-and end of larger buffers such that whole pages in the middle can still 
-be mapped in-place). As such I'm very happy to see that someone has the 
-time and interest to improve things, but some of this patch looks like 
-adding more mess to work around the existing mess, rather than more 
-fundamentally cleaning it up. For example, rather than further cementing 
-the bodge of having two separate map_sg implementations, I think the 
-bouncing could be streamlined into iommu-dma's own flow as part of its 
-scatterlist transformation (AFAICS temporarily swizzling sg_page so that 
-iommu_map_sg() maps the bounced copy would be no worse than what it's 
-already doing).
+So I think we're mostly talking about CPU reads here.  We expect a PCI
+response containing the data.  Sometimes there's no response or an
+error response.  The behavior of the host bridge in these error cases
+is not defined by PCI, so what the CPU sees is not consistent across
+platforms.  In some cases, the bridge handles this as a catastrophic
+error that forces a system restart.
 
-Thanks,
-Robin.
+But in most cases, at least on x86, the bridge logs an error and
+fabricates ~0 data so the CPU read can complete.  Then it's up to
+software to recognize that an error occurred and decide what to do
+about it.  Is this a benign or a poisonous error?
 
-[1] 
-https://lore.kernel.org/linux-iommu/20190312163845.GA13141@infradead.org/
+I'd say this is a benign error.  It certainly can't be ignored, but as
+long as the driver recognizes the error, it should be able to deal
+with it without crashing the whole system and forcing a restart.
 
->> Signed-off-by: David Stevens <stevensd@chromium.org>
->> ---
->>   drivers/iommu/dma-iommu.c | 82 ++++++++++++++++++++++++---------------
->>   1 file changed, 51 insertions(+), 31 deletions(-)
->>
->> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
->> index 7bcdd1205535..24d1042cd052 100644
->> --- a/drivers/iommu/dma-iommu.c
->> +++ b/drivers/iommu/dma-iommu.c
->> @@ -505,7 +505,8 @@ static void __iommu_dma_unmap_swiotlb(struct device *dev, dma_addr_t dma_addr,
->>   	__iommu_dma_unmap(dev, dma_addr, size);
->>   
->>   	if (unlikely(is_swiotlb_buffer(phys)))
->> -		swiotlb_tbl_unmap_single(dev, phys, size, dir, attrs);
->> +		swiotlb_tbl_unmap_single(dev, phys, size, dir,
->> +					 attrs | DMA_ATTR_SKIP_CPU_SYNC);
->>   }
->>   
->>   static dma_addr_t __iommu_dma_map(struct device *dev, phys_addr_t phys,
->> @@ -536,7 +537,8 @@ static dma_addr_t __iommu_dma_map(struct device *dev, phys_addr_t phys,
->>   
->>   static dma_addr_t __iommu_dma_map_swiotlb(struct device *dev, phys_addr_t phys,
->>   		size_t org_size, dma_addr_t dma_mask, bool coherent,
->> -		enum dma_data_direction dir, unsigned long attrs)
->> +		enum dma_data_direction dir, unsigned long attrs,
->> +		phys_addr_t *adj_phys)
->>   {
->>   	int prot = dma_info_to_prot(dir, coherent, attrs);
->>   	struct iommu_domain *domain = iommu_get_dma_domain(dev);
->> @@ -555,7 +557,8 @@ static dma_addr_t __iommu_dma_map_swiotlb(struct device *dev, phys_addr_t phys,
->>   	    iova_offset(iovad, phys | org_size)) {
->>   		aligned_size = iova_align(iovad, org_size);
->>   		phys = swiotlb_tbl_map_single(dev, phys, org_size,
->> -					      aligned_size, dir, attrs);
->> +					      aligned_size, dir,
->> +					      attrs | DMA_ATTR_SKIP_CPU_SYNC);
->>   
->>   		if (phys == DMA_MAPPING_ERROR)
->>   			return DMA_MAPPING_ERROR;
->> @@ -573,6 +576,8 @@ static dma_addr_t __iommu_dma_map_swiotlb(struct device *dev, phys_addr_t phys,
->>   
->>   		memset(padding_start, 0, padding_size);
->>   	}
->> +	if (adj_phys)
->> +		*adj_phys = phys;
->>   
->>   	iova = __iommu_dma_map(dev, phys, aligned_size, prot, dma_mask);
->>   	if (iova == DMA_MAPPING_ERROR && is_swiotlb_buffer(phys))
->> @@ -785,15 +790,17 @@ static void iommu_dma_sync_single_for_cpu(struct device *dev,
->>   		swiotlb_sync_single_for_cpu(dev, phys, size, dir);
->>   }
->>   
->> -static void iommu_dma_sync_single_for_device(struct device *dev,
->> -		dma_addr_t dma_handle, size_t size, enum dma_data_direction dir)
->> +static void __iommu_dma_sync_single_for_device(struct device *dev,
->> +		dma_addr_t dma_handle, size_t size,
->> +		enum dma_data_direction dir, phys_addr_t phys)
->>   {
->> -	phys_addr_t phys;
->> -
->>   	if (dev_is_dma_coherent(dev) && !dev_is_untrusted(dev))
->>   		return;
->>   
->> -	phys = iommu_iova_to_phys(iommu_get_dma_domain(dev), dma_handle);
->> +	if (phys == 0)
->> +		phys = iommu_iova_to_phys(iommu_get_dma_domain(dev),
->> +					  dma_handle);
->> +
->>   	if (is_swiotlb_buffer(phys))
->>   		swiotlb_sync_single_for_device(dev, phys, size, dir);
->>   
->> @@ -801,6 +808,12 @@ static void iommu_dma_sync_single_for_device(struct device *dev,
->>   		arch_sync_dma_for_device(phys, size, dir);
->>   }
->>   
->> +static void iommu_dma_sync_single_for_device(struct device *dev,
->> +		dma_addr_t dma_handle, size_t size, enum dma_data_direction dir)
->> +{
->> +	__iommu_dma_sync_single_for_device(dev, dma_handle, size, dir, 0);
->> +}
->> +
->>   static void iommu_dma_sync_sg_for_cpu(struct device *dev,
->>   		struct scatterlist *sgl, int nelems,
->>   		enum dma_data_direction dir)
->> @@ -811,14 +824,13 @@ static void iommu_dma_sync_sg_for_cpu(struct device *dev,
->>   	if (dev_is_dma_coherent(dev) && !dev_is_untrusted(dev))
->>   		return;
->>   
->> -	for_each_sg(sgl, sg, nelems, i) {
->> -		if (!dev_is_dma_coherent(dev))
->> +	if (dev_is_untrusted(dev))
->> +		for_each_sg(sgl, sg, nelems, i)
->> +			iommu_dma_sync_single_for_cpu(dev, sg_dma_address(sg),
->> +						      sg->length, dir);
->> +	else
->> +		for_each_sg(sgl, sg, nelems, i)
->>   			arch_sync_dma_for_cpu(sg_phys(sg), sg->length, dir);
->> -
->> -		if (is_swiotlb_buffer(sg_phys(sg)))
->> -			swiotlb_sync_single_for_cpu(dev, sg_phys(sg),
->> -						    sg->length, dir);
->> -	}
->>   }
->>   
->>   static void iommu_dma_sync_sg_for_device(struct device *dev,
->> @@ -831,29 +843,30 @@ static void iommu_dma_sync_sg_for_device(struct device *dev,
->>   	if (dev_is_dma_coherent(dev) && !dev_is_untrusted(dev))
->>   		return;
->>   
->> -	for_each_sg(sgl, sg, nelems, i) {
->> -		if (is_swiotlb_buffer(sg_phys(sg)))
->> -			swiotlb_sync_single_for_device(dev, sg_phys(sg),
->> -						       sg->length, dir);
->> -
->> -		if (!dev_is_dma_coherent(dev))
->> +	if (dev_is_untrusted(dev))
->> +		for_each_sg(sgl, sg, nelems, i)
->> +			__iommu_dma_sync_single_for_device(dev,
->> +							   sg_dma_address(sg),
->> +							   sg->length, dir, 0);
->> +	else
->> +		for_each_sg(sgl, sg, nelems, i)
->>   			arch_sync_dma_for_device(sg_phys(sg), sg->length, dir);
->> -	}
->>   }
->>   
->>   static dma_addr_t iommu_dma_map_page(struct device *dev, struct page *page,
->>   		unsigned long offset, size_t size, enum dma_data_direction dir,
->>   		unsigned long attrs)
->>   {
->> -	phys_addr_t phys = page_to_phys(page) + offset;
->> +	phys_addr_t phys = page_to_phys(page) + offset, adj_phys;
->>   	bool coherent = dev_is_dma_coherent(dev);
->>   	dma_addr_t dma_handle;
->>   
->> -	dma_handle = __iommu_dma_map_swiotlb(dev, phys, size, dma_get_mask(dev),
->> -			coherent, dir, attrs);
->> -	if (!coherent && !(attrs & DMA_ATTR_SKIP_CPU_SYNC) &&
->> +	dma_handle = __iommu_dma_map_swiotlb(dev, phys, size,
->> +			dma_get_mask(dev), coherent, dir, attrs, &adj_phys);
->> +	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC) &&
->>   	    dma_handle != DMA_MAPPING_ERROR)
->> -		arch_sync_dma_for_device(phys, size, dir);
->> +		__iommu_dma_sync_single_for_device(dev, dma_handle, size,
->> +						   dir, adj_phys);
->>   	return dma_handle;
->>   }
->>   
->> @@ -960,7 +973,7 @@ static int iommu_dma_map_sg_swiotlb(struct device *dev, struct scatterlist *sg,
->>   	for_each_sg(sg, s, nents, i) {
->>   		sg_dma_address(s) = __iommu_dma_map_swiotlb(dev, sg_phys(s),
->>   				s->length, dma_get_mask(dev),
->> -				dev_is_dma_coherent(dev), dir, attrs);
->> +				dev_is_dma_coherent(dev), dir, attrs, NULL);
->>   		if (sg_dma_address(s) == DMA_MAPPING_ERROR)
->>   			goto out_unmap;
->>   		sg_dma_len(s) = s->length;
->> @@ -991,17 +1004,24 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
->>   	dma_addr_t iova;
->>   	size_t iova_len = 0;
->>   	unsigned long mask = dma_get_seg_boundary(dev);
->> -	int i;
->> +	int i, early_mapped = 0;
->>   
->>   	if (static_branch_unlikely(&iommu_deferred_attach_enabled) &&
->>   	    iommu_deferred_attach(dev, domain))
->>   		return 0;
->>   
->> +	if (dev_is_untrusted(dev)) {
->> +		early_mapped = iommu_dma_map_sg_swiotlb(dev, sg, nents,
->> +							dir, attrs);
->> +		if (!early_mapped)
->> +			return 0;
->> +	}
->> +
->>   	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
->>   		iommu_dma_sync_sg_for_device(dev, sg, nents, dir);
->>   
->> -	if (dev_is_untrusted(dev))
->> -		return iommu_dma_map_sg_swiotlb(dev, sg, nents, dir, attrs);
->> +	if (early_mapped)
->> +		return early_mapped;
->>   
->>   	/*
->>   	 * Work out how much IOVA space we need, and align the segments to
->> -- 
->> 2.32.0.93.g670b81a890-goog
-> _______________________________________________
-> iommu mailing list
-> iommu@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/iommu
-> 
+Bjorn
