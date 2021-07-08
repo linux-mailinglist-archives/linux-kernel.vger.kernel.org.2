@@ -2,99 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB1EC3BFAC2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 14:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 224B43BFAC7
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 14:58:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231803AbhGHNAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 09:00:17 -0400
-Received: from meesny.iki.fi ([195.140.195.201]:38204 "EHLO meesny.iki.fi"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231404AbhGHNAQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 09:00:16 -0400
-Received: from hillosipuli.retiisi.eu (89-27-100-251.bb.dnainternet.fi [89.27.100.251])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sailus)
-        by meesny.iki.fi (Postfix) with ESMTPSA id BC3AF200B9;
-        Thu,  8 Jul 2021 15:57:30 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
-        t=1625749050;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vHwc2iN6bUv/poqxKz5vkCUvi9lnsC7e2XhitOKa43I=;
-        b=GWi5fWrCoNrEnmEO0n68V+MuIf83Pa5GMCwu5NuWaTX32pOylrfWybNp/kULITG189ltIB
-        gUNC7CXtUA1P7OGjGn3YzGdmIPAoJjS2Pq3DHDlXkgmdeTH6fiHDTxGkC64WGQz8vn6S9z
-        R3ZOsbD2+5uNPXlTA8okxTiQiNkuJss=
-Received: from valkosipuli.localdomain (valkosipuli.localdomain [IPv6:fd35:1bc8:1a6:d3d5::80:2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 84BC3634C87;
-        Thu,  8 Jul 2021 15:56:51 +0300 (EEST)
-Received: from localhost ([127.0.0.1] helo=valkosipuli.retiisi.eu)
-        by valkosipuli.localdomain with esmtp (Exim 4.92)
-        (envelope-from <sakari.ailus@iki.fi>)
-        id 1m1Tar-0001zl-RD; Thu, 08 Jul 2021 15:57:29 +0300
-Date:   Thu, 8 Jul 2021 15:57:29 +0300
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     krzysztof.kozlowski@canonical.com,
-        laurent.pinchart@ideasonboard.com, devicetree@vger.kernel.org,
-        kernel@puri.sm, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, mchehab@kernel.org,
-        paul.kocialkowski@bootlin.com, pavel@ucw.cz,
-        phone-devel@vger.kernel.org, robh@kernel.org, shawnx.tu@intel.com
-Subject: Re: [PATCH v6 3/5] media: i2c: add driver for the SK Hynix Hi-846 8M
- pixel camera
-Message-ID: <20210708125729.GZ3@valkosipuli.retiisi.eu>
-References: <20210628101054.828579-1-martin.kepplinger@puri.sm>
- <20210628101054.828579-4-martin.kepplinger@puri.sm>
+        id S231791AbhGHNBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 09:01:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231404AbhGHNBC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 09:01:02 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21C7DC061574;
+        Thu,  8 Jul 2021 05:58:20 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id v20so9457365eji.10;
+        Thu, 08 Jul 2021 05:58:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6s8n9vrT87My3E6DX+6DGL/DAUdwKgYVA6j/IcbbZfE=;
+        b=tO0i0726Ql5fGaRAzhNoGLJXndmFJDrVzeJ4Gs25f7K50DVpyAmO9ivg9gT3qUBewk
+         ejApU9PGkHEAigwnwmwm8nxMW1SkMXxr1HTNQQ/9HAnCy6CZGtFqU5kAf6REvCtyMrU6
+         q4acdbmsBpOreDu82XGOZ2tbz2EF656wFktGdkUoMGmNcU74YreoDDmtXojRIYr1IGHh
+         GqsJpiOXedilvYQaZZO7OAAq4RBbG9pCk4YbvqEpkfXDRtLnGX9tu5jlNFqvLHArZmbm
+         GnetzX+6VUbpF2LcK9b7g1j4V9rlhFYnYT+LKz/zRs28nc8WyHOMnEQ31g+2YbavdyaX
+         1qPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6s8n9vrT87My3E6DX+6DGL/DAUdwKgYVA6j/IcbbZfE=;
+        b=HZsmbTFA6qj0Tgk9X5g7QMPe/ydm/h7TD+2a3fpFPQId4aIW7LERy1DJZZyAal22H8
+         c0ZrXphvPx7hIKYdpybAZUMJxhZcShVK5ot+KmHWmd/kJ3h17TZNR+dwUPDSQhdJkHEH
+         pIrreoRj/RAdYjBPpQ42nsPBqtAZ+aQAz/A1i7E7MwJiFpWGZX8vBB2i1L9OUAltItWU
+         4DFKxZ5SJl6fLakSX/y1pEcsdR9ZiVR50u3LdgLZ8IZ6MdD7lbPCnGpkjNrm+wdfSa8v
+         optsEpCCrv5SEL6QHxmPyd74mOt5x+eGHEYp4T+21M3EGopvM51NNAEV1Ekdkt3LZOSU
+         06WA==
+X-Gm-Message-State: AOAM533sEnpfDgM6CH7ncLCsRdizkXO96SnonSsTG88qRnLOHoPiCul6
+        svpWsZ6JGcvtsl4rlCWeaOrFtn+iuyGN0QwA0zw=
+X-Google-Smtp-Source: ABdhPJwKktIYeiljgC8utUJP2pYHqZaFRVd2qAyoVyuCOGhLzFmXBPN2e0GbJXvv/Q2ls95yoXc3vbfOu3XWtZ9mQuc=
+X-Received: by 2002:a17:907:2d86:: with SMTP id gt6mr30027442ejc.428.1625749098639;
+ Thu, 08 Jul 2021 05:58:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210628101054.828579-4-martin.kepplinger@puri.sm>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-        s=meesny; t=1625749050;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vHwc2iN6bUv/poqxKz5vkCUvi9lnsC7e2XhitOKa43I=;
-        b=ZV4eWNlQPCaPsWHai36aWk9In7eCXZhzu8MlWbZnCOzZu3rSIIVknOhIFKJLfOf0pXZ5fw
-        i8VD7HF2Qvny9E1VbkkIMCNfCZUIm29Dlpg9taEhD89X3IB18TZJpskUGb0BlraKUqm1zs
-        Fz2MWDr08EvKhHWWRarbYTnmskUF7LY=
-ARC-Seal: i=1; s=meesny; d=iki.fi; t=1625749050; a=rsa-sha256; cv=none;
-        b=SVlRZG8gSwlNfhqRWff+uM6gDMT78kKvN757zxdz904VbX53rSUDseGtrOzNZUgvTB9RHa
-        yODmLtsDAypE8WVV0xg0qJrK47ZpSjqjI6Kk9nxnNMMAnustMGfPkL5Ryhl7rtA3DVgvNH
-        7JZ8SNab3gxjOTv25rpSCOXY3n1iOx8=
-ARC-Authentication-Results: i=1;
-        ORIGINATING;
-        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
+References: <20210705112358.3554-1-linux.amoon@gmail.com> <20210705112358.3554-2-linux.amoon@gmail.com>
+In-Reply-To: <20210705112358.3554-2-linux.amoon@gmail.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Thu, 8 Jul 2021 14:58:07 +0200
+Message-ID: <CAFBinCDaiu-tuo654_UTmxb0yeqQ8YqxCC7oVxq1EU4AmQRQdA@mail.gmail.com>
+Subject: Re: [PATCHv2 1/3] ARM: dts: meson8b: odroidc1: Fix the pwm regulator
+ supply properties
+To:     Anand Moon <linux.amoon@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
+On Mon, Jul 5, 2021 at 1:25 PM Anand Moon <linux.amoon@gmail.com> wrote:
+>
+> After enabling CONFIG_REGULATOR_DEBUG=y we observer below debug logs.
+I think there's a typo here: observer -> observe
+maybe Kevin or Neil can fix this up (in this and the following two
+patches) while applying the patch so you don't have to re-spin a v3
 
-On Mon, Jun 28, 2021 at 12:10:52PM +0200, Martin Kepplinger wrote:
-...
-> +	hi846->clock = devm_clk_get(&client->dev, NULL);
-> +	if (IS_ERR(hi846->clock)) {
-> +		dev_err(&client->dev, "failed to get clock: %pe\n", hi846->clock);
-> +		return PTR_ERR(hi846->clock);
-> +	}
-> +
-> +	mclk_freq = clk_get_rate(hi846->clock);
-> +	dev_dbg(&client->dev, "clk rate: %u\n", mclk_freq);
-
-You'll need to check this is the value you expect it to be. The register
-lists are specific to that value.
-
-Could you also check Documentation/driver-api/media/camera-sensor.rst
-regarding the assigned-clocks etc. properties, and align the bindings with
-that?
-
--- 
-Sakari Ailus
+> Changes help link VCCK and VDDEE pwm regulator to 5V regulator supply
+> instead of dummy regulator.
+>
+> [    7.117140] pwm-regulator regulator-vcck: Looking up pwm-supply from device tree
+> [    7.117153] pwm-regulator regulator-vcck: Looking up pwm-supply property in node /regulator-vcck failed
+> [    7.117184] VCCK: supplied by regulator-dummy
+> [    7.117194] regulator-dummy: could not add device link regulator.8: -ENOENT
+> [    7.117266] VCCK: 860 <--> 1140 mV at 986 mV, enabled
+> [    7.118498] VDDEE: will resolve supply early: pwm
+> [    7.118515] pwm-regulator regulator-vddee: Looking up pwm-supply from device tree
+> [    7.118526] pwm-regulator regulator-vddee: Looking up pwm-supply property in node /regulator-vddee failed
+> [    7.118553] VDDEE: supplied by regulator-dummy
+> [    7.118563] regulator-dummy: could not add device link regulator.9: -ENOENT
+>
+> Fixes: 524d96083b66 ("ARM: dts: meson8b: odroidc1: add the CPU voltage regulator")
+> Fixes: 8bdf38be712d ("ARM: dts: meson8b: odroidc1: add the VDDEE regulator")
+>
+> Tested-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> Signed-off-by: Anand Moon <linux.amoon@gmail.com>
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
