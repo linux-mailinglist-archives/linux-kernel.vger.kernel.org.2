@@ -2,152 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 771793BF42B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 05:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE5C93BF432
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 05:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbhGHDEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 23:04:01 -0400
-Received: from mail-db8eur05on2064.outbound.protection.outlook.com ([40.107.20.64]:22621
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230387AbhGHDEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 23:04:00 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Sq57MHOeWfoEJUMfKMNdYGQj79p7VE9kslsDa06QUde4nDnH9HdLYVHZaGn93ND/NAFB2Gm66aZbg+n5s/iNj6Er+pUTHTsjpdbAXGTdkIq7s0Dcan4xwMJOamoQ6xdbucr9KYelRZXZUXEgWl7qWez10RHoPjCKGrh0lMvWEwUIReKYmVL1FkIuXVbkqXFiOwlvxbevQpyfguKxPopk4gaD19hNfYGIEkqMjK3AotWav/cEbKBxPeAVM9zo+fKFMylfC5O5l+2vhyxy7OoSxnzW+BLF5CahWKuXlW3atw8XJlR/JRHNiOMwtppzbjxfmjRKMzDmkb28WpSSyIu4bg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PS0+dzpmrJxeeMuiWXj3oRA+xYuCCdg2E4OFAQUDXKw=;
- b=BbmZMEywxqJ9F0kADhsEM/V/HB0W1b/sZVTemGgxKkZnpDt4pe1TEvSS0vowxV/+BX/5UKiqRGvrypOPrWhrBWTCiao/5hzvhE9+tJjrDAq4+Xllfcgrjn6EqwTFynb8tcyYTpVxzDcJfFc1Qw4Kx0jsWV9XiCSV3S+TSTMgLpyEOBa6WOKganfltZaxvcDQGjbuS5Zkx7VT21NitM02TOYSEqGYxyvr88tJjAMJ0vKtMaa8NkW4IsStqCGQ/iMwvAUvx9bYJhI+fega4utxQSDUhUBdNbxTLZ+YRQpQO4+VrILcYCUEyQyNf4mbxl2vDKm5to8i7MH29N9TIR8B7Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PS0+dzpmrJxeeMuiWXj3oRA+xYuCCdg2E4OFAQUDXKw=;
- b=WJzCbVS9ijGg1mN4rdZAeRXIemW8D+UWn/OOwwNVxwsMw5Lu1OM2Ur5749Ro6Py7GWyJvpGffAVXegIdqsu8Mt3QdLy8Lv2BsJb22ER04WDw+jOVe94G8BY//tEs7lYd+/qurPNola5c5yIF0yiX6KMh9hsEgmSkjP0zGUIdDpY=
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DBBPR04MB7884.eurprd04.prod.outlook.com (2603:10a6:10:1f2::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.23; Thu, 8 Jul
- 2021 03:01:16 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::c445:d742:eb76:86dd]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::c445:d742:eb76:86dd%9]) with mapi id 15.20.4287.033; Thu, 8 Jul 2021
- 03:01:15 +0000
-From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-        "sboyd@kernel.org" <sboyd@kernel.org>,
-        "mturquette@baylibre.com" <mturquette@baylibre.com>
-CC:     "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>
-Subject: RE: [PATCH] clk: not calculate new rate for protected clks
-Thread-Topic: [PATCH] clk: not calculate new rate for protected clks
-Thread-Index: AQHXVgSxg8DzlmcuR0ixKMBWM65yqas4nvwQ
-Date:   Thu, 8 Jul 2021 03:01:15 +0000
-Message-ID: <DB6PR0402MB27601F676286D00AE50B144988199@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-References: <20210531103957.21886-1-peng.fan@oss.nxp.com>
-In-Reply-To: <20210531103957.21886-1-peng.fan@oss.nxp.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: oss.nxp.com; dkim=none (message not signed)
- header.d=none;oss.nxp.com; dmarc=none action=none header.from=oss.nxp.com;
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1fd0224f-b774-4128-9330-08d941bca6e9
-x-ms-traffictypediagnostic: DBBPR04MB7884:
-x-ms-exchange-sharedmailbox-routingagent-processed: True
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DBBPR04MB78842356F64B736A87DF464BC9199@DBBPR04MB7884.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3383;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: dWRgxvJqfBVQOxYe2GPMxKHHENfLedMT8I4RPeS/VeDg7JgIAKxZx9xM77O0Tt5kzlOpnbDSJYrwKVRAMBkmwOOLNCC5ilcllnttfznl5rSZ6B3oQ9DMn2YmkDCfYxrAwLN1cY7muLj/aMH68E16OoeJazVs8UeBt3p28tWCG8cZ+M6YKFiTqyOjuAWEOlh2dWe8G1By4Ltq+YWl1PhPCxzeQy/JsNwi3UASH79p+J1wRxTFcSqVpbU8wV9YSu9Ke1/ZELl8N7KiqHwy643L2Vn6Idx9ANLFGHTSZDJKgDXjf2IGf6FUq0TAq+UC4+psuL2Q8VW1JnxfQbJJYJNQ6lVCJDwXd0kS6YI6oBs1aetr5ot4PGGUmYYlplpub5/+qjk8QgFdb3V1Twdt6DHu0ltX7SlJcRZ/7cIf1bKWv/NvF6zPYjn7IUnpBBx2RVWpY4eCly95JU8xBQUR7o9RhrYJdxb+xFaMC2ypbnoAN6wnxr6vzH162jCVNj9UcqyTWdyBskGiMzSG8gELqeHK243rfrt6yDtVjkYa7Noy6mGCDWjEEtJ8GeTAax4LjYruAQ2+eoNfnKwbr5vy0J2rqKNXI2NmlfDBjzVBL1/yuRctuc8TGIT6CvAW/vvzFdNy+Di08f1I4pyLTkOrR7wL/A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(376002)(346002)(136003)(39860400002)(6506007)(55016002)(33656002)(4744005)(9686003)(2906002)(4326008)(64756008)(71200400001)(316002)(122000001)(478600001)(66446008)(110136005)(52536014)(7696005)(8676002)(26005)(38100700002)(66556008)(66946007)(76116006)(83380400001)(66476007)(5660300002)(54906003)(8936002)(86362001)(186003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?bL1u2Lnxz8HOk+87jYpf1WAydV0G/cR2KPJzx1FB1ei/4EoNK2os84SvZHCR?=
- =?us-ascii?Q?Br4Mg70ZsaY2ermX6ZK6nkUnwja/LfZrnkb07jyp+doQFk7AFxkel64JGsln?=
- =?us-ascii?Q?ZKXElrRxjjXZ8W+3M8K6SaL1VC0zMr0SqsnmZz/Pqz1Ww91N4yR2zXl3q1/k?=
- =?us-ascii?Q?4X9l4mm6AYSSYqQi5iR7c4VRdB8C0afu0loJlGPHhuSfBz4Xav+aiG/JhkZY?=
- =?us-ascii?Q?1Syn9s294lr404DvGdIfqfQbw4Jf2v7+P0/eyOcIFqtprTRCnxgtuNmEIRAC?=
- =?us-ascii?Q?UTvPIn1u3cQtF7mmawEGZTB3IEJbfVAz9r58JilI3RtSBEsInD+xweKBLCUl?=
- =?us-ascii?Q?x4PUJ3V46UamHO6RGwT/ZLQ4rN7gU8o2H/fEUEY+cbmDRjirbxzc3dqO7P5Z?=
- =?us-ascii?Q?Jh91LkWLTKTecmh7ecOEFoP2FExAkl1LXDZ7KSiYxOi+E7rnScMqle4pVMWe?=
- =?us-ascii?Q?jqMzLjDZgyzr3VYcg/06yBdMZi9Ev6MReie7tAfBfLr1oRkBypsXiTZ1VMgr?=
- =?us-ascii?Q?Ux+YXTtsgQBkWA4iNFiA65YLz6MQNq2KHkwNUVWi9TXz5upFHvGqDz0+BW5N?=
- =?us-ascii?Q?xTN1/0iVqXo402N6NeRKmwEY10g4DlxLCEDL545pcjgQ5F2L4F0lv0XUyMaY?=
- =?us-ascii?Q?CgJBxJXsKu/GKhtOHC4d4kETq9RX8HOKF2+I2ePMCCE7gw/BYIwny0tO1J4P?=
- =?us-ascii?Q?VjwjfA3ZV+L/kdmHakZ3dUE/zC1gm4cLqCckeTggRyUD4+ts1MlY8T6+UMdA?=
- =?us-ascii?Q?BxqWngO2TUl3kBVWspwfBPnfMFin9/1+IaUq6477Y/UmVWXHP/AndGz5n6Fw?=
- =?us-ascii?Q?DjnEUpAR8nm7i9wcZvXQ138kwiR30uB0fZmg4NoNr/Zoe+tLbbQKZ6p8xIfp?=
- =?us-ascii?Q?iUl5m/dj/1LsOTAf/Piz0gv0vsGdGGra5DZ2zd1g4CAIfwhJ7unEhs0FN2ay?=
- =?us-ascii?Q?XEJUXzNJPDrqr7WuKTl9W4D6PuVAYjoO0uBmuz1IH/5ciEErYnFYYGDzI17v?=
- =?us-ascii?Q?Ezm2GYapXg79BdIfvQk4nEgSBsgpBkGswiJp98ZUnILHQbtcvzFJRRONpju9?=
- =?us-ascii?Q?Jn9qdV0Rivz8HeMGAuBxmtHMa3ohvgwE+6Un5qSIizmzGy8ZHdru1rNNTbxV?=
- =?us-ascii?Q?tWB+TmBa5EdwO9jhRsbMHXa1gfjwLaE5sxudKA/vQrn2qHvpQm/FwKxY7Uv2?=
- =?us-ascii?Q?f6O2eHoETFOjFUJnS2QeE2odOwsPG4aZC7odtQ60xGIsCr2reZA+xR0Ezj6C?=
- =?us-ascii?Q?cP2/ZgmOkK4O3HsLzbnCHMtatnKqWGOOp4ZI1GTRHHYdYBOOgTAfEA8EzSQ2?=
- =?us-ascii?Q?d4pG2gOBcK4nvS04KcABT1G+?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S230367AbhGHDJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 23:09:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230244AbhGHDJo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 23:09:44 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF98C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 20:07:03 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id l2so6342276edt.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 20:07:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=ZiuonARrCQCukLkSMESCo/Rbo7DU/jQm+OMfOC/COxM=;
+        b=egHoAayTFmxrme9MvsR30sXf7Y7GkgCy5StLlW7ZFeFTbSIDQScSU+RZjT9DgIoowx
+         lOskgZlMr3AvPga2DnwXEER2gjQ0solhYHU6EBfJf04Cv2gjOqiMbGvsg7rnHMr6grkP
+         0iKju8Z9aOIzvJlS9zV/JE4QuyePYDd4Ksw5t0qHWcac2XsthdfUiz295ME/VsdNuh0g
+         jNQRg6Al7ztNBy+J/Ycti4SDoJw4lxb4Q839qrqLj4dOEbdQBbZS96Va3X2xG/C7gRQe
+         BO/UQxiQRrRpl3Nc3/t9tKevSGMTtkCaAAWdvDHnGlJmsiApxQRXaxeDjKk4cvk+Tf3T
+         /JPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=ZiuonARrCQCukLkSMESCo/Rbo7DU/jQm+OMfOC/COxM=;
+        b=CcZL/mpz8I03GUpxGnbDnubga0H4Sz3Uc8g43eZKPR14ML6nkvIztA9sd5MiQ8Vw3s
+         JUzRISrhDx0ftTDXQHrK0Wlp2gvzjI5i30l+dQS3Zh8PiCYTgM687wXiwCoGqxmUVXhC
+         En80ttpJy7LHsAHnOGBjsFWL0Gb5LldZhCJTwPOiZ/j0Fo7NXi02PbrNt3M1VmDTEzx/
+         kqOeR/GyyLAH9IeSYJL0OGraV++HSUDeOS0ljKtYtCg3CC5jWZj4VocYOj8vx/gkf8ot
+         Xe4yqb3neRbEMgkHVTqTwjieXCbxg7Hnq3n0/crYrotYuLgG1ebkmlC3k+nsOe4/FlN7
+         hOIQ==
+X-Gm-Message-State: AOAM5308ashm2H2R/AWJgCT1NiiCWW5JMT0Annyiau7nEPcZIGYCuJ9Y
+        uQcjiw65dlj/Te7PO5mj684HVCteBKCT3rUCG0c=
+X-Google-Smtp-Source: ABdhPJxPiWzK772tRugCsz+v05N2B2Ignw/EGE7XCeUTrAT8JcQXovWJ4tm/orZEFxIS3sCYKCm3Bh5PLW4d3mr1uJs=
+X-Received: by 2002:a05:6402:1d07:: with SMTP id dg7mr34778270edb.298.1625713621401;
+ Wed, 07 Jul 2021 20:07:01 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1fd0224f-b774-4128-9330-08d941bca6e9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jul 2021 03:01:15.8678
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: uYcRbUwg9qIuakhoGDZrY4emA48U7lm+o6p98wsxDUOklZfpWwbreP2n9jbAI7esrbPwuH9DcozbybaTnLP6fA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7884
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Thu, 8 Jul 2021 13:06:50 +1000
+Message-ID: <CAPM=9txowZc9-MVfS_uvASJMnE4Okt4B8KHCyk3nC9x=-a+w3w@mail.gmail.com>
+Subject: [git pull] drm fixes for 5.14-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Subject: [PATCH] clk: not calculate new rate for protected clks
+Hi Linus,
 
-Gentle ping...
+Some fixes for rc1 that came in the past weeks, mainly a bunch of
+amdgpu fixes, some i915 and the rest are misc around the place. I'm
+sending this a bit early so some more stuff may show up, but I'll
+probably take tomorrow off.
 
-Thanks,
-Peng.
+Dave.
 
->=20
-> From: Peng Fan <peng.fan@nxp.com>
->=20
-> If the protect_count of the parent clk is not 0, we not calculate new rat=
-es for
-> parent. Otherwise, the common clk framework may configure other child clk=
-s
-> that is under using.
->=20
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  drivers/clk/clk.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c index
-> 65508eb89ec9..8ac121838e13 100644
-> --- a/drivers/clk/clk.c
-> +++ b/drivers/clk/clk.c
-> @@ -2002,7 +2002,7 @@ static struct clk_core *clk_calc_new_rates(struct
-> clk_core *core,
->  	}
->=20
->  	if ((core->flags & CLK_SET_RATE_PARENT) && parent &&
-> -	    best_parent_rate !=3D parent->rate)
-> +	    best_parent_rate !=3D parent->rate &&
-> +!clk_core_rate_is_protected(parent))
->  		top =3D clk_calc_new_rates(parent, best_parent_rate);
->=20
->  out:
-> --
-> 2.30.0
+drm-next-2021-07-08-1:
+drm fixes for 5.14-rc1
 
+dma-buf:
+- doc fixes
+
+amdgpu:
+- Misc Navi fixes
+- Powergating fix
+- Yellow Carp updates
+- Beige Goby updates
+- S0ix fix
+- Revert overlay validation fix
+- GPU reset fix for DC
+- PPC64 fix
+- Add new dimgrey cavefish DID
+- RAS fix
+- TTM fixes
+
+amdkfd:
+- SVM fixes
+
+radeon:
+- Fix missing drm_gem_object_put in error path
+- NULL ptr deref fix
+
+i915:
+- display DP VSC fix
+- DG1 display fix
+- IRQ fixes
+- IRQ demidlayering
+
+gma500:
+- bo leaks in error paths fixed
+The following changes since commit 8a02ea42bc1d4c448caf1bab0e05899dad503f74=
+:
+
+  Merge tag 'drm-intel-next-fixes-2021-06-29' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-next (2021-06-30
+15:42:05 +1000)
+
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-next-2021-07-08-1
+
+for you to fetch changes up to 21c355b09711e95f8f0e7c1890b343c6cd350042:
+
+  Merge tag 'drm-misc-next-fixes-2021-07-01' of
+git://anongit.freedesktop.org/drm/drm-misc into drm-next (2021-07-08
+11:17:32 +1000)
+
+----------------------------------------------------------------
+drm fixes for 5.14-rc1
+
+dma-buf:
+- doc fixes
+
+amdgpu:
+- Misc Navi fixes
+- Powergating fix
+- Yellow Carp updates
+- Beige Goby updates
+- S0ix fix
+- Revert overlay validation fix
+- GPU reset fix for DC
+- PPC64 fix
+- Add new dimgrey cavefish DID
+- RAS fix
+- TTM fixes
+
+amdkfd:
+- SVM fixes
+
+radeon:
+- Fix missing drm_gem_object_put in error path
+- NULL ptr deref fix
+
+i915:
+- display DP VSC fix
+- DG1 display fix
+- IRQ fixes
+- IRQ demidlayering
+
+gma500:
+- bo leaks in error paths fixed
+
+----------------------------------------------------------------
+Aaron Liu (2):
+      drm/amdgpu: enable tmz on yellow carp
+      drm/amdgpu: enable sdma0 tmz for Raven/Renoir(V2)
+
+Alex Deucher (2):
+      drm/amdgpu/display: drop unused variable
+      drm/amdgpu: add new dimgrey cavefish DID
+
+Alex Sierra (11):
+      drm/amdkfd: inc counter on child ranges with xnack off
+      drm/amdkfd: device pgmap owner at the svm migrate init
+      drm/amdkfd: add owner ref param to get hmm pages
+      drm/amdkfd: set owner ref to svm range prefault
+      drm/amdgpu: get owner ref in validate and map
+      drm/amdkfd: use hmm range fault to get both domain pfns
+      drm/amdkfd: classify and map mixed svm range pages in GPU
+      drm/amdkfd: skip invalid pages during migrations
+      drm/amdkfd: skip migration for pages already in VRAM
+      drm/amdkfd: add invalid pages debug at vram migration
+      drm/amdkfd: Maintain svm_bo reference in page->zone_device_data
+
+Chengming Gui (1):
+      drm/amd/amdgpu: enable gpu recovery for beige_goby
+
+Chengzhe Liu (1):
+      drm/amdgpu: Power down VCN and JPEG before disabling SMU features
+
+Darren Powell (1):
+      amdgpu/pm: remove code duplication in show_power_cap calls
+
+Dave Airlie (3):
+      Merge tag 'amd-drm-next-5.14-2021-07-01' of
+https://gitlab.freedesktop.org/agd5f/linux into drm-next
+      Merge tag 'drm-intel-next-fixes-2021-07-07' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-next
+      Merge tag 'drm-misc-next-fixes-2021-07-01' of
+git://anongit.freedesktop.org/drm/drm-misc into drm-next
+
+Evan Quan (7):
+      drm/amdgpu: correct tcp harvest setting
+      drm/amdgpu: fix Navi1x tcp power gating hang when issuing
+lightweight invalidaiton
+      drm/amdgpu: fix NAK-G generation during PCI-e link width switch
+      drm/amdgpu: fix the hang caused by PCIe link width switch
+      drm/amdgpu: correct clock gating settings on feature unsupported
+      drm/amdgpu: update GFX MGCG settings
+      drm/amdgpu: update HDP LS settings
+
+Guchun Chen (2):
+      drm/amd/display: fix incorrrect valid irq check
+      drm/amd/display: fix null pointer access in gpu reset
+
+Huang Rui (1):
+      drm/amdgpu: move apu flags initialization to the start of device init
+
+Jing Xiangfeng (2):
+      drm/gma500: Add the missed drm_gem_object_put() in
+psb_user_framebuffer_create()
+      drm/radeon: Add the missed drm_gem_object_put() in
+radeon_user_framebuffer_create()
+
+Joseph Greathouse (1):
+      drm/amdgpu: Update NV SIMD-per-CU to 2
+
+Jos=C3=A9 Roberto de Souza (1):
+      drm/i915/display/dg1: Correctly map DPLLs during state readout
+
+Kees Cook (1):
+      drm/i915/display: Do not zero past infoframes.vsc
+
+Michal Suchanek (1):
+      drm/amdgpu/dc: Really fix DCN3.1 Makefile for PPC64
+
+Mikel Rychliski (1):
+      drm/radeon: Fix NULL dereference when updating memory stats
+
+Mukul Joshi (1):
+      drm/amdgpu: Conditionally reset SDMA RAS error counts
+
+Nicholas Kazlauskas (1):
+      drm/amd/display: Extend DMUB diagnostic logging to DCN3.1
+
+Nirmoy Das (1):
+      drm/amdgpu: return early for non-TTM_PL_TT type BOs
+
+Oak Zeng (1):
+      drm/amdgpu: Set ttm caching flags during bo allocation
+
+Philip Yang (4):
+      drm/amdkfd: add helper function for kfd sysfs create
+      drm/amdkfd: fix sysfs kobj leak
+      drm/amdkfd: add sysfs counters for vm fault and migration
+      drm/amdkfd: implement counters for vm fault and migration
+
+Randy Dunlap (1):
+      <linux/dma-resv.h>: correct a function name in kernel-doc
+
+Reka Norman (1):
+      drm/amd/display: Respect CONFIG_FRAME_WARN=3D0 in dml Makefile
+
+Rodrigo Siqueira (1):
+      Revert "drm/amd/display: Fix overlay validation by considering cursor=
+s"
+
+Shyam Sundar S K (1):
+      drm/amd/pm: skip PrepareMp1ForUnload message in s0ix
+
+Thomas Zimmermann (2):
+      drm/i915: Use the correct IRQ during resume
+      drm/i915: Drop all references to DRM IRQ midlayer
+
+Tiezhu Yang (1):
+      drm/radeon: Call radeon_suspend_kms() in radeon_pci_shutdown()
+for Loongson64
+
+Veerabadhran Gopalakrishnan (1):
+      amdgpu/nv.c - Added codec query for Beige Goby
+
+Zhan Liu (1):
+      drm/amd/display: Enabling eDP no power sequencing with DAL feature ma=
+sk
+
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c         |  37 +++
+ drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c            |   2 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_gmc.c            |   1 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_mn.c             |   3 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_mn.h             |   2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_nbio.h           |   2 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c            |   9 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c       |   5 +
+ drivers/gpu/drm/amd/amdgpu/athub_v2_0.c            |  12 +-
+ drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c             | 266 +++++++++++++++--=
+---
+ drivers/gpu/drm/amd/amdgpu/hdp_v5_0.c              |  85 ++++---
+ drivers/gpu/drm/amd/amdgpu/mmhub_v2_0.c            |  10 +-
+ drivers/gpu/drm/amd/amdgpu/nbio_v2_3.c             |  51 +++-
+ drivers/gpu/drm/amd/amdgpu/nv.c                    |  37 ++-
+ drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c             |  11 +-
+ drivers/gpu/drm/amd/amdgpu/smuio_v11_0.c           |   5 +-
+ drivers/gpu/drm/amd/amdgpu/soc15.c                 |  10 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_migrate.c           | 100 +++++---
+ drivers/gpu/drm/amd/amdkfd/kfd_priv.h              |   9 +
+ drivers/gpu/drm/amd/amdkfd/kfd_process.c           | 272 ++++++++++++-----=
+----
+ .../gpu/drm/amd/amdkfd/kfd_process_queue_manager.c |   1 +
+ drivers/gpu/drm/amd/amdkfd/kfd_svm.c               | 236 ++++++++++++-----=
+-
+ drivers/gpu/drm/amd/amdkfd/kfd_svm.h               |  19 +-
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c  |  13 +-
+ drivers/gpu/drm/amd/display/dc/dc.h                |   1 +
+ .../amd/display/dc/dce110/dce110_hw_sequencer.c    |  31 ++-
+ drivers/gpu/drm/amd/display/dc/dcn31/Makefile      |   2 +
+ drivers/gpu/drm/amd/display/dc/dml/Makefile        |   8 +-
+ drivers/gpu/drm/amd/display/dc/irq/irq_service.c   |   4 +-
+ drivers/gpu/drm/amd/display/dc/irq_types.h         |   2 +-
+ drivers/gpu/drm/amd/display/dmub/src/dmub_dcn31.c  |  60 +++++
+ drivers/gpu/drm/amd/display/dmub/src/dmub_dcn31.h  |  16 +-
+ drivers/gpu/drm/amd/display/dmub/src/dmub_srv.c    |   5 +-
+ drivers/gpu/drm/amd/include/amd_shared.h           |  10 +-
+ drivers/gpu/drm/amd/include/navi10_enum.h          |   2 +-
+ drivers/gpu/drm/amd/pm/amdgpu_pm.c                 |  95 ++-----
+ drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c          |   8 +-
+ .../gpu/drm/amd/pm/swsmu/smu13/yellow_carp_ppt.c   |   3 +-
+ drivers/gpu/drm/gma500/framebuffer.c               |   7 +-
+ drivers/gpu/drm/i915/display/intel_ddi.c           |  19 +-
+ drivers/gpu/drm/i915/display/intel_dp.c            |   2 +-
+ drivers/gpu/drm/i915/gt/intel_engine_cs.c          |   2 +-
+ drivers/gpu/drm/i915/gt/intel_ring_submission.c    |   7 +-
+ drivers/gpu/drm/i915/i915_drv.c                    |   1 -
+ drivers/gpu/drm/i915/i915_irq.c                    |  10 +-
+ drivers/gpu/drm/i915/i915_irq.h                    |   1 +
+ drivers/gpu/drm/i915/i915_reg.h                    |   3 -
+ drivers/gpu/drm/radeon/radeon_display.c            |   1 +
+ drivers/gpu/drm/radeon/radeon_drv.c                |   8 +-
+ drivers/gpu/drm/radeon/radeon_object.c             |  29 +--
+ drivers/gpu/drm/radeon/radeon_object.h             |   2 +-
+ drivers/gpu/drm/radeon/radeon_ttm.c                |  13 +-
+ include/linux/dma-resv.h                           |   2 +-
+ 53 files changed, 1048 insertions(+), 504 deletions(-)
