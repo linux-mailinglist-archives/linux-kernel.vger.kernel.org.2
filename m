@@ -2,113 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B253C1997
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 21:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62C163C199D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 21:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbhGHTJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 15:09:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55088 "EHLO
+        id S230135AbhGHTLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 15:11:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhGHTJE (ORCPT
+        with ESMTP id S229497AbhGHTLi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 15:09:04 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D339C06175F
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 12:06:22 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id x25so5519792lfu.13
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 12:06:22 -0700 (PDT)
+        Thu, 8 Jul 2021 15:11:38 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C057C06175F
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 12:08:56 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id a18so18235270lfs.10
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 12:08:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=6+ObdsFBNceXxQMGRQLsnrEHm6C0Lskp1Geuon+6uw8=;
-        b=bq27k7ehTq6PP6GLXwIhD4/bRzbmj/DGO6KYwn7DSNlyDy5iuDsu54K4B885W1VYVb
-         U8yXKixUGFYhcXFJk9eY0jQRsjzrEQe9T1yY/vZIf715+544XLHyZreWR/hh5MF9Hy/X
-         yU0Y1TPJCIqQd5WtT0KsTKrcChaGafn5YOrPdpyjofJL05W3C4P+nQ4EQ1e3WIZ1SJfa
-         7b1VCG0oElp56PfW5ZIMFhSmIN0GnwUypgXmut3Q0g45NJ6w+S3fswk45z2j7ZEeOGNn
-         G7yD9Yu/BUAlme72wrplZ2qss8ncByV8Ottx/mzLfLhWN0GcIAoDJmNikJSnDNKWLcjl
-         a3WQ==
+        bh=yxq/oYeE5el0szoQlSwnFi3D5C8UV0iamECRppUCTb8=;
+        b=CS3c/rCTZLRhfSZCtAFxKSJZw+1e1IR2isTofp5binEMsCyeotR+El3bf6mQCQ7wzV
+         jWJVrjKqwkUrl/VQ13p+AJp8e9SLTn3+uYldNdocc5FmU6w/ISh4Hjnj12WnLq/EThgO
+         RbZbkm4tf7VyU3WqQYrHzFeeclUlFPuNKfF+ya3FOwYmCiWCvShmMWhtzPePt/2e6muW
+         holGzqrc5CfzyDkjL6U+Obpw4PhbRyRoFodiF7RVOGG4BUOmfOSeC11wHIYOKds4+G3B
+         DC2PS92JFmb/Unb81kfVM9358a4QlEBNkQ13Q/EUOUtc2N7DO9nV0/mST0Mi/s2lpHWG
+         e87g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=6+ObdsFBNceXxQMGRQLsnrEHm6C0Lskp1Geuon+6uw8=;
-        b=sBntnnfiex2/+YDFfxzTdq0B7Bwdo/IsF9wCRqvhr46XMgQBYyMh8gFHQCy1MAwDFB
-         klw0BdNuPSljo88o07ClIyhvrXeYTgSLoLID7i3SOL+XUcDEFjrGV3diTxik+KqX7c+4
-         m1JXNsNGx4bC7cTAfXbSnxQz2t1f8kAHHUdKnJOZYrtCGX6ZjkO9xx4Nq0kqHKZshWq8
-         yCYDJDijJC9cgVKrqQfjSq61fPG/CGbHfotQToYDvyxEG0kIUmPP2cRkVW0Bha5PxsEr
-         dUb7JnDVLf1SVoi9RV5xMGKurZgLflvCXxhF9JFIQsHYivD7alpuX+NmclKGPzo7AxWi
-         kCvw==
-X-Gm-Message-State: AOAM5329Z/4oyLpVyyUFyZY//3uNxwbVydOF/AT6F50HGA3hXVYbc2jY
-        BPuA2LfYs9hoLn+1K1/hnGOmnreZ8sArIXgILsJaEA==
-X-Google-Smtp-Source: ABdhPJz4LAL596K6alYRyJay2//b2wtiw4hkERI0ktoOb61Rp/LnXvF6gWSEZEvMbdZtMGvKakFM26BpcVZLdEswaGk=
-X-Received: by 2002:a19:5f04:: with SMTP id t4mr25643332lfb.297.1625771180373;
- Thu, 08 Jul 2021 12:06:20 -0700 (PDT)
+        bh=yxq/oYeE5el0szoQlSwnFi3D5C8UV0iamECRppUCTb8=;
+        b=OrjNOEH31l41Z7Pi5tKj43LjuNserW58OK6W0ed1YXMCbqSzGgLHPNzmLry/eGeeWa
+         96NC0SSWxbzlcwJpoDtNs15IeqXYkqhkZ6gXBQUo3u4cOBHzbtVIa5HIGyfN/P2+nmSB
+         jwE/ZKeOKekgXqeVw/w6Uhk+3952R9mbn/lmk9eISt5kx7lNYDjckM4jCuSIV4AyCQqE
+         fk5xlEo1gANNtlWOiYU/kY6TxjlrGPFCuQzNOsDh9dJT+qyHF22P8zFqZebvOCCIeH3I
+         cNQaFUO4uIBnra9vCR060kaaGnoXSXo80dTMi1jqhi2FoSclNcG3crK6iVbMg9bo5sLz
+         owkw==
+X-Gm-Message-State: AOAM533DETcXcNyhRgxXFfbDiCBXuhgBb2RS4+m3SXCRtA/PGmoUnCSf
+        fugomfIIoBHiTEsLzazIfMvI89+qWFReHiiGPNtPBg==
+X-Google-Smtp-Source: ABdhPJwhUiU2hH+eK040L2z7DvLsOjcyahjvGYkBvhI4UVYaDBykLuhSrSWwAE71GJGyfHanhk2MomjJhdWec0wQ9ck=
+X-Received: by 2002:ac2:4c55:: with SMTP id o21mr21895033lfk.122.1625771334722;
+ Thu, 08 Jul 2021 12:08:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210707224310.1403944-1-ndesaulniers@google.com>
- <20210707224310.1403944-3-ndesaulniers@google.com> <CAK7LNAR66iE0w4bjpMVEz6W==mnc59MEnRWm1MXrqApP0aE4Qw@mail.gmail.com>
- <CAK8P3a1MW9hYzDT-iL4CpwaJ5NUuQODT3XgheocrnF7496GKFw@mail.gmail.com>
-In-Reply-To: <CAK8P3a1MW9hYzDT-iL4CpwaJ5NUuQODT3XgheocrnF7496GKFw@mail.gmail.com>
+References: <20210623141854.GA32155@lst.de> <08df01d7683d$8f5b7b70$ae127250$@codeaurora.org>
+ <CAK8P3a28_0KJpcLRQrDhFk8-ndxmfk7-Q2_qcRRiYkyh-NNZUQ@mail.gmail.com>
+ <08e101d76842$94f78a60$bee69f20$@codeaurora.org> <20210623151746.GA4247@lst.de>
+ <CAK8P3a2bG64ARjpwQ0ZhQ9P0g8B-=AwcHHAbYBXBS4B6Fy9pQw@mail.gmail.com>
+ <YNQE0YJzC2xmWg+2@Ryzen-9-3900X.localdomain> <20210707141054.GA24828@lst.de>
+ <1ee8fc44-3e8c-91c0-7909-a636757dbda4@kernel.org> <20210708052751.GA18789@lst.de>
+ <CAKwvOd=iRLQPum8-jaCG90TPyxDptNB31yRHMEWgSMxjv=KuHA@mail.gmail.com> <0a6801d77428$13c88060$3b598120$@codeaurora.org>
+In-Reply-To: <0a6801d77428$13c88060$3b598120$@codeaurora.org>
 From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 8 Jul 2021 12:06:09 -0700
-Message-ID: <CAKwvOdnV0j6u84aFrsNW1cfQmEQ4106uhq3dK-pEjSVDmq8pLg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] Makefile: drop CROSS_COMPILE for LLVM=1 LLVM_IAS=1
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Fangrui Song <maskray@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <nathan@kernel.org>
+Date:   Thu, 8 Jul 2021 12:08:44 -0700
+Message-ID: <CAKwvOdkQhq-hPr=S52D=kJVPGP507F78hY2PbC+hbuq3MZUkDw@mail.gmail.com>
+Subject: Re: how can we test the hexagon port in mainline
+To:     bcain@codeaurora.org
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "Manning, Sid" <sidneym@quicinc.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Sid Manning <sidneym@codeaurora.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-hexagon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 8, 2021 at 4:45 AM Arnd Bergmann <arnd@kernel.org> wrote:
+On Thu, Jul 8, 2021 at 11:36 AM Brian Cain <bcain@codeaurora.org> wrote:
 >
-> On Thu, Jul 8, 2021 at 12:23 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> > On Thu, Jul 8, 2021 at 7:43 AM 'Nick Desaulniers' via Clang Built
-> >
-> > We must rely on this behavior of Clang because
-> > --target (which is contained in CLANG_FLAGS)
-> > must be specified before the Kconfig time.
-> > Then, a user can toggle CONFIG_64BIT any time
-> > from menuconfig etc.
-> >
-> > With this in mind, using $(ARCH) as if-else
-> > switches is pointless.
-> > $(SRCARCH) is the only meaningful input.
-> >
-> >
-> >   else ifeq ($(ARCH),i386)
-> >   CLANG_FLAGS    += --target=i686-linux-gnu
-> >   else ifeq ($(ARCH),x86)
-> >   CLANG_FLAGS    += --target=x86_64-linux-gnu
-> >   else ifeq ($(ARCH),x86_64)
-> >   CLANG_FLAGS    += --target=x86_64-linux-gnu
-> >
-> > should be replaced with:
-> >
-> >   else ifeq ($(SRCARCH),x86_64)
-> >   CLANG_FLAGS    += --target=x86_64-linux-gnu
+> > From: Nick Desaulniers <ndesaulniers@google.com>
+> > We're looking into statically linked images of clang to prevent these
+> > kinds of games.
 >
-> I think we usually only have to provide the architecture
-> name, as in "--target=x86_64", though for arm I get a
-> warning "clang: warning: unknown platform, assuming
-> -mfloat-abi=soft" unless I provide the full triple.
+> Statically linking against libc++/libc++abi at least seems like a good idea.  Let me know if we can help.
 
-Right, Fangrui also made that suggestion, but for that reason (the
-error for various architectures when using 2-component triples) I'd
-prefer to just always specify a full triple.  I picked some to have a
-starting point; unless they NEED to change, I'll refrain from
-modifying them further.
-
-Technically, I think they can have 4 components, not sure why we still
-call them a "target triple." I guess I wouldn't be surprised if they
-can contain more than 4 components at this point.
+Consider subscribing/reading/posting to
+https://github.com/ClangBuiltLinux/tc-build/issues/150.
 -- 
 Thanks,
 ~Nick Desaulniers
