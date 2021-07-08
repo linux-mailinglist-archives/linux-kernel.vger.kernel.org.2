@@ -2,122 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A9963BF2CB
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 02:21:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A41C83BF2CF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 02:23:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230164AbhGHAY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 20:24:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59582 "EHLO
+        id S230173AbhGHAZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 20:25:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230117AbhGHAY1 (ORCPT
+        with ESMTP id S230099AbhGHAZ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 20:24:27 -0400
-X-Greylist: delayed 103804 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 07 Jul 2021 17:21:47 PDT
-Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 074B9C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 17:21:46 -0700 (PDT)
-Received: from usagi.middle.earth (ethbase.usagi.not.afront.org [IPv6:2620:137:e001:0:1897:4108:901b:c660])
-        by mail.monkeyblade.net (Postfix) with ESMTPSA id 279144D0F3480;
-        Wed,  7 Jul 2021 17:21:45 -0700 (PDT)
-Subject: Re: [PATCH] checkpatch: Add check for common mailing list helper
- checks
-To:     Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org,
-        Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-References: <20210702223743.1240694-1-warthog9@eaglescrag.net>
- <b1592f359a7e68704c0faac77015b9b2aa8e4073.camel@perches.com>
- <506ec749-63dc-3a08-48e7-5179c3df9a42@eaglescrag.net>
- <5e5eaf6773a0dad42cd59e89f8e710666373f8f1.camel@perches.com>
-From:   John 'Warthog9' Hawley <warthog9@eaglescrag.net>
-Openpgp: preference=signencrypt
-Message-ID: <9fc96a1e-e079-229f-9f78-fa3d92b52116@eaglescrag.net>
-Date:   Wed, 7 Jul 2021 17:21:44 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Wed, 7 Jul 2021 20:25:58 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86833C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 17:23:17 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id w127so5656300oig.12
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 17:23:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=RbFoIrsFO5XIBA5/R77ovrZzmwL+AynSzkgJ2f7jhfU=;
+        b=VtqVdY9lPfx6/Yhz6fJsozfP0L7QK8deW47mn5HtSUTeVi/BXaHkwcRUuSetNMFuv+
+         x8Yhrjnke5Up7Wi7q3tBV3KbOYQAFsMdgx+87cNXyxc2Lu5XMxJMTGbDkxE03etTMIXo
+         b6Imw0lJLHvtX3T/tUGCAOwUqIA+SEgiKShfw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=RbFoIrsFO5XIBA5/R77ovrZzmwL+AynSzkgJ2f7jhfU=;
+        b=aHwetxg+eXAGfjSU9pYLo1JM8l8q2CWVK1/w18NJnTEVICedjHixby12N363pS2Slp
+         i6bBH6I7Twgv6aW12HcEDaWXgiedaBPd6CoqAIX7IfuQjxNlRAGgH7UDTfeIOmvCSklh
+         m77BZi/MUN+nuQz/CLap2snv6Hn0ntvC0MQZrJ7nAERfVYsKCjvb8Sks23lkV5SQ2U8c
+         VQLVI5fnZzls8IPyfbCyJ8FdjcxMsiKdmj/OEU0KQckhQzQPCNrqd5aZlc1YNrUR5/FF
+         X7ke99WM3A8opAa8yuDZry63b7TICdbOW1EHT7Tm8wpS21fRcga0X/r6h7kvjF4LF2Ur
+         H1sg==
+X-Gm-Message-State: AOAM53223S4pJDEpSg80fq+i73Y9LeQQhqJaWRHD2ME5u6mq2CBqSnyi
+        R+/1LPqAMyFZryCdkJRGhbL2nAWKiEuqAU0cS/+u/Q==
+X-Google-Smtp-Source: ABdhPJzg1rZ5ea1h4hn9be4lgRL9bCGi6K92pjjcqaaI2kcvco3q8d0Q3VHMcWfzh+rCZRL2WFO4Mh/aHBfbyPTXkOo=
+X-Received: by 2002:aca:3012:: with SMTP id w18mr1495720oiw.125.1625703796995;
+ Wed, 07 Jul 2021 17:23:16 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 8 Jul 2021 00:23:16 +0000
 MIME-Version: 1.0
-In-Reply-To: <5e5eaf6773a0dad42cd59e89f8e710666373f8f1.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-MW
-Content-Transfer-Encoding: 8bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Wed, 07 Jul 2021 17:21:45 -0700 (PDT)
+In-Reply-To: <20210703025449.2687201-1-bjorn.andersson@linaro.org>
+References: <20210703025449.2687201-1-bjorn.andersson@linaro.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 8 Jul 2021 00:23:16 +0000
+Message-ID: <CAE-0n502u+7CNhA5_kMfc-CVvpSzdGOeputT6nxW8BvtyVBeRQ@mail.gmail.com>
+Subject: Re: [RESEND PATCH 2/2] soc: qcom: rpmhpd: Make power_on actually
+ enable the domain
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/7/21 10:53 AM, Joe Perches wrote:
-> On Tue, 2021-07-06 at 12:31 -0700, John 'Warthog9' Hawley wrote:
->> On 7/3/21 11:39 AM, Joe Perches wrote:
->>> On Fri, 2021-07-02 at 15:37 -0700, John 'Warthog9' Hawley (VMware)
->>> wrote:
->>>> From: John 'Warthog9' Hawley <warthog9@eaglescrag.net>
->>>>
->>>> Mailing lists in an attempt to try and avoid sending certain
->>>> administrative e-mails to the list, will check the first few lines
->>>> (usually ~10) looking for keywords.  If those key words are found it
->>>> shunts the e-mail to the list admin contact instead of potentially
->>>> passing it through to the list.
->>>
->>> Perhaps the below is a bit better, but I believe a few of the tests
->>> are going to be tripped a bit too often.
->>>
->>> Especially "cancel", "config" and maybe "subscribe" too.
->>>
->>> For instance:
->>>
->>> $ git log --grep='\bcancel\b' -P -i --pretty=oneline -10000 | wc -l
->>> 1693
->>>
->>> $ git log --grep='^config\b' -P -i --pretty=oneline -10000 | wc -l
->>> 890
->>>
->>> $ git log --grep='\bsubscribe\b' -P -i --pretty=oneline -10000 | wc -l
->>> 123
->>
->> A part of getting this into checkpatch.pl is getting some better
->> feedback mechanisms for why patches may not be passing through the list
->> correctly with regexes that have been in place for at least 14 years.
->> These, aren't tripped over often,
-> 
-> 3000+ commits with regex matches seem rather a lot to me.>
->> but have run into a instance at least
->> recently that triggered me trying to get at least some self check, and
->> notification, pieces in place.
-> 
-> No worries, but perhaps the message might be reworded to
-> say something about possible mailing list moderation rather
-> than imply rejection.
->>>> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> []
->>> @@ -865,6 +865,37 @@ our $allowed_asm_includes = qr{(?x:
->>>  )};
->>>  # memory.h: ARM has a custom one
->>>
->>> +our $mailing_list_phrases = qr{(?xi:
->>> +	\bcancel\b |
-> 
-> Mere use of the word "cancel" in the commit description seems undesirable to me.>
->>> +# check if words in the commit message may trip up common mailing list helpers
->>> +# to redirect email to the admin contact
->>> +		if ($in_commit_log && $commit_log_lines < 10 &&
->>> +		    $line =~ /($mailing_list_phrases)/) {
->>> +			WARN("MAILING_LIST_HELPER",
->>> +			     "Line matches common mailing list helpers and may not be delivered correctly - consider rewording '$1'\n" . $herecurr);
-> 
-> Maybe FILTERS for phrases and helpers
-> 
-> Maybe something like:
-> 
-> "Use of '$1' in this patch's commit description might cause mailing list moderation or rejection\n"
+Quoting Bjorn Andersson (2021-07-02 19:54:49)
+> The general expectation is that powering on a power-domain should make
+> the power domain deliver some power, and if a specific performace state
+> is needed further requests has to be made.
+>
+> But in contrast with other power-domain implementations (e.g. rpmpd) the
+> RPMh does not have an interface to enable the power, so the driver has
+> to vote for a particular corner (performance level) in rpmh_power_on().
+>
+> But the corner is never initialized, so a typical request to simply
+> enable the power domain would not actually turn on the hardware. Further
+> more, when no more clients vote for a performance state (i.e. the
+> aggregated vote is 0) the power domain would be turn off.
 
-"Use of '$1' in this patch's commit description, may cause the message
-to be considered an administrative message and may be misdirected and
-undelivered to the mailing list\n"
+s/turn/turned/
 
-might be more overall accurate since the mailing list is likely push the
-message into the admin queue as if it was a control message, and it may
-not be easy to get it back into the main stream for delivery.
+>
+> Fix both of these issues by always voting for a corner with non-zero
+> value, when the power domain is enabled.
+>
+> The tracking of the lowest non-zero corner is performed to handle the
+> corner case if there's ever a domain with a non-zero lowest corner, in
+> which case both rpmh_power_on() and rpmh_rpmhpd_set_performance_state()
+> would be allowed to use this lowest corner.
+>
+> Fixes: 279b7e8a62cc ("soc: qcom: rpmhpd: Add RPMh power domain driver")
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
 
-I'm not picky on the exact wording of the message though, just need to
-convey that the commit_log may have something in it that may trip up the
-mailing list, and the message may not make it through.
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
