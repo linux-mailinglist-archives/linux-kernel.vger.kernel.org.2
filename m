@@ -2,87 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D9973C1780
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 18:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E28A33C178B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 18:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229605AbhGHQ7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 12:59:04 -0400
-Received: from smtprelay0165.hostedemail.com ([216.40.44.165]:46402 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229469AbhGHQ7D (ORCPT
+        id S229899AbhGHRA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 13:00:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229669AbhGHRAU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 12:59:03 -0400
-Received: from omf18.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 14E3F1846F773;
-        Thu,  8 Jul 2021 16:56:20 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf18.hostedemail.com (Postfix) with ESMTPA id 332772EBFC6;
-        Thu,  8 Jul 2021 16:56:08 +0000 (UTC)
-Message-ID: <d538c07ccb0176fe7c715bf4cb3b48d84b378c52.camel@perches.com>
-Subject: Re: [PATCH 0/2] LICENSES: add and use copyleft-next-0.3.1
-From:   Joe Perches <joe@perches.com>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        "Bradley M. Kuhn" <bkuhn@ebb.org>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>, tglx@linutronix.de,
-        akpm@linux-foundation.org, shuah@kernel.org, rafael@kernel.org,
-        rgoldwyn@suse.com, kuno@frob.nl, fontana@sharpeleven.org,
-        Ciaran.Farrell@suse.com, Christopher.DeNicolo@suse.com, hch@lst.de,
-        corbet@lwn.net, linux@leemhuis.info, ast@kernel.org,
-        andriin@fb.com, daniel@iogearbox.net, atenart@kernel.org,
-        alobakin@pm.me, weiwan@google.com, ap420073@gmail.com,
-        tj@kernel.org, jeyu@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, minchan@kernel.org,
-        axboe@kernel.dk, mbenes@suse.com, jpoimboe@redhat.com,
-        keescook@chromium.org, jikos@kernel.org, rostedt@goodmis.org,
-        peterz@infradead.org, linux-block@vger.kernel.org,
-        linux-spdx@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, copyleft-next@lists.fedorahosted.org
-Date:   Thu, 08 Jul 2021 09:56:05 -0700
-In-Reply-To: <YOcakETswyEN58j6@kroah.com>
-References: <20210707184310.3624761-1-mcgrof@kernel.org>
-         <YOaZohB/2Z3x5grc@kroah.com> <YOcSwXkpzAFGucXM@ebb.org>
-         <YOcakETswyEN58j6@kroah.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Thu, 8 Jul 2021 13:00:20 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B6DC06175F
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 09:57:37 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id g19so9999204ybe.11
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 09:57:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2CS38GY8uch1zA08SQ4xz6CBM44J4uI/8FoF/YQIRvg=;
+        b=m8XywZ2+S9UOWKZmzx/D8unKfUc0zQgMFZMupUXrfvQ1W7WhFP6Q2bXBW2DvqTJNDF
+         sWvhuUlLRlanBWYnkusi47QZxNLB3oHqqzFG2OEBkbSj74/lknP4zAdzSwClyWiTuvZ4
+         PWDnFFv8AsiqZbSJkpEH+H07F66xB2yqu8T1GwqJhxTItaJCauQXY1Y+nIxioLFmQQL1
+         OYvrW1QQxi9VBCf8ocG+lkouQDEPYkKtrxZcQ+OA/S6reyIV8LY9sGNH7zo1uNl3usMB
+         UI9k1YuR8ov+3FJdH5uJyLdVL5mLZ2WX3+Cb4NqXQBZlnxQmds5KMR8avZBsK4FwUUVC
+         NpBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2CS38GY8uch1zA08SQ4xz6CBM44J4uI/8FoF/YQIRvg=;
+        b=bfgxXoLn9dUgMy3qCMZQ4WS4QDXzZKhx6ZD/of3dhS3FHel/cKg4yOCD7neMsXsjCp
+         KN3tG1EH1kRnf4stR1hf+Zd8jFmNY1Zk0HlgBeFrwIUe68tc0bPfCbe7xLTvU7sw9pRb
+         5rSu9bnVwfIqadUZinwJgXzdQQkMwingFnKCddwriqnVvBz4OdOm/TkSQ9VhEeR1hhqm
+         KIIyS8ewaXZjSRYb+HaeERBZut9jBJaVSD0P1quKHLx344Ts4vqz7Wft8ZZJY1Lzx334
+         zXmCxpHRbt52cQvoh2PlJ+5/pXjvqerjl3xS6qk7UuvCPr3ahcqf4VnlWQ84j9bKRnPP
+         kKAg==
+X-Gm-Message-State: AOAM530KMKnWnhQkYcm/jMTVQATmJAa5vLTN5Q3x86ZuMYiP3FwEox+1
+        zqwhyVLezK6xRh4o1undyGNrum8/rDlcN2ZALxLQBg==
+X-Google-Smtp-Source: ABdhPJw6/bLzCbNz7a/bzlL5qOwxd5fOQUAlJIesmKG3Pe/ypoTsBSGwviPm8Ci/f6WK9I/+/2J5+2ES3XYM4LJuryk=
+X-Received: by 2002:a25:8b91:: with SMTP id j17mr38884530ybl.228.1625763456939;
+ Thu, 08 Jul 2021 09:57:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.40
-X-Stat-Signature: 475dg3wxf8bgjys8z5wo7iib4gfsknho
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 332772EBFC6
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19kIzUQ5SAeC/3sY9lA0yTN+vDwkbWjZK8=
-X-HE-Tag: 1625763368-322840
+References: <20210707172948.1025-1-adrian.hunter@intel.com>
+ <20210707172948.1025-3-adrian.hunter@intel.com> <YOXm4FuL/CW4lYDZ@kroah.com>
+ <66130101-b0c5-a9a3-318a-468c6f3b380f@intel.com> <CAJZ5v0hfEE=ney1tH5MtQm0KWs4U2yzy_DqAAW7hTyxxx2-cNg@mail.gmail.com>
+ <c3ec3ca2-220f-9e5a-e2ce-b1c2be86c97c@intel.com> <CAGETcx_D9KvxEK689ggF6xViiC_yXaCWdL0KoW8uJwiNPhxy8w@mail.gmail.com>
+ <CAJZ5v0jnWWLyCFub=-ETr7d_ck=roVexTj8M0NRLi-svfjJy3Q@mail.gmail.com>
+In-Reply-To: <CAJZ5v0jnWWLyCFub=-ETr7d_ck=roVexTj8M0NRLi-svfjJy3Q@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 8 Jul 2021 09:57:01 -0700
+Message-ID: <CAGETcx9hYu-n+tGOnEspWOckvgVQG+QcZPoR-DwesPh1qfrnXA@mail.gmail.com>
+Subject: Re: [PATCH RFC 2/2] scsi: ufshcd: Fix device links when BOOT WLUN
+ fails to probe
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "open list:TARGET SUBSYSTEM" <linux-scsi@vger.kernel.org>,
+        Avri Altman <avri.altman@wdc.com>,
+        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-07-08 at 17:32 +0200, Greg KH wrote:
-> On Thu, Jul 08, 2021 at 07:59:13AM -0700, Bradley M. Kuhn wrote:
-> > Greg KH wrote:
-> > > Any chance you wish to just change the license of these files, given that
-> > > you are the only one that has tried to use it for kernel code?
-> > 
-> > There is a lot of dual-licensed (GPLv2-only|{2,3}-Clause-BSD) code already in
-> > Linux.  Many corporate copyright holders have well documented strong reasons
-> > for wanting that.  (Those policy goals and the analysis behind them, I find
-> > problematic and sometimes outright wrong, but nonetheless it's their right to
-> > license their copyrights that way, and the license *is* GPLv2-only
-> > compatible, as is Luis'!).
-> > 
-> > I assume that you're not asking those companies to relicense to pure
-> > GPLv2-only.
-> 
-> On the contrary, I have stated in public many times to companies that
-> try to add dual-licensed new kernel code that they should only do so if
-> they provide a really good reason, and pushed back on them numerous
-> times.  See the mailing list archives for details if you care.
-> 
-> So yes, I am asking them, this is not anything new.
-> 
-> Let's keep it simple please, and not add new licenses for no real good
-> reason if at all possible.
+On Thu, Jul 8, 2021 at 9:49 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Thu, Jul 8, 2021 at 6:46 PM Saravana Kannan <saravanak@google.com> wrote:
+> >
+> > On Thu, Jul 8, 2021 at 7:17 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
+> > >
+> > > On 8/07/21 3:31 pm, Rafael J. Wysocki wrote:
+> > > > On Wed, Jul 7, 2021 at 7:49 PM Adrian Hunter <adrian.hunter@intel.com> wrote:
+> > > >>
+> > > >> On 7/07/21 8:39 pm, Greg Kroah-Hartman wrote:
+> > > >>> On Wed, Jul 07, 2021 at 08:29:48PM +0300, Adrian Hunter wrote:
+> > > >>>> If a LUN fails to probe (e.g. absent BOOT WLUN), the device will not have
+> > > >>>> been registered but can still have a device link holding a reference to the
+> > > >>>> device. The unwanted device link will prevent runtime suspend indefinitely,
+> > > >>>> and cause some warnings if the supplier is ever deleted (e.g. by unbinding
+> > > >>>> the UFS host controller). Fix by explicitly deleting the device link when
+> > > >>>> SCSI destroys the SCSI device.
+> > > >>>>
+> > > >>>> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+> > > >>>> ---
+> > > >>>>  drivers/scsi/ufs/ufshcd.c | 7 +++++++
+> > > >>>>  1 file changed, 7 insertions(+)
+> > > >>>>
+> > > >>>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> > > >>>> index 708b3b62fc4d..483aa74fe2c8 100644
+> > > >>>> --- a/drivers/scsi/ufs/ufshcd.c
+> > > >>>> +++ b/drivers/scsi/ufs/ufshcd.c
+> > > >>>> @@ -5029,6 +5029,13 @@ static void ufshcd_slave_destroy(struct scsi_device *sdev)
+> > > >>>>              spin_lock_irqsave(hba->host->host_lock, flags);
+> > > >>>>              hba->sdev_ufs_device = NULL;
+> > > >>>>              spin_unlock_irqrestore(hba->host->host_lock, flags);
+> > > >>>> +    } else {
+> > > >>>> +            /*
+> > > >>>> +             * If a LUN fails to probe (e.g. absent BOOT WLUN), the device
+> > > >>>> +             * will not have been registered but can still have a device
+> > > >>>> +             * link holding a reference to the device.
+> > > >>>> +             */
+> > > >>>> +            device_links_scrap(&sdev->sdev_gendev);
+> > > >>>
+> > > >>> What created that link?  And why did it do that before probe happened
+> > > >>> successfully?
+> > > >>
+> > > >> The same driver created the link.
+> > > >>
+> > > >> The documentation seems to say it is allowed to, if it is the consumer.
+> > > >> From Documentation/driver-api/device_link.rst
+> > > >>
+> > > >>   Usage
+> > > >>   =====
+> > > >>
+> > > >>   The earliest point in time when device links can be added is after
+> > > >>   :c:func:`device_add()` has been called for the supplier and
+> > > >>   :c:func:`device_initialize()` has been called for the consumer.
+> > > >
+> > > > Yes, this is allowed, but if you've added device links to a device
+> > > > object that is not going to be registered after all, you are
+> > > > responsible for doing the cleanup.
+> > > >
+> > > > Why can't you call device_link_del() directly on those links?
+> > > >
+> > > > Or device_link_remove() if you don't want to deal with link pointers?
+> > > >
+> > >
+> > > Those only work for DL_FLAG_STATELESS device links, but we use only
+> > > DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE flags.
+> >
+> > Is there a reason you can't use DL_FLAG_STATELESS? It doesn't preclude
+> > you from using RPM_ACTIVE as far as I can tell.
+>
+> Perhaps he wants the links to be managed if they are used after all.
+>
+> Anyway, this is a valid use case that is not covered right now.
 
-You can ask but it's the submitter's choice to license their code
-however they desire.
+Maybe. But the suggested patch is certainly risky.
 
+There is no requirement the consumer is registered before the links
+are added though. So, randomly deleting a managed link when
+device_link_put_kref() is called on a stateless refcount (they are
+still the same link still) isn't right. The entity that created the
+managed device link might still want it there. Also, if two entities
+create a managed link and one of them calls device_link_put_kref()
+before the device is registered, we have a UAF problem because managed
+links aren't refcounted (more than once).
 
+-Saravana
