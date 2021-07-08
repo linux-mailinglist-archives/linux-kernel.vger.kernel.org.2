@@ -2,127 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D1B3C15A5
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 17:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DA2D3C15B2
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 17:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232060AbhGHPGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 11:06:01 -0400
-Received: from mail-oo1-f48.google.com ([209.85.161.48]:40878 "EHLO
-        mail-oo1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229738AbhGHPGA (ORCPT
+        id S231974AbhGHPL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 11:11:28 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:42674 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229592AbhGHPLY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 11:06:00 -0400
-Received: by mail-oo1-f48.google.com with SMTP id j4-20020a4ac5440000b029025992521cf0so1439097ooq.7;
-        Thu, 08 Jul 2021 08:03:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9fRsjb6ixRhrvN3TM5YwQx/rG19O2SMWtEg9Q+v6fqM=;
-        b=RZcVw6UVkCfkoNzRdLXsQ/xzOsilWpKp2jKa90VknW060g9lqzmf8yO2BfQs3q0e3W
-         HwYXdqWs3B8hIMzXraZO8KF3i4gwCw4km6+gHcd64+2+GOGzpK5HD+Ybcp29EjziZUqB
-         uAEGsVGwcD5Z8rxnXq9u2KJ+QuEetxsgOSLXkGg2k8TOULZXRNU0iCw3RabazC08T0P0
-         wR5nQtodsic9DUeyN4yZtAv1sAwtLacEOA5B3357fQ0b1e4Xgg620IybKRCkE3JfFjgj
-         9JHwCUmBtdGLafSFSwqEIOteIon48Ve9QEgpP9XI9NDSJi7EJBCG3yI/47qXebCa3QOi
-         kvWA==
-X-Gm-Message-State: AOAM532rVi4e+PharUK+s3zBulFGDdE8xMrKEo5HgP/L5FDb+0/qeBqR
-        ln9Ih1y4217z+PKQvwgFvWDE8hv0isd4rztHLNM=
-X-Google-Smtp-Source: ABdhPJw6rRUj1eTPCAv1/80AGJMjw6lgLatnsz92iWe8QDTP7Wr4l6gE3Ui3oQXimZNb02HlGgqmJ+koMz7JDPGIVuE=
-X-Received: by 2002:a4a:5dc6:: with SMTP id w189mr22866611ooa.1.1625756598703;
- Thu, 08 Jul 2021 08:03:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210707172948.1025-1-adrian.hunter@intel.com>
- <20210707172948.1025-3-adrian.hunter@intel.com> <YOXm4FuL/CW4lYDZ@kroah.com>
- <66130101-b0c5-a9a3-318a-468c6f3b380f@intel.com> <CAJZ5v0hfEE=ney1tH5MtQm0KWs4U2yzy_DqAAW7hTyxxx2-cNg@mail.gmail.com>
- <c3ec3ca2-220f-9e5a-e2ce-b1c2be86c97c@intel.com>
-In-Reply-To: <c3ec3ca2-220f-9e5a-e2ce-b1c2be86c97c@intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 8 Jul 2021 17:03:07 +0200
-Message-ID: <CAJZ5v0hXR+ZsjKP1BUrOEXDFfD3ha=w90bExrx5qhTrOG16Ksw@mail.gmail.com>
-Subject: Re: [PATCH RFC 2/2] scsi: ufshcd: Fix device links when BOOT WLUN
- fails to probe
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "open list:TARGET SUBSYSTEM" <linux-scsi@vger.kernel.org>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Thu, 8 Jul 2021 11:11:24 -0400
+X-UUID: 3c85a5a83be84b6ea866ee9c0a6f44be-20210708
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:To:From:Subject:Message-ID; bh=rmy3vTKrj+13anpiQhZfLEyONls/y6wLF5zWGoxVdF8=;
+        b=hD+qqujji0r8m3P9PDI2pnMaDxCMqpZ2iA7j9kUXLS7Bm41FTMOTTzpROgvrgPodbTxI7zxg2oo1FOLcMcwYXhexU7yj6uPtnpQSDxCXNRy2sadtBPP35cEdUTZFQrUfRZond4eqtm9BT5pLUTEbCse8EbAIynqlYzbCZn3SOTA=;
+X-UUID: 3c85a5a83be84b6ea866ee9c0a6f44be-20210708
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <deren.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1688495760; Thu, 08 Jul 2021 23:08:36 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 8 Jul 2021 23:08:30 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 8 Jul 2021 23:08:30 +0800
+Message-ID: <1eaab818ef2478b115e1387dcca7427f633cc217.camel@mediatek.com>
+Subject: Re: [PATCH] mt76: mt7921: continue to probe driver when fw already
+ downloaded
+From:   Deren Wu <deren.wu@mediatek.com>
+To:     Aaron Ma <aaron.ma@canonical.com>, <nbd@nbd.name>,
+        <lorenzo.bianconi83@gmail.com>, <ryder.lee@mediatek.com>,
+        <kvalo@codeaurora.org>, <davem@davemloft.net>, <kuba@kernel.org>,
+        <matthias.bgg@gmail.com>, <sean.wang@mediatek.com>,
+        <Soul.Huang@mediatek.com>, <linux-wireless@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Date:   Thu, 8 Jul 2021 23:08:30 +0800
+In-Reply-To: <20210708131710.695595-1-aaron.ma@canonical.com>
+References: <20210708131710.695595-1-aaron.ma@canonical.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 8, 2021 at 4:17 PM Adrian Hunter <adrian.hunter@intel.com> wrote:
->
-> On 8/07/21 3:31 pm, Rafael J. Wysocki wrote:
-> > On Wed, Jul 7, 2021 at 7:49 PM Adrian Hunter <adrian.hunter@intel.com> wrote:
-> >>
-> >> On 7/07/21 8:39 pm, Greg Kroah-Hartman wrote:
-> >>> On Wed, Jul 07, 2021 at 08:29:48PM +0300, Adrian Hunter wrote:
-> >>>> If a LUN fails to probe (e.g. absent BOOT WLUN), the device will not have
-> >>>> been registered but can still have a device link holding a reference to the
-> >>>> device. The unwanted device link will prevent runtime suspend indefinitely,
-> >>>> and cause some warnings if the supplier is ever deleted (e.g. by unbinding
-> >>>> the UFS host controller). Fix by explicitly deleting the device link when
-> >>>> SCSI destroys the SCSI device.
-> >>>>
-> >>>> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-> >>>> ---
-> >>>>  drivers/scsi/ufs/ufshcd.c | 7 +++++++
-> >>>>  1 file changed, 7 insertions(+)
-> >>>>
-> >>>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> >>>> index 708b3b62fc4d..483aa74fe2c8 100644
-> >>>> --- a/drivers/scsi/ufs/ufshcd.c
-> >>>> +++ b/drivers/scsi/ufs/ufshcd.c
-> >>>> @@ -5029,6 +5029,13 @@ static void ufshcd_slave_destroy(struct scsi_device *sdev)
-> >>>>              spin_lock_irqsave(hba->host->host_lock, flags);
-> >>>>              hba->sdev_ufs_device = NULL;
-> >>>>              spin_unlock_irqrestore(hba->host->host_lock, flags);
-> >>>> +    } else {
-> >>>> +            /*
-> >>>> +             * If a LUN fails to probe (e.g. absent BOOT WLUN), the device
-> >>>> +             * will not have been registered but can still have a device
-> >>>> +             * link holding a reference to the device.
-> >>>> +             */
-> >>>> +            device_links_scrap(&sdev->sdev_gendev);
-> >>>
-> >>> What created that link?  And why did it do that before probe happened
-> >>> successfully?
-> >>
-> >> The same driver created the link.
-> >>
-> >> The documentation seems to say it is allowed to, if it is the consumer.
-> >> From Documentation/driver-api/device_link.rst
-> >>
-> >>   Usage
-> >>   =====
-> >>
-> >>   The earliest point in time when device links can be added is after
-> >>   :c:func:`device_add()` has been called for the supplier and
-> >>   :c:func:`device_initialize()` has been called for the consumer.
-> >
-> > Yes, this is allowed, but if you've added device links to a device
-> > object that is not going to be registered after all, you are
-> > responsible for doing the cleanup.
-> >
-> > Why can't you call device_link_del() directly on those links?
-> >
-> > Or device_link_remove() if you don't want to deal with link pointers?
-> >
->
-> Those only work for DL_FLAG_STATELESS device links, but we use only
-> DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE flags.
+SGkgQWFyb24sDQoNClRoYW5rcyBmb3IgdGhpcyBwYXRjaC4gV2UgdmVyaWZpZWQgdGhpcyBpcyBn
+b29kIGhlcmUuDQoNCkNvdWxkIHlvdSBwbGVhc2UgYWRkIGZpeCB0YWcgYXMgd2VsbD8gSXQncyBi
+ZXR0ZXIgdG8gYmFja3BvcnQgdGhpcw0KcGF0Y2guDQoNCkZpeGVzOiAxYzA5OWFiNDQ3MjdjICgi
+bXQ3NjogbXQ3OTIxOiBhZGQgTUNVIHN1cHBvcnQiKQ0KDQoNClRoYW5rcywNCkRlcmVuDQoNCg0K
+T24gVGh1LCAyMDIxLTA3LTA4IGF0IDIxOjE3ICswODAwLCBBYXJvbiBNYSB3cm90ZToNCj4gV2hl
+biByZWJvb3Qgc3lzdGVtLCBubyBwb3dlciBjeWNsZXMsIGZpcm13YXJlIGlzIGFscmVhZHkgZG93
+bmxvYWRlZCwNCj4gcmV0dXJuIC1FSU8gd2lsbCBicmVhayBkcml2ZXIgYXMgZXJyb3I6DQo+IG10
+NzkyMWU6IHByb2JlIG9mIDAwMDA6MDM6MDAuMCBmYWlsZWQgd2l0aCBlcnJvciAtNQ0KPiANCj4g
+U2tpcCBmaXJtd2FyZSBkb3dubG9hZCBhbmQgY29udGludWUgdG8gcHJvYmUuDQo+IA0KPiBTaWdu
+ZWQtb2ZmLWJ5OiBBYXJvbiBNYSA8YWFyb24ubWFAY2Fub25pY2FsLmNvbT4NCj4gLS0tDQo+ICBk
+cml2ZXJzL25ldC93aXJlbGVzcy9tZWRpYXRlay9tdDc2L210NzkyMS9tY3UuYyB8IDMgKystDQo+
+ICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+IA0KPiBk
+aWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvbWVkaWF0ZWsvbXQ3Ni9tdDc5MjEvbWN1
+LmMNCj4gYi9kcml2ZXJzL25ldC93aXJlbGVzcy9tZWRpYXRlay9tdDc2L210NzkyMS9tY3UuYw0K
+PiBpbmRleCBjMmM0ZGMxOTY4MDIuLmNkNjkwYzY0ZjY1YiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVy
+cy9uZXQvd2lyZWxlc3MvbWVkaWF0ZWsvbXQ3Ni9tdDc5MjEvbWN1LmMNCj4gKysrIGIvZHJpdmVy
+cy9uZXQvd2lyZWxlc3MvbWVkaWF0ZWsvbXQ3Ni9tdDc5MjEvbWN1LmMNCj4gQEAgLTkzMSw3ICs5
+MzEsNyBAQCBzdGF0aWMgaW50IG10NzkyMV9sb2FkX2Zpcm13YXJlKHN0cnVjdCBtdDc5MjFfZGV2
+DQo+ICpkZXYpDQo+ICAJcmV0ID0gbXQ3Nl9nZXRfZmllbGQoZGV2LCBNVF9DT05OX09OX01JU0Ms
+DQo+IE1UX1RPUF9NSVNDMl9GV19OOV9SRFkpOw0KPiAgCWlmIChyZXQpIHsNCj4gIAkJZGV2X2Ri
+ZyhkZXYtPm10NzYuZGV2LCAiRmlybXdhcmUgaXMgYWxyZWFkeQ0KPiBkb3dubG9hZFxuIik7DQo+
+IC0JCXJldHVybiAtRUlPOw0KPiArCQlnb3RvIGZ3X2xvYWRlZDsNCj4gIAl9DQo+ICANCj4gIAly
+ZXQgPSBtdDc5MjFfbG9hZF9wYXRjaChkZXYpOw0KPiBAQCAtOTQ5LDYgKzk0OSw3IEBAIHN0YXRp
+YyBpbnQgbXQ3OTIxX2xvYWRfZmlybXdhcmUoc3RydWN0IG10NzkyMV9kZXYNCj4gKmRldikNCj4g
+IAkJcmV0dXJuIC1FSU87DQo+ICAJfQ0KPiAgDQo+ICtmd19sb2FkZWQ6DQo+ICAJbXQ3Nl9xdWV1
+ZV90eF9jbGVhbnVwKGRldiwgZGV2LT5tdDc2LnFfbWN1W01UX01DVVFfRldETF0sDQo+IGZhbHNl
+KTsNCj4gIA0KPiAgI2lmZGVmIENPTkZJR19QTQ0K
 
-So I'd probably modify device_link_remove() to check if the consumer
-device has been registered and run __device_link_del() directly
-instead of device_link_put_kref() if it hasn't.
-
-Or add an argument to it to force the removal.
