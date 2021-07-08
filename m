@@ -2,108 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F7C3BF6F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 10:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1DF53BF6FD
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 10:43:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231235AbhGHIoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 04:44:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231144AbhGHIop (ORCPT
+        id S231274AbhGHIpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 04:45:22 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:50156 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230442AbhGHIpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 04:44:45 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 724DEC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 01:42:03 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id cy23so2379287edb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 01:42:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=os/T813PZdDCU5XBX3OMjqspJfYpz1AMtwUEcpldmCU=;
-        b=d1gplhl6eBDBBtCFbhQ87Fu5JJvAdcL0ZtOA/xnA/P44IGqhqYrHr1miuolseUIeKp
-         +nXMZmw/jcyqylbOHuZYz69yGM73v98UgtBqFLdx9Z+vn1BuZcmPzygE0Y6oSKT3aYhC
-         d8H9ODr61uI52Fq0RVqmLCyGbgj++7SYf3kUJmjySftyXAt5VyLvzrT/uNuHYXb/X4RR
-         j+0NZCKmNnX6ANd9xMH4YkB8H0fvszFuqtT6CVCJsTbW2cHWqw9icRr1X8olGfaBtT7o
-         aPZf3/Pd9CQfrP+T01RN5PPHoFhlJkWTKE8LCPTz8/wQc14J1Ygx7YzehJsREx9HFjBn
-         GYBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=os/T813PZdDCU5XBX3OMjqspJfYpz1AMtwUEcpldmCU=;
-        b=OB4wYXBn9aAub3ovpPeMt5nkupkRFuf7WDDrHUuxtfcA01bdXF7EsLq8QA5bu5Ico0
-         vyCBAlc6KK32tK4LzANjyE+8Pm5YeVWu3+m2g6wEdDeLvttWSubxR9oVBBVGd0n9zCg9
-         QOBpnzjf3lb8/hO8KN404CgEPg+F6CaQwkjcmM8b2TqKAx1b7kSrDOBTWgTu56yvEXRx
-         6LFisGhT0BLAu3lQWDHo/9YNsO0C4lM4HPR4u/qSOKto56LKLQFC6rNv2tXNHouiAyPp
-         T+xgf84ZWBwJmemDcBKz7QMVjsBOW6/x49+qq/5bgWXbTlxul6AyPKBTiWh1YPZTHUYM
-         8rEQ==
-X-Gm-Message-State: AOAM5338OXhyRYFb6ZF3GkjCsG4o/5aKwhdQqFDqeuMnDPoYpZk4jJe1
-        M3mFsu4BWtslTjpg+T0NRsAZkWuY8oYqQmWySTM=
-X-Google-Smtp-Source: ABdhPJx83Wr9R9gdGNSGocTRyRtkWBZAGSCWqjaompP2jLu6wFyiWdSCGUG3FLeBDgXgrd8lyLyM5pBRHsvsxEJrN3U=
-X-Received: by 2002:a05:6402:100e:: with SMTP id c14mr35744812edu.51.1625733722153;
- Thu, 08 Jul 2021 01:42:02 -0700 (PDT)
+        Thu, 8 Jul 2021 04:45:17 -0400
+Date:   Thu, 08 Jul 2021 08:42:33 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1625733754;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1tiXnXA2geNuqo5yihtFM0roznMTk9XKuXE3x9JbFXw=;
+        b=c3Z7hv2UWo2bHRDJtPivG7xswgWTRyAU+7nBE+XfJGeCjrSHPmEDz/hej5s/Ks7b9wwp7D
+        1Hnilkq697lrbTFnwc8jKurIjnPilYJp9YvCKB1jLrFm57Q3GHLXZuBSJmk96b+wzK8QCq
+        JZGwE5rYUXINss4cqz4iC3id1yX1CCAxEbySX81NnNp5K5FXz4mbWYfGpPObCqVIvC7GHk
+        ddbzS5y+/Tr8rf+r4a6mjqF/mVDOo79pxj0fH7DJgWGeG0FE/kDmwjFiZyGFnnGksvwIEe
+        ZY79AmUsx9aCgs6181XVnb35ptrdl+leZlvUH4gAbBX+bNQ+WTTY3NekZtP7bQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1625733754;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1tiXnXA2geNuqo5yihtFM0roznMTk9XKuXE3x9JbFXw=;
+        b=ksoUo3Y67VgQeht09b1G9Bj6VHrrzHCIERi7P5G8R84GF3n6HOejs8sofv/dHBrnlSKO3h
+        PoJUAPYEsA2l+3BQ==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] Documentation/atomic_t: Document cmpxchg() vs
+ try_cmpxchg()
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <YOMgPeMOmmiK3tXO@hirez.programming.kicks-ass.net>
+References: <YOMgPeMOmmiK3tXO@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <YJ4yBmIV6RJCo42U@google.com> <s5hk0o18tio.wl-tiwai@suse.de>
- <YJ5cHdv6MVmAKD3b@google.com> <YKDYQfDf7GiMfGCN@google.com>
- <YKDYbaprE3K2QpCe@google.com> <s5hbl9b6mah.wl-tiwai@suse.de>
- <CAMo8BfKKMQkcsbOQaeEjq_FsJhdK=fn598dvh7YOcZshUSOH=g@mail.gmail.com>
- <s5ho8be8v3z.wl-tiwai@suse.de> <CAMo8Bf+FF8Ofq=FwoZZXp9vKiMaUZNAm+W=OJmu2j2XN6kLb-Q@mail.gmail.com>
- <s5hk0m26lfu.wl-tiwai@suse.de> <CAMo8BfLj+VLUbfUmHUSHOfc3PwbWd2w_xnaTZa9HyrcmvJCAkQ@mail.gmail.com>
- <s5hfswp6zx8.wl-tiwai@suse.de>
-In-Reply-To: <s5hfswp6zx8.wl-tiwai@suse.de>
-From:   Max Filippov <jcmvbkbc@gmail.com>
-Date:   Thu, 8 Jul 2021 01:41:50 -0700
-Message-ID: <CAMo8Bf+bGujLN7H5yBqy-AkPCN7LgfmGSiWEGdjW6ZWeFoXs9A@mail.gmail.com>
-Subject: Re: ALSA: intel8x0: div by zero in snd_intel8x0_update()
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        alsa-devel@alsa-project.org, Leon Romanovsky <leon@kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <162573375370.395.17829380230599129573.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 8, 2021 at 12:13 AM Takashi Iwai <tiwai@suse.de> wrote:
-> On Wed, 07 Jul 2021 22:33:22 +0200,
-> Max Filippov wrote:
-> >
-> > On Wed, Jul 7, 2021 at 11:14 AM Takashi Iwai <tiwai@suse.de> wrote:
-> > > On Wed, 07 Jul 2021 19:50:07 +0200, Max Filippov wrote:
-> > > > It didn't change anything in my case. My further observation is that
-> > > > the snd_intel8x0_update is called before the ichdev->prepared
-> > > > is set to one and as a result IRQ is apparently never cleared.
-> > >
-> > > So it's broken in anyway no matter whether
-> > > intel8x0_measure_ac97_clock() is called or not, right?
-> >
-> > The change that you suggested didn't eliminate the call to
-> > intel8x0_measure_ac97_clock, it's still called and an interrupt
-> > flood happens at the same place.
->
-> Ah I see the point.  Then the fix would be a oneliner like below.
->
->
-> Takashi
->
-> --- a/sound/pci/intel8x0.c
-> +++ b/sound/pci/intel8x0.c
-> @@ -694,7 +694,7 @@ static inline void snd_intel8x0_update(struct intel8x0 *chip, struct ichdev *ich
->         int status, civ, i, step;
->         int ack = 0;
->
-> -       if (!ichdev->prepared || ichdev->suspended)
-> +       if (!(ichdev->prepared || ichdev->in_measurement) || ichdev->suspended)
+The following commit has been merged into the locking/core branch of tip:
 
-There's no ichdev::in_measurement, but if replaced with
-chip->in_measurement it indeed fixes my issue.
-So with this change:
-Tested-by: Max Filippov <jcmvbkbc@gmail.com>
+Commit-ID:     d1bbfd0c7c9f985e57795a7e0cefc209ebf689c0
+Gitweb:        https://git.kernel.org/tip/d1bbfd0c7c9f985e57795a7e0cefc209ebf689c0
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Mon, 05 Jul 2021 17:00:24 +02:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Wed, 07 Jul 2021 13:53:25 +02:00
 
--- 
-Thanks.
--- Max
+Documentation/atomic_t: Document cmpxchg() vs try_cmpxchg()
+
+There seems to be a significant amount of confusion around the new
+try_cmpxchg(), despite this being more like the C11
+atomic_compare_exchange_*() family. Add a few words of clarification
+on how cmpxchg() and try_cmpxchg() relate to one another.
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Will Deacon <will@kernel.org>
+Link: https://lkml.kernel.org/r/YOMgPeMOmmiK3tXO@hirez.programming.kicks-ass.net
+---
+ Documentation/atomic_t.txt | 41 +++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 41 insertions(+)
+
+diff --git a/Documentation/atomic_t.txt b/Documentation/atomic_t.txt
+index 0f1fded..a9c1e2b 100644
+--- a/Documentation/atomic_t.txt
++++ b/Documentation/atomic_t.txt
+@@ -271,3 +271,44 @@ WRITE_ONCE.  Thus:
+ 			SC *y, t;
+ 
+ is allowed.
++
++
++CMPXCHG vs TRY_CMPXCHG
++----------------------
++
++  int atomic_cmpxchg(atomic_t *ptr, int old, int new);
++  bool atomic_try_cmpxchg(atomic_t *ptr, int *oldp, int new);
++
++Both provide the same functionality, but try_cmpxchg() can lead to more
++compact code. The functions relate like:
++
++  bool atomic_try_cmpxchg(atomic_t *ptr, int *oldp, int new)
++  {
++    int ret, old = *oldp;
++    ret = atomic_cmpxchg(ptr, old, new);
++    if (ret != old)
++      *oldp = ret;
++    return ret == old;
++  }
++
++and:
++
++  int atomic_cmpxchg(atomic_t *ptr, int old, int new)
++  {
++    (void)atomic_try_cmpxchg(ptr, &old, new);
++    return old;
++  }
++
++Usage:
++
++  old = atomic_read(&v);			old = atomic_read(&v);
++  for (;;) {					do {
++    new = func(old);				  new = func(old);
++    tmp = atomic_cmpxchg(&v, old, new);		} while (!atomic_try_cmpxchg(&v, &old, new));
++    if (tmp == old)
++      break;
++    old = tmp;
++  }
++
++NB. try_cmpxchg() also generates better code on some platforms (notably x86)
++where the function more closely matches the hardware instruction.
