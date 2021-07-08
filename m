@@ -2,113 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FEB13C1422
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 15:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 925BD3C1427
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 15:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231737AbhGHNWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 09:22:22 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:62224 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230254AbhGHNWW (ORCPT
+        id S231754AbhGHNXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 09:23:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229901AbhGHNXk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 09:22:22 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 168D3Rc4089316;
-        Thu, 8 Jul 2021 09:19:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=a6ht9fWcftbDkY/phtJSvy+Xk8N90i08AhnE9h0GppI=;
- b=d7l5jf2+soU8x5cVsHPm7dAMvaArXX6pc+8EcXWymu1wXxT7jes347l48KQSjs7Xbj7p
- T4ctt8xuP9J1Ur625X6oeBR7wQXTAzdd9vvxiqac1OjJw+WpwyxnZl/D2rrVRCpEJwnv
- QefvH3J4NQBVCK2oH5NosWesbrsTGvi7ultTLyMWig5VNFiG5dxc2g5qzg0mJ+Ckbn7v
- ST+cSXEwQpZmEiF+lLlkXK6THqYqoztLjTqXU7hImAeWE6ll99KxRj/YP9etf+bafCil
- 2kOm3FYvMhyaqWiFvHv817dL/NjLq9oPq0/XIODGAo3Ga7FHJT2amm0x2EuMdSEDKh1K ug== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39nvwktgb4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Jul 2021 09:19:33 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 168D4LnT096113;
-        Thu, 8 Jul 2021 09:19:33 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39nvwktg9r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Jul 2021 09:19:32 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 168DI163032626;
-        Thu, 8 Jul 2021 13:19:30 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06ams.nl.ibm.com with ESMTP id 39jf5ha7mt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Jul 2021 13:19:30 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 168DJR3i32571902
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 8 Jul 2021 13:19:27 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5B78AA405C;
-        Thu,  8 Jul 2021 13:19:27 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id ED4E5A4064;
-        Thu,  8 Jul 2021 13:19:26 +0000 (GMT)
-Received: from localhost (unknown [9.145.63.161])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu,  8 Jul 2021 13:19:26 +0000 (GMT)
-Date:   Thu, 8 Jul 2021 15:19:25 +0200
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] livepatch: Speed up transition retries
-Message-ID: <your-ad-here.call-01625750365-ext-6037@work.hours>
-References: <patch.git-3127eb42c636.your-ad-here.call-01625661963-ext-4010@work.hours>
- <YObU7HQ1vUAQzME3@alley>
+        Thu, 8 Jul 2021 09:23:40 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF6AC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 06:20:57 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id q18so15507766lfc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 06:20:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=phystech-edu.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=KE8NOJiJ0V+TtARi6NSHG/thecWx9xet0pqt8oRBjLs=;
+        b=TktgSi9h1vOl9BnxmPyh+CZu0cJ5B9oe+agvxvU4Fq8zgoBfhYhuuP+zHnNnwKYmMx
+         03rQceYgdIJKZBKtnZoGcGvpvpoGm20uXu0io0djHcgZr5Pr5BaOyv4oXv6Ya9TorfHC
+         ohIPjwXYVd2vDd8SxXQFnFJ+lugFSxwupif6IiDSarP5ECB7uRr941UjLX8IDjqSCS14
+         +f2ZTePeJRVYNSCFp/F1xnsO7P9yhrd1m3Zsetyu316Gv4JrdcSSpriryQ7s7QGogojE
+         vxdv5Xp7Vs7MdPGNl8R3L9I0X/lN2XACe8jIYU5DNSRFjyN+UxtsZLwWF/tzCOlz/kY0
+         3KYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=KE8NOJiJ0V+TtARi6NSHG/thecWx9xet0pqt8oRBjLs=;
+        b=f269CJPWLdvdQKnZHCnJlj+aJ4nt1PXAfILj4Dm2qcX4qCbBLjW3guXLUGrIDR5efw
+         si86ueZVyNY/f5WpvUnR1uhdc29a80QsKjdQDqMC5VrelJ8ksHZ3DdnQYdN51W+I+8p3
+         Yb+03S3wikQCE0wugvi91AcrpuYdq5vRJ/O4f+cm7vxpV3MjF68gx9tASGvjXQ8Gblyx
+         izx/ogJSEjDS0zxbnbzYuE1KsP8Hx1QlVNnYblOMN0DafbRo7V4k9+v7DVUm3nNFaaNw
+         XGLMn54pUgVCubMH1wxf8QWtIlkQL4bp0rE7M4jLkHiwoNaB/VU+vHgO7uH5iowKlGp7
+         YWew==
+X-Gm-Message-State: AOAM532lkLOPN5kMkiVptfowf1GlqTZsVj/UKkZvdRuiMknnom5iEoWA
+        LV6o/nSAfk0KpwTKNLdVojShrQ==
+X-Google-Smtp-Source: ABdhPJy/KBaddQl0NdAnrXytzOMs65zvpx8CPI3qr2KR+DTHRjxfTu9ToD3HyKMytUcBg9uNx85Xyw==
+X-Received: by 2002:ac2:548a:: with SMTP id t10mr9720309lfk.247.1625750455529;
+        Thu, 08 Jul 2021 06:20:55 -0700 (PDT)
+Received: from 192.168.1.3 ([2a00:1370:810e:abfe:9c62:44e3:b0ab:76fd])
+        by smtp.gmail.com with ESMTPSA id n6sm197799lfi.2.2021.07.08.06.20.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jul 2021 06:20:55 -0700 (PDT)
+Date:   Thu, 8 Jul 2021 16:20:51 +0300
+From:   Viktor Prutyanov <viktor.prutyanov@phystech.edu>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     sean@mess.org, mchehab@kernel.org, robh+dt@kernel.org,
+        khilman@baylibre.com, Neil Armstrong <narmstrong@baylibre.com>,
+        jbrunet@baylibre.com, linux-media <linux-media@vger.kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, rockosov@gmail.com
+Subject: Re: [PATCH v2 1/2] media: rc: meson-irblaster: document device tree
+ bindings
+Message-ID: <20210708162051.13953369@192.168.1.3>
+In-Reply-To: <CAFBinCDgQHA1vmunNBdER0BfiKt8XYZ+-VBs3c21+S3bYP7GZQ@mail.gmail.com>
+References: <20210707141323.20757-1-viktor.prutyanov@phystech.edu>
+        <20210707141323.20757-2-viktor.prutyanov@phystech.edu>
+        <CAFBinCDgQHA1vmunNBdER0BfiKt8XYZ+-VBs3c21+S3bYP7GZQ@mail.gmail.com>
+Organization: MIPT
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YObU7HQ1vUAQzME3@alley>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: lxzj2KDpD46u5wge5zXY5J3QylFjfmNy
-X-Proofpoint-ORIG-GUID: NCshRIEWHdJVf9H4EktqHfA6qhl1xzke
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-08_06:2021-07-08,2021-07-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- priorityscore=1501 impostorscore=0 lowpriorityscore=0 adultscore=0
- mlxscore=0 suspectscore=0 phishscore=0 clxscore=1015 spamscore=0
- mlxlogscore=999 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2107080073
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 08, 2021 at 12:35:24PM +0200, Petr Mladek wrote:
-> On Wed 2021-07-07 14:49:41, Vasily Gorbik wrote:
-> > That's just a racy hack for now for demonstration purposes.
-> > 
-> > For s390 LPAR with 128 cpu this reduces livepatch kselftest run time
-> > from
-> > real    1m11.837s
-> > user    0m0.603s
-> > sys     0m10.940s
-> > 
-> > to
-> > real    0m14.550s
-> > user    0m0.420s
-> > sys     0m5.779s
-> > 
-> > Would smth like that be useful for production use cases?
-> > Any ideas how to approach that more gracefully?
-> 
-> Honestly, I do not see a real life use case for this, except maybe
-> speeding up a test suite.
-> 
-> The livepatch transition is more about reliability than about speed.
-> In the real life, a livepatch will be applied only once in a while.
+Hi Martin,
 
-That's what I thought. Thanks for looking. Dropping this one.
+On Thu, 8 Jul 2021 15:09:30 +0200
+Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
+
+> Hi Viktor,
+> 
+> On Wed, Jul 7, 2021 at 4:13 PM Viktor Prutyanov
+> <viktor.prutyanov@phystech.edu> wrote:
+> >
+> > This patch adds binding documentation for the IR transmitter
+> > available in Amlogic Meson SoCs.
+> >
+> > Signed-off-by: Viktor Prutyanov <viktor.prutyanov@phystech.edu>
+> > ---
+> >  changes in v2:
+> >    - compatible = "amlogic,meson-g12a-irblaster" added
+> >    - clocks, clock-names and mod-clock updated  
+> thanks for updating this patch with my feedback!
+> 
+> [...]
+> > +  mod-clock:
+> > +    maxItems: 1  
+> in the change-log for this patch you mentioned that mod-clock is
+> updated as well I think that mod-clock (as a whole property) should
+> only be added if it's an external input to the IR blaster IP block
+
+There are 2 clocks connected to blaster module, and mod-clock is just a
+selector between them. Meson IR blaster driver should choose one of the
+modulation clocks. If not through a property, then how to do it? 
+
+> 
+> 
+> Best regards,
+> Martin
+
+Best regards,
+Viktor
