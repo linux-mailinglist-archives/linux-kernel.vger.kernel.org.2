@@ -2,79 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 482E93C182E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 19:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 165C53C1832
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 19:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229836AbhGHRfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 13:35:51 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:48793 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbhGHRfv (ORCPT
+        id S230004AbhGHRfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 13:35:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229592AbhGHRfy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 13:35:51 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1625765589; h=Content-Transfer-Encoding: Mime-Version:
- Content-Type: References: In-Reply-To: Date: Cc: To: From: Subject:
- Message-ID: Sender; bh=gJdLAU5Uhao+hus0LMO748o8+xshJ3r9MDcn1bVd+O8=; b=F3oJlw+iDt9gz98Jm/+bz0hZ5hkTtFJ+Qm63J79LU/cvgSWF1EfjaLNvl877X0f4lphl+M3T
- d8H7kG8+KW25OaHkxL+R9mh09mPyH+2qbeN5sHQoQ7WmBuMqLrOGBnG8O0i4rAfTKcDUfGa+
- p81dcRKUvzD8z9fE4l4tvbIGFcI=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 60e736cf638039e997a28ab0 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 08 Jul 2021 17:33:03
- GMT
-Sender: hemantk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0BDADC433D3; Thu,  8 Jul 2021 17:33:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hemantk-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 34B1DC433F1;
-        Thu,  8 Jul 2021 17:33:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 34B1DC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
-Message-ID: <1625765577.10055.24.camel@codeaurora.org>
-Subject: Re: [PATCH] bus: mhi: pci_generic: Simplify code and axe the use of
- a deprecated API
-From:   Hemant Kumar <hemantk@codeaurora.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>, mani@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Date:   Thu, 08 Jul 2021 10:32:57 -0700
-In-Reply-To: <bb3dc436fe142309a2334549db782c5ebb80a2be.1625718497.git.christophe.jaillet@wanadoo.fr>
-References: <bb3dc436fe142309a2334549db782c5ebb80a2be.1625718497.git.christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.18.5.2-0ubuntu3.2 
-Mime-Version: 1.0
+        Thu, 8 Jul 2021 13:35:54 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1911C061574;
+        Thu,  8 Jul 2021 10:33:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=kFgsm0QLBs/EmPxl0wGUNK5go+DtDBkQXPkUTOtc8Sc=; b=y50iv/NcmeUAirCKi7y8eFRcAQ
+        C+Cbm8Ij/OJlszOWYxIdOiG8mSY5MJgsoTKFUS/rtxzV2lpeWDpn2uiZ4N8gH8vnWu7io6zMFBKZY
+        uMkBoBg0cc2TIXIqgjK6zCI25QXc9bK369YSd+iSUs1okoJ+RtBujlJID3icepDeh2N68wMNVZmH4
+        N9mcoLmaGaUFg2ZAkBg37SAxlYq2OBiKxSAWrOTNN3sdcKkpdyHluUv/OeMbBz0xFtVe93hO0xx/8
+        bWVTxqBrLTcH8v+qdRsK77IHp74pGkSJDvrnU94f2wnS4eMZXAqQf3nB8ZatJgyblfIKrrztDxBTs
+        l+Chm2zg==;
+Received: from [2601:1c0:6280:3f0::aefb] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m1Xtf-00HZ7P-LQ; Thu, 08 Jul 2021 17:33:11 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        UNGLinuxDriver@microchip.com, linux-arm-kernel@lists.infradead.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH net-next] net: microchip: sparx5: fix kconfig warning
+Date:   Thu,  8 Jul 2021 10:33:10 -0700
+Message-Id: <20210708173310.7370-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-07-08 at 06:30 +0200, Christophe JAILLET wrote:
-> The wrappers in include/linux/pci-dma-compat.h should go away.
-> 
-> Replace 'pci_set_dma_mask/pci_set_consistent_dma_mask' by an
-> equivalent
-> and less verbose 'dma_set_mask_and_coherent()' call.
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> If needed, see post from Christoph Hellwig on the kernel-janitors ML:
->    https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
-> ---
+PHY_SPARX5_SERDES depends on OF so SPARX5_SWITCH should also depend
+on OF since 'select' does not follow any dependencies.
 
-Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+WARNING: unmet direct dependencies detected for PHY_SPARX5_SERDES
+  Depends on [n]: (ARCH_SPARX5 || COMPILE_TEST [=n]) && OF [=n] && HAS_IOMEM [=y]
+  Selected by [y]:
+  - SPARX5_SWITCH [=y] && NETDEVICES [=y] && ETHERNET [=y] && NET_VENDOR_MICROCHIP [=y] && NET_SWITCHDEV [=y] && HAS_IOMEM [=y]
 
+Fixes: 3cfa11bac9bb ("net: sparx5: add the basic sparx5 driver")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Lars Povlsen <lars.povlsen@microchip.com>
+Cc: Steen Hegelund <Steen.Hegelund@microchip.com>
+Cc: UNGLinuxDriver@microchip.com
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org
+---
+ drivers/net/ethernet/microchip/sparx5/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- linux-next-20210708.orig/drivers/net/ethernet/microchip/sparx5/Kconfig
++++ linux-next-20210708/drivers/net/ethernet/microchip/sparx5/Kconfig
+@@ -2,6 +2,7 @@ config SPARX5_SWITCH
+ 	tristate "Sparx5 switch driver"
+ 	depends on NET_SWITCHDEV
+ 	depends on HAS_IOMEM
++	depends on OF
+ 	select PHYLINK
+ 	select PHY_SPARX5_SERDES
+ 	select RESET_CONTROLLER
