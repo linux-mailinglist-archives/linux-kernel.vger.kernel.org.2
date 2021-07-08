@@ -2,126 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCBB83BF9E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 14:14:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E46F13BF9E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 14:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbhGHMRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 08:17:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24091 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229590AbhGHMRH (ORCPT
+        id S231126AbhGHMRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 08:17:15 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:6446 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229590AbhGHMRL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 08:17:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625746465;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I55zh2XXZG4Wh8FdZlPVvOlalnJqCExFPnbC3bw2voU=;
-        b=gCVKbwkFuXcZSDFBztb01rBSN1REjjsuGxaY81Op7Z1dGYrx8CYJnlqn8LUo+Tz5n7rNtj
-        T6Qhg6yY5w5wJtrPuSRvm5I6i6AhnPg85Dz8vMqYoXdXObPQHwfKwyHRPl8qN5TBXYBcCo
-        SG6qeug/PXMrchqNNhSsjxyEgqH47NI=
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com
- [209.85.166.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-350-WYTZukSNPvaELJ1uTQTZVg-1; Thu, 08 Jul 2021 08:14:24 -0400
-X-MC-Unique: WYTZukSNPvaELJ1uTQTZVg-1
-Received: by mail-il1-f199.google.com with SMTP id f5-20020a92b5050000b02901ff388acf98so3480434ile.2
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 05:14:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=I55zh2XXZG4Wh8FdZlPVvOlalnJqCExFPnbC3bw2voU=;
-        b=JpT2i2VswDHkCZa7zkxYvWKMNAPEyV9m/1hEDOVVxmGhJ5VI7ZGUDo39V9VBHrT3Gq
-         IS/OP/KlQMfkyGtTcjIxxN2Pp5sxXgIm3ANWlQUojtUY4eLuzNFMveOUMRw33LlanKHY
-         21KfJw+kE+thzv4XVYHjeFGZ8A7BKSC6Qb3nb56AKZTcPxz/azZ5pe1J/OqF6wLlB4Zp
-         hHG5Yx0cTJcHhVuyPfyeXdJOlEJQFqTG/CIowZkA/xQiNvPKA5MZPW9wwkGce/FMVn7W
-         3r/ZlUV3wKUdOisOD9AvpQcVpD3xyKj9/RWPkQCGXHSxqJDvWfTfnMrdkOr8mw19T5yv
-         Wdjg==
-X-Gm-Message-State: AOAM533GV369NThh6bSU3Ak5utNHyUKK+30XO0mymgg3axRN2yVUqp9G
-        7GbqhMuyRJPi65ZpKmdmUXfeodjy/SpdR9cnXWoX17xnz3N8onxWPUSgET/KsAfUqayTFQUjOWW
-        /ryo/VGTqsnL3pYoE0UB6i3PJ1rNgBu8PZpuIXpyQ
-X-Received: by 2002:a05:6638:372c:: with SMTP id k44mr26426561jav.94.1625746464043;
-        Thu, 08 Jul 2021 05:14:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy2Ybl/++F5bCkFRwxr1Df16nASMIT1l9l7RKaCM5kiK/gmVXr2wTAan2c6EykGJnA7ffNMJC1G/s1frAEY8uU=
-X-Received: by 2002:a05:6638:372c:: with SMTP id k44mr26426536jav.94.1625746463835;
- Thu, 08 Jul 2021 05:14:23 -0700 (PDT)
+        Thu, 8 Jul 2021 08:17:11 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GLFW62Z6Kz798P;
+        Thu,  8 Jul 2021 20:10:58 +0800 (CST)
+Received: from [10.174.177.209] (10.174.177.209) by
+ dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 8 Jul 2021 20:14:26 +0800
+Subject: Re: [PATCH v2] mm/zsmalloc.c: close race window between
+ zs_pool_dec_isolated() and zs_unregister_migration()
+To:     <akpm@linux-foundation.org>, <minchan@kernel.org>,
+        <ngupta@vflare.org>
+CC:     <senozhatsky@chromium.org>, <henryburns@google.com>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+References: <20210708115117.12359-1-linmiaohe@huawei.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <7a16cf45-eaed-e7ba-bf47-2382b2c542f2@huawei.com>
+Date:   Thu, 8 Jul 2021 20:14:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210707081642.95365-1-ihuguet@redhat.com> <0e6a7c74-96f6-686f-5cf5-cd30e6ca25f8@gmail.com>
- <CACT4oudw=usQQNO0dL=xhJw9TN+9V3o=TsKGvGh7extu+JWCqA@mail.gmail.com> <20210707130140.rgbbhvboozzvfoe3@gmail.com>
-In-Reply-To: <20210707130140.rgbbhvboozzvfoe3@gmail.com>
-From:   =?UTF-8?B?w43DsWlnbyBIdWd1ZXQ=?= <ihuguet@redhat.com>
-Date:   Thu, 8 Jul 2021 14:14:13 +0200
-Message-ID: <CACT4oud6R3tPFpGuiyNM9kjV5kXqzRcg8J_exv-2MaHWLPm-sA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] sfc: revert "reduce the number of requested xdp ev queues"
-To:     =?UTF-8?B?w43DsWlnbyBIdWd1ZXQ=?= <ihuguet@redhat.com>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, ivan@cloudflare.com,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210708115117.12359-1-linmiaohe@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.209]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 7, 2021 at 3:01 PM Martin Habets <habetsm.xilinx@gmail.com> wro=
-te:
-> > Another question I have, thinking about the long term solution: would
-> > it be a problem to use the standard TX queues for XDP_TX/REDIRECT? At
-> > least in the case that we're hitting the resources limits, I think
-> > that they could be enqueued to these queues. I think that just taking
-> > netif_tx_lock would avoid race conditions, or a per-queue lock.
->
-> We considered this but did not want normal traffic to get delayed for
-> XDP traffic. The perceived performance drop on a normal queue would
-> be tricky to diagnose, and the only way to prevent it would be to
-> disable XDP on the interface all together. There is no way to do the
-> latter per interface, and we felt the "solution" of disabling XDP
-> was not a good way forward.
-> Off course our design of this was all done several years ago.
+Sorry for the disturbs! Please ignore this duplicated one...
 
-In my opinion, there is no reason to make that distinction between
-normal traffic and XDP traffic. XDP traffic redirected with XDP_TX or
-XDP_REDIRECT is traffic that the user has chosen to redirect that way,
-but pushing the work down in the stack. Without XDP, this traffic had
-gone up the stack to userspace, or at least to the firewall, and then
-redirected, passed again to the network stack and added to normal TX
-queues.
-
-If the user wants to prevent XDP from mixing with normal traffic, just
-not attaching an XDP program to the interface, or not using
-XDP_TX/REDIRECT in it would be enough. Probably I don't understand
-what you want to say here.
-
-Anyway, if you think that keeping XDP TX queues separated is the way
-to go, it's OK, but my proposal is to share the normal TX queues at
-least in the cases where dedicated queues cannot be allocated. As you
-say, the performance drop would be tricky to measure, if there's any,
-but in any case, even separating the queues, they're competing for
-resources of CPU, PCI bandwidth, network bandwidth...
-
-The fact is that the situation right now is this one:
-- Many times (or almost always with modern servers' processors)
-XDP_TX/REDIRECT doesn't work at all
-- The only workaround is reducing the number of normal channels to let
-free resources for XDP, but this is a much higher performance drop for
-normal traffic than sharing queues with XDP, IMHO.
-
-Increasing the maximum number of channels and queues, or even making
-them virtually unlimited, would be very good, I think, because people
-who knows how to configure the hardware would take advantage of it,
-but there will always be situations of getting short of resources:
-- Who knows how many cores we will be using 5 forward from now?
-- VFs normally have less resources available: 8 MSI-X vectors by default
-
-With some time, I can try to prepare some patches with these changes,
-if you agree.
-
-Regards
---=20
-=C3=8D=C3=B1igo Huguet
+On 2021/7/8 19:51, Miaohe Lin wrote:
+> There has one possible race window between zs_pool_dec_isolated() and
+> zs_unregister_migration() because wait_for_isolated_drain() checks the
+> isolated count without holding class->lock and there is no order inside
+> zs_pool_dec_isolated(). Thus the below race window could be possible:
+> 
+> zs_pool_dec_isolated		zs_unregister_migration
+>   check pool->destroying != 0
+> 				  pool->destroying = true;
+> 				  smp_mb();
+> 				  wait_for_isolated_drain()
+> 				    wait for pool->isolated_pages == 0
+>   atomic_long_dec(&pool->isolated_pages);
+>   atomic_long_read(&pool->isolated_pages) == 0
+> 
+> Since we observe the pool->destroying (false) before atomic_long_dec()
+> for pool->isolated_pages, waking pool->migration_wait up is missed.
+> 
+> Fix this by ensure checking pool->destroying is happened after the
+> atomic_long_dec(&pool->isolated_pages).
+> 
+> Fixes: 701d678599d0 ("mm/zsmalloc.c: fix race condition in zs_destroy_pool")
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+> v1->v2:
+>   Fix potential race window rather than simply combine atomic_long_dec
+> and atomic_long_read.
+> 
+> Hi Andrew,
+>   This patch is the version 2 of
+> mm-zsmallocc-combine-two-atomic-ops-in-zs_pool_dec_isolated.patch.
+> Many thanks.
+> ---
+>  mm/zsmalloc.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
+> index 5f3df680f0a2..0fc388a0202d 100644
+> --- a/mm/zsmalloc.c
+> +++ b/mm/zsmalloc.c
+> @@ -1830,10 +1830,11 @@ static inline void zs_pool_dec_isolated(struct zs_pool *pool)
+>  	VM_BUG_ON(atomic_long_read(&pool->isolated_pages) <= 0);
+>  	atomic_long_dec(&pool->isolated_pages);
+>  	/*
+> -	 * There's no possibility of racing, since wait_for_isolated_drain()
+> -	 * checks the isolated count under &class->lock after enqueuing
+> -	 * on migration_wait.
+> +	 * Checking pool->destroying must happen after atomic_long_dec()
+> +	 * for pool->isolated_pages above. Paired with the smp_mb() in
+> +	 * zs_unregister_migration().
+>  	 */
+> +	smp_mb__after_atomic();
+>  	if (atomic_long_read(&pool->isolated_pages) == 0 && pool->destroying)
+>  		wake_up_all(&pool->migration_wait);
+>  }
+> 
 
