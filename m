@@ -2,52 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC6B73BFA1D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 14:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6146D3BFA3F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 14:30:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231544AbhGHMbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 08:31:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47940 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231449AbhGHMbF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 08:31:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66C0661450;
-        Thu,  8 Jul 2021 12:28:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1625747303;
-        bh=rjj/1ngXwpg9hzNLAgSxlfUR07I5G2q+ZBm7VtzPLF0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M0nzAjLeUCzPNfNafKaSb9o5GjwGih3LvftztkTQQE8m6K7qDoMF2kTv9YdrB8/jV
-         +ovaYl8iv5tcBILeNBxyX58rX0HKZrw/W7WmUhkgE9dzcRMhvaEAkKnmku1aMoReNp
-         Fju83XD2+krqU2nZqCSow6wNm290bOmMYSxCOTfw=
-Date:   Thu, 8 Jul 2021 14:28:18 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Wenchao Hao <haowenchao@huawei.com>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linfeilong@huawei.com,
-        Wu Bo <wubo40@huawei.com>,
-        Zhiqiang Liu <liuzhiqiang26@huawei.com>
-Subject: Re: [PATCH] driver core: Make probe_type of driver accessible via
- sysfs
-Message-ID: <YObvYiPxQC7lk3NT@kroah.com>
-References: <20210708122010.262510-1-haowenchao@huawei.com>
+        id S231126AbhGHMdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 08:33:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229659AbhGHMdf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 08:33:35 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10D5CC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 05:30:54 -0700 (PDT)
+Received: from [IPv6:2a02:810a:880:f54:e8eb:1d02:4dd8:a76b] (unknown [IPv6:2a02:810a:880:f54:e8eb:1d02:4dd8:a76b])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dafna)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id AAF981F43B8D;
+        Thu,  8 Jul 2021 13:30:50 +0100 (BST)
+Subject: Re: Aw: Re: BUG: MTK DRM/HDMI broken on 5.13 (mt7623/bpi-r2)
+To:     Frank Wunderlich <frank-w@public-files.de>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Collabora Kernel ML <kernel@collabora.com>
+References: <trinity-cc8f5927-9aaf-43ae-a107-6a6229f1b481-1625565279264@3c-app-gmx-bs60>
+ <25d61873-38ae-5648-faab-03431b74f777@collabora.com>
+ <trinity-e6443313-a436-4e9d-a93c-1bef1cce135d-1625736911475@3c-app-gmx-bap19>
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Message-ID: <df431199-0c65-fb9a-02b4-9f84899f37ee@collabora.com>
+Date:   Thu, 8 Jul 2021 14:30:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210708122010.262510-1-haowenchao@huawei.com>
+In-Reply-To: <trinity-e6443313-a436-4e9d-a93c-1bef1cce135d-1625736911475@3c-app-gmx-bap19>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 08, 2021 at 08:20:10PM +0800, Wenchao Hao wrote:
-> Like drivers_autoprobe of bus, make probe_type of driver
-> accessible via sysfs, so we can get and set a driver's probe_type
-> happily.
+Hi
 
-Why is this needed?  Who will use it?  And where is the
-Documentation/ABI/ file update for this new sysfs file which is required
-for all sysfs files?
+On 08.07.21 11:35, Frank Wunderlich wrote:
+> Hi
+> 
+> just a small update, added debug in the vendor-specific functions for page_flip and vblank and it seems they never get called
+> 
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> @@ -87,21 +87,25 @@ static void mtk_drm_crtc_finish_page_flip(struct mtk_drm_crtc *mtk_crtc)
+>   {
+>          struct drm_crtc *crtc = &mtk_crtc->base;
+>          unsigned long flags;
+> -
+> +printk(KERN_ALERT "DEBUG: Passed %s %d \n",__FUNCTION__,__LINE__);
+>          spin_lock_irqsave(&crtc->dev->event_lock, flags);
+>          drm_crtc_send_vblank_event(crtc, mtk_crtc->event);
+>          drm_crtc_vblank_put(crtc);
+>          mtk_crtc->event = NULL;
+>          spin_unlock_irqrestore(&crtc->dev->event_lock, flags);
+> +printk(KERN_ALERT "DEBUG: Passed %s %d \n",__FUNCTION__,__LINE__);
+>   }
+> 
+>   static void mtk_drm_finish_page_flip(struct mtk_drm_crtc *mtk_crtc)
+>   {
+> +printk(KERN_ALERT "DEBUG: Passed %s %d update:%d,needsvblank:%d\n",__FUNCTION__,__LINE__,mtk_crtc->config_updating,mtk_crtc->pending_needs_vblank);
+>          drm_crtc_handle_vblank(&mtk_crtc->base);
+>          if (!mtk_crtc->config_updating && mtk_crtc->pending_needs_vblank) {
+> +printk(KERN_ALERT "DEBUG: Passed %s %d \n",__FUNCTION__,__LINE__);
+>                  mtk_drm_crtc_finish_page_flip(mtk_crtc);
+>                  mtk_crtc->pending_needs_vblank = false;
+>          }
+> +printk(KERN_ALERT "DEBUG: Passed %s %d \n",__FUNCTION__,__LINE__);
+>   }
+> 
+>   static void mtk_drm_crtc_destroy(struct drm_crtc *crtc)
+> 
+> finish_page_flip is called by mtk_crtc_ddp_irq. this seems to be set in mtk_drm_crtc_enable_vblank with mtk_ddp_comp_enable_vblank. this is called correctly
+> 
+> 113 static inline void mtk_ddp_comp_enable_vblank(struct mtk_ddp_comp *comp,
+> 114                           void (*vblank_cb)(void *),
+> 115                           void *vblank_cb_data)
+> 116 {
+> 117 printk(KERN_ALERT "DEBUG: Passed %s %d \n",__FUNCTION__,__LINE__);
+> 118     if (comp->funcs && comp->funcs->enable_vblank)
+> 119     {
+> 120         comp->funcs->enable_vblank(comp->dev, vblank_cb, vblank_cb_data);
+> 121 printk(KERN_ALERT "DEBUG: Passed %s %d \n",__FUNCTION__,__LINE__);
+> 122     }
+> 123 }
+> 
+> i see both messages, but mtk_crtc_ddp_irq is never called and so the other 2 not.
 
-thanks,
+Yes, In my case the irq isr is also not called after resume which cause the warning
+even though "enable_vblank" do get called. Don't know why is that.
 
-greg k-h
+> 
+> root@bpi-r2:~# dmesg | grep -i DEBUG
+> [    6.433509] DEBUG: Passed mtk_drm_crtc_enable_vblank 510
+> [    6.433530] DEBUG: Passed mtk_ddp_comp_enable_vblank 117
+> [    6.433537] DEBUG: Passed mtk_ddp_comp_enable_vblank 121 <<<
+> 
+> 
+> comp->funcs->enable_vblank should be mtk_drm_crtc_enable_vblank, right?
+
+No, this is a bit confusing , there are also the funcs of the components, see in file mtk_drm_ddp_comp.c
+so for mt7623  it is mtk_ovl_enable_vblank.
+
+Thanks,
+Dafna
+
+> 
+> 641 static const struct drm_crtc_funcs mtk_crtc_funcs = {
+> 642     .set_config     = drm_atomic_helper_set_config,
+> 643     .page_flip      = drm_atomic_helper_page_flip,
+> 644     .destroy        = mtk_drm_crtc_destroy,
+> 645     .reset          = mtk_drm_crtc_reset,
+> 646     .atomic_duplicate_state = mtk_drm_crtc_duplicate_state,
+> 647     .atomic_destroy_state   = mtk_drm_crtc_destroy_state,
+> 648     .enable_vblank      = mtk_drm_crtc_enable_vblank, <<<<<<<
+> 649     .disable_vblank     = mtk_drm_crtc_disable_vblank,
+> 650 };
+> 
+> but it looks like a recursion:
+> mtk_drm_crtc_enable_vblank calls mtk_ddp_comp_enable_vblank => enable_vblank (=mtk_drm_crtc_enable_vblank), but i see the messages not repeating
+> 
+> mtk_drm_crtc_enable_vblank(struct drm_crtc *crtc)
+> 511     mtk_ddp_comp_enable_vblank(comp, mtk_crtc_ddp_irq, &mtk_crtc->base);
+> 
+> 113 static inline void mtk_ddp_comp_enable_vblank(struct mtk_ddp_comp *comp,
+> 114                           void (*vblank_cb)(void *),
+> 115                           void *vblank_cb_data)
+> 116 {
+> 118     if (comp->funcs && comp->funcs->enable_vblank)
+> 120         comp->funcs->enable_vblank(comp->dev, vblank_cb, vblank_cb_data);
+> 
+> but params do not match...comp->funcs->enable_vblank takes 3 arguments but comp->funcs->enable_vblank has only one.something i miss here...
+> 
+> i guess not, but is watchdog somehow involved? i ask because i see this on reboot/poweroff:
+> 
+> "watchdog: watchdog0: watchdog did not stop!"
+> 
+> i see this with my 5.13, 5.12-drm (5.12.0+mtk/core drm-patches) and 5.12.14 too (hdmi is working there), but not 5.12.0!
+> that means something in drm-patches (mtk/core) breaks watchdog. maybe the recursion mentioned above?
+> 
+> regards Frank
+> 
+> 
+>> Gesendet: Donnerstag, 08. Juli 2021 um 09:22 Uhr
+>> Von: "Dafna Hirschfeld" <dafna.hirschfeld@collabora.com>
+> 
+>>
+>> Hi Frank,
+>>
+>>
+>> On 06.07.21 11:54, Frank Wunderlich wrote:
+>>> Hi,
+>>>
+>>> i've noticed that HDMI is broken at least on my board (Bananapi-r2,mt7623) on 5.13.
+>>>
+>>> after some research i noticed that it is working till
+>>>
+>>> commit 2e477391522354e763aa62ee3e281c1ad9e8eb1b
+>>> Author: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+> 
+>>
+>> We also encountered that warning on mt8173 device - Acer Chromebook R13. It happen after resuming from suspend to ram.
+>> We could not find a version that works and we were not able to find the fix of the bug.
+>> It seems like the irq isr is not called after resuming from suspend.
+>> Please share if you have new findings regarding that bug.
+>>
+>> Thanks,
+>> Dafna
+> 
