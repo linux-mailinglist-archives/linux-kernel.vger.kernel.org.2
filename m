@@ -2,74 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55E5C3C14E5
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 16:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 616D73C14E6
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 16:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231790AbhGHOOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 10:14:01 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:60440 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbhGHOOA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 10:14:00 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id DEBC922277;
-        Thu,  8 Jul 2021 14:11:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1625753477; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=1N/reUsLeZKLGDwD3Bs0QRIIYMaSHgj6eG6/MqcnweM=;
-        b=i91DsQb7krT0Mx0l9l2Gp5oZ9tFtUnzffqsqjyeLmkJQGtfKFCMxsTio3D6Rh++LWOSKxa
-        9q5/2opOK6R4QJJAh4vdkHARhUwxfRT9hTzbtphnRQ2jDoxBUJmsu7MPPVcCwQT6swszuj
-        fyw60zr/S7VjuvbT82+Ww6DEOFfmJyo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1625753477;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=1N/reUsLeZKLGDwD3Bs0QRIIYMaSHgj6eG6/MqcnweM=;
-        b=uZPgZ4SO/ByQQdux5ClIRcxgll97WoKY/o1GqyV3hg9unpzwpoOAn9rA9IZ/6pr8eLa25o
-        zkqqcAR6wIqeZVBw==
-Received: from hawking.suse.de (hawking.suse.de [10.160.4.0])
-        by relay2.suse.de (Postfix) with ESMTP id D7D25A3B87;
-        Thu,  8 Jul 2021 14:11:17 +0000 (UTC)
-Received: by hawking.suse.de (Postfix, from userid 17005)
-        id BFC4D446184; Thu,  8 Jul 2021 16:11:17 +0200 (CEST)
-From:   Andreas Schwab <schwab@suse.de>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH] mmc: mmc_spi: add spi:mmc-spi-slot alias
-CC:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Yow:  Has everybody got HALVAH spread all over their ANKLES??...
- Now, it's time to ``HAVE A NAGEELA''!!
-Date:   Thu, 08 Jul 2021 16:11:17 +0200
-Message-ID: <mvm4kd499q2.fsf@suse.de>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S231860AbhGHOOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 10:14:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37290 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229592AbhGHOOi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 10:14:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B248616E8;
+        Thu,  8 Jul 2021 14:11:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625753516;
+        bh=1KfomhuDu3CpCxt02QtH0UfkbSugvdEeaTVo//4mN/k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bYnggQxWY7I+EIuC6fk/4x81z3jDILAu5k/te8z2rsrrLBFYAGTP40WTi7t7BbWg2
+         FzUj7AL0LzIjRd+lro4VjE8K3hvUMnfllVGwIVsWPbYSvyldoAEhilBYiR0y9rZ9di
+         KkFREOBfxsPKwqfoECemNDcjC42ANxqnJXWvlnOxvEZSeIthVPU9RX9ecpxmyNzpLF
+         c8jjohxmVrdmjya8Lfah/m5DlGbj7D9g3mTe4ArWFes1WMdZuDYy+wZtIDoXoUOTVH
+         Cm19kxpxXYAjk952W6LOaEb6VyV4FK5p649DA0MGMCedXJfmpdaA+zMAlMTO02konZ
+         kw8ArFCxLQlUg==
+Date:   Thu, 8 Jul 2021 16:11:51 +0200
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Reiner Huober <reiner.huober@nokia.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Emil Velikov <emil.l.velikov@gmail.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] module: combine constructors in module linker script
+Message-ID: <YOcHp2+4e9S6lLH8@p200300cbcf044300404ca642de146c7c.dip0.t-ipconnect.de>
+References: <1625576575-1008-1-git-send-email-reiner.huober@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <1625576575-1008-1-git-send-email-reiner.huober@nokia.com>
+X-OS:   Linux p200300cbcf044300404ca642de146c7c.dip0.t-ipconnect.de
+ 5.12.10-1-default x86_64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This allows the driver to be auto loaded.
++++ Reiner Huober [06/07/21 15:02 +0200]:
+>The constructor code for modules must be aware of init code inside
+>different sections.
+>
+>Newer GCC compilers write constructors in more than one section,
+>e.g. ".ctors.65435". These must be combined into a single
+>".ctors" section. In the module loader, only the ".ctors" section
+>is searched and the constructors therein are initialized, when
+>CONFIG_CONSTRUCTORS=y is set. Other constructors are ignored.
+>
+>This change combines all ".ctors.*" and the ".ctors" section, if any,
+>in <module>.ko into a single ."ctors" section.
+>
+>For code coverage in GCC, this is necessary to show the
+>code coverage for modules, since code coverage uses such
+>constructors when initializing a module in newer version of GCC.
+>
+>Signed-off-by: Reiner Huober <reiner.huober@nokia.com>
 
-Signed-off-by: Andreas Schwab <schwab@suse.de>
----
- drivers/mmc/host/mmc_spi.c | 1 +
- 1 file changed, 1 insertion(+)
+Thanks, I'll queue this up after the merge window is over.
 
-diff --git a/drivers/mmc/host/mmc_spi.c b/drivers/mmc/host/mmc_spi.c
-index 9776a03a10f5..a5f318b70057 100644
---- a/drivers/mmc/host/mmc_spi.c
-+++ b/drivers/mmc/host/mmc_spi.c
-@@ -1544,3 +1544,4 @@ MODULE_AUTHOR("Mike Lavender, David Brownell, Hans-Peter Nilsson, Jan Nikitenko"
- MODULE_DESCRIPTION("SPI SD/MMC host driver");
- MODULE_LICENSE("GPL");
- MODULE_ALIAS("spi:mmc_spi");
-+MODULE_ALIAS("spi:mmc-spi-slot");
--- 
-2.32.0
-
-
--- 
-Andreas Schwab, SUSE Labs, schwab@suse.de
-GPG Key fingerprint = 0196 BAD8 1CE9 1970 F4BE  1748 E4D4 88E3 0EEA B9D7
-"And now for something completely different."
+Jessica
