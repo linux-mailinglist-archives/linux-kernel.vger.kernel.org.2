@@ -2,115 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A71163BF63D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 09:27:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95B083BF641
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 09:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229966AbhGHH3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 03:29:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbhGHH3j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 03:29:39 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D3EC061574;
-        Thu,  8 Jul 2021 00:26:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vl5MbRdGwmlZh7qhtnufnGU16TVZ9C/OsTo2b3jA4CM=; b=IK5y5r7nAKeB3x4HLrBMKfQ2Dm
-        Zob9xcDtZGLg/wdtxqqXN9bQSGYk4Sbxr2DMEKtbCsTvN6anqUayPDYVyyso6a0ar8GjGVCiBu480
-        0TGlwVrvJimpl0UeiBKkz5CaaJo2LtRmHZXou+vWcTBVY7XDm1PyO9TSRmtPGSFtFxlfhUvuf/2kJ
-        f2PMD134yqCjxSmd0pgM3PjAoj2YOEyIUiyz4+Zts4g76uBREqUggXtbbH5YMnIsrAMJJvALVfNCa
-        UKk0s/pkMpOtS45zjDnJ+GjRkwzPc7V5d8XQ8To4/eDK5Z5fhK7fGrX7HOOfAjx2Xf4xAEWBnYHw0
-        zsbDMTZQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m1OQV-00DBl7-Es; Thu, 08 Jul 2021 07:26:31 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4A8F630007E;
-        Thu,  8 Jul 2021 09:26:26 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2A8F82D16D2AC; Thu,  8 Jul 2021 09:26:26 +0200 (CEST)
-Date:   Thu, 8 Jul 2021 09:26:26 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Phil Auld <pauld@redhat.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] sched: Fix nr_uninterruptible race causing increasing
- load average
-Message-ID: <YOaoomJAS2FzXi7I@hirez.programming.kicks-ass.net>
-References: <20210707190457.60521-1-pauld@redhat.com>
+        id S230463AbhGHHai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 03:30:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229819AbhGHHah (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 03:30:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C595261CE6;
+        Thu,  8 Jul 2021 07:27:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625729275;
+        bh=VpwS74sn0t9DOYxCOxJQbb5MWKu8kh0BSYlixiieyUk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=efxDp5fFr+pRqFyPUJlyRllnY/YX928i3PAR9jJVZvwpUsMMqfiIChkMJ2mumhxSl
+         LQBSOsbVJCmyZcfdEjcWxPc61DD/2z4D9wlkiuOC47eJAVO+1VK3zUa4bXj3uVpLJm
+         OQFGodQOkdscZ3BUdvn3kI2S32S9EHXrBMUe1J01EqVYD/7tCkt1pELIJvFtHpw65+
+         PRzklL0x4vZQSJ5N+qWZPjXU3bgivEgK6MhyjZjvkFnZJBWAqLgP+V2BjlOxPUkcE1
+         fFMKfvsn8p56P5F+EjFs8Vd3Mq+gj5P0sdK4sIb9D8sdqNgPK35jzckM/rb4ZY6ofs
+         Uxj1HuNE/qMVg==
+Received: by mail-wr1-f43.google.com with SMTP id f17so6196004wrt.6;
+        Thu, 08 Jul 2021 00:27:55 -0700 (PDT)
+X-Gm-Message-State: AOAM5333JowZT2lpNZTdTfG5KfMnLBKP+BCVkWDvrnjFaJRuRAxyXKyI
+        c3OOcs7dS3Pav/CmhPi0efs5gSJJzJpI2EirUyE=
+X-Google-Smtp-Source: ABdhPJwOJUc8WOoAvivZvzplZIoiv8OZEvFjB98beVIBCV5NJIJNqWP8yX4b/JR9slr34KeawQwn/Esd98wX5jCjdJY=
+X-Received: by 2002:adf:e650:: with SMTP id b16mr3155943wrn.105.1625729274326;
+ Thu, 08 Jul 2021 00:27:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210707190457.60521-1-pauld@redhat.com>
+References: <20210707224310.1403944-1-ndesaulniers@google.com> <YOaR1ZjToP/kgNsC@infradead.org>
+In-Reply-To: <YOaR1ZjToP/kgNsC@infradead.org>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 8 Jul 2021 09:27:38 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1ctLcHuLZfBJ7wXHRmidpQZ4EZdML1nqPJVGYVTgHmaw@mail.gmail.com>
+Message-ID: <CAK8P3a1ctLcHuLZfBJ7wXHRmidpQZ4EZdML1nqPJVGYVTgHmaw@mail.gmail.com>
+Subject: Re: [PATCH 0/2] infer CROSS_COMPILE from ARCH for LLVM=1 LLVM_IAS=1
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 03:04:57PM -0400, Phil Auld wrote:
-> On systems with weaker memory ordering (e.g. power) commit dbfb089d360b
-> ("sched: Fix loadavg accounting race") causes increasing values of load
-> average (via rq->calc_load_active and calc_load_tasks) due to the wakeup
-> CPU not always seeing the write to task->sched_contributes_to_load in
-> __schedule(). Missing that we fail to decrement nr_uninterruptible when
-> waking up a task which incremented nr_uninterruptible when it slept.
-> 
-> The rq->lock serialization is insufficient across different rq->locks.
-> 
-> Add smp_wmb() to schedule and smp_rmb() before the read in
-> ttwu_do_activate().
+On Thu, Jul 8, 2021 at 7:49 AM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Wed, Jul 07, 2021 at 03:43:08PM -0700, Nick Desaulniers wrote:
+> > We get constant feedback that the command line invocation of make is too
+> > long. CROSS_COMPILE is helpful when a toolchain has a prefix of the
+> > target triple, or is an absolute path outside of $PATH, but it's mostly
+> > redundant for a given ARCH.
+> >
+> > Instead, let's infer it from ARCH, and move some flag handling into a
+> > new file included from the top level Makefile.
+>
+> Why only for LLVM?  I really hate the mess we currently have with
+> ARCH and CROSS_COMPILE.  Being able to set both in .config (and maybe
+> even inferring CROSS_COMPILE where possible) would make my life so
+> much easier.
 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 4ca80df205ce..ced7074716eb 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -2992,6 +2992,8 @@ ttwu_do_activate(struct rq *rq, struct task_struct *p, int wake_flags,
->  
->  	lockdep_assert_held(&rq->lock);
->  
-> +	/* Pairs with smp_wmb in __schedule() */
-> +	smp_rmb();
->  	if (p->sched_contributes_to_load)
->  		rq->nr_uninterruptible--;
->  
+I agree this would be best, but solving the problem for llvm is
+trivial with a 1:1
+mapping between ARCH= and --target= strings. Doing the same for gcc
+requires enumerating all possible target triples, and possibly deciding between
+different versions, e.g. when your path contains
 
-Is this really needed ?! (this question is a big fat clue the comment is
-insufficient). AFAICT try_to_wake_up() has a LOAD-ACQUIRE on p->on_rq
-and hence the p->sched_contributed_to_load must already happen after.
+/usr/bin/powerpc64-linux-gnu-gcc-5.2.0
+/usr/bin/powerpc64-linux-gnu-gcc -> powerpc64-linux-gnu-gcc-5.2.0
+/usr/local/bin/ppc64le-linux-gcc-9
+~/bin/powerpc/powerpc-linux-unknown-gcc-12.0.20210708.experimental
 
-> @@ -5084,6 +5086,11 @@ static void __sched notrace __schedule(bool preempt)
->  				!(prev_state & TASK_NOLOAD) &&
->  				!(prev->flags & PF_FROZEN);
->  
-> +			/*
-> +			 * Make sure the previous write is ordered before p->on_rq etc so
-> +			 * that it is visible to other cpus in the wakeup path (ttwu_do_activate()).
-> +			 */
-> +			smp_wmb();
->  			if (prev->sched_contributes_to_load)
->  				rq->nr_uninterruptible++;
+all of these should be able to cross-build any powerpc kernel, but
+there is no obvious first choice (highest version, first in path,
+ordered list of target triples, ...). I tried coming up with a heuristic
+to pick a reasonable toolchain, but at some point gave up because
+I failed to express that in a readable bash or Makefile syntax.
 
-That comment is terrible, look at all the other barrier comments around
-there for clues; in effect you're worrying about:
-
-	p->sched_contributes_to_load = X	R1 = p->on_rq
-	WMB					RMB
-	p->on_rq = Y				R2 = p->sched_contributes_to_load
-
-Right?
-
-
-Bah bah bah.. I so detest having to add barriers here for silly
-accounting. Let me think about this a little.
-
-
+        Arnd
