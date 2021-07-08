@@ -2,100 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F35893C1536
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 16:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42B1A3C1542
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 16:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231956AbhGHOe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 10:34:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40575 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229738AbhGHOeZ (ORCPT
+        id S231851AbhGHOj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 10:39:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231779AbhGHOj0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 10:34:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625754703;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mReZdr+kDhUGUhWJ8r6VOESdc8Yx9vE3TvsNv2E5jwY=;
-        b=h3iVUSfBjp4gsHQpYdd3ITootApBJFVhqUq6vV0nYTdVaa12V20xsNPO0AYEIX8ba5WPhw
-        i/vz1CHeuktC9Vn4ov/EpYb5Sl/H/PhGvcWVcp7FWg+L02MkINJeDtCTCtcHW81DAevUoc
-        NhOjYlMg41v3wulI0L2fIBkTlAAuP5g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-197-A5jZ9OlJN0WgollNuj_Mgg-1; Thu, 08 Jul 2021 10:31:40 -0400
-X-MC-Unique: A5jZ9OlJN0WgollNuj_Mgg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2019D1023F6B;
-        Thu,  8 Jul 2021 14:31:32 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (ovpn-115-5.ams2.redhat.com [10.36.115.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0F3B5421F;
-        Thu,  8 Jul 2021 14:31:29 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     libc-alpha@sourceware.org, linux-api@vger.kernel.org,
-        x86@kernel.org, linux-arch@vger.kernel.org,
-        "H.J. Lu" <hjl.tools@gmail.com>, linux-kernel@vger.kernel.org
-Subject: Re: x86 CPU features detection for applications (and AMX)
-References: <87tulo39ms.fsf@oldenburg.str.redhat.com>
-        <e376bcb9-cd79-7665-5859-ae808dd286f1@intel.com>
-        <878s2hz6g3.fsf@oldenburg.str.redhat.com>
-        <b3b104cd-72d9-7f5c-116b-414c6ebf448d@intel.com>
-Date:   Thu, 08 Jul 2021 16:31:28 +0200
-In-Reply-To: <b3b104cd-72d9-7f5c-116b-414c6ebf448d@intel.com> (Dave Hansen's
-        message of "Thu, 8 Jul 2021 07:19:21 -0700")
-Message-ID: <87sg0oswqn.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        Thu, 8 Jul 2021 10:39:26 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55A69C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 07:36:44 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id o17-20020a9d76510000b02903eabfc221a9so6082792otl.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 07:36:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=72Nulo0ReEKh1o09njcEPjT3ZEsb/u/uPS+kUmVy8sU=;
+        b=FWRbODpJvUDW1Hvvw6jBbIxh3B4HQaPFbePSQUSLSnU3oLIOtqDyL5r0r30yICdLR5
+         yPDKdQ08N64edmb3D42lPuwAt1byFqGLzD6Q9oAWRnvo2NBTHJameLigCEbX0UTLUCUf
+         YeA2vARMIdIU5/CZ+Oz55gYoydq3XkuhCgH0U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=72Nulo0ReEKh1o09njcEPjT3ZEsb/u/uPS+kUmVy8sU=;
+        b=HGXSxIpWcJ9pboheFpfkQ0gYfvi7ukhDmM+l4C7d6eBdZJZ0ZiYFkX1ytY1OovQXOk
+         tiqR0zE0Y0RrJd42lbvSPWLIXZYQBOwVh7WgsrEfZvDXn5AAWUYa65P/e3g6RGiArkb9
+         iFBg6cPdycB+0EYK18me/mJIh4P0jRE8qGltO/q9d/9lX0rpLHhB76+IEgN7ij9pfgUa
+         BNxIYbopVd/1dPd9+XnLn+l5dES9RgImi9k0Qvg+56zdBNJefVam0eZAMBRFbXsYD6+n
+         ejYeEasgjoKW69KTDh+roYcYJA+Uw6/ZffBk3ulinu7BSFs6DcYcYZc8ezcMIoxvHEEq
+         +uiQ==
+X-Gm-Message-State: AOAM531wQ+sWR+wGjRMkUuVL308Xd0hV6xA34UqGWafgh+1ASqn15+8b
+        to9JLJBZAQ76NFJ5bJdUevSh5xcSE+FIDA==
+X-Google-Smtp-Source: ABdhPJxxjNxUxY4J4VuocfijMuG6jxbCS8pqypZoPVmMFrNVe1vJkN09EMSImjia+mgvShBbzs0oWA==
+X-Received: by 2002:a9d:7457:: with SMTP id p23mr20664668otk.85.1625755003614;
+        Thu, 08 Jul 2021 07:36:43 -0700 (PDT)
+Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com. [209.85.210.52])
+        by smtp.gmail.com with ESMTPSA id u22sm554233oie.26.2021.07.08.07.36.43
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Jul 2021 07:36:43 -0700 (PDT)
+Received: by mail-ot1-f52.google.com with SMTP id 59-20020a9d0ac10000b0290462f0ab0800so6006409otq.11
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 07:36:43 -0700 (PDT)
+X-Received: by 2002:a25:6088:: with SMTP id u130mr41384789ybb.257.1625754992872;
+ Thu, 08 Jul 2021 07:36:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <20210624171759.4125094-1-dianders@chromium.org>
+ <YNXXwvuErVnlHt+s@8bytes.org> <CAD=FV=UFxZH7g8gH5+M=Fv4Y-e1bsLkNkPGJhNwhvVychcGQcQ@mail.gmail.com>
+ <CAD=FV=W=HmgH3O3z+nThWL6U+X4Oh37COe-uTzVB9SanP2n86w@mail.gmail.com> <YOaymBHc4g2cIfRn@8bytes.org>
+In-Reply-To: <YOaymBHc4g2cIfRn@8bytes.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 8 Jul 2021 07:36:20 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=U_mKPaGfWyN1SVi9S2hPBpG=rE_p89+Jvjr95d0TvgsA@mail.gmail.com>
+Message-ID: <CAD=FV=U_mKPaGfWyN1SVi9S2hPBpG=rE_p89+Jvjr95d0TvgsA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] iommu: Enable non-strict DMA on QCom SD/MMC
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        John Garry <john.garry@huawei.com>,
+        Rob Clark <robdclark@chromium.org>, quic_c_gdjako@quicinc.com,
+        Saravana Kannan <saravanak@google.com>,
+        Rajat Jain <rajatja@google.com>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-pci@vger.kernel.org,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        Sonny Rao <sonnyrao@chromium.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Dave Hansen:
+Hi,
 
-> On 7/7/21 11:05 PM, Florian Weimer wrote:
->>> This looks basically like someone dumped a bunch of CPUID bit values and
->>> exposed them to applications without considering whether applications
->>> would ever need them.  For instance, why would an app ever care about:
->>>
->>> 	PKS =E2=80=93 Protection keys for supervisor-mode pages.
->>>
->>> And how could glibc ever give applications accurate information about
->>> whether PKS "is supported by the operating system"?  It just plain
->>> doesn't know, or at least only knows from a really weak ABI like
->>> /proc/cpuinfo.
->> glibc is expected to mask these bits for CPU_FEATURE_USABLE because they
->> have unknown semantics (to glibc).
+On Thu, Jul 8, 2021 at 1:09 AM Joerg Roedel <joro@8bytes.org> wrote:
 >
-> OK, so if I call CPU_FEATURE_USABLE(PKS) on a system *WITH* PKS
-> supported in the operating system, I'll get false from an interface that
-> claims to be:
+> On Wed, Jul 07, 2021 at 01:00:13PM -0700, Doug Anderson wrote:
+> > a) Nothing is inherently broken with my current approach.
+> >
+> > b) My current approach doesn't make anybody terribly upset even if
+> > nobody is totally in love with it.
 >
->> This macro returns a nonzero value (true) if the processor has the
->> feature name and the feature is supported by the operating system.
+> Well, no, sorry :)
 >
-> The interface just seems buggy by *design*.
+> I don't think it is a good idea to allow drivers to opt-out of the
+> strict-setting. This is a platform or user decision, and the driver
+> should accept whatever it gets.
 
-Yes, but that is largely a documentation matter.  We should have said
-something about =E2=80=9Cuserspace=E2=80=9D there, and that the bit needs t=
-o be known to
-glibc.  There is another exception: FSGSBASE, and that's a real bug we
-need to fix (it has to go through AT_HWCAP2).
+Sure, I agree with you there. The driver shouldn't ever be able to
+override and make things less strict than the user or platform wants.
+It feels like that can be accomplished. See below.
 
-If we want to avoid that, we need to go down the road of a curated set
-of CPUID bits, where a bit only exists if we have taught glibc its
-semantics.  You still might get a false negative by running against an
-older glibc than the application was built for.  (We are not going to
-force applications that e.g. look for FSGSBASE only run with a glibc
-that is at least of that version which implemented semantics for the
-FSGSBASE bit.)
 
-Thanks,
-Florian
+> So the real question is still why strict is the default setting and how
+> to change that.
 
+I guess there are two strategies if we agree that there's a benefit to
+running some devices in strict and others in non-strict:
+
+* opt-in to strict: default is non-strict and we have to explicitly
+list what we want to be strict.
+
+* opt-out of strict: default is strict and we have to explicitly list
+what we want to be non-strict.
+
+I guess the question is: do we allow both strategies or only one of
+them? I think you are suggesting that the kernel should support
+"opt-in" to strict and that that matches the status quo with PCI on
+x86. I'm pushing for some type of "opt-out" of strict support. I have
+heard from security folks that they'd prefer "opt-out" of strict as
+well. If we're willing to accept more complex config options we could
+support both choosable by KConfig. How it'd all work in my mind:
+
+Command line:
+
+* iommu.strict=0 - suggest non-strict by default
+* iommu.strict=1 - force strict for all drivers
+* iommu.strict not specified - no opinion
+
+Kconfig:
+
+* IOMMU_DEFAULT_LAZY - suggest non-strict by default; drivers can
+opt-in to strict
+* IOMMU_DEFAULT_STRICT - force strict for all drivers
+* IOMMU_DEFAULT_LOOSE_STRICT - allow explicit suggestions for laziness
+but default to strict if no votes.
+
+Drivers:
+* suggest lazy - suggest non-strict
+* force strict - force strict
+* no vote
+
+
+How the above work together:
+
+* if _any_ of the three things wants strict then it's strict.
+
+* if _all_ of the three things want lazy then it's lazy.
+
+* If the KConfig is "loose strict" and the command line is set to
+"lazy" then it's equivalent to the KConfig saying "lazy". In other
+words drivers could still "opt-in" to strict but otherwise we'd be
+lazy.
+
+* The only way for a driver's "suggest lazy" vote to have any effect
+at all is if "iommu.strict" wasn't specified on the command line _and_
+if the KConfig was "loose strict". This is effectively the "opt-out"
+of lazy.
+
+
+If you think the strategy I describe above is garbage then would you
+be OK if I re-worked my patchset to at least allow non-PCI drivers to
+"opt-in" to strict? Effectively I'd change patch #3 to list all of the
+peripherals on my SoC _except_ the USB and SD/MMC and request that
+they all be strict. If other people expressed their preference for the
+"opt-out" of strict strategy would that change your mind?
+
+
+> Or document for the users that want performance how to
+> change the setting, so that they can decide.
+
+Pushing this to the users can make sense for a Linux distribution but
+probably less sense for an embedded platform. So I'm happy to make
+some way for a user to override this (like via kernel command line),
+but I also strongly believe there should be a default that users don't
+have to futz with that we think is correct.
+
+-Doug
