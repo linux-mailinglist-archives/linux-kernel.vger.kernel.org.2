@@ -2,147 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7A73BF3AB
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 03:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75C553BF3AF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 03:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbhGHBxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 21:53:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51046 "EHLO
+        id S230314AbhGHBzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 21:55:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230160AbhGHBxS (ORCPT
+        with ESMTP id S230123AbhGHBzF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 21:53:18 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4626C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 18:50:36 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id y4so3988579pfi.9
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 18:50:36 -0700 (PDT)
+        Wed, 7 Jul 2021 21:55:05 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A602DC061574;
+        Wed,  7 Jul 2021 18:52:23 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id b5so2116540plg.2;
+        Wed, 07 Jul 2021 18:52:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=q3zMtawysIJzQo3VuvzN8yTT5X9XIbc6q+Nlmu+/bcQ=;
-        b=HO8Sjk9BfZM7V2Rcgnkj5Tyoc7RqOc7B0yGMOUFWDYHKCFsS7Rt7Ism6BDjagpjVVT
-         XvcXTDIYq8hurMp+o05S84Y9rY8ICHwmbh7jEON9Glmoly/9w79xHhEn6dfBcU25p6nH
-         WFG5Vg9IP9Gr3VwsCgEt/atkQaA0L33vDjmmGvdve89KL04I1YKkb7RB8P6Ot7G0bNTC
-         J8VM2qG7sBIh0x1VqRbBfF6rf2t4XTpsmnC8WCuEHtfOPOK6jFtYRpeGE+0QL+3YgMeU
-         RmQCR8Q6GS8ZahXyaFxgbTWpwrw5bB2EWMfwEiXLaltOXTZM8WpK/oxKRlLovOjm4jWg
-         TDOA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LpL7qx90kO/NgJfcn2pzZvgiawADIWqcEOHPJQejQw0=;
+        b=ED2uT3QB1HhsWxq1L45xwQou5AP4Y9WzFSN7zd9p3D1IF3z4fKaxHBfgzMtKaGl8kB
+         wYCq5bstM1hSbqb0JUlCcIjSpFgugdwjJQ/YJFt5+lgApZCzYWAjkaryJTGM6w27n0uN
+         TxT2ow0e00/iPygqFBfSESLftaH0KoyCj8Y+7AeANXFXHxwZfgiDqP1kr9kbV8z4AUEn
+         dWOEIcoxRjuVj2KZ7PVn9BxSvF4gdsa7bSypTxCkLCrxGxG94neeAg6KE4XYWvkg6IdN
+         6CFjTqkgCQnmbCm4IaJ3CuX3wp6rjMGtvpz3Tmk+Rk/cu4dORuidAIcGq6lZ59eqHAWD
+         KGmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=q3zMtawysIJzQo3VuvzN8yTT5X9XIbc6q+Nlmu+/bcQ=;
-        b=rcRQCoN5H1EhkU507JSrkf3EMauECU/8lhwzwcaddu3mLX/fU7rgOVy1PsVEZGKeYX
-         jG822NQayEcxrJpg/MyGnLfBXi+xiTrElwuqQYsIczHfeyx5Egv5eCoXJBY1toxmWTeQ
-         tv3/ks/AIUZXhBvP7RjKqUtWdeDkbWSICJrkKW5B0Fp+3tcCeQ5/8hGzX643vvNDHwlR
-         uhkS55VaJpXbAl5flmC10xelB+Gz/ZYALd6PWbFs0qKdSVEKAnCvkvAutbnnuT35H2lb
-         sqAkiLoKYV88s+QrLdsw+uAtRD07JFxW4IKzUeU6OsFQF/kANsaiRpLvUYw/eBl8WIyQ
-         uKuQ==
-X-Gm-Message-State: AOAM531NE4/W5ZQrA2w+nXIkLWm2YpG7DGnwlR58qpYcFzLc4WaWy+6R
-        oW+xM4QPC3w7H7BpTkaydLnNqw==
-X-Google-Smtp-Source: ABdhPJwKtpgmioukwHPVwFtR/9XWsY+luViLvGsBrwI0JmAZLZVUUXJezKXYEsNQXo6WLRFnB4b7KA==
-X-Received: by 2002:a05:6a00:8c4:b029:2b4:8334:ed4d with SMTP id s4-20020a056a0008c4b02902b48334ed4dmr28225085pfu.36.1625709036308;
-        Wed, 07 Jul 2021 18:50:36 -0700 (PDT)
-Received: from [192.168.10.23] (219-90-184-65.ip.adam.com.au. [219.90.184.65])
-        by smtp.gmail.com with UTF8SMTPSA id m21sm520100pfa.99.2021.07.07.18.50.32
+        bh=LpL7qx90kO/NgJfcn2pzZvgiawADIWqcEOHPJQejQw0=;
+        b=K1o5B0kU6ZeDQOxq7SmL7v/N43U/2U0h1QyoUkSGG9OdbhgREI7T8XYIIFp2fKaPk6
+         KDMg2nsDon54t1EdO1xOVOvdxVeOX/R9cz6euUv0YY7cpIz66xrSvXz703B02YhAMQwO
+         QiRjkH1tYk1o3OwgW64TFXiFYypDJnMBRKSuuccvJKuLipHNF5DWBfoyNWyVEteJ49mW
+         ronPZCi85KCHCOuM9v8MjC58EfbM+M1FpOVKmzA7vRUoX0vg7ENyTB5kFM8ovDR9DzI0
+         FbVzvzGc3Ue2IZa91UEu6+Hm69why+sns8k1mL+cjH01Us0FvAbwv1hQ6P2X485rPWEb
+         OQ4Q==
+X-Gm-Message-State: AOAM530v+R6ZNQ/ErPonHwhpCs5jIK+pFX1SYATBclt//42bTT9WxqPZ
+        CXbsWxeCrTtrneu8LBgzc1o=
+X-Google-Smtp-Source: ABdhPJyCISuCbgDROL/gqJ0JBv5xppQzbfXoTRY1Of4YmEnuf7J/NnVqeEWvz0Q6P6hvE1E01bB4JA==
+X-Received: by 2002:a17:90b:4b52:: with SMTP id mi18mr12177096pjb.37.1625709143189;
+        Wed, 07 Jul 2021 18:52:23 -0700 (PDT)
+Received: from [192.168.1.237] ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id f2sm491957pfe.23.2021.07.07.18.52.20
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jul 2021 18:50:35 -0700 (PDT)
-Message-ID: <645405bb-50ae-f18e-eeba-b42770cc4b8e@ozlabs.ru>
-Date:   Thu, 8 Jul 2021 11:50:30 +1000
+        Wed, 07 Jul 2021 18:52:22 -0700 (PDT)
+Subject: Re: [PATCH v3 0/2] fcntl: fix potential deadlocks
+To:     Jeff Layton <jlayton@kernel.org>, bfields@fieldses.org,
+        viro@zeniv.linux.org.uk
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20210707074401.447952-1-desmondcheongzx@gmail.com>
+ <15fbc55a3b983c4962e9ad2d96eeebd77aad3be6.camel@kernel.org>
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Message-ID: <12c41697-e9ea-3326-b906-bf15a0a4dece@gmail.com>
+Date:   Thu, 8 Jul 2021 09:52:19 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:89.0) Gecko/20100101
- Thunderbird/89.0
-Subject: Re: [tip: sched/core] sched/core: Initialize the idle task with
- preemption disabled
+In-Reply-To: <15fbc55a3b983c4962e9ad2d96eeebd77aad3be6.camel@kernel.org>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
 Content-Language: en-US
-To:     Valentin Schneider <valentin.schneider@arm.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Frederic Weisbecker <frederic@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
-References: <20210512094636.2958515-1-valentin.schneider@arm.com>
- <162081815405.29796.14574924529325899839.tip-bot2@tip-bot2>
- <20210706194456.GA1823793@roeck-us.net> <87fswr6lqv.mognet@arm.com>
- <20210707120305.GB115752@lothringen> <87czru727k.mognet@arm.com>
- <c30097f3-63b4-6fa0-a369-8f4e20ee1040@roeck-us.net>
- <de7b1d0f-8767-1b33-2950-576029c0d9f7@ozlabs.ru> <878s2i6uk2.mognet@arm.com>
- <c9bd8db3-60ae-1dbe-aa2f-f2fe3d5fe2d9@roeck-us.net>
- <875yxm6nec.mognet@arm.com>
-From:   Alexey Kardashevskiy <aik@ozlabs.ru>
-In-Reply-To: <875yxm6nec.mognet@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 08/07/2021 03:31, Valentin Schneider wrote:
-> On 07/07/21 09:35, Guenter Roeck wrote:
->> I think I have it. pseries_defconfig, and pseries emulation,
->> started with "-smp 2" and qemu-system-ppc64:
+On 8/7/21 1:06 am, Jeff Layton wrote:
+> On Wed, 2021-07-07 at 15:43 +0800, Desmond Cheong Zhi Xi wrote:
+>> Hi,
 >>
->> [    0.731644][    T1] smp: Bringing up secondary CPUs ...^M
->> [    0.750546][    T0] BUG: scheduling while atomic: swapper/1/0/0x00000000^M
->> [    0.752119][    T0] no locks held by swapper/1/0.^M
->> [    0.752309][    T0] Modules linked in:^M
->> [    0.752684][    T0] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.13.0-11855-g77d34a4683b0 #1^M
->> [    0.753197][    T0] Call Trace:^M
->> [    0.753334][    T0] [c000000008737b20] [c0000000009f9b18] .dump_stack_lvl+0xa4/0x100 (unreliable)^M
->> [    0.754224][    T0] [c000000008737bb0] [c000000000190ed0] .__schedule_bug+0xa0/0xe0^M
->> [    0.754459][    T0] [c000000008737c30] [c000000001182518] .__schedule+0xc08/0xd90^M
->> [    0.754738][    T0] [c000000008737d20] [c000000001182b8c] .schedule_idle+0x2c/0x60^M
->> [    0.754945][    T0] [c000000008737d90] [c0000000001a48ec] .do_idle+0x29c/0x3c0^M
->> [    0.755145][    T0] [c000000008737e60] [c0000000001a4df0] .cpu_startup_entry+0x30/0x40^M
->> [    0.755403][    T0] [c000000008737ee0] [c00000000005ef10] .start_secondary+0x2c0/0x300^M
->> [    0.755621][    T0] [c000000008737f90] [c00000000000d254] start_secondary_prolog+0x10/0x14^M
->> [    0.764164][    T1] smp: Brought up 1 node, 2 CPUs^M
+>> Sorry for the delay between v1 and v2, there was an unrelated issue with Syzbot testing.
 >>
->> Guenter
+>> Syzbot reports a possible irq lock inversion dependency:
+>> https://syzkaller.appspot.com/bug?id=923cfc6c6348963f99886a0176ef11dcc429547b
+>>
+>> While investigating this error, I discovered that multiple similar lock inversion scenarios can occur. Hence, this series addresses potential deadlocks for two classes of locks, one in each patch:
+>>
+>> 1. Fix potential deadlocks for &fown_struct.lock
+>>
+>> 2. Fix potential deadlock for &fasync_struct.fa_lock
+>>
+>> v2 -> v3:
+>> - Removed WARN_ON_ONCE, keeping elaboration for why read_lock_irq is safe to use in the commit message. As suggested by Greg KH.
+>>
+>> v1 -> v2:
+>> - Added WARN_ON_ONCE(irqs_disabled()) before calls to read_lock_irq, and added elaboration in the commit message. As suggested by Jeff Layton.
+>>
+>> Best wishes,
+>> Desmond
+>>
+>> Desmond Cheong Zhi Xi (2):
+>>    fcntl: fix potential deadlocks for &fown_struct.lock
+>>    fcntl: fix potential deadlock for &fasync_struct.fa_lock
+>>
+>>   fs/fcntl.c | 18 ++++++++++--------
+>>   1 file changed, 10 insertions(+), 8 deletions(-)
+>>
 > 
-> Hmph, I was about to say I couldn't get that, but after cycling between
-> different PREEMPT options I finally triggered it, so thanks for that!
+> Looks like these patches are identical to the v1 set, so I'm just going
+> to leave those in place since linux-next already has them. Let me know
+> if I've missed something though.
 > 
-> Same sha1 as yours, invocation is:
+> Thanks!
 > 
->    qemu-system-ppc64 vmlinux -smp 2 -nographic -m 1024 -machine pseries,usb=off
-> 
-> with pseries_defconfig + CONFIG_DEBUG_ATOMIC_SLEEP + CONFIG_PREEMPT_VOLUNTARY
-> 
-> Now to dig!
 
-CONFIG_PREEMPT_NOTIFIERS=y
-CONFIG_PREEMPT_NONE=y
-# CONFIG_PREEMPT_VOLUNTARY is not set
-# CONFIG_PREEMPT is not set
-CONFIG_PREEMPT_COUNT=y
+Yep, there's no change outside of the commit message. But I think after 
+the discussion and with config DEBUG_IRQFLAGS, that is fine.
 
-CONFIG_DEBUG_ATOMIC_SLEEP=y
-
-is what I have, and qemu cmdline is
-
-qemu-system-ppc64 \
--nodefaults \
--chardev stdio,id=STDIO0,signal=off,mux=on \
--device spapr-vty,id=svty0,reg=0x71000110,chardev=STDIO0 \
--mon id=MON0,chardev=STDIO0,mode=readline \
--nographic \
--vga none \
--enable-kvm \
--m 512M \
--smp 2 \
--kernel ./vmldbg \
--machine pseries
-
-
-(unrelated) I wonder how/why PREEMPT_NOTIFIERS work when PREEMPT_NONE=y 
-:-/ I have a crash in a KVM preempt notifier with such config.
-
-
-
--- 
-Alexey
+Thanks again, Jeff!
