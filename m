@@ -2,103 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9BB23BF78A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 11:26:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9FE23BF78D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 11:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231299AbhGHJ2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 05:28:52 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:34608 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231254AbhGHJ2w (ORCPT
+        id S231308AbhGHJaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 05:30:17 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:10431 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231254AbhGHJaQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 05:28:52 -0400
-Received: from mail-wm1-f70.google.com ([209.85.128.70])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1m1QIL-0006Bt-77
-        for linux-kernel@vger.kernel.org; Thu, 08 Jul 2021 09:26:09 +0000
-Received: by mail-wm1-f70.google.com with SMTP id j141-20020a1c23930000b0290212502cb19aso2147309wmj.0
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 02:26:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=koIPrhzeeGnASWujJpf7LVgsTrCU+gcQgVFV1kcN3ho=;
-        b=eQh/ONHdvAW8lPa4eT8Jm7GRa+xvGC8NsAil6bCU09DVmmg4H3PV6qn9koPCr74V6y
-         t8mHl5BB8OecWn9lMDTVA66ArPTQMNf2bljgwiXmSB+5SQbbnkOqvvrTfr1LEhkyj05W
-         lmz5IeaNFiZud5Ba8rr6TLo1zrOyuTwY0XXJGyC79PltynckIhOV0TzJSUPqwT2MwGRU
-         8xougpm3DlAXnfzjbu9dGhgt22wHQNd6GzUFc4otZZDqoKAzms8f5eOKaraBe+RZnpbL
-         A7KnJdA13zUIqzxZmwNHlitGssO+bd/HOn/24uatKaiTpK/LatgiaZJNVgaIsoO9i0oa
-         7osQ==
-X-Gm-Message-State: AOAM5313eLi8pjlxYnueeDL/A+x+jRSd14E2MoKsDx7fG9a14p3bXywF
-        6ba+9gOEZ4jzb+L43o5QxfyxCQ8ta06sbCpoUVTn9sKu5CniVmoQKiFxx8E+4r9XDYBrfDLSpRP
-        zzNllGgoTLJELj4SY1rn8s7XX6tlja9zajATvx73jow==
-X-Received: by 2002:a05:6000:1ac6:: with SMTP id i6mr29153775wry.327.1625736368926;
-        Thu, 08 Jul 2021 02:26:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz9bTjhzy4ewOg0e87DpVaZF42E3AYLNFYRiKycIX46b0OEGS9rxawBZpCgOiwlhnyBj7S+/Q==
-X-Received: by 2002:a05:6000:1ac6:: with SMTP id i6mr29153760wry.327.1625736368771;
-        Thu, 08 Jul 2021 02:26:08 -0700 (PDT)
-Received: from [192.168.3.211] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
-        by smtp.gmail.com with ESMTPSA id h10sm4020332wmb.46.2021.07.08.02.26.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Jul 2021 02:26:08 -0700 (PDT)
-Subject: Re: [PATCH 1/9] dt-bindings: memory: mediatek: Add mt8195 smi binding
-To:     Yong Wu <yong.wu@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
-        anan.sun@mediatek.com, ming-fan.chen@mediatek.com,
-        yi.kuo@mediatek.com, anthony.huang@mediatek.com
-References: <20210616114346.18812-1-yong.wu@mediatek.com>
- <20210616114346.18812-2-yong.wu@mediatek.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <6e512d15-3acc-2097-1fd1-e021552fdc8d@canonical.com>
-Date:   Thu, 8 Jul 2021 11:26:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 8 Jul 2021 05:30:16 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GL9pq6Qz6zZrgt;
+        Thu,  8 Jul 2021 17:24:19 +0800 (CST)
+Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Thu, 8 Jul 2021 17:27:32 +0800
+Received: from [127.0.0.1] (10.69.38.203) by dggema757-chm.china.huawei.com
+ (10.1.198.199) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 8 Jul
+ 2021 17:27:32 +0800
+Subject: Re: [RFC PATCH 3/4] ultrasoc: Add ultrasoc AXI Communicator driver
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Linuxarm <linuxarm@huawei.com>
+CC:     <alexander.shishkin@linux.intel.com>, <suzuki.poulose@arm.com>,
+        <jonathan.zhouwen@huawei.com>, <f.fangjian@huawei.com>,
+        <linux-kernel@vger.kernel.org>, <coresight@lists.linaro.org>
+References: <1623749684-65432-1-git-send-email-liuqi115@huawei.com>
+ <1623749684-65432-4-git-send-email-liuqi115@huawei.com>
+ <20210629212224.GB1238591@p14s>
+From:   "liuqi (BA)" <liuqi115@huawei.com>
+Message-ID: <bc070eac-2a64-444c-c7ab-967b547da323@huawei.com>
+Date:   Thu, 8 Jul 2021 17:27:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210616114346.18812-2-yong.wu@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20210629212224.GB1238591@p14s>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.38.203]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggema757-chm.china.huawei.com (10.1.198.199)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/06/2021 13:43, Yong Wu wrote:
-> This patch adds mt8195 smi supporting in the bindings.
+
+Hi Mathieu,
+
+On 2021/6/30 5:22, Mathieu Poirier wrote:
+> On Tue, Jun 15, 2021 at 05:34:43PM +0800, Qi Liu wrote:
+>> This patch adds driver for ultrasoc AXI Communicator. It includes
+>> a platform driver to probe AXI Communicator device, a set of
+>> operations to access the service data, and a service work entry
+>> which will be called by the standard communicator service.
+>>
+>> Signed-off-by: Jonathan Zhou <jonathan.zhouwen@huawei.com>
+>> Signed-off-by: Qi Liu <liuqi115@huawei.com>
+>> ---
+
+[...]
+
+>> +
+>> +static const struct acpi_device_id ultrasoc_axi_com_acpi_match[] = {
+>> +	{"HISI03B1", },
+>> +	{},
+>> +};
 > 
-> In mt8195, there are two smi-common HW, one is for vdo(video output),
-> the other is for vpp(video processing pipe). They connects with different
-> smi-larbs, then some setting(bus_sel) is different. Differentiate them
-> with the compatible string.
+> No need for MODULE_DEVICE_TABLE()?
 > 
-> Something like this:
+> I am very confused as to what this IP does...  And I'm even more confused as to
+> why ultrasoc.c is needed at all.  As I pointed out in a previous comment there
+> is a lot of work to do on this patchset but there is no point in writing more
+> while questions about the current design choices are pending.
+> thanks for reviewing this patch.
+
+This module is used on Hip08 platform, to store trace data from ETM, you 
+can find the data path diagram in kernel document patch.
+
+And this module is developed by Ultrasoc technology, which is acquired 
+by Siemens, we still use "Ultrasoc" to name document and structures.
+
+At the beginning we use the ultrasoc.c as a framework to adapt multiple 
+hardware devices and support more capabilities. But after discussing 
+with suppliers, we are only allowed to upstream the axi-com and smb driver.
+
+So the software architecture seems unreasonable now, I'll refactor it in 
+next version, thanks.
+
+Qi
+> I am done reviewing this set.
 > 
->     IOMMU(VDO)          IOMMU(VPP)
->        |                   |
->   SMI_COMMON_VDO      SMI_COMMON_VPP
->   ---------------     ----------------
->   |      |   ...      |      |     ...
-> larb0 larb2  ...    larb1 larb3    ...
+> Thanks,
+> Mathieu
 > 
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> ---
->  .../bindings/memory-controllers/mediatek,smi-common.yaml    | 6 +++++-
->  .../bindings/memory-controllers/mediatek,smi-larb.yaml      | 3 +++
->  2 files changed, 8 insertions(+), 1 deletion(-)
+>> +
+>> +static struct platform_driver axi_com_driver = {
+>> +	.driver = {
+>> +		.name = "ultrasoc,axi-com",
+>> +		.acpi_match_table = ultrasoc_axi_com_acpi_match,
+>> +	},
+>> +	.probe = axi_com_probe,
+>> +	.remove = axi_com_remove,
+>> +};
+>> +module_platform_driver(axi_com_driver);
+>> +
+>> +MODULE_DESCRIPTION("Ultrasoc AXI COM driver");
+>> +MODULE_LICENSE("Dual MIT/GPL");
+>> +MODULE_AUTHOR("Jonathan Zhou <jonathan.zhouwen@huawei.com>");
+>> +MODULE_AUTHOR("Qi Liu <liuqi115@huawei.com>");
+>> diff --git a/drivers/hwtracing/ultrasoc/ultrasoc-axi-com.h b/drivers/hwtracing/ultrasoc/ultrasoc-axi-com.h
+>> new file mode 100644
+>> index 0000000..64bcf83
+>> --- /dev/null
+>> +++ b/drivers/hwtracing/ultrasoc/ultrasoc-axi-com.h
+>> @@ -0,0 +1,66 @@
+>> +/* SPDX-License-Identifier: MIT */
+>> +/*
+>> + * Copyright (C) 2021 Hisilicon Limited Permission is hereby granted, free of
+>> + * charge, to any person obtaining a copy of this software and associated
+>> + * documentation files (the "Software"), to deal in the Software without
+>> + * restriction, including without limitation the rights to use, copy, modify,
+>> + * merge, publish, distribute, sublicense, and/or sell copies of the Software,
+>> + * and to permit persons to whom the Software is furnished to do so, subject
+>> + * to the following conditions:
+>> + *
+>> + * The above copyright notice and this permission notice shall be included in
+>> + * all copies or substantial portions of the Software.
+>> + *
+>> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+>> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+>> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+>> + * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+>> + * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+>> + * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+>> + * IN THE SOFTWARE.
+>> + *
+>> + * Code herein communicates with and accesses proprietary hardware which is
+>> + * licensed intellectual property (IP) belonging to Siemens Digital Industries
+>> + * Software Ltd.
+>> + *
+>> + * Siemens Digital Industries Software Ltd. asserts and reserves all rights to
+>> + * their intellectual property. This paragraph may not be removed or modified
+>> + * in any way without permission from Siemens Digital Industries Software Ltd.
+>> + */
+>> +#ifndef ULTRASOC_AXI_COM_H
+>> +#define ULTRASOC_AXI_COM_H
+>> +
+>> +#include "ultrasoc.h"
+>> +
+>> +#define AXIC_US_CTL 0X0 /* Upstream general control */
+>> +#define AXIC_US_DATA 0XC /* Upstream message data */
+>> +#define AXIC_US_BUF_STS 0X10 /* Upstream buffer status */
+>> +
+>> +#define AXIC_DS_CTL 0X80 /* Downstream general contral */
+>> +#define AXIC_DS_DATA 0X8C /* Downstream message data */
+>> +#define AXIC_DS_BUF_STS 0X90 /* Downstream buffer status */
+>> +#define AXIC_DS_RD_STS 0X94 /* Downstream read status */
+>> +
+>> +#define AXIC_MSG_LEN_PER_SEND		4
+>> +#define AXIC_MSG_LEN_PER_REC		4
+>> +#define AXIC_US_CTL_EN 0x1
+>> +#define AXIC_DS_CTL_EN 0x1
+>> +
+>> +struct axi_com_drv_data {
+>> +	void __iomem *base;
+>> +
+>> +	struct device *dev;
+>> +	struct ultrasoc_com *com;
+>> +
+>> +	u32 ds_msg_counter;
+>> +
+>> +	u32 us_msg_cur;
+>> +	spinlock_t us_msg_list_lock;
+>> +	struct list_head us_msg_head;
+>> +
+>> +	u32 ds_msg_cur;
+>> +	spinlock_t ds_msg_list_lock;
+>> +	struct list_head ds_msg_head;
+>> +};
+>> +
+>> +#endif
+>> -- 
+>> 2.7.4
+>>
+> .
 > 
 
-I cannot find it on devicetree list, it seems you did not Cc it. Please
-use scripts/get_maintainer.pl.
-
-
-Best regards,
-Krzysztof
