@@ -2,165 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F2A3BF6CF
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 10:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF743BF6D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 10:19:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231187AbhGHITP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 04:19:15 -0400
-Received: from mga09.intel.com ([134.134.136.24]:46664 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230414AbhGHITO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 04:19:14 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10038"; a="209427698"
+        id S231241AbhGHIVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 04:21:52 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:42315 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230489AbhGHIVw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 04:21:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1625732350; x=1657268350;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=kaiYy91aS9+64PsrqN1DBhXW906kYA0Sk07YOSxw57g=;
+  b=Fxmh8T359nWsx/o4Ph2FZ0n8bjQFu6pciF5GaEBxNM8kSg+5DH65hSB/
+   +joj6SBe8iBEAp74mCXkInCj8JYUPit1RnQ7zkeRxDTB7qw/qqIBcMFNZ
+   HaC1Q1v3yCDLFu96UpgPGQXO8Gt/5BgY66+DexOiplDOl+Nlc/2MQOBht
+   X/lyVByOta8JsEA0Tl8ghm8kqDOZJZURPjpSueylsEKl7Hz36HPdk+aXg
+   4e+fMf7nWbI8WpYQ01Yj+eRtC2gMMcXSJgO+yUFyEMrSZLnX4tLAH1GJT
+   Thw5bTvIHMdOFsw5+UwG/yvBdFvjhJVisLTuwpv/DWCovqNqhlbSnmWri
+   A==;
+IronPort-SDR: KyWlK5llewvNZaMPQ798rrUQHQVw1pQMnG6xTlyEDRloy3ib2FqCPwmEqZiXJzmKpGnzOX82OL
+ 6LhEd1b5TgxGCwf0WxWVvp5z1DMUyVmGnXrQAYsSHay4IInf27LRWBJ8mS5I8H8NkqZPmVJi+V
+ tKGYqf5qQU/YLhyLZV9Q8dnxxy1Kywv5yn8BshOSaU/Mby1F1sskVhf3Y5U++74T3/+isQPUAo
+ buvXTnKoqY1Yz6J3t/NwxkYKADmvzQeZnxv0C0h1fzJcKdIhWZptzCyctVYJdAZ2VloFZhBitQ
+ 5Yo=
 X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
-   d="scan'208";a="209427698"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 01:16:32 -0700
-X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
-   d="scan'208";a="487463340"
-Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.239.13.111]) ([10.239.13.111])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 01:16:27 -0700
-Subject: Re: [PATCH v2 1/6] x86/tdx: Add TDREPORT TDX Module call support
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <20210707204249.3046665-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210707204249.3046665-2-sathyanarayanan.kuppuswamy@linux.intel.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-Message-ID: <d9aac97c-aa08-de9f-fa44-91b7dde61ce3@intel.com>
-Date:   Thu, 8 Jul 2021 16:16:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210707204249.3046665-2-sathyanarayanan.kuppuswamy@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+   d="scan'208";a="121350934"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 08 Jul 2021 01:19:09 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 8 Jul 2021 01:19:09 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2
+ via Frontend Transport; Thu, 8 Jul 2021 01:19:09 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MotHUrwgofzZ7bWVYJqHcBEuMHP6xVuGingEUJBcNLlhskyRnBg0kq9YEWpraI4UwGcTwhoWd2opxCydvfe2dEKNJaws/9h337ulojzQFMvKouecaUo9tcqJ6fA2NiaO29lAtAsBpFjofdfUG0PPLF2xzqCqKpJJ9wpIOs2LS78Kyv15bIte8fcw0JvqEFPGDzPTZnH8Rd0KYNth9PzS1S9RDHXquM7oyhcubnjhcrpZ662p5bfOCZ4TSjA+wh5ilcDCWUKhMcHhj4oC2/vRCa3cGpxLzPcCJ8L6n/sKqz6Sc/fpkc92SyWDQpNAdANewHH4j2fqYPcwBcpRcPVS0A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kaiYy91aS9+64PsrqN1DBhXW906kYA0Sk07YOSxw57g=;
+ b=ka8HZeA9fmIB53MiS+wlDKd++mFiQAUmnJvoAl0EUdAVSNVMcmvYBT64okl7twqeKdt32+MwSIiubFf3ZQ88XFg+32Yx0Xfs96nTZBA9wytHDvGQyhdf50QpLjURCqXrGzzAl9Drn4j0Bi9uY16b4GenuxvEHBATcivH8vtxziRSnWiAqqAouVkU+1j9uqZBx/ALXWo6w4Ixee1sisly9Pxe8gWSOqtovD8fbG5BexlDPEU8H5TN3tQ1Xd0I7lv1nJc01nycoZycVu6IlOhSNy8bJv1CY9qBhlR1aXAy15K08KDJlTddRkEiHgQJvJrqMrASGzz0cl8xyQDSe+XVhQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kaiYy91aS9+64PsrqN1DBhXW906kYA0Sk07YOSxw57g=;
+ b=CdDe5SW17216ZFJlbDKaLwzUonW4oSXXiR3kp42P5npsu71VLOfJ73nvcG7v8KR3mObmnFx8/9nwmsAR47EhxvHV4zYi8wYhbHV2h2glA7xa+/PO9lXAQGOyQhtYXw9ha9Mt5S+0YiYCkpMsFcouLfsWFBafHTM0nhIlubBlZ+0=
+Received: from DM8PR11MB5687.namprd11.prod.outlook.com (2603:10b6:8:22::7) by
+ DM6PR11MB3465.namprd11.prod.outlook.com (2603:10b6:5:b::18) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4287.23; Thu, 8 Jul 2021 08:19:07 +0000
+Received: from DM8PR11MB5687.namprd11.prod.outlook.com
+ ([fe80::44ef:d8cf:6e86:2cd5]) by DM8PR11MB5687.namprd11.prod.outlook.com
+ ([fe80::44ef:d8cf:6e86:2cd5%5]) with mapi id 15.20.4308.022; Thu, 8 Jul 2021
+ 08:19:07 +0000
+From:   <Codrin.Ciubotariu@microchip.com>
+To:     <rdunlap@infradead.org>, <linux-kernel@vger.kernel.org>
+CC:     <alsa-devel@alsa-project.org>, <lgirdwood@gmail.com>,
+        <broonie@kernel.org>, <mirq-linux@rere.qmqm.pl>,
+        <alexandre.belloni@free-electrons.com>
+Subject: Re: [PATCH v3] ASoC: atmel: ATMEL drivers don't need HAS_DMA
+Thread-Topic: [PATCH v3] ASoC: atmel: ATMEL drivers don't need HAS_DMA
+Thread-Index: AQHXc3nAapI43oKKzkGOq7eDGPDjAas4vOIA
+Date:   Thu, 8 Jul 2021 08:19:07 +0000
+Message-ID: <fca8f952-2be0-5c57-d60d-5c4f025abc4d@microchip.com>
+References: <20210707214752.3831-1-rdunlap@infradead.org>
+In-Reply-To: <20210707214752.3831-1-rdunlap@infradead.org>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none
+ header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: bcc6dbe3-82b8-468f-7a81-08d941e90e82
+x-ms-traffictypediagnostic: DM6PR11MB3465:
+x-microsoft-antispam-prvs: <DM6PR11MB3465DC0BCB98F0B00CF46DDFE7199@DM6PR11MB3465.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2803;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 7I6YAWO3/LuQs8OX7IwCGCgHb+37ybxmKfWuNVqpFl4jFvz9IrGHCDoRaGpHTF530fTSBssb6TQ7qnMFB3t8tprKHl6v4fSt3Xo5DWj5YjlwwPlISXI2BmAwewBOyNTqlPhoDIOwzg9LA+q9f4yypM1WNDozfe9L8LYHN9bzgXSEFeOsS6XNA/6CgQKt0PbCScYPocZugn3ybIONh+WAuV07plfMBH59xl6w/Qj83oxps0GEFWd1GVWX4kfNRdefwK3B9oP9031uXTHMMlFvn94CIvCM2+pkr9hHjTsaNvnnfBYOOza3dCLWrI0PtqwLkvhiqUYifyV1A6E2o25ieAhNzB3CLPqMxMZCSV2EPJkNxPZ62k5/o3+knhLdsP3rrUQpYcMkwgcQ63Hg7BHtwy2ydO0M9JBWpRTu6+ovwvXXkCNRJ6sH45Z/JbBVLprQIFMTOeU5NVDrvL33oILGRs5Gbo2hoAZHiPateJcMrSuvyJFHZhWQPhH4kG9ma9uwF+96kAme54m/rD091MKvp48CnMDT25bquoFypz/gjzffuK8Ng/pEorWwjw2+MnG2KhKpbE27cE93fQkgutqBIRSbgHb4stUWp/uvqmqGoyHmP6k4560XmEV3qgGHHn1thUcFqmrXnSshTWJwSYySWMO1CYNCpQA4MheoyJAj86OaMZ81sQBJk9RCj1wpgvDiKkgs1bK90OYTEQKA1fjTFQSZCVzWwJx8C8iCVsY2vH8ErOhogWxT0fPDfpYiSa/Y
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR11MB5687.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(346002)(376002)(136003)(366004)(6506007)(53546011)(4326008)(26005)(91956017)(66446008)(71200400001)(76116006)(36756003)(186003)(86362001)(478600001)(66946007)(31686004)(66556008)(38100700002)(83380400001)(5660300002)(66574015)(66476007)(110136005)(2906002)(6512007)(2616005)(64756008)(8936002)(8676002)(31696002)(6486002)(122000001)(316002)(54906003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZWdFTk5XZWQ4THZkQmFWNElPbVZUV3cwM3J5c0dFSjRwV3dVSUVzWTBCSDVU?=
+ =?utf-8?B?Q3dGbWFQNzh0ZXh5RGhQYzdtMjNjcytqcjlXdWdZUDFnVlhWUHJ5REo4WWUr?=
+ =?utf-8?B?UUNBcU0xaENGL2FKWU5SeFBhLzRYaVBaZUZibm1RSHUvYTVOaXFaaXU3QmNw?=
+ =?utf-8?B?RXJ1czJOUnFaYm5rTG9WZFc5aW9CcjBGbjJTQlRZeUdiSHBsS2YrOE5Ways2?=
+ =?utf-8?B?UVAvZjFScVZyMXVEeXl1eEx0U1hMSi8yZmYzVWsrbkM4akQ0U1VPdllnK2I0?=
+ =?utf-8?B?cnR1amlaYi9LRytuRW44OXZ1ZDMyWG03L0hnY3JSTDlabU1pdXF1YXA5ZVgz?=
+ =?utf-8?B?TldmVFdHaDg0emxWU0dnSVd2Z1JJZ242NDhwUmZvcW01cTRpdExibU01bFQ4?=
+ =?utf-8?B?ZGlqaFNrVlNlTG5SelBvZE92YTBKbUlvcm9NbDJiNUd3OFpQdm1WVHE1TzRO?=
+ =?utf-8?B?WmhsbW5rYS9EYXl4U3h0a3RXb24vSVk2c0duWFRuRStSbWJ2T3pXR0FJNkhZ?=
+ =?utf-8?B?MENqTzZwbStQYS84TGUzTGY0L0NKRmVUcmQ5YmE5RHd2c0RTaStORXpmc0Jz?=
+ =?utf-8?B?RjJqWUJwNnJYT2VvT3R3aURLNHl2VnFTOXV3VC9rQXlTRitUTkg3MDhiMDFy?=
+ =?utf-8?B?NzhZU1dUTkgrTVNLelhXSFRnc0dKY3Y3SzFjMEd6am0yK1ZBdFNBdGJwR3Bz?=
+ =?utf-8?B?SmJaUzk0SlVnVTdjVnhHYnJaWGZXaEVmTVowUnloQ1Y1MzNsRXlDOFNYdkY1?=
+ =?utf-8?B?WjVmeXRsRklocWh5elk3b0ZoalhXcm40VTZiaFdQaEM2SXZTSDY0VXRQRnd5?=
+ =?utf-8?B?QTVnWXhtRURJdE04OVgwc0NwcWxReEQ5OFh5Znd6WjVGZS9oc2JNendMUXh5?=
+ =?utf-8?B?K0JXczFyUDhpT1MrcGtpNCtZbC9PUW41RGtrK21hR0I1cTkwR3pLa0NPQUxM?=
+ =?utf-8?B?YkRQdHBYZWRVQ2J0R3B0dFdBRlRub3lhcnFEN09yNEJpN0xYcUlzdDhUeVNW?=
+ =?utf-8?B?cDdsSENFY0VnMFFTRUlWM3hmTW90eTE5SVI5WjNKbGJ5bi9vKzRMMHFTdm5F?=
+ =?utf-8?B?Q0VoeDVsa1dhL0JveFBCYXlQSzFMVVJnSjZCZHJHczRWdTl4bkJ0dXU5Zzlx?=
+ =?utf-8?B?ZEZld2MvVU9SdXZHSHgyejRXSzJQRURVeEVlV1VhM0I3NG12WXVUb09sckZH?=
+ =?utf-8?B?WEFEUXM5ekI2bWVHb1RVeWxqR29IZjdqYjdEdDJVWElrZjVLK2ZPR3JtT3VZ?=
+ =?utf-8?B?OWV2dGx1MzdIbVZGcHgyemRUYUZmbWlCNGRBcG9UeVNOV1VzYlZlM2RidDdy?=
+ =?utf-8?B?TkZJQlIyeDh5MmdVNG42MVU5eEpwUFREU09QY3U2cXJVMzVJQmg4ZzhNUmFx?=
+ =?utf-8?B?Rmk2elFVSXRBTHFFVWNJd0V4UDI2UjRiNkZhQndFY1JCMUYrSHpWalE5SUkr?=
+ =?utf-8?B?d0tBbGJNSE45WUllTGIrb1diMis4VzlpTGhJUkNIeXQrbHpOaHRncFVaTlhH?=
+ =?utf-8?B?bklDd0NubFYvc2dEbG13UXhBQXNtd0tTSnI3MFMyQm5PYThHRnhpU3AvKzJo?=
+ =?utf-8?B?Vnk1bHl0TTE3aUNiRmJFdUV4NWJoUVJzVmFHSGN4MitsQ3pib25GOC9YVlRS?=
+ =?utf-8?B?dGlHV2tGbFQxeGxMUENOV0NtUk4weUJvNEtYNi83QTJ3TzRwUERvZHhONkQ1?=
+ =?utf-8?B?c0dEcDBTbXE5eHBrNUhHSVoyQnN2US9yYlJsRzk1K0pwSk1WNll4d2hYeDlp?=
+ =?utf-8?Q?6P7eqlOfHOoc19U+iA=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <7F35494470898646B4668ADF0A7622B7@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM8PR11MB5687.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bcc6dbe3-82b8-468f-7a81-08d941e90e82
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jul 2021 08:19:07.4749
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9Kov4EVQlPmhjocCSrlGt0UJYlO8tdqA4FRIE9OSo3MbDj1QMAFPRckCZMjURjYL+F2sIXdQagaIimZwQYr0HRVNIA2862YUUpsiYU45ueg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3465
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/8/2021 4:42 AM, Kuppuswamy Sathyanarayanan wrote:
-> The TDX Guest-Host Communication Interface (GHCI) includes a module
-> call (TDREPORT TDCALL) that a guest can make to acquire a copy of the
-> attestation data that it needs to verify its trustworthiness.
-> 
-> Add a wrapper function tdx_mcall_tdreport() that makes the module
-> call to get this data.
-> 
-> See GHCI section 2.4.5 "TDCALL [TDG.MR.REPORT] leaf" for additional
-> details.
-> 
-> [Xiaoyao: Proposed error code fix]
-> Reviewed-by: Tony Luck <tony.luck@intel.com>
-> Reviewed-by: Andi Kleen <ak@linux.intel.com>
-> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> ---
->   arch/x86/include/asm/tdx.h |  2 ++
->   arch/x86/kernel/tdx.c      | 33 +++++++++++++++++++++++++++++++++
->   2 files changed, 35 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-> index 48927fac9e12..4f1b5c14a09b 100644
-> --- a/arch/x86/include/asm/tdx.h
-> +++ b/arch/x86/include/asm/tdx.h
-> @@ -96,6 +96,8 @@ extern int tdx_hcall_gpa_intent(phys_addr_t gpa, int numpages,
->   
->   bool tdg_filter_enabled(void);
->   
-> +int tdx_mcall_tdreport(u64 data, u64 reportdata);
-> +
->   /*
->    * To support I/O port access in decompressor or early kernel init
->    * code, since #VE exception handler cannot be used, use paravirt
-> diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-> index f76af7661046..0f797803f4c8 100644
-> --- a/arch/x86/kernel/tdx.c
-> +++ b/arch/x86/kernel/tdx.c
-> @@ -23,6 +23,7 @@
->   /* TDX Module call Leaf IDs */
->   #define TDINFO				1
->   #define TDGETVEINFO			3
-> +#define TDREPORT			4
->   #define TDACCEPTPAGE			6
->   
->   /* TDX hypercall Leaf IDs */
-> @@ -30,6 +31,11 @@
->   
->   /* TDX Module call error codes */
->   #define TDX_PAGE_ALREADY_ACCEPTED       0x8000000000000001
-> +#define TDCALL_RETURN_CODE_MASK		0xFFFFFFFF00000000
-> +#define TDCALL_OPERAND_BUSY		0x8000020000000000
-> +#define TDCALL_INVALID_OPERAND		0x8000000000000000
-> +#define TDCALL_RETURN_CODE(a)		((a) & TDCALL_RETURN_CODE_MASK)
-> +
->   
->   #define VE_IS_IO_OUT(exit_qual)		(((exit_qual) & 8) ? 0 : 1)
->   #define VE_GET_IO_SIZE(exit_qual)	(((exit_qual) & 7) + 1)
-> @@ -139,6 +145,33 @@ static bool tdg_perfmon_enabled(void)
->   	return td_info.attributes & BIT(63);
->   }
->   
-> +/*
-> + * tdx_mcall_tdreport() - Generate TDREPORT_STRUCT using TDCALL.
-> + *
-> + * @data        : Physical address of 1024B aligned data to store
-> + *                TDREPORT_STRUCT.
-> + * @reportdata  : Physical address of 64B aligned report data
-> + *
-> + * return 0 on success or failure error number.
-> + */
-> +int tdx_mcall_tdreport(u64 data, u64 reportdata)
-> +{
-> +	u64 ret;
-> +
-> +	if (!data || !reportdata || !prot_guest_has(PR_GUEST_TDX))
-> +		return -EINVAL;
-> +
-> +	ret = __trace_tdx_module_call(TDREPORT, data, reportdata, 0, 0, NULL);
-> +
-> +	if (TDCALL_RETURN_CODE(ret) == TDCALL_INVALID_OPERAND)
-> +		return -EINVAL;
-> +	else if (TDCALL_RETURN_CODE(ret) == TDCALL_OPERAND_BUSY)
-> +		return -EBUSY;
-
-Sorry I guess I didn't state it clearly during internal review.
-
-I suggest something like this
-
-if (ret != TDCALL_SUCCESS) {
-	if (TDCALL_RETURN_CODE(ret) == TDCALL_INVALID_OPERAND)
-		return -EINVAL;
-	else if (TDCALL_RETURN_CODE(ret) == TDCALL_OPERAND_BUSY)
-		return -EBUSY;
-	else
-		return -EFAULT; //I'm not sure if -EFAULT is proper.
-}
-
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(tdx_mcall_tdreport);
-> +
->   static void tdg_get_info(void)
->   {
->   	u64 ret;
-> 
-
+T24gMDguMDcuMjAyMSAwMDo0NywgUmFuZHkgRHVubGFwIHdyb3RlOg0KPiBFWFRFUk5BTCBFTUFJ
+TDogRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNzIHlvdSBrbm93
+IHRoZSBjb250ZW50IGlzIHNhZmUNCj4gDQo+IE9uIGEgY29uZmlnIChzdWNoIGFzIGFyY2gvc2gv
+KSB3aGljaCBkb2VzIG5vdCBzZXQgSEFTX0RNQSB3aGVuIE1NVQ0KPiBpcyBub3Qgc2V0LCBzZXZl
+cmFsIEFUTUVMIEFTb0MgZHJpdmVycyBzZWxlY3Qgc3ltYm9scyB0aGF0IGNhdXNlDQo+IGtjb25m
+aWcgd2FybmluZ3MuIFRoZXJlIGlzIG9uZSAiZGVwZW5kcyBvbiBIQVNfRE1BIiB3aGljaCBpcyBu
+byBsb25nZXINCj4gbmVlZGVkLiBEcm9wcGluZyBpdCBlbGltaW5hdGVzIHRoZSBrY29uZmlnIHdh
+cm5pbmdzIGFuZCBzdGlsbCBidWlsZHMNCj4gd2l0aCBubyBwcm9ibGVtcyByZXBvcnRlZC4NCj4g
+DQo+IEZpeCB0aGUgZm9sbG93aW5nIGtjb25maWcgd2FybmluZ3M6DQo+IA0KPiBXQVJOSU5HOiB1
+bm1ldCBkaXJlY3QgZGVwZW5kZW5jaWVzIGRldGVjdGVkIGZvciBTTkRfQVRNRUxfU09DX1BEQw0K
+PiAgICBEZXBlbmRzIG9uIFtuXTogU09VTkQgWz1tXSAmJiAhVU1MICYmIFNORCBbPW1dICYmIFNO
+RF9TT0MgWz1tXSAmJiBTTkRfQVRNRUxfU09DIFs9bV0gJiYgSEFTX0RNQSBbPW5dDQo+ICAgIFNl
+bGVjdGVkIGJ5IFttXToNCj4gICAgLSBTTkRfQVRNRUxfU09DX1NTQyBbPW1dICYmIFNPVU5EIFs9
+bV0gJiYgIVVNTCAmJiBTTkQgWz1tXSAmJiBTTkRfU09DIFs9bV0gJiYgU05EX0FUTUVMX1NPQyBb
+PW1dDQo+ICAgIC0gU05EX0FUTUVMX1NPQ19TU0NfUERDIFs9bV0gJiYgU09VTkQgWz1tXSAmJiAh
+VU1MICYmIFNORCBbPW1dICYmIFNORF9TT0MgWz1tXSAmJiBTTkRfQVRNRUxfU09DIFs9bV0gJiYg
+QVRNRUxfU1NDIFs9bV0NCj4gDQo+IFdBUk5JTkc6IHVubWV0IGRpcmVjdCBkZXBlbmRlbmNpZXMg
+ZGV0ZWN0ZWQgZm9yIFNORF9BVE1FTF9TT0NfU1NDX1BEQw0KPiAgICBEZXBlbmRzIG9uIFtuXTog
+U09VTkQgWz1tXSAmJiAhVU1MICYmIFNORCBbPW1dICYmIFNORF9TT0MgWz1tXSAmJiBTTkRfQVRN
+RUxfU09DIFs9bV0gJiYgQVRNRUxfU1NDIFs9bV0gJiYgSEFTX0RNQSBbPW5dDQo+ICAgIFNlbGVj
+dGVkIGJ5IFttXToNCj4gICAgLSBTTkRfQVQ5MV9TT0NfU0FNOUcyMF9XTTg3MzEgWz1tXSAmJiBT
+T1VORCBbPW1dICYmICFVTUwgJiYgU05EIFs9bV0gJiYgU05EX1NPQyBbPW1dICYmIFNORF9BVE1F
+TF9TT0MgWz1tXSAmJiAoQVJDSF9BVDkxIHx8IENPTVBJTEVfVEVTVCBbPXldKSAmJiBBVE1FTF9T
+U0MgWz1tXSAmJiBTTkRfU09DX0kyQ19BTkRfU1BJIFs9bV0NCj4gDQo+IFdBUk5JTkc6IHVubWV0
+IGRpcmVjdCBkZXBlbmRlbmNpZXMgZGV0ZWN0ZWQgZm9yIFNORF9BVE1FTF9TT0NfU1NDDQo+ICAg
+IERlcGVuZHMgb24gW25dOiBTT1VORCBbPW1dICYmICFVTUwgJiYgU05EIFs9bV0gJiYgU05EX1NP
+QyBbPW1dICYmIFNORF9BVE1FTF9TT0MgWz1tXSAmJiBIQVNfRE1BIFs9bl0NCj4gICAgU2VsZWN0
+ZWQgYnkgW21dOg0KPiAgICAtIFNORF9BVE1FTF9TT0NfU1NDX0RNQSBbPW1dICYmIFNPVU5EIFs9
+bV0gJiYgIVVNTCAmJiBTTkQgWz1tXSAmJiBTTkRfU09DIFs9bV0gJiYgU05EX0FUTUVMX1NPQyBb
+PW1dICYmIEFUTUVMX1NTQyBbPW1dDQo+IA0KPiBXQVJOSU5HOiB1bm1ldCBkaXJlY3QgZGVwZW5k
+ZW5jaWVzIGRldGVjdGVkIGZvciBTTkRfQVRNRUxfU09DX1NTQ19ETUENCj4gICAgRGVwZW5kcyBv
+biBbbl06IFNPVU5EIFs9bV0gJiYgIVVNTCAmJiBTTkQgWz1tXSAmJiBTTkRfU09DIFs9bV0gJiYg
+U05EX0FUTUVMX1NPQyBbPW1dICYmIEFUTUVMX1NTQyBbPW1dICYmIEhBU19ETUEgWz1uXQ0KPiAg
+ICBTZWxlY3RlZCBieSBbbV06DQo+ICAgIC0gU05EX0FUTUVMX1NPQ19XTTg5MDQgWz1tXSAmJiBT
+T1VORCBbPW1dICYmICFVTUwgJiYgU05EIFs9bV0gJiYgU05EX1NPQyBbPW1dICYmIFNORF9BVE1F
+TF9TT0MgWz1tXSAmJiAoQVJDSF9BVDkxIHx8IENPTVBJTEVfVEVTVCBbPXldKSAmJiBBVE1FTF9T
+U0MgWz1tXSAmJiBJMkMgWz1tXQ0KPiAgICAtIFNORF9BVDkxX1NPQ19TQU05WDVfV004NzMxIFs9
+bV0gJiYgU09VTkQgWz1tXSAmJiAhVU1MICYmIFNORCBbPW1dICYmIFNORF9TT0MgWz1tXSAmJiBT
+TkRfQVRNRUxfU09DIFs9bV0gJiYgKEFSQ0hfQVQ5MSB8fCBDT01QSUxFX1RFU1QgWz15XSkgJiYg
+QVRNRUxfU1NDIFs9bV0gJiYgU05EX1NPQ19JMkNfQU5EX1NQSSBbPW1dDQo+IA0KPiBGaXhlczog
+Mzk1MWU0YWFlMmNlICgiQVNvQzogYXRtZWwtcGNtOiBkbWEgc3VwcG9ydCBiYXNlZCBvbiBwY20g
+ZG1hZW5naW5lIikNCj4gRml4ZXM6IDE4MjkxNDEwNTU3ZiAoIkFTb0M6IGF0bWVsOiBlbmFibGUg
+U09DX1NTQ19QREMgYW5kIFNPQ19TU0NfRE1BIGluIEtjb25maWciKQ0KPiBGaXhlczogMDYxOTgx
+ZmY4Y2M4ICgiQVNvQzogYXRtZWw6IHByb3Blcmx5IHNlbGVjdCBkbWEgZHJpdmVyIHN0YXRlIikN
+Cg0KSSBhbSBub3Qgc3VyZSBhYm91dCB0aGVzZSBmaXhlcyB0YWdzLiBBcyBBbGV4YW5kcmUgbWVu
+dGlvbmVkLCBpdCBsb29rcyANCmxpa2UgdGhlIHJlYXNvbiBmb3IgSEFTX0RNQSBpbiB0aGUgZmly
+c3QgcGxhY2Ugd2FzIHRoZSBDT01QSUxFX1RFU1Qgd2l0aCANCm0zMnIgYXJjaC4gSSBkaWcgYSBi
+aXQsIGFuZCwgaWYgYW55LCBJIHRoaW5rIHdlIHNob3VsZCB1c2U6DQpGaXhlczogZWIxNzcyNmIw
+MGIzICgibTMycjogYWRkIHNpbXBsZSBkbWEiKQ0Kc2luY2UgdGhpcyBjb21taXQgYWRkcyBkdW1t
+eSBETUEgc3VwcG9ydCBmb3IgbTMyciBhbmQgc2VlbXMgdG8gZml4IHRoZSANCkhBU19ETUEgZGVw
+ZW5kZW5jeS4NCg0KPiBTaWduZWQtb2ZmLWJ5OiBSYW5keSBEdW5sYXAgPHJkdW5sYXBAaW5mcmFk
+ZWFkLm9yZz4NCj4gQ2M6IENvZHJpbiBDaXVib3Rhcml1IDxjb2RyaW4uY2l1Ym90YXJpdUBtaWNy
+b2NoaXAuY29tPg0KPiBDYzogYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnDQo+IENjOiBMaWFt
+IEdpcmR3b29kIDxsZ2lyZHdvb2RAZ21haWwuY29tPg0KPiBDYzogTWFyayBCcm93biA8YnJvb25p
+ZUBrZXJuZWwub3JnPg0KPiBDYzogTWljaGHFgiBNaXJvc8WCYXcgPG1pcnEtbGludXhAcmVyZS5x
+bXFtLnBsPg0KDQpPdGhlciB0aGFuIHRoYXQ6DQpSZXZpZXdlZC1ieTogQ29kcmluIENpdWJvdGFy
+aXUgPGNvZHJpbi5jaXVib3Rhcml1QG1pY3JvY2hpcC5jb20+DQoNClRoYW5rcyENCkNvZHJpbg0K
