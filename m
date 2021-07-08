@@ -2,87 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82DD23BF3E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 04:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B8983BF3F7
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 04:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230229AbhGHCVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 22:21:40 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:41623 "EHLO ozlabs.org"
+        id S230412AbhGHC1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 22:27:21 -0400
+Received: from mga14.intel.com ([192.55.52.115]:62635 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230160AbhGHCVj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 22:21:39 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GL0N05RpTz9sWl;
-        Thu,  8 Jul 2021 12:18:56 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1625710736;
-        bh=dGsVRSn27YFSkOofaMR31nZQGDHDgtQeHE6bnmvWkaE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RL1Xa8KB52elSP6gQ73crwJGl6rIIxCDoWujSlmfZAUR5/DDss3aArwk6jRo2rvd5
-         KrWabGA32zu5MJZGKgE9jDUMrMfES6g42snvVqorAaXPo4l8ue5Z71SHn6n0xWdpbQ
-         CE8UYSB1cVE/dtrGcoerNw1E+Egnlk9UuE4mcVXlUA4rBB4QyEbeAv1yoq9IAu9JD2
-         NBowx8hypjNpXH1jreejFQVVcfcJKsK9rSeQca2oY0PS5gN4ERS9SEdbFW+0o/ZA0q
-         bPzFWp8KHmQ0IVEymRPJUQpoQvhZxxQHamb82lrkCGfB5gSkiuVulK5wZMWHkoCqP6
-         jfn2XliBEJpaQ==
-Date:   Thu, 8 Jul 2021 12:18:55 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the irqchip tree
-Message-ID: <20210708121855.69b5a5f8@canb.auug.org.au>
-In-Reply-To: <20210615210143.2e00d851@canb.auug.org.au>
-References: <20210615210143.2e00d851@canb.auug.org.au>
+        id S230188AbhGHC1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 22:27:21 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10038"; a="209247383"
+X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
+   d="scan'208";a="209247383"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2021 19:24:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
+   d="scan'208";a="498201106"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
+  by fmsmga002.fm.intel.com with ESMTP; 07 Jul 2021 19:24:38 -0700
+Date:   Thu, 8 Jul 2021 10:19:13 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Tom Rix <trix@redhat.com>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Wu Hao <hao.wu@intel.com>,
+        Moritz Fischer <mdf@kernel.org>, linux-fpga@vger.kernel.org
+Subject: Re: [PATCH] bus: Make remove callback return void
+Message-ID: <20210708021913.GB12358@yilunxu-OptiPlex-7050>
+References: <20210706095037.1425211-1-u.kleine-koenig@pengutronix.de>
+ <4c7210e4-76e4-07fe-a40c-a58e331d0a6e@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_//s5UlzaF5+5cr3lV1ju95zu";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4c7210e4-76e4-07fe-a40c-a58e331d0a6e@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_//s5UlzaF5+5cr3lV1ju95zu
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-On Tue, 15 Jun 2021 21:01:43 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> After merging the irqchip tree, today's linux-next build (htmldocs)
-> produced this warning:
->=20
-> kernel/irq/irqdesc.c:692: warning: Excess function parameter 'lookup' des=
-cription in 'handle_domain_irq'
->=20
-> Introduced by commit
->=20
->   e1c054918c6c ("genirq: Move non-irqdomain handle_domain_irq() handling =
-into ARM's handle_IRQ()")
-
-I am still getting this warning.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_//s5UlzaF5+5cr3lV1ju95zu
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDmYI8ACgkQAVBC80lX
-0Gw/SQf7B0f/UfT/zvDZRvtx2gcSuOd8QnLGqC5m8DRXCtbkm2nzjmsiX63TQoK8
-oSywcEOGhNBCAH1yJ8qm//9dfztnSF6Miyw9Yz3H5jOjJrzpJyjm3CmBlSgSv/fH
-1WcB6Ugp60dYcQCRdwEerizIIc4xBuB0IMdLpkyPqUjkLvUZ40VxTUiTKPsA3f/P
-+B6kYEtYB8losIWopzm2XfmZsAUc1Ox99aiaZoL/Zjj5HhCUJhCFqgAw4CfZfelE
-7dvq05h8Hk/l2u0DtFbJcpzaaZXnXv2WNRh1QmUszjWYj17xDyqBnihqB/17JLfd
-0PiotiaI0hSrV/Y+nXSH509OllADfg==
-=uKMN
------END PGP SIGNATURE-----
-
---Sig_//s5UlzaF5+5cr3lV1ju95zu--
+On Tue, Jul 06, 2021 at 06:52:09AM -0700, Tom Rix wrote:
+> 
+> On 7/6/21 2:50 AM, Uwe Kleine-König wrote:
+> > The driver core ignores the return value of this callback because there
+> > is only little it can do when a device disappears.
+> > 
+> > This is the final bit of a long lasting cleanup quest where several
+> > buses were converted to also return void from their remove callback.
+> > Additionally some resource leaks were fixed that were caused by drivers
+> > returning an error code in the expectation that the driver won't go
+> > away.
+> > 
+> > With struct bus_type::remove returning void it's prevented that newly
+> > implemented buses return an ignored error code and so don't anticipate
+> > wrong expectations for driver authors.
+> > 
+> > Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> > ---
+> > Hello,
+> > 
+> > this patch depends on "PCI: endpoint: Make struct pci_epf_driver::remove
+> > return void" that is not yet applied, see
+> > https://lore.kernel.org/r/20210223090757.57604-1-u.kleine-koenig@pengutronix.de.
+> > 
+> > I tested it using allmodconfig on amd64 and arm, but I wouldn't be
+> > surprised if I still missed to convert a driver. So it would be great to
+> > get this into next early after the merge window closes.
+> > 
+> > I send this mail to all people that get_maintainer.pl emits for this
+> > patch. I wonder how many recipents will refuse this mail because of the
+> > long Cc: list :-)
+> > 
+> > Best regards
+> > Uwe
+> 
+> >   drivers/fpga/dfl.c                        | 4 +---
+> Reviewed-by: Tom Rix <trix@redhat.com>
+Reviewed-by: Xu Yilun <yilun.xu@intel.com>
