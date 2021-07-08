@@ -2,142 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A63A53C1734
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 18:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A16E3C173A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 18:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229691AbhGHQoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 12:44:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbhGHQoi (ORCPT
+        id S229701AbhGHQpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 12:45:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38109 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229566AbhGHQpv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 12:44:38 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DFCDC061574;
-        Thu,  8 Jul 2021 09:41:55 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id h4so6606835pgp.5;
-        Thu, 08 Jul 2021 09:41:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GylP2h/vGk7rUHYwB/QVPhjkfxYbehLyp/bT9npB0Yg=;
-        b=LMDdcytOc0Z2ciYeBY8dEa8I1jmlRbOcH/X+ADarQXDMKb06H1m0FXVLHAq9fAGtV0
-         UkXcpcNGPdCx7kXglylmKcOgzjSmX5DycwkvVlzl80380L6rPIEPaDPtF+Ks+xCPhZL4
-         zuBqapjmzA4ckNeVWkvdGA4WI0zVLcraFxMgVtqMwCNKIj2+q3q8GjO6e+WtLzWnpYVW
-         PWuy/e8MnFcuSx4iIkaunj1CT901rl1vI50VYjq9E8fdYVmVYJUEOZm1GcyAnW4aw3UV
-         bp4j1JHkP6F2gTiiQA5ZtmwHuksnWhEkSFt4eLzsLUmdTick0+pkXidC0/R4iLMZ8kVY
-         +5Ng==
+        Thu, 8 Jul 2021 12:45:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625762589;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=D66C027ALMZX8KmiIGzWW2xf5pX3PYyC6v7g+QXpb8U=;
+        b=AGW+HInTcftCd+hZEEmV+mZk0GMTkaznEpqBx0Co3/j4cHA73uHkJKjtnHdP66U93giJH5
+        QAV+81hxU1qkIF47IDlCnbYCoU0rNM121PWI90Xci16EPOCjbRntqCARw53AQ+rM8FZghU
+        PvKjf6y6123hprtE6NEOBEabfKUuMqY=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-316-dgAgOoLyPo-gAQRtdltr2w-1; Thu, 08 Jul 2021 12:43:07 -0400
+X-MC-Unique: dgAgOoLyPo-gAQRtdltr2w-1
+Received: by mail-ed1-f69.google.com with SMTP id z5-20020a05640235c5b0290393974bcf7eso3623678edc.2
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 09:43:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=GylP2h/vGk7rUHYwB/QVPhjkfxYbehLyp/bT9npB0Yg=;
-        b=lW7527+JTiJvK1P1lzdpq/2DYT8BkFZ9LzumlSCKst0jZr0yoRJhYk2cIpdy4C8E9u
-         Uyx/4BwhMzF0cerHFIuwbZt+gwCxs4wsI5UD0Gynl2CRtHmTiF0TrYNlZNLsSurBe0cA
-         0F4EIPONK72WPUwjplNCPj72NxcstWHYtI1uTibhCf9LAGXGkzoMC/N5UM6BeW1BqVIU
-         wmKVaxsPCtEeyez2FxYjXRoh5Alzf9KlH2evjrOL7KiekDhAfn6rqKfs3lF1dstRu3bd
-         V7yZALvHgKO0SrwcKM1Vb0+waGjI8y1tu+AKM8FLzJomBxyPaScL1jDUaE/EbNrUcKq1
-         HwLw==
-X-Gm-Message-State: AOAM530CIuWNeJWPxRQg0GePke8VAI5mRg2N1UrDYiktLbUyUQ0bv9I4
-        VQSnzftduKdWBuzRPABSv20IYj4QDnUSRQ==
-X-Google-Smtp-Source: ABdhPJxJFZ4WqZ2x+jy1EH6AaS76n/tnnlNBEqSyLLyKLS7XrC9am9Huo+b3X+VARYTDQ8wpiawxVA==
-X-Received: by 2002:a62:4e97:0:b029:312:7b4c:55b7 with SMTP id c145-20020a624e970000b02903127b4c55b7mr31638752pfb.47.1625762514387;
-        Thu, 08 Jul 2021 09:41:54 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id y5sm9387095pjy.2.2021.07.08.09.41.50
+        bh=D66C027ALMZX8KmiIGzWW2xf5pX3PYyC6v7g+QXpb8U=;
+        b=dJIUs1rZgBmEYB3ZTBYr7DAmox8A1HU9jT7kzQr+nbS9K76JHICa+RkO13rnFsv28K
+         yEG10UODwgYLml5WN392q3zPaPIxJv8cJVUDClS+WCmmsUi22qVQP3bNM1tGhAI1/vxA
+         UsnB9pxgpVN7U5XwGUFLRc+XOT2A+QivAmAOvp9LHg2uayvMe+RunDVOwOqDFJ0PdQj5
+         1QtLbf9QPx7ti/vfqcYkulbSfroIz9XLBHYWBhw9BmmXbshXTVIbkODUNyL2J35IIvaL
+         +9ti1Omigm7BuzJA1iLHzwfRrkdncS7Onwo4/AFO0OjQN9AVNjdkcYpum05GphsmWSW1
+         Tepw==
+X-Gm-Message-State: AOAM530CWmGso0UwoK8CgebuYVGAI/Eboqloydp4tmiNH2Mli694pqlS
+        xEkAtKwEA4LEQIu7psmjiVciPvKAyTzbnx1FLX5X7nKwXCC9kuJaxG0GtaDoYAP8kVu+kzz8khA
+        cOPvdvTmM9fZA5LWbow4hvYjC
+X-Received: by 2002:a05:6402:50c6:: with SMTP id h6mr39709587edb.296.1625762586739;
+        Thu, 08 Jul 2021 09:43:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyjgIagSVZlBFLz6289dyKlXMEisgWewUN7ov4BwrNX4oVQl4QAdly/6faGn+deCRC/YbC93A==
+X-Received: by 2002:a05:6402:50c6:: with SMTP id h6mr39709567edb.296.1625762586559;
+        Thu, 08 Jul 2021 09:43:06 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id p19sm1488014edr.73.2021.07.08.09.43.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Jul 2021 09:41:53 -0700 (PDT)
-Subject: Re: [PATCH net] net: phy: reconfigure PHY WOL in resume if WOL option
- still enabled
-To:     "Ismail, Mohammad Athari" <mohammad.athari.ismail@intel.com>,
-        Andrew Lunn <andrew@lunn.ch>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210708004253.6863-1-mohammad.athari.ismail@intel.com>
- <YOZTmfvVTj9eo+to@lunn.ch> <4e159b98-ec02-33b7-862a-0e35832c3a5f@gmail.com>
- <CO1PR11MB477144A2A055B390825A9FF4D5199@CO1PR11MB4771.namprd11.prod.outlook.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <9871a015-bcfb-0bdb-c481-5e8f2356e5ba@gmail.com>
-Date:   Thu, 8 Jul 2021 09:41:45 -0700
+        Thu, 08 Jul 2021 09:43:06 -0700 (PDT)
+Subject: Re: [PATCH] KVM: mmio: Fix use-after-free Read in
+ kvm_vm_ioctl_unregister_coalesced_mmio
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        linux-kernel@vger.kernel.org
+Cc:     kvm@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
+References: <20210626070304.143456-1-wangkefeng.wang@huawei.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <8c53acbe-ccb9-4283-0634-cbf69a1052e4@redhat.com>
+Date:   Thu, 8 Jul 2021 18:43:05 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <CO1PR11MB477144A2A055B390825A9FF4D5199@CO1PR11MB4771.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210626070304.143456-1-wangkefeng.wang@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/8/21 3:10 AM, Ismail, Mohammad Athari wrote:
+On 26/06/21 09:03, Kefeng Wang wrote:
+> BUG: KASAN: use-after-free in kvm_vm_ioctl_unregister_coalesced_mmio+0x7c/0x1ec arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:183
+> Read of size 8 at addr ffff0000c03a2500 by task syz-executor083/4269
 > 
+> CPU: 5 PID: 4269 Comm: syz-executor083 Not tainted 5.10.0 #7
+> Hardware name: linux,dummy-virt (DT)
+> Call trace:
+>   dump_backtrace+0x0/0x2d0 arch/arm64/kernel/stacktrace.c:132
+>   show_stack+0x28/0x34 arch/arm64/kernel/stacktrace.c:196
+>   __dump_stack lib/dump_stack.c:77 [inline]
+>   dump_stack+0x110/0x164 lib/dump_stack.c:118
+>   print_address_description+0x78/0x5c8 mm/kasan/report.c:385
+>   __kasan_report mm/kasan/report.c:545 [inline]
+>   kasan_report+0x148/0x1e4 mm/kasan/report.c:562
+>   check_memory_region_inline mm/kasan/generic.c:183 [inline]
+>   __asan_load8+0xb4/0xbc mm/kasan/generic.c:252
+>   kvm_vm_ioctl_unregister_coalesced_mmio+0x7c/0x1ec arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:183
+>   kvm_vm_ioctl+0xe30/0x14c4 arch/arm64/kvm/../../../virt/kvm/kvm_main.c:3755
+>   vfs_ioctl fs/ioctl.c:48 [inline]
+>   __do_sys_ioctl fs/ioctl.c:753 [inline]
+>   __se_sys_ioctl fs/ioctl.c:739 [inline]
+>   __arm64_sys_ioctl+0xf88/0x131c fs/ioctl.c:739
+>   __invoke_syscall arch/arm64/kernel/syscall.c:36 [inline]
+>   invoke_syscall arch/arm64/kernel/syscall.c:48 [inline]
+>   el0_svc_common arch/arm64/kernel/syscall.c:158 [inline]
+>   do_el0_svc+0x120/0x290 arch/arm64/kernel/syscall.c:220
+>   el0_svc+0x1c/0x28 arch/arm64/kernel/entry-common.c:367
+>   el0_sync_handler+0x98/0x170 arch/arm64/kernel/entry-common.c:383
+>   el0_sync+0x140/0x180 arch/arm64/kernel/entry.S:670
 > 
->> -----Original Message-----
->> From: Florian Fainelli <f.fainelli@gmail.com>
->> Sent: Thursday, July 8, 2021 10:49 AM
->> To: Andrew Lunn <andrew@lunn.ch>; Ismail, Mohammad Athari
->> <mohammad.athari.ismail@intel.com>
->> Cc: Heiner Kallweit <hkallweit1@gmail.com>; David S . Miller
->> <davem@davemloft.net>; Russell King <linux@armlinux.org.uk>; Jakub Kicinski
->> <kuba@kernel.org>; netdev@vger.kernel.org; linux-kernel@vger.kernel.org
->> Subject: Re: [PATCH net] net: phy: reconfigure PHY WOL in resume if WOL
->> option still enabled
->>
->>
->>
->> On 7/7/2021 6:23 PM, Andrew Lunn wrote:
->>> On Thu, Jul 08, 2021 at 08:42:53AM +0800,
->> mohammad.athari.ismail@intel.com wrote:
->>>> From: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
->>>>
->>>> When the PHY wakes up from suspend through WOL event, there is a need
->>>> to reconfigure the WOL if the WOL option still enabled. The main
->>>> operation is to clear the WOL event status. So that, subsequent WOL
->>>> event can be triggered properly.
->>>>
->>>> This fix is needed especially for the PHY that operates in PHY_POLL
->>>> mode where there is no handler (such as interrupt handler) available
->>>> to clear the WOL event status.
->>>
->>> I still think this architecture is wrong.
->>>
->>> The interrupt pin is wired to the PMIC. Can the PMIC be modelled as an
->>> interrupt controller? That would allow the interrupt to be handled as
->>> normal, and would mean you don't need polling, and you don't need this
->>> hack.
->>
->> I have to agree with Andrew here, and if the answer is that you cannot model
->> this PMIC as an interrupt controller, cannot the config_init() callback of the
->> driver acknowledge then disable the interrupts as it normally would if you were
->> cold booting the system? This would also allow you to properly account for the
->> PHY having woken-up the system.
+> Allocated by task 4269:
+>   stack_trace_save+0x80/0xb8 kernel/stacktrace.c:121
+>   kasan_save_stack mm/kasan/common.c:48 [inline]
+>   kasan_set_track mm/kasan/common.c:56 [inline]
+>   __kasan_kmalloc+0xdc/0x120 mm/kasan/common.c:461
+>   kasan_kmalloc+0xc/0x14 mm/kasan/common.c:475
+>   kmem_cache_alloc_trace include/linux/slab.h:450 [inline]
+>   kmalloc include/linux/slab.h:552 [inline]
+>   kzalloc include/linux/slab.h:664 [inline]
+>   kvm_vm_ioctl_register_coalesced_mmio+0x78/0x1cc arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:146
+>   kvm_vm_ioctl+0x7e8/0x14c4 arch/arm64/kvm/../../../virt/kvm/kvm_main.c:3746
+>   vfs_ioctl fs/ioctl.c:48 [inline]
+>   __do_sys_ioctl fs/ioctl.c:753 [inline]
+>   __se_sys_ioctl fs/ioctl.c:739 [inline]
+>   __arm64_sys_ioctl+0xf88/0x131c fs/ioctl.c:739
+>   __invoke_syscall arch/arm64/kernel/syscall.c:36 [inline]
+>   invoke_syscall arch/arm64/kernel/syscall.c:48 [inline]
+>   el0_svc_common arch/arm64/kernel/syscall.c:158 [inline]
+>   do_el0_svc+0x120/0x290 arch/arm64/kernel/syscall.c:220
+>   el0_svc+0x1c/0x28 arch/arm64/kernel/entry-common.c:367
+>   el0_sync_handler+0x98/0x170 arch/arm64/kernel/entry-common.c:383
+>   el0_sync+0x140/0x180 arch/arm64/kernel/entry.S:670
 > 
-> Hi Florian,
+> Freed by task 4269:
+>   stack_trace_save+0x80/0xb8 kernel/stacktrace.c:121
+>   kasan_save_stack mm/kasan/common.c:48 [inline]
+>   kasan_set_track+0x38/0x6c mm/kasan/common.c:56
+>   kasan_set_free_info+0x20/0x40 mm/kasan/generic.c:355
+>   __kasan_slab_free+0x124/0x150 mm/kasan/common.c:422
+>   kasan_slab_free+0x10/0x1c mm/kasan/common.c:431
+>   slab_free_hook mm/slub.c:1544 [inline]
+>   slab_free_freelist_hook mm/slub.c:1577 [inline]
+>   slab_free mm/slub.c:3142 [inline]
+>   kfree+0x104/0x38c mm/slub.c:4124
+>   coalesced_mmio_destructor+0x94/0xa4 arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:102
+>   kvm_iodevice_destructor include/kvm/iodev.h:61 [inline]
+>   kvm_io_bus_unregister_dev+0x248/0x280 arch/arm64/kvm/../../../virt/kvm/kvm_main.c:4374
+>   kvm_vm_ioctl_unregister_coalesced_mmio+0x158/0x1ec arch/arm64/kvm/../../../virt/kvm/coalesced_mmio.c:186
+>   kvm_vm_ioctl+0xe30/0x14c4 arch/arm64/kvm/../../../virt/kvm/kvm_main.c:3755
+>   vfs_ioctl fs/ioctl.c:48 [inline]
+>   __do_sys_ioctl fs/ioctl.c:753 [inline]
+>   __se_sys_ioctl fs/ioctl.c:739 [inline]
+>   __arm64_sys_ioctl+0xf88/0x131c fs/ioctl.c:739
+>   __invoke_syscall arch/arm64/kernel/syscall.c:36 [inline]
+>   invoke_syscall arch/arm64/kernel/syscall.c:48 [inline]
+>   el0_svc_common arch/arm64/kernel/syscall.c:158 [inline]
+>   do_el0_svc+0x120/0x290 arch/arm64/kernel/syscall.c:220
+>   el0_svc+0x1c/0x28 arch/arm64/kernel/entry-common.c:367
+>   el0_sync_handler+0x98/0x170 arch/arm64/kernel/entry-common.c:383
+>   el0_sync+0x140/0x180 arch/arm64/kernel/entry.S:670
 > 
-> Thank you for the suggestion. 
-> If I understand correctly, you are suggesting to acknowledge and clear the WOL status in config_init() callback function. Am I correct?
-> If yes, I did try to add a code to clear WOL status in marvell_config_init() function (we are using Marvell Alaska 88E1512). But, I found that, if the platform wake up from S3(mem) or S4(disk), the config_init() callback function is not called. As the result, WOL status not able to be cleared in config_init().
+> If kvm_io_bus_unregister_dev() return -ENOMEM, we already call kvm_iodevice_destructor()
+> inside this function to delete 'struct kvm_coalesced_mmio_dev *dev' from list
+> and free the dev, but kvm_iodevice_destructor() is called again, it will lead
+> the above issue.
 > 
-> Please advice if you any suggestion.
+> Let's check the the return value of kvm_io_bus_unregister_dev(), only call
+> kvm_iodevice_destructor() if the return value is 0.
+> 
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: kvm@vger.kernel.org
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+>   virt/kvm/coalesced_mmio.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/virt/kvm/coalesced_mmio.c b/virt/kvm/coalesced_mmio.c
+> index f08f5e82460b..0be80c213f7f 100644
+> --- a/virt/kvm/coalesced_mmio.c
+> +++ b/virt/kvm/coalesced_mmio.c
+> @@ -186,7 +186,6 @@ int kvm_vm_ioctl_unregister_coalesced_mmio(struct kvm *kvm,
+>   		    coalesced_mmio_in_range(dev, zone->addr, zone->size)) {
+>   			r = kvm_io_bus_unregister_dev(kvm,
+>   				zone->pio ? KVM_PIO_BUS : KVM_MMIO_BUS, &dev->dev);
+> -			kvm_iodevice_destructor(&dev->dev);
+>   
+>   			/*
+>   			 * On failure, unregister destroys all devices on the
+> @@ -196,6 +195,7 @@ int kvm_vm_ioctl_unregister_coalesced_mmio(struct kvm *kvm,
+>   			 */
+>   			if (r)
+>   				break;
+> +			kvm_iodevice_destructor(&dev->dev);
+>   		}
+>   	}
+>   
+> 
 
-This is presumably that you are seeing with stmmac along with phylink?
+Queued, thanks.
 
-During S3 resume you should be going back to the kernel provided
-re-entry point and resume where we left (warm boot) so
-mdio_bus_phy_resume() should call phy_init_hw() which calls
-config_init(), have you traced if that is somehow not happening?
+Paolo
 
-During S4 resume (disk), I suppose that you have to involve the boot
-loader to restore the DRAM image from the storage disk, and so that does
-effectively look like a quasi cold boot from the kernel? If so, that
-should still lead to config_init() being called when the PHY is
-attached, no?
--- 
-Florian
