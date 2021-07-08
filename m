@@ -2,88 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D3683C13C3
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 15:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6EFA3C1382
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 15:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231749AbhGHNGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 09:06:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58236 "EHLO
+        id S231543AbhGHNGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 09:06:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231550AbhGHNGt (ORCPT
+        with ESMTP id S230396AbhGHNG2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 09:06:49 -0400
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05955C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 06:04:07 -0700 (PDT)
-Received: by mail-vs1-xe2f.google.com with SMTP id h5so3511300vsg.12
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 06:04:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KEHvtk/qDbB4blO1SCEyQUaWYrL3oXULeK/saz6CTeE=;
-        b=AoVRYb45kt0ltweZhxP5zSUmqreVyxGzhf0gfCOx5WHPtiPAeuuN2aeLc5WfwYke3G
-         KCG5DghU1Hp3un1DSxPPc+BCmXKhndrA5ZfJU+LP+oSptOxPEOqzFdZEpKAhS+Wc81sz
-         vKJgu6XBA/mWwzrEYesOipfqr+E3OpPg3DTWDEr9LbVpljtpI2bUyI5avGDqMoPMofb+
-         QEzR9gpXS9XIpuiKfojrj1xM9LWCT1S83yT0/gNiJYt+yO5P1DSSBXH367plz4y/FLs8
-         cLluvRJ8zgdIoDHf1H7lmrd1E4I+i6q42vNx/XbZ5CZ0JubHDui5MtOOPaaSxi9JZI3f
-         Z9wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KEHvtk/qDbB4blO1SCEyQUaWYrL3oXULeK/saz6CTeE=;
-        b=MgIXVoTG2VPDiTmT/zY7992jR6Pp7Q+djfOi94kU9eE+p0CmVoZrCvNQlF6WXyB2JY
-         kJIMTKk2iAm85+hpgmGZIebVOYzInyP8qjWJFKor3ueZCSMHFBwlsoqDFZ3rHQam9KWW
-         93BJM5XLK18MErTRSXPXQ2X7J95+lmL6DZ9ShF8xqGwHmTvuGnOmxqmstUtSQqnz8RW0
-         0W25cau19+ssiFqZ77CeMeARHC4674EzsSypGSFiACTZ7HZb5WXigsJh8tHPChR5EGb9
-         C4yI/EUb1h87Pf/yzJ4bksy4SMuZ1mvLmfxIvjaz4cVVg4djsLLv+tX4RIJmkIYxw150
-         nxvw==
-X-Gm-Message-State: AOAM530GRib2Nx7AUAqQgFv+X+L2RMidKF1UwrNqBAv+SyH0a1eKLYzI
-        IoZrFwSocagqR/C29+J7/A1cZEEt1Bdh8Sh3iCOZcA==
-X-Google-Smtp-Source: ABdhPJxXd15HTOj1S79pKDlOlKLm6vFjRSvtykjfTPrGVEJUaYx/vzhhBQjyJBbp+A/154EsGOxphqSdkkg0KisQ/yE=
-X-Received: by 2002:a67:ee54:: with SMTP id g20mr27739180vsp.55.1625749446193;
- Thu, 08 Jul 2021 06:04:06 -0700 (PDT)
+        Thu, 8 Jul 2021 09:06:28 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2B8DC061574;
+        Thu,  8 Jul 2021 06:03:46 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1625749425;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MRfCbrQnCjc31mun5+lwwycjoViRgOB/BMNUJ5+WFVM=;
+        b=XqHv15B4IzUHDb3aeRgQ9sUauMXSuWJTTUoBLFBg7gfNpqSdZz+HCXNTrRDVU1Hs3lihnx
+        JANDD+V7ccrDsoSGZXo307eDImgnyvANXm0IZz3nwgiSjCqAUWuCMMg9tx6667WyaZF53b
+        QU+hi4vZKSV2MRfp7E1o73tvD1CsOuSdsp/HsqCbe6wvkWcbxqTyBbNODiQIPdr3zDI8xo
+        LLjpGBPv93PD9rzuHIOJrcPSCFdDgKCf5Tit7ww64Vg3jhXI1sTNIbgfzO1tu+btaeikY3
+        BgkBZMnh6EACv5LXSbZuZsm7z6ct3YEp6uBGDZmmVtJ/Q2c3OWv9jHo3y4PEmg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1625749425;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MRfCbrQnCjc31mun5+lwwycjoViRgOB/BMNUJ5+WFVM=;
+        b=x5+ZjaUMukMtoLsi6pswazdqA74YMyQ4LYDTz12q7iwjXG7PC589ioXdFo3oGf5Lm6/oqS
+        X39v/oanHo5CqlBQ==
+To:     syzbot <syzbot+a3fcd59df1b372066f5a@syzkaller.appspotmail.com>,
+        akpm@linux-foundation.org, bp@alien8.de, hpa@zytor.com,
+        jmattson@google.com, joro@8bytes.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        mark.rutland@arm.com, masahiroy@kernel.org, mingo@redhat.com,
+        pbonzini@redhat.com, peterz@infradead.org,
+        rafael.j.wysocki@intel.com, rostedt@goodmis.org, seanjc@google.com,
+        sedat.dilek@gmail.com, syzkaller-bugs@googlegroups.com,
+        vitor@massaru.org, vkuznets@redhat.com, wanpengli@tencent.com,
+        will@kernel.org, x86@kernel.org
+Subject: Re: [syzbot] general protection fault in try_grab_compound_head
+In-Reply-To: <0000000000009e89e205c63dda94@google.com>
+References: <0000000000009e89e205c63dda94@google.com>
+Date:   Thu, 08 Jul 2021 15:03:45 +0200
+Message-ID: <87fswpot3i.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20210623101731.87885-1-andriy.shevchenko@linux.intel.com>
- <CAPDyKFoM-gkFPoFePbHS62r-HUpk6ipA5J-qPbQ8NWL9Mm_N2Q@mail.gmail.com> <CAHp75VfdDXwboZWZgRdFNXLpONy8UgDryeZWd6UD2RaCXo=uOw@mail.gmail.com>
-In-Reply-To: <CAHp75VfdDXwboZWZgRdFNXLpONy8UgDryeZWd6UD2RaCXo=uOw@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 8 Jul 2021 15:03:30 +0200
-Message-ID: <CAPDyKFqmswO9a-Sv6Wk5x4XA0P-idT1zZwRvjVbK7oS=J2cesg@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] mmc: mmc_spi: Simplify busy loop in mmc_spi_skip()
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 8 Jul 2021 at 14:50, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+On Sat, Jul 03 2021 at 13:24, syzbot wrote:
+> syzbot has bisected this issue to:
 >
-> On Thu, Jul 8, 2021 at 3:33 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > On Wed, 23 Jun 2021 at 12:17, Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
+> commit 997acaf6b4b59c6a9c259740312a69ea549cc684
+> Author: Mark Rutland <mark.rutland@arm.com>
+> Date:   Mon Jan 11 15:37:07 2021 +0000
 >
-> ...
->
-> > This certainly is an improvement.
-> >
-> > Although, what do you think of moving to readx_poll_timeout(), that
-> > should allow even a better cleanup, don't you think?
->
-> I believe you meant rather read_poll_timeout(). Either way I don't see
-> the benefit of using that macro when you have to customize its body a
-> lot. Besides that the macro doesn't use cond_sched() or even
-> schedule() and I'm not sure it will be an equivalent change.
->
-> That said, I prefer going this patch as is for the time being. We may
-> adjust it later on.
+>     lockdep: report broken irq restoration
 
-Okay, no strong opinion from my side. Queued for v5.15 on my devel
-branch, thanks!
+That's the commit which makes the underlying problem visible:
 
-Kind regards
-Uffe
+       raw_local_irq_restore() called with IRQs enabled
+
+and is triggered by this call chain:
+
+ kvm_wait arch/x86/kernel/kvm.c:860 [inline]
+ kvm_wait+0xc3/0xe0 arch/x86/kernel/kvm.c:837
+ pv_wait arch/x86/include/asm/paravirt.h:564 [inline]
+ pv_wait_head_or_lock kernel/locking/qspinlock_paravirt.h:470 [inline]
+ __pv_queued_spin_lock_slowpath+0x8b8/0xb40 kernel/locking/qspinlock.c:508
+ pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:554 [inline]
+ queued_spin_lock_slowpath arch/x86/include/asm/qspinlock.h:51 [inline]
+ queued_spin_lock include/asm-generic/qspinlock.h:85 [inline]
+ do_raw_spin_lock+0x200/0x2b0 kernel/locking/spinlock_debug.c:113
+ spin_lock include/linux/spinlock.h:354 [inline]
+ alloc_huge_page+0x2b0/0xda0 mm/hugetlb.c:2318
+ hugetlb_no_page mm/hugetlb.c:4323 [inline]
+ hugetlb_fault+0xc35/0x1cd0 mm/hugetlb.c:4523
+ follow_hugetlb_page+0x317/0xda0 mm/hugetlb.c:4836
+ __get_user_pages+0x3fa/0xe30 mm/gup.c:1041
+ __get_user_pages_locked mm/gup.c:1256 [inline]
+ __gup_longterm_locked+0x15f/0xc80 mm/gup.c:1667
+ io_sqe_buffer_register fs/io_uring.c:8462 [inline]
+ __io_uring_register fs/io_uring.c:9901 [inline]
+ __do_sys_io_uring_register+0xeb1/0x3350 fs/io_uring.c:10000
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Thanks,
+
+        tglx
