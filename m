@@ -2,154 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B251E3C1514
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 16:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 751A13C1516
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 16:22:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbhGHOYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 10:24:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231754AbhGHOYm (ORCPT
+        id S231974AbhGHOZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 10:25:30 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:1696 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231515AbhGHOZ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 10:24:42 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99408C06175F
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 07:21:59 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id i8so7720256wrp.12
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 07:21:59 -0700 (PDT)
+        Thu, 8 Jul 2021 10:25:29 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 168EMXX3025875;
+        Thu, 8 Jul 2021 14:22:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2020-01-29;
+ bh=8+aqNpOIdC336lxqyNc/bD55AhEDMwUsfe+OdCIsvpw=;
+ b=LTNyKg14gbyoNV21MAfFLgnpgzRETypOrZqXWbE7dapEYl7lmZFGkO6qG/3uuuioXPXA
+ FQX3zpQa0Ao1tFjt35GcZ74JkICBk38jyUVwLU79crA5x/jtXrV3poLlVT4q3Dkod4L7
+ 5RKScWJC6DyTnmRP5lA1SZmL+ij6FC26z8obUi+NqR2tZqqP19kN/tQGlbLSFJSl7K3O
+ 12WjDki1feB9fyUo5Ii2B/brLut/+N9nAntfkG7JvkfQrkvHqsHkIhki755viU02cleq
+ /3guEjYK92/sopediQKbEP1Anm8CoOfBrxrrm7vFq1zaMKubjhXpIWNVlXaVch+b9FId Mg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39nbsxtkt6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 08 Jul 2021 14:22:40 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 168EKD8h037372;
+        Thu, 8 Jul 2021 14:22:39 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2175.outbound.protection.outlook.com [104.47.57.175])
+        by userp3030.oracle.com with ESMTP id 39jd15rr8k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 08 Jul 2021 14:22:39 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mTZaeum1WY5qH2L0fakQjhybJgs1q6/zXBLJPB4U5y7JyE6Gvr+FWmFi0wG6mdkLGHnoZwWWW7WEeD4OVJbZSBbGzj5evNpc+eslaxEM8EPO/5mFWJEJk5+incV1a9AbfwIR0VNDYUk0mxsn15PBJzUpjP9AjFz+MnSvsSn/dVyNQQl3ftBppw4B+g3ecuujwlBZaJxo5WCexhxnCTJg8ZPRtK4/2TtJxGcnxWOLw/l6TYxrdhjZlhd6/YZpqdxCa1uuG+jPmB6WUQzV2d3l9+A95+dPTUr4Fj9B0XeYOgRvsjw1aULNjvsQen+5QmpiTBLXz0WKSfkIXk5ef6ayUQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8+aqNpOIdC336lxqyNc/bD55AhEDMwUsfe+OdCIsvpw=;
+ b=lNdoIV+XNbb7jYR9JezJDXD8G88AGVIe3KGnp/rz0PJVYLkNKPblJcGTxG/Ip5GRKbjAiFHivxGCurXvAzJhpR9WiEfo8IuACkpylVk23XIBDtX25BueiL4jQUstQ9bUJz0ovPckk9Y4BUk838ceY/xqsF6uKRVwIvwO3W5S4HzOrs5I+u7gXqpuRNuXBod85gbVOBd60BKJVhUHYKCN/MPTGtFdAz9+SH2E4Eal0E4qpXvCwEKttGb6YPXRFlFGeXNePqrmF7JaQCGtnbghS05BXuxCyJ4Tanv3fmgnyW9mb461W/oLzBcnJQeE+OFYS+P1PNW+5BSTGkE4wLULWw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=S3PWxzev7Fm1gHxNnCDGrUgfUsd5p8eneX+C6EsBy6M=;
-        b=knp1ELX1d7zG9sldwK7YgLHAxY1LonJp0NaIMZOc3MGE3C1NPZsIbC9zNitjAK+sZt
-         DF9JaR9ZGs/AGXeMgak+PiyGl32BdiwSsu35E/8h+ohU025rWFP/9opn9lDkxtdt4tlE
-         o2fiA1tJPbesIGr8MeMlQPRC8TgINj9O6+/D0nPv128eCYr4AXGae+5CoLDm95w4n0pa
-         4FJMAWEue/H3MNTpO+ABXOJWPrCUjkGvMBJ5Qs67/vUImo9vErh2e9I21NCrXokYrSNg
-         nLOyrvuCp7G6y7TcXZ+S7k+kx5MNmy52uZPCWtLFmFf6GUrjNDSSvolee3D87XppmwBT
-         IwuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=S3PWxzev7Fm1gHxNnCDGrUgfUsd5p8eneX+C6EsBy6M=;
-        b=CkdFosjoNqoR0fe0nssTEjamG0X7x+BOAIUHudZHO5y5J4eursTOzARpRMJc+lbdbe
-         xo6mGXSYMC9qa8xT0kwXuOQ4qa35FfZivSB5RRD9YffXWFZT3bt08p/ONKUdPoR0+01i
-         0x57k3roezDVV6CDoK1Sap8X0ynqrvbGm8SSMZ8z7W7wv8lEZk93bHZ/ZTospr10vpaj
-         vjr4rzIkkQxz1xi38oNX7j5rmkcmwWqaSEpSKMlVorH2O+tIgVxy4Qotyrsym9FMsh8X
-         BkkrC5ZVLPMvl+qALvzTmiwX/HdzLwrhDYgB8TMlPIiuPLFL1aybf13k32NG12q59isM
-         VI9A==
-X-Gm-Message-State: AOAM532SUg2tiUZDIrVeuU3ArGrVzL4mama+IgCdmS3lXyuopt2c7dg/
-        a0gsWLszF/B8I30t8VSBZPJ3bQ==
-X-Google-Smtp-Source: ABdhPJyGGsRSTvC7m4aetVL+3CnYichEdMME7Z9uaIYS63GyEfxgRKpcO0ov3LHcDC5b5ICCr+lVwg==
-X-Received: by 2002:a5d:4fd2:: with SMTP id h18mr10788259wrw.289.1625754118201;
-        Thu, 08 Jul 2021 07:21:58 -0700 (PDT)
-Received: from enceladus (ppp-94-66-242-227.home.otenet.gr. [94.66.242.227])
-        by smtp.gmail.com with ESMTPSA id y11sm6325854wmi.33.2021.07.08.07.21.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jul 2021 07:21:57 -0700 (PDT)
-Date:   Thu, 8 Jul 2021 17:21:53 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linuxarm@openeuler.org,
-        yisen.zhuang@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
-        thomas.petazzoni@bootlin.com, Marcin Wojtas <mw@semihalf.com>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        hawk@kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, fenghua.yu@intel.com,
-        guro@fb.com, peterx@redhat.com, Feng Tang <feng.tang@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, mcroce@microsoft.com,
-        Hugh Dickins <hughd@google.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>, wenxu@ucloud.cn,
-        cong.wang@bytedance.com, Kevin Hao <haokexin@gmail.com>,
-        nogikh@google.com, Marco Elver <elver@google.com>,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH net-next RFC 1/2] page_pool: add page recycling support
- based on elevated refcnt
-Message-ID: <YOcKASZ9Bp0/cz1d@enceladus>
-References: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
- <1625044676-12441-2-git-send-email-linyunsheng@huawei.com>
- <CAKgT0Ueyc8BqjkdTVC_c-Upn-ghNeahYQrWJtQSqxoqN7VvMWA@mail.gmail.com>
- <29403911-bc26-dd86-83b8-da3c1784d087@huawei.com>
- <CAKgT0UcGDYcuZRXX1MaFAzzBySu3R4_TSdC6S0cyS7Ppt_dNng@mail.gmail.com>
- <YOX6bPEL0cq8CgPG@enceladus>
- <CAKgT0UfPFbAptXMJ4BQyeAadaxyHfkKRfeiwhrVMwafNEM_0cw@mail.gmail.com>
-MIME-Version: 1.0
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8+aqNpOIdC336lxqyNc/bD55AhEDMwUsfe+OdCIsvpw=;
+ b=Avq5tnJoooPOrbPR98xd2+EB6fnWcm17UxXHEErvOc25MKmIoVjbhTK6en1TcDKF+Bs6+1x5n7n8HnKXzlxpSV5qs91VAGEglercYR3GVRUMknbt/tGM7Y+Her/etIL32ZkIMM5muOuxQeatbjwTupfy2qLZLSccF8q9bZOQEpk=
+Authentication-Results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB2999.namprd10.prod.outlook.com (2603:10b6:a03:85::27)
+ by SJ0PR10MB4784.namprd10.prod.outlook.com (2603:10b6:a03:2d4::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20; Thu, 8 Jul
+ 2021 14:22:35 +0000
+Received: from BYAPR10MB2999.namprd10.prod.outlook.com
+ ([fe80::8111:d8f1:c262:808d]) by BYAPR10MB2999.namprd10.prod.outlook.com
+ ([fe80::8111:d8f1:c262:808d%6]) with mapi id 15.20.4308.022; Thu, 8 Jul 2021
+ 14:22:35 +0000
+Date:   Thu, 8 Jul 2021 10:22:31 -0400
+From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     xen-devel@lists.xenproject.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Roger Pau =?iso-8859-1?Q?Monn=E9?= <roger.pau@citrix.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH v2 0/3] xen: harden blkfront against malicious backends
+Message-ID: <YOcKJ6m31tHuq2kh@char.us.oracle.com>
+References: <20210708124345.10173-1-jgross@suse.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKgT0UfPFbAptXMJ4BQyeAadaxyHfkKRfeiwhrVMwafNEM_0cw@mail.gmail.com>
+In-Reply-To: <20210708124345.10173-1-jgross@suse.com>
+X-ClientProxiedBy: MN2PR10CA0032.namprd10.prod.outlook.com
+ (2603:10b6:208:120::45) To BYAPR10MB2999.namprd10.prod.outlook.com
+ (2603:10b6:a03:85::27)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from char.us.oracle.com (130.44.160.152) by MN2PR10CA0032.namprd10.prod.outlook.com (2603:10b6:208:120::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.19 via Frontend Transport; Thu, 8 Jul 2021 14:22:34 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d36ba2f3-bf74-4b9b-d202-08d9421bd50b
+X-MS-TrafficTypeDiagnostic: SJ0PR10MB4784:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SJ0PR10MB47849DD12284E1917D44FB4489199@SJ0PR10MB4784.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NpJNicft54NU0o5bY+ypmRKcSOJzBbttEiPos6zjQgNHWTRB6mv0vygbpsSkhlJBWcLfDP129P2h6ncn4Ao9h0ekIDnbspLQ3QBlo3cbDWJfEIC7rIizcCebUuggqrlhf0G3ugw6BbxJXAQFtHVejXMfg2eenI5RAtDn9T5oKZrbkOOR5BfO1BpTkGRk2c6DXmktXa+nrUx13MoGYRkch6b70jFFVwJQI2F+/ae3bsHJOhQ7Ncx6TXB6jNFwyrdQ4K8TZc1qblpMvwiamDNbJfb12cXOJd5a7LAy1+Ij/If1qYtS47aV1xu7iY7aeLVAGEI2lmg5x/LXUFH/fatCHidvPWI559WRWNZhFG6bP86io3u50+Kl5rquUI5GwNYs2zKVDTsth+xwCAeNdvbTuUN6wy2E5uzRTNT1lGSepZ+tX5EFRaoz7/jLRVRAlks1iZaysOFNVi/y24YBLahyyI6EIscOblnNc6iocZhBMUxTDfJv2g+cmEKo+r+3wO95Z70wbZDqkcqYXAmYsf9nWQGIlez3s+wWGA1IstH1LwlaAUBccQcEOL43yDSGL1JX8uF5QA/wbAGFU9wDowNtwXToysuPc2K3oIQjDQ3ThwJVeI0RCUjWYs8FIKyR9Z0laCsIWQr9AvtBolKGJ23MdgY+hQ9bP/42EyRaGcDtwkTq8v6144XmoqiVQCdmjJPn64/nNgFayKjuLZbYEw18FsafJIOIgeX8rYHER5cEDCHof9aqtLBvtccwJe7p7MytWEcVk4VcjLC7vrlmCzajIIF90bxLCmlgqosgnn8YAu8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2999.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(346002)(39860400002)(136003)(396003)(478600001)(316002)(38350700002)(86362001)(966005)(38100700002)(2906002)(83380400001)(52116002)(6916009)(26005)(7696005)(8936002)(54906003)(186003)(8676002)(4326008)(6666004)(66476007)(66946007)(66556008)(956004)(5660300002)(55016002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?y3ARb6nCAKV3Czv7MtYPpmokDhR/zrnUzhjSPOK7Rcq027a1q0auvcQfbfRh?=
+ =?us-ascii?Q?GrDKA0zJTL9PIf7YUB+svcFOoUY0z/OMzJ5vf73B54cgM4bdTB24ubBak0+d?=
+ =?us-ascii?Q?8CcY/ha3JbHxOzDQlDHtMfdRoKq2/M167r7MpgZPWP39CaFnaR/tm1MBVDfR?=
+ =?us-ascii?Q?nOBVmeDeYPA6dOn8SmfcOc86unJHDXZt/13wzafPAL5o6FioyRBB81T49BsX?=
+ =?us-ascii?Q?NbUaL0M97O1nmigeGpx+PhBuPPawSUYF0BKq+bCmS6pEZX5KzLZ2Lv62ZSxZ?=
+ =?us-ascii?Q?5HxGQWqwXDVK9tygyd+zm0QSA0XLv8dfeuHbLgt8lMUjkjas9MNnwaflR5Gb?=
+ =?us-ascii?Q?PuboWg/NHCL646vFWy4qpdDCTUmi7ZonVW19jIn8HYWxRgv7esjeePAPPMPY?=
+ =?us-ascii?Q?ZkTFe6RMjz67kX03nQKlle5Eu24zIAO+qg0K0cGo1ebELE78Psjym7ccxtue?=
+ =?us-ascii?Q?xPJXYgKB0spNZChvX76VetlRiogU5aqvO5fLs/7LLKiYO9OoHDLJSv/5humf?=
+ =?us-ascii?Q?tcVYDrs6U62UxAa6EaQROPJbweFBUnDgeh5aQNKFiK5licpny3I2iylvDFsj?=
+ =?us-ascii?Q?YGmeR0NaD2v3152+HRZ2jHp5J8fVWNTZ2B2ngxJJUxj1ArYvXXNBy+BOS98R?=
+ =?us-ascii?Q?N5v35WC2su+E46NwySSmhNIH3kErwjIwEbPObmXnAUdeMTJA5KXchFPn1rp9?=
+ =?us-ascii?Q?LiPb4OmXlNTm4RkttT43mDbJytFDhJVLaxSQtOYsxVXO2PKs2htM/mkxf4qP?=
+ =?us-ascii?Q?5wJvNyrY/4KyERZ/3IPI8XiEeWySqoFXb4uc2lTI13xlhzvubYQmS95tGppq?=
+ =?us-ascii?Q?Ym2e9g+fpuCzY5iptD3K1YrwbOLEJlvdDusgnCqh50IEThCcGRwaTQYzD6cq?=
+ =?us-ascii?Q?mdmW3CXXcSCqTp9ldmeKMjG+bW/WjaP/xp9PjXedqX/Hs0sgQUAb0ehogCbo?=
+ =?us-ascii?Q?tCwJAb3dqSWiC41Nz+FK9flmFQJYeWCLS4la9FDY/9X3XKQhpH3sOOKlfaVu?=
+ =?us-ascii?Q?U4SfGYWPfUHzIULcelfC0OMyiHLK0jSu8Vc+srBdhyMNxpIo5mcIrd7Il6j/?=
+ =?us-ascii?Q?Yx6/sz/FKCpOPaCN81TPqk+eZmh+HFAhvCzBQ+XaNcwOFcAhPo5+h/X4au4+?=
+ =?us-ascii?Q?FTDdUCvwVn4knty8ZhJMJmSGDWdfLpUxWcJIX7TF9ypwmNtkEPnuKFB/heVd?=
+ =?us-ascii?Q?Tw6xkEuFJy0cVUbSFKneVg5efVxxllAsZuG9yjH4rkDulgogwldYa5IH+v3k?=
+ =?us-ascii?Q?KOyrwSO3XR81IQ0kesCX+QMZw6xqLmW3ruN9nfinFlK0g9f/7WgcKQCldVPM?=
+ =?us-ascii?Q?49gueOoFptQI5UHmwPf3SHiH?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d36ba2f3-bf74-4b9b-d202-08d9421bd50b
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2999.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jul 2021 14:22:35.6637
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tJft0CievwA0O/A/blsVuPrNFEgcrqjXzukmfT7Q9lg5oa/01dqMykVWDAbazvIS2uYBPocCX29YIdHHDW8kww==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4784
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10038 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0
+ suspectscore=0 phishscore=0 mlxscore=0 bulkscore=0 adultscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107080078
+X-Proofpoint-ORIG-GUID: I-PLq_lY1OLt-zFhG7kTrumscKKdY6nu
+X-Proofpoint-GUID: I-PLq_lY1OLt-zFhG7kTrumscKKdY6nu
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > >
-
-[...]
-
-> > > > The above expectation is based on that the last user will always
-> > > > call page_pool_put_full_page() in order to do the recycling or do
-> > > > the resource cleanup(dma unmaping..etc).
-> > > >
-> > > > As the skb_free_head() and skb_release_data() have both checked the
-> > > > skb->pp_recycle to call the page_pool_put_full_page() if needed, I
-> > > > think we are safe for most case, the one case I am not so sure above
-> > > > is the rx zero copy, which seems to also bump up the refcnt before
-> > > > mapping the page to user space, we might need to ensure rx zero copy
-> > > > is not the last user of the page or if it is the last user, make sure
-> > > > it calls page_pool_put_full_page() too.
-> > >
-> > > Yes, but the skb->pp_recycle value is per skb, not per page. So my
-> > > concern is that carrying around that value can be problematic as there
-> > > are a number of possible cases where the pages might be
-> > > unintentionally recycled. All it would take is for a packet to get
-> > > cloned a few times and then somebody starts using pskb_expand_head and
-> > > you would have multiple cases, possibly simultaneously, of entities
-> > > trying to free the page. I just worry it opens us up to a number of
-> > > possible races.
-> >
-> > Maybe I missde something, but I thought the cloned SKBs would never trigger
-> > the recycling path, since they are protected by the atomic dataref check in
-> > skb_release_data(). What am I missing?
+On Thu, Jul 08, 2021 at 02:43:42PM +0200, Juergen Gross wrote:
+> Xen backends of para-virtualized devices can live in dom0 kernel, dom0
+> user land, or in a driver domain. This means that a backend might
+> reside in a less trusted environment than the Xen core components, so
+> a backend should not be able to do harm to a Xen guest (it can still
+> mess up I/O data, but it shouldn't be able to e.g. crash a guest by
+> other means or cause a privilege escalation in the guest).
 > 
-> Are you talking about the head frag? So normally a clone wouldn't
-> cause an issue because the head isn't changed. In the case of the
-> head_frag we should be safe since pskb_expand_head will just kmalloc
-> the new head and clears head_frag so it won't trigger
-> page_pool_return_skb_page on the head_frag since the dataref just goes
-> from 2 to 1.
+> Unfortunately blkfront in the Linux kernel is fully trusting its
+> backend. This series is fixing blkfront in this regard.
 > 
-> The problem is that pskb_expand_head memcopies the page frags over and
-> takes a reference on the pages. At that point you would have two skbs
-> both pointing to the same set of pages and each one ready to call
-> page_pool_return_skb_page on the pages at any time and possibly racing
-> with the other.
+> It was discussed to handle this as a security problem, but the topic
+> was discussed in public before, so it isn't a real secret.
 
-Ok let me make sure I get the idea properly. 
-When pskb_expand_head is called, the new dataref will be 1, but the
-head_frag will be set to 0, in which case the recycling code won't be
-called for that skb.  
-So you are mostly worried about a race within the context of 
-pskb_expand_skb() between copying the frags, releasing the previous head
-and preparing the new one (on a cloned skb)?
+Wow. This looks like what Marek did .. in 2018!
 
+https://lists.xenproject.org/archives/html/xen-devel/2018-04/msg02336.html
+
+Would it be worth crediting Marek?
 > 
-> I suspect if they both called it at roughly the same time one of them
-> would trigger a NULL pointer dereference since they would both check
-> pp_magic first, and then both set pp to NULL. If run on a system where
-> dma_unmap_page_attrs takes a while it would be very likely to race
-> since pp_magic doesn't get cleared until after the page is unmapped.
-
-
-Thanks!
-/Ilias
+> Changes in V2:
+> - put blkfront patches into own series
+> - some minor comments addressed
+> 
+> Juergen Gross (3):
+>   xen/blkfront: read response from backend only once
+>   xen/blkfront: don't take local copy of a request from the ring page
+>   xen/blkfront: don't trust the backend response data blindly
+> 
+>  drivers/block/xen-blkfront.c | 122 +++++++++++++++++++++++------------
+>  1 file changed, 80 insertions(+), 42 deletions(-)
+> 
+> -- 
+> 2.26.2
+> 
