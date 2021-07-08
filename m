@@ -2,85 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 188F33BF6C0
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 10:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54B2B3BF6C5
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 10:10:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231247AbhGHILo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 04:11:44 -0400
-Received: from 8bytes.org ([81.169.241.247]:33194 "EHLO theia.8bytes.org"
+        id S231252AbhGHINM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 04:13:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231195AbhGHILm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 04:11:42 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id B94FA312; Thu,  8 Jul 2021 10:08:58 +0200 (CEST)
-Date:   Thu, 8 Jul 2021 10:08:56 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        John Garry <john.garry@huawei.com>,
-        Rob Clark <robdclark@chromium.org>, quic_c_gdjako@quicinc.com,
-        Saravana Kannan <saravanak@google.com>,
-        Rajat Jain <rajatja@google.com>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-pci@vger.kernel.org,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        Sonny Rao <sonnyrao@chromium.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 0/3] iommu: Enable non-strict DMA on QCom SD/MMC
-Message-ID: <YOaymBHc4g2cIfRn@8bytes.org>
-References: <20210624171759.4125094-1-dianders@chromium.org>
- <YNXXwvuErVnlHt+s@8bytes.org>
- <CAD=FV=UFxZH7g8gH5+M=Fv4Y-e1bsLkNkPGJhNwhvVychcGQcQ@mail.gmail.com>
- <CAD=FV=W=HmgH3O3z+nThWL6U+X4Oh37COe-uTzVB9SanP2n86w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=W=HmgH3O3z+nThWL6U+X4Oh37COe-uTzVB9SanP2n86w@mail.gmail.com>
+        id S230486AbhGHINL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 04:13:11 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC9AE61CD5;
+        Thu,  8 Jul 2021 08:10:29 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1m1P75-00C2vf-Qj; Thu, 08 Jul 2021 09:10:27 +0100
+Date:   Thu, 08 Jul 2021 09:10:10 +0100
+Message-ID: <87im1l2plp.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the irqchip tree
+In-Reply-To: <20210708121855.69b5a5f8@canb.auug.org.au>
+References: <20210615210143.2e00d851@canb.auug.org.au>
+        <20210708121855.69b5a5f8@canb.auug.org.au>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: sfr@canb.auug.org.au, linux-kernel@vger.kernel.org, linux-next@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 01:00:13PM -0700, Doug Anderson wrote:
-> a) Nothing is inherently broken with my current approach.
+Hi Stephen,
+
+On Thu, 08 Jul 2021 03:18:55 +0100,
+Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 > 
-> b) My current approach doesn't make anybody terribly upset even if
-> nobody is totally in love with it.
+> Hi all,
+> 
+> On Tue, 15 Jun 2021 21:01:43 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > After merging the irqchip tree, today's linux-next build (htmldocs)
+> > produced this warning:
+> > 
+> > kernel/irq/irqdesc.c:692: warning: Excess function parameter 'lookup' description in 'handle_domain_irq'
+> > 
+> > Introduced by commit
+> > 
+> >   e1c054918c6c ("genirq: Move non-irqdomain handle_domain_irq() handling into ARM's handle_IRQ()")
+> 
+> I am still getting this warning.
 
-Well, no, sorry :)
+Hmmm... I've had a fix for this sitting in irqchip-fixes for some
+time. But I now realise that this branch is not included in -next
+while tip tracks it.
 
-I don't think it is a good idea to allow drivers to opt-out of the
-strict-setting. This is a platform or user decision, and the driver
-should accept whatever it gets.
+Any chance you could add [1] to -next in the future?
 
-So the real question is still why strict is the default setting and how
-to change that. Or document for the users that want performance how to
-change the setting, so that they can decide.
+Thanks,
 
-Regards,
+	M.
 
-	Joerg
+[1] git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git irq/irqchip-fixes
 
+-- 
+Without deviation from the norm, progress is not possible.
