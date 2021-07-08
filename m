@@ -2,111 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB613C176C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 18:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FD333C176D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 18:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229838AbhGHQxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 12:53:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50630 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229542AbhGHQx3 (ORCPT
+        id S229877AbhGHQxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 12:53:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229669AbhGHQxn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 12:53:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625763046;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2OB0zSrc/L137vieSn1bV5IcC6z0P+Q1vkoqM8xpfTo=;
-        b=YEQI2B85NKHdFVQI9+sMoi9OQUYYjxYD9xmr1/qK7ZADcxSoiYTbcDrsRho6CcmU7gf8ij
-        Skecd1g8ifNnPg4itELRXECm9Zzt6z2Wkg9rYG5rrVlBAxdSFUssSXIYoVSQBjdIUuu0xS
-        RxLBq0Egot0aiHI+DjuU5/Dr6N7gRLA=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-409-Aqzgl9nqP6SbmHbz6Z2bMw-1; Thu, 08 Jul 2021 12:50:45 -0400
-X-MC-Unique: Aqzgl9nqP6SbmHbz6Z2bMw-1
-Received: by mail-ed1-f70.google.com with SMTP id y18-20020a0564022712b029038ffac1995eso3658955edd.12
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 09:50:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2OB0zSrc/L137vieSn1bV5IcC6z0P+Q1vkoqM8xpfTo=;
-        b=jdvaQ62Cl4D4m6BNVfWkxXYM7g5dTChOcj7+gKenelXRykNcubDrFjCCea0NofOp2y
-         pRCt5G5ayNn2PfMp0P8YJsBI7OfJtFQSUNqQlM9RjCbjyLpuSlq2nrYdZjmiZjj0ssRY
-         47uzA6DNkFXDKY+ABfe8kKVk1Dcn8gM2AsSEpo2LK7rFR7GrglH9whMAn0UDPz9hjaKc
-         vPXJM7sB44gmnR5CIJIQcGeqcNH5WtzuEVQPARTGGpvCMxRg1yuYJ/5puqJwjp4W+DtC
-         xwdnC4xy8xp1Ja4PYpV+7wQjADszboPAf+1x8wDouVtdWyc3XX9Qk+34GTi9xF0uHL/8
-         ar4A==
-X-Gm-Message-State: AOAM530BUA7+oXNUtbFvV5HAG25y2nHmcVyudUhEM+50Xz/ZOkG8n26p
-        lft3AkAc2zuyfP3hAPDVGQcO1YmJXv15QaysMe6hR9g/eyX9YN/e05BKofXBFAyQ14nGxCzkfGZ
-        yE3hadg6nmO3bFac6gWWHPHkA
-X-Received: by 2002:a17:907:d8c:: with SMTP id go12mr19890645ejc.442.1625763044386;
-        Thu, 08 Jul 2021 09:50:44 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzk9fO2BRrb8OTLwrPrz4tYr5MAon9lbPn4sasbXn1PywwYC0XefPHKB81KozyzGnj+G0mQ5Q==
-X-Received: by 2002:a17:907:d8c:: with SMTP id go12mr19890610ejc.442.1625763044210;
-        Thu, 08 Jul 2021 09:50:44 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id j6sm1618320eds.58.2021.07.08.09.50.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Jul 2021 09:50:43 -0700 (PDT)
-Subject: Re: [PATCH 0/5] KVM: x86: Use kernel x86 cpuid utilities in KVM
- selftests
-To:     Jim Mattson <jmattson@google.com>,
-        Ricardo Koller <ricarkol@google.com>
-Cc:     kvm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-References: <20210422005626.564163-1-ricarkol@google.com>
- <c4524e4a-55c7-66f9-25d6-d397f11d25a8@redhat.com>
- <YIm7iWxggvoN9riz@google.com>
- <CALMp9eSfpdWF0OROsOqxohxMoFrrY=Gt7FYfB1_31D7no4JYLw@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <16823e91-5caf-f52e-e0dc-28ebb9a87b47@redhat.com>
-Date:   Thu, 8 Jul 2021 18:50:41 +0200
+        Thu, 8 Jul 2021 12:53:43 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 638FDC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 09:51:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=rRjw0MD5mNTCw5c7zVuaZpo/EngGyn3l6moiSAMWrZo=; b=dEEI2DJ2/5DjEr22QVGqIT5SK6
+        cjFeYoY3XcdnNfSHkj2TkppKM5DwnQLrFLNoN1FohaDoUyekGg8vbQgM+a27yQsz6wi/G6gkKOuQ4
+        eIFXNUwtRCZ9B24WAMX7oqppvjF5gd9Et55yKh6LjMghEtDPU5Q0+ukPJjyPJ4llJf2xJrxK90zu3
+        NuPf21AmwPMZHxCkqRP/0KKpdRYcyiDYruJJf7Iz7IybeZt2wBdFCuPxY0PkqyY0dlLzL02wlBQDl
+        hAZZ2ViJqfx6R2FrqAFNLC3tT0vUGiy0oUEPqfCFUsl9J7JTjYyIeSekGwgjI/zw12vZmz6z6l3eS
+        rO8SL2tg==;
+Received: from [2601:1c0:6280:3f0::aefb]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m1XEi-00HX04-FP; Thu, 08 Jul 2021 16:50:52 +0000
+Subject: Re: [PATCH v3] ASoC: atmel: ATMEL drivers don't need HAS_DMA
+To:     Codrin.Ciubotariu@microchip.com, linux-kernel@vger.kernel.org
+Cc:     alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+        broonie@kernel.org, mirq-linux@rere.qmqm.pl,
+        alexandre.belloni@free-electrons.com
+References: <20210707214752.3831-1-rdunlap@infradead.org>
+ <fca8f952-2be0-5c57-d60d-5c4f025abc4d@microchip.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <49495ab9-5039-f332-2895-1a79c034f58d@infradead.org>
+Date:   Thu, 8 Jul 2021 09:50:50 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <CALMp9eSfpdWF0OROsOqxohxMoFrrY=Gt7FYfB1_31D7no4JYLw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <fca8f952-2be0-5c57-d60d-5c4f025abc4d@microchip.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/06/21 19:28, Jim Mattson wrote:
->> Thanks. I was thinking about kvm-unit-tests, but the issue is that it
->> would also be a copy. And just like with kernel headers, it would be
->> ideal to keep them in-sync. The advantage of the kernel headers is that
->> it's much easier to check and fix diffs with them. On the other hand, as
->> you say, there would not be any #ifdef stuff with kvm=unit-tests. Please
->> let me know what you think.
->
-> I think the kvm-unit-tests implementation is superior to the kernel
-> implementation, but that's probably because I suggested it. Still, I
-> think there's an argument to be made that selftests, unlike
-> kvm-unit-tests, are part of the kernel distribution and should be
-> consistent with the kernel where possible.
+On 7/8/21 1:19 AM, Codrin.Ciubotariu@microchip.com wrote:
+> On 08.07.2021 00:47, Randy Dunlap wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>>
+>> On a config (such as arch/sh/) which does not set HAS_DMA when MMU
+>> is not set, several ATMEL ASoC drivers select symbols that cause
+>> kconfig warnings. There is one "depends on HAS_DMA" which is no longer
+>> needed. Dropping it eliminates the kconfig warnings and still builds
+>> with no problems reported.
+>>
+>> Fix the following kconfig warnings:
+>>
+>> WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_PDC
+>>    Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
+>>    Selected by [m]:
+>>    - SND_ATMEL_SOC_SSC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m]
+>>    - SND_ATMEL_SOC_SSC_PDC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
+>>
+>> WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_PDC
+>>    Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
+>>    Selected by [m]:
+>>    - SND_AT91_SOC_SAM9G20_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
+>>
+>> WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC
+>>    Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
+>>    Selected by [m]:
+>>    - SND_ATMEL_SOC_SSC_DMA [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
+>>
+>> WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_DMA
+>>    Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
+>>    Selected by [m]:
+>>    - SND_ATMEL_SOC_WM8904 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && I2C [=m]
+>>    - SND_AT91_SOC_SAM9X5_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
+>>
+>> Fixes: 3951e4aae2ce ("ASoC: atmel-pcm: dma support based on pcm dmaengine")
+>> Fixes: 18291410557f ("ASoC: atmel: enable SOC_SSC_PDC and SOC_SSC_DMA in Kconfig")
+>> Fixes: 061981ff8cc8 ("ASoC: atmel: properly select dma driver state")
 > 
-> Paolo?
+> I am not sure about these fixes tags. As Alexandre mentioned, it looks 
+> like the reason for HAS_DMA in the first place was the COMPILE_TEST with 
+> m32r arch. I dig a bit, and, if any, I think we should use:
+> Fixes: eb17726b00b3 ("m32r: add simple dma")
+> since this commit adds dummy DMA support for m32r and seems to fix the 
+> HAS_DMA dependency.
 
-I also prefer the kvm-unit-tests implementation, for what it's worth... 
-Let's see what the code looks like?
+Ah, I forgot to update the Fixes: tag(s).
 
-Paolo
+I won't disagree with your Fixes: suggestion (good digging) but
+I would probably have used 8d7d11005e930:
+  ASoC: atmel: fix build failure
+which is the commit that added "depends on HAS_DMA".
+
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Cc: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+>> Cc: alsa-devel@alsa-project.org
+>> Cc: Liam Girdwood <lgirdwood@gmail.com>
+>> Cc: Mark Brown <broonie@kernel.org>
+>> Cc: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+> 
+> Other than that:
+> Reviewed-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+
+Thanks.  I'll send a v4 with your Fixes: suggestion.
 
