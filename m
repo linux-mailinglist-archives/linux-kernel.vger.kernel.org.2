@@ -2,101 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2BAB3BF9F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 14:20:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD5C33BF9FB
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 14:23:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbhGHMW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 08:22:57 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:6447 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbhGHMW5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 08:22:57 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GLFdl3xlSz75hM;
-        Thu,  8 Jul 2021 20:16:43 +0800 (CST)
-Received: from dggpemm500017.china.huawei.com (7.185.36.178) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 8 Jul 2021 20:20:11 +0800
-Received: from huawei.com (10.175.104.170) by dggpemm500017.china.huawei.com
- (7.185.36.178) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 8 Jul 2021
- 20:20:11 +0800
-From:   Wenchao Hao <haowenchao@huawei.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <linfeilong@huawei.com>, Wu Bo <wubo40@huawei.com>,
-        Zhiqiang Liu <liuzhiqiang26@huawei.com>,
-        Wenchao Hao <haowenchao@huawei.com>
-Subject: [PATCH] driver core: Make probe_type of driver accessible via sysfs
-Date:   Thu, 8 Jul 2021 20:20:10 +0800
-Message-ID: <20210708122010.262510-1-haowenchao@huawei.com>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.170]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500017.china.huawei.com (7.185.36.178)
-X-CFilter-Loop: Reflected
+        id S230451AbhGHM0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 08:26:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46650 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229533AbhGHM0c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 08:26:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D1506191D;
+        Thu,  8 Jul 2021 12:23:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625747030;
+        bh=de5Knocb7QEcbG+wqSFPW5eDpL8I68H8P34+AQN09tU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GmJTwS5/HekIDdw6rr+ksDzSzfNEK9HgbQ9OBmflMj+C036iMiETK6Kw0psqrb8gq
+         h7QKTmC/jeRh7eInDkxKM4kbdR1KsRr4pQzBoG4GTgYCJ7m39lm8M4SkMhd/UlOKUM
+         7S6F1nxBhuJseD9HMPm9OSdUI7OYIXJjCgawUHZ7XMVrJupkwKJKNTViV2IGK51eWa
+         iYYSmBUFFRt8x5Sf7xr+eWPMJZlwxUVt6V+i18BpJHqbPQ7HrLAfR2xTwQJ1BTl1L8
+         LeVSATORnm63UW9ulGZg9/NVWWjiPuFlQTe6CQG2/j2zFMy8Cundyzi1X1o0INri1s
+         79QqadkQ4uYmg==
+Date:   Thu, 8 Jul 2021 21:23:47 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [PATCH 2/2 v3] tracing/histogram: Update the documentation for
+ the buckets modifier
+Message-Id: <20210708212347.809997d19d4309d38fa59e20@kernel.org>
+In-Reply-To: <20210707213922.167218794@goodmis.org>
+References: <20210707213623.250212325@goodmis.org>
+        <20210707213922.167218794@goodmis.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Like drivers_autoprobe of bus, make probe_type of driver
-accessible via sysfs, so we can get and set a driver's probe_type
-happily.
+On Wed, 07 Jul 2021 17:36:25 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Signed-off-by: Wenchao Hao <haowenchao@huawei.com>
----
- drivers/base/bus.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+> 
+> Update both the tracefs README file as well as the histogram.rst to
+> include an explanation of what the buckets modifier is and how to use it.
+> Include an example with the wakeup_latency example for both log2 and the
+> buckets modifiers as there was no existing log2 example.
+> 
 
-diff --git a/drivers/base/bus.c b/drivers/base/bus.c
-index 1f6b4bd61056..e006562cb638 100644
---- a/drivers/base/bus.c
-+++ b/drivers/base/bus.c
-@@ -583,6 +583,25 @@ static ssize_t uevent_store(struct device_driver *drv, const char *buf,
- }
- static DRIVER_ATTR_WO(uevent);
- 
-+static ssize_t probe_type_show(struct device_driver *drv, char *buf)
-+{
-+	return sysfs_emit(buf, "%d\n", drv->probe_type);
-+}
-+
-+static ssize_t probe_type_store(struct device_driver *drv, const char *buf,
-+		size_t count)
-+{
-+	if (buf[0] == '0')
-+		drv->probe_type = 0;
-+	else if (buf[0] == '1')
-+		drv->probe_type = 1;
-+	else if (buf[0] == '2')
-+		drv->probe_type = 2;
-+
-+	return count;
-+}
-+static DRIVER_ATTR_RW(probe_type);
-+
- /**
-  * bus_add_driver - Add a driver to the bus.
-  * @drv: driver.
-@@ -626,6 +645,12 @@ int bus_add_driver(struct device_driver *drv)
- 		printk(KERN_ERR "%s: uevent attr (%s) failed\n",
- 			__func__, drv->name);
- 	}
-+	error = driver_create_file(drv, &driver_attr_probe_type);
-+	if (error) {
-+		printk(KERN_ERR "%s: probe_type attr (%s) failed\n",
-+				__func__, drv->name);
-+	}
-+
- 	error = driver_add_groups(drv, bus->drv_groups);
- 	if (error) {
- 		/* How the hell do we get out of this pickle? Give up */
+Looks good to me.
+
+Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thanks!
+
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> ---
+>  Documentation/trace/histogram.rst | 92 +++++++++++++++++++++++++++++--
+>  kernel/trace/trace.c              |  1 +
+>  2 files changed, 87 insertions(+), 6 deletions(-)
+> 
+> diff --git a/Documentation/trace/histogram.rst b/Documentation/trace/histogram.rst
+> index b71e09f745c3..11094ec6e52e 100644
+> --- a/Documentation/trace/histogram.rst
+> +++ b/Documentation/trace/histogram.rst
+> @@ -77,6 +77,7 @@ Documentation written by Tom Zanussi
+>  	.syscall    display a syscall id as a system call name
+>  	.execname   display a common_pid as a program name
+>  	.log2       display log2 value rather than raw number
+> +	.buckets=size  display grouping of values rather than raw number
+>  	.usecs      display a common_timestamp in microseconds
+>  	=========== ==========================================
+>  
+> @@ -228,7 +229,7 @@ Extended error information
+>    that lists the total number of bytes requested for each function in
+>    the kernel that made one or more calls to kmalloc::
+>  
+> -    # echo 'hist:key=call_site:val=bytes_req' > \
+> +    # echo 'hist:key=call_site:val=bytes_req.buckets=32' > \
+>              /sys/kernel/debug/tracing/events/kmem/kmalloc/trigger
+>  
+>    This tells the tracing system to create a 'hist' trigger using the
+> @@ -1823,20 +1824,99 @@ and variables defined on other events (see Section 2.2.3 below on
+>  how that is done using hist trigger 'onmatch' action). Once that is
+>  done, the 'wakeup_latency' synthetic event instance is created.
+>  
+> -A histogram can now be defined for the new synthetic event::
+> -
+> -  # echo 'hist:keys=pid,prio,lat.log2:sort=pid,lat' >> \
+> -        /sys/kernel/debug/tracing/events/synthetic/wakeup_latency/trigger
+> -
+>  The new event is created under the tracing/events/synthetic/ directory
+>  and looks and behaves just like any other event::
+>  
+>    # ls /sys/kernel/debug/tracing/events/synthetic/wakeup_latency
+>          enable  filter  format  hist  id  trigger
+>  
+> +A histogram can now be defined for the new synthetic event::
+> +
+> +  # echo 'hist:keys=pid,prio,lat.log2:sort=lat' >> \
+> +        /sys/kernel/debug/tracing/events/synthetic/wakeup_latency/trigger
+> +
+> +The above shows the latency "lat" in a power of 2 grouping.
+> +
+>  Like any other event, once a histogram is enabled for the event, the
+>  output can be displayed by reading the event's 'hist' file.
+>  
+> +  # cat /sys/kernel/debug/tracing/events/synthetic/wakeup_latency/hist
+> +
+> +  # event histogram
+> +  #
+> +  # trigger info: hist:keys=pid,prio,lat.log2:vals=hitcount:sort=lat.log2:size=2048 [active]
+> +  #
+> +
+> +  { pid:       2035, prio:          9, lat: ~ 2^2  } hitcount:         43
+> +  { pid:       2034, prio:          9, lat: ~ 2^2  } hitcount:         60
+> +  { pid:       2029, prio:          9, lat: ~ 2^2  } hitcount:        965
+> +  { pid:       2034, prio:        120, lat: ~ 2^2  } hitcount:          9
+> +  { pid:       2033, prio:        120, lat: ~ 2^2  } hitcount:          5
+> +  { pid:       2030, prio:          9, lat: ~ 2^2  } hitcount:        335
+> +  { pid:       2030, prio:        120, lat: ~ 2^2  } hitcount:         10
+> +  { pid:       2032, prio:        120, lat: ~ 2^2  } hitcount:          1
+> +  { pid:       2035, prio:        120, lat: ~ 2^2  } hitcount:          2
+> +  { pid:       2031, prio:          9, lat: ~ 2^2  } hitcount:        176
+> +  { pid:       2028, prio:        120, lat: ~ 2^2  } hitcount:         15
+> +  { pid:       2033, prio:          9, lat: ~ 2^2  } hitcount:         91
+> +  { pid:       2032, prio:          9, lat: ~ 2^2  } hitcount:        125
+> +  { pid:       2029, prio:        120, lat: ~ 2^2  } hitcount:          4
+> +  { pid:       2031, prio:        120, lat: ~ 2^2  } hitcount:          3
+> +  { pid:       2029, prio:        120, lat: ~ 2^3  } hitcount:          2
+> +  { pid:       2035, prio:          9, lat: ~ 2^3  } hitcount:         41
+> +  { pid:       2030, prio:        120, lat: ~ 2^3  } hitcount:          1
+> +  { pid:       2032, prio:          9, lat: ~ 2^3  } hitcount:         32
+> +  { pid:       2031, prio:          9, lat: ~ 2^3  } hitcount:         44
+> +  { pid:       2034, prio:          9, lat: ~ 2^3  } hitcount:         40
+> +  { pid:       2030, prio:          9, lat: ~ 2^3  } hitcount:         29
+> +  { pid:       2033, prio:          9, lat: ~ 2^3  } hitcount:         31
+> +  { pid:       2029, prio:          9, lat: ~ 2^3  } hitcount:         31
+> +  { pid:       2028, prio:        120, lat: ~ 2^3  } hitcount:         18
+> +  { pid:       2031, prio:        120, lat: ~ 2^3  } hitcount:          2
+> +  { pid:       2028, prio:        120, lat: ~ 2^4  } hitcount:          1
+> +  { pid:       2029, prio:          9, lat: ~ 2^4  } hitcount:          4
+> +  { pid:       2031, prio:        120, lat: ~ 2^7  } hitcount:          1
+> +  { pid:       2032, prio:        120, lat: ~ 2^7  } hitcount:          1
+> +
+> +  Totals:
+> +      Hits: 2122
+> +      Entries: 30
+> +      Dropped: 0
+> +
+> +
+> +The latency values can also be grouped linearly by a given size with
+> +the ".buckets" modifier and specify a size (in this case groups of 10).
+> +
+> +  # echo 'hist:keys=pid,prio,lat.buckets=10:sort=lat' >> \
+> +        /sys/kernel/debug/tracing/events/synthetic/wakeup_latency/trigger
+> +
+> +  # event histogram
+> +  #
+> +  # trigger info: hist:keys=pid,prio,lat.buckets=10:vals=hitcount:sort=lat.buckets=10:size=2048 [active]
+> +  #
+> +
+> +  { pid:       2067, prio:          9, lat: ~ 0-9 } hitcount:        220
+> +  { pid:       2068, prio:          9, lat: ~ 0-9 } hitcount:        157
+> +  { pid:       2070, prio:          9, lat: ~ 0-9 } hitcount:        100
+> +  { pid:       2067, prio:        120, lat: ~ 0-9 } hitcount:          6
+> +  { pid:       2065, prio:        120, lat: ~ 0-9 } hitcount:          2
+> +  { pid:       2066, prio:        120, lat: ~ 0-9 } hitcount:          2
+> +  { pid:       2069, prio:          9, lat: ~ 0-9 } hitcount:        122
+> +  { pid:       2069, prio:        120, lat: ~ 0-9 } hitcount:          8
+> +  { pid:       2070, prio:        120, lat: ~ 0-9 } hitcount:          1
+> +  { pid:       2068, prio:        120, lat: ~ 0-9 } hitcount:          7
+> +  { pid:       2066, prio:          9, lat: ~ 0-9 } hitcount:        365
+> +  { pid:       2064, prio:        120, lat: ~ 0-9 } hitcount:         35
+> +  { pid:       2065, prio:          9, lat: ~ 0-9 } hitcount:        998
+> +  { pid:       2071, prio:          9, lat: ~ 0-9 } hitcount:         85
+> +  { pid:       2065, prio:          9, lat: ~ 10-19 } hitcount:          2
+> +  { pid:       2064, prio:        120, lat: ~ 10-19 } hitcount:          2
+> +
+> +  Totals:
+> +      Hits: 2112
+> +      Entries: 16
+> +      Dropped: 0
+> +
+>  2.2.3 Hist trigger 'handlers' and 'actions'
+>  -------------------------------------------
+>  
+> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> index 14f56e9fa001..8097d5aa8627 100644
+> --- a/kernel/trace/trace.c
+> +++ b/kernel/trace/trace.c
+> @@ -5648,6 +5648,7 @@ static const char readme_msg[] =
+>  	"\t            .execname   display a common_pid as a program name\n"
+>  	"\t            .syscall    display a syscall id as a syscall name\n"
+>  	"\t            .log2       display log2 value rather than raw number\n"
+> +	"\t            .buckets=size  display values in groups of size rather than raw number\n"
+>  	"\t            .usecs      display a common_timestamp in microseconds\n\n"
+>  	"\t    The 'pause' parameter can be used to pause an existing hist\n"
+>  	"\t    trigger or to start a hist trigger but not log any events\n"
+> -- 
+> 2.30.2
+
+
 -- 
-2.27.0
-
+Masami Hiramatsu <mhiramat@kernel.org>
