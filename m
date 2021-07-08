@@ -2,100 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B36A3BF43C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 05:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E3CA3BF43D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 05:13:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230414AbhGHDOO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 7 Jul 2021 23:14:14 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:57561 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230244AbhGHDON (ORCPT
+        id S230416AbhGHDQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 23:16:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230244AbhGHDQF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 23:14:13 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R861e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=zhaoyan.liao@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0Uf4GV0k_1625713889;
-Received: from 30.250.200.142(mailfrom:zhaoyan.liao@linux.alibaba.com fp:SMTPD_---0Uf4GV0k_1625713889)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 08 Jul 2021 11:11:30 +0800
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.32\))
-Subject: Re: [PATCH] use 64bit timer for hpet
-From:   Linux <zhaoyan.liao@linux.alibaba.com>
-In-Reply-To: <875yxmqw2s.ffs@nanos.tec.linutronix.de>
-Date:   Thu, 8 Jul 2021 11:11:28 +0800
-Cc:     mingo@redhat.com, hpa@zytor.com, dwmw@amazon.co.uk,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        songmuchun@bytedance.com, likunkun@bytedance.com,
-        guancheng.rjk@alibaba-inc.com, duanxiongchun@bytedance.com,
-        wenan.mao@linux.alibaba.com
-Content-Transfer-Encoding: 8BIT
-Message-Id: <8A96C0F7-FBE4-4B23-8565-E814401BF927@linux.alibaba.com>
-References: <1625213625-25745-1-git-send-email-zhaoyan.liao@linux.alibaba.com>
- <875yxmqw2s.ffs@nanos.tec.linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-X-Mailer: Apple Mail (2.3654.40.0.2.32)
+        Wed, 7 Jul 2021 23:16:05 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F035CC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 20:13:23 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id l26so6127192oic.7
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 20:13:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bLq+m8mRzEZ5b3sETJPsOqtUDE3wGL5gfvCXClShmb0=;
+        b=OAKMai1UQ8NEZXqNXBcbgikoW5/jXe6mp4CJSkrldyrY23PL2FHfc/uWzXgFNZUq/o
+         wWVbUZeVdzvdzlb+B0+E7YJ7cFJxybpkNho19k6M5co2ba4H6HkEMBMXfsGfxNeBKieq
+         l+AhELx4jRYJ+rrHv1+q/PMV+VO7QgBYQCxTo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bLq+m8mRzEZ5b3sETJPsOqtUDE3wGL5gfvCXClShmb0=;
+        b=BNxiUh6sGz8oAYJzwiwG2tJakYgG9HnOqB6MhHHptWeHgVLIZGHoKxtMspylYyPb/6
+         2XTh9fbqP2duoIwPGZ84fjM1MKMLi+vqHM+BJxMuo8z0mAeYsFLFk17FP2lHuN84ayDo
+         3qQ8Ke+lYaKP6A+npfshu/9nKnUW0AIg0xfz4DO4uqPMkWrF7oFYujZN2BvWRxXISWi9
+         d8Nkt1d7lYC7F/DS14HWJYF+nD2IH863bv/cVz6mu3VzL5EXSFuZ9bkaZz5/LJCwCBJ7
+         tCPsndjvb6CPGa9HIn12v2kUBCOC5yiurA781ngvob38vW9/d3LI605qZmJxcuaORN46
+         9FyQ==
+X-Gm-Message-State: AOAM530P7TtVrEH3qPkX9UYuZPHdNghr2wRnlzRuL3DyDeCoBrE7SZVu
+        eZoULNKJVJlkKCOG3xB0Yw/aEA==
+X-Google-Smtp-Source: ABdhPJzqgVPiezueLlr3ZlY7zO5/wkCCQC840FTUCce3OhPyfxTmnx2ofIfbVCt8dCXRlFyB6LBXUQ==
+X-Received: by 2002:a05:6808:159d:: with SMTP id t29mr21335223oiw.159.1625714003373;
+        Wed, 07 Jul 2021 20:13:23 -0700 (PDT)
+Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id t12sm266872oic.33.2021.07.07.20.13.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 20:13:22 -0700 (PDT)
+From:   Shuah Khan <skhan@linuxfoundation.org>
+To:     mcgrof@kernel.org, gregkh@linuxfoundation.org, rafael@kernel.org
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        syzbot+77cea49e091776a57689@syzkaller.appspotmail.com
+Subject: [PATCH] firmware_loader: Fix use-after-free Read in firmware_loading_store
+Date:   Wed,  7 Jul 2021 21:13:21 -0600
+Message-Id: <20210708031321.50800-1-skhan@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gleixner,
+If user writes to 'loading' between loading aborted and 'loading'
+gets removed, __fw_load_abort() could be called twice in error
+path setting the state to load aborted. __fw_load_abort() checks
+for fw_sysfs_done() case, but doesn't check for abort case. This
+opens the window for use-after-free Read in firmware_loading_store().
 
-> Seriously? The wrap-around time for 32bit HPET @24MHz is ~3 minutes.
+Fix it by adding check for fw load aborted in addition to done in
+__fw_load_abort() and return if either one of the states is true.
 
-In some cases, our system will be very busy, and the timeout of 3 minutes 
-is not an exaggeration. Then, the system considers that the tsc clock is 
-inaccurate and switches the tsc clock to the hpet clock, which brings 
-greater performance overhead.
+BUG: KASAN: use-after-free in __list_del_entry_valid+0xd6/0xf0 lib/list_debug.c:54
+Read of size 8 at addr ffff88802b3da2c8 by task systemd-udevd/25252
 
-> Aside of that the reason why the kernel does not support 64bit HPET is
-> that there are HPETs which advertise 64bit support, but the
-> implementation is buggy.
+CPU: 0 PID: 25252 Comm: systemd-udevd Not tainted 5.13.0-rc1-syzkaller #0
+Hardware name: Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:233
+ __kasan_report mm/kasan/report.c:419 [inline]
+ kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:436
+ __list_del_entry_valid+0xd6/0xf0 lib/list_debug.c:54
+ __list_del_entry include/linux/list.h:132 [inline]
+ list_del_init include/linux/list.h:204 [inline]
+ __fw_load_abort drivers/base/firmware_loader/fallback.c:97 [inline]
+ __fw_load_abort drivers/base/firmware_loader/fallback.c:88 [inline]
+ fw_load_abort drivers/base/firmware_loader/fallback.c:105 [inline]
+ firmware_loading_store+0x141/0x650 drivers/base/firmware_loader/fallback.c:297
+ dev_attr_store+0x50/0x80 drivers/base/core.c:2066
+ sysfs_kf_write+0x110/0x160 fs/sysfs/file.c:139
+ kernfs_fop_write_iter+0x342/0x500 fs/kernfs/file.c:296
+ call_write_iter include/linux/fs.h:2114 [inline]
+ new_sync_write+0x426/0x650 fs/read_write.c:518
+ vfs_write+0x796/0xa30 fs/read_write.c:605
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f6d0b3fe970
+Code: 73 01 c3 48 8b 0d 28 d5 2b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 83 3d 99 2d 2c 00 00 75 10 b8 01 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 7e 9b 01 00 48 89 04 24
+RSP: 002b:00007ffde8a82ba8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007f6d0b3fe970
+RDX: 0000000000000002 RSI: 00005567e595b380 RDI: 0000000000000007
+RBP: 00005567e595b380 R08: 00007f6d0c58c8c0 R09: 0000000000000002
+R10: 0000000000000020 R11: 0000000000000246 R12: 0000000000000002
+R13: 0000000000000001 R14: 00005567e59427d0 R15: 0000000000000002
 
-Can you tell me what is the buggy with the 64-bit hpet clock? In my opinion, 
-it is unreasonable to use a lower-bit width clock to calibrate a higher-bit width
- clock, and the hardware already supports the higher-bit width.
+Reported-by: syzbot+77cea49e091776a57689@syzkaller.appspotmail.com
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+---
+ drivers/base/firmware_loader/fallback.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-
-> 2021年7月7日 下午6:04，Thomas Gleixner <tglx@linutronix.de> 写道：
-> 
-> Liao,
-> 
-> On Fri, Jul 02 2021 at 16:13, zhaoyan liao wrote:
->> The kernel judges whether the tsc clock is accurate in the
->> clocksource_watchdog background thread function. The hpet clock source
->> is 32-bit, but tsc is 64-bit. Therefore, when the system is busy and the
->> clocksource_watchdog cannot be scheduled in time, the hpet clock may
->> overflow and cause the system to misjudge tsc as unreliable.
-> 
-> Seriously? The wrap-around time for 32bit HPET @24MHz is ~3 minutes.
-> 
->> In this case, we recommend that the kernel adopts the 64-bit hpet clock
->> by default to keep the width of the two clock sources the same to reduce
->> misjudgment. Some CPU models may not support 64-bit hpet, but according
->> to the description of the CPU's register manual, it does not affect our
->> reading action.
-> 
-> So much for the theory.
-> 
->> -#define HPET_MASK			CLOCKSOURCE_MASK(32)
->> +#define HPET_MASK			CLOCKSOURCE_MASK(64)
-> 
-> How is that valid for a 32bit HPET? This breaks the clocksource.
-> 
->> +inline unsigned long hpet_readq(unsigned int a)
->> +{
->> +	return readq(hpet_virt_address + a);
-> 
-> Breaks 32bit build immediately.
-> 
-> Aside of that the reason why the kernel does not support 64bit HPET is
-> that there are HPETs which advertise 64bit support, but the
-> implementation is buggy.
-> 
-> IOW, while this works for your hardware this breaks quite some parts of
-> the universe. Not really a good approach.
-> 
-> Thanks,
-> 
->        tglx
+diff --git a/drivers/base/firmware_loader/fallback.c b/drivers/base/firmware_loader/fallback.c
+index 91899d185e31..e6a18c2a6c43 100644
+--- a/drivers/base/firmware_loader/fallback.c
++++ b/drivers/base/firmware_loader/fallback.c
+@@ -89,9 +89,10 @@ static void __fw_load_abort(struct fw_priv *fw_priv)
+ {
+ 	/*
+ 	 * There is a small window in which user can write to 'loading'
+-	 * between loading done and disappearance of 'loading'
++	 * between loading done or aborted and disappearance of
++	 * 'loading'
+ 	 */
+-	if (fw_sysfs_done(fw_priv))
++	if (fw_sysfs_done(fw_priv) || fw_state_is_aborted(fw_priv))
+ 		return;
+ 
+ 	list_del_init(&fw_priv->pending_list);
+-- 
+2.30.2
 
