@@ -2,214 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C551B3BF8A2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 13:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 926D13BF8AF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 13:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231565AbhGHLEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 07:04:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231522AbhGHLEh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 07:04:37 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 074CEC061574;
-        Thu,  8 Jul 2021 04:01:56 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id k31-20020a05600c1c9fb029021727d66d33so2113686wms.0;
-        Thu, 08 Jul 2021 04:01:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0q2XAc7CdT3TgB10pdJE5kx0YMb858f02LBVzXJ1O9Y=;
-        b=ss+HVddi2Yb9LDcR0+4nqmaNNfSMMCBEuwH5VEm8nkmIqj/VHaxDODkvdVab2f01Lx
-         +h8LDNtYHqLSXHSEX8j7lFv+yXf4A9ojDAhChPCpZEgQiqAMfj8qTSeh8wUezWDYsDkc
-         PHwMizfh6GJO8lwmvj6QPvw4C8BdxBL+6h8SmCieMjsdAPB8dndHES0j9bc398Av8b4B
-         yC+0BBrf0GozOU/Ljpr2O6FDx+CdirLYIo3oyBWgI/O70rDsqkrSegMv7kqK3qbu9p1R
-         kTXobYhuwWg5+skAGn6tTBy3OWcEDc3gf/e4x4fJ4cq4flOAl3vaxQIVWPMjk+YU1YMA
-         mxQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0q2XAc7CdT3TgB10pdJE5kx0YMb858f02LBVzXJ1O9Y=;
-        b=M4BXFAVane9guNTTzX5bCtmOX2boqaOrhxdeCKT5BYk2wHGQg+BgZnYn7Z1IFBBwf3
-         HbivWm5ZuSrVXOPrgX7tzBggkQ8zP4Y7xMGanFQn64OS1zddTbdHUFoikX5L9FrTULDZ
-         iKfaCLYS0TubwD3He/7YRdh4BnH5xT+RzR79thaUylabEr+lGPxJQb5jq2QWzj1/dCHo
-         dFCrsEbbNZIopvlysygVJPbAHQPMPikxbffGYRPRnP1qGQGR7kalVjW79VASdXpEmD+P
-         E0sqeKMLUgk/mTQ6rsunz9vvlx2JfSxwmp5l5F692Yd+8h5Lq2rN3l4m94qxIygGxPAP
-         NWsw==
-X-Gm-Message-State: AOAM5320HHgOGi1sSs0GFj4zZPEdDkVcPIP5bBaoFkcdDV9924WCg1mP
-        IT5bp9Sse0dz2SzI1S4E7hdhwAFF/3s=
-X-Google-Smtp-Source: ABdhPJzIHy2aJCrUwjFIryceTbQUOXi3nwiQi+/7q1wuOGo8Qn77qPDzujrfbJ6GHPxvEvB5M2lX5Q==
-X-Received: by 2002:a05:600c:4a09:: with SMTP id c9mr31946590wmp.11.1625742114583;
-        Thu, 08 Jul 2021 04:01:54 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id c10sm1654010wmb.40.2021.07.08.04.01.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jul 2021 04:01:53 -0700 (PDT)
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] pwm: Changes for v5.14-rc1
-Date:   Thu,  8 Jul 2021 13:04:15 +0200
-Message-Id: <20210708110415.1785007-1-thierry.reding@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        id S231572AbhGHLMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 07:12:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34610 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231522AbhGHLMF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 07:12:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 080D061606;
+        Thu,  8 Jul 2021 11:09:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625742564;
+        bh=O9K4Dy/jCMCCdUkBLxKjOpkYRQKnlt2h/CJQif++SME=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=qknINIEsuRSXOyI6xbCItD101O4iVSmVeuFRkakW69Y+k5b/878uv+w1U6SFqXeiB
+         cdRwGF0kCgyfHgHxEh40AQ7njzwXRf57H6emEjsbzajwLvCOtfP9LhWiv8JMlBpARP
+         6v5z67ehURIeGKlcqvaHNVyK3Hvp63ME21+N4zMH0INNxzb8n4c2/wAyYe0KJoERpX
+         zTEp7P4tjiJhuVeWZmvYRV+eMW19fC8tb0Tbo/5Nb+J411KfCSB4+LBodCCsdv6X8e
+         qUEOEJFAFFbxe0S1mlHlkbMpsnSI30qCEbW7BdRq0gCkNR40zPEL9mGEjglHLcxRSq
+         3t0LnAeQ+U1lA==
+Date:   Thu, 8 Jul 2021 07:09:23 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     dsterba@suse.cz, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.13 75/85] btrfs: make Private2 lifespan more
+ consistent
+Message-ID: <YObc45mLr/L++VKj@sashalap>
+References: <20210704230420.1488358-1-sashal@kernel.org>
+ <20210704230420.1488358-75-sashal@kernel.org>
+ <20210707111005.GI2610@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210707111005.GI2610@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Wed, Jul 07, 2021 at 01:10:05PM +0200, David Sterba wrote:
+>On Sun, Jul 04, 2021 at 07:04:10PM -0400, Sasha Levin wrote:
+>> From: Qu Wenruo <wqu@suse.com>
+>>
+>> [ Upstream commit 87b4d86baae219a9a79f6b0a1434b2a42fd40d09 ]
+>>
+>> Currently we use page Private2 bit to indicate that we have ordered
+>> extent for the page range.
+>>
+>> But the lifespan of it is not consistent, during regular writeback path,
+>> there are two locations to clear the same PagePrivate2:
+>>
+>>     T ----- Page marked Dirty
+>>     |
+>>     + ----- Page marked Private2, through btrfs_run_dealloc_range()
+>>     |
+>>     + ----- Page cleared Private2, through btrfs_writepage_cow_fixup()
+>>     |       in __extent_writepage_io()
+>>     |       ^^^ Private2 cleared for the first time
+>>     |
+>>     + ----- Page marked Writeback, through btrfs_set_range_writeback()
+>>     |       in __extent_writepage_io().
+>>     |
+>>     + ----- Page cleared Private2, through
+>>     |       btrfs_writepage_endio_finish_ordered()
+>>     |       ^^^ Private2 cleared for the second time.
+>>     |
+>>     + ----- Page cleared Writeback, through
+>>             btrfs_writepage_endio_finish_ordered()
+>>
+>> Currently PagePrivate2 is mostly to prevent ordered extent accounting
+>> being executed for both endio and invalidatepage.
+>> Thus only the one who cleared page Private2 is responsible for ordered
+>> extent accounting.
+>>
+>> But the fact is, in btrfs_writepage_endio_finish_ordered(), page
+>> Private2 is cleared and ordered extent accounting is executed
+>> unconditionally.
+>>
+>> The race prevention only happens through btrfs_invalidatepage(), where
+>> we wait for the page writeback first, before checking the Private2 bit.
+>>
+>> This means, Private2 is also protected by Writeback bit, and there is no
+>> need for btrfs_writepage_cow_fixup() to clear Priavte2.
+>>
+>> This patch will change btrfs_writepage_cow_fixup() to just check
+>> PagePrivate2, not to clear it.
+>> The clearing will happen in either btrfs_invalidatepage() or
+>> btrfs_writepage_endio_finish_ordered().
+>>
+>> This makes the Private2 bit easier to understand, just meaning the page
+>> has unfinished ordered extent attached to it.
+>>
+>> And this patch is a hard requirement for the incoming refactoring for
+>> how we finished ordered IO for endio context, as the coming patch will
+>> check Private2 to determine if we need to do the ordered extent
+>> accounting.  Thus this patch is definitely needed or we will hang due to
+>> unfinished ordered extent.
+>>
+>> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> Signed-off-by: David Sterba <dsterba@suse.com>
+>> Signed-off-by: Sasha Levin <sashal@kernel.org>
+>
+>Please drop this patch from all autosel stable backports. This is not a
+>standalone fix and the CC: stable@ is not there intentionally.
 
-The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
+Will do.
 
-  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+>All patches that go through my tree are evaluated for stable backports
+>up to 4.4 so it's unlikely the machinery you're using can find something
+>I've overlooked.
 
-are available in the Git repository at:
+If you'd like, I can make it ignore fs/btrfs/. The tool is there to help
+maintainers who aren't as diligent w.r.t tagging patches for stable, not
+to create extra noise for something.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/thierry.reding/linux-pwm.git tags/pwm/for-5.14-rc1
+We can ofcourse also keep the current workflow if you think that it's
+helpful in some way.
 
-for you to fetch changes up to bebedf2bb4a9e0cb4ffa72cbc960728051b338a4:
+>The patches that autosel picks and do not get a complain^Wreply for me
+>are below the bar I'd consider it for stable but if after another review
+>the patch "does no harm", I let it pass because you're obviously
+>handling the backports. I would not tag it myself to avoid increasing
+>load of Greg with patches that don't matter much.
 
-  pwm: Remove redundant assignment to pointer pwm (2021-07-07 21:43:32 +0200)
+I'd say don't worry about this side of things: we're trying to get any
+fixes in, without too much regard to whether the fix is for something
+"big" or "small". We'd prefer to go over extra patches here in exchange
+for a much better user experience :)
 
+-- 
 Thanks,
-Thierry
-
-----------------------------------------------------------------
-pwm: Changes for v5.14-rc1
-
-This contains mostly various fixes, cleanups and some conversions to the
-atomic API. One noteworthy change is that PWM consumers can now pass a
-hint to the PWM core about the PWM usage, enabling PWM providers to
-implement various optimizations.
-
-There's also a fair bit of simplification here with the addition of some
-device-managed helpers as well as unification between the DT and ACPI
-firmware interfaces.
-
-----------------------------------------------------------------
-Alexander Sverdlin (1):
-      pwm: ep93xx: Prepare clock before using it
-
-Andy Shevchenko (6):
-      docs: firmware-guide: ACPI: Add a PWM example
-      pwm: core: Convert to use fwnode for matching
-      pwm: core: Reuse fwnode_to_pwmchip() in ACPI case
-      pwm: core: Unify fwnode checks in the module
-      pwm: core: Remove unused devm_pwm_put()
-      pwm: core: Simplify some devm_*pwm*() functions
-
-Clemens Gruber (4):
-      pwm: core: Support new usage_power setting in PWM state
-      pwm: pca9685: Support new usage_power setting in PWM state
-      pwm: pca9685: Restrict period change for enabled PWMs
-      pwm: pca9685: Add error messages for failed regmap calls
-
-Colin Ian King (2):
-      pwm: ep93xx: Fix read of uninitialized variable ret
-      pwm: Remove redundant assignment to pointer pwm
-
-Lokesh Vutla (4):
-      dt-bindings: pwm: pwm-tiehrpwm: Convert to json schema
-      dt-bindings: pwm: pwm-tiehrpwm: Add compatible string for AM64 SoC
-      dt-bindings: pwm: pwm-tiecap: Convert to json schema
-      dt-bindings: pwm: pwm-tiecap: Add compatible string for AM64 SoC
-
-Uwe Kleine-König (32):
-      pwm: Make of_pwm_xlate_with_flags() work with #pwm-cells = <2>
-      pwm: Drop of_pwm_simple_xlate() in favour of of_pwm_xlate_with_flags()
-      pwm: Autodetect default value for of_pwm_n_cells from device tree
-      pwm: Simplify all drivers with explicit of_pwm_n_cells = 3
-      pwm: visconti: Fix and simplify period calculation
-      pwm: spear: Don't modify HW state in .remove callback
-      pwm: spear: Free resources only after pwmchip_remove()
-      pwm: spear: Implement .apply() callback
-      pwm: Add a device-managed function to add PWM chips
-      pwm: lpss: Simplify using devm_pwmchip_add()
-      pwm: meson: Simplify using devm_pwmchip_add()
-      pwm: clps711x: Simplify using devm_pwmchip_add()
-      pwm: imx1: Don't disable clocks at device remove time
-      pwm: imx1: Simplify using devm_pwmchip_add()
-      pwm: crc: Simplify using devm_pwmchip_add()
-      pwm: Drop irrelevant error path from pwmchip_remove()
-      pwm: tiecap: Drop .free() callback
-      pwm: tiecap: Implement .apply() callback
-      pwm: berlin: use consistent naming for variables
-      pwm: berlin: Implement .apply() callback
-      pwm: berlin: Don't check the return code of pwmchip_remove()
-      pwm: pxa: Drop if with an always false condition
-      pwm: pxa: Always use the same variable name for driver data
-      pwm: sprd: Don't check the return code of pwmchip_remove()
-      pwm: tegra: Drop an if block with an always false condition
-      pwm: tegra: Don't modify HW state in .remove callback
-      pwm: tegra: Don't needlessly enable and disable the clock in .remove()
-      pwm: tegra: Assert reset only after the PWM was unregistered
-      pwm: vt8500: Drop if with an always false condition
-      pwm: vt8500: Only unprepare the clock after the pwmchip was removed
-      pwm: ep93xx: Implement .apply callback
-      pwm: ep93xx: Unfold legacy callbacks into ep93xx_pwm_apply()
-
-Zou Wei (1):
-      pwm: img: Fix PM reference leak in img_pwm_enable()
-
- .../devicetree/bindings/pwm/pwm-tiecap.txt         |  51 -----
- .../devicetree/bindings/pwm/pwm-tiecap.yaml        |  64 ++++++
- .../devicetree/bindings/pwm/pwm-tiehrpwm.txt       |  50 -----
- .../devicetree/bindings/pwm/pwm-tiehrpwm.yaml      |  65 ++++++
- Documentation/driver-api/driver-model/devres.rst   |   3 +-
- Documentation/driver-api/pwm.rst                   |   7 +-
- Documentation/firmware-guide/acpi/enumeration.rst  |  32 +++
- drivers/pwm/core.c                                 | 222 +++++++--------------
- drivers/pwm/pwm-atmel-hlcdc.c                      |   2 -
- drivers/pwm/pwm-atmel-tcb.c                        |   2 -
- drivers/pwm/pwm-atmel.c                            |   2 -
- drivers/pwm/pwm-bcm-iproc.c                        |   2 -
- drivers/pwm/pwm-bcm-kona.c                         |   2 -
- drivers/pwm/pwm-bcm2835.c                          |   2 -
- drivers/pwm/pwm-berlin.c                           | 165 ++++++++-------
- drivers/pwm/pwm-clps711x.c                         |  12 +-
- drivers/pwm/pwm-crc.c                              |  12 +-
- drivers/pwm/pwm-ep93xx.c                           | 167 ++++++++--------
- drivers/pwm/pwm-fsl-ftm.c                          |   2 -
- drivers/pwm/pwm-hibvt.c                            |   2 -
- drivers/pwm/pwm-img.c                              |   2 +-
- drivers/pwm/pwm-imx-tpm.c                          |   2 -
- drivers/pwm/pwm-imx1.c                             |  14 +-
- drivers/pwm/pwm-imx27.c                            |   3 -
- drivers/pwm/pwm-jz4740.c                           |   2 -
- drivers/pwm/pwm-lpc18xx-sct.c                      |   2 -
- drivers/pwm/pwm-lpss-pci.c                         |   4 -
- drivers/pwm/pwm-lpss-platform.c                    |   4 +-
- drivers/pwm/pwm-lpss.c                             |   8 +-
- drivers/pwm/pwm-lpss.h                             |   1 -
- drivers/pwm/pwm-meson.c                            |  14 +-
- drivers/pwm/pwm-mxs.c                              |   2 -
- drivers/pwm/pwm-omap-dmtimer.c                     |   2 -
- drivers/pwm/pwm-pca9685.c                          | 198 ++++++++++++++----
- drivers/pwm/pwm-pxa.c                              |  40 ++--
- drivers/pwm/pwm-renesas-tpu.c                      |   2 -
- drivers/pwm/pwm-rockchip.c                         |   5 -
- drivers/pwm/pwm-samsung.c                          |   3 -
- drivers/pwm/pwm-sifive.c                           |   2 -
- drivers/pwm/pwm-spear.c                            |  40 +++-
- drivers/pwm/pwm-sprd.c                             |   4 +-
- drivers/pwm/pwm-stm32-lp.c                         |   2 -
- drivers/pwm/pwm-stm32.c                            |   2 -
- drivers/pwm/pwm-sun4i.c                            |   2 -
- drivers/pwm/pwm-tegra.c                            |  24 +--
- drivers/pwm/pwm-tiecap.c                           |  58 ++++--
- drivers/pwm/pwm-tiehrpwm.c                         |   2 -
- drivers/pwm/pwm-visconti.c                         |  17 +-
- drivers/pwm/pwm-vt8500.c                           |  10 +-
- include/linux/pwm.h                                |  15 +-
- 50 files changed, 710 insertions(+), 642 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/pwm/pwm-tiecap.txt
- create mode 100644 Documentation/devicetree/bindings/pwm/pwm-tiecap.yaml
- delete mode 100644 Documentation/devicetree/bindings/pwm/pwm-tiehrpwm.txt
- create mode 100644 Documentation/devicetree/bindings/pwm/pwm-tiehrpwm.yaml
+Sasha
