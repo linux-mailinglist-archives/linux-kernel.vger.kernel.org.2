@@ -2,153 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C91D03C13E8
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 15:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08DF73C1417
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 15:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231843AbhGHNNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 09:13:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51888 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230080AbhGHNNL (ORCPT
+        id S231795AbhGHNUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 09:20:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231433AbhGHNUM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 09:13:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625749829;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Su19WDhoU/YXgcv3TtubE0a9+gNAyxVy+Jnc8J4aC5U=;
-        b=JxmLJoVKxFTxguND4YNL6NuuiGGZbXAh8OWgN3HHrJ6b8A0y8c4IYsCAeq7DfipnsdaJt3
-        1U2a58crcCslIZAIGMYr3BqJ9ydd7khfMvb8LAud4Kt8w7gSGP/hOhqZwJ0mkEAge4ABAJ
-        AqfJWfr1r1DUmhRWQSQj5ZgRE7dBaSo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-584-GX00-M0UPyaJOTd3kjjI3A-1; Thu, 08 Jul 2021 09:10:26 -0400
-X-MC-Unique: GX00-M0UPyaJOTd3kjjI3A-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 690E5192CC6B;
-        Thu,  8 Jul 2021 13:10:24 +0000 (UTC)
-Received: from optiplex-fbsd (unknown [10.3.128.11])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D9231E2F7;
-        Thu,  8 Jul 2021 13:10:21 +0000 (UTC)
-Date:   Thu, 8 Jul 2021 09:10:18 -0400
-From:   Rafael Aquini <aquini@redhat.com>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
-        Zqiang <qiang.zhang@windriver.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+127fd7828d6eeb611703@syzkaller.appspotmail.com
-Subject: Re: [PATCH] mm/page_alloc: Avoid page allocator recursion with
- pagesets.lock held
-Message-ID: <YOb5OrkqjWu4TODN@optiplex-fbsd>
-References: <20210708081434.GV3840@techsingularity.net>
+        Thu, 8 Jul 2021 09:20:12 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D9A04C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 06:17:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+        Content-Transfer-Encoding; bh=Q0JrVxxRtdNtAWQujigT9sHiWjfPxHh4Ty
+        k9D3IGJfM=; b=EWmcnECaaveKEcpLv0fYSRQD344PEseLxRe4Ya7VPYZQHq9Id/
+        1VDUjNJst3omL2weMbsh+NXO+8KOrilFHDUlMZy2kcjCzKegieqlfwepxnThGF73
+        BkIU9wM/bHqawLPQQQTWzQTqNu0zrleYZJ8LKcknTjriAxIkfyxC4eww0=
+Received: from xhacker (unknown [101.86.20.15])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygCnrAC8+uZg7EZDAA--.30987S2;
+        Thu, 08 Jul 2021 21:16:45 +0800 (CST)
+Date:   Thu, 8 Jul 2021 21:10:56 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] riscv: stacktrace: Fix NULL pointer dereference
+Message-ID: <20210708211056.642835b5@xhacker>
+In-Reply-To: <20210619001332.2c0c9a05@xhacker>
+References: <20210619001332.2c0c9a05@xhacker>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210708081434.GV3840@techsingularity.net>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygCnrAC8+uZg7EZDAA--.30987S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZFyDuF4rtw4rWryfCFy5XFb_yoWrGFW7pF
+        13JF47Cr48Jr4xtr17Ar15ZFy5Jrn8Za43Kr9rAr1rAF15Wr1UXr18tFW7Wr1qkr4DXa47
+        trn0qw4vqw4DJ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyFb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E
+        4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGV
+        WUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_
+        Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rV
+        WrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_
+        GrUvcSsGvfC2KfnxnUUI43ZEXa7IU5PpnJUUUUU==
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 08, 2021 at 09:14:34AM +0100, Mel Gorman wrote:
-> Syzbot is reporting potential deadlocks due to pagesets.lock when
-> PAGE_OWNER is enabled. One example from Desmond Cheong Zhi Xi is
-> as follows
-> 
->   __alloc_pages_bulk()
->     local_lock_irqsave(&pagesets.lock, flags) <---- outer lock here
->     prep_new_page():
->       post_alloc_hook():
->         set_page_owner():
->           __set_page_owner():
->             save_stack():
->               stack_depot_save():
->                 alloc_pages():
->                   alloc_page_interleave():
->                     __alloc_pages():
->                       get_page_from_freelist():
->                         rm_queue():
->                           rm_queue_pcplist():
->                             local_lock_irqsave(&pagesets.lock, flags);
->                             *** DEADLOCK ***
-> 
-> Zhang, Qiang also reported
-> 
->   BUG: sleeping function called from invalid context at mm/page_alloc.c:5179
->   in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 1, name: swapper/0
->   .....
->   __dump_stack lib/dump_stack.c:79 [inline]
->   dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
->   ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:9153
->   prepare_alloc_pages+0x3da/0x580 mm/page_alloc.c:5179
->   __alloc_pages+0x12f/0x500 mm/page_alloc.c:5375
->   alloc_page_interleave+0x1e/0x200 mm/mempolicy.c:2147
->   alloc_pages+0x238/0x2a0 mm/mempolicy.c:2270
->   stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
->   save_stack+0x15e/0x1e0 mm/page_owner.c:120
->   __set_page_owner+0x50/0x290 mm/page_owner.c:181
->   prep_new_page mm/page_alloc.c:2445 [inline]
->   __alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5313
->   alloc_pages_bulk_array_node include/linux/gfp.h:557 [inline]
->   vm_area_alloc_pages mm/vmalloc.c:2775 [inline]
->   __vmalloc_area_node mm/vmalloc.c:2845 [inline]
->   __vmalloc_node_range+0x39d/0x960 mm/vmalloc.c:2947
->   __vmalloc_node mm/vmalloc.c:2996 [inline]
->   vzalloc+0x67/0x80 mm/vmalloc.c:3066
-> 
-> There are a number of ways it could be fixed. The page owner code could
-> be audited to strip GFP flags that allow sleeping but it'll impair the
-> functionality of PAGE_OWNER if allocations fail. The bulk allocator
-> could add a special case to release/reacquire the lock for prep_new_page
-> and lookup PCP after the lock is reacquired at the cost of performance.
-> The patches requiring prep could be tracked using the least significant
-> bit and looping through the array although it is more complicated for
-> the list interface. The options are relatively complex and the second
-> one still incurs a performance penalty when PAGE_OWNER is active so this
-> patch takes the simple approach -- disable bulk allocation of PAGE_OWNER is
-                                                            ^^^^
-Minor nit: s/of/if
+Hi Palmer,
 
-> active. The caller will be forced to allocate one page at a time incurring
-> a performance penalty but PAGE_OWNER is already a performance penalty.
+On Sat, 19 Jun 2021 00:13:32 +0800
+Jisheng Zhang wrote:
+
+> From: Jisheng Zhang <jszhang@kernel.org>
 > 
-> Fixes: dbbee9d5cd83 ("mm/page_alloc: convert per-cpu list protection to local_lock")
-> Reported-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-> Reported-by: "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-> Reported-and-tested-by: syzbot+127fd7828d6eeb611703@syzkaller.appspotmail.com
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> When CONFIG_FRAME_POINTER=y, calling dump_stack() can always trigger
+> NULL pointer dereference panic similar as below:
+> 
+> [    0.396060] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.13.0-rc5+ #47
+> [    0.396692] Hardware name: riscv-virtio,qemu (DT)
+> [    0.397176] Call Trace:
+> [    0.398191] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000960
+> [    0.399487] Oops [#1]
+> [    0.399739] Modules linked in:
+> [    0.400135] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.13.0-rc5+ #47
+> [    0.400570] Hardware name: riscv-virtio,qemu (DT)
+> [    0.400926] epc : walk_stackframe+0xc4/0xdc
+> [    0.401291]  ra : dump_backtrace+0x30/0x38
+> [    0.401630] epc : ffffffff80004922 ra : ffffffff8000496a sp : ffffffe000f3bd00
+> [    0.402115]  gp : ffffffff80cfdcb8 tp : ffffffe000f30000 t0 : ffffffff80d0b0cf
+> [    0.402602]  t1 : ffffffff80d0b0c0 t2 : 0000000000000000 s0 : ffffffe000f3bd60
+> [    0.403071]  s1 : ffffffff808bc2e8 a0 : 0000000000001000 a1 : 0000000000000000
+> [    0.403448]  a2 : ffffffff803d7088 a3 : ffffffff808bc2e8 a4 : 6131725dbc24d400
+> [    0.403820]  a5 : 0000000000001000 a6 : 0000000000000002 a7 : ffffffffffffffff
+> [    0.404226]  s2 : 0000000000000000 s3 : 0000000000000000 s4 : 0000000000000000
+> [    0.404634]  s5 : ffffffff803d7088 s6 : ffffffff808bc2e8 s7 : ffffffff80630650
+> [    0.405085]  s8 : ffffffff80912a80 s9 : 0000000000000008 s10: ffffffff804000fc
+> [    0.405388]  s11: 0000000000000000 t3 : 0000000000000043 t4 : ffffffffffffffff
+> [    0.405616]  t5 : 000000000000003d t6 : ffffffe000f3baa8
+> [    0.405793] status: 0000000000000100 badaddr: 0000000000000960 cause: 000000000000000d
+> [    0.406135] [<ffffffff80004922>] walk_stackframe+0xc4/0xdc
+> [    0.407032] [<ffffffff8000496a>] dump_backtrace+0x30/0x38
+> [    0.407797] [<ffffffff803d7100>] show_stack+0x40/0x4c
+> [    0.408234] [<ffffffff803d9e5c>] dump_stack+0x90/0xb6
+> [    0.409019] [<ffffffff8040423e>] ptdump_init+0x20/0xc4
+> [    0.409681] [<ffffffff800015b6>] do_one_initcall+0x4c/0x226
+> [    0.410110] [<ffffffff80401094>] kernel_init_freeable+0x1f4/0x258
+> [    0.410562] [<ffffffff803dba88>] kernel_init+0x22/0x148
+> [    0.410959] [<ffffffff800029e2>] ret_from_exception+0x0/0x14
+> [    0.412241] ---[ end trace b2ab92c901b96251 ]---
+> [    0.413099] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+> 
+> The reason is the task is NULL when we finally call walk_stackframe()
+> the NULL is passed from __dump_stack():
+> 
+> |static void __dump_stack(void)
+> |{
+> |        dump_stack_print_info(KERN_DEFAULT);
+> |        show_stack(NULL, NULL, KERN_DEFAULT);
+> |}
+> 
+> Fix this issue by checking "task == NULL" case in walk_stackframe().
+> 
+> Fixes: eac2f3059e02 ("riscv: stacktrace: fix the riscv stacktrace when CONFIG_FRAME_POINTER enabled"
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+
+What about this patch? This is a fix to an obvious bug: call dump_stack() will
+panic.
+
+Thanks
 > ---
->  mm/page_alloc.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
+>  arch/riscv/kernel/stacktrace.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 3b97e17806be..6ef86f338151 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5239,6 +5239,18 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->  	if (nr_pages - nr_populated == 1)
->  		goto failed;
->  
-> +#ifdef CONFIG_PAGE_OWNER
-> +	/*
-> +	 * PAGE_OWNER may recurse into the allocator to allocate space to
-> +	 * save the stack with pagesets.lock held. Releasing/reacquiring
-> +	 * removes much of the performance benefit of bulk allocation so
-> +	 * force the caller to allocate one page at a time as it'll have
-> +	 * similar performance to added complexity to the bulk allocator.
-> +	 */
-> +	if (static_branch_unlikely(&page_owner_inited))
-> +		goto failed;
-> +#endif
-> +
->  	/* May set ALLOC_NOFRAGMENT, fragmentation will return 1 page. */
->  	gfp &= gfp_allowed_mask;
->  	alloc_gfp = gfp;
-> 
-Acked-by: Rafael Aquini <aquini@redhat.com>
+> diff --git a/arch/riscv/kernel/stacktrace.c b/arch/riscv/kernel/stacktrace.c
+> index bde85fc53357..7bc8af75933a 100644
+> --- a/arch/riscv/kernel/stacktrace.c
+> +++ b/arch/riscv/kernel/stacktrace.c
+> @@ -27,7 +27,7 @@ void notrace walk_stackframe(struct task_struct *task, struct pt_regs *regs,
+>  		fp = frame_pointer(regs);
+>  		sp = user_stack_pointer(regs);
+>  		pc = instruction_pointer(regs);
+> -	} else if (task == current) {
+> +	} else if (task == NULL || task == current) {
+>  		fp = (unsigned long)__builtin_frame_address(1);
+>  		sp = (unsigned long)__builtin_frame_address(0);
+>  		pc = (unsigned long)__builtin_return_address(0);
+
 
