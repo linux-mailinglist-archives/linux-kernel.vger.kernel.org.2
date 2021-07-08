@@ -2,477 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28DA63BF711
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 10:47:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA3703BF717
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 10:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231243AbhGHIuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 04:50:01 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:14038 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230414AbhGHIuA (ORCPT
+        id S231156AbhGHIxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 04:53:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44455 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229979AbhGHIxK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 04:50:00 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GL8wH3k8HzZp1G;
-        Thu,  8 Jul 2021 16:43:59 +0800 (CST)
-Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 8 Jul 2021 16:47:12 +0800
-Received: from [127.0.0.1] (10.69.38.203) by dggema757-chm.china.huawei.com
- (10.1.198.199) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 8 Jul
- 2021 16:47:11 +0800
-Subject: Re: [RFC PATCH 4/4] ultrasoc: Add System Memory Buffer driver
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Linuxarm <linuxarm@huawei.com>
-CC:     <alexander.shishkin@linux.intel.com>, <suzuki.poulose@arm.com>,
-        <jonathan.zhouwen@huawei.com>, <f.fangjian@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <coresight@lists.linaro.org>
-References: <1623749684-65432-1-git-send-email-liuqi115@huawei.com>
- <1623749684-65432-5-git-send-email-liuqi115@huawei.com>
- <20210629205003.GA1238591@p14s>
-From:   "liuqi (BA)" <liuqi115@huawei.com>
-Message-ID: <3931b63d-c058-35d0-290d-5b215d0b94c3@huawei.com>
-Date:   Thu, 8 Jul 2021 16:47:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Thu, 8 Jul 2021 04:53:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625734228;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SuIb8Mf/UTnaQz6OhnBGLu2JATZoHpFDaa87yUrmOjI=;
+        b=WciHVvd6PqtFtrlpZOQ6sCB/jPcbkKor8HlxKlY0ZJ8L7tp1UD4lMOR8oxeblkaw9YXVF3
+        5DPjUwl1sm+kCG3KFNWYYBwbuPMGQpzdYJvBwGQXoGUchALjtHtGB8repPElIBpMVUof4N
+        DZ3V60V7NjseMwJETgTedDzZqiW+Iqs=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-134-heqofvoGOFm4rGzlFG-dxQ-1; Thu, 08 Jul 2021 04:50:27 -0400
+X-MC-Unique: heqofvoGOFm4rGzlFG-dxQ-1
+Received: by mail-wm1-f70.google.com with SMTP id r5-20020a05600c35c5b029020fcaed9f61so902291wmq.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 01:50:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=SuIb8Mf/UTnaQz6OhnBGLu2JATZoHpFDaa87yUrmOjI=;
+        b=amclZQyXZh0Sh9+AFuxCxbkwIlT/6c/uwNd63FLTs7ZRh6FKUPZidLW8UMuVGdcXE5
+         emfMxQD503VjSkqwSi4Vr+R2QFRTj3f4mCRsJln7HvljBWjtb2hMSU5yPe4R6ZMK80Jb
+         1XIbv67OUGq5p6i13Kqck3RvApaLx7PjqaEJC0INKF3u57ebHElh2sCc6Pkjon3D0A4e
+         74j4h5d4H3Y5RPs+Rpzsi8clOlsx4jh5nKzOGKT7vSruoK3QGCGSKMh8U+pqoUDe/7RP
+         1FTXEevyQUGcMqz01RjZ/rKs9ANYeWWbUeX78FJLvyBi2O2gIpMcPOSm6r/y/8xIOJeY
+         iQPw==
+X-Gm-Message-State: AOAM5304s6ggJTy0NFCkfe1o2WP2ShqjgFiakniAQQXBtNKg9AY3A4jL
+        7fjD9jcBQ9+H5z5zzl1or+avUOOuiI3J0V42Mh7+AAV4BH4m57WU6fuFjEqI/0MCxVmdv2yi5ai
+        6KKjOWmLafN/tYrzJFuoSLufX
+X-Received: by 2002:a05:600c:1c1d:: with SMTP id j29mr32350636wms.34.1625734225948;
+        Thu, 08 Jul 2021 01:50:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxMxAdEuD7qHb5c0k9Wf7jG75F3PvDQ5XFmRSVxx0RNY6c6tA03nnyEHlmbWdrGaWp7vAZumw==
+X-Received: by 2002:a05:600c:1c1d:: with SMTP id j29mr32350583wms.34.1625734225686;
+        Thu, 08 Jul 2021 01:50:25 -0700 (PDT)
+Received: from work-vm (cpc109021-salf6-2-0-cust453.10-2.cable.virginm.net. [82.29.237.198])
+        by smtp.gmail.com with ESMTPSA id o3sm1529999wrw.56.2021.07.08.01.50.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jul 2021 01:50:25 -0700 (PDT)
+Date:   Thu, 8 Jul 2021 09:50:22 +0100
+From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part1 RFC v4 04/36] x86/mm: Add sev_feature_enabled()
+ helper
+Message-ID: <YOa8TlaZM42+sz+E@work-vm>
+References: <20210707181506.30489-1-brijesh.singh@amd.com>
+ <20210707181506.30489-5-brijesh.singh@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <20210629205003.GA1238591@p14s>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.69.38.203]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggema757-chm.china.huawei.com (10.1.198.199)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210707181506.30489-5-brijesh.singh@amd.com>
+User-Agent: Mutt/2.0.7 (2021-05-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi Mathieu,
-
-Thanks for reviewing this patch.
-
-On 2021/6/30 4:50, Mathieu Poirier wrote:
-> Hi Qi,
+* Brijesh Singh (brijesh.singh@amd.com) wrote:
+> The sev_feature_enabled() helper can be used by the guest to query whether
+> the SNP - Secure Nested Paging feature is active.
 > 
-> On Tue, Jun 15, 2021 at 05:34:44PM +0800, Qi Liu wrote:
->> This patch adds driver for System Memory Buffer. It includes
->> a platform driver for the SMB device.
->>
->> Signed-off-by: Jonathan Zhou <jonathan.zhouwen@huawei.com>
->> Signed-off-by: Qi Liu <liuqi115@huawei.com>
->> ---
->>   drivers/hwtracing/ultrasoc/Kconfig        |   9 +
->>   drivers/hwtracing/ultrasoc/Makefile       |   3 +
->>   drivers/hwtracing/ultrasoc/ultrasoc-smb.c | 663 ++++++++++++++++++++++++++++++
->>   drivers/hwtracing/ultrasoc/ultrasoc-smb.h | 182 ++++++++
->>   4 files changed, 857 insertions(+)
->>   create mode 100644 drivers/hwtracing/ultrasoc/ultrasoc-smb.c
->>   create mode 100644 drivers/hwtracing/ultrasoc/ultrasoc-smb.h
->>
->> diff --git a/drivers/hwtracing/ultrasoc/Kconfig b/drivers/hwtracing/ultrasoc/Kconfig
->> index 77429f3..8899949 100644
->> --- a/drivers/hwtracing/ultrasoc/Kconfig
->> +++ b/drivers/hwtracing/ultrasoc/Kconfig
->> @@ -22,4 +22,13 @@ config ULTRASOC_AXI_COM
->>   	  the upstream channel is used to transmit user configuration, and
->>   	  downstream channel to carry response and trace data to the users.
->>   
->> +config ULTRASOC_SMB
->> +	tristate "Ultrasoc System memory buffer drivers"
->> +	help
->> +	  This config enables support for Ultrasoc System Memory Buffer
->> +	  drivers. The System Memory Buffer provides a way to buffer and
->> +	  store messages in system memory. It provides a capability to
->> +	  store messages received on its input message interface to an
->> +	  area of system memory.
->> +
->>   endif
->> diff --git a/drivers/hwtracing/ultrasoc/Makefile b/drivers/hwtracing/ultrasoc/Makefile
->> index 54711a7b..b174ca8 100644
->> --- a/drivers/hwtracing/ultrasoc/Makefile
->> +++ b/drivers/hwtracing/ultrasoc/Makefile
->> @@ -8,3 +8,6 @@ ultrasoc-drv-objs := ultrasoc.o
->>   
->>   obj-$(CONFIG_ULTRASOC_AXI_COM) += ultrasoc-axi-com-drv.o
->>   ultrasoc-axi-com-drv-objs := ultrasoc-axi-com.o
->> +
-
-[...]
-
->> +static ssize_t smb_show_status(struct ultrasoc_com *com, char *buf,
->> +			       ssize_t wr_size)
->> +{
->> +	struct smb_drv_data *drvdata;
->> +	u32 value;
->> +
->> +	drvdata = dev_get_drvdata(com->dev);
->> +	value = readl(drvdata->base + SMB_LB_INT_STS);
->> +	wr_size += sysfs_emit_at(buf, wr_size, "%-20s: 0x%08x\n",
->> +				 "interrupt status", value);
->> +	value = readl(drvdata->base + SMB_LB_WR_ADDR);
->> +	wr_size += sysfs_emit_at(buf, wr_size, "%-20s: %#x\n", "write point",
->> +				 value);
->> +	value = readl(drvdata->base + SMB_LB_RD_ADDR);
->> +	wr_size += sysfs_emit_at(buf, wr_size, "%-20s: %#x\n", "read point",
->> +				 value);
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> ---
+>  arch/x86/include/asm/mem_encrypt.h |  8 ++++++++
+>  arch/x86/include/asm/msr-index.h   |  2 ++
+>  arch/x86/mm/mem_encrypt.c          | 14 ++++++++++++++
+>  3 files changed, 24 insertions(+)
 > 
-> This will not work.  The sysfs interface requires one line per entry.  Please
-> look at what other coresight drivers do in that area.
+> diff --git a/arch/x86/include/asm/mem_encrypt.h b/arch/x86/include/asm/mem_encrypt.h
+> index 8cc2fd308f65..fb857f2e72cb 100644
+> --- a/arch/x86/include/asm/mem_encrypt.h
+> +++ b/arch/x86/include/asm/mem_encrypt.h
+> @@ -16,6 +16,12 @@
+>  
+>  #include <asm/bootparam.h>
+>  
+> +enum sev_feature_type {
+> +	SEV,
+> +	SEV_ES,
+> +	SEV_SNP
+> +};
 
-got it, I'll use multi sysfs files to show these information， like this:
-static struct attribute *smb_sink_attrs[] = {
-	&dev_attr_read_pos.attr,
-	&dev_attr_write_pos.attr,
-	&dev_attr_buf_status.attr,
-	NULL,
-};
-> 
->> +
->> +	return wr_size;
->> +}
->> +
->> +static int smb_init_data_buffer(struct platform_device *pdev,
->> +				struct smb_data_buffer *sdb)
->> +{
->> +	struct resource *res;
->> +
->> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
->> +	if (IS_ERR(res)) {
->> +		dev_err(&pdev->dev, "SMB device without data buffer.\n");
->> +		return -EINVAL;
->> +	}
->> +
->> +	sdb->buf_base_phys = res->start;
->> +	sdb->buf_size = resource_size(res);
->> +	if (sdb->buf_size == 0)
->> +		return -EINVAL;
->> +
->> +	sdb->buf_base = ioremap_cache(sdb->buf_base_phys, sdb->buf_size);
-> 
-> Why no using devm_ioremap_resource() ?
-will use this, thanks.
+Is this ....
 
-> 
->> +	if (sdb->buf_base == NULL)
->> +		return -ENOMEM;
->> +
->> +	sdb->buf_cfg_mode = SMB_BUF_CFG_STREAMING;
-> 
-> As far as I can tell there is no point in keeping the value of
-> SMB_BUF_CFG_STREAMING in the smb_data_buffer since it isn't used for anything
-> else other than setting a HW register in smb_set_default_hw().
-> 
-thanks, will remove this member in struct smb_data_buffer, thanks.
+>  #ifdef CONFIG_AMD_MEM_ENCRYPT
+>  
+>  extern u64 sme_me_mask;
+> @@ -54,6 +60,7 @@ void __init sev_es_init_vc_handling(void);
+>  bool sme_active(void);
+>  bool sev_active(void);
+>  bool sev_es_active(void);
+> +bool sev_feature_enabled(unsigned int feature_type);
+>  
+>  #define __bss_decrypted __section(".bss..decrypted")
+>  
+> @@ -87,6 +94,7 @@ static inline int __init
+>  early_set_memory_encrypted(unsigned long vaddr, unsigned long size) { return 0; }
+>  
+>  static inline void mem_encrypt_free_decrypted_mem(void) { }
+> +static bool sev_feature_enabled(unsigned int feature_type) { return false; }
+>  
+>  #define __bss_decrypted
+>  
+> diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+> index a7c413432b33..37589da0282e 100644
+> --- a/arch/x86/include/asm/msr-index.h
+> +++ b/arch/x86/include/asm/msr-index.h
+> @@ -481,8 +481,10 @@
+>  #define MSR_AMD64_SEV			0xc0010131
+>  #define MSR_AMD64_SEV_ENABLED_BIT	0
+>  #define MSR_AMD64_SEV_ES_ENABLED_BIT	1
+> +#define MSR_AMD64_SEV_SNP_ENABLED_BIT	2
 
->> +	return 0;
->> +}
->> +
+Just the same as this ?
 
-[...]
+>  #define MSR_AMD64_SEV_ENABLED		BIT_ULL(MSR_AMD64_SEV_ENABLED_BIT)
+>  #define MSR_AMD64_SEV_ES_ENABLED	BIT_ULL(MSR_AMD64_SEV_ES_ENABLED_BIT)
+> +#define MSR_AMD64_SEV_SNP_ENABLED	BIT_ULL(MSR_AMD64_SEV_SNP_ENABLED_BIT)
+>  
+>  #define MSR_AMD64_VIRT_SPEC_CTRL	0xc001011f
+>  
+> diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+> index ff08dc463634..63e7799a9a86 100644
+> --- a/arch/x86/mm/mem_encrypt.c
+> +++ b/arch/x86/mm/mem_encrypt.c
+> @@ -389,6 +389,16 @@ bool noinstr sev_es_active(void)
+>  	return sev_status & MSR_AMD64_SEV_ES_ENABLED;
+>  }
+>  
+> +bool sev_feature_enabled(unsigned int type)
 
->> +static int smb_config_com_descp(struct platform_device *pdev,
->> +				struct smb_drv_data *drvdata)
->> +{
->> +	struct device *parent = pdev->dev.parent;
->> +	struct ultrasoc_com_descp com_descp = {0};
->> +	struct device *dev = &pdev->dev;
->> +	struct ultrasoc_com *com;
->> +
->> +	com_descp.name = pdev->name;
->> +	com_descp.com_type = ULTRASOC_COM_TYPE_DOWN;
->> +	com_descp.com_dev = dev;
->> +	com_descp.uscom_ops = &smb_ops;
->> +	com = ultrasoc_register_com(parent, &com_descp);
+In which case, if you want the enum then that would be enum
+sev_feature_type type  ?
+
+> +{
+> +	switch (type) {
+> +	case SEV: return sev_status & MSR_AMD64_SEV_ENABLED;
+> +	case SEV_ES: return sev_status & MSR_AMD64_SEV_ES_ENABLED;
+> +	case SEV_SNP: return sev_status & MSR_AMD64_SEV_SNP_ENABLED;
+> +	default: return false;
+
+or, could you just go for making that whole thing a bit test on 1<<type
+?
+
+> +	}
+> +}
+> +
+>  /* Override for DMA direct allocation check - ARCH_HAS_FORCE_DMA_UNENCRYPTED */
+>  bool force_dma_unencrypted(struct device *dev)
+>  {
+> @@ -461,6 +471,10 @@ static void print_mem_encrypt_feature_info(void)
+>  	if (sev_es_active())
+>  		pr_cont(" SEV-ES");
+>  
+> +	/* Secure Nested Paging */
+> +	if (sev_feature_enabled(SEV_SNP))
+> +		pr_cont(" SEV-SNP");
+> +
+>  	pr_cont("\n");
+>  }
+
+Dave
+
+> -- 
+> 2.17.1
 > 
-> Why is this needed?  As far as I can see this device does not need to
-> register with the ultrasoc core.
 > 
-yes, you are right.
-
-At the beginning we use the ultrasoc core to adapt multiple hardware 
-devices and support more capabilities. But after discussing with 
-Siemens, we are allowed to only upstream the axi-com and smb driver.
-
-So the software architecture seems unreasonable now, I'll refactor it in 
-next version, thanks.
-
-> To me the very first thing do to about this patchset is to move this in
-> drivers/hwtracing/coresight/.  That will dissociate this code completely from
-> the ultrasoc core (more on that later) and avoid duplications as pointed out by
-> Suzuki.
-> 
-> There are several things to address with this patch but there is no point in
-> elaborating further until the above hasn't been done.
-> 
-Got it, will move the driver next time, thanks.
-
-Qi
->> +	if (IS_ERR(com)) {
->> +		dev_err(dev, "Failed to register smb com.\n");
->> +		return PTR_ERR(com);
->> +	}
->> +
->> +	drvdata->com = com;
->> +	return 0;
->> +}
->> +
->> +static int smb_probe(struct platform_device *pdev)
->> +{
->> +	struct smb_drv_data *drvdata;
->> +	int ret;
->> +
->> +	drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
->> +	if (!drvdata)
->> +		return -ENOMEM;
->> +
->> +	ret = smb_init_res(pdev, drvdata);
->> +	if (ret)
->> +		return ret;
->> +
->> +	smb_set_default_hw(drvdata);
->> +	spin_lock_init(&drvdata->spinlock);
->> +	drvdata->dev = &pdev->dev;
->> +	drvdata->pid = -1;
->> +
->> +	ret = smb_config_com_descp(pdev, drvdata);
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret = smb_register_sink(pdev, drvdata);
->> +	if (ret) {
->> +		dev_err(&pdev->dev, "failed to register smb sink.\n");
->> +		ultrasoc_unregister_com(drvdata->com);
->> +		return ret;
->> +	}
->> +
->> +	platform_set_drvdata(pdev, drvdata);
->> +	return 0;
->> +}
->> +
->> +static int smb_remove(struct platform_device *pdev)
->> +{
->> +	struct smb_drv_data *drvdata = platform_get_drvdata(pdev);
->> +
->> +	smb_unregister_sink(drvdata);
->> +	ultrasoc_unregister_com(drvdata->com);
->> +	smb_release_data_buffer(drvdata);
->> +	return 0;
->> +}
->> +
->> +static const struct acpi_device_id ultrasoc_smb_acpi_match[] = {
->> +	{"HISI03A1", },
->> +	{},
->> +};
->> +
->> +static struct platform_driver smb_driver = {
->> +	.driver = {
->> +		.name = "ultrasoc,smb",
->> +		.acpi_match_table = ultrasoc_smb_acpi_match,
->> +	},
->> +	.probe = smb_probe,
->> +	.remove = smb_remove,
->> +};
->> +module_platform_driver(smb_driver);
->> +
->> +MODULE_DESCRIPTION("Ultrasoc smb driver");
->> +MODULE_LICENSE("Dual MIT/GPL");
->> +MODULE_AUTHOR("Jonathan Zhou <jonathan.zhouwen@huawei.com>");
->> +MODULE_AUTHOR("Qi Liu <liuqi115@huawei.com>");
->> diff --git a/drivers/hwtracing/ultrasoc/ultrasoc-smb.h b/drivers/hwtracing/ultrasoc/ultrasoc-smb.h
->> new file mode 100644
->> index 0000000..e37d510
->> --- /dev/null
->> +++ b/drivers/hwtracing/ultrasoc/ultrasoc-smb.h
->> @@ -0,0 +1,182 @@
->> +/* SPDX-License-Identifier: MIT */
->> +/*
->> + * Copyright (C) 2021 Hisilicon Limited Permission is hereby granted, free of
->> + * charge, to any person obtaining a copy of this software and associated
->> + * documentation files (the "Software"), to deal in the Software without
->> + * restriction, including without limitation the rights to use, copy, modify,
->> + * merge, publish, distribute, sublicense, and/or sell copies of the Software,
->> + * and to permit persons to whom the Software is furnished to do so, subject
->> + * to the following conditions:
->> + *
->> + * The above copyright notice and this permission notice shall be included in
->> + * all copies or substantial portions of the Software.
->> + *
->> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
->> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
->> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
->> + * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
->> + * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
->> + * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
->> + * IN THE SOFTWARE.
->> + *
->> + * Code herein communicates with and accesses proprietary hardware which is
->> + * licensed intellectual property (IP) belonging to Siemens Digital Industries
->> + * Software Ltd.
->> + *
->> + * Siemens Digital Industries Software Ltd. asserts and reserves all rights to
->> + * their intellectual property. This paragraph may not be removed or modified
->> + * in any way without permission from Siemens Digital Industries Software Ltd.
->> + */
->> +
->> +#ifndef _ULTRASOC_SMB_H
->> +#define _ULTRASOC_SMB_H
->> +
->> +#include <linux/coresight.h>
->> +#include <linux/list.h>
->> +#include <linux/miscdevice.h>
->> +
->> +#include "ultrasoc.h"
->> +
->> +#define SMB_GLOBAL_CFG		0X0
->> +#define SMB_GLOBAL_EN		0X4
->> +#define SMB_GLOBAL_INT		0X8
->> +#define SMB_LB_CFG_LO		0X40
->> +#define SMB_LB_CFG_HI		0X44
->> +#define SMB_LB_INT_CTRL		0X48
->> +#define SMB_LB_INT_STS		0X4C
->> +#define SMB_LB_BASE_LO		0X50
->> +#define SMB_LB_BASE_HI		0X54
->> +#define SMB_LB_LIMIT		0X58
->> +#define SMB_LB_RD_ADDR		0X5C
->> +#define SMB_LB_WR_ADDR		0X60
->> +#define SMB_LB_PURGE		0X64
->> +
->> +#define SMB_MSG_LC(lc)		((lc & 0x3) << 2)
->> +#define SMB_BST_LEN(len)	(((len - 1) & 0xff) << 4)
->> +/* idle message injection timer period */
->> +#define SMB_IDLE_PRD(period)	(((period - 216) & 0xf) << 12)
->> +#define SMB_MEM_WR(credit, rate) (((credit & 0x3) << 16) | ((rate & 0xf) << 18))
->> +#define SMB_MEM_RD(credit, rate) (((credit & 0x3) << 22) | ((rate & 0xf) << 24))
->> +#define HISI_SMB_GLOBAL_CFG                                                    \
->> +	(SMB_MSG_LC(0) | SMB_IDLE_PRD(231) | SMB_MEM_WR(0x3, 0x0) |            \
->> +	 SMB_MEM_RD(0x3, 0x6) | SMB_BST_LEN(16))
->> +
->> +#define SMB_INT_ENABLE		BIT(0)
->> +#define SMB_INT_TYPE_PULSE	BIT(1)
->> +#define SMB_INT_POLARITY_HIGH	BIT(2)
->> +#define HISI_SMB_GLB_INT_CFG	(SMB_INT_ENABLE | SMB_INT_TYPE_PULSE |         \
->> +				SMB_INT_POLARITY_HIGH)
->> +
->> +/* logic buffer config register low 32b */
->> +#define SMB_BUF_ENABLE			BIT(0)
->> +#define SMB_BUF_SINGLE_END		BIT(1)
->> +#define SMB_BUF_INIT			BIT(8)
->> +#define SMB_BUF_CONTINUOUS		BIT(11)
->> +#define SMB_FLOW_MASK			GENMASK(19, 16)
->> +#define SMB_BUF_CFG_STREAMING						       \
->> +	(SMB_BUF_INIT | SMB_BUF_CONTINUOUS | SMB_FLOW_MASK)
->> +#define SMB_BUF_WRITE_BASE		GENMASK(31, 0)
->> +
->> +/* logic buffer config register high 32b */
->> +#define SMB_MSG_FILTER(lower, upper)	((lower & 0xff) | ((upper & 0xff) << 8))
->> +#define SMB_BUF_INT_ENABLE		BIT(0)
->> +#define SMB_BUF_NOTE_NOT_EMPTY		BIT(8)
->> +#define SMB_BUF_NOTE_BLOCK_AVAIL	BIT(9)
->> +#define SMB_BUF_NOTE_TRIGGERED		BIT(10)
->> +#define SMB_BUF_NOTE_FULL		BIT(11)
->> +#define HISI_SMB_BUF_INT_CFG						\
->> +	(SMB_BUF_INT_ENABLE | SMB_BUF_NOTE_NOT_EMPTY |			\
->> +	   SMB_BUF_NOTE_BLOCK_AVAIL | SMB_BUF_NOTE_TRIGGERED |		\
->> +	    SMB_BUF_NOTE_FULL)
->> +
->> +struct smb_data_buffer {
->> +	/* memory buffer for hardware write */
->> +	u32 buf_cfg_mode;
->> +	bool lost;
->> +	void __iomem *buf_base;
->> +	u64 buf_base_phys;
->> +	u64 buf_size;
->> +	u64 to_copy;
->> +	u32 rd_offset;
->> +};
->> +
->> +struct smb_drv_data {
->> +	void __iomem *base;
->> +	struct device *dev;
->> +	struct ultrasoc_com *com;
->> +	struct smb_data_buffer smb_db;
->> +	/* to register ultrasoc smb as a coresight sink device. */
->> +	struct coresight_device	*csdev;
->> +	spinlock_t		spinlock;
->> +	local_t			reading;
->> +	pid_t			pid;
->> +	u32			mode;
->> +	struct miscdevice miscdev;
->> +};
->> +
->> +#define SMB_MSG_ALIGH_SIZE 0x400
->> +
->> +static inline struct smb_data_buffer *
->> +	dev_get_smb_data_buffer(struct device *dev)
->> +{
->> +	struct smb_drv_data *drvdata = dev_get_drvdata(dev);
->> +
->> +	if (drvdata)
->> +		return &drvdata->smb_db;
->> +
->> +	return NULL;
->> +}
->> +
->> +/*
->> + * Coresight doesn't export the following
->> + * structures(cs_mode,cs_buffers,etm_event_data),
->> + * so we redefine a copy here.
->> + */
->> +enum cs_mode {
->> +	CS_MODE_DISABLED,
->> +	CS_MODE_SYSFS,
->> +	CS_MODE_PERF,
->> +};
->> +
->> +struct cs_buffers {
->> +	unsigned int		cur;
->> +	unsigned int		nr_pages;
->> +	unsigned long		offset;
->> +	local_t			data_size;
->> +	bool			snapshot;
->> +	void			**data_pages;
->> +};
->> +
->> +struct etm_event_data {
->> +	struct work_struct work;
->> +	cpumask_t mask;
->> +	void *snk_config;
->> +	struct list_head * __percpu *path;
->> +};
->> +
->> +#if IS_ENABLED(CONFIG_CORESIGHT)
->> +int etm_perf_symlink(struct coresight_device *csdev, bool link);
->> +int etm_perf_add_symlink_sink(struct coresight_device *csdev);
->> +void etm_perf_del_symlink_sink(struct coresight_device *csdev);
->> +static inline void *etm_perf_sink_config(struct perf_output_handle *handle)
->> +{
->> +	struct etm_event_data *data = perf_get_aux(handle);
->> +
->> +	if (data)
->> +		return data->snk_config;
->> +	return NULL;
->> +}
->> +#else
->> +static inline int etm_perf_symlink(struct coresight_device *csdev, bool link)
->> +{ return -EINVAL; }
->> +int etm_perf_add_symlink_sink(struct coresight_device *csdev)
->> +{ return -EINVAL; }
->> +void etm_perf_del_symlink_sink(struct coresight_device *csdev) {}
->> +static inline void *etm_perf_sink_config(struct perf_output_handle *handle)
->> +{
->> +	return NULL;
->> +}
->> +
->> +#endif /* CONFIG_CORESIGHT */
->> +
->> +#endif
->> -- 
->> 2.7.4
->>
-> .
-> 
+-- 
+Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
 
