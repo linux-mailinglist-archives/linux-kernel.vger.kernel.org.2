@@ -2,112 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8044B3BFA42
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 14:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3BBA3BFA48
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 14:32:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231433AbhGHMeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 08:34:09 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:43968 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbhGHMeH (ORCPT
+        id S231708AbhGHMe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 08:34:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231485AbhGHMe4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 08:34:07 -0400
-Received: by mail-ot1-f44.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso5632589otu.10;
-        Thu, 08 Jul 2021 05:31:25 -0700 (PDT)
+        Thu, 8 Jul 2021 08:34:56 -0400
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7F8FC06175F
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 05:32:14 -0700 (PDT)
+Received: by mail-ua1-x92e.google.com with SMTP id s13so2144228uao.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 05:32:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=97vdrVmJKKi4NcxbUC3J7X79qp5WNrMcYTnOyAAgKjs=;
+        b=WIVRaj1BSp54uJjE1kHVvg/EnfWbsrunUx2DNW8R0bu7vkb7moI4E81GVcBcKnkkPC
+         2nucmpiQvSaliLnxpminobkKrgfbpZj6YX26xwON3BGZoVGizbc2FbBcf04URXOu9WnX
+         D57y9c8aQy5bxugug//6QWP0op85FrHpJoNk6QbD+aXbFPOiFHQSET4EwOJiaDADkdzh
+         3FsOSnuhzJPSezlvX3JK5eFo5b/zbW/NxDq0fvmqpvnjg1QnmywdxBJ76Srikk4aGFH9
+         bbDP6cwRryrpdvOJnzkB18hp8nAY3/o2PRcYFOUmIBob3oVgDCw7oNPptg/qRXj5p/In
+         ZC5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8NbbxqFq1+bnPl6bXmT9IRtDnEnfSxRPSocv3xOtk8g=;
-        b=imrznStF9Q20u6HrXZal+4a1Do0dxHQOFgZW8qcnz0PvkyPWAXUcWoIZzqpQUiyA5b
-         jDt1qC/BLGd/tA8+e8zf+2oCx1q5wuLvxDwqTHYZsRzUFgCXlnywlumTHsGf/rhfNtYa
-         lnyo/ShEmU+VSOE/TDRP5MxgsWmXDOlbiCDBQsIZJ5qQfNC109IY6T0eJuf6LvViH/N/
-         2jugfgUW0rIFYy8kqigrEDqt++3c19yJbbH3S+RR/UemJJb+P2x/UKn/i7MIwtoRrGj2
-         0dQx6ZVm1CgG/LAUu7QyHSq63zO3JxwvfCWUhVYihQExI2R87bAeetcUSZwStKt64o+V
-         vmiw==
-X-Gm-Message-State: AOAM531FUyX1k2tkNjkYyoSrHdlmxrgxJiPScYoxRDE7Pr3uAS3ZmUbk
-        AR69W67JriTo1JRmz19SbVsF75okzs/mdq44qA8=
-X-Google-Smtp-Source: ABdhPJyj3pCWjeWLPgnpvDjaFKZ/Rjv0erHMWtpAneJA8jAWQrRGqbYu0Sk/GL8IqTWy0lp3Mu/oOKuo5z6v7jI/WxU=
-X-Received: by 2002:a9d:604e:: with SMTP id v14mr23489241otj.260.1625747484877;
- Thu, 08 Jul 2021 05:31:24 -0700 (PDT)
+        bh=97vdrVmJKKi4NcxbUC3J7X79qp5WNrMcYTnOyAAgKjs=;
+        b=oSVlKmYNnB34MsxK2xPyol126coxuPPIxm4jcgRsOUWV/BXAA/nw2r/KnBc7RhRpJi
+         GEZ2DLRzW4S5/GSB9iYWktnCUQTe/LkpJR+beX7UMXEXfPH+sLilLumn/RpMv52BmCI2
+         NGwoWOc5EMYltHknIIM0Aq4e6V4ulXXQ3fEASa4xjZTl9p2cxzD0HuU+Qa0O5iwnOBYA
+         TkrGGDwPaivDN851qxOt1nl+3U8tY5+NMBO0lv6cP7zKpo32BLTe5eBMv0OOV+MiGKTv
+         zJmPIruroFneLW9Pv/fKSAfeHC0b5HZAQv+TJgffO+ii38SjacqZCxzqhUflNLyp+IbV
+         xPNA==
+X-Gm-Message-State: AOAM533jYKwTjFs9iRNA8P+kpHjBk3qSLHX4IwHJZ8DfDbWVbp7B2LjB
+        u7AEHz97HVq/l0+IcU2XRJUsrGYE0mW+KJsqoOAKQb5GaoWTOzrg
+X-Google-Smtp-Source: ABdhPJyaQV5Nz27FW0HR5+s3BUq9TkQ0MhLZj8IV0NX0V7i2yyvXQoJ/e1mgN5wOcTglek3w5xVsOBVxLh9XW9PcY4o=
+X-Received: by 2002:ab0:42a6:: with SMTP id j35mr26712394uaj.129.1625747533895;
+ Thu, 08 Jul 2021 05:32:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210707172948.1025-1-adrian.hunter@intel.com>
- <20210707172948.1025-3-adrian.hunter@intel.com> <YOXm4FuL/CW4lYDZ@kroah.com> <66130101-b0c5-a9a3-318a-468c6f3b380f@intel.com>
-In-Reply-To: <66130101-b0c5-a9a3-318a-468c6f3b380f@intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 8 Jul 2021 14:31:13 +0200
-Message-ID: <CAJZ5v0hfEE=ney1tH5MtQm0KWs4U2yzy_DqAAW7hTyxxx2-cNg@mail.gmail.com>
-Subject: Re: [PATCH RFC 2/2] scsi: ufshcd: Fix device links when BOOT WLUN
- fails to probe
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "open list:TARGET SUBSYSTEM" <linux-scsi@vger.kernel.org>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
+References: <20210623101731.87885-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210623101731.87885-1-andriy.shevchenko@linux.intel.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 8 Jul 2021 14:31:37 +0200
+Message-ID: <CAPDyKFoM-gkFPoFePbHS62r-HUpk6ipA5J-qPbQ8NWL9Mm_N2Q@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] mmc: mmc_spi: Simplify busy loop in mmc_spi_skip()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 7, 2021 at 7:49 PM Adrian Hunter <adrian.hunter@intel.com> wrote:
+On Wed, 23 Jun 2021 at 12:17, Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 >
-> On 7/07/21 8:39 pm, Greg Kroah-Hartman wrote:
-> > On Wed, Jul 07, 2021 at 08:29:48PM +0300, Adrian Hunter wrote:
-> >> If a LUN fails to probe (e.g. absent BOOT WLUN), the device will not have
-> >> been registered but can still have a device link holding a reference to the
-> >> device. The unwanted device link will prevent runtime suspend indefinitely,
-> >> and cause some warnings if the supplier is ever deleted (e.g. by unbinding
-> >> the UFS host controller). Fix by explicitly deleting the device link when
-> >> SCSI destroys the SCSI device.
-> >>
-> >> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-> >> ---
-> >>  drivers/scsi/ufs/ufshcd.c | 7 +++++++
-> >>  1 file changed, 7 insertions(+)
-> >>
-> >> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> >> index 708b3b62fc4d..483aa74fe2c8 100644
-> >> --- a/drivers/scsi/ufs/ufshcd.c
-> >> +++ b/drivers/scsi/ufs/ufshcd.c
-> >> @@ -5029,6 +5029,13 @@ static void ufshcd_slave_destroy(struct scsi_device *sdev)
-> >>              spin_lock_irqsave(hba->host->host_lock, flags);
-> >>              hba->sdev_ufs_device = NULL;
-> >>              spin_unlock_irqrestore(hba->host->host_lock, flags);
-> >> +    } else {
-> >> +            /*
-> >> +             * If a LUN fails to probe (e.g. absent BOOT WLUN), the device
-> >> +             * will not have been registered but can still have a device
-> >> +             * link holding a reference to the device.
-> >> +             */
-> >> +            device_links_scrap(&sdev->sdev_gendev);
-> >
-> > What created that link?  And why did it do that before probe happened
-> > successfully?
+> Infinite loops are hard to read and understand because of
+> hidden main loop condition. Simplify such one in mmc_spi_skip().
 >
-> The same driver created the link.
+> Using schedule() to schedule (and be friendly to others)
+> is discouraged and cond_resched() should be used instead.
+> Hence, replace schedule() with cond_resched() at the same
+> time.
 >
-> The documentation seems to say it is allowed to, if it is the consumer.
-> From Documentation/driver-api/device_link.rst
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/mmc/host/mmc_spi.c | 15 ++++-----------
+>  1 file changed, 4 insertions(+), 11 deletions(-)
 >
->   Usage
->   =====
+> diff --git a/drivers/mmc/host/mmc_spi.c b/drivers/mmc/host/mmc_spi.c
+> index 65c65bb5737f..a1bcde3395a6 100644
+> --- a/drivers/mmc/host/mmc_spi.c
+> +++ b/drivers/mmc/host/mmc_spi.c
+> @@ -180,7 +180,7 @@ static int mmc_spi_skip(struct mmc_spi_host *host, unsigned long timeout,
+>         u8 *cp = host->data->status;
+>         unsigned long start = jiffies;
 >
->   The earliest point in time when device links can be added is after
->   :c:func:`device_add()` has been called for the supplier and
->   :c:func:`device_initialize()` has been called for the consumer.
+> -       while (1) {
+> +       do {
+>                 int             status;
+>                 unsigned        i;
+>
+> @@ -193,16 +193,9 @@ static int mmc_spi_skip(struct mmc_spi_host *host, unsigned long timeout,
+>                                 return cp[i];
+>                 }
+>
+> -               if (time_is_before_jiffies(start + timeout))
+> -                       break;
+> -
+> -               /* If we need long timeouts, we may release the CPU.
+> -                * We use jiffies here because we want to have a relation
+> -                * between elapsed time and the blocking of the scheduler.
+> -                */
+> -               if (time_is_before_jiffies(start + 1))
+> -                       schedule();
+> -       }
+> +               /* If we need long timeouts, we may release the CPU */
+> +               cond_resched();
+> +       } while (time_is_after_jiffies(start + timeout));
 
-Yes, this is allowed, but if you've added device links to a device
-object that is not going to be registered after all, you are
-responsible for doing the cleanup.
+This certainly is an improvement.
 
-Why can't you call device_link_del() directly on those links?
+Although, what do you think of moving to readx_poll_timeout(), that
+should allow even a better cleanup, don't you think?
 
-Or device_link_remove() if you don't want to deal with link pointers?
+>         return -ETIMEDOUT;
+>  }
+>
+
+Kind regards
+Uffe
