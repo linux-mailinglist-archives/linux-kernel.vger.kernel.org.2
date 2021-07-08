@@ -2,131 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD07B3C1746
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 18:44:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D27CE3C174F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 18:46:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229841AbhGHQrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 12:47:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38410 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229524AbhGHQrN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 12:47:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 88F256145A;
-        Thu,  8 Jul 2021 16:44:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625762671;
-        bh=W3zJ1dUIVfwK2RD5Gb/pjjaY8IvTpKuqVuwPdbuz25M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Sp+30VCoqVzKdRCHxsdjheJ32Al4GyKkdqY67UI3HBglP9/4ElBHuP/C2H/FyWKo7
-         e/R4/9B3d7vhaPNlh1DPVXpIf7uT6p/REBIACdKpJwJF9GZS42ymRBAxS0kVUi63dX
-         LFzIygW0HZtu2Ulg0IazOQ0jJMqOOsCWNLsNFVLNWlAdaw+e6puTS7FlMwyfD5gEdI
-         lFB3Rrin6g2B0nXBBJNO+PUuvd4DpkVlBGoDw/jR5Tje1HakbrKaEjYhMjAxMq0G0/
-         9JUb/J7ll5Lxx3f7sEDifcv8wjoDYV7KpD0n+YA4MYDlWDIvbopDufBoyo/NtyqWxC
-         FAtOTP/W4ikEQ==
-Date:   Thu, 8 Jul 2021 17:44:19 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        heikki.krogerus@linux.intel.com, thomas.hellstrom@linux.intel.com,
-        peterz@infradead.org, benh@kernel.crashing.org,
-        joonas.lahtinen@linux.intel.com, dri-devel@lists.freedesktop.org,
-        chris@chris-wilson.co.uk, grant.likely@arm.com, paulus@samba.org,
-        Frank Rowand <frowand.list@gmail.com>, mingo@kernel.org,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Saravana Kannan <saravanak@google.com>, mpe@ellerman.id.au,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        bskeggs@redhat.com, linux-pci@vger.kernel.org,
-        xen-devel@lists.xenproject.org,
-        Thierry Reding <treding@nvidia.com>,
-        intel-gfx@lists.freedesktop.org, matthew.auld@intel.com,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        Jianxiong Gao <jxgao@google.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        maarten.lankhorst@linux.intel.com, airlied@linux.ie,
-        Dan Williams <dan.j.williams@intel.com>,
-        linuxppc-dev@lists.ozlabs.org, jani.nikula@linux.intel.com,
-        Rob Herring <robh+dt@kernel.org>, rodrigo.vivi@intel.com,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Claire Chang <tientzu@chromium.org>,
-        boris.ostrovsky@oracle.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        jgross@suse.com, Nicolas Boichat <drinkcat@chromium.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Qian Cai <quic_qiancai@quicinc.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, xypron.glpk@gmx.de,
-        Tom Lendacky <thomas.lendacky@amd.com>, bauerman@linux.ibm.com
-Subject: Re: [PATCH v15 06/12] swiotlb: Use is_swiotlb_force_bounce for
- swiotlb data bouncing
-Message-ID: <20210708164418.GB23598@willie-the-truck>
-References: <0f7bd903-e309-94a0-21d7-f0e8e9546018@arm.com>
- <YN/7xcxt/XGAKceZ@Ryzen-9-3900X.localdomain>
- <20210705190352.GA19461@willie-the-truck>
- <20210706044848.GA13640@lst.de>
- <20210706132422.GA20327@willie-the-truck>
- <a59f771f-3289-62f0-ca50-8f3675d9b166@arm.com>
- <20210706140513.GA26498@lst.de>
- <bb32d5a6-2b34-4524-e171-3e9f5f4d3a94@arm.com>
- <20210706170657.GD20750@willie-the-truck>
- <e1c026c6-22c7-8979-4941-de9cfab3863a@kernel.org>
+        id S229644AbhGHQsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 12:48:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229468AbhGHQsq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 12:48:46 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53764C06175F
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 09:46:04 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id k184so9939562ybf.12
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 09:46:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C8aJuBtMFzTRHA7lVP8ggKa6+OtDRqlwkTJ4zp7YVbA=;
+        b=m2cxjbPU1NSMTUyOORYLxJ0yJPmYYSMS6OxzDvZTtFbsnMH+Ot23bNJpv/3h/PvsAQ
+         wuwOcPYtcx6bb3PqzxripTgjY7O8QhK6TnU4eirzRoxxY9lkHe9/yd7KWl8PkzQz4bg1
+         WyDnUViuKF6FwO293DmW0zD8F2DYITDltL2xKkvQ7lNXVnP3u8sYNKCEp2/32TqTsKdb
+         K6yPK3jse7H4m6YIYrN/UQk8SN8WuncPaGo+YjCoRqzPcDReF1P19QMIngBA0daWQgBp
+         LhXNeajwwiA8v21pGlYcMVWqSVLUjINqCp5UndIBta85cMU7iLxVbyfw6CQIfAX8owma
+         hISg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C8aJuBtMFzTRHA7lVP8ggKa6+OtDRqlwkTJ4zp7YVbA=;
+        b=mZF9xhTozK37F2LpIyjW6KMqxtc+t3H/zKDmB4ef+gQnLSkz4daUlVD/bReEjIXsYN
+         FYF1FCi+Iwel9Hqo37unpCMSeM1L+WGntjEtHtSSjJT7Hl8oBZwCVopmP1YXAI7jZ9Kt
+         lAZp33HYSljqzUfFURiq7KPL0EYmyQfkD7L94t8t5/vJ1qZV6Z2AkJuS0BAw+itvMqk+
+         BEAU64JjyJTW9Ek7qFN02zDNaed6jJASU4lvZpVgPGlUPZY4XLPcW7wx+pXX8E/bf/lw
+         gu5XPUzxUXb2MH5F+1sxsu97MFD/4rbuczqyrZKX5CFzZaTDwHN5p/y3ifOtIZbc/0YN
+         Uf8w==
+X-Gm-Message-State: AOAM5308+bYA7EVbfAvowVlddXu2xj6Fu/xXpCutMXq02dkpPUgo9i3m
+        bmjKq6rjBALucbHNN1ZILpZZs/9WoKA3OQyXML7cvw==
+X-Google-Smtp-Source: ABdhPJwB3mFvuPjBuouBnVJ2WKh37PWsmDCUs7owmMr3YwI4DjL6FalRU/lXkkhreClSaM5YzUR6kZbEGVtXz4mx4b8=
+X-Received: by 2002:a25:b3c8:: with SMTP id x8mr41042585ybf.466.1625762763268;
+ Thu, 08 Jul 2021 09:46:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e1c026c6-22c7-8979-4941-de9cfab3863a@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210707172948.1025-1-adrian.hunter@intel.com>
+ <20210707172948.1025-3-adrian.hunter@intel.com> <YOXm4FuL/CW4lYDZ@kroah.com>
+ <66130101-b0c5-a9a3-318a-468c6f3b380f@intel.com> <CAJZ5v0hfEE=ney1tH5MtQm0KWs4U2yzy_DqAAW7hTyxxx2-cNg@mail.gmail.com>
+ <c3ec3ca2-220f-9e5a-e2ce-b1c2be86c97c@intel.com>
+In-Reply-To: <c3ec3ca2-220f-9e5a-e2ce-b1c2be86c97c@intel.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 8 Jul 2021 09:45:27 -0700
+Message-ID: <CAGETcx_D9KvxEK689ggF6xViiC_yXaCWdL0KoW8uJwiNPhxy8w@mail.gmail.com>
+Subject: Re: [PATCH RFC 2/2] scsi: ufshcd: Fix device links when BOOT WLUN
+ fails to probe
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "open list:TARGET SUBSYSTEM" <linux-scsi@vger.kernel.org>,
+        Avri Altman <avri.altman@wdc.com>,
+        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 12:14:16PM -0700, Nathan Chancellor wrote:
-> On 7/6/2021 10:06 AM, Will Deacon wrote:
-> > On Tue, Jul 06, 2021 at 04:39:11PM +0100, Robin Murphy wrote:
-> > > On 2021-07-06 15:05, Christoph Hellwig wrote:
-> > > > On Tue, Jul 06, 2021 at 03:01:04PM +0100, Robin Murphy wrote:
-> > > > > FWIW I was pondering the question of whether to do something along those
-> > > > > lines or just scrap the default assignment entirely, so since I hadn't got
-> > > > > round to saying that I've gone ahead and hacked up the alternative
-> > > > > (similarly untested) for comparison :)
-> > > > > 
-> > > > > TBH I'm still not sure which one I prefer...
-> > > > 
-> > > > Claire did implement something like your suggestion originally, but
-> > > > I don't really like it as it doesn't scale for adding multiple global
-> > > > pools, e.g. for the 64-bit addressable one for the various encrypted
-> > > > secure guest schemes.
-> > > 
-> > > Ah yes, that had slipped my mind, and it's a fair point indeed. Since we're
-> > > not concerned with a minimal fix for backports anyway I'm more than happy to
-> > > focus on Will's approach. Another thing is that that looks to take us a
-> > > quiet step closer to the possibility of dynamically resizing a SWIOTLB pool,
-> > > which is something that some of the hypervisor protection schemes looking to
-> > > build on top of this series may want to explore at some point.
-> > 
-> > Ok, I'll split that nasty diff I posted up into a reviewable series and we
-> > can take it from there.
-> 
-> For what it's worth, I attempted to boot Will's diff on top of Konrad's
-> devel/for-linus-5.14 and it did not work; in fact, I got no output on my
-> monitor period, even with earlyprintk=, and I do not think this machine has
-> a serial console.
+On Thu, Jul 8, 2021 at 7:17 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
+>
+> On 8/07/21 3:31 pm, Rafael J. Wysocki wrote:
+> > On Wed, Jul 7, 2021 at 7:49 PM Adrian Hunter <adrian.hunter@intel.com> wrote:
+> >>
+> >> On 7/07/21 8:39 pm, Greg Kroah-Hartman wrote:
+> >>> On Wed, Jul 07, 2021 at 08:29:48PM +0300, Adrian Hunter wrote:
+> >>>> If a LUN fails to probe (e.g. absent BOOT WLUN), the device will not have
+> >>>> been registered but can still have a device link holding a reference to the
+> >>>> device. The unwanted device link will prevent runtime suspend indefinitely,
+> >>>> and cause some warnings if the supplier is ever deleted (e.g. by unbinding
+> >>>> the UFS host controller). Fix by explicitly deleting the device link when
+> >>>> SCSI destroys the SCSI device.
+> >>>>
+> >>>> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+> >>>> ---
+> >>>>  drivers/scsi/ufs/ufshcd.c | 7 +++++++
+> >>>>  1 file changed, 7 insertions(+)
+> >>>>
+> >>>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> >>>> index 708b3b62fc4d..483aa74fe2c8 100644
+> >>>> --- a/drivers/scsi/ufs/ufshcd.c
+> >>>> +++ b/drivers/scsi/ufs/ufshcd.c
+> >>>> @@ -5029,6 +5029,13 @@ static void ufshcd_slave_destroy(struct scsi_device *sdev)
+> >>>>              spin_lock_irqsave(hba->host->host_lock, flags);
+> >>>>              hba->sdev_ufs_device = NULL;
+> >>>>              spin_unlock_irqrestore(hba->host->host_lock, flags);
+> >>>> +    } else {
+> >>>> +            /*
+> >>>> +             * If a LUN fails to probe (e.g. absent BOOT WLUN), the device
+> >>>> +             * will not have been registered but can still have a device
+> >>>> +             * link holding a reference to the device.
+> >>>> +             */
+> >>>> +            device_links_scrap(&sdev->sdev_gendev);
+> >>>
+> >>> What created that link?  And why did it do that before probe happened
+> >>> successfully?
+> >>
+> >> The same driver created the link.
+> >>
+> >> The documentation seems to say it is allowed to, if it is the consumer.
+> >> From Documentation/driver-api/device_link.rst
+> >>
+> >>   Usage
+> >>   =====
+> >>
+> >>   The earliest point in time when device links can be added is after
+> >>   :c:func:`device_add()` has been called for the supplier and
+> >>   :c:func:`device_initialize()` has been called for the consumer.
+> >
+> > Yes, this is allowed, but if you've added device links to a device
+> > object that is not going to be registered after all, you are
+> > responsible for doing the cleanup.
+> >
+> > Why can't you call device_link_del() directly on those links?
+> >
+> > Or device_link_remove() if you don't want to deal with link pointers?
+> >
+>
+> Those only work for DL_FLAG_STATELESS device links, but we use only
+> DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE flags.
 
-Looking back at the diff, I completely messed up swiotlb_exit() by mixing up
-physical and virtual addresses.
+Is there a reason you can't use DL_FLAG_STATELESS? It doesn't preclude
+you from using RPM_ACTIVE as far as I can tell.
 
-> Robin's fix does work, it survived ten reboots with no issues getting to X
-> and I do not see the KASAN and slub debug messages anymore but I understand
-> that this is not the preferred solution it seems (although Konrad did want
-> to know if it works).
-> 
-> I am happy to test any further patches or follow ups as needed, just keep me
-> on CC.
+-Saravana
 
-Cheers. Since this isn't 5.14 material any more, I'll CC you on a series
-next week.
 
-Will
+-Saravana
