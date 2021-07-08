@@ -2,89 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF3333BF6E9
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 10:31:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46C523BF6EC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 10:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231218AbhGHIdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 04:33:42 -0400
-Received: from mail.ispras.ru ([83.149.199.84]:54250 "EHLO mail.ispras.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230414AbhGHIdm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 04:33:42 -0400
-Received: from hellwig.intra.ispras.ru (unknown [83.149.199.249])
-        by mail.ispras.ru (Postfix) with ESMTPS id 484EF40A2BAA;
-        Thu,  8 Jul 2021 08:30:57 +0000 (UTC)
-From:   Evgeny Novikov <novikov@ispras.ru>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Evgeny Novikov <novikov@ispras.ru>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org
-Subject: [PATCH] USB: EHCI: ehci-mv: improve error handling in mv_ehci_enable()
-Date:   Thu,  8 Jul 2021 11:30:56 +0300
-Message-Id: <20210708083056.21543-1-novikov@ispras.ru>
-X-Mailer: git-send-email 2.26.2
+        id S231190AbhGHIkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 04:40:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230414AbhGHIkQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 04:40:16 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 383DCC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 01:37:35 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id a6so2561211plh.11
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 01:37:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ow6TssIgweT/GoAzxSRukYv145LzMR/18ewmHa903tU=;
+        b=fttXZFzoq1PFbtzT6GLchigJke//EcyHyL6cuG0NFxsW+gKl90hEVLn+Z6A8QGhs7Y
+         UEIIIiugt6qH9dZWB0JhMKIOFrdORsR4qtubn1qCXg4Rn7dv07ktzjKTAh0La7t4n12t
+         ZCpmtQBhp77h5hpZJaj/I/su2NJwX+nWQjNXHaTFlxPUwTDVl0Dwa+g3Ma0NlfoOQiXj
+         NKDGfAFtspcRP2MvlflXl67RtXOJAaLktk4YEBZaptevxHCoCVtf+ii3q1UR5I24mAg0
+         PNqfRuZ19MGwNrcCTKX4hyhcJtbBBtIec9cZBDabnJ1TyocsSRWsiaNy2+MskLFM6X7C
+         5G1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ow6TssIgweT/GoAzxSRukYv145LzMR/18ewmHa903tU=;
+        b=MT/t0WldBIxgx4zscNO5eZBs8mFq61XtwV/XW2UJdaKyexmSD235SFZADxaAmhriv5
+         htnsi+2wQxMUsNUNbZ8jCNcVPQVXdpOrc5YoOOcz8YZAjq61QMw+AcFsudelgQrzTM5N
+         4LVVdTyR7Q8ldzwuLf2dF2L1NEcOoOBsyoK9F22zTXD26JjC6frb4ZVAoMMTewu49bEE
+         U70yZlPnYj8y6ov6L96mKXZ+cW+jEzVFJ171oG8keI1nYu4NhQnBnLECLxQ1a6Y02nUA
+         1U7KtW3gW42aLF9MVfoxl6VdBo/C8WynCvEdQFk6plsRF90ahK+awWMdSMhRL6+3+av4
+         LjQA==
+X-Gm-Message-State: AOAM533IHCCZLvB1yQ5ywpQnNudhfTQjEoKZhgIpLEvsAb8iFvhiw3AM
+        Y55g5BsYvPsY2gVDvoW4QQqR0g==
+X-Google-Smtp-Source: ABdhPJwy6EnErPIofL/vD7EAud7+o6gts5+joGCEo+xXtxdeyOlzlPOH9f2OIAv6neGs35KZkbJ9zg==
+X-Received: by 2002:a17:90a:eb0c:: with SMTP id j12mr7087591pjz.79.1625733448683;
+        Thu, 08 Jul 2021 01:37:28 -0700 (PDT)
+Received: from localhost ([106.201.108.2])
+        by smtp.gmail.com with ESMTPSA id g9sm1782323pfj.49.2021.07.08.01.37.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jul 2021 01:37:27 -0700 (PDT)
+Date:   Thu, 8 Jul 2021 14:07:25 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org, rjw@rjwysocki.net,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        amit.kucheria@linaro.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org, jami.kettunen@somainline.org,
+        paul.bouchara@somainline.org,
+        ~postmarketos/upstreaming@lists.sr.ht, jeffrey.l.hugo@gmail.com,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: Re: [PATCH v6 3/9] dt-bindings: arm: cpus: Document
+ 'qcom,freq-domain' property
+Message-ID: <20210708083725.ggq66mv5g3w4e6nk@vireshk-i7>
+References: <20210701105730.322718-1-angelogioacchino.delregno@somainline.org>
+ <20210701105730.322718-4-angelogioacchino.delregno@somainline.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210701105730.322718-4-angelogioacchino.delregno@somainline.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mv_ehci_enable() did not disable and unprepare clocks in case of
-failures of phy_init(). Besides, it did not take into account failures
-of ehci_clock_enable() (in effect, failures of clk_prepare_enable()).
-The patch fixes both issues and gets rid of redundant wrappers around
-clk_prepare_enable() and clk_disable_unprepare() to simplify this a bit.
+On 01-07-21, 12:57, AngeloGioacchino Del Regno wrote:
+> From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> 
+> Add devicetree documentation for 'qcom,freq-domain' property specific
+> to Qualcomm CPUs. This property is used to reference the CPUFREQ node
+> along with Domain ID (0/1).
+> 
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> ---
+>  Documentation/devicetree/bindings/arm/cpus.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/cpus.yaml b/Documentation/devicetree/bindings/arm/cpus.yaml
+> index f3c7249c73d6..8512fa0147fa 100644
+> --- a/Documentation/devicetree/bindings/arm/cpus.yaml
+> +++ b/Documentation/devicetree/bindings/arm/cpus.yaml
+> @@ -290,6 +290,12 @@ properties:
+>  
+>        * arm/msm/qcom,kpss-acc.txt
+>  
+> +  qcom,freq-domain:
+> +    $ref: '/schemas/types.yaml#/definitions/phandle-array'
+> +    description: |
+> +      CPUs supporting freq-domain must set their "qcom,freq-domain" property
+> +      with phandle to a cpufreq_hw node followed by the Domain ID(0/1).
 
-Found by Linux Driver Verification project (linuxtesting.org).
+We should be moving this driver to the new generic bindings instead.
 
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
----
- drivers/usb/host/ehci-mv.c | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
+commit 88bf5a85fe98 ("dt-bindings: dvfs: Add support for generic performance domains")
 
-diff --git a/drivers/usb/host/ehci-mv.c b/drivers/usb/host/ehci-mv.c
-index cffdc8d01b2a..8fd27249ad25 100644
---- a/drivers/usb/host/ehci-mv.c
-+++ b/drivers/usb/host/ehci-mv.c
-@@ -42,26 +42,25 @@ struct ehci_hcd_mv {
- 	int (*set_vbus)(unsigned int vbus);
- };
- 
--static void ehci_clock_enable(struct ehci_hcd_mv *ehci_mv)
-+static int mv_ehci_enable(struct ehci_hcd_mv *ehci_mv)
- {
--	clk_prepare_enable(ehci_mv->clk);
--}
-+	int retval;
- 
--static void ehci_clock_disable(struct ehci_hcd_mv *ehci_mv)
--{
--	clk_disable_unprepare(ehci_mv->clk);
--}
-+	retval = clk_prepare_enable(ehci_mv->clk);
-+	if (retval)
-+		return retval;
- 
--static int mv_ehci_enable(struct ehci_hcd_mv *ehci_mv)
--{
--	ehci_clock_enable(ehci_mv);
--	return phy_init(ehci_mv->phy);
-+	retval = phy_init(ehci_mv->phy);
-+	if (retval)
-+		clk_disable_unprepare(ehci_mv->clk);
-+
-+	return retval;
- }
- 
- static void mv_ehci_disable(struct ehci_hcd_mv *ehci_mv)
- {
- 	phy_exit(ehci_mv->phy);
--	ehci_clock_disable(ehci_mv);
-+	clk_disable_unprepare(ehci_mv->clk);
- }
- 
- static int mv_ehci_reset(struct usb_hcd *hcd)
 -- 
-2.26.2
-
+viresh
