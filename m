@@ -2,156 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B3FB3BF860
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 12:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32E873BF86B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 12:29:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231486AbhGHK32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 06:29:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231332AbhGHK31 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 06:29:27 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D84C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 03:26:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=W6daYrP8Mv2FprAvKbzd+kl8kAFrmodDnM6Y2UgE6zs=; b=LGrhXEsYfyPCIkU5Lhlbt3mzrD
-        nPYY0+/5sDwdJPwG58wKYZPDFGLezlg3zHxn8fC4X3clhB6TD7fcQI8ou1fBX3dbf/J/t3rvbukOl
-        Jlk8J5GTwtFNI/Qn61q3yjZCkgeANb9diAjzU1EmawY5VRwYW5GLcZg2w5m4tn3Yh0lfk4T1jgd09
-        vNpmcNWlNz1F3q6eYZ1G3AgY4efkh1EOiaFcadjeyFYhOy/fDXK/2vm76Bg8g3Z3tQUwYbctOAATS
-        lIBq5OWzvWmi3/ANeFHSyUgpwtA//2HzRLJhRzJijJheD0u5ipDoytUBjn3Lv2VhnUJdHrwb2xlhY
-        +uwvrPcQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m1REo-00FbhV-EJ; Thu, 08 Jul 2021 10:26:34 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5A059300233;
-        Thu,  8 Jul 2021 12:26:33 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 384992CB6EA9B; Thu,  8 Jul 2021 12:26:33 +0200 (CEST)
-Date:   Thu, 8 Jul 2021 12:26:33 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Juri Lelli <juri.lelli@redhat.com>
-Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org,
-        vincent.guittot@linaro.org, rostedt@goodmis.org,
-        dietmar.eggemann@arm.com, bristot@redhat.com, bsegall@google.com,
-        mgorman@suse.de, Mark Simmons <msimmons@redhat.com>
-Subject: Re: [PATCH] sched/rt: Fix double enqueue caused by rt_effective_prio
-Message-ID: <YObS2Rudg4osS7Ic@hirez.programming.kicks-ass.net>
-References: <20210701091431.256457-1-juri.lelli@redhat.com>
- <YObOIwH7MbfagklQ@hirez.programming.kicks-ass.net>
+        id S231515AbhGHKbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 06:31:36 -0400
+Received: from mga06.intel.com ([134.134.136.31]:28659 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231332AbhGHKbe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 06:31:34 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10038"; a="270596731"
+X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
+   d="scan'208";a="270596731"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 03:28:50 -0700
+X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
+   d="scan'208";a="428304447"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 03:28:46 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 4570B20188;
+        Thu,  8 Jul 2021 13:28:44 +0300 (EEST)
+Date:   Thu, 8 Jul 2021 13:28:44 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Pratyush Yadav <p.yadav@ti.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Nikhil Devshatwar <nikhil.nd@ti.com>,
+        Dongchun Zhu <dongchun.zhu@mediatek.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Martina Krasteva <martinax.krasteva@intel.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Raag Jadav <raagjadav@gmail.com>,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH v3 01/11] media: ov5640: Use runtime PM to control sensor
+ power
+Message-ID: <20210708102844.GZ3@paasikivi.fi.intel.com>
+References: <20210624192200.22559-1-p.yadav@ti.com>
+ <20210624192200.22559-2-p.yadav@ti.com>
+ <20210707203718.GX3@paasikivi.fi.intel.com>
+ <YOYWCRg0P65U41Fg@pendragon.ideasonboard.com>
+ <20210707214415.GY3@paasikivi.fi.intel.com>
+ <YOYh1Jnd++ifyQUT@pendragon.ideasonboard.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YObOIwH7MbfagklQ@hirez.programming.kicks-ass.net>
+In-Reply-To: <YOYh1Jnd++ifyQUT@pendragon.ideasonboard.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 08, 2021 at 12:06:27PM +0200, Peter Zijlstra wrote:
-> Slightly larger patch, but perhaps a little cleaner.. still pondering if
-> we can share a little more between __sched_setscheduler() and
-> rt_mutex_setprio().
+Hi Laurent,
 
-Best I can seem to come up with...
+On Thu, Jul 08, 2021 at 12:51:16AM +0300, Laurent Pinchart wrote:
+> Hi Sakari,
+> 
+> On Thu, Jul 08, 2021 at 12:44:15AM +0300, Sakari Ailus wrote:
+> > On Thu, Jul 08, 2021 at 12:00:57AM +0300, Laurent Pinchart wrote:
+> > > On Wed, Jul 07, 2021 at 11:37:18PM +0300, Sakari Ailus wrote:
+> > > > On Fri, Jun 25, 2021 at 12:51:50AM +0530, Pratyush Yadav wrote:
+> > > > > Calling s_power subdev callback is discouraged. Instead, the subdevs
+> > > > > should use runtime PM to control its power. Use runtime PM callbacks to
+> > > > > control sensor power. The pm counter is incremented when the stream is
+> > > > > started and decremented when the stream is stopped.
+> > > > > 
+> > > > > Refactor s_stream() a bit to make this new control flow easier. Add a
+> > > > > helper to choose whether mipi or dvp set_stream needs to be called. The
+> > > > > logic flow is also changed to make it a bit clearer.
+> > > > > 
+> > > > > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> > > > > 
+> > > > > ---
+> > > > > 
+> > > > > Changes in v3:
+> > > > > - Clean up the logic in ov5640_s_stream() a bit.
+> > > > > - Use pm_runtime_resume_and_get() instead of pm_runtime_get_sync().
+> > > > > - Rename the label error_pm to disable_pm.
+> > > > > 
+> > > > > Changes in v2:
+> > > > > - New in v2.
+> > > > > 
+> > > > >  drivers/media/i2c/Kconfig  |   2 +-
+> > > > >  drivers/media/i2c/ov5640.c | 127 +++++++++++++++++++++++--------------
+> > > > >  2 files changed, 79 insertions(+), 50 deletions(-)
+> > > > > 
+> > > > > diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
+> > > > > index 588f8eb95984..8f43a4d7bcc1 100644
+> > > > > --- a/drivers/media/i2c/Kconfig
+> > > > > +++ b/drivers/media/i2c/Kconfig
+> > > > > @@ -929,7 +929,7 @@ config VIDEO_OV2740
+> > > > >  
+> > > > >  config VIDEO_OV5640
+> > > > >  	tristate "OmniVision OV5640 sensor support"
+> > > > > -	depends on OF
+> > > > > +	depends on OF && PM
+> > > > 
+> > > > Could you add support for runtime PM without requiring CONFIG_PM?
+> > > > 
+> > > > Essentially you'll need to power on the device in probe and power it off in
+> > > > probe, and make sure the runtime PM nop variant functions return the value
+> > > > you'd expect.
+> > > 
+> > > I've gone through that in several sensor drivers, and it really
+> > > increases the complexity to get it right, to a point where I'm not
+> > > comfortable asking someone to do the same (not to mention the very, very
+> > 
+> > I don't think it's very complicated, really. Looking at examples of other
+> > drivers (e.g. imx334) doing exactly the same helps as you don't need to
+> > check for individual functions.
+> > 
+> > The complexity of the power management in this driver is mostly because of
+> > evolutionary development done over time, it's an old driver.
+> 
+> https://git.linuxtv.org/pinchartl/media.git/commit/?h=sensors/ar0330/driver&id=e72ca23c4c6b1ab6b06ac48280726e09d63cc818
+> 
+> Look at the changes to ar0330_probe(). As far as I understand, anything
+> less than that would be incorrect, and it's way too easy to get it
+> wrong.
 
----
- kernel/sched/core.c | 45 +++++++++++++++++----------------------------
- 1 file changed, 17 insertions(+), 28 deletions(-)
+The driver uses autosuspend that requires quite a few extra calls to
+runtime PM framework. The only other driver doing this may be the CCS
+driver.
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index ede10642612c..c686f0c70656 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -6341,6 +6341,18 @@ int default_wake_function(wait_queue_entry_t *curr, unsigned mode, int wake_flag
- }
- EXPORT_SYMBOL(default_wake_function);
- 
-+static void __setscheduler_prio(struct task_struct *p, int prio)
-+{
-+	if (dl_prio(prio))
-+		p->sched_class = &dl_sched_class;
-+	else if (rt_prio(prio))
-+		p->sched_class = &rt_sched_class;
-+	else
-+		p->sched_class = &fair_sched_class;
-+
-+	p->prio = prio;
-+}
-+
- #ifdef CONFIG_RT_MUTEXES
- 
- static inline int __rt_effective_prio(struct task_struct *pi_task, int prio)
-@@ -6456,22 +6468,19 @@ void rt_mutex_setprio(struct task_struct *p, struct task_struct *pi_task)
- 		} else {
- 			p->dl.pi_se = &p->dl;
- 		}
--		p->sched_class = &dl_sched_class;
- 	} else if (rt_prio(prio)) {
- 		if (dl_prio(oldprio))
- 			p->dl.pi_se = &p->dl;
- 		if (oldprio < prio)
- 			queue_flag |= ENQUEUE_HEAD;
--		p->sched_class = &rt_sched_class;
- 	} else {
- 		if (dl_prio(oldprio))
- 			p->dl.pi_se = &p->dl;
- 		if (rt_prio(oldprio))
- 			p->rt.timeout = 0;
--		p->sched_class = &fair_sched_class;
- 	}
- 
--	p->prio = prio;
-+	__setscheduler_prio(p, prio);
- 
- 	if (queued)
- 		enqueue_task(rq, p, queue_flag);
-@@ -6824,29 +6833,6 @@ static void __setscheduler_params(struct task_struct *p,
- 	set_load_weight(p, true);
- }
- 
--/* Actually do priority change: must hold pi & rq lock. */
--static void __setscheduler(struct rq *rq, struct task_struct *p,
--			   const struct sched_attr *attr, int newprio)
--{
--	/*
--	 * If params can't change scheduling class changes aren't allowed
--	 * either.
--	 */
--	if (attr->sched_flags & SCHED_FLAG_KEEP_PARAMS)
--		return;
--
--	__setscheduler_params(p, attr);
--
--	p->prio = newprio;
--
--	if (dl_prio(p->prio))
--		p->sched_class = &dl_sched_class;
--	else if (rt_prio(p->prio))
--		p->sched_class = &rt_sched_class;
--	else
--		p->sched_class = &fair_sched_class;
--}
--
- /*
-  * Check the target process has a UID that matches the current process's:
-  */
-@@ -7089,7 +7075,10 @@ static int __sched_setscheduler(struct task_struct *p,
- 
- 	prev_class = p->sched_class;
- 
--	__setscheduler(rq, p, attr, newprio);
-+	if (!(attr->sched_flags & SCHED_FLAG_KEEP_PARAMS)) {
-+		__setscheduler_params(p, attr);
-+		__setscheduler_prio(p, newprio);
-+	}
- 	__setscheduler_uclamp(p, attr);
- 
- 	if (queued) {
+> 
+> > > high chance that it won't be done correctly). What's the practical
+> > > drawback in requiring CONFIG_PM ?
+> > 
+> > Good question. CONFIG_PM is something you can disable (for a reason I can't
+> > think of though). Why should a driver depend on it when it could perfectly
+> > work without it as well?
+> 
+> Because it requires additional complexity in the driver, times the
+> number of sensor drivers we have in the kernel. Not even mentioning test
+
+How much of additional complexity?
+
+You need to call the function powering on the sensor in probe, and call
+another one to power the sensor off in remove, and make sure the use of
+runtime PM functions is correct. Good examples exist of this.
+
+Even if you fully relied on runtime PM and do not call the aforementioned
+functions directly, you need to power on the sensor in probe using runtime
+PM on DT based systems which is not the case on ACPI based systems. These
+differences need to be taken into account in that case.
+
+> coverage, I'm pretty sure very few people would test the sensor drivers
+> without CONFIG_PM.
+
+That is probably true.
+
+-- 
+Regards,
+
+Sakari Ailus
