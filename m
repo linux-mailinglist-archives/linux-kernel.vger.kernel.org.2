@@ -2,89 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C71803C19A4
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 21:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4014F3C19B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 21:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230164AbhGHTO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 15:14:27 -0400
-Received: from mail-qt1-f175.google.com ([209.85.160.175]:41604 "EHLO
-        mail-qt1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhGHTOZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 15:14:25 -0400
-Received: by mail-qt1-f175.google.com with SMTP id z18so2342195qtq.8
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 12:11:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=y37sxqdyEEFFUgy5VlTHVFB6NCIJDJ+Q1MpiuJu7Kuc=;
-        b=L62hs+XttK6l9tVhqNLnDDPyE7FzM+/wPdEEaAp4Ycgo8eV3rIwiPaCMTkDglPhP8D
-         b5aMfqm2UCbr5bcVYhdCVUozu3Y1EzEjhtzmKGVO2unOzkXcg/hsptuMHdhnGJO2UUWA
-         QJndIonidXviZhUwEFXCITmtaCgjblRuiUx3cTbsfFqdvhe/mz+UvwSU5SRQQWbTVZpJ
-         R8hXzEvRHvPhJfRxDycEy5XfAaayvCZKA4DFxFL8Rf+0ji8UKFwoO36egvsCb0DzkdJA
-         HRapAyuya1sExJ1Y05L6EObRI5v74QBoSGYWw9aA7cVWbGH7rQbL42K1Gw8X125424eJ
-         2Mzg==
-X-Gm-Message-State: AOAM532/794hEk4q/6VEf35UaBAGKBeXVStcbA+inXmeHPwyIPLU8IUX
-        vJWlEp56BR2IMeiEzZ1L/Vg=
-X-Google-Smtp-Source: ABdhPJxKOGf0wyKILouQA7dYUfZOfHDAgSb3Z5+ZQgEPFEzSYKD/7E0N9Y3cN9BswWyxBFjZb5fuCw==
-X-Received: by 2002:a05:622a:209:: with SMTP id b9mr9039217qtx.375.1625771502621;
-        Thu, 08 Jul 2021 12:11:42 -0700 (PDT)
-Received: from msft-t490s.. ([45.74.48.12])
-        by smtp.gmail.com with ESMTPSA id p9sm1283880qtw.88.2021.07.08.12.11.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jul 2021 12:11:42 -0700 (PDT)
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Linux-MM <linux-mm@kvack.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Yang Shi <shy828301@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH] Revert "mm/page_alloc: make should_fail_alloc_page() static"
-Date:   Thu,  8 Jul 2021 21:11:28 +0200
-Message-Id: <20210708191128.153796-1-mcroce@linux.microsoft.com>
-X-Mailer: git-send-email 2.31.1
+        id S230242AbhGHTTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 15:19:38 -0400
+Received: from mga04.intel.com ([192.55.52.120]:42552 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230221AbhGHTTd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 15:19:33 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10039"; a="207754404"
+X-IronPort-AV: E=Sophos;i="5.84,224,1620716400"; 
+   d="scan'208";a="207754404"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 12:16:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,224,1620716400"; 
+   d="scan'208";a="628618685"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 08 Jul 2021 12:16:47 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1m1ZVu-000ESB-Jg; Thu, 08 Jul 2021 19:16:46 +0000
+Date:   Fri, 09 Jul 2021 03:16:37 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:WIP/fixes] BUILD SUCCESS
+ e47a7063d6a2bcdf4322a8ddefa6b16ea7f097e2
+Message-ID: <60e74f15.zKDaHgfk20R/9CqC%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git WIP/fixes
+branch HEAD: e47a7063d6a2bcdf4322a8ddefa6b16ea7f097e2  drm/vmwgfx: Always include the <drm/ttm/ttm_range_manager.h> header
 
-This reverts commit f7173090033c70886d925995e9dfdfb76dbb2441.
+elapsed time: 727m
 
-Fix an unresolved symbol error when CONFIG_DEBUG_INFO_BTF=y:
+configs tested: 154
+configs skipped: 3
 
-  LD      vmlinux
-  BTFIDS  vmlinux
-FAILED unresolved symbol should_fail_alloc_page
-make: *** [Makefile:1199: vmlinux] Error 255
-make: *** Deleting file 'vmlinux'
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Fixes: f7173090033c ("mm/page_alloc: make should_fail_alloc_page() static")
-Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                          rsk7269_defconfig
+arm                   milbeaut_m10v_defconfig
+arm                         mv78xx0_defconfig
+mips                        bcm63xx_defconfig
+arm                        multi_v7_defconfig
+powerpc                 mpc8315_rdb_defconfig
+h8300                       h8s-sim_defconfig
+sparc64                          alldefconfig
+arm                     am200epdkit_defconfig
+xtensa                  audio_kc705_defconfig
+arm                            mps2_defconfig
+arm                           sunxi_defconfig
+mips                         tb0219_defconfig
+powerpc                    amigaone_defconfig
+x86_64                           alldefconfig
+m68k                       m5275evb_defconfig
+arm                             ezx_defconfig
+powerpc               mpc834x_itxgp_defconfig
+arm                      pxa255-idp_defconfig
+sh                            shmin_defconfig
+microblaze                      mmu_defconfig
+arm                          lpd270_defconfig
+sh                          kfr2r09_defconfig
+arc                      axs103_smp_defconfig
+sh                          sdk7786_defconfig
+riscv                          rv32_defconfig
+powerpc                     kilauea_defconfig
+um                             i386_defconfig
+powerpc                         ps3_defconfig
+powerpc                    sam440ep_defconfig
+arm                           corgi_defconfig
+powerpc                          allmodconfig
+arm                  colibri_pxa270_defconfig
+mips                         cobalt_defconfig
+powerpc                   bluestone_defconfig
+mips                          rb532_defconfig
+sh                              ul2_defconfig
+mips                      maltaaprp_defconfig
+sh                          lboxre2_defconfig
+mips                     loongson2k_defconfig
+sh                           se7724_defconfig
+arc                        nsim_700_defconfig
+arm                         vf610m4_defconfig
+arm                          imote2_defconfig
+mips                         rt305x_defconfig
+xtensa                generic_kc705_defconfig
+sh                           se7751_defconfig
+arm                       versatile_defconfig
+sh                         ecovec24_defconfig
+m68k                        stmark2_defconfig
+mips                  cavium_octeon_defconfig
+arm                     eseries_pxa_defconfig
+powerpc                      pasemi_defconfig
+arm                             mxs_defconfig
+sh                           se7712_defconfig
+sh                        edosk7705_defconfig
+sh                           se7705_defconfig
+powerpc                     ep8248e_defconfig
+powerpc                      ppc64e_defconfig
+powerpc                  storcenter_defconfig
+arm                         cm_x300_defconfig
+m68k                         apollo_defconfig
+m68k                         amcore_defconfig
+sh                        dreamcast_defconfig
+sh                            migor_defconfig
+arm                           h3600_defconfig
+arm                           u8500_defconfig
+arm                        mvebu_v7_defconfig
+sh                            hp6xx_defconfig
+csky                             alldefconfig
+powerpc                     mpc512x_defconfig
+powerpc                 mpc834x_mds_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210707
+x86_64               randconfig-a002-20210707
+x86_64               randconfig-a005-20210707
+x86_64               randconfig-a006-20210707
+x86_64               randconfig-a003-20210707
+x86_64               randconfig-a001-20210707
+i386                 randconfig-a004-20210707
+i386                 randconfig-a006-20210707
+i386                 randconfig-a001-20210707
+i386                 randconfig-a003-20210707
+i386                 randconfig-a005-20210707
+i386                 randconfig-a002-20210707
+i386                 randconfig-a015-20210707
+i386                 randconfig-a016-20210707
+i386                 randconfig-a012-20210707
+i386                 randconfig-a011-20210707
+i386                 randconfig-a014-20210707
+i386                 randconfig-a013-20210707
+i386                 randconfig-a015-20210708
+i386                 randconfig-a016-20210708
+i386                 randconfig-a011-20210708
+i386                 randconfig-a012-20210708
+i386                 randconfig-a013-20210708
+i386                 randconfig-a014-20210708
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-b001-20210707
+x86_64               randconfig-b001-20210708
+x86_64               randconfig-a015-20210707
+x86_64               randconfig-a014-20210707
+x86_64               randconfig-a012-20210707
+x86_64               randconfig-a011-20210707
+x86_64               randconfig-a016-20210707
+x86_64               randconfig-a013-20210707
+
 ---
- mm/page_alloc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index d6e94cc8066c..7b6405f8ff48 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -3831,7 +3831,7 @@ static inline bool __should_fail_alloc_page(gfp_t gfp_mask, unsigned int order)
- 
- #endif /* CONFIG_FAIL_PAGE_ALLOC */
- 
--static noinline bool should_fail_alloc_page(gfp_t gfp_mask, unsigned int order)
-+noinline bool should_fail_alloc_page(gfp_t gfp_mask, unsigned int order)
- {
- 	return __should_fail_alloc_page(gfp_mask, order);
- }
--- 
-2.31.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
