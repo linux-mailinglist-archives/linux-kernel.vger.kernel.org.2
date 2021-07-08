@@ -2,107 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 591443C15D9
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 17:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65BFA3C15DE
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 17:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232033AbhGHPYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 11:24:03 -0400
-Received: from mail-lf1-f51.google.com ([209.85.167.51]:45844 "EHLO
-        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231815AbhGHPYB (ORCPT
+        id S231978AbhGHPYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 11:24:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231815AbhGHPYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 11:24:01 -0400
-Received: by mail-lf1-f51.google.com with SMTP id p1so16720906lfr.12;
-        Thu, 08 Jul 2021 08:21:18 -0700 (PDT)
+        Thu, 8 Jul 2021 11:24:37 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13692C061574;
+        Thu,  8 Jul 2021 08:21:55 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id cs1-20020a17090af501b0290170856e1a8aso6102400pjb.3;
+        Thu, 08 Jul 2021 08:21:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=3Fqa3JBj0Mm9fkBkNJ7GXxkTFWxEhmfT0t9V/cQ727s=;
+        b=hxtwVxRcpcsJoF9+n57xGeTeJaz2f6WWTY4XnqgKoPLbi41YKZZwEWgQJHG8flKXPP
+         hYz2lMwTiaUHs4WpaBvwIrRXHwN7Fowm0tk/ffuuuFSv5BySYvdMNpUR0qDdxBIzsn1J
+         kJc+xSKaRWIB5wCxm/hBeIugFbv4HAXyC8ZyAU91Sf8jP6zjCFloMOvZXlmpyfnwLFiQ
+         W5psn7i7/h+5n4VqYgAIDCI35zFI8oFzyPmYB8Ygic7UPK//Bw6di+1/Rexl1nWsVot9
+         G1gZexwi12GEQvRScQ40Js0kzdfSu1YLXjAQB9Be4qbDJ4p+VSKAl3PvN3rJHR9/i84J
+         ysiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vSXN7Kh9x6gUYLLQwWC/sSb0E4UPI2sT9SAOdpYbkPg=;
-        b=QX0vL98es+y/BQNXMBqfb3IPiTURZw0irJ8w/w7nqNPD5fYIgonVsa/GbWWE/U5Bvl
-         nFMn4xCEK0uyBZY/W794KPr97788o3DJTa//bish6ThatEK2/yoKoA6Kbq8oM0iO4TDG
-         jbBtxieyTxhQwdJN/GY2hkORe5xEY9odwyDsI6uqelxeD6pJ0zdbo+QT1//keHtKdorF
-         8tnhuY7/y3wquik8tZL9X8ZWsiz1ALW9Uo9pheA/n9o5jcpzMuPtAJpJRCfJnCU9yH1d
-         DZogYz8gVjFWtco4DJosD7JYMmmQrJLANJKF58b9dlLGGAhDKHIzgRiNLZOe1Q71hpWG
-         Kqxw==
-X-Gm-Message-State: AOAM533BRX0API8RvZ3+DTUN81PkgWEexK12HPtcL+AB0B7XK87vdyp9
-        IPahKKxwTeAgmJUL3iCmQQ0=
-X-Google-Smtp-Source: ABdhPJxWrzepObN6CSW8WNRQ+3zqT4UTWNkQxd6YGC/oJWxo3WQDcjnbsKvh+kb42dRvV9UjSjqS4Q==
-X-Received: by 2002:a05:6512:224e:: with SMTP id i14mr20966868lfu.195.1625757677635;
-        Thu, 08 Jul 2021 08:21:17 -0700 (PDT)
-Received: from localhost (88-112-11-80.elisa-laajakaista.fi. [88.112.11.80])
-        by smtp.gmail.com with ESMTPSA id a24sm221525lfg.231.2021.07.08.08.21.16
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3Fqa3JBj0Mm9fkBkNJ7GXxkTFWxEhmfT0t9V/cQ727s=;
+        b=Z5LNK/igB2vf+kbT2zkmOQ+hHEmURAeQj71aCXxDwgsqkHBWHDZ/5ESBVOAKKAhzkR
+         y8ARlrB0rVLIBN8wobwz+1vs6R1jBi94ELZAG0sGly0mcb7PC9Q3Vm1gYBwvjgwlGH41
+         A8m7StdiKISiT5c5A+Hj5Hv/EKEZ+ODWTjwT1lGh39Gls8Y63uFLcjk3lttbQUXCZrex
+         Wjo5kqhP0hsasBIiU71VTnClWm+pUjqvyb3Y2PQT+Lc6TU7OkbvRDMS+SCJh7KOVJelH
+         FagpY/dmDAfmFL1Id/VHbCWGXQQrnWFgtTpsA3//cnCv3fLwk0WVXp4vvs03XJx+nYVa
+         c3Vw==
+X-Gm-Message-State: AOAM531sf3RRhC1Gc/p/OgHpXxeu9TrqOoJj624PyRPoD+PS6RdFtZsn
+        NTYew4ngpCvEligaztLCN9g=
+X-Google-Smtp-Source: ABdhPJz9H92rKwh3I7eM5NHfswNbRROh3I53dWdBQ7onM2aiB+pcMCdG10WGGSdMIk+b4rVpicPNFw==
+X-Received: by 2002:a17:902:988f:b029:114:12d2:d548 with SMTP id s15-20020a170902988fb029011412d2d548mr26555639plp.73.1625757714594;
+        Thu, 08 Jul 2021 08:21:54 -0700 (PDT)
+Received: from localhost ([2601:647:4600:1ed4:adaa:7ff5:893e:b91])
+        by smtp.gmail.com with ESMTPSA id m21sm3460649pfa.99.2021.07.08.08.21.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jul 2021 08:21:17 -0700 (PDT)
-From:   Hannu Hartikainen <hannu@hrtk.in>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-gpio@vger.kernel.org
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Hannu Hartikainen <hannu@hrtk.in>
-Subject: [PATCH] docs: gpio: explain GPIOD_OUT_* values and toggling active low
-Date:   Thu,  8 Jul 2021 18:20:54 +0300
-Message-Id: <20210708152054.361704-1-hannu@hrtk.in>
-X-Mailer: git-send-email 2.32.0
+        Thu, 08 Jul 2021 08:21:54 -0700 (PDT)
+Date:   Thu, 8 Jul 2021 08:21:52 -0700
+From:   Isaku Yamahata <isaku.yamahata@gmail.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
+        Connor Kuehl <ckuehl@redhat.com>,
+        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        isaku.yamahata@gmail.com,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        kernel test robot <lkp@intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+Subject: Re: [RFC PATCH v2 55/69] KVM: VMX: Add 'main.c' to wrap VMX and TDX
+Message-ID: <20210708152152.GB278847@private.email.ne.jp>
+References: <cover.1625186503.git.isaku.yamahata@intel.com>
+ <52e7bb9f6bd27dc56880d81e232270679ffee601.1625186503.git.isaku.yamahata@intel.com>
+ <0b1edf62-fce8-f628-b482-021f99004f38@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0b1edf62-fce8-f628-b482-021f99004f38@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I was confused about the gpiod_flags values and thought that
-GPIOD_OUT_LOW and GPIOD_OUT_HIGH set the line to be active low / active
-high. This is not true, but I got the misconception because the flags
-GPIOD_OUT_*_OPEN_DRAIN do change line configuration and there's a
-subchapter about *active low* and *open drain* semantics.
+On Tue, Jul 06, 2021 at 04:43:22PM +0200,
+Paolo Bonzini <pbonzini@redhat.com> wrote:
 
-Add an explicit mention that the initial value is a logical value (and
-not the line configuration or physical line level). Also add a mention
-of the function gpiod_toggle_active_low which was previously missing
-from this document.
+> On 03/07/21 00:05, isaku.yamahata@intel.com wrote:
+> > +#include "vmx.c"
+> 
+> What makes it particularly hard to have this as a separate .o file rather
+> than an #include?
 
-Signed-off-by: Hannu Hartikainen <hannu@hrtk.in>
----
- Documentation/driver-api/gpio/consumer.rst | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/driver-api/gpio/consumer.rst b/Documentation/driver-api/gpio/consumer.rst
-index 3366a991b4aa..47869ca8ccf0 100644
---- a/Documentation/driver-api/gpio/consumer.rst
-+++ b/Documentation/driver-api/gpio/consumer.rst
-@@ -72,6 +72,10 @@ for the GPIO. Values can be:
- * GPIOD_OUT_HIGH_OPEN_DRAIN same as GPIOD_OUT_HIGH but also enforce the line
-   to be electrically used with open drain.
- 
-+Note that the initial value is *logical* and the physical line level depends on
-+whether the line is configured active high or active low (see
-+:ref:`active_low_semantics`).
-+
- The two last flags are used for use cases where open drain is mandatory, such
- as I2C: if the line is not already configured as open drain in the mappings
- (see board.txt), then open drain will be enforced anyway and a warning will be
-@@ -252,6 +256,8 @@ that can't be accessed from hardIRQ handlers, these calls act the same as the
- spinlock-safe calls.
- 
- 
-+.. _active_low_semantics:
-+
- The active low and open drain semantics
- ---------------------------------------
- As a consumer should not have to care about the physical line level, all of the
-@@ -309,9 +315,11 @@ work on the raw line value::
- 	void gpiod_set_raw_value_cansleep(struct gpio_desc *desc, int value)
- 	int gpiod_direction_output_raw(struct gpio_desc *desc, int value)
- 
--The active low state of a GPIO can also be queried using the following call::
-+The active low state of a GPIO can also be queried and toggled using the
-+following calls::
- 
- 	int gpiod_is_active_low(const struct gpio_desc *desc)
-+	void gpiod_toggle_active_low(struct gpio_desc *desc)
- 
- Note that these functions should only be used with great moderation; a driver
- should not have to care about the physical line level or open drain semantics.
+It's to let complier to optimize functionc call of "if (tdx) tdx_xxx() else vmx_xxx()",
+given x86_ops static call story.
 -- 
-2.32.0
-
+Isaku Yamahata <isaku.yamahata@gmail.com>
