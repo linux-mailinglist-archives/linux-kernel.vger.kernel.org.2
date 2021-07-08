@@ -2,142 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 862DA3C1633
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 17:41:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E3B13C1637
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 17:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231952AbhGHPoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 11:44:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231915AbhGHPoD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 11:44:03 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62BB0C061574;
-        Thu,  8 Jul 2021 08:41:21 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id c17so10335572ejk.13;
-        Thu, 08 Jul 2021 08:41:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5bU32yJf64wWn9CfdxsNuw5tyIVyQgOrDIQvU4YN6Bc=;
-        b=VXajLMBrDp9MZZibgCZ0QCEOc5WbEkmG/g1P1YrY5mnZdqXZmKi9ttOjsQr9Zd17k4
-         CF0X4hUWbXylNczO00mH4C8+EiaNfeEgrxjat6YShpfqsvrxSTjlZdS4zmuCt2BUXRJF
-         2A2MUXpNJX5mzZhl0D4Eq7U5aRxmmMb9wTNDPBA9ew1KeHGrEIYzzLMxfEz808qgAp5v
-         REw6HfCcEPLwvGFUYvmCLcFhy70/F1A7K4R5CRvbSrFxyHUlwAXCjdk27HzwH8qCXFPK
-         o04KSL/hgtx4thmUEg9QwjJ4VkcFlhT7nTZrkPSmZceYMie+Qq/D7M05xAUtB/M2JDcG
-         ladA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5bU32yJf64wWn9CfdxsNuw5tyIVyQgOrDIQvU4YN6Bc=;
-        b=HgqDWjtEBmahzDgWZhoVtOPJ/vGu0qFS4NK23ZigKHF4I4tBH39Mn0oODhIC1dIOI6
-         vwnZL6tcnCeNSA04q1wbuGWNSGq96cSTA2OvfDwhcZCAXjuxnL9SKZDffvL00v4ieT++
-         OzwYP9M5plF9F5QXFizFohbq3remO3aIdnLobd8cFnuw79gP0BhaNqW9maAxtnNuk8jq
-         oZ+yebF/uuKhmMEhjHAPC8/8BzlgbsaLbmElHTQTwYOZVneDLQlkLPWR8DmldGYW89gK
-         wkT249XJMnAAhDeVJneMtrgpPCB49aacBgAOoeZfRECfIXiyul6xDbCqTm3XOtGdITN2
-         Zzgg==
-X-Gm-Message-State: AOAM5317lCjwL7Gr3eFhuZqSHdy7EJkm8UtYSbt0+88IpFNsnmRqfdp4
-        ZsaZk7yBmfLC3FdXVdlAzWxUK+kXsRkfJiNjg/4=
-X-Google-Smtp-Source: ABdhPJwCNoAHske5J5uWUfE99nkBOdwzueLyp2cACPMXjO+HwO0XN2yQgspY5xXym3RPo7ole52HvaSDABcfj++0wY8=
-X-Received: by 2002:a17:907:3e22:: with SMTP id hp34mr20001925ejc.470.1625758879806;
- Thu, 08 Jul 2021 08:41:19 -0700 (PDT)
+        id S232016AbhGHPpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 11:45:50 -0400
+Received: from foss.arm.com ([217.140.110.172]:33418 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229592AbhGHPpt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 11:45:49 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1ECAAED1;
+        Thu,  8 Jul 2021 08:43:07 -0700 (PDT)
+Received: from [10.57.35.192] (unknown [10.57.35.192])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E3B433F66F;
+        Thu,  8 Jul 2021 08:43:05 -0700 (PDT)
+Subject: Re: [PATCH 1/2] dma-iommu: fix swiotlb SKIP_CPU_SYNC and arch sync
+To:     Joerg Roedel <joro@8bytes.org>,
+        David Stevens <stevensd@chromium.org>
+Cc:     iommu@lists.linux-foundation.org, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org, Tom Murphy <murphyt7@tcd.ie>
+References: <20210702053742.842850-1-stevensd@google.com>
+ <YObCtaW2UPii7mUL@8bytes.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <3f63e831-72a2-6482-aeea-7c8e84228b8c@arm.com>
+Date:   Thu, 8 Jul 2021 16:43:01 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <CAKgT0Ueyc8BqjkdTVC_c-Upn-ghNeahYQrWJtQSqxoqN7VvMWA@mail.gmail.com>
- <29403911-bc26-dd86-83b8-da3c1784d087@huawei.com> <CAKgT0UcGDYcuZRXX1MaFAzzBySu3R4_TSdC6S0cyS7Ppt_dNng@mail.gmail.com>
- <YOX6bPEL0cq8CgPG@enceladus> <CAKgT0UfPFbAptXMJ4BQyeAadaxyHfkKRfeiwhrVMwafNEM_0cw@mail.gmail.com>
- <YOcKASZ9Bp0/cz1d@enceladus> <CAKgT0UfJuvdkccr=SXWNUaGx7y5nUHFL-E9g3qi4sagY_jWUUQ@mail.gmail.com>
- <YOcQyKt6i+UeMzSS@enceladus> <YOcXDISpR7Cf+eZG@enceladus> <CAKgT0UcoLE=MhG+QxS=up5BH_cK5FBSwyMHDvfUg2g8083UM+w@mail.gmail.com>
- <YOcbgEKqq/cRBxX9@enceladus>
-In-Reply-To: <YOcbgEKqq/cRBxX9@enceladus>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Thu, 8 Jul 2021 08:41:08 -0700
-Message-ID: <CAKgT0Ucnd4Oia8xy2D65O04901+Rh6cepX-d2vK1+0_Of2NwoA@mail.gmail.com>
-Subject: Re: [PATCH net-next RFC 1/2] page_pool: add page recycling support
- based on elevated refcnt
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linuxarm@openeuler.org,
-        yisen.zhuang@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
-        thomas.petazzoni@bootlin.com, Marcin Wojtas <mw@semihalf.com>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        hawk@kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, fenghua.yu@intel.com,
-        guro@fb.com, peterx@redhat.com, Feng Tang <feng.tang@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, mcroce@microsoft.com,
-        Hugh Dickins <hughd@google.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>, wenxu@ucloud.cn,
-        cong.wang@bytedance.com, Kevin Hao <haokexin@gmail.com>,
-        nogikh@google.com, Marco Elver <elver@google.com>,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YObCtaW2UPii7mUL@8bytes.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 8, 2021 at 8:36 AM Ilias Apalodimas
-<ilias.apalodimas@linaro.org> wrote:
->
-> On Thu, Jul 08, 2021 at 08:29:56AM -0700, Alexander Duyck wrote:
-> > On Thu, Jul 8, 2021 at 8:17 AM Ilias Apalodimas
-> > <ilias.apalodimas@linaro.org> wrote:
+On 2021-07-08 10:17, Joerg Roedel wrote:
+> Adding Robin.
+> 
+> On Fri, Jul 02, 2021 at 02:37:41PM +0900, David Stevens wrote:
+>> From: David Stevens <stevensd@chromium.org>
+>>
+>> Make map_swiotlb and unmap_swiotlb only for mapping, and consistently
+>> use sync_single_for and sync_sg_for functions for swiotlb sync and arch
+>> sync. This ensures that the same code path is responsible for syncing
+>> regardless of whether or not SKIP_CPU_SYNC is set. In the process, fix
+>> various places where the original physical address and swiotlb tlb_addr
+>> are mixed up:
+>>    - Make sync_sg functions call sync_single functions for untrusted
+>>      devices, so they use tlb_addr when checking is_swiotlb_buffer and
+>>      when doing arch sync if necessary.
+>>    - Use tlb_addr for arch sync in map_page if necessary.
+>>    - In map_sg, map before syncing so that arch sync can target the
+>>      bounce buffer if necessary.
+>>    - Pass SKIP_CPU_SYNC to swiotlb map and unmap to avoid double syncing
+>>      the swiotlb. This had previously only happened in the unmap_page
+>>      case, but is now necessary for all swiotlb cases.
+>>
+>> Fixes: 82612d66d51d ("iommu: Allow the dma-iommu api to use bounce buffers")
 
-<snip>
+Hmm, there's a lot going on here, and it's not really clear to me what's 
+what, especially WRT the comment about addresses being mixed up. Is 
+there an actual correctness bug anywhere, i.e. an address which *should* 
+be synced *isn't*? If so, please fix that minimally in a standalone 
+patch without all the additional complication. If it's purely an 
+efficiency improvement - i.e. the bounce page getting synced twice 
+(which shouldn't have *too* much impact) or the original copy geting 
+redundantly synced *as well* as the bounce page, then please clarify 
+whether you've measured significant impact in practice or if this is 
+just an observation from code inspection.
 
-> > > What do you think about resetting pp_recycle bit on pskb_expand_head()?
-> >
-> > I assume you mean specifically in the cloned case?
-> >
->
-> Yes. Even if we do it unconditionally we'll just loose non-cloned buffers from
-> the recycling.
-> I'll send a patch later today.
+TBH I don't find the overall justification in the commit message 
+particularly convincing - to a less generous reading it kind of comes 
+across as "move things around for the sake of it". Yes one can argue for 
+keeping all the cache maintenance in one place, but one can equally 
+argue for the keeping all the low-level practicalities of bouncing under 
+SWIOTLB's umbrella such that it doesn't clutter up the IOMMU-focused 
+code. The point of utilising the SWIOTLB machinery in the first place 
+was to share and reuse as much of its "normal" flow as possible to keep 
+things simple (see the thread at [1] for where the history began).
 
-If you do it unconditionally you could leak DMA mappings since in the
-non-cloned case we don't bother with releasing the shared info since
-we just did a memcpy of it without the reference count tweaks. We have
-to be really careful here. The idea is that we have to make exactly
-one call to the __page_pool_put_page function for this page.
+Now, what is true is that the integration into iommu-dma is a bit rough 
+and bolted-on in places. IIRC it was done expediently to un-block 
+further development on the Intel driver, and it was always the plan to 
+come back and improve it later (like only bouncing the unaligned start 
+and end of larger buffers such that whole pages in the middle can still 
+be mapped in-place). As such I'm very happy to see that someone has the 
+time and interest to improve things, but some of this patch looks like 
+adding more mess to work around the existing mess, rather than more 
+fundamentally cleaning it up. For example, rather than further cementing 
+the bodge of having two separate map_sg implementations, I think the 
+bouncing could be streamlined into iommu-dma's own flow as part of its 
+scatterlist transformation (AFAICS temporarily swizzling sg_page so that 
+iommu_map_sg() maps the bounced copy would be no worse than what it's 
+already doing).
 
-> > > If my memory serves me right Eric wanted that from the beginning. Then the
-> > > cloned/expanded SKB won't trigger the recycling.  If that skb hits the free
-> > > path first, we'll end up recycling the fragments eventually.  If the
-> > > original one goes first, we'll just unmap the page(s) and freeing the cloned
-> > > one will free all the remaining buffers.
-> >
-> > I *think* that should be fine. Effectively what we are doing is making
-> > it so that if the original skb is freed first the pages are released,
-> > and if it is released after the clone/expended skb then it can be
-> > recycled.
->
-> Exactly
->
-> >
-> > The issue is we have to maintain it so that there will be exactly one
-> > caller of the recycling function for the pages. So any spot where we
-> > are updating skb->head we will have to see if there is a clone and if
-> > so we have to clear the pp_recycle flag on our skb so that it doesn't
-> > try to recycle the page frags as well.
->
-> Correct. I'll keep looking around in case there's something less fragile we
-> can do
+Thanks,
+Robin.
 
-That is the risk to this kind of thing. We have to make the call once
-and only once and if we either miss it or call it too many times we
-can introduce some serious issues.
+[1] 
+https://lore.kernel.org/linux-iommu/20190312163845.GA13141@infradead.org/
 
-Thanks.
-
-- Alex
+>> Signed-off-by: David Stevens <stevensd@chromium.org>
+>> ---
+>>   drivers/iommu/dma-iommu.c | 82 ++++++++++++++++++++++++---------------
+>>   1 file changed, 51 insertions(+), 31 deletions(-)
+>>
+>> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+>> index 7bcdd1205535..24d1042cd052 100644
+>> --- a/drivers/iommu/dma-iommu.c
+>> +++ b/drivers/iommu/dma-iommu.c
+>> @@ -505,7 +505,8 @@ static void __iommu_dma_unmap_swiotlb(struct device *dev, dma_addr_t dma_addr,
+>>   	__iommu_dma_unmap(dev, dma_addr, size);
+>>   
+>>   	if (unlikely(is_swiotlb_buffer(phys)))
+>> -		swiotlb_tbl_unmap_single(dev, phys, size, dir, attrs);
+>> +		swiotlb_tbl_unmap_single(dev, phys, size, dir,
+>> +					 attrs | DMA_ATTR_SKIP_CPU_SYNC);
+>>   }
+>>   
+>>   static dma_addr_t __iommu_dma_map(struct device *dev, phys_addr_t phys,
+>> @@ -536,7 +537,8 @@ static dma_addr_t __iommu_dma_map(struct device *dev, phys_addr_t phys,
+>>   
+>>   static dma_addr_t __iommu_dma_map_swiotlb(struct device *dev, phys_addr_t phys,
+>>   		size_t org_size, dma_addr_t dma_mask, bool coherent,
+>> -		enum dma_data_direction dir, unsigned long attrs)
+>> +		enum dma_data_direction dir, unsigned long attrs,
+>> +		phys_addr_t *adj_phys)
+>>   {
+>>   	int prot = dma_info_to_prot(dir, coherent, attrs);
+>>   	struct iommu_domain *domain = iommu_get_dma_domain(dev);
+>> @@ -555,7 +557,8 @@ static dma_addr_t __iommu_dma_map_swiotlb(struct device *dev, phys_addr_t phys,
+>>   	    iova_offset(iovad, phys | org_size)) {
+>>   		aligned_size = iova_align(iovad, org_size);
+>>   		phys = swiotlb_tbl_map_single(dev, phys, org_size,
+>> -					      aligned_size, dir, attrs);
+>> +					      aligned_size, dir,
+>> +					      attrs | DMA_ATTR_SKIP_CPU_SYNC);
+>>   
+>>   		if (phys == DMA_MAPPING_ERROR)
+>>   			return DMA_MAPPING_ERROR;
+>> @@ -573,6 +576,8 @@ static dma_addr_t __iommu_dma_map_swiotlb(struct device *dev, phys_addr_t phys,
+>>   
+>>   		memset(padding_start, 0, padding_size);
+>>   	}
+>> +	if (adj_phys)
+>> +		*adj_phys = phys;
+>>   
+>>   	iova = __iommu_dma_map(dev, phys, aligned_size, prot, dma_mask);
+>>   	if (iova == DMA_MAPPING_ERROR && is_swiotlb_buffer(phys))
+>> @@ -785,15 +790,17 @@ static void iommu_dma_sync_single_for_cpu(struct device *dev,
+>>   		swiotlb_sync_single_for_cpu(dev, phys, size, dir);
+>>   }
+>>   
+>> -static void iommu_dma_sync_single_for_device(struct device *dev,
+>> -		dma_addr_t dma_handle, size_t size, enum dma_data_direction dir)
+>> +static void __iommu_dma_sync_single_for_device(struct device *dev,
+>> +		dma_addr_t dma_handle, size_t size,
+>> +		enum dma_data_direction dir, phys_addr_t phys)
+>>   {
+>> -	phys_addr_t phys;
+>> -
+>>   	if (dev_is_dma_coherent(dev) && !dev_is_untrusted(dev))
+>>   		return;
+>>   
+>> -	phys = iommu_iova_to_phys(iommu_get_dma_domain(dev), dma_handle);
+>> +	if (phys == 0)
+>> +		phys = iommu_iova_to_phys(iommu_get_dma_domain(dev),
+>> +					  dma_handle);
+>> +
+>>   	if (is_swiotlb_buffer(phys))
+>>   		swiotlb_sync_single_for_device(dev, phys, size, dir);
+>>   
+>> @@ -801,6 +808,12 @@ static void iommu_dma_sync_single_for_device(struct device *dev,
+>>   		arch_sync_dma_for_device(phys, size, dir);
+>>   }
+>>   
+>> +static void iommu_dma_sync_single_for_device(struct device *dev,
+>> +		dma_addr_t dma_handle, size_t size, enum dma_data_direction dir)
+>> +{
+>> +	__iommu_dma_sync_single_for_device(dev, dma_handle, size, dir, 0);
+>> +}
+>> +
+>>   static void iommu_dma_sync_sg_for_cpu(struct device *dev,
+>>   		struct scatterlist *sgl, int nelems,
+>>   		enum dma_data_direction dir)
+>> @@ -811,14 +824,13 @@ static void iommu_dma_sync_sg_for_cpu(struct device *dev,
+>>   	if (dev_is_dma_coherent(dev) && !dev_is_untrusted(dev))
+>>   		return;
+>>   
+>> -	for_each_sg(sgl, sg, nelems, i) {
+>> -		if (!dev_is_dma_coherent(dev))
+>> +	if (dev_is_untrusted(dev))
+>> +		for_each_sg(sgl, sg, nelems, i)
+>> +			iommu_dma_sync_single_for_cpu(dev, sg_dma_address(sg),
+>> +						      sg->length, dir);
+>> +	else
+>> +		for_each_sg(sgl, sg, nelems, i)
+>>   			arch_sync_dma_for_cpu(sg_phys(sg), sg->length, dir);
+>> -
+>> -		if (is_swiotlb_buffer(sg_phys(sg)))
+>> -			swiotlb_sync_single_for_cpu(dev, sg_phys(sg),
+>> -						    sg->length, dir);
+>> -	}
+>>   }
+>>   
+>>   static void iommu_dma_sync_sg_for_device(struct device *dev,
+>> @@ -831,29 +843,30 @@ static void iommu_dma_sync_sg_for_device(struct device *dev,
+>>   	if (dev_is_dma_coherent(dev) && !dev_is_untrusted(dev))
+>>   		return;
+>>   
+>> -	for_each_sg(sgl, sg, nelems, i) {
+>> -		if (is_swiotlb_buffer(sg_phys(sg)))
+>> -			swiotlb_sync_single_for_device(dev, sg_phys(sg),
+>> -						       sg->length, dir);
+>> -
+>> -		if (!dev_is_dma_coherent(dev))
+>> +	if (dev_is_untrusted(dev))
+>> +		for_each_sg(sgl, sg, nelems, i)
+>> +			__iommu_dma_sync_single_for_device(dev,
+>> +							   sg_dma_address(sg),
+>> +							   sg->length, dir, 0);
+>> +	else
+>> +		for_each_sg(sgl, sg, nelems, i)
+>>   			arch_sync_dma_for_device(sg_phys(sg), sg->length, dir);
+>> -	}
+>>   }
+>>   
+>>   static dma_addr_t iommu_dma_map_page(struct device *dev, struct page *page,
+>>   		unsigned long offset, size_t size, enum dma_data_direction dir,
+>>   		unsigned long attrs)
+>>   {
+>> -	phys_addr_t phys = page_to_phys(page) + offset;
+>> +	phys_addr_t phys = page_to_phys(page) + offset, adj_phys;
+>>   	bool coherent = dev_is_dma_coherent(dev);
+>>   	dma_addr_t dma_handle;
+>>   
+>> -	dma_handle = __iommu_dma_map_swiotlb(dev, phys, size, dma_get_mask(dev),
+>> -			coherent, dir, attrs);
+>> -	if (!coherent && !(attrs & DMA_ATTR_SKIP_CPU_SYNC) &&
+>> +	dma_handle = __iommu_dma_map_swiotlb(dev, phys, size,
+>> +			dma_get_mask(dev), coherent, dir, attrs, &adj_phys);
+>> +	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC) &&
+>>   	    dma_handle != DMA_MAPPING_ERROR)
+>> -		arch_sync_dma_for_device(phys, size, dir);
+>> +		__iommu_dma_sync_single_for_device(dev, dma_handle, size,
+>> +						   dir, adj_phys);
+>>   	return dma_handle;
+>>   }
+>>   
+>> @@ -960,7 +973,7 @@ static int iommu_dma_map_sg_swiotlb(struct device *dev, struct scatterlist *sg,
+>>   	for_each_sg(sg, s, nents, i) {
+>>   		sg_dma_address(s) = __iommu_dma_map_swiotlb(dev, sg_phys(s),
+>>   				s->length, dma_get_mask(dev),
+>> -				dev_is_dma_coherent(dev), dir, attrs);
+>> +				dev_is_dma_coherent(dev), dir, attrs, NULL);
+>>   		if (sg_dma_address(s) == DMA_MAPPING_ERROR)
+>>   			goto out_unmap;
+>>   		sg_dma_len(s) = s->length;
+>> @@ -991,17 +1004,24 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
+>>   	dma_addr_t iova;
+>>   	size_t iova_len = 0;
+>>   	unsigned long mask = dma_get_seg_boundary(dev);
+>> -	int i;
+>> +	int i, early_mapped = 0;
+>>   
+>>   	if (static_branch_unlikely(&iommu_deferred_attach_enabled) &&
+>>   	    iommu_deferred_attach(dev, domain))
+>>   		return 0;
+>>   
+>> +	if (dev_is_untrusted(dev)) {
+>> +		early_mapped = iommu_dma_map_sg_swiotlb(dev, sg, nents,
+>> +							dir, attrs);
+>> +		if (!early_mapped)
+>> +			return 0;
+>> +	}
+>> +
+>>   	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+>>   		iommu_dma_sync_sg_for_device(dev, sg, nents, dir);
+>>   
+>> -	if (dev_is_untrusted(dev))
+>> -		return iommu_dma_map_sg_swiotlb(dev, sg, nents, dir, attrs);
+>> +	if (early_mapped)
+>> +		return early_mapped;
+>>   
+>>   	/*
+>>   	 * Work out how much IOVA space we need, and align the segments to
+>> -- 
+>> 2.32.0.93.g670b81a890-goog
+> _______________________________________________
+> iommu mailing list
+> iommu@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/iommu
+> 
