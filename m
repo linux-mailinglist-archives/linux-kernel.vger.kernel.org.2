@@ -2,70 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1B03BF639
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 09:24:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A71163BF63D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 09:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230458AbhGHH11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 03:27:27 -0400
-Received: from smtp-34-i2.italiaonline.it ([213.209.12.34]:39495 "EHLO
-        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229819AbhGHH10 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 03:27:26 -0400
-Received: from oxapps-11-062.iol.local ([10.101.8.72])
-        by smtp-34.iol.local with ESMTPA
-        id 1OOpmO9WMLCum1OOpmcB8O; Thu, 08 Jul 2021 09:24:44 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1625729084; bh=ZFcvfYIu04Jwk1y4dAI4qU91JWbmprdVROAPFA3RXWc=;
-        h=From;
-        b=C33kLZ1+HYZH+/R5yvH7LKvjTfTKfgR8RAYMZfvuD8k646ZgEurp2uW26AMssQPjI
-         5E190UzuZED8k8ryFx1Pf+tR3qEabAGTMv/En+PzynC1vYpTyO74wFMMtHgScW+Sfj
-         R8JW2s2ZqRhphg348n1uMc3H+zeWgYU7kYUThl4tUIM92ngZMS412fcJEyM5nst+3B
-         RUjT8gN744QiBujwWYE+WZX79atRp3sl9HZpJ3/0S6guVkReWFkjqVSDcHLm2a/G/Y
-         xoSD5rNGdHGKY9b+4GxOZu7QTUJSPfcshpboD0lLKFumEf7RPQ8+z1REP3JrFlZS68
-         GM5ACjtmy54Lg==
-X-CNFS-Analysis: v=2.4 cv=a8D1SWeF c=1 sm=1 tr=0 ts=60e6a83c cx=a_exe
- a=ArCppHiS2LX9rvfu7+HyXQ==:117 a=C-c6dMTymFoA:10 a=IkcTkHD0fZMA:10
- a=vesc6bHxzc4A:10 a=J1Y8HTJGAAAA:8 a=NRFWTJTpNJUI3RitD60A:9 a=QEXdDO2ut3YA:10
- a=y1Q9-5lHfBjTkpIzbSAN:22
-Date:   Thu, 8 Jul 2021 09:24:43 +0200 (CEST)
-From:   dariobin@libero.it
-To:     David Miller <davem@davemloft.net>
-Cc:     linux-kernel@vger.kernel.org, jonathan.lemon@gmail.com,
-        richardcochran@gmail.com, netdev@vger.kernel.org
-Message-ID: <48220229.92708.1625729083880@mail1.libero.it>
-In-Reply-To: <20210708.001404.122934424143086559.davem@davemloft.net>
-References: <20210708050849.11959-1-dariobin@libero.it>
- <20210708.001404.122934424143086559.davem@davemloft.net>
-Subject: Re: [PATCH] ptp: fix PTP PPS source's lookup cookie set
+        id S229966AbhGHH3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 03:29:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229819AbhGHH3j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 03:29:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D3EC061574;
+        Thu,  8 Jul 2021 00:26:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=vl5MbRdGwmlZh7qhtnufnGU16TVZ9C/OsTo2b3jA4CM=; b=IK5y5r7nAKeB3x4HLrBMKfQ2Dm
+        Zob9xcDtZGLg/wdtxqqXN9bQSGYk4Sbxr2DMEKtbCsTvN6anqUayPDYVyyso6a0ar8GjGVCiBu480
+        0TGlwVrvJimpl0UeiBKkz5CaaJo2LtRmHZXou+vWcTBVY7XDm1PyO9TSRmtPGSFtFxlfhUvuf/2kJ
+        f2PMD134yqCjxSmd0pgM3PjAoj2YOEyIUiyz4+Zts4g76uBREqUggXtbbH5YMnIsrAMJJvALVfNCa
+        UKk0s/pkMpOtS45zjDnJ+GjRkwzPc7V5d8XQ8To4/eDK5Z5fhK7fGrX7HOOfAjx2Xf4xAEWBnYHw0
+        zsbDMTZQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m1OQV-00DBl7-Es; Thu, 08 Jul 2021 07:26:31 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4A8F630007E;
+        Thu,  8 Jul 2021 09:26:26 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2A8F82D16D2AC; Thu,  8 Jul 2021 09:26:26 +0200 (CEST)
+Date:   Thu, 8 Jul 2021 09:26:26 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Phil Auld <pauld@redhat.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] sched: Fix nr_uninterruptible race causing increasing
+ load average
+Message-ID: <YOaoomJAS2FzXi7I@hirez.programming.kicks-ass.net>
+References: <20210707190457.60521-1-pauld@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Mailer: Open-Xchange Mailer v7.10.3-Rev34
-X-Originating-IP: 185.33.57.41
-X-Originating-Client: open-xchange-appsuite
-x-libjamsun: 3PyYk19zG1o8mnI2s2jZE59u2Tz78qKN
-x-libjamv: DavxN2eeZiI=
-X-CMAE-Envelope: MS4xfFCSJpA/OjFfBSSRErxdbTy+ce/E1c56GUHbCXQanXQOj0xvzrKIfkeubhPvW1Cj9OqhN6Wgro42DVt77NMDAJWbGw5p/svNATW8J9Z6K9VA0h+0vef7
- 3G/zfkLv4vJLqLsnMZfpbvp3bZDCtz6IhryfDkLDFS0RGbFExP2l6wVlfvDd8iND91A8f+3NpP9BJVF7UGj1WMvcbdXtVKnBleNcFF8tPZB733+GaYMv2PAS
- NHkqmrUhbCALPh3keEPPo6dhZop+KVFMq8tL9xr9wj4u8hoKTy8iJLXAs8qm3L+V9PcHtsktxC572SrelGWoUIG5ThJybzrsXT4EkRI52ROFEt/qBsTQHvyL
- coOdS5eR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210707190457.60521-1-pauld@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
-
-> Il 08/07/2021 09:14 David Miller <davem@davemloft.net> ha scritto:
+On Wed, Jul 07, 2021 at 03:04:57PM -0400, Phil Auld wrote:
+> On systems with weaker memory ordering (e.g. power) commit dbfb089d360b
+> ("sched: Fix loadavg accounting race") causes increasing values of load
+> average (via rq->calc_load_active and calc_load_tasks) due to the wakeup
+> CPU not always seeing the write to task->sched_contributes_to_load in
+> __schedule(). Missing that we fail to decrement nr_uninterruptible when
+> waking up a task which incremented nr_uninterruptible when it slept.
 > 
+> The rq->lock serialization is insufficient across different rq->locks.
+> 
+> Add smp_wmb() to schedule and smp_rmb() before the read in
+> ttwu_do_activate().
+
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 4ca80df205ce..ced7074716eb 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -2992,6 +2992,8 @@ ttwu_do_activate(struct rq *rq, struct task_struct *p, int wake_flags,
 >  
-> this pastch does not apply to the current net tree, that is why I keep marking it "Not Applicable"
-> in patchwork.
+>  	lockdep_assert_held(&rq->lock);
+>  
+> +	/* Pairs with smp_wmb in __schedule() */
+> +	smp_rmb();
+>  	if (p->sched_contributes_to_load)
+>  		rq->nr_uninterruptible--;
+>  
 
-I applied and tested the patch this morning on the mainline kernel. What am I missing?
-Should I wait for the merge windows to end?
+Is this really needed ?! (this question is a big fat clue the comment is
+insufficient). AFAICT try_to_wake_up() has a LOAD-ACQUIRE on p->on_rq
+and hence the p->sched_contributed_to_load must already happen after.
 
-Thanks and regards,
-Dario
+> @@ -5084,6 +5086,11 @@ static void __sched notrace __schedule(bool preempt)
+>  				!(prev_state & TASK_NOLOAD) &&
+>  				!(prev->flags & PF_FROZEN);
+>  
+> +			/*
+> +			 * Make sure the previous write is ordered before p->on_rq etc so
+> +			 * that it is visible to other cpus in the wakeup path (ttwu_do_activate()).
+> +			 */
+> +			smp_wmb();
+>  			if (prev->sched_contributes_to_load)
+>  				rq->nr_uninterruptible++;
+
+That comment is terrible, look at all the other barrier comments around
+there for clues; in effect you're worrying about:
+
+	p->sched_contributes_to_load = X	R1 = p->on_rq
+	WMB					RMB
+	p->on_rq = Y				R2 = p->sched_contributes_to_load
+
+Right?
+
+
+Bah bah bah.. I so detest having to add barriers here for silly
+accounting. Let me think about this a little.
+
+
