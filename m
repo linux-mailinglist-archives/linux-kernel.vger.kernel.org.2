@@ -2,101 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7743BF766
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 11:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECBA13BF769
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 11:19:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231320AbhGHJVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 05:21:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20924 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231190AbhGHJVT (ORCPT
+        id S231371AbhGHJWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 05:22:07 -0400
+Received: from mickerik.phytec.de ([195.145.39.210]:46318 "EHLO
+        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231190AbhGHJWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 05:21:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625735918;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KHU1Vmvm7F12r1PAslF5dEr4adP4DAjY+fw1RfKa6y0=;
-        b=aaMDZFVgPUQpwaABvphhaAiKYlyPd6jGTMxe3GUaitzMTkLMrPU41AfKZ3y7Mo/orC9DDQ
-        Ttp89+jnetxloE6i0X0c8RwqyT34fmSg9/YLHquLCgEBvskUw1QYRtKzuZZQ9XAtDYpLwV
-        Kl7gvDvFUQ4ZuJ5zozHi/P0DTd4UXWg=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-563-cZLgfcrvPAS2z4j59fRWag-1; Thu, 08 Jul 2021 05:18:37 -0400
-X-MC-Unique: cZLgfcrvPAS2z4j59fRWag-1
-Received: by mail-ej1-f71.google.com with SMTP id 16-20020a1709063010b029037417ca2d43so1547653ejz.5
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 02:18:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KHU1Vmvm7F12r1PAslF5dEr4adP4DAjY+fw1RfKa6y0=;
-        b=PhyvEkNi35o5CEVPVwhNvGWTqadkrBgYiYF3IBkfEGGmHsxz0nrlSrvqMpxySzMFq7
-         ow7xQr0majL6SNSu3VFY8zhqGmMKUBfLKlZzv9X0/FyxqdA69RktgX4jy5ytHoTuGVZg
-         DWgt3FrLXZsvb0WyHf7Jqa1AFQUX5teGQpQYy9rlqmgI7Mv/0ZQruqw06iYcdAB0Hl6u
-         i3CUCIa3VLt0QAxLXALMtP07VjT/3EQB9vAjO/dzSxBLnil69UzWSsWJvqzK34ef+JTc
-         3tCKTC48s0uMj8cHSEJJOHTXCfq3oOtxSx2e7UJ2CogGmy+SpQgqP13l4cjLF79M9/s0
-         KzMQ==
-X-Gm-Message-State: AOAM532RQb5HCZFBVdWcgckopTqhq7bBW/EmUdZkumd++gsLPlgqsJNP
-        x/3B6EZXJvX57HD6/DbZ7h0f8chNYKkIOt0yLta/GNKfPzQdR2vj3jK4sYFjsJiFOdw8W7anJiB
-        XKhB5F0B6PoIKhjkyVUxaSKNZC7GzlIEpwHx8ArjG/KP34rn5VWAgqEPod2SPGH6EC/rLb3JUeM
-        oK
-X-Received: by 2002:a17:906:e0e:: with SMTP id l14mr9138394eji.501.1625735915619;
-        Thu, 08 Jul 2021 02:18:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxifn4rGSLVNiWgp2jP6bilACMyMlJDH3BLCSzTzOMJEiHwS01lRdGsL3R/9D4VvMBOp99ILA==
-X-Received: by 2002:a17:906:e0e:: with SMTP id l14mr9138354eji.501.1625735915367;
-        Thu, 08 Jul 2021 02:18:35 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id q24sm940031edc.82.2021.07.08.02.18.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Jul 2021 02:18:34 -0700 (PDT)
-Subject: Re: [PATCH V2] x86/kvmclock: Stop kvmclocks for hibernate restore
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Lenny Szubowicz <lszubowi@redhat.com>, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210326024143.279941-1-lszubowi@redhat.com>
- <YOawSzWrNtUIlSuE@8bytes.org>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <ee8c4344-b6b2-07b4-bb5c-48f6462f0931@redhat.com>
-Date:   Thu, 8 Jul 2021 11:18:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 8 Jul 2021 05:22:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
+        q=dns/txt; i=@phytec.de; t=1625735962; x=1628327962;
+        h=From:Sender:Reply-To:Subject:Date:Message-Id:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=3PXh34z5hHskudF1buVvXccfk5Dp/8JaB8bjicQftPo=;
+        b=sNNO97DmzttzEerctp4x0u30gcQWvLpTzy8apnZL20CsKhLU7S21iuVx7l4Ei9ml
+        /QfgP8nrpizgMlKgs7c/qMWGmb5CjUagQC2uvITLbb4I105t/se+HlMBr08DE4sy
+        cDt63vhLV73laRHQ3KIdLMseYYPFsDblCgrFU36Vhwk=;
+X-AuditID: c39127d2-1e4f970000001daf-7b-60e6c31af88c
+Received: from idefix.phytec.de (Unknown_Domain [172.16.0.10])
+        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 96.B7.07599.A13C6E06; Thu,  8 Jul 2021 11:19:22 +0200 (CEST)
+Received: from lws-riedmueller.phytec.de ([172.16.23.108])
+          by idefix.phytec.de (IBM Domino Release 9.0.1FP7)
+          with ESMTP id 2021070811192213-1113440 ;
+          Thu, 8 Jul 2021 11:19:22 +0200 
+From:   Stefan Riedmueller <s.riedmueller@phytec.de>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Stefan Riedmueller <s.riedmueller@phytec.de>
+Subject: [PATCH v4 0/6] media: mt9p031: Read back the real clock rate
+Date:   Thu, 8 Jul 2021 11:19:16 +0200
+Message-Id: <20210708091922.5508-1-s.riedmueller@phytec.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YOawSzWrNtUIlSuE@8bytes.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MIMETrack: Itemize by SMTP Server on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 08.07.2021 11:19:22,
+        Serialize by Router on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 08.07.2021 11:19:22
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: quoted-printable
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrMLMWRmVeSWpSXmKPExsWyRoCBS1fq8LMEg7b74hbzj5xjteicuITd
+        4vKuOWwWPRu2slos2/SHyaJ17xF2i09bvjE5sHvM7pjJ6rFpVSebx7yTgR6fN8kFsERx2aSk
+        5mSWpRbp2yVwZUw8u5mx4CBfxcWNB5gaGGdxdzFyckgImEjs2jeFvYuRi0NIYBujxJXXM5kg
+        nGuMEsd7jrCAVLEJGEksmNYIlhARaGOU2HGkGcxhFtjCKPH5/n4gh4NDWMBV4vMkLpAGFgEV
+        iVmXZjOC2LwC1hI3379lhVgnLzHz0nd2iLigxMmZT1hA5kgIXGGU6P/YzA5RJCRxevFZZhCb
+        WUBbYtnC18wTGPlmIemZhSS1gJFpFaNQbmZydmpRZrZeQUZlSWqyXkrqJkZgQB6eqH5pB2Pf
+        HI9DjEwcjIcYJTiYlUR4jWY8SxDiTUmsrEotyo8vKs1JLT7EKM3BoiTOu4G3JExIID2xJDU7
+        NbUgtQgmy8TBKdXAqNv4WdC6qnLOFHF3j3PKGwz+VZ71VuesVLAXX3+58WpMpN3ivFurV+dv
+        3x+5IFBvpvALwx3rHevvWE6aG1yw9KVci9eFCqMuxtxjJ4X+Z9glZnP/9FwQ1Mzw8Whm90d5
+        Xem1e1pm3w3UuBfievzWpgUL46du9RSuf/2ddUPCk4dbLXZYriq6qMRSnJFoqMVcVJwIAG4K
+        Vkc2AgAA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/07/21 09:59, Joerg Roedel wrote:
-> Hi Paolo,
-> 
-> On Thu, Mar 25, 2021 at 10:41:43PM -0400, Lenny Szubowicz wrote:
->> Reported-by: Xiaoyi Chen <cxiaoyi@amazon.com>
->> Tested-by: Mohamed Aboubakr <mabouba@amazon.com>
->> Signed-off-by: Lenny Szubowicz <lszubowi@redhat.com>
->> ---
->>   arch/x86/kernel/kvmclock.c | 40 ++++++++++++++++++++++++++++++++++----
->>   1 file changed, 36 insertions(+), 4 deletions(-)
-> 
-> What is the status of this patch? Are there any objections?
+Hi,
 
-It was replaced by these:
+Changes in v4:
+ - Add two missing BIT macro conversions
+ - Switch to dt-bindings yaml schema before applying changes
+ - Drop explicit pclk-sample property documentation patch since it is
+   documented in the referenced video-interface schema now. (I hope that
+   is correct)
 
-0a269a008f83 x86/kvm: Fix pr_info() for async PF setup/teardown
-8b79feffeca2 x86/kvm: Teardown PV features on boot CPU as well
-c02027b5742b x86/kvm: Disable kvmclock on all CPUs on shutdown
-3d6b84132d2a x86/kvm: Disable all PV features on crash
-384fc672f528 x86/kvm: Unify kvm_pv_guest_cpu_reboot() with kvm_guest_cpu_offline()
+Changes in v3:
+ - Dropped 1/5 media: mt9p031: Add support for 8 bit and 10 bit formats
+ - Dropped 3/5 media: mt9p031: Implement [gs]=5Fregister debug calls
+ - Added reviewed-by from Laurent Pinchart to
+   media: mt9p031: Read back the real clock rate
+ - Dropped unnecessary register reads in
+   media: mt9p031: Fix corrupted frame after restarting
+ - Changed sorting of register bits from MSB to LSB
+ - Added patch to switch to BIT macro
+ - Added two additional dt-bindings patches to add missing properties
+   documentation
 
-Thanks,
+Christian Hemp (1):
+  media: mt9p031: Make pixel clock polarity configurable by DT
 
-Paolo
+Dirk Bender (1):
+  media: mt9p031: Fix corrupted frame after restarting stream
+
+Enrico Scholz (1):
+  media: mt9p031: Read back the real clock rate
+
+Stefan Riedmueller (3):
+  media: mt9p031: Use BIT macro
+  media: dt-bindings: mt9p031: Convert bindings to yaml
+  media: dt-bindings: mt9p031: Add missing required properties
+
+ .../bindings/media/i2c/aptina,mt9p031.yaml    | 97 +++++++++++++++++++
+ .../devicetree/bindings/media/i2c/mt9p031.txt | 40 --------
+ MAINTAINERS                                   |  1 +
+ drivers/media/i2c/Kconfig                     |  1 +
+ drivers/media/i2c/mt9p031.c                   | 80 +++++++++++----
+ include/media/i2c/mt9p031.h                   |  1 +
+ 6 files changed, 162 insertions(+), 58 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/aptina,mt9p=
+031.yaml
+ delete mode 100644 Documentation/devicetree/bindings/media/i2c/mt9p031.txt
+
+--=20
+2.25.1
 
