@@ -2,159 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7F7C3BF9AA
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 14:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC4843BF9B8
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 14:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231452AbhGHMFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 08:05:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29397 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231376AbhGHMFF (ORCPT
+        id S231482AbhGHMIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 08:08:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231397AbhGHMIj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 08:05:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625745743;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=irJWbsazcANgVH4MXpW0qDIuSKTyiYEmedYDwUz4854=;
-        b=haKNQXNcFHZeHhD4SIZ4O+M4e2+PBDs8ZONfC3rovUB+u4aKjdHk86tTUfFJDY919MWoOf
-        imEpLNVwvjeOaMf7z+DvRowalms2YGGn2koW4UA/Bc5aEtRB1dtq4UXQ4k6vmubr5MABXK
-        rL1yS5FSY+XlEe/hlvNukiwGcxwbKi8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-10-7quC6f1YNGOg_60yIhjsTA-1; Thu, 08 Jul 2021 08:02:20 -0400
-X-MC-Unique: 7quC6f1YNGOg_60yIhjsTA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D2F55BBEE0;
-        Thu,  8 Jul 2021 12:02:18 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.195.77])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 0D7525C1C2;
-        Thu,  8 Jul 2021 12:02:16 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Thu,  8 Jul 2021 14:02:17 +0200 (CEST)
-Date:   Thu, 8 Jul 2021 14:02:14 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Vladimir Divjak <vladimir.divjak@bmw.de>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, mcgrof@kernel.org,
-        akpm@linux-foundation.org
-Subject: Re: [PATCH] coredump: allow PTRACE_ATTACH to coredump user mode
- helper
-Message-ID: <20210708120213.GA29937@redhat.com>
-References: <20210705151019.989929-1-vladimir.divjak@bmw.de>
+        Thu, 8 Jul 2021 08:08:39 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF14C061574;
+        Thu,  8 Jul 2021 05:05:56 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id n14so14714544lfu.8;
+        Thu, 08 Jul 2021 05:05:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RD1/6/jmD47YttIqk+9t+pHrc67BCgSGhpOheow4sIY=;
+        b=lAzrJcdoxD0YH80j6oxSekIGmPClzY0t1lkujYsp7F2vb15XXHlYcTE8rQ5se9REvI
+         a2NhbxUVftdUvnUqRzlxiGGP7vng+qbasFpAUVsWGWCygdS7wjLUb+r65eezCgr3MQ9u
+         Wn/bnKT6OS+ZRZ0Y9Ei3h3NgfhaFBmAvnGppSxqifoiB3cW3hF/Gwpqqw2GmQq/Vi3in
+         +Qz0ZwD19oQNg/DVAHeJ/9peTwApsOoTYVSq6+knveRYD5RbtS7/NpE8BtADkQzVCxm8
+         iU6n3rxbi2Rq8RPyCmNQLpKnI1r8KEWg9rOaNaOjc76Tu6vykJTOJjyE251zraqyagdy
+         +91w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RD1/6/jmD47YttIqk+9t+pHrc67BCgSGhpOheow4sIY=;
+        b=iV2ZnQ2K9zd93b6BmHXJVii4OpiVI176C7XU5KL6bw78rQ/p7vgAisz2XFRb4nozHF
+         NTeHwfUaaAdm/tQ5lozKTwcja9jJp4DaoyFh25kcWJMworwj3Hs9d+J3AFmjC/qxzwmy
+         11r0sf5uZhsaXevknccQKfSzSzGslNJ5rwpedGSZT3cx1rVLdUOgr+N0ejqy1VrqtdyA
+         d3EXXE8IHX0wxWwzy5yev2Tj3bzFlt5AYxslpxVFbjB7tXQboMEl7ra0Q3wGbZFtGgXX
+         +ZXax7fnTJDoCdNjVxZnneDJvyMWhR1FasabtCllIRkAtQ5KOw93YlEHCpVUhwSmUezd
+         U9UA==
+X-Gm-Message-State: AOAM531wek7bTOiqWvsWsk0OMjWh4CBAceJ417BJ+yKQuIBurp1+uMXV
+        nLCqrnmbEsD65+NMPT+VlM3ryZgL0a3Nx6qZE6E=
+X-Google-Smtp-Source: ABdhPJx6SX0r8fvbnYfayHEqpfIeV3JLezQLgvKici5Q8Gb9bx2Ia8CwMfE4+PnaZ8ESbmhzhnw/Z/VPC2vzAOIbEYU=
+X-Received: by 2002:a05:651c:481:: with SMTP id s1mr10736951ljc.444.1625745954768;
+ Thu, 08 Jul 2021 05:05:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210705151019.989929-1-vladimir.divjak@bmw.de>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20210706114028.132-1-alistair@alistair23.me> <CAOMZO5CEeBWEaRWXpfgjR+q0QnpPmoyGN+ShjCHNzoSqk_iW0Q@mail.gmail.com>
+ <CAKmqyKPLWft8kUR9A2V1fjpaD8dmpbT9=Lc-NY76wkgenLE93Q@mail.gmail.com>
+In-Reply-To: <CAKmqyKPLWft8kUR9A2V1fjpaD8dmpbT9=Lc-NY76wkgenLE93Q@mail.gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Thu, 8 Jul 2021 09:05:43 -0300
+Message-ID: <CAOMZO5C=CcJDg9BQMVd8UU7fryW9TqMvvnJCuC3cq-7rzTi=eQ@mail.gmail.com>
+Subject: Re: [PATCH v3] ARM: dts: imx7d-remarkable2: Add WiFi support
+To:     Alistair Francis <alistair23@gmail.com>
+Cc:     Alistair Francis <alistair@alistair23.me>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/05, Vladimir Divjak wrote:
+Hi Alistair,
+
+On Thu, Jul 8, 2021 at 6:16 AM Alistair Francis <alistair23@gmail.com> wrote:
+
+> I'm not sure I follow, we do the same thing here with:
 >
-> * Problem description / Rationale:
-> In automotive and/or embedded environments,
-> the storage capacity to store, and/or
-> network capabilities to upload
-> a complete core file can easily be a limiting factor,
-> making offline issue analysis difficult.
+> &clks {
+>     assigned-clocks = <&clks IMX7D_CLKO2_ROOT_SRC>,
+>               <&clks IMX7D_CLKO2_ROOT_DIV>;
+>     assigned-clock-parents = <&clks IMX7D_CKIL>;
+>     assigned-clock-rates = <0>, <32768>;
+> };
 
-To be honest, I don't like the idea... plus the implementation looks
-horrible to me, sorry.
+Ah, got it. This was not in the patch context, so that's why I got confused.
 
-Can't the coredump helper process simply do
-ptrace(PTRACE_SEIZE, PTRACE_O_TRACEEXIT), close the pipe, and wait
-for PTRACE_EVENT_EXIT ? Then it can use ptrace() as usual.
+Now I see it as part of the original file, so it looks good to me, thanks:
 
-> +void cdh_unlink_current(void)
-> +{
-> +	struct cdh_entry *entry, *next;
-> +
-> +	mutex_lock(&cdh_mutex);
-> +	list_for_each_entry_safe(entry, next, &cdh_list, cdh_list_link) {
-
-Why _safe ?
-
-> +bool cdh_ptrace_allowed(struct task_struct *task)
-> +{
-> +	struct cdh_entry *entry;
-> +
-> +	mutex_lock(&cdh_mutex);
-> +	list_for_each_entry(entry, &cdh_list, cdh_list_link) {
-> +		if (task_tgid_nr(entry->task_being_dumped) == task_tgid_nr(task)
-> +		    && entry->helper_pid == task_tgid_nr(current)) {
-> +			reinit_completion(&(entry->ptrace_done));
-> +			wait_task_inactive(entry->task_being_dumped, 0);
-
-So. IIUC, this assumes that when cdh_ptrace_allowed() returns the dumping
-process must be blocked in dump_emit()->wait_for_completion(ptrace_done).
-And thus ptrace_attach() can safely do task->state = TASK_TRACED.
-
-But it is possible that __dump_emit() has already failed and task_being_dumped
-sleeps in cdh_unlink_current() waiting for cdh_mutex. So it will be running
-right after cdh_ptrace_allowed() drops cdh_mutex.
-
-> +struct cdh_entry *cdh_get_entry_for_current(void)
-> +{
-> +	struct cdh_entry *entry;
-> +
-> +	list_for_each_entry(entry, &cdh_list, cdh_list_link) {
-> +		if (entry->task_being_dumped == current)
-> +			return entry;
-
-Why is it safe without cdh_mutex ?
-
-> @@ -361,6 +362,8 @@ static int ptrace_attach(struct task_struct *task, long request,
->  {
->  	bool seize = (request == PTRACE_SEIZE);
->  	int retval;
-> +	bool core_state = false;
-> +	bool core_trace_allowed = false;
->
->  	retval = -EIO;
->  	if (seize) {
-> @@ -392,10 +395,17 @@ static int ptrace_attach(struct task_struct *task, long request,
->
->  	task_lock(task);
->  	retval = __ptrace_may_access(task, PTRACE_MODE_ATTACH_REALCREDS);
-> +	if (unlikely(task->mm->core_state))
-> +		core_state = true;
-
-task->mm can be NULL
-
-> +	if (!seize && unlikely(core_state)) {
-> +		if (cdh_ptrace_allowed(task))
-> +			core_trace_allowed = true;
-> +	}
-
-Why !seize ???
-
-What if ptrace_attach() fails after that? Who will wake this task up ?
-
-> +	/*
-> +	 * Core state process does not process signals normally.
-> +	 * set directly to TASK_TRACED if allowed by cdh_ptrace_allowed.
-> +	 */
-> +	if (core_trace_allowed)
-> +		task->state = TASK_TRACED;
-
-See above.
-
-But even if I missed something, this is wrong no matter what, you should
-never change another task's state.
-
-> @@ -821,6 +838,8 @@ static int ptrace_resume(struct task_struct *child, long request,
->  {
->  	bool need_siglock;
->
-> +	cdh_signal_continue(child);
-
-takes cdh_mutex :/
-
-Oleg.
-
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
