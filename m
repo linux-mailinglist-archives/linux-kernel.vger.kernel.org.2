@@ -2,108 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3CD3BF831
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 12:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1EAA3BF835
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 12:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231453AbhGHKQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 06:16:54 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:43346 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231332AbhGHKQx (ORCPT
+        id S231487AbhGHKRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 06:17:14 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:39538 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231332AbhGHKRN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 06:16:53 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 9E7B12235F;
-        Thu,  8 Jul 2021 10:14:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1625739251; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=L9fG/9l95sDD5upgyztRxQDi3j6L5c0fkrT4qgdJKZU=;
-        b=Uo1LL/bhDWwVf9ZzX35a1SvIKiZ6vvxHTyHpxaHdDdVcvtbh99hK1UsTsVSk5Dy5/oK0Qh
-        Htk/1Vrlpj/d075LsCT7e7x/xovt8GwO8Lf8HSZ0BXY5GrhYY6jaQrN+Xs1O8jY2a9DUR+
-        yQvc4EBHdwHqqwPOuMshDlP8o7aThdE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1625739251;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=L9fG/9l95sDD5upgyztRxQDi3j6L5c0fkrT4qgdJKZU=;
-        b=kumXPEHTRHLuqo/viCd1DZo3N8g0e9KN8ULaqxBMX94BUkdRAXpneRR+qxoV4acQEdlI0x
-        8V0tq38EJfq5L6BQ==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 75DB81338E;
-        Thu,  8 Jul 2021 10:14:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id qSCpG/PP5mC0MwAAGKfGzw
-        (envelope-from <hare@suse.de>); Thu, 08 Jul 2021 10:14:11 +0000
-Subject: Re: [PATCH v2 5/5] nvme-fc: Freeze queues before destroying them
-To:     Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        James Smart <james.smart@broadcom.com>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        Sagi Grimberg <sagi@grimberg.me>
-References: <20210708092755.15660-1-dwagner@suse.de>
- <20210708092755.15660-6-dwagner@suse.de>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <8edf09e2-52c1-5b96-6d45-ec210ffc33e1@suse.de>
-Date:   Thu, 8 Jul 2021 12:14:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 8 Jul 2021 06:17:13 -0400
+X-UUID: b52e43e1cd4a44ea8bab0ad0d062c7cc-20210708
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=BdKf2p9ZqSn+V2IGWR+PNooNX2lJcGUJfQegrqEiVdM=;
+        b=b9KBXnQhFfVkALohUmv/2LnhbOt1iUi904ILwVtQ1tYHLOaWrXl1XYroC752ZyZqDtJex2kTKqACUwgbm3cX8vQjTL97yy4w4zDXL8YDUxLp+ybU6dYhlz1T18HznDFrejFTF7tLeIyBkuB8OEs6eyMkf03jlsC5iSjlHijj/DE=;
+X-UUID: b52e43e1cd4a44ea8bab0ad0d062c7cc-20210708
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <guangming.cao@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 290473540; Thu, 08 Jul 2021 18:14:25 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ MTKMBS33N2.mediatek.inc (172.27.4.76) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 8 Jul 2021 18:14:23 +0800
+Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
+ MTKCAS06.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Thu, 8 Jul 2021 18:14:22 +0800
+From:   <guangming.cao@mediatek.com>
+To:     Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        John Stultz <john.stultz@linaro.org>,
+        <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <linaro-mm-sig@lists.linaro.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Guangming Cao <Guangming.Cao@mediatek.com>
+Subject: [PATCH] dma-heap: Let dma heap use dma_map_attrs to map & unmap iova
+Date:   Thu, 8 Jul 2021 18:14:21 +0800
+Message-ID: <20210708101421.9101-1-guangming.cao@mediatek.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20210708092755.15660-6-dwagner@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 879CEDBA69CA375324736404F3170BD4C1626A51C81092302B49131EC5ACEC612000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/8/21 11:27 AM, Daniel Wagner wrote:
-> nvme_wait_freeze_timeout() in nvme_fc_recreate_io_queues() needs to be
-> paired with a nvme_start_freeze(). Without freezing first we will always
-> timeout in nvme_wait_freeze_timeout().
-> 
-> Note there is a similiar fix for RDMA 9f98772ba307 ("nvme-rdma: fix
-> controller reset hang during traffic") which happens to follow the PCI
-> strategy how to handle resetting the queues.
-> 
-> Signed-off-by: Daniel Wagner <dwagner@suse.de>
-> ---
->   drivers/nvme/host/fc.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
-> index 8e1fc3796735..a38b01485939 100644
-> --- a/drivers/nvme/host/fc.c
-> +++ b/drivers/nvme/host/fc.c
-> @@ -3249,6 +3249,7 @@ nvme_fc_delete_association(struct nvme_fc_ctrl *ctrl)
->   		nvme_fc_xmt_ls_rsp(disls);
->   
->   	if (ctrl->ctrl.tagset) {
-> +		nvme_start_freeze(&ctrl->ctrl);
->   		nvme_fc_delete_hw_io_queues(ctrl);
->   		nvme_fc_free_io_queues(ctrl);
->   	}
-> 
-Please add a comment here about the pairing. We've missed it once, so we 
-should make it clear why it has to be placed here.
+RnJvbTogR3VhbmdtaW5nIENhbyA8R3VhbmdtaW5nLkNhb0BtZWRpYXRlay5jb20+DQoNCkZvciBk
+bWEtaGVhcCB1c2VycywgdGhleSBjYW4ndCBieXBhc3MgY2FjaGUgc3luYyB3aGVuIG1hcC91bm1h
+cCBpb3ZhDQp3aXRoIGRtYSBoZWFwLiBCdXQgdGhleSBjYW4gZG8gaXQgYnkgYWRkaW5nIERNQV9B
+VFRSX1NLSVBfQ1BVX1NZTkMNCmludG8gZG1hX2FsbG9jX2F0dHJzLg0KDQpUbyBrZWVwIGFsaWdu
+bWVudCwgYXQgZG1hX2hlYXAgc2lkZSwgYWxzbyB1c2UNCmRtYV9idWZfYXR0YWNobWVudC5kbWFf
+bWFwX2F0dHJzIHRvIGRvIGlvdmEgbWFwICYgdW5tYXAuDQoNClNpZ25lZC1vZmYtYnk6IEd1YW5n
+bWluZyBDYW8gPEd1YW5nbWluZy5DYW9AbWVkaWF0ZWsuY29tPg0KLS0tDQogZHJpdmVycy9kbWEt
+YnVmL2hlYXBzL2NtYV9oZWFwLmMgICAgfCA2ICsrKystLQ0KIGRyaXZlcnMvZG1hLWJ1Zi9oZWFw
+cy9zeXN0ZW1faGVhcC5jIHwgNiArKysrLS0NCiAyIGZpbGVzIGNoYW5nZWQsIDggaW5zZXJ0aW9u
+cygrKSwgNCBkZWxldGlvbnMoLSkNCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvZG1hLWJ1Zi9oZWFw
+cy9jbWFfaGVhcC5jIGIvZHJpdmVycy9kbWEtYnVmL2hlYXBzL2NtYV9oZWFwLmMNCmluZGV4IDBj
+MDViNzk4NzBmOS4uMmM5ZmViM2JmYzNlIDEwMDY0NA0KLS0tIGEvZHJpdmVycy9kbWEtYnVmL2hl
+YXBzL2NtYV9oZWFwLmMNCisrKyBiL2RyaXZlcnMvZG1hLWJ1Zi9oZWFwcy9jbWFfaGVhcC5jDQpA
+QCAtOTksOSArOTksMTAgQEAgc3RhdGljIHN0cnVjdCBzZ190YWJsZSAqY21hX2hlYXBfbWFwX2Rt
+YV9idWYoc3RydWN0IGRtYV9idWZfYXR0YWNobWVudCAqYXR0YWNobWUNCiB7DQogCXN0cnVjdCBk
+bWFfaGVhcF9hdHRhY2htZW50ICphID0gYXR0YWNobWVudC0+cHJpdjsNCiAJc3RydWN0IHNnX3Rh
+YmxlICp0YWJsZSA9ICZhLT50YWJsZTsNCisJaW50IGF0dHJzID0gYXR0YWNobWVudC0+ZG1hX21h
+cF9hdHRyczsNCiAJaW50IHJldDsNCiANCi0JcmV0ID0gZG1hX21hcF9zZ3RhYmxlKGF0dGFjaG1l
+bnQtPmRldiwgdGFibGUsIGRpcmVjdGlvbiwgMCk7DQorCXJldCA9IGRtYV9tYXBfc2d0YWJsZShh
+dHRhY2htZW50LT5kZXYsIHRhYmxlLCBkaXJlY3Rpb24sIGF0dHJzKTsNCiAJaWYgKHJldCkNCiAJ
+CXJldHVybiBFUlJfUFRSKC1FTk9NRU0pOw0KIAlhLT5tYXBwZWQgPSB0cnVlOw0KQEAgLTExMyw5
+ICsxMTQsMTAgQEAgc3RhdGljIHZvaWQgY21hX2hlYXBfdW5tYXBfZG1hX2J1ZihzdHJ1Y3QgZG1h
+X2J1Zl9hdHRhY2htZW50ICphdHRhY2htZW50LA0KIAkJCQkgICBlbnVtIGRtYV9kYXRhX2RpcmVj
+dGlvbiBkaXJlY3Rpb24pDQogew0KIAlzdHJ1Y3QgZG1hX2hlYXBfYXR0YWNobWVudCAqYSA9IGF0
+dGFjaG1lbnQtPnByaXY7DQorCWludCBhdHRycyA9IGF0dGFjaG1lbnQtPmRtYV9tYXBfYXR0cnM7
+DQogDQogCWEtPm1hcHBlZCA9IGZhbHNlOw0KLQlkbWFfdW5tYXBfc2d0YWJsZShhdHRhY2htZW50
+LT5kZXYsIHRhYmxlLCBkaXJlY3Rpb24sIDApOw0KKwlkbWFfdW5tYXBfc2d0YWJsZShhdHRhY2ht
+ZW50LT5kZXYsIHRhYmxlLCBkaXJlY3Rpb24sIGF0dHJzKTsNCiB9DQogDQogc3RhdGljIGludCBj
+bWFfaGVhcF9kbWFfYnVmX2JlZ2luX2NwdV9hY2Nlc3Moc3RydWN0IGRtYV9idWYgKmRtYWJ1ZiwN
+CmRpZmYgLS1naXQgYS9kcml2ZXJzL2RtYS1idWYvaGVhcHMvc3lzdGVtX2hlYXAuYyBiL2RyaXZl
+cnMvZG1hLWJ1Zi9oZWFwcy9zeXN0ZW1faGVhcC5jDQppbmRleCAyM2E3ZTc0ZWY5NjYuLmZjN2Ix
+ZTAyOTg4ZSAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvZG1hLWJ1Zi9oZWFwcy9zeXN0ZW1faGVhcC5j
+DQorKysgYi9kcml2ZXJzL2RtYS1idWYvaGVhcHMvc3lzdGVtX2hlYXAuYw0KQEAgLTEzMCw5ICsx
+MzAsMTAgQEAgc3RhdGljIHN0cnVjdCBzZ190YWJsZSAqc3lzdGVtX2hlYXBfbWFwX2RtYV9idWYo
+c3RydWN0IGRtYV9idWZfYXR0YWNobWVudCAqYXR0YWMNCiB7DQogCXN0cnVjdCBkbWFfaGVhcF9h
+dHRhY2htZW50ICphID0gYXR0YWNobWVudC0+cHJpdjsNCiAJc3RydWN0IHNnX3RhYmxlICp0YWJs
+ZSA9IGEtPnRhYmxlOw0KKwlpbnQgYXR0cnMgPSBhdHRhY2htZW50LT5kbWFfbWFwX2F0dHJzOw0K
+IAlpbnQgcmV0Ow0KIA0KLQlyZXQgPSBkbWFfbWFwX3NndGFibGUoYXR0YWNobWVudC0+ZGV2LCB0
+YWJsZSwgZGlyZWN0aW9uLCAwKTsNCisJcmV0ID0gZG1hX21hcF9zZ3RhYmxlKGF0dGFjaG1lbnQt
+PmRldiwgdGFibGUsIGRpcmVjdGlvbiwgYXR0cnMpOw0KIAlpZiAocmV0KQ0KIAkJcmV0dXJuIEVS
+Ul9QVFIocmV0KTsNCiANCkBAIC0xNDUsOSArMTQ2LDEwIEBAIHN0YXRpYyB2b2lkIHN5c3RlbV9o
+ZWFwX3VubWFwX2RtYV9idWYoc3RydWN0IGRtYV9idWZfYXR0YWNobWVudCAqYXR0YWNobWVudCwN
+CiAJCQkJICAgICAgZW51bSBkbWFfZGF0YV9kaXJlY3Rpb24gZGlyZWN0aW9uKQ0KIHsNCiAJc3Ry
+dWN0IGRtYV9oZWFwX2F0dGFjaG1lbnQgKmEgPSBhdHRhY2htZW50LT5wcml2Ow0KKwlpbnQgYXR0
+cnMgPSBhdHRhY2htZW50LT5kbWFfbWFwX2F0dHJzOw0KIA0KIAlhLT5tYXBwZWQgPSBmYWxzZTsN
+Ci0JZG1hX3VubWFwX3NndGFibGUoYXR0YWNobWVudC0+ZGV2LCB0YWJsZSwgZGlyZWN0aW9uLCAw
+KTsNCisJZG1hX3VubWFwX3NndGFibGUoYXR0YWNobWVudC0+ZGV2LCB0YWJsZSwgZGlyZWN0aW9u
+LCBhdHRycyk7DQogfQ0KIA0KIHN0YXRpYyBpbnQgc3lzdGVtX2hlYXBfZG1hX2J1Zl9iZWdpbl9j
+cHVfYWNjZXNzKHN0cnVjdCBkbWFfYnVmICpkbWFidWYsDQotLSANCjIuMTcuMQ0K
 
-Cheers,
-
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
