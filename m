@@ -2,117 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F88A3C1B35
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 23:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C313C1B38
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 23:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231434AbhGHVsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 17:48:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231388AbhGHVse (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 17:48:34 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B50BC061574;
-        Thu,  8 Jul 2021 14:45:52 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id p17so3390508plf.12;
-        Thu, 08 Jul 2021 14:45:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=unimzu0XAveKj8zrSg6I5RmfEQpBWzpdBUGIusVQD/M=;
-        b=nFh8ab2Z9FF1OogJgAaHxaLArJCU2nLYJSEoAaLaX1fHoUwTrveWuGqaEcb9t19Fuk
-         2TvGciPLKkLRow61/02Q/yzn58rKdVqD13ULDsgJhQUmCze8z8TPqo9meSQ/fZjIBmCp
-         Kr+IZ0wmelriRvZPh805NTipBTuMWFGTcqMRKcjRTSqR9Lrkq5oFjJqK1JfbBiQAgAG0
-         yhqWS0ZlO7E+Ll7XSvmQ9dYRwtwOAxB1+cORCGUm7WcjQZJOmLUghi55UvTXfdB0S9OA
-         E2iN1ewn771J5QEvoh73TlLpT3CGTjEAagSbXlpW71tUfD7Nfg14g70I+BblJeyL2H5C
-         XLhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=unimzu0XAveKj8zrSg6I5RmfEQpBWzpdBUGIusVQD/M=;
-        b=l0+WKlugUCWhuR9nJC92TXqok3iLk5K08R+SvQ+Bvk/u1WKUk5242TWQcMBMjeiddw
-         zw8DMAwhH90TZZOVL2aAbEHXlXhtGaG7qOdxvqk1ivQxNOp01l1HNP2OuTvyfD4H0JdD
-         UHwXQMpc+iewvujUWJ0T4Rgw80oVV8RsDJKdrtNFzWjdE+zNFc+wfyw2ZZuLVkBTaR6M
-         hs3sbEdU75Nu5W4t6Zld5AbyWEdOp+vSd7+9p5YhRF0NBOgxWh2LXJabv9IJWuFfTRqH
-         CU2LRfrZ+J2i6fkGxaVG2hW7eMI3Jmc/X30TLgxADSI9dvYZeCe3m0ESQDGzX8He/ZtR
-         dONw==
-X-Gm-Message-State: AOAM5314Ziyv4bjRhCGarVndhHV4Vk0z7bzwikSEykI2xmUYcrruWTb9
-        bVUFQEE3t2ye+aP1UrRBBpdOaKk36r/qtg==
-X-Google-Smtp-Source: ABdhPJxsCk3wl/+j5QEwUngwfZUBYABgijhZXbMcdWaFEkg19qeByjqFR1a7peE4Xgkmguo2LiJXuQ==
-X-Received: by 2002:a17:90a:b63:: with SMTP id 90mr31249525pjq.58.1625780751478;
-        Thu, 08 Jul 2021 14:45:51 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id w14sm3360432pjb.3.2021.07.08.14.45.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Jul 2021 14:45:50 -0700 (PDT)
-Subject: Re: linux-next: Fixes tag needs some work in the net tree
-To:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210709073104.7cd2da52@canb.auug.org.au>
- <30e28b44-b618-bdf5-cf4a-dc676185372d@gmail.com>
- <6e95b490-47d0-a5d0-b729-db2581e73e3c@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <aa475f3f-339a-59b1-d92d-aa0748838c45@gmail.com>
-Date:   Thu, 8 Jul 2021 14:45:45 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231443AbhGHVtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 17:49:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41352 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231314AbhGHVtu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 17:49:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E7F961606;
+        Thu,  8 Jul 2021 21:47:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625780827;
+        bh=mrhrj7r8a/qXiw0M9WJaa1DCHBkLNSRdzlM6SWlPTKE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=oXC1SpBo1ZihpDDEULeQAk6w2SDXIHgfxJgsYjq252DCnaUUT30xkukiAfUimCtXc
+         BMR4woyeM+Rfd2iwqsrQBBHBN4Z9DEITqKxG6L73lW/gFVxxPEcUCT68YEpg2JXB+l
+         5VOi6QrEUCacBgxZl/id89uBAGiL0ocodTd01YmA5eLsrCJU/mNOyWJ0tLjMC7K1Pg
+         9dxITECxLSUyGGlO+GMCKNFMEtJZb4/frXQYucndDj9mSlw/INEpUX10Mial7LAX3D
+         jDRTmyfx1pjrDE/DW8FBsDyLz4bh8FfIkmvrfhvCkDzvocl6CTHRc7bTglGlbBLbwF
+         5AJBC3yoMdehA==
+Date:   Thu, 8 Jul 2021 16:47:06 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>, bjorn@helgaas.com,
+        andy@kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [Linux-kernel-mentees] [PATCH v1] gpio: ml: ioh: Convert to
+ dev_pm_ops
+Message-ID: <20210708214706.GA1059661@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <6e95b490-47d0-a5d0-b729-db2581e73e3c@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75Vfpj+ENMe9u-SMKfvCsyFtOucUT9bD3qfWX+QjccZ9ZyQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/8/21 2:44 PM, Eric Dumazet wrote:
-> 
-> 
-> On 7/8/21 11:38 PM, Florian Fainelli wrote:
->> On 7/8/21 2:31 PM, Stephen Rothwell wrote:
->>> Hi all,
->>>
->>> In commit
->>>
->>>   9615fe36b31d ("skbuff: Fix build with SKB extensions disabled")
->>>
->>> Fixes tag
->>>
->>>   Fixes: Fixes: 8550ff8d8c75 ("skbuff: Release nfct refcount on napi stolen or re-used skbs")
->>>
->>> has these problem(s):
->>>
->>>   - No SHA1 recognised
->>>
->>> Not worth rebasing for, just more care next time.
->>
->> It is there though:
->>
->> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/?id=8550ff8d8c75416e984d9c4b082845e57e560984
->>
->> and has the proper format AFAICT, what am I missing?
->>
-> 
-> This commit was the first commit, adding the bug.
-> 
-> Your commit changelog had :
-> 
->     Fixes: Fixes: 8550ff8d8c75 ("skbuff: Release nfct refcount on napi stolen or re-used skbs")
->     Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
->     Reviewed-by: Roi Dayan <roid@nvidia.com>
->     Reviewed-by: Eric Dumazet <edumazet@google.com>
->     Signed-off-by: David S. Miller <davem@davemloft.net>
-> 
-> See the extra Fixes: word ?
+[+cc linux-pci]
 
-Doh! yes, sorry about that.
--- 
-Florian
+On Thu, Apr 02, 2020 at 11:23:27PM +0300, Andy Shevchenko wrote:
+> On Thu, Apr 2, 2020 at 11:16 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > On Thu, Apr 02, 2020 at 09:33:46PM +0300, Andy Shevchenko wrote:
+> > > On Thu, Apr 2, 2020 at 6:52 PM Vaibhav Gupta <vaibhavgupta40@gmail.com> wrote:
+> > > >
+> > > > Convert the legacy callback .suspend() and .resume()
+> > > > to the generic ones.
+> > >
+> > > Thank you for the patch.
+> > >
+> > > Rather then doing this I think the best approach is to unify gpio-pch
+> > > and gpio-ml-ioh together.
+> > > Under umbrella of the task, the clean ups like above are highly
+> > > appreciated.
+> >
+> > I'd be all in favor of that, but what Vaibhav is working toward is
+> > eliminating use of legacy PM in PCI drivers.  I think unifying drivers
+> > is really out of scope for that project.
+> >
+> > If you'd rather leave gpio-ml-ioh.c alone for now, I suggest that
+> > Vaibhav move on to other PCI drivers that use legacy PM.  If we
+> > convert all the others away from legacy PM and gpio-ml-ioh.c is the
+> > only one remaining, then I guess we can revisit this :)
+> 
+> Then skip this driver for good.
+> 
+> > Or, maybe converting gpio-ml-ioh.c now, along the lines of
+> > 226e6b866d74 ("gpio: pch: Convert to dev_pm_ops"), would be one small
+> > step towards the eventual unification, by making gpio-pch and
+> > gpio-ml-ioh a little more similar.
+> 
+> I think it will delay the real work here (very old code motivates
+> better to get rid of it then semi-fixed one).
+
+With respect, I think it is unreasonable to use the fact that
+gpio-ml-ioh and gpio-pch should be unified to hold up the conversion
+of gpio-ml-ioh to generic power management.
+
+I do not want to skip gpio-ml-ioh for good, because it is one of the
+few remaining drivers that use the legacy PCI PM interfaces.  We are
+very close to being able to remove a significant amount of ugly code
+from the PCI core.
+
+gpio-ml-ioh and gpio-pch do look quite similar, and no doubt it would
+be great to unify them.  But without datasheets or hardware to test,
+that's not a trivial task, and I don't think that burden should fall
+on anyone who wants to make any improvements to these drivers.
+
+Another alternative would be to remove legacy PCI PM usage
+(ioh_gpio_suspend() and ioh_gpio_resume()) from gpio-ml-ioh.  That
+would mean gpio-ml-ioh wouldn't support power management at all, which
+isn't a good thing, but maybe it would be even more motivation to
+unify it with gpio-pch (which has already been converted by
+226e6b866d74 ("gpio: pch: Convert to dev_pm_ops"))?
+
+Bjorn
