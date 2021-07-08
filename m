@@ -2,146 +2,514 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC5EB3BF9FE
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 14:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20D2C3BFA05
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 14:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231177AbhGHM0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 08:26:45 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:26379 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230511AbhGHM0o (ORCPT
+        id S231376AbhGHM1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 08:27:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229795AbhGHM1s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 08:26:44 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210708122401epoutp02c83ecc7c1c193deff2563a8870750c2b~P0FIAjzTv2118421184epoutp02X
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 12:24:01 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210708122401epoutp02c83ecc7c1c193deff2563a8870750c2b~P0FIAjzTv2118421184epoutp02X
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1625747041;
-        bh=oOzJuWcMwSuh+8AAaknnVD1lxN/Rb96+3VUoj6XrcMs=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=qipmtqF1bY1isP3m3vRGNwpUZ4ygnEE5IjZ0Bp84HLau80DrbCXGAeP21ZDLXYNwK
-         vViVh0gg9rL8myMhcwAhpGlVS9aYhajgePHOkw3tck4j+hCacIAW6XcT1ITlpPk9nB
-         nsZyQc5GVaLEN2ExeenYWTJPKBo0I7BRUxuCoC5E=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210708122400epcas1p206fcd4f6e3a01e67906f20dbc4d49e15~P0FHabrb52304823048epcas1p2s;
-        Thu,  8 Jul 2021 12:24:00 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.40.164]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4GLFp73xczz4x9Pv; Thu,  8 Jul
-        2021 12:23:59 +0000 (GMT)
-X-AuditID: b6c32a39-86dff70000002572-44-60e6ee5fa5a6
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
-        8E.DB.09586.F5EE6E06; Thu,  8 Jul 2021 21:23:59 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: [PATCH] connector: send event on write to /proc/[pid]/comm
-Reply-To: ohoono.kwon@samsung.com
-Sender: =?UTF-8?B?6raM7Jik7ZuI?= <ohoono.kwon@samsung.com>
-From:   =?UTF-8?B?6raM7Jik7ZuI?= <ohoono.kwon@samsung.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        =?UTF-8?B?6raM7Jik7ZuI?= <ohoono.kwon@samsung.com>
-CC:     "mingo@kernel.org" <mingo@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "christian.brauner@ubuntu.com" <christian.brauner@ubuntu.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "ohkwon1043@gmail.com" <ohkwon1043@gmail.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <8735sxoh7j.fsf@disp2133>
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210708122359epcms1p2aa0ae62f2476e18ca63bdc48a0bb2050@epcms1p2>
-Date:   Thu, 08 Jul 2021 21:23:59 +0900
-X-CMS-MailID: 20210708122359epcms1p2aa0ae62f2476e18ca63bdc48a0bb2050
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprHJsWRmVeSWpSXmKPExsWy7bCmgW78u2cJBufny1rMWb+GzWLrt0SL
-        OedbWCz+b2tht9iz9ySLxeVdc9gsVv87xWixd7+vxa6fK5gdOD22rLzJ5LFz1l12j02rOtk8
-        Tsz4zeLRt2UVo8eDSW8YPT5vkvOYcqidJYAjKscmIzUxJbVIITUvOT8lMy/dVsk7ON453tTM
-        wFDX0NLCXEkhLzE31VbJxSdA1y0zB+g6JYWyxJxSoFBAYnGxkr6dTVF+aUmqQkZ+cYmtUmpB
-        Sk6BoUGBXnFibnFpXrpecn6ulaGBgZEpUGVCTsbkPzsZC2YpVOx/84GtgXGlfBcjJ4eEgInE
-        5Ann2boYuTiEBHYwSiw6cYG1i5GDg1dAUOLvDmGQGmEBd4mlc54zg4SFBBQltp12gwhbSUzr
-        +8cEYrMJWEg8X/uTFcQWEUiVWDLlPgvISGaBdmaJnoNXWSB28UrMaH8KZUtLbF++lRHE5hRQ
-        k1jw6DorRFxU4ubqt+ww9vtj8xkhbBGJ1ntnmSFsQYkHP3dDxSUlbrbdBVsmIdDPKHF/XQuU
-        M4FRYsmTSWwQVeYSzza0gE3lFfCVOP/4L9jZLAKqEts2/wd7WELAReJPcyFImFlAW2LZwtdg
-        DzMLaEqs36UPMUVRYufvuYwQJXwS7772sML8tWPeEyaIKaoSy357wLzYN/0yG0TYQ2LNO1FI
-        KG9klHjb/pZlAqPCLERAz0KydxbC3gWMzKsYxVILinPTU4sNC0yR43YTIzihalnuYJz+9oPe
-        IUYmDsZDjBIczEoivEYzniUI8aYkVlalFuXHF5XmpBYfYjQFengis5Rocj4wpeeVxBuaGhkb
-        G1uYmJmbmRorifPuZDuUICSQnliSmp2aWpBaBNPHxMEp1cC0kdshi2XbITHnO7sWlApkrb1d
-        9F972YzFedd3np7YUnL4q/yFmA3sP2S/Tr7yhSv9gXPYrn+quvZcL7vFjz4zTtyd+UdHbIGi
-        +BZPz5Pc7BI8B4P+H8vtPvVNh++qxeTjKwTl7z9syji3/LKbZdUx6WoZKXVN7hunp54LNVI6
-        3+mcn1DwmOFa1bIrhbPXXX0UND3RUdqRX6KHe/b/bh0JnUXuXJn9IQW3WS3PKSxUfdywxSTN
-        MtLiw6ytt3y0r/t9/7Zw/bQ2x3U6k/2tG3r5NydzhDufL3rsvir0wcnUy/P7fp27mOwlteXR
-        oZaTax47reKPuJ26omfBFKOZWfvjVPbeSLkxw33dldDN1yRClFiKMxINtZiLihMB5/yPmjEE
-        AAA=
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210701133458epcms1p68e9eb9bd0eee8903ba26679a37d9d960
-References: <8735sxoh7j.fsf@disp2133>
-        <20210701133458epcms1p68e9eb9bd0eee8903ba26679a37d9d960@epcms1p6>
-        <CGME20210701133458epcms1p68e9eb9bd0eee8903ba26679a37d9d960@epcms1p2>
+        Thu, 8 Jul 2021 08:27:48 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3AC2C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 05:25:06 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id oj11-20020a17090b4d8bb029017338c124dcso1379748pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 05:25:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qzde1jyLwbbN8JJTdptRnmAwdxE63PqJOw02INDe7XE=;
+        b=GaGhLxs5jL9Fr1tPQoqGgD/ZqgqcoreGt6OacjWnhxolEgFof6mcpu6TKChDhHtF9H
+         PcnduLFXHky5dmGhOuJt8PppMA6bidqxCTxC1hukEE/a4a+XhcBGjit06cP+qS+ARCwc
+         YNu2z5L+AqtcudMtYXWWh9L5POOMvza3tPp2aGs/KYuL0aptUV11HsgCoDLkdtNE8CpL
+         JdIZFh17Y8MlORRZdwgy/8LWgw7QM4SF+iS/rUQFPvXBdRD8PDaBXHaX4mnas+SZcJxB
+         xxqMQ3gYRnCQCnWpjKJJvUyN/2TpArQa+VPl9eIQ0kwwRvt6hKA7RgVcX/hzPm60tPNP
+         V+OA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qzde1jyLwbbN8JJTdptRnmAwdxE63PqJOw02INDe7XE=;
+        b=mvo/0c2FqHoS5wnXj4635tTZWY/es559jWjx5KjEB8M3lXBxTtOvWCsjrm1vaAnMQy
+         7+RBOfanxTBqBE7TcRoJ1jy8OJ/NcHu11GN6WcDN1MH5xiZD0usLZeAGIXX65UaMnVat
+         86CLc8XyiYWrvLXQDlYcqwTE8cActNzQYETDqXTAb7hAhpmVYOk92AAcO7cz6CNlJ8Pa
+         SQwtrJjLza3AsRS+q4UDUHKWHXNqYFsCiqEKPJUs503ljKvZ8Cy8bQQv/SnVQLxIuilh
+         UH/4DbTMb40/SN06ynaaU1Ox/DZzYbc5T3+mrEE89yeVEA7/JAGwwzvvqIfbKvuO0w5D
+         YC1Q==
+X-Gm-Message-State: AOAM5313ksTSUV6sloOwF02J7RMFZwUb/WGW2b/vtrV8h4XBp97Y2JxO
+        A0XXqqqLT84FCeAnLMgBJTHEdQ==
+X-Google-Smtp-Source: ABdhPJw5O7PN9WlK5Gj3W8x0BA53zAepb420D9F2iyScoHU8C9ObBJkPWso5qdWAWQqh0oVpqAilUg==
+X-Received: by 2002:a17:90b:798:: with SMTP id l24mr32321381pjz.141.1625747106011;
+        Thu, 08 Jul 2021 05:25:06 -0700 (PDT)
+Received: from localhost.localdomain ([223.178.210.84])
+        by smtp.gmail.com with ESMTPSA id h1sm9293303pji.14.2021.07.08.05.25.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jul 2021 05:25:05 -0700 (PDT)
+From:   Sumit Garg <sumit.garg@linaro.org>
+To:     kgdb-bugreport@lists.sourceforge.net
+Cc:     daniel.thompson@linaro.org, jason.wessel@windriver.com,
+        dianders@chromium.org, linux-kernel@vger.kernel.org,
+        Sumit Garg <sumit.garg@linaro.org>
+Subject: [PATCH v3] kdb: Get rid of custom debug heap allocator
+Date:   Thu,  8 Jul 2021 17:54:47 +0530
+Message-Id: <20210708122447.3880803-1-sumit.garg@linaro.org>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eric W. Biederman <ebiederm=40xmission.com> writes:=20
-> =EA=B6=8C=EC=98=A4=ED=9B=88=20<ohoono.kwon=40samsung.com>=20writes:=0D=0A=
->=20>=20=0D=0A>=20>=20>=20While=20comm=20change=20event=20via=20prctl=20has=
-=20been=20reported=20to=20proc=20connector=20by=0D=0A>=20>=20'commit=20f786=
-ecba4158=20(=22connector:=20add=20comm=20change=20event=20report=20to=20pro=
-c=0D=0A>=20>=20connector=22)',=20connector=20listeners=20were=20missing=20c=
-omm=20changes=20by=20explicit=0D=0A>=20>=20writes=20on=20/proc/=5Bpid=5D/co=
-mm.=0D=0A>=20>=0D=0A>=20>=20Let=20explicit=20writes=20on=20/proc/=5Bpid=5D/=
-comm=20report=20to=20proc=20connector.=0D=0A>=20=0D=0A>=20Is=20connector=20=
-really=20useful?=20=20I=20am=20under=20the=20impression=20that=20connector=
-=0D=0A>=20did=20not=20get=20much=20if=20any=20real=20uptake=20of=20users.=
-=0D=0A>=20=0D=0A>=20I=20know=20the=20impression=20that=20connector=20is=20n=
-ot=20used=20and=20that=20there=0D=0A>=20are=20generally=20better=20mechanis=
-ms=20for=20what=20it=20provides=20has=20led=20to=0D=0A>=20connector=20not=
-=20getting=20any=20namespace=20support.=20=20Similarly=20bugs=0D=0A>=20like=
-=20the=20one=20you=20just=20have=20found=20persist.=0D=0A>=20=0D=0A>=20If=
-=20connector=20is=20actually=20useful=20then=20it=20is=20worth=20fixing=20l=
-ittle=20things=0D=0A>=20like=20this.=20=20But=20if=20no=20one=20is=20really=
-=20using=20connector=20I=20suspect=20a=20better=0D=0A>=20patch=20direction=
-=20would=20be=20to=20start=20figuring=20out=20how=20to=20deprecate=20and=0D=
-=0A>=20remove=20connector.=0D=0A>=20=0D=0A>=20Eric=0D=0A=0D=0ADear=20Eric.=
-=0D=0A=0D=0AI=20get=20your=20point,=20and=20I=20can=20also=20see=20that=20/=
-drivers/connector=20directory=20has=0D=0Anot=20been=20modified=20since=20la=
-st=20December,=20which=20might=20imply=20that=20not=20so=20many=0D=0Ausers=
-=20are=20actively=20paying=20attention=20to=20the=20connector.=0D=0A=0D=0AH=
-owever=20in=20Samsung,=20we=20are=20currently=20using=20connector=20feature=
-=20for=20our=0D=0Aproprietary=20solution,=20which=20uses=20it=20to=20receiv=
-e=20kernel=20events=20such=20as=20fork,=0D=0Aexec,=20and=20comm=20changes=
-=20at=20userspace=20daemon.=0D=0A=0D=0ASince=20I=20am=20new=20to=20patching=
-=20linux=20kernel,=20I=20cannot=20say=20much=20about=20whether=0D=0Aconnect=
-or=20should=20be=20deprecated=20or=20not.=20I=20guess=20it=20is=20up=20to=
-=20all=20of=20you=20guys=0D=0Awho=20have=20contributed=20to=20the=20connect=
-or=20driver=20to=20discuss=20and=20decide.=0D=0A=0D=0AMeanwhile,=20I=20stil=
-l=20think=20bugfixes=20should=20be=20applied=20until=20the=20feature=20is=
-=0D=0Aactually=20decided=20to=20be=20deprecated.=0D=0A=0D=0AThanks,=0D=0AOh=
-hoon=20Kwon.=0D=0A=0D=0A>=20=0D=0A>=20=0D=0A>=20>=20Signed-off-by:=20Ohhoon=
-=20Kwon=20<ohoono.kwon=40samsung.com>=0D=0A>=20>=20---=0D=0A>=20>=20=20fs/p=
-roc/base.c=20=7C=205=20++++-=0D=0A>=20>=20=201=20file=20changed,=204=20inse=
-rtions(+),=201=20deletion(-)=0D=0A>=20>=0D=0A>=20>=20diff=20--git=20a/fs/pr=
-oc/base.c=20b/fs/proc/base.c=0D=0A>=20>=20index=209cbd915025ad..3e1e6b56aa9=
-6=20100644=0D=0A>=20>=20---=20a/fs/proc/base.c=0D=0A>=20>=20+++=20b/fs/proc=
-/base.c=0D=0A>=20>=20=40=40=20-95,6=20+95,7=20=40=40=0D=0A>=20>=20=20=23inc=
-lude=20<linux/posix-timers.h>=0D=0A>=20>=20=20=23include=20<linux/time_name=
-space.h>=0D=0A>=20>=20=20=23include=20<linux/resctrl.h>=0D=0A>=20>=20+=23in=
-clude=20<linux/cn_proc.h>=0D=0A>=20>=20=20=23include=20<trace/events/oom.h>=
-=0D=0A>=20>=20=20=23include=20=22internal.h=22=0D=0A>=20>=20=20=23include=
-=20=22fd.h=22=0D=0A>=20>=20=40=40=20-1674,8=20+1675,10=20=40=40=20static=20=
-ssize_t=20comm_write(struct=20file=20*file,=20const=20char=20__user=20*buf,=
-=0D=0A>=20>=20=20=09if=20(=21p)=0D=0A>=20>=20=20=09=09return=20-ESRCH;=0D=
-=0A>=20>=20=20=0D=0A>=20>=20-=09if=20(same_thread_group(current,=20p))=0D=
-=0A>=20>=20+=09if=20(same_thread_group(current,=20p))=20=7B=0D=0A>=20>=20=
-=20=09=09set_task_comm(p,=20buffer);=0D=0A>=20>=20+=09=09proc_comm_connecto=
-r(p);=0D=0A>=20>=20+=09=7D=0D=0A>=20>=20=20=09else=0D=0A>=20>=20=20=09=09co=
-unt=20=3D=20-EINVAL;=0D=0A=0D=0A
+Currently the only user for debug heap is kdbnearsym() which can be
+modified to rather use statically allocated buffer for symbol name as
+per it's current usage. So do that and hence remove custom debug heap
+allocator.
+
+Note that this change puts a restriction on kdbnearsym() callers to
+carefully use shared namebuf such that a caller should consume the symbol
+returned immediately prior to another call to fetch a different symbol.
+
+This change has been tested using kgdbtest on arm64 which doesn't show
+any regressions.
+
+Suggested-by: Daniel Thompson <daniel.thompson@linaro.org>
+Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+---
+
+Changes in v3:
+- Rebased to tip of upstream master.
+- Updated function header comment for kdbnearsym().
+
+Changes in v2:
+- Use single static buffer for symbol name in kdbnearsym() instead of
+  per caller buffers allocated on stack.
+
+ kernel/debug/kdb/kdb_debugger.c |   1 -
+ kernel/debug/kdb/kdb_private.h  |   5 -
+ kernel/debug/kdb/kdb_support.c  | 328 +++-----------------------------
+ 3 files changed, 28 insertions(+), 306 deletions(-)
+
+diff --git a/kernel/debug/kdb/kdb_debugger.c b/kernel/debug/kdb/kdb_debugger.c
+index 0220afda3200..e91fc3e4edd5 100644
+--- a/kernel/debug/kdb/kdb_debugger.c
++++ b/kernel/debug/kdb/kdb_debugger.c
+@@ -140,7 +140,6 @@ int kdb_stub(struct kgdb_state *ks)
+ 	 */
+ 	kdb_common_deinit_state();
+ 	KDB_STATE_CLEAR(PAGER);
+-	kdbnearsym_cleanup();
+ 	if (error == KDB_CMD_KGDB) {
+ 		if (KDB_STATE(DOING_KGDB))
+ 			KDB_STATE_CLEAR(DOING_KGDB);
+diff --git a/kernel/debug/kdb/kdb_private.h b/kernel/debug/kdb/kdb_private.h
+index 170c69aedebb..8dbc840113c9 100644
+--- a/kernel/debug/kdb/kdb_private.h
++++ b/kernel/debug/kdb/kdb_private.h
+@@ -109,7 +109,6 @@ extern int kdbgetaddrarg(int, const char **, int*, unsigned long *,
+ 			 long *, char **);
+ extern int kdbgetsymval(const char *, kdb_symtab_t *);
+ extern int kdbnearsym(unsigned long, kdb_symtab_t *);
+-extern void kdbnearsym_cleanup(void);
+ extern char *kdb_strdup(const char *str, gfp_t type);
+ extern void kdb_symbol_print(unsigned long, const kdb_symtab_t *, unsigned int);
+ 
+@@ -233,10 +232,6 @@ extern struct task_struct *kdb_curr_task(int);
+ 
+ #define GFP_KDB (in_dbg_master() ? GFP_ATOMIC : GFP_KERNEL)
+ 
+-extern void *debug_kmalloc(size_t size, gfp_t flags);
+-extern void debug_kfree(void *);
+-extern void debug_kusage(void);
+-
+ extern struct task_struct *kdb_current_task;
+ extern struct pt_regs *kdb_current_regs;
+ 
+diff --git a/kernel/debug/kdb/kdb_support.c b/kernel/debug/kdb/kdb_support.c
+index 9f50d22d68e6..f0a5448b14df 100644
+--- a/kernel/debug/kdb/kdb_support.c
++++ b/kernel/debug/kdb/kdb_support.c
+@@ -52,48 +52,48 @@ int kdbgetsymval(const char *symname, kdb_symtab_t *symtab)
+ }
+ EXPORT_SYMBOL(kdbgetsymval);
+ 
+-static char *kdb_name_table[100];	/* arbitrary size */
+-
+ /*
+- * kdbnearsym -	Return the name of the symbol with the nearest address
+- *	less than 'addr'.
++ * kdbnearsym() - Return the name of the symbol with the nearest address
++ *                less than @addr.
++ * @addr: Address to check for near symbol
++ * @symtab: Structure to receive results
+  *
+- * Parameters:
+- *	addr	Address to check for symbol near
+- *	symtab  Structure to receive results
+- * Returns:
+- *	0	No sections contain this address, symtab zero filled
+- *	1	Address mapped to module/symbol/section, data in symtab
+- * Remarks:
+- *	2.6 kallsyms has a "feature" where it unpacks the name into a
+- *	string.  If that string is reused before the caller expects it
+- *	then the caller sees its string change without warning.  To
+- *	avoid cluttering up the main kdb code with lots of kdb_strdup,
+- *	tests and kfree calls, kdbnearsym maintains an LRU list of the
+- *	last few unique strings.  The list is sized large enough to
+- *	hold active strings, no kdb caller of kdbnearsym makes more
+- *	than ~20 later calls before using a saved value.
++ * WARNING: This function may return a pointer to a single statically
++ * allocated buffer (namebuf). kdb's unusual calling context (single
++ * threaded, all other CPUs halted) provides us sufficient locking for
++ * this to be safe. The only constraint imposed by the static buffer is
++ * that the caller must consume any previous reply prior to another call
++ * to lookup a new symbol.
++ *
++ * Note that, strictly speaking, some architectures may re-enter the kdb
++ * trap if the system turns out to be very badly damaged and this breaks
++ * the single-threaded assumption above. In these circumstances successful
++ * continuation and exit from the inner trap is unlikely to work and any
++ * user attempting this receives a prominent warning before being allowed
++ * to progress. In these circumstances we remain memory safe because
++ * namebuf[KSYM_NAME_LEN-1] will never change from '\0' although we do
++ * tolerate the possibility of garbled symbol display from the outer kdb
++ * trap.
++ *
++ * Return:
++ * * 0 - No sections contain this address, symtab zero filled
++ * * 1 - Address mapped to module/symbol/section, data in symtab
+  */
+ int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab)
+ {
+ 	int ret = 0;
+ 	unsigned long symbolsize = 0;
+ 	unsigned long offset = 0;
+-#define knt1_size 128		/* must be >= kallsyms table size */
+-	char *knt1 = NULL;
++	static char namebuf[KSYM_NAME_LEN];
+ 
+ 	kdb_dbg_printf(AR, "addr=0x%lx, symtab=%px\n", addr, symtab);
+ 	memset(symtab, 0, sizeof(*symtab));
+ 
+ 	if (addr < 4096)
+ 		goto out;
+-	knt1 = debug_kmalloc(knt1_size, GFP_ATOMIC);
+-	if (!knt1) {
+-		kdb_func_printf("addr=0x%lx cannot kmalloc knt1\n", addr);
+-		goto out;
+-	}
++
+ 	symtab->sym_name = kallsyms_lookup(addr, &symbolsize , &offset,
+-				(char **)(&symtab->mod_name), knt1);
++				(char **)(&symtab->mod_name), namebuf);
+ 	if (offset > 8*1024*1024) {
+ 		symtab->sym_name = NULL;
+ 		addr = offset = symbolsize = 0;
+@@ -102,63 +102,14 @@ int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab)
+ 	symtab->sym_end = symtab->sym_start + symbolsize;
+ 	ret = symtab->sym_name != NULL && *(symtab->sym_name) != '\0';
+ 
+-	if (ret) {
+-		int i;
+-		/* Another 2.6 kallsyms "feature".  Sometimes the sym_name is
+-		 * set but the buffer passed into kallsyms_lookup is not used,
+-		 * so it contains garbage.  The caller has to work out which
+-		 * buffer needs to be saved.
+-		 *
+-		 * What was Rusty smoking when he wrote that code?
+-		 */
+-		if (symtab->sym_name != knt1) {
+-			strncpy(knt1, symtab->sym_name, knt1_size);
+-			knt1[knt1_size-1] = '\0';
+-		}
+-		for (i = 0; i < ARRAY_SIZE(kdb_name_table); ++i) {
+-			if (kdb_name_table[i] &&
+-			    strcmp(kdb_name_table[i], knt1) == 0)
+-				break;
+-		}
+-		if (i >= ARRAY_SIZE(kdb_name_table)) {
+-			debug_kfree(kdb_name_table[0]);
+-			memmove(kdb_name_table, kdb_name_table+1,
+-			       sizeof(kdb_name_table[0]) *
+-			       (ARRAY_SIZE(kdb_name_table)-1));
+-		} else {
+-			debug_kfree(knt1);
+-			knt1 = kdb_name_table[i];
+-			memmove(kdb_name_table+i, kdb_name_table+i+1,
+-			       sizeof(kdb_name_table[0]) *
+-			       (ARRAY_SIZE(kdb_name_table)-i-1));
+-		}
+-		i = ARRAY_SIZE(kdb_name_table) - 1;
+-		kdb_name_table[i] = knt1;
+-		symtab->sym_name = kdb_name_table[i];
+-		knt1 = NULL;
+-	}
+-
+ 	if (symtab->mod_name == NULL)
+ 		symtab->mod_name = "kernel";
+ 	kdb_dbg_printf(AR, "returns %d symtab->sym_start=0x%lx, symtab->mod_name=%px, symtab->sym_name=%px (%s)\n",
+ 		       ret, symtab->sym_start, symtab->mod_name, symtab->sym_name, symtab->sym_name);
+-
+ out:
+-	debug_kfree(knt1);
+ 	return ret;
+ }
+ 
+-void kdbnearsym_cleanup(void)
+-{
+-	int i;
+-	for (i = 0; i < ARRAY_SIZE(kdb_name_table); ++i) {
+-		if (kdb_name_table[i]) {
+-			debug_kfree(kdb_name_table[i]);
+-			kdb_name_table[i] = NULL;
+-		}
+-	}
+-}
+-
+ static char ks_namebuf[KSYM_NAME_LEN+1], ks_namebuf_prev[KSYM_NAME_LEN+1];
+ 
+ /*
+@@ -249,6 +200,7 @@ void kdb_symbol_print(unsigned long addr, const kdb_symtab_t *symtab_p,
+ 		      unsigned int punc)
+ {
+ 	kdb_symtab_t symtab, *symtab_p2;
++
+ 	if (symtab_p) {
+ 		symtab_p2 = (kdb_symtab_t *)symtab_p;
+ 	} else {
+@@ -656,230 +608,6 @@ unsigned long kdb_task_state(const struct task_struct *p, unsigned long mask)
+ 	return (mask & kdb_task_state_string(state)) != 0;
+ }
+ 
+-/* Last ditch allocator for debugging, so we can still debug even when
+- * the GFP_ATOMIC pool has been exhausted.  The algorithms are tuned
+- * for space usage, not for speed.  One smallish memory pool, the free
+- * chain is always in ascending address order to allow coalescing,
+- * allocations are done in brute force best fit.
+- */
+-
+-struct debug_alloc_header {
+-	u32 next;	/* offset of next header from start of pool */
+-	u32 size;
+-	void *caller;
+-};
+-
+-/* The memory returned by this allocator must be aligned, which means
+- * so must the header size.  Do not assume that sizeof(struct
+- * debug_alloc_header) is a multiple of the alignment, explicitly
+- * calculate the overhead of this header, including the alignment.
+- * The rest of this code must not use sizeof() on any header or
+- * pointer to a header.
+- */
+-#define dah_align 8
+-#define dah_overhead ALIGN(sizeof(struct debug_alloc_header), dah_align)
+-
+-static u64 debug_alloc_pool_aligned[256*1024/dah_align];	/* 256K pool */
+-static char *debug_alloc_pool = (char *)debug_alloc_pool_aligned;
+-static u32 dah_first, dah_first_call = 1, dah_used, dah_used_max;
+-
+-/* Locking is awkward.  The debug code is called from all contexts,
+- * including non maskable interrupts.  A normal spinlock is not safe
+- * in NMI context.  Try to get the debug allocator lock, if it cannot
+- * be obtained after a second then give up.  If the lock could not be
+- * previously obtained on this cpu then only try once.
+- *
+- * sparse has no annotation for "this function _sometimes_ acquires a
+- * lock", so fudge the acquire/release notation.
+- */
+-static DEFINE_SPINLOCK(dap_lock);
+-static int get_dap_lock(void)
+-	__acquires(dap_lock)
+-{
+-	static int dap_locked = -1;
+-	int count;
+-	if (dap_locked == smp_processor_id())
+-		count = 1;
+-	else
+-		count = 1000;
+-	while (1) {
+-		if (spin_trylock(&dap_lock)) {
+-			dap_locked = -1;
+-			return 1;
+-		}
+-		if (!count--)
+-			break;
+-		udelay(1000);
+-	}
+-	dap_locked = smp_processor_id();
+-	__acquire(dap_lock);
+-	return 0;
+-}
+-
+-void *debug_kmalloc(size_t size, gfp_t flags)
+-{
+-	unsigned int rem, h_offset;
+-	struct debug_alloc_header *best, *bestprev, *prev, *h;
+-	void *p = NULL;
+-	if (!get_dap_lock()) {
+-		__release(dap_lock);	/* we never actually got it */
+-		return NULL;
+-	}
+-	h = (struct debug_alloc_header *)(debug_alloc_pool + dah_first);
+-	if (dah_first_call) {
+-		h->size = sizeof(debug_alloc_pool_aligned) - dah_overhead;
+-		dah_first_call = 0;
+-	}
+-	size = ALIGN(size, dah_align);
+-	prev = best = bestprev = NULL;
+-	while (1) {
+-		if (h->size >= size && (!best || h->size < best->size)) {
+-			best = h;
+-			bestprev = prev;
+-			if (h->size == size)
+-				break;
+-		}
+-		if (!h->next)
+-			break;
+-		prev = h;
+-		h = (struct debug_alloc_header *)(debug_alloc_pool + h->next);
+-	}
+-	if (!best)
+-		goto out;
+-	rem = best->size - size;
+-	/* The pool must always contain at least one header */
+-	if (best->next == 0 && bestprev == NULL && rem < dah_overhead)
+-		goto out;
+-	if (rem >= dah_overhead) {
+-		best->size = size;
+-		h_offset = ((char *)best - debug_alloc_pool) +
+-			   dah_overhead + best->size;
+-		h = (struct debug_alloc_header *)(debug_alloc_pool + h_offset);
+-		h->size = rem - dah_overhead;
+-		h->next = best->next;
+-	} else
+-		h_offset = best->next;
+-	best->caller = __builtin_return_address(0);
+-	dah_used += best->size;
+-	dah_used_max = max(dah_used, dah_used_max);
+-	if (bestprev)
+-		bestprev->next = h_offset;
+-	else
+-		dah_first = h_offset;
+-	p = (char *)best + dah_overhead;
+-	memset(p, POISON_INUSE, best->size - 1);
+-	*((char *)p + best->size - 1) = POISON_END;
+-out:
+-	spin_unlock(&dap_lock);
+-	return p;
+-}
+-
+-void debug_kfree(void *p)
+-{
+-	struct debug_alloc_header *h;
+-	unsigned int h_offset;
+-	if (!p)
+-		return;
+-	if ((char *)p < debug_alloc_pool ||
+-	    (char *)p >= debug_alloc_pool + sizeof(debug_alloc_pool_aligned)) {
+-		kfree(p);
+-		return;
+-	}
+-	if (!get_dap_lock()) {
+-		__release(dap_lock);	/* we never actually got it */
+-		return;		/* memory leak, cannot be helped */
+-	}
+-	h = (struct debug_alloc_header *)((char *)p - dah_overhead);
+-	memset(p, POISON_FREE, h->size - 1);
+-	*((char *)p + h->size - 1) = POISON_END;
+-	h->caller = NULL;
+-	dah_used -= h->size;
+-	h_offset = (char *)h - debug_alloc_pool;
+-	if (h_offset < dah_first) {
+-		h->next = dah_first;
+-		dah_first = h_offset;
+-	} else {
+-		struct debug_alloc_header *prev;
+-		unsigned int prev_offset;
+-		prev = (struct debug_alloc_header *)(debug_alloc_pool +
+-						     dah_first);
+-		while (1) {
+-			if (!prev->next || prev->next > h_offset)
+-				break;
+-			prev = (struct debug_alloc_header *)
+-				(debug_alloc_pool + prev->next);
+-		}
+-		prev_offset = (char *)prev - debug_alloc_pool;
+-		if (prev_offset + dah_overhead + prev->size == h_offset) {
+-			prev->size += dah_overhead + h->size;
+-			memset(h, POISON_FREE, dah_overhead - 1);
+-			*((char *)h + dah_overhead - 1) = POISON_END;
+-			h = prev;
+-			h_offset = prev_offset;
+-		} else {
+-			h->next = prev->next;
+-			prev->next = h_offset;
+-		}
+-	}
+-	if (h_offset + dah_overhead + h->size == h->next) {
+-		struct debug_alloc_header *next;
+-		next = (struct debug_alloc_header *)
+-			(debug_alloc_pool + h->next);
+-		h->size += dah_overhead + next->size;
+-		h->next = next->next;
+-		memset(next, POISON_FREE, dah_overhead - 1);
+-		*((char *)next + dah_overhead - 1) = POISON_END;
+-	}
+-	spin_unlock(&dap_lock);
+-}
+-
+-void debug_kusage(void)
+-{
+-	struct debug_alloc_header *h_free, *h_used;
+-#ifdef	CONFIG_IA64
+-	/* FIXME: using dah for ia64 unwind always results in a memory leak.
+-	 * Fix that memory leak first, then set debug_kusage_one_time = 1 for
+-	 * all architectures.
+-	 */
+-	static int debug_kusage_one_time;
+-#else
+-	static int debug_kusage_one_time = 1;
+-#endif
+-	if (!get_dap_lock()) {
+-		__release(dap_lock);	/* we never actually got it */
+-		return;
+-	}
+-	h_free = (struct debug_alloc_header *)(debug_alloc_pool + dah_first);
+-	if (dah_first == 0 &&
+-	    (h_free->size == sizeof(debug_alloc_pool_aligned) - dah_overhead ||
+-	     dah_first_call))
+-		goto out;
+-	if (!debug_kusage_one_time)
+-		goto out;
+-	debug_kusage_one_time = 0;
+-	kdb_func_printf("debug_kmalloc memory leak dah_first %d\n", dah_first);
+-	if (dah_first) {
+-		h_used = (struct debug_alloc_header *)debug_alloc_pool;
+-		kdb_func_printf("h_used %px size %d\n", h_used, h_used->size);
+-	}
+-	do {
+-		h_used = (struct debug_alloc_header *)
+-			  ((char *)h_free + dah_overhead + h_free->size);
+-		kdb_func_printf("h_used %px size %d caller %px\n",
+-				h_used, h_used->size, h_used->caller);
+-		h_free = (struct debug_alloc_header *)
+-			  (debug_alloc_pool + h_free->next);
+-	} while (h_free->next);
+-	h_used = (struct debug_alloc_header *)
+-		  ((char *)h_free + dah_overhead + h_free->size);
+-	if ((char *)h_used - debug_alloc_pool !=
+-	    sizeof(debug_alloc_pool_aligned))
+-		kdb_func_printf("h_used %px size %d caller %px\n",
+-				h_used, h_used->size, h_used->caller);
+-out:
+-	spin_unlock(&dap_lock);
+-}
+-
+ /* Maintain a small stack of kdb_flags to allow recursion without disturbing
+  * the global kdb state.
+  */
+-- 
+2.25.1
+
