@@ -2,55 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F167F3BF513
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 07:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8803BF51C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 07:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229637AbhGHFag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 01:30:36 -0400
-Received: from verein.lst.de ([213.95.11.211]:39235 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229579AbhGHFag (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 01:30:36 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id DB4DC68C4E; Thu,  8 Jul 2021 07:27:51 +0200 (CEST)
-Date:   Thu, 8 Jul 2021 07:27:51 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Brian Cain <bcain@codeaurora.org>,
-        Sid Manning <sidneym@codeaurora.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-hexagon@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com
-Subject: Re: how can we test the hexagon port in mainline
-Message-ID: <20210708052751.GA18789@lst.de>
-References: <20210623141854.GA32155@lst.de> <08df01d7683d$8f5b7b70$ae127250$@codeaurora.org> <CAK8P3a28_0KJpcLRQrDhFk8-ndxmfk7-Q2_qcRRiYkyh-NNZUQ@mail.gmail.com> <08e101d76842$94f78a60$bee69f20$@codeaurora.org> <20210623151746.GA4247@lst.de> <CAK8P3a2bG64ARjpwQ0ZhQ9P0g8B-=AwcHHAbYBXBS4B6Fy9pQw@mail.gmail.com> <YNQE0YJzC2xmWg+2@Ryzen-9-3900X.localdomain> <20210707141054.GA24828@lst.de> <1ee8fc44-3e8c-91c0-7909-a636757dbda4@kernel.org>
+        id S229650AbhGHFfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 01:35:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229579AbhGHFfr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 01:35:47 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4758DC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 22:33:05 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m1Med-0005qp-RM; Thu, 08 Jul 2021 07:32:55 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m1MeZ-000300-1z; Thu, 08 Jul 2021 07:32:51 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m1MeY-0007HF-QD; Thu, 08 Jul 2021 07:32:50 +0200
+Date:   Thu, 8 Jul 2021 07:32:32 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Xu Yilun <yilun.xu@intel.com>
+Cc:     Tom Rix <trix@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Wu Hao <hao.wu@intel.com>,
+        Moritz Fischer <mdf@kernel.org>, linux-fpga@vger.kernel.org
+Subject: Re: [PATCH] bus: Make remove callback return void
+Message-ID: <20210708053232.phruotxefsoqyhzq@pengutronix.de>
+References: <20210706095037.1425211-1-u.kleine-koenig@pengutronix.de>
+ <4c7210e4-76e4-07fe-a40c-a58e331d0a6e@redhat.com>
+ <20210708021913.GB12358@yilunxu-OptiPlex-7050>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xmgq4o3jbkgraaz5"
 Content-Disposition: inline
-In-Reply-To: <1ee8fc44-3e8c-91c0-7909-a636757dbda4@kernel.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20210708021913.GB12358@yilunxu-OptiPlex-7050>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 10:42:27AM -0700, Nathan Chancellor wrote:
->> hch@brick:~/work/linux$ make -j4 ARCH=hexagon
->> CROSS_COMPILE=hexagon-unknown-linux-musl LLVM=1 LLVM_IAS=1 defconfig all
->> HOSTCC  scripts/basic/fixdep
->> clang: error while loading shared libraries: libtinfo.so.5: cannot open shared object file: No such file or directory
->
-> Hmmm, is that with libtinfo5 installed (or whatever the ncurses-compat 
-> equivalent is on your distribution installed)? I had that problem on Debian 
-> until I insta
 
-I did install libtinfo5, which just gets me to the next error:
+--xmgq4o3jbkgraaz5
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-hch@brick:~/work/linux$ export PATH=/opt/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linux-gnu/bin/:$PATH
-hch@brick:~/work/linux$ make -j4 ARCH=hexagon CROSS_COMPILE=hexagon-unknown-linux-musl LLVM=1 LLVM_IAS=1 defconfig all
-  HOSTCC  scripts/basic/fixdep
-clang: error while loading shared libraries: libc++.so.1: cannot open shared object file: No such file or directory
-make[2]: *** [scripts/Makefile.host:95: scripts/basic/fixdep] Error 127
-make[1]: *** [Makefile:543: scripts_basic] Error 2
-make: *** [Makefile:346: __build_one_by_one] Error 2
+Hello,
 
+On Thu, Jul 08, 2021 at 10:19:13AM +0800, Xu Yilun wrote:
+> On Tue, Jul 06, 2021 at 06:52:09AM -0700, Tom Rix wrote:
+> > On 7/6/21 2:50 AM, Uwe Kleine-K=F6nig wrote:
+> > >   drivers/fpga/dfl.c                        | 4 +---
+> > Reviewed-by: Tom Rix <trix@redhat.com>
+> Reviewed-by: Xu Yilun <yilun.xu@intel.com>
+
+Note there is already a v2 out. See
+https://lore.kernel.org/lkml/20210706154803.1631813-5-u.kleine-koenig@pengu=
+tronix.de .
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--xmgq4o3jbkgraaz5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmDmjegACgkQwfwUeK3K
+7AmHqgf7BmG51FI4Db8X2wcyosweFIvawskXYfYmZraLxltZ8d76NuuIJUmw5/j3
+HJfOfWl0hhYJsrTQVSbOnaOG32y4GQ4b7yqzxJVCog/L5HSxXeG06em6BoiypgXV
+9Vj1l+qcpoE9pljM8mxHpLLDUQOoAERrreZ7Qri+/sXrbvwOni9xRSOYLoXLnkFy
+yUdANl/t217x2v2Lzjqy4c3y4IpiPw98mqaiXxnlY8Fdhnh76C8fJ2Ex7AbKmQsM
+bQk6+ts2XSbQwIAPbwv7g42yafrwFDr4mXGXcDTq6pss4VrrYjAjA5mT38yIxhpO
+WzWJhnzN+s1iCV7r6Z9ilJyyizyl3Q==
+=GBSF
+-----END PGP SIGNATURE-----
+
+--xmgq4o3jbkgraaz5--
