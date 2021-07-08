@@ -2,159 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F46C3C19D7
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 21:32:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5476B3C19DE
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 21:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbhGHTei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 15:34:38 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:22128 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229497AbhGHTee (ORCPT
+        id S230261AbhGHTgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 15:36:23 -0400
+Received: from mail-pf1-f169.google.com ([209.85.210.169]:35590 "EHLO
+        mail-pf1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhGHTgW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 15:34:34 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 168J2tTl170332;
-        Thu, 8 Jul 2021 15:31:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=ZzzOZykbO5QMdxGLhuT6hx8FDb0c0UjkV/9s7AfHQLQ=;
- b=Sw+aHGRn21aswTCdI20LxnX2frLNJicCucWHY/Jbzm30Q0e27vXltma0WYEsaUkM2/pZ
- yh4A50daDGe7uQaZp57VN4yqR7e1WWBVa1ZRYFWrpFxmXXP4n12armrSQ/abNTzylfI0
- +gY6A22a58Fws0i1ylGERGXsxDxD+JnvtypALj7USBy/dqnbPQzw5tGwWj5c5A98SrWF
- 39yv+VHNdf5b1ej/AjbqCqUOrkXVGXm5HGlwO/PQHFAuvmrgAuotUysdgAUjyRWMQ8om
- ULcJ/iY87fZDqHXCCUrIKS+w4X9csH7K7RxPkL8ohnFTOoDmSI+iBaKZvsjilcXnb0Z3 xQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39p1y5m90p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Jul 2021 15:31:21 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 168J38F3170861;
-        Thu, 8 Jul 2021 15:31:21 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39p1y5m901-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Jul 2021 15:31:20 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 168JEObG025826;
-        Thu, 8 Jul 2021 19:31:19 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06ams.nl.ibm.com with ESMTP id 39jf5habhw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Jul 2021 19:31:19 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 168JVGQZ28377532
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 8 Jul 2021 19:31:17 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DB60FAE045;
-        Thu,  8 Jul 2021 19:31:16 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5081BAE04D;
-        Thu,  8 Jul 2021 19:31:11 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.121.73])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu,  8 Jul 2021 19:31:11 +0000 (GMT)
-Message-ID: <490941a5197bf4bcf0d6f95610085ee4d46ed9bb.camel@linux.ibm.com>
-Subject: Re: [PATCH RFC 00/12] Enroll kernel keys thru MOK
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     keyrings@vger.kernel.org,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>, keescook@chromium.org,
-        gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
-        scott.branden@broadcom.com, weiyongjun1@huawei.com,
-        nayna@linux.ibm.com, ebiggers@google.com, ardb@kernel.org,
-        nramas@linux.microsoft.com, lszubowi@redhat.com,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        James.Bottomley@HansenPartnership.com, pjones@redhat.com,
-        glin@suse.com, "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>
-Date:   Thu, 08 Jul 2021 15:31:10 -0400
-In-Reply-To: <21EFCB58-2D89-4D30-8DA2-B952A7E1B1BD@oracle.com>
-References: <20210707024403.1083977-1-eric.snowberg@oracle.com>
-         <42b787dd3a20fe37c4de60daf75db06e409cfb6d.camel@linux.ibm.com>
-         <5BFB3C52-36D4-47A5-B1B8-977717C555A0@oracle.com>
-         <886f30dcf7b3d48644289acc3601c2f0207b19b6.camel@linux.ibm.com>
-         <D34A6328-91CA-4E1E-845C-FAC9B424819B@oracle.com>
-         <c0cf7f883a9252c17427f1f992e4973e78481304.camel@linux.ibm.com>
-         <21EFCB58-2D89-4D30-8DA2-B952A7E1B1BD@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: aggJvet0yOt-ImSnGQ0anKTGvo1Pu3_V
-X-Proofpoint-GUID: nzOHRzEqfJNWiGRgDl2PnNQs2Gmz1T0Z
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-08_11:2021-07-08,2021-07-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 priorityscore=1501 malwarescore=0 bulkscore=0 spamscore=0
- mlxscore=0 mlxlogscore=999 adultscore=0 phishscore=0 impostorscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107080097
+        Thu, 8 Jul 2021 15:36:22 -0400
+Received: by mail-pf1-f169.google.com with SMTP id d12so6493957pfj.2;
+        Thu, 08 Jul 2021 12:33:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=i1x79IxgHWwXPlhnf35hTvQGJigxp9TB63be2mWFl8c=;
+        b=QrFn1JViUFkMbdEARdeyHqs07tODk1uhSyiyp+mUgby1w6fnL2Bbucyrt+ltF3htLr
+         yVef2NpiF9VosFECKZ39uNFnrHUawnh8BtYxLuBhIMAerB6Td0olqkhb0btEsNV+JduJ
+         vxOpzd+oo7RjeMFu3v3AG0K282mSZcvLHyf8qhg3xc7a+ASpajZA/98lkNDoxLOLYtyH
+         t2vpcURoa6M73UaZKCnGEvrzVBgRMZAAeJqKZpOOeVEydT81DW0heopi0wa1om9faMBY
+         bgHZliOecxmO5I7H/83I7uAUCH74iqpTGUj7EKjC/5GlXiHVQqXKf7Oap/9ZPd5y2JsQ
+         JAiQ==
+X-Gm-Message-State: AOAM5325K8hUMQfh6nTA1ES6t3sKlSnn3w5yqtZUqfB3jGdCg2/7TwgD
+        FolIOK3pvVYX6iiwdy9kL8A=
+X-Google-Smtp-Source: ABdhPJxh7PA9JCdKwIvu5ezCF3wF82rwdLjP5exSZrmWt6CdickS5srFih5x2dIeKAf8p2nDIKmESA==
+X-Received: by 2002:aa7:8c4e:0:b029:324:c334:59 with SMTP id e14-20020aa78c4e0000b0290324c3340059mr12500220pfd.56.1625772819282;
+        Thu, 08 Jul 2021 12:33:39 -0700 (PDT)
+Received: from garbanzo ([191.96.120.45])
+        by smtp.gmail.com with ESMTPSA id o34sm4321039pgm.6.2021.07.08.12.33.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jul 2021 12:33:38 -0700 (PDT)
+Date:   Thu, 8 Jul 2021 12:33:34 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     tglx@linutronix.de, akpm@linux-foundation.org, shuah@kernel.org,
+        rafael@kernel.org, rgoldwyn@suse.com, kuno@frob.nl,
+        fontana@sharpeleven.org, Ciaran.Farrell@suse.com,
+        Christopher.DeNicolo@suse.com, hch@lst.de, corbet@lwn.net,
+        linux@leemhuis.info, ast@kernel.org, andriin@fb.com,
+        daniel@iogearbox.net, atenart@kernel.org, alobakin@pm.me,
+        weiwan@google.com, ap420073@gmail.com, tj@kernel.org,
+        jeyu@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, minchan@kernel.org,
+        axboe@kernel.dk, mbenes@suse.com, jpoimboe@redhat.com,
+        keescook@chromium.org, jikos@kernel.org, rostedt@goodmis.org,
+        peterz@infradead.org, linux-block@vger.kernel.org,
+        linux-spdx@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, copyleft-next@lists.fedorahosted.org
+Subject: Re: [PATCH 0/2] LICENSES: add and use copyleft-next-0.3.1
+Message-ID: <20210708193334.uyndyk6mxpylv2qn@garbanzo>
+References: <20210707184310.3624761-1-mcgrof@kernel.org>
+ <YOaZohB/2Z3x5grc@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YOaZohB/2Z3x5grc@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
-
-On Thu, 2021-07-08 at 11:59 -0600, Eric Snowberg wrote:
-> 
-> >  Asumming a
-> > function similar to "restrict_link_by_builtin_and_secondary_trusted" is
-> > defined to include the MOK keyring, the CA keys in the MOK db would be
-> > loaded onto the MOK keyring, the other keys that meet the secondary
-> > keyring restriction would be loaded directly onto the secondary
-> > keyring[1], and as you currently have, the remaining keys onto the
-> > platform keyring.
+On Thu, Jul 08, 2021 at 08:22:26AM +0200, Greg KH wrote:
+> On Wed, Jul 07, 2021 at 11:43:08AM -0700, Luis Chamberlain wrote:
+> > This adds the copyleft-next-0.3.1 SPDX tag and replaces existing
+> > boilerplate with the tag.
 > > 
-> > This eliminates the exemption needed for loading keys onto the
-> > secondary keyring.  The MOK keyring, containing just CA keys, becomes a
-> > new trust source.
+> > Luis Chamberlain (2):
+> >   LICENSES: Add the copyleft-next-0.3.1 license
+> >   testing: use the copyleft-next-0.3.1 SPDX tag
+> > 
+> >  LICENSES/dual/copyleft-next-0.3.1        | 237 +++++++++++++++++++++++
+> >  lib/test_kmod.c                          |  12 +-
+> >  lib/test_sysctl.c                        |  12 +-
+> >  tools/testing/selftests/kmod/kmod.sh     |  13 +-
+> >  tools/testing/selftests/sysctl/sysctl.sh |  12 +-
 > 
-> I just want to make sure I understand. If we kept the .mok keyring around, 
-> we would store it into the system_keyring code, just like the platform 
-> keyring is stored.  This would allow the move exemption code to be removed.
-> If the mok keyring is a new trust source, whenever the secondary keyring 
-> is referenced in verify_ code, the mok keyring will be checked too.  If 
-> I have this right, let me know and I’ll work on a v2.  Thanks.
+> As we only have 4 usages of this license in the tree, we have the
+> opportunity to actually remove it and keep the list of licenses that we
+> use in the kernel source smaller.
+> 
+> Any chance you wish to just change the license of these files, given
+> that you are the only one that has tried to use it for kernel code?
 
-All the firmware keys are loaded onto the "platform" keyring, without
-any restriction.  Your reference point should be the "builtin" and
-"secondary" keyrings, not the "platform" keyring.
+Since it is a "relatively" new license (2012, used in Linux since 2017)
+obviously not many people would have used it, but one cannot assume it
+is not because one does not want, but rather one is not aware.
 
-Changes:
-- defining a new keyring restriction which only allows CA keys to be
-loaded onto the MOK keyring.
-- defining a new keyring restriction something along the lines of
-"restrict_link_by_builtin_mok_and_secondary_trusted()".
+I myself have used the license for all new projects, and the agreement
+I reached with SUSE was I'd be using this license when I can for my
+own projects and contributions. I'm not a zealot though, and I also
+take care for proper considerations for such a large project such
+as Linux. It is why I had the license vetted by attorneys at SUSE
+in 2017, and also drew up a public discussion over its possible use on
+Linux. My goal then, in so far as Linux is concerned, is to use it for
+selftests as a safe place, which won't grow folks weary or concerned.
 
-In the case of "restrict_link_by_builtin_and_secondary_trusted()", it's
-based on a build time option.  In the case of MOK, it might be both a
-build time and runtime firmware variable option.  There are quite a few
-permutations that will somehow need to be addressed:  secondary keyring
-not defined, but MOK keyring defined, and the reverse.
+And then let things evolve from there.
 
-Once all the CA keys in the MOK db are loaded onto the MOK keyring,
-there will be no need for moving keys to the secondary keyring.  The
-secondary keyring restriction will just work.  The main question is
-whether there will need to be two passes.   One pass to first load all
-the CA keys onto the MOK keyring.  A second pass to load the keys onto
-the secondary keyring, based on the keyring restriction, and the
-remaining ones onto the "platform" keyring to avoid the regression.
+Of all the items listed on patch #1 for which I prefer using
+copyleft-next the most important one for me is an explicit patent
+grant. Although GPL applies to Linux I do feel very strongly about
+propagation of more projects with such type of licenses and I feel
+we should be happy to help such projects grow by allowing cross
+polination.
 
-[Once the CA keys are loaded onto the MOK keyring, userspace will be
-able to load certificates, signed by a key on the MOK keyring, onto the
-secondary keyring.]
+> As a follow-up to this, I do not want to see your "test_sysfs.c" module
+> as a dual-licensed file, as that makes no sense whatsoever.
 
-thanks,
+You can ignore the patch then, its a selftest driver, not a core sysfs
+change. I believe it should be up to the selftest maintainer?
 
-Mimi
+The changes I am making to sysfs are explicitly under GPLv2, and
+has nothing to do with copyleft-next. I am using dual licensing with
+copyleft-next only for selftests for now. I have support from SUSE to
+use this license.
 
+> It is
+> directly testing GPL-v2-only code, so the attempt to dual license it
+> makes no sense to me.
+
+So what? I can have BSD licensed code testing GPLv2 code. In fact folks
+out there use proprietary licensed code to test GPLv2 code as well. I
+don't see your the rationale here.
+
+> How could anyone take that code and do anything
+> with it under the copyleft-next license only?  And where would that
+> happen?
+
+That's up to the users. In my case I am heavily involved with doing
+automation of testing and so *I care* as I am building automation of
+testing for all things kernel. My project kdevops, will soon be
+relicensed to copyleft-next.
+
+My personal development goal is I will embrace copyleft-next for
+anything new I write, and only use GPLv2 or another license when
+I am required to do so. I believe I am being reasonable also in using
+this only for sefltests for now as discussions and awareness of the
+license grows.
+
+> I understand the appeal of copyleft-next in that it resolves many of the
+> "grey" areas around gplv2, but given that no one is rushing to advise us
+> to relicense all of the kernel with this thing, there is no need to
+> encourage the spread of it given the added complexity and confusion that
+> adding another license to our mix can only cause.
+
+"Need" is subjective. I feel strongly about a need to have explicit patent
+grants propagating in our community. So the more we can do this outside
+of Linux and allow code from Linux to be used in such projects the
+better.
+
+The license is one of the only few licenses (if not only?) which is
+GPLv2 compatible and also has an clear patent grant. I have reasons to
+believe, we as a community face serious challenges if we don't grow our
+collection of code with explicit patent grants. And so any new project
+I create will have such licenses. It is simply my preference, and if I
+can contribute code to Linux in a "safe place" to slowly build traction
+of it, then fantastic.
+
+> So please, no, I don't want to see new licenses added to the tree, if
+> anything we should be trimming them down to be less as it makes things
+> simpler and more obvious.
+
+Too late. Dual GPLv2 / copyleft-next code was added in 2017 and I had
+a clear community discussion over it.
+
+I take caution and care about this. I do feel this discussion is worth
+having and hence my contributions in 2017 and now adding the respective
+SPDX license tag.
+
+  Luis
