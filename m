@@ -2,215 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FC163C19B6
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 21:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB7E13C19B9
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 21:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230222AbhGHTUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 15:20:37 -0400
-Received: from mga01.intel.com ([192.55.52.88]:7531 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229497AbhGHTUg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 15:20:36 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10039"; a="231340869"
-X-IronPort-AV: E=Sophos;i="5.84,224,1620716400"; 
-   d="scan'208";a="231340869"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 12:17:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,224,1620716400"; 
-   d="scan'208";a="487774382"
-Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 08 Jul 2021 12:17:49 -0700
-Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1m1ZWs-000ESE-L0; Thu, 08 Jul 2021 19:17:46 +0000
-Date:   Fri, 09 Jul 2021 03:16:44 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- dd28e0c352c025765370ab4a3a302d7701b4b2f5
-Message-ID: <60e74f1c.gcBK1I29Zwp0lNvG%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230235AbhGHTVk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 8 Jul 2021 15:21:40 -0400
+Received: from mail-ed1-f42.google.com ([209.85.208.42]:38523 "EHLO
+        mail-ed1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhGHTVh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 15:21:37 -0400
+Received: by mail-ed1-f42.google.com with SMTP id x12so10104944eds.5
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 12:18:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=Lcf7pj0lQYGzDh3Xt/SAhA9pFGz1V15H7OOqaDQJa10=;
+        b=uTjM/LKlT83bLSUbTuGN68xO6UEPLSXW+DsYtel9cgqrCDIbLDjwafp7319Sjq//hO
+         21yqGpTAsApj4ob8F1ciysuA5sHvChipcD/fTc8PsvrIhnXaWN1GXt3c0aUdkSrXBMTy
+         EkFIoymE7WcR1P/mSZPZr2bIR/Us11MeloQeWEkrB1QHoe7dtMlNox+3CoTp/lcNsjxS
+         nZMJ+ee3SIG5zk0k862fzPfGKtjC1KlOSmXdtLrL67uUtUBTWm5qu/hDeZG86mvoyiuJ
+         0cJENE3vsBFmjKt8P9ktqkNv3vHQScMizQufkseURzZqaCR7avjCVAK45f3c9+GQHGk/
+         2t4g==
+X-Gm-Message-State: AOAM532Cpjks/Uxsx6ufXJv1w/W/wTfEa08PdUZhqPdvkU7s6nJST2rx
+        tjisMdJN+P70MGF54W077Bs=
+X-Google-Smtp-Source: ABdhPJzTzDiPQg0MEKqX0YmNU80wQTamYWiHaJ1ONnOcCcdx+KwrglYjwavDp/GXKH43VosCsZybgw==
+X-Received: by 2002:aa7:db95:: with SMTP id u21mr40422671edt.152.1625771933841;
+        Thu, 08 Jul 2021 12:18:53 -0700 (PDT)
+Received: from localhost (mob-2-41-76-128.net.vodafone.it. [2.41.76.128])
+        by smtp.gmail.com with ESMTPSA id b23sm1719733edy.44.2021.07.08.12.18.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jul 2021 12:18:53 -0700 (PDT)
+Date:   Thu, 8 Jul 2021 21:18:44 +0200
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Yang Shi <shy828301@gmail.com>, Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 03/14] mm/page_alloc: Make should_fail_alloc_page a
+ static function should_fail_alloc_page static
+Message-ID: <20210708211648.13659bb5@linux.microsoft.com>
+In-Reply-To: <20210520084809.8576-4-mgorman@techsingularity.net>
+References: <20210520084809.8576-1-mgorman@techsingularity.net>
+        <20210520084809.8576-4-mgorman@techsingularity.net>
+Organization: Microsoft
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: dd28e0c352c025765370ab4a3a302d7701b4b2f5  Merge branch 'WIP/fixes'
+On Thu, 20 May 2021 09:47:58 +0100
+Mel Gorman <mgorman@techsingularity.net> wrote:
 
-elapsed time: 727m
+> make W=1 generates the following warning for mm/page_alloc.c
+> 
+>   mm/page_alloc.c:3651:15: warning: no previous prototype for
+> ‘should_fail_alloc_page’ [-Wmissing-prototypes] noinline bool
+> should_fail_alloc_page(gfp_t gfp_mask, unsigned int order)
+> ^~~~~~~~~~~~~~~~~~~~~~
+> 
+> This function is deliberately split out for BPF to allow errors to be
+> injected. The function is not used anywhere else so it is local to
+> the file. Make it static which should still allow error injection
+> to be used similar to how block/blk-core.c:should_fail_bio() works.
+> 
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> ---
+>  mm/page_alloc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index aaa1655cf682..26cc1a4e639b 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -3648,7 +3648,7 @@ static inline bool
+> __should_fail_alloc_page(gfp_t gfp_mask, unsigned int order) 
+>  #endif /* CONFIG_FAIL_PAGE_ALLOC */
+>  
+> -noinline bool should_fail_alloc_page(gfp_t gfp_mask, unsigned int
+> order) +static noinline bool should_fail_alloc_page(gfp_t gfp_mask,
+> unsigned int order) {
+>  	return __should_fail_alloc_page(gfp_mask, order);
+>  }
 
-configs tested: 157
-configs skipped: 3
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Hi Mel,
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                          rsk7269_defconfig
-arm                   milbeaut_m10v_defconfig
-arm                         mv78xx0_defconfig
-mips                        bcm63xx_defconfig
-arm                        multi_v7_defconfig
-powerpc                 mpc8315_rdb_defconfig
-powerpc                      chrp32_defconfig
-mips                     cu1830-neo_defconfig
-arm                          ixp4xx_defconfig
-powerpc                  iss476-smp_defconfig
-h8300                       h8s-sim_defconfig
-sparc64                          alldefconfig
-arm                     am200epdkit_defconfig
-xtensa                  audio_kc705_defconfig
-arm                            mps2_defconfig
-arm                           sunxi_defconfig
-sh                          kfr2r09_defconfig
-arc                      axs103_smp_defconfig
-sh                          sdk7786_defconfig
-riscv                          rv32_defconfig
-powerpc                     kilauea_defconfig
-um                             i386_defconfig
-powerpc                         ps3_defconfig
-powerpc                    sam440ep_defconfig
-arm                           corgi_defconfig
-powerpc                          allmodconfig
-arm                  colibri_pxa270_defconfig
-mips                         cobalt_defconfig
-powerpc                   bluestone_defconfig
-mips                          rb532_defconfig
-sh                              ul2_defconfig
-mips                      maltaaprp_defconfig
-sh                          lboxre2_defconfig
-mips                     loongson2k_defconfig
-sh                           se7724_defconfig
-arc                        nsim_700_defconfig
-arm                         vf610m4_defconfig
-arm                          imote2_defconfig
-mips                         rt305x_defconfig
-xtensa                generic_kc705_defconfig
-sh                           se7751_defconfig
-arm                       versatile_defconfig
-sh                         ecovec24_defconfig
-m68k                        stmark2_defconfig
-mips                  cavium_octeon_defconfig
-arm                     eseries_pxa_defconfig
-powerpc                      pasemi_defconfig
-arm                             mxs_defconfig
-sh                           se7712_defconfig
-sh                        edosk7705_defconfig
-powerpc                     tqm8541_defconfig
-sh                           se7722_defconfig
-mips                           xway_defconfig
-sh                           sh2007_defconfig
-arm                         cm_x300_defconfig
-m68k                         apollo_defconfig
-m68k                         amcore_defconfig
-sh                        dreamcast_defconfig
-sh                            migor_defconfig
-arm                           h3600_defconfig
-arm                           u8500_defconfig
-arm                        mvebu_v7_defconfig
-sh                            hp6xx_defconfig
-powerpc                     akebono_defconfig
-arm                       cns3420vb_defconfig
-m68k                           sun3_defconfig
-csky                             alldefconfig
-powerpc                     mpc512x_defconfig
-powerpc                 mpc834x_mds_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20210707
-x86_64               randconfig-a002-20210707
-x86_64               randconfig-a005-20210707
-x86_64               randconfig-a006-20210707
-x86_64               randconfig-a003-20210707
-x86_64               randconfig-a001-20210707
-i386                 randconfig-a006-20210708
-i386                 randconfig-a004-20210708
-i386                 randconfig-a001-20210708
-i386                 randconfig-a003-20210708
-i386                 randconfig-a005-20210708
-i386                 randconfig-a002-20210708
-i386                 randconfig-a004-20210707
-i386                 randconfig-a006-20210707
-i386                 randconfig-a001-20210707
-i386                 randconfig-a003-20210707
-i386                 randconfig-a005-20210707
-i386                 randconfig-a002-20210707
-i386                 randconfig-a015-20210707
-i386                 randconfig-a016-20210707
-i386                 randconfig-a012-20210707
-i386                 randconfig-a011-20210707
-i386                 randconfig-a014-20210707
-i386                 randconfig-a013-20210707
-i386                 randconfig-a015-20210708
-i386                 randconfig-a016-20210708
-i386                 randconfig-a011-20210708
-i386                 randconfig-a012-20210708
-i386                 randconfig-a013-20210708
-i386                 randconfig-a014-20210708
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+It seems that this breaks builds with CONFIG_DEBUG_INFO_BTF=y.
+Maybe that warning was a false positive because
+should_fail_alloc_page() is referenced via a macro?
 
-clang tested configs:
-x86_64               randconfig-b001-20210707
-x86_64               randconfig-b001-20210708
-x86_64               randconfig-a015-20210707
-x86_64               randconfig-a014-20210707
-x86_64               randconfig-a012-20210707
-x86_64               randconfig-a011-20210707
-x86_64               randconfig-a016-20210707
-x86_64               randconfig-a013-20210707
+I proposed to revert it, feel free to propose another fix.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Regards,
+-- 
+per aspera ad upstream
