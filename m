@@ -2,63 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D56A3BF54F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 07:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 951BB3BF560
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 08:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229679AbhGHFwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 01:52:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbhGHFwU (ORCPT
+        id S229742AbhGHGIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 02:08:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33423 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229608AbhGHGIL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 01:52:20 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C2DC061574;
-        Wed,  7 Jul 2021 22:49:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mWfljA4QruRpBEIi5sIMdGx5T82sFFv30vncfANMf1g=; b=MJOHj97MGASie+OP4yLR4gsDaP
-        JUN0nm34hL4c6b+ZuugumECiSKrCDv4ro/y2PsEnmXIuSFUVZDg0Ym/01JhkduvQ5P1XcBaRjv30B
-        mRL50AfbSbCW/s5S+pfkD+j3jeY0r6funfeUAOrvaLVEdgPiTX3ZDXoy75YSNbYNz1LtRM+xOYKCu
-        /R11f5sIhoOBlTS4Xp5AQFqY+iSgJD+mriVHZZGyyalnvy9tn+0P7MCGzI+VlUaIcXNRUk4F3muR0
-        eAnpb+NG2iWAOzaBwZrJhc3yyvp/xmMp8LNsQkzBp7MI71UPyOq9CXe5zdLOtpU1cjW1QBjNGMsPn
-        MwXBe/cg==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m1MuL-00D80v-2u; Thu, 08 Jul 2021 05:49:16 +0000
-Date:   Thu, 8 Jul 2021 06:49:09 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Fangrui Song <maskray@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 0/2] infer CROSS_COMPILE from ARCH for LLVM=1 LLVM_IAS=1
-Message-ID: <YOaR1ZjToP/kgNsC@infradead.org>
-References: <20210707224310.1403944-1-ndesaulniers@google.com>
+        Thu, 8 Jul 2021 02:08:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625724329;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wCYV9rADVa/Zk0J+SdK18xNcB21VXuhcx5+1Vv01yS4=;
+        b=cD2Hy1Sm+sBhybszw0y6pb2UrWMR6Dk3HLQhQkzy4bvTN/JQyQly/8+15tFf3el+DCCgOT
+        2fcx+1rr/DnDWIcddxPje3yN7wuw7ZuQV5Od+DWXfKG3Kz36yE8rGQ5xEXlQKvEGX+iIzt
+        +cS5xXGdwYZNv9iXV6L0ryITSylvOMY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-91-9-DnYDoaOMCTGRYBVNbyrA-1; Thu, 08 Jul 2021 02:05:25 -0400
+X-MC-Unique: 9-DnYDoaOMCTGRYBVNbyrA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 509EB18D6A2A;
+        Thu,  8 Jul 2021 06:05:20 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (ovpn-115-5.ams2.redhat.com [10.36.115.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0D14654450;
+        Thu,  8 Jul 2021 06:05:17 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     libc-alpha@sourceware.org, linux-api@vger.kernel.org,
+        x86@kernel.org, linux-arch@vger.kernel.org,
+        "H.J. Lu" <hjl.tools@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Re: x86 CPU features detection for applications (and AMX)
+References: <87tulo39ms.fsf@oldenburg.str.redhat.com>
+        <e376bcb9-cd79-7665-5859-ae808dd286f1@intel.com>
+Date:   Thu, 08 Jul 2021 08:05:16 +0200
+In-Reply-To: <e376bcb9-cd79-7665-5859-ae808dd286f1@intel.com> (Dave Hansen's
+        message of "Wed, 23 Jun 2021 08:32:09 -0700")
+Message-ID: <878s2hz6g3.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210707224310.1403944-1-ndesaulniers@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 03:43:08PM -0700, Nick Desaulniers wrote:
-> We get constant feedback that the command line invocation of make is too
-> long. CROSS_COMPILE is helpful when a toolchain has a prefix of the
-> target triple, or is an absolute path outside of $PATH, but it's mostly
-> redundant for a given ARCH.
-> 
-> Instead, let's infer it from ARCH, and move some flag handling into a
-> new file included from the top level Makefile.
+* Dave Hansen:
 
-Why only for LLVM?  I really hate the mess we currently have with
-ARCH and CROSS_COMPILE.  Being able to set both in .config (and maybe
-even inferring CROSS_COMPILE where possible) would make my life so
-much easier.
+> On 6/23/21 8:04 AM, Florian Weimer wrote:
+>> https://www.gnu.org/software/libc/manual/html_node/X86.html
+> ...
+>> Previously kernel developers have expressed dismay that we didn't
+>> coordinate the interface with them.  This is why I want raise this now.
+>
+> This looks basically like someone dumped a bunch of CPUID bit values and
+> exposed them to applications without considering whether applications
+> would ever need them.  For instance, why would an app ever care about:
+>
+> 	PKS =E2=80=93 Protection keys for supervisor-mode pages.
+>
+> And how could glibc ever give applications accurate information about
+> whether PKS "is supported by the operating system"?  It just plain
+> doesn't know, or at least only knows from a really weak ABI like
+> /proc/cpuinfo.
+
+glibc is expected to mask these bits for CPU_FEATURE_USABLE because they
+have unknown semantics (to glibc).
+
+They are still exposed via HAS_CPU_FEATURE.
+
+I argued against HAS_CPU_FEATURE because the mere presence of this
+interface will introduce application bugs because application really
+must use CPU_FEATURE_USABLE instead.
+
+I wanted to go with a curated set of bits, but we couldn't get consensus
+around that.  Curiously, the present interface can expose changing CPU
+state (if the kernel updates some fixed memory region accordingly), my
+preferred interface would not have supported that.
+
+> It also doesn't seem to tell applications what they want which is, "can
+> I, the application, *use* this feature?"
+
+CPU_FEATURE_USABLE is supposed to be that interface.
+
+Thanks,
+Florian
+
