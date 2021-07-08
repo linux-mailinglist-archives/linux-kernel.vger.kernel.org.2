@@ -2,93 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 115863BF924
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 13:38:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFDC43BF929
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 13:38:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231765AbhGHLko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 07:40:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38600 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231758AbhGHLkn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 07:40:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A70861436;
-        Thu,  8 Jul 2021 11:38:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625744281;
-        bh=XCxvllQ/KD+p9FxitaUkqrANLpqAIhFcRBSM/MmUgQg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qNgQlrQSej9qvj5IpDGyJO8hLbhjXbUbgpHpwZuGskaUzjJxXBFKweAz+o0jJhYRz
-         xySP/0gEhtrFch2B1hHjYhZvmTlWDZcACJK5tMxIF2GcrAREyLucYMimIHoH2vqsXS
-         dYbP06HMpzwnp7rwRnqmAwy2NiqRo0U9HDMfj5hhEAhjO7KWZiRQS1zKgNgRcDv1Up
-         s27x4h2QvUsq8y7grfyBcvXt6ywwN10xr3XnOD+2ycliNlidcy8cjolGnH+uuj5hG1
-         CB6uNb81PDi842af4bcWcIzQvp4X4t7VpqiDrbBqq08kOGbi2mfWTs+FwpXfQ/ZctO
-         2mFlTubY6K7WA==
-Date:   Thu, 8 Jul 2021 13:37:59 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] preempt: Allow CONFIG_DEBUG_PREEMPT for
- CONFIG_PREEMPT_VOLUNTARY
-Message-ID: <20210708113759.GB130061@lothringen>
-References: <20210707192306.2297497-1-valentin.schneider@arm.com>
+        id S231776AbhGHLl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 07:41:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231660AbhGHLl0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 07:41:26 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7A11C06175F
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 04:38:44 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id 14so5337864qkh.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 04:38:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pdT67ZAjjxOqbY6V2cjTYgIg9rCc8phajEZLUlLXgeg=;
+        b=rjNG93BPgj9AGSiSqrEBFuzyaSBTjTCuK3WnOo8zwYfI6rDja3Eh+Mhq+EX6MfPcro
+         /05SilWpB1W4XI9XGWMLeMC9JEg2Bh8QwSadSyZlRtaaDo7vKFZxmW/KLmuArZUzbl1J
+         4swV1pk3QIwZZDg+YYZarB1yyFMOExptk+kZlttoBvLgyinGj1h9yJKbowe0Ap0qS5+k
+         iuFyrecEG7JaV4nq/TQoGtj2+qzL9Pr8h95Q8gDee6uRST6hEnyQcgJadbGZiDJETDd3
+         svh3LGi+NKFIEr5DbZnizmH49PF40IGsian6KUOOnStKd6vzmFkIyCi4La97PmUao4N2
+         Yx9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pdT67ZAjjxOqbY6V2cjTYgIg9rCc8phajEZLUlLXgeg=;
+        b=rxhIUbB/HFLxaALsULObQARrNj28Yi9R5Yrd4dYN9e+ZcCc1wHoDwHRkw8eYrZK8A3
+         kcONKzMcNojJxuHjPfSncTaR3XRobs9pt9PV1NH8DPIJvGOqQUa21Rbaoquc99unIxET
+         ZpcY9ZcpAZrO/rQZCi4qtUftH4Pl/Oao57z9Q8k79ncvbR6xVMOGwPIgKUYLIvAp80DO
+         s0pQvtIs5wQsnhjIMd4ZOQPXpHjtOkAnmVa/9eloY4CHNlcdP5d3Gl9wLGzjv7jSpmBV
+         hOu9NqoSOPJXNDoJprVUWQVatjoMJpT6jmcw2OkFgSnnUsS1F1QQwNVL8UsTvqY/Dx19
+         XjoQ==
+X-Gm-Message-State: AOAM533emq7cRRsdW/IfKcnkquULW387+XW0FXeYbfvE896Jh/U0WS/o
+        J2zbNiY00Rnsw1/e6FBcr8sV+i+FtKNF2U9t57Mxkg==
+X-Google-Smtp-Source: ABdhPJzYWdG8T+IBKuhBvIPzgfm/PnzWBGXAmU22UIEFseDKn9jaTlFmZpw5V/xP7DM++zadOmnW6ApXNlK441So3jQ=
+X-Received: by 2002:a05:620a:651:: with SMTP id a17mr7019470qka.434.1625744323877;
+ Thu, 08 Jul 2021 04:38:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210707192306.2297497-1-valentin.schneider@arm.com>
+References: <20210708065619.999199-1-swboyd@chromium.org>
+In-Reply-To: <20210708065619.999199-1-swboyd@chromium.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Thu, 8 Jul 2021 14:38:33 +0300
+Message-ID: <CAA8EJppvcnQmJJ-TfMQTvdJwSN-F0A4nREShGHwMqOOAj=4X1w@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/dpu: Add newlines to printks
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 08:23:06PM +0100, Valentin Schneider wrote:
-> While recently staring at some preempt_count dumpster fire for a
-> CONFIG_PREEMPT_VOLUNTARY kernel, I wished I could turn on
-> CONFIG_DEBUG_PREEMPT on top of CONFIG_DEBUG_ATOMIC_SLEEP to see *where*
-> preemption had been disabled. It didn't take much to get that, and although
-> it didn't help my particular case, I think it can still be useful.
-> 
-> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+On Thu, 8 Jul 2021 at 09:56, Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> Add some missing newlines to the various DRM printks in this file.
+> Noticed while looking at logs. While we're here unbreak quoted
+> strings so grepping them is easier.
+>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
 > ---
->  kernel/sched/core.c | 3 +--
->  lib/Kconfig.debug   | 2 +-
->  2 files changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 0c22cd026440..5673b85fa22d 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -5109,8 +5109,7 @@ static inline void sched_tick_start(int cpu) { }
->  static inline void sched_tick_stop(int cpu) { }
->  #endif
->  
-> -#if defined(CONFIG_PREEMPTION) && (defined(CONFIG_DEBUG_PREEMPT) || \
-> -				defined(CONFIG_TRACE_PREEMPT_TOGGLE))
-> +#if defined(CONFIG_DEBUG_PREEMPT) || defined(CONFIG_TRACE_PREEMPT_TOGGLE)
->  /*
->   * If the value passed in is equal to the current preempt count
->   * then we just disabled preemption. Start timing the latency.
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 678c13967580..7fdd45eee343 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -1204,7 +1204,7 @@ config DEBUG_TIMEKEEPING
->  
->  config DEBUG_PREEMPT
->  	bool "Debug preemptible kernel"
-> -	depends on DEBUG_KERNEL && PREEMPTION && TRACE_IRQFLAGS_SUPPORT
-> +	depends on DEBUG_KERNEL && PREEMPT_COUNT && TRACE_IRQFLAGS_SUPPORT
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 12 +++++-------
+>  1 file changed, 5 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> index 1c04b7cce43e..0e9d3fa1544b 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> @@ -274,20 +274,20 @@ int dpu_encoder_helper_wait_for_irq(struct dpu_encoder_phys *phys_enc,
+>
+>         /* return EWOULDBLOCK since we know the wait isn't necessary */
+>         if (phys_enc->enable_state == DPU_ENC_DISABLED) {
+> -               DRM_ERROR("encoder is disabled id=%u, intr=%d, irq=%d",
+> +               DRM_ERROR("encoder is disabled id=%u, intr=%d, irq=%d\n",
+>                           DRMID(phys_enc->parent), intr_idx,
+>                           irq->irq_idx);
+>                 return -EWOULDBLOCK;
+>         }
+>
+>         if (irq->irq_idx < 0) {
+> -               DRM_DEBUG_KMS("skip irq wait id=%u, intr=%d, irq=%s",
+> +               DRM_DEBUG_KMS("skip irq wait id=%u, intr=%d, irq=%s\n",
+>                               DRMID(phys_enc->parent), intr_idx,
+>                               irq->name);
+>                 return 0;
+>         }
+>
+> -       DRM_DEBUG_KMS("id=%u, intr=%d, irq=%d, pp=%d, pending_cnt=%d",
+> +       DRM_DEBUG_KMS("id=%u, intr=%d, irq=%d, pp=%d, pending_cnt=%d\n",
+>                       DRMID(phys_enc->parent), intr_idx,
+>                       irq->irq_idx, phys_enc->hw_pp->idx - PINGPONG_0,
+>                       atomic_read(wait_info->atomic_cnt));
+> @@ -303,8 +303,7 @@ int dpu_encoder_helper_wait_for_irq(struct dpu_encoder_phys *phys_enc,
+>                 if (irq_status) {
+>                         unsigned long flags;
+>
+> -                       DRM_DEBUG_KMS("irq not triggered id=%u, intr=%d, "
+> -                                     "irq=%d, pp=%d, atomic_cnt=%d",
+> +                       DRM_DEBUG_KMS("irq not triggered id=%u, intr=%d, irq=%d, pp=%d, atomic_cnt=%d\n",
+>                                       DRMID(phys_enc->parent), intr_idx,
+>                                       irq->irq_idx,
+>                                       phys_enc->hw_pp->idx - PINGPONG_0,
+> @@ -315,8 +314,7 @@ int dpu_encoder_helper_wait_for_irq(struct dpu_encoder_phys *phys_enc,
+>                         ret = 0;
+>                 } else {
+>                         ret = -ETIMEDOUT;
+> -                       DRM_DEBUG_KMS("irq timeout id=%u, intr=%d, "
+> -                                     "irq=%d, pp=%d, atomic_cnt=%d",
+> +                       DRM_DEBUG_KMS("irq timeout id=%u, intr=%d, irq=%d, pp=%d, atomic_cnt=%d\n",
+>                                       DRMID(phys_enc->parent), intr_idx,
+>                                       irq->irq_idx,
+>                                       phys_enc->hw_pp->idx - PINGPONG_0,
+>
+> base-commit: e9f1cbc0c4114880090c7a578117d3b9cf184ad4
+> --
+> https://chromeos.dev
+>
 
-IIRC it used to be that way before. That was the reason for the split
-of CONFIG_PREEMPT_COUNT from CONFIG_PREEMPT in the first place. Not
-sure what happened. But anyway, your patch looks welcome.
 
-Thanks.
-
->  	default y
->  	help
->  	  If you say Y here then the kernel will use a debug variant of the
-> -- 
-> 2.25.1
-> 
+-- 
+With best wishes
+Dmitry
