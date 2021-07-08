@@ -2,139 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E05673C17F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 19:17:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4166F3C1800
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 19:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229606AbhGHRTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 13:19:46 -0400
-Received: from out28-75.mail.aliyun.com ([115.124.28.75]:37144 "EHLO
-        out28-75.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbhGHRTp (ORCPT
+        id S229670AbhGHRYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 13:24:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229566AbhGHRX5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 13:19:45 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07453699|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.153769-0.00185027-0.844381;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047199;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=16;RT=16;SR=0;TI=SMTPD_---.KeIlheY_1625764612;
-Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KeIlheY_1625764612)
-          by smtp.aliyun-inc.com(10.147.41.120);
-          Fri, 09 Jul 2021 01:16:59 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     tsbogend@alpha.franken.de, paulburton@kernel.org
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cand@gmx.com, git@xen0n.name, chenhuacai@kernel.org,
-        maoxiaochuan@loongson.cn, f.fainelli@gmail.com,
-        paul@crapouillou.net, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
-        sernia.zhou@foxmail.com
-Subject: [PATCH] MIPS: Ingenic: Add system type for new Ingenic SoCs.
-Date:   Fri,  9 Jul 2021 01:16:42 +0800
-Message-Id: <1625764602-67310-1-git-send-email-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.7.4
+        Thu, 8 Jul 2021 13:23:57 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1D8CC06175F
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 10:21:14 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id t9so6799183pgn.4
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 10:21:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QCo14xV8rAUzfCQotnJU7VU371YftBdUOIgGhDFsTfQ=;
+        b=uKrPkQ7z//kRJCEDNzlJq3jk9963Z+56kAkAGNixVeitn98yJqkQMIhBYO1kGOdsDG
+         ChwAe9JIO+Y+NVLtWJVhoW37GHQ5l6q7n9Hs15/uIcr0+YY1NhV3cU7rgWfuhjUTHLDP
+         F3kPdaqUAsErGeyoU4v1lN/j9va7VuIJ44dMfTd+0mnRTjHW4xzPYoWJwUMgGkF0JOje
+         yORTgZVVMPOSQeFNwMbzTh7Lu303zxcjjeBLIZLrQBzzlZ/WjxLtyKdSusYE9v+IZDfE
+         KxEkj8zPLAJPsvrgrpuUwkSAwQa4v0VHjEq84bmaS4mtyQypu42ylkQklHjyK5Tu1ZyD
+         nQmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QCo14xV8rAUzfCQotnJU7VU371YftBdUOIgGhDFsTfQ=;
+        b=LVatYOjrGrUKg43fakp5YxH3SqToIBfBP8ytqF+eMrVDDQxr4i8EnWxMfa6i5rxT8d
+         gEeWO5owKN0xQIZ524kY8PFETKPfHFs2GdRaCWxtPrDZMO8YAh0Mlv8Rz8V4hrmdGZJb
+         GMfdO/+tQlaDPHHsfE0w3GLO2evTlwz0iB9GTc+6owj0NherzzVThOK132tH/CZa8sOa
+         4IxgTH9SNH6GyMSBpZTqXvrb5ro3E73onzDDdqgXWkx5Qn3zwPEyAXJpD97J8S3qZkhW
+         lRaM6leJJHS/BBIUiE6p1rbtpK0cVa9dKaDooGw5Nkml0iLLDZ9z+GLvHuAXj9Qa/GSy
+         QsAw==
+X-Gm-Message-State: AOAM533FSvvBVAum02z+rV9Wnyr+ipvyKhlSvI71q9n5LVb69CEKUxQe
+        9MLzovNryh2E1v3KQIHa7+DoNA==
+X-Google-Smtp-Source: ABdhPJxw9Zesv74cgLZNu9iz4EI0aH/v4a9liAq8BZawNc4Jve8bQGGcctC73X4IMo9Il18j/byJCQ==
+X-Received: by 2002:a05:6a00:b41:b029:324:2cb7:ed97 with SMTP id p1-20020a056a000b41b02903242cb7ed97mr13631893pfo.53.1625764873255;
+        Thu, 08 Jul 2021 10:21:13 -0700 (PDT)
+Received: from google.com (150.12.83.34.bc.googleusercontent.com. [34.83.12.150])
+        by smtp.gmail.com with ESMTPSA id h14sm3833299pgv.47.2021.07.08.10.21.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jul 2021 10:21:12 -0700 (PDT)
+Date:   Thu, 8 Jul 2021 10:21:09 -0700
+From:   Ricardo Koller <ricarkol@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 0/5] KVM: x86: Use kernel x86 cpuid utilities in KVM
+ selftests
+Message-ID: <YOc0BUrL6VMw78nF@google.com>
+References: <20210422005626.564163-1-ricarkol@google.com>
+ <c4524e4a-55c7-66f9-25d6-d397f11d25a8@redhat.com>
+ <YIm7iWxggvoN9riz@google.com>
+ <CALMp9eSfpdWF0OROsOqxohxMoFrrY=Gt7FYfB1_31D7no4JYLw@mail.gmail.com>
+ <16823e91-5caf-f52e-e0dc-28ebb9a87b47@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <16823e91-5caf-f52e-e0dc-28ebb9a87b47@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add JZ4730, JZ4760, JZ4760B, X2000H, and X2100 system type for
-cat /proc/cpuinfo to give out JZ4730, JZ4760, JZ4760B, X2000H,
-and X2100.
+On Thu, Jul 08, 2021 at 06:50:41PM +0200, Paolo Bonzini wrote:
+> On 29/06/21 19:28, Jim Mattson wrote:
+> > > Thanks. I was thinking about kvm-unit-tests, but the issue is that it
+> > > would also be a copy. And just like with kernel headers, it would be
+> > > ideal to keep them in-sync. The advantage of the kernel headers is that
+> > > it's much easier to check and fix diffs with them. On the other hand, as
+> > > you say, there would not be any #ifdef stuff with kvm=unit-tests. Please
+> > > let me know what you think.
+> > 
+> > I think the kvm-unit-tests implementation is superior to the kernel
+> > implementation, but that's probably because I suggested it. Still, I
+> > think there's an argument to be made that selftests, unlike
+> > kvm-unit-tests, are part of the kernel distribution and should be
+> > consistent with the kernel where possible.
+> > 
+> > Paolo?
+> 
+> I also prefer the kvm-unit-tests implementation, for what it's worth...
+> Let's see what the code looks like?
 
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
----
- arch/mips/generic/board-ingenic.c | 15 +++++++++++++++
- arch/mips/include/asm/bootinfo.h  |  3 +++
- arch/mips/include/asm/cpu.h       |  4 ++--
- 3 files changed, 20 insertions(+), 2 deletions(-)
+I'm not sure I understand the question. You mean: let's see how this
+looks using kvm-unit-tests headers? If that's the case I can work on a
+v3 using kvm-unit-tests.
 
-diff --git a/arch/mips/generic/board-ingenic.c b/arch/mips/generic/board-ingenic.c
-index 0cec0be..303bee6 100644
---- a/arch/mips/generic/board-ingenic.c
-+++ b/arch/mips/generic/board-ingenic.c
-@@ -21,6 +21,10 @@
- static __init char *ingenic_get_system_type(unsigned long machtype)
- {
- 	switch (machtype) {
-+	case MACH_INGENIC_X2100:
-+		return "X2100";
-+	case MACH_INGENIC_X2000H:
-+		return "X2000H";
- 	case MACH_INGENIC_X2000E:
- 		return "X2000E";
- 	case MACH_INGENIC_X2000:
-@@ -37,8 +41,14 @@ static __init char *ingenic_get_system_type(unsigned long machtype)
- 		return "JZ4775";
- 	case MACH_INGENIC_JZ4770:
- 		return "JZ4770";
-+	case MACH_INGENIC_JZ4760B:
-+		return "JZ4760B";
-+	case MACH_INGENIC_JZ4760:
-+		return "JZ4760";
- 	case MACH_INGENIC_JZ4725B:
- 		return "JZ4725B";
-+	case MACH_INGENIC_JZ4730:
-+		return "JZ4730";
- 	default:
- 		return "JZ4740";
- 	}
-@@ -61,8 +71,11 @@ static __init const void *ingenic_fixup_fdt(const void *fdt, const void *match_d
- }
- 
- static const struct of_device_id ingenic_of_match[] __initconst = {
-+	{ .compatible = "ingenic,jz4730", .data = (void *)MACH_INGENIC_JZ4730 },
- 	{ .compatible = "ingenic,jz4740", .data = (void *)MACH_INGENIC_JZ4740 },
- 	{ .compatible = "ingenic,jz4725b", .data = (void *)MACH_INGENIC_JZ4725B },
-+	{ .compatible = "ingenic,jz4760", .data = (void *)MACH_INGENIC_JZ4760 },
-+	{ .compatible = "ingenic,jz4760b", .data = (void *)MACH_INGENIC_JZ4760B },
- 	{ .compatible = "ingenic,jz4770", .data = (void *)MACH_INGENIC_JZ4770 },
- 	{ .compatible = "ingenic,jz4775", .data = (void *)MACH_INGENIC_JZ4775 },
- 	{ .compatible = "ingenic,jz4780", .data = (void *)MACH_INGENIC_JZ4780 },
-@@ -71,6 +84,8 @@ static const struct of_device_id ingenic_of_match[] __initconst = {
- 	{ .compatible = "ingenic,x1830", .data = (void *)MACH_INGENIC_X1830 },
- 	{ .compatible = "ingenic,x2000", .data = (void *)MACH_INGENIC_X2000 },
- 	{ .compatible = "ingenic,x2000e", .data = (void *)MACH_INGENIC_X2000E },
-+	{ .compatible = "ingenic,x2000h", .data = (void *)MACH_INGENIC_X2000H },
-+	{ .compatible = "ingenic,x2100", .data = (void *)MACH_INGENIC_X2100 },
- 	{}
- };
- 
-diff --git a/arch/mips/include/asm/bootinfo.h b/arch/mips/include/asm/bootinfo.h
-index 4c2e817..2128ba9 100644
---- a/arch/mips/include/asm/bootinfo.h
-+++ b/arch/mips/include/asm/bootinfo.h
-@@ -75,6 +75,7 @@ enum ingenic_machine_type {
- 	MACH_INGENIC_JZ4750,
- 	MACH_INGENIC_JZ4755,
- 	MACH_INGENIC_JZ4760,
-+	MACH_INGENIC_JZ4760B,
- 	MACH_INGENIC_JZ4770,
- 	MACH_INGENIC_JZ4775,
- 	MACH_INGENIC_JZ4780,
-@@ -83,6 +84,8 @@ enum ingenic_machine_type {
- 	MACH_INGENIC_X1830,
- 	MACH_INGENIC_X2000,
- 	MACH_INGENIC_X2000E,
-+	MACH_INGENIC_X2000H,
-+	MACH_INGENIC_X2100,
- };
- 
- extern char *system_type;
-diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
-index 9e6211e..c70cac7 100644
---- a/arch/mips/include/asm/cpu.h
-+++ b/arch/mips/include/asm/cpu.h
-@@ -46,8 +46,8 @@
- #define PRID_COMP_NETLOGIC	0x0c0000
- #define PRID_COMP_CAVIUM	0x0d0000
- #define PRID_COMP_LOONGSON	0x140000
--#define PRID_COMP_INGENIC_13	0x130000	/* X2000 */
--#define PRID_COMP_INGENIC_D0	0xd00000	/* JZ4740, JZ4750, X1830 */
-+#define PRID_COMP_INGENIC_13	0x130000	/* X2000, X2100 */
-+#define PRID_COMP_INGENIC_D0	0xd00000	/* JZ4730, JZ4740, JZ4750, JZ4760, X1830 */
- #define PRID_COMP_INGENIC_D1	0xd10000	/* JZ4770, JZ4775, X1000 */
- #define PRID_COMP_INGENIC_E1	0xe10000	/* JZ4780 */
- 
--- 
-2.7.4
+Thanks,
+Ricardo
 
+> 
+> Paolo
+> 
