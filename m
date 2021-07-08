@@ -2,183 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6146D3BFA3F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 14:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8044B3BFA42
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 14:31:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231126AbhGHMdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 08:33:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbhGHMdf (ORCPT
+        id S231433AbhGHMeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 08:34:09 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:43968 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229659AbhGHMeH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 08:33:35 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10D5CC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 05:30:54 -0700 (PDT)
-Received: from [IPv6:2a02:810a:880:f54:e8eb:1d02:4dd8:a76b] (unknown [IPv6:2a02:810a:880:f54:e8eb:1d02:4dd8:a76b])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dafna)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id AAF981F43B8D;
-        Thu,  8 Jul 2021 13:30:50 +0100 (BST)
-Subject: Re: Aw: Re: BUG: MTK DRM/HDMI broken on 5.13 (mt7623/bpi-r2)
-To:     Frank Wunderlich <frank-w@public-files.de>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        linux-mediatek@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Collabora Kernel ML <kernel@collabora.com>
-References: <trinity-cc8f5927-9aaf-43ae-a107-6a6229f1b481-1625565279264@3c-app-gmx-bs60>
- <25d61873-38ae-5648-faab-03431b74f777@collabora.com>
- <trinity-e6443313-a436-4e9d-a93c-1bef1cce135d-1625736911475@3c-app-gmx-bap19>
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Message-ID: <df431199-0c65-fb9a-02b4-9f84899f37ee@collabora.com>
-Date:   Thu, 8 Jul 2021 14:30:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 8 Jul 2021 08:34:07 -0400
+Received: by mail-ot1-f44.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso5632589otu.10;
+        Thu, 08 Jul 2021 05:31:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8NbbxqFq1+bnPl6bXmT9IRtDnEnfSxRPSocv3xOtk8g=;
+        b=imrznStF9Q20u6HrXZal+4a1Do0dxHQOFgZW8qcnz0PvkyPWAXUcWoIZzqpQUiyA5b
+         jDt1qC/BLGd/tA8+e8zf+2oCx1q5wuLvxDwqTHYZsRzUFgCXlnywlumTHsGf/rhfNtYa
+         lnyo/ShEmU+VSOE/TDRP5MxgsWmXDOlbiCDBQsIZJ5qQfNC109IY6T0eJuf6LvViH/N/
+         2jugfgUW0rIFYy8kqigrEDqt++3c19yJbbH3S+RR/UemJJb+P2x/UKn/i7MIwtoRrGj2
+         0dQx6ZVm1CgG/LAUu7QyHSq63zO3JxwvfCWUhVYihQExI2R87bAeetcUSZwStKt64o+V
+         vmiw==
+X-Gm-Message-State: AOAM531FUyX1k2tkNjkYyoSrHdlmxrgxJiPScYoxRDE7Pr3uAS3ZmUbk
+        AR69W67JriTo1JRmz19SbVsF75okzs/mdq44qA8=
+X-Google-Smtp-Source: ABdhPJyj3pCWjeWLPgnpvDjaFKZ/Rjv0erHMWtpAneJA8jAWQrRGqbYu0Sk/GL8IqTWy0lp3Mu/oOKuo5z6v7jI/WxU=
+X-Received: by 2002:a9d:604e:: with SMTP id v14mr23489241otj.260.1625747484877;
+ Thu, 08 Jul 2021 05:31:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <trinity-e6443313-a436-4e9d-a93c-1bef1cce135d-1625736911475@3c-app-gmx-bap19>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210707172948.1025-1-adrian.hunter@intel.com>
+ <20210707172948.1025-3-adrian.hunter@intel.com> <YOXm4FuL/CW4lYDZ@kroah.com> <66130101-b0c5-a9a3-318a-468c6f3b380f@intel.com>
+In-Reply-To: <66130101-b0c5-a9a3-318a-468c6f3b380f@intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 8 Jul 2021 14:31:13 +0200
+Message-ID: <CAJZ5v0hfEE=ney1tH5MtQm0KWs4U2yzy_DqAAW7hTyxxx2-cNg@mail.gmail.com>
+Subject: Re: [PATCH RFC 2/2] scsi: ufshcd: Fix device links when BOOT WLUN
+ fails to probe
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "open list:TARGET SUBSYSTEM" <linux-scsi@vger.kernel.org>,
+        Avri Altman <avri.altman@wdc.com>,
+        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Wed, Jul 7, 2021 at 7:49 PM Adrian Hunter <adrian.hunter@intel.com> wrote:
+>
+> On 7/07/21 8:39 pm, Greg Kroah-Hartman wrote:
+> > On Wed, Jul 07, 2021 at 08:29:48PM +0300, Adrian Hunter wrote:
+> >> If a LUN fails to probe (e.g. absent BOOT WLUN), the device will not have
+> >> been registered but can still have a device link holding a reference to the
+> >> device. The unwanted device link will prevent runtime suspend indefinitely,
+> >> and cause some warnings if the supplier is ever deleted (e.g. by unbinding
+> >> the UFS host controller). Fix by explicitly deleting the device link when
+> >> SCSI destroys the SCSI device.
+> >>
+> >> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+> >> ---
+> >>  drivers/scsi/ufs/ufshcd.c | 7 +++++++
+> >>  1 file changed, 7 insertions(+)
+> >>
+> >> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> >> index 708b3b62fc4d..483aa74fe2c8 100644
+> >> --- a/drivers/scsi/ufs/ufshcd.c
+> >> +++ b/drivers/scsi/ufs/ufshcd.c
+> >> @@ -5029,6 +5029,13 @@ static void ufshcd_slave_destroy(struct scsi_device *sdev)
+> >>              spin_lock_irqsave(hba->host->host_lock, flags);
+> >>              hba->sdev_ufs_device = NULL;
+> >>              spin_unlock_irqrestore(hba->host->host_lock, flags);
+> >> +    } else {
+> >> +            /*
+> >> +             * If a LUN fails to probe (e.g. absent BOOT WLUN), the device
+> >> +             * will not have been registered but can still have a device
+> >> +             * link holding a reference to the device.
+> >> +             */
+> >> +            device_links_scrap(&sdev->sdev_gendev);
+> >
+> > What created that link?  And why did it do that before probe happened
+> > successfully?
+>
+> The same driver created the link.
+>
+> The documentation seems to say it is allowed to, if it is the consumer.
+> From Documentation/driver-api/device_link.rst
+>
+>   Usage
+>   =====
+>
+>   The earliest point in time when device links can be added is after
+>   :c:func:`device_add()` has been called for the supplier and
+>   :c:func:`device_initialize()` has been called for the consumer.
 
-On 08.07.21 11:35, Frank Wunderlich wrote:
-> Hi
-> 
-> just a small update, added debug in the vendor-specific functions for page_flip and vblank and it seems they never get called
-> 
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> @@ -87,21 +87,25 @@ static void mtk_drm_crtc_finish_page_flip(struct mtk_drm_crtc *mtk_crtc)
->   {
->          struct drm_crtc *crtc = &mtk_crtc->base;
->          unsigned long flags;
-> -
-> +printk(KERN_ALERT "DEBUG: Passed %s %d \n",__FUNCTION__,__LINE__);
->          spin_lock_irqsave(&crtc->dev->event_lock, flags);
->          drm_crtc_send_vblank_event(crtc, mtk_crtc->event);
->          drm_crtc_vblank_put(crtc);
->          mtk_crtc->event = NULL;
->          spin_unlock_irqrestore(&crtc->dev->event_lock, flags);
-> +printk(KERN_ALERT "DEBUG: Passed %s %d \n",__FUNCTION__,__LINE__);
->   }
-> 
->   static void mtk_drm_finish_page_flip(struct mtk_drm_crtc *mtk_crtc)
->   {
-> +printk(KERN_ALERT "DEBUG: Passed %s %d update:%d,needsvblank:%d\n",__FUNCTION__,__LINE__,mtk_crtc->config_updating,mtk_crtc->pending_needs_vblank);
->          drm_crtc_handle_vblank(&mtk_crtc->base);
->          if (!mtk_crtc->config_updating && mtk_crtc->pending_needs_vblank) {
-> +printk(KERN_ALERT "DEBUG: Passed %s %d \n",__FUNCTION__,__LINE__);
->                  mtk_drm_crtc_finish_page_flip(mtk_crtc);
->                  mtk_crtc->pending_needs_vblank = false;
->          }
-> +printk(KERN_ALERT "DEBUG: Passed %s %d \n",__FUNCTION__,__LINE__);
->   }
-> 
->   static void mtk_drm_crtc_destroy(struct drm_crtc *crtc)
-> 
-> finish_page_flip is called by mtk_crtc_ddp_irq. this seems to be set in mtk_drm_crtc_enable_vblank with mtk_ddp_comp_enable_vblank. this is called correctly
-> 
-> 113 static inline void mtk_ddp_comp_enable_vblank(struct mtk_ddp_comp *comp,
-> 114                           void (*vblank_cb)(void *),
-> 115                           void *vblank_cb_data)
-> 116 {
-> 117 printk(KERN_ALERT "DEBUG: Passed %s %d \n",__FUNCTION__,__LINE__);
-> 118     if (comp->funcs && comp->funcs->enable_vblank)
-> 119     {
-> 120         comp->funcs->enable_vblank(comp->dev, vblank_cb, vblank_cb_data);
-> 121 printk(KERN_ALERT "DEBUG: Passed %s %d \n",__FUNCTION__,__LINE__);
-> 122     }
-> 123 }
-> 
-> i see both messages, but mtk_crtc_ddp_irq is never called and so the other 2 not.
+Yes, this is allowed, but if you've added device links to a device
+object that is not going to be registered after all, you are
+responsible for doing the cleanup.
 
-Yes, In my case the irq isr is also not called after resume which cause the warning
-even though "enable_vblank" do get called. Don't know why is that.
+Why can't you call device_link_del() directly on those links?
 
-> 
-> root@bpi-r2:~# dmesg | grep -i DEBUG
-> [    6.433509] DEBUG: Passed mtk_drm_crtc_enable_vblank 510
-> [    6.433530] DEBUG: Passed mtk_ddp_comp_enable_vblank 117
-> [    6.433537] DEBUG: Passed mtk_ddp_comp_enable_vblank 121 <<<
-> 
-> 
-> comp->funcs->enable_vblank should be mtk_drm_crtc_enable_vblank, right?
-
-No, this is a bit confusing , there are also the funcs of the components, see in file mtk_drm_ddp_comp.c
-so for mt7623  it is mtk_ovl_enable_vblank.
-
-Thanks,
-Dafna
-
-> 
-> 641 static const struct drm_crtc_funcs mtk_crtc_funcs = {
-> 642     .set_config     = drm_atomic_helper_set_config,
-> 643     .page_flip      = drm_atomic_helper_page_flip,
-> 644     .destroy        = mtk_drm_crtc_destroy,
-> 645     .reset          = mtk_drm_crtc_reset,
-> 646     .atomic_duplicate_state = mtk_drm_crtc_duplicate_state,
-> 647     .atomic_destroy_state   = mtk_drm_crtc_destroy_state,
-> 648     .enable_vblank      = mtk_drm_crtc_enable_vblank, <<<<<<<
-> 649     .disable_vblank     = mtk_drm_crtc_disable_vblank,
-> 650 };
-> 
-> but it looks like a recursion:
-> mtk_drm_crtc_enable_vblank calls mtk_ddp_comp_enable_vblank => enable_vblank (=mtk_drm_crtc_enable_vblank), but i see the messages not repeating
-> 
-> mtk_drm_crtc_enable_vblank(struct drm_crtc *crtc)
-> 511     mtk_ddp_comp_enable_vblank(comp, mtk_crtc_ddp_irq, &mtk_crtc->base);
-> 
-> 113 static inline void mtk_ddp_comp_enable_vblank(struct mtk_ddp_comp *comp,
-> 114                           void (*vblank_cb)(void *),
-> 115                           void *vblank_cb_data)
-> 116 {
-> 118     if (comp->funcs && comp->funcs->enable_vblank)
-> 120         comp->funcs->enable_vblank(comp->dev, vblank_cb, vblank_cb_data);
-> 
-> but params do not match...comp->funcs->enable_vblank takes 3 arguments but comp->funcs->enable_vblank has only one.something i miss here...
-> 
-> i guess not, but is watchdog somehow involved? i ask because i see this on reboot/poweroff:
-> 
-> "watchdog: watchdog0: watchdog did not stop!"
-> 
-> i see this with my 5.13, 5.12-drm (5.12.0+mtk/core drm-patches) and 5.12.14 too (hdmi is working there), but not 5.12.0!
-> that means something in drm-patches (mtk/core) breaks watchdog. maybe the recursion mentioned above?
-> 
-> regards Frank
-> 
-> 
->> Gesendet: Donnerstag, 08. Juli 2021 um 09:22 Uhr
->> Von: "Dafna Hirschfeld" <dafna.hirschfeld@collabora.com>
-> 
->>
->> Hi Frank,
->>
->>
->> On 06.07.21 11:54, Frank Wunderlich wrote:
->>> Hi,
->>>
->>> i've noticed that HDMI is broken at least on my board (Bananapi-r2,mt7623) on 5.13.
->>>
->>> after some research i noticed that it is working till
->>>
->>> commit 2e477391522354e763aa62ee3e281c1ad9e8eb1b
->>> Author: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-> 
->>
->> We also encountered that warning on mt8173 device - Acer Chromebook R13. It happen after resuming from suspend to ram.
->> We could not find a version that works and we were not able to find the fix of the bug.
->> It seems like the irq isr is not called after resuming from suspend.
->> Please share if you have new findings regarding that bug.
->>
->> Thanks,
->> Dafna
-> 
+Or device_link_remove() if you don't want to deal with link pointers?
