@@ -2,97 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 688763BF435
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 05:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0022E3BF438
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 05:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230396AbhGHDMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 23:12:02 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:51178 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230244AbhGHDMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 23:12:02 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1m1KPd-00060d-FZ; Thu, 08 Jul 2021 11:09:17 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1m1KPZ-0008Mp-Mj; Thu, 08 Jul 2021 11:09:13 +0800
-Date:   Thu, 8 Jul 2021 11:09:13 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: [GIT PULL] Crypto Fixes for 5.14
-Message-ID: <20210708030913.GA32097@gondor.apana.org.au>
-References: <20200803044024.GA6429@gondor.apana.org.au>
- <20200830223304.GA16882@gondor.apana.org.au>
- <20201026011159.GA2428@gondor.apana.org.au>
- <20201227113221.GA28744@gondor.apana.org.au>
- <20210108035450.GA6191@gondor.apana.org.au>
+        id S230433AbhGHDMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 23:12:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230244AbhGHDMa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 23:12:30 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4EDDC061574;
+        Wed,  7 Jul 2021 20:09:48 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id p21so10436286lfj.13;
+        Wed, 07 Jul 2021 20:09:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zOuVEKmSTO8HNKXM2OyBQMBqTxDYg4hfRl7sR8OpN38=;
+        b=DDMazZBAtPE2hBBF9mKL/ywFhnPN/012PNsBxLBxKjZXzUwQeXj3gWreF1Ia8IxEj8
+         CvZY2z+3Uw5dVh42M5Ra9t9MV+DbZmWOl3VD7mdrxEMqnOgvl9ydjpSF0PoKrawk8Ovo
+         MkzCOTkSt3xQnx6RtA2+WPWoNV0LLghCr6lZqM0nGndUtzBkem/SRFfwbf4st7xLMp+l
+         dOdUnjYPJn2UOckbc89ryN6Uc/0lhaXDTAZklRpfNXyci2JoYUv6Ln4Q6wF8YanroDqy
+         hWD590w0+EhNHOAQWbsoookxP9dbEo0DXnthjaifpd3wqP1vVLTduxFTPyQww2nFal/I
+         3Y6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zOuVEKmSTO8HNKXM2OyBQMBqTxDYg4hfRl7sR8OpN38=;
+        b=teH+AU3m77yLZS0Q1G9PUrzMsxSNLV0SYWkPUDeKRE0wvw0MNXzaTxXQZGPVGCKEjB
+         7ohA8EVVBuczJpsuQ/4q9GXJ2Clo0vbeUeQAYwAOqghWzMRDpsCGRRRM7q03bGeoX0Wo
+         Nd5BHXay8r5kZCmwm7kEeFesXmiL3FNDPpbo7wiTJzad9hycTXoH8OQ9E6wYPIzBX+7U
+         r6qSadtPbivNITi3VyIo7acLBbSt7q6BmhxUJp/s0XCo2XGJZbZEvjQfKvplO8rwOj/0
+         TmGFg0XL9U0+2vmvewpDfDs2dBUehW5K59YXylQNZYRsOnbDGbysbGvZu/3EsrASy+Jr
+         KQrA==
+X-Gm-Message-State: AOAM532VPa6GKPn/J6jafPTDRvgussjOFAgTfdpta9HMSJ6NrVyLim1K
+        TCNvSQJ0plfgEbMzneG9CEUf0yCYmg6ahSEZBPU=
+X-Google-Smtp-Source: ABdhPJwKZdq15qpbv7h2OOlVXAf5ZGqkMjxXVrItgJi8vE0+oyYi7iePM1Uho4dCgqiu0sSqJod2tpDgv91ZtSU2dh0=
+X-Received: by 2002:a05:6512:3f1a:: with SMTP id y26mr22261665lfa.540.1625713787314;
+ Wed, 07 Jul 2021 20:09:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210108035450.GA6191@gondor.apana.org.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210707043811.5349-1-hefengqing@huawei.com> <20210707043811.5349-4-hefengqing@huawei.com>
+ <CAPhsuW7ssFzvS5-kdZa3tY-2EJk8QUdVpQCJYVBr+vD11JzrsQ@mail.gmail.com> <1c5b393d-6848-3d10-30cf-7063a331f76c@huawei.com>
+In-Reply-To: <1c5b393d-6848-3d10-30cf-7063a331f76c@huawei.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 7 Jul 2021 20:09:36 -0700
+Message-ID: <CAADnVQJ0Q0dLVs5UM-CyJe90N+KHomccAy-S_LOOARa9nXkXsA@mail.gmail.com>
+Subject: Re: [bpf-next 3/3] bpf: Fix a use after free in bpf_check()
+To:     He Fengqing <hefengqing@huawei.com>
+Cc:     Song Liu <song@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus:
+On Wed, Jul 7, 2021 at 8:00 PM He Fengqing <hefengqing@huawei.com> wrote:
+>
+> Ok, I will change this in next version.
 
-This push contains the following fixes and changes:
-
-- Regression in drbg due to missing self-test for new default algorithm.
-- Add ratelimit on user-triggerable message in qat.
-- Build failure due to missing dependency in sl3516.
-- Remove obsolete PageSlab checks.
-- Bogus hardware register writes on Kunpeng920 in hisilicon/sec.
-
-The following changes since commit 9f38b678ffc4e2ccf167a1131c0403dc4f5e1bb7:
-
-  crypto: sl3516 - depends on HAS_IOMEM (2021-06-24 14:57:28 +0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
-
-for you to fetch changes up to 66192b2e3fd8ab97ed518d6c0240e26655a20b4b:
-
-  crypto: hisilicon/sec - fix the process of disabling sva prefetching (2021-06-28 11:28:09 +0800)
-
-----------------------------------------------------------------
-Colin Ian King (1):
-      crypto: qat - ratelimit invalid ioctl message and print the invalid cmd
-
-Geert Uytterhoeven (2):
-      crypto: sl3516 - Typo s/Stormlink/Storlink/
-      crypto: sl3516 - Add dependency on ARCH_GEMINI
-
-Herbert Xu (2):
-      crypto: scatterwalk - Remove obsolete PageSlab check
-      crypto: omap - Drop obsolete PageSlab check
-
-Kai Ye (1):
-      crypto: hisilicon/sec - fix the process of disabling sva prefetching
-
-Stephan Müller (1):
-      crypto: drbg - self test for HMAC(SHA-512)
-
- crypto/testmgr.c                            |  5 ++-
- crypto/testmgr.h                            | 49 +++++++++++++++++++++++++++++
- drivers/crypto/Kconfig                      |  6 ++--
- drivers/crypto/gemini/sl3516-ce-cipher.c    |  2 +-
- drivers/crypto/gemini/sl3516-ce-core.c      |  2 +-
- drivers/crypto/hisilicon/sec2/sec_main.c    |  3 ++
- drivers/crypto/omap-crypto.c                |  3 +-
- drivers/crypto/qat/qat_common/adf_ctl_drv.c |  2 +-
- include/crypto/scatterwalk.h                |  7 +----
- 9 files changed, 64 insertions(+), 15 deletions(-)
-
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+before you spam the list with the next version
+please explain why any of these changes are needed?
+I don't see an explanation in the patches and I don't see a bug in the code.
+Did you check what is the prog clone ?
+When is it constructed? Why verifier has anything to do with it?
