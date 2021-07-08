@@ -2,122 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3CAA3C1547
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 16:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9750A3C1548
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 16:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231965AbhGHOje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 10:39:34 -0400
-Received: from mga06.intel.com ([134.134.136.31]:44691 "EHLO mga06.intel.com"
+        id S231951AbhGHOkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 10:40:24 -0400
+Received: from mga12.intel.com ([192.55.52.136]:19419 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231872AbhGHOj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 10:39:27 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10038"; a="270628632"
+        id S231858AbhGHOkX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 10:40:23 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10038"; a="189195795"
 X-IronPort-AV: E=Sophos;i="5.84,224,1620716400"; 
-   d="scan'208";a="270628632"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 07:36:45 -0700
+   d="scan'208";a="189195795"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 07:37:23 -0700
 X-IronPort-AV: E=Sophos;i="5.84,224,1620716400"; 
-   d="scan'208";a="645929650"
-Received: from kezheong-mobl.gar.corp.intel.com (HELO [10.212.152.178]) ([10.212.152.178])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 07:36:44 -0700
-Subject: Re: x86 CPU features detection for applications (and AMX)
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     libc-alpha@sourceware.org, linux-api@vger.kernel.org,
-        x86@kernel.org, linux-arch@vger.kernel.org,
-        "H.J. Lu" <hjl.tools@gmail.com>, linux-kernel@vger.kernel.org
-References: <87tulo39ms.fsf@oldenburg.str.redhat.com>
- <e376bcb9-cd79-7665-5859-ae808dd286f1@intel.com>
- <878s2hz6g3.fsf@oldenburg.str.redhat.com>
- <b3b104cd-72d9-7f5c-116b-414c6ebf448d@intel.com>
- <87sg0oswqn.fsf@oldenburg.str.redhat.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <ba004c50-a630-27f4-5fb0-c6ad2b1f1e06@intel.com>
-Date:   Thu, 8 Jul 2021 07:36:44 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+   d="scan'208";a="487629085"
+Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 07:37:23 -0700
+Date:   Thu, 8 Jul 2021 07:36:57 -0700
+From:   "Raj, Ashok" <ashok.raj@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "Dey, Megha" <megha.dey@intel.com>, linux-kernel@vger.kernel.org,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "Van De Ven, Arjan" <arjan.van.de.ven@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>
+Subject: Re: Programming PASID in IMS entries
+Message-ID: <20210708143657.GA70042@otc-nc-03>
+References: <bd509e3d-f59d-1200-44ce-93cf9132bd8c@intel.com>
+ <87k0m2qzgz.ffs@nanos.tec.linutronix.de>
+ <20210707221216.GA56594@otc-nc-03>
+ <20210707235822.GB4459@nvidia.com>
+ <20210708003335.GC56594@otc-nc-03>
+ <20210708120846.GD4459@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <87sg0oswqn.fsf@oldenburg.str.redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210708120846.GD4459@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/8/21 7:31 AM, Florian Weimer wrote:
->> OK, so if I call CPU_FEATURE_USABLE(PKS) on a system *WITH* PKS
->> supported in the operating system, I'll get false from an interface that
->> claims to be:
->>
->>> This macro returns a nonzero value (true) if the processor has the
->>> feature name and the feature is supported by the operating system.
->> The interface just seems buggy by *design*.
-> Yes, but that is largely a documentation matter.  We should have said
-> something about “userspace” there, and that the bit needs to be known to
-> glibc.  There is another exception: FSGSBASE, and that's a real bug we
-> need to fix (it has to go through AT_HWCAP2).
+Hi Jason
+
+On Thu, Jul 08, 2021 at 09:08:46AM -0300, Jason Gunthorpe wrote:
+> On Wed, Jul 07, 2021 at 05:33:35PM -0700, Raj, Ashok wrote:
+> > On Wed, Jul 07, 2021 at 08:58:22PM -0300, Jason Gunthorpe wrote:
+> > > On Wed, Jul 07, 2021 at 03:12:16PM -0700, Raj, Ashok wrote:
+> > > > Hi Thomas
+> > > > 
+> > > > On Wed, Jul 07, 2021 at 10:50:52AM +0200, Thomas Gleixner wrote:
+> > > > > Megha,
+> > > > > 
+> > > > > On Wed, Jul 07 2021 at 09:49, Megha Dey wrote:
+> > > > > > Per your suggestions during the last meeting, we wanted to confirm the 
+> > > > > > sequence to program the PASID into the IMS entries:
+> > > > > >
+> > > > > > 1. Add a PASID member to struct msi_desc (Add as part of a union. Other 
+> > > > > > source-id's such as Jason's vm-id can be added to it)
+> > > > > 
+> > > > > Yes. Though we also discussed storing the default PASID in struct device
+> > > > > to begin with which is then copied to the msi_desc entries during
+> > > > > allocation.
+> > > > 
+> > > > Using default PASID in struct device will work for sub-devices until the
+> > > > guest needs to enable ENQCMD support. Since the guest kernel can ask for an
+> > > > interrupt by specifying something in the descriptor submitted via ENQCMD.
+> > > > Using the PASID in struct device won't be sufficient.
+> > > 
+> > > Could you could store a pasid table in the struct device and index it
+> > > by vector?
+> > 
+> > Possibly... what ever Thomas things is clean. The device specific driver
+> > would have this already. So providing some call to get this filled in vs
+> > storing that in struct device. Someone close at heart to the driver model
+> > is best to comment :-)
+> > 
+> > IMS core owns the format of the entries right now vs device specific driver. 
+> > I suppose your use case requiring a vm_id might have a different format. 
+> > So this is yet another one the core needs to learn and adapt?
 > 
-> If we want to avoid that, we need to go down the road of a curated set
-> of CPUID bits, where a bit only exists if we have taught glibc its
-> semantics.  You still might get a false negative by running against an
-> older glibc than the application was built for.  (We are not going to
-> force applications that e.g. look for FSGSBASE only run with a glibc
-> that is at least of that version which implemented semantics for the
-> FSGSBASE bit.)
+> All entry format stuff is device specific, it shouldn't be in "core"
+> code.
 
-That's kinda my whole point.
+Well, this is how it started way back last year. 
 
-These *MUST* be curated to be meaningful.  Right now, someone just
-dumped a set of CPUID bits into the documentation.
+https://lore.kernel.org/lkml/158751209583.36773.15917761221672315662.stgit@djiang5-desk3.ch.intel.com/
 
-The interface really needs *three* modes:
+Where the driver functions for mask/unmask/write_msg etc. So the core needs
 
-1. Yes, the CPU/OS supports this feature
-2. No, the CPU/OS doesn't support this feature
-3. Hell if I know, never heard of this feature
-	
-The interface really conflates 2 and 3.  To me, that makes it
-fundamentally flawed.
+So the format or layout is device specific, but core can dictate the exact
+message that needs to be written.
+
+> 
+> It is is the same reason that the IRQ chip driver for IDXD should have
+> IDXD in the name, it is not a generic "IMS core" thing.
+> 
+> The question mark is probably the locking model, but if IDXD
+> guarentees the pasid table doesn't change while the irq is active then
+> maybe it works out well enough.
+
+I think this must be gauranteed at a min? changing things underneath when
+the interrupts are unmasked would be bad usage.
+
+> 
+> Associating a void * with the irq is also possibly reasonable, I'm not
+> sure which path makes the most sense.
+> 
+
+Seems like it.. 
+
+Cheers,
+Ashok
