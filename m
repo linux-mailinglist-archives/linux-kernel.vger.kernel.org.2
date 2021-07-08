@@ -2,85 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E9A83C14E0
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 16:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55E5C3C14E5
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 16:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231928AbhGHOKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 10:10:14 -0400
-Received: from mga11.intel.com ([192.55.52.93]:3830 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229592AbhGHOKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 10:10:10 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10038"; a="206494882"
-X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
-   d="scan'208";a="206494882"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 07:07:28 -0700
-X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
-   d="scan'208";a="492127379"
-Received: from palgarin-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.55.207])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 07:07:27 -0700
-Subject: Re: [PATCH v2 1/6] x86/tdx: Add TDREPORT TDX Module call support
-To:     Xiaoyao Li <xiaoyao.li@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <20210707204249.3046665-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210707204249.3046665-2-sathyanarayanan.kuppuswamy@linux.intel.com>
- <d9aac97c-aa08-de9f-fa44-91b7dde61ce3@intel.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <46944ac2-4841-7f1d-4f54-ecb477f43d63@linux.intel.com>
-Date:   Thu, 8 Jul 2021 07:07:26 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231790AbhGHOOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 10:14:01 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:60440 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229592AbhGHOOA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 10:14:00 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id DEBC922277;
+        Thu,  8 Jul 2021 14:11:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1625753477; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=1N/reUsLeZKLGDwD3Bs0QRIIYMaSHgj6eG6/MqcnweM=;
+        b=i91DsQb7krT0Mx0l9l2Gp5oZ9tFtUnzffqsqjyeLmkJQGtfKFCMxsTio3D6Rh++LWOSKxa
+        9q5/2opOK6R4QJJAh4vdkHARhUwxfRT9hTzbtphnRQ2jDoxBUJmsu7MPPVcCwQT6swszuj
+        fyw60zr/S7VjuvbT82+Ww6DEOFfmJyo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1625753477;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=1N/reUsLeZKLGDwD3Bs0QRIIYMaSHgj6eG6/MqcnweM=;
+        b=uZPgZ4SO/ByQQdux5ClIRcxgll97WoKY/o1GqyV3hg9unpzwpoOAn9rA9IZ/6pr8eLa25o
+        zkqqcAR6wIqeZVBw==
+Received: from hawking.suse.de (hawking.suse.de [10.160.4.0])
+        by relay2.suse.de (Postfix) with ESMTP id D7D25A3B87;
+        Thu,  8 Jul 2021 14:11:17 +0000 (UTC)
+Received: by hawking.suse.de (Postfix, from userid 17005)
+        id BFC4D446184; Thu,  8 Jul 2021 16:11:17 +0200 (CEST)
+From:   Andreas Schwab <schwab@suse.de>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH] mmc: mmc_spi: add spi:mmc-spi-slot alias
+CC:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Yow:  Has everybody got HALVAH spread all over their ANKLES??...
+ Now, it's time to ``HAVE A NAGEELA''!!
+Date:   Thu, 08 Jul 2021 16:11:17 +0200
+Message-ID: <mvm4kd499q2.fsf@suse.de>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <d9aac97c-aa08-de9f-fa44-91b7dde61ce3@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This allows the driver to be auto loaded.
 
+Signed-off-by: Andreas Schwab <schwab@suse.de>
+---
+ drivers/mmc/host/mmc_spi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-On 7/8/21 1:16 AM, Xiaoyao Li wrote:
-> 
-> Sorry I guess I didn't state it clearly during internal review.
-> 
-> I suggest something like this
-> 
-> if (ret != TDCALL_SUCCESS) {
->      if (TDCALL_RETURN_CODE(ret) == TDCALL_INVALID_OPERAND)
->          return -EINVAL;
->      else if (TDCALL_RETURN_CODE(ret) == TDCALL_OPERAND_BUSY)
->          return -EBUSY;
->      else
->          return -EFAULT; //I'm not sure if -EFAULT is proper.
-> }
+diff --git a/drivers/mmc/host/mmc_spi.c b/drivers/mmc/host/mmc_spi.c
+index 9776a03a10f5..a5f318b70057 100644
+--- a/drivers/mmc/host/mmc_spi.c
++++ b/drivers/mmc/host/mmc_spi.c
+@@ -1544,3 +1544,4 @@ MODULE_AUTHOR("Mike Lavender, David Brownell, Hans-Peter Nilsson, Jan Nikitenko"
+ MODULE_DESCRIPTION("SPI SD/MMC host driver");
+ MODULE_LICENSE("GPL");
+ MODULE_ALIAS("spi:mmc_spi");
++MODULE_ALIAS("spi:mmc-spi-slot");
+-- 
+2.32.0
 
-As per current spec, TDCALL_INVALID_OPERAND, TDCALL_OPERAND_BUSY and
-0 are the only possible return values. So I have checked for failure case
-in if condition and returned success by default. Any reason for specifically
-checking for success code ?
 
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Andreas Schwab, SUSE Labs, schwab@suse.de
+GPG Key fingerprint = 0196 BAD8 1CE9 1970 F4BE  1748 E4D4 88E3 0EEA B9D7
+"And now for something completely different."
