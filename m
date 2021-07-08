@@ -2,122 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C6953BF5DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 08:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B48013BF5EC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 09:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230414AbhGHG7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 02:59:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60798 "EHLO
+        id S230401AbhGHHGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 03:06:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230388AbhGHG7C (ORCPT
+        with ESMTP id S229735AbhGHHGG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 02:59:02 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A636C06175F
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 23:56:21 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id s18so4963256pgg.8
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 23:56:21 -0700 (PDT)
+        Thu, 8 Jul 2021 03:06:06 -0400
+Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D7D1C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 00:03:24 -0700 (PDT)
+Received: by mail-vk1-xa29.google.com with SMTP id d7so1172118vkf.2
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 00:03:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/BAyx8HGJRdLOBdbNiU99QlY+5w2alIzKC7hMMjJk8E=;
-        b=NHKTbL1+5esONkdEeIVUEHanUegxhWFq3mH2qGjsXdj1X4CnZ25OcIeCnh1Cz26/fD
-         kX0pEMz5+wuULkM4jGkngh+2zCZzZ//MWkaMBjnnQj1BxLgsg02dZLG+cN7b2Z+y8sow
-         h7S6o4wsaeft1bc7Ih5xOyZb+/4dtQEJdUkPQ=
+        d=deviqon.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AolFQ0Dlxnk8mpgwdaTbhkpjw+QyQ2x2z2tLBCeVDKU=;
+        b=JSMx6oJewQlDXLoMI+Mk4yW+QG4e1/UHJT/MSmzqWBGYemY4kSFSWJh+qidXXAdyHG
+         kk9h0cAuJ6wv7+WaChvXuvoq86cYFE3wEydjQvuvVgb0rbX84QDOepMZOgqyrKqGjV/y
+         w9gQnySkQqXzQQExenmtsUjkil9v/Lk1X0h4Yc2XtAmlY6js9sY47XYQtiEi3ktSsgDT
+         /4w1UPgQ8098XZVN6BY6m/o1KfMiplAyD8LeyFMlM8WnalFyliR0kRleW22rJaAQap7O
+         aW3hlFM2i1cQ2FGjExmVEbp7IoESM9wcNX7+co2P91XUskUvWjlAlSVez0+bHkxAL04J
+         dApw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/BAyx8HGJRdLOBdbNiU99QlY+5w2alIzKC7hMMjJk8E=;
-        b=Zvg7n5goot+lr9AVf9ZoU0WjDBCR/sT3VMS8h3bI+7Vaf+2uhuJCS7QEFhRCDpnVe1
-         JoaqP3VWwK0k1RCJfssIBZUkvDRcNaORg+XjASv6c8eKVkQvpD2GMPS7GUBFWPORzIRB
-         ApL4QuKJnnNKKpLoP/DE6ZfFSq3xdbTeoHyjGC0yRUE3FHLpZHsq0idIKVdIrJO8TFq+
-         oi3wsYj6RVnQU1twKaraVnUsS9tXSRRgs8EAzzC6/qyBQMAqZez2Gpa3L11NctJWTzho
-         QCLExSoJDRBNyJ0D72pBbAMNOPLX61EMF57Cq58J6io2i8d6U06JdasotgvVEmnanLCM
-         DMdQ==
-X-Gm-Message-State: AOAM531jsTWcatd4fyjud42s7oAv8XoFcXdWbhyeug5gP/IzLyszB32S
-        tn+Iez6WXFxsSNK3Y5KWI9NNIg==
-X-Google-Smtp-Source: ABdhPJxigodUsLw90BixpU3dO51TKFxRvaaErkAE8oVzv77ily6wyBUHpPvwY3JTNwAh2mxe/+P+EQ==
-X-Received: by 2002:a63:e043:: with SMTP id n3mr6974211pgj.106.1625727380608;
-        Wed, 07 Jul 2021 23:56:20 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:201:82ce:1825:c0a5:9605])
-        by smtp.gmail.com with ESMTPSA id a23sm1120910pfa.16.2021.07.07.23.56.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 23:56:20 -0700 (PDT)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org
-Subject: [PATCH] drm/msm/dpu: Add newlines to printks
-Date:   Wed,  7 Jul 2021 23:56:19 -0700
-Message-Id: <20210708065619.999199-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AolFQ0Dlxnk8mpgwdaTbhkpjw+QyQ2x2z2tLBCeVDKU=;
+        b=pQhLkIfF4pfZbqAI8x50F4D3054xo7wesvBCILR20L8i//VUglNgUlbabddg04CwZz
+         i+Fza/o5+EK4jEU5ZdP0drukhmrwpHpTRY+RiBPME/ohOtCQNNAmAgUA+9bjuV5WuEtq
+         nUQJsdJU/tLGagruoWaEMnwfyClj8S6eZFAI9lg1tynivXNhYdoK6Ya2b5Mp0I3ESjAl
+         wufqwQd0mB6Mtaf+9xdqpl4cDKFTJZQ7KcTA8qxLl+IrSoc6NeuJUO3nM+4WWsLYNKl/
+         qDL0dfQVWgO6naxcPh8aYceFPp1DcnZwVTfupbzsHYbe7M737YqmUWpt1Q4l3JYbWB8q
+         E5mw==
+X-Gm-Message-State: AOAM5334Rxpv4ZGxI5J2eIJTmOFeM3mj4GHbVhU9H2S613QRkd7HX5bu
+        57lQ7eIbCDF7UesMb2y77tuQyr/daZDeVDbiGxenHg==
+X-Google-Smtp-Source: ABdhPJx3MDuK5SJTbuLP4EONy/q5aBt78hArwFacYF0cjtlWb4vFvBylQ5Z+dO7TleD9xWiu4y2VZior7dKHEy0cugg=
+X-Received: by 2002:a1f:6247:: with SMTP id w68mr7602824vkb.11.1625727803200;
+ Thu, 08 Jul 2021 00:03:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210707135226.191988-1-aardelean@deviqon.com> <YOW1dKIpXa1GXyXh@smile.fi.intel.com>
+In-Reply-To: <YOW1dKIpXa1GXyXh@smile.fi.intel.com>
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+Date:   Thu, 8 Jul 2021 10:03:12 +0300
+Message-ID: <CAASAkoY2Yw7E1ftN+410twQ3HHkF=b85YbzuyCXonKf3LwDehQ@mail.gmail.com>
+Subject: Re: [PATCH] gpio: wcove: remove platform_set_drvdata() + cleanup probe
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        sathyanarayanan.kuppuswamy@linux.intel.com, andy@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add some missing newlines to the various DRM printks in this file.
-Noticed while looking at logs. While we're here unbreak quoted
-strings so grepping them is easier.
+On Wed, 7 Jul 2021 at 17:09, Andy Shevchenko
+<andriy.shevchenko@intel.com> wrote:
+>
+> On Wed, Jul 07, 2021 at 04:52:26PM +0300, Alexandru Ardelean wrote:
+> > The platform_set_drvdata() call is only useful if we need to retrieve back
+> > the private information.
+> > Since the driver doesn't do that, it's not useful to have it.
+>
+> This is fine.
+>
+> > This change also changes the probe order a bit, moving the
+> > devm_gpiochip_add_data() as the last call. This means that when the
+> > gpiochip is registered [and available to consumers], it should be
+> > initialized.
+> >
+> > It's still possible that the devm_gpiochip_add_data() call could fail,
+> > leaving the chip in a partially initialized state, but that was possible
+> > even before this change; it was just some other partially initialized
+> > state.
+>
+> ...
+>
+> >       /* Enable GPIO0 interrupts */
+>
+> ^^^^^
+>
+> > +     return devm_gpiochip_add_data(dev, &wg->chip, wg);
+>
+> This is dangerous change. How did you test it?
+>
+> The handler now can be called before chip and actual handling code is
+> registered. It means at least two possible (bad) scenarios:
+>  1) the handler may dereference dangling or NULL pointer;
+>  2) the IRQ may be level interrupt and we may got 100000 IRQs and
+>     IRQ core will disable it leaving device completely unfunctional.
 
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-index 1c04b7cce43e..0e9d3fa1544b 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-@@ -274,20 +274,20 @@ int dpu_encoder_helper_wait_for_irq(struct dpu_encoder_phys *phys_enc,
- 
- 	/* return EWOULDBLOCK since we know the wait isn't necessary */
- 	if (phys_enc->enable_state == DPU_ENC_DISABLED) {
--		DRM_ERROR("encoder is disabled id=%u, intr=%d, irq=%d",
-+		DRM_ERROR("encoder is disabled id=%u, intr=%d, irq=%d\n",
- 			  DRMID(phys_enc->parent), intr_idx,
- 			  irq->irq_idx);
- 		return -EWOULDBLOCK;
- 	}
- 
- 	if (irq->irq_idx < 0) {
--		DRM_DEBUG_KMS("skip irq wait id=%u, intr=%d, irq=%s",
-+		DRM_DEBUG_KMS("skip irq wait id=%u, intr=%d, irq=%s\n",
- 			      DRMID(phys_enc->parent), intr_idx,
- 			      irq->name);
- 		return 0;
- 	}
- 
--	DRM_DEBUG_KMS("id=%u, intr=%d, irq=%d, pp=%d, pending_cnt=%d",
-+	DRM_DEBUG_KMS("id=%u, intr=%d, irq=%d, pp=%d, pending_cnt=%d\n",
- 		      DRMID(phys_enc->parent), intr_idx,
- 		      irq->irq_idx, phys_enc->hw_pp->idx - PINGPONG_0,
- 		      atomic_read(wait_info->atomic_cnt));
-@@ -303,8 +303,7 @@ int dpu_encoder_helper_wait_for_irq(struct dpu_encoder_phys *phys_enc,
- 		if (irq_status) {
- 			unsigned long flags;
- 
--			DRM_DEBUG_KMS("irq not triggered id=%u, intr=%d, "
--				      "irq=%d, pp=%d, atomic_cnt=%d",
-+			DRM_DEBUG_KMS("irq not triggered id=%u, intr=%d, irq=%d, pp=%d, atomic_cnt=%d\n",
- 				      DRMID(phys_enc->parent), intr_idx,
- 				      irq->irq_idx,
- 				      phys_enc->hw_pp->idx - PINGPONG_0,
-@@ -315,8 +314,7 @@ int dpu_encoder_helper_wait_for_irq(struct dpu_encoder_phys *phys_enc,
- 			ret = 0;
- 		} else {
- 			ret = -ETIMEDOUT;
--			DRM_DEBUG_KMS("irq timeout id=%u, intr=%d, "
--				      "irq=%d, pp=%d, atomic_cnt=%d",
-+			DRM_DEBUG_KMS("irq timeout id=%u, intr=%d, irq=%d, pp=%d, atomic_cnt=%d\n",
- 				      DRMID(phys_enc->parent), intr_idx,
- 				      irq->irq_idx,
- 				      phys_enc->hw_pp->idx - PINGPONG_0,
+Makes sense.
+Let's drop this :)
 
-base-commit: e9f1cbc0c4114880090c7a578117d3b9cf184ad4
--- 
-https://chromeos.dev
 
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
