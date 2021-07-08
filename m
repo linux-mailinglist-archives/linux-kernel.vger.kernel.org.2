@@ -2,113 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8768E3BF826
+	by mail.lfdr.de (Postfix) with ESMTP id CFDD73BF827
 	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 12:12:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231449AbhGHKPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 06:15:03 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:43140 "EHLO
+        id S231472AbhGHKPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 06:15:05 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:43152 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231324AbhGHKPD (ORCPT
+        with ESMTP id S231421AbhGHKPE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 06:15:03 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 7DF342235F;
-        Thu,  8 Jul 2021 10:12:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1625739140; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hYO8eT5RyGu5yME6TLfsn3cvME04291AisNrXHN42ug=;
-        b=FMqIVL5DsqDK/v7wUKeoFLCQta7Y8JBC5wBM0zoHpMn9spJsdGBgYE+TcXQIC3E8sxTR23
-        Fb7JYnB+8s91edikLw1VgqjLg8zLKtLWom1edHedxiUdafxFxLNTh1rf/hdFuWv0duzCPh
-        IZ5RVsYP/gYJLwRDuYwVC1S2IESEl5o=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Thu, 8 Jul 2021 06:15:04 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 62A64A3B88;
-        Thu,  8 Jul 2021 10:12:20 +0000 (UTC)
-Date:   Thu, 8 Jul 2021 12:12:20 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] livepatch: Kick idle cpu's tasks to perform
- transition
-Message-ID: <YObPhPkzRSqnzgK3@alley>
-References: <patch.git-b76842ceb035.your-ad-here.call-01625661932-ext-1304@work.hours>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9777E22360;
+        Thu,  8 Jul 2021 10:12:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1625739141; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IKJzJF5tCumCbWebteEOvrLHiJPh+40M7IbuEO+NlOI=;
+        b=rPqiYhvAwWq1ArT7bQvl0xOR4z6zEqWTso/BaP00HogF+U0nX2nEkeeeNhs8V/V4OcYwBD
+        krtC6xVusFSAJ+BajKhGuTBAiLii6Mh3tmgSMa7+mAvTyD24dVF0uBK0xRFN/shF4mlBn1
+        E1Ou6fCe0492ZQHw9NRHKMhtzq41XCg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1625739141;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IKJzJF5tCumCbWebteEOvrLHiJPh+40M7IbuEO+NlOI=;
+        b=d0QIo+yfd6JyQac+aUWnWf7nmGC2KBlR/uJwryrPG+uA1x7YHl6x9PFKfDHZ89AvsobT9Z
+        mbRkJ6trKNa1LADw==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 747811338E;
+        Thu,  8 Jul 2021 10:12:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id kIe2G4XP5mA5MwAAGKfGzw
+        (envelope-from <hare@suse.de>); Thu, 08 Jul 2021 10:12:21 +0000
+Subject: Re: [PATCH v2 4/5] nvme-fc: Wait with a timeout for queue to freeze
+To:     Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        James Smart <james.smart@broadcom.com>,
+        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        James Smart <jsmart2021@gmail.com>
+References: <20210708092755.15660-1-dwagner@suse.de>
+ <20210708092755.15660-5-dwagner@suse.de>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <bf265380-6164-2462-ff30-6144e9f9b2ea@suse.de>
+Date:   Thu, 8 Jul 2021 12:12:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <patch.git-b76842ceb035.your-ad-here.call-01625661932-ext-1304@work.hours>
+In-Reply-To: <20210708092755.15660-5-dwagner@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-07-07 14:49:38, Vasily Gorbik wrote:
-> On an idle system with large amount of cpus it might happen that
-> klp_update_patch_state() is not reached in do_idle() for a long periods
-> of time. With debug messages enabled log is filled with:
-> [  499.442643] livepatch: klp_try_switch_task: swapper/63:0 is running
-
-I see. I guess that the problem is only when CONFIG_NO_HZ is enabled.
-Do I get it correctly, please?
-
-> without any signs of progress. Ending up with "failed to complete
-> transition".
+On 7/8/21 11:27 AM, Daniel Wagner wrote:
+> Do not wait indifinitly for all queues to freeze. Instead use a
+> timeout and abort the operation if we get stuck.
 > 
-> On s390 LPAR with 128 cpus not a single transition is able to complete
-> and livepatch kselftests fail.
-> 
-> To deal with that, make sure we break out of do_idle() inner loop to
-> reach klp_update_patch_state() by marking idle tasks as NEED_RESCHED
-> as well as kick cpus out of idle state.
->
-> Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+> Reviewed-by: James Smart <jsmart2021@gmail.com>
+> Signed-off-by: Daniel Wagner <dwagner@suse.de>
 > ---
->  kernel/livepatch/transition.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+>   drivers/nvme/host/fc.c | 9 ++++++++-
+>   1 file changed, 8 insertions(+), 1 deletion(-)
 > 
-> diff --git a/kernel/livepatch/transition.c b/kernel/livepatch/transition.c
-> index 3a4beb9395c4..793eba46e970 100644
-> --- a/kernel/livepatch/transition.c
-> +++ b/kernel/livepatch/transition.c
-> @@ -415,8 +415,11 @@ void klp_try_complete_transition(void)
->  	for_each_possible_cpu(cpu) {
->  		task = idle_task(cpu);
->  		if (cpu_online(cpu)) {
-> -			if (!klp_try_switch_task(task))
-> +			if (!klp_try_switch_task(task)) {
->  				complete = false;
-> +				set_tsk_need_resched(task);
-> +				kick_process(task);
+> diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
+> index d0eb81387d4e..8e1fc3796735 100644
+> --- a/drivers/nvme/host/fc.c
+> +++ b/drivers/nvme/host/fc.c
+> @@ -2956,7 +2956,14 @@ nvme_fc_recreate_io_queues(struct nvme_fc_ctrl *ctrl)
+>   		dev_info(ctrl->ctrl.device,
+>   			"reconnect: revising io queue count from %d to %d\n",
+>   			prior_ioq_cnt, nr_io_queues);
+> -		nvme_wait_freeze(&ctrl->ctrl);
+> +		if (!nvme_wait_freeze_timeout(&ctrl->ctrl, NVME_IO_TIMEOUT)) {
+> +			/*
+> +			 * If we timed out waiting for freeze we are likely to
+> +			 * be stuck.  Fail the controller initialization just
+> +			 * to be safe.
+> +			 */
+> +			return -ENODEV;
 
-First, we should kick the idle threads in klp_send_signals().
-It already solves similar problem when normal threads and kthreads
-stay in the incorruptible sleep for too long.
+For controller reset we're using '-ENOTCONN'; maybe it's worthwhile to 
+use the same error code here.
+But that's just a minor detail.
 
-Second, the way looks a bit hacky to me. need_resched() depends on
-the currect implementation of the idle loop. kick_process() has
-a completely different purpose and does checks that do not fit well
-this use-case.
+> +		}
+>   		blk_mq_update_nr_hw_queues(&ctrl->tag_set, nr_io_queues);
+>   		nvme_unfreeze(&ctrl->ctrl);
+>   	}
+> 
+Reviewed-by: Hannes Reinecke <hare@suse.de>
 
-I wonder if wake_up_nohz_cpu() would fit better here. Please, add
-scheduler people into CC, namely:
+Cheers,
 
-    Ingo Molnar <mingo@redhat.com>
-    Peter Zijlstra <peterz@infradead.org>
-
-and NOHZ guys:
-
-    Frederic Weisbecker <fweisbec@gmail.com>
-    Thomas Gleixner <tglx@linutronix.de>
-
-
-Best Regards,
-Petr
+Hannes
+-- 
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
