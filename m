@@ -2,93 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B1B23BF802
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 12:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30D473BF806
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 12:09:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231431AbhGHKL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 06:11:28 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:42524 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231332AbhGHKL1 (ORCPT
+        id S231452AbhGHKMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 06:12:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231332AbhGHKMA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 06:11:27 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id EA60922323;
-        Thu,  8 Jul 2021 10:08:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1625738924; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=N9TyFwEe5FQOuKpCFtv0haO4nVb73dTNISc703GO9ys=;
-        b=GSDEOWff/FWfkPQgg2zY7s9aYRVZO3IwE878kHzsbP5wOSKSBo103QxkBjJZo/yIP5p5qU
-        rypfQ4MP60ziq9cfeML2yTkBScNesVNsZNtxhZx8zEnkPEa8LHtX4nPxUsuGqgyZPLEd22
-        5aRJ/X06dGYsbu2j4D3L+DjSnfy3hNo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1625738924;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=N9TyFwEe5FQOuKpCFtv0haO4nVb73dTNISc703GO9ys=;
-        b=wPD/xKmgZ6jRqWlXdmY0hKpg1kEVrQJnXkgcdUqQ6Sp12oCclFoEv4uNlsxH9GxyqWCpd/
-        P107rqkbI25GJ5CA==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id C1A7C1338E;
-        Thu,  8 Jul 2021 10:08:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id O6MNLqzO5mBeMgAAGKfGzw
-        (envelope-from <hare@suse.de>); Thu, 08 Jul 2021 10:08:44 +0000
-Subject: Re: [PATCH v2 1/5] nvme-fc: Update hardware queues before using them
-To:     Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        James Smart <james.smart@broadcom.com>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        James Smart <jsmart2021@gmail.com>
-References: <20210708092755.15660-1-dwagner@suse.de>
- <20210708092755.15660-2-dwagner@suse.de>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <57de7af1-b263-ceed-54aa-e9880327bcc1@suse.de>
-Date:   Thu, 8 Jul 2021 12:08:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 8 Jul 2021 06:12:00 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69DB7C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 03:09:18 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 8so2048563lfp.9
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 03:09:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=aFq54d9QsTmv3rpdp/cy3tzjqHVefFyvdZXGzyRj2aA=;
+        b=NK8bhf24SP2Scx6x0fpPgDcU6o9ccB6rm/GRBUBFfvhzt3iMiKtxiNlsHKmgop/Ssf
+         ymZPwJh97NG7AetSXxYGFsFIr/e1epnbeI9qKVjep+vxph9tE46UJ5rksZP6Qv0BObwE
+         0PteEM1heK5lEjTVhcSxOHfVWKa1BWdT2mxcbMMVpzKRqiOZKW7Wfhyi8ZgqqDQrRkXr
+         UEmskaw7qH6oyyImdgPZpNjWqt4ysr1nHekFb/rQAPVERL7o+7uj+6cEnOlT+8u+wL+s
+         kEunaZaNRMXJydH9sVUwnt5QIuau7bnIn4WPZy+gcNXtVxBwIQ5vB7jFEb6eg5OOtY9D
+         rJxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=aFq54d9QsTmv3rpdp/cy3tzjqHVefFyvdZXGzyRj2aA=;
+        b=ldtfikKa7RgIQKxE3kL5l1aIx5RU1eVjWiUy1fLiVvuUcDXGZeyQyww+yZtGNEwu9O
+         YqP+2c+zaS9JFv+8bwx5tcLKx/WAbtQs6CyCkNib8kWQcHA6pmTmV++SbgAzOGelOHBp
+         aR/OlM1OwjvsvMrJYSSIC838FnY0e2eLm3D1lRL3zztINyhi+nK8sz0YAhq0h3knPMXe
+         MUaYmcyyGdjkOv2XJ/+KI0El/y6EcxWRgv5f3DbC3xjR8VeeL/cwo38gee6wjmOEKerp
+         743Ecdy584GJhtQXHUY9sf8XNWsA67NtFWtjVpRuNPbYqXH0XNjBju0xqnfZjUiU3hOU
+         Ilmw==
+X-Gm-Message-State: AOAM532tmt0bY1RVVs1tOmBZ6XVHyALTCkwpGQ3E5dfqUKeGB0wKaxQm
+        x2FVoO3XN3lGy/zDpDDEirc=
+X-Google-Smtp-Source: ABdhPJxL1oW6mn1pIrhyg621tFB+MjLEJFrBCVWCPsMq8ZMu/jnhFoEhMI+ze7ZGg4FrZi1NtBW2ig==
+X-Received: by 2002:a05:6512:2291:: with SMTP id f17mr23098736lfu.466.1625738956685;
+        Thu, 08 Jul 2021 03:09:16 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.225.155])
+        by smtp.gmail.com with ESMTPSA id a24sm148372lfg.231.2021.07.08.03.09.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jul 2021 03:09:16 -0700 (PDT)
+Date:   Thu, 8 Jul 2021 13:09:10 +0300
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        ray.huang@amd.com, airlied@linux.ie
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] gpu: ttm: fix GPF in ttm_bo_release
+Message-ID: <20210708130910.63a15c73@gmail.com>
+In-Reply-To: <20210708113701.4cea7989@gmail.com>
+References: <20210707185108.3798-1-paskripkin@gmail.com>
+        <f4bb7b29-3abc-a056-fc24-4e91b5de8d74@amd.com>
+        <20210708113701.4cea7989@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210708092755.15660-2-dwagner@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/8/21 11:27 AM, Daniel Wagner wrote:
-> In case the number of hardware queues changes, do the update the
-> tagset and ctx to hctx first before using the mapping to recreate and
-> connnect the IO queues.
-> 
-> Reviewed-by: James Smart <jsmart2021@gmail.com>
-> Reviewed-by: Ming Lei <ming.lei@redhat.com>
-> Signed-off-by: Daniel Wagner <dwagner@suse.de>
-> ---
->   drivers/nvme/host/fc.c | 16 ++++++++--------
->   1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+On Thu, 8 Jul 2021 11:37:01 +0300
+Pavel Skripkin <paskripkin@gmail.com> wrote:
 
-Cheers,
+> On Thu, 8 Jul 2021 08:49:48 +0200
+> Christian K=C3=B6nig <christian.koenig@amd.com> wrote:
+>=20
+> > Am 07.07.21 um 20:51 schrieb Pavel Skripkin:
+> > > My local syzbot instance hit GPF in ttm_bo_release().
+> > > Unfortunately, syzbot didn't produce a reproducer for this, but I
+> > > found out possible scenario:
+> > >
+> > > drm_gem_vram_create()            <-- drm_gem_vram_object kzalloced
+> > > 				     (bo embedded in this object)
+> > >    ttm_bo_init()
+> > >      ttm_bo_init_reserved()
+> > >        ttm_resource_alloc()
+> > >          man->func->alloc()       <-- allocation failure
+> > >        ttm_bo_put()
+> > > 	ttm_bo_release()
+> > > 	  ttm_mem_io_free()      <-- bo->resource =3D=3D NULL passed
+> > > 				     as second argument
+> > > 	     *GPF*
+> > >
+> > > So, I've added check in ttm_bo_release() to avoid passing
+> > > NULL as second argument to ttm_mem_io_free().
+>=20
+> Hi, Christian!
+>=20
+> Thank you for quick feedback :)
+>=20
+> >=20
+> > There is another ocassion of this a bit down before we call=20
+> > ttm_bo_move_to_lru_tail() apart from that good catch.
+> >=20
+>=20
+> Did you mean, that ttm_bo_move_to_lru_tail() should have NULL check
+> too? I checked it's realization, and, I think, NULL check is necessary
+> there, since mem pointer is dereferenced w/o any checking
+>=20
+> > But I'm wondering if we should make the functions NULL save instead
+> > of the external check.
+> >=20
+>=20
+> I tried to find more possible scenarios of GPF in ttm_bo_release(),
+> but I didn't find one. But, yes, moving NULL check inside
+> ttm_mem_io_free() is more general approach and it will defend this
+> function from GPFs in the future.
+>=20
+>=20
+>=20
+> With regards,
+> Pavel Skripkin
+>=20
 
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+I misclicked and sent this email to Christian privately :(
+
+Added all thread participants back, sorry.
+
+
+
+With regards,
+Pavel Skripkin
