@@ -2,132 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E713BF780
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 11:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9BB23BF78A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 11:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231490AbhGHJWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 05:22:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231382AbhGHJWr (ORCPT
+        id S231299AbhGHJ2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 05:28:52 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:34608 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231254AbhGHJ2w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 05:22:47 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DD11C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 02:20:05 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id p8so6652861wrr.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 02:20:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=E8wOYuGgW5dxV41LrFT+/grkfGnQ13pyFW8oHR7OIZw=;
-        b=IWXWukGJ+sYxiBpJibUmxHiqApl6N+DEulPAvNQ/b2VL/rwieZfZp75c0X7vLZ7TJ3
-         0g5Gf6cVNpOGW+gR1Syy7MbfuG+hTjErP9dwW+0H51UwTQ8mi0v1L849+pmDSzTTVqkJ
-         hooulS78YJSUBUtnvAqCwO/nCq8PKrJbic1qTpunf0ly+mWpOHPgqYlA4r+2PvgJSSNT
-         O62eIYPcVRZYNb0NiuUCihI1ETeyo5JJyO2ju4/y0YmS9tss/tGaKGIM2EFtHWwbBkY+
-         LhU94BKNnWJgSAYBqhwsy1iWmpPaDgrZv62rUaPsJxbiXdoGEevvKIIT4MOm64D/R8/p
-         np+g==
+        Thu, 8 Jul 2021 05:28:52 -0400
+Received: from mail-wm1-f70.google.com ([209.85.128.70])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1m1QIL-0006Bt-77
+        for linux-kernel@vger.kernel.org; Thu, 08 Jul 2021 09:26:09 +0000
+Received: by mail-wm1-f70.google.com with SMTP id j141-20020a1c23930000b0290212502cb19aso2147309wmj.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 02:26:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=E8wOYuGgW5dxV41LrFT+/grkfGnQ13pyFW8oHR7OIZw=;
-        b=fHCmA1eLKvIXn/cRbhSn2Veo8aayCszWpUswAz4DDOIroGvEXUuCXk9C/GSFIna/n2
-         26kNEtKj1WntRBfB4nLx+2U06s8KmdCczOG9+2kbmRXT1yh0imFSbs0duK8OmLqJ20+q
-         FzZFPpI/0f/gXfM+LrlQPOnGYb+xdS9fp6kavwohRSZrMlWhwiV6zj2dAQDno7d/yxu6
-         71rBDaMF1tiFbkllbtF9xOVSp67uT8c3kIL2RwF/uTcNyjwNBCtOzPML2gnydGF1c3WP
-         OVE6qlM6nYxkTDS3Sj3yxT37cFuADH8YVg+hs+Kfse5TSAsQSW9n7+Wwu2gTQuJb/vPZ
-         mj4g==
-X-Gm-Message-State: AOAM530N9vrIQstFLwLBvwB4prAuhCKQN8zTkJMCFcCDZMD/VOAuJSmF
-        zBJ5v5WObjpxCcmJGZlv6Vs=
-X-Google-Smtp-Source: ABdhPJzeCR07d1y8gCpicm/rcIXFt9UWWOn6W0Tb2/O83UCOlBFXjE1O5HjKURZbqEnAIZvYGAJdeg==
-X-Received: by 2002:a5d:52d0:: with SMTP id r16mr32765405wrv.323.1625736004038;
-        Thu, 08 Jul 2021 02:20:04 -0700 (PDT)
-Received: from bcarvalho-Ubuntu.lan ([2001:818:de85:7e00:4d1a:56e6:44c6:5764])
-        by smtp.gmail.com with ESMTPSA id y11sm5594308wmi.33.2021.07.08.02.20.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jul 2021 02:20:03 -0700 (PDT)
-From:   Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
-To:     rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
-        hamohammed.sa@gmail.com, daniel@ffwll.ch, airlied@linux.ie
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH v2] drm/vkms: Creating a debug file to get/track vkms config in vkms_drv.c
-Date:   Thu,  8 Jul 2021 10:20:02 +0100
-Message-Id: <20210708092002.11847-1-martinsdecarvalhobeatriz@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=koIPrhzeeGnASWujJpf7LVgsTrCU+gcQgVFV1kcN3ho=;
+        b=eQh/ONHdvAW8lPa4eT8Jm7GRa+xvGC8NsAil6bCU09DVmmg4H3PV6qn9koPCr74V6y
+         t8mHl5BB8OecWn9lMDTVA66ArPTQMNf2bljgwiXmSB+5SQbbnkOqvvrTfr1LEhkyj05W
+         lmz5IeaNFiZud5Ba8rr6TLo1zrOyuTwY0XXJGyC79PltynckIhOV0TzJSUPqwT2MwGRU
+         8xougpm3DlAXnfzjbu9dGhgt22wHQNd6GzUFc4otZZDqoKAzms8f5eOKaraBe+RZnpbL
+         A7KnJdA13zUIqzxZmwNHlitGssO+bd/HOn/24uatKaiTpK/LatgiaZJNVgaIsoO9i0oa
+         7osQ==
+X-Gm-Message-State: AOAM5313eLi8pjlxYnueeDL/A+x+jRSd14E2MoKsDx7fG9a14p3bXywF
+        6ba+9gOEZ4jzb+L43o5QxfyxCQ8ta06sbCpoUVTn9sKu5CniVmoQKiFxx8E+4r9XDYBrfDLSpRP
+        zzNllGgoTLJELj4SY1rn8s7XX6tlja9zajATvx73jow==
+X-Received: by 2002:a05:6000:1ac6:: with SMTP id i6mr29153775wry.327.1625736368926;
+        Thu, 08 Jul 2021 02:26:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz9bTjhzy4ewOg0e87DpVaZF42E3AYLNFYRiKycIX46b0OEGS9rxawBZpCgOiwlhnyBj7S+/Q==
+X-Received: by 2002:a05:6000:1ac6:: with SMTP id i6mr29153760wry.327.1625736368771;
+        Thu, 08 Jul 2021 02:26:08 -0700 (PDT)
+Received: from [192.168.3.211] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
+        by smtp.gmail.com with ESMTPSA id h10sm4020332wmb.46.2021.07.08.02.26.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Jul 2021 02:26:08 -0700 (PDT)
+Subject: Re: [PATCH 1/9] dt-bindings: memory: mediatek: Add mt8195 smi binding
+To:     Yong Wu <yong.wu@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
+        anan.sun@mediatek.com, ming-fan.chen@mediatek.com,
+        yi.kuo@mediatek.com, anthony.huang@mediatek.com
+References: <20210616114346.18812-1-yong.wu@mediatek.com>
+ <20210616114346.18812-2-yong.wu@mediatek.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <6e512d15-3acc-2097-1fd1-e021552fdc8d@canonical.com>
+Date:   Thu, 8 Jul 2021 11:26:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210616114346.18812-2-yong.wu@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Creating a vkms_config_debufs file in vkms_drv.c to get/track vkms config
-data, for the long-term plan of making vkms configurable and have multiple
-different instances.
+On 16/06/2021 13:43, Yong Wu wrote:
+> This patch adds mt8195 smi supporting in the bindings.
+> 
+> In mt8195, there are two smi-common HW, one is for vdo(video output),
+> the other is for vpp(video processing pipe). They connects with different
+> smi-larbs, then some setting(bus_sel) is different. Differentiate them
+> with the compatible string.
+> 
+> Something like this:
+> 
+>     IOMMU(VDO)          IOMMU(VPP)
+>        |                   |
+>   SMI_COMMON_VDO      SMI_COMMON_VPP
+>   ---------------     ----------------
+>   |      |   ...      |      |     ...
+> larb0 larb2  ...    larb1 larb3    ...
+> 
+> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> ---
+>  .../bindings/memory-controllers/mediatek,smi-common.yaml    | 6 +++++-
+>  .../bindings/memory-controllers/mediatek,smi-larb.yaml      | 3 +++
+>  2 files changed, 8 insertions(+), 1 deletion(-)
+> 
 
-Reviewed-by: Melissa Wen <melissa.srw@gmail.com>
-Signed-off-by: Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
----
-Changes in v2:
-    - corrected subject to make clear in terms of its purpose
-    - corrected commit message
----
- drivers/gpu/drm/vkms/vkms_drv.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+I cannot find it on devicetree list, it seems you did not Cc it. Please
+use scripts/get_maintainer.pl.
 
-diff --git a/drivers/gpu/drm/vkms/vkms_drv.c b/drivers/gpu/drm/vkms/vkms_drv.c
-index 027ffe759440..c81fba6c72f0 100644
---- a/drivers/gpu/drm/vkms/vkms_drv.c
-+++ b/drivers/gpu/drm/vkms/vkms_drv.c
-@@ -28,6 +28,9 @@
- 
- #include "vkms_drv.h"
- 
-+#include <drm/drm_print.h>
-+#include <drm/drm_debugfs.h>
-+
- #define DRIVER_NAME	"vkms"
- #define DRIVER_DESC	"Virtual Kernel Mode Setting"
- #define DRIVER_DATE	"20180514"
-@@ -86,12 +89,37 @@ static void vkms_atomic_commit_tail(struct drm_atomic_state *old_state)
- 	drm_atomic_helper_cleanup_planes(dev, old_state);
- }
- 
-+static int vkms_config_show(struct seq_file *m, void *data)
-+{
-+	struct drm_info_node *node = (struct drm_info_node *)m->private;
-+	struct drm_device *dev = node->minor->dev;
-+	struct vkms_device *vkmsdev = drm_device_to_vkms_device(dev);
-+
-+	seq_printf(m, "writeback=%d\n", vkmsdev->config->writeback);
-+	seq_printf(m, "cursor=%d\n", vkmsdev->config->cursor);
-+	seq_printf(m, "overlay=%d\n", vkmsdev->config->overlay);
-+
-+	return 0;
-+}
-+
-+static const struct drm_info_list vkms_config_debugfs_list[] = {
-+	{ "vkms_config", vkms_config_show, 0 },
-+};
-+
-+static void vkms_config_debugfs_init(struct drm_minor *minor)
-+{
-+	drm_debugfs_create_files(vkms_config_debugfs_list, ARRAY_SIZE(vkms_config_debugfs_list),
-+				 minor->debugfs_root, minor);
-+}
-+
- static const struct drm_driver vkms_driver = {
- 	.driver_features	= DRIVER_MODESET | DRIVER_ATOMIC | DRIVER_GEM,
- 	.release		= vkms_release,
- 	.fops			= &vkms_driver_fops,
- 	DRM_GEM_SHMEM_DRIVER_OPS,
- 
-+	.debugfs_init           = vkms_config_debugfs_init,
-+
- 	.name			= DRIVER_NAME,
- 	.desc			= DRIVER_DESC,
- 	.date			= DRIVER_DATE,
--- 
-2.25.1
 
+Best regards,
+Krzysztof
