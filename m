@@ -2,107 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C45F3C14FE
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 16:17:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F0123C14FA
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 16:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231906AbhGHOUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 10:20:38 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:13348 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229592AbhGHOUh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 10:20:37 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 168E3OAf061621;
-        Thu, 8 Jul 2021 10:17:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=i1GNgGIbXvfhoDgAPErSGD1yx0vYCJp3egTZw1pEoLE=;
- b=UC/S7ZO0gfPdqVQ668+WBLCOuYS1lLNmOVxtuKDXT69U3Ku5+V5wBIezbhepETRVSE70
- bRqWYqrZQWkcrlxtX6VFuiACzXbL2uNoO1AheYVb8orSnHOfHIXq524DqofZXyYCxS/N
- fCjkGXw/Qjt4aLvM2elo2NVh4F2JLTpRC2XJEvFQkdInLAS8vuDXG87MvT4W2NmHbmgL
- BKaVCsaJ8B8/5ySa5xgXD4QpRaX4r0I5GMqCUjC6F2YMypMoX9ZogPUbS1nQsUDfTDyh
- H7/kzXc9+47oVQq3YMotxodHBqdvAjFhUOz9mMHgi6aIalkz5F/NhXqRAGpbtzwNCX3G hA== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39nvwkvsrx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Jul 2021 10:17:34 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 168E3orO016846;
-        Thu, 8 Jul 2021 14:17:32 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 39jfh8t8nk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Jul 2021 14:17:32 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 168EFWox24117682
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 8 Jul 2021 14:15:32 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AFEA5420E2;
-        Thu,  8 Jul 2021 14:17:28 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 95A1D4211B;
-        Thu,  8 Jul 2021 14:17:11 +0000 (GMT)
-Received: from osiris (unknown [9.145.79.77])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu,  8 Jul 2021 14:17:11 +0000 (GMT)
-Date:   Thu, 8 Jul 2021 16:17:10 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH] s390: preempt: Fix preempt_count initialization
-Message-ID: <YOcI5iAZnHS9rtRT@osiris>
-References: <20210707163338.1623014-1-valentin.schneider@arm.com>
+        id S231963AbhGHOTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 10:19:48 -0400
+Received: from mga12.intel.com ([192.55.52.136]:17440 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229592AbhGHOTq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 10:19:46 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10038"; a="189191797"
+X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
+   d="scan'208";a="189191797"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 07:17:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
+   d="scan'208";a="628519028"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
+  by orsmga005.jf.intel.com with ESMTP; 08 Jul 2021 07:16:59 -0700
+Subject: Re: [PATCH RFC 2/2] scsi: ufshcd: Fix device links when BOOT WLUN
+ fails to probe
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "open list:TARGET SUBSYSTEM" <linux-scsi@vger.kernel.org>,
+        Avri Altman <avri.altman@wdc.com>,
+        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210707172948.1025-1-adrian.hunter@intel.com>
+ <20210707172948.1025-3-adrian.hunter@intel.com> <YOXm4FuL/CW4lYDZ@kroah.com>
+ <66130101-b0c5-a9a3-318a-468c6f3b380f@intel.com>
+ <CAJZ5v0hfEE=ney1tH5MtQm0KWs4U2yzy_DqAAW7hTyxxx2-cNg@mail.gmail.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <c3ec3ca2-220f-9e5a-e2ce-b1c2be86c97c@intel.com>
+Date:   Thu, 8 Jul 2021 17:17:13 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210707163338.1623014-1-valentin.schneider@arm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: WkrwQ_rUrtcTredijp19qSyFHFlLJya7
-X-Proofpoint-ORIG-GUID: WkrwQ_rUrtcTredijp19qSyFHFlLJya7
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-08_06:2021-07-08,2021-07-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- priorityscore=1501 impostorscore=0 lowpriorityscore=0 adultscore=0
- mlxscore=0 suspectscore=0 phishscore=0 clxscore=1011 spamscore=0
- mlxlogscore=807 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2107080077
+In-Reply-To: <CAJZ5v0hfEE=ney1tH5MtQm0KWs4U2yzy_DqAAW7hTyxxx2-cNg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 05:33:38PM +0100, Valentin Schneider wrote:
-> S390's init_idle_preempt_count(p, cpu) doesn't actually let us initialize the
-> preempt_count of the requested CPU's idle task: it unconditionally writes
-> to the current CPU's. This clearly conflicts with idle_threads_init(),
-> which intends to initialize *all* the idle tasks, including their
-> preempt_count (or their CPU's, if the arch uses a per-CPU preempt_count).
+On 8/07/21 3:31 pm, Rafael J. Wysocki wrote:
+> On Wed, Jul 7, 2021 at 7:49 PM Adrian Hunter <adrian.hunter@intel.com> wrote:
+>>
+>> On 7/07/21 8:39 pm, Greg Kroah-Hartman wrote:
+>>> On Wed, Jul 07, 2021 at 08:29:48PM +0300, Adrian Hunter wrote:
+>>>> If a LUN fails to probe (e.g. absent BOOT WLUN), the device will not have
+>>>> been registered but can still have a device link holding a reference to the
+>>>> device. The unwanted device link will prevent runtime suspend indefinitely,
+>>>> and cause some warnings if the supplier is ever deleted (e.g. by unbinding
+>>>> the UFS host controller). Fix by explicitly deleting the device link when
+>>>> SCSI destroys the SCSI device.
+>>>>
+>>>> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+>>>> ---
+>>>>  drivers/scsi/ufs/ufshcd.c | 7 +++++++
+>>>>  1 file changed, 7 insertions(+)
+>>>>
+>>>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>>>> index 708b3b62fc4d..483aa74fe2c8 100644
+>>>> --- a/drivers/scsi/ufs/ufshcd.c
+>>>> +++ b/drivers/scsi/ufs/ufshcd.c
+>>>> @@ -5029,6 +5029,13 @@ static void ufshcd_slave_destroy(struct scsi_device *sdev)
+>>>>              spin_lock_irqsave(hba->host->host_lock, flags);
+>>>>              hba->sdev_ufs_device = NULL;
+>>>>              spin_unlock_irqrestore(hba->host->host_lock, flags);
+>>>> +    } else {
+>>>> +            /*
+>>>> +             * If a LUN fails to probe (e.g. absent BOOT WLUN), the device
+>>>> +             * will not have been registered but can still have a device
+>>>> +             * link holding a reference to the device.
+>>>> +             */
+>>>> +            device_links_scrap(&sdev->sdev_gendev);
+>>>
+>>> What created that link?  And why did it do that before probe happened
+>>> successfully?
+>>
+>> The same driver created the link.
+>>
+>> The documentation seems to say it is allowed to, if it is the consumer.
+>> From Documentation/driver-api/device_link.rst
+>>
+>>   Usage
+>>   =====
+>>
+>>   The earliest point in time when device links can be added is after
+>>   :c:func:`device_add()` has been called for the supplier and
+>>   :c:func:`device_initialize()` has been called for the consumer.
 > 
-> Unfortunately, it seems the way s390 does things doesn't let us initialize
-> every possible CPU's preempt_count early on, as the pages where this
-> resides are only allocated when a CPU is brought up and are freed when it
-> is brought down.
+> Yes, this is allowed, but if you've added device links to a device
+> object that is not going to be registered after all, you are
+> responsible for doing the cleanup.
 > 
-> Let the arch-specific code set a CPU's preempt_count when its lowcore is
-> allocated, and turn init_idle_preempt_count() into an empty stub.
+> Why can't you call device_link_del() directly on those links?
 > 
-> Fixes: f1a0a376ca0c ("sched/core: Initialize the idle task with preemption disabled")
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-> ---
->  arch/s390/include/asm/preempt.h | 16 ++++------------
->  arch/s390/kernel/setup.c        |  1 +
->  arch/s390/kernel/smp.c          |  1 +
->  3 files changed, 6 insertions(+), 12 deletions(-)
+> Or device_link_remove() if you don't want to deal with link pointers?
+> 
 
-Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
+Those only work for DL_FLAG_STATELESS device links, but we use only
+DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE flags.
 
-Vasily, can you pick this one up, please?
