@@ -2,138 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E8063C1B1D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 23:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C3343C1B22
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 23:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbhGHVnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 17:43:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60890 "EHLO
+        id S231357AbhGHVoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 17:44:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231265AbhGHVnH (ORCPT
+        with ESMTP id S231265AbhGHVoY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 17:43:07 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DBE1C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 14:40:25 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id x6so3572676qvx.4
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 14:40:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=X04tcKXa7hFEehVhGpumTDGOPBdfX4n0IkKTDrQdgMI=;
-        b=W1oZZzqpf6gxAFkRB9yGMvnIAM8TSfq+X3VRQUEVVXMXrfR2ZwUNGHs0NA5Vofb94J
-         7v5Y+vSGdYpRXRz9xGFt9ANLqHvJkHv9dBgQlHNU/EimvI4nTd3jhdvnrxghP4WGvmuM
-         O5eZGSMna5lzQ/fN4xemsrRE+IH2AfSWerxc6NBuJ1nbKa3juenlp347rrYTij3hKIkP
-         VGJp6cpQeAvlTRL5vl9nH0utTLIZA8UX8271PJ5YvN7Yz5MHMT+yPkCdxM3X8160mCJV
-         KBLRQbUSLSRzuwV8HYmcGmJUXf+2jqHJoVeFVf9aoljCxwSTBrcBjc7r2g2NwnuSIue6
-         H+VQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=X04tcKXa7hFEehVhGpumTDGOPBdfX4n0IkKTDrQdgMI=;
-        b=i7UbUgsLnxueW3BJ656ZPGEHvPMiDiWJDLNxFSkMmxk+Zm+dKjBp+X8lvGvwn67+w2
-         Eqmsje1RGYxcmZ6Mr5oWHyew+vjcGGF9qstWFqrmpXdhKP/SOxrP8QThxVd4ihFlaLm4
-         UswiaSxgWs1GWgeOmm6sqX8z/TzB6vIkpT8VIKEba2wzjuPfVlrhDw1PdCCQq7BaGzm7
-         dPbwcdhROa1Okmk0dXo8Vv3fW9vkNyLjJ8b9llHEmBV/zqjozSIbZRsRobnOFA19aY1C
-         9dJFBL9RnM6Fa7HNvalniEU842GO2VjkrS5Fa+mH9pNci3f0PWJlzUyjRflaTd2/tRTM
-         ivUA==
-X-Gm-Message-State: AOAM531jK2R9GFvJu5gpawxUfaHQDZY9V/B4GZuzQHw2jNKFOubhLZmw
-        41ZahJCy1+LjMhF3EO8PwnlsKQ==
-X-Google-Smtp-Source: ABdhPJyCj0Bip0e8fLTg2zNGYdN69r9A0+iv9qeSlSw4AqQRYRpiDcI/avhqQZQnUQiZVSO4BPtW1Q==
-X-Received: by 2002:a05:6214:29ef:: with SMTP id jv15mr7195839qvb.1.1625780424291;
-        Thu, 08 Jul 2021 14:40:24 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:8649])
-        by smtp.gmail.com with ESMTPSA id k6sm1458865qtg.78.2021.07.08.14.40.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jul 2021 14:40:23 -0700 (PDT)
-Date:   Thu, 8 Jul 2021 17:40:22 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, matthias.bgg@gmail.com, minchan@google.com,
-        timmurray@google.com, yt.chang@mediatek.com, wenju.xu@mediatek.com,
-        jonathan.jmchen@mediatek.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, kernel-team@android.com,
-        SH Chen <show-hong.chen@mediatek.com>
-Subject: Re: [PATCH v4 1/1] psi: stop relying on timer_pending for poll_work
- rescheduling
-Message-ID: <YOdwxh3487PeMHRX@cmpxchg.org>
-References: <20210708203648.2399667-1-surenb@google.com>
+        Thu, 8 Jul 2021 17:44:24 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D665C061574;
+        Thu,  8 Jul 2021 14:41:42 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GLV9c2Hmpz9s5R;
+        Fri,  9 Jul 2021 07:41:40 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1625780500;
+        bh=iMjLue84MtL4u1QyHyLXTcIHUE91RKo/s7Pdxsd3pKc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=UW7Nw0zSCCbJbgbRYE7KIX3pfSYgx9xu6pvWdsqwGWFdIbzQfZMys0+NbJWOqKbxr
+         sCYnWLIo7ict0jUUc2jzgJUNJVq+uybGRSz/Sc9E67VdrnQvjkK8HGgre7f1AtYSuJ
+         MKQtcgNfcTniI+vCj3sAVglGxrvAHQEQYqoTorEzLpJZueP/A3hv7Ha4vTJ6QSfilf
+         u5aiij7W2Zp0sID4eYXPJsqQeV7yInfVoSyBL0IOgUslLLHwAw77z5HrjgWVlwGxxq
+         Ef6nIqMHjDsL3oQeJjJaWro+ZA/DcBkbibkyt3Rkdc1YtxWMQKP5JUS39UnRrsRtLi
+         5QACbPMAqr1WA==
+Date:   Fri, 9 Jul 2021 07:41:39 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the irqchip tree
+Message-ID: <20210709074139.6e5a5689@canb.auug.org.au>
+In-Reply-To: <87fswo3gxq.wl-maz@kernel.org>
+References: <20210615210143.2e00d851@canb.auug.org.au>
+        <20210708121855.69b5a5f8@canb.auug.org.au>
+        <87im1l2plp.wl-maz@kernel.org>
+        <20210708225037.4980f159@canb.auug.org.au>
+        <87fswo3gxq.wl-maz@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210708203648.2399667-1-surenb@google.com>
+Content-Type: multipart/signed; boundary="Sig_/oT.rqm2DlpQ5BoDyA9CsDxu";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 08, 2021 at 01:36:48PM -0700, Suren Baghdasaryan wrote:
-> Psi polling mechanism is trying to minimize the number of wakeups to
-> run psi_poll_work and is currently relying on timer_pending() to detect
-> when this work is already scheduled. This provides a window of opportunity
-> for psi_group_change to schedule an immediate psi_poll_work after
-> poll_timer_fn got called but before psi_poll_work could reschedule itself.
-> Below is the depiction of this entire window:
-> 
-> poll_timer_fn
->   wake_up_interruptible(&group->poll_wait);
-> 
-> psi_poll_worker
->   wait_event_interruptible(group->poll_wait, ...)
->   psi_poll_work
->     psi_schedule_poll_work
->       if (timer_pending(&group->poll_timer)) return;
->       ...
->       mod_timer(&group->poll_timer, jiffies + delay);
-> 
-> Prior to 461daba06bdc we used to rely on poll_scheduled atomic which was
-> reset and set back inside psi_poll_work and therefore this race window
-> was much smaller.
-> The larger window causes increased number of wakeups and our partners
-> report visible power regression of ~10mA after applying 461daba06bdc.
-> Bring back the poll_scheduled atomic and make this race window even
-> narrower by resetting poll_scheduled only when we reach polling expiration
-> time. This does not completely eliminate the possibility of extra wakeups
-> caused by a race with psi_group_change however it will limit it to the
-> worst case scenario of one extra wakeup per every tracking window (0.5s
-> in the worst case).
-> This patch also ensures correct ordering between clearing poll_scheduled
-> flag and obtaining changed_states using memory barrier. Correct ordering
-> between updating changed_states and setting poll_scheduled is ensured by
-> atomic_xchg operation.
-> By tracing the number of immediate rescheduling attempts performed by
-> psi_group_change and the number of these attempts being blocked due to
-> psi monitor being already active, we can assess the effects of this change:
-> 
-> Before the patch:
->                                            Run#1    Run#2      Run#3
-> Immediate reschedules attempted:           684365   1385156    1261240
-> Immediate reschedules blocked:             682846   1381654    1258682
-> Immediate reschedules (delta):             1519     3502       2558
-> Immediate reschedules (% of attempted):    0.22%    0.25%      0.20%
-> 
-> After the patch:
->                                            Run#1    Run#2      Run#3
-> Immediate reschedules attempted:           882244   770298    426218
-> Immediate reschedules blocked:             881996   769796    426074
-> Immediate reschedules (delta):             248      502       144
-> Immediate reschedules (% of attempted):    0.03%    0.07%     0.03%
-> 
-> The number of non-blocked immediate reschedules dropped from 0.22-0.25%
-> to 0.03-0.07%. The drop is attributed to the decrease in the race window
-> size and the fact that we allow this race only when psi monitors reach
-> polling window expiration time.
-> 
-> Fixes: 461daba06bdc ("psi: eliminate kthread_worker from psi trigger scheduling mechanism")
-> Reported-by: Kathleen Chang <yt.chang@mediatek.com>
-> Reported-by: Wenju Xu <wenju.xu@mediatek.com>
-> Reported-by: Jonathan Chen <jonathan.jmchen@mediatek.com>
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> Tested-by: SH Chen <show-hong.chen@mediatek.com>
+--Sig_/oT.rqm2DlpQ5BoDyA9CsDxu
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Hi Marc,
+
+On Thu, 08 Jul 2021 17:32:01 +0100 Marc Zyngier <maz@kernel.org> wrote:
+>
+> On Thu, 08 Jul 2021 13:50:37 +0100,
+> Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >=20
+> > On Thu, 08 Jul 2021 09:10:10 +0100 Marc Zyngier <maz@kernel.org> wrote:=
+ =20
+> > >
+> > > Hmmm... I've had a fix for this sitting in irqchip-fixes for some
+> > > time. But I now realise that this branch is not included in -next
+> > > while tip tracks it.
+> > >=20
+> > > Any chance you could add [1] to -next in the future?
+> > >=20
+> > >=20
+> > > [1] git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.g=
+it irq/irqchip-fixes =20
+> >=20
+> > So I assume this a branch of bug fixes for the current release, right? =
+=20
+>=20
+> Yes, that's exactly what this is.
+>=20
+> > In which case I will add it tomorrow. =20
+
+Added from today.
+
+Thanks for adding your subsystem tree as a participant of linux-next.  As
+you may know, this is not a judgement of your code.  The purpose of
+linux-next is for integration testing and to lower the impact of
+conflicts between subsystems in the next merge window.=20
+
+You will need to ensure that the patches/commits in your tree/series have
+been:
+     * submitted under GPL v2 (or later) and include the Contributor's
+        Signed-off-by,
+     * posted to the relevant mailing list,
+     * reviewed by you (or another maintainer of your subsystem tree),
+     * successfully unit tested, and=20
+     * destined for the current or next Linux merge window.
+
+Basically, this should be just what you would send to Linus (or ask him
+to fetch).  It is allowed to be rebased if you deem it necessary.
+
+--=20
+Cheers,
+Stephen Rothwell=20
+sfr@canb.auug.org.au
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/oT.rqm2DlpQ5BoDyA9CsDxu
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDncRMACgkQAVBC80lX
+0GxFWQgAh2+VPDc1iUycA8NbZO9BAToojcD8dS0NqMNEam6q7OynIU6TEA8G25mB
+4dnzzyb4SJLAcHdUim087vCf5FTzCt3+m1hAC8Wt/igzGzbboBqVddOZfkX64mNI
+4P4tL/IHPEQlAAbtOWJZD0CVsAvChf/fO/HL05zF8+0zDJTCvpJhxRaaBemvJBNn
+suMr1z1+p4kQqBIb6U9JjbY2wHIqXfkvWhc8ZJM4Im5KafdVOmp/90zd8KONvUlB
+at/EvpyUm9WDw2ZS/oPWWYyybDGm0+aTp/Tp+Mfm/pcZfjro6BtL6x7/b+/O2Gec
+KElrTRL13B6xqoS3dezboFDXLz5jbw==
+=PMsz
+-----END PGP SIGNATURE-----
+
+--Sig_/oT.rqm2DlpQ5BoDyA9CsDxu--
