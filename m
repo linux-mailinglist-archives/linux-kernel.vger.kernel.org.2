@@ -2,94 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 412B03BF6B7
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 10:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1DFC3BF6BB
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 10:08:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbhGHILQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 04:11:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230507AbhGHILO (ORCPT
+        id S231223AbhGHILa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 04:11:30 -0400
+Received: from mail-vs1-f48.google.com ([209.85.217.48]:42548 "EHLO
+        mail-vs1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230507AbhGHIL3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 04:11:14 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C10C061574;
-        Thu,  8 Jul 2021 01:08:32 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id a8so6353585wrp.5;
-        Thu, 08 Jul 2021 01:08:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0gQCiVWHnENSaNLbAkzqpLG4Nw4sNv4Kb7hrJojJUFQ=;
-        b=HIoJLVdXN7GLqFdwM1tJZ+niNitRx3J6zWG9+W2pLSWdweIS7029LrZUqEt5zqcWLM
-         tMDr04xgCJ4c+0xcbJUq7I4ENW4dKD9RHL8pAI996hnGyPRuBTFzD/ImO3zWLABIzAuJ
-         7VoYHCcGdNJhp/5Jmnloun+UPTB2HD4oRop80aPQPgQ0srLmyGp3HEkRLml3L7LJ9+pz
-         ZS7kYr7vZG6OPAOG24jXDJ/vwFHoYnrz4ZMPbkFna42N2wz2B0VmaEOKNQarmbyOIcJp
-         LeZ5V4Rkpx6hOYvYbbyPFFOqtKg1a2onvPplqMjZhWEsTuzI5nIjenG8A9ju1fodDOtw
-         kPmg==
+        Thu, 8 Jul 2021 04:11:29 -0400
+Received: by mail-vs1-f48.google.com with SMTP id f7so1649411vsa.9;
+        Thu, 08 Jul 2021 01:08:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0gQCiVWHnENSaNLbAkzqpLG4Nw4sNv4Kb7hrJojJUFQ=;
-        b=TcUVo5nO5081HzqPqizyk5g4jIuQxujCm5s1hSt+K5n2J/AUenUbtj+ai+Xf90bzyY
-         9efvK2uXc/KwPr813z7wBL9eqY6rciNMgkyvQLl1QZknPh4Nl3sCvLFCOiW5E5lslsL8
-         sqN5QxFyKaZnTJmHQXE2qzHPvKI4KOO4hAXtN8Qf3d8HDsBeBrJX+vram5/kSnWoWwET
-         8q7pOflc6aUGKMIrpRUXiZA32b2Tq53oieGm8axgoY+imzhQfz4ZkALyIxpsAy70et5t
-         O+bnj6HxTjD2MBZks6hRMLj9QnVV650BAcJXUB9S28MdBiXIW+djnb6JuydUiEPgzN0y
-         PU1w==
-X-Gm-Message-State: AOAM533PS27SJM1ethRCM1Qkd7Mj9cDZtaWAjUtR8c/n6ulsLxMbDizv
-        52YulkCK8Vdgf3Afy0Kq88qjnDZVt6A=
-X-Google-Smtp-Source: ABdhPJznJ8uFi7KEB3UmzZEHGRNcnSxfCw+kXc8n47jza2IATwHia2kJi0F6XEcYwLIbyH4JNXHpYw==
-X-Received: by 2002:a5d:6986:: with SMTP id g6mr32174198wru.321.1625731710755;
-        Thu, 08 Jul 2021 01:08:30 -0700 (PDT)
-Received: from [192.168.98.98] ([37.165.6.154])
-        by smtp.gmail.com with ESMTPSA id j1sm8277140wms.7.2021.07.08.01.08.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Jul 2021 01:08:29 -0700 (PDT)
-Subject: Re: [PATCH] net: rtnetlink: Fix rtnl_dereference return value is NULL
-To:     Yajun Deng <yajun.deng@linux.dev>, davem@davemloft.net,
-        kuba@kernel.org, ryazanov.s.a@gmail.com, johannes.berg@intel.com,
-        avagin@gmail.com, vladimir.oltean@nxp.com, cong.wang@bytedance.com,
-        roopa@cumulusnetworks.com, zhudi21@huawei.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210708073745.13797-1-yajun.deng@linux.dev>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <2a00ac67-f5bc-8ff8-3737-ebea83777f87@gmail.com>
-Date:   Thu, 8 Jul 2021 10:08:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O/tIWe1nqJc31V9O67iN2UwPLB/e3npgUn13q7m69ss=;
+        b=qGlLnBuCRgQDHIqNwEFfJXZTd4avWy8Q9VwCF4SondArB+UipHMxKeQj5R6Azg6je+
+         sOALUfZF4Tq832YtnFhLQmKtqdRyDsQdXyDfFwAlMtcgNABrUfa0FTWAwtJw7pYh7+mJ
+         4Fg74KP6kJyfMsnYeKJ+VSCiaUbpVqe/S8zBrgea+wB77Wz2VUyDeSnHpKNOfroCcL93
+         XBb06O2TE06x0fQHgvu+MRzAql6pXqzAy6PIQpwk/93IfA3DznQfFFTfecfuOqLHWBes
+         pYLUr9/jXAN1Hrb7TQN9jLUOX6zBv4liy2RTpVKzA5qleA10IzKf377D54n+MwU3ds+F
+         KTpw==
+X-Gm-Message-State: AOAM531O4VVb5sX5+9RQ5UenPr9XdiEaFJ6MPIq5LmEM3RYPELH2uuhR
+        NEWzVLahFYKUgEOukwbICNn/sTe2Hld3Mukp3lA=
+X-Google-Smtp-Source: ABdhPJyfgxP7oRWHTXJVgdG1tOCGPkZeuoNJZuk3WboobDdKopyitU1PXLZUDpWjlFzGxDsvvBGsTPy4zyldcksBuf0=
+X-Received: by 2002:a05:6102:321c:: with SMTP id r28mr1843618vsf.40.1625731726611;
+ Thu, 08 Jul 2021 01:08:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210708073745.13797-1-yajun.deng@linux.dev>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210707224310.1403944-1-ndesaulniers@google.com> <20210707224310.1403944-3-ndesaulniers@google.com>
+In-Reply-To: <20210707224310.1403944-3-ndesaulniers@google.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 8 Jul 2021 10:08:35 +0200
+Message-ID: <CAMuHMdXuzb6PuujuCzm_FYq9ZeZeJxVZiYTGxdGeOTkZ6+W=+w@mail.gmail.com>
+Subject: Re: [PATCH 2/2] Makefile: drop CROSS_COMPILE for LLVM=1 LLVM_IAS=1
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <nathan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Nick,
 
+On Thu, Jul 8, 2021 at 1:12 AM Nick Desaulniers <ndesaulniers@google.com> wrote:
+> We get constant feedback that the command line invocation of make is too
+> long. CROSS_COMPILE is helpful when a toolchain has a prefix of the
+> target triple, or is an absolute path outside of $PATH, but it's mostly
+> redundant for a given ARCH.
+>
+> If CROSS_COMPILE is not set, simply set --target= for CLANG_FLAGS,
+> KBUILD_CFLAGS, and KBUILD_AFLAGS based on $ARCH.
+>
+> Previously, we'd cross compile via:
+> $ ARCH=arm64 CROSS_COMPILE=aarch64-linxu-gnu make LLVM=1 LLVM_IAS=1
 
-On 7/8/21 9:37 AM, Yajun Deng wrote:
-> rtnl_dereference() may be return NULL in rtnl_unregister(),
-> so add this case handling.
-> 
-> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-> ---
->  net/core/rtnetlink.c | 17 ++++++++++-------
->  1 file changed, 10 insertions(+), 7 deletions(-)
-> 
+Which didn't really work, I assume? (s/linxu/linux/)
 
-I do not see a use case for this.
-None of rtnl_unregister() callers check the return value anyway.
+Gr{oetje,eeting}s,
 
-Can you elaborate ?
+                        Geert
 
-If this was a bug fix, we would need a Fixes: tag.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-If this is something you need for an upcoming work, you would need to tag
-this for net-next tree.
-
-Thanks.
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
