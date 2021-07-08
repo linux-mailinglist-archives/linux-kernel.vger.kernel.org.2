@@ -2,137 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AA823C1B77
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 00:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98ABB3C1B72
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 00:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230416AbhGHWdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 18:33:04 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:19154 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229631AbhGHWdA (ORCPT
+        id S230336AbhGHWbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 18:31:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229631AbhGHWbV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 18:33:00 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 168M36eL155360;
-        Thu, 8 Jul 2021 18:30:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=+tKAWui9H07PmoURGM29yHvu85k+T7jBXWOYauoqnc8=;
- b=bg90Io1yMsZGhQDa6Lnv4KRetpvNwEmq3eoOv2/B/3SJiCVykMdDzwehgeqVhDnsy55u
- Vkxpd6uzqAWtcoZ0DtTSs1Orq4L/5MVkD4NI38FKLk22goOwR5na58Z1pv411Tf4nits
- P/Rev1K6lO/k5hOcUOXDcJ15B5WH6SPDN2Wa3LmysHJjHRcYE0QqAeEFtq7ZH5T8nR2M
- 77kKPP+sK0+KJyp7SOdfuWnxnYJmzH7wHFjEixxxtPXX0Z+8/HcU5F0NsDXF26X8pNEX
- phg549RVjPKfCVebme3y8JGIYEwGgulNFwl5tPa+ounFzaKIHfR3sH7d5w+4FW86ge1B qg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39p2qqdy1p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Jul 2021 18:30:04 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 168M35LI155211;
-        Thu, 8 Jul 2021 18:30:03 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39p2qqdy15-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Jul 2021 18:30:03 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 168MH9MQ001458;
-        Thu, 8 Jul 2021 22:30:02 GMT
-Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
-        by ppma05wdc.us.ibm.com with ESMTP id 39jfhdfb9r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Jul 2021 22:30:02 +0000
-Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 168MU2xh12059028
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 8 Jul 2021 22:30:02 GMT
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3B6CB124058;
-        Thu,  8 Jul 2021 22:30:02 +0000 (GMT)
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 21AEE124073;
-        Thu,  8 Jul 2021 22:30:02 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu,  8 Jul 2021 22:30:02 +0000 (GMT)
-Subject: Re: [PATCH v3] pkcs7: make parser enable SM2 and SM3 algorithms
- combination
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        David Howells <dhowells@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Biggers <ebiggers@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Vitaly Chikunov <vt@altlinux.org>,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Pascal van Leeuwen <pvanleeuwen@rambus.com>,
-        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-References: <20210624094705.48673-1-tianjia.zhang@linux.alibaba.com>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-Message-ID: <23f6a837-5b45-5950-0b0f-b138793373e1@linux.ibm.com>
-Date:   Thu, 8 Jul 2021 18:30:01 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Thu, 8 Jul 2021 18:31:21 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D947C061574;
+        Thu,  8 Jul 2021 15:28:38 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id q184so4335095ljq.0;
+        Thu, 08 Jul 2021 15:28:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:date:from:user-agent:mime-version:to:cc:subject
+         :references:in-reply-to:content-transfer-encoding;
+        bh=AqbpJ/vzfCUi++Lrt9i6vX2WjRS/QO6GgOjj5ClJ7wo=;
+        b=IR4hD0JMJHJdJKQjb4R/xJQmLr/oFmlzz2nUoYApYcOcb9S+QmFX2WS0jN4scM+QsP
+         8S4WVT5dBDJCKusXGiftTsdaHs283M4m6lLlCkUl9v8NLi9Ggehc6bX4U9K+B0ZGOtOZ
+         57M1Xot91So4IKp85WRWAKVs2VZfsdT5PXODFuHeiiz5WIdZBdaYlOvL7h4soZwkchS+
+         vLklbE4eYnox+e5HwfmkNbImxxrT1ZmlDWQeBvrAuISTAtTKqRJS1yaqPM9ce+hypFFi
+         Viy5nP8rJc8hX+q4XlpbdRJ27r9jHMpMok/QmiR4Ph6KSu9txYt5pP2C+J1oebOD5ope
+         EQYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:from:user-agent:mime-version:to
+         :cc:subject:references:in-reply-to:content-transfer-encoding;
+        bh=AqbpJ/vzfCUi++Lrt9i6vX2WjRS/QO6GgOjj5ClJ7wo=;
+        b=JTAJjLMsLQi4/TnGImZVprXuW6aiNF7kEm8L/KPtZWqpCdH/mxD50oM39IzNUjQLK7
+         bjinBpZYLoi/TuA4W+khJSoutNssDLwQOEbULzkmEDDPEuxUZsU3gDkRouZgdvSHQs0y
+         OoREGmSsEec/QSjkL3YRxhF9IW0B82vFBJXRqrSITV9YOdRWHbLmeBjYmYgZzO1tUNGn
+         LQx/q3L8BdGA3i2Oh0qNbvxHynhGek1AABqgb93vJpuNKCKDw3EhSkeTVs5KyrgWni35
+         JpCD1a9sAL6rHsFFK27+f6wepj8rsvUMs0hIWHjtFKcDxwe2EowfoEMvJhsGQtgW9spc
+         MW6g==
+X-Gm-Message-State: AOAM530yVTXrQ8TDAN5fbweo0fQkfFntzQWOnmy0cQQ/UCrqC7rDRlkb
+        ioNG8MdLLlOeE7xwl1ze4AA=
+X-Google-Smtp-Source: ABdhPJw+WCaKvBBipNv2bVZHQtDkxTm0ja9OtDsNpIwdc9Rztn64vX21tBpzp1cqd2VMOaXorxJ1vg==
+X-Received: by 2002:a2e:81c8:: with SMTP id s8mr6659564ljg.324.1625783316721;
+        Thu, 08 Jul 2021 15:28:36 -0700 (PDT)
+Received: from [192.168.0.91] ([188.242.181.97])
+        by smtp.googlemail.com with ESMTPSA id a15sm362883ljn.26.2021.07.08.15.28.36
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Thu, 08 Jul 2021 15:28:36 -0700 (PDT)
+Message-ID: <60E77EBF.2020605@gmail.com>
+Date:   Fri, 09 Jul 2021 01:39:59 +0300
+From:   Nikolai Zhubr <zhubr.2@gmail.com>
+User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; ru; rv:1.9.2.4) Gecko/20100608 Thunderbird/3.1
 MIME-Version: 1.0
-In-Reply-To: <20210624094705.48673-1-tianjia.zhang@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+CC:     Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@kernel.org>,
+        x86@kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] x86/PCI: Handle PIRQ routing tables with no router
+ device given
+References: <alpine.DEB.2.21.2107061320570.1711@angie.orcam.me.uk> <60E726E2.2050104@gmail.com> <alpine.DEB.2.21.2107082226040.6599@angie.orcam.me.uk>
+In-Reply-To: <alpine.DEB.2.21.2107082226040.6599@angie.orcam.me.uk>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: I_4TVNfqS7oUt2BoK87Do5NNYJiIU1t9
-X-Proofpoint-GUID: w9hpo3HcMisF8apDP4aZpUW7ZANI9LP4
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-08_12:2021-07-08,2021-07-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1011
- adultscore=0 impostorscore=0 mlxlogscore=999 spamscore=0 bulkscore=0
- malwarescore=0 priorityscore=1501 mlxscore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107080113
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+08.07.2021 23:45, Maciej W. Rozycki:
+>   Have you tried contacting Nvidia about your ALI chipset?  Back in the day
+> I tried to avoid undocumented stuff and Intel was reasonably open about
+> most of their chipsets.
 
-On 6/24/21 5:47 AM, Tianjia Zhang wrote:
-> Support parsing the message signature of the SM2 and SM3 algorithm
-> combination. This group of algorithms has been well supported. One
-> of the main users is module signature verification.
+Well, being neither their customer nor a kernel developer, I'm not sure 
+my request would be considered serious. Anyway, probably I'll give it a 
+try a bit later when I have an opportunity to dismount this board for 
+more comfortable testing. I was also going to try to modify its BIOS to 
+remove some unwanted behaviour unrelated to IRQs, and it might happen 
+that I also discover something about PCI handling along with (It is just 
+64k size, after all, and I have a 8086 debugger)
+
+
+Thank you,
+
+Regards,
+Nikolai
+
+
+>    Maciej
 >
-> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> ---
->   crypto/asymmetric_keys/pkcs7_parser.c | 7 +++++++
->   1 file changed, 7 insertions(+)
->
-> diff --git a/crypto/asymmetric_keys/pkcs7_parser.c b/crypto/asymmetric_keys/pkcs7_parser.c
-> index 967329e0a07b..6cf6c4552c11 100644
-> --- a/crypto/asymmetric_keys/pkcs7_parser.c
-> +++ b/crypto/asymmetric_keys/pkcs7_parser.c
-> @@ -248,6 +248,9 @@ int pkcs7_sig_note_digest_algo(void *context, size_t hdrlen,
->   	case OID_sha224:
->   		ctx->sinfo->sig->hash_algo = "sha224";
->   		break;
-> +	case OID_sm3:
-> +		ctx->sinfo->sig->hash_algo = "sm3";
-> +		break;
->   	default:
->   		printk("Unsupported digest algo: %u\n", ctx->last_oid);
->   		return -ENOPKG;
-> @@ -269,6 +272,10 @@ int pkcs7_sig_note_pkey_algo(void *context, size_t hdrlen,
->   		ctx->sinfo->sig->pkey_algo = "rsa";
->   		ctx->sinfo->sig->encoding = "pkcs1";
->   		break;
-> +	case OID_SM2_with_SM3:
-> +		ctx->sinfo->sig->pkey_algo = "sm2";
-> +		ctx->sinfo->sig->encoding = "raw";
-> +		break;
->   	default:
->   		printk("Unsupported pkey algo: %u\n", ctx->last_oid);
->   		return -ENOPKG;
-
-
-Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
-
 
