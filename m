@@ -2,98 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDF3C3BF958
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 13:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A123BF962
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 13:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231718AbhGHLxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 07:53:43 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:10293 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231628AbhGHLxn (ORCPT
+        id S231779AbhGHL5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 07:57:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231628AbhGHL5t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 07:53:43 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GLDxj3P3Sz1CGV7;
-        Thu,  8 Jul 2021 19:45:29 +0800 (CST)
-Received: from huawei.com (10.175.124.27) by dggeme703-chm.china.huawei.com
- (10.1.199.99) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 8 Jul
- 2021 19:50:59 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>, <minchan@kernel.org>,
-        <ngupta@vflare.org>
-CC:     <senozhatsky@chromium.org>, <henryburns@google.com>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH v2] mm/zsmalloc.c: close race window between zs_pool_dec_isolated() and zs_unregister_migration()
-Date:   Thu, 8 Jul 2021 19:51:17 +0800
-Message-ID: <20210708115117.12359-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.23.0
+        Thu, 8 Jul 2021 07:57:49 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 445BAC061574;
+        Thu,  8 Jul 2021 04:55:06 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id p1so14577510lfr.12;
+        Thu, 08 Jul 2021 04:55:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7sCC2Bd3Tn+urUcYrm3jEWJH+8AhYlM496j93EpGunY=;
+        b=bTqf4yjic2rDiWS+orAjXyEKJru+oQn1UGFnL5a4G97JLuyMcKfzAb4Diol6hGOkK/
+         k0OnFELCnFddmCqM++Pw22CicpARykrG1UTAr8DQ9YGSf4LrxMqD36HtUpcByjj80G6L
+         GKZeDVZeXxmq+asxsKTbb88gGCy38H1U1D2HYnDvBhs2+45Q0SanIF5fhZe1hW/hqtyP
+         JxDIBEDyL+kTe9E8wLrnUV0vpasW/svJTGAn09XWjT/IK0XlJOZiQUrpJeifXIEwjqjH
+         meABxWDJQX3X0YnKiUFN1n8PhaDkYRadom/aG49lKL/9BAjw7zTbeW+x0s+ksb1vIW4k
+         htKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7sCC2Bd3Tn+urUcYrm3jEWJH+8AhYlM496j93EpGunY=;
+        b=dKiCnQ0ohXPWvujlRph+Tj+A0k7dmY+7NdZ92wc6yT1/HZyIssL61MotYwPA1CY4Dz
+         +F4ZGzP7yKsyevp0Brov66eg8DZubjOsmEEJ+eNz66pzEs8CV43f0cK+89BbOGi4Ii0c
+         YSu7jyA4WVeYTJLutYKNy/2k/4wmTicLlT4vgNJfj/1VTMODqDemxoKyC3Pzpfp8Yvpo
+         ueEYacKveE99A/HiOsAevDpq9LcOtPUUDQXB/ew7NM2i4o70qcaVAPuFjOqjmXUByB8+
+         2kIoF6gFlOCbHktyz82HPCY39JXUAuFJHqadenU3XqTS7G/Gf4VByssmpkl50bVuQ4/W
+         Yd7g==
+X-Gm-Message-State: AOAM530Xu2dKFXLUhJ/aUxytlzoaHKIBGt5Bt/rOpLzeA6vy8gsb+IjW
+        lbyHyoucT8KPB4h7tePUl/Ku/kShT7z7oRPNcIc=
+X-Google-Smtp-Source: ABdhPJyyP0lPdJAOb9msVU4E4hiWvjm1wD88vNW3My1f2et8PWNOB5d2yUbFzLSPcCsU1CQwhL4t/b6v5T0CMMRodcw=
+X-Received: by 2002:a2e:9881:: with SMTP id b1mr23741766ljj.53.1625745304639;
+ Thu, 08 Jul 2021 04:55:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.27]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggeme703-chm.china.huawei.com (10.1.199.99)
-X-CFilter-Loop: Reflected
+References: <20210525143001.9298-1-cniedermaier@dh-electronics.com>
+ <20210602195009.GA3870858@robh.at.kernel.org> <b765351a7c3542d2a66ab1168f1ff222@dh-electronics.com>
+ <bfbd70ca-b5a6-f7a7-4c7d-72ac86874227@denx.de> <76d6cc846f4f473083e597303956ff11@dh-electronics.com>
+In-Reply-To: <76d6cc846f4f473083e597303956ff11@dh-electronics.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Thu, 8 Jul 2021 08:54:53 -0300
+Message-ID: <CAOMZO5AOjG__CpjDknnyK2Ox0V7dVPeSAWQV8DKtaREEJAeO=g@mail.gmail.com>
+Subject: Re: [PATCH V2] dt-bindings: arm: fsl: Add DHCOM PicoITX and DHCOM
+ DRC02 boards
+To:     Christoph Niedermaier <cniedermaier@dh-electronics.com>
+Cc:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        kernel <kernel@dh-electronics.com>,
+        "Marek MV. Vasut" <marex@denx.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There has one possible race window between zs_pool_dec_isolated() and
-zs_unregister_migration() because wait_for_isolated_drain() checks the
-isolated count without holding class->lock and there is no order inside
-zs_pool_dec_isolated(). Thus the below race window could be possible:
+Hi Christoph,
 
-zs_pool_dec_isolated		zs_unregister_migration
-  check pool->destroying != 0
-				  pool->destroying = true;
-				  smp_mb();
-				  wait_for_isolated_drain()
-				    wait for pool->isolated_pages == 0
-  atomic_long_dec(&pool->isolated_pages);
-  atomic_long_read(&pool->isolated_pages) == 0
+On Thu, Jul 8, 2021 at 4:39 AM Christoph Niedermaier
+<cniedermaier@dh-electronics.com> wrote:
 
-Since we observe the pool->destroying (false) before atomic_long_dec()
-for pool->isolated_pages, waking pool->migration_wait up is missed.
+> Is this Patch OK?
 
-Fix this by ensure checking pool->destroying is happened after the
-atomic_long_dec(&pool->isolated_pages).
+It looks good for me:
 
-Fixes: 701d678599d0 ("mm/zsmalloc.c: fix race condition in zs_destroy_pool")
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
-v1->v2:
-  Fix potential race window rather than simply combine atomic_long_dec
-and atomic_long_read.
-
-Hi Andrew,
-  This patch is the version 2 of
-mm-zsmallocc-combine-two-atomic-ops-in-zs_pool_dec_isolated.patch.
-Many thanks.
----
- mm/zsmalloc.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
-index 5f3df680f0a2..0fc388a0202d 100644
---- a/mm/zsmalloc.c
-+++ b/mm/zsmalloc.c
-@@ -1830,10 +1830,11 @@ static inline void zs_pool_dec_isolated(struct zs_pool *pool)
- 	VM_BUG_ON(atomic_long_read(&pool->isolated_pages) <= 0);
- 	atomic_long_dec(&pool->isolated_pages);
- 	/*
--	 * There's no possibility of racing, since wait_for_isolated_drain()
--	 * checks the isolated count under &class->lock after enqueuing
--	 * on migration_wait.
-+	 * Checking pool->destroying must happen after atomic_long_dec()
-+	 * for pool->isolated_pages above. Paired with the smp_mb() in
-+	 * zs_unregister_migration().
- 	 */
-+	smp_mb__after_atomic();
- 	if (atomic_long_read(&pool->isolated_pages) == 0 && pool->destroying)
- 		wake_up_all(&pool->migration_wait);
- }
--- 
-2.23.0
-
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
