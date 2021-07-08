@@ -2,82 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E1FD3BF441
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 05:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C7BB3BF444
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 05:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230418AbhGHDTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 23:19:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41528 "EHLO
+        id S230388AbhGHDVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 23:21:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230201AbhGHDTb (ORCPT
+        with ESMTP id S230305AbhGHDVM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 23:19:31 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D01CC061574;
-        Wed,  7 Jul 2021 20:16:49 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id p21so10482410lfj.13;
-        Wed, 07 Jul 2021 20:16:49 -0700 (PDT)
+        Wed, 7 Jul 2021 23:21:12 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BBC2C06175F
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 20:18:31 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id o8so5192553ilf.12
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 20:18:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EuBitGCp9JesYh5sdj5eqPVCDuGNnzs3S7G9gvYO70w=;
-        b=qpNFpx5bxvVv1h0F6VLtN6W2IWGNHL+2J/ewNcUPtz6onCLvDYomy4A7MKtst86kYH
-         wFYfj4hiwIBbMaszradNZd4JF493z64kryks4Chu9Um9oDCO9k+en+9DJx6OVav1v2JD
-         vFK2Gd5Ii9QLGkx7X69ynqvdp1kuqwDxMmXVeLl90fbaS1rS3lXhztCt2hh95Bqp12bd
-         zf4rR3576PmWDvj+Boy0Btj62znU3Y9CVT6bA1RR5l0JAqp1prprT7rUTzSFLJTvHsjB
-         wBtBlygpkUmBmtoSv1f9jNS/nVLPsHsWyvImiP/owMr5On8QfgcWyWveX3AA9a8uvFB+
-         IVdA==
+        d=linuxfoundation.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9T+utMZuunfx662ohPO94qoZtpTEcl7gy4ZtO3dCnRk=;
+        b=RSFOn9Fyok6NqB6pVJQsWOINqg0fmGywAVRJbO8VT6wIV8nJTWJv0VjXUDq1d7xFCm
+         oONM6pJJiLpqrTerV+tgbfuzZ2t6qXZittqvUUEOKcz/vYJ4E4MJxpdl0kBcwXXuhbI8
+         UbRIJvm+kscN6mkL/+AtibUwKbMfCyWqE9M84=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EuBitGCp9JesYh5sdj5eqPVCDuGNnzs3S7G9gvYO70w=;
-        b=HAhe53b+gLe44NcyyNmTE4S8xYozMcdVRLAahMI+9g5scnj61KnqtE/z3IB/ujhAd5
-         ouwxTWX7INi/kqmmj1iZXIxfjJ6s5vnWYES2FNQ2L2GALIOIn5+Freph6+5FTRgcsTOc
-         QyZd1yekSkD6rFBm2iajFZckWF1hG8jct856HVXjHJ8GFyeax4BEEGgeNV0LK5wawM2a
-         LPOmMYejs7rUh+2B22sJHSei0hn72tPnQINEAiviWWnzfLepvuNYW7Ho3gY2AY0p7GlT
-         YoN7rKQdMlSF1Di0/o3nsW4O/Vyhwgl3c3Rr8scIhZNKAhRsP8SpMI17O/tzng++4Q86
-         oRSQ==
-X-Gm-Message-State: AOAM531pm7qIGQx39tC1RNOLvZ1E5NxUeqS7MtCQri67OxcZ0Fl526fS
-        wDjP14gMws0GRpQyAg0uh1Ts044c0ESNR9Eax9Y=
-X-Google-Smtp-Source: ABdhPJy2VhIfF+IB0Zop6gyB8VX7dVvGHnVKbHU1VcZn9vFB13Gr84kZfOwE/m3z/c35KwTC6q4QsCxYC0AytsLx/Cg=
-X-Received: by 2002:ac2:4893:: with SMTP id x19mr1592041lfc.214.1625714208020;
- Wed, 07 Jul 2021 20:16:48 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9T+utMZuunfx662ohPO94qoZtpTEcl7gy4ZtO3dCnRk=;
+        b=bW4Cp40v4aFLJ82gY6Zbr+Wkdw4FWYi9sTqWNaUdzsy1/LEzwUjTTN2Jr7QFP3uIES
+         MYHI44w/zLte3QihGh/efOAg/RN4Y0cLL1g8BWeMFWE3EieBMyEd614yl9PByPfktYK+
+         PlVsibl+AJmH0M9nWxn+Kzk0lttlfZOVu2dZbO+jyGcI7nsFgmJkBTwckQEva56mvQ76
+         xqEZe2jsvfhlXYGpC9QMPzfmq5V7Tpc+AuXVJNkgEDUStRVv98iWXM2dJgig3U+dYelJ
+         qTul/iSEFuzpRXr75sR2DMFHbrD7Lh1IjRCbmuFwboPNkKc6V5NtlSA/OlwDfL72C7zB
+         Grag==
+X-Gm-Message-State: AOAM532HgbNBcr96jQLwLeTiIewNbc4zhvAfUAeimCxIXDsrShGw2Lkv
+        WcIys8crnlz04XZIfg2ep0E6XEC6tXiRJA==
+X-Google-Smtp-Source: ABdhPJyejhApA3rWl1rQFA3BRKanF3qwZu4S5QEagZ+XdsLOO5j3FEbgQLk3H5iWq00V0EGztof2yg==
+X-Received: by 2002:a05:6e02:78c:: with SMTP id q12mr7884200ils.243.1625714310809;
+        Wed, 07 Jul 2021 20:18:30 -0700 (PDT)
+Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id g12sm450538ioc.25.2021.07.07.20.18.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 20:18:30 -0700 (PDT)
+From:   Shuah Khan <skhan@linuxfoundation.org>
+To:     shuah@kernel.org, gregkh@linuxfoundation.org
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] selftests: firmware: Fix ingonred return val of asprintf() warn
+Date:   Wed,  7 Jul 2021 21:18:27 -0600
+Message-Id: <20210708031827.51293-1-skhan@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210707060328.3133074-1-Jianlin.Lv@arm.com>
-In-Reply-To: <20210707060328.3133074-1-Jianlin.Lv@arm.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 7 Jul 2021 20:16:36 -0700
-Message-ID: <CAADnVQ+FV6J-y3VkbP6B6cJEO0sFa40kHpinSuwVN1Rk2Fk=qA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: runqslower: fixed make install issue
-To:     Jianlin Lv <Jianlin.Lv@arm.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>, iecedge@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 6, 2021 at 11:03 PM Jianlin Lv <Jianlin.Lv@arm.com> wrote:
->
-> runqslower did not define install target, resulting in an installation
-> tool/bpf error:
->         $ make -C tools/bpf/ install
->
->         make[1]: Entering directory './tools/bpf/runqslower'
->         make[1]: *** No rule to make target 'install'.  Stop.
->
-> Add install target for runqslower.
->
-> Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
+Fix the following ingonred return val of asprintf() warn during
+build:
 
-Andrii applied a patch that removed install target.
-I don't mind whichever way.
+cc -Wall -O2    fw_namespace.c  -o ../tools/testing/selftests/firmware/fw_namespace
+fw_namespace.c: In function ‘main’:
+fw_namespace.c:132:2: warning: ignoring return value of ‘asprintf’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  132 |  asprintf(&fw_path, "/lib/firmware/%s", fw_name);
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+---
+ tools/testing/selftests/firmware/fw_namespace.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/firmware/fw_namespace.c b/tools/testing/selftests/firmware/fw_namespace.c
+index 0e393cb5f42d..4c6f0cd83c5b 100644
+--- a/tools/testing/selftests/firmware/fw_namespace.c
++++ b/tools/testing/selftests/firmware/fw_namespace.c
+@@ -129,7 +129,8 @@ int main(int argc, char **argv)
+ 		die("mounting tmpfs to /lib/firmware failed\n");
+ 
+ 	sys_path = argv[1];
+-	asprintf(&fw_path, "/lib/firmware/%s", fw_name);
++	if (asprintf(&fw_path, "/lib/firmware/%s", fw_name) < 0)
++		die("error: failed to build full fw_path\n");
+ 
+ 	setup_fw(fw_path);
+ 
+-- 
+2.30.2
+
