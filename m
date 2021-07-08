@@ -2,93 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D972D3BF7CC
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 11:52:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB543BF7D2
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 11:53:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231376AbhGHJzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 05:55:01 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:36710 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230079AbhGHJzA (ORCPT
+        id S231446AbhGHJzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 05:55:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231360AbhGHJzu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 05:55:00 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id EA857201A1;
-        Thu,  8 Jul 2021 09:52:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1625737937; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PhlJNBpetjZSDV5/yCI47Cdt6ca/0zPJcaE8KUURNEc=;
-        b=f5l6TTOQAYB3MaKb1DZ9Ruzgb2xHoK54uI9sHiBGLRmiaQokt0TJV4zeh2rFYpiEfoPau5
-        XeZ3Swqiy7Kn2+OChoCLUlIaO59Ad2dxOlkgrUmLH4X1YXZjIPwHDS6x8felX1bGIGQ1D+
-        EJhdDiBG3+7H1nbAG25qMUAma5eROjY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1625737937;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PhlJNBpetjZSDV5/yCI47Cdt6ca/0zPJcaE8KUURNEc=;
-        b=J6vHDs5u3ru0i/nrlj6xKeplfW0Cbu6Uj5FAG7tRm2oWd5W0XLN9eUwnpV4eHv97lQYbCZ
-        R4hE2UUNrTcoS2AA==
-Received: from quack2.suse.cz (unknown [10.163.43.118])
-        by relay2.suse.de (Postfix) with ESMTP id D6302A3B88;
-        Thu,  8 Jul 2021 09:52:17 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 589961F2CAF; Thu,  8 Jul 2021 11:52:17 +0200 (CEST)
-Date:   Thu, 8 Jul 2021 11:52:17 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux F2FS Dev Mailing List 
-        <linux-f2fs-devel@lists.sourceforge.net>, Jan Kara <jack@suse.cz>
-Subject: Re: [GIT PULL] f2fs for 5.14-rc1
-Message-ID: <20210708095217.GA32434@quack2.suse.cz>
-References: <YOYHejl3CgABOnhP@google.com>
- <20210708094647.7c0d3060@canb.auug.org.au>
+        Thu, 8 Jul 2021 05:55:50 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7A88C061574;
+        Thu,  8 Jul 2021 02:53:07 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id h1-20020a17090a3d01b0290172d33bb8bcso5537939pjc.0;
+        Thu, 08 Jul 2021 02:53:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pP73IrCzP3i0QRD5vKKxBVf9fATf89KjmWVbRdJAXWg=;
+        b=MVNw4G3ivXOPqXOy5yXFS1hqraU2wybFgf8NsCWlF1jvN5k3MKExXmiNVBrGibuE+l
+         JJtRqjN1WppxCBZzgosB5xg8EK8HK29oFHBaMF5eCyajnr2I52w+53uSWra1t0+SQDfX
+         Ch27a2NASYVBnV3j3EMfECZjYJvb7yXVlDccHAF0MBFhwqqGIpVeQTs1lPX6y5gizKmC
+         pWyfDlIr0+OuCnGT8XJMHlaG4NPybN+Sy86p8VhzFkuS7aVQxzDhTcsrSqd6d4QeAk7I
+         wE4vjQzdpEL8oOFk98tjwUE7RN2nBFVpJXRdhCnOJCdiWcq6fHZiDW8bM+phuSJ4MPFf
+         3kTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pP73IrCzP3i0QRD5vKKxBVf9fATf89KjmWVbRdJAXWg=;
+        b=AGDOSaNwAS4jcXq66ofpqZs53yFw82YpXvXNpNxF+eUOYaib+B8ujA+reB4U7xQZRb
+         cMDYRWOgzmVLIyLEOlS6WhgV66Os2oTjxR1LCNeXobUteSZ8TVpKEqE8fxg2jtcUmgRj
+         DQ+C2Mzqy8kcgQ6UXTuWsiCAPlVRJ+5lIpZ1JsOEiIo4ufYVqjffYByvInmbuYLQujgB
+         gN8jOtd5fcIO+ji7c/Bh+KIobrQw1EaOH0sic1sFUnI0LMucnjfKrw4wZL5x+oKmNsbn
+         4lckuSuPSwQeaeXj6Mld1UddjNhdLmE0v2j9PLdnFIftv1kJnbQVM70oXda3kgaJkN2l
+         J3zQ==
+X-Gm-Message-State: AOAM5328Lljq2QI857CZepCdrk+krF5Sa02+7agt9jvQcAEqQgkxGeM4
+        NgtsRBpnINFSOwZl5j0QCeE=
+X-Google-Smtp-Source: ABdhPJzCen8H13roJe+VcrT1fuciaZNNAHgz/HNODAXEjwP/LITAK+0KCs+JBq5A+7/Xi/ewjMF31w==
+X-Received: by 2002:a17:903:186:b029:129:5733:85c8 with SMTP id z6-20020a1709030186b0290129573385c8mr25566147plg.39.1625737987436;
+        Thu, 08 Jul 2021 02:53:07 -0700 (PDT)
+Received: from vessel.. ([103.242.196.137])
+        by smtp.gmail.com with ESMTPSA id b4sm1900896pji.52.2021.07.08.02.53.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jul 2021 02:53:06 -0700 (PDT)
+From:   Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
+To:     peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca
+Cc:     Saubhik Mukherjee <saubhik.mukherjee@gmail.com>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ldv-project@linuxtesting.org, andrianov@ispras.ru
+Subject: [PATCH v2] char: tpm: vtpm_proxy: Fix race in init
+Date:   Thu,  8 Jul 2021 15:22:59 +0530
+Message-Id: <20210708095259.27915-1-saubhik.mukherjee@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210708094647.7c0d3060@canb.auug.org.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 08-07-21 09:46:47, Stephen Rothwell wrote:
-> Hi Jaegeuk,
-> 
-> On Wed, 7 Jul 2021 12:58:50 -0700 Jaegeuk Kim <jaegeuk@kernel.org> wrote:
-> >
-> > Could you please consider this pull request?
-> > 
-> > Thanks,
-> > 
-> > The following changes since commit bd3c9cdb21a2674dd0db70199df884828e37abd4:
-> > 
-> >   Merge tag 'arm64-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux (2021-05-14 10:52:47 -0700)
-> > 
-> > are available in the Git repository at:
-> > 
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git tags/f2fs-for-5.14-rc1
-> > 
-> > for you to fetch changes up to 28607bf3aa6f9762b32dc7f1ed0488823c0651b8:
-> > 
-> >   f2fs: drop dirty node pages when cp is in error status (2021-07-06 22:05:06 -0700)
-> 
-> Its worth mentioning the semantic conflict against the ext3 tree (which
-> hasn't been merged by Linus yet, but presumably will be).
+vtpm_module_init calls vtpmx_init which calls misc_register. The file
+operations callbacks are registered. So, vtpmx_fops_ioctl can execute in
+parallel with rest of vtpm_module_init. vtpmx_fops_ioctl calls
+vtpmx_ioc_new_dev, which calls vtpm_proxy_create_device, which calls
+vtpm_proxy_work_start, which could read uninitialized workqueue.
 
-Whether that particular series causing the conflict will be merged by Linus
-in this merge window is uncertain - Linus didn't like how filemap_fault()
-unconditionally acquired the lock. I've created an optimization patch to avoid
-that but review is pending... At this point I'm leaning towards the variant
-that series won't go in during the merge window. In that case I'll
-probably rebase on top of rc1 and force-push everything.
+To avoid this, create workqueue before vtpmx init.
 
-								Honza
+Found by Linux Driver Verification project (linuxtesting.org).
+
+Fixes: 6f99612e2500 ("tpm: Proxy driver for supporting multiple emulated TPMs")
+Signed-off-by: Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
+---
+
+Changes since v1 ([0]):
+- Add Fixes tag to commit message, as requested by Jarkko in [1].
+
+[0]: https://lkml.org/lkml/2021/6/23/572
+[1]: https://lkml.org/lkml/2021/6/29/695
+
+ drivers/char/tpm/tpm_vtpm_proxy.c | 19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/char/tpm/tpm_vtpm_proxy.c b/drivers/char/tpm/tpm_vtpm_proxy.c
+index 91c772e38bb5..225dfa026a8f 100644
+--- a/drivers/char/tpm/tpm_vtpm_proxy.c
++++ b/drivers/char/tpm/tpm_vtpm_proxy.c
+@@ -697,23 +697,22 @@ static int __init vtpm_module_init(void)
+ {
+ 	int rc;
+ 
+-	rc = vtpmx_init();
+-	if (rc) {
+-		pr_err("couldn't create vtpmx device\n");
+-		return rc;
+-	}
+-
+ 	workqueue = create_workqueue("tpm-vtpm");
+ 	if (!workqueue) {
+ 		pr_err("couldn't create workqueue\n");
+-		rc = -ENOMEM;
+-		goto err_vtpmx_cleanup;
++		return -ENOMEM;
++	}
++
++	rc = vtpmx_init();
++	if (rc) {
++		pr_err("couldn't create vtpmx device\n");
++		goto err_destroy_workqueue;
+ 	}
+ 
+ 	return 0;
+ 
+-err_vtpmx_cleanup:
+-	vtpmx_cleanup();
++err_destroy_workqueue:
++	destroy_workqueue(workqueue);
+ 
+ 	return rc;
+ }
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.30.2
+
