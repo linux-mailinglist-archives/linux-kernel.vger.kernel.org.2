@@ -2,101 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD083BF9E5
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 14:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCBB83BF9E7
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 14:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229706AbhGHMPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 08:15:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbhGHMPD (ORCPT
+        id S229795AbhGHMRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 08:17:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24091 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229590AbhGHMRH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 08:15:03 -0400
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 480C3C06175F
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 05:12:21 -0700 (PDT)
-Received: by mail-vs1-xe2e.google.com with SMTP id j8so3488014vsd.0
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 05:12:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=74IJmH2QOykPmJGuffsoKEUZ/+2Y969fvLtQrP2crS8=;
-        b=qsUzl9LuVVs31f2p2N+5FDKJIVdBSGTKmilQcBklUBWzcfLxem9wLrc5JqbrUk8ItT
-         ia5nwKG5PLcGSh1vFhOE3SJGs4l4jRSUjlrPmKuSJoT3UFUghN3OS5U3+NOuFufDnQD9
-         Rvo/Y7GwXNgACHTD0Rd0VpOZthsXsvi8/MSZe9A9Xw+4T9UOppfwzi2qdbQ/EtAxBxW6
-         0fcHXGKYP+wP+Di4elb5VFNdAL+cZoP7Zd4xCvGw1ctVhUnOmXdbcd1+gve2ZgFeilNW
-         d84Jbdb059jMbfBs6+ZCXn/XPouW9sjUNt0zy2bHtzjmruzkxSYKJQkXsIPgSjC2gS2J
-         L2kA==
+        Thu, 8 Jul 2021 08:17:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625746465;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=I55zh2XXZG4Wh8FdZlPVvOlalnJqCExFPnbC3bw2voU=;
+        b=gCVKbwkFuXcZSDFBztb01rBSN1REjjsuGxaY81Op7Z1dGYrx8CYJnlqn8LUo+Tz5n7rNtj
+        T6Qhg6yY5w5wJtrPuSRvm5I6i6AhnPg85Dz8vMqYoXdXObPQHwfKwyHRPl8qN5TBXYBcCo
+        SG6qeug/PXMrchqNNhSsjxyEgqH47NI=
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com
+ [209.85.166.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-350-WYTZukSNPvaELJ1uTQTZVg-1; Thu, 08 Jul 2021 08:14:24 -0400
+X-MC-Unique: WYTZukSNPvaELJ1uTQTZVg-1
+Received: by mail-il1-f199.google.com with SMTP id f5-20020a92b5050000b02901ff388acf98so3480434ile.2
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 05:14:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=74IJmH2QOykPmJGuffsoKEUZ/+2Y969fvLtQrP2crS8=;
-        b=ZfUlVi5rvwghMak7HgpXY8942lWRwfWN+B0StKrXY2IGIwKECVys70rwNu304y8exs
-         X8FWGieDTc0X16qlobpnNzCbpnLpTAKNbacd1l7tlEYdZkddEfvvw2aNxPecwagbwtHx
-         mBOFv5vGckkOPH8Jm8MfRph/SsOKVD6e/ReC2J7aqOJAt2EFFQKmHnmf+9JhPnNraWTe
-         xGyW/CdwoM8gVmSaltn7FwTq+iym1LPP1fmbS59XL7mKms1d/P4jm7kmMqUNKMmKlWMP
-         DZmGIecFVYQNjSeUXGn8QczAFUr7sFsCTIuSzh/2KIyEYQWZf1abVz6krNqBrmdE7IUY
-         PUDA==
-X-Gm-Message-State: AOAM530X4RzK5zBCvVnoyovI0ktqFo3b7F51hPisHE+Ibs1c52u14ddy
-        cHcO8ipxXPUHK0YuAipVQdBkI799R4w01eUvuUQe0Q==
-X-Google-Smtp-Source: ABdhPJz5qXBkYjOlV4N1RGqbTLijRshQKc1z2Yw7EU94BW5+ZsEbGwsZEibUUF8kltbRyJggYBt0M7qyOrdXOwn24dc=
-X-Received: by 2002:a67:ee54:: with SMTP id g20mr27453162vsp.55.1625746340485;
- Thu, 08 Jul 2021 05:12:20 -0700 (PDT)
+         :message-id:subject:to:content-transfer-encoding;
+        bh=I55zh2XXZG4Wh8FdZlPVvOlalnJqCExFPnbC3bw2voU=;
+        b=JpT2i2VswDHkCZa7zkxYvWKMNAPEyV9m/1hEDOVVxmGhJ5VI7ZGUDo39V9VBHrT3Gq
+         IS/OP/KlQMfkyGtTcjIxxN2Pp5sxXgIm3ANWlQUojtUY4eLuzNFMveOUMRw33LlanKHY
+         21KfJw+kE+thzv4XVYHjeFGZ8A7BKSC6Qb3nb56AKZTcPxz/azZ5pe1J/OqF6wLlB4Zp
+         hHG5Yx0cTJcHhVuyPfyeXdJOlEJQFqTG/CIowZkA/xQiNvPKA5MZPW9wwkGce/FMVn7W
+         3r/ZlUV3wKUdOisOD9AvpQcVpD3xyKj9/RWPkQCGXHSxqJDvWfTfnMrdkOr8mw19T5yv
+         Wdjg==
+X-Gm-Message-State: AOAM533GV369NThh6bSU3Ak5utNHyUKK+30XO0mymgg3axRN2yVUqp9G
+        7GbqhMuyRJPi65ZpKmdmUXfeodjy/SpdR9cnXWoX17xnz3N8onxWPUSgET/KsAfUqayTFQUjOWW
+        /ryo/VGTqsnL3pYoE0UB6i3PJ1rNgBu8PZpuIXpyQ
+X-Received: by 2002:a05:6638:372c:: with SMTP id k44mr26426561jav.94.1625746464043;
+        Thu, 08 Jul 2021 05:14:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy2Ybl/++F5bCkFRwxr1Df16nASMIT1l9l7RKaCM5kiK/gmVXr2wTAan2c6EykGJnA7ffNMJC1G/s1frAEY8uU=
+X-Received: by 2002:a05:6638:372c:: with SMTP id k44mr26426536jav.94.1625746463835;
+ Thu, 08 Jul 2021 05:14:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210623075002.1746924-1-swboyd@chromium.org>
-In-Reply-To: <20210623075002.1746924-1-swboyd@chromium.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 8 Jul 2021 14:11:44 +0200
-Message-ID: <CAPDyKFozrrtwOEzBeKctD5fRM=D0dg9N=kFsvdXXDO-zD51Diw@mail.gmail.com>
-Subject: Re: [PATCH 0/2] Two mmc fixes for IDA and KASAN issues
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Sujit Kautkar <sujitka@chromium.org>,
-        Zubin Mithra <zsm@chromium.org>
+References: <20210707081642.95365-1-ihuguet@redhat.com> <0e6a7c74-96f6-686f-5cf5-cd30e6ca25f8@gmail.com>
+ <CACT4oudw=usQQNO0dL=xhJw9TN+9V3o=TsKGvGh7extu+JWCqA@mail.gmail.com> <20210707130140.rgbbhvboozzvfoe3@gmail.com>
+In-Reply-To: <20210707130140.rgbbhvboozzvfoe3@gmail.com>
+From:   =?UTF-8?B?w43DsWlnbyBIdWd1ZXQ=?= <ihuguet@redhat.com>
+Date:   Thu, 8 Jul 2021 14:14:13 +0200
+Message-ID: <CACT4oud6R3tPFpGuiyNM9kjV5kXqzRcg8J_exv-2MaHWLPm-sA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] sfc: revert "reduce the number of requested xdp ev queues"
+To:     =?UTF-8?B?w43DsWlnbyBIdWd1ZXQ=?= <ihuguet@redhat.com>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, ivan@cloudflare.com,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Jun 2021 at 09:50, Stephen Boyd <swboyd@chromium.org> wrote:
+On Wed, Jul 7, 2021 at 3:01 PM Martin Habets <habetsm.xilinx@gmail.com> wro=
+te:
+> > Another question I have, thinking about the long term solution: would
+> > it be a problem to use the standard TX queues for XDP_TX/REDIRECT? At
+> > least in the case that we're hitting the resources limits, I think
+> > that they could be enqueued to these queues. I think that just taking
+> > netif_tx_lock would avoid race conditions, or a per-queue lock.
 >
-> Here's a followup to a thread I sent a couple months ago[1]. They're only
-> marginally related to each other, but I have bundled them here into one
-> series to make it easier to track. Resending to restart the discussion.
->
-> Cc: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-> Cc: Sujit Kautkar <sujitka@chromium.org>
-> Cc: Zubin Mithra <zsm@chromium.org>
->
-> [1] https://lore.kernel.org/r/20210413003621.1403300-1-swboyd@chromium.org
->
-> Stephen Boyd (2):
->   mmc: block: Use kref in place of struct mmc_blk_data::usage
->   mmc: core: Don't allocate IDA for OF aliases
->
->  drivers/mmc/core/block.c | 35 +++++++++++++++++++++--------------
->  drivers/mmc/core/host.c  | 20 ++++++++++----------
->  2 files changed, 31 insertions(+), 24 deletions(-)
->
+> We considered this but did not want normal traffic to get delayed for
+> XDP traffic. The perceived performance drop on a normal queue would
+> be tricky to diagnose, and the only way to prevent it would be to
+> disable XDP on the interface all together. There is no way to do the
+> latter per interface, and we felt the "solution" of disabling XDP
+> was not a good way forward.
+> Off course our design of this was all done several years ago.
 
-My apologies for the delay! The changes look very good to me, thanks
-for helping out!
+In my opinion, there is no reason to make that distinction between
+normal traffic and XDP traffic. XDP traffic redirected with XDP_TX or
+XDP_REDIRECT is traffic that the user has chosen to redirect that way,
+but pushing the work down in the stack. Without XDP, this traffic had
+gone up the stack to userspace, or at least to the firewall, and then
+redirected, passed again to the network stack and added to normal TX
+queues.
 
-FYI, I did some more thorough analysis of how the block device
-reference counting/locking should be managed, from a generic point of
-view. Your change in patch1 fixes the immediate problem with the KASAN
-splat I reported, but also moves the code in the right direction.
+If the user wants to prevent XDP from mixing with normal traffic, just
+not attaching an XDP program to the interface, or not using
+XDP_TX/REDIRECT in it would be enough. Probably I don't understand
+what you want to say here.
 
-However, there are lots of additional improvements that deserve to be
-made (another possible KASAN splat) for this related mmc code. I am
-looking into this and will keep you posted. :-)
+Anyway, if you think that keeping XDP TX queues separated is the way
+to go, it's OK, but my proposal is to share the normal TX queues at
+least in the cases where dedicated queues cannot be allocated. As you
+say, the performance drop would be tricky to measure, if there's any,
+but in any case, even separating the queues, they're competing for
+resources of CPU, PCI bandwidth, network bandwidth...
 
-So, this series is applied for fixes and stable tags added for both
-patches. Again, thanks for helping out!
+The fact is that the situation right now is this one:
+- Many times (or almost always with modern servers' processors)
+XDP_TX/REDIRECT doesn't work at all
+- The only workaround is reducing the number of normal channels to let
+free resources for XDP, but this is a much higher performance drop for
+normal traffic than sharing queues with XDP, IMHO.
 
-Kind regards
-Uffe
+Increasing the maximum number of channels and queues, or even making
+them virtually unlimited, would be very good, I think, because people
+who knows how to configure the hardware would take advantage of it,
+but there will always be situations of getting short of resources:
+- Who knows how many cores we will be using 5 forward from now?
+- VFs normally have less resources available: 8 MSI-X vectors by default
+
+With some time, I can try to prepare some patches with these changes,
+if you agree.
+
+Regards
+--=20
+=C3=8D=C3=B1igo Huguet
+
