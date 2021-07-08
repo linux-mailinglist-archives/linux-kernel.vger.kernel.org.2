@@ -2,72 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C613C1A87
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 22:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8BBD3C1A8F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 22:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230436AbhGHUaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 16:30:01 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:42028 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230238AbhGHUaA (ORCPT
+        id S230453AbhGHUgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 16:36:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230238AbhGHUgp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 16:30:00 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 168KRElU028290
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 8 Jul 2021 16:27:14 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 2756A15C3DBB; Thu,  8 Jul 2021 16:27:14 -0400 (EDT)
-Date:   Thu, 8 Jul 2021 16:27:14 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: [GIT PULL] ext4 fixes for v5.14-rc1
-Message-ID: <YOdfoq/0eBHtjTht@mit.edu>
+        Thu, 8 Jul 2021 16:36:45 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3BB9C061574;
+        Thu,  8 Jul 2021 13:34:01 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id hc16so11920636ejc.12;
+        Thu, 08 Jul 2021 13:34:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Kuf9B8hhb/FsSxugunw9yeVw6DPaLs/0chQ2Iw5Fnu8=;
+        b=OXMVHq0wQI5muGrdtpQIcL1Hj+0R84U0isVeiY+D3BzCiGRuG/sHmbjU47mWQ7Rlps
+         3C0VGA41Advyo4uajWgmKXwIL+4m/cxD8yFoLg/dEOqIbcl4l+10TZjVywS1Ru+kCils
+         3unZX40jmG/3F0sqVdRq56PFVPIfsJhjoBBA+caGzwikfzDCA5DHj+QyWSpaq9UBbZnp
+         nrLwsPQqU1ESKMfnyIdcrThzt/ux7OUbGidxR6kXp/FQOISmF95okv7Frf1O2o3UHIU8
+         txIeb1Mi/aLytFoIbaWXBjtWBsMqqtx+eI3Tt1tMDwTM3IpKGBd8c095Fo3GO4yvXGJw
+         AOVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Kuf9B8hhb/FsSxugunw9yeVw6DPaLs/0chQ2Iw5Fnu8=;
+        b=ikzfYPmuP7kljP6cmYK3yyIVIBMABhL7G3++tmcNKLXth2rwUEEXU35IbghXMsnh+4
+         ccvYkzEQijNccRdov2XirKubUUOdQBDSUIPtyV29oHzSE0sk18kzsl5diyuJu3FJKbiZ
+         fcwGpH6lYf09jgjEbm4gQSkqB3n38zoQqfFT6kCM8ueEWcD0ruaNA1zloOpBtX/vL+7G
+         F/lza7lLTEIBVdt1zqSaGQDCe7pjFyJnnHdGTqO+LSloYDi/DIHfCf2/SBksvMFOFZZq
+         Mu67v/ikbP42KM7zz0jGpEOG5G/ywtL3zeI41zXFScJih6CtJ0nhOeBCFRphmnKA1Azi
+         5Abw==
+X-Gm-Message-State: AOAM533QtOHfvywRQLU8we0391yvasSgCYY5r4a1ynSk07XGwFc2mv6p
+        i80r9fFNHf3gV+46Ba14EduKMStMQJI=
+X-Google-Smtp-Source: ABdhPJxFAGPPZ24pMNBdbogAaDpKbM2C1ew7A0Wp61lHGHAWa8Wr2+wYHY6CVE3mWgjZoqenP0ZBwg==
+X-Received: by 2002:a17:906:f285:: with SMTP id gu5mr33389617ejb.226.1625776440290;
+        Thu, 08 Jul 2021 13:34:00 -0700 (PDT)
+Received: from [10.18.0.15] ([37.58.58.229])
+        by smtp.gmail.com with ESMTPSA id o14sm1820146edw.36.2021.07.08.13.33.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Jul 2021 13:33:59 -0700 (PDT)
+Subject: Re: [PATCH][RFT] PCI: Use pci_update_current_state() in
+ pci_enable_device_flags()
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+References: <4327888.LvFx2qVVIh@kreacher>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <5327028b-6e0b-e83c-b147-da083a23634c@gmail.com>
+Date:   Thu, 8 Jul 2021 22:33:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <4327888.LvFx2qVVIh@kreacher>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 16aa4c9a1fbe763c147a964cdc1f5be8ed98ed13:
+On 7/8/21 3:25 PM, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> Updating the current_state field of struct pci_dev the way it is done
+> in pci_enable_device_flags() before calling do_pci_enable_device() may
+> not work.  For example, if the given PCI device depends on an ACPI
+> power resource whose _STA method initially returns 0 ("off"), but the
+> config space of the PCI device is accessible and the power state
+> retrieved from the PCI_PM_CTRL register is D0, the current_state
+> field in the struct pci_dev representing that device will get out of
+> sync with the power.state of its ACPI companion object and that will
+> lead to power management issues going forward.
+> 
+> To avoid such issues, make pci_enable_device_flags() call
+> pci_update_current_state() which takes ACPI device power management
+> into account, if present, to retrieve the current power state of the
+> device.
+> 
+> Link: https://lore.kernel.org/lkml/20210314000439.3138941-1-luzmaximilian@gmail.com/
+> Reported-by: Maximilian Luz <luzmaximilian@gmail.com>
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+> 
+> Hi Maximilian,
+> 
+> Because commit 4514d991d992 ("PCI: PM: Do not read power state in
+> pci_enable_device_flags()"), the issue addressed by it is back, so
+> we need an alternative way to address it.
+> 
+> Can you please check if this patch makes that issue go away?
 
-  jbd2: export jbd2_journal_[un]register_shrinker() (2021-06-30 11:05:00 -0400)
+Hi,
 
-are available in the Git repository at:
+just tested this on v5.13 and it works, thanks! Feel free to add
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
+Tested-by: Maximilian Luz <luzmaximilian@gmail.com>
 
-for you to fetch changes up to 0705e8d1e2207ceeb83dc6e1751b6b82718b353a:
-
-  ext4: inline jbd2_journal_[un]register_shrinker() (2021-07-08 08:37:31 -0400)
-
-----------------------------------------------------------------
-Ext4 regression and bug fixes for v5.14-rc1
-
-----------------------------------------------------------------
-Stephen Brennan (1):
-      ext4: use ext4_grp_locked_error in mb_find_extent
-
-Theodore Ts'o (4):
-      Revert "ext4: consolidate checks for resize of bigalloc into ext4_resize_begin"
-      ext4: fix possible UAF when remounting r/o a mmp-protected file system
-      ext4: fix flags validity checking for EXT4_IOC_CHECKPOINT
-      ext4: inline jbd2_journal_[un]register_shrinker()
-
-Ye Bin (1):
-      ext4: fix WARN_ON_ONCE(!buffer_uptodate) after an error writing the superblock
-
- fs/ext4/ext4_jbd2.c  |   2 +-
- fs/ext4/ioctl.c      |  16 ++++++-
- fs/ext4/mballoc.c    |   9 ++--
- fs/ext4/mmp.c        |  31 ++++++-------
- fs/ext4/resize.c     |   4 --
- fs/ext4/super.c      |  26 ++++++-----
- fs/jbd2/checkpoint.c |   4 +-
- fs/jbd2/journal.c    | 149 ++++++++++++++++++++++++-----------------------------------
- include/linux/jbd2.h |   6 +--
- 9 files changed, 115 insertions(+), 132 deletions(-)
+Regards,
+Max
