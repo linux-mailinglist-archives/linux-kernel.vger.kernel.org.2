@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2567F3C1B92
+	by mail.lfdr.de (Postfix) with ESMTP id 91BF83C1B93
 	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 00:42:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230509AbhGHWp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 18:45:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46264 "EHLO
+        id S230527AbhGHWp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 18:45:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhGHWpU (ORCPT
+        with ESMTP id S230481AbhGHWpU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 8 Jul 2021 18:45:20 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE9FCC06175F;
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B24D7C061574;
         Thu,  8 Jul 2021 15:42:37 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso7827232wmh.4;
+Received: by mail-wm1-x331.google.com with SMTP id n33so5098340wms.1;
         Thu, 08 Jul 2021 15:42:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=TvUOlyzh89Y5KHQg8sXXVivyOcDl2hejbAKiOuf8MHw=;
-        b=NRZda7jNRVfHNvTCws/m+ClujdGTTH1R5X3Vu5LRyCotwZixgYEGg/ye0+rYF2YYa3
-         4PgxsxtudgtSyD/WcIpEPCvIDyzotRgoUYuZq1jEgEDxjG0B1jYcaW/k9ntSdD6oD0Mo
-         Dbv2AW1H87hIWdDRrjsGJiTKxCsULKcqfOAo9FLmrDRcXlooKToYqoXuP8TOp+jZ0ewf
-         z7V1NXeGcW7c0VJ+caWjzrfn+O/FBwdtd5NtWBLU4MDoK8ieDreZr2eO1oP9qAmXVPiy
-         +QbS1A2fA5k9HMNfEcJmazqVRlpx81m47VhPaQ1GLaBbdYZHv0XneFzP9P9tv9EDQnF4
-         D6vQ==
+        bh=bUg0OzAAYGqZcpEHpJpOK9a0znuiIQ3W0JwwGxaqD0o=;
+        b=lhiYDZxDdw4bNnOCZ3Y6pShqZ/RC9q1TPMxVm+5O/1EYjyZ78Dq+lkSt8FubGYcFEE
+         po+UB7U4QKHpifAKTNHYHqmPh+s12fMu1G4BsCd4kwAMwkz2oz8MqmREbrvPBTkxr5YJ
+         BssnHR6Udm0UP75Oz7SQh0BRYVXnqKl0809ZGICxzrj0kwu77ufajA0Gw0LPBXhu6unw
+         GtDuFRyn/C106L5aiZ0hs/pNlC/Aa4ZeNw9y2DrAqP0WT/27AbFwCNKwpF7hHz5LCA8j
+         mNkwURAsu3HaSu1tsQHhCJJtFu5IaNWrUFYuzGwd6NUmMbK0tNzwUf47Ih7jnSHggJRv
+         aF6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=TvUOlyzh89Y5KHQg8sXXVivyOcDl2hejbAKiOuf8MHw=;
-        b=IQTOLHF/TXS4Y/7kOHxx16uCn+8o+9NoX2YVmcKp9dPsOBM/0HcsprxhHdVtLUnP3R
-         lyAJSr4plFYO1urMO6K/rTkOUmWMRF6/uR0Nav0GMgtB6IXmz90Mq2ZhLcgCvC71qbF8
-         0E/OiwKWwmv3bab3hUccvlsOsI19w5lyP4uY1IvH/RLzZ9hM9u6dJgUn4rOelzzIOvJ7
-         HSLVMU69S2jst8SE58NToemn96cJyOk5YWM9znXpoUIoxn8ZwbvoPTCND/l7raA/AR2D
-         wvPGNLYlenSAhON4MKs4tf21B3y1ZfDvcj/3CKSXwkFbLYZHhFzi8Qy2TNvUl+oC7jiE
-         DKOA==
-X-Gm-Message-State: AOAM532OJzXT0/FS/lJG8b+JXtBD5r+dd5IxcnQXQvvmYZT7uk9Q7sV6
-        +/LbqckMK4orpt+OzHRrQPac4aekkrE=
-X-Google-Smtp-Source: ABdhPJyinUwjVc2lEs/1l4CHbiYL3fOGyRCIwTmGUluaFFNm4gL8Of6uWjNbKz5+HNhVRxHK49ca7A==
-X-Received: by 2002:a05:600c:1546:: with SMTP id f6mr35464808wmg.164.1625784155539;
-        Thu, 08 Jul 2021 15:42:35 -0700 (PDT)
+        bh=bUg0OzAAYGqZcpEHpJpOK9a0znuiIQ3W0JwwGxaqD0o=;
+        b=Vk/N3uYgK6xX6rk8JDZ1EoG+mGCZ8Rbxp+rdOiuy8Rwacd4sz1iJYlArmm0F31tWKZ
+         lKI9tTeED/9ytnAQjahCAExfCvvymzF8ZpcuukfgwSrKWS0AnXMiWgQYQnj4lfjke9mH
+         z/S/e5VsuX47r8Uis8PExf79fE1JAj2I6oqIsm3emPkrX1ujuYZT0UUTEMl/URYdifxr
+         eGnvIYjKzJHCsHa26QCGDnQVvMehUCumvasSgDxpAtOVjtDir6zVXQ1CXyFoVhwBNz9x
+         lq2DcsZuD8UhPe38fqrjclfd0Q0zBTr2sA9S1oAWc87z4dLnjOZQwgbxpILgdE1WatyC
+         Jm5A==
+X-Gm-Message-State: AOAM532oIgWrBgKvy1rQVImWJxCK95d0WwOE7hKv5NXB+hdbD+b03DBU
+        8BrYNHFPAy6VSCsIpC4f7/EDf+RRe0A=
+X-Google-Smtp-Source: ABdhPJzPZgd0mTkEsn2Ag64pVyhYmpJbazexrNwYfc9oGXRs5wUpBHL53fnkbrmyO1fc67UW/3Rtag==
+X-Received: by 2002:a1c:f717:: with SMTP id v23mr7673943wmh.32.1625784156381;
+        Thu, 08 Jul 2021 15:42:36 -0700 (PDT)
 Received: from valhalla.home ([2.29.20.111])
-        by smtp.gmail.com with ESMTPSA id l4sm3080655wme.26.2021.07.08.15.42.34
+        by smtp.gmail.com with ESMTPSA id l4sm3080655wme.26.2021.07.08.15.42.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jul 2021 15:42:35 -0700 (PDT)
+        Thu, 08 Jul 2021 15:42:36 -0700 (PDT)
 From:   Daniel Scally <djrscally@gmail.com>
 To:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
 Cc:     hdegoede@redhat.com, mgross@linux.intel.com,
         luzmaximilian@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
         andy.shevchenko@gmail.com, laurent.pinchart@ideasonboard.com,
         kieran.bingham@ideasonboard.com
-Subject: [RFC PATCH 1/2] regulator: Add support for software node connections
-Date:   Thu,  8 Jul 2021 23:42:25 +0100
-Message-Id: <20210708224226.457224-2-djrscally@gmail.com>
+Subject: [RFC PATCH 2/2] platform/surface: Add Surface Go 2 board file
+Date:   Thu,  8 Jul 2021 23:42:26 +0100
+Message-Id: <20210708224226.457224-3-djrscally@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210708224226.457224-1-djrscally@gmail.com>
 References: <20210708224226.457224-1-djrscally@gmail.com>
@@ -66,275 +66,213 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On some x86 platforms, firmware provided by the OEM does not adequately
-describe the constraints of regulator resources nor their connections to
-consuming devices via ACPI. To compensate, extend the regulator framework
-to allow discovery of constraints and supply-consumer relationships via
-software node references and properties. This will allow us to define
-those platform specific connections so that the resources can be used in
-the usual way.
+The DSDT tables on the Surface Go 2 contain no power control methods for
+the world facing camera, so the regulator, gpio and clk frameworks have no
+way to discover the appropriate connections and settings.
+
+To compensate for the shortcomings, define the connections and other
+parameters in a board file for this device.
 
 Signed-off-by: Daniel Scally <djrscally@gmail.com>
 ---
+ MAINTAINERS                             |   6 ++
+ drivers/platform/surface/Kconfig        |  10 ++
+ drivers/platform/surface/Makefile       |   1 +
+ drivers/platform/surface/surface_go_2.c | 135 ++++++++++++++++++++++++
+ 4 files changed, 152 insertions(+)
+ create mode 100644 drivers/platform/surface/surface_go_2.c
 
-swnode_get_regulator_constraints() here is not as extensive as the equivalent
-function in of_regulator...I could include all that now, but it didn't seem
-worth it so we don't know what any of those values should be.
-
- drivers/regulator/Kconfig                  |   6 ++
- drivers/regulator/Makefile                 |   1 +
- drivers/regulator/core.c                   |  23 +++++
- drivers/regulator/swnode_regulator.c       | 111 +++++++++++++++++++++
- include/linux/regulator/swnode_regulator.h |  33 ++++++
- 5 files changed, 174 insertions(+)
- create mode 100644 drivers/regulator/swnode_regulator.c
- create mode 100644 include/linux/regulator/swnode_regulator.h
-
-diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index 9d84d9245490..7e0351f8fe38 100644
---- a/drivers/regulator/Kconfig
-+++ b/drivers/regulator/Kconfig
-@@ -1171,6 +1171,12 @@ config REGULATOR_SY8827N
- 	help
- 	  This driver supports SY8827N single output regulator.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 52e61092c63b..f11e68daf939 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -12143,6 +12143,12 @@ F:	Documentation/driver-api/surface_aggregator/clients/dtx.rst
+ F:	drivers/platform/surface/surface_dtx.c
+ F:	include/uapi/linux/surface_aggregator/dtx.h
  
-+config REGULATOR_SWNODE
-+	bool "Software Node Regulator Support"
++MICROSOFT SURFACE GO 2 SUPPORT
++M:	Daniel Scally <djrscally@gmail.com>
++L:	platform-driver-x86@vger.kernel.org
++S:	Maintained
++F:	drivers/platform/surface/surface_go_2.c
++
+ MICROSOFT SURFACE GPE LID SUPPORT DRIVER
+ M:	Maximilian Luz <luzmaximilian@gmail.com>
+ L:	platform-driver-x86@vger.kernel.org
+diff --git a/drivers/platform/surface/Kconfig b/drivers/platform/surface/Kconfig
+index 3105f651614f..0c55bd531592 100644
+--- a/drivers/platform/surface/Kconfig
++++ b/drivers/platform/surface/Kconfig
+@@ -124,6 +124,16 @@ config SURFACE_DTX
+ 	  Aggregator Bus (i.e. CONFIG_SURFACE_AGGREGATOR_BUS=n). In that case,
+ 	  some devices, specifically the Surface Book 3, will not be supported.
+ 
++config SURFACE_GO_2
++	bool "Surface Go 2 Specific Driver"
 +	help
-+	  This option configures support for providing regulator constraints and
-+	  mappings to consumers through the use of software nodes.
++	  This board file performs some platform specific configuration to help
++	  the regulator, gpio and clk frameworks link those resources to the
++	  consuming devices - specifically the world facing camera.
 +
- config REGULATOR_TPS51632
- 	tristate "TI TPS51632 Power Regulator"
- 	depends on I2C
-diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
-index 580b015296ea..25cb7bbad652 100644
---- a/drivers/regulator/Makefile
-+++ b/drivers/regulator/Makefile
-@@ -9,6 +9,7 @@ obj-$(CONFIG_OF) += of_regulator.o
- obj-$(CONFIG_REGULATOR_FIXED_VOLTAGE) += fixed.o
- obj-$(CONFIG_REGULATOR_VIRTUAL_CONSUMER) += virtual.o
- obj-$(CONFIG_REGULATOR_USERSPACE_CONSUMER) += userspace-consumer.o
-+obj-$(CONFIG_REGULATOR_SWNODE) += swnode_regulator.o
- 
- obj-$(CONFIG_REGULATOR_88PG86X) += 88pg86x.o
- obj-$(CONFIG_REGULATOR_88PM800) += 88pm800-regulator.o
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index f192bf19492e..6e10f511db80 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -20,11 +20,13 @@
- #include <linux/gpio/consumer.h>
- #include <linux/of.h>
- #include <linux/regmap.h>
-+#include <linux/property.h>
- #include <linux/regulator/of_regulator.h>
- #include <linux/regulator/consumer.h>
- #include <linux/regulator/coupler.h>
- #include <linux/regulator/driver.h>
- #include <linux/regulator/machine.h>
-+#include <linux/regulator/swnode_regulator.h>
- #include <linux/module.h>
- 
- #define CREATE_TRACE_POINTS
-@@ -1763,6 +1765,7 @@ static struct regulator_dev *regulator_dev_lookup(struct device *dev,
- 						  const char *supply)
- {
- 	struct regulator_dev *r = NULL;
-+	struct fwnode_handle *swnode;
- 	struct device_node *node;
- 	struct regulator_map *map;
- 	const char *devname = NULL;
-@@ -1785,6 +1788,22 @@ static struct regulator_dev *regulator_dev_lookup(struct device *dev,
- 		}
- 	}
- 
-+	/* next, try software nodes */
-+	if (dev && dev->fwnode && is_software_node(dev->fwnode->secondary)) {
-+		swnode = swnode_get_regulator_node(dev, supply);
-+		if (!IS_ERR(swnode)) {
-+			r = swnode_find_regulator_by_node(swnode);
-+			if (r)
-+				return r;
++	  Select Y here if your device is a Microsoft Surface Go 2, otherwise
++	  select N.
 +
-+			/*
-+			 * We have a node, but there is no device.
-+			 * assume it has not registered yet.
-+			 */
-+			return ERR_PTR(-EPROBE_DEFER);
-+		}
-+	}
-+
- 	/* if not found, try doing it non-dt way */
- 	if (dev)
- 		devname = dev_name(dev);
-@@ -5242,6 +5261,10 @@ regulator_register(const struct regulator_desc *regulator_desc,
- 	init_data = regulator_of_get_init_data(dev, regulator_desc, config,
- 					       &rdev->dev.of_node);
- 
-+	if (!init_data)
-+		init_data = regulator_swnode_get_init_data(dev, regulator_desc,
-+							   config, &rdev->dev.fwnode);
-+
- 	/*
- 	 * Sometimes not all resources are probed already so we need to take
- 	 * that into account. This happens most the time if the ena_gpiod comes
-diff --git a/drivers/regulator/swnode_regulator.c b/drivers/regulator/swnode_regulator.c
+ config SURFACE_GPE
+ 	tristate "Surface GPE/Lid Support Driver"
+ 	depends on DMI
+diff --git a/drivers/platform/surface/Makefile b/drivers/platform/surface/Makefile
+index 32889482de55..9f858d2a3d77 100644
+--- a/drivers/platform/surface/Makefile
++++ b/drivers/platform/surface/Makefile
+@@ -12,6 +12,7 @@ obj-$(CONFIG_SURFACE_AGGREGATOR)	+= aggregator/
+ obj-$(CONFIG_SURFACE_AGGREGATOR_CDEV)	+= surface_aggregator_cdev.o
+ obj-$(CONFIG_SURFACE_AGGREGATOR_REGISTRY) += surface_aggregator_registry.o
+ obj-$(CONFIG_SURFACE_DTX)		+= surface_dtx.o
++obj-$(CONFIG_SURFACE_GO_2)		+= surface_go_2.o
+ obj-$(CONFIG_SURFACE_GPE)		+= surface_gpe.o
+ obj-$(CONFIG_SURFACE_HOTPLUG)		+= surface_hotplug.o
+ obj-$(CONFIG_SURFACE_PLATFORM_PROFILE)	+= surface_platform_profile.o
+diff --git a/drivers/platform/surface/surface_go_2.c b/drivers/platform/surface/surface_go_2.c
 new file mode 100644
-index 000000000000..75718de74366
+index 000000000000..4a335f0d5fd5
 --- /dev/null
-+++ b/drivers/regulator/swnode_regulator.c
-@@ -0,0 +1,111 @@
++++ b/drivers/platform/surface/surface_go_2.c
+@@ -0,0 +1,135 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/* Author: Dan Scally <djrscally@gmail.com> */
 +
++#include <linux/acpi.h>
++#include <linux/gpio/machine.h>
++#include <linux/init.h>
++#include <linux/kernel.h>
 +#include <linux/property.h>
-+#include <linux/regulator/driver.h>
-+#include <linux/regulator/machine.h>
 +
-+#include "internal.h"
++static const struct software_node tps68470_node = {
++	"INT3472",
++};
 +
-+static struct fwnode_handle *
-+regulator_swnode_get_init_node(struct fwnode_handle *fwnode,
-+			       const struct regulator_desc *desc)
++static const struct property_entry ana_properties[] = {
++	PROPERTY_ENTRY_STRING("regulator-name", "ANA"),
++	PROPERTY_ENTRY_U32("regulator-min-microvolt", 2815200),
++	PROPERTY_ENTRY_U32("regulator-max-microvolt", 2815200),
++	{ }
++};
++
++static const struct property_entry vsio_properties[] = {
++	PROPERTY_ENTRY_STRING("regulator-name", "VSIO"),
++	PROPERTY_ENTRY_U32("regulator-min-microvolt", 1800600),
++	PROPERTY_ENTRY_U32("regulator-max-microvolt", 1800600),
++	{ }
++};
++
++static const struct property_entry core_properties[] = {
++	PROPERTY_ENTRY_STRING("regulator-name", "CORE"),
++	PROPERTY_ENTRY_U32("regulator-min-microvolt", 1200000),
++	PROPERTY_ENTRY_U32("regulator-max-microvolt", 1200000),
++	{ }
++};
++
++static const struct software_node regulator_nodes[] = {
++	{"ANA", &tps68470_node, ana_properties},
++	{"VSIO", &tps68470_node, vsio_properties},
++	{"CORE", &tps68470_node, core_properties},
++};
++
++static const struct property_entry sensor_properties[] = {
++	PROPERTY_ENTRY_REF("avdd-supply", &regulator_nodes[0]),
++	PROPERTY_ENTRY_REF("dovdd-supply", &regulator_nodes[1]),
++	PROPERTY_ENTRY_REF("dvdd-supply", &regulator_nodes[2]),
++	{ }
++};
++
++static struct software_node sensor_node = {
++	.name		= "INT347A",
++	.properties	= sensor_properties,
++};
++
++static struct gpiod_lookup_table surface_go_2_gpios = {
++	.dev_id = "i2c-INT347A:00",
++	.table = {
++		GPIO_LOOKUP("tps68470-gpio", 9, "reset", GPIO_ACTIVE_LOW),
++		GPIO_LOOKUP("tps68470-gpio", 7, "powerdown", GPIO_ACTIVE_LOW)
++	}
++};
++
++static int __init surface_go_2_init(void)
 +{
-+	const struct software_node *parent, *child;
-+
-+	parent = to_software_node(fwnode->secondary);
-+
-+	if (desc->regulators_node)
-+		child = software_node_find_by_name(parent,
-+						   desc->regulators_node);
-+	else
-+		child = software_node_find_by_name(parent, desc->name);
-+
-+	return software_node_fwnode(child);
-+}
-+
-+static int swnode_get_regulator_constraints(struct fwnode_handle *swnode,
-+					    struct regulator_init_data *init_data)
-+{
-+	struct regulation_constraints *constraints = &init_data->constraints;
-+	u32 pval;
++	struct fwnode_handle *fwnode, *sensor_fwnode;
++	struct acpi_device *adev, *sensor;
 +	int ret;
 +
-+	ret = fwnode_property_read_string(swnode, "regulator-name", &constraints->name);
-+	if (ret)
-+		return ret;
++	adev = acpi_dev_get_first_match_dev("INT3472", "0", -1);
++	if (!adev) {
++		pr_err("%s(): Failed to find INT3472 ACPI device\n", __func__);
++		return -EINVAL;
++	}
 +
-+	if (!fwnode_property_read_u32(swnode, "regulator-min-microvolt", &pval))
-+		constraints->min_uV = pval;
++	ret = software_node_register(&tps68470_node);
++	if (ret) {
++		dev_err(&adev->dev, "Failed to add tps68470 software node\n");
++		goto err_put_adev;
++	}
 +
-+	if (!fwnode_property_read_u32(swnode, "regulator-max-microvolt", &pval))
-+		constraints->max_uV = pval;
++	fwnode = software_node_fwnode(&tps68470_node);
++	if (!fwnode) {
++		dev_err(&adev->dev, "Failed to find tps68470 fwnode\n");
++		ret = -ENODEV;
++		goto err_put_adev;
++	}
 +
-+	/* Voltage change possible? */
-+	if (constraints->min_uV != constraints->max_uV)
-+		constraints->valid_ops_mask |= REGULATOR_CHANGE_VOLTAGE;
++	adev->fwnode.secondary = fwnode;
 +
-+	/* Do we have a voltage range, if so try to apply it? */
-+	if (constraints->min_uV && constraints->max_uV)
-+		constraints->apply_uV = true;
++	ret = software_node_register_nodes(regulator_nodes);
++	if (ret) {
++		dev_err(&adev->dev,
++			"failed to register software nodes for regulator\n");
++		goto err_unregister_node;
++	}
 +
-+	constraints->boot_on = fwnode_property_read_bool(swnode, "regulator-boot-on");
-+	constraints->always_on = fwnode_property_read_bool(swnode, "regulator-always-on");
-+	if (!constraints->always_on) /* status change should be possible. */
-+		constraints->valid_ops_mask |= REGULATOR_CHANGE_STATUS;
++	gpiod_add_lookup_table(&surface_go_2_gpios);
 +
-+	return 0;
++	sensor = acpi_dev_get_first_match_dev("INT347A", "0", -1);
++	if (!sensor) {
++		pr_err("%s(): Failed to find sensor\n", __func__);
++		ret = -ENODEV;
++		goto err_remove_gpio_lookup;
++	}
++
++	ret = software_node_register(&sensor_node);
++	if (ret) {
++		dev_err(&sensor->dev, "Failed to add sensor node\n");
++		goto err_put_sensor;
++	}
++
++	sensor_fwnode = software_node_fwnode(&sensor_node);
++	if (!sensor_fwnode) {
++		dev_err(&sensor->dev, "Failed to find sensor fwnode\n");
++		ret = -ENODEV;
++		goto err_unregister_sensor_node;
++	}
++
++	sensor->fwnode.secondary = sensor_fwnode;
++
++	return ret;
++
++err_unregister_sensor_node:
++	software_node_unregister(&sensor_node);
++err_put_sensor:
++	acpi_dev_put(sensor);
++err_remove_gpio_lookup:
++	gpiod_remove_lookup_table(&surface_go_2_gpios);
++err_unregister_node:
++	adev->fwnode.secondary = -ENODEV;
++	software_node_unregister(&tps68470_node);
++err_put_adev:
++	acpi_dev_put(adev);
++
++	return ret;
 +}
-+
-+struct regulator_init_data *
-+regulator_swnode_get_init_data(struct device *dev,
-+			       const struct regulator_desc *desc,
-+			       struct regulator_config *config,
-+			       struct fwnode_handle **regnode)
-+{
-+	struct fwnode_handle *fwnode = dev_fwnode(dev);
-+	struct regulator_init_data *init_data;
-+	struct fwnode_handle *regulator;
-+	int ret;
-+
-+	if (!fwnode || !is_software_node(fwnode->secondary))
-+		return NULL;
-+
-+	regulator = regulator_swnode_get_init_node(fwnode, desc);
-+	if (!regulator)
-+		return NULL;
-+
-+	init_data = devm_kzalloc(dev, sizeof(*init_data), GFP_KERNEL);
-+	if (!init_data)
-+		return ERR_PTR(-ENOMEM);
-+
-+	ret = swnode_get_regulator_constraints(regulator, init_data);
-+	if (ret)
-+		return ERR_PTR(ret);
-+
-+	*regnode = regulator;
-+
-+	return init_data;
-+}
-+
-+struct regulator_dev *
-+swnode_find_regulator_by_node(struct fwnode_handle *swnode)
-+{
-+	struct device *dev;
-+
-+	dev = class_find_device_by_fwnode(&regulator_class, swnode);
-+
-+	return dev ? dev_to_rdev(dev) : NULL;
-+}
-+
-+struct fwnode_handle *swnode_get_regulator_node(struct device *dev, const char *supply)
-+{
-+	struct fwnode_handle *fwnode = dev_fwnode(dev);
-+	char *prop_name;
-+
-+	prop_name = devm_kasprintf(dev, GFP_KERNEL, "%s-supply", supply);
-+	if (!prop_name)
-+		return ERR_PTR(-ENOMEM);
-+
-+	return fwnode_find_reference(fwnode->secondary, prop_name, 0);
-+}
-diff --git a/include/linux/regulator/swnode_regulator.h b/include/linux/regulator/swnode_regulator.h
-new file mode 100644
-index 000000000000..97527f7dbe80
---- /dev/null
-+++ b/include/linux/regulator/swnode_regulator.h
-@@ -0,0 +1,33 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Author: Dan Scally <djrscally@gmail.com> */
-+#ifndef __LINUX_SWNODE_REG_H
-+#define __LINUX_SWNODE_REG_H
-+
-+#if defined(CONFIG_REGULATOR_SWNODE)
-+struct regulator_init_data *regulator_swnode_get_init_data(struct device *dev,
-+							   const struct regulator_desc *desc,
-+							   struct regulator_config *config,
-+							   struct fwnode_handle **regnode);
-+struct regulator_dev *swnode_find_regulator_by_node(struct fwnode_handle *swnode);
-+struct fwnode_handle *swnode_get_regulator_node(struct device *dev, const char *supply);
-+#else
-+struct regulator_init_data *regulator_swnode_get_init_data(struct device *dev,
-+							   const struct regulator_desc *desc,
-+							   struct regulator_config *config)
-+{
-+	return NULL;
-+}
-+
-+struct regulator_dev *swnode_find_regulator_by_node(struct fwnode_handle *swnode)
-+{
-+	return NULL;
-+}
-+
-+struct fwnode_handle *swnode_get_regulator_node(struct device *dev, const char *supply)
-+{
-+	return NULL;
-+}
-+
-+#endif
-+
-+#endif
++device_initcall(surface_go_2_init);
 -- 
 2.25.1
 
