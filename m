@@ -2,72 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55ACD3C185C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 19:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA1F43C1887
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 19:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230099AbhGHRlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 13:41:13 -0400
-Received: from smtprelay0011.hostedemail.com ([216.40.44.11]:46104 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229815AbhGHRlM (ORCPT
+        id S230038AbhGHRmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 13:42:42 -0400
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:34530 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229592AbhGHRmk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 13:41:12 -0400
-Received: from omf16.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id A11C1180A9C98;
-        Thu,  8 Jul 2021 17:38:29 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf16.hostedemail.com (Postfix) with ESMTPA id 3C77425511A;
-        Thu,  8 Jul 2021 17:38:28 +0000 (UTC)
-Message-ID: <ccf9f07a72c911652d24ceb6c6e925f834f1d338.camel@perches.com>
-Subject: Re: [PATCH net-next v2] drivers: net: Follow the indentation coding
- standard on printks
-From:   Joe Perches <joe@perches.com>
-To:     Carlos Bilbao <bilbao@vt.edu>, davem@davemloft.net
-Cc:     kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, andrew@lunn.ch,
-        gregkh@linuxfoundation.org
-Date:   Thu, 08 Jul 2021 10:38:26 -0700
-In-Reply-To: <5183009.Sb9uPGUboI@iron-maiden>
-References: <1884900.usQuhbGJ8B@iron-maiden>
-         <03ad1f2319a608bbfe3fc09e901742455bf733a0.camel@perches.com>
-         <5183009.Sb9uPGUboI@iron-maiden>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Thu, 8 Jul 2021 13:42:40 -0400
+Received: by mail-ot1-f50.google.com with SMTP id w8-20020a0568304108b02904b3da3d49e5so2618152ott.1;
+        Thu, 08 Jul 2021 10:39:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RWxAkUDPROT9OQdmZgcR2azQpGWf/ojz84EqfWmUJ+s=;
+        b=eVHHUh4s3RPlk52oudODzeCE5kNPTRj8sCa+B2P0NivMIVszI66AeiywPNI1qrRHJf
+         M2+6eyQfNIMYe5P2H0zwfa3DOGTrebUos0RS2EDipVzhbdOt8UqkcKtNAFusI6T520SM
+         Y31t5Yt//li+VJLUAor3zweeVFG8/CBnc8PpsQ1epITOQclo3bJyPzeOc8JeXPm31gKY
+         IJRM7NliN6+hHm3KTSKSLEt8yCUsWnAi7yb7J9GcaeOZ/Ddv50QW+9wGHUILvtWizyRZ
+         pOODgCtTLg62sjJVCWVqs2o3S6CY4yBOQDX1WRW29fNvodwheLGsqQ9xuLrkNhTdurL1
+         Du+A==
+X-Gm-Message-State: AOAM532zkDTSV8HEo5c2Z+P52rwjlm0ycde7Oha3dv/G+KMpdfnurvQg
+        Q9Oa5rVkty+xj9u/HQf07zXoYkDDWuyiHw/pgnk=
+X-Google-Smtp-Source: ABdhPJw7nO6n5J5JgUGjAeA/V6Pjv2e64JRPVijORIUp2w/oc4dE8/NlBs17yulf3H4tG9/0t2A9gyjNX1h5VOxkgQE=
+X-Received: by 2002:a9d:5f19:: with SMTP id f25mr12190282oti.206.1625765997136;
+ Thu, 08 Jul 2021 10:39:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.88
-X-Stat-Signature: 4r8o453uawndmydoihpe9mb65adrwyw8
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 3C77425511A
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18aO+OxNVt0tR2tBbw9r7VAFqEi8lL67G4=
-X-HE-Tag: 1625765908-184590
+References: <20210707172948.1025-1-adrian.hunter@intel.com>
+ <20210707172948.1025-3-adrian.hunter@intel.com> <YOXm4FuL/CW4lYDZ@kroah.com>
+ <66130101-b0c5-a9a3-318a-468c6f3b380f@intel.com> <CAJZ5v0hfEE=ney1tH5MtQm0KWs4U2yzy_DqAAW7hTyxxx2-cNg@mail.gmail.com>
+ <c3ec3ca2-220f-9e5a-e2ce-b1c2be86c97c@intel.com> <CAGETcx_D9KvxEK689ggF6xViiC_yXaCWdL0KoW8uJwiNPhxy8w@mail.gmail.com>
+ <CAJZ5v0jnWWLyCFub=-ETr7d_ck=roVexTj8M0NRLi-svfjJy3Q@mail.gmail.com> <CAGETcx9hYu-n+tGOnEspWOckvgVQG+QcZPoR-DwesPh1qfrnXA@mail.gmail.com>
+In-Reply-To: <CAGETcx9hYu-n+tGOnEspWOckvgVQG+QcZPoR-DwesPh1qfrnXA@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 8 Jul 2021 19:39:46 +0200
+Message-ID: <CAJZ5v0inT1BWYrfQEMufgmCATXFE5XqMyjKoardtPpkowKm-nA@mail.gmail.com>
+Subject: Re: [PATCH RFC 2/2] scsi: ufshcd: Fix device links when BOOT WLUN
+ fails to probe
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "open list:TARGET SUBSYSTEM" <linux-scsi@vger.kernel.org>,
+        Avri Altman <avri.altman@wdc.com>,
+        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-07-08 at 13:33 -0400, Carlos Bilbao wrote:
-> Fix indentation of printks that start at the beginning of the line. Change this 
-> for the right number of space characters, or tabs if the file uses them. 
+On Thu, Jul 8, 2021 at 6:57 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> On Thu, Jul 8, 2021 at 9:49 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> >
+> > On Thu, Jul 8, 2021 at 6:46 PM Saravana Kannan <saravanak@google.com> wrote:
+> > >
+> > > On Thu, Jul 8, 2021 at 7:17 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
+> > > >
+> > > > On 8/07/21 3:31 pm, Rafael J. Wysocki wrote:
+> > > > > On Wed, Jul 7, 2021 at 7:49 PM Adrian Hunter <adrian.hunter@intel.com> wrote:
+> > > > >>
+> > > > >> On 7/07/21 8:39 pm, Greg Kroah-Hartman wrote:
+> > > > >>> On Wed, Jul 07, 2021 at 08:29:48PM +0300, Adrian Hunter wrote:
+> > > > >>>> If a LUN fails to probe (e.g. absent BOOT WLUN), the device will not have
+> > > > >>>> been registered but can still have a device link holding a reference to the
+> > > > >>>> device. The unwanted device link will prevent runtime suspend indefinitely,
+> > > > >>>> and cause some warnings if the supplier is ever deleted (e.g. by unbinding
+> > > > >>>> the UFS host controller). Fix by explicitly deleting the device link when
+> > > > >>>> SCSI destroys the SCSI device.
+> > > > >>>>
+> > > > >>>> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+> > > > >>>> ---
+> > > > >>>>  drivers/scsi/ufs/ufshcd.c | 7 +++++++
+> > > > >>>>  1 file changed, 7 insertions(+)
+> > > > >>>>
+> > > > >>>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> > > > >>>> index 708b3b62fc4d..483aa74fe2c8 100644
+> > > > >>>> --- a/drivers/scsi/ufs/ufshcd.c
+> > > > >>>> +++ b/drivers/scsi/ufs/ufshcd.c
+> > > > >>>> @@ -5029,6 +5029,13 @@ static void ufshcd_slave_destroy(struct scsi_device *sdev)
+> > > > >>>>              spin_lock_irqsave(hba->host->host_lock, flags);
+> > > > >>>>              hba->sdev_ufs_device = NULL;
+> > > > >>>>              spin_unlock_irqrestore(hba->host->host_lock, flags);
+> > > > >>>> +    } else {
+> > > > >>>> +            /*
+> > > > >>>> +             * If a LUN fails to probe (e.g. absent BOOT WLUN), the device
+> > > > >>>> +             * will not have been registered but can still have a device
+> > > > >>>> +             * link holding a reference to the device.
+> > > > >>>> +             */
+> > > > >>>> +            device_links_scrap(&sdev->sdev_gendev);
+> > > > >>>
+> > > > >>> What created that link?  And why did it do that before probe happened
+> > > > >>> successfully?
+> > > > >>
+> > > > >> The same driver created the link.
+> > > > >>
+> > > > >> The documentation seems to say it is allowed to, if it is the consumer.
+> > > > >> From Documentation/driver-api/device_link.rst
+> > > > >>
+> > > > >>   Usage
+> > > > >>   =====
+> > > > >>
+> > > > >>   The earliest point in time when device links can be added is after
+> > > > >>   :c:func:`device_add()` has been called for the supplier and
+> > > > >>   :c:func:`device_initialize()` has been called for the consumer.
+> > > > >
+> > > > > Yes, this is allowed, but if you've added device links to a device
+> > > > > object that is not going to be registered after all, you are
+> > > > > responsible for doing the cleanup.
+> > > > >
+> > > > > Why can't you call device_link_del() directly on those links?
+> > > > >
+> > > > > Or device_link_remove() if you don't want to deal with link pointers?
+> > > > >
+> > > >
+> > > > Those only work for DL_FLAG_STATELESS device links, but we use only
+> > > > DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE flags.
+> > >
+> > > Is there a reason you can't use DL_FLAG_STATELESS? It doesn't preclude
+> > > you from using RPM_ACTIVE as far as I can tell.
+> >
+> > Perhaps he wants the links to be managed if they are used after all.
+> >
+> > Anyway, this is a valid use case that is not covered right now.
+>
+> Maybe. But the suggested patch is certainly risky.
+>
+> There is no requirement the consumer is registered before the links
+> are added though. So, randomly deleting a managed link when
+> device_link_put_kref() is called on a stateless refcount (they are
+> still the same link still) isn't right.
 
-You are touching 2 different drivers and this should really be
-2 separate patches.
+Device pointers are needed in order to create a device link and it is
+quite unlikely that a pointer to an unregistered device will be shared
+between two different pieces of code.
 
-> diff --git a/drivers/net/ethernet/dec/tulip/de4x5.c.rej b/drivers/net/ethernet/dec/tulip/de4x5.c.rej
-[]
-> +++ b/drivers/net/ethernet/dec/tulip/de4x5.c.rej
-> @@ -0,0 +1,11 @@
-> +--- drivers/net/ethernet/dec/tulip/de4x5.c
-> ++++ drivers/net/ethernet/dec/tulip/de4x5.c
-> +@@ -3169,7 +3169,7 @@ dc2114x_autoconf(struct net_device *dev)
-> + 
-> +     default:
-> +        lp->tcount++;
-> +-printk("Huh?: media:%02x\n", lp->media);
-> ++       printk("Huh?: media:%02x\n", lp->media);
-> +        lp->media = INIT;
-> +        break;
-> +     }
+> The entity that created the
+> managed device link might still want it there.
 
-This is an interdiff that should not be part of this change.
+So the stateless kref is going to be put first.
 
+> Also, if two entities
+> create a managed link and one of them calls device_link_put_kref()
+> before the device is registered, we have a UAF problem because managed
+> links aren't refcounted (more than once).
 
+IMO until a device object is registered, its creator should be allowed
+to do the cleanup in the case when it gets released without
+registration, including the removal of any device links to it that
+have been added so far.
+
+Messing up with a device object created by someone else that may still
+go away without registration is a risky business regardless.
