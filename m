@@ -2,92 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30E943C18AD
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 19:53:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6367D3C18B0
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 19:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbhGHRzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 13:55:51 -0400
-Received: from protestant.ebb.org ([50.56.179.12]:37644 "EHLO
-        protestant.ebb.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhGHRzu (ORCPT
+        id S230117AbhGHRzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 13:55:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229875AbhGHRzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 13:55:50 -0400
-Received: from localhost (unknown [216.161.86.19])
-        (Authenticated sender: bkuhn)
-        by protestant.ebb.org (Postfix) with ESMTPSA id 9DD828208F;
-        Thu,  8 Jul 2021 10:53:05 -0700 (PDT)
-Date:   Thu, 8 Jul 2021 10:52:54 -0700
-From:   "Bradley M. Kuhn" <bkuhn@ebb.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>, tglx@linutronix.de,
-        akpm@linux-foundation.org, shuah@kernel.org, rafael@kernel.org,
-        rgoldwyn@suse.com, kuno@frob.nl, fontana@sharpeleven.org,
-        Ciaran.Farrell@suse.com, Christopher.DeNicolo@suse.com, hch@lst.de,
-        corbet@lwn.net, linux@leemhuis.info, ast@kernel.org,
-        andriin@fb.com, daniel@iogearbox.net, atenart@kernel.org,
-        alobakin@pm.me, weiwan@google.com, ap420073@gmail.com,
-        tj@kernel.org, jeyu@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, minchan@kernel.org,
-        axboe@kernel.dk, mbenes@suse.com, jpoimboe@redhat.com,
-        keescook@chromium.org, jikos@kernel.org, rostedt@goodmis.org,
-        peterz@infradead.org, linux-block@vger.kernel.org,
-        linux-spdx@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, copyleft-next@lists.fedorahosted.org
-Subject: Re: [PATCH 0/2] LICENSES: add and use copyleft-next-0.3.1
-Message-ID: <YOc7dgBq/N5vDjhx@ebb.org>
-References: <20210707184310.3624761-1-mcgrof@kernel.org>
- <YOaZohB/2Z3x5grc@kroah.com>
- <YOcSwXkpzAFGucXM@ebb.org>
- <YOcakETswyEN58j6@kroah.com>
+        Thu, 8 Jul 2021 13:55:52 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48BD1C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 10:53:09 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id h18so3242428qve.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 10:53:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vt-edu.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:organization:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Cwxf7KEJLH0aH3P6Bk/LrPnmtc+hrdUpVwR6xUgQ4IQ=;
+        b=J1RLSIOgi4uJxM6mRcqJNhUm3aT0HGueiUa9P/RPhhNeZ9f43HAodnXZjyuxTD8NW5
+         EJNiGb6lnR+KCJc3rrZWee4KK1ve51y/K7Zl8/QkMMwWLmTEW1VxBDnkpdP7hkKlZJRz
+         zHaIBQjXcT64oHcaE5C3+vdKCI2P65dA/5X3CgEn5aCVQxdh+kW7V1OWK2F27DbMf1jq
+         uRSwjXaQ8FCIVzmJQycJHvMDVjjcZJZLSNo9tJU9wviRPhblDolVhP+FzBSMnZvvgpUS
+         K47axkcrLkG8lf7nY3X8ikQelII+mGu+b4QcqgepwbFAtw78WT2/BmcQBwS1kbtP1Pdw
+         pagA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:organization
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=Cwxf7KEJLH0aH3P6Bk/LrPnmtc+hrdUpVwR6xUgQ4IQ=;
+        b=h17cxVDJ1lIztVepRc7+YRqwbVl8AORMa0iVOLnkZtEGudRCB5I0MxF6QzFbrqn9+i
+         9BeksTxVN5UJeEcvKHV9n+PB33cUweLLNL3WylWuc8HJVRBNVDAARpORavo4LNhVR0mG
+         5i2rKbBTNCebNFpeK+fi+4tG5cQrPmL3ZBkavRF+dSa0jRFrpajzWxR0u441J9/Tg3g6
+         xMRbFNhQDOj2jBUvxl1A1zTMNafQWbunBcFGd0+EnVC0O1UW+DckESRLXNNHmLH4V6eD
+         4OYcFoIOwyG+eI0FD7xmU7ZV6EhChL8I5WjWxW5Jq7qcdTSTkBbhcUEgmrAWjSujC/L4
+         6RHw==
+X-Gm-Message-State: AOAM532an8P5WPOWQo14RJIV+7yXSWNuPqrZD2ybzzDj/rJVCex5IDBQ
+        B3/rcTkA9OtBuzJ/UB4ySE/lzuqXQfRbPe3TaHA=
+X-Google-Smtp-Source: ABdhPJwnmCJQBIGBmtHW4MBoUCFtTNyBcPS3Eh6JmcXJfb/PX7fs8KDcUjsvkfXdsMpEeUnPU3Vebw==
+X-Received: by 2002:a05:6214:15d0:: with SMTP id p16mr31133720qvz.21.1625766788233;
+        Thu, 08 Jul 2021 10:53:08 -0700 (PDT)
+Received: from iron-maiden.localnet (50-200-151-121-static.hfc.comcastbusiness.net. [50.200.151.121])
+        by smtp.gmail.com with ESMTPSA id m189sm1278171qkd.107.2021.07.08.10.53.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jul 2021 10:53:08 -0700 (PDT)
+From:   Carlos Bilbao <bilbao@vt.edu>
+To:     davem@davemloft.net, Joe Perches <joe@perches.com>
+Cc:     kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, andrew@lunn.ch,
+        gregkh@linuxfoundation.org
+Subject: [PATCH net-next v2] drivers: net: Remove undefined XXXDEBUG on driver sb1000
+Date:   Thu, 08 Jul 2021 13:53:07 -0400
+Message-ID: <12806725.dW097sEU6C@iron-maiden>
+Organization: Virginia Tech
+In-Reply-To: <ccf9f07a72c911652d24ceb6c6e925f834f1d338.camel@perches.com>
+References: <1884900.usQuhbGJ8B@iron-maiden> <5183009.Sb9uPGUboI@iron-maiden> <ccf9f07a72c911652d24ceb6c6e925f834f1d338.camel@perches.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YOcakETswyEN58j6@kroah.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg KH wrote:
-> Let's keep it simple please, and not add new licenses for no real good
-> reason if at all possible.
+XXXDEBUG isn't defined anywhere so these can be deleted from this file.
 
-I've stated a number of real good reasons to keep copyleft-next as a
-dual-licensing option; they seem to have not been refuted here. Indeed, this
-point is quite salient:
+Signed-off-by: Carlos Bilbao <bilbao@vt.edu>
+---
+ drivers/net/sb1000.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-Joe Perches wrote:
->>> You can ask but it's the submitter's choice to license their code however
->>> they desire.
+diff --git a/drivers/net/sb1000.c b/drivers/net/sb1000.c
+index e88af978f63c..a7a6bd7ef015 100644
+--- a/drivers/net/sb1000.c
++++ b/drivers/net/sb1000.c
+@@ -759,9 +759,6 @@ sb1000_rx(struct net_device *dev)
+ 	ioaddr = dev->base_addr;
+ 
+ 	insw(ioaddr, (unsigned short*) st, 1);
+-#ifdef XXXDEBUG
+-printk("cm0: received: %02x %02x\n", st[0], st[1]);
+-#endif /* XXXDEBUG */
+ 	lp->rx_frames++;
+ 
+ 	/* decide if it is a good or bad frame */
+@@ -804,9 +801,6 @@ printk("cm0: received: %02x %02x\n", st[0], st[1]);
+ 	if (st[0] & 0x40) {
+ 		/* get data length */
+ 		insw(ioaddr, buffer, NewDatagramHeaderSize / 2);
+-#ifdef XXXDEBUG
+-printk("cm0: IP identification: %02x%02x  fragment offset: %02x%02x\n", buffer[30], buffer[31], buffer[32], buffer[33]);
+-#endif /* XXXDEBUG */
+ 		if (buffer[0] != NewDatagramHeaderSkip) {
+ 			if (sb1000_debug > 1)
+ 				printk(KERN_WARNING "%s: new datagram header skip error: "
+-- 
+2.25.1
 
-… to which I'd add, as long as the license is GPLv2-only-compatible, which of
-course (GPLv2-only|copyleft-next) is.
 
 
-Rest is admittedly a bit OT:
-
-Greg also noted:
-> I have stated in public many times to companies that try to add
-> dual-licensed new kernel code that they should only do so if they provide a
-> really good reason
-
-We can agree to disagree on the differences in how company vs. individual
-requests and their "good reasons" are handled/prioritized; I think we'd both
-agree it's actually moot anyway.  While it's an important topic, I apologize
-for raising that as it was off-topic to the issue at hand.
-
-On that off-topic point, Tim Bird added:
->> It's not at all purely symbolic to dual license (GPLv2-only|2-Clause-BSD).
->> That dual-licensing has allowed the interchange of a lot of code between
->> the BSD Unixes and Linux, that otherwise would not have happened.
-
-This is a good point, but the same argument is of course valid for
-copyleft-next-licensed projects.  While there are currently fewer than those
-than BSD-ish projects, I don't think Linux should stand on ceremony of “your
-project must be this tall to ride this ride” and share code with us … and
-then there are the aspirational arguments that I made in my prior email.
---
-Bradley M. Kuhn - he/him
-
-Pls. support the charity where I work, Software Freedom Conservancy:
-https://sfconservancy.org/supporter/
