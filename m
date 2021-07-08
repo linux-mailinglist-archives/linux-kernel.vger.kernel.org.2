@@ -2,190 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2AB33C1583
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 16:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C0E03C1586
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 16:57:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232023AbhGHO57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 10:57:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57429 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231858AbhGHO56 (ORCPT
+        id S231983AbhGHO7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 10:59:48 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:35670 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231708AbhGHO7q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 10:57:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625756116;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Thu, 8 Jul 2021 10:59:46 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id BFF27201EA;
+        Thu,  8 Jul 2021 14:57:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1625756223; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=vn4Iw4rKn4KgREOV9J8dhiG81JB34qcsT1rWAqvgmiI=;
-        b=dU3igyOqirJmBeCDwF4mADKdjmgx+PKLbq3llppsG0fZ5W6cyb8z4tAmxx7VaS/R5K9LPm
-        ABSC1kRnQLFGW4e2Mp2DMD4zHUJcqXwWUKN40NKUCnxx2HX7Uc/RCnV12Cu2lixvxNcnPt
-        t6h5Te3fr7PtdywvsA/NcBnaLNwBbnc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-26-LEzu5iB-NYiq8jTnSMKRnw-1; Thu, 08 Jul 2021 10:55:10 -0400
-X-MC-Unique: LEzu5iB-NYiq8jTnSMKRnw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        bh=d+w+ftWQRSGcaS7USD2rNrsIWh5yIVNwfoY5jSFqupE=;
+        b=J876vjgxxb1UxT9ci9UL8oQtz1KU3XMqZRhRpNDfal/B+eVett1CrKyXY/FAzPlmWTJMUa
+        h4sYgc/pIOrZ4xKz3MtFMRsjzDMBzKeUFv9P2hXSf+5Yu/uD1A4YDQMXWGK22IlYO+jaeT
+        RZgeXLhXXzQOVXve2CpC3EVHD63i7V0=
+Received: from suse.cz (unknown [10.100.216.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 385BA8030B0;
-        Thu,  8 Jul 2021 14:55:09 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (unknown [10.22.8.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 094CA5D6D1;
-        Thu,  8 Jul 2021 14:54:59 +0000 (UTC)
-Date:   Thu, 8 Jul 2021 10:54:58 -0400
-From:   Phil Auld <pauld@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] sched: Fix nr_uninterruptible race causing increasing
- load average
-Message-ID: <YOcRwhF6XkYWPjvV@lorien.usersys.redhat.com>
-References: <20210707190457.60521-1-pauld@redhat.com>
- <YOaoomJAS2FzXi7I@hirez.programming.kicks-ass.net>
- <YOatszHNZc9XRbYB@hirez.programming.kicks-ass.net>
- <YOavHgRUBM6cc95s@hirez.programming.kicks-ass.net>
+        by relay2.suse.de (Postfix) with ESMTPS id A5098A3B87;
+        Thu,  8 Jul 2021 14:57:03 +0000 (UTC)
+Date:   Thu, 8 Jul 2021 16:57:03 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] livepatch: Speed up transition retries
+Message-ID: <YOcSP7LZPtF5p6XT@alley>
+References: <patch.git-3127eb42c636.your-ad-here.call-01625661963-ext-4010@work.hours>
+ <YObU7HQ1vUAQzME3@alley>
+ <your-ad-here.call-01625750365-ext-6037@work.hours>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YOavHgRUBM6cc95s@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <your-ad-here.call-01625750365-ext-6037@work.hours>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 08, 2021 at 09:54:06AM +0200 Peter Zijlstra wrote:
-> On Thu, Jul 08, 2021 at 09:48:03AM +0200, Peter Zijlstra wrote:
-> > On Thu, Jul 08, 2021 at 09:26:26AM +0200, Peter Zijlstra wrote:
-> > > On Wed, Jul 07, 2021 at 03:04:57PM -0400, Phil Auld wrote:
-> > > > On systems with weaker memory ordering (e.g. power) commit dbfb089d360b
-> > > > ("sched: Fix loadavg accounting race") causes increasing values of load
-> > > > average (via rq->calc_load_active and calc_load_tasks) due to the wakeup
-> > > > CPU not always seeing the write to task->sched_contributes_to_load in
-> > > > __schedule(). Missing that we fail to decrement nr_uninterruptible when
-> > > > waking up a task which incremented nr_uninterruptible when it slept.
-> > > > 
-> > > > The rq->lock serialization is insufficient across different rq->locks.
-> > > > 
-> > > > Add smp_wmb() to schedule and smp_rmb() before the read in
-> > > > ttwu_do_activate().
+On Thu 2021-07-08 15:19:25, Vasily Gorbik wrote:
+> On Thu, Jul 08, 2021 at 12:35:24PM +0200, Petr Mladek wrote:
+> > On Wed 2021-07-07 14:49:41, Vasily Gorbik wrote:
+> > > That's just a racy hack for now for demonstration purposes.
 > > > 
-> > > > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > > > index 4ca80df205ce..ced7074716eb 100644
-> > > > --- a/kernel/sched/core.c
-> > > > +++ b/kernel/sched/core.c
-> > > > @@ -2992,6 +2992,8 @@ ttwu_do_activate(struct rq *rq, struct task_struct *p, int wake_flags,
-> > > >  
-> > > >  	lockdep_assert_held(&rq->lock);
-> > > >  
-> > > > +	/* Pairs with smp_wmb in __schedule() */
-> > > > +	smp_rmb();
-> > > >  	if (p->sched_contributes_to_load)
-> > > >  		rq->nr_uninterruptible--;
-> > > >  
+> > > For s390 LPAR with 128 cpu this reduces livepatch kselftest run time
+> > > from
+> > > real    1m11.837s
+> > > user    0m0.603s
+> > > sys     0m10.940s
 > > > 
-> > > Is this really needed ?! (this question is a big fat clue the comment is
-> > > insufficient). AFAICT try_to_wake_up() has a LOAD-ACQUIRE on p->on_rq
-> > > and hence the p->sched_contributed_to_load must already happen after.
+> > > to
+> > > real    0m14.550s
+> > > user    0m0.420s
+> > > sys     0m5.779s
 > > > 
-> > > > @@ -5084,6 +5086,11 @@ static void __sched notrace __schedule(bool preempt)
-> > > >  				!(prev_state & TASK_NOLOAD) &&
-> > > >  				!(prev->flags & PF_FROZEN);
-> > > >  
-> > > > +			/*
-> > > > +			 * Make sure the previous write is ordered before p->on_rq etc so
-> > > > +			 * that it is visible to other cpus in the wakeup path (ttwu_do_activate()).
-> > > > +			 */
-> > > > +			smp_wmb();
-> > > >  			if (prev->sched_contributes_to_load)
-> > > >  				rq->nr_uninterruptible++;
-> > > 
-> > > That comment is terrible, look at all the other barrier comments around
-> > > there for clues; in effect you're worrying about:
-> > > 
-> > > 	p->sched_contributes_to_load = X	R1 = p->on_rq
-> > > 	WMB					RMB
-> > > 	p->on_rq = Y				R2 = p->sched_contributes_to_load
-> > > 
-> > > Right?
-> > > 
-> > > 
-> > > Bah bah bah.. I so detest having to add barriers here for silly
-> > > accounting. Let me think about this a little.
+> > > Would smth like that be useful for production use cases?
+> > > Any ideas how to approach that more gracefully?
 > > 
-> > I got the below:
+> > Honestly, I do not see a real life use case for this, except maybe
+> > speeding up a test suite.
 > > 
-> > __schedule()					ttwu()
-> > 
-> > rq_lock()					raw_spin_lock(&p->pi_lock)
-> > smp_mb__after_spinlock();			smp_mb__after_spinlock();
-> > 
-> > p->sched_contributes_to_load = X;		if (READ_ONCE(p->on_rq) && ...)
-> > 						  goto unlock;
-> > 						smp_acquire__after_ctrl_dep();
-> > 
-> > 						smp_cond_load_acquire(&p->on_cpu, !VAL)
-> > 
-> > deactivate_task()
-> >   p->on_rq = 0;
-> > 
-> > context_switch()
-> >   finish_task_switch()
-> >     finish_task()
-> >       smp_store_release(p->on_cpu, 0);
-> > 
-> > 						ttwu_queue()
-> > 						  rq_lock()
-> > 						    ttwu_do_activate()
-> > 						      if (p->sched_contributes_to_load)
-> > 						        ...
-> > 						  rq_unlock()
-> > 						raw_spin_unlock(&p->pi_lock);
-> >     finish_lock_switch()
-> >       rq_unlock();
-> > 
-> > 
-> > 
-> > The only way for ttwu() to end up in an enqueue, is if it did a
-> > LOAD-ACQUIRE on ->on_cpu, 
+> > The livepatch transition is more about reliability than about speed.
+> > In the real life, a livepatch will be applied only once in a while.
 > 
-> That's not completely true; there's the WF_ON_CPU case, but in that
-> scenario we IPI the CPU doing __schedule and it becomes simple UP/PO and
-> everything must trivially work.
->
-> > but that orders with the STORE-RELEASE on the
-> > same, which ensures the p->sched_contributes_to_load LOAD must happen
-> > after the STORE.
-> > 
-> > What am I missing? Your Changelog/comments provide insufficient clues..
-> 
+> That's what I thought. Thanks for looking. Dropping this one.
 
-Sorry... I don't have a nice diagram. I'm still looking at what all those
-macros actually mean on the various architectures.
+If you still wanted to speed up the transition from some reason
+then an easy win might be to call klp_send_signals() earlier.
 
-"Works great in practice but how does it work in theory?" :)
+Well, my view is the following. The primary livepatching task is
+to fix some broken/vulnerable functionality on a running kernel.
+It should ideally happen on background and do not affect or slow
+down the existing work load.
 
-Using what you have above I get the same thing. It looks like it should be
-ordered but in practice it's not, and ordering it "more" as I did in the
-patch, fixes it.
+klp_send_signals() is not ideal. The fake signal interrupts syscalls
+and they need to get restarted. Also the function wakes up a lot of
+tasks and might increase load. Hence, it is used as a last resort that
+allows to finish the transition in a reasonable time frame.
 
-Is it possible that the bit field is causing some of the assumptions about
-ordering in those various macros to be off?
+That said, the current timeouts are arbitrary chosen values based
+rather on a common sense than on some measurement. I could imagine that
+we could modify them or allow to trigger klp_send_signal() via
+sysfs when there is a good reason.
 
-I notice in all the comments about smp_mb__after_spinlock etc, it's always
-WRITE_ONCE/READ_ONCE on the variables in question but we can't do that with
-the bit field. 
-
-
-I appreciate your time on this.
-
-
-Cheers,
-Phil
-
--- 
-
+Best Regards,
+Petr
