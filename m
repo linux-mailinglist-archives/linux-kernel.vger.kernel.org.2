@@ -2,109 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46C523BF6EC
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 10:37:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BDB93BF6EF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 10:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231190AbhGHIkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 04:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230414AbhGHIkQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 04:40:16 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 383DCC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 01:37:35 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id a6so2561211plh.11
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 01:37:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ow6TssIgweT/GoAzxSRukYv145LzMR/18ewmHa903tU=;
-        b=fttXZFzoq1PFbtzT6GLchigJke//EcyHyL6cuG0NFxsW+gKl90hEVLn+Z6A8QGhs7Y
-         UEIIIiugt6qH9dZWB0JhMKIOFrdORsR4qtubn1qCXg4Rn7dv07ktzjKTAh0La7t4n12t
-         ZCpmtQBhp77h5hpZJaj/I/su2NJwX+nWQjNXHaTFlxPUwTDVl0Dwa+g3Ma0NlfoOQiXj
-         NKDGfAFtspcRP2MvlflXl67RtXOJAaLktk4YEBZaptevxHCoCVtf+ii3q1UR5I24mAg0
-         PNqfRuZ19MGwNrcCTKX4hyhcJtbBBtIec9cZBDabnJ1TyocsSRWsiaNy2+MskLFM6X7C
-         5G1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ow6TssIgweT/GoAzxSRukYv145LzMR/18ewmHa903tU=;
-        b=MT/t0WldBIxgx4zscNO5eZBs8mFq61XtwV/XW2UJdaKyexmSD235SFZADxaAmhriv5
-         htnsi+2wQxMUsNUNbZ8jCNcVPQVXdpOrc5YoOOcz8YZAjq61QMw+AcFsudelgQrzTM5N
-         4LVVdTyR7Q8ldzwuLf2dF2L1NEcOoOBsyoK9F22zTXD26JjC6frb4ZVAoMMTewu49bEE
-         U70yZlPnYj8y6ov6L96mKXZ+cW+jEzVFJ171oG8keI1nYu4NhQnBnLECLxQ1a6Y02nUA
-         1U7KtW3gW42aLF9MVfoxl6VdBo/C8WynCvEdQFk6plsRF90ahK+awWMdSMhRL6+3+av4
-         LjQA==
-X-Gm-Message-State: AOAM533IHCCZLvB1yQ5ywpQnNudhfTQjEoKZhgIpLEvsAb8iFvhiw3AM
-        Y55g5BsYvPsY2gVDvoW4QQqR0g==
-X-Google-Smtp-Source: ABdhPJwy6EnErPIofL/vD7EAud7+o6gts5+joGCEo+xXtxdeyOlzlPOH9f2OIAv6neGs35KZkbJ9zg==
-X-Received: by 2002:a17:90a:eb0c:: with SMTP id j12mr7087591pjz.79.1625733448683;
-        Thu, 08 Jul 2021 01:37:28 -0700 (PDT)
-Received: from localhost ([106.201.108.2])
-        by smtp.gmail.com with ESMTPSA id g9sm1782323pfj.49.2021.07.08.01.37.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jul 2021 01:37:27 -0700 (PDT)
-Date:   Thu, 8 Jul 2021 14:07:25 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     bjorn.andersson@linaro.org, agross@kernel.org, rjw@rjwysocki.net,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        amit.kucheria@linaro.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, jami.kettunen@somainline.org,
-        paul.bouchara@somainline.org,
-        ~postmarketos/upstreaming@lists.sr.ht, jeffrey.l.hugo@gmail.com,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: Re: [PATCH v6 3/9] dt-bindings: arm: cpus: Document
- 'qcom,freq-domain' property
-Message-ID: <20210708083725.ggq66mv5g3w4e6nk@vireshk-i7>
-References: <20210701105730.322718-1-angelogioacchino.delregno@somainline.org>
- <20210701105730.322718-4-angelogioacchino.delregno@somainline.org>
+        id S231175AbhGHInA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 04:43:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33970 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230414AbhGHIm7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 04:42:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 23F1461C3F;
+        Thu,  8 Jul 2021 08:40:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625733617;
+        bh=wpeHIkX4pbHNPXzG/4S2lBdfpwjjpCHtd0IIdU/Yp2Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=n+49CsDTZZmpsHgMyh7iK5oCU/qlvKWKUixStynQKnXZidptKU9DvA43RVBo/skLM
+         JiftOIEYkEX+BJyk4pbrVqgjqYif5h7qMT33+mamQakxr2sFyVIDkN7kOcApsS/oju
+         h/LfS1xBITrB4ty9LzBs82iDxgLLZAQKH13jKAh0BLbWdcCqUyYkUI1yCI82xqbKvi
+         flANLHs6O3AdOgzpaJ/FZkMq5D+0h3UVMDCVFkmBx4gjnWLZFvZoq7KPaOgGPKKHNv
+         4cL6CSfIuAUfXTsu0iGPmH5oYlGC0WBA5DhiAlBy6n1pSJm8VHjuHshlbV4MN2grjT
+         AqQokxKyXNqKg==
+Date:   Thu, 8 Jul 2021 10:40:13 +0200
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Nick Alcock <nick.alcock@oracle.com>
+Cc:     masahiroy@kernel.org, linux-modules@vger.kernel.org,
+        linux-kernel@vger.kernel.org, arnd@arndb.de,
+        Eugene Loh <eugene.loh@oracle.com>,
+        Kris Van Hees <kris.van.hees@oracle.com>
+Subject: Re: [PATCH v2 PING] kallsyms: new /proc/kallmodsyms with builtin
+ modules and symbol sizes
+Message-ID: <YOa57bMUbUlxJ5Mv@p200300cbcf044300404ca642de146c7c.dip0.t-ipconnect.de>
+References: <20210629221542.93728-1-nick.alcock@oracle.com>
+ <20210706193334.474270-1-nick.alcock@oracle.com>
+ <YOXAjHC9RPAI5QwO@p200300cbcf044300404ca642de146c7c.dip0.t-ipconnect.de>
+ <87lf6ic58x.fsf@esperi.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20210701105730.322718-4-angelogioacchino.delregno@somainline.org>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <87lf6ic58x.fsf@esperi.org.uk>
+X-OS:   Linux p200300cbcf044300404ca642de146c7c.dip0.t-ipconnect.de
+ 5.12.10-1-default x86_64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01-07-21, 12:57, AngeloGioacchino Del Regno wrote:
-> From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> 
-> Add devicetree documentation for 'qcom,freq-domain' property specific
-> to Qualcomm CPUs. This property is used to reference the CPUFREQ node
-> along with Domain ID (0/1).
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> ---
->  Documentation/devicetree/bindings/arm/cpus.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/cpus.yaml b/Documentation/devicetree/bindings/arm/cpus.yaml
-> index f3c7249c73d6..8512fa0147fa 100644
-> --- a/Documentation/devicetree/bindings/arm/cpus.yaml
-> +++ b/Documentation/devicetree/bindings/arm/cpus.yaml
-> @@ -290,6 +290,12 @@ properties:
->  
->        * arm/msm/qcom,kpss-acc.txt
->  
-> +  qcom,freq-domain:
-> +    $ref: '/schemas/types.yaml#/definitions/phandle-array'
-> +    description: |
-> +      CPUs supporting freq-domain must set their "qcom,freq-domain" property
-> +      with phandle to a cpufreq_hw node followed by the Domain ID(0/1).
++++ Nick Alcock [07/07/21 20:07 +0100]:
+>On 7 Jul 2021, Jessica Yu uttered the following:
+>
+>> +++ Nick Alcock [06/07/21 20:33 +0100]:
+>>> 15 files changed, 1309 insertions(+), 67 deletions(-)
+>>
+>> This diffstat is seriously _enormous_. Please don't send patches of
+>> this size and expect people to be willing to review :-(. Please break
+>> this up into a logical sequence of smaller patches to help your
+>> potential reviewers and resend with a cover letter.
+>
+>Heh, this is very project-dependent it seems. I've been told not to
+>split up things so finely when sending series containing 3000+-line
+>commits to various toolchain projects before :)
 
-We should be moving this driver to the new generic bindings instead.
+Huh, that's interesting :) 
 
-commit 88bf5a85fe98 ("dt-bindings: dvfs: Add support for generic performance domains")
+>Since you are in the "slice finely" camp, I'll split it up a bunch and
+>resend. (This will necessarily involve adding things in one commit to
+>no obvious purpose in that commit, but I'll keep the intermediate stages
+>building and booting, of course.)
 
--- 
-viresh
+Yes, the norm in the Linux kernel community is to split up large
+patches into a logical sequence of smaller patches, this will help
+reviewers a lot. Thanks in advance!
+
