@@ -2,166 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6343C14D0
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 16:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6F5C3C14D4
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 16:02:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231815AbhGHOEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 10:04:12 -0400
-Received: from mout.gmx.net ([212.227.17.20]:37179 "EHLO mout.gmx.net"
+        id S231893AbhGHOF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 10:05:26 -0400
+Received: from mga14.intel.com ([192.55.52.115]:53497 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231515AbhGHOEL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 10:04:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1625752868;
-        bh=wJLSJn1hGsIV0cT50m36a3Mvxx5NqHn/rVaA7yriqQ4=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=hh7sgOhe6tpcP0zZFu9hYFPRWLbZXF5z6Z4O+MLvpwrmPfUKDH9ZbQWHC0xBijdUU
-         MluClb3UbtUj+nMzx7ZUe4ULV01FCu6hEF50FV+6HqJS6s2mjB5eNO2NxFBBwdIrxj
-         pGzu6/+TmmEcF0qqJlMjXWFEBmiBQ4KWNFXGlT0o=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [217.61.147.159] ([217.61.147.159]) by web-mail.gmx.net
- (3c-app-gmx-bap19.server.lan [172.19.172.89]) (via HTTP); Thu, 8 Jul 2021
- 16:01:08 +0200
+        id S231515AbhGHOFV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 10:05:21 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10038"; a="209326210"
+X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
+   d="scan'208";a="209326210"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 07:02:39 -0700
+X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
+   d="scan'208";a="564522640"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 07:02:37 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with ESMTP id 34A7D20345;
+        Thu,  8 Jul 2021 17:02:35 +0300 (EEST)
+Date:   Thu, 8 Jul 2021 17:02:35 +0300
+From:   "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>
+To:     Stefan =?iso-8859-1?Q?Riedm=FCller?= <S.Riedmueller@phytec.de>
+Cc:     "mchehab@kernel.org" <mchehab@kernel.org>,
+        "laurent.pinchart@ideasonboard.com" 
+        <laurent.pinchart@ideasonboard.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+Subject: Re: [PATCH v4 5/6] media: dt-bindings: mt9p031: Convert bindings to
+ yaml
+Message-ID: <20210708140235.GB3@paasikivi.fi.intel.com>
+References: <20210708091922.5508-1-s.riedmueller@phytec.de>
+ <20210708091922.5508-6-s.riedmueller@phytec.de>
+ <20210708112313.GA3@paasikivi.fi.intel.com>
+ <b588b43347afe377b6fda03c54855f97a421d89f.camel@phytec.de>
 MIME-Version: 1.0
-Message-ID: <trinity-4ed3af00-b67c-468b-be4c-1e4b2379eca6-1625752868027@3c-app-gmx-bap19>
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        linux-mediatek@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Collabora Kernel ML <kernel@collabora.com>
-Subject: Aw: Re:  Re: BUG: MTK DRM/HDMI broken on 5.13 (mt7623/bpi-r2)
-Content-Type: text/plain; charset=UTF-8
-Date:   Thu, 8 Jul 2021 16:01:08 +0200
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <df431199-0c65-fb9a-02b4-9f84899f37ee@collabora.com>
-References: <trinity-cc8f5927-9aaf-43ae-a107-6a6229f1b481-1625565279264@3c-app-gmx-bs60>
- <25d61873-38ae-5648-faab-03431b74f777@collabora.com>
- <trinity-e6443313-a436-4e9d-a93c-1bef1cce135d-1625736911475@3c-app-gmx-bap19>
- <df431199-0c65-fb9a-02b4-9f84899f37ee@collabora.com>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:8e+4dnkz5HdUeEwQAIbBhX/zyuSBFGQIIRaR0vNHkeVSovxQzS8gZ42XihYzt8dz1/lDa
- S934zUN3XxKxF8jj1GqmJudA8mCZHQghn2OkR/0ufVP5AAYXhKUbvWhVSKsnPVzHNc3aDZ1XBF51
- X6/HOGeSxxcB7LJ5IwugC+QmRsa1/stBj68AkaXAf3muG7aTiQEnVH9YnAIa+moqX5Y05aTqDQKC
- V58CpzCUoNoLbNBrZWNgZqiRSHJpeOmrL0IlPO/6kR2MfJPx0d7ZLGF7Y3VVeDAafVai5sDXq76z
- tM=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Z90GzCAze48=:gvRIenqr4jAzeeWVhzfOQP
- BtPbImyxhCbmc1PxyGIEepLj6KQJsnUfElejdvg0ZzrONhM/pSdfLy+zGVYCiWVeYUapXGVAp
- eSPBsqcZluzjWtS3VxncB7VF7HFbonk1mrJ8+sI4dPepWRedXEX5eCBasCZ6j1y16Q08+aFOr
- pC81vY32oqpUlCyPFQT//U5Lv5JBYw2tLYHlUaOS2zt3nMvdfRyt28z0g68U3DjoCg/r32x5Y
- oj1br4ye4uCkdXjz+A3/Dv+4rrrmwFsPf5Joe2sy2a0Vjb8uhDoDou80sRBORhqhMtGTWW7y0
- r8YJcJ+OrIE7I0fAqHUTWEpWAYFbf5+ojD4MBtC8vNIeCdhX26Joh2kKSL2oBBrcEH1da7fwk
- Z/svvyHUHdeAnAUPZ7KMnrY3LIBwIHoBBdsq3oJyL/J8tSv2cIwtOzPIk+ecFCzW57KLdit2w
- ZH50xC30cXHKRAJkxnxJHHbN6BSvQSclNz8JVkOA4n2vSWRPKAvIL1PukrBHRmSrYCTiGw2Nw
- do5BDKCVAyS11uAvVA4wqVQUvnOT1QzAS3j5cWrua544yC4js4fhKcw+JevcCfrREA/HaY1U0
- 6cZMWlfsdbjE87FiNDWYNcWMK3M/z5UnUn8b6RA4d8ojZ5LQF2irFza1F/RHgSKGypExfCGws
- 1DLwNXO5QfmHPZY5Gca/F0GfPM+ofgZHJlkM7fUhwTXZP6Pp4qIxkjeGN3HP0ypGny1CwuUaB
- Lzs1EmXkN/fVykD3yc22kNgj9b17cBbPCuKwkKuS0znpyAQprWR70YfDgWwekVNEolmiPHTh0
- LBa/d5xKhbeybEIky5X0wyZ67rbtQj0tVs7Nh/otjmR24mAHhE=
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b588b43347afe377b6fda03c54855f97a421d89f.camel@phytec.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Gesendet: Donnerstag, 08. Juli 2021 um 14:30 Uhr
-> Von: "Dafna Hirschfeld" <dafna.hirschfeld@collabora.com>
-> > i see both messages, but mtk_crtc_ddp_irq is never called and so the o=
-ther 2 not.
->
-> Yes, In my case the irq isr is also not called after resume which cause =
-the warning
-> even though "enable_vblank" do get called. Don't know why is that.
+Hi Stefan,
 
+On Thu, Jul 08, 2021 at 01:34:17PM +0000, Stefan Riedmüller wrote:
+> Hi Sakari,
+> 
+> On Thu, 2021-07-08 at 14:23 +0300, Sakari Ailus wrote:
+> > Hi Stefan,
+> > 
+> > Thanks for the patch.
+> 
+> Thanks for your feedback!
 
-> > comp->funcs->enable_vblank should be mtk_drm_crtc_enable_vblank, right=
-?
->
-> No, this is a bit confusing , there are also the funcs of the components=
-, see in file mtk_drm_ddp_comp.c
-> so for mt7623  it is mtk_ovl_enable_vblank.
+You're welcome!
 
-thanks for pointing to this. in this function another struct is filled wit=
-h the callback+data, and this callback seems to be called mtk_disp_ovl_irq=
-_handler which name suggests also a irq as trigger
+> 
+> > 
+> > On Thu, Jul 08, 2021 at 11:19:21AM +0200, Stefan Riedmueller wrote:
+> > > Convert mt9p031 sensor bindings to yaml schema. Also update the
+> > > MAINTAINERS entry.
+> > > 
+> > > Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
+> > > ---
+> > >  .../bindings/media/i2c/aptina,mt9p031.yaml    | 75 +++++++++++++++++++
+> > >  .../devicetree/bindings/media/i2c/mt9p031.txt | 40 ----------
+> > >  MAINTAINERS                                   |  1 +
+> > >  3 files changed, 76 insertions(+), 40 deletions(-)
+> > >  create mode 100644
+> > > Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yaml
+> > >  delete mode 100644
+> > > Documentation/devicetree/bindings/media/i2c/mt9p031.txt
+> > > 
+> > > diff --git
+> > > a/Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yaml
+> > > b/Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yaml
+> > > new file mode 100644
+> > > index 000000000000..7de62e339895
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yaml
+> > > @@ -0,0 +1,75 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/media/i2c/mt9p031.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Aptina 1/2.5-Inch 5Mp CMOS Digital Image Sensor
+> > > +
+> > > +maintainers:
+> > > +  - Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > > +
+> > > +description: |
+> > > +  The Aptina MT9P031 is a 1/2.5-inch CMOS active pixel digital image
+> > > sensor
+> > > +  with an active array size of 2592H x 1944V. It is programmable through
+> > > a
+> > > +  simple two-wire serial interface.
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    enum:
+> > > +      - aptina,mt9p031
+> > > +      - aptina,mt9p031m
+> > > +
+> > > +  reg:
+> > > +    description: I2C device address
+> > > +    maxItems: 1
+> > > +
+> > > +  reset-gpios:
+> > > +    maxItems: 1
+> > > +    description: Chip reset GPIO
+> > > +
+> > > +  port:
+> > > +    $ref: /schemas/graph.yaml#/properties/port
+> > 
+> > This should probably be:
+> > 
+> > 	$ref: /schemas/graph.yaml#/$defs/port-base
+> 
+> I actually was not sure which one of these to use because I found both in
+> existing bindings. Also /schemas/graph.yaml#/properties/port has a reference
+> to $defs/port-base. It would be nice if you or someone else could give me a
+> hint why /schemas/graph.yaml#/$defs/port-base would be the correct one here.
 
-412     ret =3D devm_request_irq(dev, irq, mtk_disp_ovl_irq_handler,
-413                    IRQF_TRIGGER_NONE, dev_name(dev), priv);
-414     if (ret < 0) {
-415         dev_err(dev, "Failed to request irq %d: %d\n", irq, ret);
-416         return ret;
-417     }
+I haven't dug into the details but:
 
-as i don't see this error in dmesg, i guess the registration was successfu=
-l. added again some debug and it looks like the interrupt callback (mtk_di=
-sp_ovl_irq_handler) is not called
+<URL:https://lore.kernel.org/linux-media/20210623164344.2571043-1-robh@kernel.org/T/>
 
-[    5.125002] DEBUG: Passed mtk_disp_ovl_probe 416 int reg:0
-[    6.344029] DEBUG: Passed mtk_drm_crtc_enable_vblank 510
-[    6.344051] DEBUG: Passed mtk_ddp_comp_enable_vblank 117
-[    6.344057] DEBUG: Passed mtk_ovl_enable_vblank 107
-[    6.344062] DEBUG: Passed mtk_ovl_enable_vblank 112
-[    6.344066] DEBUG: Passed mtk_ddp_comp_enable_vblank 121
+> 
+> > 
+> > > +    addittionalProeprties: false
+> > 
+> > Could you run
+> > 
+> > 	make dt_binding_check
+> > DT_SCHEMA_FILES=Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.y
+> > aml
+> > 
+> > please?
+> 
+> Sorry, I totally forgot about this. I'll do so before sending the next
+> version.
 
-=2D-- a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-@@ -86,6 +86,7 @@ static irqreturn_t mtk_disp_ovl_irq_handler(int irq, voi=
-d *dev_id)
- {
-        struct mtk_disp_ovl *priv =3D dev_id;
+No worries.
 
-+printk(KERN_ALERT "DEBUG: Passed %s %d \n",__FUNCTION__,__LINE__);
-        /* Clear frame completion interrupt */
-        writel(0x0, priv->regs + DISP_REG_OVL_INTSTA);
+> 
+> > 
+> > > +
+> > > +    properties:
+> > > +      endpoint:
+> > > +        $ref: /schemas/media/video-interfaces.yaml#
+> > > +        unevaluatedProperties: false
+> > > +
+> > > +        properties:
+> > > +          input-clock-frequency: true
+> > > +          pixel-clock-frequency: true
+> > 
+> > These two legacy properties were not in the endpoint previously.
+> 
+> That's right, but they are being parsed from the endpoint so I figured they
+> belong here. Should I mention this in the commit message?
 
-@@ -93,6 +94,7 @@ static irqreturn_t mtk_disp_ovl_irq_handler(int irq, voi=
-d *dev_id)
-                return IRQ_NONE;
+Please do. I missed the driver did this.
 
-        priv->vblank_cb(priv->vblank_cb_data);
-+printk(KERN_ALERT "DEBUG: Passed %s %d \n",__FUNCTION__,__LINE__);
+Ideally the driver would use the common properties but it's old and
+unlikely to be used in new boards anyway I guess.
 
-        return IRQ_HANDLED;
- }
-@@ -102,11 +104,12 @@ void mtk_ovl_enable_vblank(struct device *dev,
-                           void *vblank_cb_data)
- {
-        struct mtk_disp_ovl *ovl =3D dev_get_drvdata(dev);
--
-+printk(KERN_ALERT "DEBUG: Passed %s %d \n",__FUNCTION__,__LINE__);
-        ovl->vblank_cb =3D vblank_cb;
-        ovl->vblank_cb_data =3D vblank_cb_data;
-        writel(0x0, ovl->regs + DISP_REG_OVL_INTSTA);
-        writel_relaxed(OVL_FME_CPL_INT, ovl->regs + DISP_REG_OVL_INTEN);
-+printk(KERN_ALERT "DEBUG: Passed %s %d \n",__FUNCTION__,__LINE__);
- }
+> 
+> Thanks,
+> Stefan
+> 
+> > 
+> > > +
+> > > +        required:
+> > > +          - input-clock-frequency
+> > > +          - pixel-clock-frequency
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - reg
+> > > +  - port
+> > > +
+> > > +additionalProperties: false
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    i2c0 {
+> > > +        #address-cells = <1>;
+> > > +        #size-cells = <0>;
+> > > +
+> > > +        mt9p031@5d {
+> > > +            compatible = "aptina,mt9p031";
+> > > +            reg = <0x5d>;
+> > > +            reset-gpios = <&gpio_sensor 0 0>;
+> > > +
+> > > +            port {
+> > > +                mt9p031_1: endpoint {
+> > > +                    input-clock-frequency = <6000000>;
+> > > +                    pixel-clock-frequency = <96000000>;
+> > > +                };
+> > > +            };
+> > > +        }:
+> > > +    };
+> > > +
+> > > +...
+> > > diff --git a/Documentation/devicetree/bindings/media/i2c/mt9p031.txt
+> > > b/Documentation/devicetree/bindings/media/i2c/mt9p031.txt
+> > > deleted file mode 100644
+> > > index cb60443ff78f..000000000000
+> > > --- a/Documentation/devicetree/bindings/media/i2c/mt9p031.txt
+> > > +++ /dev/null
+> > > @@ -1,40 +0,0 @@
+> > > -* Aptina 1/2.5-Inch 5Mp CMOS Digital Image Sensor
+> > > -
+> > > -The Aptina MT9P031 is a 1/2.5-inch CMOS active pixel digital image sensor
+> > > with
+> > > -an active array size of 2592H x 1944V. It is programmable through a
+> > > simple
+> > > -two-wire serial interface.
+> > > -
+> > > -Required Properties:
+> > > -- compatible: value should be either one among the following
+> > > -	(a) "aptina,mt9p031" for mt9p031 sensor
+> > > -	(b) "aptina,mt9p031m" for mt9p031m sensor
+> > > -
+> > > -- input-clock-frequency: Input clock frequency.
+> > > -
+> > > -- pixel-clock-frequency: Pixel clock frequency.
+> > > -
+> > > -Optional Properties:
+> > > -- reset-gpios: Chip reset GPIO
+> > > -
+> > > -For further reading on port node refer to
+> > > -Documentation/devicetree/bindings/media/video-interfaces.txt.
+> > > -
+> > > -Example:
+> > > -
+> > > -	i2c0@1c22000 {
+> > > -		...
+> > > -		...
+> > > -		mt9p031@5d {
+> > > -			compatible = "aptina,mt9p031";
+> > > -			reg = <0x5d>;
+> > > -			reset-gpios = <&gpio3 30 0>;
+> > > -
+> > > -			port {
+> > > -				mt9p031_1: endpoint {
+> > > -					input-clock-frequency = <6000000>;
+> > > -					pixel-clock-frequency = <96000000>;
+> > > -				};
+> > > -			};
+> > > -		};
+> > > -		...
+> > > -	};
+> > > diff --git a/MAINTAINERS b/MAINTAINERS
+> > > index c7456776ace5..f2123226baae 100644
+> > > --- a/MAINTAINERS
+> > > +++ b/MAINTAINERS
+> > > @@ -12610,6 +12610,7 @@ M:	Laurent Pinchart <
+> > > laurent.pinchart@ideasonboard.com>
+> > >  L:	linux-media@vger.kernel.org
+> > >  S:	Maintained
+> > >  T:	git git://linuxtv.org/media_tree.git
+> > > +F:	Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yaml
+> > >  F:	drivers/media/i2c/mt9p031.c
+> > >  F:	include/media/i2c/mt9p031.h
+> > >  
 
- void mtk_ovl_disable_vblank(struct device *dev)
-@@ -410,6 +413,7 @@ static int mtk_disp_ovl_probe(struct platform_device *=
-pdev)
+-- 
+Regards,
 
-        ret =3D devm_request_irq(dev, irq, mtk_disp_ovl_irq_handler,
-                               IRQF_TRIGGER_NONE, dev_name(dev), priv);
-+printk(KERN_ALERT "DEBUG: Passed %s %d int reg:%d\n",__FUNCTION__,__LINE_=
-_,ret);
-        if (ret < 0) {
-                dev_err(dev, "Failed to request irq %d: %d\n", irq, ret);
-                return ret;
-
-
-how can we trace this further? maybe watchdog related?
-
-> >
-> > "watchdog: watchdog0: watchdog did not stop!"
-> >
-> > i see this with my 5.13, 5.12-drm (5.12.0+mtk/core drm-patches) and 5.=
-12.14 too (hdmi is working there), but not 5.12.0!
-> > that means something in drm-patches (mtk/core) breaks watchdog. maybe =
-the recursion mentioned above?
-
+Sakari Ailus
