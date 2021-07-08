@@ -2,116 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F0123C14FA
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 16:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A1A93C1526
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 16:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231963AbhGHOTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 10:19:48 -0400
-Received: from mga12.intel.com ([192.55.52.136]:17440 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229592AbhGHOTq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 10:19:46 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10038"; a="189191797"
-X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
-   d="scan'208";a="189191797"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 07:17:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
-   d="scan'208";a="628519028"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
-  by orsmga005.jf.intel.com with ESMTP; 08 Jul 2021 07:16:59 -0700
-Subject: Re: [PATCH RFC 2/2] scsi: ufshcd: Fix device links when BOOT WLUN
- fails to probe
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "open list:TARGET SUBSYSTEM" <linux-scsi@vger.kernel.org>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210707172948.1025-1-adrian.hunter@intel.com>
- <20210707172948.1025-3-adrian.hunter@intel.com> <YOXm4FuL/CW4lYDZ@kroah.com>
- <66130101-b0c5-a9a3-318a-468c6f3b380f@intel.com>
- <CAJZ5v0hfEE=ney1tH5MtQm0KWs4U2yzy_DqAAW7hTyxxx2-cNg@mail.gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <c3ec3ca2-220f-9e5a-e2ce-b1c2be86c97c@intel.com>
-Date:   Thu, 8 Jul 2021 17:17:13 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231985AbhGHO2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 10:28:53 -0400
+Received: from wforward4-smtp.messagingengine.com ([64.147.123.34]:56781 "EHLO
+        wforward4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231756AbhGHO2u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 10:28:50 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailforward.west.internal (Postfix) with ESMTP id 5DEA21AC1121;
+        Thu,  8 Jul 2021 10:17:45 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Thu, 08 Jul 2021 10:17:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=KMgRIE
+        ryP5GBUNqve801kcFjmD/qbfxjGon5OIpBqtg=; b=hLbnxrl0LKK0xuB8TuxAWN
+        6hFoy6RU4c4no21f3Anwcoo8RcNdMEmkFz5izxIYsy9vBOVHT0yA+EALDpJw7xqG
+        gqNbN3lC2xhmzwB4oW0TFqZ2NYBkfRKwZiBAV4g0IuRAWERM3Hv8uwdU8rhybmuo
+        PVDGpjBlyoUaBcSYXVw7ap8j7sH4dDOTpHqjhFm2h0wdILuaupeT3Nx9+FMwe/7D
+        R7mJ74oWTEXtW/Z/0Lwm+KinHtFfKrV+SCXzwaGl9mrOGI9YUNcNpI9le5rSJwjE
+        cmrqrZREk8OxN0hO03Nwy9Q6ArUlF/ZOSWqWE2DcHLqa01Bgt6BKkoMBWa8VK5MQ
+        ==
+X-ME-Sender: <xms:BwnnYHzuxtKDz2pOitFGwf2OITRbHm0ODhgEQU9nBbCx46X1KCX6hg>
+    <xme:BwnnYPQOPSOXwAN57jUGch6mgPuQR26XwtVIL_UiTS4ARF7J-RfoFxoh561rtWRUi
+    Mh8GjaQt_KcN31VQEI>
+X-ME-Received: <xmr:BwnnYBXuvjTfmY_FR41XyiVoW3Z3Yxs8BI29Z8AzDPNds9cFGgGNe1KVo1VyE-UI5ANVeHaTsRSoTHbr0nW8cR5C_1_lbCabQV0PltuBBkE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrtdeggdejfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefvufgjfhfhfffkgggtsehttdertddttddtnecuhfhrohhmpeffrghvihguucfg
+    ughmohhnughsohhnuceoughmvgesughmvgdrohhrgheqnecuggftrfgrthhtvghrnhephf
+    ekgeeutddvgeffffetheejvdejieetgfefgfffudegffffgeduheegteegleeknecuvehl
+    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepughmvgesughmvg
+    drohhrgh
+X-ME-Proxy: <xmx:BwnnYBipcfX-3vUSmI1uSXUmT1TyHQ-zI5mGM1FYTnmDrVkkrfIcnQ>
+    <xmx:BwnnYJBTtI0fRQDsftFora7jLw_Z9izUQucJ3jF6hTmD_GYJyB2n7w>
+    <xmx:BwnnYKKQgcJJYnch00QLEtZic9QgzU9Cxgp58_QYEPIXLGFyjVPGjw>
+    <xmx:CQnnYBaNqaHlbwLXaxIXHOn5UqQxrI2WsBQmEzuJrLL4PWMhtg2eGhSuKkXBpgdk>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 8 Jul 2021 10:17:42 -0400 (EDT)
+Received: from localhost (disaster-area.hh.sledj.net [local])
+        by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id d69a583e;
+        Thu, 8 Jul 2021 14:17:40 +0000 (UTC)
+To:     David Matlack <dmatlack@google.com>
+Cc:     linux-kernel@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v2 0/2] kvm: x86: Convey the exit reason to user-space
+ on emulation failure
+In-Reply-To: <YOY2pLoXQ8ePXu0W@google.com>
+References: <20210706101207.2993686-1-david.edmondson@oracle.com>
+ <YOY2pLoXQ8ePXu0W@google.com>
+X-HGTTG: heart-of-gold
+From:   David Edmondson <dme@dme.org>
+Date:   Thu, 08 Jul 2021 15:17:40 +0100
+Message-ID: <m28s2g51q3.fsf@dme.org>
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0hfEE=ney1tH5MtQm0KWs4U2yzy_DqAAW7hTyxxx2-cNg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/07/21 3:31 pm, Rafael J. Wysocki wrote:
-> On Wed, Jul 7, 2021 at 7:49 PM Adrian Hunter <adrian.hunter@intel.com> wrote:
->>
->> On 7/07/21 8:39 pm, Greg Kroah-Hartman wrote:
->>> On Wed, Jul 07, 2021 at 08:29:48PM +0300, Adrian Hunter wrote:
->>>> If a LUN fails to probe (e.g. absent BOOT WLUN), the device will not have
->>>> been registered but can still have a device link holding a reference to the
->>>> device. The unwanted device link will prevent runtime suspend indefinitely,
->>>> and cause some warnings if the supplier is ever deleted (e.g. by unbinding
->>>> the UFS host controller). Fix by explicitly deleting the device link when
->>>> SCSI destroys the SCSI device.
->>>>
->>>> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
->>>> ---
->>>>  drivers/scsi/ufs/ufshcd.c | 7 +++++++
->>>>  1 file changed, 7 insertions(+)
->>>>
->>>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->>>> index 708b3b62fc4d..483aa74fe2c8 100644
->>>> --- a/drivers/scsi/ufs/ufshcd.c
->>>> +++ b/drivers/scsi/ufs/ufshcd.c
->>>> @@ -5029,6 +5029,13 @@ static void ufshcd_slave_destroy(struct scsi_device *sdev)
->>>>              spin_lock_irqsave(hba->host->host_lock, flags);
->>>>              hba->sdev_ufs_device = NULL;
->>>>              spin_unlock_irqrestore(hba->host->host_lock, flags);
->>>> +    } else {
->>>> +            /*
->>>> +             * If a LUN fails to probe (e.g. absent BOOT WLUN), the device
->>>> +             * will not have been registered but can still have a device
->>>> +             * link holding a reference to the device.
->>>> +             */
->>>> +            device_links_scrap(&sdev->sdev_gendev);
->>>
->>> What created that link?  And why did it do that before probe happened
->>> successfully?
->>
->> The same driver created the link.
->>
->> The documentation seems to say it is allowed to, if it is the consumer.
->> From Documentation/driver-api/device_link.rst
->>
->>   Usage
->>   =====
->>
->>   The earliest point in time when device links can be added is after
->>   :c:func:`device_add()` has been called for the supplier and
->>   :c:func:`device_initialize()` has been called for the consumer.
-> 
-> Yes, this is allowed, but if you've added device links to a device
-> object that is not going to be registered after all, you are
-> responsible for doing the cleanup.
-> 
-> Why can't you call device_link_del() directly on those links?
-> 
-> Or device_link_remove() if you don't want to deal with link pointers?
-> 
+Apologies if you see two of these - I had some email problems earlier.
 
-Those only work for DL_FLAG_STATELESS device links, but we use only
-DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE flags.
+On Wednesday, 2021-07-07 at 23:20:04 UTC, David Matlack wrote:
 
+> On Tue, Jul 06, 2021 at 11:12:05AM +0100, David Edmondson wrote:
+>> To help when debugging failures in the field, if instruction emulation
+>> fails, report the VM exit reason to userspace in order that it can be
+>> recorded.
+>
+> What is the benefit of seeing the VM-exit reason that led to an
+> emulation failure?
+
+I can't cite an example of where this has definitively led in a
+direction that helped solve a problem, but we do sometimes see emulation
+failures reported in situations where we are not able to reproduce the
+failures on demand and the existing information provided at the time of
+failure is either insufficient or suspect.
+
+Given that, I'm left casting about for data that can be made available
+to assist in postmortem analysis of the failures.
+
+>> I'm unsure whether sgx_handle_emulation_failure() needs to be adapted
+>> to use the emulation_failure part of the exit union in struct kvm_run
+>> - advice welcomed.
+>> 
+>> v2:
+>> - Improve patch comments (dmatlack)
+>> - Intel should provide the full exit reason (dmatlack)
+>> - Pass a boolean rather than flags (dmatlack)
+>> - Use the helper in kvm_task_switch() and kvm_handle_memory_failure()
+>>   (dmatlack)
+>> - Describe the exit_reason field of the emulation_failure structure
+>>   (dmatlack)
+>> 
+>> David Edmondson (2):
+>>   KVM: x86: Add kvm_x86_ops.get_exit_reason
+>>   KVM: x86: On emulation failure, convey the exit reason to userspace
+>> 
+>>  arch/x86/include/asm/kvm-x86-ops.h |  1 +
+>>  arch/x86/include/asm/kvm_host.h    |  3 +++
+>>  arch/x86/kvm/svm/svm.c             |  6 ++++++
+>>  arch/x86/kvm/vmx/vmx.c             | 11 +++++++----
+>>  arch/x86/kvm/x86.c                 | 22 +++++++++++++---------
+>>  include/uapi/linux/kvm.h           |  7 +++++++
+>>  6 files changed, 37 insertions(+), 13 deletions(-)
+>> 
+>> -- 
+>> 2.30.2
+>> 
+
+dme.
+-- 
+It's gettin', it's gettin', it's gettin' kinda hectic.
