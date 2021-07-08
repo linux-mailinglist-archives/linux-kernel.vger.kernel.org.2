@@ -2,149 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B71D03C194B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 20:38:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4ECA3C194F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 20:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230115AbhGHSlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 14:41:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48844 "EHLO
+        id S230170AbhGHSld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 14:41:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhGHSlG (ORCPT
+        with ESMTP id S229795AbhGHSlc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 14:41:06 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF0BC06175F
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 11:38:24 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id u14so7114573pga.11
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 11:38:24 -0700 (PDT)
+        Thu, 8 Jul 2021 14:41:32 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A499C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 11:38:50 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id h1-20020a17090a3d01b0290172d33bb8bcso6616058pjc.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 11:38:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=7IMuMUvHO82Rf0Ss8PXs63y6ANC76fGZyxGH24nk1uY=;
-        b=AEJUmU092XhSjinH3RNlcQMS/9jJCUfRHFTvGQOCYGEgAkLDTt91AoUhpV20zqrqaG
-         DgxEkyC7dIjMJejx10JKJCCad8mo9r17BDUHgTgdADxDWEmoQX6MI/Ks82PTsEV6wf6b
-         wKLuoB0Bw21064KfDHSoi9ggEs0OdmCiFqzx+6A/Qav7JexZHVOP5GV64ONuI1uoMqnJ
-         IK8vOt7ia2yi82nY24zzCbuTHHcTJGeeT6wXiPdp0g3awgHWnmetypwl0L8gEXlERsvv
-         zaj3cym87YUy76sBrw/rUq8ip5xJy8lswH9QtOrhmAE4wJ4AU/HW2//+e5yWeiPhqfWo
-         iJxQ==
+        bh=oYyGT0KTIm/nNsMmN7965VbdTTSrQLQ+D7tsa96mwIM=;
+        b=q+CGLCLh1DItOWyDk5zZjNqU3t5nU96RLi66qrgD1gy0+IyWzMvD7ar/jA67PdhXNf
+         V7Lfi9WOs+Zk6ZFBrc5Ejx9xbu5o/3uRhflM3UZ/tifkBNV5eiTyn+/zpBNqM7DRNYSl
+         nCKHahsSCYAxzzPzGD4R+rLq0aZHKW5AVZn2hbcAk/VEY1LIMWfhVOps4vHnYszxwp4p
+         IRHyQIGYRCNNWqcOAUn1Un/9PBAEtqRb03ICdFbVYazyLuMhGwPGzH3dH6kyiD1WDkXS
+         CbKBgXE04OIwUlj3tgZlAO4JezDzW3W4vmMdP6dnhIvBxQ44PanrhD0Cq4hAV/o94oCL
+         V35w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=7IMuMUvHO82Rf0Ss8PXs63y6ANC76fGZyxGH24nk1uY=;
-        b=KtvTNNU5jNI1m27SnWczbb6cOg8jmvD7Tr/IMy5VX0Q13+LvoyhYK6qCua7Nz5PUMf
-         kHaDE0cal4zhBm1wN8O4H8L25/WhfKU4xe8pD6a++sSRwdXl5ucqudw3lOTFFp/NystB
-         KV+oOKTM5g2CAamVXaXBPXLcifrJUGaVoehnDV/cDuWOwP4D57+FIS0g1ljUZkjHyMxn
-         bCjCRY7xQSE5PvlT4LSoCpK4dViQp4i8C3zL8+06kaA5tNclbA8W0VMeNWYJxEz1VwOP
-         cpN9iNHMi3DzMnmG3xgQO2kRT+1JhtPHopxUtZiGKdJP3MlYfFWTxBbyxb3uBwy3fOHt
-         bz8w==
-X-Gm-Message-State: AOAM532ypHaZO5YGBbStqz0geOlasOlI+iHD8nZv5n2cTXqKtgsuWD5s
-        D2vPfogXvBW8fecUJotGVBD26Q==
-X-Google-Smtp-Source: ABdhPJwvrGKMIplQ3AYMPHgsfd1ogRE/LvqPPIKpnrjJ1sSar/mUZLFVw9JqUCa95Qns7PZ7PlcqCQ==
-X-Received: by 2002:aa7:8d5a:0:b029:302:e2cb:6d79 with SMTP id s26-20020aa78d5a0000b0290302e2cb6d79mr32258922pfe.71.1625769503629;
-        Thu, 08 Jul 2021 11:38:23 -0700 (PDT)
-Received: from google.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
-        by smtp.gmail.com with ESMTPSA id 2sm4277773pgz.26.2021.07.08.11.38.22
+        bh=oYyGT0KTIm/nNsMmN7965VbdTTSrQLQ+D7tsa96mwIM=;
+        b=iHEIjspbp5J6zSuqDTC4+A3QwlNRzcSxbmZ7dx7SMkN3dOOvcJVOcA1CRcfG0dvo5X
+         v7lq+TJAInXtc0VGOE1i/XVns8Hd+zxodoTq+txuz88a1NCk+b9zxxV/2AjujLgaarCC
+         +pfLeER785Ki9Zgtcnd23HEDIwPoXOF+tFUmtwyqb+jCO/vN85pj+S1th+L+b4uU4E5Z
+         MEF2YcA8NAawnuACKGJoXKaZmmezDReoc5/yZpC+OVcS/sxoNzxaEMz3MI6Oyr5wXssG
+         HjkXQU/gGYg6jVOCP8wKF5U7gObj8V7K+EboURKQfN27E3Qw4h1mFGvRrpY3WSP9mY5L
+         52RA==
+X-Gm-Message-State: AOAM532VUzUOAIcsdP//Z9F4tAIZbWzSVPDpVICT7EvujgaSDzNXknwB
+        zFAmccZqAQcV2ZxUaxVD/J14zw==
+X-Google-Smtp-Source: ABdhPJxjZJ7WiU46r1WhIokN9qfAawnDzk1VajsJ6aOlSlRr90d4PJex7Ymtixosuiglb25ke8iqsg==
+X-Received: by 2002:a17:90b:198a:: with SMTP id mv10mr6281337pjb.67.1625769529574;
+        Thu, 08 Jul 2021 11:38:49 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:ab8a])
+        by smtp.gmail.com with ESMTPSA id r10sm3583285pff.7.2021.07.08.11.38.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jul 2021 11:38:22 -0700 (PDT)
-Date:   Thu, 8 Jul 2021 18:38:18 +0000
-From:   David Matlack <dmatlack@google.com>
-To:     David Edmondson <dme@dme.org>
-Cc:     linux-kernel@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        Thu, 08 Jul 2021 11:38:49 -0700 (PDT)
+Date:   Thu, 8 Jul 2021 14:38:45 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v2 0/2] kvm: x86: Convey the exit reason to user-space on
- emulation failure
-Message-ID: <YOdGGuk2trw0h95x@google.com>
-References: <20210706101207.2993686-1-david.edmondson@oracle.com>
- <YOY2pLoXQ8ePXu0W@google.com>
- <m28s2g51q3.fsf@dme.org>
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        matthias.bgg@gmail.com, Minchan Kim <minchan@google.com>,
+        Tim Murray <timmurray@google.com>,
+        YT Chang <yt.chang@mediatek.com>,
+        Wenju Xu =?utf-8?B?KOiuuOaWh+S4vik=?= <wenju.xu@mediatek.com>,
+        Jonathan JMChen =?utf-8?B?KOmZs+WutuaYjik=?= 
+        <jonathan.jmchen@mediatek.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        kernel-team <kernel-team@android.com>,
+        SH Chen <show-hong.chen@mediatek.com>
+Subject: Re: [PATCH v3 1/1] psi: stop relying on timer_pending for poll_work
+ rescheduling
+Message-ID: <YOdGNVFtYAKmfpiY@cmpxchg.org>
+References: <20210707023933.1691149-1-surenb@google.com>
+ <YOWugYxQ9Yfsqba2@cmpxchg.org>
+ <CAJuCfpGx22iTaDGCfOrM_pD6PYZqQrni2+u5jQy+NpNeNg7B9w@mail.gmail.com>
+ <YOcPUs97epJ5VrEf@cmpxchg.org>
+ <CAJuCfpFCi6fa+Ke4bvP9hbMeC82VaT6twNWC3+ckXz6yD0qCtQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <m28s2g51q3.fsf@dme.org>
+In-Reply-To: <CAJuCfpFCi6fa+Ke4bvP9hbMeC82VaT6twNWC3+ckXz6yD0qCtQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 08, 2021 at 03:17:40PM +0100, David Edmondson wrote:
-> Apologies if you see two of these - I had some email problems earlier.
-
-I only got one! :)
-
-> 
-> On Wednesday, 2021-07-07 at 23:20:04 UTC, David Matlack wrote:
-> 
-> > On Tue, Jul 06, 2021 at 11:12:05AM +0100, David Edmondson wrote:
-> >> To help when debugging failures in the field, if instruction emulation
-> >> fails, report the VM exit reason to userspace in order that it can be
-> >> recorded.
+On Thu, Jul 08, 2021 at 08:54:56AM -0700, Suren Baghdasaryan wrote:
+> On Thu, Jul 8, 2021 at 7:44 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> > On Wed, Jul 07, 2021 at 03:43:48PM -0700, Suren Baghdasaryan wrote:
+> > > On Wed, Jul 7, 2021 at 6:39 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> > > > This looks good to me now code wise. Just a comment on the comments:
+> > > >
+> > > > On Tue, Jul 06, 2021 at 07:39:33PM -0700, Suren Baghdasaryan wrote:
+> > > > > @@ -559,18 +560,14 @@ static u64 update_triggers(struct psi_group *group, u64 now)
+> > > > >       return now + group->poll_min_period;
+> > > > >  }
+> > > > >
+> > > > > -/* Schedule polling if it's not already scheduled. */
+> > > > > -static void psi_schedule_poll_work(struct psi_group *group, unsigned long delay)
+> > > > > +/* Schedule polling if it's not already scheduled or forced. */
+> > > > > +static void psi_schedule_poll_work(struct psi_group *group, unsigned long delay,
+> > > > > +                                bool force)
+> > > > >  {
+> > > > >       struct task_struct *task;
+> > > > >
+> > > > > -     /*
+> > > > > -      * Do not reschedule if already scheduled.
+> > > > > -      * Possible race with a timer scheduled after this check but before
+> > > > > -      * mod_timer below can be tolerated because group->polling_next_update
+> > > > > -      * will keep updates on schedule.
+> > > > > -      */
+> > > > > -     if (timer_pending(&group->poll_timer))
+> > > > > +     /* xchg should be called even when !force to set poll_scheduled */
+> > > > > +     if (atomic_xchg(&group->poll_scheduled, 1) && !force)
+> > > > >               return;
+> > > >
+> > > > This explains what the code does, but not why. It would be good to
+> > > > explain the ordering with poll_work, here or there. But both sides
+> > > > should mention each other.
+> > >
+> > > How about this:
+> > >
+> > > /*
+> > >  * atomic_xchg should be called even when !force to always set poll_scheduled
+> > >  * and to provide a memory barrier (see the comment inside psi_poll_work).
+> > >  */
 > >
-> > What is the benefit of seeing the VM-exit reason that led to an
-> > emulation failure?
+> > The memory barrier part makes sense, but the first part says what the
+> > code does and the message is unclear to me. Are you worried somebody
+> > might turn this around in the future and only conditionalize on
+> > poll_scheduled when !force? Essentially, I don't see the downside of
+> > dropping that. But maybe I'm missing something.
 > 
-> I can't cite an example of where this has definitively led in a
-> direction that helped solve a problem, but we do sometimes see emulation
-> failures reported in situations where we are not able to reproduce the
-> failures on demand and the existing information provided at the time of
-> failure is either insufficient or suspect.
+> Actually you are right. Originally I was worried that there might be a
+> case when poll_scheduled==0 and force==true and if someone flips the
+> conditions we will reschedule the timer but will not set
+> poll_scheduled back to 1.
+
+Oh I see.
+
+Right, flipping the condition doesn't make sense because we need
+poll_scheduled to be set when we go ahead - whether we're forcing or
+not. I.e. if we were in a locked section, we'd write it like this:
+
+	if (poll_scheduled)
+		if (!force)
+			return;
+	else
+		poll_scheduled = 1;
+
+> However I don't think this condition is possible. We set force=true
+> only when we skipped resetting poll_schedule to 0 and on initial
+> wakeup we always reset poll_schedule. How about changing the comment
+> to this:
 > 
-> Given that, I'm left casting about for data that can be made available
-> to assist in postmortem analysis of the failures.
+>  /*
+>   * atomic_xchg should be called even when !force to provide a
+>   * full memory barrier (see the comment inside psi_poll_work).
+>   */
 
-Understood, thanks for the context. My only concern would be that
-userspace APIs are difficult to change once they exist. If it turns
-out knowing the exit reason does not help with debugging emulation
-failures we'd still be stuck with exporting it on every emulation
-failure.
+Personally, I still find this more confusing than no comment on
+!force, because when you read it it sort of raises the question what
+the alternatives would be. And the alternatives appear to be
+nonsensical code rather than legitimate options.
 
-My intuition is that the instruction bytes (which are now available with
-Aaron's patch) and the guest register state (which is queryable through
-other ioctls) should be sufficient to set up a reproduction of the
-emulation failure in a kvm-unit-test and the exit reason should not
-really matter. I'm curious if that's not the case?
+But I won't insist if you prefer to leave it in. Your call.
 
-I'm really not opposed to exporting the exit reason if it is useful, I'm
-just not sure it will help.
-
+> > /*
+> >  * A task change can race with the poll worker that is supposed to
+> >  * report on it. To avoid missing events, ensure ordering between
+> >  * poll_scheduled and the task state accesses, such that if the poll
+> >  * worker misses the state update, the task change is guaranteed to
+> >  * reschedule the poll worker:
+> >  *
+> >  * poll worker:
+> >  *   atomic_set(poll_scheduled, 0)
+> >  *   smp_mb()
+> >  *   LOAD states
+> >  *
+> >  * task change:
+> >  *   STORE states
+> >  *   if atomic_xchg(poll_scheduled, 1) == 0:
+> >  *     schedule poll worker
+> >  *
+> >  * The atomic_xchg() implies a full barrier.
+> >  */
+> >  smp_mb();
+> >
+> > This gives a high-level view of what's happening but it can still be
+> > mapped to the code by following the poll_scheduled variable.
 > 
-> >> I'm unsure whether sgx_handle_emulation_failure() needs to be adapted
-> >> to use the emulation_failure part of the exit union in struct kvm_run
-> >> - advice welcomed.
-> >> 
-> >> v2:
-> >> - Improve patch comments (dmatlack)
-> >> - Intel should provide the full exit reason (dmatlack)
-> >> - Pass a boolean rather than flags (dmatlack)
-> >> - Use the helper in kvm_task_switch() and kvm_handle_memory_failure()
-> >>   (dmatlack)
-> >> - Describe the exit_reason field of the emulation_failure structure
-> >>   (dmatlack)
-> >> 
-> >> David Edmondson (2):
-> >>   KVM: x86: Add kvm_x86_ops.get_exit_reason
-> >>   KVM: x86: On emulation failure, convey the exit reason to userspace
-> >> 
-> >>  arch/x86/include/asm/kvm-x86-ops.h |  1 +
-> >>  arch/x86/include/asm/kvm_host.h    |  3 +++
-> >>  arch/x86/kvm/svm/svm.c             |  6 ++++++
-> >>  arch/x86/kvm/vmx/vmx.c             | 11 +++++++----
-> >>  arch/x86/kvm/x86.c                 | 22 +++++++++++++---------
-> >>  include/uapi/linux/kvm.h           |  7 +++++++
-> >>  6 files changed, 37 insertions(+), 13 deletions(-)
-> >> 
-> >> -- 
-> >> 2.30.2
-> >> 
-> 
-> dme.
-> -- 
-> It's gettin', it's gettin', it's gettin' kinda hectic.
+> This looks really good to me.
+> If you agree on the first comment modification, should I respin the
+> next version?
+
+Yeah, sounds good to me!
