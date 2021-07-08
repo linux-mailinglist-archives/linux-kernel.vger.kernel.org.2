@@ -2,276 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0531B3C16AC
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 17:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57CBF3C16B2
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 17:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232073AbhGHP5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 11:57:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40504 "EHLO
+        id S232095AbhGHP7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 11:59:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbhGHP5v (ORCPT
+        with ESMTP id S229592AbhGHP7v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 11:57:51 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5AEC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 08:55:08 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id g19so9673982ybe.11
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 08:55:08 -0700 (PDT)
+        Thu, 8 Jul 2021 11:59:51 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98AAEC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 08:57:08 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id j186-20020a25d2c30000b029055ed6ffbea6so65560ybg.14
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 08:57:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6UdkOmJakgL6063lK1x5OJ+9bILb67jEBJSct2Tiyn8=;
-        b=eaPCqjssketnN5rcQLUSWjDvRGpF6oO3dJ1xJVgD8FabxO6oIBvzFsHhHN9dnJw6Uv
-         4Jka7MrqpRDLVfQKWAntEr2fjDPnojnKDY83XlsUDZlPkTDd0qndi+tmpqQraYDImEvn
-         pDQpdBr5WznvEabCqJ8SI9LR5EvC7TmVpWhwzW6t0+/28xIcmn+M4wT1EcbnzwKkGZep
-         XEdJtmQl28GDBAAyVym9Wa725bjHP+NEZ6bqbIVkX6E5+PJRLapypmvkE2Z6gGpGaRoJ
-         D+E6jFvDSp0Bv3faEEKpZNJrjlbtiQHQg1EqbUTNvReu3qzuiPxT1KnGErgeCL72dVkM
-         uRSA==
+        h=date:message-id:mime-version:subject:from:cc;
+        bh=27c25yrooHjh+TTXqzDDAJzddaCf990UPSULOb6WFAI=;
+        b=aDve9Zer0+oH4LFmsjzSJjy2qJ6ydRcQ4yQsIy3WlRU1bl7Dmud2tM1BJ1Roiz1yG5
+         MRwy5WjkhamTgnta59/CF/rpz9FqUnMiMsx0Kal3nVzvPQB82HyD7sy+7CsnlR0bouiD
+         c6LHwPfuy3ub4AhJWEntApfWGyn8plc0X0dXsEHEUGNnHc5Mv2HTE9OHzVoGJsklAhuP
+         OhKTiZYaq8ap1CzW5ckGAJEV6sbIhVoXogJjAIBB8u5NGAhl+baC5pWqq8fb2MNhJLff
+         zIfBuQnrl1GveetW406kcZxik0zn+tT2kRnNYSqDk10TCrpApsbgL/M68IuegAnY/2WW
+         XE0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6UdkOmJakgL6063lK1x5OJ+9bILb67jEBJSct2Tiyn8=;
-        b=OkWmUBPyyb+zccSUm2K/3qjvnuwncHtWgsbkbTf7AjjfiPlSWE4pbV9tvsjH3NZnKw
-         f/lgthhKiGxSwoJgGFAPP55P/wYL639qs4ezWu3HJNr2Lqg0fici5d7U/rTZtfS468VB
-         1T9FzLfZJNRWdreEUZF71InXXgnK8rV2doNij0x+2PU9lWNEDVffJ9+7sURs8LuAkHtz
-         LBK/U+lpg3WIYxgLSbLxxcLKgv2V9+xRke8qXET9NYQFhfuAO7IhDYt6UjKUahdyGZq2
-         C/VfFPGbZTkKe2kCDHd+lv4e696dFnXKCoKL7ZUbFlHB2BjiY/xPYLliNTQaenFHeKr8
-         cqCg==
-X-Gm-Message-State: AOAM531hy1ZLj6y7lnYhgIOXsuUjVGxQ7R/t6+EwFI9V1rwEMIYA82F/
-        MnUqo1jwIJJ0RiRUbtnye1RhfRNru25uZxcXXynWWw==
-X-Google-Smtp-Source: ABdhPJwwYOeIjOxVMM4ucNHcKJaI3EruSvnu73J6ySxh3Gu3vHUzq8ZicQy+g1ddtn1UGOnk8q/XGE31GxROTVekW+A=
-X-Received: by 2002:a25:4102:: with SMTP id o2mr38235336yba.23.1625759707575;
- Thu, 08 Jul 2021 08:55:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210707023933.1691149-1-surenb@google.com> <YOWugYxQ9Yfsqba2@cmpxchg.org>
- <CAJuCfpGx22iTaDGCfOrM_pD6PYZqQrni2+u5jQy+NpNeNg7B9w@mail.gmail.com> <YOcPUs97epJ5VrEf@cmpxchg.org>
-In-Reply-To: <YOcPUs97epJ5VrEf@cmpxchg.org>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 8 Jul 2021 08:54:56 -0700
-Message-ID: <CAJuCfpFCi6fa+Ke4bvP9hbMeC82VaT6twNWC3+ckXz6yD0qCtQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] psi: stop relying on timer_pending for poll_work rescheduling
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        matthias.bgg@gmail.com, Minchan Kim <minchan@google.com>,
-        Tim Murray <timmurray@google.com>,
-        YT Chang <yt.chang@mediatek.com>,
-        =?UTF-8?B?V2VuanUgWHUgKOiuuOaWh+S4vik=?= <wenju.xu@mediatek.com>,
-        =?UTF-8?B?Sm9uYXRoYW4gSk1DaGVuICjpmbPlrrbmmI4p?= 
-        <jonathan.jmchen@mediatek.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        kernel-team <kernel-team@android.com>,
-        SH Chen <show-hong.chen@mediatek.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc;
+        bh=27c25yrooHjh+TTXqzDDAJzddaCf990UPSULOb6WFAI=;
+        b=qYMCNP3LLK8EC7qhE40Hfl18zlAXPy5zPbPCgmE32KyjVgwfRw+2ILNfRFT4X+41eK
+         /ICnFWA/szTsvPi9ghgG71p6SXWL41A2/CWlSXkBcjZA9jEgW9MQLf9cYw4YezZJejzN
+         7lyUzgP5PR8eplgU1e3R15xJ0TlXDWYCS5DBkwYi83/iwmwvb8fJD5uWj6hRqETPpeme
+         RVGjrdE6eUDVsxSn+Ji1ABWH1dgITs2bci63YubNPjWP/dQWOlh95VDF4Wjx034VI8Z7
+         7zGFveR3eb4JJQWTqXoEdsiv2EttRQMr+Et/3L2UOcQzQ1Xa+cnrS9HTX9DWf5MVKWmD
+         HDOw==
+X-Gm-Message-State: AOAM5315yyyu5hWKP3tdyKW8BBgYmf+Lxi2Rfd9VKuXyBElmZlvui7Fr
+        DVLfifbV4FQIP945VHDnzeSmzdYnNC3jb3yJ6g==
+X-Google-Smtp-Source: ABdhPJwJm8LFQbdn+sWTcjBTOAiLQyJG59Q9gRIYORRT7i6i0bKT6kb92g60GNPehB0rrnSxorNHWRR+6SETm68Gsg==
+X-Received: from kaleshsingh.c.googlers.com ([fda3:e722:ac3:cc00:14:4d90:c0a8:2145])
+ (user=kaleshsingh job=sendgmr) by 2002:a25:da84:: with SMTP id
+ n126mr41966629ybf.412.1625759827786; Thu, 08 Jul 2021 08:57:07 -0700 (PDT)
+Date:   Thu,  8 Jul 2021 15:56:43 +0000
+Message-Id: <20210708155647.44208-1-kaleshsingh@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+Subject: [PATCH] procfs: Prevent unpriveleged processes accessing fdinfo
+From:   Kalesh Singh <kaleshsingh@google.com>
+Cc:     keescook@chromium.org, torvalds@linux-foundation.org,
+        ebiederm@xmission.com, christian.brauner@ubuntu.com,
+        christian.koenig@amd.com, surenb@google.com, hridya@google.com,
+        kernel-team@android.com, Kalesh Singh <kaleshsingh@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- t
+The file permissions on the fdinfo dir from were changed from
+S_IRUSR|S_IXUSR to S_IRUGO|S_IXUGO, and a PTRACE_MODE_READ check was
+added for opening the fdinfo files [1]. However, the ptrace permission
+check was not added to the directory, allowing anyone to get the open FD
+numbers by reading the fdinfo directory.
 
-On Thu, Jul 8, 2021 at 7:44 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> On Wed, Jul 07, 2021 at 03:43:48PM -0700, Suren Baghdasaryan wrote:
-> > On Wed, Jul 7, 2021 at 6:39 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > >
-> > > This looks good to me now code wise. Just a comment on the comments:
-> > >
-> > > On Tue, Jul 06, 2021 at 07:39:33PM -0700, Suren Baghdasaryan wrote:
-> > > > @@ -559,18 +560,14 @@ static u64 update_triggers(struct psi_group *group, u64 now)
-> > > >       return now + group->poll_min_period;
-> > > >  }
-> > > >
-> > > > -/* Schedule polling if it's not already scheduled. */
-> > > > -static void psi_schedule_poll_work(struct psi_group *group, unsigned long delay)
-> > > > +/* Schedule polling if it's not already scheduled or forced. */
-> > > > +static void psi_schedule_poll_work(struct psi_group *group, unsigned long delay,
-> > > > +                                bool force)
-> > > >  {
-> > > >       struct task_struct *task;
-> > > >
-> > > > -     /*
-> > > > -      * Do not reschedule if already scheduled.
-> > > > -      * Possible race with a timer scheduled after this check but before
-> > > > -      * mod_timer below can be tolerated because group->polling_next_update
-> > > > -      * will keep updates on schedule.
-> > > > -      */
-> > > > -     if (timer_pending(&group->poll_timer))
-> > > > +     /* xchg should be called even when !force to set poll_scheduled */
-> > > > +     if (atomic_xchg(&group->poll_scheduled, 1) && !force)
-> > > >               return;
-> > >
-> > > This explains what the code does, but not why. It would be good to
-> > > explain the ordering with poll_work, here or there. But both sides
-> > > should mention each other.
-> >
-> > How about this:
-> >
-> > /*
-> >  * atomic_xchg should be called even when !force to always set poll_scheduled
-> >  * and to provide a memory barrier (see the comment inside psi_poll_work).
-> >  */
->
-> The memory barrier part makes sense, but the first part says what the
-> code does and the message is unclear to me. Are you worried somebody
-> might turn this around in the future and only conditionalize on
-> poll_scheduled when !force? Essentially, I don't see the downside of
-> dropping that. But maybe I'm missing something.
+Add the missing ptrace permission check for opening the fdinfo directory.
+The check is also added for readdir, lseek in the case that
+an unprivileged process inherits an open FD to the fdinfo dir after an
+exec.
 
-Actually you are right. Originally I was worried that there might be a
-case when poll_scheduled==0 and force==true and if someone flips the
-conditions we will reschedule the timer but will not set
-poll_scheduled back to 1. However I don't think this condition is
-possible. We set force=true only when we skipped resetting
-poll_schedule to 0 and on initial wakeup we always reset
-poll_schedule. How about changing the comment to this:
+For the same reason, similar checks are added for fdinfo files which
+previously only checked the ptrace permission in open.
 
- /*
-  * atomic_xchg should be called even when !force to provide a
-  * full memory barrier (see the comment inside psi_poll_work).
-  */
+[1] https://lkml.kernel.org/r/20210308170651.919148-1-kaleshsingh@google.com
 
->         /*
->          * The xchg implies a full barrier that matches the one
->          * in psi_poll_work() (see corresponding comment there).
->          */
->
-> > > > @@ -595,6 +595,28 @@ static void psi_poll_work(struct psi_group *group)
-> > > >
-> > > >       now = sched_clock();
-> > > >
-> > > > +     if (now > group->polling_until) {
-> > > > +             /*
-> > > > +              * We are either about to start or might stop polling if no
-> > > > +              * state change was recorded. Resetting poll_scheduled leaves
-> > > > +              * a small window for psi_group_change to sneak in and schedule
-> > > > +              * an immegiate poll_work before we get to rescheduling. One
-> > > > +              * potential extra wakeup at the end of the polling window
-> > > > +              * should be negligible and polling_next_update still keeps
-> > > > +              * updates correctly on schedule.
-> > > > +              */
-> > > > +             atomic_set(&group->poll_scheduled, 0);
-> > > > +             /*
-> > > > +              * Ensure that operations of clearing group->poll_scheduled and
-> > > > +              * obtaining changed_states are not reordered.
-> > > > +              */
-> > > > +             smp_mb();
-> > >
-> > > Same here, it would be good to explain that this is ordering the
-> > > scheduler with the timer such that no events are missed. Feel free to
-> > > reuse my race diagram from the other thread - those are better at
-> > > conveying the situation than freeform text.
-> >
-> > I tried to make your diagram a bit less abstract by using the actual
-> > names. How about this?
-> >
-> > /*
-> >  * We need to enforce ordering between poll_scheduled and psi_group_cpu.times
-> >  * reads and writes in psi_poll_work and psi_group_change functions.
-> > Otherwise we
-> >  * might fail to reschedule the timer when monitored states change:
-> >  *
-> >  * psi_poll_work:
-> >  *     poll_scheduled = 0
-> >  *     smp_mb()
-> >  *     changed_states = collect_percpu_times()
-> >  *     if changed_states && xchg(poll_scheduled, 1) == 0
-> >  *         mod_timer()
->
-> Those last two lines aren't relevant for the race, right? I'd leave
-> those out to not distract from it.
+Fixes: 7bc3fa0172a4 ("procfs: allow reading fdinfo with PTRACE_MODE_READ")
+Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+---
+ fs/proc/fd.c | 65 ++++++++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 61 insertions(+), 4 deletions(-)
 
-They did help me illustrate the two failure cases but yeah, someone
-who can read the code can derive the rest :)
+diff --git a/fs/proc/fd.c b/fs/proc/fd.c
+index 172c86270b31..aea59e243bae 100644
+--- a/fs/proc/fd.c
++++ b/fs/proc/fd.c
+@@ -72,7 +72,7 @@ static int seq_show(struct seq_file *m, void *v)
+ 	return 0;
+ }
+ 
+-static int seq_fdinfo_open(struct inode *inode, struct file *file)
++static int proc_fdinfo_access_allowed(struct inode *inode)
+ {
+ 	bool allowed = false;
+ 	struct task_struct *task = get_proc_task(inode);
+@@ -86,13 +86,44 @@ static int seq_fdinfo_open(struct inode *inode, struct file *file)
+ 	if (!allowed)
+ 		return -EACCES;
+ 
++	return 0;
++}
++
++static int seq_fdinfo_open(struct inode *inode, struct file *file)
++{
++	int ret = proc_fdinfo_access_allowed(inode);
++
++	if (ret)
++		return ret;
++
+ 	return single_open(file, seq_show, inode);
+ }
+ 
++static ssize_t seq_fdinfo_read(struct file *file, char __user *buf, size_t size,
++		loff_t *ppos)
++{
++	int ret = proc_fdinfo_access_allowed(file_inode(file));
++
++	if (ret)
++		return ret;
++
++	return seq_read(file, buf, size, ppos);
++}
++
++static loff_t seq_fdinfo_lseek(struct file *file, loff_t offset, int whence)
++{
++	int ret = proc_fdinfo_access_allowed(file_inode(file));
++
++	if (ret)
++		return ret;
++
++	return seq_lseek(file, offset, whence);
++}
++
+ static const struct file_operations proc_fdinfo_file_operations = {
+ 	.open		= seq_fdinfo_open,
+-	.read		= seq_read,
+-	.llseek		= seq_lseek,
++	.read		= seq_fdinfo_read,
++	.llseek		= seq_fdinfo_lseek,
+ 	.release	= single_release,
+ };
+ 
+@@ -344,17 +375,43 @@ proc_lookupfdinfo(struct inode *dir, struct dentry *dentry, unsigned int flags)
+ 
+ static int proc_readfdinfo(struct file *file, struct dir_context *ctx)
+ {
++	int ret = proc_fdinfo_access_allowed(file_inode(file));
++
++	if (ret)
++		return ret;
++
+ 	return proc_readfd_common(file, ctx,
+ 				  proc_fdinfo_instantiate);
+ }
+ 
++static loff_t proc_llseek_fdinfo(struct file *file, loff_t offset, int whence)
++{
++	int ret = proc_fdinfo_access_allowed(file_inode(file));
++
++	if (ret)
++		return ret;
++
++	return generic_file_llseek(file, offset, whence);
++}
++
++static int proc_open_fdinfo(struct inode *inode, struct file *file)
++{
++	int ret = proc_fdinfo_access_allowed(inode);
++
++	if (ret)
++		return ret;
++
++	return 0;
++}
++
+ const struct inode_operations proc_fdinfo_inode_operations = {
+ 	.lookup		= proc_lookupfdinfo,
+ 	.setattr	= proc_setattr,
+ };
+ 
+ const struct file_operations proc_fdinfo_operations = {
++	.open		= proc_open_fdinfo,
+ 	.read		= generic_read_dir,
+ 	.iterate_shared	= proc_readfdinfo,
+-	.llseek		= generic_file_llseek,
++	.llseek		= proc_llseek_fdinfo,
+ };
 
->
-> >  * psi_group_change:
-> >  *     record_times()
-> >  *     smp_mb()
-> >  *     if xchg(poll_scheduled, 1) == 0
-> >  *         mod_timer()
->
-> The reason I tend to keep these more abstract is because 1) the names
-> of the functions change (I had already sent out patches to rename half
-> the variable and function names in this diagram), while the
-> architecture (task change vs poll worker) likely won't, and 2) because
-> it's easy to drown out what the reads, writes, and thus the race
-> condition is with code details and function call indirections.
+base-commit: e9f1cbc0c4114880090c7a578117d3b9cf184ad4
+-- 
+2.32.0.93.g670b81a890-goog
 
-Got it.
-
->
-> How about a compromise?
->
-> /*
->  * A task change can race with the poll worker that is supposed to
->  * report on it. To avoid missing events, ensure ordering between
->  * poll_scheduled and the task state accesses, such that if the poll
->  * worker misses the state update, the task change is guaranteed to
->  * reschedule the poll worker:
->  *
->  * poll worker:
->  *   atomic_set(poll_scheduled, 0)
->  *   smp_mb()
->  *   LOAD states
->  *
->  * task change:
->  *   STORE states
->  *   if atomic_xchg(poll_scheduled, 1) == 0:
->  *     schedule poll worker
->  *
->  * The atomic_xchg() implies a full barrier.
->  */
->  smp_mb();
->
-> This gives a high-level view of what's happening but it can still be
-> mapped to the code by following the poll_scheduled variable.
-
-This looks really good to me.
-If you agree on the first comment modification, should I respin the
-next version?
-
->
-> > If we remove smp_mb barriers then there are the following possible
-> > reordering cases:
-> >
-> > Case1: reordering in psi_poll_work
-> > psi_poll_work                    psi_group_change
-> >   changed_states = collect_percpu_times()
-> >                                               record_times()
-> >                                               if xchg(poll_scheduled,
-> > 1) == 0 <-- false
-> >                                                   mod_timer()
-> >   poll_scheduled = 0
-> >   if changed_states && xchg(poll_scheduled, 1) == 0 <-- changed_states is false
-> >       mod_timer()
-> >
-> > Case2: reordering in psi_group_change
-> > psi_poll_work                    psi_group_change
-> >                                               if xchg(poll_scheduled,
-> > 1) == 0 <-- false
-> >                                                   mod_timer()
-> >   poll_scheduled = 0
-> >   changed_states = collect_percpu_times()
-> >                                                   record_times()
-> >   if changed_states && xchg(poll_scheduled, 1) == 0 <-- changed_states is false
-> >       mod_timer()
-> >
-> > In both cases mod_timer() is not called, poll update is missed. But
-> > describing this all in the comments would be an overkill IMHO.
-> > WDYT?
->
-> Yeah, I also think that's overkill. The failure cases can be derived
-> from the concurrency diagram and explanation.
->
-> Thanks
