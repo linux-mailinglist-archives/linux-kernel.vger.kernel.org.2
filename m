@@ -2,91 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C24C3BFAAC
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 14:50:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53B323BFAAE
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 14:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231624AbhGHMx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 08:53:29 -0400
-Received: from ozlabs.org ([203.11.71.1]:45253 "EHLO ozlabs.org"
+        id S231654AbhGHMzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 08:55:07 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:51297 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229659AbhGHMx2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 08:53:28 -0400
+        id S230433AbhGHMzG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 08:55:06 -0400
 Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GLGNw3ZFhz9sRf;
-        Thu,  8 Jul 2021 22:50:40 +1000 (AEST)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GLGQt6BFkz9s5R;
+        Thu,  8 Jul 2021 22:52:22 +1000 (AEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1625748640;
-        bh=wVB2xHLvC0Sx3VH5QFGi2wnyMzDyK5n8NbulD0HO+xE=;
+        s=201702; t=1625748743;
+        bh=S8ucLp7nedvIAiNyMX/aoAvCTHpW3Mv2oduRMPGocQw=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=HiUwPAwrV3CmFIR2gKZS+e4HlxgB/ZMQq1+Hx1biC4UR25wzm7TGFmFU4MbYU1WzK
-         hbSK1p25kXaMUBNqGSzKa3BFMlZEaVdhG1pHaGALBOvFgDz2Tnumo0Cpk4de1L5dRN
-         vl/W+sCNdwIAPC7CZFp/NOQpVd7z7LEFJdwhXwEC8zb1UfUQMa4/vxMrQ+0nFaZVU/
-         Rrab2XB6OLKmCNYjJPTcCK+hvxVp6Orn7/v4qQxZ1ozKcM8/Iiyuy6j3FdvP5KCmZ0
-         XmutqeS2qGj0Eb9QENJOgbyJNRWq+89gybjoTLd2dEWvMvxvWrjOieiCR+8VqoVUyq
-         o4WHlkXcMjQBA==
-Date:   Thu, 8 Jul 2021 22:50:37 +1000
+        b=N2kqwd0kwaD3xi7U4djjpjnyMBWIErwGSqc+s3wLTFHu91RBPz4tJiiK0WLqBGHXF
+         8XzT9A0dvYFxJLKM8P/HIXCoywfGNo7lwo9j7CtRHgEWvZPVx2G6B1ZD0RuXst2Qnz
+         oUf7EL70QbZF+d5Jh4vZCG22Vm8UNO4U3EUu1krnXsO2xSjy0VkoijqX0qHbhaVQH8
+         8dl2SdGBq8kmO5m9/ELMA4HWFgCsCOy8vJIMWQz5Uq1CWlo20nouIg/H2iTdt3to3g
+         K2DGBppf6phZD2QPyJWNCOhIhHYZl45DbPyqwGMyCcFdwlPIzDyHIbAwez/0No4a5G
+         qbW/IvTzFeAJw==
+Date:   Thu, 8 Jul 2021 22:52:21 +1000
 From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the irqchip tree
-Message-ID: <20210708225037.4980f159@canb.auug.org.au>
-In-Reply-To: <87im1l2plp.wl-maz@kernel.org>
-References: <20210615210143.2e00d851@canb.auug.org.au>
-        <20210708121855.69b5a5f8@canb.auug.org.au>
-        <87im1l2plp.wl-maz@kernel.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux F2FS Dev Mailing List 
+        <linux-f2fs-devel@lists.sourceforge.net>
+Subject: Re: [GIT PULL] f2fs for 5.14-rc1
+Message-ID: <20210708225221.30f1100b@canb.auug.org.au>
+In-Reply-To: <20210708095217.GA32434@quack2.suse.cz>
+References: <YOYHejl3CgABOnhP@google.com>
+        <20210708094647.7c0d3060@canb.auug.org.au>
+        <20210708095217.GA32434@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/3CKfFPpSRjUNDaEW3Xgx/9K";
+Content-Type: multipart/signed; boundary="Sig_/.o7QYyeDvI95PXfHejQuDb4";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/3CKfFPpSRjUNDaEW3Xgx/9K
+--Sig_/.o7QYyeDvI95PXfHejQuDb4
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-Hi Marc,
+Hi Jan,
 
-On Thu, 08 Jul 2021 09:10:10 +0100 Marc Zyngier <maz@kernel.org> wrote:
+On Thu, 8 Jul 2021 11:52:17 +0200 Jan Kara <jack@suse.cz> wrote:
 >
-> Hmmm... I've had a fix for this sitting in irqchip-fixes for some
-> time. But I now realise that this branch is not included in -next
-> while tip tracks it.
->=20
-> Any chance you could add [1] to -next in the future?
->=20
-> Thanks,
->=20
-> 	M.
->=20
-> [1] git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git i=
-rq/irqchip-fixes
+> Whether that particular series causing the conflict will be merged by Lin=
+us
+> in this merge window is uncertain - Linus didn't like how filemap_fault()
+> unconditionally acquired the lock. I've created an optimization patch to =
+avoid
+> that but review is pending... At this point I'm leaning towards the varia=
+nt
+> that series won't go in during the merge window. In that case I'll
+> probably rebase on top of rc1 and force-push everything.
 
-So I assume this a branch of bug fixes for the current release, right?
-In which case I will add it tomorrow.
-
+No worries, thanks for the reply.
 --=20
 Cheers,
 Stephen Rothwell
 
---Sig_/3CKfFPpSRjUNDaEW3Xgx/9K
+--Sig_/.o7QYyeDvI95PXfHejQuDb4
 Content-Type: application/pgp-signature
 Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDm9J0ACgkQAVBC80lX
-0GzRrAf/S2tAE6SxTNv9ux7Kx5Qx09zIrz0h9U7IKLjnflgJdWSfcErWd0wkePhl
-qSJOhiXVmiDSS9sC+wb2EBW9GpA0awlMoTzjFmSfcNhIH7W4sTA0gtFiWVcfjB/j
-3GOzQQLRTfg5M1gqCZ4441UWNC7mlJPmuEZYuoODHcVx1MY+0mNpS62w0ADsbAm3
-ixxPjaiKHy/IaSTk0dsLDqiHlo2CFE3taTM5NLEAEF1EQSdxdjuEZVT6kYZ0B0SI
-EhsqFTTQ5AkXsl0+wEauIvX7CJV5qDTGnS9j4OTt8VxHaD3vUwLL5pusHVYC1QOL
-aFI2sDnagPRzyvXm6TeTV7pC6dwUyA==
-=rNLV
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDm9QUACgkQAVBC80lX
+0Gw65wf7BYY2Q+2LzBOx+CnC0fGEpBEXWBilTo/z5vdX9KxtDswQf3Xk4YDRcIsJ
+QjTiDAVneeytbS24VqMIXZShTjtodXt5UNX4PhutGlz0jTTU3am4+11YT+cSJd51
+Z5+V8fsZPIdwFJ1F7JGByrmWgjYrcjjLzSvUVzL98YVqB20EXmPoPHumLpXH2VHp
+jLgFfrKtjsGdkcayDq/ofcAOssi0KP4rL5gtiVX7HvfCzZRmHTDcTHf1tANxz4aC
+L+jHIVwqPOdtbIKmWmr7RCNu5z7zlFJBe4ORwpDuvr/xWDZPP3jLxQ5F89RZ2BbU
+w6wqeHbAcG8FXeXFV+/wz08yZSs2UA==
+=BWRJ
 -----END PGP SIGNATURE-----
 
---Sig_/3CKfFPpSRjUNDaEW3Xgx/9K--
+--Sig_/.o7QYyeDvI95PXfHejQuDb4--
