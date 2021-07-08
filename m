@@ -2,79 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A6163BF488
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 06:21:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E192D3BF48B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 06:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229595AbhGHEYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 00:24:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhGHEYC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 00:24:02 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 815A4C061574;
-        Wed,  7 Jul 2021 21:21:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=77m8A8TvwRFVR/JL6IH9OVAJZSv5m+xL9r+uut0gWrE=; b=XPt01X6UkV7rGd6LHEXZR1NKe4
-        3yW7hiUcn60dUf2JhvwoW4h0q/Wu7LtxE+5EazlbwldAKTxr19PIvq+MCPol0O6DC8NjXFcqJ/WKX
-        TjWv3OT6OB81SAXqjy4FsIVWSmxeCZ8FncVaHc540DT0r0OzOaawhAwnRSR4Ing9OSxJb8O0ke31Q
-        YbpZeSn3Y3HtJdYkyZCRMqg70Qm53VTdYsIY/9aKL21jMOW9AMiOzicFQ3eg5LQGLrwYuPCM0z1pb
-        5/1FxXV97+cOCmgWBHl2dZhNe9bXkjHSeMTkKYNk8A54+Y2fIJh3LoUeNvNUE8so8qyA82+kJq78O
-        HiV1XAew==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m1LWv-00D4oo-4R; Thu, 08 Jul 2021 04:21:02 +0000
-Date:   Thu, 8 Jul 2021 05:20:53 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        ??rjan Eide <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Mel Gorman <mgorman@suse.de>, linux-mm <linux-mm@kvack.org>
-Subject: Re: page pools, was Re: [PATCH v9 1/5] drm: Add a sharable drm
- page-pool implementation
-Message-ID: <YOZ9JZlwkjyDGti5@infradead.org>
-References: <20210630013421.735092-1-john.stultz@linaro.org>
- <20210630013421.735092-2-john.stultz@linaro.org>
- <YOVL1f4m+8ly9fyM@infradead.org>
- <CALAqxLUubzuLkFxmWjfPQHaFU8EkWuGo7nDhfkgi4wPGHnBoVw@mail.gmail.com>
+        id S229637AbhGHE1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 00:27:25 -0400
+Received: from mga03.intel.com ([134.134.136.65]:31750 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229482AbhGHE1Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 00:27:24 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10038"; a="209480889"
+X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
+   d="scan'208";a="209480889"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2021 21:24:41 -0700
+X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
+   d="scan'208";a="487400097"
+Received: from sneftin-mobl.ger.corp.intel.com (HELO [10.185.169.17]) ([10.185.169.17])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2021 21:24:38 -0700
+Subject: Re: [Intel-wired-lan] [PATCH 2/2] igc: wait for the MAC copy when
+ enabled MAC passthrough
+To:     Aaron Ma <aaron.ma@canonical.com>, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Edri, Michael" <michael.edri@intel.com>,
+        "Ruinskiy, Dima" <dima.ruinskiy@intel.com>,
+        "Shalev, Avi" <avi.shalev@intel.com>
+References: <20210702045120.22855-1-aaron.ma@canonical.com>
+ <20210702045120.22855-2-aaron.ma@canonical.com>
+ <613e2106-940a-49ed-6621-0bb00bc7dca5@intel.com>
+ <ad3d2d01-1d0a-8887-b057-e6a9531a05f4@canonical.com>
+ <f9f9408e-9ba3-7ed9-acc2-1c71913b04f0@intel.com>
+ <96106dfe-9844-1d9d-d865-619d78a0d150@canonical.com>
+From:   "Neftin, Sasha" <sasha.neftin@intel.com>
+Message-ID: <47117935-10d6-98e0-5894-ba104912ce25@intel.com>
+Date:   Thu, 8 Jul 2021 07:24:35 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALAqxLUubzuLkFxmWjfPQHaFU8EkWuGo7nDhfkgi4wPGHnBoVw@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <96106dfe-9844-1d9d-d865-619d78a0d150@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 12:35:23PM -0700, John Stultz wrote:
-> So, as Christian mentioned, on the TTM side it's useful, as they are
-> trying to avoid TLB flushes when changing caching attributes.
+On 7/6/2021 09:46, Aaron Ma wrote:
 > 
-> For the dmabuf system heap purposes, the main benefit is moving the
-> page zeroing to the free path, rather than the allocation path. This
-> on its own doesn't save much, but allows us to defer frees (and thus
-> the zeroing) to the background, which can get that work out of the hot
-> path.
+> On 7/5/21 7:54 PM, Neftin, Sasha wrote:
+>> Hello Aaron, Thanks to point me on this document. I see... This is 
+>> recommendation for Windows driver. Anyway, "delay" approach is 
+>> error-prone. We need rather ask for MNG FW confirmation (message) that 
+>> MAC address is copied.
+>> Can we call (in case we know that MNG FW copied MAC address):
+>> igc_rar_set (method from igc_mac.c), update the mac.addr and then 
+>> perform": memcpy(netdev->dev_addr, hw->mac.addr, netdev->addr_len);?
+> 
+> Without delay, after igc_rar_set, the MAC address is all 0.
+> The MAC addr is the from dock instead of MAC passthrough with the 
+> original driver.
+I would to like suggest checking the following direction:
+1. principal question: can we update the netdev device address after it 
+is already set during probe? I meant perform another:
+memcpy(netdev->dev_addr, hw->mac.addr, netdev->addr_len) up to demand
+2. We need to work with Intel's firmware engineer/group and define the 
+message/event: MAC addressis changed and should be updated.
+As I know MNG FW updates shadow registers. Since shadow registers are 
+different from RAL/RAH registers - it could be a notification that the 
+MAC address changed. Let's check it.
+> 
+> Thanks,
+> Aaron
 
-I really do no think that is worth it to fragment the free pages.
