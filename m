@@ -2,118 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0433C16F3
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 18:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7363C1706
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 18:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229600AbhGHQUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 12:20:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54947 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229489AbhGHQUq (ORCPT
+        id S229604AbhGHQ1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 12:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229468AbhGHQ1h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 12:20:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625761084;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=m9j0fgT60+2/e0HhcHcfYjSR793UpMTP7LOw8dx+WmU=;
-        b=BJYRcCPVIO+sX4d7JP+oHXbV2QHddoz4FO6pViLn35MQgunT2xfxzB+W5QanFADh4zZpvw
-        XPCezolJtRADm4I1+PvF2SFehswkdhaznpd7ut/zwINEvXGZ2OK8KzyyJxtN3WosOAgAa7
-        5FsXCO/OVD0j7kte0htssHjX40JCdGY=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-544-qKEABBv-MgaoR6mcOQcOtA-1; Thu, 08 Jul 2021 12:18:03 -0400
-X-MC-Unique: qKEABBv-MgaoR6mcOQcOtA-1
-Received: by mail-ej1-f70.google.com with SMTP id og25-20020a1709071dd9b02904c99c7e61f1so2072811ejc.18
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 09:18:03 -0700 (PDT)
+        Thu, 8 Jul 2021 12:27:37 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D4BC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 09:24:55 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id a13so8233751wrf.10
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 09:24:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K6n8sh6LGjBhE4XtolhUR5s1aOIcgEeUb5cKA4itJB4=;
+        b=yy5YSNmt72HDFQKc9NCrpGh0eyZFexVc0dNwPpyVAM4yyRE2yBf/7FqcNelJIJ3vD6
+         LL2gzco/awhqQIq6oLk5m3J4exXfYg1nYJOH9293RiwE0NTs+XraK3lqXIfGy2EAzu5N
+         88B92D/KUl1EScfOSenCCHFc3RSMarzHx2nCGQ6uKy/zhRT3gZKCKb0KgRI64qCrjQ0F
+         Rke8+aXJHAGcOTOWtZRVcIXvpPhLKCrt6906PGA0du90R4WtlKuqk3qw63LfkFEtzndA
+         WuxIoe4l6sI9TIP32C/EeAP2oz2iZsqH2y/riPtHHKFTAUbZ8WYVkl9G8RT0sGZjKqbE
+         q8UQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=m9j0fgT60+2/e0HhcHcfYjSR793UpMTP7LOw8dx+WmU=;
-        b=iYoPbDf+OTjP+53mLV67KknUsQoj6Znr2J97Twsrnq2ZJ8X9GT/s+ei4K8fAJ/HIkp
-         HQE0//uDjIHWHIclRV9CJSYkiHIboKWXoRA3QBOxXm2cINJgtQM9LpDmPZlcQNOWySaL
-         l5Qaw/1ffq7cA0wmXe9jhgEP621Vt09TA2n0xMNVmcCNgd5B+BTdJ6YUWct6M6ogFplu
-         UknYrSCuOeVAYsqGWB8NzuA37LBKq9+QcJU0XcBmzFVlLkb64gd685tg7MwR5vXnmr5A
-         4ZiahxJyZR0k0Igx5XYGT+b3M4jaz5Ma7vWHFbPVfOAQ7MpsbXh2JE+rUnfZHFi5nElL
-         0nmg==
-X-Gm-Message-State: AOAM5336iLlKP2eXGirYU6AMVred0ThplApc4nIk1fvUWJ8jR+ThS1Yy
-        DG+70XQSfVwOGhvzzQsoOc1TACqw9IFhSvF/6bGDv5D3Eeti+IPSv3/jMJUGCvkFZv5qi4flOjs
-        ehl/csoG08pCwk2QDURbEu1ZE/stUL3vQmBdAYcPE0LR/+EhDvCIDzXnaS1sJqtnqlwaveJPNKi
-        Fi
-X-Received: by 2002:a17:906:8584:: with SMTP id v4mr31620049ejx.301.1625761081827;
-        Thu, 08 Jul 2021 09:18:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxrusHA0pBCSrA1fd/X22PtmeBy7767Uwpwxg/gdkQaycnP2jWXEycjCC8XUgx7fHyY9loSLg==
-X-Received: by 2002:a17:906:8584:: with SMTP id v4mr31620017ejx.301.1625761081541;
-        Thu, 08 Jul 2021 09:18:01 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id ja11sm1182528ejc.62.2021.07.08.09.18.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Jul 2021 09:18:01 -0700 (PDT)
-Subject: Re: [PATCH] Revert "KVM: x86: WARN and reject loading KVM if NX is
- supported but not enabled"
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        bh=K6n8sh6LGjBhE4XtolhUR5s1aOIcgEeUb5cKA4itJB4=;
+        b=Op+JdyEFxQpnuf0YgudpEA1zAbX90a2sMmulHHq/iCv6EASSXDHDsXAmZ6euUHacSJ
+         T4TpoFIP+coxdEld4mjo89me+UfdHfffgBD6yZlE6mia/gisLv0g+tim/X6DtTLVo1q3
+         GJ1pmBZ2mRH8qUHvn838S00AHzqH4RcXL4iqNJn51JaQS8phZlj9KyYofKkh/W9juMBM
+         p1IIzgw/8UusB+F0MOGyhlY7Mh/P1dd0uP1edySF14MyW90x6vEPAzBxUq3L+pLqS8GP
+         6MzbxnS9XbkbGN1rtRGyZsmna/aYBwZDaqFpEl1DbVP93n7WCBqRXBK8T+/ku18p3OH0
+         Ho6A==
+X-Gm-Message-State: AOAM53057usn4g5kiHdxxhHuj7LcuoaS3scmUn4sbrZNEY2CYKapzlqy
+        O5ptOeP0klrYUAik/Wve1RJbnA==
+X-Google-Smtp-Source: ABdhPJwAFAHhRu6O8+PDLej2JYaDDmqd0mYSt6TES+zRkJq9cNsk/cVWUksge6P3qEYiIxnFtIgsRg==
+X-Received: by 2002:a05:6000:1843:: with SMTP id c3mr36422947wri.301.1625761493705;
+        Thu, 08 Jul 2021 09:24:53 -0700 (PDT)
+Received: from localhost.localdomain (ppp-94-66-242-227.home.otenet.gr. [94.66.242.227])
+        by smtp.gmail.com with ESMTPSA id m29sm9546071wms.13.2021.07.08.09.24.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jul 2021 09:24:53 -0700 (PDT)
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     netdev@vger.kernel.org
+Cc:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Matteo Croce <mcroce@microsoft.com>,
         linux-kernel@vger.kernel.org
-References: <20210625001853.318148-1-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <28ec9d07-756b-f546-dad1-0af751167838@redhat.com>
-Date:   Thu, 8 Jul 2021 18:17:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+Subject: [PATCH] skbuff: Fix a potential race while recycling page_pool packets
+Date:   Thu,  8 Jul 2021 19:24:45 +0300
+Message-Id: <20210708162449.98764-1-ilias.apalodimas@linaro.org>
+X-Mailer: git-send-email 2.32.0.rc0
 MIME-Version: 1.0
-In-Reply-To: <20210625001853.318148-1-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/06/21 02:18, Sean Christopherson wrote:
-> Let KVM load if EFER.NX=0 even if NX is supported, the analysis and
-> testing (or lack thereof) for the non-PAE host case was garbage.
-> 
-> If the kernel won't be using PAE paging, .Ldefault_entry in head_32.S
-> skips over the entire EFER sequence.  Hopefully that can be changed in
-> the future to allow KVM to require EFER.NX, but the motivation behind
-> KVM's requirement isn't yet merged.  Reverting and revisiting the mess
-> at a later date is by far the safest approach.
-> 
-> This reverts commit 8bbed95d2cb6e5de8a342d761a89b0a04faed7be.
-> 
-> Fixes: 8bbed95d2cb6 ("KVM: x86: WARN and reject loading KVM if NX is supported but not enabled")
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
-> 
-> Hopefully it's not too late to just drop the original patch...
-> 
->   arch/x86/kvm/x86.c | 3 ---
->   1 file changed, 3 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 4a597aafe637..1cc02a3685d0 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -10981,9 +10981,6 @@ int kvm_arch_hardware_setup(void *opaque)
->   	int r;
->   
->   	rdmsrl_safe(MSR_EFER, &host_efer);
-> -	if (WARN_ON_ONCE(boot_cpu_has(X86_FEATURE_NX) &&
-> -			 !(host_efer & EFER_NX)))
-> -		return -EIO;
->   
->   	if (boot_cpu_has(X86_FEATURE_XSAVES))
->   		rdmsrl(MSR_IA32_XSS, host_xss);
-> 
+As Alexander points out, when we are trying to recycle a cloned/expanded
+SKB we might trigger a race.  The recycling code relies on the
+pp_recycle bit to trigger,  which we carry that over to cloned SKBs.
+When that cloned SKB gets expanded,  we are creating 2 separate instances
+accessing the page frags.  Since the skb_release_data() will first try to
+recycle the frags,  there's a potential race between the original and
+cloned SKB.
 
-So do we want this or "depends on X86_64 || X86_PAE"?
+Fix this by explicitly making the cloned/expanded SKB not recyclable.
+If the original SKB is freed first the pages are released.
+If it is released after the clone/expended skb then it can still be
+recycled.
 
-Paolo
+Fixes: 6a5bcd84e886 ("page_pool: Allow drivers to hint on SKB recycling")
+Reported-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+---
+ net/core/skbuff.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 12aabcda6db2..0cb53c05ed76 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -1718,6 +1718,13 @@ int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
+ 	}
+ 	off = (data + nhead) - skb->head;
+ 
++	/* If it's a cloned skb we expand with frags attached we must prohibit
++	 * the recycling code from running, otherwise we might trigger a race
++	 * while trying to recycle the fragments from the original and cloned
++	 * skb
++	 */
++	if (skb_cloned(skb))
++		skb->pp_recycle = 0;
+ 	skb->head     = data;
+ 	skb->head_frag = 0;
+ 	skb->data    += off;
+-- 
+2.32.0.rc0
 
