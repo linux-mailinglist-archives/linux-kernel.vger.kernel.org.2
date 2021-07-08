@@ -2,194 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57CBF3C16B2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 17:57:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24C803C16BC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 18:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232095AbhGHP7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 11:59:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbhGHP7v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 11:59:51 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98AAEC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 08:57:08 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id j186-20020a25d2c30000b029055ed6ffbea6so65560ybg.14
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 08:57:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:cc;
-        bh=27c25yrooHjh+TTXqzDDAJzddaCf990UPSULOb6WFAI=;
-        b=aDve9Zer0+oH4LFmsjzSJjy2qJ6ydRcQ4yQsIy3WlRU1bl7Dmud2tM1BJ1Roiz1yG5
-         MRwy5WjkhamTgnta59/CF/rpz9FqUnMiMsx0Kal3nVzvPQB82HyD7sy+7CsnlR0bouiD
-         c6LHwPfuy3ub4AhJWEntApfWGyn8plc0X0dXsEHEUGNnHc5Mv2HTE9OHzVoGJsklAhuP
-         OhKTiZYaq8ap1CzW5ckGAJEV6sbIhVoXogJjAIBB8u5NGAhl+baC5pWqq8fb2MNhJLff
-         zIfBuQnrl1GveetW406kcZxik0zn+tT2kRnNYSqDk10TCrpApsbgL/M68IuegAnY/2WW
-         XE0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc;
-        bh=27c25yrooHjh+TTXqzDDAJzddaCf990UPSULOb6WFAI=;
-        b=qYMCNP3LLK8EC7qhE40Hfl18zlAXPy5zPbPCgmE32KyjVgwfRw+2ILNfRFT4X+41eK
-         /ICnFWA/szTsvPi9ghgG71p6SXWL41A2/CWlSXkBcjZA9jEgW9MQLf9cYw4YezZJejzN
-         7lyUzgP5PR8eplgU1e3R15xJ0TlXDWYCS5DBkwYi83/iwmwvb8fJD5uWj6hRqETPpeme
-         RVGjrdE6eUDVsxSn+Ji1ABWH1dgITs2bci63YubNPjWP/dQWOlh95VDF4Wjx034VI8Z7
-         7zGFveR3eb4JJQWTqXoEdsiv2EttRQMr+Et/3L2UOcQzQ1Xa+cnrS9HTX9DWf5MVKWmD
-         HDOw==
-X-Gm-Message-State: AOAM5315yyyu5hWKP3tdyKW8BBgYmf+Lxi2Rfd9VKuXyBElmZlvui7Fr
-        DVLfifbV4FQIP945VHDnzeSmzdYnNC3jb3yJ6g==
-X-Google-Smtp-Source: ABdhPJwJm8LFQbdn+sWTcjBTOAiLQyJG59Q9gRIYORRT7i6i0bKT6kb92g60GNPehB0rrnSxorNHWRR+6SETm68Gsg==
-X-Received: from kaleshsingh.c.googlers.com ([fda3:e722:ac3:cc00:14:4d90:c0a8:2145])
- (user=kaleshsingh job=sendgmr) by 2002:a25:da84:: with SMTP id
- n126mr41966629ybf.412.1625759827786; Thu, 08 Jul 2021 08:57:07 -0700 (PDT)
-Date:   Thu,  8 Jul 2021 15:56:43 +0000
-Message-Id: <20210708155647.44208-1-kaleshsingh@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-Subject: [PATCH] procfs: Prevent unpriveleged processes accessing fdinfo
-From:   Kalesh Singh <kaleshsingh@google.com>
-Cc:     keescook@chromium.org, torvalds@linux-foundation.org,
-        ebiederm@xmission.com, christian.brauner@ubuntu.com,
-        christian.koenig@amd.com, surenb@google.com, hridya@google.com,
-        kernel-team@android.com, Kalesh Singh <kaleshsingh@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+        id S232080AbhGHQF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 12:05:27 -0400
+Received: from mga02.intel.com ([134.134.136.20]:39679 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229592AbhGHQF0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 12:05:26 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10039"; a="196707792"
+X-IronPort-AV: E=Sophos;i="5.84,224,1620716400"; 
+   d="scan'208";a="196707792"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 09:02:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,224,1620716400"; 
+   d="scan'208";a="628562316"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
+  by orsmga005.jf.intel.com with ESMTP; 08 Jul 2021 09:02:29 -0700
+Subject: Re: [PATCH RFC 2/2] scsi: ufshcd: Fix device links when BOOT WLUN
+ fails to probe
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "open list:TARGET SUBSYSTEM" <linux-scsi@vger.kernel.org>,
+        Avri Altman <avri.altman@wdc.com>,
+        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210707172948.1025-1-adrian.hunter@intel.com>
+ <20210707172948.1025-3-adrian.hunter@intel.com> <YOXm4FuL/CW4lYDZ@kroah.com>
+ <66130101-b0c5-a9a3-318a-468c6f3b380f@intel.com>
+ <CAJZ5v0hfEE=ney1tH5MtQm0KWs4U2yzy_DqAAW7hTyxxx2-cNg@mail.gmail.com>
+ <c3ec3ca2-220f-9e5a-e2ce-b1c2be86c97c@intel.com>
+ <CAJZ5v0hXR+ZsjKP1BUrOEXDFfD3ha=w90bExrx5qhTrOG16Ksw@mail.gmail.com>
+ <CAJZ5v0igHZ+cj7F-pMZEtNjG+UkRE-jUNC7m7e2vsZfasZLY5A@mail.gmail.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <4bb516f8-d987-dc4a-5e32-8db827ac486b@intel.com>
+Date:   Thu, 8 Jul 2021 19:02:42 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <CAJZ5v0igHZ+cj7F-pMZEtNjG+UkRE-jUNC7m7e2vsZfasZLY5A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The file permissions on the fdinfo dir from were changed from
-S_IRUSR|S_IXUSR to S_IRUGO|S_IXUGO, and a PTRACE_MODE_READ check was
-added for opening the fdinfo files [1]. However, the ptrace permission
-check was not added to the directory, allowing anyone to get the open FD
-numbers by reading the fdinfo directory.
+On 8/07/21 6:12 pm, Rafael J. Wysocki wrote:
+> On Thu, Jul 8, 2021 at 5:03 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>>
+>> On Thu, Jul 8, 2021 at 4:17 PM Adrian Hunter <adrian.hunter@intel.com> wrote:
+>>>
+>>> On 8/07/21 3:31 pm, Rafael J. Wysocki wrote:
+>>>> On Wed, Jul 7, 2021 at 7:49 PM Adrian Hunter <adrian.hunter@intel.com> wrote:
+>>>>>
+>>>>> On 7/07/21 8:39 pm, Greg Kroah-Hartman wrote:
+>>>>>> On Wed, Jul 07, 2021 at 08:29:48PM +0300, Adrian Hunter wrote:
+>>>>>>> If a LUN fails to probe (e.g. absent BOOT WLUN), the device will not have
+>>>>>>> been registered but can still have a device link holding a reference to the
+>>>>>>> device. The unwanted device link will prevent runtime suspend indefinitely,
+>>>>>>> and cause some warnings if the supplier is ever deleted (e.g. by unbinding
+>>>>>>> the UFS host controller). Fix by explicitly deleting the device link when
+>>>>>>> SCSI destroys the SCSI device.
+>>>>>>>
+>>>>>>> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+>>>>>>> ---
+>>>>>>>  drivers/scsi/ufs/ufshcd.c | 7 +++++++
+>>>>>>>  1 file changed, 7 insertions(+)
+>>>>>>>
+>>>>>>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>>>>>>> index 708b3b62fc4d..483aa74fe2c8 100644
+>>>>>>> --- a/drivers/scsi/ufs/ufshcd.c
+>>>>>>> +++ b/drivers/scsi/ufs/ufshcd.c
+>>>>>>> @@ -5029,6 +5029,13 @@ static void ufshcd_slave_destroy(struct scsi_device *sdev)
+>>>>>>>              spin_lock_irqsave(hba->host->host_lock, flags);
+>>>>>>>              hba->sdev_ufs_device = NULL;
+>>>>>>>              spin_unlock_irqrestore(hba->host->host_lock, flags);
+>>>>>>> +    } else {
+>>>>>>> +            /*
+>>>>>>> +             * If a LUN fails to probe (e.g. absent BOOT WLUN), the device
+>>>>>>> +             * will not have been registered but can still have a device
+>>>>>>> +             * link holding a reference to the device.
+>>>>>>> +             */
+>>>>>>> +            device_links_scrap(&sdev->sdev_gendev);
+>>>>>>
+>>>>>> What created that link?  And why did it do that before probe happened
+>>>>>> successfully?
+>>>>>
+>>>>> The same driver created the link.
+>>>>>
+>>>>> The documentation seems to say it is allowed to, if it is the consumer.
+>>>>> From Documentation/driver-api/device_link.rst
+>>>>>
+>>>>>   Usage
+>>>>>   =====
+>>>>>
+>>>>>   The earliest point in time when device links can be added is after
+>>>>>   :c:func:`device_add()` has been called for the supplier and
+>>>>>   :c:func:`device_initialize()` has been called for the consumer.
+>>>>
+>>>> Yes, this is allowed, but if you've added device links to a device
+>>>> object that is not going to be registered after all, you are
+>>>> responsible for doing the cleanup.
+>>>>
+>>>> Why can't you call device_link_del() directly on those links?
+>>>>
+>>>> Or device_link_remove() if you don't want to deal with link pointers?
+>>>>
+>>>
+>>> Those only work for DL_FLAG_STATELESS device links, but we use only
+>>> DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE flags.
+>>
+>> So I'd probably modify device_link_remove() to check if the consumer
+>> device has been registered and run __device_link_del() directly
+>> instead of device_link_put_kref() if it hasn't.
+>>
+>> Or add an argument to it to force the removal.
+> 
+> Or even modify device_link_put_kref() like this:
+> 
+>  static void device_link_put_kref(struct device_link *link)
+>  {
+>           if (link->flags & DL_FLAG_STATELESS)
+>                   kref_put(&link->kref, __device_link_del);
+> +        else if (!device_is_registered(link->consumer))
+> +                __device_link_del(link);
+>           else
+>                  WARN(1, "Unable to drop a managed device link reference\n");
+>  }
+> 
 
-Add the missing ptrace permission check for opening the fdinfo directory.
-The check is also added for readdir, lseek in the case that
-an unprivileged process inherits an open FD to the fdinfo dir after an
-exec.
-
-For the same reason, similar checks are added for fdinfo files which
-previously only checked the ptrace permission in open.
-
-[1] https://lkml.kernel.org/r/20210308170651.919148-1-kaleshsingh@google.com
-
-Fixes: 7bc3fa0172a4 ("procfs: allow reading fdinfo with PTRACE_MODE_READ")
-Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
----
- fs/proc/fd.c | 65 ++++++++++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 61 insertions(+), 4 deletions(-)
-
-diff --git a/fs/proc/fd.c b/fs/proc/fd.c
-index 172c86270b31..aea59e243bae 100644
---- a/fs/proc/fd.c
-+++ b/fs/proc/fd.c
-@@ -72,7 +72,7 @@ static int seq_show(struct seq_file *m, void *v)
- 	return 0;
- }
- 
--static int seq_fdinfo_open(struct inode *inode, struct file *file)
-+static int proc_fdinfo_access_allowed(struct inode *inode)
- {
- 	bool allowed = false;
- 	struct task_struct *task = get_proc_task(inode);
-@@ -86,13 +86,44 @@ static int seq_fdinfo_open(struct inode *inode, struct file *file)
- 	if (!allowed)
- 		return -EACCES;
- 
-+	return 0;
-+}
-+
-+static int seq_fdinfo_open(struct inode *inode, struct file *file)
-+{
-+	int ret = proc_fdinfo_access_allowed(inode);
-+
-+	if (ret)
-+		return ret;
-+
- 	return single_open(file, seq_show, inode);
- }
- 
-+static ssize_t seq_fdinfo_read(struct file *file, char __user *buf, size_t size,
-+		loff_t *ppos)
-+{
-+	int ret = proc_fdinfo_access_allowed(file_inode(file));
-+
-+	if (ret)
-+		return ret;
-+
-+	return seq_read(file, buf, size, ppos);
-+}
-+
-+static loff_t seq_fdinfo_lseek(struct file *file, loff_t offset, int whence)
-+{
-+	int ret = proc_fdinfo_access_allowed(file_inode(file));
-+
-+	if (ret)
-+		return ret;
-+
-+	return seq_lseek(file, offset, whence);
-+}
-+
- static const struct file_operations proc_fdinfo_file_operations = {
- 	.open		= seq_fdinfo_open,
--	.read		= seq_read,
--	.llseek		= seq_lseek,
-+	.read		= seq_fdinfo_read,
-+	.llseek		= seq_fdinfo_lseek,
- 	.release	= single_release,
- };
- 
-@@ -344,17 +375,43 @@ proc_lookupfdinfo(struct inode *dir, struct dentry *dentry, unsigned int flags)
- 
- static int proc_readfdinfo(struct file *file, struct dir_context *ctx)
- {
-+	int ret = proc_fdinfo_access_allowed(file_inode(file));
-+
-+	if (ret)
-+		return ret;
-+
- 	return proc_readfd_common(file, ctx,
- 				  proc_fdinfo_instantiate);
- }
- 
-+static loff_t proc_llseek_fdinfo(struct file *file, loff_t offset, int whence)
-+{
-+	int ret = proc_fdinfo_access_allowed(file_inode(file));
-+
-+	if (ret)
-+		return ret;
-+
-+	return generic_file_llseek(file, offset, whence);
-+}
-+
-+static int proc_open_fdinfo(struct inode *inode, struct file *file)
-+{
-+	int ret = proc_fdinfo_access_allowed(inode);
-+
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+
- const struct inode_operations proc_fdinfo_inode_operations = {
- 	.lookup		= proc_lookupfdinfo,
- 	.setattr	= proc_setattr,
- };
- 
- const struct file_operations proc_fdinfo_operations = {
-+	.open		= proc_open_fdinfo,
- 	.read		= generic_read_dir,
- 	.iterate_shared	= proc_readfdinfo,
--	.llseek		= generic_file_llseek,
-+	.llseek		= proc_llseek_fdinfo,
- };
-
-base-commit: e9f1cbc0c4114880090c7a578117d3b9cf184ad4
--- 
-2.32.0.93.g670b81a890-goog
-
+Thanks! :-) I will do that.
