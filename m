@@ -2,166 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81FF83C1579
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 16:50:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 811A83C157C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 16:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232004AbhGHOxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 10:53:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231792AbhGHOxh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 10:53:37 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D6AC061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 07:50:55 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id w13so4278839wmc.3
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 07:50:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CqegNe6afZGuoA4ywYbhhiljd9BmDBRgWgf3bipzZ9M=;
-        b=eRboreH6uMXG79fmStphyJ2LlPkFebtxMpNadeQcr3k39zdBPZGcolc2j8avyIYUfM
-         nEGl4M/aM7NrllJnSilRi1U1v4TIVMys3+ZNIDwgmNTqZAX9ZQQyFlQTsVyTQenojoQi
-         RCpI/w9UtfsDw7C3+3WuELXPOBq3hZQ1FAMG1Stil4BhxcFXl/z6qvxKYeBwZ2ojyDBH
-         hFaWznS8E3zqiEekYF13MlsqHYpOfRZAMa8OHALRbhAoqVMMtbGbaSojvfzx7pwf/ULg
-         y5817lHF4YEg/4eXG6X0vht8yWb4r03fMCDJA3nYbhJX7jXy0lBU7M3ACjiHB4G27mXc
-         7jaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CqegNe6afZGuoA4ywYbhhiljd9BmDBRgWgf3bipzZ9M=;
-        b=isNEJ29u8t6VuOh1UPy11RSb+fTaNPFCInOJ9XSMkik54f1PJNSAsAcOxcafcHgG3X
-         hODE4lnqVGVNeCJetoSCzS4Vv5ebUZYBwFj99gpUupWMa2uGpdmaocfVeUP/ND3iDS1O
-         rTDGDnzsvsNVGru222PIIDcvGKUtehZMikqLxs9FO0nBokg+BnTA0PiLm14jgfeYa2oz
-         Y2UNbqNjmhf8IvU7fr1Bdfv53ZoXtbv5FCTlItrd1Z6PW7ymLB44HtDCFivRbTODCgj7
-         q+T8FaMFTvyL6ZIbS396mqpMT3p7uajaJqHivIwWoK8ar7eJxK/JPri7/VHC33hT0Mzb
-         RIIg==
-X-Gm-Message-State: AOAM530OTL5eCdummCN6MsbdX4kwvHOTFeo5jGs8W03wUwIutkrLlb/d
-        eQIhAYUIDJKIO6JlzyAKr5ezLw==
-X-Google-Smtp-Source: ABdhPJxcRn/Mt1uXH48Enuc4Y6DewGso6ByL2CifNQe65iSmHfopTFxnZRQp5SorWOz60B2Wrns8QA==
-X-Received: by 2002:a1c:7308:: with SMTP id d8mr4228688wmb.20.1625755853497;
-        Thu, 08 Jul 2021 07:50:53 -0700 (PDT)
-Received: from enceladus (ppp-94-66-242-227.home.otenet.gr. [94.66.242.227])
-        by smtp.gmail.com with ESMTPSA id o3sm1483595wrm.5.2021.07.08.07.50.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jul 2021 07:50:52 -0700 (PDT)
-Date:   Thu, 8 Jul 2021 17:50:48 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linuxarm@openeuler.org,
-        yisen.zhuang@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
-        thomas.petazzoni@bootlin.com, Marcin Wojtas <mw@semihalf.com>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        hawk@kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, fenghua.yu@intel.com,
-        guro@fb.com, peterx@redhat.com, Feng Tang <feng.tang@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, mcroce@microsoft.com,
-        Hugh Dickins <hughd@google.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>, wenxu@ucloud.cn,
-        cong.wang@bytedance.com, Kevin Hao <haokexin@gmail.com>,
-        nogikh@google.com, Marco Elver <elver@google.com>,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH net-next RFC 1/2] page_pool: add page recycling support
- based on elevated refcnt
-Message-ID: <YOcQyKt6i+UeMzSS@enceladus>
-References: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
- <1625044676-12441-2-git-send-email-linyunsheng@huawei.com>
- <CAKgT0Ueyc8BqjkdTVC_c-Upn-ghNeahYQrWJtQSqxoqN7VvMWA@mail.gmail.com>
- <29403911-bc26-dd86-83b8-da3c1784d087@huawei.com>
- <CAKgT0UcGDYcuZRXX1MaFAzzBySu3R4_TSdC6S0cyS7Ppt_dNng@mail.gmail.com>
- <YOX6bPEL0cq8CgPG@enceladus>
- <CAKgT0UfPFbAptXMJ4BQyeAadaxyHfkKRfeiwhrVMwafNEM_0cw@mail.gmail.com>
- <YOcKASZ9Bp0/cz1d@enceladus>
- <CAKgT0UfJuvdkccr=SXWNUaGx7y5nUHFL-E9g3qi4sagY_jWUUQ@mail.gmail.com>
+        id S231910AbhGHO4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 10:56:14 -0400
+Received: from mail1.perex.cz ([77.48.224.245]:39948 "EHLO mail1.perex.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229738AbhGHO4N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 10:56:13 -0400
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id E7812A003F;
+        Thu,  8 Jul 2021 16:53:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz E7812A003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+        t=1625756009; bh=50Pcd5aTX9wikvo2sIBF0vJ6IcrjySrof/14/tpqP8k=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=phgeDJEeL3CJ2C+r+weBuDGCtGDMtCBf8XucknY8xtRV+9n1UxbGse81CzdL9m7Ru
+         AntvgEqAMSaowOfV+vTJPwyqirFmSYAYpmlhCPFRLL4DZVRlhH4VHxn85oxOFgnFsJ
+         gt6H/bNUob/HValmw35d8rWFyLg9tbCG5ViZFM0Q=
+Received: from p1gen2.localdomain (unknown [192.168.100.98])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: perex)
+        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+        Thu,  8 Jul 2021 16:53:20 +0200 (CEST)
+Subject: Re: [Patch v2] ALSA: compress: allow to leave draining state when
+ pausing in draining
+To:     Robert Lee <lerobert@google.com>, Takashi Iwai <tiwai@suse.de>
+Cc:     vkoul@kernel.org, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, carterhsu@google.com,
+        zxinhui@google.com, bubblefang@google.com
+References: <20210708020815.3489365-1-lerobert@google.com>
+ <s5ho8bd59q4.wl-tiwai@suse.de>
+ <CAOM6g_Cv6rsLOAb0+Lr_YkjHpKfw+zvWXH0X5LKR=Z4dtXGRng@mail.gmail.com>
+From:   Jaroslav Kysela <perex@perex.cz>
+Message-ID: <e2705267-4400-bb7f-e96a-9b103872c0a1@perex.cz>
+Date:   Thu, 8 Jul 2021 16:53:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKgT0UfJuvdkccr=SXWNUaGx7y5nUHFL-E9g3qi4sagY_jWUUQ@mail.gmail.com>
+In-Reply-To: <CAOM6g_Cv6rsLOAb0+Lr_YkjHpKfw+zvWXH0X5LKR=Z4dtXGRng@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 08, 2021 at 07:24:57AM -0700, Alexander Duyck wrote:
-> On Thu, Jul 8, 2021 at 7:21 AM Ilias Apalodimas
-> <ilias.apalodimas@linaro.org> wrote:
-> >
-> > > > > >
-> >
-> > [...]
-> >
-> > > > > > The above expectation is based on that the last user will always
-> > > > > > call page_pool_put_full_page() in order to do the recycling or do
-> > > > > > the resource cleanup(dma unmaping..etc).
-> > > > > >
-> > > > > > As the skb_free_head() and skb_release_data() have both checked the
-> > > > > > skb->pp_recycle to call the page_pool_put_full_page() if needed, I
-> > > > > > think we are safe for most case, the one case I am not so sure above
-> > > > > > is the rx zero copy, which seems to also bump up the refcnt before
-> > > > > > mapping the page to user space, we might need to ensure rx zero copy
-> > > > > > is not the last user of the page or if it is the last user, make sure
-> > > > > > it calls page_pool_put_full_page() too.
-> > > > >
-> > > > > Yes, but the skb->pp_recycle value is per skb, not per page. So my
-> > > > > concern is that carrying around that value can be problematic as there
-> > > > > are a number of possible cases where the pages might be
-> > > > > unintentionally recycled. All it would take is for a packet to get
-> > > > > cloned a few times and then somebody starts using pskb_expand_head and
-> > > > > you would have multiple cases, possibly simultaneously, of entities
-> > > > > trying to free the page. I just worry it opens us up to a number of
-> > > > > possible races.
-> > > >
-> > > > Maybe I missde something, but I thought the cloned SKBs would never trigger
-> > > > the recycling path, since they are protected by the atomic dataref check in
-> > > > skb_release_data(). What am I missing?
-> > >
-> > > Are you talking about the head frag? So normally a clone wouldn't
-> > > cause an issue because the head isn't changed. In the case of the
-> > > head_frag we should be safe since pskb_expand_head will just kmalloc
-> > > the new head and clears head_frag so it won't trigger
-> > > page_pool_return_skb_page on the head_frag since the dataref just goes
-> > > from 2 to 1.
-> > >
-> > > The problem is that pskb_expand_head memcopies the page frags over and
-> > > takes a reference on the pages. At that point you would have two skbs
-> > > both pointing to the same set of pages and each one ready to call
-> > > page_pool_return_skb_page on the pages at any time and possibly racing
-> > > with the other.
-> >
-> > Ok let me make sure I get the idea properly.
-> > When pskb_expand_head is called, the new dataref will be 1, but the
-> > head_frag will be set to 0, in which case the recycling code won't be
-> > called for that skb.
-> > So you are mostly worried about a race within the context of
-> > pskb_expand_skb() between copying the frags, releasing the previous head
-> > and preparing the new one (on a cloned skb)?
+On 08. 07. 21 15:47, Robert Lee wrote:
+> Hi Takashi,
 > 
-> The race is between freeing the two skbs. So the original and the
-> clone w/ the expanded head will have separate instances of the page. I
-> am pretty certain there is a race if the two of them start trying to
-> free the page frags at the same time.
+> It is a little complex to describe the design in detail, but try to
+> explain simply
+> what issue we meet.
 > 
+> If w/o the change,  after user resumes from the pause, our system would call
+> snd_compr_drain() or snd_compr_partial_drain() again after it returns from
+> previous drain (when EOF reaches). Then it will block in this drain and no one
+> wake it up because EOF has already reached. I add this change to return from
+> the previous drain.
 
-Right, I completely forgot calling __skb_frag_unref() before releasing the
-head ...
-You are right, this will be a race.  Let me go back to the original mail
-thread and see what we can do
+It looks like that the driver does not call snd_compr_drain_notify() so the
+state is not updated to SETUP on EOF.
 
-Thanks!
-/Ilias
-> Thanks,
-> 
-> - Alex
+> Actually, I am wondering how the pause-during-drain can keep the state in
+> DRAINING. It should have a different design. :)
+
+I already proposed to add a new state (because it's a new state), but the
+conservative way was elected to avoid user space changes.
+
+				Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
