@@ -2,245 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4FA93BFA9B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 14:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9113BFA9F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 14:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231768AbhGHMt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 08:49:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231270AbhGHMtx (ORCPT
+        id S231515AbhGHMvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 08:51:54 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:62296 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229659AbhGHMvw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 08:49:53 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18388C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 05:47:12 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id i8so7340149wrp.12
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 05:47:12 -0700 (PDT)
+        Thu, 8 Jul 2021 08:51:52 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 168CgdrD001761;
+        Thu, 8 Jul 2021 12:48:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=VRUFYsMd0FPpWrz6g5RTo9ra+BrWkXz4S09+sR2p0kQ=;
+ b=w3HrA5EbBl1YlwfjJ1Yl/KvKEOc2/VRKxwjP97JJ/x2dfW27TJPDntApISHMUIR274pt
+ At9FLfXSSb2uCmoyS3ynOdAFkf80oBstmm5K08qgZDbbLkGcmwwcWt7kCQmT9OgGHTLv
+ nvTcpkLkPTUxLsWhBzslrw1H+8lSSCVheB4QESLLD3LxYR4MXymFn5tAxtiFtYNFlbi4
+ NHyQjV8F2TS+GjF0EkvTDNm2A2JQj3BxAcbrzfGMiJ7kaNYuJAHB7XIlFphTt+2Bkk3T
+ gTV7eWjkAgalNtEe2aq4bhZq0TmeMR63dcdIE/8AAPw9LycXgHywlqEmNCz473YIrkW3 UQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39nbsxtd2c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 08 Jul 2021 12:48:10 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 168CicwL098474;
+        Thu, 8 Jul 2021 12:48:09 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2043.outbound.protection.outlook.com [104.47.66.43])
+        by aserp3030.oracle.com with ESMTP id 39nbg47gjr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 08 Jul 2021 12:48:09 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eVsf1IHOoi13fv6bwKAbgR2YOFxKXWm9MQ5WlC4d2S88xBokNLPBnZv9/8pU9ufL0S491ZRisKKXJeID5ToXWUJ5X7Fjtt39BJjTqAwbDJqf6CTmueJEbEWmpGBKXiwkef3Ck1V+DWwA0p9hMWSaftGRzsqExtXbJVB36CXcM+O+3sJKi4X63g0CM4DWWzgaILDzDtFNUYa8BXV6Ut7L7gWMl0zrmBWk+qZpeJWQ0Pn3As1HwBdqRl0/B5JbRUaLdyTAEYSFzdBP2kepO+joJcL2bZjam7UIv3yMxV+g4lur8H+tywv+6Krxgo8lH6tYtpmzQtwNoweB9cErzaBPxA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=k6D+1iE6BBJCy3s6qoddiTii2ouCZ37lzfbhfCMG5ak=;
+ b=Oi7uLvmOSUgwrD4ovR07F5OV4FjIfx1YKUUo1XaCqPQojKZYW6W3YQ+hH4CLDxSHuz/ItUEMBIvuwPWunLGE0oQgbJ3LUfrkFf//cZ/S1rRgOnL6gVKfhYrsVTd4F5DArXDfsfFmuoLZCkefwNn2YmW1zCVDciheOaYt51Q05gxcxirKCIcXeyDJ+z/tTRqGPQhefrNwLUywILsgg3mK8hNhHQe99LwXl4RnTHHs3L/jWkeiNI2qMUw+AztJw6UythY0Gl+pB+E+/LTeDI6TQSrubrWcsUX7poWMv1XMR7AFRrvFwD78NooZXHRHJGg+eJMG62srywQjI6zLra/8lA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=G5Cx284bJE2XKfvh4KWIUQ5AHnVId0RoYqnTdEgX9Lc=;
-        b=tnDYG3S0kkLnhciBQsuqUjAtt8UjLLkoMFe9BFx2vpnaXfCtYBB9e7qlaRZl/MdtXE
-         dijuaYpJt2WEJ9ejzeOylDMiKsPyVmeN6sRHtGU/tIFPa7m1sN1P3BMdNalDsIVktzpK
-         +P0S4rkvq/FcoscxLxXJqhx7ag5awGu2i5pfYEk1y3ELLRqXOhNOG5x/0NaGsi/WBSqW
-         /FiJ0ypPCFaXYcMpz8RB2OLVx2I+yVcvJmPUKL94yuHUdbsn5ozpo+1K5bPea/9sQQTt
-         +/ORFNz7BnLZMEkwdVlJmkN+fkaBXkh472D2tp+KHQCgvLFR6/f2If9gwAywiI4U+SwG
-         H68A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=G5Cx284bJE2XKfvh4KWIUQ5AHnVId0RoYqnTdEgX9Lc=;
-        b=ot67pU0TbikyyY54DKk5bc6nDmdQGW+iA48mZiyWdH6PUu3lhaqVRGURt8RppW0qo4
-         vRYtkOubwRXptfigYTgazEfqN7GlBH50jIVtlxwyp+fs+5/5iFnzUs9/hkPa7tq6oZEV
-         CohZgpgvZ9PnrtTE3oqH8xoeTl2I7QkujlE+Kid9+uw662/cr/dEOaeFeVKduT5vb+SJ
-         OMcyHwNDl3EkhRw3V7T9yilOqodQvoP5fWjzaAm4JnBall6bHDJE4T2D9pKl4bGrcyzh
-         S+VcTW3eMxDLBmKNYZNEg7brrVyNY/INa02Z/aJa/apSUsjQ6MtRWtYr0/5tyd/TeBEV
-         oU/Q==
-X-Gm-Message-State: AOAM533cpcjwNpGSV4a7sb1UtFgnmJQ07a7T3sqN70mIUQYgv67KvTZC
-        4SHbbj2CsvbjCxiLb1y79xa2jQ==
-X-Google-Smtp-Source: ABdhPJxsJBEdEeJpWYGQmIEWKDbDKwPhhk1u8LceEwzGCPjHIM54Q6EjJ9Uvw9Sw9HeaO1jMxu0zhA==
-X-Received: by 2002:a5d:5048:: with SMTP id h8mr3712857wrt.292.1625748430627;
-        Thu, 08 Jul 2021 05:47:10 -0700 (PDT)
-Received: from google.com ([109.180.115.218])
-        by smtp.gmail.com with ESMTPSA id s9sm2156709wrn.87.2021.07.08.05.47.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jul 2021 05:47:10 -0700 (PDT)
-Date:   Thu, 8 Jul 2021 12:47:08 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Alistair Francis <alistair23@gmail.com>
-Cc:     Alistair Francis <alistair@alistair23.me>,
-        Rob Herring <robh+dt@kernel.org>, lgirdwood@gmail.com,
-        Mark Brown <broonie@kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 2/5] mfd: sy7636a: Initial commit
-Message-ID: <YObzzE8y2tyiMg5p@google.com>
-References: <20210615103400.946-1-alistair@alistair23.me>
- <20210615103400.946-2-alistair@alistair23.me>
- <YMnY7RLW6ml4Tq0g@dell>
- <CAKmqyKNs+Ebvd5MwtoKfKhNrMJVhTsBLjDhLXRuK8C+gs5MCcQ@mail.gmail.com>
- <YMsTy3QnYzjrFSFg@dell>
- <CAKmqyKODRkahuUL+SFj8RQYq2rvj=nLgseozAyiwkDmtD8JE+g@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=k6D+1iE6BBJCy3s6qoddiTii2ouCZ37lzfbhfCMG5ak=;
+ b=AhmpPjnEYL4G0/JwQIAgyDjVVt8d9QAPDP2wycetSFr7b5NrqNI6XtNZ3k6pRzmLGYS4oUU0JxiTf7bPIpLwAC7O29iM5XMo5mT0/hUau4QcNdr6Q2nyElKDCbclDhV1/okqWj7kNQdtSDCDoCl3k7oQsTKylt+DL6QfoHvlHrg=
+Authentication-Results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB3240.namprd10.prod.outlook.com (2603:10b6:a03:155::17)
+ by BY5PR10MB3939.namprd10.prod.outlook.com (2603:10b6:a03:1f7::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20; Thu, 8 Jul
+ 2021 12:48:06 +0000
+Received: from BYAPR10MB3240.namprd10.prod.outlook.com
+ ([fe80::59e7:5c8c:71fb:a6ba]) by BYAPR10MB3240.namprd10.prod.outlook.com
+ ([fe80::59e7:5c8c:71fb:a6ba%7]) with mapi id 15.20.4287.034; Thu, 8 Jul 2021
+ 12:48:06 +0000
+Subject: Re: [RFC PATCH 0/5] madvise MADV_DOEXEC
+To:     "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
+        <longpeng2@huawei.com>, Anthony Yznaga <anthony.yznaga@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-arch@vger.kernel.org
+Cc:     mhocko@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org, arnd@arndb.de,
+        ebiederm@xmission.com, keescook@chromium.org, gerg@linux-m68k.org,
+        ktkhai@virtuozzo.com, christian.brauner@ubuntu.com,
+        peterz@infradead.org, esyr@redhat.com, jgg@ziepe.ca,
+        christian@kellner.me, areber@redhat.com, cyphar@cyphar.com,
+        "Gonglei (Arei)" <arei.gonglei@huawei.com>
+References: <1595869887-23307-1-git-send-email-anthony.yznaga@oracle.com>
+ <cc714571-4461-c9e0-7b24-e213664caa54@huawei.com>
+From:   Steven Sistare <steven.sistare@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <43471cbb-67c6-f189-ef12-0f8302e81b06@oracle.com>
+Date:   Thu, 8 Jul 2021 08:48:01 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <cc714571-4461-c9e0-7b24-e213664caa54@huawei.com>
+Content-Type: text/plain; charset=gbk
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKmqyKODRkahuUL+SFj8RQYq2rvj=nLgseozAyiwkDmtD8JE+g@mail.gmail.com>
+X-ClientProxiedBy: SN4PR0701CA0004.namprd07.prod.outlook.com
+ (2603:10b6:803:28::14) To BYAPR10MB3240.namprd10.prod.outlook.com
+ (2603:10b6:a03:155::17)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.92] (24.62.106.7) by SN4PR0701CA0004.namprd07.prod.outlook.com (2603:10b6:803:28::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.19 via Frontend Transport; Thu, 8 Jul 2021 12:48:03 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 15a722fa-63c0-464e-05ef-08d9420ea1ac
+X-MS-TrafficTypeDiagnostic: BY5PR10MB3939:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR10MB3939C2069B6806DD58B23846F9199@BY5PR10MB3939.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: WLCu6ICqMrvAY0Wu6SsiWg7yyNloGLbS8s8ElRn7aSev7aJ2dGqkGJ4qYAZ/GJ8bAmrUdBK/2OvdIE5RGd71kdzJnza0f3RlRIA7mVOe0jnqGjLCaNtrobXmcP82za0S7dYrnMZdknleiMlMEDTBlWASpe+3GjZ+Nmfi5lTVJ50/R5KELIVZS+c4Ed+x0Vph64SWL5FvgmVYzVUDLdChCMKZKjTqodrJfWSD2K7J3YZ6AXG7VVNl2Y8bXpJnck9Ro8DHdRqwhMiFbQ7lIM5x5A2yTFYL86I+idV9LJXybfu4WBIRRwPDXagNXV7B0/R+YR2eGk0DDrTi+eZ3HiEmj/Ngny+iqweTh30BMK7Q5HVT8gIutBv4pBLiKq1A5n+X0hAbkNN3SM4jzYU8ZUxIfnS0gAafMckRtMnrf+Jh5RPns7kJA8EFbr2KuGIS4+L+YvHFbAk0SISzZntmIVM6QF5aBBu5cXeUGzIiDZWp6FK1GlEmec5zXrSUxbqX101NdBfKm6TrhSNcFgKIS4tEowG+S+rpoTxiVKkZZzTjNcBdtd/ZlmmjoLr0tQDM/dAJEZAUpS00EuHNqPpaiQRw4gw+GBxVOrBVPjMjUB+/vDJlaxA2XwSpSmDkKvmyokiYCAdpUkTMUcmpSDhE1231V7JdPk2dYbpV3D+Sag8soWvwJO5cHQkzeywmeeFMmmFVk5ccKWZ0zkCQwLcUyVE4xQMq9L1VJJ9uCv710b+67cY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3240.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39860400002)(136003)(366004)(346002)(396003)(83380400001)(53546011)(16576012)(4326008)(31696002)(86362001)(316002)(7416002)(110136005)(5660300002)(36756003)(478600001)(36916002)(6486002)(8676002)(186003)(26005)(2616005)(956004)(31686004)(38100700002)(2906002)(8936002)(66946007)(66556008)(44832011)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?gb2312?B?bWxwV01yU3dBN0d4VG1mNGZtYXlyOHJiNDNReGRiK0c4WVBZRDVlQmFtL3Vj?=
+ =?gb2312?B?SEVOdXdFaUNEak5JNDZTcU5CNStHak02YklmcVFHd1FRN1ZKREtpYkpMMGYz?=
+ =?gb2312?B?djdwdm55YW5UTHRMb2J0S2J5ZEtrTDBNZDJieXAxZE1PZjZzQVJ1dmp1RXdl?=
+ =?gb2312?B?MDJqZC9WSkZUM2F5RjQvN0d2SHpIMjRidHlFM1RuYTA0eUczRVFRR2pZOHdo?=
+ =?gb2312?B?WXBDYXpKYlBJTEZFNm5Qb1V2a0NPK3c1UXBtYlJrSnNYWWRINTNlcXE5TVJs?=
+ =?gb2312?B?OVM3V0EzSzhoeWFZcG9LeXhqVWtpdWd3RFRpclJzalN1Vjdibzh1YlZzbEIr?=
+ =?gb2312?B?SGRUUDZvSlRqNE1rS1pZNHBvZTU3S2NYNTd4MEZVZEJCRmVXaUdJek5WQ0JR?=
+ =?gb2312?B?UTc3SlpHajZSWnhlVEdkditBNWhuU3JXVEIvY0M4bG9MNkw4cWdpQUF5cWRl?=
+ =?gb2312?B?eEpCNU9ETU1NampZc29pT3Vrck1IQW9TSXAxQlVKQnRqUXFpY1hCU2V6WCts?=
+ =?gb2312?B?dDZ4VHFpa2xqa1lDU2llZFgyVXdKaVBsbDNmbEtFVDQwM0c5eGRXaHFqVm4y?=
+ =?gb2312?B?emZjNjRvL2FnMEFPQ3lnb1UybVpWSENnenRJaW5aRDIwa29kSDJCZkd2VGg2?=
+ =?gb2312?B?d2NRaCtRcVh0VzIwcnJNK1NBckkyMFcxd2ZjVUN3aG9jRGJPRHQ1NCtacUhk?=
+ =?gb2312?B?Wm9HaC9oTS9Dd0txQUlBcm9nYWJrQlNkMkpJRlRpcmZTbWlUUUhsdkx4L0V4?=
+ =?gb2312?B?OTlERmlNT01VQVYvbCs5Y3RmcUQrWEVRL2dPdUVzNFl3Umt2dlhkN3h3cnd1?=
+ =?gb2312?B?SndiVGY4VVF2aTMvMUdHVGJXNmlvVHNTTy8zVWVvVTR1OWQ5RFpFTERCaC96?=
+ =?gb2312?B?WEk4SDVjUHpJTG0xSjlWZ29sWHBSb1ZnMlA5WVpGMTdpMGpPS1BCZEtXcEdW?=
+ =?gb2312?B?N0NWUlZFd1NNT2ROQXFpTkhPcTVEQjN4cmVKa29Cb0ovelNaejB4ZlFHa2ZG?=
+ =?gb2312?B?TDJucVpGS0tKZEtjM1NLMnozUnhSd2s0akJYUXExZTdwbklMcU5aNXZwM3Zl?=
+ =?gb2312?B?UnZseFI3SktzaXlEV254NGJhT1Q5Vko2aktmMXJyNkRsbDJzNmJKVE5QRkl5?=
+ =?gb2312?B?UitvUGlYVXRrTzZnb1FUMHNJN0d2dWExSVN1NER3cml3NjR5VXU2c1hoRkNu?=
+ =?gb2312?B?bVFjai91OEprczl5VGxYa1ZDYTZFRmpqYU1WaWdQWVNuUkRiK2hZVStpWGhN?=
+ =?gb2312?B?RE1qVTRpRkt4ZDNTVzE2M3Yvbks0U1VwQjN6QWJCVW5Ld1I4OHdXSWsyc2ta?=
+ =?gb2312?B?Q3lkb240SkU0QlUwVUdnNkpERkk5cEpTdVlSemRaRzRoSmtDeHNlMkZtZTlN?=
+ =?gb2312?B?bHZ6cEx4OXc4MDJlTElLdGQxMmEvTnZxaFJjQ3V4WGJUOU5Qc0tZb2NwM2s0?=
+ =?gb2312?B?TnhYUDAxQlB2US9EOExZVmg3d1c4bW1rNVhpbUlZVW45YUNPaEVuYXdBUDk5?=
+ =?gb2312?B?ektBaXZNNm4vQlJxRW1jM3dIRklMVWFrQlQ2RkJ0b3IyeUZGOHdQemE3QzJz?=
+ =?gb2312?B?VE5palpaamV3K21mS0hVdnZwcHBpdkFIQTZGUVlLYmdGN0g5bzVNa2k5alMz?=
+ =?gb2312?B?WFpMeGtwZjlmaFhuRCtJWEJ1dThqRHQwYStGRDBWQ2c2Qm5pdmM4NUxraXkz?=
+ =?gb2312?B?dTljbGNFYkNkUEp1RUVDK2IwR0RzRzRuQytwWGxscnJrV0l3cE53R2JVdlpG?=
+ =?gb2312?Q?OZc/xEfNfwhXrwv9bo4iCfK37YLiSOssTB/s808?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 15a722fa-63c0-464e-05ef-08d9420ea1ac
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3240.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jul 2021 12:48:06.3474
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8A/CkzU7VSn4UxEQiZQ7edIyF9r76lr/4yuJlq5OWIVJsbI/InqOmEXVEJ/cJczF/Px24eEcOd4dRgjxiKCd5znBkHy3fBZkzokyYfXZuWc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB3939
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10038 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ phishscore=0 adultscore=0 suspectscore=0 spamscore=0 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107080071
+X-Proofpoint-ORIG-GUID: omFRdClSznxRcEgac497l4JIB_6bwinC
+X-Proofpoint-GUID: omFRdClSznxRcEgac497l4JIB_6bwinC
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 08 Jul 2021, Alistair Francis wrote:
-
-> On Thu, Jun 17, 2021 at 7:20 PM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > On Thu, 17 Jun 2021, Alistair Francis wrote:
-> >
-> > > On Wed, Jun 16, 2021 at 8:56 PM Lee Jones <lee.jones@linaro.org> wrote:
-> > > >
-> > > > On Tue, 15 Jun 2021, Alistair Francis wrote:
-> > > >
-> > > > > Initial support for the Silergy SY7636A Power Management chip.
-> > > > >
-> > > > > Signed-off-by: Alistair Francis <alistair@alistair23.me>
-> > > > > ---
-> > > > >  drivers/mfd/Kconfig         |  9 ++++
-> > > > >  drivers/mfd/Makefile        |  1 +
-> > > > >  drivers/mfd/sy7636a.c       | 82 +++++++++++++++++++++++++++++++++++++
-> > > > >  include/linux/mfd/sy7636a.h | 47 +++++++++++++++++++++
-> > > > >  4 files changed, 139 insertions(+)
-> > > > >  create mode 100644 drivers/mfd/sy7636a.c
-> > > > >  create mode 100644 include/linux/mfd/sy7636a.h
-> > > > >
-> > > > > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> > > > > index 5c7f2b100191..7d6cf32b1549 100644
-> > > > > --- a/drivers/mfd/Kconfig
-> > > > > +++ b/drivers/mfd/Kconfig
-> > > > > @@ -1339,6 +1339,15 @@ config MFD_SYSCON
-> > > > >         Select this option to enable accessing system control registers
-> > > > >         via regmap.
-> > > > >
-> > > > > +config MFD_SY7636A
-> > > > > +     tristate "Silergy SY7636A Power Management chip"
-> > > > > +     select MFD_CORE
-> > > > > +     select REGMAP_I2C
-> > > > > +     depends on I2C
-> > > > > +     help
-> > > > > +       Select this option to enable support for the Silergy SY7636A
-> > > > > +       Power Management chip.
-> > > > > +
-> > > > >  config MFD_DAVINCI_VOICECODEC
-> > > > >       tristate
-> > > > >       select MFD_CORE
-> > > > > diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-> > > > > index 4f6d2b8a5f76..f95e1e725a95 100644
-> > > > > --- a/drivers/mfd/Makefile
-> > > > > +++ b/drivers/mfd/Makefile
-> > > > > @@ -265,6 +265,7 @@ obj-$(CONFIG_MFD_STMFX)   += stmfx.o
-> > > > >  obj-$(CONFIG_MFD_KHADAS_MCU)         += khadas-mcu.o
-> > > > >  obj-$(CONFIG_MFD_ACER_A500_EC)       += acer-ec-a500.o
-> > > > >
-> > > > > +obj-$(CONFIG_MFD_SY7636A)    += sy7636a.o
-> > > > >  obj-$(CONFIG_SGI_MFD_IOC3)   += ioc3.o
-> > > > >  obj-$(CONFIG_MFD_SIMPLE_MFD_I2C)     += simple-mfd-i2c.o
-> > > > >  obj-$(CONFIG_MFD_INTEL_M10_BMC)   += intel-m10-bmc.o
-> > > > > diff --git a/drivers/mfd/sy7636a.c b/drivers/mfd/sy7636a.c
-> > > > > new file mode 100644
-> > > > > index 000000000000..e08f29ea63f8
-> > > > > --- /dev/null
-> > > > > +++ b/drivers/mfd/sy7636a.c
-> > > > > @@ -0,0 +1,82 @@
-> > > > > +// SPDX-License-Identifier: GPL-2.0+
-> > > > > +//
-> > > >
-> > > > Only the SPDX with C++ style comments please.
-> > > >
-> > > > > +// MFD parent driver for SY7636A chip
-> > > >
-> > > > Drop the MFD part.  It's a Linuxisum that doesn't really exist.
-> > > >
-> > > > > +// Copyright (C) 2021 reMarkable AS - http://www.remarkable.com/
-> > > > > +//
-> > > > > +// Authors: Lars Ivar Miljeteig <lars.ivar.miljeteig@remarkable.com>
-> > > > > +//          Alistair Francis <alistair@alistair23.me>
-> > > > > +//
-> > > > > +// Based on the lp87565 driver by Keerthy <j-keerthy@ti.com>
-> > > > > +
-> > > > > +#include <linux/interrupt.h>
-> > > > > +#include <linux/mfd/core.h>
-> > > > > +#include <linux/module.h>
-> > > > > +#include <linux/of_device.h>
-> > > > > +
-> > > > > +#include <linux/mfd/sy7636a.h>
-> > > > > +
-> > > > > +static const struct regmap_config sy7636a_regmap_config = {
-> > > > > +     .reg_bits = 8,
-> > > > > +     .val_bits = 8,
-> > > > > +};
-> > > > > +
-> > > > > +static const struct mfd_cell sy7636a_cells[] = {
-> > > > > +     { .name = "sy7636a-regulator", },
-> > > > > +     { .name = "sy7636a-temperature", },
-> > > > > +     { .name = "sy7636a-thermal", },
-> > > > > +};
-> > > > > +
-> > > > > +static const struct of_device_id of_sy7636a_match_table[] = {
-> > > > > +     { .compatible = "silergy,sy7636a", },
-> > > > > +     {}
-> > > > > +};
-> > > > > +MODULE_DEVICE_TABLE(of, of_sy7636a_match_table);
-> > > >
-> > > > Hold on.  This driver doesn't really do anything.  If you create OF
-> > > > nodes for all the sub-devices, you can use simple-mfd-i2c.
-> > > >
-> > > > Any reason you can't do that?
-> > >
-> > > Just to confirm, you mean something like this?
-> > >
-> > > diff --git a/arch/arm/boot/dts/imx7d-remarkable2.dts
-> > > b/arch/arm/boot/dts/imx7d-remarkable2.dts
-> > > index 9327d1c06c96..3577104b3853 100644
-> > > --- a/arch/arm/boot/dts/imx7d-remarkable2.dts
-> > > +++ b/arch/arm/boot/dts/imx7d-remarkable2.dts
-> > > @@ -382,6 +382,21 @@ epd_pmic: sy7636a@62 {
-> > >                 pinctrl-0 = <&pinctrl_epdpmic>;
-> > >                 #thermal-sensor-cells = <0>;
-> > >
-> > > +               regulator@0 {
-> > > +                       compatible = "sy7636a-regulator";
-> > > +                       reg = <0>;
-> > > +               };
-> > > +
-> > > +               temperature@0 {
-> > > +                       compatible = "sy7636a-temperature";
-> > > +                       reg = <0>;
-> > > +               };
-> > > +
-> > > +               thermal@0 {
-> > > +                       compatible = "sy7636a-thermal";
-> > > +                       reg = <0>;
-> > > +               };
-> > > +
-> > >                 regulators {
-> > >                         compatible = "silergy,sy7636a-regulator";
-> > > diff --git a/drivers/mfd/simple-mfd-i2c.c b/drivers/mfd/simple-mfd-i2c.c
-> > > index 87f684cff9a1..622a05318cff 100644
-> > > --- a/drivers/mfd/simple-mfd-i2c.c
-> > > +++ b/drivers/mfd/simple-mfd-i2c.c
-> > > @@ -39,6 +39,7 @@ static int simple_mfd_i2c_probe(struct i2c_client *i2c)
-> > >
-> > >  static const struct of_device_id simple_mfd_i2c_of_match[] = {
-> > >         { .compatible = "kontron,sl28cpld" },
-> > > +       { .compatible = "silergy,sy7636a" },
-> > >         {}
-> > >  };
-> > >  MODULE_DEVICE_TABLE(of, simple_mfd_i2c_of_match);
-> >
-> > Essentially.  Take a look at how the other users are implementing.
-> >
-> > The reg entries look bogus to me though.  Maybe just leave them out?
+On 7/8/2021 5:52 AM, Longpeng (Mike, Cloud Infrastructure Service Product Dept.) wrote:
+> Hi Anthony and Steven,
 > 
-> So I tried this and didn't have any luck.
+> ÔÚ 2020/7/28 1:11, Anthony Yznaga Ð´µÀ:
+>> This patchset adds support for preserving an anonymous memory range across
+>> exec(3) using a new madvise MADV_DOEXEC argument.  The primary benefit for
+>> sharing memory in this manner, as opposed to re-attaching to a named shared
+>> memory segment, is to ensure it is mapped at the same virtual address in
+>> the new process as it was in the old one.  An intended use for this is to
+>> preserve guest memory for guests using vfio while qemu exec's an updated
+>> version of itself.  By ensuring the memory is preserved at a fixed address,
+>> vfio mappings and their associated kernel data structures can remain valid.
+>> In addition, for the qemu use case, qemu instances that back guest RAM with
+>> anonymous memory can be updated.
 > 
-> After some Kconfig changes to allow it to build, I managed to get it
-> probing, but I never got it to power up. It doesn't seem to be the
-> same.
+> We have a requirement like yours, but ours seems more complex. We want to
+> isolate some memory regions from the VM's memory space and the start a child
+> process who will using these memory regions.
+> 
+> I've wrote a draft to support this feature, but I just find that my draft is
+> pretty like yours.
+> 
+> It seems that you've already abandoned this patchset, why ?
 
-I need a more technical reason why this is not the correct approach
-for you.  "I can't get it to work" doesn't quite reach the quality
-line I'm afraid.
+Hi Longpeng,
+  The reviewers did not like the proposal for several reasons, but the showstopper
+was that they did not want to add complexity to the exec path in the kernel.  You
+can read the email archive for details.
 
-Did you try enabling the debug prints in of_platform_bus_create() and
-friends to see if your devices are probing correctly?
+We solved part of our problem by adding new vfio interfaces: VFIO_DMA_UNMAP_FLAG_VADDR
+and VFIO_DMA_MAP_FLAG_VADDR.  That solves the vfio problem for shared memory, but not
+for mmap MAP_ANON memory.
 
--- 
-Lee Jones [æŽç¼æ–¯]
-Senior Technical Lead - Developer Services
-Linaro.org â”‚ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+- Steve
+
+>> Patches 1 and 2 ensure that loading of ELF load segments does not silently
+>> clobber existing VMAS, and remove assumptions that the stack is the only
+>> VMA in the mm when the stack is set up.  Patch 1 re-introduces the use of
+>> MAP_FIXED_NOREPLACE to load ELF binaries that addresses the previous issues
+>> and could be considered on its own.
+>>
+>> Patches 3, 4, and 5 introduce the feature and an opt-in method for its use
+>> using an ELF note.
+>>
+>> Anthony Yznaga (5):
+>>   elf: reintroduce using MAP_FIXED_NOREPLACE for elf executable mappings
+>>   mm: do not assume only the stack vma exists in setup_arg_pages()
+>>   mm: introduce VM_EXEC_KEEP
+>>   exec, elf: require opt-in for accepting preserved mem
+>>   mm: introduce MADV_DOEXEC
+>>
+>>  arch/x86/Kconfig                       |   1 +
+>>  fs/binfmt_elf.c                        | 196 +++++++++++++++++++++++++--------
+>>  fs/exec.c                              |  33 +++++-
+>>  include/linux/binfmts.h                |   7 +-
+>>  include/linux/mm.h                     |   5 +
+>>  include/uapi/asm-generic/mman-common.h |   3 +
+>>  kernel/fork.c                          |   2 +-
+>>  mm/madvise.c                           |  25 +++++
+>>  mm/mmap.c                              |  47 ++++++++
+>>  9 files changed, 266 insertions(+), 53 deletions(-)
+>>
+> 
