@@ -2,175 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 131E93BF8EC
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 13:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5DA63BF8E0
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 13:25:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231749AbhGHL2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 07:28:47 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:33562 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231716AbhGHL2q (ORCPT
+        id S231698AbhGHL2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 07:28:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231585AbhGHL2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 07:28:46 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 168BP8eU062944;
-        Thu, 8 Jul 2021 06:25:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1625743508;
-        bh=Nm5PF+zi+CnvnEIK9X8Ur0GOfFhsnJVQA+rpwvJmIYY=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=jIxJh+vcs42ss6Wd2ahnU6QWgOMNC0HE+rt7Al24ndBsIdWFopCegdE5hsVUMniVN
-         cKGJkaykLzk440G7cEe0NmntGx3WJWxjoreP5xg9qPfGdIG9sqry4iMidVD6Dks6KJ
-         6u9SBEY91lAi8i14SOW7D1EDB7pY2w4bBz0CelJE=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 168BP8uC088808
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 8 Jul 2021 06:25:08 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 8 Jul
- 2021 06:25:08 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 8 Jul 2021 06:25:08 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 168BP7CJ040075;
-        Thu, 8 Jul 2021 06:25:07 -0500
-Date:   Thu, 8 Jul 2021 16:55:06 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-CC:     Jacopo Mondi <jacopo@jmondi.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Nikhil Devshatwar <nikhil.nd@ti.com>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>, Benoit Parrot <bparrot@ti.com>,
-        Bert Vermeulen <bert@biot.com>,
-        Dikshita Agarwal <dikshita@codeaurora.org>,
-        Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Eugen Hristev <eugen.hristev@microchip.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Helen Koike <helen.koike@collabora.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Martina Krasteva <martinax.krasteva@intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Michael Tretter <m.tretter@pengutronix.de>,
-        Mirela Rabulea <mirela.rabulea@nxp.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Qiushi Wu <wu000273@umn.edu>, Raag Jadav <raagjadav@gmail.com>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Zou Wei <zou_wei@huawei.com>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>
-Subject: Re: [PATCH v3 00/11] CSI2RX support on J721E
-Message-ID: <20210708112504.optj6xzkljrpbwsg@ti.com>
-References: <20210624192200.22559-1-p.yadav@ti.com>
- <dd3b13ec-a883-5b22-47ce-d6e591b674aa@ideasonboard.com>
- <20210707185636.xxu6n6p4gihrs37d@ti.com>
- <20210708081919.rlp5xv5f4jbx6uav@uno.localdomain>
- <c7ff2f59-7975-adad-d9dd-d4084eecb65b@ideasonboard.com>
+        Thu, 8 Jul 2021 07:28:05 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91656C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 04:25:23 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 8so2716558lfp.9
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 04:25:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=8DBNWswRshfN5Ny23TvA6/jrQn9A7b/fkkYmbm5qgVs=;
+        b=YaPePHsAH1A4rk9bMi6Jow3MV8e8FgcAJJV03p2GBnirkjF1LglYdizQpCUPrGadxj
+         rkRLgiwMsfPTM6UwHDzHCe2FFkvWDhqAdIEBfwAopnuyT/JdQVCVHesk+Vje+ztqL5Ui
+         lYl98ywxG+I8EraIrj0UwhdVzauhQnyQ/xw69vWKar3HfZLcNb+OgIG48Cbukl0JV55r
+         RNVUNJ6OA0MjbdXOL0isM3cYbQlRS/eTzHW+P6elj3FkqYx1hY2jVEEnFut5qNLd/Yax
+         0F1X3DlXXgo+HEf4/C5inRS5qJP1Z8Y4TfGJXTJf8kNLQ65BWyldELIMqgfwbUByg8Ak
+         KpDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=8DBNWswRshfN5Ny23TvA6/jrQn9A7b/fkkYmbm5qgVs=;
+        b=ioN92tCpaMsEETxUiYYtaYch4uFfOaq03WIG3cH6CDz1NPo3OvJwBvsuj/JexJM0lQ
+         Qr4Px41jAuCk+eUVAf21cqKXs+K2wfKUGO93Jp7sY6SV8IHrZNlJDk1J1d7Ck/7mf6aQ
+         3kn+OkrN4N8vStXnonPDZiw1sDpHwzsFEPCSGBKjhchmj5v8HhU07eldsNY+IrCVKMSH
+         yZXR0TV0DaCFbkxBwRMJxdDvHu9iTB9IwSOhNIp83VKOGEfN2FApwHxaZY6oPAM2MKch
+         7QeGGBLMVBn5my6Lgxq5Y1arYUYxc9K33RIz4puYKo8/wnk3rDQFzof4SKK8S9ylSho1
+         2Keg==
+X-Gm-Message-State: AOAM532oD3y5mg2qfIt7Ai9Lk10ahutDqymRJ+tsp83ZYEoqqULr4/nQ
+        sCKS790REkhEJj1YSBREcYs=
+X-Google-Smtp-Source: ABdhPJxWQm115GX66m8TZnr5hZ6aNXgoRI9xpJBwUvtpEV2EGc0IvaifB2KOP4Ph83DOlhgO8tDYQg==
+X-Received: by 2002:a05:6512:400e:: with SMTP id br14mr19881396lfb.332.1625743521873;
+        Thu, 08 Jul 2021 04:25:21 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.225.155])
+        by smtp.gmail.com with ESMTPSA id j17sm213986lja.38.2021.07.08.04.25.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jul 2021 04:25:21 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     christian.koenig@amd.com, ray.huang@amd.com, airlied@linux.ie
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>
+Subject: [PATCH v2] gpu: ttm: add missing NULL checks
+Date:   Thu,  8 Jul 2021 14:25:18 +0300
+Message-Id: <20210708112518.17271-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <55aa8ece-1f1d-76d0-4f2f-951d39e79484@amd.com>
+References: <55aa8ece-1f1d-76d0-4f2f-951d39e79484@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <c7ff2f59-7975-adad-d9dd-d4084eecb65b@ideasonboard.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/07/21 11:43AM, Tomi Valkeinen wrote:
-> On 08/07/2021 11:19, Jacopo Mondi wrote:
-> > Hi Tomi, Pratyush,
-> > 
-> > On Thu, Jul 08, 2021 at 12:26:38AM +0530, Pratyush Yadav wrote:
-> > > Hi Tomi,
-> > > 
-> > > Thanks for looking into the patches.
-> > > 
-> > > On 01/07/21 10:56AM, Tomi Valkeinen wrote:
-> > > > Hi Pratyush,
-> > > > 
-> > > > On 24/06/2021 22:21, Pratyush Yadav wrote:
-> > > > > Hi,
-> > > > > 
-> > > > > This series adds support for CSI2 capture on J721E. It includes some
-> > > > > fixes to the Cadence CSI2RX driver, adds runtime PM support to OV5640
-> > > > > driver, and finally adds the TI CSI2RX wrapper driver.
-> > > > > 
-> > > > > This series used to include the DPHY and DMA engine patches as well, but
-> > > > > they have been split off to facilitate easier merging. Patch 3 is
-> > > > > build-dependent on the DPHY series [0].
-> > > > > 
-> > > > > The DMA engine patch [1] can go in any order since that is only a run
-> > > > > time dependency. Things probably won't work without it but it will still
-> > > > > build fine.
-> > > > > 
-> > > > > Tested on TI's J721E with OV5640 sensor.
-> > > > 
-> > > > I applied these (csi-2 rx, phy, dma-engine) to linux-media/master, and added dts changes to add the csi2-rx. When sending the series, can you also push the branch you use for testing, as the posted patches do not include everything needed?
-> > > 
-> > > Please use https://github.com/prati0100/linux-next/ branch "capture"
-> > > 
-> > > I will include the link in the cover letter from next version onwards.
-> > > 
-> > > > 
-> > > > Here are some notes from quick tests:
-> > > > 
-> > > > Capture works, but the fps is ~28.98. I would expect it to be closer to 30. Are the clocks configured correctly?
-> > > 
-> > > I see this as well. I figured this had something to do with the sensor.
-> > 
-> > Tomi you might remember your patch to change the h/vtot values which I
-> > collected in a series which I never managed to bring to v1, as Hugues
-> > reported it was broken for JPEG capture.
-> > 
-> > I'll leave it here just for reference, I admit I dropped the ball
-> > rather quickly there:
-> > https://patchwork.linuxtv.org/project/linux-media/cover/20201028225706.110078-1-jacopo+renesas@jmondi.org/
-> > 
-> > I wish I could re-test but seems I've lost the powering cable of the
-> > device I used to test ov5640 :(
-> 
-> Yes, I'm still using my hack patch when working with OV5640. With that hack,
-> on TI platforms with CAL IP, I get ~30fps. With this series on J7, I get the
-> above mentioned 28.98.
-> 
-> It's possible my hack patch is wrong, and CAL driver is buggy, but together
-> they make things right. I guess I should also try J7 without my hack patch.
+My local syzbot instance hit GPF in ttm_bo_release().
+Unfortunately, syzbot didn't produce a reproducer for this, but I
+found out possible scenario:
 
-I think this is a OV5640 related issue. On IMX219 I am seeing exactly 30 
-fps.
+drm_gem_vram_create()            <-- drm_gem_vram_object kzalloced
+				     (bo embedded in this object)
+  ttm_bo_init()
+    ttm_bo_init_reserved()
+      ttm_resource_alloc()
+        man->func->alloc()       <-- allocation failure
+      ttm_bo_put()
+	ttm_bo_release()
+	  ttm_mem_io_free()      <-- bo->resource == NULL passed
+				     as second argument
+	     *GPF*
 
-> 
-> If I recall right, I tested your changes but I couldn't get them to work on
-> my HW.
-> 
-> I haven't worked on that since then, as I decided that debugging blind is
-> pointless. We need someone to analyze the signals to see what OV5640 is
-> sending. Or some new understanding about the OV5640 HW.
-> 
->  Tomi
+Added NULL check inside ttm_mem_io_free() to prevent reported GPF and
+make this function NULL save in future.
 
+Same problem was in ttm_bo_move_to_lru_tail() as Christian reported.
+ttm_bo_move_to_lru_tail() is called in ttm_bo_release() and mem pointer
+can be NULL as well as in ttm_mem_io_free().
+
+Fail log:
+
+KASAN: null-ptr-deref in range [0x0000000000000020-0x0000000000000027]
+CPU: 1 PID: 10419 Comm: syz-executor.3 Not tainted 5.13.0-rc7-next-20210625 #7
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
+RIP: 0010:ttm_mem_io_free+0x28/0x170 drivers/gpu/drm/ttm/ttm_bo_util.c:66
+Code: b1 90 41 56 41 55 41 54 55 48 89 fd 53 48 89 f3 e8 cd 19 24 fd 4c 8d 6b 20 48 b8 00 00 00 00 00 fc ff df 4c 89 ea 48 c1 ea 03 <80> 3c 02 00 0f 85 2a 01 00 00 4c 8b 63 20 31 ff 4c 89 e6 e8 00 1f
+RSP: 0018:ffffc900141df968 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc90010da0000
+RDX: 0000000000000004 RSI: ffffffff84513ea3 RDI: ffff888041fbc010
+RBP: ffff888041fbc010 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000020 R14: ffff88806b258800 R15: ffff88806b258a38
+FS:  00007fa6e9845640(0000) GS:ffff88807ec00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fad61265e18 CR3: 000000005ad79000 CR4: 0000000000350ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ ttm_bo_release+0xd94/0x10a0 drivers/gpu/drm/ttm/ttm_bo.c:422
+ kref_put include/linux/kref.h:65 [inline]
+ ttm_bo_put drivers/gpu/drm/ttm/ttm_bo.c:470 [inline]
+ ttm_bo_init_reserved+0x7cb/0x960 drivers/gpu/drm/ttm/ttm_bo.c:1050
+ ttm_bo_init+0x105/0x270 drivers/gpu/drm/ttm/ttm_bo.c:1074
+ drm_gem_vram_create+0x332/0x4c0 drivers/gpu/drm/drm_gem_vram_helper.c:228
+
+Fixes: d3116756a710 ("drm/ttm: rename bo->mem and make it a pointer")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+
+Changes in v2:
+	1. Added NULL check in ttm_bo_move_to_lru_tail()
+	
+	2. Changed subject line, since NULL check added in 2 funtions
+
+---
+ drivers/gpu/drm/ttm/ttm_bo.c      | 3 +++
+ drivers/gpu/drm/ttm/ttm_bo_util.c | 3 +++
+ 2 files changed, 6 insertions(+)
+
+diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
+index 1b950b45cf4b..8d7fd65ccced 100644
+--- a/drivers/gpu/drm/ttm/ttm_bo.c
++++ b/drivers/gpu/drm/ttm/ttm_bo.c
+@@ -102,6 +102,9 @@ void ttm_bo_move_to_lru_tail(struct ttm_buffer_object *bo,
+ 		return;
+ 	}
+ 
++	if (!mem)
++		return;
++
+ 	man = ttm_manager_type(bdev, mem->mem_type);
+ 	list_move_tail(&bo->lru, &man->lru[bo->priority]);
+ 
+diff --git a/drivers/gpu/drm/ttm/ttm_bo_util.c b/drivers/gpu/drm/ttm/ttm_bo_util.c
+index 2f57f824e6db..763fa6f4e07d 100644
+--- a/drivers/gpu/drm/ttm/ttm_bo_util.c
++++ b/drivers/gpu/drm/ttm/ttm_bo_util.c
+@@ -63,6 +63,9 @@ int ttm_mem_io_reserve(struct ttm_device *bdev,
+ void ttm_mem_io_free(struct ttm_device *bdev,
+ 		     struct ttm_resource *mem)
+ {
++	if (!mem)
++		return;
++
+ 	if (!mem->bus.offset && !mem->bus.addr)
+ 		return;
+ 
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+2.32.0
+
