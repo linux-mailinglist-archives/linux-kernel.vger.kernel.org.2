@@ -2,96 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F83F3BF7A7
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 11:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 744E63BF7A9
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 11:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231364AbhGHJgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 05:36:51 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:34758 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231281AbhGHJgt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 05:36:49 -0400
-Received: from mail-wm1-f72.google.com ([209.85.128.72])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1m1QQ3-0006cT-6k
-        for linux-kernel@vger.kernel.org; Thu, 08 Jul 2021 09:34:07 +0000
-Received: by mail-wm1-f72.google.com with SMTP id p3-20020a05600c3583b02901f55d71e34aso2134323wmq.4
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 02:34:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=E0C7nCPw9ngmgHYShx7ewbeQGAOF1fcpotAi0fhHmT0=;
-        b=gCaZ/tathkmvFbhMiUmx8Z68+6H25HlQdjfhAfo3FIvBORNp8q2iIboYt3eV475d8j
-         niJkZa6Q9Wg/nSOFGxDXVMy/4hs/mXVugCBLbyOonnaAxZLf6NtflgDP4JzC1CEQRmVC
-         O3v5XwONE/a5YIBHOg3gnc/PlIT+x3heKurDYwbKBrHKE2gqIYeNx8wgAgNjrxoftNe4
-         ZjaumrhJsWX5wKhNuArJazIWkJJIVFzRo/D9mq10/RxvroCDeDsD4m4xNn0+sJGI4IgN
-         ZX6BoSo6sVqa32KVd0qi42oja9khNcEGpDofLXQeH7nK56bA2HOPUjY5g0E92Y2GSHPU
-         peVQ==
-X-Gm-Message-State: AOAM530MRiqp5x9f+FYUeQvD1MY2C4vs6BrqwNvdC3piPDk6L0xL66xD
-        neeYO+wjRVAp0T58JkGYMFhIDf4zpy+mAmCS2nEoNg2rbkUC8xruOf8AeBOimfp7pAAhD5bfpWN
-        WuowCi6RmI5bfuqvq4PKNesa+77TkFZjVlFEJm3RIMw==
-X-Received: by 2002:a05:6000:12c7:: with SMTP id l7mr32033339wrx.177.1625736846964;
-        Thu, 08 Jul 2021 02:34:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx6b2RvxjwXvMJgFoy20i+dUp4HtIQ58rbfVrXOuRcq9Ho/OovvbcDwRF9C+0n3tuxHzLL9uQ==
-X-Received: by 2002:a05:6000:12c7:: with SMTP id l7mr32033308wrx.177.1625736846800;
-        Thu, 08 Jul 2021 02:34:06 -0700 (PDT)
-Received: from [192.168.3.211] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
-        by smtp.gmail.com with ESMTPSA id p7sm1637544wrr.21.2021.07.08.02.34.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Jul 2021 02:34:06 -0700 (PDT)
-Subject: Re: [PATCH 4/9] memory: mtk-smi: Rename smi_gen to smi_type
-To:     Yong Wu <yong.wu@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
-        anan.sun@mediatek.com, ming-fan.chen@mediatek.com,
-        yi.kuo@mediatek.com, anthony.huang@mediatek.com
-References: <20210616114346.18812-1-yong.wu@mediatek.com>
- <20210616114346.18812-5-yong.wu@mediatek.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <a3abe400-4172-4f62-1548-b78b9ec4c157@canonical.com>
-Date:   Thu, 8 Jul 2021 11:34:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231345AbhGHJiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 05:38:17 -0400
+Received: from mout.gmx.net ([212.227.17.20]:35213 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231281AbhGHJiQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 05:38:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1625736911;
+        bh=c5Q2FsPdojCP6Bswqmw6Exz/MdxfLETzLExQXTGx8lE=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=DPIQo/8gASI330Cx4yxfanb/dLuuKy32ZiCxm7AfbHVW+8wJ9n7H0rhfTwwfg3t4J
+         hMBEpU/GjJPD9xo6OxXEUfDhlBp7BHBzHjDwQMWXy0Pxb1xWnI2xyuleEOW9qB6ROu
+         X/2HjFBnvc2T53ULK2eODdX47MIIxwGDhuEprAYs=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [217.61.147.159] ([217.61.147.159]) by web-mail.gmx.net
+ (3c-app-gmx-bap19.server.lan [172.19.172.89]) (via HTTP); Thu, 8 Jul 2021
+ 11:35:11 +0200
 MIME-Version: 1.0
-In-Reply-To: <20210616114346.18812-5-yong.wu@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Message-ID: <trinity-e6443313-a436-4e9d-a93c-1bef1cce135d-1625736911475@3c-app-gmx-bap19>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Collabora Kernel ML <kernel@collabora.com>
+Subject: Aw: Re: BUG: MTK DRM/HDMI broken on 5.13 (mt7623/bpi-r2)
+Content-Type: text/plain; charset=UTF-8
+Date:   Thu, 8 Jul 2021 11:35:11 +0200
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <25d61873-38ae-5648-faab-03431b74f777@collabora.com>
+References: <trinity-cc8f5927-9aaf-43ae-a107-6a6229f1b481-1625565279264@3c-app-gmx-bs60>
+ <25d61873-38ae-5648-faab-03431b74f777@collabora.com>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:a8dv+hSeSfNIo9WHqQ6TEcfo1UipGqirY6lIuH/V1gbgDJORXHn5hHNNXLWniRtJbNTLu
+ aGex8DbBZasYA8GYzz/ZM0s9eXbHWUGIMyIkDoTxl06Ty/bdS0WJv+xHi1+lL6bLh67j82kwnMoS
+ GWyKcvKzxBHdJZJNvdd9eCiy3dLJ7IqC2c72LWEERvcAna9R/82v9+G+1FBpRsn+/hnFYYjg8mqv
+ RgYpIV2BliDoyISDLTtcIGmjIYLdDBhKLM2sWRFOtqBTq/hYUDpMzFHy2N9QBVSsd6h8ZH9zzgzp
+ MY=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:M3vMpT3BFSc=:F/NKhlmrjYTuX834cBuZSo
+ /BanSKuY8fpmxKAagAm9NG8vCZPyC/M9fVcoT85cSt89htL8cxKXbQeLGzpzxhGG9uxWEaxm8
+ lcSt0A5k62SN8NDetwDu3at51lwmz/C8wPSXxU9Bx9q59qw60VAFNVxCbN9SHu9nF3TRPBoeN
+ PLz7ltPfU9MerD80aSyJGIbnU/SlsNcTkcv4Sf3YFX26hQNehXG3UDphturrtZlQ52tob1AUR
+ QeW7IT7ZTkIFiGxbhfT8CTHJ/zH7icMdKyLpzjDanewiRa7Lklwd8R/JQ28+tVUTdqKcy52VU
+ g7Rop1R3uCX5wB4RveqrWMaWWPkJtjHuPOHIiatn4roGlCE8dHRY3sXu+z01oQQhqPtueobnu
+ fOZP0JjJC4v2bpAH2mlgFRUwjkO6Sa1aiLtBaQGx/i4LcEGQp8XCOuo2FE5Jk9fDBIHvHYsow
+ DyTuwV8r7Ps5FfA4aKggVIRhNJyS4mZ2YTXfFS853u/UkQLkn/UxmcnDULMzyj71ofulrH+3y
+ MfdFWWSle0MEJEBgMrVqraAlca0fcP1faVusLssJxo2GwdO923SjePkHREQd3IYbgaftEqd22
+ oe10T4ekFHxOaTLSK05J+rXOF+iWHgXNRLYOnmmGt9uMbM1vn7XetAGEPTfDzxiU+1V0ZOJk+
+ U4Fq6F8c6fnpjX2jIRkhWflLULW96hABhk0cUVPQeTa1Kuie4W0y59jhqICUeKm+ladspcg+B
+ wlYHszc6Ihq8ajNbXfRj/4opJ5V0OkxQSntQKfY0JfoHAM8vca4Q/HQLR5OrF0H+h/zx2JyYl
+ qcy47vRVCEJAagEhgsLYA6IgCtvpXLWJLJaW74ECs+fNuh/Re4=
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/06/2021 13:43, Yong Wu wrote:
-> This is a preparing patch for adding smi sub common.
+Hi
 
-Don't write "This patch". Use simple imperative:
-"Prepare for adding smi sub common."
+just a small update, added debug in the vendor-specific functions for page=
+_flip and vblank and it seems they never get called
 
-https://elixir.bootlin.com/linux/v5.13/source/Documentation/process/submitting-patches.rst#L89
- 
-> About the previou smi_gen, we have gen1/gen2 that stand for the generation
-> number for HW. I plan to add a new type(sub_common), then the "gen" is not
-> prober. this patch only change it to "type", No functional change.
+=2D-- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+@@ -87,21 +87,25 @@ static void mtk_drm_crtc_finish_page_flip(struct mtk_d=
+rm_crtc *mtk_crtc)
+ {
+        struct drm_crtc *crtc =3D &mtk_crtc->base;
+        unsigned long flags;
+-
++printk(KERN_ALERT "DEBUG: Passed %s %d \n",__FUNCTION__,__LINE__);
+        spin_lock_irqsave(&crtc->dev->event_lock, flags);
+        drm_crtc_send_vblank_event(crtc, mtk_crtc->event);
+        drm_crtc_vblank_put(crtc);
+        mtk_crtc->event =3D NULL;
+        spin_unlock_irqrestore(&crtc->dev->event_lock, flags);
++printk(KERN_ALERT "DEBUG: Passed %s %d \n",__FUNCTION__,__LINE__);
+ }
 
-Same.
+ static void mtk_drm_finish_page_flip(struct mtk_drm_crtc *mtk_crtc)
+ {
++printk(KERN_ALERT "DEBUG: Passed %s %d update:%d,needsvblank:%d\n",__FUNC=
+TION__,__LINE__,mtk_crtc->config_updating,mtk_crtc->pending_needs_vblank);
+        drm_crtc_handle_vblank(&mtk_crtc->base);
+        if (!mtk_crtc->config_updating && mtk_crtc->pending_needs_vblank) =
+{
++printk(KERN_ALERT "DEBUG: Passed %s %d \n",__FUNCTION__,__LINE__);
+                mtk_drm_crtc_finish_page_flip(mtk_crtc);
+                mtk_crtc->pending_needs_vblank =3D false;
+        }
++printk(KERN_ALERT "DEBUG: Passed %s %d \n",__FUNCTION__,__LINE__);
+ }
 
-> 
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> ---
->  drivers/memory/mtk-smi.c | 24 ++++++++++++------------
->  1 file changed, 12 insertions(+), 12 deletions(-)
-> 
+ static void mtk_drm_crtc_destroy(struct drm_crtc *crtc)
 
-Best regards,
-Krzysztof
+finish_page_flip is called by mtk_crtc_ddp_irq. this seems to be set in mt=
+k_drm_crtc_enable_vblank with mtk_ddp_comp_enable_vblank. this is called c=
+orrectly
+
+113 static inline void mtk_ddp_comp_enable_vblank(struct mtk_ddp_comp *com=
+p,
+114                           void (*vblank_cb)(void *),
+115                           void *vblank_cb_data)
+116 {
+117 printk(KERN_ALERT "DEBUG: Passed %s %d \n",__FUNCTION__,__LINE__);
+118     if (comp->funcs && comp->funcs->enable_vblank)
+119     {
+120         comp->funcs->enable_vblank(comp->dev, vblank_cb, vblank_cb_dat=
+a);
+121 printk(KERN_ALERT "DEBUG: Passed %s %d \n",__FUNCTION__,__LINE__);
+122     }
+123 }
+
+i see both messages, but mtk_crtc_ddp_irq is never called and so the other=
+ 2 not.
+
+root@bpi-r2:~# dmesg | grep -i DEBUG
+[    6.433509] DEBUG: Passed mtk_drm_crtc_enable_vblank 510
+[    6.433530] DEBUG: Passed mtk_ddp_comp_enable_vblank 117
+[    6.433537] DEBUG: Passed mtk_ddp_comp_enable_vblank 121 <<<
+
+
+comp->funcs->enable_vblank should be mtk_drm_crtc_enable_vblank, right?
+
+641 static const struct drm_crtc_funcs mtk_crtc_funcs =3D {
+642     .set_config     =3D drm_atomic_helper_set_config,
+643     .page_flip      =3D drm_atomic_helper_page_flip,
+644     .destroy        =3D mtk_drm_crtc_destroy,
+645     .reset          =3D mtk_drm_crtc_reset,
+646     .atomic_duplicate_state =3D mtk_drm_crtc_duplicate_state,
+647     .atomic_destroy_state   =3D mtk_drm_crtc_destroy_state,
+648     .enable_vblank      =3D mtk_drm_crtc_enable_vblank, <<<<<<<
+649     .disable_vblank     =3D mtk_drm_crtc_disable_vblank,
+650 };
+
+but it looks like a recursion:
+mtk_drm_crtc_enable_vblank calls mtk_ddp_comp_enable_vblank =3D> enable_vb=
+lank (=3Dmtk_drm_crtc_enable_vblank), but i see the messages not repeating
+
+mtk_drm_crtc_enable_vblank(struct drm_crtc *crtc)
+511     mtk_ddp_comp_enable_vblank(comp, mtk_crtc_ddp_irq, &mtk_crtc->base=
+);
+
+113 static inline void mtk_ddp_comp_enable_vblank(struct mtk_ddp_comp *com=
+p,
+114                           void (*vblank_cb)(void *),
+115                           void *vblank_cb_data)
+116 {
+118     if (comp->funcs && comp->funcs->enable_vblank)
+120         comp->funcs->enable_vblank(comp->dev, vblank_cb, vblank_cb_dat=
+a);
+
+but params do not match...comp->funcs->enable_vblank takes 3 arguments but=
+ comp->funcs->enable_vblank has only one.something i miss here...
+
+i guess not, but is watchdog somehow involved? i ask because i see this on=
+ reboot/poweroff:
+
+"watchdog: watchdog0: watchdog did not stop!"
+
+i see this with my 5.13, 5.12-drm (5.12.0+mtk/core drm-patches) and 5.12.1=
+4 too (hdmi is working there), but not 5.12.0!
+that means something in drm-patches (mtk/core) breaks watchdog. maybe the =
+recursion mentioned above?
+
+regards Frank
+
+
+> Gesendet: Donnerstag, 08. Juli 2021 um 09:22 Uhr
+> Von: "Dafna Hirschfeld" <dafna.hirschfeld@collabora.com>
+
+>
+> Hi Frank,
+>
+>
+> On 06.07.21 11:54, Frank Wunderlich wrote:
+> > Hi,
+> >
+> > i've noticed that HDMI is broken at least on my board (Bananapi-r2,mt7=
+623) on 5.13.
+> >
+> > after some research i noticed that it is working till
+> >
+> > commit 2e477391522354e763aa62ee3e281c1ad9e8eb1b
+> > Author: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+
+>
+> We also encountered that warning on mt8173 device - Acer Chromebook R13.=
+ It happen after resuming from suspend to ram.
+> We could not find a version that works and we were not able to find the =
+fix of the bug.
+> It seems like the irq isr is not called after resuming from suspend.
+> Please share if you have new findings regarding that bug.
+>
+> Thanks,
+> Dafna
+
