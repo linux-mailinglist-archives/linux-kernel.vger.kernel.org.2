@@ -2,95 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E026F3C1607
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 17:31:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D58743C160D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 17:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231985AbhGHPeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 11:34:05 -0400
-Received: from mout.gmx.net ([212.227.17.20]:47129 "EHLO mout.gmx.net"
+        id S232052AbhGHPfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 11:35:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52086 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231845AbhGHPeC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 11:34:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1625758260;
-        bh=nG0rFzyWwxI3NQHIWUD7r321QKdUVY+N3Y6jzsdRrnA=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=S5SAzrqyQJbsGmcURycPWr0syeS93jfLxJc3Tin/BtqK1DmT+5jFUv2whdu34S5B3
-         3AZbIbQIxfBrasNI+NoZZfYi8Xv4hpB5qNT+8v7DSI0nieqBr2fav6G6aZ5VYuA1yd
-         AgbWjeo+wPkfHw9SCLkfkTOWd+zrAEZcVM7NFL+0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [217.61.147.159] ([217.61.147.159]) by web-mail.gmx.net
- (3c-app-gmx-bap19.server.lan [172.19.172.89]) (via HTTP); Thu, 8 Jul 2021
- 17:31:00 +0200
+        id S231845AbhGHPfR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 11:35:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5144261625;
+        Thu,  8 Jul 2021 15:32:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1625758354;
+        bh=d6hWipfI0BuFnl9dNbp+8qC1wTQ3teMKHa503AJAlPY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cyoPKYxVRv1vMNWTVMHiXStGDPwfMWCQUl0LQlzTfhD9fJVXWEe2h6Gh/IyAnqNqK
+         6/4A3b9p2HRqQpAFeeHmBrtWA2anQIIdI7Mbl6he9LgjdLXHEqtvjbr8CY/saQYxMD
+         xc67nH26ld32JoOgouZj5VRCew1Q0ka+n1C180PA=
+Date:   Thu, 8 Jul 2021 17:32:32 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Bradley M. Kuhn" <bkuhn@ebb.org>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>, tglx@linutronix.de,
+        akpm@linux-foundation.org, shuah@kernel.org, rafael@kernel.org,
+        rgoldwyn@suse.com, kuno@frob.nl, fontana@sharpeleven.org,
+        Ciaran.Farrell@suse.com, Christopher.DeNicolo@suse.com, hch@lst.de,
+        corbet@lwn.net, linux@leemhuis.info, ast@kernel.org,
+        andriin@fb.com, daniel@iogearbox.net, atenart@kernel.org,
+        alobakin@pm.me, weiwan@google.com, ap420073@gmail.com,
+        tj@kernel.org, jeyu@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, minchan@kernel.org,
+        axboe@kernel.dk, mbenes@suse.com, jpoimboe@redhat.com,
+        keescook@chromium.org, jikos@kernel.org, rostedt@goodmis.org,
+        peterz@infradead.org, linux-block@vger.kernel.org,
+        linux-spdx@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, copyleft-next@lists.fedorahosted.org
+Subject: Re: [PATCH 0/2] LICENSES: add and use copyleft-next-0.3.1
+Message-ID: <YOcakETswyEN58j6@kroah.com>
+References: <20210707184310.3624761-1-mcgrof@kernel.org>
+ <YOaZohB/2Z3x5grc@kroah.com>
+ <YOcSwXkpzAFGucXM@ebb.org>
 MIME-Version: 1.0
-Message-ID: <trinity-3f4f4b55-7e39-4d80-8fc3-7d0e2b3026de-1625758259993@3c-app-gmx-bap19>
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     Frank Wunderlich <frank-w@public-files.de>
-Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-mediatek@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Collabora Kernel ML <kernel@collabora.com>
-Subject: Aw: Re: BUG: MTK DRM/HDMI broken on 5.13 (mt7623/bpi-r2)
-Content-Type: text/plain; charset=UTF-8
-Date:   Thu, 8 Jul 2021 17:31:00 +0200
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <trinity-e6443313-a436-4e9d-a93c-1bef1cce135d-1625736911475@3c-app-gmx-bap19>
-References: <trinity-cc8f5927-9aaf-43ae-a107-6a6229f1b481-1625565279264@3c-app-gmx-bs60>
- <25d61873-38ae-5648-faab-03431b74f777@collabora.com>
- <trinity-e6443313-a436-4e9d-a93c-1bef1cce135d-1625736911475@3c-app-gmx-bap19>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:wiHKJ4pZw+i4+wRHC9BOA/fmvr0HJrbs+S04dC9RHlZ/rQdWr6dVlmhEeNLG1lN7/H4GT
- mPhnuqZc9y1dxElbjPUNI7dfnsS4rf87tw1G1CpmS7ZdbSFmK57SjekTbtefPEVY9cxHBTvGLRbk
- 3fB/KFrCxX+Ug0D0oJ06IN0ZT9I2yfEgtsiX6JVX5xiWIfVDi5eWxL9hYbCmnDgyJSCSw2BPVjFc
- GhITtzk/1X9uIssmMVja+Va0pQp6+ijeW/X3xULfbXJyklzULp+60CGtC4REKiUA/ZLuC4V86qhO
- qU=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Vw9zW2hsmd4=:hnMCvQBqmELYzsYTSfnv6K
- esoWwP7uwrtKpHZ4GnnPSZGmZ2VmGCNBtQqc0QXaw7hkF6kFXrlBkgihXyqebUs38Wr4tpGFZ
- tmv30lpPfUeC7wlNV7EGAmY4vFbWBKE8LU+3IIA6JZSriijkOZLGl6614zXxskbazuK8NbnPK
- rIZ83b6dg3R57xDsGgAwRQWIzFxNj2usIgvTnEahaML8sbQ1v2oQZSbdd2B2LTY1ms3CloHzK
- HrmSrujpl43ivTNrxyhmnNvNLF4XxawW2N+nuV6YHOdb3oddICQZqS4cUSm6zfHi7QqAzgEBz
- MJ3jE+kRRbGsxLXG18l5x5hYk/ea+aYWdz8z7TOoqWOFisdNZUb3xxQOtQ+opUsboD0F/6NXq
- XQYQXGHWLSEWTn8WBRHwHUElW83dsbN1yrRtkd4uEiWj28icIBf+72jiZYG7fBZCnwZHCfC4P
- ruBhz5YE22r0UP9Ic8bv0L/1h89y3D2f9Yr5Ht59binUNP3aC4RzXIzuHEMfV2flOE2ODwFlb
- 0Ho4A9fsy/9cw+rnLI6fl+H1fT4bDx8PON7aVW+mRrToQmpKbtZV04l3QFn548VEnkWEXiEyc
- mQK9oKa+D2lHd2WmPsa0JTVG49DbFezYOSyCmbGBFS4HlPAL9J1CaLPAHV0LacGLx4GspP3Hi
- LKLsbV026QLgOc2QzbYOe1ABqwBtsNo8O24PF1WUBguC3WZMWWN+ovDCRIj2RX+Inwy5bBKn7
- Qs+Ou7O3XfNRlGd2AHh+NznUlVlLgCa0trrWzQa5Nv5h1uTTzFfSEiNYufIHTurDSN5Aw2xb4
- rJt55pnWq52brszm5L3osPN9GOnQY3hG9Ez7Ekoq+hTc0fC13Y=
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YOcSwXkpzAFGucXM@ebb.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Gesendet: Donnerstag, 08. Juli 2021 um 11:35 Uhr
-> Von: "Frank Wunderlich" <frank-w@public-files.de>
-> i guess not, but is watchdog somehow involved? i ask because i see this =
-on reboot/poweroff:
->
-> "watchdog: watchdog0: watchdog did not stop!"
->
-> i see this with my 5.13, 5.12-drm (5.12.0+mtk/core drm-patches) and 5.12=
-.14 too (hdmi is working there), but not 5.12.0!
-> that means something in drm-patches (mtk/core) breaks watchdog. maybe th=
-e recursion mentioned above?
+On Thu, Jul 08, 2021 at 07:59:13AM -0700, Bradley M. Kuhn wrote:
+> Greg KH wrote:
+> > Any chance you wish to just change the license of these files, given that
+> > you are the only one that has tried to use it for kernel code?
+> 
+> There is a lot of dual-licensed (GPLv2-only|{2,3}-Clause-BSD) code already in
+> Linux.  Many corporate copyright holders have well documented strong reasons
+> for wanting that.  (Those policy goals and the analysis behind them, I find
+> problematic and sometimes outright wrong, but nonetheless it's their right to
+> license their copyrights that way, and the license *is* GPLv2-only
+> compatible, as is Luis'!).
+> 
+> I assume that you're not asking those companies to relicense to pure
+> GPLv2-only.
 
-have to correct me: 5.12.0 shows this error too, so error not caused by dr=
-m-patches, but i guess unrelated to the possible irq issue causing hdmi no=
-t working on 5.13 (wait-for-vblank/page_flip tracebacks)
+On the contrary, I have stated in public many times to companies that
+try to add dual-licensed new kernel code that they should only do so if
+they provide a really good reason, and pushed back on them numerous
+times.  See the mailing list archives for details if you care.
 
-i'm not aware who is also involved in the problem, so i want to avoid send=
- people to the wrong way :)
+So yes, I am asking them, this is not anything new.
 
-regards Frank
+Let's keep it simple please, and not add new licenses for no real good
+reason if at all possible.
+
+thanks,
+
+greg k-h
