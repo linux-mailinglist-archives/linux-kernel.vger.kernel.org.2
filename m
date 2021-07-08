@@ -2,87 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32A213C1603
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 17:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A9FB3C15E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 17:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232026AbhGHPdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 11:33:42 -0400
-Received: from da1vs04.rockwellcollins.com ([205.175.227.52]:31102 "EHLO
-        da1vs04.rockwellcollins.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231932AbhGHPdl (ORCPT
+        id S231967AbhGHP2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 11:28:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231940AbhGHP23 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 11:33:41 -0400
-X-Greylist: delayed 426 seconds by postgrey-1.27 at vger.kernel.org; Thu, 08 Jul 2021 11:33:41 EDT
-IronPort-SDR: sVBj2hguHH4RHwuK3x/99GL+dtkuWgeiyP5Yi6nSlIexJqow++FEIFTqkvF95sPWcPbfJqmbGG
- rfmhVvIOlJNq6zkHo2oxt0SUXBm8cxKsTZhCmn8+z57QuQJAXrufDvHsOrJXWRw7uSFJ1nyTmT
- j9KPlltHfQrpqZOeSk6uACehou/yMdGMJaQko7/7T5fkVp1BxZRrFBbva9z+/umBv5JT5SA708
- ZdEDgr7oYTtZ81NWmZwEox/hV5PJ4+sVt1+iLJOC6a4/WKkXZWydBymxXZcElnkhyKOx00RjYC
- D84=
-Received: from ofwda1n02.rockwellcollins.com (HELO ciulimr01.rockwellcollins.com) ([205.175.227.14])
-  by da1vs04.rockwellcollins.com with ESMTP; 08 Jul 2021 10:23:53 -0500
-X-Received: from biscuits.rockwellcollins.com (biscuits.rockwellcollins.lab [10.148.119.137])
-        by ciulimr01.rockwellcollins.com (Postfix) with ESMTP id A5C0B60089;
-        Thu,  8 Jul 2021 10:23:52 -0500 (CDT)
-From:   Matthew Weber <matthew.weber@collins.com>
-To:     sashal@kernel.org
-Cc:     gregkh@linuxfoundation.org, Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab@s-opensource.com>,
-        Matthew Weber <matthew.weber@collins.com>,
-        Stefani Seibold <stefani@seibold.net>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] kfifo: DECLARE_KIFO_PTR(fifo, u64) does not work on arm 32 bit
-Date:   Thu,  8 Jul 2021 10:23:41 -0500
-Message-Id: <20210708152342.59635-1-matthew.weber@collins.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 8 Jul 2021 11:28:29 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77666C06175F
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 08:25:46 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id a6so6020229qka.4
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 08:25:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vt-edu.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:organization:mime-version
+         :content-transfer-encoding;
+        bh=ZlsmpUZ3dqpWLyD9xGWZtjT/n2aBeI2MV4ZA7OeTIJE=;
+        b=JX1jiFOpEifP7nXEV+l7qXTqB/HpAHr5Y4V5OqIKYTgubw7yR7sQ0AMWtdU252XEPV
+         nulK4XSgludUXIgMZNSh3t0VUIeJKPP6uIdsM6ZklTJ7WvjoTZm5YkI9pVHVNZEzUjn6
+         RBPChln9daFTztYlfZOPh8jiHA21Qi07eeHIXBor4KJ9bB4ga7zZTSxpUBPAUuxugDx8
+         rCjL9SUIwGO6jA10YB2JPZ9yIw75IsEbS2PMYcJGubbskvqGPK+k41coVcF4VHTqaYI2
+         FQlpAXIBNW329Q/H5iQSiuIXBJiZXaVGEG6DmZUxafOvKWiI/js5h6k8iuAWO/RCcL1S
+         e9vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:organization
+         :mime-version:content-transfer-encoding;
+        bh=ZlsmpUZ3dqpWLyD9xGWZtjT/n2aBeI2MV4ZA7OeTIJE=;
+        b=Vj6zSOfdTQ1i0XX/Xqt91DZcJkH1NMULZA9Ya6xLyz5Or+XnE28Vua/X0uP591I7in
+         1jc5NYaW/CZVgR1UBmzIBq9ErxQqQ2JErVZvI4RuGhvr7quCG8ficvdzX1oT2BfkMHnn
+         0+WH20E8HQEw9b+WsVWksDUTkB6911L6b5a1beke1dm5T5zfK59AKAEEIsdQ7CxKa17d
+         soonMA0602Z0UWMqESxSeWgPezGI1RLvQFEPa0hJzQl5KJ9gozht2ZnFFWoGMuIHag2u
+         ptCD838E6wsvCenVRUCO5B1D1e5gJf6TSAu94hr/KSDYtiqKd2gCjP6d5+lhMHQ+5WTj
+         REuQ==
+X-Gm-Message-State: AOAM533UBpV8yaAAWHPpFfevuUm2eX0wYEWB+TSqT++mv2DQGuLeNnS9
+        Hs/w3jcLLkDSngK0TdZ9ZiMJdA==
+X-Google-Smtp-Source: ABdhPJzlnN/DdwjUTZRoDmXWDXPzwZfq3mQopOF5elSUKGRVoaL7qo3K3JzF8ZcimejjDuXT+boFxA==
+X-Received: by 2002:a05:620a:4dd:: with SMTP id 29mr27156031qks.250.1625757945517;
+        Thu, 08 Jul 2021 08:25:45 -0700 (PDT)
+Received: from iron-maiden.localnet ([50.225.136.98])
+        by smtp.gmail.com with ESMTPSA id b188sm1073658qkf.133.2021.07.08.08.25.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jul 2021 08:25:45 -0700 (PDT)
+From:   Carlos Bilbao <bilbao@vt.edu>
+To:     James.Bottomley@hansenpartnership.com
+Cc:     deller@gmx.de, linux-parisc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, andrew@lunn.ch
+Subject: [PATCH] drivers: parisc: Follow the indentation coding standard on printks
+Date:   Thu, 08 Jul 2021 11:25:44 -0400
+Message-ID: <1793924.CQOukoFCf9@iron-maiden>
+Organization: Virginia Tech
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Young <sean@mess.org>
+Fix indentation of printks that start at the beginning of the line. Change this 
+for the right number of space characters, or tabs if the file uses them. 
 
-If you try to store u64 in a kfifo (or a struct with u64 members),
-then the buf member of __STRUCT_KFIFO_PTR will cause 4 bytes
-padding due to alignment (note that struct __kfifo is 20 bytes
-on 32 bit).
-
-That in turn causes the __is_kfifo_ptr() to fail, which is caught
-by kfifo_alloc(), which now returns EINVAL.
-
-So, ensure that __is_kfifo_ptr() compares to the right structure.
-
-Signed-off-by: Sean Young <sean@mess.org>
-Acked-by: Stefani Seibold <stefani@seibold.net>
-Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
-Signed-off-by: Matthew Weber <matthew.weber@collins.com>
+Signed-off-by: Carlos Bilbao <bilbao@vt.edu>
 ---
+ drivers/parisc/iosapic.c               | 4 ++--
+ drivers/parisc/sba_iommu.c             | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-This patch originally made it into 4.16 as 
-8a866fee3909c49738e1c4429a8d2b9bf27e015d but is a bug on at least 4.14
-for any 32bit system(PPC/ARM/...) using kfifo with u64 datatypes.
-
-Please add to linux-4.14.y for the next LTS tag.
-(Below patch is a cherry-pick of the commit onto linux-4.14.y and was
- verified on 32bit hardware.)
-
----
- include/linux/kfifo.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/kfifo.h b/include/linux/kfifo.h
-index 41eb6fdf87a8..86b5fb08e96c 100644
---- a/include/linux/kfifo.h
-+++ b/include/linux/kfifo.h
-@@ -113,7 +113,8 @@ struct kfifo_rec_ptr_2 __STRUCT_KFIFO_PTR(unsigned char, 2, void);
-  * array is a part of the structure and the fifo type where the array is
-  * outside of the fifo structure.
-  */
--#define	__is_kfifo_ptr(fifo)	(sizeof(*fifo) == sizeof(struct __kfifo))
-+#define	__is_kfifo_ptr(fifo) \
-+	(sizeof(*fifo) == sizeof(STRUCT_KFIFO_PTR(typeof(*(fifo)->type))))
+diff --git a/drivers/parisc/iosapic.c b/drivers/parisc/iosapic.c
+index 8a3b0c3a1e92..5d27c23e6429 100644
+--- a/drivers/parisc/iosapic.c
++++ b/drivers/parisc/iosapic.c
+@@ -633,7 +633,7 @@ static void iosapic_unmask_irq(struct irq_data *d)
+ 	printk("\n");
+ }
  
- /**
-  * DECLARE_KFIFO_PTR - macro to declare a fifo pointer object
+-printk("iosapic_enable_irq(): sel ");
++	printk("iosapic_enable_irq(): sel ");
+ {
+ 	struct iosapic_info *isp = vi->iosapic;
+ 
+@@ -642,7 +642,7 @@ printk("iosapic_enable_irq(): sel ");
+ 		printk(" %x", d1);
+ 	}
+ }
+-printk("\n");
++	printk("\n");
+ #endif
+ 
+ 	/*
+diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
+index dce4cdf786cd..c3381facdfc5 100644
+--- a/drivers/parisc/sba_iommu.c
++++ b/drivers/parisc/sba_iommu.c
+@@ -1550,7 +1550,7 @@ static void sba_hw_init(struct sba_device *sba_dev)
+ 
+ 
+ #if 0
+-printk("sba_hw_init(): mem_boot 0x%x 0x%x 0x%x 0x%x\n", PAGE0->mem_boot.hpa,
++	printk("sba_hw_init(): mem_boot 0x%x 0x%x 0x%x 0x%x\n", PAGE0->mem_boot.hpa,
+ 	PAGE0->mem_boot.spa, PAGE0->mem_boot.pad, PAGE0->mem_boot.cl_class);
+ 
+ 	/*
 -- 
-2.17.1
+2.25.1
+
+
+
 
