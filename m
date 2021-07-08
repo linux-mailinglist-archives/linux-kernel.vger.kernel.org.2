@@ -2,209 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 407723BF743
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 11:07:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0856A3BF745
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 11:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231313AbhGHJKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 05:10:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23955 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231255AbhGHJKF (ORCPT
+        id S231332AbhGHJLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 05:11:12 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47232 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231254AbhGHJLL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 05:10:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625735243;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yKsQQhdebDXEx1+61ELONXUK6wL4wa5lTwMISxD88g0=;
-        b=KFcOCA8RlhjrxyHy9L/WQ8f3CmLI4df3SgFlkgU4ks12Pa3YDFYSBnmCyBrfrFnoAR7LYp
-        YMx54NDRpa/N6mRUOeHUNR7st2D0zZUo/PNurqLYTudRgla6Y43KgIILCzFixp3bX+R052
-        UOZgri5W4kuGwdeZ/zRtp1VP8MsKDV0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-8-11uk5Y45N-SljR8RLm1AGw-1; Thu, 08 Jul 2021 05:07:21 -0400
-X-MC-Unique: 11uk5Y45N-SljR8RLm1AGw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7189719200C0;
-        Thu,  8 Jul 2021 09:07:19 +0000 (UTC)
-Received: from localhost (ovpn-114-141.ams2.redhat.com [10.36.114.141])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2ED2D10372C0;
-        Thu,  8 Jul 2021 09:07:15 +0000 (UTC)
-Date:   Thu, 8 Jul 2021 10:07:14 +0100
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Yongji Xie <xieyongji@bytedance.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mika =?iso-8859-1?Q?Penttil=E4?= <mika.penttila@nextfour.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
-        Greg KH <gregkh@linuxfoundation.org>, songmuchun@bytedance.com,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v8 10/10] Documentation: Add documentation for VDUSE
-Message-ID: <YObAQsmJjKWxuO/C@stefanha-x1.localdomain>
-References: <CACycT3uxnQmXWsgmNVxQtiRhz1UXXTAJFY3OiAJqokbJH6ifMA@mail.gmail.com>
- <YNxCDpM3bO5cPjqi@stefanha-x1.localdomain>
- <CACycT3taKhf1cWp3Jd0aSVekAZvpbR-_fkyPLQ=B+jZBB5H=8Q@mail.gmail.com>
- <YN3ABqCMLQf7ejOm@stefanha-x1.localdomain>
- <CACycT3vo-diHgTSLw_FS2E+5ia5VjihE3qw7JmZR7JT55P-wQA@mail.gmail.com>
- <8320d26d-6637-85c6-8773-49553dfa502d@redhat.com>
- <YOL/9mxkJaokKDHc@stefanha-x1.localdomain>
- <CACycT3t-BTMrpNTwBUfbvaxTh6tLthxbo3OJwMk_iuiSpMuZPg@mail.gmail.com>
- <YOQu8dB6tlb9juNz@stefanha-x1.localdomain>
- <CACycT3t=V-VV7LYDda8mt=QxN_Ay-N+3dgWp382TObkeei9MOg@mail.gmail.com>
+        Thu, 8 Jul 2021 05:11:11 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16894jlV055988;
+        Thu, 8 Jul 2021 05:08:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=JPJDLe0p4ZjhEFucYJlDDkxue6Tk2PTl5d+5nvsL6qE=;
+ b=AzNQwZ6xuDPxnCb7xw9sj+naBglfF8O3fijEP1F6hyyXSGYVht3RGUaR7yMMy1funRtC
+ K5x9vHRf/v19nEV0cK2zVvzpFxI3g10CICZQ/e+PM7sRxgBbI/gOK09TB3u1WJdoILM/
+ BSpDeTxygKxzhKB+2/KbGJnJrAOrV58KaBY/0JkNBzOThnfS7Dr/j4CW/6Qw8HyekyTT
+ fbhox1BSJsEc7/Vg6McbpeL7DvDu2AdAX60SbZEoBKic40yWZ87R4JlEGAQ+fwQjGbFr
+ HBv6sy/Hjb/JeCA2EB493JJWwVPWQT0w+Yovywq7K830AfXyKRLD0mHbwS9r1GRdsLX6 Gg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39nwn01c8u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 08 Jul 2021 05:08:16 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 168951xJ059928;
+        Thu, 8 Jul 2021 05:08:16 -0400
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39nwn01c8j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 08 Jul 2021 05:08:16 -0400
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 168979ig006029;
+        Thu, 8 Jul 2021 09:08:15 GMT
+Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
+        by ppma01wdc.us.ibm.com with ESMTP id 39jfhca9r8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 08 Jul 2021 09:08:15 +0000
+Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
+        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16898EoM18612528
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 8 Jul 2021 09:08:14 GMT
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2E1686E058;
+        Thu,  8 Jul 2021 09:08:14 +0000 (GMT)
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D14F96E052;
+        Thu,  8 Jul 2021 09:08:13 +0000 (GMT)
+Received: from sofia.ibm.com (unknown [9.199.42.113])
+        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu,  8 Jul 2021 09:08:13 +0000 (GMT)
+Received: by sofia.ibm.com (Postfix, from userid 1000)
+        id 451722E3B06; Thu,  8 Jul 2021 14:38:08 +0530 (IST)
+Date:   Thu, 8 Jul 2021 14:38:08 +0530
+From:   Gautham R Shenoy <ego@linux.vnet.ibm.com>
+To:     "Pratik R. Sampat" <psampat@linux.ibm.com>
+Cc:     mpe@ellerman.id.au, rjw@rjwysocki.net, linux-pm@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        pratik.r.sampat@gmail.com
+Subject: Re: [PATCH] cpufreq:powernv: Fix init_chip_info initialization in
+ numa=off
+Message-ID: <20210708090808.GA21260@in.ibm.com>
+Reply-To: ego@linux.vnet.ibm.com
+References: <20210615050949.10071-1-psampat@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="JRfIoP81GtaBg/o+"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACycT3t=V-VV7LYDda8mt=QxN_Ay-N+3dgWp382TObkeei9MOg@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20210615050949.10071-1-psampat@linux.ibm.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: UgbXKmIpz22uEgfbU_KqL_zudiRSdQ8B
+X-Proofpoint-ORIG-GUID: twlkEIaGgywqDefwKHZo2OlwpgoN0mA-
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-08_04:2021-07-06,2021-07-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
+ clxscore=1011 impostorscore=0 lowpriorityscore=0 adultscore=0
+ malwarescore=0 suspectscore=0 priorityscore=1501 mlxlogscore=999
+ mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107080050
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Pratik,
 
---JRfIoP81GtaBg/o+
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Tue, Jun 15, 2021 at 10:39:49AM +0530, Pratik R. Sampat wrote:
+> In the numa=off kernel command-line configuration init_chip_info() loops
+> around the number of chips and attempts to copy the cpumask of that node
+> which is NULL for all iterations after the first chip.
 
-On Wed, Jul 07, 2021 at 05:09:13PM +0800, Yongji Xie wrote:
-> On Tue, Jul 6, 2021 at 6:22 PM Stefan Hajnoczi <stefanha@redhat.com> wrot=
-e:
-> >
-> > On Tue, Jul 06, 2021 at 11:04:18AM +0800, Yongji Xie wrote:
-> > > On Mon, Jul 5, 2021 at 8:50 PM Stefan Hajnoczi <stefanha@redhat.com> =
-wrote:
-> > > >
-> > > > On Mon, Jul 05, 2021 at 11:36:15AM +0800, Jason Wang wrote:
-> > > > >
-> > > > > =E5=9C=A8 2021/7/4 =E4=B8=8B=E5=8D=885:49, Yongji Xie =E5=86=99=
-=E9=81=93:
-> > > > > > > > OK, I get you now. Since the VIRTIO specification says "Dev=
-ice
-> > > > > > > > configuration space is generally used for rarely-changing or
-> > > > > > > > initialization-time parameters". I assume the VDUSE_DEV_SET=
-_CONFIG
-> > > > > > > > ioctl should not be called frequently.
-> > > > > > > The spec uses MUST and other terms to define the precise requ=
-irements.
-> > > > > > > Here the language (especially the word "generally") is weaker=
- and means
-> > > > > > > there may be exceptions.
-> > > > > > >
-> > > > > > > Another type of access that doesn't work with the VDUSE_DEV_S=
-ET_CONFIG
-> > > > > > > approach is reads that have side-effects. For example, imagin=
-e a field
-> > > > > > > containing an error code if the device encounters a problem u=
-nrelated to
-> > > > > > > a specific virtqueue request. Reading from this field resets =
-the error
-> > > > > > > code to 0, saving the driver an extra configuration space wri=
-te access
-> > > > > > > and possibly race conditions. It isn't possible to implement =
-those
-> > > > > > > semantics suing VDUSE_DEV_SET_CONFIG. It's another corner cas=
-e, but it
-> > > > > > > makes me think that the interface does not allow full VIRTIO =
-semantics.
-> > > > >
-> > > > >
-> > > > > Note that though you're correct, my understanding is that config =
-space is
-> > > > > not suitable for this kind of error propagating. And it would be =
-very hard
-> > > > > to implement such kind of semantic in some transports.  Virtqueue=
- should be
-> > > > > much better. As Yong Ji quoted, the config space is used for
-> > > > > "rarely-changing or intialization-time parameters".
-> > > > >
-> > > > >
-> > > > > > Agreed. I will use VDUSE_DEV_GET_CONFIG in the next version. An=
-d to
-> > > > > > handle the message failure, I'm going to add a return value to
-> > > > > > virtio_config_ops.get() and virtio_cread_* API so that the erro=
-r can
-> > > > > > be propagated to the virtio device driver. Then the virtio-blk =
-device
-> > > > > > driver can be modified to handle that.
-> > > > > >
-> > > > > > Jason and Stefan, what do you think of this way?
-> > > >
-> > > > Why does VDUSE_DEV_GET_CONFIG need to support an error return value?
-> > > >
-> > >
-> > > We add a timeout and return error in case userspace never replies to
-> > > the message.
-> > >
-> > > > The VIRTIO spec provides no way for the device to report errors from
-> > > > config space accesses.
-> > > >
-> > > > The QEMU virtio-pci implementation returns -1 from invalid
-> > > > virtio_config_read*() and silently discards virtio_config_write*()
-> > > > accesses.
-> > > >
-> > > > VDUSE can take the same approach with
-> > > > VDUSE_DEV_GET_CONFIG/VDUSE_DEV_SET_CONFIG.
-> > > >
-> > >
-> > > I noticed that virtio_config_read*() only returns -1 when we access a
-> > > invalid field. But in the VDUSE case, VDUSE_DEV_GET_CONFIG might fail
-> > > when we access a valid field. Not sure if it's ok to silently ignore
-> > > this kind of error.
-> >
-> > That's a good point but it's a general VIRTIO issue. Any device
-> > implementation (QEMU userspace, hardware vDPA, etc) can fail, so the
-> > VIRTIO specification needs to provide a way for the driver to detect
-> > this.
-> >
-> > If userspace violates the contract then VDUSE needs to mark the device
-> > broken. QEMU's device emulation does something similar with the
-> > vdev->broken flag.
-> >
-> > The VIRTIO Device Status field DEVICE_NEEDS_RESET bit can be set by
-> > vDPA/VDUSE to indicate that the device is not operational and must be
-> > reset.
-> >
->=20
-> It might be a solution. But DEVICE_NEEDS_RESET  is not implemented
-> currently. So I'm thinking whether it's ok to add a check of
-> DEVICE_NEEDS_RESET status bit in probe function of virtio device
-> driver (e.g. virtio-blk driver). Then VDUSE can make use of it to fail
-> device initailization when configuration space access failed.
+Thanks for taking a look into this. Indeed there is an issue here
+because the code here assumes that node_mask as a proxy for the
+chip_mask. This assumption breaks when run with numa=off, since there will only be a
+single node, but multiple chips.
 
-Okay.
 
-Stefan
+> 
+> Hence adding a check to bail out after the first initialization if there
+> is only one node.
+> 
+> Fixes: 053819e0bf84 ("cpufreq: powernv: Handle throttling due to Pmax capping at chip level")
+> Signed-off-by: Pratik R. Sampat <psampat@linux.ibm.com>
+> Reported-by: Shirisha Ganta <shirishaganta1@ibm.com>
+> ---
+>  drivers/cpufreq/powernv-cpufreq.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/cpufreq/powernv-cpufreq.c b/drivers/cpufreq/powernv-cpufreq.c
+> index e439b43c19eb..663f9c4b5e3a 100644
+> --- a/drivers/cpufreq/powernv-cpufreq.c
+> +++ b/drivers/cpufreq/powernv-cpufreq.c
+> @@ -1078,6 +1078,8 @@ static int init_chip_info(void)
+>  		INIT_WORK(&chips[i].throttle, powernv_cpufreq_work_fn);
+>  		for_each_cpu(cpu, &chips[i].mask)
+>  			per_cpu(chip_info, cpu) =  &chips[i];
+> +		if (num_possible_nodes() == 1)
+> +			break;
 
---JRfIoP81GtaBg/o+
-Content-Type: application/pgp-signature; name="signature.asc"
+With this we will only initialize the chip[0].throttle work function,
+while for the rest of the chips chip[i].throttle will be
+uninitialized. While we may be running in the numa=off mode, the fact
+remains that those other chips do exist and they may experiencing
+throttling, during which they will try to schedule work for chip[i] in
+order to take corrective action, which will fail.
 
------BEGIN PGP SIGNATURE-----
+Hence a more correct approach may be to maintain a chip[i] mask
+independent of the node mask.
 
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmDmwEIACgkQnKSrs4Gr
-c8h1Uwf/V57anfkJGNBdE/1nvE9TLQ0SZ4PD1vU4fyfrXmi1FuC/T0RDPx2KpjhM
-pTZtL/+8qsT68q4dLuI3vRpys19JEXe5G6qtKeJp6Hj2gWhq5fcIQE40rwjI2Q0M
-r7hKT/3JCtuQMcv8XDUOU7QRg32V/uP7DABqOqHvhEU0D3nK07bLS2J5g035Tn6X
-munQgDzLg0BPKTntfz1CUooXjcF6l9HOuBnRBPIldlavndT3KKMnWW9atAf9Tofl
-2N1is88HX38huzt8UCnp57cdjFNtA59nfH3Au3mZ4s1NDKmwtAwGLRc0yJch4+cG
-M+8mdGvmL3lc/0owKY8YpOtgyL4xIg==
-=kNcQ
------END PGP SIGNATURE-----
 
---JRfIoP81GtaBg/o+--
 
+
+
+>  	}
+>  
+>  free_and_return:
+> -- 
+> 2.30.2
+> 
