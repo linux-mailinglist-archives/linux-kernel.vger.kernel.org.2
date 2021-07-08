@@ -2,160 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC4953C18A2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 19:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30E943C18AD
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 19:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230089AbhGHRvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 13:51:49 -0400
-Received: from foss.arm.com ([217.140.110.172]:35644 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229580AbhGHRvs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 13:51:48 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6F741ED1;
-        Thu,  8 Jul 2021 10:49:06 -0700 (PDT)
-Received: from [10.57.35.192] (unknown [10.57.35.192])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 54A7F3F66F;
-        Thu,  8 Jul 2021 10:49:05 -0700 (PDT)
-Subject: Re: [PATCH 2/2] dma-iommu: Check CONFIG_SWIOTLB more broadly
-To:     David Stevens <stevensd@chromium.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Tom Murphy <murphyt7@tcd.ie>
-References: <20210702053742.842850-1-stevensd@google.com>
- <20210702053742.842850-2-stevensd@google.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <aa5271cc-b555-50eb-7a45-b9bbec92d97c@arm.com>
-Date:   Thu, 8 Jul 2021 18:49:00 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229815AbhGHRzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 13:55:51 -0400
+Received: from protestant.ebb.org ([50.56.179.12]:37644 "EHLO
+        protestant.ebb.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229469AbhGHRzu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 13:55:50 -0400
+Received: from localhost (unknown [216.161.86.19])
+        (Authenticated sender: bkuhn)
+        by protestant.ebb.org (Postfix) with ESMTPSA id 9DD828208F;
+        Thu,  8 Jul 2021 10:53:05 -0700 (PDT)
+Date:   Thu, 8 Jul 2021 10:52:54 -0700
+From:   "Bradley M. Kuhn" <bkuhn@ebb.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>, tglx@linutronix.de,
+        akpm@linux-foundation.org, shuah@kernel.org, rafael@kernel.org,
+        rgoldwyn@suse.com, kuno@frob.nl, fontana@sharpeleven.org,
+        Ciaran.Farrell@suse.com, Christopher.DeNicolo@suse.com, hch@lst.de,
+        corbet@lwn.net, linux@leemhuis.info, ast@kernel.org,
+        andriin@fb.com, daniel@iogearbox.net, atenart@kernel.org,
+        alobakin@pm.me, weiwan@google.com, ap420073@gmail.com,
+        tj@kernel.org, jeyu@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, minchan@kernel.org,
+        axboe@kernel.dk, mbenes@suse.com, jpoimboe@redhat.com,
+        keescook@chromium.org, jikos@kernel.org, rostedt@goodmis.org,
+        peterz@infradead.org, linux-block@vger.kernel.org,
+        linux-spdx@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, copyleft-next@lists.fedorahosted.org
+Subject: Re: [PATCH 0/2] LICENSES: add and use copyleft-next-0.3.1
+Message-ID: <YOc7dgBq/N5vDjhx@ebb.org>
+References: <20210707184310.3624761-1-mcgrof@kernel.org>
+ <YOaZohB/2Z3x5grc@kroah.com>
+ <YOcSwXkpzAFGucXM@ebb.org>
+ <YOcakETswyEN58j6@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20210702053742.842850-2-stevensd@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YOcakETswyEN58j6@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-02 06:37, David Stevens wrote:
-> From: David Stevens <stevensd@chromium.org>
-> 
-> Add check for CONFIG_SWIOTLB to dev_is_untrusted, so that swiotlb
-> related code can be removed more aggressively.
+Greg KH wrote:
+> Let's keep it simple please, and not add new licenses for no real good
+> reason if at all possible.
 
-Seems logical, and I think the new name is secretly the best part since 
-it clarifies the intent of 90% of the callers. However...
+I've stated a number of real good reasons to keep copyleft-next as a
+dual-licensing option; they seem to have not been refuted here. Indeed, this
+point is quite salient:
 
-> Signed-off-by: David Stevens <stevensd@chromium.org>
-> ---
->   drivers/iommu/dma-iommu.c | 26 +++++++++++++-------------
->   1 file changed, 13 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-> index 24d1042cd052..614f0dd86b08 100644
-> --- a/drivers/iommu/dma-iommu.c
-> +++ b/drivers/iommu/dma-iommu.c
-> @@ -310,9 +310,10 @@ static void iommu_dma_flush_iotlb_all(struct iova_domain *iovad)
->   	domain->ops->flush_iotlb_all(domain);
->   }
->   
-> -static bool dev_is_untrusted(struct device *dev)
-> +static bool dev_use_swiotlb(struct device *dev)
->   {
-> -	return dev_is_pci(dev) && to_pci_dev(dev)->untrusted;
-> +	return IS_ENABLED(CONFIG_SWIOTLB) &&
-> +	       dev_is_pci(dev) && to_pci_dev(dev)->untrusted;
->   }
->   
->   /**
-> @@ -368,7 +369,7 @@ static int iommu_dma_init_domain(struct iommu_domain *domain, dma_addr_t base,
->   
->   	init_iova_domain(iovad, 1UL << order, base_pfn);
->   
-> -	if (!cookie->fq_domain && (!dev || !dev_is_untrusted(dev)) &&
-> +	if (!cookie->fq_domain && (!dev || !dev_use_swiotlb(dev)) &&
+Joe Perches wrote:
+>>> You can ask but it's the submitter's choice to license their code however
+>>> they desire.
 
-...this one is unrelated to SWIOTLB. Even when we can't use bouncing to 
-fully mitigate untrusted devices, it still makes sense to impose strict 
-invalidation on them. Maybe we can keep dev_is_untrusted() and define 
-dev_use_swiotlb() in terms of it?
+… to which I'd add, as long as the license is GPLv2-only-compatible, which of
+course (GPLv2-only|copyleft-next) is.
 
-Robin.
 
->   	    domain->ops->flush_iotlb_all && !iommu_get_dma_strict(domain)) {
->   		if (init_iova_flush_queue(iovad, iommu_dma_flush_iotlb_all,
->   					  iommu_dma_entry_dtor))
-> @@ -553,8 +554,7 @@ static dma_addr_t __iommu_dma_map_swiotlb(struct device *dev, phys_addr_t phys,
->   	 * If both the physical buffer start address and size are
->   	 * page aligned, we don't need to use a bounce page.
->   	 */
-> -	if (IS_ENABLED(CONFIG_SWIOTLB) && dev_is_untrusted(dev) &&
-> -	    iova_offset(iovad, phys | org_size)) {
-> +	if (dev_use_swiotlb(dev) && iova_offset(iovad, phys | org_size)) {
->   		aligned_size = iova_align(iovad, org_size);
->   		phys = swiotlb_tbl_map_single(dev, phys, org_size,
->   					      aligned_size, dir,
-> @@ -779,7 +779,7 @@ static void iommu_dma_sync_single_for_cpu(struct device *dev,
->   {
->   	phys_addr_t phys;
->   
-> -	if (dev_is_dma_coherent(dev) && !dev_is_untrusted(dev))
-> +	if (dev_is_dma_coherent(dev) && !dev_use_swiotlb(dev))
->   		return;
->   
->   	phys = iommu_iova_to_phys(iommu_get_dma_domain(dev), dma_handle);
-> @@ -794,7 +794,7 @@ static void __iommu_dma_sync_single_for_device(struct device *dev,
->   		dma_addr_t dma_handle, size_t size,
->   		enum dma_data_direction dir, phys_addr_t phys)
->   {
-> -	if (dev_is_dma_coherent(dev) && !dev_is_untrusted(dev))
-> +	if (dev_is_dma_coherent(dev) && !dev_use_swiotlb(dev))
->   		return;
->   
->   	if (phys == 0)
-> @@ -821,10 +821,10 @@ static void iommu_dma_sync_sg_for_cpu(struct device *dev,
->   	struct scatterlist *sg;
->   	int i;
->   
-> -	if (dev_is_dma_coherent(dev) && !dev_is_untrusted(dev))
-> +	if (dev_is_dma_coherent(dev) && !dev_use_swiotlb(dev))
->   		return;
->   
-> -	if (dev_is_untrusted(dev))
-> +	if (dev_use_swiotlb(dev))
->   		for_each_sg(sgl, sg, nelems, i)
->   			iommu_dma_sync_single_for_cpu(dev, sg_dma_address(sg),
->   						      sg->length, dir);
-> @@ -840,10 +840,10 @@ static void iommu_dma_sync_sg_for_device(struct device *dev,
->   	struct scatterlist *sg;
->   	int i;
->   
-> -	if (dev_is_dma_coherent(dev) && !dev_is_untrusted(dev))
-> +	if (dev_is_dma_coherent(dev) && !dev_use_swiotlb(dev))
->   		return;
->   
-> -	if (dev_is_untrusted(dev))
-> +	if (dev_use_swiotlb(dev))
->   		for_each_sg(sgl, sg, nelems, i)
->   			__iommu_dma_sync_single_for_device(dev,
->   							   sg_dma_address(sg),
-> @@ -1010,7 +1010,7 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
->   	    iommu_deferred_attach(dev, domain))
->   		return 0;
->   
-> -	if (dev_is_untrusted(dev)) {
-> +	if (dev_use_swiotlb(dev)) {
->   		early_mapped = iommu_dma_map_sg_swiotlb(dev, sg, nents,
->   							dir, attrs);
->   		if (!early_mapped)
-> @@ -1092,7 +1092,7 @@ static void iommu_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
->   	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
->   		iommu_dma_sync_sg_for_cpu(dev, sg, nents, dir);
->   
-> -	if (dev_is_untrusted(dev)) {
-> +	if (dev_use_swiotlb(dev)) {
->   		iommu_dma_unmap_sg_swiotlb(dev, sg, nents, dir, attrs);
->   		return;
->   	}
-> 
+Rest is admittedly a bit OT:
+
+Greg also noted:
+> I have stated in public many times to companies that try to add
+> dual-licensed new kernel code that they should only do so if they provide a
+> really good reason
+
+We can agree to disagree on the differences in how company vs. individual
+requests and their "good reasons" are handled/prioritized; I think we'd both
+agree it's actually moot anyway.  While it's an important topic, I apologize
+for raising that as it was off-topic to the issue at hand.
+
+On that off-topic point, Tim Bird added:
+>> It's not at all purely symbolic to dual license (GPLv2-only|2-Clause-BSD).
+>> That dual-licensing has allowed the interchange of a lot of code between
+>> the BSD Unixes and Linux, that otherwise would not have happened.
+
+This is a good point, but the same argument is of course valid for
+copyleft-next-licensed projects.  While there are currently fewer than those
+than BSD-ish projects, I don't think Linux should stand on ceremony of “your
+project must be this tall to ride this ride” and share code with us … and
+then there are the aspirational arguments that I made in my prior email.
+--
+Bradley M. Kuhn - he/him
+
+Pls. support the charity where I work, Software Freedom Conservancy:
+https://sfconservancy.org/supporter/
