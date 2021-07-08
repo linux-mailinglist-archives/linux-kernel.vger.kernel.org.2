@@ -2,163 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC9C03BF96B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 13:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A893BF92F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 13:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231455AbhGHMAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 08:00:39 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:57743 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231347AbhGHMAi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 08:00:38 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 0E86C580583;
-        Thu,  8 Jul 2021 07:57:56 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Thu, 08 Jul 2021 07:57:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
-         h=from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm1; bh=TDZ9TqyEzhFi4Z160/490nIKbT
-        svjWH1kG4Ng2NyjUM=; b=DF61YvdQA9GzPniZ3TVEmvA7JQkqB8Km6NX2VGdG+L
-        00GuxI/2wd3UP5N0gbYgm0x48UFqkzXbEu8LhjNaWbZCjynnYK/OHZVYo4dbhZGw
-        s4bv6ERKqY9VyTxP2AiSBIm2eORwgx+ps8HcoQucWYNWhyIWLo19AMvG6CknhEEe
-        OJGpT7SQYrdgnxKmpPuPdCt50NGk52uQY8Sq47M8Dv209/e4lYjU0hAdXf056ZLG
-        /ElxKUdvAxlH3+bKrM627LhnvkYCV93yweL76v2jFXr9xzSe5eUyFF4ZlK+GNIzi
-        YHhVGojZtOoSh22e6DFdrxiTgfYFXEGKyFdpsmpiHaFQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=TDZ9TqyEzhFi4Z160
-        /490nIKbTsvjWH1kG4Ng2NyjUM=; b=pWwPnF9cXGqG1Fe4PkktmEGW/Ne2vejVg
-        TQHNASYqzxjWZqHZZHDCzdfWiRvrOALCWeje3mBh9IbpGMLIhUwJyJSX1KbuDGtw
-        iel8f01p7qmzXIEIbSgMLcvDdeR3neIa08bfuTRoYWvlGafDWMZkAJxV5gW46S77
-        rT4vlBIVEDbt5fUrxyzGo2ebYoYWYR9FlynKzLU/MC6txKMO6tBPYLjJj/dmbVoD
-        n/nphEjcRxZZYT1U7fg73UCp0cIQbPKeqWJprZmBvEsy9vK00hV/CVUzcHA6eqH1
-        YoBijNLXl45GZproVWz0WVxkYqRxbq9Vrx6OGXCPCv0uOERXQrfqw==
-X-ME-Sender: <xms:QejmYHSS_PncIBBNYVb3moguaqCMqcqkyfhEXMNhSJg2WkWjFjh7Xw>
-    <xme:QejmYIyvBD_9yRVFJlHt1ps5cevBkMcqpB97w_Sg6BvN7aWYUt8iQXtfTfq3dhsaS
-    XEI8JrIa2ezumcRn9A>
-X-ME-Received: <xmr:QejmYM3eJj9W2YiDEvyrrMmFTbuHkcCXr7iwthffSYdYam7RPpABsFKxD_zUiSTGNMQdK8L55ELCfwRZQxQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrtdeggdeghecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomheptehlihhsthgrihhr
-    ucfhrhgrnhgtihhsuceorghlihhsthgrihhrsegrlhhishhtrghirhdvfedrmhgvqeenuc
-    ggtffrrghtthgvrhhnpefghfegkeejtddvfeekjeelgeffhefhvddvvddtvefgfffftdek
-    geeljeefvdeiudenucffohhmrghinhepvghinhhkrdgtohhmnecuvehluhhsthgvrhfuih
-    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghlihhsthgrihhrsegrlhhishht
-    rghirhdvfedrmhgv
-X-ME-Proxy: <xmx:QejmYHB3mD8O3fPyaatydnPI5DQ0dZSpxgBEohvUFOrKN9_5QlCDQg>
-    <xmx:QejmYAg_vYYGNeXAnZycQn68wsYYOad8pfpBTMYH3RKP_mXC6EEIBQ>
-    <xmx:QejmYLqie_G32bxkjwFw093WE_b5a26YIlZbjaevsqJb8L-hyMlPSg>
-    <xmx:ROjmYMwRHi30dL8cVS4GluEBiNcruMJJXrBLz5ZUvL0iwH3SUSgAvQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 8 Jul 2021 07:57:48 -0400 (EDT)
-From:   Alistair Francis <alistair@alistair23.me>
-To:     robh+dt@kernel.org, thierry.reding@gmail.com, sam@ravnborg.org,
-        krzk@kernel.org, shawnguo@kernel.org, daniel@0x0f.com,
-        linux@rempel-privat.de, kuninori.morimoto.gx@renesas.com,
-        max.Merchel@tq-group.com, geert+renesas@glider.be,
-        airlied@linux.ie, daniel@ffwll.ch
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, alistair23@gmail.com,
-        Alistair Francis <alistair@alistair23.me>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v3] drm/panel: Add support for E Ink VB3300-KCA
-Date:   Thu,  8 Jul 2021 21:57:35 +1000
-Message-Id: <20210708115735.142-1-alistair@alistair23.me>
-X-Mailer: git-send-email 2.20.1
+        id S231791AbhGHLmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 07:42:43 -0400
+Received: from mail-dm6nam12on2051.outbound.protection.outlook.com ([40.107.243.51]:44103
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231753AbhGHLmm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 07:42:42 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oAQO9MX1tq9hmUUd34gMyC62pxwfjCe7hIiNcPtSfKUigmrHUnRiBPpidV1eXLAuY712bl/YPQnVN3weiDqECZp5TyI7aR/g2TXZzNi6M+W8YfCqqBV28EDnup4VDtTP547xSdOdEV2HabdMwcENdbdBi5E5Zb/cqyxw5Rw5tFmMfELKPMGPR4QErJq7GUIrXLcXYtk83ZOtmP9/zFdEKIfyuxZtU3efW0dSIgjbKDghMcymPzNhroK1ZBexOAjUMQ+gFVi5Yphyes7/cRGBs3ZBKhkkKlgOFbWkn+yxHQj4UbSEc5Rm0Px3+h6OOZD8J+qS+LOa8NLEnZCNZGssTA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8oF93lj8d/CKRFJCa7P53Ywm8l3dqkeVeKNOoM+OOb4=;
+ b=JFeD5EFGYK5OfS6k+fa2Y+j7ubZ1CjAzo0ip+SfczSrJp+ULmeXhzd/hXVn2a8XMAtOqiHVdvPuhwWhbG/W9V+LAAICeKBmljDpTnDp8g29//looNNrbXId6zUcr+/AoU/TwNVDBzyauxam6cWN3VG8MuH+jIOcWB2vdI6/TFIzVKHvG7Q2ngZJUWvPXjFFBFNfbWxfxjDQ0T8D8XFhoPpJHmMHiEQkUeHBODmhjurc7Ocn7b8ZXj6VWVaadvbYv8BAab6M4AHNLmw/ZNmbzTCHkwCh+8mtz2y6HylfDis43kFNTLcVSvlehPJIQVCA9BnXOLhdnZTnkILAdjWO73w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8oF93lj8d/CKRFJCa7P53Ywm8l3dqkeVeKNOoM+OOb4=;
+ b=MP4Rk446kcpeFNQJWv784KYO2xNSzKI7vx+Ib75Pl38FUTE/pEeyGeIybu5dddSmmkKfEAqEkBB8IZABy2EcrrrN7HLIF/vDkWbRAwBHPFB3FMH1lNWsCpXg2x+xwqJWDsYuOqsTawE1iehNrw5m28QNKWExDehjbp5L9vHIuG4=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
+ (2603:10b6:300:e4::23) by MW2PR12MB2379.namprd12.prod.outlook.com
+ (2603:10b6:907:9::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.22; Thu, 8 Jul
+ 2021 11:39:58 +0000
+Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
+ ([fe80::d0a9:a5f1:ca5a:b439]) by MWHPR1201MB2557.namprd12.prod.outlook.com
+ ([fe80::d0a9:a5f1:ca5a:b439%11]) with mapi id 15.20.4308.021; Thu, 8 Jul 2021
+ 11:39:58 +0000
+Subject: Re: [PATCH 05/12] ASoC: amd: add ACP5x PCM platform driver
+To:     Mark Brown <broonie@kernel.org>
+Cc:     alsa-devel@alsa-project.org, Alexander.Deucher@amd.com,
+        Sunil-kumar.Dommati@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210707055623.27371-1-vijendar.mukunda@amd.com>
+ <20210707055623.27371-6-vijendar.mukunda@amd.com>
+ <20210707162420.GG4394@sirena.org.uk>
+From:   "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+Message-ID: <5abfd669-6a54-98c9-519c-ff7b5a195ebe@amd.com>
+Date:   Thu, 8 Jul 2021 17:27:37 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210707162420.GG4394@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SGXP274CA0007.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::19)
+ To MWHPR1201MB2557.namprd12.prod.outlook.com (2603:10b6:300:e4::23)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.252.93.39] (165.204.159.242) by SGXP274CA0007.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend Transport; Thu, 8 Jul 2021 11:39:55 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cb367196-a9d3-4a19-d839-08d942051d4c
+X-MS-TrafficTypeDiagnostic: MW2PR12MB2379:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MW2PR12MB2379F7A830AF112B08D6957B97199@MW2PR12MB2379.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2803;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ju34W9QtQYK42GVSvJHdMR8skgZY+umEnLvYQXeVwO+wB9XTgkcCbwUXdAUkQEP7nMD8H+jOBWBFotRjUmCF3znVPHfgjv1syAeJUyAoyV1D2FSm3/QIl1wW6w1WbZ9YmXfcIb+05zBFjtOf2WPnswvBUk72YrjqlCl6HbBCoiMu5qCivTcxnl6Ctq9l0M2v3ajDURAMF7XTnTniyr7qo0fz21y3wxW7qXxOVowPDnOdKQdDc/HwUIipkhieHop3J/A8o0UIw9iZhxi97G9kkntjMhOzcfb/hjyRw4efOlOYyjUsrI17HjTZ/DHDNnVxlIQjEGIegEpMvqY9lPtufUhissXo/gFPoLZs1YHa6TvZRr1wOI/guOnSvHxIs1qKz74WiyJLE8CfUr2QFcI5+aKjabzBDU6hVPaoynKMezxMtozYl4jocNK43GdkefHAZzO9mrie0UmqiwPNldIATX0VpTr4c9CglKhK7fmzgIOjFkxvB3eYyztg38hrrkgXCpXq0OKcyw5RNegZ2d14iqP+r3yMtLgxk9sb+W8rFB8Ce2AJyY0NA5OGB5qHByQ6UgB46UmtVDyq0wPO8Scdi9x/FTI/LdJG802rxmPBE7+nYwaiEHNixeG4lNXtOFuoxDASBsNlg3lBMtsvXzVLx5gUGJSOOZXQYdZV+LUszjn5J5SU5wcZRwZ6NN6afp8ALNrm5KpaUqS6BwBqAv+/3sEhmMKDB153mwfwYiHBwsbZzvsW8J+f8CEwZ/NgMZWw
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1201MB2557.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(376002)(396003)(39860400002)(346002)(558084003)(26005)(6916009)(2906002)(8676002)(31696002)(956004)(2616005)(6486002)(4326008)(6666004)(5660300002)(186003)(478600001)(53546011)(8936002)(16576012)(66556008)(66946007)(31686004)(66476007)(86362001)(38100700002)(316002)(36756003)(54906003)(32563001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?Windows-1252?Q?/rMs+uqyLpwGMTh2J/F0Tlqg6Qc3Wb2uIOxW0zDu5iINhMS82kfyfyBL?=
+ =?Windows-1252?Q?37T5MnV3ggY2jTi/cPyICPonYd1qJAPcFO4QI4YjJtSYeJE913sY/YhO?=
+ =?Windows-1252?Q?YkjWYyZ8vpxyhgdtjf9Gl/iO7oC9xW2XDBjSmsbhEglRH+JiSL00ZSbI?=
+ =?Windows-1252?Q?aIgJjLtu2GR6mfv1JLHuUBD/d/iraQSzN1ew/smVjCs1N/uEMtzmITSu?=
+ =?Windows-1252?Q?JJZkjXCEQEH621XzihI1BtQTWXKgVCEsRyXqbyeh6np69Wz2UV5DsCA1?=
+ =?Windows-1252?Q?2C8nCS7MUP0apoEFIzzxUIt160kLlGw/bpW+mvbTi5Pllo37NBc3MeX2?=
+ =?Windows-1252?Q?cL9VjMxSDeb863g4wE+CRWhlb5jwzD1hkxVvaLFWsomvT+IbbI/KL7jr?=
+ =?Windows-1252?Q?a/LZqPVCuAmN5w6s3Vkv8tKCw160FKthQBJAyMDF5ZLWI1qz2RvfrOPN?=
+ =?Windows-1252?Q?wbOd0YC8MqR9QXqFHY13kpuqcGHXaweb/OS7VIRvp4jnuMuvIU7UHBgT?=
+ =?Windows-1252?Q?mbye3qJTEM2mnCYjx1W87MTtXSCHaRG6/PIWfhgPVhsPy4wNJDFHr3Y6?=
+ =?Windows-1252?Q?QDO6KU8TF62bLwhjdsCEMbwfmWfQYhceTAxpFW4zRFiLRZ/ImeFBj+vV?=
+ =?Windows-1252?Q?FcoLJDjKq5FCHwyj9Yeb5gYAxrBuC0xFE+ipw0jSCs5BsCZqoY6D2m94?=
+ =?Windows-1252?Q?AS8CWAjyemDPUJHMHhvjl5AzMgFVlN2mrIDb2ZgGOQmVn4toAxOV5Erc?=
+ =?Windows-1252?Q?VWIjU36IvBoP4zeABUfRoF/bVh86DhU46gqrvf/ANdsmfetTpUlhfV2N?=
+ =?Windows-1252?Q?zugVVFRdnY6GD6RoL0Jm0C5UHDIyxl8L1CwK32KWu96GZ2OEe476+TM8?=
+ =?Windows-1252?Q?3+GF1mcOkIoNKI9Z0p6FYBRh8M4/XX9zqm7SjomulnFXDzd1atjCiITq?=
+ =?Windows-1252?Q?HvztxPUxCXTBgZdJdJ2AfJq8ZeK8FdN7qks8LG+RYOIpncUTVMs4tZvc?=
+ =?Windows-1252?Q?IV7PQj8dhGXHd40pw5mCftzTfFGO7dcbN7txsszbHM94tBtkHpfJWjTe?=
+ =?Windows-1252?Q?N8bnUn9h6ZW58iH/7eQJ4zYKcXKc06icbmgOwbUJX5DR165xwpfDPH3O?=
+ =?Windows-1252?Q?eS+CP3Wp9Pl81J97NsLlQPbxs1Ic8OMP1fXIqfR/EpgAbsNdGPeuT9SP?=
+ =?Windows-1252?Q?U/E+lLfkTHYOzgwcxQjJVfP3jqHg1/YOPY/zpjOSilRJd/NSpZvVOZ0J?=
+ =?Windows-1252?Q?eGafDI7fTngOYkRFrY3c2VjrEqFnjB/suAVavWDEjwlHfNQK1TTWpm2b?=
+ =?Windows-1252?Q?ZnHZDQggt/3Ct5cCEA7xV6uzqfZKHc/Flg3rNrLHweB/cIrr0SXMCzhk?=
+ =?Windows-1252?Q?ImUKQv2GiORYltBM4Sn/JQvVqzvQ02UtBnv/genZI8uCooe+98V9oMAz?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cb367196-a9d3-4a19-d839-08d942051d4c
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB2557.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jul 2021 11:39:58.6629
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QRdDOpMokCpSzW6JQ9oV6DIeVv8EX92JxG77wEvtuGddY/V5vss5MCACoDuOw1Gp3jPBZPgPGzG5LQg+AdQ8iA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR12MB2379
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the 10.3" E Ink panel described at:
-https://www.eink.com/product.html?type=productdetail&id=7
-
-Signed-off-by: Alistair Francis <alistair@alistair23.me>
-Acked-by: Rob Herring <robh@kernel.org>
----
- .../bindings/display/panel/panel-simple.yaml  |  2 ++
- .../devicetree/bindings/vendor-prefixes.yaml  |  2 ++
- drivers/gpu/drm/panel/panel-simple.c          | 29 +++++++++++++++++++
- 3 files changed, 33 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-index b3797ba2698b..799e20222551 100644
---- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-+++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-@@ -128,6 +128,8 @@ properties:
-         # Emerging Display Technology Corp. WVGA TFT Display with capacitive touch
-       - edt,etm0700g0dh6
-       - edt,etm0700g0edh6
-+        # E Ink VB3300-KCA
-+      - eink,vb3300-kca
-         # Evervision Electronics Co. Ltd. VGG804821 5.0" WVGA TFT LCD Panel
-       - evervision,vgg804821
-         # Foxlink Group 5" WVGA TFT LCD panel
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 0199728d2eaf..3612c6020fe4 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -335,6 +335,8 @@ patternProperties:
-     description: eGalax_eMPIA Technology Inc
-   "^einfochips,.*":
-     description: Einfochips
-+  "^eink,.*":
-+    description: E Ink Corporation
-   "^elan,.*":
-     description: Elan Microelectronic Corp.
-   "^element14,.*":
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index 21939d4352cf..210377b03f6f 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -2046,6 +2046,32 @@ static const struct panel_desc edt_etm0700g0bdh6 = {
- 	.bus_flags = DRM_BUS_FLAG_DE_HIGH | DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE,
- };
- 
-+static const struct display_timing eink_vb3300_kca_timing = {
-+	.pixelclock = { 40000000, 40000000, 40000000 },
-+	.hactive = { 334, 334, 334 },
-+	.hfront_porch = { 1, 1, 1 },
-+	.hback_porch = { 1, 1, 1 },
-+	.hsync_len = { 1, 1, 1 },
-+	.vactive = { 1405, 1405, 1405 },
-+	.vfront_porch = { 1, 1, 1 },
-+	.vback_porch = { 1, 1, 1 },
-+	.vsync_len = { 1, 1, 1 },
-+	.flags = DISPLAY_FLAGS_HSYNC_LOW | DISPLAY_FLAGS_VSYNC_LOW |
-+		 DISPLAY_FLAGS_DE_HIGH | DISPLAY_FLAGS_PIXDATA_POSEDGE,
-+};
-+
-+static const struct panel_desc eink_vb3300_kca = {
-+	.timings = &eink_vb3300_kca_timing,
-+	.num_timings = 1,
-+	.bpc = 6,
-+	.size = {
-+		.width = 157,
-+		.height = 209,
-+	},
-+	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
-+	.bus_flags = DRM_BUS_FLAG_DE_HIGH | DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE,
-+};
-+
- static const struct display_timing evervision_vgg804821_timing = {
- 	.pixelclock = { 27600000, 33300000, 50000000 },
- 	.hactive = { 800, 800, 800 },
-@@ -4344,6 +4370,9 @@ static const struct of_device_id platform_of_match[] = {
- 	}, {
- 		.compatible = "edt,etm0700g0dh6",
- 		.data = &edt_etm0700g0dh6,
-+	}, {
-+		.compatible = "eink,vb3300-kca",
-+		.data = &eink_vb3300_kca,
- 	}, {
- 		.compatible = "edt,etm0700g0bdh6",
- 		.data = &edt_etm0700g0bdh6,
--- 
-2.31.1
-
+On 7/7/21 9:54 PM, Mark Brown wrote:
+> On Wed, Jul 07, 2021 at 11:26:16AM +0530, Vijendar Mukunda wrote:
+> 
+>> +static int acp5x_audio_remove(struct platform_device *pdev)
+>> +{
+>> +	return 0;
+>> +}
+> 
+> Just drop this since it's empty.
+> 
+Will drop the code and post the new version.
