@@ -2,127 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AB543BF7D2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 11:53:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78E013BF7DD
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 11:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231446AbhGHJzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 05:55:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231360AbhGHJzu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 05:55:50 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7A88C061574;
-        Thu,  8 Jul 2021 02:53:07 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id h1-20020a17090a3d01b0290172d33bb8bcso5537939pjc.0;
-        Thu, 08 Jul 2021 02:53:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pP73IrCzP3i0QRD5vKKxBVf9fATf89KjmWVbRdJAXWg=;
-        b=MVNw4G3ivXOPqXOy5yXFS1hqraU2wybFgf8NsCWlF1jvN5k3MKExXmiNVBrGibuE+l
-         JJtRqjN1WppxCBZzgosB5xg8EK8HK29oFHBaMF5eCyajnr2I52w+53uSWra1t0+SQDfX
-         Ch27a2NASYVBnV3j3EMfECZjYJvb7yXVlDccHAF0MBFhwqqGIpVeQTs1lPX6y5gizKmC
-         pWyfDlIr0+OuCnGT8XJMHlaG4NPybN+Sy86p8VhzFkuS7aVQxzDhTcsrSqd6d4QeAk7I
-         wE4vjQzdpEL8oOFk98tjwUE7RN2nBFVpJXRdhCnOJCdiWcq6fHZiDW8bM+phuSJ4MPFf
-         3kTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pP73IrCzP3i0QRD5vKKxBVf9fATf89KjmWVbRdJAXWg=;
-        b=AGDOSaNwAS4jcXq66ofpqZs53yFw82YpXvXNpNxF+eUOYaib+B8ujA+reB4U7xQZRb
-         cMDYRWOgzmVLIyLEOlS6WhgV66Os2oTjxR1LCNeXobUteSZ8TVpKEqE8fxg2jtcUmgRj
-         DQ+C2Mzqy8kcgQ6UXTuWsiCAPlVRJ+5lIpZ1JsOEiIo4ufYVqjffYByvInmbuYLQujgB
-         gN8jOtd5fcIO+ji7c/Bh+KIobrQw1EaOH0sic1sFUnI0LMucnjfKrw4wZL5x+oKmNsbn
-         4lckuSuPSwQeaeXj6Mld1UddjNhdLmE0v2j9PLdnFIftv1kJnbQVM70oXda3kgaJkN2l
-         J3zQ==
-X-Gm-Message-State: AOAM5328Lljq2QI857CZepCdrk+krF5Sa02+7agt9jvQcAEqQgkxGeM4
-        NgtsRBpnINFSOwZl5j0QCeE=
-X-Google-Smtp-Source: ABdhPJzCen8H13roJe+VcrT1fuciaZNNAHgz/HNODAXEjwP/LITAK+0KCs+JBq5A+7/Xi/ewjMF31w==
-X-Received: by 2002:a17:903:186:b029:129:5733:85c8 with SMTP id z6-20020a1709030186b0290129573385c8mr25566147plg.39.1625737987436;
-        Thu, 08 Jul 2021 02:53:07 -0700 (PDT)
-Received: from vessel.. ([103.242.196.137])
-        by smtp.gmail.com with ESMTPSA id b4sm1900896pji.52.2021.07.08.02.53.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jul 2021 02:53:06 -0700 (PDT)
-From:   Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
-To:     peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca
-Cc:     Saubhik Mukherjee <saubhik.mukherjee@gmail.com>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org, andrianov@ispras.ru
-Subject: [PATCH v2] char: tpm: vtpm_proxy: Fix race in init
-Date:   Thu,  8 Jul 2021 15:22:59 +0530
-Message-Id: <20210708095259.27915-1-saubhik.mukherjee@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        id S231394AbhGHKCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 06:02:12 -0400
+Received: from aibo.runbox.com ([91.220.196.211]:33062 "EHLO aibo.runbox.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231324AbhGHKCL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 06:02:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbx.email;
+         s=selector1; h=Content-Transfer-Encoding:Content-Type:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From;
+        bh=sX3qr2Vm8GAaJ2+VLtcLzuHYAmZWCfBOqIydL9l9cfk=; b=qZVXXV5ZbkDoOAifwi6jb9Qn5J
+        ACQTAJHy7TAY0uNB+eLXDldbJsKCB6abZtoCzxzdAnhG4TQhI+ZkpmRc11X8p4vp3Q2Ab8gqtgRsY
+        c6cKcGxEchMLi4e3OSsqpdLyCPptqSPPpvmDN820u1IFF7NvXfY6totXGMhyVH4lQeseVaxb0vr4a
+        cTAEFCnxOcerYGqFYcLNvXENyPA/d0pxDXl3vmOL2+xMyiOVRRb3uATpTt9ImpOh2/dWT0NjuFLCa
+        dVg6x89rIybkdqvwvVcSyw7SvCQTqC4WckZIRFU22YBQ/HlcO34wYhtMhwzBrkRa/XrikiyStT4PY
+        SDJXPdHQ==;
+Received: from [10.9.9.73] (helo=submission02.runbox)
+        by mailtransmit02.runbox with esmtp (Exim 4.86_2)
+        (envelope-from <detegr@rbx.email>)
+        id 1m1QoY-0005Ds-Tw; Thu, 08 Jul 2021 11:59:27 +0200
+Received: by submission02.runbox with esmtpsa  [Authenticated ID (932193)]  (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.90_1)
+        id 1m1QoX-0007Nm-CZ; Thu, 08 Jul 2021 11:59:25 +0200
+From:   =?UTF-8?q?Antti=20Ker=C3=A4nen?= <detegr@rbx.email>
+To:     linux-iio@vger.kernel.org
+Cc:     =?UTF-8?q?Antti=20Ker=C3=A4nen?= <detegr@rbx.email>,
+        Hannu Hartikainen <hannu@hrtk.in>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Nuno Sa <nuno.sa@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] iio: adis: set GPIO reset pin direction
+Date:   Thu,  8 Jul 2021 12:54:29 +0300
+Message-Id: <20210708095425.13295-1-detegr@rbx.email>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <60e5ac8c.1c69fb81.c69f0.abab@mx.google.com>
+References: <60e5ac8c.1c69fb81.c69f0.abab@mx.google.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vtpm_module_init calls vtpmx_init which calls misc_register. The file
-operations callbacks are registered. So, vtpmx_fops_ioctl can execute in
-parallel with rest of vtpm_module_init. vtpmx_fops_ioctl calls
-vtpmx_ioc_new_dev, which calls vtpm_proxy_create_device, which calls
-vtpm_proxy_work_start, which could read uninitialized workqueue.
+Set reset pin direction to output as the reset pin needs to be an active
+low output pin.
 
-To avoid this, create workqueue before vtpmx init.
-
-Found by Linux Driver Verification project (linuxtesting.org).
-
-Fixes: 6f99612e2500 ("tpm: Proxy driver for supporting multiple emulated TPMs")
-Signed-off-by: Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
+Co-developed-by: Hannu Hartikainen <hannu@hrtk.in>
+Signed-off-by: Hannu Hartikainen <hannu@hrtk.in>
+Signed-off-by: Antti Keränen <detegr@rbx.email>
 ---
+Removed unnecessary toggling of the pin as requested by Lars-Peter. I
+missed out on the conversation, but I agree this is better.
 
-Changes since v1 ([0]):
-- Add Fixes tag to commit message, as requested by Jarkko in [1].
+ drivers/iio/imu/adis.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-[0]: https://lkml.org/lkml/2021/6/23/572
-[1]: https://lkml.org/lkml/2021/6/29/695
-
- drivers/char/tpm/tpm_vtpm_proxy.c | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/char/tpm/tpm_vtpm_proxy.c b/drivers/char/tpm/tpm_vtpm_proxy.c
-index 91c772e38bb5..225dfa026a8f 100644
---- a/drivers/char/tpm/tpm_vtpm_proxy.c
-+++ b/drivers/char/tpm/tpm_vtpm_proxy.c
-@@ -697,23 +697,22 @@ static int __init vtpm_module_init(void)
- {
- 	int rc;
+diff --git a/drivers/iio/imu/adis.c b/drivers/iio/imu/adis.c
+index 319b64b2fd88..f8b7837d8b8f 100644
+--- a/drivers/iio/imu/adis.c
++++ b/drivers/iio/imu/adis.c
+@@ -415,12 +415,11 @@ int __adis_initial_startup(struct adis *adis)
+ 	int ret;
  
--	rc = vtpmx_init();
--	if (rc) {
--		pr_err("couldn't create vtpmx device\n");
--		return rc;
--	}
--
- 	workqueue = create_workqueue("tpm-vtpm");
- 	if (!workqueue) {
- 		pr_err("couldn't create workqueue\n");
--		rc = -ENOMEM;
--		goto err_vtpmx_cleanup;
-+		return -ENOMEM;
-+	}
-+
-+	rc = vtpmx_init();
-+	if (rc) {
-+		pr_err("couldn't create vtpmx device\n");
-+		goto err_destroy_workqueue;
- 	}
+ 	/* check if the device has rst pin low */
+-	gpio = devm_gpiod_get_optional(&adis->spi->dev, "reset", GPIOD_ASIS);
++	gpio = devm_gpiod_get_optional(&adis->spi->dev, "reset", GPIOD_OUT_HIGH);
+ 	if (IS_ERR(gpio))
+ 		return PTR_ERR(gpio);
  
- 	return 0;
- 
--err_vtpmx_cleanup:
--	vtpmx_cleanup();
-+err_destroy_workqueue:
-+	destroy_workqueue(workqueue);
- 
- 	return rc;
- }
+ 	if (gpio) {
+-		gpiod_set_value_cansleep(gpio, 1);
+ 		msleep(10);
+ 		/* bring device out of reset */
+ 		gpiod_set_value_cansleep(gpio, 0);
 -- 
-2.30.2
+2.32.0
 
