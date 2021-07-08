@@ -2,103 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6367D3C18B0
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 19:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F543C18B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 19:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230117AbhGHRzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 13:55:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38692 "EHLO
+        id S230093AbhGHR47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 13:56:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229875AbhGHRzw (ORCPT
+        with ESMTP id S229594AbhGHR47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 13:55:52 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48BD1C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 10:53:09 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id h18so3242428qve.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 10:53:09 -0700 (PDT)
+        Thu, 8 Jul 2021 13:56:59 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F30D3C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 10:54:15 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id u25so3729786ljj.11
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 10:54:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:organization:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Cwxf7KEJLH0aH3P6Bk/LrPnmtc+hrdUpVwR6xUgQ4IQ=;
-        b=J1RLSIOgi4uJxM6mRcqJNhUm3aT0HGueiUa9P/RPhhNeZ9f43HAodnXZjyuxTD8NW5
-         EJNiGb6lnR+KCJc3rrZWee4KK1ve51y/K7Zl8/QkMMwWLmTEW1VxBDnkpdP7hkKlZJRz
-         zHaIBQjXcT64oHcaE5C3+vdKCI2P65dA/5X3CgEn5aCVQxdh+kW7V1OWK2F27DbMf1jq
-         uRSwjXaQ8FCIVzmJQycJHvMDVjjcZJZLSNo9tJU9wviRPhblDolVhP+FzBSMnZvvgpUS
-         K47axkcrLkG8lf7nY3X8ikQelII+mGu+b4QcqgepwbFAtw78WT2/BmcQBwS1kbtP1Pdw
-         pagA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XLeTm8WzPVQ9Sr8q9zm+SAU9BBtPQLj8j1FfOLzDLnU=;
+        b=RWOaueOJO5xvt4fqZzIPd4Vel/uolsuiKcXGz9lCbZXCGZdx75mRZ0KbrWjHv1wbvO
+         Ee7a0KwDbarwAeTqGfaYMS+O1gmCILZ5WVudvXXm4HDhMDTyOvjWrP210JpM4MiBkldv
+         6O/PGupcuvQ2VlXs6WJl8MLeFxAAWpVxEqIn+PAv/xNLVbAkaUqgfbGnwSzadMWiR6A3
+         0vmxX+Xa3x617Bh9kGiGn/V7/JQDGzXcImELH9h6jlKfsXDPBLlG0Cc4kDOREqmMDWkm
+         K0wQ+46ejU8BMlKFB/pIJ4U6eIXBj4yhXQoYMRCkiWMXZn/24EPbWGsTU9YJ8aqABiim
+         peZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:organization
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=Cwxf7KEJLH0aH3P6Bk/LrPnmtc+hrdUpVwR6xUgQ4IQ=;
-        b=h17cxVDJ1lIztVepRc7+YRqwbVl8AORMa0iVOLnkZtEGudRCB5I0MxF6QzFbrqn9+i
-         9BeksTxVN5UJeEcvKHV9n+PB33cUweLLNL3WylWuc8HJVRBNVDAARpORavo4LNhVR0mG
-         5i2rKbBTNCebNFpeK+fi+4tG5cQrPmL3ZBkavRF+dSa0jRFrpajzWxR0u441J9/Tg3g6
-         xMRbFNhQDOj2jBUvxl1A1zTMNafQWbunBcFGd0+EnVC0O1UW+DckESRLXNNHmLH4V6eD
-         4OYcFoIOwyG+eI0FD7xmU7ZV6EhChL8I5WjWxW5Jq7qcdTSTkBbhcUEgmrAWjSujC/L4
-         6RHw==
-X-Gm-Message-State: AOAM532an8P5WPOWQo14RJIV+7yXSWNuPqrZD2ybzzDj/rJVCex5IDBQ
-        B3/rcTkA9OtBuzJ/UB4ySE/lzuqXQfRbPe3TaHA=
-X-Google-Smtp-Source: ABdhPJwnmCJQBIGBmtHW4MBoUCFtTNyBcPS3Eh6JmcXJfb/PX7fs8KDcUjsvkfXdsMpEeUnPU3Vebw==
-X-Received: by 2002:a05:6214:15d0:: with SMTP id p16mr31133720qvz.21.1625766788233;
-        Thu, 08 Jul 2021 10:53:08 -0700 (PDT)
-Received: from iron-maiden.localnet (50-200-151-121-static.hfc.comcastbusiness.net. [50.200.151.121])
-        by smtp.gmail.com with ESMTPSA id m189sm1278171qkd.107.2021.07.08.10.53.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jul 2021 10:53:08 -0700 (PDT)
-From:   Carlos Bilbao <bilbao@vt.edu>
-To:     davem@davemloft.net, Joe Perches <joe@perches.com>
-Cc:     kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, andrew@lunn.ch,
-        gregkh@linuxfoundation.org
-Subject: [PATCH net-next v2] drivers: net: Remove undefined XXXDEBUG on driver sb1000
-Date:   Thu, 08 Jul 2021 13:53:07 -0400
-Message-ID: <12806725.dW097sEU6C@iron-maiden>
-Organization: Virginia Tech
-In-Reply-To: <ccf9f07a72c911652d24ceb6c6e925f834f1d338.camel@perches.com>
-References: <1884900.usQuhbGJ8B@iron-maiden> <5183009.Sb9uPGUboI@iron-maiden> <ccf9f07a72c911652d24ceb6c6e925f834f1d338.camel@perches.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XLeTm8WzPVQ9Sr8q9zm+SAU9BBtPQLj8j1FfOLzDLnU=;
+        b=eBTAztP4x3Ci5en1HLGdhRo6pOE1aE1lSZoI8qETsU/ENYQqRklN4B1fkYx+Tr1kIg
+         1hfMkqTG+OtLr+rqr7SC/UwwwEFdQDCzEPvi7STakUClvoRBmvt/+A75KdW+mw4W4MZn
+         eiKnVfFfXtw4pCKyiWU6QYEcrAuM+yPdRlVJl8VxBT5d2p2+YUKoHaOIolewB0Du4hTy
+         bx+WvFyS/T9rxsCNR9gRVCUkP65i+ubSgRSO+vhycUf81PhLX7Qa6lHsSxDipazSQu5w
+         pLibZjcgMcy+Kmsr62Sg4Mv9PeqDRmH/iR+m69hGtnCRVh0nRMYhqFR3/vFlTDEjfFTQ
+         ysCQ==
+X-Gm-Message-State: AOAM532ZQyI55e3wcaJeCvMd4s4n7RLs3xAC5YNK/lcouiP0PIBfLlmf
+        DZrpV/EjwD+oN9jPb0NI5IEvt47vTFtNNM2yYa/X2g==
+X-Google-Smtp-Source: ABdhPJz2JOrYrSVo4rsv90odW35rlCHUa8Twxs2mBeum/lwA3ehRSDUFBeGYRAAjkGEPJo8Fujsx5Ca8yTGdUYWsLhY=
+X-Received: by 2002:a2e:9952:: with SMTP id r18mr3955699ljj.244.1625766853637;
+ Thu, 08 Jul 2021 10:54:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20210623141854.GA32155@lst.de> <08df01d7683d$8f5b7b70$ae127250$@codeaurora.org>
+ <CAK8P3a28_0KJpcLRQrDhFk8-ndxmfk7-Q2_qcRRiYkyh-NNZUQ@mail.gmail.com>
+ <08e101d76842$94f78a60$bee69f20$@codeaurora.org> <20210623151746.GA4247@lst.de>
+ <CAK8P3a2bG64ARjpwQ0ZhQ9P0g8B-=AwcHHAbYBXBS4B6Fy9pQw@mail.gmail.com>
+ <YNQE0YJzC2xmWg+2@Ryzen-9-3900X.localdomain> <20210707141054.GA24828@lst.de>
+ <1ee8fc44-3e8c-91c0-7909-a636757dbda4@kernel.org> <20210708052751.GA18789@lst.de>
+In-Reply-To: <20210708052751.GA18789@lst.de>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 8 Jul 2021 10:54:03 -0700
+Message-ID: <CAKwvOd=iRLQPum8-jaCG90TPyxDptNB31yRHMEWgSMxjv=KuHA@mail.gmail.com>
+Subject: Re: how can we test the hexagon port in mainline
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        Sid Manning <sidneym@codeaurora.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-hexagon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-XXXDEBUG isn't defined anywhere so these can be deleted from this file.
+On Wed, Jul 7, 2021 at 10:27 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Wed, Jul 07, 2021 at 10:42:27AM -0700, Nathan Chancellor wrote:
+> >> hch@brick:~/work/linux$ make -j4 ARCH=hexagon
+> >> CROSS_COMPILE=hexagon-unknown-linux-musl LLVM=1 LLVM_IAS=1 defconfig all
+> >> HOSTCC  scripts/basic/fixdep
+> >> clang: error while loading shared libraries: libtinfo.so.5: cannot open shared object file: No such file or directory
+> >
+> > Hmmm, is that with libtinfo5 installed (or whatever the ncurses-compat
+> > equivalent is on your distribution installed)? I had that problem on Debian
+> > until I insta
+>
+> I did install libtinfo5, which just gets me to the next error:
+>
+> hch@brick:~/work/linux$ export PATH=/opt/clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl/x86_64-linux-gnu/bin/:$PATH
+> hch@brick:~/work/linux$ make -j4 ARCH=hexagon CROSS_COMPILE=hexagon-unknown-linux-musl LLVM=1 LLVM_IAS=1 defconfig all
+>   HOSTCC  scripts/basic/fixdep
+> clang: error while loading shared libraries: libc++.so.1: cannot open shared object file: No such file or directory
 
-Signed-off-by: Carlos Bilbao <bilbao@vt.edu>
----
- drivers/net/sb1000.c | 6 ------
- 1 file changed, 6 deletions(-)
+^ Nathan did mention earlier in the thread that he "had to install
+libtinfo5 and libc++1-7 on Debian Buster." Emphasis on the _and
+libc++_ part.
 
-diff --git a/drivers/net/sb1000.c b/drivers/net/sb1000.c
-index e88af978f63c..a7a6bd7ef015 100644
---- a/drivers/net/sb1000.c
-+++ b/drivers/net/sb1000.c
-@@ -759,9 +759,6 @@ sb1000_rx(struct net_device *dev)
- 	ioaddr = dev->base_addr;
- 
- 	insw(ioaddr, (unsigned short*) st, 1);
--#ifdef XXXDEBUG
--printk("cm0: received: %02x %02x\n", st[0], st[1]);
--#endif /* XXXDEBUG */
- 	lp->rx_frames++;
- 
- 	/* decide if it is a good or bad frame */
-@@ -804,9 +801,6 @@ printk("cm0: received: %02x %02x\n", st[0], st[1]);
- 	if (st[0] & 0x40) {
- 		/* get data length */
- 		insw(ioaddr, buffer, NewDatagramHeaderSize / 2);
--#ifdef XXXDEBUG
--printk("cm0: IP identification: %02x%02x  fragment offset: %02x%02x\n", buffer[30], buffer[31], buffer[32], buffer[33]);
--#endif /* XXXDEBUG */
- 		if (buffer[0] != NewDatagramHeaderSkip) {
- 			if (sb1000_debug > 1)
- 				printk(KERN_WARNING "%s: new datagram header skip error: "
+I'm not sure if that binary distribution came with a libc++.so.1; if
+so, that path needs to be specified via LD_LIBRARY_PATH so that the
+runtime loader can find it.  Perhaps rpath wasn't set when the clang
+binary was built.
+
+We're looking into statically linked images of clang to prevent these
+kinds of games.
+
+> make[2]: *** [scripts/Makefile.host:95: scripts/basic/fixdep] Error 127
+> make[1]: *** [Makefile:543: scripts_basic] Error 2
+> make: *** [Makefile:346: __build_one_by_one] Error 2
+>
+
+
 -- 
-2.25.1
-
-
-
+Thanks,
+~Nick Desaulniers
