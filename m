@@ -2,378 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B533BF858
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 12:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3FB3BF860
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 12:26:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231482AbhGHKZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 06:25:32 -0400
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:28247 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231332AbhGHKZb (ORCPT
+        id S231486AbhGHK32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 06:29:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231332AbhGHK31 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 06:25:31 -0400
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 168AMbfx020771;
-        Thu, 8 Jul 2021 19:22:37 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 168AMbfx020771
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1625739758;
-        bh=x3iwjkRslUVXVzynqv9DkfAuhFvPu/NJ3gSa6NASYJE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=uUd/VI3gi4dSyj51T4o6o+nARO5jLxRxy1olcogqUDzQKJDzcvEDK5GxemrwZ8gOa
-         I5o4JyO3t/g32eqxiOVGgkRAZt0toUIs6RjDRWO6ihTYHSo+ChGRRTSQ0Mg6XdR70Z
-         3PvRyxKfwafUTufh6LsbdfE2tOHIW0CJKYYRoO7fpkXUJP/vWWpXmwIenWBexubuut
-         86TpGPPbH6eYD1abTyndbevMP9BGUFVM0KqJdDdU3geOLk/I3M0rc0CF4CUzBpVbRS
-         lVRtY2SZ94ojvcTe9axGz8j1UrG7uYLWEPafx2ldKkMARI2s1SdE0fINvsmSoUCryv
-         dW32QaWHhEn+g==
-X-Nifty-SrcIP: [209.85.215.171]
-Received: by mail-pg1-f171.google.com with SMTP id u14so5428955pga.11;
-        Thu, 08 Jul 2021 03:22:37 -0700 (PDT)
-X-Gm-Message-State: AOAM530Ip/6JVdWynY8YEz5AbX2I/W6KQV9MBj0h7aM76yivDXND5A8k
-        SVYLFKHnodyOBY0oyHT1OYbuVb3hKLQgLUhW95A=
-X-Google-Smtp-Source: ABdhPJwu/iejZEqe9GXSf6sCQ5uzSwt2Q2xmjpHiv3AjLx+bimvubcjAKL2DtAxnQm0H6+37pnxC9zVobNq6Lje6JXo=
-X-Received: by 2002:a05:6a00:c3:b029:327:f2ea:d869 with SMTP id
- e3-20020a056a0000c3b0290327f2ead869mr1588588pfj.63.1625739756737; Thu, 08 Jul
- 2021 03:22:36 -0700 (PDT)
+        Thu, 8 Jul 2021 06:29:27 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D84C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 03:26:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=W6daYrP8Mv2FprAvKbzd+kl8kAFrmodDnM6Y2UgE6zs=; b=LGrhXEsYfyPCIkU5Lhlbt3mzrD
+        nPYY0+/5sDwdJPwG58wKYZPDFGLezlg3zHxn8fC4X3clhB6TD7fcQI8ou1fBX3dbf/J/t3rvbukOl
+        Jlk8J5GTwtFNI/Qn61q3yjZCkgeANb9diAjzU1EmawY5VRwYW5GLcZg2w5m4tn3Yh0lfk4T1jgd09
+        vNpmcNWlNz1F3q6eYZ1G3AgY4efkh1EOiaFcadjeyFYhOy/fDXK/2vm76Bg8g3Z3tQUwYbctOAATS
+        lIBq5OWzvWmi3/ANeFHSyUgpwtA//2HzRLJhRzJijJheD0u5ipDoytUBjn3Lv2VhnUJdHrwb2xlhY
+        +uwvrPcQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m1REo-00FbhV-EJ; Thu, 08 Jul 2021 10:26:34 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5A059300233;
+        Thu,  8 Jul 2021 12:26:33 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 384992CB6EA9B; Thu,  8 Jul 2021 12:26:33 +0200 (CEST)
+Date:   Thu, 8 Jul 2021 12:26:33 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Juri Lelli <juri.lelli@redhat.com>
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org,
+        vincent.guittot@linaro.org, rostedt@goodmis.org,
+        dietmar.eggemann@arm.com, bristot@redhat.com, bsegall@google.com,
+        mgorman@suse.de, Mark Simmons <msimmons@redhat.com>
+Subject: Re: [PATCH] sched/rt: Fix double enqueue caused by rt_effective_prio
+Message-ID: <YObS2Rudg4osS7Ic@hirez.programming.kicks-ass.net>
+References: <20210701091431.256457-1-juri.lelli@redhat.com>
+ <YObOIwH7MbfagklQ@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20210707224310.1403944-1-ndesaulniers@google.com> <20210707224310.1403944-3-ndesaulniers@google.com>
-In-Reply-To: <20210707224310.1403944-3-ndesaulniers@google.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 8 Jul 2021 19:21:59 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAR66iE0w4bjpMVEz6W==mnc59MEnRWm1MXrqApP0aE4Qw@mail.gmail.com>
-Message-ID: <CAK7LNAR66iE0w4bjpMVEz6W==mnc59MEnRWm1MXrqApP0aE4Qw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] Makefile: drop CROSS_COMPILE for LLVM=1 LLVM_IAS=1
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>, Fangrui Song <maskray@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <nathan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YObOIwH7MbfagklQ@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 8, 2021 at 7:43 AM 'Nick Desaulniers' via Clang Built
-Linux <clang-built-linux@googlegroups.com> wrote:
->
-> We get constant feedback that the command line invocation of make is too
-> long. CROSS_COMPILE is helpful when a toolchain has a prefix of the
-> target triple, or is an absolute path outside of $PATH, but it's mostly
-> redundant for a given ARCH.
->
-> If CROSS_COMPILE is not set, simply set --target= for CLANG_FLAGS,
-> KBUILD_CFLAGS, and KBUILD_AFLAGS based on $ARCH.
->
-> Previously, we'd cross compile via:
-> $ ARCH=arm64 CROSS_COMPILE=aarch64-linxu-gnu make LLVM=1 LLVM_IAS=1
-> Now:
-> $ ARCH=arm64 make LLVM=1 LLVM_IAS=1
->
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1399
-> Suggested-by: Arnd Bergmann <arnd@kernel.org>
-> Suggested-by: Nathan Chancellor <nathan@kernel.org>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
-> Changes RFC -> v1:
-> * Rebase onto linux-kbuild/for-next
-> * Keep full target triples since missing the gnueabi suffix messes up
->   32b ARM. Drop Fangrui's sugguested by tag. Update commit message to
->   drop references to arm64.
-> * Flush out TODOS.
-> * Add note about -EL/-EB, -m32/-m64.
-> * Add note to Documentation/.
->
->  Documentation/kbuild/llvm.rst |  5 +++++
->  scripts/Makefile.clang        | 38 +++++++++++++++++++++++++++++++++--
->  2 files changed, 41 insertions(+), 2 deletions(-)
-
-
-
-
-
-
-
-
-When I was considering a similar idea, my plan was
-to implement this in Kconfig instead of in Makefile
-because that will pass the compiler information
-in one direction (only from Kconfig to Kbuild), but
-that is not so important. We can change it later
-if needed.
-
-I did not complete it because I was investigating
-some issues (especially [3] below), but maybe
-that is something we don't care about.
-
-Can you address [2] below at least?
-If we do not have any concern, I can merge it.
-It is likely so because people are only discussing
-"We want to omit omit CROSS_COMPILE".
-
-
-
-
-
-
-
-[1] explicit target triple for native builds
-
-The default target of my distro clang
-is x86_64-pc-linux-gnu.
-
-$ clang --version
-Ubuntu clang version 11.0.0-2
-Target: x86_64-pc-linux-gnu
-Thread model: posix
-InstalledDir: /usr/bin
-
-So, previously, the kernel was built with
-implied --target=x86_64-pc-linux-gnu.
-
-
-With this patch, --target=x86_64-linux-gnu will be
-explicitly specified.
-
-The same applies to native-builds of other architectures.
-For example, when a user builds the arm64 kernel on
-an arm64 server, --target=aarch64-linux-gnu is
-explicitly forced.
-
-I guess, this is a good direction because the produced
-code will be more deterministic, irrespective of the
-Clang's configuration.
-
-
-
-[2] 32/64-bit configuration is toggled in Kconfig time.
-
-Initially, you submitted only arm64. Maybe, it was intentional
-since arm64 is the simplest case.
-
-In the kernel tree, arch/arm and arch/arm64 are very special
-cases where 32-bit and 64-bit are separated by directory.
-
-Some of the other architectures are bi-arch, and
-32-bit/64-bit is specified by CONFIG_64BIT in Kconfig time.
-
-When Makefiles are being parsed, we actually do not know
-whether the user is planning to configure the kernel
-for 32-bit or 64-bit because CONFIG_64BIT is not
-specified at this point.
-
-ARCH=x86 + CONFIG_64BIT=y
-will build the x86_64 kernel, and
-ARCH=x86 + CONFIG_64BIT=n
-will build the i386 kernel.
-
-
-Then, you may wonder
-
-  else ifeq ($(ARCH),x86)
-  CLANG_FLAGS    += --target=x86_64-linux-gnu
-
-... works?
-
-Yes, it does fortunately.
-
--m32/-m64 takes precedence over the
-{x86_64,i386} part of the target triple.
-
-As far as I tested,
-
-      clang --target=x86_64-linux-gnu -m32
-
-produced i386 code.
-
-Interestingly,
-
-    clang --target=i386-linux-gnu  -m64
-
-produced x86_64 code.
-
-
-We must rely on this behavior of Clang because
---target (which is contained in CLANG_FLAGS)
-must be specified before the Kconfig time.
-Then, a user can toggle CONFIG_64BIT any time
-from menuconfig etc.
-
-With this in mind, using $(ARCH) as if-else
-switches is pointless.
-$(SRCARCH) is the only meaningful input.
-
-
-  else ifeq ($(ARCH),i386)
-  CLANG_FLAGS    += --target=i686-linux-gnu
-  else ifeq ($(ARCH),x86)
-  CLANG_FLAGS    += --target=x86_64-linux-gnu
-  else ifeq ($(ARCH),x86_64)
-  CLANG_FLAGS    += --target=x86_64-linux-gnu
-
-should be replaced with:
-
-  else ifeq ($(SRCARCH),x86_64)
-  CLANG_FLAGS    += --target=x86_64-linux-gnu
-
-
-Some architectures are not only bi-arch, but also bi-endian.
-
-
-You hardcoded 64bit little endian for ppc:
-
-   else ifeq ($(ARCH),powerpc)
-   CLANG_FLAGS    += --target=powerpc64le-linux-gnu
-
-
-But, we must rely on the fact that
-
-   clang  --target=powerpc64le-linux-gnu -mbig-endian -m32
-
-produces big-endian 32-bit code.
-
-This makes the "64le" part meaningless.
-
-
-This should be noted. Otherwise it is difficult
-to understand why --target=x86_64-linux-gnu works fine
-with building the i386 kernel.
-
-
-
-[3] User-space compilation
-
-This does not matter to the kernel itself, but
-Kbuild compiles some userspace programs for
-the target architecture.
-See the samples/ directory for example.
-
-Another example is net/bpfilter/Makefile, which
-embeds the user mode helper when
-CONFIG_BPFILTER_UMH=y.
-
-For this purpose, Kconfig checks if $(CC) is
-capable of linking the userspace.
-(CONFIG_CC_CAN_LINK).
-
-When cross-building with Clang, I cannot see
-CONFIG_CC_CAN_LINK set.
-
-If we care about CONFIG_CC_CAN_LINK, probably,
---sysroot or something should be set according to:
-
-https://clang.llvm.org/docs/CrossCompilation.html
-
-This is an existing issue, but I have no time
-for looking into this.
-
-On debian systems, sysroot for cross-compilation
-are located in /usr/aarch64-linux-gnu,
-/usr/arm-linux-gnueabi, /usr/arm-linux-gnueabihf,
-/usr/i686-linux-gnu/ etc. but I do not know if it
-is the same across distros.
-
-
-
-
-
-[4] What is the best target if we hard-code it?
-
-Currently, we require the correct CROSS_COMPILE
-is provided by users.
-
-The target might impact the performance
-or the ABI.
-It was difficult for me to define
-which one is better than another.
-
-For example for ARCH=arm, which is better
---target=arm-linux-gnueabi or
---target=arm-lnux-gnueabihf or
-something we don't care about?
-
-
-
-
-
-
-
-> diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
-> index b18401d2ba82..80c63dd9a6d1 100644
-> --- a/Documentation/kbuild/llvm.rst
-> +++ b/Documentation/kbuild/llvm.rst
-> @@ -46,6 +46,11 @@ example: ::
->
->         clang --target=aarch64-linux-gnu foo.c
->
-> +When both ``LLVM=1`` and ``LLVM_IAS=1`` are used, ``CROSS_COMPILE`` becomes
-> +unnecessary and can be inferred from ``ARCH``. Example: ::
-> +
-> +       ARCH=arm64 make LLVM=1 LLVM_IAS=1
-> +
->  LLVM Utilities
->  --------------
->
-> diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
-> index 297932e973d4..a79088797a50 100644
-> --- a/scripts/Makefile.clang
-> +++ b/scripts/Makefile.clang
-> @@ -1,6 +1,40 @@
-> -ifneq ($(CROSS_COMPILE),)
-> +# Individual arch/{arch}/Makfiles should use -EL/-EB to set intended endianness
-> +# and -m32/-m64 to set word size based on Kconfigs instead of relying on the
-> +# target triple.
-> +ifeq ($(CROSS_COMPILE),)
-> +ifneq ($(LLVM),)
-> +ifeq ($(LLVM_IAS),1)
-> +ifeq ($(ARCH),arm)
-> +CLANG_FLAGS    += --target=arm-linux-gnueabi
-> +else ifeq ($(ARCH),arm64)
-> +CLANG_FLAGS    += --target=aarch64-linux-gnu
-> +else ifeq ($(ARCH),hexagon)
-> +CLANG_FLAGS    += --target=hexagon-linux-gnu
-> +else ifeq ($(ARCH),i386)
-> +CLANG_FLAGS    += --target=i686-linux-gnu
-> +else ifeq ($(ARCH),m68k)
-> +CLANG_FLAGS    += --target=m68k-linux-gnu
-> +else ifeq ($(ARCH),mips)
-> +CLANG_FLAGS    += --target=mipsel-linux-gnu
-> +else ifeq ($(ARCH),powerpc)
-> +CLANG_FLAGS    += --target=powerpc64le-linux-gnu
-> +else ifeq ($(ARCH),riscv)
-> +CLANG_FLAGS    += --target=riscv64-linux-gnu
-> +else ifeq ($(ARCH),s390)
-> +CLANG_FLAGS    += --target=s390x-linux-gnu
-> +else ifeq ($(ARCH),x86)
-> +CLANG_FLAGS    += --target=x86_64-linux-gnu
-> +else ifeq ($(ARCH),x86_64)
-> +CLANG_FLAGS    += --target=x86_64-linux-gnu
-> +else
-> +$(error Specify CROSS_COMPILE or add '--target=' option to scripts/Makefile.clang)
-> +endif # ARCH
-> +endif # LLVM_IAS
-> +endif # LLVM
-> +else
->  CLANG_FLAGS    += --target=$(notdir $(CROSS_COMPILE:%-=%))
-> -endif
-> +endif # CROSS_COMPILE
-> +
->  ifeq ($(LLVM_IAS),1)
->  CLANG_FLAGS    += -integrated-as
->  else
-> --
-> 2.32.0.93.g670b81a890-goog
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210707224310.1403944-3-ndesaulniers%40google.com.
-
-
-
---
-Best Regards
-
-Masahiro Yamada
+On Thu, Jul 08, 2021 at 12:06:27PM +0200, Peter Zijlstra wrote:
+> Slightly larger patch, but perhaps a little cleaner.. still pondering if
+> we can share a little more between __sched_setscheduler() and
+> rt_mutex_setprio().
+
+Best I can seem to come up with...
+
+---
+ kernel/sched/core.c | 45 +++++++++++++++++----------------------------
+ 1 file changed, 17 insertions(+), 28 deletions(-)
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index ede10642612c..c686f0c70656 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -6341,6 +6341,18 @@ int default_wake_function(wait_queue_entry_t *curr, unsigned mode, int wake_flag
+ }
+ EXPORT_SYMBOL(default_wake_function);
+ 
++static void __setscheduler_prio(struct task_struct *p, int prio)
++{
++	if (dl_prio(prio))
++		p->sched_class = &dl_sched_class;
++	else if (rt_prio(prio))
++		p->sched_class = &rt_sched_class;
++	else
++		p->sched_class = &fair_sched_class;
++
++	p->prio = prio;
++}
++
+ #ifdef CONFIG_RT_MUTEXES
+ 
+ static inline int __rt_effective_prio(struct task_struct *pi_task, int prio)
+@@ -6456,22 +6468,19 @@ void rt_mutex_setprio(struct task_struct *p, struct task_struct *pi_task)
+ 		} else {
+ 			p->dl.pi_se = &p->dl;
+ 		}
+-		p->sched_class = &dl_sched_class;
+ 	} else if (rt_prio(prio)) {
+ 		if (dl_prio(oldprio))
+ 			p->dl.pi_se = &p->dl;
+ 		if (oldprio < prio)
+ 			queue_flag |= ENQUEUE_HEAD;
+-		p->sched_class = &rt_sched_class;
+ 	} else {
+ 		if (dl_prio(oldprio))
+ 			p->dl.pi_se = &p->dl;
+ 		if (rt_prio(oldprio))
+ 			p->rt.timeout = 0;
+-		p->sched_class = &fair_sched_class;
+ 	}
+ 
+-	p->prio = prio;
++	__setscheduler_prio(p, prio);
+ 
+ 	if (queued)
+ 		enqueue_task(rq, p, queue_flag);
+@@ -6824,29 +6833,6 @@ static void __setscheduler_params(struct task_struct *p,
+ 	set_load_weight(p, true);
+ }
+ 
+-/* Actually do priority change: must hold pi & rq lock. */
+-static void __setscheduler(struct rq *rq, struct task_struct *p,
+-			   const struct sched_attr *attr, int newprio)
+-{
+-	/*
+-	 * If params can't change scheduling class changes aren't allowed
+-	 * either.
+-	 */
+-	if (attr->sched_flags & SCHED_FLAG_KEEP_PARAMS)
+-		return;
+-
+-	__setscheduler_params(p, attr);
+-
+-	p->prio = newprio;
+-
+-	if (dl_prio(p->prio))
+-		p->sched_class = &dl_sched_class;
+-	else if (rt_prio(p->prio))
+-		p->sched_class = &rt_sched_class;
+-	else
+-		p->sched_class = &fair_sched_class;
+-}
+-
+ /*
+  * Check the target process has a UID that matches the current process's:
+  */
+@@ -7089,7 +7075,10 @@ static int __sched_setscheduler(struct task_struct *p,
+ 
+ 	prev_class = p->sched_class;
+ 
+-	__setscheduler(rq, p, attr, newprio);
++	if (!(attr->sched_flags & SCHED_FLAG_KEEP_PARAMS)) {
++		__setscheduler_params(p, attr);
++		__setscheduler_prio(p, newprio);
++	}
+ 	__setscheduler_uclamp(p, attr);
+ 
+ 	if (queued) {
