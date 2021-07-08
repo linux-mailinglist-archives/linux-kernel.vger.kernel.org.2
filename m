@@ -2,142 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F89A3C1834
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 19:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 482E93C182E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 19:33:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230079AbhGHRgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 13:36:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbhGHRgC (ORCPT
+        id S229836AbhGHRfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 13:35:51 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:48793 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229592AbhGHRfv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 13:36:02 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE171C06175F;
-        Thu,  8 Jul 2021 10:33:19 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id a6so3688991ljq.3;
-        Thu, 08 Jul 2021 10:33:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=p8as5+U+fUkwkcmcZ2ww9hFTp+JN+Md67nryC+hBSxw=;
-        b=mv6qxhLzloqaQsgg3yWnQ0bdog4KqbISrbYI6fgzLD93cJXjkgieBVJh+0D2pPab9w
-         ccbsyGQ0pDGL2hLlfagR03fJ3z/R3+QpWlUSpAmnTwSXL/sdpFSMDt7Mf7HmTdERXC+7
-         uYnXR2H0kSl2LiFt2qFJoOU2Jw/xxIxFh47RLHpxG6kxrIZ7Za7RaBj+7tzlBMxQUveI
-         4M9OGZZXI3Qsg79XqsTsCGTIlOhCVbqlLi5Kl8eY3eu8Ai4JQKmiByPsUqe5qILpEHvh
-         B+QPUKO1Iyh3Uc5nF2ti1jD+vY0rz6yJKWWp56WcKb7YQggivRT8V2fJt/nd2OfAM92/
-         YmdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=p8as5+U+fUkwkcmcZ2ww9hFTp+JN+Md67nryC+hBSxw=;
-        b=WBy6cElgJ/uLmZmUv5BTI4wUKLs3dvgGvq90lNnkClTSiAj/CaR5syXsOKS+Uft+Nh
-         qb5ttr5V8szNCOYsV9NGJCQtasFuDN4yi0y7AscsTVF/qoDyxiJ1snil7KlW5urScyBh
-         NibjZcO+EsT+DenX/E5oN8SXRwKajaA6kVLOVpAe9MNqhh+1NeTxfQX5bkK1bzJa5iSH
-         ewx6SwalLVZhJif5XIYtwTGXpk3t5+17fPmdzgbDV7uLfau2JrEYf1+alXUgsrLFtL11
-         Yviz/y6Iko9aJaeRALpBYKxJ/ezc3uhMEmgYdQ9oLKC+JyZrektuyO9ckmymGpLyUUJq
-         hmuQ==
-X-Gm-Message-State: AOAM530bm6q0pOQjkElKziURDoa0tdTCtwp+TwGXMa5lRwlDPSmV95WK
-        euQxP8dXAWGqcktKG2vyreT7BBZw27yDpms4gYs=
-X-Google-Smtp-Source: ABdhPJzXcWFdXI1S+Xc+K3K4T+wc48lSqLmrmir6aVgVYqsoemEs48d+917E8MnXcUgOZuzfYfJvrbBi4OL6KIBSVrM=
-X-Received: by 2002:a2e:bb98:: with SMTP id y24mr12341008lje.507.1625765597906;
- Thu, 08 Jul 2021 10:33:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1625709047.git.gayatri.kammela@intel.com>
-In-Reply-To: <cover.1625709047.git.gayatri.kammela@intel.com>
-From:   Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
-Date:   Thu, 8 Jul 2021 13:32:51 -0400
-Message-ID: <CAE2upjQK80HF+hADt+q9PQKpX6MntqQFQ+mcXRKkus1FvxvvRQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/5] Add Alder Lake PCH-S support to PMC core driver
-To:     Gayatri Kammela <gayatri.kammela@intel.com>
-Cc:     platform-driver-x86@vger.kernel.org, mgross@linux.intel.com,
-        hdegoede@redhat.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        vicamo.yang@canonical.com,
-        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
-        "Box, David E" <david.e.box@intel.com>,
-        linux-kernel@vger.kernel.org, tamar.mashiah@intel.com,
-        gregkh@linuxfoundation.org, rajatja@google.com,
-        Shyam-sundar.S-k@amd.com, Alexander.Deucher@amd.com,
-        mlimonci@amd.com
+        Thu, 8 Jul 2021 13:35:51 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1625765589; h=Content-Transfer-Encoding: Mime-Version:
+ Content-Type: References: In-Reply-To: Date: Cc: To: From: Subject:
+ Message-ID: Sender; bh=gJdLAU5Uhao+hus0LMO748o8+xshJ3r9MDcn1bVd+O8=; b=F3oJlw+iDt9gz98Jm/+bz0hZ5hkTtFJ+Qm63J79LU/cvgSWF1EfjaLNvl877X0f4lphl+M3T
+ d8H7kG8+KW25OaHkxL+R9mh09mPyH+2qbeN5sHQoQ7WmBuMqLrOGBnG8O0i4rAfTKcDUfGa+
+ p81dcRKUvzD8z9fE4l4tvbIGFcI=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 60e736cf638039e997a28ab0 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 08 Jul 2021 17:33:03
+ GMT
+Sender: hemantk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0BDADC433D3; Thu,  8 Jul 2021 17:33:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from hemantk-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 34B1DC433F1;
+        Thu,  8 Jul 2021 17:33:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 34B1DC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
+Message-ID: <1625765577.10055.24.camel@codeaurora.org>
+Subject: Re: [PATCH] bus: mhi: pci_generic: Simplify code and axe the use of
+ a deprecated API
+From:   Hemant Kumar <hemantk@codeaurora.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>, mani@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Date:   Thu, 08 Jul 2021 10:32:57 -0700
+In-Reply-To: <bb3dc436fe142309a2334549db782c5ebb80a2be.1625718497.git.christophe.jaillet@wanadoo.fr>
+References: <bb3dc436fe142309a2334549db782c5ebb80a2be.1625718497.git.christophe.jaillet@wanadoo.fr>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.18.5.2-0ubuntu3.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Series looks good to me.
+On Thu, 2021-07-08 at 06:30 +0200, Christophe JAILLET wrote:
+> The wrappers in include/linux/pci-dma-compat.h should go away.
+> 
+> Replace 'pci_set_dma_mask/pci_set_consistent_dma_mask' by an
+> equivalent
+> and less verbose 'dma_set_mask_and_coherent()' call.
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+> If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+>    https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+> ---
 
-Acked-by: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
-
-+ AMD folks
-
-Hi Alex, Mario and Shaym - Perhaps AMD PMC files should also follow
-the similar convention and it could probably evolve in future where
-both x86 based PMC drivers might use some common library helper
-functions. What do you think?
-
-
-On Wed, Jul 7, 2021 at 10:10 PM Gayatri Kammela
-<gayatri.kammela@intel.com> wrote:
->
-> Hi,
-> The patch series move intel_pmc_core* files to pmc subfolder as well as
-> add Alder Lake PCH-S support to PMC core driver.
->
-> Patch 1: Move intel_pmc_core* files to pmc subfolder
-> Patch 2: Add Alderlake support to pmc_core driver
-> Patch 3: Add Latency Tolerance Reporting (LTR) support to Alder Lake
-> Patch 4: Add Alder Lake low power mode support for pmc_core
-> Patch 5: Add GBE Package C10 fix for Alder Lake
->
-> Changes since v1:
-> 1) Add patch 1 to v2 i.e., Move intel_pmc_core* files to pmc subfolder
-> 2) Modify commit message for patch 2.
->
-> David E. Box (1):
->   platform/x86: intel_pmc_core: Add GBE Package C10 fix for Alder Lake
->     PCH
->
-> Gayatri Kammela (4):
->   platform/x86: intel_pmc_core: Move intel_pmc_core* files to pmc
->     subfolder
->   platform/x86/intel: intel_pmc_core: Add Alderlake support to pmc_core
->     driver
->   platform/x86/intel: intel_pmc_core: Add Latency Tolerance Reporting
->     (LTR) support to Alder Lake
->   platform/x86/intel: intel_pmc_core: Add Alder Lake low power mode
->     support for pmc_core
->
->  drivers/platform/x86/Kconfig                  |  21 --
->  drivers/platform/x86/Makefile                 |   1 -
->  drivers/platform/x86/intel/Kconfig            |   1 +
->  drivers/platform/x86/intel/Makefile           |   1 +
->  drivers/platform/x86/intel/pmc/Kconfig        |  22 ++
->  drivers/platform/x86/intel/pmc/Makefile       |   5 +
->  .../x86/{ => intel/pmc}/intel_pmc_core.c      | 307 +++++++++++++++++-
->  .../x86/{ => intel/pmc}/intel_pmc_core.h      |  17 +
->  .../{ => intel/pmc}/intel_pmc_core_pltdrv.c   |   0
->  9 files changed, 350 insertions(+), 25 deletions(-)
->  create mode 100644 drivers/platform/x86/intel/pmc/Kconfig
->  create mode 100644 drivers/platform/x86/intel/pmc/Makefile
->  rename drivers/platform/x86/{ => intel/pmc}/intel_pmc_core.c (85%)
->  rename drivers/platform/x86/{ => intel/pmc}/intel_pmc_core.h (95%)
->  rename drivers/platform/x86/{ => intel/pmc}/intel_pmc_core_pltdrv.c (100%)
->
-> Cc: Srinivas Pandruvada <srinivas.pandruvada@intel.com>
-> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Cc: David Box <david.e.box@intel.com>
-> Cc: You-Sheng Yang <vicamo.yang@canonical.com>
-> Cc: Hans de Goede <hdegoede@redhat.com>
->
-> base-commit: a931dd33d370896a683236bba67c0d6f3d01144d
-> --
-> 2.25.1
->
-
-
+Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
 -- 
-Thanks,
-Rajneesh
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+
