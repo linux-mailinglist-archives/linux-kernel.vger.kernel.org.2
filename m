@@ -2,89 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3927F3C1576
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 16:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81FF83C1579
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 16:50:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231976AbhGHOwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 10:52:07 -0400
-Received: from mga05.intel.com ([192.55.52.43]:44802 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229738AbhGHOwG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 10:52:06 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10039"; a="295155383"
-X-IronPort-AV: E=Sophos;i="5.84,224,1620716400"; 
-   d="scan'208";a="295155383"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 07:49:24 -0700
-X-IronPort-AV: E=Sophos;i="5.84,224,1620716400"; 
-   d="scan'208";a="487635956"
-Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.212.55.119]) ([10.212.55.119])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 07:49:23 -0700
-Subject: Re: [PATCH] dmaengine: idxd: Simplify code and axe the use of a
- deprecated API
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        vkoul@kernel.org
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <70c8a3bc67e41c5fefb526ecd64c5174c1e2dc76.1625720835.git.christophe.jaillet@wanadoo.fr>
-From:   Dave Jiang <dave.jiang@intel.com>
-Message-ID: <6224f6aa-b460-4f18-99d0-38b29998a57d@intel.com>
-Date:   Thu, 8 Jul 2021 07:49:23 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232004AbhGHOxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 10:53:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231792AbhGHOxh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 10:53:37 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D6AC061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 07:50:55 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id w13so4278839wmc.3
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 07:50:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CqegNe6afZGuoA4ywYbhhiljd9BmDBRgWgf3bipzZ9M=;
+        b=eRboreH6uMXG79fmStphyJ2LlPkFebtxMpNadeQcr3k39zdBPZGcolc2j8avyIYUfM
+         nEGl4M/aM7NrllJnSilRi1U1v4TIVMys3+ZNIDwgmNTqZAX9ZQQyFlQTsVyTQenojoQi
+         RCpI/w9UtfsDw7C3+3WuELXPOBq3hZQ1FAMG1Stil4BhxcFXl/z6qvxKYeBwZ2ojyDBH
+         hFaWznS8E3zqiEekYF13MlsqHYpOfRZAMa8OHALRbhAoqVMMtbGbaSojvfzx7pwf/ULg
+         y5817lHF4YEg/4eXG6X0vht8yWb4r03fMCDJA3nYbhJX7jXy0lBU7M3ACjiHB4G27mXc
+         7jaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CqegNe6afZGuoA4ywYbhhiljd9BmDBRgWgf3bipzZ9M=;
+        b=isNEJ29u8t6VuOh1UPy11RSb+fTaNPFCInOJ9XSMkik54f1PJNSAsAcOxcafcHgG3X
+         hODE4lnqVGVNeCJetoSCzS4Vv5ebUZYBwFj99gpUupWMa2uGpdmaocfVeUP/ND3iDS1O
+         rTDGDnzsvsNVGru222PIIDcvGKUtehZMikqLxs9FO0nBokg+BnTA0PiLm14jgfeYa2oz
+         Y2UNbqNjmhf8IvU7fr1Bdfv53ZoXtbv5FCTlItrd1Z6PW7ymLB44HtDCFivRbTODCgj7
+         q+T8FaMFTvyL6ZIbS396mqpMT3p7uajaJqHivIwWoK8ar7eJxK/JPri7/VHC33hT0Mzb
+         RIIg==
+X-Gm-Message-State: AOAM530OTL5eCdummCN6MsbdX4kwvHOTFeo5jGs8W03wUwIutkrLlb/d
+        eQIhAYUIDJKIO6JlzyAKr5ezLw==
+X-Google-Smtp-Source: ABdhPJxcRn/Mt1uXH48Enuc4Y6DewGso6ByL2CifNQe65iSmHfopTFxnZRQp5SorWOz60B2Wrns8QA==
+X-Received: by 2002:a1c:7308:: with SMTP id d8mr4228688wmb.20.1625755853497;
+        Thu, 08 Jul 2021 07:50:53 -0700 (PDT)
+Received: from enceladus (ppp-94-66-242-227.home.otenet.gr. [94.66.242.227])
+        by smtp.gmail.com with ESMTPSA id o3sm1483595wrm.5.2021.07.08.07.50.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jul 2021 07:50:52 -0700 (PDT)
+Date:   Thu, 8 Jul 2021 17:50:48 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linuxarm@openeuler.org,
+        yisen.zhuang@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
+        thomas.petazzoni@bootlin.com, Marcin Wojtas <mw@semihalf.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        hawk@kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, fenghua.yu@intel.com,
+        guro@fb.com, peterx@redhat.com, Feng Tang <feng.tang@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, mcroce@microsoft.com,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>, wenxu@ucloud.cn,
+        cong.wang@bytedance.com, Kevin Hao <haokexin@gmail.com>,
+        nogikh@google.com, Marco Elver <elver@google.com>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH net-next RFC 1/2] page_pool: add page recycling support
+ based on elevated refcnt
+Message-ID: <YOcQyKt6i+UeMzSS@enceladus>
+References: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
+ <1625044676-12441-2-git-send-email-linyunsheng@huawei.com>
+ <CAKgT0Ueyc8BqjkdTVC_c-Upn-ghNeahYQrWJtQSqxoqN7VvMWA@mail.gmail.com>
+ <29403911-bc26-dd86-83b8-da3c1784d087@huawei.com>
+ <CAKgT0UcGDYcuZRXX1MaFAzzBySu3R4_TSdC6S0cyS7Ppt_dNng@mail.gmail.com>
+ <YOX6bPEL0cq8CgPG@enceladus>
+ <CAKgT0UfPFbAptXMJ4BQyeAadaxyHfkKRfeiwhrVMwafNEM_0cw@mail.gmail.com>
+ <YOcKASZ9Bp0/cz1d@enceladus>
+ <CAKgT0UfJuvdkccr=SXWNUaGx7y5nUHFL-E9g3qi4sagY_jWUUQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <70c8a3bc67e41c5fefb526ecd64c5174c1e2dc76.1625720835.git.christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKgT0UfJuvdkccr=SXWNUaGx7y5nUHFL-E9g3qi4sagY_jWUUQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 08, 2021 at 07:24:57AM -0700, Alexander Duyck wrote:
+> On Thu, Jul 8, 2021 at 7:21 AM Ilias Apalodimas
+> <ilias.apalodimas@linaro.org> wrote:
+> >
+> > > > > >
+> >
+> > [...]
+> >
+> > > > > > The above expectation is based on that the last user will always
+> > > > > > call page_pool_put_full_page() in order to do the recycling or do
+> > > > > > the resource cleanup(dma unmaping..etc).
+> > > > > >
+> > > > > > As the skb_free_head() and skb_release_data() have both checked the
+> > > > > > skb->pp_recycle to call the page_pool_put_full_page() if needed, I
+> > > > > > think we are safe for most case, the one case I am not so sure above
+> > > > > > is the rx zero copy, which seems to also bump up the refcnt before
+> > > > > > mapping the page to user space, we might need to ensure rx zero copy
+> > > > > > is not the last user of the page or if it is the last user, make sure
+> > > > > > it calls page_pool_put_full_page() too.
+> > > > >
+> > > > > Yes, but the skb->pp_recycle value is per skb, not per page. So my
+> > > > > concern is that carrying around that value can be problematic as there
+> > > > > are a number of possible cases where the pages might be
+> > > > > unintentionally recycled. All it would take is for a packet to get
+> > > > > cloned a few times and then somebody starts using pskb_expand_head and
+> > > > > you would have multiple cases, possibly simultaneously, of entities
+> > > > > trying to free the page. I just worry it opens us up to a number of
+> > > > > possible races.
+> > > >
+> > > > Maybe I missde something, but I thought the cloned SKBs would never trigger
+> > > > the recycling path, since they are protected by the atomic dataref check in
+> > > > skb_release_data(). What am I missing?
+> > >
+> > > Are you talking about the head frag? So normally a clone wouldn't
+> > > cause an issue because the head isn't changed. In the case of the
+> > > head_frag we should be safe since pskb_expand_head will just kmalloc
+> > > the new head and clears head_frag so it won't trigger
+> > > page_pool_return_skb_page on the head_frag since the dataref just goes
+> > > from 2 to 1.
+> > >
+> > > The problem is that pskb_expand_head memcopies the page frags over and
+> > > takes a reference on the pages. At that point you would have two skbs
+> > > both pointing to the same set of pages and each one ready to call
+> > > page_pool_return_skb_page on the pages at any time and possibly racing
+> > > with the other.
+> >
+> > Ok let me make sure I get the idea properly.
+> > When pskb_expand_head is called, the new dataref will be 1, but the
+> > head_frag will be set to 0, in which case the recycling code won't be
+> > called for that skb.
+> > So you are mostly worried about a race within the context of
+> > pskb_expand_skb() between copying the frags, releasing the previous head
+> > and preparing the new one (on a cloned skb)?
+> 
+> The race is between freeing the two skbs. So the original and the
+> clone w/ the expanded head will have separate instances of the page. I
+> am pretty certain there is a race if the two of them start trying to
+> free the page frags at the same time.
+> 
 
-On 7/7/2021 10:08 PM, Christophe JAILLET wrote:
-> The wrappers in include/linux/pci-dma-compat.h should go away.
->
-> Replace 'pci_set_dma_mask/pci_set_consistent_dma_mask' by an equivalent
-> and less verbose 'dma_set_mask_and_coherent()' call.
->
-> Even if the code may look different, it should have exactly the same
-> run-time behavior.
-> If pci_set_dma_mask(64) fails and pci_set_dma_mask(32) succeeds, then
-> pci_set_consistent_dma_mask(64) will also fail.
->
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Right, I completely forgot calling __skb_frag_unref() before releasing the
+head ...
+You are right, this will be a race.  Let me go back to the original mail
+thread and see what we can do
 
-Acked-by: Dave Jiang <dave.jiang@intel.com>
-
-thanks.
-
-> ---
-> If needed, see post from Christoph Hellwig on the kernel-janitors ML:
->     https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
-> ---
->   drivers/dma/idxd/init.c | 10 ++--------
->   1 file changed, 2 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/dma/idxd/init.c b/drivers/dma/idxd/init.c
-> index c8ae41d36040..de300ba38b14 100644
-> --- a/drivers/dma/idxd/init.c
-> +++ b/drivers/dma/idxd/init.c
-> @@ -637,15 +637,9 @@ static int idxd_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->   	}
->   
->   	dev_dbg(dev, "Set DMA masks\n");
-> -	rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
-> +	rc = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
->   	if (rc)
-> -		rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
-> -	if (rc)
-> -		goto err;
-> -
-> -	rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
-> -	if (rc)
-> -		rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
-> +		rc = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
->   	if (rc)
->   		goto err;
->   
+Thanks!
+/Ilias
+> Thanks,
+> 
+> - Alex
