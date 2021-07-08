@@ -2,258 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B56A3C1629
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 17:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 651993C162E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 17:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231989AbhGHPnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 11:43:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231804AbhGHPnY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 11:43:24 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8631EC06175F
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 08:40:41 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id k4so1787915wrc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 08:40:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:subject:to:cc:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=7o3jCjF52vu1m+SPPYBNztcE1ZA7aixghKNxFppt9FA=;
-        b=z7Al6ICQJ+HJIkOrOcnpLbbNFf9wnKaNtjdk1nbOInTWoa9aW75evFkjor7Nc4rXiQ
-         +CrZ2r8wyukbPoDnUAw5f4GrrT2Ce6ThW0bj2Z4aw+ESq0sbzW7MXh6ZFUQIVsvQBQLA
-         9eMIcpwGLczwuumvCv4YguZaMOkDHNmVic/k0Hteul8go1xo8HsO+fZMg5pzbmAFmrlr
-         VG0aLYLwoAmuhwi7U4817zsWXmu8tSEef8GAxMpA3t7/hHiblTztCvIztmjkgCWb9Q4v
-         Y2Ui9yvHc9GeNchHImvAoE6LMaa8NYFMY6GhGgNk8mbrrvHnq/rmA7z5gyVoyjGkBr5p
-         Kn+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=7o3jCjF52vu1m+SPPYBNztcE1ZA7aixghKNxFppt9FA=;
-        b=uGtrRgV580URaiCQ1zWA84UQ4DQRo6HCgCpCYGEj2GMI7T8CIJ82trPMZghY4NH2+x
-         PGxlJg0a3/gH5vOZtHNwrDGPJbyROLP83Og/yJxcSdPIPJi+owHMIF/NozEXsOQDGWet
-         oiTZjRQy9jDLeb8uRjwFp/W+Px0LbX+NbY2tVIV5qHQ6PU61ex3AwRYyhqWQKLft2jcl
-         Phk4x02FRcsEIPJNMTO0Tsv9uGcYUFe5zDx/A4YoRYi2HOeIzd9ra76njJTc+ba6jvdc
-         kQkYY+HGPJBlEdbS4a1ekHLfqYuFp4EHLGG7HommcNjz0VebWBaA40UFBicPFJ94ORgG
-         YKuQ==
-X-Gm-Message-State: AOAM53187L9jV83mrTYOV51Bpg7dLznaLel3inrmzVUp6u9qPYs7WjIk
-        uLoZNYo6MenhDmHk5Loo6lnO4w==
-X-Google-Smtp-Source: ABdhPJwc87XRDZHEogMOh/eC4F2mcM/rap/waYz412NYfVxrKC3dF/C/EEt838n88wHEvFObtl6sLQ==
-X-Received: by 2002:a5d:4bc4:: with SMTP id l4mr34860965wrt.67.1625758839754;
-        Thu, 08 Jul 2021 08:40:39 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:b33a:9c9a:b724:1957? ([2a01:e34:ed2f:f020:b33a:9c9a:b724:1957])
-        by smtp.googlemail.com with ESMTPSA id n18sm8258196wms.3.2021.07.08.08.40.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Jul 2021 08:40:38 -0700 (PDT)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [GIT PULL] thermal for v5.14-rc1 #2
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        Linux PM mailing list <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Chunyan Zhang <zhang.chunyan@linaro.org>,
+        id S231877AbhGHPnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 11:43:41 -0400
+Received: from mga03.intel.com ([134.134.136.65]:20769 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231804AbhGHPnk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 11:43:40 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10039"; a="209571446"
+X-IronPort-AV: E=Sophos;i="5.84,224,1620716400"; 
+   d="scan'208";a="209571446"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 08:40:57 -0700
+X-IronPort-AV: E=Sophos;i="5.84,224,1620716400"; 
+   d="scan'208";a="645951409"
+Received: from kezheong-mobl.gar.corp.intel.com (HELO [10.212.152.178]) ([10.212.152.178])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 08:40:55 -0700
+Subject: Re: [PATCH Part2 RFC v4 00/40] Add AMD Secure Nested Paging (SEV-SNP)
+ Hypervisor Support
+To:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Rajeshwari Ravindra Kamble <rkambl@codeaurora.org>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        =?UTF-8?Q?Niklas_S=c3=b6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Finley Xiao <finley.xiao@rock-chips.com>
-Message-ID: <8b2470a5-3090-87c3-0fad-d8eefdf54f4f@linaro.org>
-Date:   Thu, 8 Jul 2021 17:40:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <aba678aa-ecd7-1a36-6096-10b2e015b25d@intel.com>
+Date:   Thu, 8 Jul 2021 08:40:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210707183616.5620-1-brijesh.singh@amd.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 7/7/21 11:35 AM, Brijesh Singh wrote:
+> Changes since v3:
+>  * Add support for extended guest message request.
+>  * Add ioctl to query the SNP Platform status.
+>  * Add ioctl to get and set the SNP config.
+>  * Add check to verify that memory reserved for the RMP covers the full system RAM.
+>  * Start the SNP specific commands from 256 instead of 255.
+>  * Multiple cleanup and fixes based on the review feedback.
+> 
+> Changes since v2:
+>  * Add AP creation support.
+>  * Drop the patch to handle the RMP fault for the kernel address.
+>  * Add functions to track the write access from the hypervisor.
+>  * Do not enable the SNP feature when IOMMU is disabled or is in passthrough mode.
+>  * Dump the RMP entry on RMP violation for the debug.
+>  * Shorten the GHCB macro names.
+>  * Start the SNP_INIT command id from 255 to give some gap for the legacy SEV.
+>  * Sync the header with the latest 0.9 SNP spec.
 
-
-here is the second PR for v5.14-rc1.
-
-I removed the two patches responsible of the compilation issue.
-
-The branch was several days in linux-next before sending this PR in
-addition to several local testing.
-
-The following changes since commit 614124bea77e452aa6df7a8714e8bc820b489922:
-
-  Linux 5.13-rc5 (2021-06-06 15:47:27 -0700)
-
-are available in the Git repository at:
-
-
-ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git
-tags/thermal-v5.14-rc1
-
-for you to fetch changes up to fe6a6de6692e7f7159c1ff42b07ecd737df712b4:
-
-  thermal/drivers/int340x/processor_thermal: Fix tcc setting (2021-07-04
-18:28:04 +0200)
-
-----------------------------------------------------------------
-- Add rk3568 sensor support (Finley Xiao)
-
-- Add missing MODULE_DEVICE_TABLE for the Spreadtrum sensor (Chunyan
-  Zhang)
-
-- Export additionnal attributes for the int340x thermal processor
-  (Srinivas Pandruvada)
-
-- Add SC7280 compatible for the tsens driver (Rajeshwari Ravindra
-  Kamble)
-
-- Fix kernel documentation for thermal_zone_device_unregister()	and
-  use devm_platform_get_and_ioremap_resource() (Yang Yingliang)
-
-- Fix coefficient calculations for the rcar_gen3 sensor driver (Niklas
-  Söderlund)
-
-- Fix shadowing variable rcar_gen3_ths_tj_1 (Geert Uytterhoeven)
-
-- Add missing of_node_put() for the iMX and Spreadtrum sensors
-  (Krzysztof Kozlowski)
-
-- Add tegra3 thermal sensor DT bindings (Dmitry Osipenko)
-
-- Stop the thermal zone monitoring when unregistering it to prevent a
-  temperature update without the 'get_temp' callback (Dmitry Osipenko)
-
-- Add rk3568 DT bindings, convert bindings to yaml schemas and add the
-  corresponding compatible in the Rockchip sensor (Ezequiel Garcia)
-
-- Add the sc8180x compatible for the Qualcomm tsensor (Bjorn Andersson)
-
-- Use the find_first_zero_bit()	function instead of custom code (Andy
-  Shevchenko)
-
-- Fix the kernel doc for the device cooling device (Yang Li)
-
-- Reorg the processor thermal int340x to set the scene for the PCI
-  mmio driver (Srinivas Pandruvada)
-
-- Add PCI MMIO driver for the int340x processor thermal driver
-  (Srinivas Pandruvada)
-
-- Add hwmon sensors for the mediatek sensor (Frank Wunderlich)
-
-- Fix warning for return value reported by Smatch for the int340x
-  thermal processor (Srinivas Pandruvada)
-
-- Fix wrong register access and decoding for the int340x thermal
-  processor (Srinivas Pandruvada)
-
-----------------------------------------------------------------
-Andy Shevchenko (1):
-      thermal/drivers/intel/intel_soc_dts_iosf: Switch to use
-find_first_zero_bit()
-
-Bjorn Andersson (1):
-      dt-bindings: thermal: tsens: Add sc8180x compatible
-
-Chunyan Zhang (1):
-      thermal/drivers/sprd: Add missing MODULE_DEVICE_TABLE
-
-Dmitry Osipenko (2):
-      dt-bindings: thermal: Add binding for Tegra30 thermal sensor
-      thermal/core/thermal_of: Stop zone device before unregistering it
-
-Ezequiel Garcia (2):
-      dt-bindings: thermal: convert rockchip-thermal to json-schema
-      dt-bindings: rockchip-thermal: Support the RK3568 SoC compatible
-
-Finley Xiao (1):
-      thermal/drivers/rockchip: Support RK3568 SoCs in the thermal driver
-
-Frank Wunderlich (1):
-      thermal/drivers/mediatek: Add sensors-support
-
-Geert Uytterhoeven (1):
-      thermal/drivers/rcar_gen3_thermal: Do not shadow rcar_gen3_ths_tj_1
-
-Krzysztof Kozlowski (2):
-      thermal/drivers/imx_sc: Add missing of_node_put for loop iteration
-      thermal/drivers/sprd: Add missing of_node_put for loop iteration
-
-Niklas Söderlund (1):
-      thermal/drivers/rcar_gen3_thermal: Fix coefficient calculations
-
-Rajeshwari Ravindra Kamble (1):
-      dt-bindings: thermal: tsens: Add compatible string to TSENS
-binding for SC7280
-
-Srinivas Pandruvada (6):
-      thermal/drivers/int340x: processor_thermal: Export mailbox interface
-      thermal/drivers/int340x: processor_thermal: Export additional
-attributes
-      thermal/drivers/int340x/processor_thermal: Split enumeration and
-processing part
-      thermal/drivers/int340x/processor_thermal: Add PCI MMIO based
-thermal driver
-      thermal/drivers/int340x/processor_thermal: Fix warning for return
-value
-      thermal/drivers/int340x/processor_thermal: Fix tcc setting
-
-Yang Li (1):
-      thermal: devfreq_cooling: Fix kernel-doc
-
-Yang Yingliang (2):
-      thermal/core: Correct function name thermal_zone_device_unregister()
-      thermal/drivers/st: Use devm_platform_get_and_ioremap_resource()
-
- .../bindings/thermal/nvidia,tegra30-tsensor.yaml   |  73 ++++
- .../devicetree/bindings/thermal/qcom-tsens.yaml    |   2 +
- .../bindings/thermal/rockchip-thermal.txt          |  85 -----
- .../bindings/thermal/rockchip-thermal.yaml         |  96 ++++++
- drivers/thermal/devfreq_cooling.c                  |   2 +-
- drivers/thermal/imx_sc_thermal.c                   |   3 +
- drivers/thermal/intel/int340x_thermal/Makefile     |   3 +
- .../intel/int340x_thermal/int3401_thermal.c        |  82 +++++
- .../int340x_thermal/processor_thermal_device.c     | 309 +++--------------
- .../int340x_thermal/processor_thermal_device.h     |   9 +
- .../int340x_thermal/processor_thermal_device_pci.c | 373
-+++++++++++++++++++++
- .../processor_thermal_device_pci_legacy.c          | 163 +++++++++
- .../intel/int340x_thermal/processor_thermal_mbox.c |  12 +-
- .../intel/int340x_thermal/processor_thermal_rfim.c |  55 +++
- drivers/thermal/intel/intel_soc_dts_iosf.c         |  15 +-
- drivers/thermal/mtk_thermal.c                      |   6 +
- drivers/thermal/rcar_gen3_thermal.c                |   7 +-
- drivers/thermal/rockchip_thermal.c                 | 121 +++++++
- drivers/thermal/sprd_thermal.c                     |  16 +-
- drivers/thermal/st/st_thermal_memmap.c             |  13 +-
- drivers/thermal/thermal_core.c                     |   2 +-
- drivers/thermal/thermal_of.c                       |   3 +
- 22 files changed, 1066 insertions(+), 384 deletions(-)
- create mode 100644
-Documentation/devicetree/bindings/thermal/nvidia,tegra30-tsensor.yaml
- delete mode 100644
-Documentation/devicetree/bindings/thermal/rockchip-thermal.txt
- create mode 100644
-Documentation/devicetree/bindings/thermal/rockchip-thermal.yaml
- create mode 100644 drivers/thermal/intel/int340x_thermal/int3401_thermal.c
- create mode 100644
-drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c
- create mode 100644
-drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci_legacy.c
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+What happened to the THP splitting on RMP violations?
