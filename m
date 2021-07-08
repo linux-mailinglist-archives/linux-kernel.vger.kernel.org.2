@@ -2,113 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D4133BF79F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 11:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DFE93BF79D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 11:30:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231515AbhGHJcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 05:32:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231483AbhGHJcn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 05:32:43 -0400
-Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 592EAC06175F;
-        Thu,  8 Jul 2021 02:30:02 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1625736598;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=F+3S4xnK9TmTf0ZoWZseFYs+ALq/OEM1GTjw6tmkjAk=;
-        b=j6onS+7DFYt1n5sXnypetUJq5castzHqm7cgZ1KX9nqLEDiAAFHVdeAztdSbMii3cHoS4M
-        8rMwIaouzxrpFmHWFqfpMva0RX+419g2osXXVkpoYtA2srSR+BSQSFV89PSzEH6qCvoCYb
-        3quJTGIUy17k3fDL3ZsCN2LTJPp3NHQ=
-From:   Yajun Deng <yajun.deng@linux.dev>
-To:     davem@davemloft.net, kuba@kernel.org, ryazanov.s.a@gmail.com,
-        johannes.berg@intel.com, avagin@gmail.com, vladimir.oltean@nxp.com,
-        cong.wang@bytedance.com, roopa@cumulusnetworks.com,
-        yajun.deng@linux.dev, zhudi21@huawei.com, edumazet@google.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] net: rtnetlink: Fix rtnl_dereference may be return NULL
-Date:   Thu,  8 Jul 2021 17:29:36 +0800
-Message-Id: <20210708092936.20044-1-yajun.deng@linux.dev>
+        id S231480AbhGHJcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 05:32:39 -0400
+Received: from mout.gmx.net ([212.227.17.21]:54109 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231272AbhGHJci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 05:32:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1625736584;
+        bh=8kHVJRXooFfRe+q2fG2IcWE5oAzcpJoXFZwcURMNHHE=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=iAtVF+UXERbGpY0Gg/aWy5E5rPcg973k2Idl2OG5ZwBEx2+9Uv09LMHo0HQ1nqflP
+         xFyie7CKbD47NpiJAG7aBnVft0e0Q6NSf4XHlhGAbZQLlfbJ/GWyeSN6OArZepbX4E
+         7Adx/f4NQ0v3QDuBwfVjgIkUeN2jYDrMoy2xPl+o=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.20.60] ([92.116.175.26]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mw9UK-1l9JhE2dgC-00s72h; Thu, 08
+ Jul 2021 11:29:44 +0200
+Subject: Re: div_u64/do_div stack size usage, was Re: [v3] block: Removed a
+ warning while compiling with a cross compiler for parisc
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Abd-Alrhman Masalkhi <abd.masalkhi@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Bernardo Innocenti <bernie@develer.com>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+References: <CAK8P3a2mAQOnTxBhVzVA8q8O-uVrdidCN5h5-T2dc0=Wet2uPQ@mail.gmail.com>
+ <20210706205927.4407-1-abd.masalkhi@gmail.com>
+ <CAK8P3a23=tcWx8iWNAKXcT9TRgPrZbEVVy9a_ad29hSde_jkKg@mail.gmail.com>
+ <YOWt2swxONAvhesH@ls3530>
+ <CAK8P3a1EFuqgZGdpWzib3RxFf6TXCy_CUTZx2ekd0wTbdNdoxg@mail.gmail.com>
+From:   Helge Deller <deller@gmx.de>
+Message-ID: <bece0f60-b19e-5601-3bd9-c899c3d4cd93@gmx.de>
+Date:   Thu, 8 Jul 2021 11:29:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: yajun.deng@linux.dev
+In-Reply-To: <CAK8P3a1EFuqgZGdpWzib3RxFf6TXCy_CUTZx2ekd0wTbdNdoxg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Jv53KzQXouaw43xDUVZe3MwZlNLqqXC3spNXZNGSBaTRtIYIU/P
+ aS/Lb+E3LGgU+Avl4W21Fq34cyiQeTn3d2a24zRfGT0g0zV+qvkSikgXd1U9fUpee3eWFHI
+ EwVzQ7cbt96fURKSXfMr+mbb1HAgQhAGfHs0icOC1/I9ilZAsmrzVlL5AYh1NOdQM6gDVmG
+ dwlXQvwAs/vHorNPSQ74A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Q2RolDHnw2A=:QtIXFuu5fYsg56jwXJP6W1
+ Vdu9WQHtNVmXh0pAvLM3sXdzeupJN4hA+tzmydiDGeCTW6hoNrLLKAEAHWC6tuAYG0dOtXD+m
+ 6x//VMcheR3f2886octSE/+wXuFB0gQZtQjVYk3OEDN/yLALu35Fu8H3WinLqUYdR88dUKefT
+ YBp1qG6/O863t8hQfbcIzi8g650EZ+YAr1TudF7urfRxKvEASREco4UTIvm5CttmUBqsTdFGN
+ i/Ux4KaQW22W40ihoDE+2WQ7NU8/0lciPOm+E0Ul6fcSg2w623Mz1G7HmRIsAnhmWYPuxBOkM
+ G1M4FvntXaLw3kuCi3Ta4hjGm9bRRnw1Rcyv8ZQ+fkDee+1Gal+AWPaa6uOOWQcqUgVfR3UaS
+ b8XCPs1nW9vvNHo4l14JcJ7AAxe7oS7+mi0lVcl0wv8D9yFIl7F9e8uIjYn+szUtW4gM8N3yp
+ Zg5JyMktMf2f4KyxXMnKL3zsaw4Jf28JHUdxfe0bnBtdybrb5QxuRyxbhndSItWh2nf+Zf8qh
+ c2OlQUG4/XyPKy9KhfsJi94eYoK7x27cOfg27MvWSCh1f2WCJ8uQEvLUUfXxk9FgISwybF3TW
+ iRQU1cj4MfN5BBN/rbrMHtmeGI7wXL/6TfnpKGs+ynJd6uYJiXeBLb+j6gs6lzl5FXPVHSCHQ
+ aRBgjRavq8LIgznn1AMkBgFw2L7b8KWKK9VkLbiyFxh0qsKDV7cu5i6Mi3DPy/GTBh0OsTunb
+ lN9y2dYsPGkNgfocoe+VjXCAXm1X5qUEZC407PhuKW46CXrdjDNwdbLsRMCt9J7ewcKXKB7ym
+ ZtYJ8uKQAIw4X8m43TDS8yGxC59nXGIiwFBYpAZnZ9V6vbpQ6QAjYkWw4XHTAESCdG/OumXSN
+ ibwU5IalHr+lflYuRh3PS3kheSsT+RfMh/+/5dSxQqSiu6XSpTqMvCCGbxZ+f7viePFr2Z5F4
+ Ve3bwo81D8QkWyS3C0OeV/iEov7NqfnsQtgKHvPvy04xGIJYLJnKe2g24w7O5nq2EeOgf6vvb
+ xAyby6vU2q9R7gcWDRBSpy9dpRZJ09K6ObpUWIfY30w60v5Yx9SN1tfVjqgcV/X6/tn1Vs9zI
+ ds5Yv7cuL6cEQ+D9h42eaojziVlOGsc4iof
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The value 'link' may be NULL in rtnl_unregister(), this leads to
-kfree_rcu(NULL, xxx), so add this case handling. And modify the return
-value to 'void' in rtnl_unregister(). there is no case using it.
+On 7/7/21 10:39 PM, Arnd Bergmann wrote:
+> On Wed, Jul 7, 2021 at 3:36 PM Helge Deller <deller@gmx.de> wrote:
+>> * Arnd Bergmann <arnd@arndb.de>:
+>>> My first thought was this was a result of -finline-functions getting
+>>> enabled by default in gcc-10, but enabling it on gcc-9 did not
+>>> help here. It's likely that the gcc behavior was fixed in the process
+>>> of enabling the more aggressive inliner by default though.
+>>>
+>>> I also tried building genhd.o for every architecture that has
+>>> gcc-9.4 support and did not find the problem anywhere except
+>>> on parisc.
+>>>
+>>> Using CONFIG_CC_OPTIMIZE_FOR_SIZE did solve the
+>>> problem for me (frame size down to 164 bytes), but I could not
+>>> pinpoint a specific -f option that fixes it for -O2. Maybe we can
+>>> simply change the defconfig here? 32-bit parisc systems are
+>>> probably memory limited enough that building a -Os kernel
+>>> is a good idea anyway. 64-bit parisc already builds with -Os
+>>> but does not see the warning with -O2 either.
+>>
+>> I agree that the simplest solution is to increase the default value for
+>> parisc here.
+>> On parisc we have a 32k stack (either 1x32k or 2x16k when using IRQ
+>> stacks). I increased the default value to 1280 in 2017, but as can be
+>> seen here this isn't sufficient. Either way, we have an active runtime
+>> check for stack overflows which has never triggered yet, so let's just
+>> remove the compiler warning by increasing the value to 2048. Patch is
+>> below.
+>>
+>> [PATCH] parisc: Increase gcc stack frame check to 2048 for 32- and 64-b=
+it
+>>
+>> parisc uses much bigger frames than other architectures, so increase th=
+e
+>> stack frame check value to 2048 to avoid compiler warnings.
+>
+> I think setting it to 2048 is rather excessive,
 
-Fixes: addf9b90de22 (net: rtnetlink: use rcu to free rtnl message handlers)
-Fixes: 51e13685bd93 (rtnetlink: RCU-annotate both dimensions of rtnl_msg_handlers)
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
----
- include/net/rtnetlink.h |  2 +-
- net/core/rtnetlink.c    | 18 ++++++++----------
- 2 files changed, 9 insertions(+), 11 deletions(-)
+Since parisc needs roughly twice the frame (and stack) size as x86,
+2048 seemed logical since that's the double of what's used on x86.
+Of course we can reduce it, e.g. to 1536.
 
-diff --git a/include/net/rtnetlink.h b/include/net/rtnetlink.h
-index 384e800665f2..9d263ad9ea48 100644
---- a/include/net/rtnetlink.h
-+++ b/include/net/rtnetlink.h
-@@ -17,7 +17,7 @@ void rtnl_register(int protocol, int msgtype,
- 		   rtnl_doit_func, rtnl_dumpit_func, unsigned int flags);
- int rtnl_register_module(struct module *owner, int protocol, int msgtype,
- 			 rtnl_doit_func, rtnl_dumpit_func, unsigned int flags);
--int rtnl_unregister(int protocol, int msgtype);
-+void rtnl_unregister(int protocol, int msgtype);
- void rtnl_unregister_all(int protocol);
- 
- static inline int rtnl_msg_family(const struct nlmsghdr *nlh)
-diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-index f6af3e74fc44..e80177c195a5 100644
---- a/net/core/rtnetlink.c
-+++ b/net/core/rtnetlink.c
-@@ -281,10 +281,8 @@ void rtnl_register(int protocol, int msgtype,
-  * rtnl_unregister - Unregister a rtnetlink message type
-  * @protocol: Protocol family or PF_UNSPEC
-  * @msgtype: rtnetlink message type
-- *
-- * Returns 0 on success or a negative error code.
-  */
--int rtnl_unregister(int protocol, int msgtype)
-+void rtnl_unregister(int protocol, int msgtype)
- {
- 	struct rtnl_link __rcu **tab;
- 	struct rtnl_link *link;
-@@ -295,18 +293,18 @@ int rtnl_unregister(int protocol, int msgtype)
- 
- 	rtnl_lock();
- 	tab = rtnl_dereference(rtnl_msg_handlers[protocol]);
--	if (!tab) {
--		rtnl_unlock();
--		return -ENOENT;
--	}
-+	if (!tab)
-+		goto unlock;
- 
- 	link = rtnl_dereference(tab[msgindex]);
--	rcu_assign_pointer(tab[msgindex], NULL);
--	rtnl_unlock();
-+	if (!link)
-+		goto unlock;
- 
-+	rcu_assign_pointer(tab[msgindex], NULL);
- 	kfree_rcu(link, rcu);
- 
--	return 0;
-+unlock:
-+	rtnl_unlock();
- }
- EXPORT_SYMBOL_GPL(rtnl_unregister);
- 
--- 
-2.32.0
+> and it would make you miss other real bugs. What I suggested was to
+> change the defconfig to use CONFIG_CC_OPTIMIZE_FOR_SIZE instead.
 
+But then you still will see those warnings in case you choose to not
+optize for size.
+
+> The reasoning for the 1280 byte limit on parisc is that it needs a few e=
+xtra
+> bytes for its larger stack frames, and 1024 for the other 32-bit archite=
+ctures
+> is only there because anything smaller warns for a handful of functions
+> that are fine-tuned to need slightly less than that, when the call chain
+> is predictable and using less would impact performance.
+>
+> I actually think we should reduce the warning limit for 64-bit architect=
+ures
+> to 1280 bytes as well, but that triggers a couple of warnings that still
+> need to be resolved first. In almost all cases, a kernel function needin=
+g
+> more than 512 bytes is an indication of either a bug in the kernel, or
+> (rarely) in the compiler.
+
+or bad coding, e.g. huge local variables ot too much nesting of local func=
+tions.
+
+Helge
