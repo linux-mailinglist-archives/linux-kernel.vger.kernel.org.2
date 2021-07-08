@@ -2,162 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32E873BF86B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 12:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C2C43BF86E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 12:29:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231515AbhGHKbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 06:31:36 -0400
-Received: from mga06.intel.com ([134.134.136.31]:28659 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231332AbhGHKbe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 06:31:34 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10038"; a="270596731"
-X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
-   d="scan'208";a="270596731"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 03:28:50 -0700
-X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
-   d="scan'208";a="428304447"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 03:28:46 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id 4570B20188;
-        Thu,  8 Jul 2021 13:28:44 +0300 (EEST)
-Date:   Thu, 8 Jul 2021 13:28:44 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Pratyush Yadav <p.yadav@ti.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Nikhil Devshatwar <nikhil.nd@ti.com>,
-        Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Martina Krasteva <martinax.krasteva@intel.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Raag Jadav <raagjadav@gmail.com>,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH v3 01/11] media: ov5640: Use runtime PM to control sensor
- power
-Message-ID: <20210708102844.GZ3@paasikivi.fi.intel.com>
-References: <20210624192200.22559-1-p.yadav@ti.com>
- <20210624192200.22559-2-p.yadav@ti.com>
- <20210707203718.GX3@paasikivi.fi.intel.com>
- <YOYWCRg0P65U41Fg@pendragon.ideasonboard.com>
- <20210707214415.GY3@paasikivi.fi.intel.com>
- <YOYh1Jnd++ifyQUT@pendragon.ideasonboard.com>
+        id S231544AbhGHKcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 06:32:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231435AbhGHKcH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 06:32:07 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A73C061574;
+        Thu,  8 Jul 2021 03:29:25 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id h1-20020a17090a3d01b0290172d33bb8bcso5592384pjc.0;
+        Thu, 08 Jul 2021 03:29:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Fri6CTG62n5mPzd6PDTzvkLlOYKTfbKQfa4LIN83KEs=;
+        b=sC/wcjvCNNbvzyeW/dDFpG4jErg7MUKsQcImGtM4JUboho9hCyMfQOqHPwYU/jX2BT
+         QNcvhQICzt4sNICQUFE4eSaAsD950iXm4Oaqu48FkkxiVWYz6Uh1b6YwOxEEnchNECVX
+         ZbMk76bWToktjdJFleTluver1aZr1HenbxrkqRilqb12knp0qW4HTjp4yccjJsL1h//m
+         NvQUoP0dOS/9EDe+UyMx6mosELcyLELjsPRO5ltdxaC71eh1SY25T2HPe9i7oLMUISkq
+         bPxnYjU9GRd8NceXRPjBupSA5BBLPJR1hphovvjTTzCQ0VunS7ivHR2i6nBoW2OTyDip
+         YypQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Fri6CTG62n5mPzd6PDTzvkLlOYKTfbKQfa4LIN83KEs=;
+        b=X/qU+RryL23TjJBG8rPmDYv54Osm6PhYhhaCT1cMPTFu/grd13K8og/2DJo1Xe1kDY
+         A3uz9FUYB+2PG1znnJVUMqrC53VBhzq8KjX0hFmI1+TyiR7d7fDjpmxj8E9JLjxpIpE6
+         xsPNVeq+C8sOMD8GEH0mvek+jKjMS7Xv8YT7Co3zvkKrvxuMUM6pJH6RiqZq7yE3O01L
+         rDtWukm8e5YO/GNtIy1xA7fEm9ExpemRJm7iIT1TK+DbLPffBxxgom+U35xjzlLebZCM
+         KR28lKZaYg07BxU6RV/DIkgAC1nXsqIDlx7ByN6Ao2qdSRDhvdDucp7GCrjmgzSbP1p+
+         rN5Q==
+X-Gm-Message-State: AOAM530hr0yn+6CMdzN0XejcOEl/AjT3CE+tBNznv4qtBfA/mJnzyjJL
+        TtXLDgIg7U7A6puu3o963EU=
+X-Google-Smtp-Source: ABdhPJy+0h04fLeo2fdk7Exx7BEbuiM0av0r4rhbBoYgiAUd+ovrDBb3sKzzSeSrJHtffi/BI3Sk9A==
+X-Received: by 2002:a17:90b:1294:: with SMTP id fw20mr4246917pjb.100.1625740164709;
+        Thu, 08 Jul 2021 03:29:24 -0700 (PDT)
+Received: from localhost.lan (p1284205-ipngn14601marunouchi.tokyo.ocn.ne.jp. [153.205.193.205])
+        by smtp.gmail.com with ESMTPSA id z3sm2555650pgl.77.2021.07.08.03.29.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jul 2021 03:29:24 -0700 (PDT)
+Received: from x2.lan (localhost [127.0.0.1])
+        by localhost.lan (Postfix) with ESMTPSA id 912F59011C2;
+        Thu,  8 Jul 2021 10:29:21 +0000 (GMT)
+From:   Vincent Pelletier <plr.vincent@gmail.com>
+To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH] checkpatch: Follow scripts/spdxcheck.py's switch to python3
+Date:   Thu,  8 Jul 2021 10:29:18 +0000
+Message-Id: <73dca402670be1e7a8adf139621dafd0dfa03191.1625740121.git.plr.vincent@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YOYh1Jnd++ifyQUT@pendragon.ideasonboard.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+Since commit d0259c42abff ("spdxcheck.py: Use Python 3") spdxcheck.py
+expects to be run using python3. "python" may still be a python2 alias.
+Instead, obey scripts/spdxcheck.py's shebang by executing it without
+pre-selecting an interpreter.
+Also, test python3 presence in path.
 
-On Thu, Jul 08, 2021 at 12:51:16AM +0300, Laurent Pinchart wrote:
-> Hi Sakari,
-> 
-> On Thu, Jul 08, 2021 at 12:44:15AM +0300, Sakari Ailus wrote:
-> > On Thu, Jul 08, 2021 at 12:00:57AM +0300, Laurent Pinchart wrote:
-> > > On Wed, Jul 07, 2021 at 11:37:18PM +0300, Sakari Ailus wrote:
-> > > > On Fri, Jun 25, 2021 at 12:51:50AM +0530, Pratyush Yadav wrote:
-> > > > > Calling s_power subdev callback is discouraged. Instead, the subdevs
-> > > > > should use runtime PM to control its power. Use runtime PM callbacks to
-> > > > > control sensor power. The pm counter is incremented when the stream is
-> > > > > started and decremented when the stream is stopped.
-> > > > > 
-> > > > > Refactor s_stream() a bit to make this new control flow easier. Add a
-> > > > > helper to choose whether mipi or dvp set_stream needs to be called. The
-> > > > > logic flow is also changed to make it a bit clearer.
-> > > > > 
-> > > > > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> > > > > 
-> > > > > ---
-> > > > > 
-> > > > > Changes in v3:
-> > > > > - Clean up the logic in ov5640_s_stream() a bit.
-> > > > > - Use pm_runtime_resume_and_get() instead of pm_runtime_get_sync().
-> > > > > - Rename the label error_pm to disable_pm.
-> > > > > 
-> > > > > Changes in v2:
-> > > > > - New in v2.
-> > > > > 
-> > > > >  drivers/media/i2c/Kconfig  |   2 +-
-> > > > >  drivers/media/i2c/ov5640.c | 127 +++++++++++++++++++++++--------------
-> > > > >  2 files changed, 79 insertions(+), 50 deletions(-)
-> > > > > 
-> > > > > diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
-> > > > > index 588f8eb95984..8f43a4d7bcc1 100644
-> > > > > --- a/drivers/media/i2c/Kconfig
-> > > > > +++ b/drivers/media/i2c/Kconfig
-> > > > > @@ -929,7 +929,7 @@ config VIDEO_OV2740
-> > > > >  
-> > > > >  config VIDEO_OV5640
-> > > > >  	tristate "OmniVision OV5640 sensor support"
-> > > > > -	depends on OF
-> > > > > +	depends on OF && PM
-> > > > 
-> > > > Could you add support for runtime PM without requiring CONFIG_PM?
-> > > > 
-> > > > Essentially you'll need to power on the device in probe and power it off in
-> > > > probe, and make sure the runtime PM nop variant functions return the value
-> > > > you'd expect.
-> > > 
-> > > I've gone through that in several sensor drivers, and it really
-> > > increases the complexity to get it right, to a point where I'm not
-> > > comfortable asking someone to do the same (not to mention the very, very
-> > 
-> > I don't think it's very complicated, really. Looking at examples of other
-> > drivers (e.g. imx334) doing exactly the same helps as you don't need to
-> > check for individual functions.
-> > 
-> > The complexity of the power management in this driver is mostly because of
-> > evolutionary development done over time, it's an old driver.
-> 
-> https://git.linuxtv.org/pinchartl/media.git/commit/?h=sensors/ar0330/driver&id=e72ca23c4c6b1ab6b06ac48280726e09d63cc818
-> 
-> Look at the changes to ar0330_probe(). As far as I understand, anything
-> less than that would be incorrect, and it's way too easy to get it
-> wrong.
+Signed-off-by: Vincent Pelletier <plr.vincent@gmail.com>
+---
+ scripts/checkpatch.pl | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-The driver uses autosuspend that requires quite a few extra calls to
-runtime PM framework. The only other driver doing this may be the CCS
-driver.
-
-> 
-> > > high chance that it won't be done correctly). What's the practical
-> > > drawback in requiring CONFIG_PM ?
-> > 
-> > Good question. CONFIG_PM is something you can disable (for a reason I can't
-> > think of though). Why should a driver depend on it when it could perfectly
-> > work without it as well?
-> 
-> Because it requires additional complexity in the driver, times the
-> number of sensor drivers we have in the kernel. Not even mentioning test
-
-How much of additional complexity?
-
-You need to call the function powering on the sensor in probe, and call
-another one to power the sensor off in remove, and make sure the use of
-runtime PM functions is correct. Good examples exist of this.
-
-Even if you fully relied on runtime PM and do not call the aforementioned
-functions directly, you need to power on the sensor in probe using runtime
-PM on DT based systems which is not the case on ACPI based systems. These
-differences need to be taken into account in that case.
-
-> coverage, I'm pretty sure very few people would test the sensor drivers
-> without CONFIG_PM.
-
-That is probably true.
-
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 23697a6b1eaa..a1cbd5fd0856 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -1084,10 +1084,10 @@ sub is_maintained_obsolete {
+ sub is_SPDX_License_valid {
+ 	my ($license) = @_;
+ 
+-	return 1 if (!$tree || which("python") eq "" || !(-e "$root/scripts/spdxcheck.py") || !(-e "$gitroot"));
++	return 1 if (!$tree || which("python3") eq "" || !(-e "$root/scripts/spdxcheck.py") || !(-e "$gitroot"));
+ 
+ 	my $root_path = abs_path($root);
+-	my $status = `cd "$root_path"; echo "$license" | python scripts/spdxcheck.py -`;
++	my $status = `cd "$root_path"; echo "$license" | scripts/spdxcheck.py -`;
+ 	return 0 if ($status ne "");
+ 	return 1;
+ }
 -- 
-Regards,
+2.32.0
 
-Sakari Ailus
