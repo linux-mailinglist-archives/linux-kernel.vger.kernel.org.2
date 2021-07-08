@@ -2,145 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B2F83BF477
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 06:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F1983BF47B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 06:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229571AbhGHEQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 00:16:55 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:10327 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhGHEQy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 00:16:54 -0400
-Received: from dggeme765-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GL2qw2fq9z76HT;
-        Thu,  8 Jul 2021 12:09:48 +0800 (CST)
-Received: from DESKTOP-E0KHRBE.china.huawei.com (10.67.103.82) by
- dggeme765-chm.china.huawei.com (10.3.19.111) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 8 Jul 2021 12:14:10 +0800
-From:   Shaobo Huang <huangshaobo6@huawei.com>
-To:     <ardb@kernel.org>, <dvyukov@google.com>, <f.fainelli@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux@armlinux.org.uk>,
-        <nico@marvell.com>, <qbarnes@gmail.com>, <sagar.abhishek@gmail.com>
-CC:     <chenzefeng2@huawei.com>, <huangshaobo6@huawei.com>,
-        <kepler.chenxin@huawei.com>, <liucheng32@huawei.com>,
-        <liuwenliang@huawei.com>, <nixiaoming@huawei.com>,
-        <wuquanming@huawei.com>, <young.liuyang@huawei.com>,
-        <zengweilin@huawei.com>
-Subject: Re: [PATCH] ARM: fix panic when kasan and kprobe are enabled
-Date:   Thu, 8 Jul 2021 12:14:09 +0800
-Message-ID: <20210708041409.34168-1-huangshaobo6@huawei.com>
-X-Mailer: git-send-email 2.21.0.windows.1
-In-Reply-To: <CAMj1kXGqfF68MT4WwrxS0cYiUBb0gODDh-wGZSQcW9vxdfK90A@mail.gmail.com>
-References: <CAMj1kXGqfF68MT4WwrxS0cYiUBb0gODDh-wGZSQcW9vxdfK90A@mail.gmail.com>
+        id S229600AbhGHERh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 00:17:37 -0400
+Received: from verein.lst.de ([213.95.11.211]:39111 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229482AbhGHERg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 00:17:36 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 0839F68BFE; Thu,  8 Jul 2021 06:14:47 +0200 (CEST)
+Date:   Thu, 8 Jul 2021 06:14:46 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     gregkh@linuxfoundation.org, tglx@linutronix.de,
+        akpm@linux-foundation.org, shuah@kernel.org, rafael@kernel.org,
+        rgoldwyn@suse.com, kuno@frob.nl, fontana@sharpeleven.org,
+        Ciaran.Farrell@suse.com, Christopher.DeNicolo@suse.com, hch@lst.de,
+        corbet@lwn.net, linux@leemhuis.info, ast@kernel.org,
+        andriin@fb.com, daniel@iogearbox.net, atenart@kernel.org,
+        alobakin@pm.me, weiwan@google.com, ap420073@gmail.com,
+        tj@kernel.org, jeyu@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, minchan@kernel.org,
+        axboe@kernel.dk, mbenes@suse.com, jpoimboe@redhat.com,
+        keescook@chromium.org, jikos@kernel.org, rostedt@goodmis.org,
+        peterz@infradead.org, linux-block@vger.kernel.org,
+        linux-spdx@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, copyleft-next@lists.fedorahosted.org
+Subject: Re: [PATCH 0/2] LICENSES: add and use copyleft-next-0.3.1
+Message-ID: <20210708041446.GA17410@lst.de>
+References: <20210707184310.3624761-1-mcgrof@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.103.82]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggeme765-chm.china.huawei.com (10.3.19.111)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210707184310.3624761-1-mcgrof@kernel.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Feb 2021 at 09:40, Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> > From: huangshaobo <huangshaobo6@huawei.com>
-> >
-> > arm32 uses software to simulate the instruction replaced
-> > by kprobe. some instructions may be simulated by constructing
-> > assembly functions. therefore, before executing instruction
-> > simulation, it is necessary to construct assembly function
-> > execution environment in C language through binding registers.
-> > after kasan is enabled, the register binding relationship will
-> > be destroyed, resulting in instruction simulation errors and
-> > causing kernel panic.
-> >
-> > the kprobe emulate instruction function is distributed in three
-> > files: actions-common.c actions-arm.c actions-thumb.c, so disable
-> > KASAN when compiling these files.
-> >
-> > for example, use kprobe insert on cap_capable+20 after kasan
-> > enabled, the cap_capable assembly code is as follows:
-> > <cap_capable>:
-> > e92d47f0        push    {r4, r5, r6, r7, r8, r9, sl, lr}
-> > e1a05000        mov     r5, r0
-> > e280006c        add     r0, r0, #108    ; 0x6c
-> > e1a04001        mov     r4, r1
-> > e1a06002        mov     r6, r2
-> > e59fa090        ldr     sl, [pc, #144]  ;
-> > ebfc7bf8        bl      c03aa4b4 <__asan_load4>
-> > e595706c        ldr     r7, [r5, #108]  ; 0x6c
-> > e2859014        add     r9, r5, #20
-> > ......
-> > The emulate_ldr assembly code after enabling kasan is as follows:
-> > c06f1384 <emulate_ldr>:
-> > e92d47f0        push    {r4, r5, r6, r7, r8, r9, sl, lr}
-> > e282803c        add     r8, r2, #60     ; 0x3c
-> > e1a05000        mov     r5, r0
-> > e7e37855        ubfx    r7, r5, #16, #4
-> > e1a00008        mov     r0, r8
-> > e1a09001        mov     r9, r1
-> > e1a04002        mov     r4, r2
-> > ebf35462        bl      c03c6530 <__asan_load4>
-> > e357000f        cmp     r7, #15
-> > e7e36655        ubfx    r6, r5, #12, #4
-> > e205a00f        and     sl, r5, #15
-> > 0a000001        beq     c06f13bc <emulate_ldr+0x38>
-> > e0840107        add     r0, r4, r7, lsl #2
-> > ebf3545c        bl      c03c6530 <__asan_load4>
-> > e084010a        add     r0, r4, sl, lsl #2
-> > ebf3545a        bl      c03c6530 <__asan_load4>
-> > e2890010        add     r0, r9, #16
-> > ebf35458        bl      c03c6530 <__asan_load4>
-> > e5990010        ldr     r0, [r9, #16]
-> > e12fff30        blx     r0
-> > e356000f        cm      r6, #15
-> > 1a000014        bne     c06f1430 <emulate_ldr+0xac>
-> > e1a06000        mov     r6, r0
-> > e2840040        add     r0, r4, #64     ; 0x40
-> > ......
-> > when running in emulate_ldr to simulate the ldr instruction, panic
-> > occurred, and the log is as follows:
-> > Unable to handle kernel NULL pointer dereference at virtual address
-> > 00000090
-> > pgd = ecb46400
-> > [00000090] *pgd=2e0fa003, *pmd=00000000
-> > Internal error: Oops: 206 [#1] SMP ARM
-> > PC is at cap_capable+0x14/0xb0
-> > LR is at emulate_ldr+0x50/0xc0
-> > psr: 600d0293 sp : ecd63af8  ip : 00000004  fp : c0a7c30c
-> > r10: 00000000  r9 : c30897f4  r8 : ecd63cd4
-> > r7 : 0000000f  r6 : 0000000a  r5 : e59fa090  r4 : ecd63c98
-> > r3 : c06ae294  r2 : 00000000  r1 : b7611300  r0 : bf4ec008
-> > Flags: nZCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment user
-> > Control: 32c5387d  Table: 2d546400  DAC: 55555555
-> > Process bash (pid: 1643, stack limit = 0xecd60190)
-> > (cap_capable) from (kprobe_handler+0x218/0x340)
-> > (kprobe_handler) from (kprobe_trap_handler+0x24/0x48)
-> > (kprobe_trap_handler) from (do_undefinstr+0x13c/0x364)
-> > (do_undefinstr) from (__und_svc_finish+0x0/0x30)
-> > (__und_svc_finish) from (cap_capable+0x18/0xb0)
-> > (cap_capable) from (cap_vm_enough_memory+0x38/0x48)
-> > (cap_vm_enough_memory) from
-> > (security_vm_enough_memory_mm+0x48/0x6c)
-> > (security_vm_enough_memory_mm) from
-> > (copy_process.constprop.5+0x16b4/0x25c8)
-> > (copy_process.constprop.5) from (_do_fork+0xe8/0x55c)
-> > (_do_fork) from (SyS_clone+0x1c/0x24)
-> > (SyS_clone) from (__sys_trace_return+0x0/0x10)
-> > Code: 0050a0e1 6c0080e2 0140a0e1 0260a0e1 (f801f0e7)
-> >
-> > Fixes: 35aa1df43283 ("ARM kprobes: instruction single-stepping support")
-> > Fixes: 421015713b30 ("ARM: 9017/2: Enable KASan for ARM")
-> > Signed-off-by: huangshaobo <huangshaobo6@huawei.com>
+On Wed, Jul 07, 2021 at 11:43:08AM -0700, Luis Chamberlain wrote:
+> This adds the copyleft-next-0.3.1 SPDX tag and replaces existing
+> boilerplate with the tag.
 
-> Acked-by: Ard Biesheuvel <ardb@kernel.org>
-
-Maintainer ping?
-
-thanks,
-ShaoBo Huang
+Why do we need a random weirdo license in the kernel tree?  Is there
+any benefit?  If so it needs to be clearly spelled out.
