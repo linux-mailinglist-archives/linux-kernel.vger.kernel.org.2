@@ -2,83 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FBB53C1B2B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 23:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 563E73C1B2F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 23:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231382AbhGHVq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 17:46:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33532 "EHLO
+        id S231391AbhGHVro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 17:47:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230508AbhGHVq5 (ORCPT
+        with ESMTP id S230508AbhGHVrl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 17:46:57 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F383C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 14:44:13 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id u18so9345937lfl.2
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 14:44:13 -0700 (PDT)
+        Thu, 8 Jul 2021 17:47:41 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77506C061574;
+        Thu,  8 Jul 2021 14:44:59 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id p8so9361327wrr.1;
+        Thu, 08 Jul 2021 14:44:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WNUdXmAdyTLugzbXax99lK0jKXoIs2WTSE5WoZskvj0=;
-        b=gbipal36mpQN7Afd0MiNy7ScPAzJbvar3bRjj/hZUcY5WhNk1EXDqng/H6wGZVJcW8
-         yZ5nU1zw1U1j2XelewznZsv6R6ukoU2jfO4kRGVp2Dda3GDHEFTsbS7A7BAxIuJRTgTC
-         k/bIveMZzbvdSdNgfrU8F4UlijzvkE1tTP+d63RGShTDmzDWhaj6vBrlxPyd84mR2AGw
-         n2xWD8XfQ1QqRBb+/D1o27iXvJcObT5EKdHUJlBr38Nar30nX6s4hq/M+vgTFqhUcBCF
-         pINtMibejBlp+pzAEh7V+hVPBl0mVAytJ4jPIAQvv6wQQl6XzSkK4ycJWwpPYNmgVKIt
-         vDEw==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=e3c06khZqPC3XSHVb3ebER1HzNExLJ3z79mEUxG26Aw=;
+        b=O5TNAOv8t7QOVuHEkg6vBhuHRiYMUtWe+gsyIHnDRlZwDEYTNtSkQ+jeOam02hpBH1
+         FR/2BfUmb/w7c6Jd7wCZ1swRl1zZLCgBKHVKE+VHxKoVTF1+5p8e3FS+aY5a3ubXF5OL
+         uUWUZ1CXMY0hdTzNEUSFjK+0zSsHJhCnQ6WmdeMMuahWdeFRdZQSQgl7U73jCtHaGryT
+         9xIESHSAnSEPR1+T2fAP6zsTDA0Kx/PS/aKeiT+778LsuB7brlb0yB+3ITr1roTy0WMe
+         XdjXNQg+OL4y8KaRN5JIfCRlgfg/uIvn9TdZY+CJIH+T7l6rcCisi0WwEGSRBi1OoNOf
+         b30g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WNUdXmAdyTLugzbXax99lK0jKXoIs2WTSE5WoZskvj0=;
-        b=Er3IIPyGcXJdu7Nx4PQc0O5ZxuGsVFd8YX7gH0uwC4kJ/EZ94bx+wvmapPjyPbTj7h
-         3K0RJ5mHrInYVp+nMSq69XoNrOsj8Vs8WC7g0L72bivBfJqGTPy2z0oKdgzpOfmKMdo2
-         NqnAK4fvgRjhMKQYBFiuilCM/Zj82D6yKfrtstgjugpxzuuCsehQ9KZ3smlul03lJLNa
-         G896L+pJcxWAkOAiqWpghEAnjzSu4tzapzQR+9+X0/S1qXYjnNZ8Ayr885YyTA/xRq8l
-         o8PL8ohxJAej2OFRD9vJJfLU5sP9F7dfMuzyEgOAVhQor/cbS+IqoW9qVak+ASuUwNek
-         YPVA==
-X-Gm-Message-State: AOAM533dkQqx8C5e3jex9uYZcnLmFYOqlSblGgX1ZE+FXc2xkRtt83J5
-        8D/xK+WUcyLYEHYjdxFqRoJrzo7izMR3SXnE+tKL+HqqLR0=
-X-Google-Smtp-Source: ABdhPJz3WVDNPE2LfCzF+PEm4pDEl4OsjSePR4Mcd3LkAUO+MuEH/Fu5Nap7ddow2Wj2S3QASzxD/bK9rc1SmAPl6xQ=
-X-Received: by 2002:ac2:4d4a:: with SMTP id 10mr15224978lfp.125.1625780651756;
- Thu, 08 Jul 2021 14:44:11 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=e3c06khZqPC3XSHVb3ebER1HzNExLJ3z79mEUxG26Aw=;
+        b=ByYzcVfTvV6plrxxkPrknaRD00/MfrqBqkT11YzERTrICguQGnN4nftimhh96tDTPQ
+         wUEOOg6o+sb7jHVMhL6c7Kpdfc6yA1F6i/YNJWUp0CVlCGgF1zBV6PzrXb/hR4GTtSgl
+         CNTOZqf7yuY5c8kiOh/06lBjne/QFPwhXgC4W3WOJ99enxAHTSnERce4swUTZrEBueKv
+         /skNJsyofA2lLgY8lOAcUrHPKE8ZBEYNdcRE2Z24IQx8d/4u9EWkyGC7MLU/ERt/i/GH
+         qZWzcaY59OMWS9PyZ71hoBWGMDm1b0JZbOzIw0vtnfDo+Z0BECGtEpa5OQEO7fpOEph3
+         OIWw==
+X-Gm-Message-State: AOAM531Om16Dib/z68Atg1Ixp0EE6dcHSXuUYRzD49Nq8UnxYIVBV26f
+        dQ0U0uJL0URy6AwvdDdoYLoIXqD0yJk=
+X-Google-Smtp-Source: ABdhPJzkNWHTEYW2Lzfj6t8TyywuwZGPF0tx8xHCePCyJL+4l97KRP+rWT6M7f+E0X+tFuu59OAyrA==
+X-Received: by 2002:adf:e689:: with SMTP id r9mr18449919wrm.416.1625780697917;
+        Thu, 08 Jul 2021 14:44:57 -0700 (PDT)
+Received: from [10.0.0.3] ([37.165.255.126])
+        by smtp.gmail.com with ESMTPSA id u18sm3014424wmj.15.2021.07.08.14.44.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Jul 2021 14:44:57 -0700 (PDT)
+Subject: Re: linux-next: Fixes tag needs some work in the net tree
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210709073104.7cd2da52@canb.auug.org.au>
+ <30e28b44-b618-bdf5-cf4a-dc676185372d@gmail.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <6e95b490-47d0-a5d0-b729-db2581e73e3c@gmail.com>
+Date:   Thu, 8 Jul 2021 23:44:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <YMJTyVVdylyHtkeW@hirez.programming.kicks-ass.net> <96842d90-7d3b-efac-fe1f-6e90b6a83ee5@uwaterloo.ca>
-In-Reply-To: <96842d90-7d3b-efac-fe1f-6e90b6a83ee5@uwaterloo.ca>
-From:   Peter Oskolkov <posk@google.com>
-Date:   Thu, 8 Jul 2021 14:44:00 -0700
-Message-ID: <CAPNVh5d12sEqwKj-=aXWOQjxBXLcmwgQ9KiRNSTtGhL9PVT9vw@mail.gmail.com>
-Subject: Re: [RFC PATCH v0.1 0/9] UMCG early preview/RFC patchset
-To:     Thierry Delisle <tdelisle@uwaterloo.ca>
-Cc:     linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pjt@google.com, posk@posk.io, Peter Buhr <pabuhr@uwaterloo.ca>,
-        Martin Karsten <mkarsten@uwaterloo.ca>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <30e28b44-b618-bdf5-cf4a-dc676185372d@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 7, 2021 at 10:45 AM Thierry Delisle <tdelisle@uwaterloo.ca> wrote:
->
-> Hi,
-> I wanted to way-in on this. I am one of the main developer's on the Cforall
-> programming language (https://cforall.uwaterloo.ca), which implements
-> its own
-> M:N user-threading runtime. I want to state that this RFC is an interesting
-> feature, which we would be able to take advantage of immediately, assuming
-> performance and flexibility closely match state-of-the-art implementations.
 
-Hi Thierry,
 
-Thank you for your message! I just posted a new version/approach:
+On 7/8/21 11:38 PM, Florian Fainelli wrote:
+> On 7/8/21 2:31 PM, Stephen Rothwell wrote:
+>> Hi all,
+>>
+>> In commit
+>>
+>>   9615fe36b31d ("skbuff: Fix build with SKB extensions disabled")
+>>
+>> Fixes tag
+>>
+>>   Fixes: Fixes: 8550ff8d8c75 ("skbuff: Release nfct refcount on napi stolen or re-used skbs")
+>>
+>> has these problem(s):
+>>
+>>   - No SHA1 recognised
+>>
+>> Not worth rebasing for, just more care next time.
+> 
+> It is there though:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/?id=8550ff8d8c75416e984d9c4b082845e57e560984
+> 
+> and has the proper format AFAICT, what am I missing?
+> 
 
-https://lore.kernel.org/lkml/20210708194638.128950-1-posk@google.com/
+This commit was the first commit, adding the bug.
 
-Let's move the discussion to the new thread.
+Your commit changelog had :
 
-Thanks,
-Peter
+    Fixes: Fixes: 8550ff8d8c75 ("skbuff: Release nfct refcount on napi stolen or re-used skbs")
+    Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+    Reviewed-by: Roi Dayan <roid@nvidia.com>
+    Reviewed-by: Eric Dumazet <edumazet@google.com>
+    Signed-off-by: David S. Miller <davem@davemloft.net>
 
-[...]
+See the extra Fixes: word ?
+
