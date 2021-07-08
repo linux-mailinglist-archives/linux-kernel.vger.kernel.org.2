@@ -2,228 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C98D3BF68D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 09:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A9183BF687
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 09:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231173AbhGHH7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 03:59:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230495AbhGHH7d (ORCPT
+        id S231156AbhGHH7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 03:59:12 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:46947 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229868AbhGHH7E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 03:59:33 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C3AC061574;
-        Thu,  8 Jul 2021 00:56:51 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id ie21so3090379pjb.0;
-        Thu, 08 Jul 2021 00:56:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=H49TTePA4MNINpDUvjXg8h5z2g+u65TAF2/0pD6oCxk=;
-        b=hvF+73nRlvnE1hgKnSaKV0tVVnWAIKzmi9O3fpjvbgdkw8t+6Z9Y0/f7dBtgx0lpTy
-         /dqsoKFZpn+mMd4pJ3Uuqx3eDEXWDx7YDVx8RKBBtonycdEcfClY/0t5m1VQFd4zWE79
-         E8UouTeu+kfi+zVoYkJ41CBtq0Qf6Y4/dI63COg9FdeicNzHar1gWCjerJk+R01UtvWl
-         sfUgOoHVGs4FA0jSn43vMEJF5Cv5hTOiAmf7AUau9j2obm50/aTD80sKpxjUr80jJpHD
-         RQNiVGhzVH2M6XEzuy5pgm0VtChTYNxjI+DB0O47EkHCgAEvdpDc3e+ZnSXdvqPoOeJR
-         h1eQ==
+        Thu, 8 Jul 2021 03:59:04 -0400
+Received: by mail-io1-f72.google.com with SMTP id a24-20020a5d95580000b029044cbcdddd23so3500735ios.13
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 00:56:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=H49TTePA4MNINpDUvjXg8h5z2g+u65TAF2/0pD6oCxk=;
-        b=n4ED3CzdDFVBK8RvXH/s1Mcn0zodTSZwsJA9WFgUpyrLVFyu+0fL3vE1q+4KSs0Uzk
-         rl4QlKUddm/tKBtC1oToAGVV6z+TTqwpGwDJDHdlbo5mVKoKiWms91TTr+PJfGHF6/eI
-         +PFk/vTUvrVdiPlpWAhq7o4+FGL+0h1kNDaWEoZ7ux4r1xEl3ljL5wps4/lKQwTbJu9i
-         MdJKf9uqqrnrDkF2unijaSuCBwMC2CI4Pmo0NoBdndtYuLWhEWx4hTnPkPJKKVjxWToK
-         9QaogKOuyTZmePhk8qYCeDVsx5KketFT+sPk5btm5CHrm4lXIhQTk+JHUvCCGZkmixta
-         l+BA==
-X-Gm-Message-State: AOAM531+wcIzuSQG4Syr93MDKwdnkJWEkErlleYdLu0o0k8k6csnDINW
-        b8NV7W05NMivmUMqLaTdDgmE4+Fm4OIvhgC03SE=
-X-Google-Smtp-Source: ABdhPJw8qkV/I1wIeO5JvBSngmjoJiLuq8SqSkTXhW3YeDaPn1KIaeruOvoW5CrAWEo24Egkia9SYF+sJ31tLc5NGxk=
-X-Received: by 2002:a17:90b:85:: with SMTP id bb5mr18488396pjb.228.1625731011208;
- Thu, 08 Jul 2021 00:56:51 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=O7AQKpyZLQC3aFNhzqdwbPrrpitp3omasznrK3n6h5g=;
+        b=nFA5zZULT/I22VpIZgHKsLs6cdb8kep2x22LKs6hb+v6gjQnLiOP3Ji+meyy7OyGW7
+         TopEl8FumBg7BFgq6FyGt96Dookjpx8Vlx/dRQreDIOTdlxJYlYIIWiG1Z1ddRnLt14k
+         u4VVIZiXLOrvqIJ7kh+8eVD9hzl4NweweRN7zK3lvrhej5talXFbUssyVWtJ+Q+m42rA
+         EWXbBNHje22PX1JWQvfHNGmZ4q4tiJzGCDEH7ZRpDrCTlws/cQAe11mn9SxkuSacib5/
+         WkSFNndmWzylmfhoCMbokMMzGqKRgcyCJwYdr/7SZ03vqPXpEpgggr2ccNIzlOf2o4vK
+         cymQ==
+X-Gm-Message-State: AOAM532VwmDmBBz0tnP1AcLkBbHvOh47LYjFKSSJ0dTN2isFm0GRmmTE
+        tR1w318kbib2of8ZCemDD6pf+y1AZ1sc42XGHmtsSUrGmOoe
+X-Google-Smtp-Source: ABdhPJxw1hU+YC0mw8cRKCbb5cdddK60p8VSTlVUr314MpUNLbHfczXNQnXHcyvIZDXH97HB++ZsJFv4SkYnkIrGoocRjcms80oJ
 MIME-Version: 1.0
-References: <cover.1625709047.git.gayatri.kammela@intel.com> <ffbbbc22605014d0de6eabaf7f1441a761456cb2.1625709047.git.gayatri.kammela@intel.com>
-In-Reply-To: <ffbbbc22605014d0de6eabaf7f1441a761456cb2.1625709047.git.gayatri.kammela@intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 8 Jul 2021 10:56:15 +0300
-Message-ID: <CAHp75VdFpJBEWBJMJexK3muvWt+EEqMMyVtxMvm9sSXhkysaww@mail.gmail.com>
-Subject: Re: [PATCH v2 1/5] platform/x86/intel: intel_pmc_core: Move
- intel_pmc_core* files to pmc subfolder
-To:     Gayatri Kammela <gayatri.kammela@intel.com>
-Cc:     Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        You-Sheng Yang <vicamo.yang@canonical.com>,
-        "Pandruvada, Srinivas" <srinivas.pandruvada@intel.com>,
-        "Box, David E" <david.e.box@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tamar Mashiah <tamar.mashiah@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rajat Jain <rajatja@google.com>
+X-Received: by 2002:a05:6638:3a1:: with SMTP id z1mr63518jap.77.1625730982828;
+ Thu, 08 Jul 2021 00:56:22 -0700 (PDT)
+Date:   Thu, 08 Jul 2021 00:56:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000bb5f8605c697fd87@google.com>
+Subject: [syzbot] KASAN: use-after-free Write in get_ucounts
+From:   syzbot <syzbot+8c3af233123df0578a5c@syzkaller.appspotmail.com>
+To:     ebiederm@xmission.com, legion@kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 8, 2021 at 5:10 AM Gayatri Kammela
-<gayatri.kammela@intel.com> wrote:
->
-> As part of collecting Intel x86 specific drivers in their own
-> folder, move intel_pmc_core* files to its own subfolder there.
+Hello,
 
-I'm fine with this, it is also possible I think to drop intel_pmc_
-prefix from the file names (core.c, core.h, pltdrv.c). In any case it
-may be done later on.
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+syzbot found the following issue on:
 
-> Cc: Srinivas Pandruvada <srinivas.pandruvada@intel.com>
-> Cc: David Box <david.e.box@intel.com>
-> Cc: You-Sheng Yang <vicamo.yang@canonical.com>
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Gayatri Kammela <gayatri.kammela@intel.com>
-> ---
->  drivers/platform/x86/Kconfig                  | 21 ------------------
->  drivers/platform/x86/Makefile                 |  1 -
->  drivers/platform/x86/intel/Kconfig            |  1 +
->  drivers/platform/x86/intel/Makefile           |  1 +
->  drivers/platform/x86/intel/pmc/Kconfig        | 22 +++++++++++++++++++
->  drivers/platform/x86/intel/pmc/Makefile       |  5 +++++
->  .../x86/{ => intel/pmc}/intel_pmc_core.c      |  0
->  .../x86/{ => intel/pmc}/intel_pmc_core.h      |  0
->  .../{ => intel/pmc}/intel_pmc_core_pltdrv.c   |  0
->  9 files changed, 29 insertions(+), 22 deletions(-)
->  create mode 100644 drivers/platform/x86/intel/pmc/Kconfig
->  create mode 100644 drivers/platform/x86/intel/pmc/Makefile
->  rename drivers/platform/x86/{ => intel/pmc}/intel_pmc_core.c (100%)
->  rename drivers/platform/x86/{ => intel/pmc}/intel_pmc_core.h (100%)
->  rename drivers/platform/x86/{ => intel/pmc}/intel_pmc_core_pltdrv.c (100%)
->
-> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-> index 7d385c3b2239..cae72922f448 100644
-> --- a/drivers/platform/x86/Kconfig
-> +++ b/drivers/platform/x86/Kconfig
-> @@ -1184,27 +1184,6 @@ config INTEL_MRFLD_PWRBTN
->           To compile this driver as a module, choose M here: the module
->           will be called intel_mrfld_pwrbtn.
->
-> -config INTEL_PMC_CORE
-> -       tristate "Intel PMC Core driver"
-> -       depends on PCI
-> -       depends on ACPI
-> -       help
-> -         The Intel Platform Controller Hub for Intel Core SoCs provides access
-> -         to Power Management Controller registers via various interfaces. This
-> -         driver can utilize debugging capabilities and supported features as
-> -         exposed by the Power Management Controller. It also may perform some
-> -         tasks in the PMC in order to enable transition into the SLPS0 state.
-> -         It should be selected on all Intel platforms supported by the driver.
-> -
-> -         Supported features:
-> -               - SLP_S0_RESIDENCY counter
-> -               - PCH IP Power Gating status
-> -               - LTR Ignore / LTR Show
-> -               - MPHY/PLL gating status (Sunrisepoint PCH only)
-> -               - SLPS0 Debug registers (Cannonlake/Icelake PCH)
-> -               - Low Power Mode registers (Tigerlake and beyond)
-> -               - PMC quirks as needed to enable SLPS0/S0ix
-> -
->  config INTEL_PMT_CLASS
->         tristate
->         help
-> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-> index 7ee369aab10d..43d36f8c36f1 100644
-> --- a/drivers/platform/x86/Makefile
-> +++ b/drivers/platform/x86/Makefile
-> @@ -128,7 +128,6 @@ obj-$(CONFIG_INTEL_UNCORE_FREQ_CONTROL)             += intel-uncore-frequency.o
->  obj-$(CONFIG_INTEL_BXTWC_PMIC_TMU)     += intel_bxtwc_tmu.o
->  obj-$(CONFIG_INTEL_CHTDC_TI_PWRBTN)    += intel_chtdc_ti_pwrbtn.o
->  obj-$(CONFIG_INTEL_MRFLD_PWRBTN)       += intel_mrfld_pwrbtn.o
-> -obj-$(CONFIG_INTEL_PMC_CORE)           += intel_pmc_core.o intel_pmc_core_pltdrv.o
->  obj-$(CONFIG_INTEL_PMT_CLASS)          += intel_pmt_class.o
->  obj-$(CONFIG_INTEL_PMT_TELEMETRY)      += intel_pmt_telemetry.o
->  obj-$(CONFIG_INTEL_PMT_CRASHLOG)       += intel_pmt_crashlog.o
-> diff --git a/drivers/platform/x86/intel/Kconfig b/drivers/platform/x86/intel/Kconfig
-> index f2eef337eb98..8ca021785f67 100644
-> --- a/drivers/platform/x86/intel/Kconfig
-> +++ b/drivers/platform/x86/intel/Kconfig
-> @@ -18,5 +18,6 @@ if X86_PLATFORM_DRIVERS_INTEL
->
->  source "drivers/platform/x86/intel/int33fe/Kconfig"
->  source "drivers/platform/x86/intel/int3472/Kconfig"
-> +source "drivers/platform/x86/intel/pmc/Kconfig"
->
->  endif # X86_PLATFORM_DRIVERS_INTEL
-> diff --git a/drivers/platform/x86/intel/Makefile b/drivers/platform/x86/intel/Makefile
-> index 0653055942d5..49962f4dfdec 100644
-> --- a/drivers/platform/x86/intel/Makefile
-> +++ b/drivers/platform/x86/intel/Makefile
-> @@ -6,3 +6,4 @@
->
->  obj-$(CONFIG_INTEL_CHT_INT33FE)                += int33fe/
->  obj-$(CONFIG_INTEL_SKL_INT3472)                += int3472/
-> +obj-$(CONFIG_INTEL_PMC_CORE)           += pmc/
-> diff --git a/drivers/platform/x86/intel/pmc/Kconfig b/drivers/platform/x86/intel/pmc/Kconfig
-> new file mode 100644
-> index 000000000000..b4c955a35674
-> --- /dev/null
-> +++ b/drivers/platform/x86/intel/pmc/Kconfig
-> @@ -0,0 +1,22 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +
-> +config INTEL_PMC_CORE
-> +       tristate "Intel PMC Core driver"
-> +       depends on PCI
-> +       depends on ACPI
-> +       help
-> +         The Intel Platform Controller Hub for Intel Core SoCs provides access
-> +         to Power Management Controller registers via various interfaces. This
-> +         driver can utilize debugging capabilities and supported features as
-> +         exposed by the Power Management Controller. It also may perform some
-> +         tasks in the PMC in order to enable transition into the SLPS0 state.
-> +         It should be selected on all Intel platforms supported by the driver.
-> +
-> +         Supported features:
-> +               - SLP_S0_RESIDENCY counter
-> +               - PCH IP Power Gating status
-> +               - LTR Ignore / LTR Show
-> +               - MPHY/PLL gating status (Sunrisepoint PCH only)
-> +               - SLPS0 Debug registers (Cannonlake/Icelake PCH)
-> +               - Low Power Mode registers (Tigerlake and beyond)
-> +               - PMC quirks as needed to enable SLPS0/S0ix
-> diff --git a/drivers/platform/x86/intel/pmc/Makefile b/drivers/platform/x86/intel/pmc/Makefile
-> new file mode 100644
-> index 000000000000..633a7598d6d6
-> --- /dev/null
-> +++ b/drivers/platform/x86/intel/pmc/Makefile
-> @@ -0,0 +1,5 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +
-> +obj-$(CONFIG_INTEL_PMC_CORE)   += intel_pmc_core.o
-> +obj-$(CONFIG_INTEL_PMC_CORE)   += intel_pmc_core_pltdrv.o
-> diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel/pmc/intel_pmc_core.c
-> similarity index 100%
-> rename from drivers/platform/x86/intel_pmc_core.c
-> rename to drivers/platform/x86/intel/pmc/intel_pmc_core.c
-> diff --git a/drivers/platform/x86/intel_pmc_core.h b/drivers/platform/x86/intel/pmc/intel_pmc_core.h
-> similarity index 100%
-> rename from drivers/platform/x86/intel_pmc_core.h
-> rename to drivers/platform/x86/intel/pmc/intel_pmc_core.h
-> diff --git a/drivers/platform/x86/intel_pmc_core_pltdrv.c b/drivers/platform/x86/intel/pmc/intel_pmc_core_pltdrv.c
-> similarity index 100%
-> rename from drivers/platform/x86/intel_pmc_core_pltdrv.c
-> rename to drivers/platform/x86/intel/pmc/intel_pmc_core_pltdrv.c
-> --
-> 2.25.1
->
+HEAD commit:    3dbdb38e Merge branch 'for-5.14' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=160c4854300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1700b0b2b41cd52c
+dashboard link: https://syzkaller.appspot.com/bug?extid=8c3af233123df0578a5c
+compiler:       Debian clang version 11.0.1-2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1652cdc4300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8c3af233123df0578a5c@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: use-after-free in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+BUG: KASAN: use-after-free in atomic_add_negative include/asm-generic/atomic-instrumented.h:556 [inline]
+BUG: KASAN: use-after-free in get_ucounts+0x28/0x160 kernel/ucount.c:152
+Write of size 4 at addr ffff888014fe2e1c by task syz-executor.0/14561
+
+CPU: 1 PID: 14561 Comm: syz-executor.0 Not tainted 5.13.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack_lvl+0x1ae/0x29f lib/dump_stack.c:96
+ print_address_description+0x66/0x3b0 mm/kasan/report.c:233
+ __kasan_report mm/kasan/report.c:419 [inline]
+ kasan_report+0x163/0x210 mm/kasan/report.c:436
+ check_region_inline mm/kasan/generic.c:135 [inline]
+ kasan_check_range+0x2b5/0x2f0 mm/kasan/generic.c:189
+ instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+ atomic_add_negative include/asm-generic/atomic-instrumented.h:556 [inline]
+ get_ucounts+0x28/0x160 kernel/ucount.c:152
+ set_cred_ucounts+0x220/0x2d0 kernel/cred.c:684
+ __sys_setuid+0x355/0x4a0 kernel/sys.c:623
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665d9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fcf0138f188 EFLAGS: 00000246 ORIG_RAX: 0000000000000069
+RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665d9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000003065ff
+RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
+R13: 00007ffd26c2c90f R14: 00007fcf0138f300 R15: 0000000000022000
+
+Allocated by task 14004:
+ kasan_save_stack mm/kasan/common.c:38 [inline]
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:434 [inline]
+ ____kasan_kmalloc+0xc4/0xf0 mm/kasan/common.c:513
+ kasan_kmalloc include/linux/kasan.h:263 [inline]
+ kmem_cache_alloc_trace+0x96/0x340 mm/slub.c:2997
+ kmalloc include/linux/slab.h:591 [inline]
+ kzalloc include/linux/slab.h:721 [inline]
+ alloc_ucounts+0x176/0x420 kernel/ucount.c:169
+ set_cred_ucounts+0x220/0x2d0 kernel/cred.c:684
+ __sys_setuid+0x355/0x4a0 kernel/sys.c:623
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Freed by task 14561:
+ kasan_save_stack mm/kasan/common.c:38 [inline]
+ kasan_set_track+0x3d/0x70 mm/kasan/common.c:46
+ kasan_set_free_info+0x1f/0x40 mm/kasan/generic.c:360
+ ____kasan_slab_free+0x109/0x150 mm/kasan/common.c:366
+ kasan_slab_free include/linux/kasan.h:229 [inline]
+ slab_free_hook mm/slub.c:1639 [inline]
+ slab_free_freelist_hook+0x1d8/0x290 mm/slub.c:1664
+ slab_free mm/slub.c:3224 [inline]
+ kfree+0xcf/0x2d0 mm/slub.c:4268
+ put_cred_rcu+0x221/0x400 kernel/cred.c:124
+ rcu_do_batch kernel/rcu/tree.c:2558 [inline]
+ rcu_core+0x906/0x14b0 kernel/rcu/tree.c:2793
+ __do_softirq+0x372/0x783 kernel/softirq.c:558
+
+Last potentially related work creation:
+ kasan_save_stack+0x27/0x50 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xee/0x120 mm/kasan/generic.c:348
+ insert_work+0x54/0x400 kernel/workqueue.c:1332
+ __queue_work+0x90e/0xc40 kernel/workqueue.c:1498
+ queue_work_on+0x111/0x200 kernel/workqueue.c:1525
+ queue_work include/linux/workqueue.h:507 [inline]
+ call_usermodehelper_exec+0x283/0x470 kernel/umh.c:435
+ kobject_uevent_env+0x1337/0x1700 lib/kobject_uevent.c:618
+ kobject_synth_uevent+0x3bf/0x900 lib/kobject_uevent.c:208
+ uevent_store+0x20/0x60 drivers/base/core.c:2370
+ kernfs_fop_write_iter+0x3b6/0x510 fs/kernfs/file.c:296
+ call_write_iter include/linux/fs.h:2114 [inline]
+ new_sync_write fs/read_write.c:518 [inline]
+ vfs_write+0xa39/0xc90 fs/read_write.c:605
+ ksys_write+0x171/0x2a0 fs/read_write.c:658
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Second to last potentially related work creation:
+ kasan_save_stack+0x27/0x50 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xee/0x120 mm/kasan/generic.c:348
+ insert_work+0x54/0x400 kernel/workqueue.c:1332
+ __queue_work+0x90e/0xc40 kernel/workqueue.c:1498
+ queue_work_on+0x111/0x200 kernel/workqueue.c:1525
+ queue_work include/linux/workqueue.h:507 [inline]
+ netdevice_queue_work drivers/infiniband/core/roce_gid_mgmt.c:659 [inline]
+ netdevice_event+0x836/0x970 drivers/infiniband/core/roce_gid_mgmt.c:802
+ notifier_call_chain kernel/notifier.c:83 [inline]
+ raw_notifier_call_chain+0xe7/0x170 kernel/notifier.c:410
+ __dev_notify_flags+0x306/0x5d0 net/core/dev.c:2122
+ dev_change_flags+0xe3/0x190 net/core/dev.c:8870
+ devinet_ioctl+0x908/0x1db0 net/ipv4/devinet.c:1142
+ inet_ioctl+0x31e/0x400 net/ipv4/af_inet.c:971
+ sock_do_ioctl+0xd6/0x300 net/socket.c:1087
+ sock_ioctl+0x444/0x6a0 net/socket.c:1214
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:1069 [inline]
+ __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:1055
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+The buggy address belongs to the object at ffff888014fe2e00
+ which belongs to the cache kmalloc-192 of size 192
+The buggy address is located 28 bytes inside of
+ 192-byte region [ffff888014fe2e00, ffff888014fe2ec0)
+The buggy address belongs to the page:
+page:ffffea000053f880 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff888014fe2500 pfn:0x14fe2
+flags: 0xfff00000000200(slab|node=0|zone=1|lastcpupid=0x7ff)
+raw: 00fff00000000200 ffffea0000779440 0000000700000007 ffff888011841a00
+raw: ffff888014fe2500 0000000080100008 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12c00(GFP_NOIO|__GFP_NOWARN|__GFP_NORETRY), pid 1, ts 9328207879, free_ts 7070662202
+ prep_new_page mm/page_alloc.c:2445 [inline]
+ get_page_from_freelist+0x779/0xa30 mm/page_alloc.c:4178
+ __alloc_pages+0x26c/0x5f0 mm/page_alloc.c:5386
+ alloc_page_interleave+0x22/0x1c0 mm/mempolicy.c:2147
+ alloc_slab_page mm/slub.c:1702 [inline]
+ allocate_slab+0xf1/0x540 mm/slub.c:1842
+ new_slab mm/slub.c:1905 [inline]
+ new_slab_objects mm/slub.c:2651 [inline]
+ ___slab_alloc+0x1cf/0x350 mm/slub.c:2814
+ __slab_alloc mm/slub.c:2854 [inline]
+ slab_alloc_node mm/slub.c:2936 [inline]
+ slab_alloc mm/slub.c:2978 [inline]
+ __kmalloc+0x2e7/0x390 mm/slub.c:4106
+ kmalloc include/linux/slab.h:596 [inline]
+ usb_alloc_urb+0x38/0x130 drivers/usb/core/urb.c:74
+ usb_internal_control_msg drivers/usb/core/message.c:95 [inline]
+ usb_control_msg+0x15f/0x470 drivers/usb/core/message.c:153
+ usb_get_descriptor+0xa1/0x3c0 drivers/usb/core/message.c:790
+ usb_get_configuration+0x2a8/0x650 drivers/usb/core/config.c:928
+ usb_enumerate_device drivers/usb/core/hub.c:2391 [inline]
+ usb_new_device+0x144/0x1790 drivers/usb/core/hub.c:2527
+ register_root_hub+0x214/0x550 drivers/usb/core/hcd.c:1010
+ usb_add_hcd+0xa24/0x1490 drivers/usb/core/hcd.c:2809
+ vhci_hcd_probe+0x16b/0x3e0 drivers/usb/usbip/vhci_hcd.c:1360
+ platform_probe+0x130/0x1b0 drivers/base/platform.c:1447
+ really_probe+0x385/0x1020 drivers/base/dd.c:576
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1355 [inline]
+ free_pcp_prepare+0xc29/0xd20 mm/page_alloc.c:1406
+ free_unref_page_prepare mm/page_alloc.c:3341 [inline]
+ free_unref_page+0x7e/0x550 mm/page_alloc.c:3420
+ kasan_depopulate_vmalloc_pte+0x66/0x80 mm/kasan/shadow.c:375
+ apply_to_pte_range mm/memory.c:2435 [inline]
+ apply_to_pmd_range mm/memory.c:2479 [inline]
+ apply_to_pud_range mm/memory.c:2515 [inline]
+ apply_to_p4d_range mm/memory.c:2551 [inline]
+ __apply_to_page_range+0x9e4/0xc40 mm/memory.c:2585
+ kasan_release_vmalloc+0x96/0xb0 mm/kasan/shadow.c:485
+ __purge_vmap_area_lazy+0xcba/0x18d0 mm/vmalloc.c:1652
+ try_purge_vmap_area_lazy mm/vmalloc.c:1671 [inline]
+ free_vmap_area_noflush+0x9a1/0xa10 mm/vmalloc.c:1713
+ free_unmap_vmap_area mm/vmalloc.c:1726 [inline]
+ remove_vm_area+0x1ff/0x220 mm/vmalloc.c:2465
+ vm_remove_mappings mm/vmalloc.c:2494 [inline]
+ __vunmap+0x32e/0xa70 mm/vmalloc.c:2559
+ free_work+0x66/0x90 mm/vmalloc.c:80
+ process_one_work+0x833/0x10c0 kernel/workqueue.c:2276
+ worker_thread+0xac1/0x1320 kernel/workqueue.c:2422
+ kthread+0x453/0x480 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+Memory state around the buggy address:
+ ffff888014fe2d00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff888014fe2d80: 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc
+>ffff888014fe2e00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                            ^
+ ffff888014fe2e80: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+ ffff888014fe2f00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
 
 
--- 
-With Best Regards,
-Andy Shevchenko
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
