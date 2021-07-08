@@ -2,132 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F15FF3C1B5A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 00:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E22273C1B60
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 00:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbhGHWJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 18:09:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38394 "EHLO
+        id S230343AbhGHWNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 18:13:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230120AbhGHWJJ (ORCPT
+        with ESMTP id S230238AbhGHWNJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 18:09:09 -0400
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB5CBC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 15:06:26 -0700 (PDT)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id ABA1C80719;
-        Fri,  9 Jul 2021 10:06:23 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1625781983;
-        bh=sBRB0Nuc+nWL4ZG5Reyu9Ge8Sg/kecBZKOXgpD3yAqs=;
-        h=From:To:Cc:Subject:Date;
-        b=U7QoTuBEpTdEn2HecinibcX3F12t8YCV2OhSccEsTaEDWCtJCyDU6Kef92TmMIblQ
-         PPcZdCzC1DZuHYTOGJar5rX3M+q8gYRvEz2eMGZ/xQldf0xr6GlQ5yVy+g2rFhADxI
-         6YujXT9n4d12HoAkX7FRoe6aHsSXAN3G1vktwpY8Ad9x2W/TMPTMzjZvFs7p5rT25E
-         PIFkGHfdCpHtSNTcTntTMK3uAcFh2qLegap+ndl+xGtnmGHAgdEU1zKb5VvoAa0a9o
-         FGelFJyCFquMxLFw1Qa0yYgSYVKX1tITXR17DqAy98uvEqr1/JCTdF9uGK05CIlx6n
-         gZsedrnhO9vlA==
-Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B60e776df0000>; Fri, 09 Jul 2021 10:06:23 +1200
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
-        by pat.atlnz.lc (Postfix) with ESMTP id 80E9A13ED8E;
-        Fri,  9 Jul 2021 10:06:23 +1200 (NZST)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-        id 7C798280055; Fri,  9 Jul 2021 10:06:23 +1200 (NZST)
-From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
-To:     linux@roeck-us.net, jdelvare@suse.com
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH] hwmon: (pmbus/bpa-rs600): Support BPD-RS600
-Date:   Fri,  9 Jul 2021 10:06:18 +1200
-Message-Id: <20210708220618.23576-1-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.32.0
+        Thu, 8 Jul 2021 18:13:09 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 443A1C061574;
+        Thu,  8 Jul 2021 15:10:27 -0700 (PDT)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 2ACB192009C; Fri,  9 Jul 2021 00:10:26 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 2583192009B;
+        Fri,  9 Jul 2021 00:10:26 +0200 (CEST)
+Date:   Fri, 9 Jul 2021 00:10:26 +0200 (CEST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: [PATCH v2] PCI: Sanitise firmware BAR assignments behind a PCI-PCI
+ bridge
+Message-ID: <alpine.DEB.2.21.2105031353140.2587@angie.orcam.me.uk>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=Sr3uF8G0 c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=e_q4qTt1xDgA:10 a=M5HzeCQB0xmgccp7If8A:9
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The BPD-RS600 is the DC version of the BPA-RS600. The PMBUS interface is
-the same between the two models. Keep the same compatible string but
-accept either BPA-RS600 or BPD-RS600 in the PMBUS_MFR_MODEL.
+Fix an issue with the Tyan Tomcat IV S1564D system, the BIOS of which 
+does not assign PCI buses beyond #2, where our resource reallocation 
+code preserves the reset default of an I/O BAR assignment outside its 
+upstream PCI-to-PCI bridge's I/O forwarding range for device 06:08.0 in 
+this log:
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+pci_bus 0000:00: max bus depth: 4 pci_try_num: 5
+[...]
+pci 0000:06:08.0: BAR 4: no space for [io  size 0x0020]
+pci 0000:06:08.0: BAR 4: trying firmware assignment [io  0xfce0-0xfcff]
+pci 0000:06:08.0: BAR 4: assigned [io  0xfce0-0xfcff]
+pci 0000:06:08.1: BAR 4: no space for [io  size 0x0020]
+pci 0000:06:08.1: BAR 4: trying firmware assignment [io  0xfce0-0xfcff]
+pci 0000:06:08.1: BAR 4: [io  0xfce0-0xfcff] conflicts with 0000:06:08.0 [io  0xfce0-0xfcff]
+pci 0000:06:08.1: BAR 4: failed to assign [io  size 0x0020]
+pci 0000:05:00.0: PCI bridge to [bus 06]
+pci 0000:05:00.0:   bridge window [mem 0xd8000000-0xd85fffff]
+[...]
+pci 0000:00:11.0: PCI bridge to [bus 01-06]
+pci 0000:00:11.0:   bridge window [io  0xe000-0xefff]
+pci 0000:00:11.0:   bridge window [mem 0xd8000000-0xdfffffff]
+pci 0000:00:11.0:   bridge window [mem 0xa8000000-0xafffffff 64bit pref]
+pci_bus 0000:00: No. 2 try to assign unassigned res
+[...]
+pci 0000:06:08.1: BAR 4: no space for [io  size 0x0020]
+pci 0000:06:08.1: BAR 4: trying firmware assignment [io  0xfce0-0xfcff]
+pci 0000:06:08.1: BAR 4: [io  0xfce0-0xfcff] conflicts with 0000:06:08.0 [io  0xfce0-0xfcff]
+pci 0000:06:08.1: BAR 4: failed to assign [io  size 0x0020]
+pci 0000:05:00.0: PCI bridge to [bus 06]
+pci 0000:05:00.0:   bridge window [mem 0xd8000000-0xd85fffff]
+[...]
+pci 0000:00:11.0: PCI bridge to [bus 01-06]
+pci 0000:00:11.0:   bridge window [io  0xe000-0xefff]
+pci 0000:00:11.0:   bridge window [mem 0xd8000000-0xdfffffff]
+pci 0000:00:11.0:   bridge window [mem 0xa8000000-0xafffffff 64bit pref]
+pci_bus 0000:00: No. 3 try to assign unassigned res
+pci 0000:00:11.0: resource 7 [io  0xe000-0xefff] released
+[...]
+pci 0000:06:08.1: BAR 4: assigned [io  0x2000-0x201f]
+pci 0000:05:00.0: PCI bridge to [bus 06]
+pci 0000:05:00.0:   bridge window [io  0x2000-0x2fff]
+pci 0000:05:00.0:   bridge window [mem 0xd8000000-0xd85fffff]
+[...]
+pci 0000:00:11.0: PCI bridge to [bus 01-06]
+pci 0000:00:11.0:   bridge window [io  0x1000-0x2fff]
+pci 0000:00:11.0:   bridge window [mem 0xd8000000-0xdfffffff]
+pci 0000:00:11.0:   bridge window [mem 0xa8000000-0xafffffff 64bit pref]
+pci_bus 0000:00: resource 4 [io  0x0000-0xffff]
+pci_bus 0000:00: resource 5 [mem 0x00000000-0xffffffff]
+pci_bus 0000:01: resource 0 [io  0x1000-0x2fff]
+pci_bus 0000:01: resource 1 [mem 0xd8000000-0xdfffffff]
+pci_bus 0000:01: resource 2 [mem 0xa8000000-0xafffffff 64bit pref]
+pci_bus 0000:02: resource 0 [io  0x1000-0x2fff]
+pci_bus 0000:02: resource 1 [mem 0xd8000000-0xd8bfffff]
+pci_bus 0000:04: resource 0 [io  0x1000-0x1fff]
+pci_bus 0000:04: resource 1 [mem 0xd8600000-0xd8afffff]
+pci_bus 0000:05: resource 0 [io  0x2000-0x2fff]
+pci_bus 0000:05: resource 1 [mem 0xd8000000-0xd85fffff]
+pci_bus 0000:06: resource 0 [io  0x2000-0x2fff]
+pci_bus 0000:06: resource 1 [mem 0xd8000000-0xd85fffff]
+
+-- note that the assignment of 0xfce0-0xfcff is outside the range of 
+0x2000-0x2fff assigned to bus #6:
+
+05:00.0 PCI bridge: Texas Instruments XIO2000(A)/XIO2200A PCI Express-to-PCI Bridge (rev 03) (prog-if 00 [Normal decode])
+        Flags: bus master, fast devsel, latency 0
+        Bus: primary=05, secondary=06, subordinate=06, sec-latency=0
+        I/O behind bridge: 00002000-00002fff
+        Memory behind bridge: d8000000-d85fffff
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/4 Enable-
+        Capabilities: [80] #0d [0000]
+        Capabilities: [90] Express PCI/PCI-X Bridge IRQ 0
+
+06:08.0 USB controller: VIA Technologies, Inc. VT82xx/62xx/VX700/8x0/900 UHCI USB 1.1 Controller (rev 61) (prog-if 00 [UHCI])
+	Subsystem: VIA Technologies, Inc. VT82xx/62xx/VX700/8x0/900 UHCI USB 1.1 Controller
+        Flags: bus master, medium devsel, latency 22, IRQ 5
+        I/O ports at fce0 [size=32]
+        Capabilities: [80] Power Management version 2
+
+06:08.1 USB controller: VIA Technologies, Inc. VT82xx/62xx/VX700/8x0/900 UHCI USB 1.1 Controller (rev 61) (prog-if 00 [UHCI])
+	Subsystem: VIA Technologies, Inc. VT82xx/62xx/VX700/8x0/900 UHCI USB 1.1 Controller
+        Flags: bus master, medium devsel, latency 22, IRQ 5
+        I/O ports at 2000 [size=32]
+        Capabilities: [80] Power Management version 2
+
+Since both 06:08.0 and 06:08.1 have the same reset defaults the latter 
+device escapes its fate and gets a good assignment owing to an address 
+conflict with the former device.
+
+Consequently when the device driver tries to access 06:08.0 according to 
+its designated address range it pokes at an unassigned I/O location, 
+likely subtractively decoded by the southbridge and forwarded to ISA, 
+causing the driver to become confused and bail out:
+
+uhci_hcd 0000:06:08.0: host system error, PCI problems?
+uhci_hcd 0000:06:08.0: host controller process error, something bad happened!
+uhci_hcd 0000:06:08.0: host controller halted, very bad!
+uhci_hcd 0000:06:08.0: HCRESET not completed yet!
+uhci_hcd 0000:06:08.0: HC died; cleaning up
+
+if good luck happens or if bad luck does, an infinite flood of messages:
+
+uhci_hcd 0000:06:08.0: host system error, PCI problems?
+uhci_hcd 0000:06:08.0: host controller process error, something bad happened!
+uhci_hcd 0000:06:08.0: host system error, PCI problems?
+uhci_hcd 0000:06:08.0: host controller process error, something bad happened!
+uhci_hcd 0000:06:08.0: host system error, PCI problems?
+uhci_hcd 0000:06:08.0: host controller process error, something bad happened!
+[...]
+
+making the system virtually unusuable.
+
+This is because we have code to deal with a situation from PR #16263, 
+where broken ACPI firmware reports the wrong address range for the host 
+bridge's decoding window and trying to adjust to the window causes more 
+breakage than leaving the BIOS assignments intact.
+
+This may work for a device directly on the root bus decoded by the host 
+bridge only, but for a device behind one or more PCI-to-PCI (or CardBus) 
+bridges those bridges' forwarding windows have been standardised and 
+need to be respected, or leaving whatever has been there in a downstream 
+device's BAR will have no effect as cycles for the addresses recorded 
+there will have no chance to appear on the bus the device has been 
+immediately attached to.
+
+Make sure then for a device behind a PCI-to-PCI bridge that any firmware 
+assignment is within the bridge's relevant forwarding window or do not 
+restore the assignment, fixing the system concerned as follows:
+
+pci_bus 0000:00: max bus depth: 4 pci_try_num: 5
+[...]
+pci 0000:06:08.0: BAR 4: no space for [io  size 0x0020]
+pci 0000:06:08.0: BAR 4: failed to assign [io  0xfce0-0xfcff]
+pci 0000:06:08.1: BAR 4: no space for [io  size 0x0020]
+pci 0000:06:08.1: BAR 4: failed to assign [io  0xfce0-0xfcff]
+[...]
+pci_bus 0000:00: No. 2 try to assign unassigned res
+[...]
+pci 0000:06:08.0: BAR 4: no space for [io  size 0x0020]
+pci 0000:06:08.0: BAR 4: failed to assign [io  0xfce0-0xfcff]
+pci 0000:06:08.1: BAR 4: no space for [io  size 0x0020]
+pci 0000:06:08.1: BAR 4: failed to assign [io  0xfce0-0xfcff]
+[...]
+pci_bus 0000:00: No. 3 try to assign unassigned res
+[...]
+pci 0000:06:08.0: BAR 4: assigned [io  0x2000-0x201f]
+pci 0000:06:08.1: BAR 4: assigned [io  0x2020-0x203f]
+
+and making device 06:08.0 work correctly.
+
+Cf. <https://bugzilla.kernel.org/show_bug.cgi?id=16263>
+
+Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+Fixes: 58c84eda0756 ("PCI: fall back to original BIOS BAR addresses")
+Cc: stable@vger.kernel.org # v2.6.35+
 ---
- drivers/hwmon/pmbus/bpa-rs600.c | 22 +++++++++++++++-------
- 1 file changed, 15 insertions(+), 7 deletions(-)
+For the record the system's bus topology is as follows:
 
-diff --git a/drivers/hwmon/pmbus/bpa-rs600.c b/drivers/hwmon/pmbus/bpa-rs=
-600.c
-index 2be69fedfa36..d205b41540ce 100644
---- a/drivers/hwmon/pmbus/bpa-rs600.c
-+++ b/drivers/hwmon/pmbus/bpa-rs600.c
-@@ -21,6 +21,8 @@
- #define BPARS600_MFR_IOUT_MAX	0xa6
- #define BPARS600_MFR_POUT_MAX	0xa7
-=20
-+enum chips { bpa_rs600, bpd_rs600 };
-+
- static int bpa_rs600_read_byte_data(struct i2c_client *client, int page,=
- int reg)
- {
- 	int ret;
-@@ -146,11 +148,19 @@ static struct pmbus_driver_info bpa_rs600_info =3D =
-{
- 	.read_word_data =3D bpa_rs600_read_word_data,
- };
-=20
-+static const struct i2c_device_id bpa_rs600_id[] =3D {
-+	{ "bpa-rs600", bpa_rs600 },
-+	{ "bpd-rs600", bpd_rs600 },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(i2c, bpa_rs600_id);
-+
- static int bpa_rs600_probe(struct i2c_client *client)
- {
- 	struct device *dev =3D &client->dev;
- 	u8 buf[I2C_SMBUS_BLOCK_MAX + 1];
- 	int ret;
-+	const struct i2c_device_id *mid;
-=20
- 	if (!i2c_check_functionality(client->adapter,
- 				     I2C_FUNC_SMBUS_READ_BYTE_DATA
-@@ -164,7 +174,11 @@ static int bpa_rs600_probe(struct i2c_client *client=
-)
- 		return ret;
- 	}
-=20
--	if (strncmp(buf, "BPA-RS600", 8)) {
-+	for (mid =3D bpa_rs600_id; mid->name[0]; mid++) {
-+		if (!strncasecmp(buf, mid->name, strlen(mid->name)))
-+			break;
-+	}
-+	if (!mid->name[0]) {
- 		buf[ret] =3D '\0';
- 		dev_err(dev, "Unsupported Manufacturer Model '%s'\n", buf);
- 		return -ENODEV;
-@@ -173,12 +187,6 @@ static int bpa_rs600_probe(struct i2c_client *client=
-)
- 	return pmbus_do_probe(client, &bpa_rs600_info);
- }
-=20
--static const struct i2c_device_id bpa_rs600_id[] =3D {
--	{ "bpars600", 0 },
--	{},
--};
--MODULE_DEVICE_TABLE(i2c, bpa_rs600_id);
--
- static const struct of_device_id __maybe_unused bpa_rs600_of_match[] =3D=
- {
- 	{ .compatible =3D "blutek,bpa-rs600" },
- 	{},
---=20
-2.32.0
+-[0000:00]-+-00.0
+           +-07.0
+           +-07.1
+           +-07.2
+           +-11.0-[0000:01-06]----00.0-[0000:02-06]--+-00.0-[0000:03]--
+           |                                         +-01.0-[0000:04]--+-00.0
+           |                                         |                 \-00.3
+           |                                         \-02.0-[0000:05-06]----00.0-[0000:06]--+-05.0
+           |                                                                                +-08.0
+           |                                                                                +-08.1
+           |                                                                                \-08.2
+           +-12.0
+           +-13.0
+           \-14.0
 
+Changes from v1:
+
+- Do restore firmware BAR assignments behind a PCI-PCI bridge, but only if 
+  within the bridge's forwarding window.
+
+- Update the change description and heading accordingly (was: PCI: Do not 
+  restore firmware BAR assignments behind a PCI-PCI bridge).
+---
+ drivers/pci/setup-res.c |   12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+linux-pci-setup-res-fw-address-nobridge.diff
+Index: linux-macro-ide-tty/drivers/pci/setup-res.c
+===================================================================
+--- linux-macro-ide-tty.orig/drivers/pci/setup-res.c
++++ linux-macro-ide-tty/drivers/pci/setup-res.c
+@@ -208,9 +208,19 @@ static int pci_revert_fw_address(struct
+ 	res->end = res->start + size - 1;
+ 	res->flags &= ~IORESOURCE_UNSET;
+ 
++	/*
++	 * If we're behind a P2P or CardBus bridge, make sure we're
++	 * inside the relevant forwarding window, or otherwise the
++	 * assignment must have been bogus and accesses intended for
++	 * the range assigned would not reach the device anyway.
++	 * On the root bus accept anything under the assumption the
++	 * host bridge will let it through.
++	 */
+ 	root = pci_find_parent_resource(dev, res);
+ 	if (!root) {
+-		if (res->flags & IORESOURCE_IO)
++		if (dev->bus->parent)
++			return -ENXIO;
++		else if (res->flags & IORESOURCE_IO)
+ 			root = &ioport_resource;
+ 		else
+ 			root = &iomem_resource;
