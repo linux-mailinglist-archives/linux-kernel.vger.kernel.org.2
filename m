@@ -2,176 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A7063BF3F1
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 04:23:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E22A3BF3F0
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 04:23:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230401AbhGHCZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 22:25:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58156 "EHLO
+        id S230359AbhGHCZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 22:25:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230372AbhGHCZq (ORCPT
+        with ESMTP id S230194AbhGHCZk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 22:25:46 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26458C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 19:23:05 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id v17so2101809qvw.12
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 19:23:05 -0700 (PDT)
+        Wed, 7 Jul 2021 22:25:40 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D81C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 19:22:58 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id y4so1876744pgl.10
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 19:22:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=lST2GatSsqwk3Z8FCgmMrt0ILXDDrNipd0HQcGxijfg=;
-        b=FAlLOPyJ4H7IU5p4eQxNVLd+Rt3wbUfxsZhaqIJKkrpRxeFe6vIiJ/xlTa0AlGa1XB
-         9KRxcAvIhtvdWrHpY+Ldv7aP3Iv/P+5I14p2f5bfFTGgMzGc7GhOfb+WyldJPOIjXA0u
-         u1xeW8BFARWocufzyI/+0E1gWlFlN4iDilER/unfMN7E+/I8ddaHnYUDpBQN0IbnhHNa
-         N97Y9m4H/4F7/S7u84Htw4YsrweJICinmoPNrc9QRxZXW6uCvFqX+fsAjwPyibwiubYW
-         qRml9wQdmjc7e8LjveU0mFk3wMcB3J6zXN02qiICqF2acuprTPIw4GGyYZNsO23Baom2
-         YAtg==
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=L9ZzMO/peqn6RjqikFr8dYXKCUUURvXv/xvzuiz9Gcg=;
+        b=sqVUCblt6YbpHOIC+8fh382fu2yduVloIOccYtsHNuLy2665lyxR/g9GUDe1Vs8ofD
+         rNTEBWrbzY8rTWdro1WR+QUkgdghK7JSomCw03NMBMLeBmBbdMWfZ0kMaBVrjUnFFn/J
+         FU1RcHjuhD8ylUQJDGUtnTvwx3g+QA4XhcOhCxIyYi603WD91GSzxNFAVmoWdaivaeIy
+         T33502MZo28xIZfltFPmhbQjx7010qn0AvjbLVqcXb9b91n44dvvFki8ErUCSJoCi0dK
+         3zJaqUxx059uCRPY+5JWgl4dcioI4VYaXheUxR4r0am2vwZ9Ji/RuXSflMzz5+HfPKnm
+         ZmGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=lST2GatSsqwk3Z8FCgmMrt0ILXDDrNipd0HQcGxijfg=;
-        b=TbUEkPOJkftxKePNR663E4IkR/kttH2gNpuBdv/oNaqzieqr8mujO4c4wdaHiU+1ry
-         EG+71lMYEICN1zv2OIq/6v2QnvT7bbi0DwnaUuzoDY9Fy+V0N9hICkQF5lfSc0CdSoo+
-         iYqvQMl9U7d9vIk6wks/bfza3c6ERiK5G0w0IKFmo0HegRbCviemV5RMgFqEpmUouTZ8
-         t779S/u/mgrSWb+AqsePo0pVyJIPb3ABZBIBWMvRxNrqQuW44GE890huAu8cz56j13bo
-         88zjkPWITXiQ3E3SgsPGdjzlmiKmgkxVokaucf6SxYHVTVEUvMrRrNJS3uHbtjB1Cos1
-         3fVw==
-X-Gm-Message-State: AOAM531kFG/WyV7TXhgXkIwtzAs38X0fZQZ3qjliPiFPtRJYyFCi9S+w
-        UxJfupf4bLlESVGBi6JzYfEq8ptXhGZKEw6cxgLQ
-X-Google-Smtp-Source: ABdhPJy9HTVKpGucbawiqf7KNb+G9oMYcH6YLEKujjy13G56omVCNN8DzjnFWfdTDwgGfkVbxQGFwY3zZDjxWqqk7GM=
-X-Received: by 2002:a05:6214:4e2:: with SMTP id cl2mr5425980qvb.55.1625710983970;
- Wed, 07 Jul 2021 19:23:03 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=L9ZzMO/peqn6RjqikFr8dYXKCUUURvXv/xvzuiz9Gcg=;
+        b=atH9vBbJ6VvyCSjkHxmDUw8yVek33Nf7ihGRwHYI9VDXRhsLD4HTBmGOPy/1WdOGyd
+         bTJFuRBHyval4ctD/98zUJayVdZRadZs6P2bKnywORuzTt+aWhKoIpGCCf2tp0sye3bF
+         UIYXjGi5kwtLRCTcu8K5XJja69k5enTOGndZwntz+KtabS/U5z61mbYuyqxrC79P/Kio
+         ArqtAn34ULmif98PYU95ArQkijRgz7o6u76tB/uEMRDKXP83uEg9nXVDXuMm+cSp399A
+         r1pb2xwpDvg2Wid/u7x1hzZNkwqW1TJ92++AoomZvgKgM+fz/gEU0KNEyLgktyxIqdP2
+         uxUA==
+X-Gm-Message-State: AOAM531iYR7a78UDw4HaKVYRqpNYbalJTTxaeBmkPMer4xxuD3r+V6oL
+        wHxeCyVMJoM9KnMoqVcbEs3bBlbUPCB4CA==
+X-Google-Smtp-Source: ABdhPJxjwp0VZUWtk582B8D83sqx5L5ovUaeeEilDOLIBZHiqCNSo05hlDyZZDoZ78ZHZjAgPKJ/9g==
+X-Received: by 2002:a63:1308:: with SMTP id i8mr29514509pgl.19.1625710978256;
+        Wed, 07 Jul 2021 19:22:58 -0700 (PDT)
+Received: from [192.168.10.23] (219-90-184-65.ip.adam.com.au. [219.90.184.65])
+        by smtp.gmail.com with UTF8SMTPSA id j15sm7712642pjn.28.2021.07.07.19.22.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Jul 2021 19:22:57 -0700 (PDT)
+Message-ID: <894b13be-20a3-6855-0136-6419700fa3e9@ozlabs.ru>
+Date:   Thu, 8 Jul 2021 12:22:53 +1000
 MIME-Version: 1.0
-References: <20210706124440.3247283-1-lerobert@google.com> <s5hbl7e8ib1.wl-tiwai@suse.de>
-In-Reply-To: <s5hbl7e8ib1.wl-tiwai@suse.de>
-From:   Robert Lee <lerobert@google.com>
-Date:   Thu, 8 Jul 2021 10:22:46 +0800
-Message-ID: <CAOM6g_B2s7Dqt3srp3U+8s0QLEogjkT=q-nmmRyDXPPs+Tdt8Q@mail.gmail.com>
-Subject: Re: [PATCH] ALSA: compress: allow to leave draining state when
- pausing in draining
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     vkoul@kernel.org, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        carterhsu@google.com, zxinhui@google.com, bubblefang@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:89.0) Gecko/20100101
+ Thunderbird/89.0
+Subject: Re: [PATCH kernel] KVM: PPC: Book3S HV: Make unique debugfs nodename
+Content-Language: en-US
+To:     Fabiano Rosas <farosas@linux.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, kvm-ppc@vger.kernel.org,
+        Paul Mackerras <paulus@ozlabs.org>
+References: <20210707041344.3803554-1-aik@ozlabs.ru>
+ <87zguynhfo.fsf@linux.ibm.com>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+In-Reply-To: <87zguynhfo.fsf@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Takashi,
-Nice catch. I make a change and mail patch v2 for reviewing.
-
-thanks,
-Robert.
 
 
-Takashi Iwai <tiwai@suse.de> =E6=96=BC 2021=E5=B9=B47=E6=9C=887=E6=97=A5 =
-=E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=887:38=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On Tue, 06 Jul 2021 14:44:40 +0200,
-> Robert Lee wrote:
-> >
-> > When compress offload pauses in draining state, not all platforms
-> > need to keep in draining state. Some platforms may call drain or
-> > partial drain again when resume from pause in draining, so it needs
-> > to wake up from snd_compress_wait_for_drain() in this case.
-> >
-> > Call API snd_compr_leave_draining_in_pause(), if the platform
-> > doesn't need to keep in draining state when pause in draining
-> > state.
-> >
-> > Signed-off-by: Robert Lee <lerobert@google.com>
->
-> Well, the logic is a bit confusing (hard to understand what really
-> "leave-draining-in-pause" actually means) but also error-prone;
-> e.g. you left pause_in_draining flag set while changing the state to
-> SNDRV_PCM_STATE_PAUSED.  This will keep the pause_in_draining flag
-> even after snd_compr_resume() call.
->
->
-> thanks,
->
-> Takashi
->
-> > ---
-> >  include/sound/compress_driver.h | 14 ++++++++++++++
-> >  sound/core/compress_offload.c   |  7 ++++++-
-> >  2 files changed, 20 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/include/sound/compress_driver.h b/include/sound/compress_d=
-river.h
-> > index 277087f635f3..e16524a93a14 100644
-> > --- a/include/sound/compress_driver.h
-> > +++ b/include/sound/compress_driver.h
-> > @@ -145,6 +145,7 @@ struct snd_compr_ops {
-> >   * @lock: device lock
-> >   * @device: device id
-> >   * @use_pause_in_draining: allow pause in draining, true when set
-> > + * @leave_draining_in_pause: leave draining state when pausing in drai=
-ning
-> >   */
-> >  struct snd_compr {
-> >       const char *name;
-> > @@ -156,6 +157,7 @@ struct snd_compr {
-> >       struct mutex lock;
-> >       int device;
-> >       bool use_pause_in_draining;
-> > +     bool leave_draining_in_pause;
-> >  #ifdef CONFIG_SND_VERBOSE_PROCFS
-> >       /* private: */
-> >       char id[64];
-> > @@ -182,6 +184,18 @@ static inline void snd_compr_use_pause_in_draining=
-(struct snd_compr_stream *subs
-> >       substream->device->use_pause_in_draining =3D true;
-> >  }
-> >
-> > +/**
-> > + * snd_compr_leave_draining_in_pause - Leave draining state when pause=
- in draining
-> > + * @substream: compress substream to set
-> > + *
-> > + * In some platform, we need to leave draining state when we use pause=
- in draining.
-> > + * Add API to allow leave draining state.
-> > + */
-> > +static inline void snd_compr_leave_draining_in_pause(struct snd_compr_=
-stream *substream)
-> > +{
-> > +     substream->device->leave_draining_in_pause =3D true;
-> > +}
-> > +
-> >  /* dsp driver callback apis
-> >   * For playback: driver should call snd_compress_fragment_elapsed() to=
- let the
-> >   * framework know that a fragment has been consumed from the ring buff=
-er
-> > diff --git a/sound/core/compress_offload.c b/sound/core/compress_offloa=
-d.c
-> > index 21ce4c056a92..9c7bd4db6ecd 100644
-> > --- a/sound/core/compress_offload.c
-> > +++ b/sound/core/compress_offload.c
-> > @@ -719,8 +719,13 @@ static int snd_compr_pause(struct snd_compr_stream=
- *stream)
-> >               if (!stream->device->use_pause_in_draining)
-> >                       return -EPERM;
-> >               retval =3D stream->ops->trigger(stream, SNDRV_PCM_TRIGGER=
-_PAUSE_PUSH);
-> > -             if (!retval)
-> > +             if (!retval) {
-> >                       stream->pause_in_draining =3D true;
-> > +                     if (stream->device->leave_draining_in_pause) {
-> > +                             stream->runtime->state =3D SNDRV_PCM_STAT=
-E_PAUSED;
-> > +                             wake_up(&stream->runtime->sleep);
-> > +                     }
-> > +             }
-> >               break;
-> >       default:
-> >               return -EPERM;
-> > --
-> > 2.32.0.93.g670b81a890-goog
-> >
+On 08/07/2021 03:48, Fabiano Rosas wrote:
+> Alexey Kardashevskiy <aik@ozlabs.ru> writes:
+> 
+>> Currently it is vm-$currentpid which works as long as there is just one
+>> VM per the userspace (99.99% cases) but produces a bunch
+>> of "debugfs: Directory 'vm16679' with parent 'kvm' already present!"
+>> when syzkaller (syscall fuzzer) is running so only one VM is present in
+>> the debugfs for a given process.
+>>
+>> This changes the debugfs node to include the LPID which alone should be
+>> system wide unique. This leaves the existing pid for the convenience of
+>> matching the VM's debugfs with the running userspace process (QEMU).
+>>
+>> Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+> 
+> Reviewed-by: Fabiano Rosas <farosas@linux.ibm.com>
+
+thanks.
+
+Strangely it also fixes a bunch of
+
+BUG: unable to handle kernel NULL pointer dereference in corrupted
+BUG: unable to handle kernel paging request in corrupted
+
+I was having 3 of these for every hour of running syzkaller and not 
+anymore with this patch.
+
+
+> 
+>> ---
+>>   arch/powerpc/kvm/book3s_hv.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+>> index 1d1fcc290fca..0223ddc0eed0 100644
+>> --- a/arch/powerpc/kvm/book3s_hv.c
+>> +++ b/arch/powerpc/kvm/book3s_hv.c
+>> @@ -5227,7 +5227,7 @@ static int kvmppc_core_init_vm_hv(struct kvm *kvm)
+>>   	/*
+>>   	 * Create a debugfs directory for the VM
+>>   	 */
+>> -	snprintf(buf, sizeof(buf), "vm%d", current->pid);
+>> +	snprintf(buf, sizeof(buf), "vm%d-lp%ld", current->pid, lpid);
+>>   	kvm->arch.debugfs_dir = debugfs_create_dir(buf, kvm_debugfs_dir);
+>>   	kvmppc_mmu_debugfs_init(kvm);
+>>   	if (radix_enabled())
+
+-- 
+Alexey
