@@ -2,116 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A53F63C1753
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 18:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9ECF3C1741
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 18:44:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbhGHQtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 12:49:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48950 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229468AbhGHQtK (ORCPT
+        id S229624AbhGHQrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 12:47:09 -0400
+Received: from 185-125-188-181.canonical.com ([185.125.188.181]:58476 "EHLO
+        smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229524AbhGHQrH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 12:49:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625762787;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SYpoSLky/52YWrPuCvWYEFOuiX2LDrIjQnGVL8zOqkg=;
-        b=DDJRJeKx7X2mBXRTfiN71eMqbUa7DVDi+4prn3TxRHearhXcJB1dwJzl4MssMr4KFIDm1s
-        24K+AkyQdtnHw3SvmZcFBo4WXqGfKkwp37FPEqg4/H9Tv3fWsEgIb7V48qhj0Jy1mWFPyZ
-        YIA7uEMFkOpwxI9gALStOPx7TJoHcEo=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-423-jamPhYVsMZGv6i0StPvTWA-1; Thu, 08 Jul 2021 12:46:26 -0400
-X-MC-Unique: jamPhYVsMZGv6i0StPvTWA-1
-Received: by mail-ej1-f72.google.com with SMTP id p20-20020a1709064994b02903cd421d7803so2099732eju.22
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 09:46:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SYpoSLky/52YWrPuCvWYEFOuiX2LDrIjQnGVL8zOqkg=;
-        b=Fw3Y5i50z1e9yyvSC+ikOV6FWD3na3HaHjHucw0tXyp7w35op59T/SjAFM2+qOHUAB
-         3cp6072qKJHrDJ8HVC0VYTWelE72mOwmzY7RrJRdYECpxIimVuA7+nmxe5wTUZvlEXqo
-         QvdwrW+EpM7C4+UssFZ5CnOxtCiZywm0F9l7M9uI99qxJQFK+gqHzVz1iQMYonGKZU+u
-         4uTDDUPflv0M1chmZUx6c795FYBZMz0mbw1DVVopxZmcAEtUCVG16xIy6vnIawy5riG3
-         zWzGNQnHzKckQkyLrxD4ghFUApDqLpcMRnDM/Ty2SOdyfQJsRiCMdbvh/AA8+UbrpOA6
-         RLIw==
-X-Gm-Message-State: AOAM532kY1rGMHyEVPDjrON9eZQ8doQmeJ9VJcsWcWyN2+m+KyQTpQ3a
-        AOfZNiKFK/oE8vLwjIn7r1iZcuv5Ne2mohB0tnihKdvuyMpOhkfxshnacjA1+kYTJ8zFog1eY/O
-        ndO80sFwTzoQKI9S5sFEDWj4lrDDusvyEPDrhWfcz6YEFa17mz/6ck8gGN5RGU8VYgCtxOaJbUz
-        oL
-X-Received: by 2002:a17:906:60d3:: with SMTP id f19mr32679803ejk.413.1625762785372;
-        Thu, 08 Jul 2021 09:46:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxKy10UxVtQ7oO9YwYzVTP/mgRlPlJX9CqrvtVvMkjx6B/EzHogyUAAvrBXNOPeRtNzur5mew==
-X-Received: by 2002:a17:906:60d3:: with SMTP id f19mr32679767ejk.413.1625762785157;
-        Thu, 08 Jul 2021 09:46:25 -0700 (PDT)
-Received: from [192.168.10.67] ([93.56.169.140])
-        by smtp.gmail.com with ESMTPSA id h9sm1220167ejk.15.2021.07.08.09.46.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Jul 2021 09:46:24 -0700 (PDT)
-Subject: Re: [PATCH] KVM: x86/pmu: Clear anythread deprecated bit when 0xa
- leaf is unsupported on the SVM
-To:     Like Xu <like.xu.linux@gmail.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Stephane Eranian <eranian@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210628074354.33848-1-likexu@tencent.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <7f5d7af0-a48e-5bca-34e2-2a6f2bdab448@redhat.com>
-Date:   Thu, 8 Jul 2021 18:44:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 8 Jul 2021 12:47:07 -0400
+Received: from localhost (1.general.khfeng.us.vpn [10.172.68.174])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 326D4406F3;
+        Thu,  8 Jul 2021 16:44:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1625762664;
+        bh=XUa/LxK/s1WBFKG79HL0lzKF1+tqdljpwl7aEBKLbJM=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=BuT2lY6wzvJJPmPGVhx86BZjbaETEf1NHcmMrLPexly4/T/vxGGwwblXcUMxU7ken
+         yeFUZ5PR8H9hJQDDkQdieq5rqe5yPMQOhLOi/eMuzCrnmcizo0uCBbR9CZgGZfVHto
+         z5rYmTrd8eZ5eI692SiIa5+aqR/MojPO7uImWVNkXEvZnaSoQoGMLPccBehwlgZ05A
+         L5BlT94SDGbwJtU6ly5wtyZMA1uaPrRDe97IIlwXU2c+dy3wyUj7ul2o0JKenHfqO8
+         EUMMl5IKY4tw4fnea0JNBpYA7MCQQnMhNXVB3F7jf+nPxSMzkcUHibR6KMNLrlZUC+
+         GKq35NGeWAGrQ==
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     joro@8bytes.org, will@kernel.org
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        iommu@lists.linux-foundation.org (open list:AMD IOMMU (AMD-VI)),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] iommu/amd: Keep swiotlb enabled to ensure devices with 32bit DMA still work
+Date:   Fri,  9 Jul 2021 00:44:18 +0800
+Message-Id: <20210708164418.974092-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210628074354.33848-1-likexu@tencent.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/06/21 09:43, Like Xu wrote:
-> The AMD platform does not support the functions Ah CPUID leaf. The returned
-> results for this entry should all remain zero just like the native does:
-> 
-> AMD host:
->     0x0000000a 0x00: eax=0x00000000 ebx=0x00000000 ecx=0x00000000 edx=0x00000000
-> (uncanny) AMD guest:
->     0x0000000a 0x00: eax=0x00000000 ebx=0x00000000 ecx=0x00000000 edx=0x00008000
-> 
-> Fixes: cadbaa039b99 ("perf/x86/intel: Make anythread filter support conditional")
-> Signed-off-by: Like Xu <likexu@tencent.com>
-> ---
->   arch/x86/kvm/cpuid.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 0edda1fc4fe7..b1808e4fc7d5 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -765,7 +765,8 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
->   
->   		edx.split.num_counters_fixed = min(cap.num_counters_fixed, MAX_FIXED_COUNTERS);
->   		edx.split.bit_width_fixed = cap.bit_width_fixed;
-> -		edx.split.anythread_deprecated = 1;
-> +		if (cap.version)
-> +			edx.split.anythread_deprecated = 1;
->   		edx.split.reserved1 = 0;
->   		edx.split.reserved2 = 0;
->   
-> 
+We are seeing kernel panic on rtw88 probe routine because swiotlb isn't
+set:
+[  252.036773] rtw_8821ce 0000:06:00.0: enabling device (0000 -> 0003)
+[  252.037084] Kernel panic - not syncing: Can not allocate SWIOTLB buffer earlier and can't now provide you with the DMA bounce buffer
+[  252.037146] CPU: 7 PID: 1174 Comm: modprobe Not tainted 5.13.0+ #39
+[  252.037175] Hardware name: HP HP ProDesk 405 G6 Small Form Factor PC/8835, BIOS S05 Ver. 02.04.00 06/03/2021
+[  252.037218] Call Trace:
+[  252.037231]  dump_stack_lvl+0x4a/0x5f
+[  252.037251]  dump_stack+0x10/0x12
+[  252.037267]  panic+0x101/0x2e3
+[  252.037284]  swiotlb_tbl_map_single.cold+0xc/0x73
+[  252.037305]  ? __mod_lruvec_page_state+0x95/0xb0
+[  252.037329]  ? kmalloc_large_node+0x8c/0xb0
+[  252.037348]  ? __netdev_alloc_skb+0x44/0x160
+[  252.037370]  swiotlb_map+0x61/0x240
+[  252.037387]  ? __alloc_skb+0xed/0x1e0
+[  252.037404]  dma_map_page_attrs+0x12c/0x1f0
+[  252.037422]  ? __netdev_alloc_skb+0x44/0x160
+[  252.037443]  rtw_pci_probe+0x30f/0x872 [rtw88_pci]
+[  252.037467]  local_pci_probe+0x48/0x80
+[  252.037487]  pci_device_probe+0x105/0x1c0
+[  252.037506]  really_probe+0x1fe/0x3f0
+[  252.037524]  __driver_probe_device+0x109/0x180
+[  252.037545]  driver_probe_device+0x23/0x90
+[  252.037564]  __driver_attach+0xac/0x1b0
+[  252.037582]  ? __device_attach_driver+0xe0/0xe0
+[  252.037602]  bus_for_each_dev+0x7e/0xc0
+[  252.037620]  driver_attach+0x1e/0x20
+[  252.037637]  bus_add_driver+0x135/0x1f0
+[  252.037654]  driver_register+0x95/0xf0
+[  252.037672]  ? 0xffffffffc0fa0000
+[  252.037687]  __pci_register_driver+0x68/0x70
+[  252.037707]  rtw_8821ce_driver_init+0x23/0x1000 [rtw88_8821ce]
+[  252.037734]  do_one_initcall+0x48/0x1d0
+[  252.037752]  ? __cond_resched+0x1a/0x50
+[  252.037771]  ? kmem_cache_alloc_trace+0x29d/0x3c0
+[  252.037792]  do_init_module+0x62/0x280
+[  252.037810]  load_module+0x2577/0x27c0
+[  252.037862]  __do_sys_finit_module+0xbf/0x120
+[  252.037877]  __x64_sys_finit_module+0x1a/0x20
+[  252.037893]  do_syscall_64+0x3b/0xc0
+[  252.037907]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[  252.037925] RIP: 0033:0x7ff5a2f9408d
+[  252.037938] Code: 27 0d 00 0f 05 eb a9 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d ab dd 0c 00 f7 d8 64 89 01 48
+[  252.037993] RSP: 002b:00007fffaa89dce8 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+[  252.038017] RAX: ffffffffffffffda RBX: 000055fd4f881080 RCX: 00007ff5a2f9408d
+[  252.038039] RDX: 0000000000000000 RSI: 000055fd4f63ec02 RDI: 0000000000000009
+[  252.038063] RBP: 0000000000040000 R08: 0000000000000000 R09: 000055fd4f8885b0
+[  252.038085] R10: 0000000000000009 R11: 0000000000000246 R12: 000055fd4f63ec02
+[  252.038107] R13: 000055fd4f881120 R14: 0000000000000000 R15: 000055fd4f88e350
+[  252.038293] Kernel Offset: 0x30600000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
 
-Queued, thanks.
+Because the Realtek WiFi (PCI 06:00.0) is in the same IOMMU group as AMD
+graphics (PCI 01:00.0),
+[    1.326166] pci 0000:01:00.0: Adding to iommu group 0
+...
+[    1.326268] pci 0000:06:00.0: Adding to iommu group 0
 
-Paolo
+And the AMD graphics supports iommu_v2, so the group uses intentity
+mapping based on the query from amd_iommu_def_domain_type().
+
+However, the Realtek WiFi only supports 32bit DMA, so we need to
+make sure swiotlb is enabled.
+
+The swiotlb is enabled by pci_swiotlb_detect_4gb() to support legacy
+devices, but it gets disabled later by amd_iommu_init_dma_ops(). Keep
+swiotlb enabled to resolve the issue.
+
+Cc: Robin Murphy <robin.murphy@arm.com>
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+v2:
+ - Keep swiotlb enabled if it's already set.
+ - Some wording change.
+
+ drivers/iommu/amd/iommu.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+index 811a49a95d04..a893a6b6aeba 100644
+--- a/drivers/iommu/amd/iommu.c
++++ b/drivers/iommu/amd/iommu.c
+@@ -1774,7 +1774,8 @@ void amd_iommu_domain_update(struct protection_domain *domain)
+ 
+ static void __init amd_iommu_init_dma_ops(void)
+ {
+-	swiotlb = (iommu_default_passthrough() || sme_me_mask) ? 1 : 0;
++	if (!swiotlb)
++		swiotlb = (iommu_default_passthrough() || sme_me_mask) ? 1 : 0;
+ 
+ 	if (amd_iommu_unmap_flush)
+ 		pr_info("IO/TLB flush on unmap enabled\n");
+-- 
+2.31.1
 
