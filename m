@@ -2,70 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67F413C1AD9
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 23:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 611AB3C1ADB
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 23:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231312AbhGHVMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 17:12:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37890 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231217AbhGHVMp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 17:12:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 6737F61879;
-        Thu,  8 Jul 2021 21:10:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625778603;
-        bh=ycO46sPn9SF/y2HH4YmUKWneyoVGQpxdzkURV02pbG0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=drer0/uoE6R0++zh6+i/AzY6ojbKOoqTtwfgfKFY0U38eMYNSVn3FlnyhpZ/TJaZa
-         gWAPmL9WjRlmJwMWdeMMeZQ+vrQWk3Bz4T5EGoW1muo1Cwz2c0nKuyxU8poUA4Oku0
-         /0IId0uodJx4gkELqyvnjg3bzwsRcPK/aGicBEvSxI0ujL+4eo5uDsfFDgIWlw7jI6
-         SLEQgXDvyIZsl/TF642MPQSMWUWdDe4IgymZ4JjC5StQEMS1/xVm/OiBTcqFLtSypX
-         Fczd//CfdaH1mWLv07fqdO1gye+oa0xyq+4/2ac/wv9paDehPEzieK7w5uHxHCW/iX
-         C73tRAsvrHAhg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5D40A60A4D;
-        Thu,  8 Jul 2021 21:10:03 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231162AbhGHVPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 17:15:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230238AbhGHVPS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 17:15:18 -0400
+Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1098BC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 14:12:36 -0700 (PDT)
+Received: by mail-vs1-xe2b.google.com with SMTP id g25so4433989vss.3
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 14:12:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=f1NHfW9F+V78jjSXkJMUixUMtEy56ReUIzgPfUrq2/k=;
+        b=kX91r1j3b1eond5H8vs2cxeIPsnS3WnX4y41EibTl/bRNtJ+cvF05DPNYodSGN7rVl
+         a4wPQTrKiR0MODFixrsSBlfMIf9MmbyDgxPUkorZQBy5HR3F3b2E7XOSoSym+94bTRjk
+         sp+86F24xZ60jEwDZ/CaNsVK6Ns53eFJ3w8GLuwCUYQkI0RVU2aCtR/wmIgfnpqFuedD
+         iw9HyEyxAS086IPLo39bzeS5KBMHgyHlFRTEX1GbVXHR4A9ivJRrh0RqyuP+4UaEq4sg
+         /KQM1RWfaf1/ba2uau1H0GTT0lKQgSrVrFOAmBV+GQ1vMRLuX5tfgSxX+hZMobqlmPWF
+         SArA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=f1NHfW9F+V78jjSXkJMUixUMtEy56ReUIzgPfUrq2/k=;
+        b=TE2GphYu3EwmEK4YBOJkE8ovkiGTRSkKmMO2CeaJmsAOyvV52xFLmgBORzs+H50SA3
+         eypuJCL9ua6Mh1WT4Zq21F3td/YFReXRdEr570z7HrlzNg6gugpoIaq8SNMMJJc/6Anu
+         SPbVcNZghYELVbthv3gKbpiGZbealK/DvOoGt4CqPtiHOI23oVkc4/YM5e4xFZ+W1kAr
+         9iXrlemR3XGh9AmHwS0ANSnAr3HQbyhwxOQ+7cn/r8ASSFktQgLylZus0NI0eDHftAC+
+         TUmW5BGk+UyeybIWCTMjzMC6DN5/1C1o0nRLlHvqk6yzaj5qhEapoZSwtd1Qs3Pzm/2E
+         U+7g==
+X-Gm-Message-State: AOAM533LUQvHUNtYKxv+aRY+XYrnALYwGsqXqd4tNFZIb3kS+xzh9PH5
+        BdtZW641w4xHiDT8ESgB4aDfSdONLJ9QBfndeQS14Q==
+X-Google-Smtp-Source: ABdhPJzjcQRpPyO+uiq9mWg8ubZa2vCyJpTZozBlll1pHMwAWuxcR59BDzuLnrWh4uOPYGHV+z02Je619Y5mcf82ISM=
+X-Received: by 2002:a67:d998:: with SMTP id u24mr30784838vsj.16.1625778754878;
+ Thu, 08 Jul 2021 14:12:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: microchip: sparx5: fix kconfig warning
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162577860337.27238.17965837673029609536.git-patchwork-notify@kernel.org>
-Date:   Thu, 08 Jul 2021 21:10:03 +0000
-References: <20210708173310.7370-1-rdunlap@infradead.org>
-In-Reply-To: <20210708173310.7370-1-rdunlap@infradead.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, lars.povlsen@microchip.com,
-        Steen.Hegelund@microchip.com, UNGLinuxDriver@microchip.com,
-        linux-arm-kernel@lists.infradead.org, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org
+References: <20210708194638.128950-1-posk@google.com> <20210708194638.128950-3-posk@google.com>
+In-Reply-To: <20210708194638.128950-3-posk@google.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 8 Jul 2021 23:12:08 +0200
+Message-ID: <CAG48ez3LxrPva9Kxtn1DVhJWxhn3hvJ5oeDwXcrEeK_UvGh0UA@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/3 v0.2] sched/umcg: RFC: add userspace atomic helpers
+To:     Peter Oskolkov <posk@posk.io>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
+        Peter Oskolkov <posk@google.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Andrei Vagin <avagin@google.com>,
+        Jim Newsome <jnewsome@torproject.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Thu, Jul 8, 2021 at 9:46 PM Peter Oskolkov <posk@posk.io> wrote:
+> Add helper functions to work atomically with userspace 32/64 bit values -
+> there are some .*futex.* named helpers, but they are not exactly
+> what is needed for UMCG; I haven't found what else I could use, so I
+> rolled these.
+>
+> At the moment only X86_64 is supported.
+>
+> Note: the helpers should probably go into arch/ somewhere; I have
+> them in kernel/sched/umcg.h temporarily for convenience. Please
+> let me know where I should put them and how to name them.
 
-This patch was applied to netdev/net.git (refs/heads/master):
+Instead of open-coding spinlocks in userspace memory like this (which
+some of the reviewers will probably dislike because it will have
+issues around priority inversion and such), I wonder whether you could
+use an actual futex as your underlying locking primitive?
 
-On Thu,  8 Jul 2021 10:33:10 -0700 you wrote:
-> PHY_SPARX5_SERDES depends on OF so SPARX5_SWITCH should also depend
-> on OF since 'select' does not follow any dependencies.
-> 
-> WARNING: unmet direct dependencies detected for PHY_SPARX5_SERDES
->   Depends on [n]: (ARCH_SPARX5 || COMPILE_TEST [=n]) && OF [=n] && HAS_IOMEM [=y]
->   Selected by [y]:
->   - SPARX5_SWITCH [=y] && NETDEVICES [=y] && ETHERNET [=y] && NET_VENDOR_MICROCHIP [=y] && NET_SWITCHDEV [=y] && HAS_IOMEM [=y]
-> 
-> [...]
+The most straightforward way to do that would probably be to make the
+head structure in userspace look roughly like this?
 
-Here is the summary with links:
-  - [net-next] net: microchip: sparx5: fix kconfig warning
-    https://git.kernel.org/netdev/net/c/96248d6da657
+struct umcg_head {
+  u64 head_ptr;
+  u32 lock;
+};
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+and then from kernel code, you could build a fastpath that directly
+calls cmpxchg_futex_value_locked() and build a fallback based on
+do_futex(), or something like that.
 
-
+There is precedent for using futex from inside the kernel to
+communicate with userspace: See mm_release(), which calls do_futex()
+with FUTEX_WAKE for the clear_child_tid feature.
