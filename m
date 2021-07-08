@@ -2,143 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE5563C17EE
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 19:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E05673C17F5
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 19:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbhGHRSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 13:18:15 -0400
-Received: from mga02.intel.com ([134.134.136.20]:47365 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229489AbhGHRSN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 13:18:13 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10039"; a="196726294"
-X-IronPort-AV: E=Sophos;i="5.84,224,1620716400"; 
-   d="scan'208";a="196726294"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 10:15:28 -0700
-X-IronPort-AV: E=Sophos;i="5.84,224,1620716400"; 
-   d="scan'208";a="645980585"
-Received: from kezheong-mobl.gar.corp.intel.com (HELO [10.212.152.178]) ([10.212.152.178])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 10:15:27 -0700
-Subject: Re: [PATCH Part2 RFC v4 09/40] x86/fault: Add support to dump RMP
- entry on fault
-To:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        npmccallum@redhat.com, brijesh.ksingh@gmail.com
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-10-brijesh.singh@amd.com>
- <cb9e3890-9642-f254-2fe7-30621e686844@intel.com>
- <0d19eb84-f2b7-aa24-2fe9-19035b49fbd6@amd.com>
- <15d5e954-0383-fe0e-e8c1-3e9f8b0ef8ff@intel.com>
- <23dbe0da-581e-2444-7126-428e79514614@amd.com>
- <8c4852e4-8f57-354b-630d-cea8176fc026@intel.com>
- <5861dd0a-7e46-af3d-3d0e-28b41ca17e1e@amd.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <e98cf66a-472d-e322-5f7d-01661fd98ab2@intel.com>
-Date:   Thu, 8 Jul 2021 10:15:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229606AbhGHRTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 13:19:46 -0400
+Received: from out28-75.mail.aliyun.com ([115.124.28.75]:37144 "EHLO
+        out28-75.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229489AbhGHRTp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 13:19:45 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07453699|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.153769-0.00185027-0.844381;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047199;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=16;RT=16;SR=0;TI=SMTPD_---.KeIlheY_1625764612;
+Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KeIlheY_1625764612)
+          by smtp.aliyun-inc.com(10.147.41.120);
+          Fri, 09 Jul 2021 01:16:59 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     tsbogend@alpha.franken.de, paulburton@kernel.org
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cand@gmx.com, git@xen0n.name, chenhuacai@kernel.org,
+        maoxiaochuan@loongson.cn, f.fainelli@gmail.com,
+        paul@crapouillou.net, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
+        sernia.zhou@foxmail.com
+Subject: [PATCH] MIPS: Ingenic: Add system type for new Ingenic SoCs.
+Date:   Fri,  9 Jul 2021 01:16:42 +0800
+Message-Id: <1625764602-67310-1-git-send-email-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <5861dd0a-7e46-af3d-3d0e-28b41ca17e1e@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/8/21 10:11 AM, Brijesh Singh wrote:
-> On 7/8/21 11:58 AM, Dave Hansen wrote:>> Logically its going to be
-> tricky to figure out which exact entry caused
->>> the fault, hence I dump any non-zero entry. I understand it may dump
->>> some useless.
->>
->> What's tricky about it?
->>
->> Sure, there's a possibility that more than one entry could contribute to
->> a fault.  But, you always know *IF* an entry could contribute to a fault.
->>
->> I'm fine if you run through the logic, don't find a known reason
->> (specific RMP entry) for the fault, and dump the whole table in that
->> case.  But, unconditionally polluting the kernel log with noise isn't
->> very nice for debugging.
-> 
-> The tricky part is to determine which undocumented bit to check to know
-> that we should stop dump. I can go with your suggestion that first try
-> with the known reasons and fallback to dump whole table for unknown
-> reasons only.
+Add JZ4730, JZ4760, JZ4760B, X2000H, and X2100 system type for
+cat /proc/cpuinfo to give out JZ4730, JZ4760, JZ4760B, X2000H,
+and X2100.
 
-You *can't* stop because of undocumented bits.  Fundamentally.  You
-literally don't know if the bit means "this caused a fault" versus "this
-definitely couldn't cause a fault".
+Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+---
+ arch/mips/generic/board-ingenic.c | 15 +++++++++++++++
+ arch/mips/include/asm/bootinfo.h  |  3 +++
+ arch/mips/include/asm/cpu.h       |  4 ++--
+ 3 files changed, 20 insertions(+), 2 deletions(-)
 
-Basically, if we get to the point of dumping the whole table, we should
-also spit out an error message saying that the kernel is dazed and
-confused and can't figure out why the hardware caused a fault.  Then,
-dump out the whole table so that the "hardware" folks can have a look.
+diff --git a/arch/mips/generic/board-ingenic.c b/arch/mips/generic/board-ingenic.c
+index 0cec0be..303bee6 100644
+--- a/arch/mips/generic/board-ingenic.c
++++ b/arch/mips/generic/board-ingenic.c
+@@ -21,6 +21,10 @@
+ static __init char *ingenic_get_system_type(unsigned long machtype)
+ {
+ 	switch (machtype) {
++	case MACH_INGENIC_X2100:
++		return "X2100";
++	case MACH_INGENIC_X2000H:
++		return "X2000H";
+ 	case MACH_INGENIC_X2000E:
+ 		return "X2000E";
+ 	case MACH_INGENIC_X2000:
+@@ -37,8 +41,14 @@ static __init char *ingenic_get_system_type(unsigned long machtype)
+ 		return "JZ4775";
+ 	case MACH_INGENIC_JZ4770:
+ 		return "JZ4770";
++	case MACH_INGENIC_JZ4760B:
++		return "JZ4760B";
++	case MACH_INGENIC_JZ4760:
++		return "JZ4760";
+ 	case MACH_INGENIC_JZ4725B:
+ 		return "JZ4725B";
++	case MACH_INGENIC_JZ4730:
++		return "JZ4730";
+ 	default:
+ 		return "JZ4740";
+ 	}
+@@ -61,8 +71,11 @@ static __init const void *ingenic_fixup_fdt(const void *fdt, const void *match_d
+ }
+ 
+ static const struct of_device_id ingenic_of_match[] __initconst = {
++	{ .compatible = "ingenic,jz4730", .data = (void *)MACH_INGENIC_JZ4730 },
+ 	{ .compatible = "ingenic,jz4740", .data = (void *)MACH_INGENIC_JZ4740 },
+ 	{ .compatible = "ingenic,jz4725b", .data = (void *)MACH_INGENIC_JZ4725B },
++	{ .compatible = "ingenic,jz4760", .data = (void *)MACH_INGENIC_JZ4760 },
++	{ .compatible = "ingenic,jz4760b", .data = (void *)MACH_INGENIC_JZ4760B },
+ 	{ .compatible = "ingenic,jz4770", .data = (void *)MACH_INGENIC_JZ4770 },
+ 	{ .compatible = "ingenic,jz4775", .data = (void *)MACH_INGENIC_JZ4775 },
+ 	{ .compatible = "ingenic,jz4780", .data = (void *)MACH_INGENIC_JZ4780 },
+@@ -71,6 +84,8 @@ static const struct of_device_id ingenic_of_match[] __initconst = {
+ 	{ .compatible = "ingenic,x1830", .data = (void *)MACH_INGENIC_X1830 },
+ 	{ .compatible = "ingenic,x2000", .data = (void *)MACH_INGENIC_X2000 },
+ 	{ .compatible = "ingenic,x2000e", .data = (void *)MACH_INGENIC_X2000E },
++	{ .compatible = "ingenic,x2000h", .data = (void *)MACH_INGENIC_X2000H },
++	{ .compatible = "ingenic,x2100", .data = (void *)MACH_INGENIC_X2100 },
+ 	{}
+ };
+ 
+diff --git a/arch/mips/include/asm/bootinfo.h b/arch/mips/include/asm/bootinfo.h
+index 4c2e817..2128ba9 100644
+--- a/arch/mips/include/asm/bootinfo.h
++++ b/arch/mips/include/asm/bootinfo.h
+@@ -75,6 +75,7 @@ enum ingenic_machine_type {
+ 	MACH_INGENIC_JZ4750,
+ 	MACH_INGENIC_JZ4755,
+ 	MACH_INGENIC_JZ4760,
++	MACH_INGENIC_JZ4760B,
+ 	MACH_INGENIC_JZ4770,
+ 	MACH_INGENIC_JZ4775,
+ 	MACH_INGENIC_JZ4780,
+@@ -83,6 +84,8 @@ enum ingenic_machine_type {
+ 	MACH_INGENIC_X1830,
+ 	MACH_INGENIC_X2000,
+ 	MACH_INGENIC_X2000E,
++	MACH_INGENIC_X2000H,
++	MACH_INGENIC_X2100,
+ };
+ 
+ extern char *system_type;
+diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
+index 9e6211e..c70cac7 100644
+--- a/arch/mips/include/asm/cpu.h
++++ b/arch/mips/include/asm/cpu.h
+@@ -46,8 +46,8 @@
+ #define PRID_COMP_NETLOGIC	0x0c0000
+ #define PRID_COMP_CAVIUM	0x0d0000
+ #define PRID_COMP_LOONGSON	0x140000
+-#define PRID_COMP_INGENIC_13	0x130000	/* X2000 */
+-#define PRID_COMP_INGENIC_D0	0xd00000	/* JZ4740, JZ4750, X1830 */
++#define PRID_COMP_INGENIC_13	0x130000	/* X2000, X2100 */
++#define PRID_COMP_INGENIC_D0	0xd00000	/* JZ4730, JZ4740, JZ4750, JZ4760, X1830 */
+ #define PRID_COMP_INGENIC_D1	0xd10000	/* JZ4770, JZ4775, X1000 */
+ #define PRID_COMP_INGENIC_E1	0xe10000	/* JZ4780 */
+ 
+-- 
+2.7.4
+
