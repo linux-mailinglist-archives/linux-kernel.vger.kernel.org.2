@@ -2,97 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 721BF3C14C7
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 15:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7DB53C14A8
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 15:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231936AbhGHOA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 10:00:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231515AbhGHOAz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 10:00:55 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C975FC06175F
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 06:58:13 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id v14so15903912lfb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 06:58:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RTQMNsYkH54gTZYg5JDo/dsYjbW4P2+8PHeW4ZHkno8=;
-        b=gKecfPmI02OLNoie4L136UAox+LToVyA9H3yfCLewhc3MAJfq5CB1cnK+BK9W7USVP
-         YiEOEFddz6oVpWLL1RF9gOYp0iwEcL0KzMwnV15wdxQU2z/pcH3wSNA7v9O9D+hPflQi
-         MObaUt7NIL//UMryaxKl17vqo2IjBFZgAt/YGKGntBI/SXxEM+qUxtBytKPPzN4SffLo
-         G5nnsk++yww4Sc/oYiP21+5bFLVHjIrk2R54VjDaiXgfltun4gPgA3NU1j2WfDFBq5AV
-         rkU1DjmGXhFZVjafaJczJHgVrNBwE9kTcTSF05Ij+FxZ1tX0IA9diuO5AnYHLFNwIXrA
-         lwHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RTQMNsYkH54gTZYg5JDo/dsYjbW4P2+8PHeW4ZHkno8=;
-        b=tgcdH6U0zNcHmEXoNHL1ZE6Vz9HKQj2xEBI3rWYMeMH5NJtxSJ5qUmLSE82NoBSIs9
-         AAUE3CmbCuJsgK3OIGDKeeTpOXjuQwtXfyGQ0nBNVac7xASSMhEsoF7PIK1ydW3BaTL2
-         0cZiA25TaYF1YLQmu7VEj7aPwuO5rsHhVUNCVd9SQO7YPO9vMPpNXb2fxj4GY+f3ADRm
-         V7wwKJyzKbEjgHcV68JsPX1wuAVdpxkWEbpIoyjx7lVTQbXj0E+JKp8fbwgF+hp//8x3
-         sj+hg1uJEVJU+UOUq9cJYu0Jyr5QLNu+s7UXgkcpj9yH7yWkvEBU/TBb2eSYwklj6n7G
-         n8kg==
-X-Gm-Message-State: AOAM533w+3hvV9mL81qjYJc9HR0Z+0LIO5GpTdvRMjZdeCVFiea8S+Lm
-        Dy+KNuPWBlSzphP3dDq8lD0/1y1h0S5qaA==
-X-Google-Smtp-Source: ABdhPJwW+Ex9xsSpyg9Pb3vhDSaDTE/P+lD1YFK0vaxIg4+WDF9ongDtWtza8/vtU8CtMb8nCLtx/w==
-X-Received: by 2002:a05:651c:178b:: with SMTP id bn11mr24068444ljb.43.1625752691451;
-        Thu, 08 Jul 2021 06:58:11 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id z1sm205549lfh.137.2021.07.08.06.58.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jul 2021 06:58:10 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id C77E5102878; Thu,  8 Jul 2021 16:58:11 +0300 (+03)
-Date:   Thu, 8 Jul 2021 16:58:11 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>, Yang Shi <shy828301@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 2/4] mm/rmap: fix old bug: munlocking THP missed other
- mlocks
-Message-ID: <20210708135811.775drqgwkwc76vcb@box.shutemov.name>
-References: <563ce5b2-7a44-5b4d-1dfd-59a0e65932a9@google.com>
- <cfa154c-d595-406-eb7d-eb9df730f944@google.com>
+        id S231845AbhGHNwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 09:52:23 -0400
+Received: from mail-bn8nam11on2078.outbound.protection.outlook.com ([40.107.236.78]:33888
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231449AbhGHNwW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 09:52:22 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GxJDDfUmO31lnhTDjC6mKFoFaF6JQPw41ekLX5WfJLrOvJ/hbE6RIF0stHAGW+smFX/oLzsLm/6o3RGuB+KeYJzAo6TjmXhsh9LTsXNo9MeyjLpfa70Fo/P+k2M8wLr9qXZuyvQ2zOIeSZtcgEh3RcIOjByCIFDecI7sftimM+mnNkv6r29NrnH+Gsuv3ks4XybDqAiOv0BTKYbT8uwyIbUJcnZpM0Bk9aERcz5p6IxRQ4VHmtV4bILZFEmJDJ/PDEInGHayCuNXF5nlhvbYMJ7G2qyL4gKo4acCgM212T6I6cNKWm8wCxr2qMCVcQPRtxcmNBP5TjbRwKPahpDfpA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zq90a9gKitsz2V1+gGdRBz6G7syzg7Mgd4bwuARPe+Q=;
+ b=n44DCnFmT5X8QeVtJbdkeUa7Ssuj+IncKS3q63S38GA4FOmxDuDnwEIvbVOvPt5VOQdtseJhY05Lggdm+zWSyuKGM4zAmkxY8VSIAukYgrW0e2MHOOnYuOQwExI+hpTZWZ2Xqm7aXQzFtMpYcgkZuG5lufACBpQPJozGmuLPYKL4sCTaHvBER64UCDqGbT9T1Y5MvWL2BlYQTXUuiu6J0HM1TiVZYvBj9TzjXSlUrfPLIes1T3eB2w6XsqmPj2G+Z7ckly2JRaDUz5WaSfWLRto8vYSN1utjgqXjnz9QlAF7AgSy5l9tuCggSRbKMm1Xgi9n6jsN+CWMCBy8BItSXA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zq90a9gKitsz2V1+gGdRBz6G7syzg7Mgd4bwuARPe+Q=;
+ b=2X83nQ6ce4d0BPgPmuDtfurcvdKaZwMKnQkZFomwAf/xWKKcDXBxv5YEV0585ZEqx5Ikr2+FQHWuH3SQ872VhPWWkJuT6qOFCAXETENscjwOr2ub/6vdf19mMyzp416GZpvY4iDrWRi2lkJSj5RZTWj3bvVbWs8qZNjqoo7suYU=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from CY4PR1201MB2550.namprd12.prod.outlook.com
+ (2603:10b6:903:ce::13) by CY4PR12MB1703.namprd12.prod.outlook.com
+ (2603:10b6:903:122::9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.22; Thu, 8 Jul
+ 2021 13:49:35 +0000
+Received: from CY4PR1201MB2550.namprd12.prod.outlook.com
+ ([fe80::d53a:8bc9:23fa:46bb]) by CY4PR1201MB2550.namprd12.prod.outlook.com
+ ([fe80::d53a:8bc9:23fa:46bb%7]) with mapi id 15.20.4287.033; Thu, 8 Jul 2021
+ 13:49:35 +0000
+Subject: Re: [PATCH 02/12] ASoC: amd: add Vangogh ACP PCI driver
+To:     Mark Brown <broonie@kernel.org>
+Cc:     alsa-devel@alsa-project.org, Alexander.Deucher@amd.com,
+        Sunil-kumar.Dommati@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210707055623.27371-1-vijendar.mukunda@amd.com>
+ <20210707055623.27371-3-vijendar.mukunda@amd.com>
+ <20210707161730.GE4394@sirena.org.uk>
+From:   "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+Message-ID: <208c55ce-7c62-720b-666e-0973bc91e6cd@amd.com>
+Date:   Thu, 8 Jul 2021 19:37:12 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210707161730.GE4394@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SGXP274CA0001.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::13)
+ To CY4PR1201MB2550.namprd12.prod.outlook.com (2603:10b6:903:ce::13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cfa154c-d595-406-eb7d-eb9df730f944@google.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.252.93.39] (165.204.159.242) by SGXP274CA0001.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.19 via Frontend Transport; Thu, 8 Jul 2021 13:49:32 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6c0d4008-d0ec-4a2f-f769-08d9421738bc
+X-MS-TrafficTypeDiagnostic: CY4PR12MB1703:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CY4PR12MB1703CE84F05BC576DC0D9FAA97199@CY4PR12MB1703.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xB+CyfQxVdrPzfihwUCf1wfpgkOcuwWRn++6iVk87MEpPfxPNXoWBZwpVujwRklwBRTvszNWAiZ7v86V9Quo/LqOBH3hVXTtFN9q2nhRXFtwf6Pg+bYJu+ODPApWg2rgY5MrJxL7b2cs6PSGuAYu8T046kECyG3ywvBiXBLCNKnqwk5nD/Om8tkCihFZjeFk8B8hRy8N2ynxKWpXIYCSDKUHn2dCy2YBMQoAQobtRrIQ5m77wWkHmRWPR9gyp5KZMWxw3CJSVrdQbo25TB1xNK31zheyEV9zTdFUiQF98giSpzL1tU6j/mPDquAYjNtXUeNLboExt20WojnicbcCOTvHRW/OI1OKck9Gkqq0ANuHtVGfW7HPVnEQIPHWg0voLIc0yriPyfufVZjcp5hjrR/asMBCLofBBG8GGOs9vSwQA+7cd1snHI9XpWDfje/18ROg8Y3mhrJaUsdAIrTb6ohHWSKxAlw5YOz5hrIW+cOK/XnjJyqE4gHuolIxl5RXEGoVxGZnbCBI9AAiLIeNuEdI0YMRssJ5n0lQfUTbO6GboQN9NuKR9KApqdq3bVtQ3EkqoHiB4Ac2/S1Sl/v+Qut6OwxM7Ch0hR+aWFd2SHJI0+FvnatWk4JGRAKA5eN32KTi+GFpTy+tm0/HanP/R6OyEDMEjJVRXMtZY++pNfx4AOCnXAo6FbHzGBmdbfKSvNeBSI8gNLvRViOv2/2BvmE1zaSt9u0HP06g2BpjsrY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1201MB2550.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(346002)(136003)(39860400002)(366004)(2906002)(2616005)(31686004)(5660300002)(956004)(53546011)(8936002)(54906003)(36756003)(8676002)(316002)(16576012)(4744005)(66476007)(66556008)(478600001)(31696002)(66946007)(6486002)(26005)(6916009)(186003)(4326008)(6666004)(38100700002)(86362001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?Windows-1252?Q?DLhovIHlj+0MplPPDUPtnZL7LdeDKMh0RnWMOyNrcTndj7coDJUkajwY?=
+ =?Windows-1252?Q?FYy/QhTcu8kvFKQTXqug+8Y80VMhexLjeWln+q2hERor6efShvFc7sDr?=
+ =?Windows-1252?Q?X50yiTgnY2BqB2jqP2gG0fuanL+jtBCVTTxy+lUMzZ9zixhcV/pfbeFK?=
+ =?Windows-1252?Q?I+kqoTzSsuO0K4S1OKkEQDbykLaCOgzGblbWStENKhF1si+TCaLRyVwM?=
+ =?Windows-1252?Q?j7GatVHg1lH772GZgfnKiKRj3m8oHanOztqNaw6ErTFqGcMH4HyezMZY?=
+ =?Windows-1252?Q?tQXIKJ6ceVuwE+0ZH3aRxUdnvM3ZgnYAmv4Hj2+nXWfwC8o7rNustWrg?=
+ =?Windows-1252?Q?6b/YAwV3bSYhMtGgG/LSPdZtSu2Wz3T8tY7lv3fm4wiz5v3kCTs4NflV?=
+ =?Windows-1252?Q?hzmooUyKmaWG9A14/XoNkzjauwx8IbfLMOmDEE/lQJWiA97hbuKTc2Xv?=
+ =?Windows-1252?Q?r2ggt0Y3hfVjeP4MGGrcAtVjtH3PIA4sR2nZnYqPGpElt1y2VPBhrjkD?=
+ =?Windows-1252?Q?47gFjvu7N2Kf/gFr9ZmzHUKA49hst6GXms0LjDNYvf84yGmC6FZTjZaw?=
+ =?Windows-1252?Q?6osLmMcosX05Q6P6bBwLuIKY++9fjkkJbK01mLO4iYUx88oEjtqLAxr8?=
+ =?Windows-1252?Q?x1jj4oUKqVzze2aumjr50pOOVYFQ5r4TvAdv1tJLpYOTR4nRG8LixWy0?=
+ =?Windows-1252?Q?+z94NtYsYJHgwdWXrklsheeHweFD272yCfQyWc4oJXlNYIX9UY8qrIcE?=
+ =?Windows-1252?Q?Q8sA4yDRCPCLfVGjCkH7cu6hT6dv2Uj9wlaVpugK+aImRwuK9Rr41O87?=
+ =?Windows-1252?Q?zVKAsKQtD9bCmnt2vUQcExYEEA0nbeqpI+MhYZDZADv0ccYRqm/ydGJ1?=
+ =?Windows-1252?Q?137pioNgi8/ZfLGecMP8GK7ikRY5tN7y43PWWTWr0KDeu1MSd5QmQfOg?=
+ =?Windows-1252?Q?0pB31W0rPm6eITnWV/zqVOn3LjBcEzOr0et2eUZi392wnnjRGtOCJazY?=
+ =?Windows-1252?Q?YxSdHjQrF9Z6t6m69P28KY8LoJeJq8EDSvKkRSSsEGxSs1Y7aCLvVYjE?=
+ =?Windows-1252?Q?FRf96xWrjXdvpriRtvLEHAh0LisMxPLEBGb9eNsSUxNeQvjCsxGQ8Plx?=
+ =?Windows-1252?Q?WShWDGAEBJUDyt32jpBZ2b+XbZCIr1NiuUoDfdexFV1eZAoskwugA9cv?=
+ =?Windows-1252?Q?wPvF4AnP5LHzK95BykxWhxVyjaK6xSXUgVw1Jt0a17WYrZMvzD2lntZP?=
+ =?Windows-1252?Q?lijkHYDj5yImO9kxgTHvQA8KWtDsAWDVieIM7wZ6wUdecjAv+VOo3vRd?=
+ =?Windows-1252?Q?9EFSLshcHjyhfv3pPeOe8zoOC6OOu5ZxfzfL6V/qViHJyX//4YAI7M41?=
+ =?Windows-1252?Q?V5GxUEWwYzDY5S41eNM5VgUbvbxiUWFG2WxdH1cNeiT7ltkbi/WtJdv1?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6c0d4008-d0ec-4a2f-f769-08d9421738bc
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR1201MB2550.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jul 2021 13:49:35.6493
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: u0z4V99AWjsihc+8T7k7IMJtW2qdoiG/gJiQCgcsHk1E7Ac5GZac8AoGMpx7KUWdgUHuPq6fAeMPOm22NlkVyQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1703
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 01:08:53PM -0700, Hugh Dickins wrote:
-> The kernel recovers in due course from missing Mlocked pages: but there
-> was no point in calling page_mlock() (formerly known as try_to_munlock())
-> on a THP, because nothing got done even when it was found to be mapped in
-> another VM_LOCKED vma.
+On 7/7/21 9:47 PM, Mark Brown wrote:
+> On Wed, Jul 07, 2021 at 11:26:13AM +0530, Vijendar Mukunda wrote:
 > 
-> It's true that we need to be careful: Mlocked accounting of pte-mapped
-> THPs is too difficult (so consistently avoided); but Mlocked accounting
-> of only-pmd-mapped THPs is supposed to work, even when multiple mappings
-> are mlocked and munlocked or munmapped.  Refine the tests.
+>> +static inline u32 acp_readl(void __iomem *base_addr)
+>> +{
+>> +	return readl(base_addr - ACP5x_PHY_BASE_ADDRESS);
+>> +}
+> 
+> I see this was the same for Renoir but it's weird that the read and
+> write functions are substracting rather than adding the base address
+> here.  A comment might be good.
+> 
+We can modify code by providing relative offset from base address which
+adds base address in readl and writel functions.
+To make this change, we have to modify original header file.
+To have sync with our HW team and Firmware teams, we are using same
+common header file.
 
-Well, that's true that it should be fine to mlock only-pmd-mapped THPs,
-but the refined check doesn't gurantee that the page is not mapped with
-PTEs. !PageDoubleMap(page) only guarantees that the page in not mapped
-with both PMDs and PTEs at the same time. For anon pages, we clear the
-flag when the last PMD mapping is gone and only PTEs left.
+We will add comment in the code.
 
-Do I miss some detail here? Maybe we exclude anon pages here somehow?
-I don't see it.
 
--- 
- Kirill A. Shutemov
