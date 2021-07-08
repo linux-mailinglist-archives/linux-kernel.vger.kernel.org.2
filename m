@@ -2,114 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE343C15E3
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 17:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32A213C1603
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 17:31:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231915AbhGHP0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 11:26:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231804AbhGHP00 (ORCPT
+        id S232026AbhGHPdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 11:33:42 -0400
+Received: from da1vs04.rockwellcollins.com ([205.175.227.52]:31102 "EHLO
+        da1vs04.rockwellcollins.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231932AbhGHPdl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 11:26:26 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E07A6C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 08:23:43 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id c9so1039980qte.6
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 08:23:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:organization:mime-version
-         :content-transfer-encoding;
-        bh=+YN55qVJT6wyC2rtDdpkRhVOqaoHkRAE4/LgamoXOuY=;
-        b=GL38T1LqGKZ3ZHwIez67t3J3i336LrAK6A70RsakIVVAIHGIX2vhOyfY1moMZ6VgB/
-         rKVn1d7bUvZ0TjaVcdFyjkpfyPmXIK78Ko9q5Y7/trVXwrzbt4U3Ee8yRU+Np/SUF8Fc
-         U9NLuea2epXaRI02H6epKBE5wyVAACFpMm6TAdmuEqb/jZA9aT0YsSFL1Kpw0v3TPRYp
-         kkUubx0Q7PdBSVsPnVLCd1WAW0mPsVPFWMcslAaDfMEhM4JE0izWHRrlWji8QicUld0e
-         cSAhEDkYfsN/v8QVwF1ObMMfXPu0L8qhu2SvYsajphnXYg5SQGnO1hC4fH32FNcguNtr
-         mMaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:organization
-         :mime-version:content-transfer-encoding;
-        bh=+YN55qVJT6wyC2rtDdpkRhVOqaoHkRAE4/LgamoXOuY=;
-        b=IJR/OP4IDxrlCv5DOtPRBIKTozWJ1snBBJdY/QyZEl9MQO76wYz9SEDdzJQF4eOjVm
-         cFdha7rezfMLNIBaE8m23VGccNLhc6/XN9Q3713SeYHhO+Y/LvWPNr5G7RovgEu3rV95
-         14K2pvDTnGnkpi6HyQGePXD7YP74jIWSd5+ARCp06wjoFchwEKa65P9S/5CLnJSjqPR+
-         1UhDihWv/LbwdnMo7Nd7dWiV0KWDDH51GQfT91scaywaK084UhI+WpyrfhTJWDhTD59O
-         k9jlNF6tJR9jj9XNTeB7tEVY2ugKQH9mUypY2ocqKkwUmbye1xjWVgZx1CgOI/VJNqeS
-         P0DA==
-X-Gm-Message-State: AOAM531hB6ATOsd4xax0M8JB0W7FlGMKlZXlrPD63YBwY23JyjNIBjTi
-        09RDvs9kK+DJ728nslJLrOLcTQ==
-X-Google-Smtp-Source: ABdhPJyoHqkFNIolSZv4+J+JG/HNwhwGEYBadtGOyri4ALLuNSj0/YY6m0VmS1fNECiTBIjazFHbnQ==
-X-Received: by 2002:ac8:5f86:: with SMTP id j6mr9022194qta.227.1625757823041;
-        Thu, 08 Jul 2021 08:23:43 -0700 (PDT)
-Received: from iron-maiden.localnet ([50.225.136.98])
-        by smtp.gmail.com with ESMTPSA id x9sm1072514qtf.76.2021.07.08.08.23.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jul 2021 08:23:42 -0700 (PDT)
-From:   Carlos Bilbao <bilbao@vt.edu>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, andrew@lunn.ch,
-        gregkh@linuxfoundation.org
-Subject: [PATCH] drivers: net: Follow the indentation coding standard on printks
-Date:   Thu, 08 Jul 2021 11:23:41 -0400
-Message-ID: <1884900.usQuhbGJ8B@iron-maiden>
-Organization: Virginia Tech
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+        Thu, 8 Jul 2021 11:33:41 -0400
+X-Greylist: delayed 426 seconds by postgrey-1.27 at vger.kernel.org; Thu, 08 Jul 2021 11:33:41 EDT
+IronPort-SDR: sVBj2hguHH4RHwuK3x/99GL+dtkuWgeiyP5Yi6nSlIexJqow++FEIFTqkvF95sPWcPbfJqmbGG
+ rfmhVvIOlJNq6zkHo2oxt0SUXBm8cxKsTZhCmn8+z57QuQJAXrufDvHsOrJXWRw7uSFJ1nyTmT
+ j9KPlltHfQrpqZOeSk6uACehou/yMdGMJaQko7/7T5fkVp1BxZRrFBbva9z+/umBv5JT5SA708
+ ZdEDgr7oYTtZ81NWmZwEox/hV5PJ4+sVt1+iLJOC6a4/WKkXZWydBymxXZcElnkhyKOx00RjYC
+ D84=
+Received: from ofwda1n02.rockwellcollins.com (HELO ciulimr01.rockwellcollins.com) ([205.175.227.14])
+  by da1vs04.rockwellcollins.com with ESMTP; 08 Jul 2021 10:23:53 -0500
+X-Received: from biscuits.rockwellcollins.com (biscuits.rockwellcollins.lab [10.148.119.137])
+        by ciulimr01.rockwellcollins.com (Postfix) with ESMTP id A5C0B60089;
+        Thu,  8 Jul 2021 10:23:52 -0500 (CDT)
+From:   Matthew Weber <matthew.weber@collins.com>
+To:     sashal@kernel.org
+Cc:     gregkh@linuxfoundation.org, Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab@s-opensource.com>,
+        Matthew Weber <matthew.weber@collins.com>,
+        Stefani Seibold <stefani@seibold.net>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] kfifo: DECLARE_KIFO_PTR(fifo, u64) does not work on arm 32 bit
+Date:   Thu,  8 Jul 2021 10:23:41 -0500
+Message-Id: <20210708152342.59635-1-matthew.weber@collins.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix indentation of printks that start at the beginning of the line. Change this 
-for the right number of space characters, or tabs if the file uses them. 
+From: Sean Young <sean@mess.org>
 
-Signed-off-by: Carlos Bilbao <bilbao@vt.edu>
+If you try to store u64 in a kfifo (or a struct with u64 members),
+then the buf member of __STRUCT_KFIFO_PTR will cause 4 bytes
+padding due to alignment (note that struct __kfifo is 20 bytes
+on 32 bit).
+
+That in turn causes the __is_kfifo_ptr() to fail, which is caught
+by kfifo_alloc(), which now returns EINVAL.
+
+So, ensure that __is_kfifo_ptr() compares to the right structure.
+
+Signed-off-by: Sean Young <sean@mess.org>
+Acked-by: Stefani Seibold <stefani@seibold.net>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Signed-off-by: Matthew Weber <matthew.weber@collins.com>
 ---
- drivers/net/ethernet/dec/tulip/de4x5.c | 2 +-
- drivers/net/sb1000.c                   | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/dec/tulip/de4x5.c b/drivers/net/ethernet/dec/tulip/de4x5.c
-index b125d7faefdf..155cfe8800cd 100644
---- a/drivers/net/ethernet/dec/tulip/de4x5.c
-+++ b/drivers/net/ethernet/dec/tulip/de4x5.c
-@@ -3169,7 +3169,7 @@ dc2114x_autoconf(struct net_device *dev)
+This patch originally made it into 4.16 as 
+8a866fee3909c49738e1c4429a8d2b9bf27e015d but is a bug on at least 4.14
+for any 32bit system(PPC/ARM/...) using kfifo with u64 datatypes.
+
+Please add to linux-4.14.y for the next LTS tag.
+(Below patch is a cherry-pick of the commit onto linux-4.14.y and was
+ verified on 32bit hardware.)
+
+---
+ include/linux/kfifo.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/kfifo.h b/include/linux/kfifo.h
+index 41eb6fdf87a8..86b5fb08e96c 100644
+--- a/include/linux/kfifo.h
++++ b/include/linux/kfifo.h
+@@ -113,7 +113,8 @@ struct kfifo_rec_ptr_2 __STRUCT_KFIFO_PTR(unsigned char, 2, void);
+  * array is a part of the structure and the fifo type where the array is
+  * outside of the fifo structure.
+  */
+-#define	__is_kfifo_ptr(fifo)	(sizeof(*fifo) == sizeof(struct __kfifo))
++#define	__is_kfifo_ptr(fifo) \
++	(sizeof(*fifo) == sizeof(STRUCT_KFIFO_PTR(typeof(*(fifo)->type))))
  
-     default:
- 	lp->tcount++;
--printk("Huh?: media:%02x\n", lp->media);
-+	printk("Huh?: media:%02x\n", lp->media);
- 	lp->media = INIT;
- 	break;
-     }
-diff --git a/drivers/net/sb1000.c b/drivers/net/sb1000.c
-index e88af978f63c..54a7c7613434 100644
---- a/drivers/net/sb1000.c
-+++ b/drivers/net/sb1000.c
-@@ -760,7 +760,7 @@ sb1000_rx(struct net_device *dev)
- 
- 	insw(ioaddr, (unsigned short*) st, 1);
- #ifdef XXXDEBUG
--printk("cm0: received: %02x %02x\n", st[0], st[1]);
-+	printk("cm0: received: %02x %02x\n", st[0], st[1]);
- #endif /* XXXDEBUG */
- 	lp->rx_frames++;
- 
-@@ -805,7 +805,7 @@ printk("cm0: received: %02x %02x\n", st[0], st[1]);
- 		/* get data length */
- 		insw(ioaddr, buffer, NewDatagramHeaderSize / 2);
- #ifdef XXXDEBUG
--printk("cm0: IP identification: %02x%02x  fragment offset: %02x%02x\n", buffer[30], buffer[31], buffer[32], buffer[33]);
-+		printk("cm0: IP identification: %02x%02x  fragment offset: %02x%02x\n", buffer[30], buffer[31], buffer[32], buffer[33]);
- #endif /* XXXDEBUG */
- 		if (buffer[0] != NewDatagramHeaderSkip) {
- 			if (sb1000_debug > 1)
+ /**
+  * DECLARE_KFIFO_PTR - macro to declare a fifo pointer object
 -- 
-2.25.1
-
-
+2.17.1
 
