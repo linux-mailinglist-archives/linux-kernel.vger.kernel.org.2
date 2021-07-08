@@ -2,113 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D51863C18CE
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 20:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B173C18C3
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 19:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230162AbhGHSDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 14:03:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56051 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229875AbhGHSDD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 14:03:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625767221;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sNdGapRBRJZQ1Z2SOCf4wMd2iR2TD2nNsiYZrAOlxeo=;
-        b=KRa053i4gMKqUzf/fJPG0bMHsE//jEm6YsBvzL1ctwuOsvKNNhDRCE9LkNwuWpkj/oM2n6
-        9NCa9spv4nKADMZbiZfHA9LpWq0l8tecLuv2x2z/3zyh54pR8OWhVWV6jXEkI2RCClMyGx
-        H/7kRkofxByO5YGPWGHybsPel4RDYvY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-315-Pm6cBVeaPwyaJ5CA6J_ONg-1; Thu, 08 Jul 2021 14:00:19 -0400
-X-MC-Unique: Pm6cBVeaPwyaJ5CA6J_ONg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C6BD080006E;
-        Thu,  8 Jul 2021 18:00:17 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-114-175.rdu2.redhat.com [10.10.114.175])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 38ED65D9FC;
-        Thu,  8 Jul 2021 18:00:10 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 9FC13223D99; Thu,  8 Jul 2021 14:00:09 -0400 (EDT)
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        viro@zeniv.linux.org.uk
-Cc:     virtio-fs@redhat.com, dwalsh@redhat.com, dgilbert@redhat.com,
-        vgoyal@redhat.com, christian.brauner@ubuntu.com,
-        casey.schaufler@intel.com, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org, tytso@mit.edu, miklos@szeredi.hu,
-        gscrivan@redhat.com, jack@suse.cz
-Subject: [PATCH v2 1/1] xattr: Allow user.* xattr on symlink and special files
-Date:   Thu,  8 Jul 2021 13:57:38 -0400
-Message-Id: <20210708175738.360757-2-vgoyal@redhat.com>
-In-Reply-To: <20210708175738.360757-1-vgoyal@redhat.com>
-References: <20210708175738.360757-1-vgoyal@redhat.com>
+        id S229846AbhGHSCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 14:02:05 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:46608 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229469AbhGHSCE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 14:02:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=XeccN3vO+kZBO9cGBrJoTHdPFyuWAmPfbzHVpOaC8fY=; b=tppSSr1NFt4b3TicbMLi3prqV7
+        Tn8oeifOWd4GI2qI54qN9Ho9tkVDidYizFDE8nee7HL63OcsHFl4F3kCb7GnxUWDp13QbVRQni+uG
+        gBfsyDrdZ87ctOD/qIqPVI2Q8aE27YciBlSdJdyOfnw3jdfq1mp7FRwGDbaUs0CqCQpo=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1m1YIq-00CfWD-E0; Thu, 08 Jul 2021 19:59:12 +0200
+Date:   Thu, 8 Jul 2021 19:59:12 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Carlos Bilbao <bilbao@vt.edu>
+Cc:     davem@davemloft.net, Joe Perches <joe@perches.com>,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
+Subject: Re: [PATCH net-next v2] drivers: ethernet: tulip: Fix indentation of
+ printk
+Message-ID: <YOc88LkI3KsiyaZF@lunn.ch>
+References: <1884900.usQuhbGJ8B@iron-maiden>
+ <5183009.Sb9uPGUboI@iron-maiden>
+ <ccf9f07a72c911652d24ceb6c6e925f834f1d338.camel@perches.com>
+ <4352381.cEBGB3zze1@iron-maiden>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4352381.cEBGB3zze1@iron-maiden>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently user.* xattr are not allowed on symlink and special files.
+On Thu, Jul 08, 2021 at 01:48:24PM -0400, Carlos Bilbao wrote:
+> Fix indentation of printk that starts at the beginning of the line and does
+> not have a KERN_<LEVEL>.
+> 
+> Signed-off-by: Carlos Bilbao <bilbao@vt.edu>
+> ---
+>  drivers/net/ethernet/dec/tulip/de4x5.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/dec/tulip/de4x5.c b/drivers/net/ethernet/dec/tulip/de4x5.c
+> index b125d7faefdf..0d8ddfdd5c09 100644
+> --- a/drivers/net/ethernet/dec/tulip/de4x5.c
+> +++ b/drivers/net/ethernet/dec/tulip/de4x5.c
+> @@ -3169,7 +3169,7 @@ dc2114x_autoconf(struct net_device *dev)
+>  
+>      default:
+>  	lp->tcount++;
+> -printk("Huh?: media:%02x\n", lp->media);
+> +	printk(KERN_NOTICE "Huh?: media:%02x\n", lp->media);
+>  	lp->media = INIT;
+>  	break;
+>      }
 
-man xattr and recent discussion suggested that primary reason for this
-restriction is how file permissions for symlinks and special files
-are little different from regular files and directories.
+Since this is a network driver, and you have a net_device structure,
+the best practice is to use
 
-For symlinks, they are world readable/writable and if user xattr were
-to be permitted, it will allow unpriviliged users to dump a huge amount
-of user.* xattrs on symlinks without any control.
+netdev_notice(dev, "Huh?: media:%02x\n", lp->media);
 
-For special files, permissions typically control capability to read/write
-from devices (and not necessarily from filesystem). So if a user can
-write to device (/dev/null), does not necessarily mean it should be allowed
-to write large number of user.* xattrs on the filesystem device node is
-residing in.
+You could go through this driver and change all printk() to
+netdev_dbg(), netdev_err(), netdev_info etc.  The advantage of these
+calls is that they make it clear which network interface is outputting
+the message.
 
-This patch proposes to relax the restrictions a bit and allow file owner
-or priviliged user (CAP_FOWNER), to be able to read/write user.* xattrs
-on symlink and special files.
+Other subsystems have similar calls. If there are not subsystem
+specific print functions, but you have a struct device, it is best to
+use dev_err(), dev_dbg(), dev_info() etc. These functions will make it
+clear which device is printing the message.
 
-virtiofs daemon has a need to store user.* xatrrs on all the files
-(including symlinks and special files), and currently that fails. This
-patch should help.
-
-Link: https://lore.kernel.org/linux-fsdevel/20210625191229.1752531-1-vgoyal@redhat.com/
-Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
----
- fs/xattr.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/fs/xattr.c b/fs/xattr.c
-index 5c8c5175b385..2f1855c8b620 100644
---- a/fs/xattr.c
-+++ b/fs/xattr.c
-@@ -120,12 +120,14 @@ xattr_permission(struct user_namespace *mnt_userns, struct inode *inode,
- 	}
- 
- 	/*
--	 * In the user.* namespace, only regular files and directories can have
--	 * extended attributes. For sticky directories, only the owner and
--	 * privileged users can write attributes.
-+	 * In the user.* namespace, for symlinks and special files, only
-+	 * the owner and priviliged users can read/write attributes.
-+	 * For sticky directories, only the owner and privileged users can
-+	 * write attributes.
- 	 */
- 	if (!strncmp(name, XATTR_USER_PREFIX, XATTR_USER_PREFIX_LEN)) {
--		if (!S_ISREG(inode->i_mode) && !S_ISDIR(inode->i_mode))
-+		if (!S_ISREG(inode->i_mode) && !S_ISDIR(inode->i_mode) &&
-+		    !inode_owner_or_capable(mnt_userns, inode))
- 			return (mask & MAY_WRITE) ? -EPERM : -ENODATA;
- 		if (S_ISDIR(inode->i_mode) && (inode->i_mode & S_ISVTX) &&
- 		    (mask & MAY_WRITE) &&
--- 
-2.25.4
-
+	      Andrew
