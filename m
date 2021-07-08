@@ -2,111 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43EDD3C1509
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 16:19:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D943C1505
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 16:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231952AbhGHOWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 10:22:18 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49876 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229592AbhGHOWS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 10:22:18 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 168E3E8x106215;
-        Thu, 8 Jul 2021 10:19:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=yG5M2Svt3PiyFLv9+HYb6BhSHC4U9BWAtuNV31oNFLA=;
- b=KHos7KKRRuheuVg+LXaQuKxBnxQzR407xBu0LfDxyqLitqwiIGuz4d3tjSTDIBilGvoB
- VoMVaaX7j2dmoYjhHN84w9Yf+XffimwaDKKyI16Y/pTMcVzRNtXNMSqjnjM7PQ/RwLEU
- OE3HyB73Xqe02TS+qsEkVKzjxzREqdSorGrJ0zJ4evlHSDGyjifzLrOXXO+Cdvcr+Yig
- 5oT+S5q/HNHtbYn2z2IGeOos1iHaFpy8DP5dXndLcaZ0VIaUkVtBp5r4Cd8ExPFmP+yZ
- 8LXSO60HjFtyie4BTuSSo1S9v83NLu1ya6SSxLJAV6+VNqAgKxROMTzxqzD3TTQAhRUh Jw== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39p1ybk1k7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Jul 2021 10:19:13 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 168E3Vaw016576;
-        Thu, 8 Jul 2021 14:19:11 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 39jfh8t8pf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Jul 2021 14:19:11 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 168EJ8JT33816962
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 8 Jul 2021 14:19:08 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F1385A405F;
-        Thu,  8 Jul 2021 14:19:07 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 93D2CA4059;
-        Thu,  8 Jul 2021 14:19:07 +0000 (GMT)
-Received: from localhost (unknown [9.145.63.161])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu,  8 Jul 2021 14:19:07 +0000 (GMT)
-Date:   Thu, 8 Jul 2021 16:19:01 +0200
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH] s390: preempt: Fix preempt_count initialization
-Message-ID: <your-ad-here.call-01625753941-ext-9306@work.hours>
-References: <20210707163338.1623014-1-valentin.schneider@arm.com>
- <YOcI5iAZnHS9rtRT@osiris>
+        id S231921AbhGHOWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 10:22:07 -0400
+Received: from mga17.intel.com ([192.55.52.151]:51866 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229592AbhGHOWG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 10:22:06 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10038"; a="189889861"
+X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
+   d="scan'208";a="189889861"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 07:19:24 -0700
+X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
+   d="scan'208";a="645925463"
+Received: from kezheong-mobl.gar.corp.intel.com (HELO [10.212.152.178]) ([10.212.152.178])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 07:19:24 -0700
+Subject: Re: x86 CPU features detection for applications (and AMX)
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     libc-alpha@sourceware.org, linux-api@vger.kernel.org,
+        x86@kernel.org, linux-arch@vger.kernel.org,
+        "H.J. Lu" <hjl.tools@gmail.com>, linux-kernel@vger.kernel.org
+References: <87tulo39ms.fsf@oldenburg.str.redhat.com>
+ <e376bcb9-cd79-7665-5859-ae808dd286f1@intel.com>
+ <878s2hz6g3.fsf@oldenburg.str.redhat.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
+ oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
+ 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
+ ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
+ VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
+ iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
+ c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
+ pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
+ ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
+ QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
+ c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
+ CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
+ 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
+ K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
+ VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
+ e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
+ ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
+ kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
+ rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
+ f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
+ mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
+ UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
+ sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
+ 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
+ cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
+ UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
+ db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
+ lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
+ kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
+ gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
+ AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
+ XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
+ e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
+ pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
+ YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
+ lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
+ M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
+ 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
+ 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
+ OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
+ ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
+ z5cecg==
+Message-ID: <b3b104cd-72d9-7f5c-116b-414c6ebf448d@intel.com>
+Date:   Thu, 8 Jul 2021 07:19:21 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <878s2hz6g3.fsf@oldenburg.str.redhat.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YOcI5iAZnHS9rtRT@osiris>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: KHMZ-n4bjk9_5UtBMnmJMnfquCidElZR
-X-Proofpoint-ORIG-GUID: KHMZ-n4bjk9_5UtBMnmJMnfquCidElZR
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-08_06:2021-07-08,2021-07-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
- malwarescore=0 impostorscore=0 bulkscore=0 mlxlogscore=893
- priorityscore=1501 adultscore=0 mlxscore=0 spamscore=0 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107080077
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 08, 2021 at 04:17:10PM +0200, Heiko Carstens wrote:
-> On Wed, Jul 07, 2021 at 05:33:38PM +0100, Valentin Schneider wrote:
-> > S390's init_idle_preempt_count(p, cpu) doesn't actually let us initialize the
-> > preempt_count of the requested CPU's idle task: it unconditionally writes
-> > to the current CPU's. This clearly conflicts with idle_threads_init(),
-> > which intends to initialize *all* the idle tasks, including their
-> > preempt_count (or their CPU's, if the arch uses a per-CPU preempt_count).
-> > 
-> > Unfortunately, it seems the way s390 does things doesn't let us initialize
-> > every possible CPU's preempt_count early on, as the pages where this
-> > resides are only allocated when a CPU is brought up and are freed when it
-> > is brought down.
-> > 
-> > Let the arch-specific code set a CPU's preempt_count when its lowcore is
-> > allocated, and turn init_idle_preempt_count() into an empty stub.
-> > 
-> > Fixes: f1a0a376ca0c ("sched/core: Initialize the idle task with preemption disabled")
-> > Reported-by: Guenter Roeck <linux@roeck-us.net>
-> > Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-> > ---
-> >  arch/s390/include/asm/preempt.h | 16 ++++------------
-> >  arch/s390/kernel/setup.c        |  1 +
-> >  arch/s390/kernel/smp.c          |  1 +
-> >  3 files changed, 6 insertions(+), 12 deletions(-)
-> 
-> Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
-> 
-> Vasily, can you pick this one up, please?
+On 7/7/21 11:05 PM, Florian Weimer wrote:
+>> This looks basically like someone dumped a bunch of CPUID bit values and
+>> exposed them to applications without considering whether applications
+>> would ever need them.  For instance, why would an app ever care about:
+>>
+>> 	PKS – Protection keys for supervisor-mode pages.
+>>
+>> And how could glibc ever give applications accurate information about
+>> whether PKS "is supported by the operating system"?  It just plain
+>> doesn't know, or at least only knows from a really weak ABI like
+>> /proc/cpuinfo.
+> glibc is expected to mask these bits for CPU_FEATURE_USABLE because they
+> have unknown semantics (to glibc).
 
-Will pick it up right away for rc1, thanks!
+OK, so if I call CPU_FEATURE_USABLE(PKS) on a system *WITH* PKS
+supported in the operating system, I'll get false from an interface that
+claims to be:
+
+> This macro returns a nonzero value (true) if the processor has the
+> feature name and the feature is supported by the operating system.
+
+The interface just seems buggy by *design*.
