@@ -2,106 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94EF33C1775
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 18:53:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9973C1780
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 18:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229735AbhGHQzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 12:55:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhGHQzu (ORCPT
+        id S229605AbhGHQ7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 12:59:04 -0400
+Received: from smtprelay0165.hostedemail.com ([216.40.44.165]:46402 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229469AbhGHQ7D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 12:55:50 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60B49C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 09:53:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=/p9/nO2z+HayInnxDJI+dz72S16cGA63N9tpKubBVKA=; b=4PCAkNjqMjk8p1OJecPKtFqN/D
-        g5FWsQSxTQbjvX57X8avZFNQWn5c5nfGpFclUeO9j30xiR+rLU5dxzt5VpZJUOvipA7VR2C4TJXtX
-        da2kcOi8WP7/V5vWtdE7+LA/KjQRnh8rjSqBuhwG/f4tPwx/ESWkdAZ5ys+4gp3FaaKO5by1AyArI
-        qfQqBEeu+Fo9IxSEcIkYEZcKBhg69PG3wi6P/gys8fdxCGdb7IW6ooNeV+TFyXbnDmLXir7rp+sIC
-        icbmTHnlbSG/4aO7TUatWKm1bC/dSHgfj88B5h4zvdBS4+lVxZkileHlpB12cCPsUXWeKvbphQ+IT
-        VpHa702Q==;
-Received: from [2601:1c0:6280:3f0::aefb] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m1XGs-00HXIB-AB; Thu, 08 Jul 2021 16:53:07 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>, alsa-devel@alsa-project.org,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Subject: [PATCH v4] ASoC: atmel: ATMEL drivers don't need HAS_DMA
-Date:   Thu,  8 Jul 2021 09:53:05 -0700
-Message-Id: <20210708165305.25461-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Thu, 8 Jul 2021 12:59:03 -0400
+Received: from omf18.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 14E3F1846F773;
+        Thu,  8 Jul 2021 16:56:20 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf18.hostedemail.com (Postfix) with ESMTPA id 332772EBFC6;
+        Thu,  8 Jul 2021 16:56:08 +0000 (UTC)
+Message-ID: <d538c07ccb0176fe7c715bf4cb3b48d84b378c52.camel@perches.com>
+Subject: Re: [PATCH 0/2] LICENSES: add and use copyleft-next-0.3.1
+From:   Joe Perches <joe@perches.com>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        "Bradley M. Kuhn" <bkuhn@ebb.org>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>, tglx@linutronix.de,
+        akpm@linux-foundation.org, shuah@kernel.org, rafael@kernel.org,
+        rgoldwyn@suse.com, kuno@frob.nl, fontana@sharpeleven.org,
+        Ciaran.Farrell@suse.com, Christopher.DeNicolo@suse.com, hch@lst.de,
+        corbet@lwn.net, linux@leemhuis.info, ast@kernel.org,
+        andriin@fb.com, daniel@iogearbox.net, atenart@kernel.org,
+        alobakin@pm.me, weiwan@google.com, ap420073@gmail.com,
+        tj@kernel.org, jeyu@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, minchan@kernel.org,
+        axboe@kernel.dk, mbenes@suse.com, jpoimboe@redhat.com,
+        keescook@chromium.org, jikos@kernel.org, rostedt@goodmis.org,
+        peterz@infradead.org, linux-block@vger.kernel.org,
+        linux-spdx@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, copyleft-next@lists.fedorahosted.org
+Date:   Thu, 08 Jul 2021 09:56:05 -0700
+In-Reply-To: <YOcakETswyEN58j6@kroah.com>
+References: <20210707184310.3624761-1-mcgrof@kernel.org>
+         <YOaZohB/2Z3x5grc@kroah.com> <YOcSwXkpzAFGucXM@ebb.org>
+         <YOcakETswyEN58j6@kroah.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.40
+X-Stat-Signature: 475dg3wxf8bgjys8z5wo7iib4gfsknho
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 332772EBFC6
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19kIzUQ5SAeC/3sY9lA0yTN+vDwkbWjZK8=
+X-HE-Tag: 1625763368-322840
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On a config (such as arch/sh/) which does not set HAS_DMA when MMU
-is not set, several ATMEL ASoC drivers select symbols that cause
-kconfig warnings. There is one "depends on HAS_DMA" which is no longer
-needed. Dropping it eliminates the kconfig warnings and still builds
-with no problems reported.
+On Thu, 2021-07-08 at 17:32 +0200, Greg KH wrote:
+> On Thu, Jul 08, 2021 at 07:59:13AM -0700, Bradley M. Kuhn wrote:
+> > Greg KH wrote:
+> > > Any chance you wish to just change the license of these files, given that
+> > > you are the only one that has tried to use it for kernel code?
+> > 
+> > There is a lot of dual-licensed (GPLv2-only|{2,3}-Clause-BSD) code already in
+> > Linux.  Many corporate copyright holders have well documented strong reasons
+> > for wanting that.  (Those policy goals and the analysis behind them, I find
+> > problematic and sometimes outright wrong, but nonetheless it's their right to
+> > license their copyrights that way, and the license *is* GPLv2-only
+> > compatible, as is Luis'!).
+> > 
+> > I assume that you're not asking those companies to relicense to pure
+> > GPLv2-only.
+> 
+> On the contrary, I have stated in public many times to companies that
+> try to add dual-licensed new kernel code that they should only do so if
+> they provide a really good reason, and pushed back on them numerous
+> times.  See the mailing list archives for details if you care.
+> 
+> So yes, I am asking them, this is not anything new.
+> 
+> Let's keep it simple please, and not add new licenses for no real good
+> reason if at all possible.
 
-Fix the following kconfig warnings:
+You can ask but it's the submitter's choice to license their code
+however they desire.
 
-WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_PDC
-  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
-  Selected by [m]:
-  - SND_ATMEL_SOC_SSC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m]
-  - SND_ATMEL_SOC_SSC_PDC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
 
-WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_PDC
-  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
-  Selected by [m]:
-  - SND_AT91_SOC_SAM9G20_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
-
-WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC
-  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
-  Selected by [m]:
-  - SND_ATMEL_SOC_SSC_DMA [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
-
-WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_DMA
-  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
-  Selected by [m]:
-  - SND_ATMEL_SOC_WM8904 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && I2C [=m]
-  - SND_AT91_SOC_SAM9X5_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
-
-Fixes: eb17726b00b3 ("m32r: add simple dma")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Reviewed-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
----
-v2: rebase & resend;
-    drop Cc: to Bo Shen <voice.shen@atmel.com> # bounced
-v3: drop "depends on HAS_DMA" (as suggested by Codrin; Thanks)
-v4: update Fixes: tag as suggested by Codrin (Thanks)
-
----
- sound/soc/atmel/Kconfig |    1 -
- 1 file changed, 1 deletion(-)
-
---- linux-next-20210707.orig/sound/soc/atmel/Kconfig
-+++ linux-next-20210707/sound/soc/atmel/Kconfig
-@@ -11,7 +11,6 @@ if SND_ATMEL_SOC
- 
- config SND_ATMEL_SOC_PDC
- 	bool
--	depends on HAS_DMA
- 
- config SND_ATMEL_SOC_DMA
- 	bool
