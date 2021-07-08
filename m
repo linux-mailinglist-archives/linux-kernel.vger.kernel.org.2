@@ -2,141 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08DF73C1417
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 15:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A0DA3C13EC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 15:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231795AbhGHNUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 09:20:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231433AbhGHNUM (ORCPT
+        id S231852AbhGHNN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 09:13:57 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:40911 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230080AbhGHNNz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 09:20:12 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D9A04C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 06:17:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
-        Content-Transfer-Encoding; bh=Q0JrVxxRtdNtAWQujigT9sHiWjfPxHh4Ty
-        k9D3IGJfM=; b=EWmcnECaaveKEcpLv0fYSRQD344PEseLxRe4Ya7VPYZQHq9Id/
-        1VDUjNJst3omL2weMbsh+NXO+8KOrilFHDUlMZy2kcjCzKegieqlfwepxnThGF73
-        BkIU9wM/bHqawLPQQQTWzQTqNu0zrleYZJ8LKcknTjriAxIkfyxC4eww0=
-Received: from xhacker (unknown [101.86.20.15])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygCnrAC8+uZg7EZDAA--.30987S2;
-        Thu, 08 Jul 2021 21:16:45 +0800 (CST)
-Date:   Thu, 8 Jul 2021 21:10:56 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] riscv: stacktrace: Fix NULL pointer dereference
-Message-ID: <20210708211056.642835b5@xhacker>
-In-Reply-To: <20210619001332.2c0c9a05@xhacker>
-References: <20210619001332.2c0c9a05@xhacker>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Thu, 8 Jul 2021 09:13:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1625749872;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dApYUv0qBUWG/wRh9snu9rIDXsxOLh5oXW2J0EqkRjU=;
+        b=Qqx0quu3LaPpEv3UKaoxcfTUVCJdqqyZ4Ageis0pbRP2ZLUDko+GHIHIIqPV9FHjMiSWRR
+        jUM85mvNImZ++0vS79RqCcWiLh7XAyGwMCXwPJd36JGiLPCAotzNr5GEMQrjePD6G13ADX
+        F6l58zTv8KDsA9n0XAoui1KNse6jzB4=
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com
+ (mail-db8eur05lp2104.outbound.protection.outlook.com [104.47.17.104])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-35-hNxWYglAO0O33bdWQOT1nA-2; Thu, 08 Jul 2021 15:11:11 +0200
+X-MC-Unique: hNxWYglAO0O33bdWQOT1nA-2
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MLk6rZXViFu7Y2TOTHEwfy+5qhcjUEiTjSi6kMpRGeXLTbX3cociKgiFbMBooAUrovV3rDjELkIC/xFLAivmxSI/7lEPP+ksRSarbKcIm68kBgOyjE/b2YRfIISMEB1+lE4PEfpF5omiGQQK8c8YF9Wb+8AWhcinwjQwlYQHJWxx/r6ZnVjjdHag26Sh/lMpr8oak2Z0htwisXLvRKo8S2kU/ij6nZ2nI8HAflZ9UTpf7XU5jWbAzraMs/IcvlXhZMVMP4bUgwJyq5tHK0hHDEGJ6ztg3dNRvQ9+HYT90fh+EYuBYxpDtZmRqcHThU2bsthHu+O5fgH7h7Crq7javQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dApYUv0qBUWG/wRh9snu9rIDXsxOLh5oXW2J0EqkRjU=;
+ b=VAdiMJmCCnkHquSE7nCNKxGliAxuVRHKEHKT11p5bVn2xgqH4N/LqJtEDZeDgu/H6Zb6uOWhuYl+I9NGhM0XBMpHSF/WcCncMuT6CDYDiunbP3Ww98QghFaoUsZZlfddIf+OxfBl+h3fHQLWLwAP9tik36vCfLozzFSuuTARH74GmErqSzBHFd899+WNWsyd/UqH6txXatl6Z0IIaLW8i7KjejDh9GyGbKXq6AT5WBxkUnsfTStdvu1qcRh5rsACLAp1Ay7ZZVM8BoTErPXY1CrIOg2FbiRJ7sSc0r17Zp2piXt14tQahonZz/FJQQbufDHnu9YhJ6mK9ouJcAw/xw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
+ by VI1PR04MB5167.eurprd04.prod.outlook.com (2603:10a6:803:5b::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.31; Thu, 8 Jul
+ 2021 13:11:08 +0000
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::99d3:99cd:8adf:3eea]) by VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::99d3:99cd:8adf:3eea%5]) with mapi id 15.20.4308.022; Thu, 8 Jul 2021
+ 13:11:08 +0000
+Subject: Re: [PATCH v2 3/3] xen/blkfront: don't trust the backend response
+ data blindly
+To:     Juergen Gross <jgross@suse.com>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
+        Jens Axboe <axboe@kernel.dk>, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
+References: <20210708124345.10173-1-jgross@suse.com>
+ <20210708124345.10173-4-jgross@suse.com>
+From:   Jan Beulich <jbeulich@suse.com>
+Message-ID: <c33d7570-d986-749d-1e4f-85829a11babb@suse.com>
+Date:   Thu, 8 Jul 2021 15:11:06 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210708124345.10173-4-jgross@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygCnrAC8+uZg7EZDAA--.30987S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxZFyDuF4rtw4rWryfCFy5XFb_yoWrGFW7pF
-        13JF47Cr48Jr4xtr17Ar15ZFy5Jrn8Za43Kr9rAr1rAF15Wr1UXr18tFW7Wr1qkr4DXa47
-        trn0qw4vqw4DJ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyFb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E
-        4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGV
-        WUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_
-        Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rV
-        WrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_
-        GrUvcSsGvfC2KfnxnUUI43ZEXa7IU5PpnJUUUUU==
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+X-ClientProxiedBy: PR3P191CA0008.EURP191.PROD.OUTLOOK.COM
+ (2603:10a6:102:54::13) To VI1PR04MB5600.eurprd04.prod.outlook.com
+ (2603:10a6:803:e7::16)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.156.60.236] (37.24.206.209) by PR3P191CA0008.EURP191.PROD.OUTLOOK.COM (2603:10a6:102:54::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18 via Frontend Transport; Thu, 8 Jul 2021 13:11:07 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 61fe5661-7176-464b-7042-08d94211d979
+X-MS-TrafficTypeDiagnostic: VI1PR04MB5167:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB5167CFFD359DFFA79FC3CAA9B3199@VI1PR04MB5167.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:862;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 759rmCWBcna+LESXm5El+06QO+Q6e7T+OsR8b3PRrlz1pTEf97QY5nwzO0VTRAD5AITHyW/5RhzwRArdlA9LP+HXD5xnv4wQZ1OGyT6lZz60QU6kWxSfd1E0utFJo6MWlG2jYQQiN6p9+8zfcGyEMZhWepH2SuAQGWiHyNEQzxzdBHvp7jCLaNvAA2FJsXEcA6jZhpfvUku/gtWyLHciGhBfv4FyMwcxsT46WG6MIqn2m3549kQoAg0zE5eG6KqVJZsPqJCDXIn5N3rqsY1RBVqZTydhv2Cc5hVU0nQb0EGQe+bxOmKIKmz7PSpdq/865hpNPeb+EN0sZSxG4pOR/KdggK9Mo63ZKi+LT1rxEKdzDZvYtIO2cvFRxpiaQH1NkSy3SqbhVSLx9cD2ovGCrv3126ibKkAlMPKtO0egzPlkBxOYiXUjGsGA9jQ+dOCPDwAIrc2Vxj8F53kte6RUlOmBZiYesKfQJTZ6iY1v4CmYBXaafpPBAlZ1yviuFyjCdzqbusIge57qXj93Ube9Ni2uVBwagzpNSj3/MtK6UIKeYNCf/zCtnkF/l4essmfv38S94cVhlnd6vJczwbqLgzpPY0U+AEGTF5TslS0TKVn7LcbTwEw4/BRgvSQ0EWdQNrVLGyRXmD4MU91FtoOm3rZAladVU/+S4e8knJKiH/y2V/6uWnXVvhaUnjNjxdPK+axWhssgjrS8AATUGbZg/wksCwNqnXOVlkINpo4bQ+ZdWqELhYdUnD//+jUjkoOv
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(366004)(39850400004)(396003)(376002)(26005)(66556008)(86362001)(37006003)(16576012)(54906003)(8676002)(478600001)(5660300002)(6636002)(36756003)(53546011)(66476007)(6486002)(956004)(4326008)(2616005)(38100700002)(83380400001)(66946007)(31686004)(31696002)(6862004)(186003)(2906002)(8936002)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RkxEekdzSnduZXRsZWZ4QnJWY0RxZU5uVlN0SEM1SitLN2dkYTVnQ3hNZUow?=
+ =?utf-8?B?bVcrREhoUzNjYi9KZDdYNnRGYysxVk1sN1F4dmtsWDI1WEd0T2Y3ekhXUDNR?=
+ =?utf-8?B?M29LYWFHdkhyaUdoTGRnc05TMFM5cVB6dkQwc1BzZFVubk96N2VlVmZQWlBj?=
+ =?utf-8?B?MkxManh0V2x3NkdVMnJ6bHFqR09DYWppdVRrTjJ4OU1zaUN2OG9nNVM1Ym0w?=
+ =?utf-8?B?THVNVHdvOFNtMnA0WENLTFZ3K1hYVXlBZGszWXYzWXQwRVpDRHVtS1JDOEtw?=
+ =?utf-8?B?NlVHcmpmTS9ZUEZBY0FMTDhDVDlpNWFaWGRpeWQ0eWJ2WHZwN1d6WjZOK0sr?=
+ =?utf-8?B?YUwrcWg2THZ0Y04rSjhXNXpJcmo4UEdxSkM3czdQVEwvSXF6RE1ra1ZFSXcv?=
+ =?utf-8?B?aGlKTHZVSE5yVmNuckthUUVRM0xVUUJYUTlEd3RpUW93VW5FSENtK2d2YTZy?=
+ =?utf-8?B?R2RDSXVycTU3b01laDFXcGJXaXVqcGtRTEp0OW9ubHZFRklvMHpQc1gwMXdN?=
+ =?utf-8?B?TFdhUDNndVFQUDI0cFcxRDVvTHZqTCt6NVlHR21IZk9NZ3R0bGh0d0dpZTlB?=
+ =?utf-8?B?QmFYZUVqTG9RYXR0dHZkZVBBNS9yNDdra2xKVGRPRS80KzdXU3RlclM0Z3By?=
+ =?utf-8?B?RzB2U1c2bGVtcmxRdyt1WWZFb2lCbzJoVk9ZVzZmT2I4UG1nZjd4ZWxPNCtC?=
+ =?utf-8?B?OG5zbUxhUTBKekN4T0VCVmVtR0ZDQWdOUUlFWEQ3OHFKNCtZM3RBZDNCRW5D?=
+ =?utf-8?B?dUlwcXRnSE4zL0s5YVlhaGZBRDhNRHBxTFFFVE9OdlYyaGUyVFBnaEJSQ3Rh?=
+ =?utf-8?B?ZmsrMGlZVFBLRWNyRjRaNVFXYjhLWmlCYW80R2d6RkQyQ0p5dEFYeTYzVmE2?=
+ =?utf-8?B?SVlVN3M1OGd0eDU1Wks3UVduUCtqZ2xIbSt5R0JsMVU4SmlEb2FRWHJZdXhy?=
+ =?utf-8?B?eDhITGlCenZKRUVmSTBzOEJmbUJCc2RPZHB1MnlCVzZVQjdiN3FIcmpHV1VF?=
+ =?utf-8?B?c3J0V0Zqd05USENHei9zWmJRWWxLVVVBYkVJNU54NGo3cmJScWRyUUhUYTEx?=
+ =?utf-8?B?OU1WSTNIV1FZanRJQ041YmxobytPV3luaHFOQU5rWFJOZDlkSnFod2hoN1l4?=
+ =?utf-8?B?MUpqWGxWcVNFME1rcTdSdlpBc2VaRHVQWk1Zd1Fhby9ndklZTERXaEJML2xW?=
+ =?utf-8?B?NVdXYk1rNTJLeWRac1o3ekJZR2N1N0RtZlczZ2VvdzRPejZjQ2RmYkpmSEdu?=
+ =?utf-8?B?OUtiNkZiQ2ZteEdGUVNSZENRbXlWWitrM3BIYmRaQ291Nm43RHlLM0dDbzFa?=
+ =?utf-8?B?SUJETldTTVNJQlFnTktzWlNxNjZOYTlVZ1NNYy82WExDTTVjcVhpSXRaa2w0?=
+ =?utf-8?B?YWNVYUE4eG02WDNTR3VmZFh1WjUzb1c1QVE2TDFxUndLWTNLc0p5ZDNmb0xL?=
+ =?utf-8?B?aTZEaDJlZE12RGdkdDJLWm96N0l1bFNDZGFUSW1xbmlzZmxKNGpmYkxOUlNV?=
+ =?utf-8?B?QSt6YjBIMFlKL29NYnNFQjJtMUtJN2d2WU5GbXBQYlBOK0hlNUs3a1Z4UlFQ?=
+ =?utf-8?B?NVQ1YUZweFlLYWRJN1QrK2Fjait4bnVrSFVqMDhEVjI1OGZsWVYvT1V1MzVp?=
+ =?utf-8?B?Tkw1czRkZTFyYnA0OHBOenJzRlkxZE52VlZ3SXdReXBWMVp6cUNRVUlLRFQv?=
+ =?utf-8?B?SUlwaklBZzlNTXZRSDQvcmV6ZWtiU1RuLzlHSWFxWG1GU3RGSW1oR0F4T3NS?=
+ =?utf-8?Q?yI8EV2NI00WjuHSuVYQU0ZjybhMWs9QAGQwNOZj?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 61fe5661-7176-464b-7042-08d94211d979
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jul 2021 13:11:08.1956
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4sCOwJ3oMz+phsm4z9QPbBYGdLGN3i73yU8PrsQVHmk4uitO1FJ0I4hCLnqSjGVc/I/9/WxEWIT3Px3MFIe9bQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5167
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Palmer,
+On 08.07.2021 14:43, Juergen Gross wrote:
+> Today blkfront will trust the backend to send only sane response data.
+> In order to avoid privilege escalations or crashes in case of malicious
+> backends verify the data to be within expected limits. Especially make
+> sure that the response always references an outstanding request.
+> 
+> Introduce a new state of the ring BLKIF_STATE_ERROR which will be
+> switched to in case an inconsistency is being detected. Recovering from
+> this state is possible only via removing and adding the virtual device
+> again (e.g. via a suspend/resume cycle).
+> 
+> Signed-off-by: Juergen Gross <jgross@suse.com>
 
-On Sat, 19 Jun 2021 00:13:32 +0800
-Jisheng Zhang wrote:
+Reviewed-by: Jan Beulich <jbeulich@suse.com>
+albeit ...
 
-> From: Jisheng Zhang <jszhang@kernel.org>
-> 
-> When CONFIG_FRAME_POINTER=y, calling dump_stack() can always trigger
-> NULL pointer dereference panic similar as below:
-> 
-> [    0.396060] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.13.0-rc5+ #47
-> [    0.396692] Hardware name: riscv-virtio,qemu (DT)
-> [    0.397176] Call Trace:
-> [    0.398191] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000960
-> [    0.399487] Oops [#1]
-> [    0.399739] Modules linked in:
-> [    0.400135] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.13.0-rc5+ #47
-> [    0.400570] Hardware name: riscv-virtio,qemu (DT)
-> [    0.400926] epc : walk_stackframe+0xc4/0xdc
-> [    0.401291]  ra : dump_backtrace+0x30/0x38
-> [    0.401630] epc : ffffffff80004922 ra : ffffffff8000496a sp : ffffffe000f3bd00
-> [    0.402115]  gp : ffffffff80cfdcb8 tp : ffffffe000f30000 t0 : ffffffff80d0b0cf
-> [    0.402602]  t1 : ffffffff80d0b0c0 t2 : 0000000000000000 s0 : ffffffe000f3bd60
-> [    0.403071]  s1 : ffffffff808bc2e8 a0 : 0000000000001000 a1 : 0000000000000000
-> [    0.403448]  a2 : ffffffff803d7088 a3 : ffffffff808bc2e8 a4 : 6131725dbc24d400
-> [    0.403820]  a5 : 0000000000001000 a6 : 0000000000000002 a7 : ffffffffffffffff
-> [    0.404226]  s2 : 0000000000000000 s3 : 0000000000000000 s4 : 0000000000000000
-> [    0.404634]  s5 : ffffffff803d7088 s6 : ffffffff808bc2e8 s7 : ffffffff80630650
-> [    0.405085]  s8 : ffffffff80912a80 s9 : 0000000000000008 s10: ffffffff804000fc
-> [    0.405388]  s11: 0000000000000000 t3 : 0000000000000043 t4 : ffffffffffffffff
-> [    0.405616]  t5 : 000000000000003d t6 : ffffffe000f3baa8
-> [    0.405793] status: 0000000000000100 badaddr: 0000000000000960 cause: 000000000000000d
-> [    0.406135] [<ffffffff80004922>] walk_stackframe+0xc4/0xdc
-> [    0.407032] [<ffffffff8000496a>] dump_backtrace+0x30/0x38
-> [    0.407797] [<ffffffff803d7100>] show_stack+0x40/0x4c
-> [    0.408234] [<ffffffff803d9e5c>] dump_stack+0x90/0xb6
-> [    0.409019] [<ffffffff8040423e>] ptdump_init+0x20/0xc4
-> [    0.409681] [<ffffffff800015b6>] do_one_initcall+0x4c/0x226
-> [    0.410110] [<ffffffff80401094>] kernel_init_freeable+0x1f4/0x258
-> [    0.410562] [<ffffffff803dba88>] kernel_init+0x22/0x148
-> [    0.410959] [<ffffffff800029e2>] ret_from_exception+0x0/0x14
-> [    0.412241] ---[ end trace b2ab92c901b96251 ]---
-> [    0.413099] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-> 
-> The reason is the task is NULL when we finally call walk_stackframe()
-> the NULL is passed from __dump_stack():
-> 
-> |static void __dump_stack(void)
-> |{
-> |        dump_stack_print_info(KERN_DEFAULT);
-> |        show_stack(NULL, NULL, KERN_DEFAULT);
-> |}
-> 
-> Fix this issue by checking "task == NULL" case in walk_stackframe().
-> 
-> Fixes: eac2f3059e02 ("riscv: stacktrace: fix the riscv stacktrace when CONFIG_FRAME_POINTER enabled"
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> @@ -1602,7 +1628,8 @@ static irqreturn_t blkif_interrupt(int irq, void *dev_id)
+>  		case BLKIF_OP_DISCARD:
+>  			if (unlikely(bret.status == BLKIF_RSP_EOPNOTSUPP)) {
+>  				struct request_queue *rq = info->rq;
+> -				printk(KERN_WARNING "blkfront: %s: %s op failed\n",
+> +
+> +				pr_warn_ratelimited("blkfront: %s: %s op failed\n",
+>  					   info->gd->disk_name, op_name(bret.operation));
+>  				blkif_req(req)->error = BLK_STS_NOTSUPP;
+>  				info->feature_discard = 0;
+> @@ -1614,13 +1641,13 @@ static irqreturn_t blkif_interrupt(int irq, void *dev_id)
+>  		case BLKIF_OP_FLUSH_DISKCACHE:
+>  		case BLKIF_OP_WRITE_BARRIER:
+>  			if (unlikely(bret.status == BLKIF_RSP_EOPNOTSUPP)) {
+> -				printk(KERN_WARNING "blkfront: %s: %s op failed\n",
+> +				pr_warn_ratelimited("blkfront: %s: %s op failed\n",
+>  				       info->gd->disk_name, op_name(bret.operation));
+>  				blkif_req(req)->error = BLK_STS_NOTSUPP;
+>  			}
+>  			if (unlikely(bret.status == BLKIF_RSP_ERROR &&
+>  				     rinfo->shadow[id].req.u.rw.nr_segments == 0)) {
+> -				printk(KERN_WARNING "blkfront: %s: empty %s op failed\n",
+> +				pr_warn_ratelimited("blkfront: %s: empty %s op failed\n",
+>  				       info->gd->disk_name, op_name(bret.operation));
+>  				blkif_req(req)->error = BLK_STS_NOTSUPP;
+>  			}
+> @@ -1635,8 +1662,8 @@ static irqreturn_t blkif_interrupt(int irq, void *dev_id)
+>  		case BLKIF_OP_READ:
+>  		case BLKIF_OP_WRITE:
+>  			if (unlikely(bret.status != BLKIF_RSP_OKAY))
+> -				dev_dbg(&info->xbdev->dev, "Bad return from blkdev data "
+> -					"request: %x\n", bret.status);
+> +				dev_dbg_ratelimited(&info->xbdev->dev,
+> +					"Bad return from blkdev data request: %x\n", bret.status);
+>  
+>  			break;
+>  		default:
 
-What about this patch? This is a fix to an obvious bug: call dump_stack() will
-panic.
+... all of these look kind of unrelated to the topic of the patch,
+and the conversion also isn't mentioned as on-purpose in the
+description.
 
-Thanks
-> ---
->  arch/riscv/kernel/stacktrace.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/riscv/kernel/stacktrace.c b/arch/riscv/kernel/stacktrace.c
-> index bde85fc53357..7bc8af75933a 100644
-> --- a/arch/riscv/kernel/stacktrace.c
-> +++ b/arch/riscv/kernel/stacktrace.c
-> @@ -27,7 +27,7 @@ void notrace walk_stackframe(struct task_struct *task, struct pt_regs *regs,
->  		fp = frame_pointer(regs);
->  		sp = user_stack_pointer(regs);
->  		pc = instruction_pointer(regs);
-> -	} else if (task == current) {
-> +	} else if (task == NULL || task == current) {
->  		fp = (unsigned long)__builtin_frame_address(1);
->  		sp = (unsigned long)__builtin_frame_address(0);
->  		pc = (unsigned long)__builtin_return_address(0);
-
+Jan
 
