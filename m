@@ -2,131 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E663BF5CC
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 08:51:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 124BB3BF5CF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 08:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230401AbhGHGyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 02:54:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229756AbhGHGyW (ORCPT
+        id S230436AbhGHGzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 02:55:21 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:24442 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229843AbhGHGzU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 02:54:22 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D69E5C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 23:51:39 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id 59-20020a9d0ac10000b0290462f0ab0800so4851019otq.11
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 23:51:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=HVD5y86eZda4zsbe0B5h51p+U8LmjsDcgy/cp1cHfiw=;
-        b=maO7t2jNZuoibZMBU8a+fE5saykw+uyETAlE6DBaxuGJWyKbRsLkQniBtfYnTMUpU7
-         soWO4Hzh+XJ2IxeklQU4q2ciYvv2J+reQ+i4U94xFKK5M5BgmU22TTB4jfHqOL8BWHNC
-         FX7Pur7coMrSF3RK2+8c0bOxNdQnwCX7QaN6A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=HVD5y86eZda4zsbe0B5h51p+U8LmjsDcgy/cp1cHfiw=;
-        b=hWi6pDeS5Vzr3ddby74FiAo6okhcvfg206pb1rXGWmfXBQFaLvaomjUf7ASZKDryNB
-         F8FqNmuR9paqsNCSoErqBqmzBmKeou6E1RkEbkc9IhijbGWUOZ2GbHlZohKi6DLjIIOh
-         vrv/H9fMfKDvunOn1QXNVWjCKnNYMc0bY62ZUrDzSjRomwixIAQ06avJ3K0fNG5Odqme
-         m3GPdwmFQJe+E+XrG+cmaZySrvlR7gtS2wnr0RtmotkVrueU3OSXZZEFuTK7BEtSroU7
-         Wyxjm8xwY+8aWxSzx+rSQn2ptoBskecF1uUEj5j5SViFn90AIrGDo7Uts9kPLlprDThD
-         gJiw==
-X-Gm-Message-State: AOAM5311848gFcjtxQhZpwEs03a1ylVSvKkV7XPJSDf4Jp6wME9a1x4V
-        X6mFR4Tg2bkWFiC4KkTOHZvzcG0f+OUwYuWT4SQsVg==
-X-Google-Smtp-Source: ABdhPJzjxc7AbuyTBSxQVRlFe8tgvyY2EhHa2gKQ9gHMn+8kCgwJU6QlGzVsTvjV1C0NxrHMTo3r6RYo4HUQnRkpuX0=
-X-Received: by 2002:a05:6830:1353:: with SMTP id r19mr22942548otq.233.1625727099195;
- Wed, 07 Jul 2021 23:51:39 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 8 Jul 2021 06:51:38 +0000
+        Thu, 8 Jul 2021 02:55:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1625727158;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MP+NHmOhOR9FUeuSZLn1wOVcE4VHHx3OuaTMn1B1Ufc=;
+        b=I/qx2XpsolWTc/wgvXX+S1m3g8w3/G+80g+z4b/AwB0XJUgiwlXSL3iL1YuQwsFNbt/l+n
+        tW5QEhMJy4dLLUHOmrIQgwpcBlHGk1nrkUoD88Wvk12NAXxH5DoCPCJJS8PrbdxmvFjL5f
+        dJF4rfD0PqESsNOYbWhfysYu5R8xpyw=
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com
+ (mail-db8eur05lp2107.outbound.protection.outlook.com [104.47.17.107])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-30-hrloLkyTMG-oaWVi1Q547g-1; Thu, 08 Jul 2021 08:52:37 +0200
+X-MC-Unique: hrloLkyTMG-oaWVi1Q547g-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d71zlIvzTdLpezd8srRq6i9qV61chMF9ODQbVTQVzJe2mAVDcB0+GmEvCbnu0OxjIlaiV6UjZ91JVlMRr98rtmPgyTFYZ2AIUoKI6CuoKoSmQWZ7laCLTN8OJBYZp02e1UF7lvTusPWxKC69RSWRShoXyPGl4fcDfftJTlIyNF4bkDVM28tu5HETXDHmTKQO5+bP0CZvRbIntvhBiFpJMnJOvvayRdJJb6OAFbHEoFcU6vzc2Jd7fsp59mm1B7290uxP8xdKMal7aNkuDYUkM62UAFn7plEqkIMAKATXE4j0FlEDIxLBHA18mw+69AAPazK/GeflJKxM83d5wwojkg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MP+NHmOhOR9FUeuSZLn1wOVcE4VHHx3OuaTMn1B1Ufc=;
+ b=l46XNCM4JG2xHHqAy5Mrf2CiTau/4iRH9uLUy6vVHe60Kwb1geSwoV0WaHRfyFZw1HPUb3wf3LLGiCTqXbolfWFthrjc8CmuFCKcPhTq/bXs40LsJnOuR9CWkxthL+seK+kYzek+GYCDf8M64/ffZlpyh8UQYK7mcVzzJg0kNJzIclbE7mcVck9xZj+qpxxIy2WRc6GYECUS4a+doBKeWnP+RaC7yzruJ518dyBsHfO2sQCky9lR/122m9pCE9BmXeNXZlrj0u4WA3ZvG0gamACKurM1AAztQRkN/7PO+5yOyuxwHJoKKEJyz6l1zSLmX4pEkhcq3oo8Vsmi7Zbmhw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
+ by VI1PR04MB3117.eurprd04.prod.outlook.com (2603:10a6:802:6::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22; Thu, 8 Jul
+ 2021 06:52:33 +0000
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::99d3:99cd:8adf:3eea]) by VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::99d3:99cd:8adf:3eea%5]) with mapi id 15.20.4308.022; Thu, 8 Jul 2021
+ 06:52:33 +0000
+Subject: Re: [PATCH 4/8] xen/blkfront: don't trust the backend response data
+ blindly
+To:     Juergen Gross <jgross@suse.com>
+Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, xen-devel@lists.xenproject.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210513100302.22027-1-jgross@suse.com>
+ <20210513100302.22027-5-jgross@suse.com>
+ <315ad8b9-8a98-8d3e-f66c-ab32af2731a8@suse.com>
+ <6095c4b9-a9bb-8a38-fb6c-a5483105b802@suse.com>
+ <a19a13ba-a386-2808-ad85-338d47085fa6@suse.com>
+ <030ef85e-b5af-f46e-c8dc-88b8d195c4e1@suse.com>
+ <477f01cd-8793-705c-10f9-cf0c0cd6ed84@suse.com>
+ <dca55162-ec2e-682a-824d-b657a6407249@suse.com>
+ <5a9dcc69-385a-eda5-6974-cb962ae62601@suse.com>
+ <7f606c27-173a-542d-406d-196dae784edd@suse.com>
+From:   Jan Beulich <jbeulich@suse.com>
+Message-ID: <fbd099f3-4d62-e0f6-1bad-6d317428051e@suse.com>
+Date:   Thu, 8 Jul 2021 08:52:31 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <7f606c27-173a-542d-406d-196dae784edd@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR0P281CA0013.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:15::18) To VI1PR04MB5600.eurprd04.prod.outlook.com
+ (2603:10a6:803:e7::16)
 MIME-Version: 1.0
-In-Reply-To: <8da6e99f-ae80-b9a5-4fe9-6cc467ea65d0@codeaurora.org>
-References: <20210703005416.2668319-1-bjorn.andersson@linaro.org>
- <20210703005416.2668319-2-bjorn.andersson@linaro.org> <CAE-0n50EvG4qV0n+Ag+dvFxKKasnUzwH=MA+f-jsgDdBqaqziQ@mail.gmail.com>
- <YOaAqAqldq3Hyiva@yoga> <8da6e99f-ae80-b9a5-4fe9-6cc467ea65d0@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 8 Jul 2021 06:51:38 +0000
-Message-ID: <CAE-0n50NciURowskkFg2-1emtotdprL_Ns8C_mAFVSAKQ-Dx7g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] soc: qcom: rpmhpd: Use corner in power_off
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.156.60.236] (37.24.206.209) by FR0P281CA0013.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:15::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.8 via Frontend Transport; Thu, 8 Jul 2021 06:52:32 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 560b950d-fd9c-4978-3f35-08d941dcf63b
+X-MS-TrafficTypeDiagnostic: VI1PR04MB3117:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB3117C4739CA41DD27DF6E003B3199@VI1PR04MB3117.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: A/9we6e9+DV4TdluH37oUdB9HVshATA/q/Y0PRf3604XuM4LBfX2xDSrsxVUgTvpCHSTAyp9tKYweNBLOPxzg81eOj2M0orkxr/vuaoy7O3z7AHQE6stXjl2gZqbCwTeNwJRnDGS8wrFpCIgDbTI7Ok7g3N0j7JHJpF9VsE8xVyBTGUivHsLJiX85NdGUSk/wxsWOjwJOuGwTNZf5Jn0Px6KxWmUMLqSf463M9CcdhFtAh0XNmSbE9xbAyJseo85YOB7v+Xu/ArNP6ErTUfPWZExrpVOi9YR4uDYFap7purtmqTYeu+H0VZg8MQysnYa4C/Wm24oG5PrKXRfg04r5wpm6KNpC2Nsd+t+WMFo4UHw7gWmpTryWb7Qrx1u5wHjH53gznkjNpA50jD2xjBEI0liZ4xkE+LzGB+BdDv+J56IJizu8uBInUekNCZRFQV5YKYc+BCLs/jYmANcZwjlvx1uRsczopfH7zHDHrdR33rlCVmQV4QN9pIJnfadFNs+QPbjXZYei1O04vPmOoBRN39qBQ+mBaxfyi/WvnilBbiBSqRv9lmPmyXeLfHfFfu3XS1s0vwsVTCkdA5vvF5KDsUCDgWBkWGFejMXrF655es8SP6S8RfcM1mXdLo/yIBs+C/ILQ9FrceKs8zn3NyO8DKvrk3Bymi8/wPWdVLMxupJB205CA/I+woiN3QqRlzd6qq5WKEZbXlUbG8eaPIGYSYoWMTV3t9ArEbie83+3bUudg3G7+xcZu5IRVoLZZh6
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(346002)(136003)(376002)(39850400004)(54906003)(8936002)(2906002)(6636002)(2616005)(5660300002)(83380400001)(956004)(66556008)(36756003)(37006003)(478600001)(31696002)(26005)(316002)(8676002)(66476007)(186003)(16576012)(38100700002)(66946007)(6862004)(31686004)(4326008)(86362001)(6486002)(53546011)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Y01mdVZDV2RQOU84Sk5mcmxjOTl4V1NDMTBjTTk4eG01RXk4bUNlN2RWVEdl?=
+ =?utf-8?B?ejQ5MGIrejlIc0FvUW1wa3BKaUhsWC9PLzQ0UUNacVdZWm00UGducURxWlY1?=
+ =?utf-8?B?Q2Ntc3VuOW1CNHdvZThKNVdqZmZFb2s1RlV4Mzh0REs1dDlhSFl1bGxrNVRQ?=
+ =?utf-8?B?VSt2V3Z4TmNyNTBVTDNuYkxNTVdoMkh5Y0toWTdOdFV6TW92a291OUc4dzJC?=
+ =?utf-8?B?T2lwVDg0ZS9ITlhRdkN6SVN5RlRsM0k1dXdBU3phR0JEc2xvL2U0bS82MTZB?=
+ =?utf-8?B?MU1MSFpXRWd1V1hyOWorWnJWMmQzOWh0QkZCY2E1dElNTXkxaFUrbzVpajNW?=
+ =?utf-8?B?QVRwV1lyaXlJQTVvODRzbmVUUzRqWUd2VTVISnpEUEJnTzFSZmNWNEpPOXM3?=
+ =?utf-8?B?UW96cFZVcUhDMktKT2tDSHJFMUgzb2taQW9FQmVxOVdnTEFmbXh5OTRKdkRV?=
+ =?utf-8?B?U1ZPMTJ3WFRkNTdUS0pGK1FuaTRMY0dma3N3dDJ0MXhzU3pDQTZmVDR5emh5?=
+ =?utf-8?B?Unp1dGFHN3o3MnNsV2I0NTBnQzBmZm4wQU42ZkJsUUx2cGFkOGxpVlVaR01B?=
+ =?utf-8?B?L2RUdWUwY2VrWTRQcEpOazFRSmNmOEVmQy8wR2tqcG9RS2hmVE1YVG1nL1Iw?=
+ =?utf-8?B?MkY2ZUVkVmsxV3hGeWlmSFhZYk9jSkVUWGpsVGFXaVVsMjhvR0Fkd2J6b09v?=
+ =?utf-8?B?OTdlUWVkZ2lWdE9aaGhLYjZpSTRxRlZzdjdKNThMcjk3eG90MjRRNFFYakRG?=
+ =?utf-8?B?T2FkY1pPRGRXVktNeXEzVGRSUnNGVjUwL3kyK3dDZGdaNzNlb0Y1UHNzUXJn?=
+ =?utf-8?B?SzJQNzVMVm1JbG1wcXFjcTJUMDlFQXMxNDYwdjBtVERlazh3REdQdEpyN0l1?=
+ =?utf-8?B?TFdLVkZjMGlnWjdCdVFPQ0dLeGRJU0puamEvSjcxS1B5Nk5GdGVQSGg0a2tD?=
+ =?utf-8?B?NmVNN2hpK0NWMW9mcTk5TzJzaW96K0tCOTRoYkhRM0lxdHc4V1F4RmNkaWg3?=
+ =?utf-8?B?dWVvSzhqYlVOZ2NORUpRa0ZPVVg0Nk5oeDVlK09YZlc3TVRMWlhqQStzcnYw?=
+ =?utf-8?B?NmNQNTF5Z1NPYXVkZ1Q1aFk0LzdKL08xVDBtT3ZHS25EOUlZME1oSnQzTXlR?=
+ =?utf-8?B?YnpURUQ5UHVVZUJZRGM2YXpuTVNVOFc1NW9ROG1RT0F4Wi9PQzF0bTRoV3lR?=
+ =?utf-8?B?SFcrT0pRN3I2aGF0ZGtka0x2WUp2QXRyb0RNY2JxQnZ3OFF3NmtJaTRyZ3cr?=
+ =?utf-8?B?UXpFU3o2aVpTaHhsQjNyVmphS05TbDFWeG12djZnWkFobG55N0drU3E3YXk4?=
+ =?utf-8?B?ME9RMXg1YmlBZndEQ3pxQzY2T0JLWVEzUDMvbkN2OXRMSHVBQ0Fjc0pvbW5U?=
+ =?utf-8?B?cS9IczE1Q01JM1h4ZzBMODd4amsxS2V5dnpyRmdIcUp5ZERqY29BcGJHUU0x?=
+ =?utf-8?B?K3VuWmZRbnJoaDlzMnhUd1hUMlZkdWFNd0gvSkhkdHlkZW96cnh1b3FTZTYy?=
+ =?utf-8?B?eDd5VVpiYXBrelZyZ1BZc1VTMTFCRE52aDdZRnljWGU0L0l1U3pKeUhWWXBw?=
+ =?utf-8?B?OXAzWTNVL0J3bGdhK08xMmJjM01reURET21tQStpM085ZmlyMWE2RjAvN0ww?=
+ =?utf-8?B?VmdJc01BRnZmcTBPVlZXNW9XRlpBQ1Excks3bFJSaE1QUUMzV21PbWx6cnV5?=
+ =?utf-8?B?NHZWeXFVckV2d3Nuek1iVWxnbEVmUE9RU1YvZ3FsTlBlVU5oWEVFK0tLUWxW?=
+ =?utf-8?Q?/U2uDBzUNCHZRsB0iLbb6ALgbrbzmk1F4kLbb33?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 560b950d-fd9c-4978-3f35-08d941dcf63b
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jul 2021 06:52:33.0923
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Vli2JyaS8h1sMq4yORG4hHk8vEMxMDx0LvZ/ijBnF3Em/SFo+cdZfHCluyNhWk04C8yi/DZbtdcoOp7D1doGSw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB3117
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Rajendra Nayak (2021-07-07 22:03:53)
->
->
-> On 7/8/2021 10:05 AM, Bjorn Andersson wrote:
-> > On Wed 07 Jul 19:21 CDT 2021, Stephen Boyd wrote:
-> >
-> >> Quoting Bjorn Andersson (2021-07-02 17:54:15)
-> >>> rpmhpd_aggregate_corner() takes a corner as parameter, but in
-> >>> rpmhpd_power_off() the code requests the level of the first corner
-> >>> instead.
-> >>>
-> >>> In all (known) current cases the first corner has level 0, so this
-> >>> change should be a nop, but in case that there's a power domain with a
-> >>> non-zero lowest level this makes sure that rpmhpd_power_off() actually
-> >>> requests the lowest level - which is the closest to "power off" we can
-> >>> get.
-> >>>
-> >>> While touching the code, also skip the unnecessary zero-initialization
-> >>> of "ret".
-> >>>
-> >>> Fixes: 279b7e8a62cc ("soc: qcom: rpmhpd: Add RPMh power domain driver")
-> >>> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> >>> ---
-> >>
-> >> I think this is why qcom folks talk about "virtual corner" and "physical
-> >> corner" because there's the one in command DB and the one in hardware.
-> >
-> > I think the driver uses "level" and "corner" to denote the two different
-> > number spaces, so I think we're good...now that we after this patch
-> > don't pass a "level" as "corner" during power_off ;)
+On 08.07.2021 08:40, Juergen Gross wrote:
+> On 08.07.21 08:37, Jan Beulich wrote:
+>> On 08.07.2021 07:47, Juergen Gross wrote:
+>>> On 17.05.21 17:33, Jan Beulich wrote:
+>>>> On 17.05.2021 17:22, Juergen Gross wrote:
+>>>>> On 17.05.21 17:12, Jan Beulich wrote:
+>>>>>> On 17.05.2021 16:23, Juergen Gross wrote:
+>>>>>>> On 17.05.21 16:11, Jan Beulich wrote:
+>>>>>>>> On 13.05.2021 12:02, Juergen Gross wrote:
+>>>>>>>>> @@ -1574,10 +1580,16 @@ static irqreturn_t blkif_interrupt(int irq, void *dev_id)
+>>>>>>>>>      	spin_lock_irqsave(&rinfo->ring_lock, flags);
+>>>>>>>>>       again:
+>>>>>>>>>      	rp = rinfo->ring.sring->rsp_prod;
+>>>>>>>>> +	if (RING_RESPONSE_PROD_OVERFLOW(&rinfo->ring, rp)) {
+>>>>>>>>> +		pr_alert("%s: illegal number of responses %u\n",
+>>>>>>>>> +			 info->gd->disk_name, rp - rinfo->ring.rsp_cons);
+>>>>>>>>> +		goto err;
+>>>>>>>>> +	}
+>>>>>>>>>      	rmb(); /* Ensure we see queued responses up to 'rp'. */
+>>>>>>>>
+>>>>>>>> I think you want to insert after the barrier.
+>>>>>>>
+>>>>>>> Why? The relevant variable which is checked is "rp". The result of the
+>>>>>>> check is in no way depending on the responses themselves. And any change
+>>>>>>> of rsp_cons is protected by ring_lock, so there is no possibility of
+>>>>>>> reading an old value here.
+>>>>>>
+>>>>>> But this is a standard double read situation: You might check a value
+>>>>>> and then (via a separate read) use a different one past the barrier.
+>>>>>
+>>>>> Yes and no.
+>>>>>
+>>>>> rsp_cons should never be written by the other side, and additionally
+>>>>> it would be read multiple times anyway.
+>>>>
+>>>> But I'm talking about rsp_prod, as that's what rp gets loaded from.
+>>>
+>>> Oh, now I get your problem.
+>>>
+>>> But shouldn't that better be solved by using READ_ONCE() for reading rp
+>>> instead?
+>>
+>> Not sure - the rmb() is needed anyway aiui, and hence you could as well
+>> move your code addition.
+> 
+> Sure.
+> 
+> My question was rather: does the rmb() really eliminate the possibility
+> of a double read introduced by the compiler? If yes, moving the code is
+> the correct solution.
 
-Alright then nothing to do. Yay?
+It doesn't eliminate the possibility of a double read, but (leaving
+aside split accesses) that's not what you care about here. What you
+need is a single stable value to operate on. No matter how many
+(non-split) reads the compiler may issue to fill "rp", the final
+read's value will be used in the subsequent calculation. Or at
+least that's been my understanding; thinking about it the compiler
+might issue multiple reads into distinct registers ahead of the
+barrier, and use different registers for different subsequent
+operations. While this would look like intentionally inefficient
+code generation to me, you may indeed want to play safe and use
+ACCESS_ONCE() _and_ the barrier. I guess there are more places then
+which would want similar treatment, and it's not a problem that
+this change introduces ...
 
-> >
-> >> Maybe we should change rpmhpd_aggregate_corner() to call the argument
-> >> 'vcorner'?
-> >
-> > So "virtual corner" is "corner" and "physical corner" is level? I.e. 256
-> > is a "physical corner"?
->
-> I haven't heard of anything called a 'physical corner'. These were always
-> referred to as virtual corners, on older platforms it was just one contiguous
-> number space, on newer ones we added another higher level sparse number space
-> just for more fun :)
-> Command DB refers to these as hlvl and vlvl, I haven;t yet figured out what their
-> full forms are :/
+Jan
 
-Ah maybe I'm mixing up CPR terms with this stuff. I suspect hlvl is
-"hardware level" and vlvl is "virtual level", but probably should have
-been "software level".
-
-As far as I remember, the command DB layer was stacked on top so that
-they could insert more levels in between two levels in the hardware
-number space and not have to change all the rpmh clients out there (of
-which there could be many considering all the independent operating
-systems running on the SoC). For example, [0, 128, 256] maps to [0, 1,
-2] and then they realize they need to jam another level between 1 and 2
-so they remap 256 to 3 so everyone keeps considering 256 as the previous
-vlvl to clear the way for 2 to be reused as 198 or something like that.
-
-I don't think this ever really changes after the device ships, but it
-lets them decouple rpmh firmware updates from the rest of the system. As
-long as they're kept as far apart in vlvl space as there are numbers in
-hlvl space they can easily do this remap trick and hardware can treat it
-as levels that bounce around physical voltages that are monotonically
-increasing.
