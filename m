@@ -2,92 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44A3A3C1754
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 18:47:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD98A3C1778
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 18:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbhGHQtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 12:49:40 -0400
-Received: from smtprelay0002.hostedemail.com ([216.40.44.2]:59658 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229468AbhGHQtj (ORCPT
+        id S229862AbhGHQ42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 12:56:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24191 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229745AbhGHQ41 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 12:49:39 -0400
-Received: from omf09.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id DDF9118481CC3;
-        Thu,  8 Jul 2021 16:46:56 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf09.hostedemail.com (Postfix) with ESMTPA id C71191E04D6;
-        Thu,  8 Jul 2021 16:46:55 +0000 (UTC)
-Message-ID: <39a7b7c455c6c23f0bfe7403b4957d2c92196d46.camel@perches.com>
-Subject: Re: [PATCH] drivers: parisc: Follow the indentation coding standard
- on printks
-From:   Joe Perches <joe@perches.com>
-To:     Carlos Bilbao <bilbao@vt.edu>,
-        James.Bottomley@hansenpartnership.com
-Cc:     deller@gmx.de, linux-parisc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, andrew@lunn.ch
-Date:   Thu, 08 Jul 2021 09:46:54 -0700
-In-Reply-To: <1793924.CQOukoFCf9@iron-maiden>
-References: <1793924.CQOukoFCf9@iron-maiden>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Thu, 8 Jul 2021 12:56:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625763225;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8zOv/MDfEWcH9s0zWRUnQQNA4xFdmSTmuagPnlN1tB8=;
+        b=fHiE//kX0HDHxKHUZzhuNUmrYb3AzsKMZ60dkLSosaaCykmuTFdxOlvYFqG9CKS9Hacjo6
+        O4LBEqgej8p8Vgg/EZWTNimyGi4gTgM6f7hWJ+oQTMPgnOSoz8+AQ82y++++W0GxZO8NHZ
+        iwlkj2uq+ahI+XU0YYwd54FoLXvyp48=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-62-MHMYsE5EPi-ZDkCvXE_lFg-1; Thu, 08 Jul 2021 12:53:44 -0400
+X-MC-Unique: MHMYsE5EPi-ZDkCvXE_lFg-1
+Received: by mail-lj1-f197.google.com with SMTP id f14-20020a2ea0ce0000b0290187d7481310so71150ljm.7
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 09:53:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8zOv/MDfEWcH9s0zWRUnQQNA4xFdmSTmuagPnlN1tB8=;
+        b=kvII6rVa3TIbC4Wd2M4rzoLlM7eHiCd0UvFpMK46rltmTgq+T1w7Q2VDSTEpFrsIEH
+         2sMIDS+6DBHgcYQ4h+3sN3BRj9gt6XyOqVBHgTU0W6PJaTzbQ/OxROrg3m2+vjz1580I
+         2kuvrIol6IQk8WygFHxLNdIFnSW2aYgD8guwtXhAJlisKXYUpC4OZ1JjliUyjfxtUvE6
+         AXNOyDOuAcrrMGeWNlp8KlL6U+UqvoCG9WE4yN/vU6QXj1TaMtA45v+UHNUZai3o9p6A
+         /PGzf/S4gcpGOeOybDax8vzCCTJAmvFZs/bGD0exrnfsWMuy3DUPwuxwT8E0KtL5wJRZ
+         0seA==
+X-Gm-Message-State: AOAM5335aMjrXUQp2XVyy3HhsfhyeMOImTPvJWgYwmzlIzDeMBFrtHwy
+        8MavvvOO3L1DGN4Qhd/XONxUUCWb6V4p20XpmbJlUmjcfEwkKnDaJUAX99GNurH3gKsSWr8ntxm
+        jKmA7aMJqSxSgQzvCGnXLQrZm
+X-Received: by 2002:a17:907:ea5:: with SMTP id ho37mr31944244ejc.109.1625762903187;
+        Thu, 08 Jul 2021 09:48:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw3a5F1wHTH5P/QRmbTxUMdjhRN2uE1z7VdPPF6Jl7c6aaYv8oJSi/bC2ELxd8i4zc3tObZCg==
+X-Received: by 2002:a17:907:ea5:: with SMTP id ho37mr31944235ejc.109.1625762903030;
+        Thu, 08 Jul 2021 09:48:23 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id g17sm1552964edb.37.2021.07.08.09.48.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Jul 2021 09:48:22 -0700 (PDT)
+Subject: Re: [PATCH] KVM: X86: Also reload the debug registers before
+ kvm_x86->run() when the host is using them
+To:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org
+References: <20210628172632.81029-1-jiangshanlai@gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <46e0aaf1-b7cd-288f-e4be-ac59aa04908f@redhat.com>
+Date:   Thu, 8 Jul 2021 18:48:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.88
-X-Stat-Signature: bf5x7hu4qzo6ebqrqu3zoqskqspn4eqn
-X-Rspamd-Server: rspamout02
-X-Rspamd-Queue-Id: C71191E04D6
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+3oypUb4+2pFpKdBOrW8q0uE0T83Ec5xw=
-X-HE-Tag: 1625762815-113199
+In-Reply-To: <20210628172632.81029-1-jiangshanlai@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-07-08 at 11:25 -0400, Carlos Bilbao wrote:
-> Fix indentation of printks that start at the beginning of the line. Change this 
-> for the right number of space characters, or tabs if the file uses them. 
-
-These are ancient codes, but:
-
-> diff --git a/drivers/parisc/iosapic.c b/drivers/parisc/iosapic.c
-[]
-> @@ -633,7 +633,7 @@ static void iosapic_unmask_irq(struct irq_data *d)
->  	printk("\n");
->  }
->  
+On 28/06/21 19:26, Lai Jiangshan wrote:
+> From: Lai Jiangshan <laijs@linux.alibaba.com>
 > 
-> -printk("iosapic_enable_irq(): sel ");
-> +	printk("iosapic_enable_irq(): sel ");
->  {
->  	struct iosapic_info *isp = vi->iosapic;
->  
+> When the host is using debug registers but the guest is not using them
+> nor is the guest in guest-debug state, the kvm code does not reset
+> the host debug registers before kvm_x86->run().  Rather, it relies on
+> the hardware vmentry instruction to automatically reset the dr7 registers
+> which ensures that the host breakpoints do not affect the guest.
 > 
-> @@ -642,7 +642,7 @@ printk("iosapic_enable_irq(): sel ");
->  		printk(" %x", d1);
->  	}
->  }
-> -printk("\n");
-> +	printk("\n");
->  #endif
+> But there are still problems:
+> 	o The addresses of the host breakpoints can leak into the guest
+> 	  and the guest may use these information to attack the host.
 
-This is in an undefined #ifdef block and the block could be deleted.
+I don't think this is true, because DRn reads would exit (if they don't, 
+switch_db_regs would be nonzero).  But otherwise it makes sense to do at 
+least the DR7 write, and we might as well do all of them.
 
-> diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
-[]
-> @@ -1550,7 +1550,7 @@ static void sba_hw_init(struct sba_device *sba_dev)
->  
+> 	o It violates the non-instrumentable nature around VM entry and
+> 	  exit.  For example, when a host breakpoint is set on
+> 	  vcpu->arch.cr2, #DB will hit aftr kvm_guest_enter_irqoff().
 > 
->  
+> Beside the problems, the logic is not consistent either. When the guest
+> debug registers are active, the host breakpoints are reset before
+> kvm_x86->run(). But when the guest debug registers are inactive, the
+> host breakpoints are delayed to be disabled.  The host tracing tools may
+> see different results depending on there is any guest running or not.
+
+More precisely, the host tracing tools may see different results 
+depending on what the guest is doing.
+
+Queued (with fixed commit message), thanks!
+
+Paolo
+
+> To fix the problems, we also reload the debug registers before
+> kvm_x86->run() when the host is using them whenever the guest is using
+> them or not.
 > 
->  #if 0
-
-#if 0 blocks can be removed.
-
-> -printk("sba_hw_init(): mem_boot 0x%x 0x%x 0x%x 0x%x\n", PAGE0->mem_boot.hpa,
-> +	printk("sba_hw_init(): mem_boot 0x%x 0x%x 0x%x 0x%x\n", PAGE0->mem_boot.hpa,
->  	PAGE0->mem_boot.spa, PAGE0->mem_boot.pad, PAGE0->mem_boot.cl_class);
->  
+> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+> ---
+>   arch/x86/kvm/x86.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
->  	/*
-
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index b594275d49b5..cce316655d3c 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -9320,7 +9320,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+>   	if (test_thread_flag(TIF_NEED_FPU_LOAD))
+>   		switch_fpu_return();
+>   
+> -	if (unlikely(vcpu->arch.switch_db_regs)) {
+> +	if (unlikely(vcpu->arch.switch_db_regs || hw_breakpoint_active())) {
+>   		set_debugreg(0, 7);
+>   		set_debugreg(vcpu->arch.eff_db[0], 0);
+>   		set_debugreg(vcpu->arch.eff_db[1], 1);
+> 
 
