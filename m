@@ -2,389 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3C053C1766
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 18:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDB613C176C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 18:50:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbhGHQwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 12:52:39 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:35858 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229992AbhGHQwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 12:52:33 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4GLMhl6bVtzBF3Q;
-        Thu,  8 Jul 2021 18:49:43 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id O2M-KEPMrU1i; Thu,  8 Jul 2021 18:49:43 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4GLMhl5hdCzBF3J;
-        Thu,  8 Jul 2021 18:49:43 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id BB01F8B801;
-        Thu,  8 Jul 2021 18:49:43 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id LJkU6zeZlgBu; Thu,  8 Jul 2021 18:49:43 +0200 (CEST)
-Received: from po9473vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 68B548B7E3;
-        Thu,  8 Jul 2021 18:49:43 +0200 (CEST)
-Received: by po9473vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 48C076640E; Thu,  8 Jul 2021 16:49:43 +0000 (UTC)
-Message-Id: <03166d569526be70214fe9370a7bad219d2f41c8.1625762907.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <b864a92693ca8413ef0b19f0c12065c212899b6e.1625762905.git.christophe.leroy@csgroup.eu>
-References: <b864a92693ca8413ef0b19f0c12065c212899b6e.1625762905.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v4 4/4] powerpc/ptdump: Convert powerpc to GENERIC_PTDUMP
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Thu,  8 Jul 2021 16:49:43 +0000 (UTC)
+        id S229838AbhGHQxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 12:53:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50630 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229542AbhGHQx3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 12:53:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625763046;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2OB0zSrc/L137vieSn1bV5IcC6z0P+Q1vkoqM8xpfTo=;
+        b=YEQI2B85NKHdFVQI9+sMoi9OQUYYjxYD9xmr1/qK7ZADcxSoiYTbcDrsRho6CcmU7gf8ij
+        Skecd1g8ifNnPg4itELRXECm9Zzt6z2Wkg9rYG5rrVlBAxdSFUssSXIYoVSQBjdIUuu0xS
+        RxLBq0Egot0aiHI+DjuU5/Dr6N7gRLA=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-409-Aqzgl9nqP6SbmHbz6Z2bMw-1; Thu, 08 Jul 2021 12:50:45 -0400
+X-MC-Unique: Aqzgl9nqP6SbmHbz6Z2bMw-1
+Received: by mail-ed1-f70.google.com with SMTP id y18-20020a0564022712b029038ffac1995eso3658955edd.12
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 09:50:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2OB0zSrc/L137vieSn1bV5IcC6z0P+Q1vkoqM8xpfTo=;
+        b=jdvaQ62Cl4D4m6BNVfWkxXYM7g5dTChOcj7+gKenelXRykNcubDrFjCCea0NofOp2y
+         pRCt5G5ayNn2PfMp0P8YJsBI7OfJtFQSUNqQlM9RjCbjyLpuSlq2nrYdZjmiZjj0ssRY
+         47uzA6DNkFXDKY+ABfe8kKVk1Dcn8gM2AsSEpo2LK7rFR7GrglH9whMAn0UDPz9hjaKc
+         vPXJM7sB44gmnR5CIJIQcGeqcNH5WtzuEVQPARTGGpvCMxRg1yuYJ/5puqJwjp4W+DtC
+         xwdnC4xy8xp1Ja4PYpV+7wQjADszboPAf+1x8wDouVtdWyc3XX9Qk+34GTi9xF0uHL/8
+         ar4A==
+X-Gm-Message-State: AOAM530BUA7+oXNUtbFvV5HAG25y2nHmcVyudUhEM+50Xz/ZOkG8n26p
+        lft3AkAc2zuyfP3hAPDVGQcO1YmJXv15QaysMe6hR9g/eyX9YN/e05BKofXBFAyQ14nGxCzkfGZ
+        yE3hadg6nmO3bFac6gWWHPHkA
+X-Received: by 2002:a17:907:d8c:: with SMTP id go12mr19890645ejc.442.1625763044386;
+        Thu, 08 Jul 2021 09:50:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzk9fO2BRrb8OTLwrPrz4tYr5MAon9lbPn4sasbXn1PywwYC0XefPHKB81KozyzGnj+G0mQ5Q==
+X-Received: by 2002:a17:907:d8c:: with SMTP id go12mr19890610ejc.442.1625763044210;
+        Thu, 08 Jul 2021 09:50:44 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id j6sm1618320eds.58.2021.07.08.09.50.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Jul 2021 09:50:43 -0700 (PDT)
+Subject: Re: [PATCH 0/5] KVM: x86: Use kernel x86 cpuid utilities in KVM
+ selftests
+To:     Jim Mattson <jmattson@google.com>,
+        Ricardo Koller <ricarkol@google.com>
+Cc:     kvm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+References: <20210422005626.564163-1-ricarkol@google.com>
+ <c4524e4a-55c7-66f9-25d6-d397f11d25a8@redhat.com>
+ <YIm7iWxggvoN9riz@google.com>
+ <CALMp9eSfpdWF0OROsOqxohxMoFrrY=Gt7FYfB1_31D7no4JYLw@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <16823e91-5caf-f52e-e0dc-28ebb9a87b47@redhat.com>
+Date:   Thu, 8 Jul 2021 18:50:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <CALMp9eSfpdWF0OROsOqxohxMoFrrY=Gt7FYfB1_31D7no4JYLw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch converts powerpc to the generic PTDUMP implementation.
+On 29/06/21 19:28, Jim Mattson wrote:
+>> Thanks. I was thinking about kvm-unit-tests, but the issue is that it
+>> would also be a copy. And just like with kernel headers, it would be
+>> ideal to keep them in-sync. The advantage of the kernel headers is that
+>> it's much easier to check and fix diffs with them. On the other hand, as
+>> you say, there would not be any #ifdef stuff with kvm=unit-tests. Please
+>> let me know what you think.
+>
+> I think the kvm-unit-tests implementation is superior to the kernel
+> implementation, but that's probably because I suggested it. Still, I
+> think there's an argument to be made that selftests, unlike
+> kvm-unit-tests, are part of the kernel distribution and should be
+> consistent with the kernel where possible.
+> 
+> Paolo?
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v4: Reworked init of ptdump range
----
- arch/powerpc/Kconfig            |   2 +
- arch/powerpc/Kconfig.debug      |  30 -------
- arch/powerpc/mm/Makefile        |   2 +-
- arch/powerpc/mm/mmu_decl.h      |   2 +-
- arch/powerpc/mm/ptdump/Makefile |   9 +-
- arch/powerpc/mm/ptdump/ptdump.c | 146 ++++++++------------------------
- 6 files changed, 47 insertions(+), 144 deletions(-)
+I also prefer the kvm-unit-tests implementation, for what it's worth... 
+Let's see what the code looks like?
 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 0104345d0a65..dc1ab533a1cf 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -123,6 +123,7 @@ config PPC
- 	select ARCH_HAS_COPY_MC			if PPC64
- 	select ARCH_HAS_DEBUG_VIRTUAL
- 	select ARCH_HAS_DEBUG_VM_PGTABLE
-+	select ARCH_HAS_DEBUG_WX		if STRICT_KERNEL_RWX
- 	select ARCH_HAS_DEVMEM_IS_ALLOWED
- 	select ARCH_HAS_DMA_MAP_DIRECT 		if PPC_PSERIES
- 	select ARCH_HAS_ELF_RANDOMIZE
-@@ -182,6 +183,7 @@ config PPC
- 	select GENERIC_IRQ_SHOW
- 	select GENERIC_IRQ_SHOW_LEVEL
- 	select GENERIC_PCI_IOMAP		if PCI
-+	select GENERIC_PTDUMP
- 	select GENERIC_SMP_IDLE_THREAD
- 	select GENERIC_STRNCPY_FROM_USER
- 	select GENERIC_STRNLEN_USER
-diff --git a/arch/powerpc/Kconfig.debug b/arch/powerpc/Kconfig.debug
-index 205cd77f321f..192f0ed0097f 100644
---- a/arch/powerpc/Kconfig.debug
-+++ b/arch/powerpc/Kconfig.debug
-@@ -365,36 +365,6 @@ config FAIL_IOMMU
- 
- 	  If you are unsure, say N.
- 
--config PPC_PTDUMP
--	bool "Export kernel pagetable layout to userspace via debugfs"
--	depends on DEBUG_KERNEL && DEBUG_FS
--	help
--	  This option exports the state of the kernel pagetables to a
--	  debugfs file. This is only useful for kernel developers who are
--	  working in architecture specific areas of the kernel - probably
--	  not a good idea to enable this feature in a production kernel.
--
--	  If you are unsure, say N.
--
--config PPC_DEBUG_WX
--	bool "Warn on W+X mappings at boot"
--	depends on PPC_PTDUMP && STRICT_KERNEL_RWX
--	help
--	  Generate a warning if any W+X mappings are found at boot.
--
--	  This is useful for discovering cases where the kernel is leaving
--	  W+X mappings after applying NX, as such mappings are a security risk.
--
--	  Note that even if the check fails, your kernel is possibly
--	  still fine, as W+X mappings are not a security hole in
--	  themselves, what they do is that they make the exploitation
--	  of other unfixed kernel bugs easier.
--
--	  There is no runtime or memory usage effect of this option
--	  once the kernel has booted up - it's a one time check.
--
--	  If in doubt, say "Y".
--
- config PPC_FAST_ENDIAN_SWITCH
- 	bool "Deprecated fast endian-switch syscall"
- 	depends on DEBUG_KERNEL && PPC_BOOK3S_64
-diff --git a/arch/powerpc/mm/Makefile b/arch/powerpc/mm/Makefile
-index eae4ec2988fc..df8172da2301 100644
---- a/arch/powerpc/mm/Makefile
-+++ b/arch/powerpc/mm/Makefile
-@@ -18,5 +18,5 @@ obj-$(CONFIG_PPC_MM_SLICES)	+= slice.o
- obj-$(CONFIG_HUGETLB_PAGE)	+= hugetlbpage.o
- obj-$(CONFIG_NOT_COHERENT_CACHE) += dma-noncoherent.o
- obj-$(CONFIG_PPC_COPRO_BASE)	+= copro_fault.o
--obj-$(CONFIG_PPC_PTDUMP)	+= ptdump/
-+obj-$(CONFIG_PTDUMP_CORE)	+= ptdump/
- obj-$(CONFIG_KASAN)		+= kasan/
-diff --git a/arch/powerpc/mm/mmu_decl.h b/arch/powerpc/mm/mmu_decl.h
-index 7dac910c0b21..dd1cabc2ea0f 100644
---- a/arch/powerpc/mm/mmu_decl.h
-+++ b/arch/powerpc/mm/mmu_decl.h
-@@ -180,7 +180,7 @@ static inline void mmu_mark_rodata_ro(void) { }
- void __init mmu_mapin_immr(void);
- #endif
- 
--#ifdef CONFIG_PPC_DEBUG_WX
-+#ifdef CONFIG_DEBUG_WX
- void ptdump_check_wx(void);
- #else
- static inline void ptdump_check_wx(void) { }
-diff --git a/arch/powerpc/mm/ptdump/Makefile b/arch/powerpc/mm/ptdump/Makefile
-index 712762be3cb1..4050cbb55acf 100644
---- a/arch/powerpc/mm/ptdump/Makefile
-+++ b/arch/powerpc/mm/ptdump/Makefile
-@@ -5,5 +5,10 @@ obj-y	+= ptdump.o
- obj-$(CONFIG_4xx)		+= shared.o
- obj-$(CONFIG_PPC_8xx)		+= 8xx.o
- obj-$(CONFIG_PPC_BOOK3E_MMU)	+= shared.o
--obj-$(CONFIG_PPC_BOOK3S_32)	+= shared.o bats.o segment_regs.o
--obj-$(CONFIG_PPC_BOOK3S_64)	+= book3s64.o hashpagetable.o
-+obj-$(CONFIG_PPC_BOOK3S_32)	+= shared.o
-+obj-$(CONFIG_PPC_BOOK3S_64)	+= book3s64.o
-+
-+ifdef CONFIG_PTDUMP_DEBUGFS
-+obj-$(CONFIG_PPC_BOOK3S_32)	+= bats.o segment_regs.o
-+obj-$(CONFIG_PPC_BOOK3S_64)	+= hashpagetable.o
-+endif
-diff --git a/arch/powerpc/mm/ptdump/ptdump.c b/arch/powerpc/mm/ptdump/ptdump.c
-index fb531bc64fc5..2d80d775d15e 100644
---- a/arch/powerpc/mm/ptdump/ptdump.c
-+++ b/arch/powerpc/mm/ptdump/ptdump.c
-@@ -16,6 +16,7 @@
- #include <linux/io.h>
- #include <linux/mm.h>
- #include <linux/highmem.h>
-+#include <linux/ptdump.h>
- #include <linux/sched.h>
- #include <linux/seq_file.h>
- #include <asm/fixmap.h>
-@@ -54,6 +55,7 @@
-  *
-  */
- struct pg_state {
-+	struct ptdump_state ptdump;
- 	struct seq_file *seq;
- 	const struct addr_marker *marker;
- 	unsigned long start_address;
-@@ -102,6 +104,11 @@ static struct addr_marker address_markers[] = {
- 	{ -1,	NULL },
- };
- 
-+static struct ptdump_range ptdump_range[] __ro_after_init = {
-+	{TASK_SIZE_MAX, ~0UL},
-+	{0, 0}
-+};
-+
- #define pt_dump_seq_printf(m, fmt, args...)	\
- ({						\
- 	if (m)					\
-@@ -204,10 +211,10 @@ static void note_page_update_state(struct pg_state *st, unsigned long addr, int
- 	}
- }
- 
--static void note_page(struct pg_state *st, unsigned long addr,
--		      int level, u64 val, unsigned long page_size)
-+static void note_page(struct ptdump_state *pt_st, unsigned long addr, int level, u64 val)
- {
- 	u64 flag = level >= 0 ? val & pg_level[level].mask : 0;
-+	struct pg_state *st = container_of(pt_st, struct pg_state, ptdump);
- 
- 	/* At first no level is set */
- 	if (st->level == -1) {
-@@ -245,94 +252,6 @@ static void note_page(struct pg_state *st, unsigned long addr,
- 	}
- }
- 
--static void walk_pte(struct pg_state *st, pmd_t *pmd, unsigned long start)
--{
--	pte_t *pte = pte_offset_kernel(pmd, 0);
--	unsigned long addr;
--	unsigned int i;
--
--	for (i = 0; i < PTRS_PER_PTE; i++, pte++) {
--		addr = start + i * PAGE_SIZE;
--		note_page(st, addr, 4, pte_val(*pte), PAGE_SIZE);
--
--	}
--}
--
--static void walk_hugepd(struct pg_state *st, hugepd_t *phpd, unsigned long start,
--			int pdshift, int level)
--{
--#ifdef CONFIG_ARCH_HAS_HUGEPD
--	unsigned int i;
--	int shift = hugepd_shift(*phpd);
--	int ptrs_per_hpd = pdshift - shift > 0 ? 1 << (pdshift - shift) : 1;
--
--	if (start & ((1 << shift) - 1))
--		return;
--
--	for (i = 0; i < ptrs_per_hpd; i++) {
--		unsigned long addr = start + (i << shift);
--		pte_t *pte = hugepte_offset(*phpd, addr, pdshift);
--
--		note_page(st, addr, level + 1, pte_val(*pte), 1 << shift);
--	}
--#endif
--}
--
--static void walk_pmd(struct pg_state *st, pud_t *pud, unsigned long start)
--{
--	pmd_t *pmd = pmd_offset(pud, 0);
--	unsigned long addr;
--	unsigned int i;
--
--	for (i = 0; i < PTRS_PER_PMD; i++, pmd++) {
--		addr = start + i * PMD_SIZE;
--		if (!pmd_none(*pmd) && !pmd_is_leaf(*pmd))
--			/* pmd exists */
--			walk_pte(st, pmd, addr);
--		else
--			note_page(st, addr, 3, pmd_val(*pmd), PMD_SIZE);
--	}
--}
--
--static void walk_pud(struct pg_state *st, p4d_t *p4d, unsigned long start)
--{
--	pud_t *pud = pud_offset(p4d, 0);
--	unsigned long addr;
--	unsigned int i;
--
--	for (i = 0; i < PTRS_PER_PUD; i++, pud++) {
--		addr = start + i * PUD_SIZE;
--		if (!pud_none(*pud) && !pud_is_leaf(*pud))
--			/* pud exists */
--			walk_pmd(st, pud, addr);
--		else
--			note_page(st, addr, 2, pud_val(*pud), PUD_SIZE);
--	}
--}
--
--static void walk_pagetables(struct pg_state *st)
--{
--	unsigned int i;
--	unsigned long addr = st->start_address & PGDIR_MASK;
--	pgd_t *pgd = pgd_offset_k(addr);
--
--	/*
--	 * Traverse the linux pagetable structure and dump pages that are in
--	 * the hash pagetable.
--	 */
--	for (i = pgd_index(addr); i < PTRS_PER_PGD; i++, pgd++, addr += PGDIR_SIZE) {
--		p4d_t *p4d = p4d_offset(pgd, 0);
--
--		if (p4d_none(*p4d) || p4d_is_leaf(*p4d))
--			note_page(st, addr, 1, p4d_val(*p4d), PGDIR_SIZE);
--		else if (is_hugepd(__hugepd(p4d_val(*p4d))))
--			walk_hugepd(st, (hugepd_t *)p4d, addr, PGDIR_SHIFT, 1);
--		else
--			/* p4d exists */
--			walk_pud(st, p4d, addr);
--	}
--}
--
- static void populate_markers(void)
- {
- 	int i = 0;
-@@ -383,17 +302,14 @@ static int ptdump_show(struct seq_file *m, void *v)
- 		.seq = m,
- 		.marker = address_markers,
- 		.level = -1,
--		.start_address = IS_ENABLED(CONFIG_PPC64) ? PAGE_OFFSET : TASK_SIZE,
-+		.ptdump = {
-+			.note_page = note_page,
-+			.range = ptdump_range,
-+		}
- 	};
- 
--#ifdef CONFIG_PPC64
--	if (!radix_enabled())
--		st.start_address = KERN_VIRT_START;
--#endif
--
- 	/* Traverse kernel page tables */
--	walk_pagetables(&st);
--	note_page(&st, 0, -1, 0, 0);
-+	ptdump_walk_pgd(&st.ptdump, &init_mm, NULL);
- 	return 0;
- }
- 
-@@ -409,23 +325,24 @@ static void build_pgtable_complete_mask(void)
- 				pg_level[i].mask |= pg_level[i].flag[j].mask;
- }
- 
--#ifdef CONFIG_PPC_DEBUG_WX
-+#ifdef CONFIG_DEBUG_WX
- void ptdump_check_wx(void)
- {
- 	struct pg_state st = {
- 		.seq = NULL,
--		.marker = address_markers,
-+		.marker = (struct addr_marker[]) {
-+			{ 0, NULL},
-+			{ -1, NULL},
-+		},
- 		.level = -1,
- 		.check_wx = true,
--		.start_address = IS_ENABLED(CONFIG_PPC64) ? PAGE_OFFSET : TASK_SIZE,
-+		.ptdump = {
-+			.note_page = note_page,
-+			.range = ptdump_range,
-+		}
- 	};
- 
--#ifdef CONFIG_PPC64
--	if (!radix_enabled())
--		st.start_address = KERN_VIRT_START;
--#endif
--
--	walk_pagetables(&st);
-+	ptdump_walk_pgd(&st.ptdump, &init_mm, NULL);
- 
- 	if (st.wx_pages)
- 		pr_warn("Checked W+X mappings: FAILED, %lu W+X pages found\n",
-@@ -435,12 +352,21 @@ void ptdump_check_wx(void)
- }
- #endif
- 
--static int ptdump_init(void)
-+static int __init ptdump_init(void)
- {
-+#ifdef CONFIG_PPC64
-+	if (!radix_enabled())
-+		ptdump_range[0].start = KERN_VIRT_START;
-+	else
-+		ptdump_range[0].start = PAGE_OFFSET;
-+#endif
-+
- 	populate_markers();
- 	build_pgtable_complete_mask();
--	debugfs_create_file("kernel_page_tables", 0400, NULL, NULL,
--			    &ptdump_fops);
-+
-+	if (IS_ENABLED(CONFIG_PTDUMP_DEBUGFS))
-+		debugfs_create_file("kernel_page_tables", 0400, NULL, NULL, &ptdump_fops);
-+
- 	return 0;
- }
- device_initcall(ptdump_init);
--- 
-2.25.0
+Paolo
 
