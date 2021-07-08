@@ -2,125 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C25C33BF77D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 11:19:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0E713BF780
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 11:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231483AbhGHJWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 05:22:23 -0400
-Received: from mickerik.phytec.de ([195.145.39.210]:46330 "EHLO
-        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231394AbhGHJWK (ORCPT
+        id S231490AbhGHJWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 05:22:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231382AbhGHJWr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 05:22:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
-        q=dns/txt; i=@phytec.de; t=1625735963; x=1628327963;
-        h=From:Sender:Reply-To:Subject:Date:Message-Id:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=iPCwYoZWJZV4vwThU3muuhgkMB2HBIf7o/b+oay4+PA=;
-        b=TM+Eac0WxmL5yRDrAB8CsT7WLbMVg/57l1cY0PI6PL6vIT/ICis8ttBhyGQrE4so
-        dfno+s5fYEKY+rGhnIylVTo4FvXmPzcdWwt1Go3TSO8tkkp2a9BgRzBW7hEHZMoE
-        z+c+7LW/uLyJdotJOCxc/55UWEbEmHAbc7fZvdT3v+0=;
-X-AuditID: c39127d2-1d8f870000001daf-8a-60e6c31bbd9e
-Received: from idefix.phytec.de (Unknown_Domain [172.16.0.10])
-        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id AA.B7.07599.B13C6E06; Thu,  8 Jul 2021 11:19:23 +0200 (CEST)
-Received: from lws-riedmueller.phytec.de ([172.16.23.108])
-          by idefix.phytec.de (IBM Domino Release 9.0.1FP7)
-          with ESMTP id 2021070811192355-1113446 ;
-          Thu, 8 Jul 2021 11:19:23 +0200 
-From:   Stefan Riedmueller <s.riedmueller@phytec.de>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 6/6] media: dt-bindings: mt9p031: Add missing required properties
-Date:   Thu, 8 Jul 2021 11:19:22 +0200
-Message-Id: <20210708091922.5508-7-s.riedmueller@phytec.de>
+        Thu, 8 Jul 2021 05:22:47 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DD11C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 02:20:05 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id p8so6652861wrr.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 02:20:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=E8wOYuGgW5dxV41LrFT+/grkfGnQ13pyFW8oHR7OIZw=;
+        b=IWXWukGJ+sYxiBpJibUmxHiqApl6N+DEulPAvNQ/b2VL/rwieZfZp75c0X7vLZ7TJ3
+         0g5Gf6cVNpOGW+gR1Syy7MbfuG+hTjErP9dwW+0H51UwTQ8mi0v1L849+pmDSzTTVqkJ
+         hooulS78YJSUBUtnvAqCwO/nCq8PKrJbic1qTpunf0ly+mWpOHPgqYlA4r+2PvgJSSNT
+         O62eIYPcVRZYNb0NiuUCihI1ETeyo5JJyO2ju4/y0YmS9tss/tGaKGIM2EFtHWwbBkY+
+         LhU94BKNnWJgSAYBqhwsy1iWmpPaDgrZv62rUaPsJxbiXdoGEevvKIIT4MOm64D/R8/p
+         np+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=E8wOYuGgW5dxV41LrFT+/grkfGnQ13pyFW8oHR7OIZw=;
+        b=fHCmA1eLKvIXn/cRbhSn2Veo8aayCszWpUswAz4DDOIroGvEXUuCXk9C/GSFIna/n2
+         26kNEtKj1WntRBfB4nLx+2U06s8KmdCczOG9+2kbmRXT1yh0imFSbs0duK8OmLqJ20+q
+         FzZFPpI/0f/gXfM+LrlQPOnGYb+xdS9fp6kavwohRSZrMlWhwiV6zj2dAQDno7d/yxu6
+         71rBDaMF1tiFbkllbtF9xOVSp67uT8c3kIL2RwF/uTcNyjwNBCtOzPML2gnydGF1c3WP
+         OVE6qlM6nYxkTDS3Sj3yxT37cFuADH8YVg+hs+Kfse5TSAsQSW9n7+Wwu2gTQuJb/vPZ
+         mj4g==
+X-Gm-Message-State: AOAM530N9vrIQstFLwLBvwB4prAuhCKQN8zTkJMCFcCDZMD/VOAuJSmF
+        zBJ5v5WObjpxCcmJGZlv6Vs=
+X-Google-Smtp-Source: ABdhPJzeCR07d1y8gCpicm/rcIXFt9UWWOn6W0Tb2/O83UCOlBFXjE1O5HjKURZbqEnAIZvYGAJdeg==
+X-Received: by 2002:a5d:52d0:: with SMTP id r16mr32765405wrv.323.1625736004038;
+        Thu, 08 Jul 2021 02:20:04 -0700 (PDT)
+Received: from bcarvalho-Ubuntu.lan ([2001:818:de85:7e00:4d1a:56e6:44c6:5764])
+        by smtp.gmail.com with ESMTPSA id y11sm5594308wmi.33.2021.07.08.02.20.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jul 2021 02:20:03 -0700 (PDT)
+From:   Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
+To:     rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+        hamohammed.sa@gmail.com, daniel@ffwll.ch, airlied@linux.ie
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH v2] drm/vkms: Creating a debug file to get/track vkms config in vkms_drv.c
+Date:   Thu,  8 Jul 2021 10:20:02 +0100
+Message-Id: <20210708092002.11847-1-martinsdecarvalhobeatriz@gmail.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210708091922.5508-1-s.riedmueller@phytec.de>
-References: <20210708091922.5508-1-s.riedmueller@phytec.de>
 MIME-Version: 1.0
-X-MIMETrack: Itemize by SMTP Server on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
- 08.07.2021 11:19:23,
-        Serialize by Router on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
- 08.07.2021 11:19:23
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: quoted-printable
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrNLMWRmVeSWpSXmKPExsWyRoCBS1f68LMEg9dPzS3mHznHatE5cQm7
-        xeVdc9gsejZsZbVYtukPk0Xr3iPsFp+2fGNyYPeY3TGT1WPTqk42j3knAz0+b5ILYInisklJ
-        zcksSy3St0vgyvjVtZCtoI+3YuK+g4wNjB84uxg5OSQETCRO/pjD2MXIxSEksI1RYsPvD1DO
-        NUaJBXNbWECq2ASMJBZMa2QCSYgItDFK7DjSDOYwC2xhlJh+eTkbSJWwQIhEz5s7TCA2i4CK
-        xJTlp9lBbF4Ba4nNG+eyQOyTl5h56TtQnIODU8BGoqs/BSQsBFRybNYtVohyQYmTM5+wgMyX
-        ELjCKDH/1zI2iF4hidOLzzKD2MwC2hLLFr5mnsAoMAtJzywkqQWMTKsYhXIzk7NTizKz9Qoy
-        KktSk/VSUjcxAgP48ET1SzsY++Z4HGJk4mA8xCjBwawkwms041mCEG9KYmVValF+fFFpTmrx
-        IUZpDhYlcd4NvCVhQgLpiSWp2ampBalFMFkmDk6pBkbhvefZmHbeNN5rzBh+qWAN++Pifcxe
-        OQkautPajKMkzbbGBzpwpP6b/kZhDntj5ZzK6JClLwWmvLqncd7FIzntXG32rDlhvd0bPm/g
-        P7BeX/Vcd6XEHtdjW6Z91dOTmGJ5J/N1o2vgyV1TXC8tZ7e032Tb9S+kI1wl8vgq7dVr3jx1
-        +nnB4qMSS3FGoqEWc1FxIgB1sv9WTgIAAA==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing required clocks and supply regulator properties for the
-sensor input clock and vdd, vdd=5Fio and vaa supply regulators.
+Creating a vkms_config_debufs file in vkms_drv.c to get/track vkms config
+data, for the long-term plan of making vkms configurable and have multiple
+different instances.
 
-Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
+Reviewed-by: Melissa Wen <melissa.srw@gmail.com>
+Signed-off-by: Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
 ---
- .../bindings/media/i2c/aptina,mt9p031.yaml    | 22 +++++++++++++++++++
- 1 file changed, 22 insertions(+)
+Changes in v2:
+    - corrected subject to make clear in terms of its purpose
+    - corrected commit message
+---
+ drivers/gpu/drm/vkms/vkms_drv.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yam=
-l b/Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yaml
-index 7de62e339895..09560d97a59d 100644
---- a/Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yaml
-+++ b/Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yaml
-@@ -24,6 +24,18 @@ properties:
-     description: I2C device address
-     maxItems: 1
-=20
-+  clocks:
-+    maxItems: 1
+diff --git a/drivers/gpu/drm/vkms/vkms_drv.c b/drivers/gpu/drm/vkms/vkms_drv.c
+index 027ffe759440..c81fba6c72f0 100644
+--- a/drivers/gpu/drm/vkms/vkms_drv.c
++++ b/drivers/gpu/drm/vkms/vkms_drv.c
+@@ -28,6 +28,9 @@
+ 
+ #include "vkms_drv.h"
+ 
++#include <drm/drm_print.h>
++#include <drm/drm_debugfs.h>
 +
-+  vdd-supply:
-+    description: Digital supply voltage, 1.8 V
+ #define DRIVER_NAME	"vkms"
+ #define DRIVER_DESC	"Virtual Kernel Mode Setting"
+ #define DRIVER_DATE	"20180514"
+@@ -86,12 +89,37 @@ static void vkms_atomic_commit_tail(struct drm_atomic_state *old_state)
+ 	drm_atomic_helper_cleanup_planes(dev, old_state);
+ }
+ 
++static int vkms_config_show(struct seq_file *m, void *data)
++{
++	struct drm_info_node *node = (struct drm_info_node *)m->private;
++	struct drm_device *dev = node->minor->dev;
++	struct vkms_device *vkmsdev = drm_device_to_vkms_device(dev);
 +
-+  vdd=5Fio-supply:
-+    description: I/O supply voltage, 1.8 or 2.8 V
++	seq_printf(m, "writeback=%d\n", vkmsdev->config->writeback);
++	seq_printf(m, "cursor=%d\n", vkmsdev->config->cursor);
++	seq_printf(m, "overlay=%d\n", vkmsdev->config->overlay);
 +
-+  vaa-supply:
-+    description: Analog supply voltage, 2.8 V
++	return 0;
++}
 +
-   reset-gpios:
-     maxItems: 1
-     description: Chip reset GPIO
-@@ -48,6 +60,10 @@ properties:
- required:
-   - compatible
-   - reg
-+  - clocks
-+  - vdd-supply
-+  - vdd=5Fio-supply
-+  - vaa-supply
-   - port
-=20
- additionalProperties: false
-@@ -63,6 +79,12 @@ examples:
-             reg =3D <0x5d>;
-             reset-gpios =3D <&gpio=5Fsensor 0 0>;
-=20
-+            clocks =3D <&sensor=5Fclk>;
++static const struct drm_info_list vkms_config_debugfs_list[] = {
++	{ "vkms_config", vkms_config_show, 0 },
++};
 +
-+            vdd-supply =3D <&reg=5Fvdd>;
-+            vdd=5Fio-supply =3D <&reg=5Fvdd=5Fio>;
-+            vaa-supply =3D <&reg=5Fvaa>;
++static void vkms_config_debugfs_init(struct drm_minor *minor)
++{
++	drm_debugfs_create_files(vkms_config_debugfs_list, ARRAY_SIZE(vkms_config_debugfs_list),
++				 minor->debugfs_root, minor);
++}
 +
-             port {
-                 mt9p031=5F1: endpoint {
-                     input-clock-frequency =3D <6000000>;
---=20
+ static const struct drm_driver vkms_driver = {
+ 	.driver_features	= DRIVER_MODESET | DRIVER_ATOMIC | DRIVER_GEM,
+ 	.release		= vkms_release,
+ 	.fops			= &vkms_driver_fops,
+ 	DRM_GEM_SHMEM_DRIVER_OPS,
+ 
++	.debugfs_init           = vkms_config_debugfs_init,
++
+ 	.name			= DRIVER_NAME,
+ 	.desc			= DRIVER_DESC,
+ 	.date			= DRIVER_DATE,
+-- 
 2.25.1
 
