@@ -2,92 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 798883C1564
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 16:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E01403C1566
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 16:44:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231933AbhGHOqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 10:46:34 -0400
-Received: from foss.arm.com ([217.140.110.172]:60604 "EHLO foss.arm.com"
+        id S231990AbhGHOrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 10:47:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:60630 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229738AbhGHOqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 10:46:33 -0400
+        id S229738AbhGHOrF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 10:47:05 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A4B321424;
-        Thu,  8 Jul 2021 07:43:51 -0700 (PDT)
-Received: from [10.57.35.192] (unknown [10.57.35.192])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C709D3F66F;
-        Thu,  8 Jul 2021 07:43:50 -0700 (PDT)
-Subject: Re: [PATCH] iommu/amd: Enable swiotlb if any device supports iommu v2
- and uses identity mapping
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     will@kernel.org,
-        "open list:AMD IOMMU (AMD-VI)" <iommu@lists.linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>
-References: <20210708074232.924844-1-kai.heng.feng@canonical.com>
- <YObFJREB9/JlcNZP@8bytes.org> <fde11cec-d1bd-49be-f129-c69a973d1b3b@arm.com>
- <CAAd53p40RcG0oeYr9QAKMjYRtyq7he=d_b_a39n4Rt5JSVScRQ@mail.gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <f3bdedcb-5602-cbca-7df1-019e8b8c4217@arm.com>
-Date:   Thu, 8 Jul 2021 15:43:42 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <CAAd53p40RcG0oeYr9QAKMjYRtyq7he=d_b_a39n4Rt5JSVScRQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 32791D6E;
+        Thu,  8 Jul 2021 07:44:23 -0700 (PDT)
+Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D57693F66F;
+        Thu,  8 Jul 2021 07:44:21 -0700 (PDT)
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     akpm@linux-foundation.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     andreyknvl@gmail.com, catalin.marinas@arm.com, dvyukov@google.com,
+        glider@google.com, mark.rutland@arm.com, ryabinin.a.a@gmail.com,
+        will@kernel.org
+Subject: [PATCH] kasan: fix build for CONFIG_KASAN_HW_TAGS
+Date:   Thu,  8 Jul 2021 15:44:11 +0100
+Message-Id: <20210708144411.25467-1-mark.rutland@arm.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-08 14:57, Kai-Heng Feng wrote:
-> On Thu, Jul 8, 2021 at 6:18 PM Robin Murphy <robin.murphy@arm.com> wrote:
->>
->> On 2021-07-08 10:28, Joerg Roedel wrote:
->>> On Thu, Jul 08, 2021 at 03:42:32PM +0800, Kai-Heng Feng wrote:
->>>> @@ -344,6 +344,9 @@ static int iommu_init_device(struct device *dev)
->>>>
->>>>               iommu = amd_iommu_rlookup_table[dev_data->devid];
->>>>               dev_data->iommu_v2 = iommu->is_iommu_v2;
->>>> +
->>>> +            if (dev_data->iommu_v2)
->>>> +                    swiotlb = 1;
->>>
->>> This looks like the big hammer, as it will affect all other systems
->>> where the AMD GPUs are in their own group.
->>>
->>> What is needed here is an explicit check whether a non-iommu-v2 device
->>> is direct-mapped because it shares a group with the GPU, and only enable
->>> swiotlb in this case.
->>
->> Right, it's basically about whether any DMA-limited device might at any
->> time end up in an IOMMU_DOMAIN_IDENTITY domain. And given the
->> possibility of device hotplug and the user being silly with the sysfs
->> interface, I don't think we can categorically determine that at boot time.
->>
->> Also note that Intel systems are likely to be similarly affected (in
->> fact intel-iommu doesn't even have the iommu_default_passthough() check
->> so it's probably even easier to blow up).
-> 
-> swiotlb is enabled by pci_swiotlb_detect_4gb() and intel-iommu doesn't
-> disable it.
+When CONFIG_KASAN_HW_TAGS is selected, <linux/kasan.h> uses _RET_IP_,
+but doesn't explicitly include <linux/kernel.h> where this is defined.
 
-Oh, right... I did say I found this dance hard to follow. Clearly I 
-shouldn't have trusted what I thought I remembered from looking at it 
-yesterday :)
+We used to get this via a transitive include, but since commit:
 
-Also not helped by the fact that it sets iommu_detected which *does* 
-disable SWIOTLB, but only on IA-64.
+  f39650de687e3576 ("kernel.h: split out panic and oops helpers")
 
-> I wonder if we can take the same approach in amd-iommu?
+... this is no longer the case, and so we get a build failure:
 
-Certainly if there's a precedent for leaving SWIOTLB enabled even if it 
-*might* be redundant, that seems like the easiest option (it's what we 
-do on arm64 too, but then we have system topologies where some devices 
-may not be behind IOMMUs even when others are). More fun would be to try 
-to bring it up at the first sign of IOMMU_DOMAIN_IDENTITY if it was 
-disabled previously, but I don't have the highest hope of that being 
-practical.
+|   CC      arch/arm64/mm/kasan_init.o
+| In file included from arch/arm64/mm/kasan_init.c:10:
+| ./include/linux/kasan.h: In function 'kasan_slab_free':
+| ./include/linux/kasan.h:211:39: error: '_RET_IP_' undeclared (first use in this function)
+|   211 |   return __kasan_slab_free(s, object, _RET_IP_, init);
+|       |                                       ^~~~~~~~
+| ./include/linux/kasan.h:211:39: note: each undeclared identifier is reported only once for each function it appears in
+| ./include/linux/kasan.h: In function 'kasan_kfree_large':
+| ./include/linux/kasan.h:219:28: error: '_RET_IP_' undeclared (first use in this function)
+|   219 |   __kasan_kfree_large(ptr, _RET_IP_);
+|       |                            ^~~~~~~~
+| ./include/linux/kasan.h: In function 'kasan_slab_free_mempool':
+| ./include/linux/kasan.h:226:34: error: '_RET_IP_' undeclared (first use in this function)
+|   226 |   __kasan_slab_free_mempool(ptr, _RET_IP_);
+|       |                                  ^~~~~~~~
+| ./include/linux/kasan.h: In function 'kasan_check_byte':
+| ./include/linux/kasan.h:277:35: error: '_RET_IP_' undeclared (first use in this function)
+|   277 |   return __kasan_check_byte(addr, _RET_IP_);
+|       |                                   ^~~~~~~~
 
-Robin.
+Fix this by including <linux/kernel.h> explicitly.
+
+Fixes: 6028bf777417 ("kernel.h: split out panic and oops helpers")
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Will Deacon <will@kernel.org>
+---
+ include/linux/kasan.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+As a heads-up, there are some unrelated runtime issues with
+CONFIG_KASAN_HW_TAGS and the recent arm64 string routines rework, which
+I'm looking into now. If you boot-test with this applied, you should
+expect to see those.
+
+Andrew, I assume you'd be the one to pick this up?
+
+Thanks,
+Mark.
+
+diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+index 5310e217bd74..dd874a1ee862 100644
+--- a/include/linux/kasan.h
++++ b/include/linux/kasan.h
+@@ -3,6 +3,7 @@
+ #define _LINUX_KASAN_H
+ 
+ #include <linux/bug.h>
++#include <linux/kernel.h>
+ #include <linux/static_key.h>
+ #include <linux/types.h>
+ 
+-- 
+2.11.0
+
