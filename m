@@ -2,75 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9FF3BF4C6
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 06:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D8E3BF4D1
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 06:34:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229606AbhGHEd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 00:33:28 -0400
-Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:32056 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229553AbhGHEd1 (ORCPT
+        id S229605AbhGHEhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 00:37:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229482AbhGHEhE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 00:33:27 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d71 with ME
-        id SUWk2500421Fzsu03UWk09; Thu, 08 Jul 2021 06:30:45 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 08 Jul 2021 06:30:45 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     mani@kernel.org, hemantk@codeaurora.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] bus: mhi: pci_generic: Simplify code and axe the use of a deprecated API
-Date:   Thu,  8 Jul 2021 06:30:37 +0200
-Message-Id: <bb3dc436fe142309a2334549db782c5ebb80a2be.1625718497.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Thu, 8 Jul 2021 00:37:04 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35851C061574;
+        Wed,  7 Jul 2021 21:34:23 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id b2so7166918ejg.8;
+        Wed, 07 Jul 2021 21:34:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=DZpADzPkllhB2f2eevjE66dy2/DnKutR4bBIj2mC0zE=;
+        b=HJ07gHdCtEklVmkp4xRYgIPUAD1HZjREgIW3OpJHgt4qXJpC5lFaYD8Ws1nxl82O5t
+         v+y2PCjnxaCmhCXhyDcryaFWrUajiTKSJIl/VIPLcpNHBUULHgfShO101pFa0wZmridA
+         h78fPgrFXJQ+2f8AwVKD/DIDdmECtjJpoPDmQdztLiHHI7eOT3s9Cacqr8BdZQyZoF4L
+         qNzftyyDdT0fBg+eSuJ0VNf5v6saBnI4k3iVC9vAEKXmW10KQQh94LY1gI6dQaBVbHZR
+         RxMKoBfID8csPYIXn+512I/Yt+qGGzF702arAv/fUMLqIrLOEQo665o9OquAWkUkEJMM
+         jndA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=DZpADzPkllhB2f2eevjE66dy2/DnKutR4bBIj2mC0zE=;
+        b=EsHRFWP46FONEJbQafzMXsXIc3dfCIAiSuuRAsAO1Gi5Bfe7DnZ7T8dNMBdhSESC3N
+         dm17sjySRkTvy9MaEI/DOiiMXrPkLKFUhZqKQD5ekJ38/dg1WAc+3dbmpjcBmNFrpID+
+         nLOsm04FbvE6HK1hm1DV0NFaQcsbtomMtgAgIGn+60lQX4XNBQgrO8h34Mdco89mGuXb
+         8z6O+/5EcsZJWMcOi8Tnwg/Eovv9FbmoB8avc/Khv2w3mi3bhtrKlmON8drteRdLEY4h
+         vPeHKilom4uF5tPZdVViRyxrlSm0CgJd7NOR9m36MtxtqrIL3TBxfslMMKEtd9EUr/cR
+         ltqQ==
+X-Gm-Message-State: AOAM533zYdDj7h4f7v42D6K0Zce2bAnd/wvWu5slurWc2V8lkuOhKy6R
+        doFB3IH/EwWJ0Bjyl4lqWcAXqSisJC4WeJtX9Q5d4SzhZY+fWK76
+X-Google-Smtp-Source: ABdhPJzssqKIKBytGh1QuCXAmejrZd+4ZlIpiWHBYBOqgXdru/TvdJxgKsfMyuHooVJ4FOFPDIFjx5btkZqfgludPPs=
+X-Received: by 2002:a17:906:3699:: with SMTP id a25mr22145621ejc.452.1625718861821;
+ Wed, 07 Jul 2021 21:34:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   iLifetruth <yixiaonn@gmail.com>
+Date:   Thu, 8 Jul 2021 12:33:47 +0800
+Message-ID: <CABv53a8jyUXns9yu3xyd71_R+nNerU+Xj4i7a4rcZUH0bd52kw@mail.gmail.com>
+Subject: crypto: prefix additional module autoloading with "crypto-"
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Qiang Liu <cyruscyliu@gmail.com>, yajin@vm-kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+Hi, in the latest version of linux kernel, we may have found some
+additional incomplete fixed crypto-related modules related to
+CVE-2013-7421.
 
-Replace 'pci_set_dma_mask/pci_set_consistent_dma_mask' by an equivalent
-and less verbose 'dma_set_mask_and_coherent()' call.
+==========
+The upstream commit 5d26a105b5a7 ("crypto: prefix module autoloading
+with "crypto-"")  provided the fixing patch for CVE-2013-7421 about 7
+years ago on 2014-11-24.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/bus/mhi/pci_generic.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+This patch changed the automatic module loading when requesting crypto
+algorithms to prefix all module requests with "crypto-", so we can
+never run the risk of exposing module auto-loading to userspace via a
+crypto API, as demonstrated by Mathias Krause:
+        https://lkml.org/lkml/2013/3/4/70
 
-diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
-index bb0326883470..dd3199de07e2 100644
---- a/drivers/bus/mhi/pci_generic.c
-+++ b/drivers/bus/mhi/pci_generic.c
-@@ -510,18 +510,12 @@ static int mhi_pci_claim(struct mhi_controller *mhi_cntrl,
- 	mhi_cntrl->regs = pcim_iomap_table(pdev)[bar_num];
- 	mhi_cntrl->reg_len = pci_resource_len(pdev, bar_num);
- 
--	err = pci_set_dma_mask(pdev, dma_mask);
-+	err = dma_set_mask_and_coherent(&pdev->dev, dma_mask);
- 	if (err) {
- 		dev_err(&pdev->dev, "Cannot set proper DMA mask\n");
- 		return err;
- 	}
- 
--	err = pci_set_consistent_dma_mask(pdev, dma_mask);
--	if (err) {
--		dev_err(&pdev->dev, "set consistent dma mask failed\n");
--		return err;
--	}
--
- 	pci_set_master(pdev);
- 
- 	return 0;
--- 
-2.30.2
+=========
+And the common fix pattern we found in each crypto-related module is as follows:
+1. linux/drivers/crypto/padlock-aes.c
+       -MODULE_ALIAS("aes");
+       +MODULE_ALIAS_CRYPTO("aes");
 
+or in another module:
+
+2. linux/drivers/crypto/qat/qat_common/adf_ctl_drv.c
+      -MODULE_ALIAS("intel_qat");
+      +MODULE_ALIAS_CRYPTO("intel_qat");
+...
+
+==========
+Even though commit 5d26a105b5a7 added those aliases for a large number
+of modules,  it is still missing some newly added crypto-related
+modules.
+For example:
+1. for file linux/drivers/crypto/amcc/crypto4xx_trng.c in line 129,
+Module_ALIAS is used instead of MODULE_ALIAS_CRYPTO
+           MODULE_ALIAS("ppc4xx_rng");
+     In fact, ppc4xx-rng was integrated into crypto4xx on 2016-04-18
+by commit 5343e674f32fb8, which was committed about 2 years later than
+the security bug fixing patch(5d26a105b5a7) committed on 2014-11-24
+
+More modules that may not have been fixed are as follows:
+2. linux/crypto/crypto_user_base.c
+        MODULE_ALIAS("net-pf-16-proto-21");
+3. linux/drivers/crypto/mxs-dcp.c
+        MODULE_ALIAS("platform:mxs-dcp");
+4. linux/drivers/crypto/omap-sham.c
+        MODULE_ALIAS("platform:omap-sham");
+5. linux/drivers/crypto/qcom-rng.c
+        MODULE_ALIAS("platform:" KBUILD_MODNAME);
+6. linux/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-core.c
+        MODULE_ALIAS("platform:sun4i-ss");
+7. linux/drivers/crypto/marvell/cesa/cesa.c
+        MODULE_ALIAS("platform:mv_crypto");
+8. linux/drivers/crypto/qce/core.c
+        MODULE_ALIAS("platform:" KBUILD_MODNAME);
+
+==========
+Now, shall we port the fix pattern to these modules from the patch of
+CVE-2013-7421?
+We would like to contact you to confirm this problem.
+
+Thank you!
