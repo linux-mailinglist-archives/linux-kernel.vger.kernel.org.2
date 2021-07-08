@@ -2,229 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F453BF706
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 10:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C73A53BF70C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 10:43:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231371AbhGHIps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 04:45:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231344AbhGHIpr (ORCPT
+        id S231392AbhGHIqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 04:46:13 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:49906 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231156AbhGHIqN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 04:45:47 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC42EC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 01:43:05 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id p17so2048973plf.12
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 01:43:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4X56iU4N0E+ayaaRhTpJj7zvU3AsIErwbtf4WUrMOX4=;
-        b=abKm7nXfVZFt9n9AK0hzyALrAYUSVBDSHoibzI+wMgOOFUCtcwKZcDklDg0oypMdnZ
-         aumSkyGlQn7nmgtGY2eMcTzkpxAwwtsb9rNgA1LSyXer9qAuFGcrMt4dMQs0kB8z0Pm0
-         rJQstvWvVLP5tv8f83fPK3I5FXpFxgUw4Wijk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4X56iU4N0E+ayaaRhTpJj7zvU3AsIErwbtf4WUrMOX4=;
-        b=NpejzVDrp5JATRj9xOOlOJM8JAOcGaipLahQrqB+k/+p+qIL/DWCK6m76oevCVWfSc
-         3Ll6IZoDMzQf1v97ihODhObZMYBw1ppWdIQF2HYv9fa257LeVk1lEmPFjzdQP/miC6oJ
-         /3+TxEDNbtiuUrOtJu/44y3Dv7UnMlQbKYkTqbMa2lmbG4WcwR/YYotr4KFk7ODwpPa4
-         JsRlNOtU7550HXN1CPuq0wg3OO8UerMEmohFDZGM9AOaoVB0dr06l1IDoDiTGfibywCZ
-         VMI+UoPM0554A8cDlgwEBg9PqBvAmfrvuu4krMOVyVDI3hEC811NHQ26bOcRsVFgmcWo
-         0vuA==
-X-Gm-Message-State: AOAM531om3EATIO0lIpqoWhT7rXUTzTH8kY3dgxVZwqScRpPkLD/YdC1
-        IPyg9uEDzR/vPgssq/S8RZHwtA==
-X-Google-Smtp-Source: ABdhPJwiIDoPmZy8pzUM6Kg1dXNKRIBXDHjKKlnSzgiOzOnWNNjpvkbYx7J5i713ZeOLIDSkeCrLeg==
-X-Received: by 2002:a17:90a:6903:: with SMTP id r3mr15518869pjj.105.1625733785397;
-        Thu, 08 Jul 2021 01:43:05 -0700 (PDT)
-Received: from ikjn-p920.tpe.corp.google.com ([2401:fa00:1:10:45e5:3e18:ee2f:e9d7])
-        by smtp.gmail.com with ESMTPSA id n3sm1901559pfn.216.2021.07.08.01.43.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jul 2021 01:43:04 -0700 (PDT)
-From:   Ikjoon Jang <ikjn@chromium.org>
-To:     linux-usb@vger.kernel.org
-Cc:     Ikjoon Jang <ikjn@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] xhci: fix unmatched num_trbs_free
-Date:   Thu,  8 Jul 2021 16:43:01 +0800
-Message-Id: <20210708164256.1.Ib344a977b52486ec81b60f9820338f1b43655f8d@changeid>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+        Thu, 8 Jul 2021 04:46:13 -0400
+Received: from [192.168.1.111] (91-158-153-130.elisa-laajakaista.fi [91.158.153.130])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 574A6E7;
+        Thu,  8 Jul 2021 10:43:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1625733809;
+        bh=6IvbrqMxcjh3DQkYpu4PYqeYQ0WmbHNAr/A4z7dJgaY=;
+        h=To:Cc:References:From:Subject:Date:In-Reply-To:From;
+        b=o3CHoxkQAgl1tfEqTcVMpsAwQnPChF+FNEjOu5o3JLEBbhwB5pmvOotEeDgQCWMdb
+         RJTypBZkEWNQQzpM2+lL6YakbyTpxWvuCfP5mt3bwsabKBX9Pnvdm5Suo2sll+x0lu
+         XMExrSY7tURTyAK+xwocqEe4IpakjLXU1OzGTqIU=
+To:     Jacopo Mondi <jacopo@jmondi.org>, Pratyush Yadav <p.yadav@ti.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Nikhil Devshatwar <nikhil.nd@ti.com>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Arnd Bergmann <arnd@arndb.de>, Benoit Parrot <bparrot@ti.com>,
+        Bert Vermeulen <bert@biot.com>,
+        Dikshita Agarwal <dikshita@codeaurora.org>,
+        Dongchun Zhu <dongchun.zhu@mediatek.com>,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Helen Koike <helen.koike@collabora.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Martina Krasteva <martinax.krasteva@intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Michael Tretter <m.tretter@pengutronix.de>,
+        Mirela Rabulea <mirela.rabulea@nxp.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        =?UTF-8?Q?Niklas_S=c3=b6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Qiushi Wu <wu000273@umn.edu>, Raag Jadav <raagjadav@gmail.com>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Zou Wei <zou_wei@huawei.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+References: <20210624192200.22559-1-p.yadav@ti.com>
+ <dd3b13ec-a883-5b22-47ce-d6e591b674aa@ideasonboard.com>
+ <20210707185636.xxu6n6p4gihrs37d@ti.com>
+ <20210708081919.rlp5xv5f4jbx6uav@uno.localdomain>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Subject: Re: [PATCH v3 00/11] CSI2RX support on J721E
+Message-ID: <c7ff2f59-7975-adad-d9dd-d4084eecb65b@ideasonboard.com>
+Date:   Thu, 8 Jul 2021 11:43:23 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210708081919.rlp5xv5f4jbx6uav@uno.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When unlinked urbs are queued to the cancelled td list, many tds
-might be located after hw dequeue pointer and just marked as no-op
-but not reclaimed to num_trbs_free. This bias can leads to unnecessary
-ring expansions and leaks in atomic pool.
+On 08/07/2021 11:19, Jacopo Mondi wrote:
+> Hi Tomi, Pratyush,
+> 
+> On Thu, Jul 08, 2021 at 12:26:38AM +0530, Pratyush Yadav wrote:
+>> Hi Tomi,
+>>
+>> Thanks for looking into the patches.
+>>
+>> On 01/07/21 10:56AM, Tomi Valkeinen wrote:
+>>> Hi Pratyush,
+>>>
+>>> On 24/06/2021 22:21, Pratyush Yadav wrote:
+>>>> Hi,
+>>>>
+>>>> This series adds support for CSI2 capture on J721E. It includes some
+>>>> fixes to the Cadence CSI2RX driver, adds runtime PM support to OV5640
+>>>> driver, and finally adds the TI CSI2RX wrapper driver.
+>>>>
+>>>> This series used to include the DPHY and DMA engine patches as well, but
+>>>> they have been split off to facilitate easier merging. Patch 3 is
+>>>> build-dependent on the DPHY series [0].
+>>>>
+>>>> The DMA engine patch [1] can go in any order since that is only a run
+>>>> time dependency. Things probably won't work without it but it will still
+>>>> build fine.
+>>>>
+>>>> Tested on TI's J721E with OV5640 sensor.
+>>>
+>>> I applied these (csi-2 rx, phy, dma-engine) to linux-media/master, and added dts changes to add the csi2-rx. When sending the series, can you also push the branch you use for testing, as the posted patches do not include everything needed?
+>>
+>> Please use https://github.com/prati0100/linux-next/ branch "capture"
+>>
+>> I will include the link in the cover letter from next version onwards.
+>>
+>>>
+>>> Here are some notes from quick tests:
+>>>
+>>> Capture works, but the fps is ~28.98. I would expect it to be closer to 30. Are the clocks configured correctly?
+>>
+>> I see this as well. I figured this had something to do with the sensor.
+> 
+> Tomi you might remember your patch to change the h/vtot values which I
+> collected in a series which I never managed to bring to v1, as Hugues
+> reported it was broken for JPEG capture.
+> 
+> I'll leave it here just for reference, I admit I dropped the ball
+> rather quickly there:
+> https://patchwork.linuxtv.org/project/linux-media/cover/20201028225706.110078-1-jacopo+renesas@jmondi.org/
+> 
+> I wish I could re-test but seems I've lost the powering cable of the
+> device I used to test ov5640 :(
 
-To prevent this bias, this patch counts free TRBs every time xhci moves
-dequeue pointer. This patch utilizes existing
-update_ring_for_set_deq_completion() function, renamed it to move_deq().
+Yes, I'm still using my hack patch when working with OV5640. With that 
+hack, on TI platforms with CAL IP, I get ~30fps. With this series on J7, 
+I get the above mentioned 28.98.
 
-When it walks through to the new dequeue pointer, it also counts
-free TRBs manually. This patch adds a fast path for the most cases
-where the new dequeue pointer is still in the current segment.
+It's possible my hack patch is wrong, and CAL driver is buggy, but 
+together they make things right. I guess I should also try J7 without my 
+hack patch.
 
-Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
----
+If I recall right, I tested your changes but I couldn't get them to work 
+on my HW.
 
- drivers/usb/host/xhci-ring.c | 106 +++++++++++++++++------------------
- 1 file changed, 52 insertions(+), 54 deletions(-)
+I haven't worked on that since then, as I decided that debugging blind 
+is pointless. We need someone to analyze the signals to see what OV5640 
+is sending. Or some new understanding about the OV5640 HW.
 
-diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
-index 3c12a6fc406b..6414ffe33581 100644
---- a/drivers/usb/host/xhci-ring.c
-+++ b/drivers/usb/host/xhci-ring.c
-@@ -152,6 +152,54 @@ static void next_trb(struct xhci_hcd *xhci,
- 	}
- }
- 
-+/* Forward dequeue pointer to the specific position,
-+ * walk through the ring and reclaim free trb slots to num_trbs_free
-+ */
-+static int move_deq(struct xhci_hcd *xhci, struct xhci_ring *ep_ring,
-+		    struct xhci_segment *new_seg, union xhci_trb *new_deq)
-+{
-+	unsigned int steps;
-+	union xhci_trb *deq;
-+	struct xhci_segment *seg = ep_ring->deq_seg;
-+
-+	/* direct paths */
-+	if (ep_ring->dequeue == new_deq) {
-+		return 0;
-+	} else if ((ep_ring->deq_seg == new_seg) &&
-+	    (ep_ring->dequeue <= new_deq)) {
-+		steps = new_deq - ep_ring->dequeue;
-+		deq = new_deq;
-+		goto found;
-+	}
-+
-+	/* fast walk to the next segment */
-+	seg = seg->next;
-+	steps = (TRBS_PER_SEGMENT - 1) -
-+		(ep_ring->dequeue - ep_ring->deq_seg->trbs);
-+	deq = &seg->trbs[0];
-+
-+	while (deq != new_deq) {
-+		if (trb_is_link(deq)) {
-+			seg = seg->next;
-+			deq = seg->trbs;
-+		} else {
-+			steps++;
-+			deq++;
-+		}
-+		if (deq == ep_ring->dequeue) {
-+			xhci_warn(xhci, "Unable to find new dequeue pointer\n");
-+			return -ENOENT;
-+		}
-+	}
-+
-+found:
-+	ep_ring->deq_seg = seg;
-+	ep_ring->dequeue = deq;
-+	ep_ring->num_trbs_free += steps;
-+
-+	return 0;
-+}
-+
- /*
-  * See Cycle bit rules. SW is the consumer for the event ring only.
-  */
-@@ -1245,52 +1293,6 @@ void xhci_stop_endpoint_command_watchdog(struct timer_list *t)
- 			"xHCI host controller is dead.");
- }
- 
--static void update_ring_for_set_deq_completion(struct xhci_hcd *xhci,
--		struct xhci_virt_device *dev,
--		struct xhci_ring *ep_ring,
--		unsigned int ep_index)
--{
--	union xhci_trb *dequeue_temp;
--	int num_trbs_free_temp;
--	bool revert = false;
--
--	num_trbs_free_temp = ep_ring->num_trbs_free;
--	dequeue_temp = ep_ring->dequeue;
--
--	/* If we get two back-to-back stalls, and the first stalled transfer
--	 * ends just before a link TRB, the dequeue pointer will be left on
--	 * the link TRB by the code in the while loop.  So we have to update
--	 * the dequeue pointer one segment further, or we'll jump off
--	 * the segment into la-la-land.
--	 */
--	if (trb_is_link(ep_ring->dequeue)) {
--		ep_ring->deq_seg = ep_ring->deq_seg->next;
--		ep_ring->dequeue = ep_ring->deq_seg->trbs;
--	}
--
--	while (ep_ring->dequeue != dev->eps[ep_index].queued_deq_ptr) {
--		/* We have more usable TRBs */
--		ep_ring->num_trbs_free++;
--		ep_ring->dequeue++;
--		if (trb_is_link(ep_ring->dequeue)) {
--			if (ep_ring->dequeue ==
--					dev->eps[ep_index].queued_deq_ptr)
--				break;
--			ep_ring->deq_seg = ep_ring->deq_seg->next;
--			ep_ring->dequeue = ep_ring->deq_seg->trbs;
--		}
--		if (ep_ring->dequeue == dequeue_temp) {
--			revert = true;
--			break;
--		}
--	}
--
--	if (revert) {
--		xhci_dbg(xhci, "Unable to find new dequeue pointer\n");
--		ep_ring->num_trbs_free = num_trbs_free_temp;
--	}
--}
--
- /*
-  * When we get a completion for a Set Transfer Ring Dequeue Pointer command,
-  * we need to clear the set deq pending flag in the endpoint ring state, so that
-@@ -1377,8 +1379,8 @@ static void xhci_handle_cmd_set_deq(struct xhci_hcd *xhci, int slot_id,
- 			/* Update the ring's dequeue segment and dequeue pointer
- 			 * to reflect the new position.
- 			 */
--			update_ring_for_set_deq_completion(xhci, ep->vdev,
--				ep_ring, ep_index);
-+			move_deq(xhci, ep_ring, ep->queued_deq_seg,
-+				 ep->queued_deq_ptr);
- 		} else {
- 			xhci_warn(xhci, "Mismatch between completed Set TR Deq Ptr command & xHCI internal state.\n");
- 			xhci_warn(xhci, "ep deq seg = %p, deq ptr = %p\n",
-@@ -2212,9 +2214,7 @@ static int finish_td(struct xhci_hcd *xhci, struct xhci_virt_ep *ep,
- 	}
- 
- 	/* Update ring dequeue pointer */
--	ep_ring->dequeue = td->last_trb;
--	ep_ring->deq_seg = td->last_trb_seg;
--	ep_ring->num_trbs_free += td->num_trbs - 1;
-+	move_deq(xhci, ep_ring, td->last_trb_seg, td->last_trb);
- 	inc_deq(xhci, ep_ring);
- 
- 	return xhci_td_cleanup(xhci, td, ep_ring, td->status);
-@@ -2434,9 +2434,7 @@ static int skip_isoc_td(struct xhci_hcd *xhci, struct xhci_td *td,
- 	frame->actual_length = 0;
- 
- 	/* Update ring dequeue pointer */
--	ep->ring->dequeue = td->last_trb;
--	ep->ring->deq_seg = td->last_trb_seg;
--	ep->ring->num_trbs_free += td->num_trbs - 1;
-+	move_deq(xhci, ep->ring, td->last_trb_seg, td->last_trb);
- 	inc_deq(xhci, ep->ring);
- 
- 	return xhci_td_cleanup(xhci, td, ep->ring, status);
--- 
-2.32.0.93.g670b81a890-goog
-
+  Tomi
