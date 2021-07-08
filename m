@@ -2,121 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 040EE3C1718
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 18:31:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB54D3C1715
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 18:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229607AbhGHQd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 12:33:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhGHQdy (ORCPT
+        id S229554AbhGHQd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 12:33:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57641 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229469AbhGHQd0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 12:33:54 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10D0EC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 09:31:12 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id r135so9981928ybc.0
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 09:31:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NMTcg78nKWSJcJfCUjOApxjzs+sPcdCEgZ4uZjz231g=;
-        b=z2RNN4Nu5H7/UcFUNCQRgZe9XBD8/tCo9TRGYLjRUtYjwiF9KhEpT6Yh5L8Ub9yaaZ
-         PGucGzX5OfnesZpNwTWrT3jsYw1uyo1sg51dl9olR5hakcsj0HlwN+sEVxaj7XM/lCEe
-         XNZnZmb06lWZ+YUuyorzzQXalXJ47jKudzjOPLFLbHd1bgUr6I1G7JJsE3zWrz2Z85Bg
-         afwd+z9Adk2rZncrNlOT4bqfhHS0SP0qu5gtAeXRU/6tBuS2TkOSR6xBVQbaUT0ujloD
-         +e0+vv//EEyhCA9a+Nu0BSfHmZEko5H0WrF0tSTVcHa+G7aoJxFFU2VQMMx3psSlq0fL
-         3nWg==
+        Thu, 8 Jul 2021 12:33:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625761843;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=n3O76+nvGmM0mqj/tRy/JidZpIj8VUJL+4rKAr009LU=;
+        b=hQ2SMJSFVBDX5kbJW+BFAmS+8L5Ai8YQmY/xtlYbYUqG3DiWfsdwto01a/yNC1etpLZ+WU
+        mbUTB0VOnhQEPCfJ189XdhfveZ0Y4lSQm4aIbPvmMysbOhAptvo5EtRXqyevUalOUpKyrh
+        v6KJ2BY+SpiujgL6OrwlRyICzKI7F7s=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-545-LMsEXpenP4uxCDLskS7lEg-1; Thu, 08 Jul 2021 12:30:42 -0400
+X-MC-Unique: LMsEXpenP4uxCDLskS7lEg-1
+Received: by mail-ej1-f71.google.com with SMTP id 16-20020a1709063010b029037417ca2d43so2078908ejz.5
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 09:30:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NMTcg78nKWSJcJfCUjOApxjzs+sPcdCEgZ4uZjz231g=;
-        b=ZoUv5wZyKm+2fiEH9hbz6Eg+EO58ZEQT8TzZJBSHOsmhGfUaklVPElGgOKGKQuihwn
-         +dNFpC4IJHg9QZhCDLxOhurFmLaF+FMwFvH2NDaVO6dw61ibUJfJS0cy6sn3pnIE4l+4
-         AML7LBG1ImSNlKcJfNJNOPayAm0yChfOvt4c7RIf7GwH2NgXFNZlp+FTFVW34ZVcXBtG
-         ieedUcD2kmWn0qDyRavagqhIW1pEqodlkdPZbHcvxVvCmVpEWYQe/olnLXwjfWKbnJWk
-         rYHYnUrS3Cuxmb3YjTNdRKszbpc/2dVErj4JhYOOb4/OXb9FVDERss048JS8OKGm+CfJ
-         cVwA==
-X-Gm-Message-State: AOAM5338+Mi5NvolOuRPyFU8zQ0QM9Ps6z/24bkdYgRxGXrSWdHz/hH7
-        txSW21e0DjL2MRx1XR1G2eFov1M6HX4LF1eBjntReQ==
-X-Google-Smtp-Source: ABdhPJyifGeQbMAKWpzpjofrDfJiL8SSZR7E6f1CcjMhjl1jVg3iJx7e0tf4JxyxMAUOwTZ4x03qcSTWAN/yk8BYhu4=
-X-Received: by 2002:a25:41c7:: with SMTP id o190mr39204050yba.256.1625761870465;
- Thu, 08 Jul 2021 09:31:10 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=n3O76+nvGmM0mqj/tRy/JidZpIj8VUJL+4rKAr009LU=;
+        b=p0CnvjdkmZrpgIdZ9I4gBOtOK20gG9kFdDL3IkB5bIbQTQef5rE2JHbO+6VvBJ62va
+         7QC1ufpTk4ZsVp3xJ5b1B0ocu860/phrOlO9WAJ9YfXmjltozXKr4x7g+d72Jm4hGV2T
+         ZMRwxyMtCPtWc9cAGLHq/LAjxcBnrKYTj7V48wKzBN2iGeyeQpVwvAOAhxvqRpvd8nPj
+         6k0ZjYFuERP8Fi//qLIRff/U/1rObfDa23WoK+NFe+TI9PhOtQfrDXhCyfQAj6HxFP0r
+         tG5XgnnV8OhwutpnrZ9dySE4lK97izC+4I2PnhUWMkXqYKeOdVcmH/9Tn5YACiNVtYnc
+         DpZg==
+X-Gm-Message-State: AOAM53097KqKJOIQVFU1WaFR/1U7OVQq6gYzs1tZtY18RayWfILKNawy
+        N/RDUcdAxakWyWG7mO6W/BI0i6ITO6AmXNgaQKPQliveaUF9yIIHHozhDJZ4DMJrnzExtO8FHNp
+        yb8VGXnHGanM+Wt4ZC1dv8DQf
+X-Received: by 2002:a05:6402:5203:: with SMTP id s3mr32864308edd.353.1625761841459;
+        Thu, 08 Jul 2021 09:30:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyasSg+PY1RAPaYCFiCyAbI/uYXfdvuQUyEoZ6VHLFFAVFYbfTsHADOeVyRlOHkyrlbVl+wdQ==
+X-Received: by 2002:a05:6402:5203:: with SMTP id s3mr32864280edd.353.1625761841267;
+        Thu, 08 Jul 2021 09:30:41 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id dd24sm1532844edb.45.2021.07.08.09.30.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Jul 2021 09:30:40 -0700 (PDT)
+Subject: Re: [PATCH 0/2] KVM: SVM: Final C-bit fixes?
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peter Gonda <pgonda@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+References: <20210625020354.431829-1-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <e406b31f-64bd-eb88-51bb-dd534719fb6e@redhat.com>
+Date:   Thu, 8 Jul 2021 18:30:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210708162449.98764-1-ilias.apalodimas@linaro.org>
-In-Reply-To: <20210708162449.98764-1-ilias.apalodimas@linaro.org>
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Date:   Thu, 8 Jul 2021 19:30:31 +0300
-Message-ID: <CAC_iWjLsd-hJs1gk3CknJFXb2H4aAeEUUUskzPEugeRHjRuWLg@mail.gmail.com>
-Subject: Re: [PATCH] skbuff: Fix a potential race while recycling page_pool packets
-To:     Networking <netdev@vger.kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210625020354.431829-1-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+cc Alexander on his gmail address since the Intel one bounced.
+On 25/06/21 04:03, Sean Christopherson wrote:
+> Patch 01 reverts the C-bit truncation patch as the reserved #PF was
+> confirmed to be due to a magic HyperTransport region (how many magic
+> addresses are there!?!).  Hopefully the original patch simply be dropped,
+> but just in case...
+> 
+> Patch 02 reverts the C-bit clearing in the #NPF handler.  If that somehow
+> turns out to be incorrect, i.e. there are flows where the CPU doesn't
+> mask off the C-bit, then it can be conditional on a SEV guest.
+> 
+> I'll be offline for the next two weeks, fingers crossed I've undone all
+> the damage.  :-)
+> 
+> Thanks!
+> 
+> Sean Christopherson (2):
+>    Revert "KVM: x86: Truncate reported guest MAXPHYADDR to C-bit if SEV
+>      is supported"
+>    KVM: SVM: Revert clearing of C-bit on GPA in #NPF handler
+> 
+>   arch/x86/kvm/cpuid.c   | 11 -----------
+>   arch/x86/kvm/svm/svm.c | 39 +++++++++------------------------------
+>   arch/x86/kvm/x86.c     |  3 ---
+>   arch/x86/kvm/x86.h     |  1 -
+>   4 files changed, 9 insertions(+), 45 deletions(-)
+> 
 
-Alexander want me to respin it with you gmail address on the Reported-by?
+Queued, thanks.
 
-Sorry for the noise
-/Ilias
+Paolo
 
-On Thu, 8 Jul 2021 at 19:24, Ilias Apalodimas
-<ilias.apalodimas@linaro.org> wrote:
->
-> As Alexander points out, when we are trying to recycle a cloned/expanded
-> SKB we might trigger a race.  The recycling code relies on the
-> pp_recycle bit to trigger,  which we carry that over to cloned SKBs.
-> When that cloned SKB gets expanded,  we are creating 2 separate instances
-> accessing the page frags.  Since the skb_release_data() will first try to
-> recycle the frags,  there's a potential race between the original and
-> cloned SKB.
->
-> Fix this by explicitly making the cloned/expanded SKB not recyclable.
-> If the original SKB is freed first the pages are released.
-> If it is released after the clone/expended skb then it can still be
-> recycled.
->
-> Fixes: 6a5bcd84e886 ("page_pool: Allow drivers to hint on SKB recycling")
-> Reported-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-> ---
->  net/core/skbuff.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index 12aabcda6db2..0cb53c05ed76 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -1718,6 +1718,13 @@ int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
->         }
->         off = (data + nhead) - skb->head;
->
-> +       /* If it's a cloned skb we expand with frags attached we must prohibit
-> +        * the recycling code from running, otherwise we might trigger a race
-> +        * while trying to recycle the fragments from the original and cloned
-> +        * skb
-> +        */
-> +       if (skb_cloned(skb))
-> +               skb->pp_recycle = 0;
->         skb->head     = data;
->         skb->head_frag = 0;
->         skb->data    += off;
-> --
-> 2.32.0.rc0
->
