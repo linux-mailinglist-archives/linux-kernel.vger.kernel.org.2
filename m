@@ -2,88 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B433BF2EE
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 02:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C7C03BF330
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 02:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230135AbhGHAqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 20:46:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43168 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230000AbhGHAqW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 20:46:22 -0400
-Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D039261CAC;
-        Thu,  8 Jul 2021 00:43:40 +0000 (UTC)
-Date:   Wed, 7 Jul 2021 20:43:39 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        syzbot+721aa903751db87aa244@syzkaller.appspotmail.com,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH] tracepoint: Add tracepoint_probe_register_may_exist()
- for BPF tracing
-Message-ID: <20210707204339.5f415991@rorschach.local.home>
-In-Reply-To: <CAEf4BzYRxRW8qR3oENuVEMBYtcvK0bUDEkoq+e4TRT5Hh0pV_Q@mail.gmail.com>
-References: <20210629095543.391ac606@oasis.local.home>
-        <CAEf4BzZPb=cPf9V1Bz+USiq+b5opUTNkj4+CRjXdHcmExW3jVg@mail.gmail.com>
-        <20210707184518.618ae497@rorschach.local.home>
-        <CAEf4BzZ=hFZw1RNx0Pw=kMNq2xRrqHYCQQ_TY_pt86Zg9HFJfA@mail.gmail.com>
-        <20210707200544.1fbfd42b@rorschach.local.home>
-        <CAEf4BzYRxRW8qR3oENuVEMBYtcvK0bUDEkoq+e4TRT5Hh0pV_Q@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230244AbhGHBCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 21:02:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230129AbhGHBCI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 21:02:08 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B8B3C061574;
+        Wed,  7 Jul 2021 17:59:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=DQ/ZqedFwNuEbvbxnVdd4B/mfUuq92y0TGsMJ/w3Rb4=; b=jg8IqGl2h31ZNsVMimKoOBaTWJ
+        pZJWJyUMrT7KElP4BkLGh18OCcyt7p77lQyct5FNFLYlwDzIOV0i7bppOWOo0IXgIO7oSQQIJislh
+        bvleAfjaSE6juQimQJjXA5zU2USOfrJHt/BFkya7zRwfFGtcfxsZ0aTh9LaXXxew0IXJY6s72vtv0
+        z/suJRxIyxAKlUwEZA/YAbJKivGXjf1n5cC/ZupOIirSY2ilNI3GY6ntpqSPYa/KFiXVPTw1GilhO
+        yfBUWJsM9VJ5AmDiVJ3i0APuSx/EstDtr+nDLY5rwnQ0k8+llG3lCAms1+4+xyQHYJFzMHQdynj+m
+        cAtbdG4Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m1IN6-00Cxix-4L; Thu, 08 Jul 2021 00:58:34 +0000
+Date:   Thu, 8 Jul 2021 01:58:32 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Finn Behrens <finn@kloenk.dev>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        rust-for-linux <rust-for-linux@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 00/17] Rust support
+Message-ID: <YOZNuEtNbsLxRM0R@casper.infradead.org>
+References: <20210704202756.29107-1-ojeda@kernel.org>
+ <YOVNJuA0ojmeLvKa@infradead.org>
+ <CANiq72mKPFtB4CtHcc94a_y1V4bEOXXN2CwttQFvyzwXJv62kw@mail.gmail.com>
+ <YOWjLmg/Z7kr2+tx@kroah.com>
+ <YOW1Nj8+a2Yth2++@google.com>
+ <YOXB7FRqldZik2Xn@kroah.com>
+ <BFD5298D-00CD-4FEF-AE77-61E69AF78604@kloenk.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BFD5298D-00CD-4FEF-AE77-61E69AF78604@kloenk.dev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 7 Jul 2021 17:23:54 -0700
-Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+On Wed, Jul 07, 2021 at 10:56:57PM +0200, Finn Behrens wrote:
+> There is a more general use driver (network dummy) still in the making, It is fully operational, just the documentation of the rust bindings are not finished yet, so it is not merged into the rust tree yet, also I have to rebase it.
 
-> On Wed, Jul 7, 2021 at 5:05 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > On Wed, 7 Jul 2021 16:49:26 -0700
-> > Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> >  
-> > > As for why the user might need that, it's up to the user and I don't
-> > > want to speculate because it will always sound contrived without a
-> > > specific production use case. But people are very creative and we try
-> > > not to dictate how and what can be done if it doesn't break any
-> > > fundamental assumption and safety.  
-> >
-> > I guess it doesn't matter, because if they try to do it, the second
-> > attachment will simply fail to attach.
-> >  
-> 
-> But not for the kprobe case.
+Why are you so resistant to writing a real driver that deals with actual
+hardware?  A simple NVMe driver is less than a thousand lines of C.
+I know the one in the kernel now is ridiculously complicated and has
+been thoroughly messed up with abstractions to support NVMeoF instead
+of having a separate driver, but it's really a simple interface at heart.
 
-What do you mean "not for the kprobe case"? What kprobe case?
-
-You attach the same program twice to the same kprobe? Or do you create
-two kprobes at the same location?
-
-> 
-> And it might not always be possible to know that the same BPF program
-> is being attached. It could be attached by different processes that
-> re-use pinned program (without being aware of each other). Or it could
-> be done from some generic library that just accepts prog_fd and
-> doesn't really know the exact BPF program and whether it was already
-> attached.
-> 
-> Not sure why it doesn't matter that attachment will fail where it is
-> expected to succeed. The question is rather why such restriction?
-
-Why is it expected to succeed? It never did. And why such a
-restriction? Because it complicates the code, and there's no good use
-case to do so. Why complicate something for little reward?
-
--- Steve
