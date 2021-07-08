@@ -2,170 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D0F13BFA99
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 14:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4FA93BFA9B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 14:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231779AbhGHMtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 08:49:36 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:52332 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231472AbhGHMtg (ORCPT
+        id S231768AbhGHMt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 08:49:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231270AbhGHMtx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 08:49:36 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 168Ceqoe011583;
-        Thu, 8 Jul 2021 05:46:45 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=99JQtymiKQrVpD4JR6FItTIu++DbzZ98gvUQfXoeGvw=;
- b=GrD8qTIFsbWqGOUAY08T/9gPEarqSGdWOWqKRUWqzD42+JmzzU50ZYqN4QRR9jOE1t3m
- +gwcWn6KfQnFwKBb+tFhYpfivSVMEQUslqZOpZRZXKwJATBCrxxUgNzRebeTk++iyWiy
- od5O6wSV884KdACNpc351nPQ0izvlWhYHAaFh2Mz/xe3GQ4Uq1oOWCJmlU7zZlBOGQ9+
- 0yEAYvXqQf1kNHHnemr2N9uK0Wm0vLH1DRrd5qHZfrVHTZjhKenhhMlLhrDH6b2PwPp+
- qGlBMUWBXMeyf87HfAQsAf73xTewyJJTOdDpiJQfbJ0HZ3nNSbP0VsDD3amwxLspokhD yA== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com with ESMTP id 39nrnu1y2h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 08 Jul 2021 05:46:44 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 8 Jul
- 2021 05:46:43 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Thu, 8 Jul 2021 05:46:43 -0700
-Received: from octopus.marvell.com (octopus.marvell.com [10.5.24.3])
-        by maili.marvell.com (Postfix) with ESMTP id 6091A3F7076;
-        Thu,  8 Jul 2021 05:46:39 -0700 (PDT)
-From:   <kostap@marvell.com>
-To:     <miquel.raynal@bootlin.com>, <kishon@ti.com>, <vkoul@kernel.org>,
-        <robh+dt@kernel.org>, <andrew@lunn.ch>,
-        <gregory.clement@bootlin.com>, <sebastian.hesselbarth@gmail.com>,
-        <vladimir.vid@sartura.hr>, <luka.kovacic@sartura.hr>,
-        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <mw@semihalf.com>, <jaz@semihalf.com>, <nadavh@marvell.com>,
-        <stefanc@marvell.com>, <bpeled@marvell.com>,
-        Konstantin Porotchkin <kostap@marvell.com>
-Subject: [PATCH v7 5/5] arch/arm64: dts: change 10gbase-kr to 10gbase-r in Armada
-Date:   Thu, 8 Jul 2021 15:46:12 +0300
-Message-ID: <20210708124612.30742-6-kostap@marvell.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210708124612.30742-1-kostap@marvell.com>
-References: <20210708124612.30742-1-kostap@marvell.com>
+        Thu, 8 Jul 2021 08:49:53 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18388C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 05:47:12 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id i8so7340149wrp.12
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 05:47:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=G5Cx284bJE2XKfvh4KWIUQ5AHnVId0RoYqnTdEgX9Lc=;
+        b=tnDYG3S0kkLnhciBQsuqUjAtt8UjLLkoMFe9BFx2vpnaXfCtYBB9e7qlaRZl/MdtXE
+         dijuaYpJt2WEJ9ejzeOylDMiKsPyVmeN6sRHtGU/tIFPa7m1sN1P3BMdNalDsIVktzpK
+         +P0S4rkvq/FcoscxLxXJqhx7ag5awGu2i5pfYEk1y3ELLRqXOhNOG5x/0NaGsi/WBSqW
+         /FiJ0ypPCFaXYcMpz8RB2OLVx2I+yVcvJmPUKL94yuHUdbsn5ozpo+1K5bPea/9sQQTt
+         +/ORFNz7BnLZMEkwdVlJmkN+fkaBXkh472D2tp+KHQCgvLFR6/f2If9gwAywiI4U+SwG
+         H68A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=G5Cx284bJE2XKfvh4KWIUQ5AHnVId0RoYqnTdEgX9Lc=;
+        b=ot67pU0TbikyyY54DKk5bc6nDmdQGW+iA48mZiyWdH6PUu3lhaqVRGURt8RppW0qo4
+         vRYtkOubwRXptfigYTgazEfqN7GlBH50jIVtlxwyp+fs+5/5iFnzUs9/hkPa7tq6oZEV
+         CohZgpgvZ9PnrtTE3oqH8xoeTl2I7QkujlE+Kid9+uw662/cr/dEOaeFeVKduT5vb+SJ
+         OMcyHwNDl3EkhRw3V7T9yilOqodQvoP5fWjzaAm4JnBall6bHDJE4T2D9pKl4bGrcyzh
+         S+VcTW3eMxDLBmKNYZNEg7brrVyNY/INa02Z/aJa/apSUsjQ6MtRWtYr0/5tyd/TeBEV
+         oU/Q==
+X-Gm-Message-State: AOAM533cpcjwNpGSV4a7sb1UtFgnmJQ07a7T3sqN70mIUQYgv67KvTZC
+        4SHbbj2CsvbjCxiLb1y79xa2jQ==
+X-Google-Smtp-Source: ABdhPJxsJBEdEeJpWYGQmIEWKDbDKwPhhk1u8LceEwzGCPjHIM54Q6EjJ9Uvw9Sw9HeaO1jMxu0zhA==
+X-Received: by 2002:a5d:5048:: with SMTP id h8mr3712857wrt.292.1625748430627;
+        Thu, 08 Jul 2021 05:47:10 -0700 (PDT)
+Received: from google.com ([109.180.115.218])
+        by smtp.gmail.com with ESMTPSA id s9sm2156709wrn.87.2021.07.08.05.47.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jul 2021 05:47:10 -0700 (PDT)
+Date:   Thu, 8 Jul 2021 12:47:08 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Alistair Francis <alistair23@gmail.com>
+Cc:     Alistair Francis <alistair@alistair23.me>,
+        Rob Herring <robh+dt@kernel.org>, lgirdwood@gmail.com,
+        Mark Brown <broonie@kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 2/5] mfd: sy7636a: Initial commit
+Message-ID: <YObzzE8y2tyiMg5p@google.com>
+References: <20210615103400.946-1-alistair@alistair23.me>
+ <20210615103400.946-2-alistair@alistair23.me>
+ <YMnY7RLW6ml4Tq0g@dell>
+ <CAKmqyKNs+Ebvd5MwtoKfKhNrMJVhTsBLjDhLXRuK8C+gs5MCcQ@mail.gmail.com>
+ <YMsTy3QnYzjrFSFg@dell>
+ <CAKmqyKODRkahuUL+SFj8RQYq2rvj=nLgseozAyiwkDmtD8JE+g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: onuq7hqDIA-RESX5kacIpAsN7ZBZYY2x
-X-Proofpoint-GUID: onuq7hqDIA-RESX5kacIpAsN7ZBZYY2x
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-08_06:2021-07-08,2021-07-08 signatures=0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKmqyKODRkahuUL+SFj8RQYq2rvj=nLgseozAyiwkDmtD8JE+g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Konstantin Porotchkin <kostap@marvell.com>
+On Thu, 08 Jul 2021, Alistair Francis wrote:
 
-Change all 10G port modes in Armada family device trees from
-10gbase-kr to 10gbase-r
+> On Thu, Jun 17, 2021 at 7:20 PM Lee Jones <lee.jones@linaro.org> wrote:
+> >
+> > On Thu, 17 Jun 2021, Alistair Francis wrote:
+> >
+> > > On Wed, Jun 16, 2021 at 8:56 PM Lee Jones <lee.jones@linaro.org> wrote:
+> > > >
+> > > > On Tue, 15 Jun 2021, Alistair Francis wrote:
+> > > >
+> > > > > Initial support for the Silergy SY7636A Power Management chip.
+> > > > >
+> > > > > Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> > > > > ---
+> > > > >  drivers/mfd/Kconfig         |  9 ++++
+> > > > >  drivers/mfd/Makefile        |  1 +
+> > > > >  drivers/mfd/sy7636a.c       | 82 +++++++++++++++++++++++++++++++++++++
+> > > > >  include/linux/mfd/sy7636a.h | 47 +++++++++++++++++++++
+> > > > >  4 files changed, 139 insertions(+)
+> > > > >  create mode 100644 drivers/mfd/sy7636a.c
+> > > > >  create mode 100644 include/linux/mfd/sy7636a.h
+> > > > >
+> > > > > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> > > > > index 5c7f2b100191..7d6cf32b1549 100644
+> > > > > --- a/drivers/mfd/Kconfig
+> > > > > +++ b/drivers/mfd/Kconfig
+> > > > > @@ -1339,6 +1339,15 @@ config MFD_SYSCON
+> > > > >         Select this option to enable accessing system control registers
+> > > > >         via regmap.
+> > > > >
+> > > > > +config MFD_SY7636A
+> > > > > +     tristate "Silergy SY7636A Power Management chip"
+> > > > > +     select MFD_CORE
+> > > > > +     select REGMAP_I2C
+> > > > > +     depends on I2C
+> > > > > +     help
+> > > > > +       Select this option to enable support for the Silergy SY7636A
+> > > > > +       Power Management chip.
+> > > > > +
+> > > > >  config MFD_DAVINCI_VOICECODEC
+> > > > >       tristate
+> > > > >       select MFD_CORE
+> > > > > diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+> > > > > index 4f6d2b8a5f76..f95e1e725a95 100644
+> > > > > --- a/drivers/mfd/Makefile
+> > > > > +++ b/drivers/mfd/Makefile
+> > > > > @@ -265,6 +265,7 @@ obj-$(CONFIG_MFD_STMFX)   += stmfx.o
+> > > > >  obj-$(CONFIG_MFD_KHADAS_MCU)         += khadas-mcu.o
+> > > > >  obj-$(CONFIG_MFD_ACER_A500_EC)       += acer-ec-a500.o
+> > > > >
+> > > > > +obj-$(CONFIG_MFD_SY7636A)    += sy7636a.o
+> > > > >  obj-$(CONFIG_SGI_MFD_IOC3)   += ioc3.o
+> > > > >  obj-$(CONFIG_MFD_SIMPLE_MFD_I2C)     += simple-mfd-i2c.o
+> > > > >  obj-$(CONFIG_MFD_INTEL_M10_BMC)   += intel-m10-bmc.o
+> > > > > diff --git a/drivers/mfd/sy7636a.c b/drivers/mfd/sy7636a.c
+> > > > > new file mode 100644
+> > > > > index 000000000000..e08f29ea63f8
+> > > > > --- /dev/null
+> > > > > +++ b/drivers/mfd/sy7636a.c
+> > > > > @@ -0,0 +1,82 @@
+> > > > > +// SPDX-License-Identifier: GPL-2.0+
+> > > > > +//
+> > > >
+> > > > Only the SPDX with C++ style comments please.
+> > > >
+> > > > > +// MFD parent driver for SY7636A chip
+> > > >
+> > > > Drop the MFD part.  It's a Linuxisum that doesn't really exist.
+> > > >
+> > > > > +// Copyright (C) 2021 reMarkable AS - http://www.remarkable.com/
+> > > > > +//
+> > > > > +// Authors: Lars Ivar Miljeteig <lars.ivar.miljeteig@remarkable.com>
+> > > > > +//          Alistair Francis <alistair@alistair23.me>
+> > > > > +//
+> > > > > +// Based on the lp87565 driver by Keerthy <j-keerthy@ti.com>
+> > > > > +
+> > > > > +#include <linux/interrupt.h>
+> > > > > +#include <linux/mfd/core.h>
+> > > > > +#include <linux/module.h>
+> > > > > +#include <linux/of_device.h>
+> > > > > +
+> > > > > +#include <linux/mfd/sy7636a.h>
+> > > > > +
+> > > > > +static const struct regmap_config sy7636a_regmap_config = {
+> > > > > +     .reg_bits = 8,
+> > > > > +     .val_bits = 8,
+> > > > > +};
+> > > > > +
+> > > > > +static const struct mfd_cell sy7636a_cells[] = {
+> > > > > +     { .name = "sy7636a-regulator", },
+> > > > > +     { .name = "sy7636a-temperature", },
+> > > > > +     { .name = "sy7636a-thermal", },
+> > > > > +};
+> > > > > +
+> > > > > +static const struct of_device_id of_sy7636a_match_table[] = {
+> > > > > +     { .compatible = "silergy,sy7636a", },
+> > > > > +     {}
+> > > > > +};
+> > > > > +MODULE_DEVICE_TABLE(of, of_sy7636a_match_table);
+> > > >
+> > > > Hold on.  This driver doesn't really do anything.  If you create OF
+> > > > nodes for all the sub-devices, you can use simple-mfd-i2c.
+> > > >
+> > > > Any reason you can't do that?
+> > >
+> > > Just to confirm, you mean something like this?
+> > >
+> > > diff --git a/arch/arm/boot/dts/imx7d-remarkable2.dts
+> > > b/arch/arm/boot/dts/imx7d-remarkable2.dts
+> > > index 9327d1c06c96..3577104b3853 100644
+> > > --- a/arch/arm/boot/dts/imx7d-remarkable2.dts
+> > > +++ b/arch/arm/boot/dts/imx7d-remarkable2.dts
+> > > @@ -382,6 +382,21 @@ epd_pmic: sy7636a@62 {
+> > >                 pinctrl-0 = <&pinctrl_epdpmic>;
+> > >                 #thermal-sensor-cells = <0>;
+> > >
+> > > +               regulator@0 {
+> > > +                       compatible = "sy7636a-regulator";
+> > > +                       reg = <0>;
+> > > +               };
+> > > +
+> > > +               temperature@0 {
+> > > +                       compatible = "sy7636a-temperature";
+> > > +                       reg = <0>;
+> > > +               };
+> > > +
+> > > +               thermal@0 {
+> > > +                       compatible = "sy7636a-thermal";
+> > > +                       reg = <0>;
+> > > +               };
+> > > +
+> > >                 regulators {
+> > >                         compatible = "silergy,sy7636a-regulator";
+> > > diff --git a/drivers/mfd/simple-mfd-i2c.c b/drivers/mfd/simple-mfd-i2c.c
+> > > index 87f684cff9a1..622a05318cff 100644
+> > > --- a/drivers/mfd/simple-mfd-i2c.c
+> > > +++ b/drivers/mfd/simple-mfd-i2c.c
+> > > @@ -39,6 +39,7 @@ static int simple_mfd_i2c_probe(struct i2c_client *i2c)
+> > >
+> > >  static const struct of_device_id simple_mfd_i2c_of_match[] = {
+> > >         { .compatible = "kontron,sl28cpld" },
+> > > +       { .compatible = "silergy,sy7636a" },
+> > >         {}
+> > >  };
+> > >  MODULE_DEVICE_TABLE(of, simple_mfd_i2c_of_match);
+> >
+> > Essentially.  Take a look at how the other users are implementing.
+> >
+> > The reg entries look bogus to me though.  Maybe just leave them out?
+> 
+> So I tried this and didn't have any luck.
+> 
+> After some Kconfig changes to allow it to build, I managed to get it
+> probing, but I never got it to power up. It doesn't seem to be the
+> same.
 
-Signed-off-by: Konstantin Porotchkin <kostap@marvell.com>
-Suggested-by: Russell King <linux@armlinux.org.uk>
----
- arch/arm64/boot/dts/marvell/armada-7040-db.dts | 2 +-
- arch/arm64/boot/dts/marvell/armada-8040-db.dts | 4 ++--
- arch/arm64/boot/dts/marvell/cn9130-crb.dtsi    | 2 +-
- arch/arm64/boot/dts/marvell/cn9130-db.dtsi     | 2 +-
- arch/arm64/boot/dts/marvell/cn9131-db.dtsi     | 2 +-
- arch/arm64/boot/dts/marvell/cn9132-db.dtsi     | 2 +-
- 6 files changed, 7 insertions(+), 7 deletions(-)
+I need a more technical reason why this is not the correct approach
+for you.  "I can't get it to work" doesn't quite reach the quality
+line I'm afraid.
 
-diff --git a/arch/arm64/boot/dts/marvell/armada-7040-db.dts b/arch/arm64/boot/dts/marvell/armada-7040-db.dts
-index 51f3e2907597..cd326fe224ce 100644
---- a/arch/arm64/boot/dts/marvell/armada-7040-db.dts
-+++ b/arch/arm64/boot/dts/marvell/armada-7040-db.dts
-@@ -282,7 +282,7 @@
- &cp0_eth0 {
- 	status = "okay";
- 	/* Network PHY */
--	phy-mode = "10gbase-kr";
-+	phy-mode = "10gbase-r";
- 	/* Generic PHY, providing serdes lanes */
- 	phys = <&cp0_comphy2 0>;
- 
-diff --git a/arch/arm64/boot/dts/marvell/armada-8040-db.dts b/arch/arm64/boot/dts/marvell/armada-8040-db.dts
-index e39e1efc95b6..f2e8e0df8865 100644
---- a/arch/arm64/boot/dts/marvell/armada-8040-db.dts
-+++ b/arch/arm64/boot/dts/marvell/armada-8040-db.dts
-@@ -195,7 +195,7 @@
- 
- &cp0_eth0 {
- 	status = "okay";
--	phy-mode = "10gbase-kr";
-+	phy-mode = "10gbase-r";
- 
- 	fixed-link {
- 		speed = <10000>;
-@@ -348,7 +348,7 @@
- 
- &cp1_eth0 {
- 	status = "okay";
--	phy-mode = "10gbase-kr";
-+	phy-mode = "10gbase-r";
- 
- 	fixed-link {
- 		speed = <10000>;
-diff --git a/arch/arm64/boot/dts/marvell/cn9130-crb.dtsi b/arch/arm64/boot/dts/marvell/cn9130-crb.dtsi
-index 75933477324a..9f0efcdacdf1 100644
---- a/arch/arm64/boot/dts/marvell/cn9130-crb.dtsi
-+++ b/arch/arm64/boot/dts/marvell/cn9130-crb.dtsi
-@@ -202,7 +202,7 @@
- &cp0_eth0 {
- 	/* This port is connected to 88E6393X switch */
- 	status = "okay";
--	phy-mode = "10gbase-kr";
-+	phy-mode = "10gbase-r";
- 	managed = "in-band-status";
- 	phys = <&cp0_comphy4 0>;
- };
-diff --git a/arch/arm64/boot/dts/marvell/cn9130-db.dtsi b/arch/arm64/boot/dts/marvell/cn9130-db.dtsi
-index 39fc90716454..2cd4bb09e8ff 100644
---- a/arch/arm64/boot/dts/marvell/cn9130-db.dtsi
-+++ b/arch/arm64/boot/dts/marvell/cn9130-db.dtsi
-@@ -126,7 +126,7 @@
- /* SLM-1521-V2, CON9 */
- &cp0_eth0 {
- 	status = "okay";
--	phy-mode = "10gbase-kr";
-+	phy-mode = "10gbase-r";
- 	/* Generic PHY, providing serdes lanes */
- 	phys = <&cp0_comphy4 0>;
- 	managed = "in-band-status";
-diff --git a/arch/arm64/boot/dts/marvell/cn9131-db.dtsi b/arch/arm64/boot/dts/marvell/cn9131-db.dtsi
-index daddab638fb8..f995b1bcda01 100644
---- a/arch/arm64/boot/dts/marvell/cn9131-db.dtsi
-+++ b/arch/arm64/boot/dts/marvell/cn9131-db.dtsi
-@@ -85,7 +85,7 @@
- /* CON50 */
- &cp1_eth0 {
- 	status = "okay";
--	phy-mode = "10gbase-kr";
-+	phy-mode = "10gbase-r";
- 	/* Generic PHY, providing serdes lanes */
- 	phys = <&cp1_comphy4 0>;
- 	managed = "in-band-status";
-diff --git a/arch/arm64/boot/dts/marvell/cn9132-db.dtsi b/arch/arm64/boot/dts/marvell/cn9132-db.dtsi
-index 5948de6b4638..3f1795fb4fe7 100644
---- a/arch/arm64/boot/dts/marvell/cn9132-db.dtsi
-+++ b/arch/arm64/boot/dts/marvell/cn9132-db.dtsi
-@@ -103,7 +103,7 @@
- /* SLM-1521-V2, CON9 */
- &cp2_eth0 {
- 	status = "disabled";
--	phy-mode = "10gbase-kr";
-+	phy-mode = "10gbase-r";
- 	/* Generic PHY, providing serdes lanes */
- 	phys = <&cp2_comphy4 0>;
- 	managed = "in-band-status";
+Did you try enabling the debug prints in of_platform_bus_create() and
+friends to see if your devices are probing correctly?
+
 -- 
-2.17.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
