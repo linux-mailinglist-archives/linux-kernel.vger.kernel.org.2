@@ -2,109 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8A333C1801
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 19:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E1C13C1803
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 19:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229763AbhGHRZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 13:25:07 -0400
-Received: from foss.arm.com ([217.140.110.172]:35038 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229566AbhGHRZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 13:25:05 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4415FED1;
-        Thu,  8 Jul 2021 10:22:23 -0700 (PDT)
-Received: from [10.57.35.192] (unknown [10.57.35.192])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 27E413F73B;
-        Thu,  8 Jul 2021 10:22:22 -0700 (PDT)
-Subject: Re: [PATCH 1/4] dma-iommu: add kalloc gfp flag to alloc helper
-To:     David Stevens <stevensd@chromium.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        iommu@lists.linux-foundation.org, Christoph Hellwig <hch@lst.de>,
-        linux-kernel@vger.kernel.org
-References: <20210707075505.2896824-1-stevensd@google.com>
- <20210707075505.2896824-2-stevensd@google.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <8cdbcbbb-5064-ae7f-af4a-abb0e4203b6d@arm.com>
-Date:   Thu, 8 Jul 2021 18:22:17 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229603AbhGHR0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 13:26:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229469AbhGHR0V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 13:26:21 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34005C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 10:23:39 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id g4so6424127qkl.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 10:23:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vt-edu.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:organization:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=A6r9ahSEivquSNC+v6wy1zVJBcSXU9JsNZeAxAJzmVI=;
+        b=0BgY3VwLusa6P/XifL4mLEtCi8DC/SXmSI+73TJNDBo7NorxpYQIgRCMphPEKGyxYq
+         KGgh/OA8OllyvZHuhCUTCCP7Hwl8XXiAwDmqcaNO69Oivy43ykrXNcqtv7r8H1lR/0ZN
+         G5Ay6IqhFLt2Jy1mUUxFrID8HYg+gOuDqvZhjkcUhGmDMRvvmGy9ZllrYgLgxkFMXfPk
+         OdMKHocuVod+wU2l/NayVQNLTjLVIgte9OckgtN886hf0Xkf+/kTgfMl/asRKW9AVhGH
+         bxZ2fTzAL+jwO5U9uJOS/m0RUlfabWoYqdZUGBmt7uben64BDUeAxLhtA0hd8FMo1QAL
+         fhDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:organization
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=A6r9ahSEivquSNC+v6wy1zVJBcSXU9JsNZeAxAJzmVI=;
+        b=bRfKYcD+aH2RCVOPxGi8eLqEwkGgl2PfeaG5pK+dZl+setVRC5E0CBuQWPEgkvKDRa
+         78pDljgIQdbAhXcl07Mkg0KEJTB10S/kUk1XiuJ350NB/I8j3P1SywONkiUJir8Rtgs5
+         nBWwj16bBXTD9JYTPZmSIOMyekNSrARJfDwlOXBEvXGVBWb40ZdJJzI2IV/yUf0HAEW/
+         3qIz75kl9pbp6CeFiJ7m46hl/lS+bZuUGk9mVuM53HRCe42Ozn7rG2WwCgCaR2cyEzWi
+         EfdIN2khPGU43HNsc2vPhkM8VJxKdVC5KfigJ3UDkC2EjM7Rqys2fU4bQuFkk7GXauqO
+         6kRg==
+X-Gm-Message-State: AOAM532n+/Z6oq16WbFrVrDNpVyDIl7M+koR26qXMVbCH+cdnbdABEAC
+        tAilag/3Mse+KBj+mTfiGZMduA==
+X-Google-Smtp-Source: ABdhPJzrFr69iEOqgEgQjKYOgyMHMtcoM01m802eZv9zRtkGbxrg3mu6WCYSueHmcxd64Neey+x2gw==
+X-Received: by 2002:a05:620a:38b:: with SMTP id q11mr1731323qkm.308.1625765018382;
+        Thu, 08 Jul 2021 10:23:38 -0700 (PDT)
+Received: from iron-maiden.localnet (50-200-151-121-static.hfc.comcastbusiness.net. [50.200.151.121])
+        by smtp.gmail.com with ESMTPSA id y26sm1244658qkm.32.2021.07.08.10.23.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jul 2021 10:23:38 -0700 (PDT)
+From:   Carlos Bilbao <bilbao@vt.edu>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     3chas3@gmail.com, linux-atm-general@lists.sourceforge.net,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v2] drivers: atm: Follow the indentation coding standard on printks
+Date:   Thu, 08 Jul 2021 13:23:37 -0400
+Message-ID: <1764897.atdPhlSkOF@iron-maiden>
+Organization: Virginia Tech
+In-Reply-To: <4121270.ejJDZkT8p0@iron-maiden>
+References: <2784471.e9J7NaK4W3@iron-maiden> <YOceNJYQJiPh3qhc@lunn.ch> <4121270.ejJDZkT8p0@iron-maiden>
 MIME-Version: 1.0
-In-Reply-To: <20210707075505.2896824-2-stevensd@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-07 08:55, David Stevens wrote:
-> From: David Stevens <stevensd@chromium.org>
-> 
-> Add gfp flag for kalloc calls within __iommu_dma_alloc_pages, so the
-> function can be called from atomic contexts.
+Fix indentation of printks that start at the beginning of the line. Change this 
+for the right number of space characters, or tabs if the file uses them. 
 
-Why bother? If you need GFP_ATOMIC for allocating the pages array, then 
-you don't not need it for allocating the pages themselves. It's hardly 
-rocket science to infer one from the other.
+Signed-off-by: Carlos Bilbao <bilbao@vt.edu>
+---
+Changelog: 
+- Replaced printk for DPRINTK on suni.c
+- Directly removed the #if 0 printks.
+---
 
-Robin.
 
-> Signed-off-by: David Stevens <stevensd@chromium.org>
-> ---
->   drivers/iommu/dma-iommu.c | 13 +++++++------
->   1 file changed, 7 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-> index 614f0dd86b08..00993b56c977 100644
-> --- a/drivers/iommu/dma-iommu.c
-> +++ b/drivers/iommu/dma-iommu.c
-> @@ -593,7 +593,8 @@ static void __iommu_dma_free_pages(struct page **pages, int count)
->   }
->   
->   static struct page **__iommu_dma_alloc_pages(struct device *dev,
-> -		unsigned int count, unsigned long order_mask, gfp_t gfp)
-> +		unsigned int count, unsigned long order_mask,
-> +		gfp_t page_gfp, gfp_t kalloc_gfp)
->   {
->   	struct page **pages;
->   	unsigned int i = 0, nid = dev_to_node(dev);
-> @@ -602,15 +603,15 @@ static struct page **__iommu_dma_alloc_pages(struct device *dev,
->   	if (!order_mask)
->   		return NULL;
->   
-> -	pages = kvzalloc(count * sizeof(*pages), GFP_KERNEL);
-> +	pages = kvzalloc(count * sizeof(*pages), kalloc_gfp);
->   	if (!pages)
->   		return NULL;
->   
->   	/* IOMMU can map any pages, so himem can also be used here */
-> -	gfp |= __GFP_NOWARN | __GFP_HIGHMEM;
-> +	page_gfp |= __GFP_NOWARN | __GFP_HIGHMEM;
->   
->   	/* It makes no sense to muck about with huge pages */
-> -	gfp &= ~__GFP_COMP;
-> +	page_gfp &= ~__GFP_COMP;
->   
->   	while (count) {
->   		struct page *page = NULL;
-> @@ -624,7 +625,7 @@ static struct page **__iommu_dma_alloc_pages(struct device *dev,
->   		for (order_mask &= (2U << __fls(count)) - 1;
->   		     order_mask; order_mask &= ~order_size) {
->   			unsigned int order = __fls(order_mask);
-> -			gfp_t alloc_flags = gfp;
-> +			gfp_t alloc_flags = page_gfp;
->   
->   			order_size = 1U << order;
->   			if (order_mask > order_size)
-> @@ -680,7 +681,7 @@ static struct page **__iommu_dma_alloc_noncontiguous(struct device *dev,
->   
->   	count = PAGE_ALIGN(size) >> PAGE_SHIFT;
->   	pages = __iommu_dma_alloc_pages(dev, count, alloc_sizes >> PAGE_SHIFT,
-> -					gfp);
-> +					gfp, GFP_KERNEL);
->   	if (!pages)
->   		return NULL;
->   
-> 
+
+
+
