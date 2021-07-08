@@ -2,290 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33BDC3C1B6B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 00:21:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA823C1B77
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 00:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230375AbhGHWYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 18:24:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44278 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229631AbhGHWYI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 18:24:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F700617ED;
-        Thu,  8 Jul 2021 22:21:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625782885;
-        bh=897f09UMwt0h/lwDJeDuOlz+iPLrpipRWFy/FQG4FkA=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=DpMVkpRy0/Q2BUH1Pg1OENWOvi+Q55403P1H3Ck+a+vSfgJg1a882wet1gD1EHVIW
-         2wWaxJpmw6O6VEW4/P7x/oY23JVPDVo5XgqKB77RtPj52gMzQIY7TJ6/dyiRCX1w4L
-         j9ZY+qPy+mB93pMeCh3tE3z97WRPIKATgTIYi/Egl+Z2pJXPjdB4spBdm6tNmCz+lQ
-         SB6CvHnNpGNL0rmuNpE2Di2axbHDeZ1yaFJRcfQUj95R9jsNUEPJBvMfBZWcoBTejF
-         jVOjY0xqJ7ucd6qAB04JTXdvirrEzxDU4ffkRwLiAhBeqkcTcu+1r+rT2wJYn1AZaO
-         CHhRR3hGLvtfg==
-Subject: Re: [PATCH v2 5/6] platform/x86: intel_tdx_attest: Add TDX Guest
- attestation interface driver
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <20210707204249.3046665-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210707204249.3046665-6-sathyanarayanan.kuppuswamy@linux.intel.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Message-ID: <06c85c19-e16c-3121-ed47-075cfa779b67@kernel.org>
-Date:   Thu, 8 Jul 2021 15:21:24 -0700
+        id S230416AbhGHWdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 18:33:04 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:19154 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229631AbhGHWdA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 18:33:00 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 168M36eL155360;
+        Thu, 8 Jul 2021 18:30:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=+tKAWui9H07PmoURGM29yHvu85k+T7jBXWOYauoqnc8=;
+ b=bg90Io1yMsZGhQDa6Lnv4KRetpvNwEmq3eoOv2/B/3SJiCVykMdDzwehgeqVhDnsy55u
+ Vkxpd6uzqAWtcoZ0DtTSs1Orq4L/5MVkD4NI38FKLk22goOwR5na58Z1pv411Tf4nits
+ P/Rev1K6lO/k5hOcUOXDcJ15B5WH6SPDN2Wa3LmysHJjHRcYE0QqAeEFtq7ZH5T8nR2M
+ 77kKPP+sK0+KJyp7SOdfuWnxnYJmzH7wHFjEixxxtPXX0Z+8/HcU5F0NsDXF26X8pNEX
+ phg549RVjPKfCVebme3y8JGIYEwGgulNFwl5tPa+ounFzaKIHfR3sH7d5w+4FW86ge1B qg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39p2qqdy1p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 08 Jul 2021 18:30:04 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 168M35LI155211;
+        Thu, 8 Jul 2021 18:30:03 -0400
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39p2qqdy15-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 08 Jul 2021 18:30:03 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 168MH9MQ001458;
+        Thu, 8 Jul 2021 22:30:02 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma05wdc.us.ibm.com with ESMTP id 39jfhdfb9r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 08 Jul 2021 22:30:02 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 168MU2xh12059028
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 8 Jul 2021 22:30:02 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3B6CB124058;
+        Thu,  8 Jul 2021 22:30:02 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 21AEE124073;
+        Thu,  8 Jul 2021 22:30:02 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu,  8 Jul 2021 22:30:02 +0000 (GMT)
+Subject: Re: [PATCH v3] pkcs7: make parser enable SM2 and SM3 algorithms
+ combination
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        David Howells <dhowells@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Biggers <ebiggers@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Vitaly Chikunov <vt@altlinux.org>,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Pascal van Leeuwen <pvanleeuwen@rambus.com>,
+        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jia Zhang <zhang.jia@linux.alibaba.com>
+References: <20210624094705.48673-1-tianjia.zhang@linux.alibaba.com>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <23f6a837-5b45-5950-0b0f-b138793373e1@linux.ibm.com>
+Date:   Thu, 8 Jul 2021 18:30:01 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210707204249.3046665-6-sathyanarayanan.kuppuswamy@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210624094705.48673-1-tianjia.zhang@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: I_4TVNfqS7oUt2BoK87Do5NNYJiIU1t9
+X-Proofpoint-GUID: w9hpo3HcMisF8apDP4aZpUW7ZANI9LP4
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-08_12:2021-07-08,2021-07-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1011
+ adultscore=0 impostorscore=0 mlxlogscore=999 spamscore=0 bulkscore=0
+ malwarescore=0 priorityscore=1501 mlxscore=0 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107080113
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/7/21 1:42 PM, Kuppuswamy Sathyanarayanan wrote:
 
-> The interaction with the TDX module is like a RPM protocol here. There
-> are several operations (get tdreport, get quote) that need to input a
-> blob, and then output another blob. It was considered to use a sysfs
-> interface for this, but it doesn't fit well into the standard sysfs
-> model for configuring values. It would be possible to do read/write on
-> files, but it would need multiple file descriptors, which would be
-> somewhat messy. ioctls seems to be the best fitting and simplest model
-> here. There is one ioctl per operation, that takes the input blob and
-> returns the output blob, and as well as auxiliary ioctls to return the
-> blob lengths. The ioctls are documented in the header file. 
-> 
-> Reviewed-by: Tony Luck <tony.luck@intel.com>
-> Reviewed-by: Andi Kleen <ak@linux.intel.com>
-> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+On 6/24/21 5:47 AM, Tianjia Zhang wrote:
+> Support parsing the message signature of the SM2 and SM3 algorithm
+> combination. This group of algorithms has been well supported. One
+> of the main users is module signature verification.
+>
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 > ---
->  drivers/platform/x86/Kconfig            |   9 ++
->  drivers/platform/x86/Makefile           |   1 +
->  drivers/platform/x86/intel_tdx_attest.c | 171 ++++++++++++++++++++++++
->  include/uapi/misc/tdx.h                 |  37 +++++
->  4 files changed, 218 insertions(+)
->  create mode 100644 drivers/platform/x86/intel_tdx_attest.c
->  create mode 100644 include/uapi/misc/tdx.h
-> 
-> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-> index 60592fb88e7a..7d01c473aef6 100644
-> --- a/drivers/platform/x86/Kconfig
-> +++ b/drivers/platform/x86/Kconfig
-> @@ -1301,6 +1301,15 @@ config INTEL_SCU_IPC_UTIL
->  	  low level access for debug work and updating the firmware. Say
->  	  N unless you will be doing this on an Intel MID platform.
->  
-> +config INTEL_TDX_ATTESTATION
-> +	tristate "Intel TDX attestation driver"
-> +	depends on INTEL_TDX_GUEST
-> +	help
-> +	  The TDX attestation driver provides IOCTL or MMAP interfaces to
-> +	  the user to request TDREPORT from the TDX module or request quote
-> +	  from VMM. It is mainly used to get secure disk decryption keys from
-> +	  the key server.
-
-What's the MMAP interface
-
-> +
->  config INTEL_TELEMETRY
->  	tristate "Intel SoC Telemetry Driver"
->  	depends on X86_64
-> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-> index dcc8cdb95b4d..83439990ae47 100644
-> --- a/drivers/platform/x86/Makefile
-> +++ b/drivers/platform/x86/Makefile
-> @@ -138,6 +138,7 @@ obj-$(CONFIG_INTEL_SCU_PCI)		+= intel_scu_pcidrv.o
->  obj-$(CONFIG_INTEL_SCU_PLATFORM)	+= intel_scu_pltdrv.o
->  obj-$(CONFIG_INTEL_SCU_WDT)		+= intel_scu_wdt.o
->  obj-$(CONFIG_INTEL_SCU_IPC_UTIL)	+= intel_scu_ipcutil.o
-> +obj-$(CONFIG_INTEL_TDX_ATTESTATION)	+= intel_tdx_attest.o
->  obj-$(CONFIG_INTEL_TELEMETRY)		+= intel_telemetry_core.o \
->  					   intel_telemetry_pltdrv.o \
->  					   intel_telemetry_debugfs.o
-> diff --git a/drivers/platform/x86/intel_tdx_attest.c b/drivers/platform/x86/intel_tdx_attest.c
-> new file mode 100644
-> index 000000000000..a0225d053851
-> --- /dev/null
-> +++ b/drivers/platform/x86/intel_tdx_attest.c
-> @@ -0,0 +1,171 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * intel_tdx_attest.c - TDX guest attestation interface driver.
-> + *
-> + * Implements user interface to trigger attestation process and
-> + * read the TD Quote result.
-> + *
-> + * Copyright (C) 2020 Intel Corporation
-> + *
-> + * Author:
-> + *     Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> + */
-> +
-> +#define pr_fmt(fmt) "x86/tdx: attest: " fmt
-> +
-> +#include <linux/module.h>
-> +#include <linux/miscdevice.h>
-> +#include <linux/uaccess.h>
-> +#include <linux/fs.h>
-> +#include <linux/mm.h>
-> +#include <linux/slab.h>
-> +#include <linux/set_memory.h>
-> +#include <linux/io.h>
-> +#include <asm/apic.h>
-> +#include <asm/tdx.h>
-> +#include <asm/irq_vectors.h>
-> +#include <uapi/misc/tdx.h>
-> +
-> +#define VERSION				"1.0"
-> +
-> +/* Used in Quote memory allocation */
-> +#define QUOTE_SIZE			(2 * PAGE_SIZE)
-> +
-> +/* Mutex to synchronize attestation requests */
-> +static DEFINE_MUTEX(attestation_lock);
-> +/* Completion object to track attestation status */
-> +static DECLARE_COMPLETION(attestation_done);
-> +
-> +static void attestation_callback_handler(void)
-> +{
-> +	complete(&attestation_done);
-> +}
-> +
-> +static long tdg_attest_ioctl(struct file *file, unsigned int cmd,
-> +			     unsigned long arg)
-> +{
-> +	u64 data = virt_to_phys(file->private_data);
-
-
-> +	void __user *argp = (void __user *)arg;
-> +	u8 *reportdata;
-> +	long ret = 0;
-> +
-> +	mutex_lock(&attestation_lock);
-> +
-> +	reportdata = kzalloc(TDX_TDREPORT_LEN, GFP_KERNEL);
-> +	if (!reportdata) {
-> +		mutex_unlock(&attestation_lock);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	switch (cmd) {
-> +	case TDX_CMD_GET_TDREPORT:
-> +		if (copy_from_user(reportdata, argp, TDX_REPORT_DATA_LEN)) {
-> +			ret = -EFAULT;
-> +			break;
-> +		}
-
-This copies from user memory to reportdata.
-
-> +
-> +		/* Generate TDREPORT_STRUCT */
-> +		if (tdx_mcall_tdreport(data, virt_to_phys(reportdata))) {
-> +			ret = -EIO;
-> +			break;
-> +		}
-
-This does the hypercall.
-
-> +
-> +		if (copy_to_user(argp, file->private_data, TDX_TDREPORT_LEN))
-> +			ret = -EFAULT;
-
-This copies from private_data to user memory.  How did the report get to
-private_data?
-
+>   crypto/asymmetric_keys/pkcs7_parser.c | 7 +++++++
+>   1 file changed, 7 insertions(+)
+>
+> diff --git a/crypto/asymmetric_keys/pkcs7_parser.c b/crypto/asymmetric_keys/pkcs7_parser.c
+> index 967329e0a07b..6cf6c4552c11 100644
+> --- a/crypto/asymmetric_keys/pkcs7_parser.c
+> +++ b/crypto/asymmetric_keys/pkcs7_parser.c
+> @@ -248,6 +248,9 @@ int pkcs7_sig_note_digest_algo(void *context, size_t hdrlen,
+>   	case OID_sha224:
+>   		ctx->sinfo->sig->hash_algo = "sha224";
+>   		break;
+> +	case OID_sm3:
+> +		ctx->sinfo->sig->hash_algo = "sm3";
 > +		break;
-> +	case TDX_CMD_GEN_QUOTE:
-> +		if (copy_from_user(reportdata, argp, TDX_REPORT_DATA_LEN)) {
-> +			ret = -EFAULT;
-> +			break;
-> +		}
-> +
-> +		/* Generate TDREPORT_STRUCT */
-> +		if (tdx_mcall_tdreport(data, virt_to_phys(reportdata))) {
-> +			ret = -EIO;
-> +			break;
-> +		}
-> +
-> +		ret = set_memory_decrypted((unsigned long)file->private_data,
-> +					   1UL << get_order(QUOTE_SIZE));
-> +		if (ret)
-> +			break;
-
-Now private_data is decrypted.  (And this operation is *expensive*.  Why
-is it done at ioctl time?)
-
-> +
-> +		/* Submit GetQuote Request */
-> +		if (tdx_hcall_get_quote(data)) {
-> +			ret = -EIO;
-> +			goto done;
-> +		}
-> +
-> +		/* Wait for attestation completion */
-> +		wait_for_completion_interruptible(&attestation_done);
-> +
-> +		if (copy_to_user(argp, file->private_data, QUOTE_SIZE))
-> +			ret = -EFAULT;
-> +done:
-> +		ret = set_memory_encrypted((unsigned long)file->private_data,
-> +					   1UL << get_order(QUOTE_SIZE));
-
-And this is, again, quite expensive.
-
-> +
+>   	default:
+>   		printk("Unsupported digest algo: %u\n", ctx->last_oid);
+>   		return -ENOPKG;
+> @@ -269,6 +272,10 @@ int pkcs7_sig_note_pkey_algo(void *context, size_t hdrlen,
+>   		ctx->sinfo->sig->pkey_algo = "rsa";
+>   		ctx->sinfo->sig->encoding = "pkcs1";
+>   		break;
+> +	case OID_SM2_with_SM3:
+> +		ctx->sinfo->sig->pkey_algo = "sm2";
+> +		ctx->sinfo->sig->encoding = "raw";
 > +		break;
-> +	case TDX_CMD_GET_QUOTE_SIZE:
-> +		if (put_user(QUOTE_SIZE, (u64 __user *)argp))
-> +			ret = -EFAULT;
-> +
-> +		break;
-> +	default:
-> +		pr_err("cmd %d not supported\n", cmd);
-> +		break;
-> +	}
-> +
-> +	mutex_unlock(&attestation_lock);
-> +
-> +	kfree(reportdata);
-> +
-> +	return ret;
-> +}
-> +
-> +static int tdg_attest_open(struct inode *inode, struct file *file)
-> +{
-> +	/*
-> +	 * Currently tdg_event_notify_handler is only used in attestation
-> +	 * driver. But, WRITE_ONCE is used as benign data race notice.
-> +	 */
-> +	WRITE_ONCE(tdg_event_notify_handler, attestation_callback_handler);
-> +
-> +	file->private_data = (void *)__get_free_pages(GFP_KERNEL | __GFP_ZERO,
-> +						      get_order(QUOTE_SIZE));
+>   	default:
+>   		printk("Unsupported pkey algo: %u\n", ctx->last_oid);
+>   		return -ENOPKG;
 
-This allocation has negligible cost compared to changing memory to
-decrypted.
 
-Shouldn't you allocate a buffer once at driver load time or even at boot
-and just keep reusing it as needed?  You could have a few pages of
-shared memory for the specific purposes of hypercalls, and you could
-check them out and release them when you need some.
+Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+
+
