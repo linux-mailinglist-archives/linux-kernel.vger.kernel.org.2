@@ -2,100 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 016DE3C1C33
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 01:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6153C1C45
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 01:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229624AbhGHXmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 19:42:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55902 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229491AbhGHXmf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 19:42:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BB7D61409;
-        Thu,  8 Jul 2021 23:39:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625787592;
-        bh=kfQyKRysnqk2rwMhGbwxmhAhfrh6e/bHBlkPvbh8xX4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=lXpCmUHcL3GCOKWWsZ4Svs6avH76vsfB03TkOw1vTUFKjontO124Snt0vckmqQjcs
-         xjbip2YWWHxMODSWKSW5eaeAsRi4HToYsdZb95JNmHrnY0ZPDb2/4XDG8vdjViXjOG
-         2FGN5UxPbSZE/UcnaLCCe0Ve0ZpXrdkQyaNVvvPlWcoIFSAfQrJu9WtDV7HMYpnuIb
-         I4zFaMHlRi59Uvn2SHhj8khwUnfi7NkudrU6D5roXj5LM9alMnH2xDoRI3D2SQRfUJ
-         oswtYDfgD4svfdARUgfnVuIumG2F+1ub8Kygt5DV9JJTfGjQtPs6elbk3WHEsYdTRO
-         s6mzNkRPsAhyw==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Brian Cain <bcain@codeaurora.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH] Hexagon: Export raw I/O routines for modules
-Date:   Thu,  8 Jul 2021 16:38:50 -0700
-Message-Id: <20210708233849.3140194-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890
+        id S229706AbhGHX7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 19:59:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229491AbhGHX7R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 19:59:17 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40523C061574;
+        Thu,  8 Jul 2021 16:56:34 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id i125so7547792qke.12;
+        Thu, 08 Jul 2021 16:56:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JxYklUz44zAQ3MzfouqUmQy/qiMtrAD9UXmtJKCtA/w=;
+        b=kEiqnCuR7tMsrDslENNLgLV8ythWAXcMIpmWJ1qplv5s886wXjuWdHYg3ytilBi0VN
+         eA3pKnPaPndNSeXEMe3rVAjcE63zXJPxzQ/3emcXVGCimXO1EXLWFY6K1dxc3fS5n5HT
+         MzEiGLm8oMbZ/L6LFLefqg22J44//2ovMNnuaoiTrX/JqpwHByOPJdMw3frg6FL5FUke
+         1Abi1w1HU5B9GUCe4SFRL+zerr71m9ldADTqHKLx6llGR9qu4E61mWuhy6vHeFU3/8QB
+         +vAxM8n+RaIvwq/CjN9UeQE9FRLmuN89UdAL1mFwz5CyqjG2qKLepIjrO/sOOHMvU47W
+         fOUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JxYklUz44zAQ3MzfouqUmQy/qiMtrAD9UXmtJKCtA/w=;
+        b=ZC5b9OpX1rfNOAfiLP2PxCnl16pBfs4oli/qfmfp1QNoE20wFkq70OX2wqXmELr8TV
+         3a08rJz/8Zb4F1upbP7yIookqyhX6b2n13laIc0/fkJ8cUnR7XHLCJbWfF/AvIqE4Ncr
+         fsHuq5H88euw7HqAiJHxxkGOwSaAs0gIk/kpbB9nFz03tZeqPsAurW1ZgIzEg9gDstIX
+         WaOgjbpn8c9BfTA4SNrLrVfpXSxyKTJZ8YamY3kYY9qDXPapbRG7cm127zhhFYwjVNfu
+         vrvzAaubIdtCS9FY4TgGjOEg8I9t2X7oCiAEIaJ0CDeSI3FAG6VaBwY2wK4mV/KghEci
+         8hPg==
+X-Gm-Message-State: AOAM530ZGaH6WCz22ots/l2wDEJQIEEyQ052ALTgaAXmCMDkB52Hp6PO
+        iVQ04yTL7aFe2RsgtNqr6tA=
+X-Google-Smtp-Source: ABdhPJwm5rWvQ/I40uPncgyn0lV5qZM3h3Z7M1wIK4VMncyZjTP4Adn6ZZhAZ1iedD/qPFAwoJHkKg==
+X-Received: by 2002:a37:8081:: with SMTP id b123mr34932677qkd.231.1625788593329;
+        Thu, 08 Jul 2021 16:56:33 -0700 (PDT)
+Received: from shaak.xiphos.ca (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
+        by smtp.gmail.com with ESMTPSA id m68sm1733234qkc.109.2021.07.08.16.56.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jul 2021 16:56:32 -0700 (PDT)
+From:   Liam Beguin <liambeguin@gmail.com>
+To:     liambeguin@gmail.com, lars@metafoo.de,
+        Michael.Hennerich@analog.com, jic23@kernel.org,
+        charles-antoine.couret@essensium.com
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+Subject: [PATCH v1 0/4] AD7949 Fixes
+Date:   Thu,  8 Jul 2021 19:56:14 -0400
+Message-Id: <20210708235618.1541335-1-liambeguin@gmail.com>
+X-Mailer: git-send-email 2.30.1.489.g328c10930387
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building ARCH=hexagon allmodconfig, the following errors occur:
+While working on another series[1] I ran into issues where my SPI
+controller would fail to handle 14-bit and 16-bit SPI messages. This
+addresses that issue and adds support for selecting a different voltage
+reference source from the devicetree.
 
-ERROR: modpost: "__raw_readsl" [drivers/i3c/master/svc-i3c-master.ko] undefined!
-ERROR: modpost: "__raw_writesl" [drivers/i3c/master/dw-i3c-master.ko] undefined!
-ERROR: modpost: "__raw_readsl" [drivers/i3c/master/dw-i3c-master.ko] undefined!
-ERROR: modpost: "__raw_writesl" [drivers/i3c/master/i3c-master-cdns.ko] undefined!
-ERROR: modpost: "__raw_readsl" [drivers/i3c/master/i3c-master-cdns.ko] undefined!
+This is base on a series[2] that seems to not have made it all the way,
+and was tested on an ad7689.
 
-Export these symbols so that modules can use them without any errors.
+[1] https://patchwork.kernel.org/project/linux-iio/list/?series=511545
+[2] https://patchwork.kernel.org/project/linux-iio/list/?series=116971&state=%2A&archive=both
 
-Fixes: 013bf24c3829 ("Hexagon: Provide basic implementation and/or stubs for I/O routines.")
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
+Thanks for your time,
+Liam
 
-It would be nice if this could get into 5.14 at some point so that we
-can build ARCH=hexagon allmodconfig in our CI.
+Liam Beguin (4):
+  iio: adc: ad7949: define and use bitfield names
+  iio: adc: ad7949: fix spi messages on non 14-bit controllers
+  iio: adc: ad7949: add support for internal vref
+  dt-bindings: iio: adc: ad7949: add adi,reference-source
 
- arch/hexagon/lib/io.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ .../bindings/iio/adc/adi,ad7949.yaml          |  22 ++
+ drivers/iio/adc/ad7949.c                      | 191 +++++++++++++++---
+ 2 files changed, 181 insertions(+), 32 deletions(-)
 
-diff --git a/arch/hexagon/lib/io.c b/arch/hexagon/lib/io.c
-index d35d69d6588c..55f75392857b 100644
---- a/arch/hexagon/lib/io.c
-+++ b/arch/hexagon/lib/io.c
-@@ -27,6 +27,7 @@ void __raw_readsw(const void __iomem *addr, void *data, int len)
- 		*dst++ = *src;
- 
- }
-+EXPORT_SYMBOL(__raw_readsw);
- 
- /*
-  * __raw_writesw - read words a short at a time
-@@ -47,6 +48,7 @@ void __raw_writesw(void __iomem *addr, const void *data, int len)
- 
- 
- }
-+EXPORT_SYMBOL(__raw_writesw);
- 
- /*  Pretty sure len is pre-adjusted for the length of the access already */
- void __raw_readsl(const void __iomem *addr, void *data, int len)
-@@ -62,6 +64,7 @@ void __raw_readsl(const void __iomem *addr, void *data, int len)
- 
- 
- }
-+EXPORT_SYMBOL(__raw_readsl);
- 
- void __raw_writesl(void __iomem *addr, const void *data, int len)
- {
-@@ -76,3 +79,4 @@ void __raw_writesl(void __iomem *addr, const void *data, int len)
- 
- 
- }
-+EXPORT_SYMBOL(__raw_writesl);
 
-base-commit: f55966571d5eb2876a11e48e798b4592fa1ffbb7
+base-commit: 6cbb3aa0f9d5d23221df787cf36f74d3866fdb78
 -- 
-2.32.0.93.g670b81a890
+2.30.1.489.g328c10930387
 
