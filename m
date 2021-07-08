@@ -2,257 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 839E33BF96E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 13:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 691D83BF970
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 13:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231490AbhGHMBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 08:01:00 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:60095 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231347AbhGHMA7 (ORCPT
+        id S231550AbhGHMBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 08:01:04 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:47163 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231347AbhGHMBD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 08:00:59 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 2CE215C0041;
-        Thu,  8 Jul 2021 07:58:17 -0400 (EDT)
+        Thu, 8 Jul 2021 08:01:03 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id F081B58057A;
+        Thu,  8 Jul 2021 07:58:21 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Thu, 08 Jul 2021 07:58:17 -0400
+  by compute2.internal (MEProxy); Thu, 08 Jul 2021 07:58:21 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
-         h=from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm1; bh=pRIPB83la3iKOmVVHMgSN8VS8y
-        +Ff25CtnJH129lD38=; b=XHdw/n2X0QPHhk5Rk29wFDa/p/xkS59o/mc2SeDavS
-        3HukKqfZkR7YE/KafMUaT7+v431Tf9/nfa7M+xgzu1jYE3f3sdnPVfbiJAj7Ow8W
-        gk86tgDL8W9Bdo5eI1y2tM0KivP9sAWh9mORZkD0VAk7IAT9RiIRUtoSZFtTXI3r
-        0MJQv0fJd5i01ZlqGbbeYHVBXHM5gV4ojFXvXMG+BpUoZAc90bfYLT1un9TpDm9z
-        JhId10gbVqt5CVRwBn0XjXuSN2BbrOTu7PPWd/+qGhluzBsf1OSFqfu7EdHPqfHy
-        nncPVm89f+m+v47eAy8SmD8EmU+wDVmCKbjCM7PpylAg==
+         h=from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm1; bh=+CJTfInSHFK2B
+        aVPjtCvIlAEU6b/iEqjuBkVjoLMTG8=; b=ZYhnU/f5dKm1VnShTylYVHC23dGyU
+        y1wuxEmolojBe85xbDBCAAeKNfDFw2BVGYC3PRDiArXdja+qvMTje3kht77Y1dQT
+        NuLrCMMWAJz/5cxl9IlIMerqoqjkOKXrPpdIK/PQDSF05HllavdDtp3FxPZ+Vap0
+        +qkxMM0lWzEwBBVetYVZjzDYcjefQr64QEbbEMcqfsqYITkmmck/0hcJK4ZNeO7l
+        sN0vYSt8e4GrcbV6xLHwiiqpPt4s3H8I29fod2AsvyB4n65G3ajZv0ldVSs+aC0A
+        0Rou3B9/AXHh4aL2MwzDYlzNPGoos115Zd+Kbh9ldGfZ1knsqYn9gRe7Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=pRIPB83la3iKOmVVH
-        MgSN8VS8y+Ff25CtnJH129lD38=; b=s/iUt8VeVjzPozum6CJNWV6Xn3GrOETvg
-        DshS8wObJ82OBV8qXoTx2S2ALniOjn4WccVTD/xksmrsxsOuXbbZFhJvSJ6F4kFV
-        9wlZ86/MycnGXIHawyrhd/SRArdHbym9O+pIeVs0wQg8v2VLrMDPUj+qwA1bI2vf
-        fy5OknMGFe5jkOSaKO4wrdrp6/RvUefmp58utwYo3974tPNMXCkvPkXxefcKetNf
-        VPrNPTF99cCxB7lkKlCNYa7Uwjky3jiNDTM4rJC9Qbkm3jAwW2NUpm4JS9As9YOI
-        GCOZDTwV3nUaykgTqBsYy8qHOKzXF4ItNdURLG6tW2P208GQLz/DA==
-X-ME-Sender: <xms:WOjmYG3OItMVLig85IbwcM9d6MdyJghGDuL-OXNAWJSiNjBGggXDwQ>
-    <xme:WOjmYJHuuUXxRjLdeEBXhKWkt0hIe-9uYdnw7t_sj6ddBlj6KHsDO95HO7acGMBlE
-    xBhstK6mlz56-QbW8E>
-X-ME-Received: <xmr:WOjmYO4xjV94oMWQz9x0xnC70MFa4Z1SVgVupJeqRhbdVUjutP5uNlk32sxxWzKzw4_doPjH-w5hB6VniLc>
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=+CJTfInSHFK2BaVPjtCvIlAEU6b/iEqjuBkVjoLMTG8=; b=XbqkpFGD
+        Or48Fd3/pBtGw3pDeqfnT9YhI17uLEwSkfG9KjpHeysM76G8ymsOdvXDABsdnMmU
+        aAOnAbBfLHQjVsvh2G5Q7CGUeGamNjlo4jS70Ymv/NDS6ljSoZckCIOVUxyzdAxy
+        UWh22ZhYaEc0mD+x1F1Md5FomAUNVvKzqfe2ZRyIoQmnB3zKHTeINVAll58PgHvP
+        GCYm1y7gXi0PzIiPRCulFNZ0gpRuLLSVWG9v1fN8pa6faO3JcjkfEJEtpfpJth5/
+        beeGFZprbnGrKoa75IKBpi5n9pTa4jHVL2VMZBLT44xkvSctQi10N9eqIhIRnmc/
+        rpA0wl9lnPNL4A==
+X-ME-Sender: <xms:XejmYD19GkWwH6iNzZ7T4rtIMorZLAdXKxXXhJc5WLvIuK0K86IwwQ>
+    <xme:XejmYCE9_tqTkVEDOXDMt4ValbRd1u48ln4Fzx8Wo5tScudsJqgq1gMvh1F-FGY6I
+    6JWfSJp8oNx2PPfcqY>
+X-ME-Received: <xmr:XejmYD4F-JjkmcKBeR3AJSI_EsNSYf7HnASMwPcfpBgmEPt0qP5fMypRoNKyOPPN4WIBgVE4RLj6cg0jei8>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrtdeggdeghecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
-    dtnecuhfhrohhmpeetlhhishhtrghirhcuhfhrrghntghishcuoegrlhhishhtrghirhes
-    rghlihhsthgrihhrvdefrdhmvgeqnecuggftrfgrthhtvghrnhepkeduveffffefffefve
-    fhudejfeefiedugfeltdegueehhfejkedvudeltdeihedtnecuffhomhgrihhnpehrvghm
-    rghrkhgrsghlvgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
-    grihhlfhhrohhmpegrlhhishhtrghirhesrghlihhsthgrihhrvdefrdhmvg
-X-ME-Proxy: <xmx:WOjmYH2CRToLzSgpwgTadkKWR2Kn5R81cg8D5745Ua9A1lcVTKcRdg>
-    <xmx:WOjmYJGhVDBtpRDjpfqTIAIO7H4HcoQANpYVy-dm9f1UHXKEjNcCtg>
-    <xmx:WOjmYA-tw82DfCW0tXCA9veYJ8muoZBYaTl9flw4-5mcYBkOI-EiOA>
-    <xmx:WejmYA0_MJS4lGi3rgrvbJra59FV3Qd9btLYNPKg_27PvO9ZrDF9VA>
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomheptehlihhsthgr
+    ihhrucfhrhgrnhgtihhsuceorghlihhsthgrihhrsegrlhhishhtrghirhdvfedrmhgvqe
+    enucggtffrrghtthgvrhhnpeehffejteetteekfffhvdeghfegvedvvdeujeehheefveef
+    udefgeeitdehueejleenucffohhmrghinheprhgvmhgrrhhkrggslhgvrdgtohhmnecuve
+    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghlihhsthgr
+    ihhrsegrlhhishhtrghirhdvfedrmhgv
+X-ME-Proxy: <xmx:XejmYI1bW9T5iJBOVvFPNNDrHRPsY8cSGgSyVTcsgDDZjbc1MDEYmQ>
+    <xmx:XejmYGFtZmewkoueOx1AGX1RWQPMc3Eroy046D_UmOx3V_BxKEq-6A>
+    <xmx:XejmYJ9UNIFo4zpl7ak1FgvV245oVYD60R7mgbLuVZdrR73-XBVIOA>
+    <xmx:XejmYEa5yp7WA2UotYM-HuvBgiywa1LV4U7ob4-waHxQD4zj3vDnwA>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 8 Jul 2021 07:58:13 -0400 (EDT)
+ 8 Jul 2021 07:58:17 -0400 (EDT)
 From:   Alistair Francis <alistair@alistair23.me>
 To:     lee.jones@linaro.org, robh+dt@kernel.org, lgirdwood@gmail.com,
         broonie@kernel.org, linux-imx@nxp.com, kernel@pengutronix.de
 Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alistair23@gmail.com, Alistair Francis <alistair@alistair23.me>
-Subject: [PATCH v7 1/6] mfd: sy7636a: Initial commit
-Date:   Thu,  8 Jul 2021 21:57:59 +1000
-Message-Id: <20210708115804.212-1-alistair@alistair23.me>
+        alistair23@gmail.com,
+        Lars Ivar Miljeteig <lars.ivar.miljeteig@remarkable.no>,
+        Alistair Francis <alistair@alistair23.me>
+Subject: [PATCH v7 2/6] thermal: sy7636a: Add thermal driver for sy7636a
+Date:   Thu,  8 Jul 2021 21:58:00 +1000
+Message-Id: <20210708115804.212-2-alistair@alistair23.me>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210708115804.212-1-alistair@alistair23.me>
+References: <20210708115804.212-1-alistair@alistair23.me>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Initial support for the Silergy SY7636A Power Management chip.
+From: Lars Ivar Miljeteig <lars.ivar.miljeteig@remarkable.no>
+
+Add thermal driver to enable kernel based polling
+and shutdown of device for temperatures out of spec
 
 Signed-off-by: Alistair Francis <alistair@alistair23.me>
 ---
- drivers/mfd/Kconfig         |  9 +++++
- drivers/mfd/Makefile        |  1 +
- drivers/mfd/sy7636a.c       | 81 +++++++++++++++++++++++++++++++++++++
- include/linux/mfd/sy7636a.h | 47 +++++++++++++++++++++
- 4 files changed, 138 insertions(+)
- create mode 100644 drivers/mfd/sy7636a.c
- create mode 100644 include/linux/mfd/sy7636a.h
+ drivers/thermal/Kconfig           |   7 ++
+ drivers/thermal/Makefile          |   1 +
+ drivers/thermal/sy7636a_thermal.c | 107 ++++++++++++++++++++++++++++++
+ 3 files changed, 115 insertions(+)
+ create mode 100644 drivers/thermal/sy7636a_thermal.c
 
-diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index 6a3fd2d75f96..7b59aa0fd3f2 100644
---- a/drivers/mfd/Kconfig
-+++ b/drivers/mfd/Kconfig
-@@ -1352,6 +1352,15 @@ config MFD_SYSCON
- 	  Select this option to enable accessing system control registers
- 	  via regmap.
+diff --git a/drivers/thermal/Kconfig b/drivers/thermal/Kconfig
+index d7f44deab5b1..7112c63d9021 100644
+--- a/drivers/thermal/Kconfig
++++ b/drivers/thermal/Kconfig
+@@ -450,6 +450,13 @@ depends on (ARCH_STI || ARCH_STM32) && OF
+ source "drivers/thermal/st/Kconfig"
+ endmenu
  
-+config MFD_SY7636A
-+	tristate "Silergy SY7636A Power Management chip"
-+	select MFD_CORE
-+	select REGMAP_I2C
-+	depends on I2C
++config SY7636A_THERMAL
++	tristate "SY7636A thermal management"
++	depends on MFD_SY7636A
 +	help
-+	  Select this option to enable support for the Silergy SY7636A
-+	  Power Management chip.
++	  Enable the sy7636a thermal driver, which supports the
++	  temperature sensor embedded in Silabs SY7636A chip.
 +
- config MFD_DAVINCI_VOICECODEC
- 	tristate
- 	select MFD_CORE
-diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-index 8116c19d5fd4..cbe581e87fa9 100644
---- a/drivers/mfd/Makefile
-+++ b/drivers/mfd/Makefile
-@@ -266,6 +266,7 @@ obj-$(CONFIG_MFD_KHADAS_MCU) 	+= khadas-mcu.o
- obj-$(CONFIG_MFD_ACER_A500_EC)	+= acer-ec-a500.o
- obj-$(CONFIG_MFD_QCOM_PM8008)	+= qcom-pm8008.o
+ source "drivers/thermal/tegra/Kconfig"
  
-+obj-$(CONFIG_MFD_SY7636A)	+= sy7636a.o
- obj-$(CONFIG_SGI_MFD_IOC3)	+= ioc3.o
- obj-$(CONFIG_MFD_SIMPLE_MFD_I2C)	+= simple-mfd-i2c.o
- obj-$(CONFIG_MFD_INTEL_M10_BMC)   += intel-m10-bmc.o
-diff --git a/drivers/mfd/sy7636a.c b/drivers/mfd/sy7636a.c
+ config GENERIC_ADC_THERMAL
+diff --git a/drivers/thermal/Makefile b/drivers/thermal/Makefile
+index 82fc3e616e54..2e1aca8a0a09 100644
+--- a/drivers/thermal/Makefile
++++ b/drivers/thermal/Makefile
+@@ -51,6 +51,7 @@ obj-$(CONFIG_DA9062_THERMAL)	+= da9062-thermal.o
+ obj-y				+= intel/
+ obj-$(CONFIG_TI_SOC_THERMAL)	+= ti-soc-thermal/
+ obj-y				+= st/
++obj-$(CONFIG_SY7636A_THERMAL)	+= sy7636a_thermal.o
+ obj-$(CONFIG_QCOM_TSENS)	+= qcom/
+ obj-y				+= tegra/
+ obj-$(CONFIG_HISI_THERMAL)     += hisi_thermal.o
+diff --git a/drivers/thermal/sy7636a_thermal.c b/drivers/thermal/sy7636a_thermal.c
 new file mode 100644
-index 000000000000..345892e11221
+index 000000000000..705a16fb1045
 --- /dev/null
-+++ b/drivers/mfd/sy7636a.c
-@@ -0,0 +1,81 @@
++++ b/drivers/thermal/sy7636a_thermal.c
+@@ -0,0 +1,107 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +//
-+// MFD parent driver for SY7636A chip
++// Functions to access SY3686A power management chip temperature
 +//
-+// Copyright (C) 2021 reMarkable AS - http://www.remarkable.com/
++// Copyright (C) 2019 reMarkable AS - http://www.remarkable.com/
 +//
 +// Authors: Lars Ivar Miljeteig <lars.ivar.miljeteig@remarkable.com>
 +//          Alistair Francis <alistair@alistair23.me>
-+//
-+// Based on the lp87565 driver by Keerthy <j-keerthy@ti.com>
 +
-+#include <linux/interrupt.h>
-+#include <linux/mfd/core.h>
 +#include <linux/module.h>
-+#include <linux/of_device.h>
++#include <linux/platform_device.h>
++#include <linux/thermal.h>
 +
 +#include <linux/mfd/sy7636a.h>
 +
-+static const struct regmap_config sy7636a_regmap_config = {
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+};
-+
-+static const struct mfd_cell sy7636a_cells[] = {
-+	{ .name = "sy7636a-regulator", },
-+	{ .name = "sy7636a-temperature", },
-+	{ .name = "sy7636a-thermal", },
-+};
-+
-+static const struct of_device_id of_sy7636a_match_table[] = {
-+	{ .compatible = "silergy,sy7636a", },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, of_sy7636a_match_table);
-+
-+static int sy7636a_probe(struct i2c_client *client,
-+			 const struct i2c_device_id *ids)
-+{
++struct sy7636a_data {
 +	struct sy7636a *sy7636a;
++	struct thermal_zone_device *thermal_zone_dev;
++};
++
++static int sy7636a_get_temp(void *arg, int *res)
++{
++	unsigned int reg_val, mode_ctr;
 +	int ret;
++	struct sy7636a_data *data = arg;
++	bool isVoltageActive;
 +
-+	sy7636a = devm_kzalloc(&client->dev, sizeof(*sy7636a), GFP_KERNEL);
-+	if (!sy7636a)
-+		return -ENOMEM;
-+
-+	sy7636a->dev = &client->dev;
-+
-+	sy7636a->regmap = devm_regmap_init_i2c(client, &sy7636a_regmap_config);
-+	if (IS_ERR(sy7636a->regmap)) {
-+		ret = PTR_ERR(sy7636a->regmap);
-+		dev_err(sy7636a->dev,
-+			"Failed to initialize register map: %d\n", ret);
++	ret = regmap_read(data->sy7636a->regmap,
++			SY7636A_REG_OPERATION_MODE_CRL, &mode_ctr);
++	if (ret)
 +		return ret;
++
++	isVoltageActive = mode_ctr & SY7636A_OPERATION_MODE_CRL_ONOFF;
++
++	if (!isVoltageActive) {
++		ret = regmap_write(data->sy7636a->regmap,
++				SY7636A_REG_OPERATION_MODE_CRL,
++				mode_ctr | SY7636A_OPERATION_MODE_CRL_ONOFF);
++		if (ret)
++			return ret;
 +	}
 +
-+	i2c_set_clientdata(client, sy7636a);
++	ret = regmap_read(data->sy7636a->regmap,
++			SY7636A_REG_TERMISTOR_READOUT, &reg_val);
++	if (ret)
++		return ret;
 +
-+	return devm_mfd_add_devices(sy7636a->dev, PLATFORM_DEVID_AUTO,
-+					sy7636a_cells, ARRAY_SIZE(sy7636a_cells),
-+					NULL, 0, NULL);
++	if (!isVoltageActive) {
++		ret = regmap_write(data->sy7636a->regmap,
++				SY7636A_REG_OPERATION_MODE_CRL,
++				mode_ctr);
++		if (ret)
++			return ret;
++	}
++
++	*res = *((signed char*)&reg_val);
++	*res *= 1000;
++
++	return ret;
 +}
 +
-+static const struct i2c_device_id sy7636a_id_table[] = {
-+	{ "sy7636a", 0 },
-+	{ },
++static const struct thermal_zone_of_device_ops ops = {
++	.get_temp	= sy7636a_get_temp,
 +};
-+MODULE_DEVICE_TABLE(i2c, sy7636a_id_table);
 +
-+static struct i2c_driver sy7636a_driver = {
-+	.driver	= {
-+		.name	= "sy7636a",
-+		.of_match_table = of_sy7636a_match_table,
-+	},
-+	.probe = sy7636a_probe,
-+	.id_table = sy7636a_id_table,
++static int sy7636a_thermal_probe(struct platform_device *pdev)
++{
++	struct sy7636a *sy7636a = dev_get_drvdata(pdev->dev.parent);
++	struct sy7636a_data *data;
++
++	if (!sy7636a)
++		return -EPROBE_DEFER;
++
++	data = devm_kzalloc(&pdev->dev, sizeof(struct sy7636a_data), GFP_KERNEL);
++	if (!data)
++		return -ENOMEM;
++
++	platform_set_drvdata(pdev, data);
++
++	data->sy7636a = sy7636a;
++	data->thermal_zone_dev = devm_thermal_zone_of_sensor_register(
++			pdev->dev.parent,
++			0,
++			data,
++			&ops);
++
++	return PTR_ERR_OR_ZERO(data->thermal_zone_dev);
++}
++
++static const struct platform_device_id sy7636a_thermal_id_table[] = {
++	{ "sy7636a-thermal", },
++	{ }
 +};
-+module_i2c_driver(sy7636a_driver);
++MODULE_DEVICE_TABLE(platform, sy7636a_thermal_id_table);
++
++static struct platform_driver sy7636a_thermal_driver = {
++	.driver = {
++		.name = "sy7636a-thermal",
++	},
++	.probe = sy7636a_thermal_probe,
++	.id_table = sy7636a_thermal_id_table,
++};
++module_platform_driver(sy7636a_thermal_driver);
 +
 +MODULE_AUTHOR("Lars Ivar Miljeteig <lars.ivar.miljeteig@remarkable.com>");
-+MODULE_DESCRIPTION("Silergy SY7636A Multi-Function Device Driver");
++MODULE_DESCRIPTION("SY7636A thermal driver");
 +MODULE_LICENSE("GPL v2");
-diff --git a/include/linux/mfd/sy7636a.h b/include/linux/mfd/sy7636a.h
-new file mode 100644
-index 000000000000..b6845a3572b8
---- /dev/null
-+++ b/include/linux/mfd/sy7636a.h
-@@ -0,0 +1,47 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Functions to access SY3686A power management chip.
-+ *
-+ * Copyright (C) 2021 reMarkable AS - http://www.remarkable.com/
-+ */
-+
-+#ifndef __MFD_SY7636A_H
-+#define __MFD_SY7636A_H
-+
-+#include <linux/i2c.h>
-+#include <linux/regmap.h>
-+#include <linux/regulator/driver.h>
-+#include <linux/regulator/machine.h>
-+
-+#define SY7636A_REG_OPERATION_MODE_CRL		0x00
-+#define SY7636A_OPERATION_MODE_CRL_VCOMCTL	BIT(6)
-+#define SY7636A_OPERATION_MODE_CRL_ONOFF	BIT(7)
-+#define SY7636A_REG_VCOM_ADJUST_CTRL_L		0x01
-+#define SY7636A_REG_VCOM_ADJUST_CTRL_H		0x02
-+#define SY7636A_REG_VCOM_ADJUST_CTRL_MASK	0x01ff
-+#define SY7636A_REG_VLDO_VOLTAGE_ADJULST_CTRL	0x03
-+#define SY7636A_REG_POWER_ON_DELAY_TIME		0x06
-+#define SY7636A_REG_FAULT_FLAG			0x07
-+#define SY7636A_FAULT_FLAG_PG			BIT(0)
-+#define SY7636A_REG_TERMISTOR_READOUT		0x08
-+
-+#define SY7636A_REG_MAX				0x08
-+
-+#define VCOM_MIN		0
-+#define VCOM_MAX		5000
-+
-+#define VCOM_ADJUST_CTRL_MASK	0x1ff
-+// Used to shift the high byte
-+#define VCOM_ADJUST_CTRL_SHIFT	8
-+// Used to scale from VCOM_ADJUST_CTRL to mv
-+#define VCOM_ADJUST_CTRL_SCAL	10000
-+
-+#define FAULT_FLAG_SHIFT	1
-+
-+struct sy7636a {
-+	struct device *dev;
-+	struct regmap *regmap;
-+	struct gpio_desc *pgood_gpio;
-+};
-+
-+#endif /* __LINUX_MFD_SY7636A_H */
 -- 
 2.31.1
 
