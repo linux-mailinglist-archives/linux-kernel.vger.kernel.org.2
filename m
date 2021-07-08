@@ -2,112 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B3CD3C1B4C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 00:00:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F15FF3C1B5A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 00:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbhGHWCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 18:02:40 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:54170 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbhGHWCk (ORCPT
+        id S230291AbhGHWJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 18:09:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230120AbhGHWJJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 18:02:40 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1625781597; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=foQZWcxZgegObXgHqgBDEXunbwEGNs+mS0D1mjRzN8g=;
- b=NVhMuAE6jMI6DVdqCbO9Fj4d6QERA1axXRmJs9VE0b7JCO5oDRBsxpdrNRnQdhXF4WcQ52lf
- TFDIw1KK5bA0BHocS7/TjRsmlrGw8BXuRSuSeLOJIBPLIoflmtE2hKyHEYQI1tXRft0zjSHT
- Jz27WMBnGA3y3b1d+kwgHaOQR/0=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 60e7755cec0b18a745196179 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 08 Jul 2021 21:59:56
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6E443C43460; Thu,  8 Jul 2021 21:59:55 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 44FB3C433D3;
-        Thu,  8 Jul 2021 21:59:53 +0000 (UTC)
+        Thu, 8 Jul 2021 18:09:09 -0400
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB5CBC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 15:06:26 -0700 (PDT)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id ABA1C80719;
+        Fri,  9 Jul 2021 10:06:23 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1625781983;
+        bh=sBRB0Nuc+nWL4ZG5Reyu9Ge8Sg/kecBZKOXgpD3yAqs=;
+        h=From:To:Cc:Subject:Date;
+        b=U7QoTuBEpTdEn2HecinibcX3F12t8YCV2OhSccEsTaEDWCtJCyDU6Kef92TmMIblQ
+         PPcZdCzC1DZuHYTOGJar5rX3M+q8gYRvEz2eMGZ/xQldf0xr6GlQ5yVy+g2rFhADxI
+         6YujXT9n4d12HoAkX7FRoe6aHsSXAN3G1vktwpY8Ad9x2W/TMPTMzjZvFs7p5rT25E
+         PIFkGHfdCpHtSNTcTntTMK3uAcFh2qLegap+ndl+xGtnmGHAgdEU1zKb5VvoAa0a9o
+         FGelFJyCFquMxLFw1Qa0yYgSYVKX1tITXR17DqAy98uvEqr1/JCTdF9uGK05CIlx6n
+         gZsedrnhO9vlA==
+Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B60e776df0000>; Fri, 09 Jul 2021 10:06:23 +1200
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
+        by pat.atlnz.lc (Postfix) with ESMTP id 80E9A13ED8E;
+        Fri,  9 Jul 2021 10:06:23 +1200 (NZST)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+        id 7C798280055; Fri,  9 Jul 2021 10:06:23 +1200 (NZST)
+From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
+To:     linux@roeck-us.net, jdelvare@suse.com
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH] hwmon: (pmbus/bpa-rs600): Support BPD-RS600
+Date:   Fri,  9 Jul 2021 10:06:18 +1200
+Message-Id: <20210708220618.23576-1-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 08 Jul 2021 14:59:53 -0700
-From:   khsieh@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
-        sean@poorly.run, abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        airlied@linux.ie, daniel@ffwll.ch, bjorn.andersson@linaro.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/7] drm/msm/dp: reset aux controller after
- dp_aux_cmd_fifo_tx() failed.
-In-Reply-To: <CAE-0n53JxLuQZBUMLOuH_Bm7zQ7Vite2OhjTB_xO=s_KAGarXw@mail.gmail.com>
-References: <1625592020-22658-1-git-send-email-khsieh@codeaurora.org>
- <1625592020-22658-4-git-send-email-khsieh@codeaurora.org>
- <CAE-0n53JxLuQZBUMLOuH_Bm7zQ7Vite2OhjTB_xO=s_KAGarXw@mail.gmail.com>
-Message-ID: <a5bb5f6bf7defa9c9bbf7d1fde87ca49@codeaurora.org>
-X-Sender: khsieh@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: quoted-printable
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=Sr3uF8G0 c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=e_q4qTt1xDgA:10 a=M5HzeCQB0xmgccp7If8A:9
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-08 00:34, Stephen Boyd wrote:
-> Quoting Kuogee Hsieh (2021-07-06 10:20:16)
->> Aux hardware calibration sequence requires resetting the aux 
->> controller
->> in order for the new setting to take effect. However resetting the AUX
->> controller will also clear HPD interrupt status which may accidentally
->> cause pending unplug interrupt to get lost. Therefore reset aux
->> controller only when link is in connection state when 
->> dp_aux_cmd_fifo_tx()
->> fail. This fixes Link Layer CTS cases 4.2.1.1 and 4.2.1.2.
->> 
->> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
->> ---
->>  drivers/gpu/drm/msm/dp/dp_aux.c | 3 +++
->>  1 file changed, 3 insertions(+)
->> 
->> diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c 
->> b/drivers/gpu/drm/msm/dp/dp_aux.c
->> index 4a3293b..eb40d84 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_aux.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_aux.c
->> @@ -353,6 +353,9 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux 
->> *dp_aux,
->>                         if (!(aux->retry_cnt % MAX_AUX_RETRIES))
->>                                 
->> dp_catalog_aux_update_cfg(aux->catalog);
->>                 }
->> +               /* reset aux if link is in connected state */
->> +               if (dp_catalog_link_is_connected(aux->catalog))
-> 
-> How do we avoid resetting aux when hpd is unplugged and then plugged
-> back in during an aux transfer?
-i am not sure this is possible.
-it should get unplug interrupt followed by plugin interrupt.
-In this case, aux will be re set and initialized
-> 
->> +                       dp_catalog_aux_reset(aux->catalog);
->>         } else {
->>                 aux->retry_cnt = 0;
->>                 switch (aux->aux_error_num) {
->> --
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->> Forum,
->> a Linux Foundation Collaborative Project
->> 
+The BPD-RS600 is the DC version of the BPA-RS600. The PMBUS interface is
+the same between the two models. Keep the same compatible string but
+accept either BPA-RS600 or BPD-RS600 in the PMBUS_MFR_MODEL.
+
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+---
+ drivers/hwmon/pmbus/bpa-rs600.c | 22 +++++++++++++++-------
+ 1 file changed, 15 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/hwmon/pmbus/bpa-rs600.c b/drivers/hwmon/pmbus/bpa-rs=
+600.c
+index 2be69fedfa36..d205b41540ce 100644
+--- a/drivers/hwmon/pmbus/bpa-rs600.c
++++ b/drivers/hwmon/pmbus/bpa-rs600.c
+@@ -21,6 +21,8 @@
+ #define BPARS600_MFR_IOUT_MAX	0xa6
+ #define BPARS600_MFR_POUT_MAX	0xa7
+=20
++enum chips { bpa_rs600, bpd_rs600 };
++
+ static int bpa_rs600_read_byte_data(struct i2c_client *client, int page,=
+ int reg)
+ {
+ 	int ret;
+@@ -146,11 +148,19 @@ static struct pmbus_driver_info bpa_rs600_info =3D =
+{
+ 	.read_word_data =3D bpa_rs600_read_word_data,
+ };
+=20
++static const struct i2c_device_id bpa_rs600_id[] =3D {
++	{ "bpa-rs600", bpa_rs600 },
++	{ "bpd-rs600", bpd_rs600 },
++	{},
++};
++MODULE_DEVICE_TABLE(i2c, bpa_rs600_id);
++
+ static int bpa_rs600_probe(struct i2c_client *client)
+ {
+ 	struct device *dev =3D &client->dev;
+ 	u8 buf[I2C_SMBUS_BLOCK_MAX + 1];
+ 	int ret;
++	const struct i2c_device_id *mid;
+=20
+ 	if (!i2c_check_functionality(client->adapter,
+ 				     I2C_FUNC_SMBUS_READ_BYTE_DATA
+@@ -164,7 +174,11 @@ static int bpa_rs600_probe(struct i2c_client *client=
+)
+ 		return ret;
+ 	}
+=20
+-	if (strncmp(buf, "BPA-RS600", 8)) {
++	for (mid =3D bpa_rs600_id; mid->name[0]; mid++) {
++		if (!strncasecmp(buf, mid->name, strlen(mid->name)))
++			break;
++	}
++	if (!mid->name[0]) {
+ 		buf[ret] =3D '\0';
+ 		dev_err(dev, "Unsupported Manufacturer Model '%s'\n", buf);
+ 		return -ENODEV;
+@@ -173,12 +187,6 @@ static int bpa_rs600_probe(struct i2c_client *client=
+)
+ 	return pmbus_do_probe(client, &bpa_rs600_info);
+ }
+=20
+-static const struct i2c_device_id bpa_rs600_id[] =3D {
+-	{ "bpars600", 0 },
+-	{},
+-};
+-MODULE_DEVICE_TABLE(i2c, bpa_rs600_id);
+-
+ static const struct of_device_id __maybe_unused bpa_rs600_of_match[] =3D=
+ {
+ 	{ .compatible =3D "blutek,bpa-rs600" },
+ 	{},
+--=20
+2.32.0
+
