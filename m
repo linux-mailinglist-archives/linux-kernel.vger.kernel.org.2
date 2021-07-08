@@ -2,79 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1DFC3BF6BB
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 10:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 188F33BF6C0
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 10:09:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231223AbhGHILa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 04:11:30 -0400
-Received: from mail-vs1-f48.google.com ([209.85.217.48]:42548 "EHLO
-        mail-vs1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230507AbhGHIL3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 04:11:29 -0400
-Received: by mail-vs1-f48.google.com with SMTP id f7so1649411vsa.9;
-        Thu, 08 Jul 2021 01:08:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O/tIWe1nqJc31V9O67iN2UwPLB/e3npgUn13q7m69ss=;
-        b=qGlLnBuCRgQDHIqNwEFfJXZTd4avWy8Q9VwCF4SondArB+UipHMxKeQj5R6Azg6je+
-         sOALUfZF4Tq832YtnFhLQmKtqdRyDsQdXyDfFwAlMtcgNABrUfa0FTWAwtJw7pYh7+mJ
-         4Fg74KP6kJyfMsnYeKJ+VSCiaUbpVqe/S8zBrgea+wB77Wz2VUyDeSnHpKNOfroCcL93
-         XBb06O2TE06x0fQHgvu+MRzAql6pXqzAy6PIQpwk/93IfA3DznQfFFTfecfuOqLHWBes
-         pYLUr9/jXAN1Hrb7TQN9jLUOX6zBv4liy2RTpVKzA5qleA10IzKf377D54n+MwU3ds+F
-         KTpw==
-X-Gm-Message-State: AOAM531O4VVb5sX5+9RQ5UenPr9XdiEaFJ6MPIq5LmEM3RYPELH2uuhR
-        NEWzVLahFYKUgEOukwbICNn/sTe2Hld3Mukp3lA=
-X-Google-Smtp-Source: ABdhPJyfgxP7oRWHTXJVgdG1tOCGPkZeuoNJZuk3WboobDdKopyitU1PXLZUDpWjlFzGxDsvvBGsTPy4zyldcksBuf0=
-X-Received: by 2002:a05:6102:321c:: with SMTP id r28mr1843618vsf.40.1625731726611;
- Thu, 08 Jul 2021 01:08:46 -0700 (PDT)
+        id S231247AbhGHILo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 04:11:44 -0400
+Received: from 8bytes.org ([81.169.241.247]:33194 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231195AbhGHILm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 04:11:42 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id B94FA312; Thu,  8 Jul 2021 10:08:58 +0200 (CEST)
+Date:   Thu, 8 Jul 2021 10:08:56 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        John Garry <john.garry@huawei.com>,
+        Rob Clark <robdclark@chromium.org>, quic_c_gdjako@quicinc.com,
+        Saravana Kannan <saravanak@google.com>,
+        Rajat Jain <rajatja@google.com>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-pci@vger.kernel.org,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        Sonny Rao <sonnyrao@chromium.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 0/3] iommu: Enable non-strict DMA on QCom SD/MMC
+Message-ID: <YOaymBHc4g2cIfRn@8bytes.org>
+References: <20210624171759.4125094-1-dianders@chromium.org>
+ <YNXXwvuErVnlHt+s@8bytes.org>
+ <CAD=FV=UFxZH7g8gH5+M=Fv4Y-e1bsLkNkPGJhNwhvVychcGQcQ@mail.gmail.com>
+ <CAD=FV=W=HmgH3O3z+nThWL6U+X4Oh37COe-uTzVB9SanP2n86w@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210707224310.1403944-1-ndesaulniers@google.com> <20210707224310.1403944-3-ndesaulniers@google.com>
-In-Reply-To: <20210707224310.1403944-3-ndesaulniers@google.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 8 Jul 2021 10:08:35 +0200
-Message-ID: <CAMuHMdXuzb6PuujuCzm_FYq9ZeZeJxVZiYTGxdGeOTkZ6+W=+w@mail.gmail.com>
-Subject: Re: [PATCH 2/2] Makefile: drop CROSS_COMPILE for LLVM=1 LLVM_IAS=1
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Fangrui Song <maskray@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <nathan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD=FV=W=HmgH3O3z+nThWL6U+X4Oh37COe-uTzVB9SanP2n86w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nick,
+On Wed, Jul 07, 2021 at 01:00:13PM -0700, Doug Anderson wrote:
+> a) Nothing is inherently broken with my current approach.
+> 
+> b) My current approach doesn't make anybody terribly upset even if
+> nobody is totally in love with it.
 
-On Thu, Jul 8, 2021 at 1:12 AM Nick Desaulniers <ndesaulniers@google.com> wrote:
-> We get constant feedback that the command line invocation of make is too
-> long. CROSS_COMPILE is helpful when a toolchain has a prefix of the
-> target triple, or is an absolute path outside of $PATH, but it's mostly
-> redundant for a given ARCH.
->
-> If CROSS_COMPILE is not set, simply set --target= for CLANG_FLAGS,
-> KBUILD_CFLAGS, and KBUILD_AFLAGS based on $ARCH.
->
-> Previously, we'd cross compile via:
-> $ ARCH=arm64 CROSS_COMPILE=aarch64-linxu-gnu make LLVM=1 LLVM_IAS=1
+Well, no, sorry :)
 
-Which didn't really work, I assume? (s/linxu/linux/)
+I don't think it is a good idea to allow drivers to opt-out of the
+strict-setting. This is a platform or user decision, and the driver
+should accept whatever it gets.
 
-Gr{oetje,eeting}s,
+So the real question is still why strict is the default setting and how
+to change that. Or document for the users that want performance how to
+change the setting, so that they can decide.
 
-                        Geert
+Regards,
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+	Joerg
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
