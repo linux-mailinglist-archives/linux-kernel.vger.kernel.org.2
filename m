@@ -2,105 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9363C15D5
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 17:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 591443C15D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 17:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232024AbhGHPW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 11:22:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231815AbhGHPW4 (ORCPT
+        id S232033AbhGHPYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 11:24:03 -0400
+Received: from mail-lf1-f51.google.com ([209.85.167.51]:45844 "EHLO
+        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231815AbhGHPYB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 11:22:56 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8BE2C061574;
-        Thu,  8 Jul 2021 08:20:14 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id y4so5707620pfi.9;
-        Thu, 08 Jul 2021 08:20:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Oa1n/03ttdi3Zf5gHmQjIpSy/crMGDJ29NI1GoGfvEg=;
-        b=V5amZpP3ONMVJggcdh2j+5YpI3lV2lc9De0dnPy6kSqUgUMXtpBLZx6oid6aMklJ5N
-         WtCINBljJl7ZXHVWCPK0UmPAdmjaxsrGzcvTH6iQDacbxNsYwE03lyoOrZ6iEl7mltcF
-         X6zpNM7RXTbKzFEmvf/izet8wS3XpXzj6FuVFYZMdBtPdSxIZLziBZ31KOBzf0LX3j82
-         ILB5s8bUgkxJdXCd8IspfKo2kGhyhrSU65ZJPsURrXhViij29Qd5EEcZRw+cwQEW1jDE
-         wc/NrLB67VyMnnrN04RZ2uTfG998Gs8R/roCehGIFmUR5uyCLBviNcWG8LyKAYqDz6jA
-         WcHw==
+        Thu, 8 Jul 2021 11:24:01 -0400
+Received: by mail-lf1-f51.google.com with SMTP id p1so16720906lfr.12;
+        Thu, 08 Jul 2021 08:21:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Oa1n/03ttdi3Zf5gHmQjIpSy/crMGDJ29NI1GoGfvEg=;
-        b=es2ASJ+u3R47FmgydJ7YSqWHy0ppUhNasfIUFre/8wUTDLv432qVwSawSFRb90MOce
-         ++rRSg+FIKoWTgESov83PH7Yy0mnZ/gx5vgaw6Jo1RmswEuWpl/m3ha8UzCq7Immlry6
-         kdYlBf6sTmIPBwMv1pn73w76XYc1CZIS4uMLR4hnDzReELtiZC+s8e1byPyfMP4aRPFX
-         +9UiyPc+uyoWatBzB7H54VQMeq3xh7kisDB+6Sm24FuyuWkT/6wmgIwQjOUfCj7szhGL
-         bF2ARWO4Vv5PJAcJok3ZFqm+b7dwHOw8Bs74kgAhvJsjqdf5J9mCHvpS+JIGJd/1RmI+
-         wEMg==
-X-Gm-Message-State: AOAM5337Sg8i+913w61aHF23LHMacbqMW+q5k5dmlnY0bae/K3SaVGXJ
-        lx0K7qcB3qsRrs0ZT/j1HaM=
-X-Google-Smtp-Source: ABdhPJzSKnaFQnkVkV8bkLbOKU0rfchxmthNXjsLQBZBVV3tO/4LG8SauJrN5U1F/4rQ9RoBWaEngQ==
-X-Received: by 2002:a65:450c:: with SMTP id n12mr28900567pgq.98.1625757614264;
-        Thu, 08 Jul 2021 08:20:14 -0700 (PDT)
-Received: from localhost ([2601:647:4600:1ed4:adaa:7ff5:893e:b91])
-        by smtp.gmail.com with ESMTPSA id 133sm3530456pfx.39.2021.07.08.08.20.13
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vSXN7Kh9x6gUYLLQwWC/sSb0E4UPI2sT9SAOdpYbkPg=;
+        b=QX0vL98es+y/BQNXMBqfb3IPiTURZw0irJ8w/w7nqNPD5fYIgonVsa/GbWWE/U5Bvl
+         nFMn4xCEK0uyBZY/W794KPr97788o3DJTa//bish6ThatEK2/yoKoA6Kbq8oM0iO4TDG
+         jbBtxieyTxhQwdJN/GY2hkORe5xEY9odwyDsI6uqelxeD6pJ0zdbo+QT1//keHtKdorF
+         8tnhuY7/y3wquik8tZL9X8ZWsiz1ALW9Uo9pheA/n9o5jcpzMuPtAJpJRCfJnCU9yH1d
+         DZogYz8gVjFWtco4DJosD7JYMmmQrJLANJKF58b9dlLGGAhDKHIzgRiNLZOe1Q71hpWG
+         Kqxw==
+X-Gm-Message-State: AOAM533BRX0API8RvZ3+DTUN81PkgWEexK12HPtcL+AB0B7XK87vdyp9
+        IPahKKxwTeAgmJUL3iCmQQ0=
+X-Google-Smtp-Source: ABdhPJxWrzepObN6CSW8WNRQ+3zqT4UTWNkQxd6YGC/oJWxo3WQDcjnbsKvh+kb42dRvV9UjSjqS4Q==
+X-Received: by 2002:a05:6512:224e:: with SMTP id i14mr20966868lfu.195.1625757677635;
+        Thu, 08 Jul 2021 08:21:17 -0700 (PDT)
+Received: from localhost (88-112-11-80.elisa-laajakaista.fi. [88.112.11.80])
+        by smtp.gmail.com with ESMTPSA id a24sm221525lfg.231.2021.07.08.08.21.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jul 2021 08:20:13 -0700 (PDT)
-Date:   Thu, 8 Jul 2021 08:20:12 -0700
-From:   Isaku Yamahata <isaku.yamahata@gmail.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        isaku.yamahata@gmail.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: Re: [RFC PATCH v2 43/69] KVM: x86/mmu: Allow non-zero init value for
- shadow PTE
-Message-ID: <20210708152012.GA278847@private.email.ne.jp>
-References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <2a12f8867229459dba2da233bf7762cb1ac2722c.1625186503.git.isaku.yamahata@intel.com>
- <c27da555-b0f2-045c-d577-7e9afb858da1@redhat.com>
+        Thu, 08 Jul 2021 08:21:17 -0700 (PDT)
+From:   Hannu Hartikainen <hannu@hrtk.in>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-gpio@vger.kernel.org
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Hannu Hartikainen <hannu@hrtk.in>
+Subject: [PATCH] docs: gpio: explain GPIOD_OUT_* values and toggling active low
+Date:   Thu,  8 Jul 2021 18:20:54 +0300
+Message-Id: <20210708152054.361704-1-hannu@hrtk.in>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c27da555-b0f2-045c-d577-7e9afb858da1@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 04:56:07PM +0200,
-Paolo Bonzini <pbonzini@redhat.com> wrote:
+I was confused about the gpiod_flags values and thought that
+GPIOD_OUT_LOW and GPIOD_OUT_HIGH set the line to be active low / active
+high. This is not true, but I got the misconception because the flags
+GPIOD_OUT_*_OPEN_DRAIN do change line configuration and there's a
+subchapter about *active low* and *open drain* semantics.
 
-> On 03/07/21 00:04, isaku.yamahata@intel.com wrote:
-> > From: Sean Christopherson <sean.j.christopherson@intel.com>
-> > 
-> > TDX will run with EPT violation #VEs enabled, which means KVM needs to
-> > set the "suppress #VE" bit in unused PTEs to avoid unintentionally
-> > reflecting not-present EPT violations into the guest.
-> > 
-> > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> > ---
-> >   arch/x86/kvm/mmu.h      |  1 +
-> >   arch/x86/kvm/mmu/mmu.c  | 50 +++++++++++++++++++++++++++++++++++------
-> >   arch/x86/kvm/mmu/spte.c | 10 +++++++++
-> >   arch/x86/kvm/mmu/spte.h |  2 ++
-> >   4 files changed, 56 insertions(+), 7 deletions(-)
-> 
-> Please ensure that this also works for tdp_mmu.c (if anything, consider
-> supporting TDX only for TDP MMU; it's quite likely that mmu.c support for
-> EPT/NPT will go away).
+Add an explicit mention that the initial value is a logical value (and
+not the line configuration or physical line level). Also add a mention
+of the function gpiod_toggle_active_low which was previously missing
+from this document.
 
-It's on my TODO list. Will address it.
+Signed-off-by: Hannu Hartikainen <hannu@hrtk.in>
+---
+ Documentation/driver-api/gpio/consumer.rst | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/driver-api/gpio/consumer.rst b/Documentation/driver-api/gpio/consumer.rst
+index 3366a991b4aa..47869ca8ccf0 100644
+--- a/Documentation/driver-api/gpio/consumer.rst
++++ b/Documentation/driver-api/gpio/consumer.rst
+@@ -72,6 +72,10 @@ for the GPIO. Values can be:
+ * GPIOD_OUT_HIGH_OPEN_DRAIN same as GPIOD_OUT_HIGH but also enforce the line
+   to be electrically used with open drain.
+ 
++Note that the initial value is *logical* and the physical line level depends on
++whether the line is configured active high or active low (see
++:ref:`active_low_semantics`).
++
+ The two last flags are used for use cases where open drain is mandatory, such
+ as I2C: if the line is not already configured as open drain in the mappings
+ (see board.txt), then open drain will be enforced anyway and a warning will be
+@@ -252,6 +256,8 @@ that can't be accessed from hardIRQ handlers, these calls act the same as the
+ spinlock-safe calls.
+ 
+ 
++.. _active_low_semantics:
++
+ The active low and open drain semantics
+ ---------------------------------------
+ As a consumer should not have to care about the physical line level, all of the
+@@ -309,9 +315,11 @@ work on the raw line value::
+ 	void gpiod_set_raw_value_cansleep(struct gpio_desc *desc, int value)
+ 	int gpiod_direction_output_raw(struct gpio_desc *desc, int value)
+ 
+-The active low state of a GPIO can also be queried using the following call::
++The active low state of a GPIO can also be queried and toggled using the
++following calls::
+ 
+ 	int gpiod_is_active_low(const struct gpio_desc *desc)
++	void gpiod_toggle_active_low(struct gpio_desc *desc)
+ 
+ Note that these functions should only be used with great moderation; a driver
+ should not have to care about the physical line level or open drain semantics.
 -- 
-Isaku Yamahata <isaku.yamahata@gmail.com>
+2.32.0
+
