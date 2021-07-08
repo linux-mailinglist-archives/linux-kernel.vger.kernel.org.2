@@ -2,128 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C3343C1B22
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 23:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FBB53C1B2B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 23:44:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231357AbhGHVoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 17:44:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32954 "EHLO
+        id S231382AbhGHVq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 17:46:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231265AbhGHVoY (ORCPT
+        with ESMTP id S230508AbhGHVq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 17:44:24 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D665C061574;
-        Thu,  8 Jul 2021 14:41:42 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GLV9c2Hmpz9s5R;
-        Fri,  9 Jul 2021 07:41:40 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1625780500;
-        bh=iMjLue84MtL4u1QyHyLXTcIHUE91RKo/s7Pdxsd3pKc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=UW7Nw0zSCCbJbgbRYE7KIX3pfSYgx9xu6pvWdsqwGWFdIbzQfZMys0+NbJWOqKbxr
-         sCYnWLIo7ict0jUUc2jzgJUNJVq+uybGRSz/Sc9E67VdrnQvjkK8HGgre7f1AtYSuJ
-         MKQtcgNfcTniI+vCj3sAVglGxrvAHQEQYqoTorEzLpJZueP/A3hv7Ha4vTJ6QSfilf
-         u5aiij7W2Zp0sID4eYXPJsqQeV7yInfVoSyBL0IOgUslLLHwAw77z5HrjgWVlwGxxq
-         Ef6nIqMHjDsL3oQeJjJaWro+ZA/DcBkbibkyt3Rkdc1YtxWMQKP5JUS39UnRrsRtLi
-         5QACbPMAqr1WA==
-Date:   Fri, 9 Jul 2021 07:41:39 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the irqchip tree
-Message-ID: <20210709074139.6e5a5689@canb.auug.org.au>
-In-Reply-To: <87fswo3gxq.wl-maz@kernel.org>
-References: <20210615210143.2e00d851@canb.auug.org.au>
-        <20210708121855.69b5a5f8@canb.auug.org.au>
-        <87im1l2plp.wl-maz@kernel.org>
-        <20210708225037.4980f159@canb.auug.org.au>
-        <87fswo3gxq.wl-maz@kernel.org>
+        Thu, 8 Jul 2021 17:46:57 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F383C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 14:44:13 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id u18so9345937lfl.2
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 14:44:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WNUdXmAdyTLugzbXax99lK0jKXoIs2WTSE5WoZskvj0=;
+        b=gbipal36mpQN7Afd0MiNy7ScPAzJbvar3bRjj/hZUcY5WhNk1EXDqng/H6wGZVJcW8
+         yZ5nU1zw1U1j2XelewznZsv6R6ukoU2jfO4kRGVp2Dda3GDHEFTsbS7A7BAxIuJRTgTC
+         k/bIveMZzbvdSdNgfrU8F4UlijzvkE1tTP+d63RGShTDmzDWhaj6vBrlxPyd84mR2AGw
+         n2xWD8XfQ1QqRBb+/D1o27iXvJcObT5EKdHUJlBr38Nar30nX6s4hq/M+vgTFqhUcBCF
+         pINtMibejBlp+pzAEh7V+hVPBl0mVAytJ4jPIAQvv6wQQl6XzSkK4ycJWwpPYNmgVKIt
+         vDEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WNUdXmAdyTLugzbXax99lK0jKXoIs2WTSE5WoZskvj0=;
+        b=Er3IIPyGcXJdu7Nx4PQc0O5ZxuGsVFd8YX7gH0uwC4kJ/EZ94bx+wvmapPjyPbTj7h
+         3K0RJ5mHrInYVp+nMSq69XoNrOsj8Vs8WC7g0L72bivBfJqGTPy2z0oKdgzpOfmKMdo2
+         NqnAK4fvgRjhMKQYBFiuilCM/Zj82D6yKfrtstgjugpxzuuCsehQ9KZ3smlul03lJLNa
+         G896L+pJcxWAkOAiqWpghEAnjzSu4tzapzQR+9+X0/S1qXYjnNZ8Ayr885YyTA/xRq8l
+         o8PL8ohxJAej2OFRD9vJJfLU5sP9F7dfMuzyEgOAVhQor/cbS+IqoW9qVak+ASuUwNek
+         YPVA==
+X-Gm-Message-State: AOAM533dkQqx8C5e3jex9uYZcnLmFYOqlSblGgX1ZE+FXc2xkRtt83J5
+        8D/xK+WUcyLYEHYjdxFqRoJrzo7izMR3SXnE+tKL+HqqLR0=
+X-Google-Smtp-Source: ABdhPJz3WVDNPE2LfCzF+PEm4pDEl4OsjSePR4Mcd3LkAUO+MuEH/Fu5Nap7ddow2Wj2S3QASzxD/bK9rc1SmAPl6xQ=
+X-Received: by 2002:ac2:4d4a:: with SMTP id 10mr15224978lfp.125.1625780651756;
+ Thu, 08 Jul 2021 14:44:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/oT.rqm2DlpQ5BoDyA9CsDxu";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <YMJTyVVdylyHtkeW@hirez.programming.kicks-ass.net> <96842d90-7d3b-efac-fe1f-6e90b6a83ee5@uwaterloo.ca>
+In-Reply-To: <96842d90-7d3b-efac-fe1f-6e90b6a83ee5@uwaterloo.ca>
+From:   Peter Oskolkov <posk@google.com>
+Date:   Thu, 8 Jul 2021 14:44:00 -0700
+Message-ID: <CAPNVh5d12sEqwKj-=aXWOQjxBXLcmwgQ9KiRNSTtGhL9PVT9vw@mail.gmail.com>
+Subject: Re: [RFC PATCH v0.1 0/9] UMCG early preview/RFC patchset
+To:     Thierry Delisle <tdelisle@uwaterloo.ca>
+Cc:     linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pjt@google.com, posk@posk.io, Peter Buhr <pabuhr@uwaterloo.ca>,
+        Martin Karsten <mkarsten@uwaterloo.ca>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/oT.rqm2DlpQ5BoDyA9CsDxu
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi Marc,
-
-On Thu, 08 Jul 2021 17:32:01 +0100 Marc Zyngier <maz@kernel.org> wrote:
+On Wed, Jul 7, 2021 at 10:45 AM Thierry Delisle <tdelisle@uwaterloo.ca> wrote:
 >
-> On Thu, 08 Jul 2021 13:50:37 +0100,
-> Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >=20
-> > On Thu, 08 Jul 2021 09:10:10 +0100 Marc Zyngier <maz@kernel.org> wrote:=
- =20
-> > >
-> > > Hmmm... I've had a fix for this sitting in irqchip-fixes for some
-> > > time. But I now realise that this branch is not included in -next
-> > > while tip tracks it.
-> > >=20
-> > > Any chance you could add [1] to -next in the future?
-> > >=20
-> > >=20
-> > > [1] git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.g=
-it irq/irqchip-fixes =20
-> >=20
-> > So I assume this a branch of bug fixes for the current release, right? =
-=20
->=20
-> Yes, that's exactly what this is.
->=20
-> > In which case I will add it tomorrow. =20
+> Hi,
+> I wanted to way-in on this. I am one of the main developer's on the Cforall
+> programming language (https://cforall.uwaterloo.ca), which implements
+> its own
+> M:N user-threading runtime. I want to state that this RFC is an interesting
+> feature, which we would be able to take advantage of immediately, assuming
+> performance and flexibility closely match state-of-the-art implementations.
 
-Added from today.
+Hi Thierry,
 
-Thanks for adding your subsystem tree as a participant of linux-next.  As
-you may know, this is not a judgement of your code.  The purpose of
-linux-next is for integration testing and to lower the impact of
-conflicts between subsystems in the next merge window.=20
+Thank you for your message! I just posted a new version/approach:
 
-You will need to ensure that the patches/commits in your tree/series have
-been:
-     * submitted under GPL v2 (or later) and include the Contributor's
-        Signed-off-by,
-     * posted to the relevant mailing list,
-     * reviewed by you (or another maintainer of your subsystem tree),
-     * successfully unit tested, and=20
-     * destined for the current or next Linux merge window.
+https://lore.kernel.org/lkml/20210708194638.128950-1-posk@google.com/
 
-Basically, this should be just what you would send to Linus (or ask him
-to fetch).  It is allowed to be rebased if you deem it necessary.
+Let's move the discussion to the new thread.
 
---=20
-Cheers,
-Stephen Rothwell=20
-sfr@canb.auug.org.au
+Thanks,
+Peter
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/oT.rqm2DlpQ5BoDyA9CsDxu
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDncRMACgkQAVBC80lX
-0GxFWQgAh2+VPDc1iUycA8NbZO9BAToojcD8dS0NqMNEam6q7OynIU6TEA8G25mB
-4dnzzyb4SJLAcHdUim087vCf5FTzCt3+m1hAC8Wt/igzGzbboBqVddOZfkX64mNI
-4P4tL/IHPEQlAAbtOWJZD0CVsAvChf/fO/HL05zF8+0zDJTCvpJhxRaaBemvJBNn
-suMr1z1+p4kQqBIb6U9JjbY2wHIqXfkvWhc8ZJM4Im5KafdVOmp/90zd8KONvUlB
-at/EvpyUm9WDw2ZS/oPWWYyybDGm0+aTp/Tp+Mfm/pcZfjro6BtL6x7/b+/O2Gec
-KElrTRL13B6xqoS3dezboFDXLz5jbw==
-=PMsz
------END PGP SIGNATURE-----
-
---Sig_/oT.rqm2DlpQ5BoDyA9CsDxu--
+[...]
