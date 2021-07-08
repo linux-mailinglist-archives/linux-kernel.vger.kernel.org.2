@@ -2,173 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5476B3C19DE
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 21:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1793C19E2
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 21:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230261AbhGHTgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 15:36:23 -0400
-Received: from mail-pf1-f169.google.com ([209.85.210.169]:35590 "EHLO
-        mail-pf1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhGHTgW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 15:36:22 -0400
-Received: by mail-pf1-f169.google.com with SMTP id d12so6493957pfj.2;
-        Thu, 08 Jul 2021 12:33:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=i1x79IxgHWwXPlhnf35hTvQGJigxp9TB63be2mWFl8c=;
-        b=QrFn1JViUFkMbdEARdeyHqs07tODk1uhSyiyp+mUgby1w6fnL2Bbucyrt+ltF3htLr
-         yVef2NpiF9VosFECKZ39uNFnrHUawnh8BtYxLuBhIMAerB6Td0olqkhb0btEsNV+JduJ
-         vxOpzd+oo7RjeMFu3v3AG0K282mSZcvLHyf8qhg3xc7a+ASpajZA/98lkNDoxLOLYtyH
-         t2vpcURoa6M73UaZKCnGEvrzVBgRMZAAeJqKZpOOeVEydT81DW0heopi0wa1om9faMBY
-         bgHZliOecxmO5I7H/83I7uAUCH74iqpTGUj7EKjC/5GlXiHVQqXKf7Oap/9ZPd5y2JsQ
-         JAiQ==
-X-Gm-Message-State: AOAM5325K8hUMQfh6nTA1ES6t3sKlSnn3w5yqtZUqfB3jGdCg2/7TwgD
-        FolIOK3pvVYX6iiwdy9kL8A=
-X-Google-Smtp-Source: ABdhPJxh7PA9JCdKwIvu5ezCF3wF82rwdLjP5exSZrmWt6CdickS5srFih5x2dIeKAf8p2nDIKmESA==
-X-Received: by 2002:aa7:8c4e:0:b029:324:c334:59 with SMTP id e14-20020aa78c4e0000b0290324c3340059mr12500220pfd.56.1625772819282;
-        Thu, 08 Jul 2021 12:33:39 -0700 (PDT)
-Received: from garbanzo ([191.96.120.45])
-        by smtp.gmail.com with ESMTPSA id o34sm4321039pgm.6.2021.07.08.12.33.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jul 2021 12:33:38 -0700 (PDT)
-Date:   Thu, 8 Jul 2021 12:33:34 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     tglx@linutronix.de, akpm@linux-foundation.org, shuah@kernel.org,
-        rafael@kernel.org, rgoldwyn@suse.com, kuno@frob.nl,
-        fontana@sharpeleven.org, Ciaran.Farrell@suse.com,
-        Christopher.DeNicolo@suse.com, hch@lst.de, corbet@lwn.net,
-        linux@leemhuis.info, ast@kernel.org, andriin@fb.com,
-        daniel@iogearbox.net, atenart@kernel.org, alobakin@pm.me,
-        weiwan@google.com, ap420073@gmail.com, tj@kernel.org,
-        jeyu@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, minchan@kernel.org,
-        axboe@kernel.dk, mbenes@suse.com, jpoimboe@redhat.com,
-        keescook@chromium.org, jikos@kernel.org, rostedt@goodmis.org,
-        peterz@infradead.org, linux-block@vger.kernel.org,
-        linux-spdx@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, copyleft-next@lists.fedorahosted.org
-Subject: Re: [PATCH 0/2] LICENSES: add and use copyleft-next-0.3.1
-Message-ID: <20210708193334.uyndyk6mxpylv2qn@garbanzo>
-References: <20210707184310.3624761-1-mcgrof@kernel.org>
- <YOaZohB/2Z3x5grc@kroah.com>
-MIME-Version: 1.0
+        id S230256AbhGHTiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 15:38:08 -0400
+Received: from mail-bn8nam11on2065.outbound.protection.outlook.com ([40.107.236.65]:52160
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229497AbhGHTiH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 15:38:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=J55HpShWXFQ2EI4qRoqTF51Fn96/UdQJKK1HIWOkdScjDY1tAqsF9ph8Ldc2iq17GE3YVbgHofQnAdCTwXajcwV0Lk/w9ooYtBheWANGsx/OkkB8leyGGu7A6HFplcYFttdVp2g8vzrcasgtIH7yBXGaaUHuPBZc2yga33DjptWsDA8reLyOkkzmqdq3Q5cSodtEaE1Au7UvlSCp1uibrvglYUvhZWiA0Tcx1e1VeGme0JtWeQLJUkzux4Ah/LmSp6D9v3y8nC/HqTQ8g9X0XMGXQG/qOOxXOx2kefEmBOZtX1RW6Cl75hmCh8uhMP4eDwH5SwUjxiiaz0c1GFAJNg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sak4XYXVtoAtArtxkB42NYx+sKcLwNpELzfbSm9ia+c=;
+ b=RL/QaF91DLN6eToBsVQwBi0cZj1jJvAVsbbpwpvo43leQwigMmWRKAr+4MOxz/WPJ7evtMdapZYOBK3FKQL+dxYKL5sy9L2zII9kaSU6BWQjvEV54opBwbc15qGSzOpiySINp3zEzSwUXi0XbXvz/vviY+BFoDXUw8O1IzdC3r1Hz5BWoXEUhzxvcFWADBPf8iy7yd2drlgU/Kz4GmTIZ0xq29Kq83Plfb7IIKuLehKLoGqrbQ4XuUkScOC6kWnXWQ3sbaTmtxhcFFFTRueKxiKsqe8XSwCjXbsLxi0FmCyGCInUW2/vdBD1vCgajTTJC1D1i68hCcwn8KHbjiOwHA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sak4XYXVtoAtArtxkB42NYx+sKcLwNpELzfbSm9ia+c=;
+ b=XjXK3/83ptDIpzbjppZilAjdpPz1YVmym0gc2IkCi1DnPw5EwQphykAbRr3inGndsLLWv7gob1UUP+FEtShep6w2L87kMgcGFnKQtIZf1GY08sj/5JeeXxAO8Ao1M8nJL8CAmHqnc2A8vl/U9LyfHN68XWL8NZbJgBT5M+o1c18=
+Authentication-Results: alien8.de; dkim=none (message not signed)
+ header.d=none;alien8.de; dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
+ by BN8PR12MB3633.namprd12.prod.outlook.com (2603:10b6:408:49::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.32; Thu, 8 Jul
+ 2021 19:35:23 +0000
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::c099:e7a1:249a:a8a2]) by BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::c099:e7a1:249a:a8a2%7]) with mapi id 15.20.4287.035; Thu, 8 Jul 2021
+ 19:35:23 +0000
+Date:   Thu, 8 Jul 2021 15:35:17 -0400
+From:   Yazen Ghannam <yazen.ghannam@amd.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mchehab@kernel.org, tony.luck@intel.com,
+        Smita.KoralahalliChannabasappa@amd.com
+Subject: Re: [PATCH v2 03/31] EDAC/amd64: Don't use naked values for DF
+ registers
+Message-ID: <20210708193517.GA15605@aus-x-yghannam.amd.com>
+References: <20210623192002.3671647-1-yazen.ghannam@amd.com>
+ <20210623192002.3671647-4-yazen.ghannam@amd.com>
+ <YNX0ZLRSLgmm2LiA@zn.tnic>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YOaZohB/2Z3x5grc@kroah.com>
+In-Reply-To: <YNX0ZLRSLgmm2LiA@zn.tnic>
+X-ClientProxiedBy: BN9PR03CA0491.namprd03.prod.outlook.com
+ (2603:10b6:408:130::16) To BN8PR12MB3108.namprd12.prod.outlook.com
+ (2603:10b6:408:40::20)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from aus-x-yghannam.amd.com (165.204.25.250) by BN9PR03CA0491.namprd03.prod.outlook.com (2603:10b6:408:130::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend Transport; Thu, 8 Jul 2021 19:35:22 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9e14ee3b-0471-4212-cd7e-08d942478773
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3633:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN8PR12MB36335A55DA8B9B551D2A83E7F8199@BN8PR12MB3633.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mNFur5I0tc/Piia03NZqknl3/V261NvxK9C6+cMWMFXkKZhM2nCJCobUxYKLo/OX43VOY+WX/rZYfR6NzXMXxT8rBxu04yRE0hahN6MXKGrXd8f7FGhHnCQcKlsk8301aLgFRn6dHLJ009GvAC3+XelRPRG4KG1i+Fa8ma0VRMs8NchkcGWVt+iBWIKGnW8wnjtEG1jVWx3Hn4YXIYoYYzDEzMkf/y2FQlktXAsPsCG5ppLnE8qNwqaFrvg0eEZTN4f41FRrKzvhZdLUF9qyHXxTCin164QKLZgxKXGu4kasiHj/uJb0e31sJVG0LdPyOURArT+ZpxNTE21W+KrFK5uBzoP4ME+pZpxcj4VgCIEOlQEHSC+Z85jIDmtbdt4mIvf9WSG6skUCboRlDTwPKCbIdnCyvcGPOcHmvCtRsOfCQBefbwMEONG3Pv9empOY90VSF/u7pGvJLuhC/fc/FV4k0NNNAqI4nqHLI8NR01UZVn1EBFY5qtsiAVkruUzuFOtnBuKcwrrKnNsAdL+1lFKD2hLbHJJgAoowTnxXl/ql2PaaMvisJkyGnJCVXOgC0ns0reqFIQCke6fKRtJ5hNZJCTcY17p2CbW56i6kJchsE/WbJbG7tdGkHxF3c/VA+6QNm9mz510h7qF3kqQvQmcggUqwj2WfmooozxU6De2YqI5bTtLZ/MjIRC+j7pBdOrxHEVDQ1vZqP/ioynz/93toBlcFANy4w0rKJjswvos=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(396003)(346002)(136003)(376002)(38100700002)(38350700002)(8936002)(66946007)(7696005)(52116002)(55016002)(2906002)(8676002)(6666004)(956004)(44832011)(66476007)(1076003)(5660300002)(316002)(186003)(33656002)(6916009)(86362001)(66556008)(26005)(4326008)(478600001)(83380400001)(41403002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?BF4ikv19m6akFGtEhDWh8zR6y6lUsDYIGFO/UH68vbgMw36bOMTosJHQzx+9?=
+ =?us-ascii?Q?vxcHQmpm2dHlCgvzqmKJbgqTHLOfVBXN0K3ZsRi0ye0rR3ZVQBvhWb2VBCLU?=
+ =?us-ascii?Q?wFlX4jFmaCfaZw14WYiTr0wZ2CMbTkuYMhbon3AE97zNYaa8KEkIcHU0jPDX?=
+ =?us-ascii?Q?/uqIhSsC/HREpbUWVwIHvpAF2LrUJA/JsEMIKFG8ZZNq5GLhUjhW1+oW4mkG?=
+ =?us-ascii?Q?AamZGQOCxeTKkzEip6YpPK0as3KKyHswCOYTOZnL8eiGxyaQ0STADxjOTV/5?=
+ =?us-ascii?Q?blTOkSUbm1Q0nJWbktXLMT4gzhxWM4InNSO7WIMbBLBTLk1/3ghpyAZmS2v+?=
+ =?us-ascii?Q?mQhE6rawWYbu7NMFc7z6NaAbZrZgVFvyNwPjv4J6O+WTmR7BchU692Y7TRkU?=
+ =?us-ascii?Q?11gSnzkh00na2HMllQktma3LXnvn5QR1nWQ7YpW6DzMuPH+HRIxAAx7/Fi7w?=
+ =?us-ascii?Q?3D8y4h6kPdL/0D0HKoYG3hHQD65hk6LZu9g8pgRrCCqtBBpXxzC6+rELZAof?=
+ =?us-ascii?Q?54EEcZXeDcafJ1DLRQ4jqYy7oU6Du85qHUPQjW8CXCVwNoDLQoxvmzF73g09?=
+ =?us-ascii?Q?ZeFtA+GeKxjQDDHs1yhyJdmCbRuemfrY8wAx1fsthlPCMi7RvmTT2MzTgwCh?=
+ =?us-ascii?Q?c6342vIeQH1xsnfSk/7D3n8BMFvaBTkSU7cpmwFdwANrpcqU9nEKL9daqDp1?=
+ =?us-ascii?Q?/2kl4x5gSpgESEdJT2pXNptmGrsadPlXOw1ffGv31of9kjMGAWxzO8VPd/D7?=
+ =?us-ascii?Q?4syGcm9uyXJGVrbb5oWKSjm4uIlAjk/2PbLqUgF26bU3q8YJMzSS9ZMM84KU?=
+ =?us-ascii?Q?zBktxPpCArnH3f8YtJeNh7Uqkio75hGUy0+gUW7RWM8Tr/lrcqq17PdiVZLv?=
+ =?us-ascii?Q?ST3/hb0ARzsrtU6iLazeZVEzs6NZCYw1Y1XESEFDy6DMJ8lEdGQvCG5NtiEZ?=
+ =?us-ascii?Q?j2sVf03AdYdu61GIwk07tAtvozo5OmbJdZaY3fJPngTaS6+oKDEXUJMsNcfR?=
+ =?us-ascii?Q?nhBQrAukaULH9o3Gq0C7u4VTopkez/aot9xxte4TdKtFwltRvxO+J64NJmHl?=
+ =?us-ascii?Q?f2/T2/MDaQtrUYsFZlcZPKcTsr8DihNNb2vGdMtCjKKI7vgiJR3zkrWYWsg0?=
+ =?us-ascii?Q?RCKIlUWuPW89YMBjs3HP1pCJIjYm+eOK5+ApTwZvciGgy12c7WHNMVlQEXs3?=
+ =?us-ascii?Q?PoNTi1ruD0enUfiW4HTUW44yC2yiZgLLOm0zlyOfbqgKlGiX+EkhChMS9IDY?=
+ =?us-ascii?Q?FK4LiSQu2z4yBREp+2VM1zwr7zkDGLkUnGEKlPQE1aVf5WyB9+Dv5R5vWhF0?=
+ =?us-ascii?Q?f4yfM7fu8OBqJ5PLCILjfs2z?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9e14ee3b-0471-4212-cd7e-08d942478773
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jul 2021 19:35:23.4629
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: j/aAyoi69GVC9wiEc/62tk0MO/cricaEiaXi/gmjKYrZ86iH3QgQTIYITzDJDZc/gPWe8onHQhWW1ddLNne8Kw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3633
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 08, 2021 at 08:22:26AM +0200, Greg KH wrote:
-> On Wed, Jul 07, 2021 at 11:43:08AM -0700, Luis Chamberlain wrote:
-> > This adds the copyleft-next-0.3.1 SPDX tag and replaces existing
-> > boilerplate with the tag.
-> > 
-> > Luis Chamberlain (2):
-> >   LICENSES: Add the copyleft-next-0.3.1 license
-> >   testing: use the copyleft-next-0.3.1 SPDX tag
-> > 
-> >  LICENSES/dual/copyleft-next-0.3.1        | 237 +++++++++++++++++++++++
-> >  lib/test_kmod.c                          |  12 +-
-> >  lib/test_sysctl.c                        |  12 +-
-> >  tools/testing/selftests/kmod/kmod.sh     |  13 +-
-> >  tools/testing/selftests/sysctl/sysctl.sh |  12 +-
+On Fri, Jun 25, 2021 at 05:21:08PM +0200, Borislav Petkov wrote:
+> On Wed, Jun 23, 2021 at 07:19:34PM +0000, Yazen Ghannam wrote:
+> > +static struct df_reg df_regs[] = {
+> > +	/* D18F0x50 (FabricBlockInstanceInformation3_CS) */
+> > +	[FAB_BLK_INST_INFO_3]	=	{0, 0x50},
+> > +	/* D18F0x104 (DramHoleControl) */
+> > +	[DRAM_HOLE_CTL]		=	{0, 0x104},
+> > +	/* D18F0x110 (DramBaseAddress) */
+> > +	[DRAM_BASE_ADDR]	=	{0, 0x110},
+> > +	/* D18F0x114 (DramLimitAddress) */
+> > +	[DRAM_LIMIT_ADDR]	=	{0, 0x114},
+> > +	/* D18F0x1B4 (DramOffset) */
+> > +	[DRAM_OFFSET]		=	{0, 0x1B4},
+> > +	/* D18F1x208 (SystemFabricIdMask) */
+> > +	[SYS_FAB_ID_MASK]	=	{1, 0x208},
+> > +};
+> > +
+> >  static int umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr)
+> >  {
+> >  	u64 dram_base_addr, dram_limit_addr, dram_hole_base;
+> > @@ -1059,8 +1091,9 @@ static int umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr
+> >  	u8 cs_mask, cs_id = 0;
+> >  	bool hash_enabled = false;
+> >  
+> > -	/* Read D18F0x1B4 (DramOffset), check if base 1 is used. */
+> > -	if (amd_df_indirect_read(nid, 0, 0x1B4, umc, &tmp))
+> > +	struct df_reg reg;
+> > +
+> > +	if (amd_df_indirect_read(nid, df_regs[DRAM_OFFSET], umc, &tmp))
+> >  		goto out_err;
+> >  
+> >  	/* Remove HiAddrOffset from normalized address, if enabled: */
+> > @@ -1073,8 +1106,9 @@ static int umc_normaddr_to_sysaddr(u64 norm_addr, u16 nid, u8 umc, u64 *sys_addr
+> >  		}
+> >  	}
+> >  
+> > -	/* Read D18F0x110 (DramBaseAddress). */
+> > -	if (amd_df_indirect_read(nid, 0, 0x110 + (8 * base), umc, &tmp))
+> > +	reg = df_regs[DRAM_BASE_ADDR];
+> > +	reg.offset += base * 8;
 > 
-> As we only have 4 usages of this license in the tree, we have the
-> opportunity to actually remove it and keep the list of licenses that we
-> use in the kernel source smaller.
+> So this looks weird: you have a df_regs[] array of all those different
+> DF registers which I'd assume is a read-only thing because, well, those
+> func and offset things are immutable, i.e., hw registers offsets etc.
 > 
-> Any chance you wish to just change the license of these files, given
-> that you are the only one that has tried to use it for kernel code?
+> But then here you go and and modify the offset.
+> 
+> And that df_regs array is globally visible in the driver and if some
+> later functionality decides to use it, it'll see the modified offset.
+> 
+> IOW, I'd make that array read only (const) and use local vars instead to
+> pass down to amd_df_indirect_read().
+> 
+> And I'm also questioning what the point is for that df_reg thing?
+> 
+> You have them defined but then you have to change them.
+> 
+> I.e., you can just as well pass in func and offset separately and be
+> done with it.
+> 
+> But maybe there's something else happening in the patches which comes
+> later and which will make me go, ahaa.
+>
 
-Since it is a "relatively" new license (2012, used in Linux since 2017)
-obviously not many people would have used it, but one cannot assume it
-is not because one does not want, but rather one is not aware.
+You're right that the values should be immutable. The changes done here
+are only for this pair of base/limit registers. Most of the time we'll
+only use 2 pairs (4 registers). But some systems will need to look at 16
+pairs, and so this current approach seemed nicer than writing out 32
+registers with mostly redundant information.
 
-I myself have used the license for all new projects, and the agreement
-I reached with SUSE was I'd be using this license when I can for my
-own projects and contributions. I'm not a zealot though, and I also
-take care for proper considerations for such a large project such
-as Linux. It is why I had the license vetted by attorneys at SUSE
-in 2017, and also drew up a public discussion over its possible use on
-Linux. My goal then, in so far as Linux is concerned, is to use it for
-selftests as a safe place, which won't grow folks weary or concerned.
+I was trying to make the code more "self-documenting" and move away from
+magic numbers, etc. But it all looks okay to me, so I'm not sure which
+way to go (magic numbers + code comments, something else, etc.).
 
-And then let things evolve from there.
+So I'm inclined to stick with passing in the func/offset values and
+dropping the df_regs thing.
 
-Of all the items listed on patch #1 for which I prefer using
-copyleft-next the most important one for me is an explicit patent
-grant. Although GPL applies to Linux I do feel very strongly about
-propagation of more projects with such type of licenses and I feel
-we should be happy to help such projects grow by allowing cross
-polination.
+Thanks,
+Yazen
 
-> As a follow-up to this, I do not want to see your "test_sysfs.c" module
-> as a dual-licensed file, as that makes no sense whatsoever.
-
-You can ignore the patch then, its a selftest driver, not a core sysfs
-change. I believe it should be up to the selftest maintainer?
-
-The changes I am making to sysfs are explicitly under GPLv2, and
-has nothing to do with copyleft-next. I am using dual licensing with
-copyleft-next only for selftests for now. I have support from SUSE to
-use this license.
-
-> It is
-> directly testing GPL-v2-only code, so the attempt to dual license it
-> makes no sense to me.
-
-So what? I can have BSD licensed code testing GPLv2 code. In fact folks
-out there use proprietary licensed code to test GPLv2 code as well. I
-don't see your the rationale here.
-
-> How could anyone take that code and do anything
-> with it under the copyleft-next license only?  And where would that
-> happen?
-
-That's up to the users. In my case I am heavily involved with doing
-automation of testing and so *I care* as I am building automation of
-testing for all things kernel. My project kdevops, will soon be
-relicensed to copyleft-next.
-
-My personal development goal is I will embrace copyleft-next for
-anything new I write, and only use GPLv2 or another license when
-I am required to do so. I believe I am being reasonable also in using
-this only for sefltests for now as discussions and awareness of the
-license grows.
-
-> I understand the appeal of copyleft-next in that it resolves many of the
-> "grey" areas around gplv2, but given that no one is rushing to advise us
-> to relicense all of the kernel with this thing, there is no need to
-> encourage the spread of it given the added complexity and confusion that
-> adding another license to our mix can only cause.
-
-"Need" is subjective. I feel strongly about a need to have explicit patent
-grants propagating in our community. So the more we can do this outside
-of Linux and allow code from Linux to be used in such projects the
-better.
-
-The license is one of the only few licenses (if not only?) which is
-GPLv2 compatible and also has an clear patent grant. I have reasons to
-believe, we as a community face serious challenges if we don't grow our
-collection of code with explicit patent grants. And so any new project
-I create will have such licenses. It is simply my preference, and if I
-can contribute code to Linux in a "safe place" to slowly build traction
-of it, then fantastic.
-
-> So please, no, I don't want to see new licenses added to the tree, if
-> anything we should be trimming them down to be less as it makes things
-> simpler and more obvious.
-
-Too late. Dual GPLv2 / copyleft-next code was added in 2017 and I had
-a clear community discussion over it.
-
-I take caution and care about this. I do feel this discussion is worth
-having and hence my contributions in 2017 and now adding the respective
-SPDX license tag.
-
-  Luis
