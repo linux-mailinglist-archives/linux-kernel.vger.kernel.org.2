@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75DC63BF88D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 12:48:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 432F53BF890
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 12:48:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231543AbhGHKuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 06:50:51 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:19206 "EHLO
+        id S231563AbhGHKvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 06:51:15 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:45196 "EHLO
         mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231493AbhGHKuu (ORCPT
+        by vger.kernel.org with ESMTP id S231512AbhGHKvO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 06:50:50 -0400
+        Thu, 8 Jul 2021 06:51:14 -0400
 Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 168Aipxk008768;
-        Thu, 8 Jul 2021 03:47:45 -0700
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2169.outbound.protection.outlook.com [104.47.57.169])
-        by mx0a-0016f401.pphosted.com with ESMTP id 39nrnu1jg6-1
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 168Aj9T6009255;
+        Thu, 8 Jul 2021 03:48:21 -0700
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2171.outbound.protection.outlook.com [104.47.59.171])
+        by mx0a-0016f401.pphosted.com with ESMTP id 39nrnu1jhy-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Jul 2021 03:47:45 -0700
+        Thu, 08 Jul 2021 03:48:20 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ktrp1mBtGQ/btb7S7Sbzowhxf2pwepoe4NpUiEqUpXRnNGyAabGcpszWIx/O8Yq7B811kjH7RIE2vZWtC8I5DBYURXrF9qOt6U1jjT6VFBPWeLgnmm+AeYeu+L78VlWe5O0BxvNPm2lm8/LNESiAkZa3amNm9zGM/7LZNPzQZxO4f30GEg7uyoJFTfA+aLX1uwe6VSMB9z3yQiDOxnZP45221dXcIpsNTXdoFOpjnt1LZAgDE81xVm8oGxSbZAI0UaI62Iiq9kto09nezeq8tcV5qu/MogEjuzVXJLURBFVQWsNrwme5OOu3+3IM/+p1X2xmHoV7BBN718qeMXj19Q==
+ b=SyIj9hlxwuK2fc6HNeZeNOfXBOcoVbycyw4dEGmyZunZSs9TcyCgC64LRvFS3aljiK4zf/8kkgcVhSpC4ylyHfDl9s5aNLnM7TcxnfINfDtYycg8zELFqDqZfq6+ToRdmhim8jIMkuH6UsDUvszWmGfeJqc+rvT1neO5GIlxaJE0wnpGj4vf1aR+pp6CVi9kFo5qV4eOZiS1aOb1JCZNTtqw2UYlEi6SxNYs85Jb6zLqPP9fZStUxVSSEh7Bx2vdsju51iXbQ0MOtdQf4ILw3Eu+iI0UuneJc/hVnfm9qWPIomSJnFUvLKfDHbPe5IdNYko5QauEkdsQqFEvzU0Z4A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cHWZnmDHNP6Vfci8+hXzTfTAZBTc+ahWFK1tyMV8YGk=;
- b=EaZ4l7XRWgBJ8c9zsIV39wT+BLu6fnYPdH9q8lOjUXjKYVQlfyhKJ2BAghQKY6ENxXMgfycfXb730ailuVdE91sN+HkCfjXuj8GL5F28kKBizWDky9Vxi0VTvQE1/v7mARXe9ZMs7PMU2eUJFQwN9wu7CFsdtHT4QpPLaCp5vFk1Z8XSWYc5ZifEFNXmgw3rFFekf+hnPLDGzPYU4VTZJUnsdGiUm43u6ObSCbQBSHxGPTUbF9uLlUHInaIvLOZDMdzLIZ+AYEJ+pJyveCRSfimNsDKWTR+959IaYnWEx4T1uq9UNO2ZpuW3VlBvjy3DXHZ7N4J01lSPbdKcryGi7Q==
+ bh=syeIjh4PO5hpkSUtLh/FYIv/Xdn98n1bsCFaaHMEgAw=;
+ b=hlu6mEVDypcAZpM6APcfwutugJArZvynaGdcQQg5tC1VPGO+pXKBv9/4igVOTeTjEHxQv/Uk7TnL+JFQwOFY9AlOXj/J51R/R9aA2wYT9QVa3pCjt7EH0Kw9sUjTkARQheor/bEnbkJFBbYhT8n2nqEA/jlL//xF+q9JLoncGhtcuSaZR9iFPkWr0pCFCJtNpg5H3iRZmAioj1P1LJYAaMwcp/n4dJz0F7RkQ+cuIOIlKRCtIyLOfEZdvwvA2ULf1o2cC5wPtah4VdSqI2sB7N2gOa/CwNM7md/b3vC+vn80hslBqcDLHJASgOKwUzXeS2LVg7tdzkg7ljniZdbBxg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
  dkim=pass header.d=marvell.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cHWZnmDHNP6Vfci8+hXzTfTAZBTc+ahWFK1tyMV8YGk=;
- b=nXbNEgzUk9aMfvHH7njtVg8Vvj2jgNdjO8QifP/19qjiOWTgb0ZFaPBpq21BNAz0aoVm38iSAGuwXjZqSrBDE5bkEGZQF59xldqXUwJoWw7xSBGua5yIZp7Sc39azIrEsURFGNWGyJkpIykFFj88kZRyDluflwZa3sIvAWo3ajo=
+ bh=syeIjh4PO5hpkSUtLh/FYIv/Xdn98n1bsCFaaHMEgAw=;
+ b=R7CLNHuy4m5ynzftkr5p7aKHwOXsmBGlLwa9EnleKvm6lvvkynS/21n9CNo0Vp7FNy3Jq/3s/YdtFQCwhFltgkYmBC2GqegvNhyLD1j6ButdUHDye8oVVC9HRp+C9Xdqtf0wVU9Dphsc554VFblUvF0bI4sWBO+iUIa2XR52wH0=
 Received: from CO6PR18MB4465.namprd18.prod.outlook.com (2603:10b6:303:13b::10)
- by CO6PR18MB4467.namprd18.prod.outlook.com (2603:10b6:5:355::12) with
+ by CO1PR18MB4729.namprd18.prod.outlook.com (2603:10b6:303:e8::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.21; Thu, 8 Jul
- 2021 10:47:42 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.19; Thu, 8 Jul
+ 2021 10:48:18 +0000
 Received: from CO6PR18MB4465.namprd18.prod.outlook.com
  ([fe80::7412:17a6:caa5:8df2]) by CO6PR18MB4465.namprd18.prod.outlook.com
  ([fe80::7412:17a6:caa5:8df2%9]) with mapi id 15.20.4308.022; Thu, 8 Jul 2021
- 10:47:42 +0000
+ 10:48:18 +0000
 From:   Bharat Bhushan <bbhushan2@marvell.com>
-To:     Mark Rutland <mark.rutland@arm.com>
+To:     Marc Zyngier <maz@kernel.org>
 CC:     "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
         "will@kernel.org" <will@kernel.org>,
         "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
-        "maz@kernel.org" <maz@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
         "konrad.dybcio@somainline.org" <konrad.dybcio@somainline.org>,
         "saiprakash.ranjan@codeaurora.org" <saiprakash.ranjan@codeaurora.org>,
         "robh@kernel.org" <robh@kernel.org>,
@@ -63,85 +63,84 @@ Subject: RE: [EXT] Re: [PATCH] clocksource: Add Marvell Errata-38627
  workaround
 Thread-Topic: [EXT] Re: [PATCH] clocksource: Add Marvell Errata-38627
  workaround
-Thread-Index: AQHXcWQ/kwOpukHdIkqoSg2KEiIGgKs0F7CAgAAR5yA=
-Date:   Thu, 8 Jul 2021 10:47:42 +0000
-Message-ID: <CO6PR18MB4465687A22FE724E59D4225CE3199@CO6PR18MB4465.namprd18.prod.outlook.com>
+Thread-Index: AQHXcWQ/kwOpukHdIkqoSg2KEiIGgKs0HPqAgATIYeA=
+Date:   Thu, 8 Jul 2021 10:48:18 +0000
+Message-ID: <CO6PR18MB44652857D3ACBE95BD254976E3199@CO6PR18MB4465.namprd18.prod.outlook.com>
 References: <20210705060843.3150-1-bbhushan2@marvell.com>
- <20210705090753.GD38629@C02TD0UTHF1T.local>
-In-Reply-To: <20210705090753.GD38629@C02TD0UTHF1T.local>
+ <87im1p861y.wl-maz@kernel.org>
+In-Reply-To: <87im1p861y.wl-maz@kernel.org>
 Accept-Language: en-IN, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-authentication-results: arm.com; dkim=none (message not signed)
- header.d=none;arm.com; dmarc=none action=none header.from=marvell.com;
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=marvell.com;
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d8d98a97-9ce0-4edf-6193-08d941fdd02b
-x-ms-traffictypediagnostic: CO6PR18MB4467:
+x-ms-office365-filtering-correlation-id: 84b69b9c-fdd3-45df-e486-08d941fde571
+x-ms-traffictypediagnostic: CO1PR18MB4729:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CO6PR18MB4467624C15485BB53F7A82CEE3199@CO6PR18MB4467.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-microsoft-antispam-prvs: <CO1PR18MB472956DB195B0F19A94AA38BE3199@CO1PR18MB4729.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4502;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: CCs5F7nB5htMrCpufCnE3Kjb8TDhEzpoUlQiLDh3ljOaDGXb1ViJ51H5hjxZepTDb36qcL57x2RlCNW5AvzkNlkyBLB1EiV1vXnkv2NfNGABRkxo7klUNw2EWZ0v1/+70XuT5PyMuCuGwsyNcyreDj0MCEIggu+332tcYkh9uSk3EK1QNw/QhT4laJwHKkr9VWitq9P83ys56ajozbarozRyBX4Qp5TG8gw9TogUYiLHUTTaLJrrVkoPD8pEo7plzW7AcgaryzI7gd4PlbOPbSe/8TDSrFOrY6vkx26kNK9qbQWnlAoGvEJoA9KJfnzmzyPz22QrtxmGS7qDoiYLwXdWofsyPQEIulcnqFzgSlE6DkUXuec5y0VuS4dWBPty8FHXdGzI6ggGIeNJ+h0qMqDVfotvvycAj5x3pwNaRbeDCM/CuPyIeN9rL107qF0+jYORN6s+Hg+l73h1S5EhfzwtoUwD+SFVdbwmXmUN5fBty4+XumXgmRUqKuvMng6TwhisR7qa3otuBt6hdQpTRB40Dflxi4EIzyPCeto4JYPe/bJS64foD2QRgnn81XPiOuIQlm6d2kthSFztjBSGUlk+Afj5XkSn126waIA0twm7TlN22vwjTBbbgRZDFztk4lhKn/Qki2LmcAZibWltow==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR18MB4465.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(39850400004)(136003)(366004)(6506007)(53546011)(186003)(9686003)(83380400001)(86362001)(52536014)(33656002)(8676002)(107886003)(30864003)(7416002)(8936002)(76116006)(6916009)(2906002)(122000001)(38100700002)(5660300002)(66556008)(66476007)(66446008)(64756008)(478600001)(54906003)(7696005)(66946007)(84040400003)(55236004)(71200400001)(4326008)(26005)(55016002)(316002);DIR:OUT;SFP:1101;
+x-microsoft-antispam-message-info: VFwgyIhxeI96fBHIX6BPJeAssdFukiVVZKoYIknQcgjJLUMLIm+SCMKRNYBdO2CDNQ7f4KigY9kJkWIvAydJR4WX8zHcZZdg/vqy8uqVZs8MjgOaHypBrzuVc/CxaTIDPscrwjMILdRW9JWK+jOt2+ObzQ92kX5ajAaSo5NiUtg0SOkRyUqY5VoOBd6Czd4IJXmX+zFYnU/pBhXkqQgkhHyseQxcS72lBPHVE6zw4RtrzTM0dBjBZeSPB3Mj+md2ijYG7JEEnj7vTQDuFwosRhP2WGHyd1j/6/baRorLNa8AUBtoTloBXgrelFhmX3ZCwSEaxKr/jbVNBLnPcF2WwtU+Yn/yI2GEhHrDZy5uIiCl3ApbDq6WTRKK8ADJQNIQ9luj8EHgCjBAjo1pG9Dz1/DYsD5UpJO75v4RFbbgydyPVGnCPxE6iVtzK4uDPQ2vabmneT7euriEIlGf16lSEbfjn40djjgnjNPNMAWDp49JdGqHFvvEeTBIzgJfmlxTl9Ouu0vNFgs1gycBenPkhfWm78rKTdO2LQNvnnlPHTKNoBkedz/L/l5mrmynWfVh5xDeODqSOzGm/Mh+oESlWSWOY0m+9ABBEOjWGcdWmjWF/NmRJs5bkxSDek6Jj/F15PU48WQK6qGt/eykNXzCfA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR18MB4465.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(366004)(376002)(396003)(346002)(76116006)(8676002)(66446008)(8936002)(55016002)(186003)(9686003)(71200400001)(52536014)(55236004)(38100700002)(84040400003)(7416002)(66556008)(66946007)(64756008)(66476007)(7696005)(122000001)(30864003)(33656002)(107886003)(2906002)(478600001)(26005)(53546011)(4326008)(54906003)(83380400001)(6506007)(6916009)(316002)(5660300002)(86362001);DIR:OUT;SFP:1101;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?+9lUALErl48LaQ0dCI2kDxiaTUx+tw7Gf9daUHREFT/mpPrHBV1D56sPpIAw?=
- =?us-ascii?Q?/JMPBTG5+gSQjVPOyWiLh3CcZX1XVWzgBF/kYaUEZDyYy7o1Kl9c3DOkcMlC?=
- =?us-ascii?Q?tdDvEjiDXPqOX+fC4arymPkmWzV5JSEGLJhke1wqghhvqnTKimirznwXqB00?=
- =?us-ascii?Q?MZzy1sZcVldSbyNr7BIEm3Wkm7nLBUdG0nXQxm5bGAOMNbtEmzw0GkpejQRq?=
- =?us-ascii?Q?3L/RY9Ia2lUBkVpeMOVOlBUp2Wvl6No0SqqkSOQZPpkwqBOkg17KPtrww4wO?=
- =?us-ascii?Q?A9jOQb8nFB1ju2reSMaL3S0JYSd//I1yvfshZYKWeZXgPv1OC6EKEoVTxTVg?=
- =?us-ascii?Q?gSMiLggsUVYnHUVMDUdU99ynBszafn+7ncpT7i9DzG0ps+qz30BVTu2tCnfk?=
- =?us-ascii?Q?cbpojvgEeWdVt4ubikYevnxgu117MgjhqcnTM66yLLhNdFyJhziuGciSkZ8B?=
- =?us-ascii?Q?VJUHhGdLDnXIZbWGXx15FXjECPxE9fSkVkatkx1TYmNxO25hjZivcgI3fU2F?=
- =?us-ascii?Q?86QlG3ZpSx/kFCb14SXI3tB8i3KtxDMTLOsIESpsuV/FeDrXHElkubEFyKgh?=
- =?us-ascii?Q?FEEq6cFvch+jWRmXgF5W3iq4Uud33oQ+yvWL8HsT4xx/XtrD8BTgpg7B9Qg1?=
- =?us-ascii?Q?yI+JdUh2Zrq161bnw5QHx2U3PzNSWLbRfWxt0Rh9nYrv7GooKnbbyTB8Rmy9?=
- =?us-ascii?Q?yZ05eLNFh9p7BdTSHGaMS2PWSEGXCv7hKQw/7u2bChlh48s+jN5Q9Id0+ijx?=
- =?us-ascii?Q?Xv+iN/RN6aQRj1YFMEyC2uMFdmjhrlUINcDphjeRk1uasYX2053fDJyZQrJN?=
- =?us-ascii?Q?mSu3Sp+Te/0FzWvi8A43wCxUL7R63pMeoXipfWWTlQjcHv+em64X0SSJVTeU?=
- =?us-ascii?Q?ZlQKNwbsqvuaZf0bLNedHXbUreOdJ1GWiOHUqFKcQVuc44mcjZNFWBgfqbDv?=
- =?us-ascii?Q?ImBxVJt4O7MHlI/RcjAoceTDE1d8JtYSNyJAES95itAEg8aLhH1O1Er93jS0?=
- =?us-ascii?Q?I8dqoE/vdHgYWqY9XA4tAZUGplqeT6sRB1o0muOf8DlW6RCUXdF8YcF6hw0j?=
- =?us-ascii?Q?EpSnRwJ+k0TjhPVQPiJ0FmfLNTveRqZyjOIwDCfJEW2s0kiHa+dJJxdzMuqi?=
- =?us-ascii?Q?ppYmJTd44i0mYgGga7OapH/UAveHFz1QUonYrU8VNflbb5qmBzyl64PNK4ki?=
- =?us-ascii?Q?YK7bkmB7f6958A6qcVcQEXcW6qR90MHRLZ6schMnwlcLZpMQny4v1fE8/355?=
- =?us-ascii?Q?72xiv4xshDkIn3dDbvynf9JN9BFU1Gc8LHr10joH/5CHnK8lGOxzlfM0WPu8?=
- =?us-ascii?Q?dgQ=3D?=
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?gxbFLqoIEAdwTgobIfdNWoDArrk1SKZ8AHuQrHmSdq8wQeFUWhEbXbBcPs6c?=
+ =?us-ascii?Q?gWtQowugniavrD+idSkpHHkiWReKhY3vttcMjaqC/Gr1BQNH0npiSEO7foMo?=
+ =?us-ascii?Q?avtfQsGeLg3gBJH5BIFkJOIvf4fZaITKrA4kG+cka2mT//O7hxEFzr+ql2WI?=
+ =?us-ascii?Q?OVlsPKiJxgYUYnPXYXY1Iv3LtCfKgPe83D7/Ptt+VUKg5R+lau8Z5Fkyd992?=
+ =?us-ascii?Q?5RMQd2Fr/EvxJZApP9ABAAUaPjBhV6D6hXOgTEf1Mv07dQyNC/5cF0tJJBi6?=
+ =?us-ascii?Q?CChM+/yHLEPPjGYCCYQWg+T12pOtYPL3vVxZijo0tJrxaKNb2oV2s3/R4jFd?=
+ =?us-ascii?Q?qSv04BI5zcI3qenuoGKKcWIVeDc8ISllmZ7Cz1vUm+TzQgFqqkPbNGjnhgB4?=
+ =?us-ascii?Q?Zws4JryLez5BS2W6gQ+svNnq33vSGK6ksUhlpyIH3IdtPgUhFLswXkSNSToM?=
+ =?us-ascii?Q?+vwgltXvkU6v3j43CCY/XoVmsUZ2YJEsMTgjLPJlLoXH8K7mFYZabsCsgbSt?=
+ =?us-ascii?Q?sx+k8s09TLdJ/sNTbXrvRI2aMJh2ipdl/vO9RUNa1jQNQXy7oUv45Re5N3xp?=
+ =?us-ascii?Q?tKRnPzfH3QgTNwBVGkaOid/mk/+niM/r47Mkt1QMKc7sy8qsiIfJgp0Uor0V?=
+ =?us-ascii?Q?xJ1W4UI9Ke7SLzCS9eLO0RHAGy73AEOre7AKoqygDVLEnBaasbJx+3T/FFfT?=
+ =?us-ascii?Q?IQMSGM0PSkcaEWzsir4Dm5WG2v8hJPmqLYkLOqihopvTsGcz/Q70kepRNOiy?=
+ =?us-ascii?Q?VD5snyplokAL7NXYkismBpxhK3vpujgILVN0HZvdqC6pxumw4K1wq1nt3K8+?=
+ =?us-ascii?Q?fXdqFSSIUjbHJYQ8ogEJgM9Sz59vAtZ8Ew4XjaH2+Ks4SzIEYdO7ijViKJwq?=
+ =?us-ascii?Q?tyPW6/cpgd+b/s6zzQ1iYeOv/iUmkE7XUqqnzmHRhKbrJf0Q1Gq9AMSD6byH?=
+ =?us-ascii?Q?8b4QOpgJFW5QEKyBBv8/1SqgmLeHCz3v1evvSXxoh4M1FYcPrBb2Qf7CWY+6?=
+ =?us-ascii?Q?0GRk16cJZmtER2k2xDX0+GIqHXc9iD4Gtiq3HOJI2tnWnYVDCRyQ3kW6kviv?=
+ =?us-ascii?Q?CnL6Gtq71qEvaMWswWcmvrfJItHhWIYeeRojHBBDHHAVAQpOHwjWUl/+/m+F?=
+ =?us-ascii?Q?rhlyyMf4y0zt7l9VYBf5j3m4sd3VxRU1UrFOmWaYDY+sQYe07d86V32l+B87?=
+ =?us-ascii?Q?OA5T5E9u72u8GPYP9wgB3LVIRM0q2PC+DRiRx5GLI5FnAVqihB7RkUNu3P13?=
+ =?us-ascii?Q?8QC1lKT5ANHIp+y5XyhygUS3IAQdF++QonX1CI7oFxtYlC+iumusC7W5KO2l?=
+ =?us-ascii?Q?6+g=3D?=
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: marvell.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: CO6PR18MB4465.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d8d98a97-9ce0-4edf-6193-08d941fdd02b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jul 2021 10:47:42.3297
+X-MS-Exchange-CrossTenant-Network-Message-Id: 84b69b9c-fdd3-45df-e486-08d941fde571
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jul 2021 10:48:18.0389
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 5p74pDgSl0VqaRgupcg5G8FDDCvpMBlMIyoa1G753v9CCTRxydyAvredQPC6DstvM1lMB9WPTTiMgijq1BIO6g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR18MB4467
-X-Proofpoint-ORIG-GUID: -tKUNc0wqtAyPKIBeCcmLftG699PRWZw
-X-Proofpoint-GUID: -tKUNc0wqtAyPKIBeCcmLftG699PRWZw
+X-MS-Exchange-CrossTenant-userprincipalname: UvFdId2+LN3JQOWDVSg3tn5zmUJR6IvX3itwbwZVDEufOq+06tcMmlPGDspzSVN8MHwNBZ9lGmbg3IXRUbP5wg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR18MB4729
+X-Proofpoint-ORIG-GUID: _CWQNsvapsezfexcLvgJmsweCXjqXSj8
+X-Proofpoint-GUID: _CWQNsvapsezfexcLvgJmsweCXjqXSj8
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-07-08_04:2021-07-06,2021-07-08 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+Hi Marc,
 
-Sorry for the delay, was gathering some details.
-Pease see inline
+Similar questions are asked by Mark, response might be duplicated.
 
 > -----Original Message-----
-> From: Mark Rutland <mark.rutland@arm.com>
-> Sent: Monday, July 5, 2021 2:38 PM
+> From: Marc Zyngier <maz@kernel.org>
+> Sent: Monday, July 5, 2021 2:57 PM
 > To: Bharat Bhushan <bbhushan2@marvell.com>
 > Cc: catalin.marinas@arm.com; will@kernel.org; daniel.lezcano@linaro.org;
-> maz@kernel.org; konrad.dybcio@somainline.org;
+> mark.rutland@arm.com; konrad.dybcio@somainline.org;
 > saiprakash.ranjan@codeaurora.org; robh@kernel.org; marcan@marcan.st;
 > suzuki.poulose@arm.com; broonie@kernel.org; linux-arm-
 > kernel@lists.infradead.org; linux-kernel@vger.kernel.org; Linu Cherian
@@ -152,72 +151,62 @@ nd
 > External Email
 >=20
 > ----------------------------------------------------------------------
-> Hi Bharat,
->=20
-> On Mon, Jul 05, 2021 at 11:38:43AM +0530, Bharat Bhushan wrote:
+> On Mon, 05 Jul 2021 07:08:43 +0100,
+> Bharat Bhushan <bbhushan2@marvell.com> wrote:
+> >
 > > CPU pipeline have unpredicted behavior when timer interrupt appears
-> > and then disappears prior to the exception happening. Time interrupt
-> > appears on timer expiry and disappears when timer programming or timer
-> > disable. This typically can happen when a load instruction misses in
-> > the cache,  which can take few hundreds of cycles, and an interrupt
-> > appears after the load instruction starts executing but disappears
-> > before the load instruction completes.
+> > and then disappears prior to the exception happening.
 >=20
-> Could you elaborate on the scenario? What sort of unpredictable behaviour=
- can
-> occur? e.g:
+> What kind of unpredictable behaviours? =20
 
 This is a race condition where an instruction (except store, system, load a=
 tomic and load exclusive) becomes "nop" if interrupt appears and disappears=
- before taken by CPU. For example interrupt appears after the atomic load i=
-nstruction starts executing and disappears before the atomic load instructi=
-on completes, in that case instruction (not all) can become "nop". As inter=
-rupt disappears before atomic instruction completes, cpu continues to execu=
-te and while take junk from register as other dependent got "nop".
->=20
-> * Does the CPU lockup?
-No
+ before taken by CPU. This can lead to GPR corruption. For example interrup=
+t appears after the atomic load instruction starts executing and disappears=
+ before the atomic load instruction completes, in that case instruction (no=
+t all) can become "nop". As interrupt disappears before atomic instruction =
+completes, cpu continues to execute and while take stale value from registe=
+r as other dependent got "nop".
 
-> * Does the CPU take the exception at all?
-No
+> What happens if a guest isn't aware of  the erratum or actively tries to =
+trigger it?
 
-> * Does the load behave erroneously?
-No,
-
-> * Does any CPU state (e.g. GPRs, PC, PSTATE) become corrupted?
-
-yes, GPRs will get corrupted, will have stale value
+Errata applies to VM (EL1 virtual timer) as well. In addition extending the=
+ workaround to timer context save/restore in kvm seems to work.
+Can you help if we are missing something in VM?
 
 >=20
-> Does the problem manifest when IRQs are masked by DAIF.I, or by
-> CNT*_CTL_EL0.{IMASK,ENABLE} ?
+> > Time interrupt appears on timer
+> > expiry and disappears when timer programming or timer disable. This
+> > typically can happen when a load instruction misses in the cache,
+> > which can take few hundreds of cycles, and an interrupt appears after
+> > the load instruction starts executing but disappears before the load
+> > instruction completes.
+> >
+> > Workaround of this is to ensure maximum 2us of time
+>=20
+> maximum? I'm not sure how you can bound this. Or did you mean *minimum*?
 
-No, there are no issue if interrupts are masked.
+It is minimum
 
 >=20
-> > Workaround of this is to ensure maximum 2us of time gap between timer
-> > interrupt and timer programming which can de-assert timer interrupt.
->=20
-> The code below seems to try to enforce a 2us *minimum*. Which is it suppo=
-sed
-> to be?
+> How was this value obtained? What guarantees that it is safe?
 
-Yes, it is minimum 2us.
+H/w team suggested same
 
 >=20
-> Can you explain *why* this is supposed to help?
-With the workaround interrupt assertion and de-assertion will be minimum 2u=
-s apart.
+> > gap between timer interrupt and timer programming which can de-assert
+> > timer interrupt.
+>=20
+> What guarantees do you have on the propagation of the interrupt signal fr=
+om the
+> timer to the CPU, given that the GIC is involved in the middle of it?
+
+As per suggestion from h/w team it is sufficient delay to cover propagation=
+ delay.
 
 >=20
-> I don't see how we can guarantee this in a VM, or if the CPU misses on an
-> instruction fetch.
-
-This errata applies to VM (virtual timer) as well, maybe there is some gap =
-in my understanding, how it will be different in VM.
-Can you help with what issue we can have VM?
-
->=20
+> >
 > > Signed-off-by: Linu Cherian <lcherian@marvell.com>
 > > Signed-off-by: Bharat Bhushan <bbhushan2@marvell.com>
 > > ---
@@ -277,7 +266,14 @@ Can you help with what issue we can have VM?
 > > MIDR_CPU_MODEL(ARM_CPU_IMP_BRCM, BRCM_CPU_PART_VULCAN)
 > #define
 > > MIDR_QCOM_FALKOR_V1 MIDR_CPU_MODEL(ARM_CPU_IMP_QCOM,
-> > QCOM_CPU_PART_FALKOR_V1) diff --git a/arch/arm64/kernel/cpu_errata.c
+> > QCOM_CPU_PART_FALKOR_V1)
+>=20
+> This part should be is a separate patch.
+
+Ok,
+
+>=20
+> > diff --git a/arch/arm64/kernel/cpu_errata.c
 > > b/arch/arm64/kernel/cpu_errata.c index e2c20c036442..363f83adb333
 > > 100644
 > > --- a/arch/arm64/kernel/cpu_errata.c
@@ -301,6 +297,12 @@ Can you help with what issue we can have VM?
 > > +	MIDR_REV(MIDR_MRVL_OCTEONTX2_98XX, 0, 0),
 > > +	/* Marvell OcteonTX 2, 95O pass 1.0 */
 > > +	MIDR_REV(MIDR_MRVL_OCTEONTX2_95O, 0, 0),
+>=20
+> Is there any part that is *not* affected?
+
+This is fixed in newer revision of octeaonTx2 part.
+
+>=20
 > > +	{},
 > > +};
 > > +#endif
@@ -352,6 +354,11 @@ Can you help with what issue we can have VM?
 > > +	  38627. According to this errata CPU pipeline have
 > > +	  unpredicted behavior when timer interrupt appears and
 > > +	  then disappears prior to the exception happening.
+>=20
+> This wording is actually a lot clearer than the commit message. What happ=
+ens if a
+> guest plays with the timer?
+>=20
 > > +	  This Errata workaround is applicable only to some Marvell
 > > +	  OcteonTX2 series of processors.
 > > +
@@ -395,7 +402,20 @@ long evt,
 > > +fixed
 > > + * to 100MHz on all affected parts.
 > > + */
+>=20
+> Please fix the comment style.
+>=20
 > > +static __always_inline
+>=20
+> Please drop this __always_inline. There is no hard requirement for it, an=
+d you
+> are about to *wait*, so waiting faster is... not that interesting. The co=
+mpiler will
+> figure it out.
+
+Ok,
+
+>=20
 > > +void erratum_38627_set_next_event(const int access, unsigned long evt,
 > > +				  struct clock_event_device *clk) {
 > > +	int32_t tval;
@@ -405,17 +425,16 @@ long evt,
 > > +	/* Timer already expired, wait for (2 - expired time)us */
 > > +	if ((tval > -200) && (tval < 0))
 > > +		udelay(2 + tval/100);
->=20
-> Isn't this ensuring a 2us *minimum* rather than *maximum* ?
-
-Minimum 2us, will correct
->=20
 > > +
 > > +	/* Timer is about to expire, wait for 2us + time to expire */
 > > +	if (tval >=3D 0 && tval < 200)
 > > +		udelay(3 + tval/100);
 >=20
-> Again, this appears to be waiting for 2us *minimum*.
+> I read 3us here, which contradicts the comment. Also, even if you wait fo=
+r an
+> arbitrary amount of time, I still don't see what guarantees you may have =
+that the
+> interrupt will have actually be signalled.
 
 Yes, minimum 2us,
 
@@ -425,22 +444,6 @@ For 99 < tval < 200, in that case we want to wait 2us after tval expiry, In=
  that case that turn out to be 2us + 2us (round up of  99 < tval < 200) =3D=
  4us.
 
->=20
-> What if when we did the read we have 2.01 us to go? Is the expectation th=
-at we'll
-> manage to execute this code and set the next event in less that 2us?
-
-2us is safe value and already considers the time between reading of tval an=
-d programming timer.
-Expectation is that it will take few cycles in programming timer after read=
-ing tval.
-
-Thanks
--Bharat
-
->=20
-> Thanks,
-> Mark.
 >=20
 > > +
 > > +	set_next_event(access, evt, clk);
@@ -483,6 +486,19 @@ Thanks
 > >  #ifdef CONFIG_SUN50I_ERRATUM_UNKNOWN1
 > >  	{
 > >  		.match_type =3D ate_match_dt,
-> > --
-> > 2.17.1
-> >
+>=20
+> You need to update Documentation/arm64/silicon-errata.rst.
+
+Will do,
+
+>=20
+> Overall, this patch raises *a lot* of questions...
+
+Looking forward to understand all possible cases we need to extend workarou=
+nd.
+
+>=20
+> 	M.
+>=20
+> --
+> Without deviation from the norm, progress is not possible.
