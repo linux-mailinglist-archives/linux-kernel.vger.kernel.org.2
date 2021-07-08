@@ -2,83 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54EAC3BF66F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 09:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A0313BF673
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 09:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbhGHHuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 03:50:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43912 "EHLO
+        id S230522AbhGHHvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 03:51:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229851AbhGHHuN (ORCPT
+        with ESMTP id S229851AbhGHHvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 03:50:13 -0400
-Received: from mx2.securetransport.de (mx2.securetransport.de [IPv6:2a03:4000:13:6c7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D81CDC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 00:47:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dh-electronics.com;
-        s=dhelectronicscom; t=1625730424;
-        bh=dde1WsS9tS7ABtllHJehoQdQKDcbrJHK8Aivo9V/QlM=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-        b=ZvzCCclH5/Df9kyXBu1k1Cw97PXWAFOPXev91m6UgPAPDJFQ6rrY4M02ESp6GqqOX
-         f6jIIz5SIDUGh8oKVhPhRVc/BjQNYFK6TpDN4rPcGCD79MzBuScThD3dwWllZhRB/p
-         64sjHIrfkUzn/Pmw/jN7ightdmSZJzgydE61KTioiAoCsaQEzP8MvNAGE13Ib0YWkm
-         /PC8n/Cxa6hj1W5fCYmAaRqAie8FiWdlnOJ0jEDl9qG6ckfLVeFG6i3WrvJCcmioUt
-         0ce7RIFbyZcXbyNE5cf061Eiy+RzLfez4ckoMsuHivs8Ju4RQnEf1bSn6OR7CJW85Z
-         Pjxe5xLvbF2DQ==
-X-secureTransport-forwarded: yes
-From:   Christoph Niedermaier <cniedermaier@dh-electronics.com>
-Complaints-To: abuse@cubewerk.de
-To:     Arnd Bergmann <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        kernel <kernel@dh-electronics.com>,
-        Alexandre TORGUE <alexandre.torgue@st.com>,
-        "Marek MV. Vasut" <marex@denx.de>
-Subject: RE: [PATCH] MAINTAINERS: Add maintainers for DHCOM i.MX6 and
- DHCOM/DHCOR STM32MP1
-Thread-Topic: [PATCH] MAINTAINERS: Add maintainers for DHCOM i.MX6 and
- DHCOM/DHCOR STM32MP1
-Thread-Index: AQHXUJSuJd8KnePrj0my43aX64Fm16sTog0AgCVWkGA=
-Date:   Thu, 8 Jul 2021 07:46:51 +0000
-Message-ID: <0d2d38e799764058b4d69d5a87ee164c@dh-electronics.com>
-References: <20210524115853.6413-1-cniedermaier@dh-electronics.com>
- <a6229fe4-7409-deac-6c59-93a715dc4d45@denx.de>
-In-Reply-To: <a6229fe4-7409-deac-6c59-93a715dc4d45@denx.de>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Thu, 8 Jul 2021 03:51:23 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 630A0C061574;
+        Thu,  8 Jul 2021 00:48:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=vdXYS9ID+bf5JGS30Bu8QVJFnhfQslN7L9O4LZcVUew=; b=veP9x6J5Xx9infh1+qhJzFnMSP
+        Ir16CeY5Js1kPyDUy3xOgKtgHD2L69JgD5gncBHTXV3RyGIiRbb2ker5Id0gd08ZD7q9GTkgqk8wM
+        Nw0wdpD33M5Z3SZecihT87UaxWDQVeI5h1hSRMxjFWOuj7tzytvrZxYNX/BYIrwd37TIbypBSLZAO
+        ADkn1UMIl9HgaiXMyzVp8zYDqx02nCr60ohiUo3D3msf1okSHPy9g6/q+BazID9ObSYGfrLkfUz1h
+        UuJD/QbwPcvmhHHUEYrdoGLY5JsbW+va8MqrpncyveR8ZBIqhv3WzcJufbYj7DojRkq98uXJVNpgB
+        LuYFwLmQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m1OlP-00DCbv-Vf; Thu, 08 Jul 2021 07:48:15 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8236230007E;
+        Thu,  8 Jul 2021 09:48:03 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6980C2CB89AE0; Thu,  8 Jul 2021 09:48:03 +0200 (CEST)
+Date:   Thu, 8 Jul 2021 09:48:03 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Phil Auld <pauld@redhat.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] sched: Fix nr_uninterruptible race causing increasing
+ load average
+Message-ID: <YOatszHNZc9XRbYB@hirez.programming.kicks-ass.net>
+References: <20210707190457.60521-1-pauld@redhat.com>
+ <YOaoomJAS2FzXi7I@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YOaoomJAS2FzXi7I@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTWFyZWsgVmFzdXQgW21haWx0bzptYXJleEBkZW54LmRlXQ0KU2VudDogTW9uZGF5LCBK
-dW5lIDE0LCAyMDIxIDU6MzIgUE0NCj4gT24gNS8yNC8yMSAxOjU4IFBNLCBDaHJpc3RvcGggTmll
-ZGVybWFpZXIgd3JvdGU6DQo+PiBBZGQgbWFpbnRhaW5lcnMgZm9yIERIIGVsZWN0cm9uaWNzIERI
-Q09NIGkuTVg2DQo+PiBhbmQgREhDT00vREhDT1IgU1RNMzJNUDEgYm9hcmRzLg0KPj4NCj4+IFNp
-Z25lZC1vZmYtYnk6IENocmlzdG9waCBOaWVkZXJtYWllciA8Y25pZWRlcm1haWVyQGRoLWVsZWN0
-cm9uaWNzLmNvbT4NCj4+IENjOiBsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmcN
-Cj4+IENjOiBrZXJuZWxAZGgtZWxlY3Ryb25pY3MuY29tDQo+PiBUbzogbGludXgta2VybmVsQHZn
-ZXIua2VybmVsLm9yZw0KPj4gLS0tDQo+PiAgIE1BSU5UQUlORVJTIHwgMTMgKysrKysrKysrKysr
-Kw0KPj4gICAxIGZpbGUgY2hhbmdlZCwgMTMgaW5zZXJ0aW9ucygrKQ0KPj4NCj4+IGRpZmYgLS1n
-aXQgYS9NQUlOVEFJTkVSUyBiL01BSU5UQUlORVJTDQo+PiBpbmRleCAwN2YwNDE0YmMyYTUuLmMz
-ODM2ZDM0ZTg0NCAxMDA2NDQNCj4+IC0tLSBhL01BSU5UQUlORVJTDQo+PiArKysgYi9NQUlOVEFJ
-TkVSUw0KPj4gQEAgLTUzMjAsNiArNTMyMCwxOSBAQCBGOiAgICAgaW5jbHVkZS9uZXQvZGV2bGlu
-ay5oDQo+PiAgIEY6ICBpbmNsdWRlL3VhcGkvbGludXgvZGV2bGluay5oDQo+PiAgIEY6ICBuZXQv
-Y29yZS9kZXZsaW5rLmMNCj4+DQo+PiArREggRUxFQ1RST05JQ1MgSU1YNiBESENPTSBCT0FSRCBT
-VVBQT1JUDQo+PiArTTogICBDaHJpc3RvcGggTmllZGVybWFpZXIgPGNuaWVkZXJtYWllckBkaC1l
-bGVjdHJvbmljcy5jb20+DQo+PiArTDogICBrZXJuZWxAZGgtZWxlY3Ryb25pY3MuY29tDQo+PiAr
-UzogICBNYWludGFpbmVkDQo+PiArRjogICBhcmNoL2FybS9ib290L2R0cy9pbXg2Ki1kaGNvbS0q
-DQo+PiArDQo+PiArREggRUxFQ1RST05JQ1MgU1RNMzJNUDEgREhDT00vREhDT1IgQk9BUkQgU1VQ
-UE9SVA0KPj4gK006ICAgTWFyZWsgVmFzdXQgPG1hcmV4QGRlbnguZGU+DQo+PiArTDogICBrZXJu
-ZWxAZGgtZWxlY3Ryb25pY3MuY29tDQo+PiArUzogICBNYWludGFpbmVkDQo+PiArRjogICBhcmNo
-L2FybS9ib290L2R0cy9zdG0zMm1wMSotZGhjb20tKg0KPj4gK0Y6ICAgYXJjaC9hcm0vYm9vdC9k
-dHMvc3RtMzJtcDEqLWRoY29yLSoNCj4+ICsNCj4+ICAgRElBTE9HIFNFTUlDT05EVUNUT1IgRFJJ
-VkVSUw0KPj4gICBNOiAgU3VwcG9ydCBPcGVuc291cmNlIDxzdXBwb3J0Lm9wZW5zb3VyY2VAZGlh
-c2VtaS5jb20+DQo+PiAgIFM6ICBTdXBwb3J0ZWQNCj4gDQo+IFJldmlld2VkLWJ5OiBNYXJlayBW
-YXN1dCA8bWFyZXhAZGVueC5kZT4NCg0KSGVsbG8gQXJuZCwNCg0KQ291bGQgeW91IHBpY2sgdGhp
-cyBwYXRjaD8NCg0KQmVzdCByZWdhcmRzDQpDaHJpc3RvcGgNCg==
+On Thu, Jul 08, 2021 at 09:26:26AM +0200, Peter Zijlstra wrote:
+> On Wed, Jul 07, 2021 at 03:04:57PM -0400, Phil Auld wrote:
+> > On systems with weaker memory ordering (e.g. power) commit dbfb089d360b
+> > ("sched: Fix loadavg accounting race") causes increasing values of load
+> > average (via rq->calc_load_active and calc_load_tasks) due to the wakeup
+> > CPU not always seeing the write to task->sched_contributes_to_load in
+> > __schedule(). Missing that we fail to decrement nr_uninterruptible when
+> > waking up a task which incremented nr_uninterruptible when it slept.
+> > 
+> > The rq->lock serialization is insufficient across different rq->locks.
+> > 
+> > Add smp_wmb() to schedule and smp_rmb() before the read in
+> > ttwu_do_activate().
+> 
+> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > index 4ca80df205ce..ced7074716eb 100644
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > @@ -2992,6 +2992,8 @@ ttwu_do_activate(struct rq *rq, struct task_struct *p, int wake_flags,
+> >  
+> >  	lockdep_assert_held(&rq->lock);
+> >  
+> > +	/* Pairs with smp_wmb in __schedule() */
+> > +	smp_rmb();
+> >  	if (p->sched_contributes_to_load)
+> >  		rq->nr_uninterruptible--;
+> >  
+> 
+> Is this really needed ?! (this question is a big fat clue the comment is
+> insufficient). AFAICT try_to_wake_up() has a LOAD-ACQUIRE on p->on_rq
+> and hence the p->sched_contributed_to_load must already happen after.
+> 
+> > @@ -5084,6 +5086,11 @@ static void __sched notrace __schedule(bool preempt)
+> >  				!(prev_state & TASK_NOLOAD) &&
+> >  				!(prev->flags & PF_FROZEN);
+> >  
+> > +			/*
+> > +			 * Make sure the previous write is ordered before p->on_rq etc so
+> > +			 * that it is visible to other cpus in the wakeup path (ttwu_do_activate()).
+> > +			 */
+> > +			smp_wmb();
+> >  			if (prev->sched_contributes_to_load)
+> >  				rq->nr_uninterruptible++;
+> 
+> That comment is terrible, look at all the other barrier comments around
+> there for clues; in effect you're worrying about:
+> 
+> 	p->sched_contributes_to_load = X	R1 = p->on_rq
+> 	WMB					RMB
+> 	p->on_rq = Y				R2 = p->sched_contributes_to_load
+> 
+> Right?
+> 
+> 
+> Bah bah bah.. I so detest having to add barriers here for silly
+> accounting. Let me think about this a little.
+
+I got the below:
+
+__schedule()					ttwu()
+
+rq_lock()					raw_spin_lock(&p->pi_lock)
+smp_mb__after_spinlock();			smp_mb__after_spinlock();
+
+p->sched_contributes_to_load = X;		if (READ_ONCE(p->on_rq) && ...)
+						  goto unlock;
+						smp_acquire__after_ctrl_dep();
+
+						smp_cond_load_acquire(&p->on_cpu, !VAL)
+
+deactivate_task()
+  p->on_rq = 0;
+
+context_switch()
+  finish_task_switch()
+    finish_task()
+      smp_store_release(p->on_cpu, 0);
+
+						ttwu_queue()
+						  rq_lock()
+						    ttwu_do_activate()
+						      if (p->sched_contributes_to_load)
+						        ...
+						  rq_unlock()
+						raw_spin_unlock(&p->pi_lock);
+    finish_lock_switch()
+      rq_unlock();
+
+
+
+The only way for ttwu() to end up in an enqueue, is if it did a
+LOAD-ACQUIRE on ->on_cpu, but that orders with the STORE-RELEASE on the
+same, which ensures the p->sched_contributes_to_load LOAD must happen
+after the STORE.
+
+What am I missing? Your Changelog/comments provide insufficient clues..
