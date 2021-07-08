@@ -2,142 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC0173C1825
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 19:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F89A3C1834
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 19:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229845AbhGHRda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 13:33:30 -0400
-Received: from mail.efficios.com ([167.114.26.124]:41662 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhGHRd1 (ORCPT
+        id S230079AbhGHRgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 13:36:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229592AbhGHRgC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 13:33:27 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 49C7D356D73;
-        Thu,  8 Jul 2021 13:30:44 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id tso4qtwJn-oc; Thu,  8 Jul 2021 13:30:42 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id AFF91357023;
-        Thu,  8 Jul 2021 13:30:42 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com AFF91357023
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1625765442;
-        bh=yMCYyUaDxa0KOIyw0fOG9F7BxYnhCUATdYeNCkh9Sd8=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=DD66BDayNIPrk1AxZnelfo9LMYuU77BQ2RXKSI6d2ruOdKNi+D/1I/DaleCo9j9mi
-         I0nIX9jl9ByWQV14NlOXWtTtHwi1RhCqyQopPqMOdGoF2Tpk3MjOfw+iKVjrrhPPAq
-         a5JLtTdGIQLmvg7dGztILNzzDKpnHUDXNM2vErTa2tWvq6D00cwVudDsMYe6prVNRc
-         El6BT/7ir9Oh0siLaKjJmJgmeEEoaNclmAE56sZA0fXbQpsyFNnP+fRRg2LYYqETYj
-         zU0gMbEZiJE+vTS3KmTun6RQfI+rl5mHimQY7GUFzSbgFQZt/YSYw0hSfht6PiPKc8
-         3oSiIwuLO+wIw==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id wvLcxJ3AAWch; Thu,  8 Jul 2021 13:30:42 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 98ABF356D6D;
-        Thu,  8 Jul 2021 13:30:42 -0400 (EDT)
-Date:   Thu, 8 Jul 2021 13:30:42 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     rostedt <rostedt@goodmis.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        syzbot+721aa903751db87aa244@syzkaller.appspotmail.com,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Ingo Molnar <mingo@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Message-ID: <12904992.10404.1625765442490.JavaMail.zimbra@efficios.com>
-In-Reply-To: <CAEf4BzYRxRW8qR3oENuVEMBYtcvK0bUDEkoq+e4TRT5Hh0pV_Q@mail.gmail.com>
-References: <20210629095543.391ac606@oasis.local.home> <CAEf4BzZPb=cPf9V1Bz+USiq+b5opUTNkj4+CRjXdHcmExW3jVg@mail.gmail.com> <20210707184518.618ae497@rorschach.local.home> <CAEf4BzZ=hFZw1RNx0Pw=kMNq2xRrqHYCQQ_TY_pt86Zg9HFJfA@mail.gmail.com> <20210707200544.1fbfd42b@rorschach.local.home> <CAEf4BzYRxRW8qR3oENuVEMBYtcvK0bUDEkoq+e4TRT5Hh0pV_Q@mail.gmail.com>
-Subject: Re: [PATCH] tracepoint: Add tracepoint_probe_register_may_exist()
- for BPF tracing
+        Thu, 8 Jul 2021 13:36:02 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE171C06175F;
+        Thu,  8 Jul 2021 10:33:19 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id a6so3688991ljq.3;
+        Thu, 08 Jul 2021 10:33:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=p8as5+U+fUkwkcmcZ2ww9hFTp+JN+Md67nryC+hBSxw=;
+        b=mv6qxhLzloqaQsgg3yWnQ0bdog4KqbISrbYI6fgzLD93cJXjkgieBVJh+0D2pPab9w
+         ccbsyGQ0pDGL2hLlfagR03fJ3z/R3+QpWlUSpAmnTwSXL/sdpFSMDt7Mf7HmTdERXC+7
+         uYnXR2H0kSl2LiFt2qFJoOU2Jw/xxIxFh47RLHpxG6kxrIZ7Za7RaBj+7tzlBMxQUveI
+         4M9OGZZXI3Qsg79XqsTsCGTIlOhCVbqlLi5Kl8eY3eu8Ai4JQKmiByPsUqe5qILpEHvh
+         B+QPUKO1Iyh3Uc5nF2ti1jD+vY0rz6yJKWWp56WcKb7YQggivRT8V2fJt/nd2OfAM92/
+         YmdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p8as5+U+fUkwkcmcZ2ww9hFTp+JN+Md67nryC+hBSxw=;
+        b=WBy6cElgJ/uLmZmUv5BTI4wUKLs3dvgGvq90lNnkClTSiAj/CaR5syXsOKS+Uft+Nh
+         qb5ttr5V8szNCOYsV9NGJCQtasFuDN4yi0y7AscsTVF/qoDyxiJ1snil7KlW5urScyBh
+         NibjZcO+EsT+DenX/E5oN8SXRwKajaA6kVLOVpAe9MNqhh+1NeTxfQX5bkK1bzJa5iSH
+         ewx6SwalLVZhJif5XIYtwTGXpk3t5+17fPmdzgbDV7uLfau2JrEYf1+alXUgsrLFtL11
+         Yviz/y6Iko9aJaeRALpBYKxJ/ezc3uhMEmgYdQ9oLKC+JyZrektuyO9ckmymGpLyUUJq
+         hmuQ==
+X-Gm-Message-State: AOAM530bm6q0pOQjkElKziURDoa0tdTCtwp+TwGXMa5lRwlDPSmV95WK
+        euQxP8dXAWGqcktKG2vyreT7BBZw27yDpms4gYs=
+X-Google-Smtp-Source: ABdhPJzXcWFdXI1S+Xc+K3K4T+wc48lSqLmrmir6aVgVYqsoemEs48d+917E8MnXcUgOZuzfYfJvrbBi4OL6KIBSVrM=
+X-Received: by 2002:a2e:bb98:: with SMTP id y24mr12341008lje.507.1625765597906;
+ Thu, 08 Jul 2021 10:33:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4059 (ZimbraWebClient - FF89 (Linux)/8.8.15_GA_4059)
-Thread-Topic: tracepoint: Add tracepoint_probe_register_may_exist() for BPF tracing
-Thread-Index: zSZXTZdQDtLWPVa8QvQrrBDxNYsq7Q==
+References: <cover.1625709047.git.gayatri.kammela@intel.com>
+In-Reply-To: <cover.1625709047.git.gayatri.kammela@intel.com>
+From:   Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
+Date:   Thu, 8 Jul 2021 13:32:51 -0400
+Message-ID: <CAE2upjQK80HF+hADt+q9PQKpX6MntqQFQ+mcXRKkus1FvxvvRQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] Add Alder Lake PCH-S support to PMC core driver
+To:     Gayatri Kammela <gayatri.kammela@intel.com>
+Cc:     platform-driver-x86@vger.kernel.org, mgross@linux.intel.com,
+        hdegoede@redhat.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        vicamo.yang@canonical.com,
+        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+        "Box, David E" <david.e.box@intel.com>,
+        linux-kernel@vger.kernel.org, tamar.mashiah@intel.com,
+        gregkh@linuxfoundation.org, rajatja@google.com,
+        Shyam-sundar.S-k@amd.com, Alexander.Deucher@amd.com,
+        mlimonci@amd.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Jul 7, 2021, at 8:23 PM, Andrii Nakryiko andrii.nakryiko@gmail.com wrote:
+Series looks good to me.
 
-> On Wed, Jul 7, 2021 at 5:05 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->>
->> On Wed, 7 Jul 2021 16:49:26 -0700
->> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->>
->> > As for why the user might need that, it's up to the user and I don't
->> > want to speculate because it will always sound contrived without a
->> > specific production use case. But people are very creative and we try
->> > not to dictate how and what can be done if it doesn't break any
->> > fundamental assumption and safety.
->>
->> I guess it doesn't matter, because if they try to do it, the second
->> attachment will simply fail to attach.
->>
-> 
-> But not for the kprobe case.
-> 
-> And it might not always be possible to know that the same BPF program
-> is being attached. It could be attached by different processes that
-> re-use pinned program (without being aware of each other). Or it could
-> be done from some generic library that just accepts prog_fd and
-> doesn't really know the exact BPF program and whether it was already
-> attached.
-> 
-> Not sure why it doesn't matter that attachment will fail where it is
-> expected to succeed. The question is rather why such restriction?
+Acked-by: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
 
-Before eBPF came to exist, all in-kernel users of the tracepoint API never
-required multiple registrations for a given (tracepoint, probe, data) tuple.
++ AMD folks
 
-This allowed us to expose an API which can consider that the (tracepoint, probe, data)
-tuple is unique for each registration/unregistration pair, and therefore use that same
-tuple for unregistration. Refusing multiple registrations for a given tuple allows us to
-forgo the complexity of reference counting for duplicate registrations, and provide
-immediate feedback to misbehaving tracers which have duplicate registration or
-unbalanced registration/unregistration pairs.
+Hi Alex, Mario and Shaym - Perhaps AMD PMC files should also follow
+the similar convention and it could probably evolve in future where
+both x86 based PMC drivers might use some common library helper
+functions. What do you think?
 
-From the perspective of a ring buffer tracer, the notion of multiple instances of
-a given (tracepoint, probe, data) tuple is rather silly: it would mean that a given
-tracepoint hit would generate many instances of the exact same event into the
-same trace buffer.
 
-AFAIR, having the WARN_ON_ONCE() within the tracepoint code to highlight this kind of misuse
-allowed Steven to find a few unbalanced registration/unregistration issues while developing
-ftrace in the past. I vaguely recall that it triggered for blktrace at some point as well.
+On Wed, Jul 7, 2021 at 10:10 PM Gayatri Kammela
+<gayatri.kammela@intel.com> wrote:
+>
+> Hi,
+> The patch series move intel_pmc_core* files to pmc subfolder as well as
+> add Alder Lake PCH-S support to PMC core driver.
+>
+> Patch 1: Move intel_pmc_core* files to pmc subfolder
+> Patch 2: Add Alderlake support to pmc_core driver
+> Patch 3: Add Latency Tolerance Reporting (LTR) support to Alder Lake
+> Patch 4: Add Alder Lake low power mode support for pmc_core
+> Patch 5: Add GBE Package C10 fix for Alder Lake
+>
+> Changes since v1:
+> 1) Add patch 1 to v2 i.e., Move intel_pmc_core* files to pmc subfolder
+> 2) Modify commit message for patch 2.
+>
+> David E. Box (1):
+>   platform/x86: intel_pmc_core: Add GBE Package C10 fix for Alder Lake
+>     PCH
+>
+> Gayatri Kammela (4):
+>   platform/x86: intel_pmc_core: Move intel_pmc_core* files to pmc
+>     subfolder
+>   platform/x86/intel: intel_pmc_core: Add Alderlake support to pmc_core
+>     driver
+>   platform/x86/intel: intel_pmc_core: Add Latency Tolerance Reporting
+>     (LTR) support to Alder Lake
+>   platform/x86/intel: intel_pmc_core: Add Alder Lake low power mode
+>     support for pmc_core
+>
+>  drivers/platform/x86/Kconfig                  |  21 --
+>  drivers/platform/x86/Makefile                 |   1 -
+>  drivers/platform/x86/intel/Kconfig            |   1 +
+>  drivers/platform/x86/intel/Makefile           |   1 +
+>  drivers/platform/x86/intel/pmc/Kconfig        |  22 ++
+>  drivers/platform/x86/intel/pmc/Makefile       |   5 +
+>  .../x86/{ => intel/pmc}/intel_pmc_core.c      | 307 +++++++++++++++++-
+>  .../x86/{ => intel/pmc}/intel_pmc_core.h      |  17 +
+>  .../{ => intel/pmc}/intel_pmc_core_pltdrv.c   |   0
+>  9 files changed, 350 insertions(+), 25 deletions(-)
+>  create mode 100644 drivers/platform/x86/intel/pmc/Kconfig
+>  create mode 100644 drivers/platform/x86/intel/pmc/Makefile
+>  rename drivers/platform/x86/{ => intel/pmc}/intel_pmc_core.c (85%)
+>  rename drivers/platform/x86/{ => intel/pmc}/intel_pmc_core.h (95%)
+>  rename drivers/platform/x86/{ => intel/pmc}/intel_pmc_core_pltdrv.c (100%)
+>
+> Cc: Srinivas Pandruvada <srinivas.pandruvada@intel.com>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: David Box <david.e.box@intel.com>
+> Cc: You-Sheng Yang <vicamo.yang@canonical.com>
+> Cc: Hans de Goede <hdegoede@redhat.com>
+>
+> base-commit: a931dd33d370896a683236bba67c0d6f3d01144d
+> --
+> 2.25.1
+>
 
-Considering that allowing duplicates would add complexity to the tracepoint code,
-what is the use-case justifying allowing many instances of the exact same callback
-and data for a given tracepoint ?
-
-One key difference I notice here between eBPF and ring buffer tracers is what eBPF
-considers a "program". AFAIU (please let me know if I'm mistaken), the "callback"
-argument provided by eBPF to the tracepoint API is a limited set of trampoline routines.
-The bulk of the eBPF "program" is provided in the "data" argument. So this means the
-"program" is both the eBPF code and some context.
-
-So I understand that a given eBPF code could be loaded more than once for a given
-tracepoint, but I would expect that each registration on a given tracepoint be
-provided with its own "context", otherwise we end up in a similar situation as the
-ring buffer's duplicated events scenario I explained above.
-
-Also, we should discuss whether kprobes might benefit from being more strict by
-rejecting duplicated (instrumentation site, probe, data) tuples.
-
-Thanks,
-
-Mathieu
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Thanks,
+Rajneesh
