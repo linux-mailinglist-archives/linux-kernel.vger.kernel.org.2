@@ -2,137 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A28B3C1942
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 20:36:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B71D03C194B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 20:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbhGHSjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 14:39:14 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:56156 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbhGHSjJ (ORCPT
+        id S230115AbhGHSlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 14:41:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229469AbhGHSlG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 14:39:09 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1625769387; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
- To: From: Reply-To: Sender;
- bh=CaCFZHGTqeI0frAdNEP44m6CAB9Mlr4tcLRQxgjQMC0=; b=m3HUMQj1xxyma1swyAt7aiu0O286JGjG/LeOix7WDS+s1HT4CIa9MRS+MraGANZMa7z5iEjT
- Ns7amQFFVqwoT2JECxHLPUBuD1F35uAvNZm//PKkJHa3Uo9HUGqQaq0EmTVGyTd1c2fx6zmu
- lkjs4055zPfVLS3uSd4TfMwKqJ8=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 60e74589ec0b18a7451dfa54 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 08 Jul 2021 18:35:53
- GMT
-Sender: bcain=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B9806C43143; Thu,  8 Jul 2021 18:35:52 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from BCAIN (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bcain)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 44C17C433F1;
-        Thu,  8 Jul 2021 18:35:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 44C17C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bcain@codeaurora.org
-Reply-To: <bcain@codeaurora.org>
-From:   "Brian Cain" <bcain@codeaurora.org>
-To:     "'Nick Desaulniers'" <ndesaulniers@google.com>,
-        "'Christoph Hellwig'" <hch@lst.de>
-Cc:     "'Manning, Sid'" <sidneym@quicinc.com>,
-        "'Nathan Chancellor'" <nathan@kernel.org>,
-        "'Sid Manning'" <sidneym@codeaurora.org>,
-        "'Arnd Bergmann'" <arnd@arndb.de>, <linux-hexagon@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <clang-built-linux@googlegroups.com>
-References: <20210623141854.GA32155@lst.de> <08df01d7683d$8f5b7b70$ae127250$@codeaurora.org> <CAK8P3a28_0KJpcLRQrDhFk8-ndxmfk7-Q2_qcRRiYkyh-NNZUQ@mail.gmail.com> <08e101d76842$94f78a60$bee69f20$@codeaurora.org> <20210623151746.GA4247@lst.de> <CAK8P3a2bG64ARjpwQ0ZhQ9P0g8B-=AwcHHAbYBXBS4B6Fy9pQw@mail.gmail.com> <YNQE0YJzC2xmWg+2@Ryzen-9-3900X.localdomain> <20210707141054.GA24828@lst.de> <1ee8fc44-3e8c-91c0-7909-a636757dbda4@kernel.org> <20210708052751.GA18789@lst.de> <CAKwvOd=iRLQPum8-jaCG90TPyxDptNB31yRHMEWgSMxjv=KuHA@mail.gmail.com>
-In-Reply-To: <CAKwvOd=iRLQPum8-jaCG90TPyxDptNB31yRHMEWgSMxjv=KuHA@mail.gmail.com>
-Subject: RE: how can we test the hexagon port in mainline
-Date:   Thu, 8 Jul 2021 13:35:49 -0500
-Message-ID: <0a6801d77428$13c88060$3b598120$@codeaurora.org>
+        Thu, 8 Jul 2021 14:41:06 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF0BC06175F
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 11:38:24 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id u14so7114573pga.11
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 11:38:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7IMuMUvHO82Rf0Ss8PXs63y6ANC76fGZyxGH24nk1uY=;
+        b=AEJUmU092XhSjinH3RNlcQMS/9jJCUfRHFTvGQOCYGEgAkLDTt91AoUhpV20zqrqaG
+         DgxEkyC7dIjMJejx10JKJCCad8mo9r17BDUHgTgdADxDWEmoQX6MI/Ks82PTsEV6wf6b
+         wKLuoB0Bw21064KfDHSoi9ggEs0OdmCiFqzx+6A/Qav7JexZHVOP5GV64ONuI1uoMqnJ
+         IK8vOt7ia2yi82nY24zzCbuTHHcTJGeeT6wXiPdp0g3awgHWnmetypwl0L8gEXlERsvv
+         zaj3cym87YUy76sBrw/rUq8ip5xJy8lswH9QtOrhmAE4wJ4AU/HW2//+e5yWeiPhqfWo
+         iJxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7IMuMUvHO82Rf0Ss8PXs63y6ANC76fGZyxGH24nk1uY=;
+        b=KtvTNNU5jNI1m27SnWczbb6cOg8jmvD7Tr/IMy5VX0Q13+LvoyhYK6qCua7Nz5PUMf
+         kHaDE0cal4zhBm1wN8O4H8L25/WhfKU4xe8pD6a++sSRwdXl5ucqudw3lOTFFp/NystB
+         KV+oOKTM5g2CAamVXaXBPXLcifrJUGaVoehnDV/cDuWOwP4D57+FIS0g1ljUZkjHyMxn
+         bCjCRY7xQSE5PvlT4LSoCpK4dViQp4i8C3zL8+06kaA5tNclbA8W0VMeNWYJxEz1VwOP
+         cpN9iNHMi3DzMnmG3xgQO2kRT+1JhtPHopxUtZiGKdJP3MlYfFWTxBbyxb3uBwy3fOHt
+         bz8w==
+X-Gm-Message-State: AOAM532ypHaZO5YGBbStqz0geOlasOlI+iHD8nZv5n2cTXqKtgsuWD5s
+        D2vPfogXvBW8fecUJotGVBD26Q==
+X-Google-Smtp-Source: ABdhPJwvrGKMIplQ3AYMPHgsfd1ogRE/LvqPPIKpnrjJ1sSar/mUZLFVw9JqUCa95Qns7PZ7PlcqCQ==
+X-Received: by 2002:aa7:8d5a:0:b029:302:e2cb:6d79 with SMTP id s26-20020aa78d5a0000b0290302e2cb6d79mr32258922pfe.71.1625769503629;
+        Thu, 08 Jul 2021 11:38:23 -0700 (PDT)
+Received: from google.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
+        by smtp.gmail.com with ESMTPSA id 2sm4277773pgz.26.2021.07.08.11.38.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jul 2021 11:38:22 -0700 (PDT)
+Date:   Thu, 8 Jul 2021 18:38:18 +0000
+From:   David Matlack <dmatlack@google.com>
+To:     David Edmondson <dme@dme.org>
+Cc:     linux-kernel@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v2 0/2] kvm: x86: Convey the exit reason to user-space on
+ emulation failure
+Message-ID: <YOdGGuk2trw0h95x@google.com>
+References: <20210706101207.2993686-1-david.edmondson@oracle.com>
+ <YOY2pLoXQ8ePXu0W@google.com>
+ <m28s2g51q3.fsf@dme.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQJHxj6Ga6VuoE3mNrk9EKW2w3HC7gG6K8dnAg2GTicC7yoGzAOeQQE6AcpiXAwBQV0IVQJh9CDkAd1aUgECtDKCjQHeCRXAqactp4A=
-Content-Language: en-us
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <m28s2g51q3.fsf@dme.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Nick Desaulniers <ndesaulniers@google.com>
-> Sent: Thursday, July 8, 2021 12:54 PM
-> To: Christoph Hellwig <hch@lst.de>
-> Cc: Nathan Chancellor <nathan@kernel.org>; Brian Cain
-> <bcain@codeaurora.org>; Sid Manning <sidneym@codeaurora.org>; Arnd
-> Bergmann <arnd@arndb.de>; linux-hexagon@vger.kernel.org; linux-
-> kernel@vger.kernel.org; clang-built-linux@googlegroups.com
-> Subject: Re: how can we test the hexagon port in mainline
->=20
-> On Wed, Jul 7, 2021 at 10:27 PM Christoph Hellwig <hch@lst.de> wrote:
+On Thu, Jul 08, 2021 at 03:17:40PM +0100, David Edmondson wrote:
+> Apologies if you see two of these - I had some email problems earlier.
+
+I only got one! :)
+
+> 
+> On Wednesday, 2021-07-07 at 23:20:04 UTC, David Matlack wrote:
+> 
+> > On Tue, Jul 06, 2021 at 11:12:05AM +0100, David Edmondson wrote:
+> >> To help when debugging failures in the field, if instruction emulation
+> >> fails, report the VM exit reason to userspace in order that it can be
+> >> recorded.
 > >
-> > On Wed, Jul 07, 2021 at 10:42:27AM -0700, Nathan Chancellor wrote:
-> > >> hch@brick:~/work/linux$ make -j4 ARCH=3Dhexagon
-> > >> CROSS_COMPILE=3Dhexagon-unknown-linux-musl LLVM=3D1 LLVM_IAS=3D1
-> defconfig all
-> > >> HOSTCC  scripts/basic/fixdep
-> > >> clang: error while loading shared libraries: libtinfo.so.5: =
-cannot open
-> shared object file: No such file or directory
-> > >
-> > > Hmmm, is that with libtinfo5 installed (or whatever the =
-ncurses-compat
-> > > equivalent is on your distribution installed)? I had that problem =
-on Debian
-> > > until I insta
-> >
-> > I did install libtinfo5, which just gets me to the next error:
-> >
-> > hch@brick:~/work/linux$ export PATH=3D/opt/clang+llvm-12.0.0-cross-
-> hexagon-unknown-linux-musl/x86_64-linux-gnu/bin/:$PATH
-> > hch@brick:~/work/linux$ make -j4 ARCH=3Dhexagon
-> CROSS_COMPILE=3Dhexagon-unknown-linux-musl LLVM=3D1 LLVM_IAS=3D1 =
-defconfig
-> all
-> >   HOSTCC  scripts/basic/fixdep
-> > clang: error while loading shared libraries: libc++.so.1: cannot =
-open shared
-> object file: No such file or directory
->=20
-> ^ Nathan did mention earlier in the thread that he "had to install
-> libtinfo5 and libc++1-7 on Debian Buster." Emphasis on the _and
-> libc++_ part.
->=20
-> I'm not sure if that binary distribution came with a libc++.so.1; if
-> so, that path needs to be specified via LD_LIBRARY_PATH so that the
-> runtime loader can find it.  Perhaps rpath wasn't set when the clang
-> binary was built.
+> > What is the benefit of seeing the VM-exit reason that led to an
+> > emulation failure?
+> 
+> I can't cite an example of where this has definitively led in a
+> direction that helped solve a problem, but we do sometimes see emulation
+> failures reported in situations where we are not able to reproduce the
+> failures on demand and the existing information provided at the time of
+> failure is either insufficient or suspect.
+> 
+> Given that, I'm left casting about for data that can be made available
+> to assist in postmortem analysis of the failures.
 
-The only libc++ builds in this distribution are the target hexagon ones. =
- I did not include a host x86_64 libc++.so library, but it does seem =
-like it would be more convenient if we did.
+Understood, thanks for the context. My only concern would be that
+userspace APIs are difficult to change once they exist. If it turns
+out knowing the exit reason does not help with debugging emulation
+failures we'd still be stuck with exporting it on every emulation
+failure.
 
-Nathan suggested disabling the terminfo dependency, I will include that =
-change for the next release that we produce.  Also, the upcoming =
-clang-13 release from releases.llvm.org should contain all the necessary =
-fixes (discussed recently) to build kernel code for hexagon.
+My intuition is that the instruction bytes (which are now available with
+Aaron's patch) and the guest register state (which is queryable through
+other ioctls) should be sufficient to set up a reproduction of the
+emulation failure in a kvm-unit-test and the exit reason should not
+really matter. I'm curious if that's not the case?
 
-> We're looking into statically linked images of clang to prevent these
-> kinds of games.
+I'm really not opposed to exporting the exit reason if it is useful, I'm
+just not sure it will help.
 
-Statically linking against libc++/libc++abi at least seems like a good =
-idea.  Let me know if we can help.
-
--Brian
-
+> 
+> >> I'm unsure whether sgx_handle_emulation_failure() needs to be adapted
+> >> to use the emulation_failure part of the exit union in struct kvm_run
+> >> - advice welcomed.
+> >> 
+> >> v2:
+> >> - Improve patch comments (dmatlack)
+> >> - Intel should provide the full exit reason (dmatlack)
+> >> - Pass a boolean rather than flags (dmatlack)
+> >> - Use the helper in kvm_task_switch() and kvm_handle_memory_failure()
+> >>   (dmatlack)
+> >> - Describe the exit_reason field of the emulation_failure structure
+> >>   (dmatlack)
+> >> 
+> >> David Edmondson (2):
+> >>   KVM: x86: Add kvm_x86_ops.get_exit_reason
+> >>   KVM: x86: On emulation failure, convey the exit reason to userspace
+> >> 
+> >>  arch/x86/include/asm/kvm-x86-ops.h |  1 +
+> >>  arch/x86/include/asm/kvm_host.h    |  3 +++
+> >>  arch/x86/kvm/svm/svm.c             |  6 ++++++
+> >>  arch/x86/kvm/vmx/vmx.c             | 11 +++++++----
+> >>  arch/x86/kvm/x86.c                 | 22 +++++++++++++---------
+> >>  include/uapi/linux/kvm.h           |  7 +++++++
+> >>  6 files changed, 37 insertions(+), 13 deletions(-)
+> >> 
+> >> -- 
+> >> 2.30.2
+> >> 
+> 
+> dme.
+> -- 
+> It's gettin', it's gettin', it's gettin' kinda hectic.
