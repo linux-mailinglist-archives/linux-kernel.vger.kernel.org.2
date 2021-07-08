@@ -2,112 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB4E3BF7CE
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 11:52:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D972D3BF7CC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 11:52:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231440AbhGHJzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 05:55:04 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:10432 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231360AbhGHJzC (ORCPT
+        id S231376AbhGHJzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 05:55:01 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:36710 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230079AbhGHJzA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 05:55:02 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GLBMP60LjzZpW0;
-        Thu,  8 Jul 2021 17:49:05 +0800 (CST)
-Received: from dggpeml500016.china.huawei.com (7.185.36.70) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 8 Jul 2021 17:52:18 +0800
-Received: from [10.174.148.223] (10.174.148.223) by
- dggpeml500016.china.huawei.com (7.185.36.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 8 Jul 2021 17:52:17 +0800
-Subject: Re: [RFC PATCH 0/5] madvise MADV_DOEXEC
-To:     Anthony Yznaga <anthony.yznaga@oracle.com>,
-        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-mm@kvack.org>, <linux-arch@vger.kernel.org>
-CC:     <mhocko@kernel.org>, <tglx@linutronix.de>, <mingo@redhat.com>,
-        <bp@alien8.de>, <x86@kernel.org>, <hpa@zytor.com>,
-        <viro@zeniv.linux.org.uk>, <akpm@linux-foundation.org>,
-        <arnd@arndb.de>, <ebiederm@xmission.com>, <keescook@chromium.org>,
-        <gerg@linux-m68k.org>, <ktkhai@virtuozzo.com>,
-        <christian.brauner@ubuntu.com>, <peterz@infradead.org>,
-        <esyr@redhat.com>, <jgg@ziepe.ca>, <christian@kellner.me>,
-        <areber@redhat.com>, <cyphar@cyphar.com>,
-        <steven.sistare@oracle.com>,
-        "Gonglei (Arei)" <arei.gonglei@huawei.com>
-References: <1595869887-23307-1-git-send-email-anthony.yznaga@oracle.com>
-From:   "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
-        <longpeng2@huawei.com>
-Message-ID: <cc714571-4461-c9e0-7b24-e213664caa54@huawei.com>
-Date:   Thu, 8 Jul 2021 17:52:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 8 Jul 2021 05:55:00 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id EA857201A1;
+        Thu,  8 Jul 2021 09:52:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1625737937; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PhlJNBpetjZSDV5/yCI47Cdt6ca/0zPJcaE8KUURNEc=;
+        b=f5l6TTOQAYB3MaKb1DZ9Ruzgb2xHoK54uI9sHiBGLRmiaQokt0TJV4zeh2rFYpiEfoPau5
+        XeZ3Swqiy7Kn2+OChoCLUlIaO59Ad2dxOlkgrUmLH4X1YXZjIPwHDS6x8felX1bGIGQ1D+
+        EJhdDiBG3+7H1nbAG25qMUAma5eROjY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1625737937;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PhlJNBpetjZSDV5/yCI47Cdt6ca/0zPJcaE8KUURNEc=;
+        b=J6vHDs5u3ru0i/nrlj6xKeplfW0Cbu6Uj5FAG7tRm2oWd5W0XLN9eUwnpV4eHv97lQYbCZ
+        R4hE2UUNrTcoS2AA==
+Received: from quack2.suse.cz (unknown [10.163.43.118])
+        by relay2.suse.de (Postfix) with ESMTP id D6302A3B88;
+        Thu,  8 Jul 2021 09:52:17 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 589961F2CAF; Thu,  8 Jul 2021 11:52:17 +0200 (CEST)
+Date:   Thu, 8 Jul 2021 11:52:17 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux F2FS Dev Mailing List 
+        <linux-f2fs-devel@lists.sourceforge.net>, Jan Kara <jack@suse.cz>
+Subject: Re: [GIT PULL] f2fs for 5.14-rc1
+Message-ID: <20210708095217.GA32434@quack2.suse.cz>
+References: <YOYHejl3CgABOnhP@google.com>
+ <20210708094647.7c0d3060@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <1595869887-23307-1-git-send-email-anthony.yznaga@oracle.com>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.148.223]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500016.china.huawei.com (7.185.36.70)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210708094647.7c0d3060@canb.auug.org.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anthony and Steven,
-
-ÔÚ 2020/7/28 1:11, Anthony Yznaga Ð´µÀ:
-> This patchset adds support for preserving an anonymous memory range across
-> exec(3) using a new madvise MADV_DOEXEC argument.  The primary benefit for
-> sharing memory in this manner, as opposed to re-attaching to a named shared
-> memory segment, is to ensure it is mapped at the same virtual address in
-> the new process as it was in the old one.  An intended use for this is to
-> preserve guest memory for guests using vfio while qemu exec's an updated
-> version of itself.  By ensuring the memory is preserved at a fixed address,
-> vfio mappings and their associated kernel data structures can remain valid.
-> In addition, for the qemu use case, qemu instances that back guest RAM with
-> anonymous memory can be updated.
+On Thu 08-07-21 09:46:47, Stephen Rothwell wrote:
+> Hi Jaegeuk,
 > 
-
-We have a requirement like yours, but ours seems more complex. We want to
-isolate some memory regions from the VM's memory space and the start a child
-process who will using these memory regions.
-
-I've wrote a draft to support this feature, but I just find that my draft is
-pretty like yours.
-
-It seems that you've already abandoned this patchset, why ?
-
-> Patches 1 and 2 ensure that loading of ELF load segments does not silently
-> clobber existing VMAS, and remove assumptions that the stack is the only
-> VMA in the mm when the stack is set up.  Patch 1 re-introduces the use of
-> MAP_FIXED_NOREPLACE to load ELF binaries that addresses the previous issues
-> and could be considered on its own.
+> On Wed, 7 Jul 2021 12:58:50 -0700 Jaegeuk Kim <jaegeuk@kernel.org> wrote:
+> >
+> > Could you please consider this pull request?
+> > 
+> > Thanks,
+> > 
+> > The following changes since commit bd3c9cdb21a2674dd0db70199df884828e37abd4:
+> > 
+> >   Merge tag 'arm64-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux (2021-05-14 10:52:47 -0700)
+> > 
+> > are available in the Git repository at:
+> > 
+> >   git://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git tags/f2fs-for-5.14-rc1
+> > 
+> > for you to fetch changes up to 28607bf3aa6f9762b32dc7f1ed0488823c0651b8:
+> > 
+> >   f2fs: drop dirty node pages when cp is in error status (2021-07-06 22:05:06 -0700)
 > 
-> Patches 3, 4, and 5 introduce the feature and an opt-in method for its use
-> using an ELF note.
-> 
-> Anthony Yznaga (5):
->   elf: reintroduce using MAP_FIXED_NOREPLACE for elf executable mappings
->   mm: do not assume only the stack vma exists in setup_arg_pages()
->   mm: introduce VM_EXEC_KEEP
->   exec, elf: require opt-in for accepting preserved mem
->   mm: introduce MADV_DOEXEC
-> 
->  arch/x86/Kconfig                       |   1 +
->  fs/binfmt_elf.c                        | 196 +++++++++++++++++++++++++--------
->  fs/exec.c                              |  33 +++++-
->  include/linux/binfmts.h                |   7 +-
->  include/linux/mm.h                     |   5 +
->  include/uapi/asm-generic/mman-common.h |   3 +
->  kernel/fork.c                          |   2 +-
->  mm/madvise.c                           |  25 +++++
->  mm/mmap.c                              |  47 ++++++++
->  9 files changed, 266 insertions(+), 53 deletions(-)
-> 
+> Its worth mentioning the semantic conflict against the ext3 tree (which
+> hasn't been merged by Linus yet, but presumably will be).
 
+Whether that particular series causing the conflict will be merged by Linus
+in this merge window is uncertain - Linus didn't like how filemap_fault()
+unconditionally acquired the lock. I've created an optimization patch to avoid
+that but review is pending... At this point I'm leaning towards the variant
+that series won't go in during the merge window. In that case I'll
+probably rebase on top of rc1 and force-push everything.
+
+								Honza
 -- 
-Sincerely yours,
-Longpeng(Mike)
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
