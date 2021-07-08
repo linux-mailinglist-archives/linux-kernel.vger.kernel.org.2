@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AE7E3BF795
+	by mail.lfdr.de (Postfix) with ESMTP id 838513BF796
 	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 11:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231419AbhGHJa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 05:30:59 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:60766 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231320AbhGHJav (ORCPT
+        id S231449AbhGHJbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 05:31:00 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:36018 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231321AbhGHJav (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 8 Jul 2021 05:30:51 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 759A12019C;
+        by smtp-out1.suse.de (Postfix) with ESMTP id 7BEAE21FD1;
         Thu,  8 Jul 2021 09:28:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
         t=1625736488; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Y5VwJX1eWn9Inbb0pgjqnO2NeXEAl/NCz0WSLGRvteI=;
-        b=sc5YOILhVrkbL6XNABgCDJZBxWHo6H1xiw2xwtCGobIBuIyX8SM9VUml5nrPRKZdjYOsxP
-        6CpXJJBB0lUfon2gZfv5Hon6yw4Hrx4Xg9QXWAAm6b/KhUOjHbgjXERujzQGLvOfc6cCWP
-        sEBRm7Pvak3NGFKcPChTy3E+ASEpMyM=
+        bh=nXMw5odYC5q3FtwoS0u2DjqK6fjPg8pZT74QTDkWFwE=;
+        b=Qv55vqoafuG/M0TBtVGf+0hCC9x0VbDwAz/osL6gh0wU4Xh2uThmZPoUDKAaUIUM4gnjsC
+        elaDmHJnKpVbQwSF6pLR9+fBOzPl2swU3gAp9BRVl6POPPJ2G7Gkcp+6YZnyXWUUR7waU5
+        iZpVfoYcSbFavPqJ6xJQxOKSEEzXIzw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
         s=susede2_ed25519; t=1625736488;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Y5VwJX1eWn9Inbb0pgjqnO2NeXEAl/NCz0WSLGRvteI=;
-        b=a4XRPi0Ymnw79wZWBpHJINiEUi0bc7FnkzZZAD2nR825jZr7D7GCrR5oR4WTpgy1eOD+ZU
-        gcvJ4D/OjkNPEyDQ==
+        bh=nXMw5odYC5q3FtwoS0u2DjqK6fjPg8pZT74QTDkWFwE=;
+        b=GOcRbaYY7m+h3QxqYXNghwggvQNfKf6YAQjX/OeGUG5foxRxP20pywvX7MM6428OxvZPcR
+        9xJxgEuwWQT+EtBw==
 Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
-        by relay2.suse.de (Postfix) with ESMTP id 6E38EA3B89;
+        by relay2.suse.de (Postfix) with ESMTP id 71FDCA3B8A;
         Thu,  8 Jul 2021 09:28:08 +0000 (UTC)
 Received: by adalid.arch.suse.de (Postfix, from userid 17828)
-        id 5ECE45171150; Thu,  8 Jul 2021 11:28:08 +0200 (CEST)
+        id 63BBD5171152; Thu,  8 Jul 2021 11:28:08 +0200 (CEST)
 From:   Daniel Wagner <dwagner@suse.de>
 To:     linux-nvme@lists.infradead.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -45,10 +45,11 @@ Cc:     linux-kernel@vger.kernel.org,
         Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
         Ming Lei <ming.lei@redhat.com>,
         Sagi Grimberg <sagi@grimberg.me>,
-        Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH v2 3/5] nvme-rdma: Update number of hardware queues before using them
-Date:   Thu,  8 Jul 2021 11:27:53 +0200
-Message-Id: <20210708092755.15660-4-dwagner@suse.de>
+        Daniel Wagner <dwagner@suse.de>,
+        James Smart <jsmart2021@gmail.com>
+Subject: [PATCH v2 4/5] nvme-fc: Wait with a timeout for queue to freeze
+Date:   Thu,  8 Jul 2021 11:27:54 +0200
+Message-Id: <20210708092755.15660-5-dwagner@suse.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210708092755.15660-1-dwagner@suse.de>
 References: <20210708092755.15660-1-dwagner@suse.de>
@@ -58,52 +59,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the number of hardware queues changes during resetting we should
-update the tagset first before using it.
+Do not wait indifinitly for all queues to freeze. Instead use a
+timeout and abort the operation if we get stuck.
 
+Reviewed-by: James Smart <jsmart2021@gmail.com>
 Signed-off-by: Daniel Wagner <dwagner@suse.de>
 ---
- drivers/nvme/host/rdma.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ drivers/nvme/host/fc.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
-index 3a296fd34bef..9825112bd9f4 100644
---- a/drivers/nvme/host/rdma.c
-+++ b/drivers/nvme/host/rdma.c
-@@ -967,6 +967,7 @@ static void nvme_rdma_destroy_io_queues(struct nvme_rdma_ctrl *ctrl,
- static int nvme_rdma_configure_io_queues(struct nvme_rdma_ctrl *ctrl, bool new)
- {
- 	int ret;
-+	u32 prior_q_cnt = ctrl->ctrl.queue_count;
- 
- 	ret = nvme_rdma_alloc_io_queues(ctrl);
- 	if (ret)
-@@ -984,13 +985,7 @@ static int nvme_rdma_configure_io_queues(struct nvme_rdma_ctrl *ctrl, bool new)
- 			ret = PTR_ERR(ctrl->ctrl.connect_q);
- 			goto out_free_tag_set;
- 		}
--	}
--
--	ret = nvme_rdma_start_io_queues(ctrl);
--	if (ret)
--		goto out_cleanup_connect_q;
--
--	if (!new) {
-+	} else if (prior_q_cnt != ctrl->ctrl.queue_count) {
- 		nvme_start_queues(&ctrl->ctrl);
- 		if (!nvme_wait_freeze_timeout(&ctrl->ctrl, NVME_IO_TIMEOUT)) {
- 			/*
-@@ -1006,6 +1001,10 @@ static int nvme_rdma_configure_io_queues(struct nvme_rdma_ctrl *ctrl, bool new)
+diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
+index d0eb81387d4e..8e1fc3796735 100644
+--- a/drivers/nvme/host/fc.c
++++ b/drivers/nvme/host/fc.c
+@@ -2956,7 +2956,14 @@ nvme_fc_recreate_io_queues(struct nvme_fc_ctrl *ctrl)
+ 		dev_info(ctrl->ctrl.device,
+ 			"reconnect: revising io queue count from %d to %d\n",
+ 			prior_ioq_cnt, nr_io_queues);
+-		nvme_wait_freeze(&ctrl->ctrl);
++		if (!nvme_wait_freeze_timeout(&ctrl->ctrl, NVME_IO_TIMEOUT)) {
++			/*
++			 * If we timed out waiting for freeze we are likely to
++			 * be stuck.  Fail the controller initialization just
++			 * to be safe.
++			 */
++			return -ENODEV;
++		}
+ 		blk_mq_update_nr_hw_queues(&ctrl->tag_set, nr_io_queues);
  		nvme_unfreeze(&ctrl->ctrl);
  	}
- 
-+	ret = nvme_rdma_start_io_queues(ctrl);
-+	if (ret)
-+		goto out_cleanup_connect_q;
-+
- 	return 0;
- 
- out_wait_freeze_timed_out:
 -- 
 2.29.2
 
