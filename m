@@ -2,105 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B09C3C1BF9
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 01:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 771DA3C1C0A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 01:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229701AbhGHXZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 19:25:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55080 "EHLO
+        id S229607AbhGHX2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 19:28:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbhGHXZi (ORCPT
+        with ESMTP id S229497AbhGHX2K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 19:25:38 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 213F0C06175F
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 16:22:55 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id i5-20020a9d68c50000b02904b41fa91c97so3184199oto.5
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 16:22:55 -0700 (PDT)
+        Thu, 8 Jul 2021 19:28:10 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B856C06175F
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 16:25:27 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id k11-20020a056902070bb029055a2303fc2dso9023012ybt.11
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 16:25:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=erPEQ5qusFdUetma23ocZGx6VyJVWOGasdNhx9ZlPas=;
-        b=bbkWaV/PVCApTEkLGIr7Q6qml+NjjkYBHxxln82BTmc9cUbq9U+InpMo+ndTTLI3re
-         WL7Wm7LTmXSpuVv4gxUVcRuj5nSDvJsiyxWOIsevLHq2HUmjbY2xoSTbSTrwGzGaqCrP
-         GtK3nYsSsgjONgyB6ATgfpYs96JQF0wQPjR38=
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=3UNGNWby+JwNaCoHIhHyVIJsq6+YeBmss1XfIpN9rvI=;
+        b=v+itpwtNHus5Oj2rA04Z5doOdxbPffIS8ptB8Gm3Mn26g63+uudriQZUlm3OYJ9Y2I
+         Cbop6S5cp9y9ZS/5N7EUYC99i9fePSYTwoduL8za5UVsjnZpdDsWZDF2z9aW7s3gqU5i
+         R9/oqkLOHtwtffByV7CZcnWZ5Y9WYlP5mY+psQO6QuzuWmqSvRZTtR8kEaT3co93qSpg
+         GgdQd5lZy0eM8wxv79o+ENCeQ5KMMloPmXm8ywUYP0wcNNud6ChbB+p9JgwdREEKGS6Z
+         4NGlJ8O3CkMT9dpd2KcyGRCW2peLe1/UhmJKbMKmCZhGu2OdhY7PJs/CIVEl1AXI6us6
+         AVmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=erPEQ5qusFdUetma23ocZGx6VyJVWOGasdNhx9ZlPas=;
-        b=ui4MHUiWzDR7Ce4BcOP6h/lr2F+OAdcPdJxH11vsWjo9Hk01MeQtnpGGVF/Rt3L+7u
-         UTvvz1T8LEJaH1HPLn2F6oz6Dxifzmh7QIXAicbMBlF2pNjWaAupxcAkxHpYCO1mbU6F
-         h/Wloha+Gxx0a0xdKHv8XT9hVSoQmEg4QqBsqLFnQiINEcpUSj9IpiIWbXDvGqJ5gHIY
-         t2NleBzLo/pNAQw/oENaZZE+HeJojQFjnBme3IEpVV8NBKYdFRjusr6jd3pJLvOUwXLC
-         VDaO9qqWClHmyUVmZKUOXz+gGeAtBdovapsBNlX8Vwo3vdc+tI814PAKvwgQ+ZcRff0r
-         cnHw==
-X-Gm-Message-State: AOAM533FZMdFUgW0rDIchjkHNAUFpNE1HWibLmmx3y9Z0MlSXkCAnu8l
-        1ihRVvHOPLetmubESijyq/oEM5gGz2plo6Y9MF5DCw==
-X-Google-Smtp-Source: ABdhPJwzNo2G5Ic4IAhAIUd0OQNH7pT10e/9fRFyYaiHj2yruNoCtHSEn6HGIP/M+B0rBbuqWBW4dXscBlQUrVRZXuM=
-X-Received: by 2002:a9d:8c7:: with SMTP id 65mr26143667otf.25.1625786574524;
- Thu, 08 Jul 2021 16:22:54 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 8 Jul 2021 23:22:54 +0000
-MIME-Version: 1.0
-In-Reply-To: <1624015734-16778-2-git-send-email-okukatla@codeaurora.org>
-References: <1624015734-16778-1-git-send-email-okukatla@codeaurora.org> <1624015734-16778-2-git-send-email-okukatla@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 8 Jul 2021 23:22:54 +0000
-Message-ID: <CAE-0n51btkt9ehEFrm+WucP90ZufKw1PEQqzNGVDRy51jByXkw@mail.gmail.com>
-Subject: Re: [V4 1/3] dt-bindings: interconnect: Add EPSS L3 DT binding on SC7280
-To:     Andy Gross <agross@kernel.org>, Georgi Djakov <djakov@kernel.org>,
-        Odelu Kukatla <okukatla@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sibi Sankar <sibis@codeaurora.org>, bjorn.andersson@linaro.org,
-        devicetree@vger.kernel.org, evgreen@google.com,
-        georgi.djakov@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Cc:     seansw@qti.qualcomm.com, elder@linaro.org,
-        linux-arm-msm-owner@vger.kernel.org
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=3UNGNWby+JwNaCoHIhHyVIJsq6+YeBmss1XfIpN9rvI=;
+        b=otOezejxCbaAHMMwyxGzOfZKN4bfyTvxkkZVS/su7hUB5Coj5ww+O6cc7oeaWgx7cP
+         nXilJc3DEreOVH7BM9pUI6L9XZEfysDGFhe0UP0gptBQvwizW80XjLIh6BHG5eY8TEWr
+         5Snl0nobvVT1mI/X8cvisY8OZskHTsxYp65T2KZFzOeTPE1FJRPtybsJyxFGOgundzQP
+         +xNNN9RWkSSAJqlyrTYqLAZoMjfDh3nrO1+TwNZGiqbz82RhamUAwwfJGPJsMnc7WZe/
+         7N/OOzpzwryPzjttYUHJ7ru87gjX3uC7BgwbL0GghVzDjKAzjGuN6ZySSbYtmDv9W/nf
+         5NJQ==
+X-Gm-Message-State: AOAM530VEEmzF13rddCfZs8/SsJ6PXo7toasfsa8y9DjMv243kmqRKrN
+        G8hULce+pOJ4hCYi22xzRw55lov554q5znzyjbQ=
+X-Google-Smtp-Source: ABdhPJxoxbWITubhOzR1BOEqmjmDar82hmG56b6oTrMrXwpxuhuSrEsv3rZzg+qc9j8rRowBU4NsTRuQ8X9i9EHNigM=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:9fd:98a9:be3a:391d])
+ (user=ndesaulniers job=sendgmr) by 2002:a25:81c5:: with SMTP id
+ n5mr43225237ybm.323.1625786726476; Thu, 08 Jul 2021 16:25:26 -0700 (PDT)
+Date:   Thu,  8 Jul 2021 16:25:20 -0700
+Message-Id: <20210708232522.3118208-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+Subject: [PATCH v2 0/2] infer CROSS_COMPILE from SRCARCH for LLVM=1 LLVM_IAS=1
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Miguel Ojeda <ojeda@kernel.org>, Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Odelu Kukatla (2021-06-18 04:28:52)
-> Add Epoch Subsystem (EPSS) L3 interconnect provider binding on SC7280
-> SoCs.
->
-> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
-> ---
->  .../devicetree/bindings/interconnect/qcom,osm-l3.yaml          |  9 ++++++++-
->  include/dt-bindings/interconnect/qcom,osm-l3.h                 | 10 +++++++++-
->  2 files changed, 17 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml b/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml
-> index d6a95c3..9f67c8e 100644
-> --- a/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml
-> +++ b/Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml
-> @@ -18,12 +18,19 @@ properties:
->    compatible:
->      enum:
->        - qcom,sc7180-osm-l3
-> +      - qcom,sc7280-epss-l3
->        - qcom,sdm845-osm-l3
->        - qcom,sm8150-osm-l3
->        - qcom,sm8250-epss-l3
->
->    reg:
-> -    maxItems: 1
-> +    minItems: 1
-> +    maxItems: 4
+We get constant feedback that the command line invocation of make is too
+long. CROSS_COMPILE is helpful when a toolchain has a prefix of the
+target triple, or is an absolute path outside of $PATH, but it's mostly
+redundant for a given ARCH.
 
-Can we base this on the compatible string so that only sc7280-epss-l3
-requires 4 items? and then the others require 1 reg property?
+Instead, let's infer it from SRCARCH, and move some flag handling into a
+new file included from the top level Makefile.
 
-> +    items:
-> +      - description: OSM clock domain-0 base address and size
-> +      - description: OSM clock domain-1 base address and size
-> +      - description: OSM clock domain-2 base address and size
-> +      - description: OSM clock domain-3 base address and size
->
->    clocks:
->      items:
+Changes v1 -> v2:
+* patch 1/2 untouched.
+* Fix typos in commit message as per Geert and Masahiro.
+* Use SRCARCH instead of ARCH, simplifying x86 handling, as per
+  Masahiro. Add his sugguested by tag.
+* change commit oneline from 'drop' to 'infer.'
+* Add detail about explicit host --target and relationship of ARCH to
+  SRCARCH, as per Masahiro.
+
+Nick Desaulniers (2):
+  Makefile: move initial clang flag handling into scripts/Makefile.clang
+  Makefile: infer CROSS_COMPILE from SRCARCH for LLVM=1 LLVM_IAS=1
+
+ Documentation/kbuild/llvm.rst |  5 ++++
+ MAINTAINERS                   |  1 +
+ Makefile                      | 15 +-----------
+ scripts/Makefile.clang        | 44 +++++++++++++++++++++++++++++++++++
+ 4 files changed, 51 insertions(+), 14 deletions(-)
+ create mode 100644 scripts/Makefile.clang
+
+
+base-commit: a0e781a2a35a8dd4e6a38571998d59c6b0e32cd8
+-- 
+2.32.0.93.g670b81a890-goog
+
