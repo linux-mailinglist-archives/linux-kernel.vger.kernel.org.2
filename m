@@ -2,119 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1CB63BF971
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 13:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E013BF984
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 13:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231640AbhGHMBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 08:01:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52198 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231561AbhGHMBF (ORCPT
+        id S231808AbhGHMBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 08:01:50 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:43325 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231784AbhGHMBt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 08:01:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625745502;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dshXb9jn8eIm6Bc2LZzQNFCS56+vnABkiUTQb4CJn2U=;
-        b=eAMi73DZTS+sV4DpJM8UwxNmE+6yWW4OtuKz1BuIjXQM2ggDjDTH1LdaQ4JWwbi7iNYGgc
-        EP1NtQMq1rmMoiZ/eRxEuMXhjlx8Igg1e9JvXqBoZRvnX8Za52KQ8ClCGCgkdB+KlKCNnn
-        wX5rkDLMTXfdKJyi0OKv1iX7Y/9/HxU=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-189-HfZF-znfP-CAYnuMdiGxww-1; Thu, 08 Jul 2021 07:58:21 -0400
-X-MC-Unique: HfZF-znfP-CAYnuMdiGxww-1
-Received: by mail-wr1-f71.google.com with SMTP id w4-20020a05600018c4b0290134e4f784e8so1846874wrq.10
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 04:58:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:subject:to:cc:references:from
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-transfer-encoding:content-language;
-        bh=dshXb9jn8eIm6Bc2LZzQNFCS56+vnABkiUTQb4CJn2U=;
-        b=J6iz6TXO8DcHj2EWTR5Ac+Ms/3i6Pv5Whc/uxG/hjiwfmthF5oqCe6ryXwVlC6FJxG
-         GBcRpVnuyiqmg5t+wP42IIFH74SWLd+iaJHxj9IHkAHrHFNkwD1W3zNGuzoRqQNqdkvf
-         2h6HueMo31fTIDn2daE5JDr69NB450QuqTLXzwotOoZoxqmhp3VwcR17flMekIeqDLry
-         sfeD1XLDuyH0mPwxFrArrsOCvt4KhHC8IMknuVo0kNwlI8GD7EMJjC7pudfzTs6MvgQ5
-         xb+KC96rjfV/MItRkuXUpk6g8RiN1LZEaCp/9Qjg9Ss5cKqcebQyUGCuJEMybqploJtI
-         nhjQ==
-X-Gm-Message-State: AOAM5339I417Kq0IZrjMo9r45aer62Vgd7O5k7u2HadK9BjAn0grNqrH
-        kqlFslShlyuYPFiWVNeRZLKicV89pXtftvhEFGF4tBjj9hFA0l5EmcqF1+/Nxio116HsXwOJR/K
-        3J19b22YeYwqZ4CI7rQ9GTRGt
-X-Received: by 2002:adf:f346:: with SMTP id e6mr16953048wrp.28.1625745500696;
-        Thu, 08 Jul 2021 04:58:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxozFjMyAziG3KZbbDgZO1MZs3Mlv2ma3E1vYF8tuWG6EYbU0l54aPD4L8qQkEAA6YUMnh1Lw==
-X-Received: by 2002:adf:f346:: with SMTP id e6mr16953035wrp.28.1625745500565;
-        Thu, 08 Jul 2021 04:58:20 -0700 (PDT)
-Received: from ?IPv6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id c7sm2064945wrs.23.2021.07.08.04.58.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Jul 2021 04:58:20 -0700 (PDT)
-Reply-To: eric.auger@redhat.com
-Subject: Re: [PATCH v2] misc/pvpanic-pci: Allow automatic loading
-To:     eric.auger.pro@gmail.com, linux-kernel@vger.kernel.org,
-        mihai.carabas@oracle.com, gregkh@linuxfoundation.org,
-        andriy.shevchenko@linux.intel.com
-Cc:     arnd@arndb.de, pizhenwei@bytedance.com, pbonzini@redhat.com,
-        joe@perches.com, drjones@redhat.com
-References: <20210629072214.901004-1-eric.auger@redhat.com>
-From:   Eric Auger <eric.auger@redhat.com>
-Message-ID: <3e006cfb-f965-67b8-7167-dc2fcf342361@redhat.com>
-Date:   Thu, 8 Jul 2021 13:58:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Thu, 8 Jul 2021 08:01:49 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id CB80958057A;
+        Thu,  8 Jul 2021 07:59:07 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Thu, 08 Jul 2021 07:59:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
+         h=from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=yEjWxOGk2YrrSh+LFrvL+ETV5U
+        BWmp/CI+DKroRyqOw=; b=JUhzHhsI3PLEx+GyCQ7kW9pSH4bjlB6LpdIwkbGGJe
+        uuSw4SkS5FRxqoronEWoQ8TP9bgfgWZdxBGFSGrgVSWMzyn8VHKeTx6ieqj6Un9v
+        Dj8IhBy/kxJQ8Yjd8q+x9fYkuhFVUelAYpOllC0kkrKlTg3xjNEbRXAQlZEPdG0w
+        VqX54MI8n6L4CI46GSjzGlHfKn1vUCbLYQq+nh8f9agdK0Uid4VqJ/ihp2Mh4Zhr
+        L1HCX+eqqYunGso5zqzClcfjtmmJqhviVSOMK4PGqDVBqlTar4TVLuStb7An4vVZ
+        42iaAe4OIBltaNS4hevKTjhcPwPQeLXUIiPc+Bu3ZZUQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=yEjWxOGk2YrrSh+LF
+        rvL+ETV5UBWmp/CI+DKroRyqOw=; b=fEAWrbsX7VglqnE3WF7GD4/kYLSIDTNq8
+        XRgMxTnqapgbhXYOUPL0LP2S+q2MJAIa0VVvwX8IWq3fZ1bLcOrzSmdYDrSGwtOz
+        jBO9UrzsRAeVjfuXDrHzPmncMsMjMM9EBHqC5L59+mtNtbHoch1nhM4gG9+N6jfb
+        zIDkfpvzCokPQlcZZuxAU+06RnR2O3YRnFbUy/PY3AkUqIlNs7gAqPNOghMJ4rSV
+        BQ0tOGHmDn25fKjwFZapw4/2GXxKNz2KnXtiSHmdtkxBaeuRXCkTwun12Ix2mpq2
+        Wru8ezOnd8YTR2973UYCiUc/KDExFa/m8mRTiU1ZH6+jOQHXtYXcA==
+X-ME-Sender: <xms:i-jmYORgTJZIjLrcJ_UmfZXsboB4E6GA2t7-w7Oj3bmwNbmejNtFbQ>
+    <xme:i-jmYDw1uO9n481AQtSJfGhfG6Mq03yzARFFsUQM62YHzG4Wic23PMX36hefEOz-6
+    3D3xkpIQFpipnb-cvM>
+X-ME-Received: <xmr:i-jmYL3q8qMZv6ipn7OixcGQJzZThxDJsvvCrvxHF_eSKkGu47nDaOzmHBhEXZXZNH-BzfQHUsyKzGC4aLA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrtdeggdeghecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
+    dtnecuhfhrohhmpeetlhhishhtrghirhcuhfhrrghntghishcuoegrlhhishhtrghirhes
+    rghlihhsthgrihhrvdefrdhmvgeqnecuggftrfgrthhtvghrnhepjeeliefhvdetgfdtte
+    fhtdegffdtiefffeejiefffeevueeljeehjeevhfffueeknecuvehluhhsthgvrhfuihii
+    vgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghlihhsthgrihhrsegrlhhishhtrg
+    hirhdvfedrmhgv
+X-ME-Proxy: <xmx:i-jmYKAsc54ZeaUnEm6dQ7Z-1OX75Pfff4eE2cIuL7qLzfEmHD2w-Q>
+    <xmx:i-jmYHiE5RC0RI0jFyvL4n-jJZZBDaeS8ZroNwd2Uof4B7SJjf2lTg>
+    <xmx:i-jmYGrTQxarQtN1mw-vLCbJxnJY6R_TIS_EqpwtpeMYbmh82Mk4xg>
+    <xmx:i-jmYMYkFqzuXBblbTbppVa2G1qaiwUrWgwt3DVp8DGasMux-t5kxQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 8 Jul 2021 07:59:03 -0400 (EDT)
+From:   Alistair Francis <alistair@alistair23.me>
+To:     dmitry.torokhov@gmail.com, linux-input@vger.kernel.org,
+        linux-imx@nxp.com, kernel@pengutronix.de, pinglinux@gmail.com,
+        tatsunosuke.tobita@wacom.com, junkpainting@gmail.com,
+        ping.cheng@wacom.com
+Cc:     linux-kernel@vger.kernel.org, alistair23@gmail.com,
+        robh+dt@kernel.org, devicetree@vger.kernel.org,
+        Alistair Francis <alistair@alistair23.me>
+Subject: [PATCH v7 0/9] Add Wacom I2C support to rM2
+Date:   Thu,  8 Jul 2021 21:58:44 +1000
+Message-Id: <20210708115853.281-1-alistair@alistair23.me>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20210629072214.901004-1-eric.auger@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Add support to the reMarkable2 (rM2) for the Wacom I2C device.
 
-On 6/29/21 9:22 AM, Eric Auger wrote:
-> The virtual machine monitor (QEMU) exposes the pvpanic-pci
-> device to the guest. On guest side the module exists but
-> currently isn't loaded automatically. So the driver fails
-> to be probed and does not its job of handling guest panic
-> events.
->
-> Instead of requiring manual modprobe, let's include a device
-> database using the MODULE_DEVICE_TABLE macro and let the
-> module auto-load when the guest gets exposed with such a
-> pvpanic-pci device.
->
-> Signed-off-by: Eric Auger <eric.auger@redhat.com>
-Maybe I misunderstood your question on the v1. This patch does not
-result from an issue found by a tool/script but was identified while
-exercising the pvpanic-pci use case "manually".
+This is based on the reMarkable Linux fork and with this series I am
+able to probe the Wacom digitiser.
 
-Thanks
+v7:
+ - Fx the compatible name and documentation
 
-Eric
->
-> ---
->
-> v1 -> v2:
-> - enhance the commit message with additional info (Greg, Andy)
-> ---
->  drivers/misc/pvpanic/pvpanic-pci.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/misc/pvpanic/pvpanic-pci.c b/drivers/misc/pvpanic/pvpanic-pci.c
-> index 9ecc4e8559d5d..30290d42d8aa8 100644
-> --- a/drivers/misc/pvpanic/pvpanic-pci.c
-> +++ b/drivers/misc/pvpanic/pvpanic-pci.c
-> @@ -122,4 +122,6 @@ static struct pci_driver pvpanic_pci_driver = {
->  	},
->  };
->  
-> +MODULE_DEVICE_TABLE(pci, pvpanic_pci_id_tbl);
-> +
->  module_pci_driver(pvpanic_pci_driver);
+Alistair Francis (9):
+  dt-bindings: Add Wacom to vendor bindings
+  dt-bindings: touchscreen: Initial commit of wacom,i2c
+  Input: wacom_i2c - Add device tree support to wacom_i2c
+  Input: wacom_i2c - Add touchscren properties
+  Input: wacom_i2c - Add support for distance and tilt x/y
+  Input: wacom_i2c - Clean up the query device fields
+  Input: wacom_i2c - Add support for vdd regulator
+  ARM: imx_v6_v7_defconfig: Enable Wacom I2C
+  ARM: dts: imx7d: remarkable2: add wacom digitizer device
+
+ .../input/touchscreen/wacom,generic.yaml      |  48 ++++++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ arch/arm/boot/dts/imx7d-remarkable2.dts       |  61 +++++++
+ arch/arm/configs/imx_v6_v7_defconfig          |   1 +
+ drivers/input/touchscreen/wacom_i2c.c         | 155 ++++++++++++++----
+ 5 files changed, 233 insertions(+), 34 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/wacom,generic.yaml
+
+-- 
+2.31.1
 
