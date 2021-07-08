@@ -2,152 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B23133BF5F8
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 09:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 059AE3BF60F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 09:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231210AbhGHHHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 03:07:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229872AbhGHHHY (ORCPT
+        id S229868AbhGHHQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 03:16:22 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:32822 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229669AbhGHHQV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 03:07:24 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2987CC061764;
-        Thu,  8 Jul 2021 00:04:37 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id t14-20020a05600c198eb029020c8aac53d4so16379055wmq.1;
-        Thu, 08 Jul 2021 00:04:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Qi7EPW8pW/I0yAkgaQOKC9ugDNgF35OVARmaEmgJKWw=;
-        b=Cwn8F5vy9JikZKZheIsJEDo2QKqWrbdmcrE4AkBuaH8/kk2Ef7dMtZXzqGLk3X5hGI
-         WfOuhv7vRTl7hSuvYcmx6aRhKu+mEDa9tqzl+hWR9hpVu0LRZMA9wBqj3a08M4e++PFR
-         lrPErK5riYTt+57XBSjmgj6RJmM/escT7YiRJT3O0irt3UvkxvPsbK+soASuHZnOlecl
-         1o+QP8jAKtrBM7bUPAAVNxgdGOEVbsYXHTpQ/CYopq6hjuU/D0JivaHaP8uSjlxCKbw4
-         LEWqRALNDHv954PUwwMXq/JLi7f5PGpGJHHDpr6bJEa9sDRb/aJpgy/+x6VQoomsZGsI
-         C6jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Qi7EPW8pW/I0yAkgaQOKC9ugDNgF35OVARmaEmgJKWw=;
-        b=Xm9yDStJRn6nGDZot793SSTeJqxquRr9+VPeIewKsNa2mbQ8Jq3MH889pQVdfLopDR
-         uHpj8grOUTgHWRI/LcJNjlMwTm+AasADVfTCJX0HnOYkl6ZWtZ7Uu6hxKGH+ws86G+b+
-         vIAXsB1a0SrA+VsyPtpMgugBkuimLCf1+J66BDuM9KLBdITssASpiKJTO2A5LW76f/KU
-         mJB9sWgLn/OD1LRTOfs/zU5Zar1aAvdspvMt5YU+GeEyxXKIu1K+XV1b9cJE635g3geN
-         A+0GtBuLL+E50iKQ7qKjl3IPTu/+aV85EruY4Or8Fc+u3c7UOB2hTlkQ7/7+f7WvnEqi
-         ceiw==
-X-Gm-Message-State: AOAM530MNYyqgL1JzsZMtL5X8qfnp6iltWB4U5O+8X+SbI3hNKZKlqNa
-        TDJsMfBRU4G4RQT9AXSggCKxFm9konxIhA==
-X-Google-Smtp-Source: ABdhPJziVIvppULck7oF3vVM83VrYcTW4RZzJVVQbvoYI82XxRS+fCrLP94/iSsWpIsCPOTjXiVNXA==
-X-Received: by 2002:a7b:c0c1:: with SMTP id s1mr28990524wmh.70.1625727875543;
-        Thu, 08 Jul 2021 00:04:35 -0700 (PDT)
-Received: from localhost.localdomain (98.red-81-38-58.dynamicip.rima-tde.net. [81.38.58.98])
-        by smtp.gmail.com with ESMTPSA id u15sm8093305wmq.1.2021.07.08.00.04.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 08 Jul 2021 00:04:35 -0700 (PDT)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     linux-gpio@vger.kernel.org
-Cc:     linus.walleij@linaro.org, gregory.0xf0@gmail.com,
-        bgolaszewski@baylibre.com, f.fainelli@gmail.com,
-        matthias.bgg@gmail.com, opensource@vdorst.com,
-        andy.shevchenko@gmail.com, git@johnthomson.fastmail.com.au,
-        neil@brown.name, hofrat@osadl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] gpio: brcmstb: remove custom 'brcmstb_gpio_set_names'
-Date:   Thu,  8 Jul 2021 09:04:29 +0200
-Message-Id: <20210708070429.31871-4-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210708070429.31871-1-sergio.paracuellos@gmail.com>
-References: <20210708070429.31871-1-sergio.paracuellos@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 8 Jul 2021 03:16:21 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 2339720161;
+        Thu,  8 Jul 2021 07:13:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1625728419; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Xm801qlOgDTdwA0+ZHys/QkRvVO84weEPSbBZ/1uzdA=;
+        b=pK31RxHSDcs3PbALgjEKQf7BNoj5+FWXoLDwxFUb819lkqSV3wuZfkbzkOcqyGEnrTD1aT
+        xmIwiqnNNnWIIlZVgas39789yj6gB/Ww6Z07JO0qLbXIbEgGcUyQ6lByZnS7sqxETb7j17
+        6gCvLvmfATVv5n1vqODYl+XALhvmHHk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1625728419;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Xm801qlOgDTdwA0+ZHys/QkRvVO84weEPSbBZ/1uzdA=;
+        b=5qrZeLrPoDl0JQBsDPlez05Z/f9bL6nqljng5m3xqbFyZkx4TZ2Rf279T1Af7Y1ij3MKhA
+        ZNOD48vx9w8N8iDA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 166ECA3B88;
+        Thu,  8 Jul 2021 07:13:39 +0000 (UTC)
+Date:   Thu, 08 Jul 2021 09:13:39 +0200
+Message-ID: <s5hfswp6zx8.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Max Filippov <jcmvbkbc@gmail.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        alsa-devel@alsa-project.org, Leon Romanovsky <leon@kernel.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: Re: ALSA: intel8x0: div by zero in snd_intel8x0_update()
+In-Reply-To: <CAMo8BfLj+VLUbfUmHUSHOfc3PwbWd2w_xnaTZa9HyrcmvJCAkQ@mail.gmail.com>
+References: <YJ4yBmIV6RJCo42U@google.com>
+        <s5hk0o18tio.wl-tiwai@suse.de>
+        <YJ5cHdv6MVmAKD3b@google.com>
+        <YKDYQfDf7GiMfGCN@google.com>
+        <YKDYbaprE3K2QpCe@google.com>
+        <s5hbl9b6mah.wl-tiwai@suse.de>
+        <CAMo8BfKKMQkcsbOQaeEjq_FsJhdK=fn598dvh7YOcZshUSOH=g@mail.gmail.com>
+        <s5ho8be8v3z.wl-tiwai@suse.de>
+        <CAMo8Bf+FF8Ofq=FwoZZXp9vKiMaUZNAm+W=OJmu2j2XN6kLb-Q@mail.gmail.com>
+        <s5hk0m26lfu.wl-tiwai@suse.de>
+        <CAMo8BfLj+VLUbfUmHUSHOfc3PwbWd2w_xnaTZa9HyrcmvJCAkQ@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gpiolib core code has been updated to support setting
-friendly names through properly 'gpio-line-names'.
-Instead of redefine behaviour here to skip the core
-to be executed, just properly assign the desired offset
-per bank to get in the core the expected behaviour.
+On Wed, 07 Jul 2021 22:33:22 +0200,
+Max Filippov wrote:
+> 
+> On Wed, Jul 7, 2021 at 11:14 AM Takashi Iwai <tiwai@suse.de> wrote:
+> > On Wed, 07 Jul 2021 19:50:07 +0200, Max Filippov wrote:
+> > > It didn't change anything in my case. My further observation is that
+> > > the snd_intel8x0_update is called before the ichdev->prepared
+> > > is set to one and as a result IRQ is apparently never cleared.
+> >
+> > So it's broken in anyway no matter whether
+> > intel8x0_measure_ac97_clock() is called or not, right?
+> 
+> The change that you suggested didn't eliminate the call to
+> intel8x0_measure_ac97_clock, it's still called and an interrupt
+> flood happens at the same place.
 
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
----
- drivers/gpio/gpio-brcmstb.c | 45 +------------------------------------
- 1 file changed, 1 insertion(+), 44 deletions(-)
+Ah I see the point.  Then the fix would be a oneliner like below.
 
-diff --git a/drivers/gpio/gpio-brcmstb.c b/drivers/gpio/gpio-brcmstb.c
-index fcfc1a1f1a5c..a7275159052e 100644
---- a/drivers/gpio/gpio-brcmstb.c
-+++ b/drivers/gpio/gpio-brcmstb.c
-@@ -603,49 +603,6 @@ static const struct dev_pm_ops brcmstb_gpio_pm_ops = {
- 	.resume_noirq = brcmstb_gpio_resume,
- };
- 
--static void brcmstb_gpio_set_names(struct device *dev,
--				   struct brcmstb_gpio_bank *bank)
--{
--	struct device_node *np = dev->of_node;
--	const char **names;
--	int nstrings, base;
--	unsigned int i;
--
--	base = bank->id * MAX_GPIO_PER_BANK;
--
--	nstrings = of_property_count_strings(np, "gpio-line-names");
--	if (nstrings <= base)
--		/* Line names not present */
--		return;
--
--	names = devm_kcalloc(dev, MAX_GPIO_PER_BANK, sizeof(*names),
--			     GFP_KERNEL);
--	if (!names)
--		return;
--
--	/*
--	 * Make sure to not index beyond the end of the number of descriptors
--	 * of the GPIO device.
--	 */
--	for (i = 0; i < bank->width; i++) {
--		const char *name;
--		int ret;
--
--		ret = of_property_read_string_index(np, "gpio-line-names",
--						    base + i, &name);
--		if (ret) {
--			if (ret != -ENODATA)
--				dev_err(dev, "unable to name line %d: %d\n",
--					base + i, ret);
--			break;
--		}
--		if (*name)
--			names[i] = name;
--	}
--
--	bank->gc.names = names;
--}
--
- static int brcmstb_gpio_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -759,6 +716,7 @@ static int brcmstb_gpio_probe(struct platform_device *pdev)
- 		gc->of_xlate = brcmstb_gpio_of_xlate;
- 		/* not all ngpio lines are valid, will use bank width later */
- 		gc->ngpio = MAX_GPIO_PER_BANK;
-+		gc->offset = bank->id * MAX_GPIO_PER_BANK;
- 		if (priv->parent_irq > 0)
- 			gc->to_irq = brcmstb_gpio_to_irq;
- 
-@@ -769,7 +727,6 @@ static int brcmstb_gpio_probe(struct platform_device *pdev)
- 		need_wakeup_event |= !!__brcmstb_gpio_get_active_irqs(bank);
- 		gc->write_reg(reg_base + GIO_MASK(bank->id), 0);
- 
--		brcmstb_gpio_set_names(dev, bank);
- 		err = gpiochip_add_data(gc, bank);
- 		if (err) {
- 			dev_err(dev, "Could not add gpiochip for bank %d\n",
--- 
-2.25.1
 
+Takashi
+
+--- a/sound/pci/intel8x0.c
++++ b/sound/pci/intel8x0.c
+@@ -694,7 +694,7 @@ static inline void snd_intel8x0_update(struct intel8x0 *chip, struct ichdev *ich
+ 	int status, civ, i, step;
+ 	int ack = 0;
+ 
+-	if (!ichdev->prepared || ichdev->suspended)
++	if (!(ichdev->prepared || ichdev->in_measurement) || ichdev->suspended)
+ 		return;
+ 
+ 	spin_lock_irqsave(&chip->reg_lock, flags);
