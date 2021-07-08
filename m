@@ -2,158 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C00A23BF65B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 09:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C113BF65E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 09:38:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230440AbhGHHkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 03:40:46 -0400
-Received: from mail-dm6nam12on2081.outbound.protection.outlook.com ([40.107.243.81]:6410
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229838AbhGHHkp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 03:40:45 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FYoH/c1tiPA2EKIQIURz3+sNI390A9Df3cQo9VVU13NzPZA1asUDozarUjuZjXhMli7GnjaJInpKNa3875LKpe67v4Dx7dzxbDPg3UNHG4OBMa1xxoBaHJ3HV4mbOB5D4nIQ/5WzOkc7H2lJqgsMfWgFqCKfmvwdzvjB2iBwtXHKYst0qcAvaHl+VKRmW663oie1n0tdwRZiEhB46hhB8UxkCb/yV1n1zb1zAy0PQqIdR/ztPtnpuJiObelfFR21nEJQDbw0jmoP9RDFGNKBE+BG+magAY6jTqutwpWj2sGc0fR2Re5WmnMpA8AesDSKL6xsvlFg9iwaHVxUJhYzcw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BMO1kMg1XjTq+X+UYxazKejnuvisMJ8gy0SeMKIAegs=;
- b=TSsOnKsJyQune7VWB1Z8DBq4haqTscjmboQSachVfkhzo8D+nptDv/sYDDWEC4GhJs7zsmYRs5S2QvR09yaQF+80VLpSMOA+k/F/xjNNZ1BlfLLBXQCwlG+Oh+QzTZO6FQNV3wGPbbAM4Yovs7856UchJFywpI3yYZDWucHM479IPCnjiYuMkChYHHKoHSjddbaEcWIvBY7ABlzmxRgoQ7AZHtv57iaxm2ZhiG6Ru+XsU87oth/SIBFWVVnOUGMllwewB4b+JxomKN9TVf5BOkGRSsUgoVLTcLqEwGhSk9yEs/dd8Xqub6nKs1svbgeLExJNZk5g2cuTvVnme6vb/A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BMO1kMg1XjTq+X+UYxazKejnuvisMJ8gy0SeMKIAegs=;
- b=h8LNI0tMuvMD8blnbSRW3RrfDEOEUnZ2hqlo01MBiXm7wyEV4zyEgWnIRoTPgDzPl95oq3L/JR0tTrFbCixAoo13pWXFA6A0i/xQsrvdNDnkKJ+JDdPOuSj2BbEziUveT85saraE59fa53S8/mHQv2xYWmQ8eNAT3gzyaW3KbKw=
-Authentication-Results: kvack.org; dkim=none (message not signed)
- header.d=none;kvack.org; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by BL0PR12MB4897.namprd12.prod.outlook.com (2603:10b6:208:17e::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20; Thu, 8 Jul
- 2021 07:37:59 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::6c9e:1e08:7617:f756]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::6c9e:1e08:7617:f756%5]) with mapi id 15.20.4308.022; Thu, 8 Jul 2021
- 07:37:59 +0000
-Subject: Re: page pools, was Re: [PATCH v9 1/5] drm: Add a sharable drm
- page-pool implementation
-To:     Christoph Hellwig <hch@infradead.org>,
-        John Stultz <john.stultz@linaro.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        ??rjan Eide <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Mel Gorman <mgorman@suse.de>, linux-mm <linux-mm@kvack.org>
-References: <20210630013421.735092-1-john.stultz@linaro.org>
- <20210630013421.735092-2-john.stultz@linaro.org>
- <YOVL1f4m+8ly9fyM@infradead.org>
- <CALAqxLUubzuLkFxmWjfPQHaFU8EkWuGo7nDhfkgi4wPGHnBoVw@mail.gmail.com>
- <YOZ9JZlwkjyDGti5@infradead.org>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <798f5d1d-b64c-8c73-bfe6-701893820ff0@amd.com>
-Date:   Thu, 8 Jul 2021 09:37:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <YOZ9JZlwkjyDGti5@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: FR0P281CA0087.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:1e::12) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        id S230494AbhGHHlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 03:41:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229838AbhGHHlC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 03:41:02 -0400
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26779C061574;
+        Thu,  8 Jul 2021 00:38:21 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1625729895;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=4zHBxaMAyTXtQ6h+HyhVoICHa4hb51TQtMkMoZjY9QQ=;
+        b=ov8Z0rkyn7MGj7v9Z2mO2dCNaOvADpf/PHqvEaB1gEFBcNMOpGMzSZEa14blNHSrxsGGS+
+        zXJnAMr4YNq2WL9T4EwfPRYyNYKTJdVTi0vEci/vTiAecsMGKJ8wBQN9z4tzCi+KM0ejAK
+        6/Kzt/njNyT1bwzCTHv7D2egZbf8Vsk=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     davem@davemloft.net, kuba@kernel.org, ryazanov.s.a@gmail.com,
+        johannes.berg@intel.com, avagin@gmail.com, vladimir.oltean@nxp.com,
+        cong.wang@bytedance.com, roopa@cumulusnetworks.com,
+        yajun.deng@linux.dev, zhudi21@huawei.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net: rtnetlink: Fix rtnl_dereference return value is NULL
+Date:   Thu,  8 Jul 2021 15:37:45 +0800
+Message-Id: <20210708073745.13797-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:bc19:c1e3:6307:7e3e] (2a02:908:1252:fb60:bc19:c1e3:6307:7e3e) by FR0P281CA0087.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:1e::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.10 via Frontend Transport; Thu, 8 Jul 2021 07:37:47 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 48bb7de0-f498-4360-da6c-08d941e34e98
-X-MS-TrafficTypeDiagnostic: BL0PR12MB4897:
-X-Microsoft-Antispam-PRVS: <BL0PR12MB4897D4E620F5D6D5147D084683199@BL0PR12MB4897.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Q7A1LkSEDESTA/jbLk0xHnbe49n1De6MTk+6NsuptzwNTEAEph263DBVoAMpaIHDhaRf9FOo9aJPRhxZwp7GWT6oAVmcf3/ma0ufWTIBcM+vyjpkuGNYwRedWV1cc/7fMnxPihoFhy2CJdCwrDdjiSXAjui0sSUh8bzfdZA9fFg9F5DcSDa7NkPWNqiZBLwKA1IFGqMVeVvigPYqyc6D97EzrI+xmDoAzDay32HRe7Jxn8xKb5xIXP9rWUq6lStV613G8tPEtWCM1r/dJeVHzdnsTmUDGrynjCKxI3OLpQqo2t0D5GGT6S98BScMQ8fSyfjKiY6sGMF6LWcDSIFTl03o0NZTHKu7Y+qmL3MPbtu0mKZxI55vlM52qaFvSCBz0Yw9XuFsj9U98c6tA+2CwldKU8aVnksqMIzL+HqtZUwr8EzbizfUg9QFp29xh7O7TMPvNsPLn0dZep1jdxZ4/6w83ycdXrxon0+J5BrmOWYgl8QeeUMsfOXTj9dsDluEKrtPweWNnMs105qYXsGadinFABITwYqCDo2rq55EvLvpS/mrYAlyX6Ugrz0BWZ8hJcDbpIHlp8KeQ3J66JMEZeN9rMY8qA9twXma/r3E+PGcqnmZIt65A1MncnmsfWl5Q7j4WQA16/MBy3xTbmmX5HcLsHS2JclVQ4UJXDraxC2oYPMpoUXqFRGR0c9qI0JbFXm8BnhZkGLSYyXr+UXbntHU+mC2YhUMeRcLmyDMcpsCCNcqw/UWhiHqhRbY5j0B
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(39860400002)(396003)(136003)(376002)(8936002)(66556008)(66476007)(38100700002)(31696002)(6666004)(2616005)(8676002)(4326008)(316002)(31686004)(54906003)(478600001)(110136005)(7416002)(6486002)(66946007)(86362001)(36756003)(186003)(2906002)(4744005)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?emtvQ05YYW1yMXJJUzZrVlJMVHpTL0x6c1VJS2R0d203UWYxMytwdVh3RFFV?=
- =?utf-8?B?QjdGbkxsbmF0UVMyMWN1cmg5eDNyRnpKanpmT0VZNFdlemY3MDgwNmlCaW53?=
- =?utf-8?B?dytOTnFGZmRqWkhEbGx3eGlJZkRINVJSRGsvdTRWUm5STDRFNXRFL3dvMXZT?=
- =?utf-8?B?bG1FdnhhakZNZ1ovSEFLWnhORjlLZTFvNzIrV3R1NnJianh5VFhkVUxGTXQ4?=
- =?utf-8?B?cmE3ZG0yWlRVejNUK2R5bUt3SjJ4OFptRml1SG1DU1FoQ281TTFlWjBIMXcx?=
- =?utf-8?B?QlhZcno2aGdFNUVUcTM4Uyt2QzFodGdnVXVJaGcwcUtwaHFqZkU2MjhTeFJu?=
- =?utf-8?B?Vk94UXM2Y3laQXd2azdFSzRERm5vdWJzN01ueVc5VnRuOGErbzhWeWNybFg4?=
- =?utf-8?B?ZkdDNENSelRKcGMwamY3R3lFYXZaREZ3UHRhdG5PQlVQb0o3aDdWOHl1L2p3?=
- =?utf-8?B?TUVCaExrU3RKVE5BRXR1VTdFZGt3eUlVWjZ6M2k1VXFpQ09tWUYwNmpYeFdC?=
- =?utf-8?B?T3ROWlhBMU1vUFVsc0c2dFRxVFBaVFo4bFhWVFdIOVRLUnIzRWUrVURWdFlv?=
- =?utf-8?B?NVB4VU9hbWs4N1gyNCtCWXpXR1RaSFM5ZksySXd2Q2dsbEdpc1kwemxkY2lU?=
- =?utf-8?B?cU1CSDVoTVlSM2QrT2Z4MVpwZnI0UkYxaFFtS1dUTmh3R2xWUnJ4bWd6UDhQ?=
- =?utf-8?B?SFo1bDB5c2EreWpRNnloTFN6VFY1NVE3ckhWNzIrRFNvY2RSMkxqaXB3MTI5?=
- =?utf-8?B?WnhDMTVBZTNFQjFkUFFKRlVOekZkR3dUdm9HRWM4Ny9IWEpIVGt4ODI1OVQ2?=
- =?utf-8?B?RGl0amhodzdOWTdaNG1vaUpwMlRKeXdoVXNzL1Y5ZnRwUFU1cEZnMWZwWXRs?=
- =?utf-8?B?cnllNVJsMDNkYU9QekE4S2dsTU93dzZxNTAvNHg0cGcwWWF3ZkNZQWk3Myta?=
- =?utf-8?B?WHNNc0Uzc0FRNERoYVV4RmYrMFJuOUJaY1FiVUZBa3NIY0JhYXA1UGMzR2U4?=
- =?utf-8?B?RmdJSElwRURaSnFEdVg0dmlLR2tvNkNYY2VtY3k4VE13ZGRwUkNOZzBpK3dl?=
- =?utf-8?B?c2ZvRzdDVVk0V2tydHJaSnlRUGNoWjAzd0Y4Unp6MXdUd0FVZHVLTS9xYVh1?=
- =?utf-8?B?RFRkNGdnSmVWRWQvWjVGaDhTM1BoVGRxa3drTzkrTktNcnh5UmNIY0c4Nm1j?=
- =?utf-8?B?MmlSV0w1RXNyVVdqd055ZEhORzNDWWhsYnFrM042NjAzU00vcU40N1F4T3o0?=
- =?utf-8?B?RzExKzRESExsTDBHSlIvWWFJWjBmcStMejJuUXFGdmRLQ0FHdjdQNXJkY0Ix?=
- =?utf-8?B?bkxZL3J3OHBGejJhQXpQd1cySGNjV3ZRSGg3RDArZlAwOGF4OUhTUXhmdVFJ?=
- =?utf-8?B?NGQ2OGxNKzBLaUtTR0hsQ1Vlc1VsUi9wdjRRYXlKeGR1VmJicmRJeDFVUW9y?=
- =?utf-8?B?WStlRXQ0bWwvSmpGOWxtZnJFSlpWZWQzM2VaazVvMmZRSlRleWFHVVpPSlll?=
- =?utf-8?B?L0NMcXhkUk9WWks4aG54MGY3bHEyUEZ3c3BuOXdPQXlTaG5JTFJFUWFWc3NR?=
- =?utf-8?B?WEdrU0Zqd0djaFZJSVZyNjhzL0Y3YTlUazJ2SFFHWC9MTE1TdngwMGwxOURQ?=
- =?utf-8?B?ZzhuZkV4OVpvU2xOekVRSXV5L2dNWDI4a09UaFBWRnZ2VU1JSnlQQmVBMXBy?=
- =?utf-8?B?dFVxT0xjanBXZGdXT085WDIzTWQ3clV4SjFtL1RWcUZBdEp4TEUxWnpHb2o0?=
- =?utf-8?B?emdlNnpKS2J2WUhqbXpnbm5OckZWOFJuYVkrN3NkamRBM01MUXFycE8vRlVo?=
- =?utf-8?B?Tkt4dkdJUzR2RU1vbG4zQmYxb2xqaDdsRVRESzRyaElqMXJCOFlrWk5QZnBr?=
- =?utf-8?Q?DqpqifLONl2XA?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 48bb7de0-f498-4360-da6c-08d941e34e98
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jul 2021 07:37:59.5619
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +09IUgizJvH0pK6ASmIdu6wXs+FQL+1voQTYzWfsPEwW+MGWVkQYnRqO8DTG9N7a
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4897
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: yajun.deng@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 08.07.21 um 06:20 schrieb Christoph Hellwig:
-> On Wed, Jul 07, 2021 at 12:35:23PM -0700, John Stultz wrote:
->> So, as Christian mentioned, on the TTM side it's useful, as they are
->> trying to avoid TLB flushes when changing caching attributes.
->>
->> For the dmabuf system heap purposes, the main benefit is moving the
->> page zeroing to the free path, rather than the allocation path. This
->> on its own doesn't save much, but allows us to defer frees (and thus
->> the zeroing) to the background, which can get that work out of the hot
->> path.
-> I really do no think that is worth it to fragment the free pages.
+rtnl_dereference() may be return NULL in rtnl_unregister(),
+so add this case handling.
 
-And I think functionality like that should be part of the common page 
-allocator.
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+---
+ net/core/rtnetlink.c | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-I mean we already have __GFP_ZERO, why not have a background kernel 
-thread which zeros free pages when a CPU core is idle? (I'm pretty sure 
-we already have that somehow).
+diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
+index f6af3e74fc44..57ce22669b06 100644
+--- a/net/core/rtnetlink.c
++++ b/net/core/rtnetlink.c
+@@ -289,24 +289,27 @@ int rtnl_unregister(int protocol, int msgtype)
+ 	struct rtnl_link __rcu **tab;
+ 	struct rtnl_link *link;
+ 	int msgindex;
++	int ret = -ENOENT;
+ 
+ 	BUG_ON(protocol < 0 || protocol > RTNL_FAMILY_MAX);
+ 	msgindex = rtm_msgindex(msgtype);
+ 
+ 	rtnl_lock();
+ 	tab = rtnl_dereference(rtnl_msg_handlers[protocol]);
+-	if (!tab) {
+-		rtnl_unlock();
+-		return -ENOENT;
+-	}
++	if (!tab)
++		goto unlock;
+ 
+ 	link = rtnl_dereference(tab[msgindex]);
+-	rcu_assign_pointer(tab[msgindex], NULL);
+-	rtnl_unlock();
++	if (!link)
++		goto unlock;
+ 
++	rcu_assign_pointer(tab[msgindex], NULL);
+ 	kfree_rcu(link, rcu);
++	ret = 0;
+ 
+-	return 0;
++unlock:
++	rtnl_unlock();
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(rtnl_unregister);
+ 
+-- 
+2.32.0
 
-Christian.
