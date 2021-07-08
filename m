@@ -2,94 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A41C83BF2CF
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 02:23:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E343BF2D3
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 02:24:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230173AbhGHAZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 20:25:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59906 "EHLO
+        id S230208AbhGHA0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 20:26:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230099AbhGHAZ6 (ORCPT
+        with ESMTP id S230099AbhGHA0r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 20:25:58 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86833C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 17:23:17 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id w127so5656300oig.12
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 17:23:17 -0700 (PDT)
+        Wed, 7 Jul 2021 20:26:47 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB2DC061574;
+        Wed,  7 Jul 2021 17:24:05 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id g19so6060227ybe.11;
+        Wed, 07 Jul 2021 17:24:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=RbFoIrsFO5XIBA5/R77ovrZzmwL+AynSzkgJ2f7jhfU=;
-        b=VtqVdY9lPfx6/Yhz6fJsozfP0L7QK8deW47mn5HtSUTeVi/BXaHkwcRUuSetNMFuv+
-         x8Yhrjnke5Up7Wi7q3tBV3KbOYQAFsMdgx+87cNXyxc2Lu5XMxJMTGbDkxE03etTMIXo
-         b6Imw0lJLHvtX3T/tUGCAOwUqIA+SEgiKShfw=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4JA4gyENDgRM8u2jdOpOeLqy9c08YUXj4WglLNdN3zc=;
+        b=Mj4U+ieNFWhyGEXQnyXtVTDg2lCJESVN10I26YFkCJWgQHd+PEwjQ9mIDWIdOvvavI
+         krhPvXoVIbGs1EMBQcQzD5j3jgt70enRhSyimELNjzCLE+ZXHVVeCjwTu9DDezfUOfEd
+         NwXeyR3GpIbio5pnWuAaXN3gC/O2NaKjEa+3X91Rxd+S1cJDrAjaSEpi0nzW3OO91hCC
+         Nw8lO358HU31eQBp3v2qgza9yOC7vldKWP7ixPpfGg8IB6B556bwDpth1Kj3SYGmm5oq
+         k6L9lBPzD3smbdj+K+vNmIMcpbHKFMGfL/YcOVtjf/JMjVPvOSBsAJ8QCCxvUHJk5EPJ
+         yFUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=RbFoIrsFO5XIBA5/R77ovrZzmwL+AynSzkgJ2f7jhfU=;
-        b=aHwetxg+eXAGfjSU9pYLo1JM8l8q2CWVK1/w18NJnTEVICedjHixby12N363pS2Slp
-         i6bBH6I7Twgv6aW12HcEDaWXgiedaBPd6CoqAIX7IfuQjxNlRAGgH7UDTfeIOmvCSklh
-         m77BZi/MUN+nuQz/CLap2snv6Hn0ntvC0MQZrJ7nAERfVYsKCjvb8Sks23lkV5SQ2U8c
-         VQLVI5fnZzls8IPyfbCyJ8FdjcxMsiKdmj/OEU0KQckhQzQPCNrqd5aZlc1YNrUR5/FF
-         X7ke99WM3A8opAa8yuDZry63b7TICdbOW1EHT7Tm8wpS21fRcga0X/r6h7kvjF4LF2Ur
-         H1sg==
-X-Gm-Message-State: AOAM53223S4pJDEpSg80fq+i73Y9LeQQhqJaWRHD2ME5u6mq2CBqSnyi
-        R+/1LPqAMyFZryCdkJRGhbL2nAWKiEuqAU0cS/+u/Q==
-X-Google-Smtp-Source: ABdhPJzg1rZ5ea1h4hn9be4lgRL9bCGi6K92pjjcqaaI2kcvco3q8d0Q3VHMcWfzh+rCZRL2WFO4Mh/aHBfbyPTXkOo=
-X-Received: by 2002:aca:3012:: with SMTP id w18mr1495720oiw.125.1625703796995;
- Wed, 07 Jul 2021 17:23:16 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 8 Jul 2021 00:23:16 +0000
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4JA4gyENDgRM8u2jdOpOeLqy9c08YUXj4WglLNdN3zc=;
+        b=F8KX0rCxHND7j+248k2hB0hJXs7rXh6yd6cljhHJ9ts+JnByWjawzsOhEXHEVY4qXe
+         TIFFoFFgCacDiD5pERamfQ6hRwijMpR5hiZzWurJR2A05BRDBvaWDuUavXvrZLXlLSN2
+         YIvqG59OjrJJzMKppmsqngQmP6YZvxFAegF8+y3E0HbMW1PP4etBOqduCFlZM92PoZ9M
+         Jq6YZ+bqH+5JKitw0ucOA59O1F0tS5Pw1pW85V5zBtfwxQp1OzHpogzhOhjQf8COShki
+         oNIaVzA7SrBWlTGuMtgCPksYFUxkr0eFFomR0VkxxGW6nU+lR7g3cdeNcN23TPOPlPrK
+         YPoQ==
+X-Gm-Message-State: AOAM532QjGyTwR1CnleuKmHltqt41VZDqoR/KRGNPRMJlLnLCzJf/Sbj
+        TwclIjXfKSELZkoRZAbHm8HAlIPCOptIzsSV0W8=
+X-Google-Smtp-Source: ABdhPJzwzviM9JBKxjLOHjyexk6HOmHhFfeAWkDJufGTDd4thrHStPRdZOOfUcvn2CFSfqyk7leAUwGrU/z1X+qk68Q=
+X-Received: by 2002:a25:b741:: with SMTP id e1mr36829504ybm.347.1625703845244;
+ Wed, 07 Jul 2021 17:24:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210703025449.2687201-1-bjorn.andersson@linaro.org>
-References: <20210703025449.2687201-1-bjorn.andersson@linaro.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 8 Jul 2021 00:23:16 +0000
-Message-ID: <CAE-0n502u+7CNhA5_kMfc-CVvpSzdGOeputT6nxW8BvtyVBeRQ@mail.gmail.com>
-Subject: Re: [RESEND PATCH 2/2] soc: qcom: rpmhpd: Make power_on actually
- enable the domain
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210629095543.391ac606@oasis.local.home> <CAEf4BzZPb=cPf9V1Bz+USiq+b5opUTNkj4+CRjXdHcmExW3jVg@mail.gmail.com>
+ <20210707184518.618ae497@rorschach.local.home> <CAEf4BzZ=hFZw1RNx0Pw=kMNq2xRrqHYCQQ_TY_pt86Zg9HFJfA@mail.gmail.com>
+ <20210707200544.1fbfd42b@rorschach.local.home>
+In-Reply-To: <20210707200544.1fbfd42b@rorschach.local.home>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 7 Jul 2021 17:23:54 -0700
+Message-ID: <CAEf4BzYRxRW8qR3oENuVEMBYtcvK0bUDEkoq+e4TRT5Hh0pV_Q@mail.gmail.com>
+Subject: Re: [PATCH] tracepoint: Add tracepoint_probe_register_may_exist() for
+ BPF tracing
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        syzbot+721aa903751db87aa244@syzkaller.appspotmail.com,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bjorn Andersson (2021-07-02 19:54:49)
-> The general expectation is that powering on a power-domain should make
-> the power domain deliver some power, and if a specific performace state
-> is needed further requests has to be made.
+On Wed, Jul 7, 2021 at 5:05 PM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> But in contrast with other power-domain implementations (e.g. rpmpd) the
-> RPMh does not have an interface to enable the power, so the driver has
-> to vote for a particular corner (performance level) in rpmh_power_on().
+> On Wed, 7 Jul 2021 16:49:26 -0700
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 >
-> But the corner is never initialized, so a typical request to simply
-> enable the power domain would not actually turn on the hardware. Further
-> more, when no more clients vote for a performance state (i.e. the
-> aggregated vote is 0) the power domain would be turn off.
+> > As for why the user might need that, it's up to the user and I don't
+> > want to speculate because it will always sound contrived without a
+> > specific production use case. But people are very creative and we try
+> > not to dictate how and what can be done if it doesn't break any
+> > fundamental assumption and safety.
+>
+> I guess it doesn't matter, because if they try to do it, the second
+> attachment will simply fail to attach.
+>
 
-s/turn/turned/
+But not for the kprobe case.
 
->
-> Fix both of these issues by always voting for a corner with non-zero
-> value, when the power domain is enabled.
->
-> The tracking of the lowest non-zero corner is performed to handle the
-> corner case if there's ever a domain with a non-zero lowest corner, in
-> which case both rpmh_power_on() and rpmh_rpmhpd_set_performance_state()
-> would be allowed to use this lowest corner.
->
-> Fixes: 279b7e8a62cc ("soc: qcom: rpmhpd: Add RPMh power domain driver")
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
+And it might not always be possible to know that the same BPF program
+is being attached. It could be attached by different processes that
+re-use pinned program (without being aware of each other). Or it could
+be done from some generic library that just accepts prog_fd and
+doesn't really know the exact BPF program and whether it was already
+attached.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Not sure why it doesn't matter that attachment will fail where it is
+expected to succeed. The question is rather why such restriction?
+
+> -- Steve
