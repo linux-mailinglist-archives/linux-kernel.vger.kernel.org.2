@@ -2,119 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1737C3BF4D3
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 06:35:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 609DF3BF4D6
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 06:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229624AbhGHEih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 00:38:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhGHEih (ORCPT
+        id S229644AbhGHEj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 00:39:59 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:55019 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229482AbhGHEj6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 00:38:37 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA05C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Jul 2021 21:35:55 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id z18-20020a9d7a520000b02904b28bda1885so3148283otm.7
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 21:35:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IfQ8PSVhuZ6L8Wdvtm/o1xt0WVv9JVjQWBs6sIfflpw=;
-        b=czj3Bg3UkwAJ2FaKsXlvtboq/0UeWCjH+oJ7zB7j5BstzyX9WhzCvWnhb2S7es2gf/
-         qDYrKfpA1nCggf6H1R5Bx6DWE5jMNvHeIiWuet8vmoUGB6t3+JsdZbQom+aQhFirYIlw
-         lk5k94QPLJXXCSi9P3ZutSP7sC4+t6g39imBzZcY/TKdeDUEkg2AXjYD9zj1A5HLQgTq
-         cvTYB9hlVkZ7VN9Rhg/HJtIrSoGMzVIjOc7YDQkNmAqGdyZgJrXTcAlbhd6Z1KWjNLVv
-         odpNJfg1EFnQcdJFvXpCKm19UXyToFmeNmvTEf9KM7qSyLa3ccLHvJzQTl2ndJNgd6ri
-         csNA==
+        Thu, 8 Jul 2021 00:39:58 -0400
+Received: by mail-io1-f69.google.com with SMTP id m14-20020a5d898e0000b02904f7957d92b5so3171946iol.21
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Jul 2021 21:37:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IfQ8PSVhuZ6L8Wdvtm/o1xt0WVv9JVjQWBs6sIfflpw=;
-        b=G2SbMhPbuwKPUItHmZ2r5jjAq79syTrDjQIJtmKtSS3JufFhVI6cVK0/MttpMvpvWJ
-         i+muE3O9cdW0XFYx8EbIv27PcagfzTsuukHPSMsZ2x41dGEUDE5ZAHnzuJirc/TEyqMo
-         6bDc/d24ECXuOPl9xm7Tlyz6lGWwCXVqnnL0r3lm2hgpqLG2SeAKMpiWgQiXtdwvxYUN
-         DYPpCv68OCgxJFNvGxorvh/RfA+JI/dcWP6S2kBXGPlhSdrVXDSmHprhWZIU2lJ8sOvw
-         O9W5qqvqdvNzbpL0SR0IhtmFip7DzemJKp5gOZR6J87hftuv+tPUi+Hf0qOXE5jxPgea
-         fjAg==
-X-Gm-Message-State: AOAM531g5SvOUxkrEss1PX3uvaagxztynZLsvq0cgb/SYvBTkQaNpQ9G
-        0UAEMo3ybCr7t28l1sA/XpJcXYmNKAU2tA==
-X-Google-Smtp-Source: ABdhPJwGRenAwOfhQnQ3yXcVmV5j8ioSMHQoRYSsO/3D4uWIpOMW3epdehI1Q6E9f8QSvQueuTvkkQ==
-X-Received: by 2002:a9d:634d:: with SMTP id y13mr22566972otk.294.1625718955094;
-        Wed, 07 Jul 2021 21:35:55 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id o26sm325734oic.12.2021.07.07.21.35.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 21:35:54 -0700 (PDT)
-Date:   Wed, 7 Jul 2021 23:35:52 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] soc: qcom: rpmhpd: Use corner in power_off
-Message-ID: <YOaAqAqldq3Hyiva@yoga>
-References: <20210703005416.2668319-1-bjorn.andersson@linaro.org>
- <20210703005416.2668319-2-bjorn.andersson@linaro.org>
- <CAE-0n50EvG4qV0n+Ag+dvFxKKasnUzwH=MA+f-jsgDdBqaqziQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=40l21TFuHqhJl0mM7zsS8/Vnk6ZKMOnaYU7/bH8VqkU=;
+        b=ZpSnzGdJpzuGGTo7WNFySsHoRn5oTttTTuBkeP+XrUwedmtanWnmNVMYcY/2VeS1fg
+         QpM7Gr2yVJwQXu3jIG6tBpATG3UwlBsy1rrF2Cpf/mg5XA4rop4O43LI18VYmhZofiRP
+         hbdNN2F4dYSAwq64m19gDU+YVQvFbN5xm0zidUhSK9542GKWl+t0/WSB6qwdUZpU/xco
+         KSEqLAdyJcuLE3Ct3SNAJolihJODvrE4mtFRuuU4NjdQKmQhHt7eJcIrerQv1uEipaWR
+         A9hs4aiyRLvBIOucMesnQzg3ipVljTOV/iSfJi8HwHtK1rxo+YppGHjhgwfiEkRZEeMN
+         bBQA==
+X-Gm-Message-State: AOAM533foU3hJbVDonfRBkEYdnrTSQepnJpF/knshGw61h+jcbG26eEX
+        DeytPhaK16b0dDQNZ2QcGdnOUc7QmsacTfo7DP/fCI3Ksqwv
+X-Google-Smtp-Source: ABdhPJwbeNdDJaibVFfoqsd6LMSSJBeov+U4QbW9IjY+ESUaQyhqcY8c3Wzyhnst3V0G3j306oxA7ETyLX+KTIRqosmNQy/rauJG
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAE-0n50EvG4qV0n+Ag+dvFxKKasnUzwH=MA+f-jsgDdBqaqziQ@mail.gmail.com>
+X-Received: by 2002:a05:6602:1544:: with SMTP id h4mr2437448iow.76.1625719037271;
+ Wed, 07 Jul 2021 21:37:17 -0700 (PDT)
+Date:   Wed, 07 Jul 2021 21:37:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b8a3e905c69535e3@google.com>
+Subject: [syzbot] kernel BUG in __tlb_remove_page_size
+From:   syzbot <syzbot+2f816ba9b71ca9a8e6b0@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, aneesh.kumar@linux.ibm.com,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, npiggin@gmail.com, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com, will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 07 Jul 19:21 CDT 2021, Stephen Boyd wrote:
+Hello,
 
-> Quoting Bjorn Andersson (2021-07-02 17:54:15)
-> > rpmhpd_aggregate_corner() takes a corner as parameter, but in
-> > rpmhpd_power_off() the code requests the level of the first corner
-> > instead.
-> >
-> > In all (known) current cases the first corner has level 0, so this
-> > change should be a nop, but in case that there's a power domain with a
-> > non-zero lowest level this makes sure that rpmhpd_power_off() actually
-> > requests the lowest level - which is the closest to "power off" we can
-> > get.
-> >
-> > While touching the code, also skip the unnecessary zero-initialization
-> > of "ret".
-> >
-> > Fixes: 279b7e8a62cc ("soc: qcom: rpmhpd: Add RPMh power domain driver")
-> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > ---
-> 
-> I think this is why qcom folks talk about "virtual corner" and "physical
-> corner" because there's the one in command DB and the one in hardware.
+syzbot found the following issue on:
 
-I think the driver uses "level" and "corner" to denote the two different
-number spaces, so I think we're good...now that we after this patch
-don't pass a "level" as "corner" during power_off ;)
+HEAD commit:    3dbdb38e Merge branch 'for-5.14' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1216c149d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a1fcf15a09815757
+dashboard link: https://syzkaller.appspot.com/bug?extid=2f816ba9b71ca9a8e6b0
+userspace arch: i386
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=151ee572300000
 
-> Maybe we should change rpmhpd_aggregate_corner() to call the argument
-> 'vcorner'?
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+2f816ba9b71ca9a8e6b0@syzkaller.appspotmail.com
 
-So "virtual corner" is "corner" and "physical corner" is level? I.e. 256
-is a "physical corner"?
+ release_pages+0x856/0x20a0 mm/swap.c:972
+ tlb_batch_pages_flush mm/mmu_gather.c:49 [inline]
+ tlb_flush_mmu_free mm/mmu_gather.c:242 [inline]
+ tlb_flush_mmu mm/mmu_gather.c:249 [inline]
+ tlb_finish_mmu+0x165/0x8c0 mm/mmu_gather.c:340
+ exit_mmap+0x1ea/0x620 mm/mmap.c:3204
+ __mmput+0x122/0x470 kernel/fork.c:1101
+ mmput+0x58/0x60 kernel/fork.c:1122
+ exit_mm kernel/exit.c:501 [inline]
+ do_exit+0xae2/0x2a50 kernel/exit.c:812
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ __do_sys_exit_group kernel/exit.c:933 [inline]
+ __se_sys_exit_group kernel/exit.c:931 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+------------[ cut here ]------------
+kernel BUG at mm/mmu_gather.c:87!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 10208 Comm: syz-executor.4 Not tainted 5.13.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__tlb_remove_page_size+0x1f1/0x420 mm/mmu_gather.c:87
+Code: d2 0f 85 ef 01 00 00 8b 6d 0c e9 34 ff ff ff e8 65 0d c8 ff 0f 0b e8 5e 0d c8 ff 48 c7 c6 60 93 96 89 4c 89 f7 e8 9f ce fa ff <0f> 0b e8 48 0d c8 ff 4c 8d 6b 24 48 b8 00 00 00 00 00 fc ff df 4c
+RSP: 0018:ffffc90002757748 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffffc90002757a60 RCX: 0000000000000000
+RDX: ffff888032eeb880 RSI: ffffffff81ad7ce1 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000000029 R09: 00000000ffffffff
+R10: ffffffff88e1c1e9 R11: 00000000ffffffff R12: 0000000000000000
+R13: 0000000000000001 R14: ffffea0000d09e00 R15: ffffc90002757a88
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: 000000000ab8a404 CR3: 000000003792f000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __tlb_remove_page include/asm-generic/tlb.h:440 [inline]
+ zap_pte_range mm/memory.c:1272 [inline]
+ zap_pmd_range mm/memory.c:1384 [inline]
+ zap_pud_range mm/memory.c:1413 [inline]
+ zap_p4d_range mm/memory.c:1434 [inline]
+ unmap_page_range+0xf22/0x2890 mm/memory.c:1455
+ unmap_single_vma+0x198/0x300 mm/memory.c:1500
+ unmap_vmas+0x16d/0x2f0 mm/memory.c:1532
+ exit_mmap+0x1d0/0x620 mm/mmap.c:3202
+ __mmput+0x122/0x470 kernel/fork.c:1101
+ mmput+0x58/0x60 kernel/fork.c:1122
+ exit_mm kernel/exit.c:501 [inline]
+ do_exit+0xae2/0x2a50 kernel/exit.c:812
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ get_signal+0x47f/0x2150 kernel/signal.c:2796
+ arch_do_signal_or_restart+0x2a9/0x1eb0 arch/x86/kernel/signal.c:789
+ handle_signal_work kernel/entry/common.c:148 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+ exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:209
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
+ __do_fast_syscall_32+0x72/0xf0 arch/x86/entry/common.c:181
+ do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:203
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7ff1549
+Code: Unable to access opcode bytes at RIP 0xf7ff151f.
+RSP: 002b:00000000f77eb68c EFLAGS: 00000246 ORIG_RAX: 00000000000000f0
+RAX: 0000000000000001 RBX: 000000000819afcc RCX: 0000000000000081
+RDX: 00000000000f4240 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 00000000080525a9 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+---[ end trace 67c535245c014435 ]---
+RIP: 0010:__tlb_remove_page_size+0x1f1/0x420 mm/mmu_gather.c:87
+Code: d2 0f 85 ef 01 00 00 8b 6d 0c e9 34 ff ff ff e8 65 0d c8 ff 0f 0b e8 5e 0d c8 ff 48 c7 c6 60 93 96 89 4c 89 f7 e8 9f ce fa ff <0f> 0b e8 48 0d c8 ff 4c 8d 6b 24 48 b8 00 00 00 00 00 fc ff df 4c
+RSP: 0018:ffffc90002757748 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffffc90002757a60 RCX: 0000000000000000
+RDX: ffff888032eeb880 RSI: ffffffff81ad7ce1 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000000029 R09: 00000000ffffffff
+R10: ffffffff88e1c1e9 R11: 00000000ffffffff R12: 0000000000000000
+R13: 0000000000000001 R14: ffffea0000d09e00 R15: ffffc90002757a88
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: 000000000ab8a404 CR3: 000000003792f000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-Or did you get the suggestion backwards?
 
-> Unfortunately we can't really build a type system here to
-> make this problem easy to catch with a mismatched type, unless there's
-> some sort of typedef trick we can play?
-> 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-s/i/corner/ in rpmhpd_set_performance_state() would further enforce the
-naming scheme used and reduce the risk for future confusion.
-
-But we did just squash the final bug... ;)
-
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-
-Thanks,
-Bjorn
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
