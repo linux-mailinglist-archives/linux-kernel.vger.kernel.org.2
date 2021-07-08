@@ -2,98 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6EFA3C1382
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 15:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4E13C13DC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 15:07:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231543AbhGHNGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 09:06:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230396AbhGHNG2 (ORCPT
+        id S231783AbhGHNKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 09:10:17 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:37254 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230080AbhGHNKP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 09:06:28 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2B8DC061574;
-        Thu,  8 Jul 2021 06:03:46 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1625749425;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MRfCbrQnCjc31mun5+lwwycjoViRgOB/BMNUJ5+WFVM=;
-        b=XqHv15B4IzUHDb3aeRgQ9sUauMXSuWJTTUoBLFBg7gfNpqSdZz+HCXNTrRDVU1Hs3lihnx
-        JANDD+V7ccrDsoSGZXo307eDImgnyvANXm0IZz3nwgiSjCqAUWuCMMg9tx6667WyaZF53b
-        QU+hi4vZKSV2MRfp7E1o73tvD1CsOuSdsp/HsqCbe6wvkWcbxqTyBbNODiQIPdr3zDI8xo
-        LLjpGBPv93PD9rzuHIOJrcPSCFdDgKCf5Tit7ww64Vg3jhXI1sTNIbgfzO1tu+btaeikY3
-        BgkBZMnh6EACv5LXSbZuZsm7z6ct3YEp6uBGDZmmVtJ/Q2c3OWv9jHo3y4PEmg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1625749425;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MRfCbrQnCjc31mun5+lwwycjoViRgOB/BMNUJ5+WFVM=;
-        b=x5+ZjaUMukMtoLsi6pswazdqA74YMyQ4LYDTz12q7iwjXG7PC589ioXdFo3oGf5Lm6/oqS
-        X39v/oanHo5CqlBQ==
-To:     syzbot <syzbot+a3fcd59df1b372066f5a@syzkaller.appspotmail.com>,
-        akpm@linux-foundation.org, bp@alien8.de, hpa@zytor.com,
-        jmattson@google.com, joro@8bytes.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mark.rutland@arm.com, masahiroy@kernel.org, mingo@redhat.com,
-        pbonzini@redhat.com, peterz@infradead.org,
-        rafael.j.wysocki@intel.com, rostedt@goodmis.org, seanjc@google.com,
-        sedat.dilek@gmail.com, syzkaller-bugs@googlegroups.com,
-        vitor@massaru.org, vkuznets@redhat.com, wanpengli@tencent.com,
-        will@kernel.org, x86@kernel.org
-Subject: Re: [syzbot] general protection fault in try_grab_compound_head
-In-Reply-To: <0000000000009e89e205c63dda94@google.com>
-References: <0000000000009e89e205c63dda94@google.com>
-Date:   Thu, 08 Jul 2021 15:03:45 +0200
-Message-ID: <87fswpot3i.ffs@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Thu, 8 Jul 2021 09:10:15 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R941e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=chengshuyi@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Uf7.lIJ_1625749643;
+Received: from localhost(mailfrom:chengshuyi@linux.alibaba.com fp:SMTPD_---0Uf7.lIJ_1625749643)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 08 Jul 2021 21:07:31 +0800
+From:   Shuyi Cheng <chengshuyi@linux.alibaba.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Shuyi Cheng <chengshuyi@linux.alibaba.com>
+Subject: [PATCH bpf-next v2] libbpf: Introduce 'btf_custom_path' to 'bpf_obj_open_opts'.
+Date:   Thu,  8 Jul 2021 21:07:02 +0800
+Message-Id: <1625749622-119334-1-git-send-email-chengshuyi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 03 2021 at 13:24, syzbot wrote:
-> syzbot has bisected this issue to:
->
-> commit 997acaf6b4b59c6a9c259740312a69ea549cc684
-> Author: Mark Rutland <mark.rutland@arm.com>
-> Date:   Mon Jan 11 15:37:07 2021 +0000
->
->     lockdep: report broken irq restoration
+In order to enable the older kernel to use the CO-RE feature, load the
+vmlinux btf of the specified path.
 
-That's the commit which makes the underlying problem visible:
+Learn from Andrii's comments in [0], add the btf_custom_path parameter
+to bpf_obj_open_opts, you can directly use the skeleton's
+<objname>_bpf__open_opts function to pass in the btf_custom_path
+parameter.
 
-       raw_local_irq_restore() called with IRQs enabled
+Prior to this, there was also a developer who provided a patch with
+similar functions. It is a pity that the follow-up did not continue to
+advance. See [1].
 
-and is triggered by this call chain:
+	[0]https://lore.kernel.org/bpf/CAEf4BzbJZLjNoiK8_VfeVg_Vrg=9iYFv+po-38SMe=UzwDKJ=Q@mail.gmail.com/#t
+	[1]https://yhbt.net/lore/all/CAEf4Bzbgw49w2PtowsrzKQNcxD4fZRE6AKByX-5-dMo-+oWHHA@mail.gmail.com/
 
- kvm_wait arch/x86/kernel/kvm.c:860 [inline]
- kvm_wait+0xc3/0xe0 arch/x86/kernel/kvm.c:837
- pv_wait arch/x86/include/asm/paravirt.h:564 [inline]
- pv_wait_head_or_lock kernel/locking/qspinlock_paravirt.h:470 [inline]
- __pv_queued_spin_lock_slowpath+0x8b8/0xb40 kernel/locking/qspinlock.c:508
- pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:554 [inline]
- queued_spin_lock_slowpath arch/x86/include/asm/qspinlock.h:51 [inline]
- queued_spin_lock include/asm-generic/qspinlock.h:85 [inline]
- do_raw_spin_lock+0x200/0x2b0 kernel/locking/spinlock_debug.c:113
- spin_lock include/linux/spinlock.h:354 [inline]
- alloc_huge_page+0x2b0/0xda0 mm/hugetlb.c:2318
- hugetlb_no_page mm/hugetlb.c:4323 [inline]
- hugetlb_fault+0xc35/0x1cd0 mm/hugetlb.c:4523
- follow_hugetlb_page+0x317/0xda0 mm/hugetlb.c:4836
- __get_user_pages+0x3fa/0xe30 mm/gup.c:1041
- __get_user_pages_locked mm/gup.c:1256 [inline]
- __gup_longterm_locked+0x15f/0xc80 mm/gup.c:1667
- io_sqe_buffer_register fs/io_uring.c:8462 [inline]
- __io_uring_register fs/io_uring.c:9901 [inline]
- __do_sys_io_uring_register+0xeb1/0x3350 fs/io_uring.c:10000
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Signed-off-by: Shuyi Cheng <chengshuyi@linux.alibaba.com>
+---
+v1: https://lore.kernel.org/bpf/CAEf4BzaGjEC4t1OefDo11pj2-HfNy0BLhs_G2UREjRNTmb2u=A@mail.gmail.com/t/#m4d9f7c6761fbd2b436b5dfe491cd864b70225804
+v1->v2:
+-- Change custom_btf_path to btf_custom_path.
+-- If the length of btf_custom_path of bpf_obj_open_opts is too long, 
+   return ERR_PTR(-ENAMETOOLONG).
+-- Add `custom BTF is in addition to vmlinux BTF`
+   with btf_custom_path field.
 
-Thanks,
+ tools/lib/bpf/libbpf.c | 27 ++++++++++++++++++++++++---
+ tools/lib/bpf/libbpf.h |  6 +++++-
+ 2 files changed, 29 insertions(+), 4 deletions(-)
 
-        tglx
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 1e04ce7..aed156c 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -494,6 +494,10 @@ struct bpf_object {
+ 	struct btf *btf;
+ 	struct btf_ext *btf_ext;
+ 
++	/* custom BTF is in addition to vmlinux BTF (i.e., Use the CO-RE
++	 * feature in the old kernel).
++	 */
++	char *btf_custom_path;
+ 	/* Parse and load BTF vmlinux if any of the programs in the object need
+ 	 * it at load time.
+ 	 */
+@@ -2679,8 +2683,15 @@ static int bpf_object__load_vmlinux_btf(struct bpf_object *obj, bool force)
+ 	if (!force && !obj_needs_vmlinux_btf(obj))
+ 		return 0;
+ 
+-	obj->btf_vmlinux = libbpf_find_kernel_btf();
+-	err = libbpf_get_error(obj->btf_vmlinux);
++	if (obj->btf_custom_path) {
++		obj->btf_vmlinux = btf__parse(obj->btf_custom_path, NULL);
++		err = libbpf_get_error(obj->btf_vmlinux);
++		pr_debug("loading custom vmlinux BTF '%s': %d\n", obj->btf_custom_path, err);
++	} else {
++		obj->btf_vmlinux = libbpf_find_kernel_btf();
++		err = libbpf_get_error(obj->btf_vmlinux);
++	}
++
+ 	if (err) {
+ 		pr_warn("Error loading vmlinux BTF: %d\n", err);
+ 		obj->btf_vmlinux = NULL;
+@@ -7554,7 +7565,7 @@ int bpf_program__load(struct bpf_program *prog, char *license, __u32 kern_ver)
+ __bpf_object__open(const char *path, const void *obj_buf, size_t obj_buf_sz,
+ 		   const struct bpf_object_open_opts *opts)
+ {
+-	const char *obj_name, *kconfig;
++	const char *obj_name, *kconfig, *btf_tmp_path;
+ 	struct bpf_program *prog;
+ 	struct bpf_object *obj;
+ 	char tmp_name[64];
+@@ -7584,6 +7595,15 @@ int bpf_program__load(struct bpf_program *prog, char *license, __u32 kern_ver)
+ 	obj = bpf_object__new(path, obj_buf, obj_buf_sz, obj_name);
+ 	if (IS_ERR(obj))
+ 		return obj;
++
++	btf_tmp_path = OPTS_GET(opts, btf_custom_path, NULL);
++	if (btf_tmp_path) {
++		if (strlen(btf_tmp_path) >= PATH_MAX)
++			return ERR_PTR(-ENAMETOOLONG);
++		obj->btf_custom_path = strdup(btf_tmp_path);
++		if (!obj->btf_custom_path)
++			return ERR_PTR(-ENOMEM);
++	}
+ 
+ 	kconfig = OPTS_GET(opts, kconfig, NULL);
+ 	if (kconfig) {
+@@ -8702,6 +8722,7 @@ void bpf_object__close(struct bpf_object *obj)
+ 	for (i = 0; i < obj->nr_maps; i++)
+ 		bpf_map__destroy(&obj->maps[i]);
+ 
++	zfree(&obj->btf_custom_path);
+ 	zfree(&obj->kconfig);
+ 	zfree(&obj->externs);
+ 	obj->nr_extern = 0;
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 6e61342..5002d1f 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -94,8 +94,12 @@ struct bpf_object_open_opts {
+ 	 * system Kconfig for CONFIG_xxx externs.
+ 	 */
+ 	const char *kconfig;
++	/* custom BTF is in addition to vmlinux BTF (i.e., Use the CO-RE
++	 * feature in the old kernel).
++	 */
++	char *btf_custom_path;
+ };
+-#define bpf_object_open_opts__last_field kconfig
++#define bpf_object_open_opts__last_field btf_custom_path
+ 
+ LIBBPF_API struct bpf_object *bpf_object__open(const char *path);
+ LIBBPF_API struct bpf_object *
+-- 
+1.8.3.1
+
