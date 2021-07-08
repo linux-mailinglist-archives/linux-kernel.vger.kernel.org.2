@@ -2,98 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 059AE3BF60F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 09:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D64173BF613
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 09:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbhGHHQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 03:16:22 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:32822 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229669AbhGHHQV (ORCPT
+        id S230492AbhGHHQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 03:16:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37028 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230404AbhGHHQr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 03:16:21 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 2339720161;
-        Thu,  8 Jul 2021 07:13:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1625728419; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Thu, 8 Jul 2021 03:16:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625728445;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Xm801qlOgDTdwA0+ZHys/QkRvVO84weEPSbBZ/1uzdA=;
-        b=pK31RxHSDcs3PbALgjEKQf7BNoj5+FWXoLDwxFUb819lkqSV3wuZfkbzkOcqyGEnrTD1aT
-        xmIwiqnNNnWIIlZVgas39789yj6gB/Ww6Z07JO0qLbXIbEgGcUyQ6lByZnS7sqxETb7j17
-        6gCvLvmfATVv5n1vqODYl+XALhvmHHk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1625728419;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xm801qlOgDTdwA0+ZHys/QkRvVO84weEPSbBZ/1uzdA=;
-        b=5qrZeLrPoDl0JQBsDPlez05Z/f9bL6nqljng5m3xqbFyZkx4TZ2Rf279T1Af7Y1ij3MKhA
-        ZNOD48vx9w8N8iDA==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
-        by relay2.suse.de (Postfix) with ESMTP id 166ECA3B88;
-        Thu,  8 Jul 2021 07:13:39 +0000 (UTC)
-Date:   Thu, 08 Jul 2021 09:13:39 +0200
-Message-ID: <s5hfswp6zx8.wl-tiwai@suse.de>
-From:   Takashi Iwai <tiwai@suse.de>
-To:     Max Filippov <jcmvbkbc@gmail.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        alsa-devel@alsa-project.org, Leon Romanovsky <leon@kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
+        bh=aTVrKeNSZQYZXjn+U2KrdBcF3WfqOs66nwM/5SMqCdw=;
+        b=TSSdMntVnKRxEDx7lz7jdYOma51JlVFim6r8e+6okk8SFPXsqZ1VOyF3TVqeOhY7omFZzP
+        qDEf8oDLFIa24nAQcTrdpS9A3NNB1LP36lvDUGFy5hxqvcoO7iVNOHmnTcxhO1u5OMj5AB
+        wlB5qQjwet7Nc63vvkK2W+9JJjiyANo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-240-thd_CwFgO0yjDP7m6NA6iA-1; Thu, 08 Jul 2021 03:14:03 -0400
+X-MC-Unique: thd_CwFgO0yjDP7m6NA6iA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1FDD91084F40;
+        Thu,  8 Jul 2021 07:14:01 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (ovpn-115-5.ams2.redhat.com [10.36.115.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9FEBF5D9D3;
+        Thu,  8 Jul 2021 07:13:50 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: Re: ALSA: intel8x0: div by zero in snd_intel8x0_update()
-In-Reply-To: <CAMo8BfLj+VLUbfUmHUSHOfc3PwbWd2w_xnaTZa9HyrcmvJCAkQ@mail.gmail.com>
-References: <YJ4yBmIV6RJCo42U@google.com>
-        <s5hk0o18tio.wl-tiwai@suse.de>
-        <YJ5cHdv6MVmAKD3b@google.com>
-        <YKDYQfDf7GiMfGCN@google.com>
-        <YKDYbaprE3K2QpCe@google.com>
-        <s5hbl9b6mah.wl-tiwai@suse.de>
-        <CAMo8BfKKMQkcsbOQaeEjq_FsJhdK=fn598dvh7YOcZshUSOH=g@mail.gmail.com>
-        <s5ho8be8v3z.wl-tiwai@suse.de>
-        <CAMo8Bf+FF8Ofq=FwoZZXp9vKiMaUZNAm+W=OJmu2j2XN6kLb-Q@mail.gmail.com>
-        <s5hk0m26lfu.wl-tiwai@suse.de>
-        <CAMo8BfLj+VLUbfUmHUSHOfc3PwbWd2w_xnaTZa9HyrcmvJCAkQ@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
+        kernel-team <kernel-team@android.com>
+Subject: Re: [PATCH 1/1] mm: introduce process_reap system call
+References: <20210623192822.3072029-1-surenb@google.com>
+        <87sg0qa22l.fsf@oldenburg.str.redhat.com>
+        <CAJuCfpEWpvw+gW+NvBPOdGqUOEyucFoT8gdC2uk18dMBQFbhqw@mail.gmail.com>
+        <87wnq1z7kl.fsf@oldenburg.str.redhat.com>
+        <CAJuCfpFt55Dw1uW3S6_AincNfPaAtwdi6iXYVvFr7x3fvt4uzw@mail.gmail.com>
+        <87zguxxrfl.fsf@oldenburg.str.redhat.com>
+        <CAJuCfpEUXz-oHi5Ho8nGAKtFV6ArQDx9yQwrdTzYgHr5+6=YaQ@mail.gmail.com>
+Date:   Thu, 08 Jul 2021 09:13:48 +0200
+In-Reply-To: <CAJuCfpEUXz-oHi5Ho8nGAKtFV6ArQDx9yQwrdTzYgHr5+6=YaQ@mail.gmail.com>
+        (Suren Baghdasaryan's message of "Wed, 7 Jul 2021 23:39:34 -0700")
+Message-ID: <874kd5xopf.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 07 Jul 2021 22:33:22 +0200,
-Max Filippov wrote:
-> 
-> On Wed, Jul 7, 2021 at 11:14 AM Takashi Iwai <tiwai@suse.de> wrote:
-> > On Wed, 07 Jul 2021 19:50:07 +0200, Max Filippov wrote:
-> > > It didn't change anything in my case. My further observation is that
-> > > the snd_intel8x0_update is called before the ichdev->prepared
-> > > is set to one and as a result IRQ is apparently never cleared.
-> >
-> > So it's broken in anyway no matter whether
-> > intel8x0_measure_ac97_clock() is called or not, right?
-> 
-> The change that you suggested didn't eliminate the call to
-> intel8x0_measure_ac97_clock, it's still called and an interrupt
-> flood happens at the same place.
+* Suren Baghdasaryan:
 
-Ah I see the point.  Then the fix would be a oneliner like below.
+> Sending SIGKILL is blocking in terms of delivering the signal, but it
+> does not block waiting for SIGKILL to be processed by the signal
+> recipient and memory to be released. When I was talking about
+> "blocking", I meant that current kill() and friends do not block to
+> wait for SIGKILL to be processed.
+> process_reap() will block until the memory is released. Whether the
+> userspace caller is using it right after sending a SIGKILL to reclaim
+> the memory synchronously or spawns a separate thread to reclaim memory
+> asynchronously is up to the user. Both patterns are supported.
 
+I see, this makes sense.
 
-Takashi
+Considering that the pidfd sticks around after process_reap returns, the
+issue described in bug 154011 probably does not apply to process_reap.
+(This relates to asynchronous resource deallocation, as discussed before.)
 
---- a/sound/pci/intel8x0.c
-+++ b/sound/pci/intel8x0.c
-@@ -694,7 +694,7 @@ static inline void snd_intel8x0_update(struct intel8x0 *chip, struct ichdev *ich
- 	int status, civ, i, step;
- 	int ack = 0;
- 
--	if (!ichdev->prepared || ichdev->suspended)
-+	if (!(ichdev->prepared || ichdev->in_measurement) || ichdev->suspended)
- 		return;
- 
- 	spin_lock_irqsave(&chip->reg_lock, flags);
+Thanks,
+Florian
+
