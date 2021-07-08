@@ -2,58 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B01533BF2AE
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 02:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9DD3BF2B5
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 02:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230082AbhGHAI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 20:08:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59374 "EHLO mail.kernel.org"
+        id S230038AbhGHANB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 20:13:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229729AbhGHAI2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 20:08:28 -0400
-Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9352261C42;
-        Thu,  8 Jul 2021 00:05:46 +0000 (UTC)
-Date:   Wed, 7 Jul 2021 20:05:44 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        syzbot+721aa903751db87aa244@syzkaller.appspotmail.com,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH] tracepoint: Add tracepoint_probe_register_may_exist()
- for BPF tracing
-Message-ID: <20210707200544.1fbfd42b@rorschach.local.home>
-In-Reply-To: <CAEf4BzZ=hFZw1RNx0Pw=kMNq2xRrqHYCQQ_TY_pt86Zg9HFJfA@mail.gmail.com>
-References: <20210629095543.391ac606@oasis.local.home>
-        <CAEf4BzZPb=cPf9V1Bz+USiq+b5opUTNkj4+CRjXdHcmExW3jVg@mail.gmail.com>
-        <20210707184518.618ae497@rorschach.local.home>
-        <CAEf4BzZ=hFZw1RNx0Pw=kMNq2xRrqHYCQQ_TY_pt86Zg9HFJfA@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229999AbhGHANB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 20:13:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 595CE61C42;
+        Thu,  8 Jul 2021 00:10:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625703020;
+        bh=u5cr8gCXRmIVEx9nPKy91mk6gsb4DsQEiJQdZ5vKous=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GIP1pj7y1EiJTOl39ck4CBjDTiGSrUCBNLAU5lITvUNN80ii13vqkMY/7CXxMumy6
+         JC7y877N/SeUUo3B/bQp1rqMYfNE/2j+69+3uXSH3fFnZpBCw0HpGZ2p1mDm6IX2y9
+         GUPosEvXYcUvthWDVzEcpCBZwbyZOOUHW28IRYkOOwRvz56V3lNve/XJYkrEB4OF93
+         zqnQMwHqRRSoHx5D6V2uODT5QEQRuGXEzhFq2blXLMFLjbv8nV5UH9TtHH4BrMMra4
+         DVYOMr9zjr9HOKycdSC9LniG1n35QHFK8zJQIoesaxTqlcSPPeXgOAq4UcmYdwBLqq
+         /LbRs+JReC2vg==
+Date:   Wed, 7 Jul 2021 17:10:18 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux F2FS Dev Mailing List 
+        <linux-f2fs-devel@lists.sourceforge.net>, Jan Kara <jack@suse.cz>
+Subject: Re: [GIT PULL] f2fs for 5.14-rc1
+Message-ID: <YOZCaqG7TZVLOnl+@google.com>
+References: <YOYHejl3CgABOnhP@google.com>
+ <20210708094647.7c0d3060@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210708094647.7c0d3060@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 7 Jul 2021 16:49:26 -0700
-Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+Hi Stephen,
 
-> As for why the user might need that, it's up to the user and I don't
-> want to speculate because it will always sound contrived without a
-> specific production use case. But people are very creative and we try
-> not to dictate how and what can be done if it doesn't break any
-> fundamental assumption and safety.
+On 07/08, Stephen Rothwell wrote:
+> Hi Jaegeuk,
+> 
+> On Wed, 7 Jul 2021 12:58:50 -0700 Jaegeuk Kim <jaegeuk@kernel.org> wrote:
+> >
+> > Could you please consider this pull request?
+> > 
+> > Thanks,
+> > 
+> > The following changes since commit bd3c9cdb21a2674dd0db70199df884828e37abd4:
+> > 
+> >   Merge tag 'arm64-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux (2021-05-14 10:52:47 -0700)
+> > 
+> > are available in the Git repository at:
+> > 
+> >   git://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git tags/f2fs-for-5.14-rc1
+> > 
+> > for you to fetch changes up to 28607bf3aa6f9762b32dc7f1ed0488823c0651b8:
+> > 
+> >   f2fs: drop dirty node pages when cp is in error status (2021-07-06 22:05:06 -0700)
+> 
+> Its worth mentioning the semantic conflict against the ext3 tree (which
+> hasn't been merged by Linus yet, but presumably will be).
+> 
+> https://lore.kernel.org/lkml/20210623104922.30a5a3fa@canb.auug.org.au/
 
-I guess it doesn't matter, because if they try to do it, the second
-attachment will simply fail to attach.
+I think this looks good to me. Thank you~
 
--- Steve
+> 
+> The ext3 commit has been rebased and is now
+> 
+>   1474c39351f0 ("f2fs: Convert to using invalidate_lock")
+> 
+> but I am still applying the mentioned merge resolution patch.
+> -- 
+> Cheers,
+> Stephen Rothwell
+
+
