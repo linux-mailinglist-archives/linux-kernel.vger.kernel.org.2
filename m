@@ -2,81 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B8983BF3F7
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 04:24:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE1AF3BF3E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 04:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230412AbhGHC1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 22:27:21 -0400
-Received: from mga14.intel.com ([192.55.52.115]:62635 "EHLO mga14.intel.com"
+        id S230266AbhGHCXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 22:23:35 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:47419 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230188AbhGHC1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 22:27:21 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10038"; a="209247383"
-X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
-   d="scan'208";a="209247383"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2021 19:24:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
-   d="scan'208";a="498201106"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
-  by fmsmga002.fm.intel.com with ESMTP; 07 Jul 2021 19:24:38 -0700
-Date:   Thu, 8 Jul 2021 10:19:13 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Tom Rix <trix@redhat.com>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, Wu Hao <hao.wu@intel.com>,
-        Moritz Fischer <mdf@kernel.org>, linux-fpga@vger.kernel.org
-Subject: Re: [PATCH] bus: Make remove callback return void
-Message-ID: <20210708021913.GB12358@yilunxu-OptiPlex-7050>
-References: <20210706095037.1425211-1-u.kleine-koenig@pengutronix.de>
- <4c7210e4-76e4-07fe-a40c-a58e331d0a6e@redhat.com>
+        id S230160AbhGHCXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 22:23:33 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GL0QB4ctpz9sWl;
+        Thu,  8 Jul 2021 12:20:49 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1625710851;
+        bh=O6fSgqYKbW8xFa28F+ufSGqF0ogOYHuxSa3iqkJu4qc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=FbrKlRwfhv8LR7WKLm3RODqwaLKfYl5s0dFhb4QdARGD0RCrjW9sXxXz8COb80SJG
+         jkwGJ120v3RqxJixwwQREXEIj/7BxOQmJBUw5BwJgvQNJx+NyE50byIoS42M9nV3yr
+         Y0yMHZCmJznIK4wfYha6+duMiLxU00SniJlVVN0+GAPaPdFB4u4sRzbCMTDoxeqnol
+         L0l6FrK/sixHDOoIE60QH99tprhyWJxhyqWE+E9oBGj3YNSjFr1oBwSYPI+KuyF7UN
+         SQLP64h8YbzAytdHT0va70iSAP34bE1Cv6/QaA84JkG6lln4NRubg/PO5xH/TnyGnf
+         HXLpb/irGXKjg==
+Date:   Thu, 8 Jul 2021 12:20:48 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Matthew Auld <matthew.auld@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warnings after merge of the drm tree
+Message-ID: <20210708122048.534c1c4d@canb.auug.org.au>
+In-Reply-To: <20210603193242.1ce99344@canb.auug.org.au>
+References: <20210603193242.1ce99344@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4c7210e4-76e4-07fe-a40c-a58e331d0a6e@redhat.com>
+Content-Type: multipart/signed; boundary="Sig_/89K8vhLQ9m1S=V0Qbv_HZcq";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 06:52:09AM -0700, Tom Rix wrote:
-> 
-> On 7/6/21 2:50 AM, Uwe Kleine-König wrote:
-> > The driver core ignores the return value of this callback because there
-> > is only little it can do when a device disappears.
-> > 
-> > This is the final bit of a long lasting cleanup quest where several
-> > buses were converted to also return void from their remove callback.
-> > Additionally some resource leaks were fixed that were caused by drivers
-> > returning an error code in the expectation that the driver won't go
-> > away.
-> > 
-> > With struct bus_type::remove returning void it's prevented that newly
-> > implemented buses return an ignored error code and so don't anticipate
-> > wrong expectations for driver authors.
-> > 
-> > Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> > ---
-> > Hello,
-> > 
-> > this patch depends on "PCI: endpoint: Make struct pci_epf_driver::remove
-> > return void" that is not yet applied, see
-> > https://lore.kernel.org/r/20210223090757.57604-1-u.kleine-koenig@pengutronix.de.
-> > 
-> > I tested it using allmodconfig on amd64 and arm, but I wouldn't be
-> > surprised if I still missed to convert a driver. So it would be great to
-> > get this into next early after the merge window closes.
-> > 
-> > I send this mail to all people that get_maintainer.pl emits for this
-> > patch. I wonder how many recipents will refuse this mail because of the
-> > long Cc: list :-)
-> > 
-> > Best regards
-> > Uwe
-> 
-> >   drivers/fpga/dfl.c                        | 4 +---
-> Reviewed-by: Tom Rix <trix@redhat.com>
-Reviewed-by: Xu Yilun <yilun.xu@intel.com>
+--Sig_/89K8vhLQ9m1S=V0Qbv_HZcq
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+On Thu, 3 Jun 2021 19:32:42 +1000 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>
+> After merging the drm tree, today's linux-next build (htmldocs) produced
+> these warnings:
+>=20
+> Documentation/gpu/driver-uapi.rst:2412: WARNING: Duplicate C declaration,=
+ also defined at gpu/rfc/i915_gem_lmem:1393.
+> Declaration is '.. c:enum:: drm_i915_gem_memory_class'.
+> Documentation/gpu/driver-uapi.rst:2484: WARNING: Duplicate C declaration,=
+ also defined at gpu/rfc/i915_gem_lmem:2484.
+> Declaration is '.. c:struct:: drm_i915_gem_memory_class_instance'.
+> Documentation/gpu/driver-uapi.rst:7: WARNING: Duplicate C declaration, al=
+so defined at gpu/rfc/i915_gem_lmem:7.
+> Declaration is '.. c:struct:: drm_i915_memory_region_info'.
+> Documentation/gpu/driver-uapi.rst:2531: WARNING: Duplicate C declaration,=
+ also defined at gpu/rfc/i915_gem_lmem:2531.
+> Declaration is '.. c:struct:: drm_i915_query_memory_regions'.
+> Documentation/gpu/driver-uapi.rst:2595: WARNING: Duplicate C declaration,=
+ also defined at gpu/rfc/i915_gem_lmem:1393.
+> Declaration is '.. c:struct:: drm_i915_gem_create_ext'.
+> Documentation/gpu/driver-uapi.rst:2615: WARNING: Duplicate C declaration,=
+ also defined at gpu/rfc/i915_gem_lmem:1393.
+> Declaration is '.. c:struct:: drm_i915_gem_create_ext_memory_regions'.
+>=20
+> Introduced by (one or more of) commits
+>=20
+>   0c1a77cbdafb ("drm/doc: add section for driver uAPI")
+>   2bc9c04ea702 ("drm/doc/rfc: i915 DG1 uAPI")
+>   727ecd99a4c9 ("drm/doc/rfc: drop the i915_gem_lmem.h header")
+
+I am still getting these warning.
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/89K8vhLQ9m1S=V0Qbv_HZcq
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDmYQAACgkQAVBC80lX
+0GwVCwf/SUFcXwnAMwIuELT5qczrwssV13CsynuE9hgWz/ibEnwL7oOasOt/kBwQ
+5LgJ7avoBCjclp7xL8oJhoCcuVIRMaQYL2kDkOQ5XNs0uVxIP/hOrb4cKtzLbEUP
+1BF0rfI7hPzmyJ2PLWnV28Ko+9O5yclcz/T+nJeGrVItOh0R3ZVsy/5i22APh5j3
+SpcY530SEouZWfV+kABJcb3ixLVfqLm+R2ArzzVrCVBuFdIsbaaUt1CVQyOC6s2v
+C7H7auUkcDpZFJDQFbz/XU/sPRdRDgn5Yjx71CbC2NnzPUdvvBTy7FXtouOs4q5m
+e9aRHQz35QEV6lOjbdvTxV0XqfGisw==
+=LJNj
+-----END PGP SIGNATURE-----
+
+--Sig_/89K8vhLQ9m1S=V0Qbv_HZcq--
