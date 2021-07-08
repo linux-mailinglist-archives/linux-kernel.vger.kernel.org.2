@@ -2,142 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0856A3BF745
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 11:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B0103BF749
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 11:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231332AbhGHJLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 05:11:12 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47232 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231254AbhGHJLL (ORCPT
+        id S231347AbhGHJLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 05:11:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231328AbhGHJLY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 05:11:11 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16894jlV055988;
-        Thu, 8 Jul 2021 05:08:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=JPJDLe0p4ZjhEFucYJlDDkxue6Tk2PTl5d+5nvsL6qE=;
- b=AzNQwZ6xuDPxnCb7xw9sj+naBglfF8O3fijEP1F6hyyXSGYVht3RGUaR7yMMy1funRtC
- K5x9vHRf/v19nEV0cK2zVvzpFxI3g10CICZQ/e+PM7sRxgBbI/gOK09TB3u1WJdoILM/
- BSpDeTxygKxzhKB+2/KbGJnJrAOrV58KaBY/0JkNBzOThnfS7Dr/j4CW/6Qw8HyekyTT
- fbhox1BSJsEc7/Vg6McbpeL7DvDu2AdAX60SbZEoBKic40yWZ87R4JlEGAQ+fwQjGbFr
- HBv6sy/Hjb/JeCA2EB493JJWwVPWQT0w+Yovywq7K830AfXyKRLD0mHbwS9r1GRdsLX6 Gg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39nwn01c8u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Jul 2021 05:08:16 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 168951xJ059928;
-        Thu, 8 Jul 2021 05:08:16 -0400
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39nwn01c8j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Jul 2021 05:08:16 -0400
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 168979ig006029;
-        Thu, 8 Jul 2021 09:08:15 GMT
-Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
-        by ppma01wdc.us.ibm.com with ESMTP id 39jfhca9r8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Jul 2021 09:08:15 +0000
-Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
-        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16898EoM18612528
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 8 Jul 2021 09:08:14 GMT
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2E1686E058;
-        Thu,  8 Jul 2021 09:08:14 +0000 (GMT)
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D14F96E052;
-        Thu,  8 Jul 2021 09:08:13 +0000 (GMT)
-Received: from sofia.ibm.com (unknown [9.199.42.113])
-        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu,  8 Jul 2021 09:08:13 +0000 (GMT)
-Received: by sofia.ibm.com (Postfix, from userid 1000)
-        id 451722E3B06; Thu,  8 Jul 2021 14:38:08 +0530 (IST)
-Date:   Thu, 8 Jul 2021 14:38:08 +0530
-From:   Gautham R Shenoy <ego@linux.vnet.ibm.com>
-To:     "Pratik R. Sampat" <psampat@linux.ibm.com>
-Cc:     mpe@ellerman.id.au, rjw@rjwysocki.net, linux-pm@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        pratik.r.sampat@gmail.com
-Subject: Re: [PATCH] cpufreq:powernv: Fix init_chip_info initialization in
- numa=off
-Message-ID: <20210708090808.GA21260@in.ibm.com>
-Reply-To: ego@linux.vnet.ibm.com
-References: <20210615050949.10071-1-psampat@linux.ibm.com>
+        Thu, 8 Jul 2021 05:11:24 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04018C06175F
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 02:08:42 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id w15so5248938pgk.13
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 02:08:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Yg6Z3gvRm/WxFc49h9ykaSeGxX205qh/XOHqR1NLiv0=;
+        b=D86zu17peaSI05ZGtRayzJkiERzzC389M/vpUzxYKRPppRcPvGh2WCkxqGTfwF+rca
+         bjKDJeII8bS/dnXI9as+S8WMV67p7eAmz/QRPDyfnYlK9XFqq0m9RNvUZk91YSWE4caw
+         e1d4ajWd7acS76uFFMfkNNVEj71v+0nJI8CzI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Yg6Z3gvRm/WxFc49h9ykaSeGxX205qh/XOHqR1NLiv0=;
+        b=o1SZ0lPxamG2tOhxf1IWzDIHrMLE/+MYQ8FVqiammm4k5uzZkdv3aKF1DStRG89Lsi
+         5X/2B6qWaDBUthT7Z+7fXD8eiin7Y3rLXplw2GyVgLia85RSIi3xDzSg5eoGM6mH4AgP
+         l6W4KIJj+gRgRjb/05GvQn9VphNkfNW6f17qykYQbp7yKAD2CjNJm4HVAp9y58xAC12y
+         DOVx6LEtiwyN+a6+1u9OWDhhFjQpQjxav0R2veo13R/zaDDZmNs55xPCsAoVSUmAgfdL
+         PjUIt+OiP1239XXjxWaTqQPddQ32Z0aWgfPmiz3OxdoZUx3woK4LwyQluLYd9x778Z6A
+         DLIQ==
+X-Gm-Message-State: AOAM533VRUCDjyfcfbgvU27DvgWIpAcBPWXxfomRfgmWES06/AQDyKYB
+        DKUNiguenq9sdOqWz59WxWeQqg==
+X-Google-Smtp-Source: ABdhPJxOnkscBdonJ86nK9tc+Wc4YdX/kKAb4TDhNGLDEIRbN+1e04A66g4E3wdaWfoJcqWtxAvFLg==
+X-Received: by 2002:aa7:9407:0:b029:31c:c870:4b05 with SMTP id x7-20020aa794070000b029031cc8704b05mr23767424pfo.23.1625735321487;
+        Thu, 08 Jul 2021 02:08:41 -0700 (PDT)
+Received: from judyhsiao-p920.tpe.corp.google.com ([2401:fa00:1:10:2693:9a12:155:84a7])
+        by smtp.gmail.com with ESMTPSA id g10sm1677024pjv.46.2021.07.08.02.08.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jul 2021 02:08:40 -0700 (PDT)
+From:   Judy Hsiao <judyhsiao@chromium.org>
+To:     Andy Gross <agross@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        dianders@chromium.org, dgreid@chromium.org, cychiang@google.com,
+        judyhsiao@google.com, tzungbi@chromium.org, swboyd@chromium.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Judy Hsiao <judyhsiao@chromium.org>
+Subject: [PATCH] arm64: dts: qcom: sc7180: Set adau wakeup delay to 80 ms
+Date:   Thu,  8 Jul 2021 17:08:10 +0800
+Message-Id: <20210708090810.174767-1-judyhsiao@chromium.org>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615050949.10071-1-psampat@linux.ibm.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: UgbXKmIpz22uEgfbU_KqL_zudiRSdQ8B
-X-Proofpoint-ORIG-GUID: twlkEIaGgywqDefwKHZo2OlwpgoN0mA-
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-08_04:2021-07-06,2021-07-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
- clxscore=1011 impostorscore=0 lowpriorityscore=0 adultscore=0
- malwarescore=0 suspectscore=0 priorityscore=1501 mlxlogscore=999
- mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107080050
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Pratik,
+Set audu wakeup delay to 80 ms for fixing pop noise during capture begin.
 
-On Tue, Jun 15, 2021 at 10:39:49AM +0530, Pratik R. Sampat wrote:
-> In the numa=off kernel command-line configuration init_chip_info() loops
-> around the number of chips and attempts to copy the cpumask of that node
-> which is NULL for all iterations after the first chip.
+Signed-off-by: Judy Hsiao <judyhsiao@chromium.org>
+---
+ arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks for taking a look into this. Indeed there is an issue here
-because the code here assumes that node_mask as a proxy for the
-chip_mask. This assumption breaks when run with numa=off, since there will only be a
-single node, but multiple chips.
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
+index 6f9c07147551..a758e4d22612 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
+@@ -23,7 +23,7 @@ / {
+ 	adau7002: audio-codec-1 {
+ 		compatible = "adi,adau7002";
+ 		IOVDD-supply = <&pp1800_l15a>;
+-		wakeup-delay-ms = <15>;
++		wakeup-delay-ms = <80>;
+ 		#sound-dai-cells = <0>;
+ 	};
+ 
+-- 
+2.31.0
 
-
-> 
-> Hence adding a check to bail out after the first initialization if there
-> is only one node.
-> 
-> Fixes: 053819e0bf84 ("cpufreq: powernv: Handle throttling due to Pmax capping at chip level")
-> Signed-off-by: Pratik R. Sampat <psampat@linux.ibm.com>
-> Reported-by: Shirisha Ganta <shirishaganta1@ibm.com>
-> ---
->  drivers/cpufreq/powernv-cpufreq.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/cpufreq/powernv-cpufreq.c b/drivers/cpufreq/powernv-cpufreq.c
-> index e439b43c19eb..663f9c4b5e3a 100644
-> --- a/drivers/cpufreq/powernv-cpufreq.c
-> +++ b/drivers/cpufreq/powernv-cpufreq.c
-> @@ -1078,6 +1078,8 @@ static int init_chip_info(void)
->  		INIT_WORK(&chips[i].throttle, powernv_cpufreq_work_fn);
->  		for_each_cpu(cpu, &chips[i].mask)
->  			per_cpu(chip_info, cpu) =  &chips[i];
-> +		if (num_possible_nodes() == 1)
-> +			break;
-
-With this we will only initialize the chip[0].throttle work function,
-while for the rest of the chips chip[i].throttle will be
-uninitialized. While we may be running in the numa=off mode, the fact
-remains that those other chips do exist and they may experiencing
-throttling, during which they will try to schedule work for chip[i] in
-order to take corrective action, which will fail.
-
-Hence a more correct approach may be to maintain a chip[i] mask
-independent of the node mask.
-
-
-
-
-
->  	}
->  
->  free_and_return:
-> -- 
-> 2.30.2
-> 
