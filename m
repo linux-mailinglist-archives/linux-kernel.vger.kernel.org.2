@@ -2,84 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB57B3BF664
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 09:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A26A3BF657
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 09:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230526AbhGHHmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 03:42:51 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.80]:11526 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229838AbhGHHmt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 03:42:49 -0400
-X-Greylist: delayed 348 seconds by postgrey-1.27 at vger.kernel.org; Thu, 08 Jul 2021 03:42:48 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1625729648;
-    s=strato-dkim-0002; d=aepfle.de;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=Ie8bhNxcgTEIyaHnXue+qUsCeFcFU7OWzE+Hs21wg9g=;
-    b=nKxlYYk9ExTxZ9BuI9EhfpAje6vEfx0GVmBer00VZb2GlgTta4a3e6mEReme+AVLKJ
-    x1g28GBLyGoFvM6gaG5z7b+cV6ZJFLoem/obwXB9+z0+SoPV6pwNVVIIk3/UOPHsneyg
-    GWLwYXUqnjer9VpKH4m9Cx5Kv703S9RZFcbTVNL6kEIMVP91SRDKJaQgZM42hrAkVc4e
-    lmSSydRxnY+lu4pZdDi8VibLUhPOJminze/kIh5/0FPTHkurK2p5a/EfuKxM/KIN1xWG
-    WfgjyRn1yLU1J5t4Nvhf0XjMie6PdfNUCxeSR2W7CoeJ26/3wkjbXCgr0r3rPyjQAbxh
-    dA9w==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2EQZWCpfu+qG7CngxMFH1J+3q8wa/QDiZbDmui9LcK/RdXt7GAQpV1nK0bLlEYINdoY/p1XzQbc+3kk9TsJTnzSvdM+YSIzPms="
-X-RZG-CLASS-ID: mo00
-Received: from aepfle.de
-    by smtp.strato.de (RZmta 47.28.1 AUTH)
-    with ESMTPSA id 30791cx687Y4Yio
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Thu, 8 Jul 2021 09:34:04 +0200 (CEST)
-Date:   Thu, 8 Jul 2021 09:34:00 +0200
-From:   Olaf Hering <olaf@aepfle.de>
-To:     Tianyu Lan <ltykernel@gmail.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
-        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
-        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
-        hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
-        rppt@kernel.org, akpm@linux-foundation.org,
-        kirill.shutemov@linux.intel.com, Tianyu.Lan@microsoft.com,
-        thomas.lendacky@amd.com, ardb@kernel.org,
-        nramas@linux.microsoft.com, robh@kernel.org, keescook@chromium.org,
-        rientjes@google.com, pgonda@google.com, martin.b.radev@gmail.com,
-        hannes@cmpxchg.org, saravanand@fb.com, krish.sadhukhan@oracle.com,
-        xen-devel@lists.xenproject.org, tj@kernel.org,
-        michael.h.kelley@microsoft.com, iommu@lists.linux-foundation.org,
-        linux-arch@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        netdev@vger.kernel.org, vkuznets@redhat.com, brijesh.singh@amd.com,
-        anparri@microsoft.com
-Subject: Re: [RFC PATCH V4 01/12] x86/HV: Initialize shared memory boundary
- in the Isolation VM.
-Message-ID: <20210708073400.GA28528@aepfle.de>
-References: <20210707153456.3976348-1-ltykernel@gmail.com>
- <20210707153456.3976348-2-ltykernel@gmail.com>
+        id S229899AbhGHHih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 03:38:37 -0400
+Received: from m12-15.163.com ([220.181.12.15]:43232 "EHLO m12-15.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229838AbhGHHig (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 03:38:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=cMheW
+        nPV+Ne7z6zmDmh2HBf+TFVmVgbZ0iWS3s4DJ54=; b=G00cRHc8xFyvio61+davz
+        HFu5kh+y/CbB66KLliCOwoWKJm068Gw4d6109U50Ph0M6rAmaSLaPOw9NHE0gDNs
+        JUDxfz3HQzb7WGpx9NjJc4gs2fd2f68E+Kym38hf3CtQTUBXuNYh9AAwnQTnLpLE
+        +nkIDDL3hpELrmq95NCIGA=
+Received: from localhost.localdomain (unknown [218.17.89.111])
+        by smtp11 (Coremail) with SMTP id D8CowAAXH697quZgw2xcAA--.51S2;
+        Thu, 08 Jul 2021 15:34:29 +0800 (CST)
+From:   ChunyouTang <tangchunyou@163.com>
+To:     steven.price@arm.com
+Cc:     robh@kernel.org, tomeu.vizoso@collabora.com,
+        alyssa.rosenzweig@collabora.com, airlied@linux.ie, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        ChunyouTang <tangchunyou@icubecorp.cn>
+Subject: [PATCH v3] drm/panfrost:fix the exception name always "UNKNOWN"
+Date:   Thu,  8 Jul 2021 15:34:06 +0800
+Message-Id: <20210708073407.2015-1-tangchunyou@163.com>
+X-Mailer: git-send-email 2.30.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210707153456.3976348-2-ltykernel@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: D8CowAAXH697quZgw2xcAA--.51S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtw15Cr48Cw4rJr18JF4ktFb_yoWkZrg_ur
+        17ur9xXrsIyrn0kws2y3Z7uryFvryUXw48Aw1fGryDCa45C3s0gwn2vrs8Zr48Wa15CFn8
+        tanFvF1Fkry7KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5oc_3UUUUU==
+X-Originating-IP: [218.17.89.111]
+X-CM-SenderInfo: 5wdqwu5kxq50rx6rljoofrz/1tbiZQXJUV8ZPobPkQAAsY
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, Tianyu Lan wrote:
+From: ChunyouTang <tangchunyou@icubecorp.cn>
 
-> +++ b/include/asm-generic/mshyperv.h
-> @@ -34,8 +34,18 @@ struct ms_hyperv_info {
+The exception_code in register is only 8 bits,So if
+fault_status in panfrost_gpu_irq_handler() don't
+(& 0xFF),it can't get correct exception reason.
 
->  	void  __percpu **ghcb_base;
+and it's better to show all of the register value
+to custom,so it's better fault_status don't (& 0xFF).
 
-It would be cool if the cover letter states which commit id this series is based on.
+Signed-off-by: ChunyouTang <tangchunyou@icubecorp.cn>
+---
+ drivers/gpu/drm/panfrost/panfrost_gpu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Olaf
+diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+index 1fffb6a0b24f..d2d287bbf4e7 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
++++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+@@ -33,7 +33,7 @@ static irqreturn_t panfrost_gpu_irq_handler(int irq, void *data)
+ 		address |= gpu_read(pfdev, GPU_FAULT_ADDRESS_LO);
+ 
+ 		dev_warn(pfdev->dev, "GPU Fault 0x%08x (%s) at 0x%016llx\n",
+-			 fault_status & 0xFF, panfrost_exception_name(pfdev, fault_status & 0xFF),
++			 fault_status, panfrost_exception_name(pfdev, fault_status & 0xFF),
+ 			 address);
+ 
+ 		if (state & GPU_IRQ_MULTIPLE_FAULT)
+-- 
+2.25.1
+
