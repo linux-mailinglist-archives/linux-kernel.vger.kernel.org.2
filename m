@@ -2,122 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 969D53C1B46
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 23:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3CD3C1B4C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 00:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230191AbhGHWAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 18:00:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhGHWAF (ORCPT
+        id S230313AbhGHWCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 18:02:40 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:54170 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229866AbhGHWCk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 18:00:05 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FBF2C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 14:57:22 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id k11so10122426ioa.5
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 14:57:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h1Nw5vlDLzAgvrulBSETvQkc9AOySYTU4bju4sEyOtU=;
-        b=uh1B7OktdVdQAKyT5bAo1eLgRq/GVHtrx02nYVWG5t6vt2iZ27b4+7O0ayMEp3yyf4
-         cg9zald17/uAd1kpNfUegcYmv5j4CLHe5V84p+cOIeOS2+HFJ+PkTqYgdkZ0GKALBzr9
-         lBISKAO3ILMGf7Ttuht8/Dx2GHRwGRWaTyuLpx650f/7iX0zJAy4AGnhJ1khYVJP/Fqo
-         ii0wigMPDlUsxjXg/ffp587S9atABDx/QngBQM0GovQ166zrK2vjSy4UrZv0C98NS0/L
-         NT4/ke2B+HWt5Jr2FvsUrToHy5g2qDdBCbDAuxCS4inde0wNaeY05nUjZGKUVDFKivpa
-         IthQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h1Nw5vlDLzAgvrulBSETvQkc9AOySYTU4bju4sEyOtU=;
-        b=GCMmAaYMurNWxiAkD0tHw5ms/i4vzfro5suqxTmnPXEZbp4aVTsOuPJv9P+jjFXyBf
-         ZGh/xYYdyWYbrswzTKiZyHM2+Vby0fvAGnMJHiGDiZnZL6Oq5ZPLmwiF4WkhcSgibTHv
-         3WuqJQbJ4PZnAMSRHZVVDxaAhV/MonRtbFPu/bFMjvw6bGE3U6CqXjjgf594LbL6AIKg
-         xc18hV5CxslYGghYa/ckemjt3F+raS6PpnqicZNGyKJHYrXp6v63eLtCelORjHFBRow9
-         WxZMTJo6qn4REbQPbQZtbc67e8GpjI28VK9sebr3MOjzdtz5GqrSufX69o2nMhAddsey
-         AbVg==
-X-Gm-Message-State: AOAM533PaFJiGJc9ZfJpm7FzWf265i21jP7fXg+dFSxGbr1IItgHIAhl
-        wmYcQUf8oT0IL7fVVbCqGjYJcIocbxcbV4dI8fg=
-X-Google-Smtp-Source: ABdhPJwCIGlyUtzySF4gtuORUJ/1ZGzkctTs9yzBCiQS7a1wi1Zd9/DY2uoG0AKNlwvDxLNxHmAwgD8//okue8sI3TY=
-X-Received: by 2002:a05:6602:2157:: with SMTP id y23mr10122550ioy.116.1625781441691;
- Thu, 08 Jul 2021 14:57:21 -0700 (PDT)
+        Thu, 8 Jul 2021 18:02:40 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1625781597; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=foQZWcxZgegObXgHqgBDEXunbwEGNs+mS0D1mjRzN8g=;
+ b=NVhMuAE6jMI6DVdqCbO9Fj4d6QERA1axXRmJs9VE0b7JCO5oDRBsxpdrNRnQdhXF4WcQ52lf
+ TFDIw1KK5bA0BHocS7/TjRsmlrGw8BXuRSuSeLOJIBPLIoflmtE2hKyHEYQI1tXRft0zjSHT
+ Jz27WMBnGA3y3b1d+kwgHaOQR/0=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 60e7755cec0b18a745196179 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 08 Jul 2021 21:59:56
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6E443C43460; Thu,  8 Jul 2021 21:59:55 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 44FB3C433D3;
+        Thu,  8 Jul 2021 21:59:53 +0000 (UTC)
 MIME-Version: 1.0
-References: <CADLJR24hQya0MkJhdDAJ0KO4MG+Fj4tRU5dNrbNdD9DMG_gLHg@mail.gmail.com>
- <YOPl3dXamM3FERYT@kroah.com> <fe95e46b-fbc9-6411-0e4c-7b72040cddc5@infradead.org>
- <YOVDSjXuOll5I8uL@kroah.com>
-In-Reply-To: <YOVDSjXuOll5I8uL@kroah.com>
-From:   Sunip Mukherjee <sunipkmukherjee@gmail.com>
-Date:   Thu, 8 Jul 2021 17:57:11 -0400
-Message-ID: <CADLJR24PrAFUFvcpLH=FBaRSc7gF+x675OKFt1s5QBo0JnCUgw@mail.gmail.com>
-Subject: Re: Char Driver for Silicon Labs Si446x Transceivers
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 08 Jul 2021 14:59:53 -0700
+From:   khsieh@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run, abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        airlied@linux.ie, daniel@ffwll.ch, bjorn.andersson@linaro.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/7] drm/msm/dp: reset aux controller after
+ dp_aux_cmd_fifo_tx() failed.
+In-Reply-To: <CAE-0n53JxLuQZBUMLOuH_Bm7zQ7Vite2OhjTB_xO=s_KAGarXw@mail.gmail.com>
+References: <1625592020-22658-1-git-send-email-khsieh@codeaurora.org>
+ <1625592020-22658-4-git-send-email-khsieh@codeaurora.org>
+ <CAE-0n53JxLuQZBUMLOuH_Bm7zQ7Vite2OhjTB_xO=s_KAGarXw@mail.gmail.com>
+Message-ID: <a5bb5f6bf7defa9c9bbf7d1fde87ca49@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you so much, I will follow the documentation and submit a patch
-soon for review.
-
-Thanks,
-Sunip
-
-On Wed, Jul 7, 2021 at 2:01 AM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Tue, Jul 06, 2021 at 01:17:09PM -0700, Randy Dunlap wrote:
-> > On 7/5/21 10:10 PM, Greg KH wrote:
-> > > On Mon, Jul 05, 2021 at 06:09:28PM -0400, Sunip Mukherjee wrote:
-> > >> Hi,
-> > >>
-> > >> I am very new to the kernel community; this is my first message in the
-> > >> LKML so my apologies if I am doing things wrong.
-> > >>
-> > >> I have been using an Si4463 transceiver for UHF communication with a
-> > >> cubesat I developed. I could not find any code to control the
-> > >> transceiver on Linux. The closest thing I could find was an AVR
-> > >> implementation by Zak Kemble
-> > >> (https://blog.zakkemble.net/si4463-radio-library-avr-arduino/).
-> > >> I followed the API docs and rewrote the whole thing at first for
-> > >> userland only (can be found here:
-> > >> https://github.com/SPACE-HAUC/si446x_linux/releases/tag/v3.1), and
-> > >> then I decided it would be a great learning opportunity for me to port
-> > >> it to the kernel.
-> > >>
-> > >> The kernel port has gone mostly smoothly. The transceiver communicates
-> > >> with the host MCU over SPI, and requires a pin for RESET, and another
-> > >> pin for IRQ.
-> > >> I have implemented the driver to provide a char device (/dev/si446x#)
-> > >> to the userland for open, read, write, poll and ioctl.
-> > >> I had initially set up a pull request for the driver and the device
-> > >> tree overlay to the Raspberry Pi kernel community. They have agreed to
-> > >> accept the device tree overlay for the device, however the driver
-> > >> needs to be included by the Linux Kernel community. I want to use this
-> > >> opportunity to find some people who have access to a Si446x
-> > >> transceiver and a Raspberry Pi, so that the code I have can be tested,
-> > >> and if deemed worthy, included in the kernel tree.
-> > >>
-> > >> My code is hosted here: https://github.com/sunipkmukherjee/silabs.git
-> > >>
-> > >> Any suggestions/criticisms are welcome.
-> > >
-> > > If you post it in a patch form, as described in our documentation, I
-> > > will be glad to review it.  Otherwise just looking at a random github
-> > > repo is quite difficult and provides no way to give proper feedback.
-> > >
-> > > Instructions on how to make a patch and submit it and the proper format
-> > > for everything can be found in the Documentation/SubmittingPatches file.
-> >
-> > which is now known as Documentation/process/submitting-patches.rst
->
-> That's what that file says :)
->
-> I should update my bot one of these days to point to the real
-> location...
->
-> thanks,
->
-> greg k-h
+On 2021-07-08 00:34, Stephen Boyd wrote:
+> Quoting Kuogee Hsieh (2021-07-06 10:20:16)
+>> Aux hardware calibration sequence requires resetting the aux 
+>> controller
+>> in order for the new setting to take effect. However resetting the AUX
+>> controller will also clear HPD interrupt status which may accidentally
+>> cause pending unplug interrupt to get lost. Therefore reset aux
+>> controller only when link is in connection state when 
+>> dp_aux_cmd_fifo_tx()
+>> fail. This fixes Link Layer CTS cases 4.2.1.1 and 4.2.1.2.
+>> 
+>> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+>> ---
+>>  drivers/gpu/drm/msm/dp/dp_aux.c | 3 +++
+>>  1 file changed, 3 insertions(+)
+>> 
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c 
+>> b/drivers/gpu/drm/msm/dp/dp_aux.c
+>> index 4a3293b..eb40d84 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_aux.c
+>> +++ b/drivers/gpu/drm/msm/dp/dp_aux.c
+>> @@ -353,6 +353,9 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux 
+>> *dp_aux,
+>>                         if (!(aux->retry_cnt % MAX_AUX_RETRIES))
+>>                                 
+>> dp_catalog_aux_update_cfg(aux->catalog);
+>>                 }
+>> +               /* reset aux if link is in connected state */
+>> +               if (dp_catalog_link_is_connected(aux->catalog))
+> 
+> How do we avoid resetting aux when hpd is unplugged and then plugged
+> back in during an aux transfer?
+i am not sure this is possible.
+it should get unplug interrupt followed by plugin interrupt.
+In this case, aux will be re set and initialized
+> 
+>> +                       dp_catalog_aux_reset(aux->catalog);
+>>         } else {
+>>                 aux->retry_cnt = 0;
+>>                 switch (aux->aux_error_num) {
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>> Forum,
+>> a Linux Foundation Collaborative Project
+>> 
