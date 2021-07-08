@@ -2,101 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F5D63C1443
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 15:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED383C1445
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 15:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231777AbhGHN1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 09:27:51 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:54244 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229901AbhGHN1u (ORCPT
+        id S231789AbhGHN2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 09:28:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23285 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231137AbhGHN2m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 09:27:50 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.1.0)
- id cece774477dad180; Thu, 8 Jul 2021 15:25:07 +0200
-Received: from kreacher.localnet (89-64-81-140.dynamic.chello.pl [89.64.81.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Thu, 8 Jul 2021 09:28:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625750760;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sgAZqvIsySXyytpE1Vt0NiR8ftCkjzuXuMqm+w94wKQ=;
+        b=FjUxm4y2LnnASd+oY8eBZ9IL7V7xPRFu2xLCQbJtK4vjqKK0No9oErwGuG9vLSbEcAONui
+        r1VEVJyAZMlCjV/H/sdVe5IddgTNfHfXQ0Mqo2tBWaT9mE3rO+EAekqEP/r9QceD9+f2H/
+        HDXmd9HH1SQk2L1fcWO8Wi/dAhZ95J0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-40-TBdO-pdmP0iry3uq5EAIqA-1; Thu, 08 Jul 2021 09:25:59 -0400
+X-MC-Unique: TBdO-pdmP0iry3uq5EAIqA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 981EA669C1D;
-        Thu,  8 Jul 2021 15:25:06 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     Linux PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: [PATCH][RFT] PCI: Use pci_update_current_state() in pci_enable_device_flags()
-Date:   Thu, 08 Jul 2021 15:25:06 +0200
-Message-ID: <4327888.LvFx2qVVIh@kreacher>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0E6388030B0;
+        Thu,  8 Jul 2021 13:25:58 +0000 (UTC)
+Received: from lorien.usersys.redhat.com (unknown [10.22.8.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C35C45D9D3;
+        Thu,  8 Jul 2021 13:25:47 +0000 (UTC)
+Date:   Thu, 8 Jul 2021 09:25:45 -0400
+From:   Phil Auld <pauld@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] sched: Fix nr_uninterruptible race causing increasing
+ load average
+Message-ID: <YOb82exzMcrOxfHa@lorien.usersys.redhat.com>
+References: <20210707190457.60521-1-pauld@redhat.com>
+ <YOaoomJAS2FzXi7I@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 89.64.81.140
-X-CLIENT-HOSTNAME: 89-64-81-140.dynamic.chello.pl
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrtdeggdeivdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdevgfetueetheekudeuvdduteelvefftdfftdejjeeukeffteeikefgiefghedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepkeelrdeigedrkedurddugedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedurddugedtpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhuiihmrgigihhmihhlihgrnhesghhmrghilhdrtghomhdprhgtphhtthhopehlihhnuhigqdhptghisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthht
- ohephhgvlhhgrggrsheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhhikhgrrdifvghsthgvrhgsvghrgheslhhinhhugidrihhnthgvlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YOaoomJAS2FzXi7I@hirez.programming.kicks-ass.net>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Hi Peter,
 
-Updating the current_state field of struct pci_dev the way it is done
-in pci_enable_device_flags() before calling do_pci_enable_device() may
-not work.  For example, if the given PCI device depends on an ACPI
-power resource whose _STA method initially returns 0 ("off"), but the
-config space of the PCI device is accessible and the power state
-retrieved from the PCI_PM_CTRL register is D0, the current_state
-field in the struct pci_dev representing that device will get out of
-sync with the power.state of its ACPI companion object and that will
-lead to power management issues going forward.
+On Thu, Jul 08, 2021 at 09:26:26AM +0200 Peter Zijlstra wrote:
+> On Wed, Jul 07, 2021 at 03:04:57PM -0400, Phil Auld wrote:
+> > On systems with weaker memory ordering (e.g. power) commit dbfb089d360b
+> > ("sched: Fix loadavg accounting race") causes increasing values of load
+> > average (via rq->calc_load_active and calc_load_tasks) due to the wakeup
+> > CPU not always seeing the write to task->sched_contributes_to_load in
+> > __schedule(). Missing that we fail to decrement nr_uninterruptible when
+> > waking up a task which incremented nr_uninterruptible when it slept.
+> > 
+> > The rq->lock serialization is insufficient across different rq->locks.
+> > 
+> > Add smp_wmb() to schedule and smp_rmb() before the read in
+> > ttwu_do_activate().
+> 
+> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > index 4ca80df205ce..ced7074716eb 100644
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > @@ -2992,6 +2992,8 @@ ttwu_do_activate(struct rq *rq, struct task_struct *p, int wake_flags,
+> >  
+> >  	lockdep_assert_held(&rq->lock);
+> >  
+> > +	/* Pairs with smp_wmb in __schedule() */
+> > +	smp_rmb();
+> >  	if (p->sched_contributes_to_load)
+> >  		rq->nr_uninterruptible--;
+> >  
+> 
+> Is this really needed ?! (this question is a big fat clue the comment is
+> insufficient). AFAICT try_to_wake_up() has a LOAD-ACQUIRE on p->on_rq
+> and hence the p->sched_contributed_to_load must already happen after.
+>
 
-To avoid such issues, make pci_enable_device_flags() call
-pci_update_current_state() which takes ACPI device power management
-into account, if present, to retrieve the current power state of the
-device.
+Yes, it is needed.  We've got idle power systems with load average of 530.21.
+Calc_load_tasks is 530, and the sum of both nr_uninterruptible and
+calc_load_active across all the runqueues is 530. Basically monotonically
+non-decreasing load average. With the patch this no longer happens.
 
-Link: https://lore.kernel.org/lkml/20210314000439.3138941-1-luzmaximilian@gmail.com/
-Reported-by: Maximilian Luz <luzmaximilian@gmail.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
+We need the sched_contributed_to_load to "happen before" so that it's seen
+on the other cpu on wakeup.
 
-Hi Maximilian,
+> > @@ -5084,6 +5086,11 @@ static void __sched notrace __schedule(bool preempt)
+> >  				!(prev_state & TASK_NOLOAD) &&
+> >  				!(prev->flags & PF_FROZEN);
+> >  
+> > +			/*
+> > +			 * Make sure the previous write is ordered before p->on_rq etc so
+> > +			 * that it is visible to other cpus in the wakeup path (ttwu_do_activate()).
+> > +			 */
+> > +			smp_wmb();
+> >  			if (prev->sched_contributes_to_load)
+> >  				rq->nr_uninterruptible++;
+> 
+> That comment is terrible, look at all the other barrier comments around
+> there for clues; in effect you're worrying about:
+> 
+> 	p->sched_contributes_to_load = X	R1 = p->on_rq
+> 	WMB					RMB
+> 	p->on_rq = Y				R2 = p->sched_contributes_to_load
+> 
+> Right?
 
-Because commit 4514d991d992 ("PCI: PM: Do not read power state in
-pci_enable_device_flags()"), the issue addressed by it is back, so
-we need an alternative way to address it.
+The only way I can see that decrememnt being missed is if the write to
+sched_contributes_to_load is not being seen on the wakeup cpu. 
 
-Can you please check if this patch makes that issue go away?
+Before the previous patch the _state condition was checked again on the
+wakeup cpu and that is ordered.
 
-Thanks!
+> 
+> 
+> Bah bah bah.. I so detest having to add barriers here for silly
+> accounting. Let me think about this a little.
+> 
+> 
 
----
- drivers/pci/pci.c |    6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+Thanks,
+Phil
 
-Index: linux-pm/drivers/pci/pci.c
-===================================================================
---- linux-pm.orig/drivers/pci/pci.c
-+++ linux-pm/drivers/pci/pci.c
-@@ -1906,11 +1906,7 @@ static int pci_enable_device_flags(struc
- 	 * so that things like MSI message writing will behave as expected
- 	 * (e.g. if the device really is in D0 at enable time).
- 	 */
--	if (dev->pm_cap) {
--		u16 pmcsr;
--		pci_read_config_word(dev, dev->pm_cap + PCI_PM_CTRL, &pmcsr);
--		dev->current_state = (pmcsr & PCI_PM_CTRL_STATE_MASK);
--	}
-+	pci_update_current_state(dev, dev->current_state);
- 
- 	if (atomic_inc_return(&dev->enable_cnt) > 1)
- 		return 0;		/* already enabled */
-
-
+-- 
 
