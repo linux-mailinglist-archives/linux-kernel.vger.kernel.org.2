@@ -2,186 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 656063BF428
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 05:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 771793BF42B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Jul 2021 05:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230388AbhGHDDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Jul 2021 23:03:25 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:10429 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230201AbhGHDDY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Jul 2021 23:03:24 -0400
-Received: from dggeme751-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GL1DS0scPzZqyG;
-        Thu,  8 Jul 2021 10:57:28 +0800 (CST)
-Received: from [10.67.110.55] (10.67.110.55) by dggeme751-chm.china.huawei.com
- (10.3.19.97) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 8 Jul
- 2021 11:00:39 +0800
-From:   He Fengqing <hefengqing@huawei.com>
-Subject: Re: [bpf-next 3/3] bpf: Fix a use after free in bpf_check()
-To:     Song Liu <song@kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210707043811.5349-1-hefengqing@huawei.com>
- <20210707043811.5349-4-hefengqing@huawei.com>
- <CAPhsuW7ssFzvS5-kdZa3tY-2EJk8QUdVpQCJYVBr+vD11JzrsQ@mail.gmail.com>
-Message-ID: <1c5b393d-6848-3d10-30cf-7063a331f76c@huawei.com>
-Date:   Thu, 8 Jul 2021 11:00:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S230413AbhGHDEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Jul 2021 23:04:01 -0400
+Received: from mail-db8eur05on2064.outbound.protection.outlook.com ([40.107.20.64]:22621
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230387AbhGHDEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Jul 2021 23:04:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Sq57MHOeWfoEJUMfKMNdYGQj79p7VE9kslsDa06QUde4nDnH9HdLYVHZaGn93ND/NAFB2Gm66aZbg+n5s/iNj6Er+pUTHTsjpdbAXGTdkIq7s0Dcan4xwMJOamoQ6xdbucr9KYelRZXZUXEgWl7qWez10RHoPjCKGrh0lMvWEwUIReKYmVL1FkIuXVbkqXFiOwlvxbevQpyfguKxPopk4gaD19hNfYGIEkqMjK3AotWav/cEbKBxPeAVM9zo+fKFMylfC5O5l+2vhyxy7OoSxnzW+BLF5CahWKuXlW3atw8XJlR/JRHNiOMwtppzbjxfmjRKMzDmkb28WpSSyIu4bg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PS0+dzpmrJxeeMuiWXj3oRA+xYuCCdg2E4OFAQUDXKw=;
+ b=BbmZMEywxqJ9F0kADhsEM/V/HB0W1b/sZVTemGgxKkZnpDt4pe1TEvSS0vowxV/+BX/5UKiqRGvrypOPrWhrBWTCiao/5hzvhE9+tJjrDAq4+Xllfcgrjn6EqwTFynb8tcyYTpVxzDcJfFc1Qw4Kx0jsWV9XiCSV3S+TSTMgLpyEOBa6WOKganfltZaxvcDQGjbuS5Zkx7VT21NitM02TOYSEqGYxyvr88tJjAMJ0vKtMaa8NkW4IsStqCGQ/iMwvAUvx9bYJhI+fega4utxQSDUhUBdNbxTLZ+YRQpQO4+VrILcYCUEyQyNf4mbxl2vDKm5to8i7MH29N9TIR8B7Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PS0+dzpmrJxeeMuiWXj3oRA+xYuCCdg2E4OFAQUDXKw=;
+ b=WJzCbVS9ijGg1mN4rdZAeRXIemW8D+UWn/OOwwNVxwsMw5Lu1OM2Ur5749Ro6Py7GWyJvpGffAVXegIdqsu8Mt3QdLy8Lv2BsJb22ER04WDw+jOVe94G8BY//tEs7lYd+/qurPNola5c5yIF0yiX6KMh9hsEgmSkjP0zGUIdDpY=
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DBBPR04MB7884.eurprd04.prod.outlook.com (2603:10a6:10:1f2::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.23; Thu, 8 Jul
+ 2021 03:01:16 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c445:d742:eb76:86dd]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c445:d742:eb76:86dd%9]) with mapi id 15.20.4287.033; Thu, 8 Jul 2021
+ 03:01:15 +0000
+From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+        "sboyd@kernel.org" <sboyd@kernel.org>,
+        "mturquette@baylibre.com" <mturquette@baylibre.com>
+CC:     "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>
+Subject: RE: [PATCH] clk: not calculate new rate for protected clks
+Thread-Topic: [PATCH] clk: not calculate new rate for protected clks
+Thread-Index: AQHXVgSxg8DzlmcuR0ixKMBWM65yqas4nvwQ
+Date:   Thu, 8 Jul 2021 03:01:15 +0000
+Message-ID: <DB6PR0402MB27601F676286D00AE50B144988199@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+References: <20210531103957.21886-1-peng.fan@oss.nxp.com>
+In-Reply-To: <20210531103957.21886-1-peng.fan@oss.nxp.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: oss.nxp.com; dkim=none (message not signed)
+ header.d=none;oss.nxp.com; dmarc=none action=none header.from=oss.nxp.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1fd0224f-b774-4128-9330-08d941bca6e9
+x-ms-traffictypediagnostic: DBBPR04MB7884:
+x-ms-exchange-sharedmailbox-routingagent-processed: True
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DBBPR04MB78842356F64B736A87DF464BC9199@DBBPR04MB7884.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3383;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: dWRgxvJqfBVQOxYe2GPMxKHHENfLedMT8I4RPeS/VeDg7JgIAKxZx9xM77O0Tt5kzlOpnbDSJYrwKVRAMBkmwOOLNCC5ilcllnttfznl5rSZ6B3oQ9DMn2YmkDCfYxrAwLN1cY7muLj/aMH68E16OoeJazVs8UeBt3p28tWCG8cZ+M6YKFiTqyOjuAWEOlh2dWe8G1By4Ltq+YWl1PhPCxzeQy/JsNwi3UASH79p+J1wRxTFcSqVpbU8wV9YSu9Ke1/ZELl8N7KiqHwy643L2Vn6Idx9ANLFGHTSZDJKgDXjf2IGf6FUq0TAq+UC4+psuL2Q8VW1JnxfQbJJYJNQ6lVCJDwXd0kS6YI6oBs1aetr5ot4PGGUmYYlplpub5/+qjk8QgFdb3V1Twdt6DHu0ltX7SlJcRZ/7cIf1bKWv/NvF6zPYjn7IUnpBBx2RVWpY4eCly95JU8xBQUR7o9RhrYJdxb+xFaMC2ypbnoAN6wnxr6vzH162jCVNj9UcqyTWdyBskGiMzSG8gELqeHK243rfrt6yDtVjkYa7Noy6mGCDWjEEtJ8GeTAax4LjYruAQ2+eoNfnKwbr5vy0J2rqKNXI2NmlfDBjzVBL1/yuRctuc8TGIT6CvAW/vvzFdNy+Di08f1I4pyLTkOrR7wL/A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(376002)(346002)(136003)(39860400002)(6506007)(55016002)(33656002)(4744005)(9686003)(2906002)(4326008)(64756008)(71200400001)(316002)(122000001)(478600001)(66446008)(110136005)(52536014)(7696005)(8676002)(26005)(38100700002)(66556008)(66946007)(76116006)(83380400001)(66476007)(5660300002)(54906003)(8936002)(86362001)(186003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?bL1u2Lnxz8HOk+87jYpf1WAydV0G/cR2KPJzx1FB1ei/4EoNK2os84SvZHCR?=
+ =?us-ascii?Q?Br4Mg70ZsaY2ermX6ZK6nkUnwja/LfZrnkb07jyp+doQFk7AFxkel64JGsln?=
+ =?us-ascii?Q?ZKXElrRxjjXZ8W+3M8K6SaL1VC0zMr0SqsnmZz/Pqz1Ww91N4yR2zXl3q1/k?=
+ =?us-ascii?Q?4X9l4mm6AYSSYqQi5iR7c4VRdB8C0afu0loJlGPHhuSfBz4Xav+aiG/JhkZY?=
+ =?us-ascii?Q?1Syn9s294lr404DvGdIfqfQbw4Jf2v7+P0/eyOcIFqtprTRCnxgtuNmEIRAC?=
+ =?us-ascii?Q?UTvPIn1u3cQtF7mmawEGZTB3IEJbfVAz9r58JilI3RtSBEsInD+xweKBLCUl?=
+ =?us-ascii?Q?x4PUJ3V46UamHO6RGwT/ZLQ4rN7gU8o2H/fEUEY+cbmDRjirbxzc3dqO7P5Z?=
+ =?us-ascii?Q?Jh91LkWLTKTecmh7ecOEFoP2FExAkl1LXDZ7KSiYxOi+E7rnScMqle4pVMWe?=
+ =?us-ascii?Q?jqMzLjDZgyzr3VYcg/06yBdMZi9Ev6MReie7tAfBfLr1oRkBypsXiTZ1VMgr?=
+ =?us-ascii?Q?Ux+YXTtsgQBkWA4iNFiA65YLz6MQNq2KHkwNUVWi9TXz5upFHvGqDz0+BW5N?=
+ =?us-ascii?Q?xTN1/0iVqXo402N6NeRKmwEY10g4DlxLCEDL545pcjgQ5F2L4F0lv0XUyMaY?=
+ =?us-ascii?Q?CgJBxJXsKu/GKhtOHC4d4kETq9RX8HOKF2+I2ePMCCE7gw/BYIwny0tO1J4P?=
+ =?us-ascii?Q?VjwjfA3ZV+L/kdmHakZ3dUE/zC1gm4cLqCckeTggRyUD4+ts1MlY8T6+UMdA?=
+ =?us-ascii?Q?BxqWngO2TUl3kBVWspwfBPnfMFin9/1+IaUq6477Y/UmVWXHP/AndGz5n6Fw?=
+ =?us-ascii?Q?DjnEUpAR8nm7i9wcZvXQ138kwiR30uB0fZmg4NoNr/Zoe+tLbbQKZ6p8xIfp?=
+ =?us-ascii?Q?iUl5m/dj/1LsOTAf/Piz0gv0vsGdGGra5DZ2zd1g4CAIfwhJ7unEhs0FN2ay?=
+ =?us-ascii?Q?XEJUXzNJPDrqr7WuKTl9W4D6PuVAYjoO0uBmuz1IH/5ciEErYnFYYGDzI17v?=
+ =?us-ascii?Q?Ezm2GYapXg79BdIfvQk4nEgSBsgpBkGswiJp98ZUnILHQbtcvzFJRRONpju9?=
+ =?us-ascii?Q?Jn9qdV0Rivz8HeMGAuBxmtHMa3ohvgwE+6Un5qSIizmzGy8ZHdru1rNNTbxV?=
+ =?us-ascii?Q?tWB+TmBa5EdwO9jhRsbMHXa1gfjwLaE5sxudKA/vQrn2qHvpQm/FwKxY7Uv2?=
+ =?us-ascii?Q?f6O2eHoETFOjFUJnS2QeE2odOwsPG4aZC7odtQ60xGIsCr2reZA+xR0Ezj6C?=
+ =?us-ascii?Q?cP2/ZgmOkK4O3HsLzbnCHMtatnKqWGOOp4ZI1GTRHHYdYBOOgTAfEA8EzSQ2?=
+ =?us-ascii?Q?d4pG2gOBcK4nvS04KcABT1G+?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <CAPhsuW7ssFzvS5-kdZa3tY-2EJk8QUdVpQCJYVBr+vD11JzrsQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.110.55]
-X-ClientProxiedBy: dggeme714-chm.china.huawei.com (10.1.199.110) To
- dggeme751-chm.china.huawei.com (10.3.19.97)
-X-CFilter-Loop: Reflected
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1fd0224f-b774-4128-9330-08d941bca6e9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jul 2021 03:01:15.8678
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: uYcRbUwg9qIuakhoGDZrY4emA48U7lm+o6p98wsxDUOklZfpWwbreP2n9jbAI7esrbPwuH9DcozbybaTnLP6fA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7884
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> Subject: [PATCH] clk: not calculate new rate for protected clks
 
+Gentle ping...
 
-在 2021/7/7 15:25, Song Liu 写道:
-> On Tue, Jul 6, 2021 at 8:53 PM He Fengqing <hefengqing@huawei.com> wrote:
->>
->> In bpf_patch_insn_data, env->prog was input parameter of
->> bpf_patch_insn_single function. bpf_patch_insn_single call
->> bpf_prog_realloc to realloc ebpf prog. When we need to malloc new prog,
->> bpf_prog_realloc will free the old prog, in this scenery is the
->> env->prog.
->> Then bpf_patch_insn_data function call adjust_insn_aux_data function, if
->> adjust_insn_aux_data function return error, bpf_patch_insn_data will
->> return NULL.
->> In bpf_check->convert_ctx_accesses->bpf_patch_insn_data call chain, if
->> bpf_patch_insn_data return NULL, env->prog has been freed in
->> bpf_prog_realloc, then bpf_check will use the freed env->prog.
-> 
-> Besides "what is the bug", please also describe "how to fix it". For example,
-> add "Fix it by adding a free_old argument to bpf_prog_realloc(), and ...".
-> Also, for the subject of 0/3, it is better to say "fix potential
-> memory leak and ...".
+Thanks,
+Peng.
 
-Thanks for your suggestion.
+>=20
+> From: Peng Fan <peng.fan@nxp.com>
+>=20
+> If the protect_count of the parent clk is not 0, we not calculate new rat=
+es for
+> parent. Otherwise, the common clk framework may configure other child clk=
+s
+> that is under using.
+>=20
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  drivers/clk/clk.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c index
+> 65508eb89ec9..8ac121838e13 100644
+> --- a/drivers/clk/clk.c
+> +++ b/drivers/clk/clk.c
+> @@ -2002,7 +2002,7 @@ static struct clk_core *clk_calc_new_rates(struct
+> clk_core *core,
+>  	}
+>=20
+>  	if ((core->flags & CLK_SET_RATE_PARENT) && parent &&
+> -	    best_parent_rate !=3D parent->rate)
+> +	    best_parent_rate !=3D parent->rate &&
+> +!clk_core_rate_is_protected(parent))
+>  		top =3D clk_calc_new_rates(parent, best_parent_rate);
+>=20
+>  out:
+> --
+> 2.30.0
 
-> 
->>
->> Signed-off-by: He Fengqing <hefengqing@huawei.com>
->> ---
->>   include/linux/filter.h |  2 +-
->>   kernel/bpf/core.c      |  9 ++++---
->>   kernel/bpf/verifier.c  | 53 ++++++++++++++++++++++++++++++++----------
->>   net/core/filter.c      |  2 +-
->>   4 files changed, 49 insertions(+), 17 deletions(-)
->>
->> diff --git a/include/linux/filter.h b/include/linux/filter.h
->> index f39e008a377d..ec11a5ae92c2 100644
->> --- a/include/linux/filter.h
->> +++ b/include/linux/filter.h
->> @@ -881,7 +881,7 @@ void bpf_prog_jit_attempt_done(struct bpf_prog *prog);
->>   struct bpf_prog *bpf_prog_alloc(unsigned int size, gfp_t gfp_extra_flags);
->>   struct bpf_prog *bpf_prog_alloc_no_stats(unsigned int size, gfp_t gfp_extra_flags);
->>   struct bpf_prog *bpf_prog_realloc(struct bpf_prog *fp_old, unsigned int size,
->> -                                 gfp_t gfp_extra_flags);
->> +                                 gfp_t gfp_extra_flags, bool free_old);
->>   void __bpf_prog_free(struct bpf_prog *fp);
->>
->>   static inline void bpf_prog_clone_free(struct bpf_prog *fp)
->> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
->> index 49b0311f48c1..e5616bb1665b 100644
->> --- a/kernel/bpf/core.c
->> +++ b/kernel/bpf/core.c
->> @@ -218,7 +218,7 @@ void bpf_prog_fill_jited_linfo(struct bpf_prog *prog,
->>   }
->>
->>   struct bpf_prog *bpf_prog_realloc(struct bpf_prog *fp_old, unsigned int size,
->> -                                 gfp_t gfp_extra_flags)
->> +                                 gfp_t gfp_extra_flags, bool free_old)
->>   {
->>          gfp_t gfp_flags = GFP_KERNEL_ACCOUNT | __GFP_ZERO | gfp_extra_flags;
->>          struct bpf_prog *fp;
->> @@ -238,7 +238,8 @@ struct bpf_prog *bpf_prog_realloc(struct bpf_prog *fp_old, unsigned int size,
->>                  /* We keep fp->aux from fp_old around in the new
->>                   * reallocated structure.
->>                   */
->> -               bpf_prog_clone_free(fp_old);
->> +               if (free_old)
->> +                       bpf_prog_clone_free(fp_old);
->>          }
->>
->>          return fp;
->> @@ -456,7 +457,7 @@ struct bpf_prog *bpf_patch_insn_single(struct bpf_prog *prog, u32 off,
->>           * last page could have large enough tailroom.
->>           */
->>          prog_adj = bpf_prog_realloc(prog, bpf_prog_size(insn_adj_cnt),
->> -                                   GFP_USER);
->> +                                   GFP_USER, false);
->>          if (!prog_adj)
->>                  return ERR_PTR(-ENOMEM);
->>
->> @@ -1150,6 +1151,8 @@ struct bpf_prog *bpf_jit_blind_constants(struct bpf_prog *prog)
->>                          return tmp;
->>                  }
->>
->> +               if (tmp != clone)
->> +                       bpf_prog_clone_free(clone);
->>                  clone = tmp;
->>                  insn_delta = rewritten - 1;
->>
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index 41109f49b724..e75b933f69e4 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -11855,7 +11855,10 @@ static int opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
->>                  new_prog = bpf_patch_insn_data(env, adj_idx, patch, patch_len);
->>                  if (!new_prog)
->>                          return -ENOMEM;
->> -               env->prog = new_prog;
->> +               if (new_prog != env->prog) {
->> +                       bpf_prog_clone_free(env->prog);
->> +                       env->prog = new_prog;
->> +               }
-> 
-> Can we move this check into bpf_patch_insn_data()?
-
-Ok, I will change this in next version.
-
-> 
->>                  insns = new_prog->insnsi;
->>                  aux = env->insn_aux_data;
->>                  delta += patch_len - 1;
-> [...]
-> 
->> diff --git a/net/core/filter.c b/net/core/filter.c
->> index d70187ce851b..8a8d1a3ba5c2 100644
->> --- a/net/core/filter.c
->> +++ b/net/core/filter.c
->> @@ -1268,7 +1268,7 @@ static struct bpf_prog *bpf_migrate_filter(struct bpf_prog *fp)
->>
->>          /* Expand fp for appending the new filter representation. */
->>          old_fp = fp;
->> -       fp = bpf_prog_realloc(old_fp, bpf_prog_size(new_len), 0);
->> +       fp = bpf_prog_realloc(old_fp, bpf_prog_size(new_len), 0, true);
-> 
-> Can we add some logic here and not add free_old to bpf_prog_realloc()?
-
-Ok, maybe we can free old_fp here, never in bpf_prog_realloc.
-
-
-> 
-> Thanks,
-> Song
-> .
-> 
