@@ -2,131 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6E143C2301
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 13:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8E993C2305
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 13:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231226AbhGILmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 07:42:19 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:14061 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230367AbhGILmS (ORCPT
+        id S231260AbhGILmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 07:42:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230501AbhGILme (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 07:42:18 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GLrhg2mcBzbbls;
-        Fri,  9 Jul 2021 19:36:19 +0800 (CST)
-Received: from dggema774-chm.china.huawei.com (10.1.198.216) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 9 Jul 2021 19:39:31 +0800
-Received: from [10.67.102.197] (10.67.102.197) by
- dggema774-chm.china.huawei.com (10.1.198.216) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 9 Jul 2021 19:39:30 +0800
-Subject: Re: [PATCH 4.4.y] arm: kprobes: Allow to handle reentered kprobe on
- single-stepping
-To:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Shaobo Huang <huangshaobo6@huawei.com>
-CC:     <gregkh@linuxfoundation.org>, <chenzefeng2@huawei.com>,
-        <kepler.chenxin@huawei.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux@arm.linux.org.uk>,
-        <liucheng32@huawei.com>, <tixy@linaro.org>, <xiaoqian9@huawei.com>,
-        <young.liuyang@huawei.com>, <zengweilin@huawei.com>
-References: <YOcOcNBRou5KlbOR@kroah.com>
- <20210709024630.22268-1-huangshaobo6@huawei.com>
- <20210709180031.adc7260b54645b0292a6f02a@kernel.org>
-From:   Xiaoming Ni <nixiaoming@huawei.com>
-Message-ID: <9ca81fb8-8d6e-1708-db01-a29e54c79343@huawei.com>
-Date:   Fri, 9 Jul 2021 19:39:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.0.1
+        Fri, 9 Jul 2021 07:42:34 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C4D9C0613E6
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 04:39:50 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id s6so6105338qkc.8
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 04:39:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=V80QwRmpVqLUC1/pv95T7LChrvArer3bS4sHJ/jE7pM=;
+        b=Mcjrj+EF55gxmaqc6tz/ekD7I3bs3f1Lm68LlK8VTuwLZE/S80ym58HLfCWIU40S2P
+         /6pA9l+yCKaWXsASDqXmV9tfCj6PfvOSLgSzFkR9cNTxTLckiK3XECwRkA4OeZJmLdfm
+         spqDijNKbfXMffSPvv5Nw6EqQrfHyTI/fIm5+nFauKeUwoCrSsKsootOJO2TgFAGu9CT
+         rG0kT7BuO8vvcVOXYAmSIv0+6B6QtHQo7zz3j54JQ3p1ohaSlYj0lUOOPsTVFgikAByZ
+         znYtPwnzfWXVV9+DYX25XdSF1l9wx+9wAge9RE02zg0H7be9miB+lHdAVfCLe2tZXuyW
+         Wiew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V80QwRmpVqLUC1/pv95T7LChrvArer3bS4sHJ/jE7pM=;
+        b=AOZd+PB156kwX1E9ZHB18ZbHbAIaxRwfmJLuqRtIbGP/7OqmkDO8SKQPElhzjWX/A/
+         0jSlzCHyNzexY+kP85T7MiVGgBW3SQD75B0m7gOTcmG/WNZlQ3Od2o3r7W0kunlTXQMI
+         qWPwRTWMJYa7/Czy8tZqitEVibl+LQq7cAu6REZUyrB88lCVdrh8ZmYc4b1f+6SxIiLI
+         WCKl3vHrUdPhP5PfGvTPy6BOnoUW3etAzUNQPKOpz0aZZpBGS4UKoVV3mOTh1L1tsOgQ
+         aHluZUtfj3q1PSuHD20lLioco3zEs4q+uRb9EAFdc7SATDc+5JEDTAWldDhX2NX88hs1
+         Ku+g==
+X-Gm-Message-State: AOAM530NfWQ+De2z7NpdFuISLT9M8CgTcSWto2H50UMWK9jJbWfSnm5i
+        4y9pncwj1r9hWaBfD3plsYtUcySMQyw+62gvhNiVpw==
+X-Google-Smtp-Source: ABdhPJyMo2wUMKJXK0KxcB+yRDpiHkai20Amf0pxsUSYlncs5xFeAFIIYQibhXDSSQCVAbQKVd7GDIA5UvRkYIIBUOs=
+X-Received: by 2002:a05:620a:651:: with SMTP id a17mr13144418qka.434.1625830789281;
+ Fri, 09 Jul 2021 04:39:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210709180031.adc7260b54645b0292a6f02a@kernel.org>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.197]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema774-chm.china.huawei.com (10.1.198.216)
-X-CFilter-Loop: Reflected
+References: <20210709043136.533205-1-dmitry.baryshkov@linaro.org>
+ <20210709043136.533205-4-dmitry.baryshkov@linaro.org> <CAPDyKFoNPkFqGMvR=JGXNVXp-UfWLUqReZ0DGP8+0PBh+7dCRg@mail.gmail.com>
+In-Reply-To: <CAPDyKFoNPkFqGMvR=JGXNVXp-UfWLUqReZ0DGP8+0PBh+7dCRg@mail.gmail.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Fri, 9 Jul 2021 14:39:37 +0300
+Message-ID: <CAA8EJpqykAyBKBADuGUQeZjG5-NPC6HgieNQLtWeA+McG_BMqw@mail.gmail.com>
+Subject: Re: [RESEND PATCH v2 3/7] PM: domains: Add support for runtime PM
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/9 17:00, Masami Hiramatsu wrote:
-> Hi Shaobo,
-> 
-> Thanks for backporting!
-> Greg, it seems this patch can be applied to 4.9 too without any issue.
-> 
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=linux-4.9.y&id=355a04fa1fc23c4fb1d16440e62d46a42691e96b
+Hi,
 
-The v4.9 branch has been fixed.
+On Fri, 9 Jul 2021 at 11:25, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> On Fri, 9 Jul 2021 at 06:32, Dmitry Baryshkov
+> <dmitry.baryshkov@linaro.org> wrote:
+> >
+> > Registers for some genpds can be located in the SoC area, powered up by
+> > another power domain. To enabled access to those registers, respective
+> > domain should be turned on.
+> >
+> > This patch adds basic infrastructure to the genpd code to allow
+> > implementing drivers for such genpd. PM domain can provide the parent
+> > device through the genpd->dev.parent pointer. If its provided at the
+> > pm_genpd_init() call time and if it is pm-enabled, genpd power_on and
+> > power_off operations will call pm_runtime_get_sync() before powering up
+> > the domain and pm_runtime_put_sync() after powering it down.
+> >
+> > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+>
+> Hi Dmitry,
+>
+> Using runtime PM for the genpd provider device, is not the correct
+> approach. If the provider domain needs another domain to be powered on
+> to work correctly, that per definition means that it has a parent
+> domain.
+>
+> I suggest you try to build the correct PM domain topology, via using
+> pm_genpd_add_subdomain() or of_genpd_add_subdomain(), then genpd will
+> manages the power on/off for parent/child domain internally.
 
-Thanks
-Xiaoming Ni
+Indeed, this patch seems redundant now, with the
+pm_genpd_add_subdomain call in place.
+Would you like me to resend a v3 just dropping this patch?
+
+>
+> Kind regards
+> Uffe
+>
+> > ---
+> >  drivers/base/power/domain.c | 33 +++++++++++++++++++++++++++++++++
+> >  include/linux/pm_domain.h   |  6 ++++++
+> >  2 files changed, 39 insertions(+)
+> >
+> > diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+> > index e5d97174c254..7d49531c9731 100644
+> > --- a/drivers/base/power/domain.c
+> > +++ b/drivers/base/power/domain.c
+> > @@ -482,6 +482,30 @@ void dev_pm_genpd_set_next_wakeup(struct device *dev, ktime_t next)
+> >  }
+> >  EXPORT_SYMBOL_GPL(dev_pm_genpd_set_next_wakeup);
+> >
+> > +static int _genpd_pm_runtime_get(struct generic_pm_domain *genpd)
+> > +{
+> > +       int ret;
+> > +
+> > +       if (!(genpd->flags & _GENPD_FLAG_RPM_ENABLED))
+> > +               return 0;
+> > +
+> > +       ret = pm_runtime_get_sync(genpd->dev.parent);
+> > +       if (ret < 0) {
+> > +               pm_runtime_put_noidle(genpd->dev.parent);
+> > +               return ret;
+> > +       }
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +static void _genpd_pm_runtime_put(struct generic_pm_domain *genpd)
+> > +{
+> > +       if (!(genpd->flags & _GENPD_FLAG_RPM_ENABLED))
+> > +               return;
+> > +
+> > +       pm_runtime_put_sync(genpd->dev.parent);
+> > +}
+> > +
+> >  static int _genpd_power_on(struct generic_pm_domain *genpd, bool timed)
+> >  {
+> >         unsigned int state_idx = genpd->state_idx;
+> > @@ -497,6 +521,10 @@ static int _genpd_power_on(struct generic_pm_domain *genpd, bool timed)
+> >         if (ret)
+> >                 return ret;
+> >
+> > +       ret = _genpd_pm_runtime_get(genpd);
+> > +       if (ret)
+> > +               return ret;
+> > +
+> >         if (!genpd->power_on)
+> >                 goto out;
+> >
+> > @@ -526,6 +554,7 @@ static int _genpd_power_on(struct generic_pm_domain *genpd, bool timed)
+> >         raw_notifier_call_chain(&genpd->power_notifiers, GENPD_NOTIFY_ON, NULL);
+> >         return 0;
+> >  err:
+> > +       _genpd_pm_runtime_put(genpd);
+> >         raw_notifier_call_chain(&genpd->power_notifiers, GENPD_NOTIFY_OFF,
+> >                                 NULL);
+> >         return ret;
+> > @@ -572,6 +601,7 @@ static int _genpd_power_off(struct generic_pm_domain *genpd, bool timed)
+> >                  genpd->name, "off", elapsed_ns);
+> >
+> >  out:
+> > +       _genpd_pm_runtime_put(genpd);
+> >         raw_notifier_call_chain(&genpd->power_notifiers, GENPD_NOTIFY_OFF,
+> >                                 NULL);
+> >         return 0;
+> > @@ -1986,6 +2016,9 @@ int pm_genpd_init(struct generic_pm_domain *genpd,
+> >         genpd->domain.ops.complete = genpd_complete;
+> >         genpd->domain.start = genpd_dev_pm_start;
+> >
+> > +       if (genpd->dev.parent && pm_runtime_enabled(genpd->dev.parent))
+> > +               genpd->flags |= _GENPD_FLAG_RPM_ENABLED;
+> > +
+> >         if (genpd->flags & GENPD_FLAG_PM_CLK) {
+> >                 genpd->dev_ops.stop = pm_clk_suspend;
+> >                 genpd->dev_ops.start = pm_clk_resume;
+> > diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
+> > index 21a0577305ef..e86cd7cfc9ec 100644
+> > --- a/include/linux/pm_domain.h
+> > +++ b/include/linux/pm_domain.h
+> > @@ -60,6 +60,10 @@
+> >   * GENPD_FLAG_MIN_RESIDENCY:   Enable the genpd governor to consider its
+> >   *                             components' next wakeup when determining the
+> >   *                             optimal idle state.
+> > + *
+> > + * _GENPD_FLAG_RPM_ENABLED:    Use genpd's parent dev for runtime power
+> > + *                             management. There is no need to set this flag,
+> > + *                             it will be detected automatically.
+> >   */
+> >  #define GENPD_FLAG_PM_CLK       (1U << 0)
+> >  #define GENPD_FLAG_IRQ_SAFE     (1U << 1)
+> > @@ -69,6 +73,8 @@
+> >  #define GENPD_FLAG_RPM_ALWAYS_ON (1U << 5)
+> >  #define GENPD_FLAG_MIN_RESIDENCY (1U << 6)
+> >
+> > +#define _GENPD_FLAG_RPM_ENABLED         (1U << 31)
+> > +
+> >  enum gpd_status {
+> >         GENPD_STATE_ON = 0,     /* PM domain is on */
+> >         GENPD_STATE_OFF,        /* PM domain is off */
+> > --
+> > 2.30.2
+> >
 
 
 
-> Thank you,
-> 
-> On Fri, 9 Jul 2021 10:46:30 +0800
-> Shaobo Huang <huangshaobo6@huawei.com> wrote:
-> 
->> From: Masami Hiramatsu <mhiramat@kernel.org>
->>
->> commit f3fbd7ec62dec1528fb8044034e2885f2b257941 upstream
->>
->> This is arm port of commit 6a5022a56ac3 ("kprobes/x86: Allow to
->> handle reentered kprobe on single-stepping")
->>
->> Since the FIQ handlers can interrupt in the single stepping
->> (or preparing the single stepping, do_debug etc.), we should
->> consider a kprobe is hit in the NMI handler. Even in that
->> case, the kprobe is allowed to be reentered as same as the
->> kprobes hit in kprobe handlers
->> (KPROBE_HIT_ACTIVE or KPROBE_HIT_SSDONE).
->>
->> The real issue will happen when a kprobe hit while another
->> reentered kprobe is processing (KPROBE_REENTER), because
->> we already consumed a saved-area for the previous kprobe.
->>
->> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
->> Signed-off-by: Jon Medhurst <tixy@linaro.org>
->> Fixes: 24ba613c9d6c ("ARM kprobes: core code")
->> Cc: stable@vger.kernel.org #v2.6.25~v4.11
->> Signed-off-by: huangshaobo <huangshaobo6@huawei.com>
->> ---
->>   arch/arm/probes/kprobes/core.c | 6 ++++++
->>   1 file changed, 6 insertions(+)
->>
->> diff --git a/arch/arm/probes/kprobes/core.c b/arch/arm/probes/kprobes/core.c
->> index 3eb018fa1a1f..c3362ddd6c4c 100644
->> --- a/arch/arm/probes/kprobes/core.c
->> +++ b/arch/arm/probes/kprobes/core.c
->> @@ -270,6 +270,7 @@ void __kprobes kprobe_handler(struct pt_regs *regs)
->>   			switch (kcb->kprobe_status) {
->>   			case KPROBE_HIT_ACTIVE:
->>   			case KPROBE_HIT_SSDONE:
->> +			case KPROBE_HIT_SS:
->>   				/* A pre- or post-handler probe got us here. */
->>   				kprobes_inc_nmissed_count(p);
->>   				save_previous_kprobe(kcb);
->> @@ -278,6 +279,11 @@ void __kprobes kprobe_handler(struct pt_regs *regs)
->>   				singlestep(p, regs, kcb);
->>   				restore_previous_kprobe(kcb);
->>   				break;
->> +			case KPROBE_REENTER:
->> +				/* A nested probe was hit in FIQ, it is a BUG */
->> +				pr_warn("Unrecoverable kprobe detected at %p.\n",
->> +					p->addr);
->> +				/* fall through */
->>   			default:
->>   				/* impossible cases */
->>   				BUG();
->> -- 
->> 2.12.3
->>
-> 
-> 
-
+-- 
+With best wishes
+Dmitry
