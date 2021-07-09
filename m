@@ -2,107 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29D933C2477
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:20:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33A963C2435
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231921AbhGINW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 09:22:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53918 "EHLO mail.kernel.org"
+        id S231950AbhGINVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 09:21:33 -0400
+Received: from mga18.intel.com ([134.134.136.126]:25063 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232378AbhGINWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 09:22:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01CF9611B0;
-        Fri,  9 Jul 2021 13:20:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1625836801;
-        bh=PZ6EJcrDKzfN3PJu5a68vxiQpKR6yp/1vj+22G8udRs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wqqpQlKNgzZ4hxe0RI5EgFBIm9bjVtUcrVedU9ruFYDCwXoD5/h5cGjXNW1YeqQ9l
-         bmLibcsikudQUcjIF8EA8rxlpnxI8xXl5qUFJQUlNWGwGmLtJZidLAa1U1792KpycA
-         iWfF8ACJ4rbPA1Jn6+XQKcrmhy9hk2yHTpqDTlVo=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+        id S231925AbhGINVc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 09:21:32 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10039"; a="196974898"
+X-IronPort-AV: E=Sophos;i="5.84,226,1620716400"; 
+   d="scan'208";a="196974898"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2021 06:18:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,226,1620716400"; 
+   d="scan'208";a="628856893"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
+  by orsmga005.jf.intel.com with ESMTP; 09 Jul 2021 06:18:44 -0700
+Subject: Re: [PATCH V2 1/2] driver core: Add ability to delete device links of
+ unregistered devices
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julien Grall <julien@xen.org>,
-        Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrvsky@oracle.com>
-Subject: [PATCH 4.14 25/25] xen/events: reset active flag for lateeoi events later
-Date:   Fri,  9 Jul 2021 15:18:56 +0200
-Message-Id: <20210709131643.055966920@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210709131627.928131764@linuxfoundation.org>
-References: <20210709131627.928131764@linuxfoundation.org>
-User-Agent: quilt/0.66
+        Saravana Kannan <saravanak@google.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "open list:TARGET SUBSYSTEM" <linux-scsi@vger.kernel.org>,
+        Avri Altman <avri.altman@wdc.com>,
+        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210709064341.6206-1-adrian.hunter@intel.com>
+ <20210709064341.6206-2-adrian.hunter@intel.com>
+ <CAJZ5v0hZCUruTc9U64Kx0EO8iky34AR+=QeNcSafQEvcGWapLw@mail.gmail.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <f538dda5-6c55-0930-b258-85a3245f06a8@intel.com>
+Date:   Fri, 9 Jul 2021 16:18:57 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0hZCUruTc9U64Kx0EO8iky34AR+=QeNcSafQEvcGWapLw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+On 9/07/21 2:28 pm, Rafael J. Wysocki wrote:
+> On Fri, Jul 9, 2021 at 8:43 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
+>>
+>> Managed device links are deleted by device_del(). However it is possible to
+>> add a device link to a consumer before device_add(), and then discover an
+>> error prevents the device from being used. In that case normally references
+>> to the device would be dropped and the device would be deleted. However the
+>> device link holds a reference to the device, so the device link and device
+>> remain indefinitely.
+>>
+>> Amend device link removal to accept removal of a link with an
+>> unregistered consumer device.
+>>
+>> To make that work nicely, the devlink_remove_symlinks() function must be
+>> amended to cope with the absence of the consumer's sysfs presence,
+>> otherwise sysfs_remove_link() will generate a warning.
+>>
+>> Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>> Fixes: b294ff3e34490 ("scsi: ufs: core: Enable power management for wlun")
+>> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+>> ---
+>>  drivers/base/core.c | 11 ++++++++---
+>>  1 file changed, 8 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/base/core.c b/drivers/base/core.c
+>> index ea5b85354526..24bacdb315c6 100644
+>> --- a/drivers/base/core.c
+>> +++ b/drivers/base/core.c
+>> @@ -562,7 +562,8 @@ static void devlink_remove_symlinks(struct device *dev,
+>>         struct device *con = link->consumer;
+>>         char *buf;
+>>
+>> -       sysfs_remove_link(&link->link_dev.kobj, "consumer");
+>> +       if (device_is_registered(con))
+>> +               sysfs_remove_link(&link->link_dev.kobj, "consumer");
+> 
+> I think that this is needed regardless of the changes in
+> device_link_put_kref(), because if somebody decides to delete a
+> stateless device link before registering the consumer device,
+> sysfs_remove_link() will still complain, won't it?
 
-commit 3de218ff39b9e3f0d453fe3154f12a174de44b25 upstream.
+I would think so.
 
-In order to avoid a race condition for user events when changing
-cpu affinity reset the active flag only when EOI-ing the event.
+> 
+>>         sysfs_remove_link(&link->link_dev.kobj, "supplier");
+>>
+>>         len = max(strlen(dev_bus_name(sup)) + strlen(dev_name(sup)),
+>> @@ -575,8 +576,10 @@ static void devlink_remove_symlinks(struct device *dev,
+>>                 return;
+>>         }
+>>
+>> -       snprintf(buf, len, "supplier:%s:%s", dev_bus_name(sup), dev_name(sup));
+>> -       sysfs_remove_link(&con->kobj, buf);
+>> +       if (device_is_registered(con)) {
+>> +               snprintf(buf, len, "supplier:%s:%s", dev_bus_name(sup), dev_name(sup));
+>> +               sysfs_remove_link(&con->kobj, buf);
+>> +       }
+> 
+> And here too, if I'm not mistaken.
+> 
+> So in that case it would be better to put the above changes into a
+> separate patch and add a Fixes tag to it.
 
-This is working fine as all user events are lateeoi events. Note that
-lateeoi_ack_mask_dynirq() is not modified as there is no explicit call
-to xen_irq_lateeoi() expected later.
+Yes, that makes sense.  I'll send a V3
 
-Cc: stable@vger.kernel.org
-Reported-by: Julien Grall <julien@xen.org>
-Fixes: b6622798bc50b62 ("xen/events: avoid handling the same event on two cpus at the same time")
-Tested-by: Julien Grall <julien@xen.org>
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Reviewed-by: Boris Ostrovsky <boris.ostrvsky@oracle.com>
-Link: https://lore.kernel.org/r/20210623130913.9405-1-jgross@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- drivers/xen/events/events_base.c |   23 +++++++++++++++++++----
- 1 file changed, 19 insertions(+), 4 deletions(-)
-
---- a/drivers/xen/events/events_base.c
-+++ b/drivers/xen/events/events_base.c
-@@ -524,6 +524,9 @@ static void xen_irq_lateeoi_locked(struc
- 	}
- 
- 	info->eoi_time = 0;
-+
-+	/* is_active hasn't been reset yet, do it now. */
-+	smp_store_release(&info->is_active, 0);
- 	do_unmask(info, EVT_MASK_REASON_EOI_PENDING);
- }
- 
-@@ -1780,10 +1783,22 @@ static void lateeoi_ack_dynirq(struct ir
- 	struct irq_info *info = info_for_irq(data->irq);
- 	evtchn_port_t evtchn = info ? info->evtchn : 0;
- 
--	if (VALID_EVTCHN(evtchn)) {
--		do_mask(info, EVT_MASK_REASON_EOI_PENDING);
--		ack_dynirq(data);
--	}
-+	if (!VALID_EVTCHN(evtchn))
-+		return;
-+
-+	do_mask(info, EVT_MASK_REASON_EOI_PENDING);
-+
-+	if (unlikely(irqd_is_setaffinity_pending(data)) &&
-+	    likely(!irqd_irq_disabled(data))) {
-+		do_mask(info, EVT_MASK_REASON_TEMPORARY);
-+
-+		clear_evtchn(evtchn);
-+
-+		irq_move_masked_irq(data);
-+
-+		do_unmask(info, EVT_MASK_REASON_TEMPORARY);
-+	} else
-+		clear_evtchn(evtchn);
- }
- 
- static void lateeoi_mask_ack_dynirq(struct irq_data *data)
-
+> 
+>>         snprintf(buf, len, "consumer:%s:%s", dev_bus_name(con), dev_name(con));
+>>         sysfs_remove_link(&sup->kobj, buf);
+>>         kfree(buf);
+>> @@ -885,6 +888,8 @@ static void device_link_put_kref(struct device_link *link)
+>>  {
+>>         if (link->flags & DL_FLAG_STATELESS)
+>>                 kref_put(&link->kref, __device_link_del);
+>> +       else if (!device_is_registered(link->consumer))
+>> +               __device_link_del(&link->kref);
+>>         else
+>>                 WARN(1, "Unable to drop a managed device link reference\n");
+>>  }
+>> --
+>> 2.17.1
+>>
 
