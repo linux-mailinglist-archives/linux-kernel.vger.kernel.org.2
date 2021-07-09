@@ -2,138 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDB433C23A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 14:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD2B3C23AC
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 14:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231338AbhGIMtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S231467AbhGIMtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 08:49:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231431AbhGIMtL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 9 Jul 2021 08:49:11 -0400
-Received: from foss.arm.com ([217.140.110.172]:52168 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231467AbhGIMtK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 08:49:10 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E6C9FED1;
-        Fri,  9 Jul 2021 05:46:26 -0700 (PDT)
-Received: from [10.57.35.192] (unknown [10.57.35.192])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8C00C3F66F;
-        Fri,  9 Jul 2021 05:46:24 -0700 (PDT)
-Subject: Re: [RFC v1 6/8] mshv: command line option to skip devices in
- PV-IOMMU
-To:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
-Cc:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        pasha.tatashin@soleen.com, kumarpraveen@linux.microsoft.com,
-        Will Deacon <will@kernel.org>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        virtualization@lists.linux-foundation.org,
-        Vineeth Pillai <viremana@linux.microsoft.com>
-References: <20210709114339.3467637-1-wei.liu@kernel.org>
- <20210709114339.3467637-7-wei.liu@kernel.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <1c839a00-0f5f-fdfa-cfb3-f345bef9f849@arm.com>
-Date:   Fri, 9 Jul 2021 13:46:19 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 714F7C0613DD;
+        Fri,  9 Jul 2021 05:46:27 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id 37so9881255pgq.0;
+        Fri, 09 Jul 2021 05:46:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=a8Fdp0uOkotya/kKDIDVD2b894Pw0XhGKYmVcYD6eEw=;
+        b=hlp54LnJJs1CAUdyxnywduEZx2aVQdAFjMZ8bC8CIlzhwsIHht8V/i8iGTF4+zFiCK
+         xCnrf62Hh32UXJeClpw+fJORc5Zb99y2fguP0hGqJ3cwaUlHgEVkwMrwBXTiQsg4gFvI
+         0IwtidDeeYjzxwdfVcHLlEdkXkZQoe+AWCeNP8DA/dWCChF+Q+wg+V7bB2IU5sMHNDug
+         c2aDuywfrdNiPaI1lZMKJ0y04wCdV0XZwKvO9eD8rovvxqsPc7LmQrzGV7zHc2Z8ibR2
+         MAB5ejjWMd6iRdI3GitBSJfVEzOb0hTiL02uCb6VzGB42U+DjNuMSH8p+8LwMyJqnDz0
+         FT1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=a8Fdp0uOkotya/kKDIDVD2b894Pw0XhGKYmVcYD6eEw=;
+        b=oBM1ZWU9ymqswW9gbMvX+pW07f/qAw1hk4yRbw+ktzWz/Jm6daivG72qBCESGgRNMc
+         DoZjS7GmLXor80fGqPHmm5yYVVVePApnr9qkZyqrPDiiQrZarroJapybvuGvqiFvvUaK
+         xad/Ow+2zTqELyA0DAKsx6e9wAmdWdxMIQGMlItHoxYb7/lrx6Tj13qLcZsDrh5f5DT7
+         1FLOv2Edw+5VJLZ4Lzlzcer3nvXESnIC2hlQy3CBOK8kI8SZ7dYsNaoS24l/at4D+EKD
+         ujfp12bPibkHKq3j0xDri3PIJrgsRBin8+0ey1AIoa+crzd8/6ib7vyK0mpkGLlWxmqX
+         8/YA==
+X-Gm-Message-State: AOAM530tcKQl4kCRw7oXo8mxwfvWXnSVJpQOnvUx7fzErEoNf0YeaJLl
+        YwholPdj6IOccp4RsZwOogY=
+X-Google-Smtp-Source: ABdhPJzKpGnIHiI1mb1IZJRs4ZZ91CGKjEI3GaLhAcHodQ9xrHfMMD5ahjV0Hr4h/dfGJItBh0Ccqw==
+X-Received: by 2002:a63:5345:: with SMTP id t5mr36500421pgl.167.1625834786944;
+        Fri, 09 Jul 2021 05:46:26 -0700 (PDT)
+Received: from localhost ([152.57.176.46])
+        by smtp.gmail.com with ESMTPSA id e24sm6226808pfn.127.2021.07.09.05.46.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Jul 2021 05:46:26 -0700 (PDT)
+Date:   Fri, 9 Jul 2021 18:16:21 +0530
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     alex.williamson@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Amey Narkhede <ameynarkhede03@gmail.com>
+Subject: Re: [PATCH v10 0/8] Expose and manage PCI device reset
+Message-ID: <20210709124621.ky3c6ip4wjrpsctr@archlinux>
+References: <20210709123813.8700-1-ameynarkhede03@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210709114339.3467637-7-wei.liu@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210709123813.8700-1-ameynarkhede03@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-09 12:43, Wei Liu wrote:
-> Some devices may have been claimed by the hypervisor already. One such
-> example is a user can assign a NIC for debugging purpose.
-> 
-> Ideally Linux should be able to tell retrieve that information, but
-> there is no way to do that yet. And designing that new mechanism is
-> going to take time.
-> 
-> Provide a command line option for skipping devices. This is a stopgap
-> solution, so it is intentionally undocumented. Hopefully we can retire
-> it in the future.
+On 21/07/09 06:08PM, Amey Narkhede wrote:
+> PCI and PCIe devices may support a number of possible reset mechanisms
+> for example Function Level Reset (FLR) provided via Advanced Feature or
+> PCIe capabilities, Power Management reset, bus reset, or device specific reset.
+> Currently the PCI subsystem creates a policy prioritizing these reset methods
+> which provides neither visibility nor control to userspace.
+>
+> Expose the reset methods available per device to userspace, via sysfs
+> and allow an administrative user or device owner to have ability to
+> manage per device reset method priorities or exclusions.
+> This feature aims to allow greater control of a device for use cases
+> as device assignment, where specific device or platform issues may
+> interact poorly with a given reset method, and for which device specific
+> quirks have not been developed.
+>
+> Changes in v10:
+> 	- Fix build error on ppc as reported by build bot
+>
+Aplogies for late response. For some reason I did not get email from
+test bot. I checked spam folder too. Not sure if gmail messed something
+up.
 
-Huh? If the host is using a device, why the heck is it exposing any 
-knowledge of that device to the guest at all, let alone allowing the 
-guest to do anything that could affect its operation!?
-
-Robin.
-
-> Signed-off-by: Wei Liu <wei.liu@kernel.org>
-> ---
->   drivers/iommu/hyperv-iommu.c | 45 ++++++++++++++++++++++++++++++++++++
->   1 file changed, 45 insertions(+)
-> 
-> diff --git a/drivers/iommu/hyperv-iommu.c b/drivers/iommu/hyperv-iommu.c
-> index 043dcff06511..353da5036387 100644
-> --- a/drivers/iommu/hyperv-iommu.c
-> +++ b/drivers/iommu/hyperv-iommu.c
-> @@ -349,6 +349,16 @@ static const struct irq_domain_ops hyperv_root_ir_domain_ops = {
->   
->   #ifdef CONFIG_HYPERV_ROOT_PVIOMMU
->   
-> +/* The IOMMU will not claim these PCI devices. */
-> +static char *pci_devs_to_skip;
-> +static int __init mshv_iommu_setup_skip(char *str) {
-> +	pci_devs_to_skip = str;
-> +
-> +	return 0;
-> +}
-> +/* mshv_iommu_skip=(SSSS:BB:DD.F)(SSSS:BB:DD.F) */
-> +__setup("mshv_iommu_skip=", mshv_iommu_setup_skip);
-> +
->   /* DMA remapping support */
->   struct hv_iommu_domain {
->   	struct iommu_domain domain;
-> @@ -774,6 +784,41 @@ static struct iommu_device *hv_iommu_probe_device(struct device *dev)
->   	if (!dev_is_pci(dev))
->   		return ERR_PTR(-ENODEV);
->   
-> +	/*
-> +	 * Skip the PCI device specified in `pci_devs_to_skip`. This is a
-> +	 * temporary solution until we figure out a way to extract information
-> +	 * from the hypervisor what devices it is already using.
-> +	 */
-> +	if (pci_devs_to_skip && *pci_devs_to_skip) {
-> +		int pos = 0;
-> +		int parsed;
-> +		int segment, bus, slot, func;
-> +		struct pci_dev *pdev = to_pci_dev(dev);
-> +
-> +		do {
-> +			parsed = 0;
-> +
-> +			sscanf(pci_devs_to_skip + pos,
-> +				" (%x:%x:%x.%x) %n",
-> +				&segment, &bus, &slot, &func, &parsed);
-> +
-> +			if (parsed <= 0)
-> +				break;
-> +
-> +			if (pci_domain_nr(pdev->bus) == segment &&
-> +				pdev->bus->number == bus &&
-> +				PCI_SLOT(pdev->devfn) == slot &&
-> +				PCI_FUNC(pdev->devfn) == func)
-> +			{
-> +				dev_info(dev, "skipped by MSHV IOMMU\n");
-> +				return ERR_PTR(-ENODEV);
-> +			}
-> +
-> +			pos += parsed;
-> +
-> +		} while (pci_devs_to_skip[pos]);
-> +	}
-> +
->   	vdev = kzalloc(sizeof(*vdev), GFP_KERNEL);
->   	if (!vdev)
->   		return ERR_PTR(-ENOMEM);
-> 
+[...]
+Amey
