@@ -2,144 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC2B73C2911
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:32:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F3B3C291C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbhGISe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 14:34:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59118 "EHLO
+        id S229618AbhGISla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 14:41:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhGISe4 (ORCPT
+        with ESMTP id S229459AbhGISl3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 14:34:56 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 665E4C0613DD;
-        Fri,  9 Jul 2021 11:32:11 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id nd37so17907451ejc.3;
-        Fri, 09 Jul 2021 11:32:11 -0700 (PDT)
+        Fri, 9 Jul 2021 14:41:29 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F3D7C0613DD
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 11:38:45 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so10422265otl.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 11:38:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VtJq8ypnKS4eYlxtTrToZVYOT0P02GWDtqg+RJsp0r4=;
-        b=Tkbz1Uom9Ksoj+v6zQJZaJuFIwSvZIDFfKaTRmAiXfUIJF2JBtndq+A4uppjsoWdUM
-         GM0vQw7OtRYmvhAxcCTe45AImdH9fkmBjEKQnnSxvPH5UM32Z3vluY9iTVVYPk0OHGR4
-         +f9zEGyZs2xqSUb2cF7f6OpBum34xUfQ7G5oRSDmPZLJEMKInJIsfnHaS8CHGdpJ7DIO
-         1fxk6MANgtgIF3GMTsKSoMwCBhuXzgEM2cP28eBIPucYyD4+P5IK8P2EW0TAMjYWQSld
-         9RcievpykfBUz1OgbGkFWmPhIjXMOnpyXQ8tPceb+t8Fn7BdHJBoeBw1P1acSx2r3hr5
-         yGhA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qj3KpcOQKWBzcflU86gjTc8VoKi1gpmdgNDbxJviBI0=;
+        b=A4Cvlv1Fh51k0o0xQWyeFWpAZfb9FXth/pz01DS5kfqkl30l5jBXktepGdqZ0NA76I
+         GKY/zBF6hWK0x8wXurclALF/1ImnhNqh36ZJP5+lKjNF++8h+5rG2XyGP4hiwQXOc4cT
+         OKt/mrKSL1wtzvpGE+MepNetHCVFU2MXmr/pMHlT17SuFnw9iJbL9a/yMx3Hz+lk93iA
+         NeDI1fFIHnXZ5HRO50Hww+ZEWCpxOCt7Q+/WD5shDX2q+/TioKGdFtvdJpWXfYMTERtn
+         QL6n/MEPjsWsd/zgIXgjV3lHhv/b30hxFeuCPode4q9g5Z2tC4vroD4SQxBcto61xfF1
+         3teg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VtJq8ypnKS4eYlxtTrToZVYOT0P02GWDtqg+RJsp0r4=;
-        b=DJt+3az8JlGI6arRjbdQAZXCnGEnuuwRqC4vcIGmxyzYgo43KJMqWkMmYLfhPqzox+
-         Gcy5podWD9lfdkHtHvNo9b5hFxBhWIp6aGkIm7DTgVS89ar6DekDWuTsa0US5ULUSSVN
-         Lf7zPtxzaOcacUhmpzEfsYp8a/TiEFd4umb0//4JE8rQMcQ3lat26AvE4RnGWnbRRQwX
-         o3yj3NMXlRZTXb+764rvJgLRn4iXQl/oegF8eyvTaHYG62kEm4gOck+QtW4d/BSb1/1i
-         vZiI/s7Yyuv/0f6/ooJJiGAleGxvmnbxNcEGYKP22Gw4XAJXR/NeotHoFuQto5McNn3/
-         YUBQ==
-X-Gm-Message-State: AOAM533RQBU1hjriWwhul2bimLct5+9hrv4UOJziA+bMkRBnhctFdTS3
-        IxDPQ8Jy46koWbD77cAWHRzV+G7DvwrmO91lphE=
-X-Google-Smtp-Source: ABdhPJy81KXEn6X3hOLvrxh6D0GLTzilfT6rxFPn5rObGOLN7nn5gQc6vdYFUpHDi1l6cbGuWo99snz99LEm63ljuRY=
-X-Received: by 2002:a17:907:d28:: with SMTP id gn40mr39961662ejc.471.1625855529920;
- Fri, 09 Jul 2021 11:32:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210709164216.18561-1-ms@dev.tdt.de>
-In-Reply-To: <20210709164216.18561-1-ms@dev.tdt.de>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Fri, 9 Jul 2021 20:31:59 +0200
-Message-ID: <CAFBinCCw9+oCV==1DrNFU6Lu02h3OyZu9wM=78RKGMCZU6ObEA@mail.gmail.com>
-Subject: Re: [PATCH net-next v3] net: phy: intel-xway: Add RGMII internal
- delay configuration
-To:     Martin Schiller <ms@dev.tdt.de>
-Cc:     Hauke Mehrtens <hauke@hauke-m.de>, f.fainelli@gmail.com,
-        andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qj3KpcOQKWBzcflU86gjTc8VoKi1gpmdgNDbxJviBI0=;
+        b=XW8CDwLCrINi0UkbNI40suixylWthUFQn25D5W0MRim4AT75Kp5ssK1dWkKN7ZoQDG
+         mMVMtPjOVjpv4nioXlRF1/DJKvxtk3xaeB8tSIgVXuPQ8Dpsba7wjTruk6PPWnxuuOJL
+         5qBkVau0c1oVhLdauCrQdVPExGpe6yCsUvy9vJYFIFF6RcRkm1HGS4qR+BHY18Sw9QmR
+         VHvWWpElp+2QgslVYJzygC518N4h89sLlv/Aq4K1qcXzrrRE0U5+y8EoZT7mMWsh8gPa
+         k8Ut9HXinObihkRXjO7iZffHlCa6prTUnPq2Its7RCSlOXeND+yLDax8eMbP7wnaPyLz
+         N7YA==
+X-Gm-Message-State: AOAM533HHC7E9wndDCE9sJlJOpKiRCpeurIYwRtoSQVPvB/li29jhezQ
+        QTsmuS04XKmKdKAydIYcS9IaNg==
+X-Google-Smtp-Source: ABdhPJwVD+4DFQQutaGF70jDlFkhLLbo2uu0p7xx8G/lH+KQw0QFWt6ZPfJ8hME6UCVC+jyulPb9mA==
+X-Received: by 2002:a9d:5e17:: with SMTP id d23mr28618905oti.330.1625855924936;
+        Fri, 09 Jul 2021 11:38:44 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id l7sm1277837otu.76.2021.07.09.11.38.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Jul 2021 11:38:44 -0700 (PDT)
+Date:   Fri, 9 Jul 2021 13:38:42 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v3 3/7] clk: qcom: gdsc: enable optional power domain
+ support
+Message-ID: <YOiXsnXFKP5qD5qX@yoga>
+References: <20210709173202.667820-1-dmitry.baryshkov@linaro.org>
+ <20210709173202.667820-4-dmitry.baryshkov@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210709173202.667820-4-dmitry.baryshkov@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
+On Fri 09 Jul 12:31 CDT 2021, Dmitry Baryshkov wrote:
 
-overall this is looking good.
-A few comments below - I think none of them is a "must change" in my opinion.
-
-On Fri, Jul 9, 2021 at 6:42 PM Martin Schiller <ms@dev.tdt.de> wrote:
->
-> This adds the posibility to configure the RGMII RX/TX clock skew via
-typo: posibility -> possibility
-
-[...]
-> +#define XWAY_MDIO_MIICTRL_RXSKEW_MASK  GENMASK(14, 12)
-> +#define XWAY_MDIO_MIICTRL_RXSKEW_SHIFT 12
-if you use
-- FIELD_PREP(XWAY_MDIO_MIICTRL_RXSKEW_MASK, rxskew); (as for example [0] does)
-- and FIELD_GET(XWAY_MDIO_MIICTRL_RXSKEW_MASK, val);
-below then you can drop the _SHIFT #define
-this is purely cosmetic though, so nothing which blocks this from being merged
-
-> +#define XWAY_MDIO_MIICTRL_TXSKEW_MASK  GENMASK(10, 8)
-> +#define XWAY_MDIO_MIICTRL_TXSKEW_SHIFT 8
-same as above
-
-[...]
-> +#if IS_ENABLED(CONFIG_OF_MDIO)
-is there any particular reason why we need to guard this with CONFIG_OF_MDIO?
-The dp83822 driver does not use this #if either (as far as I
-understand at least)
-
-[...]
-> +static int xway_gphy_of_reg_init(struct phy_device *phydev)
+> On sm8250 dispcc and videocc registers are powered up by the MMCX power
+> domain. Currently we use a regulator to enable this domain on demand,
+> however this has some consequences, as genpd code is not reentrant.
+> 
+> Teach Qualcomm clock controller code about setting up runtime PM and
+> using specified for gdsc powerup.
+> 
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> ---
+>  drivers/clk/qcom/common.c | 37 +++++++++++++++++++++++++++++++------
+>  drivers/clk/qcom/gdsc.c   |  4 ++++
+>  2 files changed, 35 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/clk/qcom/common.c b/drivers/clk/qcom/common.c
+> index 60d2a78d1395..43d8f8feeb3c 100644
+> --- a/drivers/clk/qcom/common.c
+> +++ b/drivers/clk/qcom/common.c
+> @@ -10,6 +10,7 @@
+>  #include <linux/clk-provider.h>
+>  #include <linux/reset-controller.h>
+>  #include <linux/of.h>
+> +#include <linux/pm_runtime.h>
+>  
+>  #include "common.h"
+>  #include "clk-rcg.h"
+> @@ -224,6 +225,11 @@ static struct clk_hw *qcom_cc_clk_hw_get(struct of_phandle_args *clkspec,
+>  	return cc->rclks[idx] ? &cc->rclks[idx]->hw : NULL;
+>  }
+>  
+> +static void qcom_cc_pm_runtime_disable(void *data)
 > +{
-> +       struct device *dev = &phydev->mdio.dev;
-> +       int delay_size = ARRAY_SIZE(xway_internal_delay);
-Some people in the kernel community are working on automatically
-detecting and fixing signedness issues.
-I am not sure if they would find this at some point suggesting that it
-can be an "unsigned int".
+> +	pm_runtime_disable(data);
+> +}
+> +
+>  int qcom_cc_really_probe(struct platform_device *pdev,
+>  			 const struct qcom_cc_desc *desc, struct regmap *regmap)
+>  {
+> @@ -241,6 +247,18 @@ int qcom_cc_really_probe(struct platform_device *pdev,
+>  	if (!cc)
+>  		return -ENOMEM;
+>  
+> +	pm_runtime_enable(dev);
 
-> +       s32 rx_int_delay;
-> +       s32 tx_int_delay;
-xway_gphy14_config_aneg() below defines two variables in one line, so
-to be consistent this would be:
-    s32 rx_int_delay, tx_int_delay;
-another option is to just re-use one "int_delay" variable (as it seems
-that they're both used in different code-paths).
+In turingcc-qcs404.c I'm using pm_runtime to have the clock framework
+ensure that the iface clock is enabled during clock operations, so this
+will result in a "unbalanced enable" warning.
 
-> +       u16 mask = 0;
-I think this should be dropped and the phy_modify() call below should read:
-    return phy_modify(phydev, XWAY_MDIO_MIICTRL,
-                                  XWAY_MDIO_MIICTRL_RXSKEW_MASK |
-                                  XWAY_MDIO_MIICTRL_TXSKEW_MASK, val);
-For rgmii-txid the RX delay might be provided by the MAC or PCB trace
-length so the PHY should not add any RX delay.
-Similarly for rgmii-rxid the TX delay might be provided by the MAC or
-PCB trace length so the PHY should not add any TX delay.
-That means we always need to mask the RX and TX skew bits, regardless
-of what we're setting later on (as phy_modify is only called for one
-of: rgmii-id, rgmii-txid, rgmii-rxid).
+> +	ret = pm_runtime_get_sync(dev);
 
-[...]
-> +       if (phydev->interface == PHY_INTERFACE_MODE_RGMII_ID ||
-> +           phydev->interface == PHY_INTERFACE_MODE_RGMII_RXID) {
-> +               rx_int_delay = phy_get_internal_delay(phydev, dev,
-> +                                                     &xway_internal_delay[0],
-I think above line can be simplified as:
-    xway_internal_delay,
+I don't think you should wrap the entire initialization in a
+pm_runtime_get_sync()/put() region. Instead follow the clock framework
+and wrap gdsc initialization that needs to touch the hardware in:
 
-[...]
-> +       if (phydev->interface == PHY_INTERFACE_MODE_RGMII_ID ||
-> +           phydev->interface == PHY_INTERFACE_MODE_RGMII_TXID) {
-> +               tx_int_delay = phy_get_internal_delay(phydev, dev,
-> +                                                     &xway_internal_delay[0],
-same as above
+	if (pm_runtime_enabled())
+		pm_runtime_get_sync();
+
+I do however think that as of this patch, when probe returns MMCX might
+very well be turned off, as the only user (this driver) has pm_runtime
+enabled and it's idle. So I think you should introduce the
+pm_runtime_get()/put() in the gdsc functions before this patch.
 
 
-Best regards,
-Martin
+To summarize, I think you should rely on the individual clock drivers to
+pm_runtime_enable()/disable().
 
+> +	if (ret < 0) {
+> +		pm_runtime_put(dev);
+> +		pm_runtime_disable(dev);
+> +		return ret;
+> +	}
+> +
+> +	ret = devm_add_action_or_reset(dev, qcom_cc_pm_runtime_disable, dev);
+> +	if (ret)
+> +		goto err;
+> +
+>  	reset = &cc->reset;
+>  	reset->rcdev.of_node = dev->of_node;
+>  	reset->rcdev.ops = &qcom_reset_ops;
+> @@ -251,7 +269,7 @@ int qcom_cc_really_probe(struct platform_device *pdev,
+>  
+>  	ret = devm_reset_controller_register(dev, &reset->rcdev);
+>  	if (ret)
+> -		return ret;
+> +		goto err;
+>  
+>  	if (desc->gdscs && desc->num_gdscs) {
+>  		scd = devm_kzalloc(dev, sizeof(*scd), GFP_KERNEL);
+> @@ -262,11 +280,11 @@ int qcom_cc_really_probe(struct platform_device *pdev,
+>  		scd->num = desc->num_gdscs;
+>  		ret = gdsc_register(scd, &reset->rcdev, regmap);
+>  		if (ret)
+> -			return ret;
+> +			goto err;
+>  		ret = devm_add_action_or_reset(dev, qcom_cc_gdsc_unregister,
+>  					       scd);
+>  		if (ret)
+> -			return ret;
+> +			goto err;
+>  	}
+>  
+>  	cc->rclks = rclks;
+> @@ -277,7 +295,7 @@ int qcom_cc_really_probe(struct platform_device *pdev,
+>  	for (i = 0; i < num_clk_hws; i++) {
+>  		ret = devm_clk_hw_register(dev, clk_hws[i]);
+>  		if (ret)
+> -			return ret;
+> +			goto err;
+>  	}
+>  
+>  	for (i = 0; i < num_clks; i++) {
+> @@ -286,14 +304,21 @@ int qcom_cc_really_probe(struct platform_device *pdev,
+>  
+>  		ret = devm_clk_register_regmap(dev, rclks[i]);
+>  		if (ret)
+> -			return ret;
+> +			goto err;
+>  	}
+>  
+>  	ret = devm_of_clk_add_hw_provider(dev, qcom_cc_clk_hw_get, cc);
+>  	if (ret)
+> -		return ret;
+> +		goto err;
+> +
+> +	pm_runtime_put(dev);
+>  
+>  	return 0;
+> +
+> +err:
+> +	pm_runtime_put(dev);
+> +
+> +	return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(qcom_cc_really_probe);
+>  
+> diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
+> index 51ed640e527b..ccd36617d067 100644
+> --- a/drivers/clk/qcom/gdsc.c
+> +++ b/drivers/clk/qcom/gdsc.c
+> @@ -439,6 +439,8 @@ int gdsc_register(struct gdsc_desc *desc,
+>  			continue;
+>  		if (scs[i]->parent)
+>  			pm_genpd_add_subdomain(scs[i]->parent, &scs[i]->pd);
+> +		else if (!IS_ERR_OR_NULL(dev->pm_domain))
+> +			pm_genpd_add_subdomain(pd_to_genpd(dev->pm_domain), &scs[i]->pd);
 
-[0] https://elixir.bootlin.com/linux/v5.13/source/drivers/net/phy/dp83867.c#L438
+Nice, I didn't know that we could fish it out of the dev.
+
+Regards,
+Bjorn
+
+>  	}
+>  
+>  	return of_genpd_add_provider_onecell(dev->of_node, data);
+> @@ -457,6 +459,8 @@ void gdsc_unregister(struct gdsc_desc *desc)
+>  			continue;
+>  		if (scs[i]->parent)
+>  			pm_genpd_remove_subdomain(scs[i]->parent, &scs[i]->pd);
+> +		else if (!IS_ERR_OR_NULL(dev->pm_domain))
+> +			pm_genpd_remove_subdomain(pd_to_genpd(dev->pm_domain), &scs[i]->pd);
+>  	}
+>  	of_genpd_del_provider(dev->of_node);
+>  }
+> -- 
+> 2.30.2
+> 
