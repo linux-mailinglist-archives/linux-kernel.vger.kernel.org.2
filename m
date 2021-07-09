@@ -2,133 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 686FF3C2B80
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 00:54:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8624B3C2B83
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 00:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231344AbhGIW5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 18:57:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55388 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229542AbhGIW5U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 18:57:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BA59613BF;
-        Fri,  9 Jul 2021 22:54:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625871276;
-        bh=x0FRejFIgHX/Bw4TECN4z64GQhcXeWno1qkqNAwLb9w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q4I353nNmA0X0JD+fTI12W8VBiL7kPT1K9IFK+bfBNIZH+jDTx2++DKHrR4xF3BhK
-         amk5u1srp3vX8EqMnopHmAC8XjFiL3I/18bs3QlpOGe87rLRy0Nd+MKNVP+OMRZsfi
-         Jb9w+PrK28jPtQqahNddD/tUg75V/xGPfET25cN42fLnQI4nasQOw6l+ZxosuAlH9L
-         d2lqQowrnqqwpNbtORMF/oUBRWf1igxi3Lk8BGAlMrwyrb0TvxCOIz68w/lxXdMSax
-         Uw0ck13THuA7TvXraCTpmHEuKdfd3Hb3rqPdfDmKQLOtizhxLsl47IdZELkedpxk3Y
-         rZxKDwdSC5aBw==
-Received: by pali.im (Postfix)
-        id 7FD9A77D; Sat, 10 Jul 2021 00:54:33 +0200 (CEST)
-Date:   Sat, 10 Jul 2021 00:54:33 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     Jonas =?utf-8?Q?Dre=C3=9Fler?= <verdre@v0yd.nl>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v2 2/2] mwifiex: pcie: add reset_d3cold quirk for Surface
- gen4+ devices
-Message-ID: <20210709225433.axpzdsfbyvieahvr@pali>
-References: <20210709161251.g4cvq3l4fnh4ve4r@pali>
- <d9158206-8ebe-c857-7533-47155a6464e1@gmail.com>
- <20210709173013.vkavxrtz767vrmej@pali>
- <89a60b06-b22d-2ea8-d164-b74e4c92c914@gmail.com>
- <20210709184443.fxcbc77te6ptypar@pali>
- <251bd696-9029-ec5a-8b0c-da78a0c8b2eb@gmail.com>
- <20210709194401.7lto67x6oij23uc5@pali>
- <4e35bfc1-c38d-7198-dedf-a1f2ec28c788@gmail.com>
- <20210709212505.mmqxdplmxbemqzlo@pali>
- <bfbb3b4d-07f7-1b97-54f0-21eba4766798@gmail.com>
+        id S231397AbhGIW5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 18:57:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229542AbhGIW5t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 18:57:49 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7041C0613DD
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 15:55:05 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id f93-20020a9d03e60000b02904b1f1d7c5f4so10281946otf.9
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 15:55:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K66QBtJ+phE9JDS05iwl9n97KF/7XWVHefoFggtflzM=;
+        b=Z/XPwxtaDaG7Js+AzZfVg7udevUwQeigbzx2kcOEOIMdKZCh9sVF/Y/W06OI71vVY3
+         /JFy9RUt7+y/MUHSyhiCbN0oEp++Y/QF5Dl0C24seRliY5YF1z/DxkR1b6RRINEMW0l6
+         wHP88x0UyOI+fAuhMGHr1/BTlWWbdRtPdhwY3YekmvTa2k8DK8hN7h/TzM94IiMazauB
+         qaQYgLjYTLudt5LMQ9+WnOErefGfuM2g0Il0p2lfBprzLIfyiPixrppmC8YRQ6oQgCLT
+         vYmXal5xRAmgHE9kR9Fle9PnTRkGe52G3gJayqOeCBkJixnxV4N1r6jOM91CDa4ivbai
+         GKLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K66QBtJ+phE9JDS05iwl9n97KF/7XWVHefoFggtflzM=;
+        b=A2nilJ78D2c53euyJSxgEC/rrmu0VR1xovYejkdZR+hgEv0b1T9UWTXKXL1cCGfYHu
+         /KBhBS1u8YoI+/+Cg6KPuK0Nj4CEudALeG/br1buAHW7+Vg1TaMz3g2bDgsj8103AKxN
+         2WKTiGR4g43PW31c25cwlNcdWjXoo+ZgDeFV7MBbfbgD0cWLITXkKv1l88TzLxCzicD2
+         a90o3ndd/1XQbk82q3Ys99ANVvG19Sjfx6ji+fWGwHW/4ZwjE25CcOfpJfDCiEWr+FyH
+         7gOSbcuPNd642riOc035Ar/szAPatAv7mlG8KLxuM/XBDoS+2HrEaVePUC0xPT1j6dHx
+         Du6w==
+X-Gm-Message-State: AOAM530C7ZsfMzhoxA1FT1vnkF+9/Feup0NvkoU9HCbMTjitRtgchTA6
+        Km5c9AF5JG9D+dj8fJD6pDJAF4KNOetJhfksgcaCBg==
+X-Google-Smtp-Source: ABdhPJy5uCAPcDt5kVVjgCYzDengiFvxQ8jSXjkQFK9bVgyvt+tzXMN3MUek0UZoagdOIr7X/Uavr8JUjm6YJkR+0wM=
+X-Received: by 2002:a05:6830:25cb:: with SMTP id d11mr24792741otu.56.1625871304819;
+ Fri, 09 Jul 2021 15:55:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bfbb3b4d-07f7-1b97-54f0-21eba4766798@gmail.com>
-User-Agent: NeoMutt/20180716
+References: <1625825111-6604-1-git-send-email-weijiang.yang@intel.com> <1625825111-6604-7-git-send-email-weijiang.yang@intel.com>
+In-Reply-To: <1625825111-6604-7-git-send-email-weijiang.yang@intel.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Fri, 9 Jul 2021 15:54:53 -0700
+Message-ID: <CALMp9eQEs9pUyy1PpwLPG0_PtF07tR2Opw+1b=w4-knOwYPvvg@mail.gmail.com>
+Subject: Re: [PATCH v5 06/13] KVM: x86/vmx: Save/Restore host MSR_ARCH_LBR_CTL state
+To:     Yang Weijiang <weijiang.yang@intel.com>
+Cc:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        wei.w.wang@intel.com, like.xu.linux@gmail.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday 10 July 2021 00:25:36 Maximilian Luz wrote:
-> On 7/9/21 11:25 PM, Pali Rohár wrote:
-> 
-> [...]
-> 
-> > PCIe Function Level Reset should reset only one PCIe part of device. And
-> > seems that this type of reset does not work properly in some situations.
-> > 
-> > Note that PCIe Function Level Reset is independent of running firmware.
-> > It is implement in hardware and (should) work also at early stage when
-> > firmware is not loaded yet.
-> > 
-> > I'm starting to think more and more if quirk in this patch really needs
-> > to be behind DMI check and if rather it should not be called on other
-> > platforms too?
-> 
-> Maybe? I'm not sure how well this behaves on other devices and if there
-> even are any devices outside of the MS Surface line that really require
-> or benefit from something like this. To me it seems safer to put it
-> behind quirks, at least until we know more.
+On Fri, Jul 9, 2021 at 2:51 AM Yang Weijiang <weijiang.yang@intel.com> wrote:
+>
+> If host is using MSR_ARCH_LBR_CTL then save it before vm-entry
+> and reload it after vm-exit.
 
-This is a good argument for DMI based quirk.
+I don't see anything being done here "before VM-entry" or "after
+VM-exit." This code seems to be invoked on vcpu_load and vcpu_put.
 
-But at the end, PCI people should look at this patch and say what do
-they thing about it, if it is better to enable it only for specific set
-of machines (Surface) or it is better to enable it for every 88W8xxx
-wifi or for none.
-
-> Also not sure if this is just my bias, but it feels like the Surface
-> line always had more problems with that driver (and firmware) than
-> others.
-
-Ehm, really? I see reports also from non-Surface users about bad quality
-of these 88W[89]xxx cards and repeating firmware issues. I have bad
-personal experience with 88W8997 SDIO firmware and lot of times I get
-advice about ex-Marvell/NXP wifi cards "do not touch and run away
-quickly".
-
-I think that more people if they get mPCIe/M.2 wifi card in laptop which
-does not work, they just replace it with some working one. And not
-spending infinite time in trying to fix it... So this may explain why
-there are more Surface users with these issues...
-
-> I'm honestly a bit surprised that MS stuck with them for this
-> long (they decided to go with Intel for 7th gen devices). AFAICT they
-> initially chose Marvell due to connected standby support, so maybe that
-> causes issue for us and others simply aren't using that feature? Just
-> guessing though.
-
-In my opinion that "Connected Standby" is just MS marketing term.
-
-88W[89]xxx chips using full-mac firmware and drivers [*]. Full-mac lot
-of times causing more issues than soft-mac solution. Moreover this
-Marvell firmware implements also other "application" layers in firmware
-which OS drivers can use, e.g. there is fully working "wpa-supplicant"
-replacement and also AP part. Maybe windows drivers are using it and it
-cause less problems? Duno. mwifiex uses only "low level" commands and
-WPA state machine is implemented in userspace wpa-supplicant daemon.
-
-
-[*] - Small note: There are also soft-mac firmwares and drivers but
-apparently Marvell has never finished linux driver and firmware was not
-released to public...
-
-And there is also Laird Connectivity which offers their own proprietary
-linux kernel drivers with their own firmware for these 88W[89]xxx chips.
-Last time I checked it they released some parts of driver on github.
-Maybe somebody could contact Laird or check if their driver can be
-replaced by mwifiex? Or just replacing ex-Marvell/NXP firmware by their?
-But I'm not sure if they have something for 88W8897.
+In any case, I don't see why this one MSR is special. It seems that if
+the host is using the architectural LBR MSRs, then *all* of the host
+architectural LBR MSRs have to be saved on vcpu_load and restored on
+vcpu_put. Shouldn't  kvm_load_guest_fpu() and kvm_put_guest_fpu() do
+that via the calls to kvm_save_current_fpu(vcpu->arch.user_fpu) and
+restore_fpregs_from_fpstate(&vcpu->arch.user_fpu->state)?
