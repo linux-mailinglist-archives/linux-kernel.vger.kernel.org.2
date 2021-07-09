@@ -2,138 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10DED3C270B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 17:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D4ED3C270D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 17:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232385AbhGIPsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 11:48:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49546 "EHLO
+        id S232427AbhGIPt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 11:49:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232269AbhGIPs3 (ORCPT
+        with ESMTP id S232269AbhGIPt4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 11:48:29 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B9FBC0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 08:45:46 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so6283888pjo.3
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 08:45:46 -0700 (PDT)
+        Fri, 9 Jul 2021 11:49:56 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7814C0613E5
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 08:47:12 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id i16-20020a17090acf90b02901736d9d2218so1295744pju.1
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 08:47:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Xr/oo6QaKEF3yyBzroogqbeO+TEDdTjBQ/ohjUC5aco=;
-        b=gNm9KR7Nl8b9kI9wKWmASc8pm+nB7atspkpJFn7eECRe/lnLCs4xSNPxz58yuIa1OK
-         R/vZghjGU4MRZtmnPjYdWXKqguGp+KH3Zx9PvkHubZupsYJxxK1hWxywGPCbQsyJwaM3
-         xkym/IhEZz/64BDNO0BDoiNpBDquYRtarrFQ2VI4LLDwhpkzZEtrMRK2JurOaADNG+o0
-         KBm+6blpXBJT8pwmAbekJEnr0U7c1mFvv7whPja26P2EJLmbsX3mCvBkFN7JR71p6Jw7
-         oaazMaMkY6Rw8uENKdeQBZ6MRuK+UHBaKg7tPQ8qGcLTrc/rmn2ropvAlqS6Al6OeEmk
-         n1cw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aWRV/nM5DEWXiCQSe/62S8V1L20wuubZeFimG8/S0eY=;
+        b=ouHw5uK7Qig/cJRudMZNkpgkYuA3HP9yCXWPjJzIgGCv78msj3WCGK78eFhNe1d0e8
+         fkLIrgIHCDigJwKsDF/BMlAQcWr4Fu590jCX6/sL8ngrHygaWLCW/xvlQdJLl2Jr5CRH
+         NRFrdtbYv645uAYeXH8hOusnvJ7Nt8xqoF7nSHhNL0FUsgr8bLQaCe49/3NZSeJ32XA0
+         TnjS5D05oZM4FEfXtTvch9VGkp08ee6PWlaEC0BxTXJ3LjTGrbz5LSv2GU6GbswPkyqp
+         m/uFPsHZWYDo7yLMWLq5nOEH9mCKR+UNxTORFVkKrRFciL9NgD5KCPTfrpFCXee8L4O7
+         QRzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Xr/oo6QaKEF3yyBzroogqbeO+TEDdTjBQ/ohjUC5aco=;
-        b=I1K1Cu1wBYPwwgOEAnsB5BNjmjrcmXrwkxm+cU116VhnTNdn3W5G8qNqevYaCZflDI
-         5NYwF/jZlcLDJl4DVTRGpBkA4ihFrxiiHZuMctbMazx4GOlA5pp23BRpFH4jvEFGExdY
-         dgYbomlB47tsDl1yDV2fMXSjnFCPX1P1o1+mYgWATHZQJkIKOi4pGJkhRiK47FHI+h7e
-         cZJAScMtVfTHZ0ZJaMJgV4Z2LB6H4714R7fhiI2lyhiHUdDrluxxFCb302VmQX7dS94Z
-         JXW2WaPNoRxYLX9E7av4iS0BCpauasxwOzo8TK2iM4XXPh9aWMiVZDQnLFz319ieuuTp
-         M7gQ==
-X-Gm-Message-State: AOAM531fwYm9cqUjIzaUh9H8GZhYNUyy/y4yoFdeXZ0HP4bg3PcD4ioc
-        8s9QiOpsp0MUXdKB8CKCERiLcAyICE5u28INUECSXLvaWBjudA==
-X-Google-Smtp-Source: ABdhPJzNrUv4fPbngocprXlQfxtuH19GJRjFf7mXutAxJzFikk7L3/9XR5BkuWb3UkVh+I09qpS91rNkXCt+nPshsFc=
-X-Received: by 2002:a17:90b:3647:: with SMTP id nh7mr4697326pjb.228.1625845545524;
- Fri, 09 Jul 2021 08:45:45 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aWRV/nM5DEWXiCQSe/62S8V1L20wuubZeFimG8/S0eY=;
+        b=NW4MuRGWsOemULiSH1Lwl2dCol7L3O47kJ9mC/QtFw5Z/oOn8c612X/OyyTveoL8Lx
+         koErHEXSCkDFY5KqdH4OfMB5I9YKx1s9bv5VbOnX0Y9S69kma3gN0LEc5RCMbmQ9V/Xv
+         3IlN8QW4q+KIfJOlnlRM5QsUfBc2NhmC2GU2dbklUjwrgxdyhpXyOCLOFqT2FgDST1/O
+         qBezFvm2N/VvoNm5MbwDZH5e+ii5J6q7H1TmbwHTbWVz4UhxFJvV98i6+6Arx7y361gm
+         UikXhdSOrdeXdqW7Z1XkpjGZwMutwJiHWVZkp0AyKv7wp+682JNdc8Rc+jKSXziwvCb/
+         x7PQ==
+X-Gm-Message-State: AOAM532qXEPHeIX7YxxZCq9EkxuyznF8c7zNNsMm/K6XMZawMygRiDmT
+        GoADQYsp9+7I3jpFxGR9XkRUtw==
+X-Google-Smtp-Source: ABdhPJxSzgUbe56dtC+lLbeqw5dBgJD5rlSaxgGt55Qv1he1TgNACLH1yFF2FnfBKrT+NjOSvXks/w==
+X-Received: by 2002:a17:90a:de8b:: with SMTP id n11mr38743076pjv.11.1625845632179;
+        Fri, 09 Jul 2021 08:47:12 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id p24sm7495391pgl.68.2021.07.09.08.47.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Jul 2021 08:47:11 -0700 (PDT)
+Date:   Fri, 9 Jul 2021 15:47:08 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Edmondson <david.edmondson@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Matlack <dmatlack@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Joao Martins <joao.m.martins@oracle.com>
+Subject: Re: [PATCH v2 2/2] KVM: x86: On emulation failure, convey the exit
+ reason to userspace
+Message-ID: <YOhvfDfqypLCRZuO@google.com>
+References: <20210706101207.2993686-1-david.edmondson@oracle.com>
+ <20210706101207.2993686-3-david.edmondson@oracle.com>
 MIME-Version: 1.0
-References: <CAHp75VfKyqy+vM0XkP9Yb+znGOTVT4zYCRY3A3nQ7C3WNUVN0g@mail.gmail.com>
- <CAHp75VfUHPqccrxe81=jYmiskgWcgTpf3jBjXsPiFpox+Xuyyw@mail.gmail.com>
-In-Reply-To: <CAHp75VfUHPqccrxe81=jYmiskgWcgTpf3jBjXsPiFpox+Xuyyw@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 9 Jul 2021 18:45:06 +0300
-Message-ID: <CAHp75VcmiEuJ7ZfrUeV0ty=qpLEJwsHQa-DwpmyWYyf_OMwQWQ@mail.gmail.com>
-Subject: Re: parallel panel display stopped working
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Lars Poeschel <poeschel@lemonage.de>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Geert Uytterhoeven <geert.uytterhoeven@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210706101207.2993686-3-david.edmondson@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 9, 2021 at 5:54 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Fri, Jul 9, 2021 at 5:40 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> >
-> > Parallel (4 bits)  panel display stopped working.
-> > I have no time right now to bisect but I have noticed there was quite
-> > a pile of patches from Lars to the driver recently (yeah, it seems for
-> > a few months I haven't run my tests against the AUX display driver).
-> >
-> > I believe the issue is there somewhere.
-> >
-> > Moreover on the removal I have got an oops
-> >
-> > [  218.825445] kernel tried to execute NX-protected page - exploit
-> > attempt? (uid: 0)
-> > [  218.832965] BUG: unable to handle page fault for address: ffff8f8f06559dc0
-> > [  218.839863] #PF: supervisor instruction fetch in kernel mode
-> > [  218.845540] #PF: error_code(0x0011) - permissions violation
-> > [  218.851132] PGD e601067 P4D e601067 PUD e602067 PMD 645a063 PTE
-> > 8000000006559063
-> > [  218.858587] Oops: 0011 [#1] SMP PTI
-> > [  218.862099] CPU: 0 PID: 7 Comm: kworker/u4:0 Tainted: G         C
-> >      5.13.0+ #23
-> > [  218.869870] Hardware name: Intel Corporation Merrifield/BODEGA BAY,
-> > BIOS 542 2015.01.21:18.19.48
-> > [  218.878681] Workqueue: kacpi_hotplug acpi_device_del_work_fn
-> > [  218.884380] RIP: 0010:0xffff8f8f06559dc0
-> > [  218.888328] Code: ff ff d2 2b 21 8c ff ff ff ff 08 00 00 00 00 00
-> > 00 00 78 34 fa 02 8f 8f ff ff 00 00 00 00 00
-> > 00 00 00 00 00 00 00 00 00 00 00 <72> 65 67 75 6c 61 74 6f 72 3a 72 65
-> > 67 75 6c 61 74 6f 72 2e 30 2d
-> > [  218.907138] RSP: 0000:ffffad36c0043c90 EFLAGS: 00010246
-> > [  218.912387] RAX: ffff8f8f06559dc0 RBX: ffff8f8f062cbc00 RCX: ffff8f8f01239fc8
-> > [  218.919542] RDX: 000000002a3cccf8 RSI: 0000000000000001 RDI: ffff8f8f06559480
-> > [  218.926701] RBP: ffffffffc037e279 R08: 00000000d5832520 R09: 0000000000000001
-> > [  218.933856] R10: 0000000000000000 R11: 0000000000000001 R12: ffff8f8f062cbc00
-> > [  218.941010] R13: ffffffffc038e028 R14: ffffffff8c5e0b60 R15: 00000000fffffffd
-> > [  218.948166] FS:  0000000000000000(0000) GS:ffff8f8f3e200000(0000)
-> > knlGS:0000000000000000
-> > [  218.956286] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [  218.962053] CR2: ffff8f8f06559dc0 CR3: 0000000002ef4000 CR4: 00000000001006f0
-> > [  218.969208] Call Trace:
-> > [  218.971678]  ? hd44780_common_clear_display+0x17/0x30 [hd44780_common]
-> > [  218.978252]  ? charlcd_write_char+0x21a/0x810 [charlcd]
-> > [  218.983519]  ? charlcd_puts+0x30/0x60 [charlcd]
-> > [  218.988083]  ? charlcd_unregister+0x24/0x70 [charlcd]
-> > [  218.993167]  ? hd44780_remove+0x1e/0x30 [hd44780]
-> > [  218.997901]  ? platform_remove+0x1f/0x40
-> > ...
-> >
-> > Just for your information and with hope that somebody may test and/or
-> > reproduce this and fix it. Later on I might find time to bisect the
-> > other issue I mentioned above.
->
-> For time being confirmed the following:
-> 1. a2060f288e15 ("auxdisplay: Call charlcd_backlight in place") has a
-> remove bug (above), while panel works
-> 2. 66ce7d5c1e12 ("auxdisplay: Use an enum for charlcd backlight on/off
-> ops") everything works as expected
->
-> So, the oops introduced in between those two.
+On Tue, Jul 06, 2021, David Edmondson wrote:
+> Should instruction emulation fail, include the VM exit reason in the
+> emulation_failure data passed to userspace, in order that the VMM can
+> report it as a debugging aid when describing the failure.
 
-The culprit (*) is 01ec46dfa633 ("auxdisplay: Move init_display to
-hd44780_common").
+...
 
-*) Obviously it's not. It reveals the design issue on how the modules
-were split. How this had been tested if tested at all?
+> @@ -7473,7 +7474,14 @@ static void prepare_emulation_failure_exit(struct kvm_vcpu *vcpu)
+>  		memcpy(run->emulation_failure.insn_bytes,
+>  		       ctxt->fetch.data, insn_size);
+>  	}
+> +
+> +	run->emulation_failure.ndata = 4;
+> +	run->emulation_failure.flags |=
+> +		KVM_INTERNAL_ERROR_EMULATION_FLAG_EXIT_REASON;
+> +	run->emulation_failure.exit_reason =
+> +		static_call(kvm_x86_get_exit_reason)(vcpu);
+>  }
 
-P.S. If we don't get a fix in time, I will ask Miguel to revert the entire pile.
+...
 
--- 
-With Best Regards,
-Andy Shevchenko
+> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> index d9e4aabcb31a..863195371272 100644
+> --- a/include/uapi/linux/kvm.h
+> +++ b/include/uapi/linux/kvm.h
+> @@ -282,6 +282,7 @@ struct kvm_xen_exit {
+>  
+>  /* Flags that describe what fields in emulation_failure hold valid data. */
+>  #define KVM_INTERNAL_ERROR_EMULATION_FLAG_INSTRUCTION_BYTES (1ULL << 0)
+> +#define KVM_INTERNAL_ERROR_EMULATION_FLAG_EXIT_REASON       (1ULL << 1)
+>  
+>  /* for KVM_RUN, returned by mmap(vcpu_fd, offset=0) */
+>  struct kvm_run {
+> @@ -404,6 +405,12 @@ struct kvm_run {
+>  			__u64 flags;
+>  			__u8  insn_size;
+>  			__u8  insn_bytes[15];
+> +			/*
+> +			 * The "exit reason" extracted from the
+> +			 * VMCS/VMCB that was the cause of attempted
+> +			 * emulation.
+> +			 */
+> +			__u64 exit_reason;
+
+Rather than providing just the exit reason and adding another kvm_x86_ops hook,
+I would prefer to extend kvm_x86_get_exit_info() to also provide the exit reason
+and use that.  E.g. on VMX, all exceptions funnel through a single exit reason.
+Dumping exit_info_{1,2} and error_code in addition to intr_info might not be all
+that useful, but I can't see in harm either, and more info is generally a good
+thing.
+
+The only other user of kvm_x86_get_exit_info() is for tracepoints, those could
+be modified to not pass in the exit reason.
+
+>  		} emulation_failure;
+>  		/* KVM_EXIT_OSI */
+>  		struct {
+> -- 
+> 2.30.2
+> 
