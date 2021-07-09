@@ -2,105 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7E323C274F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 18:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D5A3C2753
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 18:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229491AbhGIQLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 12:11:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54710 "EHLO
+        id S229561AbhGIQNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 12:13:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhGIQLV (ORCPT
+        with ESMTP id S229441AbhGIQNh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 12:11:21 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFCC9C0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 09:08:36 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id w15so10395632pgk.13
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 09:08:36 -0700 (PDT)
+        Fri, 9 Jul 2021 12:13:37 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4555C0613DD
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 09:10:53 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id h1-20020a17090a3d01b0290172d33bb8bcso8534566pjc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 09:10:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1dWQ88WIQ5IstqaeE3j8DLdXDLPGrHCJiGz4Qh7PYMo=;
-        b=Zp85bicnHRb/fW+g5H1Toa/2HMOF4NGgUYu2mej9QYu8TsBbD1BR3dBnpNx7kveneJ
-         02xkx5hS3wnbmF03TidqUjrWGVXkR7F0b8ByrjLxoLdJaSc78RK9+N/mXD/OvJ8NCVoM
-         9AoIVnIs6NAgnibrzUvOtFezcfKHQLoBd19fKnMH05s4a8/h2Eq/DNTXFU7BfZVtzBZL
-         F3JKyj1lT0U2pvyYnWw8FptoUzq0sAatVWpZo0pqxuXM3PFNIeo4Ya0+zaU7XLy67LaN
-         /JbEa/Ts0lzc3VHAHFXn6H5Azf+v2+mIdLRPhgrDYVWuoVdYwGotr67F29YZgFYkiVwm
-         Cqzw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=q06fwHRHMX96E1HCBPishz+R4ck8i/x3l8SYTB/YKHg=;
+        b=CC9JmBHwIAQ4EgZxzlZCN6Z/G2V3MvFBUCnzbUL3RwREbffTl0vlTwkvT9DLm+lrs9
+         LwYViIzIUU8BJQExdWRy9/pChl1Id+cpbBLN7qQ1VYe9PkT84zo0s5Mf1B5YPwq0dVyX
+         Yh2qQ7VGpjxWkERM5mHRhMxKAXSgELt9hTHVBDeKlXWi9Md8+ZVSx3EdPBhF/4LG2g2o
+         f4M8hqW8yX7rdmnj1vMBUsO0lVjrLgi5861wG4WqhYUZxeFAHK5NRdbx7I6sO6hTZZK1
+         E6ys9+nvUNp15KOkxLZfKn8moabnZlh5QoHdy9CJvAOwAlhNF6Jwd2/UEvHBFeH76LuN
+         ZVbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1dWQ88WIQ5IstqaeE3j8DLdXDLPGrHCJiGz4Qh7PYMo=;
-        b=g+gc7xcDKeitC4RBTDZpbvz9CzuVjd6ZhfY/rKgZMcWPxgNHoPve89IWtt92Xgm4Ty
-         z0dLe3g4DR9n9VA7lWy/aqe2SyGBNrxnOSe9MU6fn+lg8/W3cpo2rMqs6v06QOVFLUIm
-         773gAYYNkdp75jcIspAvh3LHz4BFKvwnIE10V7/bcO85YZCIhKX6nRDgPjuuvfWOKyfM
-         iRsAs/4T/zUxiqeH1i5VQEi4meSVzElqF0nHL4yOpUdUlQX3wnErbFjkR8nsqbQqDR6x
-         wj8vJZTUGrqZHt0aW787Em2W6c9IAnj+Vg/mlQ/jUECJGD7EJ2BV0+7vxiMYhPf3wNx7
-         G75w==
-X-Gm-Message-State: AOAM530R0vnGpaLtv0ALMPUt12TyAS3y5K4fVgVbC+2Fl/E7UTjcRk19
-        AE3FqlvD6od+zlr9j5u7q1cQtQ==
-X-Google-Smtp-Source: ABdhPJwe0NwkcU86y/qh/DSvobHnOef/XrbaKIMj2PN9WnGn8LqxuTM8bfDZHUN/osucDOuVM4nQvA==
-X-Received: by 2002:a63:2d02:: with SMTP id t2mr23416547pgt.114.1625846916318;
-        Fri, 09 Jul 2021 09:08:36 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id x10sm7336215pfd.175.2021.07.09.09.08.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 09:08:35 -0700 (PDT)
-Date:   Fri, 9 Jul 2021 16:08:32 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Matlack <dmatlack@google.com>
-Cc:     David Edmondson <dme@dme.org>, linux-kernel@vger.kernel.org,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v2 0/2] kvm: x86: Convey the exit reason to user-space on
- emulation failure
-Message-ID: <YOh0gNxRJ67Lbo7g@google.com>
-References: <20210706101207.2993686-1-david.edmondson@oracle.com>
- <YOY2pLoXQ8ePXu0W@google.com>
- <m28s2g51q3.fsf@dme.org>
- <YOdGGuk2trw0h95x@google.com>
- <m2y2ag36od.fsf@dme.org>
- <YOdhhcjXEHUaMIFc@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q06fwHRHMX96E1HCBPishz+R4ck8i/x3l8SYTB/YKHg=;
+        b=hNhhCev2spiWGwAcvtrMHB+NigJE8MvSmeVQAGyYMgssjKICENHujHLlI5OIWXKyge
+         q+T3lhs6VYLUd89CW0/SSso1LLahoRS1AbvlY2VpwOv63UgMubJ6FXzzxgZ7z0T8rzdX
+         2NeuJ3Kij11adk2E1Jaw7+KyOVRSLnhsj76L+Gt6egqt5Ar8PwM1jE6ztyFmEs8WgiM/
+         PO3vbdwkYBrBRdtmd3JyCQEpVM/lJgnvM7CQZ3hjXDL8aaz7wa0HGumAx9vneyQX293e
+         +IMZBVbvnRqAz5T4CC6ZffbX6P7kTFFWrRLRZsAExxejrC+4a8ePeHXU5yuGjeQbRsW7
+         5vIg==
+X-Gm-Message-State: AOAM5311j/NyW+chjD15WjMhAjby2H9USrtuo4J1SN8TISeIhB4kCE4R
+        kh6QcfCrZS3x+LeZ38eOq/VrDVnQHK9YeX4QtGNxVuHy+dA=
+X-Google-Smtp-Source: ABdhPJx1wt/UMqZCTZlu/2xSkZRo8Mx1FEeXPRuiPQ+Qfllb6LF0Am6D1LMwsDltoAwUKxoP3NKs1R5nxAhyRdDjX4E=
+X-Received: by 2002:a17:90b:3647:: with SMTP id nh7mr4797902pjb.228.1625847053099;
+ Fri, 09 Jul 2021 09:10:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YOdhhcjXEHUaMIFc@google.com>
+References: <CAHp75VfKyqy+vM0XkP9Yb+znGOTVT4zYCRY3A3nQ7C3WNUVN0g@mail.gmail.com>
+In-Reply-To: <CAHp75VfKyqy+vM0XkP9Yb+znGOTVT4zYCRY3A3nQ7C3WNUVN0g@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 9 Jul 2021 19:10:14 +0300
+Message-ID: <CAHp75VeL89xaP9xjnigvv7Hki20=b7drp5iZ+ZfhZke6WGWsRA@mail.gmail.com>
+Subject: Re: parallel panel display stopped working
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Lars Poeschel <poeschel@lemonage.de>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Geert Uytterhoeven <geert.uytterhoeven@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 08, 2021, David Matlack wrote:
-> On Thu, Jul 08, 2021 at 09:13:38PM +0100, David Edmondson wrote:
-> > On Thursday, 2021-07-08 at 18:38:18 UTC, David Matlack wrote:
-> > > On Thu, Jul 08, 2021 at 03:17:40PM +0100, David Edmondson wrote:
-> > >> I can't cite an example of where this has definitively led in a
-> > >> direction that helped solve a problem, but we do sometimes see emulation
-> > >> failures reported in situations where we are not able to reproduce the
-> > >> failures on demand and the existing information provided at the time of
-> > >> failure is either insufficient or suspect.
-> > >> 
-> > >> Given that, I'm left casting about for data that can be made available
-> > >> to assist in postmortem analysis of the failures.
-> > >
-> > > Understood, thanks for the context. My only concern would be that
-> > > userspace APIs are difficult to change once they exist.
-> > 
-> > Agreed.
-> > 
-> > > If it turns out knowing the exit reason does not help with debugging
-> > > emulation failures we'd still be stuck with exporting it on every
-> > > emulation failure.
+On Fri, Jul 9, 2021 at 5:40 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> Parallel (4 bits)  panel display stopped working.
 
-I can think of multiple cases where knowing why KVM emulated in the first place
-would be helpful, e.g. a failure on EPT misconfig (MMIO) exit could be a simple
-"drat, KVM doesn't handle SSE instructions", whereas a failure on a descriptor
-table exit (for UMIP emulation) would be a completely different mess.
+This part appears to be a configuration issue. So, we have only one
+left, i.e. oops on remove.
+
+-- 
+With Best Regards,
+Andy Shevchenko
