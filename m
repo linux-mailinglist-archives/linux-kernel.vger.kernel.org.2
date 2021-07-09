@@ -2,166 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A94523C26B5
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 17:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BF913C26B2
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 17:18:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232366AbhGIPU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 11:20:57 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:48424 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232345AbhGIPUv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 11:20:51 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 169FGpra032716;
-        Fri, 9 Jul 2021 15:18:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=otqpN61pViFGHMc2ANP/EZDomhNwidHWFEwCBXECaPs=;
- b=xr4GBFVdfMDdwtnPhatONZaOOkeGeXJrDaWuKq7GUr2xD5EcN/fYjALRP/8JQiB/Csph
- cTABRGgBGZgI7OF9Z/pf7oT4Eg1aiBNnoF220mLQk6kEiWuGXvapLHmtzIaPN20HDU+x
- Zpmmzdcxp3UooFd+APJuVAbLpvjgWZQOdew6Emgy/UCaH93ySZk7FY2wq4w6oqyRwbTa
- r2IGupwBuaY+gs4hlDi/rOeiy4Hooa9ZlvDORFpIVatJhPIEGULBdrqkZhANLUaDwq9M
- KFC9iFGMj7kVjluRz0SiUQQWTZGPF5uVRah7shGuIU0U+KQn38AhegZJKRnW3xQQ4StC WA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39pkn48ngr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 09 Jul 2021 15:18:04 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 169FGI9V114669;
-        Fri, 9 Jul 2021 15:18:03 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
-        by userp3030.oracle.com with ESMTP id 39jd1aajsm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 09 Jul 2021 15:18:03 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nBSPmMX8Q/KXWMXyvEoqeBqw8WMoiGJfy6LZlHqaKmEh2JRaF9xyjdCJpAPFAoQK/0V1HcWRfdAu98iOZ1S7lE7VAub6GPZ++kROzVlmi0BOq5Ez2YwmEewmvvjXJQYFr98HX/3HoyQ/w3ceB4cRUc6wTQFg8MZZ+9NIOPX692xU1kh2fKcAX7UKn6/UhPp+FAkfn8WmDVWIXOdMT0Wy9HzGWQzq8UoAbz9jftHndNqoiR1v98dC/aycBV/E8zWJkHGaDtNh7v6iJ3P3ZnK1DCUcVXWHuV6Nb+5yaCHlihQETstgw4A7V3NQs5tnVxFbs0AdUdj/W67kFKA9SY1RXQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=otqpN61pViFGHMc2ANP/EZDomhNwidHWFEwCBXECaPs=;
- b=ixSY8qOlCXjQ+55RKK2cNJRCN5FKuxPOZtaj2SY8wOhtNRrM/9AcaanIh73DsOXYFt6dJ/G+SAPLLW1mwzOKzAvy83p8kABhPdLOFyNwCAdqK8r6RW1Pf6bZWmavzEKAgDDKtQyFDlhGdTrjT7D9GXXAXLbRE2+pYHxDI+66kokYlk6zlYcAJfzdFF7meEAfcuuhD4yN1AmCE7YkFByZgKV7Ce4IWEtfHtSB0qdvsZ33uKI3TopoTfqFsmu2RCFb/TM6S+REm4ZstfquuCGXYWPNWq5tomcx8TPt7mgIsu/9TqXZF5jmWOhEYIu4I7701kHG/zgZdwIM9m+rnknVdA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=otqpN61pViFGHMc2ANP/EZDomhNwidHWFEwCBXECaPs=;
- b=PSca18f2tFoIAyZNkbCnYiwuLN5mivGbMn2tyAjQXqvAmp+Rsyj7xGozCA5qHAi0z98in/hg+1mGZvYhTQ+oaCGx7PdiENRki2VXupnZs8v81ync84jNc3mIALraGsMOT/BBC/PQ93rRJ18XLrKrKl7RhrzZSE+zM+QMcSi5Ml4=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB2966.namprd10.prod.outlook.com (2603:10b6:a03:8c::27)
- by SJ0PR10MB4525.namprd10.prod.outlook.com (2603:10b6:a03:2db::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20; Fri, 9 Jul
- 2021 15:18:01 +0000
-Received: from BYAPR10MB2966.namprd10.prod.outlook.com
- ([fe80::9478:368e:93b4:6b48]) by BYAPR10MB2966.namprd10.prod.outlook.com
- ([fe80::9478:368e:93b4:6b48%4]) with mapi id 15.20.4308.023; Fri, 9 Jul 2021
- 15:18:01 +0000
-Date:   Fri, 9 Jul 2021 11:17:56 -0400
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Hao Lee <haolee.swjtu@gmail.com>
-Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, tj@kernel.org
-Subject: Re: [Question] Do we need remote charging for cpu and cpuacct subsys?
-Message-ID: <20210709151756.u3su4vleiowd5tky@oracle.com>
-References: <60decdb6.1c69fb81.6130e.7642@mx.google.com>
- <20210702200742.wuhdg4dhpolher3t@oracle.com>
- <CA+PpKPmN2E5zCjP3mkurNA2GANtLCUmoPG+_4mUq3E8cxOhuhQ@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+PpKPmN2E5zCjP3mkurNA2GANtLCUmoPG+_4mUq3E8cxOhuhQ@mail.gmail.com>
-X-ClientProxiedBy: MN2PR20CA0054.namprd20.prod.outlook.com
- (2603:10b6:208:235::23) To BYAPR10MB2966.namprd10.prod.outlook.com
- (2603:10b6:a03:8c::27)
+        id S232339AbhGIPUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 11:20:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47588 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231976AbhGIPUr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 11:20:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 81FC061378;
+        Fri,  9 Jul 2021 15:18:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625843883;
+        bh=vMyLlBn5SDcWApgFaI0EJ9BsXgv7pPplGE4dXFe3yiM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q011Ury9ifT2AGKh1U5gd0k2DRWoKoMqgdf3+g67+z2ZrDqQaUSHOL6PBl3twoDGC
+         lut8O6wyjXF4r5EaUJuhLxOMQbC0RJdzoiu8bHUzu6OG+/FL8/OdQzjNygLIbY7fYg
+         XIhz9fddKNXF8O1UcaBu490ROLi7L2M0CUXFtMxoVw+691pP+aTwD0gjINBJchlt3j
+         JOWddMP2m80i+oL00IwdUaaI/H2iY1gISEEyhS+Df3M36VIEsfD0RoDzylmPhBQMnO
+         3vHtZVIQfQalrBdqJIyWt2C0MiOGeBFB/LRffM/KxjqHr+SQhMQWBRBNJRUefBqCW8
+         nFYhW91QuHuSw==
+Received: by pali.im (Postfix)
+        id 0F59F77D; Fri,  9 Jul 2021 17:18:00 +0200 (CEST)
+Date:   Fri, 9 Jul 2021 17:18:00 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Jonas =?utf-8?Q?Dre=C3=9Fler?= <verdre@v0yd.nl>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v2 2/2] mwifiex: pcie: add reset_d3cold quirk for Surface
+ gen4+ devices
+Message-ID: <20210709151800.7b2qqezlcicbgrqn@pali>
+References: <20210709145831.6123-1-verdre@v0yd.nl>
+ <20210709145831.6123-3-verdre@v0yd.nl>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from oracle.com (98.229.125.203) by MN2PR20CA0054.namprd20.prod.outlook.com (2603:10b6:208:235::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend Transport; Fri, 9 Jul 2021 15:18:00 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dec62b34-90bc-4a7e-80f9-08d942ecbdaf
-X-MS-TrafficTypeDiagnostic: SJ0PR10MB4525:
-X-Microsoft-Antispam-PRVS: <SJ0PR10MB45256F790D138B2C1A4C4446D9189@SJ0PR10MB4525.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lrMXLkenWrQQxdKAsQ2msJqiMIPPTzl7F+VMfMJqjiSuEZnSbbuq0ksaTanaZUAwvXDzbtcY3sGWlmPYlHTy061iveBB6YE0XFwKQfpCMry3xRI5DzWk3cECI0heNOIcNTIyD1GB1SClc0AtGIzQnKVQGmwjqh/skScWi569nI9CEGXGN61me1IzoRaDDbZG7pxYO1Nn0cRmtdRzlg97X1TN9D8YB/9rQve5eOc8SVX+sXkdbx4QH4N0VRoGR69OsiQyEfZjxYzGP57c3QKM2ONsx74cDdt0H/zbFdIAJ1hbT4izjA6xZ+3mGKeBPYGXWvgVefa5H4meBct+vwSml3jsvkK9Zv1j2UnPWVpwq2UAUj4hqsk5gklF/5pFm5JMOkBMbTZ8lyvx5U57tx0yOFN0ApVOWO3X47qHmm22u2KFFCQY4DmKy4/ix2dbA7eLvuJqCLvO31k65sdhFbYLtSlBqsjSNlSJEgFBNA90uwB5+OKqrODRNtihO3kmYSypoBv6j7XjOikXpED+JLEE107/1Q+U9y/nnTntvcSgq+6F8ncCtb5YBNq1akzOt3MnvPQjWa6TJ5E6RDNRoO781Bfty4zTpJXSuRXDOejuVbnr/8yBlkn6+LME9cJWlwkFoJohcRmD2vOQdC11sUdAdwLXZJvpzDij9keg3bGUIUdHr85E5OiLfYnbA/B1BEQN
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2966.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(346002)(396003)(136003)(376002)(366004)(478600001)(55016002)(8676002)(4326008)(66556008)(8886007)(2616005)(26005)(5660300002)(66946007)(38100700002)(52116002)(8936002)(1076003)(38350700002)(6916009)(6666004)(66476007)(316002)(7696005)(83380400001)(186003)(53546011)(2906002)(86362001)(36756003)(956004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4tAumTEjNyUaeXfmHdj87rrlsMQQHtdZT95tDnKoIwpR7xrOCaoFqg2SiWZj?=
- =?us-ascii?Q?pk+XCRj9bmDA29jVqqstqF0JXkgnjVrq+Rsciumw6nL2OAgjPq2A1AgUdtod?=
- =?us-ascii?Q?J3YP3G0WFZHCxGEaPcXP1l9vd4znbk/vUKOYjhXR6MNHLcYioIGL8VAIWQpj?=
- =?us-ascii?Q?b8c78zaVLzX+qanaTedjcVBj8BGXLCF0NVSx/sIfCQBgTaiqjBGSlun6HaS4?=
- =?us-ascii?Q?JnywBOga2E9WIRjJW+8uVjqrHXMxzfJ8PMWmFGqyOPNk4TX1Ne1o7a118Z5E?=
- =?us-ascii?Q?m0N62qzJ1ayLGFWhIfINus8QyvqLUUCRW3JMF/0mCWhsw/YnXe+ovj3VMpQh?=
- =?us-ascii?Q?5fq5sQrlgmje64wI7lba1FUA90ABXgUnLA9fXDIaK6ATKuifI2RG5c8jctrt?=
- =?us-ascii?Q?8jK1zyh9Cs66hYheUG1nwnlr3widT8nJWDX/7+urB5XKu3KBjl5wqAhgfuPC?=
- =?us-ascii?Q?oHU6xFKnPig4X1pccVYSME/HyB//hLco+P5nPf5HvDfpLxejiJTDgVO2XELp?=
- =?us-ascii?Q?AMTXO0OLhL9P24CDd66LOaxzhZqQjIvsEM40z30YMGfOkyd5plHz7p4VVFE4?=
- =?us-ascii?Q?Lj5rZMOM6i6pV/Z45qaz+KL7XKkkY+Pt5V6Z/LqiL5s0oOYjhyuBOcxFBEip?=
- =?us-ascii?Q?dNK99iAoBjUU9z1M+zddAqL07A/mtS4SXAUfW0kQgl6TP7co88vGoSQdR0QE?=
- =?us-ascii?Q?Jxn2771S6PXFAvevkx5tQ34YcwU5T+VhFIXI1ixD6Q4dSByFLzYlpMPgXpF+?=
- =?us-ascii?Q?HG3sYAnNUBzXC2QR5Eg7F6u7HJ1w+HPlN1EFPobyo3XYgcZEjrEZoUvsK7v0?=
- =?us-ascii?Q?1/cJ0QuYn09OUa4I9sa+DTPLyqPk6gF5RIvxxYhdDOxOTRjTFFrdGownNGCA?=
- =?us-ascii?Q?pPkYbYcq/Tkow+nyqo3fAHY82SeHVoZTv3n+BEcoSBPhBS+pS2xI/onan23R?=
- =?us-ascii?Q?himVws+/MUacFy4VepUcPleBmGRG5YkRnVqWWTSUOCuCdJLok+K75at1zDNg?=
- =?us-ascii?Q?h9Ur1wkQdm0UOC26fViSlKmao9WImPocWr03otzNmxw/Z5NCVoq9QoHWwoFW?=
- =?us-ascii?Q?ztzsyWZFeSMHJTi7Su5Yo3Vfk5eHeVQvObeUM/y6VJXl0cY1fSKdL2Dl4zVP?=
- =?us-ascii?Q?hIvA7NDJSrXvXnyrMQ70qT8qaTHOofp/WETMkTva8COet5UalqzPmW/ws3Zx?=
- =?us-ascii?Q?iCOCR1T4LlbXvqx7UAzX1gMRTDXgS7lTdAoipMtmX6PT2qD/bskxYOvoEK8Z?=
- =?us-ascii?Q?kBgbBmfsIIBp6OBjriopyZ8bca083mFvhYhRMspbU7lFPJWGUxNOYzKEzZDs?=
- =?us-ascii?Q?Et8c99WC6UdT1K3H9NQ3GwiO?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dec62b34-90bc-4a7e-80f9-08d942ecbdaf
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2966.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jul 2021 15:18:01.3089
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DAtNoZeOQsaFLC4UabsS5SC0HWW7vBdDCuflt+7NZW1nKqp85hVleGmJVT7SSFru/8FZdJRyS+8z+WeXfK+/2q1Gz6yTtLGGV3ZKY6l3Ztg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4525
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10039 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0
- suspectscore=0 phishscore=0 mlxscore=0 bulkscore=0 adultscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107090077
-X-Proofpoint-GUID: wGsLkvzWOdzqyuv4Qm74kekh7t016pve
-X-Proofpoint-ORIG-GUID: wGsLkvzWOdzqyuv4Qm74kekh7t016pve
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210709145831.6123-3-verdre@v0yd.nl>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-[only replying now b/c I was out most of this week]
-
-On Sun, Jul 04, 2021 at 12:18:22AM +0800, Hao Lee wrote:
-> On Sat, Jul 3, 2021 at 4:07 AM Daniel Jordan <daniel.m.jordan@oracle.com> wrote:
-> > So naturally, I'm curious about your use case and how it may be
-> > different from these others. What kworkers would you like to account?
+On Friday 09 July 2021 16:58:31 Jonas Dreßler wrote:
+> From: Tsuchiya Yuto <kitakar@gmail.com>
 > 
-> Thanks. We use a workqueue to perform asynchronous reclaim for cgroups.
-> The kworker may consume lots of CPU cycles if the cgroup memory pressure
-> is extremely high, so we want to charge the cpu usage to the related
-> cgroup for which the kworker works. Otherwise, the reclaim kworker will
-> steal cpu time from the system level, which breaks the resource isolation.
-
-Ok, that helps.
-
-> I also have a question here. Are the back-charging and remote charging
-> the same thing?
-
-Basically yes.
-
-> > The only one I'm aware of
-> > that's like that is net rx, where the work to process packets has to
-> > start before their ultimate destination, and therefore cgroup, is known.
+> To reset mwifiex on Surface gen4+ (Pro 4 or later gen) devices, it
+> seems that putting the wifi device into D3cold is required according
+> to errata.inf file on Windows installation (Windows/INF/errata.inf).
 > 
-> Sorry. Is this a typo?  It seems the word "known" should be "unknown"...
+> This patch adds a function that performs power-cycle (put into D3cold
+> then D0) and call the function at the end of reset_prepare().
+> 
+> Note: Need to also reset the parent device (bridge) of wifi on SB1;
+> it might be because the bridge of wifi always reports it's in D3hot.
+> When I tried to reset only the wifi device (not touching parent), it gave
+> the following error and the reset failed:
+> 
+>     acpi device:4b: Cannot transition to power state D0 for parent in D3hot
+>     mwifiex_pcie 0000:03:00.0: can't change power state from D3cold to D0 (config space inaccessible)
+> 
+> Signed-off-by: Tsuchiya Yuto <kitakar@gmail.com>
+> Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
+> ---
+>  drivers/net/wireless/marvell/mwifiex/pcie.c   |   7 +
+>  .../wireless/marvell/mwifiex/pcie_quirks.c    | 123 ++++++++++++++++++
+>  .../wireless/marvell/mwifiex/pcie_quirks.h    |   3 +
+>  3 files changed, 133 insertions(+)
+> 
+> diff --git a/drivers/net/wireless/marvell/mwifiex/pcie.c b/drivers/net/wireless/marvell/mwifiex/pcie.c
+> index a530832c9421..c6ccce426b49 100644
+> --- a/drivers/net/wireless/marvell/mwifiex/pcie.c
+> +++ b/drivers/net/wireless/marvell/mwifiex/pcie.c
+> @@ -528,6 +528,13 @@ static void mwifiex_pcie_reset_prepare(struct pci_dev *pdev)
+>  	mwifiex_shutdown_sw(adapter);
+>  	clear_bit(MWIFIEX_IFACE_WORK_DEVICE_DUMP, &card->work_flags);
+>  	clear_bit(MWIFIEX_IFACE_WORK_CARD_RESET, &card->work_flags);
+> +
+> +	/* On MS Surface gen4+ devices FLR isn't effective to recover from
+> +	 * hangups, so we power-cycle the card instead.
+> +	 */
+> +	if (card->quirks & QUIRK_FW_RST_D3COLD)
+> +		mwifiex_pcie_reset_d3cold_quirk(pdev);
+> +
 
-What I'm saying is, the work to process packets starts when the cgroup
-is unknown.
+Hello! Now I'm thinking loudly about this patch. Why this kind of reset
+is needed only for Surface devices? AFAIK these 88W8897 chips are same
+in all cards. Chip itself implements PCIe interface (and also SDIO) so
+for me looks very strange if this 88W8897 PCIe device needs DMI specific
+quirks. I cannot believe that Microsoft got some special version of
+these chips from Marvell which are different than version uses on cards
+in mPCIe form factor.
+
+And now when I'm reading comment below about PCIe bridge to which is
+this 88W8897 PCIe chip connected, is not this rather an issue in that
+PCIe bridge (instead of mwifiex/88W8897) or in ACPI firmware which
+controls this bridge?
+
+Or are having other people same issues on mPCIe form factor wifi cards
+with 88W8897 chips and then this quirk should not DMI dependent?
+
+Note that I'm seeing issues with reset and other things also on chip
+88W8997 when is connected to system via SDIO. These chips have both PCIe
+and SDIO buses, it just depends which pins are used.
+
+>  	mwifiex_dbg(adapter, INFO, "%s, successful\n", __func__);
+>  
+>  	card->pci_reset_ongoing = true;
+> diff --git a/drivers/net/wireless/marvell/mwifiex/pcie_quirks.c b/drivers/net/wireless/marvell/mwifiex/pcie_quirks.c
+> index 4064f99b36ba..b5f214fc1212 100644
+> --- a/drivers/net/wireless/marvell/mwifiex/pcie_quirks.c
+> +++ b/drivers/net/wireless/marvell/mwifiex/pcie_quirks.c
+> @@ -15,6 +15,72 @@
+>  
+>  /* quirk table based on DMI matching */
+>  static const struct dmi_system_id mwifiex_quirk_table[] = {
+> +	{
+> +		.ident = "Surface Pro 4",
+> +		.matches = {
+> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
+> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Pro 4"),
+> +		},
+> +		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
+> +	},
+> +	{
+> +		.ident = "Surface Pro 5",
+> +		.matches = {
+> +			/* match for SKU here due to generic product name "Surface Pro" */
+> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
+> +			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "Surface_Pro_1796"),
+> +		},
+> +		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
+> +	},
+> +	{
+> +		.ident = "Surface Pro 5 (LTE)",
+> +		.matches = {
+> +			/* match for SKU here due to generic product name "Surface Pro" */
+> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
+> +			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "Surface_Pro_1807"),
+> +		},
+> +		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
+> +	},
+> +	{
+> +		.ident = "Surface Pro 6",
+> +		.matches = {
+> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
+> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Pro 6"),
+> +		},
+> +		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
+> +	},
+> +	{
+> +		.ident = "Surface Book 1",
+> +		.matches = {
+> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
+> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Book"),
+> +		},
+> +		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
+> +	},
+> +	{
+> +		.ident = "Surface Book 2",
+> +		.matches = {
+> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
+> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Book 2"),
+> +		},
+> +		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
+> +	},
+> +	{
+> +		.ident = "Surface Laptop 1",
+> +		.matches = {
+> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
+> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Laptop"),
+> +		},
+> +		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
+> +	},
+> +	{
+> +		.ident = "Surface Laptop 2",
+> +		.matches = {
+> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
+> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Laptop 2"),
+> +		},
+> +		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
+> +	},
+>  	{}
+>  };
+>  
+> @@ -29,4 +95,61 @@ void mwifiex_initialize_quirks(struct pcie_service_card *card)
+>  
+>  	if (!card->quirks)
+>  		dev_info(&pdev->dev, "no quirks enabled\n");
+> +	if (card->quirks & QUIRK_FW_RST_D3COLD)
+> +		dev_info(&pdev->dev, "quirk reset_d3cold enabled\n");
+> +}
+> +
+> +static void mwifiex_pcie_set_power_d3cold(struct pci_dev *pdev)
+> +{
+> +	dev_info(&pdev->dev, "putting into D3cold...\n");
+> +
+> +	pci_save_state(pdev);
+> +	if (pci_is_enabled(pdev))
+> +		pci_disable_device(pdev);
+> +	pci_set_power_state(pdev, PCI_D3cold);
+> +}
+> +
+> +static int mwifiex_pcie_set_power_d0(struct pci_dev *pdev)
+> +{
+> +	int ret;
+> +
+> +	dev_info(&pdev->dev, "putting into D0...\n");
+> +
+> +	pci_set_power_state(pdev, PCI_D0);
+> +	ret = pci_enable_device(pdev);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "pci_enable_device failed\n");
+> +		return ret;
+> +	}
+> +	pci_restore_state(pdev);
+> +
+> +	return 0;
+> +}
+> +
+> +int mwifiex_pcie_reset_d3cold_quirk(struct pci_dev *pdev)
+> +{
+> +	struct pci_dev *parent_pdev = pci_upstream_bridge(pdev);
+> +	int ret;
+> +
+> +	/* Power-cycle (put into D3cold then D0) */
+> +	dev_info(&pdev->dev, "Using reset_d3cold quirk to perform FW reset\n");
+> +
+> +	/* We need to perform power-cycle also for bridge of wifi because
+> +	 * on some devices (e.g. Surface Book 1), the OS for some reasons
+> +	 * can't know the real power state of the bridge.
+> +	 * When tried to power-cycle only wifi, the reset failed with the
+> +	 * following dmesg log:
+> +	 * "Cannot transition to power state D0 for parent in D3hot".
+> +	 */
+> +	mwifiex_pcie_set_power_d3cold(pdev);
+> +	mwifiex_pcie_set_power_d3cold(parent_pdev);
+> +
+> +	ret = mwifiex_pcie_set_power_d0(parent_pdev);
+> +	if (ret)
+> +		return ret;
+> +	ret = mwifiex_pcie_set_power_d0(pdev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return 0;
+>  }
+> diff --git a/drivers/net/wireless/marvell/mwifiex/pcie_quirks.h b/drivers/net/wireless/marvell/mwifiex/pcie_quirks.h
+> index 7a1fe3b3a61a..549093067813 100644
+> --- a/drivers/net/wireless/marvell/mwifiex/pcie_quirks.h
+> +++ b/drivers/net/wireless/marvell/mwifiex/pcie_quirks.h
+> @@ -5,4 +5,7 @@
+>  
+>  #include "pcie.h"
+>  
+> +#define QUIRK_FW_RST_D3COLD	BIT(0)
+> +
+>  void mwifiex_initialize_quirks(struct pcie_service_card *card);
+> +int mwifiex_pcie_reset_d3cold_quirk(struct pci_dev *pdev);
+> -- 
+> 2.31.1
+> 
