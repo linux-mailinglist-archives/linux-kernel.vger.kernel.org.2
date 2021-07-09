@@ -2,82 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B550A3C2330
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 13:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF0F3C2335
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 13:58:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbhGIL5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 07:57:42 -0400
-Received: from mail-m121145.qiye.163.com ([115.236.121.145]:24056 "EHLO
-        mail-m121145.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230404AbhGIL5l (ORCPT
+        id S231156AbhGIMB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 08:01:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29985 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230209AbhGIMBY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 07:57:41 -0400
-DKIM-Signature: a=rsa-sha256;
-        b=TO35Znobx+zrBkl0UMTUikbg7mG+7QaDHdbOnNa+uUYJS/BP70jyBrSmJcWi/TuvP9p+927BzUUZ3H8PxCtGBBKWqfBfbPkczqKH26bdvXAmtB0+iQOY8ErjDdHkb6514hZWDWch9Doi0JJUahc48EBfVoBkzi69IsUVhj1LxV0=;
-        s=default; c=relaxed/relaxed; d=vivo.com; v=1;
-        bh=T4xMGc7me59KwIsmnVHeeSdisgp1gMZdDkVw03/tF6k=;
-        h=date:mime-version:subject:message-id:from;
-Received: from ubuntu.localdomain (unknown [36.152.145.182])
-        by mail-m121145.qiye.163.com (Hmail) with ESMTPA id 889EF800311;
-        Fri,  9 Jul 2021 19:54:55 +0800 (CST)
-From:   zhouchuangao <zhouchuangao@vivo.com>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     zhouchuangao <zhouchuangao@vivo.com>
-Subject: [PATCH v2] kernel/sched/core: Print the time when the process entered the D state
-Date:   Fri,  9 Jul 2021 04:54:49 -0700
-Message-Id: <1625831689-122629-1-git-send-email-zhouchuangao@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGUseGVZPT08YQktDGU4eTk9VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hOSFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mwg6FDo4HT8DLhIeHjcjIk4f
-        KxgwCy5VSlVKTUlOQ0hKTUJNSk1LVTMWGhIXVQETFA4YEw4aFRwaFDsNEg0UVRgUFkVZV1kSC1lB
-        WUhNVUpOSVVKT05VSkNJWVdZCAFZQUlOS0I3Bg++
-X-HM-Tid: 0a7a8b1ee5efb03akuuu889ef800311
+        Fri, 9 Jul 2021 08:01:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625831920;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FuFxCjGxNh1s//8/+rvZWuY1XbBWxr4LXzkXcXPHOes=;
+        b=aRcQvZpdVKV+UY7Dnc/6LW3X1zWkUtBtmIoxMzhySfkju8a5iew36H1bFUdgU2nih+TQA3
+        uvfFiTb01SipvqUZml+ioiUhkdwUzKVasIOKsEIvLzZXePck8PMn1gQxt29ykDZrtH8xix
+        W1Jx/Xptkjf1YbAvwAoOwvnQBLBQ0gE=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-22-CBzEFJ6VP_W4BdCLfiHGwQ-1; Fri, 09 Jul 2021 07:58:39 -0400
+X-MC-Unique: CBzEFJ6VP_W4BdCLfiHGwQ-1
+Received: by mail-wm1-f69.google.com with SMTP id p3-20020a05600c3583b02901f55d71e34aso3932651wmq.4
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 04:58:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=FuFxCjGxNh1s//8/+rvZWuY1XbBWxr4LXzkXcXPHOes=;
+        b=CtvWrjCO6HESvCm98XwexD8CywK71hdzKMrOYAzFjmm7yjQdaopealx+f22udk4DXe
+         6+ExDDsK7yogM86thqyuhkoDP92yQMJv1u61twIZmgk14W6RPhYDKSGua1PZm1qoRBsF
+         foHn4NoBcdG5dmB28ToqcQJdpVYrH7HZ9kiYJotkbhU9L4GahA/pr996SIicR/NQ375C
+         xvXSCYzoU0AauPHS2WxrrRULg2eOlxt49poYWub6be6CQ/CUuYMnhX3EjbvHcP3URQPK
+         1BGcFOE0bPCh5KrRxaLIkeSczsi/8pMG0BMyiCOSxkUqzSt89S0C7ynsx/OJ3vlJeZYR
+         Ec4w==
+X-Gm-Message-State: AOAM5325l3DcFpisckyvB3AOTQqjRQ1NmeL0uFJN7GxSNZSsq8TLqHcN
+        QkUegXiGDYqi48mQ8pAg+9zHtBK2dZ1ASALMVcUsmuNeHHrRHfR6qkupDmrYl30FMFA9HoxO2Fw
+        feiqcUe4SyKfd/USF40gc5DFT
+X-Received: by 2002:adf:f68c:: with SMTP id v12mr3128762wrp.360.1625831918049;
+        Fri, 09 Jul 2021 04:58:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyim5N1USaxYaocYdwzdDVk3Pi1SzoUm517PhIHt2LlW5hZerMhCXi5JonII8cQ1eauGxo3+A==
+X-Received: by 2002:adf:f68c:: with SMTP id v12mr3128752wrp.360.1625831917915;
+        Fri, 09 Jul 2021 04:58:37 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23a45.dip0.t-ipconnect.de. [79.242.58.69])
+        by smtp.gmail.com with ESMTPSA id s9sm5066131wrn.87.2021.07.09.04.58.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Jul 2021 04:58:37 -0700 (PDT)
+Subject: Re: [PATCH v1] binfmt: remove support for em86 (alpha only)
+To:     Matt Turner <mattst88@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-alpha <linux-alpha@vger.kernel.org>
+References: <20210420175631.46923-1-david@redhat.com>
+ <CAEdQ38FOJdZxB7OGd569Lkn+RGPyjoukriwDfBEf2QKHvYguXQ@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <8d3e3257-860a-6766-f598-0d94582db523@redhat.com>
+Date:   Fri, 9 Jul 2021 13:58:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <CAEdQ38FOJdZxB7OGd569Lkn+RGPyjoukriwDfBEf2QKHvYguXQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sometimes we need to trigger /proc/sysrq-trigger to view the information
-of the D state process in the system.
-e.g:
-echo w > /proc/sysrq-trigger
+On 29.04.21 04:36, Matt Turner wrote:
+> This seems very reasonable, and I'll merge it through my tree unless
+> someone beats me to it.
+> 
 
-Here we print the scheduling time of the process, which is convenient
-for us to judge the state of the system and for debugging.
+Hi Matt,
 
-Signed-off-by: zhouchuangao <zhouchuangao@vivo.com>
----
- kernel/sched/core.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+looks like this patch hasn't found its way upstream yet.
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index cf16f8f..ab422ab 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -8154,10 +8154,12 @@ void sched_show_task(struct task_struct *p)
- 	if (pid_alive(p))
- 		ppid = task_pid_nr(rcu_dereference(p->real_parent));
- 	rcu_read_unlock();
--	pr_cont(" stack:%5lu pid:%5d ppid:%6d flags:0x%08lx\n",
-+	pr_cont(" stack:%5lu pid:%5d ppid:%6d flags:0x%08lx",
- 		free, task_pid_nr(p), ppid,
- 		(unsigned long)task_thread_info(p)->flags);
--
-+#ifdef CONFIG_SCHED_INFO
-+	pr_cont(" sched:%llu\n", p->sched_info.last_arrival);
-+#endif
- 	print_worker_info(KERN_INFO, p);
- 	print_stop_info(KERN_INFO, p);
- 	show_stack(p, NULL, KERN_INFO);
 -- 
-2.7.4
+Thanks,
+
+David / dhildenb
 
