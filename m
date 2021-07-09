@@ -2,137 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33A963C2435
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 588903C247D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:20:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231950AbhGINVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 09:21:33 -0400
-Received: from mga18.intel.com ([134.134.136.126]:25063 "EHLO mga18.intel.com"
+        id S232442AbhGINXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 09:23:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231925AbhGINVc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 09:21:32 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10039"; a="196974898"
-X-IronPort-AV: E=Sophos;i="5.84,226,1620716400"; 
-   d="scan'208";a="196974898"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2021 06:18:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,226,1620716400"; 
-   d="scan'208";a="628856893"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
-  by orsmga005.jf.intel.com with ESMTP; 09 Jul 2021 06:18:44 -0700
-Subject: Re: [PATCH V2 1/2] driver core: Add ability to delete device links of
- unregistered devices
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
+        id S232413AbhGINXH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 09:23:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3080F608FE;
+        Fri,  9 Jul 2021 13:20:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1625836823;
+        bh=O0M0pxLYjP0vqL1M7/m3fHuBafy0fs0uj3AAK7Rj/Mc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WI26g4DC+98gHLFcDFoaBxNzomSREJNV3LU4MEolp8a44YYUp5RgXQqy2n5aCQ0bz
+         6EHHsQLlPt7yX7gHa3b++m/5k1I26SDh5jzunyaoPpLzINXi8UVdVXdexGUQT0uxqE
+         V3BzRPTgpIOMNRFpZppHhqSSRLwD9CA2CYsDtrS8=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "open list:TARGET SUBSYSTEM" <linux-scsi@vger.kernel.org>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210709064341.6206-1-adrian.hunter@intel.com>
- <20210709064341.6206-2-adrian.hunter@intel.com>
- <CAJZ5v0hZCUruTc9U64Kx0EO8iky34AR+=QeNcSafQEvcGWapLw@mail.gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <f538dda5-6c55-0930-b258-85a3245f06a8@intel.com>
-Date:   Fri, 9 Jul 2021 16:18:57 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 5.4 0/4] 5.4.131-rc1 review
+Date:   Fri,  9 Jul 2021 15:20:14 +0200
+Message-Id: <20210709131531.277334979@linuxfoundation.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0hZCUruTc9U64Kx0EO8iky34AR+=QeNcSafQEvcGWapLw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.131-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.4.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.4.131-rc1
+X-KernelTest-Deadline: 2021-07-11T13:15+00:00
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/07/21 2:28 pm, Rafael J. Wysocki wrote:
-> On Fri, Jul 9, 2021 at 8:43 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
->>
->> Managed device links are deleted by device_del(). However it is possible to
->> add a device link to a consumer before device_add(), and then discover an
->> error prevents the device from being used. In that case normally references
->> to the device would be dropped and the device would be deleted. However the
->> device link holds a reference to the device, so the device link and device
->> remain indefinitely.
->>
->> Amend device link removal to accept removal of a link with an
->> unregistered consumer device.
->>
->> To make that work nicely, the devlink_remove_symlinks() function must be
->> amended to cope with the absence of the consumer's sysfs presence,
->> otherwise sysfs_remove_link() will generate a warning.
->>
->> Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->> Fixes: b294ff3e34490 ("scsi: ufs: core: Enable power management for wlun")
->> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
->> ---
->>  drivers/base/core.c | 11 ++++++++---
->>  1 file changed, 8 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/base/core.c b/drivers/base/core.c
->> index ea5b85354526..24bacdb315c6 100644
->> --- a/drivers/base/core.c
->> +++ b/drivers/base/core.c
->> @@ -562,7 +562,8 @@ static void devlink_remove_symlinks(struct device *dev,
->>         struct device *con = link->consumer;
->>         char *buf;
->>
->> -       sysfs_remove_link(&link->link_dev.kobj, "consumer");
->> +       if (device_is_registered(con))
->> +               sysfs_remove_link(&link->link_dev.kobj, "consumer");
-> 
-> I think that this is needed regardless of the changes in
-> device_link_put_kref(), because if somebody decides to delete a
-> stateless device link before registering the consumer device,
-> sysfs_remove_link() will still complain, won't it?
+This is the start of the stable review cycle for the 5.4.131 release.
+There are 4 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-I would think so.
+Responses should be made by Sun, 11 Jul 2021 13:14:09 +0000.
+Anything received after that time might be too late.
 
-> 
->>         sysfs_remove_link(&link->link_dev.kobj, "supplier");
->>
->>         len = max(strlen(dev_bus_name(sup)) + strlen(dev_name(sup)),
->> @@ -575,8 +576,10 @@ static void devlink_remove_symlinks(struct device *dev,
->>                 return;
->>         }
->>
->> -       snprintf(buf, len, "supplier:%s:%s", dev_bus_name(sup), dev_name(sup));
->> -       sysfs_remove_link(&con->kobj, buf);
->> +       if (device_is_registered(con)) {
->> +               snprintf(buf, len, "supplier:%s:%s", dev_bus_name(sup), dev_name(sup));
->> +               sysfs_remove_link(&con->kobj, buf);
->> +       }
-> 
-> And here too, if I'm not mistaken.
-> 
-> So in that case it would be better to put the above changes into a
-> separate patch and add a Fixes tag to it.
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.131-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+and the diffstat can be found below.
 
-Yes, that makes sense.  I'll send a V3
+thanks,
 
-> 
->>         snprintf(buf, len, "consumer:%s:%s", dev_bus_name(con), dev_name(con));
->>         sysfs_remove_link(&sup->kobj, buf);
->>         kfree(buf);
->> @@ -885,6 +888,8 @@ static void device_link_put_kref(struct device_link *link)
->>  {
->>         if (link->flags & DL_FLAG_STATELESS)
->>                 kref_put(&link->kref, __device_link_del);
->> +       else if (!device_is_registered(link->consumer))
->> +               __device_link_del(&link->kref);
->>         else
->>                 WARN(1, "Unable to drop a managed device link reference\n");
->>  }
->> --
->> 2.17.1
->>
+greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 5.4.131-rc1
+
+Juergen Gross <jgross@suse.com>
+    xen/events: reset active flag for lateeoi events later
+
+Alper Gun <alpergun@google.com>
+    KVM: SVM: Call SEV Guest Decommission if ASID binding fails
+
+Heiko Carstens <hca@linux.ibm.com>
+    s390/stack: fix possible register corruption with stack switch helper
+
+David Rientjes <rientjes@google.com>
+    KVM: SVM: Periodically schedule when unregistering regions on destroy
+
+
+-------------
+
+Diffstat:
+
+ Makefile                           |  4 ++--
+ arch/s390/include/asm/stacktrace.h | 18 +++++++++++-------
+ arch/x86/kvm/svm.c                 | 33 ++++++++++++++++++++++-----------
+ drivers/xen/events/events_base.c   | 23 +++++++++++++++++++----
+ 4 files changed, 54 insertions(+), 24 deletions(-)
+
 
