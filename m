@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A7D3C2894
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E78D73C2897
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbhGIRoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 13:44:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41206 "EHLO mail.kernel.org"
+        id S230123AbhGIRoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 13:44:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229491AbhGIRoS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 13:44:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 69111613C3;
-        Fri,  9 Jul 2021 17:41:34 +0000 (UTC)
+        id S229990AbhGIRoT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 13:44:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 0B37E61355;
+        Fri,  9 Jul 2021 17:41:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625852494;
-        bh=s7NHSmEvVLDK8ELKiralJ+3di6Ye5BtwUViSqtRFX9E=;
+        s=k20201202; t=1625852496;
+        bh=HMqOvaYLTou3mTCIRv6S+zTU+I/qP7tcTRfW1HQbnug=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=GUTyEm8xPp6iORWjK6uruak4u9nf4kfLoAsM4KWDhlw+xGDGwO95Jw11ZqjDwpyva
-         Ypj8QRLqIOXIYe4DfaSdM7ZCkYv4W1RWANvEHZZL/Avim5HWi0ZiNvTVnmzGmrwSjN
-         4UKPPsnDq7hbJNDASy8dBK9kYGL2RYAOK3frgsrHl4o/JNQ+YDRa9vq0lW5lIaw5FN
-         A3JKpCyhR8D65nYZBaSIX/zO5v/sL5eWzGJbxX6o3FI9MmHqD+uWBhuHCsPc+5y4PR
-         +IgWN1MGNzCNvBLUiVbnAJH24DijZPnjVTdObtSXyDPNZ5g05deuJkexC6n1unsDsy
-         Y+/xILoq/hz6A==
+        b=YcyYhJUKApQrmVJ0k3w8mA/WU9bS8suQYsJOwHRrGCUaR9KJd70LOQydOm/4jzK4S
+         F8RI3O/6VR3k7+oKSzNu9wYIlkXidlrtgMrMgBsj44mZBpd03FmT1i0oh2KvF8vvGO
+         FYCwV8HOe7MfGh4GP1puAeVqLEDhF0NhxAZ6xyHnpcitEoz58svr3eN9ng2aHrrLdW
+         JfGXfVNOjf7hJKUeKyH+Xf0CvVddNOAjWn3FhzZfqidPKPeqrF8UhT5dIyuG1a2BwQ
+         yGuX0x8LI1F/cxbibmZE+7ylYfqchtKHTjg3GU7xTsk4bc3b6syZ2DNfw4RIQCfCSO
+         QRK9EWuE+foCw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5866A609F6;
-        Fri,  9 Jul 2021 17:41:34 +0000 (UTC)
-Subject: Re: [GIT PULL] UBIFS changes for 5.14
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 013B5609F6;
+        Fri,  9 Jul 2021 17:41:36 +0000 (UTC)
+Subject: Re: [GIT PULL] Ceph updates for 5.14-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <245242026.4934.1625778600867.JavaMail.zimbra@nod.at>
-References: <245242026.4934.1625778600867.JavaMail.zimbra@nod.at>
-X-PR-Tracked-List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
-X-PR-Tracked-Message-Id: <245242026.4934.1625778600867.JavaMail.zimbra@nod.at>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-5.14-rc1
-X-PR-Tracked-Commit-Id: a801fcfeef96702fa3f9b22ad56c5eb1989d9221
+In-Reply-To: <20210708195458.14317-1-idryomov@gmail.com>
+References: <20210708195458.14317-1-idryomov@gmail.com>
+X-PR-Tracked-List-Id: <ceph-devel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210708195458.14317-1-idryomov@gmail.com>
+X-PR-Tracked-Remote: https://github.com/ceph/ceph-client.git tags/ceph-for-5.14-rc1
+X-PR-Tracked-Commit-Id: 4c18347238ab5a4ee0e71ca765460d84c75a26b5
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 7a400bf28334fc7734639db3566394e1fc80670c
-Message-Id: <162585249429.25269.16275890531912140965.pr-tracker-bot@kernel.org>
-Date:   Fri, 09 Jul 2021 17:41:34 +0000
-To:     Richard Weinberger <richard@nod.at>
-Cc:     torvalds <torvalds@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>
+X-PR-Merge-Commit-Id: 47a7ce62889a52841bcc8cec98dd3bf45af3b4f0
+Message-Id: <162585249599.25269.4950112226626666845.pr-tracker-bot@kernel.org>
+Date:   Fri, 09 Jul 2021 17:41:35 +0000
+To:     Ilya Dryomov <idryomov@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 8 Jul 2021 23:10:00 +0200 (CEST):
+The pull request you sent on Thu,  8 Jul 2021 21:54:58 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-5.14-rc1
+> https://github.com/ceph/ceph-client.git tags/ceph-for-5.14-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/7a400bf28334fc7734639db3566394e1fc80670c
+https://git.kernel.org/torvalds/c/47a7ce62889a52841bcc8cec98dd3bf45af3b4f0
 
 Thank you!
 
