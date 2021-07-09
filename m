@@ -2,77 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD5603C28C8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF45E3C28CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229606AbhGIR70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 13:59:26 -0400
-Received: from vern.gendns.com ([98.142.107.122]:41026 "EHLO vern.gendns.com"
+        id S229841AbhGISAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 14:00:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229459AbhGIR7Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 13:59:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=nr+ybean0GYJB/FyhUT9xAqfrMJWszlIeTXTMgqs5Dc=; b=a75vxDYeO3We3ly4cfZS1ufdEm
-        BlS3Ccue4Ng+uimuFb4XfgEXdH1bnw22GU1M313Mf3Q2MmlmxSw5wV4qX9VExHHbzwJ5arzVBpXvp
-        fY/2v5sJdZ0BDGdC+dlR3yL1wsIpYr9OeUTQNTdZCBrP9/ry5v5dwdxzJ+jry/z6vYbEP3nbJwCT2
-        fkHo3FRr+Y2fOc4tUSYzDqinER8++H4eKMzjBJi/eQgEguDCFhuONx13FyrRA/I8is4Y7Asov94Y7
-        O7DdXXdqdd53E4JumqAJ2J2fxeA9mO4xu/WmogooVxa7kMCD5g1d1VNyQeMRlu5+M6adNTnOEeNVo
-        wshnMKKw==;
-Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:52256 helo=[192.168.0.134])
-        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <david@lechnology.com>)
-        id 1m1ujh-00BKQG-CM; Fri, 09 Jul 2021 13:56:38 -0400
-Subject: Re: [PATCH v12 08/17] docs: counter: Update to reflect sysfs
- internalization
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>, jic23@kernel.org
-Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
-        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        o.rempel@pengutronix.de, jarkko.nikula@linux.intel.com
-References: <cover.1625471640.git.vilhelm.gray@gmail.com>
- <3e0a3f7a32bba0f56f5830ff1548ef417e63880e.1625471640.git.vilhelm.gray@gmail.com>
-From:   David Lechner <david@lechnology.com>
-Message-ID: <dee9b119-1e45-2c82-2a1d-0979244fb01f@lechnology.com>
-Date:   Fri, 9 Jul 2021 12:56:34 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229459AbhGISAK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 14:00:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28C1A613C9;
+        Fri,  9 Jul 2021 17:57:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625853446;
+        bh=C1m6Z9er+kZNyzP955FA2czrvjgxs0c+EFM0BbWsrF8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YTFtmBV8+FFOIZrRpKe4P8sa2BS1tkgqKR09afY18rlcW0DlBGNQp1WSZWtmTSjgt
+         n4btsgBgp/1Vv7tIlaG67SC98AaUgACoNlxJvk8Y4/9K7Sd1+vW0mGQlCQrHkGoZZg
+         2LNX4jFjDbhhCGTsUgCYjqatklBZPvoayJs7WcrnRxVxVdLSfy4qFCSe6MZ8HoNZa2
+         K0VxUskNo/4PdMz4ukuNajchxahsJNVh8h8AzPxMt8YquQ/lxzajkI4tM+if6lCIKw
+         CxgJOb/r5wZlk+BAnzOLbD7wU2qTfUdeu152iXX733pDh6epIbUAtQ42jr49tNyVC6
+         Rz0tQTEkbs8nQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 3C9B540B1A; Fri,  9 Jul 2021 14:57:23 -0300 (-03)
+Date:   Fri, 9 Jul 2021 14:57:23 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Shunsuke Nakamura <nakamura.shun@fujitsu.com>,
+        linux-perf-users@vger.kernel.org
+Subject: [PATCH] libperf: Remove BUG_ON() from library code in
+ get_group_fd(). was Re: [PATCH 6/7] libperF: Add group support to
+ perf_evsel__open
+Message-ID: <YOiOA5zOtVH9IBbE@kernel.org>
+References: <20210706151704.73662-1-jolsa@kernel.org>
+ <20210706151704.73662-7-jolsa@kernel.org>
+ <YOXnq2yTVwklbrpO@kernel.org>
+ <YOXvSpcxeAnrGBTi@krava>
 MIME-Version: 1.0
-In-Reply-To: <3e0a3f7a32bba0f56f5830ff1548ef417e63880e.1625471640.git.vilhelm.gray@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YOXvSpcxeAnrGBTi@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/5/21 3:18 AM, William Breathitt Gray wrote:
-> The Counter subsystem architecture and driver implementations have
-> changed in order to handle Counter sysfs interactions in a more
-> consistent way. This patch updates the Generic Counter interface
-> documentation to reflect the changes.
-> 
-> Signed-off-by: William Breathitt Gray<vilhelm.gray@gmail.com>
-> ---
+Em Wed, Jul 07, 2021 at 08:15:38PM +0200, Jiri Olsa escreveu:
+> On Wed, Jul 07, 2021 at 02:43:07PM -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Tue, Jul 06, 2021 at 05:17:03PM +0200, Jiri Olsa escreveu:
+> > > +static int get_group_fd(struct perf_evsel *evsel, int cpu, int thread)
+> > > +{
+> > > +	struct perf_evsel *leader = evsel->leader;
+> > > +	int fd;
+> > > +
+> > > +	if (evsel == leader)
+> > > +		return -1;
+> > > +
+> > > +	/*
+> > > +	 * Leader must be already processed/open,
+> > > +	 * if not it's a bug.
+> > > +	 */
+> > > +	BUG_ON(!leader->fd);
 
-Reviewed-by: David Lechner <david@lechnology.com>
+> > Humm, having panics in library code looks ugly, why can't we just return
+> > some errno and let the whatever is using the library to fail gracefully?
+ 
+> true, I took it from perf code, did not realize this,
+> I'll check what can we do in here
 
+So, I've added this as a follow up patch:
+
+commit 0ec138125eaea5f15157adcecc3e0def1ad2ed22
+Author: Arnaldo Carvalho de Melo <acme@redhat.com>
+Date:   Fri Jul 9 14:52:16 2021 -0300
+
+    libperf: Remove BUG_ON() from library code in get_group_fd()
+    
+    We shouldn't just panic, return a value that doesn't clash with what
+    perf_evsel__open() was already returning in case of error, i.e. errno
+    when sys_perf_event_open() fails.
+    
+    Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+    Cc: Ian Rogers <irogers@google.com>
+    Cc: Jiri Olsa <jolsa@kernel.org>
+    Cc: Mark Rutland <mark.rutland@arm.com>
+    Cc: Michael Petlan <mpetlan@redhat.com>
+    Cc: Namhyung Kim <namhyung@kernel.org>
+    Cc: Peter Zijlstra <peterz@infradead.org>
+    Cc: Shunsuke Nakamura <nakamura.shun@fujitsu.com>
+    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+
+diff --git a/tools/lib/perf/evsel.c b/tools/lib/perf/evsel.c
+index 9ebf7122d4766c5e..d8886720e83d8dfe 100644
+--- a/tools/lib/perf/evsel.c
++++ b/tools/lib/perf/evsel.c
+@@ -77,23 +77,30 @@ sys_perf_event_open(struct perf_event_attr *attr,
+ 	return syscall(__NR_perf_event_open, attr, pid, cpu, group_fd, flags);
+ }
+ 
+-static int get_group_fd(struct perf_evsel *evsel, int cpu, int thread)
++static int get_group_fd(struct perf_evsel *evsel, int cpu, int thread, int *group_fd)
+ {
+ 	struct perf_evsel *leader = evsel->leader;
+ 	int fd;
+ 
+-	if (evsel == leader)
+-		return -1;
++	if (evsel == leader) {
++		*group_fd = -1;
++		return 0;
++	}
+ 
+ 	/*
+ 	 * Leader must be already processed/open,
+ 	 * if not it's a bug.
+ 	 */
+-	BUG_ON(!leader->fd);
++	if (!leader->fd)
++		return -ENOTCONN;
+ 
+ 	fd = FD(leader, cpu, thread);
+-	BUG_ON(fd == -1);
+-	return fd;
++	if (fd == -1)
++		return -EBADF;
++
++	*group_fd = fd;
++
++	return 0;
+ }
+ 
+ int perf_evsel__open(struct perf_evsel *evsel, struct perf_cpu_map *cpus,
+@@ -133,7 +140,9 @@ int perf_evsel__open(struct perf_evsel *evsel, struct perf_cpu_map *cpus,
+ 		for (thread = 0; thread < threads->nr; thread++) {
+ 			int fd, group_fd;
+ 
+-			group_fd = get_group_fd(evsel, cpu, thread);
++			err = get_group_fd(evsel, cpu, thread, &group_fd);
++			if (err < 0)
++				return err;
+ 
+ 			fd = sys_perf_event_open(&evsel->attr,
+ 						 threads->map[thread].pid,
