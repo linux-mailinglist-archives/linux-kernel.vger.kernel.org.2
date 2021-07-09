@@ -2,80 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F05D3C1F72
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 08:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4742B3C1F77
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 08:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230404AbhGIGma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 02:42:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230269AbhGIGm3 (ORCPT
+        id S230493AbhGIGnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 02:43:03 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:10339 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230428AbhGIGm7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 02:42:29 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6E7AC0613E5
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 23:39:46 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id c28so20684685lfp.11
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 23:39:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GdbwvfH2damctRl688URppCcO8HiCSnYmA4puvxValM=;
-        b=KARnKsI6wDXVlxoOJqqGBaT9Cvtu6meuaoim3L0lyRJTOtNHXTW15+lu+fX2Avc4SE
-         sclUFBx2eXDhb5Ek6QXiwTQZFR7u0/lkRPCyWJj7CZ75DdaQuqELDVVUi+O3wDDsq6XB
-         xaCqqW3u5S+0Z+S72yZYXwfyQ8NqtI/64qcv8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GdbwvfH2damctRl688URppCcO8HiCSnYmA4puvxValM=;
-        b=BtMiOA5BQWfxXCcL5bu5XwAYMnXPxkUdQl2IKPGvh18UjlsOcW0KPCyLq5QLvS4xBY
-         gvLgXji1H6osCeKgGlrTF7g4xYEyh+8s/EqbkAaMcIl8rj04jaFTzIdU7gLmVq8yET7F
-         jE3wErqrS1nu/rcFklWlSOHfwXi9su5nD8wZbfaENShtYKSpvSFHxMrCiAd+tfSv+wSt
-         1TrvnMF6Tj8aH4GHwFPTz3Y05S6RvURfPAwSyF690v+2ndrYyMeKoqusLRFp+KXjgh0b
-         XyA+e4Vxdf8cIUic5GKNfH0PsmQ9WMSlCpwbANTFXkOq8Ju/+34He72mrIa9Xh6tf0kQ
-         5O7w==
-X-Gm-Message-State: AOAM533eAQRjaQJuEEfX3ivU6/mIJi4ILz3Ykby4gdx1QzG6cjo5lhsn
-        ciEPJ0m2jnZPeN4/T8qlhX+JMeqt29o5DQbrVog+1g==
-X-Google-Smtp-Source: ABdhPJyxfIq66PAyhcwZKY98vY9gxJePWfUzcQTs7lPlWbqVj656LIF99F/PEycna45aCaK+KtkLo7qALswN1VrtyeQ=
-X-Received: by 2002:a19:ca13:: with SMTP id a19mr27080916lfg.647.1625812785287;
- Thu, 08 Jul 2021 23:39:45 -0700 (PDT)
+        Fri, 9 Jul 2021 02:42:59 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GLk1x0cXWz77hb;
+        Fri,  9 Jul 2021 14:35:49 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 9 Jul 2021 14:40:04 +0800
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 9 Jul 2021
+ 14:40:03 +0800
+Subject: Re: [PATCH net-next RFC 0/2] add elevated refcnt support for page
+ pool
+To:     Matteo Croce <mcroce@linux.microsoft.com>,
+        Marcin Wojtas <mw@semihalf.com>
+CC:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Sven Auhagen <sven.auhagen@voleatech.de>,
+        David Miller <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>, <linuxarm@openeuler.org>,
+        <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        "Matthew Wilcox" <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Peter Xu <peterx@redhat.com>,
+        <feng.tang@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>,
+        wenxu <wenxu@ucloud.cn>, Cong Wang <cong.wang@bytedance.com>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Marco Elver <elver@google.com>, <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+References: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
+ <20210702153947.7b44acdf@linux.microsoft.com>
+ <20210706155131.GS22278@shell.armlinux.org.uk>
+ <CAFnufp1hM6WRDigAsSfM94yneRhkmxBoGG7NxRUkbfTR2WQvyA@mail.gmail.com>
+ <CAPv3WKdQ5jYtMyZuiKshXhLjcf9b+7Dm2Lt2cjE=ATDe+n9A5g@mail.gmail.com>
+ <CAFnufp0NaPSkMQC-3ne49FL3Ak+UV0a7QoXELvVuMzBR4+GZ_g@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <14a92860-67cc-b2ac-efba-dd482f03204b@huawei.com>
+Date:   Fri, 9 Jul 2021 14:40:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-References: <20210616224743.5109-1-chun-jie.chen@mediatek.com> <20210616224743.5109-13-chun-jie.chen@mediatek.com>
-In-Reply-To: <20210616224743.5109-13-chun-jie.chen@mediatek.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Fri, 9 Jul 2021 14:39:34 +0800
-Message-ID: <CAGXv+5Ggv1ouJfGwfk8XbTZ1c61-QU-=M1pA=VB4oJqWwE2r3A@mail.gmail.com>
-Subject: Re: [PATCH 12/22] clk: mediatek: Add MT8195 scp adsp clock support
-To:     Chun-Jie Chen <chun-jie.chen@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, srv_heupstream@mediatek.com,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAFnufp0NaPSkMQC-3ne49FL3Ak+UV0a7QoXELvVuMzBR4+GZ_g@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme704-chm.china.huawei.com (10.1.199.100) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 2021/7/9 12:15, Matteo Croce wrote:
+> On Wed, Jul 7, 2021 at 6:50 PM Marcin Wojtas <mw@semihalf.com> wrote:
+>>
+>> Hi,
+>>
+>>
+>> śr., 7 lip 2021 o 01:20 Matteo Croce <mcroce@linux.microsoft.com> napisał(a):
+>>>
+>>> On Tue, Jul 6, 2021 at 5:51 PM Russell King (Oracle)
+>>> <linux@armlinux.org.uk> wrote:
+>>>>
+>>>> On Fri, Jul 02, 2021 at 03:39:47PM +0200, Matteo Croce wrote:
+>>>>> On Wed, 30 Jun 2021 17:17:54 +0800
+>>>>> Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>>>>
+>>>>>> This patchset adds elevated refcnt support for page pool
+>>>>>> and enable skb's page frag recycling based on page pool
+>>>>>> in hns3 drvier.
+>>>>>>
+>>>>>> Yunsheng Lin (2):
+>>>>>>   page_pool: add page recycling support based on elevated refcnt
+>>>>>>   net: hns3: support skb's frag page recycling based on page pool
+>>>>>>
+>>>>>>  drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    |  79 +++++++-
+>>>>>>  drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |   3 +
+>>>>>>  drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c |   1 +
+>>>>>>  drivers/net/ethernet/marvell/mvneta.c              |   6 +-
+>>>>>>  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c    |   2 +-
+>>>>>>  include/linux/mm_types.h                           |   2 +-
+>>>>>>  include/linux/skbuff.h                             |   4 +-
+>>>>>>  include/net/page_pool.h                            |  30 ++-
+>>>>>>  net/core/page_pool.c                               | 215
+>>>>>> +++++++++++++++++---- 9 files changed, 285 insertions(+), 57
+>>>>>> deletions(-)
+>>>>>>
+>>>>>
+>>>>> Interesting!
+>>>>> Unfortunately I'll not have access to my macchiatobin anytime soon, can
+>>>>> someone test the impact, if any, on mvpp2?
+>>>>
+>>>> I'll try to test. Please let me know what kind of testing you're
+>>>> looking for (I haven't been following these patches, sorry.)
+>>>>
+>>>
+>>> A drop test or L2 routing will be enough.
+>>> BTW I should have the macchiatobin back on friday.
+>>
+>> I have a 10G packet generator connected to 10G ports of CN913x-DB - I
+>> will stress mvpp2 in l2 forwarding early next week (I'm mostly AFK
+>> this until Monday).
+>>
+> 
+> I managed to to a drop test on mvpp2. Maybe there is a slowdown but
+> it's below the measurement uncertainty.
+> 
+> Perf top before:
+> 
+> Overhead  Shared O  Symbol
+>    8.48%  [kernel]  [k] page_pool_put_page
+>    2.57%  [kernel]  [k] page_pool_refill_alloc_cache
+>    1.58%  [kernel]  [k] page_pool_alloc_pages
+>    0.75%  [kernel]  [k] page_pool_return_skb_page
+> 
+> after:
+> 
+> Overhead  Shared O  Symbol
+>    8.34%  [kernel]  [k] page_pool_put_page
+>    4.52%  [kernel]  [k] page_pool_return_skb_page
+>    4.42%  [kernel]  [k] page_pool_sub_bias
+>    3.16%  [kernel]  [k] page_pool_alloc_pages
+>    2.43%  [kernel]  [k] page_pool_refill_alloc_cache
 
-On Thu, Jun 17, 2021 at 6:59 AM Chun-Jie Chen
-<chun-jie.chen@mediatek.com> wrote:
->
-> Add MT8195 scp adsp clock provider
->
-> Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
+Hi, Matteo
+Thanks for the testing.
+it seems you have adapted the mvpp2 driver to use the new frag
+API for page pool, There is one missing optimization for XDP case,
+the page is always returned to the pool->ring regardless of the
+context of page_pool_put_page() for elevated refcnt case.
 
-Same comments about commit log and Kconfig option applies.
+Maybe adding back that optimization will close some gap of the above
+performance difference if the drop is happening in softirq context.
 
-Code looks good otherwise. Note that the datasheet I have does not include
-the registers used in this driver, so I cannot confirm them.
-
-
-ChenYu
+> 
+> Regards,
+> 
