@@ -2,69 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88EE23C28FA
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C9B3C2900
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbhGIS1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 14:27:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbhGIS1n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 14:27:43 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A418FC0613E5
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 11:24:59 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id 7-20020a9d0d070000b0290439abcef697so10366246oti.2
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 11:24:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cCbbGBdIPrXvg7z6uGOacux3U5ndYtQkeQddrGJuteo=;
-        b=vlf7whsxzmtk448E1+o9NJ2OOvxq8TJ2U1w08A420zMEZs6W2ipS2fhv+6aIUud8KN
-         vkxYEtg6M0DPKVILq6QVBoe5bpMUSWtDExRVJ3yCcTsBBTgNvkTAHyMQE56ubhz7MMEF
-         YJQITWDNSlAYqbmyEjYYbP90n1EGex9kwB7b4hGTuFxHhmLuquQpw6D+kS/I8uWtZT32
-         QW3fPnVhkFu7uiq+3Rm92d9wrOv37IVqpWAw5eHbAl8r+ktQZoh4b/k2zzdF7/BHJPrz
-         0XfW/RX2l3n9V8B9WN/HuTHquPbwqp3vbOze3EUq7ok7bj1brfF3h2xq9blXQOlznpMf
-         +tGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cCbbGBdIPrXvg7z6uGOacux3U5ndYtQkeQddrGJuteo=;
-        b=d+M2ISDU+RqlG59g5KyZ/H0LA7FsU8OJOAtZ/RU0C6MzrISIlVDSreWLYNZeXghGap
-         NQK4FrBWjPuv5L3f0j0SIjvBRejTYCf4nFTQzvLkKUwHhCBUznk+xVrm8yfZk9UvpBSf
-         orN7cbqJE7RQnNMvA/XGVs7mC/2nXY0/f19hCmbkeSVN+sa1KoXSM1TnLaWJwKKxU+rx
-         18RvnF5kGeBeNYPuUGnBHP4bXDInrYua69DdlH+onM0hMIiMuEcO3fTj9+mmUISo+6FL
-         l03aCbPwgJiYFDFN5i5VQviThi9/4c2QTogyRfzb6BDJ0hLOUjhjQ4aKNYJlF9cP0Q5y
-         XrCQ==
-X-Gm-Message-State: AOAM531fmy6zmJLCV0Fqfx1pPbQ7NihEe9Bv5nT53Yr4426rF3MfOFad
-        U18plysrl3Jx/pvbztOJQX6XAkRJS5ktyFbylqVDZw==
-X-Google-Smtp-Source: ABdhPJwgHvARYc2xotg4epyoFW+Z6WbiX8NYhMBNuPl98PG+uDuX+DhvJJJo51/2+oEuNnMJLuao6yNXhLG9XhXxEYA=
-X-Received: by 2002:a05:6830:25cb:: with SMTP id d11mr24052350otu.56.1625855098621;
- Fri, 09 Jul 2021 11:24:58 -0700 (PDT)
+        id S229943AbhGIS3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 14:29:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229491AbhGIS3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 14:29:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02A27613BF;
+        Fri,  9 Jul 2021 18:26:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625855200;
+        bh=bq7hES9922zgTAyN+l6SWN2Mf5iaz95IRfUV+Ls16ik=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=muxar4b5zjX8knNvBMU1JB3Fq1hkzWEGjTVVbmSEmNmDwmQeBxbUtZRz5Vb8Wr6IQ
+         LsOKiwSf6DiSITdFPvms+EQe1fJvkam2xUwL29h3BHfKwcaYzkk+3hCTRAsHnnAtZn
+         PQmcHMW0WAflzGDI51CORrUucCd06C3umoS2tVG18sMJgCh+uDaPqSrxb/ePskfSiB
+         lco8qKkzSaXICfgsYkPLQIXn4QyVKJFXhYNSeVd35V1RUOeVEs4b8kFn5XXoFDhf8R
+         8YChKLlpt4G7A9RmZFzA4FKiVsfgvSWWmwoXBAhlJmgHK70mWrAlQjZGMiemP0nkUs
+         /AmeTrvdadxdw==
+Date:   Fri, 9 Jul 2021 19:26:06 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Mason Zhang <mason.zhang@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        leilk.liu@mediatek.com, wsd_upstream@mediatek.com
+Subject: Re: [PATCH 2/2] spi: mediatek: update spi master bingdings for
+ MT6893 SOC
+Message-ID: <20210709182606.GH4112@sirena.org.uk>
+References: <20210629101310.21045-1-mason.zhang@mediatek.com>
 MIME-Version: 1.0
-References: <1625825111-6604-1-git-send-email-weijiang.yang@intel.com> <1625825111-6604-4-git-send-email-weijiang.yang@intel.com>
-In-Reply-To: <1625825111-6604-4-git-send-email-weijiang.yang@intel.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Fri, 9 Jul 2021 11:24:46 -0700
-Message-ID: <CALMp9eTKNG_b6Te=aV_Qd3ADXzf8RkvDhGfWtopQGAf51eHMbg@mail.gmail.com>
-Subject: Re: [PATCH v5 03/13] KVM: x86: Add arch LBR MSRs to msrs_to_save_all list
-To:     Yang Weijiang <weijiang.yang@intel.com>
-Cc:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
-        wei.w.wang@intel.com, like.xu.linux@gmail.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4LFBTxd4L5NLO6ly"
+Content-Disposition: inline
+In-Reply-To: <20210629101310.21045-1-mason.zhang@mediatek.com>
+X-Cookie: This fortune intentionally left blank.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 9, 2021 at 2:51 AM Yang Weijiang <weijiang.yang@intel.com> wrote:
->
-> Arch LBR MSR_ARCH_LBR_DEPTH and MSR_ARCH_LBR_CTL are {saved|restored}
-> by userspace application if they're available.
->
-> Suggested-by: Jim Mattson <jmattson@google.com>
-> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
-Reviewed-by: Jim Mattson <jmattson@google.com>
+
+--4LFBTxd4L5NLO6ly
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jun 29, 2021 at 06:13:11PM +0800, Mason Zhang wrote:
+
+> Change-Id: Iaa2840f7e89db83f9505302b50b449f8885a14c1
+
+Please don't include noise like this in upstream patch submissions.
+
+--4LFBTxd4L5NLO6ly
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDolL4ACgkQJNaLcl1U
+h9AGuQf/fiCaDqWym+z4bphEMW/sreSQaMhUPsX89q9L53pDipBgT9J5f7DiTPNJ
+NmM66kiRq9S7lp9aENzPFdHRj16H2oY/Z2R+ZkhSBl9eIX2bfSrT0iAZugxIRgb/
+9LiihnkiKENv1488qf82H7geFWjUCJ3uOa8o85+B5Hc4/4PomUZRhmES+nTneMpd
+RjJphzjpC2I/jYhW1YcyjSH7bA/vtSlZ1noq1SuB+NImujAzJ2M1zWxes61HvdTL
+dw0yWHYBLiUSRgDSb2bd4e0eke0mAPzz5XZUgRT9UNk+4pH9XsOTw1LnnDYayAJd
+z5KQ/Bake3q0K0jl0otdp1oaLsyLZQ==
+=L+oc
+-----END PGP SIGNATURE-----
+
+--4LFBTxd4L5NLO6ly--
