@@ -2,124 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D4003C2354
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 14:17:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAA603C233E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 14:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231288AbhGIMTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 08:19:43 -0400
-Received: from m12-15.163.com ([220.181.12.15]:46521 "EHLO m12-15.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230209AbhGIMTm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 08:19:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=COISp
-        wghJpsZ4Lc5bzWnX/i5U691H/hAD6H0OTHuz80=; b=pGAAenVqK5T9xibHF3u+P
-        xjujH0995EQ9DUWwMmq4Jr95RcZI0lqsZtioBT6QduvKN9hZkt8dT3YEkdtPdmg4
-        P4dUhaU0F8LtztzgyZerdF7Qd5clVpEbm6AW0FZb8KbZKb+L75C1rwOfl8nycoXM
-        i0ob9C4UZ1vA/4t96epkog=
-Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
-        by smtp11 (Coremail) with SMTP id D8CowAA3P+fzGehglpvgAA--.66S2;
-        Fri, 09 Jul 2021 17:42:38 +0800 (CST)
-From:   dingsenjie@163.com
-To:     robdclark@gmail.com, sean@poorly.run, airlied@linux.ie,
-        daniel@ffwll.ch
-Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        dingsenjie <dingsenjie@yulong.com>
-Subject: [PATCH] gpu: drm: Remove unneeded variable: "ret"
-Date:   Fri,  9 Jul 2021 17:41:44 +0800
-Message-Id: <20210709094144.118920-1-dingsenjie@163.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        id S231156AbhGIMH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 08:07:28 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:34508
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230209AbhGIMH1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 08:07:27 -0400
+X-Greylist: delayed 561 seconds by postgrey-1.27 at vger.kernel.org; Fri, 09 Jul 2021 08:07:26 EDT
+Received: from [10.172.193.212] (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 13005401BE;
+        Fri,  9 Jul 2021 11:55:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1625831717;
+        bh=WQJt/rujabpC6j6jCpmi7LAcFfdIBX8ppv3eoy0WW0U=;
+        h=To:From:Subject:Message-ID:Date:MIME-Version:Content-Type;
+        b=UPrNulqI6eXqI24HT0Y3q3LuJdP9oM+FMFbPZEB+XM0sPIGjI6PqEWfTibzJXMNPt
+         CRvh4MMwRxasGkQMloASW+Uv75M+mZyZ1dZks6XnrjWpLIXr90Rc/rNVaxKmJ0LkKT
+         72cQclYQ5qnUo4kCOpoEMmDaLWE51v4KSH1+uH/TQx2YHh2hl90gjEDMwTRGuSIafo
+         k80io4WXl6fckGBGdJpTcM2gvRldXlZiuYS7znddixjIO8gW8vz3XMvyzfu+hZ3Fv+
+         +dI55UKA8+iw7utUf9SOOUBhzuHfStpB7hMpRpjGrNGxY8Dl0tih09IYLBYyKcM7Pz
+         qour85fGZETyw==
+To:     Jens Axboe <axboe@kernel.dk>
+From:   Colin Ian King <colin.king@canonical.com>
+Subject: potential null pointer deference (or maybe invalid null check) in
+ io_uring io_poll_remove_double()
+Cc:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <fe70c532-e2a7-3722-58a1-0fa4e5c5ff2c@canonical.com>
+Date:   Fri, 9 Jul 2021 12:55:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: D8CowAA3P+fzGehglpvgAA--.66S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxZr47Kr45tr47AryDWry3Arb_yoW5XF1Dpr
-        W5uwn0qry8Zw48Xr4UCFyfuFy3Z3WI9rWxJry2g3sYyF1ayw4DGa45uF4xWF4akFZxCrW2
-        qF4fAw1xZF1xWrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UupBhUUUUU=
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/1tbipRq8yFUMe+47egABsH
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dingsenjie <dingsenjie@yulong.com>
+Hi Jens,
 
-remove unneeded variable: "ret".
+I was triaging some outstanding Coverity static analysis warnings and
+found a potential issue in the following commit:
 
-Signed-off-by: dingsenjie <dingsenjie@yulong.com>
----
- drivers/gpu/drm/msm/dp/dp_ctrl.c |  4 +---
- drivers/gpu/drm/msm/dp/dp_link.c | 13 ++++---------
- 2 files changed, 5 insertions(+), 12 deletions(-)
+commit 807abcb0883439af5ead73f3308310453b97b624
+Author: Jens Axboe <axboe@kernel.dk>
+Date:   Fri Jul 17 17:09:27 2020 -0600
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-index e3462f5..0d11046 100644
---- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
-+++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-@@ -1052,7 +1052,6 @@ static bool dp_ctrl_train_pattern_set(struct dp_ctrl_private *ctrl,
- 		u8 pattern)
- {
- 	u8 buf;
--	int ret = 0;
- 
- 	DRM_DEBUG_DP("sink: pattern=%x\n", pattern);
- 
-@@ -1061,8 +1060,7 @@ static bool dp_ctrl_train_pattern_set(struct dp_ctrl_private *ctrl,
- 	if (pattern && pattern != DP_TRAINING_PATTERN_4)
- 		buf |= DP_LINK_SCRAMBLING_DISABLE;
- 
--	ret = drm_dp_dpcd_writeb(ctrl->aux, DP_TRAINING_PATTERN_SET, buf);
--	return ret == 1;
-+	return drm_dp_dpcd_writeb(ctrl->aux, DP_TRAINING_PATTERN_SET, buf) == 1;
- }
- 
- static int dp_ctrl_read_link_status(struct dp_ctrl_private *ctrl,
-diff --git a/drivers/gpu/drm/msm/dp/dp_link.c b/drivers/gpu/drm/msm/dp/dp_link.c
-index be986da..fee3bc4 100644
---- a/drivers/gpu/drm/msm/dp/dp_link.c
-+++ b/drivers/gpu/drm/msm/dp/dp_link.c
-@@ -782,7 +782,6 @@ static int dp_link_process_link_training_request(struct dp_link_private *link)
- bool dp_link_send_test_response(struct dp_link *dp_link)
- {
- 	struct dp_link_private *link = NULL;
--	int ret = 0;
- 
- 	if (!dp_link) {
- 		DRM_ERROR("invalid input\n");
-@@ -791,10 +790,8 @@ bool dp_link_send_test_response(struct dp_link *dp_link)
- 
- 	link = container_of(dp_link, struct dp_link_private, dp_link);
- 
--	ret = drm_dp_dpcd_writeb(link->aux, DP_TEST_RESPONSE,
--			dp_link->test_response);
--
--	return ret == 1;
-+	return drm_dp_dpcd_writeb(link->aux, DP_TEST_RESPONSE,
-+			dp_link->test_response) == 1;
- }
- 
- int dp_link_psm_config(struct dp_link *dp_link,
-@@ -829,7 +826,6 @@ int dp_link_psm_config(struct dp_link *dp_link,
- bool dp_link_send_edid_checksum(struct dp_link *dp_link, u8 checksum)
- {
- 	struct dp_link_private *link = NULL;
--	int ret = 0;
- 
- 	if (!dp_link) {
- 		DRM_ERROR("invalid input\n");
-@@ -838,9 +834,8 @@ bool dp_link_send_edid_checksum(struct dp_link *dp_link, u8 checksum)
- 
- 	link = container_of(dp_link, struct dp_link_private, dp_link);
- 
--	ret = drm_dp_dpcd_writeb(link->aux, DP_TEST_EDID_CHECKSUM,
--						checksum);
--	return ret == 1;
-+	return drm_dp_dpcd_writeb(link->aux, DP_TEST_EDID_CHECKSUM,
-+						checksum) == 1;
- }
- 
- static int dp_link_parse_vx_px(struct dp_link_private *link)
--- 
-1.9.1
+    io_uring: ensure double poll additions work with both request types
 
+The analysis from Coverity is as follows:
+
+4962 static int io_poll_double_wake(struct wait_queue_entry *wait,
+unsigned mode,
+4963                               int sync, void *key)
+4964 {
+4965        struct io_kiocb *req = wait->private;
+4966        struct io_poll_iocb *poll = io_poll_get_single(req);
+4967        __poll_t mask = key_to_poll(key);
+4968
+4969        /* for instances that support it check for an event match
+first: */
+
+    deref_ptr: Directly dereferencing pointer poll.
+
+4970        if (mask && !(mask & poll->events))
+4971                return 0;
+4972        if (!(poll->events & EPOLLONESHOT))
+4973                return poll->wait.func(&poll->wait, mode, sync, key);
+4974
+4975        list_del_init(&wait->entry);
+4976
+
+  Dereference before null check (REVERSE_INULL)
+  check_after_deref: Null-checking poll suggests that it may be null,
+but it has already been dereferenced on all paths leading to the check.
+
+4977        if (poll && poll->head) {
+4978                bool done;
+
+pointer poll is being dereferenced on line 4970, however, on line 4977
+it is being null checked. Either the null check is redundant (because it
+can never be null) or it needs to be performed before the poll->events
+read on line 4970.
+
+Colin
