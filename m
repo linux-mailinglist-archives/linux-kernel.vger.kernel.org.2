@@ -2,104 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA693C28F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9E613C28F7
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:21:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229821AbhGISVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 14:21:42 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:19528 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229499AbhGISVm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 14:21:42 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 169I3WeW019644;
-        Fri, 9 Jul 2021 14:18:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=cFcgBIMjRZFExSLu1MOUcIIL2PdkFtlHRsVx5aIYk4A=;
- b=Ze1+9MfImnDYfZOS6IQLTqz/XdEFFRTzGg9ECjwZwQ6lF7G1zBDhLlzgLuduRQ292Wph
- 3GI07EUNXvHX+A5fgDLtdhTlGfj8ibM+hy/CtIm1IKvsTXn84BKL6wOW6Ettxz7E6dIN
- dBZCBNLuqyStkgbEeb08XfGZQStVqe6+dLdFEE4PE3f00GJAVxH0qjdSbgzoT/2GBr8P
- +GGGX12JVAgiuBr6nm/7ntCABMjPmMC6RKDYKPtqqFJ7kAX0923yWTuWPzRGug7I0Sgn
- 1ZsyellWfMqBeJ9/vVb0GpABEei9erAKJfAftW6aYIRVxtyyEtnfZhPNIloCJJ4Y7XF/ 0w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39p1yctjna-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Jul 2021 14:18:52 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 169I6dDi030341;
-        Fri, 9 Jul 2021 14:18:52 -0400
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39p1yctjn5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Jul 2021 14:18:52 -0400
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 169HvGOq010236;
-        Fri, 9 Jul 2021 18:18:51 GMT
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by ppma01wdc.us.ibm.com with ESMTP id 39jfhdqn5m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Jul 2021 18:18:51 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 169IIpjJ40042774
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 9 Jul 2021 18:18:51 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 419DB112062;
-        Fri,  9 Jul 2021 18:18:51 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 31442112061;
-        Fri,  9 Jul 2021 18:18:51 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri,  9 Jul 2021 18:18:51 +0000 (GMT)
-Subject: Re: [PATCH v2] char: tpm: vtpm_proxy: Fix race in init
-To:     Saubhik Mukherjee <saubhik.mukherjee@gmail.com>, peterhuewe@gmx.de,
-        jarkko@kernel.org, jgg@ziepe.ca
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org, andrianov@ispras.ru
-References: <20210708095259.27915-1-saubhik.mukherjee@gmail.com>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-Message-ID: <86011d11-522d-a686-b360-43d19366cab7@linux.ibm.com>
-Date:   Fri, 9 Jul 2021 14:18:50 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S229750AbhGISYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 14:24:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47070 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229499AbhGISYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 14:24:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 44A0061361;
+        Fri,  9 Jul 2021 18:21:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625854910;
+        bh=eKI2MKP/0FuOgp2lSQADbh4/n7CDz5nAGAOBVI4TIjo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=N/HLJC2qL9tBRINagovny6irxRVUrUF93KF4dCITFUitVY/jhT/JVsjNuAarTWWst
+         dElW6tywW5jWecoyYIPhIHM+Ok8n60VlMkOV+JbMcfrJja3A5iktp3xNb1ZmMxJWeY
+         dW14BVXdmyWY682mZb1gAGCVUQGu8vOeUmmQbPEYoUXdv21LF9qRV5S/qWMYRAq+f1
+         3yp0U9ADUMQNcgZGCEOtZNYeuDlXC+9vLlux8tp1JrTvUMsyqjl2k8je8pY6YC7Ot5
+         vy8IzwAV2c1JeXqSDGovhzofv3vUkOeZrB/xKr+6mPsEIJuxxzNUd1HGZwd7MgVXZP
+         O0tFc62E6XTbw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 0512940B1A; Fri,  9 Jul 2021 15:21:46 -0300 (-03)
+Date:   Fri, 9 Jul 2021 15:21:46 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Leo Yan <leo.yan@linaro.org>,
+        Remi Bernon <rbernon@codeweavers.com>,
+        Fabian Hemmer <copy@copy.sh>, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf test: add missing free for scandir-returned dirent
+ entities
+Message-ID: <YOiTuvHKc5I9TzJe@kernel.org>
+References: <20210709163454.672082-1-rickyman7@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210708095259.27915-1-saubhik.mukherjee@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: vOZgn4vSeRLUVMMW_qNnd3QKtwH8SYls
-X-Proofpoint-ORIG-GUID: qr1nPttsjHrQNoZNJCTYs43asoNwpa3h
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-09_12:2021-07-09,2021-07-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
- malwarescore=0 impostorscore=0 bulkscore=0 mlxlogscore=999
- priorityscore=1501 adultscore=0 mlxscore=0 spamscore=0 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107090088
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210709163454.672082-1-rickyman7@gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Fri, Jul 09, 2021 at 06:34:53PM +0200, Riccardo Mancini escreveu:
+> ASan reported a memory leak for items of the entlist returned from scandir.
+> In fact, scandir returns a malloc'd array of malloc'd dirents.
+> This patch adds the missing (z)frees.
 
-On 7/8/21 5:52 AM, Saubhik Mukherjee wrote:
-> vtpm_module_init calls vtpmx_init which calls misc_register. The file
-> operations callbacks are registered. So, vtpmx_fops_ioctl can execute in
-> parallel with rest of vtpm_module_init. vtpmx_fops_ioctl calls
-> vtpmx_ioc_new_dev, which calls vtpm_proxy_create_device, which calls
-> vtpm_proxy_work_start, which could read uninitialized workqueue.
->
-> To avoid this, create workqueue before vtpmx init.
->
-> Found by Linux Driver Verification project (linuxtesting.org).
->
-> Fixes: 6f99612e2500 ("tpm: Proxy driver for supporting multiple emulated TPMs")
-> Signed-off-by: Saubhik Mukherjee <saubhik.mukherjee@gmail.com>
+Hey, I thought you were pluging old leaks, this one was introduced
+recently ;-) :-)
 
-Tested-by: Stefan Berger <stefanb@linux.ibm.com>
+Thanks, applied!
 
+- Arnaldo
+ 
+> Fixes: da963834fe6975a1 ("perf test: Iterate over shell tests in alphabetical order")
+> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+> ---
+>  tools/perf/tests/builtin-test.c | 15 +++++++++++----
+>  1 file changed, 11 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
+> index 41e3cf6bb66c68e8..5e6242576236325c 100644
+> --- a/tools/perf/tests/builtin-test.c
+> +++ b/tools/perf/tests/builtin-test.c
+> @@ -26,6 +26,7 @@
+>  #include <linux/kernel.h>
+>  #include <linux/string.h>
+>  #include <subcmd/exec-cmd.h>
+> +#include <linux/zalloc.h>
+>  
+>  static bool dont_fork;
+>  
+> @@ -540,7 +541,7 @@ static int shell_tests__max_desc_width(void)
+>  {
+>  	struct dirent **entlist;
+>  	struct dirent *ent;
+> -	int n_dirs;
+> +	int n_dirs, e;
+>  	char path_dir[PATH_MAX];
+>  	const char *path = shell_tests__dir(path_dir, sizeof(path_dir));
+>  	int width = 0;
+> @@ -564,8 +565,9 @@ static int shell_tests__max_desc_width(void)
+>  		}
+>  	}
+>  
+> +	for (e = 0; e < n_dirs; e++)
+> +		zfree(&entlist[e]);
+>  	free(entlist);
+> -
+>  	return width;
+>  }
+>  
+> @@ -596,7 +598,7 @@ static int run_shell_tests(int argc, const char *argv[], int i, int width)
+>  {
+>  	struct dirent **entlist;
+>  	struct dirent *ent;
+> -	int n_dirs;
+> +	int n_dirs, e;
+>  	char path_dir[PATH_MAX];
+>  	struct shell_test st = {
+>  		.dir = shell_tests__dir(path_dir, sizeof(path_dir)),
+> @@ -629,6 +631,8 @@ static int run_shell_tests(int argc, const char *argv[], int i, int width)
+>  		test_and_print(&test, false, -1);
+>  	}
+>  
+> +	for (e = 0; e < n_dirs; e++)
+> +		zfree(&entlist[e]);
+>  	free(entlist);
+>  	return 0;
+>  }
+> @@ -730,7 +734,7 @@ static int perf_test__list_shell(int argc, const char **argv, int i)
+>  {
+>  	struct dirent **entlist;
+>  	struct dirent *ent;
+> -	int n_dirs;
+> +	int n_dirs, e;
+>  	char path_dir[PATH_MAX];
+>  	const char *path = shell_tests__dir(path_dir, sizeof(path_dir));
+>  
+> @@ -752,8 +756,11 @@ static int perf_test__list_shell(int argc, const char **argv, int i)
+>  			continue;
+>  
+>  		pr_info("%2d: %s\n", i, t.desc);
+> +
+>  	}
+>  
+> +	for (e = 0; e < n_dirs; e++)
+> +		zfree(&entlist[e]);
+>  	free(entlist);
+>  	return 0;
+>  }
+> -- 
+> 2.23.0
+> 
 
+-- 
+
+- Arnaldo
