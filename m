@@ -2,163 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0ADF3C2142
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 11:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B363C2146
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 11:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231797AbhGIJL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 05:11:56 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:3962 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbhGIJL4 (ORCPT
+        id S231804AbhGIJNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 05:13:37 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:36122 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229559AbhGIJNg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 05:11:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1625821753; x=1657357753;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=qoTCGaKaNTMKDnUqImnQk7FVPbqjiWCVM/wRC2xi/jk=;
-  b=TqHZI/bURuQh5xky9kLCo3bcRgWo6idMfCqnlEF1yngWL9U3kf8kpsma
-   u8IdVmF7euOXlzE4L9xv32hzhrxtCFlbQr3VHd8+H1Njs6s9CYdeSYTBu
-   ClYtC7ImRwzsb7MzI9cIImM51Vo3tdBPRmhL1TSKpChYcoKLCZJCU9ucE
-   yfwmrS0PxIIvVv0ODiM4cr/L8/edgv8soT1HlCUW4BFof8GzQfk2wR7ki
-   hb+PW1UZuiYjEup+NLSaSnk/UXzdlOS45X5mk7wJVF/dsUa1xsTNqkuQ1
-   FeGJpreTWNnQy7aSNVE2gjtWtAPUYCiwmMF0LyiqCgNFHYO/3Oe/GWrT0
-   w==;
-IronPort-SDR: 9N36sJuu9undiyjtnPTZJNiz5gNmMtCtgNIwfce9O0JGgt+/9v9T+4eeFRpt5DyQqTjRHu3QAc
- bao5ddg7rgLFkLzm6CCZigMO7dg9A4SwISFM8GMXkar1WMCxH1lrotGD9y3XhyqNEDG/bxO6ER
- 1DrENnNllEO6Ka+pb9eS+3VOO1TJKlBxSEgCWxgxZoOrbpkIBeEXThz//Ck4drk674noXGESLR
- hHb3vGvSLdOA2ArIjNjxxf3kahXABtOCTXZysgDWjzx6WeuT/Z1psgjMNjf7a858uRCP/4pcHo
- Jwo=
-X-IronPort-AV: E=Sophos;i="5.84,226,1620716400"; 
-   d="scan'208";a="135202067"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 09 Jul 2021 02:09:12 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 9 Jul 2021 02:09:11 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2
- via Frontend Transport; Fri, 9 Jul 2021 02:09:11 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CR3qXknXDfonx4vIwJ3M1/3FSgRcqmVY74m3ytqS66YFK25jk5irIT63sW3P/NF234vllN9hc8LjmZ3E0Hu5DDB2TUsjey8Yesp+ZR++t/csTbBJyVNrUGQrbqyvxt5ic/Otw1guWUVjYkp7SdGMrs4sBldw1Jc6pNTq7nG6xEoszXdCu2wXTaakjs8JLRCV7x9rtHkVP0KSSiGVb6IEEgKV+urhYCcQ3LANyA4/BuOzFhz/M9LWt4eOjHaqqTAQ4F1y65nbwRmSCplTVfBNBrVDFkT3CVwoHZ7aMKKtFOmOt5LnGa3oIPyBTS1EuKkUFIqYi9aiDQ2MvfertDOtqw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qoTCGaKaNTMKDnUqImnQk7FVPbqjiWCVM/wRC2xi/jk=;
- b=lrmKyJkRzJMvt4QCBxI51iE49Z7bIZLBKVIsEesZ05P59e2xWwXWIZPH2nTsXt4IyjeNumHX0fFTW7bolJ8E6Fx0WzXmfzNuYFiD37jaoVhmS4a5GLtPiyl/id6/fdYDUQ9U/yncI2EzaZgUebFUJZOrfrb+k8rDinWcB7NWKS7GqZd0p/81DeKlR154dCePnogjZ85+bHt4zaxGdDsARhJ/91Dbr/V9zdev70AhAKCrQ40LHsfefAGdlUOt93ZATJ3wBXdXfN6s9ESkn4oaxcUDNiVYt6BZGEII+h+IJL1vLn4W5AA+1rfqO6fwNEsQOBJW1VWDhra9jPYNBKWzLg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qoTCGaKaNTMKDnUqImnQk7FVPbqjiWCVM/wRC2xi/jk=;
- b=h+XaYKRD8nNM/gBbvEnT/gxUst+dE+2Yr8neIMWa9nnEaL/l2g/LrSFJ0ugtee8VNFhGmdh553Y+MxiKyBAr/G6q5e24JX2F3JtVIrAFY+nJdT/Lt2CZTMbXxAGae6avZ/sbK7vJDhTe1LRWhrnFPDXfHd3kLHRhPLsTnZtsxRc=
-Received: from DM8PR11MB5687.namprd11.prod.outlook.com (2603:10b6:8:22::7) by
- DM6PR11MB4578.namprd11.prod.outlook.com (2603:10b6:5:2a7::15) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4308.20; Fri, 9 Jul 2021 09:09:10 +0000
-Received: from DM8PR11MB5687.namprd11.prod.outlook.com
- ([fe80::44ef:d8cf:6e86:2cd5]) by DM8PR11MB5687.namprd11.prod.outlook.com
- ([fe80::44ef:d8cf:6e86:2cd5%5]) with mapi id 15.20.4308.023; Fri, 9 Jul 2021
- 09:09:10 +0000
-From:   <Codrin.Ciubotariu@microchip.com>
-To:     <Claudiu.Beznea@microchip.com>, <lee.jones@linaro.org>,
-        <Nicolas.Ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <Ludovic.Desroches@microchip.com>, <romain.izard.pro@gmail.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] mfd: atmel-flexcom: use resume_noirq
-Thread-Topic: [PATCH 2/2] mfd: atmel-flexcom: use resume_noirq
-Thread-Index: AQHXcZGe7OXGogNlJ0iPorfIse7dbas6YQOA
-Date:   Fri, 9 Jul 2021 09:09:10 +0000
-Message-ID: <f0ca6431-8143-9e47-9f7f-d1d14dbd5fb7@microchip.com>
-References: <20210705113104.579535-1-claudiu.beznea@microchip.com>
- <20210705113104.579535-3-claudiu.beznea@microchip.com>
-In-Reply-To: <20210705113104.579535-3-claudiu.beznea@microchip.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-authentication-results: microchip.com; dkim=none (message not signed)
- header.d=none;microchip.com; dmarc=none action=none
- header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a2197618-eee4-4b08-7cb9-08d942b93701
-x-ms-traffictypediagnostic: DM6PR11MB4578:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR11MB4578F007BCE9C11CA4C2B70EE7189@DM6PR11MB4578.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: moNu9bWurQ5p3ZR9URurzkdHwxLtVo2Vy0FEZV6v9uyOOqxXEj/o+fX55Rk3cUmfAf6KPwIZu6eBXgMPz8hmCBHqbF1KMW4jcrJ+K1qbqHnC7ssqhh053tc8G3NXQoxuUwPqGm/hIuhW5oNNFKpZlKhv1dfbT0EfnDQXtnwlQfIVHw0go0djdLqvGX0h/bqFlrzYwAtOzDd9YexNsM7kUVPOCIQ+OvfdtG8Mc+9YtZF2JrhoBCTuXu5RL0p590CjJTmJfVB+mKb/nZlOOnPUh9NkcILVvLVXUQkKyuA+Ws20Y3kcA0FJCpBLLt+hntINc+BZHecCvdrn248+QbnZu9rZ6/7imjmJ2W1Yy3tFkbXHMYdX1nHlmAlsTxPdWzxf1OPrYbgvZuD8wuIptloy67c1Ak+xvMIsdoE0+ZgLIJDfP6RwTHny5EmuKle0ieOhepkesijTZIdLL0M7dlNAnpaO4ImlHLUOOFmJ5StBLhsnkF7Cj+g6ZXczcTgw2WQWLAKeTNhpH0gfb3xXvn7EZd5hQGVVaWWwS6qrUiUgEplcxN1g1x3e0bSWuUjWo3sH2oI+nCiCfYVshMSxXZDh/UaEKc+9RqDLlo0QYeG7yrmDKxCF4lAKF79rJwRsxNDQqrJjUL3N0AAjkcW4hc3c/5UeZiZXmlQIycuG+UA9fgUaAPG80PN+ScuN5wOlrsnAfVIvFIdmXbz+48kWu5D8QDgpb44aUyV9LUhUGz5+V1s=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR11MB5687.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(136003)(366004)(396003)(39860400002)(8676002)(83380400001)(2616005)(4744005)(71200400001)(4326008)(478600001)(31686004)(31696002)(26005)(316002)(6486002)(186003)(5660300002)(38100700002)(86362001)(66446008)(91956017)(53546011)(6512007)(6506007)(66946007)(66556008)(66476007)(76116006)(54906003)(64756008)(36756003)(122000001)(110136005)(8936002)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?emhYeU1jM3pLYU1zZWxhS1l2aDY3N1FzdTdhUFM1Q1MzWEtmYllObE84K2Ft?=
- =?utf-8?B?cExCM05HL2JjeldTRWVwOEQ5d05CY1Z1bWZtVTRuMkJhcjEzdFh6VitqYkR6?=
- =?utf-8?B?UmZPRDhDL0I2RjFQSE1NNUxQWG1pR3dDVlUxWWJ4cWliU1IwRVJ3K2drczNN?=
- =?utf-8?B?b05iS1BSb1ZuZjgyOFBtbDRDTDFLS2R1QlhsUHlLb2UvZXRNRGxmSVd1NGlp?=
- =?utf-8?B?Y3MwVVljME5nellOM2U4djkwdTZQQnEyNHlVaWZLcWlhNU03Z1hIbXhJMEZM?=
- =?utf-8?B?NXZJQnp2OGpSNjRjQ1ByekJtYlZJalJlYVhINGtDTEF4c1dxZUVxM1NERTEz?=
- =?utf-8?B?WUE3R2RmUUdXczd3c0IzaGJHTXZWMnczVUt2RHpJZ0R0a0MvUVE0WndBaUZm?=
- =?utf-8?B?MDlmQ04xMHptQVd0c2hsYTFBeTRubmJhYzV3RzVmYlZDY3hGaWpCcnBlOThy?=
- =?utf-8?B?SzIzTklGcDE2Y29lbnlUODhIdGxOQ09iVUl1dXpHMS9rbnJWYi8zUjQxNEVD?=
- =?utf-8?B?dGVrRjNXMDhhWTczTmdOYldtaGhmNkU1TUN1Z0xLOGNQWGRzSFFDVFEzT1Bv?=
- =?utf-8?B?T0FrTHBzeWpOWVNmb1JXNW1yaWl3cEpIZlBobzhjUHlDekE4YXI4WXZJTkY4?=
- =?utf-8?B?MmJhTFBNREk2cWtHQUI1VTRxUlp6VTMrb0NuTEZxOXErbzNuUjY5akpmOUl2?=
- =?utf-8?B?MUtrNCs3dW9rRG1ENUpkRGNHdFhPZERpSnRJRVNhWUc5USs5eUFPTE9mQ0NE?=
- =?utf-8?B?M1N6YWNSRmxQeUJoaWpYUU5ESWtyckhJWTZWd0F4cEdtQlVveFkyOFN3OWtG?=
- =?utf-8?B?NzVrKzBoQ1JHNWZjUko0ZGE3TDY4YXh5dkluaGhveEJEUW5DNENGRGFlYWgr?=
- =?utf-8?B?NjlyS3RYY0tjdVFYQ0Vuam1IVFpFQzJWVzJ2RllZYytTTWo0emYxZjd3WTh5?=
- =?utf-8?B?NGxwUG43WlBrTTBZQU4xUUVzenRFOEdoOXpyR3l1Z2R1WThGeHZNbEFQMitt?=
- =?utf-8?B?UXNaN1Q3bUlqcEpSRHgxUVYxN1B2SUhXVkJmOWpYOWJFUlZ3bGFCQ1hXdStJ?=
- =?utf-8?B?VlZlWUFWUHdvZ2xFZk4zVUE3Zitxdy9ZaEFzdklVY2pJNVZOaWpTbjFEOGlt?=
- =?utf-8?B?NTNubjRzRFpvQmllUlI0cVhOcWNXL0U3blBISnVhWXhPYmQ0Q1ZDMzU0My9w?=
- =?utf-8?B?d3I3MFNPREVTeVRpNzBEWjN6TnFjV25PRkxhb29DMnh0ZHIvQkFJSFFqOERB?=
- =?utf-8?B?aFRTbzE5eTI3VUE0SC9ZRjdkZis1OFY4Q01yaVVWNGExVkFkQVBmbTF4QlpB?=
- =?utf-8?B?MkpHTCtCV09KM2tKUHRkakFUQVh6OVNVaktIaWpvLzNaL3RGTmpGbW5kcWtD?=
- =?utf-8?B?Q2F0NHBDN2tTdE1yTTlISFpZOE0yN1ZNK1dqeE1VRnEzS3VSdnZoZnFDb1dy?=
- =?utf-8?B?cnF1TWNuSVF2TkJzYU9PRmx2Q1RvY1VyMWJWcmVDR2VzbzZTZ0NtOWlhdmRE?=
- =?utf-8?B?elVScDVBQUdFL3RMYzZ6N0hYa2ZQWjNUWGZUZEFLc3pTU3FIRzJ4SmFKUHFo?=
- =?utf-8?B?eXF4QkJmRDBXanp1OW1pTFNMU2lRM3cvL3VwK1VocVNhRExOZVMwT2NlMU1Q?=
- =?utf-8?B?U3dMbDE4RlNrVzZXZWxPaXNwZTB3dnpqZkNYV00zL3l5L0J5ZFE1c2pFNVF4?=
- =?utf-8?B?Nm5IemFpL0hFWXRZdzgwbUVmRlNRWHNzeXIvdFdEUkpQcjJaUklmVkRwVytN?=
- =?utf-8?Q?L4bbFs7jWFBxtIH4aw=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <002605EF9C17194998DA72BCCC402DEC@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Fri, 9 Jul 2021 05:13:36 -0400
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 169918gk031664;
+        Fri, 9 Jul 2021 11:09:51 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=DVH6ZuxNXZTaEp6S+cHLNHrvmkcMuKnL6vylu2Kte94=;
+ b=7X5msmvjOn6lK1uy7Ov8hNhhBoUX+ReOVaZHIli8xgs4URQqfsV9h2q3EJXf0IyZyrk6
+ 7ruDFLQaiTTrqQkNVRP1+z7Rv3updQNngansGwJLOY/0Yix0aqY6xoBjAXTZsih9S+kd
+ poVuB4Kx/1KZe0q+NYpzxtuSki2I6bjBhUKmA8xen5CKzs0uCxzrEN5X83BpPYUhxmC3
+ +IzXYipnYgtWR+uKtzKR6JP1KdrOrsfZ3uUxa0CnDt320w51GFLgppGJ8WLDLqv86vTj
+ HJaalJUplp1g4iT0HZswmfKbe78By3wzgNH0Gryn8cbYrDtO03w7qs/UDlKBYJvXTfkF 8A== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 39p4vbbww3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Jul 2021 11:09:51 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A91B010002A;
+        Fri,  9 Jul 2021 11:09:48 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 87CAF218CB8;
+        Fri,  9 Jul 2021 11:09:48 +0200 (CEST)
+Received: from lmecxl0557.lme.st.com (10.75.127.47) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 9 Jul
+ 2021 11:09:47 +0200
+Subject: Re: [PATCH 0/2] Add "BACKGROUND_COLOR" drm property
+To:     Simon Ser <contact@emersion.fr>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Yannick FERTRE - foss <yannick.fertre@foss.st.com>,
+        Philippe CORNU - foss <philippe.cornu@foss.st.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>,
+        Matt Roper <matthew.d.roper@intel.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Yannick FERTRE <yannick.fertre@st.com>,
+        Raphael GALLAIS-POU <raphael.gallais-pou@st.com>,
+        Philippe CORNU <philippe.cornu@st.com>
+References: <20210707084557.22443-1-raphael.gallais-pou@foss.st.com>
+ <31K3xupK1-7HNWorHqIwGwgEJl-1XdFjUQEoNYm6yB-lRoZ8kq5quRji_r3mzPZ0bUayLef6xPfQDiETgZp9lR7vUpDn2nB_37ncSd-J0Wc=@emersion.fr>
+ <YOWTCSpOZTGZS2qP@phenom.ffwll.local>
+From:   Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Message-ID: <a8f02b4c-b1ea-320e-a6b2-952f4e641794@foss.st.com>
+Date:   Fri, 9 Jul 2021 11:09:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR11MB5687.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a2197618-eee4-4b08-7cb9-08d942b93701
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jul 2021 09:09:10.7200
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: eHpOgeeZND4AXp76ZH3pdANi/TP9YjxG9y821QXLWJqyfHZhBaS0OStbKqw6fcGT+YVh4MbxGbqTYYbftSVPQsqDOJCO2l+ymKjwujFuV+c=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4578
+In-Reply-To: <YOWTCSpOZTGZS2qP@phenom.ffwll.local>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-09_04:2021-07-09,2021-07-09 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMDUuMDcuMjAyMSAxNDozMSwgQ2xhdWRpdSBCZXpuZWEgd3JvdGU6DQo+IEZsZXhjb20gSVAg
-ZW1iZWRzIDMgb3RoZXIgSVBzOiB1c2FydCwgaTJjLCBzcGkgYW5kIHNlbGVjdHMgdGhlIG9wZXJh
-dGlvbg0KPiBtb2RlICh1c2FydCwgaTJjLCBzcGkpIHZpYSBtb2RlIHJlZ2lzdGVyIChGTEVYX01S
-KS4gT24gaTJjIGJ1cyB0aGVyZSBtaWdodA0KPiBiZSBjb25uZWN0ZWQgY3JpdGljYWwgZGV2aWNl
-cyAobGlrZSBQTUlDKSB3aGljaCBvbiBzdXNwZW5kL3Jlc3VtZSBzaG91bGQNCj4gYmUgc3VzcGVu
-ZGVkL3Jlc3VtZWQgYXQgdGhlIGVuZC9iZWdpbm5pbmcuIGkyYyB1c2VzDQo+IC5zdXNwZW5kX25v
-aXJxLy5yZXN1bWVfbm9pcnEgZm9yIHRoaXMga2luZCBvZiBwdXJwb3Nlcy4gQWxpZ24gZmxleGNv
-bQ0KPiB0byB1c2UgLnJlc3VtZV9ub2lycSBhcyBpdCBzaG91bGQgYmUgcmVzdW1lZCBiZWZvcmUg
-dGhlIGVtYmVkZGVkIElQcy4NCj4gT3RoZXJ3aXNlIHRoZSBlbWJlZGRlZCBkZXZpY2VzIG1pZ2h0
-IGJlaGF2ZSBiYWRseS4NCj4gDQo+IEZpeGVzOiA3ZmRlYzExMDE1YzMgKCJhdG1lbF9mbGV4Y29t
-OiBTdXBwb3J0IHJlc3VtaW5nIGFmdGVyIGEgY2hpcCByZXNldCIpDQo+IFNpZ25lZC1vZmYtYnk6
-IENsYXVkaXUgQmV6bmVhIDxjbGF1ZGl1LmJlem5lYUBtaWNyb2NoaXAuY29tPg0KDQpUZXN0ZWQt
-Ynk6IENvZHJpbiBDaXVib3Rhcml1IDxjb2RyaW4uY2l1Ym90YXJpdUBtaWNyb2NoaXAuY29tPg0K
+
+On 7/7/21 1:42 PM, Daniel Vetter wrote:
+> On Wed, Jul 07, 2021 at 09:03:03AM +0000, Simon Ser wrote:
+>> Hi,
+>>
+>> Thanks for working on this. Do you have plans for user-space
+>> implementations and IGT?
+> Note that these parts are mandatory, and there's a patch floating around
+> further clarifying what's all expected for new properties:
+>
+> https://lore.kernel.org/dri-devel/20210706161244.1038592-1-maxime@cerno.tech/
+
+
+Hi,
+
+
+We don't usually test with piglit and igt-gpu-tools. Instead, modetest 
+utility of the libdrm is used quite often (as is it the case in order to 
+test this property).
+
+
+We plan to port those tools on our platform before implementing this 
+kind of tests, but it will require a bit more time.
+
+An analysis is currently ongoing.
+
+
+Furthermore, do you have any advice on top of documentation for 
+implementing such tests ?
+
+
+I was also thinking about implementing an option into modetest to ease 
+the use of this drm property (support of hexadecimal values for properties).
+
+
+Regards,
+
+Raphaël
+
+>
+> Cheers, Daniel
+>
+>> Thanks,
+>>
+>> Simon
