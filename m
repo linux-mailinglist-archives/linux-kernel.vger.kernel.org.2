@@ -2,112 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC5E3C1DDC
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 05:39:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78AF53C1DE4
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 05:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231274AbhGIDjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 23:39:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54402 "EHLO
+        id S231132AbhGIDq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 23:46:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231233AbhGIDjV (ORCPT
+        with ESMTP id S230462AbhGIDqz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 23:39:21 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D4DC061574;
-        Thu,  8 Jul 2021 20:36:38 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id p1so20354662lfr.12;
-        Thu, 08 Jul 2021 20:36:38 -0700 (PDT)
+        Thu, 8 Jul 2021 23:46:55 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F6A5C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 20:44:11 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so5308470pjo.3
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 20:44:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XgObjxd836J01Nl5oCqassoOm41G96StAN2mBy6f6k4=;
-        b=M33c2EL7z+WEZC3oDvuC3shlwtFr4uiO3JilGf9Eo4z6vLw6dx+Jf+BZ36qnTRiA18
-         6Wb5vaAAAMAKIRgRGaFzSMoKV/b9G/mphNE3Ygrs3MUoI3tOtVBGhkBpcgBb3/qGThlM
-         wX/+0FWZ1Ejtgd+2u+/PVDbklQgiSvMmgKXy4OyL5HlGTe8MMy03rFBbCYoEGvJhxoLU
-         usBTJ6Bx0yn4xScP4jbLaXF5ePg7w4rJlum2bTAgyU33jawZj9VGWVysTJ7oQ3/EuBIV
-         FRAv/EE/1q4ccZdJnJPplMJJtbrSVYmoOsCsqlfi22hfN2LNRgkCHRRhv91Db3WdvUqN
-         Nkpg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xkFDtexi/vMwk8I3d6YlTg5u37i8ZW2hQo1vPp5vAsk=;
+        b=CIGTDosxAQ1YjXeC3953YY48H+KIcktvFf+jUy6Mf3aKz9wBXD27lWDOaK7UCa23Hi
+         PWHBvkvblid2DvD713/emp6BmhVjoXVyyC2KDZPIRy9bs1eHgiqQztLd+28te0uYIV/O
+         gE66OE3UGusmNlh4Gfxj63fcFmrH7p3KLoSLwBeIpvE8SWMgRKT8LeCKgdCikjKxin4z
+         q9sDIgDhoRtFk21Pe8VMVmq1MAZf27Vv29rcFc6f72E1AEP2hbE15ClxubOUGaXvHSWm
+         gOn7MT3GAU2RrDIk4/5PtozgUlwa9FLExSwt7EkkI8N1iakD8beHuDX3Z8h1G3+eNNsw
+         36XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XgObjxd836J01Nl5oCqassoOm41G96StAN2mBy6f6k4=;
-        b=fI83NZzIVYxmy4JCz0nmoVHRJnbg2Pshyorgcwli+qcatlAu7+sSOLrTQFcrYUpmBU
-         YhlbWjDORGVqql8eYlPr/YT/cdEChZFUW5otrXDREqbRthZt5EEZunm9niUAXaGQq+r4
-         fua/pAZv5i5/XJIYdBGCm8Mbkur1eqhukFnOGpkxVeJS4Lqx1zvom8bavZMRdfgYivHD
-         BEKDiujanl/xmVthvjjjfCnriSURkyMAh2JqU89zSBPyaOC/rA93EI0K74weIvYICcx6
-         jpUMlPYAGYCuwvsk7WJFnFNTT2L+03o2HC8yFAnR+A7li4Rn7l9JwGosv8Nq2SmFrsma
-         AiYg==
-X-Gm-Message-State: AOAM530rITqJSWT1uxtdZeKzfE9rJRy/CgsYdXJtF5LCWcn6G6NS51Ne
-        z/vfN28YRJH28kzFC+DtNIRXDhPfAclHqEoEXvA=
-X-Google-Smtp-Source: ABdhPJyDqDlrpIzJfkA7MkaBaE2HUpGUAL9UjDk3tOBMXIdWPUxXBAEJvNWAsn7kBZzQ85vEDHGwLlkIUBDzGFYqiVM=
-X-Received: by 2002:a19:5016:: with SMTP id e22mr24174635lfb.539.1625801796743;
- Thu, 08 Jul 2021 20:36:36 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xkFDtexi/vMwk8I3d6YlTg5u37i8ZW2hQo1vPp5vAsk=;
+        b=mgo7hJ4vHXC1lWViykS+JGecL0CZWzLXNvYbQqR1lPf6/zdABJotuEj3DrxDW9F/E0
+         gHwgcb+++mndl4eZGCKQEXp4lQUS4Clhmhf/TtBDT3PBmKi1KflFjX65thf//dGSJVkj
+         PuZARIxx/+rhDOa0Fbjm6y950/B0kn1rIWSRcLlXdT2Vv9fBb3wKCkkSAE0W59ATxhLJ
+         cTtO9uqlTvbefLodRxnKCaWtVPV5VKo3yNFg0i4oxusvSjt/i4999vm7/Qz7IdgL9p2D
+         83rBu11b+agZvAL1+vnxqfX4rZ+3FTrC1FWcPlFDiZNBtCLH9femu5ybPaA9oR9LWg/b
+         w0MQ==
+X-Gm-Message-State: AOAM533gyI/eR8fwjtV6nAdmhQXJLfBun6vPDv+ADs7zWJGgRH5MKU95
+        ZP2Qo2gNTbLlDKdn4ZtTIkTs/A==
+X-Google-Smtp-Source: ABdhPJxH+A4xey9h58qu80WqGf4nd39LxWfRQeFFewlb+PDJOngfC5cTctLhAT7z2TUi+NJIe3vRxw==
+X-Received: by 2002:a17:90a:cd01:: with SMTP id d1mr8389091pju.106.1625802250390;
+        Thu, 08 Jul 2021 20:44:10 -0700 (PDT)
+Received: from localhost ([106.201.108.2])
+        by smtp.gmail.com with ESMTPSA id q21sm4218209pfh.26.2021.07.08.20.44.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jul 2021 20:44:09 -0700 (PDT)
+Date:   Fri, 9 Jul 2021 09:14:07 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Jie Deng <jie.deng@intel.com>
+Cc:     linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, wsa@kernel.org,
+        wsa+renesas@sang-engineering.com, mst@redhat.com, arnd@arndb.de,
+        jasowang@redhat.com, andriy.shevchenko@linux.intel.com,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, conghui.chen@intel.com,
+        stefanha@redhat.com, gregkh@linuxfoundation.org,
+        vincent.guittot@linaro.org, alex.bennee@linaro.org
+Subject: Re: [PATCH v14] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <20210709034407.xmglkgzubrztnxsg@vireshk-i7>
+References: <984ebecaf697058eb73389ed14ead9dd6d38fb53.1625796246.git.jie.deng@intel.com>
 MIME-Version: 1.0
-References: <20210709031526.30746-1-jrdr.linux@gmail.com>
-In-Reply-To: <20210709031526.30746-1-jrdr.linux@gmail.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Fri, 9 Jul 2021 00:36:25 -0300
-Message-ID: <CAOMZO5BHDBR5y5q559UexTmYbhPwSp1MV3TJ3k+z4W8ehE-5_Q@mail.gmail.com>
-Subject: Re: [PATCH] iio: accel: fxls8962af: Initialize return value
-To:     Souptick Joarder <jrdr.linux@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Sean Nyekjaer <sean@geanix.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-iio@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <984ebecaf697058eb73389ed14ead9dd6d38fb53.1625796246.git.jie.deng@intel.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Souptick,
-
-On Fri, Jul 9, 2021 at 12:17 AM Souptick Joarder <jrdr.linux@gmail.com> wrote:
->
-> kernel test robot throws below warning ->
->
-> smatch warnings:
-> drivers/iio/accel/fxls8962af-core.c:640
-> fxls8962af_i2c_raw_read_errata3() error: uninitialized symbol 'ret'.
->
-> Initialize it.
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+On 09-07-21, 10:25, Jie Deng wrote:
+> Add an I2C bus driver for virtio para-virtualization.
+> 
+> The controller can be emulated by the backend driver in
+> any device model software by following the virtio protocol.
+> 
+> The device specification can be found on
+> https://lists.oasis-open.org/archives/virtio-comment/202101/msg00008.html.
+> 
+> By following the specification, people may implement different
+> backend drivers to emulate different controllers according to
+> their needs.
+> 
+> Co-developed-by: Conghui Chen <conghui.chen@intel.com>
+> Signed-off-by: Conghui Chen <conghui.chen@intel.com>
+> Signed-off-by: Jie Deng <jie.deng@intel.com>
 > ---
->  drivers/iio/accel/fxls8962af-core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/iio/accel/fxls8962af-core.c b/drivers/iio/accel/fxls8962af-core.c
-> index 078d87865fde..8af1c8f58e83 100644
-> --- a/drivers/iio/accel/fxls8962af-core.c
-> +++ b/drivers/iio/accel/fxls8962af-core.c
-> @@ -628,7 +628,7 @@ static int fxls8962af_i2c_raw_read_errata3(struct fxls8962af_data *data,
->                                            u16 *buffer, int samples,
->                                            int sample_length)
->  {
-> -       int i, ret;
-> +       int i, ret = -EINVAL;
->
->         for (i = 0; i < samples; i++) {
->                 ret = regmap_raw_read(data->regmap, FXLS8962AF_BUF_X_LSB,
+> Changes v13 -> v14
+> 	- Put the headers in virtio_i2c.h in alphabetical order.
+> 	- Dropped I2C_FUNC_SMBUS_QUICK support.
+> 	- Dropped few unnecessary variables and checks.
+> 	- Use "num" everywhere instead of num or nr, to be consistent.
+> 	- Added few comments which make the design more clear. 
 
-Would the change below work?
+Thanks a lot for following this up so far :)
 
---- a/drivers/iio/accel/fxls8962af-core.c
-+++ b/drivers/iio/accel/fxls8962af-core.c
-@@ -637,7 +637,7 @@ static int fxls8962af_i2c_raw_read_errata3(struct
-fxls8962af_data *data,
-                        return ret;
-        }
+> +static int virtio_i2c_prepare_reqs(struct virtqueue *vq,
+> +				   struct virtio_i2c_req *reqs,
+> +				   struct i2c_msg *msgs, int num)
+> +{
+> +	struct scatterlist *sgs[3], out_hdr, msg_buf, in_hdr;
+> +	int i;
+> +
+> +	for (i = 0; i < num; i++) {
+> +		int outcnt = 0, incnt = 0;
+> +
+> +		/*
+> +		 * We don't support 0 length messages and so masked out
+> +		 * I2C_FUNC_SMBUS_QUICK in virtio_i2c_func().
+> +		 */
+> +		if (!msgs[i].len)
+> +			break;
+> +
+> +		/*
+> +		 * Only 7-bit mode supported for this moment. For the address
+> +		 * format, Please check the Virtio I2C Specification.
+> +		 */
+> +		reqs[i].out_hdr.addr = cpu_to_le16(msgs[i].addr << 1);
+> +
+> +		if (i != num - 1)
+> +			reqs[i].out_hdr.flags = cpu_to_le32(VIRTIO_I2C_FLAGS_FAIL_NEXT);
+> +
+> +		sg_init_one(&out_hdr, &reqs[i].out_hdr, sizeof(reqs[i].out_hdr));
+> +		sgs[outcnt++] = &out_hdr;
+> +
+> +		reqs[i].buf = i2c_get_dma_safe_msg_buf(&msgs[i], 1);
+> +		if (!reqs[i].buf)
+> +			break;
+> +
+> +		sg_init_one(&msg_buf, reqs[i].buf, msgs[i].len);
+> +
+> +		if (msgs[i].flags & I2C_M_RD)
+> +			sgs[outcnt + incnt++] = &msg_buf;
+> +		else
+> +			sgs[outcnt++] = &msg_buf;
+> +
+> +		sg_init_one(&in_hdr, &reqs[i].in_hdr, sizeof(reqs[i].in_hdr));
+> +		sgs[outcnt + incnt++] = &in_hdr;
+> +
+> +		if (virtqueue_add_sgs(vq, sgs, outcnt, incnt, &reqs[i], GFP_KERNEL)) {
+> +			i2c_put_dma_safe_msg_buf(reqs[i].buf, &msgs[i], false);
+> +			break;
+> +		}
+> +	}
+> +
+> +	return i;
+> +}
 
--       return ret;
-+       return 0;
- }
+Wolfram, in case you wonder why we don't error out early as discussed earlier,
+then ...
+
+> +static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
+> +			   int num)
+> +{
+
+...
+
+> +	/*
+> +	 * For the case where count < num, i.e. we weren't able to queue all the
+> +	 * msgs, ideally we should abort right away and return early, but some
+> +	 * of the messages are already sent to the remote I2C controller and the
+> +	 * virtqueue will be left in undefined state in that case. We kick the
+> +	 * remote here to clear the virtqueue, so we can try another set of
+> +	 * messages later on.
+> +	 */
+
+... here is the reasoning for that.
+
+Please see if you can still get it merged into 5.14-rc1/2. Thanks.
+
+Reviewed-by: Viresh Kumar <viresh.kumar@linaro.org>
+Tested-by: Viresh Kumar <viresh.kumar@linaro.org>
+
+-- 
+viresh
