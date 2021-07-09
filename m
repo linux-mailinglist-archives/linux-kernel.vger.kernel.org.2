@@ -2,64 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 726293C2984
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 21:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 347B03C298A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 21:22:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230314AbhGITX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 15:23:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57550 "EHLO mail.kernel.org"
+        id S231255AbhGITYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 15:24:43 -0400
+Received: from foss.arm.com ([217.140.110.172]:58602 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229931AbhGITXX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 15:23:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8C416613CA;
-        Fri,  9 Jul 2021 19:20:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625858439;
-        bh=w41MqLWCZVrKkXPru1mLtgmwejMDAJGww+t1PKadTdM=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=MZoR4J4urLASjIf2lNBh6d0mWEc4rufMW2IFJFrugL3cH2BcyRBxhvoZ14aI6oti1
-         MRzjewvHfN2t00nzQTM7h/dZdUpzaJqTFyN3JLMMgMeeVR8+oL1CaQrfZ9WQ/SfPG/
-         gMOgAdYj2Ecx2HS002zaUNge463mAVVbGAklnG6AQK5wbracrG5BWeqXWkljZwi9Ye
-         1ATFFAIxiw9DYcqHdeT9wpFgf0goEOmeWDBh0WGwo6huLkbG2rl3PzjWjySVqfUBWb
-         cAcvlU/9b0C4wgXIYULE0FuGfOlcXG2K9BuxKbSKtME+U+YvVUt/45y6GCuTvJh1ZA
-         LSe+xVh5ZtrCw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 862A0609AD;
-        Fri,  9 Jul 2021 19:20:39 +0000 (UTC)
-Subject: Re: [GIT PULL] tracing: Fix for histogram and clean up in ftrace
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210709092256.567f77a1@oasis.local.home>
-References: <20210709092256.567f77a1@oasis.local.home>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210709092256.567f77a1@oasis.local.home>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.14-2
-X-PR-Tracked-Commit-Id: 3ecda64475bccdfdcbfd5b9b7e4bf639d8b233da
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5a7f7fc5ddbbf9bf63eaa8cb9a0d254ab984f3d6
-Message-Id: <162585843954.13664.17450618214890991774.pr-tracker-bot@kernel.org>
-Date:   Fri, 09 Jul 2021 19:20:39 +0000
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        id S229552AbhGITYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 15:24:41 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3396531B;
+        Fri,  9 Jul 2021 12:21:57 -0700 (PDT)
+Received: from [10.57.33.207] (unknown [10.57.33.207])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B38DD3F66F;
+        Fri,  9 Jul 2021 12:21:52 -0700 (PDT)
+Subject: Re: [PATCH v2 0/3] iommu: Enable non-strict DMA on QCom SD/MMC
+To:     Joerg Roedel <joro@8bytes.org>,
+        Doug Anderson <dianders@chromium.org>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-pci@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Rajat Jain <rajatja@google.com>, Will Deacon <will@kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Jonathan Corbet <corbet@lwn.net>, quic_c_gdjako@quicinc.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Sonny Rao <sonnyrao@chromium.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        iommu@lists.linux-foundation.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        Baokun Li <libaokun1@huawei.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
+        "Maciej W. Rozycki" <macro@orcam.me.uk>
+References: <20210624171759.4125094-1-dianders@chromium.org>
+ <YNXXwvuErVnlHt+s@8bytes.org>
+ <CAD=FV=UFxZH7g8gH5+M=Fv4Y-e1bsLkNkPGJhNwhvVychcGQcQ@mail.gmail.com>
+ <CAD=FV=W=HmgH3O3z+nThWL6U+X4Oh37COe-uTzVB9SanP2n86w@mail.gmail.com>
+ <YOaymBHc4g2cIfRn@8bytes.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <0a2042ff-1604-d32d-35a7-d4df8f591459@arm.com>
+Date:   Fri, 9 Jul 2021 20:21:46 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <YOaymBHc4g2cIfRn@8bytes.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 9 Jul 2021 09:22:56 -0400:
+On 2021-07-08 09:08, Joerg Roedel wrote:
+> On Wed, Jul 07, 2021 at 01:00:13PM -0700, Doug Anderson wrote:
+>> a) Nothing is inherently broken with my current approach.
+>>
+>> b) My current approach doesn't make anybody terribly upset even if
+>> nobody is totally in love with it.
+> 
+> Well, no, sorry :)
+> 
+> I don't think it is a good idea to allow drivers to opt-out of the
+> strict-setting. This is a platform or user decision, and the driver
+> should accept whatever it gets.
+> 
+> So the real question is still why strict is the default setting and how
+> to change that.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.14-2
+It's occurred to me whilst hacking on the relevant area that there's an 
+important point I may have somewhat glossed over there: most of the 
+IOMMU drivers that are used for arm64 do not take advantage of 
+non-strict mode anyway. If anything it would be detrimental, since 
+iommu-dma would waste a bunch of time and memory managing flush queues 
+and firing off the batch invalidations while internally the drivers are 
+still invalidating each unmap synchronously.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5a7f7fc5ddbbf9bf63eaa8cb9a0d254ab984f3d6
+Those IOMMUs in mobile and embedded SoCs are also mostly used for media 
+devices, where the buffers are relatively large and change relatively 
+infrequently, so they are less likely to gain significantly from 
+supporting non-strict mode. It's primarily the Arm SMMUs which get used 
+in the more "x86-like" paradigm (especially in larger systems) of being 
+stuck in front of everything including networking/storage/PCIe/etc. 
+where the workloads are far more varied.
 
-Thank you!
+Robin.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+> Or document for the users that want performance how to
+> change the setting, so that they can decide.
+> 
+> Regards,
+> 
+> 	Joerg
+> 
+> _______________________________________________
+> iommu mailing list
+> iommu@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/iommu
+> 
