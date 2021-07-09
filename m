@@ -2,181 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B42583C26DB
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 17:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5BA3C26DE
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 17:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232382AbhGIPe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 11:34:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49340 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232248AbhGIPe2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 11:34:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E700F613C1;
-        Fri,  9 Jul 2021 15:31:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625844704;
-        bh=EJGDTErqhFfO+4+vO3fnUq+RuTjIL8rzCpz3Xvt7RAg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nAuK98c1w4esf+28ABqRQMXZ/TSLSo9cs01eDTxLDD0GrdE4WUkH+DmwMCQUdYjlJ
-         wdNRiLZJvshUGJUkF+BBUz6X9Bd9mOwMhoyy3LxVlWM7eHfVVLpCOtly+/JM8DupTL
-         85Pl0hown2YU/9o/yw/N+1LWRZnglUVckqA4YW8yukfeZGkO1fWC+VLyDny/h+lHNX
-         HGM9eG0HFYOyCFpSyxraIk6ozDWDBAVCLqRkU2t2KxJASRnz4Q9zE+tdKUnV68/NQD
-         x0BWRQq6fHp0I8QnjnQntzO4ArOqSNuvEQ+gi2g20UhdcNLGqD0slG59NtV5nX1LY7
-         lbDQ1y6yAOYvw==
-Date:   Sat, 10 Jul 2021 00:31:40 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
-        yhs@fb.com, linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH -tip v8 05/13] x86/kprobes: Add UNWIND_HINT_FUNC on
- kretprobe_trampoline code
-Message-Id: <20210710003140.8e561ad33d42f9ac78de6a15@kernel.org>
-In-Reply-To: <YOK8pzp8B2V+1EaU@gmail.com>
-References: <162399992186.506599.8457763707951687195.stgit@devnote2>
-        <162399996966.506599.810050095040575221.stgit@devnote2>
-        <YOK8pzp8B2V+1EaU@gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232386AbhGIPfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 11:35:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231976AbhGIPfn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 11:35:43 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C23C6C0613DD;
+        Fri,  9 Jul 2021 08:32:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=y7YLHiF0t+l7CAiXRoEvkaZFeIRtHz06yPRep3Kg/LM=; b=cBaSGviwrp/QKpIQbEzA+mZFQt
+        gwNGWcl04gu8kPnL199xu/bBhXuhbNZRbCFyLnnY6WTYlGlXWVhJu0+MXdkdYFiI/6yYbV3bl32s0
+        JWG9A0CdPvNcpYS1YUnAv8QgA/UymEqfFn8bzWbKCHXwaWKUDNvPXQ16pM55my0DJt0ntdPFILt4E
+        uN2RM+XpsviEXdDjdC1SiPe1jN9t9R/U9mYpIViX4Ug97nhwdepiGqHj5+kYfhd7C7tMCdpr1/Ae2
+        JmCWzLhVPcTns+75Q1+sGe6vZFgLsSZR8BPvVXWz3N6IghXCyUFWCizmSgFMHhPnolCcE43NaSgk5
+        Rn3Q10SQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m1sUi-00EdZV-PT; Fri, 09 Jul 2021 15:32:50 +0000
+Date:   Fri, 9 Jul 2021 16:32:48 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        kumarpraveen@linux.microsoft.com, pasha.tatashin@soleen.com,
+        Jonathan Corbet <corbet@lwn.net>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Lillian Grassin-Drake <ligrassi@microsoft.com>,
+        Muminul Islam <muislam@microsoft.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Subject: Re: [RFC v1 7/8] mshv: implement in-kernel device framework
+Message-ID: <YOhsIDccgbUCzwqt@casper.infradead.org>
+References: <20210709114339.3467637-1-wei.liu@kernel.org>
+ <20210709114339.3467637-8-wei.liu@kernel.org>
+ <YOhIzJVPN9SwoRK0@casper.infradead.org>
+ <20210709135013.t5axinjmufotpylf@liuwe-devbox-debian-v2>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210709135013.t5axinjmufotpylf@liuwe-devbox-debian-v2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 5 Jul 2021 10:02:47 +0200
-Ingo Molnar <mingo@kernel.org> wrote:
-
-> 
-> * Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
-> > From: Josh Poimboeuf <jpoimboe@redhat.com>
+On Fri, Jul 09, 2021 at 01:50:13PM +0000, Wei Liu wrote:
+> On Fri, Jul 09, 2021 at 02:02:04PM +0100, Matthew Wilcox wrote:
+> > On Fri, Jul 09, 2021 at 11:43:38AM +0000, Wei Liu wrote:
+> > > +static long
+> > > +mshv_partition_ioctl_create_device(struct mshv_partition *partition,
+> > > +	void __user *user_args)
+> > > +{
+> > [...]
+> > > +	mshv_partition_get(partition);
+> > > +	r = anon_inode_getfd(ops->name, &mshv_device_fops, dev, O_RDWR | O_CLOEXEC);
+> > > +	if (r < 0) {
+> > > +		mshv_partition_put_no_destroy(partition);
+> > > +		list_del(&dev->partition_node);
+> > > +		ops->destroy(dev);
+> > > +		goto out;
+> > > +	}
+> > > +
+> > > +	cd->fd = r;
+> > > +	r = 0;
 > > 
-> > Add UNWIND_HINT_FUNC on kretporbe_trampoline code so that ORC
-> > information is generated on the kretprobe_trampoline correctly.
-> 
-> What is a 'kretporbe'?
-
-Oops, it's a typo.
-
-> 
-> > Note that when the CONFIG_FRAME_POINTER=y, since the
-> > kretprobe_trampoline skips updating frame pointer, the stack frame
-> > of the kretprobe_trampoline seems non-standard. So this marks it
-> > is STACK_FRAME_NON_STANDARD() and undefine UNWIND_HINT_FUNC.
-> 
-> What does 'marks it is' mean?
-
-Sorry, I meant, this marks the kretprobe_trampoline as non-standard
-stack frame by STACK_FRAME_NON_STANDARD().
-
-> 
-> 'undefine' UNWIND_HINT_FUNC?
-> 
-> Doesn't the patch do the exact opposite:
-> 
->   > +#define UNWIND_HINT_FUNC \
->   > +	UNWIND_HINT(ORC_REG_SP, 8, UNWIND_HINT_TYPE_FUNC, 0)
-> 
-> But it does undefine it in a specific spot:
-
-Yes, if you think this is not correct way, what about the following?
-
-#ifdef CONFIG_FRAME_POINTER
-STACK_FRAME_NON_STANDARD(kretprobe_trampoline);
-#define KRETPROBE_UNWIND_HINT_FUNC
-#else
-#define KRETPROBE_UNWIND_HINT_FUNC	UNWIND_HINT_FUNC
-#endif
-
-
-> > Anyway, with the frame pointer, FP unwinder can unwind the stack
-> > frame correctly without that hint.
+> > Why return the fd in memory instead of returning the fd as the return
+> > value from the ioctl?
 > > 
-> > Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> > Tested-by: Andrii Nakryik <andrii@kernel.org>
+> > > +	if (copy_to_user(user_args, &tmp, sizeof(tmp))) {
+> > > +		r = -EFAULT;
+> > > +		goto out;
+> > > +	}
+> > 
+> > ... this could then disappear.
 > 
-> I have to say these changelogs are very careless.
-
-Sorry for inconvenience...
-
+> Thanks for your comment, Matthew.
 > 
-> > +#else
-> > +
-> 
-> In headers, in longer CPP blocks, please always mark the '#else' branch 
-> with what it is the else branch of.
+> This is intentionally because I didn't want to deviate from KVM's API.
+> The fewer differences the better.
 
-OK.
-
-> 
-> See the output of:
-> 
->    kepler:~/tip> git grep '#else' arch/x86/include/asm/ | head
-
-Thanks for the hint!
-
-> 
-> > +#ifdef CONFIG_FRAME_POINTER
-> > +/*
-> > + * kretprobe_trampoline skips updating frame pointer. The frame pointer
-> > + * saved in trampoline_handler points to the real caller function's
-> > + * frame pointer. Thus the kretprobe_trampoline doesn't seems to have a
-> > + * standard stack frame with CONFIG_FRAME_POINTER=y.
-> > + * Let's mark it non-standard function. Anyway, FP unwinder can correctly
-> > + * unwind without the hint.
-> 
-> s/doesn't seems to have a standard stack frame
->  /doesn't have a standard stack frame
-> 
-> There's nothing 'seems' about the situation - it's a non-standard function 
-> entry and stack frame situation, and the unwinder needs to know about it.
-
-OK.
-
-> 
-> > +STACK_FRAME_NON_STANDARD(kretprobe_trampoline);
-> > +#undef UNWIND_HINT_FUNC
-> > +#define UNWIND_HINT_FUNC
-> > +#endif
-> >  /*
-> >   * When a retprobed function returns, this code saves registers and
-> >   * calls trampoline_handler() runs, which calls the kretprobe's handler.
-> > @@ -1031,6 +1044,7 @@ asm(
-> >  	/* We don't bother saving the ss register */
-> >  #ifdef CONFIG_X86_64
-> >  	"	pushq %rsp\n"
-> > +	UNWIND_HINT_FUNC
-> >  	"	pushfq\n"
-> >  	SAVE_REGS_STRING
-> >  	"	movq %rsp, %rdi\n"
-> > @@ -1041,6 +1055,7 @@ asm(
-> >  	"	popfq\n"
-> >  #else
-> >  	"	pushl %esp\n"
-> > +	UNWIND_HINT_FUNC
-> >  	"	pushfl\n"
-> >  	SAVE_REGS_STRING
-> >  	"	movl %esp, %eax\n"
-> 
-> Why not provide an appropriate annotation method in <asm/unwind_hints.h>, 
-> so that other future code can use it too instead of reinventing the wheel?
-
-Would you mean we should define the UNWIND_HINT_FUNC as a macro
-which depends on CONFIG_FRAME_POINTER, in <asm/unwind_hints.h>?
-
-Josh, what would you think?
-
-Thank you,
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Then don't define your own structure.  Use theirs.
