@@ -2,122 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4FEE3C253A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E38753C2540
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231906AbhGINvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 09:51:19 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58762 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231682AbhGINvS (ORCPT
+        id S232018AbhGINwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 09:52:23 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:55027 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231454AbhGINwW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 09:51:18 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1625838514;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hVC3cXAhgYnSipbuuxux93KDFOSs/oL3p5xOhmYvtWo=;
-        b=cWB3cxoJSaVuRcaSa8q85BHUo4we2u+X4Z+9zJeJYLSEMt1u/AxV8omDcjeMPkUch38RdB
-        4G/NN+3C6hjxQb+6oNDncQgrSeyTsPL1/2vJheRqMqXoBxygtPHIwSXvAn/Ag9tg6yBR6R
-        lToodPh9HSQwZuY51xCfq55RTDBlS81/4JmgnMF34eeIf+iGtAH0qRBVTFIDC6cK5QSWaB
-        EZJEuwbO9Z6baMalA1qXgCLJtAXzyyYDZr7EwpSM4cdO4sJpdOJ7Uk00+AM45LDT69RzTk
-        xW0DkdYNc82xPlugRnR+Bm+ovk/54C+TomUscxvIGNXFXWD3pvwMwrPEtQQrTA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1625838514;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hVC3cXAhgYnSipbuuxux93KDFOSs/oL3p5xOhmYvtWo=;
-        b=iDLmk7mU5iLGJJ3gsdnwKgDnHOn+R5VCbr4dfEEIj2KXnaInxLJhwsO6/El4OO/x8CM7d/
-        Shkj7Ql4xt6vHxAg==
-To:     Andrew Halaney <ahalaney@redhat.com>
-Cc:     bigeasy@linutronix.de, linux-kernel@vger.kernel.org,
-        linux-rt-users@vger.kernel.org, Chunyu Hu <chuhu@redhat.com>,
-        stable-rt@vger.kernel.org
-Subject: Re: [RT PATCH] locking/rwsem-rt: Remove might_sleep() in __up_read()
-In-Reply-To: <20210708195125.zxqsxy5bpccgxb2n@halaneylaptop>
-References: <20210406221952.50399-1-ahalaney@redhat.com> <20210426164229.mbrsrjpmmhp7ehna@halaneylaptop> <877dkoud19.ffs@nanos.tec.linutronix.de> <20210708195125.zxqsxy5bpccgxb2n@halaneylaptop>
-Date:   Fri, 09 Jul 2021 15:48:33 +0200
-Message-ID: <87bl7boaxa.ffs@nanos.tec.linutronix.de>
+        Fri, 9 Jul 2021 09:52:22 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R271e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UfDrXrP_1625838575;
+Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UfDrXrP_1625838575)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 09 Jul 2021 21:49:36 +0800
+Date:   Fri, 9 Jul 2021 21:49:35 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable <stable@vger.kernel.org>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Nick Terrell <terrelln@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [linux-stable-rc:linux-5.4.y 7045/7049] mipsel-linux-ld:
+ decompress.c:undefined reference to `memmove'
+Message-ID: <YOhT78jt3rkCmudH@B-P7TQMD6M-0146.local>
+References: <202107070120.6dOj1kB7-lkp@intel.com>
+ <YOfjmCT6n61Yidvp@B-P7TQMD6M-0146.local>
+ <YOf4yZIld6L6XP13@B-P7TQMD6M-0146.local>
+ <YOglcE85xuwfD7It@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YOglcE85xuwfD7It@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew,
+On Fri, Jul 09, 2021 at 12:31:12PM +0200, Greg Kroah-Hartman wrote:
+> On Fri, Jul 09, 2021 at 03:20:41PM +0800, Gao Xiang wrote:
+> > Hi Greg, stable all,
+> > 
+> > On Fri, Jul 09, 2021 at 01:50:16PM +0800, Gao Xiang wrote:
+> > > On Wed, Jul 07, 2021 at 01:15:28AM +0800, kernel test robot wrote:
+> > > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> > > > head:   3909e2374335335c9504467caabc906d3f7487e4
+> > > > commit: defcc2b5e54a4724fb5733f802edf5dd596018b6 [7045/7049] lib/lz4: explicitly support in-place decompression
+> > > > config: mips-randconfig-r036-20210706 (attached as .config)
+> > > > compiler: mipsel-linux-gcc (GCC) 9.3.0
+> > > > reproduce (this is a W=1 build):
+> > > >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> > > >         chmod +x ~/bin/make.cross
+> > > >         # https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?id=defcc2b5e54a4724fb5733f802edf5dd596018b6
+> > > >         git remote add linux-stable-rc https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+> > > >         git fetch --no-tags linux-stable-rc linux-5.4.y
+> > > >         git checkout defcc2b5e54a4724fb5733f802edf5dd596018b6
+> > > >         # save the attached .config to linux build tree
+> > > >         mkdir build_dir
+> > > >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross O=build_dir ARCH=mips SHELL=/bin/bash
+> > > > 
+> > > > If you fix the issue, kindly add following tag as appropriate
+> > > > Reported-by: kernel test robot <lkp@intel.com>
+> > > 
+> > > Which is weird, does the preboot environment miss memmove() on mipsel?
+> > > Just a guess, I may look into that myself later...
+> > > 
+> > 
+> > After manually checking, I found memmove() for the mips preboot environment
+> > was incidentally introduced by commit a510b616131f ("MIPS: Add support for
+> > ZSTD-compressed kernels") which wasn't included in v5.4, but included in
+> > v5.10 as below (so v5.10.y is fine):
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/arch/mips/boot/compressed?h=v5.10&id=a510b616131f85215ba156ed67e5ed1c0701f80f
+> > 
+> > And when I applied the following patch partially from the original
+> > commit, the compile error with the command lines mentioned above was gone:
+> > 
+> > diff --git a/arch/mips/boot/compressed/string.c b/arch/mips/boot/compressed/string.c
+> > index 43beecc3587c..e9ab7ea592ba 100644
+> > --- a/arch/mips/boot/compressed/string.c
+> > +++ b/arch/mips/boot/compressed/string.c
+> > @@ -27,3 +27,19 @@ void *memset(void *s, int c, size_t n)
+> >  		ss[i] = c;
+> >  	return s;
+> >  }
+> > +
+> > +void * __weak memmove(void *dest, const void *src, size_t n)
+> > +{
+> > +	unsigned int i;
+> > +	const char *s = src;
+> > +	char *d = dest;
+> > +
+> > +	if ((uintptr_t)dest < (uintptr_t)src) {
+> > +		for (i = 0; i < n; i++)
+> > +			d[i] = s[i];
+> > +	} else {
+> > +		for (i = n; i > 0; i--)
+> > +			d[i - 1] = s[i - 1];
+> > +	}
+> > +	return dest;
+> > +}
+> > 
+> > How to backport such commit partially to the v5.4.y stable kernel?
+> 
+> Please submit it in a format which we can apply it.
 
-On Thu, Jul 08 2021 at 14:51, Andrew Halaney wrote:
+I've sent out a patch (although not sure if the exact format like this):
+https://lore.kernel.org/r/20210709132408.174206-1-hsiangkao@linux.alibaba.com/
 
-Cc+ stable-rt folks and leave context untrimmed.
+> 
+> > ... Also, it would be better to check other mips compile combinations
+> > automatically since it's hard for me to check all such combinations
+> > one-by-one...
+> 
+> That's what kernelci is for, can you use that?
 
-> On Mon, Apr 26, 2021 at 08:16:34PM +0200, Thomas Gleixner wrote:
->> On Mon, Apr 26 2021 at 11:42, Andrew Halaney wrote:
->> > On Tue, Apr 06, 2021 at 05:19:52PM -0500, Andrew Halaney wrote:
->> >> There's no chance of sleeping here, the reader is giving up the
->> >> lock and possibly waking up the writer who is waiting on it.
->> >> 
->> >> Reported-by: Chunyu Hu <chuhu@redhat.com>
->> >> Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
->> >> ---
->> >> Hello,
->> >> 
->> >> I ran into a warning caused by this, and I think the warning is
->> >> incorrect. Please let me know if I'm wrong!
->> >> I'm working off of linux-5.12.y-rt, but this applies cleanly to older
->> >> stable branches as well.
->> >>
->> >> Thanks,
->> >> Andrew
->> >> 
->> >>  kernel/locking/rwsem-rt.c | 1 -
->> >>  1 file changed, 1 deletion(-)
->> >> 
->> >> diff --git a/kernel/locking/rwsem-rt.c b/kernel/locking/rwsem-rt.c
->> >> index 274172d5bb3a..b61edc4dcb73 100644
->> >> --- a/kernel/locking/rwsem-rt.c
->> >> +++ b/kernel/locking/rwsem-rt.c
->> >> @@ -198,7 +198,6 @@ void __up_read(struct rw_semaphore *sem)
->> >>  	if (!atomic_dec_and_test(&sem->readers))
->> >>  		return;
->> >>  
->> >> -	might_sleep();
->> >>  	raw_spin_lock_irq(&m->wait_lock);
->> >>  	/*
->> >>  	 * Wake the writer, i.e. the rtmutex owner. It might release the
->> >> -- 
->> >> 2.30.2
->> >
->> > Just a gentle follow up, any feedback?
->> 
->> Looks correct. Will go into the next rt-release.
->> 
->> Thanks,
->> 
->>         tglx
->> 
->
-> Hi Thomas,
->
-> I see a new release (v5.13-rt1) was created, and with it rwsem
-> was overhauled entirely making this patch pointless for linux-rt-devel.
->
-> That being said, it's a little unclear to me how RT only patches
-> make their way to the maintained branches over in linux-stable-rt.
-> I think it should be applied to:
->  v4.9-rt
->  v4.14-rt
->  v4.19-rt
->  v5.4-rt
->  v5.10-rt
-> to remove the incorrect warning, unless those branches plan to backport
-> the latest RT patchset with the new rwsem implementation. Is there a
-> proper way for me signal that?
-
-See Cc.
+I'm not sure how to use kernelci myself, maybe I missed something...
 
 Thanks,
+Gao Xiang
 
-        tglx
+> 
+> thanks,
+> 
+> greg k-h
