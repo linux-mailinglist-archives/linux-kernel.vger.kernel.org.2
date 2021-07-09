@@ -2,205 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C26923C20CB
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 10:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CC073C20C5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 10:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231574AbhGII2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 04:28:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231512AbhGII2W (ORCPT
+        id S231550AbhGII2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 04:28:01 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:51002 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229685AbhGII2A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 04:28:22 -0400
-Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB068C0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 01:25:37 -0700 (PDT)
-Received: by mail-ua1-x936.google.com with SMTP id d2so3316358uan.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 01:25:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=t3RLL9HO+hRks/PkaZVZzTRgr7UF7nIkarU/0lU2gW0=;
-        b=xa8EcFrdSBerofKAu49UyccOsdgMTavqkP72/U4wlhtzAU56H3Rj/hASqT7/iblaWc
-         PbO8qb28TkXHozsJ33GCYE6az0gFPuHBFfxBylnqMfX6TBGzPmBFARb2AtVnjYr2CyYW
-         WI/3eah8ups/diSTfsx7Fb05cOyK1pM1WTarPOWDq1QB3bvNIseuTE7y+RiyVK9bl/fE
-         NFu5Je+z/+mJ61795+jV1DmJR+9q+EfGkuBMxUmaTirZEmxLkVHatsUcZUgZXWk5thzb
-         hyCcxgtcHbWlOZe0vhbrlTTqoqzMyrRWEAoKwAMBwuOc4RjZ50F9w+xIcpP8sUNbhkBL
-         N92w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=t3RLL9HO+hRks/PkaZVZzTRgr7UF7nIkarU/0lU2gW0=;
-        b=iNXmXjJeuhvdpZZpyem5Uql7DMk10PBOW+QlggUmEheswcAfTiWetiRPdmiEpMvSys
-         C/yPXwgwCzw+ZMarGeI7hFYofozdzO5/CIumhDb3ryLpfZxrFprUUEyM4SSHq620dsxI
-         Lz+rUc8feqySnJndn7e7UX1eTUR09SdOoWXTeyT9jP2lnEf9kHVs5RQjkzdEVeAG76EH
-         Gdp2wafiw78Gpdy9n1/SFwsWUseirjPrOp2YV6D8R2UFolVPm/MnjOxtJtNAT1hOmD5D
-         0YTfzR/JZbstkaqJk580EYhc045w2DioVNV3X4O3QWqPo2S+D12IU2plXujPHHeQ9gkd
-         narw==
-X-Gm-Message-State: AOAM5302Ur98CdYS4tbSqsnttnJJ0OHfMh1EClydJq731znYR6+aOR9d
-        eWdseybCKgsB1Nu7ZLsyA23cmcwVdUj88bSl49uwnQ==
-X-Google-Smtp-Source: ABdhPJzMQyl6scM8lSRI3/3VcQLnb3dWbPw/GE5McGGy4qkNZvJw1LohG72KEsgcTXGV4e7TibVDqyBgR2zflxu3At4=
-X-Received: by 2002:a9f:2f14:: with SMTP id x20mr36234489uaj.104.1625819136865;
- Fri, 09 Jul 2021 01:25:36 -0700 (PDT)
+        Fri, 9 Jul 2021 04:28:00 -0400
+X-UUID: e2fa50fcf82b4f31a3406b086a65e148-20210709
+X-UUID: e2fa50fcf82b4f31a3406b086a65e148-20210709
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <lecopzer.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 54868000; Fri, 09 Jul 2021 16:25:13 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 9 Jul 2021 16:25:12 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 9 Jul 2021 16:25:12 +0800
+From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
+To:     <samitolvanen@google.com>
+CC:     <clang-built-linux@googlegroups.com>, <keescook@chromium.org>,
+        <lecopzer.chen@mediatek.com>, <linux-kbuild@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <masahiroy@kernel.org>,
+        <michal.lkml@markovi.net>, <nathan@kernel.org>,
+        <ndesaulniers@google.com>, <yj.chiang@mediatek.com>
+Subject: Re: [PATCH v3 1/2] Kbuild: lto: add CONFIG_MAKE_VERSION
+Date:   Fri, 9 Jul 2021 16:25:12 +0800
+Message-ID: <20210709082512.25208-1-lecopzer.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <CABCJKufWcp6Hx=8btz6pDNcKvQ21n4BSPZ7cp1Tzhxt0+pQOmw@mail.gmail.com>
+References: <CABCJKufWcp6Hx=8btz6pDNcKvQ21n4BSPZ7cp1Tzhxt0+pQOmw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210709043136.533205-1-dmitry.baryshkov@linaro.org> <20210709043136.533205-4-dmitry.baryshkov@linaro.org>
-In-Reply-To: <20210709043136.533205-4-dmitry.baryshkov@linaro.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 9 Jul 2021 10:24:59 +0200
-Message-ID: <CAPDyKFoNPkFqGMvR=JGXNVXp-UfWLUqReZ0DGP8+0PBh+7dCRg@mail.gmail.com>
-Subject: Re: [RESEND PATCH v2 3/7] PM: domains: Add support for runtime PM
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Jul 2021 at 06:32, Dmitry Baryshkov
-<dmitry.baryshkov@linaro.org> wrote:
->
-> Registers for some genpds can be located in the SoC area, powered up by
-> another power domain. To enabled access to those registers, respective
-> domain should be turned on.
->
-> This patch adds basic infrastructure to the genpd code to allow
-> implementing drivers for such genpd. PM domain can provide the parent
-> device through the genpd->dev.parent pointer. If its provided at the
-> pm_genpd_init() call time and if it is pm-enabled, genpd power_on and
-> power_off operations will call pm_runtime_get_sync() before powering up
-> the domain and pm_runtime_put_sync() after powering it down.
->
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> On Tue, Jul 6, 2021 at 2:06 AM Lecopzer Chen <lecopzer.chen@mediatek.com> wrote:
+> >
+> > > On Sun, Jul 4, 2021 at 7:03 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> > > >
+> > > > On Fri, Jul 2, 2021 at 12:29 PM Lecopzer Chen
+> > > > <lecopzer.chen@mediatek.com> wrote:
+> > > > >
+> > > > > To check the GNU make version. Used by the LTO Kconfig.
+> > > > >
+> > > > > LTO with MODVERSIONS will fail in generating correct CRC because
+> > > > > the makefile rule doesn't work for make with version 3.8X.[1]
+> > > > >
+> > > > > Thus we need to check make version during selecting on LTO Kconfig.
+> > > > > Add CONFIG_MAKE_VERSION which means MAKE_VERSION in canonical digits
+> > > > > for arithmetic comparisons.
+> > > > >
+> > > > > [1] https://lore.kernel.org/lkml/20210616080252.32046-1-lecopzer.chen@mediatek.com/
+> > > > > Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+> > > > > ---
+> > > >
+> > > >
+> > > > NACK.
+> > > >
+> > > > "Let's add MAKE_VERSION >= 40200 restriction
+> > > > just because I cannot write correct code that
+> > > > works for older Make" is a horrible idea.
+> > > >
+> > > > Also, Kconfig is supposed to check the compiler
+> > > > (or toolchains) capability, not host tool versions.
+> > >
+> > > I feel like requiring a Make that's half a decade old for a feature
+> > > that also requires a toolchain released last October ago isn't
+> > > entirely unreasonable.
+> > >
+> > > That being said, if Masahiro prefers not to rely on the wildcard
+> > > function's behavior here, which is a reasonable request, we could
+> > > simply use the shell to test for the file's existence:
+> > >
+> > > diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+> > > index 34d257653fb4..c6bd62f518ff 100644
+> > > --- a/scripts/Makefile.build
+> > > +++ b/scripts/Makefile.build
+> > > @@ -388,7 +388,7 @@ ifeq ($(CONFIG_LTO_CLANG) $(CONFIG_MODVERSIONS),y y)
+> > >        cmd_update_lto_symversions =                                     \
+> > >         rm -f $@.symversions                                            \
+> > >         $(foreach n, $(filter-out FORCE,$^),                            \
+> > > -               $(if $(wildcard $(n).symversions),                      \
+> > > +               $(if $(shell test -s $(n).symversions && echo y),       \
+> > >                         ; cat $(n).symversions >> $@.symversions))
+> > >  else
+> > >        cmd_update_lto_symversions = echo >/dev/null
+> > >
+> > > This is not quite as efficient as using wildcard, but should work with
+> > > older Make versions too. Thoughts?
+> > >
+> >
+> >
+> > I've tested this in both make-4.3 and 3.81, and the CRC is correct.
+> > But I'm not sure if anyone would have the "arg list too long" issue.
+> >
+> > Tested-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+> 
+> Thank you for testing. This should produce a command identical to the
+> wildcard version (with newer Make versions), so that shouldn't be an
+> issue. If nobody objects to this approach, would you mind putting this
+> into a proper patch and sending it as v4?
 
-Hi Dmitry,
+Sure, I'll rebase the whole commit and send as v4 soon.
 
-Using runtime PM for the genpd provider device, is not the correct
-approach. If the provider domain needs another domain to be powered on
-to work correctly, that per definition means that it has a parent
-domain.
 
-I suggest you try to build the correct PM domain topology, via using
-pm_genpd_add_subdomain() or of_genpd_add_subdomain(), then genpd will
-manages the power on/off for parent/child domain internally.
-
-Kind regards
-Uffe
-
-> ---
->  drivers/base/power/domain.c | 33 +++++++++++++++++++++++++++++++++
->  include/linux/pm_domain.h   |  6 ++++++
->  2 files changed, 39 insertions(+)
->
-> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> index e5d97174c254..7d49531c9731 100644
-> --- a/drivers/base/power/domain.c
-> +++ b/drivers/base/power/domain.c
-> @@ -482,6 +482,30 @@ void dev_pm_genpd_set_next_wakeup(struct device *dev, ktime_t next)
->  }
->  EXPORT_SYMBOL_GPL(dev_pm_genpd_set_next_wakeup);
->
-> +static int _genpd_pm_runtime_get(struct generic_pm_domain *genpd)
-> +{
-> +       int ret;
-> +
-> +       if (!(genpd->flags & _GENPD_FLAG_RPM_ENABLED))
-> +               return 0;
-> +
-> +       ret = pm_runtime_get_sync(genpd->dev.parent);
-> +       if (ret < 0) {
-> +               pm_runtime_put_noidle(genpd->dev.parent);
-> +               return ret;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static void _genpd_pm_runtime_put(struct generic_pm_domain *genpd)
-> +{
-> +       if (!(genpd->flags & _GENPD_FLAG_RPM_ENABLED))
-> +               return;
-> +
-> +       pm_runtime_put_sync(genpd->dev.parent);
-> +}
-> +
->  static int _genpd_power_on(struct generic_pm_domain *genpd, bool timed)
->  {
->         unsigned int state_idx = genpd->state_idx;
-> @@ -497,6 +521,10 @@ static int _genpd_power_on(struct generic_pm_domain *genpd, bool timed)
->         if (ret)
->                 return ret;
->
-> +       ret = _genpd_pm_runtime_get(genpd);
-> +       if (ret)
-> +               return ret;
-> +
->         if (!genpd->power_on)
->                 goto out;
->
-> @@ -526,6 +554,7 @@ static int _genpd_power_on(struct generic_pm_domain *genpd, bool timed)
->         raw_notifier_call_chain(&genpd->power_notifiers, GENPD_NOTIFY_ON, NULL);
->         return 0;
->  err:
-> +       _genpd_pm_runtime_put(genpd);
->         raw_notifier_call_chain(&genpd->power_notifiers, GENPD_NOTIFY_OFF,
->                                 NULL);
->         return ret;
-> @@ -572,6 +601,7 @@ static int _genpd_power_off(struct generic_pm_domain *genpd, bool timed)
->                  genpd->name, "off", elapsed_ns);
->
->  out:
-> +       _genpd_pm_runtime_put(genpd);
->         raw_notifier_call_chain(&genpd->power_notifiers, GENPD_NOTIFY_OFF,
->                                 NULL);
->         return 0;
-> @@ -1986,6 +2016,9 @@ int pm_genpd_init(struct generic_pm_domain *genpd,
->         genpd->domain.ops.complete = genpd_complete;
->         genpd->domain.start = genpd_dev_pm_start;
->
-> +       if (genpd->dev.parent && pm_runtime_enabled(genpd->dev.parent))
-> +               genpd->flags |= _GENPD_FLAG_RPM_ENABLED;
-> +
->         if (genpd->flags & GENPD_FLAG_PM_CLK) {
->                 genpd->dev_ops.stop = pm_clk_suspend;
->                 genpd->dev_ops.start = pm_clk_resume;
-> diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
-> index 21a0577305ef..e86cd7cfc9ec 100644
-> --- a/include/linux/pm_domain.h
-> +++ b/include/linux/pm_domain.h
-> @@ -60,6 +60,10 @@
->   * GENPD_FLAG_MIN_RESIDENCY:   Enable the genpd governor to consider its
->   *                             components' next wakeup when determining the
->   *                             optimal idle state.
-> + *
-> + * _GENPD_FLAG_RPM_ENABLED:    Use genpd's parent dev for runtime power
-> + *                             management. There is no need to set this flag,
-> + *                             it will be detected automatically.
->   */
->  #define GENPD_FLAG_PM_CLK       (1U << 0)
->  #define GENPD_FLAG_IRQ_SAFE     (1U << 1)
-> @@ -69,6 +73,8 @@
->  #define GENPD_FLAG_RPM_ALWAYS_ON (1U << 5)
->  #define GENPD_FLAG_MIN_RESIDENCY (1U << 6)
->
-> +#define _GENPD_FLAG_RPM_ENABLED         (1U << 31)
-> +
->  enum gpd_status {
->         GENPD_STATE_ON = 0,     /* PM domain is on */
->         GENPD_STATE_OFF,        /* PM domain is off */
-> --
-> 2.30.2
->
