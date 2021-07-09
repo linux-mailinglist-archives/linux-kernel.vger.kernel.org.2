@@ -2,170 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A3A3C28D2
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:00:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 885E93C28DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbhGISCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 14:02:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55994 "EHLO
+        id S230146AbhGISM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 14:12:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33834 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230106AbhGISCm (ORCPT
+        by vger.kernel.org with ESMTP id S229936AbhGISMX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 14:02:42 -0400
+        Fri, 9 Jul 2021 14:12:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625853598;
+        s=mimecast20190719; t=1625854179;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=41TcmMi84uP8FXnE7KMs91C429FUdwl3NuxFrKdIilI=;
-        b=RnVAPiDT/uXUXVt1PJDAdOcCrdnTD/zaR2Cx4ljIOPgVdzlAi9orPnmi8RNmsqD0JQTOkw
-        57r73R2QWH6dJDjVBCleyEiDo5EMiF04VhjcC6AC2yaS1xiuglymJF7DU85FpNhen67NeK
-        35Z33eCVoiAEqywolWPcrogEyWIRGZ8=
+         to:to:cc:cc; bh=8dzIZ0NGWcvLE911x7l7LrX9eMLcBpxOIY0yPCLQHEw=;
+        b=HnS/52+AM/WfvgES8onqL2ih9t40zl2+SNsUytgEfNktznbujzTNYjjvmQXKKWP94UckzO
+        0Va0nC2BQWl7x4CKwX7cKQDAjd7wI2QrK1A9Hx4OM4H+QV6v/8JTcLu5/TYtbCOOe/7BJB
+        kQY0Ag36rL4a/sutAoph1jelNXPfaoY=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-597-i47g4pAXP8-QiKd9E8HfUg-1; Fri, 09 Jul 2021 13:59:54 -0400
-X-MC-Unique: i47g4pAXP8-QiKd9E8HfUg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+ us-mta-431-WNW_iuT9Ph-fKleZ6RTpiA-1; Fri, 09 Jul 2021 14:09:37 -0400
+X-MC-Unique: WNW_iuT9Ph-fKleZ6RTpiA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8F91E5074B;
-        Fri,  9 Jul 2021 17:59:52 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-116-62.rdu2.redhat.com [10.10.116.62])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6522819D9F;
-        Fri,  9 Jul 2021 17:59:48 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id E840E22054F; Fri,  9 Jul 2021 13:59:47 -0400 (EDT)
-Date:   Fri, 9 Jul 2021 13:59:47 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, virtio-fs@redhat.com, dwalsh@redhat.com,
-        dgilbert@redhat.com, casey.schaufler@intel.com,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        tytso@mit.edu, miklos@szeredi.hu, gscrivan@redhat.com,
-        jack@suse.cz, Christoph Hellwig <hch@infradead.org>,
-        bfields@redhat.com
-Subject: Re: [PATCH v2 1/1] xattr: Allow user.* xattr on symlink and special
- files
-Message-ID: <20210709175947.GB398382@redhat.com>
-References: <20210708175738.360757-1-vgoyal@redhat.com>
- <20210708175738.360757-2-vgoyal@redhat.com>
- <20210709091915.2bd4snyfjndexw2b@wittgenstein>
- <20210709152737.GA398382@redhat.com>
- <710d1c6f-d477-384f-0cc1-8914258f1fb1@schaufler-ca.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <710d1c6f-d477-384f-0cc1-8914258f1fb1@schaufler-ca.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5B29C84F20B;
+        Fri,  9 Jul 2021 18:09:36 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-4.gru2.redhat.com [10.97.112.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9D5C9175B9;
+        Fri,  9 Jul 2021 18:09:32 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 44615416D862; Fri,  9 Jul 2021 15:09:28 -0300 (-03)
+Message-ID: <20210709173726.457181806@fuller.cnet>
+User-Agent: quilt/0.66
+Date:   Fri, 09 Jul 2021 14:37:26 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Christoph Lameter <cl@linux.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Nitesh Lal <nilal@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nicolas Saenz <nsaenzju@redhat.com>
+Subject: [patch 0/5] optionally perform deferred actions on return to userspace
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 09, 2021 at 08:34:41AM -0700, Casey Schaufler wrote:
-> On 7/9/2021 8:27 AM, Vivek Goyal wrote:
-> > On Fri, Jul 09, 2021 at 11:19:15AM +0200, Christian Brauner wrote:
-> >> On Thu, Jul 08, 2021 at 01:57:38PM -0400, Vivek Goyal wrote:
-> >>> Currently user.* xattr are not allowed on symlink and special files.
-> >>>
-> >>> man xattr and recent discussion suggested that primary reason for this
-> >>> restriction is how file permissions for symlinks and special files
-> >>> are little different from regular files and directories.
-> >>>
-> >>> For symlinks, they are world readable/writable and if user xattr were
-> >>> to be permitted, it will allow unpriviliged users to dump a huge amount
-> >>> of user.* xattrs on symlinks without any control.
-> >>>
-> >>> For special files, permissions typically control capability to read/write
-> >>> from devices (and not necessarily from filesystem). So if a user can
-> >>> write to device (/dev/null), does not necessarily mean it should be allowed
-> >>> to write large number of user.* xattrs on the filesystem device node is
-> >>> residing in.
-> >>>
-> >>> This patch proposes to relax the restrictions a bit and allow file owner
-> >>> or priviliged user (CAP_FOWNER), to be able to read/write user.* xattrs
-> >>> on symlink and special files.
-> >>>
-> >>> virtiofs daemon has a need to store user.* xatrrs on all the files
-> >>> (including symlinks and special files), and currently that fails. This
-> >>> patch should help.
-> >>>
-> >>> Link: https://lore.kernel.org/linux-fsdevel/20210625191229.1752531-1-vgoyal@redhat.com/
-> >>> Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
-> >>> ---
-> >> Seems reasonable and useful.
-> >> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-> >>
-> >> One question, do all filesystem supporting xattrs deal with setting them
-> >> on symlinks/device files correctly?
-> > Wrote a simple bash script to do setfattr/getfattr user.foo xattr on
-> > symlink and device node on ext4, xfs and btrfs and it works fine.
-> 
-> How about nfs, tmpfs, overlayfs and/or some of the other less conventional
-> filesystems?
+Changelog:
 
-tmpfs does not support user.* xattr at all on any kind of files.
+-v2: fix !CONFIG_SMP breakage (kernel robot)
+     switch option to generic "quiesce_on_exit_to_usermode"
 
-overlayfs works fine. I updated my test too.
+Summary of what was discussed on -v1:
 
-nfs seems to have some issues. 
+1) The additional hooks to performance sensitive callbacks
+in mm/vmstat.c are protected by a static key, therefore
+workloads which do not enable this should not be impacted.
 
-- I can set user.foo xattr on symlink and query it back using xattr name.
+2) People would prefer the prctl() interface, but as noted
+in the option documentation (patch 1), the code added by
+this patchset should be reused by the prctl() interface,
+and the isolcpus option can then be deprecated.
 
-  getfattr -h -n user.foo foo-link.txt
+3) Nobody has any other bright ideas for ways to solve this
+that would make this patch series obsolete.
 
-  But when I try to dump all xattrs on this file, user.foo is being
-  filtered out it looks like. Not sure why.
+4) The isolcpus= interface should switch to a cpuset based
+interface.
 
-- I can't set "user.foo" xattr on a device node on nfs and I get
-  "Permission denied". I am assuming nfs server is returning this.
-  I am using knfsd with following in /etc/exports.
+---
 
-  /mnt/test/nfs-server 127.0.0.1(insecure,no_root_squash,rw,async)
 
-Copying Bruce. He might have an idea.
+The logic to disable vmstat worker thread, when entering
+nohz full, does not cover all scenarios. For example, it is possible
+for the following to happen:
 
-Thanks
-Vivek
+1) enter nohz_full, which calls refresh_cpu_vm_stats, syncing the stats.
+2) app runs mlock, which increases counters for mlock'ed pages.
+3) start -RT loop
 
-> 
-> >
-> > https://github.com/rhvgoyal/misc/blob/master/generic-programs/user-xattr-special-files.sh
-> >
-> > I probably can add some more filesystems to test.
-> >
-> > Thanks
-> > Vivek
-> >
-> >>>  fs/xattr.c | 10 ++++++----
-> >>>  1 file changed, 6 insertions(+), 4 deletions(-)
-> >>>
-> >>> diff --git a/fs/xattr.c b/fs/xattr.c
-> >>> index 5c8c5175b385..2f1855c8b620 100644
-> >>> --- a/fs/xattr.c
-> >>> +++ b/fs/xattr.c
-> >>> @@ -120,12 +120,14 @@ xattr_permission(struct user_namespace *mnt_userns, struct inode *inode,
-> >>>  	}
-> >>>  
-> >>>  	/*
-> >>> -	 * In the user.* namespace, only regular files and directories can have
-> >>> -	 * extended attributes. For sticky directories, only the owner and
-> >>> -	 * privileged users can write attributes.
-> >>> +	 * In the user.* namespace, for symlinks and special files, only
-> >>> +	 * the owner and priviliged users can read/write attributes.
-> >>> +	 * For sticky directories, only the owner and privileged users can
-> >>> +	 * write attributes.
-> >>>  	 */
-> >>>  	if (!strncmp(name, XATTR_USER_PREFIX, XATTR_USER_PREFIX_LEN)) {
-> >>> -		if (!S_ISREG(inode->i_mode) && !S_ISDIR(inode->i_mode))
-> >>> +		if (!S_ISREG(inode->i_mode) && !S_ISDIR(inode->i_mode) &&
-> >>> +		    !inode_owner_or_capable(mnt_userns, inode))
-> >>>  			return (mask & MAY_WRITE) ? -EPERM : -ENODATA;
-> >>>  		if (S_ISDIR(inode->i_mode) && (inode->i_mode & S_ISVTX) &&
-> >>>  		    (mask & MAY_WRITE) &&
-> >>> -- 
-> >>> 2.25.4
-> >>>
-> 
+Since refresh_cpu_vm_stats from nohz_full logic can happen _before_
+the mlock, vmstat shepherd can restart vmstat worker thread on
+the CPU in question.
+
+To fix this, optionally quiesce deferred actions when returning
+to userspace, controllable by a new "quiesce_on_exit_to_usermode"
+isolcpus flag (default off).
+
+See individual patches for details.
+
+
 
