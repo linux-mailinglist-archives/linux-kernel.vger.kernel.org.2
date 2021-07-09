@@ -2,42 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 264113C226A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 12:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A41343C2269
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 12:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231152AbhGIKov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 06:44:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47656 "EHLO mail.kernel.org"
+        id S231283AbhGIKos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 06:44:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230045AbhGIKog (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 06:44:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 41C08613D1;
-        Fri,  9 Jul 2021 10:41:52 +0000 (UTC)
+        id S230031AbhGIKof (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 06:44:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E9F39613DF;
+        Fri,  9 Jul 2021 10:41:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1625827312;
-        bh=wfUzRS73CLi9JPmsY6swuZBS9fgBSlej69+zvdJdWm8=;
+        bh=sEi0ifqdSJujS+O4xXc7C5cCdEC25XeRG+JKalDhaK8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G4rvgZ9KIBB02ZiO9k2bdylxw5yOPJ8ex4N36xKUXh2pQbJJwtBcACu1K5V+atOmo
-         KjyV2goEuIRO1YgM6R/VaStOsA6y9wFdzht2wa18Vlin7iNeaKuWTbnMWY/jQ2VFvr
-         y1dQElerIpgLvVfzRPqpIOZehXUHSEwQHi0d+IealJhZ/MirSD98i65UwOAlkBn8n1
-         MxGNPSN5Wbvy0luUSDVNWrZL0NzpwrPeaucdJckd6sQhS9ZY2Rqu02f74F+duiz5aA
-         39OIecn0D04FCMhBDWmqLI88VJ9b+QY+AF+W0OVVqebK0bNeJzi2C33WpgJeZ53jyn
-         2IUIJ1XcuF1+w==
+        b=OkmCoS1+n4faqGxR1tlJWR7jxKP4fTwN14o2zNZSm+1N6+3qa8hYxNMI9CH00e4Gn
+         uoQ5WdzQppAvMYNXmAt9HCQLY3uqq/31/2c/QwuPB+5IHLww8gkR4KU3gJizq/h1dg
+         EbPR7tQ1pIiKM5iukHTxeKCmGx26tneLXyhjQNAPvpXidNB8awT2sfZduPNmPBkyxS
+         9LahBdeX5b5Yc6jx5UhC5s9AXl4hmyp8mxUyP3uFLK4towQXN8lJzHGO6znzFpp5Eb
+         wmx9ZnJxqBZKTTkqejJbZsLxguEgC5U2nQgzoh2xgyfC9I2cIXax9XHoqzz1wIlx1e
+         YB4ad5+G6wC/g==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1m1nx7-00B5FV-6z; Fri, 09 Jul 2021 12:41:49 +0200
+        id 1m1nx7-00B5Fa-8I; Fri, 09 Jul 2021 12:41:49 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Manivannan Sadhasivam <mani@kernel.org>,
         Rob Herring <robh@kernel.org>
 Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org
-Subject: [PATCH v3 2/9] dt-bindings: phy: add bindings for Hikey 970 PCIe PHY
-Date:   Fri,  9 Jul 2021 12:41:38 +0200
-Message-Id: <efa7981b73e4885158baa8085ac9420e5f1ac182.1625826353.git.mchehab+huawei@kernel.org>
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: [PATCH v3 3/9] dt-bindings: PCI: kirin: fix compatible string
+Date:   Fri,  9 Jul 2021 12:41:39 +0200
+Message-Id: <a94a119d657ef6fa5b62c91d866dc076b37d2cb2.1625826353.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1625826353.git.mchehab+huawei@kernel.org>
 References: <cover.1625826353.git.mchehab+huawei@kernel.org>
@@ -48,122 +50,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the bindings for Hikey 960 (hi3660) PCIe PHY
-interface, supported via the pcie-kirin driver.
+The pcie-kirin driver doesn't declare a hisilicon,kirin-pcie.
+Also, remove the useless comment after the description, as other
+compat will be supported by the same driver in the future.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- .../phy/hisilicon,phy-hi3670-pcie.yaml        | 101 ++++++++++++++++++
- 1 file changed, 101 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
+ Documentation/devicetree/bindings/pci/kirin-pcie.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml b/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
-new file mode 100644
-index 000000000000..eddf2f2b6382
---- /dev/null
-+++ b/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
-@@ -0,0 +1,101 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/phy/hisilicon,phy-hi3670-pcie.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Hisilicon Kirin970 PCIe PHY
-+
-+maintainers:
-+  - Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-+
-+description: |+
-+  Bindings for PCIe PHY on HiSilicon Kirin 970.
-+
-+properties:
-+  compatible:
-+    const: hisilicon,hi970-pcie-phy
-+
-+  "#phy-cells":
-+    const: 0
-+
-+  reg:
-+    maxItems: 1
-+    description: PHY Control registers
-+
-+  reg-names:
-+    const: phy
-+
-+  phy-supply:
-+    description: The PCIe PHY power supply
-+
-+  clocks:
-+    items:
-+      - description: PCIe PHY clock
-+      - description: PCIe AUX clock
-+      - description: PCIe APB PHY clock
-+      - description: PCIe APB SYS clock
-+      - description: PCIe ACLK clock
-+
-+  clock-names:
-+    items:
-+      - const: pcie_phy_ref
-+      - const: pcie_aux
-+      - const: pcie_apb_phy
-+      - const: pcie_apb_sys
-+      - const: pcie_aclk
-+
-+  reset-gpios:
-+    description: PCI PERST reset GPIOs
-+    maxItems: 4
-+
-+  clkreq-gpios:
-+    description: Clock request GPIOs
-+    maxItems: 3
-+
-+  hisilicon,eye-diagram-param:
-+    $ref: /schemas/types.yaml#/definitions/uint32-array
-+    description: Eye diagram for phy.
-+
-+required:
-+  - "#phy-cells"
-+  - compatible
-+  - reg
-+  - reg-names
-+  - clocks
-+  - clock-names
-+  - reset-gpios
-+  - clkreq-gpios
-+  - hisilicon,eye-diagram-param
-+  - phy-supply
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/hi3670-clock.h>
-+
-+    bus {
-+      #address-cells = <2>;
-+      #size-cells = <2>;
-+      pcie_phy: pcie-phy@fc000000 {
-+        compatible = "hisilicon,hi970-pcie-phy";
-+        reg = <0x0 0xfc000000 0x0 0x80000>;
-+        reg-names = "phy";
-+        #phy-cells = <0>;
-+        phy-supply = <&ldo33>;
-+        clocks = <&crg_ctrl HI3670_CLK_GATE_PCIEPHY_REF>,
-+                 <&crg_ctrl HI3670_CLK_GATE_PCIEAUX>,
-+                 <&crg_ctrl HI3670_PCLK_GATE_PCIE_PHY>,
-+                 <&crg_ctrl HI3670_PCLK_GATE_PCIE_SYS>,
-+                 <&crg_ctrl HI3670_ACLK_GATE_PCIE>;
-+        clock-names = "pcie_phy_ref", "pcie_aux",
-+                      "pcie_apb_phy", "pcie_apb_sys", "pcie_aclk";
-+        reset-gpios = <&gpio7 0 0 >, <&gpio25 2 0 >,
-+                      <&gpio3 1 0 >, <&gpio27 4 0 >;
-+        clkreq-gpios = <&gpio20 6 0 >, <&gpio27 3 0 >, <&gpio17 0 0 >;
-+        hisilicon,eye-diagram-param = <0xFFFFFFFF 0xFFFFFFFF
-+                                       0xFFFFFFFF 0xFFFFFFFF 0xFFFFFFFF>;
-+      };
-+    };
-+...
+diff --git a/Documentation/devicetree/bindings/pci/kirin-pcie.txt b/Documentation/devicetree/bindings/pci/kirin-pcie.txt
+index 6bbe43818ad5..71cac2b74002 100644
+--- a/Documentation/devicetree/bindings/pci/kirin-pcie.txt
++++ b/Documentation/devicetree/bindings/pci/kirin-pcie.txt
+@@ -9,7 +9,7 @@ Additional properties are described here:
+ 
+ Required properties
+ - compatible:
+-	"hisilicon,kirin960-pcie" for PCIe of Kirin960 SoC
++	"hisilicon,kirin960-pcie"
+ - reg: Should contain rc_dbi, apb, phy, config registers location and length.
+ - reg-names: Must include the following entries:
+   "dbi": controller configuration registers;
+@@ -23,7 +23,7 @@ Optional properties:
+ Example based on kirin960:
+ 
+ 	pcie@f4000000 {
+-		compatible = "hisilicon,kirin-pcie";
++		compatible = "hisilicon,kirin960-pcie";
+ 		reg = <0x0 0xf4000000 0x0 0x1000>, <0x0 0xff3fe000 0x0 0x1000>,
+ 		      <0x0 0xf3f20000 0x0 0x40000>, <0x0 0xF4000000 0 0x2000>;
+ 		reg-names = "dbi","apb","phy", "config";
 -- 
 2.31.1
 
