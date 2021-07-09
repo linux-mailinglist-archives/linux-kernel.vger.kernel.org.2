@@ -2,84 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6984C3C28BF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1A7D3C2894
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbhGIR4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 13:56:35 -0400
-Received: from vern.gendns.com ([98.142.107.122]:40744 "EHLO vern.gendns.com"
+        id S229986AbhGIRoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 13:44:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229459AbhGIR4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 13:56:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=MDLeLO35yOu9e+ubHJxjLeSOA9/E59U+abO9awfMjes=; b=uEKvpYtIJXAef+wcJU2rz3jJ1R
-        +SpErNwb42GrUY8jmhoBonO+rLsr7WddcXUYxtWaQ362z0dd4aNql8LmZCM3Hg2TQ17a9hduZ9VfP
-        NNWyY9sJaec7olTzWUO6LbXxHDxYztGLoxQypbiFTlvrKrwNvZ7D8e4p2kPiXT3A+hymGMTJTW1SZ
-        ztE/Kk1Qq0ciBFqB3aqVQamyiPJI0C+/zAOCjxO4wAgoX8mtwzQwluvo6ir0PGp6HeGCZtVFuiqbS
-        4EapOkdO+PccQu5XAJV3UjvULolMMDKfRh7L7Kui8g/bn8V+U8CIFWSMMgRAfUzvJp1dxUOZyqE7R
-        6dDGxWow==;
-Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:51894 helo=[192.168.0.134])
-        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <david@lechnology.com>)
-        id 1m1uUU-00BGSf-Ep; Fri, 09 Jul 2021 13:40:54 -0400
-Subject: Re: [PATCH v12 02/17] counter: Return error code on invalid modes
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>, jic23@kernel.org
-Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
-        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        o.rempel@pengutronix.de, jarkko.nikula@linux.intel.com,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-References: <cover.1625471640.git.vilhelm.gray@gmail.com>
- <6d4bfe6d7acfbeaf09a6c7d6324b0cbf8e23f35a.1625471640.git.vilhelm.gray@gmail.com>
-From:   David Lechner <david@lechnology.com>
-Message-ID: <f432f63a-69c3-5016-ea36-e5df309e8c5b@lechnology.com>
-Date:   Fri, 9 Jul 2021 12:40:49 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <6d4bfe6d7acfbeaf09a6c7d6324b0cbf8e23f35a.1625471640.git.vilhelm.gray@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+        id S229491AbhGIRoS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 13:44:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 69111613C3;
+        Fri,  9 Jul 2021 17:41:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625852494;
+        bh=s7NHSmEvVLDK8ELKiralJ+3di6Ye5BtwUViSqtRFX9E=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=GUTyEm8xPp6iORWjK6uruak4u9nf4kfLoAsM4KWDhlw+xGDGwO95Jw11ZqjDwpyva
+         Ypj8QRLqIOXIYe4DfaSdM7ZCkYv4W1RWANvEHZZL/Avim5HWi0ZiNvTVnmzGmrwSjN
+         4UKPPsnDq7hbJNDASy8dBK9kYGL2RYAOK3frgsrHl4o/JNQ+YDRa9vq0lW5lIaw5FN
+         A3JKpCyhR8D65nYZBaSIX/zO5v/sL5eWzGJbxX6o3FI9MmHqD+uWBhuHCsPc+5y4PR
+         +IgWN1MGNzCNvBLUiVbnAJH24DijZPnjVTdObtSXyDPNZ5g05deuJkexC6n1unsDsy
+         Y+/xILoq/hz6A==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5866A609F6;
+        Fri,  9 Jul 2021 17:41:34 +0000 (UTC)
+Subject: Re: [GIT PULL] UBIFS changes for 5.14
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <245242026.4934.1625778600867.JavaMail.zimbra@nod.at>
+References: <245242026.4934.1625778600867.JavaMail.zimbra@nod.at>
+X-PR-Tracked-List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
+X-PR-Tracked-Message-Id: <245242026.4934.1625778600867.JavaMail.zimbra@nod.at>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-5.14-rc1
+X-PR-Tracked-Commit-Id: a801fcfeef96702fa3f9b22ad56c5eb1989d9221
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 7a400bf28334fc7734639db3566394e1fc80670c
+Message-Id: <162585249429.25269.16275890531912140965.pr-tracker-bot@kernel.org>
+Date:   Fri, 09 Jul 2021 17:41:34 +0000
+To:     Richard Weinberger <richard@nod.at>
+Cc:     torvalds <torvalds@linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/5/21 3:18 AM, William Breathitt Gray wrote:
-> Only a select set of modes (function, action, etc.) are valid for a
-> given device configuration. This patch ensures that invalid modes result
-> in a return -EINVAL. Such a situation should never occur in reality, but
-> it's good to define a default switch cases for the sake of making the
-> intent of the code clear.
-> 
-> Cc: Kamel Bouhara <kamel.bouhara@bootlin.com>
-> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-> Cc: Alexandre Torgue <alexandre.torgue@st.com>
-> Cc: David Lechner <david@lechnology.com>
-> Acked-by: Syed Nayyar Waris <syednwaris@gmail.com>
-> Reviewed-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-> ---
+The pull request you sent on Thu, 8 Jul 2021 23:10:00 +0200 (CEST):
 
+> git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-5.14-rc1
 
-Acked-by: David Lechner <david@lechnology.com>
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/7a400bf28334fc7734639db3566394e1fc80670c
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
