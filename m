@@ -2,148 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9E613C28F7
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:21:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88EE23C28FA
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229750AbhGISYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 14:24:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47070 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229499AbhGISYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 14:24:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44A0061361;
-        Fri,  9 Jul 2021 18:21:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625854910;
-        bh=eKI2MKP/0FuOgp2lSQADbh4/n7CDz5nAGAOBVI4TIjo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N/HLJC2qL9tBRINagovny6irxRVUrUF93KF4dCITFUitVY/jhT/JVsjNuAarTWWst
-         dElW6tywW5jWecoyYIPhIHM+Ok8n60VlMkOV+JbMcfrJja3A5iktp3xNb1ZmMxJWeY
-         dW14BVXdmyWY682mZb1gAGCVUQGu8vOeUmmQbPEYoUXdv21LF9qRV5S/qWMYRAq+f1
-         3yp0U9ADUMQNcgZGCEOtZNYeuDlXC+9vLlux8tp1JrTvUMsyqjl2k8je8pY6YC7Ot5
-         vy8IzwAV2c1JeXqSDGovhzofv3vUkOeZrB/xKr+6mPsEIJuxxzNUd1HGZwd7MgVXZP
-         O0tFc62E6XTbw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 0512940B1A; Fri,  9 Jul 2021 15:21:46 -0300 (-03)
-Date:   Fri, 9 Jul 2021 15:21:46 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, Leo Yan <leo.yan@linaro.org>,
-        Remi Bernon <rbernon@codeweavers.com>,
-        Fabian Hemmer <copy@copy.sh>, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf test: add missing free for scandir-returned dirent
- entities
-Message-ID: <YOiTuvHKc5I9TzJe@kernel.org>
-References: <20210709163454.672082-1-rickyman7@gmail.com>
+        id S229846AbhGIS1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 14:27:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229491AbhGIS1n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 14:27:43 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A418FC0613E5
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 11:24:59 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id 7-20020a9d0d070000b0290439abcef697so10366246oti.2
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 11:24:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cCbbGBdIPrXvg7z6uGOacux3U5ndYtQkeQddrGJuteo=;
+        b=vlf7whsxzmtk448E1+o9NJ2OOvxq8TJ2U1w08A420zMEZs6W2ipS2fhv+6aIUud8KN
+         vkxYEtg6M0DPKVILq6QVBoe5bpMUSWtDExRVJ3yCcTsBBTgNvkTAHyMQE56ubhz7MMEF
+         YJQITWDNSlAYqbmyEjYYbP90n1EGex9kwB7b4hGTuFxHhmLuquQpw6D+kS/I8uWtZT32
+         QW3fPnVhkFu7uiq+3Rm92d9wrOv37IVqpWAw5eHbAl8r+ktQZoh4b/k2zzdF7/BHJPrz
+         0XfW/RX2l3n9V8B9WN/HuTHquPbwqp3vbOze3EUq7ok7bj1brfF3h2xq9blXQOlznpMf
+         +tGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cCbbGBdIPrXvg7z6uGOacux3U5ndYtQkeQddrGJuteo=;
+        b=d+M2ISDU+RqlG59g5KyZ/H0LA7FsU8OJOAtZ/RU0C6MzrISIlVDSreWLYNZeXghGap
+         NQK4FrBWjPuv5L3f0j0SIjvBRejTYCf4nFTQzvLkKUwHhCBUznk+xVrm8yfZk9UvpBSf
+         orN7cbqJE7RQnNMvA/XGVs7mC/2nXY0/f19hCmbkeSVN+sa1KoXSM1TnLaWJwKKxU+rx
+         18RvnF5kGeBeNYPuUGnBHP4bXDInrYua69DdlH+onM0hMIiMuEcO3fTj9+mmUISo+6FL
+         l03aCbPwgJiYFDFN5i5VQviThi9/4c2QTogyRfzb6BDJ0hLOUjhjQ4aKNYJlF9cP0Q5y
+         XrCQ==
+X-Gm-Message-State: AOAM531fmy6zmJLCV0Fqfx1pPbQ7NihEe9Bv5nT53Yr4426rF3MfOFad
+        U18plysrl3Jx/pvbztOJQX6XAkRJS5ktyFbylqVDZw==
+X-Google-Smtp-Source: ABdhPJwgHvARYc2xotg4epyoFW+Z6WbiX8NYhMBNuPl98PG+uDuX+DhvJJJo51/2+oEuNnMJLuao6yNXhLG9XhXxEYA=
+X-Received: by 2002:a05:6830:25cb:: with SMTP id d11mr24052350otu.56.1625855098621;
+ Fri, 09 Jul 2021 11:24:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210709163454.672082-1-rickyman7@gmail.com>
-X-Url:  http://acmel.wordpress.com
+References: <1625825111-6604-1-git-send-email-weijiang.yang@intel.com> <1625825111-6604-4-git-send-email-weijiang.yang@intel.com>
+In-Reply-To: <1625825111-6604-4-git-send-email-weijiang.yang@intel.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Fri, 9 Jul 2021 11:24:46 -0700
+Message-ID: <CALMp9eTKNG_b6Te=aV_Qd3ADXzf8RkvDhGfWtopQGAf51eHMbg@mail.gmail.com>
+Subject: Re: [PATCH v5 03/13] KVM: x86: Add arch LBR MSRs to msrs_to_save_all list
+To:     Yang Weijiang <weijiang.yang@intel.com>
+Cc:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        wei.w.wang@intel.com, like.xu.linux@gmail.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Jul 09, 2021 at 06:34:53PM +0200, Riccardo Mancini escreveu:
-> ASan reported a memory leak for items of the entlist returned from scandir.
-> In fact, scandir returns a malloc'd array of malloc'd dirents.
-> This patch adds the missing (z)frees.
-
-Hey, I thought you were pluging old leaks, this one was introduced
-recently ;-) :-)
-
-Thanks, applied!
-
-- Arnaldo
- 
-> Fixes: da963834fe6975a1 ("perf test: Iterate over shell tests in alphabetical order")
-> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-> ---
->  tools/perf/tests/builtin-test.c | 15 +++++++++++----
->  1 file changed, 11 insertions(+), 4 deletions(-)
-> 
-> diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-> index 41e3cf6bb66c68e8..5e6242576236325c 100644
-> --- a/tools/perf/tests/builtin-test.c
-> +++ b/tools/perf/tests/builtin-test.c
-> @@ -26,6 +26,7 @@
->  #include <linux/kernel.h>
->  #include <linux/string.h>
->  #include <subcmd/exec-cmd.h>
-> +#include <linux/zalloc.h>
->  
->  static bool dont_fork;
->  
-> @@ -540,7 +541,7 @@ static int shell_tests__max_desc_width(void)
->  {
->  	struct dirent **entlist;
->  	struct dirent *ent;
-> -	int n_dirs;
-> +	int n_dirs, e;
->  	char path_dir[PATH_MAX];
->  	const char *path = shell_tests__dir(path_dir, sizeof(path_dir));
->  	int width = 0;
-> @@ -564,8 +565,9 @@ static int shell_tests__max_desc_width(void)
->  		}
->  	}
->  
-> +	for (e = 0; e < n_dirs; e++)
-> +		zfree(&entlist[e]);
->  	free(entlist);
-> -
->  	return width;
->  }
->  
-> @@ -596,7 +598,7 @@ static int run_shell_tests(int argc, const char *argv[], int i, int width)
->  {
->  	struct dirent **entlist;
->  	struct dirent *ent;
-> -	int n_dirs;
-> +	int n_dirs, e;
->  	char path_dir[PATH_MAX];
->  	struct shell_test st = {
->  		.dir = shell_tests__dir(path_dir, sizeof(path_dir)),
-> @@ -629,6 +631,8 @@ static int run_shell_tests(int argc, const char *argv[], int i, int width)
->  		test_and_print(&test, false, -1);
->  	}
->  
-> +	for (e = 0; e < n_dirs; e++)
-> +		zfree(&entlist[e]);
->  	free(entlist);
->  	return 0;
->  }
-> @@ -730,7 +734,7 @@ static int perf_test__list_shell(int argc, const char **argv, int i)
->  {
->  	struct dirent **entlist;
->  	struct dirent *ent;
-> -	int n_dirs;
-> +	int n_dirs, e;
->  	char path_dir[PATH_MAX];
->  	const char *path = shell_tests__dir(path_dir, sizeof(path_dir));
->  
-> @@ -752,8 +756,11 @@ static int perf_test__list_shell(int argc, const char **argv, int i)
->  			continue;
->  
->  		pr_info("%2d: %s\n", i, t.desc);
-> +
->  	}
->  
-> +	for (e = 0; e < n_dirs; e++)
-> +		zfree(&entlist[e]);
->  	free(entlist);
->  	return 0;
->  }
-> -- 
-> 2.23.0
-> 
-
--- 
-
-- Arnaldo
+On Fri, Jul 9, 2021 at 2:51 AM Yang Weijiang <weijiang.yang@intel.com> wrote:
+>
+> Arch LBR MSR_ARCH_LBR_DEPTH and MSR_ARCH_LBR_CTL are {saved|restored}
+> by userspace application if they're available.
+>
+> Suggested-by: Jim Mattson <jmattson@google.com>
+> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+Reviewed-by: Jim Mattson <jmattson@google.com>
