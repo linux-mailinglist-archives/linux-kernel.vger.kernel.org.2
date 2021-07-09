@@ -2,134 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C573C28D9
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CB583C28D5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbhGISMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 14:12:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21387 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229735AbhGISMX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 14:12:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625854178;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=PLewHXDmPjFB924jxgbIi8PWfwqgckw1/ZnpEwhMiSQ=;
-        b=HgJigSKHqBNy+uRt2byI9qssg1utnyEuzTqNmd3DtkQDHjS6vvW4aZzwRkiFmV0OnIDpmR
-        V27dCkEetxQIqmIztodmNEmZQbLpCb91AREly09uHmbNKM7jjbAHoShPE1rRspqCszeWGc
-        AYKVpkL2cVkBnbF+LK2W7U41b09t1HU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-281-47HzS6GfNBy2U3kKwvSrsg-1; Fri, 09 Jul 2021 14:09:37 -0400
-X-MC-Unique: 47HzS6GfNBy2U3kKwvSrsg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5129F100B3AC;
-        Fri,  9 Jul 2021 18:09:36 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-4.gru2.redhat.com [10.97.112.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A032419D9F;
-        Fri,  9 Jul 2021 18:09:32 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 5F0594179BA8; Fri,  9 Jul 2021 15:09:28 -0300 (-03)
-Message-ID: <20210709174428.339306008@fuller.cnet>
-User-Agent: quilt/0.66
-Date:   Fri, 09 Jul 2021 14:37:31 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Christoph Lameter <cl@linux.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Nitesh Lal <nilal@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nicolas Saenz <nsaenzju@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Subject: [patch 5/5] mm: vmstat_refresh: avoid queueing work item if cpu stats are clean
-References: <20210709173726.457181806@fuller.cnet>
+        id S229557AbhGISKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 14:10:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45274 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229459AbhGISKr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 14:10:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7EFA613D1;
+        Fri,  9 Jul 2021 18:08:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625854083;
+        bh=g580cb8XE1EltER+O5uJzG51+6yzo/VUllKlQDQL0PM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=J92z3dv+UUwreQ8GgWqq0beXpdRNvozazCwc1N5QVHivg3+pdY0TNe8mWyLx1jJBD
+         1FqE5cleRol+IE/4UsW8jMcr9SN9EtQLq+2UpCBa3O5w/QiZJXuREZoQvDDjZNWn5i
+         L+1viwDwHCO648jtrY2ry7r4vvkCa7MESWf/lwl2YTbRPkUFXQAcyc8EgSR26px46m
+         dG92LNanTCDHylp2S5BAZWb9TNRASTkLevV7iGNg9dgXiRwTB7/4rayiys2PwHuY7V
+         70BCDD7lEXjWfNxLTTYAmaRlhrX9oqh3xQm4bAAlmzxRjCSDqMOsSYPNo2yJ1kgxr0
+         kRQJvVf+UUh1Q==
+Date:   Fri, 9 Jul 2021 21:08:00 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Tony Luck <tony.luck@intel.com>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] x86/sgx: Track phase and type of SGX EPC pages
+Message-ID: <20210709180800.kpjlrvbljaknuncq@kernel.org>
+References: <20210708181423.1312359-1-tony.luck@intel.com>
+ <20210708181423.1312359-2-tony.luck@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210708181423.1312359-2-tony.luck@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is not necessary to queue work item to run refresh_vm_stats 
-on a remote CPU if that CPU has no dirty stats and no per-CPU
-allocations for remote nodes.
+On Thu, Jul 08, 2021 at 11:14:20AM -0700, Tony Luck wrote:
+> Memory errors can be reported either synchronously as memory is accessed,
+> or asynchronously by speculative access or by a memory controller page
+> scrubber.  The life cycle of an EPC page takes it through:
+> 	dirty -> free -> in-use -> free.
+> 
+> Memory errors are reported using physical addresses. It is a simple
+> matter to find which sgx_epc_page structure maps a given address.
+> But then recovery code needs to be able to determine the current use of
+> the page to take the appropriate recovery action. Within the "in-use"
+> phase different actions are needed based on how the page is used in
+> the enclave.
+> 
+> Add new flags bits to describe the phase (with an extra bit for the new
+> phase of "poisoned"). Drop pages marked as poisoned instead of adding
+> them to a free list to make sure they are not re-used.
+> 
+> Add a type field to struct epc_page for how an in-use page has been
+> allocated. Re-use "enum sgx_page_type" for this type, with a couple
+> of additions for s/w types.
+> 
+> Signed-off-by: Tony Luck <tony.luck@intel.com>
+> ---
+>  arch/x86/include/asm/sgx.h      |  6 ++++++
+>  arch/x86/kernel/cpu/sgx/encl.c  |  4 ++--
+>  arch/x86/kernel/cpu/sgx/ioctl.c |  4 ++--
+>  arch/x86/kernel/cpu/sgx/main.c  | 21 +++++++++++++++++++--
+>  arch/x86/kernel/cpu/sgx/sgx.h   | 14 ++++++++++++--
+>  arch/x86/kernel/cpu/sgx/virt.c  |  2 +-
+>  6 files changed, 42 insertions(+), 9 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/sgx.h b/arch/x86/include/asm/sgx.h
+> index 9c31e0ebc55b..9619a6d77a83 100644
+> --- a/arch/x86/include/asm/sgx.h
+> +++ b/arch/x86/include/asm/sgx.h
+> @@ -216,6 +216,8 @@ struct sgx_pageinfo {
+>   * %SGX_PAGE_TYPE_REG:	a regular page
+>   * %SGX_PAGE_TYPE_VA:	a VA page
+>   * %SGX_PAGE_TYPE_TRIM:	a page in trimmed state
+> + *
+> + * Also used to track current use of &struct sgx_epc_page
+>   */
+>  enum sgx_page_type {
+>  	SGX_PAGE_TYPE_SECS,
+> @@ -223,6 +225,10 @@ enum sgx_page_type {
+>  	SGX_PAGE_TYPE_REG,
+>  	SGX_PAGE_TYPE_VA,
+>  	SGX_PAGE_TYPE_TRIM,
+> +
+> +	/* sgx_epc_page.type */
+> +	SGX_PAGE_TYPE_FREE = 100,
+> +	SGX_PAGE_TYPE_KVM = 101,
+>  };
+>  
+>  #define SGX_NR_PAGE_TYPES	5
+> diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
+> index 3be203297988..abf6e1a704c0 100644
+> --- a/arch/x86/kernel/cpu/sgx/encl.c
+> +++ b/arch/x86/kernel/cpu/sgx/encl.c
+> @@ -72,7 +72,7 @@ static struct sgx_epc_page *sgx_encl_eldu(struct sgx_encl_page *encl_page,
+>  	struct sgx_epc_page *epc_page;
+>  	int ret;
+>  
+> -	epc_page = sgx_alloc_epc_page(encl_page, false);
+> +	epc_page = sgx_alloc_epc_page(encl_page, SGX_PAGE_TYPE_REG, false);
+>  	if (IS_ERR(epc_page))
+>  		return epc_page;
+>  
+> @@ -679,7 +679,7 @@ struct sgx_epc_page *sgx_alloc_va_page(void)
+>  	struct sgx_epc_page *epc_page;
+>  	int ret;
+>  
+> -	epc_page = sgx_alloc_epc_page(NULL, true);
+> +	epc_page = sgx_alloc_epc_page(NULL,  SGX_PAGE_TYPE_VA, true);
+>  	if (IS_ERR(epc_page))
+>  		return ERR_CAST(epc_page);
+>  
+> diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
+> index 83df20e3e633..a74ae00194cc 100644
+> --- a/arch/x86/kernel/cpu/sgx/ioctl.c
+> +++ b/arch/x86/kernel/cpu/sgx/ioctl.c
+> @@ -83,7 +83,7 @@ static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
+>  
+>  	encl->backing = backing;
+>  
+> -	secs_epc = sgx_alloc_epc_page(&encl->secs, true);
+> +	secs_epc = sgx_alloc_epc_page(&encl->secs, SGX_PAGE_TYPE_SECS, true);
+>  	if (IS_ERR(secs_epc)) {
+>  		ret = PTR_ERR(secs_epc);
+>  		goto err_out_backing;
+> @@ -300,7 +300,7 @@ static int sgx_encl_add_page(struct sgx_encl *encl, unsigned long src,
+>  	if (IS_ERR(encl_page))
+>  		return PTR_ERR(encl_page);
+>  
+> -	epc_page = sgx_alloc_epc_page(encl_page, true);
+> +	epc_page = sgx_alloc_epc_page(encl_page, SGX_PAGE_TYPE_REG, true);
+>  	if (IS_ERR(epc_page)) {
+>  		kfree(encl_page);
+>  		return PTR_ERR(epc_page);
+> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> index 63d3de02bbcc..643df87b3e01 100644
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -401,7 +401,12 @@ static void sgx_reclaim_pages(void)
+>  		section = &sgx_epc_sections[epc_page->section];
+>  		node = section->node;
+>  
+> +		/* drop poison pages instead of adding to free list */
+> +		if (epc_page->flags & SGX_EPC_PAGE_POISON)
+> +			continue;
+> +
+>  		spin_lock(&node->lock);
+> +		epc_page->flags = SGX_EPC_PAGE_FREE;
+>  		list_add_tail(&epc_page->list, &node->free_page_list);
+>  		sgx_nr_free_pages++;
+>  		spin_unlock(&node->lock);
+> @@ -560,6 +565,7 @@ int sgx_unmark_page_reclaimable(struct sgx_epc_page *page)
+>  /**
+>   * sgx_alloc_epc_page() - Allocate an EPC page
+>   * @owner:	the owner of the EPC page
+> + * @type:	type of page being allocated
+>   * @reclaim:	reclaim pages if necessary
+>   *
+>   * Iterate through EPC sections and borrow a free EPC page to the caller. When a
+> @@ -574,7 +580,7 @@ int sgx_unmark_page_reclaimable(struct sgx_epc_page *page)
+>   *   an EPC page,
+>   *   -errno on error
+>   */
+> -struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
+> +struct sgx_epc_page *sgx_alloc_epc_page(void *owner, enum sgx_page_type type, bool reclaim)
+>  {
+>  	struct sgx_epc_page *page;
+>  
+> @@ -582,6 +588,8 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
+>  		page = __sgx_alloc_epc_page();
+>  		if (!IS_ERR(page)) {
+>  			page->owner = owner;
+> +			page->type = type;
+> +			page->flags = 0;
+>  			break;
+>  		}
+>  
+> @@ -616,14 +624,22 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
+>   * responsibility to make sure that the page is in uninitialized state. In other
+>   * words, do EREMOVE, EWB or whatever operation is necessary before calling
+>   * this function.
+> + *
+> + * Note that if the page has been tagged as poisoned, it is simply
+> + * dropped on the floor instead of added to the free list to make
+> + * sure we do not re-use it.
+>   */
+>  void sgx_free_epc_page(struct sgx_epc_page *page)
+>  {
+>  	struct sgx_epc_section *section = &sgx_epc_sections[page->section];
+>  	struct sgx_numa_node *node = section->node;
+>  
+> +	if (page->flags & SGX_EPC_PAGE_POISON)
+> +		return;
 
-This fixes sosreport hang (which uses vmstat_refresh) with 
-spinning SCHED_FIFO process.
+I tend to think that it would be nice to collect them somewhere instead
+purposely leaking. E.g. this gives possibility to examine list with
+debugging tools.
 
-Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
-
-Index: linux-2.6-vmstat-update/mm/vmstat.c
-===================================================================
---- linux-2.6-vmstat-update.orig/mm/vmstat.c
-+++ linux-2.6-vmstat-update/mm/vmstat.c
-@@ -1895,17 +1895,39 @@ static bool need_update(int cpu)
- }
- 
- #ifdef CONFIG_PROC_FS
--static void refresh_vm_stats(struct work_struct *work)
-+static bool need_drain_remote_zones(int cpu)
-+{
-+	struct zone *zone;
-+
-+	for_each_populated_zone(zone) {
-+		struct per_cpu_pageset *p;
-+
-+		p = per_cpu_ptr(zone->pageset, cpu);
-+
-+		if (!p->pcp.count)
-+			continue;
-+		if (!p->expire)
-+			continue;
-+		if (zone_to_nid(zone) == cpu_to_node(cpu))
-+			continue;
-+
-+		return true;
-+	}
-+
-+	return false;
-+}
-+
-+static long refresh_vm_stats(void *arg)
- {
- 	refresh_cpu_vm_stats(true);
-+	return 0;
- }
- 
- int vmstat_refresh(struct ctl_table *table, int write,
- 		   void *buffer, size_t *lenp, loff_t *ppos)
- {
- 	long val;
--	int err;
--	int i;
-+	int i, cpu;
- 
- 	/*
- 	 * The regular update, every sysctl_stat_interval, may come later
-@@ -1919,9 +1941,15 @@ int vmstat_refresh(struct ctl_table *tab
- 	 * transiently negative values, report an error here if any of
- 	 * the stats is negative, so we know to go looking for imbalance.
- 	 */
--	err = schedule_on_each_cpu(refresh_vm_stats);
--	if (err)
--		return err;
-+	get_online_cpus();
-+	for_each_online_cpu(cpu) {
-+		if (need_update(cpu) || need_drain_remote_zones(cpu))
-+			work_on_cpu(cpu, refresh_vm_stats, NULL);
-+
-+		cond_resched();
-+	}
-+	put_online_cpus();
-+
- 	for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++) {
- 		/*
- 		 * Skip checking stats known to go negative occasionally.
-
-
+/Jarkko
