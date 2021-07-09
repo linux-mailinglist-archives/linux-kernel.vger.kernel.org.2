@@ -2,157 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 726683C20D6
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 10:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CA3F3C20DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 10:33:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231543AbhGIIdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 04:33:43 -0400
-Received: from mail-bn8nam12on2074.outbound.protection.outlook.com ([40.107.237.74]:56385
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229685AbhGIIdm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 04:33:42 -0400
+        id S231556AbhGIIfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 04:35:41 -0400
+Received: from esa1.fujitsucc.c3s2.iphmx.com ([68.232.152.245]:25481 "EHLO
+        esa1.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229685AbhGIIfk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 04:35:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+  t=1625819578; x=1657355578;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=Hn4fpWYIv14ajTz0ApsVQZi36hD9I/MbN9CenVZgnQc=;
+  b=lbeA9IOao0vjleriLM9AIAkkTszqWrOleKc7dtIjmKf5OLzaG0q5m3e3
+   ahcyTwGoJAlL+rsU+uH6ILkzMiaWcXthnYlhE7GHthYu5qpKXgC4ZjLkH
+   oXxMM01EaJJtTaMTU/bEN0/HG8BsCjGlEdeb4/h1ujoZ2Z+a8dXnP7Dka
+   c31TqVY25sWed1O4u5wqhsVNYyeO3gKphQWTNpF9RXtzSiIs9RQ5HhtUE
+   iOCQWpg984fFAZTnb8SE44tdPyuLo45RryqizMEcyGWGGK9ebHr6fSJN4
+   96Px/ypqnjyYTds6lsbVdeQngg0CKDff8s+nYcuUyoSduXzEwUQ9L2cZx
+   g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10039"; a="42844543"
+X-IronPort-AV: E=Sophos;i="5.84,226,1620658800"; 
+   d="scan'208";a="42844543"
+Received: from mail-ty1jpn01lp2057.outbound.protection.outlook.com (HELO JPN01-TY1-obe.outbound.protection.outlook.com) ([104.47.93.57])
+  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2021 17:32:53 +0900
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AkDbxEKpl6+xj2N1DH83u12eIRbba+QaHnLblluKlvesUxNci13ImfSXl9SD3+W5yS/4z0e94QqpeRxyxodJ5FLUicZkyne6fL8mtBzLcJ6yc8WwjFcrdCoBBsmkOtUpibCvZ0walNbslFOLeNSbFlcU0WcnY6W3tCgFbiMHlzdB2bT+CSofcNZ2JobncrbGfm1Wg9Hi6ILjDA2vFZjVAS0uWoDquVm3kWFqAHO9Etmw9ab6PJ4fBjSzJg8mfolz8FkT96AKEu86HPYR1wrXb+1mtXvs0qxsDjX+MNByuXo5yiL4StfDrRoBw7k1aY12PEWQrAq2KDmzArCNwe2l8g==
+ b=MUE7qaoGj/DbKrXesojepI2aWsAbEPS44v/KXSeLM4UhjIsYd39IJqHYmQCPa8VxahYONWl6kBshl3wIKT//Fj4emwyoSOSl5SqYhQvG95hN51sI3k/SG/++u1tz7A1lrZHwFZ7BG0LKrAtpZQqm+UXtd2sWO8cM9ROaLuRfCiDs/58Xhgn9+3x1r8OgINSpae5Itm7SZC4IoJVvPvGRKBxALqsEdjwuS7uj1jzU/xz9970tGYfqYsZSZABsH8tg2ZlwefFtxxt1hFTcCl/myytQstRrXS9FRNUukIZJPMXFFsB8AtoUeEadxQwwnTUeH/wOF5OnQVAS//fBJBLm0Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WoYoSUXnUf5VxAIIfla5tLu7hcqPV1kaD5+Tt/z98p0=;
- b=hVQUVGVOOo+Fny3stQSrn5ghlPXxngvh8uWZVOU16X71dInpQ5CaDzXxejSy/MDrdBVvbJ2diutAK0TvWqLM1Ry/lT+lIXunjaMDdi3CopXpc5JdQTbBwast0tC6H1XGVMOm/ojWC5uZXWUJwtHJAGyOVjASgvhlGic/ARxO+E25leNqtBOlPK8lJFaZxh/1KOlJxgFMie5Gcj9X1TO1YgwDc1EnWoWy4AKOowUpW0xVclGKLzuHw3UIkNkplbgQmZbCxmvwQuDUWwHTGel5D4C1QTYLa7a9TZTO/HCwvjweedt0UPwMkttyAN3NrN77+Q5VkrgG306KMwIKs7KeJw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ bh=Hn4fpWYIv14ajTz0ApsVQZi36hD9I/MbN9CenVZgnQc=;
+ b=OXFI34vr9Z28+dMPbehH9bRLeAvsEwz06Pdk9jT2IJh2yeVcRlESaqCQuZR/Pj1lvinYMY4/5GH3+r+XBtYM+yW9JombOENuPVXUyL7yk4XUJk+sqqEng/pWl08c1ARxVGdsLD0tsR0Q/D0Pss5no1p0CchPZbrlpuJTD69WPxl989XlDWrFmsFXU0PbC5v6tgOcr3pnvsiGkG/Kniyn6tH9AFdFhMpJT5beA4Zhg4FfjsYT4ZKzuLEUn6eLb1vxqXCCHqnJst6lI33uede6i9wEI3tJaQj1yi8tZxrNzuOSQOAk/IhO+h0mh8H2sPUCfKvVthhkv4UDIIA7X8fV1w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WoYoSUXnUf5VxAIIfla5tLu7hcqPV1kaD5+Tt/z98p0=;
- b=slpTNI5gniiqj1uY2saiBvyK/ko8PZ9bE7eimBWzCjJII82o5KC4/LceksuYSOhCT2OKLkhsTpFkqLPj1hhjofFsLuxDMBe9YlSqIsuYmF3mYCJzzJeEhDhABfmJxvNoWVs4JgFHDERDgrWgEIVBwpe+DT1KDQglUY6NqDn9PJtFspiNtkyzCjlNn5VPquuJF411sW0s1Lup73a/LcpP0xAG11E536cQ+kjWGlshBYox/F2kLylrI+a0ytJmmQaqzHEjJWnLySkMF2FqVZCU2IrV3fOc+i1gve60/05/e3fwqBsUCKUWTWBfVgVb3mv+jwKpI05zAbc4fPn2vgsd6w==
-Received: from MW4PR04CA0015.namprd04.prod.outlook.com (2603:10b6:303:69::20)
- by CH2PR12MB3928.namprd12.prod.outlook.com (2603:10b6:610:23::11) with
+ bh=Hn4fpWYIv14ajTz0ApsVQZi36hD9I/MbN9CenVZgnQc=;
+ b=R4W4MQ7VehR6TMM/jX6mydK/TZSf1v6QjqY6+kiGsnh6f3+d3r61arMq3oqWMkRofKWTkbRFEdjBi6v5gCzcDjYNX111DI/hg3zH8refRporuxn4ZyrPrAgZghKdSjUaVlD/Q460sBSdK53J/liwFk00EYsJ/xBDlsrvyRxH5UY=
+Received: from OSBPR01MB4600.jpnprd01.prod.outlook.com (2603:1096:604:7e::12)
+ by OSBPR01MB4773.jpnprd01.prod.outlook.com (2603:1096:604:7a::23) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.27; Fri, 9 Jul
- 2021 08:30:57 +0000
-Received: from CO1NAM11FT042.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:69:cafe::b) by MW4PR04CA0015.outlook.office365.com
- (2603:10b6:303:69::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend
- Transport; Fri, 9 Jul 2021 08:30:57 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT042.mail.protection.outlook.com (10.13.174.250) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4308.20 via Frontend Transport; Fri, 9 Jul 2021 08:30:57 +0000
-Received: from [10.26.49.10] (172.20.187.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 9 Jul
- 2021 08:30:54 +0000
-Subject: Re: [RFC 08/11] gpiolib: cdev: Add hardware timestamp clock type
-To:     Dipen Patel <dipenp@nvidia.com>, <thierry.reding@gmail.com>,
-        <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-gpio@vger.kernel.org>, <linus.walleij@linaro.org>,
-        <bgolaszewski@baylibre.com>, <warthog618@gmail.com>,
-        <devicetree@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <robh+dt@kernel.org>
-References: <20210625235532.19575-1-dipenp@nvidia.com>
- <20210625235532.19575-9-dipenp@nvidia.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <7e49e6a9-bd7c-1b97-50e6-bc803addc27f@nvidia.com>
-Date:   Fri, 9 Jul 2021 09:30:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.30; Fri, 9 Jul
+ 2021 08:32:50 +0000
+Received: from OSBPR01MB4600.jpnprd01.prod.outlook.com
+ ([fe80::8cd6:d0ec:739d:5284]) by OSBPR01MB4600.jpnprd01.prod.outlook.com
+ ([fe80::8cd6:d0ec:739d:5284%6]) with mapi id 15.20.4308.023; Fri, 9 Jul 2021
+ 08:32:50 +0000
+From:   "nakamura.shun@fujitsu.com" <nakamura.shun@fujitsu.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+CC:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>
+Subject: Re: [RFCv2 0/7] libperf: Add leader/group info to perf_evsel
+Thread-Topic: [RFCv2 0/7] libperf: Add leader/group info to perf_evsel
+Thread-Index: AQHXcnn/wz5qoT5DfU6ga3rhnp0lbqs3mQmAgAA7bACAAATkAIACeqw9
+Date:   Fri, 9 Jul 2021 08:32:50 +0000
+Message-ID: <OSBPR01MB4600BC30D85403D3130B0C9AF7189@OSBPR01MB4600.jpnprd01.prod.outlook.com>
+References: <20210706151704.73662-1-jolsa@kernel.org>
+ <YOW+eyxYtPhc2hSf@kernel.org>
+ <YOXwVPS6zIyw0C/k@krava>,<YOX0bpjlr/Xqlbk0@kernel.org>
+In-Reply-To: <YOX0bpjlr/Xqlbk0@kernel.org>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_Enabled=True;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_SiteId=a19f121d-81e1-4858-a9d8-736e267fd4c7;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_SetDate=2021-07-09T08:32:48.985Z;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_Name=FUJITSU-RESTRICTED;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_ContentBits=0;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_Method=Standard;
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=fujitsu.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 4fa0cd37-235a-4b5c-dc18-08d942b4235f
+x-ms-traffictypediagnostic: OSBPR01MB4773:
+x-microsoft-antispam-prvs: <OSBPR01MB47730FFCE80404FA77BF08B3F7189@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: uJmNaqrNMLoP0ZKoQm2pwH6E9PAf33ZZvPvn1QWpZ4JLKfR6PuOADHOlYeDK5uOLktkldIxx6mHu9se6XYWPhXz8TwLLgie+QEMxTZpDP/xyTlYPKJBWhEVtNdW+4dvBQypgweoamUsCmSIjAMGZs75/KSlu6OTZakYPARVDrjYwIQ5jrNXqSf3J55LFPiu9j6KKOq96uL1OCR+e685vlRC5lmZdb9nlSHnylvAW6hvIWg41bvK/n6JRp39mQmy+/05MURht9OF4mk46gndNLwA3nyNgIdEsqUnRbcANXAx+ZW/9WBQj6+0RvRDQiqfnqStfmBENiH5BEjYypDaGrA4OgOHi/oP6RDxeZdtoHTBPrERELfepC2lajeIkCyFBsZw+GuDYH8YkAoWmbpVKDpXGKWYpM4JYAfVfbiTbBlnLl6qw+Q2RXu1Xlopy8Be6z7uN+u8DS3K+nFbdi1Swk23oWPp8j5Kuocf2OkuHFfQg8GIhjKe6F2cYP6eAHK7Snq6Wte3UQINqfOTHhr8jMN7cOi32uu2uL74D6AzXdOuygM8UcZXuPemjAi64ksBGpaBYO50xoBsILJJ3LsSgOc2sOqHaP5a+QWPL2USjFUMUdOAufbSNdn/h/0cIPtDOXvFpJEqB/BC5OyJYVXIaDBxlueSs8fjuEwJgbUzZ0j6mMnB26z1Q61kFUckgC2cGJ4SOJpmsi/DfglvXfBNTbcMQOoPTp9oT/sOtijJ3Tp4=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB4600.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(366004)(346002)(376002)(136003)(5660300002)(8676002)(4744005)(7416002)(122000001)(9686003)(52536014)(38100700002)(55016002)(478600001)(86362001)(83380400001)(85182001)(6506007)(66946007)(71200400001)(7696005)(33656002)(186003)(76116006)(66556008)(64756008)(26005)(66476007)(54906003)(2906002)(66446008)(8936002)(4326008)(110136005)(316002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-2022-jp?B?U2ljTDVEcFBTdjlaVVFmZkYvbXhRRjYwWGpWbXVXTUV1TTd6TnpoMm5m?=
+ =?iso-2022-jp?B?MVJ4YTdkWVp3K0RWaExzcDR2bFRtUXgvVW44MzM5WkUxSGhOQTlLSUNS?=
+ =?iso-2022-jp?B?OTdMZ2FoaW45Q3ZxYWtGYUpUZVRGL05SNWhrOUhTYmVESFRQY0tXQTBl?=
+ =?iso-2022-jp?B?NFVMSDZwcE95cHRTV3dvdy9sVjY3UmM5cXRqYWFrOWlVT1VLQ2VwRVIr?=
+ =?iso-2022-jp?B?L244UTd5ZEVSVkx3MjVHWFJOeDF4SHpxUnE2V3JKRjBMYXFFeGl4V2JX?=
+ =?iso-2022-jp?B?NkZueFZJSHhkVG4yR2FzT2JGL2hBK2M4alYxRWNTQnBScWJWa2h2UWh1?=
+ =?iso-2022-jp?B?SzJ5MHNmZ3BVM25XcmlsM1dRQ3VGS295OFNNak5uN1hjckVhZXpZSUhU?=
+ =?iso-2022-jp?B?dndhVGRmM2lLWjVENmwvcXRWdGhxcWY2eEZISlV0cTVIeHNoVVQyb014?=
+ =?iso-2022-jp?B?VlhJQVFmMmkzcWxPZkRuT1RhbkdHQktQMTA5TTZJdENLWDRaNTJZZGdY?=
+ =?iso-2022-jp?B?T1k0VUxkdElhSm9oQTBQYmRZL0FYM0ZYTDFneWtvZmVOYkNwNjkveFNT?=
+ =?iso-2022-jp?B?U0tOUXAxeWhtOWd0ZlJnUGU4OTlYR0J3di9NWVlpK3FiSFI5WXZMc1Q5?=
+ =?iso-2022-jp?B?bDErckVhZFlMY2tPR0xQc2RleE5Edi9FWFRNTi9wakRselNvMW53V0ZW?=
+ =?iso-2022-jp?B?d0lLTFRZYU9laFZ2U1ZYS3NZVG4rQ1FpMG1Md0VvaldBanpLZnhwc1Bl?=
+ =?iso-2022-jp?B?UDlEWWxlNktsS1BpZ2p3c3hDbVBRS3lLZHlHaFB6L1cvY1BxTzErL25p?=
+ =?iso-2022-jp?B?TkFBSWV6TFRqWDRNT1VmemdGelNkQ1RPY2N6YVlyZFUwTVZpZElOTERi?=
+ =?iso-2022-jp?B?OVlTb3ZKMnFINnFxTEtLL2tUeUJ5L21wMEY0cjhFdWRXZGUyT1dleSti?=
+ =?iso-2022-jp?B?TWRCRG9VcDl5ckNpK1VpUk1lTkV0ZVZSNENBU1cvc252aC9FMHlvb2Js?=
+ =?iso-2022-jp?B?bWhRRGwrZHJ4UlJwNVlWUjY1YU4wNTlJL1NXZXRsbVhhWldRR0JRTUdX?=
+ =?iso-2022-jp?B?Nmp5cEdNb2w0cFBJTnNmb2pWZzNIQVpVMGo3RVRDZ0ZSb3k5QUowMlhN?=
+ =?iso-2022-jp?B?Qnc3d3prcW1qLzFzTEJGdzBBVERVU1NldERFVkcwQWdkTkFLZE5tMm1w?=
+ =?iso-2022-jp?B?dXdobHduMDVtS1RSK09vSkxFUWtJRnB4d1FCelNOMkwvQWQzbmhvL2Ux?=
+ =?iso-2022-jp?B?dzIxazZOdHdiekNSSkFmNTBGZjRVN0JQZlVPd25adkkxUW1XdFVjR0xk?=
+ =?iso-2022-jp?B?TDhqTnNKVkpZZzE5Y2VEN1FJM3ZLRzhGVlVHSU10MEVlUnZMUFlZU3Vz?=
+ =?iso-2022-jp?B?dmh2ZUZYYlNWZzkxOXRnbTJDbU5FRUw3NndDL0dqMW4xYzBiSXpXQlhX?=
+ =?iso-2022-jp?B?d0RaMjZNYlBJdm9TdDBlRE0xRWd2OFhmT2JBNWkzUnBVMjZLNTB0aGtr?=
+ =?iso-2022-jp?B?MFJQYnZOY3FOcTZ2M1hoaE9uM0diT2N2U3RIZkJaajVpYkJ1VTZnUWYx?=
+ =?iso-2022-jp?B?LzFsL0tPL1VVVTJ1bGVhZS9Nd0VjOHN5b0NmNDM0d3ZqeFZ6WGRZYzli?=
+ =?iso-2022-jp?B?YWg5bFJ6UU1LMGt5blNrOGhqeEVJVUkwUGF3Y3ovMU8wT0sxNDFqRWU0?=
+ =?iso-2022-jp?B?b2svUllCWlc2L0lEZzdkaGg2SVh1SXU4UUx4K2NkZW1GbUQ5Yi91K1pP?=
+ =?iso-2022-jp?B?MFRoU3ZmS1lXQkN0TVkzNm4wNGdjZERrWHk5V3RYSWxZakdTODNNakpT?=
+ =?iso-2022-jp?B?Y1RzV1BMWVJLWjhmbUJ4U2NLU3F0ZGtjRld1VW11VGI0Y3IyTjRkQ0tt?=
+ =?iso-2022-jp?B?OVRIS1RhVVV0OWc1ZVhVMy9vRS9ZPQ==?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <20210625235532.19575-9-dipenp@nvidia.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 85e8c8bb-dba7-41f0-141f-08d942b3dff7
-X-MS-TrafficTypeDiagnostic: CH2PR12MB3928:
-X-Microsoft-Antispam-PRVS: <CH2PR12MB392823253B4F3C5DD259B74AD9189@CH2PR12MB3928.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AAkisYR6Hgxf3A1WbC3nDnvDNGuf9aIq7J5tPeUrXGk5EXGWJmSnNPOUVNPVPnkKWKRX0z0myTE/Sfbdab7d1I+Dr1LGp10pEImmr3WBBBhgY0ghjjaTs4t3pXBb1HIPT4+IFalYYlYXg7uupR7oSXWhW2yffn9tjG7E2OI3SxvOL6klFqTebutnSkg9mSFVYl8QSPl64+po5anK9Igal5NXhLMmH5ZdI2RHXxsk4yX5HKWoPiStY9B7oASOGIjBToUUdAjbuPb6mEhyMzrkzltMHgeQozVKwTxk+Kl79iaRyhf+KmnMFJkc6VLFigO0GngOfPRcy/0fmITLmGi8zpm7H4XskFN/rBTi0HpUkXwj0nzZ5aXtic0FZ1mwqcfsIFTtbJ1d0+Iv1b5AyZi1B90BIl/HWAa/8Xd8u0Zuk4hGq+ia85TS29tT9SApMOHoQVuumAQcGeIW7qPngfS8IBPdr9kbMcDS2DQU1JG99icoSFuy9LSt2hVBYBamNmzQnZD+tokrQb/54MiLtfEWeFU4E6PcGiPJlwsJDtAEjKOZWth4v/dtWN8ycsmA3qMF0Bpw/GCuGkPwX8uA/BuYnl5nHStHi/81XPYMktn/javKZhWmXZGVMdqEgN3+KROExZfAUbbuyw7wlNRBsIKHdFOGpws74AL772EsG8+soc+HRkdNA8CwAlYgf9Yo78xrgGz77GLFLFKszmU5qusXOrkFVBYpVPX3L1u6ZrpDuM0THM3ZKLeDi3dHNQrDg9tWZGofXeKPtcO6827rS1oHyw5gq69VROXm1uzvoN6po0VNOhuNvsxzxZ+B6Uo5fh728uvDq1oFOgUg55o+AyTLHQ==
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(346002)(39860400002)(376002)(396003)(46966006)(36840700001)(478600001)(16576012)(82740400003)(186003)(70206006)(921005)(16526019)(70586007)(7636003)(31686004)(36906005)(36860700001)(31696002)(316002)(83380400001)(7416002)(356005)(8676002)(2906002)(82310400003)(86362001)(53546011)(8936002)(2616005)(110136005)(5660300002)(426003)(34070700002)(36756003)(336012)(26005)(47076005)(43740500002)(83996005)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jul 2021 08:30:57.2647
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB4600.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4fa0cd37-235a-4b5c-dc18-08d942b4235f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jul 2021 08:32:50.4257
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 85e8c8bb-dba7-41f0-141f-08d942b3dff7
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT042.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB3928
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: alIWKooMasVNIDpsvRmETRCzRa5l9tahejbm9fEGQ140VCLRWaCXe36AGkSPQUcpHDhtNCDzqp68kNZdaWK9AGHrZXrYqUp6ycwCMij6DWo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSBPR01MB4773
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 26/06/2021 00:55, Dipen Patel wrote:
-> This patch adds new clock type for the GPIO controller which can
-> timestamp gpio lines using hardware means. To expose such
-> functionalities to the userspace, code has been added in this patch
-> where during line create call, it checks for new clock type and if
-> requested, calls hardware timestamp related API from gpiolib.c.
-> During line change event, it retrieves timestamp in nano seconds by
-> calling gpiod_get_hw_timestamp API from gpiolib.c. At the line release,
-> it disables this functionality by calling gpiod_hw_timestamp_control.
-> 
-> Signed-off-by: Dipen Patel <dipenp@nvidia.com>
-> ---
->  drivers/gpio/gpiolib-cdev.c | 65 +++++++++++++++++++++++++++++++++++--
->  include/uapi/linux/gpio.h   |  1 +
->  2 files changed, 64 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
-> index 1631727bf0da..9f98c727e937 100644
-> --- a/drivers/gpio/gpiolib-cdev.c
-> +++ b/drivers/gpio/gpiolib-cdev.c
-> @@ -518,6 +518,7 @@ struct linereq {
->  	 GPIO_V2_LINE_DRIVE_FLAGS | \
->  	 GPIO_V2_LINE_EDGE_FLAGS | \
->  	 GPIO_V2_LINE_FLAG_EVENT_CLOCK_REALTIME | \
-> +	 GPIO_V2_LINE_FLAG_EVENT_CLOCK_HARDWARE | \
->  	 GPIO_V2_LINE_BIAS_FLAGS)
->  
->  static void linereq_put_event(struct linereq *lr,
-> @@ -540,9 +541,20 @@ static void linereq_put_event(struct linereq *lr,
->  
->  static u64 line_event_timestamp(struct line *line)
->  {
-> +	bool block;
-> +
->  	if (test_bit(FLAG_EVENT_CLOCK_REALTIME, &line->desc->flags))
->  		return ktime_get_real_ns();
->  
-> +	if (test_bit(FLAG_EVENT_CLOCK_HARDWARE, &line->desc->flags)) {
-> +		if (irq_count())
-> +			block = false;
-> +		else
-> +			block = true;
-> +
-> +		return gpiod_get_hw_timestamp(line->desc, block);
-> +	}
-> +
->  	return ktime_get_ns();
->  }
-
-
-Looking at line_event_timestamp() and the callers of this function, it
-appears that this should always return nanoseconds. Does
-gpiod_get_hw_timestamp() return nanoseconds?
-
-Jon
-
--- 
-nvpublic
+Hi Jiri, Arnaldo=0A=
+=0A=
+Thank you for posting a patch.=0A=
+=0A=
+> Its all in tmp.perf/core, but from what I saw, yeah, he requested being=
+=0A=
+> able to have a group leader.=0A=
+> =0A=
+> Nakamura-san, isn't that the case?=0A=
+=0A=
+Yes, that's right.=0A=
+=0A=
+With these patches, I think we can use event group to register multiple =0A=
+perf events, just like PAPI.=0A=
+If I find any problems, I will point them out.=0A=
+=0A=
+Best Regards=0A=
+Shunsuke=
