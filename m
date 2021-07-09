@@ -2,259 +2,614 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B91D3C1FE2
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 09:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA1683C1FE9
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 09:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231136AbhGIHQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 03:16:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230121AbhGIHQe (ORCPT
+        id S231149AbhGIHS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 03:18:59 -0400
+Received: from mx0b-00128a01.pphosted.com ([148.163.139.77]:21444 "EHLO
+        mx0b-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230121AbhGIHS5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 03:16:34 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADEE9C0613DD;
-        Fri,  9 Jul 2021 00:13:50 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 59-20020a9d0ac10000b0290462f0ab0800so8503001otq.11;
-        Fri, 09 Jul 2021 00:13:50 -0700 (PDT)
+        Fri, 9 Jul 2021 03:18:57 -0400
+Received: from pps.filterd (m0167090.ppops.net [127.0.0.1])
+        by mx0b-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16976q6Y030563;
+        Fri, 9 Jul 2021 03:15:57 -0400
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2041.outbound.protection.outlook.com [104.47.66.41])
+        by mx0b-00128a01.pphosted.com with ESMTP id 39nywam72x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Jul 2021 03:15:57 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bbLh8blrnJJQN/Yf1gYJN70xVfHUnaUhlA17shQLKzu7t7bx1RqfCl+DbrBTZp4J2y5o4majpc1/MXW3UKILHLFO+2Z+/SCt3waster1VHaG8MC4JEc6Cyn20Cca/6puibhIh2Z+cp3LUgxdZSgCAFppfFkxupuo/ns6PtstIgUFj4Nyl7ETL78h6Wgvf1BEjTdqkW7A7w9TmCE6ezXu9g+2xBIbHtFcceQd6NZBG4rTm8Ify/ffQKT99Y5YLS2W5ZQAhWJBq93riC60YgJ180IWF0im+/UEGyqnbzUHEAbl0EU7vM8QTEt90URmOZNzBeobbL3CKXRTmh6K0UuiVQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GJNfergDaAORVPuCE3CJ2QSXfJ7vcH+NJFYIhO5ns8w=;
+ b=VMkO4hJrftZ82WEENCFi/5Urs2C7OC9Nqg1dao7wNh6qvqE4rcRW7kHItmPWZxSkIR23s8CbRy1Rt997CJZkqmHYQ/FLCxotFBKmro8VO3NFyXS72w1r9TE4taQCj7qtOcG7QRr/WqzagGA6SgR51wGDiCSD3dxJcxL25gKtVx6JKtK4lQmI9oHyLnc3cj04GmkkG7g9Obug4xF/HynbhWg0UYQ0/ojAmzPchPFdasuwmBBMHKL46uQkURaVmwIm4bHmn82Tfu9bKPGa6VDRAjyWSx1u4I3dmHd8znGqpsFmyL5pIvAYjtoWuQPjLlq3HTzoqmZViBSnNhZH4VeBbQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
+ dkim=pass header.d=analog.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jr4ogZHqQ7zRi1sMqa0R1O1+zw4sLaP6ohLoK1fMMDA=;
-        b=n/DHTtUXSVuzF1Xnos9aimqdfW9QH7aIknywhLk6BxVNxLEmmnwqQoz+lGE66ZE8iq
-         1RCNT/IjdnE751iaxx45aHSfvJZd497Kmh5FWEHusd+H97AeXAMi/EuAeQsiKUp55NOs
-         1c8tzG8bYjTyOAKkcFArMs8w3A70fwFRuiAn+Yv+FOgi3ISW+WZkYrbSLL5C3cwC2gQp
-         YKArlmO0sGBDCR8r1CH1tuVi/yTrVWOxPTzGnN3vrI6p7Zg+2oaLRZMbIn5D1bnqgCWd
-         3ym7tlzQOQv7iJ0ZDWtywzjlilUWjKNnbmWdE1xUZ4b5lDzZ4rcrcBvzmicsx41qiVRI
-         GAQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jr4ogZHqQ7zRi1sMqa0R1O1+zw4sLaP6ohLoK1fMMDA=;
-        b=uPyJEDyTRCPMqjxB4Vt91VVVVdknEEqypwq8uYdtlVC8afG008sZZBLbmYobadZbmV
-         Rb4vU3jNDnWhU7k9bDbwUz2VReL/dTZ0JFHKfsDIQkaWQmhEhOfT6xf5I76RKuNyMjr8
-         duCHzCFTiO1eITPmWle1HFLXSWaQBsLmUP1+dt1iLiw77Zrf379Jhp2YZe7MWvgsjihB
-         DGFnHUQg7xSGexdUVSKL2c3eq1NNkwK5WjIVSS4e0IGm6ii7Aq072aJKSN3Ew2M8CtRy
-         eQMyraMOnUzBwrcw6Czx/53r1ddTyvoAMtLlV4hhQGEv37A/zAvIHdogyUFQzOMpitPI
-         MWvA==
-X-Gm-Message-State: AOAM531qf6yIddVxPLLMgOVOlkEXL2TG8HcQJK4gbAcL1BujxC9X0xKl
-        6cfgn5qJ2/XqJ20rLk4L9Uv2sqwPJQwsG+Fva08=
-X-Google-Smtp-Source: ABdhPJwXx9Y+ZgogxjgcXleD8BNl4B2h14hUIQAR+6xkzT6s1p9jrtncqLVmpcjytbyarhg742wb/HcJfm6otgmpsnI=
-X-Received: by 2002:a05:6830:160c:: with SMTP id g12mr517364otr.118.1625814829931;
- Fri, 09 Jul 2021 00:13:49 -0700 (PDT)
+ d=analog.onmicrosoft.com; s=selector2-analog-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GJNfergDaAORVPuCE3CJ2QSXfJ7vcH+NJFYIhO5ns8w=;
+ b=pZzMZtr1uWYR52EntSvqN9izL4jrfsyS3cWkh2KvSNA/hZL5Ram3L57WHTEEZ3ubYRCTU+Apbd4QGgRL5PZIh7kOIVtTCZmZw7dSqcPfPXVvDr5IahFQ47UsHrx0pxuQWqiH9o/49RG5vdViK6g4qF0xcYTO8MgCfHP6YKCd9EU=
+Received: from PH0PR03MB6366.namprd03.prod.outlook.com (2603:10b6:510:ab::22)
+ by PH0PR03MB5894.namprd03.prod.outlook.com (2603:10b6:510:31::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.22; Fri, 9 Jul
+ 2021 07:15:55 +0000
+Received: from PH0PR03MB6366.namprd03.prod.outlook.com
+ ([fe80::4b7:376:c5f2:3891]) by PH0PR03MB6366.namprd03.prod.outlook.com
+ ([fe80::4b7:376:c5f2:3891%3]) with mapi id 15.20.4242.023; Fri, 9 Jul 2021
+ 07:15:55 +0000
+From:   "Sa, Nuno" <Nuno.Sa@analog.com>
+To:     Ivan Mikhaylov <i.mikhaylov@yadro.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+Subject: RE: [PATCH v3 1/1] iio: proximity: vcnl3020: add periodic mode
+Thread-Topic: [PATCH v3 1/1] iio: proximity: vcnl3020: add periodic mode
+Thread-Index: AQHXc/U/Q114uXpUm0OlNRJ4Z2t99Ks6OFFA
+Date:   Fri, 9 Jul 2021 07:15:55 +0000
+Message-ID: <PH0PR03MB6366A1F0B5AB2963081A8CDB99189@PH0PR03MB6366.namprd03.prod.outlook.com>
+References: <20210708124115.558186-1-i.mikhaylov@yadro.com>
+ <20210708124115.558186-2-i.mikhaylov@yadro.com>
+In-Reply-To: <20210708124115.558186-2-i.mikhaylov@yadro.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: =?iso-8859-1?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcbnNhXGFwcG?=
+ =?iso-8859-1?Q?RhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEy?=
+ =?iso-8859-1?Q?OWUzNWJcbXNnc1xtc2ctN2RkOGVlZWUtZTA4NS0xMWViLThiNzEtZmM3Nz?=
+ =?iso-8859-1?Q?c0MjFmY2FlXGFtZS10ZXN0XDdkZDhlZWVmLWUwODUtMTFlYi04YjcxLWZj?=
+ =?iso-8859-1?Q?Nzc3NDIxZmNhZWJvZHkudHh0IiBzej0iMTIzNjciIHQ9IjEzMjcwMjg4NT?=
+ =?iso-8859-1?Q?UyNTU4MDczOSIgaD0iTHBQb2d4YkoxTjl6M0xFWVNqRGR4QlNzWWNjPSIg?=
+ =?iso-8859-1?Q?aWQ9IiIgYmw9IjAiIGJvPSIxIiBjaT0iY0FBQUFFUkhVMVJTUlVGTkNnVU?=
+ =?iso-8859-1?Q?FBSVlEQUFERDYydEFrblRYQVpYak9uRnFuazlHbGVNNmNXcWVUMFlGQUFB?=
+ =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUhBQUFBQVdBd0FBQUFBQUFBQUFBQU?=
+ =?iso-8859-1?Q?FBQUFBQUFBQUFBQUVBQVFBQkFBQUFCT1lHY2dBQUFBQUFBQUFBQUFBQUFK?=
+ =?iso-8859-1?Q?NEFBQUJoQUdRQWFRQmZBSE1BWlFCakFIVUFjZ0JsQUY4QWNBQnlBRzhBYW?=
+ =?iso-8859-1?Q?dCbEFHTUFkQUJ6QUY4QVpnQmhBR3dBY3dCbEFGOEFaZ0J2QUhNQWFRQjBB?=
+ =?iso-8859-1?Q?R2tBZGdCbEFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
+ =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFHRU?=
+ =?iso-8859-1?Q?FaQUJwQUY4QWN3QmxBR01BZFFCeUFHVUFYd0J3QUhJQWJ3QnFBR1VBWXdC?=
+ =?iso-8859-1?Q?MEFITUFYd0IwQUdrQVpRQnlBREVBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
+ =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
+ =?iso-8859-1?Q?FBQUFBQUFBQUFBQVFBQUFBQUFBQUFDQUFBQUFBQ2VBQUFBWVFCa0FHa0FY?=
+ =?iso-8859-1?Q?d0J6QUdVQVl3QjFBSElBWlFCZkFIQUFjZ0J2QUdvQVpRQmpBSFFBY3dCZk?=
+ =?iso-8859-1?Q?FIUUFhUUJsQUhJQU1nQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
+ =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?iso-8859-1?Q?QUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFBQmhBSElBYVFCaEFGOEFaQU?=
+ =?iso-8859-1?Q?JwQUdNQWRBQnBBRzhBYmdCaEFISUFlUUJmQUhRQWFRQmxBSElBTVFBQUFB?=
+ =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
+ =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFFQU?=
+ =?iso-8859-1?Q?FBQUFBQUFBQWdBQUFBQUFuZ0FBQUdFQWNnQnBBR0VBWHdCa0FHa0FZd0Iw?=
+ =?iso-8859-1?Q?QUdrQWJ3QnVBR0VBY2dCNUFGOEFkQUJwQUdVQWNnQXlBQUFBQUFBQUFBQU?=
+ =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
+ =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFB?=
+ =?iso-8859-1?Q?QUNBQUFBQUFBPSIvPjwvbWV0YT4=3D?=
+x-dg-rorf: true
+authentication-results: yadro.com; dkim=none (message not signed)
+ header.d=none;yadro.com; dmarc=none action=none header.from=analog.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 6368a8a1-0ec9-4f2d-10d0-08d942a96474
+x-ms-traffictypediagnostic: PH0PR03MB5894:
+x-microsoft-antispam-prvs: <PH0PR03MB589478B5809503497F1C9FEF99189@PH0PR03MB5894.namprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 9KXnP4AJSsBdMVdugSVjGNEGwIKaQ3JXK4QIOFs8F/cVVwqpfigdiAWVcl/XGZmDbJhtsDjVkl1U0TP5mkG/eDjJvRVGmDuDGxtZTIGssDNTh2t7xcSa6jywiVrBsz9sGqv8zBc/J05r8oyqu4sdoIw7a7zH6fUidwoGynx81Wp+utVKFx/3EbHq9fC2UDNS0m3g1ojzlNbTwk9qtJG0HBqkDZ2ZpAAaq0cBqLRiyoiVU5dRuFlKRAuc56UsLbS5UIb8ZbVoRhSBOuCzZrPa97vX3akCjlFVbgFJBLOWA5ehAiyou4wxpEOjyaOk2vCcF2Np/aOGdboASX+R3dDnG6bGcnV6oHQI4K60mlr3dTcG74XwchjjM1YVZ6bPOi8kmMF+ZZXelGUd80yeYgMqxEhGxrEi6/CmMbNvhsp4Zi//AVdLEoBdLzg1uzSAt62+k/T6LQKY6SdToVQ0K8qN54dYOcKI0yelZjmbXQpYUYGXYhXFQp3BZa/QX+/w9lBfbvoSNl/JTvsMX+WcQORlqU7yWCL49ZHB9T5yyNOLx+WT83n3h+nHUdiAlhfYOiqiINewEnWjKVGaCJSpGHig4FvW1RY+Gi9UFhPakgnxu9z4JL9Ex0g3/5OPNLf5iG1QuAihvBQoZfRIaOM/3HpGuPJx+mmEJgWejNAhTSERdopfxgzQojb4MCk/BUNwJYYuPR0j1w9s7UkcMz2pQuK71KyqQnA+ChSo3Nyz5unCSi0=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR03MB6366.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(136003)(346002)(39860400002)(396003)(110136005)(64756008)(66946007)(9686003)(55016002)(5660300002)(122000001)(4326008)(52536014)(66476007)(966005)(6506007)(86362001)(54906003)(66556008)(66446008)(38100700002)(2906002)(53546011)(186003)(33656002)(478600001)(71200400001)(8936002)(76116006)(83380400001)(7696005)(30864003)(8676002)(316002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?iMd4sa/qvG9KRhDrtOyMO9Zh53IMDl0UVyPQUsFWQSbVZfpEk2jfNAjyx/?=
+ =?iso-8859-1?Q?J4UNtcQMhfEianguPRMdasxvz/tdAqEiZzA/gOES/2ZC1kUMOsQFHkxDtC?=
+ =?iso-8859-1?Q?raSvWvETinTb2n9/IWD2EGMMAhQ1NxD+0H56RQF8MqMlX4actjORPAmYFq?=
+ =?iso-8859-1?Q?wlWeUiIZO3WPuR0OyawnUqHwV9G10iWFbipjJs/Qeg0Jn8yOW+ezhDmLRh?=
+ =?iso-8859-1?Q?onaJMdeoNAHqZmjgJYfPV1kyshVGcpRUeGq4Wbgd5fRVq3xQk3QosmONkq?=
+ =?iso-8859-1?Q?Q/cbtyo+zhC1JtOgRbLMtNQ/bg5rIVz1GerKOcNSiMFJNWoMhlnCKecrj3?=
+ =?iso-8859-1?Q?U55M7afgjM8kcRUn2XgdtDuSzw55TGXQS5p8UKqJV3TraRAdDKk985V373?=
+ =?iso-8859-1?Q?BZ/mMeQW8Onqi+cH9nuR3XsH/BnsIlwbBstomoDEoLoNvwxe8UB/MuBRH+?=
+ =?iso-8859-1?Q?rVaFtWibt1X1L4gMSKy/Sw/hwsyFXY7+P6XnXLr/t/RC8GYwsIHMi82Jeh?=
+ =?iso-8859-1?Q?6HiaoIPWmPBOaBpaBbQxST1/G5O3mh/WLsKqHumPUeNX7rSa+I3HGR6J/v?=
+ =?iso-8859-1?Q?z8wlelnpOydPzeWYuuZooL705yPxzi+dwll7/YWo+cH357QVaD/IC/HYA0?=
+ =?iso-8859-1?Q?MxXMHjKEXksNBEmfRRe9UWDpRNEOxPXNr0/SlPpDnInIymwmt5OVWZs6CU?=
+ =?iso-8859-1?Q?FXS4OjhbelX8G9WVy2SM9VTr3oC/5kHmRwz/2l3Sz3J8RzfYRkAhgV4rQh?=
+ =?iso-8859-1?Q?lLM+bK7TyeEt5o2GkIQ1UqSytXW6QWxuzhGifvZLKpXWy/VcfFXX2Uiv8n?=
+ =?iso-8859-1?Q?flMWvu1pq7GsbfcGmDJVPTu6D4Lni0gpMR3uHEjR1nxu34R6ydFkjEhQSp?=
+ =?iso-8859-1?Q?xkfZpJjHsFE3AGLQuNYNbvTZjgjcW3JsiW2B3mkVDh7b1lJ0accLcGDTfh?=
+ =?iso-8859-1?Q?w2yYpVseDu0p42jhpXgJCLVVlnYk19SsQiaErxc/Bpw2caYTq3lBwqoe06?=
+ =?iso-8859-1?Q?BYekj5QX+Di7DlZA2laf6ZURpfsNdK9E/vnpQSS8nYK9AGnRlaichqbFK5?=
+ =?iso-8859-1?Q?BeCZ0q3zF2gQNEoo1nFoZsjRW/UpJ6khAIeJ+piTiiiuNlR1w3VFDxlxkg?=
+ =?iso-8859-1?Q?APVKTb6ntL4iPmtOzfaDTEkYl5j2I8T+NiPGOCgG2zyWRq5VEG7heiiX9t?=
+ =?iso-8859-1?Q?I3wiAHGbZ+nVDtLyvvgo4JZxzm5r1HyqGQskWXblcUC5evY8I3Ov+egy7q?=
+ =?iso-8859-1?Q?6q+cuvCRlodCBrVOfWNlnvmAUlhA7T8VtQUvI3movWSgsNLWNGr71hG7A+?=
+ =?iso-8859-1?Q?GG2W8azWsqbcXlK9xPV55/mXC4v8qjjd9synZv8nM+bZaK3RCvrUKsvFWx?=
+ =?iso-8859-1?Q?oqUk8fLJmjOQ8B9rrH2QutHufdNXz75BnTRs0oaRCwez09FSUO6czbxves?=
+ =?iso-8859-1?Q?OMY6tevPeveoNCaa?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20210707094133.24597-1-kerneljasonxing@gmail.com>
-In-Reply-To: <20210707094133.24597-1-kerneljasonxing@gmail.com>
-From:   Jason Xing <kerneljasonxing@gmail.com>
-Date:   Fri, 9 Jul 2021 15:13:14 +0800
-Message-ID: <CAL+tcoCc+r96Bv8aDXTwY5h_OYTz8sHxdpPW7OuNfdDz+ssYYg@mail.gmail.com>
-Subject: Re: [PATCH net] i40e: introduce pseudo number of cpus for compatibility
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        anthony.l.nguyen@intel.com, David Miller <davem@davemloft.net>,
-        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org
-Cc:     intel-wired-lan@lists.osuosl.org, netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
-        Jason Xing <xingwanli@kuaishou.com>,
-        Shujin Li <lishujin@kuaishou.com>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: analog.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR03MB6366.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6368a8a1-0ec9-4f2d-10d0-08d942a96474
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jul 2021 07:15:55.0944
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: iUp1MsbPz8wJHZKJt0Q0+sGLj6GwY6W9UnBHnWzLc7AJow39GbScjF82saH9E+oQvxIUtEfFYjuvbmppyR3/Wg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR03MB5894
+X-Proofpoint-ORIG-GUID: DxTJsp85IAYy01fZmYKluMY_nl2I1u4W
+X-Proofpoint-GUID: DxTJsp85IAYy01fZmYKluMY_nl2I1u4W
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-09_03:2021-07-09,2021-07-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ bulkscore=0 mlxlogscore=999 priorityscore=1501 lowpriorityscore=0
+ suspectscore=0 clxscore=1011 mlxscore=0 spamscore=0 impostorscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107090035
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Oh, one more thing I missed in the last email is that all the failures
-are happening on the combination of X722 10GbE and 1GbE. So the value
-of @num_tx_qp  the driver fetches is 384 while the value is 768
-without x722 1GbE.
+Hi Ivan,
 
-I get that information back here:
-$ lspci | grep -i ether
-5a:00.0 Ethernet controller: Intel Corporation Ethernet Connection
-X722 for 10GbE SFP+ (rev 09)
-5a:00.1 Ethernet controller: Intel Corporation Ethernet Connection
-X722 for 10GbE SFP+ (rev 09)
-5a:00.2 Ethernet controller: Intel Corporation Ethernet Connection
-X722 for 1GbE (rev 09)
-5a:00.3 Ethernet controller: Intel Corporation Ethernet Connection
-X722 for 1GbE (rev 09)
+This looks good. Some comments inline...
 
-I know it's really stupid to control the number of online cpus, but
-finding a good way only to limit the @alloc_queue_pairs is not easy to
-go. So could someone point out a better way to fix this issue and take
-care of some relatively old nics with the number of cpus increasing?
-
-Thanks,
-Jason
-
-On Wed, Jul 7, 2021 at 5:41 PM <kerneljasonxing@gmail.com> wrote:
->
-> From: Jason Xing <xingwanli@kuaishou.com>
->
-> The kernel will crash when loading xdpdrv with more than 64 cores and
-> Intel X722. Last time I submitted the fix (commit: 4e39a072a), but it only
-> solves the similar issue if the machine has less than 64 cores.
->
-> Crash log:
-> [305797.917411] Using feature eBPF/xdp.
-> [305798.054336] i40e 0000:1a:00.0: failed to get tracking for 256 queues
-> for VSI 0 err -12
-> [305798.055448] i40e 0000:1a:00.0: setup of MAIN VSI failed
-> [305798.056130] i40e 0000:1a:00.0: can't remove VEB 160 with 0 VSIs left
-> [305798.056856] BUG: unable to handle kernel NULL pointer dereference at
-> 0000000000000000
-> [305798.061190] RIP: 0010:i40e_xdp+0xae/0x110 [i40e]
-> [305798.075139] Call Trace:
-> [305798.075666]  dev_xdp_install+0x4f/0x70
-> [305798.076253]  dev_change_xdp_fd+0x11f/0x230
-> [305798.085182]  do_setlink+0xac7/0xe70
-> [305798.086344]  rtnl_newlink+0x72d/0x850
->
-> Here's how to reproduce:
-> 1) prepare one machine shipped with more than 64 cores and Intel X722
-> 10G.
-> 2) # mount bpffs -t bpf /sys/fs/bpf
-> 3) # ip link set dev eth01 xdpdrv obj ./bpf_xdp.o sec from-netdev
->
-> The reason is that the allocation of @rss_size_max is too large and then
-> affects the value of @vsi->alloc_queue_pairs which is 64. Later, if we
-> load the xdpdrv, it will reinit the vsi and assign double of the older
-> value to @alloc_queue_pairs which triggers the failure of finding the
-> lump.
->
-> We cannot simply add the limit of calculating @rss_size_max because
-> @pf->num_lan_qps will pick up the maximum (say, the number of cpus).
-> In fact, we don't need to allocate too many resources in accordance with
-> the number of cpus. It's limited by the hardware itself. So I introduce
-> the pseudo number of cpus to replace the real number to avoid the
-> unbalance.
->
-> After applying this feature, the machine with X722 nic will only use 64
-> cores no mather how large the number of cpus. The pseudo number
-> actually depends on @num_tx_qp.
->
-> Fixes: 41c445ff0f48 ("i40e: main driver core")
-> Co-developed-by: Shujin Li <lishujin@kuaishou.com>
-> Signed-off-by: Shujin Li <lishujin@kuaishou.com>
-> Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
+> From: Ivan Mikhaylov <i.mikhaylov@yadro.com>
+> Sent: Thursday, July 8, 2021 2:41 PM
+> To: Jonathan Cameron <jic23@kernel.org>; Lars-Peter Clausen
+> <lars@metafoo.de>; Peter Meerwald-Stadler
+> <pmeerw@pmeerw.net>
+> Cc: Ivan Mikhaylov <i.mikhaylov@yadro.com>; linux-
+> kernel@vger.kernel.org; linux-iio@vger.kernel.org; kernel test robot
+> <lkp@intel.com>
+> Subject: [PATCH v3 1/1] iio: proximity: vcnl3020: add periodic mode
+>=20
+> [External]
+>=20
+> Add the possibility to run proximity sensor in periodic measurement
+> mode with thresholds.
+>=20
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>
 > ---
->  drivers/net/ethernet/intel/i40e/i40e_main.c | 47 +++++++++++++++++++++++------
->  1 file changed, 38 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-> index 861e59a..26de518 100644
-> --- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-> +++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-> @@ -100,6 +100,35 @@ static int i40e_get_capabilities(struct i40e_pf *pf,
->  static struct workqueue_struct *i40e_wq;
->
->  /**
-> + * i40e_pseudo_num_online_cpus - use as possible as what we can use actually
-> + * @pf: board private structure
-> + *
-> + * We mignt not use all the cores because some old nics are not compatible
-> + * with the machine which has a large number of cores, say, 128 cores
-> + * combined with X722 nic.
-> + *
-> + * We should avoid this situation where the number of core is too large
-> + * while the nic is a little bit old. Therefore, we have to limit the
-> + * actual number of cpus we can use by adding the calculation of parameters
-> + * of the hardware.
-> + *
-> + * The algorithm is violent and shrink the number exponentially, so that we
-> + * make sure that the driver can work definitely.
-> + */
-> +static u16 i40e_pseudo_num_online_cpus(struct i40e_pf *pf)
+>  drivers/iio/proximity/vcnl3020.c | 297
+> ++++++++++++++++++++++++++++++-
+>  1 file changed, 295 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/iio/proximity/vcnl3020.c
+> b/drivers/iio/proximity/vcnl3020.c
+> index 43817f6b3086..cd5e9a34b93c 100644
+> --- a/drivers/iio/proximity/vcnl3020.c
+> +++ b/drivers/iio/proximity/vcnl3020.c
+> @@ -3,7 +3,6 @@
+>   * Support for Vishay VCNL3020 proximity sensor on i2c bus.
+>   * Based on Vishay VCNL4000 driver code.
+>   *
+> - * TODO: interrupts.
+>   */
+>=20
+>  #include <linux/module.h>
+> @@ -11,9 +10,10 @@
+>  #include <linux/err.h>
+>  #include <linux/delay.h>
+>  #include <linux/regmap.h>
+> +#include <linux/interrupt.h>
+>=20
+>  #include <linux/iio/iio.h>
+> -#include <linux/iio/sysfs.h>
+> +#include <linux/iio/events.h>
+>=20
+>  #define VCNL3020_PROD_ID	0x21
+>=20
+> @@ -37,6 +37,21 @@
+>  					* measurement
+>  					*/
+>=20
+> +/* Enables periodic proximity measurement */
+> +#define VCNL_PS_EN		BIT(1)
+> +
+> +/* Enables state machine and LP oscillator for self timed
+> measurements */
+> +#define VCNL_PS_SELFTIMED_EN	BIT(0)
+> +
+> +/* Bit masks for ICR */
+> +
+> +/* Enable interrupts on low or high thresholds */
+> +#define  VCNL_ICR_THRES_EN	BIT(1)
+> +
+> +/* Bit masks for ISR */
+> +#define VCNL_INT_TH_HI		BIT(0)	/* High threshold hit */
+> +#define VCNL_INT_TH_LOW		BIT(1)	/* Low threshold hit */
+> +
+>  #define VCNL_ON_DEMAND_TIMEOUT_US	100000
+>  #define VCNL_POLL_US			20000
+>=20
+> @@ -215,12 +230,230 @@ static int
+> vcnl3020_write_proxy_samp_freq(struct vcnl3020_data *data, int val,
+>  	return regmap_write(data->regmap, VCNL_PROXIMITY_RATE,
+> index);
+>  }
+>=20
+> +static bool vcnl3020_is_in_periodic_mode(struct vcnl3020_data
+> *data)
 > +{
-> +       u32 limit;
-> +       u16 pow;
+> +	int rc;
+> +	unsigned int cmd;
 > +
-> +       limit = pf->hw.func_caps.num_tx_qp / 3;
-> +       pow = roundup_pow_of_two(num_online_cpus());
-> +       while (pow >= limit)
-> +               pow = rounddown_pow_of_two(pow - 1);
+> +	rc =3D regmap_read(data->regmap, VCNL_COMMAND, &cmd);
+> +	if (rc)
+> +		return false;
 > +
-> +       return pow;
+> +	return !!(cmd & VCNL_PS_SELFTIMED_EN);
 > +}
 > +
-> +/**
->   * i40e_allocate_dma_mem_d - OS specific memory alloc for shared code
->   * @hw:   pointer to the HW structure
->   * @mem:  ptr to mem struct to fill out
-> @@ -11395,7 +11424,7 @@ static int i40e_init_msix(struct i40e_pf *pf)
->          * will use any remaining vectors to reach as close as we can to the
->          * number of online CPUs.
->          */
-> -       cpus = num_online_cpus();
-> +       cpus = i40e_pseudo_num_online_cpus(pf);
->         pf->num_lan_msix = min_t(int, cpus, vectors_left / 2);
->         vectors_left -= pf->num_lan_msix;
->
-> @@ -11457,7 +11486,7 @@ static int i40e_init_msix(struct i40e_pf *pf)
->          * the number of vectors for num_lan_msix to be at most 50% of the
->          * available vectors, to allow for other features. Now, we add back
->          * the remaining vectors. However, we ensure that the total
-> -        * num_lan_msix will not exceed num_online_cpus(). To do this, we
-> +        * num_lan_msix will not exceed i40e_pseudo_num_online_cpus(). To do this, we
->          * calculate the number of vectors we can add without going over the
->          * cap of CPUs. For systems with a small number of CPUs this will be
->          * zero.
-> @@ -12102,7 +12131,7 @@ int i40e_reconfig_rss_queues(struct i40e_pf *pf, int queue_count)
->         if (!(pf->flags & I40E_FLAG_RSS_ENABLED))
->                 return 0;
->
-> -       queue_count = min_t(int, queue_count, num_online_cpus());
-> +       queue_count = min_t(int, queue_count, i40e_pseudo_num_online_cpus(pf));
->         new_rss_size = min_t(int, queue_count, pf->rss_size_max);
->
->         if (queue_count != vsi->num_queue_pairs) {
-> @@ -12348,13 +12377,13 @@ static int i40e_sw_init(struct i40e_pf *pf)
->                                  pf->hw.func_caps.num_tx_qp);
->
->         /* find the next higher power-of-2 of num cpus */
-> -       pow = roundup_pow_of_two(num_online_cpus());
-> +       pow = roundup_pow_of_two(i40e_pseudo_num_online_cpus(pf));
->         pf->rss_size_max = min_t(int, pf->rss_size_max, pow);
->
->         if (pf->hw.func_caps.rss) {
->                 pf->flags |= I40E_FLAG_RSS_ENABLED;
->                 pf->alloc_rss_size = min_t(int, pf->rss_size_max,
-> -                                          num_online_cpus());
-> +                                          i40e_pseudo_num_online_cpus(pf));
->         }
->
->         /* MFP mode enabled */
-> @@ -12446,16 +12475,16 @@ static int i40e_sw_init(struct i40e_pf *pf)
->             pf->hw.aq.fw_maj_ver >= 6)
->                 pf->hw_features |= I40E_HW_PTP_L4_CAPABLE;
->
-> -       if (pf->hw.func_caps.vmdq && num_online_cpus() != 1) {
-> +       if (pf->hw.func_caps.vmdq && i40e_pseudo_num_online_cpus(pf) != 1) {
->                 pf->num_vmdq_vsis = I40E_DEFAULT_NUM_VMDQ_VSI;
->                 pf->flags |= I40E_FLAG_VMDQ_ENABLED;
->                 pf->num_vmdq_qps = i40e_default_queues_per_vmdq(pf);
->         }
->
-> -       if (pf->hw.func_caps.iwarp && num_online_cpus() != 1) {
-> +       if (pf->hw.func_caps.iwarp && i40e_pseudo_num_online_cpus(pf) != 1) {
->                 pf->flags |= I40E_FLAG_IWARP_ENABLED;
->                 /* IWARP needs one extra vector for CQP just like MISC.*/
-> -               pf->num_iwarp_msix = (int)num_online_cpus() + 1;
-> +               pf->num_iwarp_msix = (int)i40e_pseudo_num_online_cpus(pf) + 1;
->         }
->         /* Stopping FW LLDP engine is supported on XL710 and X722
->          * starting from FW versions determined in i40e_init_adminq.
-> @@ -14805,7 +14834,7 @@ static void i40e_determine_queue_usage(struct i40e_pf *pf)
->                 }
->
->                 /* limit lan qps to the smaller of qps, cpus or msix */
-> -               q_max = max_t(int, pf->rss_size_max, num_online_cpus());
-> +               q_max = max_t(int, pf->rss_size_max, i40e_pseudo_num_online_cpus(pf));
->                 q_max = min_t(int, q_max, pf->hw.func_caps.num_tx_qp);
->                 q_max = min_t(int, q_max, pf->hw.func_caps.num_msix_vectors);
->                 pf->num_lan_qps = q_max;
+> +static bool vcnl3020_is_thr_enabled(struct vcnl3020_data *data)
+> +{
+> +	int rc;
+> +	unsigned int icr;
+> +
+> +	rc =3D regmap_read(data->regmap, VCNL_PS_ICR, &icr);
+> +	if (rc)
+> +		return false;
+> +
+> +	return !!(icr & VCNL_ICR_THRES_EN);
+> +}
+> +
+> +static int vcnl3020_read_event(struct iio_dev *indio_dev,
+> +			       const struct iio_chan_spec *chan,
+> +			       enum iio_event_type type,
+> +			       enum iio_event_direction dir,
+> +			       enum iio_event_info info,
+> +			       int *val, int *val2)
+> +{
+> +	int rc;
+> +	struct vcnl3020_data *data =3D iio_priv(indio_dev);
+> +	__be16 res;
+> +
+> +	switch (info) {
+> +	case IIO_EV_INFO_VALUE:
+> +		switch (dir) {
+> +		case IIO_EV_DIR_RISING:
+> +			rc =3D regmap_bulk_read(data->regmap,
+> VCNL_PS_HI_THR_HI,
+> +					      &res, sizeof(res));
+
+Me and Jonathan actually spoke about this in the beginning of
+the week [1]. For IIO we enforce that this has to be DMA safe
+even though it's a 2 byte transfer... Check on IIO driver's using
+' ____cacheline_aligned'. Note, that it actually matters for the
+buffer/data to be the last member of the structure...
+
+> +			if (rc < 0)
+> +				return rc;
+> +			*val =3D be16_to_cpu(res);
+> +			return IIO_VAL_INT;
+> +		case IIO_EV_DIR_FALLING:
+> +			rc =3D regmap_bulk_read(data->regmap,
+> VCNL_PS_LO_THR_HI,
+> +					      &res, sizeof(res));
+> +			if (rc < 0)
+> +				return rc;
+> +			*val =3D be16_to_cpu(res);
+> +			return IIO_VAL_INT;
+> +		default:
+> +			return -EINVAL;
+> +		}
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static int vcnl3020_write_event(struct iio_dev *indio_dev,
+> +				const struct iio_chan_spec *chan,
+> +				enum iio_event_type type,
+> +				enum iio_event_direction dir,
+> +				enum iio_event_info info,
+> +				int val, int val2)
+> +{
+> +	int rc;
+> +	__be16 buf;
+> +	struct vcnl3020_data *data =3D iio_priv(indio_dev);
+> +
+> +	mutex_lock(&data->lock);
+> +
+> +	switch (info) {
+> +	case IIO_EV_INFO_VALUE:
+> +		switch (dir) {
+> +		case IIO_EV_DIR_RISING:
+> +			/* 16 bit word/ low * high */
+> +			buf =3D cpu_to_be16(val);
+> +			rc =3D regmap_bulk_write(data->regmap,
+> VCNL_PS_HI_THR_HI,
+> +					       &buf, sizeof(buf));
+
+Typically, AFAIK, ' regmap_bulk_write()' creates a DMA safe bounce
+buffer for you. However I don't thinks that's done with that in mind
+and I don't see anywhere on docs that this is something we can rely
+on. Thus, I would also use the DMA safe buffer here and not rely on
+regmap implementation details...
+
+> +			if (rc < 0)
+> +				goto out_mutex;
+> +			rc =3D IIO_VAL_INT;
+> +			goto out_mutex;
+> +		case IIO_EV_DIR_FALLING:
+> +			buf =3D cpu_to_be16(val);
+> +			rc =3D regmap_bulk_write(data->regmap,
+> VCNL_PS_LO_THR_HI,
+> +					       &buf, sizeof(buf));
+> +			if (rc < 0)
+> +				goto out_mutex;
+> +			rc =3D IIO_VAL_INT;
+> +			goto out_mutex;
+> +		default:
+> +			rc =3D -EINVAL;
+> +			goto out_mutex;
+> +		}
+> +	default:
+> +		rc =3D -EINVAL;
+> +		goto out_mutex;
+> +	}
+> +out_mutex:
+> +	mutex_unlock(&data->lock);
+> +
+> +	return rc;
+> +}
+> +
+> +static int vcnl3020_enable_periodic(struct iio_dev *indio_dev,
+> +				    struct vcnl3020_data *data)
+> +{
+> +	int rc;
+> +	int cmd;
+> +
+> +	mutex_lock(&data->lock);
+> +
+> +	/* Enable periodic measurement of proximity data. */
+> +	cmd =3D VCNL_PS_EN | VCNL_PS_SELFTIMED_EN;
+> +
+> +	rc =3D regmap_write(data->regmap, VCNL_COMMAND, cmd);
+> +	if (rc)
+> +		goto out_mutex;
+> +
+> +	/*
+> +	 * Enable interrupts on threshold, for proximity data by
+> +	 * default.
+> +	 */
+> +	rc =3D regmap_write(data->regmap, VCNL_PS_ICR,
+> VCNL_ICR_THRES_EN);
+> +
+> +out_mutex:
+> +	mutex_unlock(&data->lock);
+> +
+> +	return rc;
+> +}
+> +
+> +static int vcnl3020_disable_periodic(struct iio_dev *indio_dev,
+> +				     struct vcnl3020_data *data)
+> +{
+> +	int rc;
+> +
+> +	mutex_lock(&data->lock);
+> +
+> +	rc =3D regmap_write(data->regmap, VCNL_COMMAND, 0);
+> +	if (rc)
+> +		goto out_mutex;
+> +
+> +	rc =3D regmap_write(data->regmap, VCNL_PS_ICR, 0);
+> +	if (rc)
+> +		goto out_mutex;
+> +
+> +	/* Clear interrupt flag bit */
+> +	rc =3D regmap_write(data->regmap, VCNL_ISR, 0);
+> +
+> +out_mutex:
+> +	mutex_unlock(&data->lock);
+> +
+> +	return rc;
+> +}
+> +
+> +static int vcnl3020_config_threshold(struct iio_dev *indio_dev, bool
+> state)
+> +{
+> +	struct vcnl3020_data *data =3D iio_priv(indio_dev);
+> +
+> +	if (state) {
+> +		return vcnl3020_enable_periodic(indio_dev, data);
+> +	} else {
+> +		if (!vcnl3020_is_thr_enabled(data))
+> +			return 0;
+> +		return vcnl3020_disable_periodic(indio_dev, data);
+> +	}
+> +}
+> +
+> +static int vcnl3020_write_event_config(struct iio_dev *indio_dev,
+> +				       const struct iio_chan_spec *chan,
+> +				       enum iio_event_type type,
+> +				       enum iio_event_direction dir,
+> +				       int state)
+> +{
+> +	switch (chan->type) {
+> +	case IIO_PROXIMITY:
+> +		return vcnl3020_config_threshold(indio_dev, state);
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static int vcnl3020_read_event_config(struct iio_dev *indio_dev,
+> +				      const struct iio_chan_spec *chan,
+> +				      enum iio_event_type type,
+> +				      enum iio_event_direction dir)
+> +{
+> +	struct vcnl3020_data *data =3D iio_priv(indio_dev);
+> +
+> +	switch (chan->type) {
+> +	case IIO_PROXIMITY:
+> +		return vcnl3020_is_thr_enabled(data);
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static const struct iio_event_spec vcnl3020_event_spec[] =3D {
+> +	{
+> +		.type =3D IIO_EV_TYPE_THRESH,
+> +		.dir =3D IIO_EV_DIR_RISING,
+> +		.mask_separate =3D BIT(IIO_EV_INFO_VALUE),
+> +	}, {
+> +		.type =3D IIO_EV_TYPE_THRESH,
+> +		.dir =3D IIO_EV_DIR_FALLING,
+> +		.mask_separate =3D BIT(IIO_EV_INFO_VALUE),
+> +	}, {
+> +		.type =3D IIO_EV_TYPE_THRESH,
+> +		.dir =3D IIO_EV_DIR_EITHER,
+> +		.mask_separate =3D BIT(IIO_EV_INFO_ENABLE),
+> +	},
+> +};
+> +
+>  static const struct iio_chan_spec vcnl3020_channels[] =3D {
+>  	{
+>  		.type =3D IIO_PROXIMITY,
+>  		.info_mask_separate =3D BIT(IIO_CHAN_INFO_RAW) |
+>  				      BIT(IIO_CHAN_INFO_SAMP_FREQ),
+>  		.info_mask_separate_available =3D
+> BIT(IIO_CHAN_INFO_SAMP_FREQ),
+> +		.event_spec =3D vcnl3020_event_spec,
+> +		.num_event_specs =3D
+> ARRAY_SIZE(vcnl3020_event_spec),
+>  	},
+>  };
+>=20
+> @@ -233,6 +466,11 @@ static int vcnl3020_read_raw(struct iio_dev
+> *indio_dev,
+>=20
+>  	switch (mask) {
+>  	case IIO_CHAN_INFO_RAW:
+> +
+> +		/* Protect against event capture. */
+> +		if (vcnl3020_is_in_periodic_mode(data))
+> +			return -EBUSY;
+
+This does not give you any guarantee that you won't end up calling
+'vcnl3020_measure_proximity()' with periodic mode enabled... The
+'if()' should be done under the same data lock that you use for
+enabling/disabling this mode. Just push the check inside
+'vcnl3020_measure_proximity()'.
+
+>  		rc =3D vcnl3020_measure_proximity(data, val);
+>  		if (rc)
+>  			return rc;
+> @@ -254,6 +492,10 @@ static int vcnl3020_write_raw(struct iio_dev
+> *indio_dev,
+>  	int rc;
+>  	struct vcnl3020_data *data =3D iio_priv(indio_dev);
+>=20
+> +	/* Protect against event capture. */
+> +	if (vcnl3020_is_in_periodic_mode(data))
+> +		return -EBUSY;
+
+ditto...
+
+[1]: https://marc.info/?l=3Dlinux-kernel&m=3D162556231125061&w=3D2
+- Nuno S=E1
+
+>  	switch (mask) {
+>  	case IIO_CHAN_INFO_SAMP_FREQ:
+>  		rc =3D iio_device_claim_direct_mode(indio_dev);
+> @@ -287,6 +529,10 @@ static const struct iio_info vcnl3020_info =3D {
+>  	.read_raw =3D vcnl3020_read_raw,
+>  	.write_raw =3D vcnl3020_write_raw,
+>  	.read_avail =3D vcnl3020_read_avail,
+> +	.read_event_value =3D vcnl3020_read_event,
+> +	.write_event_value =3D vcnl3020_write_event,
+> +	.read_event_config =3D vcnl3020_read_event_config,
+> +	.write_event_config =3D vcnl3020_write_event_config,
+>  };
+>=20
+>  static const struct regmap_config vcnl3020_regmap_config =3D {
+> @@ -295,6 +541,40 @@ static const struct regmap_config
+> vcnl3020_regmap_config =3D {
+>  	.max_register	=3D VCNL_PS_MOD_ADJ,
+>  };
+>=20
+> +static irqreturn_t vcnl3020_handle_irq_thread(int irq, void *p)
+> +{
+> +	struct iio_dev *indio_dev =3D p;
+> +	struct vcnl3020_data *data =3D iio_priv(indio_dev);
+> +	unsigned int isr;
+> +	int rc;
+> +
+> +	rc =3D regmap_read(data->regmap, VCNL_ISR, &isr);
+> +	if (rc) {
+> +		dev_err(data->dev, "Error (%d) reading reg (0x%x)\n",
+> +			rc, VCNL_ISR);
+> +		return IRQ_HANDLED;
+> +	}
+> +
+> +	if (isr & VCNL_ICR_THRES_EN) {
+> +		iio_push_event(indio_dev,
+> +
+> IIO_UNMOD_EVENT_CODE(IIO_PROXIMITY,
+> +						    1,
+> +						    IIO_EV_TYPE_THRESH,
+> +						    IIO_EV_DIR_RISING),
+> +			       iio_get_time_ns(indio_dev));
+> +
+> +		rc =3D regmap_write(data->regmap, VCNL_ISR,
+> +				  isr & VCNL_ICR_THRES_EN);
+> +		if (rc)
+> +			dev_err(data->dev, "Error (%d) writing in reg
+> (0x%x)\n",
+> +				rc, VCNL_ISR);
+> +	} else {
+> +		return IRQ_NONE;
+> +	}
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+>  static int vcnl3020_probe(struct i2c_client *client)
+>  {
+>  	struct vcnl3020_data *data;
+> @@ -327,6 +607,19 @@ static int vcnl3020_probe(struct i2c_client
+> *client)
+>  	indio_dev->name =3D "vcnl3020";
+>  	indio_dev->modes =3D INDIO_DIRECT_MODE;
+>=20
+> +	if (client->irq) {
+> +		rc =3D devm_request_threaded_irq(&client->dev, client-
+> >irq,
+> +					       NULL,
+> vcnl3020_handle_irq_thread,
+> +					       IRQF_ONESHOT, indio_dev-
+> >name,
+> +					       indio_dev);
+> +		if (rc) {
+> +			dev_err(&client->dev,
+> +				"Error (%d) irq request failed (%u)\n",
+> rc,
+> +				client->irq);
+> +			return rc;
+> +		}
+> +	}
+> +
+>  	return devm_iio_device_register(&client->dev, indio_dev);
+>  }
+>=20
 > --
-> 1.8.3.1
->
+> 2.31.1
+
