@@ -2,220 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3329D3C23DB
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 14:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BAE63C23E1
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231493AbhGINBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 09:01:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47326 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231252AbhGINBt (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 09:01:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E84C1613B5;
-        Fri,  9 Jul 2021 12:59:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625835546;
-        bh=7A7c7zqoaufBPARmr8/9p+A/DjswEQjyzl09hviXTMY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=etaxLMmqZm9sCxYmTHArZnB13O5eX/h+qR5lk01/R1y5YVYt/gORRIbixRFJ3eGWh
-         n3vQ0Dp/zZmYtlI9BDv0KAXRy5EgTsxcVWGP46wZwM5Fyn2nJ0nF7OBz1yhpfMabFS
-         z1Te2MVyfB+uy3WAZ79G3z5onwd38ZgpIEZ2FPKtSV8211bDbkZD2WQBLyFbEhszkW
-         1xcsb1J8LXETL4RSZ6+ux9PsFMrqmpTZrPHuchznMccEpwXCntEvEvnREmAjtiljT/
-         4kwgG2PElH/PBUHq7SFpYLaBa0G8Oqe0uLr1cscqW6HvLkkPjKTXcwnrgtKeJzVW7i
-         88GZev46DYX7Q==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id A276340B1A; Fri,  9 Jul 2021 09:59:01 -0300 (-03)
-Date:   Fri, 9 Jul 2021 09:59:01 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     Agustin Vega-Frias <agustinv@codeaurora.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Jin Yao <yao.jin@linux.intel.com>, jolsa@kernel.org,
-        peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v3] perf tools: Fix pattern matching for same substring
- in different pmu type
-Message-ID: <YOhIFZ5IaFua9HbS@kernel.org>
-References: <20210701064253.1175-1-yao.jin@linux.intel.com>
- <YOSyhwJ/E0JoeWOS@krava>
- <8c2b5f66-c85e-8717-d218-4d6a2182262a@linux.intel.com>
+        id S231561AbhGINCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 09:02:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231252AbhGINCo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 09:02:44 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81A16C0613DD
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 05:59:59 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id s6so6313667qkc.8
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 05:59:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qHUKIAO+ag23hTE+JlEANC815kPjbkRicggysyG8Jlg=;
+        b=i3JcU8eAJ1FUfNlg79X+U4p7WO3GFW7qB8FvtBD5WhofvVvu2G56A3JOA5/vdgHN6c
+         zvfJGzH11cmDvGR5fGVJL4DPvmx2/a/mk9GYI28b5BrtQXpC0EDOEPpV90ZNeCLpph+b
+         OgqvUPA10mCm+2bqy/hBzMKrLS3GC9J6C2NdK1Xg04LO7jLBmsZGBezYvB2dXxvsdrQh
+         5ymM8/UDsXY81dWl0xecHiNrSkw8ubKlXwV6Z01SQZqIf7bMmA2kJzTMJl6rsfEJIin/
+         ayKkeJzm7ZDZgs/05IUiH2yMczzGls8HjeyD3OgYdwiA7vEDSMPwpXlDBRbHggWKPit3
+         BTkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qHUKIAO+ag23hTE+JlEANC815kPjbkRicggysyG8Jlg=;
+        b=j1AZBNGcIaSNR7NoBwizrjUqFjm/UCFBhm62JsWrVPgXWHumcQIIQD/bPScJnK73ad
+         kAE6ogyT38UR1vpututRudRQ2GZNXzA1ErYKR5qj8aQaLWzeY4rJcsXI2/OQWz7hPgmx
+         dn62rjXajaX7KJjgCT1bjupymnPe/w1M8LD4hIFduscznjWExbTk4wJ3vG/uRROtwVBC
+         uHhObFMQW5kzIflmJo8/UOyCbUsoZRd+WGZF0GaSB6NhbIEGi6ij6TXRC+/ufmiLVzQf
+         yy1qTM1z90gWKbM6MbUjLKzIjTqHckwVEukpiPSqLjPbr0WiZm8xE08V9CulIqHMQOt3
+         6Jxg==
+X-Gm-Message-State: AOAM5313AcG8qtiZ/5jBLHIR3lPbJtBFBfdBY1tncGPuiZzXyx4U+6HC
+        29rK32LqnUi2K/tJCy/ofawIhXjEr71frl2YzYigFw==
+X-Google-Smtp-Source: ABdhPJzndnsCyyGh8jUxDgcociSvc3ryge/5xkRw/ChC+jM3JKLtHvs2x6l09me2hWKF0pHigePtxJza/9DSKC6iXGA=
+X-Received: by 2002:ae9:e309:: with SMTP id v9mr13906999qkf.138.1625835598668;
+ Fri, 09 Jul 2021 05:59:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8c2b5f66-c85e-8717-d218-4d6a2182262a@linux.intel.com>
-X-Url:  http://acmel.wordpress.com
+References: <20210709043136.533205-1-dmitry.baryshkov@linaro.org>
+ <20210709043136.533205-5-dmitry.baryshkov@linaro.org> <CAPDyKFprYK8bSk+rdnDt3xRUR9BRNdyRiBdefO+s7qzOwHf7hg@mail.gmail.com>
+ <CAA8EJprrjz=o7Ymt1mNBZASzTeX==1ceRTeKA4f3QrVMcpO6xg@mail.gmail.com> <CAPDyKFoLcsYLisEiOF66dDsV+759c5k0PD64uxU11jc5VTdNYQ@mail.gmail.com>
+In-Reply-To: <CAPDyKFoLcsYLisEiOF66dDsV+759c5k0PD64uxU11jc5VTdNYQ@mail.gmail.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Fri, 9 Jul 2021 15:59:47 +0300
+Message-ID: <CAA8EJpr2HEm4R+bGrH6DHA_z8bjN69Zam9UUiAeKAr5vsCKr3A@mail.gmail.com>
+Subject: Re: [RESEND PATCH v2 4/7] clk: qcom: gdsc: enable optional power
+ domain support
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Jul 06, 2021 at 04:02:24PM -0400, Liang, Kan escreveu:
-> On 7/6/2021 3:44 PM, Jiri Olsa wrote:
-> > On Thu, Jul 01, 2021 at 02:42:53PM +0800, Jin Yao wrote:
-> > > Some different pmu types may have same substring. For example,
-> > > on Icelake server, we have pmu types "uncore_imc" and
-> > > "uncore_imc_free_running". Both pmu types have substring "uncore_imc".
-> > > But the parser would wrongly think they are the same pmu type.
+On Fri, 9 Jul 2021 at 15:18, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> On Fri, 9 Jul 2021 at 13:46, Dmitry Baryshkov
+> <dmitry.baryshkov@linaro.org> wrote:
+> >
+> > On Fri, 9 Jul 2021 at 12:33, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > >
+> > > On Fri, 9 Jul 2021 at 06:32, Dmitry Baryshkov
+> > > <dmitry.baryshkov@linaro.org> wrote:
+> > > >
+> > > > On sm8250 dispcc and videocc registers are powered up by the MMCX power
+> > > > domain. Currently we used a regulator to enable this domain on demand,
+> > > > however this has some consequences, as genpd code is not reentrant.
+> > > >
+> > > > Teach Qualcomm clock controller code about setting up power domains and
+> > > > using them for gdsc control.
+> > > >
+> > > > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > >
+> > > [...]
+> > >
+> > > > diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
+> > > > index 51ed640e527b..9401d01533c8 100644
+> > > > --- a/drivers/clk/qcom/gdsc.c
+> > > > +++ b/drivers/clk/qcom/gdsc.c
+> > > > @@ -427,6 +427,7 @@ int gdsc_register(struct gdsc_desc *desc,
+> > > >                         continue;
+> > > >                 scs[i]->regmap = regmap;
+> > > >                 scs[i]->rcdev = rcdev;
+> > > > +               scs[i]->pd.dev.parent = desc->dev;
+> > > >                 ret = gdsc_init(scs[i]);
+> > > >                 if (ret)
+> > > >                         return ret;
+> > > > @@ -439,6 +440,8 @@ int gdsc_register(struct gdsc_desc *desc,
+> > > >                         continue;
+> > > >                 if (scs[i]->parent)
+> > > >                         pm_genpd_add_subdomain(scs[i]->parent, &scs[i]->pd);
+> > > > +               else if (!IS_ERR_OR_NULL(dev->pm_domain))
+> > >
+> > > So dev_pm_domain_attach() (which calls genpd_dev_pm_attach() is being
+> > > called for gdsc platform device from the platform bus', to try to
+> > > attach the device to its corresponding PM domain.
+> > >
+> > > Looking a bit closer to genpd_dev_pm_attach(), I realize that we
+> > > shouldn't really try to attach a device to its PM domain, when its OF
+> > > node (dev->of_node) contains a "#power-domain-cells" specifier. This
+> > > is because it indicates that the device belongs to a genpd provider
+> > > itself. In this case, a "power-domains" specifier tells that it has a
+> > > parent domain.
+> > >
+> > > I will post a patch that fixes this asap.
+> >
+> > I think there is nothing to fix here. The dispcc/videocc drivers
+> > provide clocks in addition to the gdsc power domain. And provided
+> > clocks would definitely benefit from having the dispcc device being
+> > attached to the power domain which governs clock registers (MMCX in
+> > our case). Thus I think it is perfectly valid to have:
+> >
+> > rpmhpd device:
+> >  - provides MMCX domain.
+> >
+> > dispcc device:
+> >  - is attached to the MMCX domain,
+>
+> We don't need this, it's redundant and weird to me.
+>
+> Also I am kind of worried that you will hit another new path in genpd,
+> causing locking issues etc, as it has not been designed to work like
+> this (a provider device and a child domain sharing the same "parent").
 
-> > > We enable an imc event,
-> > > perf stat -e uncore_imc/event=0xe3/ -a -- sleep 1
+So, which domain should the dispcc device belong to? It's registers
+are powered by the MMCX domain. I can not attach it to the child
+(GDSC) domain either: in the case of videocc there are 4 child
+domains.
+An alternative would be to request that all users of the provided
+clocks power on one of the child domains. However this is also not
+perfect. If some generic code (e.g. clock framework) calls into
+provided clocks (e.g. because of assigned-clock-rates), this can
+happen w/o proper power domain being powered up yet.
 
-> > > Perf actually expands the event to:
-> > > uncore_imc_0/event=0xe3/
-> > > uncore_imc_1/event=0xe3/
-> > > uncore_imc_2/event=0xe3/
-> > > uncore_imc_3/event=0xe3/
-> > > uncore_imc_4/event=0xe3/
-> > > uncore_imc_5/event=0xe3/
-> > > uncore_imc_6/event=0xe3/
-> > > uncore_imc_7/event=0xe3/
-> > > uncore_imc_free_running_0/event=0xe3/
-> > > uncore_imc_free_running_1/event=0xe3/
-> > > uncore_imc_free_running_3/event=0xe3/
-> > > uncore_imc_free_running_4/event=0xe3/
+>
+> >  - provides MDSS_GDSC
+>
+> It's perfectly fine that dispcc acts as a genpd provider. In this
+> case, the corresponding PM domain should be assigned as a child for
+> the parent MMCX domain. That should make this work, I think.
+>
+> >  - provides clocks
+>
+> That sounds reasonable as well.
+>
+> >
+> > >
+> > > > +                       pm_genpd_add_subdomain(pd_to_genpd(dev->pm_domain), &scs[i]->pd);
+> > > >         }
+> > > >
+> > > >         return of_genpd_add_provider_onecell(dev->of_node, data);
+> > > > @@ -457,6 +460,8 @@ void gdsc_unregister(struct gdsc_desc *desc)
+> > > >                         continue;
+> > > >                 if (scs[i]->parent)
+> > > >                         pm_genpd_remove_subdomain(scs[i]->parent, &scs[i]->pd);
+> > > > +               else if (!IS_ERR_OR_NULL(dev->pm_domain))
+> > >
+> > > Ditto.
+> > >
+> > > > +                       pm_genpd_remove_subdomain(pd_to_genpd(dev->pm_domain), &scs[i]->pd);
+> > > >         }
+> > > >         of_genpd_del_provider(dev->of_node);
+> > > >  }
+> > > > --
+> > > > 2.30.2
+> > > >
+> > >
+>
+> Kind regards
+> Uffe
 
-> > > That's because the "uncore_imc_free_running" matches the
-> > > pattern "uncore_imc*".
 
-> > > Now we check that the last characters of pmu name is
-> > > '_<digit>'.
-> > > 
-> > > For example, for pattern "uncore_imc*", "uncore_imc_0" is parsed ok,
-> > > but "uncore_imc_free_running_0" would be failed.
-> > > 
-> > > Fixes: b2b9d3a3f021 ("perf pmu: Support wildcards on pmu name in dynamic pmu events")
-> > > Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-
-> > looks good to me, Kan, Andi?
-
-> Yes, it looks good to me too.
-
-> Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
-
-Thanks, I'm applying it, Jin, please next time Cc the author of the
-patch you're fixing, in this case:
-
-  Cc: Agustin Vega-Frias <agustinv@codeaurora.org>
-
-I'm adding it to this message as well.
- 
-> BTW: The new uncore patch[1] for the "alias" attribute should be easily
-> rebase on this patch. I believe Yao has already finished the test as well. I
-> think he will resend the new "alias" attribute patch later soon.
-> [1] https://lore.kernel.org/lkml/1624990443-168533-7-git-send-email-kan.liang@linux.intel.com
-> 
-> Thanks,
-> Kan
-> 
-> > 
-> > Acked-by: Jiri Olsa <jolsa@redhat.com>
-> > 
-> > thanks,
-> > jirka
-> > 
-> > > ---
-> > >   tools/perf/util/parse-events.y |  2 +-
-> > >   tools/perf/util/pmu.c          | 36 +++++++++++++++++++++++++++++++++-
-> > >   tools/perf/util/pmu.h          |  1 +
-> > >   3 files changed, 37 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
-> > > index aba12a4d488e..9321bd0e2f76 100644
-> > > --- a/tools/perf/util/parse-events.y
-> > > +++ b/tools/perf/util/parse-events.y
-> > > @@ -316,7 +316,7 @@ event_pmu_name opt_pmu_config
-> > >   			if (!strncmp(name, "uncore_", 7) &&
-> > >   			    strncmp($1, "uncore_", 7))
-> > >   				name += 7;
-> > > -			if (!fnmatch(pattern, name, 0)) {
-> > > +			if (!perf_pmu__match(pattern, name, $1)) {
-> > >   				if (parse_events_copy_term_list(orig_terms, &terms))
-> > >   					CLEANUP_YYABORT;
-> > >   				if (!parse_events_add_pmu(_parse_state, list, pmu->name, terms, true, false))
-> > > diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-> > > index 88c8ecdc60b0..44b90d638ad5 100644
-> > > --- a/tools/perf/util/pmu.c
-> > > +++ b/tools/perf/util/pmu.c
-> > > @@ -3,6 +3,7 @@
-> > >   #include <linux/compiler.h>
-> > >   #include <linux/string.h>
-> > >   #include <linux/zalloc.h>
-> > > +#include <linux/ctype.h>
-> > >   #include <subcmd/pager.h>
-> > >   #include <sys/types.h>
-> > >   #include <errno.h>
-> > > @@ -17,6 +18,7 @@
-> > >   #include <locale.h>
-> > >   #include <regex.h>
-> > >   #include <perf/cpumap.h>
-> > > +#include <fnmatch.h>
-> > >   #include "debug.h"
-> > >   #include "evsel.h"
-> > >   #include "pmu.h"
-> > > @@ -740,6 +742,27 @@ struct pmu_events_map *__weak pmu_events_map__find(void)
-> > >   	return perf_pmu__find_map(NULL);
-> > >   }
-> > > +static bool perf_pmu__valid_suffix(char *pmu_name, char *tok)
-> > > +{
-> > > +	char *p;
-> > > +
-> > > +	if (strncmp(pmu_name, tok, strlen(tok)))
-> > > +		return false;
-> > > +
-> > > +	p = pmu_name + strlen(tok);
-> > > +	if (*p == 0)
-> > > +		return true;
-> > > +
-> > > +	if (*p != '_')
-> > > +		return false;
-> > > +
-> > > +	++p;
-> > > +	if (*p == 0 || !isdigit(*p))
-> > > +		return false;
-> > > +
-> > > +	return true;
-> > > +}
-> > > +
-> > >   bool pmu_uncore_alias_match(const char *pmu_name, const char *name)
-> > >   {
-> > >   	char *tmp = NULL, *tok, *str;
-> > > @@ -768,7 +791,7 @@ bool pmu_uncore_alias_match(const char *pmu_name, const char *name)
-> > >   	 */
-> > >   	for (; tok; name += strlen(tok), tok = strtok_r(NULL, ",", &tmp)) {
-> > >   		name = strstr(name, tok);
-> > > -		if (!name) {
-> > > +		if (!name || !perf_pmu__valid_suffix((char *)name, tok)) {
-> > >   			res = false;
-> > >   			goto out;
-> > >   		}
-> > > @@ -1872,3 +1895,14 @@ bool perf_pmu__has_hybrid(void)
-> > >   	return !list_empty(&perf_pmu__hybrid_pmus);
-> > >   }
-> > > +
-> > > +int perf_pmu__match(char *pattern, char *name, char *tok)
-> > > +{
-> > > +	if (fnmatch(pattern, name, 0))
-> > > +		return -1;
-> > > +
-> > > +	if (tok && !perf_pmu__valid_suffix(name, tok))
-> > > +		return -1;
-> > > +
-> > > +	return 0;
-> > > +}
-> > > diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-> > > index a790ef758171..926da483a141 100644
-> > > --- a/tools/perf/util/pmu.h
-> > > +++ b/tools/perf/util/pmu.h
-> > > @@ -133,5 +133,6 @@ void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
-> > >   				   char *name);
-> > >   bool perf_pmu__has_hybrid(void);
-> > > +int perf_pmu__match(char *pattern, char *name, char *tok);
-> > >   #endif /* __PMU_H */
-> > > -- 
-> > > 2.17.1
-> > > 
-> > 
 
 -- 
-
-- Arnaldo
+With best wishes
+Dmitry
