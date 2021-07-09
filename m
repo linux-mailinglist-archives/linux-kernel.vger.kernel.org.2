@@ -2,744 +2,728 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8A853C2393
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 14:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB71D3C2388
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 14:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231751AbhGIMmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 08:42:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34662 "EHLO
+        id S231588AbhGIMlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 08:41:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231704AbhGIMmE (ORCPT
+        with ESMTP id S231544AbhGIMld (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 08:42:04 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98941C0613DD;
-        Fri,  9 Jul 2021 05:39:20 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id b14-20020a17090a7aceb029017261c7d206so8146090pjl.5;
-        Fri, 09 Jul 2021 05:39:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=KtOw6KFMp+RQAwtQCj0p8SrCAk9x4q/xTNDuSv9+A3I=;
-        b=H8W/sfXnaj15crPFLKbK11XvkBw3rOMkCvTsrbtatw1ywI/VTVbHzHbbrbzsciDTLM
-         sSQTfZt0iMbkigh65tA+dLsaPpNLcw+Dg3JqqFFw5iXz2LiS4OQTB9LSZ+2iktZn2Hho
-         63/jxF8kzqX0I7exOYMzExcWQn4w3jrx/stxA1/N+clcMOyuIHF0Ad7FP74hGDrwNpv2
-         gffjAiNQZyje7FbgEzzmRmDw4qEbPT+VQ+tlsJU5Qkc3S9qAy3iohWZyaiApeohwGjeI
-         C4bhun7Qov8s7P4aavgXUV3MvMhzQCXqvJZ9VbLak90BwaM8NqA1H1sPPhoSMM1JcRPl
-         HsCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KtOw6KFMp+RQAwtQCj0p8SrCAk9x4q/xTNDuSv9+A3I=;
-        b=FQfKQvOfR5/EsJvB4gx55eooNAb0RV4aD6Uq9sO0fTqKzqXd1EjoFCzGuBeglF0RIS
-         D2JkDTHOXKPiqPA2QqyanlVnJ7qHQyDhU73UJbQb97oGYrSbfRIuTm5JiiKbtaLVEJ47
-         +oeVr/tAaWqeBn/M07rb9w91y+wqd3yzG75NHWshSp7ruNJpSNgKKX4lPyfdsa0B3Zt1
-         YBm4JSiqPN2RrQ5dEjYyf9IZ7134IjfzPPzcj2TKjZHfUygRl9+FdjSgmfS3U3ANbyjG
-         ToOVQbBMrAkiQvDePm9EQHpALC+2OzJItDp8OnJqBQT3ak36uF0UgDjR7ssrpbzrpJls
-         Dmgg==
-X-Gm-Message-State: AOAM533BRq+7/mTnzD6KMSZWcXMDIEIWuTZBcGj/BCB+OZxuw4g+f2PG
-        yifVshE5h+RaNyrgmiQvKfc=
-X-Google-Smtp-Source: ABdhPJwPhGZgj/f69p97Tm9uNfxY6FoNQQ4W6FiirdCk3+4nAYfGpWSfp+CsOpHaMwK2gMLlqKS3wQ==
-X-Received: by 2002:a17:90a:f18f:: with SMTP id bv15mr4068237pjb.63.1625834359986;
-        Fri, 09 Jul 2021 05:39:19 -0700 (PDT)
-Received: from localhost.localdomain ([152.57.176.46])
-        by smtp.googlemail.com with ESMTPSA id j6sm5592402pji.23.2021.07.09.05.39.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 05:39:19 -0700 (PDT)
-From:   Amey Narkhede <ameynarkhede03@gmail.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     alex.williamson@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
-        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Amey Narkhede <ameynarkhede03@gmail.com>
-Subject: [PATCH v10 8/8] PCI: Change the type of probe argument in reset functions
-Date:   Fri,  9 Jul 2021 18:08:13 +0530
-Message-Id: <20210709123813.8700-9-ameynarkhede03@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210709123813.8700-1-ameynarkhede03@gmail.com>
-References: <20210709123813.8700-1-ameynarkhede03@gmail.com>
+        Fri, 9 Jul 2021 08:41:33 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE02AC0613DD
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 05:38:49 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1m1pm7-0004J4-2v; Fri, 09 Jul 2021 14:38:35 +0200
+Message-ID: <891447bb1780e365a9b4c730c27f1f34995a3176.camel@pengutronix.de>
+Subject: Re: [PATCH V8 3/4] soc: imx: Add generic blk-ctl driver
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Peng Fan <peng.fan@nxp.com>,
+        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
+Cc:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "krzk@kernel.org" <krzk@kernel.org>,
+        "agx@sigxcpu.org" <agx@sigxcpu.org>,
+        "marex@denx.de" <marex@denx.de>,
+        "andrew.smirnov@gmail.com" <andrew.smirnov@gmail.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jacky Bai <ping.bai@nxp.com>,
+        "frieder.schrempf@kontron.de" <frieder.schrempf@kontron.de>,
+        "aford173@gmail.com" <aford173@gmail.com>,
+        Abel Vesa <abel.vesa@nxp.com>,
+        "jagan@amarulasolutions.com" <jagan@amarulasolutions.com>
+Date:   Fri, 09 Jul 2021 14:38:32 +0200
+In-Reply-To: <DB6PR0402MB2760797C59DCDE0F284D6AB388189@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+References: <20210629072941.7980-1-peng.fan@oss.nxp.com>
+         <20210629072941.7980-4-peng.fan@oss.nxp.com>
+         <0fc1f5043eeedb0c40ae9f76e245c648e0c88cde.camel@pengutronix.de>
+         <DB6PR0402MB2760EACC7F2457309F1D886C881A9@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+         <b1a0853e8491d817074042205db1951cb53da538.camel@pengutronix.de>
+         <DB6PR0402MB2760797C59DCDE0F284D6AB388189@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce a new enum pci_reset_mode_t to make the context of probe argument
-in reset functions clear and the code easier to read.  Change the type of
-probe argument in functions which implement reset methods from int to
-pci_reset_mode_t to make the intent clear.
+Am Freitag, dem 09.07.2021 um 10:08 +0000 schrieb Peng Fan:
+> > Subject: Re: [PATCH V8 3/4] soc: imx: Add generic blk-ctl driver
+> > 
+> > Hi Peng,
+> > 
+> > Am Mittwoch, dem 07.07.2021 um 09:56 +0000 schrieb Peng Fan:
+> > > Hi Lucas,
+> > > 
+> > > > Subject: Re: [PATCH V8 3/4] soc: imx: Add generic blk-ctl
+> > > > driver
+> > > 
+> > > After rethinking about this driver, I think we still need expose
+> > > to
+> > > pgc to touch the blk-ctl hardware bus handshake.
+> > > 
+> > > Currently we are assuming the blk-ctl probe will finish the
+> > > handshake.
+> > > But there is another case, saying gpu.
+> > > 
+> > > -----------------------------------------------------------------
+> > > ------>
+> > > GPU on(1)
+> > >           VPUMIX on (2)
+> > >                         GPU off(3)
+> > > 
+> > > Between GPU on/off, VPUMIX-BLK-CTL not done, so vpumix pgc
+> > > handshake
+> > > not done. Then GPU off (3) will trigger failed to command pgc,
+> > > because
+> > > the last pgc(vpu power on) not finished.
+> > > 
+> > > I think this could be not avoided if we split the handshake into
+> > > blk-ctl driver. How do you think?
+> > > 
+> > This is really unfortunate. So the PGC state machine really waits
+> > for the ADB
+> > handshake? 
+> 
+> Not very sure, just a guess here. Because of ....., I am not able to
+> find
+> HW people to give explaination for the messy hardware design.
+> 
+It's somewhat disillusioning to hear that not even you are able to find
+people able to give a proper explanation on how those things fit
+together. :/
 
-Add a new line in return statement of pci_reset_bus_function().
+> About your idea to not create a platform device as what gpcv2 driver
+> did,
+> I rethink about that.
+> if we split the handshake in blk-ctl driver, we need saying
+> vpumix-blk-ctl depends on pgc_vpumix
+> pgc_vpu_g1/g2/h1 depends on vpumix-blk-ctl bus domain.
+> It is hard to do defer probe if we just use simple parent/child pd
+> tree.
+> 
+> If we move the handshake back to gpcv2 driver, the blk-ctl driver
+> could be simplier I think, but have to add reference to blk-ctl node
+> in pgc node.
 
-Suggested-by: Alex Williamson <alex.williamson@redhat.com>
-Suggested-by: Krzysztof Wilczyński <kw@linux.com>
-Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
----
- drivers/crypto/cavium/nitrox/nitrox_main.c    |  2 +-
- .../ethernet/cavium/liquidio/lio_vf_main.c    |  2 +-
- drivers/pci/hotplug/pciehp.h                  |  2 +-
- drivers/pci/hotplug/pciehp_hpc.c              |  4 +-
- drivers/pci/hotplug/pnv_php.c                 |  4 +-
- drivers/pci/pci-acpi.c                        | 10 ++-
- drivers/pci/pci-sysfs.c                       |  6 +-
- drivers/pci/pci.c                             | 85 ++++++++++++-------
- drivers/pci/pci.h                             | 12 +--
- drivers/pci/pcie/aer.c                        |  2 +-
- drivers/pci/quirks.c                          | 37 ++++----
- include/linux/pci.h                           |  8 +-
- include/linux/pci_hotplug.h                   |  2 +-
- 13 files changed, 107 insertions(+), 69 deletions(-)
+I'll spend some time and see if I can come up with a proper abstraction
+here. This will probably take a little while, as I don't have a good
+plan yet, so it will involve some typing of prototype driver code to
+see how things work out.
 
-diff --git a/drivers/crypto/cavium/nitrox/nitrox_main.c b/drivers/crypto/cavium/nitrox/nitrox_main.c
-index 15d6c8452..f97fa8e99 100644
---- a/drivers/crypto/cavium/nitrox/nitrox_main.c
-+++ b/drivers/crypto/cavium/nitrox/nitrox_main.c
-@@ -306,7 +306,7 @@ static int nitrox_device_flr(struct pci_dev *pdev)
- 		return -ENOMEM;
- 	}
- 
--	pcie_reset_flr(pdev, 0);
-+	pcie_reset_flr(pdev, PCI_RESET_DO_RESET);
- 
- 	pci_restore_state(pdev);
- 
-diff --git a/drivers/net/ethernet/cavium/liquidio/lio_vf_main.c b/drivers/net/ethernet/cavium/liquidio/lio_vf_main.c
-index 336d149ee..6e666be69 100644
---- a/drivers/net/ethernet/cavium/liquidio/lio_vf_main.c
-+++ b/drivers/net/ethernet/cavium/liquidio/lio_vf_main.c
-@@ -526,7 +526,7 @@ static void octeon_destroy_resources(struct octeon_device *oct)
- 			oct->irq_name_storage = NULL;
- 		}
- 		/* Soft reset the octeon device before exiting */
--		if (!pcie_reset_flr(oct->pci_dev, 1))
-+		if (!pcie_reset_flr(oct->pci_dev, PCI_RESET_PROBE))
- 			octeon_pci_flr(oct);
- 		else
- 			cn23xx_vf_ask_pf_to_do_flr(oct);
-diff --git a/drivers/pci/hotplug/pciehp.h b/drivers/pci/hotplug/pciehp.h
-index 4fd200d8b..87da03adc 100644
---- a/drivers/pci/hotplug/pciehp.h
-+++ b/drivers/pci/hotplug/pciehp.h
-@@ -181,7 +181,7 @@ void pciehp_release_ctrl(struct controller *ctrl);
- 
- int pciehp_sysfs_enable_slot(struct hotplug_slot *hotplug_slot);
- int pciehp_sysfs_disable_slot(struct hotplug_slot *hotplug_slot);
--int pciehp_reset_slot(struct hotplug_slot *hotplug_slot, int probe);
-+int pciehp_reset_slot(struct hotplug_slot *hotplug_slot, pci_reset_mode_t mode);
- int pciehp_get_attention_status(struct hotplug_slot *hotplug_slot, u8 *status);
- int pciehp_set_raw_indicator_status(struct hotplug_slot *h_slot, u8 status);
- int pciehp_get_raw_indicator_status(struct hotplug_slot *h_slot, u8 *status);
-diff --git a/drivers/pci/hotplug/pciehp_hpc.c b/drivers/pci/hotplug/pciehp_hpc.c
-index fb3840e22..24b3c8787 100644
---- a/drivers/pci/hotplug/pciehp_hpc.c
-+++ b/drivers/pci/hotplug/pciehp_hpc.c
-@@ -834,14 +834,14 @@ void pcie_disable_interrupt(struct controller *ctrl)
-  * momentarily, if we see that they could interfere. Also, clear any spurious
-  * events after.
-  */
--int pciehp_reset_slot(struct hotplug_slot *hotplug_slot, int probe)
-+int pciehp_reset_slot(struct hotplug_slot *hotplug_slot, pci_reset_mode_t mode)
- {
- 	struct controller *ctrl = to_ctrl(hotplug_slot);
- 	struct pci_dev *pdev = ctrl_dev(ctrl);
- 	u16 stat_mask = 0, ctrl_mask = 0;
- 	int rc;
- 
--	if (probe)
-+	if (mode == PCI_RESET_PROBE)
- 		return 0;
- 
- 	down_write(&ctrl->reset_lock);
-diff --git a/drivers/pci/hotplug/pnv_php.c b/drivers/pci/hotplug/pnv_php.c
-index 04565162a..77df598c8 100644
---- a/drivers/pci/hotplug/pnv_php.c
-+++ b/drivers/pci/hotplug/pnv_php.c
-@@ -526,7 +526,7 @@ static int pnv_php_enable(struct pnv_php_slot *php_slot, bool rescan)
- 	return 0;
- }
- 
--static int pnv_php_reset_slot(struct hotplug_slot *slot, int probe)
-+static int pnv_php_reset_slot(struct hotplug_slot *slot, pci_reset_mode_t mode)
- {
- 	struct pnv_php_slot *php_slot = to_pnv_php_slot(slot);
- 	struct pci_dev *bridge = php_slot->pdev;
-@@ -537,7 +537,7 @@ static int pnv_php_reset_slot(struct hotplug_slot *slot, int probe)
- 	 * which don't have a bridge. Only claim to support
- 	 * reset_slot() if we have a bridge device (for now...)
- 	 */
--	if (probe)
-+	if (mode == PCI_RESET_PROBE)
- 		return !bridge;
- 
- 	/* mask our interrupt while resetting the bridge */
-diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
-index b6de71d15..a92ed574a 100644
---- a/drivers/pci/pci-acpi.c
-+++ b/drivers/pci/pci-acpi.c
-@@ -944,16 +944,20 @@ void pci_set_acpi_fwnode(struct pci_dev *dev)
- /**
-  * pci_dev_acpi_reset - do a function level reset using _RST method
-  * @dev: device to reset
-- * @probe: check if _RST method is included in the acpi_device context.
-+ * @probe: If PCI_RESET_PROBE, check whether _RST method is included
-+ *         in the acpi_device context.
-  */
--int pci_dev_acpi_reset(struct pci_dev *dev, int probe)
-+int pci_dev_acpi_reset(struct pci_dev *dev, pci_reset_mode_t mode)
- {
- 	acpi_handle handle = ACPI_HANDLE(&dev->dev);
- 
-+	if (mode >= PCI_RESET_MODE_MAX)
-+		return -EINVAL;
-+
- 	if (!handle || !acpi_has_method(handle, "_RST"))
- 		return -ENOTTY;
- 
--	if (probe)
-+	if (mode == PCI_RESET_PROBE)
- 		return 0;
- 
- 	if (ACPI_FAILURE(acpi_evaluate_object(handle, "_RST", NULL, NULL))) {
-diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-index 8a740e211..dcf19f6d6 100644
---- a/drivers/pci/pci-sysfs.c
-+++ b/drivers/pci/pci-sysfs.c
-@@ -1393,7 +1393,8 @@ static ssize_t reset_method_store(struct device *dev,
- 
- 		for (i = 1; i < PCI_NUM_RESET_METHODS; i++) {
- 			if (sysfs_streq(name, pci_reset_fn_methods[i].name) &&
--			    !pci_reset_fn_methods[i].reset_fn(pdev, 1)) {
-+			    !pci_reset_fn_methods[i].reset_fn(pdev,
-+							      PCI_RESET_PROBE)) {
- 				reset_methods[n++] = i;
- 				break;
- 			}
-@@ -1405,7 +1406,8 @@ static ssize_t reset_method_store(struct device *dev,
- 		}
- 	}
- 
--	if (!pci_reset_fn_methods[1].reset_fn(pdev, 1) && reset_methods[0] != 1)
-+	if (!pci_reset_fn_methods[1].reset_fn(pdev, PCI_RESET_PROBE) &&
-+	    reset_methods[0] != 1)
- 		pci_warn(pdev, "Device specific reset disabled/de-prioritized by user");
- 
- set_reset_methods:
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 1e64dbd3e..60204cee6 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -4650,30 +4650,36 @@ EXPORT_SYMBOL_GPL(pcie_flr);
- /**
-  * pcie_reset_flr - initiate a PCIe function level reset
-  * @dev: device to reset
-- * @probe: If set, only check if the device can be reset this way.
-+ * @mode: If PCI_RESET_PROBE, only check if the device can be reset this way.
-  *
-  * Initiate a function level reset on @dev.
-  */
--int pcie_reset_flr(struct pci_dev *dev, int probe)
-+int pcie_reset_flr(struct pci_dev *dev, pci_reset_mode_t mode)
- {
-+	if (mode >= PCI_RESET_MODE_MAX)
-+		return -EINVAL;
-+
- 	if (dev->dev_flags & PCI_DEV_FLAGS_NO_FLR_RESET)
- 		return -ENOTTY;
- 
- 	if (!dev->has_pcie_flr)
- 		return -ENOTTY;
- 
--	if (probe)
-+	if (mode == PCI_RESET_PROBE)
- 		return 0;
- 
- 	return pcie_flr(dev);
- }
- EXPORT_SYMBOL_GPL(pcie_reset_flr);
- 
--static int pci_af_flr(struct pci_dev *dev, int probe)
-+static int pci_af_flr(struct pci_dev *dev, pci_reset_mode_t mode)
- {
- 	int pos;
- 	u8 cap;
- 
-+	if (mode >= PCI_RESET_MODE_MAX)
-+		return -EINVAL;
-+
- 	pos = pci_find_capability(dev, PCI_CAP_ID_AF);
- 	if (!pos)
- 		return -ENOTTY;
-@@ -4685,7 +4691,7 @@ static int pci_af_flr(struct pci_dev *dev, int probe)
- 	if (!(cap & PCI_AF_CAP_TP) || !(cap & PCI_AF_CAP_FLR))
- 		return -ENOTTY;
- 
--	if (probe)
-+	if (mode == PCI_RESET_PROBE)
- 		return 0;
- 
- 	/*
-@@ -4716,7 +4722,7 @@ static int pci_af_flr(struct pci_dev *dev, int probe)
- /**
-  * pci_pm_reset - Put device into PCI_D3 and back into PCI_D0.
-  * @dev: Device to reset.
-- * @probe: If set, only check if the device can be reset this way.
-+ * @mode: If PCI_RESET_PROBE, only check if the device can be reset this way.
-  *
-  * If @dev supports native PCI PM and its PCI_PM_CTRL_NO_SOFT_RESET flag is
-  * unset, it will be reinitialized internally when going from PCI_D3hot to
-@@ -4728,10 +4734,13 @@ static int pci_af_flr(struct pci_dev *dev, int probe)
-  * by default (i.e. unless the @dev's d3hot_delay field has a different value).
-  * Moreover, only devices in D0 can be reset by this function.
-  */
--static int pci_pm_reset(struct pci_dev *dev, int probe)
-+static int pci_pm_reset(struct pci_dev *dev, pci_reset_mode_t mode)
- {
- 	u16 csr;
- 
-+	if (mode >= PCI_RESET_MODE_MAX)
-+		return -EINVAL;
-+
- 	if (!dev->pm_cap || dev->dev_flags & PCI_DEV_FLAGS_NO_PM_RESET)
- 		return -ENOTTY;
- 
-@@ -4739,7 +4748,7 @@ static int pci_pm_reset(struct pci_dev *dev, int probe)
- 	if (csr & PCI_PM_CTRL_NO_SOFT_RESET)
- 		return -ENOTTY;
- 
--	if (probe)
-+	if (mode == PCI_RESET_PROBE)
- 		return 0;
- 
- 	if (dev->current_state != PCI_D0)
-@@ -4988,10 +4997,13 @@ int pci_bridge_secondary_bus_reset(struct pci_dev *dev)
- }
- EXPORT_SYMBOL_GPL(pci_bridge_secondary_bus_reset);
- 
--static int pci_parent_bus_reset(struct pci_dev *dev, int probe)
-+static int pci_parent_bus_reset(struct pci_dev *dev, pci_reset_mode_t mode)
- {
- 	struct pci_dev *pdev;
- 
-+	if (mode >= PCI_RESET_MODE_MAX)
-+		return -EINVAL;
-+
- 	if (pci_is_root_bus(dev->bus) || dev->subordinate ||
- 	    !dev->bus->self || dev->dev_flags & PCI_DEV_FLAGS_NO_BUS_RESET)
- 		return -ENOTTY;
-@@ -5000,44 +5012,47 @@ static int pci_parent_bus_reset(struct pci_dev *dev, int probe)
- 		if (pdev != dev)
- 			return -ENOTTY;
- 
--	if (probe)
-+	if (mode == PCI_RESET_PROBE)
- 		return 0;
- 
- 	return pci_bridge_secondary_bus_reset(dev->bus->self);
- }
- 
--static int pci_reset_hotplug_slot(struct hotplug_slot *hotplug, int probe)
-+static int pci_reset_hotplug_slot(struct hotplug_slot *hotplug, pci_reset_mode_t mode)
- {
- 	int rc = -ENOTTY;
- 
-+	if (mode >= PCI_RESET_MODE_MAX)
-+		return -EINVAL;
-+
- 	if (!hotplug || !try_module_get(hotplug->owner))
- 		return rc;
- 
- 	if (hotplug->ops->reset_slot)
--		rc = hotplug->ops->reset_slot(hotplug, probe);
-+		rc = hotplug->ops->reset_slot(hotplug, mode);
- 
- 	module_put(hotplug->owner);
- 
- 	return rc;
- }
- 
--static int pci_dev_reset_slot_function(struct pci_dev *dev, int probe)
-+static int pci_dev_reset_slot_function(struct pci_dev *dev, pci_reset_mode_t mode)
- {
- 	if (dev->multifunction || dev->subordinate || !dev->slot ||
- 	    dev->dev_flags & PCI_DEV_FLAGS_NO_BUS_RESET)
- 		return -ENOTTY;
- 
--	return pci_reset_hotplug_slot(dev->slot->hotplug, probe);
-+	return pci_reset_hotplug_slot(dev->slot->hotplug, mode);
- }
- 
--static int pci_reset_bus_function(struct pci_dev *dev, int probe)
-+static int pci_reset_bus_function(struct pci_dev *dev, pci_reset_mode_t mode)
- {
- 	int rc;
- 
--	rc = pci_dev_reset_slot_function(dev, probe);
-+	rc = pci_dev_reset_slot_function(dev, mode);
- 	if (rc != -ENOTTY)
- 		return rc;
--	return pci_parent_bus_reset(dev, probe);
-+	return pci_parent_bus_reset(dev, mode);
- }
- 
- static void pci_dev_lock(struct pci_dev *dev)
-@@ -5157,7 +5172,7 @@ int __pci_reset_function_locked(struct pci_dev *dev)
- 	 * mechanisms might be broken on the device.
- 	 */
- 	for (i = 0; i <  PCI_NUM_RESET_METHODS && (m = dev->reset_methods[i]); i++) {
--		rc = pci_reset_fn_methods[m].reset_fn(dev, 0);
-+		rc = pci_reset_fn_methods[m].reset_fn(dev, PCI_RESET_DO_RESET);
- 		if (!rc)
- 			return 0;
- 		if (rc != -ENOTTY)
-@@ -5192,7 +5207,7 @@ void pci_init_reset_methods(struct pci_dev *dev)
- 	might_sleep();
- 
- 	for (i = 1; i < PCI_NUM_RESET_METHODS; i++) {
--		rc = pci_reset_fn_methods[i].reset_fn(dev, 1);
-+		rc = pci_reset_fn_methods[i].reset_fn(dev, PCI_RESET_PROBE);
- 		if (!rc)
- 			reset_methods[n++] = i;
- 		else if (rc != -ENOTTY)
-@@ -5509,21 +5524,24 @@ static void pci_slot_restore_locked(struct pci_slot *slot)
- 	}
- }
- 
--static int pci_slot_reset(struct pci_slot *slot, int probe)
-+static int pci_slot_reset(struct pci_slot *slot, pci_reset_mode_t mode)
- {
- 	int rc;
- 
-+	if (mode >= PCI_RESET_MODE_MAX)
-+		return -EINVAL;
-+
- 	if (!slot || !pci_slot_resetable(slot))
- 		return -ENOTTY;
- 
--	if (!probe)
-+	if (mode != PCI_RESET_PROBE)
- 		pci_slot_lock(slot);
- 
- 	might_sleep();
- 
--	rc = pci_reset_hotplug_slot(slot->hotplug, probe);
-+	rc = pci_reset_hotplug_slot(slot->hotplug, mode);
- 
--	if (!probe)
-+	if (mode != PCI_RESET_PROBE)
- 		pci_slot_unlock(slot);
- 
- 	return rc;
-@@ -5537,7 +5555,7 @@ static int pci_slot_reset(struct pci_slot *slot, int probe)
-  */
- int pci_probe_reset_slot(struct pci_slot *slot)
- {
--	return pci_slot_reset(slot, 1);
-+	return pci_slot_reset(slot, PCI_RESET_PROBE);
- }
- EXPORT_SYMBOL_GPL(pci_probe_reset_slot);
- 
-@@ -5560,14 +5578,14 @@ static int __pci_reset_slot(struct pci_slot *slot)
- {
- 	int rc;
- 
--	rc = pci_slot_reset(slot, 1);
-+	rc = pci_slot_reset(slot, PCI_RESET_PROBE);
- 	if (rc)
- 		return rc;
- 
- 	if (pci_slot_trylock(slot)) {
- 		pci_slot_save_and_disable_locked(slot);
- 		might_sleep();
--		rc = pci_reset_hotplug_slot(slot->hotplug, 0);
-+		rc = pci_reset_hotplug_slot(slot->hotplug, PCI_RESET_DO_RESET);
- 		pci_slot_restore_locked(slot);
- 		pci_slot_unlock(slot);
- 	} else
-@@ -5576,14 +5594,17 @@ static int __pci_reset_slot(struct pci_slot *slot)
- 	return rc;
- }
- 
--static int pci_bus_reset(struct pci_bus *bus, int probe)
-+static int pci_bus_reset(struct pci_bus *bus, pci_reset_mode_t mode)
- {
- 	int ret;
- 
-+	if (mode >= PCI_RESET_MODE_MAX)
-+		return -EINVAL;
-+
- 	if (!bus->self || !pci_bus_resetable(bus))
- 		return -ENOTTY;
- 
--	if (probe)
-+	if (mode == PCI_RESET_PROBE)
- 		return 0;
- 
- 	pci_bus_lock(bus);
-@@ -5622,14 +5643,14 @@ int pci_bus_error_reset(struct pci_dev *bridge)
- 			goto bus_reset;
- 
- 	list_for_each_entry(slot, &bus->slots, list)
--		if (pci_slot_reset(slot, 0))
-+		if (pci_slot_reset(slot, PCI_RESET_DO_RESET))
- 			goto bus_reset;
- 
- 	mutex_unlock(&pci_slot_mutex);
- 	return 0;
- bus_reset:
- 	mutex_unlock(&pci_slot_mutex);
--	return pci_bus_reset(bridge->subordinate, 0);
-+	return pci_bus_reset(bridge->subordinate, PCI_RESET_DO_RESET);
- }
- 
- /**
-@@ -5640,7 +5661,7 @@ int pci_bus_error_reset(struct pci_dev *bridge)
-  */
- int pci_probe_reset_bus(struct pci_bus *bus)
- {
--	return pci_bus_reset(bus, 1);
-+	return pci_bus_reset(bus, PCI_RESET_PROBE);
- }
- EXPORT_SYMBOL_GPL(pci_probe_reset_bus);
- 
-@@ -5654,7 +5675,7 @@ static int __pci_reset_bus(struct pci_bus *bus)
- {
- 	int rc;
- 
--	rc = pci_bus_reset(bus, 1);
-+	rc = pci_bus_reset(bus, PCI_RESET_PROBE);
- 	if (rc)
- 		return rc;
- 
-diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-index 2c12017ed..06be9e6fa 100644
---- a/drivers/pci/pci.h
-+++ b/drivers/pci/pci.h
-@@ -604,19 +604,19 @@ static inline int pci_enable_ptm(struct pci_dev *dev, u8 *granularity)
- struct pci_dev_reset_methods {
- 	u16 vendor;
- 	u16 device;
--	int (*reset)(struct pci_dev *dev, int probe);
-+	int (*reset)(struct pci_dev *dev, pci_reset_mode_t mode);
- };
- 
- struct pci_reset_fn_method {
--	int (*reset_fn)(struct pci_dev *pdev, int probe);
-+	int (*reset_fn)(struct pci_dev *pdev, pci_reset_mode_t mode);
- 	char *name;
- };
- 
- extern const struct pci_reset_fn_method pci_reset_fn_methods[];
- #ifdef CONFIG_PCI_QUIRKS
--int pci_dev_specific_reset(struct pci_dev *dev, int probe);
-+int pci_dev_specific_reset(struct pci_dev *dev, pci_reset_mode_t mode);
- #else
--static inline int pci_dev_specific_reset(struct pci_dev *dev, int probe)
-+static inline int pci_dev_specific_reset(struct pci_dev *dev, pci_reset_mode_t mode)
- {
- 	return -ENOTTY;
- }
-@@ -705,9 +705,9 @@ static inline int pci_aer_raw_clear_status(struct pci_dev *dev) { return -EINVAL
- int pci_acpi_program_hp_params(struct pci_dev *dev);
- extern const struct attribute_group pci_dev_acpi_attr_group;
- void pci_set_acpi_fwnode(struct pci_dev *dev);
--int pci_dev_acpi_reset(struct pci_dev *dev, int probe);
-+int pci_dev_acpi_reset(struct pci_dev *dev, pci_reset_mode_t mode);
- #else
--static inline int pci_dev_acpi_reset(struct pci_dev *dev, int probe)
-+static inline int pci_dev_acpi_reset(struct pci_dev *dev, pci_reset_mode_t mode)
- {
- 	return -ENOTTY;
- }
-diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-index 98077595a..cfa7a1775 100644
---- a/drivers/pci/pcie/aer.c
-+++ b/drivers/pci/pcie/aer.c
-@@ -1405,7 +1405,7 @@ static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
- 	}
- 
- 	if (type == PCI_EXP_TYPE_RC_EC || type == PCI_EXP_TYPE_RC_END) {
--		rc = pcie_reset_flr(dev, 0);
-+		rc = pcie_reset_flr(dev, PCI_RESET_DO_RESET);
- 		if (!rc)
- 			pci_info(dev, "has been reset\n");
- 		else
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index e86cf4a3b..e7f15fc02 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -3669,7 +3669,7 @@ DECLARE_PCI_FIXUP_SUSPEND_LATE(PCI_VENDOR_ID_INTEL,
-  * reset a single function if other methods (e.g. FLR, PM D0->D3) are
-  * not available.
-  */
--static int reset_intel_82599_sfp_virtfn(struct pci_dev *dev, int probe)
-+static int reset_intel_82599_sfp_virtfn(struct pci_dev *dev, pci_reset_mode_t mode)
- {
- 	/*
- 	 * http://www.intel.com/content/dam/doc/datasheet/82599-10-gbe-controller-datasheet.pdf
-@@ -3679,7 +3679,7 @@ static int reset_intel_82599_sfp_virtfn(struct pci_dev *dev, int probe)
- 	 * Thus we must call pcie_flr() directly without first checking if it is
- 	 * supported.
- 	 */
--	if (!probe)
-+	if (mode == PCI_RESET_DO_RESET)
- 		pcie_flr(dev);
- 	return 0;
- }
-@@ -3691,13 +3691,13 @@ static int reset_intel_82599_sfp_virtfn(struct pci_dev *dev, int probe)
- #define NSDE_PWR_STATE		0xd0100
- #define IGD_OPERATION_TIMEOUT	10000     /* set timeout 10 seconds */
- 
--static int reset_ivb_igd(struct pci_dev *dev, int probe)
-+static int reset_ivb_igd(struct pci_dev *dev, pci_reset_mode_t mode)
- {
- 	void __iomem *mmio_base;
- 	unsigned long timeout;
- 	u32 val;
- 
--	if (probe)
-+	if (mode == PCI_RESET_PROBE)
- 		return 0;
- 
- 	mmio_base = pci_iomap(dev, 0, 0);
-@@ -3734,7 +3734,7 @@ static int reset_ivb_igd(struct pci_dev *dev, int probe)
- }
- 
- /* Device-specific reset method for Chelsio T4-based adapters */
--static int reset_chelsio_generic_dev(struct pci_dev *dev, int probe)
-+static int reset_chelsio_generic_dev(struct pci_dev *dev, pci_reset_mode_t mode)
- {
- 	u16 old_command;
- 	u16 msix_flags;
-@@ -3750,7 +3750,7 @@ static int reset_chelsio_generic_dev(struct pci_dev *dev, int probe)
- 	 * If this is the "probe" phase, return 0 indicating that we can
- 	 * reset this device.
- 	 */
--	if (probe)
-+	if (mode == PCI_RESET_PROBE)
- 		return 0;
- 
- 	/*
-@@ -3812,17 +3812,17 @@ static int reset_chelsio_generic_dev(struct pci_dev *dev, int probe)
-  *    Chapter 3: NVMe control registers
-  *    Chapter 7.3: Reset behavior
-  */
--static int nvme_disable_and_flr(struct pci_dev *dev, int probe)
-+static int nvme_disable_and_flr(struct pci_dev *dev, pci_reset_mode_t mode)
- {
- 	void __iomem *bar;
- 	u16 cmd;
- 	u32 cfg;
- 
- 	if (dev->class != PCI_CLASS_STORAGE_EXPRESS ||
--	    pcie_reset_flr(dev, 1) || !pci_resource_start(dev, 0))
-+	    pcie_reset_flr(dev, PCI_RESET_PROBE) || !pci_resource_start(dev, 0))
- 		return -ENOTTY;
- 
--	if (probe)
-+	if (mode == PCI_RESET_PROBE)
- 		return 0;
- 
- 	bar = pci_iomap(dev, 0, NVME_REG_CC + sizeof(cfg));
-@@ -3886,11 +3886,13 @@ static int nvme_disable_and_flr(struct pci_dev *dev, int probe)
-  * device too soon after FLR.  A 250ms delay after FLR has heuristically
-  * proven to produce reliably working results for device assignment cases.
-  */
--static int delay_250ms_after_flr(struct pci_dev *dev, int probe)
-+static int delay_250ms_after_flr(struct pci_dev *dev, pci_reset_mode_t mode)
- {
--	int ret = pcie_reset_flr(dev, probe);
-+	int ret;
-+
-+	ret = pcie_reset_flr(dev, mode);
- 
--	if (probe)
-+	if (ret || mode == PCI_RESET_PROBE)
- 		return ret;
- 
- 	msleep(250);
-@@ -3906,13 +3908,13 @@ static int delay_250ms_after_flr(struct pci_dev *dev, int probe)
- #define HINIC_OPERATION_TIMEOUT     15000	/* 15 seconds */
- 
- /* Device-specific reset method for Huawei Intelligent NIC virtual functions */
--static int reset_hinic_vf_dev(struct pci_dev *pdev, int probe)
-+static int reset_hinic_vf_dev(struct pci_dev *pdev, pci_reset_mode_t mode)
- {
- 	unsigned long timeout;
- 	void __iomem *bar;
- 	u32 val;
- 
--	if (probe)
-+	if (mode == PCI_RESET_PROBE)
- 		return 0;
- 
- 	bar = pci_iomap(pdev, 0, 0);
-@@ -3983,16 +3985,19 @@ static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
-  * because when a host assigns a device to a guest VM, the host may need
-  * to reset the device but probably doesn't have a driver for it.
-  */
--int pci_dev_specific_reset(struct pci_dev *dev, int probe)
-+int pci_dev_specific_reset(struct pci_dev *dev, pci_reset_mode_t mode)
- {
- 	const struct pci_dev_reset_methods *i;
- 
-+	if (mode >= PCI_RESET_MODE_MAX)
-+		return -EINVAL;
-+
- 	for (i = pci_dev_reset_methods; i->reset; i++) {
- 		if ((i->vendor == dev->vendor ||
- 		     i->vendor == (u16)PCI_ANY_ID) &&
- 		    (i->device == dev->device ||
- 		     i->device == (u16)PCI_ANY_ID))
--			return i->reset(dev, probe);
-+			return i->reset(dev, mode);
- 	}
- 
- 	return -ENOTTY;
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index c3b0d771c..0d650c873 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -52,6 +52,12 @@
- /* Number of reset methods used in pci_reset_fn_methods array in pci.c */
- #define PCI_NUM_RESET_METHODS 7
- 
-+typedef enum pci_reset_mode {
-+	PCI_RESET_DO_RESET,
-+	PCI_RESET_PROBE,
-+	PCI_RESET_MODE_MAX,
-+} pci_reset_mode_t;
-+
- /*
-  * The PCI interface treats multi-function devices as independent
-  * devices.  The slot/function address of each device is encoded
-@@ -1232,7 +1238,7 @@ u32 pcie_bandwidth_available(struct pci_dev *dev, struct pci_dev **limiting_dev,
- 			     enum pci_bus_speed *speed,
- 			     enum pcie_link_width *width);
- void pcie_print_link_status(struct pci_dev *dev);
--int pcie_reset_flr(struct pci_dev *dev, int probe);
-+int pcie_reset_flr(struct pci_dev *dev, pci_reset_mode_t mode);
- int pcie_flr(struct pci_dev *dev);
- int __pci_reset_function_locked(struct pci_dev *dev);
- int pci_reset_function(struct pci_dev *dev);
-diff --git a/include/linux/pci_hotplug.h b/include/linux/pci_hotplug.h
-index b482e42d7..9e8da46e7 100644
---- a/include/linux/pci_hotplug.h
-+++ b/include/linux/pci_hotplug.h
-@@ -44,7 +44,7 @@ struct hotplug_slot_ops {
- 	int (*get_attention_status)	(struct hotplug_slot *slot, u8 *value);
- 	int (*get_latch_status)		(struct hotplug_slot *slot, u8 *value);
- 	int (*get_adapter_status)	(struct hotplug_slot *slot, u8 *value);
--	int (*reset_slot)		(struct hotplug_slot *slot, int probe);
-+	int (*reset_slot)		(struct hotplug_slot *slot, pci_reset_mode_t mode);
- };
- 
- /**
--- 
-2.32.0
+> 
+> And rethink about the gpcv2 driver, should we add a mutex lock
+> in power on/off? I know that genpd has lock, but the lock is per
+> genpd.
+> 
+> Considering GPU powering on, VPU may be powering off, the power
+> sequence maybe interrupted by the other. I thought this
+> may cause failed to command PGC, so better add a mutex lock
+> in pgc power on/off?
+> 
+I don't think sequences for different domains are interacting with each
+other, at least that's my understanding of the PGC hardware. The
+example code 5 in the i.MX8MM reference manual at least hints at it
+being totally legal to request multiple domains to power-up at the same
+time and also there are no waits for sequence completion between
+request to power-down different domains.
+
+> 
+> Until now my understanding was that this isn't hooked up in the
+> > state machine, but sequenced by software through writing and
+> > waiting for the
+> > bits in GPC_PU_PWRHSK.
+> > 
+> > > BTW: #linux-imx IRC moved to Libre.Chat
+> > > 
+> > > > 
+> > > > Hi Peng,
+> > > > 
+> > > > Am Dienstag, dem 29.06.2021 um 15:29 +0800 schrieb Peng Fan
+> > > > (OSS):
+> > > > > From: Peng Fan <peng.fan@nxp.com>
+> > > > > 
+> > > > > The i.MX8MM introduces an IP named BLK_CTL and usually is
+> > > > > comprised of some GPRs.
+> > > > > 
+> > > > > The GPRs has some clock bits and reset bits, but here we take
+> > > > > it
+> > > > > as virtual PDs, because of the clock and power domain A/B
+> > > > > lock
+> > > > > issue when taking it as a clock controller.
+> > > > > 
+> > > > > For some bits, it might be good to also make it as a reset
+> > > > > controller, but to i.MX8MM, we not add that support for now.
+> > > > > 
+> > > > > Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> > > > > ---
+> > > > >  drivers/soc/imx/Makefile  |   2 +-
+> > > > >  drivers/soc/imx/blk-ctl.c | 324
+> > > > > ++++++++++++++++++++++++++++++++++++++
+> > > > >  drivers/soc/imx/blk-ctl.h |  85 ++++++++++
+> > > > >  3 files changed, 410 insertions(+), 1 deletion(-)  create
+> > > > > mode
+> > > > > 100644 drivers/soc/imx/blk-ctl.c  create mode 100644
+> > > > > drivers/soc/imx/blk-ctl.h
+> > > > > 
+> > > > > diff --git a/drivers/soc/imx/Makefile
+> > > > > b/drivers/soc/imx/Makefile
+> > > > > index 078dc918f4f3..d3d2b49a386c 100644
+> > > > > --- a/drivers/soc/imx/Makefile
+> > > > > +++ b/drivers/soc/imx/Makefile
+> > > > > @@ -4,4 +4,4 @@ obj-$(CONFIG_ARCH_MXC) += soc-imx.o  endif
+> > > > >  obj-$(CONFIG_HAVE_IMX_GPC) += gpc.o
+> > > > >  obj-$(CONFIG_IMX_GPCV2_PM_DOMAINS) += gpcv2.o
+> > > > > -obj-$(CONFIG_SOC_IMX8M) += soc-imx8m.o
+> > > > > +obj-$(CONFIG_SOC_IMX8M) += soc-imx8m.o blk-ctl.o
+> > > > > diff --git a/drivers/soc/imx/blk-ctl.c b/drivers/soc/imx/blk-
+> > > > > ctl.c
+> > > > > new file mode 100644 index 000000000000..cec1884202e0
+> > > > > --- /dev/null
+> > > > > +++ b/drivers/soc/imx/blk-ctl.c
+> > > > > @@ -0,0 +1,324 @@
+> > > > > +// SPDX-License-Identifier: GPL-2.0
+> > > > > +/*
+> > > > > + * Copyright 2021 NXP.
+> > > > > + */
+> > > > > +
+> > > > > +#include <linux/clk.h>
+> > > > > +#include <linux/err.h>
+> > > > > +#include <linux/io.h>
+> > > > > +#include <linux/module.h>
+> > > > > +#include <linux/mutex.h>
+> > > > > +#include <linux/of.h>
+> > > > > +#include <linux/of_address.h>
+> > > > > +#include <linux/of_device.h>
+> > > > > +#include <linux/platform_device.h> #include
+> > > > > <linux/pm_runtime.h>
+> > > > > +#include <linux/pm_domain.h> #include <linux/regmap.h>
+> > > > > #include
+> > > > > +<linux/slab.h>
+> > > > > +
+> > > > > +#include "blk-ctl.h"
+> > > > > +
+> > > > > +static inline struct imx_blk_ctl_domain
+> > > > > *to_imx_blk_ctl_pd(struct
+> > > > > +generic_pm_domain *genpd) {
+> > > > > +	return container_of(genpd, struct
+> > > > > imx_blk_ctl_domain, genpd); }
+> > > > > +
+> > > > > +static int imx_blk_ctl_enable_hsk(struct device *dev) {
+> > > > > +	struct imx_blk_ctl *blk_ctl = dev_get_drvdata(dev);
+> > > > > +	const struct imx_blk_ctl_hw *hw = blk_ctl->dev_data-
+> > > > > >hw_hsk;
+> > > > > +	struct regmap *regmap = blk_ctl->regmap;
+> > > > > +	int ret;
+> > > > > +
+> > > > > +	if (hw->flags & IMX_BLK_CTL_PD_RESET) {
+> > > > > +		ret = regmap_update_bits(regmap, hw-
+> > > > > >rst_offset,
+> > hw->rst_mask,
+> > > > hw->rst_mask);
+> > > > > +		if (ret)
+> > > > > +			return ret;
+> > > > > +	}
+> > > > > +
+> > > > > +	ret = regmap_update_bits(regmap, hw->offset, hw-
+> > > > > >mask,
+> > > > > +hw->mask);
+> > > > > +
+> > > > > +	/* Wait for handshake */
+> > > > > +	udelay(5);
+> > > > > +
+> > > > > +	return ret;
+> > > > > +}
+> > > > > +
+> > > > > +static int imx_blk_ctl_power_on(struct generic_pm_domain
+> > > > > *domain) {
+> > > > > +	struct imx_blk_ctl_domain *pd =
+> > > > > to_imx_blk_ctl_pd(domain);
+> > > > > +	struct imx_blk_ctl *blk_ctl = pd->blk_ctl;
+> > > > > +	struct regmap *regmap = blk_ctl->regmap;
+> > > > > +	const struct imx_blk_ctl_hw *hw =
+> > &blk_ctl->dev_data->pds[pd->id];
+> > > > > +	int ret;
+> > > > > +
+> > > > > +	mutex_lock(&blk_ctl->lock);
+> > > > > +
+> > > > > +	ret = clk_bulk_prepare_enable(blk_ctl->num_clks,
+> > > > > blk_ctl->clks);
+> > > > 
+> > > > I'm still not a fan of enabling all the clocks going into the
+> > > > blk-ctl to power up/down one specific domain. It's not really a
+> > > > problem with clocks, where the parents are always on, as the
+> > > > clock
+> > > > gate/ungate is pretty cheap, but as soon as you get to
+> > > > something
+> > > > like the display pixel clock, where the parent PLL may be shut
+> > > > down,
+> > > > the clock enable may easily be the most costly operation of
+> > > > this
+> > > > whole function, even if this specific clock isn't even needed
+> > > > for the domain
+> > in question.
+> > > 
+> > > We had an agreement to use bulk clks in the beginning :) But I
+> > > could
+> > > look into use dedicated clk, but that requires new logic to map
+> > > each
+> > > pd with needed clks.
+> > > 
+> > Yea, I didn't totally reject using bulk clks, but looking at the
+> > number of
+> > different clocks going into e.g. the i.MX8MP MEDIAMIX blk-ctl, I
+> > fear that
+> > using bulk clocks is actually making the power up/down for the blk-
+> > ctl
+> > domains much more costly than it needs to be. I think we should
+> > really think
+> > about this now, as using bulk clks vs. individual clocks for each
+> > domain will
+> > most likely have an impact on the DT binding, so will be very hard
+> > to change
+> > once the driver is accepted upstream.
+> 
+> ok, I see.
+> 
+> > 
+> > 
+> > > > 
+> > > > > +	if (ret) {
+> > > > > +		mutex_unlock(&blk_ctl->lock);
+> > > > > +		return ret;
+> > > > > +	}
+> > > > > +
+> > > > > +	if (hw->flags & IMX_BLK_CTL_PD_HANDSHAKE) {
+> > > > > +		ret = imx_blk_ctl_enable_hsk(blk_ctl->dev);
+> > > > > +		if (ret)
+> > > > > +			dev_err(blk_ctl->dev, "Handshake
+> > > > > failed when power
+> > on\n");
+> > > > > +
+> > > > > +		/* Expected, handshake already handle
+> > > > > reset*/
+> > > > > +		goto disable_clk;
+> > > > > +	}
+> > > > > +
+> > > > > +	if (hw->flags & IMX_BLK_CTL_PD_RESET) {
+> > > > > +		ret = regmap_clear_bits(regmap, hw-
+> > > > > >rst_offset,
+> > hw->rst_mask);
+> > > > > +		if (ret)
+> > > > > +			goto disable_clk;
+> > > > > +
+> > > > > +		/* Wait for reset propagate */
+> > > > > +		udelay(5);
+> > > > > +
+> > > > > +		ret = regmap_update_bits(regmap, hw-
+> > > > > >rst_offset,
+> > hw->rst_mask,
+> > > > hw->rst_mask);
+> > > > > +		if (ret)
+> > > > > +			goto disable_clk;
+> > > > > +	}
+> > > > > +
+> > > > > +	ret = regmap_update_bits(regmap, hw->offset, hw-
+> > > > > >mask,
+> > > > > +hw->mask);
+> > > > > 
+> > > > 
+> > > > I find this very hard to follow and reason about. Why do we
+> > > > even
+> > > > need those different paths for domains with or without the
+> > > > handshake?
+> > > > 
+> > > > Shouldn't it be enough to just be enough to do the following in
+> > > > all
+> > > > cases:
+> > > > 1. release sft reset
+> > > > 2. enable sft clock
+> > > > 3. wait a little for reset to propagate or ADB to ack power up
+> > > 
+> > > Reset flow is: assert reset, deassert reset, enable clk Handshake
+> > > flow: deassert reset, enable clk.
+> > > 
+> > > Per my previous test, use reset flow for handshake seems not
+> > > work. I
+> > > could recall clearly.
+> > > 
+> > That's surprising to me, given that the blk-ctl resets should be
+> > asserted when
+> > we power up the GPC mix domains. I don't dispute your testing, but
+> > I would
+> > be very interested to learn what's going on in hardware that
+> > asserting a
+> > already asserted reset would break the power- up flow.
+> 
+> I could give a re-try, considering the code has changed a lot from
+> the beginning.
+> 
+> You could also give a look at Marex's reset early patch, it maybe
+> caused by
+> the blk-ctl patch or not, but he confirms after add reset early,
+> gpu/vpu
+> not met failed to command PGC anymore.
+
+I'll take a look at this. I'm still a bit puzzled as to why some of the
+domains require a late, as in after the power-up request, reset.
+Normally I would expect the reset to be level triggered, so it
+shouldn't make a difference if the reset is asserted before or after
+the power-up request.
+
+> > 
+> > > > 
+> > > > > +disable_clk:
+> > > > > +	clk_bulk_disable_unprepare(blk_ctl->num_clks,
+> > > > > blk_ctl->clks);
+> > > > > +
+> > > > > +	mutex_unlock(&blk_ctl->lock);
+> > > > > +
+> > > > > +	return ret;
+> > > > > +}
+> > > > > +
+> > > > > +static int imx_blk_ctl_power_off(struct generic_pm_domain
+> > > > > *domain) {
+> > > > > +	struct imx_blk_ctl_domain *pd =
+> > > > > to_imx_blk_ctl_pd(domain);
+> > > > > +	struct imx_blk_ctl *blk_ctl = pd->blk_ctl;
+> > > > > +	struct regmap *regmap = blk_ctl->regmap;
+> > > > > +	const struct imx_blk_ctl_hw *hw =
+> > &blk_ctl->dev_data->pds[pd->id];
+> > > > > +	int ret = 0;
+> > > > > +
+> > > > > +	mutex_lock(&blk_ctl->lock);
+> > > > > +
+> > > > > +	ret = clk_bulk_prepare_enable(blk_ctl->num_clks,
+> > > > > blk_ctl->clks);
+> > > > > +	if (ret) {
+> > > > > +		mutex_unlock(&blk_ctl->lock);
+> > > > > +		return ret;
+> > > > > +	}
+> > > > > +
+> > > > > +	if (!(hw->flags & IMX_BLK_CTL_PD_HANDSHAKE)) {
+> > > > > +		ret = regmap_clear_bits(regmap, hw->offset,
+> > > > > hw->mask);
+> > > > > +		if (ret)
+> > > > > +			goto disable_clk;
+> > > > > +
+> > > > > +		if (hw->flags & IMX_BLK_CTL_PD_RESET) {
+> > > > > +			ret = regmap_clear_bits(regmap, hw-
+> > > > > >rst_offset,
+> > > > hw->rst_mask);
+> > > > > +			if (ret)
+> > > > > +				goto disable_clk;
+> > > > > +		}
+> > > > > +	} else {
+> > > > > +		ret = imx_blk_ctl_enable_hsk(blk_ctl->dev);
+> > > > 
+> > > > Why would we need to enable the handshake again in the power
+> > > > DOWN
+> > > > path?
+> > > > The clock/reset bits should still be set from the power up. The
+> > > > power down should probably just be a no-op for the blk-ctl bus
+> > > > domains, to allow the proper ADB handshake in the PGC domain
+> > power-down.
+> > > 
+> > > I exported VPU-H1 as VPU-BUS for handshake, because they share
+> > > same
+> > > bits.  But you raise a valid idea, I think I could drop VPU-BUS,
+> > > then
+> > > just no-op here.
+> > 
+> > By share the same bits, you mean the ADB is connected to the same
+> > clock and
+> > reset as H1?
+> 
+> G1/G2/H1 all these three bits could be used for ADB handshake, I just
+> use H1 here.
+> 
+> 
+> > 
+> > > 
+> > > BTW: bus should be enabled when power down others.
+> > 
+> > I guess bus should just be always enabled as long as the PGC mix
+> > domain is
+> > powered-up, right?
+> 
+> Yes. correct.
+> 
+> > 
+> > > 
+> > > > 
+> > > > > +		if (ret)
+> > > > > +			dev_err(blk_ctl->dev, "Handshake
+> > > > > failed when power
+> > off\n");
+> > > > > +	}
+> > > > > +
+> > > > > +disable_clk:
+> > > > > +	clk_bulk_disable_unprepare(blk_ctl->num_clks,
+> > > > > blk_ctl->clks);
+> > > > > +
+> > > > > +	mutex_unlock(&blk_ctl->lock);
+> > > > > +
+> > > > > +	return ret;
+> > > > > +}
+> > > > > +
+> > > > > +static int imx_blk_ctl_probe(struct platform_device *pdev) {
+> > > > > +	struct imx_blk_ctl_domain *domain = pdev-
+> > > > > >dev.platform_data;
+> > > > > +	struct imx_blk_ctl *blk_ctl = domain->blk_ctl;
+> > > > > +	struct generic_pm_domain *parent_genpd;
+> > > > > +	struct device *dev = &pdev->dev;
+> > > > > +	struct device *active_pd;
+> > > > > +	int ret;
+> > > > > +
+> > > > > +	pdev->dev.of_node = blk_ctl->dev->of_node;
+> > > > > +
+> > > > > +	if (domain->hw->active_pd_name) {
+> > > > > +		active_pd =
+> > > > > dev_pm_domain_attach_by_name(dev,
+> > > > domain->hw->active_pd_name);
+> > > > > +		if (IS_ERR_OR_NULL(active_pd)) {
+> > > > > +			ret = PTR_ERR(active_pd) ? : -
+> > > > > ENODATA;
+> > > > > +			pdev->dev.of_node = NULL;
+> > > > 
+> > > > This is extremely ugly. I think we should not even have
+> > > > separate
+> > > > platform drivers for the blk-ctl domains, there is just no
+> > > > reason
+> > > > for it. See below for more comments in that direction.
+> > > > 
+> > > > > +			return ret;
+> > > > > +		}
+> > > > > +
+> > > > > +		domain->active_pd = active_pd;
+> > > > > +	} else {
+> > > > > +		if (!blk_ctl->bus_domain) {
+> > > > > +			pdev->dev.of_node = NULL;
+> > > > > +			return -EPROBE_DEFER;
+> > > > > +		}
+> > > > > +	}
+> > > > > +
+> > > > > +	if (domain->hw->active_pd_name)
+> > > > > +		parent_genpd = pd_to_genpd(active_pd-
+> > > > > >pm_domain);
+> > > > > +	else
+> > > > > +		parent_genpd = blk_ctl->bus_domain;
+> > > > > +
+> > > > > +	if (pm_genpd_add_subdomain(parent_genpd, &domain-
+> > > > > >genpd)) {
+> > > > > +		dev_warn(dev, "failed to add subdomain:
+> > > > > %s\n",
+> > > > domain->genpd.name);
+> > > > 
+> > > > I don't see where the dispmix_bus domain and clock is kept
+> > > > enabled.
+> > > > I would guess that the bus domain should be some kind of parent
+> > > > to
+> > > > the lcdif and mipi domains,
+> > > 
+> > > Yes. vpumix-blk-ctl bus domain is parent to vpu-g1/g2 and similar
+> > > to others.
+> > > 
+> > >  as I don't think it would be okay to disable the bus clock,
+> > > while any
+> > > > of the peripherals in the dispmix complex are still active. Am
+> > > > I
+> > > > missing something here?
+> > > 
+> > > You are right, bus clock should be always kept enable if any
+> > > periphals
+> > > in dispmix is alive.
+> > > 
+> > > > 
+> > > > > +	} else {
+> > > > > +		mutex_lock(&blk_ctl->lock);
+> > > > > +		domain->hooked = true;
+> > > > > +		mutex_unlock(&blk_ctl->lock);
+> > > > > +	}
+> > > > > +
+> > > > > +	return 0;
+> > > > > +}
+> > > > > +
+> > > > > +static int imx_blk_ctl_remove(struct platform_device *pdev)
+> > > > > {
+> > > > > +	struct imx_blk_ctl_domain *domain = pdev-
+> > > > > >dev.platform_data;
+> > > > > +	struct imx_blk_ctl *blk_ctl = domain->blk_ctl;
+> > > > > +	struct generic_pm_domain *parent_genpd;
+> > > > > +	struct device *active_pd;
+> > > > > +
+> > > > > +	if (domain->hw->active_pd_name)
+> > > > > +		parent_genpd = pd_to_genpd(active_pd-
+> > > > > >pm_domain);
+> > > > 
+> > > > This has probably never been tested. active_pd is undefined at
+> > > > this
+> > > > point, so will most likely lead to a kernel crash.
+> > > 
+> > > My bad. Indeed, remove not tested.
+> > > 
+> > > > > +	else
+> > > > > +		parent_genpd = blk_ctl->bus_domain;
+> > > > > +
+> > > > > +	pm_genpd_remove_subdomain(parent_genpd, &domain-
+> > > > > >genpd);
+> > > > > +
+> > > > > +	mutex_lock(&blk_ctl->lock);
+> > > > > +	domain->hooked = false;
+> > > > > +	mutex_unlock(&blk_ctl->lock);
+> > > > > +
+> > > > > +	if (domain->hw->active_pd_name)
+> > > > > +		dev_pm_domain_detach(domain->active_pd,
+> > > > > false);
+> > > > > +
+> > > > > +	return 0;
+> > > > > +}
+> > > > > +
+> > > > > +static const struct platform_device_id imx_blk_ctl_id[] = {
+> > > > > +	{ "imx-vpumix-blk-ctl", },
+> > > > > +	{ "imx-dispmix-blk-ctl", },
+> > > > > +	{ },
+> > > > > +};
+> > > > > +
+> > > > > +static struct platform_driver imx_blk_ctl_driver = {
+> > > > > +	.driver = {
+> > > > > +		.name = "imx-blk-ctl",
+> > > > > +	},
+> > > > > +	.probe    = imx_blk_ctl_probe,
+> > > > > +	.remove   = imx_blk_ctl_remove,
+> > > > > +	.id_table = imx_blk_ctl_id,
+> > > > > +};
+> > > > > +builtin_platform_driver(imx_blk_ctl_driver)
+> > > > > +
+> > > > > +static struct generic_pm_domain
+> > > > > *imx_blk_ctl_genpd_xlate(struct
+> > > > of_phandle_args *genpdspec,
+> > > > > +							
+> > > > > void *data)
+> > > > > +{
+> > > > > +	struct genpd_onecell_data *genpd_data = data;
+> > > > > +	unsigned int idx = genpdspec->args[0];
+> > > > > +	struct imx_blk_ctl_domain *domain;
+> > > > > +	struct generic_pm_domain *genpd = ERR_PTR(-
+> > > > > EPROBE_DEFER);
+> > > > > +
+> > > > > +	if (genpdspec->args_count != 1)
+> > > > > +		return ERR_PTR(-EINVAL);
+> > > > > +
+> > > > > +	if (idx >= genpd_data->num_domains)
+> > > > > +		return ERR_PTR(-EINVAL);
+> > > > > +
+> > > > > +	if (!genpd_data->domains[idx])
+> > > > > +		return ERR_PTR(-ENOENT);
+> > > > > +
+> > > > > +	domain = to_imx_blk_ctl_pd(genpd_data-
+> > > > > >domains[idx]);
+> > > > > +
+> > > > > +	mutex_lock(&domain->blk_ctl->lock);
+> > > > > +	if (domain->hooked)
+> > > > > +		genpd = genpd_data->domains[idx];
+> > > > > +	mutex_unlock(&domain->blk_ctl->lock);
+> > > > > +
+> > > > > +	return genpd;
+> > > > > +}
+> > > > > +
+> > > > > +int imx_blk_ctl_register(struct device *dev) {
+> > > > > +	struct imx_blk_ctl *blk_ctl = dev_get_drvdata(dev);
+> > > > > +	const struct imx_blk_ctl_dev_data *dev_data =
+> > > > > blk_ctl->dev_data;
+> > > > > +	int num = dev_data->pds_num;
+> > > > > +	struct imx_blk_ctl_domain *domain;
+> > > > > +	struct generic_pm_domain *genpd;
+> > > > > +	struct platform_device *pd_pdev;
+> > > > > +	int domain_index;
+> > > > > +	int i, ret;
+> > > > > +
+> > > > > +	blk_ctl->onecell_data.num_domains = num;
+> > > > > +	blk_ctl->onecell_data.xlate =
+> > > > > imx_blk_ctl_genpd_xlate;
+> > > > > +	blk_ctl->onecell_data.domains = devm_kcalloc(dev,
+> > > > > num,
+> > > > > +sizeof(struct
+> > > > generic_pm_domain *),
+> > > > > +						    
+> > > > > GFP_KERNEL);
+> > > > > +	if (!blk_ctl->onecell_data.domains)
+> > > > > +		return -ENOMEM;
+> > > > > +
+> > > > > +	for (i = 0; i < num; i++) {
+> > > > > +		domain_index = dev_data->pds[i].id;
+> > > > > +		if (domain_index >= num) {
+> > > > > +			dev_warn(dev, "Domain index %d is
+> > > > > out of bounds\n",
+> > > > domain_index);
+> > > > > +			continue;
+> > > > > +		}
+> > > > > +
+> > > > > +		domain = devm_kzalloc(dev, sizeof(struct
+> > > > > imx_blk_ctl_domain),
+> > > > GFP_KERNEL);
+> > > > > +		if (!domain)
+> > > > > +			goto error;
+> > > > > +
+> > > > > +		pd_pdev = platform_device_alloc(dev_data-
+> > > > > >name,
+> > domain_index);
+> > > > > +		if (!pd_pdev) {
+> > > > > +			dev_err(dev, "Failed to allocate
+> > > > > platform device\n");
+> > > > > +			goto error;
+> > > > > +		}
+> > > > 
+> > > > We don't need a full blow platform device and a driver for the
+> > > > individual domains. The only point where we need the device is
+> > > > to
+> > > > attach the parent PGC power domains and for this we only need a
+> > > > device.
+> > > > 
+> > > > So we could either have a dummy device for this usage in the
+> > > > domain
+> > > > or we could even reuse the device in the genpd, which is
+> > > > initialized
+> > > > in pm_genpd_init.
+> > > > 
+> > > > Now while I think about it... genpd_dev_pm_attach_by_name
+> > > > already
+> > > > allocates the virtual dummy device. I don't think we need to do
+> > > > anything here on our own. Just get rid of the platform device
+> > > > and driver.
+> > > 
+> > > ok, let me rethink about it. If you have chance to be on IRC, I
+> > > could
+> > > talk with you later if I come about new implementation.
+> > 
+> > I'm in the IRC channel if you prefer to talk there.
+> 
+> BTW, do you have time to pick up the BLK-CTL part? I think you have
+> better architecture view than me.
+
+Yes, this whole power-domain/blk-ctl complex is blocking a lot of other
+things I'm supposed to look into. I'll spend some time trying to sort
+this out.
+
+Regards,
+Lucas
 
