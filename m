@@ -2,108 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B17943C1D35
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 03:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F170D3C1D3D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 04:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230280AbhGIB6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 21:58:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60494 "EHLO
+        id S230367AbhGICHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 22:07:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhGIB63 (ORCPT
+        with ESMTP id S230141AbhGICHe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 21:58:29 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00AECC061574;
-        Thu,  8 Jul 2021 18:55:45 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id j9so1634466pfc.5;
-        Thu, 08 Jul 2021 18:55:45 -0700 (PDT)
+        Thu, 8 Jul 2021 22:07:34 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0105C061762
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 19:04:51 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so5200579pjo.3
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 19:04:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Nn1wSgCcZgcwpI1qK0JAAC1fT9Tjqy/uXaXsglsp5RM=;
-        b=i/s4z4IVsWKS3nyUBDvXz4eFVldzWy51+mktPw1TUrjN8CXWW+D91zcDp8p1OnQBm2
-         B3l3S7NeVPqDveXbTsjGXz/ktMaOoBL7rZ3iCmHqdIPlhi77pno6IRsLTf8WF64Bu2y/
-         3E9QkQAXbKOFz362FaKluY38hXQgwsFFJpSWGG+JMj1DuFgcqQEZmVRVQ7V6YjX+Il4n
-         Q77tHvat9/+If2jKXxbXhg7mYRJzIWzc4ertiXq+LWlMGDOjlGnwhXSVHkuh0n0OAqrj
-         B6Vig2RhPcEIijUx31zSFgjyMyFvRAQFKBT3pR1VaMDaHnk0+Ex4rS+S20us5vH11bFk
-         TBag==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BVmgiSoeAePhBmCLdjFJeAKj4gM8pZI9jJIBMA1d9SE=;
+        b=nOy3S+hBH8Tk3VPQtRsr4FS7vHvTjqKKF3q4j4/Iz3rEow5ZwXTSH+1Eq1Qyct6jfd
+         cRwQhXijCMaDM3wTbh4tJPpjF8ze2aGBDhHTisQK6YbEsAb/eJAhaXW68YmZwp7pSPKH
+         y7obz32V9TCKSYEgGN1EqCp+IuW3akLvlugdeykO+p5b9g/KGZm/BxBG1Sk5VbmVjXD5
+         PDj8dOYE98hqeeCiu9Ir5q+0KS07C38eKGmFtACVM/QipVxhtXvhavsADsTRBnHvVQMM
+         qxtAh8B59ycVO1ZdQLuY+kzzPslqILg8akcV4XeDYTXQTbtzFvTIRDkHsc58M+8CI/Y9
+         KVOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Nn1wSgCcZgcwpI1qK0JAAC1fT9Tjqy/uXaXsglsp5RM=;
-        b=X/8uv9WqRZBzIAgldjDz8nvozWmBW8W1jjjxOFrJOaQ9setlENHQItyM8DqpCvp56z
-         ePPeYbyDS8zzpYM/xuxvRyWeVoui50yb4OMtQpdvYY0SFl+tZz7/f8gWRNLtuWv59OXT
-         d5w112g9oMW7ZrtEUVdImQyIbY3C0ppENM/7Nvo81jJPfKnQac/5NGdItR68o2eG4I5q
-         mdxQSgOq++/oMc4Xn70wDkKwhPHanwXdCxfZIMJ8Ph3R5QL+dWCl/GnmqXvxma3FqgoS
-         eGsqbIedLlEXMDU4Yf1FqDhQgvu6aN036lLpg/SG2tmSYGhw/kd7tH7iz6/ORiFQBWx9
-         T20A==
-X-Gm-Message-State: AOAM5320VeXoSGGXKnoGUlJcCCrATrbxLI/XAHA44GBq98qmJiX16gzi
-        c0ud2b+cSJK8f5FmVSjudV7cL1wtK2A=
-X-Google-Smtp-Source: ABdhPJy+hANOy4Cvpb++vC/TjCi/mm5x3T8XqooM4KeQU0Pb3nI6Jw3Mk+65iRlbpve43YqmJZI9Ag==
-X-Received: by 2002:aa7:8003:0:b029:2eb:2f8f:a320 with SMTP id j3-20020aa780030000b02902eb2f8fa320mr34939624pfi.70.1625795745012;
-        Thu, 08 Jul 2021 18:55:45 -0700 (PDT)
-Received: from 7YHHR73.igp.broadcom.net (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id e2sm4161122pfj.212.2021.07.08.18.55.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jul 2021 18:55:44 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Doug Berger <opendmb@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM GENET
-        ETHERNET DRIVER), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net] net: bcmgenet: Ensure all TX/RX queues DMAs are disabled
-Date:   Thu,  8 Jul 2021 18:55:32 -0700
-Message-Id: <20210709015532.10590-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BVmgiSoeAePhBmCLdjFJeAKj4gM8pZI9jJIBMA1d9SE=;
+        b=YEMLGqZVLb7B3D1cOUcywkvwa90FRhAI390zFandpcgXRor0eNELvc/e8XmJbKFM66
+         m33DV3xgoEPQlgMSM5phCUVdKvc9mCnDjOW7ux3Hs9ANTSSN2ynGKjUp1EX5lc+oXplb
+         3IayfjrIBrBSn5/9KwIIa5jN3KbJHEvPutWp+1wfC3IiB0DVHqv7GBrFML7BGN8efKi5
+         IqpwxPp5/uDjYWd1qymL589ULDi5sqQQqNj9fLKgDv61qOBB7470SJ8YwKnstEOez1P+
+         tit3sanqbvR0vXejuyXGXB0xulSrUWpY74JR1k2VW7j28bRgZbFbL1wImcCDoRt/hm8d
+         ciqA==
+X-Gm-Message-State: AOAM530qRPjSm1KmhYJHxtHnN+KgRDZ5DMeWwRlJr61TPBn5PshJUL2k
+        cnitLhUPqRgpHpG4RWiucmQe9FaWoJF56C/NfZpnQg==
+X-Google-Smtp-Source: ABdhPJyEz8U2pKVhGrHBoDqX+2MQUYuuhUzLeDOKRp5NApgfTOqBP5NVA74Lwy229E9/7syAydM5mL2FNAKSdTbIQpg=
+X-Received: by 2002:a17:902:d88b:b029:128:cd59:ead2 with SMTP id
+ b11-20020a170902d88bb0290128cd59ead2mr28421140plz.27.1625796290994; Thu, 08
+ Jul 2021 19:04:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210707204249.3046665-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210707204249.3046665-6-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAPcyv4h8SaVL_QGLv1DT0JuoyKmSBvxJQw0aamMuzarexaU7VA@mail.gmail.com>
+ <24d8fd58-36c1-0e89-4142-28f29e2c434b@linux.intel.com> <CAPcyv4heA8gps2K_ckUV1gGJdjGeB+5dOSntS=TREEX5-0rtwQ@mail.gmail.com>
+ <4972fc1a-1ffb-2b6d-e764-471210df96a3@linux.intel.com> <CAPcyv4gwsT4rJzemkofk6SP5cAp9=nr5T6vtu+i6wTbU91R_Bg@mail.gmail.com>
+ <ca608162-2a48-0816-4302-c2a5b2766a7a@linux.intel.com>
+In-Reply-To: <ca608162-2a48-0816-4302-c2a5b2766a7a@linux.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 8 Jul 2021 19:04:40 -0700
+Message-ID: <CAPcyv4jPqv43Hh836bpDUwMYAsPHDrjUhXoJ0Ufgjbqc3h2eyQ@mail.gmail.com>
+Subject: Re: [PATCH v2 5/6] platform/x86: intel_tdx_attest: Add TDX Guest
+ attestation interface driver
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org, bpf@vger.kernel.org,
+        Netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make sure that we disable each of the TX and RX queues in the TDMA and
-RDMA control registers. This is a correctness change to be symmetrical
-with the code that enables the TX and RX queues.
+On Thu, Jul 8, 2021 at 6:44 PM Andi Kleen <ak@linux.intel.com> wrote:
+>
+>
+> > One allocation for the life of the driver that can have its direct map
+> > permissions changed rather than an allocation per-file descriptor and
+> > fragmenting the direct map.
+>
+> The vmap() approach discussed in another mail will solve that.
 
-Tested-by: Maxime Ripard <maxime@cerno.tech>
-Fixes: 1c1008c793fa ("net: bcmgenet: add main driver file")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/net/ethernet/broadcom/genet/bcmgenet.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Ok, not my first choice for how to handle the allocation side of that,
+but not broken.
 
-diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-index 35e9956e930c..db74241935ab 100644
---- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-+++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-@@ -3238,15 +3238,21 @@ static void bcmgenet_get_hw_addr(struct bcmgenet_priv *priv,
- /* Returns a reusable dma control register value */
- static u32 bcmgenet_dma_disable(struct bcmgenet_priv *priv)
- {
-+	unsigned int i;
- 	u32 reg;
- 	u32 dma_ctrl;
- 
- 	/* disable DMA */
- 	dma_ctrl = 1 << (DESC_INDEX + DMA_RING_BUF_EN_SHIFT) | DMA_EN;
-+	for (i = 0; i < priv->hw_params->tx_queues; i++)
-+		dma_ctrl |= (1 << (i + DMA_RING_BUF_EN_SHIFT));
- 	reg = bcmgenet_tdma_readl(priv, DMA_CTRL);
- 	reg &= ~dma_ctrl;
- 	bcmgenet_tdma_writel(priv, reg, DMA_CTRL);
- 
-+	dma_ctrl = 1 << (DESC_INDEX + DMA_RING_BUF_EN_SHIFT) | DMA_EN;
-+	for (i = 0; i < priv->hw_params->rx_queues; i++)
-+		dma_ctrl |= (1 << (i + DMA_RING_BUF_EN_SHIFT));
- 	reg = bcmgenet_rdma_readl(priv, DMA_CTRL);
- 	reg &= ~dma_ctrl;
- 	bcmgenet_rdma_writel(priv, reg, DMA_CTRL);
--- 
-2.25.1
-
+I'd still feel better if there was an actual data structure assigned
+to file->private_data rather than using that 'void *' pointer directly
+and casting throughout the driver.
