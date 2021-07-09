@@ -2,96 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEE023C2822
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9128B3C2825
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbhGIRRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 13:17:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41436 "EHLO
+        id S229662AbhGIRSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 13:18:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbhGIRRo (ORCPT
+        with ESMTP id S229459AbhGIRSm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 13:17:44 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B40DC0613E5
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 10:15:01 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id g5so15731242ybu.10
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 10:15:01 -0700 (PDT)
+        Fri, 9 Jul 2021 13:18:42 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B63DC0613DD
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 10:15:58 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id h7-20020a5b0a870000b029054c59edf217so12378552ybq.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 10:15:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UfAm236+ZW2LhRr62fKnJMwoIctKDz6MX0I8ooLV4Hk=;
-        b=Ti/AAu6fROwptWF8bpkOULqE3NuqDJti9uO0acIPfDTodRUrNg0kunoeZmAMhw7eat
-         XNCt4Hsw8+Erz0qFR24p9Jj/TCMmVPcVdzb6cKu894/aUOFKeqoGXZ2u3GaZMWRzo3vU
-         K0YbzIvlfxGV4u/HDl9u7yhi0Z2G9bBsNMM94=
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=Mo8vf2VijmXE0Kj63cEeHZeOMc23Yva+SB8nf+0oHHk=;
+        b=edy+MsiIy/d4cyFnuv1+E/otaIO6nz7+ZqGr/G0JQdc/NYFDoq4ejsTXJgkrhOkFv4
+         8uB0hSdSzgXI3O38qdYCBilrBOniO0ARAy53wZsVqF3fcvMqwp8i8yzmBmG2S2crxCGg
+         N6oRBxtrNu2FREg4kIW+L03/94KJCq+PEp0lumHydN1xpmNeEn08JTIlz1vzPYO/nW1R
+         WV1OdtMP0+V1jEGOC067Y7JbM+/rF/121CLJ1JZJRR8CypXzxxC9ukq01qbXgYKml9RL
+         8qB6e+RLAnn9ICDGygpT9ZObPnZV5pDapDoXkXphh63xKis0s3Qy9gqom096EB9pnTRR
+         1+rA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UfAm236+ZW2LhRr62fKnJMwoIctKDz6MX0I8ooLV4Hk=;
-        b=JPN+ghJheXt8vzE2KrkoIgOM73Z0F6Qq4LpAiYiBU4QtAdvu48DOwClq6Dk1nd17et
-         JvqJdlComzXHVTBqqyl9PRDpGn0pEMf6jNBg9seu+ODgudgHFObpxrrnxLxPxAk0jA/V
-         1K7mxHX0F5ld1ynwd2+54yv3nWrNedCsS6SfskPZoc/MKLSNBkUNMGKJg8lqXAxHdG2j
-         bb6MgHkcbBYP7oxoE7BPBYGMs0XglQtfnu1TO3tOfhtEnrJiIFerwn7qVva3ttA77XI1
-         gB2jxd8ubPYiTWvnbne91DShHo3RdI2s4PG5wQCu2meo5GElgjM8+IhI+pWZ8VFESq58
-         ox6g==
-X-Gm-Message-State: AOAM531nSPjrFMzEroSvjEOJH5ngGyhmzERlFKtby53qZr4u8VaKnY2Z
-        VdiNYlcAVoJLVSrB+n44LUGTBRwE47CilFG8N9XG
-X-Google-Smtp-Source: ABdhPJyQNjjz+iD+y8t80vrh6c1jtsrqchb4uyODrpPHieb6ZiR1HsxyXwYB4IvCM86/upEIhDFi2E4YhoitiwyInY0=
-X-Received: by 2002:a25:3bcb:: with SMTP id i194mr45897853yba.442.1625850900256;
- Fri, 09 Jul 2021 10:15:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210629134018.62859-1-xypron.glpk@gmx.de> <877di3mfbe.fsf@igel.home>
-In-Reply-To: <877di3mfbe.fsf@igel.home>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Fri, 9 Jul 2021 10:14:49 -0700
-Message-ID: <CAOnJCUJhYZbAL9dMReJt0=y9V33Ed1DaBCXGCdwxH8iUU3bcRg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] RISC-V: load initrd wherever it fits into memory
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Heinrich Schuchardt <xypron.glpk@gmx.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Andreas Schwab <schwab@linux-m68k.org>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=Mo8vf2VijmXE0Kj63cEeHZeOMc23Yva+SB8nf+0oHHk=;
+        b=dkEWZ0BJc/NLF8skKws6BUXx+5mruS6aAA0rc1NOkcMWKvbdB3ENp38x2r4pdzc3e2
+         EdiPLXohjmpcH9pF3HZmu1PITWR/0bAM6suJLcMCh/ER6mP6L6Wfgf0ax00wXtQh6g7W
+         iarSzVcYshxSGUqT11618PzgcNWt8bvPXNiGi81jbPbMSgfOhdMEOz6YLBqcNBenvZRs
+         MqUkKgaLUmIC6wxktJzDfarZqjJPfNGzfCsxDrcE3tpkcFRwrOFo9xcN5EHAlpDM5wCr
+         tN9+rz/RtJIY1qizDg4Z9gaF3q0oAkBw6qvssF+WpEsY2FKT+3gdt5ekZkY52Kx/4+BA
+         pgEQ==
+X-Gm-Message-State: AOAM5309jX2+oEHLIHRvgQ8ndM9CaUwp325bGhuVC28hD19QRGLbwB5h
+        SW06taexQ+xAC+GiFDWUptnBj2uGXtA=
+X-Google-Smtp-Source: ABdhPJzi/H/Nck0AAoo0h214LOlRmb+5pLoinbBXSR23O2IEoejG7Qf2DRTOJSSegkcmPxGYKjLml/YP47A=
+X-Received: from surenb1.mtv.corp.google.com ([2620:15c:211:200:9f62:e8e9:4de2:f00a])
+ (user=surenb job=sendgmr) by 2002:a25:df11:: with SMTP id w17mr47515616ybg.314.1625850957757;
+ Fri, 09 Jul 2021 10:15:57 -0700 (PDT)
+Date:   Fri,  9 Jul 2021 10:15:54 -0700
+Message-Id: <20210709171554.3494654-1-surenb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+Subject: [PATCH v2 1/1] mm, memcg: inline mem_cgroup_{charge/uncharge} to
+ improve disabled memcg config
+From:   Suren Baghdasaryan <surenb@google.com>
+To:     tj@kernel.org
+Cc:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com,
+        songmuchun@bytedance.com, shy828301@gmail.com, alexs@kernel.org,
+        richard.weiyang@gmail.com, vbabka@suse.cz, axboe@kernel.dk,
+        iamjoonsoo.kim@lge.com, david@redhat.com, willy@infradead.org,
+        apopple@nvidia.com, minchan@kernel.org, linmiaohe@huawei.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, kernel-team@android.com, surenb@google.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 6, 2021 at 12:07 PM Andreas Schwab <schwab@linux-m68k.org> wrote:
->
-> On Jun 29 2021, Heinrich Schuchardt wrote:
->
-> > Requiring that initrd is loaded below RAM start + 256 MiB led to failure
-> > to boot SUSE Linux with GRUB on QEMU, cf.
-> > https://lists.gnu.org/archive/html/grub-devel/2021-06/msg00037.html
-> >
-> > Remove the constraint.
-> >
-> > Reported-by: Andreas Schwab <schwab@linux-m68k.org>
-> > Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
->
-> With that patch the image in
-> http://download.opensuse.org/ports/riscv/tumbleweed/iso/ work again.
->
+Inline mem_cgroup_{charge/uncharge} and mem_cgroup_uncharge_list functions
+functions to perform mem_cgroup_disabled static key check inline before
+calling the main body of the function. This minimizes the memcg overhead
+in the pagefault and exit_mmap paths when memcgs are disabled using
+cgroup_disable=memory command-line option.
+This change results in ~0.4% overhead reduction when running PFT test
+comparing {CONFIG_MEMCG=n} against {CONFIG_MEMCG=y, cgroup_disable=memory}
+configurationon on an 8-core ARM64 Android device.
 
-Thanks.
-@palmer: Can you take this one in this cycle ?
+Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+---
+changes in v2:
+- Changed mem_cgroup_charge to use the same inlining pattern as the rest of the
+functions per Johannes.
 
-> Andreas.
->
-> --
-> Andreas Schwab, schwab@linux-m68k.org
-> GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-> "And now for something completely different."
+ include/linux/memcontrol.h | 28 +++++++++++++++++++++++++---
+ mm/memcontrol.c            | 29 ++++++++++-------------------
+ 2 files changed, 35 insertions(+), 22 deletions(-)
 
-
-
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index bfe5c486f4ad..39fa88051a42 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -693,13 +693,35 @@ static inline bool mem_cgroup_below_min(struct mem_cgroup *memcg)
+ 		page_counter_read(&memcg->memory);
+ }
+ 
+-int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask);
++int __mem_cgroup_charge(struct page *page, struct mm_struct *mm,
++			gfp_t gfp_mask);
++static inline int mem_cgroup_charge(struct page *page, struct mm_struct *mm,
++				    gfp_t gfp_mask)
++{
++	if (mem_cgroup_disabled())
++		return 0;
++	return __mem_cgroup_charge(page, mm, gfp_mask);
++}
++
+ int mem_cgroup_swapin_charge_page(struct page *page, struct mm_struct *mm,
+ 				  gfp_t gfp, swp_entry_t entry);
+ void mem_cgroup_swapin_uncharge_swap(swp_entry_t entry);
+ 
+-void mem_cgroup_uncharge(struct page *page);
+-void mem_cgroup_uncharge_list(struct list_head *page_list);
++void __mem_cgroup_uncharge(struct page *page);
++static inline void mem_cgroup_uncharge(struct page *page)
++{
++	if (mem_cgroup_disabled())
++		return;
++	__mem_cgroup_uncharge(page);
++}
++
++void __mem_cgroup_uncharge_list(struct list_head *page_list);
++static inline void mem_cgroup_uncharge_list(struct list_head *page_list)
++{
++	if (mem_cgroup_disabled())
++		return;
++	__mem_cgroup_uncharge_list(page_list);
++}
+ 
+ void mem_cgroup_migrate(struct page *oldpage, struct page *newpage);
+ 
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index a228cd51c4bd..cdaf7003b43d 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -6701,8 +6701,7 @@ void mem_cgroup_calculate_protection(struct mem_cgroup *root,
+ 			atomic_long_read(&parent->memory.children_low_usage)));
+ }
+ 
+-static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
+-			       gfp_t gfp)
++static int charge_memcg(struct page *page, struct mem_cgroup *memcg, gfp_t gfp)
+ {
+ 	unsigned int nr_pages = thp_nr_pages(page);
+ 	int ret;
+@@ -6723,7 +6722,7 @@ static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
+ }
+ 
+ /**
+- * mem_cgroup_charge - charge a newly allocated page to a cgroup
++ * __mem_cgroup_charge - charge a newly allocated page to a cgroup
+  * @page: page to charge
+  * @mm: mm context of the victim
+  * @gfp_mask: reclaim mode
+@@ -6736,16 +6735,14 @@ static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
+  *
+  * Returns 0 on success. Otherwise, an error code is returned.
+  */
+-int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask)
++int __mem_cgroup_charge(struct page *page, struct mm_struct *mm,
++			gfp_t gfp_mask)
+ {
+ 	struct mem_cgroup *memcg;
+ 	int ret;
+ 
+-	if (mem_cgroup_disabled())
+-		return 0;
+-
+ 	memcg = get_mem_cgroup_from_mm(mm);
+-	ret = __mem_cgroup_charge(page, memcg, gfp_mask);
++	ret = charge_memcg(page, memcg, gfp_mask);
+ 	css_put(&memcg->css);
+ 
+ 	return ret;
+@@ -6780,7 +6777,7 @@ int mem_cgroup_swapin_charge_page(struct page *page, struct mm_struct *mm,
+ 		memcg = get_mem_cgroup_from_mm(mm);
+ 	rcu_read_unlock();
+ 
+-	ret = __mem_cgroup_charge(page, memcg, gfp);
++	ret = charge_memcg(page, memcg, gfp);
+ 
+ 	css_put(&memcg->css);
+ 	return ret;
+@@ -6916,18 +6913,15 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
+ }
+ 
+ /**
+- * mem_cgroup_uncharge - uncharge a page
++ * __mem_cgroup_uncharge - uncharge a page
+  * @page: page to uncharge
+  *
+  * Uncharge a page previously charged with mem_cgroup_charge().
+  */
+-void mem_cgroup_uncharge(struct page *page)
++void __mem_cgroup_uncharge(struct page *page)
+ {
+ 	struct uncharge_gather ug;
+ 
+-	if (mem_cgroup_disabled())
+-		return;
+-
+ 	/* Don't touch page->lru of any random page, pre-check: */
+ 	if (!page_memcg(page))
+ 		return;
+@@ -6938,20 +6932,17 @@ void mem_cgroup_uncharge(struct page *page)
+ }
+ 
+ /**
+- * mem_cgroup_uncharge_list - uncharge a list of page
++ * __mem_cgroup_uncharge_list - uncharge a list of page
+  * @page_list: list of pages to uncharge
+  *
+  * Uncharge a list of pages previously charged with
+  * mem_cgroup_charge().
+  */
+-void mem_cgroup_uncharge_list(struct list_head *page_list)
++void __mem_cgroup_uncharge_list(struct list_head *page_list)
+ {
+ 	struct uncharge_gather ug;
+ 	struct page *page;
+ 
+-	if (mem_cgroup_disabled())
+-		return;
+-
+ 	uncharge_gather_clear(&ug);
+ 	list_for_each_entry(page, page_list, lru)
+ 		uncharge_page(page, &ug);
 -- 
-Regards,
-Atish
+2.32.0.93.g670b81a890-goog
+
