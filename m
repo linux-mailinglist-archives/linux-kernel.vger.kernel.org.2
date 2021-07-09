@@ -2,121 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 582123C2974
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 21:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A4F93C2979
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 21:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230155AbhGITSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 15:18:11 -0400
-Received: from mail-wr1-f44.google.com ([209.85.221.44]:42533 "EHLO
-        mail-wr1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhGITSL (ORCPT
+        id S229759AbhGITW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 15:22:29 -0400
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:40933 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229459AbhGITW2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 15:18:11 -0400
-Received: by mail-wr1-f44.google.com with SMTP id r11so8261484wro.9;
-        Fri, 09 Jul 2021 12:15:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8pe1y794l4mjAhpeUAB5o7/eaZgmg4VuBK+ArLDxngI=;
-        b=kTIVSzvwgqWRuRBLLz2lNg833E5xqKHEBkcMzE5zk/VKTo80iVH/4p2YvOxBQO6v6p
-         kVdG8kYkVp3a4n+tRNDDodIlVQuoIaVqlbLgyZYhP3j9F98N5kYtWcy6lEj7Aga/8Ftr
-         Ubau/6eoYxaR3asDff/uJz4hjxucqkCuf7VZogz/DUarRAG0L0inuaygwKwXzMdpL41K
-         C3oeJrIOM0eu1A3HR7p0UoXOfM8Pm2WlY8C6EWnnwPn1Q2Rvyy9dGkhMENQW3qnNYzcg
-         zU0HUEqT4tNh55q/O8dzPodpO9EjMtuHxDgiXyAcwJ12DRgvRRrqRZSUbKx+ALb+RxvA
-         apmA==
-X-Gm-Message-State: AOAM533IQ+uFNV5xlYlPAt2RrXqRUQ3/rimCm+hOMjzbGEX7T3beOtFZ
-        IH4Zvde7hxsX3axFcapdEqs=
-X-Google-Smtp-Source: ABdhPJyEJldATArnxS19lyD3QfM4/weciDnCmCrbLDF8cTqtbXo14co61cfReirRF3kTiSYKhkpPKg==
-X-Received: by 2002:adf:a54b:: with SMTP id j11mr25842163wrb.305.1625858126260;
-        Fri, 09 Jul 2021 12:15:26 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id t22sm5824822wmi.22.2021.07.09.12.15.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 12:15:25 -0700 (PDT)
-Date:   Fri, 9 Jul 2021 19:15:24 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Sunil Muthuswamy <sunilmut@microsoft.com>
-Cc:     Wei Liu <wei.liu@kernel.org>, KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <liuwe@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [EXTERNAL] Re: [PATCH 1/1] PCI: hv: Support for create interrupt
- v3
-Message-ID: <20210709191524.vbtlyg42v77f5drw@liuwe-devbox-debian-v2>
-References: <MW4PR21MB20025B945D77BBFDF61C6DA8C0199@MW4PR21MB2002.namprd21.prod.outlook.com>
- <20210709102434.c4hj4iehumf7qbj7@liuwe-devbox-debian-v2>
- <MW4PR21MB200200F17E1D0E4AEEA87D0DC0189@MW4PR21MB2002.namprd21.prod.outlook.com>
+        Fri, 9 Jul 2021 15:22:28 -0400
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 169JJREl012271;
+        Sat, 10 Jul 2021 04:19:28 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 169JJREl012271
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1625858368;
+        bh=m104GlXJVC5q1AG9XKHaYUzyUiPJ1jnGghDq6ugywoQ=;
+        h=From:Date:Subject:To:Cc:From;
+        b=iU71n43lLm6VhN1Oq0UtIxKSoTDf1IJ2WIgcuJR2D+M+6UoPJzHNkZjGGSRThyNAl
+         uPsxSnQXyE4mOUm3jurtatqbcU88dBYBNXjZWJgV5gaE/NpgruoEggYHNW7E4lL8IF
+         G4YxCg3UX0v5Zc9erYZa/I5I5Biu+dx2W/LBVTbfOTDvLMGA/ZJrqQPmVdfw+hG4M2
+         gwQRHN4h6Aug8Y0iveaEYVRWWa0mAoKAmxsUPteKWAHsFABO8z31FwjGB6AAauiLpp
+         gv92w1pSaD+wWZhcvbem3EhzblQP8LcTPymhyQJg253rcQCPoRXdVSCyE0hRXQFV2a
+         KDWIH75/fjvkw==
+X-Nifty-SrcIP: [209.85.210.181]
+Received: by mail-pf1-f181.google.com with SMTP id b12so9605798pfv.6;
+        Fri, 09 Jul 2021 12:19:28 -0700 (PDT)
+X-Gm-Message-State: AOAM533w+7mxdiPoyxmY7Np5ss2O7mr7xypO+htcs7dTrAINhRLI5s6N
+        JHr06uxlJj6Sf9/qlEJXKiVPfJMiCM65Q1EaTFg=
+X-Google-Smtp-Source: ABdhPJwmalI8RBfD9OtuK9Zf2tXNd8TRC9wf2bU/Ilh27wMTt30ujq4ZFMS35rpv1HvohOj1hseUo63pCBp86vMVMC4=
+X-Received: by 2002:a65:6404:: with SMTP id a4mr40211990pgv.175.1625858367437;
+ Fri, 09 Jul 2021 12:19:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MW4PR21MB200200F17E1D0E4AEEA87D0DC0189@MW4PR21MB2002.namprd21.prod.outlook.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 10 Jul 2021 04:18:51 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAT-9N_o_J8+pD5H9gnxzxuN-3ZBQ1wt-VmyHE=oEC295g@mail.gmail.com>
+Message-ID: <CAK7LNAT-9N_o_J8+pD5H9gnxzxuN-3ZBQ1wt-VmyHE=oEC295g@mail.gmail.com>
+Subject: [GIT PULL] Kbuild updates for v5.14-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 09, 2021 at 04:42:13PM +0000, Sunil Muthuswamy wrote:
-> > > +/*
-> > > + * struct hv_msi_desc3 - 1.3 version of hv_msi_desc
-> > > + *	Everything is the same as in 'hv_msi_desc2' except that the size
-> > > + *	of the 'vector_count' field is larger to support bigger vector
-> > > + *	values. For ex: LPI vectors on ARM.
-> > > + */
-> > > +struct hv_msi_desc3 {
-> > > +	u32	vector;
-> > > +	u8	delivery_mode;
-> > > +	u8	reserved;
-> > > +	u16	vector_count;
-> > > +	u16	processor_count;
-> > > +	u16	processor_array[32];
-> > > +} __packed;
-> > > +
-> > >  /**
-> > >   * struct tran_int_desc
-> > >   * @reserved:		unused, padding
-> > > @@ -383,6 +402,12 @@ struct pci_create_interrupt2 {
-> > >  	struct hv_msi_desc2 int_desc;
-> > >  } __packed;
-> > >
-> > > +struct pci_create_interrupt3 {
-> > > +	struct pci_message message_type;
-> > > +	union win_slot_encoding wslot;
-> > > +	struct hv_msi_desc3 int_desc;
-> > > +} __packed;
-> > > +
-> > >  struct pci_delete_interrupt {
-> > >  	struct pci_message message_type;
-> > >  	union win_slot_encoding wslot;
-> > > @@ -1334,26 +1359,55 @@ static u32 hv_compose_msi_req_v1(
-> > >  	return sizeof(*int_pkt);
-> > >  }
-> > >
-> > > +static void hv_compose_msi_req_get_cpu(struct cpumask *affinity, int *cpu,
-> > > +				       u16 *count)
-> > 
-> > Isn't count redundant here? I don't see how this can be used safely for
-> > passing back more than 1 cpu, since if cpu is pointing to an array, its
-> > size is not specified.
-> > 
-> > Wei.
-> 
-> Yes, it is at the moment. But, the function can be extended in the future to take
-> a size as well. But, it will always be 1 and I preferred keeping that information
-> with the implementation. If you have preference, I can hard code that in the
-> caller. It seems fine for me either ways.
+Hi Linus,
 
-Since this is not too much trouble I would rather you remove count and
-then introduce it when it is needed.
+Please pull Kbuild updates for v5.14-rc1
+Thanks.
 
-Wei.
 
-> 
-> - Sunil
+The following changes since commit c4681547bcce777daf576925a966ffa824edd09d:
+
+  Linux 5.13-rc3 (2021-05-23 11:42:48 -1000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
+tags/kbuild-v5.14
+
+for you to fetch changes up to 27932b6a2088eac7a5afa5471963b926cfbb4de7:
+
+  scripts: add generic syscallnr.sh (2021-07-09 04:01:14 +0900)
+
+----------------------------------------------------------------
+Kbuild updates for v5.14
+
+ - Increase the -falign-functions alignment for the debug option.
+
+ - Remove ugly libelf checks from the top Makefile.
+
+ - Make the silent build (-s) more silent.
+
+ - Re-compile the kernel if KBUILD_BUILD_TIMESTAMP is specified.
+
+ - Various script cleanups
+
+----------------------------------------------------------------
+Bjorn Helgaas (1):
+      kconfig.h: explain IS_MODULE(), IS_ENABLED()
+
+Feng Tang (1):
+      Makefile: extend 32B aligned debug option to 64B aligned
+
+Mark Brown (1):
+      kbuild: modpost: Explicitly warn about unprototyped symbols
+
+Masahiro Yamada (23):
+      kbuild: hide tools/ build targets from external module builds
+      kbuild: remove libelf checks from top Makefile
+      kbuild: require all architectures to have arch/$(SRCARCH)/Kbuild
+      alpha: move core-y in arch/alpha/Makefile to arch/alpha/Kbuild
+      h8300: move core-y in arch/h8300/Makefile to arch/h8300/Kbuild
+      hexagon: move core-y in arch/hexagon/Makefile to arch/hexagon/Kbuild
+      sh: move core-y in arch/sh/Makefile to arch/sh/Kbuild
+      kbuild: merge scripts/mkmakefile to top Makefile
+      init: use $(call cmd,) for generating include/generated/compile.h
+      kbuild: sink stdout from cmd for silent build
+      kbuild: clean up ${quiet} checks in shell scripts
+      scripts/setlocalversion: remove mercurial, svn and git-svn supports
+      scripts/setlocalversion: remove workaround for old make-kpkg
+      scripts/setlocalversion: add more comments to -dirty flag detection
+      scripts/setlocalversion: factor out 12-chars hash construction
+      scripts/setlocalversion: simplify the short version part
+      kconfig: constify long_opts
+      kbuild: remove trailing slashes from $(KBUILD_EXTMOD)
+      nds32: add arch/nds32/boot/.gitignore
+      parisc: syscalls: use pattern rules to generate syscall headers
+      sparc: syscalls: use pattern rules to generate syscall headers
+      scripts: check duplicated syscall number in syscall table
+      scripts: add generic syscallnr.sh
+
+Matthias Maennich (1):
+      kbuild: mkcompile_h: consider timestamp if KBUILD_BUILD_TIMESTAMP is set
+
+ Makefile                             | 130
+++++++++++++++++++++++++--------------------------------
+ arch/alpha/Kbuild                    |   3 ++
+ arch/alpha/Makefile                  |   2 -
+ arch/arc/Makefile                    |   3 --
+ arch/arm/Makefile                    |   1 -
+ arch/arm64/Makefile                  |   1 -
+ arch/csky/Kbuild                     |   1 +
+ arch/h8300/Kbuild                    |   2 +
+ arch/h8300/Makefile                  |   3 --
+ arch/hexagon/Kbuild                  |   2 +
+ arch/hexagon/Makefile                |   4 --
+ arch/ia64/Kbuild                     |   1 +
+ arch/m68k/Makefile                   |   1 -
+ arch/microblaze/Kbuild               |   1 +
+ arch/mips/Makefile                   |   3 --
+ arch/nds32/Kbuild                    |   1 +
+ arch/nds32/boot/.gitignore           |   2 +
+ arch/nios2/Kbuild                    |   1 +
+ arch/openrisc/Makefile               |   1 -
+ arch/parisc/Kbuild                   |   1 +
+ arch/parisc/kernel/syscalls/Makefile |  18 ++------
+ arch/powerpc/Makefile                |   3 --
+ arch/riscv/Makefile                  |   1 -
+ arch/s390/Makefile                   |   3 --
+ arch/sh/Kbuild                       |   4 ++
+ arch/sh/Makefile                     |   5 ---
+ arch/sparc/Makefile                  |   3 --
+ arch/sparc/kernel/syscalls/Makefile  |  18 ++------
+ arch/um/Kbuild                       |   1 +
+ arch/x86/Makefile                    |   3 --
+ arch/xtensa/Kbuild                   |   1 +
+ include/linux/kconfig.h              |   6 ++-
+ init/Makefile                        |  12 +++---
+ kernel/gen_kheaders.sh               |   4 +-
+ lib/Kconfig.debug                    |   4 +-
+ scripts/Kbuild.include               |   7 ++-
+ scripts/Makefile.build               |   2 -
+ scripts/Makefile.modfinal            |   2 -
+ scripts/kconfig/conf.c               |   2 +-
+ scripts/link-vmlinux.sh              |   4 +-
+ scripts/mkcompile_h                  |  18 +++++---
+ scripts/mkmakefile                   |  17 --------
+ scripts/mod/modpost.c                |   7 ++-
+ scripts/setlocalversion              |  75 ++++++--------------------------
+ scripts/syscallhdr.sh                |   2 +-
+ scripts/syscallnr.sh                 |  74 ++++++++++++++++++++++++++++++++
+ scripts/syscalltbl.sh                |   7 ++-
+ 47 files changed, 215 insertions(+), 252 deletions(-)
+ create mode 100644 arch/alpha/Kbuild
+ create mode 100644 arch/csky/Kbuild
+ create mode 100644 arch/h8300/Kbuild
+ create mode 100644 arch/hexagon/Kbuild
+ create mode 100644 arch/ia64/Kbuild
+ create mode 100644 arch/microblaze/Kbuild
+ create mode 100644 arch/nds32/Kbuild
+ create mode 100644 arch/nds32/boot/.gitignore
+ create mode 100644 arch/nios2/Kbuild
+ create mode 100644 arch/parisc/Kbuild
+ create mode 100644 arch/sh/Kbuild
+ create mode 100644 arch/um/Kbuild
+ create mode 100644 arch/xtensa/Kbuild
+ delete mode 100755 scripts/mkmakefile
+ create mode 100644 scripts/syscallnr.sh
+
+-- 
+Best Regards
+Masahiro Yamada
