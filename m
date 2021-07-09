@@ -2,166 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88CEB3C2266
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 12:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDD3D3C226E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 12:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230470AbhGIKom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 06:44:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47544 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230000AbhGIKoe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 06:44:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EA19613F0;
-        Fri,  9 Jul 2021 10:41:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625827311;
-        bh=m59H58S8c6uJmUxjlwS9k0tBdkqFiZIxmvII33/F3pI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SslcZji14eYszw8cDvpsfM8KITDXGg+CWncX5fUuz0NXcIxEYebukwcpftPMSPKsi
-         OJQaVqH/hzX9FY6T/BH1nwFf65zUpB4XhdGAnHLHCry2Vd0MUpEr1/gojp/fYU0Bpp
-         zdy+HKeWUoFzTuf8FACkfnSKhZ9AQoDsAzssUP/baWB1xYx2RmDpPb6/W4zNnhcoCl
-         bXDraS2bm3x4+0hDcMSKO6HmUzK/Dl5Rc1h7wimkUCTqWl5zfyuDha+8M8w2GRwTHi
-         50EmuXR3PcvLwUpyjzjawpFPOqxkOOd1yOGnzUxJsYeMjdw+RN5ISbSVQtLQnV1LmA
-         d4ApfW5g5CCwQ==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1m1nx7-00B5G4-LF; Fri, 09 Jul 2021 12:41:49 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Manivannan Sadhasivam <mani@kernel.org>,
-        Rob Herring <robh@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wei Xu <xuwei5@hisilicon.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH v3 9/9] arm64: dts: hisilicon: Add support for HiKey 970 PCIe controller hardware
-Date:   Fri,  9 Jul 2021 12:41:45 +0200
-Message-Id: <c5bcb6cc896a0d48ed53d243f6c4b1cc1e7ea235.1625826353.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1625826353.git.mchehab+huawei@kernel.org>
-References: <cover.1625826353.git.mchehab+huawei@kernel.org>
+        id S230031AbhGIKq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 06:46:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229706AbhGIKqZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 06:46:25 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 698F4C0613DD
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 03:43:42 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id p17so4262415plf.12
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 03:43:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=e2xtCVXf4qFyJO09lCUbN2X8PkUmLUwY+9c820BNHvM=;
+        b=mD/5FkGeY8CC+sRbePxQr3O7Qe3khAYm+b1XWsKJAAB2bWOVa481+u5P9oPGhnb+zf
+         LYREjSnrGtQclutvHcpOSgUo7/RjpZCxDzjHm/WCKGwZlkHc7yqvhvHZ4VgDnFxd8idG
+         kodE5ChALW+5jILMqQqcoI84DsDJVq9arPjIA4gAxald74TIq7+9Oj8+2UBiAGoPJ0TU
+         Hz6cmVGba1BfLpQNQ9i6ucdhXJkXqmrm0R+jkPRXYSTHz8CMIVMppSeysEl/De8sQXPA
+         duc3HUAqpPS3oFXqFni+FT8x4FDL8CvZgS3EA6D1lDCyk7Be594fkK2rlpuRDJdKfi9t
+         XBew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=e2xtCVXf4qFyJO09lCUbN2X8PkUmLUwY+9c820BNHvM=;
+        b=bG0/D4XGtp2C/ttVrqTVONCfRxEuLzCnKdEV6voX0zJS7H+9uj5HbvvuvTZLXhgwO4
+         VPzIDPhZjRNnS57A2k19d1Y7+czJxRGNXvwH4dgJzax1lSwUTI/KZoGARy3fMxYAosAq
+         C1ZJ23H1cSTyt9OPRok2n+sXmuQDakpo96LewvFu2x6o7ByjVeg0jXyOu+2EZxJA0x7n
+         IPGJaBViS31wNmLU8VW6S7Q5f65df2qXQax0FhZvs1rubyST3eBZe7FLn6pQvxjDzEjk
+         FVj4euPwbQkwQWknY/Nk3xkgPmIxJchtGTLTaJekGflIXE9Dk4k+QwPGuedheB2UQTaq
+         6V+g==
+X-Gm-Message-State: AOAM532V7QQLMr9Tqtcujcve3CC6iDWtw5P/bPTG8FdChg5MP68FgVCa
+        JTRYikFdvSqijqPU01rUsZETuA==
+X-Google-Smtp-Source: ABdhPJz+XsbromyvKZFDZvlwaF5UYmGcijoRhGNPzYLjV+CAP2c9o7lavKGRM7A8pKg/aw2plRsc6A==
+X-Received: by 2002:a17:903:22c4:b029:129:8878:f872 with SMTP id y4-20020a17090322c4b02901298878f872mr23264090plg.74.1625827421831;
+        Fri, 09 Jul 2021 03:43:41 -0700 (PDT)
+Received: from localhost.localdomain ([223.178.210.84])
+        by smtp.gmail.com with ESMTPSA id 1sm17479pfv.138.2021.07.09.03.43.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Jul 2021 03:43:39 -0700 (PDT)
+From:   Sumit Garg <sumit.garg@linaro.org>
+To:     kgdb-bugreport@lists.sourceforge.net
+Cc:     daniel.thompson@linaro.org, jason.wessel@windriver.com,
+        dianders@chromium.org, rostedt@goodmis.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>
+Subject: [PATCH v4 0/4] kdb code refactoring
+Date:   Fri,  9 Jul 2021 16:13:16 +0530
+Message-Id: <20210709104320.101568-1-sumit.garg@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Some more kdb code refactoring related to:
+- Removal of redundant kdb_register_flags().
+- Simplification of kdb defcmd macro logic.
 
-Add DTS bindings for the Hikey 970 board's PCIe hardware.
+Tested with kgdbtest on arm64, doesn't show any regressions.
 
-Co-developed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- arch/arm64/boot/dts/hisilicon/hi3670.dtsi     | 72 +++++++++++++++++++
- .../boot/dts/hisilicon/hikey970-pmic.dtsi     |  1 -
- 2 files changed, 72 insertions(+), 1 deletion(-)
+Changes in v4:
+- Split rename of "defcmd_set" to "kdb_macro" as a separate patch.
+- Incorporated misc. comments from Doug.
+- Added a patch that removes redundant prefix "cmd_" from name of
+  members of struct kdbtab_t.
 
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-index 6476149d99e3..f54dab70f01b 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-@@ -177,6 +177,12 @@ sctrl: sctrl@fff0a000 {
- 			#clock-cells = <1>;
- 		};
- 
-+		pmctrl: pmctrl@fff31000 {
-+			compatible = "hisilicon,hi3670-pmctrl", "syscon";
-+			reg = <0x0 0xfff31000 0x0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
- 		iomcu: iomcu@ffd7e000 {
- 			compatible = "hisilicon,hi3670-iomcu", "syscon";
- 			reg = <0x0 0xffd7e000 0x0 0x1000>;
-@@ -660,6 +666,72 @@ gpio28: gpio@fff1d000 {
- 			clock-names = "apb_pclk";
- 		};
- 
-+		its_pcie: interrupt-controller@f4000000 {
-+			compatible = "arm,gic-v3-its";
-+			msi-controller;
-+			reg = <0x0 0xf5100000 0x0 0x100000>;
-+		};
-+
-+		pcie_phy: pcie-phy@fc000000 {
-+			compatible = "hisilicon,hi970-pcie-phy";
-+			reg = <0x0 0xfc000000 0x0 0x80000>;
-+			reg-names = "phy";
-+
-+			phy-supply = <&ldo33>;
-+
-+			clocks = <&crg_ctrl HI3670_CLK_GATE_PCIEPHY_REF>,
-+				 <&crg_ctrl HI3670_CLK_GATE_PCIEAUX>,
-+				 <&crg_ctrl HI3670_PCLK_GATE_PCIE_PHY>,
-+				 <&crg_ctrl HI3670_PCLK_GATE_PCIE_SYS>,
-+				 <&crg_ctrl HI3670_ACLK_GATE_PCIE>;
-+			clock-names = "pcie_phy_ref", "pcie_aux",
-+				      "pcie_apb_phy", "pcie_apb_sys",
-+				      "pcie_aclk";
-+
-+			reset-gpios = <&gpio7 0 0 >, <&gpio25 2 0 >,
-+				      <&gpio3 1 0 >, <&gpio27 4 0 >;
-+
-+			clkreq-gpios = <&gpio20 6 0 >, <&gpio27 3 0 >,
-+				       <&gpio17 0 0 >;
-+
-+			/* vboost iboost pre post main */
-+			hisilicon,eye-diagram-param = <0xFFFFFFFF 0xFFFFFFFF
-+						       0xFFFFFFFF 0xFFFFFFFF
-+						       0xFFFFFFFF>;
-+
-+			#phy-cells = <0>;
-+		};
-+
-+		pcie@f4000000 {
-+			compatible = "hisilicon,kirin970-pcie";
-+			reg = <0x0 0xf4000000 0x0 0x1000000>,
-+			      <0x0 0xfc180000 0x0 0x1000>,
-+			      <0x0 0xf5000000 0x0 0x2000>;
-+			reg-names = "dbi", "apb", "config";
-+			bus-range = <0x0  0x1>;
-+			msi-parent = <&its_pcie>;
-+			#address-cells = <3>;
-+			#size-cells = <2>;
-+			device_type = "pci";
-+			phys = <&pcie_phy>;
-+			ranges = <0x02000000 0x0 0x00000000
-+				  0x0 0xf6000000
-+				  0x0 0x02000000>;
-+			num-lanes = <1>;
-+			#interrupt-cells = <1>;
-+			interrupts = <0 283 4>;
-+			interrupt-names = "msi";
-+			interrupt-map-mask = <0 0 0 7>;
-+			interrupt-map = <0x0 0 0 1
-+					 &gic GIC_SPI 282 IRQ_TYPE_LEVEL_HIGH>,
-+					<0x0 0 0 2
-+					 &gic GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>,
-+					<0x0 0 0 3
-+					 &gic GIC_SPI 284 IRQ_TYPE_LEVEL_HIGH>,
-+					<0x0 0 0 4
-+					 &gic GIC_SPI 285 IRQ_TYPE_LEVEL_HIGH>;
-+		};
-+
- 		/* UFS */
- 		ufs: ufs@ff3c0000 {
- 			compatible = "hisilicon,hi3670-ufs", "jedec,ufs-2.1";
-diff --git a/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi b/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
-index 48c739eacba0..03452e627641 100644
---- a/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
-@@ -73,7 +73,6 @@ ldo33: LDO33 { /* PEX8606 */
- 					regulator-name = "ldo33";
- 					regulator-min-microvolt = <2500000>;
- 					regulator-max-microvolt = <3300000>;
--					regulator-boot-on;
- 				};
- 
- 				ldo34: LDO34 { /* GPS AUX IN VDD */
+Changes in v3:
+- Split patch into 2 for ease of review.
+- Get rid of kdb_register_flags() completely via switching all user to
+  register pre-allocated kdb commands.
+
+Changes in v2:
+- Define new structs: kdb_macro_t and kdb_macro_cmd_t instead of
+  modifying existing kdb command struct and struct kdb_subcmd.
+- Reword commit message.
+
+Sumit Garg (4):
+  kdb: Rename struct defcmd_set to struct kdb_macro_t
+  kdb: Get rid of redundant kdb_register_flags()
+  kdb: Simplify kdb_defcmd macro logic
+  kdb: Rename members of struct kdbtab_t
+
+ include/linux/kdb.h            |  27 +-
+ kernel/debug/kdb/kdb_bp.c      |  72 ++--
+ kernel/debug/kdb/kdb_main.c    | 628 +++++++++++++++------------------
+ kernel/debug/kdb/kdb_private.h |  13 -
+ kernel/trace/trace_kdb.c       |  12 +-
+ samples/kdb/kdb_hello.c        |  20 +-
+ 6 files changed, 359 insertions(+), 413 deletions(-)
+
 -- 
-2.31.1
+2.25.1
 
