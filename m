@@ -2,97 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFAED3C236A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 14:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ACB93C236D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 14:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231384AbhGIMaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 08:30:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231371AbhGIMaI (ORCPT
+        id S231285AbhGIMdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 08:33:11 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:35110
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230230AbhGIMdK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 08:30:08 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6180C0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 05:27:23 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id b12so8573762pfv.6
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 05:27:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fE0Dne1h5bAxI4O1/CQzPMn/t0RrZprT0Cm6d5DM/Zs=;
-        b=E5ff6SHHXOqKedBxsbjEoWoyB1JCax2IKfLx+Q7nq+RpHvUcgZdvB0FtgiI0gNpIbR
-         61F5C5weVZsQNmuN1nFAiiPKBztcykQfdAnktW0JyW7XKdTClGfoJE1RxclHW1NWU8Sv
-         98RT8gKPqv9CNMc80or06upJxbBmd7GT2If1dvdJgBpYVpbZbo1s5Dp5peEh6wRXI73W
-         2+MuIZYFNJlsraqeUzIsSzwdsC+97QKmQd702aM9nEzgPyg8C2oOveH9Bk4gUjBSN2rT
-         t8hdHC7ZMoKgkc2lzVonXOg+QkTF7enyOKYFMuKTsfCtgqxOQGk+GITOcWz3Z/IYs9+a
-         +JYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fE0Dne1h5bAxI4O1/CQzPMn/t0RrZprT0Cm6d5DM/Zs=;
-        b=FzUUsrRl2UxTg7hkQj0HiVHWZrNlTufCJCp7lk19DJceJG5PQvk+rNlDxBmiHg2Tc+
-         reoc/fmozTgxQ1dysQZuITXtPhGWSSM3F6wrfGBbVyohWoRCi4CvDNrOVJCQJpNFsxRb
-         d9ISuI4oORvZ4Vw/NO04MXWd5GKmMd1p6eN6/xsJ/Jmc6a+jqkx1eXc8kjnEaln8INYH
-         PAwIQpGFr6VK5wkSuHJc1Cvlr04UKrCTJHVXG23TJuDE5W/LcgHu52GR5+I9Q961WDNs
-         37tNek7FjDncseT+cLWvpCDDRsnEO3VcerSonGFqMM/fcNHAtXyAx4DfRz7WNy5X1GyT
-         AkRQ==
-X-Gm-Message-State: AOAM530Klqoa2LhORK/kX0Jrapt8d1o6p+hSKf1SvsPlWTrIu12SHgMs
-        wW4/e5A3emy9t+/9qVNQ7TI=
-X-Google-Smtp-Source: ABdhPJwJFVIItO27Z7piUEFt7/ryxpcK40iEMKLc5/nm1ZwQBuLckO8JKCPt0xFyLv3V5B020gOo5g==
-X-Received: by 2002:a05:6a00:bd5:b029:328:92ef:d3d8 with SMTP id x21-20020a056a000bd5b029032892efd3d8mr4747415pfu.51.1625833643284;
-        Fri, 09 Jul 2021 05:27:23 -0700 (PDT)
-Received: from localhost.localdomain (f.a4.5177.ip4.static.sl-reverse.com. [119.81.164.15])
-        by smtp.gmail.com with ESMTPSA id g7sm3885986pfm.5.2021.07.09.05.27.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 09 Jul 2021 05:27:23 -0700 (PDT)
-From:   yaozhenguo <yaozhenguo1@gmail.com>
-To:     axboe@kernel.dk, oleg@redhat.comm
-Cc:     linux-kernel@vger.kernel.org, yaozhenguo@jd.com,
-        yaozhenguo <yaozhenguo1@gmail.com>
-Subject: [PATCH] task_work: return -EBUSY when adding same work
-Date:   Fri,  9 Jul 2021 20:27:12 +0800
-Message-Id: <20210709122712.42844-1-yaozhenguo1@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Fri, 9 Jul 2021 08:33:10 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 9E669401BE;
+        Fri,  9 Jul 2021 12:30:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1625833825;
+        bh=7DIMw7gcT9RZtVRuhmo1ekcgPYs2ZhAhj5BeekhHQlA=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=XAzVQQPLTZ8Dpwm2dBhXdyuzdwjTpLdLOt56pTkg53wNNoYfJtgUi4ibX2ZnadA57
+         TS5hWfdWx0EY8/15NhWFtyZPidkLhjNTMXZXBaFHvqhNmMjY0lDThzCqKJ5JkjTZaE
+         fLFyjGxu3zT2KNUOoIq3pvIlQwV2UBGwlDf85jR+xb5S8nJBCk3Bb9d0gDq76APW9r
+         THueWmF9wCcImJ23Sgq78nVTIWsTgVbzckChU7q5U9YlZ08JuATp9TVJvN4nRpEOkk
+         zHVXdWUxuCH/+VW9NpjIDFIBAKnQCQk687JKmMNkJtfq1CcWYgB7Eqcex8V9dNte0P
+         FunWrlDcdbHbw==
+From:   Colin King <colin.king@canonical.com>
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] media: venus: venc: Fix potential null pointer dereference on pointer fmt
+Date:   Fri,  9 Jul 2021 13:30:25 +0100
+Message-Id: <20210709123025.456006-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-when same work is added to task->task_works list one by one,
-the list becomes endless loop. So return -EBUSY when this
-situation happen.
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: yaozhenguo <yaozhenguo1@gmail.com>
+Currently the call to find_format can potentially return a NULL to
+fmt and the nullpointer is later dereferenced on the assignment of
+pixmp->num_planes = fmt->num_planes.  Fix this by adding a NULL pointer
+check and returning NULL for the failure case.
+
+Addresses-Coverity: ("Dereference null return")
+Fixes: aaaa93eda64b ("[media] media: venus: venc: add video encoder files")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- kernel/task_work.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/media/platform/qcom/venus/venc.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/kernel/task_work.c b/kernel/task_work.c
-index 1698fbe..5061ebf 100644
---- a/kernel/task_work.c
-+++ b/kernel/task_work.c
-@@ -27,7 +27,7 @@
-  * list is LIFO.
-  *
-  * RETURNS:
-- * 0 if succeeds or -ESRCH.
-+ * 0 if succeeds or -ESRCH, -EBUSY.
-  */
- int task_work_add(struct task_struct *task, struct callback_head *work,
- 		  enum task_work_notify_mode notify)
-@@ -41,6 +41,8 @@ int task_work_add(struct task_struct *task, struct callback_head *work,
- 		head = READ_ONCE(task->task_works);
- 		if (unlikely(head == &work_exited))
- 			return -ESRCH;
-+		if (unlikely(head == work))
-+			return -EBUSY;
- 		work->next = head;
- 	} while (cmpxchg(&task->task_works, head, work) != head);
+diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
+index 8dd49d4f124c..1d62e38065d6 100644
+--- a/drivers/media/platform/qcom/venus/venc.c
++++ b/drivers/media/platform/qcom/venus/venc.c
+@@ -183,6 +183,8 @@ venc_try_fmt_common(struct venus_inst *inst, struct v4l2_format *f)
+ 		else
+ 			return NULL;
+ 		fmt = find_format(inst, pixmp->pixelformat, f->type);
++		if (!fmt)
++			return NULL;
+ 	}
  
+ 	pixmp->width = clamp(pixmp->width, frame_width_min(inst),
 -- 
-1.8.3.1
+2.31.1
 
