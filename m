@@ -2,104 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8C7C3C221D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 12:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66F613C221F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 12:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232110AbhGIKTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 06:19:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232040AbhGIKTR (ORCPT
+        id S232033AbhGIKWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 06:22:51 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:57064 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232006AbhGIKWt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 06:19:17 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC4B2C0613DD;
-        Fri,  9 Jul 2021 03:16:33 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id h2so13059541edt.3;
-        Fri, 09 Jul 2021 03:16:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=QXsQd7k3EtP7JbHV9P2Lkye4Fl7qOSwowTzhkaa8Fgo=;
-        b=Fz9/2XKD/N1tODOGkH81ulbr327p/Kr65VN37IEO+Wt8Jo53Sg5/jdWW/iueTxutt+
-         TssMGDUFo8ZN+13Zpwgy144wYOzkikYEvFrR7hLhHCwb4s8g3B/ZGJvEvzaqS0oeeJyV
-         p4t9LI4CrYtiZdI2wUZxhDUA1Rcy+ra4SgRzCl15fJB5g4cmXtD/Aa9Ytq1PtbhrPjU+
-         XY2/aCTo89v1/A457SH7knQ8He2L+zqq0VUEagcBmSJCyuTB8XjJSgraZThGVejeiBGn
-         yWBonJUVCp8mzSPlulfbzq5c5jClQqpxE/3Ka7zS5MSLt4fubf5zoxAqTZX+2wndphMR
-         kMiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=QXsQd7k3EtP7JbHV9P2Lkye4Fl7qOSwowTzhkaa8Fgo=;
-        b=rad+Q0ngp9UR0RZOgv51CQ+Bg6iUjbqZv6w3QCQC7PGqO8Pbfixm/7qfvivL+NRPTM
-         wdi9ZRIgqypXe1ALF4UU0QpaeLwuOlHPNwxxSKXa+EfVncL4T1KGAuDdyUltZmf4BnNz
-         Pwn+20+YZEh2dQrWcBtb/vJRwYInA/EUxUVIndWHtkdg9SLlOd345tqPGIQQybmgHG9D
-         nGWbLNn1DfKVQNLsqKwqeQyi1e6n3GIbcYkMAwT8KycSO8pySaIvASqIHrMwQlWKap4A
-         QZ6T/aO+J6w+o9F/2JV5u5Vs5Yj7vr9DEo8AbMcZwkbZ3j/VCUOzmTn6/DP5KqvCcrUG
-         xxwg==
-X-Gm-Message-State: AOAM532RI2w1LkXXeYjpXnqiqpX3ycNLTvDn9aTzTaHWBPBh+rMuoMtp
-        AM/HvMDh1etSuMOZovlyPrQ=
-X-Google-Smtp-Source: ABdhPJxh0VBIdnrLISWqRM+aoh8tzBoX/GhW7ibjDpNPypfVEICyqW9HX4pETTgubfwlv/DRX967Og==
-X-Received: by 2002:a05:6402:22bb:: with SMTP id cx27mr7374800edb.96.1625825792381;
-        Fri, 09 Jul 2021 03:16:32 -0700 (PDT)
-Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id s10sm2118309ejc.39.2021.07.09.03.16.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 09 Jul 2021 03:16:31 -0700 (PDT)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1] ARM: dts: rockchip: rename timer compatible strings for rk3066a.dtsi
-Date:   Fri,  9 Jul 2021 12:16:24 +0200
-Message-Id: <20210709101624.1463-1-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        Fri, 9 Jul 2021 06:22:49 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 169AJYpf117376;
+        Fri, 9 Jul 2021 05:19:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1625825974;
+        bh=iqKr0hwTHm9gTdhTR5L91AWYelwae2Yw4pOENSOJ+Yk=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=a5Sv58/tNAoVdZrRin+Z6N31jbaOkzW4OBph5QaTOxU16ioIZzFttkKkrQxeUqMtn
+         /rH5ZGU3E7l/WvW8GQeK25ZuOAxBJZaAjUyC2OVMm8K/ySbiKZbbjSeu6JQ/VgskkY
+         fdqpWpSk6QVpdN8AZRijdejL0Ry9083IEoKpO7Ok=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 169AJY0S031015
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 9 Jul 2021 05:19:34 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 9 Jul
+ 2021 05:19:33 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 9 Jul 2021 05:19:33 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 169AJX5I095119;
+        Fri, 9 Jul 2021 05:19:33 -0500
+Date:   Fri, 9 Jul 2021 15:49:32 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Evgeny Novikov <novikov@ispras.ru>
+CC:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Michael Walle <michael@walle.cc>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Pan Bian <bianpan2016@163.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <ldv-project@linuxtesting.org>
+Subject: Re: [PATCH] mtd: spi-nor: hisi-sfc: Remove excessive
+ clk_disable_unprepare()
+Message-ID: <20210709101930.dxgr22tl46turyhg@ti.com>
+References: <20210709093542.18718-1-novikov@ispras.ru>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210709093542.18718-1-novikov@ispras.ru>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The compatible string "snps,dw-apb-timer-osc" was deprecated in place
-of "snps,dw-apb-timer". Rename the timer compatible strings in
-rk3066a.dtsi, so boot loaders like U-boot can use the timer node
-directly without conversion.
+On 09/07/21 12:35PM, Evgeny Novikov wrote:
+> hisi_spi_nor_probe() invokes clk_disable_unprepare() on all paths after
+> successful call of clk_prepare_enable(), so, there is no need in one
+> more clk_disable_unprepare() in hisi_spi_nor_remove(). The patch fixes
+> that.
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- arch/arm/boot/dts/rk3066a.dtsi | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+This is true, but I think the patch should also mention that the clock 
+is enabled by hispi_spi_nor_prep() and disabled by 
+hispi_spi_nor_unprep(). So at remove time it is not possible to have the 
+clock enabled.
 
-diff --git a/arch/arm/boot/dts/rk3066a.dtsi b/arch/arm/boot/dts/rk3066a.dtsi
-index 9257ef6f8..b52ef9254 100644
---- a/arch/arm/boot/dts/rk3066a.dtsi
-+++ b/arch/arm/boot/dts/rk3066a.dtsi
-@@ -235,7 +235,7 @@
- 	};
- 
- 	timer2: timer@2000e000 {
--		compatible = "snps,dw-apb-timer-osc";
-+		compatible = "snps,dw-apb-timer";
- 		reg = <0x2000e000 0x100>;
- 		interrupts = <GIC_SPI 46 IRQ_TYPE_LEVEL_HIGH>;
- 		clocks = <&cru SCLK_TIMER2>, <&cru PCLK_TIMER2>;
-@@ -256,7 +256,7 @@
- 	};
- 
- 	timer0: timer@20038000 {
--		compatible = "snps,dw-apb-timer-osc";
-+		compatible = "snps,dw-apb-timer";
- 		reg = <0x20038000 0x100>;
- 		interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
- 		clocks = <&cru SCLK_TIMER0>, <&cru PCLK_TIMER0>;
-@@ -264,7 +264,7 @@
- 	};
- 
- 	timer1: timer@2003a000 {
--		compatible = "snps,dw-apb-timer-osc";
-+		compatible = "snps,dw-apb-timer";
- 		reg = <0x2003a000 0x100>;
- 		interrupts = <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
- 		clocks = <&cru SCLK_TIMER1>, <&cru PCLK_TIMER1>;
+The big point is not that the probe disabled the clock, but that every 
+path would make sure to disable the clock, so it will already be 
+disabled when remove is called.
+
+> 
+> Found by Linux Driver Verification project (linuxtesting.org).
+> 
+
+Fixes tag?
+
+With these comments addressed,
+
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+
+> Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+> ---
+>  drivers/mtd/spi-nor/controllers/hisi-sfc.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/controllers/hisi-sfc.c b/drivers/mtd/spi-nor/controllers/hisi-sfc.c
+> index 47fbf1d1e557..516e50269478 100644
+> --- a/drivers/mtd/spi-nor/controllers/hisi-sfc.c
+> +++ b/drivers/mtd/spi-nor/controllers/hisi-sfc.c
+> @@ -477,7 +477,6 @@ static int hisi_spi_nor_remove(struct platform_device *pdev)
+>  
+>  	hisi_spi_nor_unregister_all(host);
+>  	mutex_destroy(&host->lock);
+> -	clk_disable_unprepare(host->clk);
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.26.2
+> 
+
 -- 
-2.11.0
-
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
