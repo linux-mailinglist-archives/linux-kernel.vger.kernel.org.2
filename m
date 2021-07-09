@@ -2,222 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DE733C2065
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 10:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47DC03C2067
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 10:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231440AbhGIIEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 04:04:49 -0400
-Received: from regular1.263xmail.com ([211.150.70.206]:50562 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231367AbhGIIEr (ORCPT
+        id S231462AbhGIIE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 04:04:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231367AbhGIIE6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 04:04:47 -0400
-Received: from localhost (unknown [192.168.167.69])
-        by regular1.263xmail.com (Postfix) with ESMTP id DA72B1B9B;
-        Fri,  9 Jul 2021 16:01:55 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED2: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 1
-Received: from localhost.localdomain (unknown [183.57.25.242])
-        by smtp.263.net (postfix) whith ESMTP id P12349T139824269707008S1625817711146317_;
-        Fri, 09 Jul 2021 16:01:54 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <4ae106baf5e6455b5b8cf914d5fd869b>
-X-RL-SENDER: djw@t-chip.com.cn
-X-SENDER: djw@t-chip.com.cn
-X-LOGIN-NAME: djw@t-chip.com.cn
-X-FST-TO: linux-rockchip@lists.infradead.org
-X-RCPT-COUNT: 16
-X-SENDER-IP: 183.57.25.242
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   djw@t-chip.com.cn
-To:     linux-rockchip@lists.infradead.org
-Cc:     Wayne Chou <zxf@t-chip.com.cn>, Levin Du <djw@t-chip.com.cn>,
-        Heiko Stuebner <heiko@sntech.de>, Chen-Yu Tsai <wens@csie.org>,
-        David Bauer <mail@david-bauer.net>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Johan Jonker <jbx6244@gmail.com>,
-        Liang Chen <cl@rock-chips.com>,
-        Michael Trimarchi <michael@amarulasolutions.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tianling Shen <cnsztl@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v0 2/2] arm64: dts: rockchip: add support for Firefly ROC-RK3328-PC
-Date:   Fri,  9 Jul 2021 16:01:26 +0800
-Message-Id: <20210709080126.17045-3-djw@t-chip.com.cn>
-X-Mailer: git-send-email 2.23.0.37.g745f6812895b
-In-Reply-To: <20210709080126.17045-1-djw@t-chip.com.cn>
-References: <20210709080126.17045-1-djw@t-chip.com.cn>
+        Fri, 9 Jul 2021 04:04:58 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEA89C0613DD;
+        Fri,  9 Jul 2021 01:02:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CQxNwFkcX7A/c1W/IMz29S1TRXoiDHFmDA3Gc++dNQY=; b=FNzjBumOfS4kLskp2K+DaMEk5R
+        mpz3GygAszOVKQ4lPiUUHrAdP4Duh7mcPgsabu7cwzmNW9suFoyTX9Q57uF+ND/uw1ovS62/hWJWw
+        EBxzO6omqO6yD2NAaANAa8j2UJnHoop93adPTpRaJ+13F17MnlSVCt8jKFwdqvS9aObiMcVIuC1Ce
+        GHO17AdGROSa2c7LTbCAuuxKqJlZ37Kidd+zGBSIBnElGMD+dnhOPBs5Ak0MM2vXhJFxznJJlNb2W
+        Acexc4zUKLlNfOrgNV4v4RCYJ3FW69P9S4CvnD1C+U56FTxEDIuxKy3FNdb8D0HBUAGu/xxK156Aa
+        GOft4mFA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m1lST-00G1c1-L3; Fri, 09 Jul 2021 08:02:02 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C535930022B;
+        Fri,  9 Jul 2021 10:01:56 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A09072008EF3D; Fri,  9 Jul 2021 10:01:56 +0200 (CEST)
+Date:   Fri, 9 Jul 2021 10:01:56 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Peter Oskolkov <posk@posk.io>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
+        Peter Oskolkov <posk@google.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Andrei Vagin <avagin@google.com>,
+        Jim Newsome <jnewsome@torproject.org>,
+        Jann Horn <jannh@google.com>
+Subject: Re: [RFC PATCH 2/3 v0.2] sched/umcg: RFC: add userspace atomic
+ helpers
+Message-ID: <YOgCdMWE9OXvqczk@hirez.programming.kicks-ass.net>
+References: <20210708194638.128950-1-posk@google.com>
+ <20210708194638.128950-3-posk@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210708194638.128950-3-posk@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Levin Du <djw@t-chip.com.cn>
+On Thu, Jul 08, 2021 at 12:46:37PM -0700, Peter Oskolkov wrote:
 
-ROC-RK3328-PC is the board inside the portable Firefly Station M1
-Geek PC. As a redesign after the ROC-RK3328-CC, it uses TypeC as
-power input and OTG port, embedded with eMMC 5.1 storage and a
-SDIO WiFi/BT chip (RTL8723DS).
+> +static inline int umcg_atomic_cmpxchg_64(u64 *uval, u64 __user *uaddr,
+> +						u64 oldval, u64 newval)
+> +{
+> +	int ret = 0;
+> +
+> +	if (!user_access_begin(uaddr, sizeof(u64)))
+> +		return -EFAULT;
+> +	asm volatile("\n"
+> +		"1:\t" LOCK_PREFIX "cmpxchgq %4, %2\n"
+> +		"2:\n"
+> +		"\t.section .fixup, \"ax\"\n"
+> +		"3:\tmov     %3, %0\n"
+> +		"\tjmp     2b\n"
+> +		"\t.previous\n"
+> +		_ASM_EXTABLE_UA(1b, 3b)
+> +		: "+r" (ret), "=a" (oldval), "+m" (*uaddr)
+> +		: "i" (-EFAULT), "r" (newval), "1" (oldval)
+> +		: "memory"
+> +	);
+> +	user_access_end();
+> +	*uval = oldval;
+> +	return ret;
+> +}
 
-- Rockchip RK3328 SoC
-- 2/4GB LPDDR3 RAM
-- 16/32/64/128GB eMMC 5.1
-- TF card slot
-- USB 3.0 Port x 1, USB 2.0 Port x 1, TypeC Port x 1 (Power/OTG)
-- HDMI
-- Gigabit Ethernet
-- WiFi: RTL8723DS
-- Audio: RK3328
-- Key: Power, Reset, Recovery
-- LED: POWER, USER
-- IR
+> +static inline int fix_pagefault(unsigned long uaddr, bool write_fault)
+> +{
+> +	struct mm_struct *mm = current->mm;
+> +	int ret;
+> +
+> +	mmap_read_lock(mm);
+> +	ret = fixup_user_fault(mm, uaddr, write_fault ? FAULT_FLAG_WRITE : 0,
+> +			NULL);
+> +	mmap_read_unlock(mm);
+> +
+> +	return ret < 0 ? ret : 0;
+> +}
 
-Signed-off-by: Levin Du <djw@t-chip.com.cn>
-
----
-
- arch/arm64/boot/dts/rockchip/Makefile         |   1 +
- .../arm64/boot/dts/rockchip/rk3328-roc-pc.dts | 110 ++++++++++++++++++
- 2 files changed, 111 insertions(+)
- create mode 100644 arch/arm64/boot/dts/rockchip/rk3328-roc-pc.dts
-
-diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
-index 7fdb41de01ec..46652b6d7c4d 100644
---- a/arch/arm64/boot/dts/rockchip/Makefile
-+++ b/arch/arm64/boot/dts/rockchip/Makefile
-@@ -13,6 +13,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3328-nanopi-r2s.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3328-rock64.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3328-rock-pi-e.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3328-roc-cc.dtb
-+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3328-roc-pc.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3368-evb-act8846.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3368-geekbox.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3368-lion-haikou.dtb
-diff --git a/arch/arm64/boot/dts/rockchip/rk3328-roc-pc.dts b/arch/arm64/boot/dts/rockchip/rk3328-roc-pc.dts
-new file mode 100644
-index 000000000000..0e3d04bba75b
---- /dev/null
-+++ b/arch/arm64/boot/dts/rockchip/rk3328-roc-pc.dts
-@@ -0,0 +1,110 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+// Copyright (c) 2021 T-Chip Intelligent Technology Co., Ltd
-+
-+/dts-v1/;
-+
-+#include <dt-bindings/input/input.h>
-+
-+#include "rk3328-roc-cc.dts"
-+
-+/ {
-+	model = "Firefly ROC-RK3328-PC";
-+	compatible = "firefly,roc-rk3328-pc", "rockchip,rk3328";
-+
-+	adc-keys {
-+		compatible = "adc-keys";
-+		io-channels = <&saradc 0>;
-+		io-channel-names = "buttons";
-+		keyup-threshold-microvolt = <1750000>;
-+
-+		/* This button is unpopulated out of the factory. */
-+		button-recovery {
-+			label = "Recovery";
-+			linux,code = <KEY_VENDOR>;
-+			press-threshold-microvolt = <10000>;
-+		};
-+	};
-+
-+	ir-receiver {
-+		compatible = "gpio-ir-receiver";
-+		gpios = <&gpio2 RK_PA2 GPIO_ACTIVE_LOW>;
-+		linux,rc-map-name = "rc-khadas";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&ir_int>;
-+	};
-+
-+	sdio_pwrseq: sdio-pwrseq {
-+		compatible = "mmc-pwrseq-simple";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&wifi_en>, <&wifi_host_wake>;
-+		reset-gpios = <&gpio3 RK_PB0 GPIO_ACTIVE_LOW>;
-+	};
-+};
-+
-+&codec {
-+	mute-gpios = <&grf_gpio 0 GPIO_ACTIVE_LOW>;
-+};
-+
-+&gpu {
-+	mali-supply = <&vdd_logic>;
-+};
-+
-+&pinctrl {
-+	ir {
-+		ir_int: ir-int {
-+			rockchip,pins = <2 RK_PA2 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+	};
-+
-+	wifi {
-+		wifi_en: wifi-en {
-+			rockchip,pins = <3 RK_PB0 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+
-+		wifi_host_wake: wifi-host-wake {
-+			rockchip,pins = <3 RK_PA1 RK_FUNC_GPIO &pcfg_pull_none_4ma>;
-+		};
-+
-+		bt_rst: bt-rst {
-+			rockchip,pins = <1 RK_PD0 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+
-+		bt_en: bt-en {
-+			rockchip,pins = <1 RK_PD2 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+	};
-+
-+	sdmmcio {
-+		sdio_per_pin: sdio-per-pin {
-+			rockchip,pins = <0 RK_PD3 RK_FUNC_GPIO &pcfg_pull_down>;
-+		};
-+	};
-+};
-+
-+&pmic_int_l {
-+	rockchip,pins = <0 RK_PA2 RK_FUNC_GPIO &pcfg_pull_up>;
-+};
-+
-+&rk805 {
-+	interrupt-parent = <&gpio0>;
-+	interrupts = <RK_PA2 IRQ_TYPE_LEVEL_LOW>;
-+};
-+
-+&saradc {
-+	vref-supply = <&vcc_18>;
-+	status = "okay";
-+};
-+
-+&usb20_host_drv {
-+	rockchip,pins = <0 RK_PA0 RK_FUNC_GPIO &pcfg_pull_up>;
-+};
-+
-+&vcc_host1_5v {
-+	gpio = <&gpio0 RK_PA0 GPIO_ACTIVE_HIGH>;
-+};
-+
-+&vcc_sdio {
-+	gpios = <&gpio0 RK_PD3 GPIO_ACTIVE_HIGH>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&sdio_per_pin>;
-+};
--- 
-2.23.0.37.g745f6812895b
+> +static inline int umcg_cmpxchg_64_user(u64 __user *uaddr, u64 *prev, u64 val)
+> +{
+> +	while (true) {
+> +		int ret;
+> +		u64 expected = *prev;
+> +
+> +		pagefault_disable();
+> +		ret = umcg_atomic_cmpxchg_64(prev, uaddr, expected, val);
+> +		pagefault_enable();
+> +
+> +		if (!ret)
+> +			return *prev == expected ? 0 : -EAGAIN;
+> +
+> +		if (WARN_ONCE(ret != -EFAULT, "Unexpected error"))
+> +			return -EFAULT;
+> +
+> +		ret = fix_pagefault((unsigned long)uaddr, true);
+> +		if (ret)
+> +			return -EFAULT;
+> +	}
+> +}
+> +
+> +/**
+> + * atomic_stack_push_user - push a node onto the stack
+> + * @head - a pointer to the head of the stack;
+> + * @node - a pointer to the node to push.
+> + *
+> + * Push a node onto a single-linked list (stack). Atomicity/correctness
+> + * is guaranteed by locking the head via settings its first bit (assuming
+> + * the pointer is aligned).
+> + *
+> + * Return: 0 on success, -EFAULT on error.
+> + */
+> +static inline int atomic_stack_push_user(u64 __user *head, u64 __user *node)
+> +{
+> +	while (true) {
+> +		int ret;
+> +		u64 first;
+> +
+> +		smp_mb();  /* Make the read below clean. */
+> +		if (get_user(first, head))
+> +			return -EFAULT;
+> +
+> +		if (first & 1UL) {
+> +			cpu_relax();
+> +			continue;  /* first is being deleted. */
+> +		}
+> +
+> +		if (put_user(first, node))
+> +			return -EFAULT;
+> +		smp_mb();  /* Make the write above visible. */
+> +
+> +		ret = umcg_cmpxchg_64_user(head, &first, (u64)node);
+> +		if (!ret)
+> +			return 0;
+> +
+> +		if (ret == -EAGAIN) {
+> +			cpu_relax();
+> +			continue;
+> +		}
+> +
+> +		if (WARN_ONCE(ret != -EFAULT, "unexpected umcg_cmpxchg result"))
+> +			return -EFAULT;
+> +
+> +		return -EFAULT;
+> +	}
+> +}
 
 
+This is horrible... Jann is absolutely right, you do not, *ever* do
+userspace spinlocks. What's wrong with the trivial lockless single
+linked list approach?
 
+On top of that, you really want to avoid all that endless stac/clac
+nonsense and only have that once, at the outer edges of things.
+
+Something like the *completely* untested below (except it needs lots of
+extra gunk to support compilers without asm-goto-output, and more widths
+and ...
+
+
+#define __try_cmpxchg_user_size(ptr, oldp, new, size, label)		\
+({									\
+	_Bool __success;						\
+	__chk_user_ptr(ptr);						\
+	__typeof__(ptr) _old = (__typeof__(ptr))(oldp);			\
+	__typeof__(*(ptr)) __old = *_old;				\
+	__typeof__(*(ptr)) __new = (new);				\
+	switch (size) {							\
+	case 8:								\
+		volatile u64 *__ptr = (volatile u64 *)(ptr);		\
+		asm_volatile_goto("1: " LOCK_PREFIX "cmpxchgq %[new], %[ptr]" \
+				  CC_SET(z)				\
+				  _ASM_EXTABLE_UA(1b, %l[label])	\
+				  : CC_OUT(x) (__success),		\
+				    [ptr] "+m" (*__ptr),		\
+				    [old] "+a" (__old),			\
+				  : [new] "r" (__new)			\
+				  : "memory"				\
+				  : label);				\
+		break;							\
+	}								\
+	if (unlikely(!success))						\
+		*_old = __old;						\
+	__success;							\
+})
+
+#define unsafe_try_cmpxchg_user(ptr, oldp, new, label)			\
+	__try_cmpxchg_user_size((ptr), (oldp), (new), sizeof(*(ptr)), label);
+
+int user_llist_add(u64 __user *new, u64 __user *head)
+{
+	u64 first;
+	int ret;
+
+	if (unlikely(!access_ok(new, sizeof(*new)) ||
+		     !access_ok(head, sizeof(*head))))
+		return -EFAULT;
+
+again:
+	__uaccess_begin_nospec();
+
+	unsafe_get_user(first, head, Efault_head);
+	do {
+		unsafe_put_user(first, new, Efault_new);
+	} while (!unsafe_try_cmpxchg_user(head, &first, new, Efault_head));
+
+	user_access_end();
+
+	return 0;
+
+Efault_new:
+	user_access_end();
+
+	ret = fixup_fault(new);
+	if (ret < 0)
+		return ret;
+
+	goto again;
+
+Efault_head:
+	user_access_end();
+
+	ret = fixup_fault(head);
+	if (ret < 0)
+		return ret;
+
+	goto again;
+}
