@@ -2,59 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1791E3C2404
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 197503C23E7
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231704AbhGINM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 09:12:27 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:36158
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231419AbhGINM0 (ORCPT
+        id S231454AbhGINEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 09:04:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229671AbhGINEg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 09:12:26 -0400
-X-Greylist: delayed 555 seconds by postgrey-1.27 at vger.kernel.org; Fri, 09 Jul 2021 09:12:26 EDT
-Received: from canonical.com (1.general.ppisati.uk.vpn [10.172.193.134])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 201A0401BE;
-        Fri,  9 Jul 2021 13:00:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1625835627;
-        bh=AxMIlOmaQ4Uu2aXRanEA5LyfXIZ8Qn+vel6oh6biIdI=;
-        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-        b=q3tfLZaSZGGU3NKlgimJLilAZHAPCZhronAZHCtRxrmgjXHnpEozeEERPe4CW7jvV
-         kHi+KxtSEUZzM2wNeqByfuAs71qNWMeyGJLYCBXiYzcl5nCq0NmwjYPECjZRKFFENZ
-         jBl20UfKcLVUgoKG41AxNjLzpm16IHKcfwNHAHbURO4vgmvZ1cL/3cA6vgbU3kMBjS
-         KHd4U4M79eOLq3EfKZBE4A/96Yjks8PBjW9vUIF6s1XFKy2dsWT4Ix6IEZtBS1anci
-         JVY9QaAWQ4EnCFNwTWxn6tv5rtRQGl1QF4f6NCJK/JXBdQn7Cb/oTdDEllut5Wiq5I
-         idE1Zz7toPa5A==
-Date:   Fri, 9 Jul 2021 15:00:26 +0200
-From:   Paolo Pisati <paolo.pisati@canonical.com>
-To:     Shuah Khan <shuah@kernel.org>
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests: memory-hotplug: avoid spamming logs with
- dump_page(), ratio limit hot-remove error test
-Message-ID: <YOhIainrHwydNrGh@amaterasu>
-References: <20210630145740.54614-1-paolo.pisati@canonical.com>
+        Fri, 9 Jul 2021 09:04:36 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF64C0613DD;
+        Fri,  9 Jul 2021 06:01:52 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id j65so5947855oih.5;
+        Fri, 09 Jul 2021 06:01:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4bV1+uFZemvWfxepLcl8C7FNZfnT1P9c3vcCCXJOBHk=;
+        b=LB4eSiQiAm5sk0ney7/h64DpOnWVzOTqaCbFWSXgNIbGfJ9e93+CYnpe3bKvTBMM7m
+         npoXaPF1oo45TluGGlP2w6C33BZdH7+YUb+pMIgqaDobyup9GkVPzubWEKU8SJZ3Omfm
+         cgBIBb9VnEE3YHvLQYGgciMtGpilglWkGLiysD2U72bkWGEcjlgv5NDySeMAjOIxHlB7
+         Vg2+zu9srlgMH3j7/zYfe4K5DLL2XGW7vBOugU/ZbQoqo4CpRmspBYugGf3lkdJnma7A
+         pA6zBa+lJI56FAakfnFPWrDKHBmMif+J5j1PGzDYdi7lFr3nKLd5OERpytjxokl4ALEl
+         vvFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4bV1+uFZemvWfxepLcl8C7FNZfnT1P9c3vcCCXJOBHk=;
+        b=sYyiMddtfXfi2FIzqCO7o/IdD35fvwtl/e4UV+R3XfdiPt7x9mYK6YGtPJYXgMKDHQ
+         DnOsW8QJXI2ikD8SWUHXTBgqNehh7ytmbGwtxQ5eQ6E9B8K8oDvsX6pTtvUATtHCmVf5
+         IISo4MrIgLKdw/pywlzUPPiNUHV84yoPLxmBn8W+S0fJ3Aeivd2TWLuYbvf7AUSUvZIj
+         VUdnvCudREkFTAIkmqTDTc6DFAQfnUoeVhZTcgBs3+BqOIqJUsGt7ULiAqhS4CZ3Ef9B
+         7I71W+PSuYC7g1izepaSC7fZTw7z8nx/Fb3+3YuCxf8YBcdPrHYcstbSp6SzpDnXAiFb
+         nMaQ==
+X-Gm-Message-State: AOAM532pa5uLgRr4teu7QNSgZmynnrk85E1o9PqptQF0J7GAEQv8N99S
+        TXlIYAR3XGQnzNilDujqol1akLLbAjtpw5oxUrQ=
+X-Google-Smtp-Source: ABdhPJyRIWZ1kmpHHtquXxI1CIVJigGWnfKmbnO0qulm3lPIajOrlGK+eokmNKo4FESXaTXa92tQ4MSpT/qCioCXCcc=
+X-Received: by 2002:aca:a949:: with SMTP id s70mr10804673oie.123.1625835711544;
+ Fri, 09 Jul 2021 06:01:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210630145740.54614-1-paolo.pisati@canonical.com>
+References: <20210709073711.38cfe6e1@canb.auug.org.au> <20210709074233.GK26672@kadam>
+In-Reply-To: <20210709074233.GK26672@kadam>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Fri, 9 Jul 2021 09:01:40 -0400
+Message-ID: <CADnq5_NBvvNd0zWua9tG2ify_0UDfJSZPxorxDOeqNMGxfn5gw@mail.gmail.com>
+Subject: Re: linux-next: Fixes tag needs some work in the amdgpu tree
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 04:57:40PM +0200, Paolo Pisati wrote:
-> While the offline memory test obey ratio limit, the same test with error
-> injection does not and tries to offline all the hotpluggable memory, spamming
-> system logs with hundreds of thousands of dump_page() entries, slowing system
-> down (to the point the test itself timeout and gets terminated) and excessive fs
-> occupation:
-> 
-> ...
+On Fri, Jul 9, 2021 at 3:43 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> On Fri, Jul 09, 2021 at 07:37:11AM +1000, Stephen Rothwell wrote:
+> > Hi all,
+> >
+> > In commit
+> >
+> >   b612f5c36279 ("drm/amdgpu: unlock on error in amdgpu_ras_debugfs_table_read()")
+> >
+> > Fixes tag
+> >
+> >   Fixes: c65b0805e77919 (""drm/amdgpu: RAS EEPROM table is now in debugfs)
+> >
+> > has these problem(s):
+> >
+> >   - Subject has leading but no trailing quotes
+> >     Just use
+> >       git log -1 --format='Fixes: %h ("%s")'
+>
+> Oops.  Sorry.  I've created a fixes.sh like you say.
+>
 
-Anyone with spare cycles could review this? It got one ack already.
--- 
-bye,
-p.
+Fixed up locally.
+
+Alex
+
+> #!/bin/bash
+>
+> git log -1 --format='Fixes: %h ("%s")' $*
+>
+> regards,
+> dan carpenter
