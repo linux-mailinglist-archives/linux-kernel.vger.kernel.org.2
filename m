@@ -2,282 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B8F93C1D30
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 03:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B17943C1D35
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 03:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhGIBuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 21:50:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42446 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229637AbhGIBuC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 21:50:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7FF661467;
-        Fri,  9 Jul 2021 01:47:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625795239;
-        bh=AxPtbs0Ibe28YfzDelIbWVWHx5RyiZJ+8AWoVrRqFvc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dOo57F2Ninx9LXwqIND2y6Ppp7I5kISl2R1N+tgu4iv3NMJ1vjzaTVP4RWOEhNulC
-         PHSXgfEQyp111O6VZE7cxekixiyrSdN/f39vdrDE4FDjvu/dMOWT3wAcN+UuPjxZj7
-         2wn+z9esBt7bVPy/cEc0xzWeTg/mm6qS4T3NtTk8VKaJ6pSIcIkxzittvnxL5BbtPx
-         jkexxlocRqZwL/QDG6zXnVfvWxUValB7F1qwWzZlu8Vzmtxesrpv9TIiF25JPFKI1A
-         5PBDRYqgEsUghXc02l4xFaf9Z4MWl0gd5pczICeyH2mMk+jQknAYOOQbhkMCN2ROGN
-         hVSyBSI7hce1Q==
-Date:   Thu, 8 Jul 2021 18:47:19 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Gao Xiang <hsiangkao@linux.alibaba.com>
-Cc:     linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, nvdimm@lists.linux.dev,
-        Liu Bo <bo.liu@linux.alibaba.com>,
-        Joseqh Qi <joseph.qi@linux.alibaba.com>,
-        Liu Jiang <gerry@linux.alibaba.com>
-Subject: Re: [RFC PATCH v1.1 2/2] erofs: dax support for non-tailpacking
- regular file
-Message-ID: <20210709014719.GD11634@locust>
-References: <20210704135056.42723-3-hsiangkao@linux.alibaba.com>
- <20210705132153.223839-1-hsiangkao@linux.alibaba.com>
+        id S230280AbhGIB6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 21:58:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229637AbhGIB63 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 21:58:29 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00AECC061574;
+        Thu,  8 Jul 2021 18:55:45 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id j9so1634466pfc.5;
+        Thu, 08 Jul 2021 18:55:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Nn1wSgCcZgcwpI1qK0JAAC1fT9Tjqy/uXaXsglsp5RM=;
+        b=i/s4z4IVsWKS3nyUBDvXz4eFVldzWy51+mktPw1TUrjN8CXWW+D91zcDp8p1OnQBm2
+         B3l3S7NeVPqDveXbTsjGXz/ktMaOoBL7rZ3iCmHqdIPlhi77pno6IRsLTf8WF64Bu2y/
+         3E9QkQAXbKOFz362FaKluY38hXQgwsFFJpSWGG+JMj1DuFgcqQEZmVRVQ7V6YjX+Il4n
+         Q77tHvat9/+If2jKXxbXhg7mYRJzIWzc4ertiXq+LWlMGDOjlGnwhXSVHkuh0n0OAqrj
+         B6Vig2RhPcEIijUx31zSFgjyMyFvRAQFKBT3pR1VaMDaHnk0+Ex4rS+S20us5vH11bFk
+         TBag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Nn1wSgCcZgcwpI1qK0JAAC1fT9Tjqy/uXaXsglsp5RM=;
+        b=X/8uv9WqRZBzIAgldjDz8nvozWmBW8W1jjjxOFrJOaQ9setlENHQItyM8DqpCvp56z
+         ePPeYbyDS8zzpYM/xuxvRyWeVoui50yb4OMtQpdvYY0SFl+tZz7/f8gWRNLtuWv59OXT
+         d5w112g9oMW7ZrtEUVdImQyIbY3C0ppENM/7Nvo81jJPfKnQac/5NGdItR68o2eG4I5q
+         mdxQSgOq++/oMc4Xn70wDkKwhPHanwXdCxfZIMJ8Ph3R5QL+dWCl/GnmqXvxma3FqgoS
+         eGsqbIedLlEXMDU4Yf1FqDhQgvu6aN036lLpg/SG2tmSYGhw/kd7tH7iz6/ORiFQBWx9
+         T20A==
+X-Gm-Message-State: AOAM5320VeXoSGGXKnoGUlJcCCrATrbxLI/XAHA44GBq98qmJiX16gzi
+        c0ud2b+cSJK8f5FmVSjudV7cL1wtK2A=
+X-Google-Smtp-Source: ABdhPJy+hANOy4Cvpb++vC/TjCi/mm5x3T8XqooM4KeQU0Pb3nI6Jw3Mk+65iRlbpve43YqmJZI9Ag==
+X-Received: by 2002:aa7:8003:0:b029:2eb:2f8f:a320 with SMTP id j3-20020aa780030000b02902eb2f8fa320mr34939624pfi.70.1625795745012;
+        Thu, 08 Jul 2021 18:55:45 -0700 (PDT)
+Received: from 7YHHR73.igp.broadcom.net (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id e2sm4161122pfj.212.2021.07.08.18.55.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jul 2021 18:55:44 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Doug Berger <opendmb@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM GENET
+        ETHERNET DRIVER), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net] net: bcmgenet: Ensure all TX/RX queues DMAs are disabled
+Date:   Thu,  8 Jul 2021 18:55:32 -0700
+Message-Id: <20210709015532.10590-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210705132153.223839-1-hsiangkao@linux.alibaba.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 05, 2021 at 09:21:53PM +0800, Gao Xiang wrote:
-> DAX is quite useful for some VM use cases in order to save guest
-> memory extremely with minimal lightweight EROFS.
-> 
-> In order to prepare for such use cases, add preliminary dax support
-> for non-tailpacking regular files for now.
-> 
-> Tested with the DRAM-emulated PMEM and the EROFS image generated by
-> "mkfs.erofs -Enoinline_data enwik9.fsdax.img enwik9"
-> 
-> Cc: nvdimm@lists.linux.dev
-> Cc: linux-fsdevel@vger.kernel.org
-> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-> ---
-> change since v1:
->  - update missing hunks due to patch spliting...
->     bdev_dax_supported(...)
->     erofs_file_mmap(...)   
-> 
->  fs/erofs/data.c     | 43 +++++++++++++++++++++++++++++++++++++++++--
->  fs/erofs/inode.c    |  5 +++++
->  fs/erofs/internal.h |  2 ++
->  fs/erofs/super.c    | 26 ++++++++++++++++++++++++--
->  4 files changed, 72 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/erofs/data.c b/fs/erofs/data.c
-> index 0f82b4cb474c..c188c629be45 100644
-> --- a/fs/erofs/data.c
-> +++ b/fs/erofs/data.c
-> @@ -6,7 +6,7 @@
->  #include "internal.h"
->  #include <linux/prefetch.h>
->  #include <linux/iomap.h>
-> -
-> +#include <linux/dax.h>
->  #include <trace/events/erofs.h>
->  
->  static void erofs_readendio(struct bio *bio)
-> @@ -323,6 +323,7 @@ static int erofs_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
->  		return ret;
->  
->  	iomap->bdev = inode->i_sb->s_bdev;
-> +	iomap->dax_dev = EROFS_I_SB(inode)->dax_dev;
->  	iomap->offset = map.m_la;
->  	iomap->length = map.m_llen;
->  
-> @@ -382,6 +383,11 @@ static ssize_t erofs_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
->  	if (!iov_iter_count(to))
->  		return 0;
->  
-> +#ifdef CONFIG_FS_DAX
-> +	if (IS_DAX(iocb->ki_filp->f_mapping->host))
-> +		return dax_iomap_rw(iocb, to, &erofs_iomap_ops);
-> +#endif
-> +
->  	if (iocb->ki_flags & IOCB_DIRECT) {
->  		int err = erofs_prepare_dio(iocb, to);
->  
-> @@ -410,9 +416,42 @@ const struct address_space_operations erofs_raw_access_aops = {
->  	.direct_IO = noop_direct_IO,
->  };
->  
-> +#ifdef CONFIG_FS_DAX
-> +static vm_fault_t erofs_dax_huge_fault(struct vm_fault *vmf,
-> +		enum page_entry_size pe_size)
-> +{
-> +	return dax_iomap_fault(vmf, pe_size, NULL, NULL, &erofs_iomap_ops);
-> +}
-> +
-> +static vm_fault_t erofs_dax_fault(struct vm_fault *vmf)
-> +{
-> +	return erofs_dax_huge_fault(vmf, PE_SIZE_PTE);
-> +}
-> +
-> +static const struct vm_operations_struct erofs_dax_vm_ops = {
-> +	.fault		= erofs_dax_fault,
-> +	.huge_fault	= erofs_dax_huge_fault,
-> +};
-> +
-> +static int erofs_file_mmap(struct file *file, struct vm_area_struct *vma)
-> +{
-> +	if (!IS_DAX(file_inode(file)))
-> +		return generic_file_readonly_mmap(file, vma);
-> +
-> +	if ((vma->vm_flags & VM_SHARED) && (vma->vm_flags & VM_MAYWRITE))
-> +		return -EINVAL;
-> +
-> +	vma->vm_ops = &erofs_dax_vm_ops;
-> +	vma->vm_flags |= VM_HUGEPAGE;
-> +	return 0;
-> +}
-> +#else
-> +#define erofs_file_mmap	generic_file_readonly_mmap
-> +#endif
-> +
->  const struct file_operations erofs_file_fops = {
->  	.llseek		= generic_file_llseek,
->  	.read_iter	= erofs_file_read_iter,
-> -	.mmap		= generic_file_readonly_mmap,
-> +	.mmap		= erofs_file_mmap,
->  	.splice_read	= generic_file_splice_read,
->  };
-> diff --git a/fs/erofs/inode.c b/fs/erofs/inode.c
-> index 00edb7562fea..695b97acb9a6 100644
-> --- a/fs/erofs/inode.c
-> +++ b/fs/erofs/inode.c
-> @@ -174,6 +174,11 @@ static struct page *erofs_read_inode(struct inode *inode,
->  	inode->i_mtime.tv_nsec = inode->i_ctime.tv_nsec;
->  	inode->i_atime.tv_nsec = inode->i_ctime.tv_nsec;
->  
-> +	inode->i_flags &= ~S_DAX;
-> +	if (test_opt(&sbi->ctx, DAX) && S_ISREG(inode->i_mode) &&
-> +	    vi->datalayout == EROFS_INODE_FLAT_PLAIN)
-> +		inode->i_flags |= S_DAX;
-> +
->  	if (!nblks)
->  		/* measure inode.i_blocks as generic filesystems */
->  		inode->i_blocks = roundup(inode->i_size, EROFS_BLKSIZ) >> 9;
-> diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
-> index 2669c785d548..8b0542d35148 100644
-> --- a/fs/erofs/internal.h
-> +++ b/fs/erofs/internal.h
-> @@ -83,6 +83,7 @@ struct erofs_sb_info {
->  
->  	struct erofs_sb_lz4_info lz4;
->  #endif	/* CONFIG_EROFS_FS_ZIP */
-> +	struct dax_device *dax_dev;
->  	u32 blocks;
->  	u32 meta_blkaddr;
->  #ifdef CONFIG_EROFS_FS_XATTR
-> @@ -115,6 +116,7 @@ struct erofs_sb_info {
->  /* Mount flags set via mount options or defaults */
->  #define EROFS_MOUNT_XATTR_USER		0x00000010
->  #define EROFS_MOUNT_POSIX_ACL		0x00000020
-> +#define EROFS_MOUNT_DAX			0x00000040
->  
->  #define clear_opt(ctx, option)	((ctx)->mount_opt &= ~EROFS_MOUNT_##option)
->  #define set_opt(ctx, option)	((ctx)->mount_opt |= EROFS_MOUNT_##option)
-> diff --git a/fs/erofs/super.c b/fs/erofs/super.c
-> index 8fc6c04b54f4..b44a964ab24f 100644
-> --- a/fs/erofs/super.c
-> +++ b/fs/erofs/super.c
-> @@ -11,6 +11,7 @@
->  #include <linux/crc32c.h>
->  #include <linux/fs_context.h>
->  #include <linux/fs_parser.h>
-> +#include <linux/dax.h>
->  #include "xattr.h"
->  
->  #define CREATE_TRACE_POINTS
-> @@ -355,6 +356,7 @@ enum {
->  	Opt_user_xattr,
->  	Opt_acl,
->  	Opt_cache_strategy,
-> +	Opt_dax,
->  	Opt_err
->  };
->  
-> @@ -370,6 +372,7 @@ static const struct fs_parameter_spec erofs_fs_parameters[] = {
->  	fsparam_flag_no("acl",		Opt_acl),
->  	fsparam_enum("cache_strategy",	Opt_cache_strategy,
->  		     erofs_param_cache_strategy),
-> +	fsparam_flag("dax",             Opt_dax),
->  	{}
->  };
->  
-> @@ -410,6 +413,14 @@ static int erofs_fc_parse_param(struct fs_context *fc,
->  		ctx->cache_strategy = result.uint_32;
->  #else
->  		errorfc(fc, "compression not supported, cache_strategy ignored");
-> +#endif
-> +		break;
-> +	case Opt_dax:
-> +#ifdef CONFIG_FS_DAX
-> +		warnfc(fc, "DAX enabled. Warning: EXPERIMENTAL, use at your own risk");
-> +		set_opt(ctx, DAX);
+Make sure that we disable each of the TX and RX queues in the TDMA and
+RDMA control registers. This is a correctness change to be symmetrical
+with the code that enables the TX and RX queues.
 
-You might want to allow 'dax=always' and 'dax=never' to maintain parity
-with xfs/ext4's mount options...
+Tested-by: Maxime Ripard <maxime@cerno.tech>
+Fixes: 1c1008c793fa ("net: bcmgenet: add main driver file")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ drivers/net/ethernet/broadcom/genet/bcmgenet.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
---D
+diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+index 35e9956e930c..db74241935ab 100644
+--- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
++++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+@@ -3238,15 +3238,21 @@ static void bcmgenet_get_hw_addr(struct bcmgenet_priv *priv,
+ /* Returns a reusable dma control register value */
+ static u32 bcmgenet_dma_disable(struct bcmgenet_priv *priv)
+ {
++	unsigned int i;
+ 	u32 reg;
+ 	u32 dma_ctrl;
+ 
+ 	/* disable DMA */
+ 	dma_ctrl = 1 << (DESC_INDEX + DMA_RING_BUF_EN_SHIFT) | DMA_EN;
++	for (i = 0; i < priv->hw_params->tx_queues; i++)
++		dma_ctrl |= (1 << (i + DMA_RING_BUF_EN_SHIFT));
+ 	reg = bcmgenet_tdma_readl(priv, DMA_CTRL);
+ 	reg &= ~dma_ctrl;
+ 	bcmgenet_tdma_writel(priv, reg, DMA_CTRL);
+ 
++	dma_ctrl = 1 << (DESC_INDEX + DMA_RING_BUF_EN_SHIFT) | DMA_EN;
++	for (i = 0; i < priv->hw_params->rx_queues; i++)
++		dma_ctrl |= (1 << (i + DMA_RING_BUF_EN_SHIFT));
+ 	reg = bcmgenet_rdma_readl(priv, DMA_CTRL);
+ 	reg &= ~dma_ctrl;
+ 	bcmgenet_rdma_writel(priv, reg, DMA_CTRL);
+-- 
+2.25.1
 
-> +#else
-> +		errorfc(fc, "dax options not supported");
->  #endif
->  		break;
->  	default:
-> @@ -496,10 +507,17 @@ static int erofs_fc_fill_super(struct super_block *sb, struct fs_context *fc)
->  		return -ENOMEM;
->  
->  	sb->s_fs_info = sbi;
-> +	sbi->dax_dev = fs_dax_get_by_bdev(sb->s_bdev);
->  	err = erofs_read_superblock(sb);
->  	if (err)
->  		return err;
->  
-> +	if (test_opt(ctx, DAX) &&
-> +	    !bdev_dax_supported(sb->s_bdev, EROFS_BLKSIZ)) {
-> +		errorfc(fc, "DAX unsupported by block device. Turning off DAX.");
-> +		clear_opt(ctx, DAX);
-> +	}
-> +
->  	sb->s_flags |= SB_RDONLY | SB_NOATIME;
->  	sb->s_maxbytes = MAX_LFS_FILESIZE;
->  	sb->s_time_gran = 1;
-> @@ -609,6 +627,8 @@ static void erofs_kill_sb(struct super_block *sb)
->  	sbi = EROFS_SB(sb);
->  	if (!sbi)
->  		return;
-> +	if (sbi->dax_dev)
-> +		fs_put_dax(sbi->dax_dev);
->  	kfree(sbi);
->  	sb->s_fs_info = NULL;
->  }
-> @@ -711,8 +731,8 @@ static int erofs_statfs(struct dentry *dentry, struct kstatfs *buf)
->  
->  static int erofs_show_options(struct seq_file *seq, struct dentry *root)
->  {
-> -	struct erofs_sb_info *sbi __maybe_unused = EROFS_SB(root->d_sb);
-> -	struct erofs_fs_context *ctx __maybe_unused = &sbi->ctx;
-> +	struct erofs_sb_info *sbi = EROFS_SB(root->d_sb);
-> +	struct erofs_fs_context *ctx = &sbi->ctx;
->  
->  #ifdef CONFIG_EROFS_FS_XATTR
->  	if (test_opt(ctx, XATTR_USER))
-> @@ -734,6 +754,8 @@ static int erofs_show_options(struct seq_file *seq, struct dentry *root)
->  	else if (ctx->cache_strategy == EROFS_ZIP_CACHE_READAROUND)
->  		seq_puts(seq, ",cache_strategy=readaround");
->  #endif
-> +	if (test_opt(ctx, DAX))
-> +		seq_puts(seq, ",dax");
->  	return 0;
->  }
->  
-> -- 
-> 2.24.4
-> 
