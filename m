@@ -2,153 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF45E3C28CA
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:57:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C64763C28CC
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:58:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229841AbhGISAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 14:00:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44418 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229459AbhGISAK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 14:00:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28C1A613C9;
-        Fri,  9 Jul 2021 17:57:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625853446;
-        bh=C1m6Z9er+kZNyzP955FA2czrvjgxs0c+EFM0BbWsrF8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YTFtmBV8+FFOIZrRpKe4P8sa2BS1tkgqKR09afY18rlcW0DlBGNQp1WSZWtmTSjgt
-         n4btsgBgp/1Vv7tIlaG67SC98AaUgACoNlxJvk8Y4/9K7Sd1+vW0mGQlCQrHkGoZZg
-         2LNX4jFjDbhhCGTsUgCYjqatklBZPvoayJs7WcrnRxVxVdLSfy4qFCSe6MZ8HoNZa2
-         K0VxUskNo/4PdMz4ukuNajchxahsJNVh8h8AzPxMt8YquQ/lxzajkI4tM+if6lCIKw
-         CxgJOb/r5wZlk+BAnzOLbD7wU2qTfUdeu152iXX733pDh6epIbUAtQ42jr49tNyVC6
-         Rz0tQTEkbs8nQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 3C9B540B1A; Fri,  9 Jul 2021 14:57:23 -0300 (-03)
-Date:   Fri, 9 Jul 2021 14:57:23 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Shunsuke Nakamura <nakamura.shun@fujitsu.com>,
-        linux-perf-users@vger.kernel.org
-Subject: [PATCH] libperf: Remove BUG_ON() from library code in
- get_group_fd(). was Re: [PATCH 6/7] libperF: Add group support to
- perf_evsel__open
-Message-ID: <YOiOA5zOtVH9IBbE@kernel.org>
-References: <20210706151704.73662-1-jolsa@kernel.org>
- <20210706151704.73662-7-jolsa@kernel.org>
- <YOXnq2yTVwklbrpO@kernel.org>
- <YOXvSpcxeAnrGBTi@krava>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YOXvSpcxeAnrGBTi@krava>
-X-Url:  http://acmel.wordpress.com
+        id S229979AbhGISBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 14:01:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229459AbhGISBh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 14:01:37 -0400
+Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9BC7C0613DD;
+        Fri,  9 Jul 2021 10:58:53 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        by mail.monkeyblade.net (Postfix) with ESMTPSA id 1C3EA4D310818;
+        Fri,  9 Jul 2021 10:58:51 -0700 (PDT)
+Date:   Fri, 09 Jul 2021 10:58:47 -0700 (PDT)
+Message-Id: <20210709.105847.2246373390622335461.davem@davemloft.net>
+To:     vvs@virtuozzo.com
+Cc:     yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
+        eric.dumazet@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH IPV6 v2 1/4] ipv6: allocate enough headroom in
+ ip6_finish_output2()
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <4f6a2b28-a137-2e19-bf62-5a8767d0d0ac@virtuozzo.com>
+References: <1cbf3c7b-455e-f3a5-cc2c-c18ce8be4ce1@gmail.com>
+        <cover.1625818825.git.vvs@virtuozzo.com>
+        <4f6a2b28-a137-2e19-bf62-5a8767d0d0ac@virtuozzo.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Fri, 09 Jul 2021 10:58:51 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Jul 07, 2021 at 08:15:38PM +0200, Jiri Olsa escreveu:
-> On Wed, Jul 07, 2021 at 02:43:07PM -0300, Arnaldo Carvalho de Melo wrote:
-> > Em Tue, Jul 06, 2021 at 05:17:03PM +0200, Jiri Olsa escreveu:
-> > > +static int get_group_fd(struct perf_evsel *evsel, int cpu, int thread)
-> > > +{
-> > > +	struct perf_evsel *leader = evsel->leader;
-> > > +	int fd;
-> > > +
-> > > +	if (evsel == leader)
-> > > +		return -1;
-> > > +
-> > > +	/*
-> > > +	 * Leader must be already processed/open,
-> > > +	 * if not it's a bug.
-> > > +	 */
-> > > +	BUG_ON(!leader->fd);
 
-> > Humm, having panics in library code looks ugly, why can't we just return
-> > some errno and let the whatever is using the library to fail gracefully?
- 
-> true, I took it from perf code, did not realize this,
-> I'll check what can we do in here
+Please do not use inline in foo.c files, let the compiler decde.
 
-So, I've added this as a follow up patch:
+Thank you.
 
-commit 0ec138125eaea5f15157adcecc3e0def1ad2ed22
-Author: Arnaldo Carvalho de Melo <acme@redhat.com>
-Date:   Fri Jul 9 14:52:16 2021 -0300
-
-    libperf: Remove BUG_ON() from library code in get_group_fd()
-    
-    We shouldn't just panic, return a value that doesn't clash with what
-    perf_evsel__open() was already returning in case of error, i.e. errno
-    when sys_perf_event_open() fails.
-    
-    Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-    Cc: Ian Rogers <irogers@google.com>
-    Cc: Jiri Olsa <jolsa@kernel.org>
-    Cc: Mark Rutland <mark.rutland@arm.com>
-    Cc: Michael Petlan <mpetlan@redhat.com>
-    Cc: Namhyung Kim <namhyung@kernel.org>
-    Cc: Peter Zijlstra <peterz@infradead.org>
-    Cc: Shunsuke Nakamura <nakamura.shun@fujitsu.com>
-    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-
-diff --git a/tools/lib/perf/evsel.c b/tools/lib/perf/evsel.c
-index 9ebf7122d4766c5e..d8886720e83d8dfe 100644
---- a/tools/lib/perf/evsel.c
-+++ b/tools/lib/perf/evsel.c
-@@ -77,23 +77,30 @@ sys_perf_event_open(struct perf_event_attr *attr,
- 	return syscall(__NR_perf_event_open, attr, pid, cpu, group_fd, flags);
- }
- 
--static int get_group_fd(struct perf_evsel *evsel, int cpu, int thread)
-+static int get_group_fd(struct perf_evsel *evsel, int cpu, int thread, int *group_fd)
- {
- 	struct perf_evsel *leader = evsel->leader;
- 	int fd;
- 
--	if (evsel == leader)
--		return -1;
-+	if (evsel == leader) {
-+		*group_fd = -1;
-+		return 0;
-+	}
- 
- 	/*
- 	 * Leader must be already processed/open,
- 	 * if not it's a bug.
- 	 */
--	BUG_ON(!leader->fd);
-+	if (!leader->fd)
-+		return -ENOTCONN;
- 
- 	fd = FD(leader, cpu, thread);
--	BUG_ON(fd == -1);
--	return fd;
-+	if (fd == -1)
-+		return -EBADF;
-+
-+	*group_fd = fd;
-+
-+	return 0;
- }
- 
- int perf_evsel__open(struct perf_evsel *evsel, struct perf_cpu_map *cpus,
-@@ -133,7 +140,9 @@ int perf_evsel__open(struct perf_evsel *evsel, struct perf_cpu_map *cpus,
- 		for (thread = 0; thread < threads->nr; thread++) {
- 			int fd, group_fd;
- 
--			group_fd = get_group_fd(evsel, cpu, thread);
-+			err = get_group_fd(evsel, cpu, thread, &group_fd);
-+			if (err < 0)
-+				return err;
- 
- 			fd = sys_perf_event_open(&evsel->attr,
- 						 threads->map[thread].pid,
