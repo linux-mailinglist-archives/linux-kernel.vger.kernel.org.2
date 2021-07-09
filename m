@@ -2,241 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E5073C24CE
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:22:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6974B3C249B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:22:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232341AbhGINZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 09:25:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232793AbhGINYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 09:24:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CD44611B0;
-        Fri,  9 Jul 2021 13:22:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1625836928;
-        bh=6oQVXFeIvmrA2ziujFxfgTSpUT1DmARUpi0laEJoKRM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2k8C2vWLwtwJu9X6F9INuW3Fy1HzLviGBigdvMCJbAw1GEA+MUH0YluRHcEtvflb1
-         NXr0AEbkufczGXEgviM77BZNP/brQOpO+1kX8C0KNrmpO4+9kdG6NN33E/xcl7EKjs
-         f0c3zjKBlsFVxdiPjayZXg5QvpnQvSrX56IqcDjg=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Keerthy <j-keerthy@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Tony Lindgren <tony@atomide.com>
-Subject: [PATCH 4.19 34/34] clocksource/drivers/timer-ti-dm: Handle dra7 timer wrap errata i940
-Date:   Fri,  9 Jul 2021 15:20:50 +0200
-Message-Id: <20210709131703.070627814@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210709131644.969303901@linuxfoundation.org>
-References: <20210709131644.969303901@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S232525AbhGINYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 09:24:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232187AbhGINXu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 09:23:50 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE53C0613E8
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 06:21:07 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id t19so9221719qkg.7
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 06:21:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7IzGLjKVrrwjN0uTt13PXB3jJvt8l9fcKIkCTP7vqaM=;
+        b=ilZvJqekdiaNoyDUelqtd1Mr2MELdhK7NOPy97RgyCP0M/65g1uZgZ9UQ2c12JIUS0
+         Zj/nHUdDAdpCHCqhwHVYPL4uV0Jql3W8XsheURr1cyp13JMkeq9mm5KjdmWiKiGit3f+
+         e0jmeXNXHV3MDibDZkmtB+pzf3RgYofJMCgUIahjknN+uBmf92VM6L/OBpMjH7ROIO2p
+         vlK5A8BNbzwXIftIyjqVSfvCZ+l3lOQ18bMKdfJE7WujGTNFEwK8Y/Bq4V6iamP3vbFc
+         d1trFDgWRAxIT25wKPE8EfJecY99+N9NwYsBihnhuwz8URVrE3pU8OKf8l6PcTYMTAYR
+         UQoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7IzGLjKVrrwjN0uTt13PXB3jJvt8l9fcKIkCTP7vqaM=;
+        b=S9fVw9+xG1/N+y+31u33OWog/WTalqR0jj/Cytq3wk1oL9tNA4I+XqbE4gbWky44TA
+         E3/Cz5O56Am8cFGKhFS2s7xxkuOrjBefxZk6VBpsziFfqIxPJEYTY1AP+WRmTcEqHxVL
+         Hs1p0RLEepUq7p8X4Txkj5EE8735Cwn8cpc+F6y7vLN8Lqzi2dy7JogbYHvw2bD3NaLg
+         Ji8E28bq7hgVD7iQwL7zfbmh/wq1xqFnpAUXEui/LgI/deBAsoxLehR9zo1KRaALdwgX
+         /dY5hAw1vyyyfcZbrmwFeToF7GfaRmJ2Md+XfEKHyXCxc+ZwRFc3O+o3j792x2oFGhjK
+         ITbg==
+X-Gm-Message-State: AOAM531Wkw5Aa818pkvSrfWRg/CwouJFiSO0iVUntHoSIKsgzasz7zt6
+        iRmQxnv1roa8NA2fgq3qMZv1xQ==
+X-Google-Smtp-Source: ABdhPJznSn3h0MnwLX5ELC2apWnAD6ffHhakwHbcf/hDcrFHnP0g5lW4SvaTIjZo+RvkTwaQr/P99A==
+X-Received: by 2002:a05:620a:1996:: with SMTP id bm22mr2618839qkb.262.1625836866657;
+        Fri, 09 Jul 2021 06:21:06 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
+        by smtp.gmail.com with ESMTPSA id u4sm2132747qtw.86.2021.07.09.06.21.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Jul 2021 06:21:05 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1m1qRE-0075Wj-Qt; Fri, 09 Jul 2021 10:21:04 -0300
+Date:   Fri, 9 Jul 2021 10:21:04 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Anand Khoje <anand.a.khoje@oracle.com>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dledford@redhat.com, haakon.bugge@oracle.com, leon@kernel.org
+Subject: Re: [PATCH v7 for-next 0/3] IB/core: Obtaining subnet_prefix from
+ cache in
+Message-ID: <20210709132104.GA1582827@ziepe.ca>
+References: <20210630094615.808-1-anand.a.khoje@oracle.com>
+ <309d7800-73a3-41c6-542f-cdcb5a72e969@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <309d7800-73a3-41c6-542f-cdcb5a72e969@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+On Tue, Jul 06, 2021 at 12:55:48PM +0530, Anand Khoje wrote:
+> On 6/30/2021 3:16 PM, Anand Khoje wrote:
+> > This v7 of patch series is used to read the port_attribute subnet_prefix
+> > from a valid cache entry instead of having to call
+> > device->ops.query_gid() for Infiniband link-layer devices in
+> > __ib_query_port().
+> > 
+> > In the event of a cache update, the value for subnet_prefix gets read
+> > using device->ops.query_gid() in config_non_roce_gid_cache().
+> > 
+> > Anand Khoje (3):
+> >    IB/core: Updating cache for subnet_prefix in
+> >      config_non_roce_gid_cache()
+> >    IB/core: Shifting initialization of device->cache_lock.
+> >    IB/core: Read subnet_prefix in ib_query_port via cache.
+> > v1 -> v2:
+> >      -   Split the v1 patch in 3 patches as per Leon's suggestion.
+> > 
+> > v2 -> v3:
+> >      -   Added changes as per Mark Zhang's suggestion of clearing
+> >          flags in git_table_cleanup_one().
+> > v3 -> v4:
+> >      -   Removed the enum ib_port_data_flags and 8 byte flags from
+> >          struct ib_port_data, and the set_bit()/clear_bit() API
+> >          used to update this flag as that was not necessary.
+> >          Done to keep the code simple.
+> >      -   Added code to read subnet_prefix from updated GID cache in the
+> >          event of cache update. Prior to this change, ib_cache_update
+> >          was reading the value for subnet_prefix via ib_query_port(),
+> >          due to this patch, we ended up reading a stale cached value of
+> >          subnet_prefix.
+> > v4 -> v5:
+> >      -   Removed the code to reset cache_is_initialised bit from cleanup
+> >          as per Leon's suggestion.
+> >      -   Removed ib_cache_is_initialised() function.
+> > 
+> > v5 -> v6:
+> >      -   Added changes as per Jason's suggestion of updating subnet_prefix
+> >          in config_non_roce_gid_cache() and removing the flag
+> >          cache_is_initialized in __ib_query_port().
+> > 
+> > v6 -> v7:
+> >      -	Reordering the initialization of cache_lock, as the previous
+> > 	version caused an access to uninitialized cache_lock.
+> > 
+> >   drivers/infiniband/core/cache.c  | 10 +++++-----
+> >   drivers/infiniband/core/device.c | 10 ++++------
+> >   2 files changed, 9 insertions(+), 11 deletions(-)
+> > 
+> 
+> Hi,
+> 
+> This is just a reminder note requesting review for this patch-set.
 
-commit 25de4ce5ed02994aea8bc111d133308f6fd62566 upstream.
+You'll probably have to resend it after the merge window closed on
+Monday, rebased on the new rc1
 
-There is a timer wrap issue on dra7 for the ARM architected timer.
-In a typical clock configuration the timer fails to wrap after 388 days.
-
-To work around the issue, we need to use timer-ti-dm percpu timers instead.
-
-Let's configure dmtimer3 and 4 as percpu timers by default, and warn about
-the issue if the dtb is not configured properly.
-
-For more information, please see the errata for "AM572x Sitara Processors
-Silicon Revisions 1.1, 2.0":
-
-https://www.ti.com/lit/er/sprz429m/sprz429m.pdf
-
-The concept is based on earlier reference patches done by Tero Kristo and
-Keerthy.
-
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: Keerthy <j-keerthy@ti.com>
-Cc: Tero Kristo <kristo@kernel.org>
-[tony@atomide.com: backported to 4.19.y]
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- arch/arm/boot/dts/dra7.dtsi         |   11 +++++++
- arch/arm/mach-omap2/board-generic.c |    4 +-
- arch/arm/mach-omap2/timer.c         |   53 +++++++++++++++++++++++++++++++++++-
- drivers/clk/ti/clk-7xx.c            |    1 
- include/linux/cpuhotplug.h          |    1 
- 5 files changed, 67 insertions(+), 3 deletions(-)
-
---- a/arch/arm/boot/dts/dra7.dtsi
-+++ b/arch/arm/boot/dts/dra7.dtsi
-@@ -48,6 +48,7 @@
- 
- 	timer {
- 		compatible = "arm,armv7-timer";
-+		status = "disabled";	/* See ARM architected timer wrap erratum i940 */
- 		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
- 			     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
- 			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
-@@ -910,6 +911,8 @@
- 			reg = <0x48032000 0x80>;
- 			interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
- 			ti,hwmods = "timer2";
-+			clock-names = "fck";
-+			clocks = <&l4per_clkctrl DRA7_TIMER2_CLKCTRL 24>;
- 		};
- 
- 		timer3: timer@48034000 {
-@@ -917,6 +920,10 @@
- 			reg = <0x48034000 0x80>;
- 			interrupts = <GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>;
- 			ti,hwmods = "timer3";
-+			clock-names = "fck";
-+			clocks = <&l4per_clkctrl DRA7_TIMER3_CLKCTRL 24>;
-+			assigned-clocks = <&l4per_clkctrl DRA7_TIMER3_CLKCTRL 24>;
-+			assigned-clock-parents = <&timer_sys_clk_div>;
- 		};
- 
- 		timer4: timer@48036000 {
-@@ -924,6 +931,10 @@
- 			reg = <0x48036000 0x80>;
- 			interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
- 			ti,hwmods = "timer4";
-+			clock-names = "fck";
-+			clocks = <&l4per_clkctrl DRA7_TIMER4_CLKCTRL 24>;
-+			assigned-clocks = <&l4per_clkctrl DRA7_TIMER4_CLKCTRL 24>;
-+			assigned-clock-parents = <&timer_sys_clk_div>;
- 		};
- 
- 		timer5: timer@48820000 {
---- a/arch/arm/mach-omap2/board-generic.c
-+++ b/arch/arm/mach-omap2/board-generic.c
-@@ -330,7 +330,7 @@ DT_MACHINE_START(DRA74X_DT, "Generic DRA
- 	.init_late	= dra7xx_init_late,
- 	.init_irq	= omap_gic_of_init,
- 	.init_machine	= omap_generic_init,
--	.init_time	= omap5_realtime_timer_init,
-+	.init_time	= omap3_gptimer_timer_init,
- 	.dt_compat	= dra74x_boards_compat,
- 	.restart	= omap44xx_restart,
- MACHINE_END
-@@ -353,7 +353,7 @@ DT_MACHINE_START(DRA72X_DT, "Generic DRA
- 	.init_late	= dra7xx_init_late,
- 	.init_irq	= omap_gic_of_init,
- 	.init_machine	= omap_generic_init,
--	.init_time	= omap5_realtime_timer_init,
-+	.init_time	= omap3_gptimer_timer_init,
- 	.dt_compat	= dra72x_boards_compat,
- 	.restart	= omap44xx_restart,
- MACHINE_END
---- a/arch/arm/mach-omap2/timer.c
-+++ b/arch/arm/mach-omap2/timer.c
-@@ -42,6 +42,7 @@
- #include <linux/platform_device.h>
- #include <linux/platform_data/dmtimer-omap.h>
- #include <linux/sched_clock.h>
-+#include <linux/cpu.h>
- 
- #include <asm/mach/time.h>
- #include <asm/smp_twd.h>
-@@ -421,6 +422,53 @@ static void __init dmtimer_clkevt_init_c
- 		timer->rate);
- }
- 
-+static DEFINE_PER_CPU(struct dmtimer_clockevent, dmtimer_percpu_timer);
-+
-+static int omap_gptimer_starting_cpu(unsigned int cpu)
-+{
-+	struct dmtimer_clockevent *clkevt = per_cpu_ptr(&dmtimer_percpu_timer, cpu);
-+	struct clock_event_device *dev = &clkevt->dev;
-+	struct omap_dm_timer *timer = &clkevt->timer;
-+
-+	clockevents_config_and_register(dev, timer->rate, 3, ULONG_MAX);
-+	irq_force_affinity(dev->irq, cpumask_of(cpu));
-+
-+	return 0;
-+}
-+
-+static int __init dmtimer_percpu_quirk_init(void)
-+{
-+	struct dmtimer_clockevent *clkevt;
-+	struct clock_event_device *dev;
-+	struct device_node *arm_timer;
-+	struct omap_dm_timer *timer;
-+	int cpu = 0;
-+
-+	arm_timer = of_find_compatible_node(NULL, NULL, "arm,armv7-timer");
-+	if (of_device_is_available(arm_timer)) {
-+		pr_warn_once("ARM architected timer wrap issue i940 detected\n");
-+		return 0;
-+	}
-+
-+	for_each_possible_cpu(cpu) {
-+		clkevt = per_cpu_ptr(&dmtimer_percpu_timer, cpu);
-+		dev = &clkevt->dev;
-+		timer = &clkevt->timer;
-+
-+		dmtimer_clkevt_init_common(clkevt, 0, "timer_sys_ck",
-+					   CLOCK_EVT_FEAT_ONESHOT,
-+					   cpumask_of(cpu),
-+					   "assigned-clock-parents",
-+					   500, "percpu timer");
-+	}
-+
-+	cpuhp_setup_state(CPUHP_AP_OMAP_DM_TIMER_STARTING,
-+			  "clockevents/omap/gptimer:starting",
-+			  omap_gptimer_starting_cpu, NULL);
-+
-+	return 0;
-+}
-+
- /* Clocksource code */
- static struct omap_dm_timer clksrc;
- static bool use_gptimer_clksrc __initdata;
-@@ -565,6 +613,9 @@ static void __init __omap_sync32k_timer_
- 					3, /* Timer internal resynch latency */
- 					0xffffffff);
- 
-+	if (soc_is_dra7xx())
-+		dmtimer_percpu_quirk_init();
-+
- 	/* Enable the use of clocksource="gp_timer" kernel parameter */
- 	if (use_gptimer_clksrc || gptimer)
- 		omap2_gptimer_clocksource_init(clksrc_nr, clksrc_src,
-@@ -592,7 +643,7 @@ void __init omap3_secure_sync32k_timer_i
- #endif /* CONFIG_ARCH_OMAP3 */
- 
- #if defined(CONFIG_ARCH_OMAP3) || defined(CONFIG_SOC_AM33XX) || \
--	defined(CONFIG_SOC_AM43XX)
-+	defined(CONFIG_SOC_AM43XX) || defined(CONFIG_SOC_DRA7XX)
- void __init omap3_gptimer_timer_init(void)
- {
- 	__omap_sync32k_timer_init(2, "timer_sys_ck", NULL,
---- a/drivers/clk/ti/clk-7xx.c
-+++ b/drivers/clk/ti/clk-7xx.c
-@@ -733,6 +733,7 @@ const struct omap_clkctrl_data dra7_clkc
- static struct ti_dt_clk dra7xx_clks[] = {
- 	DT_CLK(NULL, "timer_32k_ck", "sys_32k_ck"),
- 	DT_CLK(NULL, "sys_clkin_ck", "timer_sys_clk_div"),
-+	DT_CLK(NULL, "timer_sys_ck", "timer_sys_clk_div"),
- 	DT_CLK(NULL, "sys_clkin", "sys_clkin1"),
- 	DT_CLK(NULL, "atl_dpll_clk_mux", "atl_cm:0000:24"),
- 	DT_CLK(NULL, "atl_gfclk_mux", "atl_cm:0000:26"),
---- a/include/linux/cpuhotplug.h
-+++ b/include/linux/cpuhotplug.h
-@@ -118,6 +118,7 @@ enum cpuhp_state {
- 	CPUHP_AP_ARM_L2X0_STARTING,
- 	CPUHP_AP_EXYNOS4_MCT_TIMER_STARTING,
- 	CPUHP_AP_ARM_ARCH_TIMER_STARTING,
-+	CPUHP_AP_OMAP_DM_TIMER_STARTING,
- 	CPUHP_AP_ARM_GLOBAL_TIMER_STARTING,
- 	CPUHP_AP_JCORE_TIMER_STARTING,
- 	CPUHP_AP_ARM_TWD_STARTING,
-
-
+Jason
