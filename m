@@ -2,150 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBD933C23D5
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 14:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3329D3C23DB
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 14:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231618AbhGINAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 09:00:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231285AbhGINAa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 09:00:30 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF309C0613DD;
-        Fri,  9 Jul 2021 05:57:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5bd4qn+scWk8VisRiVDNRZRKBRgO9V3WOaL1s+tjaOY=; b=lWhvRhWdikgKWxo1oVU+qnU9dy
-        9z3lGM7dPCl4sYtVFTnuvthjncZ4OiH9eMW3lilnSKuAuvcbq+DxLM9fxiau2uyIGbBRTMY48Uw4W
-        OTbZgWRDgh3c7Fj/QZIB+3evu2nIo94Jy/6E7AwwAbpZZlUGO5/7uHfsuklIhL+QgiD8yY6CrVm4f
-        dcAE5Yn7foNyiod+QngZHWkmftiyaswyMmkogAv/DOPrj1KSOQ6HCRwsjlCxqZWsIb8ACSyiigU+n
-        VhsY5s63zodxNXOgJFSQaQsHRCI20NcwEc+ZnSy4JZBuU03AC2iPs0AZPvXX2MgNM3Q/Tr3JPMTLG
-        7+t5D0Rw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m1q47-00EVwD-V2; Fri, 09 Jul 2021 12:57:17 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BE29D30007E;
-        Fri,  9 Jul 2021 14:57:10 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id ABF17200E7BC9; Fri,  9 Jul 2021 14:57:10 +0200 (CEST)
-Date:   Fri, 9 Jul 2021 14:57:10 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Phil Auld <pauld@redhat.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] sched: Fix nr_uninterruptible race causing increasing
- load average
-Message-ID: <YOhHphFWGbfAVODd@hirez.programming.kicks-ass.net>
-References: <20210707190457.60521-1-pauld@redhat.com>
- <YOaoomJAS2FzXi7I@hirez.programming.kicks-ass.net>
- <YOatszHNZc9XRbYB@hirez.programming.kicks-ass.net>
- <YOavHgRUBM6cc95s@hirez.programming.kicks-ass.net>
- <YOcRwhF6XkYWPjvV@lorien.usersys.redhat.com>
+        id S231493AbhGINBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 09:01:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47326 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231252AbhGINBt (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 09:01:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E84C1613B5;
+        Fri,  9 Jul 2021 12:59:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625835546;
+        bh=7A7c7zqoaufBPARmr8/9p+A/DjswEQjyzl09hviXTMY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=etaxLMmqZm9sCxYmTHArZnB13O5eX/h+qR5lk01/R1y5YVYt/gORRIbixRFJ3eGWh
+         n3vQ0Dp/zZmYtlI9BDv0KAXRy5EgTsxcVWGP46wZwM5Fyn2nJ0nF7OBz1yhpfMabFS
+         z1Te2MVyfB+uy3WAZ79G3z5onwd38ZgpIEZ2FPKtSV8211bDbkZD2WQBLyFbEhszkW
+         1xcsb1J8LXETL4RSZ6+ux9PsFMrqmpTZrPHuchznMccEpwXCntEvEvnREmAjtiljT/
+         4kwgG2PElH/PBUHq7SFpYLaBa0G8Oqe0uLr1cscqW6HvLkkPjKTXcwnrgtKeJzVW7i
+         88GZev46DYX7Q==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id A276340B1A; Fri,  9 Jul 2021 09:59:01 -0300 (-03)
+Date:   Fri, 9 Jul 2021 09:59:01 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     Agustin Vega-Frias <agustinv@codeaurora.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Jin Yao <yao.jin@linux.intel.com>, jolsa@kernel.org,
+        peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v3] perf tools: Fix pattern matching for same substring
+ in different pmu type
+Message-ID: <YOhIFZ5IaFua9HbS@kernel.org>
+References: <20210701064253.1175-1-yao.jin@linux.intel.com>
+ <YOSyhwJ/E0JoeWOS@krava>
+ <8c2b5f66-c85e-8717-d218-4d6a2182262a@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YOcRwhF6XkYWPjvV@lorien.usersys.redhat.com>
+In-Reply-To: <8c2b5f66-c85e-8717-d218-4d6a2182262a@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 08, 2021 at 10:54:58AM -0400, Phil Auld wrote:
-> Sorry... I don't have a nice diagram. I'm still looking at what all those
-> macros actually mean on the various architectures.
+Em Tue, Jul 06, 2021 at 04:02:24PM -0400, Liang, Kan escreveu:
+> On 7/6/2021 3:44 PM, Jiri Olsa wrote:
+> > On Thu, Jul 01, 2021 at 02:42:53PM +0800, Jin Yao wrote:
+> > > Some different pmu types may have same substring. For example,
+> > > on Icelake server, we have pmu types "uncore_imc" and
+> > > "uncore_imc_free_running". Both pmu types have substring "uncore_imc".
+> > > But the parser would wrongly think they are the same pmu type.
 
-Don't worry about other architectures, lets focus on Power, because
-that's the case where you can reprouce funnies. Now Power only has 2
-barrier ops (not quite true, but close enough for all this):
+> > > We enable an imc event,
+> > > perf stat -e uncore_imc/event=0xe3/ -a -- sleep 1
 
- - SYNC is the full barrier
+> > > Perf actually expands the event to:
+> > > uncore_imc_0/event=0xe3/
+> > > uncore_imc_1/event=0xe3/
+> > > uncore_imc_2/event=0xe3/
+> > > uncore_imc_3/event=0xe3/
+> > > uncore_imc_4/event=0xe3/
+> > > uncore_imc_5/event=0xe3/
+> > > uncore_imc_6/event=0xe3/
+> > > uncore_imc_7/event=0xe3/
+> > > uncore_imc_free_running_0/event=0xe3/
+> > > uncore_imc_free_running_1/event=0xe3/
+> > > uncore_imc_free_running_3/event=0xe3/
+> > > uncore_imc_free_running_4/event=0xe3/
 
- - LWSYNC is a TSO like barrier
+> > > That's because the "uncore_imc_free_running" matches the
+> > > pattern "uncore_imc*".
 
-Pretty much everything (LOAD-ACQUIRE, STORE-RELEASE, WMB, RMB) uses
-LWSYNC. Only MB result in SYNC.
+> > > Now we check that the last characters of pmu name is
+> > > '_<digit>'.
+> > > 
+> > > For example, for pattern "uncore_imc*", "uncore_imc_0" is parsed ok,
+> > > but "uncore_imc_free_running_0" would be failed.
+> > > 
+> > > Fixes: b2b9d3a3f021 ("perf pmu: Support wildcards on pmu name in dynamic pmu events")
+> > > Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 
-Power is 'funny' because their spinlocks are weaker than everybody
-else's, but AFAICT that doesn't seem relevant here.
+> > looks good to me, Kan, Andi?
 
-> Using what you have above I get the same thing. It looks like it should be
-> ordered but in practice it's not, and ordering it "more" as I did in the
-> patch, fixes it.
+> Yes, it looks good to me too.
 
-And you're running Linus' tree, not some franken-kernel from RHT, right?
-As asked in that other email, can you try with just the WMB added? I
-really don't believe that RMB you added can make a difference.
+> Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
 
-Also, can you try with TTWU_QUEUE disabled (without any additional
-barriers added), that simplifies the wakeup path a lot.
+Thanks, I'm applying it, Jin, please next time Cc the author of the
+patch you're fixing, in this case:
 
-> Is it possible that the bit field is causing some of the assumptions about
-> ordering in those various macros to be off?
+  Cc: Agustin Vega-Frias <agustinv@codeaurora.org>
 
-*should* not matter...
-
-	prev->sched_contributes_to_load = X;
-
-	smp_store_release(&prev->on_cpu, 0);
-	  asm("LWSYNC" : : : "memory");
-	  WRITE_ONCE(prev->on_cpu, 0);
-
-due to that memory clobber, the compiler must emit whatever stores are
-required for the bitfield prior to the LWSYNC.
-
-> I notice in all the comments about smp_mb__after_spinlock etc, it's always
-> WRITE_ONCE/READ_ONCE on the variables in question but we can't do that with
-> the bit field.
-
-Yeah, but both ->on_rq and ->sched_contributes_to_load are 'normal'
-stores. That said, given that ttwu() does a READ_ONCE() on ->on_rq, we
-should match that with WRITE_ONCE()...
-
-So I think we should do the below, but I don't believe it'll make a
-difference. Let me stare more.
-
----
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index ca9a523c9a6c..da93551b298d 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -1973,12 +1973,12 @@ void activate_task(struct rq *rq, struct task_struct *p, int flags)
- {
- 	enqueue_task(rq, p, flags);
+I'm adding it to this message as well.
  
--	p->on_rq = TASK_ON_RQ_QUEUED;
-+	WRITE_ONCE(p->on_rq, TASK_ON_RQ_QUEUED);
- }
- 
- void deactivate_task(struct rq *rq, struct task_struct *p, int flags)
- {
--	p->on_rq = (flags & DEQUEUE_SLEEP) ? 0 : TASK_ON_RQ_MIGRATING;
-+	WRITE_ONCE(p->on_rq, (flags & DEQUEUE_SLEEP) ? 0 : TASK_ON_RQ_MIGRATING);
- 
- 	dequeue_task(rq, p, flags);
- }
-@@ -5662,11 +5662,11 @@ static bool try_steal_cookie(int this, int that)
- 		if (p->core_occupation > dst->idle->core_occupation)
- 			goto next;
- 
--		p->on_rq = TASK_ON_RQ_MIGRATING;
-+		WRITE_ONCE(p->on_rq, TASK_ON_RQ_MIGRATING);
- 		deactivate_task(src, p, 0);
- 		set_task_cpu(p, this);
- 		activate_task(dst, p, 0);
--		p->on_rq = TASK_ON_RQ_QUEUED;
-+		WRITE_ONCE(p->on_rq, TASK_ON_RQ_QUEUED);
- 
- 		resched_curr(dst);
- 
+> BTW: The new uncore patch[1] for the "alias" attribute should be easily
+> rebase on this patch. I believe Yao has already finished the test as well. I
+> think he will resend the new "alias" attribute patch later soon.
+> [1] https://lore.kernel.org/lkml/1624990443-168533-7-git-send-email-kan.liang@linux.intel.com
+> 
+> Thanks,
+> Kan
+> 
+> > 
+> > Acked-by: Jiri Olsa <jolsa@redhat.com>
+> > 
+> > thanks,
+> > jirka
+> > 
+> > > ---
+> > >   tools/perf/util/parse-events.y |  2 +-
+> > >   tools/perf/util/pmu.c          | 36 +++++++++++++++++++++++++++++++++-
+> > >   tools/perf/util/pmu.h          |  1 +
+> > >   3 files changed, 37 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
+> > > index aba12a4d488e..9321bd0e2f76 100644
+> > > --- a/tools/perf/util/parse-events.y
+> > > +++ b/tools/perf/util/parse-events.y
+> > > @@ -316,7 +316,7 @@ event_pmu_name opt_pmu_config
+> > >   			if (!strncmp(name, "uncore_", 7) &&
+> > >   			    strncmp($1, "uncore_", 7))
+> > >   				name += 7;
+> > > -			if (!fnmatch(pattern, name, 0)) {
+> > > +			if (!perf_pmu__match(pattern, name, $1)) {
+> > >   				if (parse_events_copy_term_list(orig_terms, &terms))
+> > >   					CLEANUP_YYABORT;
+> > >   				if (!parse_events_add_pmu(_parse_state, list, pmu->name, terms, true, false))
+> > > diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+> > > index 88c8ecdc60b0..44b90d638ad5 100644
+> > > --- a/tools/perf/util/pmu.c
+> > > +++ b/tools/perf/util/pmu.c
+> > > @@ -3,6 +3,7 @@
+> > >   #include <linux/compiler.h>
+> > >   #include <linux/string.h>
+> > >   #include <linux/zalloc.h>
+> > > +#include <linux/ctype.h>
+> > >   #include <subcmd/pager.h>
+> > >   #include <sys/types.h>
+> > >   #include <errno.h>
+> > > @@ -17,6 +18,7 @@
+> > >   #include <locale.h>
+> > >   #include <regex.h>
+> > >   #include <perf/cpumap.h>
+> > > +#include <fnmatch.h>
+> > >   #include "debug.h"
+> > >   #include "evsel.h"
+> > >   #include "pmu.h"
+> > > @@ -740,6 +742,27 @@ struct pmu_events_map *__weak pmu_events_map__find(void)
+> > >   	return perf_pmu__find_map(NULL);
+> > >   }
+> > > +static bool perf_pmu__valid_suffix(char *pmu_name, char *tok)
+> > > +{
+> > > +	char *p;
+> > > +
+> > > +	if (strncmp(pmu_name, tok, strlen(tok)))
+> > > +		return false;
+> > > +
+> > > +	p = pmu_name + strlen(tok);
+> > > +	if (*p == 0)
+> > > +		return true;
+> > > +
+> > > +	if (*p != '_')
+> > > +		return false;
+> > > +
+> > > +	++p;
+> > > +	if (*p == 0 || !isdigit(*p))
+> > > +		return false;
+> > > +
+> > > +	return true;
+> > > +}
+> > > +
+> > >   bool pmu_uncore_alias_match(const char *pmu_name, const char *name)
+> > >   {
+> > >   	char *tmp = NULL, *tok, *str;
+> > > @@ -768,7 +791,7 @@ bool pmu_uncore_alias_match(const char *pmu_name, const char *name)
+> > >   	 */
+> > >   	for (; tok; name += strlen(tok), tok = strtok_r(NULL, ",", &tmp)) {
+> > >   		name = strstr(name, tok);
+> > > -		if (!name) {
+> > > +		if (!name || !perf_pmu__valid_suffix((char *)name, tok)) {
+> > >   			res = false;
+> > >   			goto out;
+> > >   		}
+> > > @@ -1872,3 +1895,14 @@ bool perf_pmu__has_hybrid(void)
+> > >   	return !list_empty(&perf_pmu__hybrid_pmus);
+> > >   }
+> > > +
+> > > +int perf_pmu__match(char *pattern, char *name, char *tok)
+> > > +{
+> > > +	if (fnmatch(pattern, name, 0))
+> > > +		return -1;
+> > > +
+> > > +	if (tok && !perf_pmu__valid_suffix(name, tok))
+> > > +		return -1;
+> > > +
+> > > +	return 0;
+> > > +}
+> > > diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+> > > index a790ef758171..926da483a141 100644
+> > > --- a/tools/perf/util/pmu.h
+> > > +++ b/tools/perf/util/pmu.h
+> > > @@ -133,5 +133,6 @@ void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
+> > >   				   char *name);
+> > >   bool perf_pmu__has_hybrid(void);
+> > > +int perf_pmu__match(char *pattern, char *name, char *tok);
+> > >   #endif /* __PMU_H */
+> > > -- 
+> > > 2.17.1
+> > > 
+> > 
+
+-- 
+
+- Arnaldo
