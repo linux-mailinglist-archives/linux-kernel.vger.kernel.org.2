@@ -2,140 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF51C3C2580
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D363C2582
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231976AbhGIOGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 10:06:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231732AbhGIOGQ (ORCPT
+        id S232244AbhGIOGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 10:06:19 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:37730
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229499AbhGIOGR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 10:06:16 -0400
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88F9DC0613E5
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 07:03:33 -0700 (PDT)
-Received: by mail-vs1-xe2d.google.com with SMTP id az11so5641413vsb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 07:03:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EBkQv3Hb+EzyUp0xx15eV4nVWdwYInxQXj14j/hSkTw=;
-        b=cV0PX7CieMyXh9iNqKRndqDwrdVktE8MpkQGh7gIJGtMwzmg139Lp1mpUyvfOxJwJ9
-         I9sgKO0Sin7o6j0hGdqAXONJfIj/MmANYUFLh8P1zCMChpnL7cNJA1aaVerT1WIN8dLn
-         ymggkU6DMHnL8ZciNxRaMJ3n2zDGgNTaxPhtRjmbb7kuBsIf6CT0YHlUpFkWmLKeN7uc
-         WFJwo6YHGgAyLe/mr1osIlySOLdQa5Trmz/RkFLYDd9EFDGefzxGMrJxNvM1RxFdAIZG
-         AVrIZksQ7rmo+q6tH7fbS5k5KZXDBHa/vX08tU8exMfpC9kwwT6mOfWu9Z6fZ213MBSr
-         yNbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EBkQv3Hb+EzyUp0xx15eV4nVWdwYInxQXj14j/hSkTw=;
-        b=I1L/GQzIu/FotqyGZ9N+fkk/pav1wiR6lCJAYhJ64/WOZXuJS2Qp3smb+lU187ETxy
-         4xob5VQAH0p0C8l3+CZDB+kq0u5w0l8Z0fawTouOxnJw9UqT+JKHUfzbuNRslQUj5M77
-         fdb6P7GwhBl33aobnNbOfT6MWcjhtHzBByGRhx7G1Iy5fRa54KhnnxEye83c5rJmaaxo
-         31gvP0DMP1GRlNHGXKQMhMX7DJGzL5l9PgASEbZggr2RmzJacNXSK164PmmQ9ZyeZsCk
-         R3EyVMZ64oMbEGu+v5SR8OZTgQO52Hnm268+T1e6NvlFM+sSbEZ6LhIONusXfh313meg
-         VyrQ==
-X-Gm-Message-State: AOAM530nqG+5bvctL5tBAWhP2cxZZnFqloA18nAk1/KmjauKevisSlQW
-        J0BTKN1yLc3NPfO3ln/Lbr5iHsew/466pes0SEsWJw==
-X-Google-Smtp-Source: ABdhPJyPpoCp87aEuVQW5m5FI3Cui8FxZacZGxGIMAD4zSwLzIbB62U+qZsOhXQBE5CTcJBuq51KlID1ViB9HjqKgBo=
-X-Received: by 2002:a67:8c46:: with SMTP id o67mr35531294vsd.34.1625839412692;
- Fri, 09 Jul 2021 07:03:32 -0700 (PDT)
+        Fri, 9 Jul 2021 10:06:17 -0400
+Received: from [10.172.193.212] (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 9F63C401BE;
+        Fri,  9 Jul 2021 14:03:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1625839412;
+        bh=ArzmOf/twC31usgyIHswXRtlXpE+DnHhLO+/s9grB20=;
+        h=To:From:Subject:Message-ID:Date:MIME-Version:Content-Type;
+        b=HSeoB3pKLFNLm2ZlDuZDlFKnmPTST6OaUdDf0uWdwdaWTIe6didlgnnzagiEzeS6l
+         3/81HaWIsK5kdygO4gVtpafUpASSSNC05c/vNdww3hP/Oe4GYrdBWw4cVFquUkd3r8
+         mbuskyedQfceBvQ++NC/jFq9/gmaQSuKOnCKZd25M6bVCcSfvitiwCYLYOGjtxf9iH
+         VwMWHxNlpTsDFsvZQhs4obXz70eH2IyfnmH+CfA1QOoM3FGVHcHGU4EgkWfkeULu9C
+         2ZFjhf6unyhrW1m8Fyx6RA1j4YGsvYyquDsUA68uk+ims3gAYGUYHvND4uu3Gz4XnZ
+         afw9UkKLI34LQ==
+To:     Byungho An <bh74.an@samsung.com>,
+        Siva Reddy <siva.kallam@samsung.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+From:   Colin Ian King <colin.king@canonical.com>
+Subject: issue with unreachable code in net sxgbe driver
+Message-ID: <bac2783b-c7af-4e2e-5b3b-318196abfc20@canonical.com>
+Date:   Fri, 9 Jul 2021 15:03:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210709125611.135920-1-ulf.hansson@linaro.org>
- <CAMuHMdU0AVFVb3tXW4wkEibSx50nzYKW1GopgZPfKp1SS7Mf1g@mail.gmail.com>
- <CAPDyKFpzw0mQPFs-jyMX=T6WpZ+vFqrWmoKUWD+9wW8LWqyHuA@mail.gmail.com>
- <CAMuHMdWcvAeeif6HwBMrQUs2z+jKcfY1DuKRYeyB+GTkiXGjSw@mail.gmail.com>
- <CAPDyKFo8SCbmJXQJJ4OR8_Tg=+YdK76k2Sg=KcO3t7ve2zzaHw@mail.gmail.com> <CAMuHMdW8f0YGwNBAzwG65OE+Wq59SqUFmHhDPE0Nju7OpDzLYA@mail.gmail.com>
-In-Reply-To: <CAMuHMdW8f0YGwNBAzwG65OE+Wq59SqUFmHhDPE0Nju7OpDzLYA@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 9 Jul 2021 16:02:55 +0200
-Message-ID: <CAPDyKFp3p0Ly9UDBxNo2qOE=N9VH1nzW=JkH_R_xfw4D=XkCGA@mail.gmail.com>
-Subject: Re: [PATCH] PM: domains: Don't attach a device to genpd that
- corresponds to a provider
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Jul 2021 at 15:58, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Ulf,
->
-> On Fri, Jul 9, 2021 at 3:48 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > On Fri, 9 Jul 2021 at 15:35, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > On Fri, Jul 9, 2021 at 3:23 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > > > On Fri, 9 Jul 2021 at 15:07, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > > On Fri, Jul 9, 2021 at 2:56 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > > > > > According to the common power domain DT bindings, a power domain provider
-> > > > > > must have a "#power-domain-cells" property in its OF node. Additionally, if
-> > > > > > a provider has a "power-domains" property, it means that it has a parent
-> > > > > > domain.
-> > > > >
-> > > > > OK.
-> > > > >
-> > > > > > It has turned out that some OF nodes that represents a genpd provider may
-> > > > > > also be compatible with a regular platform device. This leads to, during
-> > > > > > probe, genpd_dev_pm_attach(), genpd_dev_pm_attach_by_name() and
-> > > > > > genpd_dev_pm_attach_by_id() tries to attach the corresponding struct device
-> > > > > > to the genpd provider's parent domain, which is wrong. Instead the genpd
-> > > > >
-> > > > > Why is that wrong?
-> > > >
-> > > > It may lead to that the struct device that corresponds to a genpd
-> > > > provider may be attached to the parent domain. In other words, the
-> > > > parent domain will not only be controlled by a child domain
-> > > > (corresponding to the provider), but also through the provider's
-> > > > struct device. As far as I can tell, this has never been the intent
-> > > > for how things should work in genpd.
-> > >
-> > > Ah, you're worried about the case where the subdomain is a child of
-> > > the parent domain, but the actual subdomain controller (represented
-> > > by the platform device) isn't?
-> >
-> > Well, even if the platform device represents a subdomain controller,
-> > should it really be attached to the parent domain?
->
-> That's what the presence of the "power-domains" property means,
-> isn't it?
-> If the subdomain controller itself is not part of the parent power
-> domain, there should not be a "power-domains" property.  So perhaps
-> we need a new property ("power-domain-parent"?) to indicate what is
-> the parent domain for the subdomains in this case?
+Hi,
 
-Hmm, but perhaps it's just a matter of expectations of what will
-happen during attach.
+Static analysis with Coverity has detected several occurrences of dead
+code in the sxgbe driver in function sxgbe_mtl_init. The issue was
+introduced with the following commit:
 
-On the other hand a new binding for the parent would make it more
-clear. I wouldn't mind.
+commit 1edb9ca69e8a7988900fc0283e10550b5592164d
+Author: Siva Reddy <siva.kallam@samsung.com>
+Date:   Tue Mar 25 12:10:54 2014 -0700
 
->
-> > In any case, it means that the provider needs to manage runtime PM,
-> > etc for its struct device to not prevent the parent domain from being
-> > powered off.
->
-> Shouldn't all drivers for devices that can be somewhere in a PM Domain
-> hierarchy do that anyway? :-)  See e.g. commit 3a611e26e958b037
-> ("net/smsc911x: Add minimal runtime PM support").
->
-> If "simple-bus" would do that, we could get rid of "simple-pm-bus"...
+    net: sxgbe: add basic framework for Samsung 10Gb ethernet driver
 
-Right, I totally forgot about that. Thanks for reminding me.
+The analysis is as follows:
 
-As I said in the other thread, let's drop this patch for now.
+ 20static void sxgbe_mtl_init(void __iomem *ioaddr, unsigned int etsalg,
+ 21                           unsigned int raa)
+ 22{
+ 23        u32 reg_val;
+ 24
+ 25        reg_val = readl(ioaddr + SXGBE_MTL_OP_MODE_REG);
+ 26        reg_val &= ETS_RST;
+ 27
+ 28        /* ETS Algorith */
+ 29        switch (etsalg & SXGBE_MTL_OPMODE_ESTMASK) {
 
-Kind regards
-Uffe
+Logically dead code (DEADCODE)
+
+ 30        case ETS_WRR:
+ 31                reg_val &= ETS_WRR;
+ 32                break;
+
+
+Logically dead code (DEADCODE)
+
+ 33        case ETS_WFQ:
+ 34                reg_val |= ETS_WFQ;
+ 35                break;
+
+Logically dead code (DEADCODE)
+
+ 36        case ETS_DWRR:
+ 37                reg_val |= ETS_DWRR;
+ 38                break;
+ 39        }
+
+SXGBE_MTL_OPMODE_ESTMASK is defined as 0x03
+ETS_WRR is 0xFFFFFF9F
+ETS_WFQ is 0x00000020
+ETS_DWRR is 0x00000040
+
+so the masking of etsalg & SXGBE_MTL_OPMODE_ESTMASK will never match any
+of the ETS_* values, hence the dead code.
+
+
+ 40        writel(reg_val, ioaddr + SXGBE_MTL_OP_MODE_REG);
+ 41
+ 42        switch (raa & SXGBE_MTL_OPMODE_RAAMASK) {
+
+Logically dead code (DEADCODE)
+
+ 43        case RAA_SP:
+ 44                reg_val &= RAA_SP;
+ 45                break;
+
+Logically dead code (DEADCODE)
+
+ 46        case RAA_WSP:
+ 47                reg_val |= RAA_WSP;
+ 48                break;
+ 49        }
+ 50        writel(reg_val, ioaddr + SXGBE_MTL_OP_MODE_REG);
+ 51}
+
+SXGBE_MTL_OPMODE_RAAMASK is defined as 0x1
+RAA_SP is 0xFFFFFFFB
+RAA_WSP is 0x00000004
+
+so masking of raa & SXGBE_MTL_OPMODE_RAAMASK will never match any of the
+RAA_* values, hence the dead code.
+
+I don't think this is intentional. Not sure how to fix this hence I'm
+reporting this issue.
+
+Regards,
+
+Colin
