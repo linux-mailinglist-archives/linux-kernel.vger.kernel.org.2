@@ -2,95 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC6113C27C8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 18:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7DBB3C27CC
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 18:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229662AbhGIQyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 12:54:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhGIQyH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 12:54:07 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2809DC0613E5
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 09:51:24 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id p1so24425762lfr.12
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 09:51:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=POScCYO3L5Ni7K5IJDMuBcM7y+WItrME8kkxfvws3ek=;
-        b=EU9r8vWEoGkrd+oqDc3JWjks89a7hhBpvolnGLsELcbw9Mngci6v80+RhlCzO/9AuJ
-         6y4vqC5jmWJIR3TGTQPajSJ+RDQ79o+gDU/OXoYJEEi5kNfzsC4wkJef/dYIjwbAebTc
-         NQhsy0KfaPm+ob3cOAdYCFnxPDMPTYrSeg8gM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=POScCYO3L5Ni7K5IJDMuBcM7y+WItrME8kkxfvws3ek=;
-        b=NNuTvaHjIVVxkKaAFgvjidBlH4qqJyU9RU4cJRJKSs+B8EJmGNL+pGguBlWlcmlNMR
-         HpqseLV9MTTEWczOh36VicpJO+qNKr1RKiZwotyBPZciQWSf3oAgtZ8KQEt+Es1d8I9+
-         nh/aUJNf1BKR4GZcjSjfbBDjA21Yr7c8Eqz63G6Xa9SjVx+clUn++zw2HU7jhekIqjEE
-         5xx+M+Sk1u2GtRVf/wECTeqSd4gkbJxXPCNSCWCwPPJQzKhJvOrvB4NnuWoONc5LCkSJ
-         X2tW99/5k5OnCiRpHntRMIUAaH/sAAphYg2KOd4H2vE9zlfuRfGL7OEEe8s/AXVydAID
-         znwg==
-X-Gm-Message-State: AOAM531uANCB0sWR6YTF1d+G0Kds2/WtizzexlJaJ+pVNgf5qg+GJwAK
-        cnoQNOffXOwYfrPtGVYlZ9VwoZcS5oteGC1uYcE=
-X-Google-Smtp-Source: ABdhPJwE1Racd3BB/dDjQlurk4sgBtHrr7Y6HGtHfxhcKApjfl/piwJjQFvmP2FnJW0f5RtwORRAiw==
-X-Received: by 2002:ac2:4356:: with SMTP id o22mr30682004lfl.309.1625849482335;
-        Fri, 09 Jul 2021 09:51:22 -0700 (PDT)
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
-        by smtp.gmail.com with ESMTPSA id d12sm504190lfv.204.2021.07.09.09.51.21
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Jul 2021 09:51:21 -0700 (PDT)
-Received: by mail-lj1-f170.google.com with SMTP id s18so9012128ljg.7
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 09:51:21 -0700 (PDT)
-X-Received: by 2002:a2e:a276:: with SMTP id k22mr29161691ljm.465.1625849481318;
- Fri, 09 Jul 2021 09:51:21 -0700 (PDT)
+        id S229659AbhGIQ4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 12:56:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33276 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229459AbhGIQ4D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 12:56:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E83E6613AF
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 16:53:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625849599;
+        bh=JsXIl7xahTFA/MerH9QEXjUdUOH9+NPpHNCD++zUxTk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=YP3uwR1e39ZF0LGLmQ1KhhI1yV0dsehQ0B5GGW1ZkK1yArsWTMGp6GpjXfz4eR4nd
+         LpPdHaFFBZcRnQ4ooawStcN+9EtqlZmFzSzpxune8b1HfsWZH6DltMU0ETr2SkxRMF
+         uO71nSyDq1F7RTKBZ0AYgWZF+0qDSQgUEo4w9Vh/bOupc9HhcDDHxvJAIJTQPVcXMk
+         3ikDIWFBjt1ok1Y7TnZU356120/OQXVxRfmef1gOWmO8/fFujAAMI0ElVf5FTbaxLC
+         ymJyinqwuNpNXHarKTkrUPYHk+84Sm/rdYnFrrgS8cPBMvjm21JGeO920M6GkP74Q5
+         /V6/JmiEZrKtQ==
+Received: by mail-ej1-f43.google.com with SMTP id ga14so2361918ejc.6
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 09:53:19 -0700 (PDT)
+X-Gm-Message-State: AOAM531NsVObEJzlUX/5gBAllo372w0Rx45/XTrpA+CI3OOKzA63CjNk
+        UrBEiZ92BD4iIRUzBDXM2GIkrOEMokQYmcRZgA==
+X-Google-Smtp-Source: ABdhPJylPfVO5RStLK3tb27ot5t8ct8ONmIvowUaaTxaT2qPCccX7VMTYkv1d99rPNZHRTl5Lgmp46mcrBqG+V6/bVo=
+X-Received: by 2002:a17:907:62a1:: with SMTP id nd33mr38892423ejc.303.1625849598502;
+ Fri, 09 Jul 2021 09:53:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <6809750d3e746fb0732995bb9a0c1fa846bbd486.camel@hammerspace.com>
-In-Reply-To: <6809750d3e746fb0732995bb9a0c1fa846bbd486.camel@hammerspace.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 9 Jul 2021 09:51:05 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjvNb9GVdbWz+xxY274kuw=xkYBoBYHHHO7tscr1V0YAQ@mail.gmail.com>
-Message-ID: <CAHk-=wjvNb9GVdbWz+xxY274kuw=xkYBoBYHHHO7tscr1V0YAQ@mail.gmail.com>
-Subject: Re: [GIT PULL] Please pull NFS client changes for 5.14
-To:     Trond Myklebust <trondmy@hammerspace.com>
-Cc:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <trinity-cc8f5927-9aaf-43ae-a107-6a6229f1b481-1625565279264@3c-app-gmx-bs60>
+ <25d61873-38ae-5648-faab-03431b74f777@collabora.com> <trinity-e6443313-a436-4e9d-a93c-1bef1cce135d-1625736911475@3c-app-gmx-bap19>
+ <trinity-3f4f4b55-7e39-4d80-8fc3-7d0e2b3026de-1625758259993@3c-app-gmx-bap19>
+ <trinity-fd86a04e-81b6-45f0-8ab4-5c21655bdf53-1625824929532@3c-app-gmx-bap43>
+ <CAFqH_52OdB+H+yLh-b8ndbS_w3uwFyQEkZ-y2RQ2RnKnMEt6vQ@mail.gmail.com>
+ <trinity-ac304676-173c-42c6-837c-38e62971ede0-1625827104214@3c-app-gmx-bap43> <trinity-937ebfa3-d123-42de-a289-3ad0dbc09782-1625830110576@3c-app-gmx-bap43>
+In-Reply-To: <trinity-937ebfa3-d123-42de-a289-3ad0dbc09782-1625830110576@3c-app-gmx-bap43>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Sat, 10 Jul 2021 00:53:07 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_-yi5NP_U-m==ZHeBNC9-6NrjUacKWdmmgVXZjH+sFZKw@mail.gmail.com>
+Message-ID: <CAAOTY_-yi5NP_U-m==ZHeBNC9-6NrjUacKWdmmgVXZjH+sFZKw@mail.gmail.com>
+Subject: Re: Re: Re: BUG: MTK DRM/HDMI broken on 5.13 (mt7623/bpi-r2)
+To:     Frank Wunderlich <frank-w@public-files.de>
+Cc:     chunkuang Hu <chunkuang.hu@kernel.org>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        David Airlie <airlied@linux.ie>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 8, 2021 at 11:16 AM Trond Myklebust <trondmy@hammerspace.com> wrote:
+Hi, Frank:
+
+Frank Wunderlich <frank-w@public-files.de> =E6=96=BC 2021=E5=B9=B47=E6=9C=
+=889=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=887:28=E5=AF=AB=E9=81=93=
+=EF=BC=9A
 >
-> Please note that this branch was rebased today. The reason was I discovered
-> that one of the topic branches that was merged contained some duplicated patches
-> from the main branch (mea culpa). So the rebase simply removed those duplicates
-> from the topic branch.
+> > Gesendet: Freitag, 09. Juli 2021 um 12:38 Uhr
+> > Von: "Frank Wunderlich" <frank-w@public-files.de>
+> > An: "Enric Balletbo Serra" <eballetbo@gmail.com>
+> > Cc: "CK Hu" <ck.hu@mediatek.com>, "Dafna Hirschfeld" <dafna.hirschfeld@=
+collabora.com>, "chunkuang Hu" <chunkuang.hu@kernel.org>, "Thomas Zimmerman=
+n" <tzimmermann@suse.de>, "David Airlie" <airlied@linux.ie>, "linux-kernel"=
+ <linux-kernel@vger.kernel.org>, "Enric Balletbo i Serra" <enric.balletbo@c=
+ollabora.com>, "moderated list:ARM/Mediatek SoC support" <linux-mediatek@li=
+sts.infradead.org>, "dri-devel" <dri-devel@lists.freedesktop.org>, "Matthia=
+s Brugger" <matthias.bgg@gmail.com>, "Collabora Kernel ML" <kernel@collabor=
+a.com>
+> > Betreff: Aw: Re: Re: BUG: MTK DRM/HDMI broken on 5.13 (mt7623/bpi-r2)
+> >
+> >
+> > > Gesendet: Freitag, 09. Juli 2021 um 12:24 Uhr
+> > > Von: "Enric Balletbo Serra" <eballetbo@gmail.com>
+> > > If this is the offending commit, could you try if the following patch
+> > > fixes the issue for you?
+> > >
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/matthias.bgg/linux.gi=
+t/commit/?h=3Dv5.13-next/fixes&id=3Ddb39994e0bd852c6612a9709e63c09b98b161e0=
+0
+> > >
+> > > If not, and that patch is the offending commit, it probably means tha=
+t
+> > > the default routing table doesn't work for mt7623. Needs a specific
+> > > soc table.
+> >
+> > Hi Eric,
+> >
+> > thanks for response, but it does not fix the issue for me. hdmi on mt76=
+23 is DPI not DSI. There is already a mt7623 specific routing-table defined=
+ (one for DPI/HDMI and one for external=3DDSI/MIPI):
+> >
+> > https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/mediatek=
+/mtk_drm_drv.c#L74
+> >
+> > maybe it can be included or compared with the "default" route?
+> >
+> > regards Frank
+>
+> Hi
+>
+> i tried to convert the old routing table into the new format
+>
+> diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-=
+mmsys.c
+> index 080660ef11bf..134dae13382f 100644
+> --- a/drivers/soc/mediatek/mtk-mmsys.c
+> +++ b/drivers/soc/mediatek/mtk-mmsys.c
+> @@ -20,6 +20,12 @@ static const struct mtk_mmsys_driver_data mt2701_mmsys=
+_driver_data =3D {
+>         .num_routes =3D ARRAY_SIZE(mmsys_default_routing_table),
+>  };
+>
+> +static const struct mtk_mmsys_driver_data mt7623_mmsys_driver_data =3D {
+> +       .clk_driver =3D "clk-mt2701-mm",
+> +       .routes =3D mmsys_mt7623_routing_table,
+> +       .num_routes =3D ARRAY_SIZE(mmsys_mt7623_routing_table),
+> +};
+> +
+>  static const struct mtk_mmsys_driver_data mt2712_mmsys_driver_data =3D {
+>         .clk_driver =3D "clk-mt2712-mm",
+>         .routes =3D mmsys_default_routing_table,
+> @@ -133,6 +139,10 @@ static const struct of_device_id of_match_mtk_mmsys[=
+] =3D {
+>                 .compatible =3D "mediatek,mt2701-mmsys",
+>                 .data =3D &mt2701_mmsys_driver_data,
+>         },
+> +       {
+> +               .compatible =3D "mediatek,mt7623-mmsys",
+> +               .data =3D &mt7623_mmsys_driver_data,
+> +       },
+>         {
+>                 .compatible =3D "mediatek,mt2712-mmsys",
+>                 .data =3D &mt2712_mmsys_driver_data,
+> diff --git a/drivers/soc/mediatek/mtk-mmsys.h b/drivers/soc/mediatek/mtk-=
+mmsys.h
+> index 11388961dded..fd397f68339c 100644
+> --- a/drivers/soc/mediatek/mtk-mmsys.h
+> +++ b/drivers/soc/mediatek/mtk-mmsys.h
+> @@ -214,5 +214,14 @@ static const struct mtk_mmsys_routes mmsys_default_r=
+outing_table[] =3D {
+>                 DISP_REG_CONFIG_DISP_UFOE_MOUT_EN, UFOE_MOUT_EN_DSI0,
+>         }
+>  };
+> -
+> +static const struct mtk_mmsys_routes mmsys_mt7623_routing_table[] =3D {
+> +       //HDMI
+> +       {
+> +               DDP_COMPONENT_OVL0, DDP_COMPONENT_RDMA0,
+> +               DISP_REG_CONFIG_DISP_OVL_MOUT_EN, OVL_MOUT_EN_RDMA
+> +       }, {
+> +               DDP_COMPONENT_RDMA0, DDP_COMPONENT_DPI0,
+> +               DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN, RDMA0_SOUT_DPI0
+> +       }
+> +};
+>  #endif /* __SOC_MEDIATEK_MTK_MMSYS_H */
+> :...skipping...
+> diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-=
+mmsys.c
+> index 080660ef11bf..134dae13382f 100644
+> --- a/drivers/soc/mediatek/mtk-mmsys.c
+> +++ b/drivers/soc/mediatek/mtk-mmsys.c
+> @@ -20,6 +20,12 @@ static const struct mtk_mmsys_driver_data mt2701_mmsys=
+_driver_data =3D {
+>         .num_routes =3D ARRAY_SIZE(mmsys_default_routing_table),
+>  };
+>
+> +static const struct mtk_mmsys_driver_data mt7623_mmsys_driver_data =3D {
+> +       .clk_driver =3D "clk-mt2701-mm",//leave clock as mt7623 is based =
+on mt2701
+> +       .routes =3D mmsys_mt7623_routing_table,
+> +       .num_routes =3D ARRAY_SIZE(mmsys_mt7623_routing_table),
+> +};
+> +
+>  static const struct mtk_mmsys_driver_data mt2712_mmsys_driver_data =3D {
+>         .clk_driver =3D "clk-mt2712-mm",
+>         .routes =3D mmsys_default_routing_table,
+> @@ -133,6 +139,10 @@ static const struct of_device_id of_match_mtk_mmsys[=
+] =3D {
+>                 .compatible =3D "mediatek,mt2701-mmsys",
+>                 .data =3D &mt2701_mmsys_driver_data,
+>         },
+> +       {
+> +               .compatible =3D "mediatek,mt7623-mmsys",
+> +               .data =3D &mt7623_mmsys_driver_data,
+> +       },
+>         {
+>                 .compatible =3D "mediatek,mt2712-mmsys",
+>                 .data =3D &mt2712_mmsys_driver_data,
+> diff --git a/drivers/soc/mediatek/mtk-mmsys.h b/drivers/soc/mediatek/mtk-=
+mmsys.h
+> index 11388961dded..fd397f68339c 100644
+> --- a/drivers/soc/mediatek/mtk-mmsys.h
+> +++ b/drivers/soc/mediatek/mtk-mmsys.h
+> @@ -214,5 +214,14 @@ static const struct mtk_mmsys_routes mmsys_default_r=
+outing_table[] =3D {
+>                 DISP_REG_CONFIG_DISP_UFOE_MOUT_EN, UFOE_MOUT_EN_DSI0,
+>         }
+>  };
+> -
+> +static const struct mtk_mmsys_routes mmsys_mt7623_routing_table[] =3D {
+> +       //HDMI
+> +       {
+> +               DDP_COMPONENT_OVL0, DDP_COMPONENT_RDMA0,
+> +               DISP_REG_CONFIG_DISP_OVL_MOUT_EN, OVL_MOUT_EN_RDMA
+> +       }, {
+> +               DDP_COMPONENT_RDMA0, DDP_COMPONENT_DPI0,
+> +               DISP_REG_CONFIG_DISP_RDMA0_SOUT_EN, RDMA0_SOUT_DPI0
+> +       }
+> +};
+>
+> here i've left out COLOR0 and BLS because i have not found the 3rd (addre=
+ss) and 4th params (value) for the routing between them and edging componen=
+ts
+>
+> this is the old route:
+>
+>         DDP_COMPONENT_OVL0,
+>         DDP_COMPONENT_RDMA0,
+>         DDP_COMPONENT_COLOR0,
+>         DDP_COMPONENT_BLS,
+>         DDP_COMPONENT_DPI0,
+>
+> so i guess i need:
+>
+> DISP_REG_CONFIG_DISP_RDMA0_MOUT_EN, RDMA0_MOUT_EN_COLOR0
+> DISP_REG_CONFIG_DISP_COLOR0_MOUT_EN, COLOR0_MOUT_EN_BLS
+> DISP_REG_CONFIG_DISP_BLS_MOUT_EN, BLS_MOUT_EN_DPI0
+>
+> thinking OUT is right for display...it's no HDMI-in
+> but i'm unsure whats the difference between MOUT and SOUT
+>
+> compatible for mmsys is already set to mediatek,mt7623-mmsys in arch/arm/=
+boot/dts/mt7623n.dtsi but it's not working, i guess because color0 and bls =
+are missing in route
+>
+> any hint how to add them?
 
-Please don't rebase just for pointless details like this.
+SOUT means even though data could output to multiple sink, but could
+only output to single sink at one moment. MOUT means data could output
+to multiple sink at one moment.
+For SOUT with 4 sink output, the value for each sink would be 0, 1, 2, 3.
+For MOUT with 4 sink output, the value for each sink would be BIT(0),
+BIT(1), BIT(2), BIT(3).
+[1] is my original design, and it has 'mask' in struct mtk_mmsys_conn_cfg.
+For SOUT with 4 sink output, the mask would be 0x3.
+For MOUT with 4 sink output, the mask would be 0xf.
+You could try to add back the mask.
 
-Duplicate patches aren't a problem, and we have them all the time.
+[1] https://chromium-review.googlesource.com/c/chromiumos/third_party/kerne=
+l/+/2345186
 
-Yes, they can cause annoying merge conflicts (not on their own -
-identical patches will merge just fine - but if there are then *other*
-changes to the same area). But it's seldom all that big of a deal, and
-if there's just a couple of duplicates, then rebasing is much _worse_
-than the fix.
+Regards,
+Chun-Kuang.
 
-If there were *tons* of duplicate patches, and you have some workflow
-issue, that's one thing - and then you need to fix the workflow. But
-particularly for just a couple of patches, rebasing and losing all the
-testing is really entirely the wrong thing to do.
-
-In other words: only rebase for *catastrophic* stuff. Only yo fix
-things that are actively broken. Not for some minor technical issue.
-
-I've pulled this, but please avoid this in the future.
-
-               Linus
+>
+> regards Frank
