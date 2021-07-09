@@ -2,94 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DD2B3C23AC
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 14:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAF493C23AF
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 14:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231467AbhGIMtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 08:49:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231431AbhGIMtL (ORCPT
+        id S231470AbhGIMuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 08:50:06 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:44302 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229671AbhGIMuF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 08:49:11 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 714F7C0613DD;
-        Fri,  9 Jul 2021 05:46:27 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id 37so9881255pgq.0;
-        Fri, 09 Jul 2021 05:46:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=a8Fdp0uOkotya/kKDIDVD2b894Pw0XhGKYmVcYD6eEw=;
-        b=hlp54LnJJs1CAUdyxnywduEZx2aVQdAFjMZ8bC8CIlzhwsIHht8V/i8iGTF4+zFiCK
-         xCnrf62Hh32UXJeClpw+fJORc5Zb99y2fguP0hGqJ3cwaUlHgEVkwMrwBXTiQsg4gFvI
-         0IwtidDeeYjzxwdfVcHLlEdkXkZQoe+AWCeNP8DA/dWCChF+Q+wg+V7bB2IU5sMHNDug
-         c2aDuywfrdNiPaI1lZMKJ0y04wCdV0XZwKvO9eD8rovvxqsPc7LmQrzGV7zHc2Z8ibR2
-         MAB5ejjWMd6iRdI3GitBSJfVEzOb0hTiL02uCb6VzGB42U+DjNuMSH8p+8LwMyJqnDz0
-         FT1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=a8Fdp0uOkotya/kKDIDVD2b894Pw0XhGKYmVcYD6eEw=;
-        b=oBM1ZWU9ymqswW9gbMvX+pW07f/qAw1hk4yRbw+ktzWz/Jm6daivG72qBCESGgRNMc
-         DoZjS7GmLXor80fGqPHmm5yYVVVePApnr9qkZyqrPDiiQrZarroJapybvuGvqiFvvUaK
-         xad/Ow+2zTqELyA0DAKsx6e9wAmdWdxMIQGMlItHoxYb7/lrx6Tj13qLcZsDrh5f5DT7
-         1FLOv2Edw+5VJLZ4Lzlzcer3nvXESnIC2hlQy3CBOK8kI8SZ7dYsNaoS24l/at4D+EKD
-         ujfp12bPibkHKq3j0xDri3PIJrgsRBin8+0ey1AIoa+crzd8/6ib7vyK0mpkGLlWxmqX
-         8/YA==
-X-Gm-Message-State: AOAM530tcKQl4kCRw7oXo8mxwfvWXnSVJpQOnvUx7fzErEoNf0YeaJLl
-        YwholPdj6IOccp4RsZwOogY=
-X-Google-Smtp-Source: ABdhPJzKpGnIHiI1mb1IZJRs4ZZ91CGKjEI3GaLhAcHodQ9xrHfMMD5ahjV0Hr4h/dfGJItBh0Ccqw==
-X-Received: by 2002:a63:5345:: with SMTP id t5mr36500421pgl.167.1625834786944;
-        Fri, 09 Jul 2021 05:46:26 -0700 (PDT)
-Received: from localhost ([152.57.176.46])
-        by smtp.gmail.com with ESMTPSA id e24sm6226808pfn.127.2021.07.09.05.46.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 05:46:26 -0700 (PDT)
-Date:   Fri, 9 Jul 2021 18:16:21 +0530
-From:   Amey Narkhede <ameynarkhede03@gmail.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     alex.williamson@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
-        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Amey Narkhede <ameynarkhede03@gmail.com>
-Subject: Re: [PATCH v10 0/8] Expose and manage PCI device reset
-Message-ID: <20210709124621.ky3c6ip4wjrpsctr@archlinux>
-References: <20210709123813.8700-1-ameynarkhede03@gmail.com>
+        Fri, 9 Jul 2021 08:50:05 -0400
+X-UUID: 9b997646e56344c693cebd0a7413313b-20210709
+X-UUID: 9b997646e56344c693cebd0a7413313b-20210709
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <tinghan.shen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 358079144; Fri, 09 Jul 2021 20:47:20 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 9 Jul 2021 20:47:18 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 9 Jul 2021 20:47:18 +0800
+From:   Tinghan Shen <tinghan.shen@mediatek.com>
+To:     <ohad@wizery.com>, <bjorn.andersson@linaro.org>,
+        <mathieu.poirier@linaro.org>, <robh+dt@kernel.org>,
+        <matthias.bgg@gmail.com>
+CC:     <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
+        <tzungbi@google.com>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Tinghan Shen <tinghan.shen@mediatek.com>
+Subject: [PATCH 1/2] dt-bindings: remoteproc: mediatek: Add binding for mt8195 scp
+Date:   Fri, 9 Jul 2021 20:46:30 +0800
+Message-ID: <20210709124631.28312-1-tinghan.shen@mediatek.com>
+X-Mailer: git-send-email 2.15.GIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210709123813.8700-1-ameynarkhede03@gmail.com>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/07/09 06:08PM, Amey Narkhede wrote:
-> PCI and PCIe devices may support a number of possible reset mechanisms
-> for example Function Level Reset (FLR) provided via Advanced Feature or
-> PCIe capabilities, Power Management reset, bus reset, or device specific reset.
-> Currently the PCI subsystem creates a policy prioritizing these reset methods
-> which provides neither visibility nor control to userspace.
->
-> Expose the reset methods available per device to userspace, via sysfs
-> and allow an administrative user or device owner to have ability to
-> manage per device reset method priorities or exclusions.
-> This feature aims to allow greater control of a device for use cases
-> as device assignment, where specific device or platform issues may
-> interact poorly with a given reset method, and for which device specific
-> quirks have not been developed.
->
-> Changes in v10:
-> 	- Fix build error on ppc as reported by build bot
->
-Aplogies for late response. For some reason I did not get email from
-test bot. I checked spam folder too. Not sure if gmail messed something
-up.
+Add mt8195 compatible to binding document. The description of required
+properties are also modified to reflect the hardware change between
+mt8183 and mt8195. The mt8195 doesn't have to control the scp clock on
+kernel side.
 
-[...]
-Amey
+Signed-off-by: Tinghan Shen <tinghan.shen@mediatek.com>
+---
+ Documentation/devicetree/bindings/remoteproc/mtk,scp.txt | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/remoteproc/mtk,scp.txt b/Documentation/devicetree/bindings/remoteproc/mtk,scp.txt
+index 3f5f78764b60..d64466eefbe3 100644
+--- a/Documentation/devicetree/bindings/remoteproc/mtk,scp.txt
++++ b/Documentation/devicetree/bindings/remoteproc/mtk,scp.txt
+@@ -5,13 +5,15 @@ This binding provides support for ARM Cortex M4 Co-processor found on some
+ Mediatek SoCs.
+ 
+ Required properties:
+-- compatible		Should be "mediatek,mt8183-scp"
++				"mediatek,mt8183-scp"
++				"mediatek,mt8195-scp"
+ - reg			Should contain the address ranges for memory regions:
+ 			SRAM, CFG, and L1TCM.
+ - reg-names		Contains the corresponding names for the memory regions:
+ 			"sram", "cfg", and "l1tcm".
+-- clocks		Clock for co-processor (See: ../clock/clock-bindings.txt)
+-- clock-names		Contains the corresponding name for the clock. This
++- clocks		Required by mt8183. Clock for co-processor (See: ../clock/clock-bindings.txt)
++- clock-names		Required by mt8183. Contains the corresponding name for the clock. This
+ 			should be named "main".
+ 
+ Subnodes
+-- 
+2.18.0
+
