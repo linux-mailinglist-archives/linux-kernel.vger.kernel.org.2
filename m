@@ -2,92 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B48853C1F9C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 09:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B66D3C1F9D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 09:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230351AbhGIGv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 02:51:26 -0400
-Received: from first.geanix.com ([116.203.34.67]:33146 "EHLO first.geanix.com"
+        id S230437AbhGIGvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 02:51:33 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:51208 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229979AbhGIGvZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 02:51:25 -0400
-Received: from skn-laptop (unknown [185.17.218.86])
-        by first.geanix.com (Postfix) with ESMTPSA id E65294C6131;
-        Fri,  9 Jul 2021 06:48:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1625813320; bh=G0vkrddXVJRk86vG8AulMVgWg2Euen3OkHPG0N5Lqzs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=GJVzd35pmHfMihPaCrCIIrePwsC6hhHg1u9rv11Sm3xm5WOW1fxP+6zFytNabgF5v
-         yb50kv8LdqD/KALAMcDnwR1raf6tiK36mVm5kC/Ao1P6O8RRE9POF4LfCCCNj82aQH
-         6R/DpzFRfbS4fJVR6WuRPeKqgqqtZEyVDOq38XqMDJxohXSR6Sdai6PFBm9j0EOxe0
-         wn6DmqhkQnn9HtLM3iDPg+9Q9nUGGKCdilm+qLFU3tEL5O7NGr2RmAgN4ASnBj3ojJ
-         LBtfbAMwGnfnQqMX6x43MUWNINjk6i2QxgNKUi1KJdvFrX6a+RrksBLW2nkN6Xaw5g
-         vV7DQZJFoZZGw==
-Date:   Fri, 9 Jul 2021 08:48:38 +0200
-From:   Sean Nyekjaer <sean@geanix.com>
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     Souptick Joarder <jrdr.linux@gmail.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-iio@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH] iio: accel: fxls8962af: Initialize return value
-Message-ID: <20210709064838.wtuqgm3qwguhpfjn@skn-laptop>
-References: <20210709031526.30746-1-jrdr.linux@gmail.com>
- <CAOMZO5BHDBR5y5q559UexTmYbhPwSp1MV3TJ3k+z4W8ehE-5_Q@mail.gmail.com>
+        id S229979AbhGIGvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 02:51:32 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1m1kJc-0008TB-GX; Fri, 09 Jul 2021 14:48:48 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1m1kJa-0001ZD-Jk; Fri, 09 Jul 2021 14:48:46 +0800
+Date:   Fri, 9 Jul 2021 14:48:46 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Steve French <smfrench@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        James Morris <james.morris@microsoft.com>
+Subject: Re: how to request crypto_alloc_shash for GMAC
+Message-ID: <20210709064846.GB5907@gondor.apana.org.au>
+References: <CAH2r5muOdHbLDQr_p15U0572qF+6MjPK+32JYAf4LUKPuvkLGA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAOMZO5BHDBR5y5q559UexTmYbhPwSp1MV3TJ3k+z4W8ehE-5_Q@mail.gmail.com>
-X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on 93bd6fdb21b5
+In-Reply-To: <CAH2r5muOdHbLDQr_p15U0572qF+6MjPK+32JYAf4LUKPuvkLGA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Souptick and Fabio.
+On Fri, Jul 09, 2021 at 12:48:00AM -0500, Steve French wrote:
+>
+> Presumably due to https://www.ietf.org/rfc/rfc4543.txt it is already
+> supported in the kernel ... but what is the name that it is exposed as
+> in the kernel crypto libraries?
 
-On Fri, Jul 09, 2021 at 12:36:25AM -0300, Fabio Estevam wrote:
-> Hi Souptick,
-> 
-> On Fri, Jul 9, 2021 at 12:17 AM Souptick Joarder <jrdr.linux@gmail.com> wrote:
-> >
-> > kernel test robot throws below warning ->
-> >
-> > smatch warnings:
-> > drivers/iio/accel/fxls8962af-core.c:640
-> > fxls8962af_i2c_raw_read_errata3() error: uninitialized symbol 'ret'.
-> >
-> > Initialize it.
-> >
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-Missing fixes-tag ;)
+We don't have standalone gmac in the kernel, it only exists as
+part of the AEAD algorithm gcm.  You're more than welcome to add
+it of course.
 
-[ ... ]
-
-> 
-> Would the change below work?
-> 
-> --- a/drivers/iio/accel/fxls8962af-core.c
-> +++ b/drivers/iio/accel/fxls8962af-core.c
-> @@ -637,7 +637,7 @@ static int fxls8962af_i2c_raw_read_errata3(struct
-> fxls8962af_data *data,
->                         return ret;
->         }
-> 
-> -       return ret;
-> +       return 0;
->  }
-
-I have already submitted a patch for this :)
-https://patchwork.kernel.org/project/linux-iio/patch/20210623113115.581609-1-sean@geanix.com/
-
-/Sean
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
