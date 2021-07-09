@@ -2,87 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A5DB3C23FC
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C81963C23FA
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:07:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231556AbhGINJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 09:09:50 -0400
-Received: from mail-vs1-f47.google.com ([209.85.217.47]:35513 "EHLO
-        mail-vs1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231547AbhGINJo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231561AbhGINJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 9 Jul 2021 09:09:44 -0400
-Received: by mail-vs1-f47.google.com with SMTP id h18so5551172vsj.2;
-        Fri, 09 Jul 2021 06:06:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f9K50uqbO+OiOIh+y9BZ3Xord6eCTGCDJbMPLK8l0eg=;
-        b=EBEZzyR5U25hGognpAacPuMnX++dEbyHcSCf42Vk8NX4PGKN5e++z8eG8rdmDXvtLB
-         wyN+OOzzgdhAx7e/iQw0wi9RrEKRTkG+yrqCfK3wv/kAfin/Vruih22OnH5Urw9s8/hz
-         mXnuWREJRyEClrnZ90ovEBfUL3iOntHIn5cBQoeTDsU4SBW3qZpv+quV3S2jInhhpHPA
-         hlAYKYTFRmJCXJK18a+9c3N4eMKT/ORECvGF3Q1MrGMvFmgnmVhVTBtehGXcs267hU/N
-         f6RwM/J8yO9GOryHcpZraUNqxSAsK3yUshwUnN5laLlaPIX7R7EfkwXNrpf1FmC6Ei0k
-         YEmQ==
-X-Gm-Message-State: AOAM5319YE4ujcfL0NrJPFIy6n3r3r+kf6nvfj7XE7v24JpHyVisji1s
-        dzqy0X0aYAUxGVhNjteTX8jk87gmzArGb+4EQKU=
-X-Google-Smtp-Source: ABdhPJx3ZIltFRr1pc6I8+WpbqTDhmio+F0DH8vBQADE5fqcKRACpSnhwHDQdnzBNzZeeKxVuaR7iUkPgKNj5sKN05c=
-X-Received: by 2002:a67:f98c:: with SMTP id b12mr36045844vsq.40.1625836019416;
- Fri, 09 Jul 2021 06:06:59 -0700 (PDT)
+Received: from mail.kernel.org ([198.145.29.99]:48426 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231285AbhGINJn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 09:09:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CDBA61377;
+        Fri,  9 Jul 2021 13:06:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1625836019;
+        bh=bppPLBlGq3MRWU4+6plXC5MiNOmAXncZ5ZS65JOB/+o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EcIgpMSwgMQxE8HZr/IAB0tkDVQi0vrNSEV9MKmc6czxSprh5N/fYARhUTrQ9CJq6
+         /X2WYGG0qIRx54h27ze20nJKYgBethoiWFAbEd3TqiGN3ZjiLRIWdVDB7znv9y3dkc
+         +nrnwzPMHiu3Ok2zK7HXuAp46zoPAUy8aY+vHEZM=
+Date:   Fri, 9 Jul 2021 15:06:56 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Shaobo Huang <huangshaobo6@huawei.com>
+Cc:     chenzefeng2@huawei.com, kepler.chenxin@huawei.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux@arm.linux.org.uk, liucheng32@huawei.com, mhiramat@kernel.org,
+        nixiaoming@huawei.com, tixy@linaro.org, xiaoqian9@huawei.com,
+        young.liuyang@huawei.com, zengweilin@huawei.com
+Subject: Re: [PATCH 4.4.y] arm: kprobes: Allow to handle reentered kprobe on
+ single-stepping
+Message-ID: <YOhJ8KaoH4BU3ej1@kroah.com>
+References: <YOcOcNBRou5KlbOR@kroah.com>
+ <20210709024630.22268-1-huangshaobo6@huawei.com>
 MIME-Version: 1.0
-References: <20210709125611.135920-1-ulf.hansson@linaro.org>
-In-Reply-To: <20210709125611.135920-1-ulf.hansson@linaro.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 9 Jul 2021 15:06:48 +0200
-Message-ID: <CAMuHMdU0AVFVb3tXW4wkEibSx50nzYKW1GopgZPfKp1SS7Mf1g@mail.gmail.com>
-Subject: Re: [PATCH] PM: domains: Don't attach a device to genpd that
- corresponds to a provider
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210709024630.22268-1-huangshaobo6@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ulf,
+On Fri, Jul 09, 2021 at 10:46:30AM +0800, Shaobo Huang wrote:
+> From: Masami Hiramatsu <mhiramat@kernel.org>
+> 
+> commit f3fbd7ec62dec1528fb8044034e2885f2b257941 upstream
+> 
+> This is arm port of commit 6a5022a56ac3 ("kprobes/x86: Allow to
+> handle reentered kprobe on single-stepping")
+> 
+> Since the FIQ handlers can interrupt in the single stepping
+> (or preparing the single stepping, do_debug etc.), we should
+> consider a kprobe is hit in the NMI handler. Even in that
+> case, the kprobe is allowed to be reentered as same as the
+> kprobes hit in kprobe handlers
+> (KPROBE_HIT_ACTIVE or KPROBE_HIT_SSDONE).
+> 
+> The real issue will happen when a kprobe hit while another
+> reentered kprobe is processing (KPROBE_REENTER), because
+> we already consumed a saved-area for the previous kprobe.
+> 
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> Signed-off-by: Jon Medhurst <tixy@linaro.org>
+> Fixes: 24ba613c9d6c ("ARM kprobes: core code")
+> Cc: stable@vger.kernel.org #v2.6.25~v4.11
+> Signed-off-by: huangshaobo <huangshaobo6@huawei.com>
+> ---
+>  arch/arm/probes/kprobes/core.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 
-Thanks for your patch!
+Now queued up, thanks.
 
-On Fri, Jul 9, 2021 at 2:56 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> According to the common power domain DT bindings, a power domain provider
-> must have a "#power-domain-cells" property in its OF node. Additionally, if
-> a provider has a "power-domains" property, it means that it has a parent
-> domain.
-
-OK.
-
-> It has turned out that some OF nodes that represents a genpd provider may
-> also be compatible with a regular platform device. This leads to, during
-> probe, genpd_dev_pm_attach(), genpd_dev_pm_attach_by_name() and
-> genpd_dev_pm_attach_by_id() tries to attach the corresponding struct device
-> to the genpd provider's parent domain, which is wrong. Instead the genpd
-
-Why is that wrong?
-
-> provider should only assign a parent domain, through
-> pm_genpd_add_subdomain() or of_genpd_add_subdomain().
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+greg k-h
