@@ -2,123 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C3443C2872
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D3273C2877
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:32:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230201AbhGIRfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 13:35:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45376 "EHLO
+        id S230166AbhGIRfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 13:35:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230109AbhGIRez (ORCPT
+        with ESMTP id S230264AbhGIRfC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 13:34:55 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68134C0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 10:32:11 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id t17so24780763lfq.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 10:32:11 -0700 (PDT)
+        Fri, 9 Jul 2021 13:35:02 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED15C0613E6
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 10:32:18 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id i20so17568752ejw.4
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 10:32:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=OW6r9Ztak14Z94NLN85hpavnPWferFff+9qy6SUKk4g=;
-        b=FrxLNPysWTbK6msNrS77oo1V4NLdNkri1hMORbbVvbWnWUfTditLVD1NZEyi+EIkhe
-         Ytl9GL9s7p+GxeHZSa0K1KVSHbHt7Db+9PZoaOBAiMDhKNzGPF7vIz4gxe0bV3Ijw0fu
-         KO1XVn5897fkEBOsj2zwZJvWih3RQDHTsVQgcr9nkNrpxaiWUBPlLL/DvWhDF9Lj/zad
-         p1+qpPBsUSq6yG1B9o1K7uNG+flJ7Bl5oK8vUla4zQnjwj/A3nKVXsVHFuy6X8xNFf2C
-         PKQldZcDzARyowiHBxpuxrTx2Vsr3ZnfqA/S3Wlh2aEHPN/3VRBjC+KyVGaNIBfaJJDm
-         iodA==
+        d=linuxtx.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=llrIKsOm/6jqQkwaVXtBD5s+GtojxsAjJ2JSPa36cxQ=;
+        b=h8YJpAbUiTa3DcAkFogZ4tSlnTfz/GW9M1A5BDZVHZU0gPizjnsjvJHjPnPPvc8HAO
+         we3hT+VNhj58Ttg72yQTYzMDPOcry2TVavDQZ1jBSQF/LwYrlm74m5cv41okTebYw4bM
+         5E1rzCPAC1oHm3SdF9XbNXVd56rgD21kVei00=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OW6r9Ztak14Z94NLN85hpavnPWferFff+9qy6SUKk4g=;
-        b=PLBT6HoofZlOxokBPRcoOJiwnuzUkf7zsG/u4i35ILt+OZvwyhAxxqYNGyxJOsQ7xp
-         RpJ8Q9fS2XsxYjR4eePEj9MNUe7CWt7oAULt2t1rV+tNZpf5mhUNaPVk7DqTudc+Rcnv
-         +B7N2WhSxwRn/ump+iu+urJP0lBcYOrAZJFh/3161fepeodE9x8rW/+naFixmRMRW8az
-         UK2YidETHIxn278A6l4T+9CEinGXAfVrf5vYAKmYwmyO6pGIANQmJSEh765rYNR7ITXa
-         bZ5+ass7GWYXTugc9nyQ3XCbMz0m+BCX27DH66hiTcWiqjLDiT4GRtAr3hwwL2+QgKWj
-         UcPw==
-X-Gm-Message-State: AOAM533iZ5Cqa9GPVXKd8LMxzC88w+V/bYYPl7TM7+kv8iezRqp3lo48
-        2NXINasyjra/xhC+oJd/HWJT5Q==
-X-Google-Smtp-Source: ABdhPJxUjTJVOzCEta2wUHL7FVm04+6VVBlwN0yiMRnKs+nVtnq3uEoz/4a6MO5w5EjHJcZlqo9D2g==
-X-Received: by 2002:ac2:48a9:: with SMTP id u9mr9304635lfg.277.1625851929692;
-        Fri, 09 Jul 2021 10:32:09 -0700 (PDT)
-Received: from eriador.lan ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id b14sm511129lfb.132.2021.07.09.10.32.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 10:32:09 -0700 (PDT)
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 7/7] clk: qcom: videocc-sm8250: stop using mmcx regulator
-Date:   Fri,  9 Jul 2021 20:32:02 +0300
-Message-Id: <20210709173202.667820-8-dmitry.baryshkov@linaro.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210709173202.667820-1-dmitry.baryshkov@linaro.org>
-References: <20210709173202.667820-1-dmitry.baryshkov@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=llrIKsOm/6jqQkwaVXtBD5s+GtojxsAjJ2JSPa36cxQ=;
+        b=E/QwbEi/Pqhq8Dm0/YMXd39jENvr3H8+HBioS4db6px6a1b1LS+RbRaZ4p6uwdtPCc
+         MGurHva6geQimvKF/pL5fylwGfYkUBx0LGVHhy5gGpSPCxSi6v+VMN8bksDIdd+mz0h5
+         4SuVgeUnhnOCXDeHUFDJ3kbRTuPI0bm2AHgfeQha9qiebiU/fGSAlsvt3yh/TQpVepoc
+         fvT2Z+4GdHDMoM11g5uTVcyzNY1bdJYJ/BDTOesiWs+N6lW5NG2NvlW7cjlcbIBzVDrH
+         7G1QpUBWi7YhKgkeoC+ROVWr2A8+9M+kmgBCrsI49HIsccUBhYUlE19rf6cJI3sqMq3T
+         quOw==
+X-Gm-Message-State: AOAM530UYnGTCq4gb9uWT/aDxVZ/XcnsW9ve8fWGUxJeU/Qhnv8zns4r
+        ZUCHVuyGR+bK/1yX0R65H1PFo7FOD117Z0/prUqhhA==
+X-Google-Smtp-Source: ABdhPJxzLNbuQQViV0380pH4y0DjDVhLWcRMKCy37+1dHHtYzXsWWMnsyYvD4mSIwgawUz/IIXfpCWJ+Sw53InWTUqs=
+X-Received: by 2002:a17:907:72c9:: with SMTP id du9mr23993406ejc.497.1625851936647;
+ Fri, 09 Jul 2021 10:32:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210702223155.1981510-1-jforbes@fedoraproject.org>
+In-Reply-To: <20210702223155.1981510-1-jforbes@fedoraproject.org>
+From:   Justin Forbes <jmforbes@linuxtx.org>
+Date:   Fri, 9 Jul 2021 12:32:06 -0500
+Message-ID: <CAFxkdApGUeGdg4=rH=iC2SK58FO6yzbFiq3uSFMFTyZsDQ5j5w@mail.gmail.com>
+Subject: Re: [PATCH] iwlwifi Add support for ax201 in Samsung Galaxy Book
+ Flex2 Alpha
+To:     Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matti Gottlieb <matti.gottlieb@intel.com>,
+        ybaruch <yaara.baruch@intel.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Ihab Zhaika <ihab.zhaika@intel.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        linux-wireless@vger.kernel.org,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now as the common qcom clock controller code has been taught about power
-domains, stop mentioning mmcx supply as a way to power up the clock
-controller's gdscs.
+On Fri, Jul 2, 2021 at 5:32 PM Justin M. Forbes
+<jforbes@fedoraproject.org> wrote:
+>
+> The Samsung Galaxy Book Flex2 Alpha uses an ax201 with the ID a0f0/6074.
+> This works fine with the existing driver once it knows to claim it.
+> Simple patch to add the device.
+>
+> Signed-off-by: Justin M. Forbes <jforbes@fedoraproject.org>
+> ---
 
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
----
- drivers/clk/qcom/videocc-sm8250.c | 4 ----
- 1 file changed, 4 deletions(-)
+Just an update from the user with this hardware that I built a test kernel for:
+"Still going strong w/ AX201, speed OK, on par w/ speeds on windows,
+no crashes, no weird messages about the driver."
 
-diff --git a/drivers/clk/qcom/videocc-sm8250.c b/drivers/clk/qcom/videocc-sm8250.c
-index 7b435a1c2c4b..eedef85d90e5 100644
---- a/drivers/clk/qcom/videocc-sm8250.c
-+++ b/drivers/clk/qcom/videocc-sm8250.c
-@@ -276,7 +276,6 @@ static struct gdsc mvs0c_gdsc = {
- 	},
- 	.flags = 0,
- 	.pwrsts = PWRSTS_OFF_ON,
--	.supply = "mmcx",
- };
- 
- static struct gdsc mvs1c_gdsc = {
-@@ -286,7 +285,6 @@ static struct gdsc mvs1c_gdsc = {
- 	},
- 	.flags = 0,
- 	.pwrsts = PWRSTS_OFF_ON,
--	.supply = "mmcx",
- };
- 
- static struct gdsc mvs0_gdsc = {
-@@ -296,7 +294,6 @@ static struct gdsc mvs0_gdsc = {
- 	},
- 	.flags = HW_CTRL,
- 	.pwrsts = PWRSTS_OFF_ON,
--	.supply = "mmcx",
- };
- 
- static struct gdsc mvs1_gdsc = {
-@@ -306,7 +303,6 @@ static struct gdsc mvs1_gdsc = {
- 	},
- 	.flags = HW_CTRL,
- 	.pwrsts = PWRSTS_OFF_ON,
--	.supply = "mmcx",
- };
- 
- static struct clk_regmap *video_cc_sm8250_clocks[] = {
--- 
-2.30.2
-
+Justin
