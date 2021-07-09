@@ -2,160 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463FF3C2737
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 18:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DF723C2739
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 18:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232426AbhGIQDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 12:03:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46864 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232345AbhGIQCz (ORCPT
+        id S232537AbhGIQDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 12:03:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232345AbhGIQDg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 12:02:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625846411;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=W8zd5CeolMZZOgiP9R7Wu16S5BIqDudS+X6cBxCBcfY=;
-        b=PY7I1tsCwlpRwM1IYpllgiRI1upnDa+JfBMklI7oC+v/OxNRvXPfjpdRn5LQY6PoOE/Os/
-        o1IfZExEpWHkvuHem0/xGj6XbkyKkW6hgehLEmL3Q43UoICZTHBZWFjzZCn08D0dQ8mnpC
-        5P6/e92vwpK1g67b1gLNGNp9PqzVOek=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-321-mKVY9dT0N5GF8oSGH1v2Jg-1; Fri, 09 Jul 2021 12:00:10 -0400
-X-MC-Unique: mKVY9dT0N5GF8oSGH1v2Jg-1
-Received: by mail-qk1-f200.google.com with SMTP id 134-20020a37068c0000b02903b7bc7392ceso3641857qkg.18
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 09:00:10 -0700 (PDT)
+        Fri, 9 Jul 2021 12:03:36 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DB0DC0613E5
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 09:00:53 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id c28so23667935lfp.11
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 09:00:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/xZI0OajFf5/ziUaY+H5m9Nzo8ghS9n7erS+9RJcXYI=;
+        b=W8p7yxoX3G5IefHMsRi4RO40HwPkUuZKO3Wv0ZsSnEGlWk9UWvnKmQGYINVPYcChA9
+         WqVnGAT7Ht7kptj0cHK+RO8ue80geR+dn9mK06BE+MSmBWZxzpFqj2liQKKsHQHwEm8/
+         9adlW2sI8CwSPhxv6HJlqtEhnnly5kd4B07uwGmd8xdOgTfH1L2I0TPxkaJjN8DDlkDD
+         1YtUnGHXQCYRub16v4ymPOdl3+c8L4KyEZjjF4acYce5MxvCBZ1TeeoUX+rWBAMUwjrR
+         qfVOlkfEB974p6LhdqPzqpMyry1nWccBFX0SbgLebwQ9nEFcv5nZaY0H5dTUUHBoyq0a
+         k+qA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:subject:to:cc:references:from
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-transfer-encoding:content-language;
-        bh=W8zd5CeolMZZOgiP9R7Wu16S5BIqDudS+X6cBxCBcfY=;
-        b=JxVsfkK1aXluOJ2NsIHV/Dj1dxhuWr3jYM9QyywHYgOYiHzc3ZFbAe5j7lN+EYSpMD
-         HVCNORKG3u2BD3AaHxNsN7xYuAmuANkPoWyhAUekXev4klrJ0eYyvF3wTAsvQIfj4Cqw
-         rMFAgOdWwTSE5C+BLWLQNn3m+CcVk6u5A34EfcECoaq6TbGBxrrdJKkJKCgiNy6ayabs
-         3E62HQOu/gpf+bz3kQm/4caNqCX1M8iP0ETI7ZWt8HbNePE2VpcuSsjQHAzjjCEO51LH
-         tNQlsOGtTKFap2GAXao2X7OuEKmQKyWY7KviwK3aS1DtGb7tlX6jGdFFNM6Dm7eInyTX
-         +h+Q==
-X-Gm-Message-State: AOAM531+etR9FYaVZjidAClm/s4Xn6ilvP1wWybAVUI1jmAtPhMkXTab
-        pLBZl4w2kRZlWtZVzNVGFJeLa2Sq6dcGXq7EVXX3KUG8NjkrNtDKRjGmSuZtraXTh3BcO8rWCqf
-        gguVuTgGxShxgblkoSonQsU6S
-X-Received: by 2002:a05:620a:14b5:: with SMTP id x21mr1253887qkj.148.1625846409859;
-        Fri, 09 Jul 2021 09:00:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy7fgfym/vObH9dS3BXtTYjPpC0DOawx2XrMA8j/rEnnVa/GS7s/gG7r6kSkkmhMgMhzYecxw==
-X-Received: by 2002:a05:620a:14b5:: with SMTP id x21mr1253860qkj.148.1625846409623;
-        Fri, 09 Jul 2021 09:00:09 -0700 (PDT)
-Received: from localhost.localdomain (cpe-74-65-150-180.maine.res.rr.com. [74.65.150.180])
-        by smtp.gmail.com with ESMTPSA id d8sm2623910qkk.119.2021.07.09.09.00.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Jul 2021 09:00:09 -0700 (PDT)
-Reply-To: dwalsh@redhat.com
-Subject: Re: [RFC PATCH v2 0/1] Relax restrictions on user.* xattr
-To:     Vivek Goyal <vgoyal@redhat.com>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk
-Cc:     virtio-fs@redhat.com, dgilbert@redhat.com,
-        christian.brauner@ubuntu.com, casey.schaufler@intel.com,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        tytso@mit.edu, miklos@szeredi.hu, gscrivan@redhat.com, jack@suse.cz
-References: <20210708175738.360757-1-vgoyal@redhat.com>
-From:   Daniel Walsh <dwalsh@redhat.com>
-Organization: Red Hat
-Message-ID: <76d4a0ed-7582-cc73-a447-5f2d133c3c24@redhat.com>
-Date:   Fri, 9 Jul 2021 12:00:07 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/xZI0OajFf5/ziUaY+H5m9Nzo8ghS9n7erS+9RJcXYI=;
+        b=CaVhSNlaN/SkK3d6QUJu5mwAto1vkIh7z3NY6lAuBCes4ce1E5tpyNOYG4Ya+4/T/w
+         XW1FjwwW/FogJOFebz1+uM5j7mPuzQx1OlksOMigxC5ZjqVpeyQuKbhKNJ+is4EpqnNl
+         T+NeWaGIeDg6/+rM/dtk9sBUfRQ2ggD2sXq9GTGcIQcFWncGF6tYvt6sMhBp91tUCwBu
+         XTmTJ8iPs18Xb+Mevi9h0xcffDyyEpAjN+3efXbd8Qn22MF/uVZLINiUZYL6opcUSzjg
+         j47IURZa8jHHpNL3BJqCr0GnqvGyq7ZZjB1ejpK02lth0xu3IhNrqvsY839H+4WciG7C
+         QldQ==
+X-Gm-Message-State: AOAM530SBhMvV6LZTmiwL2zT5oAGmcaHYYLdcuqDmnt7cSFJCnV003Fj
+        hJuktbym4RpDvBjEOQo/tUUnvjZtQV9BvFPknIwmpw==
+X-Google-Smtp-Source: ABdhPJzHHw49xv/agytETvqSChc4oU4k6Uy1gyLX68+KTNT1rad2pHALpVI3rzlltSe/tgTntSYsjF1LYD8VqnNkNdo=
+X-Received: by 2002:a19:ad4d:: with SMTP id s13mr13304956lfd.432.1625846451059;
+ Fri, 09 Jul 2021 09:00:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210708175738.360757-1-vgoyal@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210709000509.2618345-1-surenb@google.com> <20210709000509.2618345-2-surenb@google.com>
+In-Reply-To: <20210709000509.2618345-2-surenb@google.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 9 Jul 2021 09:00:39 -0700
+Message-ID: <CALvZod7MUemu_=ffcE3tpg_=Mazcp6OB=fSJxC9Sa2-uPPLqbA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] mm, memcg: add mem_cgroup_disabled checks in
+ vmpressure and swap-related functions
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Yang Shi <shy828301@gmail.com>, alexs@kernel.org,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Jens Axboe <axboe@kernel.dk>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alistair Popple <apopple@nvidia.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/8/21 13:57, Vivek Goyal wrote:
-> Hi,
+On Thu, Jul 8, 2021 at 5:05 PM Suren Baghdasaryan <surenb@google.com> wrote:
 >
-> This is V2 of the patch. Posted V1 here.
->
-> https://lore.kernel.org/linux-fsdevel/20210625191229.1752531-1-vgoyal@redhat.com/
->
-> Right now we don't allow setting user.* xattrs on symlinks and special
-> files at all. Initially I thought that real reason behind this
-> restriction is quota limitations but from last conversation it seemed
-> that real reason is that permission bits on symlink and special files
-> are special and different from regular files and directories, hence
-> this restriction is in place.
->
-> Given it probably is not a quota issue (I tested with xfs user quota
-> enabled and quota restrictions kicked in on symlink), I dropped the
-> idea of allowing user.* xattr if process has CAP_SYS_RESOURCE.
->
-> Instead this version of patch allows reading/writing user.* xattr
-> on symlink and special files if caller is owner or priviliged (has
-> CAP_FOWNER) w.r.t inode.
->
-> We need this for virtiofs daemon. I also found one more user. Giuseppe,
-> seems to set user.* xattr attrs on unpriviliged fuse-overlay as well
-> and he ran into similar issue. So fuse-overlay should benefit from
-> this change as well.
->
-> Who wants to set user.* xattr on symlink/special files
-> -----------------------------------------------------
->
-> In virtiofs, actual file server is virtiosd daemon running on host.
-> There we have a mode where xattrs can be remapped to something else.
-> For example security.selinux can be remapped to
-> user.virtiofsd.securit.selinux on the host.
->
-> This remapping is useful when SELinux is enabled in guest and virtiofs
-> as being used as rootfs. Guest and host SELinux policy might not match
-> and host policy might deny security.selinux xattr setting by guest
-> onto host. Or host might have SELinux disabled and in that case to
-> be able to set security.selinux xattr, virtiofsd will need to have
-> CAP_SYS_ADMIN (which we are trying to avoid). Being able to remap
-> guest security.selinux (or other xattrs) on host to something else
-> is also better from security point of view.
->
-> But when we try this, we noticed that SELinux relabeling in guest
-> is failing on some symlinks. When I debugged a little more, I
-> came to know that "user.*" xattrs are not allowed on symlinks
-> or special files.
->
-> So if we allow owner (or CAP_FOWNER) to set user.* xattr, it will
-> allow virtiofs to arbitrarily remap guests's xattrs to something
-> else on host and that solves this SELinux issue nicely and provides
-> two SELinux policies (host and guest) to co-exist nicely without
-> interfering with each other.
->
-> Thanks
-> Vivek
->
->
-> Vivek Goyal (1):
->    xattr: Allow user.* xattr on symlink and special files
->
->   fs/xattr.c | 10 ++++++----
->   1 file changed, 6 insertions(+), 4 deletions(-)
->
-I just wanted to point out that the work Giuseppe is doing is to support 
-nfs homedirs with container runtimes like Rootless Podman.
+[...]
 
+> --- a/mm/vmpressure.c
+> +++ b/mm/vmpressure.c
+> @@ -240,7 +240,12 @@ static void vmpressure_work_fn(struct work_struct *work)
+>  void vmpressure(gfp_t gfp, struct mem_cgroup *memcg, bool tree,
+>                 unsigned long scanned, unsigned long reclaimed)
+>  {
+> -       struct vmpressure *vmpr = memcg_to_vmpressure(memcg);
+> +       struct vmpressure *vmpr;
+> +
+> +       if (mem_cgroup_disabled())
+> +               return;
+> +
+> +       vmpr = memcg_to_vmpressure(memcg);
 
-Basically fuse-overlayfs on top of NFS homedir needs to be able to use 
-user xattrs to set file permissions and ownership fields to be 
-represented to containers.
+I was wondering why this was not crashing but realized that we
+allocate root_mem_cgroup even in cgroup_disable=memory case.
 
-Currently NFS Servers do not understand User Namespace and seeing a 
-client user attempting to chown to a different user, is blocked on the 
-server, even though user namespace on the client allows it.  
-fuse-overlay intercepts the chown from the container and writes out the 
-user.Xattr the permissions and owner/group as user.Xattrs.  And all the 
-server sees is the user modifying the xattrs now chowning the real UID 
-of the file.
-
-
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
