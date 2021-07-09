@@ -2,156 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB143C279E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 18:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AAC33C27A4
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 18:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229553AbhGIQh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 12:37:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60642 "EHLO
+        id S229632AbhGIQit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 12:38:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbhGIQh4 (ORCPT
+        with ESMTP id S229487AbhGIQis (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 12:37:56 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E49EBC0613DD;
-        Fri,  9 Jul 2021 09:35:11 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id h8so1419401eds.4;
-        Fri, 09 Jul 2021 09:35:11 -0700 (PDT)
+        Fri, 9 Jul 2021 12:38:48 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F03ADC0613DD
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 09:36:03 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id w8-20020a0568304108b02904b3da3d49e5so6018448ott.1
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 09:36:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tQVonobh9dEWViCupkTvvzo+E7fxVjP7o2OOWiVB+Hw=;
-        b=AHXL2iVjVJS4yxCtwy4e+Z6lbW8mAqOYVFO1kOuzbR31sEFXPAGUQM6yRV4G44Cp6I
-         WmY9Vp9SFuoJvulaX6X2cxh7iWWx5lDEXUu0aZZSE4F7F1F5mjq/+0AxpNjfPqTBDtcx
-         4guH7Hl80pHp7fBk5WsPjnpE+uE//33Oh7rKEwSYOlv+ktRJUvtvM/Nai3CMiwr+nntu
-         crawwmaySoGLFkAPJ7DCHDm1VD4qTNffJ5hgOMzRCYadVIdykQVuy7aVCWREib2rJkUd
-         poTOFnYU8OneJVyZ1awUO4Fu1oKF9twnO1Mr1kaR/iRRAwSl3eeuh9XvkHL/bgL1NO06
-         uNrw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KPJc57zXKNbmm6Wda6Wo2yhPL66N0K7mX7Ni/9wA22A=;
+        b=MLhRmhg31B/NqMjA2W3smAusHRT7XDvc2hG4HgIGIn0JTGEdMDa45XXhOMirJW1j4E
+         CwQteVMF1OM0UkapniXaSksq8EBVbqXIHhLkmN2KY3s7i1uJ13FxA2dMGLRejl4H836E
+         59dTDDPVDkxWC/s+vYz9Pn7andHFbqorbs3C97CpJt8ameRLbeKfzFT2KHZV+IwSHmH/
+         VsiwT9OSNAK6jezJJzPy3UEUTe/dWCAKFob1CDk2u5RsbyR+YlhUQbiEHBpbqw87y1Nw
+         W8k9sgwbLdpgTS27koSUOrVv41azZR7wU1tmMVTeequSaY2NKWTK7nmREjnTaWt6EkDt
+         2MKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tQVonobh9dEWViCupkTvvzo+E7fxVjP7o2OOWiVB+Hw=;
-        b=dIpDxglM1ENkHaU9YleG6Xh0O0qSFKdksIw7N7oUv6SVVt2KbOGm9RNNFXMT9nM133
-         vAd1P6UFr893KyTuOJPn/6poE7VolpJtEOd/mzHcT00wrffiKNLwtxTAszulL039oRJ9
-         R2fL44fpJNU1LMr696vg5IjQymRx4JfzhdrKDZlWqtxLeZzqU5piC/0QTZdIFkn3fPKS
-         a7laSBeDP+E+A1PL1yQXxy2t1aWYz5bN7+uS61G5kNsoIDGyB1Np1xmd8i9ECw6EcVqy
-         Kk5WxUtbUTOqCez5kmBUXUiXWtqHmcdJMAkecyKAB3QwfacGdEfVk88Si2jF42ybDyki
-         2bXw==
-X-Gm-Message-State: AOAM532Px7lBAAque7cS9Yr9heIhVVj1/2mjOOzjw70jVVw958uPqdO6
-        mm9zMj0rslOM8tXjLCFThGc=
-X-Google-Smtp-Source: ABdhPJwHCLANmMv7DUjkqrjvz3LdqyK2TMEM/4yhWBPFbIN8h9t7ERgdRSTaBVXj/EJn1tDigm4KLA==
-X-Received: by 2002:a05:6402:50d3:: with SMTP id h19mr37507219edb.344.1625848509907;
-        Fri, 09 Jul 2021 09:35:09 -0700 (PDT)
-Received: from honeypot.lan ([2001:b07:6456:fd99:ced0:db1c:53e1:191e])
-        by smtp.googlemail.com with ESMTPSA id b25sm3341899edv.9.2021.07.09.09.35.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 09:35:09 -0700 (PDT)
-From:   Riccardo Mancini <rickyman7@gmail.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, Leo Yan <leo.yan@linaro.org>,
-        Remi Bernon <rbernon@codeweavers.com>,
-        Fabian Hemmer <copy@copy.sh>, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] perf test: add missing free for scandir-returned dirent entities
-Date:   Fri,  9 Jul 2021 18:34:53 +0200
-Message-Id: <20210709163454.672082-1-rickyman7@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KPJc57zXKNbmm6Wda6Wo2yhPL66N0K7mX7Ni/9wA22A=;
+        b=XVmHshUs1bio/BFKxE4bnwLGp3nKxCUtT+Oww+mVOJxlzCxqFC+l8gvPJ7XxgT0j6o
+         hGe6Slblc4e48cJekaGytYGyiieL9SRxVvRgGY4Q1W5IzwflzDQlHPxgBbk8gyzxw5gj
+         SGbN8uUS31aBGsHYzDZNZ3ir5iPhZTuinZZZ1mnTQ8WwMvVKYey1snFUhP+ggW1i6H3Q
+         slmpBuY4mhAcH7EMZuTVYQmPLD1KPmdbF8QnlU2xN6MqV+yDmf7Hi/rXKPYUDi1KRyTI
+         FSZcuWUzuVj2awezYcKwKuH1dX6lb7+TaNW+JrlZxGqvIBZdoGT7Dsvk4kFvGhay4duO
+         Tvyg==
+X-Gm-Message-State: AOAM533VyaKMgw1jjAj2YlUOZLyielSZAdSDlUy9CGUfF1vO7sDkwuJG
+        ELEKi6+qPbzgkbCe731QpU6F1VJs/KKvvZeFWe/UKQ==
+X-Google-Smtp-Source: ABdhPJzmi7sJ7IjCj6kOY34d6qrQNMR5UNqyGmph22ptlmZ5SLYcWRXGTXDYBGh3Qm9ILS/PCo+NwsupNOdicOaAmU8=
+X-Received: by 2002:a9d:550e:: with SMTP id l14mr30228676oth.241.1625848563120;
+ Fri, 09 Jul 2021 09:36:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210628172632.81029-1-jiangshanlai@gmail.com>
+ <46e0aaf1-b7cd-288f-e4be-ac59aa04908f@redhat.com> <c79d0167-7034-ebe2-97b7-58354d81323d@linux.alibaba.com>
+ <397a448e-ffa7-3bea-af86-e92fbb273a07@redhat.com> <a4e07fb1-1f36-1078-0695-ff4b72016d48@linux.alibaba.com>
+ <01946b5a-9912-3dfb-36f0-031f425432d2@redhat.com>
+In-Reply-To: <01946b5a-9912-3dfb-36f0-031f425432d2@redhat.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Fri, 9 Jul 2021 09:35:30 -0700
+Message-ID: <CALMp9eQWnUM-O7VmMWTGE2C2YraWxM2K0QcOQnbkctkzg_1pUA@mail.gmail.com>
+Subject: Re: [PATCH] KVM: X86: Also reload the debug registers before
+ kvm_x86->run() when the host is using them
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ASan reported a memory leak for items of the entlist returned from scandir.
-In fact, scandir returns a malloc'd array of malloc'd dirents.
-This patch adds the missing (z)frees.
+On Fri, Jul 9, 2021 at 8:52 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 09/07/21 12:05, Lai Jiangshan wrote:
+> >
+> >
+> > On 2021/7/9 17:49, Paolo Bonzini wrote:
+> >> On 09/07/21 05:09, Lai Jiangshan wrote:
+> >>> I just noticed that emulation.c fails to emulate with DBn.
+> >>> Is there any problem around it?
+> >>
+> >> Just what you said, it's not easy and the needs are limited.  I
+> >> implemented kvm_vcpu_check_breakpoint because I was interested in
+> >> using hardware breakpoints from gdb, even with unrestricted_guest=0
+> >> and invalid guest state, but that's it.
+> >
+> > It seems kvm_vcpu_check_breakpoint() handles only for code breakpoint
+> > and doesn't handle for data breakpoints.
+>
+> Correct, there's a comment above the call.  But data breakpoint are much
+> harder and relatively less useful.
 
-Fixes: da963834fe6975a1 ("perf test: Iterate over shell tests in alphabetical order")
-Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
----
- tools/perf/tests/builtin-test.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+Data breakpoints are actually quite useful. I/O breakpoints not so much.
 
-diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-index 41e3cf6bb66c68e8..5e6242576236325c 100644
---- a/tools/perf/tests/builtin-test.c
-+++ b/tools/perf/tests/builtin-test.c
-@@ -26,6 +26,7 @@
- #include <linux/kernel.h>
- #include <linux/string.h>
- #include <subcmd/exec-cmd.h>
-+#include <linux/zalloc.h>
- 
- static bool dont_fork;
- 
-@@ -540,7 +541,7 @@ static int shell_tests__max_desc_width(void)
- {
- 	struct dirent **entlist;
- 	struct dirent *ent;
--	int n_dirs;
-+	int n_dirs, e;
- 	char path_dir[PATH_MAX];
- 	const char *path = shell_tests__dir(path_dir, sizeof(path_dir));
- 	int width = 0;
-@@ -564,8 +565,9 @@ static int shell_tests__max_desc_width(void)
- 		}
- 	}
- 
-+	for (e = 0; e < n_dirs; e++)
-+		zfree(&entlist[e]);
- 	free(entlist);
--
- 	return width;
- }
- 
-@@ -596,7 +598,7 @@ static int run_shell_tests(int argc, const char *argv[], int i, int width)
- {
- 	struct dirent **entlist;
- 	struct dirent *ent;
--	int n_dirs;
-+	int n_dirs, e;
- 	char path_dir[PATH_MAX];
- 	struct shell_test st = {
- 		.dir = shell_tests__dir(path_dir, sizeof(path_dir)),
-@@ -629,6 +631,8 @@ static int run_shell_tests(int argc, const char *argv[], int i, int width)
- 		test_and_print(&test, false, -1);
- 	}
- 
-+	for (e = 0; e < n_dirs; e++)
-+		zfree(&entlist[e]);
- 	free(entlist);
- 	return 0;
- }
-@@ -730,7 +734,7 @@ static int perf_test__list_shell(int argc, const char **argv, int i)
- {
- 	struct dirent **entlist;
- 	struct dirent *ent;
--	int n_dirs;
-+	int n_dirs, e;
- 	char path_dir[PATH_MAX];
- 	const char *path = shell_tests__dir(path_dir, sizeof(path_dir));
- 
-@@ -752,8 +756,11 @@ static int perf_test__list_shell(int argc, const char **argv, int i)
- 			continue;
- 
- 		pr_info("%2d: %s\n", i, t.desc);
-+
- 	}
- 
-+	for (e = 0; e < n_dirs; e++)
-+		zfree(&entlist[e]);
- 	free(entlist);
- 	return 0;
- }
--- 
-2.23.0
-
+> > And no code handles DR7_GD bit when the emulation is not resulted from
+> > vm-exit. (for example, the non-first instruction when kvm emulates
+> > instructions back to back and the instruction accesses to DBn).
+>
+> Good point, that should be fixed too.
+>
+> Paolo
+>
