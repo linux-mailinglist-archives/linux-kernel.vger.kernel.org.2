@@ -2,146 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDDC43C1D7E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 04:28:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D025E3C1D89
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 04:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230437AbhGICbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 22:31:16 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:36003 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230235AbhGICbO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 22:31:14 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Uf9kTmr_1625797708;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Uf9kTmr_1625797708)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 09 Jul 2021 10:28:30 +0800
-Date:   Fri, 9 Jul 2021 10:28:27 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, nvdimm@lists.linux.dev,
-        Liu Bo <bo.liu@linux.alibaba.com>,
-        Joseqh Qi <joseph.qi@linux.alibaba.com>,
-        Liu Jiang <gerry@linux.alibaba.com>
-Subject: Re: [RFC PATCH v1.1 2/2] erofs: dax support for non-tailpacking
- regular file
-Message-ID: <YOe0S+NKUrBi5YZC@B-P7TQMD6M-0146.local>
-Mail-Followup-To: "Darrick J. Wong" <djwong@kernel.org>,
-        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, nvdimm@lists.linux.dev,
-        Liu Bo <bo.liu@linux.alibaba.com>,
-        Joseqh Qi <joseph.qi@linux.alibaba.com>,
-        Liu Jiang <gerry@linux.alibaba.com>
-References: <20210704135056.42723-3-hsiangkao@linux.alibaba.com>
- <20210705132153.223839-1-hsiangkao@linux.alibaba.com>
- <20210709014719.GD11634@locust>
+        id S230451AbhGICmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 22:42:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48590 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230235AbhGICmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 22:42:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id AA0F96145E;
+        Fri,  9 Jul 2021 02:40:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625798403;
+        bh=8XViQP1Oo27SkoCgDsLPL7l/IYwvW5NjIxTcdPAIBd0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=id/eb4aFIukdcZFatJI5XyykPTY1UMD7OnBkyhj/TcHC20S1PHYSG187e65iVBExU
+         iVpbXSHDO8WDdWQ6aQQHZS0/TIO2NzMpLKcjw++DILEBgvJtLGiM7RyJpK927noudY
+         e+tGTdXpeI478y5qy+sfMxiG2dICS7AzUGDTYSltrfxCOJ4uzJsOea50Hl/6O3yYtG
+         Sy9esceYnSEuXvb6t1tldNSIPZNjr7USKpS0I5W0ej+9iFNYfVY1mpMPOGFlvCmVCS
+         vQBpoPGtbMrxOTtz74iGJ7UEZqDkd9lNMPbBvz2hh2NehuL8eLLV5dFCTC690mz8Z0
+         tK4xJNj7iEWCw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9C122609D6;
+        Fri,  9 Jul 2021 02:40:03 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210709014719.GD11634@locust>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] net: bcmgenet: Ensure all TX/RX queues DMAs are disabled
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162579840363.22257.13274984591900266324.git-patchwork-notify@kernel.org>
+Date:   Fri, 09 Jul 2021 02:40:03 +0000
+References: <20210709015532.10590-1-f.fainelli@gmail.com>
+In-Reply-To: <20210709015532.10590-1-f.fainelli@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     netdev@vger.kernel.org, maxime@cerno.tech, opendmb@gmail.com,
+        davem@davemloft.net, kuba@kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Darrick,
+Hello:
 
-On Thu, Jul 08, 2021 at 06:47:19PM -0700, Darrick J. Wong wrote:
-> On Mon, Jul 05, 2021 at 09:21:53PM +0800, Gao Xiang wrote:
+This patch was applied to netdev/net.git (refs/heads/master):
 
-...
-
-> >  	Opt_cache_strategy,
-> > +	Opt_dax,
-> >  	Opt_err
-> >  };
-> >  
-> > @@ -370,6 +372,7 @@ static const struct fs_parameter_spec erofs_fs_parameters[] = {
-> >  	fsparam_flag_no("acl",		Opt_acl),
-> >  	fsparam_enum("cache_strategy",	Opt_cache_strategy,
-> >  		     erofs_param_cache_strategy),
-> > +	fsparam_flag("dax",             Opt_dax),
-> >  	{}
-> >  };
-> >  
-> > @@ -410,6 +413,14 @@ static int erofs_fc_parse_param(struct fs_context *fc,
-> >  		ctx->cache_strategy = result.uint_32;
-> >  #else
-> >  		errorfc(fc, "compression not supported, cache_strategy ignored");
-> > +#endif
-> > +		break;
-> > +	case Opt_dax:
-> > +#ifdef CONFIG_FS_DAX
-> > +		warnfc(fc, "DAX enabled. Warning: EXPERIMENTAL, use at your own risk");
-> > +		set_opt(ctx, DAX);
+On Thu,  8 Jul 2021 18:55:32 -0700 you wrote:
+> Make sure that we disable each of the TX and RX queues in the TDMA and
+> RDMA control registers. This is a correctness change to be symmetrical
+> with the code that enables the TX and RX queues.
 > 
-> You might want to allow 'dax=always' and 'dax=never' to maintain parity
-> with xfs/ext4's mount options...
-
-Yeah, thanks for your suggestion. Will revise in the next version..
-
-(Also, more use case details and development status about this scenario
- will be shown in the following months...)
-
-Thanks,
-Gao Xiang
-
-
+> Tested-by: Maxime Ripard <maxime@cerno.tech>
+> Fixes: 1c1008c793fa ("net: bcmgenet: add main driver file")
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 > 
-> --D
-> 
-> > +#else
-> > +		errorfc(fc, "dax options not supported");
-> >  #endif
-> >  		break;
-> >  	default:
-> > @@ -496,10 +507,17 @@ static int erofs_fc_fill_super(struct super_block *sb, struct fs_context *fc)
-> >  		return -ENOMEM;
-> >  
-> >  	sb->s_fs_info = sbi;
-> > +	sbi->dax_dev = fs_dax_get_by_bdev(sb->s_bdev);
-> >  	err = erofs_read_superblock(sb);
-> >  	if (err)
-> >  		return err;
-> >  
-> > +	if (test_opt(ctx, DAX) &&
-> > +	    !bdev_dax_supported(sb->s_bdev, EROFS_BLKSIZ)) {
-> > +		errorfc(fc, "DAX unsupported by block device. Turning off DAX.");
-> > +		clear_opt(ctx, DAX);
-> > +	}
-> > +
-> >  	sb->s_flags |= SB_RDONLY | SB_NOATIME;
-> >  	sb->s_maxbytes = MAX_LFS_FILESIZE;
-> >  	sb->s_time_gran = 1;
-> > @@ -609,6 +627,8 @@ static void erofs_kill_sb(struct super_block *sb)
-> >  	sbi = EROFS_SB(sb);
-> >  	if (!sbi)
-> >  		return;
-> > +	if (sbi->dax_dev)
-> > +		fs_put_dax(sbi->dax_dev);
-> >  	kfree(sbi);
-> >  	sb->s_fs_info = NULL;
-> >  }
-> > @@ -711,8 +731,8 @@ static int erofs_statfs(struct dentry *dentry, struct kstatfs *buf)
-> >  
-> >  static int erofs_show_options(struct seq_file *seq, struct dentry *root)
-> >  {
-> > -	struct erofs_sb_info *sbi __maybe_unused = EROFS_SB(root->d_sb);
-> > -	struct erofs_fs_context *ctx __maybe_unused = &sbi->ctx;
-> > +	struct erofs_sb_info *sbi = EROFS_SB(root->d_sb);
-> > +	struct erofs_fs_context *ctx = &sbi->ctx;
-> >  
-> >  #ifdef CONFIG_EROFS_FS_XATTR
-> >  	if (test_opt(ctx, XATTR_USER))
-> > @@ -734,6 +754,8 @@ static int erofs_show_options(struct seq_file *seq, struct dentry *root)
-> >  	else if (ctx->cache_strategy == EROFS_ZIP_CACHE_READAROUND)
-> >  		seq_puts(seq, ",cache_strategy=readaround");
-> >  #endif
-> > +	if (test_opt(ctx, DAX))
-> > +		seq_puts(seq, ",dax");
-> >  	return 0;
-> >  }
-> >  
-> > -- 
-> > 2.24.4
-> > 
+> [...]
+
+Here is the summary with links:
+  - [net] net: bcmgenet: Ensure all TX/RX queues DMAs are disabled
+    https://git.kernel.org/netdev/net/c/2b452550a203
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
