@@ -2,113 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC363C214B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 11:12:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7F043C2159
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 11:19:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231854AbhGIJPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 05:15:40 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:35068 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbhGIJPj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 05:15:39 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 13BB22217F;
-        Fri,  9 Jul 2021 09:12:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1625821975; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wuq8AXnGSyHPWHlBAgr2stU1z9+pJd/xXc0LihvQkIg=;
-        b=pLKGEPz4RX9m9xhtNK/iehnkcQPfsO/AwJ5/p4NWMXdfaIK0vEyogXXGG7pqB7oaqjt3IQ
-        lfPrkyT0SJWHh4hgIYA9i77fRlp5EnqR+cEJgpGzHXsYcpz5ofWwFL4d0Oobg24cvqcfaO
-        8foEucjWZLfQFVmWv/aamHQhOU9hWic=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id BBDDAA3BC7;
-        Fri,  9 Jul 2021 09:12:54 +0000 (UTC)
-Date:   Fri, 9 Jul 2021 11:12:54 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] printk/console: Check consistent sequence number when
- handling race in console_unlock()
-Message-ID: <YOgTFsuYYNE3fnkw@alley>
-References: <20210702150657.26760-1-pmladek@suse.com>
- <87y2an7w1x.fsf@jogness.linutronix.de>
- <YOWdWs8foEWKbgXy@alley>
+        id S231787AbhGIJWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 05:22:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55264 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229559AbhGIJWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 05:22:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F17B613CC;
+        Fri,  9 Jul 2021 09:19:18 +0000 (UTC)
+Date:   Fri, 9 Jul 2021 11:19:15 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, virtio-fs@redhat.com, dwalsh@redhat.com,
+        dgilbert@redhat.com, casey.schaufler@intel.com,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        tytso@mit.edu, miklos@szeredi.hu, gscrivan@redhat.com,
+        jack@suse.cz, Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH v2 1/1] xattr: Allow user.* xattr on symlink and special
+ files
+Message-ID: <20210709091915.2bd4snyfjndexw2b@wittgenstein>
+References: <20210708175738.360757-1-vgoyal@redhat.com>
+ <20210708175738.360757-2-vgoyal@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YOWdWs8foEWKbgXy@alley>
+In-Reply-To: <20210708175738.360757-2-vgoyal@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-07-07 14:26:03, Petr Mladek wrote:
-> On Sat 2021-07-03 08:32:02, John Ogness wrote:
-> > On 2021-07-02, Petr Mladek <pmladek@suse.com> wrote:
-> > > The standard printk() tries to flush the message to the console
-> > > immediately. It tries to take the console lock. If the lock is
-> > > already taken then the current owner is responsible for flushing
-> > > even the new message.
-> > >
-> > > There is a small race window between checking whether a new message is
-> > > available and releasing the console lock. It is solved by re-checking
-> > > the state after releasing the console lock. If the check is positive
-> > > then console_unlock() tries to take the lock again and process the new
-> > > message as well.
-> > >
-> > > The commit 996e966640ddea7b535c ("printk: remove logbuf_lock") causes that
-> > > console_seq is not longer read atomically. As a result, the re-check might
-> > > be done with an inconsistent 64-bit index.
-> > >
-> > > Solve it by using the last sequence number that has been checked under
-> > > the console lock. In the worst case, it will take the lock again only
-> > > to realized that the new message has already been proceed. But it
-> > > was possible even before.
-> > >
-> > > The variable next_seq is marked as __maybe_unused to call down compiler
-> > > warning when CONFIG_PRINTK is not defined.
-> > 
-> > As Sergey already pointed out, this patch is not fixing a real
-> > problem. An inconsistent value (or an increased consistent value) would
-> > mean that another printer is actively printing, and thus a retry is not
-> > necessary anyway.
+On Thu, Jul 08, 2021 at 01:57:38PM -0400, Vivek Goyal wrote:
+> Currently user.* xattr are not allowed on symlink and special files.
 > 
-> Ah, I misunderstood that part. You are right. CPU_X might see wrong
-> console_seq only when CPU_Y incremented console_seq. If CPU_X does not do
-> retry because of racy console_seq. Then CPU_Y would do retry when
-> yet another CPU added yet another new message in the meantime.
+> man xattr and recent discussion suggested that primary reason for this
+> restriction is how file permissions for symlinks and special files
+> are little different from regular files and directories.
 > 
-> > But this patch will avoid a KASAN message about an unmarked
-> > (although safe) data race.
+> For symlinks, they are world readable/writable and if user xattr were
+> to be permitted, it will allow unpriviliged users to dump a huge amount
+> of user.* xattrs on symlinks without any control.
 > 
-> Yup.
+> For special files, permissions typically control capability to read/write
+> from devices (and not necessarily from filesystem). So if a user can
+> write to device (/dev/null), does not necessarily mean it should be allowed
+> to write large number of user.* xattrs on the filesystem device node is
+> residing in.
 > 
-> OK, I am going to queue the patch for-5.15. There is no need to
-> rush it for-4.14.
+> This patch proposes to relax the restrictions a bit and allow file owner
+> or priviliged user (CAP_FOWNER), to be able to read/write user.* xattrs
+> on symlink and special files.
+> 
+> virtiofs daemon has a need to store user.* xatrrs on all the files
+> (including symlinks and special files), and currently that fails. This
+> patch should help.
+> 
+> Link: https://lore.kernel.org/linux-fsdevel/20210625191229.1752531-1-vgoyal@redhat.com/
+> Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+> ---
 
-The patch has been committed into printk/linux.git, branch
-rework/fixup-for-5.15.
+Seems reasonable and useful.
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
 
-Note that I am going to use topic branches rework/* for the printk
-rework from now on. It will allow to be more flexible with pushing
-big changes and fixes into linux-next and mainline.
+One question, do all filesystem supporting xattrs deal with setting them
+on symlinks/device files correctly?
 
-The "rework/" prefix will still allow to differ printk rework-related
-changes from "unrelated" printk features and fixes.
-
-As a result, "printk-rework" branch will not longer be merged into
-"for-next" or "for-linus" branches. But I am still going to merge
-"rework/*" branches there so that "printk-rework" branch shows
-the printk rework history. I think about renaming this branch
-to "rework/history" or "rework/HEAD".
-
-Best Regards,
-Petr
+>  fs/xattr.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/xattr.c b/fs/xattr.c
+> index 5c8c5175b385..2f1855c8b620 100644
+> --- a/fs/xattr.c
+> +++ b/fs/xattr.c
+> @@ -120,12 +120,14 @@ xattr_permission(struct user_namespace *mnt_userns, struct inode *inode,
+>  	}
+>  
+>  	/*
+> -	 * In the user.* namespace, only regular files and directories can have
+> -	 * extended attributes. For sticky directories, only the owner and
+> -	 * privileged users can write attributes.
+> +	 * In the user.* namespace, for symlinks and special files, only
+> +	 * the owner and priviliged users can read/write attributes.
+> +	 * For sticky directories, only the owner and privileged users can
+> +	 * write attributes.
+>  	 */
+>  	if (!strncmp(name, XATTR_USER_PREFIX, XATTR_USER_PREFIX_LEN)) {
+> -		if (!S_ISREG(inode->i_mode) && !S_ISDIR(inode->i_mode))
+> +		if (!S_ISREG(inode->i_mode) && !S_ISDIR(inode->i_mode) &&
+> +		    !inode_owner_or_capable(mnt_userns, inode))
+>  			return (mask & MAY_WRITE) ? -EPERM : -ENODATA;
+>  		if (S_ISDIR(inode->i_mode) && (inode->i_mode & S_ISVTX) &&
+>  		    (mask & MAY_WRITE) &&
+> -- 
+> 2.25.4
+> 
