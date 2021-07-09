@@ -2,85 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE90A3C1F11
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 07:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B9E3C1F17
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 07:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229897AbhGIFvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 01:51:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhGIFvB (ORCPT
+        id S229992AbhGIFxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 01:53:06 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:44913 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229618AbhGIFxF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 01:51:01 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08173C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 22:48:18 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id k32so2334723wms.4
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 22:48:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=Iyq852OltEvdUGf0H79zDdEd3RNqdT+BPIXNrQsQcJE=;
-        b=OCf1/gmiC5mm+ykJ0bqekK7x1uk9xDi/yheM4KjzlDXGSsllU4smWatzFPbxicxoob
-         UzTq8URIzBygb663u+Qz+acrU1p8lDc8H41V4dPdJWsU7oBmwrPVShcH+IiGtcL+/QZG
-         1S8DExNGazfbUNOK/Ho+eGtSqkujTyyw4rK3B3QIHduuv2B/7y/63uWLnyVVBrjZpf05
-         OcKSQuOY9zDG0i0X0nuCwWxMWiBio+520fE4lz/5uIYuHuHbhjGzRDhUwak0HGRhtj53
-         XA+GfmNorztT0upctwXTudzfvx9VTp9eRo5roPvE16N2JkYu6zYLoS+ATFO+e/m/unPz
-         Csqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=Iyq852OltEvdUGf0H79zDdEd3RNqdT+BPIXNrQsQcJE=;
-        b=ghjR6JH05Ww0x4X0BBJlm8vIrlXkEDHTRP4BShOQRpfO9ox5Yk41PyhZ+BM0xQfoTq
-         rvND76ypWCB0cwNfo1A/J0JDL8Kj2Ac0AY3CSBtuLjpEJLC1Zg+wT7rcMQ92G7V4r74x
-         p1hvp0FD/DpuouScyXzFaTAej60m/YY0eKwYJJq7eEZdkHpNpd6iIFN/8Jk0hCLDcEDo
-         FiFr/Qvq0RsZ8uVEtsO2S/atERZiEf7L1Lgg9GZkO4BfF3DP269RUebL0UJz68r6I/BE
-         AS7uE+Mx1cFRtw0LRtnkZiqcJuYwIQ8HMuFookiywdlBDhiv/wFmzvWbSzZ4wXg0zWId
-         V6SA==
-X-Gm-Message-State: AOAM532k5YBeAS9bx76T7r9pfgOARvbXWeuwLq9lGfiAdR/c3jvNlcCM
-        5wAp8xqNllXFKxCwSH9YnLnT5fJqBmd9ivu+0ER67gUI/Lc=
-X-Google-Smtp-Source: ABdhPJzo57O5UM9KTSuIsJBIpCIgxTY0L/L5Yez+HoJoD0kp28X9guSFRME7Td1UIJOtiaVzjQSjFRuxa1TR88hqAkc=
-X-Received: by 2002:a7b:cbc7:: with SMTP id n7mr37582291wmi.67.1625809696277;
- Thu, 08 Jul 2021 22:48:16 -0700 (PDT)
+        Fri, 9 Jul 2021 01:53:05 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UfBeBey_1625809818;
+Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UfBeBey_1625809818)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 09 Jul 2021 13:50:19 +0800
+Date:   Fri, 9 Jul 2021 13:50:16 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Gao Xiang <hsiangkao@redhat.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Terrell <terrelln@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: [linux-stable-rc:linux-5.4.y 7045/7049] mipsel-linux-ld:
+ decompress.c:undefined reference to `memmove'
+Message-ID: <YOfjmCT6n61Yidvp@B-P7TQMD6M-0146.local>
+References: <202107070120.6dOj1kB7-lkp@intel.com>
 MIME-Version: 1.0
-From:   Steve French <smfrench@gmail.com>
-Date:   Fri, 9 Jul 2021 00:48:00 -0500
-Message-ID: <CAH2r5muOdHbLDQr_p15U0572qF+6MjPK+32JYAf4LUKPuvkLGA@mail.gmail.com>
-Subject: how to request crypto_alloc_shash for GMAC
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        James Morris <james.morris@microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <202107070120.6dOj1kB7-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I was trying to add support for GMAC packet signing in the kernel
-client (support for it, as an alternative to CMAC, has recently been
-added to some SMB3.1.1 servers)
+On Wed, Jul 07, 2021 at 01:15:28AM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> head:   3909e2374335335c9504467caabc906d3f7487e4
+> commit: defcc2b5e54a4724fb5733f802edf5dd596018b6 [7045/7049] lib/lz4: explicitly support in-place decompression
+> config: mips-randconfig-r036-20210706 (attached as .config)
+> compiler: mipsel-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?id=defcc2b5e54a4724fb5733f802edf5dd596018b6
+>         git remote add linux-stable-rc https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+>         git fetch --no-tags linux-stable-rc linux-5.4.y
+>         git checkout defcc2b5e54a4724fb5733f802edf5dd596018b6
+>         # save the attached .config to linux build tree
+>         mkdir build_dir
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross O=build_dir ARCH=mips SHELL=/bin/bash
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 
-Presumably due to https://www.ietf.org/rfc/rfc4543.txt it is already
-supported in the kernel ... but what is the name that it is exposed as
-in the kernel crypto libraries?
+Which is weird, does the preboot environment miss memmove() on mipsel?
+Just a guess, I may look into that myself later...
 
-When calling crypto_alloc_shash, I tried the obvious name:
-         "gmac(aes)"
-(similar to what was previously used "cmac(aes)" and "hmac(sha256")
-but that didn't work.
-
-Any idea what the algorithm name that is needed to be used for GMAC here?
-
-In looking at drivers/crypto/ccp (not sure if that is the right
-subdir) - the closest I see is ccp-crypto-aes-galois.c but using that
-name I also got the same error (rc=-2) trying to request that as:
-         "galois(aes)"
-
-What is the correct name to use to request GMAC in crypto_alloc_shash?
-
-Doing "git grep crypto_alloc_shash" there are no matches on:
-       - "gcm" or "gmac" or "galois"
-How is it named?
--- 
 Thanks,
+Gao Xiang
 
-Steve
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    mipsel-linux-ld: arch/mips/boot/compressed/decompress.o: in function `LZ4_decompress_safe_withSmallPrefix':
+>    decompress.c:(.text+0x220): undefined reference to `memmove'
+>    mipsel-linux-ld: arch/mips/boot/compressed/decompress.o: in function `LZ4_decompress_fast_extDict':
+>    decompress.c:(.text+0x694): undefined reference to `memmove'
+> >> mipsel-linux-ld: decompress.c:(.text+0x774): undefined reference to `memmove'
+>    mipsel-linux-ld: arch/mips/boot/compressed/decompress.o: in function `LZ4_decompress_safe':
+>    decompress.c:(.text+0xb88): undefined reference to `memmove'
+>    mipsel-linux-ld: arch/mips/boot/compressed/decompress.o: in function `LZ4_decompress_safe_partial':
+>    decompress.c:(.text+0x1078): undefined reference to `memmove'
+>    mipsel-linux-ld: arch/mips/boot/compressed/decompress.o:decompress.c:(.text+0x12f8): more undefined references to `memmove' follow
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+
