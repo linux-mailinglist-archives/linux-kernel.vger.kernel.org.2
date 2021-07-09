@@ -2,260 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C473C293F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CC9A3C2945
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbhGISy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 14:54:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35348 "EHLO
+        id S229971AbhGIS5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 14:57:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhGISy5 (ORCPT
+        with ESMTP id S229459AbhGIS5J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 14:54:57 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E3BC0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 11:52:12 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id x25so12381991lfu.13
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 11:52:12 -0700 (PDT)
+        Fri, 9 Jul 2021 14:57:09 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D12FC0613DD
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 11:54:24 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id w127so13363263oig.12
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 11:54:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3r6Zy3dc7b/RI0w3UPclEJeOMHJ4DHnlchbm5eqOnKA=;
-        b=WFMne5VNUjb+3qAUptrMy2JfcxHxLJYnnkEWEtMKvMeE/TY4YqQH+SiBvlwhPdOJij
-         272rZPxTFW6N3X2HOGyqiZP3ng3G4nWISSBuKnl0N1JyipENWxfIFf64NdzC8o6DwuzK
-         BuqhAhQRw7/0qtHefGnIJJodXqxvmW60oKGouHYt9WJFOkVVAgG/11iPqpcFAjblbJrq
-         7Rn7IO+lS3wr92tiEwS0IeP9rDLEW5Wa2u1NUF0EjwPaEA21YfarNTdxGVJ+Qa+hvmaf
-         onHP/yDSd0GfBWfXVXXcdi/Jo4ziwZlwkYIlfUkQYBVKtrrBUo5aDoSqqNkTUthFBKaJ
-         OXqw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Okt/vQX1xLFseXyS2zcH8+6wq1EWZun8qIPdwle5V30=;
+        b=DOpPZtZD1NW1KSOq9LToGWjpIcuk8Aw81H5Y5hDL643RYgZS9OGKyTFaXZVYDCm6hA
+         XCkADOtix8CVKenh7EzUD/NfNmswucQeGA3xU0lmcm0vIs8Ysgb12yByuMZjDFr6XDd7
+         4bZR4lFA4LPst4AIVYlMteXbQjBk30mzDxUunuR1nxsSXtTdzAOxW1k92lA5tX1fAKPV
+         ULlgYa8lyQWgSlfvuDume7hnWdzANhcuGZi5+1qY8PcQYbk+BgvInhs5zmayPzHemB0m
+         aNJQccKH4FsfgbukoYbtE+/XhZOihgbOeK/J3ldmTlqHAppyaSEsA9Dl/Y5LY8SGeQsn
+         0aeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3r6Zy3dc7b/RI0w3UPclEJeOMHJ4DHnlchbm5eqOnKA=;
-        b=DQcAbVcInr34QCAmofZIjgTZnn/gyjV0CEP9GnBadZwK7B7KiDixr2aapNPgueKuWv
-         Nmf8kYLivG4U1/X6782Y/JM9PP4Zk1aSLuBahlkVvjE9VL+jGfdsEjL3+FPcI+Zkpma0
-         rSda82gSiPRsxyzprGOc8B+RviF0xY6bbOmoEhv/SrZrBlKTlEOz/l6nQuwAntJW2MHJ
-         M65jS9dPM7xH8vuPy/dKGMk+DojCAecf/3gB8J+rQDlFEsahTyHSDguQKui2TM/CUUWw
-         QAHrdAewmqq2+oDYLETtGqX6ClDPQOjwVe6KUHwFfZ2w8A+O0aCujLDvsNotrdOBnCkV
-         UnAw==
-X-Gm-Message-State: AOAM530i4TeAwxZSjtxoLazKM/wKbu1eKluuF7hDojWC7SJ/+YYSYKzP
-        J7dcfK0tNsBuHvo8fNMb1TM=
-X-Google-Smtp-Source: ABdhPJwILBnt+H1yvwBYf51DAo7E+br7S3u7Fg623xSUN4Un047XgR+6vBJ3QbzVW80Vrnbu8gGlBA==
-X-Received: by 2002:a05:6512:11e2:: with SMTP id p2mr30235682lfs.312.1625856730904;
-        Fri, 09 Jul 2021 11:52:10 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.225.155])
-        by smtp.gmail.com with ESMTPSA id d8sm233572lfq.138.2021.07.09.11.52.10
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Okt/vQX1xLFseXyS2zcH8+6wq1EWZun8qIPdwle5V30=;
+        b=Jv0vnm78ZxShTED6Y9OBMtdgruO8sLSK61v7sjn8uzZJDXYzRhjds1Hrl7sASK2PjU
+         F8jpr/Rh1h6ESBC2d+yBxn3F3qgEfhGYfhZRjUy3Onwrs75KyoXt1Ca1Zzs60sizix1r
+         1mfdvzYS6h8nEknCJ63NfUhqeJSra3sfH/8VAXNrggc6UaikSXL1DTuXC1MM+hf/3cm8
+         HdOAxBnyQvL0pwVblR5+wqLk0yJ67WuXWEfRBWJ3ewlKV1IPaUw0GJGyhiD8U22L8I4N
+         W/ySNuYwNfXKsKS1dzFRES1M3rr2mcKszCJNsZ/zUEDKQHtAbd/1XJMir0hGQ7Mgfane
+         CVag==
+X-Gm-Message-State: AOAM532obUrQePGrtexmDdDRnBNPhe8nzZkGKHUOJj6sUrbqkepNHSew
+        ktDK1PCFV2I6P4OiLl1W6rHPbA==
+X-Google-Smtp-Source: ABdhPJyjocthv/mPZVMXoeD9mhT7vXAed2apV5OzOXP+ndJNIK28KQMNVuE447rscrCzL4tLmJVHow==
+X-Received: by 2002:a05:6808:31a:: with SMTP id i26mr8750684oie.40.1625856863645;
+        Fri, 09 Jul 2021 11:54:23 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id g1sm1148975ooi.34.2021.07.09.11.54.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 11:52:10 -0700 (PDT)
-Date:   Fri, 9 Jul 2021 21:52:06 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     <linux-kernel@vger.kernel.org>, <tj@kernel.org>,
-        <jiangshanlai@gmail.com>, <xuqiang36@huawei.com>
-Subject: Re: [PATCH v2] workqueue: fix UAF in pwq_unbound_release_workfn()
-Message-ID: <20210709215206.44b93d4a@gmail.com>
-In-Reply-To: <20210709071100.4057639-1-yangyingliang@huawei.com>
-References: <20210709071100.4057639-1-yangyingliang@huawei.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+        Fri, 09 Jul 2021 11:54:23 -0700 (PDT)
+Date:   Fri, 9 Jul 2021 13:54:20 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/7] clk: qcom: gdsc: call runtime PM functions for
+ the provider device
+Message-ID: <YOibXCHvnG70ftQ0@yoga>
+References: <20210709173202.667820-1-dmitry.baryshkov@linaro.org>
+ <20210709173202.667820-5-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210709173202.667820-5-dmitry.baryshkov@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Jul 2021 15:11:00 +0800
-Yang Yingliang <yangyingliang@huawei.com> wrote:
+On Fri 09 Jul 12:31 CDT 2021, Dmitry Baryshkov wrote:
 
-> I got a UAF report when doing fuzz test:
+> In order to properly handle runtime PM status of the provider device,
+> call pm_runtime_get/pm_runtime_put on the clock controller device.
 > 
-> [  152.880091][ T8030]
-> ================================================================== [
-> 152.881240][ T8030] BUG: KASAN: use-after-free in
-> pwq_unbound_release_workfn+0x50/0x190 [  152.882442][ T8030] Read of
-> size 4 at addr ffff88810d31bd00 by task kworker/3:2/8030 [
-> 152.883578][ T8030] [  152.883932][ T8030] CPU: 3 PID: 8030 Comm:
-> kworker/3:2 Not tainted 5.13.0+ #249 [  152.885014][ T8030] Hardware
-> name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1
-> 04/01/2014 [  152.886442][ T8030] Workqueue: events
-> pwq_unbound_release_workfn [  152.887358][ T8030] Call Trace: [
-> 152.887837][ T8030]  dump_stack_lvl+0x75/0x9b [  152.888525][ T8030]
-> ? pwq_unbound_release_workfn+0x50/0x190 [  152.889371][ T8030]
-> print_address_description.constprop.10+0x48/0x70 [  152.890326][
-> T8030]  ? pwq_unbound_release_workfn+0x50/0x190 [  152.891163][
-> T8030]  ? pwq_unbound_release_workfn+0x50/0x190 [  152.891999][
-> T8030]  kasan_report.cold.15+0x82/0xdb [  152.892740][ T8030]  ?
-> pwq_unbound_release_workfn+0x50/0x190 [  152.893594][ T8030]
-> __asan_load4+0x69/0x90 [  152.894243][ T8030]
-> pwq_unbound_release_workfn+0x50/0x190 [  152.895057][ T8030]
-> process_one_work+0x47b/0x890 [  152.895778][ T8030]
-> worker_thread+0x5c/0x790 [  152.896439][ T8030]  ?
-> process_one_work+0x890/0x890 [  152.897163][ T8030]
-> kthread+0x223/0x250 [  152.897747][ T8030]  ?
-> set_kthread_struct+0xb0/0xb0 [  152.898471][ T8030]
-> ret_from_fork+0x1f/0x30 [  152.899114][ T8030] [  152.899446][ T8030]
-> Allocated by task 8884: [  152.900084][ T8030]
-> kasan_save_stack+0x21/0x50 [  152.900769][ T8030]
-> __kasan_kmalloc+0x88/0xb0 [  152.901416][ T8030]
-> __kmalloc+0x29c/0x460 [  152.902014][ T8030]
-> alloc_workqueue+0x111/0x8e0 [  152.902690][ T8030]
-> __btrfs_alloc_workqueue+0x11e/0x2a0 [  152.903459][ T8030]
-> btrfs_alloc_workqueue+0x6d/0x1d0 [  152.904198][ T8030]
-> scrub_workers_get+0x1e8/0x490 [  152.904929][ T8030]
-> btrfs_scrub_dev+0x1b9/0x9c0 [  152.905599][ T8030]
-> btrfs_ioctl+0x122c/0x4e50 [  152.906247][ T8030]
-> __x64_sys_ioctl+0x137/0x190 [  152.906916][ T8030]
-> do_syscall_64+0x34/0xb0 [  152.907535][ T8030]
-> entry_SYSCALL_64_after_hwframe+0x44/0xae [  152.908365][ T8030]
-> [  152.908688][ T8030] Freed by task 8884:
-> [  152.909243][ T8030]  kasan_save_stack+0x21/0x50
-> [  152.909893][ T8030]  kasan_set_track+0x20/0x30
-> [  152.910541][ T8030]  kasan_set_free_info+0x24/0x40
-> [  152.911265][ T8030]  __kasan_slab_free+0xf7/0x140
-> [  152.911964][ T8030]  kfree+0x9e/0x3d0
-> [  152.912501][ T8030]  alloc_workqueue+0x7d7/0x8e0
-> [  152.913182][ T8030]  __btrfs_alloc_workqueue+0x11e/0x2a0
-> [  152.913949][ T8030]  btrfs_alloc_workqueue+0x6d/0x1d0
-> [  152.914703][ T8030]  scrub_workers_get+0x1e8/0x490
-> [  152.915402][ T8030]  btrfs_scrub_dev+0x1b9/0x9c0
-> [  152.916077][ T8030]  btrfs_ioctl+0x122c/0x4e50
-> [  152.916729][ T8030]  __x64_sys_ioctl+0x137/0x190
-> [  152.917414][ T8030]  do_syscall_64+0x34/0xb0
-> [  152.918034][ T8030]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [  152.918872][ T8030]
-> [  152.919203][ T8030] The buggy address belongs to the object at
-> ffff88810d31bc00 [  152.919203][ T8030]  which belongs to the cache
-> kmalloc-512 of size 512 [  152.921155][ T8030] The buggy address is
-> located 256 bytes inside of [  152.921155][ T8030]  512-byte region
-> [ffff88810d31bc00, ffff88810d31be00) [  152.922993][ T8030] The buggy
-> address belongs to the page: [  152.923800][ T8030]
-> page:ffffea000434c600 refcount:1 mapcount:0 mapping:0000000000000000
-> index:0x0 pfn:0x10d318 [  152.925249][ T8030] head:ffffea000434c600
-> order:2 compound_mapcount:0 compound_pincount:0 [  152.926399][
-> T8030] flags:
-> 0x57ff00000010200(slab|head|node=1|zone=2|lastcpupid=0x7ff) [
-> 152.927515][ T8030] raw: 057ff00000010200 dead000000000100
-> dead000000000122 ffff888009c42c80 [  152.928716][ T8030] raw:
-> 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000 [
->  152.929890][ T8030] page dumped because: kasan: bad access detected
-> [  152.930759][ T8030] [  152.931076][ T8030] Memory state around the
-> buggy address: [  152.931851][ T8030]  ffff88810d31bc00: fa fb fb fb
-> fb fb fb fb fb fb fb fb fb fb fb fb [  152.932967][ T8030]
-> ffff88810d31bc80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb [
-> 152.934068][ T8030] >ffff88810d31bd00: fb fb fb fb fb fb fb fb fb fb
-> fb fb fb fb fb fb [  152.935189][ T8030]                    ^ [
-> 152.935763][ T8030]  ffff88810d31bd80: fb fb fb fb fb fb fb fb fb fb
-> fb fb fb fb fb fb [  152.936847][ T8030]  ffff88810d31be00: fc fc fc
-> fc fc fc fc fc fc fc fc fc fc fc fc fc [  152.937940][ T8030]
-> ==================================================================
-> 
-> If apply_wqattrs_prepare() fails in alloc_workqueue(), it will call
-> put_pwq() which invoke a work queue to call
-> pwq_unbound_release_workfn() and use the 'wq'. The 'wq' allocated in
-> alloc_workqueue() will be freed in error path when
-> apply_wqattrs_prepare() fails. So it will lead a UAF.
-> 
-> CPU0                                          CPU1
-> alloc_workqueue()
-> alloc_and_link_pwqs()
-> apply_wqattrs_prepare() fails
-> apply_wqattrs_cleanup()
-> schedule_work(&pwq->unbound_release_work)
-> kfree(wq)
->                                               worker_thread()
->                                               pwq_unbound_release_workfn()
-> <- trigger uaf here
-> 
-> If apply_wqattrs_prepare() fails, the new pwqs are not linked, we
-> don't need the worker to free them, so just free the 'ctx' and its
-> members in the error path.
-> 
-> Fixes: 2d5f0764b526 ("workqueue: split apply_workqueue_attrs() into 3
-> stages") Reported-by: Hulk Robot <hulkci@huawei.com>
-> Suggested-by: Lai Jiangshan <jiangshanlai@gmail.com>
-> Co-developed-by: Xu Qiang <xuqiang36@huawei.com>
-> Signed-off-by: Xu Qiang <xuqiang36@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 > ---
-> v2:
->   also use free_wqattrs_ctx() in workqueue_apply_unbound_cpumask()
-> ---
->  kernel/workqueue.c | 34 +++++++++++++++++++++++++++++++---
->  1 file changed, 31 insertions(+), 3 deletions(-)
+>  drivers/clk/qcom/gdsc.c | 66 ++++++++++++++++++++++++++++++++++++++---
+>  drivers/clk/qcom/gdsc.h |  2 ++
+>  2 files changed, 64 insertions(+), 4 deletions(-)
 > 
-> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-> index 50142fc08902..a2966ff19c50 100644
-> --- a/kernel/workqueue.c
-> +++ b/kernel/workqueue.c
-> @@ -3898,6 +3898,31 @@ struct apply_wqattrs_ctx {
->  	struct pool_workqueue	*pwq_tbl[];
+> diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
+> index ccd36617d067..6bec31fccb09 100644
+> --- a/drivers/clk/qcom/gdsc.c
+> +++ b/drivers/clk/qcom/gdsc.c
+> @@ -11,6 +11,7 @@
+>  #include <linux/kernel.h>
+>  #include <linux/ktime.h>
+>  #include <linux/pm_domain.h>
+> +#include <linux/pm_runtime.h>
+>  #include <linux/regmap.h>
+>  #include <linux/regulator/consumer.h>
+>  #include <linux/reset-controller.h>
+> @@ -50,6 +51,30 @@ enum gdsc_status {
+>  	GDSC_ON
 >  };
 >  
-> +static void free_pwq(struct pool_workqueue *pwq)
+> +static int gdsc_pm_runtime_get(struct gdsc *sc)
 > +{
-> +	if (!pwq || --pwq->refcnt)
-> +		return;
+> +	int ret;
 > +
-> +	put_unbound_pool(pwq->pool);
-> +	kmem_cache_free(pwq_cache, pwq);
+> +	if (!sc->rpm_dev)
+> +		return 0;
+> +
+> +	ret = pm_runtime_get_sync(sc->rpm_dev);
+> +	if (ret < 0) {
+> +		pm_runtime_put_noidle(sc->rpm_dev);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
 > +}
 > +
-> +static void free_wqattrs_ctx(struct apply_wqattrs_ctx *ctx)
+> +static int gdsc_pm_runtime_put(struct gdsc *sc)
 > +{
-> +	int node;
+> +	if (!sc->rpm_dev)
+> +		return 0;
 > +
-> +	if (!ctx)
-> +		return;
-> +
-> +	for_each_node(node)
-> +		free_pwq(ctx->pwq_tbl[node]);
-> +	free_pwq(ctx->dfl_pwq);
-> +
-> +	free_workqueue_attrs(ctx->attrs);
-> +
-> +	kfree(ctx);
+> +	return pm_runtime_put_sync(sc->rpm_dev);
 > +}
 > +
->  /* free the resources after success or abort */
->  static void apply_wqattrs_cleanup(struct apply_wqattrs_ctx *ctx)
+>  /* Returns 1 if GDSC status is status, 0 if not, and < 0 on error */
+>  static int gdsc_check_status(struct gdsc *sc, enum gdsc_status status)
 >  {
-> @@ -3981,7 +4006,7 @@ apply_wqattrs_prepare(struct workqueue_struct
-> *wq, out_free:
->  	free_workqueue_attrs(tmp_attrs);
->  	free_workqueue_attrs(new_attrs);
-> -	apply_wqattrs_cleanup(ctx);
-> +	free_wqattrs_ctx(ctx);
->  	return NULL;
+> @@ -232,9 +257,8 @@ static void gdsc_retain_ff_on(struct gdsc *sc)
+>  	regmap_update_bits(sc->regmap, sc->gdscr, mask, mask);
 >  }
 >  
-> @@ -5309,9 +5334,12 @@ static int
-> workqueue_apply_unbound_cpumask(void) }
+> -static int gdsc_enable(struct generic_pm_domain *domain)
+> +static int _gdsc_enable(struct gdsc *sc)
+>  {
+> -	struct gdsc *sc = domain_to_gdsc(domain);
+>  	int ret;
 >  
->  	list_for_each_entry_safe(ctx, n, &ctxs, list) {
-> -		if (!ret)
-> +		if (!ret) {
->  			apply_wqattrs_commit(ctx);
-> -		apply_wqattrs_cleanup(ctx);
-> +			apply_wqattrs_cleanup(ctx);
-> +		} else {
-> +			free_wqattrs_ctx(ctx);
-> +		}
->  	}
+>  	if (sc->pwrsts == PWRSTS_ON)
+> @@ -290,11 +314,28 @@ static int gdsc_enable(struct generic_pm_domain *domain)
+>  	return 0;
+>  }
 >  
->  	return ret;
+> -static int gdsc_disable(struct generic_pm_domain *domain)
+> +static int gdsc_enable(struct generic_pm_domain *domain)
+>  {
+>  	struct gdsc *sc = domain_to_gdsc(domain);
+>  	int ret;
+>  
+> +	ret = gdsc_pm_runtime_get(sc);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = _gdsc_enable(sc);
+> +	if (ret) {
+> +		gdsc_pm_runtime_put(sc);
 
+I presume what you do here is to leave the pm_runtime state of dispcc
+active if we succeeded in enabling the gdsc. But the gdsc is a subdomain
+of the parent domain, so the framework should take case of its
+dependency.
 
-With this patch applied my local syzbot instance didn't hit any of the
-reported bugs. Also, I ran syz-repro with all 3 crash reports [1] and
-didn't hit any bugs as well. Thank you for the fix!
+So the reason for gdsc_pm_runtime_get()/put() in this code path is so
+that you can access the dispcc registers, i.e. I think you should
+get()/put() regardless of the return value.
 
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int _gdsc_disable(struct gdsc *sc)
+> +{
+> +	int ret;
+> +
+>  	if (sc->pwrsts == PWRSTS_ON)
+>  		return gdsc_assert_reset(sc);
+>  
+> @@ -329,6 +370,18 @@ static int gdsc_disable(struct generic_pm_domain *domain)
+>  	return 0;
+>  }
+>  
+> +static int gdsc_disable(struct generic_pm_domain *domain)
+> +{
+> +	struct gdsc *sc = domain_to_gdsc(domain);
+> +	int ret;
+> +
 
-Tested-by: Pavel Skripkin <paskripkin@gmail.com> 
+If the gdsc is found to be on at initialization, the next operation that
+will happen is gdsc_disable() and as you didn't activate the pm_runtime
+state in gdsc_init() you would in theory get here with registers
+unaccessible.
 
+In practice though, the active gdsc should through the being a subdomain
+of the parent domain keep power on for you, so you won't notice this
+issue.
 
-[1] https://lore.kernel.org/lkml/20210708162417.777bff77@gmail.com/
+But as above, I think you should wrap _gdsc_disable() in a get()/put()
+pair.
 
+> +	ret = _gdsc_disable(sc);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return gdsc_pm_runtime_put(sc);
+> +}
+> +
+>  static int gdsc_init(struct gdsc *sc)
+>  {
+>  	u32 mask, val;
+> @@ -425,6 +478,8 @@ int gdsc_register(struct gdsc_desc *desc,
+>  	for (i = 0; i < num; i++) {
+>  		if (!scs[i])
+>  			continue;
+> +		if (pm_runtime_enabled(dev))
+> +			scs[i]->rpm_dev = dev;
+>  		scs[i]->regmap = regmap;
+>  		scs[i]->rcdev = rcdev;
+>  		ret = gdsc_init(scs[i]);
+> @@ -486,7 +541,10 @@ void gdsc_unregister(struct gdsc_desc *desc)
+>   */
+>  int gdsc_gx_do_nothing_enable(struct generic_pm_domain *domain)
+>  {
+> +	struct gdsc *sc = domain_to_gdsc(domain);
+> +
+>  	/* Do nothing but give genpd the impression that we were successful */
+> -	return 0;
+> +	/* Get the runtime PM device only */
+> +	return gdsc_pm_runtime_get(sc);
 
-With regards,
-Pavel Skripkin
+Per above, if you let the framework deal with the gdsc's dependencies on
+the parent domain and you only get()/put() for the sake of dispcc then
+you don't need you don't need to do this to keep the subsequent
+gdsc_disable() in balance.
+
+>  }
+>  EXPORT_SYMBOL_GPL(gdsc_gx_do_nothing_enable);
+> diff --git a/drivers/clk/qcom/gdsc.h b/drivers/clk/qcom/gdsc.h
+> index 5bb396b344d1..a82982df0a55 100644
+> --- a/drivers/clk/qcom/gdsc.h
+> +++ b/drivers/clk/qcom/gdsc.h
+> @@ -25,6 +25,7 @@ struct reset_controller_dev;
+>   * @resets: ids of resets associated with this gdsc
+>   * @reset_count: number of @resets
+>   * @rcdev: reset controller
+> + * @rpm_dev: runtime PM device
+>   */
+>  struct gdsc {
+>  	struct generic_pm_domain	pd;
+> @@ -58,6 +59,7 @@ struct gdsc {
+>  
+>  	const char 			*supply;
+>  	struct regulator		*rsupply;
+> +	struct device 			*rpm_dev;
+
+This isn't just the "runtime pm device", it's the device this gdsc is
+associated with. So "dev" sounds sufficient to me, but that requires
+that you have a separate bool rpm_enabled to remember if
+pm_runtime_enabled() was true during probe.
+
+So unless we need "dev" for something else this might be sufficient.
+
+Regards,
+Bjorn
+
+>  };
+>  
+>  struct gdsc_desc {
+> -- 
+> 2.30.2
+> 
