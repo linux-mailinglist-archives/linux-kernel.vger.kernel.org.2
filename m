@@ -2,117 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D261D3C2234
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 12:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C78003C2236
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 12:27:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232155AbhGIK3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 06:29:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232010AbhGIK3a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 06:29:30 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A404C0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 03:26:46 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id i20so15287732ejw.4
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 03:26:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EE3G7qk9YjV6WICjXG49f7wI9xsGOugrChSPRCk7KBY=;
-        b=j6ueWrIhKJIqX+ueklioki6dIG0OTnmNayymWlaVcRO1HjVRRLInq8113rpC0VzsJE
-         LJlOHhgMqrPL7AbRHbdrjOpH5SkezCozW4eeIWh4PO1FXTa5NEVaruBmAWnQGauz7eGj
-         FQ2l2WvAoKeryPAxZP6iCnPC+YpHdEbovQavQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EE3G7qk9YjV6WICjXG49f7wI9xsGOugrChSPRCk7KBY=;
-        b=A9OT2+gXzjqTEFiJJ/4QOe/eadSKI8BOBMCWDbEwgFfasEp60qgsLrUb9OKo+M8TQe
-         u5cRUZtMOeKTKMTxLVL4VLWYq/NUGizrM+ZFVhuTEiM8JS8wdTuEjVpqypjdl6N8ETtY
-         57Vm2hhju9zaf8UdeLEuUHP98heMVX5984SmQVMUz48idINf/SoTb7o9sFVBXEagSwjb
-         1sn6DCNxqb7ZFpG+ZQPcBOqka7u/OQNUHCmkWB/mHD3dvHwwCNpUwlGkqRUlejX7VpXc
-         oO87o1SmC8WNL8s/iylGJpw0DmE41rKsn/iD6JnANx3uFBqEVdz9tEXzbUi6szsglOjd
-         mh/g==
-X-Gm-Message-State: AOAM5335UW/HxklFyCIDu/8wjDEe5LvKY88qouE/TBNPSCoCUdErUPWU
-        OcPZdWmfNeV7z/WHynLE5tiZ5vrF2DImgTh7
-X-Google-Smtp-Source: ABdhPJx4scGLsR7919Q6aDbiYiRYj69DwkenTqSh2eETVeb5KPFOtXMAsdLHw9EpXMz5M6WftNE6uw==
-X-Received: by 2002:a17:906:5187:: with SMTP id y7mr25020141ejk.153.1625826404268;
-        Fri, 09 Jul 2021 03:26:44 -0700 (PDT)
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com. [209.85.221.42])
-        by smtp.gmail.com with ESMTPSA id l26sm2798597edt.40.2021.07.09.03.26.43
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Jul 2021 03:26:43 -0700 (PDT)
-Received: by mail-wr1-f42.google.com with SMTP id m2so454622wrq.2
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 03:26:43 -0700 (PDT)
-X-Received: by 2002:adf:f1c9:: with SMTP id z9mr12812492wro.159.1625826403104;
- Fri, 09 Jul 2021 03:26:43 -0700 (PDT)
+        id S232170AbhGIK3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 06:29:44 -0400
+Received: from foss.arm.com ([217.140.110.172]:49652 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232161AbhGIK3n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 06:29:43 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D53F5ED1;
+        Fri,  9 Jul 2021 03:26:59 -0700 (PDT)
+Received: from [10.57.35.192] (unknown [10.57.35.192])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B37B33F5A1;
+        Fri,  9 Jul 2021 03:26:58 -0700 (PDT)
+Subject: Re: [bug report] iommu_dma_unmap_sg() is very slow then running IO
+ from remote numa node
+To:     Ming Lei <ming.lei@redhat.com>, linux-nvme@lists.infradead.org,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org
+References: <YOgK8fdv7dOQtkET@T590>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <23e7956b-f3b5-b585-3c18-724165994051@arm.com>
+Date:   Fri, 9 Jul 2021 11:26:53 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <1625038079-25815-1-git-send-email-kyrie.wu@mediatek.com>
-In-Reply-To: <1625038079-25815-1-git-send-email-kyrie.wu@mediatek.com>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Fri, 9 Jul 2021 19:26:31 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5D+Zwh6JxJqAbyLX9XeyFdnmjUgWTpFA6GvO2qNktOxBQ@mail.gmail.com>
-Message-ID: <CAAFQd5D+Zwh6JxJqAbyLX9XeyFdnmjUgWTpFA6GvO2qNktOxBQ@mail.gmail.com>
-Subject: Re: [PATCH v2,0/9] Support jpeg encode for MT8195
-To:     "kyrie.wu" <kyrie.wu@mediatek.com>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bin Liu <bin.liu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, Xia.Jiang@mediatek.com,
-        maoguang.meng@mediatek.com, srv_heupstream@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YOgK8fdv7dOQtkET@T590>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kyrie,
+On 2021-07-09 09:38, Ming Lei wrote:
+> Hello,
+> 
+> I observed that NVMe performance is very bad when running fio on one
+> CPU(aarch64) in remote numa node compared with the nvme pci numa node.
+> 
+> Please see the test result[1] 327K vs. 34.9K.
+> 
+> Latency trace shows that one big difference is in iommu_dma_unmap_sg(),
+> 1111 nsecs vs 25437 nsecs.
 
-On Wed, Jun 30, 2021 at 4:31 PM kyrie.wu <kyrie.wu@mediatek.com> wrote:
->
-> add component framework to using multi-HW for MT8195 jpeg encode.
->
-> kyrie.wu (9):
->   dt-bindings: mediatek: Add mediatek, mt8195-jpgenc compatible
->   media: mtk-jpegenc: Add MT8195 JPEG venc driver
->   media: mtk-jpegenc: remove redundant code of irq
->   media: mtk-jpegenc: Refactor jpeg clock interface
->   media: mtk-jpegenc: Generalize jpeg encode irq interfaces
->   media: mtk-jpegenc: Generalize jpegenc HW timeout interfaces
->   media: mtk-jpegenc: Use component framework to manage each hardware
->     information
->   media: mtk-jpegenc: Generalize jpegenc HW operations interfaces
->   media: mtk-jpegenc: Refactor jpegenc device run interface
->
->  .../bindings/media/mediatek-jpeg-encoder.yaml      |   3 +
->  drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c    | 600 +++++++++++++++++----
->  drivers/media/platform/mtk-jpeg/mtk_jpeg_core.h    |  69 ++-
->  drivers/media/platform/mtk-jpeg/mtk_jpeg_enc_hw.c  | 208 +++++++
->  4 files changed, 786 insertions(+), 94 deletions(-)
->
-> ---
-> This patch dependents on "dt-bindings: mediatek: convert mtk jpeg decoder/encoder to yaml"[1]
->
-> Please also accept this patch together with [1].
->
-> [1]https://lore.kernel.org/patchwork/patch/1445298/
+Are you able to dig down further into that? iommu_dma_unmap_sg() itself 
+doesn't do anything particularly special, so whatever makes a difference 
+is probably happening at a lower level, and I suspect there's probably 
+an SMMU involved. If for instance it turns out to go all the way down to 
+__arm_smmu_cmdq_poll_until_consumed() because polling MMIO from the 
+wrong node is slow, there's unlikely to be much you can do about that 
+other than the global "go faster" knobs (iommu.strict and 
+iommu.passthrough) with their associated compromises.
 
-Thank you for the series. However, I gave reviewing it a try and
-unfortunately had a very hard time following it, because of the way
-the patches are organized. Please make sure to read and understand the
-kernel patch submission guide[1], adjust the series appropriately and
-send a new version which I'll review.
+Robin.
 
-[1] https://www.kernel.org/doc/html/latest/process/submitting-patches.html
-
-Best regards,
-Tomasz
+> [1] fio test & results
+> 
+> 1) fio test result:
+> 
+> - run fio on local CPU
+> taskset -c 0 ~/git/tools/test/nvme/io_uring 10 1 /dev/nvme1n1 4k
+> + fio --bs=4k --ioengine=io_uring --fixedbufs --registerfiles --hipri --iodepth=64 --iodepth_batch_submit=16 --iodepth_batch_complete_min=16 --filename=/dev/nvme1n1 --direct=1 --runtime=10 --numjobs=1 --rw=randread --name=test --group_reporting
+> 
+> IOPS: 327K
+> avg latency of iommu_dma_unmap_sg(): 1111 nsecs
+> 
+> 
+> - run fio on remote CPU
+> taskset -c 80 ~/git/tools/test/nvme/io_uring 10 1 /dev/nvme1n1 4k
+> + fio --bs=4k --ioengine=io_uring --fixedbufs --registerfiles --hipri --iodepth=64 --iodepth_batch_submit=16 --iodepth_batch_complete_min=16 --filename=/dev/nvme1n1 --direct=1 --runtime=10 --numjobs=1 --rw=randread --name=test --group_reporting
+> 
+> IOPS: 34.9K
+> avg latency of iommu_dma_unmap_sg(): 25437 nsecs
+> 
+> 2) system info
+> [root@ampere-mtjade-04 ~]# lscpu | grep NUMA
+> NUMA node(s):                    2
+> NUMA node0 CPU(s):               0-79
+> NUMA node1 CPU(s):               80-159
+> 
+> lspci | grep NVMe
+> 0003:01:00.0 Non-Volatile memory controller: Samsung Electronics Co Ltd NVMe SSD Controller SM981/PM981/PM983
+> 
+> [root@ampere-mtjade-04 ~]# cat /sys/block/nvme1n1/device/device/numa_node
+> 0
+> 
+> 
+> 
+> Thanks,
+> Ming
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
