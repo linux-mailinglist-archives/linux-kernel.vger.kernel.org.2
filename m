@@ -2,134 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1EFA3C2839
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1D4D3C2844
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229701AbhGIRYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 13:24:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbhGIRYl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 13:24:41 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A007CC0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 10:21:57 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id oj10-20020a17090b4d8ab0290172f77377ebso6469126pjb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 10:21:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Nc1RujRxUKzPX3Wrhc15+dX4Hbs3SpGgW4ZBkvgtlWw=;
-        b=vScavMm43CmPwbVKjYLaRrlJJBUpzt6Ad/5991OiMkMuKQlSiGQwiIYo4lHzl/QBJj
-         TLW0rjN4FYi8zqNuiRyY4xktnEabUQQzzkhPw6vQzFmwI1ncCEBwFysmjz6ZXwfBLk0D
-         CYBiXQMoGbRo0ye2XA7/7OWmS5svjqOKCkNPIbM25RX7FOrFG4QU72L1n1QI2RZrAo8A
-         Z+FKcZDIkQZZQWnr8VbFrj3loB8V4Hvvs5dbsCeMUFJ5oSnsW0FDbYJHyk/xYVWsj0tQ
-         +VNf7u4NJa8BTlJh0KclzgrLQNGwObZcVDyrht27TYXfsiImuv47RokCfemhaYoTtWOS
-         t9pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Nc1RujRxUKzPX3Wrhc15+dX4Hbs3SpGgW4ZBkvgtlWw=;
-        b=da8U4Cd9bL25Fc0qol0kUd+vul/0elX5vn8oSam8xmeac4IRLNpY8faxvXE6lGSytc
-         5KyYIJxzTP7IyL7s/e1pZkNpQg0hmEVi9kFEyc8fDm+pxeg8DYxGXXrOsVyzgEh9BRIF
-         53QmjPw1Wl5DxcNLtSL5k6yMzoaZWOy8IO6QAbqNL8frboPfZZ9Rgcp4UmtUeby/1B5B
-         rKCPs1yThTUfCrczaRAkrC4z0gTaRTQHouXTuZidLR9LobqaSZhapk6/ZHoNJzPSTmiF
-         pEYr/isxqPwx5FY6hQPXlR2QSHhd3WNtIvbOYHKJFwN4Ghg+UVcdlqChbM2SW5fNWahq
-         y6tg==
-X-Gm-Message-State: AOAM530hMRnH2wf8P7RoD7eWlKP51sdZ5H6WsLWSAaC9LBkI98sZfZaD
-        HqTPL8lNKLKvi7kIBsNEYW88L90pHIHtYA==
-X-Google-Smtp-Source: ABdhPJzhykY6zt8ypwrURBbnuE9gwCHbkXLnj4Ko+JmUddPmGTfMZoWr75VP9CfeQGX0ZlXJ3PgRhA==
-X-Received: by 2002:a17:902:7488:b029:129:c9cd:67ec with SMTP id h8-20020a1709027488b0290129c9cd67ecmr11958540pll.58.1625851316960;
-        Fri, 09 Jul 2021 10:21:56 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id d1sm6577298pfu.6.2021.07.09.10.21.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 10:21:56 -0700 (PDT)
-Date:   Fri, 9 Jul 2021 17:21:52 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "KVM: x86: WARN and reject loading KVM if NX is
- supported but not enabled"
-Message-ID: <YOiFsB9vZgMcpJZu@google.com>
-References: <20210625001853.318148-1-seanjc@google.com>
- <28ec9d07-756b-f546-dad1-0af751167838@redhat.com>
+        id S229736AbhGIRaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 13:30:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38536 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229459AbhGIRaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 13:30:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B5CA9613BD;
+        Fri,  9 Jul 2021 17:27:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625851641;
+        bh=hunFLVyp1kxN8ZqWSRfrDVs7gY3ARFHi3Rol7iZHrco=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Wf1XfEtMdv9XkXqtMNKUuDOw4edZpH7GIsgFaNVhsmvtyHeSQuOJHBQRI39IM8SMC
+         yPt4nCUaHxngzGfc0B6B2T73Aqjyiuenivhlq11yXQuQ9rkHErqxJxTOiBAJIhBPMd
+         mkz8LA3Ui4BFpmW+qSspe79/SPtBo5FKGnO7w9d9BF9f8VDaklotsL4zVM3s2d/cLx
+         G7EL694eFvYJb/c8FrqHsk5wG451XNCh9aMMZbkV8Y7OQFCzJvW/Ywmq7Jws7/gfI+
+         Um4ZpFNFXl2AC94i9/zsElLG9eAPRLUvRgq1iL66p7JBuPnaPQE4sZDUxBiiPH5F57
+         b6WY8b5AYItSw==
+Date:   Fri, 9 Jul 2021 18:26:47 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        hdegoede@redhat.com, mgross@linux.intel.com,
+        luzmaximilian@gmail.com, lgirdwood@gmail.com,
+        andy.shevchenko@gmail.com, laurent.pinchart@ideasonboard.com,
+        kieran.bingham@ideasonboard.com
+Subject: Re: [RFC PATCH 1/2] regulator: Add support for software node
+ connections
+Message-ID: <20210709172647.GE4112@sirena.org.uk>
+References: <20210708224226.457224-1-djrscally@gmail.com>
+ <20210708224226.457224-2-djrscally@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="SNIs70sCzqvszXB4"
 Content-Disposition: inline
-In-Reply-To: <28ec9d07-756b-f546-dad1-0af751167838@redhat.com>
+In-Reply-To: <20210708224226.457224-2-djrscally@gmail.com>
+X-Cookie: This fortune intentionally left blank.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 08, 2021, Paolo Bonzini wrote:
-> On 25/06/21 02:18, Sean Christopherson wrote:
-> > Let KVM load if EFER.NX=0 even if NX is supported, the analysis and
-> > testing (or lack thereof) for the non-PAE host case was garbage.
-> > 
-> > If the kernel won't be using PAE paging, .Ldefault_entry in head_32.S
-> > skips over the entire EFER sequence.  Hopefully that can be changed in
-> > the future to allow KVM to require EFER.NX, but the motivation behind
-> > KVM's requirement isn't yet merged.  Reverting and revisiting the mess
-> > at a later date is by far the safest approach.
-> > 
-> > This reverts commit 8bbed95d2cb6e5de8a342d761a89b0a04faed7be.
-> > 
-> > Fixes: 8bbed95d2cb6 ("KVM: x86: WARN and reject loading KVM if NX is supported but not enabled")
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> > 
-> > Hopefully it's not too late to just drop the original patch...
-> > 
-> >   arch/x86/kvm/x86.c | 3 ---
-> >   1 file changed, 3 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index 4a597aafe637..1cc02a3685d0 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -10981,9 +10981,6 @@ int kvm_arch_hardware_setup(void *opaque)
-> >   	int r;
-> >   	rdmsrl_safe(MSR_EFER, &host_efer);
-> > -	if (WARN_ON_ONCE(boot_cpu_has(X86_FEATURE_NX) &&
-> > -			 !(host_efer & EFER_NX)))
-> > -		return -EIO;
-> >   	if (boot_cpu_has(X86_FEATURE_XSAVES))
-> >   		rdmsrl(MSR_IA32_XSS, host_xss);
-> > 
-> 
-> So do we want this or "depends on X86_64 || X86_PAE"?
 
-Hmm, I'm leaning towards keeping !PAE support purely for testing the !PAE<->PAE
-MMU transitions for nested virtualization.  It's not much coverage, and the !PAE
-NPT horror is a much bigger testing gap (because KVM doesn't support it), but on
-the other hand setting EFER.NX for !PAE kernels appears to be trivial, e.g.
+--SNIs70sCzqvszXB4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/arch/x86/kernel/head_32.S b/arch/x86/kernel/head_32.S
-index 67f590425d90..bfbea25a9fe8 100644
---- a/arch/x86/kernel/head_32.S
-+++ b/arch/x86/kernel/head_32.S
-@@ -214,12 +214,6 @@ SYM_FUNC_START(startup_32_smp)
-        andl $~1,%edx                   # Ignore CPUID.FPU
-        jz .Lenable_paging              # No flags or only CPUID.FPU = no CR4
+On Thu, Jul 08, 2021 at 11:42:25PM +0100, Daniel Scally wrote:
 
--       movl pa(mmu_cr4_features),%eax
--       movl %eax,%cr4
--
--       testb $X86_CR4_PAE, %al         # check if PAE is enabled
--       jz .Lenable_paging
--
-        /* Check if extended functions are implemented */
-        movl $0x80000000, %eax
-        cpuid
+> --- a/drivers/regulator/Makefile
+> +++ b/drivers/regulator/Makefile
+> @@ -9,6 +9,7 @@ obj-$(CONFIG_OF) += of_regulator.o
+>  obj-$(CONFIG_REGULATOR_FIXED_VOLTAGE) += fixed.o
+>  obj-$(CONFIG_REGULATOR_VIRTUAL_CONSUMER) += virtual.o
+>  obj-$(CONFIG_REGULATOR_USERSPACE_CONSUMER) += userspace-consumer.o
+> +obj-$(CONFIG_REGULATOR_SWNODE) += swnode_regulator.o
 
-My only hesitation is the risk of somehow breaking ancient CPUs by falling into
-the NX path.  Maybe try forcing EFER.NX=1 for !PAE, and fall back to requiring
-PAE if that gets NAK'd or needs to be reverted for whatever reason?
+This appears to be sorted with regulator drivers but as far as I
+understand it this is not a driver?  I'd put it next to the OF file.
+
+> @@ -1785,6 +1788,22 @@ static struct regulator_dev *regulator_dev_lookup(struct device *dev,
+
+The line numbers here look off...
+
+> +++ b/drivers/regulator/swnode_regulator.c
+> @@ -0,0 +1,111 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Author: Dan Scally <djrscally@gmail.com> */
+> +
+
+Please make the entire comment a C++ one so things look more
+intentional.
+
+> +static struct fwnode_handle *
+> +regulator_swnode_get_init_node(struct fwnode_handle *fwnode,
+> +			       const struct regulator_desc *desc)
+> +{
+> +	const struct software_node *parent, *child;
+> +
+> +	parent = to_software_node(fwnode->secondary);
+> +
+> +	if (desc->regulators_node)
+> +		child = software_node_find_by_name(parent,
+> +						   desc->regulators_node);
+> +	else
+> +		child = software_node_find_by_name(parent, desc->name);
+> +
+> +	return software_node_fwnode(child);
+> +}
+
+Nothing is documenting what the binding for these swnodes is supposed to
+be so it's hard to tell if any of this is correct and makes sense, nor
+how someone is supposed to take this stuff and integrate it into a
+system.  I think this needs some more explicit documentation of what's
+going on adding to the tree, this will help with review and help anyone
+who needs to use this stuff figure out how to do so.
+
+--SNIs70sCzqvszXB4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDohtYACgkQJNaLcl1U
+h9CaHQf9Edt3jgRyz64Jm4Y5r8Skn4xhgKSAiteLjulAe+KgRAPsBgrRwAd3sqbf
+5PWZ7hkFBUC7w3XEyuZgDrf38n7cS8G2bREIriH+yjxsvTQY3HhgmUEDokKooVei
+LP1xvCIefyjnraWftsrUvXu61WgqgkuSEJZukhR8e71XbmSIpLNfZ5o2mMZkgfpJ
++F66ARC2BoWZCsEfG4xbeJz21X8odvNIcDmgxegLuYeaTVx4gusike8N8tE1rp/T
+WQ064w0XnZVrcYs+u8eCHzXJOBbiLV7aDO8hs9xnsMHYWUIDFRyWYFZzUY8eJzUG
+g5fKXBObe504GP1a6iS+RndCQzULyQ==
+=agHe
+-----END PGP SIGNATURE-----
+
+--SNIs70sCzqvszXB4--
