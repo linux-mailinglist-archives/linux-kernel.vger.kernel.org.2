@@ -2,226 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9128B3C2825
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:16:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1ABB3C2826
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229662AbhGIRSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 13:18:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41670 "EHLO
+        id S229707AbhGIRTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 13:19:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhGIRSm (ORCPT
+        with ESMTP id S229459AbhGIRTP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 13:18:42 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B63DC0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 10:15:58 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id h7-20020a5b0a870000b029054c59edf217so12378552ybq.3
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 10:15:58 -0700 (PDT)
+        Fri, 9 Jul 2021 13:19:15 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2069C0613E5
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 10:16:31 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id i125so9997816qke.12
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 10:16:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=Mo8vf2VijmXE0Kj63cEeHZeOMc23Yva+SB8nf+0oHHk=;
-        b=edy+MsiIy/d4cyFnuv1+E/otaIO6nz7+ZqGr/G0JQdc/NYFDoq4ejsTXJgkrhOkFv4
-         8uB0hSdSzgXI3O38qdYCBilrBOniO0ARAy53wZsVqF3fcvMqwp8i8yzmBmG2S2crxCGg
-         N6oRBxtrNu2FREg4kIW+L03/94KJCq+PEp0lumHydN1xpmNeEn08JTIlz1vzPYO/nW1R
-         WV1OdtMP0+V1jEGOC067Y7JbM+/rF/121CLJ1JZJRR8CypXzxxC9ukq01qbXgYKml9RL
-         8qB6e+RLAnn9ICDGygpT9ZObPnZV5pDapDoXkXphh63xKis0s3Qy9gqom096EB9pnTRR
-         1+rA==
+        d=vt-edu.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:organization:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=MdqIsV//Q4vhJs3qwgiDVZoj0NjhNPqIuJo+SfgNN5E=;
+        b=TAlD3h0Im6oRi7XhTmQC0eClIgZH/AeAzBPrYhIQQ5ilawAhT7ql0UURAoT+NJxQpk
+         tGSEufuGbYBFlTpakA8lgpnTFqI+GIc3tlxlVmAqsuGMqt2/u7sBmO3JfF+EK3b5HE9M
+         I7k1gsGWz4kJaXtbl/rzcEkocLD9HBrfuNUFruGplVyJnx9A+/UiOpE5URliu2BG8ZvL
+         akUKay7dIp5uEol0vP9ChsFPrb96hhlj+032j6W9nSOL3J/BujW4cSrVq1H1lMP5wYxV
+         ozvD1Z9q79+9E2kXYnIVV3m3U+Xobi1aeXnSFad4G7+TOEQ8rY7aBTp363pw/AcmWmxI
+         ND9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=Mo8vf2VijmXE0Kj63cEeHZeOMc23Yva+SB8nf+0oHHk=;
-        b=dkEWZ0BJc/NLF8skKws6BUXx+5mruS6aAA0rc1NOkcMWKvbdB3ENp38x2r4pdzc3e2
-         EdiPLXohjmpcH9pF3HZmu1PITWR/0bAM6suJLcMCh/ER6mP6L6Wfgf0ax00wXtQh6g7W
-         iarSzVcYshxSGUqT11618PzgcNWt8bvPXNiGi81jbPbMSgfOhdMEOz6YLBqcNBenvZRs
-         MqUkKgaLUmIC6wxktJzDfarZqjJPfNGzfCsxDrcE3tpkcFRwrOFo9xcN5EHAlpDM5wCr
-         tN9+rz/RtJIY1qizDg4Z9gaF3q0oAkBw6qvssF+WpEsY2FKT+3gdt5ekZkY52Kx/4+BA
-         pgEQ==
-X-Gm-Message-State: AOAM5309jX2+oEHLIHRvgQ8ndM9CaUwp325bGhuVC28hD19QRGLbwB5h
-        SW06taexQ+xAC+GiFDWUptnBj2uGXtA=
-X-Google-Smtp-Source: ABdhPJzi/H/Nck0AAoo0h214LOlRmb+5pLoinbBXSR23O2IEoejG7Qf2DRTOJSSegkcmPxGYKjLml/YP47A=
-X-Received: from surenb1.mtv.corp.google.com ([2620:15c:211:200:9f62:e8e9:4de2:f00a])
- (user=surenb job=sendgmr) by 2002:a25:df11:: with SMTP id w17mr47515616ybg.314.1625850957757;
- Fri, 09 Jul 2021 10:15:57 -0700 (PDT)
-Date:   Fri,  9 Jul 2021 10:15:54 -0700
-Message-Id: <20210709171554.3494654-1-surenb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-Subject: [PATCH v2 1/1] mm, memcg: inline mem_cgroup_{charge/uncharge} to
- improve disabled memcg config
-From:   Suren Baghdasaryan <surenb@google.com>
-To:     tj@kernel.org
-Cc:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com,
-        songmuchun@bytedance.com, shy828301@gmail.com, alexs@kernel.org,
-        richard.weiyang@gmail.com, vbabka@suse.cz, axboe@kernel.dk,
-        iamjoonsoo.kim@lge.com, david@redhat.com, willy@infradead.org,
-        apopple@nvidia.com, minchan@kernel.org, linmiaohe@huawei.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, kernel-team@android.com, surenb@google.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:organization
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=MdqIsV//Q4vhJs3qwgiDVZoj0NjhNPqIuJo+SfgNN5E=;
+        b=q/KFf5TK+KDPAoQqRs8pPyxGAiu/f69qoO1nl4A6ZSXp1nQV+CbfrcytUnEn5RruPW
+         EiL770Uvhue+ckHl7fgy6sfb5HPc4L0YOJCB8v6KPYE8L3cAopLtnt9UbYLAbtzLQNLB
+         zdNUZufLSTGgxz/nGbBjpuxdeQTvteVIYN8qrOBbCRYsEaf7XuY/08BgqNqq5n+VnGRo
+         gq7y8IxokP2WUExXcXtGD12QYXBLX1CxcRAHpQ4/xe6xoNQU/wzXLaGGVKk1NVYN9Gx3
+         pzLZNHOEC9LhmjmAPpSN7sUB3PN2zxD29I3hSW88OHOMAgImvhlkvPKCstKIuWz5AahF
+         gyHA==
+X-Gm-Message-State: AOAM532Lw66K0e0ARDYifeKTv6MxUvpv707v2Hf4bNcAH9LF/ioGJ9bq
+        RXZsEgE9d2GVvWZW4eAexp899A==
+X-Google-Smtp-Source: ABdhPJx4XhSYY1fX8BE1I2uYoy8RZqDwkjMG1/VvQr3Rih4LbRvhls5nPGrikOhqFYldN3nmree9Hg==
+X-Received: by 2002:a05:620a:a5b:: with SMTP id j27mr14782898qka.297.1625850990816;
+        Fri, 09 Jul 2021 10:16:30 -0700 (PDT)
+Received: from iron-maiden.localnet ([50.225.136.98])
+        by smtp.gmail.com with ESMTPSA id y20sm2719483qkm.5.2021.07.09.10.16.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Jul 2021 10:16:30 -0700 (PDT)
+From:   Carlos Bilbao <bilbao@vt.edu>
+To:     James.Bottomley@hansenpartnership.com,
+        Rolf Eike Beer <eike-kernel@sf-tec.de>
+Cc:     deller@gmx.de, linux-parisc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1.1] drivers: parisc: Update iosapic driver with proper printks
+Date:   Fri, 09 Jul 2021 13:16:29 -0400
+Message-ID: <5526022.DvuYhMxLoT@iron-maiden>
+Organization: Virginia Tech
+In-Reply-To: <7261873.EvYhyI6sBW@daneel.sf-tec.de>
+References: <5760611.lOV4Wx5bFT@iron-maiden> <7261873.EvYhyI6sBW@daneel.sf-tec.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Inline mem_cgroup_{charge/uncharge} and mem_cgroup_uncharge_list functions
-functions to perform mem_cgroup_disabled static key check inline before
-calling the main body of the function. This minimizes the memcg overhead
-in the pagefault and exit_mmap paths when memcgs are disabled using
-cgroup_disable=memory command-line option.
-This change results in ~0.4% overhead reduction when running PFT test
-comparing {CONFIG_MEMCG=n} against {CONFIG_MEMCG=y, cgroup_disable=memory}
-configurationon on an 8-core ARM64 Android device.
+The code from the old I/O Sapic Driver is outdated when it comes to printks. Fix
+applying proper indentation and using pr_debug() instead of printk on debugging
+blocks. Also add a KERN_<LEVEL> where it is missing.
 
-Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+Signed-off-by: Carlos Bilbao <bilbao@vt.edu>
 ---
-changes in v2:
-- Changed mem_cgroup_charge to use the same inlining pattern as the rest of the
-functions per Johannes.
+Changelog: Replace dev_dbg() for pr_debug()
+---
+ drivers/parisc/iosapic.c | 65 +++++++++++++++++++---------------------
+ 1 file changed, 31 insertions(+), 34 deletions(-)
 
- include/linux/memcontrol.h | 28 +++++++++++++++++++++++++---
- mm/memcontrol.c            | 29 ++++++++++-------------------
- 2 files changed, 35 insertions(+), 22 deletions(-)
-
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index bfe5c486f4ad..39fa88051a42 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -693,13 +693,35 @@ static inline bool mem_cgroup_below_min(struct mem_cgroup *memcg)
- 		page_counter_read(&memcg->memory);
- }
+diff --git a/drivers/parisc/iosapic.c b/drivers/parisc/iosapic.c
+index 8a3b0c3a1e92..5bfbca3f5756 100644
+--- a/drivers/parisc/iosapic.c
++++ b/drivers/parisc/iosapic.c
+@@ -124,6 +124,7 @@
+ */
  
--int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask);
-+int __mem_cgroup_charge(struct page *page, struct mm_struct *mm,
-+			gfp_t gfp_mask);
-+static inline int mem_cgroup_charge(struct page *page, struct mm_struct *mm,
-+				    gfp_t gfp_mask)
-+{
-+	if (mem_cgroup_disabled())
-+		return 0;
-+	return __mem_cgroup_charge(page, mm, gfp_mask);
-+}
-+
- int mem_cgroup_swapin_charge_page(struct page *page, struct mm_struct *mm,
- 				  gfp_t gfp, swp_entry_t entry);
- void mem_cgroup_swapin_uncharge_swap(swp_entry_t entry);
+ #include <linux/pci.h>
++#include <linux/printk.h>
  
--void mem_cgroup_uncharge(struct page *page);
--void mem_cgroup_uncharge_list(struct list_head *page_list);
-+void __mem_cgroup_uncharge(struct page *page);
-+static inline void mem_cgroup_uncharge(struct page *page)
-+{
-+	if (mem_cgroup_disabled())
-+		return;
-+	__mem_cgroup_uncharge(page);
-+}
-+
-+void __mem_cgroup_uncharge_list(struct list_head *page_list);
-+static inline void mem_cgroup_uncharge_list(struct list_head *page_list)
-+{
-+	if (mem_cgroup_disabled())
-+		return;
-+	__mem_cgroup_uncharge_list(page_list);
-+}
+ #include <asm/pdc.h>
+ #include <asm/pdcpat.h>
+@@ -141,18 +142,17 @@
+ #undef DEBUG_IOSAPIC
+ #undef DEBUG_IOSAPIC_IRT
  
- void mem_cgroup_migrate(struct page *oldpage, struct page *newpage);
- 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index a228cd51c4bd..cdaf7003b43d 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -6701,8 +6701,7 @@ void mem_cgroup_calculate_protection(struct mem_cgroup *root,
- 			atomic_long_read(&parent->memory.children_low_usage)));
- }
- 
--static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
--			       gfp_t gfp)
-+static int charge_memcg(struct page *page, struct mem_cgroup *memcg, gfp_t gfp)
- {
- 	unsigned int nr_pages = thp_nr_pages(page);
- 	int ret;
-@@ -6723,7 +6722,7 @@ static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
- }
- 
- /**
-- * mem_cgroup_charge - charge a newly allocated page to a cgroup
-+ * __mem_cgroup_charge - charge a newly allocated page to a cgroup
-  * @page: page to charge
-  * @mm: mm context of the victim
-  * @gfp_mask: reclaim mode
-@@ -6736,16 +6735,14 @@ static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
-  *
-  * Returns 0 on success. Otherwise, an error code is returned.
-  */
--int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask)
-+int __mem_cgroup_charge(struct page *page, struct mm_struct *mm,
-+			gfp_t gfp_mask)
- {
- 	struct mem_cgroup *memcg;
- 	int ret;
- 
--	if (mem_cgroup_disabled())
--		return 0;
 -
- 	memcg = get_mem_cgroup_from_mm(mm);
--	ret = __mem_cgroup_charge(page, memcg, gfp_mask);
-+	ret = charge_memcg(page, memcg, gfp_mask);
- 	css_put(&memcg->css);
+ #ifdef DEBUG_IOSAPIC
+-#define DBG(x...) printk(x)
+-#else /* DEBUG_IOSAPIC */
++#define DBG(x...) pr_debug(x)
++#else /* !DEBUG_IOSAPIC */
+ #define DBG(x...)
+-#endif /* DEBUG_IOSAPIC */
++#endif /* !DEBUG_IOSAPIC */
  
- 	return ret;
-@@ -6780,7 +6777,7 @@ int mem_cgroup_swapin_charge_page(struct page *page, struct mm_struct *mm,
- 		memcg = get_mem_cgroup_from_mm(mm);
- 	rcu_read_unlock();
+ #ifdef DEBUG_IOSAPIC_IRT
+-#define DBG_IRT(x...) printk(x)
+-#else
++#define DBG_IRT(x...) pr_debug(x)
++#else /* !DEBUG_IOSAPIC_IRT */
+ #define DBG_IRT(x...)
+-#endif
++#endif /* !DEBUG_IOSAPIC_IRT */
  
--	ret = __mem_cgroup_charge(page, memcg, gfp);
-+	ret = charge_memcg(page, memcg, gfp);
+ #ifdef CONFIG_64BIT
+ #define COMPARE_IRTE_ADDR(irte, hpa)	((irte)->dest_iosapic_addr == (hpa))
+@@ -335,14 +335,14 @@ iosapic_load_irt(unsigned long cell_num, struct irt_entry **irt)
+ 	struct irt_entry *p = table;
+ 	int i;
  
- 	css_put(&memcg->css);
- 	return ret;
-@@ -6916,18 +6913,15 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
+-	printk(MODULE_NAME " Interrupt Routing Table (cell %ld)\n", cell_num);
+-	printk(MODULE_NAME " start = 0x%p num_entries %ld entry_size %d\n",
++	DBG_IRT("Interrupt Routing Table (cell %ld)\n", cell_num);
++	DBG_IRT("start = 0x%p num_entries %ld entry_size %d\n",
+ 		table,
+ 		num_entries,
+ 		(int) sizeof(struct irt_entry));
+ 
+ 	for (i = 0 ; i < num_entries ; i++, p++) {
+-		printk(MODULE_NAME " %02x %02x %02x %02x %02x %02x %02x %02x %08x%08x\n",
++		DBG_IRT(" %02x %02x %02x %02x %02x %02x %02x %02x %08x%08x\n",
+ 		p->entry_type, p->entry_length, p->interrupt_type,
+ 		p->polarity_trigger, p->src_bus_irq_devno, p->src_bus_id,
+ 		p->src_seg_id, p->dest_iosapic_intin,
+@@ -627,22 +627,22 @@ static void iosapic_unmask_irq(struct irq_data *d)
+ #ifdef DEBUG_IOSAPIC_IRT
+ {
+ 	u32 *t = (u32 *) ((ulong) vi->eoi_addr & ~0xffUL);
+-	printk("iosapic_enable_irq(): regs %p", vi->eoi_addr);
++	DBG_IRT("iosapic_enable_irq(): regs %p", vi->eoi_addr);
+ 	for ( ; t < vi->eoi_addr; t++)
+-		printk(" %x", readl(t));
+-	printk("\n");
++		DBG_IRT(" %x", readl(t));
++	DBG_IRT("\n");
  }
  
- /**
-- * mem_cgroup_uncharge - uncharge a page
-+ * __mem_cgroup_uncharge - uncharge a page
-  * @page: page to uncharge
-  *
-  * Uncharge a page previously charged with mem_cgroup_charge().
-  */
--void mem_cgroup_uncharge(struct page *page)
-+void __mem_cgroup_uncharge(struct page *page)
+-printk("iosapic_enable_irq(): sel ");
++	DBG_IRT("iosapic_enable_irq(): sel ");
  {
- 	struct uncharge_gather ug;
+ 	struct iosapic_info *isp = vi->iosapic;
  
--	if (mem_cgroup_disabled())
--		return;
+ 	for (d0=0x10; d0<0x1e; d0++) {
+ 		d1 = iosapic_read(isp->addr, d0);
+-		printk(" %x", d1);
++		DBG_IRT(" %x", d1);
+ 	}
+ }
+-printk("\n");
++	DBG_IRT("\n");
+ #endif
+ 
+ 	/*
+@@ -738,7 +738,7 @@ int iosapic_fixup_irq(void *isi_obj, struct pci_dev *pcidev)
+ 	/* lookup IRT entry for isi/slot/pin set */
+ 	irte = iosapic_xlate_pin(isi, pcidev);
+ 	if (!irte) {
+-		printk("iosapic: no IRTE for %s (IRQ not connected?)\n",
++		printk(KERN_NOTICE "iosapic: no IRTE for %s (IRQ not connected?)\n",
+ 				pci_name(pcidev));
+ 		return -1;
+ 	}
+@@ -956,36 +956,33 @@ iosapic_prt_irt(void *irt, long num_entry)
+ {
+ 	unsigned int i, *irp = (unsigned int *) irt;
+ 
 -
- 	/* Don't touch page->lru of any random page, pre-check: */
- 	if (!page_memcg(page))
- 		return;
-@@ -6938,20 +6932,17 @@ void mem_cgroup_uncharge(struct page *page)
+-	printk(KERN_DEBUG MODULE_NAME ": Interrupt Routing Table (%lx entries)\n", num_entry);
++	DBG("Interrupt Routing Table (%lx entries)\n", num_entry);
+ 
+ 	for (i=0; i<num_entry; i++, irp += 4) {
+-		printk(KERN_DEBUG "%p : %2d %.8x %.8x %.8x %.8x\n",
++		DBG("%p : %2d %.8x %.8x %.8x %.8x\n",
+ 					irp, i, irp[0], irp[1], irp[2], irp[3]);
+ 	}
  }
  
- /**
-- * mem_cgroup_uncharge_list - uncharge a list of page
-+ * __mem_cgroup_uncharge_list - uncharge a list of page
-  * @page_list: list of pages to uncharge
-  *
-  * Uncharge a list of pages previously charged with
-  * mem_cgroup_charge().
-  */
--void mem_cgroup_uncharge_list(struct list_head *page_list)
-+void __mem_cgroup_uncharge_list(struct list_head *page_list)
- {
- 	struct uncharge_gather ug;
- 	struct page *page;
- 
--	if (mem_cgroup_disabled())
--		return;
 -
- 	uncharge_gather_clear(&ug);
- 	list_for_each_entry(page, page_list, lru)
- 		uncharge_page(page, &ug);
+ static void
+ iosapic_prt_vi(struct vector_info *vi)
+ {
+-	printk(KERN_DEBUG MODULE_NAME ": vector_info[%d] is at %p\n", vi->irqline, vi);
+-	printk(KERN_DEBUG "\t\tstatus:	 %.4x\n", vi->status);
+-	printk(KERN_DEBUG "\t\ttxn_irq:  %d\n",  vi->txn_irq);
+-	printk(KERN_DEBUG "\t\ttxn_addr: %lx\n", vi->txn_addr);
+-	printk(KERN_DEBUG "\t\ttxn_data: %lx\n", vi->txn_data);
+-	printk(KERN_DEBUG "\t\teoi_addr: %p\n",  vi->eoi_addr);
+-	printk(KERN_DEBUG "\t\teoi_data: %x\n",  vi->eoi_data);
++	DBG("vector_info[%d] is at %p\n", vi->irqline, vi);
++	DBG("\t\tstatus:	 %.4x\n", vi->status);
++	DBG("\t\ttxn_irq:  %d\n",  vi->txn_irq);
++	DBG("\t\ttxn_addr: %lx\n", vi->txn_addr);
++	DBG("\t\ttxn_data: %lx\n", vi->txn_data);
++	DBG("\t\teoi_addr: %p\n",  vi->eoi_addr);
++	DBG("\t\teoi_data: %x\n",  vi->eoi_data);
+ }
+ 
+-
+ static void
+ iosapic_prt_isi(struct iosapic_info *isi)
+ {
+-	printk(KERN_DEBUG MODULE_NAME ": io_sapic_info at %p\n", isi);
+-	printk(KERN_DEBUG "\t\tisi_hpa:       %lx\n", isi->isi_hpa);
+-	printk(KERN_DEBUG "\t\tisi_status:    %x\n", isi->isi_status);
+-	printk(KERN_DEBUG "\t\tisi_version:   %x\n", isi->isi_version);
+-	printk(KERN_DEBUG "\t\tisi_vector:    %p\n", isi->isi_vector);
++	DBG("io_sapic_info at %p\n", isi);
++	DBG("\t\tisi_hpa:       %lx\n", isi->isi_hpa);
++	DBG("\t\tisi_status:    %x\n", isi->isi_status);
++	DBG("\t\tisi_version:   %x\n", isi->isi_version);
++	DBG("\t\tisi_vector:    %p\n", isi->isi_vector);
+ }
+ #endif /* DEBUG_IOSAPIC */
 -- 
-2.32.0.93.g670b81a890-goog
+2.25.1
+
+
 
