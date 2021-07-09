@@ -2,227 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1ABB3C2826
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F377B3C282C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbhGIRTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 13:19:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhGIRTP (ORCPT
+        id S229742AbhGIRT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 13:19:57 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:57753 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229459AbhGIRT4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 13:19:15 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2069C0613E5
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 10:16:31 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id i125so9997816qke.12
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 10:16:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:organization:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=MdqIsV//Q4vhJs3qwgiDVZoj0NjhNPqIuJo+SfgNN5E=;
-        b=TAlD3h0Im6oRi7XhTmQC0eClIgZH/AeAzBPrYhIQQ5ilawAhT7ql0UURAoT+NJxQpk
-         tGSEufuGbYBFlTpakA8lgpnTFqI+GIc3tlxlVmAqsuGMqt2/u7sBmO3JfF+EK3b5HE9M
-         I7k1gsGWz4kJaXtbl/rzcEkocLD9HBrfuNUFruGplVyJnx9A+/UiOpE5URliu2BG8ZvL
-         akUKay7dIp5uEol0vP9ChsFPrb96hhlj+032j6W9nSOL3J/BujW4cSrVq1H1lMP5wYxV
-         ozvD1Z9q79+9E2kXYnIVV3m3U+Xobi1aeXnSFad4G7+TOEQ8rY7aBTp363pw/AcmWmxI
-         ND9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:organization
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=MdqIsV//Q4vhJs3qwgiDVZoj0NjhNPqIuJo+SfgNN5E=;
-        b=q/KFf5TK+KDPAoQqRs8pPyxGAiu/f69qoO1nl4A6ZSXp1nQV+CbfrcytUnEn5RruPW
-         EiL770Uvhue+ckHl7fgy6sfb5HPc4L0YOJCB8v6KPYE8L3cAopLtnt9UbYLAbtzLQNLB
-         zdNUZufLSTGgxz/nGbBjpuxdeQTvteVIYN8qrOBbCRYsEaf7XuY/08BgqNqq5n+VnGRo
-         gq7y8IxokP2WUExXcXtGD12QYXBLX1CxcRAHpQ4/xe6xoNQU/wzXLaGGVKk1NVYN9Gx3
-         pzLZNHOEC9LhmjmAPpSN7sUB3PN2zxD29I3hSW88OHOMAgImvhlkvPKCstKIuWz5AahF
-         gyHA==
-X-Gm-Message-State: AOAM532Lw66K0e0ARDYifeKTv6MxUvpv707v2Hf4bNcAH9LF/ioGJ9bq
-        RXZsEgE9d2GVvWZW4eAexp899A==
-X-Google-Smtp-Source: ABdhPJx4XhSYY1fX8BE1I2uYoy8RZqDwkjMG1/VvQr3Rih4LbRvhls5nPGrikOhqFYldN3nmree9Hg==
-X-Received: by 2002:a05:620a:a5b:: with SMTP id j27mr14782898qka.297.1625850990816;
-        Fri, 09 Jul 2021 10:16:30 -0700 (PDT)
-Received: from iron-maiden.localnet ([50.225.136.98])
-        by smtp.gmail.com with ESMTPSA id y20sm2719483qkm.5.2021.07.09.10.16.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 10:16:30 -0700 (PDT)
-From:   Carlos Bilbao <bilbao@vt.edu>
-To:     James.Bottomley@hansenpartnership.com,
-        Rolf Eike Beer <eike-kernel@sf-tec.de>
-Cc:     deller@gmx.de, linux-parisc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1.1] drivers: parisc: Update iosapic driver with proper printks
-Date:   Fri, 09 Jul 2021 13:16:29 -0400
-Message-ID: <5526022.DvuYhMxLoT@iron-maiden>
-Organization: Virginia Tech
-In-Reply-To: <7261873.EvYhyI6sBW@daneel.sf-tec.de>
-References: <5760611.lOV4Wx5bFT@iron-maiden> <7261873.EvYhyI6sBW@daneel.sf-tec.de>
+        Fri, 9 Jul 2021 13:19:56 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1625851033; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Xx1QWoGplZYDFvg3o09yp0wM5pDO8b7Sp2lAAG1myl8=;
+ b=qKH3uj5Mw3wBGylG/fKQ9TrcE2hF9iUyr6hhfC1ag22jrZarD+qAe4ruf+ZMKHYnSgvyQtI4
+ hkq82ptgFB8zx9TPGlaATIWN1m4kCZEdfmt2ZxEGc0AOD4SOQbvgPDHyMyupV+6ogGjQ3Hwk
+ YBSYrM08WxVzKcj1My6nicZSqf4=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 60e8848501dd9a9431a8c44f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 09 Jul 2021 17:16:53
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8D101C43460; Fri,  9 Jul 2021 17:16:53 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7FA01C433F1;
+        Fri,  9 Jul 2021 17:16:52 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 09 Jul 2021 10:16:52 -0700
+From:   khsieh@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run, abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        airlied@linux.ie, daniel@ffwll.ch, bjorn.andersson@linaro.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 7/7] drm/msm/dp: retrain link when loss of symbol lock
+ detected
+In-Reply-To: <CAE-0n51U8faPjxfFcd3uuOk27urR2rCSGhg1Kat1AO6LLixYTw@mail.gmail.com>
+References: <1625592020-22658-1-git-send-email-khsieh@codeaurora.org>
+ <1625592020-22658-8-git-send-email-khsieh@codeaurora.org>
+ <CAE-0n51U8faPjxfFcd3uuOk27urR2rCSGhg1Kat1AO6LLixYTw@mail.gmail.com>
+Message-ID: <e6375232222bc357897b62c1752c06d8@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The code from the old I/O Sapic Driver is outdated when it comes to printks. Fix
-applying proper indentation and using pr_debug() instead of printk on debugging
-blocks. Also add a KERN_<LEVEL> where it is missing.
-
-Signed-off-by: Carlos Bilbao <bilbao@vt.edu>
----
-Changelog: Replace dev_dbg() for pr_debug()
----
- drivers/parisc/iosapic.c | 65 +++++++++++++++++++---------------------
- 1 file changed, 31 insertions(+), 34 deletions(-)
-
-diff --git a/drivers/parisc/iosapic.c b/drivers/parisc/iosapic.c
-index 8a3b0c3a1e92..5bfbca3f5756 100644
---- a/drivers/parisc/iosapic.c
-+++ b/drivers/parisc/iosapic.c
-@@ -124,6 +124,7 @@
- */
- 
- #include <linux/pci.h>
-+#include <linux/printk.h>
- 
- #include <asm/pdc.h>
- #include <asm/pdcpat.h>
-@@ -141,18 +142,17 @@
- #undef DEBUG_IOSAPIC
- #undef DEBUG_IOSAPIC_IRT
- 
--
- #ifdef DEBUG_IOSAPIC
--#define DBG(x...) printk(x)
--#else /* DEBUG_IOSAPIC */
-+#define DBG(x...) pr_debug(x)
-+#else /* !DEBUG_IOSAPIC */
- #define DBG(x...)
--#endif /* DEBUG_IOSAPIC */
-+#endif /* !DEBUG_IOSAPIC */
- 
- #ifdef DEBUG_IOSAPIC_IRT
--#define DBG_IRT(x...) printk(x)
--#else
-+#define DBG_IRT(x...) pr_debug(x)
-+#else /* !DEBUG_IOSAPIC_IRT */
- #define DBG_IRT(x...)
--#endif
-+#endif /* !DEBUG_IOSAPIC_IRT */
- 
- #ifdef CONFIG_64BIT
- #define COMPARE_IRTE_ADDR(irte, hpa)	((irte)->dest_iosapic_addr == (hpa))
-@@ -335,14 +335,14 @@ iosapic_load_irt(unsigned long cell_num, struct irt_entry **irt)
- 	struct irt_entry *p = table;
- 	int i;
- 
--	printk(MODULE_NAME " Interrupt Routing Table (cell %ld)\n", cell_num);
--	printk(MODULE_NAME " start = 0x%p num_entries %ld entry_size %d\n",
-+	DBG_IRT("Interrupt Routing Table (cell %ld)\n", cell_num);
-+	DBG_IRT("start = 0x%p num_entries %ld entry_size %d\n",
- 		table,
- 		num_entries,
- 		(int) sizeof(struct irt_entry));
- 
- 	for (i = 0 ; i < num_entries ; i++, p++) {
--		printk(MODULE_NAME " %02x %02x %02x %02x %02x %02x %02x %02x %08x%08x\n",
-+		DBG_IRT(" %02x %02x %02x %02x %02x %02x %02x %02x %08x%08x\n",
- 		p->entry_type, p->entry_length, p->interrupt_type,
- 		p->polarity_trigger, p->src_bus_irq_devno, p->src_bus_id,
- 		p->src_seg_id, p->dest_iosapic_intin,
-@@ -627,22 +627,22 @@ static void iosapic_unmask_irq(struct irq_data *d)
- #ifdef DEBUG_IOSAPIC_IRT
- {
- 	u32 *t = (u32 *) ((ulong) vi->eoi_addr & ~0xffUL);
--	printk("iosapic_enable_irq(): regs %p", vi->eoi_addr);
-+	DBG_IRT("iosapic_enable_irq(): regs %p", vi->eoi_addr);
- 	for ( ; t < vi->eoi_addr; t++)
--		printk(" %x", readl(t));
--	printk("\n");
-+		DBG_IRT(" %x", readl(t));
-+	DBG_IRT("\n");
- }
- 
--printk("iosapic_enable_irq(): sel ");
-+	DBG_IRT("iosapic_enable_irq(): sel ");
- {
- 	struct iosapic_info *isp = vi->iosapic;
- 
- 	for (d0=0x10; d0<0x1e; d0++) {
- 		d1 = iosapic_read(isp->addr, d0);
--		printk(" %x", d1);
-+		DBG_IRT(" %x", d1);
- 	}
- }
--printk("\n");
-+	DBG_IRT("\n");
- #endif
- 
- 	/*
-@@ -738,7 +738,7 @@ int iosapic_fixup_irq(void *isi_obj, struct pci_dev *pcidev)
- 	/* lookup IRT entry for isi/slot/pin set */
- 	irte = iosapic_xlate_pin(isi, pcidev);
- 	if (!irte) {
--		printk("iosapic: no IRTE for %s (IRQ not connected?)\n",
-+		printk(KERN_NOTICE "iosapic: no IRTE for %s (IRQ not connected?)\n",
- 				pci_name(pcidev));
- 		return -1;
- 	}
-@@ -956,36 +956,33 @@ iosapic_prt_irt(void *irt, long num_entry)
- {
- 	unsigned int i, *irp = (unsigned int *) irt;
- 
--
--	printk(KERN_DEBUG MODULE_NAME ": Interrupt Routing Table (%lx entries)\n", num_entry);
-+	DBG("Interrupt Routing Table (%lx entries)\n", num_entry);
- 
- 	for (i=0; i<num_entry; i++, irp += 4) {
--		printk(KERN_DEBUG "%p : %2d %.8x %.8x %.8x %.8x\n",
-+		DBG("%p : %2d %.8x %.8x %.8x %.8x\n",
- 					irp, i, irp[0], irp[1], irp[2], irp[3]);
- 	}
- }
- 
--
- static void
- iosapic_prt_vi(struct vector_info *vi)
- {
--	printk(KERN_DEBUG MODULE_NAME ": vector_info[%d] is at %p\n", vi->irqline, vi);
--	printk(KERN_DEBUG "\t\tstatus:	 %.4x\n", vi->status);
--	printk(KERN_DEBUG "\t\ttxn_irq:  %d\n",  vi->txn_irq);
--	printk(KERN_DEBUG "\t\ttxn_addr: %lx\n", vi->txn_addr);
--	printk(KERN_DEBUG "\t\ttxn_data: %lx\n", vi->txn_data);
--	printk(KERN_DEBUG "\t\teoi_addr: %p\n",  vi->eoi_addr);
--	printk(KERN_DEBUG "\t\teoi_data: %x\n",  vi->eoi_data);
-+	DBG("vector_info[%d] is at %p\n", vi->irqline, vi);
-+	DBG("\t\tstatus:	 %.4x\n", vi->status);
-+	DBG("\t\ttxn_irq:  %d\n",  vi->txn_irq);
-+	DBG("\t\ttxn_addr: %lx\n", vi->txn_addr);
-+	DBG("\t\ttxn_data: %lx\n", vi->txn_data);
-+	DBG("\t\teoi_addr: %p\n",  vi->eoi_addr);
-+	DBG("\t\teoi_data: %x\n",  vi->eoi_data);
- }
- 
--
- static void
- iosapic_prt_isi(struct iosapic_info *isi)
- {
--	printk(KERN_DEBUG MODULE_NAME ": io_sapic_info at %p\n", isi);
--	printk(KERN_DEBUG "\t\tisi_hpa:       %lx\n", isi->isi_hpa);
--	printk(KERN_DEBUG "\t\tisi_status:    %x\n", isi->isi_status);
--	printk(KERN_DEBUG "\t\tisi_version:   %x\n", isi->isi_version);
--	printk(KERN_DEBUG "\t\tisi_vector:    %p\n", isi->isi_vector);
-+	DBG("io_sapic_info at %p\n", isi);
-+	DBG("\t\tisi_hpa:       %lx\n", isi->isi_hpa);
-+	DBG("\t\tisi_status:    %x\n", isi->isi_status);
-+	DBG("\t\tisi_version:   %x\n", isi->isi_version);
-+	DBG("\t\tisi_vector:    %p\n", isi->isi_vector);
- }
- #endif /* DEBUG_IOSAPIC */
--- 
-2.25.1
-
-
-
+On 2021-07-08 00:21, Stephen Boyd wrote:
+> Quoting Kuogee Hsieh (2021-07-06 10:20:20)
+>> Main link symbol locked is achieved at end of link training 2. Some
+>> dongle main link symbol may become unlocked again if host did not end
+>> link training soon enough after completion of link training 2. Host
+>> have to re train main link if loss of symbol lock detected before
+>> end link training so that the coming video stream can be transmitted
+>> to sink properly.
+>> 
+>> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+> 
+> I guess this is a fix for the original driver, so it should be tagged
+> with Fixes appropriately.
+Actually, this is fix on patch #6 : drm/msm/dp: do not end dp link 
+training until video is ready
+Should i merge patch #6 and #7 together?
+Or can you suggest what should I do?
+> 
+>> ---
+>>  drivers/gpu/drm/msm/dp/dp_ctrl.c | 34 
+>> ++++++++++++++++++++++++++++++++++
+>>  1 file changed, 34 insertions(+)
+>> 
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c 
+>> b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+>> index 0cb01a9..e616ab2 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
+>> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+>> @@ -1661,6 +1661,25 @@ static bool dp_ctrl_any_lane_cr_lose(struct 
+>> dp_ctrl_private *ctrl,
+>>         return false;
+>>  }
+>> 
+>> +static bool dp_ctrl_loss_symbol_lock(struct dp_ctrl_private *ctrl)
+>> +{
+>> +       u8 link_status[6];
+> 
+> Can we use link_status[DP_LINK_STATUS_SIZE] instead?
+> 
+>> +       u8 status;
+>> +       int i;
+>> +       int lane = ctrl->link->link_params.num_lanes;
+> 
+> s/lane/num_lanes/
+> 
+> would make the code easier to read
+> 
+>> +
+>> +       dp_ctrl_read_link_status(ctrl, link_status);
+>> +
+>> +       for (i = 0; i < lane; i++) {
+>> +               status = link_status[i / 2];
+>> +               status >>= ((i % 2) * 4);
+>> +               if (!(status & DP_LANE_SYMBOL_LOCKED))
+>> +                       return true;
+>> +       }
+>> +
+>> +       return false;
+>> +}
+>> +
+>>  int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
+>>  {
+>>         int rc = 0;
+>> @@ -1777,6 +1796,17 @@ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
+>>         return rc;
+>>  }
+>> 
+>> +static int dp_ctrl_link_retrain(struct dp_ctrl_private *ctrl)
+>> +{
+>> +       int ret = 0;
+> 
+> Please drop init of ret.
+> 
+>> +       u8 cr_status[2];
+>> +       int training_step = DP_TRAINING_NONE;
+>> +
+>> +       ret = dp_ctrl_setup_main_link(ctrl, cr_status, 
+>> &training_step);
+> 
+> as it is assigned here.
+> 
+>> +
+>> +       return ret;
+> 
+> And indeed, it could be 'return dp_ctrl_setup_main_link()' instead.
+> 
+>> +}
+>> +
+>>  int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl)
+>>  {
+>>         int ret = 0;
+>> @@ -1802,6 +1832,10 @@ int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl)
+>>                 }
+>>         }
+>> 
+>> +       /* if loss symbol lock happen, then retaining the link */
+> 
+> retain or retrain? The comment seems to be saying what the code says 
+> "if
+> loss retrain", so the comment is not very useful.
+> 
+>> +       if (dp_ctrl_loss_symbol_lock(ctrl))
+>> +               dp_ctrl_link_retrain(ctrl);
+>> +
+>>         /* stop txing train pattern to end link training */
+>>         dp_ctrl_clear_training_pattern(ctrl);
+>> 
