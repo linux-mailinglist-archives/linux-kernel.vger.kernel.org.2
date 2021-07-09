@@ -2,80 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 037BD3C1EC1
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 07:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E80D3C1ED4
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 07:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229765AbhGIFIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 01:08:54 -0400
-Received: from mail-m121145.qiye.163.com ([115.236.121.145]:64524 "EHLO
-        mail-m121145.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhGIFIx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 01:08:53 -0400
-DKIM-Signature: a=rsa-sha256;
-        b=g4tBW+fqumECGTBlfka/mxLpV/e2lYPhdS7s9oiMJ1FNAfV9ZryRuSCZJ6SyrFoH/vlYFlf7pMlcASjt64lVDK9iFpMFapagdhMb+JW7v/qsL9tTFnc9aLHixf0NzfJHRqRul5yhBYZq5s2laHKrvZaCaa9/x2CNUdySk37gc8o=;
-        s=default; c=relaxed/relaxed; d=vivo.com; v=1;
-        bh=o6m8QVLBIA/2tAPs7aR60tj41WOi+Lh9NWeB8ufBD5s=;
-        h=date:mime-version:subject:message-id:from;
-Received: from ubuntu.localdomain (unknown [36.152.145.182])
-        by mail-m121145.qiye.163.com (Hmail) with ESMTPA id 7FEE8800265;
-        Fri,  9 Jul 2021 13:06:06 +0800 (CST)
-From:   zhouchuangao <zhouchuangao@vivo.com>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     zhouchuangao <zhouchuangao@vivo.com>
-Subject: [PATCH] kernel/sched/core: Print the time when the process entered the D state
-Date:   Thu,  8 Jul 2021 22:05:59 -0700
-Message-Id: <1625807160-112041-1-git-send-email-zhouchuangao@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGR8fGFZLSE9OH0JLTkJPSxpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hOSFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PQw6Nxw6OD9NOhIhKh4fKAoq
-        C08aCQxVSlVKTUlOQ0tMSk1MSkpCVTMWGhIXVQETFA4YEw4aFRwaFDsNEg0UVRgUFkVZV1kSC1lB
-        WUhNVUpOSVVKT05VSkNJWVdZCAFZQUlPTU03Bg++
-X-HM-Tid: 0a7a89a89d5ab03akuuu7fee8800265
+        id S229684AbhGIFXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 01:23:33 -0400
+Received: from mout.gmx.net ([212.227.17.20]:59597 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229583AbhGIFXc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 01:23:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1625808037;
+        bh=OCW7oljHM6ncvS3+WmeaxtPjxKjop38O0bgGSXlwec4=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=dwBZoO71An4asQnnszWWJjKf3TKTGO/GBGxwg/jcaZzBw5A6QiI8sUVlsKek+54Jw
+         EA+v45nFbvfwm4QOcvQgCJ+XHYPOPAdV2cbEfOPeI1aD23b3EfMiSJld+OAUZjhRt4
+         t15bRWHSagrO8n8C+C613/zGGAn12okSNIA2XHbw=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.217.33]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MybKf-1lFusi0rCX-00yyNh; Fri, 09
+ Jul 2021 07:20:37 +0200
+Message-ID: <966f27f7999acb1db8d60e241a73dfde3344345c.camel@gmx.de>
+Subject: [patch] mm/slub: Fix kmem_cache_alloc_bulk() error path
+From:   Mike Galbraith <efault@gmx.de>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     linux-rt-users@vger.kernel.org,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Date:   Fri, 09 Jul 2021 07:20:36 +0200
+In-Reply-To: <87tul5p2fa.ffs@nanos.tec.linutronix.de>
+References: <87tul5p2fa.ffs@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:X0SMFsCtIjHy5TeQqmMzGnMgSjxHIdat64X17zv9akVokK2mr5V
+ h/fBqIvDm4JgtYTRZinezDexdCg0ynG0BOnxfIqOApbeTFx43rAs5Aa75JVBcy06xq+/+YC
+ WN7hyVhRXCWpSDTwuqN43bKkMqtXOPRbfmYfKYSPKhjcJerW/ivq7DkAVHLJB7Qx00r4rex
+ HaHUIAuAEXAbUH5RG4SOQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:08dDrrprXM0=:IyqFnAUomg3/CSP/mVFmuk
+ qeDV5L2fW2JLDB64tD0EMUXkYxdLOkglkGAIQ07z8P0aPCmqegtwMV/aVNY3gKjsVtsB+W5Gn
+ n+a4aStrAEfj/wHsNg5P8hgohvuoRTPFw12Nt4Cb/3OxiZ/vKmcP0jHVoV+2DMiwgJlA0lAPG
+ wlU9U+eXx3ofS6Nzx80hAa4cYtBzM2Qx/55Z4kkmQu6HaDhvu2/69MuT5XOaXJaMu9hhIuFEy
+ DTIr0phbICTdWGrHLnGXFSURezF6fGtwRF3pTtpNS3LN7xBs1re/CMnrFwYpgz3Dv9zyYKk6V
+ pq3vk1EThNJrGV0IdHyA5GLxPMd3IvnWujuad0kNcv+5oO2UqCJvg4202txT2GmsRMN0lDH2e
+ sjpxZdxLfplVdzqxyBfbiZQHZgYWFEgo1ziBAf6/A8c6Nuli9o7twqHf9ZW+BU4SAQtFtXtPU
+ 3KT6/37cUPMIoA3OV+K8sOJw+FkzZdyEmmEgWHL+iiFFKKISkMnrP4ztm7wOqOSHF1sgeAd0k
+ bIAp3t8H+enRvrGgOMHRH0nv4pGEnMzX6zagENBg3ZafPd6md2zgXY2Y2yDOLbebBQAuB01Ow
+ 3s2bN0r8f4A5VVQpdLmcdVeRyKgalJ89+ekB/8C489H48g//KPTqIJxtubyK46zLCCMuxCns1
+ 1BAN8UPkgZvZnqOletCDjTslQ1SINN5r1VJTl2k2txR3R6ZvgCkmAckLzxrSg0xA4WCFCpSJL
+ 5piyJiz8SdgTS3E3pG1w0nIPn8w1JlQ1fEYeHtddZhFap9TekIDfC3IiJb/+43xwJi7NSkwZt
+ QkbDxsDSq9uK39mJwpcXtPj/Kp67qYv/Bcp4x1aD+U9OcWBcjdx6NpNG8NKfnP0HpA/TyNHIU
+ vfzCM3edPSkRlse1HugPBOokbPyYG/QPFy6GaRX2jA1/SBINtT6PTIb4Rb5gRM0DTaRyYPZxC
+ rNKkehFUnqji2QjGoQ4eiq2WAgrf49HU0Pg9DwD29SMcp6VAtJS/adnvPr1GRf4o0eDpY4kJm
+ KgdZT45AtLMeBNZl0Ib9nPbXBjiA2gNM8soKmrVWr09TIruYAw1SRYOgVJbRfTl9nNqDt0vhX
+ 3DcKqUuk9Cg5uR69JJgzihB8pNbmkkGURZX
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sometimes we need to trigger /proc/sysrq-trigger to view the information
-of the D state process in the system.
-e.g:
-echo w > /proc/sysrq-trigger
 
-Here we print the scheduling time of the process, which is convenient
-for us to judge the state of the system and for debugging.
+The kmem_cache_alloc_bulk() error exit path double unlocks cpu_slab->lock
+instead of making the required slub_put_cpu_ptr() call.  Fix that.
 
-Signed-off-by: zhouchuangao <zhouchuangao@vivo.com>
+Boring details:
+1. 12c69bab1ece ("mm, slub: move disabling/enabling irqs to ___slab_alloc())")
+adds local_irq_enable() above goto error, leaving the one at error: intact.
+2. 2180da7ea70a0 ("mm, slub: use migrate_disable() on PREEMPT_RT") adds
+slub_get/put_cpu_ptr() calls, missing the already broken error path,
+creating unpaired slub_put_cpu_ptr()/slub_put_cpu_ptr() calls.
+3. 340e7c4136c3 ("mm, slub: convert kmem_cpu_slab protection to local_lock")
+converts local_irq_enable() to local_unlock_irq(), culminating in a
+double unlock and unpaired slub_put_cpu_ptr()/slub_put_cpu_ptr().
+
+Signed-off-by: Mike Galbraith <efault@gmx.de>
 ---
- kernel/sched/core.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ mm/slub.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index cf16f8f..e03474d 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -8154,9 +8154,10 @@ void sched_show_task(struct task_struct *p)
- 	if (pid_alive(p))
- 		ppid = task_pid_nr(rcu_dereference(p->real_parent));
- 	rcu_read_unlock();
--	pr_cont(" stack:%5lu pid:%5d ppid:%6d flags:0x%08lx\n",
-+	pr_cont(" stack:%5lu pid:%5d ppid:%6d flags:0x%08lx sched:%llu\n",
- 		free, task_pid_nr(p), ppid,
--		(unsigned long)task_thread_info(p)->flags);
-+		(unsigned long)task_thread_info(p)->flags,
-+		p->sched_info.last_arrival);
- 
- 	print_worker_info(KERN_INFO, p);
- 	print_stop_info(KERN_INFO, p);
--- 
-2.7.4
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -3605,7 +3605,7 @@ int kmem_cache_alloc_bulk(struct kmem_ca
+ 				slab_want_init_on_alloc(flags, s));
+ 	return i;
+ error:
+-	local_unlock_irq(&s->cpu_slab->lock);
++	slub_put_cpu_ptr(s->cpu_slab);
+ 	slab_post_alloc_hook(s, objcg, flags, i, p, false);
+ 	__kmem_cache_free_bulk(s, i, p);
+ 	return 0;
 
