@@ -2,100 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7606E3C1D8F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 04:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 322EB3C1D93
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 04:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbhGICtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 22:49:16 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:11232 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhGICtP (ORCPT
+        id S230515AbhGICus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 22:50:48 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:34675 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230400AbhGICur (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 22:49:15 -0400
-Received: from dggeme765-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GLcq01Ykrz1CGSP;
-        Fri,  9 Jul 2021 10:41:00 +0800 (CST)
-Received: from DESKTOP-E0KHRBE.china.huawei.com (10.67.103.82) by
- dggeme765-chm.china.huawei.com (10.3.19.111) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 9 Jul 2021 10:46:30 +0800
-From:   Shaobo Huang <huangshaobo6@huawei.com>
-To:     <gregkh@linuxfoundation.org>
-CC:     <chenzefeng2@huawei.com>, <huangshaobo6@huawei.com>,
-        <kepler.chenxin@huawei.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux@arm.linux.org.uk>,
-        <liucheng32@huawei.com>, <mhiramat@kernel.org>,
-        <nixiaoming@huawei.com>, <tixy@linaro.org>, <xiaoqian9@huawei.com>,
-        <young.liuyang@huawei.com>, <zengweilin@huawei.com>
-Subject: [PATCH 4.4.y] arm: kprobes: Allow to handle reentered kprobe on single-stepping
-Date:   Fri, 9 Jul 2021 10:46:30 +0800
-Message-ID: <20210709024630.22268-1-huangshaobo6@huawei.com>
-X-Mailer: git-send-email 2.21.0.windows.1
-In-Reply-To: <YOcOcNBRou5KlbOR@kroah.com>
-References: <YOcOcNBRou5KlbOR@kroah.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.103.82]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggeme765-chm.china.huawei.com (10.3.19.111)
-X-CFilter-Loop: Reflected
+        Thu, 8 Jul 2021 22:50:47 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=chengshuyi@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Uf9vV8Z_1625798875;
+Received: from localhost(mailfrom:chengshuyi@linux.alibaba.com fp:SMTPD_---0Uf9vV8Z_1625798875)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 09 Jul 2021 10:48:02 +0800
+From:   Shuyi Cheng <chengshuyi@linux.alibaba.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Shuyi Cheng <chengshuyi@linux.alibaba.com>
+Subject: [PATCH bpf-next v3 0/2] libbpf: Introduce 'btf_custom_path' to 'bpf_obj_open_opts'
+Date:   Fri,  9 Jul 2021 10:47:51 +0800
+Message-Id: <1625798873-55442-1-git-send-email-chengshuyi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu <mhiramat@kernel.org>
+Patch 1: Add 'btf_custom_path' to 'bpf_obj_open_opts', allow developers 
+to use custom btf to perform CO-RE relocation.
 
-commit f3fbd7ec62dec1528fb8044034e2885f2b257941 upstream
+Patch 2: Fixed the memory leak problem pointed out by Andrii.
 
-This is arm port of commit 6a5022a56ac3 ("kprobes/x86: Allow to
-handle reentered kprobe on single-stepping")
+Changelog:
+----------
 
-Since the FIQ handlers can interrupt in the single stepping
-(or preparing the single stepping, do_debug etc.), we should
-consider a kprobe is hit in the NMI handler. Even in that
-case, the kprobe is allowed to be reentered as same as the
-kprobes hit in kprobe handlers
-(KPROBE_HIT_ACTIVE or KPROBE_HIT_SSDONE).
+v2: https://lore.kernel.org/bpf/CAEf4Bza_ua+tjxdhyy4nZ8Boeo+scipWmr_1xM1pC6N5wyuhAA@mail.gmail.com/T/#mf9cf86ae0ffa96180ac29e4fd12697eb70eccd0f
+v2->v3:
+--- Load the BTF specified by btf_custom_path to btf_vmlinux_override 
+    instead of btf_bmlinux.
+--- Fix the memory leak that may be introduced by the second version 
+    of the patch.
+--- Add a new patch to fix the possible memory leak caused by 
+    obj->kconfig.
 
-The real issue will happen when a kprobe hit while another
-reentered kprobe is processing (KPROBE_REENTER), because
-we already consumed a saved-area for the previous kprobe.
+v1: https://lore.kernel.org/bpf/CAEf4BzaGjEC4t1OefDo11pj2-HfNy0BLhs_G2UREjRNTmb2u=A@mail.gmail.com/t/#m4d9f7c6761fbd2b436b5dfe491cd864b70225804
+v1->v2:
+-- Change custom_btf_path to btf_custom_path.
+-- If the length of btf_custom_path of bpf_obj_open_opts is too long, 
+   return ERR_PTR(-ENAMETOOLONG).
+-- Add `custom BTF is in addition to vmlinux BTF`
+   with btf_custom_path field.
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Jon Medhurst <tixy@linaro.org>
-Fixes: 24ba613c9d6c ("ARM kprobes: core code")
-Cc: stable@vger.kernel.org #v2.6.25~v4.11
-Signed-off-by: huangshaobo <huangshaobo6@huawei.com>
----
- arch/arm/probes/kprobes/core.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Shuyi Cheng (2):
+  libbpf: Introduce 'btf_custom_path' to 'bpf_obj_open_opts'
+  libbpf: Fix the possible memory leak caused by obj->kconfig
 
-diff --git a/arch/arm/probes/kprobes/core.c b/arch/arm/probes/kprobes/core.c
-index 3eb018fa1a1f..c3362ddd6c4c 100644
---- a/arch/arm/probes/kprobes/core.c
-+++ b/arch/arm/probes/kprobes/core.c
-@@ -270,6 +270,7 @@ void __kprobes kprobe_handler(struct pt_regs *regs)
- 			switch (kcb->kprobe_status) {
- 			case KPROBE_HIT_ACTIVE:
- 			case KPROBE_HIT_SSDONE:
-+			case KPROBE_HIT_SS:
- 				/* A pre- or post-handler probe got us here. */
- 				kprobes_inc_nmissed_count(p);
- 				save_previous_kprobe(kcb);
-@@ -278,6 +279,11 @@ void __kprobes kprobe_handler(struct pt_regs *regs)
- 				singlestep(p, regs, kcb);
- 				restore_previous_kprobe(kcb);
- 				break;
-+			case KPROBE_REENTER:
-+				/* A nested probe was hit in FIQ, it is a BUG */
-+				pr_warn("Unrecoverable kprobe detected at %p.\n",
-+					p->addr);
-+				/* fall through */
- 			default:
- 				/* impossible cases */
- 				BUG();
+ tools/lib/bpf/libbpf.c | 52 ++++++++++++++++++++++++++++++++++++++++++++++----
+ tools/lib/bpf/libbpf.h |  6 +++++-
+ 2 files changed, 53 insertions(+), 5 deletions(-)
+
 -- 
-2.12.3
+1.8.3.1
 
