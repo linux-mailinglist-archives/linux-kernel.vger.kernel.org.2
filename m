@@ -2,82 +2,377 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00A313C2934
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 976F73C2938
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:47:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230317AbhGIStX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 14:49:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50076 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230123AbhGIStX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 14:49:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1966613C2;
-        Fri,  9 Jul 2021 18:46:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625856399;
-        bh=VnebZJHhnbph+O650HrQvvkh14jKb5Oq2xbw35OBKaE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=l0591HlaUwSzKzwX8XbUV22xLOd5TaICOeEE226OFbpuB9qJh/7RUciKBtQScSO9q
-         m6S6hZC+OYZInYvSIIIpagXsRCUHEQjCFP/T9HMJ7jlIMYROb/l1iEGqIVxPvtPhjl
-         5s69E7oeERziQyjUNDq4O0DAvK/Y4Wk87I9QUQtbSf9mWiqcHN6JlCtA/8OBWJP0Bl
-         1xb19G1G2JcLghU8CkiJxdPX24nzE4MDG9NNcIs3V7NKGEoMpqt0l6Bg+xzdQTfbGc
-         mcOglWwBVueLQjhQHTO4wWd8cM2NnROTb0ccf04GV4D4ranCkr1VzjrL3e4Iz6MQug
-         /R73JSspM22QA==
-Date:   Fri, 9 Jul 2021 21:46:33 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [GIT PULL] memblock, arm: fixup for the pfn_valid() rework for
- v5.14-rc1
-Message-ID: <YOiZif/oQWkVzDgg@kernel.org>
+        id S230354AbhGIStk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 14:49:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22933 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229841AbhGISti (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 14:49:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625856414;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=wMNuEC7p1hYYeQcAVeoisWoHkfZWMVz8tQXwl6mqvRw=;
+        b=AmoX78kBhJpC2SdHqtGWt8ucCkbdBQAkQZkXmFBJbBkak96VfXxyQ9se2saonrC8R1r092
+        XRDHoWQKLhtE0k+pQoxczDXTiN1ZYTFQ28Hxq4Qx4U0HsgiRjzch6Q/WAEsW+AMfpUErgv
+        5AR2vrMs2cTLa7L/VxDTNIo6MM+QuEo=
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
+ [209.85.167.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-257-QoI0nZeXMOKAIbRl8Ldw2A-1; Fri, 09 Jul 2021 14:46:53 -0400
+X-MC-Unique: QoI0nZeXMOKAIbRl8Ldw2A-1
+Received: by mail-oi1-f199.google.com with SMTP id b185-20020acab2c20000b02901f6dd5f89fbso7225039oif.10
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 11:46:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wMNuEC7p1hYYeQcAVeoisWoHkfZWMVz8tQXwl6mqvRw=;
+        b=sXSJymPgYZ3RLCHuNZd9t1aRWCNTxvWLwkXWIsV3f1FdoLSWIqoOkEP4WKkSOuZVkp
+         EKn5njoY8j3MAInly0OsmrzKDPnFmsPN5M1Z2JHuQJQlJfX1AJj2upuz9Lh9+XsWwiJs
+         8RuueSGPsCR/SfeKAF8cS+5XaCmFEDJYpWgVUWILvEXmd+IObmQHXYrTMBpnDp6DwDzM
+         VBRc4VWcFMVU0jbGtAtaF3eCe7eyUDsWDVwKO3hjp7w/2FSwL1ebRSSjwwAOoChcKsaw
+         PgVtIKlwdEpbd5WyEWzRPqaiiVk6pdQpGJ1M+5SEVhIO+bPvkTE6RCA9PoUAXaNNnRmA
+         HHHg==
+X-Gm-Message-State: AOAM531WX9sG5bV1gNMBW8EJEyuifnu7tuK7yNQqergxJeWSAC+HWqTy
+        YdH/Mzj/+XtU1h1AlE8vsAbRoS96RErh/55MlepK2q9VjjDuSfgQ7lEJhAab/7KJisMwTkHhFL1
+        TKfXl8rpV3Ts2LpVwRdXghxga
+X-Received: by 2002:aca:1809:: with SMTP id h9mr313938oih.4.1625856412474;
+        Fri, 09 Jul 2021 11:46:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwT6Qkx17xOl0yMmkNwVOlw5rcnNBZ7ZjKZSODzgT5CEJC/DZwMvYGwmRnePz7tODl1Xst8Aw==
+X-Received: by 2002:aca:1809:: with SMTP id h9mr313920oih.4.1625856412298;
+        Fri, 09 Jul 2021 11:46:52 -0700 (PDT)
+Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id s8sm756129otp.37.2021.07.09.11.46.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Jul 2021 11:46:51 -0700 (PDT)
+From:   trix@redhat.com
+To:     mdf@kernel.org, corbet@lwn.net, hao.wu@intel.com
+Cc:     linux-fpga@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Russ Weight <russell.h.weight@intel.com>,
+        Tom Rix <trix@redhat.com>, Xu Yilun <yilun.xu@intel.com>
+Subject: [RFC PATCH v10 3/3] fpga: region: Use standard dev_release for class driver
+Date:   Fri,  9 Jul 2021 11:46:48 -0700
+Message-Id: <20210709184648.2521926-1-trix@redhat.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+From: Russ Weight <russell.h.weight@intel.com>
 
-This is a fix for the rework of ARM's pfn_valid() implementation merged
-during this merge window.
+The FPGA region class driver data structure is being treated as a
+managed resource instead of using the standard dev_release call-back
+function to release the class data structure. This change removes the
+managed resource code and combines the create() and register()
+functions into a single register() function.
 
-The following changes since commit a180bd1d7e16173d965b263c5a536aa40afa2a2a:
+The parameter 'void *priv' was added to register().
 
-  iov_iter: remove uaccess_kernel() warning from iov_iter_init() (2021-07-04 16:12:42 -0700)
+Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+Signed-off-by: Tom Rix <trix@redhat.com>
+Reviewed-by: Xu Yilun <yilun.xu@intel.com>
+---
+ Documentation/driver-api/fpga/fpga-region.rst |   4 -
+ drivers/fpga/dfl-fme-region.c                 |   7 +-
+ drivers/fpga/dfl.c                            |  12 +-
+ drivers/fpga/fpga-region.c                    | 108 +++++-------------
+ drivers/fpga/of-fpga-region.c                 |  10 +-
+ include/linux/fpga/fpga-region.h              |  12 +-
+ 6 files changed, 38 insertions(+), 115 deletions(-)
 
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/rppt/memblock.git tags/fixes-2021-07-09
-
-for you to fetch changes up to 024591f9a6e0164ec23301784d1e6d8f6cacbe59:
-
-  arm: ioremap: don't abuse pfn_valid() to check if pfn is in RAM (2021-07-06 09:01:47 +0300)
-
-----------------------------------------------------------------
-arm: ioremap: don't abuse pfn_valid() to check if pfn is in RAM
-
-The semantics of pfn_valid() is to check presence of the memory map for a
-PFN and not whether a PFN is in RAM. The memory map may be present for a
-hole in the physical memory and if such hole corresponds to an MMIO range,
-__arm_ioremap_pfn_caller() will produce a WARN() and fail:
-
-Use memblock_is_map_memory() instead of pfn_valid() to check if a PFN is in
-RAM or not.
-
-----------------------------------------------------------------
-Mike Rapoport (1):
-      arm: ioremap: don't abuse pfn_valid() to check if pfn is in RAM
-
- arch/arm/mm/ioremap.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+diff --git a/Documentation/driver-api/fpga/fpga-region.rst b/Documentation/driver-api/fpga/fpga-region.rst
+index 2f621de51130d..572729e49ec02 100644
+--- a/Documentation/driver-api/fpga/fpga-region.rst
++++ b/Documentation/driver-api/fpga/fpga-region.rst
+@@ -47,7 +47,6 @@ API to add a new FPGA region
+ 
+ * struct fpga_region — The FPGA region struct
+ * struct fpga_region_ops —  Low level FPGA region driver ops
+-* devm_fpga_region_create() — Allocate and init a region struct
+ * fpga_region_register() —  Register an FPGA region
+ * fpga_region_unregister() —  Unregister an FPGA region
+ 
+@@ -79,9 +78,6 @@ following APIs to handle building or tearing down that list.
+ .. kernel-doc:: include/linux/fpga/fpga-region.h
+    :functions: fpga_region_ops
+ 
+-.. kernel-doc:: drivers/fpga/fpga-region.c
+-   :functions: devm_fpga_region_create
+-
+ .. kernel-doc:: drivers/fpga/fpga-region.c
+    :functions: fpga_region_register
+ 
+diff --git a/drivers/fpga/dfl-fme-region.c b/drivers/fpga/dfl-fme-region.c
+index be1d57ee37666..13befbb4e1a6c 100644
+--- a/drivers/fpga/dfl-fme-region.c
++++ b/drivers/fpga/dfl-fme-region.c
+@@ -57,19 +57,14 @@ static int fme_region_probe(struct platform_device *pdev)
+ 	if (IS_ERR(mgr))
+ 		return -EPROBE_DEFER;
+ 
+-	region = devm_fpga_region_create(dev, mgr, &fme_fpga_region_ops);
++	region = fpga_region_register(dev, mgr, &fme_fpga_region_ops, pdata);
+ 	if (!region) {
+ 		ret = -ENOMEM;
+ 		goto eprobe_mgr_put;
+ 	}
+ 
+-	region->priv = pdata;
+ 	platform_set_drvdata(pdev, region);
+ 
+-	ret = fpga_region_register(region);
+-	if (ret)
+-		goto eprobe_mgr_put;
+-
+ 	dev_dbg(dev, "DFL FME FPGA Region probed\n");
+ 
+ 	return 0;
+diff --git a/drivers/fpga/dfl.c b/drivers/fpga/dfl.c
+index 511b20ff35a33..6e628c07c1dc1 100644
+--- a/drivers/fpga/dfl.c
++++ b/drivers/fpga/dfl.c
+@@ -1400,19 +1400,15 @@ dfl_fpga_feature_devs_enumerate(struct dfl_fpga_enum_info *info)
+ 	if (!cdev)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	cdev->region = devm_fpga_region_create(info->dev, NULL, NULL);
+-	if (!cdev->region) {
+-		ret = -ENOMEM;
+-		goto free_cdev_exit;
+-	}
+-
+ 	cdev->parent = info->dev;
+ 	mutex_init(&cdev->lock);
+ 	INIT_LIST_HEAD(&cdev->port_dev_list);
+ 
+-	ret = fpga_region_register(cdev->region);
+-	if (ret)
++	cdev->region = fpga_region_register(info->dev, NULL, NULL, NULL);
++	if (IS_ERR(cdev->region)) {
++		ret = PTR_ERR(cdev->region);
+ 		goto free_cdev_exit;
++	}
+ 
+ 	/* create and init build info for enumeration */
+ 	binfo = devm_kzalloc(info->dev, sizeof(*binfo), GFP_KERNEL);
+diff --git a/drivers/fpga/fpga-region.c b/drivers/fpga/fpga-region.c
+index b08d3914716f0..6442e80480b43 100644
+--- a/drivers/fpga/fpga-region.c
++++ b/drivers/fpga/fpga-region.c
+@@ -184,39 +184,44 @@ static struct attribute *fpga_region_attrs[] = {
+ ATTRIBUTE_GROUPS(fpga_region);
+ 
+ /**
+- * fpga_region_create - alloc and init a struct fpga_region
++ * fpga_region_register - create and register an FPGA Region device
+  * @parent: device parent
+  * @mgr: manager that programs this region
+- * @rops:  optional pointer to struct for fpga region ops
++ * @rops: optional pointer to struct for fpga region ops
++ * @priv: fpga region private data
+  *
+  * The caller of this function is responsible for freeing the resulting region
+- * struct with fpga_region_free().  Using devm_fpga_region_create() instead is
++ * struct with fpga_region_unregiser().  Using devm_fpga_region_create() instead is
+  * recommended.
+  *
+- * Return: struct fpga_region or NULL
++ * Return: struct fpga_region or ERR_PTR()
+  */
+-struct fpga_region
+-*fpga_region_create(struct device *parent,
+-		    struct fpga_manager *mgr,
+-		    const struct fpga_region_ops *rops)
++struct fpga_region *
++fpga_region_register(struct device *parent,
++		     struct fpga_manager *mgr,
++		     const struct fpga_region_ops *rops,
++		     void *priv)
+ {
+ 	struct fpga_region *region;
+ 	int id, ret = 0;
+ 
+ 	region = kzalloc(sizeof(*region), GFP_KERNEL);
+ 	if (!region)
+-		return NULL;
++		return ERR_PTR(-ENOMEM);
+ 
+ 	id = ida_simple_get(&fpga_region_ida, 0, 0, GFP_KERNEL);
+-	if (id < 0)
++	if (id < 0) {
++		ret = id;
+ 		goto err_free;
++	}
+ 
+ 	region->mgr = mgr;
+ 	region->rops = rops;
++	region->priv = priv;
++
+ 	mutex_init(&region->mutex);
+ 	INIT_LIST_HEAD(&region->bridge_list);
+ 
+-	device_initialize(&region->dev);
+ 	region->dev.class = fpga_region_class;
+ 	region->dev.parent = parent;
+ 	region->dev.of_node = parent->of_node;
+@@ -226,6 +231,12 @@ struct fpga_region
+ 	if (ret)
+ 		goto err_remove;
+ 
++	ret = device_register(&region->dev);
++	if (ret) {
++		put_device(&region->dev);
++		return ERR_PTR(ret);
++	}
++
+ 	return region;
+ 
+ err_remove:
+@@ -233,76 +244,7 @@ struct fpga_region
+ err_free:
+ 	kfree(region);
+ 
+-	return NULL;
+-}
+-EXPORT_SYMBOL_GPL(fpga_region_create);
+-
+-/**
+- * fpga_region_free - free an FPGA region created by fpga_region_create()
+- * @region: FPGA region
+- */
+-void fpga_region_free(struct fpga_region *region)
+-{
+-	ida_simple_remove(&fpga_region_ida, region->dev.id);
+-	kfree(region);
+-}
+-EXPORT_SYMBOL_GPL(fpga_region_free);
+-
+-static void devm_fpga_region_release(struct device *dev, void *res)
+-{
+-	struct fpga_region *region = *(struct fpga_region **)res;
+-
+-	fpga_region_free(region);
+-}
+-
+-/**
+- * devm_fpga_region_create - create and initialize a managed FPGA region struct
+- * @parent: device parent
+- * @mgr: manager that programs this region
+- * @rops:  optional pointer to struct for fpga region ops
+- *
+- * This function is intended for use in an FPGA region driver's probe function.
+- * After the region driver creates the region struct with
+- * devm_fpga_region_create(), it should register it with fpga_region_register().
+- * The region driver's remove function should call fpga_region_unregister().
+- * The region struct allocated with this function will be freed automatically on
+- * driver detach.  This includes the case of a probe function returning error
+- * before calling fpga_region_register(), the struct will still get cleaned up.
+- *
+- * Return: struct fpga_region or NULL
+- */
+-struct fpga_region
+-*devm_fpga_region_create(struct device *parent,
+-			 struct fpga_manager *mgr,
+-			 const struct fpga_region_ops *rops)
+-{
+-	struct fpga_region **ptr, *region;
+-
+-	ptr = devres_alloc(devm_fpga_region_release, sizeof(*ptr), GFP_KERNEL);
+-	if (!ptr)
+-		return NULL;
+-
+-	region = fpga_region_create(parent, mgr, rops);
+-	if (!region) {
+-		devres_free(ptr);
+-	} else {
+-		*ptr = region;
+-		devres_add(parent, ptr);
+-	}
+-
+-	return region;
+-}
+-EXPORT_SYMBOL_GPL(devm_fpga_region_create);
+-
+-/**
+- * fpga_region_register - register an FPGA region
+- * @region: FPGA region
+- *
+- * Return: 0 or -errno
+- */
+-int fpga_region_register(struct fpga_region *region)
+-{
+-	return device_add(&region->dev);
++	return ERR_PTR(ret);
+ }
+ EXPORT_SYMBOL_GPL(fpga_region_register);
+ 
+@@ -320,6 +262,10 @@ EXPORT_SYMBOL_GPL(fpga_region_unregister);
+ 
+ static void fpga_region_dev_release(struct device *dev)
+ {
++	struct fpga_region *region = to_fpga_region(dev);
++
++	ida_simple_remove(&fpga_region_ida, region->dev.id);
++	kfree(region);
+ }
+ 
+ /**
+diff --git a/drivers/fpga/of-fpga-region.c b/drivers/fpga/of-fpga-region.c
+index 2c99605e008a6..bceb51b2476c6 100644
+--- a/drivers/fpga/of-fpga-region.c
++++ b/drivers/fpga/of-fpga-region.c
+@@ -409,16 +409,12 @@ static int of_fpga_region_probe(struct platform_device *pdev)
+ 	if (IS_ERR(mgr))
+ 		return -EPROBE_DEFER;
+ 
+-	region = devm_fpga_region_create(dev, mgr, &of_fpga_region_ops);
+-	if (!region) {
+-		ret = -ENOMEM;
++	region = fpga_region_register(dev, mgr, &of_fpga_region_ops, NULL);
++	if (IS_ERR(region)) {
++		ret = PTR_ERR(region);
+ 		goto eprobe_mgr_put;
+ 	}
+ 
+-	ret = fpga_region_register(region);
+-	if (ret)
+-		goto eprobe_mgr_put;
+-
+ 	of_platform_populate(np, fpga_region_of_match, NULL, &region->dev);
+ 	platform_set_drvdata(pdev, region);
+ 
+diff --git a/include/linux/fpga/fpga-region.h b/include/linux/fpga/fpga-region.h
+index afc79784b2823..98f001625933f 100644
+--- a/include/linux/fpga/fpga-region.h
++++ b/include/linux/fpga/fpga-region.h
+@@ -51,15 +51,9 @@ struct fpga_region *fpga_region_class_find(
+ 
+ int fpga_region_program_fpga(struct fpga_region *region);
+ 
+-struct fpga_region
+-*fpga_region_create(struct device *dev, struct fpga_manager *mgr,
+-		    const struct fpga_region_ops *rops);
+-void fpga_region_free(struct fpga_region *region);
+-int fpga_region_register(struct fpga_region *region);
++struct fpga_region *
++fpga_region_register(struct device *parent, struct fpga_manager *mgr,
++		     const struct fpga_region_ops *rops, void *priv);
+ void fpga_region_unregister(struct fpga_region *region);
+ 
+-struct fpga_region
+-*devm_fpga_region_create(struct device *dev, struct fpga_manager *mgr,
+-			 const struct fpga_region_ops *rops);
+-
+ #endif /* _FPGA_REGION_H */
 -- 
-Sincerely yours,
-Mike.
+2.26.3
+
