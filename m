@@ -2,169 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4142D3C25B7
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B5B73C25B9
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232273AbhGIOTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 10:19:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37998 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231775AbhGIOTA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 10:19:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B0C3613AF;
-        Fri,  9 Jul 2021 14:16:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625840177;
-        bh=x5CND8RsRdj7nNiTB7w585ma7e3rrEVRZa5p1+EuLHM=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=htOKdpsGWv/mgxAsURjgwkEs9AEvfyh9YqU8viPhedGYX2Bd/4gSAtH9qUfgTjZRn
-         VOW2Ktr9Cki/pxjw8dJglEaKMs4eMmQgAI2BQI0OIt5tWL6y95p0uPi3xLj2dCqPjq
-         jpMd+LiMPkv8AzAi7PLdiWTU8O+PiUKYG8RjPKLTozsHm6J030Vw0lkOFZOEsJtMLn
-         wxP4Z64Q6fWU0lJWoFCwPE2tTdEBlPYs/qGSghEARaVFevBKQ3/W/uWGx1EsnM75r2
-         97t2u/nBNF0CBof4NlLJ68+Z5n+sRnhNHd0xc0Ai7SLFaScIS+i7MVzM3OegKlD8WC
-         tRkwNf/4g8rhw==
-Subject: Re: [PATCH] EDAC, altera: skip defining unused structures for
- specific configs
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kernel test robot <lkp@intel.com>
-References: <20210601092704.203555-1-krzysztof.kozlowski@canonical.com>
-From:   Dinh Nguyen <dinguyen@kernel.org>
-Message-ID: <d08ede56-5b53-0697-de17-9eee9a8530e8@kernel.org>
-Date:   Fri, 9 Jul 2021 09:16:15 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232296AbhGIOTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 10:19:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232287AbhGIOTD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 10:19:03 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57085C0613DD
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 07:16:20 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id i5-20020a9d68c50000b02904b41fa91c97so5158571oto.5
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 07:16:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bxxtzhSqQ30ofxYR2wWVen9xadmyBMEFbPzU4Bge/7c=;
+        b=cZf6fFb7XZoW2XKC56KpK+eeM8OXh80i4CztX45RhXCNhmg1i0UIs4elevIQL3TC57
+         oDuSscvnClKFrdO7K67Hw/FPskzXYeHsJp4MRN0jgbS5fT1ixvWaflTgbJeOIPhG/EcP
+         GLTKSZy3GexSbMaz8CviEOADL1EPmE1bhx7tw2SOl9x89Q9ZMaJ1W7mMt5at6SAcUUvf
+         8e6P0f2BdmxIoa/zRgkSJGqjpxOdJ2u8qvQEcRY+3EdC+nqQGJEU92gh46aC7uhMYayX
+         MOix9SFPrEXKeUErZ6ebMYalGBVlRw3w3+wGzqxbLaLQnj6FHhwpi9agbAtWu7oLuyoK
+         o2Hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bxxtzhSqQ30ofxYR2wWVen9xadmyBMEFbPzU4Bge/7c=;
+        b=VAZa2i5G4j1NN7gihffgktVL+NqS6VUOR2KKcAcZGibzQ7GL+dBSfwN+tf8P5RtKqg
+         X8egEj3A+xYLznaI+KIzPkl7voQjeyWoZ2ITwkF2bnMFEBzDbPplAO1CpNbgJlBiIMJD
+         EKIv/6pi8WNqcXTHWQzhmvNMtrowAIwuyTQn91Lp4he6gbX8y3sSVvSzNIviy6QzmQP6
+         vgRXpcs+hVj+/xQ6tzeuTRPVFEtzpSoKIhIHFyHyy4sS6k6evytAt7sFZZdIjZVG9ceR
+         xaZWeGBn83PGIy55WKf2EZDTux7CNhDGGuUmPtCcZ1lNJ3LpFJDG3hq+3RsmbmK4p+OG
+         SfLQ==
+X-Gm-Message-State: AOAM533xCW1lip0Dcycy//8jbAkpGWDVkUnn8fXSRIqvAVqWvFUnJihq
+        ICA9nwYT8s3UloocfIcsHWPynA==
+X-Google-Smtp-Source: ABdhPJwud6BO9hWdFsO/4Wc/TioM7Cxa1/RTd2pqEJKFpQ/qRrxfYgYNRrztJ5OSG+CePaw8a+GTVw==
+X-Received: by 2002:a9d:4ea:: with SMTP id 97mr28601933otm.324.1625840179553;
+        Fri, 09 Jul 2021 07:16:19 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id l9sm1233261oii.20.2021.07.09.07.16.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Jul 2021 07:16:18 -0700 (PDT)
+Date:   Fri, 9 Jul 2021 09:16:16 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] PM: domains: Don't attach a device to genpd that
+ corresponds to a provider
+Message-ID: <YOhaMFHd6QD6olpg@yoga>
+References: <20210709125611.135920-1-ulf.hansson@linaro.org>
+ <CAMuHMdU0AVFVb3tXW4wkEibSx50nzYKW1GopgZPfKp1SS7Mf1g@mail.gmail.com>
+ <CAPDyKFpzw0mQPFs-jyMX=T6WpZ+vFqrWmoKUWD+9wW8LWqyHuA@mail.gmail.com>
+ <YOhTU0xUShJQXrL5@yoga>
+ <CAPDyKFr+VtGvyfJip-Mu6Gdcj1jQNtkrHRg6tJsJtAKkg0Y9+g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210601092704.203555-1-krzysztof.kozlowski@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPDyKFr+VtGvyfJip-Mu6Gdcj1jQNtkrHRg6tJsJtAKkg0Y9+g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri 09 Jul 08:58 CDT 2021, Ulf Hansson wrote:
 
-
-On 6/1/21 4:27 AM, Krzysztof Kozlowski wrote:
-> The Altera EDAC driver has several features conditionally built
-> depending on Kconfig options.  The edac_device_prv_data structures are
-> conditionally used in of_device_id tables.  They reference other
-> functions and structures which can be defined as __maybe_unused.  This
-> silences build warnings like:
+> On Fri, 9 Jul 2021 at 15:47, Bjorn Andersson <bjorn.andersson@linaro.org> wrote:
+> >
+> > On Fri 09 Jul 08:22 CDT 2021, Ulf Hansson wrote:
+> >
+> > > On Fri, 9 Jul 2021 at 15:07, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > >
+> > > > Hi Ulf,
+> > > >
+> > > > Thanks for your patch!
+> > > >
+> > > > On Fri, Jul 9, 2021 at 2:56 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > > > > According to the common power domain DT bindings, a power domain provider
+> > > > > must have a "#power-domain-cells" property in its OF node. Additionally, if
+> > > > > a provider has a "power-domains" property, it means that it has a parent
+> > > > > domain.
+> > > >
+> > > > OK.
+> > > >
+> > > > > It has turned out that some OF nodes that represents a genpd provider may
+> > > > > also be compatible with a regular platform device. This leads to, during
+> > > > > probe, genpd_dev_pm_attach(), genpd_dev_pm_attach_by_name() and
+> > > > > genpd_dev_pm_attach_by_id() tries to attach the corresponding struct device
+> > > > > to the genpd provider's parent domain, which is wrong. Instead the genpd
+> > > >
+> > > > Why is that wrong?
+> > >
+> > > It may lead to that the struct device that corresponds to a genpd
+> > > provider may be attached to the parent domain. In other words, the
+> > > parent domain will not only be controlled by a child domain
+> > > (corresponding to the provider), but also through the provider's
+> > > struct device. As far as I can tell, this has never been the intent
+> > > for how things should work in genpd.
+> > >
+> > > So wrong or not, I guess it depends on what you expect to happen.
+> > >
+> > > Do you see an issue with changing this?
+> > >
+> >
+> > But this exactly what we have in the case of the "dispcc" in the
+> > Qualcomm platform that Dmitry is working on.
+> >
+> > The provider driver needs the parent power-domain to be powered in order
+> > to poke the registers and then it is the parent of the power-domains
+> > exposed.
+> >
+> > If I understand your proposed patch we'll have to manually attach the
+> > parent domain to the struct device of the controller with this patch?
 > 
->      drivers/edac/altera_edac.c:643:37: warning:
->          ‘altr_edac_device_inject_fops’ defined but not used [-Wunused-const-variable=]
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
->   drivers/edac/altera_edac.c | 44 ++++++++++++++++++++++----------------
->   1 file changed, 26 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/edac/altera_edac.c b/drivers/edac/altera_edac.c
-> index 61c21bd880a4..2949edb93454 100644
-> --- a/drivers/edac/altera_edac.c
-> +++ b/drivers/edac/altera_edac.c
-> @@ -539,10 +539,18 @@ module_platform_driver(altr_edac_driver);
->    * trigger testing are different for each memory.
->    */
->   
-> +#ifdef CONFIG_EDAC_ALTERA_OCRAM
->   static const struct edac_device_prv_data ocramecc_data;
-> +#endif
-> +#ifdef CONFIG_EDAC_ALTERA_L2C
->   static const struct edac_device_prv_data l2ecc_data;
-> +#endif
-> +#ifdef CONFIG_EDAC_ALTERA_OCRAM
->   static const struct edac_device_prv_data a10_ocramecc_data;
-> +#endif
-> +#ifdef CONFIG_EDAC_ALTERA_L2C
->   static const struct edac_device_prv_data a10_l2ecc_data;
-> +#endif
->   
->   static irqreturn_t altr_edac_device_handler(int irq, void *dev_id)
->   {
-> @@ -569,9 +577,9 @@ static irqreturn_t altr_edac_device_handler(int irq, void *dev_id)
->   	return ret_value;
->   }
->   
-> -static ssize_t altr_edac_device_trig(struct file *file,
-> -				     const char __user *user_buf,
-> -				     size_t count, loff_t *ppos)
-> +static ssize_t __maybe_unused
-> +altr_edac_device_trig(struct file *file, const char __user *user_buf,
-> +		      size_t count, loff_t *ppos)
->   
->   {
->   	u32 *ptemp, i, error_mask;
-> @@ -640,27 +648,27 @@ static ssize_t altr_edac_device_trig(struct file *file,
->   	return count;
->   }
->   
-> -static const struct file_operations altr_edac_device_inject_fops = {
-> +static const struct file_operations altr_edac_device_inject_fops __maybe_unused = {
->   	.open = simple_open,
->   	.write = altr_edac_device_trig,
->   	.llseek = generic_file_llseek,
->   };
->   
-> -static ssize_t altr_edac_a10_device_trig(struct file *file,
-> -					 const char __user *user_buf,
-> -					 size_t count, loff_t *ppos);
-> +static ssize_t __maybe_unused
-> +altr_edac_a10_device_trig(struct file *file, const char __user *user_buf,
-> +			  size_t count, loff_t *ppos);
->   
-> -static const struct file_operations altr_edac_a10_device_inject_fops = {
-> +static const struct file_operations altr_edac_a10_device_inject_fops __maybe_unused = {
->   	.open = simple_open,
->   	.write = altr_edac_a10_device_trig,
->   	.llseek = generic_file_llseek,
->   };
->   
-> -static ssize_t altr_edac_a10_device_trig2(struct file *file,
-> -					  const char __user *user_buf,
-> -					  size_t count, loff_t *ppos);
-> +static ssize_t __maybe_unused
-> +altr_edac_a10_device_trig2(struct file *file, const char __user *user_buf,
-> +			   size_t count, loff_t *ppos);
->   
-> -static const struct file_operations altr_edac_a10_device_inject2_fops = {
-> +static const struct file_operations altr_edac_a10_device_inject2_fops __maybe_unused = {
->   	.open = simple_open,
->   	.write = altr_edac_a10_device_trig2,
->   	.llseek = generic_file_llseek,
-> @@ -1697,9 +1705,9 @@ MODULE_DEVICE_TABLE(of, altr_edac_a10_device_of_match);
->    * Based on xgene_edac.c peripheral code.
->    */
->   
-> -static ssize_t altr_edac_a10_device_trig(struct file *file,
-> -					 const char __user *user_buf,
-> -					 size_t count, loff_t *ppos)
-> +static ssize_t __maybe_unused
-> +altr_edac_a10_device_trig(struct file *file, const char __user *user_buf,
-> +			  size_t count, loff_t *ppos)
->   {
->   	struct edac_device_ctl_info *edac_dci = file->private_data;
->   	struct altr_edac_device_dev *drvdata = edac_dci->pvt_info;
-> @@ -1729,9 +1737,9 @@ static ssize_t altr_edac_a10_device_trig(struct file *file,
->    * slightly. A few Arria10 peripherals can use this injection function.
->    * Inject the error into the memory and then readback to trigger the IRQ.
->    */
-> -static ssize_t altr_edac_a10_device_trig2(struct file *file,
-> -					  const char __user *user_buf,
-> -					  size_t count, loff_t *ppos)
-> +static ssize_t __maybe_unused
-> +altr_edac_a10_device_trig2(struct file *file, const char __user *user_buf,
-> +			   size_t count, loff_t *ppos)
->   {
->   	struct edac_device_ctl_info *edac_dci = file->private_data;
->   	struct altr_edac_device_dev *drvdata = edac_dci->pvt_info;
+> Not even that would work after $subject patch, as it prevents
+> providers from being attached to a domain.
 > 
 
-Acked-by: Dinh Nguyen <dinguyen@kernel.org>
+That's definitely going to be a problem.
+
+> It sure sounds like you need to control power for the parent domain,
+> not only by registering a child domain to it.
+> 
+
+Yes, we certainly need power to the genpd provider.
+
+> >
+> > Is the Qualcomm case unique or will this change cut power do other genpd
+> > providers assuming the same?
+> 
+> I think the Qualcomm case is a bit unique or at least the first I
+> heard of. However, this change would affect all and of course we must
+> not break things.
+> 
+
+I'm surprised that we'd be alone one that needs power to our genpd
+provider. Does everyone else have their genpd providers in some
+always-on power domain?
+
+> >
+> >
+> >
+> > Worth mentioning as we discuss this is that we have another genpd
+> > provider, where I think the exposed genpds are parented by a few
+> > different (each one with a specific) parent domains. In this case we'd
+> > be forced to manually attach the genpd provider to the parent domain
+> > that it actually is powered by (as no automatic attachment happens when
+> > multiple domains are specified).
+> 
+> Yes, that's correct (assuming we don't apply $subject patch).
+> 
+
+Afaict this patch wouldn't change the case where the genpd provider has
+multiple power-domains, as it wouldn't automatically attach the device
+to any one of them anyways.
+
+Regards,
+Bjorn
+
+> To sum up:
+> 
+> Rafael I am withdrawing the $subject patch, it seems like it may break
+> existing expectations of what will happen during attach.
+> 
+> Moreover, it may actually be beneficial to allow the attach to succeed
+> for the Qcom case, so let's leave this as is.
+> 
+> Kind regards
+> Uffe
