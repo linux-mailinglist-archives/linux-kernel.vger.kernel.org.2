@@ -2,111 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4063C2077
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 10:07:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E384F3C20D8
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 10:31:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231486AbhGIIKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 04:10:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45384 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231278AbhGIIKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 04:10:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 96F1F61057;
-        Fri,  9 Jul 2021 08:07:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625818047;
-        bh=4oYv7iKBXhSakHoC7OkzpBAI0y1ALUiBYq+K2NardEs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=oTQk1UzUrkLqPeA+IyWAHfyynAHz5Oe5MqOtaeoGUCQRd5kNzkWfJmkDFoSKajUSS
-         ZHHCX896XpUoLaJ97y2tPutCdmNeqPAGmW4/iKGoHq4/ysEATq7FfGNrK+ksVbXOv9
-         C+13DkDpqmXYlP2UWoI0/evYLT5dn37LZDkjMOAZKWCDtZTS3qh2wh4HRAg8e1m2pv
-         RPbH3y/fB26DaNebmObRJYtCMvOtc6xvqRYT67Px/n2F7BrSC89n0sq6AD82NSQJl7
-         lYZekLjxN/AVywUeNrsleaWHWGPBUDG9Fo3iBlCdhL55VvOTQmaTdpFwHO2liH8H3S
-         UXw7E2SY9vvdA==
-Received: by mail-wm1-f44.google.com with SMTP id k31-20020a05600c1c9fb029021727d66d33so4189924wms.0;
-        Fri, 09 Jul 2021 01:07:27 -0700 (PDT)
-X-Gm-Message-State: AOAM531Th/fyEBQT5L7WrKZdIM9SAifyZw/suwyB+Jch5PO3EZhBE5de
-        4G+nnffpeFYTDGvE3j9532O2EFJG07tR/DYIJ4M=
-X-Google-Smtp-Source: ABdhPJyjma8r7kjEiEkZKC5RLhyIGYHqliAQk5yugD4nO73X1ncsjrcjW8SNBayxciO4eA1HJRR3GVkZlYgMIsNcUS8=
-X-Received: by 2002:a05:600c:4101:: with SMTP id j1mr10271383wmi.84.1625818046196;
- Fri, 09 Jul 2021 01:07:26 -0700 (PDT)
+        id S231404AbhGIIeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 04:34:12 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:36319 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229685AbhGIIeK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 04:34:10 -0400
+X-Greylist: delayed 1316 seconds by postgrey-1.27 at vger.kernel.org; Fri, 09 Jul 2021 04:34:10 EDT
+Received: from twspam01.aspeedtech.com (localhost [127.0.0.2] (may be forged))
+        by twspam01.aspeedtech.com with ESMTP id 1697rmIN089525
+        for <linux-kernel@vger.kernel.org>; Fri, 9 Jul 2021 15:53:48 +0800 (GMT-8)
+        (envelope-from kuohsiang_chou@aspeedtech.com)
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 1697rOPL089505;
+        Fri, 9 Jul 2021 15:53:24 +0800 (GMT-8)
+        (envelope-from kuohsiang_chou@aspeedtech.com)
+Received: from localhost.localdomain.com (192.168.2.206) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 9 Jul
+ 2021 16:09:06 +0800
+From:   KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
+To:     <tzimmermann@suse.de>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <airlied@redhat.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <jenmin_yuan@aspeedtech.com>, <kuohsiang_chou@aspeedtech.com>,
+        <arc_sung@aspeedtech.com>
+Subject: [PATCH v5] drm/ast: Disable fast reset after DRAM initial
+Date:   Fri, 9 Jul 2021 16:09:00 +0800
+Message-ID: <20210709080900.4056-1-kuohsiang_chou@aspeedtech.com>
+X-Mailer: git-send-email 2.18.4
+In-Reply-To: <bb505d06-bf46-237c-ed2f-15e3f23ec338@suse.de>
+References: <bb505d06-bf46-237c-ed2f-15e3f23ec338@suse.de>
 MIME-Version: 1.0
-References: <20210707224310.1403944-1-ndesaulniers@google.com>
- <YOaR1ZjToP/kgNsC@infradead.org> <CAK8P3a1ctLcHuLZfBJ7wXHRmidpQZ4EZdML1nqPJVGYVTgHmaw@mail.gmail.com>
- <CAKwvOdkaifETNvtTA3O9EToVHAK0N50wkT-bHOpQ2RmFg7qk0A@mail.gmail.com>
-In-Reply-To: <CAKwvOdkaifETNvtTA3O9EToVHAK0N50wkT-bHOpQ2RmFg7qk0A@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 9 Jul 2021 10:07:10 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3h_tVaXVKRgaC9L+z9CwVGkOmCPPeW7UjDUhPKHNQDmw@mail.gmail.com>
-Message-ID: <CAK8P3a3h_tVaXVKRgaC9L+z9CwVGkOmCPPeW7UjDUhPKHNQDmw@mail.gmail.com>
-Subject: Re: [PATCH 0/2] infer CROSS_COMPILE from ARCH for LLVM=1 LLVM_IAS=1
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Fangrui Song <maskray@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [192.168.2.206]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 1697rOPL089505
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 8, 2021 at 8:04 PM 'Nick Desaulniers' via Clang Built
-Linux <clang-built-linux@googlegroups.com> wrote:
+[Bug][AST2500]
 
-> > /usr/bin/powerpc64-linux-gnu-gcc-5.2.0
-> > /usr/bin/powerpc64-linux-gnu-gcc -> powerpc64-linux-gnu-gcc-5.2.0
-> > /usr/local/bin/ppc64le-linux-gcc-9
-> > ~/bin/powerpc/powerpc-linux-unknown-gcc-12.0.20210708.experimental
-> >
-> > all of these should be able to cross-build any powerpc kernel, but
-> > there is no obvious first choice (highest version, first in path,
-> > ordered list of target triples, ...). I tried coming up with a heuristic
-> > to pick a reasonable toolchain, but at some point gave up because
-> > I failed to express that in a readable bash or Makefile syntax.
->
-> Right; foremost in my mind was arm-linux-gnueabi-gcc vs
-> arm-linux-gnueabihf-gcc.  That's not even to mention the versioned
-> suffixes.
->
-> In terms of multiversion support; this series doesn't regress doing
-> things the hard/verbose way.  But I think for most users we can have a
-> simpler common case; folks can play with their $PATH or focus on more
-> hermetic builds if they want this new feature (CROSS_COMPILE
-> inference) AND support for multiple versions of the same toolchain.
+V1:
+When AST2500 acts as stand-alone VGA so that DRAM and DVO initialization
+have to be achieved by VGA driver with P2A (PCI to AHB) enabling.
+However, HW suggests disable Fast reset mode after DRAM initializaton,
+because fast reset mode is mainly designed for ARM ICE debugger.
+Once Fast reset is checked as enabling, WDT (Watch Dog Timer) should be
+first enabled to avoid system deadlock before disable fast reset mode.
 
-Fair enough. So how something like this:
+V2:
+Use to_pci_dev() to get revision of PCI configuration.
 
-powerpc-targets := powerpc32 powerpc64 powerpc32le \
-        powerpc32be powerpc64le powerpc64be ppc64le ppc64be
-arm-targets := arm-linux-gnueabi arm-linux-gnueabihf
-x86-targets := x86_64 i386 i686
-x86_64-targets := x86
-i386-targets := i686 x86 x86_64
-parisc-targets := hppa64 hppa
-...
+V3:
+If SCU00 is not unlocked, just enter its password again.
+It is unnecessary to clear AHB lock condition and restore WDT default
+setting again, before Fast-reset clearing.
 
-CROSS_COMPILE ?= `find-toolchain $(ARCH) $($(ARCH)-targets)`
+V4:
+repatch after "error : could not build fake ancestor" resolved.
 
-where find-toolchain just finds the first working toolchain based, looking
-for $(target)-linux-gcc $(target)-gcc $(target)-unknown-linux-gcc etc
-in $(PATH) but ignoring the versions?
+V5:
+Since CVE_2019_6260 item3, Most of AST2500 have disabled P2A(PCIe to AMBA).
+However, for backward compatibility, some patches about P2A, such as items
+of v5.2 and v5.3, are considered to be upstreamed with comments.
+1. Add define macro to improve source readability.
+ast_drv.h, ast_main.c, ast_post.c
+2. Add comment about "Fast restet" is enabled for ARM-ICE debugger
+ast_post.c
+3. Add comment about Reset USB port to patch USB unknown device issue
+ast_post.c
 
-What I had actually planned was a set of helpers that allow you to
-do this in multiple steps:
+Signed-off-by: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
+---
+ drivers/gpu/drm/ast/ast_drv.h  |  6 +++
+ drivers/gpu/drm/ast/ast_main.c |  5 ++
+ drivers/gpu/drm/ast/ast_post.c | 91 ++++++++++++++++++++++++----------
+ 3 files changed, 76 insertions(+), 26 deletions(-)
 
-- if $(objtree)/scripts/cross/bin/gcc (or something else we pick)
-  exists and CROSS_COMPILE is not set, set CROSS_COMPILE
-  to $(objtree)/scripts/cross/bin/ in the Makefile
-- add script to enumerate the installed toolchains
-- add a second script to symlink one of those toolchains to
-  $(objtree)/scripts/cross/bin
-- add a third script to download a cross-toolchain from kernel.org
-  for $(ARCH) and install it to one of the locations that the first
-  script looks for (/opt/cross/, $(HOME)/cross/, $(objtree)scripts/cross/)
+diff --git a/drivers/gpu/drm/ast/ast_drv.h b/drivers/gpu/drm/ast/ast_drv.h
+index 911f9f414..39ca338eb 100644
+--- a/drivers/gpu/drm/ast/ast_drv.h
++++ b/drivers/gpu/drm/ast/ast_drv.h
+@@ -337,6 +337,11 @@ int ast_mode_config_init(struct ast_private *ast);
+ #define AST_DP501_LINKRATE	0xf014
+ #define AST_DP501_EDID_DATA	0xf020
 
-        Arnd
++/* Define for Soc scratched reg */
++#define AST_VRAM_INIT_STATUS_MASK	GENMASK(7, 6)
++//#define AST_VRAM_INIT_BY_BMC		BIT(7)
++//#define AST_VRAM_INIT_READY		BIT(6)
++
+ int ast_mm_init(struct ast_private *ast);
+
+ /* ast post */
+@@ -346,6 +351,7 @@ bool ast_is_vga_enabled(struct drm_device *dev);
+ void ast_post_gpu(struct drm_device *dev);
+ u32 ast_mindwm(struct ast_private *ast, u32 r);
+ void ast_moutdwm(struct ast_private *ast, u32 r, u32 v);
++void ast_patch_ahb_2500(struct ast_private *ast);
+ /* ast dp501 */
+ void ast_set_dp501_video_output(struct drm_device *dev, u8 mode);
+ bool ast_backup_fw(struct drm_device *dev, u8 *addr, u32 size);
+diff --git a/drivers/gpu/drm/ast/ast_main.c b/drivers/gpu/drm/ast/ast_main.c
+index 2aff2e6cf..79a361867 100644
+--- a/drivers/gpu/drm/ast/ast_main.c
++++ b/drivers/gpu/drm/ast/ast_main.c
+@@ -97,6 +97,11 @@ static void ast_detect_config_mode(struct drm_device *dev, u32 *scu_rev)
+ 	jregd0 = ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd0, 0xff);
+ 	jregd1 = ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd1, 0xff);
+ 	if (!(jregd0 & 0x80) || !(jregd1 & 0x10)) {
++		/* Patch AST2500 */
++		if (((pdev->revision & 0xF0) == 0x40)
++			&& ((jregd0 & AST_VRAM_INIT_STATUS_MASK) == 0))
++			ast_patch_ahb_2500(ast);
++
+ 		/* Double check it's actually working */
+ 		data = ast_read32(ast, 0xf004);
+ 		if ((data != 0xFFFFFFFF) && (data != 0x00)) {
+diff --git a/drivers/gpu/drm/ast/ast_post.c b/drivers/gpu/drm/ast/ast_post.c
+index 0607658dd..b5d92f652 100644
+--- a/drivers/gpu/drm/ast/ast_post.c
++++ b/drivers/gpu/drm/ast/ast_post.c
+@@ -2028,6 +2028,40 @@ static bool ast_dram_init_2500(struct ast_private *ast)
+ 	return true;
+ }
+
++void ast_patch_ahb_2500(struct ast_private *ast)
++{
++	u32	data;
++
++	/* Clear bus lock condition */
++	ast_moutdwm(ast, 0x1e600000, 0xAEED1A03);
++	ast_moutdwm(ast, 0x1e600084, 0x00010000);
++	ast_moutdwm(ast, 0x1e600088, 0x00000000);
++	ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
++	data = ast_mindwm(ast, 0x1e6e2070);
++	if (data & 0x08000000) {					/* check fast reset */
++		/*
++		 * If "Fast restet" is enabled for ARM-ICE debugger,
++		 * then WDT needs to enable, that
++		 * WDT04 is WDT#1 Reload reg.
++		 * WDT08 is WDT#1 counter restart reg to avoid system deadlock
++		 * WDT0C is WDT#1 control reg
++		 *	[6:5]:= 01:Full chip
++		 *	[4]:= 1:1MHz clock source
++		 *	[1]:= 1:WDT will be cleeared and disabled after timeout occurs
++		 *	[0]:= 1:WDT enable
++		 */
++		ast_moutdwm(ast, 0x1E785004, 0x00000010);
++		ast_moutdwm(ast, 0x1E785008, 0x00004755);
++		ast_moutdwm(ast, 0x1E78500c, 0x00000033);
++		udelay(1000);
++	}
++	do {
++		ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
++		data = ast_mindwm(ast, 0x1e6e2000);
++	}	while (data != 1);
++	ast_moutdwm(ast, 0x1e6e207c, 0x08000000);	/* clear fast reset */
++}
++
+ void ast_post_chip_2500(struct drm_device *dev)
+ {
+ 	struct ast_private *ast = to_ast_private(dev);
+@@ -2035,39 +2069,44 @@ void ast_post_chip_2500(struct drm_device *dev)
+ 	u8 reg;
+
+ 	reg = ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd0, 0xff);
+-	if ((reg & 0x80) == 0) {/* vga only */
++	if ((reg & AST_VRAM_INIT_STATUS_MASK) == 0) {/* vga only */
+ 		/* Clear bus lock condition */
+-		ast_moutdwm(ast, 0x1e600000, 0xAEED1A03);
+-		ast_moutdwm(ast, 0x1e600084, 0x00010000);
+-		ast_moutdwm(ast, 0x1e600088, 0x00000000);
+-		ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
+-		ast_write32(ast, 0xf004, 0x1e6e0000);
+-		ast_write32(ast, 0xf000, 0x1);
+-		ast_write32(ast, 0x12000, 0x1688a8a8);
+-		while (ast_read32(ast, 0x12000) != 0x1)
+-			;
+-
+-		ast_write32(ast, 0x10000, 0xfc600309);
+-		while (ast_read32(ast, 0x10000) != 0x1)
+-			;
++		ast_patch_ahb_2500(ast);
++
++		/* Disable watchdog */
++		ast_moutdwm(ast, 0x1E78502C, 0x00000000);
++		ast_moutdwm(ast, 0x1E78504C, 0x00000000);
++
++		/*
++		 * Reset USB port to patch USB unknown device issue
++		 * SCU90 is Multi-function Pin Control #5
++		 *	[29]:= 1:Enable USB2.0 Host port#1 (that the mutually shared USB2.0 Hub
++		 *				port).
++		 * SCU94 is Multi-function Pin Control #6
++		 *	[14:13]:= 1x:USB2.0 Host2 controller
++		 * SCU70 is Hardware Strap reg
++		 *	[23]:= 1:CLKIN is 25MHz and USBCK1 = 24/48 MHz (determined by
++		 *				[18]: 0(24)/1(48) MHz)
++		 * SCU7C is Write clear reg to SCU70
++		 *	[23]:= write 1 and then SCU70[23] will be clear as 0b.
++		 */
++		ast_moutdwm(ast, 0x1E6E2090, 0x20000000);
++		ast_moutdwm(ast, 0x1E6E2094, 0x00004000);
++		if (ast_mindwm(ast, 0x1E6E2070) & 0x00800000) {
++			ast_moutdwm(ast, 0x1E6E207C, 0x00800000);
++			mdelay(100);
++			ast_moutdwm(ast, 0x1E6E2070, 0x00800000);
++		}
++		/* Modify eSPI reset pin */
++		temp = ast_mindwm(ast, 0x1E6E2070);
++		if (temp & 0x02000000)
++			ast_moutdwm(ast, 0x1E6E207C, 0x00004000);
+
+ 		/* Slow down CPU/AHB CLK in VGA only mode */
+ 		temp = ast_read32(ast, 0x12008);
+ 		temp |= 0x73;
+ 		ast_write32(ast, 0x12008, temp);
+
+-		/* Reset USB port to patch USB unknown device issue */
+-		ast_moutdwm(ast, 0x1e6e2090, 0x20000000);
+-		temp  = ast_mindwm(ast, 0x1e6e2094);
+-		temp |= 0x00004000;
+-		ast_moutdwm(ast, 0x1e6e2094, temp);
+-		temp  = ast_mindwm(ast, 0x1e6e2070);
+-		if (temp & 0x00800000) {
+-			ast_moutdwm(ast, 0x1e6e207c, 0x00800000);
+-			mdelay(100);
+-			ast_moutdwm(ast, 0x1e6e2070, 0x00800000);
+-		}
+-
+ 		if (!ast_dram_init_2500(ast))
+ 			drm_err(dev, "DRAM init failed !\n");
+
+--
+2.18.4
+
