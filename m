@@ -2,134 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6F863C20FB
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 10:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0D63C20FD
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 10:44:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231733AbhGIIqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 04:46:31 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:59478 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231585AbhGIIqa (ORCPT
+        id S231765AbhGIIqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 04:46:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231585AbhGIIqx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 04:46:30 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1698X3ui034061;
-        Fri, 9 Jul 2021 04:43:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : content-transfer-encoding : mime-version; s=pp1;
- bh=YGU1/GMvFydHj3oddOrY0kMV2Ha7vK1EMdXlqyXSdvY=;
- b=AKCLp/hCQtoTj6eIGpIazqFDRhlEjljHN9HqN3SSoKBX7CP/OcHF63jgoAdFQYDIvDP9
- bhVGmfpX2T2jPGbqsU1I68Ar/MSeh4VycLWdEWkfQYMpPptvfTokqzvx0wEy8MnaFK/n
- NpP/UN+VphrGvKwj55XrPDPXTQje3USSyQOKiMIBvbOafl9kb6ZwoNbBogVSQyAs4nQU
- 4smcQyX2CjgU15bTxG4qc/29MNVvCTZCQxEDSG886YfTHxaQMgC19VcToTwDA3iNwwKU
- WSn9fHBL2Q0Oe60Dg2zj/NCVo++nhEz/Dydr2y6DuZRBUkV8/6GtE9bGSo9P+5OZvLf+ 0Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39p0hr8k7r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Jul 2021 04:43:38 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1698XGBR034456;
-        Fri, 9 Jul 2021 04:43:38 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39p0hr8k6g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Jul 2021 04:43:37 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1698eejn025403;
-        Fri, 9 Jul 2021 08:43:36 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06fra.de.ibm.com with ESMTP id 39jf5hhcuc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Jul 2021 08:43:36 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1698hWEG34472422
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 9 Jul 2021 08:43:33 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C82D9A405C;
-        Fri,  9 Jul 2021 08:43:32 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B572AA4054;
-        Fri,  9 Jul 2021 08:43:27 +0000 (GMT)
-Received: from localhost.localdomain.com (unknown [9.199.39.183])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri,  9 Jul 2021 08:43:27 +0000 (GMT)
-From:   Kajol Jain <kjain@linux.ibm.com>
-To:     will@kernel.org, hao.wu@intel.com, mark.rutland@arm.com
-Cc:     trix@redhat.com, yilun.xu@intel.com, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, maddy@linux.ibm.com,
-        atrajeev@linux.vnet.ibm.com, kjain@linux.ibm.com,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        rnsastry@linux.ibm.com, linux-perf-users@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: [PATCH v2] fpga: dfl: fme: Fix cpu hotplug issue in performance reporting
-Date:   Fri,  9 Jul 2021 14:13:19 +0530
-Message-Id: <20210709084319.33776-1-kjain@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 5asgOQpK-L42J3lVBxCXJt5uqxvGUtbb
-X-Proofpoint-ORIG-GUID: 5m_umRQ0G3-bQzjaZVAZ1BURCgNMWqVG
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Fri, 9 Jul 2021 04:46:53 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD8DCC0613DD;
+        Fri,  9 Jul 2021 01:44:09 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id o4so4662659plg.1;
+        Fri, 09 Jul 2021 01:44:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7W/RXc+IBJu2j+yc4eqfnO/B+uIUaANtmNbBhY5N0bo=;
+        b=ssESuozzwrDfjs4SsestEH430LqnlOFIK4vttayikK1q0lOy53kSobtDETx1BZvA93
+         5IaLHRcJj11j3YH8WiqfYihNgWdtB0gRDLtWZMh0MvxDGzOOPERFcRfZSxdZtsKPbyhc
+         ZoT0+78m4DWWCPiFxWxLlu4iBFNJhaMOf2J18/EhD/dQA/ZjrQbbB5hTXkBm8vhaSbma
+         1swfVI6kpwLG7fzXZTkfF5+UCEaM1ytI3jVuTw1e62WyDJiPIQY68POjnVJeKhA929v3
+         ICcX1HIkikYDAd5uHngkIDKIefDlLe9KsCQnLeWHxdtMxw9LsAedeYMjv0iyZPM/n1RX
+         LjjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7W/RXc+IBJu2j+yc4eqfnO/B+uIUaANtmNbBhY5N0bo=;
+        b=OMn+YMR8AZ/y00NDvuYJU5VpC4oNppcw7TTOxRTClzSZZso0/zaFUapMgD7I/1REba
+         j5lWhpqxS/92ziJcWhRwRcTGHDBHXB/8xhRMgUOiKe9HFfpMG+zVuntNZ+KkqDE8CK0I
+         aABYF3PpD44ZW3KJIH5AoWFmGffSxE8UUNr0i/Xye0iKmuVNqiZs6U81xWmA04CPogMt
+         pfZETC8s0DZxqLfDdhOzdbLoSq+SROIMLrx/fe+Evydt1u9GdqnmRi1PQcCsE/dj4O2W
+         iGKzapmeNToJlZ0DvtTHCsJi8L3/91ZJu0NxC3bui29EyzVXZIBwaDtJTwluAu9QkfD5
+         yL+A==
+X-Gm-Message-State: AOAM531wzdDhPcg5b0pBZ9Bgfc/gZJW1GTzz20uXYi9/XSzD7HFXlLju
+        uPpqsEyVlA1QgKpQPXUzdjk=
+X-Google-Smtp-Source: ABdhPJyHHifuowhUFMdA+aX3uQQ86aA3zYGue1JjUk98DE9FLG4ZQOg4RRFDBOmCZIj7aYrQJMaabg==
+X-Received: by 2002:a17:902:aa92:b029:127:a70e:3197 with SMTP id d18-20020a170902aa92b0290127a70e3197mr30061236plr.30.1625820249319;
+        Fri, 09 Jul 2021 01:44:09 -0700 (PDT)
+Received: from localhost.localdomain ([154.16.166.216])
+        by smtp.gmail.com with ESMTPSA id x10sm5737169pfd.175.2021.07.09.01.44.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Jul 2021 01:44:08 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     ath9k-devel@qca.qualcomm.com, Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Brooke Basile <brookebasile@gmail.com>
+Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        syzbot+6692c72009680f7c4eb2@syzkaller.appspotmail.com,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ath9k: hif_usb: fix memory leak in ath9k_hif_usb_firmware_cb
+Date:   Fri,  9 Jul 2021 16:43:51 +0800
+Message-Id: <20210709084351.2087311-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-09_04:2021-07-09,2021-07-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- suspectscore=0 priorityscore=1501 adultscore=0 lowpriorityscore=0
- mlxscore=0 phishscore=0 impostorscore=0 clxscore=1015 bulkscore=0
- malwarescore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107090042
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The performance reporting driver added cpu hotplug
-feature but it didn't add pmu migration call in cpu
-offline function.
-This can create an issue incase the current designated
-cpu being used to collect fme pmu data got offline,
-as based on current code we are not migrating fme pmu to
-new target cpu. Because of that perf will still try to
-fetch data from that offline cpu and hence we will not
-get counter data.
+The commit 03fb92a432ea ("ath9k: hif_usb: fix race condition between
+usb_get_urb() and usb_kill_anchored_urbs()") adds three usb_get_urb
+in ath9k_hif_usb_dealloc_tx_urbs and usb_free_urb.
 
-Patch fixed this issue by adding pmu_migrate_context call
-in fme_perf_offline_cpu function.
+Fix this bug by adding corresponding usb_free_urb in
+ath9k_hif_usb_dealloc_tx_urbs other and hif_usb_stop.
 
-Fixes: 724142f8c42a ("fpga: dfl: fme: add performance reporting support")
-Tested-by: Xu Yilun <yilun.xu@intel.com>
-Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
-Cc: stable@vger.kernel.org
+Reported-by: syzbot+6692c72009680f7c4eb2@syzkaller.appspotmail.com
+Fixes: 03fb92a432ea ("ath9k: hif_usb: fix race condition between usb_get_urb() and usb_kill_anchored_urbs()")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
 ---
- drivers/fpga/dfl-fme-perf.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/wireless/ath/ath9k/hif_usb.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
----
-Changelog:
-v1 -> v2:
-- Add stable@vger.kernel.org in cc list
-
-RFC -> PATCH v1
-- Remove RFC tag
-- Did nits changes on subject and commit message as suggested by Xu Yilun
-- Added Tested-by tag
-- Link to rfc patch: https://lkml.org/lkml/2021/6/28/112
----
-diff --git a/drivers/fpga/dfl-fme-perf.c b/drivers/fpga/dfl-fme-perf.c
-index 4299145ef347..b9a54583e505 100644
---- a/drivers/fpga/dfl-fme-perf.c
-+++ b/drivers/fpga/dfl-fme-perf.c
-@@ -953,6 +953,10 @@ static int fme_perf_offline_cpu(unsigned int cpu, struct hlist_node *node)
- 		return 0;
- 
- 	priv->cpu = target;
-+
-+	/* Migrate fme_perf pmu events to the new target cpu */
-+	perf_pmu_migrate_context(&priv->pmu, cpu, target);
-+
- 	return 0;
- }
- 
+diff --git a/drivers/net/wireless/ath/ath9k/hif_usb.c b/drivers/net/wireless/ath/ath9k/hif_usb.c
+index 860da13bfb6a..bda91ff3289b 100644
+--- a/drivers/net/wireless/ath/ath9k/hif_usb.c
++++ b/drivers/net/wireless/ath/ath9k/hif_usb.c
+@@ -457,6 +457,7 @@ static void hif_usb_stop(void *hif_handle)
+ 		usb_kill_urb(tx_buf->urb);
+ 		list_del(&tx_buf->list);
+ 		usb_free_urb(tx_buf->urb);
++		usb_free_urb(tx_buf->urb);
+ 		kfree(tx_buf->buf);
+ 		kfree(tx_buf);
+ 		spin_lock_irqsave(&hif_dev->tx.tx_lock, flags);
+@@ -779,6 +780,7 @@ static void ath9k_hif_usb_dealloc_tx_urbs(struct hif_device_usb *hif_dev)
+ 		usb_kill_urb(tx_buf->urb);
+ 		list_del(&tx_buf->list);
+ 		usb_free_urb(tx_buf->urb);
++		usb_free_urb(tx_buf->urb);
+ 		kfree(tx_buf->buf);
+ 		kfree(tx_buf);
+ 		spin_lock_irqsave(&hif_dev->tx.tx_lock, flags);
+@@ -797,6 +799,7 @@ static void ath9k_hif_usb_dealloc_tx_urbs(struct hif_device_usb *hif_dev)
+ 		usb_kill_urb(tx_buf->urb);
+ 		list_del(&tx_buf->list);
+ 		usb_free_urb(tx_buf->urb);
++		usb_free_urb(tx_buf->urb);
+ 		kfree(tx_buf->buf);
+ 		kfree(tx_buf);
+ 		spin_lock_irqsave(&hif_dev->tx.tx_lock, flags);
 -- 
-2.31.1
+2.25.1
 
