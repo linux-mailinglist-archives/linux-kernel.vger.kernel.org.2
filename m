@@ -2,135 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBEBA3C2A0F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 22:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46CF43C2A13
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 22:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231146AbhGIUIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 16:08:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229960AbhGIUIe (ORCPT
+        id S230367AbhGIUJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 16:09:20 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:8334 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229552AbhGIUJT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 16:08:34 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1F47C0613E5
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 13:05:50 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id a6so10730139qka.4
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 13:05:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=P5+WmqauNzbChUW8XqTixtKA8dFJS+e/U7EkZz1A0EE=;
-        b=iSgKXodyEj1EqcLcoxTixy6u1pO5YCAun7vY+u/KhEWcHHJgwfXA6g3XNiut6VaTVB
-         lgk+FXZsyJ9zTHKFiIHltQuKku5R2gYNv70uOM1vvxxytHaNQaJ43aGv4c6rVPeuFTuq
-         NB0nQVZHvAkhAIGIYcSzaJBiZ8Pxy6LflyAFo9QZ0p8gbmXj7K1j217OQMYCB6c2Xrn6
-         NcJyt5Cu6Qd0BQijqleEB9j9Aju1BmPZ8yykdkvnoZmFThvncDOR5oPj2Oj92PScho6a
-         C27ghu6HIsDBdBLIu33ce3uc+pr/SEDPZaZe9yzDFyNGQ3z9mZ47Yzu/qpVQLRdOWeEC
-         Yq9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P5+WmqauNzbChUW8XqTixtKA8dFJS+e/U7EkZz1A0EE=;
-        b=rK3cWWIc/e8QUUeYugrs3ODy//ppDGeui8fr3LxBK2fQ6/M3TJoYhNLSwyVhW0dsM8
-         YZ/PtURgxmanX/MM3oEa2s78rikkWiJV6pBdcYSKsz8gzAJaMwuNq+oUUjIufp3Ecd8m
-         vyvSvsE5WqMc4sBTVslwfEtIUjGaPYAb8BXhYwd1rjmERWT9CWIvY2zYNClg2bDKFEdR
-         WFV7EPn1/GZ/3q5sratGIEmtzxboex75mHjm3C+fillCDjdLaHFwzJnYZo3yaLkIgelX
-         g1FpnnmvLe4ScBG0hHJeLqf0d8nxij++Ocdz3aSN963ov7+aJMyxxNBRDNRdW7QUIdTO
-         +kLA==
-X-Gm-Message-State: AOAM531pKAL/G+3JAanNwnUgK371gVrtCj4+kBtLctVkn4UKBsBVyCky
-        58kWehyd8rYbXCBQ1u1poQWGwlvgtx8lEK/6Cq0a2A==
-X-Google-Smtp-Source: ABdhPJzJvR1wZq9AfX5vthaOvHt9sFNe4kSP3CmRNZ1+aIxNbfPPVIY8wNmMWEtvUzL4LbsqaBnidsC5UYvDm6CiFQU=
-X-Received: by 2002:a25:7ec4:: with SMTP id z187mr48449448ybc.136.1625861149937;
- Fri, 09 Jul 2021 13:05:49 -0700 (PDT)
+        Fri, 9 Jul 2021 16:09:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1625861196; x=1657397196;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=tL3GcnotdHKbbsXQ/boARt+da3xuE9RVsSCcT0uHStE=;
+  b=GH531ghHB9J3Khd/XToBLRT9652RabluBGIZPWiFdsehs0qHO2QYg7s+
+   y3LrjHMKAvjYqMQ/YS9rCDW/w5gg6MjihZwIlDg7hPV2IUOkyt1jzhl+u
+   7SEjXf47PSj9b63htbc06TTfMKygRprOIQ5fM/mvsK2CQJV8rDdI4JYfy
+   c=;
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 09 Jul 2021 13:06:35 -0700
+X-QCInternal: smtphost
+Received: from nalasexr03e.na.qualcomm.com ([10.49.195.114])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 09 Jul 2021 13:06:35 -0700
+Received: from vamslank1-linux.qualcomm.com (10.80.80.8) by
+ nalasexr03e.na.qualcomm.com (10.49.195.114) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Fri, 9 Jul 2021 13:06:34 -0700
+From:   <quic_vamslank@quicinc.com>
+To:     <agross@kernel.org>, <bjorn.andersson@linaro.org>,
+        <linus.walleij@linaro.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <manivannan.sadhasivam@linaro.org>,
+        "Vamsi Krishna Lanka" <quic_vamslank@quicinc.com>
+Subject: [PATCH 0/2] Add pinctrl support for SDX65
+Date:   Fri, 9 Jul 2021 13:06:16 -0700
+Message-ID: <20210709200618.20230-1-quic_vamslank@quicinc.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210623192822.3072029-1-surenb@google.com> <CALCETrU577MD59P-+9sMYtS3t2sZYx-zi=VirhQpZLnhEck1vg@mail.gmail.com>
- <CAJuCfpFMTP-g9CFELMqNawX0FhF4vBNtRDP_R=WAi_RiuGW8-Q@mail.gmail.com>
- <YNzl6XNu2vxyCJu8@cmpxchg.org> <CALCETrWsVw4+jT_Z1uxidRAZ0SQbngYe7E2m-8iyX6qRbug6zA@mail.gmail.com>
- <CAJuCfpG5Ua7C4usJGEqTm6_UUd6VyRd0BsPgT97LWOzjb4Ry+g@mail.gmail.com>
- <20210702152724.7fv5tnik4qlap6do@wittgenstein> <af8e76f1-6625-25d1-98d2-a3c8a9bf2fd6@redhat.com>
- <YOWcj0+P238W1y+t@dhcp22.suse.cz> <CAJuCfpH8QQyxivztkC2-_Kk1MqA0mJVs91XXpvVsL=NzNebshw@mail.gmail.com>
- <20210709085857.zf5ik3btet3yw4ab@wittgenstein>
-In-Reply-To: <20210709085857.zf5ik3btet3yw4ab@wittgenstein>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Fri, 9 Jul 2021 13:05:38 -0700
-Message-ID: <CAJuCfpGgZQLso6VKm5QXMJok1iuioWiLGF0b2W+VbQOzqaKYww@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm: introduce process_reap system call
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Tim Murray <timmurray@google.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanexm03g.na.qualcomm.com (10.85.0.49) To
+ nalasexr03e.na.qualcomm.com (10.49.195.114)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 9, 2021 at 1:59 AM Christian Brauner
-<christian.brauner@ubuntu.com> wrote:
->
-> On Wed, Jul 07, 2021 at 02:14:23PM -0700, Suren Baghdasaryan wrote:
-> > On Wed, Jul 7, 2021 at 5:38 AM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Mon 05-07-21 09:41:54, David Hildenbrand wrote:
-> > > > On 02.07.21 17:27, Christian Brauner wrote:
-> > > [...]
-> > > > > That one was my favorite from the list I gave too but maybe we can
-> > > > > satisfy Andy too if we use one of:
-> > > > > - process_mfree()
-> > > > > - process_mrelease()
-> > > > >
-> > > >
-> > > > FWIW, I tend to like process_mrelease(), due to the implied "release" ("free
-> > > > the memory if there are no other references") semantics.
-> > >
-> > > Agreed.
-> >
-> > Ok, sounds like process_mrelease() would be an acceptable compromise.
-> >
-> > >
-> > > > Further, a new
-> > > > syscall feels cleaner than some magic sysfs/procfs toggle. Just my 2 cents.
-> > >
-> > > Yeah, proc based interface is both tricky to use and kinda ugly now that
-> > > pidfd can solve all at in once.
-> >
-> > Sounds good. Will keep it as is then.
-> >
-> > > My original preference was a more generic kill syscall to allow flags
-> > > but a dedicated syscall doesn't look really bad either.
-> >
-> > Yeah, I have tried that direction unsuccessfully before arriving at
-> > this one. Hopefully it represents the right compromise which can
-> > satisfy everyone's usecase.
->
-> I think a syscall is fine and it's not we're running out of numbers
-> (anymore). :)
+From: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
 
-Thanks everyone for the input!
-So far I collected:
-1. rename the syscall to process_mrelease()
-2. replace "dying process" with "process which was sent a SIGKILL
-signal" in the manual page text
+Hello,
 
-I'll respin a v2 with these changes next week.
-Have a great weekend!
-Suren.
+This patch series adds pinctrl bindings and tlmm support for SDX65.
 
->
-> Christian
+Thanks,
+Vamsi 
+
+Vamsi krishna Lanka (2):
+  dt-bindings: pinctrl: qcom: Add SDX65 pinctrl bindings
+  pinctrl: qcom: Add SDX65 pincontrol driver
+
+ .../bindings/pinctrl/qcom,sdx65-pinctrl.yaml  |  175 +++
+ drivers/pinctrl/qcom/Kconfig                  |    9 +
+ drivers/pinctrl/qcom/Makefile                 |    1 +
+ drivers/pinctrl/qcom/pinctrl-sdx65.c          | 1100 +++++++++++++++++
+ 4 files changed, 1285 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sdx65-pinctrl.yaml
+ create mode 100644 drivers/pinctrl/qcom/pinctrl-sdx65.c
+
+-- 
+2.32.0
+
