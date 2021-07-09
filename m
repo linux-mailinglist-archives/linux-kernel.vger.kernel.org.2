@@ -2,258 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 795F53C28A1
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:43:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD86E3C28B2
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230501AbhGIRpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 13:45:10 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:33742 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230453AbhGIRpJ (ORCPT
+        id S229662AbhGIRta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 13:49:30 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:58326 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229499AbhGIRt3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 13:45:09 -0400
-Received: by mail-io1-f71.google.com with SMTP id i9-20020a0566021349b02904df6556dad4so6905842iov.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 10:42:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=nAIiLG582GE5TP2osna2SVaot0omqgzkFcYWBYBMNHk=;
-        b=csYkieRFYhC/9VZ3We+Axr8fo92J5WwF5SmvDeni14V77+EWaSe4WbIo4/KeZW26xy
-         PcrKNDnndo3xZqba54efnTJlEwzh6kMu6MlSyXpxsOFoDLX4NXZOf6fW0VgjJ4Z7bN7L
-         jHxJMJgf45St4oZirfPfsHsTXCEUNJAUdUVSqBs0y+Qwk4OzhQJQwWEz2vVKeiY0Yl39
-         V0OqHFsIRMGTOCzBhxiggNXvQEkuWqYht/bAVP5r9C+rFP2noIV5TgwlxwyaBPFautmb
-         jjNB3fiu0brmfHPBagPxglIxb1Gh5RYhrJy1dmGRmWd8995kzdsgoYss91GaKYu8UP1L
-         aP3A==
-X-Gm-Message-State: AOAM533GW6vOMMDiCzVtN25vP6mgcXWUwbvI0P8lcuV0e9eJ2cgMiTX9
-        uHBRzrhoAFwZsU/L02pB3x1oeBJ8dCzlurUQ/gG4Ex2k2tjI
-X-Google-Smtp-Source: ABdhPJxMpZko7RXD/A5lWSHRBW487h2+kfM/IsX7WAJjc0W7T1qagGxylv1Kid52LZjBd9Q7q84XTw3OMUrqjkb7rv4f3vguFAE2
+        Fri, 9 Jul 2021 13:49:29 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1625852805; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=e48brEJUc/f60e/npMKYIQTRdSErufGPtT0TQJcL8cA=;
+ b=uiBQDnhH/IQ0WmAzTu09G7fc5wqnDFNsnbG7QR8CAclCw3T2LnOESiGjIlB/k472sMDkMhH1
+ 1/k0MgxLl9d4JE5dYUMKu1rlQyHicMPB+HwQywvtWTx2n3VYR6IHnsGG+38BI6ROTzMPEAuv
+ fUMQIbvKV754ymWwjWs/lpqSokg=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 60e88b837b2963a282acc2ea (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 09 Jul 2021 17:46:43
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 11DB6C4338A; Fri,  9 Jul 2021 17:46:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id ABE4CC433D3;
+        Fri,  9 Jul 2021 17:46:41 +0000 (UTC)
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9589:: with SMTP id a9mr8070079ioo.63.1625852544481;
- Fri, 09 Jul 2021 10:42:24 -0700 (PDT)
-Date:   Fri, 09 Jul 2021 10:42:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005efd1b05c6b44bd3@google.com>
-Subject: [syzbot] net test error: possible deadlock in fs_reclaim_acquire
-From:   syzbot <syzbot+c453e1328dbf23580e9e@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
-        axboe@kernel.dk, bpf@vger.kernel.org, christian@brauner.io,
-        daniel@iogearbox.net, davem@davemloft.net, ebiederm@xmission.com,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, peterz@infradead.org, shakeelb@google.com,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 09 Jul 2021 10:46:41 -0700
+From:   khsieh@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run, abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        airlied@linux.ie, daniel@ffwll.ch, bjorn.andersson@linaro.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/7] drm/msm/dp: reduce link rate if failed at link
+ training 1
+In-Reply-To: <CAE-0n52WyMKdQ96ji=5YLBxpndgB_CLsxscXaFexMPdLducrkQ@mail.gmail.com>
+References: <1625592020-22658-1-git-send-email-khsieh@codeaurora.org>
+ <1625592020-22658-3-git-send-email-khsieh@codeaurora.org>
+ <CAE-0n52WyMKdQ96ji=5YLBxpndgB_CLsxscXaFexMPdLducrkQ@mail.gmail.com>
+Message-ID: <ef24f67a334698610b7b8e607a727b5d@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 2021-07-08 00:33, Stephen Boyd wrote:
+> Quoting Kuogee Hsieh (2021-07-06 10:20:15)
+>> Reduce link rate and re start link training if link training 1
+>> failed due to loss of clock recovery done to fix Link Layer
+>> CTS case 4.3.1.7.  Also only update voltage and pre-emphasis
+>> swing level after link training started to fix Link Layer CTS
+>> case 4.3.1.6.
+>> 
+>> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+>> ---
+>>  drivers/gpu/drm/msm/dp/dp_ctrl.c | 86 
+>> ++++++++++++++++++++++++++--------------
+>>  1 file changed, 56 insertions(+), 30 deletions(-)
+>> 
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c 
+>> b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+>> index 27fb0f0..6f8443d 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
+>> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+>> @@ -83,13 +83,6 @@ struct dp_ctrl_private {
+>>         struct completion video_comp;
+>>  };
+>> 
+>> -struct dp_cr_status {
+>> -       u8 lane_0_1;
+>> -       u8 lane_2_3;
+>> -};
+>> -
+>> -#define DP_LANE0_1_CR_DONE     0x11
+>> -
+>>  static int dp_aux_link_configure(struct drm_dp_aux *aux,
+>>                                         struct dp_link_info *link)
+>>  {
+>> @@ -1080,7 +1073,7 @@ static int dp_ctrl_read_link_status(struct 
+>> dp_ctrl_private *ctrl,
+>>  }
+>> 
+>>  static int dp_ctrl_link_train_1(struct dp_ctrl_private *ctrl,
+>> -               struct dp_cr_status *cr, int *training_step)
+>> +               u8 *cr, int *training_step)
+>>  {
+>>         int tries, old_v_level, ret = 0;
+>>         u8 link_status[DP_LINK_STATUS_SIZE];
+>> @@ -1109,8 +1102,8 @@ static int dp_ctrl_link_train_1(struct 
+>> dp_ctrl_private *ctrl,
+>>                 if (ret)
+>>                         return ret;
+>> 
+>> -               cr->lane_0_1 = link_status[0];
+>> -               cr->lane_2_3 = link_status[1];
+>> +               cr[0] = link_status[0];
+>> +               cr[1] = link_status[1];
+>> 
+>>                 if (drm_dp_clock_recovery_ok(link_status,
+>>                         ctrl->link->link_params.num_lanes)) {
+>> @@ -1188,7 +1181,7 @@ static void 
+>> dp_ctrl_clear_training_pattern(struct dp_ctrl_private *ctrl)
+>>  }
+>> 
+>>  static int dp_ctrl_link_train_2(struct dp_ctrl_private *ctrl,
+>> -               struct dp_cr_status *cr, int *training_step)
+>> +               u8 *cr, int *training_step)
+>>  {
+>>         int tries = 0, ret = 0;
+>>         char pattern;
+>> @@ -1204,10 +1197,6 @@ static int dp_ctrl_link_train_2(struct 
+>> dp_ctrl_private *ctrl,
+>>         else
+>>                 pattern = DP_TRAINING_PATTERN_2;
+>> 
+>> -       ret = dp_ctrl_update_vx_px(ctrl);
+>> -       if (ret)
+>> -               return ret;
+>> -
+>>         ret = dp_catalog_ctrl_set_pattern(ctrl->catalog, pattern);
+>>         if (ret)
+>>                 return ret;
+>> @@ -1220,8 +1209,8 @@ static int dp_ctrl_link_train_2(struct 
+>> dp_ctrl_private *ctrl,
+>>                 ret = dp_ctrl_read_link_status(ctrl, link_status);
+>>                 if (ret)
+>>                         return ret;
+>> -               cr->lane_0_1 = link_status[0];
+>> -               cr->lane_2_3 = link_status[1];
+>> +               cr[0] = link_status[0];
+>> +               cr[1] = link_status[1];
+>> 
+>>                 if (drm_dp_channel_eq_ok(link_status,
+>>                         ctrl->link->link_params.num_lanes)) {
+>> @@ -1241,7 +1230,7 @@ static int dp_ctrl_link_train_2(struct 
+>> dp_ctrl_private *ctrl,
+>>  static int dp_ctrl_reinitialize_mainlink(struct dp_ctrl_private 
+>> *ctrl);
+>> 
+>>  static int dp_ctrl_link_train(struct dp_ctrl_private *ctrl,
+>> -               struct dp_cr_status *cr, int *training_step)
+>> +               u8 *cr, int *training_step)
+>>  {
+>>         int ret = 0;
+>>         u8 encoding = DP_SET_ANSI_8B10B;
+>> @@ -1282,7 +1271,7 @@ static int dp_ctrl_link_train(struct 
+>> dp_ctrl_private *ctrl,
+>>  }
+>> 
+>>  static int dp_ctrl_setup_main_link(struct dp_ctrl_private *ctrl,
+>> -               struct dp_cr_status *cr, int *training_step)
+>> +               u8 *cr, int *training_step)
+>>  {
+>>         int ret = 0;
+>> 
+>> @@ -1496,14 +1485,14 @@ static int 
+>> dp_ctrl_deinitialize_mainlink(struct dp_ctrl_private *ctrl)
+>>  static int dp_ctrl_link_maintenance(struct dp_ctrl_private *ctrl)
+>>  {
+>>         int ret = 0;
+>> -       struct dp_cr_status cr;
+>> +       u8 cr_status[2];
+>>         int training_step = DP_TRAINING_NONE;
+>> 
+>>         dp_ctrl_push_idle(&ctrl->dp_ctrl);
+>> 
+>>         ctrl->dp_ctrl.pixel_rate = 
+>> ctrl->panel->dp_mode.drm_mode.clock;
+>> 
+>> -       ret = dp_ctrl_setup_main_link(ctrl, &cr, &training_step);
+>> +       ret = dp_ctrl_setup_main_link(ctrl, cr_status, 
+>> &training_step);
+>>         if (ret)
+>>                 goto end;
+> 
+> Do we need to extract the link status information from deep in these
+> functions? Why not read it again when we need to?
+> 
+>> 
+>> @@ -1634,6 +1623,41 @@ void dp_ctrl_handle_sink_request(struct dp_ctrl 
+>> *dp_ctrl)
+>>         }
+>>  }
+>> 
+>> +static bool dp_ctrl_any_lane_cr_done(struct dp_ctrl_private *ctrl,
+>> +                                       u8 *cr_status)
+>> +
+>> +{
+>> +       int i;
+>> +       u8 status;
+>> +       int lane = ctrl->link->link_params.num_lanes;
+>> +
+>> +       for (i = 0; i < lane; i++) {
+>> +               status = cr_status[i / 2];
+>> +               status >>= ((i % 2) * 4);
+>> +               if (status & DP_LANE_CR_DONE)
+>> +                       return true;
+>> +       }
+>> +
+>> +       return false;
+>> +}
+>> +
+>> +static bool dp_ctrl_any_lane_cr_lose(struct dp_ctrl_private *ctrl,
+>> +                                       u8 *cr_status)
+>> +{
+>> +       int i;
+>> +       u8 status;
+>> +       int lane = ctrl->link->link_params.num_lanes;
+>> +
+>> +       for (i = 0; i < lane; i++) {
+>> +               status = cr_status[i / 2];
+>> +               status >>= ((i % 2) * 4);
+>> +               if (!(status & DP_LANE_CR_DONE))
+>> +                       return true;
+>> +       }
+>> +
+>> +       return false;
+>> +}
+> 
+> Why not use !drm_dp_clock_recovery_ok() for dp_ctrl_any_lane_cr_lose()?
+ok,
 
-syzbot found the following issue on:
-
-HEAD commit:    ccd27f05 ipv6: fix 'disable_policy' for fwd packets
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=1785e6b0300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4dab7ebc24619f37
-dashboard link: https://syzkaller.appspot.com/bug?extid=c453e1328dbf23580e9e
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c453e1328dbf23580e9e@syzkaller.appspotmail.com
-
-======================================================
-WARNING: possible circular locking dependency detected
-5.13.0-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-fuzzer/8439 is trying to acquire lock:
-ffffffff8ba9c1c0 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_acquire+0xf7/0x160 mm/page_alloc.c:4586
-
-but task is already holding lock:
-ffff8880b9d4d620 (lock#2){-.-.}-{2:2}, at: __alloc_pages_bulk+0x4ad/0x1870 mm/page_alloc.c:5291
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (lock#2){-.-.}-{2:2}:
-       local_lock_acquire include/linux/local_lock_internal.h:42 [inline]
-       free_unref_page+0x1bf/0x690 mm/page_alloc.c:3439
-       mm_free_pgd kernel/fork.c:636 [inline]
-       __mmdrop+0xcb/0x3f0 kernel/fork.c:687
-       mmdrop include/linux/sched/mm.h:49 [inline]
-       finish_task_switch.isra.0+0x6da/0xa50 kernel/sched/core.c:4582
-       context_switch kernel/sched/core.c:4686 [inline]
-       __schedule+0x93c/0x2710 kernel/sched/core.c:5940
-       preempt_schedule_notrace+0x5b/0xd0 kernel/sched/core.c:6179
-       preempt_schedule_notrace_thunk+0x16/0x18 arch/x86/entry/thunk_64.S:36
-       rcu_read_unlock_sched_notrace include/linux/rcupdate.h:809 [inline]
-       trace_lock_acquire include/trace/events/lock.h:13 [inline]
-       lock_acquire+0x461/0x510 kernel/locking/lockdep.c:5596
-       fs_reclaim_acquire mm/page_alloc.c:4581 [inline]
-       fs_reclaim_acquire+0xd2/0x160 mm/page_alloc.c:4572
-       might_alloc include/linux/sched/mm.h:198 [inline]
-       slab_pre_alloc_hook mm/slab.h:485 [inline]
-       slab_alloc_node mm/slub.c:2891 [inline]
-       slab_alloc mm/slub.c:2978 [inline]
-       kmem_cache_alloc+0x3e/0x4a0 mm/slub.c:2983
-       getname_flags.part.0+0x50/0x4f0 fs/namei.c:138
-       getname_flags fs/namei.c:2734 [inline]
-       user_path_at_empty+0xa1/0x100 fs/namei.c:2734
-       user_path_at include/linux/namei.h:60 [inline]
-       do_faccessat+0x127/0x850 fs/open.c:425
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
--> #0 (fs_reclaim){+.+.}-{0:0}:
-       check_prev_add kernel/locking/lockdep.c:3051 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3174 [inline]
-       validate_chain kernel/locking/lockdep.c:3789 [inline]
-       __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5015
-       lock_acquire kernel/locking/lockdep.c:5625 [inline]
-       lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
-       __fs_reclaim_acquire mm/page_alloc.c:4564 [inline]
-       fs_reclaim_acquire+0x117/0x160 mm/page_alloc.c:4578
-       prepare_alloc_pages+0x15c/0x580 mm/page_alloc.c:5176
-       __alloc_pages+0x12f/0x500 mm/page_alloc.c:5375
-       alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
-       stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
-       save_stack+0x15e/0x1e0 mm/page_owner.c:120
-       __set_page_owner+0x50/0x290 mm/page_owner.c:181
-       prep_new_page mm/page_alloc.c:2445 [inline]
-       __alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5313
-       alloc_pages_bulk_array_node include/linux/gfp.h:557 [inline]
-       vm_area_alloc_pages mm/vmalloc.c:2775 [inline]
-       __vmalloc_area_node mm/vmalloc.c:2845 [inline]
-       __vmalloc_node_range+0x39d/0x960 mm/vmalloc.c:2947
-       vmalloc_user+0x67/0x80 mm/vmalloc.c:3082
-       kcov_mmap+0x2b/0x140 kernel/kcov.c:465
-       call_mmap include/linux/fs.h:2119 [inline]
-       mmap_region+0xcde/0x1760 mm/mmap.c:1809
-       do_mmap+0x86e/0x11d0 mm/mmap.c:1585
-       vm_mmap_pgoff+0x1b7/0x290 mm/util.c:519
-       ksys_mmap_pgoff+0x4a8/0x620 mm/mmap.c:1636
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(lock#2);
-                               lock(fs_reclaim);
-                               lock(lock#2);
-  lock(fs_reclaim);
-
- *** DEADLOCK ***
-
-2 locks held by syz-fuzzer/8439:
- #0: ffff888030c74028 (&mm->mmap_lock#2){++++}-{3:3}, at: mmap_write_lock_killable include/linux/mmap_lock.h:87 [inline]
- #0: ffff888030c74028 (&mm->mmap_lock#2){++++}-{3:3}, at: vm_mmap_pgoff+0x15c/0x290 mm/util.c:517
- #1: ffff8880b9d4d620 (lock#2){-.-.}-{2:2}, at: __alloc_pages_bulk+0x4ad/0x1870 mm/page_alloc.c:5291
-
-stack backtrace:
-CPU: 1 PID: 8439 Comm: syz-fuzzer Not tainted 5.13.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2131
- check_prev_add kernel/locking/lockdep.c:3051 [inline]
- check_prevs_add kernel/locking/lockdep.c:3174 [inline]
- validate_chain kernel/locking/lockdep.c:3789 [inline]
- __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5015
- lock_acquire kernel/locking/lockdep.c:5625 [inline]
- lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
- __fs_reclaim_acquire mm/page_alloc.c:4564 [inline]
- fs_reclaim_acquire+0x117/0x160 mm/page_alloc.c:4578
- prepare_alloc_pages+0x15c/0x580 mm/page_alloc.c:5176
- __alloc_pages+0x12f/0x500 mm/page_alloc.c:5375
- alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
- stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
- save_stack+0x15e/0x1e0 mm/page_owner.c:120
- __set_page_owner+0x50/0x290 mm/page_owner.c:181
- prep_new_page mm/page_alloc.c:2445 [inline]
- __alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5313
- alloc_pages_bulk_array_node include/linux/gfp.h:557 [inline]
- vm_area_alloc_pages mm/vmalloc.c:2775 [inline]
- __vmalloc_area_node mm/vmalloc.c:2845 [inline]
- __vmalloc_node_range+0x39d/0x960 mm/vmalloc.c:2947
- vmalloc_user+0x67/0x80 mm/vmalloc.c:3082
- kcov_mmap+0x2b/0x140 kernel/kcov.c:465
- call_mmap include/linux/fs.h:2119 [inline]
- mmap_region+0xcde/0x1760 mm/mmap.c:1809
- do_mmap+0x86e/0x11d0 mm/mmap.c:1585
- vm_mmap_pgoff+0x1b7/0x290 mm/util.c:519
- ksys_mmap_pgoff+0x4a8/0x620 mm/mmap.c:1636
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4af20a
-Code: e8 3b 82 fb ff 48 8b 7c 24 10 48 8b 74 24 18 48 8b 54 24 20 4c 8b 54 24 28 4c 8b 44 24 30 4c 8b 4c 24 38 48 8b 44 24 08 0f 05 <48> 3d 01 f0 ff ff 76 20 48 c7 44 24 40 ff ff ff ff 48 c7 44 24 48
-RSP: 002b:000000c0002ef5d8 EFLAGS: 00000212 ORIG_RAX: 0000000000000009
-RAX: ffffffffffffffda RBX: 000000c00001e800 RCX: 00000000004af20a
-RDX: 0000000000000003 RSI: 0000000000080000 RDI: 0000000000000000
-RBP: 000000c0002ef638 R08: 0000000000000006 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000212 R12: 00000000007798c5
-R13: 00000000000000d4 R14: 00000000000000d3 R15: 0000000000000100
-BUG: sleeping function called from invalid context at mm/page_alloc.c:5179
-in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 8439, name: syz-fuzzer
-INFO: lockdep is turned off.
-irq event stamp: 30266
-hardirqs last  enabled at (30265): [<ffffffff892271f0>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
-hardirqs last  enabled at (30265): [<ffffffff892271f0>] _raw_spin_unlock_irqrestore+0x50/0x70 kernel/locking/spinlock.c:191
-hardirqs last disabled at (30266): [<ffffffff81b21da7>] __alloc_pages_bulk+0x1017/0x1870 mm/page_alloc.c:5291
-softirqs last  enabled at (29546): [<ffffffff8146345e>] invoke_softirq kernel/softirq.c:432 [inline]
-softirqs last  enabled at (29546): [<ffffffff8146345e>] __irq_exit_rcu+0x16e/0x1c0 kernel/softirq.c:636
-softirqs last disabled at (29535): [<ffffffff8146345e>] invoke_softirq kernel/softirq.c:432 [inline]
-softirqs last disabled at (29535): [<ffffffff8146345e>] __irq_exit_rcu+0x16e/0x1c0 kernel/softirq.c:636
-CPU: 1 PID: 8439 Comm: syz-fuzzer Not tainted 5.13.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
- ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:9153
- prepare_alloc_pages+0x3da/0x580 mm/page_alloc.c:5179
- __alloc_pages+0x12f/0x500 mm/page_alloc.c:5375
- alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
- stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
- save_stack+0x15e/0x1e0 mm/page_owner.c:120
- __set_page_owner+0x50/0x290 mm/page_owner.c:181
- prep_new_page mm/page_alloc.c:2445 [inline]
- __alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5313
- alloc_pages_bulk_array_node include/linux/gfp.h:557 [inline]
- vm_area_alloc_pages mm/vmalloc.c:2775 [inline]
- __vmalloc_area_node mm/vmalloc.c:2845 [inline]
- __vmalloc_node_range+0x39d/0x960 mm/vmalloc.c:2947
- vmalloc_user+0x67/0x80 mm/vmalloc.c:3082
- kcov_mmap+0x2b/0x140 kernel/kcov.c:465
- call_mmap include/linux/fs.h:2119 [inline]
- mmap_region+0xcde/0x1760 mm/mmap.c:1809
- do_mmap+0x86e/0x11d0 mm/mmap.c:1585
- vm_mmap_pgoff+0x1b7/0x290 mm/util.c:519
- ksys_mmap_pgoff+0x4a8/0x620 mm/mmap.c:1636
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4af20a
-Code: e8 3b 82 fb ff 48 8b 7c 24 10 48 8b 74 24 18 48 8b 54 24 20 4c 8b 54 24 28 4c 8b 44 24 30 4c 8b 4c 24 38 48 8b 44 24 08 0f 05 <48> 3d 01 f0 ff ff 76 20 48 c7 44 24 40 ff ff ff ff 48 c7 44 24 48
-RSP: 002b:000000c0002ef5d8 EFLAGS: 00000212 ORIG_RAX: 0000000000000009
-RAX: ffffffffffffffda RBX: 000000c00001e800 RCX: 00000000004af20a
-RDX: 0000000000000003 RSI: 0000000000080000 RDI: 0000000000000000
-RBP: 000000c0002ef638 R08: 0000000000000006 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000212 R12: 00000000007798c5
-R13: 00000000000000d4 R14: 00000000000000d3 R15: 0000000000000100
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> And then move dp_ctrl_any_lane_cr_done() next to
+> drm_dp_clock_recovery_ok() and call it drm_dp_clock_recovery_any_ok()?
+no understand how it work, can you elaborate it more?
+> 
+>> +
+>>  int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
+>>  {
+>>         int rc = 0;
+>> @@ -1641,7 +1665,7 @@ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
+>>         u32 rate = 0;
+>>         int link_train_max_retries = 5;
+>>         u32 const phy_cts_pixel_clk_khz = 148500;
+>> -       struct dp_cr_status cr;
+>> +       u8 cr_status[2];
+>>         unsigned int training_step;
+>> 
+>>         if (!dp_ctrl)
+>> @@ -1681,19 +1705,18 @@ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
+>>                 }
+>> 
+>>                 training_step = DP_TRAINING_NONE;
+>> -               rc = dp_ctrl_setup_main_link(ctrl, &cr, 
+>> &training_step);
+>> +               rc = dp_ctrl_setup_main_link(ctrl, cr_status, 
+>> &training_step);
+>>                 if (rc == 0) {
+>>                         /* training completed successfully */
+>>                         break;
+>>                 } else if (training_step == DP_TRAINING_1) {
+>>                         /* link train_1 failed */
+>> -                       if 
+>> (!dp_catalog_link_is_connected(ctrl->catalog)) {
+>> +                       if 
+>> (!dp_catalog_link_is_connected(ctrl->catalog))
+>>                                 break;
+>> -                       }
+>> 
+>>                         rc = dp_ctrl_link_rate_down_shift(ctrl);
+>>                         if (rc < 0) { /* already in RBR = 1.6G */
+>> -                               if (cr.lane_0_1 & DP_LANE0_1_CR_DONE) 
+>> {
+>> +                               if (dp_ctrl_any_lane_cr_done(ctrl, 
+>> cr_status)) {
+>>                                         /*
+>>                                          * some lanes are ready,
+>>                                          * reduce lane number
+>> @@ -1709,12 +1732,15 @@ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
+>>                                 }
+>>                         }
+>>                 } else if (training_step == DP_TRAINING_2) {
+>> -                       /* link train_2 failed, lower lane rate */
+>> -                       if 
+>> (!dp_catalog_link_is_connected(ctrl->catalog)) {
+>> +                       /* link train_2 failed */
+>> +                       if 
+>> (!dp_catalog_link_is_connected(ctrl->catalog))
+>>                                 break;
+>> -                       }
+>> 
+>> -                       rc = dp_ctrl_link_lane_down_shift(ctrl);
+>> +                       if (dp_ctrl_any_lane_cr_lose(ctrl, cr_status))
+>> +                               rc = 
+>> dp_ctrl_link_rate_down_shift(ctrl);
+>> +                       else
+>> +                               rc = 
+>> dp_ctrl_link_lane_down_shift(ctrl);
+>> +
+>>                         if (rc < 0) {
+>>                                 /* end with failure */
+>>                                 break; /* lane == 1 already */
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>> Forum,
+>> a Linux Foundation Collaborative Project
+>> 
