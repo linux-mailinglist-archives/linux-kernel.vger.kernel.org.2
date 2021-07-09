@@ -2,132 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40DEA3C2959
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:56:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C65AF3C295B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230378AbhGIS6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 14:58:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230351AbhGIS6l (ORCPT
+        id S230221AbhGIS7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 14:59:41 -0400
+Received: from mickerik.phytec.de ([195.145.39.210]:48624 "EHLO
+        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229542AbhGIS7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 14:58:41 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57836C0613E7
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 11:55:57 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id t39so3529451oiw.6
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 11:55:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hDBMTWvuC3NQG5GYyuFOUvgk3Gz5Q3JKQ7xIBH164Hw=;
-        b=t1wNfWAFzRd/LSvge8BEkwspf8qC363RNnNsyettGKyvBMAqU1MJjVB/SZJ+tNKHZe
-         wy5tu4W0u/64kNhoZlmftQnwEsTJqBM4qGQErzjEqsbDb3Oy9684poAnGFMjrn8RbtZy
-         b1SphMXcZseC94XW5R5aY6Pbungjf+g2aiKvMinnhNBkMvMGe5ADt1UIVkObdNSazUOQ
-         P1VpmsB5WC2t+6IO96DD3WwZusruNr8gHt2rmjqNhqdMNmORl61q7MowQ5vm6Mm5uIsd
-         E78o0qS7E8zyB90htaDuo+1U8qwi93H6NdHBc/1NaJyy9X0U+dqy063MsUid49MPxdud
-         qujw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hDBMTWvuC3NQG5GYyuFOUvgk3Gz5Q3JKQ7xIBH164Hw=;
-        b=n2FRxYiZKM89dHoLcUIT4mJ1lLXgfRDvq6HhLtq/o1F2bi6vgsHYv4GC8G6hIHnA67
-         N+/PpoRymPEnLLgvEz4pnQQfa6nvdiGDJkJj4o0BG4XzfxKkef5927D8+mN6RBDjhOn6
-         FzlijLOVUgxLtRb96GdY3AtuxrVav+Qs8KMQceWF2cQbFY4jPgaj7b6yv0CSUxYgw6cf
-         ZHgfsmNfnLho18l2zH5bCV822obaeocsg0juhtIiIZYddAjqnFfZxRZd8vsyOxuRYcZN
-         LxoZNizR3mk5qNSSXa/CeyFCzlhkOZJysUMKWP64WNgnrHZRlSrdduZNIQ21JoQXEupm
-         VHyQ==
-X-Gm-Message-State: AOAM532KEH0wkf3ulJOGGvZ3/g8UhXfM0Swek1ODXHjJG5cFQm36iLkP
-        5N/wiiLF2T56NIL88zAdOck8gw==
-X-Google-Smtp-Source: ABdhPJwrdBkHKexQcA3MQDWTIUSN2qrz67mZEfXPOjoXn6nd5cGx4JU64z0rcGqP6Ik74wZQEtnGDA==
-X-Received: by 2002:aca:3d8a:: with SMTP id k132mr335865oia.120.1625856956740;
-        Fri, 09 Jul 2021 11:55:56 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id o63sm1403486oih.32.2021.07.09.11.55.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 11:55:56 -0700 (PDT)
-Date:   Fri, 9 Jul 2021 13:55:54 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 7/7] clk: qcom: videocc-sm8250: stop using mmcx
- regulator
-Message-ID: <YOiburkKfepnS9TX@yoga>
-References: <20210709173202.667820-1-dmitry.baryshkov@linaro.org>
- <20210709173202.667820-8-dmitry.baryshkov@linaro.org>
+        Fri, 9 Jul 2021 14:59:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
+        q=dns/txt; i=@phytec.de; t=1625857016; x=1628449016;
+        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=0JXfPfysFGsq4Gq53PoBe0ygA8ID7GtZoxIxCOiYc+Q=;
+        b=XcSy2sKQ3Ob/HR6ddpQNIXdrgfyhF2ZiTSF6zV53OvLEvPDa1UjMs06ZjHW+ccX3
+        PTMOOndi1JwF7+/PIBnfVTOVsgIfQQ9HTTNtTqFkGcAOACVL7m6kHe2MoLT4uyfF
+        u98vrkRh0UjXGohPOgRC3oIfg+WZgsX05UXwzXnn0ig=;
+X-AuditID: c39127d2-1e4f970000001daf-66-60e89bf8ff2d
+Received: from Diagnostix.phytec.de (Diagnostix.phytec.de [172.16.0.119])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id A8.E3.07599.8FB98E06; Fri,  9 Jul 2021 20:56:56 +0200 (CEST)
+Received: from Berlix.phytec.de (172.16.0.117) by Diagnostix.phytec.de
+ (172.16.0.119) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Fri, 9 Jul 2021
+ 20:56:55 +0200
+Received: from Berlix.phytec.de ([fe80::c131:350d:c471:aafd]) by
+ berlix.phytec.de ([fe80::c131:350d:c471:aafd%3]) with mapi id 15.01.2308.008;
+ Fri, 9 Jul 2021 20:56:55 +0200
+From:   Yunus Bas <Y.Bas@phytec.de>
+To:     "sam@ravnborg.org" <sam@ravnborg.org>
+CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "laurent.pinchart@ideasonboard.com" 
+        <laurent.pinchart@ideasonboard.com>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>
+Subject: Re: [PATCH v3 1/2] drm/panel: simple: Add support for EDT
+ ETMV570G2DHU panel
+Thread-Topic: [PATCH v3 1/2] drm/panel: simple: Add support for EDT
+ ETMV570G2DHU panel
+Thread-Index: AQHXdO1xpOZocCWCkkWX939PlmZPNas63PiA
+Date:   Fri, 9 Jul 2021 18:56:55 +0000
+Message-ID: <2371e4fad8a61511e1213c07b41117079628c5f9.camel@phytec.de>
+References: <20210706075908.907659-1-y.bas@phytec.de>
+         <YOiQo3B9JtE0kuO7@ravnborg.org>
+In-Reply-To: <YOiQo3B9JtE0kuO7@ravnborg.org>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.16.0.116]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A8FA7EC2EB930B4A8F5BC2BCEF473FD5@phytec.de>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210709173202.667820-8-dmitry.baryshkov@linaro.org>
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrLIsWRmVeSWpSXmKPExsWyRoChXPfH7BcJBst+cFj0njvJZPF/20Rm
+        iytf37NZdE5cwm5xedccNosVP7cyWvzcNY/Fgd1j77cFLB47Z91l95jdMZPVY/u3B6we97uP
+        M3ksmXaVzePzJrkA9igum5TUnMyy1CJ9uwSujDVrXrIXfNCp2LEko4HxjnYXIyeHhICJxO5P
+        Zxm7GLk4hATWM0lsWdjCAuE8YZR4cHMvG4SzkVHi0tYXQA4HB5uAosSVW/kg3SICmhIfX09i
+        B6lhFrjFJLHg7H5mkBphgXCJjv8BEDUREsvWPmGGsI0k9mzdywJSwiKgInF4rQdImFfATeLr
+        o/NMILYQUPnMwxPZQGxOAR2JLX8mgcUZBWQlNmw4DzaGWUBcYtOz76wQDwhILNkDEZcQEJV4
+        +fgfVFxBoq2nkwlkFTPQmet36UO0WkgcuLoMaoyixJTuh+wQJwhKnJz5hGUCo/gsJBtmIXTP
+        QtI9C0n3LCTdCxhZVzEK5WYmZ6cWZWbrFWRUlqQm66WkbmIERvHhieqXdjD2zfE4xMjEwXiI
+        UYKDWUmE12jGswQh3pTEyqrUovz4otKc1OJDjNIcLErivBt4S8KEBNITS1KzU1MLUotgskwc
+        nFINjCl3tye6+BWLz5zuKSh5yeNhodZZPqHV74853mCLXdnFxrDAZ1KZqxPf0apVX6uUq3b9
+        27jheLSxg9FErtyN1r4NUk8t+0InVjzReP5sxnwrP43U1o/2C7PV3ffnb2d3n/xf0mbe8r3l
+        DCt7ROL2XDRerrZf7GHGrTtbjNMVj4jE/fKaYRUjrMRSnJFoqMVcVJwIAK+VQiPQAgAA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 09 Jul 12:32 CDT 2021, Dmitry Baryshkov wrote:
-
-> Now as the common qcom clock controller code has been taught about power
-> domains, stop mentioning mmcx supply as a way to power up the clock
-> controller's gdscs.
-> 
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Regards,
-Bjorn
-
-> ---
->  drivers/clk/qcom/videocc-sm8250.c | 4 ----
->  1 file changed, 4 deletions(-)
-> 
-> diff --git a/drivers/clk/qcom/videocc-sm8250.c b/drivers/clk/qcom/videocc-sm8250.c
-> index 7b435a1c2c4b..eedef85d90e5 100644
-> --- a/drivers/clk/qcom/videocc-sm8250.c
-> +++ b/drivers/clk/qcom/videocc-sm8250.c
-> @@ -276,7 +276,6 @@ static struct gdsc mvs0c_gdsc = {
->  	},
->  	.flags = 0,
->  	.pwrsts = PWRSTS_OFF_ON,
-> -	.supply = "mmcx",
->  };
->  
->  static struct gdsc mvs1c_gdsc = {
-> @@ -286,7 +285,6 @@ static struct gdsc mvs1c_gdsc = {
->  	},
->  	.flags = 0,
->  	.pwrsts = PWRSTS_OFF_ON,
-> -	.supply = "mmcx",
->  };
->  
->  static struct gdsc mvs0_gdsc = {
-> @@ -296,7 +294,6 @@ static struct gdsc mvs0_gdsc = {
->  	},
->  	.flags = HW_CTRL,
->  	.pwrsts = PWRSTS_OFF_ON,
-> -	.supply = "mmcx",
->  };
->  
->  static struct gdsc mvs1_gdsc = {
-> @@ -306,7 +303,6 @@ static struct gdsc mvs1_gdsc = {
->  	},
->  	.flags = HW_CTRL,
->  	.pwrsts = PWRSTS_OFF_ON,
-> -	.supply = "mmcx",
->  };
->  
->  static struct clk_regmap *video_cc_sm8250_clocks[] = {
-> -- 
-> 2.30.2
-> 
+SGkgU2FtLA0KDQpBbSBGcmVpdGFnLCBkZW0gMDkuMDcuMjAyMSB1bSAyMDowOCArMDIwMCBzY2hy
+aWViIFNhbSBSYXZuYm9yZzoNCj4gSGkgWXVudXMsDQo+IA0KPiBPbiBUdWUsIEp1bCAwNiwgMjAy
+MSBhdCAwOTo1OTowN0FNICswMjAwLCBZdW51cyBCYXMgd3JvdGU6DQo+ID4gRnJvbTogU3RlZmFu
+IFJpZWRtdWVsbGVyIDxzLnJpZWRtdWVsbGVyQHBoeXRlYy5kZT4NCj4gPiANCj4gPiBUaGlzIHBh
+dGNoIGFkZHMgc3VwcG9ydCBmb3IgdGhlIEVEVCBFVE1WNTcwRzJESFUgNS43IiAoNjQweDQ4MCkg
+bGNkDQo+ID4gcGFuZWwNCj4gPiB0byBEUk0gc2ltcGxlIHBhbmVsIGRyaXZlci4NCj4gPiANCj4g
+PiBTaWduZWQtb2ZmLWJ5OiBTdGVmYW4gUmllZG11ZWxsZXIgPHMucmllZG11ZWxsZXJAcGh5dGVj
+LmRlPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFl1bnVzIEJhcyA8eS5iYXNAcGh5dGVjLmRlPg0KPiA+
+IC0tLQ0KPiA+IENoYW5nZXMgaW4gdjM6DQo+ID4gLSBObyBjaGFuZ2VzIGluIGdlbmVyYWwsIGFk
+ZGVkIGFkZGl0aW9uYWwgbWFpbnRhaW5lcnMgYW5kIGFsc28NCj4gPiBzZW5kaW5nDQo+ID4gdG8g
+Z2VuZXJhbCBrZXJuZWwgbWFpbGluZyBsaXN0DQo+ID4gLS0tDQo+ID4gwqBkcml2ZXJzL2dwdS9k
+cm0vcGFuZWwvcGFuZWwtc2ltcGxlLmMgfCAyOQ0KPiA+ICsrKysrKysrKysrKysrKysrKysrKysr
+KysrKysNCj4gPiDCoDEgZmlsZSBjaGFuZ2VkLCAyOSBpbnNlcnRpb25zKCspDQo+ID4gDQo+ID4g
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9wYW5lbC9wYW5lbC1zaW1wbGUuYw0KPiA+IGIv
+ZHJpdmVycy9ncHUvZHJtL3BhbmVsL3BhbmVsLXNpbXBsZS5jDQo+ID4gaW5kZXggMjE5MzlkNDM1
+MmNmLi4wNzQzM2JmZjZjMmIgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL3BhbmVs
+L3BhbmVsLXNpbXBsZS5jDQo+ID4gKysrIGIvZHJpdmVycy9ncHUvZHJtL3BhbmVsL3BhbmVsLXNp
+bXBsZS5jDQo+ID4gQEAgLTIwMDgsNiArMjAwOCwzMiBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHBh
+bmVsX2Rlc2MNCj4gPiBlZHRfZXQwNTcwOTBkaHUgPSB7DQo+ID4gwqDCoMKgwqDCoMKgwqDCoC5j
+b25uZWN0b3JfdHlwZSA9IERSTV9NT0RFX0NPTk5FQ1RPUl9EUEksDQo+ID4gwqB9Ow0KPiA+IMKg
+DQo+ID4gK3N0YXRpYyBjb25zdCBzdHJ1Y3QgZHJtX2Rpc3BsYXlfbW9kZSBlZHRfZXRtdjU3MGcy
+ZGh1X21vZGUgPSB7DQo+ID4gK8KgwqDCoMKgwqDCoMKgLmNsb2NrID0gMjUxNzUsDQo+ID4gK8Kg
+wqDCoMKgwqDCoMKgLmhkaXNwbGF5ID0gNjQwLA0KPiA+ICvCoMKgwqDCoMKgwqDCoC5oc3luY19z
+dGFydCA9IDY0MCwNCj4gPiArwqDCoMKgwqDCoMKgwqAuaHN5bmNfZW5kID0gNjQwICsgMTYsDQo+
+ID4gK8KgwqDCoMKgwqDCoMKgLmh0b3RhbCA9IDY0MCArIDE2ICsgMzAgKyAxMTQsDQo+ID4gK8Kg
+wqDCoMKgwqDCoMKgLnZkaXNwbGF5ID0gNDgwLA0KPiA+ICvCoMKgwqDCoMKgwqDCoC52c3luY19z
+dGFydCA9IDQ4MCArIDEwLA0KPiA+ICvCoMKgwqDCoMKgwqDCoC52c3luY19lbmQgPSA0ODAgKyAx
+MCArIDMsDQo+ID4gK8KgwqDCoMKgwqDCoMKgLnZ0b3RhbCA9IDQ4MCArIDEwICsgMyArIDM1LA0K
+PiA+ICvCoMKgwqDCoMKgwqDCoC5mbGFncyA9IERSTV9NT0RFX0ZMQUdfUFZTWU5DIHwgRFJNX01P
+REVfRkxBR19QSFNZTkMsDQo+ID4gK307DQo+ID4gKw0KPiA+ICtzdGF0aWMgY29uc3Qgc3RydWN0
+IHBhbmVsX2Rlc2MgZWR0X2V0bXY1NzBnMmRodSA9IHsNCj4gPiArwqDCoMKgwqDCoMKgwqAubW9k
+ZXMgPSAmZWR0X2V0bXY1NzBnMmRodV9tb2RlLA0KPiA+ICvCoMKgwqDCoMKgwqDCoC5udW1fbW9k
+ZXMgPSAxLA0KPiA+ICvCoMKgwqDCoMKgwqDCoC5icGMgPSA2LA0KPiA+ICvCoMKgwqDCoMKgwqDC
+oC5zaXplID0gew0KPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAud2lkdGggPSAx
+MTUsDQo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC5oZWlnaHQgPSA4NiwNCj4g
+PiArwqDCoMKgwqDCoMKgwqB9LA0KPiA+ICvCoMKgwqDCoMKgwqDCoC5idXNfZm9ybWF0ID0gTUVE
+SUFfQlVTX0ZNVF9SR0I4ODhfMVgyNCwNCj4gPiArwqDCoMKgwqDCoMKgwqAuYnVzX2ZsYWdzID0g
+RFJNX0JVU19GTEFHX0RFX0hJR0ggfA0KPiA+IERSTV9CVVNfRkxBR19QSVhEQVRBX0RSSVZFX05F
+R0VER0UsDQo+ID4gK8KgwqDCoMKgwqDCoMKgLmNvbm5lY3Rvcl90eXBlID0gRFJNX01PREVfQ09O
+TkVDVE9SX0RQSSwNCj4gPiArfTsNCj4gPiArDQo+ID4gwqBzdGF0aWMgY29uc3Qgc3RydWN0IGRy
+bV9kaXNwbGF5X21vZGUgZWR0X2V0bTA3MDBnMGRoNl9tb2RlID0gew0KPiA+IMKgwqDCoMKgwqDC
+oMKgwqAuY2xvY2sgPSAzMzI2MCwNCj4gPiDCoMKgwqDCoMKgwqDCoMKgLmhkaXNwbGF5ID0gODAw
+LA0KPiA+IEBAIC00MzM4LDYgKzQzNjQsOSBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IG9mX2Rldmlj
+ZV9pZA0KPiA+IHBsYXRmb3JtX29mX21hdGNoW10gPSB7DQo+ID4gwqDCoMKgwqDCoMKgwqDCoH0s
+IHsNCj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC5jb21wYXRpYmxlID0gImVk
+dCxldDA1NzA5MGRodSIsDQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAuZGF0
+YSA9ICZlZHRfZXQwNTcwOTBkaHUsDQo+ID4gK8KgwqDCoMKgwqDCoMKgfSwgew0KPiA+ICvCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAuY29tcGF0aWJsZSA9ICJlZHQsZXRtdjU3MGcyZGh1
+IiwNCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgLmRhdGEgPSAmZWR0X2V0bXY1
+NzBnMmRodSwNCj4gPiDCoMKgwqDCoMKgwqDCoMKgfSwgew0KPiA+IMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgLmNvbXBhdGlibGUgPSAiZWR0LGV0MDcwMDgwZGg2IiwNCj4gPiDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC5kYXRhID0gJmVkdF9ldG0wNzAwZzBkaDYsDQo+
+IA0KPiBUaGlzIGxpc3QgbXVzdCBiZSBhbHBoYWJldGljYWxseSBzb3J0ZWQgYWZ0ZXIgY29tcGF0
+aWJsZS4NCj4gDQo+ICJlZHQsZXRtdjU3MGcyZGh1IiBjb21lcyBhZnRlciAiZWR0LGV0MDcwMDgw
+ZGg2Ig0KPiANCj4gVGhlIHNhbWUgb3JkZXIgbXVzdCBiZSB1c2VkIHdoZXJlIGVkdF9ldG12NTcw
+ZzJkaHUgaXMgZGVmaW5lZC4NCj4gU29ycnkgZm9yIHRoaXMgbml0LCBidXQgaWYgd2UgZmFpbHMg
+dG8gZm9sbHcgaXQgd2Ugd2lsbCBzb29uIGhhdmUNCj4gY2hhb3MuDQoNCk9mIGNvdXJzZSwgc29y
+cnkgZm9yIG5vdCBub3RpY2luZyBlYXJsaWVyLiBJIHdpbGwgY2hhbmdlIHRoaXMuDQoNClJlZ2Fy
+ZHMsIFl1bnVzDQo+IA0KPiBUaGUgcmVzdCBsb29rcyBnb29kLCBldmVyeXRoaW5nIG5lZWRlZCBp
+cyBkZWZpbmVkLg0KPiANCj4gwqDCoMKgwqDCoMKgwqDCoFNhbQ0KDQotLSANCk1pdCBmcmV1bmRs
+aWNoZW4gR3LDvMOfZW4NCll1bnVzIEJhcw0KDQotU29mdHdhcmUgRW5naW5lZXItDQpQSFlURUMg
+TWVzc3RlY2huaWsgR21iSA0KUm9iZXJ0LUtvY2gtU3RyLiAzOQ0KNTUxMjkgTWFpbnoNCkdlcm1h
+bnkNClRlbC46ICs0OSAoMCk2MTMxIDkyMjEtIDQ2Ng0KV2ViOiB3d3cucGh5dGVjLmRlDQoNClNp
+ZSBmaW5kZW4gdW5zIGF1Y2ggYXVmOiBGYWNlYm9vaywgTGlua2VkSW4sIFhpbmcsIFlvdVR1YmUN
+Cg0KUEhZVEVDIE1lc3N0ZWNobmlrIEdtYkggfCBSb2JlcnQtS29jaC1TdHIuIDM5IHwgNTUxMjkg
+TWFpbnosIEdlcm1hbnkNCkdlc2Now6RmdHNmw7xocmVyOiBEaXBsLi1JbmcuIE1pY2hhZWwgTWl0
+ZXpraSwgRGlwbC4tSW5nLiBCb2RvIEh1YmVyIHwNCkhhbmRlbHNyZWdpc3RlciBNYWlueiBIUkIg
+NDY1NiB8IEZpbmFuemFtdCBNYWlueiB8IFN0Lk5yLiAyNjY1MDA2MDgsIERFDQoxNDkwNTk4NTUN
+ClRoaXMgRS1NYWlsIG1heSBjb250YWluIGNvbmZpZGVudGlhbCBvciBwcml2aWxlZ2VkIGluZm9y
+bWF0aW9uLiBJZiB5b3UNCmFyZSBub3QgdGhlIGludGVuZGVkIHJlY2lwaWVudCAob3IgaGF2ZSBy
+ZWNlaXZlZCB0aGlzIEUtTWFpbCBpbiBlcnJvcikNCnBsZWFzZSBub3RpZnkgdGhlIHNlbmRlciBp
+bW1lZGlhdGVseSBhbmQgZGVzdHJveSB0aGlzIEUtTWFpbC4gQW55DQp1bmF1dGhvcml6ZWQgY29w
+eWluZywgZGlzY2xvc3VyZSBvciBkaXN0cmlidXRpb24gb2YgdGhlIG1hdGVyaWFsIGluDQp0aGlz
+IEUtTWFpbCBpcyBzdHJpY3RseSBmb3JiaWRkZW4uDQoNCg==
