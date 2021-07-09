@@ -2,115 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC073C20C5
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 10:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 019E23C20CE
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 10:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231550AbhGII2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 04:28:01 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:51002 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229685AbhGII2A (ORCPT
+        id S231548AbhGII3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 04:29:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231361AbhGII3u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 04:28:00 -0400
-X-UUID: e2fa50fcf82b4f31a3406b086a65e148-20210709
-X-UUID: e2fa50fcf82b4f31a3406b086a65e148-20210709
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <lecopzer.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 54868000; Fri, 09 Jul 2021 16:25:13 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 9 Jul 2021 16:25:12 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 9 Jul 2021 16:25:12 +0800
-From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
-To:     <samitolvanen@google.com>
-CC:     <clang-built-linux@googlegroups.com>, <keescook@chromium.org>,
-        <lecopzer.chen@mediatek.com>, <linux-kbuild@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <masahiroy@kernel.org>,
-        <michal.lkml@markovi.net>, <nathan@kernel.org>,
-        <ndesaulniers@google.com>, <yj.chiang@mediatek.com>
-Subject: Re: [PATCH v3 1/2] Kbuild: lto: add CONFIG_MAKE_VERSION
-Date:   Fri, 9 Jul 2021 16:25:12 +0800
-Message-ID: <20210709082512.25208-1-lecopzer.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <CABCJKufWcp6Hx=8btz6pDNcKvQ21n4BSPZ7cp1Tzhxt0+pQOmw@mail.gmail.com>
-References: <CABCJKufWcp6Hx=8btz6pDNcKvQ21n4BSPZ7cp1Tzhxt0+pQOmw@mail.gmail.com>
+        Fri, 9 Jul 2021 04:29:50 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 464D8C0613E6
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 01:27:07 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id a2so9225186pgi.6
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 01:27:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yU9Twe5lXj23b1mNka/5xOrpyF7ZSTRqoQCTkjEokB4=;
+        b=LIfVVMZPNUHjO9GLLsf57mvnfsctNvpBsj6fgEhwtEMYU2QPQ6BXihMW4SZkVW2q16
+         Qxmr/bSKL2oMkgNy53y7JgditJt9aOU8Cd84q4+Vrqw63I36+wpNdi9w+PutgmATOf8b
+         7XabHAsqBzIS7zS4SnDN9sLqcex4HGp2Xy17w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yU9Twe5lXj23b1mNka/5xOrpyF7ZSTRqoQCTkjEokB4=;
+        b=ZsKGXeWaO4BJ/qykOEgN0t5PK8FOpxzH+78e7gr0aiQEBJzKVnIBhlNkYpXwFNQ8eM
+         f4n3jAMVxvP0DMx1cqHYbfT3mmsltGrp1t8Y9HNjkAlYTGWez0mEkMMgT9lC5VxvIaKf
+         R1enGVwtH3rpogyMTWlnQdNUuRslfZRgGZLPVDPeRIHbZn3RKQLwU6WjFfDcOL9VRr7f
+         +1Y4M02tLoFIv4th232h3sbZJDdZ2WVd92Kicz7rhohBHRqF/8xl4/QTGoG16oq8lYfX
+         EqP+C9rz4J+jtAXr67I8zq3XWz2qYBDHd2AvAfSwRPy4zaQED7hyuIZIQYr6hdwyIPgC
+         pRrw==
+X-Gm-Message-State: AOAM533K3jAt8DXMwdLg0P5ekmV4MEoMp+RZ/Wja+zR3eKqon8yWanrB
+        bTXHCyhoBYHp9zf605Z/XaCvRA==
+X-Google-Smtp-Source: ABdhPJxk6FrpXb7jO30ZusT2cxQ16M60gq3kw3CbQwTLoJvyedQynzhdP7rkgXhS7oB7FCkbYSPS2A==
+X-Received: by 2002:a62:1750:0:b029:328:9c55:4f5b with SMTP id 77-20020a6217500000b02903289c554f5bmr3424022pfx.6.1625819226849;
+        Fri, 09 Jul 2021 01:27:06 -0700 (PDT)
+Received: from chromium.org ([2401:fa00:8f:203:735b:c3cc:6957:ae6d])
+        by smtp.gmail.com with ESMTPSA id cx4sm4143678pjb.53.2021.07.09.01.27.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Jul 2021 01:27:06 -0700 (PDT)
+Date:   Fri, 9 Jul 2021 17:27:02 +0900
+From:   Tomasz Figa <tfiga@chromium.org>
+To:     Tzung-Bi Shih <tzungbi@google.com>
+Cc:     "kyrie.wu" <kyrie.wu@mediatek.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bin Liu <bin.liu@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, xia.jiang@mediatek.com,
+        maoguang.meng@mediatek.com, srv_heupstream@mediatek.com
+Subject: Re: [PATCH v2,0/9] Support jpeg encode for MT8195
+Message-ID: <YOgIVnhdZeK/FR2q@chromium.org>
+References: <1625038079-25815-1-git-send-email-kyrie.wu@mediatek.com>
+ <CA+Px+wVQFK1MXbq6=x7gSfRu8uRp5hbiNgSWtJ-9ok3Lt+vz8A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+Px+wVQFK1MXbq6=x7gSfRu8uRp5hbiNgSWtJ-9ok3Lt+vz8A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Tue, Jul 6, 2021 at 2:06 AM Lecopzer Chen <lecopzer.chen@mediatek.com> wrote:
-> >
-> > > On Sun, Jul 4, 2021 at 7:03 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> > > >
-> > > > On Fri, Jul 2, 2021 at 12:29 PM Lecopzer Chen
-> > > > <lecopzer.chen@mediatek.com> wrote:
-> > > > >
-> > > > > To check the GNU make version. Used by the LTO Kconfig.
-> > > > >
-> > > > > LTO with MODVERSIONS will fail in generating correct CRC because
-> > > > > the makefile rule doesn't work for make with version 3.8X.[1]
-> > > > >
-> > > > > Thus we need to check make version during selecting on LTO Kconfig.
-> > > > > Add CONFIG_MAKE_VERSION which means MAKE_VERSION in canonical digits
-> > > > > for arithmetic comparisons.
-> > > > >
-> > > > > [1] https://lore.kernel.org/lkml/20210616080252.32046-1-lecopzer.chen@mediatek.com/
-> > > > > Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
-> > > > > ---
-> > > >
-> > > >
-> > > > NACK.
-> > > >
-> > > > "Let's add MAKE_VERSION >= 40200 restriction
-> > > > just because I cannot write correct code that
-> > > > works for older Make" is a horrible idea.
-> > > >
-> > > > Also, Kconfig is supposed to check the compiler
-> > > > (or toolchains) capability, not host tool versions.
-> > >
-> > > I feel like requiring a Make that's half a decade old for a feature
-> > > that also requires a toolchain released last October ago isn't
-> > > entirely unreasonable.
-> > >
-> > > That being said, if Masahiro prefers not to rely on the wildcard
-> > > function's behavior here, which is a reasonable request, we could
-> > > simply use the shell to test for the file's existence:
-> > >
-> > > diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-> > > index 34d257653fb4..c6bd62f518ff 100644
-> > > --- a/scripts/Makefile.build
-> > > +++ b/scripts/Makefile.build
-> > > @@ -388,7 +388,7 @@ ifeq ($(CONFIG_LTO_CLANG) $(CONFIG_MODVERSIONS),y y)
-> > >        cmd_update_lto_symversions =                                     \
-> > >         rm -f $@.symversions                                            \
-> > >         $(foreach n, $(filter-out FORCE,$^),                            \
-> > > -               $(if $(wildcard $(n).symversions),                      \
-> > > +               $(if $(shell test -s $(n).symversions && echo y),       \
-> > >                         ; cat $(n).symversions >> $@.symversions))
-> > >  else
-> > >        cmd_update_lto_symversions = echo >/dev/null
-> > >
-> > > This is not quite as efficient as using wildcard, but should work with
-> > > older Make versions too. Thoughts?
-> > >
-> >
-> >
-> > I've tested this in both make-4.3 and 3.81, and the CRC is correct.
-> > But I'm not sure if anyone would have the "arg list too long" issue.
-> >
-> > Tested-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+On Tue, Jul 06, 2021 at 07:00:17PM +0800, Tzung-Bi Shih wrote:
+> On Wed, Jun 30, 2021 at 3:28 PM kyrie.wu <kyrie.wu@mediatek.com> wrote:
+> > add component framework to using multi-HW for MT8195 jpeg encode.
+> Could you add some summary for each patch for getting an overview of the series?
 > 
-> Thank you for testing. This should produce a command identical to the
-> wildcard version (with newer Make versions), so that shouldn't be an
-> issue. If nobody objects to this approach, would you mind putting this
-> into a proper patch and sending it as v4?
+> >   dt-bindings: mediatek: Add mediatek, mt8195-jpgenc compatible
+> >   media: mtk-jpegenc: Add MT8195 JPEG venc driver
+> >   media: mtk-jpegenc: remove redundant code of irq
+> >   media: mtk-jpegenc: Refactor jpeg clock interface
+> >   media: mtk-jpegenc: Generalize jpeg encode irq interfaces
+> >   media: mtk-jpegenc: Generalize jpegenc HW timeout interfaces
+> >   media: mtk-jpegenc: Use component framework to manage each hardware
+> >     information
+> >   media: mtk-jpegenc: Generalize jpegenc HW operations interfaces
+> >   media: mtk-jpegenc: Refactor jpegenc device run interface
+> The series has some consistency issues which would make readers feel
+> uncomfortable.
+> 
+> For example:
+> - Whether to capitalize the first characters in the commit messages/titles.
+> - Whether to add a period at the end of English sentences.
 
-Sure, I'll rebase the whole commit and send as v4 soon.
+FWIW, it's not customary to add a period at the end of a patch subject.
 
+Best regards,
+Tomasz
 
