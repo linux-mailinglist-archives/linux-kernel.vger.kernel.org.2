@@ -2,92 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C4A3C21EF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 11:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A0473C2212
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 12:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232241AbhGIJyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 05:54:21 -0400
-Received: from mga05.intel.com ([192.55.52.43]:54438 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232225AbhGIJyS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 05:54:18 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10039"; a="295316534"
-X-IronPort-AV: E=Sophos;i="5.84,226,1620716400"; 
-   d="scan'208";a="295316534"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2021 02:51:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,226,1620716400"; 
-   d="scan'208";a="498856386"
-Received: from michael-optiplex-9020.sh.intel.com ([10.239.159.182])
-  by fmsmga002.fm.intel.com with ESMTP; 09 Jul 2021 02:51:33 -0700
-From:   Yang Weijiang <weijiang.yang@intel.com>
-To:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
-        jmattson@google.com, wei.w.wang@intel.com, like.xu.linux@gmail.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Yang Weijiang <weijiang.yang@intel.com>
-Subject: [PATCH v5 13/13] KVM: x86/cpuid: Advise Arch LBR feature in CPUID
-Date:   Fri,  9 Jul 2021 18:05:11 +0800
-Message-Id: <1625825111-6604-14-git-send-email-weijiang.yang@intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1625825111-6604-1-git-send-email-weijiang.yang@intel.com>
-References: <1625825111-6604-1-git-send-email-weijiang.yang@intel.com>
+        id S232097AbhGIKJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 06:09:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231864AbhGIKJs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 06:09:48 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A752C0613DD
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 03:07:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=nWtuvjlUby+2YW9qFVAVvushQo1QCbdC5Mln1a1Goe0=; b=erC+chGa43xVyRkrhkhgvpaVwS
+        b/Ksn3tS8xCCIJbVKBlWWveYqegJ8hcyaP1XByVgkPJlZPx6Cm111zdHisjbNJC3TeixztnG8cCIY
+        ozyiU0cojOwXAE/MhXCE6sTXmYHJxeljorfyzuj/mk+/dcLBM3uvAWa+aqOAiLjz2tUts056WDBjd
+        iO18meDVNg15YEeaarZeYKkx+oaGRpTXV6VPssjSXLu29BS3ctLFxt1dP8he89DZvjiU+KIbpJ55k
+        uh8fR3qCewgiIHtewj/gvdEpeV7wOi/YN7ooBOidq8159XWl5gsyBFHxzeyt+nvefkuxCcUlzzCjO
+        Km72sYrA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m1n5p-00ENHp-Ov; Fri, 09 Jul 2021 09:46:48 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 10A59300233;
+        Fri,  9 Jul 2021 11:46:43 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C43A52058B98A; Fri,  9 Jul 2021 11:46:43 +0200 (CEST)
+Date:   Fri, 9 Jul 2021 11:46:43 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     zhouchuangao <zhouchuangao@vivo.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kernel/sched/core: Print the time when the process
+ entered the D state
+Message-ID: <YOgbA/+Mm+tHKwqN@hirez.programming.kicks-ass.net>
+References: <1625807160-112041-1-git-send-email-zhouchuangao@vivo.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1625807160-112041-1-git-send-email-zhouchuangao@vivo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Arch LBR feature bit in CPU cap-mask to expose the feature.
-Currently only max LBR depth is available for guest, and it's
-consistent with host Arch LBR settings.
+On Thu, Jul 08, 2021 at 10:05:59PM -0700, zhouchuangao wrote:
+> Sometimes we need to trigger /proc/sysrq-trigger to view the information
+> of the D state process in the system.
+> e.g:
+> echo w > /proc/sysrq-trigger
+> 
+> Here we print the scheduling time of the process, which is convenient
+> for us to judge the state of the system and for debugging.
+> 
+> Signed-off-by: zhouchuangao <zhouchuangao@vivo.com>
+> ---
+>  kernel/sched/core.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index cf16f8f..e03474d 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -8154,9 +8154,10 @@ void sched_show_task(struct task_struct *p)
+>  	if (pid_alive(p))
+>  		ppid = task_pid_nr(rcu_dereference(p->real_parent));
+>  	rcu_read_unlock();
+> -	pr_cont(" stack:%5lu pid:%5d ppid:%6d flags:0x%08lx\n",
+> +	pr_cont(" stack:%5lu pid:%5d ppid:%6d flags:0x%08lx sched:%llu\n",
+>  		free, task_pid_nr(p), ppid,
+> -		(unsigned long)task_thread_info(p)->flags);
+> +		(unsigned long)task_thread_info(p)->flags,
+> +		p->sched_info.last_arrival);
 
-Co-developed-by: Like Xu <like.xu@linux.intel.com>
-Signed-off-by: Like Xu <like.xu@linux.intel.com>
-Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
----
- arch/x86/kvm/cpuid.c | 23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index d6e343809b25..b51bfeaccea3 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -490,7 +490,7 @@ void kvm_set_cpu_caps(void)
- 		F(AVX512_4VNNIW) | F(AVX512_4FMAPS) | F(SPEC_CTRL) |
- 		F(SPEC_CTRL_SSBD) | F(ARCH_CAPABILITIES) | F(INTEL_STIBP) |
- 		F(MD_CLEAR) | F(AVX512_VP2INTERSECT) | F(FSRM) |
--		F(SERIALIZE) | F(TSXLDTRK) | F(AVX512_FP16)
-+		F(SERIALIZE) | F(TSXLDTRK) | F(AVX512_FP16) | F(ARCH_LBR)
- 	);
- 
- 	/* TSC_ADJUST and ARCH_CAPABILITIES are emulated in software. */
-@@ -902,6 +902,27 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
- 				goto out;
- 		}
- 		break;
-+	/* Architectural LBR */
-+	case 0x1c: {
-+		u64 lbr_depth_mask = entry->eax & 0xff;
-+
-+		if (!lbr_depth_mask ||
-+		    !kvm_cpu_cap_has(X86_FEATURE_ARCH_LBR)) {
-+			entry->eax = entry->ebx = entry->ecx = entry->edx = 0;
-+			break;
-+		}
-+		/*
-+		 * KVM only exposes the maximum supported depth, which is the
-+		 * fixed value used on the host side.
-+		 * KVM doesn't allow VMM userspace to adjust LBR depth because
-+		 * guest LBR emulation depends on the configuration of host LBR
-+		 * driver.
-+		 */
-+		lbr_depth_mask = 1UL << (fls(lbr_depth_mask) - 1);
-+		entry->eax &= ~0xff;
-+		entry->eax |= lbr_depth_mask;
-+		break;
-+	}
- 	case KVM_CPUID_SIGNATURE: {
- 		static const char signature[12] = "KVMKVMKVM\0\0";
- 		const u32 *sigptr = (const u32 *)signature;
--- 
-2.21.1
-
+How's that not a compile fail for SCHED_INFO=n ?
