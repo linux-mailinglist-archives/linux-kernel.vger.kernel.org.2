@@ -2,106 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D423C2351
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 14:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6BE43C2357
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 14:19:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231156AbhGIMTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 08:19:12 -0400
-Received: from lucky1.263xmail.com ([211.157.147.130]:52556 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230209AbhGIMTL (ORCPT
+        id S231324AbhGIMVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 08:21:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230209AbhGIMVl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 08:19:11 -0400
-Received: from localhost (unknown [192.168.167.16])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 2097AD567B;
-        Fri,  9 Jul 2021 20:16:16 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P12363T139709705611008S1625832975658261_;
-        Fri, 09 Jul 2021 20:16:16 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <1edd35a63eca25bd31cf0c404e17181e>
-X-RL-SENDER: hjc@rock-chips.com
-X-SENDER: hjc@rock-chips.com
-X-LOGIN-NAME: hjc@rock-chips.com
-X-FST-TO: hjc@rock-chips.com
-X-RCPT-COUNT: 11
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Sandy Huang <hjc@rock-chips.com>
-To:     hjc@rock-chips.com, dri-devel@lists.freedesktop.org,
-        heiko@sntech.de,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     linux-arm-kernel@lists.infradead.org, ben.davis@arm.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] drm: drm_fourcc: add NV20 and NV30 format
-Date:   Fri,  9 Jul 2021 20:15:50 +0800
-Message-Id: <20210709121550.17958-1-hjc@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 9 Jul 2021 08:21:41 -0400
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5255DC0613DD
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 05:18:58 -0700 (PDT)
+Received: by mail-vs1-xe33.google.com with SMTP id f4so1822393vsh.11
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 05:18:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0i2x0AMVYzqLw8AMYlE+qzyfnD3fj5LQp89veWdpxEY=;
+        b=d1OMO9RO63Kf5IJ9DxyClEBbwJB/uY6CtJD/ZpW1b9/95BlVPm3FgIT6QqjYt9Ht78
+         onFQ/K0MoXr9KJqU12bLjy2FDtrywjB+XB/EH9L+kTJuMkyqZkv1we9ZXJ2S6ki8srXo
+         gz9cJ+F9r911uW31xKHVVCcJ+F7l3BSe1Vmz4+l3nTotZEXKIHOzgiQTLodDsjmdN5b8
+         z1ajubYXsEJP8z/v+AwgKxb0BxhWkiksI1uxeNOHsyf5TmP3ETHIUEw+0c7I4zmtGU4w
+         QLE7oA/l5FaNf9YQRqKKSym2CF4sezVwGq6jdx73wmRBttDr6jFmo893G7GCaoQdBb6a
+         etLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0i2x0AMVYzqLw8AMYlE+qzyfnD3fj5LQp89veWdpxEY=;
+        b=pc7sP330ybYDfIdShm+/sbfF/aQWwNdOrLJHLMDxpZtPuuIUfZp0RupHjLB/YEeL7a
+         YPRQGcupl1hsYymoeoMHUaUNL6rKM4iOzbihguUofdm94Sii7lld0iCteLcoGesrg0ES
+         Ff3SQ6uDtTDfPaGlcXJqNcT+41cnK6LF7zfHlTEr9+ON+iPF5/ZgPAnPOar1EgptW2Sr
+         e22sQbcx8jcKlUwDQIQjwanNnX1FS/04+zIf7IInn852Bc7Po75v85wd5GATLzShN7mf
+         TPV7jN0V8mZx9n0ZibfNBdYFwssJhRe0M3uKq8dzavr3uKC+iFZXGJwJ7x/1vNIMKkaF
+         Uu4Q==
+X-Gm-Message-State: AOAM531GjpiSIHx9f8hJM8OaAb52lT8EPoTEPqd+g5KvjO3p03IJGgMP
+        NVTXmgWQtNAHnUOiFCHhuOOpHox9Cg/3M/P0y5uCMg==
+X-Google-Smtp-Source: ABdhPJz7iTeFUYjs06Wx3TYcdeZ70mtZT8uIbNNFQrb+7zjXxrg/7/QeIdMzya8bZ++XTTu+Sd6CTrbJGw0ZI9z1fmg=
+X-Received: by 2002:a67:8783:: with SMTP id j125mr35621090vsd.42.1625833137493;
+ Fri, 09 Jul 2021 05:18:57 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210709043136.533205-1-dmitry.baryshkov@linaro.org>
+ <20210709043136.533205-5-dmitry.baryshkov@linaro.org> <CAPDyKFprYK8bSk+rdnDt3xRUR9BRNdyRiBdefO+s7qzOwHf7hg@mail.gmail.com>
+ <CAA8EJprrjz=o7Ymt1mNBZASzTeX==1ceRTeKA4f3QrVMcpO6xg@mail.gmail.com>
+In-Reply-To: <CAA8EJprrjz=o7Ymt1mNBZASzTeX==1ceRTeKA4f3QrVMcpO6xg@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 9 Jul 2021 14:18:20 +0200
+Message-ID: <CAPDyKFoLcsYLisEiOF66dDsV+759c5k0PD64uxU11jc5VTdNYQ@mail.gmail.com>
+Subject: Re: [RESEND PATCH v2 4/7] clk: qcom: gdsc: enable optional power
+ domain support
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DRM_FORMAT_NV20 and DRM_FORMAT_NV30 is a 2 plane format suitable for
-linear layouts, this two format is similar to NV15 has no padding
-between component, but NV15 is 4:2:0 sub-sampling, NV20 is 4:2:2
-sub-sampling and NV30 is no-sampling.
+On Fri, 9 Jul 2021 at 13:46, Dmitry Baryshkov
+<dmitry.baryshkov@linaro.org> wrote:
+>
+> On Fri, 9 Jul 2021 at 12:33, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> >
+> > On Fri, 9 Jul 2021 at 06:32, Dmitry Baryshkov
+> > <dmitry.baryshkov@linaro.org> wrote:
+> > >
+> > > On sm8250 dispcc and videocc registers are powered up by the MMCX power
+> > > domain. Currently we used a regulator to enable this domain on demand,
+> > > however this has some consequences, as genpd code is not reentrant.
+> > >
+> > > Teach Qualcomm clock controller code about setting up power domains and
+> > > using them for gdsc control.
+> > >
+> > > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> >
+> > [...]
+> >
+> > > diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
+> > > index 51ed640e527b..9401d01533c8 100644
+> > > --- a/drivers/clk/qcom/gdsc.c
+> > > +++ b/drivers/clk/qcom/gdsc.c
+> > > @@ -427,6 +427,7 @@ int gdsc_register(struct gdsc_desc *desc,
+> > >                         continue;
+> > >                 scs[i]->regmap = regmap;
+> > >                 scs[i]->rcdev = rcdev;
+> > > +               scs[i]->pd.dev.parent = desc->dev;
+> > >                 ret = gdsc_init(scs[i]);
+> > >                 if (ret)
+> > >                         return ret;
+> > > @@ -439,6 +440,8 @@ int gdsc_register(struct gdsc_desc *desc,
+> > >                         continue;
+> > >                 if (scs[i]->parent)
+> > >                         pm_genpd_add_subdomain(scs[i]->parent, &scs[i]->pd);
+> > > +               else if (!IS_ERR_OR_NULL(dev->pm_domain))
+> >
+> > So dev_pm_domain_attach() (which calls genpd_dev_pm_attach() is being
+> > called for gdsc platform device from the platform bus', to try to
+> > attach the device to its corresponding PM domain.
+> >
+> > Looking a bit closer to genpd_dev_pm_attach(), I realize that we
+> > shouldn't really try to attach a device to its PM domain, when its OF
+> > node (dev->of_node) contains a "#power-domain-cells" specifier. This
+> > is because it indicates that the device belongs to a genpd provider
+> > itself. In this case, a "power-domains" specifier tells that it has a
+> > parent domain.
+> >
+> > I will post a patch that fixes this asap.
+>
+> I think there is nothing to fix here. The dispcc/videocc drivers
+> provide clocks in addition to the gdsc power domain. And provided
+> clocks would definitely benefit from having the dispcc device being
+> attached to the power domain which governs clock registers (MMCX in
+> our case). Thus I think it is perfectly valid to have:
+>
+> rpmhpd device:
+>  - provides MMCX domain.
+>
+> dispcc device:
+>  - is attached to the MMCX domain,
 
-YYYY = UVUV = 4 * 10 bits = 40 bits = 5 bytes
+We don't need this, it's redundant and weird to me.
 
-The '20' and '30' suffix refers to the optimum effective bits per
-pixel which is achieved.
+Also I am kind of worried that you will hit another new path in genpd,
+causing locking issues etc, as it has not been designed to work like
+this (a provider device and a child domain sharing the same "parent").
 
-Signed-off-by: Sandy Huang <hjc@rock-chips.com>
-Change-Id: I84da7e03125e675f274c6307128b4b7b307767cc
----
- drivers/gpu/drm/drm_fourcc.c  | 8 ++++++++
- include/uapi/drm/drm_fourcc.h | 2 ++
- 2 files changed, 10 insertions(+)
+>  - provides MDSS_GDSC
 
-diff --git a/drivers/gpu/drm/drm_fourcc.c b/drivers/gpu/drm/drm_fourcc.c
-index eda832f9200d..9498e9d466fb 100644
---- a/drivers/gpu/drm/drm_fourcc.c
-+++ b/drivers/gpu/drm/drm_fourcc.c
-@@ -258,6 +258,14 @@ const struct drm_format_info *__drm_format_info(u32 format)
- 		  .num_planes = 2, .char_per_block = { 5, 5, 0 },
- 		  .block_w = { 4, 2, 0 }, .block_h = { 1, 1, 0 }, .hsub = 2,
- 		  .vsub = 2, .is_yuv = true },
-+		{ .format = DRM_FORMAT_NV20,		.depth = 0,
-+		  .num_planes = 2, .char_per_block = { 5, 5, 0 },
-+		  .block_w = { 4, 2, 0 }, .block_h = { 1, 1, 0 }, .hsub = 2,
-+		  .vsub = 1, .is_yuv = true },
-+		{ .format = DRM_FORMAT_NV30,		.depth = 0,
-+		  .num_planes = 2, .char_per_block = { 5, 5, 0 },
-+		  .block_w = { 4, 2, 0 }, .block_h = { 1, 1, 0 }, .hsub = 1,
-+		  .vsub = 1, .is_yuv = true },
- 		{ .format = DRM_FORMAT_Q410,		.depth = 0,
- 		  .num_planes = 3, .char_per_block = { 2, 2, 2 },
- 		  .block_w = { 1, 1, 1 }, .block_h = { 1, 1, 1 }, .hsub = 0,
-diff --git a/include/uapi/drm/drm_fourcc.h b/include/uapi/drm/drm_fourcc.h
-index f7156322aba5..a30bb7ef7632 100644
---- a/include/uapi/drm/drm_fourcc.h
-+++ b/include/uapi/drm/drm_fourcc.h
-@@ -279,6 +279,8 @@ extern "C" {
-  * index 1 = Cr:Cb plane, [39:0] Cr1:Cb1:Cr0:Cb0 little endian
-  */
- #define DRM_FORMAT_NV15		fourcc_code('N', 'V', '1', '5') /* 2x2 subsampled Cr:Cb plane */
-+#define DRM_FORMAT_NV20		fourcc_code('N', 'V', '2', '0') /* 2x1 subsampled Cr:Cb plane */
-+#define DRM_FORMAT_NV30		fourcc_code('N', 'V', '3', '0') /* non-subsampled Cr:Cb plane */
- 
- /*
-  * 2 plane YCbCr MSB aligned
--- 
-2.17.1
+It's perfectly fine that dispcc acts as a genpd provider. In this
+case, the corresponding PM domain should be assigned as a child for
+the parent MMCX domain. That should make this work, I think.
 
+>  - provides clocks
 
+That sounds reasonable as well.
 
+>
+> >
+> > > +                       pm_genpd_add_subdomain(pd_to_genpd(dev->pm_domain), &scs[i]->pd);
+> > >         }
+> > >
+> > >         return of_genpd_add_provider_onecell(dev->of_node, data);
+> > > @@ -457,6 +460,8 @@ void gdsc_unregister(struct gdsc_desc *desc)
+> > >                         continue;
+> > >                 if (scs[i]->parent)
+> > >                         pm_genpd_remove_subdomain(scs[i]->parent, &scs[i]->pd);
+> > > +               else if (!IS_ERR_OR_NULL(dev->pm_domain))
+> >
+> > Ditto.
+> >
+> > > +                       pm_genpd_remove_subdomain(pd_to_genpd(dev->pm_domain), &scs[i]->pd);
+> > >         }
+> > >         of_genpd_del_provider(dev->of_node);
+> > >  }
+> > > --
+> > > 2.30.2
+> > >
+> >
+
+Kind regards
+Uffe
