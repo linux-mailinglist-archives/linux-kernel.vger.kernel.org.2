@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 734003C23B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 14:51:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33EDE3C23B9
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 14:52:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231431AbhGIMyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 08:54:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46062 "EHLO mail.kernel.org"
+        id S231482AbhGIMyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 08:54:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229671AbhGIMyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 08:54:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 953F36138C;
-        Fri,  9 Jul 2021 12:51:35 +0000 (UTC)
+        id S229671AbhGIMyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 08:54:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D15736138C;
+        Fri,  9 Jul 2021 12:52:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625835095;
-        bh=GU1jhgi5wPMaeA8R0nZaTzda3Y0S9v6LWbgT7i4/SkY=;
+        s=k20201202; t=1625835126;
+        bh=Wtc6at4EMqah+8lowzdqgZUoTzKBCQyUdjkUDeV9SJQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tjqy5QkSAmty9r6mK5N/qGFwzTEXpvsWspiQDskLAm925ierVP2EdCW3fd3T1g9HL
-         h1TMykjV2FsFLFVVxe/RvYmHcxfF+QL6L0dl2SNtPUlvgw208lBftym/8+aE1pT6kS
-         gcvLCQUU3VbSlfDBQAXHt/9DpSOdRmoh9L++Fqb25jf+Ezmqb28Sao5n5SKoyfebwa
-         C0HoWqZPzrYTee7JVVNiQst/ROpASpVlD3orXw+5f9cQSy0VDJqOsw/T1FWQX+hJBj
-         F9BGRwaCKJ+y2lMu4j0zIxRrkkjtJX/stblKO5pEFylgryAXfwxcgejdgJyRkuq/a6
-         sRppPiz6iJaDA==
+        b=gCc+tS7QS3rSYo8B2Ur55ib22wyOTkpQDcFL5F2FC+3CF19rilIMwARhbSOqWLb+z
+         ZIK1Ro8VA5kAUEnoM1SbxupTej9e9FJ6lFmxT+PMiwf0s6y1ZOKJIod2BB4/fglcoJ
+         7fmDmpDbjdUpUUMAkb9Zv/TDA3Vo2DIALPBw9MJQxXEHGCQfVrEejdB4b93IELSIRV
+         edEvrIAOg/SBu5oBsKNJ2Qs+lxijAlZmS/rlgqYOyzg3LH0OFFlwfKa1taJSGvW9BI
+         QqywldFABFDFabVuie/Ywug8SWCMo8lMiUMPPwpXnde4SZS74h3TOFqt6PsgPWJObL
+         H6NQ3ZY4EynhQ==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D9E5E40B1A; Fri,  9 Jul 2021 09:51:31 -0300 (-03)
-Date:   Fri, 9 Jul 2021 09:51:31 -0300
+        id 567B040B1A; Fri,  9 Jul 2021 09:52:03 -0300 (-03)
+Date:   Fri, 9 Jul 2021 09:52:03 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Namhyung Kim <namhyung@kernel.org>
 Cc:     "Liang, Kan" <kan.liang@intel.com>, Ingo Molnar <mingo@redhat.com>,
@@ -33,55 +33,54 @@ Cc:     "Liang, Kan" <kan.liang@intel.com>, Ingo Molnar <mingo@redhat.com>,
         linux-kernel <linux-kernel@vger.kernel.org>,
         Yao Jin <yao.jin@linux.intel.com>,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: Re: [PATCH] perf record: Add a dummy event for a hybrid system
-Message-ID: <YOhGU0PZPSVb1s0n@kernel.org>
-References: <1625760212-18441-1-git-send-email-kan.liang@intel.com>
- <CAM9d7cgGmAsa1wCQJM_FfhiG9+ULqAdCTyqw4wSqbnNSzvrdWQ@mail.gmail.com>
+Subject: Re: [PATCH] perf stat: Add Topdown metrics L2 events as default
+ events
+Message-ID: <YOhGc+81IjLKRXVS@kernel.org>
+References: <1625760169-18396-1-git-send-email-kan.liang@intel.com>
+ <CAM9d7ciuJFpFJC+DSdSg=3VeK_YUgSiWdTE++LZHk4ir6NGLtg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAM9d7cgGmAsa1wCQJM_FfhiG9+ULqAdCTyqw4wSqbnNSzvrdWQ@mail.gmail.com>
+In-Reply-To: <CAM9d7ciuJFpFJC+DSdSg=3VeK_YUgSiWdTE++LZHk4ir6NGLtg@mail.gmail.com>
 X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Jul 08, 2021 at 10:32:13PM -0700, Namhyung Kim escreveu:
-> On Thu, Jul 8, 2021 at 9:05 AM <kan.liang@intel.com> wrote:
-> >
-> > From: Kan Liang <kan.liang@linux.intel.com>
-> >
-> > Some symbols may not be resolved if a user only monitor one type of PMU.
-> >
-> >  $ sudo perf record -e cpu_atom/branch-instructions/ ./big_small_workload
-> >  $ sudo perf report –stdio
-> >  # Overhead  Command    Shared Object      Symbol
-> >  # ........  .........  .................
-> >  # ......................................
-> >  #
-> >     28.02%  perf-exec  [unknown]          [.] 0x0000000000401cf6
-> >     11.32%  perf-exec  [unknown]          [.] 0x0000000000401d04
-> >     10.90%  perf-exec  [unknown]          [.] 0x0000000000401d11
-> >     10.61%  perf-exec  [unknown]          [.] 0x0000000000401cfc
-> >
-> > To parse symbols, the side-band events, e.g., COMM, which are generated
-> > by the kernel are required. To decide whether to generate the side-band
-> > event, the kernel relies on the event_filter_match() to filter the
-> > unrelated events. On a hybrid system, the event_filter_match() further
-> > checks the CPU mask of the current enabled PMU. If an event is collected
-> > on the CPU which doesn't have an enabled PMU, it's treated as an
-> > unrelated event.
-> >
-> > The "big_small_workload" is created in a big core, but runs on a small
-> > core. The side-band events are filtered, because the user only monitors
-> > the PMU of the small core. The big core PMU is not enabled.
-> >
-> > For a hybrid system, a dummy event is required to generate the complete
-> > side-band events.
-> >
+Em Thu, Jul 08, 2021 at 10:31:34PM -0700, Namhyung Kim escreveu:
+> On Thu, Jul 8, 2021 at 9:04 AM <kan.liang@intel.com> wrote:
+> > With the patch:
+
+> >  $ perf stat sleep 1
+
+> >  Performance counter stats for 'sleep 1':
+
+> >               0.59 msec task-clock                #    0.001 CPUs utilized
+> >                  1      context-switches          #    1.687 K/sec
+> >                  0      cpu-migrations            #    0.000 /sec
+> >                 76      page-faults               #  128.198 K/sec
+> >          1,405,318      cycles                    #    2.371 GHz
+> >          1,471,136      instructions              #    1.05  insn per cycle
+> >            310,132      branches                  #  523.136 M/sec
+> >             10,435      branch-misses             #    3.36% of all branches
+> >          8,431,908      slots                     #   14.223 G/sec
+> >          1,554,116      topdown-retiring          #     18.4% retiring
+> >          1,289,585      topdown-bad-spec          #     15.2% bad speculation
+> >          2,810,636      topdown-fe-bound          #     33.2% frontend bound
+> >          2,810,636      topdown-be-bound          #     33.2% backend bound
+> >            231,464      topdown-heavy-ops         #      2.7% heavy operations       #     15.6% light operations
+> >          1,223,453      topdown-br-mispredict     #     14.5% branch mispredict      #      0.8% machine clears
+> >          1,884,779      topdown-fetch-lat         #     22.3% fetch latency          #     10.9% fetch bandwidth
+> >          1,454,917      topdown-mem-bound         #     17.2% memory bound           #     16.0% Core bound
+
+> >        1.001179699 seconds time elapsed
+
+> >        0.000000000 seconds user
+> >        0.001238000 seconds sys
+
+> > Reviewed-by: Andi Kleen <ak@linux.intel.com>
 > > Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-> 
+
 > Acked-by: Namhyung Kim <namhyung@kernel.org>
 
 Thanks, applied.
