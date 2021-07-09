@@ -2,99 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B6B3C25D1
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B900E3C25DB
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232160AbhGIOYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 10:24:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34846 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229561AbhGIOYl (ORCPT
+        id S232111AbhGIO1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 10:27:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231797AbhGIO1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 10:24:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625840517;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=R80jkwSRBMdXMIX0M3ux6M8QaLP+0xDfTy88OLoP8qM=;
-        b=h2OBH8KDRHbrCG5SsHpkU3eV5vRInHIHJTd646l3pt11E1+9IHRNoE9V0Kj6+Ex26msm1L
-        KtKQLlVIIlnEIpLtYu4sCCj/nLCIP1IfVZdb1dpYVyYyVx8fAG1iFTW5mMjWui7Pwa1OOR
-        rnWksp+7w+AXYxxYu7qbjhr6l/w9z5s=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-604-Mi1YBWmwOS2HtCIMAe8qEg-1; Fri, 09 Jul 2021 10:21:54 -0400
-X-MC-Unique: Mi1YBWmwOS2HtCIMAe8qEg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C834B343CD;
-        Fri,  9 Jul 2021 14:21:52 +0000 (UTC)
-Received: from T590 (ovpn-12-94.pek2.redhat.com [10.72.12.94])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BE32F60BD8;
-        Fri,  9 Jul 2021 14:21:44 +0000 (UTC)
-Date:   Fri, 9 Jul 2021 22:21:39 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     linux-nvme@lists.infradead.org, Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [bug report] iommu_dma_unmap_sg() is very slow then running IO
- from remote numa node
-Message-ID: <YOhbc5C47IzC893B@T590>
-References: <YOgK8fdv7dOQtkET@T590>
- <20210709101614.GZ22278@shell.armlinux.org.uk>
+        Fri, 9 Jul 2021 10:27:11 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDA1DC0613DD;
+        Fri,  9 Jul 2021 07:24:27 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id b40so8272427ljf.12;
+        Fri, 09 Jul 2021 07:24:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rgwGXqa2G/aj+hvJiAbmrHbV8jLgv2L8wBWa5rfPFBA=;
+        b=ZLS496oLc5cKkeetafUzqCoiPt2x1QJvC/qVzEjUY48U4HHj/UWTs2d26oFxbiOfzJ
+         YwC0DmABvl35O7cpi6Lxkl7pzmaTv7g+07lCf6w50gwIC6Nj+ujXiq8ehZvvJBBVizN4
+         mVdbbaXuJZgpYaJ13y/pMQNZ2FlRiBPcDEw9dhho6ceN0ybMtKOuFHI8nap2lfqsN9QH
+         i9iEEZW+cGGKprvQENMdWG31IBfj20CEr95zdYNVHg5Ky8GrmqaPhKyd4RO6q8ICIVnm
+         5n2MTazjIvvMZKsbdp/ZpjzTGGk4aQaf8p5n4xRPDTpJAKo2YeWvuXBwpV8+FbrekuWV
+         hMUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rgwGXqa2G/aj+hvJiAbmrHbV8jLgv2L8wBWa5rfPFBA=;
+        b=S1ewbGBgG53IdJOJ7WlIuluip1yyl+4uzrwdCA2MqntEZNG72KCzBR132yJSATtX1Y
+         tyr3p12JoI57/N0oaTRdmmD4S2VSjXBkOCovKMvoPuAo3/KrLCk+hzkzJbqW++dxGQ6t
+         64A3DztIsbjowSm2YDOi6cbEyPzE3wBtqZx3qRHy8vu5YsgTpiXv8rb2BuuyqQMuoh2A
+         /2XTAb8GlZWwt8wGTsuDAvi+xcBEWfWTP5T7dHI3wKJ/X+e1Masrdk4gjF4hu6bp/4El
+         TGFHLZqnEfr6t766x0Etej6lDDpQSe+jCCTadYiPsTsnxxpgZ++rWF7l1zzqy6+l2vTC
+         VBDg==
+X-Gm-Message-State: AOAM532653AjdaAas05G3ZCHLzOpoUp9xKrGvIE8C7/rcjV1kPU1+vgU
+        1Hz1UECteOF2y8PVKxMufJA2lZ543MqHY3WW
+X-Google-Smtp-Source: ABdhPJxS81b9tGzNNIzlfUtIXBvq7xECJRFH5QHr6rXKngwCwI1b1EDHxP+OoGOEZyArWVYdgsTNHg==
+X-Received: by 2002:a2e:6111:: with SMTP id v17mr19084755ljb.27.1625840666259;
+        Fri, 09 Jul 2021 07:24:26 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.225.155])
+        by smtp.gmail.com with ESMTPSA id r7sm477810lfr.242.2021.07.09.07.24.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Jul 2021 07:24:25 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     timur@kernel.org, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>
+Subject: [PATCH] net: qcom/emac: fix UAF in emac_remove
+Date:   Fri,  9 Jul 2021 17:24:18 +0300
+Message-Id: <20210709142418.453-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210709101614.GZ22278@shell.armlinux.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 09, 2021 at 11:16:14AM +0100, Russell King (Oracle) wrote:
-> On Fri, Jul 09, 2021 at 04:38:09PM +0800, Ming Lei wrote:
-> > I observed that NVMe performance is very bad when running fio on one
-> > CPU(aarch64) in remote numa node compared with the nvme pci numa node.
-> 
-> Have you checked the effect of running a memory-heavy process using
-> memory from node 1 while being executed by CPUs in node 0?
+adpt is netdev private data and it cannot be
+used after free_netdev() call. Using adpt after free_netdev()
+can cause UAF bug. Fix it by moving free_netdev() at the end of the
+function.
 
-1) aarch64
-[root@ampere-mtjade-04 ~]# taskset -c 0 numactl -m 0  perf bench mem memcpy -s 4GB -f default
-# Running 'mem/memcpy' benchmark:
-# function 'default' (Default memcpy() provided by glibc)
-# Copying 4GB bytes ...
+Fixes: 54e19bc74f33 ("net: qcom/emac: do not use devm on internal phy pdev")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ drivers/net/ethernet/qualcomm/emac/emac.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-      11.511752 GB/sec
-[root@ampere-mtjade-04 ~]# taskset -c 0 numactl -m 1  perf bench mem memcpy -s 4GB -f default
-# Running 'mem/memcpy' benchmark:
-# function 'default' (Default memcpy() provided by glibc)
-# Copying 4GB bytes ...
-
-       3.084333 GB/sec
-
-
-2) x86_64[1]
-[root@hp-dl380g10-01 mingl]#  taskset -c 0 numactl -m 0  perf bench mem memcpy -s 4GB -f default
-# Running 'mem/memcpy' benchmark:
-# function 'default' (Default memcpy() provided by glibc)
-# Copying 4GB bytes ...
-
-       4.193927 GB/sec
-[root@hp-dl380g10-01 mingl]#  taskset -c 0 numactl -m 1  perf bench mem memcpy -s 4GB -f default
-# Running 'mem/memcpy' benchmark:
-# function 'default' (Default memcpy() provided by glibc)
-# Copying 4GB bytes ...
-
-       3.553392 GB/sec
-
-
-[1] on this x86_64 machine, IOPS can reach 680K in same fio nvme test 
-
-
-
-Thanks,
-Ming
+diff --git a/drivers/net/ethernet/qualcomm/emac/emac.c b/drivers/net/ethernet/qualcomm/emac/emac.c
+index 8543bf3c3484..ad655f0a4965 100644
+--- a/drivers/net/ethernet/qualcomm/emac/emac.c
++++ b/drivers/net/ethernet/qualcomm/emac/emac.c
+@@ -735,12 +735,13 @@ static int emac_remove(struct platform_device *pdev)
+ 
+ 	put_device(&adpt->phydev->mdio.dev);
+ 	mdiobus_unregister(adpt->mii_bus);
+-	free_netdev(netdev);
+ 
+ 	if (adpt->phy.digital)
+ 		iounmap(adpt->phy.digital);
+ 	iounmap(adpt->phy.base);
+ 
++	free_netdev(netdev);
++
+ 	return 0;
+ }
+ 
+-- 
+2.32.0
 
