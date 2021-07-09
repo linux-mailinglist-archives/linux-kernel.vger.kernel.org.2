@@ -2,149 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 913BF3C1C8F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 02:15:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6B23C1C96
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 02:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230433AbhGIARz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 20:17:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38414 "EHLO
+        id S229899AbhGIAXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 20:23:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230262AbhGIARt (ORCPT
+        with ESMTP id S229637AbhGIAXN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 20:17:49 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE64EC061760;
-        Thu,  8 Jul 2021 17:15:06 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id AD5281F41E36
-From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     kernel@collabora.com, krisman@collabora.com,
-        pgriffais@valvesoftware.com, z.figura12@gmail.com,
-        joel@joelfernandes.org, malteskarupke@fastmail.fm,
-        linux-api@vger.kernel.org, fweimer@redhat.com,
-        libc-alpha@sourceware.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org, acme@kernel.org, corbet@lwn.net,
-        Peter Oskolkov <posk@posk.io>,
-        Andrey Semashev <andrey.semashev@gmail.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Adhemerval Zanella <adhemerval.zanella@linaro.org>,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
-Subject: [PATCH v5 11/11] kernel: Enable waitpid() for futex2
-Date:   Thu,  8 Jul 2021 21:13:28 -0300
-Message-Id: <20210709001328.329716-12-andrealmeid@collabora.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210709001328.329716-1-andrealmeid@collabora.com>
-References: <20210709001328.329716-1-andrealmeid@collabora.com>
+        Thu, 8 Jul 2021 20:23:13 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C1CDC06175F
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 17:20:31 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id 37so8200117pgq.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 17:20:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TT5zfrLu6vWa/4z/bXKwUCLEUNEr9ejX8Ax6l+MRnD8=;
+        b=v0AZHEfeVGRVzZxjd5LP30OvggeS4fKO79WkNtCsGrSeRhi6eGID2oG40HP+atgPGH
+         RSNDFdKelYfFoy5BqW/u5DcmH0ApN48+QW/U5V1nVALFeJPJ/lIPtR1IA3VM0AWRTW6x
+         cWAwVsrzCrepazzvhvE89xtGAxQ9+y6i5su3X0VjrO+OqnW+ABfl/S7OwOqXhi5fKpT/
+         92nP2pU6IgzpoPPdMYv8UVmEY3iGvAgRcoqLOKs+fvNZE169ePydHXUe2+EE5YxuDerU
+         L3b5uVtmxZ/10Wbow8yKU2tg15UL+lUSFG1KnxBPnTLXJgkAjSR50HkT8oGzhDVq2wlo
+         EdCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TT5zfrLu6vWa/4z/bXKwUCLEUNEr9ejX8Ax6l+MRnD8=;
+        b=TMM6sgdpIWs6EK4ZAgV63vjVF+kHtBO50g8Vu63TXJjWPmiwETnVGjW++Slv5byKYZ
+         dMY094Xfylr+pZh3ZfJnKnFZZwilQ3QDl2rXAmcdMtdHGiUOn2tUl+evP6t+87qLHG1K
+         3lNOLvIOjJpY9K5QdGFbOpzzcVaH57qNlvSNw3c/aTOfVFrZMkluTKi7T8sXN4aNH+LC
+         ZCi/l1NcghRn0ZMw2kvLm/6VQpn6LKtR9Be9L+mpQ81fprBYU6fpLhg5ds5H05d4ig2R
+         M+JTHfhsv70pWyNfPpR/n5zF0lDwCKdGcMXdR0XP5/BckT8AlL13cQdhd7hZu433OIwl
+         LP6g==
+X-Gm-Message-State: AOAM533frNQ5QQL5cPsmS6V4p7ilbIWOGslqbxdx8y5/NmDvZMvtfMfu
+        CDYvv4mI8ndkddL7eLwwSgrPgEi3z+PLwKImS/nb0Q==
+X-Google-Smtp-Source: ABdhPJzho1Wzz2jIdtaNYyVK4S67fvXLH+RcYyaPQATK2rlI06EzO9IB95vuvqpfmxw0CljZbQ6/ijjjTemokiCJZ60=
+X-Received: by 2002:a62:ce85:0:b029:316:8ca6:c2e with SMTP id
+ y127-20020a62ce850000b02903168ca60c2emr33862440pfg.70.1625790030762; Thu, 08
+ Jul 2021 17:20:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210707204249.3046665-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210707204249.3046665-6-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAPcyv4h8SaVL_QGLv1DT0JuoyKmSBvxJQw0aamMuzarexaU7VA@mail.gmail.com> <24d8fd58-36c1-0e89-4142-28f29e2c434b@linux.intel.com>
+In-Reply-To: <24d8fd58-36c1-0e89-4142-28f29e2c434b@linux.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 8 Jul 2021 17:20:19 -0700
+Message-ID: <CAPcyv4heA8gps2K_ckUV1gGJdjGeB+5dOSntS=TREEX5-0rtwQ@mail.gmail.com>
+Subject: Re: [PATCH v2 5/6] platform/x86: intel_tdx_attest: Add TDX Guest
+ attestation interface driver
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org, bpf@vger.kernel.org,
+        Netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To make pthreads works as expected if they are using futex2, wake
-clear_child_tid with futex2 as well. This is make applications that uses
-waitpid() (and clone(CLONE_CHILD_SETTID)) wake while waiting for the
-child to terminate. Given that apps should not mix futex() and futex2(),
-any correct app will trigger a harmless noop wakeup on the interface
-that it isn't using.
+On Thu, Jul 8, 2021 at 4:57 PM Kuppuswamy, Sathyanarayanan
+<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+>
+>
+>
+> On 7/8/21 4:36 PM, Dan Williams wrote:
+> >> +static int tdg_attest_open(struct inode *inode, struct file *file)
+> >> +{
+> >> +       /*
+> >> +        * Currently tdg_event_notify_handler is only used in attestation
+> >> +        * driver. But, WRITE_ONCE is used as benign data race notice.
+> >> +        */
+> >> +       WRITE_ONCE(tdg_event_notify_handler, attestation_callback_handler);
+> > Why is this ioctl not part of the driver that registered the interrupt
+>
+> We cannot club them because they are not functionally related. Even notification
+> is a separate common feature supported by TDX and configured using
+> SetupEventNotifyInterrupt hypercall. It is not related to TDX attestation.
+> Attestation just uses event notification interface to get the quote
+> completion event.
+>
+> > handler for this callback in the first instance? I've never seen this
+> > style of cross-driver communication before.
+>
+> This is similar to x86_platform_ipi_callback() acrn_setup_intr_handler()
+> use cases.
 
-Signed-off-by: André Almeida <andrealmeid@collabora.com>
----
+Those appear to be for core functionality, not one off drivers. Where
+is the code that does the SetupEventNotifyInterrupt, is it a driver?
 
-This commit is here for the intend to show what we need to do in order
-to get a full NPTL working on top of futex2. It should be merged after
-we talk to glibc folks on the details around the futex_wait() side. For
-instance, we could use this as an opportunity to use private futexes or
-8bit sized futexes, but both sides need to use the exactly same flags.
----
- include/linux/syscalls.h |  2 ++
- kernel/fork.c            |  2 ++
- kernel/futex2.c          | 30 ++++++++++++++++++------------
- 3 files changed, 22 insertions(+), 12 deletions(-)
+>
+> >
+> >> +
+> >> +       file->private_data = (void *)__get_free_pages(GFP_KERNEL | __GFP_ZERO,
+> >> +                                                     get_order(QUOTE_SIZE));
+> > Why does this driver abandon all semblance of type-safety and use
+> > ->private_data directly? This also seems an easy way to consume
+> > memory, just keep opening this device over and over again.
+> >
+> > AFAICS this buffer is only used ephemerally. I see no reason it needs
+> > to be allocated once per open file. Unless you need several threads to
+> > be running the attestation process in parallel just allocate a single
+> > buffer at module init (statically defined or on the heap) and use a
+> > lock to enforce only one user of this buffer at a time. That would
+> > also solve your direct-map fracturing problem.
+>
+> Theoretically attestation requests can be sent in parallel. I have
+> allocated the memory in open() call mainly for this reason. But current
+> TDX ABI specification does not clearly specify this possibility and I am
+> not sure whether TDX KVM supports it. Let me confirm about it again with
+> TDX KVM owner. If such model is not currently supported, then I will move
+> the memory allocation to init code.
 
-diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-index b9c2874410d0..85b5a501fb96 100644
---- a/include/linux/syscalls.h
-+++ b/include/linux/syscalls.h
-@@ -1315,6 +1315,8 @@ int ksys_ipc(unsigned int call, int first, unsigned long second,
- 	unsigned long third, void __user * ptr, long fifth);
- int compat_ksys_ipc(u32 call, int first, int second,
- 	u32 third, u32 ptr, u32 fifth);
-+long ksys_futex_wake(void __user *uaddr, unsigned int nr_wake,
-+		     unsigned int flags);
- 
- /*
-  * The following kernel syscall equivalents are just wrappers to fs-internal
-diff --git a/kernel/fork.c b/kernel/fork.c
-index b4386ff6a641..f3f98e197fb6 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -1328,6 +1328,8 @@ static void mm_release(struct task_struct *tsk, struct mm_struct *mm)
- 			put_user(0, tsk->clear_child_tid);
- 			do_futex(tsk->clear_child_tid, FUTEX_WAKE,
- 					1, NULL, NULL, 0, 0);
-+			ksys_futex_wake(tsk->clear_child_tid, 1,
-+					FUTEX_32 | FUTEX_SHARED_FLAG);
- 		}
- 		tsk->clear_child_tid = NULL;
- 	}
-diff --git a/kernel/futex2.c b/kernel/futex2.c
-index 4f6d099badec..2ca2f40fcdd2 100644
---- a/kernel/futex2.c
-+++ b/kernel/futex2.c
-@@ -420,18 +420,8 @@ COMPAT_SYSCALL_DEFINE4(futex_wait, void __user *, uaddr, compat_u64, val,
- }
- #endif
- 
--/**
-- * sys_futex_wake - Wake a number of futexes waiting on an address
-- * @uaddr:   Address of futex to be woken up
-- * @nr_wake: Number of futexes waiting in uaddr to be woken up
-- * @flags:   Flags for size and shared
-- *
-- * Wake `nr_wake` threads waiting at uaddr.
-- *
-- * Returns the number of woken threads on success, error code otherwise.
-- */
--SYSCALL_DEFINE3(futex_wake, void __user *, uaddr, unsigned int, nr_wake,
--		unsigned int, flags)
-+long ksys_futex_wake(void __user *uaddr, unsigned int nr_wake,
-+		     unsigned int flags)
- {
- 	unsigned int size = flags & FUTEX_SIZE_MASK, futex_flags = 0;
- 
-@@ -447,6 +437,22 @@ SYSCALL_DEFINE3(futex_wake, void __user *, uaddr, unsigned int, nr_wake,
- 	return futex_wake(uaddr, futex_flags, nr_wake, FUTEX_BITSET_MATCH_ANY);
- }
- 
-+/**
-+ * sys_futex_wake - Wake a number of futexes waiting on an address
-+ * @uaddr:   Address of futex to be woken up
-+ * @nr_wake: Number of futexes waiting in uaddr to be woken up
-+ * @flags:   Flags for size and shared
-+ *
-+ * Wake `nr_wake` threads waiting at uaddr.
-+ *
-+ * Returns the number of woken threads on success, error code otherwise.
-+ */
-+SYSCALL_DEFINE3(futex_wake, void __user *, uaddr, unsigned int, nr_wake,
-+		unsigned int, flags)
-+{
-+	return ksys_futex_wake(uaddr, nr_wake, flags);
-+}
-+
- #ifdef CONFIG_COMPAT
- static int compat_futex_parse_requeue(struct compat_futex_requeue __user *rq,
- 				      void __user **uaddr, unsigned int *flags)
--- 
-2.32.0
+If you have a lock would TDX KVM even notice that its parallel
+requests are being handled serially? I.e. even if they said "yes,
+multiple requests may happen in parallel", until it becomes an actual
+latency problem in practice it's not clear that this generous use of
+resources is justified.
 
+Scratch that... this driver already has the attestation_lock! So, it's
+already the case that only one thread can be attesting at a time. The
+per-file buffer is unecessary.
+
+>
+> >
+> > All that said, this new user ABI for passing blobs in and out of the
+> > kernel is something that the keyutils API already does. Did you
+> > consider add_key() / request_key() for this case? That would also be
+> > the natural path for the end step of requesting the drive decrypt key.
+> > I.e. a chain of key payloads starting with establishing the
+> > attestation blob.
+>
+> I am not sure whether we can use keyutil interface for attestation. AFAIK,
+> there are other use cases for attestation other than  getting keys for
+> encrypted drives.
+
+keyutils supports generating and passing blobs into and out of the
+kernel with a handle associated to those blobs. This driver adds a TDX
+way to pass blobs into and out of the kernel. If Linux grows other
+TDX-like attestation requirements in the future (e.g. PCI SPDM) should
+each of those invent their own user ABI for passing blobs around?
