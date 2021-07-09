@@ -2,100 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FA083C2527
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D1043C252B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:45:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232064AbhGINpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 09:45:44 -0400
-Received: from mail-wr1-f50.google.com ([209.85.221.50]:36549 "EHLO
-        mail-wr1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231993AbhGINpk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 09:45:40 -0400
-Received: by mail-wr1-f50.google.com with SMTP id v5so12235843wrt.3;
-        Fri, 09 Jul 2021 06:42:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Q7mB1luMo6HbqDXiBnl1Lwdd0jsa0W6EKAtYOrdTCZQ=;
-        b=by///3buMRDDAm1A8U7VKz6X350wmpKMSldK1WiuThHZiEyb4BcCH2hl8tJE7M6Anr
-         EKPn5lEltKEdZPKF3zL7TyJv/aZ9WygwGWaxhSxtxSsxeSbxxvnhdHHVrW1wuSkXDBiM
-         HoCW5XwiZJxYUPyEX4AaiWbuJhEAY4wVIqFcKrJuOhlGgp+Q2qC8f2Netad7vX2upUrB
-         /Z0STFweCxfh/pKiHenf0+SIKLZRgwJjiVnPQEsPDf/iIFKg66zD5MVVUbLIa94KeMqz
-         IIiZIZREmEIhlFHj7sSam4ARMQkagHVkf3O82B6ODjccqidrfufNuXL2yOgvRkGdLtH7
-         eZNw==
-X-Gm-Message-State: AOAM5306huwZM+ntLyAlw11CwvKcVqyAWRNJs3f7k4FqSwRFcNK86cKH
-        nyjeDWYxabQoiHgf1oOG/xs=
-X-Google-Smtp-Source: ABdhPJy1Vhv89E6JlCPqe86nNsogAgxU+t9rVvrr2JLaDugrBsREJ7+fYhw4wwqlJCIcXWLMD2M1ow==
-X-Received: by 2002:adf:fd4d:: with SMTP id h13mr36177102wrs.5.1625838175836;
-        Fri, 09 Jul 2021 06:42:55 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id s9sm5305291wrn.87.2021.07.09.06.42.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 06:42:55 -0700 (PDT)
-Date:   Fri, 9 Jul 2021 13:42:53 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        pasha.tatashin@soleen.com, Will Deacon <will@kernel.org>,
-        kumarpraveen@linux.microsoft.com,
-        David Woodhouse <dwmw2@infradead.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        "open list:INTEL IOMMU VT-d" <iommu@lists.linux-foundation.org>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        virtualization@lists.linux-foundation.org,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Subject: Re: [RFC v1 3/8] intel/vt-d: make DMAR table parsing code more
- flexible
-Message-ID: <20210709134253.274m4dpqukxn43q7@liuwe-devbox-debian-v2>
-References: <20210709114339.3467637-1-wei.liu@kernel.org>
- <20210709114339.3467637-4-wei.liu@kernel.org>
- <e1dcc315-4ebb-661e-4289-d176b3db39b5@arm.com>
+        id S231808AbhGINsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 09:48:22 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:56333 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231454AbhGINsW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 09:48:22 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GLvYj5HR6z9sRK;
+        Fri,  9 Jul 2021 23:45:29 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1625838331;
+        bh=ejUtdF/2hGYw4idlr/u6O8mO52fAWHn0jUF1i9LZSbA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eFI2/HTMFs+jPEzpmoSoRo+bNKMNb+0vs92A8mnaN1apYCqxYaiOymvhjdEQemap1
+         sRP0UvBG5AFpBZ2Sr9BP5LSfvag+V60wuZizZNrzVXX++bccPO4DAvSO39ZXM6SC1q
+         farwBifG9CPUbmUrmbuRPYlJWFNJ1lc2tCpdG7F+sZjx1nrq9aHDlAB+hKJ6i6qgOF
+         0mz42Oet5TKm3DpssHcRbJ4N+ojcokGMtI3GXTP71RaGrC9F8Btw+m+llOISY3x/1u
+         vXUc4WFJr+wfOsomU+0DaSnPAZTpeHyFSQsm49LukWHAsXMpsdsSL3uTNuKEI+Af/2
+         IujoLiJyuibqQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     christophe.leroy@csgroup.eu, clg@kaod.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        naveen.n.rao@linux.vnet.ibm.com, npiggin@gmail.com,
+        valentin.schneider@arm.com, ast@kernel.org, daniel@iogearbox.net
+Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.14-2 tag
+Date:   Fri, 09 Jul 2021 23:45:27 +1000
+Message-ID: <87czrrob2g.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e1dcc315-4ebb-661e-4289-d176b3db39b5@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 09, 2021 at 01:56:46PM +0100, Robin Murphy wrote:
-> On 2021-07-09 12:43, Wei Liu wrote:
-> > Microsoft Hypervisor provides a set of hypercalls to manage device
-> > domains. The root kernel should parse the DMAR so that it can program
-> > the IOMMU (with hypercalls) correctly.
-> > 
-> > The DMAR code was designed to work with Intel IOMMU only. Add two more
-> > parameters to make it useful to Microsoft Hypervisor. Microsoft
-> > Hypervisor does not need the DMAR parsing code to allocate an Intel
-> > IOMMU structure; it also wishes to always reparse the DMAR table even
-> > after it has been parsed before.
-> 
-> We've recently defined the VIOT table for describing paravirtualised IOMMUs
-> - would it make more sense to extend that to support the Microsoft
-> implementation than to abuse a hardware-specific table? Am I right in
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
-I searched for VIOT and believed I found the correct link
-https://lwn.net/Articles/859291/. My understanding is based on the
-reading of that series.
+Hi Linus,
 
-VIOT is useful. I think it solves the problem for guests.
+Please pull powerpc fixes for 5.14:
 
-It does not solve the problem we have though. The DMAR tables are not
-conjured up by some backend software running on the host side. They are
-the real tables provided by the firmware. The kernel here is part of the
-host setup, dealing with physical hardware.
+The following changes since commit 019b3fd94ba73d3ac615f0537440b81f129821f6:
 
-No matter how much I wish all vendors unified their tables, I don't see
-how that's going to happen for readily available servers. :-(
+  Merge tag 'powerpc-5.14-1' of git://git.kernel.org/pub/scm/linux/kernel/g=
+it/powerpc/linux (2021-07-02 12:54:34 -0700)
 
-> assuming said hypervisor isn't intended to only ever run on Intel hardware?
+are available in the git repository at:
 
-Yes, that's correct. We also plan to add support AMD and ARM64.
+  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/po=
+werpc-5.14-2
 
-Wei.
+for you to fetch changes up to 2c669ef6979c370f98d4b876e54f19613c81e075:
+
+  powerpc/preempt: Don't touch the idle task's preempt_count during hotplug=
+ (2021-07-08 23:38:10 +1000)
+
+- ------------------------------------------------------------------
+powerpc fixes for 5.14 #2
+
+Fix crashes on 64-bit Book3E due to use of Book3S only mtmsrd instruction.
+
+Fix "scheduling while atomic" warnings at boot due to preempt count underfl=
+ow.
+
+Two commits fixing our handling of BPF atomic instructions.
+
+Fix error handling in xive when allocating an IPI.
+
+Fix lockup on kernel exec fault on 603.
+
+Thanks to: Bharata B Rao, C=C3=A9dric Le Goater, Christian Zigotzky, Christ=
+ophe Leroy, Guenter
+Roeck, Jiri Olsa, Naveen N. Rao, Nicholas Piggin, Valentin Schneider.
+
+- ------------------------------------------------------------------
+Christophe Leroy (1):
+      powerpc/mm: Fix lockup on kernel exec fault
+
+C=C3=A9dric Le Goater (1):
+      powerpc/xive: Fix error handling when allocating an IPI
+
+Naveen N. Rao (2):
+      powerpc/bpf: Fix detecting BPF atomic instructions
+      powerpc/bpf: Reject atomic ops in ppc32 JIT
+
+Nicholas Piggin (1):
+      powerpc/64e: Fix system call illegal mtmsrd instruction
+
+Valentin Schneider (1):
+      powerpc/preempt: Don't touch the idle task's preempt_count during hot=
+plug
+
+
+ arch/powerpc/kernel/interrupt_64.S   |  6 +++++-
+ arch/powerpc/mm/fault.c              |  4 +---
+ arch/powerpc/net/bpf_jit_comp32.c    | 14 +++++++++++---
+ arch/powerpc/net/bpf_jit_comp64.c    |  4 ++--
+ arch/powerpc/platforms/cell/smp.c    |  3 ---
+ arch/powerpc/platforms/pseries/smp.c |  3 ---
+ arch/powerpc/sysdev/xive/common.c    |  7 +++----
+ 7 files changed, 22 insertions(+), 19 deletions(-)
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmDoUOkACgkQUevqPMjh
+pYAiow/+OBasOP8AoO9oOxnxQ9UAoy7XMuE9xCXXUAWFZyzI7tspIPxYHF635cZ8
+riWkafTUKUrD6evOtQxfhq91CVUG2yUfdeHBLFgb3Azy/iGLDxNCbVq6TbgJClsi
++qFHxjGg+DzY8rFKg3UhX8+hgvO+NGVkv54qQmtyYgSEK7nLU+UJtaVPdlmmen/8
+LTTvIjvcZvEKFeJvKqojVDicAB7VUjE3w9Ct3VM4P5rc9kTVie1AdJMjb7PHGPp/
+ub043o24RM7lXKv0gG5UM57SugfEbadfhk7OKj41oFeDhGS67kEofay7fNOtPuJP
+8IXybH1gxQ84dhNPAX+mL+FuJ9LHq14RWW9bc3nc2PvuQEDJeg04PWYusH5BQb17
+Iey3z1ixQ5b6sZkZLULGmMVLc1xQhJLuMDAythUpDKu7AReHagtEclxzeNNXiz1o
+MWl/13oSCiYe8xQrvRv3eN8kcv+Nuju7r45PmEJgl0pAireZVW3gL2zS4WCjvfgX
+CNwUk+Pd0IGwRE/i3FxtkDdK4Xrn2tcmO4j0H+EB65tYfwrmVHjt4S5vIpx2PCPh
+K2YLESzoMHqak5M0agu+MFItzIyt2kCqAwS2c6z1RnJF4PpSOeFrT2YHRGqwxKji
+5xvL0+yf5HfYGzfCMURiLmMkQYmZw62kqU6ozA8KHFKQWipMN3g=3D
+=3D6KM9
+-----END PGP SIGNATURE-----
