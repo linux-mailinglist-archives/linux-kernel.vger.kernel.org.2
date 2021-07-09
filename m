@@ -2,220 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C21E43C2A81
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 22:44:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1D73C2A84
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 22:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230256AbhGIUr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 16:47:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhGIUrZ (ORCPT
+        id S230409AbhGIUsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 16:48:09 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:18634 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhGIUsH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 16:47:25 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE7BC0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 13:44:41 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id 22-20020a17090a0c16b0290164a5354ad0so8927702pjs.2
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 13:44:41 -0700 (PDT)
+        Fri, 9 Jul 2021 16:48:07 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iFKfOHPWNRehyMMb6EVJKVOyGtUORa52In1SCytQALI=;
-        b=uJDwiNUd2i0a89wFt/pd7XuecL3FcaCbSKHCJDZB1hxI4eWv3J9R4dqiZO+mNnPp/c
-         vIfUF82BRiDmT/BQXvuFhdCm1+iZzUzQp3+EatJkGSt3zZbm0ej+zxgk70/luqpiK/9L
-         xzMn6suJoVo2e2rtnnpXLdIW/NoKQir8a8qzFs4AGbwaUaigfGivrgGxRRzObFIqNtJo
-         HrM1SdK6FcwoXlXanmsss8OrOC0a6mfV1ih0MYi70/eWzdo3uB01Iu7OJfadqb4DsdMf
-         FFbEkC4OjqFljvjS8GC93QGbJo6IxSbgzD7nvr9mIQ0u3g8pZMbIXHkHQ5giOnH8NjS3
-         SmgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iFKfOHPWNRehyMMb6EVJKVOyGtUORa52In1SCytQALI=;
-        b=DFZB90js1hSRVWKjmZF7yy/DacFRHLhzmGsjnEdvX+boLQVIe0qRU+XVHek7ssrSah
-         iLbqUQLQDA47/KkCerUkWMe0+yvW0Htd/Luq/3A3bk8vsMS+2VWaSSrLOtZzdN+C+NTk
-         JrPgcajDcnL7YTHh5EjsT+Jf6Un0nszz9PTb+2WcAKiaWL783MTLkTy2L+gaKo2k+vMq
-         QIIfLfoZy0YPHwS83DWLjDH7is/HRihhLARpxiPs9Aty/K8mL9d73gR2JOMj+NXPcmYz
-         rQYdNAifAgvTVvXyYKOZM8HMVWvS+QAmW5tuBnm6dJpmk++Uh81GpYxFjzWSj8B1mFu0
-         0nSw==
-X-Gm-Message-State: AOAM5332MXBH8mQYIuy1FQ9L4H4Zzr1lRCu/xfKJnjwYILC4SrjJpiwP
-        JZefSMnV6x/VIHDWiRoeDSfEizivA4c=
-X-Google-Smtp-Source: ABdhPJwMQwUzGbPRiIc7MfVoy0lWZEJjJIPB0j7PNm51b1CRVAeeyG+dyOzkUl6ugHFlOPS+8M41JA==
-X-Received: by 2002:a17:90a:d590:: with SMTP id v16mr39175533pju.205.1625863480311;
-        Fri, 09 Jul 2021 13:44:40 -0700 (PDT)
-Received: from daehojeong-desktop.mtv.corp.google.com ([2620:15c:211:201:5944:1743:c40a:f492])
-        by smtp.gmail.com with ESMTPSA id o34sm8558852pgm.6.2021.07.09.13.44.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 13:44:39 -0700 (PDT)
-From:   Daeho Jeong <daeho43@gmail.com>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Daeho Jeong <daehojeong@google.com>
-Subject: [PATCH v2] f2fs: add sysfs nodes to get GC info for each GC mode
-Date:   Fri,  9 Jul 2021 13:44:30 -0700
-Message-Id: <20210709204430.1293298-1-daeho43@gmail.com>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1625863524; x=1657399524;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=5jYxzqwh/afUexbLAmNKPVpRdm0/qxTd9IFC6sVflLk=;
+  b=qjLm37CGL3N0/zraoeRKbwgJLnZRGiMlU7qG3R1xx1vpNkGktGb7hc9w
+   /GI8QCs1WD+pqQ53Q6sPp37zMgh6sk7PhZv1Yrm5GWFeoWrJsDasH9zxP
+   Fj82wW34d9wIrtckid26twPHGSIFZQntI2F/5mqIRdqUJD8ctC07r1/Lu
+   Q=;
+X-IronPort-AV: E=Sophos;i="5.84,227,1620691200"; 
+   d="scan'208";a="135471522"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-2c-76e0922c.us-west-2.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-33001.sea14.amazon.com with ESMTP; 09 Jul 2021 20:45:24 +0000
+Received: from EX13MTAUWA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2c-76e0922c.us-west-2.amazon.com (Postfix) with ESMTPS id 8305AE255D;
+        Fri,  9 Jul 2021 20:45:22 +0000 (UTC)
+Received: from EX13D01UWA002.ant.amazon.com (10.43.160.74) by
+ EX13MTAUWA001.ant.amazon.com (10.43.160.118) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Fri, 9 Jul 2021 20:45:22 +0000
+Received: from localhost (10.43.160.41) by EX13d01UWA002.ant.amazon.com
+ (10.43.160.74) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 9 Jul
+ 2021 20:45:21 +0000
+Date:   Fri, 9 Jul 2021 13:45:21 -0700
+From:   Samuel Mendoza-Jonas <samjonas@amazon.com>
+To:     Changheun Lee <nanich.lee@samsung.com>
+CC:     <alex_y_xu@yahoo.ca>, <gmazyland@gmail.com>, <bvanassche@acm.org>,
+        <tytso@mit.edu>, <axboe@kernel.dk>, <bgoncalv@redhat.com>,
+        <dm-crypt@saout.de>, <hch@lst.de>, <jaegeuk@kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-nvme@lists.infradead.org>,
+        <ming.lei@redhat.com>, <yi.zhang@redhat.com>, <dm-devel@redhat.com>
+Subject: Re: regression: data corruption with ext4 on LUKS on nvme with
+ torvalds master
+Message-ID: <20210709204521.y3mg7wpejqctpkmi@u87e72aa3c6c25c.ant.amazon.com>
+References: <alpine.LRH.2.02.2105140544010.22439@file01.intranet.prod.int.rdu2.redhat.com>
+ <CGME20210514104426epcas1p3ee2f22f8e18c961118795c356e6a14ae@epcas1p3.samsung.com>
+ <20210514102614.3804-1-nanich.lee@samsung.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210514102614.3804-1-nanich.lee@samsung.com>
+User-Agent: NeoMutt/20171215
+X-Originating-IP: [10.43.160.41]
+X-ClientProxiedBy: EX13D43UWC004.ant.amazon.com (10.43.162.42) To
+ EX13d01UWA002.ant.amazon.com (10.43.160.74)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daeho Jeong <daehojeong@google.com>
+On Fri, May 14, 2021 at 07:26:14PM +0900, Changheun Lee wrote:
+> > On 5/13/21 7:15 AM, Theodore Ts'o wrote:
+> > > On Thu, May 13, 2021 at 06:42:22PM +0900, Changheun Lee wrote:
+> > >>
+> > >> Problem might be casued by exhausting of memory. And memory exhausting
+> > >> would be caused by setting of small bio_max_size. Actually it was not
+> > >> reproduced in my VM environment at first. But, I reproduced same problem
+> > >> when bio_max_size is set with 8KB forced. Too many bio allocation would
+> > >> be occurred by setting of 8KB bio_max_size.
+> > > 
+> > > Hmm... I'm not sure how to align your diagnosis with the symptoms in
+> > > the bug report.  If we were limited by memory, that should slow down
+> > > the I/O, but we should still be making forward progress, no?  And a
+> > > forced reboot should not result in data corruption, unless maybe there
+> > 
+> > If you use data=writeback, data writes and journal writes are not 
+> > synchronized. So, it may be possible that a journal write made it through, 
+> > a data write didn't - the end result would be a file containing random 
+> > contents that was on the disk.
+> > 
+> > Changheun - do you use data=writeback? Did the corruption happen only in 
+> > newly created files? Or did it corrupt existing files?
+> 
+> Actually I didn't reproduced data corruption. I only reproduced hang during
+> making ext4 filesystem. Alex, could you check it?
+> 
+> > 
+> > > was a missing check for a failed memory allocation, causing data to be
+> > > written to the wrong location, a missing error check leading to the
+> > > block or file system layer not noticing that a write had failed
+> > > (although again, memory exhaustion should not lead to failed writes;
+> > > it might slow us down, sure, but if writes are being failed, something
+> > > is Badly Going Wrong --- things like writes to the swap device or
+> > > writes by the page cleaner must succeed, or else Things Would Go Bad
+> > > In A Hurry).
+> > 
+> > Mikulas
 
-Added gc_dirty_segs and gc_dirty_segs_mode sysfs nodes.
-1) "gc_dirty_segs" shows how many dirty segments have been
-reclaimed by GC during a specific GC mode.
-2) "gc_dirty_segs_mode" is used to control for which gc mode
-the "gc_dirty_segs" node shows.
+I've recently been debugging an issue that isn't this exact issue
+(it occurs in 5.10), but looks somewhat similar.
+On a host that
+- Is running a kernel 5.4 >= x >= 5.10.47 at least
+- Using an EXT4 + LUKS partition
+- Running Elasticsearch stress tests
 
-Signed-off-by: Daeho Jeong <daehojeong@google.com>
----
- Documentation/ABI/testing/sysfs-fs-f2fs | 14 +++++++++++++
- fs/f2fs/debug.c                         |  9 ++++++++
- fs/f2fs/f2fs.h                          |  5 +++++
- fs/f2fs/gc.c                            |  1 +
- fs/f2fs/sysfs.c                         | 28 +++++++++++++++++++++++++
- 5 files changed, 57 insertions(+)
+We see that the index files used by the Elasticsearch process become
+corrupt after some time, and in each case I've seen so far the content
+of the file looks like the EXT4 extent header. 
+	#define EXT4_EXT_MAGIC          cpu_to_le16(0xf30a)
 
-diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
-index 95155e4ec7fe..0d863eb185f6 100644
---- a/Documentation/ABI/testing/sysfs-fs-f2fs
-+++ b/Documentation/ABI/testing/sysfs-fs-f2fs
-@@ -493,3 +493,17 @@ Contact:	"Chao Yu" <yuchao0@huawei.com>
- Description:	When ATGC is on, it controls age threshold to bypass GCing young
- 		candidates whose age is not beyond the threshold, by default it was
- 		initialized as 604800 seconds (equals to 7 days).
-+
-+What:		/sys/fs/f2fs/<disk>/gc_dirty_segs
-+Date:		July 2021
-+Contact:	"Daeho Jeong" <daehojeong@google.com>
-+Description:	Show how many dirty segments have been reclaimed by GC during
-+		a specific GC mode (0: GC normal, 1: GC idle CB, 2: GC idle greedy,
-+		3: gc idle AT, 4: GC urgent high, 5: GC urgent low)
-+		You can re-initialize this value to "0".
-+
-+What:		/sys/fs/f2fs/<disk>/gc_dirty_segs_mode
-+Date:		July 2021
-+Contact:	"Daeho Jeong" <daehojeong@google.com>
-+Description:	You can control for which gc mode the "gc_dirty_segs" node shows.
-+		Refer to the description of the modes in "gc_dirty_segs".
-diff --git a/fs/f2fs/debug.c b/fs/f2fs/debug.c
-index 833325038ef3..53ed1e9191f0 100644
---- a/fs/f2fs/debug.c
-+++ b/fs/f2fs/debug.c
-@@ -450,6 +450,15 @@ static int stat_show(struct seq_file *s, void *v)
- 				si->data_segs, si->bg_data_segs);
- 		seq_printf(s, "  - node segments : %d (%d)\n",
- 				si->node_segs, si->bg_node_segs);
-+		seq_printf(s, "  - Reclaimed segs : Normal (%d), Idle CB (%d), "
-+				"Idle Greedy (%d), Idle AT (%d), "
-+				"Urgent High (%d), Urgent Low (%d)\n",
-+				si->sbi->gc_reclaimed_segs[GC_NORMAL],
-+				si->sbi->gc_reclaimed_segs[GC_IDLE_CB],
-+				si->sbi->gc_reclaimed_segs[GC_IDLE_GREEDY],
-+				si->sbi->gc_reclaimed_segs[GC_IDLE_AT],
-+				si->sbi->gc_reclaimed_segs[GC_URGENT_HIGH],
-+				si->sbi->gc_reclaimed_segs[GC_URGENT_LOW]);
- 		seq_printf(s, "Try to move %d blocks (BG: %d)\n", si->tot_blks,
- 				si->bg_data_blks + si->bg_node_blks);
- 		seq_printf(s, "  - data blocks : %d (%d)\n", si->data_blks,
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 16ce1ade9fa6..74b1e621c15f 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -1251,6 +1251,7 @@ enum {
- 	GC_IDLE_AT,
- 	GC_URGENT_HIGH,
- 	GC_URGENT_LOW,
-+	MAX_GC_MODE,
- };
- 
- enum {
-@@ -1728,6 +1729,10 @@ struct f2fs_sb_info {
- 	struct kmem_cache *inline_xattr_slab;	/* inline xattr entry */
- 	unsigned int inline_xattr_slab_size;	/* default inline xattr slab size */
- 
-+	/* For reclaimed dirty segs statistics per each GC mode */
-+	unsigned int gc_dirty_segs_mode;	/* GC state for reclaimed dirty segments */
-+	unsigned int gc_reclaimed_segs[MAX_GC_MODE];	/* Reclaimed dirty segs for each mode */
-+
- #ifdef CONFIG_F2FS_FS_COMPRESSION
- 	struct kmem_cache *page_array_slab;	/* page array entry */
- 	unsigned int page_array_slab_size;	/* default page array slab size */
-diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
-index da5947b30142..85f83ee38e24 100644
---- a/fs/f2fs/gc.c
-+++ b/fs/f2fs/gc.c
-@@ -1648,6 +1648,7 @@ static int do_garbage_collect(struct f2fs_sb_info *sbi,
- 							force_migrate);
- 
- 		stat_inc_seg_count(sbi, type, gc_type);
-+		sbi->gc_reclaimed_segs[sbi->gc_mode]++;
- 		migrated++;
- 
- freed:
-diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-index 6642246206bd..6e5d46b1dbf5 100644
---- a/fs/f2fs/sysfs.c
-+++ b/fs/f2fs/sysfs.c
-@@ -307,6 +307,14 @@ static ssize_t f2fs_sbi_show(struct f2fs_attr *a,
- 		return sysfs_emit(buf, "%u\n", sbi->compr_new_inode);
- #endif
- 
-+	if (!strcmp(a->attr.name, "gc_dirty_segs_mode"))
-+		return sysfs_emit(buf, "%u\n", sbi->gc_dirty_segs_mode);
-+
-+	if (!strcmp(a->attr.name, "gc_dirty_segs")) {
-+		return sysfs_emit(buf, "%u\n",
-+			sbi->gc_reclaimed_segs[sbi->gc_dirty_segs_mode]);
-+	}
-+
- 	ui = (unsigned int *)(ptr + a->offset);
- 
- 	return sprintf(buf, "%u\n", *ui);
-@@ -515,6 +523,21 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
- 		return count;
- 	}
- 
-+	if (!strcmp(a->attr.name, "gc_dirty_segs_mode")) {
-+		if (t < MAX_GC_MODE)
-+			sbi->gc_dirty_segs_mode = t;
-+		else
-+			return -EINVAL;
-+		return count;
-+	}
-+
-+	if (!strcmp(a->attr.name, "gc_dirty_segs")) {
-+		if (t != 0)
-+			return -EINVAL;
-+		sbi->gc_reclaimed_segs[sbi->gc_dirty_segs_mode] = 0;
-+		return count;
-+	}
-+
- 	*ui = (unsigned int)t;
- 
- 	return count;
-@@ -740,6 +763,9 @@ F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_candidate_count, max_candidate_cou
- F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_age_weight, age_weight);
- F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_age_threshold, age_threshold);
- 
-+F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, gc_dirty_segs_mode, gc_dirty_segs_mode);
-+F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, gc_dirty_segs, gc_reclaimed_segs);
-+
- #define ATTR_LIST(name) (&f2fs_attr_##name.attr)
- static struct attribute *f2fs_attrs[] = {
- 	ATTR_LIST(gc_urgent_sleep_time),
-@@ -812,6 +838,8 @@ static struct attribute *f2fs_attrs[] = {
- 	ATTR_LIST(atgc_candidate_count),
- 	ATTR_LIST(atgc_age_weight),
- 	ATTR_LIST(atgc_age_threshold),
-+	ATTR_LIST(gc_dirty_segs_mode),
-+	ATTR_LIST(gc_dirty_segs),
- 	NULL,
- };
- ATTRIBUTE_GROUPS(f2fs);
--- 
-2.32.0.93.g670b81a890-goog
+For example:
+$ hexdump -C /hdd1/nodes/0/indices/c6eSGDlCRjaWeIBwdeo9DQ/0/index/_23c.si
+00000000  0a f3 04 00 54 01 00 00  00 00 00 00 00 00 00 00  |....T...........|
+00000010  00 38 00 00 00 60 46 05  00 38 00 00 00 88 00 00  |.8...`F..8......|
+00000020  00 98 46 05 00 40 00 00  00 88 00 00 00 a0 46 05  |..F..@........F.|
+00000030  00 48 00 00 00 88 00 00  00 a8 46 05 00 48 00 00  |.H........F..H..|
+00000040  00 88 00 00 00 a8 46 05  00 48 00 00 00 88 00 00  |......F..H......|
+00000050  00 a8 46 05 00 48 00 00  00 88 00 00 00 a8 46 05  |..F..H........F.|
+00000060  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+*
+000001a0  00 00                                             |..|
+000001a2
 
+
+I'm working on tracing exactly when this happens, but I'd be interested
+to hear if that sounds familar or might have a similar underlying cause
+beyond the commit that was reverted above.
+
+Cheers,
+Sam Mendoza-Jonas
