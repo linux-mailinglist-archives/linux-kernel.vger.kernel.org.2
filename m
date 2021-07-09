@@ -2,162 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A97723C25C5
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBCC23C25C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:19:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232140AbhGIOWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 10:22:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58158 "EHLO
+        id S232263AbhGIOWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 10:22:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhGIOWN (ORCPT
+        with ESMTP id S231908AbhGIOWg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 10:22:13 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E28C0613DD;
-        Fri,  9 Jul 2021 07:19:30 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id g14so4578231qvo.7;
-        Fri, 09 Jul 2021 07:19:30 -0700 (PDT)
+        Fri, 9 Jul 2021 10:22:36 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5916EC0613E5
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 07:19:52 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id u7so12577052ion.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 07:19:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:content-transfer-encoding:date:message-id:cc:subject
-         :from:to:references:in-reply-to;
-        bh=AbweScTu+CSzzG5mO4s7QPojjdx+SBj/a+asVBSmxkc=;
-        b=AouQHaKb6+HOpTFdltm93W8St56GH1+1PuGJjLNIpUiwKG9speTcmC40C+LWa1/1+4
-         0ryUgO0gUJohod1AQFCH7KzpugukPVSDEfB9hD4H2q7aF2/9hE+pKWaXiBiBuOzSDEb0
-         eWuOafwk9liKfVYg+p96ZeervMswHHHaLj7lpbKBFF70qr42GLE8qTZk6m0/H3Lp0yfX
-         TQ7WfpijYv2j2FtCB87oFVxcbd2neTsUkUS3P5U9yq6GAF9lMc0ZM0QfxWK0aIrVuI/Q
-         ipChWl9FoyWCfGGCRwRTEcVv4PaMIa2ZrFh2Imkvbgev2q/zHXEO7cn4e1mc9IPWocp3
-         aoBA==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=bhHqxUlxcu/FlkKRb/gO8lzu6xUse6jQvhbl8eFYZdk=;
+        b=vXnEuPGUlWY0fazo+wWrLriShudF/YDNR0wefm0lD0auHy3oOVTHF8tYZRfQF7yRl4
+         hwEmOyY3dcLG2vRPHb/pSa3bjbZpPp5iQ65aeZ3PEOVqKPiCB/gh6d/+ajXfY1RJCqMf
+         kRvPswJEvqRGOhBQ+vBbLHfO4tPt4oBohvOkldoRf3hukeLFkIOEcv91BasPf+spYlwf
+         zBpaQXYJttlyVWQAkRmMXq5S9I8DuNoE8zXYw32LjoIUdiUBmYpHLBfTnwHNFqEzI37d
+         QAljjP6FuxEFKfUjREC2TRzOUGkBnxA28j1Rns2g8w3GtBn80qqGAOSjtxZRFAJcXhrE
+         L0Eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding:date
-         :message-id:cc:subject:from:to:references:in-reply-to;
-        bh=AbweScTu+CSzzG5mO4s7QPojjdx+SBj/a+asVBSmxkc=;
-        b=oelpxtHlN0yqGIY8/wFSv/63CSmGnzfhEg56TX4jyY1DJg6/Urd/hc3WXH6Dolb0Wq
-         URFZ8hb3e4Hlt0g0Trmnsr3kiM2eNq3vGuVaJZ3U+XAzdVRKkJ0jHt/cZN2+tt/X0MtD
-         lsn3iFDI+WBQS6xUCuNqGIAMvExbo15cIvqPql83SYrvyAdY/rv7GJ9weqRbZagjb2qC
-         DC8x98T6nrPofK5aFL2HKbJq2s981gBneRenxJ0fYchmQzs9DY8VTxYaUSkNSWs5yDmM
-         U/h/DUywulKppwiJma3KmS4fCX7JMP77pl5ZlnqLGdp3Jj7lai6qasTcrT42f1rDJ8LV
-         usEw==
-X-Gm-Message-State: AOAM53144HlebYChcG0XzTnCx4RjGmIH6K2rdtMwv5Xa5g3lTnzhfNXz
-        1YkB3diefA+mzss2lNSS2NY=
-X-Google-Smtp-Source: ABdhPJxVob48UIFSG4unefpkzdf7LQRsfXIysItrnGJy6edT/WhDIivxlCG3JhYAzxUZeZVD6VMGCg==
-X-Received: by 2002:ad4:4150:: with SMTP id z16mr12453311qvp.39.1625840369290;
-        Fri, 09 Jul 2021 07:19:29 -0700 (PDT)
-Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id s6sm2462794qkc.125.2021.07.09.07.19.28
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bhHqxUlxcu/FlkKRb/gO8lzu6xUse6jQvhbl8eFYZdk=;
+        b=TpDGLlQ6nsS2zwiGetDxT6cSScU+pnLc/JwveWaD3kcschYyN6YE0jJuDVAlvdj8hy
+         xoc+1wnfGMBi+cKfWbyipDHalkBkAN7wrjCqRiTC6JyH/o4TKs2rOaStUNO7v+dfn2Yh
+         X97eXj7VlFNny1s91VdjVYa3K1cMZTXKd8aARVA0SjJQQFHILYyAtgATeGZ/cXVbmtQq
+         HcK/2tRCXl0IKvRQBYr0NvWcSK/Ew5L1GHn4U1Vna+8IhM+GAZg7A+1YLlVH11C7st8N
+         yyQK4NvioHTIZwlvP6pMz61xAk+FtgzBB2LCl0lKXAiM2sJXdeygsCFKUxz+Z7oQEXxV
+         3d3w==
+X-Gm-Message-State: AOAM5307WK0vZNV0/K//ukUiNzF5lQ04EwSIlQlKeJQq7z5BA6XWEz0s
+        kT37//TmOoTfkekCpxGCVfPggyL38WEzHg==
+X-Google-Smtp-Source: ABdhPJy9C3+E4Cro9CTIolIQDhQ5jlejH3fxR5+yJpwB5ukwkxVCatJvDkc1mQGlvwAwKKnqqi2W2g==
+X-Received: by 2002:a02:c00c:: with SMTP id y12mr31977864jai.99.1625840391361;
+        Fri, 09 Jul 2021 07:19:51 -0700 (PDT)
+Received: from [192.168.1.134] ([198.8.77.61])
+        by smtp.gmail.com with ESMTPSA id q7sm2783002ilv.17.2021.07.09.07.19.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Jul 2021 07:19:28 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Fri, 09 Jul 2021 10:19:27 -0400
-Message-Id: <CCOOB5Y7NI0J.QOZXSZ74JNFI@shaak>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-Subject: RE: [PATCH v1 4/4] dt-bindings: iio: adc: ad7949: add
- adi,reference-source
-From:   "Liam Beguin" <liambeguin@gmail.com>
-To:     "Sa, Nuno" <Nuno.Sa@analog.com>,
-        "lars@metafoo.de" <lars@metafoo.de>,
-        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        "jic23@kernel.org" <jic23@kernel.org>,
-        "charles-antoine.couret@essensium.com" 
-        <charles-antoine.couret@essensium.com>
-References: <20210708235618.1541335-1-liambeguin@gmail.com>
- <20210708235618.1541335-5-liambeguin@gmail.com>
- <PH0PR03MB6366E7E1CBDC15B6B43F8BC699189@PH0PR03MB6366.namprd03.prod.outlook.com>
-In-Reply-To: <PH0PR03MB6366E7E1CBDC15B6B43F8BC699189@PH0PR03MB6366.namprd03.prod.outlook.com>
+        Fri, 09 Jul 2021 07:19:50 -0700 (PDT)
+Subject: Re: potential null pointer deference (or maybe invalid null check) in
+ io_uring io_poll_remove_double()
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <fe70c532-e2a7-3722-58a1-0fa4e5c5ff2c@canonical.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <c2e31029-0d6d-6624-549e-381cd73adeeb@kernel.dk>
+Date:   Fri, 9 Jul 2021 08:19:48 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <fe70c532-e2a7-3722-58a1-0fa4e5c5ff2c@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nuno,
+On 7/9/21 5:55 AM, Colin Ian King wrote:
+> Hi Jens,
+> 
+> I was triaging some outstanding Coverity static analysis warnings and
+> found a potential issue in the following commit:
+> 
+> commit 807abcb0883439af5ead73f3308310453b97b624
+> Author: Jens Axboe <axboe@kernel.dk>
+> Date:   Fri Jul 17 17:09:27 2020 -0600
+> 
+>     io_uring: ensure double poll additions work with both request types
+> 
+> The analysis from Coverity is as follows:
+> 
+> 4962 static int io_poll_double_wake(struct wait_queue_entry *wait,
+> unsigned mode,
+> 4963                               int sync, void *key)
+> 4964 {
+> 4965        struct io_kiocb *req = wait->private;
+> 4966        struct io_poll_iocb *poll = io_poll_get_single(req);
+> 4967        __poll_t mask = key_to_poll(key);
+> 4968
+> 4969        /* for instances that support it check for an event match
+> first: */
+> 
+>     deref_ptr: Directly dereferencing pointer poll.
+> 
+> 4970        if (mask && !(mask & poll->events))
+> 4971                return 0;
+> 4972        if (!(poll->events & EPOLLONESHOT))
+> 4973                return poll->wait.func(&poll->wait, mode, sync, key);
+> 4974
+> 4975        list_del_init(&wait->entry);
+> 4976
+> 
+>   Dereference before null check (REVERSE_INULL)
+>   check_after_deref: Null-checking poll suggests that it may be null,
+> but it has already been dereferenced on all paths leading to the check.
+> 
+> 4977        if (poll && poll->head) {
+> 4978                bool done;
+> 
+> pointer poll is being dereferenced on line 4970, however, on line 4977
+> it is being null checked. Either the null check is redundant (because it
+> can never be null) or it needs to be performed before the poll->events
+> read on line 4970.
 
-On Fri Jul 9, 2021 at 4:15 AM EDT, Sa, Nuno wrote:
->
->
-> > -----Original Message-----
-> > From: Liam Beguin <liambeguin@gmail.com>
-> > Sent: Friday, July 9, 2021 1:56 AM
-> > To: liambeguin@gmail.com; lars@metafoo.de; Hennerich, Michael
-> > <Michael.Hennerich@analog.com>; jic23@kernel.org; charles-
-> > antoine.couret@essensium.com
-> > Cc: linux-kernel@vger.kernel.org; linux-iio@vger.kernel.org;
-> > devicetree@vger.kernel.org; robh+dt@kernel.org
-> > Subject: [PATCH v1 4/4] dt-bindings: iio: adc: ad7949: add
-> > adi,reference-source
-> >=20
-> > [External]
-> >=20
-> > From: Liam Beguin <lvb@xiphos.com>
-> >=20
-> > Add bindings documentation for the adi,reference-source property.
-> > This property is required to properly configure the ADC sample request
-> > based on which reference source should be used for the calculation.
-> >=20
-> > Signed-off-by: Liam Beguin <lvb@xiphos.com>
-> > ---
-> >  .../bindings/iio/adc/adi,ad7949.yaml          | 22 +++++++++++++++++++
-> >  1 file changed, 22 insertions(+)
-> >=20
-> > diff --git
-> > a/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
-> > b/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
-> > index 9b56bd4d5510..3f4629281cc8 100644
-> > --- a/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
-> > +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
-> > @@ -35,6 +35,28 @@ properties:
-> >    "#io-channel-cells":
-> >      const: 1
-> >=20
-> > +  adi,reference-select:
-> > +    allOf:
-> > +      - $ref: /schemas/types.yaml#/definitions/uint32
-> > +      - enum: [0, 1, 2, 3, 6, 7]
-> > +
-> > +    default: 7
-> > +    description: |
-> > +      Select the reference voltage source to use when converting
-> > samples.
-> > +      Acceptable values are:
-> > +      - 0: Internal reference and temperature sensor enabled.
-> > +           Vref=3D2.5V, buffered output
-> > +      - 1: Internal reference and temperature sensor enabled.
-> > +           Vref=3D4.096V, buffered output
-> > +      - 2: Use external reference, temperature sensor enabled.
-> > +           Internal buffer disabled
-> > +      - 3: Use external reference, internal buffer and temperature
-> > sensor
-> > +           enabled.
-> > +      - 6: Use external reference, internal buffer and temperature
-> > sensor
-> > +           disabled.
-> > +      - 7: Use external reference, internal buffer enabled.
-> > +           Internal reference and temperature sensor disabled.
->
-> I think typically the description comes first. I also don't think you
-> need the 'allOf'(not even sure if it will pass the binding check)...
-> Just have '$ref' and 'enum' on the same level.
->
+I think it's dead code, originally copied from the single poll wake
+side. The 'poll' non-zero check should just go.
 
-Understood, I can reorder the patches so that the bindings come first.
-
-I thought I based that part on the `example-schema.yaml`, but looking at
-it again, it seems like you're right and the AllOf isn't required.
-
-I did run the bindings check on this, but I'll fix it.
-
-Thanks,
-Liam
-
-> - Nuno S=C3=A1
->
-> >  required:
-> >    - compatible
-> >    - reg
-> > --
-> > 2.30.1.489.g328c10930387
+-- 
+Jens Axboe
 
