@@ -2,104 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AAC33C27A4
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 18:36:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D45DC3C27A8
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 18:38:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229632AbhGIQit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 12:38:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60848 "EHLO
+        id S229568AbhGIQk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 12:40:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbhGIQis (ORCPT
+        with ESMTP id S229491AbhGIQk6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 12:38:48 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F03ADC0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 09:36:03 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id w8-20020a0568304108b02904b3da3d49e5so6018448ott.1
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 09:36:03 -0700 (PDT)
+        Fri, 9 Jul 2021 12:40:58 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4587C0613DD
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 09:38:14 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id y6so9891211ilj.13
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 09:38:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KPJc57zXKNbmm6Wda6Wo2yhPL66N0K7mX7Ni/9wA22A=;
-        b=MLhRmhg31B/NqMjA2W3smAusHRT7XDvc2hG4HgIGIn0JTGEdMDa45XXhOMirJW1j4E
-         CwQteVMF1OM0UkapniXaSksq8EBVbqXIHhLkmN2KY3s7i1uJ13FxA2dMGLRejl4H836E
-         59dTDDPVDkxWC/s+vYz9Pn7andHFbqorbs3C97CpJt8ameRLbeKfzFT2KHZV+IwSHmH/
-         VsiwT9OSNAK6jezJJzPy3UEUTe/dWCAKFob1CDk2u5RsbyR+YlhUQbiEHBpbqw87y1Nw
-         W8k9sgwbLdpgTS27koSUOrVv41azZR7wU1tmMVTeequSaY2NKWTK7nmREjnTaWt6EkDt
-         2MKg==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7UCUrnaTmnqC7zYMMxNNQdjhZOpOjJE48bbLnl0p6dU=;
+        b=YFbY9p6w6z668kazd9qXja8K4iAEjQKBYOJlN4YCe4GbC/i7bMYR6Q5dAvhNOI3pYV
+         xOO2qW7r88K8Y4CeYGeVHHyXETBZLajWVkxVv2XCtXq3STzvgjcQvzb5Y2KPrfb9y6A0
+         Id86/Q7ucM1fWiQu2+A522YF4tcjPA+n46YaQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KPJc57zXKNbmm6Wda6Wo2yhPL66N0K7mX7Ni/9wA22A=;
-        b=XVmHshUs1bio/BFKxE4bnwLGp3nKxCUtT+Oww+mVOJxlzCxqFC+l8gvPJ7XxgT0j6o
-         hGe6Slblc4e48cJekaGytYGyiieL9SRxVvRgGY4Q1W5IzwflzDQlHPxgBbk8gyzxw5gj
-         SGbN8uUS31aBGsHYzDZNZ3ir5iPhZTuinZZZ1mnTQ8WwMvVKYey1snFUhP+ggW1i6H3Q
-         slmpBuY4mhAcH7EMZuTVYQmPLD1KPmdbF8QnlU2xN6MqV+yDmf7Hi/rXKPYUDi1KRyTI
-         FSZcuWUzuVj2awezYcKwKuH1dX6lb7+TaNW+JrlZxGqvIBZdoGT7Dsvk4kFvGhay4duO
-         Tvyg==
-X-Gm-Message-State: AOAM533VyaKMgw1jjAj2YlUOZLyielSZAdSDlUy9CGUfF1vO7sDkwuJG
-        ELEKi6+qPbzgkbCe731QpU6F1VJs/KKvvZeFWe/UKQ==
-X-Google-Smtp-Source: ABdhPJzmi7sJ7IjCj6kOY34d6qrQNMR5UNqyGmph22ptlmZ5SLYcWRXGTXDYBGh3Qm9ILS/PCo+NwsupNOdicOaAmU8=
-X-Received: by 2002:a9d:550e:: with SMTP id l14mr30228676oth.241.1625848563120;
- Fri, 09 Jul 2021 09:36:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210628172632.81029-1-jiangshanlai@gmail.com>
- <46e0aaf1-b7cd-288f-e4be-ac59aa04908f@redhat.com> <c79d0167-7034-ebe2-97b7-58354d81323d@linux.alibaba.com>
- <397a448e-ffa7-3bea-af86-e92fbb273a07@redhat.com> <a4e07fb1-1f36-1078-0695-ff4b72016d48@linux.alibaba.com>
- <01946b5a-9912-3dfb-36f0-031f425432d2@redhat.com>
-In-Reply-To: <01946b5a-9912-3dfb-36f0-031f425432d2@redhat.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Fri, 9 Jul 2021 09:35:30 -0700
-Message-ID: <CALMp9eQWnUM-O7VmMWTGE2C2YraWxM2K0QcOQnbkctkzg_1pUA@mail.gmail.com>
-Subject: Re: [PATCH] KVM: X86: Also reload the debug registers before
- kvm_x86->run() when the host is using them
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7UCUrnaTmnqC7zYMMxNNQdjhZOpOjJE48bbLnl0p6dU=;
+        b=tb0GNeuNRzpdXm49T7BWw1k3KOGcAmTXrahH1b1Q1rNOJF0tHXMaOCPc1I/J6ReuqU
+         H0i0lVU8MJ0J3LON0cqm6WZ7H55Ok7ppaY+w/UFrxI1d2xSSOCfuR/ad4Acv9q0BjxZO
+         ZP7rPk+KNwOKolm1byKqYfV9SBZnsfPZQQ98s9d7WotJx80dJuW5DLs/j8TZQf3KIfUC
+         k3mzHskU9wKs/+dq2Me6/TL4+Gka7YB0Y19hey7DscI6Km3WYuQSiqCpvlwg6W1yQ249
+         ROPFh2RnjWTKQPKGzqKGACKp+DDRdMsZlYOV3lTWASAePG66+h20pJL3U7n6JedIYP85
+         9oCw==
+X-Gm-Message-State: AOAM530dY87Ve+fpeIBvD8xjtIdehYBob9n+qlXKULzsK6hz33AY0iaR
+        BnSdhIY8wdJu2Slxmk3X1MmVBg==
+X-Google-Smtp-Source: ABdhPJxqUJSl3Z8h2QoCF3YB5Yia+4f1Q/AMKKaaz2Ul2YNOF9piMZhvEqCQuAbbPxF+hWWNxsr06Q==
+X-Received: by 2002:a05:6e02:602:: with SMTP id t2mr2981225ils.118.1625848693961;
+        Fri, 09 Jul 2021 09:38:13 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id c16sm3193326ilo.72.2021.07.09.09.38.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Jul 2021 09:38:13 -0700 (PDT)
+Subject: Re: [PATCH] firmware_loader: Fix use-after-free Read in
+ firmware_loading_store
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     mcgrof@kernel.org, gregkh@linuxfoundation.org, rafael@kernel.org,
         linux-kernel@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        syzbot+77cea49e091776a57689@syzkaller.appspotmail.com,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210708031321.50800-1-skhan@linuxfoundation.org>
+ <20210709091721.1869-1-hdanton@sina.com>
+ <d851dd11-1b4f-4ed2-bad2-0c267e3d6021@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <3eb42554-c054-6e46-54ce-b9f637b72751@linuxfoundation.org>
+Date:   Fri, 9 Jul 2021 10:38:12 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <d851dd11-1b4f-4ed2-bad2-0c267e3d6021@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 9, 2021 at 8:52 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 09/07/21 12:05, Lai Jiangshan wrote:
-> >
-> >
-> > On 2021/7/9 17:49, Paolo Bonzini wrote:
-> >> On 09/07/21 05:09, Lai Jiangshan wrote:
-> >>> I just noticed that emulation.c fails to emulate with DBn.
-> >>> Is there any problem around it?
-> >>
-> >> Just what you said, it's not easy and the needs are limited.  I
-> >> implemented kvm_vcpu_check_breakpoint because I was interested in
-> >> using hardware breakpoints from gdb, even with unrestricted_guest=0
-> >> and invalid guest state, but that's it.
-> >
-> > It seems kvm_vcpu_check_breakpoint() handles only for code breakpoint
-> > and doesn't handle for data breakpoints.
->
-> Correct, there's a comment above the call.  But data breakpoint are much
-> harder and relatively less useful.
+On 7/9/21 10:15 AM, Shuah Khan wrote:
+> On 7/9/21 3:17 AM, Hillf Danton wrote:
+>> On Wed,  7 Jul 2021 21:13:21 -0600 Shuah Khan wrote:
+>>>
+>>> If user writes to 'loading' between loading aborted and 'loading'
+>>> gets removed, __fw_load_abort() could be called twice in error
+>>> path setting the state to load aborted. __fw_load_abort() checks
+>>> for fw_sysfs_done() case, but doesn't check for abort case. This
+>>> opens the window for use-after-free Read in firmware_loading_store().
+>>>
+>>> Fix it by adding check for fw load aborted in addition to done in
+>>> __fw_load_abort() and return if either one of the states is true.
+>>>
+>>> BUG: KASAN: use-after-free in __list_del_entry_valid+0xd6/0xf0 lib/list_debug.c:54
+>>> Read of size 8 at addr ffff88802b3da2c8 by task systemd-udevd/25252
+>>>
+>>> CPU: 0 PID: 25252 Comm: systemd-udevd Not tainted 5.13.0-rc1-syzkaller #0
+>>> Hardware name: Google Compute Engine, BIOS Google 01/01/2011
+>>> Call Trace:
+>>> __dump_stack lib/dump_stack.c:79 [inline]
+>>> dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+>>> print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:233
+>>> __kasan_report mm/kasan/report.c:419 [inline]
+>>> kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:436
+>>> __list_del_entry_valid+0xd6/0xf0 lib/list_debug.c:54
+>>> __list_del_entry include/linux/list.h:132 [inline]
+>>> list_del_init include/linux/list.h:204 [inline]
+>>> __fw_load_abort drivers/base/firmware_loader/fallback.c:97 [inline]
+>>> __fw_load_abort drivers/base/firmware_loader/fallback.c:88 [inline]
+>>> fw_load_abort drivers/base/firmware_loader/fallback.c:105 [inline]
+>>> firmware_loading_store+0x141/0x650 drivers/base/firmware_loader/fallback.c:297
+>>> dev_attr_store+0x50/0x80 drivers/base/core.c:2066
+>>> sysfs_kf_write+0x110/0x160 fs/sysfs/file.c:139
+>>> kernfs_fop_write_iter+0x342/0x500 fs/kernfs/file.c:296
+>>> call_write_iter include/linux/fs.h:2114 [inline]
+>>> new_sync_write+0x426/0x650 fs/read_write.c:518
+>>> vfs_write+0x796/0xa30 fs/read_write.c:605
+>>> ksys_write+0x12d/0x250 fs/read_write.c:658
+>>> do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+>>> entry_SYSCALL_64_after_hwframe+0x44/0xae
+>>> RIP: 0033:0x7f6d0b3fe970
+>>> Code: 73 01 c3 48 8b 0d 28 d5 2b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 83 3d 99 2d 2c 00 00 75 10 b8 01 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 7e 9b 01 00 48 89 04 24
+>>> RSP: 002b:00007ffde8a82ba8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+>>> RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007f6d0b3fe970
+>>> RDX: 0000000000000002 RSI: 00005567e595b380 RDI: 0000000000000007
+>>> RBP: 00005567e595b380 R08: 00007f6d0c58c8c0 R09: 0000000000000002
+>>> R10: 0000000000000020 R11: 0000000000000246 R12: 0000000000000002
+>>> R13: 0000000000000001 R14: 00005567e59427d0 R15: 0000000000000002
+>>>
+>>> Reported-by: syzbot+77cea49e091776a57689@syzkaller.appspotmail.com
+>>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+>>> ---
+>>> drivers/base/firmware_loader/fallback.c | 5 +++--
+>>> 1 file changed, 3 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/base/firmware_loader/fallback.c b/drivers/base/firmware_loader/fallback.c
+>>> index 91899d185e31..e6a18c2a6c43 100644
+>>> --- a/drivers/base/firmware_loader/fallback.c
+>>> +++ b/drivers/base/firmware_loader/fallback.c
+>>> @@ -89,9 +89,10 @@ static void __fw_load_abort(struct fw_priv *fw_priv)
+>>> {
+>>>     /*
+>>>      * There is a small window in which user can write to 'loading'
+>>> -     * between loading done and disappearance of 'loading'
+>>> +     * between loading done or aborted and disappearance of
+>>> +     * 'loading'
+>>>      */
+>>> -    if (fw_sysfs_done(fw_priv))
+>>> +    if (fw_sysfs_done(fw_priv) || fw_state_is_aborted(fw_priv))
+>>>
+>>
+>> Given the fw_state_is_aborted() in firmware_loading_store(), could you specify
+>> why it is a correct fix to check again?
+>>
+> 
+> Yes fw_state_is_aborted() is checked at the beginning of
+> firmware_loading_store(). Later on you will see that for
+> for case 0 logic it will do a variation on abort when
+> failure happens and sets the state to aborted. Note that
+> this would happen on failure case. Looking at the log from
+> the report this will be the case as I see errors in loading
+> path.
+> 
+> /*
+>   * Same logic as fw_load_abort, only the DONE bit
+>   * is ignored and we set ABORT only on failure.
+>   */
+>   list_del_init(&fw_priv->pending_list);
+>   if (rc) {
+>        fw_state_aborted(fw_priv);
+>        written = rc;
+>   } else {
+>        fw_state_done(fw_priv);
+>   }
+>   break;
+> 
+> If another user writes to the "loading" file before it gets
+> deleted, if user writes 0 again, fw_sysfs_loading() will be
+> false, however the fallthrough will invoked fw_load_abort()
+> and list_del_init() will be called triggering user-after-free
+> 
 
-Data breakpoints are actually quite useful. I/O breakpoints not so much.
+fw_state_aborted() should have already marked the state aborted
+and the check at the firmware_loading_store() should catch this
+case ... all of this is done with fw_lock lock held ...
 
-> > And no code handles DR7_GD bit when the emulation is not resulted from
-> > vm-exit. (for example, the non-first instruction when kvm emulates
-> > instructions back to back and the instruction accesses to DBn).
->
-> Good point, that should be fixed too.
->
-> Paolo
->
+However I am seeing the following over and over again in the
+log - hence I think it is safer to check the aborted status
+in __fw_load_abort().
+
+? __list_del_entry_valid+0xe0/0xf0
+[  348.604808][T12994]  __list_del_entry_valid+0xe0/0xf0
+[  348.610020][T12994]  firmware_loading_store+0x141/0x650
+[  348.615761][T12994]  ? firmware_data_write+0x4e0/0x4e0
+[  348.621064][T12994]  ? sysfs_file_ops+0x1c0/0x1c0
+[  348.625921][T12994]  dev_attr_store+0x50/0x80
+
+Also the fallback logic takes actions based on errors as in
+fw_load_sysfs_fallback() that returns -EAGAIN which would
+trigger request_firmware() again.
+
+Based on all of this I think this fix is needed, if only I can
+test for sure.
+
+thanks,
+-- Shuah
