@@ -2,162 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D00703C2024
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 09:43:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E963C2028
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 09:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231256AbhGIHpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 03:45:52 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:15642 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230269AbhGIHpv (ORCPT
+        id S231283AbhGIHuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 03:50:21 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:52382 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230269AbhGIHuU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 03:45:51 -0400
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1697VtWv030716;
-        Fri, 9 Jul 2021 07:42:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=55Z79PBDDzH8Wlg+o+3rPfMDOvPyOkf3aIg0pFkP8K4=;
- b=QDDyb3bW6mfKvrZ4fc7N6Yv92DjgEC0Tp9CcJwEomyvD31ZKVwNssKBulRT10QhQwqhu
- klj8FywnvaNZXlKXdcOEqs9ENKVfKlNzbm1ejXnORX3b6qZ6asUaOOqg8FsWlMUwvGSt
- FjCLpX1H5qWJ7K4dggRI2rXUI8Wk1ODJtUW3RWLwFoGCCEJwh6+u0mY1O9wK60/vpTyw
- bcQ/76sRvNxhKBm5HlHm2hwN7OjOlRpk3l9JB9FYll7GenRFn42Z6eTLmtuX+Fx8Gf2N
- xv6Nb9QEsCw3uly1g9Bb2tQfM/VByKZ++pujbXhee9xhfz2/mUpNkVmnsTnKfNmwtAPN 3g== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39npwbtr4s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 09 Jul 2021 07:42:56 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1697aicp021014;
-        Fri, 9 Jul 2021 07:42:55 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2171.outbound.protection.outlook.com [104.47.58.171])
-        by userp3020.oracle.com with ESMTP id 39k1p35nm4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 09 Jul 2021 07:42:55 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LGVXA7IrJJBq3TF3tYA6wraSXMuWIhELDdwSiCFuRDo8wQqQzGfUF8TokTsCle3IbReOCjT0ymbBnsTDZsTNqHfqkUDVDFsKSMywPOiVBJD4MvY8SuVGetGijI4PnGJ6/75kuiv9OoIqw0jUyCFrxobHGrR+3rYouGokILBLM5T7tGOUeP2A/XrXLBPeMqybUTMPqLDdvjrUrKrfWEYqEXYSHa/jhxa+MhqDiOj29yTA+a3K6ebKwzVChxxXGt6NPyLM+sqlvvrEVuRem49IuS9Pv1qmE2+XPvlcbof8dySSSRF0hlYTPkWCh04RJ9OvQOMa5bYjnexa7Of/UsqNug==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=55Z79PBDDzH8Wlg+o+3rPfMDOvPyOkf3aIg0pFkP8K4=;
- b=fbqhXb/j6R777eMhl+4UpX7vtPSyHL+JhmsdAURM9I5J+QtRBtFyWeqN+jnsVGVhrClXyg//ZHEk9QuZIiermYQD4rEnNkVE2l+vuz8koD5/cqHjyDy2DYjwKc+XyPOpPGUTtiUlX5/F17NSuPklZFw0Ddk8hCAYwlnsuJEWrDUQJy81Df+wej8p+LaeT0+aKIyGDwo0FtRvyxxlAMdJk4cn5r9kfxWei4E/qf0gbCXDRmmWfVR+/W7aLIWRB+fjgIEDGj3hnvW8Mm1WgSJnBon61myDvP+SsnUx5WJckOZzJgORMV8aZxYex+JYnXH0NDBsJwOTxg9EfiXKP2SFLA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=55Z79PBDDzH8Wlg+o+3rPfMDOvPyOkf3aIg0pFkP8K4=;
- b=j3/TOkhrKtEyyFZUjtNjXWQdmGTJOm8nYDAAsLVWC3CxOUOaQbRyAXKrzK1rTCyZJciEcJl+Percb0J3O6dNnndHQOaqbuflTt3iXSYejgUAsgmyfqYFGWRd5tINSbOagaWLvncyh9pOd1NtqgahMudhwvBMY2Ky9Fm0YmcNpJM=
-Authentication-Results: canb.auug.org.au; dkim=none (message not signed)
- header.d=none;canb.auug.org.au; dmarc=none action=none
- header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by CO1PR10MB4691.namprd10.prod.outlook.com
- (2603:10b6:303:92::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.21; Fri, 9 Jul
- 2021 07:42:52 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::3413:3c61:5067:ba73]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::3413:3c61:5067:ba73%5]) with mapi id 15.20.4287.033; Fri, 9 Jul 2021
- 07:42:52 +0000
-Date:   Fri, 9 Jul 2021 10:42:34 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Alex Deucher <alexdeucher@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the amdgpu tree
-Message-ID: <20210709074233.GK26672@kadam>
-References: <20210709073711.38cfe6e1@canb.auug.org.au>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210709073711.38cfe6e1@canb.auug.org.au>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JNAP275CA0037.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4e::7)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kadam (102.222.70.252) by JNAP275CA0037.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4e::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend Transport; Fri, 9 Jul 2021 07:42:48 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 85a11a3d-c94d-4dd5-8903-08d942ad2846
-X-MS-TrafficTypeDiagnostic: CO1PR10MB4691:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CO1PR10MB469133DE8403B77D422555578E189@CO1PR10MB4691.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:23;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: R1Q3j93b7xbr813E1c7uy9enZEbaEm8VFY+Izo7OH3c7BxxmUpuRzKvXeovhfvu7KFpiMWVn/NIBywN3bonS2VojQ+wNJYQuO4F+I6VqmROwftbTjZiDphd7Ap0eiGSCTWflZJgqUGXbeC7qrpP5I16CI+STukE2kSbH6Xk/YSse2SEUo1uLSyoVSkdHKAv2JfRY2FYDonwJLGNnyVomGvU4omFWiSx5SmMKDtPyusnqNs2gPPHKAVGOu5zSsCMlcRZwt0pMb3SM+7KbAhq/T40pJRiHW3Qf11W0E40UvDR0a/UvNV5tlp1NOk3JoccmXZdxih66Y2UGOJYjGdcmNvv51Y9XkBrwIKvNwQ3teHok+oVTovJ3svRjY5fg1ffscfm6Iq05eJRl2tuhTgNpRoVBv9uAtstl5qgKcYBLX2Ddv66V79AmnEXwWBPO+46ScNHNfhn16XyDcos4pzyEsmy0s0TkEmwvx6DjDIlvAz47UY0+EYXNNrpdDaIUi5Ke+IUMOFP1wOjmuaptJz6DwHhPq2YHEoi+SK8cee1veaKIKfQlwjx1g4wMdDmY4eKbQTUp0En1Gl/JMNmk4+2PcOWpLbywHQ1t6pgUvdjT9JKgvHL6wQYHgW99g14A0KuNJyofOvHVvqeGGqAHFcqHqPMLzvFXLUSinhd3ZwSYqyKRUcrffTmeKqBN8UuiB1tmRxLGm0aO5oMF7umAOz+F/w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(396003)(136003)(376002)(39860400002)(66476007)(8936002)(66556008)(6666004)(26005)(316002)(4326008)(44832011)(956004)(5660300002)(54906003)(478600001)(8676002)(9576002)(6916009)(83380400001)(6496006)(86362001)(186003)(1076003)(55016002)(33656002)(2906002)(9686003)(33716001)(38350700002)(66946007)(38100700002)(52116002)(4744005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?unr6hp8An9bpAsjpO9NYYKxqevFUWHr45CXi2vCxVbVYXw0BPo2lE6ELgrsx?=
- =?us-ascii?Q?Hz3vGlcs4UiDCDdkrLH5437Xlq5oLfgTQ/0tmQBNsDvw/4F/JT8nd1sbHSuA?=
- =?us-ascii?Q?tRuCnCVKlY5VEG8kS7U88kqwCowcjf/vas8wda8KyQmyJxjVqT9FVSY9Wj1z?=
- =?us-ascii?Q?ygjwv8VNC2bBUjR/MOWg6AA2PWto3TMPJ8IzCVResQV7HujXrSSYcRVB3AxW?=
- =?us-ascii?Q?e2zC1LgfTYux2oc5iRr2vTjHnYm6Kv43mbV6HiDPoSJgS86T3cOpkN82v63K?=
- =?us-ascii?Q?LbWvs7tjHiX/C1Rl+8LDelb3O6bma0hJ19q34X8U6GrZgZyAk8niUfx9Pjxi?=
- =?us-ascii?Q?/HbxMnSxZY9xORqucq0A9x5LEAZQeY+iTkPy5vpb44jEBbmdJ0pdqB8bwGDH?=
- =?us-ascii?Q?EJ8UXuYRaduPrqGvRQd6/SBTETxCUTAAcQmIt1tZUp5fjb9JDjDDgRAaqKbY?=
- =?us-ascii?Q?EPtE2sN17ktIg9+M7Pa0vGaRQkKkLLNd8bjkqdjXv/6+WSTfSIGvdclAUFi8?=
- =?us-ascii?Q?WVqUSQ7OJl7hIs/y8ANSOTrzQHgD6YQRCGWffS5kNu9KLeirggWntVm07XTq?=
- =?us-ascii?Q?3bZDfbo2CIhbz/R2C+EiltWiYQHDf0RJEKbj2/rKDXXxuf+TzEvmN0CyC0JJ?=
- =?us-ascii?Q?hZD3EuHHZg51C053Xs3bJuq7hU6ORaFjxDTYYD9q7Wxe7VdpXqIMUsLVjILf?=
- =?us-ascii?Q?U6ebbBgZ+z9L2VfBLC9ns3jbpWEX8SGzO0qdQM3qm7t9B4Z1XauMgorTiEq0?=
- =?us-ascii?Q?GVbySypa+FmWlhPUBQWr9XEwCTuMugCI8r0RKd/cFhAYnJVsW2PBhqI7tFCH?=
- =?us-ascii?Q?IHsPQBrJzJXNZsTbUI1neoUTtqEDSQCkvQf3b8p8dZM6UFL6YKG36J6aFwmM?=
- =?us-ascii?Q?sBADzpBux+vq1nE8SFARzSMAw3shMN64of8/FIscTzCsApPfwdANALMWmTYD?=
- =?us-ascii?Q?L1iv8K481GU7mwobtpgEQUvf6ZiUBYlEW4FhpCoPIlXvryA6I+rdOYEH5AIO?=
- =?us-ascii?Q?83Cxtm2mwzjo3C2kgd1sDg1RhC6BKDFdo9oU6DA57JEGspfHouixbzRMLhiJ?=
- =?us-ascii?Q?4zNe75xdhUjau9lDlUQPgos4D4OPomzaj0jXAiCAr8p2+ZiR35ogCgdQWIUh?=
- =?us-ascii?Q?hGR2YsAl4lbgC+yrdCdKwfUpkMmZ59hHpoZdQfbO+WI5ALh68L9KgfZ0oKuR?=
- =?us-ascii?Q?ObjAbsgA9jBpWml8MAjdhBxKu/7782CEDoT5NGKtuEXld/neCpEnTteb+FW3?=
- =?us-ascii?Q?yfkq/BlYW6SmafdyfgPxVPAXZf9Nmwp1ssXNddH5HKeCWm2wHWwJoXmg45TS?=
- =?us-ascii?Q?OQ9IAEauoH9xSYhATVx0QodE?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 85a11a3d-c94d-4dd5-8903-08d942ad2846
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jul 2021 07:42:52.3531
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UYpQ9A4A1YBxomkXULEr7MHlY+qxB0kMD6pLfTYrcGC3ObKGRDgaPLwVBfHVJ11EVRsjGFQWpCoznft0MJWwI01P5NYwE6weC5/skQmgw/g=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4691
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10039 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 phishscore=0
- adultscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107090037
-X-Proofpoint-GUID: SZeMbd5GYq0SLhXY_T_Y6gsn5WDqZNII
-X-Proofpoint-ORIG-GUID: SZeMbd5GYq0SLhXY_T_Y6gsn5WDqZNII
+        Fri, 9 Jul 2021 03:50:20 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 70E7D20267;
+        Fri,  9 Jul 2021 07:47:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1625816856; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+qYYZCbYZFeVvNX8WUSoJkZi53ZkOf+6w3wV4SkwAN0=;
+        b=iMOw38P7hWmAhJ2ERn2KmKkx1lDkXP3j7DTKMp+0r48SVxt/ITOuE61SmBZUNHQm9Nbw/S
+        YKJV3qC8AahobYDvbM9ggFb4NBnwOv1XCBsG99poiIeSmBeQxlPLvT8ZxoG/U3nEtriwUA
+        NzVD9tZ7F8R5n1xerjR7j7nWPckHos4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1625816856;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+qYYZCbYZFeVvNX8WUSoJkZi53ZkOf+6w3wV4SkwAN0=;
+        b=LHkJFSTzhvp/jAwrhD249RovXTAGMQ2/mfoEafVHKd1hixRbgODozY2fukelUoqbLlvk9G
+        IAcVdnKZaGaK6kBA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 5D2A2A3B9B;
+        Fri,  9 Jul 2021 07:47:36 +0000 (UTC)
+Date:   Fri, 09 Jul 2021 09:47:36 +0200
+Message-ID: <s5hsg0o3p47.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Robert Lee <lerobert@google.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, vkoul@kernel.org, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        carterhsu@google.com, zxinhui@google.com, bubblefang@google.com
+Subject: Re: [Patch v2] ALSA: compress: allow to leave draining state when pausing in draining
+In-Reply-To: <CAOM6g_D4dkwDcQza9fVXn9=uXSYTBThNVHqWb0YjLWkc_eBwog@mail.gmail.com>
+References: <20210708020815.3489365-1-lerobert@google.com>
+        <s5ho8bd59q4.wl-tiwai@suse.de>
+        <CAOM6g_Cv6rsLOAb0+Lr_YkjHpKfw+zvWXH0X5LKR=Z4dtXGRng@mail.gmail.com>
+        <e2705267-4400-bb7f-e96a-9b103872c0a1@perex.cz>
+        <CAOM6g_D4dkwDcQza9fVXn9=uXSYTBThNVHqWb0YjLWkc_eBwog@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 09, 2021 at 07:37:11AM +1000, Stephen Rothwell wrote:
-> Hi all,
+On Fri, 09 Jul 2021 04:08:29 +0200,
+Robert Lee wrote:
 > 
-> In commit
-> 
->   b612f5c36279 ("drm/amdgpu: unlock on error in amdgpu_ras_debugfs_table_read()")
-> 
-> Fixes tag
-> 
->   Fixes: c65b0805e77919 (""drm/amdgpu: RAS EEPROM table is now in debugfs)
-> 
-> has these problem(s):
-> 
->   - Subject has leading but no trailing quotes
->     Just use
-> 	git log -1 --format='Fixes: %h ("%s")'
+> Jaroslav Kysela <perex@perex.cz> 於 2021年7月8日 週四 下午10:53寫道：
+> >
+> > On 08. 07. 21 15:47, Robert Lee wrote:
+> > > Hi Takashi,
+> > >
+> > > It is a little complex to describe the design in detail, but try to
+> > > explain simply
+> > > what issue we meet.
+> > >
+> > > If w/o the change,  after user resumes from the pause, our system would call
+> > > snd_compr_drain() or snd_compr_partial_drain() again after it returns from
+> > > previous drain (when EOF reaches). Then it will block in this drain and no one
+> > > wake it up because EOF has already reached. I add this change to return from
+> > > the previous drain.
+> >
+> > It looks like that the driver does not call snd_compr_drain_notify() so the
+> > state is not updated to SETUP on EOF.
+> >
+> We indeed call snd_compr_drain_notify() on EOF, but after return from
+> wait_for _drain there is another drain again immediately.
+> Looks like the system queue some states change on user space and need
+> to drain again after resume from pause.
+> I suppose there is different design on user space so I add the hook to
+> handle diffent usage.
 
-Oops.  Sorry.  I've created a fixes.sh like you say.
+Right, the previous drain-in-pause implementation was purely in the
+kernel side, and user-space didn't change much; after resuming from
+the pause, the driver resumes exactly to the same state before the
+pause (i.e. start draining again).
 
-#!/bin/bash
+The difference sounds similar like the suspend/resume scheme; some
+does resume by itself to the previous state while some requires the
+explicit action.
 
-git log -1 --format='Fixes: %h ("%s")' $*
+> > > Actually, I am wondering how the pause-during-drain can keep the state in
+> > > DRAINING. It should have a different design. :)
+> >
+> > I already proposed to add a new state (because it's a new state), but the
+> > conservative way was elected to avoid user space changes.
 
-regards,
-dan carpenter
+Yes, the primary concern is that the compress API uses the very same
+state like PCM, and if we extend PCM state, it'll be a much larger
+problem.  And, even if we change the state to compress-only, it's
+still an ABI incompatibility, and it has to be carefully handled not
+to break the existing application (e.g. expose the new state only when
+the application is really ready to handle -- introducing a new ioctl
+for state or introduce a new ioctl like SNDRV_PCM_IOCTL_USER_PVERSION
+that informs the ABI version the user-space understands).
+
+
+Takashi
