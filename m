@@ -2,150 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 119583C2B05
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 23:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 297FA3C2B11
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 23:58:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230317AbhGIV6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 17:58:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48108 "EHLO
+        id S230439AbhGIWBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 18:01:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhGIV6b (ORCPT
+        with ESMTP id S229542AbhGIWBC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 17:58:31 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CAFEC0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 14:55:47 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id 53-20020a9d0eb80000b02904b6c4d33e84so2244620otj.13
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 14:55:47 -0700 (PDT)
+        Fri, 9 Jul 2021 18:01:02 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2276EC0613E5
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 14:58:17 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id p17so5197509plf.12
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 14:58:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=AFruxdILskc9uGrRWkoKUizlJ6dIKyOa/TAEYca5298=;
-        b=fujYqphmsvN1RzATP+6Db9NHhUA2gJAUYzqgDX7Ml645Y3LMFuJTmKEW2I+3gzJ3eE
-         eWn0DWMjgeWxYFRK9Zs2m4DoXvWoAUlvHipLBgIFj4QgUkRd85RFk1rowHP0Fx9Yt1u9
-         ws+OBYC0tET8Fee3euQtWMGSfQD8NI7RdzCjbQSH5sPLL1ZivrazHadqoFCvROW0P/rP
-         wiAThDsLS9WytgB+scFez/55UVPPYct2QoNAaq4WX5WE+rdaUGdRC++ZkrpJ7b7YSzL4
-         X05NPINn+ju4kaknmrM5OyJuvAN5H094IxRY4QM0qHwulTAxzjUtn2UPLJosDnpU+JoK
-         GDmA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tCttvNGovKwVSPHHRmt+ZWxOoFjRateaVSBYX4FqXkQ=;
+        b=NuNDqsnfC6CPF+QO34/L3c0YBe6exgYG8PXhUtsFdVz2UGp8FubC4jDf6sK+CPCIBd
+         dMzFwwYMD4uAr26hNspDYgFy+3LXN4g1YGaWlNVQNCGcx1xolQmECssaiB64mrgCZFci
+         7Vjq+Z45rYRjuM1UxNTinwxyTZS4FMdaSqIz9yQJI9qFbx4pRm9zVn9jhAkxWcj03jbO
+         lD/S+7znBlg45bhox6itBbrU5hE6uXU+1X5aXHxY6AjWdxBSaKvqXpbqXF32bWxAES2M
+         q1WFEXuGbPLMmgqhOGJCF/jqhw7/KdfmeYtoRprhVpY9O+1i2316npiGqCLTPTBpPVFd
+         o3eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=AFruxdILskc9uGrRWkoKUizlJ6dIKyOa/TAEYca5298=;
-        b=fwB9nVauRdSg+DI7BxOCCoG/eQp8QW/6LN9eeIuW3CqMPcnxDcZ23gZDpE7BITa9nW
-         u+sSstrTU4605bEive92cRbsZ+WKXaceZ+Q8x8AAOBTXMRK+Es9dr0wqEt398SyUlAkR
-         mc6bixCX9x7FPygPp7rE8uf+bDCEQyu2tltl/pj5MRekB97ETyhy0zLBtR7Fiwiq9Z8G
-         hzSY3VzTIMRV6lvdULWpJT9lsVV6cDt0K6dmUs1cWMV5Giu9cT8ccZJvtzAfSgUM+pcv
-         JjI6PDOvO6qrRGSRMw2e1sqfsXtJ1qaGNpP40+Ak/ZfKqB8e1nyRxC1wJ9A8/BUAp/bg
-         +QXw==
-X-Gm-Message-State: AOAM531M3+YEw1AqH5iwwG73elsr4vd6a8PfAk6QdlReUba4NIXp5RJw
-        1z6aWJYJntGIgW2Qdt1wNfATL0L5AeAH/bhr3w20aw==
-X-Google-Smtp-Source: ABdhPJzr0rncjh6l9YVwV1bJMrowMT4pQY0MWM6gtwQj5ODqpmYhgK8gXibmBqvckdGcfSzZ9KgwdfP1eN9Fu8xNUKw=
-X-Received: by 2002:a05:6830:25cb:: with SMTP id d11mr24646594otu.56.1625867746337;
- Fri, 09 Jul 2021 14:55:46 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tCttvNGovKwVSPHHRmt+ZWxOoFjRateaVSBYX4FqXkQ=;
+        b=MeOkRcvjs/m9/MgwXFTAtlvDcCOA162Chlzpm3r6nMlyW5yitiSDJQZOAM3Fgp1Etq
+         SXNlnosS/kUz33HDUDGXloeR39AlzcXzdv2Kzfhe1kVi1wAjQY888pQlVJJNrQPdQTqW
+         3FlOrV4SwUr7BYICFTMRvWHpJLhlhgu5xCBaDXRnsTaG+wnCcX6owMir3e1eATY7bouu
+         DsNzve2c3HAr+FLJ4uO/q066D8hYFgVylAWNTJfsoNS8zPFqmDSXVeXhPfef9dxUXaAN
+         WhIAa1uOr1CPjHiDHpPsNfv3fD/jjZ0urK9fBZxmPbTGCSIERqKWPRZV8EzdkZm/znNH
+         GhiA==
+X-Gm-Message-State: AOAM531bvKOtJ47FsErullbyFSB7dkuXNA16UELLruFouJgZtxdTIKbw
+        awByI+4n5xBT7+38T5O6VU3uNe0I/fldEQ==
+X-Google-Smtp-Source: ABdhPJxPoP1PHrp+KF/2i7yXh31TP9NwoiFn1ceC9bx9PtxYQ7uism9KYXesfofZ/nZ+HOSbQpWjmw==
+X-Received: by 2002:a17:902:778f:b029:128:b3e1:15f8 with SMTP id o15-20020a170902778fb0290128b3e115f8mr32710938pll.14.1625867896424;
+        Fri, 09 Jul 2021 14:58:16 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id f2sm7073392pfe.23.2021.07.09.14.58.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Jul 2021 14:58:15 -0700 (PDT)
+Date:   Fri, 9 Jul 2021 21:58:12 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Edmondson <david.edmondson@oracle.com>
+Cc:     David Matlack <dmatlack@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, x86@kernel.org,
+        Joao Martins <joao.m.martins@oracle.com>
+Subject: Re: [PATCH 2/2] KVM: x86: On emulation failure, convey the exit
+ reason to userspace
+Message-ID: <YOjGdFXXCqDeVlh4@google.com>
+References: <20210628173152.2062988-1-david.edmondson@oracle.com>
+ <20210628173152.2062988-3-david.edmondson@oracle.com>
+ <YNygagjfTIuptxL8@google.com>
+ <m2pmw114w5.fsf@oracle.com>
 MIME-Version: 1.0
-References: <1625825111-6604-1-git-send-email-weijiang.yang@intel.com> <1625825111-6604-6-git-send-email-weijiang.yang@intel.com>
-In-Reply-To: <1625825111-6604-6-git-send-email-weijiang.yang@intel.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Fri, 9 Jul 2021 14:55:35 -0700
-Message-ID: <CALMp9eR8mbVXS5E6sB7TwEocytpWcG_6w-ijmfxAd4ciHPtfmw@mail.gmail.com>
-Subject: Re: [PATCH v5 05/13] KVM: vmx/pmu: Emulate MSR_ARCH_LBR_CTL for guest
- Arch LBR
-To:     Yang Weijiang <weijiang.yang@intel.com>
-Cc:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
-        wei.w.wang@intel.com, like.xu.linux@gmail.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Like Xu <like.xu@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <m2pmw114w5.fsf@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 9, 2021 at 2:51 AM Yang Weijiang <weijiang.yang@intel.com> wrot=
-e:
->
-> From: Like Xu <like.xu@linux.intel.com>
->
-> Arch LBRs are enabled by setting MSR_ARCH_LBR_CTL.LBREn to 1. A new guest
-> state field named "Guest IA32_LBR_CTL" is added to enhance guest LBR usag=
-e.
-> When guest Arch LBR is enabled, a guest LBR event will be created like th=
-e
-> model-specific LBR does. Clear guest LBR enable bit on host PMI handling =
-so
-> guest can see expected config.
->
-> On processors that support Arch LBR, MSR_IA32_DEBUGCTLMSR[bit 0] has no
-> meaning. It can be written to 0 or 1, but reads will always return 0.
-> Like IA32_DEBUGCTL, IA32_ARCH_LBR_CTL msr is also reserved on INIT.
+On Fri, Jul 02, 2021, David Edmondson wrote:
+> On Wednesday, 2021-06-30 at 16:48:42 UTC, David Matlack wrote:
+> 
+> > On Mon, Jun 28, 2021 at 06:31:52PM +0100, David Edmondson wrote:
+> >>  	if (!is_guest_mode(vcpu) && static_call(kvm_x86_get_cpl)(vcpu) == 0) {
+> >> -		vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
+> >> -		vcpu->run->internal.suberror = KVM_INTERNAL_ERROR_EMULATION;
+> >> -		vcpu->run->internal.ndata = 0;
+> >> +		prepare_emulation_failure_exit(
+> >> +			vcpu, KVM_INTERNAL_ERROR_EMULATION_FLAG_EXIT_REASON);
+> >
+> > Should kvm_task_switch and kvm_handle_memory_failure also be updated
+> > like this?
+> 
+> Will do in v2.
+> 
+> sgx_handle_emulation_failure() seems like an existing user of
+> KVM_INTERNAL_ERROR_EMULATION that doesn't follow the new protocol (use
+> the emulation_failure part of the union).
+> 
+> Sean: If I add another flag for this case, what is the existing
+> user-level consumer?
 
-I suspect you mean "preserved" rather than "reserved."
+Doh, the SGX case should have been updated as part of commit c88339d88b0a ("kvm:
+x86: Allow userspace to handle emulation errors").  The easiest fix for SGX would
+be to zero out 'flags', bump ndata, and shift the existing field usage.  That
+would resolve the existing problem of the address being misinterpreted as flags,
+and would play nice _if_ additional flags are added.  I'll send a patch for that.
 
-> Signed-off-by: Like Xu <like.xu@linux.intel.com>
-> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
-> ---
->  arch/x86/events/intel/lbr.c      |  2 --
->  arch/x86/include/asm/msr-index.h |  1 +
->  arch/x86/include/asm/vmx.h       |  2 ++
->  arch/x86/kvm/vmx/pmu_intel.c     | 31 ++++++++++++++++++++++++++-----
->  arch/x86/kvm/vmx/vmx.c           |  9 +++++++++
->  5 files changed, 38 insertions(+), 7 deletions(-)
->
+Regarding the consumer, there is no existing consumer per se.  SGX is simply
+dumping the bad address that prevented emulation (the only SGX emulation failure
+scenarios are bad/missing memslots/vmas).  The SGX case is very similar to
+nested VMX instruction emulation, where failure is either due to a bad userspace
+configuration (bad/missing memslot) or a busted L1 kernel (SGX instruction data
+operand points at emulated MMIO).  A bad userspace configuration is almost always
+going to be fatal, and I highly doubt any userspace VMM will bother emulating
+SGX+MMIO.  In other words, the info dumped by SGX is purely for debug.
 
-> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
-> index da68f0e74702..4500c564c63a 100644
-> --- a/arch/x86/kvm/vmx/pmu_intel.c
-> +++ b/arch/x86/kvm/vmx/pmu_intel.c
-> @@ -19,6 +19,11 @@
->  #include "pmu.h"
->
->  #define MSR_PMC_FULL_WIDTH_BIT      (MSR_IA32_PMC0 - MSR_IA32_PERFCTR0)
-> +/*
-> + * Regardless of the Arch LBR or legacy LBR, when the LBR_EN bit 0 of th=
-e
-> + * corresponding control MSR is set to 1, LBR recording will be enabled.
-> + */
+Which brings me back to adding another flag when dumping the exit reason.  Unless
+there is a concrete use case for programmatically taking action in reponse to
+failed emulation, e.g. attemping emulation in userspace using insn_bytes+insn_size,
+I think we should not add a flag and instead dump info for debug/triage purposes
+without committing to an ABI.  I.e. define the ABI such that KVM can dump
+arbitrary info in the unused portions of data[].
 
-Is this comment misplaced? It doesn't seem to have anything to do with
-the macro being defined below.
-
-> @@ -458,6 +467,14 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, =
-struct msr_data *msr_info)
->                 lbr_desc->records.nr =3D data;
->                 lbr_desc->arch_lbr_reset =3D true;
->                 return 0;
-> +       case MSR_ARCH_LBR_CTL:
-> +               if (data & ~KVM_ARCH_LBR_CTL_MASK)
-
-Is a static mask sufficient? Per the Intel=C2=AE Architecture Instruction
-Set Extensions and Future Features Programming Reference, some of
-these bits may not be supported on all microarchitectures. See Table
-7-8. CPUID Leaf 01CH Enumeration of Architectural LBR Capabilities.
-
-> +                       break;
-> +               vmcs_write64(GUEST_IA32_LBR_CTL, data);
-> +               if (intel_pmu_lbr_is_enabled(vcpu) && !lbr_desc->event &&
-> +                   (data & ARCH_LBR_CTL_LBREN))
-> +                       intel_pmu_create_guest_lbr_event(vcpu);
-
-Nothing has to be done when the LBREN bit goes from 1 to 0?
-
-> +               return 0;
->         default:
->                 if ((pmc =3D get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0)) ||
->                     (pmc =3D get_gp_pmc(pmu, msr, MSR_IA32_PMC0))) {
-
-Per the Intel=C2=AE Architecture Instruction Set Extensions and Future
-Features Programming Reference, "IA32_LBR_CTL.LBREn is saved and
-cleared on #SMI, and restored on RSM." I don't see that happening
-anywhere. That manual also says, "On a warm reset...IA32_LBR_CTL.LBREn
-is cleared to 0, disabling LBRs." I don't see that happening either.
-
-I have a question about section 7.1.4.4 in that manual. It says, "On a
-debug breakpoint event (#DB), IA32_LBR_CTL.LBREn is cleared." When,
-exactly, does that happen? In particular, if kvm synthesizes such an
-event (for example, in kvm_vcpu_do_singlestep), does
-IA32_LBR_CTL.LBREn automatically get cleared (after loading the guest
-IA32_LBR_CTL value from the VMCS)? Or does kvm need to explicitly
-clear that bit in the VMCS before injecting the #DB?
+Not having a true ABI will be a bit gross, but digging into these types of
+failures is going to be painful no matter what; having to deduce the format of
+the data is unlikely to shift the needle much.  And the code should be
+straightforward, especially for userspace, e.g. dump all of data[] if emulation
+in userspace failed.
