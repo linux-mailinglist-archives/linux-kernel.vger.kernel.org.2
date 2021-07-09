@@ -2,128 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C36F23C2183
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 11:24:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0213A3C2187
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 11:25:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231944AbhGIJ13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 05:27:29 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:37599 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231519AbhGIJ11 (ORCPT
+        id S231964AbhGIJ1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 05:27:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231827AbhGIJ1u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 05:27:27 -0400
-Received: from mail-wr1-f71.google.com ([209.85.221.71])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1m1mkV-0008El-Cl
-        for linux-kernel@vger.kernel.org; Fri, 09 Jul 2021 09:24:43 +0000
-Received: by mail-wr1-f71.google.com with SMTP id r11-20020a5d52cb0000b02901309f5e7298so2671061wrv.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 02:24:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7WNvZLwCMJPhU0LBKsV7xjBc2Y3AeokJ7ARXwaxrCLg=;
-        b=JZEmUvl0AHNKDo1I4KE0AbnxuytEfrkhMhVNKtaeOwBpIRof4R3SEwp1+JNVt5Pnai
-         uUHC8ZAeFKlIo5wLiKjH/2XamUmwEfPmQbxQOKKcYvpKF6rGocqiOoVBPyc66zqRh17O
-         Jc4WnM4LPLpEZqd5YNexyL+RypGOmChdmyvo/IBzelWGB22Yu0iJKb/DiNftklR5JffZ
-         dnSPSn9t3eM3NM4HgrpqQ84U4zkvRLyPlUb7j9j12BRtHzOXXXOxgAe6KmjfnGanU3ja
-         um4oD+vLIsElXk/uZlcXeh3x4TMRDGV4OkAdf7S17cTg9mrqxJXxEGxMCEP+36GrIn8D
-         b5XQ==
-X-Gm-Message-State: AOAM533C1cBc+XMwh4x/cHZtzdxAdBut7Fef170cbULJSqc8VZItzMtS
-        psV73bfeaPDy8VQkFjljCnk3LaJQ93zaFkS6xbSE2NhQXusWVIwysO2lHzp8j6ocEA7dLHYaU4r
-        /YkZsrUkJB4WB/Om1BIZizmh+eyt8v8gbmm9J3fJ4wA==
-X-Received: by 2002:a05:600c:3644:: with SMTP id y4mr10822206wmq.85.1625822683167;
-        Fri, 09 Jul 2021 02:24:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwDDs/3crxV8R4sxhCWt0V09XDArwN4UwXG2P9xer0we+T7bW0lP7ZWheySa024sJYcbNmN9Q==
-X-Received: by 2002:a05:600c:3644:: with SMTP id y4mr10822184wmq.85.1625822682905;
-        Fri, 09 Jul 2021 02:24:42 -0700 (PDT)
-Received: from [192.168.3.211] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
-        by smtp.gmail.com with ESMTPSA id t22sm4497799wmi.22.2021.07.09.02.24.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Jul 2021 02:24:42 -0700 (PDT)
-To:     Mark Greer <mgreer@animalcreek.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nfc@lists.01.org
-References: <20210512144319.30852-1-krzysztof.kozlowski@canonical.com>
- <961dc9c5-0eb0-586c-5e70-b21ca2f8e6f3@linaro.org>
- <d498c949-3b1e-edaa-81ed-60573cfb6ee9@canonical.com>
- <20210512164952.GA222094@animalcreek.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [linux-nfc] Re: [PATCH 1/2] MAINTAINERS: nfc: add Krzysztof
- Kozlowski as maintainer
-Message-ID: <df2ec154-79fa-af7b-d337-913ed4a0692e@canonical.com>
-Date:   Fri, 9 Jul 2021 11:24:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 9 Jul 2021 05:27:50 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A9CC0613DD
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 02:25:06 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1m1mke-0006Bw-KC; Fri, 09 Jul 2021 11:24:52 +0200
+Message-ID: <17cadf46f4a0f9771fdde1c9aba9ffecb20efc9f.camel@pengutronix.de>
+Subject: Re: [PATCH v14 05/12] dmaengine: dma: imx-sdma: add fw_loaded and
+ is_ram_script
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Robin Gong <yibin.gong@nxp.com>, vkoul@kernel.org,
+        mark.rutland@arm.com, broonie@kernel.org, robh+dt@kernel.org,
+        catalin.marinas@arm.com, will.deacon@arm.com, shawnguo@kernel.org,
+        festevam@gmail.com, s.hauer@pengutronix.de,
+        martin.fuzzey@flowbird.group, u.kleine-koenig@pengutronix.de,
+        dan.j.williams@intel.com, matthias.schiffer@ew.tq-group.com,
+        frieder.schrempf@kontron.de, m.felsch@pengutronix.de,
+        xiaoning.wang@nxp.com
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-imx@nxp.com,
+        kernel@pengutronix.de, dmaengine@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Date:   Fri, 09 Jul 2021 11:24:48 +0200
+In-Reply-To: <1617809456-17693-6-git-send-email-yibin.gong@nxp.com>
+References: <1617809456-17693-1-git-send-email-yibin.gong@nxp.com>
+         <1617809456-17693-6-git-send-email-yibin.gong@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
 MIME-Version: 1.0
-In-Reply-To: <20210512164952.GA222094@animalcreek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/05/2021 18:49, Mark Greer wrote:
-> On Wed, May 12, 2021 at 11:43:13AM -0400, Krzysztof Kozlowski wrote:
->> On 12/05/2021 11:11, Daniel Lezcano wrote:
->>> On 12/05/2021 16:43, Krzysztof Kozlowski wrote:
->>>> The NFC subsystem is orphaned.  I am happy to spend some cycles to
->>>> review the patches, send pull requests and in general keep the NFC
->>>> subsystem running.
->>>>
->>>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->>>>
->>>> ---
->>>>
->>>> I admit I don't have big experience in NFC part but this will be nice
->>>> opportunity to learn something new. 
->>>
->>> NFC has been lost in the limbos since a while. Good to see someone
->>> volunteering to take care of it.
->>>
->>> May I suggest to create a simple nfc reading program in the 'tools'
->>> directory (could be a training exercise ;)
->>>
->>
->> Noted, thanks. I also need to get a simple hardware dongle for this....
+Am Mittwoch, dem 07.04.2021 um 23:30 +0800 schrieb Robin Gong:
+> Add 'fw_loaded' and 'is_ram_script' to check if the script used by channel
+> is ram script and it's loaded or not, so that could prevent meaningless
+> following malloc dma descriptor and bd allocate in sdma_transfer_init(),
+> otherwise memory may be consumed out potentially without free in case
+> that spi fallback into pio while dma transfer failed by sdma firmware not
+> ready(next ERR009165 patch depends on sdma RAM scripts/firmware).
 > 
-> Krzysztof, the NFC portion of the kernel has a counterpart in userspace
-> called neard.  I'm supposed to be maintaining it but I have next to no
-> time to do so.  If you have spare cycles, any help would be appreciated.
+> Signed-off-by: Robin Gong <yibin.gong@nxp.com>
+> Acked-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>  drivers/dma/imx-sdma.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
 > 
-> Anyway, in neard, there are some simple test scripts (python2 - I/we need
-> to update to python3).  The current home of neard is:
-> 
-> git://git.kernel.org/pub/scm/network/nfc/neard.git
+> diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
+> index 1c636d2..78dcfe2 100644
+> --- a/drivers/dma/imx-sdma.c
+> +++ b/drivers/dma/imx-sdma.c
+> @@ -381,6 +381,7 @@ struct sdma_channel {
+>  	enum dma_status			status;
+>  	struct imx_dma_data		data;
+>  	struct work_struct		terminate_worker;
+> +	bool				is_ram_script;
+>  };
+>  
+>  #define IMX_DMA_SG_LOOP		BIT(0)
+> @@ -444,6 +445,7 @@ struct sdma_engine {
+>  	struct sdma_buffer_descriptor	*bd0;
+>  	/* clock ratio for AHB:SDMA core. 1:1 is 1, 2:1 is 0*/
+>  	bool				clk_ratio;
+> +	bool                            fw_loaded;
+>  };
+>  
+>  static int sdma_config_write(struct dma_chan *chan,
+> @@ -899,6 +901,7 @@ static void sdma_get_pc(struct sdma_channel *sdmac,
+>  	case IMX_DMATYPE_SSI_DUAL:
+>  		per_2_emi = sdma->script_addrs->ssish_2_mcu_addr;
+>  		emi_2_per = sdma->script_addrs->mcu_2_ssish_addr;
+> +		sdmac->is_ram_script = true;
+>  		break;
+>  	case IMX_DMATYPE_SSI_SP:
+>  	case IMX_DMATYPE_MMC:
+> @@ -913,6 +916,7 @@ static void sdma_get_pc(struct sdma_channel *sdmac,
+>  		per_2_emi = sdma->script_addrs->asrc_2_mcu_addr;
+>  		emi_2_per = sdma->script_addrs->asrc_2_mcu_addr;
+>  		per_2_per = sdma->script_addrs->per_2_per_addr;
+> +		sdmac->is_ram_script = true;
+>  		break;
+>  	case IMX_DMATYPE_ASRC_SP:
+>  		per_2_emi = sdma->script_addrs->shp_2_mcu_addr;
+> @@ -1309,6 +1313,11 @@ static struct sdma_desc *sdma_transfer_init(struct sdma_channel *sdmac,
+>  {
+>  	struct sdma_desc *desc;
+>  
+> +	if (!sdmac->sdma->fw_loaded && sdmac->is_ram_script) {
+> +		dev_warn_once(sdmac->sdma->dev, "sdma firmware not ready!\n");
+> +		goto err_out;
+> +	}
+> +
+>  	desc = kzalloc((sizeof(*desc)), GFP_NOWAIT);
+>  	if (!desc)
+>  		goto err_out;
+> @@ -1559,6 +1568,8 @@ static int sdma_config_write(struct dma_chan *chan,
+>  {
+>  	struct sdma_channel *sdmac = to_sdma_chan(chan);
+>  
+> +	sdmac->is_ram_script = false;
+> +
+While it's working correctly, I find it confusing to have this
+initialization at this point in the code. Please fold this into
+sdma_get_pc(), where it gets changed as needed.
 
-I guess none of us have problem of too much spare time :), so it took me
-a while before I looked at neard.
+Other than this small issue, this patch is:
+Reviewed-by: Lucas Stach <l.stach@pengutronix.de>
 
-With newer Gcc, neard did not even compile (which I am fixing now). I
-set up a fork:
-https://github.com/krzk/neard
-However I can give early disclaimer - playing with GLib userspace code
-is not something I am in long term interested. If this was written in
-Rust, would be different story. :)
-
-I also configured basic CI (or rather continuous building):
-https://github.com/krzk/neard/actions/runs/1014641944
-
-However I still do not have proper testing setup. No hardware. Would be
-nice if Samsung. ST, NXP or Intel could spare some development board
-with the NFC chip supported by kernel. Till then, I will try the NFC
-simulator and virtual NCI drivers.
-
-My next plan for neard is to extend the CI. There is no way I (or anyone
-else I believe) can keep good quality of releases without automated
-checks. I'll add some more distros, clang and later many some linters or
-cppcheck.
+>  	if (direction == DMA_DEV_TO_MEM) {
+>  		sdmac->per_address = dmaengine_cfg->src_addr;
+>  		sdmac->watermark_level = dmaengine_cfg->src_maxburst *
+> @@ -1738,6 +1749,8 @@ static void sdma_load_firmware(const struct firmware *fw, void *context)
+>  
+>  	sdma_add_scripts(sdma, addr);
+>  
+> +	sdma->fw_loaded = true;
+> +
+>  	dev_info(sdma->dev, "loaded firmware %d.%d\n",
+>  			header->version_major,
+>  			header->version_minor);
 
 
-Best regards,
-Krzysztof
