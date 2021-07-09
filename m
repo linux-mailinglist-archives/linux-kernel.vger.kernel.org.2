@@ -2,94 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 623AD3C2A2E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 22:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4CEF3C2A31
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 22:12:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230442AbhGIUNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 16:13:54 -0400
-Received: from mail-wm1-f47.google.com ([209.85.128.47]:39449 "EHLO
-        mail-wm1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229703AbhGIUNx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 16:13:53 -0400
-Received: by mail-wm1-f47.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso9766952wmh.4;
-        Fri, 09 Jul 2021 13:11:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=X5Kq+LYu7shcjvHnUUvfPDCy6+d+q+ktHQddeACxeJY=;
-        b=cB9v0+tCbjAry9D7qLZnq3Z8cCIFAyJAz6pJdqT7qa54p0E42Z7WOzf8DHlZIiQNfh
-         1QN0ynynhwzkScReyqqRkuykz74uwyYolMK08mj1NF9+vis3DCXB9FSqcxUAFNvpYcTO
-         /G/2u2qtZkynPqnNjNTQRgtt70F/3dthUcYQ+XiqB5nw91HtGAMPVScH0EnIOGHXsLT3
-         Vs5vIUlZj86NYbTl3gwazxGJ2Ho2I6390MG9OOebM/PXuNgsRx3t14wX4AobJJ3UZp5B
-         tF/aQgjbfxFnWwXMIIQgfv8ys6aedSSNaq0xNocLRaE3R/gqz4vDISyfkJXv0C74HHKb
-         aPvQ==
-X-Gm-Message-State: AOAM530eIW2uMW4D/3PWEDYKADbr9/zHNCVTyEDejFIJjA42Rs37r9Cy
-        04Txw03ai2axlKiMq/fVc1FdluwlvU0=
-X-Google-Smtp-Source: ABdhPJw/wn/J8DBGkyIr19UCGDIC81xoa3fStxjKPsKCEvKchvST+uJVXawhHHCvajPXeaXEnV/DnA==
-X-Received: by 2002:a1c:cc02:: with SMTP id h2mr40744025wmb.39.1625861467372;
-        Fri, 09 Jul 2021 13:11:07 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id w22sm13034405wmc.4.2021.07.09.13.11.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 13:11:06 -0700 (PDT)
-Date:   Fri, 9 Jul 2021 20:11:05 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        kumarpraveen@linux.microsoft.com, pasha.tatashin@soleen.com,
-        Jonathan Corbet <corbet@lwn.net>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Lillian Grassin-Drake <ligrassi@microsoft.com>,
-        Muminul Islam <muislam@microsoft.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Subject: Re: [RFC v1 7/8] mshv: implement in-kernel device framework
-Message-ID: <20210709201105.qvl7bbal7iugtynd@liuwe-devbox-debian-v2>
-References: <20210709114339.3467637-1-wei.liu@kernel.org>
- <20210709114339.3467637-8-wei.liu@kernel.org>
- <YOhIzJVPN9SwoRK0@casper.infradead.org>
- <20210709135013.t5axinjmufotpylf@liuwe-devbox-debian-v2>
- <YOhsIDccgbUCzwqt@casper.infradead.org>
- <20210709162732.hnyzpf3uofzc7xqs@liuwe-devbox-debian-v2>
- <YOh7gO3MIDv5Eo8q@casper.infradead.org>
- <20210709191405.t3vno3zw7kdlo4ps@liuwe-devbox-debian-v2>
- <YOioFOT5WgkUB+dY@casper.infradead.org>
+        id S229882AbhGIUOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 16:14:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38170 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229459AbhGIUOx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 16:14:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AFA69613AB;
+        Fri,  9 Jul 2021 20:12:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625861529;
+        bh=DL2873M8Z+eG0pLPihjVaDqpeBObpt8oA1y2q95ITLg=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=n23WiiqxLb5bprTf7rnrdb6W1hHHRFQZjIsHw47lrgvJY3KEMAnnhorH9NJ3GAbtd
+         0zu/fwB/sFo4pQlZulDLf8lWlIs0cUsKvzJS9onTnQz1pnjA4JPb42b9wIxamxle4O
+         XxlNpuW3xRyge/Xuyb82lZ4Xoor+TqrsGeWFB1SdGvM0+OVByyAR6NUOcsUoH8awbR
+         0L5EmkYFquz19cbF6JVRUNvAPezaSkqYQtI0e/0Atmh2p/mhFVoGQv9cttqHISeS8U
+         SixGmggusxPBxdOjm9vnAQf6sqn/K6A0OUPeRq1MUZHMHRK4EgKijaU/BwxiMdo5TU
+         3UZx/uOKtvjfg==
+Subject: Re: [PATCH v2 1/2] Makefile: move initial clang flag handling into
+ scripts/Makefile.clang
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Miguel Ojeda <ojeda@kernel.org>, Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20210708232522.3118208-1-ndesaulniers@google.com>
+ <20210708232522.3118208-2-ndesaulniers@google.com>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <9f66019d-6207-1d4b-0a80-30f09b819ff4@kernel.org>
+Date:   Fri, 9 Jul 2021 13:12:08 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YOioFOT5WgkUB+dY@casper.infradead.org>
+In-Reply-To: <20210708232522.3118208-2-ndesaulniers@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 09, 2021 at 08:48:36PM +0100, Matthew Wilcox wrote:
-> On Fri, Jul 09, 2021 at 07:14:05PM +0000, Wei Liu wrote:
-> > You were not CC'ed on this patch, so presumably you got it via one of
-> > the mailing lists. I'm not sure why you only got this one patch. Perhaps
-> > if you wait a bit you will get the rest.
+On 7/8/2021 4:25 PM, 'Nick Desaulniers' via Clang Built Linux wrote:
+> With some of the changes we'd like to make to CROSS_COMPILE, the initial
+> block of clang flag handling which controls things like the target triple,
+> whether or not to use the integrated assembler and how to find GAS,
+> and erroring on unknown warnings is becoming unwieldy. Move it into its
+> own file under scripts/.
 > 
-> No, I won't.  You only cc'd linux-doc on this one patch and not on any
-> of the others.
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
-I see. That's because get_maintainers.pl only detected changes to the
-doc in this file.
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
-If you're interested in having a look at the other patches, they can
-be fetched via at the following url. 
-
-https://lore.kernel.org/linux-hyperv/20210709114339.3467637-1-wei.liu@kernel.org/
-
-Thanks for your attention.
-
-Wei.
+> ---
+>   MAINTAINERS            |  1 +
+>   Makefile               | 15 +--------------
+>   scripts/Makefile.clang | 14 ++++++++++++++
+>   3 files changed, 16 insertions(+), 14 deletions(-)
+>   create mode 100644 scripts/Makefile.clang
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 81e1edeceae4..9c1205c258c7 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -4433,6 +4433,7 @@ B:	https://github.com/ClangBuiltLinux/linux/issues
+>   C:	irc://chat.freenode.net/clangbuiltlinux
+>   F:	Documentation/kbuild/llvm.rst
+>   F:	include/linux/compiler-clang.h
+> +F:	scripts/Makefile.clang
+>   F:	scripts/clang-tools/
+>   K:	\b(?i:clang|llvm)\b
+>   
+> diff --git a/Makefile b/Makefile
+> index cbab0dc53065..010e3a4e770b 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -586,20 +586,7 @@ endif
+>   CC_VERSION_TEXT = $(subst $(pound),,$(shell $(CC) --version 2>/dev/null | head -n 1))
+>   
+>   ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
+> -ifneq ($(CROSS_COMPILE),)
+> -CLANG_FLAGS	+= --target=$(notdir $(CROSS_COMPILE:%-=%))
+> -endif
+> -ifeq ($(LLVM_IAS),1)
+> -CLANG_FLAGS	+= -integrated-as
+> -else
+> -CLANG_FLAGS	+= -no-integrated-as
+> -GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
+> -CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
+> -endif
+> -CLANG_FLAGS	+= -Werror=unknown-warning-option
+> -KBUILD_CFLAGS	+= $(CLANG_FLAGS)
+> -KBUILD_AFLAGS	+= $(CLANG_FLAGS)
+> -export CLANG_FLAGS
+> +include $(srctree)/scripts/Makefile.clang
+>   endif
+>   
+>   # Include this also for config targets because some architectures need
+> diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
+> new file mode 100644
+> index 000000000000..297932e973d4
+> --- /dev/null
+> +++ b/scripts/Makefile.clang
+> @@ -0,0 +1,14 @@
+> +ifneq ($(CROSS_COMPILE),)
+> +CLANG_FLAGS	+= --target=$(notdir $(CROSS_COMPILE:%-=%))
+> +endif
+> +ifeq ($(LLVM_IAS),1)
+> +CLANG_FLAGS	+= -integrated-as
+> +else
+> +CLANG_FLAGS	+= -no-integrated-as
+> +GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
+> +CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
+> +endif
+> +CLANG_FLAGS	+= -Werror=unknown-warning-option
+> +KBUILD_CFLAGS	+= $(CLANG_FLAGS)
+> +KBUILD_AFLAGS	+= $(CLANG_FLAGS)
+> +export CLANG_FLAGS
+> 
