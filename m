@@ -2,269 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67D433C25DF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E57DC3C25F0
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232100AbhGIO15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 10:27:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59512 "EHLO
+        id S232305AbhGIO37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 10:29:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbhGIO14 (ORCPT
+        with ESMTP id S231797AbhGIO35 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 10:27:56 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D38EC0613DD;
-        Fri,  9 Jul 2021 07:25:13 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id e14so9432499qkl.9;
-        Fri, 09 Jul 2021 07:25:13 -0700 (PDT)
+        Fri, 9 Jul 2021 10:29:57 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D888C0613E5
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 07:27:14 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id k6so10471473ilo.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 07:27:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:content-transfer-encoding:date:message-id:from:to:cc
-         :subject:references:in-reply-to;
-        bh=5EvyeeVq0zGR1aiMOlBfdhyawQhaQMkOJwagvR7vLi4=;
-        b=UqB4Y7FY0RcOFp5ceYvATO1c3w4ALAH7x1oc2xb1cDPg6n91Rap1XlYRVPgX353+lc
-         AQT1QCRR+FVfvxmjuWmntcAvphQUIE8xGgm7pk8Z3hpE7s3MdTybquyB9xF9gD7NhIm1
-         TyeI+hkglyNObRCnwsBkXimDFxSWrQ3LHumKz+HGmFMz5AdMFChDq9XXO2qfsA61hLsb
-         bxHqc1Rf/7LWs19zcZBkDAy/tptiqfRNoKHzRKwNuGkXoj8rzPfZJ1OcKiXfNjQlVnRD
-         sQR/xbfsq/Q2eKbaJkswFhcdbrY+/pUvkx/PAEU5IlgG5gBfb/k8Mc14KFt047VWWjGE
-         FqFg==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=95dkVPm8mKfD+WhqlIEKmIqJnoyW6EzD5pKbI1YQ1aw=;
+        b=kVg4PY8RXgvhd3Sd3kOhaIkN2d1ko23xe8BkDehunth690JjMfHF3Uw5kigoViaQAd
+         XU5SoeLzp9siKxy8A0aR/ti6mesUX77cvCXt/w6QMFcJyhZdvx3swCPjnJzAFdLa9NT0
+         RyUDvr+1uJxYWr6riQTSZnI3OAGzhpFFfiLsVGGJSU11Nldg/D88ys7W0vle902NNVLw
+         hdcXc5j6MepYXGNsMtJgSnWhQvB7oBETnOEsctJ1Dc6/m5JgeuLdxyt+3mO3dpSoWpql
+         FgH55bOFLAn4LJoZFe8KLGLbKFSA5roSCxYfSjJIU8CRPlsYgB85AXp2b0ymdI7+1dh2
+         2nfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding:date
-         :message-id:from:to:cc:subject:references:in-reply-to;
-        bh=5EvyeeVq0zGR1aiMOlBfdhyawQhaQMkOJwagvR7vLi4=;
-        b=VIloLmaEQNyTe/zt1VV7/Ax8GZWIousYXLbS5y79+zNZ+UTAvQf2BZUH0TrQvsD9LP
-         Vgu3hOVkI49mpdKuTGSC5Zj11FzmVeRUt0QyNVLoGSb/GH0YXNti7usXcSjmNLRPpNkL
-         Dc7/Qu4sf/O4SX/d/8OVTi3EC3CQuM+JUWWcjY1TNC9jVLotJGoWJ3Y3C4R5RQKhITm1
-         zsxl2TSnGiH9qB34HE7GLgPp4obk8dPdphDOpMVGgYaPDhhQfTCoIV6vSbSHcQVVFTwU
-         sFXQc9347QUjwjvoEeR8NsxBb312+SYi8twb5F2Wy7UQzUWfTirKy75ltj57RAx7Z+AQ
-         9PYA==
-X-Gm-Message-State: AOAM530cBDdhXFPNvsPwNhneOBlo8SzMFXbqbI0qAj3XAHXbzXxhKDWw
-        cYSym5Y40/xGZT728YoyUIk=
-X-Google-Smtp-Source: ABdhPJx/Gy9Y9EOWESFDn/wtfiSJV1uiuhFQ89Wg2b8GNjz7upNSEavaqyBjyTTAeYhc1OqitrTPAw==
-X-Received: by 2002:a37:b6c1:: with SMTP id g184mr37921760qkf.270.1625840712634;
-        Fri, 09 Jul 2021 07:25:12 -0700 (PDT)
-Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id w2sm2521850qkm.65.2021.07.09.07.25.11
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=95dkVPm8mKfD+WhqlIEKmIqJnoyW6EzD5pKbI1YQ1aw=;
+        b=m0MD1c7KQw/Ko+eUxhvveY1LeKFoSObZ7psxegH1YzqFN9Mh6QKbeiSL7ldI8uIVxH
+         EV0JUWsdXKqDn0Y3iCnG2ePIcB0lt3++xlFnN30g5CkksT61zY2PI7JIKd9nCqWCm++v
+         6PMnP+NL39jYLGvtscagsYOix1WpxL/dU5G2UCLIY4dJMx219PDPq3OG+b7D/KjJGmC0
+         yi7r5YjfHAcbfjiuN3UrRzMPoqdyRW+QLq+umtTxuQdeoktK6zy+qrdwIRwx4fxSFwy1
+         AD4p7hbzE8pVeSEK4acx4feH35SKwPh19Zjna7M6SZrvFj8HQbzpuTWokq0iUz/WOKII
+         uFog==
+X-Gm-Message-State: AOAM5325R7n77SYMvIMEZ/tiMu9YZwOT4eGtqHlBykJGO0PST1wHfiQy
+        8aEkur2QlzXC1kA6TDHrnpp35g==
+X-Google-Smtp-Source: ABdhPJzC5DNGi6NgV9XHXpVkOO3/L8OD1SjkyK5Lwv4L+LABCTnOtlvRi1kZ873eia9i7G8qo59ftA==
+X-Received: by 2002:a92:c7c4:: with SMTP id g4mr5026281ilk.252.1625840833951;
+        Fri, 09 Jul 2021 07:27:13 -0700 (PDT)
+Received: from [192.168.1.134] ([198.8.77.61])
+        by smtp.gmail.com with ESMTPSA id j4sm2866189iom.28.2021.07.09.07.27.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Jul 2021 07:25:12 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Fri, 09 Jul 2021 10:25:11 -0400
-Message-Id: <CCOOFJOC6MQV.2KZR4J2HPE7KP@shaak>
-From:   "Liam Beguin" <liambeguin@gmail.com>
-To:     "Sa, Nuno" <Nuno.Sa@analog.com>,
-        "lars@metafoo.de" <lars@metafoo.de>,
-        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        "jic23@kernel.org" <jic23@kernel.org>,
-        "charles-antoine.couret@essensium.com" 
-        <charles-antoine.couret@essensium.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-Subject: RE: [PATCH v1 2/4] iio: adc: ad7949: fix spi messages on non 14-bit
- controllers
-References: <20210708235618.1541335-1-liambeguin@gmail.com>
- <20210708235618.1541335-3-liambeguin@gmail.com>
- <PH0PR03MB63662890FF4545AAF45E026199189@PH0PR03MB6366.namprd03.prod.outlook.com>
-In-Reply-To: <PH0PR03MB63662890FF4545AAF45E026199189@PH0PR03MB6366.namprd03.prod.outlook.com>
+        Fri, 09 Jul 2021 07:27:13 -0700 (PDT)
+Subject: Re: linux-next: manual merge of the block tree with the mmc-fixes
+ tree
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>
+References: <20210709103244.64b2f1de@canb.auug.org.au>
+ <CAPDyKFrO-KcrPWBLGvS9hO+rLJjr=yx1766Np2M8HHApgkwNKg@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <12c52b0f-275c-4663-d1bd-3f06fece4299@kernel.dk>
+Date:   Fri, 9 Jul 2021 08:27:11 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <CAPDyKFrO-KcrPWBLGvS9hO+rLJjr=yx1766Np2M8HHApgkwNKg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri Jul 9, 2021 at 4:19 AM EDT, Sa, Nuno wrote:
->
->
-> > -----Original Message-----
-> > From: Liam Beguin <liambeguin@gmail.com>
-> > Sent: Friday, July 9, 2021 1:56 AM
-> > To: liambeguin@gmail.com; lars@metafoo.de; Hennerich, Michael
-> > <Michael.Hennerich@analog.com>; jic23@kernel.org; charles-
-> > antoine.couret@essensium.com
-> > Cc: linux-kernel@vger.kernel.org; linux-iio@vger.kernel.org;
-> > devicetree@vger.kernel.org; robh+dt@kernel.org
-> > Subject: [PATCH v1 2/4] iio: adc: ad7949: fix spi messages on non 14-bi=
-t
-> > controllers
-> >=20
-> > [External]
-> >=20
-> > From: Liam Beguin <lvb@xiphos.com>
-> >=20
-> > This driver supports devices with 14-bit and 16-bit sample sizes.
-> > This is not always handled properly by spi controllers and can fail. To
-> > work around this limitation, pad samples to 16-bit and split the sample
-> > into two 8-bit messages in the event that only 8-bit messages are
-> > supported by the controller.
-> >=20
-> > Signed-off-by: Liam Beguin <lvb@xiphos.com>
-> > ---
-> >  drivers/iio/adc/ad7949.c | 67
-> > ++++++++++++++++++++++++++++++++++------
-> >  1 file changed, 58 insertions(+), 9 deletions(-)
-> >=20
-> > diff --git a/drivers/iio/adc/ad7949.c b/drivers/iio/adc/ad7949.c
-> > index 93aacf4f680b..bbc6b56330a3 100644
-> > --- a/drivers/iio/adc/ad7949.c
-> > +++ b/drivers/iio/adc/ad7949.c
-> > @@ -11,6 +11,7 @@
-> >  #include <linux/module.h>
-> >  #include <linux/regulator/consumer.h>
-> >  #include <linux/spi/spi.h>
-> > +#include <linux/bitfield.h>
-> >=20
-> >  #define AD7949_MASK_TOTAL		GENMASK(13, 0)
-> >  #define AD7949_CFG_REG_SIZE_BITS	14
-> > @@ -57,6 +58,7 @@ static const struct ad7949_adc_spec
-> > ad7949_adc_spec[] =3D {
-> >   * @indio_dev: reference to iio structure
-> >   * @spi: reference to spi structure
-> >   * @resolution: resolution of the chip
-> > + * @bits_per_word: number of bits per SPI word
-> >   * @cfg: copy of the configuration register
-> >   * @current_channel: current channel in use
-> >   * @buffer: buffer to send / receive data to / from device
-> > @@ -67,28 +69,59 @@ struct ad7949_adc_chip {
-> >  	struct iio_dev *indio_dev;
-> >  	struct spi_device *spi;
-> >  	u8 resolution;
-> > +	u8 bits_per_word;
-> >  	u16 cfg;
-> >  	unsigned int current_channel;
-> > -	u16 buffer ____cacheline_aligned;
-> > +	union {
-> > +		__be16 buffer;
-> > +		u8 buf8[2];
-> > +	} ____cacheline_aligned;
-> >  };
-> >=20
-> > +static void ad7949_set_bits_per_word(struct ad7949_adc_chip
-> > *ad7949_adc)
-> > +{
-> > +	u32 adc_mask =3D SPI_BPW_MASK(ad7949_adc->resolution);
-> > +	u32 bpw =3D adc_mask & ad7949_adc->spi->controller-
-> > >bits_per_word_mask;
-> > +
-> > +	if (bpw =3D=3D adc_mask)
-> > +		ad7949_adc->bits_per_word =3D ad7949_adc-
-> > >resolution;
-> > +	else if (bpw =3D=3D SPI_BPW_MASK(16))
-> > +		ad7949_adc->bits_per_word =3D 16;
-> > +	else
-> > +		ad7949_adc->bits_per_word =3D 8;
-> > +}
-> > +
-> >  static int ad7949_spi_write_cfg(struct ad7949_adc_chip *ad7949_adc,
-> > u16 val,
-> >  				u16 mask)
-> >  {
-> >  	int ret;
-> > -	int bits_per_word =3D ad7949_adc->resolution;
-> > -	int shift =3D bits_per_word - AD7949_CFG_REG_SIZE_BITS;
-> >  	struct spi_message msg;
-> >  	struct spi_transfer tx[] =3D {
-> >  		{
-> >  			.tx_buf =3D &ad7949_adc->buffer,
-> >  			.len =3D 2,
-> > -			.bits_per_word =3D bits_per_word,
-> > +			.bits_per_word =3D ad7949_adc->bits_per_word,
-> >  		},
-> >  	};
-> >=20
-> > +	ad7949_adc->buffer =3D 0;
-> >  	ad7949_adc->cfg =3D (val & mask) | (ad7949_adc->cfg & ~mask);
-> > -	ad7949_adc->buffer =3D ad7949_adc->cfg << shift;
-> > +
-> > +	switch (ad7949_adc->bits_per_word) {
-> > +	case 16:
-> > +		ad7949_adc->buffer =3D ad7949_adc->cfg << 2;
-> > +		break;
-> > +	case 14:
-> > +		ad7949_adc->buffer =3D ad7949_adc->cfg;
-> > +		break;
-> > +	case 8:
-> > +		/* Pack 14-bit value into 2 bytes, MSB first */
-> > +		ad7949_adc->buf8[0] =3D FIELD_GET(GENMASK(13, 6),
-> > ad7949_adc->cfg);
-> > +		ad7949_adc->buf8[1] =3D FIELD_GET(GENMASK(5, 0),
-> > ad7949_adc->cfg);
-> > +		ad7949_adc->buf8[1] =3D ad7949_adc->buf8[1] << 2;
-> > +		break;
-> > +	}
->
-> Honestly I didn't went through the driver but just a question... Are we
-> sure that 'ad7949_adc->resolution' will have something valid (8, 14,
-> 16)?
-> A default statement is always a nice to have :).
-> =20
+On 7/9/21 2:34 AM, Ulf Hansson wrote:
+> On Fri, 9 Jul 2021 at 02:32, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>>
+>> Hi all,
+>>
+>> Today's linux-next merge of the block tree got a conflict in:
+>>
+>>   drivers/mmc/core/block.c
+>>
+>> between commit:
+>>
+>>   5c0777665b3e ("mmc: core: Use kref in place of struct mmc_blk_data::usage")
+>>
+>> from the mmc-fixes tree and commits:
+>>
+>>   249cda3325e0 ("mmc: remove an extra blk_{get,put}_queue pair")
+>>   607d968a5769 ("mmc: switch to blk_mq_alloc_disk")
+>>
+>> from the block tree.
+>>
+>> I fixed it up (see below) and can carry the fix as necessary. This
+>> is now fixed as far as linux-next is concerned, but any non trivial
+>> conflicts should be mentioned to your upstream maintainer when your tree
+>> is submitted for merging.  You may also want to consider cooperating
+>> with the maintainer of the conflicting tree to minimise any particularly
+>> complex conflicts.
+>>
+>> --
+>> Cheers,
+>> Stephen Rothwell
+> 
+> Stephen, thanks for the heads up!
+> 
+> Jens, I noticed that you sent the PR with the mmc commits as of
+> yesterday. Assuming Linus will pull it before rc1, I will rebase and
+> fix up the conflict from my fixes branch on top. No action needed from
+> your side.
 
-Thanks for pointing that out. You're right that based on this driver
-there's no guaranty that `ad7949_adc->resolution` will have a valid
-value. I'll add a default to 8-bit.
+I don't have any 5.15 code in for-next until after the merge window, so
+it's all fixes that are going into this release until then. These commits
+have been queued up for a few weeks, they are just part of a later push
+to Linus (that was sent out yesterday).
 
-Thanks,
-Liam
-
-> >  	spi_message_init_with_transfers(&msg, tx, 1);
-> >  	ret =3D spi_sync(ad7949_adc->spi, &msg);
-> >=20
-> > @@ -105,14 +138,12 @@ static int ad7949_spi_read_channel(struct
-> > ad7949_adc_chip *ad7949_adc, int *val,
-> >  {
-> >  	int ret;
-> >  	int i;
-> > -	int bits_per_word =3D ad7949_adc->resolution;
-> > -	int mask =3D GENMASK(ad7949_adc->resolution - 1, 0);
-> >  	struct spi_message msg;
-> >  	struct spi_transfer tx[] =3D {
-> >  		{
-> >  			.rx_buf =3D &ad7949_adc->buffer,
-> >  			.len =3D 2,
-> > -			.bits_per_word =3D bits_per_word,
-> > +			.bits_per_word =3D ad7949_adc->bits_per_word,
-> >  		},
-> >  	};
-> >=20
-> > @@ -147,7 +178,24 @@ static int ad7949_spi_read_channel(struct
-> > ad7949_adc_chip *ad7949_adc, int *val,
-> >=20
-> >  	ad7949_adc->current_channel =3D channel;
-> >=20
-> > -	*val =3D ad7949_adc->buffer & mask;
-> > +	switch (ad7949_adc->bits_per_word) {
-> > +	case 16:
-> > +		*val =3D ad7949_adc->buffer;
-> > +		/* Shift-out padding bits */
-> > +		if (ad7949_adc->resolution =3D=3D 14)
-> > +			*val =3D *val >> 2;
-> > +		break;
-> > +	case 14:
-> > +		*val =3D ad7949_adc->buffer & GENMASK(13, 0);
-> > +		break;
-> > +	case 8:
-> > +		/* Convert byte array to u16, MSB first */
-> > +		*val =3D (ad7949_adc->buf8[0] << 8) | ad7949_adc-
-> > >buf8[1];
-> > +		/* Shift-out padding bits */
-> > +		if (ad7949_adc->resolution =3D=3D 14)
-> > +			*val =3D *val >> 2;
-> > +		break;
-> > +	}
-> >=20
-> >  	return 0;
-> >  }
-> > @@ -280,6 +328,7 @@ static int ad7949_spi_probe(struct spi_device
-> > *spi)
-> >  	spec =3D &ad7949_adc_spec[spi_get_device_id(spi)-
-> > >driver_data];
-> >  	indio_dev->num_channels =3D spec->num_channels;
-> >  	ad7949_adc->resolution =3D spec->resolution;
-> > +	ad7949_set_bits_per_word(ad7949_adc);
-> >=20
-> >  	ad7949_adc->vref =3D devm_regulator_get(dev, "vref");
-> >  	if (IS_ERR(ad7949_adc->vref)) {
-> > --
-> > 2.30.1.489.g328c10930387
+-- 
+Jens Axboe
 
