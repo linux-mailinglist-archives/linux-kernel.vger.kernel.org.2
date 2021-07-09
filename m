@@ -2,134 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 129323C223E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 12:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 881763C2241
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 12:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232168AbhGIKd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 06:33:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232117AbhGIKd0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 06:33:26 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A526C0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 03:30:43 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id z25so4507684qto.12
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 03:30:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:mime-version:subject:from:in-reply-to:cc
-         :date:message-id:references:to;
-        bh=R4f9OcyVi0mET/bLtkBejNC17JCe88k19yLDC/kZYfM=;
-        b=YxFxU691lXnAutW0FnLeCUrTs7YqGJranfETBjNtErjwPseDxpmnyG3ak7tViCtCat
-         ejDmRzA2SiHzqVP7XNGe5Lmo2v8lwnUwrqyAs2BbjyxdEToaxZd3MkmBEmzmSBcZDUSP
-         I7/QT+rGLSWFCzoqJVOoPFhvKZlsRQGMYbw91JBVptpCbqLL5tM5RiycKB8Ybx7490Ms
-         IgfHd2RNtBu4k1QKnHuSQOBD/5ctjLwksQqjEfQARfyjsy8Jx8oUGuQUY0mixi7A+EJw
-         9v7NBwr2XlD70wUcFqIWUxPiyWlAeKdZ3FOjnWVd8J2QKpP1BArzDX1gqBhImV0tiKW+
-         LgTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:mime-version:subject
-         :from:in-reply-to:cc:date:message-id:references:to;
-        bh=R4f9OcyVi0mET/bLtkBejNC17JCe88k19yLDC/kZYfM=;
-        b=TsyROindn/gp7YkA28WQaEk1oX0QyOcYve4NOrsepD9bAkFzPBk6VOpd4uqKfBkdOy
-         zwjUGRSFRnN4UfthRhTtHz/WRYDTG3JfxXfboxvxe28XSNWX1CWn1pbK0DRwNrH6af5W
-         sfD4BiB4qrCj1iJXHpdeAO28hznwszREKYh3Zs19qW+DXFnF448ahey5oLT60DYnLq5l
-         jISmsaqr7jbrbtrbgo/iYAAXOSC8H9ggXwWVuzoSJvCG6syHKmtgnjhBSSKHVkcG6jCw
-         r8RS2QHV3Fm4RbzKjFkRPU/A4Mewvi6ZX65LNSf1hy8vuh7KA+xh3y26SU2wgPkmrtci
-         p8pw==
-X-Gm-Message-State: AOAM532Fb0hpsYAyy8AVTDqJF+hvV+J7a6nR5wM0VrqHMZKCziy3bxWj
-        42L7g8n6Ohqq8ZfyyZO1EbiiXw==
-X-Google-Smtp-Source: ABdhPJx9xhE/6m1aZxxmq1DNh+zIf4kZefCaNDjFiHxrVVTjqM9Y7DKV6r8cjUfVbqK76mG6mINRPw==
-X-Received: by 2002:ac8:5bc8:: with SMTP id b8mr33190118qtb.386.1625826642154;
-        Fri, 09 Jul 2021 03:30:42 -0700 (PDT)
-Received: from smtpclient.apple ([50.225.136.98])
-        by smtp.gmail.com with ESMTPSA id bm42sm2209496qkb.97.2021.07.09.03.30.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Jul 2021 03:30:41 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH] drivers: Follow the indentation coding standard on printks
-From:   bilbao@vt.edu
-In-Reply-To: <6ce9de29-2669-deb5-ea0e-895992240bea@gmx.de>
-Cc:     Rolf Eike Beer <eike-kernel@sf-tec.de>, gregkh@linuxfoundation.org,
-        davem@davemloft.net, kuba@kernel.org,
-        James.Bottomley@hansenpartnership.com, netdev@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 9 Jul 2021 06:30:40 -0400
-Message-Id: <2693E7F6-4D6D-4EF4-B2B4-102C044AB2AC@vt.edu>
-References: <6ce9de29-2669-deb5-ea0e-895992240bea@gmx.de>
-To:     Helge Deller <deller@gmx.de>
-X-Mailer: iPhone Mail (18F72)
+        id S232184AbhGIKeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 06:34:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45398 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232117AbhGIKeA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 06:34:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E812E61377;
+        Fri,  9 Jul 2021 10:31:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1625826677;
+        bh=ecNxD42qnRiObPNVV02AmEZtvMHr2xrUElBbd2znZ6Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qK9FnQIGAHO3n/0MCb5enI4LEl24KdKbjyQLJUEv8TlKa4cT35g5QjPw47KZ3vCse
+         TfaJ3RPp/0BOYMoohSyIKo/aYRHgrlt7mTHYts2xfR3GDKibp8IKlxJV/MxuL90oyO
+         B/GaNh0rOz23QpMbR+I8xO1BLpyvEqf5ylqD2H3A=
+Date:   Fri, 9 Jul 2021 12:31:12 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Gao Xiang <hsiangkao@linux.alibaba.com>
+Cc:     stable <stable@vger.kernel.org>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Nick Terrell <terrelln@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [linux-stable-rc:linux-5.4.y 7045/7049] mipsel-linux-ld:
+ decompress.c:undefined reference to `memmove'
+Message-ID: <YOglcE85xuwfD7It@kroah.com>
+References: <202107070120.6dOj1kB7-lkp@intel.com>
+ <YOfjmCT6n61Yidvp@B-P7TQMD6M-0146.local>
+ <YOf4yZIld6L6XP13@B-P7TQMD6M-0146.local>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YOf4yZIld6L6XP13@B-P7TQMD6M-0146.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Helge,
+On Fri, Jul 09, 2021 at 03:20:41PM +0800, Gao Xiang wrote:
+> Hi Greg, stable all,
+> 
+> On Fri, Jul 09, 2021 at 01:50:16PM +0800, Gao Xiang wrote:
+> > On Wed, Jul 07, 2021 at 01:15:28AM +0800, kernel test robot wrote:
+> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> > > head:   3909e2374335335c9504467caabc906d3f7487e4
+> > > commit: defcc2b5e54a4724fb5733f802edf5dd596018b6 [7045/7049] lib/lz4: explicitly support in-place decompression
+> > > config: mips-randconfig-r036-20210706 (attached as .config)
+> > > compiler: mipsel-linux-gcc (GCC) 9.3.0
+> > > reproduce (this is a W=1 build):
+> > >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> > >         chmod +x ~/bin/make.cross
+> > >         # https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?id=defcc2b5e54a4724fb5733f802edf5dd596018b6
+> > >         git remote add linux-stable-rc https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+> > >         git fetch --no-tags linux-stable-rc linux-5.4.y
+> > >         git checkout defcc2b5e54a4724fb5733f802edf5dd596018b6
+> > >         # save the attached .config to linux build tree
+> > >         mkdir build_dir
+> > >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross O=build_dir ARCH=mips SHELL=/bin/bash
+> > > 
+> > > If you fix the issue, kindly add following tag as appropriate
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > 
+> > Which is weird, does the preboot environment miss memmove() on mipsel?
+> > Just a guess, I may look into that myself later...
+> > 
+> 
+> After manually checking, I found memmove() for the mips preboot environment
+> was incidentally introduced by commit a510b616131f ("MIPS: Add support for
+> ZSTD-compressed kernels") which wasn't included in v5.4, but included in
+> v5.10 as below (so v5.10.y is fine):
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/arch/mips/boot/compressed?h=v5.10&id=a510b616131f85215ba156ed67e5ed1c0701f80f
+> 
+> And when I applied the following patch partially from the original
+> commit, the compile error with the command lines mentioned above was gone:
+> 
+> diff --git a/arch/mips/boot/compressed/string.c b/arch/mips/boot/compressed/string.c
+> index 43beecc3587c..e9ab7ea592ba 100644
+> --- a/arch/mips/boot/compressed/string.c
+> +++ b/arch/mips/boot/compressed/string.c
+> @@ -27,3 +27,19 @@ void *memset(void *s, int c, size_t n)
+>  		ss[i] = c;
+>  	return s;
+>  }
+> +
+> +void * __weak memmove(void *dest, const void *src, size_t n)
+> +{
+> +	unsigned int i;
+> +	const char *s = src;
+> +	char *d = dest;
+> +
+> +	if ((uintptr_t)dest < (uintptr_t)src) {
+> +		for (i = 0; i < n; i++)
+> +			d[i] = s[i];
+> +	} else {
+> +		for (i = n; i > 0; i--)
+> +			d[i - 1] = s[i - 1];
+> +	}
+> +	return dest;
+> +}
+> 
+> How to backport such commit partially to the v5.4.y stable kernel?
 
-I would like to finish what I started and take care of this, yes.
+Please submit it in a format which we can apply it.
+
+> ... Also, it would be better to check other mips compile combinations
+> automatically since it's hard for me to check all such combinations
+> one-by-one...
+
+That's what kernelci is for, can you use that?
 
 thanks,
-Carlos.
 
-> On Jul 9, 2021, at 2:43 AM, Helge Deller <deller@gmx.de> wrote:
->=20
-> =EF=BB=BFOn 7/8/21 11:25 PM, Rolf Eike Beer wrote:
->> Am Donnerstag, 8. Juli 2021, 15:10:01 CEST schrieb Carlos Bilbao:
->>> Fix indentation of printks that start at the beginning of the line. Chan=
-ge
->>> this for the right number of space characters, or tabs if the file uses
->>> them.
->> [...]
->>> --- a/drivers/parisc/iosapic.c
->>> +++ b/drivers/parisc/iosapic.c
->>> @@ -633,7 +633,7 @@ static void iosapic_unmask_irq(struct irq_data *d)
->>>     printk("\n");
->>> }
->>> -printk("iosapic_enable_irq(): sel ");
->>> +    printk("iosapic_enable_irq(): sel ");
->>> {
->>>     struct iosapic_info *isp =3D vi->iosapic;
->>> @@ -642,7 +642,7 @@ printk("iosapic_enable_irq(): sel ");
->>>         printk(" %x", d1);
->>>     }
->>> }
->>> -printk("\n");
->>> +    printk("\n");
->>> #endif
->>>     /*
->> This is also debug code. It is basically unchanged since it has been impo=
-rted
->> into git. So it may be time to remove the whole block. Helge?
->=20
-> I'd prefer to clean it proper up and keep it.
->=20
->=20
->>> diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
->>> index dce4cdf786cd..c3381facdfc5 100644
->>> --- a/drivers/parisc/sba_iommu.c
->>> +++ b/drivers/parisc/sba_iommu.c
->>> @@ -1550,7 +1550,7 @@ static void sba_hw_init(struct sba_device *sba_dev=
-)
->>> #if 0
->>> -printk("sba_hw_init(): mem_boot 0x%x 0x%x 0x%x 0x%x\n",
->>> PAGE0->mem_boot.hpa,
->>> +    printk("sba_hw_init(): mem_boot 0x%x 0x%x 0x%x
->>> 0x%x\n", PAGE0->mem_boot.hpa, PAGE0->mem_boot.spa, PAGE0->mem_boot.pad,
->>> PAGE0->mem_boot.cl_class);
->>>     /*
->> This is equally old. It should be either also removed, also this seems at=
-
->> least worth as documentation. Maybe just switch it to pr_debug() or
->> dev_debug() while fixing the indentation.
->=20
-> Yes, I'll clean it up too.
->=20
-> @Carlos:
-> Instead of just removing or fixing the indentation, I'll fix it for both p=
-arisc
-> drivers. Unless you want to try...
->=20
-> Helge
+greg k-h
