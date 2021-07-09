@@ -2,108 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C59F3C2174
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 11:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 840223C2178
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 11:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231910AbhGIJYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 05:24:18 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:30098 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231913AbhGIJYQ (ORCPT
+        id S231880AbhGIJZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 05:25:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231494AbhGIJZQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 05:24:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1625822493; x=1657358493;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=xnu5fiH3XiqlibW7t16ZbskhbU8t3Gem/ISjrQ//RO0=;
-  b=bVjyqjRUgtcs1KarVT0su0D0YxyovH6fgZIUKR63gLbWcMYiRfkxv3m2
-   6hYqgppnIXX+q37v+yxNwXpQ9TmBUH+1CAX2SMbXEO4j4DHtvrI6MiFtL
-   hQ9EhsOf2B/B3DU/RC8QHwftOvSDNK4AOzXA6yArCr1M6R0Yewqcr84Nw
-   7K1/weOk1TdUFjm68c2dxqNtxXCtat2g+hL7aEuhAA87025oVSAeuNOtO
-   +xsxnVtxRmBs4Bh9YiorStrOGeizhGFHBSMOBzlhslHAsbhEu4o9heg5m
-   BqfB3Dr/9Tp97xwbTbVG1vY8sg55IyDtZ0B72ZjkzKHMnzDBWclr3SCFY
-   w==;
-IronPort-SDR: ddEbgxlalOF9OW4SY+KYLwCN0uScEnOa/JJ1whBb0r/5PIFVXCTCANCGCX/Av5Dlb2k3XnTY+9
- CKpFbbMXGKkaSklLrE7hczmPwNDuYiM3oKgvJfnVc6bkzHfV1L7hkdwmojwwm3AykNWp7TDwZm
- pcY/6moSv3HPUT1yrXRdV1XaW+wU69sy5d/FwFxfhDMG0Bh9EUXMVTv0l9R1/40NLx6C5SLokl
- h9mfd4Dbv78qyyP9vQmDEbbVt+8tHRlZxhnicWA889qes2PWZV7Ffg1zzSq/z9aJ2lKcOcCYYa
- OLM=
-X-IronPort-AV: E=Sophos;i="5.84,226,1620716400"; 
-   d="scan'208";a="128227406"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 09 Jul 2021 02:21:33 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 9 Jul 2021 02:21:32 -0700
-Received: from [10.12.72.46] (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Fri, 9 Jul 2021 02:21:30 -0700
-Subject: Re: [PATCH] clk: at91: clk-generated: Limit the requested rate to our
- range
-To:     Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        <linux-clk@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
-        <claudiu.beznea@microchip.com>
-References: <20210707131213.3283509-1-codrin.ciubotariu@microchip.com>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <7586cf33-078a-cb85-98c8-9969baa0f19d@microchip.com>
-Date:   Fri, 9 Jul 2021 11:21:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 9 Jul 2021 05:25:16 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8072C0613DD
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 02:22:32 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id y4so6878065pgl.10
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 02:22:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RlfCcmnaKjWMgGf+C5ZyjROOblJXlKUZxKhwFdlX48g=;
+        b=CnWTLC4bogv5Y7mzmfByF6quAwALIuZSTIvaOW83dBVRdcfaALVYOFVi1A/TDZD7ls
+         Fp+qdejH+M+gle+5gOEKVrPYHGKleNmJLn2uBTwzO3BaVINq2PCRCySVqpjx3YbfzJB2
+         LWQfZrRGWV35+jGtc54wuWJNRFN0niL7QnqAs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RlfCcmnaKjWMgGf+C5ZyjROOblJXlKUZxKhwFdlX48g=;
+        b=SVWLkSKOeBtpsfTeyz5edQZlDgJdRkIJ0IQW+P3YIuyg87jQDPP8ZdRVHKYe5fcTdW
+         hNE58m1ISTHVyJMLfOpSlN0QSDWIjegFiI1xohwf+JlThfZcYkBgm4g5g4FZYuamgNjV
+         UrCLr8Q6lPj7Vad5E+66Ic1fJZQmS7qtdpQ0exysr/7NCtp4wp24iR9PlR608Jg4MBUK
+         015R3wIKkV6vp0wMXAxdnSH9jIufuHCWrqkX8VE5PxCYkLZ503uty8AWbHCxz6wMzb6N
+         S1wR4ZVQj++3NMlQG1u1VELPcjU6OOOxJvByf5vQVTakgM6OKvaeeF2u5DrDRCA41/lO
+         4YvA==
+X-Gm-Message-State: AOAM533XW/DUBhB8+ItTGO7g7yoIZKhrqcAB/f6rrDs2+egZoJdUwiR8
+        RiXrEJ9y9l+/Abkv8Nn+eYcM1w==
+X-Google-Smtp-Source: ABdhPJwqj9MiHt6DYZiEJ2d/D4RKw62VV8Ta6btyeDPx0NISIHpwyDaibpJc2AK6094gkv5mHgjYEg==
+X-Received: by 2002:a63:1215:: with SMTP id h21mr36491635pgl.173.1625822552412;
+        Fri, 09 Jul 2021 02:22:32 -0700 (PDT)
+Received: from senozhatsky.flets-east.jp ([2409:10:2e40:5100:a30d:fc4:7834:ee08])
+        by smtp.gmail.com with ESMTPSA id 11sm6577640pge.7.2021.07.09.02.22.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Jul 2021 02:22:32 -0700 (PDT)
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Tomasz Figa <tfiga@chromium.org>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: [PATCH] v4l-compliance: re-introduce NON_COHERENT and cache hints tests
+Date:   Fri,  9 Jul 2021 18:22:27 +0900
+Message-Id: <20210709092227.1051346-1-senozhatsky@chromium.org>
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
 MIME-Version: 1.0
-In-Reply-To: <20210707131213.3283509-1-codrin.ciubotariu@microchip.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/07/2021 at 15:12, Codrin Ciubotariu wrote:
-> On clk_generated_determine_rate(), the requested rate could be outside
-> of clk's range. Limit the rate to the clock's range to not return an
-> error.
+This returns back non-coherent (previously known as NON_COHERENT)
+memory flag and buffer cache management hints testing (for VB2_MEMORY_MMAP
+buffers).
 
-Isn't it saner for the user to return an error code instead of 
-automatically restrain the dynamics requested without notice?
+Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+---
+ utils/common/cv4l-helpers.h                 |  8 +--
+ utils/common/v4l-helpers.h                  |  8 ++-
+ utils/v4l2-compliance/v4l2-test-buffers.cpp | 65 ++++++++++++++++++---
+ 3 files changed, 66 insertions(+), 15 deletions(-)
 
-Can you elaborate the use case where returning an error is not convenient?
-
-Regards,
-   Nicolas
-
-> Fixes: df70aeef6083 ("clk: at91: add generated clock driver")
-> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-> ---
->   drivers/clk/at91/clk-generated.c | 6 ++++++
->   1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/clk/at91/clk-generated.c b/drivers/clk/at91/clk-generated.c
-> index b4fc8d71daf2..b656d25a9767 100644
-> --- a/drivers/clk/at91/clk-generated.c
-> +++ b/drivers/clk/at91/clk-generated.c
-> @@ -128,6 +128,12 @@ static int clk_generated_determine_rate(struct clk_hw *hw,
->   	int i;
->   	u32 div;
->   
-> +	/* do not look for a rate that is outside of our range */
-> +	if (gck->range.max && req->rate > gck->range.max)
-> +		req->rate = gck->range.max;
-> +	if (gck->range.min && req->rate < gck->range.min)
-> +		req->rate = gck->range.min;
-> +
->   	for (i = 0; i < clk_hw_get_num_parents(hw); i++) {
->   		if (gck->chg_pid == i)
->   			continue;
-> 
-
-
+diff --git a/utils/common/cv4l-helpers.h b/utils/common/cv4l-helpers.h
+index 712efde6..3cee372b 100644
+--- a/utils/common/cv4l-helpers.h
++++ b/utils/common/cv4l-helpers.h
+@@ -754,17 +754,17 @@ public:
+ 	int g_fd(unsigned index, unsigned plane) const { return v4l_queue_g_fd(this, index, plane); }
+ 	void s_fd(unsigned index, unsigned plane, int fd) { v4l_queue_s_fd(this, index, plane, fd); }
+ 
+-	int reqbufs(cv4l_fd *fd, unsigned count = 0)
++	int reqbufs(cv4l_fd *fd, unsigned count = 0, unsigned int flags = 0)
+ 	{
+-		return v4l_queue_reqbufs(fd->g_v4l_fd(), this, count);
++		return v4l_queue_reqbufs(fd->g_v4l_fd(), this, count, flags);
+ 	}
+ 	bool has_create_bufs(cv4l_fd *fd) const
+ 	{
+ 		return v4l_queue_has_create_bufs(fd->g_v4l_fd(), this);
+ 	}
+-	int create_bufs(cv4l_fd *fd, unsigned count, const v4l2_format *fmt = NULL)
++	int create_bufs(cv4l_fd *fd, unsigned count, const v4l2_format *fmt = NULL, unsigned int flags = 0)
+ 	{
+-		return v4l_queue_create_bufs(fd->g_v4l_fd(), this, count, fmt);
++		return v4l_queue_create_bufs(fd->g_v4l_fd(), this, count, fmt, flags);
+ 	}
+ 	int mmap_bufs(cv4l_fd *fd, unsigned from = 0)
+ 	{
+diff --git a/utils/common/v4l-helpers.h b/utils/common/v4l-helpers.h
+index f96b3c38..c09cd987 100644
+--- a/utils/common/v4l-helpers.h
++++ b/utils/common/v4l-helpers.h
+@@ -1515,7 +1515,7 @@ static inline int v4l_queue_querybufs(struct v4l_fd *f, struct v4l_queue *q, uns
+ }
+ 
+ static inline int v4l_queue_reqbufs(struct v4l_fd *f,
+-		struct v4l_queue *q, unsigned count)
++		struct v4l_queue *q, unsigned count, unsigned int flags = 0)
+ {
+ 	struct v4l2_requestbuffers reqbufs;
+ 	int ret;
+@@ -1523,6 +1523,7 @@ static inline int v4l_queue_reqbufs(struct v4l_fd *f,
+ 	reqbufs.type = q->type;
+ 	reqbufs.memory = q->memory;
+ 	reqbufs.count = count;
++	reqbufs.flags = flags;
+ 	/*
+ 	 * Problem: if REQBUFS returns an error, did it free any old
+ 	 * buffers or not?
+@@ -1547,7 +1548,7 @@ static inline bool v4l_queue_has_create_bufs(struct v4l_fd *f, const struct v4l_
+ 
+ static inline int v4l_queue_create_bufs(struct v4l_fd *f,
+ 		struct v4l_queue *q, unsigned count,
+-		const struct v4l2_format *fmt)
++		const struct v4l2_format *fmt, unsigned int flags = 0)
+ {
+ 	struct v4l2_create_buffers createbufs;
+ 	int ret;
+@@ -1555,6 +1556,7 @@ static inline int v4l_queue_create_bufs(struct v4l_fd *f,
+ 	createbufs.format.type = q->type;
+ 	createbufs.memory = q->memory;
+ 	createbufs.count = count;
++	createbufs.flags = flags;
+ 	if (fmt) {
+ 		createbufs.format = *fmt;
+ 	} else {
+@@ -1733,7 +1735,7 @@ static inline void v4l_queue_free(struct v4l_fd *f, struct v4l_queue *q)
+ 	v4l_ioctl(f, VIDIOC_STREAMOFF, &q->type);
+ 	v4l_queue_release_bufs(f, q, 0);
+ 	v4l_queue_close_exported_fds(q);
+-	v4l_queue_reqbufs(f, q, 0);
++	v4l_queue_reqbufs(f, q, 0, 0);
+ }
+ 
+ static inline void v4l_queue_buffer_update(const struct v4l_queue *q,
+diff --git a/utils/v4l2-compliance/v4l2-test-buffers.cpp b/utils/v4l2-compliance/v4l2-test-buffers.cpp
+index e40461bd..6997f40b 100644
+--- a/utils/v4l2-compliance/v4l2-test-buffers.cpp
++++ b/utils/v4l2-compliance/v4l2-test-buffers.cpp
+@@ -663,6 +663,10 @@ int testReqBufs(struct node *node)
+ 		fail_on_test(q.reqbufs(node, 0));
+ 
+ 		for (m = V4L2_MEMORY_MMAP; m <= V4L2_MEMORY_DMABUF; m++) {
++			bool cache_hints_cap = false;
++			bool coherent;
++
++			cache_hints_cap = q.g_capabilities() & V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS;
+ 			if (!(node->valid_memorytype & (1 << m)))
+ 				continue;
+ 			cv4l_queue q2(i, m);
+@@ -678,8 +682,17 @@ int testReqBufs(struct node *node)
+ 			reqbufs.count = 1;
+ 			reqbufs.type = i;
+ 			reqbufs.memory = m;
++			reqbufs.flags = V4L2_MEMORY_FLAG_NON_COHERENT;
+ 			fail_on_test(doioctl(node, VIDIOC_REQBUFS, &reqbufs));
+-			fail_on_test(check_0(reqbufs.reserved, sizeof(reqbufs.reserved)));
++			coherent = reqbufs.flags & V4L2_MEMORY_FLAG_NON_COHERENT;
++			if (!cache_hints_cap) {
++				fail_on_test(coherent);
++			} else {
++				if (m == V4L2_MEMORY_MMAP)
++					fail_on_test(!coherent);
++				else
++					fail_on_test(coherent);
++			}
+ 			q.reqbufs(node);
+ 
+ 			ret = q.create_bufs(node, 0);
+@@ -692,9 +705,32 @@ int testReqBufs(struct node *node)
+ 			node->g_fmt(crbufs.format, i);
+ 			crbufs.count = 1;
+ 			crbufs.memory = m;
++			crbufs.flags = V4L2_MEMORY_FLAG_NON_COHERENT;
+ 			fail_on_test(doioctl(node, VIDIOC_CREATE_BUFS, &crbufs));
+ 			fail_on_test(check_0(crbufs.reserved, sizeof(crbufs.reserved)));
+ 			fail_on_test(crbufs.index != q.g_buffers());
++
++			coherent = crbufs.flags & V4L2_MEMORY_FLAG_NON_COHERENT;
++			if (!cache_hints_cap) {
++				fail_on_test(coherent);
++			} else {
++				if (m == V4L2_MEMORY_MMAP)
++					fail_on_test(!coherent);
++				else
++					fail_on_test(coherent);
++			}
++
++			if (cache_hints_cap) {
++				/*
++				 * Different memory consistency model. Should fail for MMAP
++				 * queues which support cache hints.
++				 */
++				crbufs.flags = 0;
++				if (m == V4L2_MEMORY_MMAP)
++					fail_on_test(doioctl(node, VIDIOC_CREATE_BUFS, &crbufs) != EINVAL);
++				else
++					fail_on_test(doioctl(node, VIDIOC_CREATE_BUFS, &crbufs));
++			}
+ 			q.reqbufs(node);
+ 
+ 			fail_on_test(q.create_bufs(node, 1));
+@@ -1207,10 +1243,16 @@ static int setupMmap(struct node *node, cv4l_queue &q)
+ 		fail_on_test(buf.querybuf(node, i));
+ 		fail_on_test(buf.check(q, Unqueued, i));
+ 
+-		flags = buf.g_flags();
+-		flags |= V4L2_BUF_FLAG_NO_CACHE_INVALIDATE;
+-		flags |= V4L2_BUF_FLAG_NO_CACHE_CLEAN;
+-		buf.s_flags(flags);
++		/*
++		 * Do not set cache hints for all the buffers, but only on
++		 * some of them, so that we can test more cases.
++		 */
++		if (i == 0) {
++			flags = buf.g_flags();
++			flags |= V4L2_BUF_FLAG_NO_CACHE_INVALIDATE;
++			flags |= V4L2_BUF_FLAG_NO_CACHE_CLEAN;
++			buf.s_flags(flags);
++		}
+ 
+ 		for (unsigned p = 0; p < buf.g_num_planes(); p++) {
+ 			// Try a random offset
+@@ -1250,8 +1292,15 @@ static int setupMmap(struct node *node, cv4l_queue &q)
+ 		}
+ 		flags = buf.g_flags();
+ 		if (cache_hints) {
+-			fail_on_test(!(flags & V4L2_BUF_FLAG_NO_CACHE_INVALIDATE));
+-			fail_on_test(!(flags & V4L2_BUF_FLAG_NO_CACHE_CLEAN));
++			if (i == 0) {
++				/* We do expect cache hints on this buffer */
++				fail_on_test(!(flags & V4L2_BUF_FLAG_NO_CACHE_INVALIDATE));
++				fail_on_test(!(flags & V4L2_BUF_FLAG_NO_CACHE_CLEAN));
++			} else {
++				/* We expect no cache hints on this buffer */
++				fail_on_test(flags & V4L2_BUF_FLAG_NO_CACHE_INVALIDATE);
++				fail_on_test(flags & V4L2_BUF_FLAG_NO_CACHE_CLEAN);
++			}
+ 		} else if (node->might_support_cache_hints) {
+ 			fail_on_test(flags & V4L2_BUF_FLAG_NO_CACHE_INVALIDATE);
+ 			fail_on_test(flags & V4L2_BUF_FLAG_NO_CACHE_CLEAN);
+@@ -1341,7 +1390,7 @@ int testMmap(struct node *node, struct node *node_m2m_cap, unsigned frame_count,
+ 			have_createbufs = false;
+ 		if (have_createbufs) {
+ 			q.reqbufs(node);
+-			q.create_bufs(node, 2, &cur_fmt);
++			q.create_bufs(node, 2, &cur_fmt, V4L2_MEMORY_FLAG_NON_COHERENT);
+ 			fail_on_test(setupMmap(node, q));
+ 			q.munmap_bufs(node);
+ 			q.reqbufs(node, 2);
 -- 
-Nicolas Ferre
+2.27.0
+
