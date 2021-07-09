@@ -2,90 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E641E3C2994
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 21:28:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D6493C29B8
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 21:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230351AbhGITa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 15:30:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43466 "EHLO
+        id S230345AbhGITdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 15:33:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230109AbhGITa4 (ORCPT
+        with ESMTP id S229854AbhGITdJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 15:30:56 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF71C0613DD;
-        Fri,  9 Jul 2021 12:28:12 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1625858890;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SnJkV5Eue+q5YG0ekrQ5djRZ/pRdO+saRQkDIqHszro=;
-        b=tyfif7CGd9NFgPoSj8tJTrk3W/Snnx0BIGGKKd335ukMUV8eonIZzHI4YeG1GwyHreDXMo
-        emlPYODwK9YowD3J37QUhnMmMefJ0uIDIzH67rfPEhNQUtOx9OrJlBoAtbQUyU0pBWMm0/
-        /RyC8lbo8aiAMsSXsNWC5I/mHNIeH6rdq2e19IVRSnumrttzTI7AiMZHOzE15WqUoqnI67
-        NWLENNSBfLujTnBEMeNig7lLckSFvrJy4hGpPfESdnndwCsJtT3mYOegyGLHjVd8OF5wdJ
-        dOGRBY1ys/Z19RGB629aiWKmuIK1eKeXx26sOaOe3+xr/2gUymfyHkPqQNks7w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1625858890;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SnJkV5Eue+q5YG0ekrQ5djRZ/pRdO+saRQkDIqHszro=;
-        b=SF0R0xXgLXf6E4LieE82EgTOdq/BG/vWxteWTPd0GdhJ0alIsHXObTS+NIlIS/VVBamuOo
-        MmxCaFneTp3NglCw==
-To:     Mike Galbraith <efault@gmx.de>, LKML <linux-kernel@vger.kernel.org>
-Cc:     linux-rt-users@vger.kernel.org,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [rfc/patch] mm/slub: restore/expand unfreeze_partials() local exclusion scope
-In-Reply-To: <8c0e0c486056b5185b58998f2cce62619ed3f05c.camel@gmx.de>
-References: <87tul5p2fa.ffs@nanos.tec.linutronix.de> <8c0e0c486056b5185b58998f2cce62619ed3f05c.camel@gmx.de>
-Date:   Fri, 09 Jul 2021 21:28:10 +0200
-Message-ID: <878s2fnv79.ffs@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Fri, 9 Jul 2021 15:33:09 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19DF9C0613DD;
+        Fri,  9 Jul 2021 12:30:25 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id x6so5081708qvx.4;
+        Fri, 09 Jul 2021 12:30:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:content-transfer-encoding:date:message-id:to:cc
+         :subject:from:references:in-reply-to;
+        bh=ka0EYaX/8sYKpgYqTC2W9F71XAv6lfSFEDivZvKcKm4=;
+        b=ueCDPZwDb58qafDGK/oiMJ+U2GkuM/j6USTqAXp1IWndU15dsCcnKWoqexQ5MLY1Bc
+         fj6QQL2n7NUCXmzD7WyZJhjOFuH/+6s9+2KUopsjbMdqpoQJiDNVcm3sv7B8srJMfDor
+         wHYbE+RWl66KUIlSog8YZjO3/c8BSKk9gRVfxjEXw3olRnIlNSY+h5Tf/4fOtGJvHWTu
+         v6osPMntfJTmwL5uA/sEIFCWf0bM7QLcQibbrhT6kJBtsMJdZligzYGUYlvxqel73hwU
+         2CajPRGdykoaGEGZEd1fsMjVINHbJUP1+tNXfEYDjz+xnHwYJE76eZTSb99bbZsLBYvs
+         A1fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding:date
+         :message-id:to:cc:subject:from:references:in-reply-to;
+        bh=ka0EYaX/8sYKpgYqTC2W9F71XAv6lfSFEDivZvKcKm4=;
+        b=WsVD5kWgo6Xp2b1OBVTSv4HjQxArftcXIbMg8+QuCIq1PvQxk5BShNvL3q3mIWr4L+
+         /O1U2MFmQqv6k9KrfLyrIb8HV3uZI556aJz670a3WMQlf64C5ibqTLozoHkz+t65eAm8
+         GsUAp9vHY6BIL/cQpK8Qr9Kj4pchRIfe20ACGFUXj8RUPWNFdpywxAhzngPXe9xIDT2L
+         Ay1Hc+m+Whazx+kQwgju2AHjxpNqJi2aSiytQbxXEqkrXeCSo8ag9b0y33VweOf/vL9e
+         fLkhOOWR30TjQKlReL+obikMoenli9Uc2HDjYn2d6inlW1b3XXzxvgkmAQYHbW2vDoGk
+         m/ug==
+X-Gm-Message-State: AOAM530i8vDofvjMHMLWBJ4EuZhfeSs/OHgcZJeVAfljjzyBwvieDsxi
+        C6jDN+m5Jak3qQU4HpD85Dw=
+X-Google-Smtp-Source: ABdhPJw/rKyYQnlDM/8zNrY43rEmbXzeOrbxZhKMC72Y4mWTvgzK+uGa9kxilaWUlQLp9Z/6XJsdZw==
+X-Received: by 2002:a0c:f682:: with SMTP id p2mr37700010qvn.17.1625859024306;
+        Fri, 09 Jul 2021 12:30:24 -0700 (PDT)
+Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
+        by smtp.gmail.com with ESMTPSA id c2sm330034qtw.72.2021.07.09.12.30.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Jul 2021 12:30:23 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Fri, 09 Jul 2021 15:30:23 -0400
+Message-Id: <CCOUX814CQ6U.XY2CIQKFE00V@shaak>
+To:     "Peter Rosin" <peda@axentia.se>, <jic23@kernel.org>,
+        <lars@metafoo.de>, <pmeerw@pmeerw.net>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>
+Subject: Re: [PATCH v4 05/10] iio: afe: rescale: add INT_PLUS_{MICRO,NANO}
+ support
+From:   "Liam Beguin" <liambeguin@gmail.com>
+References: <20210706160942.3181474-1-liambeguin@gmail.com>
+ <20210706160942.3181474-6-liambeguin@gmail.com>
+ <4be51a74-9913-291a-9dac-422ac23da3ea@axentia.se>
+In-Reply-To: <4be51a74-9913-291a-9dac-422ac23da3ea@axentia.se>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 09 2021 at 07:21, Mike Galbraith wrote:
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -2497,7 +2497,9 @@ static void put_cpu_partial(struct kmem_
->  				 * partial array is full. Move the existing
->  				 * set to the per node partial list.
->  				 */
-> +				local_lock(&s->cpu_slab->lock);
->  				unfreeze_partials(s);
-> +				local_unlock(&s->cpu_slab->lock);
->  				oldpage = NULL;
->  				pobjects = 0;
->  				pages = 0;
-> @@ -2579,7 +2581,9 @@ static void flush_cpu_slab(struct work_s
->  	if (c->page)
->  		flush_slab(s, c, true);
->  
-> +	local_lock(&s->cpu_slab->lock);
->  	unfreeze_partials(s);
-> +	local_unlock(&s->cpu_slab->lock);
->  }
->  
->  static bool has_cpu_slab(int cpu, struct kmem_cache *s)
-> @@ -2632,8 +2636,11 @@ static int slub_cpu_dead(unsigned int cp
->  	struct kmem_cache *s;
->  
->  	mutex_lock(&slab_mutex);
-> -	list_for_each_entry(s, &slab_caches, list)
-> +	list_for_each_entry(s, &slab_caches, list) {
-> +		local_lock(&s->cpu_slab->lock);
+On Fri Jul 9, 2021 at 12:29 PM EDT, Peter Rosin wrote:
+>
+>
+> On 2021-07-06 18:09, Liam Beguin wrote:
+> > From: Liam Beguin <lvb@xiphos.com>
+> >=20
+> > Add IIO_VAL_INT_PLUS_{NANO,MICRO} scaling support.
+> > Scale the integer part and the decimal parts individually and keep the
+> > original scaling type.
+> >=20
+> > Signed-off-by: Liam Beguin <lvb@xiphos.com>
+> > ---
+> >  drivers/iio/afe/iio-rescale.c | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> >=20
+> > diff --git a/drivers/iio/afe/iio-rescale.c b/drivers/iio/afe/iio-rescal=
+e.c
+> > index ba3bdcc69b16..1d0e24145d87 100644
+> > --- a/drivers/iio/afe/iio-rescale.c
+> > +++ b/drivers/iio/afe/iio-rescale.c
+> > @@ -89,7 +89,15 @@ static int rescale_read_raw(struct iio_dev *indio_de=
+v,
+> >  			do_div(tmp, 1000000000LL);
+> >  			*val =3D tmp;
+> >  			return ret;
+> > +		case IIO_VAL_INT_PLUS_NANO:
+> > +		case IIO_VAL_INT_PLUS_MICRO:
+> > +			tmp =3D (s64)*val * rescale->numerator;
+> > +			*val =3D div_s64(tmp, rescale->denominator);
+> > +			tmp =3D (s64)*val2 * rescale->numerator;
+> > +			*val2 =3D div_s64(tmp, rescale->denominator);
+>
 
-This one is odd. It locks the cpu_slab lock of the CPU which runs this
-callback and then flushes the slab of the dead CPU.
+Hi Peter,
+
+> Hi!
+>
+> You are losing precision, and you are not mormalising after the
+> calculation.
+
+Can you elaborate a little on what you mean here?
+
+Do you mean that I should make sure that *val2, the PLUS_{NANO,MICRO}
+part, doesn't contain an integer part? And if so transfer that part back
+to *val?
+
+> I think it's better to not even attempt this given that the results can
+> be
+> really poor.
+
+Unfortunatelly, I'm kinda stuck with this as some of my ADC use these
+types.
 
 Thanks,
+Liam
 
-        tglx
+>
+> Cheers,
+> Peter
+>
+> > +			return ret;
+> >  		default:
+> > +			dev_err(&indio_dev->dev, "unsupported type %d\n", ret);
+> >  			return -EOPNOTSUPP;
+> >  		}
+> >  	default:
+> >=20
 
