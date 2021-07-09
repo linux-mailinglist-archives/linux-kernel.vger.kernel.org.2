@@ -2,126 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60B363C2146
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 11:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C7163C2147
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 11:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231804AbhGIJNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 05:13:37 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:36122 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229559AbhGIJNg (ORCPT
+        id S231815AbhGIJO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 05:14:26 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:58287 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229559AbhGIJOZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 05:13:36 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 169918gk031664;
-        Fri, 9 Jul 2021 11:09:51 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=DVH6ZuxNXZTaEp6S+cHLNHrvmkcMuKnL6vylu2Kte94=;
- b=7X5msmvjOn6lK1uy7Ov8hNhhBoUX+ReOVaZHIli8xgs4URQqfsV9h2q3EJXf0IyZyrk6
- 7ruDFLQaiTTrqQkNVRP1+z7Rv3updQNngansGwJLOY/0Yix0aqY6xoBjAXTZsih9S+kd
- poVuB4Kx/1KZe0q+NYpzxtuSki2I6bjBhUKmA8xen5CKzs0uCxzrEN5X83BpPYUhxmC3
- +IzXYipnYgtWR+uKtzKR6JP1KdrOrsfZ3uUxa0CnDt320w51GFLgppGJ8WLDLqv86vTj
- HJaalJUplp1g4iT0HZswmfKbe78By3wzgNH0Gryn8cbYrDtO03w7qs/UDlKBYJvXTfkF 8A== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 39p4vbbww3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Jul 2021 11:09:51 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A91B010002A;
-        Fri,  9 Jul 2021 11:09:48 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 87CAF218CB8;
-        Fri,  9 Jul 2021 11:09:48 +0200 (CEST)
-Received: from lmecxl0557.lme.st.com (10.75.127.47) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 9 Jul
- 2021 11:09:47 +0200
-Subject: Re: [PATCH 0/2] Add "BACKGROUND_COLOR" drm property
-To:     Simon Ser <contact@emersion.fr>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Yannick FERTRE - foss <yannick.fertre@foss.st.com>,
-        Philippe CORNU - foss <philippe.cornu@foss.st.com>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Yannick FERTRE <yannick.fertre@st.com>,
-        Raphael GALLAIS-POU <raphael.gallais-pou@st.com>,
-        Philippe CORNU <philippe.cornu@st.com>
-References: <20210707084557.22443-1-raphael.gallais-pou@foss.st.com>
- <31K3xupK1-7HNWorHqIwGwgEJl-1XdFjUQEoNYm6yB-lRoZ8kq5quRji_r3mzPZ0bUayLef6xPfQDiETgZp9lR7vUpDn2nB_37ncSd-J0Wc=@emersion.fr>
- <YOWTCSpOZTGZS2qP@phenom.ffwll.local>
-From:   Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
-Message-ID: <a8f02b4c-b1ea-320e-a6b2-952f4e641794@foss.st.com>
-Date:   Fri, 9 Jul 2021 11:09:24 +0200
+        Fri, 9 Jul 2021 05:14:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1625821903; x=1657357903;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=Pz7WNWySVatMp4bt5JkhaYRlAr6dhFqTdqnq8VFzyUE=;
+  b=zCmP9D+6ZrchL+pnpD92bMIs9Umfr4fPdb7od0CZS8faw/qAUr6b9/OM
+   lkZ5rTlBrM3bi+PeL34h1042YNoGtYoa3lPVStkh1rFKPhPsOpNQCVOyK
+   QZ8OUiDCJoEZz3QRrpIj7hTqScBJlLrTMfl/0M/YKXIwDe+Kh7em68heJ
+   0VNYAUlj4Y+c9wSejooErD3ZtcDkumNjJ6SUONNc2FulGBXZjDSbEuidh
+   FJg2HspPaa62u7HPc3sVIgGzZ/8SA+tnI63c8wub8zhjCpJcbnzLGA+FB
+   b6muwrwnVQZkDr/Iv6n0zYjNmshFsOjejB9e0BMLVQUync0HJnVJD59cS
+   g==;
+IronPort-SDR: 1YdfGPFimhGM/kjXPIh8ghVS/t+e8Hwn+/J8RiRMTM6I53PE25crNpkuW6UicJ+NQs7pNGzzRI
+ o0uyxjm0NyI8say8jTgn/vNPsXyofwduyqg42a5BY1eIguJ95M2TbG4SSsTuRg/oH1Sfp5dtid
+ A34AVH2/LAfg0l0vrJUi4q5alf8MUWT7Q7EPUZTC3QvbBfNgx+pkpdePQkZxeLhABUj36pN3Dv
+ Qxg9KtD3jvhe/m3cX/LA+iMPzYYeY+u2g8+xdyu/cxvybc2NbQeAXC9GI00ASy6rkw8SZPLSEd
+ gCM=
+X-IronPort-AV: E=Sophos;i="5.84,226,1620716400"; 
+   d="scan'208";a="61672924"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 09 Jul 2021 02:11:42 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 9 Jul 2021 02:11:42 -0700
+Received: from [10.12.72.46] (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
+ Transport; Fri, 9 Jul 2021 02:11:40 -0700
+Subject: Re: [PATCH 1/2] mfd: atmel-flexcom: remove #ifdef CONFIG_PM_SLEEP
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
+        <lee.jones@linaro.org>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>, <romain.izard.pro@gmail.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210705113104.579535-1-claudiu.beznea@microchip.com>
+ <20210705113104.579535-2-claudiu.beznea@microchip.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <fcdd81f2-c52d-758f-9788-b5b471302f77@microchip.com>
+Date:   Fri, 9 Jul 2021 11:11:40 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YOWTCSpOZTGZS2qP@phenom.ffwll.local>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210705113104.579535-2-claudiu.beznea@microchip.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Language: en-US
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-09_04:2021-07-09,2021-07-09 signatures=0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 05/07/2021 at 13:31, Claudiu Beznea wrote:
+> Remove compilation flag and use __maybe_unused and pm_ptr instead.
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-On 7/7/21 1:42 PM, Daniel Vetter wrote:
-> On Wed, Jul 07, 2021 at 09:03:03AM +0000, Simon Ser wrote:
->> Hi,
->>
->> Thanks for working on this. Do you have plans for user-space
->> implementations and IGT?
-> Note that these parts are mandatory, and there's a patch floating around
-> further clarifying what's all expected for new properties:
->
-> https://lore.kernel.org/dri-devel/20210706161244.1038592-1-maxime@cerno.tech/
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+
+> ---
+>   drivers/mfd/atmel-flexcom.c | 6 ++----
+>   1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/mfd/atmel-flexcom.c b/drivers/mfd/atmel-flexcom.c
+> index d2f5c073fdf3..962f66dc8813 100644
+> --- a/drivers/mfd/atmel-flexcom.c
+> +++ b/drivers/mfd/atmel-flexcom.c
+> @@ -87,8 +87,7 @@ static const struct of_device_id atmel_flexcom_of_match[] = {
+>   };
+>   MODULE_DEVICE_TABLE(of, atmel_flexcom_of_match);
+>   
+> -#ifdef CONFIG_PM_SLEEP
+> -static int atmel_flexcom_resume(struct device *dev)
+> +static int __maybe_unused atmel_flexcom_resume(struct device *dev)
+>   {
+>   	struct atmel_flexcom *ddata = dev_get_drvdata(dev);
+>   	int err;
+> @@ -105,7 +104,6 @@ static int atmel_flexcom_resume(struct device *dev)
+>   
+>   	return 0;
+>   }
+> -#endif
+>   
+>   static SIMPLE_DEV_PM_OPS(atmel_flexcom_pm_ops, NULL,
+>   			 atmel_flexcom_resume);
+> @@ -114,7 +112,7 @@ static struct platform_driver atmel_flexcom_driver = {
+>   	.probe	= atmel_flexcom_probe,
+>   	.driver	= {
+>   		.name		= "atmel_flexcom",
+> -		.pm		= &atmel_flexcom_pm_ops,
+> +		.pm		= pm_ptr(&atmel_flexcom_pm_ops),
+>   		.of_match_table	= atmel_flexcom_of_match,
+>   	},
+>   };
+> 
 
 
-Hi,
-
-
-We don't usually test with piglit and igt-gpu-tools. Instead, modetest 
-utility of the libdrm is used quite often (as is it the case in order to 
-test this property).
-
-
-We plan to port those tools on our platform before implementing this 
-kind of tests, but it will require a bit more time.
-
-An analysis is currently ongoing.
-
-
-Furthermore, do you have any advice on top of documentation for 
-implementing such tests ?
-
-
-I was also thinking about implementing an option into modetest to ease 
-the use of this drm property (support of hexadecimal values for properties).
-
-
-Regards,
-
-Raphaël
-
->
-> Cheers, Daniel
->
->> Thanks,
->>
->> Simon
+-- 
+Nicolas Ferre
