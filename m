@@ -2,78 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ACB93C236D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 14:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF9FB3C236F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 14:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231285AbhGIMdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 08:33:11 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:35110
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230230AbhGIMdK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 08:33:10 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S231407AbhGIMdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 08:33:54 -0400
+Received: from mga17.intel.com ([192.55.52.151]:44519 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231308AbhGIMdx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 08:33:53 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10039"; a="190071330"
+X-IronPort-AV: E=Sophos;i="5.84,226,1620716400"; 
+   d="scan'208";a="190071330"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2021 05:31:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,226,1620716400"; 
+   d="scan'208";a="492513539"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga001.jf.intel.com with ESMTP; 09 Jul 2021 05:31:06 -0700
+Received: from [10.212.175.145] (kliang2-MOBL.ccr.corp.intel.com [10.212.175.145])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 9E669401BE;
-        Fri,  9 Jul 2021 12:30:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1625833825;
-        bh=7DIMw7gcT9RZtVRuhmo1ekcgPYs2ZhAhj5BeekhHQlA=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=XAzVQQPLTZ8Dpwm2dBhXdyuzdwjTpLdLOt56pTkg53wNNoYfJtgUi4ibX2ZnadA57
-         TS5hWfdWx0EY8/15NhWFtyZPidkLhjNTMXZXBaFHvqhNmMjY0lDThzCqKJ5JkjTZaE
-         fLFyjGxu3zT2KNUOoIq3pvIlQwV2UBGwlDf85jR+xb5S8nJBCk3Bb9d0gDq76APW9r
-         THueWmF9wCcImJ23Sgq78nVTIWsTgVbzckChU7q5U9YlZ08JuATp9TVJvN4nRpEOkk
-         zHVXdWUxuCH/+VW9NpjIDFIBAKnQCQk687JKmMNkJtfq1CcWYgB7Eqcex8V9dNte0P
-         FunWrlDcdbHbw==
-From:   Colin King <colin.king@canonical.com>
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] media: venus: venc: Fix potential null pointer dereference on pointer fmt
-Date:   Fri,  9 Jul 2021 13:30:25 +0100
-Message-Id: <20210709123025.456006-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        by linux.intel.com (Postfix) with ESMTPS id 432FC580911;
+        Fri,  9 Jul 2021 05:31:06 -0700 (PDT)
+Subject: Re: [PATCH] perf/x86/intel: Apply early ACK for small core
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        stable@vger.kernel.org
+References: <1625774073-153697-1-git-send-email-kan.liang@linux.intel.com>
+ <YOgbs6i9Q/EoGDj9@hirez.programming.kicks-ass.net>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <ba2fea7f-0a8c-e80d-6397-87c4901b0eec@linux.intel.com>
+Date:   Fri, 9 Jul 2021 08:31:04 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YOgbs6i9Q/EoGDj9@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
 
-Currently the call to find_format can potentially return a NULL to
-fmt and the nullpointer is later dereferenced on the assignment of
-pixmp->num_planes = fmt->num_planes.  Fix this by adding a NULL pointer
-check and returning NULL for the failure case.
 
-Addresses-Coverity: ("Dereference null return")
-Fixes: aaaa93eda64b ("[media] media: venus: venc: add video encoder files")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/media/platform/qcom/venus/venc.c | 2 ++
- 1 file changed, 2 insertions(+)
+On 7/9/2021 5:49 AM, Peter Zijlstra wrote:
+> On Thu, Jul 08, 2021 at 12:54:33PM -0700, kan.liang@linux.intel.com wrote:
+>> @@ -2921,7 +2920,7 @@ static int intel_pmu_handle_irq(struct pt_regs *regs)
+>>   	 * No known reason to not always do late ACK,
+>>   	 * but just in case do it opt-in.
+>>   	 */
+> 
+> ^^^ comment is now seriously out of date. Can you please update it?
+> 
 
-diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
-index 8dd49d4f124c..1d62e38065d6 100644
---- a/drivers/media/platform/qcom/venus/venc.c
-+++ b/drivers/media/platform/qcom/venus/venc.c
-@@ -183,6 +183,8 @@ venc_try_fmt_common(struct venus_inst *inst, struct v4l2_format *f)
- 		else
- 			return NULL;
- 		fmt = find_format(inst, pixmp->pixelformat, f->type);
-+		if (!fmt)
-+			return NULL;
- 	}
- 
- 	pixmp->width = clamp(pixmp->width, frame_width_min(inst),
--- 
-2.31.1
+Sure, I will update it and send a V2 patch.
 
+Thanks,
+Kan
