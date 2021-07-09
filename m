@@ -2,87 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 881EE3C213A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 11:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F32D93C2140
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 11:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231756AbhGIJKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 05:10:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231573AbhGIJKA (ORCPT
+        id S231781AbhGIJLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 05:11:35 -0400
+Received: from outbound-smtp16.blacknight.com ([46.22.139.233]:33629 "EHLO
+        outbound-smtp16.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229559AbhGIJLe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 05:10:00 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E5A8C0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 02:07:17 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso6825966pjx.1
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 02:07:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/uc9H5zfGGjDARI0YzyvKzeEpD2wOClc3tIHfeaLQnc=;
-        b=M+M0yYUEtZSkXRq1SttoHZPElhf5y1HWt6Uqd2WPOVvykCW2uMKJo+dWqB/b7T/uAQ
-         fjosM8Kqi5f4SzbPGwYgm4oKpWD1wzaolrW0tjV2nOJFb+dnjxqqmOLl52TBqBzgacFW
-         P0+adWQQUibpuf3s3sD9DAyLwdemH1TUc3jSA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/uc9H5zfGGjDARI0YzyvKzeEpD2wOClc3tIHfeaLQnc=;
-        b=j2M0gL/bauQsFaiscDmCfIsawVw0I8G0R3eZRSmpPtppqza2DIo5pNhVXUdwrG5J9p
-         gOa5hETaaotBBTGzf0Gen/KYDFshvyNTeGjVsfSYqz2kC8SrqTMLfoptxwVXntG/OZAo
-         5f2s0yYXWYD+tWcmrwREylSWI823kkdJ8+wS5xO7RwuIiGMvXeRm9YLCsg0/UhYvpkkR
-         dmsPbubw+WBygzwjDvvXVKuWXMCCqB8pQl/HLDnhFIUBbGXsegaBTZdYi7MjgMfYSIqm
-         ZYHFp4Xh02SKOMLevsXjgFMo48GVwU7cVwnfNpBjuTiWoaWydSJT/E/7nEXqWu5W4H2u
-         Mu2g==
-X-Gm-Message-State: AOAM532YEarVgmE7hk+fJhq6AgJcfzxFjBbThsbqxeZ56PxAl261w5Td
-        Wy8mWi3yds2PeGTwhTeTBJJ7jQ==
-X-Google-Smtp-Source: ABdhPJz4I0POPOVj3Wkh8i4WXpamcrEJC3Grht7ICVEj/onjcRzdIfX2RaRoNse5+ehpA/w95ZtaNA==
-X-Received: by 2002:a17:90a:4595:: with SMTP id v21mr9612932pjg.202.1625821636697;
-        Fri, 09 Jul 2021 02:07:16 -0700 (PDT)
-Received: from chromium.org ([2401:fa00:8f:203:735b:c3cc:6957:ae6d])
-        by smtp.gmail.com with ESMTPSA id 21sm4831945pfh.103.2021.07.09.02.07.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 02:07:16 -0700 (PDT)
-Date:   Fri, 9 Jul 2021 18:07:11 +0900
-From:   Tomasz Figa <tfiga@chromium.org>
-To:     Tzung-Bi Shih <tzungbi@google.com>
-Cc:     "kyrie.wu" <kyrie.wu@mediatek.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bin Liu <bin.liu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, xia.jiang@mediatek.com,
-        maoguang.meng@mediatek.com, srv_heupstream@mediatek.com
-Subject: Re: [PATCH v2,3/9] media: mtk-jpegenc: remove redundant code of irq
-Message-ID: <YOgRv143zAfbrlXa@chromium.org>
-References: <1625038079-25815-1-git-send-email-kyrie.wu@mediatek.com>
- <1625038079-25815-4-git-send-email-kyrie.wu@mediatek.com>
- <CA+Px+wUPX0My5+7gBBo5N0Qf4VbpK96=vS8_F6xrRt+-T9O-3g@mail.gmail.com>
+        Fri, 9 Jul 2021 05:11:34 -0400
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp16.blacknight.com (Postfix) with ESMTPS id CC1321C5B59
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 10:08:50 +0100 (IST)
+Received: (qmail 7687 invoked from network); 9 Jul 2021 09:08:50 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 9 Jul 2021 09:08:50 -0000
+Date:   Fri, 9 Jul 2021 10:08:49 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Yang Shi <shy828301@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Revert "mm/page_alloc: make should_fail_alloc_page()
+ static"
+Message-ID: <20210709090848.GW3840@techsingularity.net>
+References: <20210708191128.153796-1-mcroce@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <CA+Px+wUPX0My5+7gBBo5N0Qf4VbpK96=vS8_F6xrRt+-T9O-3g@mail.gmail.com>
+In-Reply-To: <20210708191128.153796-1-mcroce@linux.microsoft.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 07:00:33PM +0800, Tzung-Bi Shih wrote:
-> On Wed, Jun 30, 2021 at 3:28 PM kyrie.wu <kyrie.wu@mediatek.com> wrote:
-> > the func of jpgenc irq handler would not compatible, remove those
-> > code.
-> Need more explanation about why as I believe it is non-backward compatible.
+On Thu, Jul 08, 2021 at 09:11:28PM +0200, Matteo Croce wrote:
+> From: Matteo Croce <mcroce@microsoft.com>
+> 
+> This reverts commit f7173090033c70886d925995e9dfdfb76dbb2441.
+> 
+> Fix an unresolved symbol error when CONFIG_DEBUG_INFO_BTF=y:
+> 
+>   LD      vmlinux
+>   BTFIDS  vmlinux
+> FAILED unresolved symbol should_fail_alloc_page
+> make: *** [Makefile:1199: vmlinux] Error 255
+> make: *** Deleting file 'vmlinux'
+> 
+> Fixes: f7173090033c ("mm/page_alloc: make should_fail_alloc_page() static")
+> Signed-off-by: Matteo Croce <mcroce@microsoft.com>
 
-Right. And it breaks bisection, which is not acceptable.
+Acked-by: Mel Gorman <mgorman@techsingularity.net>
 
-Kyrie, please structure your series in a way that none of the patches
-break any existing functionality.
-
-Best regards,
-Tomasz
+-- 
+Mel Gorman
+SUSE Labs
