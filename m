@@ -2,108 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F1003C25C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A97723C25C5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232144AbhGIOVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 10:21:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57930 "EHLO
+        id S232140AbhGIOWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 10:22:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231797AbhGIOVP (ORCPT
+        with ESMTP id S229548AbhGIOWN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 10:21:15 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB3F8C0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 07:18:31 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id l5so12551870iok.7
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 07:18:31 -0700 (PDT)
+        Fri, 9 Jul 2021 10:22:13 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E28C0613DD;
+        Fri,  9 Jul 2021 07:19:30 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id g14so4578231qvo.7;
+        Fri, 09 Jul 2021 07:19:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KCLoDkkZnsfCEVph7CiGHPbNElkGreiJown+HOpz3Qs=;
-        b=uhWTZf1E4fA+aW1yeP3TZedffaA9AQt0sRu99VSXttjpMhs/jTS9Cmt0UvPzN5s7s4
-         CoJs5Nfl+g68w8+8OpXv1AB5W7OUhwILNinr4pQ4oouOBjonVhlgJgRA1KnJOUvET5Ih
-         shav5mbMhmRVFCZg026/fts9fvR3fxaU1/7abqcYd3DwqguizRd4KvfoW352zR5pHo6y
-         fAOCUEAE9rXDaTS604JfwaO7GLI0gI5J+Wuh805TWwF2J/HKBZNdsp4hYgXGSO1PJixf
-         NLAfmCHe54JLkW7Acx2AHK3X8V9DARw09gYv2vuIc6tPjQaB3A3GC/BpmMhXHOvn23ET
-         szBA==
+        d=gmail.com; s=20161025;
+        h=mime-version:content-transfer-encoding:date:message-id:cc:subject
+         :from:to:references:in-reply-to;
+        bh=AbweScTu+CSzzG5mO4s7QPojjdx+SBj/a+asVBSmxkc=;
+        b=AouQHaKb6+HOpTFdltm93W8St56GH1+1PuGJjLNIpUiwKG9speTcmC40C+LWa1/1+4
+         0ryUgO0gUJohod1AQFCH7KzpugukPVSDEfB9hD4H2q7aF2/9hE+pKWaXiBiBuOzSDEb0
+         eWuOafwk9liKfVYg+p96ZeervMswHHHaLj7lpbKBFF70qr42GLE8qTZk6m0/H3Lp0yfX
+         TQ7WfpijYv2j2FtCB87oFVxcbd2neTsUkUS3P5U9yq6GAF9lMc0ZM0QfxWK0aIrVuI/Q
+         ipChWl9FoyWCfGGCRwRTEcVv4PaMIa2ZrFh2Imkvbgev2q/zHXEO7cn4e1mc9IPWocp3
+         aoBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KCLoDkkZnsfCEVph7CiGHPbNElkGreiJown+HOpz3Qs=;
-        b=oEv5Covdnkeo4sBphcpKOZUtJewv54Kx7EI3uqwOx/f5Kd8hdC1uAQFl+K7SlMJhrc
-         yCHvUM70ksS0jskn9B3N1sEPS5eO4WFvKnOnSivIKrCSO83aWKJ785RLaz3cjCLXT33f
-         CVGfNrq2hnmQ2+6ekXqOkSwz4GVRv5MhyWcaNeaAXFxS5kgQNMffRsBjiNWC7DnHsU2v
-         3yRfWLACE0kDMnRi4m8fSc96yAdmJ7amH5N+d17Z6HABk8hhsHxLgZYGwfkDb2c4949t
-         M+vA8ZwH3jQoADiKYKkItMZDR9uHQAE2MmrpnUTTerBqThFgmPGQ1X4nLouWmsm7XLfS
-         xatA==
-X-Gm-Message-State: AOAM532gaADwlOl6eLKvzPJa7/TrjB+XSOqjxiOSgwtBy3ZYRwrcBw96
-        Dg2gGcvEdPgtuqml1NaJF8E+E3mSTYQ1YQ==
-X-Google-Smtp-Source: ABdhPJygcmrftMzhupUiWoYDNlEDOHdmH6yuCFUQEgnY/Uq3BmA2o/TeNCfQkVOEv8W8Ek+OVpS0gA==
-X-Received: by 2002:a05:6638:4109:: with SMTP id ay9mr4130608jab.81.1625840310893;
-        Fri, 09 Jul 2021 07:18:30 -0700 (PDT)
-Received: from [192.168.1.134] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id e5sm3078212ilu.15.2021.07.09.07.18.29
+        h=x-gm-message-state:mime-version:content-transfer-encoding:date
+         :message-id:cc:subject:from:to:references:in-reply-to;
+        bh=AbweScTu+CSzzG5mO4s7QPojjdx+SBj/a+asVBSmxkc=;
+        b=oelpxtHlN0yqGIY8/wFSv/63CSmGnzfhEg56TX4jyY1DJg6/Urd/hc3WXH6Dolb0Wq
+         URFZ8hb3e4Hlt0g0Trmnsr3kiM2eNq3vGuVaJZ3U+XAzdVRKkJ0jHt/cZN2+tt/X0MtD
+         lsn3iFDI+WBQS6xUCuNqGIAMvExbo15cIvqPql83SYrvyAdY/rv7GJ9weqRbZagjb2qC
+         DC8x98T6nrPofK5aFL2HKbJq2s981gBneRenxJ0fYchmQzs9DY8VTxYaUSkNSWs5yDmM
+         U/h/DUywulKppwiJma3KmS4fCX7JMP77pl5ZlnqLGdp3Jj7lai6qasTcrT42f1rDJ8LV
+         usEw==
+X-Gm-Message-State: AOAM53144HlebYChcG0XzTnCx4RjGmIH6K2rdtMwv5Xa5g3lTnzhfNXz
+        1YkB3diefA+mzss2lNSS2NY=
+X-Google-Smtp-Source: ABdhPJxVob48UIFSG4unefpkzdf7LQRsfXIysItrnGJy6edT/WhDIivxlCG3JhYAzxUZeZVD6VMGCg==
+X-Received: by 2002:ad4:4150:: with SMTP id z16mr12453311qvp.39.1625840369290;
+        Fri, 09 Jul 2021 07:19:29 -0700 (PDT)
+Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
+        by smtp.gmail.com with ESMTPSA id s6sm2462794qkc.125.2021.07.09.07.19.28
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Jul 2021 07:18:30 -0700 (PDT)
-Subject: Re: [PATCH] task_work: return -EBUSY when adding same work
-To:     yaozhenguo <yaozhenguo1@gmail.com>, oleg@redhat.comm
-Cc:     linux-kernel@vger.kernel.org, yaozhenguo@jd.com
-References: <20210709122712.42844-1-yaozhenguo1@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <872612b5-b9c6-43aa-a167-1c204d0f1c5a@kernel.dk>
-Date:   Fri, 9 Jul 2021 08:18:27 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210709122712.42844-1-yaozhenguo1@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Fri, 09 Jul 2021 07:19:28 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Fri, 09 Jul 2021 10:19:27 -0400
+Message-Id: <CCOOB5Y7NI0J.QOZXSZ74JNFI@shaak>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+Subject: RE: [PATCH v1 4/4] dt-bindings: iio: adc: ad7949: add
+ adi,reference-source
+From:   "Liam Beguin" <liambeguin@gmail.com>
+To:     "Sa, Nuno" <Nuno.Sa@analog.com>,
+        "lars@metafoo.de" <lars@metafoo.de>,
+        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        "jic23@kernel.org" <jic23@kernel.org>,
+        "charles-antoine.couret@essensium.com" 
+        <charles-antoine.couret@essensium.com>
+References: <20210708235618.1541335-1-liambeguin@gmail.com>
+ <20210708235618.1541335-5-liambeguin@gmail.com>
+ <PH0PR03MB6366E7E1CBDC15B6B43F8BC699189@PH0PR03MB6366.namprd03.prod.outlook.com>
+In-Reply-To: <PH0PR03MB6366E7E1CBDC15B6B43F8BC699189@PH0PR03MB6366.namprd03.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/9/21 6:27 AM, yaozhenguo wrote:
-> when same work is added to task->task_works list one by one,
-> the list becomes endless loop. So return -EBUSY when this
-> situation happen.
-> 
-> Signed-off-by: yaozhenguo <yaozhenguo1@gmail.com>
-> ---
->  kernel/task_work.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/task_work.c b/kernel/task_work.c
-> index 1698fbe..5061ebf 100644
-> --- a/kernel/task_work.c
-> +++ b/kernel/task_work.c
-> @@ -27,7 +27,7 @@
->   * list is LIFO.
->   *
->   * RETURNS:
-> - * 0 if succeeds or -ESRCH.
-> + * 0 if succeeds or -ESRCH, -EBUSY.
->   */
->  int task_work_add(struct task_struct *task, struct callback_head *work,
->  		  enum task_work_notify_mode notify)
-> @@ -41,6 +41,8 @@ int task_work_add(struct task_struct *task, struct callback_head *work,
->  		head = READ_ONCE(task->task_works);
->  		if (unlikely(head == &work_exited))
->  			return -ESRCH;
-> +		if (unlikely(head == work))
-> +			return -EBUSY;
->  		work->next = head;
->  	} while (cmpxchg(&task->task_works, head, work) != head);
+Hi Nuno,
 
-I don't think there's anything conceptually wrong with this patch, but
-it makes me think that you hit this condition. It's really a bug in the
-caller, of course, is a WARN_ON_ONCE() warranted here? And who was the
-caller?
+On Fri Jul 9, 2021 at 4:15 AM EDT, Sa, Nuno wrote:
+>
+>
+> > -----Original Message-----
+> > From: Liam Beguin <liambeguin@gmail.com>
+> > Sent: Friday, July 9, 2021 1:56 AM
+> > To: liambeguin@gmail.com; lars@metafoo.de; Hennerich, Michael
+> > <Michael.Hennerich@analog.com>; jic23@kernel.org; charles-
+> > antoine.couret@essensium.com
+> > Cc: linux-kernel@vger.kernel.org; linux-iio@vger.kernel.org;
+> > devicetree@vger.kernel.org; robh+dt@kernel.org
+> > Subject: [PATCH v1 4/4] dt-bindings: iio: adc: ad7949: add
+> > adi,reference-source
+> >=20
+> > [External]
+> >=20
+> > From: Liam Beguin <lvb@xiphos.com>
+> >=20
+> > Add bindings documentation for the adi,reference-source property.
+> > This property is required to properly configure the ADC sample request
+> > based on which reference source should be used for the calculation.
+> >=20
+> > Signed-off-by: Liam Beguin <lvb@xiphos.com>
+> > ---
+> >  .../bindings/iio/adc/adi,ad7949.yaml          | 22 +++++++++++++++++++
+> >  1 file changed, 22 insertions(+)
+> >=20
+> > diff --git
+> > a/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
+> > b/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
+> > index 9b56bd4d5510..3f4629281cc8 100644
+> > --- a/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
+> > +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
+> > @@ -35,6 +35,28 @@ properties:
+> >    "#io-channel-cells":
+> >      const: 1
+> >=20
+> > +  adi,reference-select:
+> > +    allOf:
+> > +      - $ref: /schemas/types.yaml#/definitions/uint32
+> > +      - enum: [0, 1, 2, 3, 6, 7]
+> > +
+> > +    default: 7
+> > +    description: |
+> > +      Select the reference voltage source to use when converting
+> > samples.
+> > +      Acceptable values are:
+> > +      - 0: Internal reference and temperature sensor enabled.
+> > +           Vref=3D2.5V, buffered output
+> > +      - 1: Internal reference and temperature sensor enabled.
+> > +           Vref=3D4.096V, buffered output
+> > +      - 2: Use external reference, temperature sensor enabled.
+> > +           Internal buffer disabled
+> > +      - 3: Use external reference, internal buffer and temperature
+> > sensor
+> > +           enabled.
+> > +      - 6: Use external reference, internal buffer and temperature
+> > sensor
+> > +           disabled.
+> > +      - 7: Use external reference, internal buffer enabled.
+> > +           Internal reference and temperature sensor disabled.
+>
+> I think typically the description comes first. I also don't think you
+> need the 'allOf'(not even sure if it will pass the binding check)...
+> Just have '$ref' and 'enum' on the same level.
+>
 
--- 
-Jens Axboe
+Understood, I can reorder the patches so that the bindings come first.
+
+I thought I based that part on the `example-schema.yaml`, but looking at
+it again, it seems like you're right and the AllOf isn't required.
+
+I did run the bindings check on this, but I'll fix it.
+
+Thanks,
+Liam
+
+> - Nuno S=C3=A1
+>
+> >  required:
+> >    - compatible
+> >    - reg
+> > --
+> > 2.30.1.489.g328c10930387
 
