@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F03B23C2B1D
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 00:00:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 456803C2B1E
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 00:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231327AbhGIWDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 18:03:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50310 "EHLO mail.kernel.org"
+        id S231372AbhGIWDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 18:03:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229563AbhGIWDC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229948AbhGIWDC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 9 Jul 2021 18:03:02 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 87A4C613D1;
+        by mail.kernel.org (Postfix) with ESMTPSA id B309B613CA;
         Fri,  9 Jul 2021 22:00:18 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@goodmis.org>)
-        id 1m1yXh-000CJJ-Ja; Fri, 09 Jul 2021 18:00:17 -0400
-Message-ID: <20210709220017.448985284@goodmis.org>
+        id 1m1yXh-000CJr-PW; Fri, 09 Jul 2021 18:00:17 -0400
+Message-ID: <20210709220017.632244614@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Fri, 09 Jul 2021 17:59:55 -0400
+Date:   Fri, 09 Jul 2021 17:59:56 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org,
         linux-rt-users <linux-rt-users@vger.kernel.org>
@@ -35,7 +35,7 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@kernel.org>,
         Valentin Schneider <valentin.schneider@arm.com>,
         Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: [PATCH RT 2/8] sched: Simplify migration_cpu_stop()
+Subject: [PATCH RT 3/8] sched: Collate affine_move_task() stoppers
 References: <20210709215953.122804544@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,138 +50,65 @@ If anyone has any objections, please let me know.
 
 From: Peter Zijlstra <peterz@infradead.org>
 
-commit c20cf065d4a619d394d23290093b1002e27dff86 upstream.
+commit 58b1a45086b5f80f2b2842aa7ed0da51a64a302b upstream.
 
-When affine_move_task() issues a migration_cpu_stop(), the purpose of
-that function is to complete that @pending, not any random other
-p->migration_pending that might have gotten installed since.
-
-This realization much simplifies migration_cpu_stop() and allows
-further necessary steps to fix all this as it provides the guarantee
-that @pending's stopper will complete @pending (and not some random
-other @pending).
+The SCA_MIGRATE_ENABLE and task_running() cases are almost identical,
+collapse them to avoid further duplication.
 
 Fixes: 6d337eab041d ("sched: Fix migrate_disable() vs set_cpus_allowed_ptr()")
 Cc: stable@kernel.org
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Link: https://lkml.kernel.org/r/20210224131355.430014682@infradead.org
+Link: https://lkml.kernel.org/r/20210224131355.500108964@infradead.org
 Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/sched/core.c | 56 +++++++--------------------------------------
- 1 file changed, 8 insertions(+), 48 deletions(-)
+ kernel/sched/core.c | 23 ++++++++---------------
+ 1 file changed, 8 insertions(+), 15 deletions(-)
 
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index a3dea38f410a..d497b13efb53 100644
+index d497b13efb53..6880c300c624 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -1934,8 +1934,8 @@ static struct rq *__migrate_task(struct rq *rq, struct rq_flags *rf,
-  */
- static int migration_cpu_stop(void *data)
- {
--	struct set_affinity_pending *pending;
- 	struct migration_arg *arg = data;
-+	struct set_affinity_pending *pending = arg->pending;
- 	struct task_struct *p = arg->task;
- 	int dest_cpu = arg->dest_cpu;
- 	struct rq *rq = this_rq();
-@@ -1957,25 +1957,6 @@ static int migration_cpu_stop(void *data)
- 	raw_spin_lock(&p->pi_lock);
- 	rq_lock(rq, &rf);
+@@ -2275,30 +2275,23 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
+ 		return -EINVAL;
+ 	}
  
--	pending = p->migration_pending;
--	if (pending && !arg->pending) {
--		/*
--		 * This happens from sched_exec() and migrate_task_to(),
--		 * neither of them care about pending and just want a task to
--		 * maybe move about.
--		 *
--		 * Even if there is a pending, we can ignore it, since
--		 * affine_move_task() will have it's own stop_work's in flight
--		 * which will manage the completion.
--		 *
--		 * Notably, pending doesn't need to match arg->pending. This can
--		 * happen when tripple concurrent affine_move_task() first sets
--		 * pending, then clears pending and eventually sets another
--		 * pending.
--		 */
--		pending = NULL;
+-	if (flags & SCA_MIGRATE_ENABLE) {
+-
+-		refcount_inc(&pending->refs); /* pending->{arg,stop_work} */
+-		p->migration_flags &= ~MDF_PUSH;
+-		task_rq_unlock(rq, p, rf);
+-
+-		stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
+-				    &pending->arg, &pending->stop_work);
+-
+-		return 0;
 -	}
 -
- 	/*
- 	 * If task_rq(p) != rq, it cannot be migrated here, because we're
- 	 * holding rq->lock, if p->on_rq == 0 it cannot get enqueued because
-@@ -1986,31 +1967,20 @@ static int migration_cpu_stop(void *data)
- 			goto out;
- 
- 		if (pending) {
--			p->migration_pending = NULL;
-+			if (p->migration_pending == pending)
-+				p->migration_pending = NULL;
- 			complete = true;
- 		}
- 
--		/* migrate_enable() --  we must not race against SCA */
--		if (dest_cpu < 0) {
--			/*
--			 * When this was migrate_enable() but we no longer
--			 * have a @pending, a concurrent SCA 'fixed' things
--			 * and we should be valid again. Nothing to do.
--			 */
--			if (!pending) {
--				WARN_ON_ONCE(!cpumask_test_cpu(task_cpu(p), &p->cpus_mask));
--				goto out;
--			}
--
-+		if (dest_cpu < 0)
- 			dest_cpu = cpumask_any_distribute(&p->cpus_mask);
--		}
- 
- 		if (task_on_rq_queued(p))
- 			rq = __migrate_task(rq, &rf, p, dest_cpu);
- 		else
- 			p->wake_cpu = dest_cpu;
- 
--	} else if (dest_cpu < 0 || pending) {
-+	} else if (pending) {
+ 	if (task_running(rq, p) || p->state == TASK_WAKING) {
  		/*
- 		 * This happens when we get migrated between migrate_enable()'s
- 		 * preempt_enable() and scheduling the stopper task. At that
-@@ -2025,22 +1995,13 @@ static int migration_cpu_stop(void *data)
- 		 * ->pi_lock, so the allowed mask is stable - if it got
- 		 * somewhere allowed, we're done.
+-		 * Lessen races (and headaches) by delegating
+-		 * is_migration_disabled(p) checks to the stopper, which will
+-		 * run on the same CPU as said p.
++		 * MIGRATE_ENABLE gets here because 'p == current', but for
++		 * anything else we cannot do is_migration_disabled(), punt
++		 * and have the stopper function handle it all race-free.
  		 */
--		if (pending && cpumask_test_cpu(task_cpu(p), p->cpus_ptr)) {
--			p->migration_pending = NULL;
-+		if (cpumask_test_cpu(task_cpu(p), p->cpus_ptr)) {
-+			if (p->migration_pending == pending)
-+				p->migration_pending = NULL;
- 			complete = true;
- 			goto out;
- 		}
++
+ 		refcount_inc(&pending->refs); /* pending->{arg,stop_work} */
++		if (flags & SCA_MIGRATE_ENABLE)
++			p->migration_flags &= ~MDF_PUSH;
+ 		task_rq_unlock(rq, p, rf);
  
--		/*
--		 * When this was migrate_enable() but we no longer have an
--		 * @pending, a concurrent SCA 'fixed' things and we should be
--		 * valid again. Nothing to do.
--		 */
--		if (!pending) {
--			WARN_ON_ONCE(!cpumask_test_cpu(task_cpu(p), &p->cpus_mask));
--			goto out;
--		}
--
- 		/*
- 		 * When migrate_enable() hits a rq mis-match we can't reliably
- 		 * determine is_migration_disabled() and so have to chase after
-@@ -2058,7 +2019,6 @@ static int migration_cpu_stop(void *data)
- 		complete_all(&pending->done);
+ 		stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
+ 				    &pending->arg, &pending->stop_work);
  
- 	/* For pending->{arg,stop_work} */
--	pending = arg->pending;
- 	if (pending && refcount_dec_and_test(&pending->refs))
- 		wake_up_var(&pending->refs);
++		if (flags & SCA_MIGRATE_ENABLE)
++			return 0;
+ 	} else {
  
+ 		if (!is_migration_disabled(p)) {
 -- 
 2.30.2
