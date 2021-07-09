@@ -2,158 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92AB23C2A7A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 22:41:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1F3E3C2A7F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 22:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230354AbhGIUny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 16:43:54 -0400
-Received: from mga09.intel.com ([134.134.136.24]:57984 "EHLO mga09.intel.com"
+        id S229854AbhGIUq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 16:46:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229506AbhGIUnx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 16:43:53 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10040"; a="209735562"
-X-IronPort-AV: E=Sophos;i="5.84,227,1620716400"; 
-   d="scan'208";a="209735562"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2021 13:41:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,227,1620716400"; 
-   d="scan'208";a="450411488"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
-  by orsmga007.jf.intel.com with SMTP; 09 Jul 2021 13:40:58 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Fri, 09 Jul 2021 23:40:57 +0300
-Date:   Fri, 9 Jul 2021 23:40:57 +0300
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Rajeev Nandan <rajeevny@codeaurora.org>,
-        linux-fbdev@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Jani Nikula <jani.nikula@intel.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Krishna Manikandan <mkrishn@codeaurora.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>
-Subject: Re: [v8 0/6] drm: Support basic DPCD backlight in panel-simple and
- add a new panel ATNA33XC20
-Message-ID: <YOi0WbTP0crIkOGy@intel.com>
-References: <1624726268-14869-1-git-send-email-rajeevny@codeaurora.org>
- <CAD=FV=UP9jrS=JG=TuB7+i9QcZv8GOLYdPdb3_KNhEsgapGeww@mail.gmail.com>
+        id S229506AbhGIUqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 16:46:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00ADB613B2;
+        Fri,  9 Jul 2021 20:44:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625863451;
+        bh=CQ1uaoyjJxIqi5KhvkuC3UnaAu1VcgMADpeocbtDAQM=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=qPTyyP4rMGxwAfln56HZ+XI48oPphnsEb01PmcQC5Xn1eLhZIPhsoGyhrSfqub1bI
+         91GOsmWA1d7UNOMjtQRW1dcKSqXhrvWz1antqN3+ZktA5jOZiPt35qaPfSODNagGHu
+         ygNyDlUDiErvlPZWqci69IqgzJQ7tRXICKYYXVHZsY2+JnMgHlcFCsHqMU0+ShmD+8
+         g65r1duNkKCFLDOhizJZnW9Ib2NKTmNoKT7Bgqfka8A+Y5WBfR1WmKdnL0/E/PEECS
+         AZLboic1uZy/yW79CDhfKsVKcBemxvEUwoxu8nZnnVlsbyYF1pcK8GAOo6kJMQ8ibR
+         D55E6qVk+VDdA==
+Subject: Re: [PATCH v2 2/2] Makefile: infer CROSS_COMPILE from SRCARCH for
+ LLVM=1 LLVM_IAS=1
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Miguel Ojeda <ojeda@kernel.org>, Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20210708232522.3118208-1-ndesaulniers@google.com>
+ <20210708232522.3118208-3-ndesaulniers@google.com>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <d0c3d556-9348-f3ff-e932-8fe247da4213@kernel.org>
+Date:   Fri, 9 Jul 2021 13:44:10 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD=FV=UP9jrS=JG=TuB7+i9QcZv8GOLYdPdb3_KNhEsgapGeww@mail.gmail.com>
-X-Patchwork-Hint: comment
+In-Reply-To: <20210708232522.3118208-3-ndesaulniers@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 09, 2021 at 06:54:05AM -0700, Doug Anderson wrote:
-> Hi,
+On 7/8/2021 4:25 PM, 'Nick Desaulniers' via Clang Built Linux wrote:
+> We get constant feedback that the command line invocation of make is too
+> long. CROSS_COMPILE is helpful when a toolchain has a prefix of the
+> target triple, or is an absolute path outside of $PATH, but it's mostly
+> redundant for a given SRCARCH. SRCARCH itself is derived from ARCH
+> (normalized for a few different targets).
 > 
-> On Sat, Jun 26, 2021 at 9:52 AM Rajeev Nandan <rajeevny@codeaurora.org> wrote:
-> >
-> > This series adds the support for the eDP panel that needs the backlight
-> > controlling over the DP AUX channel using DPCD registers of the panel
-> > as per the VESA's standard.
-> >
-> > This series also adds support for the Samsung eDP AMOLED panel that
-> > needs DP AUX to control the backlight, and introduces new delays in the
-> > @panel_desc.delay to support this panel.
-> >
-> > This patch series depends on the following two series:
-> > - Doug's series [1], exposed the DP AUX channel to the panel-simple.
-> > - Lyude's series [2], introduced new drm helper functions for DPCD
-> >   backlight.
-> >
-> > This series is the logical successor to the series [3].
-> >
-> > Changes in v1:
-> > - Created dpcd backlight helper with very basic functionality, added
-> >   backlight registration in the ti-sn65dsi86 bridge driver.
-> >
-> > Changes in v2:
-> > - Created a new DisplayPort aux backlight driver and moved the code from
-> >   drm_dp_aux_backlight.c (v1) to the new driver.
-> >
-> > Changes in v3:
-> > - Fixed module compilation (kernel test bot).
-> >
-> > Changes in v4:
-> > - Added basic DPCD backlight support in panel-simple.
-> > - Added support for a new Samsung panel ATNA33XC20 that needs DPCD
-> >   backlight controlling and has a requirement of delays between enable
-> >   GPIO and regulator.
-> >
-> > Changes in v5:
-> > Addressed review suggestions from Douglas:
-> > - Created a new API drm_panel_dp_aux_backlight() in drm_panel.c
-> > - Moved DP AUX backlight functions from panel-simple.c to drm_panel.c
-> > - panel-simple probe() calls drm_panel_dp_aux_backlight() to create
-> >   backlight when the backlight phandle is not specified in panel DT
-> >   and DP AUX channel is present.
-> > - Added check for drm_edp_backlight_supported() before registering.
-> > - Removed the @uses_dpcd_backlight flag from panel_desc as this
-> >   should be auto-detected.
-> > - Updated comments/descriptions.
-> >
-> > Changes in v6:
-> > - Rebased
-> > - Updated wanrning messages, fixed word wrapping in comments.
-> > - Fixed ordering of memory allocation
-> >
-> > Changes in v7:
-> > - Updated the disable_to_power_off and power_to_enable panel delays
-> > as discovered at <https://crrev.com/c/2966167> (Douglas)
-> >
-> > Changes in v8:
-> > - Now using backlight_is_blank() to get the backlight blank status (Sam Ravnborg)
-> > - Added a new patch #4 to fix the warnings for eDP panel description (Sam Ravnborg)
-> >
-> > [1] https://lore.kernel.org/dri-devel/20210525000159.3384921-1-dianders@chromium.org/
-> > [2] https://lore.kernel.org/dri-devel/20210514181504.565252-1-lyude@redhat.com/
-> > [3] https://lore.kernel.org/dri-devel/1619416756-3533-1-git-send-email-rajeevny@codeaurora.org/
-> >
-> > Rajeev Nandan (6):
-> >   drm/panel: add basic DP AUX backlight support
-> >   drm/panel-simple: Support DP AUX backlight
-> >   drm/panel-simple: Support for delays between GPIO & regulator
-> >   drm/panel-simple: Update validation warnings for eDP panel description
-> >   dt-bindings: display: simple: Add Samsung ATNA33XC20
-> >   drm/panel-simple: Add Samsung ATNA33XC20
-> >
-> >  .../bindings/display/panel/panel-simple.yaml       |   2 +
-> >  drivers/gpu/drm/drm_panel.c                        | 108 +++++++++++++++++++++
-> >  drivers/gpu/drm/panel/panel-simple.c               |  73 +++++++++++++-
-> >  include/drm/drm_panel.h                            |  15 ++-
-> >  4 files changed, 190 insertions(+), 8 deletions(-)
+> If CROSS_COMPILE is not set, simply set --target= for CLANG_FLAGS,
+> KBUILD_CFLAGS, and KBUILD_AFLAGS based on $SRCARCH.
 > 
-> Pushed to drm-misc-next.
+> Previously, we'd cross compile via:
+> $ ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make LLVM=1 LLVM_IAS=1
+> Now:
+> $ ARCH=arm64 make LLVM=1 LLVM_IAS=1
 > 
-> 4bfe6c8f7c23 drm/panel-simple: Add Samsung ATNA33XC20
-> c20dec193584 dt-bindings: display: simple: Add Samsung ATNA33XC20
-> 13aceea56fd5 drm/panel-simple: Update validation warnings for eDP
-> panel description
-> 18a1488bf1e1 drm/panel-simple: Support for delays between GPIO & regulator
-> bfd451403d70 drm/panel-simple: Support DP AUX backlight
-> 10f7b40e4f30 drm/panel: add basic DP AUX backlight support
+> For native builds (not involving cross compilation) we now explicitly
+> specify a target triple rather than rely on the implicit host triple.
+> 
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1399
+> Suggested-by: Arnd Bergmann <arnd@kernel.org>
+> Suggested-by: Nathan Chancellor <nathan@kernel.org>
+> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+I tested arm, arm64, i386, riscv, and x86_64 and verified that the error 
+fired for an unsupported arch. Consider this:
 
-depmod: ERROR: Cycle detected: drm_kms_helper -> drm -> drm_kms_helper
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Tested-by: Nathan Chancellor <nathan@kernel.org>
 
-Looks to be due to drm_edp_backlight_enable().
-
--- 
-Ville Syrjälä
-Intel
+> ---
+> Changes v1 -> v2:
+> * Fix typos in commit message as per Geert and Masahiro.
+> * Use SRCARCH instead of ARCH, simplifying x86 handling, as per
+>    Masahiro. Add his sugguested by tag.
+> * change commit oneline from 'drop' to 'infer.'
+> * Add detail about explicit host --target and relationship of ARCH to
+>    SRCARCH, as per Masahiro.
+> 
+> Changes RFC -> v1:
+> * Rebase onto linux-kbuild/for-next
+> * Keep full target triples since missing the gnueabi suffix messes up
+>    32b ARM. Drop Fangrui's sugguested by tag. Update commit message to
+>    drop references to arm64.
+> * Flush out TODOS.
+> * Add note about -EL/-EB, -m32/-m64.
+> * Add note to Documentation/.
+> 
+>   Documentation/kbuild/llvm.rst |  5 +++++
+>   scripts/Makefile.clang        | 34 ++++++++++++++++++++++++++++++++--
+>   2 files changed, 37 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
+> index b18401d2ba82..80c63dd9a6d1 100644
+> --- a/Documentation/kbuild/llvm.rst
+> +++ b/Documentation/kbuild/llvm.rst
+> @@ -46,6 +46,11 @@ example: ::
+>   
+>   	clang --target=aarch64-linux-gnu foo.c
+>   
+> +When both ``LLVM=1`` and ``LLVM_IAS=1`` are used, ``CROSS_COMPILE`` becomes
+> +unnecessary and can be inferred from ``ARCH``. Example: ::
+> +
+> +	ARCH=arm64 make LLVM=1 LLVM_IAS=1
+> +
+>   LLVM Utilities
+>   --------------
+>   
+> diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
+> index 297932e973d4..956603f56724 100644
+> --- a/scripts/Makefile.clang
+> +++ b/scripts/Makefile.clang
+> @@ -1,6 +1,36 @@
+> -ifneq ($(CROSS_COMPILE),)
+> +# Individual arch/{arch}/Makfiles should use -EL/-EB to set intended endianness
+> +# and -m32/-m64 to set word size based on Kconfigs instead of relying on the
+> +# target triple.
+> +ifeq ($(CROSS_COMPILE),)
+> +ifneq ($(LLVM),)
+> +ifeq ($(LLVM_IAS),1)
+> +ifeq ($(SRCARCH),arm)
+> +CLANG_FLAGS	+= --target=arm-linux-gnueabi
+> +else ifeq ($(SRCARCH),arm64)
+> +CLANG_FLAGS	+= --target=aarch64-linux-gnu
+> +else ifeq ($(SRCARCH),hexagon)
+> +CLANG_FLAGS	+= --target=hexagon-linux-gnu
+> +else ifeq ($(SRCARCH),m68k)
+> +CLANG_FLAGS	+= --target=m68k-linux-gnu
+> +else ifeq ($(SRCARCH),mips)
+> +CLANG_FLAGS	+= --target=mipsel-linux-gnu
+> +else ifeq ($(SRCARCH),powerpc)
+> +CLANG_FLAGS	+= --target=powerpc64le-linux-gnu
+> +else ifeq ($(SRCARCH),riscv)
+> +CLANG_FLAGS	+= --target=riscv64-linux-gnu
+> +else ifeq ($(SRCARCH),s390)
+> +CLANG_FLAGS	+= --target=s390x-linux-gnu
+> +else ifeq ($(SRCARCH),x86)
+> +CLANG_FLAGS	+= --target=x86_64-linux-gnu
+> +else
+> +$(error Specify CROSS_COMPILE or add '--target=' option to scripts/Makefile.clang)
+> +endif # SRCARCH
+> +endif # LLVM_IAS
+> +endif # LLVM
+> +else
+>   CLANG_FLAGS	+= --target=$(notdir $(CROSS_COMPILE:%-=%))
+> -endif
+> +endif # CROSS_COMPILE
+> +
+>   ifeq ($(LLVM_IAS),1)
+>   CLANG_FLAGS	+= -integrated-as
+>   else
+> 
