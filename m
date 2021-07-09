@@ -2,61 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 473993C289B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27EB33C28A9
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbhGIRo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 13:44:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41400 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230185AbhGIRoX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 13:44:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 11625613CA;
-        Fri,  9 Jul 2021 17:41:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625852500;
-        bh=HMjoup3QJmViBUshHyxqOCKugInk17QcT2upaR2x/MU=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=gZa8kT0Xu/nP89WVzw+cUSyeEpJERqauPt4H9oNWoVaIj8Ibq3jwkxa7w+dnl3yj7
-         +sLTgnGn4bu2yo3EvsUCze02blDiXwTiI4LQjZSBfQWPvWxB3yPLwTCH3uuBD317ws
-         C+TjIGZaujK+5jgwRg4AkhgBl2UKZIr+5+OZYyyzEfWgNlqjjUVe1CdriRkhyhS3af
-         emwQ4jQLNgg3PcbGbShcCb2eaCjX8wIzAD00/l3xcLkq51Z0d6I4BQMorT4ckxJyJA
-         6wLE/G384MQ9K18wI5xPjVgNgWZ6F3OFQf6dhgt0ulzcFL3G9IXg5CqZEqhjawKunw
-         13kf1f81oFciw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0B4CA609F6;
-        Fri,  9 Jul 2021 17:41:40 +0000 (UTC)
-Subject: Re: [f2fs-dev] [GIT PULL] f2fs for 5.14-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YOYHejl3CgABOnhP@google.com>
-References: <YOYHejl3CgABOnhP@google.com>
-X-PR-Tracked-List-Id: <linux-f2fs-devel.lists.sourceforge.net>
-X-PR-Tracked-Message-Id: <YOYHejl3CgABOnhP@google.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git tags/f2fs-for-5.14-rc1
-X-PR-Tracked-Commit-Id: 28607bf3aa6f9762b32dc7f1ed0488823c0651b8
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 227c4d507c71acb7bece298a98d83e5b44433f62
-Message-Id: <162585250004.25269.13552956569503185512.pr-tracker-bot@kernel.org>
-Date:   Fri, 09 Jul 2021 17:41:40 +0000
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux F2FS Dev Mailing List 
-        <linux-f2fs-devel@lists.sourceforge.net>
+        id S231573AbhGIRp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 13:45:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231466AbhGIRpy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 13:45:54 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D71AC0613E5
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 10:43:10 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id x70so2315359oif.11
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 10:43:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=4L6LE8ktaz0dOCXgnCDHnv0IIw+yGdBizQsgg4SQBw0=;
+        b=tJISju/9KR1SDzZ9iNBfbSZaLeUMKTVBprNl2w6zSLUoiO2v8uLqxy3BNtKYxjXdsn
+         oVoDYExLLJLlWw8HGIgNxuhKLUXKL0pl8B0ZoIYh6MMz+aPmaUF14kMa4pkSHm65wK3R
+         VGd3Eo5riZrNFeGwQExMZCz11vji9H5+ah5Zobr52PCgRfrMsNkoMzEIi3Lx+w+k8n8R
+         6gWyGmo7TGS4dWuuqKqbNXPjNDxZs8Z40BCI+bQAvCvctDNpUBD/df2/ddA+PaMfmBck
+         Rv07R4vlufpsMQeGUiG+6+MEoVLoojgx5aqWqJy4rOebh4BUu1WgXefggowL5OSDB7lS
+         tcKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=4L6LE8ktaz0dOCXgnCDHnv0IIw+yGdBizQsgg4SQBw0=;
+        b=N9fW+qchyBWHDLCGNhuOsNHxm+Ow8R5J/CCBl2fPE3Fm2Ev/eZhbCrRtXSNQjvRC7K
+         zLYUv6OMO9KiIODyJlxum+ttaa3g5r7EWisoKcTZktnVDwYqi4rQyCsfK/4wSDMbzaWh
+         Il1F21wYxoHW7KDbP1S6dRNx6J1pVHBXH8UOIthNmBjc4C0PGh3RTpfLJ76bcMGSu0l4
+         zO49sC2jXRW+ZBq752zcCg68+Jk4hrpTpBlhSij1FmrCaBMay/iGMmPB7ZaMBv/9wBkB
+         JWSkL+gb4FoKAuQXisZrVst1GFlz4k3BRbHceCiNhE8Y6Nd1OYmurXMf58j4TpqirQfw
+         79+A==
+X-Gm-Message-State: AOAM53024X/W7okA63M5nAuaHyiSclzDyd41UZi7vqtLgaesRzDnwN8m
+        tKpJquWRcj27iEwAXNGcCQdTHA==
+X-Google-Smtp-Source: ABdhPJx9EhrKSE4MsvxYeX7dudoaWQkhNF849lFTZGJcfa+rkaIZMFmhnPjIVgji2r2qRlms8nAGbg==
+X-Received: by 2002:aca:5f8a:: with SMTP id t132mr102862oib.72.1625852589984;
+        Fri, 09 Jul 2021 10:43:09 -0700 (PDT)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 100sm1263446otv.32.2021.07.09.10.43.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Jul 2021 10:43:09 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sibi S <sibis@codeaurora.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/3] dt-bindings: soc: qcom: aoss: Add SC8180X and generic compatible
+Date:   Fri,  9 Jul 2021 10:41:40 -0700
+Message-Id: <20210709174142.1274554-2-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210709174142.1274554-1-bjorn.andersson@linaro.org>
+References: <20210709174142.1274554-1-bjorn.andersson@linaro.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 7 Jul 2021 12:58:50 -0700:
+Add a generic compatible for all versions of the AOSS QMP to the
+binding, in order to allow a single implementation for them and then add
+a specific compatible for the Qualcomm SC8180x platform.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git tags/f2fs-for-5.14-rc1
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/227c4d507c71acb7bece298a98d83e5b44433f62
+Changes since v1:
+- Mention the generic compatible in $subject and message.
 
-Thank you!
+ Documentation/devicetree/bindings/soc/qcom/qcom,aoss-qmp.txt | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
+diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,aoss-qmp.txt b/Documentation/devicetree/bindings/soc/qcom/qcom,aoss-qmp.txt
+index 783dc81b0f26..3747032311a4 100644
+--- a/Documentation/devicetree/bindings/soc/qcom/qcom,aoss-qmp.txt
++++ b/Documentation/devicetree/bindings/soc/qcom/qcom,aoss-qmp.txt
+@@ -18,10 +18,13 @@ power-domains.
+ 	Definition: must be one of:
+ 		    "qcom,sc7180-aoss-qmp"
+ 		    "qcom,sc7280-aoss-qmp"
++		    "qcom,sc8180x-aoss-qmp"
+ 		    "qcom,sdm845-aoss-qmp"
+ 		    "qcom,sm8150-aoss-qmp"
+ 		    "qcom,sm8250-aoss-qmp"
+ 		    "qcom,sm8350-aoss-qmp"
++		    and:
++		    "qcom,aoss-qmp"
+ 
+ - reg:
+ 	Usage: required
+@@ -70,7 +73,7 @@ The following example represents the AOSS side-channel message RAM and the
+ mechanism exposing the power-domains, as found in SDM845.
+ 
+   aoss_qmp: qmp@c300000 {
+-	  compatible = "qcom,sdm845-aoss-qmp";
++	  compatible = "qcom,sdm845-aoss-qmp", "qcom,aoss-qmp";
+ 	  reg = <0x0c300000 0x100000>;
+ 	  interrupts = <GIC_SPI 389 IRQ_TYPE_EDGE_RISING>;
+ 	  mboxes = <&apss_shared 0>;
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.29.2
+
