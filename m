@@ -2,119 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D4D3C2844
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C25F3C2841
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbhGIRaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 13:30:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38536 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229459AbhGIRaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 13:30:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B5CA9613BD;
-        Fri,  9 Jul 2021 17:27:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625851641;
-        bh=hunFLVyp1kxN8ZqWSRfrDVs7gY3ARFHi3Rol7iZHrco=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Wf1XfEtMdv9XkXqtMNKUuDOw4edZpH7GIsgFaNVhsmvtyHeSQuOJHBQRI39IM8SMC
-         yPt4nCUaHxngzGfc0B6B2T73Aqjyiuenivhlq11yXQuQ9rkHErqxJxTOiBAJIhBPMd
-         mkz8LA3Ui4BFpmW+qSspe79/SPtBo5FKGnO7w9d9BF9f8VDaklotsL4zVM3s2d/cLx
-         G7EL694eFvYJb/c8FrqHsk5wG451XNCh9aMMZbkV8Y7OQFCzJvW/Ywmq7Jws7/gfI+
-         Um4ZpFNFXl2AC94i9/zsElLG9eAPRLUvRgq1iL66p7JBuPnaPQE4sZDUxBiiPH5F57
-         b6WY8b5AYItSw==
-Date:   Fri, 9 Jul 2021 18:26:47 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        hdegoede@redhat.com, mgross@linux.intel.com,
-        luzmaximilian@gmail.com, lgirdwood@gmail.com,
-        andy.shevchenko@gmail.com, laurent.pinchart@ideasonboard.com,
-        kieran.bingham@ideasonboard.com
-Subject: Re: [RFC PATCH 1/2] regulator: Add support for software node
- connections
-Message-ID: <20210709172647.GE4112@sirena.org.uk>
-References: <20210708224226.457224-1-djrscally@gmail.com>
- <20210708224226.457224-2-djrscally@gmail.com>
+        id S229552AbhGIR37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 13:29:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229459AbhGIR36 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 13:29:58 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8205DC0613DD
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 10:27:14 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id u25so9164081ljj.11
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 10:27:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A3BFSbignNESj8/rrwZ1G7zuaCPgGVuO823S/jHyGy0=;
+        b=raXro5aqHVk05FqTrS0rJjDV0MZ5+ERPmzQZfuH4nwxpLbqvs33kwRqpd1Y3wfueAn
+         13oMZAwMS/vpxqlRC13oy5NBgkRRbSl3Fu51UXlk4PfttNKOME2w6oJ61aE5yP/SwLqo
+         An96A6j5eCxtZEaUfZYKpsyaPZpufz6QEAQxfBeyaZ5K4AWiDHQPINxpSYf77MWMDGJO
+         O1W4afwnIwmK9CpfZybIzXwmVK8krSTUIV3I/B9kMDzTBKTaseBG/LJ3JQeYJh5Tdm5X
+         cAlwgtTckxjr7yAQGgJc1AdMzb5aa+aBL5xSvmoV25k/DvgyefzRjrWC2G3AHuRPtNWA
+         0iSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A3BFSbignNESj8/rrwZ1G7zuaCPgGVuO823S/jHyGy0=;
+        b=gAIulI1Snf4EchnKWHRPb5gTNg294J8OaGDK6mRdeCFTts/BrFRYcfUBQZHLVw6nAK
+         kFJpfhkUpkBulWiebMBgY6EESuKXfO3y7UoHedWsLhAmgocBuSxRLKlWETUKQrriniV6
+         3j8XqgpEwOTK37CbK7dHZIlnzprLgR/KzExsI4ybf7mao50zVZg5jdHX+oYcC+gwE9jD
+         yrAVdg9YBMN1qIlexYl9WDofg/L1AlGEhKlXaCB+2gPgz4BuU5mWG5LJQzHAiUlUHwuW
+         qKN619B64DnZNDuMsFrwpljfkDSsnw8VJHPWxsqO05ORaOjqCWNBwWclSL1fdh7APomi
+         VACg==
+X-Gm-Message-State: AOAM533SICpwKzVHZvXjRi9Lz25MyAI88nsLMMu3OOqurKpnE9m1GcTk
+        Z6muNjEzEWvrTWr/354mvMtAsd8DMrUUbiy5SymnAQ==
+X-Google-Smtp-Source: ABdhPJxSTF27Vf8rpwGTyQEHiZoBoQsGHn5uAdCOrMmM2Yc/JJMk/btI8xEmJa8aPs/xwKR6xmWlXa18b7sKsYeZYBM=
+X-Received: by 2002:a2e:8215:: with SMTP id w21mr29626159ljg.160.1625851632594;
+ Fri, 09 Jul 2021 10:27:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="SNIs70sCzqvszXB4"
-Content-Disposition: inline
-In-Reply-To: <20210708224226.457224-2-djrscally@gmail.com>
-X-Cookie: This fortune intentionally left blank.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210709171554.3494654-1-surenb@google.com>
+In-Reply-To: <20210709171554.3494654-1-surenb@google.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 9 Jul 2021 10:27:01 -0700
+Message-ID: <CALvZod4=WD9suY1J+DKwOjxyCrCYvH=eQVPAjvZ2JJ2Qn3C2Zg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] mm, memcg: inline mem_cgroup_{charge/uncharge} to
+ improve disabled memcg config
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Yang Shi <shy828301@gmail.com>, alexs@kernel.org,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Jens Axboe <axboe@kernel.dk>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alistair Popple <apopple@nvidia.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 9, 2021 at 10:15 AM Suren Baghdasaryan <surenb@google.com> wrote:
+>
+> Inline mem_cgroup_{charge/uncharge} and mem_cgroup_uncharge_list functions
+> functions to perform mem_cgroup_disabled static key check inline before
+> calling the main body of the function. This minimizes the memcg overhead
+> in the pagefault and exit_mmap paths when memcgs are disabled using
+> cgroup_disable=memory command-line option.
+> This change results in ~0.4% overhead reduction when running PFT test
+> comparing {CONFIG_MEMCG=n} against {CONFIG_MEMCG=y, cgroup_disable=memory}
+> configurationon on an 8-core ARM64 Android device.
+>
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 
---SNIs70sCzqvszXB4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Jul 08, 2021 at 11:42:25PM +0100, Daniel Scally wrote:
-
-> --- a/drivers/regulator/Makefile
-> +++ b/drivers/regulator/Makefile
-> @@ -9,6 +9,7 @@ obj-$(CONFIG_OF) += of_regulator.o
->  obj-$(CONFIG_REGULATOR_FIXED_VOLTAGE) += fixed.o
->  obj-$(CONFIG_REGULATOR_VIRTUAL_CONSUMER) += virtual.o
->  obj-$(CONFIG_REGULATOR_USERSPACE_CONSUMER) += userspace-consumer.o
-> +obj-$(CONFIG_REGULATOR_SWNODE) += swnode_regulator.o
-
-This appears to be sorted with regulator drivers but as far as I
-understand it this is not a driver?  I'd put it next to the OF file.
-
-> @@ -1785,6 +1788,22 @@ static struct regulator_dev *regulator_dev_lookup(struct device *dev,
-
-The line numbers here look off...
-
-> +++ b/drivers/regulator/swnode_regulator.c
-> @@ -0,0 +1,111 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Author: Dan Scally <djrscally@gmail.com> */
-> +
-
-Please make the entire comment a C++ one so things look more
-intentional.
-
-> +static struct fwnode_handle *
-> +regulator_swnode_get_init_node(struct fwnode_handle *fwnode,
-> +			       const struct regulator_desc *desc)
-> +{
-> +	const struct software_node *parent, *child;
-> +
-> +	parent = to_software_node(fwnode->secondary);
-> +
-> +	if (desc->regulators_node)
-> +		child = software_node_find_by_name(parent,
-> +						   desc->regulators_node);
-> +	else
-> +		child = software_node_find_by_name(parent, desc->name);
-> +
-> +	return software_node_fwnode(child);
-> +}
-
-Nothing is documenting what the binding for these swnodes is supposed to
-be so it's hard to tell if any of this is correct and makes sense, nor
-how someone is supposed to take this stuff and integrate it into a
-system.  I think this needs some more explicit documentation of what's
-going on adding to the tree, this will help with review and help anyone
-who needs to use this stuff figure out how to do so.
-
---SNIs70sCzqvszXB4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDohtYACgkQJNaLcl1U
-h9CaHQf9Edt3jgRyz64Jm4Y5r8Skn4xhgKSAiteLjulAe+KgRAPsBgrRwAd3sqbf
-5PWZ7hkFBUC7w3XEyuZgDrf38n7cS8G2bREIriH+yjxsvTQY3HhgmUEDokKooVei
-LP1xvCIefyjnraWftsrUvXu61WgqgkuSEJZukhR8e71XbmSIpLNfZ5o2mMZkgfpJ
-+F66ARC2BoWZCsEfG4xbeJz21X8odvNIcDmgxegLuYeaTVx4gusike8N8tE1rp/T
-WQ064w0XnZVrcYs+u8eCHzXJOBbiLV7aDO8hs9xnsMHYWUIDFRyWYFZzUY8eJzUG
-g5fKXBObe504GP1a6iS+RndCQzULyQ==
-=agHe
------END PGP SIGNATURE-----
-
---SNIs70sCzqvszXB4--
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
