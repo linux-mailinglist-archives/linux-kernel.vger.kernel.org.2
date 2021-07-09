@@ -2,146 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2375A3C27C7
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 18:49:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC6113C27C8
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 18:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229563AbhGIQwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 12:52:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35652 "EHLO
+        id S229662AbhGIQyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 12:54:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhGIQw3 (ORCPT
+        with ESMTP id S229459AbhGIQyH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 12:52:29 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6032CC0613E5
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 09:49:45 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id h1so5316845plf.6
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 09:49:45 -0700 (PDT)
+        Fri, 9 Jul 2021 12:54:07 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2809DC0613E5
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 09:51:24 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id p1so24425762lfr.12
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 09:51:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=y8ksef0vKPdeGZiNhS+5SAqzB66QJi7/d7HDlmfKEi0=;
-        b=FcsaLTHBk7svPb76TOzEFx6WM9ZjHU1kpCMOBH2/zRIGGeIrdUHC+MC6r7To6OMsTg
-         TLoPCKGbLNt9Ifig3FcGfc9HtaOOWRd1Gk+erZ/U1A4K+10CshBvNH9Zgf4/GZ6j3mGc
-         kIK3MqKa0bayr1N3tvspTxbXqq1ODv9FIW845O1E5JFnKBjJXr93YOUMaXsCWKvcdAOx
-         T4ZqvW+tmSdkL6IYQEu+sT912VPb2Tw8kpq2L7blv+L4ZClgMDlidsEf8DvNknuxR+v4
-         5bhwjGU6qIJdMOC5xuRPkJTKGYdhIzDV/VDr3gZGHrC2vEXm7yb1cm+f57iqoed28F3K
-         2zAw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=POScCYO3L5Ni7K5IJDMuBcM7y+WItrME8kkxfvws3ek=;
+        b=EU9r8vWEoGkrd+oqDc3JWjks89a7hhBpvolnGLsELcbw9Mngci6v80+RhlCzO/9AuJ
+         6y4vqC5jmWJIR3TGTQPajSJ+RDQ79o+gDU/OXoYJEEi5kNfzsC4wkJef/dYIjwbAebTc
+         NQhsy0KfaPm+ob3cOAdYCFnxPDMPTYrSeg8gM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=y8ksef0vKPdeGZiNhS+5SAqzB66QJi7/d7HDlmfKEi0=;
-        b=RMTWxajj/84KsRYfyAXx89+xabJwVagMQFCQ/aeMlB+MFCZvRCNCW8OV4uEjHctLKM
-         CfWGQN23VpfbMEhwyDbzsfOLWYkIJeIYMaVZFQp0ym1QuPJQ5yGyugdg7wU1jydgzs95
-         BcFB0WQWBhDwHV7Cjz+5WTBKHixet0XJhn99ACEQbulzuPAsSr3Z2dVXmwFbO0OukvQJ
-         NmLjvptzI4cRGOoMTjQ3gTucKZxaPmOAsik3REI1oKUAYZGf+6XWc2RsVh6PxNJT8J8J
-         FZJ8t/TCBh8LQzsNY6LXUczvU7D7kSQvz1OZFOhUpTQXyiyAlMSzr5V0dnuaIHwgAZJ0
-         Tzaw==
-X-Gm-Message-State: AOAM532QgVqz67WcQooBbZzpWdp9dq2Hdvtm7N+etFQfJGN2qtIgClIg
-        nRlWQS1IUiQk6Z+QR349ReGU7g==
-X-Google-Smtp-Source: ABdhPJxLFKisA5KIw7gy1VEKuu4c2i/gr9LvfhmEAFUYyLq5nFWmE+7L34oKiMBaR47r9PExUwk4Eg==
-X-Received: by 2002:a17:902:fe0a:b029:11d:81c9:3adf with SMTP id g10-20020a170902fe0ab029011d81c93adfmr31730627plj.0.1625849384437;
-        Fri, 09 Jul 2021 09:49:44 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id i27sm7936474pgl.78.2021.07.09.09.49.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 09:49:43 -0700 (PDT)
-Date:   Fri, 9 Jul 2021 16:49:40 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH] KVM: X86: Also reload the debug registers before
- kvm_x86->run() when the host is using them
-Message-ID: <YOh+JBWBDtFQHNMW@google.com>
-References: <20210628172632.81029-1-jiangshanlai@gmail.com>
- <46e0aaf1-b7cd-288f-e4be-ac59aa04908f@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=POScCYO3L5Ni7K5IJDMuBcM7y+WItrME8kkxfvws3ek=;
+        b=NNuTvaHjIVVxkKaAFgvjidBlH4qqJyU9RU4cJRJKSs+B8EJmGNL+pGguBlWlcmlNMR
+         HpqseLV9MTTEWczOh36VicpJO+qNKr1RKiZwotyBPZciQWSf3oAgtZ8KQEt+Es1d8I9+
+         nh/aUJNf1BKR4GZcjSjfbBDjA21Yr7c8Eqz63G6Xa9SjVx+clUn++zw2HU7jhekIqjEE
+         5xx+M+Sk1u2GtRVf/wECTeqSd4gkbJxXPCNSCWCwPPJQzKhJvOrvB4NnuWoONc5LCkSJ
+         X2tW99/5k5OnCiRpHntRMIUAaH/sAAphYg2KOd4H2vE9zlfuRfGL7OEEe8s/AXVydAID
+         znwg==
+X-Gm-Message-State: AOAM531uANCB0sWR6YTF1d+G0Kds2/WtizzexlJaJ+pVNgf5qg+GJwAK
+        cnoQNOffXOwYfrPtGVYlZ9VwoZcS5oteGC1uYcE=
+X-Google-Smtp-Source: ABdhPJwE1Racd3BB/dDjQlurk4sgBtHrr7Y6HGtHfxhcKApjfl/piwJjQFvmP2FnJW0f5RtwORRAiw==
+X-Received: by 2002:ac2:4356:: with SMTP id o22mr30682004lfl.309.1625849482335;
+        Fri, 09 Jul 2021 09:51:22 -0700 (PDT)
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
+        by smtp.gmail.com with ESMTPSA id d12sm504190lfv.204.2021.07.09.09.51.21
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Jul 2021 09:51:21 -0700 (PDT)
+Received: by mail-lj1-f170.google.com with SMTP id s18so9012128ljg.7
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 09:51:21 -0700 (PDT)
+X-Received: by 2002:a2e:a276:: with SMTP id k22mr29161691ljm.465.1625849481318;
+ Fri, 09 Jul 2021 09:51:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <46e0aaf1-b7cd-288f-e4be-ac59aa04908f@redhat.com>
+References: <6809750d3e746fb0732995bb9a0c1fa846bbd486.camel@hammerspace.com>
+In-Reply-To: <6809750d3e746fb0732995bb9a0c1fa846bbd486.camel@hammerspace.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 9 Jul 2021 09:51:05 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjvNb9GVdbWz+xxY274kuw=xkYBoBYHHHO7tscr1V0YAQ@mail.gmail.com>
+Message-ID: <CAHk-=wjvNb9GVdbWz+xxY274kuw=xkYBoBYHHHO7tscr1V0YAQ@mail.gmail.com>
+Subject: Re: [GIT PULL] Please pull NFS client changes for 5.14
+To:     Trond Myklebust <trondmy@hammerspace.com>
+Cc:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 08, 2021, Paolo Bonzini wrote:
-> On 28/06/21 19:26, Lai Jiangshan wrote:
-> > From: Lai Jiangshan <laijs@linux.alibaba.com>
-> > 
-> > When the host is using debug registers but the guest is not using them
-> > nor is the guest in guest-debug state, the kvm code does not reset
-> > the host debug registers before kvm_x86->run().  Rather, it relies on
-> > the hardware vmentry instruction to automatically reset the dr7 registers
-> > which ensures that the host breakpoints do not affect the guest.
-> > 
-> > But there are still problems:
-> > 	o The addresses of the host breakpoints can leak into the guest
-> > 	  and the guest may use these information to attack the host.
-> 
-> I don't think this is true, because DRn reads would exit (if they don't,
-> switch_db_regs would be nonzero).  But otherwise it makes sense to do at
-> least the DR7 write, and we might as well do all of them.
-> 
-> > 	o It violates the non-instrumentable nature around VM entry and
-> > 	  exit.  For example, when a host breakpoint is set on
-> > 	  vcpu->arch.cr2, #DB will hit aftr kvm_guest_enter_irqoff().
-> > 
-> > Beside the problems, the logic is not consistent either. When the guest
-> > debug registers are active, the host breakpoints are reset before
-> > kvm_x86->run(). But when the guest debug registers are inactive, the
-> > host breakpoints are delayed to be disabled.  The host tracing tools may
-> > see different results depending on there is any guest running or not.
-> 
-> More precisely, the host tracing tools may see different results depending
-> on what the guest is doing.
-> 
-> Queued (with fixed commit message), thanks!
-> 
-> Paolo
-> 
-> > To fix the problems, we also reload the debug registers before
-> > kvm_x86->run() when the host is using them whenever the guest is using
-> > them or not.
-> > 
-> > Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-> > ---
-> >   arch/x86/kvm/x86.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index b594275d49b5..cce316655d3c 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -9320,7 +9320,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
-> >   	if (test_thread_flag(TIF_NEED_FPU_LOAD))
-> >   		switch_fpu_return();
-> > -	if (unlikely(vcpu->arch.switch_db_regs)) {
-> > +	if (unlikely(vcpu->arch.switch_db_regs || hw_breakpoint_active())) {
-> >   		set_debugreg(0, 7);
+On Thu, Jul 8, 2021 at 11:16 AM Trond Myklebust <trondmy@hammerspace.com> wrote:
+>
+> Please note that this branch was rebased today. The reason was I discovered
+> that one of the topic branches that was merged contained some duplicated patches
+> from the main branch (mea culpa). So the rebase simply removed those duplicates
+> from the topic branch.
 
-I would prefer zero only dr7, e.g.
+Please don't rebase just for pointless details like this.
 
-	if (unlikely(vcpu->arch.switch_db_regs)) {
-		...
-	} else if (hw_breakpoint_active()) {
-		set_debugreg(0, 7);
-	}
+Duplicate patches aren't a problem, and we have them all the time.
 
-Stuffing all DRs isn't a bug because hw_breakpoint_restore() will restore all DRs,
-but loading stale state into DRs is weird.
+Yes, they can cause annoying merge conflicts (not on their own -
+identical patches will merge just fine - but if there are then *other*
+changes to the same area). But it's seldom all that big of a deal, and
+if there's just a couple of duplicates, then rebasing is much _worse_
+than the fix.
 
-> >   		set_debugreg(vcpu->arch.eff_db[0], 0);
-> >   		set_debugreg(vcpu->arch.eff_db[1], 1);
-> > 
-> 
+If there were *tons* of duplicate patches, and you have some workflow
+issue, that's one thing - and then you need to fix the workflow. But
+particularly for just a couple of patches, rebasing and losing all the
+testing is really entirely the wrong thing to do.
+
+In other words: only rebase for *catastrophic* stuff. Only yo fix
+things that are actively broken. Not for some minor technical issue.
+
+I've pulled this, but please avoid this in the future.
+
+               Linus
