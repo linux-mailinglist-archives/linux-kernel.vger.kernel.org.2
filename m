@@ -2,139 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CEF63C26C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 17:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 072BE3C26D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 17:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232351AbhGIP1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 11:27:11 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:59032
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231976AbhGIP1J (ORCPT
+        id S232363AbhGIPac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 11:30:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42090 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232288AbhGIPaa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 11:27:09 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Fri, 9 Jul 2021 11:30:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625844467;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RGgvRb7ldJO3RjHChSuXIroDn41KTYr6B2QiWafJ5SM=;
+        b=gjIzwtvpRWlWUyHG2yMOfGneoEuqioSlCswA0naEFcaKTkDD1QdFu93dTmCh5CpTxsQBQa
+        ACw56XlvikwazTEfWaiTsyGga696C8hkdrZh3NsDvfSxIfNk3m9du/ior80n3JWYS2G9rQ
+        /ToKzaLok1UdntvUjavDmQNgUrsTdiI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-232-nwwfoorGMTe-hi9eoWaHFQ-1; Fri, 09 Jul 2021 11:27:43 -0400
+X-MC-Unique: nwwfoorGMTe-hi9eoWaHFQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id E142B404A0;
-        Fri,  9 Jul 2021 15:24:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1625844265;
-        bh=JWX8SivwH7nNO5NjJ1Y3vDYXQvqvNAJL4GkZFF3gAA4=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=ePrbXVj2d8tzWtAZ72kOZKJnJnFlv8oFGJ8pLEqAujdtH/MVyeDdOIW24eJQzHqVx
-         NCj4baz7sedv+K8XwH+yuUhLnZJkbGbgvet30xNO78qDL98u23kHbOpcUxMS9DpbXY
-         ovm9gwL1yCTDV9r6T76ktqqHTrnSYiMOcwX1a1muEcqSF7PNtaX/rPBTk+XccNOKuF
-         A7Vqy2ZlYV7bQEBn0dTLNJc22vc4fDDPdGEab/XGVxWJ2y51em27e+xgc4Rqwa4uw6
-         sQocDG/xdakcBM0RoLO880rIWftu5WVfE4OHeTWnNJJmLohqayDxkg2VR0x4yZOkhw
-         I50Ch2StUcfjA==
-From:   Colin King <colin.king@canonical.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: codecs: lpass-rx-macro: clean up for-loop indentation in switch statement
-Date:   Fri,  9 Jul 2021 16:24:24 +0100
-Message-Id: <20210709152424.460446-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BF09F1842154;
+        Fri,  9 Jul 2021 15:27:41 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-116-62.rdu2.redhat.com [10.10.116.62])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 11DEA5C1A3;
+        Fri,  9 Jul 2021 15:27:37 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 7364622054F; Fri,  9 Jul 2021 11:27:37 -0400 (EDT)
+Date:   Fri, 9 Jul 2021 11:27:37 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, virtio-fs@redhat.com, dwalsh@redhat.com,
+        dgilbert@redhat.com, casey.schaufler@intel.com,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        tytso@mit.edu, miklos@szeredi.hu, gscrivan@redhat.com,
+        jack@suse.cz, Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH v2 1/1] xattr: Allow user.* xattr on symlink and special
+ files
+Message-ID: <20210709152737.GA398382@redhat.com>
+References: <20210708175738.360757-1-vgoyal@redhat.com>
+ <20210708175738.360757-2-vgoyal@redhat.com>
+ <20210709091915.2bd4snyfjndexw2b@wittgenstein>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210709091915.2bd4snyfjndexw2b@wittgenstein>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Fri, Jul 09, 2021 at 11:19:15AM +0200, Christian Brauner wrote:
+> On Thu, Jul 08, 2021 at 01:57:38PM -0400, Vivek Goyal wrote:
+> > Currently user.* xattr are not allowed on symlink and special files.
+> > 
+> > man xattr and recent discussion suggested that primary reason for this
+> > restriction is how file permissions for symlinks and special files
+> > are little different from regular files and directories.
+> > 
+> > For symlinks, they are world readable/writable and if user xattr were
+> > to be permitted, it will allow unpriviliged users to dump a huge amount
+> > of user.* xattrs on symlinks without any control.
+> > 
+> > For special files, permissions typically control capability to read/write
+> > from devices (and not necessarily from filesystem). So if a user can
+> > write to device (/dev/null), does not necessarily mean it should be allowed
+> > to write large number of user.* xattrs on the filesystem device node is
+> > residing in.
+> > 
+> > This patch proposes to relax the restrictions a bit and allow file owner
+> > or priviliged user (CAP_FOWNER), to be able to read/write user.* xattrs
+> > on symlink and special files.
+> > 
+> > virtiofs daemon has a need to store user.* xatrrs on all the files
+> > (including symlinks and special files), and currently that fails. This
+> > patch should help.
+> > 
+> > Link: https://lore.kernel.org/linux-fsdevel/20210625191229.1752531-1-vgoyal@redhat.com/
+> > Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+> > ---
+> 
+> Seems reasonable and useful.
+> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+> 
+> One question, do all filesystem supporting xattrs deal with setting them
+> on symlinks/device files correctly?
 
-The for-loop is not indented enough and needs one more level
-of indentation. Add in the indentation across the block of code.
+Wrote a simple bash script to do setfattr/getfattr user.foo xattr on
+symlink and device node on ext4, xfs and btrfs and it works fine.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/soc/codecs/lpass-rx-macro.c | 65 ++++++++++++++++---------------
- 1 file changed, 33 insertions(+), 32 deletions(-)
+https://github.com/rhvgoyal/misc/blob/master/generic-programs/user-xattr-special-files.sh
 
-diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
-index 3622961f7c2c..196b06898eeb 100644
---- a/sound/soc/codecs/lpass-rx-macro.c
-+++ b/sound/soc/codecs/lpass-rx-macro.c
-@@ -1722,42 +1722,43 @@ static int rx_macro_digital_mute(struct snd_soc_dai *dai, int mute, int stream)
- 	case RX_MACRO_AIF2_PB:
- 	case RX_MACRO_AIF3_PB:
- 	case RX_MACRO_AIF4_PB:
--	for (j = 0; j < INTERP_MAX; j++) {
--		reg = CDC_RX_RXn_RX_PATH_CTL(j);
--		mix_reg = CDC_RX_RXn_RX_PATH_MIX_CTL(j);
--		dsm_reg = CDC_RX_RXn_RX_PATH_DSM_CTL(j);
--
--		if (mute) {
--			snd_soc_component_update_bits(component, reg,
--						      CDC_RX_PATH_PGA_MUTE_MASK,
--						      CDC_RX_PATH_PGA_MUTE_ENABLE);
--			snd_soc_component_update_bits(component, mix_reg,
--						      CDC_RX_PATH_PGA_MUTE_MASK,
--						      CDC_RX_PATH_PGA_MUTE_ENABLE);
--		} else {
--			snd_soc_component_update_bits(component, reg,
--						      CDC_RX_PATH_PGA_MUTE_MASK, 0x0);
--			snd_soc_component_update_bits(component, mix_reg,
--						      CDC_RX_PATH_PGA_MUTE_MASK, 0x0);
--		}
--
--		if (j == INTERP_AUX)
--			dsm_reg = CDC_RX_RX2_RX_PATH_DSM_CTL;
-+		for (j = 0; j < INTERP_MAX; j++) {
-+			reg = CDC_RX_RXn_RX_PATH_CTL(j);
-+			mix_reg = CDC_RX_RXn_RX_PATH_MIX_CTL(j);
-+			dsm_reg = CDC_RX_RXn_RX_PATH_DSM_CTL(j);
-+
-+			if (mute) {
-+				snd_soc_component_update_bits(component, reg,
-+							      CDC_RX_PATH_PGA_MUTE_MASK,
-+							      CDC_RX_PATH_PGA_MUTE_ENABLE);
-+				snd_soc_component_update_bits(component, mix_reg,
-+							      CDC_RX_PATH_PGA_MUTE_MASK,
-+							      CDC_RX_PATH_PGA_MUTE_ENABLE);
-+			} else {
-+				snd_soc_component_update_bits(component, reg,
-+							      CDC_RX_PATH_PGA_MUTE_MASK, 0x0);
-+				snd_soc_component_update_bits(component, mix_reg,
-+							      CDC_RX_PATH_PGA_MUTE_MASK, 0x0);
-+			}
- 
--		int_mux_cfg0 = CDC_RX_INP_MUX_RX_INT0_CFG0 + j * 8;
--		int_mux_cfg1 = int_mux_cfg0 + 4;
--		int_mux_cfg0_val = snd_soc_component_read(component, int_mux_cfg0);
--		int_mux_cfg1_val = snd_soc_component_read(component, int_mux_cfg1);
-+			if (j == INTERP_AUX)
-+				dsm_reg = CDC_RX_RX2_RX_PATH_DSM_CTL;
- 
--		if (snd_soc_component_read(component, dsm_reg) & 0x01) {
--			if (int_mux_cfg0_val || (int_mux_cfg1_val & 0xF0))
--				snd_soc_component_update_bits(component, reg, 0x20, 0x20);
--			if (int_mux_cfg1_val & 0x0F) {
--				snd_soc_component_update_bits(component, reg, 0x20, 0x20);
--				snd_soc_component_update_bits(component, mix_reg, 0x20, 0x20);
-+			int_mux_cfg0 = CDC_RX_INP_MUX_RX_INT0_CFG0 + j * 8;
-+			int_mux_cfg1 = int_mux_cfg0 + 4;
-+			int_mux_cfg0_val = snd_soc_component_read(component, int_mux_cfg0);
-+			int_mux_cfg1_val = snd_soc_component_read(component, int_mux_cfg1);
-+
-+			if (snd_soc_component_read(component, dsm_reg) & 0x01) {
-+				if (int_mux_cfg0_val || (int_mux_cfg1_val & 0xF0))
-+					snd_soc_component_update_bits(component, reg, 0x20, 0x20);
-+				if (int_mux_cfg1_val & 0x0F) {
-+					snd_soc_component_update_bits(component, reg, 0x20, 0x20);
-+					snd_soc_component_update_bits(component, mix_reg, 0x20,
-+								      0x20);
-+				}
- 			}
- 		}
--	}
- 		break;
- 	default:
- 		break;
--- 
-2.31.1
+I probably can add some more filesystems to test.
+
+Thanks
+Vivek
+
+> 
+> >  fs/xattr.c | 10 ++++++----
+> >  1 file changed, 6 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/fs/xattr.c b/fs/xattr.c
+> > index 5c8c5175b385..2f1855c8b620 100644
+> > --- a/fs/xattr.c
+> > +++ b/fs/xattr.c
+> > @@ -120,12 +120,14 @@ xattr_permission(struct user_namespace *mnt_userns, struct inode *inode,
+> >  	}
+> >  
+> >  	/*
+> > -	 * In the user.* namespace, only regular files and directories can have
+> > -	 * extended attributes. For sticky directories, only the owner and
+> > -	 * privileged users can write attributes.
+> > +	 * In the user.* namespace, for symlinks and special files, only
+> > +	 * the owner and priviliged users can read/write attributes.
+> > +	 * For sticky directories, only the owner and privileged users can
+> > +	 * write attributes.
+> >  	 */
+> >  	if (!strncmp(name, XATTR_USER_PREFIX, XATTR_USER_PREFIX_LEN)) {
+> > -		if (!S_ISREG(inode->i_mode) && !S_ISDIR(inode->i_mode))
+> > +		if (!S_ISREG(inode->i_mode) && !S_ISDIR(inode->i_mode) &&
+> > +		    !inode_owner_or_capable(mnt_userns, inode))
+> >  			return (mask & MAY_WRITE) ? -EPERM : -ENODATA;
+> >  		if (S_ISDIR(inode->i_mode) && (inode->i_mode & S_ISVTX) &&
+> >  		    (mask & MAY_WRITE) &&
+> > -- 
+> > 2.25.4
+> > 
+> 
 
