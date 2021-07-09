@@ -2,90 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41B883C1FF0
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 09:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3436B3C1FF3
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 09:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbhGIHXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 03:23:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230121AbhGIHXS (ORCPT
+        id S231223AbhGIHXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 03:23:31 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:53046 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231192AbhGIHXa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 03:23:18 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5455C0613E5
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 00:20:35 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id c15so4534840pls.13
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 00:20:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wfVRDCn12PvjlI/4gGcypwOenkONM+SKIDRbqQICJ/w=;
-        b=MExi26fU8r+DPQ3PGXA4FDAN7ifJLx45Gvgv9i5LYPl/+FZg0b/Tiebkbctj1AfWua
-         VcV7+4INK5iSHWC1zl3aZ70cmFN0+kJBfUqNPEvoWi/VhMUZWabV+WaHm8kzAJ1xqvBu
-         /W1TLeyxj79l6n1XLm/5ujeR4vwHnzqnRkw4E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wfVRDCn12PvjlI/4gGcypwOenkONM+SKIDRbqQICJ/w=;
-        b=cqKA2G4LEHpG/q5p3xLEAAOunjVgmc34enyEtkivl08N6hsBcAXHfP3Sv6R4KPE7Sb
-         Le0ZS8UM/+Gvd3kCY7Tj47sjDNP2XkulE3HKMntfiq2u9ZDQ3BiOEgKOD7PzCBK2I9k+
-         ONQSNGSMIn4d4q1hTxJaRiQmRMi7HxGJqTp9K/smsrTuxUDtowx/YFF3OW5kacSdJhKG
-         2xptCmU5FH2TNK1DTWxV8T9eeM8LHl7mBWLnDnCHOCCdWMhR80M11Viz9SD8DNOHqH+2
-         DY3d+kjsL2xLETzji4n6JB5bW6d2hwXI07eKQn36qJgxj5eg5W5JEbilj3JZF7cqZtHX
-         SmZg==
-X-Gm-Message-State: AOAM5308EUlG18PTuVZ2+x/CHn/2qj9mJXWD8aK/ebqCl3iAygNKx5uO
-        RTmJI8thwqOfsXfsnYjUYE+UnQ==
-X-Google-Smtp-Source: ABdhPJze9epknpvE6W/UqRj8DzBUd2K+lgb9x5VCG+ErVveN15EM76unXCMQ/WR6gtw5sqdRRsW8yA==
-X-Received: by 2002:a17:90a:a4c2:: with SMTP id l2mr2697048pjw.159.1625815235102;
-        Fri, 09 Jul 2021 00:20:35 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:a30d:fc4:7834:ee08])
-        by smtp.gmail.com with ESMTPSA id b10sm5062208pfi.122.2021.07.09.00.20.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 00:20:34 -0700 (PDT)
-Date:   Fri, 9 Jul 2021 16:20:28 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Tomasz Figa <tfiga@chromium.org>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2 8/8] videobuf2: handle non-contiguous DMA allocations
-Message-ID: <YOf4vH24LFhUcL9Q@google.com>
-References: <20210427131344.139443-1-senozhatsky@chromium.org>
- <20210427131344.139443-9-senozhatsky@chromium.org>
- <10a0903a-e295-5cba-683a-1eb89a0804ed@xs4all.nl>
- <YMsAIVs7G2hUDR2F@google.com>
- <YNVJJhP69KPJ+DHv@google.com>
- <CAAFQd5BB6JghdgGf9SjAWYuZFsZaAeU11rV1a1xrwws=w7j7_w@mail.gmail.com>
- <YOWsNa0Zaf9UuGWH@google.com>
- <CAAFQd5DDpxXBb=eJpzLPOhGQAgtBKnn0aTo=3Vs-rf44cu8OQA@mail.gmail.com>
+        Fri, 9 Jul 2021 03:23:30 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UfC4ohT_1625815243;
+Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UfC4ohT_1625815243)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 09 Jul 2021 15:20:45 +0800
+Date:   Fri, 9 Jul 2021 15:20:41 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     stable <stable@vger.kernel.org>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Terrell <terrelln@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        stable <stable@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [linux-stable-rc:linux-5.4.y 7045/7049] mipsel-linux-ld:
+ decompress.c:undefined reference to `memmove'
+Message-ID: <YOf4yZIld6L6XP13@B-P7TQMD6M-0146.local>
+References: <202107070120.6dOj1kB7-lkp@intel.com>
+ <YOfjmCT6n61Yidvp@B-P7TQMD6M-0146.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAAFQd5DDpxXBb=eJpzLPOhGQAgtBKnn0aTo=3Vs-rf44cu8OQA@mail.gmail.com>
+In-Reply-To: <YOfjmCT6n61Yidvp@B-P7TQMD6M-0146.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/07/07 23:10), Tomasz Figa wrote:
-> > > >
-> > > > I guess this should address the case when
-> > > >
-> > > > "after allocating the buffer, the buffer is exported as a dma_buf and
-> > > > another device calls dma_buf_ops vb2_dc_dmabuf_ops_vmap, which in turn
-> > > > calls dma_buf_map_set_vaddr(map, buf->vaddr); with a NULL buf->vaddr"
-> > >
-> > > Sorry, I fail to get what this is about. Where does this quote come from?
-> >
-> > Bottom half of https://lore.kernel.org/lkml/10a0903a-e295-5cba-683a-1eb89a0804ed@xs4all.nl/
-> 
-> I see, thanks for the pointer. Yes, vb2_dc_dmabuf_ops_vmap() needs to
-> be changed so that it calls vb2_dc_vaddr() internally instead of
-> relying on buf->vaddr directly.
+Hi Greg, stable all,
 
-Done.
+On Fri, Jul 09, 2021 at 01:50:16PM +0800, Gao Xiang wrote:
+> On Wed, Jul 07, 2021 at 01:15:28AM +0800, kernel test robot wrote:
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> > head:   3909e2374335335c9504467caabc906d3f7487e4
+> > commit: defcc2b5e54a4724fb5733f802edf5dd596018b6 [7045/7049] lib/lz4: explicitly support in-place decompression
+> > config: mips-randconfig-r036-20210706 (attached as .config)
+> > compiler: mipsel-linux-gcc (GCC) 9.3.0
+> > reproduce (this is a W=1 build):
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?id=defcc2b5e54a4724fb5733f802edf5dd596018b6
+> >         git remote add linux-stable-rc https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+> >         git fetch --no-tags linux-stable-rc linux-5.4.y
+> >         git checkout defcc2b5e54a4724fb5733f802edf5dd596018b6
+> >         # save the attached .config to linux build tree
+> >         mkdir build_dir
+> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross O=build_dir ARCH=mips SHELL=/bin/bash
+> > 
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> 
+> Which is weird, does the preboot environment miss memmove() on mipsel?
+> Just a guess, I may look into that myself later...
+> 
+
+After manually checking, I found memmove() for the mips preboot environment
+was incidentally introduced by commit a510b616131f ("MIPS: Add support for
+ZSTD-compressed kernels") which wasn't included in v5.4, but included in
+v5.10 as below (so v5.10.y is fine):
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/arch/mips/boot/compressed?h=v5.10&id=a510b616131f85215ba156ed67e5ed1c0701f80f
+
+And when I applied the following patch partially from the original
+commit, the compile error with the command lines mentioned above was gone:
+
+diff --git a/arch/mips/boot/compressed/string.c b/arch/mips/boot/compressed/string.c
+index 43beecc3587c..e9ab7ea592ba 100644
+--- a/arch/mips/boot/compressed/string.c
++++ b/arch/mips/boot/compressed/string.c
+@@ -27,3 +27,19 @@ void *memset(void *s, int c, size_t n)
+ 		ss[i] = c;
+ 	return s;
+ }
++
++void * __weak memmove(void *dest, const void *src, size_t n)
++{
++	unsigned int i;
++	const char *s = src;
++	char *d = dest;
++
++	if ((uintptr_t)dest < (uintptr_t)src) {
++		for (i = 0; i < n; i++)
++			d[i] = s[i];
++	} else {
++		for (i = n; i > 0; i--)
++			d[i - 1] = s[i - 1];
++	}
++	return dest;
++}
+
+How to backport such commit partially to the v5.4.y stable kernel?
+... Also, it would be better to check other mips compile combinations
+automatically since it's hard for me to check all such combinations
+one-by-one...
+
+Thanks,
+Gao Xiang
+
+> Thanks,
+> Gao Xiang
+> 
+> > 
+> > All errors (new ones prefixed by >>):
+> > 
+> >    mipsel-linux-ld: arch/mips/boot/compressed/decompress.o: in function `LZ4_decompress_safe_withSmallPrefix':
+> >    decompress.c:(.text+0x220): undefined reference to `memmove'
+> >    mipsel-linux-ld: arch/mips/boot/compressed/decompress.o: in function `LZ4_decompress_fast_extDict':
+> >    decompress.c:(.text+0x694): undefined reference to `memmove'
+> > >> mipsel-linux-ld: decompress.c:(.text+0x774): undefined reference to `memmove'
+> >    mipsel-linux-ld: arch/mips/boot/compressed/decompress.o: in function `LZ4_decompress_safe':
+> >    decompress.c:(.text+0xb88): undefined reference to `memmove'
+> >    mipsel-linux-ld: arch/mips/boot/compressed/decompress.o: in function `LZ4_decompress_safe_partial':
+> >    decompress.c:(.text+0x1078): undefined reference to `memmove'
+> >    mipsel-linux-ld: arch/mips/boot/compressed/decompress.o:decompress.c:(.text+0x12f8): more undefined references to `memmove' follow
+> > 
+> > ---
+> > 0-DAY CI Kernel Test Service, Intel Corporation
+> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
