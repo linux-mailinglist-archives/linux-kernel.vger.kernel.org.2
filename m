@@ -2,221 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E993C2305
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 13:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E87C83C2312
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 13:44:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231260AbhGILmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 07:42:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230501AbhGILme (ORCPT
+        id S231225AbhGILqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 07:46:30 -0400
+Received: from mail-wm1-f41.google.com ([209.85.128.41]:40908 "EHLO
+        mail-wm1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230209AbhGILq3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 07:42:34 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C4D9C0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 04:39:50 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id s6so6105338qkc.8
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 04:39:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V80QwRmpVqLUC1/pv95T7LChrvArer3bS4sHJ/jE7pM=;
-        b=Mcjrj+EF55gxmaqc6tz/ekD7I3bs3f1Lm68LlK8VTuwLZE/S80ym58HLfCWIU40S2P
-         /6pA9l+yCKaWXsASDqXmV9tfCj6PfvOSLgSzFkR9cNTxTLckiK3XECwRkA4OeZJmLdfm
-         spqDijNKbfXMffSPvv5Nw6EqQrfHyTI/fIm5+nFauKeUwoCrSsKsootOJO2TgFAGu9CT
-         rG0kT7BuO8vvcVOXYAmSIv0+6B6QtHQo7zz3j54JQ3p1ohaSlYj0lUOOPsTVFgikAByZ
-         znYtPwnzfWXVV9+DYX25XdSF1l9wx+9wAge9RE02zg0H7be9miB+lHdAVfCLe2tZXuyW
-         Wiew==
+        Fri, 9 Jul 2021 07:46:29 -0400
+Received: by mail-wm1-f41.google.com with SMTP id h18-20020a05600c3512b029020e4ceb9588so8906493wmq.5;
+        Fri, 09 Jul 2021 04:43:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V80QwRmpVqLUC1/pv95T7LChrvArer3bS4sHJ/jE7pM=;
-        b=AOZd+PB156kwX1E9ZHB18ZbHbAIaxRwfmJLuqRtIbGP/7OqmkDO8SKQPElhzjWX/A/
-         0jSlzCHyNzexY+kP85T7MiVGgBW3SQD75B0m7gOTcmG/WNZlQ3Od2o3r7W0kunlTXQMI
-         qWPwRTWMJYa7/Czy8tZqitEVibl+LQq7cAu6REZUyrB88lCVdrh8ZmYc4b1f+6SxIiLI
-         WCKl3vHrUdPhP5PfGvTPy6BOnoUW3etAzUNQPKOpz0aZZpBGS4UKoVV3mOTh1L1tsOgQ
-         aHluZUtfj3q1PSuHD20lLioco3zEs4q+uRb9EAFdc7SATDc+5JEDTAWldDhX2NX88hs1
-         Ku+g==
-X-Gm-Message-State: AOAM530NfWQ+De2z7NpdFuISLT9M8CgTcSWto2H50UMWK9jJbWfSnm5i
-        4y9pncwj1r9hWaBfD3plsYtUcySMQyw+62gvhNiVpw==
-X-Google-Smtp-Source: ABdhPJyMo2wUMKJXK0KxcB+yRDpiHkai20Amf0pxsUSYlncs5xFeAFIIYQibhXDSSQCVAbQKVd7GDIA5UvRkYIIBUOs=
-X-Received: by 2002:a05:620a:651:: with SMTP id a17mr13144418qka.434.1625830789281;
- Fri, 09 Jul 2021 04:39:49 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TUZPMZ4hjZI406B6oLsgIr41PzVsb92Ly0yg+RmaVNw=;
+        b=VreKst34LPa2TDS/74gPgnQutozHz2tnLuaYz6IvnDN9fzM/A2ZbjIel/P0Z8sX2ql
+         0jDTuYNiA8vVDhud4BI4FwaRqeWCHDO5inHAqpFMlOI2xyDBAMDkvLmRZopMiexRo7/V
+         DH3FOvZF8Q3aTgKO9KOn5e3hOR1rkiIjW9F3pwHWuQWyoMHc9OM1lZ8IGMtL9DRuDigR
+         r3Lb0M6cS2oS26ey+rj+1sGJ7Z81WJ7BPtEQ7HPXe8yL3xdL1MX4foU8KVVTxHadz1CK
+         2w2lKt5sk0tbEjWac/Cuhc7sUPxK145lr8aH1ELbiksoifH1xtmB/G1wacYPIVFB0QAy
+         01Dw==
+X-Gm-Message-State: AOAM530n50DIzDPLLVma0zmigxl0knmAOXCz8jCojwsVgQnNWcZbPJjH
+        fFx0mAxgdchLWWZCJTpishhGoEnBbLw=
+X-Google-Smtp-Source: ABdhPJwYe0JLlVWlLExBQqOITL6nm2S+sUw2zS7k+ZGTUIWG/WwdI+MpUrsQiHAZOz9sUQGzfZ+UpQ==
+X-Received: by 2002:a1c:3505:: with SMTP id c5mr11135674wma.53.1625831023671;
+        Fri, 09 Jul 2021 04:43:43 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2.j3c5onc20sse1dnehy4noqpfcg.zx.internal.cloudapp.net ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id z12sm4896849wrs.39.2021.07.09.04.43.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Jul 2021 04:43:42 -0700 (PDT)
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
+Cc:     virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        kumarpraveen@linux.microsoft.com, pasha.tatashin@soleen.com,
+        Wei Liu <wei.liu@kernel.org>
+Subject: [RFC v1 0/8] MSHV: add PV-IOMMU driver
+Date:   Fri,  9 Jul 2021 11:43:31 +0000
+Message-Id: <20210709114339.3467637-1-wei.liu@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210709043136.533205-1-dmitry.baryshkov@linaro.org>
- <20210709043136.533205-4-dmitry.baryshkov@linaro.org> <CAPDyKFoNPkFqGMvR=JGXNVXp-UfWLUqReZ0DGP8+0PBh+7dCRg@mail.gmail.com>
-In-Reply-To: <CAPDyKFoNPkFqGMvR=JGXNVXp-UfWLUqReZ0DGP8+0PBh+7dCRg@mail.gmail.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Fri, 9 Jul 2021 14:39:37 +0300
-Message-ID: <CAA8EJpqykAyBKBADuGUQeZjG5-NPC6HgieNQLtWeA+McG_BMqw@mail.gmail.com>
-Subject: Re: [RESEND PATCH v2 3/7] PM: domains: Add support for runtime PM
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi all
 
-On Fri, 9 Jul 2021 at 11:25, Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> On Fri, 9 Jul 2021 at 06:32, Dmitry Baryshkov
-> <dmitry.baryshkov@linaro.org> wrote:
-> >
-> > Registers for some genpds can be located in the SoC area, powered up by
-> > another power domain. To enabled access to those registers, respective
-> > domain should be turned on.
-> >
-> > This patch adds basic infrastructure to the genpd code to allow
-> > implementing drivers for such genpd. PM domain can provide the parent
-> > device through the genpd->dev.parent pointer. If its provided at the
-> > pm_genpd_init() call time and if it is pm-enabled, genpd power_on and
-> > power_off operations will call pm_runtime_get_sync() before powering up
-> > the domain and pm_runtime_put_sync() after powering it down.
-> >
-> > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->
-> Hi Dmitry,
->
-> Using runtime PM for the genpd provider device, is not the correct
-> approach. If the provider domain needs another domain to be powered on
-> to work correctly, that per definition means that it has a parent
-> domain.
->
-> I suggest you try to build the correct PM domain topology, via using
-> pm_genpd_add_subdomain() or of_genpd_add_subdomain(), then genpd will
-> manages the power on/off for parent/child domain internally.
+Device passthrough is a critial feature for a virtualization stack. When
+designing this feature for MSHV support on Linux, one important
+considration is to not deviate from Linux's default VFIO stack. VFIO
+relies on an IOMMU or IOMMUs in the system to manipulate DMA mappings.
 
-Indeed, this patch seems redundant now, with the
-pm_genpd_add_subdomain call in place.
-Would you like me to resend a v3 just dropping this patch?
+In this series an IOMMU driver is implemented using a set of hypercall
+interfaces provided by the Microsoft Hypervisor. At this stage only DMA
+remapping is implemented. Interrupt remapping will come later.
 
->
-> Kind regards
-> Uffe
->
-> > ---
-> >  drivers/base/power/domain.c | 33 +++++++++++++++++++++++++++++++++
-> >  include/linux/pm_domain.h   |  6 ++++++
-> >  2 files changed, 39 insertions(+)
-> >
-> > diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> > index e5d97174c254..7d49531c9731 100644
-> > --- a/drivers/base/power/domain.c
-> > +++ b/drivers/base/power/domain.c
-> > @@ -482,6 +482,30 @@ void dev_pm_genpd_set_next_wakeup(struct device *dev, ktime_t next)
-> >  }
-> >  EXPORT_SYMBOL_GPL(dev_pm_genpd_set_next_wakeup);
-> >
-> > +static int _genpd_pm_runtime_get(struct generic_pm_domain *genpd)
-> > +{
-> > +       int ret;
-> > +
-> > +       if (!(genpd->flags & _GENPD_FLAG_RPM_ENABLED))
-> > +               return 0;
-> > +
-> > +       ret = pm_runtime_get_sync(genpd->dev.parent);
-> > +       if (ret < 0) {
-> > +               pm_runtime_put_noidle(genpd->dev.parent);
-> > +               return ret;
-> > +       }
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static void _genpd_pm_runtime_put(struct generic_pm_domain *genpd)
-> > +{
-> > +       if (!(genpd->flags & _GENPD_FLAG_RPM_ENABLED))
-> > +               return;
-> > +
-> > +       pm_runtime_put_sync(genpd->dev.parent);
-> > +}
-> > +
-> >  static int _genpd_power_on(struct generic_pm_domain *genpd, bool timed)
-> >  {
-> >         unsigned int state_idx = genpd->state_idx;
-> > @@ -497,6 +521,10 @@ static int _genpd_power_on(struct generic_pm_domain *genpd, bool timed)
-> >         if (ret)
-> >                 return ret;
-> >
-> > +       ret = _genpd_pm_runtime_get(genpd);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> >         if (!genpd->power_on)
-> >                 goto out;
-> >
-> > @@ -526,6 +554,7 @@ static int _genpd_power_on(struct generic_pm_domain *genpd, bool timed)
-> >         raw_notifier_call_chain(&genpd->power_notifiers, GENPD_NOTIFY_ON, NULL);
-> >         return 0;
-> >  err:
-> > +       _genpd_pm_runtime_put(genpd);
-> >         raw_notifier_call_chain(&genpd->power_notifiers, GENPD_NOTIFY_OFF,
-> >                                 NULL);
-> >         return ret;
-> > @@ -572,6 +601,7 @@ static int _genpd_power_off(struct generic_pm_domain *genpd, bool timed)
-> >                  genpd->name, "off", elapsed_ns);
-> >
-> >  out:
-> > +       _genpd_pm_runtime_put(genpd);
-> >         raw_notifier_call_chain(&genpd->power_notifiers, GENPD_NOTIFY_OFF,
-> >                                 NULL);
-> >         return 0;
-> > @@ -1986,6 +2016,9 @@ int pm_genpd_init(struct generic_pm_domain *genpd,
-> >         genpd->domain.ops.complete = genpd_complete;
-> >         genpd->domain.start = genpd_dev_pm_start;
-> >
-> > +       if (genpd->dev.parent && pm_runtime_enabled(genpd->dev.parent))
-> > +               genpd->flags |= _GENPD_FLAG_RPM_ENABLED;
-> > +
-> >         if (genpd->flags & GENPD_FLAG_PM_CLK) {
-> >                 genpd->dev_ops.stop = pm_clk_suspend;
-> >                 genpd->dev_ops.start = pm_clk_resume;
-> > diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
-> > index 21a0577305ef..e86cd7cfc9ec 100644
-> > --- a/include/linux/pm_domain.h
-> > +++ b/include/linux/pm_domain.h
-> > @@ -60,6 +60,10 @@
-> >   * GENPD_FLAG_MIN_RESIDENCY:   Enable the genpd governor to consider its
-> >   *                             components' next wakeup when determining the
-> >   *                             optimal idle state.
-> > + *
-> > + * _GENPD_FLAG_RPM_ENABLED:    Use genpd's parent dev for runtime power
-> > + *                             management. There is no need to set this flag,
-> > + *                             it will be detected automatically.
-> >   */
-> >  #define GENPD_FLAG_PM_CLK       (1U << 0)
-> >  #define GENPD_FLAG_IRQ_SAFE     (1U << 1)
-> > @@ -69,6 +73,8 @@
-> >  #define GENPD_FLAG_RPM_ALWAYS_ON (1U << 5)
-> >  #define GENPD_FLAG_MIN_RESIDENCY (1U << 6)
-> >
-> > +#define _GENPD_FLAG_RPM_ENABLED         (1U << 31)
-> > +
-> >  enum gpd_status {
-> >         GENPD_STATE_ON = 0,     /* PM domain is on */
-> >         GENPD_STATE_OFF,        /* PM domain is off */
-> > --
-> > 2.30.2
-> >
+With this series I'm able to passthrough an NVMe drive to a guest with VFIO on
+a modified version of Cloud Hypervisor. From users' point of view, nothing
+needs changing. Cloud Hypervisor and Rust-VMM changes, which depend on the new
+kernel UAPIs from this series, will be upstreamed too.
 
+This series is built on top of Nuno and Vineeth's patches [0][1].
 
+The meat is in the patch named "mshv: add paravirtualized IOMMU
+support".
+
+The in-kernel device framework and the VFIO bridge device are heavily
+inspired by KVM's code. I pondered whether it would be worth refactoring
+the code in KVM but decided against that route for two reasons: 1. it
+allowed faster prototyping and 2. I was not sure if that's something KVM
+community would agree to.
+
+For the VT-D changes, what we're after is to build the RMRR regions list
+so that reserved regions are respected. Instead of doing a bad job
+myself, I decided to piggy-back on Intel's own code. AMD support is to
+be added until we have an AMD system.
+
+Comments are welcome.
+
+Thanks,
+Wei.
+
+[0] https://lore.kernel.org/linux-hyperv/1622241819-21155-1-git-send-email-nunodasneves@linux.microsoft.com/
+[1] https://lore.kernel.org/linux-hyperv/cover.1622654100.git.viremana@linux.microsoft.com/
+
+Wei Liu (8):
+  x86/hyperv: export hv_build_pci_dev_id
+  asm-generic/hyperv: add device domain definitions
+  intel/vt-d: make DMAR table parsing code more flexible
+  intel/vt-d: export intel_iommu_get_resv_regions
+  mshv: add paravirtualized IOMMU support
+  mshv: command line option to skip devices in PV-IOMMU
+  mshv: implement in-kernel device framework
+  mshv: add vfio bridge device
+
+ Documentation/virt/mshv/api.rst     |  12 +
+ arch/x86/hyperv/irqdomain.c         |   3 +-
+ arch/x86/include/asm/mshyperv.h     |   1 +
+ drivers/hv/Kconfig                  |   4 +
+ drivers/hv/Makefile                 |   2 +-
+ drivers/hv/mshv_main.c              | 186 ++++++++
+ drivers/hv/vfio.c                   | 244 ++++++++++
+ drivers/hv/vfio.h                   |  18 +
+ drivers/iommu/Kconfig               |  14 +
+ drivers/iommu/hyperv-iommu.c        | 673 ++++++++++++++++++++++++++++
+ drivers/iommu/intel/dmar.c          |  38 +-
+ drivers/iommu/intel/iommu.c         |   7 +-
+ drivers/iommu/intel/irq_remapping.c |   2 +-
+ include/asm-generic/hyperv-tlfs.h   | 144 ++++++
+ include/linux/dmar.h                |   2 +-
+ include/linux/intel-iommu.h         |   4 +
+ include/linux/mshv.h                |  57 +++
+ include/uapi/linux/mshv.h           |  36 ++
+ 18 files changed, 1429 insertions(+), 18 deletions(-)
+ create mode 100644 drivers/hv/vfio.c
+ create mode 100644 drivers/hv/vfio.h
 
 -- 
-With best wishes
-Dmitry
+2.30.2
+
