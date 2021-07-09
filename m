@@ -2,73 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C81963C23FA
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1413C2401
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231561AbhGINJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 09:09:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48426 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231285AbhGINJn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 09:09:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CDBA61377;
-        Fri,  9 Jul 2021 13:06:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1625836019;
-        bh=bppPLBlGq3MRWU4+6plXC5MiNOmAXncZ5ZS65JOB/+o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EcIgpMSwgMQxE8HZr/IAB0tkDVQi0vrNSEV9MKmc6czxSprh5N/fYARhUTrQ9CJq6
-         /X2WYGG0qIRx54h27ze20nJKYgBethoiWFAbEd3TqiGN3ZjiLRIWdVDB7znv9y3dkc
-         +nrnwzPMHiu3Ok2zK7HXuAp46zoPAUy8aY+vHEZM=
-Date:   Fri, 9 Jul 2021 15:06:56 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Shaobo Huang <huangshaobo6@huawei.com>
-Cc:     chenzefeng2@huawei.com, kepler.chenxin@huawei.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux@arm.linux.org.uk, liucheng32@huawei.com, mhiramat@kernel.org,
-        nixiaoming@huawei.com, tixy@linaro.org, xiaoqian9@huawei.com,
-        young.liuyang@huawei.com, zengweilin@huawei.com
-Subject: Re: [PATCH 4.4.y] arm: kprobes: Allow to handle reentered kprobe on
- single-stepping
-Message-ID: <YOhJ8KaoH4BU3ej1@kroah.com>
-References: <YOcOcNBRou5KlbOR@kroah.com>
- <20210709024630.22268-1-huangshaobo6@huawei.com>
+        id S231684AbhGINLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 09:11:09 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:44841 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231383AbhGINLG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 09:11:06 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 0CA31580370;
+        Fri,  9 Jul 2021 09:08:23 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Fri, 09 Jul 2021 09:08:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=JqsHIrzFyqFsXpqukbb6fnHV71l
+        LicR7frv2ksoQz6s=; b=Ml8PAQBlhRItczTpS07ta+GO0TJ1x4l5hpnx4MoSnB2
+        SA70l+1ZQQODEs/HuDADnD3+O2jqv8NZK0BcGAOGr16ITUCtgNdY4pm0OYxn/KHZ
+        qfwuwAGpsIihv4joY3Lkgqe4kfLLB9reU5yy38sPHQHPlIQZ0TxZ8goC/8PHIf9X
+        e6CVJRdQkgSNZthHNbQetQygGdL49heGGzY2K1Qr9GKOgqa5+VqeradeoAUMoBdL
+        9Cv78zO7lbdvs2redPBzAWFvxnEJVkfs4B3eUfZB5rzmjLRxgwHnsG3NkieowclO
+        qw4Pc3XMbOHTmqlv/qV+QQBDFRe/rR3DisrYxxwxzug==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=JqsHIr
+        zFyqFsXpqukbb6fnHV71lLicR7frv2ksoQz6s=; b=GDeE7tatxjM4dJP+WlQadO
+        EcYjsuNA3vWeaObPbHthaevM9memLtWGgZwSqXhJtqu3zN0izFp9DC56IXSX+0Ft
+        9U4MRVdd82c2amujiVDpEYs3PDEYI1WVspYpj0DpUcxMJj6a9X+PpsUmY2YwXxbi
+        7Tp48/Rf2I/+8FZo3aDCJSb+Zj0a5HkRRqNu9MnnVU/51k4UW2QfWFJNMFta2G3L
+        g+2bQQ+PGF0xQl9LWWXa4Qlvv7YH5L4Yz7smXpjQnLeVxwBLPpBRLeBjFPoZqTbp
+        FmLVo5d5kIn9AQxTUQ9d+QHUjEohqUai+bL7Wb0nnrLBfD3bnJ5e1ZRjOrc6wv2w
+        ==
+X-ME-Sender: <xms:RkroYJEKL_aKFQewa8wNFIVZVpuIhBFuRWdXsvAAn0CZQXtVYh-esQ>
+    <xme:RkroYOXhJ9mwfQ_xMel0uuX6xsGIH2AIu9V_ol9ZLy1LXQvwW6Buv1G4032ha0vIc
+    kPIAmPd3WXq7w>
+X-ME-Received: <xmr:RkroYLJEaxdSlIlgV1c6YC8qDMXLfCNjcU4iz2w-VdLScMTtHuPqn_1AnjoMcftvwEJs1YH8lmydfp4kdWsDm9LLGQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrtdeigdehkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
+    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepueelledthe
+    ekleethfeludduvdfhffeuvdffudevgeehkeegieffveehgeeftefgnecuffhomhgrihhn
+    pehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
+    grihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:RkroYPGXX03oNednvqiq4BVHNNxBRflIA-rrEyvEAKAlbGunb8tWXg>
+    <xmx:RkroYPX7pSAPWYI-sGzsufbeL82O6ZvJpFYtvTwwmGbWcM3sKeJTVA>
+    <xmx:RkroYKMBzUNgYMNyM7HC1N9uri_22UtuptlGC04iLPDSCPsUcfugBw>
+    <xmx:R0roYAsOUYCdY_8geHZUCQmwhE9_rgSRpostuVL6hoy98SE_hcD01w>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 9 Jul 2021 09:08:22 -0400 (EDT)
+Date:   Fri, 9 Jul 2021 15:08:19 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Keerthy <j-keerthy@ti.com>, Tero Kristo <kristo@kernel.org>
+Subject: Re: [Backport for 4.19.y PATCH 1/4] ARM: OMAP: replace setup_irq()
+ by request_irq()
+Message-ID: <YOhKQ3khlGlf/5D6@kroah.com>
+References: <20210709073745.13916-1-tony@atomide.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210709024630.22268-1-huangshaobo6@huawei.com>
+In-Reply-To: <20210709073745.13916-1-tony@atomide.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 09, 2021 at 10:46:30AM +0800, Shaobo Huang wrote:
-> From: Masami Hiramatsu <mhiramat@kernel.org>
+On Fri, Jul 09, 2021 at 10:37:42AM +0300, Tony Lindgren wrote:
+> From: afzal mohammed <afzal.mohd.ma@gmail.com>
 > 
-> commit f3fbd7ec62dec1528fb8044034e2885f2b257941 upstream
+> commit b75ca5217743e4d7076cf65e044e88389e44318d upstream.
 > 
-> This is arm port of commit 6a5022a56ac3 ("kprobes/x86: Allow to
-> handle reentered kprobe on single-stepping")
+> request_irq() is preferred over setup_irq(). Invocations of setup_irq()
+> occur after memory allocators are ready.
 > 
-> Since the FIQ handlers can interrupt in the single stepping
-> (or preparing the single stepping, do_debug etc.), we should
-> consider a kprobe is hit in the NMI handler. Even in that
-> case, the kprobe is allowed to be reentered as same as the
-> kprobes hit in kprobe handlers
-> (KPROBE_HIT_ACTIVE or KPROBE_HIT_SSDONE).
+> Per tglx[1], setup_irq() existed in olden days when allocators were not
+> ready by the time early interrupts were initialized.
 > 
-> The real issue will happen when a kprobe hit while another
-> reentered kprobe is processing (KPROBE_REENTER), because
-> we already consumed a saved-area for the previous kprobe.
+> Hence replace setup_irq() by request_irq().
 > 
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> Signed-off-by: Jon Medhurst <tixy@linaro.org>
-> Fixes: 24ba613c9d6c ("ARM kprobes: core code")
-> Cc: stable@vger.kernel.org #v2.6.25~v4.11
-> Signed-off-by: huangshaobo <huangshaobo6@huawei.com>
-> ---
->  arch/arm/probes/kprobes/core.c | 6 ++++++
->  1 file changed, 6 insertions(+)
+> [1] https://lkml.kernel.org/r/alpine.DEB.2.20.1710191609480.1971@nanos
+> 
 
-Now queued up, thanks.
+ALl now queued up, thanks.
 
 greg k-h
