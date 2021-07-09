@@ -2,163 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F5A53C278E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 18:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EDA23C2798
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 18:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbhGIQcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 12:32:05 -0400
-Received: from mail-db8eur05on2111.outbound.protection.outlook.com ([40.107.20.111]:50657
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229499AbhGIQcE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 12:32:04 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AFnHC+yI6x8NPs8af/Z4rncatKZcUrTUd6V1MlhMeIMrvmkJBdWNy4/X5i/nl4/yOwSXCmmbH1cr/+hB+3jKTrOq9M6cf/ouespnM4z+XJb1wPWZMBNDO7Qegi1Bb/AvKAn2mbyWrt7pBbBe79M9c2xhyqzBuxUJ/vQk/VdgGMzJi3BohLZfbuxkHD1PJxvO3t8wEhN0M7JYjnrt9rebfwT2q1R8502Rr85TNC8nAiyAfaCIUXbcQoxEzE/jC0eSOkF+spRHYszudNgfJTrye6q6q5nMPsDO98WKsKX7irpLcjjGtk5sl8hE6EpumJ97l/KrQ6y+ZzYmLbFzQJB5/g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ejALi1zsewUDtHuma1NuX/spxNrbNsw4vrH5Yrl8HBI=;
- b=L9ctXWXX70TmuxI91bvvq8YU48UGd3mVyAHkQF/6Jnj9kOT820Y4U7PynfO7SZE99KD9FM+yLTXyrIZA46asiCMRhoKIEMpCjhtleoyI5UG1QsT4VSjw1fqmSLqAFI2b/jtRpScx5TG5pSECWZ3/E1WjnRGKgCai2U0yfVAdHw310Ma22VfvZ3qAROHugbHDCzUnVHewvI6Qke4BDUvEqi0ofhbYEBlp+oe6kmdBDDSV7soaqbMAMDuHSCZW9N+pWm7E7VVwMjD9Hi5APAb6fge7ZyTRhbSFush1JeLPYV4j/CU5Zmw/Tv9YULYw7BhrAsmalAATUHN4bIwgnUsV7w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
- dkim=pass header.d=axentia.se; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ejALi1zsewUDtHuma1NuX/spxNrbNsw4vrH5Yrl8HBI=;
- b=JBN8+EHbk+ZFdk0XZG6dQUTS1IHZX6qauIfU61+0eJO5AJccVNhQBq8oBWQIzA3X1PSTO6XS5SCTe/358PsLGCZi9dWbxLgvaMdC/QV2BfakaVy9XqO7B7CT64M5JkCqfZc+IjBdf3O6P//t//+GcpOdavPIk4rlS2KomWtV30U=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=axentia.se;
-Received: from DB8PR02MB5482.eurprd02.prod.outlook.com (2603:10a6:10:eb::29)
- by DB9PR02MB6571.eurprd02.prod.outlook.com (2603:10a6:10:210::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.19; Fri, 9 Jul
- 2021 16:29:18 +0000
-Received: from DB8PR02MB5482.eurprd02.prod.outlook.com
- ([fe80::14ca:a41:2218:3578]) by DB8PR02MB5482.eurprd02.prod.outlook.com
- ([fe80::14ca:a41:2218:3578%6]) with mapi id 15.20.4287.023; Fri, 9 Jul 2021
- 16:29:18 +0000
-Subject: Re: [PATCH v4 05/10] iio: afe: rescale: add INT_PLUS_{MICRO,NANO}
- support
-To:     Liam Beguin <liambeguin@gmail.com>, jic23@kernel.org,
-        lars@metafoo.de, pmeerw@pmeerw.net
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-References: <20210706160942.3181474-1-liambeguin@gmail.com>
- <20210706160942.3181474-6-liambeguin@gmail.com>
-From:   Peter Rosin <peda@axentia.se>
-Organization: Axentia Technologies AB
-Message-ID: <4be51a74-9913-291a-9dac-422ac23da3ea@axentia.se>
-Date:   Fri, 9 Jul 2021 18:29:15 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210706160942.3181474-6-liambeguin@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: HE1PR09CA0056.eurprd09.prod.outlook.com
- (2603:10a6:7:3c::24) To DB8PR02MB5482.eurprd02.prod.outlook.com
- (2603:10a6:10:eb::29)
+        id S229623AbhGIQeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 12:34:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58588 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229441AbhGIQe2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 12:34:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C98CC6139A;
+        Fri,  9 Jul 2021 16:31:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625848305;
+        bh=PEw0NEaUyBjfW7GXEDHxHYCvnLY7I1NpyX1B2xWF90M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=U1DYYcXCOFbm42pmjM3ROP8WlTfqPN3f97C/qSoFOlKAw3b4Od2DOzJrYlg4c/U9t
+         d41LE5LBhjbAfxKyTh00SH5Hzm6Sf7XDDsNsL6Zq4O/1QITASB/KGLChrwJeO4itfY
+         uex6w1Tb0n/wG7/X9oLNI7LjCLZSmmvb7MJ9uIkDsMntmcXrXBmPMxqVBr8qx89wEy
+         Nmrvlhu1EuOTILdddo8eWVqaYdp5PWiWZIfPYr0WLiiVh9KEusHyWL7QdM7GOY8yUg
+         KM+4+ihGaoKJfKAweCKJwuV/Bl8bMsRXnzw/OS5j5C3oV44WNFi1zQvkJI5KgXpTIp
+         3dwLaHqUz0F1g==
+Received: by pali.im (Postfix)
+        id 3CF6F77D; Fri,  9 Jul 2021 18:31:42 +0200 (CEST)
+Date:   Fri, 9 Jul 2021 18:31:42 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Jonas =?utf-8?Q?Dre=C3=9Fler?= <verdre@v0yd.nl>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        "open list:TI WILINK WIRELES..." <linux-wireless@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v2 2/2] mwifiex: pcie: add reset_d3cold quirk for Surface
+ gen4+ devices
+Message-ID: <20210709163142.e3jilbxjjlpzs7qf@pali>
+References: <20210709145831.6123-1-verdre@v0yd.nl>
+ <20210709145831.6123-3-verdre@v0yd.nl>
+ <20210709151800.7b2qqezlcicbgrqn@pali>
+ <CAHp75Vf71NfbzN_k2F7AXA944O9QZus0Ja7N_seer1NJzZHzeA@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.13.3] (85.229.94.233) by HE1PR09CA0056.eurprd09.prod.outlook.com (2603:10a6:7:3c::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.19 via Frontend Transport; Fri, 9 Jul 2021 16:29:17 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cd6abad5-5ed5-454e-240d-08d942f6b33d
-X-MS-TrafficTypeDiagnostic: DB9PR02MB6571:
-X-Microsoft-Antispam-PRVS: <DB9PR02MB6571F5C1042C69BC3C70DDD0BC189@DB9PR02MB6571.eurprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sw2Rf6aDccxYT1a7/kC9BrNIrbdD+eE8CPeduz3ZYl9G1yuFJQi3jvJXEYGVY10lVQJ8fHrvm8Cq/nhAUqHA63VV6niVsxgxZO6+uv5iofD/aD8xtRdMEaduwxSNiBs1K8tEDnJPqUjVZkxt3ryq2mVbtMYHFZ42tEVZIt3nBSW/UWuMornNojkWJRTuvIcjgdHbjDUc9r1sUMjGpWRzaj3iUqvEjE/zKB7M/mxJDdGlvhGa9UGM8yx5VmNT54JExabDZH+hMR3yo+fe3R8ga33N0U66sKNAfr9xHtKHtppb9XApJllhMqOnHvKgyCfqe8vBdD43BBryoCywgDuw1jExHPnQDX9wyPLjXODWqtungh44uAW8dEYAKk3X9Iv4xA3d9CiBoIjOjllT9MkO1ZVqBM/ZqXeEP6GmapfYU8vDvWAIEcepv/rUdqGUni8s/w5vr6R1FRuAiJjBPjyvForlvbzlP8aB6r6mK/5OEXzY7X+eG/NiY13vNfjPsMjH1r1/550IjsPnPQ0RcQKuIoGTNhKN9B9+aKbNJMtgqKxFDgyK5RzAlMWYYi0dz5gaXHvva/4g+LvoqyzqWnQJDwk608j9kqELfvuf0AuFvtxQaEhJUk3Btg8e/fQHbfE1HwoShs52avQFtreRrcv/8Mub5llzxJ/L7MjsTsYBkls6z0MOGgf1Nwwvr1gJFi4y6SDqSnC/mvoKmu0IdP/mxqWpR5LvkeaL2upBIZ5Vq3g=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5482.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(396003)(366004)(136003)(39830400003)(2616005)(53546011)(8936002)(956004)(31696002)(186003)(5660300002)(8676002)(4326008)(86362001)(36916002)(38100700002)(478600001)(316002)(16576012)(66476007)(66556008)(66946007)(6486002)(31686004)(26005)(36756003)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eVhRaVI2Z2w2eWpKV1dZRnlTYVF1WXFXS21ZOXU1R3FUbUxvbU96R2JmY1h5?=
- =?utf-8?B?U3NRQ01xN0pmQmNxcHNJenptamFSM1VoVFlqYWJ3a2dIQlp4RFB6N3BaQUlS?=
- =?utf-8?B?REZtYTNEN0FyQ1BQcncxejNzek1MK01aYkxpaENBVjhIMG5xUElRSVlZNUt1?=
- =?utf-8?B?eEdDcmFuQkZYSmFTUEg4TUtEclB3T1lRdmZ3S0xNdlVsbTNGcjdLYW5iNWFD?=
- =?utf-8?B?RkVDeXRwMCtYVTF2a3JveHBpYTFHcXFuNzA3RFYzWFVLWm1UTkl2UkJMS2NO?=
- =?utf-8?B?NUJNZG40UGJROXBnOGx6OGh1aUFTQms2S0hJNzVYcXFJYnFXclpVOXBMd2M3?=
- =?utf-8?B?dDlETytRYWRZWGhlN3lmR3o1MmRaNThRMEtnUjRtekNKQ3hsSUo4MHhpM2RH?=
- =?utf-8?B?SGxTcTJhbjFZQndsWCtINHd1WHFGbUNJdHJ0ZUJCd1ZBc3NKNWl4M0w1cCtP?=
- =?utf-8?B?bGFDSFJ6R1U1V1R0MHFmNHZSM1BGUzgxOUlmbGR4YWRZT0x5MzNNYjUyb2hX?=
- =?utf-8?B?bkpwcWw2dXlCOXRWZFJOOUZyTU5mQnFFWG1uMlVWVGNtb1FEaXRCN0hyTVpv?=
- =?utf-8?B?cFhLVERqbDhsMVgvdzEyV2JjeVVRY0JVbk9YSWNWYjZScDRoSEJRQlJZY0Rq?=
- =?utf-8?B?NUdWSVpxS1VIcy9NaWZpUDM0aE9LblYrMm9qNzlpUUMxZnB5emxBSFh2ZkZq?=
- =?utf-8?B?c0poeXkwT0hnTjk1V1FFYndSREFOdnc2S0xYSFRGOUc0aGZRTFN6cWQyaU81?=
- =?utf-8?B?cjljNDhnVmZYbU5tdnZleVJXWWJpdjVFL1Erd1pvemJzL3BwM2x2TFljdDN1?=
- =?utf-8?B?ejJFUUQ5S1VZTVYvWWdCRk0zdlVmZWRLa2FQbjlwTHZzWDhVZytlcUYwdEkz?=
- =?utf-8?B?NVBocUJ4aS85bzhPSGxyZGRsUVRjUjh4VTVoSlF3K0VrSzE3R2lRTmJiWXlL?=
- =?utf-8?B?cXc2enVDZGsrRzR5RjFzS2thNzV4bGlHS3JORUVPeDgyOUpGV0p2NGwwZkFH?=
- =?utf-8?B?aWpZZ3dFcStmOHZXRXNYV2hkQTZiVDQwTUltZkJUd0pTT3A2QkVFVHhrVkRO?=
- =?utf-8?B?eFJ4d1FuOG45L2M2MHBDRlRrZG1CTkZUWi9keEFXUC94VFBGWkx3SUl5Nldj?=
- =?utf-8?B?RXBRNXZIU0IvTUN0bzQveWFxOWdUTDlJTWV1cWY0WXZock5PTmtjU29PMk9m?=
- =?utf-8?B?ditCZEY0WDFyTnE4UFNnV1FzcDJFTE8vK1R4d2I4MGdHbmRXNDFJaEJTdGww?=
- =?utf-8?B?b1o1dEJpSXpLdEhoSy91MjFlK3N1cW9YK0k4Z01vMnNwclV3R2tqakp4cHpI?=
- =?utf-8?B?cDlHMGpYYzZpMHFJN09nV2hhc0QxVE14R1F5QkJQd2RSVEpTRmU1V1NxcmMr?=
- =?utf-8?B?bzY0SVhwdWo1Z210cWhwczdvUmUxNVk3UjVQNkpycVM0bTd1SmRYQ2xRZnJv?=
- =?utf-8?B?dk5aa013TnFmK29iQ0pMcTM5dzJaUndZTkQxWlR1MTBXb01mMXdWMXE4Q2Vj?=
- =?utf-8?B?U29EM0JzbFZ6K0xnd3RWbTJpYzYwTCtMRVBCbWNHeENZTXlLSEdncHlCOEw5?=
- =?utf-8?B?enl4R1AvdFhHVXVPOGJvajh5Q3VJVGJ6OXVaV0liRE14d2wwYWJxQjBFZFV5?=
- =?utf-8?B?SlJJa2RCL2hKT09LMUw2SGJPcGJyakxJMWZmQ3VpRVQwYkxTTHVCdHZ3SUds?=
- =?utf-8?B?MkFROFZ4WlhGTXVUckkwMGFLTUhNL0wweEh6aVE2M0JqMnRBc2hjaXIxSStj?=
- =?utf-8?Q?/Sn0u/VyUu++OexMDkAnOZZiQHIB9qo92uUZCKj?=
-X-OriginatorOrg: axentia.se
-X-MS-Exchange-CrossTenant-Network-Message-Id: cd6abad5-5ed5-454e-240d-08d942f6b33d
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR02MB5482.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jul 2021 16:29:18.7101
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3tKxWXzj9dFr1K3zDSWjjlGafoVmeHm4Q2pnUK8N0EXOjEb59L1aQagcB6Yc0vxi
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR02MB6571
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75Vf71NfbzN_k2F7AXA944O9QZus0Ja7N_seer1NJzZHzeA@mail.gmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021-07-06 18:09, Liam Beguin wrote:
-> From: Liam Beguin <lvb@xiphos.com>
+On Friday 09 July 2021 19:01:44 Andy Shevchenko wrote:
+> On Fri, Jul 9, 2021 at 6:18 PM Pali Rohár <pali@kernel.org> wrote:
+> > On Friday 09 July 2021 16:58:31 Jonas Dreßler wrote:
 > 
-> Add IIO_VAL_INT_PLUS_{NANO,MICRO} scaling support.
-> Scale the integer part and the decimal parts individually and keep the
-> original scaling type.
 > 
-> Signed-off-by: Liam Beguin <lvb@xiphos.com>
-> ---
->  drivers/iio/afe/iio-rescale.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
+> > Hello! Now I'm thinking loudly about this patch. Why this kind of reset
+> > is needed only for Surface devices? AFAIK these 88W8897 chips are same
+> > in all cards. Chip itself implements PCIe interface (and also SDIO) so
+> > for me looks very strange if this 88W8897 PCIe device needs DMI specific
+> > quirks. I cannot believe that Microsoft got some special version of
+> > these chips from Marvell which are different than version uses on cards
+> > in mPCIe form factor.
+> >
+> > And now when I'm reading comment below about PCIe bridge to which is
+> > this 88W8897 PCIe chip connected, is not this rather an issue in that
+> > PCIe bridge (instead of mwifiex/88W8897) or in ACPI firmware which
+> > controls this bridge?
+> >
+> > Or are having other people same issues on mPCIe form factor wifi cards
+> > with 88W8897 chips and then this quirk should not DMI dependent?
+> >
+> > Note that I'm seeing issues with reset and other things also on chip
+> > 88W8997 when is connected to system via SDIO. These chips have both PCIe
+> > and SDIO buses, it just depends which pins are used.
 > 
-> diff --git a/drivers/iio/afe/iio-rescale.c b/drivers/iio/afe/iio-rescale.c
-> index ba3bdcc69b16..1d0e24145d87 100644
-> --- a/drivers/iio/afe/iio-rescale.c
-> +++ b/drivers/iio/afe/iio-rescale.c
-> @@ -89,7 +89,15 @@ static int rescale_read_raw(struct iio_dev *indio_dev,
->  			do_div(tmp, 1000000000LL);
->  			*val = tmp;
->  			return ret;
-> +		case IIO_VAL_INT_PLUS_NANO:
-> +		case IIO_VAL_INT_PLUS_MICRO:
-> +			tmp = (s64)*val * rescale->numerator;
-> +			*val = div_s64(tmp, rescale->denominator);
-> +			tmp = (s64)*val2 * rescale->numerator;
-> +			*val2 = div_s64(tmp, rescale->denominator);
-
-Hi!
-
-You are losing precision, and you are not mormalising after the calculation.
-I think it's better to not even attempt this given that the results can be
-really poor.
-
-Cheers,
-Peter
-
-> +			return ret;
->  		default:
-> +			dev_err(&indio_dev->dev, "unsupported type %d\n", ret);
->  			return -EOPNOTSUPP;
->  		}
->  	default:
+> I'm replying loudly :-)
 > 
+> You know that depending on the interface the firmware even for the
+> same chip may be way different. And if you have had any experience
+> working in product companies you should know well that bug in product
+> X is not gonna be fixed if it was not reported, but gets fixed on
+> product Y due to that. Besides that, how do you know that MS has not
+> been given the special edition of the FW?
+
+Yes! But I know something about these chips/cards (I have also one
+development kit) and it is quite different. It is possible that
+Microsoft may have its special version, because I know that e.g. Google
+got "fixed version" for some 88W8xxx chips (it is/was available on
+internet). But firmware is loading by mwifiex driver and we
+(linux-firmware) have just one version of firmware for these cards.
+These 88W8xxx cards lost state and running firmware after reset/power so
+after linux is booted, it loads "linux-firmware" version into 88W8897
+card and then card not run "possibly MS special edition FW".
+
+What can be possible is that we are dealing with ACPI firmware (which is
+same for both Windows and Linux OS) and then it is related to PCIe
+bridge where are some PCIe parts implemented...
+
+> As icing on the cake, the Marvell has been bought and I believe they
+> abandoned their products quite a while ago. You may read kernel
+> bugzilla for the details (last Marvell developer who answered to the
+> reports seems has no clue about the driver).
+
+Marvell 88W[89]xxx wifi cards were sold to NXP together with developers.
+Old @marvell addresses do not work so it is required to find new @nxp
+addresses for developers.
+
+There are recent firmware upgrades from NXP for linux-firmware, see:
+https://lore.kernel.org/linux-firmware/DB7PR04MB453855B0D6C41923BCB0922EFC1C9@DB7PR04MB4538.eurprd04.prod.outlook.com/
+(just only SDIO firmware for 88W8897, not PCIe)
+
+But I know that response from NXP about these cards is slow... And more
+people are complaining about firmware/driver issues for these cards.
+
+> All that said, I believe that we have to follow whatever fixes we
+> would have and be thankful to contributors and testers.
+
+I agree. If this is really fixing these issues and we do not have better
+fix yet, go ahead with it (if PCIe/WiFi maintainers are fine with it).
+
+Once we have better fix, we can replace it.
+
+Currently I'm just trying to understand this issue more deeply (e.g. how
+it can relate with similar issue which I see on SDIO and if I cannot fix
+also SDIO in better way) but seems that nobody knows more than "this
+hack/quirk somehow works for PCIe".
+
+> For the record, I've been suffering from the Linux driver of this
+> hardware for a while. And I'm fully in support of any quirks that will
+> help UX.
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
