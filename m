@@ -2,158 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F41F3C258A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 241123C258C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:06:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232269AbhGIOIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 10:08:07 -0400
-Received: from vulcan.natalenko.name ([104.207.131.136]:38376 "EHLO
-        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231880AbhGIOIG (ORCPT
+        id S232230AbhGIOJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 10:09:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57516 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231857AbhGIOJP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 10:08:06 -0400
-Received: from spock.localnet (unknown [151.237.229.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id 88C9CB236BD;
-        Fri,  9 Jul 2021 16:05:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1625839520;
+        Fri, 9 Jul 2021 10:09:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625839589;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Fv6mXtwsNLV8Z6mne/QVVhVuclAr1lGpvUhLHeEpHIw=;
-        b=FAV8uEoQgOrWeHmEturnWZdI3JxhmsU4qKLyH31j0wZ5qjpsXEhKM1wKSB2m9eTtgAkEMW
-        D8gp4Z5DWz+xJILRARllgrsT5Ig6PfnbCrwcxmmjpRVK7btk2jo3JKbmFwg9zlC6wtlEBP
-        WMAxB8d+T+x1QG1+KEX+2Xuufo7tu38=
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>
-Cc:     intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] igb: fix netpoll exit with traffic
-Date:   Fri, 09 Jul 2021 16:05:18 +0200
-Message-ID: <1682283.zdkM9JWR0q@spock>
-In-Reply-To: <20210508102630.rytwqgkn7ariwru6@spock.localdomain>
-References: <20210507023001.2621951-1-jesse.brandeburg@intel.com> <20210508102630.rytwqgkn7ariwru6@spock.localdomain>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+        bh=uLtl/5oDqf8PcrF9UEzAhu9HDJICTavDVle2PbyDR/4=;
+        b=Mdc9VT2vEx1NIxuXYr33L1gDYymRixBs5CunJWmy8Dk6KlGYET0ls3c5t5N9Phh5AER0Va
+        ch1UU1FYMLZ6zWT9zteFC3HKbK5bqFMzzCrkoWeBo7DWUaqYoWzCnjwZ1PKoEbBVeJ2F5Z
+        8u523+wkAyYgtqxEbkNjw9xqHj7iDJA=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-94-nb3E8i1eNgedJPEVt0RucQ-1; Fri, 09 Jul 2021 10:06:26 -0400
+X-MC-Unique: nb3E8i1eNgedJPEVt0RucQ-1
+Received: by mail-wm1-f69.google.com with SMTP id v25-20020a1cf7190000b0290197a4be97b7so4072551wmh.9
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 07:06:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=uLtl/5oDqf8PcrF9UEzAhu9HDJICTavDVle2PbyDR/4=;
+        b=tfaxAQRjiE656nM6Q1BS2ToTpNoRiJ2tU9Yl5JQun2BjWIj7eSKxcl3b8COdzu/2SV
+         4GxfHOt/2mGbq/1ctpo3aA40vO7fJHlnikzvOTixy//0RV17dLd1pvwJrRccf7F70rtB
+         hw1W/oHzFFIl5OU5BBkmXyPcuTc1BMaSSp6KHD1UXBGxD46DYQeRXQj0mAbuV2uDuYwh
+         XGB8KCBTtWZ+jGNH9rdR2cGuFRfMh/0YVeWrO/c7g/gbVOhGEvpsmI9uBqc5xfB2UXsF
+         rRQ2sV9JWYJCfkz5E6S3eVS6i8/fT7jbhrb0QqNSEq2LPkSbRAQzTfgWTiHQsmZimUpp
+         qXgQ==
+X-Gm-Message-State: AOAM533aJI8guDJ7CZZQLlpk6kFTGJ/9DIkQhpH3iX8Ux8jf7KDELgBM
+        ruj1UjNcxj63DZEkK7/o6sf6FgOnFoP8bPbxPzreje+UiktdmBjh7OY5W4DE2f/G0Lbd7I6tJt+
+        CuBtJfgxmw5KU4JRPV5YAp7tl
+X-Received: by 2002:adf:eb43:: with SMTP id u3mr42287717wrn.83.1625839566973;
+        Fri, 09 Jul 2021 07:06:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzpWcE5dh0IytYK877PjYOYMVLad+vBaNwXr7nhI1jGzSpEVmKBe+hQ/WRrn5DS63kTML60BQ==
+X-Received: by 2002:adf:eb43:: with SMTP id u3mr42287698wrn.83.1625839566857;
+        Fri, 09 Jul 2021 07:06:06 -0700 (PDT)
+Received: from [192.168.1.136] ([79.116.5.179])
+        by smtp.gmail.com with ESMTPSA id z11sm5410723wru.65.2021.07.09.07.06.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Jul 2021 07:06:06 -0700 (PDT)
+Message-ID: <f520c8b87f56fcda0158853c5127f0488918503e.camel@redhat.com>
+Subject: Re: [PATCH v2] timers: Recalculate next timer interrupt only when
+ necessary
+From:   Nicolas Saenz Julienne <nsaenzju@redhat.com>
+To:     He Zhe <zhe.he@windriver.com>,
+        Frederic Weisbecker <frederic@kernel.org>
+Cc:     anna-maria@linutronix.de, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de, Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Date:   Fri, 09 Jul 2021 16:06:05 +0200
+In-Reply-To: <11e85cd8-40ac-09fe-e1fe-0eafa351072c@windriver.com>
+References: <20200723151641.12236-1-frederic@kernel.org>
+         <dfbf752e-91db-b128-76a8-98fde4c5d480@windriver.com>
+         <20210708153620.GA6716@lothringen>
+         <c7a5015a-2b93-17d2-29bc-cd03e40cc09c@windriver.com>
+         <20210709084303.GA17239@lothringen>
+         <11e85cd8-40ac-09fe-e1fe-0eafa351072c@windriver.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On sobota 8. kv=C4=9Btna 2021 12:26:36 CEST Oleksandr Natalenko wrote:
-> Hello.
->=20
-> On Thu, May 06, 2021 at 07:30:01PM -0700, Jesse Brandeburg wrote:
-> > Oleksandr brought a bug report where netpoll causes trace messages in
-> > the log on igb.
-> >=20
-> > [22038.710800] ------------[ cut here ]------------
-> > [22038.710801] igb_poll+0x0/0x1440 [igb] exceeded budget in poll
-> > [22038.710802] WARNING: CPU: 12 PID: 40362 at net/core/netpoll.c:155
-> > netpoll_poll_dev+0x18a/0x1a0
-> >=20
-> > After some discussion and debug from the list, it was deemed that the
-> > right thing to do is initialize the clean_complete variable to false
-> > when the "netpoll mode" of passing a zero budget is used.
-> >=20
-> > This logic should be sane and not risky because the only time budget
-> > should be zero on entry is netpoll.  Change includes a small refactor
-> > of local variable assignments to clean up the look.
-> >=20
-> > Fixes: 16eb8815c235 ("igb: Refactor clean_rx_irq to reduce overhead and
-> > improve performance") Reported-by: Oleksandr Natalenko
-> > <oleksandr@natalenko.name>
-> > Suggested-by: Alexander Duyck <alexander.duyck@gmail.com>
-> > Signed-off-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-> > Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
-> > ---
-> >=20
-> > Compile tested ONLY, but functionally it should be exactly the same for
-> > all cases except when budget is zero on entry, which will hopefully fix
-> > the bug.
-> >=20
-> > Sending this through intel-wired-lan with Alex's ACK.
-> > ---
-> >=20
-> >  drivers/net/ethernet/intel/igb/igb_main.c | 12 ++++++++----
-> >  1 file changed, 8 insertions(+), 4 deletions(-)
-> >=20
-> > diff --git a/drivers/net/ethernet/intel/igb/igb_main.c
-> > b/drivers/net/ethernet/intel/igb/igb_main.c index
-> > 0cd37ad81b4e..b0a9bed14071 100644
-> > --- a/drivers/net/ethernet/intel/igb/igb_main.c
-> > +++ b/drivers/net/ethernet/intel/igb/igb_main.c
-> > @@ -7991,12 +7991,16 @@ static void igb_ring_irq_enable(struct
-> > igb_q_vector *q_vector)>=20
-> >   **/
-> > =20
-> >  static int igb_poll(struct napi_struct *napi, int budget)
-> >  {
-> >=20
-> > -	struct igb_q_vector *q_vector =3D container_of(napi,
-> > -						     struct igb_q_vector,
-> > -						     napi);
-> > -	bool clean_complete =3D true;
-> > +	struct igb_q_vector *q_vector;
-> > +	bool clean_complete;
-> >=20
-> >  	int work_done =3D 0;
-> >=20
-> > +	/* if budget is zero, we have a special case for netconsole, so
-> > +	 * make sure to set clean_complete to false in that case.
-> > +	 */
-> > +	clean_complete =3D !!budget;
-> > +
-> > +	q_vector =3D container_of(napi, struct igb_q_vector, napi);
-> >=20
-> >  #ifdef CONFIG_IGB_DCA
-> > =20
-> >  	if (q_vector->adapter->flags & IGB_FLAG_DCA_ENABLED)
-> >  =09
-> >  		igb_update_dca(q_vector);
->=20
-> This didn't fix the issue neither for me, nor for another person from
-> the kernel bugzilla [1].
->=20
-> The same printout still happens:
->=20
-> ```
-> May 07 20:26:55 spock kernel: igb_poll+0x0/0x1440 [igb] exceeded budget in
-> poll May 07 20:26:55 spock kernel: WARNING: CPU: 13 PID: 12285 at
-> net/core/netpoll.c:154 netpoll_poll_dev+0x18a/0x1a0 =E2=80=A6
-> May 07 20:26:55 spock kernel: Call Trace:
-> May 07 20:26:55 spock kernel:  netpoll_send_skb+0x1a0/0x260
-> May 07 20:26:55 spock kernel:  write_msg+0xe5/0x100 [netconsole]
-> May 07 20:26:55 spock kernel:  console_unlock+0x42f/0x720
-> May 07 20:26:55 spock kernel:  suspend_devices_and_enter+0x2ac/0x7f0
-> May 07 20:26:55 spock kernel:  pm_suspend.cold+0x321/0x36c
-> May 07 20:26:55 spock kernel:  state_store+0xa6/0x140
-> May 07 20:26:55 spock kernel:  kernfs_fop_write_iter+0x124/0x1b0
-> May 07 20:26:55 spock kernel:  new_sync_write+0x16a/0x200
-> May 07 20:26:55 spock kernel:  vfs_write+0x223/0x2e0
-> May 07 20:26:55 spock kernel:  __x64_sys_write+0x6d/0xf0
-> ```
->=20
-> Probably, your patch is still fine, but another idea is desperately
-> needed :).
->=20
-> Thanks.
->=20
-> [1] https://bugzilla.kernel.org/show_bug.cgi?id=3D212573
+Hi Frederic, Zhe,
 
-Gentle ping. IIUC, the patch was not picked up anyway, but maybe there's=20
-another idea?
+I've stumbled upon an issue on my x86_64 nohz_full setups which looks a lot
+like Zhe's.
 
-Thanks.
+I've got a potential fix, I'll post it as a reply to this mail.
 
-=2D-=20
-Oleksandr Natalenko (post-factum)
-
+Regards,
+Nicolas
 
