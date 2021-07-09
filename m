@@ -2,139 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A4FA3C2609
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:34:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CAA53C260C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232095AbhGIOhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 10:37:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhGIOhg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 10:37:36 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E3DC0613DD;
-        Fri,  9 Jul 2021 07:34:51 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id o5so16581239ejy.7;
-        Fri, 09 Jul 2021 07:34:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Of8sTWUpYkw8uHoUjgY7rFsK+OTOd/MVYUUYb7dwPKE=;
-        b=Dam8JlEJ+8i+TF+EyE6l3aDaaPK1jI26C7teqf6yuMEpnVLtpgIebGm/kystU1ncsV
-         fsjQMpeJaw/ZCCnP+Gdaadf5k7/jsrk8I55uFgWRdCNEvZW/IpS7n4MwCaZQ2Fd3VIh/
-         F993Xg7sUIf8Cd/OWkzyGTY1OuoKGWyNcxHvHbkuCbcNOwTwi5DRHjaA6JS5eQMmWiPT
-         Q6UnTdMTKUEwIz37n1jJkglzWaf9VtSn4dt0tXg6lXQdN4+V9CMwpJxvmVmI1BVFusYM
-         HS6VovNhI5NrKiQxILIrwpZ+TH6wy+lP/5IOXN/Zlp9WKMPmiIWwxKwE8+ma6iBbMU5S
-         b+WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Of8sTWUpYkw8uHoUjgY7rFsK+OTOd/MVYUUYb7dwPKE=;
-        b=nOzW8hKji/V5lEnWPy3yNXvutXRS1qQx3H2IhLavFl9997+XOWth9W5xrqdeEAEInd
-         2Yws32GHQGht6h5ubmhDP6w7QhdQMtj7y4HQKyRSLvTNl/uVlwSLtCtUrfS0vjTXmKed
-         73IvlDFHPXgf1GYCEJAPO7/RAG67VTz+bSM/o2Kf9NuvVRjc+I82aTEZhT1r9H4LYgTd
-         KyHVqXc6mjs23KcaXjRDo94TekkNpT7eiiEb/5wpmMAo1jeXjOwlQ43Vp6yVPGtzlvNh
-         zj2sWyBPwggXJaMWqmIZ8DbYO4dNEOXdlJdaNG3AaA2j1sxAzIxuDHJsRlSKTKQrTXoZ
-         rHpg==
-X-Gm-Message-State: AOAM532mmoMTIxsj6K9ZvMXU5Pbgg8peiuIegmf9UsgPJPRlF2Jr42ad
-        OxWcJTDRuh/wGvVMCdYw7LqTTrN4vhl2imNGpaQ=
-X-Google-Smtp-Source: ABdhPJy9wQsDdJWri14ybKCFEQtG704SNOTxAYZDWL4CzaCA/2hswVstfiOlRwp8Sd0k/B8GaWR+EHLNC22/Qzz80PM=
-X-Received: by 2002:a17:906:bc84:: with SMTP id lv4mr12289770ejb.493.1625841289853;
- Fri, 09 Jul 2021 07:34:49 -0700 (PDT)
+        id S232250AbhGIOiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 10:38:06 -0400
+Received: from first.geanix.com ([116.203.34.67]:36992 "EHLO first.geanix.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231921AbhGIOhz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 10:37:55 -0400
+Received: from skn-laptop (unknown [185.233.254.173])
+        by first.geanix.com (Postfix) with ESMTPSA id 3D2B04C63D7;
+        Fri,  9 Jul 2021 14:35:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+        t=1625841307; bh=bh6RWvk3gmI+BmTSxLuJ9NcI8N1I3Z2smqLftpZU+y0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=ApIdNMxurywsYvIo8oZfSSHfK/bjc6l5eWGbDvuLDGF7aHc5lVIsktOl6Qvsbokwh
+         axeNpl9sOmQd71eFz71Y+uUXOMrTegznugOToWaHfy0YLXTo603yeXXXI2XTvDBfcV
+         Lt8OuHb4+3SSD7JZXYQnET6ADMm1pZpo3LMmnZhbIW0Kq04k5Am08yJURWgTuBtmLk
+         i0DKZ/CN/XDeGQl4P5XaT6fMw8yd3yPKgZRQxwtQYENdg6lF/HxAg2aGvZFZj2c2HQ
+         Z2oTGaBg26YpNkEkxVyK3diNPB3rUb7nAATgFyaEHqScVkUUjoHnp3tVJwlJ8EjoVo
+         rZmSdvyAlvOmA==
+Date:   Fri, 9 Jul 2021 16:35:05 +0200
+From:   Sean Nyekjaer <sean@geanix.com>
+To:     Souptick Joarder <jrdr.linux@gmail.com>
+Cc:     Fabio Estevam <festevam@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-iio@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH] iio: accel: fxls8962af: Initialize return value
+Message-ID: <20210709143505.4xzpols32j7rotpc@skn-laptop>
+References: <20210709031526.30746-1-jrdr.linux@gmail.com>
+ <CAOMZO5BHDBR5y5q559UexTmYbhPwSp1MV3TJ3k+z4W8ehE-5_Q@mail.gmail.com>
+ <CAFqt6zZ3WOv6sv5iVgkbYBhnxvv=t1pE8ZxEiC7=j5qugvy=NA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210709062943.101532-1-ilias.apalodimas@linaro.org>
-In-Reply-To: <20210709062943.101532-1-ilias.apalodimas@linaro.org>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Fri, 9 Jul 2021 07:34:38 -0700
-Message-ID: <CAKgT0UdQmrzZufHpvRBtWgbFdTCVmKH4Vx6GzwtmC9FuM8K+hg@mail.gmail.com>
-Subject: Re: [PATCH 1/1 v2] skbuff: Fix a potential race while recycling
- page_pool packets
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc:     Netdev <netdev@vger.kernel.org>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAFqt6zZ3WOv6sv5iVgkbYBhnxvv=t1pE8ZxEiC7=j5qugvy=NA@mail.gmail.com>
+X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on 93bd6fdb21b5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 8, 2021 at 11:30 PM Ilias Apalodimas
-<ilias.apalodimas@linaro.org> wrote:
->
-> As Alexander points out, when we are trying to recycle a cloned/expanded
-> SKB we might trigger a race.  The recycling code relies on the
-> pp_recycle bit to trigger,  which we carry over to cloned SKBs.
-> If that cloned SKB gets expanded or if we get references to the frags,
-> call skbb_release_data() and overwrite skb->head, we are creating separate
-> instances accessing the same page frags.  Since the skb_release_data()
-> will first try to recycle the frags,  there's a potential race between
-> the original and cloned SKB, since both will have the pp_recycle bit set.
->
-> Fix this by explicitly those SKBs not recyclable.
-> The atomic_sub_return effectively limits us to a single release case,
-> and when we are calling skb_release_data we are also releasing the
-> option to perform the recycling, or releasing the pages from the page pool.
->
-> Fixes: 6a5bcd84e886 ("page_pool: Allow drivers to hint on SKB recycling")
-> Reported-by: Alexander Duyck <alexanderduyck@fb.com>
-> Suggested-by: Alexander Duyck <alexanderduyck@fb.com>
-> Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-> ---
-> Changes since v1:
-> - Set the recycle bit to 0 during skb_release_data instead of the
->   individual fucntions triggering the issue, in order to catch all
->   cases
->  net/core/skbuff.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index 12aabcda6db2..f91f09a824be 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -663,7 +663,7 @@ static void skb_release_data(struct sk_buff *skb)
->         if (skb->cloned &&
->             atomic_sub_return(skb->nohdr ? (1 << SKB_DATAREF_SHIFT) + 1 : 1,
->                               &shinfo->dataref))
-> -               return;
-> +               goto exit;
->
->         skb_zcopy_clear(skb, true);
->
-> @@ -674,6 +674,8 @@ static void skb_release_data(struct sk_buff *skb)
->                 kfree_skb_list(shinfo->frag_list);
->
->         skb_free_head(skb);
-> +exit:
-> +       skb->pp_recycle = 0;
->  }
->
->  /*
-> --
-> 2.32.0.rc0
->
+On Fri, Jul 09, 2021 at 07:50:48PM +0530, Souptick Joarder wrote:
+> On Fri, 9 Jul, 2021, 9:06 am Fabio Estevam, <festevam@gmail.com> wrote:
+> 
+> > Hi Souptick,
+> >
+> > On Fri, Jul 9, 2021 at 12:17 AM Souptick Joarder <jrdr.linux@gmail.com>
+> > wrote:
+> > >
+> > > kernel test robot throws below warning ->
+> > >
+> > > smatch warnings:
+> > > drivers/iio/accel/fxls8962af-core.c:640
+> > > fxls8962af_i2c_raw_read_errata3() error: uninitialized symbol 'ret'.
+> > >
+> > > Initialize it.
+> > >
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > > Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+> > > ---
+> > >  drivers/iio/accel/fxls8962af-core.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/iio/accel/fxls8962af-core.c
+> > b/drivers/iio/accel/fxls8962af-core.c
+> > > index 078d87865fde..8af1c8f58e83 100644
+> > > --- a/drivers/iio/accel/fxls8962af-core.c
+> > > +++ b/drivers/iio/accel/fxls8962af-core.c
+> > > @@ -628,7 +628,7 @@ static int fxls8962af_i2c_raw_read_errata3(struct
+> > fxls8962af_data *data,
+> > >                                            u16 *buffer, int samples,
+> > >                                            int sample_length)
+> > >  {
+> > > -       int i, ret;
+> > > +       int i, ret = -EINVAL;
+> > >
+> > >         for (i = 0; i < samples; i++) {
+> > >                 ret = regmap_raw_read(data->regmap, FXLS8962AF_BUF_X_LSB,
+> >
+> > Would the change below work?
+> >
+> 
+> This function returns -ERRNO when failed. If it is not entering loop,
+> ideally it should return -ERRNO, not 0. No ?
 
-This is probably the cleanest approach with the least amount of
-change, but one thing I am concerned with in this approach is that we
-end up having to dirty a cacheline that I am not sure is otherwise
-touched during skb cleanup. I am not sure if that will be an issue or
-not. If it is then an alternative or follow-on patch could move the
-pp_recycle flag into the skb_shared_info flags itself and then make
-certain that we clear it around the same time we are setting
-shinfo->dataref to 1.
+samples can't be 0, as fxls8962af_fifo_transfer() is never called if
+samples are 0 :)
 
-Otherwise this looks good to me.
+> 
+> >
+> > --- a/drivers/iio/accel/fxls8962af-core.c
+> > +++ b/drivers/iio/accel/fxls8962af-core.c
+> > @@ -637,7 +637,7 @@ static int fxls8962af_i2c_raw_read_errata3(struct
+> > fxls8962af_data *data,
+> >                         return ret;
+> >         }
+> >
+> > -       return ret;
+> > +       return 0;
+> >  }
+> >
 
-Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
