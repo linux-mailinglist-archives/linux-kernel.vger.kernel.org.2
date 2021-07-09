@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 885E93C28DA
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF463C28D8
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbhGISM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 14:12:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33834 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229936AbhGISMX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S230018AbhGISMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 9 Jul 2021 14:12:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58687 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229499AbhGISMW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 14:12:22 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625854179;
+        s=mimecast20190719; t=1625854178;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=8dzIZ0NGWcvLE911x7l7LrX9eMLcBpxOIY0yPCLQHEw=;
-        b=HnS/52+AM/WfvgES8onqL2ih9t40zl2+SNsUytgEfNktznbujzTNYjjvmQXKKWP94UckzO
-        0Va0nC2BQWl7x4CKwX7cKQDAjd7wI2QrK1A9Hx4OM4H+QV6v/8JTcLu5/TYtbCOOe/7BJB
-        kQY0Ag36rL4a/sutAoph1jelNXPfaoY=
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         references:references; bh=SKuk+h7htDa9dNYFdUt3m5hrD3QQHm7oWsA1+l2m0cc=;
+        b=Ogu491bUOGwf3zoTRkm6fhMqCjZzBELaLIL/WOCsikOL72XfOR6zR28U52mSHH92tZYlZw
+        +lzt+U6l07HY/oNTuPyuU5a2NlJUCKC9JTkyN6o51UQvxiP5anEXYhNUscSUM7hg+MSU9b
+        zg9rRvSCy4eta03+O8B2r9+2VjMwEf0=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-431-WNW_iuT9Ph-fKleZ6RTpiA-1; Fri, 09 Jul 2021 14:09:37 -0400
-X-MC-Unique: WNW_iuT9Ph-fKleZ6RTpiA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+ us-mta-456-gMsdvgywNtOq7SK-qL-SOA-1; Fri, 09 Jul 2021 14:09:37 -0400
+X-MC-Unique: gMsdvgywNtOq7SK-qL-SOA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5B29C84F20B;
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 703F9804301;
         Fri,  9 Jul 2021 18:09:36 +0000 (UTC)
 Received: from fuller.cnet (ovpn-112-4.gru2.redhat.com [10.97.112.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9D5C9175B9;
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A01A1604CD;
         Fri,  9 Jul 2021 18:09:32 +0000 (UTC)
 Received: by fuller.cnet (Postfix, from userid 1000)
-        id 44615416D862; Fri,  9 Jul 2021 15:09:28 -0300 (-03)
-Message-ID: <20210709173726.457181806@fuller.cnet>
+        id 48849416D8BC; Fri,  9 Jul 2021 15:09:28 -0300 (-03)
+Message-ID: <20210709174428.134060506@fuller.cnet>
 User-Agent: quilt/0.66
-Date:   Fri, 09 Jul 2021 14:37:26 -0300
+Date:   Fri, 09 Jul 2021 14:37:27 -0300
 From:   Marcelo Tosatti <mtosatti@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Christoph Lameter <cl@linux.com>,
@@ -44,55 +45,98 @@ Cc:     Christoph Lameter <cl@linux.com>,
         Juri Lelli <juri.lelli@redhat.com>,
         Nitesh Lal <nilal@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Nicolas Saenz <nsaenzju@redhat.com>
-Subject: [patch 0/5] optionally perform deferred actions on return to userspace
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        Nicolas Saenz <nsaenzju@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Subject: [patch 1/5] sched: isolation: introduce quiesce_on_exit_to_usermode isolcpu flags
+References: <20210709173726.457181806@fuller.cnet>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changelog:
+Add a new isolcpus flag "quiesce_on_exit_to_usermode" to enable
+quiescing of deferred actions on return to userspace.
 
--v2: fix !CONFIG_SMP breakage (kernel robot)
-     switch option to generic "quiesce_on_exit_to_usermode"
+Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
 
-Summary of what was discussed on -v1:
-
-1) The additional hooks to performance sensitive callbacks
-in mm/vmstat.c are protected by a static key, therefore
-workloads which do not enable this should not be impacted.
-
-2) People would prefer the prctl() interface, but as noted
-in the option documentation (patch 1), the code added by
-this patchset should be reused by the prctl() interface,
-and the isolcpus option can then be deprecated.
-
-3) Nobody has any other bright ideas for ways to solve this
-that would make this patch series obsolete.
-
-4) The isolcpus= interface should switch to a cpuset based
-interface.
-
----
-
-
-The logic to disable vmstat worker thread, when entering
-nohz full, does not cover all scenarios. For example, it is possible
-for the following to happen:
-
-1) enter nohz_full, which calls refresh_cpu_vm_stats, syncing the stats.
-2) app runs mlock, which increases counters for mlock'ed pages.
-3) start -RT loop
-
-Since refresh_cpu_vm_stats from nohz_full logic can happen _before_
-the mlock, vmstat shepherd can restart vmstat worker thread on
-the CPU in question.
-
-To fix this, optionally quiesce deferred actions when returning
-to userspace, controllable by a new "quiesce_on_exit_to_usermode"
-isolcpus flag (default off).
-
-See individual patches for details.
-
+Index: linux-2.6-vmstat-update/include/linux/sched/isolation.h
+===================================================================
+--- linux-2.6-vmstat-update.orig/include/linux/sched/isolation.h
++++ linux-2.6-vmstat-update/include/linux/sched/isolation.h
+@@ -15,6 +15,7 @@ enum hk_flags {
+ 	HK_FLAG_WQ		= (1 << 6),
+ 	HK_FLAG_MANAGED_IRQ	= (1 << 7),
+ 	HK_FLAG_KTHREAD		= (1 << 8),
++	HK_FLAG_QUIESCE_URET	= (1 << 9),
+ };
+ 
+ #ifdef CONFIG_CPU_ISOLATION
+Index: linux-2.6-vmstat-update/kernel/sched/isolation.c
+===================================================================
+--- linux-2.6-vmstat-update.orig/kernel/sched/isolation.c
++++ linux-2.6-vmstat-update/kernel/sched/isolation.c
+@@ -173,6 +173,12 @@ static int __init housekeeping_isolcpus_
+ 			continue;
+ 		}
+ 
++		if (!strncmp(str, "quiesce_on_exit_to_usermode,", 28)) {
++			str += 28;
++			flags |= HK_FLAG_QUIESCE_URET;
++			continue;
++		}
++
+ 		/*
+ 		 * Skip unknown sub-parameter and validate that it is not
+ 		 * containing an invalid character.
+Index: linux-2.6-vmstat-update/Documentation/admin-guide/kernel-parameters.txt
+===================================================================
+--- linux-2.6-vmstat-update.orig/Documentation/admin-guide/kernel-parameters.txt
++++ linux-2.6-vmstat-update/Documentation/admin-guide/kernel-parameters.txt
+@@ -2124,6 +2124,43 @@
+ 
+ 			The format of <cpu-list> is described above.
+ 
++                         quiesce_on_exit_to_usermode
++
++			  This flag allows userspace to take preventive measures to
++			  avoid deferred actions and create a OS noise free environment for
++			  the application, by quiescing such activities on
++			  return from syscalls (that is, perform the necessary
++			  background work on return to userspace, rather than allowing
++			  it to happen when userspace is executing, in the form of
++			  an interruption to the application).
++
++			  There might be a performance degradation from using this,
++			  on systemcall heavy workloads, for the isolated CPUs.
++			  This option is intended to be used by specialized workloads.
++
++			  It should be deprecated in favour of a prctl() interface
++			  to enable this mode (which allows the quiescing to take
++			  place only on select sections of userspace execution, namely
++			  the latency sensitive loops).
++
++			  Note: one of the preventive measures this option
++			  enables is the following.
++
++			  Page counters are maintained in per-CPU counters to
++			  improve performance. When a CPU modifies a page counter,
++			  this modification is kept in the per-CPU counter.
++			  Certain activities require a global count, which
++			  involves requesting each CPU to flush its local counters
++			  to the global VM counters.
++			  This flush is implemented via a workqueue item, which
++			  requires scheduling the workqueue task on isolated CPUs.
++
++			  To avoid this interruption, quiesce_on_exit_to_usermode
++			  syncs the page counters on each return from system calls.
++			  To ensure the application returns to userspace
++			  with no modified per-CPU counters, its necessary to
++			  use mlockall() in addition to this isolcpus flag.
++
+ 	iucv=		[HW,NET]
+ 
+ 	ivrs_ioapic	[HW,X86-64]
 
 
