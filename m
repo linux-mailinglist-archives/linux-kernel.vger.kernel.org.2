@@ -2,102 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2843C22FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 13:38:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6E143C2301
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 13:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231210AbhGILlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 07:41:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231149AbhGILlN (ORCPT
+        id S231226AbhGILmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 07:42:19 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:14061 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230367AbhGILmS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 07:41:13 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88867C0613DD;
-        Fri,  9 Jul 2021 04:38:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=43Lf+zzmrrH5VsxADYa58paCbsgJPKuh8uE7fsHJkIM=; b=bzOSMrlT2MuULTiykTbSEevQBy
-        BqdAfWy86bLpmFBMKGulUid+AfAXjqmMFUE/hTY5FnWCpL/KlzmWPb2s5LfXZ5sLT3ZaHjEBKUIGH
-        WEFtmOyZMHkNLohpfXlvj96GX6yeqXuqnKF+xXYezmnPc8aF08kg88bAKfTIkU1a7uiQtdRtdNe/M
-        GAQeb2UhnWu8btSaep0kSrNWq1zCNnoN4Dnne9bBDZU01gOY7vrSdVBr8m5QS6rzo5jfE6ZeSsifk
-        DAVz57tVGstU+gkOu9Qoii2LKaHW1Auuc65jH5sNLdUgFTZ9TcKwV25+880bZVD2BEleCpntOv9Fm
-        yiqoAxPg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m1opq-00G47Y-On; Fri, 09 Jul 2021 11:38:23 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 154D130022B;
-        Fri,  9 Jul 2021 13:38:21 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 02EA121BE8C9E; Fri,  9 Jul 2021 13:38:20 +0200 (CEST)
-Date:   Fri, 9 Jul 2021 13:38:20 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Phil Auld <pauld@redhat.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] sched: Fix nr_uninterruptible race causing increasing
- load average
-Message-ID: <YOg1LHSDknjobJfR@hirez.programming.kicks-ass.net>
-References: <20210707190457.60521-1-pauld@redhat.com>
- <YOaoomJAS2FzXi7I@hirez.programming.kicks-ass.net>
- <YOb82exzMcrOxfHa@lorien.usersys.redhat.com>
+        Fri, 9 Jul 2021 07:42:18 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GLrhg2mcBzbbls;
+        Fri,  9 Jul 2021 19:36:19 +0800 (CST)
+Received: from dggema774-chm.china.huawei.com (10.1.198.216) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 9 Jul 2021 19:39:31 +0800
+Received: from [10.67.102.197] (10.67.102.197) by
+ dggema774-chm.china.huawei.com (10.1.198.216) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 9 Jul 2021 19:39:30 +0800
+Subject: Re: [PATCH 4.4.y] arm: kprobes: Allow to handle reentered kprobe on
+ single-stepping
+To:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Shaobo Huang <huangshaobo6@huawei.com>
+CC:     <gregkh@linuxfoundation.org>, <chenzefeng2@huawei.com>,
+        <kepler.chenxin@huawei.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux@arm.linux.org.uk>,
+        <liucheng32@huawei.com>, <tixy@linaro.org>, <xiaoqian9@huawei.com>,
+        <young.liuyang@huawei.com>, <zengweilin@huawei.com>
+References: <YOcOcNBRou5KlbOR@kroah.com>
+ <20210709024630.22268-1-huangshaobo6@huawei.com>
+ <20210709180031.adc7260b54645b0292a6f02a@kernel.org>
+From:   Xiaoming Ni <nixiaoming@huawei.com>
+Message-ID: <9ca81fb8-8d6e-1708-db01-a29e54c79343@huawei.com>
+Date:   Fri, 9 Jul 2021 19:39:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.0.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YOb82exzMcrOxfHa@lorien.usersys.redhat.com>
+In-Reply-To: <20210709180031.adc7260b54645b0292a6f02a@kernel.org>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.197]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggema774-chm.china.huawei.com (10.1.198.216)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 08, 2021 at 09:25:45AM -0400, Phil Auld wrote:
-> Hi Peter,
+On 2021/7/9 17:00, Masami Hiramatsu wrote:
+> Hi Shaobo,
 > 
-> On Thu, Jul 08, 2021 at 09:26:26AM +0200 Peter Zijlstra wrote:
-> > On Wed, Jul 07, 2021 at 03:04:57PM -0400, Phil Auld wrote:
-> > > On systems with weaker memory ordering (e.g. power) commit dbfb089d360b
-> > > ("sched: Fix loadavg accounting race") causes increasing values of load
-> > > average (via rq->calc_load_active and calc_load_tasks) due to the wakeup
-> > > CPU not always seeing the write to task->sched_contributes_to_load in
-> > > __schedule(). Missing that we fail to decrement nr_uninterruptible when
-> > > waking up a task which incremented nr_uninterruptible when it slept.
-> > > 
-> > > The rq->lock serialization is insufficient across different rq->locks.
-> > > 
-> > > Add smp_wmb() to schedule and smp_rmb() before the read in
-> > > ttwu_do_activate().
-> > 
-> > > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > > index 4ca80df205ce..ced7074716eb 100644
-> > > --- a/kernel/sched/core.c
-> > > +++ b/kernel/sched/core.c
-> > > @@ -2992,6 +2992,8 @@ ttwu_do_activate(struct rq *rq, struct task_struct *p, int wake_flags,
-> > >  
-> > >  	lockdep_assert_held(&rq->lock);
-> > >  
-> > > +	/* Pairs with smp_wmb in __schedule() */
-> > > +	smp_rmb();
-> > >  	if (p->sched_contributes_to_load)
-> > >  		rq->nr_uninterruptible--;
-> > >  
-> > 
-> > Is this really needed ?! (this question is a big fat clue the comment is
-> > insufficient). AFAICT try_to_wake_up() has a LOAD-ACQUIRE on p->on_rq
-> > and hence the p->sched_contributed_to_load must already happen after.
-> >
+> Thanks for backporting!
+> Greg, it seems this patch can be applied to 4.9 too without any issue.
 > 
-> Yes, it is needed.  We've got idle power systems with load average of 530.21.
-> Calc_load_tasks is 530, and the sum of both nr_uninterruptible and
-> calc_load_active across all the runqueues is 530. Basically monotonically
-> non-decreasing load average. With the patch this no longer happens.
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=linux-4.9.y&id=355a04fa1fc23c4fb1d16440e62d46a42691e96b
 
-Have you tried without the rmb here? Do you really need both barriers?
+The v4.9 branch has been fixed.
+
+Thanks
+Xiaoming Ni
+
+
+
+> Thank you,
+> 
+> On Fri, 9 Jul 2021 10:46:30 +0800
+> Shaobo Huang <huangshaobo6@huawei.com> wrote:
+> 
+>> From: Masami Hiramatsu <mhiramat@kernel.org>
+>>
+>> commit f3fbd7ec62dec1528fb8044034e2885f2b257941 upstream
+>>
+>> This is arm port of commit 6a5022a56ac3 ("kprobes/x86: Allow to
+>> handle reentered kprobe on single-stepping")
+>>
+>> Since the FIQ handlers can interrupt in the single stepping
+>> (or preparing the single stepping, do_debug etc.), we should
+>> consider a kprobe is hit in the NMI handler. Even in that
+>> case, the kprobe is allowed to be reentered as same as the
+>> kprobes hit in kprobe handlers
+>> (KPROBE_HIT_ACTIVE or KPROBE_HIT_SSDONE).
+>>
+>> The real issue will happen when a kprobe hit while another
+>> reentered kprobe is processing (KPROBE_REENTER), because
+>> we already consumed a saved-area for the previous kprobe.
+>>
+>> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+>> Signed-off-by: Jon Medhurst <tixy@linaro.org>
+>> Fixes: 24ba613c9d6c ("ARM kprobes: core code")
+>> Cc: stable@vger.kernel.org #v2.6.25~v4.11
+>> Signed-off-by: huangshaobo <huangshaobo6@huawei.com>
+>> ---
+>>   arch/arm/probes/kprobes/core.c | 6 ++++++
+>>   1 file changed, 6 insertions(+)
+>>
+>> diff --git a/arch/arm/probes/kprobes/core.c b/arch/arm/probes/kprobes/core.c
+>> index 3eb018fa1a1f..c3362ddd6c4c 100644
+>> --- a/arch/arm/probes/kprobes/core.c
+>> +++ b/arch/arm/probes/kprobes/core.c
+>> @@ -270,6 +270,7 @@ void __kprobes kprobe_handler(struct pt_regs *regs)
+>>   			switch (kcb->kprobe_status) {
+>>   			case KPROBE_HIT_ACTIVE:
+>>   			case KPROBE_HIT_SSDONE:
+>> +			case KPROBE_HIT_SS:
+>>   				/* A pre- or post-handler probe got us here. */
+>>   				kprobes_inc_nmissed_count(p);
+>>   				save_previous_kprobe(kcb);
+>> @@ -278,6 +279,11 @@ void __kprobes kprobe_handler(struct pt_regs *regs)
+>>   				singlestep(p, regs, kcb);
+>>   				restore_previous_kprobe(kcb);
+>>   				break;
+>> +			case KPROBE_REENTER:
+>> +				/* A nested probe was hit in FIQ, it is a BUG */
+>> +				pr_warn("Unrecoverable kprobe detected at %p.\n",
+>> +					p->addr);
+>> +				/* fall through */
+>>   			default:
+>>   				/* impossible cases */
+>>   				BUG();
+>> -- 
+>> 2.12.3
+>>
+> 
+> 
+
