@@ -2,210 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18E013C25A6
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:13:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B5C13C25A2
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232201AbhGIOQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 10:16:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231963AbhGIOQV (ORCPT
+        id S231932AbhGIOQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 10:16:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44803 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229548AbhGIOQM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 10:16:21 -0400
-Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AC47C0613E7
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 07:13:37 -0700 (PDT)
-Received: by mail-vs1-xe34.google.com with SMTP id f7so4170225vsa.9
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 07:13:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=k89Ch88cRUiEMjry43m9N7gstMUgrbCY6fER5AdkGA4=;
-        b=QNnjKmKPBqDKbMBvnIbwxX8JaAsr3TPSp0B2A8zXJLp32wFuTIwwhAp+38Yf+UpAgp
-         0J7A1ZIUCvHdGuIAdU7n+56a7+ueGdlJXiBnIDz8aYrZEp3ZzHe4/lZuyQGxMG2z6lg0
-         Fye9AKqHdwlKVhWsQGX6wpi3jPlKnOp75XyYEd0ROtSXCGYgujwVwqSbwkzsw2RnUugM
-         aw0UHGM0rJV72qk6PGBfhmSx/mDCbuPzi32uUtlWT+QN5u+r1MSUnpyolfi+uuq7+2SR
-         uYHqhk/cJw47fyN1Emx3nBOdCW7DuHYTU31gBJMijiOMzHwCsoaD7ayfDxpaOZvt6l8H
-         Ee7g==
+        Fri, 9 Jul 2021 10:16:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625840008;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PkuhaEUod5NWJ0g94zfc/Bhhe9nf73fkAPVspEdS21w=;
+        b=VxeFVaV4sNnXdalMjU/LtZ18arEK2yq7zfkCs7tXCWrBO03jgXMDH5QjQCwVpNGtSVjQNG
+        Ncxq2maVkZKpPPJEbxj26Tf9yrwO56YwEXf/LS28U1Z6s0WtUvEUsY8PzvUTbQOJuEg8zH
+        Lrn+6sctkRG8TcsOcNEseTFpaUmCsp8=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-181-bZsyLWL0OjCS0bOCQFYDyg-1; Fri, 09 Jul 2021 10:13:27 -0400
+X-MC-Unique: bZsyLWL0OjCS0bOCQFYDyg-1
+Received: by mail-wm1-f72.google.com with SMTP id z127-20020a1c7e850000b02901e46e4d52c0so5246503wmc.6
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 07:13:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=k89Ch88cRUiEMjry43m9N7gstMUgrbCY6fER5AdkGA4=;
-        b=Z5t1jWu3LkHEhakunzj8WpSj/sc606tgRy68b8ADx0ekSfrBgmSNKeDHE0+fq1XM+g
-         QUaSWT1Sq2TDS+R7adLDaBxv1EEEXD+Bl6FWWhlwnM8QVtSZXzApsw2COlAntMp8FYSx
-         dYdZmvDuHDkqZ2CWSK1u4GtKGMpKxMxe0TNpStdZN6ITagqLymC9qY/AfYHbBmcmzQ0p
-         jJ95rNg/UCaAepgmuD1Vn3lGWo4hxonVNnu4z/ZXzEmUi4duDX8JvAendEBlVV58dGMp
-         ZsZ2rXNZoYe8uG/WybrrojeyLMJw+J3D2IAeGCnB4WTBFNijleSPc4fIMrWGhTRVK+w1
-         skRA==
-X-Gm-Message-State: AOAM532Cc9BQQTxFVrivgdCxkdhWWDzBZYl7TSaYvZGaB//cTmbVyJeb
-        LtXhVwWmzRLM71A6edC7+BDQkC48JDW7E1k+2WTWGA==
-X-Google-Smtp-Source: ABdhPJxF618DxSB9582ZosQ3wFZ5poc/1AZOCAyJqILcz1eoNrbDDPiS8QttX+dV9j3zklpYVcjXWqk6dbV0IYCa9c0=
-X-Received: by 2002:a67:ee54:: with SMTP id g20mr36212886vsp.55.1625840016445;
- Fri, 09 Jul 2021 07:13:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210709043136.533205-1-dmitry.baryshkov@linaro.org>
- <20210709043136.533205-5-dmitry.baryshkov@linaro.org> <CAPDyKFprYK8bSk+rdnDt3xRUR9BRNdyRiBdefO+s7qzOwHf7hg@mail.gmail.com>
- <CAA8EJprrjz=o7Ymt1mNBZASzTeX==1ceRTeKA4f3QrVMcpO6xg@mail.gmail.com>
- <CAPDyKFoLcsYLisEiOF66dDsV+759c5k0PD64uxU11jc5VTdNYQ@mail.gmail.com>
- <CAA8EJpr2HEm4R+bGrH6DHA_z8bjN69Zam9UUiAeKAr5vsCKr3A@mail.gmail.com>
- <CAPDyKFr+-qXbi4z4_wzDRaMMLKSKM7zNr55Kt-AOk97mVKM+8A@mail.gmail.com> <YOhXX+u9HuScTDp6@yoga>
-In-Reply-To: <YOhXX+u9HuScTDp6@yoga>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 9 Jul 2021 16:13:00 +0200
-Message-ID: <CAPDyKFrsWhaURyOcR6_hY5nH=yOmwmnpCsMjPOTscXif7DPMUQ@mail.gmail.com>
-Subject: Re: [RESEND PATCH v2 4/7] clk: qcom: gdsc: enable optional power
- domain support
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=PkuhaEUod5NWJ0g94zfc/Bhhe9nf73fkAPVspEdS21w=;
+        b=Yd8m+wdSMCXz5sy3Iqtrpz50D4FBzcYfyAQIgMVyV3aVQAmP+ugYPxPoo/UXYFtxpL
+         kG/YM9CZS7TAr0+/jgBCo80RIq/wC+7SFUiEHEO5ZGLP/TCd8708WtHMhGMHPjuB4SjY
+         jDg8DQp4wMtrK9RRIprYVurmzizAwJdofYpce6ylp99HRPLMbGeGy4WSCT9JaNWYvXEx
+         ZZZtraX7irLqcKtmA3B2fu2p+zEDxvsRZEiv0lm6HSRzIWC0yJFacoS2NucY0GjcFQb7
+         VQmjC2T/zKu2IHBqmNkFXAmnFjV7VexFlsomWAcD01scx4PIpFAVFi9T6s1y++v1CwJW
+         GVKQ==
+X-Gm-Message-State: AOAM533ex5QH6o79tw/FRQdBta++VUut2Orgr3pKsWAczRPSi32JU+e7
+        mN70xZqW9mU9QiKQQwFKi+ceDXdo2pIIyIuKL2Mia46HSTCb1Bq11/+xV9rUlGGvdmNnaFShlI9
+        xR/D5kAZXjTPJsw7UwwZ+enMx
+X-Received: by 2002:a5d:46cc:: with SMTP id g12mr40439988wrs.136.1625840006360;
+        Fri, 09 Jul 2021 07:13:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx9o+o8RdMn5hHCkABeqCjArbWj+uYGLEuQsgahKc22ny6HdGWQmihnkBV5R1LbkRvPehwTFQ==
+X-Received: by 2002:a5d:46cc:: with SMTP id g12mr40439972wrs.136.1625840006230;
+        Fri, 09 Jul 2021 07:13:26 -0700 (PDT)
+Received: from [192.168.1.136] ([79.116.5.179])
+        by smtp.gmail.com with ESMTPSA id g10sm5654356wrq.63.2021.07.09.07.13.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Jul 2021 07:13:26 -0700 (PDT)
+Message-ID: <4409fa71931446d9cabd849431ee0098c9b31292.camel@redhat.com>
+Subject: [PATCH] timers: Fix get_next_timer_interrupt() with no timers
+ pending
+From:   Nicolas Saenz Julienne <nsaenzju@redhat.com>
+To:     He Zhe <zhe.he@windriver.com>,
+        Frederic Weisbecker <frederic@kernel.org>
+Cc:     anna-maria@linutronix.de, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de
+Date:   Fri, 09 Jul 2021 16:13:25 +0200
+In-Reply-To: <f520c8b87f56fcda0158853c5127f0488918503e.camel@redhat.com>
+References: <20200723151641.12236-1-frederic@kernel.org>
+         <dfbf752e-91db-b128-76a8-98fde4c5d480@windriver.com>
+         <20210708153620.GA6716@lothringen>
+         <c7a5015a-2b93-17d2-29bc-cd03e40cc09c@windriver.com>
+         <20210709084303.GA17239@lothringen>
+         <11e85cd8-40ac-09fe-e1fe-0eafa351072c@windriver.com>
+         <f520c8b87f56fcda0158853c5127f0488918503e.camel@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Jul 2021 at 16:04, Bjorn Andersson <bjorn.andersson@linaro.org> wrote:
->
-> On Fri 09 Jul 08:14 CDT 2021, Ulf Hansson wrote:
->
-> > On Fri, 9 Jul 2021 at 14:59, Dmitry Baryshkov
-> > <dmitry.baryshkov@linaro.org> wrote:
-> > >
-> > > On Fri, 9 Jul 2021 at 15:18, Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > > >
-> > > > On Fri, 9 Jul 2021 at 13:46, Dmitry Baryshkov
-> > > > <dmitry.baryshkov@linaro.org> wrote:
-> > > > >
-> > > > > On Fri, 9 Jul 2021 at 12:33, Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > > > > >
-> > > > > > On Fri, 9 Jul 2021 at 06:32, Dmitry Baryshkov
-> > > > > > <dmitry.baryshkov@linaro.org> wrote:
-> > > > > > >
-> > > > > > > On sm8250 dispcc and videocc registers are powered up by the MMCX power
-> > > > > > > domain. Currently we used a regulator to enable this domain on demand,
-> > > > > > > however this has some consequences, as genpd code is not reentrant.
-> > > > > > >
-> > > > > > > Teach Qualcomm clock controller code about setting up power domains and
-> > > > > > > using them for gdsc control.
-> > > > > > >
-> > > > > > > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > > > > >
-> > > > > > [...]
-> > > > > >
-> > > > > > > diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
-> > > > > > > index 51ed640e527b..9401d01533c8 100644
-> > > > > > > --- a/drivers/clk/qcom/gdsc.c
-> > > > > > > +++ b/drivers/clk/qcom/gdsc.c
-> > > > > > > @@ -427,6 +427,7 @@ int gdsc_register(struct gdsc_desc *desc,
-> > > > > > >                         continue;
-> > > > > > >                 scs[i]->regmap = regmap;
-> > > > > > >                 scs[i]->rcdev = rcdev;
-> > > > > > > +               scs[i]->pd.dev.parent = desc->dev;
-> > > > > > >                 ret = gdsc_init(scs[i]);
-> > > > > > >                 if (ret)
-> > > > > > >                         return ret;
-> > > > > > > @@ -439,6 +440,8 @@ int gdsc_register(struct gdsc_desc *desc,
-> > > > > > >                         continue;
-> > > > > > >                 if (scs[i]->parent)
-> > > > > > >                         pm_genpd_add_subdomain(scs[i]->parent, &scs[i]->pd);
-> > > > > > > +               else if (!IS_ERR_OR_NULL(dev->pm_domain))
-> > > > > >
-> > > > > > So dev_pm_domain_attach() (which calls genpd_dev_pm_attach() is being
-> > > > > > called for gdsc platform device from the platform bus', to try to
-> > > > > > attach the device to its corresponding PM domain.
-> > > > > >
-> > > > > > Looking a bit closer to genpd_dev_pm_attach(), I realize that we
-> > > > > > shouldn't really try to attach a device to its PM domain, when its OF
-> > > > > > node (dev->of_node) contains a "#power-domain-cells" specifier. This
-> > > > > > is because it indicates that the device belongs to a genpd provider
-> > > > > > itself. In this case, a "power-domains" specifier tells that it has a
-> > > > > > parent domain.
-> > > > > >
-> > > > > > I will post a patch that fixes this asap.
-> > > > >
-> > > > > I think there is nothing to fix here. The dispcc/videocc drivers
-> > > > > provide clocks in addition to the gdsc power domain. And provided
-> > > > > clocks would definitely benefit from having the dispcc device being
-> > > > > attached to the power domain which governs clock registers (MMCX in
-> > > > > our case). Thus I think it is perfectly valid to have:
-> > > > >
-> > > > > rpmhpd device:
-> > > > >  - provides MMCX domain.
-> > > > >
-> > > > > dispcc device:
-> > > > >  - is attached to the MMCX domain,
-> > > >
-> > > > We don't need this, it's redundant and weird to me.
-> > > >
-> > > > Also I am kind of worried that you will hit another new path in genpd,
-> > > > causing locking issues etc, as it has not been designed to work like
-> > > > this (a provider device and a child domain sharing the same "parent").
-> > >
-> > > So, which domain should the dispcc device belong to? It's registers
-> > > are powered by the MMCX domain. I can not attach it to the child
-> > > (GDSC) domain either: in the case of videocc there are 4 child
-> > > domains.
-> >
-> > The dispcc device should *not* be attached to a PM domain.
-> >
->
-> dispcc is powered by the MMCX power domain, so it needs to be on if you
-> want to touch the registers.
->
-> I presume that for genpd this might not be a problem as long as all the
-> exposed power domains are parented by the genpd provider's parent, as
-> the core would turn the parent on before and turn off after performing
-> those operations. But without attaching to the domain we don't have
-> power to get through probe/registration.
->
-> Further more, dispcc is also a clock driver and there's certainly
-> operations where the genpd framework won't save us.
->
-> > Instead it should be registered as a genpd provider and the
-> > corresponding PM domains it provides, should be assigned as child
-> > domains to the MMCX domain.
-> >
->
-> Right, this relationship is today missing and is what Dmitry needs to
-> add - so that the parent domains stays powered even when we're not
-> keeping the parent domain enabled to poke the dispcc.
->
-> > This is exactly what the child/parent domain support in genpd is there
-> > to help with.
-> >
-> > > An alternative would be to request that all users of the provided
-> > > clocks power on one of the child domains. However this is also not
-> > > perfect. If some generic code (e.g. clock framework) calls into
-> > > provided clocks (e.g. because of assigned-clock-rates), this can
-> > > happen w/o proper power domain being powered up yet.
-> >
-> > Issues with power on/off synchronization during genpd initializations
-> > and genpd provider registration, certainly need to be fixed and I am
-> > happy to help. However, my point is that I think it's a bad idea to
-> > fix it through modelling the PM domain hierarchy in an incorrect way.
-> >
->
-> This was my initial feeling to the patch as well and I think it might be
-> better to push the pm_runtime_get/put operations into gdsc.c - in
-> particular if you're saying that the general case is not for the genpd
-> provider itself to be powered by the specified parent domain.
->
-> At least we could start by doing it manually in gdsc.c and possibly move
-> it into the framework if we're confident that it's a good idea.
+31cd0e119d50 ("timers: Recalculate next timer interrupt only when
+necessary") subtly altered get_next_timer_interrupt()'s behaviour. The
+function no longer consistently returns KTIME_MAX with no timers
+pending.
 
-Yes, better to start making this Qcom specific, then we can take it from there.
+In order to decide if there are any timers pending we check whether the
+next expiry will happen NEXT_TIMER_MAX_DELTA jiffies from now.
+Unfortunately, the next expiry time and the timer base clock are no
+longer updated in unison. The former changes upon certain timer
+operations (enqueue, expire, detach), whereas the latter keeps track of
+jiffies as they move forward. Ultimately breaking the logic above.
 
-Kind regards
-Uffe
+A simplified example:
+
+- Upon entering get_next_timer_interrupt() with:
+
+	jiffies = 1
+	base->clk = 0;
+	base->next_expiry = NEXT_TIMER_MAX_DELTA;
+
+  'base->next_expiry == base->clk + NEXT_TIMER_MAX_DELTA', the function
+  returns KTIME_MAX.
+
+- 'base->clk' is updated to the jiffies value.
+
+- The next time we enter get_next_timer_interrupt(), taking into account
+  no timer operations happened:
+
+	base->clk = 1;
+	base->next_expiry = NEXT_TIMER_MAX_DELTA;
+
+  'base->next_expiry != base->clk + NEXT_TIMER_MAX_DELTA', the function
+  returns a valid expire time, which is incorrect.
+
+This ultimately might unnecessarily rearm sched's timer on nohz_full
+setups, and add latency to the system[1].
+
+So, introduce 'base->timers_pending'[2], update it every time
+'base->next_expiry' changes, and use it in get_next_timer_interrupt().
+
+[1] See tick_nohz_stop_tick().
+[2] A quick pahole check on x86_64 and arm64 shows it doesn't make
+    'struct timer_base' any bigger.
+
+Fixes: 31cd0e119d50 ("timers: Recalculate next timer interrupt only when necessary")
+Signed-off-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
+---
+ kernel/time/timer.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index 47e5c39b005d..830a9016e0ec 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -207,6 +207,7 @@ struct timer_base {
+ 	unsigned int		cpu;
+ 	bool			next_expiry_recalc;
+ 	bool			is_idle;
++	bool			timers_pending;
+ 	DECLARE_BITMAP(pending_map, WHEEL_SIZE);
+ 	struct hlist_head	vectors[WHEEL_SIZE];
+ } ____cacheline_aligned;
+@@ -595,6 +596,7 @@ static void enqueue_timer(struct timer_base *base, struct timer_list *timer,
+ 		 * can reevaluate the wheel:
+ 		 */
+ 		base->next_expiry = bucket_expiry;
++		base->timers_pending = true;
+ 		base->next_expiry_recalc = false;
+ 		trigger_dyntick_cpu(base, timer);
+ 	}
+@@ -1598,6 +1600,7 @@ static unsigned long __next_timer_interrupt(struct timer_base *base)
+ 	}
+ 
+ 	base->next_expiry_recalc = false;
++	base->timers_pending = !(next == base->clk + NEXT_TIMER_MAX_DELTA);
+ 
+ 	return next;
+ }
+@@ -1649,7 +1652,6 @@ u64 get_next_timer_interrupt(unsigned long basej, u64 basem)
+ 	struct timer_base *base = this_cpu_ptr(&timer_bases[BASE_STD]);
+ 	u64 expires = KTIME_MAX;
+ 	unsigned long nextevt;
+-	bool is_max_delta;
+ 
+ 	/*
+ 	 * Pretend that there is no timer pending if the cpu is offline.
+@@ -1662,7 +1664,6 @@ u64 get_next_timer_interrupt(unsigned long basej, u64 basem)
+ 	if (base->next_expiry_recalc)
+ 		base->next_expiry = __next_timer_interrupt(base);
+ 	nextevt = base->next_expiry;
+-	is_max_delta = (nextevt == base->clk + NEXT_TIMER_MAX_DELTA);
+ 
+ 	/*
+ 	 * We have a fresh next event. Check whether we can forward the
+@@ -1680,7 +1681,7 @@ u64 get_next_timer_interrupt(unsigned long basej, u64 basem)
+ 		expires = basem;
+ 		base->is_idle = false;
+ 	} else {
+-		if (!is_max_delta)
++		if (base->timers_pending)
+ 			expires = basem + (u64)(nextevt - basej) * TICK_NSEC;
+ 		/*
+ 		 * If we expect to sleep more than a tick, mark the base idle.
+@@ -1970,6 +1971,7 @@ int timers_prepare_cpu(unsigned int cpu)
+ 		base = per_cpu_ptr(&timer_bases[b], cpu);
+ 		base->clk = jiffies;
+ 		base->next_expiry = base->clk + NEXT_TIMER_MAX_DELTA;
++		base->timers_pending = false;
+ 		base->is_idle = false;
+ 	}
+ 	return 0;
+-- 
+2.31.1
+
+
