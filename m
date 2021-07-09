@@ -2,153 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45A933C21D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 11:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D8A93C21CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 11:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232042AbhGIJwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 05:52:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhGIJwi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 05:52:38 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4856C0613DD;
-        Fri,  9 Jul 2021 02:49:53 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id nd37so15144626ejc.3;
-        Fri, 09 Jul 2021 02:49:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0aJWJwlheU/lxeAZzdOHAS4FN13/EFK+YqXAzvN5kvA=;
-        b=d695sFGxQwFyekLevettu75ZqH6H5Lwg4BPfxmn7KqfSAeO742acSx2XsIp2ooAH07
-         Ib/H1TkwCzk4EnU0br94r0XTKBQMR6f/ZZGRDeok8NGXm/Q/jXbc7MEP9P/ywvr55ETe
-         Bl75SKxi0lFTIlJgphm8/ZLloSPWEePoYnlGuyLZL40+Q1u9jjEkoYY3zs2jC5+/lf0V
-         bUwc88keTa7+G279yWQHMBlW4OC0GkF7g8xB3JRANMvd/JnD0JjUFjikzUzVjyJzYYvP
-         pLu4gbqBMlDSBkMZH4u4xI0wFkV0WBQ+OCWcqTvvqshnSwQh1FgDS+qr8u2HmQ0tyF+O
-         eo7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0aJWJwlheU/lxeAZzdOHAS4FN13/EFK+YqXAzvN5kvA=;
-        b=ffH3sXZD4FOqMe/b/ogrF3z0bJXp5Q7cfx+5t2sqLynG4UdObhMIZizbOuTqQtqbMx
-         2rqvaTrFqhqf625o5s5Wd+uZWrrHvOXfpUgmXQxWQZegERteMHCWnBmyNSOb3mlXNR1c
-         3rvNOtQeXEZlHdt3k+wGryXxYyWWPlJ9ld7bxEhafsa6i0y6EicnQGJcqW5KF5eQfwjC
-         BkFlWTb5c/cEgu3Zkt7pnk49FTfBySyJPdosrKk2FI9y313N9ZCCIYxINHNlz2fsUB3O
-         wKtQFzTR+K7hKltwaTIv9vYOkhdm7tqMEKDhImN99C4IM9rNCHXftfhSpK5yAjvomHC1
-         hA1A==
-X-Gm-Message-State: AOAM531EPkuzW+eX0Z/KVf+QxNzEOhmOFNf9Q+Xty9yAlAMTnDyVQdGj
-        MDpEMR/Gq9e7SbRXtspeOHcZjFF3xEfMmstfbjY=
-X-Google-Smtp-Source: ABdhPJyxMIZfMRItVQXXR8ywaQSFGfyISBm/1wxd9gGEGyjz1aO+QsdZ7kuRIFPTSt395NzQYK2DF5WSH6xQ53GQkZ0=
-X-Received: by 2002:a17:906:3006:: with SMTP id 6mr37123721ejz.73.1625824192379;
- Fri, 09 Jul 2021 02:49:52 -0700 (PDT)
+        id S232007AbhGIJwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 05:52:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34250 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229503AbhGIJwO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 05:52:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D082613C9;
+        Fri,  9 Jul 2021 09:49:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1625824171;
+        bh=YZwPUM0lSWCTbis2MmjpX1SiDovOw/fIlz9+8wFkuu4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jh2j6/HywdOkvOKergRftBGHQA3Lz6fGFjar+rpj+IOL/tyjsk45725s2q1qufIsR
+         AmA3llgBmUWdrv4Y5Mwml4SLarVlxcXhnxDaJn27/aVfq6JmSMt8nDkixK5773Yr1n
+         B2yR2t3BOK2LKpgqbbYR04vr1Bdx1uDwqqBefYuY=
+Date:   Fri, 9 Jul 2021 11:49:27 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Nava kishore Manne <navam@xilinx.com>
+Cc:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        Michal Simek <michals@xilinx.com>,
+        "mdf@kernel.org" <mdf@kernel.org>,
+        "trix@redhat.com" <trix@redhat.com>,
+        "arnd@arndb.de" <arnd@arndb.de>, Rajan Vaja <RAJANV@xilinx.com>,
+        Amit Sunil Dhamne <amitsuni@xlnx.xilinx.com>,
+        Tejas Patel <tejasp@xlnx.xilinx.com>,
+        "zou_wei@huawei.com" <zou_wei@huawei.com>,
+        Sai Krishna Potthuri <lakshmis@xilinx.com>,
+        Ravi Patel <ravipate@xlnx.xilinx.com>,
+        "iwamatsu@nigauri.org" <iwamatsu@nigauri.org>,
+        Jiaying Liang <jliang@xilinx.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        git <git@xilinx.com>,
+        "chinnikishore369@gmail.com" <chinnikishore369@gmail.com>
+Subject: Re: [RFC v2 1/4] drivers: firmware: Add user encrypted key load API
+ support
+Message-ID: <YOgbp79NQeN6K1e1@kroah.com>
+References: <20210609055232.4501-1-nava.manne@xilinx.com>
+ <20210609055232.4501-2-nava.manne@xilinx.com>
+ <YMCP/+uYMun478Z9@kroah.com>
+ <PH0PR02MB7336410E513B4D026BB4983EC2189@PH0PR02MB7336.namprd02.prod.outlook.com>
 MIME-Version: 1.0
-References: <YOfu5Zb2kpN/0Prn@mwanda>
-In-Reply-To: <YOfu5Zb2kpN/0Prn@mwanda>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Fri, 9 Jul 2021 17:49:26 +0800
-Message-ID: <CAD-N9QV-x3pzwN4HvpR9w04NnVHs1aafASQvD+gpTWg01K_YUw@mail.gmail.com>
-Subject: Re: [PATCH] media: rockchip/rga: fix a use after free in rga_probe()
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Jacob Chen <jacob-chen@iotwrt.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Hans Verkuil <hansverk@cisco.com>, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PH0PR02MB7336410E513B4D026BB4983EC2189@PH0PR02MB7336.namprd02.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 9, 2021 at 2:38 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> The video_device_release() frees the "vfd" pointer so passing it to
-> video_unregister_device() on the next line results in a use after free.
-> Calling video_unregister_device() on a device that hasn't been
-> registered is supposed to be a no-op so that can be removed.  The paths
-> with to goto unreg_video_dev have a memory leak and should be updated to
-> goto rel_vdev instead.
->
-> Fixes: f7e7b48e6d79 ("[media] rockchip/rga: v4l2 m2m support")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
->  drivers/media/platform/rockchip/rga/rga.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/media/platform/rockchip/rga/rga.c b/drivers/media/platform/rockchip/rga/rga.c
-> index bf3fd71ec3af..37f7fd060c38 100644
-> --- a/drivers/media/platform/rockchip/rga/rga.c
-> +++ b/drivers/media/platform/rockchip/rga/rga.c
-> @@ -863,12 +863,12 @@ static int rga_probe(struct platform_device *pdev)
->         if (IS_ERR(rga->m2m_dev)) {
->                 v4l2_err(&rga->v4l2_dev, "Failed to init mem2mem device\n");
->                 ret = PTR_ERR(rga->m2m_dev);
-> -               goto unreg_video_dev;
-> +               goto rel_vdev;
->         }
->
->         ret = pm_runtime_resume_and_get(rga->dev);
->         if (ret < 0)
-> -               goto unreg_video_dev;
-> +               goto rel_vdev;
->
->         rga->version.major = (rga_read(rga, RGA_VERSION_INFO) >> 24) & 0xFF;
->         rga->version.minor = (rga_read(rga, RGA_VERSION_INFO) >> 20) & 0x0F;
-> @@ -904,8 +904,6 @@ static int rga_probe(struct platform_device *pdev)
->
->  rel_vdev:
->         video_device_release(vfd);
-> -unreg_video_dev:
-> -       video_unregister_device(rga->vfd);
->  unreg_v4l2_dev:
->         v4l2_device_unregister(&rga->v4l2_dev);
->  err_put_clk:
+On Fri, Jul 09, 2021 at 08:41:35AM +0000, Nava kishore Manne wrote:
+> Hi Greg,
+> 
+> 	Thanks for providing the review comments.
+> Please find my response inline.
+> 
+> > -----Original Message-----
+> > From: Greg KH <gregkh@linuxfoundation.org>
+> > Sent: Wednesday, June 9, 2021 3:25 PM
+> > To: Nava kishore Manne <navam@xilinx.com>
+> > Cc: robh+dt@kernel.org; Michal Simek <michals@xilinx.com>;
+> > mdf@kernel.org; trix@redhat.com; arnd@arndb.de; Rajan Vaja
+> > <RAJANV@xilinx.com>; Amit Sunil Dhamne <amitsuni@xlnx.xilinx.com>;
+> > Tejas Patel <tejasp@xlnx.xilinx.com>; zou_wei@huawei.com; Sai Krishna
+> > Potthuri <lakshmis@xilinx.com>; Ravi Patel <RAVIPATE@xilinx.com>;
+> > iwamatsu@nigauri.org; Jiaying Liang <jliang@xilinx.com>;
+> > devicetree@vger.kernel.org; linux-arm-kernel@lists.infradead.org; linux-
+> > kernel@vger.kernel.org; linux-fpga@vger.kernel.org; git <git@xilinx.com>;
+> > chinnikishore369@gmail.com
+> > Subject: Re: [RFC v2 1/4] drivers: firmware: Add user encrypted key load API
+> > support
+> > 
+> > On Wed, Jun 09, 2021 at 11:22:29AM +0530, Nava kishore Manne wrote:
+> > > This patch adds user encrypted key load API to support User key
+> > > encrypted images loading use cases from Linux.
+> > 
+> > What is "user key encrypted images"?  Do we need more documentation
+> > here for what this is and how to use it?
+> > 
+> 
+> Xilinx bitstream writer, using AES, encrypts the bitstream. This feature allows user to encrypt bitstream using 256-bit AES encryption in cipher block chaining (CBC) mode.
+> User can supply a 128-bit Initial Vector and 256-bit key(user key).
 
-From the analysis of rga_probe and rga_remove function, the init and
-cleanup functions are in pairs as follows:
+Please provide the needed information in the changelog comment.
 
-        pm_runtime_enable(rga->dev);
+> For more info please refer here: 
+> https://www.xilinx.com/support/documentation/application_notes/xapp1239-fpga-bitstream-encryption.pdf 
 
-        ret = v4l2_device_register(&pdev->dev, &rga->v4l2_dev);
+External links always grow stale.
 
-        vfd = video_device_alloc();
+thanks,
 
-        rga->m2m_dev = v4l2_m2m_init(&rga_m2m_ops);
-
-        rga->cmdbuf_virt = dma_alloc_attrs(rga->dev, RGA_CMDBUF_SIZE,
-                                           &rga->cmdbuf_phy, GFP_KERNEL,
-                                           DMA_ATTR_WRITE_COMBINE);
-
-        rga->src_mmu_pages =
-                (unsigned int *)__get_free_pages(GFP_KERNEL | __GFP_ZERO, 3);
-        rga->dst_mmu_pages =
-                (unsigned int *)__get_free_pages(GFP_KERNEL | __GFP_ZERO, 3);
-
-        ret = video_register_device(vfd, VFL_TYPE_VIDEO, -1);
-        ......
-        video_unregister_device(rga->vfd);
-
-        free_pages((unsigned long)rga->src_mmu_pages, 3);
-        free_pages((unsigned long)rga->dst_mmu_pages, 3);
-
-        dma_free_attrs(rga->dev, RGA_CMDBUF_SIZE, rga->cmdbuf_virt,
-                       rga->cmdbuf_phy, DMA_ATTR_WRITE_COMBINE);
-
-        v4l2_m2m_release(rga->m2m_dev);
-
-        video_device_release(rga->vfd);
-
-        v4l2_device_unregister(&rga->v4l2_dev);
-
-        pm_runtime_disable(rga->dev);
-
-So I think the error handling code is more complex than this patch. ;(
-
-> --
-> 2.30.2
->
+greg k-h
