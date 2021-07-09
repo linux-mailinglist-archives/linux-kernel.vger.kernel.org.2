@@ -2,107 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA433C24FB
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:24:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD1DC3C24F9
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232921AbhGIN0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 09:26:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233000AbhGINZt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 09:25:49 -0400
-Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BD34C061786
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 06:23:04 -0700 (PDT)
-Received: by mail-ua1-x930.google.com with SMTP id n61so3578751uan.2
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 06:23:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ieJX/m81ywKjheIkUfnQ/E3F4+uPDEYB7LnHCrngEok=;
-        b=VclYjwS7bXZJDEksFLzyv6b4/ovnlQWrQOsOkO3JCI4lkKcS6ZcgqONoZxiKH0UtLH
-         1k/vfccWQc9aNL8JrCGpyBzD/vdcJaJxXY6C2uO4JxqIGqTxQVNOxFADDxPLonUkl8D7
-         HXVV0TfcjLn6iOPfhfDp2bRCPSKu3wQ3IggL1FQaSzcEUvbfPwor/vYiaLZ/q4u+1bsj
-         Fi1lG72QWvYMevqI34EtCTfbE93uOaY0DytDx3Acq+fUY1B7W3LKlElglAOQCyNQ7fDg
-         VI/DujxCZLdxqrIRxNX3jWhrYLQNThTsE6WIIKV19EksuWHvcfvl3l73ACKjycvaGNsh
-         JUkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ieJX/m81ywKjheIkUfnQ/E3F4+uPDEYB7LnHCrngEok=;
-        b=tmGfOPnTH9JIKaBuxb1rekVBNu0k74oQEyIDLRaNuV2BNEqFzWx44/hCPichuHa27z
-         ck4N3h6pzePTTmfFs+XCIzLSwMZDU1CucWMP8hO6rzCSIF5UYgnhwTIS/tbj6AK1aelB
-         wG4XVtzIqZDwpSyg/XwYbY2y2b01wguK/T3EzB9WhPepruvia/UIRXV8DqUJ1pGkM/VJ
-         3keAbP/vYhypqsGVyvPZpNvR5ZIfQULWUmysVeUJwAVtYzCFudjFOBvqOCmPkMCuzUbC
-         U+UwC0G4kan+ijOyhULb8UI3KrxyP8KL5lQq1G9XcukyIDs8fkSWl1Hpad9JZKnDJMLu
-         aBqQ==
-X-Gm-Message-State: AOAM532L92roak15kDY2mLYj/GtKJfc20lLdg9PDKPBRNZfDFCEBzzZG
-        u7iBmr2d25xAHPV0dBIBhnH17K/FHRruuU49Ab0N5EmeJ/qGSGbb
-X-Google-Smtp-Source: ABdhPJzUnwXfQhtV/n6pBvbfm0s5OM132bPHlFb8TEuznt+3QUJnBOpAC9TPbDy4qoKF0BvgpsIE4cf8ma9Ur7aFa0M=
-X-Received: by 2002:ab0:42a6:: with SMTP id j35mr35173493uaj.129.1625836983706;
- Fri, 09 Jul 2021 06:23:03 -0700 (PDT)
+        id S232948AbhGIN0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 09:26:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57728 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232910AbhGINZm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 09:25:42 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F1548613BC;
+        Fri,  9 Jul 2021 13:22:57 +0000 (UTC)
+Date:   Fri, 9 Jul 2021 09:22:56 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Baokun Li <libaokun1@huawei.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [GIT PULL] tracing: Fix for histogram and clean up in ftrace
+Message-ID: <20210709092256.567f77a1@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210709125611.135920-1-ulf.hansson@linaro.org> <CAMuHMdU0AVFVb3tXW4wkEibSx50nzYKW1GopgZPfKp1SS7Mf1g@mail.gmail.com>
-In-Reply-To: <CAMuHMdU0AVFVb3tXW4wkEibSx50nzYKW1GopgZPfKp1SS7Mf1g@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 9 Jul 2021 15:22:27 +0200
-Message-ID: <CAPDyKFpzw0mQPFs-jyMX=T6WpZ+vFqrWmoKUWD+9wW8LWqyHuA@mail.gmail.com>
-Subject: Re: [PATCH] PM: domains: Don't attach a device to genpd that
- corresponds to a provider
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Jul 2021 at 15:07, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Ulf,
->
-> Thanks for your patch!
->
-> On Fri, Jul 9, 2021 at 2:56 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > According to the common power domain DT bindings, a power domain provider
-> > must have a "#power-domain-cells" property in its OF node. Additionally, if
-> > a provider has a "power-domains" property, it means that it has a parent
-> > domain.
->
-> OK.
->
-> > It has turned out that some OF nodes that represents a genpd provider may
-> > also be compatible with a regular platform device. This leads to, during
-> > probe, genpd_dev_pm_attach(), genpd_dev_pm_attach_by_name() and
-> > genpd_dev_pm_attach_by_id() tries to attach the corresponding struct device
-> > to the genpd provider's parent domain, which is wrong. Instead the genpd
->
-> Why is that wrong?
 
-It may lead to that the struct device that corresponds to a genpd
-provider may be attached to the parent domain. In other words, the
-parent domain will not only be controlled by a child domain
-(corresponding to the provider), but also through the provider's
-struct device. As far as I can tell, this has never been the intent
-for how things should work in genpd.
+Linus,
 
-So wrong or not, I guess it depends on what you expect to happen.
+Tracing fix for histograms and a clean up in ftrace
 
-Do you see an issue with changing this?
+ - Fixed a bug that broke the .sym-offset modifier and added a test to make
+   sure nothing breaks it again.
 
->
-> > provider should only assign a parent domain, through
-> > pm_genpd_add_subdomain() or of_genpd_add_subdomain().
+ - Replace a list_del/list_add() with a list_move()
 
-Kind regards
-Uffe
+
+Please pull the latest trace-v5.14-2 tree, which can be found at:
+
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+trace-v5.14-2
+
+Tag SHA1: 153d0ceb33c062166324b79cde4ab67e534a0678
+Head SHA1: 3ecda64475bccdfdcbfd5b9b7e4bf639d8b233da
+
+
+Baokun Li (1):
+      ftrace: Use list_move instead of list_del/list_add
+
+Steven Rostedt (VMware) (2):
+      tracing/histograms: Fix parsing of "sym-offset" modifier
+      tracing/selftests: Add tests to test histogram sym and sym-offset modifiers
+
+----
+ kernel/trace/ftrace.c                                  |  3 +--
+ kernel/trace/trace_events_hist.c                       |  7 +++++++
+ .../selftests/ftrace/test.d/trigger/trigger-hist.tc    | 18 ++++++++++++++++++
+ 3 files changed, 26 insertions(+), 2 deletions(-)
+---------------------------
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index 72ef4dccbcc4..e6fb3e6e1ffc 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -4212,8 +4212,7 @@ static void process_mod_list(struct list_head *head, struct ftrace_ops *ops,
+ 		if (!func) /* warn? */
+ 			continue;
+ 
+-		list_del(&ftrace_mod->list);
+-		list_add(&ftrace_mod->list, &process_mods);
++		list_move(&ftrace_mod->list, &process_mods);
+ 
+ 		/* Use the newly allocated func, as it may be "*" */
+ 		kfree(ftrace_mod->func);
+diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+index ba03b7d84fc2..0207aeed31e6 100644
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -1555,6 +1555,13 @@ static int contains_operator(char *str)
+ 
+ 	switch (*op) {
+ 	case '-':
++		/*
++		 * Unfortunately, the modifier ".sym-offset"
++		 * can confuse things.
++		 */
++		if (op - str >= 4 && !strncmp(op - 4, ".sym-offset", 11))
++			return FIELD_OP_NONE;
++
+ 		if (*str == '-')
+ 			field_op = FIELD_OP_UNARY_MINUS;
+ 		else
+diff --git a/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist.tc b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist.tc
+index 2950bfbc6fce..adae72665500 100644
+--- a/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist.tc
++++ b/tools/testing/selftests/ftrace/test.d/trigger/trigger-hist.tc
+@@ -39,6 +39,24 @@ grep "parent_comm: $COMM" events/sched/sched_process_fork/hist > /dev/null || \
+ 
+ reset_trigger
+ 
++echo "Test histogram with sym modifier"
++
++echo 'hist:keys=call_site.sym' > events/kmem/kmalloc/trigger
++for i in `seq 1 10` ; do ( echo "forked" > /dev/null); done
++grep '{ call_site: \[[0-9a-f][0-9a-f]*\] [_a-zA-Z][_a-zA-Z]* *}' events/kmem/kmalloc/hist > /dev/null || \
++    fail "sym modifier on kmalloc call_site did not work"
++
++reset_trigger
++
++echo "Test histogram with sym-offset modifier"
++
++echo 'hist:keys=call_site.sym-offset' > events/kmem/kmalloc/trigger
++for i in `seq 1 10` ; do ( echo "forked" > /dev/null); done
++grep '{ call_site: \[[0-9a-f][0-9a-f]*\] [_a-zA-Z][_a-zA-Z]*+0x[0-9a-f][0-9a-f]*' events/kmem/kmalloc/hist > /dev/null || \
++    fail "sym-offset modifier on kmalloc call_site did not work"
++
++reset_trigger
++
+ echo "Test histogram with sort key"
+ 
+ echo 'hist:keys=parent_pid,child_pid:sort=child_pid.ascending' > events/sched/sched_process_fork/trigger
