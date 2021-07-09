@@ -2,130 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 948B33C2A65
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 22:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 556D03C2A6B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 22:35:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbhGIUg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 16:36:57 -0400
-Received: from mail-bn8nam11on2067.outbound.protection.outlook.com ([40.107.236.67]:56928
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229506AbhGIUg5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 16:36:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iRAT1raCPmIyXbtjGU9TdvBIoypi2WWhwjeJSA7NCv81S1OQLIFTmzp++UHw/Ev2nkdLyMPP1XHFa/yDgqDPQZKm0L1lah6wpXKgjQBUfvm0y4nFIXh4rEmm4Z+GeeBoiMq75GPGlEg5YO9ZVO0Dvkfp8nueMnhtNBxh+2go8RQ3IxmF+Y0Lj1qX//8i2cXn3bu0PD0j20r+TrHKTgaPwdfG/94fVLwLgvFfi2ct/oUmXklbnnHHgtHkExYSA0hprmWjqnIt/vTGCrsBBXMjCjaIrxZ1gtnjw4zyxELlBo2vx92qUxo4saKo3E+VbuwCpHzu1E9GpwvZ1I5z0GYPAQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SU7Vp/4HQIWFfY5yoxpf+6J88sNAsuJl6x6vSs94Un8=;
- b=IHPdmVyO8PfOJGG15oy5xDkZxC7/CJPfzjlejA2nBP9WUX1kg78RsF3Ur42RAxaWDE1UJRNljYI7Ia9pMtFMQSujg8aEiTgvKQH05oufCi+iJP0GZ6LKunSwTZE62he0HmYk1jiy/KjLurN5sDLZCvJ4hW4XXoR+b/ecsErkaqJl7iwlDjOVJbMh/PTTVp+W9N6DJtrpznHpIiExLvN7lJBjhoNPBIdc4JqjbHORuQhIrqKUqcHeFiwjgd1GZ37bnTDhq6DJ3XCIEPUdlfDyiC0K5tAliv7pJFKTRfECv3fY2PVkyIp0Cbr/XwMIE3M/cLRALecLoPRm/6Ag6szEBg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SU7Vp/4HQIWFfY5yoxpf+6J88sNAsuJl6x6vSs94Un8=;
- b=L34dtQOSR+Rzaxrk3QNKDu7oGflk2ZZ3UHKMNhluVjbdYmqw5hdPNE8QyjGM6mfCE/xa9Q+EgFb8xvZEWrOD4vrBsFvE4HUNhfEIgEWW3ysc40GDhF4X9jMpv6k3s+guEsYzp+JvXqRI8ZBO2a3hKlRR9onGAQqEDrNdTktbOVk=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=vmware.com;
-Received: from MN2PR05MB6624.namprd05.prod.outlook.com (2603:10b6:208:d8::18)
- by MN2PR05MB6559.namprd05.prod.outlook.com (2603:10b6:208:db::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.12; Fri, 9 Jul
- 2021 20:34:10 +0000
-Received: from MN2PR05MB6624.namprd05.prod.outlook.com
- ([fe80::f55f:1a1e:7d62:8c8c]) by MN2PR05MB6624.namprd05.prod.outlook.com
- ([fe80::f55f:1a1e:7d62:8c8c%5]) with mapi id 15.20.4331.014; Fri, 9 Jul 2021
- 20:34:10 +0000
-Subject: Re: [PATCH v1] fix vmwgfx compilation error due to a missing include
-To:     Dave Airlie <airlied@gmail.com>, Tong Zhang <ztong0001@gmail.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210709180944.2533114-1-ztong0001@gmail.com>
- <CAPM=9twS2B-bY8_AxB0mEVtr_2N3y3AyWjL2SNvOHA8tSMRSMQ@mail.gmail.com>
-From:   Zack Rusin <zackr@vmware.com>
-Message-ID: <92f31b07-8a3b-6d01-62a6-a0ebd6c0142d@vmware.com>
-Date:   Fri, 9 Jul 2021 16:34:05 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <CAPM=9twS2B-bY8_AxB0mEVtr_2N3y3AyWjL2SNvOHA8tSMRSMQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MWHPR01CA0033.prod.exchangelabs.com (2603:10b6:300:101::19)
- To MN2PR05MB6624.namprd05.prod.outlook.com (2603:10b6:208:d8::18)
+        id S230130AbhGIUid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 16:38:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhGIUic (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 16:38:32 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3CEFC0613DD
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 13:35:46 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id u66so7920502oif.13
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 13:35:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kHHhyfCEkW/Vi1HiAXRAzBDCaqb5jnujVXbqXt6B/VI=;
+        b=QBAo5MrAzeb+QjdnVM+fmnW1p7a8EJaQumd0VGQeb8KCkDetUWM1EvEaTgEfhpIZVQ
+         PuD4ss+l6YpCGpcPMojzvU60kJB5+bEHC4suvelLBwX2x40IE0ABrAcDmCNMFy16hcYQ
+         knCM5AWV0Op7FTMN9qaT97LNFHcTnKOLrFJpqL26hENd0UDXTL19Y1jbSho/Cq38SpPZ
+         b4O92u7O0Ee4iqGnUfoeJkwYdM3HZlFIVyVQVlROigLaYcalSa1Ymze3DHdQo3tVvw9W
+         cvgU7RWXFXl5dPtv4SFB94N5RaSx7GRLGsbScr4Z95gzvQr52CrixacaGDujxJerv1Uq
+         xPCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kHHhyfCEkW/Vi1HiAXRAzBDCaqb5jnujVXbqXt6B/VI=;
+        b=WbtPpuGYdOPHtNAkqEjK/7tlqXe4BAE6mjkFxc2yAUUkHAudPhabu5lZ6QE8NzVaeQ
+         ry90wTP9iKRnkn6EAufxG++3etNpVCia49kIUUKYRABzTtQMuNF5xB4y1mrpjeRShePb
+         6fkWk2sOwzZwvTkQK9S2ztYxQJBEbA5wMXpuO/vyOdlAF+7ghXEVUQYYh8OC/xWT5aR4
+         FtfJbFQ1nz9PYAWPIMfypAIQ8qJF9RxurBn1c5SWiskm6whj+aOc1+UTCIJAyeFP08vS
+         XLU89BkDnJ/wKHRWq0KDg5X5htRI+ahmshlXcBX+zUeTDlRB6N5H0q+HD0wSGJYIClcw
+         DsLQ==
+X-Gm-Message-State: AOAM533cB6EAyXuvKaPD6qsoLBwWoS+Q196CiArllDL7NLf2a2lSzoQh
+        VHYgkqhc7z1E3TYzox34VlEdf0deelkG1BdP/dJdVg==
+X-Google-Smtp-Source: ABdhPJzayDEww+4shroJsd3DihWck//F1i010OrV/1OXo/8pneLuwkfxzMR5eKSwVek9gvCLe2W9VqCbqA7PQP/apCI=
+X-Received: by 2002:a05:6808:355:: with SMTP id j21mr618879oie.13.1625862945597;
+ Fri, 09 Jul 2021 13:35:45 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.0.193] (108.36.85.85) by MWHPR01CA0033.prod.exchangelabs.com (2603:10b6:300:101::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend Transport; Fri, 9 Jul 2021 20:34:08 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 76a5e721-eaf3-4960-858d-08d94318e7fb
-X-MS-TrafficTypeDiagnostic: MN2PR05MB6559:
-X-LD-Processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR05MB6559FFD2615F61C36F5A4AA5CE189@MN2PR05MB6559.namprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YFFvKVQIqJADDWLYk8jF5U8ozEI7sTAp8SBTF1x7vuSVne2ohdWrsqHqrwVXOLpoD+6/PND8J230HRoAc6B04Jxaxts29NeP7IjRTuxXZ/aNFB56dmTHy4O1Kn71rg5yzabxczFMaGZBJcejsajNqfcdC9KLIRJ112/97g1A1HA58FcZ5q7HW7cpxzK4mWp2+PM68VPpWLb5+ZeHviDS7DePdoj2S/6FLcwj6ULENvQ7LXNIxHQkcx/hvTEGTcullqRlJlDvXGOPyvRDHyVv3sUstqu0+w0f2UAvpCXtgz7jWTFUulgVdn5FwSbRP3k8BoYDIhN2AkHc5J5mMhpT5Ov2Hv8a72X0votR4klxF6TK1OTwOpzZXuQ72eimWKoziGOLKhMyqV+58z0L7Ux70vwxfAIXKfnp0flvR6uJ7ut81MfT6Irg9fhMAD2MYVOOKxbavIt029KZJj0tUv+bc1Z0lJQIn+sE/khT2io+HeYZzwEHTWbIi0naJezcoKgEjFsuIdCLhhc8e3eOHw+BKXQhJgkUk4jlDixmYh1+EJY+aEnuXq2Fw4VrLLGfELTiQuh4J2/UE8ifEQcBoPcQMQSHFqOwMPYV0dD44CAExTsrdmPx11CUQG/ugURpOofjTeZm4Wp4JN9IfMy5Vo9P3cLE0ph46/KMUP6/nyqP4i8u3ZdyhcipM3QvaoiKkN0/KFBZmnzxQFxAuLE4Ik86+QVpJnhn7zkay/JKs2owehQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR05MB6624.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(136003)(346002)(366004)(396003)(66946007)(8936002)(54906003)(956004)(6666004)(2616005)(31686004)(83380400001)(26005)(110136005)(2906002)(38100700002)(4744005)(53546011)(4326008)(66476007)(66556008)(478600001)(5660300002)(186003)(8676002)(86362001)(6486002)(16576012)(36756003)(316002)(31696002)(40753002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QzFFazBiNE1wY2lsT1ZBSmcrajJjR0dKM0ZkbjZwUlg0ODV5MG80dVlxcGU5?=
- =?utf-8?B?Rk5YaVpnNE1wUTJqTFpIbU9HU0hLL1Z5VFlwUGszRk9lbWtyUjhlald4MXlo?=
- =?utf-8?B?eHhIY0d4Q3dZWm5ldnRxWkZLQ28yK2pNTTJOa3p0aVc1Y3l5OE5TMVVDbW5G?=
- =?utf-8?B?QVhSZHNsdFh0WnNxanV1MlpabmtDU2NGNDdCYTVjWVluNncvK1ZBRHJkWDYv?=
- =?utf-8?B?b1d1d2hHb2hFMXhXb2FwOWVWeHk0QStSWjJTck5nN05lbTl0MWFnMGNxbHIx?=
- =?utf-8?B?Z1pUVWdZUU00UTNNaGM5QVpxSjdFN1NNMTZkTmpyeEQxTmNNeldhVEtheGJQ?=
- =?utf-8?B?MDc2eDlianZyR1VNR0V3dlJFVVN1ZnRMNlY2UnZkNE9RNzdQQmNhbjZEUGla?=
- =?utf-8?B?NksybTJMZHNtR1ZGTFFrZUZ4T3J6OWNYSGwwSXhubUpYY0ZlQThXVEpVamsx?=
- =?utf-8?B?Q0h1R0lqVVc3MjhYL01YcnZWMUJrSHQxQ2ppc0VRQkM5K3IrRHNMd3VkQXlw?=
- =?utf-8?B?RkRiSUNuZmVxQXFmZmcyeGdGdHdnR1AvTHJob1lQUkNmQTVVaHl2ZUR2ekw1?=
- =?utf-8?B?MTJEUkI3Tkw0dEFURVJBRjVYNWJJRDBhYUVMdGtRSzdjT05IU1pZRTVJSU55?=
- =?utf-8?B?bVFaMWF4NW1uQksxU2crMmJmVzB2dWsrdWFkbHF4MEh1SXpVUFFXRDlpaU5y?=
- =?utf-8?B?d2hjYjk2NUtXMWJnRm1oZXAyRlEvelEzOGJCVnJTMjQzNnN1SmsySVY4K0oz?=
- =?utf-8?B?K1pSOHBNWk05dWdYZldVOUtwNU5YTlZhYU9INEgzWllFOWR5Qmp6U2dUSTQ1?=
- =?utf-8?B?b1F0bS90YldPTHNKYUk5YmVnQUFjRVdvL3JrL0E5Q1Fxa2k4YWppeGNPYUZE?=
- =?utf-8?B?d3NVYnllMXZNV2FZRmNZdmY1b0M5K2NwMnYzNzBoMlU5WW5tTW9iZ1pDQktp?=
- =?utf-8?B?VC93UGQ1c1NFMUxtL1FNMTJKS1FGS01FZ210QlROVnJMM0prcTlvVHNyLzVY?=
- =?utf-8?B?alZQVTV2SzFlM0NxemcwVXczMm8zeWRhU1J0TXdPMlc0ZkZUUGFmZTBTL1Jy?=
- =?utf-8?B?RXhGZGkwdlljcDFaNGFNWDdXQzFSNWtGelhFTXNvSkUyN3V5bWlqaFVLeTBt?=
- =?utf-8?B?WS9sZVVDWHQxeitFczdxNkJLb3BoNENOVHhJVWtvZ1lHOG9HVERtMDdrZFFm?=
- =?utf-8?B?dXRYWEtPazkrRTh5blVTUnFITDB4YlZhbHZiZytIQXBtWVFOZ1VOQVV6aWNn?=
- =?utf-8?B?ZC9qeS90eE8zdlp6Z1BEZ0JnZkhnMWlNM3FVYVVUVUQxWWI1ZVc1VUhueWlz?=
- =?utf-8?B?bFhnSGVEV0w5eVJwWE1hRzIzNW1yaWpyVXZmOVdPOENRYTFSdTUrK05YZDBl?=
- =?utf-8?B?K0syUm1iZ3RTWnFZaXJXNkczY1JkQk9lS1NhMUFMOFNQczAzTW5ITXhQWkFI?=
- =?utf-8?B?MlBUdWpNSUFmSHYyTGkvOEJtaFlzTDFTSDRPbDRsRzkvTC9xcjlWQis5cFRP?=
- =?utf-8?B?bXNlUG9kRTloWjZQdkhvTFpIVlZzSzJFNGVSUFJSQ2V4Z0hablRKRmIzQWI4?=
- =?utf-8?B?TThrQjBDbmpBQ1RGbjlUN2gwa0grb0g4ejZsNWRMaUFDVjg5WDE5ZDRXQnRx?=
- =?utf-8?B?bTFtU0xpVUVaTmlzVys3OENBK1F4aE05N09oUGRvWWhITUZiWGVxeityc0V3?=
- =?utf-8?B?T0hpTXZoTVFLR214MzU1Y0NIaXRtc0lLZlU2UElaZFNobjlBR3o4RGR5em9v?=
- =?utf-8?Q?paIzJmnhzf0874tOwh6hOChVG3gkGoyuiDmvvWe?=
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 76a5e721-eaf3-4960-858d-08d94318e7fb
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR05MB6624.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jul 2021 20:34:10.5449
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4KV1djc8KEjkijrp4QVsfY97bE7cqbKdScIF/vqKqHDqDmABDQaB6fLucV8nRNEy/JqMg6FkgE99O4NeD/TKzA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR05MB6559
+References: <1625825111-6604-1-git-send-email-weijiang.yang@intel.com> <1625825111-6604-5-git-send-email-weijiang.yang@intel.com>
+In-Reply-To: <1625825111-6604-5-git-send-email-weijiang.yang@intel.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Fri, 9 Jul 2021 13:35:34 -0700
+Message-ID: <CALMp9eQveWT=5fzRe_T6BaDbgpeP+kvxBfWmooEPscqcT8KvBg@mail.gmail.com>
+Subject: Re: [PATCH v5 04/13] KVM: vmx/pmu: Emulate MSR_ARCH_LBR_DEPTH for
+ guest Arch LBR
+To:     Yang Weijiang <weijiang.yang@intel.com>
+Cc:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        wei.w.wang@intel.com, like.xu.linux@gmail.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Like Xu <like.xu@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/9/21 4:04 PM, Dave Airlie wrote:
-> cc'ing Christian to fix this I assume it was ttm refactor?
+On Fri, Jul 9, 2021 at 2:51 AM Yang Weijiang <weijiang.yang@intel.com> wrote:
+>
+> From: Like Xu <like.xu@linux.intel.com>
+>
+> The number of Arch LBR entries available is determined by the value
+> in host MSR_ARCH_LBR_DEPTH.DEPTH. The supported LBR depth values are
+> enumerated in CPUID.(EAX=01CH, ECX=0):EAX[7:0]. For each bit "n" set
+> in this field, the MSR_ARCH_LBR_DEPTH.DEPTH value of "8*(n+1)" is
+> supported.
+>
+> On a guest write to MSR_ARCH_LBR_DEPTH, all LBR entries are reset to 0.
+> KVM emulates the reset behavior by introducing lbr_desc->arch_lbr_reset.
+> KVM writes guest requested value to the native ARCH_LBR_DEPTH MSR
+> (this is safe because the two values will be the same) when the Arch LBR
+> records MSRs are pass-through to the guest.
+>
+> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> ---
 
-Yes, but it's on me because after fixing it I kept forgetting to queue it up for a merge. It's now in drm-misc/drm-misc-next-fixes.
+> @@ -393,6 +417,7 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>  {
+>         struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
+>         struct kvm_pmc *pmc;
+> +       struct lbr_desc *lbr_desc = vcpu_to_lbr_desc(vcpu);
+>         u32 msr = msr_info->index;
+>         u64 data = msr_info->data;
+>
+> @@ -427,6 +452,12 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>                         return 0;
+>                 }
+>                 break;
+> +       case MSR_ARCH_LBR_DEPTH:
+> +               if (!arch_lbr_depth_is_valid(vcpu, data))
+> +                       return 1;
 
-Thomas, if you could make sure your next drm-misc-next-fixes pull request includes c26d6586e97a ("drm/vmwgfx: Fix implicit declaration error") that'd be great.
+Does this imply that, when restoring a vCPU, KVM_SET_CPUID2 must be
+called before KVM_SET_MSRS, so that arch_lbr_depth_is_valid() knows
+what to do? Is this documented anywhere?
 
-z
+> +               lbr_desc->records.nr = data;
+> +               lbr_desc->arch_lbr_reset = true;
+
+Doesn't this make it impossible to restore vCPU state, since the LBRs
+will be reset on the next VM-entry? At the very least, you probably
+shouldn't set arch_lbr_reset when the MSR write is host-initiated.
+
+However, there is another problem: arch_lbr_reset isn't serialized
+anywhere. If you fix the host-initiated issue, then you still have a
+problem if the last guest instruction prior to suspending the vCPU was
+a write to IA32_LBR_DEPTH. If there is no subsequent VM-entry prior to
+saving the vCPU state, then the LBRs will be saved/restored as part of
+the guest XSAVE state, and they will not get cleared on resuming the
+vCPU.
+
+> +               return 0;
+>         default:
+>                 if ((pmc = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0)) ||
+>                     (pmc = get_gp_pmc(pmu, msr, MSR_IA32_PMC0))) {
+> @@ -566,6 +597,7 @@ static void intel_pmu_init(struct kvm_vcpu *vcpu)
+>         lbr_desc->records.nr = 0;
+>         lbr_desc->event = NULL;
+>         lbr_desc->msr_passthrough = false;
+> +       lbr_desc->arch_lbr_reset = false;
+
+I'm not sure this is entirely correct. If the last guest instruction
+prior to a warm reset was a write to IA32_LBR_DEPTH, then the LBRs
+should be cleared (and arch_lbr_reset will be true). However, if you
+clear that flag here, the LBRs will never get cleared.
+
+>  }
+>
