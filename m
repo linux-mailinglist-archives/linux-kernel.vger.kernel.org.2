@@ -2,177 +2,381 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F7FD3C2412
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:15:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E1F53C2418
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:16:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231605AbhGINRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 09:17:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231454AbhGINRm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 09:17:42 -0400
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85779C0613E7
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 06:14:59 -0700 (PDT)
-Received: by mail-vs1-xe32.google.com with SMTP id o7so5559186vss.5
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 06:14:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z9EPl92UQBGnDOxNu/QcWkjG83wsiY8R48D3cewHxNs=;
-        b=HQVeuxVCbFCeuFQ9/tNfgKAM/LEISUuEzOujUT/HZsUaqI1qlTJqBvEA3W/cUr1SqA
-         pwdLQexNv9j7akfJF5t3IxQfzMHPwR6vDUTBA9ARo+vH8/ZEBOcn5pErUdEE91wC/u60
-         apGX1nvc8NDZi6VGKJrBGeisFZ6UnheAmzWq30UX3CLx8p1rMdJYvp0gsAwb/lIi94Rp
-         zIqSkV/Vumznl2buLT5DOZk6MH5sUc3P7b0rfK7b/sTWy+T9PV5ncij172QvJQ0xUKSY
-         2voifIKxnHUx8f7yoPHEqftTUvojwm+C2UAiSLg45PuZKKCsUkp+0B+YBB2cPJZvodDx
-         dyyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z9EPl92UQBGnDOxNu/QcWkjG83wsiY8R48D3cewHxNs=;
-        b=jrhjYny63llHXZ3ulSXqMoczwHcgdZMIVzHaOpGLiiiRhMA3NHA7pSqOeifFY4gL6y
-         0mTynDpXFmn1SdaZ2yn6N0lMs1YfwliJ6QsDq6gRIKIgQkSGBBalcMtoLRmoeqD2Hyne
-         IOGipzR3b4yRYY/7mq/Y2nnXw+hkT5ezha1v8XpN6C27A6QmlQGe2Lm6mDMQ77opWY7m
-         MjhGteyUWzO/jZSI0kDHfY/ZyzlvXnGCy07sYfstaAXuKnuiaoPFRBA017HXAcr2XlfQ
-         YGAICulQjlaBX4sxy77m73RaCN51lGw0wJ6gcHTdryk57jVANkW7wdkxTMs0MvtkMRLI
-         JSrw==
-X-Gm-Message-State: AOAM531cIKzd5ZT4PPVULVQM/rzs6e/POazFM8BO0RllDy/d1t/XokCH
-        XBLiQzy5uXO5kzgXqJqX/C6eMHwUXhsm8Ay9Uc5Rug==
-X-Google-Smtp-Source: ABdhPJwcigtsfgnzIItqj7rb3/YGAchwTPojiX8LXYTXgELezNek7ddbL6H4qNpMK1/jtFUh2b2TtcOKWrS6c3p5o0s=
-X-Received: by 2002:a67:8783:: with SMTP id j125mr36033795vsd.42.1625836497789;
- Fri, 09 Jul 2021 06:14:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210709043136.533205-1-dmitry.baryshkov@linaro.org>
- <20210709043136.533205-5-dmitry.baryshkov@linaro.org> <CAPDyKFprYK8bSk+rdnDt3xRUR9BRNdyRiBdefO+s7qzOwHf7hg@mail.gmail.com>
- <CAA8EJprrjz=o7Ymt1mNBZASzTeX==1ceRTeKA4f3QrVMcpO6xg@mail.gmail.com>
- <CAPDyKFoLcsYLisEiOF66dDsV+759c5k0PD64uxU11jc5VTdNYQ@mail.gmail.com> <CAA8EJpr2HEm4R+bGrH6DHA_z8bjN69Zam9UUiAeKAr5vsCKr3A@mail.gmail.com>
-In-Reply-To: <CAA8EJpr2HEm4R+bGrH6DHA_z8bjN69Zam9UUiAeKAr5vsCKr3A@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 9 Jul 2021 15:14:21 +0200
-Message-ID: <CAPDyKFr+-qXbi4z4_wzDRaMMLKSKM7zNr55Kt-AOk97mVKM+8A@mail.gmail.com>
-Subject: Re: [RESEND PATCH v2 4/7] clk: qcom: gdsc: enable optional power
- domain support
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S231623AbhGINTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 09:19:02 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:33603 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231543AbhGINTB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 09:19:01 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4GLtw01Y8nzBBK8;
+        Fri,  9 Jul 2021 15:16:16 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id UeH9d6at3fvS; Fri,  9 Jul 2021 15:16:16 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4GLtvz0dlzzBB1M;
+        Fri,  9 Jul 2021 15:16:15 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0B4BA8B81A;
+        Fri,  9 Jul 2021 15:16:15 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id FxoVm4Do6tU0; Fri,  9 Jul 2021 15:16:14 +0200 (CEST)
+Received: from po9473vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.103])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id D4B0E8B80A;
+        Fri,  9 Jul 2021 15:16:14 +0200 (CEST)
+Received: by po9473vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id BE265662C7; Fri,  9 Jul 2021 13:16:14 +0000 (UTC)
+Message-Id: <5492d3c3bc12eba00dfcbf4a3326b02a86b484b4.1625836563.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v2 1/2] powerpc/32s: Do kuep_lock() and kuep_unlock() in
+ assembly
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Fri,  9 Jul 2021 13:16:14 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Jul 2021 at 14:59, Dmitry Baryshkov
-<dmitry.baryshkov@linaro.org> wrote:
->
-> On Fri, 9 Jul 2021 at 15:18, Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> >
-> > On Fri, 9 Jul 2021 at 13:46, Dmitry Baryshkov
-> > <dmitry.baryshkov@linaro.org> wrote:
-> > >
-> > > On Fri, 9 Jul 2021 at 12:33, Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > > >
-> > > > On Fri, 9 Jul 2021 at 06:32, Dmitry Baryshkov
-> > > > <dmitry.baryshkov@linaro.org> wrote:
-> > > > >
-> > > > > On sm8250 dispcc and videocc registers are powered up by the MMCX power
-> > > > > domain. Currently we used a regulator to enable this domain on demand,
-> > > > > however this has some consequences, as genpd code is not reentrant.
-> > > > >
-> > > > > Teach Qualcomm clock controller code about setting up power domains and
-> > > > > using them for gdsc control.
-> > > > >
-> > > > > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > > >
-> > > > [...]
-> > > >
-> > > > > diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
-> > > > > index 51ed640e527b..9401d01533c8 100644
-> > > > > --- a/drivers/clk/qcom/gdsc.c
-> > > > > +++ b/drivers/clk/qcom/gdsc.c
-> > > > > @@ -427,6 +427,7 @@ int gdsc_register(struct gdsc_desc *desc,
-> > > > >                         continue;
-> > > > >                 scs[i]->regmap = regmap;
-> > > > >                 scs[i]->rcdev = rcdev;
-> > > > > +               scs[i]->pd.dev.parent = desc->dev;
-> > > > >                 ret = gdsc_init(scs[i]);
-> > > > >                 if (ret)
-> > > > >                         return ret;
-> > > > > @@ -439,6 +440,8 @@ int gdsc_register(struct gdsc_desc *desc,
-> > > > >                         continue;
-> > > > >                 if (scs[i]->parent)
-> > > > >                         pm_genpd_add_subdomain(scs[i]->parent, &scs[i]->pd);
-> > > > > +               else if (!IS_ERR_OR_NULL(dev->pm_domain))
-> > > >
-> > > > So dev_pm_domain_attach() (which calls genpd_dev_pm_attach() is being
-> > > > called for gdsc platform device from the platform bus', to try to
-> > > > attach the device to its corresponding PM domain.
-> > > >
-> > > > Looking a bit closer to genpd_dev_pm_attach(), I realize that we
-> > > > shouldn't really try to attach a device to its PM domain, when its OF
-> > > > node (dev->of_node) contains a "#power-domain-cells" specifier. This
-> > > > is because it indicates that the device belongs to a genpd provider
-> > > > itself. In this case, a "power-domains" specifier tells that it has a
-> > > > parent domain.
-> > > >
-> > > > I will post a patch that fixes this asap.
-> > >
-> > > I think there is nothing to fix here. The dispcc/videocc drivers
-> > > provide clocks in addition to the gdsc power domain. And provided
-> > > clocks would definitely benefit from having the dispcc device being
-> > > attached to the power domain which governs clock registers (MMCX in
-> > > our case). Thus I think it is perfectly valid to have:
-> > >
-> > > rpmhpd device:
-> > >  - provides MMCX domain.
-> > >
-> > > dispcc device:
-> > >  - is attached to the MMCX domain,
-> >
-> > We don't need this, it's redundant and weird to me.
-> >
-> > Also I am kind of worried that you will hit another new path in genpd,
-> > causing locking issues etc, as it has not been designed to work like
-> > this (a provider device and a child domain sharing the same "parent").
->
-> So, which domain should the dispcc device belong to? It's registers
-> are powered by the MMCX domain. I can not attach it to the child
-> (GDSC) domain either: in the case of videocc there are 4 child
-> domains.
+When interrupt and syscall entries where converted to C, KUEP locking
+and unlocking was also converted. It improved performance by unrolling
+the loop, and allowed easily implementing boot time deactivation of
+KUEP.
 
-The dispcc device should *not* be attached to a PM domain.
+However, null_syscall selftest shows that KUEP is still heavy
+(361 cycles with KUEP, 210 cycles without).
 
-Instead it should be registered as a genpd provider and the
-corresponding PM domains it provides, should be assigned as child
-domains to the MMCX domain.
+A way to improve more is to group 'mtsr's together, instead of
+repeating 'addi' + 'mtsr' several times.
 
-This is exactly what the child/parent domain support in genpd is there
-to help with.
+In order to do that, more registers need to be available. In C, GCC
+will always be able to provide the requested number of registers, but
+at the cost of saving some data on the stack, which is counter
+performant here.
 
-> An alternative would be to request that all users of the provided
-> clocks power on one of the child domains. However this is also not
-> perfect. If some generic code (e.g. clock framework) calls into
-> provided clocks (e.g. because of assigned-clock-rates), this can
-> happen w/o proper power domain being powered up yet.
+So let's do it in assembly, when we have full control of which
+register can be used. It also has the advantage of locking earlier
+and unlocking later and it helps GCC generating less tricky code.
+The only drawback is to make boot time deactivation less straight
+forward and require 'hand' instruction patching.
 
-Issues with power on/off synchronization during genpd initializations
-and genpd provider registration, certainly need to be fixed and I am
-happy to help. However, my point is that I think it's a bad idea to
-fix it through modelling the PM domain hierarchy in an incorrect way.
+In syscall entry, there are only 4 registers availables, so
+group 'mtsr's by 4.
 
-[...]
+In interrupt entry, syscall exit and interrupt exist, we can group
+by 6, which means 2 groups for a typical config with 12 user segments.
 
-Kind regards
-Uffe
+With this change, null_syscall selftest reports 334 cycles. Without
+the change it was 361 cycles, that's an 7% reduction.
+
+For the time being, capability to deactive at boot time is disabled.
+It will be re-enabled in following patch.
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+v2: Fixed build failure for non book3s/32
+---
+ arch/powerpc/include/asm/book3s/32/kup.h      | 16 ---
+ arch/powerpc/include/asm/book3s/32/mmu-hash.h | 98 ++++++++++++++++++-
+ arch/powerpc/include/asm/interrupt.h          |  6 +-
+ arch/powerpc/include/asm/kup.h                |  5 -
+ arch/powerpc/kernel/entry_32.S                | 26 +++++
+ arch/powerpc/kernel/head_32.h                 |  2 +
+ arch/powerpc/kernel/interrupt.c               |  3 -
+ arch/powerpc/mm/book3s32/kuep.c               |  7 +-
+ 8 files changed, 133 insertions(+), 30 deletions(-)
+
+diff --git a/arch/powerpc/include/asm/book3s/32/kup.h b/arch/powerpc/include/asm/book3s/32/kup.h
+index 64201125a287..2e0e87cf7d7a 100644
+--- a/arch/powerpc/include/asm/book3s/32/kup.h
++++ b/arch/powerpc/include/asm/book3s/32/kup.h
+@@ -22,22 +22,6 @@ static __always_inline bool kuep_is_disabled(void)
+ 	return !IS_ENABLED(CONFIG_PPC_KUEP) || static_branch_unlikely(&disable_kuep_key);
+ }
+ 
+-static inline void kuep_lock(void)
+-{
+-	if (kuep_is_disabled())
+-		return;
+-
+-	update_user_segments(mfsr(0) | SR_NX);
+-}
+-
+-static inline void kuep_unlock(void)
+-{
+-	if (kuep_is_disabled())
+-		return;
+-
+-	update_user_segments(mfsr(0) & ~SR_NX);
+-}
+-
+ #ifdef CONFIG_PPC_KUAP
+ 
+ #include <linux/sched.h>
+diff --git a/arch/powerpc/include/asm/book3s/32/mmu-hash.h b/arch/powerpc/include/asm/book3s/32/mmu-hash.h
+index f5be185cbdf8..e6c90802de03 100644
+--- a/arch/powerpc/include/asm/book3s/32/mmu-hash.h
++++ b/arch/powerpc/include/asm/book3s/32/mmu-hash.h
+@@ -64,7 +64,103 @@ struct ppc_bat {
+ #define SR_KP	0x20000000	/* User key */
+ #define SR_KS	0x40000000	/* Supervisor key */
+ 
+-#ifndef __ASSEMBLY__
++#ifdef __ASSEMBLY__
++
++#include <asm/asm-offsets.h>
++
++.macro uus_addi sr reg1 reg2 imm
++	.if NUM_USER_SEGMENTS > \sr
++	addi	\reg1,\reg2,\imm
++	.endif
++.endm
++
++.macro uus_mtsr sr reg1
++	.if NUM_USER_SEGMENTS > \sr
++	mtsr	\sr, \reg1
++	.endif
++.endm
++
++.macro update_user_segments_by_4 tmp1 tmp2 tmp3 tmp4
++	uus_addi	1, \tmp2, \tmp1, 0x111
++	uus_addi	2, \tmp3, \tmp1, 0x222
++	uus_addi	3, \tmp4, \tmp1, 0x333
++
++	uus_mtsr	0, \tmp1
++	uus_mtsr	1, \tmp2
++	uus_mtsr	2, \tmp3
++	uus_mtsr	3, \tmp4
++
++	uus_addi	4, \tmp1, \tmp1, 0x444
++	uus_addi	5, \tmp2, \tmp2, 0x444
++	uus_addi	6, \tmp3, \tmp3, 0x444
++	uus_addi	7, \tmp4, \tmp4, 0x444
++
++	uus_mtsr	4, \tmp1
++	uus_mtsr	5, \tmp2
++	uus_mtsr	6, \tmp3
++	uus_mtsr	7, \tmp4
++
++	uus_addi	8, \tmp1, \tmp1, 0x444
++	uus_addi	9, \tmp2, \tmp2, 0x444
++	uus_addi	10, \tmp3, \tmp3, 0x444
++	uus_addi	11, \tmp4, \tmp4, 0x444
++
++	uus_mtsr	8, \tmp1
++	uus_mtsr	9, \tmp2
++	uus_mtsr	10, \tmp3
++	uus_mtsr	11, \tmp4
++
++	uus_addi	12, \tmp1, \tmp1, 0x444
++	uus_addi	13, \tmp2, \tmp2, 0x444
++	uus_addi	14, \tmp3, \tmp3, 0x444
++	uus_addi	15, \tmp4, \tmp4, 0x444
++
++	uus_mtsr	12, \tmp1
++	uus_mtsr	13, \tmp2
++	uus_mtsr	14, \tmp3
++	uus_mtsr	15, \tmp4
++.endm
++
++.macro update_user_segments_by_6 tmp1 tmp2 tmp3 tmp4 tmp5 tmp6
++	uus_addi	1, \tmp2, \tmp1, 0x111
++	uus_addi	2, \tmp3, \tmp1, 0x222
++	uus_addi	3, \tmp4, \tmp1, 0x333
++	uus_addi	4, \tmp5, \tmp1, 0x444
++	uus_addi	5, \tmp6, \tmp1, 0x555
++
++	uus_mtsr	0, \tmp1
++	uus_mtsr	1, \tmp2
++	uus_mtsr	2, \tmp3
++	uus_mtsr	3, \tmp4
++	uus_mtsr	4, \tmp5
++	uus_mtsr	5, \tmp6
++
++	uus_addi	6, \tmp1, \tmp1, 0x666
++	uus_addi	7, \tmp2, \tmp2, 0x666
++	uus_addi	8, \tmp3, \tmp3, 0x666
++	uus_addi	9, \tmp4, \tmp4, 0x666
++	uus_addi	10, \tmp5, \tmp5, 0x666
++	uus_addi	11, \tmp6, \tmp6, 0x666
++
++	uus_mtsr	6, \tmp1
++	uus_mtsr	7, \tmp2
++	uus_mtsr	8, \tmp3
++	uus_mtsr	9, \tmp4
++	uus_mtsr	10, \tmp5
++	uus_mtsr	11, \tmp6
++
++	uus_addi	12, \tmp1, \tmp1, 0x666
++	uus_addi	13, \tmp2, \tmp2, 0x666
++	uus_addi	14, \tmp3, \tmp3, 0x666
++	uus_addi	15, \tmp4, \tmp4, 0x666
++
++	uus_mtsr	12, \tmp1
++	uus_mtsr	13, \tmp2
++	uus_mtsr	14, \tmp3
++	uus_mtsr	15, \tmp4
++.endm
++
++#else
+ 
+ /*
+  * This macro defines the mapping from contexts to VSIDs (virtual
+diff --git a/arch/powerpc/include/asm/interrupt.h b/arch/powerpc/include/asm/interrupt.h
+index d4bdf7d274ac..d4349ca37084 100644
+--- a/arch/powerpc/include/asm/interrupt.h
++++ b/arch/powerpc/include/asm/interrupt.h
+@@ -139,12 +139,10 @@ static inline void interrupt_enter_prepare(struct pt_regs *regs, struct interrup
+ 	if (!arch_irq_disabled_regs(regs))
+ 		trace_hardirqs_off();
+ 
+-	if (user_mode(regs)) {
+-		kuep_lock();
++	if (user_mode(regs))
+ 		account_cpu_user_entry();
+-	} else {
++	else
+ 		kuap_save_and_lock(regs);
+-	}
+ #endif
+ 
+ #ifdef CONFIG_PPC64
+diff --git a/arch/powerpc/include/asm/kup.h b/arch/powerpc/include/asm/kup.h
+index 1df763002726..34ff86e3686e 100644
+--- a/arch/powerpc/include/asm/kup.h
++++ b/arch/powerpc/include/asm/kup.h
+@@ -38,11 +38,6 @@ void setup_kuep(bool disabled);
+ static inline void setup_kuep(bool disabled) { }
+ #endif /* CONFIG_PPC_KUEP */
+ 
+-#ifndef CONFIG_PPC_BOOK3S_32
+-static inline void kuep_lock(void) { }
+-static inline void kuep_unlock(void) { }
+-#endif
+-
+ #ifdef CONFIG_PPC_KUAP
+ void setup_kuap(bool disabled);
+ #else
+diff --git a/arch/powerpc/kernel/entry_32.S b/arch/powerpc/kernel/entry_32.S
+index 0273a1349006..e382c7fc952e 100644
+--- a/arch/powerpc/kernel/entry_32.S
++++ b/arch/powerpc/kernel/entry_32.S
+@@ -52,6 +52,16 @@
+ #if defined(CONFIG_PPC_BOOK3S_32) || defined(CONFIG_E500)
+ 	.globl	prepare_transfer_to_handler
+ prepare_transfer_to_handler:
++#ifdef CONFIG_PPC_KUEP
++	beq	1f
++
++	mfsr    r4,0
++	rlwinm  r4,r4,0,8,3
++	oris    r4,r4,SR_NX@h
++	update_user_segments_by_6 r4, r5, r6, r7, r8, r9
++	blr
++1:
++#endif
+ 	/* if from kernel, check interrupted DOZE/NAP mode */
+ 	lwz	r12,TI_LOCAL_FLAGS(r2)
+ 	mtcrf	0x01,r12
+@@ -93,6 +103,12 @@ transfer_to_syscall:
+ 	SAVE_4GPRS(3, r1)
+ 	SAVE_2GPRS(7, r1)
+ 	addi	r2,r10,-THREAD
++#if defined(CONFIG_PPC_KUEP) && defined(CONFIG_PPC_BOOK3S_32)
++	mfsr    r9,0
++	rlwinm  r9,r9,0,8,3
++	oris    r9,r9,SR_NX@h
++	update_user_segments_by_4 r9, r10, r11, r12
++#endif
+ 	SAVE_NVGPRS(r1)
+ 
+ 	/* Calling convention has r9 = orig r0, r10 = regs */
+@@ -110,6 +126,11 @@ ret_from_syscall:
+ 	cmplwi	cr0,r5,0
+ 	bne-	2f
+ #endif /* CONFIG_PPC_47x */
++#if defined(CONFIG_PPC_KUEP) && defined(CONFIG_PPC_BOOK3S_32)
++	mfsr    r7,0
++	rlwinm  r7,r7,0,8,2
++	update_user_segments_by_6 r7, r8, r9, r10, r11, r12
++#endif
+ 	lwz	r4,_LINK(r1)
+ 	lwz	r5,_CCR(r1)
+ 	mtlr	r4
+@@ -273,6 +294,11 @@ interrupt_return:
+ 	beq	.Lkernel_interrupt_return
+ 	bl	interrupt_exit_user_prepare
+ 	cmpwi	r3,0
++#if defined(CONFIG_PPC_KUEP) && defined(CONFIG_PPC_BOOK3S_32)
++	mfsr    r7,0
++	rlwinm  r7,r7,0,8,2
++	update_user_segments_by_6 r7, r8, r9, r10, r11, r12
++#endif
+ 	bne-	.Lrestore_nvgprs
+ 
+ .Lfast_user_interrupt_return:
+diff --git a/arch/powerpc/kernel/head_32.h b/arch/powerpc/kernel/head_32.h
+index 6b1ec9e3541b..4df20fa73504 100644
+--- a/arch/powerpc/kernel/head_32.h
++++ b/arch/powerpc/kernel/head_32.h
+@@ -134,7 +134,9 @@ _ASM_NOKPROBE_SYMBOL(\name\()_virt)
+ .macro prepare_transfer_to_handler
+ #ifdef CONFIG_PPC_BOOK3S_32
+ 	andi.	r12,r9,MSR_PR
++#ifndef CONFIG_PPC_KUEP
+ 	bne	777f
++#endif
+ 	bl	prepare_transfer_to_handler
+ 777:
+ #endif
+diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
+index 21bbd615ca41..cd6139003776 100644
+--- a/arch/powerpc/kernel/interrupt.c
++++ b/arch/powerpc/kernel/interrupt.c
+@@ -81,8 +81,6 @@ notrace long system_call_exception(long r3, long r4, long r5,
+ {
+ 	syscall_fn f;
+ 
+-	kuep_lock();
+-
+ 	regs->orig_gpr3 = r3;
+ 
+ 	if (IS_ENABLED(CONFIG_PPC_IRQ_SOFT_MASK_DEBUG))
+@@ -365,7 +363,6 @@ interrupt_exit_user_prepare_main(unsigned long ret, struct pt_regs *regs)
+ 
+ 	/* Restore user access locks last */
+ 	kuap_user_restore(regs);
+-	kuep_unlock();
+ 
+ 	return ret;
+ }
+diff --git a/arch/powerpc/mm/book3s32/kuep.c b/arch/powerpc/mm/book3s32/kuep.c
+index c20733d6e02c..45c9967f9aef 100644
+--- a/arch/powerpc/mm/book3s32/kuep.c
++++ b/arch/powerpc/mm/book3s32/kuep.c
+@@ -7,8 +7,13 @@ struct static_key_false disable_kuep_key;
+ 
+ void setup_kuep(bool disabled)
+ {
++	if (disabled) {
++		pr_info("KUEP cannot be disabled for the time being\n");
++		disabled = false;
++	}
++
+ 	if (!disabled)
+-		kuep_lock();
++		update_user_segments(mfsr(0) | SR_NX);
+ 
+ 	if (smp_processor_id() != boot_cpuid)
+ 		return;
+-- 
+2.25.0
+
