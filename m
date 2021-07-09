@@ -2,202 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FAD53C1C6B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 02:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3FE93C1C6E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 02:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229862AbhGIAMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 20:12:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhGIAMv (ORCPT
+        id S229842AbhGIAQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 20:16:38 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:44598 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhGIAQh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 20:12:51 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90692C061762
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 17:10:07 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id s24so10078011oiw.2
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 17:10:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=GWR42JbUy+/sIryqxS932MVNmOL/59t6cQ1xgosHWYc=;
-        b=d+jLMLzzzH3wdihqtdR4LfnXdFcCeRl6qODCxtVggS9Cs4IEsIxHJ3IDF3DcMh13Tw
-         +hKQ40Jh1LvI6+psU9W/OqkG/oWz56dN7Rcsbxshqger21NjX+7p8ZlA/3aKSZ3l+HVy
-         10hvfjXOxJX4XKHMOsaAwTm86fiNqbHw4xeNk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=GWR42JbUy+/sIryqxS932MVNmOL/59t6cQ1xgosHWYc=;
-        b=XxgleW75I4dvCvthe1TRF++eVwZEWbZ5w5B1U7PbbMZYD7NmW0/cpAeIgLlNA/PAWC
-         PRopcz9weuQtPIQ47EEXineydZtGk96SapEqvmiQhl8mhHQN9odzUiulULZzes1XB9po
-         /s2bG35En3v7jhRujRlMuIktT1Rz/sk3TyEEM6IKhha6ZD7S5861Cfw4SiOq/U+VWFgp
-         SKAZoylHm/mawsBi/KE19vQX7tJu5y0jfPA7hxE1LgyfVFnYSXvuCnX9S4g5N/k4OHed
-         kWDC5awXsdqolHJzZm/x5BME8d/tdOLzctNCjbjcmIujADYbuSheQyto+gNaAu2A/bYd
-         KPPw==
-X-Gm-Message-State: AOAM532v1K+0Vi7gUOrnOw+BGIZTl8m+KiWjbP+kcxpj+GOxKHuUN9zm
-        ardCjt7SvvaGuLe2K12WCdlV96qi6KKcQ5Zi+cqNLg==
-X-Google-Smtp-Source: ABdhPJwp8Fy4KSSWjfymFnPso5UygprvHCbrGwbbuEDy1H9gDn10d1CIud4wxkRzYmEAFidozPvTeWtMXCKaSRCFs9M=
-X-Received: by 2002:aca:3012:: with SMTP id w18mr5800184oiw.125.1625789406755;
- Thu, 08 Jul 2021 17:10:06 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 9 Jul 2021 00:10:06 +0000
+        Thu, 8 Jul 2021 20:16:37 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id C9C9E1F4212B
+From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     kernel@collabora.com, krisman@collabora.com,
+        pgriffais@valvesoftware.com, z.figura12@gmail.com,
+        joel@joelfernandes.org, malteskarupke@fastmail.fm,
+        linux-api@vger.kernel.org, fweimer@redhat.com,
+        libc-alpha@sourceware.org, linux-kselftest@vger.kernel.org,
+        shuah@kernel.org, acme@kernel.org, corbet@lwn.net,
+        Peter Oskolkov <posk@posk.io>,
+        Andrey Semashev <andrey.semashev@gmail.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Adhemerval Zanella <adhemerval.zanella@linaro.org>,
+        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
+Subject: [PATCH v5 00/11] Add futex2 syscalls
+Date:   Thu,  8 Jul 2021 21:13:17 -0300
+Message-Id: <20210709001328.329716-1-andrealmeid@collabora.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <1624804950-3668-1-git-send-email-sbhanu@codeaurora.org>
-References: <1624804950-3668-1-git-send-email-sbhanu@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Fri, 9 Jul 2021 00:10:06 +0000
-Message-ID: <CAE-0n51KMizwJNTGJrD_HVVi2viZ8vh8OxE+N06Uv6p-MUd72w@mail.gmail.com>
-Subject: Re: [PATCH V5] arm64: dts: qcom: sc7280: Add nodes for eMMC and SD card
-To:     Shaik Sajida Bhanu <sbhanu@codeaurora.org>,
-        adrian.hunter@intel.com, robh+dt@kernel.org, ulf.hansson@linaro.org
-Cc:     asutoshd@codeaurora.org, stummala@codeaurora.org,
-        vbadigan@codeaurora.org, rampraka@codeaurora.org,
-        sayalil@codeaurora.org, sartgarg@codeaurora.org,
-        rnayak@codeaurora.org, saiprakash.ranjan@codeaurora.org,
-        sibis@codeaurora.org, okukatla@codeaurora.org, djakov@kernel.org,
-        cang@codeaurora.org, pragalla@codeaurora.org,
-        nitirawa@codeaurora.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Shaik Sajida Bhanu (2021-06-27 07:42:30)
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index a8c274a..c3e8740e 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -436,6 +441,60 @@
->                         #mbox-cells = <2>;
->                 };
->
-> +               sdhc_1: sdhci@7c4000 {
-> +                       compatible = "qcom,sc7280-sdhci", "qcom,sdhci-msm-v5";
+This patchset is an implementation of futex2 interface on top of existing
+futex.c code.
 
-Is qcom,sc7280-sdhci compatible documented somewhere?
+* What happened to the current futex()?
 
-> +                       status = "disabled";
-> +
-> +                       reg = <0 0x007c4000 0 0x1000>,
-> +                             <0 0x007c5000 0 0x1000>;
-> +                       reg-names = "hc", "cqhci";
-> +
-> +                       iommus = <&apps_smmu 0xc0 0x0>;
-> +                       interrupts = <GIC_SPI 652 IRQ_TYPE_LEVEL_HIGH>,
-> +                                    <GIC_SPI 656 IRQ_TYPE_LEVEL_HIGH>;
-> +                       interrupt-names = "hc_irq", "pwr_irq";
-> +
-> +                       clocks = <&gcc GCC_SDCC1_APPS_CLK>,
-> +                                <&gcc GCC_SDCC1_AHB_CLK>,
-> +                                <&rpmhcc RPMH_CXO_CLK>;
-> +                       clock-names = "core", "iface", "xo";
-> +                       interconnects = <&aggre1_noc MASTER_SDCC_1 0 &mc_virt SLAVE_EBI1 0>,
-> +                                       <&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_SDCC_1 0>;
-> +                       interconnect-names = "sdhc-ddr","cpu-sdhc";
-> +                       power-domains = <&rpmhpd SC7280_CX>;
-> +                       operating-points-v2 = <&sdhc1_opp_table>;
-> +
-> +                       bus-width = <8>;
-> +                       supports-cqe;
-> +
-> +                       qcom,dll-config = <0x0007642c>;
-> +                       qcom,ddr-config = <0x80040868>;
-> +
-> +                       mmc-ddr-1_8v;
-> +                       mmc-hs200-1_8v;
-> +                       mmc-hs400-1_8v;
-> +                       mmc-hs400-enhanced-strobe;
-> +
-> +                       sdhc1_opp_table: sdhc1-opp-table {
+The futex() is implemented using a multiplexed interface that doesn't
+scale well and gives headaches to people. We don't want to add more
+features there.
 
-Please make it
+* New features at futex2()
 
-	sdhc1_opp_table: opp-table {
+ ** NUMA-awareness
 
+ At the current implementation, all futex kernel side infrastructure is
+ stored on a single node. Given that, all futex() calls issued by
+ processors that aren't located on that node will have a memory access
+ penalty when doing it.
 
-> +                               compatible = "operating-points-v2";
-> +
-> +                               opp-100000000 {
-> +                                       opp-hz = /bits/ 64 <100000000>;
-> +                                       required-opps = <&rpmhpd_opp_low_svs>;
-> +                                       opp-peak-kBps = <1800000 400000>;
-> +                                       opp-avg-kBps = <100000 0>;
-> +                               };
-> +
-> +                               opp-384000000 {
-> +                                       opp-hz = /bits/ 64 <384000000>;
-> +                                       required-opps = <&rpmhpd_opp_nom>;
-> +                                       opp-peak-kBps = <5400000 1600000>;
-> +                                       opp-avg-kBps = <390000 0>;
-> +                               };
-> +                       };
-> +
-> +               };
-> +
->                 qupv3_id_0: geniqup@9c0000 {
->                         compatible = "qcom,geni-se-qup";
->                         reg = <0 0x009c0000 0 0x2000>;
-> @@ -1035,6 +1094,51 @@
->                         };
->                 };
->
-> +               sdhc_2: sdhci@8804000 {
-> +                       compatible = "qcom,sc7280-sdhci", "qcom,sdhci-msm-v5";
-> +                       status = "disabled";
-> +
-> +                       reg = <0 0x08804000 0 0x1000>;
-> +
-> +                       iommus = <&apps_smmu 0x100 0x0>;
-> +                       interrupts = <GIC_SPI 207 IRQ_TYPE_LEVEL_HIGH>,
-> +                                    <GIC_SPI 223 IRQ_TYPE_LEVEL_HIGH>;
-> +                       interrupt-names = "hc_irq", "pwr_irq";
-> +
-> +                       clocks = <&gcc GCC_SDCC2_APPS_CLK>,
-> +                                <&gcc GCC_SDCC2_AHB_CLK>,
-> +                                <&rpmhcc RPMH_CXO_CLK>;
-> +                       clock-names = "core", "iface", "xo";
-> +                       interconnects = <&aggre1_noc MASTER_SDCC_2 0 &mc_virt SLAVE_EBI1 0>,
-> +                                       <&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_SDCC_2 0>;
-> +                       interconnect-names = "sdhc-ddr","cpu-sdhc";
-> +                       power-domains = <&rpmhpd SC7280_CX>;
-> +                       operating-points-v2 = <&sdhc2_opp_table>;
-> +
-> +                       bus-width = <4>;
-> +
-> +                       qcom,dll-config = <0x0007642c>;
-> +
-> +                       sdhc2_opp_table: sdhc2-opp-table {
+ ** Variable sized futexes
 
-Please make it
+ Futexes are used to implement atomic operations in userspace.
+ Supporting 8, 16, 32 and 64 bit sized futexes allows user libraries to
+ implement all those sizes in a performant way. Thanks Boost devs for
+ feedback: https://lists.boost.org/Archives/boost/2021/05/251508.php
 
-	sdhc2_opp_table: opp-table {
+ Embedded systems or anything with memory constrains could benefit of
+ using smaller sizes for the futex userspace integer.
 
+ ** Wait on multiple futexes
 
-> +                               compatible = "operating-points-v2";
-> +
-> +                               opp-100000000 {
-> +                                       opp-hz = /bits/ 64 <100000000>;
-> +                                       required-opps = <&rpmhpd_opp_low_svs>;
-> +                                       opp-peak-kBps = <1800000 400000>;
-> +                                       opp-avg-kBps = <100000 0>;
-> +                               };
-> +
-> +                               opp-202000000 {
-> +                                       opp-hz = /bits/ 64 <202000000>;
-> +                                       required-opps = <&rpmhpd_opp_nom>;
-> +                                       opp-peak-kBps = <5400000 1600000>;
-> +                                       opp-avg-kBps = <200000 0>;
-> +                               };
-> +                       };
-> +
-> +               };
-> +
->                 dc_noc: interconnect@90e0000 {
->                         reg = <0 0x090e0000 0 0x5080>;
->                         compatible = "qcom,sc7280-dc-noc";
+ Proton's (a set of compatibility tools to run Windows games) fork of Wine
+ benefits of this feature to implement WaitForMultipleObjects from Win32 in 
+ a performant way. Native game engines will benefit from this as well,
+ given that this is  a common wait pattern for games.
+
+* The interface
+
+The new interface has one syscall per operation as opposed to the
+current multiplexing one. The details can be found in the following
+patches, but this is a high level summary of what the interface can do:
+
+ - Supports wake/wait semantics, as in futex()
+ - Supports requeue operations, similarly as FUTEX_CMP_REQUEUE, but with
+   individual flags for each address
+ - Supports waiting for a vector of futexes, using a new syscall named
+   futex_waitv()
+
+ - The following features will be implemented in next patchset versions:
+    - Supports variable sized futexes (8bits, 16bits, 32bits and 64bits)
+    - Supports NUMA-awareness operations, where the user can specify on
+      which memory node would like to operate
+
+* The patchset
+
+Given that futex2 reuses futex code, the patches make futex.c functions
+public and modify them as needed.
+
+This patchset can be also found at my git tree:
+
+https://gitlab.collabora.com/tonyk/linux/-/tree/futex2-dev
+
+  - Patch 1: Implements 32bit wait/wake
+
+  - Patches 2-3: Implement waitv and requeue.
+
+  - Patch 4: Add a documentation file which details the interface and
+    the internal implementation.
+
+  - Patches 5-10: Selftests for all operations along with perf
+    support for futex2.
+
+  - Patch 11: Proof of concept of waking threads at waitpid(), not to be
+  merged as it is.
+
+* Testing
+
+ ** Stability
+
+ - glibc[1]: nptl's low level locking was modified to use futex2 API
+   (except for PI). All nptl/ tests passed.
+
+ - Proton's Wine: Proton/Wine was modified in order to use futex2() for the
+   emulation of Windows NT sync mechanisms based on futex, called "fsync".
+   Triple-A games with huge CPU's loads and tons of parallel jobs worked
+   as expected when compared with the previous FUTEX_WAIT_MULTIPLE
+   implementation at futex(). Some games issue 42k futex2() calls
+   per second.
+
+ - perf: The perf benchmarks tests can also be used to stress the
+   interface, and they can be found in this patchset.
+
+[1] https://gitlab.collabora.com/tonyk/glibc/-/tree/futex2-dev
+
+ ** Performance
+
+ - Using perf, no significant difference was measured when comparing
+ futex() and futex2() for the following benchmarks: hash, wake and
+ wake-parallel.
+
+ - I measured a 15% overhead for the perf's requeue benchmark, comparing
+ futex2() to futex(). Requeue patch provides more details about why this
+ happens and how to overcome this.
+
+* Changelog
+
+Changes from v4:
+- Use existing futex.c code when possible
+- Cleaned up cover letter, check v4 for a more verbose version
+v4: https://lore.kernel.org/lkml/20210603195924.361327-1-andrealmeid@collabora.com/
+
+André Almeida (11):
+  futex2: Implement wait and wake functions
+  futex2: Implement vectorized wait
+  futex2: Implement requeue operation
+  docs: locking: futex2: Add documentation
+  selftests: futex2: Add wake/wait test
+  selftests: futex2: Add timeout test
+  selftests: futex2: Add wouldblock test
+  selftests: futex2: Add waitv test
+  selftests: futex2: Add requeue test
+  perf bench: Add futex2 benchmark tests
+  kernel: Enable waitpid() for futex2
+
+ Documentation/locking/futex2.rst              | 185 ++++++
+ Documentation/locking/index.rst               |   1 +
+ arch/x86/entry/syscalls/syscall_32.tbl        |   4 +
+ arch/x86/entry/syscalls/syscall_64.tbl        |   4 +
+ include/linux/compat.h                        |  23 +
+ include/linux/futex.h                         | 103 ++++
+ include/linux/syscalls.h                      |   8 +
+ include/uapi/asm-generic/unistd.h             |  11 +-
+ include/uapi/linux/futex.h                    |  27 +
+ init/Kconfig                                  |   7 +
+ kernel/Makefile                               |   1 +
+ kernel/fork.c                                 |   2 +
+ kernel/futex.c                                | 111 +---
+ kernel/futex2.c                               | 566 ++++++++++++++++++
+ kernel/sys_ni.c                               |   9 +
+ tools/arch/x86/include/asm/unistd_64.h        |  12 +
+ tools/perf/bench/bench.h                      |   4 +
+ tools/perf/bench/futex-hash.c                 |  24 +-
+ tools/perf/bench/futex-requeue.c              |  57 +-
+ tools/perf/bench/futex-wake-parallel.c        |  41 +-
+ tools/perf/bench/futex-wake.c                 |  37 +-
+ tools/perf/bench/futex.h                      |  47 ++
+ tools/perf/builtin-bench.c                    |  18 +-
+ .../selftests/futex/functional/.gitignore     |   3 +
+ .../selftests/futex/functional/Makefile       |   6 +-
+ .../futex/functional/futex2_requeue.c         | 164 +++++
+ .../selftests/futex/functional/futex2_wait.c  | 195 ++++++
+ .../selftests/futex/functional/futex2_waitv.c | 154 +++++
+ .../futex/functional/futex_wait_timeout.c     |  24 +-
+ .../futex/functional/futex_wait_wouldblock.c  |  33 +-
+ .../testing/selftests/futex/functional/run.sh |   6 +
+ .../selftests/futex/include/futex2test.h      | 112 ++++
+ 32 files changed, 1865 insertions(+), 134 deletions(-)
+ create mode 100644 Documentation/locking/futex2.rst
+ create mode 100644 kernel/futex2.c
+ create mode 100644 tools/testing/selftests/futex/functional/futex2_requeue.c
+ create mode 100644 tools/testing/selftests/futex/functional/futex2_wait.c
+ create mode 100644 tools/testing/selftests/futex/functional/futex2_waitv.c
+ create mode 100644 tools/testing/selftests/futex/include/futex2test.h
+
+--
+2.32.0
+
