@@ -2,302 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76E833C2598
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D70523C259E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232111AbhGIONq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 10:13:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56148 "EHLO
+        id S232184AbhGIOOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 10:14:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231732AbhGIONo (ORCPT
+        with ESMTP id S231761AbhGIOOc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 10:13:44 -0400
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050::465:101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBCDFC0613DD;
-        Fri,  9 Jul 2021 07:11:00 -0700 (PDT)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:105:465:1:2:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4GLw753K2SzQk3M;
-        Fri,  9 Jul 2021 16:10:57 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by gerste.heinlein-support.de (gerste.heinlein-support.de [91.198.250.173]) (amavisd-new, port 10030)
-        with ESMTP id ENcqCjhAKuMw; Fri,  9 Jul 2021 16:10:53 +0200 (CEST)
-Subject: Re: [RFC PATCH 2/3] mwifiex: pcie: add reset_d3cold quirk for Surface
- gen4+ devices
-To:     Amey Narkhede <ameynarkhede03@gmail.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-References: <20210522131827.67551-1-verdre@v0yd.nl>
- <20210522131827.67551-3-verdre@v0yd.nl>
- <20210522184416.mscbmay27jciy2hv@archlinux>
- <1a844abf-2259-ff4f-d49d-de95870345dc@mailbox.org>
- <20210524202734.sgvv4qtzonlqmj7p@archlinux>
-From:   =?UTF-8?Q?Jonas_Dre=c3=9fler?= <verdre@v0yd.nl>
-Message-ID: <3fdadc15-220e-2cdf-e650-1f465e6f4a88@mailbox.org>
-Date:   Fri, 9 Jul 2021 16:10:20 +0200
+        Fri, 9 Jul 2021 10:14:32 -0400
+Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 856F2C0613E5
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 07:11:48 -0700 (PDT)
+Received: by mail-ua1-x931.google.com with SMTP id k20so3625977uao.8
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 07:11:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xE3GuXPxQPxng6SCV9memDLzNaTsrWlJuTxjZOCkSxg=;
+        b=GrAOP1zSUEmQXCaJ2iewcBz7VjF//nNlpFcdHfxooxPio55+5P9rqbM5m1IBdOQ87l
+         QT9jrNpsbpck1E1mC6SWtRrgKUETw4gUU4YeNXMzGzoJt6KoShPDb4dt6SWqCol8AQGU
+         On9nVbFU5jOx5T9puRYl5UUJXgIf/PImfzvaVhf4YIbgW25qirmG0nLO4746Axs291+e
+         uwKVefmSkXvh88FZqmJ+KxQRMNy5scw/VeZiO2MudUG19RlaXLbMGcE9/Bb6JW65phsP
+         XcYMm5ryF6gwOd+TtV5muvH3PGFKKrHr2ZpIbt+GxJIPlhJ9k82mNcTy4rAFNiRf2IzR
+         C2fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xE3GuXPxQPxng6SCV9memDLzNaTsrWlJuTxjZOCkSxg=;
+        b=sUY1nDnQagDVS2JaFWicUYV5seDMsAYmkhorechINhY+zZizexl+or5xnxhqBfZujw
+         kRBq+OtIwIBetl3T7bmMRt5DlybApv3+DV2rxECdE/OsMzPkawq17kE0f0jRvjX9/fNg
+         e/e+BzMR5xQRiNvOkKxtg4XNieub+xl7ChEO1jp51Imz6p2jfGuIWMZFlOaJH6YovaJ2
+         10MSaDuULp77d54zzslV7q0HGiKScJEFb9kdua3DIBDIR0/5Qc0w0v9qq2f3/l6atN+A
+         Rs9iKg3iamC2zvBDATyfmhW86y3ED2diqa7W19GKS11rfu7Utvf1gNYogKjdWn9NSey8
+         PUWA==
+X-Gm-Message-State: AOAM533TsYe1YJby6NgZ7XpMRCHcTJNSh340BS6YagDzc8gulykgnoGE
+        N8xuDcX5tf0LYhqabmAYQYUrAzIeku05bZhy1efiag==
+X-Google-Smtp-Source: ABdhPJxJUmjEDStUNDJD1nHTQrDVNPoKS5CsDPGXfKJWvU8a14MA901o/PtVmscQQ1ribEEQeSDP1XhFFCy8EzfhT0g=
+X-Received: by 2002:ab0:42a6:: with SMTP id j35mr35590994uaj.129.1625839907672;
+ Fri, 09 Jul 2021 07:11:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210524202734.sgvv4qtzonlqmj7p@archlinux>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -2.49 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 12CAA1823
-X-Rspamd-UID: 9d884b
+References: <20210709043136.533205-1-dmitry.baryshkov@linaro.org>
+ <20210709043136.533205-5-dmitry.baryshkov@linaro.org> <CAPDyKFprYK8bSk+rdnDt3xRUR9BRNdyRiBdefO+s7qzOwHf7hg@mail.gmail.com>
+ <CAA8EJprrjz=o7Ymt1mNBZASzTeX==1ceRTeKA4f3QrVMcpO6xg@mail.gmail.com>
+ <CAPDyKFoLcsYLisEiOF66dDsV+759c5k0PD64uxU11jc5VTdNYQ@mail.gmail.com>
+ <CAA8EJpr2HEm4R+bGrH6DHA_z8bjN69Zam9UUiAeKAr5vsCKr3A@mail.gmail.com>
+ <CAPDyKFr+-qXbi4z4_wzDRaMMLKSKM7zNr55Kt-AOk97mVKM+8A@mail.gmail.com> <CAA8EJpr+N-GwY63SSpqURBrQ=Xmx51MAFZzXqSiD6x89yB-DAQ@mail.gmail.com>
+In-Reply-To: <CAA8EJpr+N-GwY63SSpqURBrQ=Xmx51MAFZzXqSiD6x89yB-DAQ@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 9 Jul 2021 16:11:11 +0200
+Message-ID: <CAPDyKFp8xfaBhNoR1KzKwBpnvEnRPfby8SeJ7TAeyaS4LTYjrA@mail.gmail.com>
+Subject: Re: [RESEND PATCH v2 4/7] clk: qcom: gdsc: enable optional power
+ domain support
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/24/21 10:27 PM, Amey Narkhede wrote:
- > On 21/05/23 12:28PM, Jonas Dreßler wrote:
- >> On 5/22/21 8:44 PM, Amey Narkhede wrote:
- >>> On 21/05/22 03:18PM, Jonas Dreßler wrote:
- >>>> From: Tsuchiya Yuto <kitakar@gmail.com>
- >>>>
- >>>> To reset mwifiex on Surface gen4+ (Pro 4 or later gen) devices, it
- >>>> seems that putting the wifi device into D3cold is required according
- >>>> to errata.inf file on Windows installation (Windows/INF/errata.inf).
- >>>>
- >>>> This patch adds a function that performs power-cycle (put into D3cold
- >>>> then D0) and call the function at the end of reset_prepare().
- >>>>
- >>>> Note: Need to also reset the parent device (bridge) of wifi on SB1;
- >>>> it might be because the bridge of wifi always reports it's in D3hot.
- >>>> When I tried to reset only the wifi device (not touching parent), 
-it gave
- >>>> the following error and the reset failed:
- >>>>
- >>>>       acpi device:4b: Cannot transition to power state D0 for 
-parent in D3hot
- >>>>       mwifiex_pcie 0000:03:00.0: can't change power state from 
-D3cold to D0 (config space inaccessible)
- >>>>
- >>> May I know how did you reset only the wifi device when you encountered
- >>> this error?
- >>
- >> Not exactly sure what you mean by that, the trick was to put the parent
- >> bridge into D3cold and then into D0 before transitioning the card into
- >> D0.
- >>
- > If the parent bridge has multiple devices attached to it, this can
- > have some side effects on other devices after the reset but as you
- > mentioned below that parent bridge is only connected to wifi card it
- > should be fine in that case.
- >
- >> That "Cannot transition to power state" warning is just the kernel
- >> enforcing ACPI specs afaik, and that prevents us from putting the device
- >> into ACPI state D0. This in turn means the device still has no power and
- >> we can't set the PCI power state to D0, which is the second error.
- >>
- >>>
- >>>> Signed-off-by: Tsuchiya Yuto <kitakar@gmail.com>
- >>>> Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
- >>>> ---
- >>>>    drivers/net/wireless/marvell/mwifiex/pcie.c   |   7 +
- >>>>    .../wireless/marvell/mwifiex/pcie_quirks.c    | 123 
-++++++++++++++++++
- >>>>    .../wireless/marvell/mwifiex/pcie_quirks.h    |   3 +
- >>>>    3 files changed, 133 insertions(+)
- >>>>
- >>>> diff --git a/drivers/net/wireless/marvell/mwifiex/pcie.c 
-b/drivers/net/wireless/marvell/mwifiex/pcie.c
- >>>> index 02fdce926de5..d9acfea395ad 100644
- >>>> --- a/drivers/net/wireless/marvell/mwifiex/pcie.c
- >>>> +++ b/drivers/net/wireless/marvell/mwifiex/pcie.c
- >>>> @@ -528,6 +528,13 @@ static void mwifiex_pcie_reset_prepare(struct 
-pci_dev *pdev)
- >>>>    	mwifiex_shutdown_sw(adapter);
- >>>>    	clear_bit(MWIFIEX_IFACE_WORK_DEVICE_DUMP, &card->work_flags);
- >>>>    	clear_bit(MWIFIEX_IFACE_WORK_CARD_RESET, &card->work_flags);
- >>>> +
- >>>> +	/* For Surface gen4+ devices, we need to put wifi into D3cold right
- >>>> +	 * before performing FLR
- >>>> +	 */
- >>>> +	if (card->quirks & QUIRK_FW_RST_D3COLD)
- >>>> +		mwifiex_pcie_reset_d3cold_quirk(pdev);
- >>>> +
- >>>>    	mwifiex_dbg(adapter, INFO, "%s, successful\n", __func__);
- >>>>
- >>>>    	card->pci_reset_ongoing = true;
- >>>> diff --git a/drivers/net/wireless/marvell/mwifiex/pcie_quirks.c 
-b/drivers/net/wireless/marvell/mwifiex/pcie_quirks.c
- >>>> index 4064f99b36ba..b5f214fc1212 100644
- >>>> --- a/drivers/net/wireless/marvell/mwifiex/pcie_quirks.c
- >>>> +++ b/drivers/net/wireless/marvell/mwifiex/pcie_quirks.c
- >>>> @@ -15,6 +15,72 @@
- >>>>
- >>>>    /* quirk table based on DMI matching */
- >>>>    static const struct dmi_system_id mwifiex_quirk_table[] = {
- >>>> +	{
- >>>> +		.ident = "Surface Pro 4",
- >>>> +		.matches = {
- >>>> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
- >>>> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Pro 4"),
- >>>> +		},
- >>>> +		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
- >>>> +	},
- >>>> +	{
- >>>> +		.ident = "Surface Pro 5",
- >>>> +		.matches = {
- >>>> +			/* match for SKU here due to generic product name "Surface Pro" */
- >>>> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
- >>>> +			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "Surface_Pro_1796"),
- >>>> +		},
- >>>> +		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
- >>>> +	},
- >>>> +	{
- >>>> +		.ident = "Surface Pro 5 (LTE)",
- >>>> +		.matches = {
- >>>> +			/* match for SKU here due to generic product name "Surface Pro" */
- >>>> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
- >>>> +			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "Surface_Pro_1807"),
- >>>> +		},
- >>>> +		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
- >>>> +	},
- >>>> +	{
- >>>> +		.ident = "Surface Pro 6",
- >>>> +		.matches = {
- >>>> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
- >>>> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Pro 6"),
- >>>> +		},
- >>>> +		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
- >>>> +	},
- >>>> +	{
- >>>> +		.ident = "Surface Book 1",
- >>>> +		.matches = {
- >>>> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
- >>>> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Book"),
- >>>> +		},
- >>>> +		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
- >>>> +	},
- >>>> +	{
- >>>> +		.ident = "Surface Book 2",
- >>>> +		.matches = {
- >>>> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
- >>>> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Book 2"),
- >>>> +		},
- >>>> +		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
- >>>> +	},
- >>>> +	{
- >>>> +		.ident = "Surface Laptop 1",
- >>>> +		.matches = {
- >>>> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
- >>>> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Laptop"),
- >>>> +		},
- >>>> +		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
- >>>> +	},
- >>>> +	{
- >>>> +		.ident = "Surface Laptop 2",
- >>>> +		.matches = {
- >>>> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
- >>>> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Laptop 2"),
- >>>> +		},
- >>>> +		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
- >>>> +	},
- >>>>    	{}
- >>>>    };
- >>>>
- >>>> @@ -29,4 +95,61 @@ void mwifiex_initialize_quirks(struct 
-pcie_service_card *card)
- >>>>
- >>>>    	if (!card->quirks)
- >>>>    		dev_info(&pdev->dev, "no quirks enabled\n");
- >>>> +	if (card->quirks & QUIRK_FW_RST_D3COLD)
- >>>> +		dev_info(&pdev->dev, "quirk reset_d3cold enabled\n");
- >>>> +}
- >>>> +
- >>>> +static void mwifiex_pcie_set_power_d3cold(struct pci_dev *pdev)
- >>>> +{
- >>>> +	dev_info(&pdev->dev, "putting into D3cold...\n");
- >>>> +
- >>>> +	pci_save_state(pdev);
- >>>> +	if (pci_is_enabled(pdev))
- >>>> +		pci_disable_device(pdev);
- >>>> +	pci_set_power_state(pdev, PCI_D3cold);
- >>>> +}
- >>> pci_set_power_state with PCI_D3cold state calls
- >>> pci_bus_set_current_state(dev->subordinate, PCI_D3cold).
- >>> Maybe this was the reason for the earlier problem you had?
- >>> Not 100% sure about this though CCing: Alex
- >>
- >> Hmm, so we'd only have to put the bridge into D3cold and that takes care
- >> of the device going to D3cold automatically?
- >>
- > Yeah I think it should do it. Have you tried this?
+On Fri, 9 Jul 2021 at 15:22, Dmitry Baryshkov
+<dmitry.baryshkov@linaro.org> wrote:
+>
+> On Fri, 9 Jul 2021 at 16:14, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> >
+> > On Fri, 9 Jul 2021 at 14:59, Dmitry Baryshkov
+> > <dmitry.baryshkov@linaro.org> wrote:
+> > >
+> > > On Fri, 9 Jul 2021 at 15:18, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > > >
+> > > > On Fri, 9 Jul 2021 at 13:46, Dmitry Baryshkov
+> > > > <dmitry.baryshkov@linaro.org> wrote:
+> > > > >
+> > > > > On Fri, 9 Jul 2021 at 12:33, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > > > > >
+> > > > > > On Fri, 9 Jul 2021 at 06:32, Dmitry Baryshkov
+> > > > > > <dmitry.baryshkov@linaro.org> wrote:
+> > > > > > >
+> > > > > > > On sm8250 dispcc and videocc registers are powered up by the MMCX power
+> > > > > > > domain. Currently we used a regulator to enable this domain on demand,
+> > > > > > > however this has some consequences, as genpd code is not reentrant.
+> > > > > > >
+> > > > > > > Teach Qualcomm clock controller code about setting up power domains and
+> > > > > > > using them for gdsc control.
+> > > > > > >
+> > > > > > > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > > > > >
+> > > > > > [...]
+> > > > > >
+> > > > > > > diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
+> > > > > > > index 51ed640e527b..9401d01533c8 100644
+> > > > > > > --- a/drivers/clk/qcom/gdsc.c
+> > > > > > > +++ b/drivers/clk/qcom/gdsc.c
+> > > > > > > @@ -427,6 +427,7 @@ int gdsc_register(struct gdsc_desc *desc,
+> > > > > > >                         continue;
+> > > > > > >                 scs[i]->regmap = regmap;
+> > > > > > >                 scs[i]->rcdev = rcdev;
+> > > > > > > +               scs[i]->pd.dev.parent = desc->dev;
+> > > > > > >                 ret = gdsc_init(scs[i]);
+> > > > > > >                 if (ret)
+> > > > > > >                         return ret;
+> > > > > > > @@ -439,6 +440,8 @@ int gdsc_register(struct gdsc_desc *desc,
+> > > > > > >                         continue;
+> > > > > > >                 if (scs[i]->parent)
+> > > > > > >                         pm_genpd_add_subdomain(scs[i]->parent, &scs[i]->pd);
+> > > > > > > +               else if (!IS_ERR_OR_NULL(dev->pm_domain))
+> > > > > >
+> > > > > > So dev_pm_domain_attach() (which calls genpd_dev_pm_attach() is being
+> > > > > > called for gdsc platform device from the platform bus', to try to
+> > > > > > attach the device to its corresponding PM domain.
+> > > > > >
+> > > > > > Looking a bit closer to genpd_dev_pm_attach(), I realize that we
+> > > > > > shouldn't really try to attach a device to its PM domain, when its OF
+> > > > > > node (dev->of_node) contains a "#power-domain-cells" specifier. This
+> > > > > > is because it indicates that the device belongs to a genpd provider
+> > > > > > itself. In this case, a "power-domains" specifier tells that it has a
+> > > > > > parent domain.
+> > > > > >
+> > > > > > I will post a patch that fixes this asap.
+> > > > >
+> > > > > I think there is nothing to fix here. The dispcc/videocc drivers
+> > > > > provide clocks in addition to the gdsc power domain. And provided
+> > > > > clocks would definitely benefit from having the dispcc device being
+> > > > > attached to the power domain which governs clock registers (MMCX in
+> > > > > our case). Thus I think it is perfectly valid to have:
+> > > > >
+> > > > > rpmhpd device:
+> > > > >  - provides MMCX domain.
+> > > > >
+> > > > > dispcc device:
+> > > > >  - is attached to the MMCX domain,
+> > > >
+> > > > We don't need this, it's redundant and weird to me.
+> > > >
+> > > > Also I am kind of worried that you will hit another new path in genpd,
+> > > > causing locking issues etc, as it has not been designed to work like
+> > > > this (a provider device and a child domain sharing the same "parent").
+> > >
+> > > So, which domain should the dispcc device belong to? It's registers
+> > > are powered by the MMCX domain. I can not attach it to the child
+> > > (GDSC) domain either: in the case of videocc there are 4 child
+> > > domains.
+> >
+> > The dispcc device should *not* be attached to a PM domain.
+> >
+> > Instead it should be registered as a genpd provider and the
+> > corresponding PM domains it provides, should be assigned as child
+> > domains to the MMCX domain.
+> >
+> > This is exactly what the child/parent domain support in genpd is there
+> > to help with.
+>
+> This is done in this patchset. If we stop attaching dispcc to the MMCX
+> genpd, I'll have to locate it in a different way, but the idea is
+> implemented here.
 
-Finally found some time to try that now and looks like it doesn't work. 
-First reset works fine, but on the second one the device can't switch 
-from D3cold to D0:
+Right. Perhaps it's not such a bad idea after all as it gives you two things:
 
-mwifiex_pcie 0000:01:00.0: can't change power state from D3cold to D0 
-(config space inaccessible)
+1) The handle to the MMCX PM domain, which makes sure it has been
+registered too before dispcc gets probed.
+2) The possibility to control power for the MMCX PM domain via runtime
+PM for the dispcc device. This seems useful for your use case.
 
-Thanks,
-Jonas
+>
+> > > An alternative would be to request that all users of the provided
+> > > clocks power on one of the child domains. However this is also not
+> > > perfect. If some generic code (e.g. clock framework) calls into
+> > > provided clocks (e.g. because of assigned-clock-rates), this can
+> > > happen w/o proper power domain being powered up yet.
+> >
+> > Issues with power on/off synchronization during genpd initializations
+> > and genpd provider registration, certainly need to be fixed and I am
+> > happy to help. However, my point is that I think it's a bad idea to
+> > fix it through modelling the PM domain hierarchy in an incorrect way.
+>
+> So, which device should I pass to clk_register to handle runtime PM
+> for the provided clocks? dispcc, should I not?
 
- >>>
- >>>> +
- >>>> +static int mwifiex_pcie_set_power_d0(struct pci_dev *pdev)
- >>>> +{
- >>>> +	int ret;
- >>>> +
- >>>> +	dev_info(&pdev->dev, "putting into D0...\n");
- >>>> +
- >>>> +	pci_set_power_state(pdev, PCI_D0);
- >>>> +	ret = pci_enable_device(pdev);
- >>>> +	if (ret) {
- >>>> +		dev_err(&pdev->dev, "pci_enable_device failed\n");
- >>>> +		return ret;
- >>>> +	}
- >>>> +	pci_restore_state(pdev);
- >>> On the side note just save and restore is enough in this case?
- >>> What would be the device <-> driver state after the reset as you
- >>> are calling this on parent_pdev below so that affects other
- >>> devices on bus?
- >>
- >> Not sure we can do anything more than save and restore, can we? I don't
- >> think it will affect other devices on the bus, the parent bridge is only
- >> connected to the wifi card, nothing else.
- >>
- > I was thinking of doing remove-reset-rescan but I think save-restore
- > should be ok if there is a single device connected to the parent bridge.
- >
- > Thanks,
- > Amey
- > [...]
- >>>> diff --git a/drivers/net/wireless/marvell/mwifiex/pcie_quirks.h 
-b/drivers/net/wireless/marvell/mwifiex/pcie_quirks.h
- >>>> index 7a1fe3b3a61a..549093067813 100644
- >>>> --- a/drivers/net/wireless/marvell/mwifiex/pcie_quirks.h
- >>>> +++ b/drivers/net/wireless/marvell/mwifiex/pcie_quirks.h
- >>>> @@ -5,4 +5,7 @@
- >>>>
- >>>>    #include "pcie.h"
- >>>>
- >>>> +#define QUIRK_FW_RST_D3COLD	BIT(0)
- >>>> +
- >>>>    void mwifiex_initialize_quirks(struct pcie_service_card *card);
- >>>> +int mwifiex_pcie_reset_d3cold_quirk(struct pci_dev *pdev);
- >>>> --
- >>>> 2.31.1
- >>>>
- >>
- >> Thanks for the review,
- >> Jonas
+Right, anything but dispcc seems wrong.
+
+> Then if the dispcc is not attached, we will have to manually handle
+> MMCX from dispcc's runtime pm callbacks. Correct?
+
+Yep - and we don't want that either.
+
+>
+> Could you please be more specific, why is it so wrong to attach dispcc
+> to the MMCX genpd?
+
+In the end it seems like I just needed to make my brain feel a little
+more comfortable with the ideas that you put forward.
+
+It should work fine, I think! My apologies for all the noise.
+
+KInd regards
+Uffe
