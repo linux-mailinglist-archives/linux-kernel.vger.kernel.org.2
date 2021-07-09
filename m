@@ -2,264 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E67253C200E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 09:36:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 883ED3C2013
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 09:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbhGIHjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 03:39:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230121AbhGIHjD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 03:39:03 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8FE6C0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 00:36:19 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id a18so21441627lfs.10
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 00:36:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version;
-        bh=VaG3Y7YczFtAXNuFBMM0Ku3shZIALJVSIv8n6IlowFI=;
-        b=fAL6q6qniIU8H4H9DZhMzTcZDmbFXGInT7nT4vDDgE2+uPu79twQBY3pMVuoUX/vGD
-         K1A6drmmCko1gcimQqFYsAUhHEvqD8MHRzu5I8lWnE/nkiadzl1J5liTypQyR4J98WCU
-         EVhMPUBbGB+vjyhSREsr18E9DwZluKSLjc4N3J5yfH6GrT1gitjYnqJpAyxs0cZ7i7XB
-         u99eWTyUzZG25JhSP8TS9VhiBSdyVhuvWvVl7sGsynAgIGwxHm2nnwu2dYDPkcjQTyRi
-         htoJUG3K5J7BcxeCnIF0CBcb4h4iAGul3ITWJyOnQ76JlKNUYOFo2bzYH/U6TvSKBB8D
-         sl/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version;
-        bh=VaG3Y7YczFtAXNuFBMM0Ku3shZIALJVSIv8n6IlowFI=;
-        b=C3NRIXokPF1z1VsLDax0ozFu7GUR6BBJqbsH8Glwt5AyRMqqhXQRBBw3c8o3Db86M9
-         xwaQQ3FXOLv1NQ9i4BtBiZCPFvj56I3lXbunr08pxUv59FWPnuVge2R6yIHNwzs6ghF6
-         Iq34a7Bi56IwDyGJXaQgjzZkHZUbtex53imXOX2fxIPTUWta+co0tnQG1Xu15h8mlrcc
-         /+w51dZDEcq/9XXEjB6QATa/iXa7FaX7bZa//vMNcFawMLda7Y50JuSt6JGri3zzcpCs
-         ipwwT9SI8q1OB45nK6zmuFFViV9L3kkWZfYzZioWT/J0LAgY0XQFQwmSi8aTFoh5rm8k
-         C3Mg==
-X-Gm-Message-State: AOAM533eyPqADZct0Q+RmWH8e6+PjrvEfnvPXnyIMlYc2UjdwyNo/+IJ
-        ic20M/y4DuHpYv6eJ4NmuAw=
-X-Google-Smtp-Source: ABdhPJw0d6LFsRwC8KFOFQuWrWupIEs47wiHYj9s8/OCEe5YyKRs1dfUxaKUktX3r1qdgyozQ1ag+Q==
-X-Received: by 2002:a05:6512:33d0:: with SMTP id d16mr19179190lfg.311.1625816178129;
-        Fri, 09 Jul 2021 00:36:18 -0700 (PDT)
-Received: from eldfell ([194.136.85.206])
-        by smtp.gmail.com with ESMTPSA id l15sm394730lfh.228.2021.07.09.00.36.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 00:36:17 -0700 (PDT)
-Date:   Fri, 9 Jul 2021 10:36:14 +0300
-From:   Pekka Paalanen <ppaalanen@gmail.com>
-To:     Raphael GALLAIS-POU - foss <raphael.gallais-pou@foss.st.com>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Yannick FERTRE - foss <yannick.fertre@foss.st.com>,
-        Philippe CORNU - foss <philippe.cornu@foss.st.com>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Yannick FERTRE <yannick.fertre@st.com>,
-        Raphael GALLAIS-POU <raphael.gallais-pou@st.com>,
-        Philippe CORNU <philippe.cornu@st.com>
-Subject: Re: [PATCH 2/2] drm/stm: ltdc: add crtc background color property
- support
-Message-ID: <20210709103614.6d5932ca@eldfell>
-In-Reply-To: <20210707084557.22443-3-raphael.gallais-pou@foss.st.com>
-References: <20210707084557.22443-1-raphael.gallais-pou@foss.st.com>
-        <20210707084557.22443-3-raphael.gallais-pou@foss.st.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231272AbhGIHkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 03:40:35 -0400
+Received: from muru.com ([72.249.23.125]:39292 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230121AbhGIHke (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 03:40:34 -0400
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id 6928F8050;
+        Fri,  9 Jul 2021 07:38:04 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     stable@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Keerthy <j-keerthy@ti.com>, Tero Kristo <kristo@kernel.org>
+Subject: [Backport for 4.19.y PATCH 1/4] ARM: OMAP: replace setup_irq() by request_irq()
+Date:   Fri,  9 Jul 2021 10:37:42 +0300
+Message-Id: <20210709073745.13916-1-tony@atomide.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/W0kPe8=pA33zQt1ChIiblgo";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/W0kPe8=pA33zQt1ChIiblgo
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: afzal mohammed <afzal.mohd.ma@gmail.com>
 
-On Wed, 7 Jul 2021 08:48:55 +0000
-Raphael GALLAIS-POU - foss <raphael.gallais-pou@foss.st.com> wrote:
+commit b75ca5217743e4d7076cf65e044e88389e44318d upstream.
 
-> This patch comes from the need to display small resolution pictures with
-> very few DDR usage. In practice, using a background color, produced by the
-> drm CRTC, around this picture allows to fetch less data in memory than
-> setting a full frame picture. And therefore the picture in DDR is smaller
-> than the size of the screen.
->=20
-> It uses the DRM framework background color property and modifies the
-> color to any value between 0x000000 and 0xFFFFFF from userland with a
-> RGB24 value (0x00RRGGBB).
->=20
-> Using this feature is observable only if layers are not full screen
-> or if layers use color formats with alpha and are "transparent" at
-> least on some pixels.
->=20
-> Depending on the hardware version, the background color can not be
-> properly displayed with non-alpha color formats derived from native
-> alpha color formats (such as XR24 or XR15) since the use of this
-> pixel format generates a non transparent layer. As a workaround,
-> the stage background color of the layer and the general background
-> color need to be synced.
->=20
-> Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
-> ---
->  drivers/gpu/drm/stm/ltdc.c | 48 ++++++++++++++++++++++++++++++++++----
->  1 file changed, 43 insertions(+), 5 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-> index 1f9392fb58e1..0aca245288cc 100644
-> --- a/drivers/gpu/drm/stm/ltdc.c
-> +++ b/drivers/gpu/drm/stm/ltdc.c
-> @@ -196,6 +196,11 @@
-> =20
->  #define NB_PF		8		/* Max nb of HW pixel format */
-> =20
-> +#define DRM_ARGB_TO_LTDC_RGB24(bgcolor) \
-> +	((u32)(DRM_ARGB_RED(bgcolor, 8) << 16	\
-> +	| DRM_ARGB_GREEN(bgcolor, 8) << 8	\
-> +	| DRM_ARGB_BLUE(bgcolor, 8)))
-> +
->  enum ltdc_pix_fmt {
->  	PF_NONE,
->  	/* RGB formats */
-> @@ -364,6 +369,15 @@ static inline u32 get_pixelformat_without_alpha(u32 =
-drm)
->  	}
->  }
-> =20
-> +/*
-> + * All non-alpha color formats derived from native alpha color formats a=
-re
-> + * either characterized by a FourCC format code (such as XR24, RX24, BX2=
-4...)
-> + */
-> +static inline u32 is_xrgb(u32 drm)
-> +{
-> +	return ((drm & 'X') =3D=3D 'X' || (drm & ('X' << 8)) =3D=3D ('X' << 8));
+request_irq() is preferred over setup_irq(). Invocations of setup_irq()
+occur after memory allocators are ready.
 
-Hi,
+Per tglx[1], setup_irq() existed in olden days when allocators were not
+ready by the time early interrupts were initialized.
 
-if you're trying to test whether the last or second last byte in the
-format code is exactly 'X', this doesn't do that. What this does is
-ignores all the bits that are zero in 'X' and ensures that all the bits
-that are one in 'X' are also one in the tested value.
+Hence replace setup_irq() by request_irq().
 
+[1] https://lkml.kernel.org/r/alpine.DEB.2.20.1710191609480.1971@nanos
 
-Thanks,
-pq
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: Keerthy <j-keerthy@ti.com>
+Cc: Tero Kristo <kristo@kernel.org>
+Signed-off-by: afzal mohammed <afzal.mohd.ma@gmail.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
+ arch/arm/mach-omap1/pm.c       | 13 ++++++-------
+ arch/arm/mach-omap1/time.c     | 10 +++-------
+ arch/arm/mach-omap1/timer32k.c | 10 +++-------
+ arch/arm/mach-omap2/timer.c    | 11 +++--------
+ 4 files changed, 15 insertions(+), 29 deletions(-)
 
-> +}
-> +
->  static irqreturn_t ltdc_irq_thread(int irq, void *arg)
->  {
->  	struct drm_device *ddev =3D arg;
-> @@ -431,7 +445,8 @@ static void ltdc_crtc_atomic_enable(struct drm_crtc *=
-crtc,
->  	pm_runtime_get_sync(ddev->dev);
-> =20
->  	/* Sets the background color value */
-> -	reg_write(ldev->regs, LTDC_BCCR, BCCR_BCBLACK);
-> +	reg_write(ldev->regs, LTDC_BCCR,
-> +		  DRM_ARGB_TO_LTDC_RGB24(crtc->state->bgcolor));
-> =20
->  	/* Enable IRQ */
->  	reg_set(ldev->regs, LTDC_IER, IER_RRIE | IER_FUIE | IER_TERRIE);
-> @@ -452,6 +467,9 @@ static void ltdc_crtc_atomic_disable(struct drm_crtc =
-*crtc,
-> =20
->  	drm_crtc_vblank_off(crtc);
-> =20
-> +	/* Reset background color */
-> +	reg_write(ldev->regs, LTDC_BCCR, BCCR_BCBLACK);
-> +
->  	/* disable IRQ */
->  	reg_clear(ldev->regs, LTDC_IER, IER_RRIE | IER_FUIE | IER_TERRIE);
-> =20
-> @@ -790,6 +808,7 @@ static void ltdc_plane_atomic_update(struct drm_plane=
- *plane,
->  	u32 y1 =3D newstate->crtc_y + newstate->crtc_h - 1;
->  	u32 src_x, src_y, src_w, src_h;
->  	u32 val, pitch_in_bytes, line_length, paddr, ahbp, avbp, bpcr;
-> +	u32 bgcolor =3D DRM_ARGB_TO_LTDC_RGB24(newstate->crtc->state->bgcolor);
->  	enum ltdc_pix_fmt pf;
-> =20
->  	if (!newstate->crtc || !fb) {
-> @@ -853,10 +872,28 @@ static void ltdc_plane_atomic_update(struct drm_pla=
-ne *plane,
->  	if (!fb->format->has_alpha)
->  		val =3D BF1_CA | BF2_1CA;
-> =20
-> -	/* Manage hw-specific capabilities */
-> -	if (ldev->caps.non_alpha_only_l1 &&
-> -	    plane->type !=3D DRM_PLANE_TYPE_PRIMARY)
-> -		val =3D BF1_PAXCA | BF2_1PAXCA;
-> +	/*
-> +	 * Manage hw-specific capabilities
-> +	 *
-> +	 * Depending on the hardware version, the background color can not be
-> +	 * properly displayed with non-alpha color formats derived from native
-> +	 * alpha color formats (such as XR24 or XR15) since the use of this
-> +	 * pixel format generates a non transparent layer. As a workaround,
-> +	 * the stage background color of the layer and the general background
-> +	 * color need to be synced.
-> +	 *
-> +	 * This is done by activating for all XRGB color format the default
-> +	 * color as the background color and then setting blending factor
-> +	 * accordingly.
-> +	 */
-> +	if (ldev->caps.non_alpha_only_l1) {
-> +		if (is_xrgb(fb->format->format)) {
-> +			val =3D BF1_CA | BF2_1CA;
-> +			reg_write(ldev->regs, LTDC_L1DCCR + lofs, bgcolor);
-> +		} else {
-> +			val =3D BF1_PAXCA | BF2_1PAXCA;
-> +		}
-> +	}
-> =20
->  	reg_update_bits(ldev->regs, LTDC_L1BFCR + lofs,
->  			LXBFCR_BF2 | LXBFCR_BF1, val);
-> @@ -1033,6 +1070,7 @@ static int ltdc_crtc_init(struct drm_device *ddev, =
-struct drm_crtc *crtc)
-> =20
->  	drm_crtc_helper_add(crtc, &ltdc_crtc_helper_funcs);
-> =20
-> +	drm_crtc_add_bgcolor_property(crtc);
->  	drm_mode_crtc_set_gamma_size(crtc, CLUT_SIZE);
->  	drm_crtc_enable_color_mgmt(crtc, 0, false, CLUT_SIZE);
-> =20
-
-
---Sig_/W0kPe8=pA33zQt1ChIiblgo
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmDn/G4ACgkQI1/ltBGq
-qqdSAQ/+O54N12B96VfgTSJt/h50b8vyqH6nlYk53aAjDGv71t3XQRp8Z0Yd/TKn
-mDoGkBad4FHRWfaorqc1DqJztkS8bqmbpz8Jg4mUt/1f/JDfRcIKDlfh/RL2dyrw
-rNhik+zr6dTPTL7Xs5joQspZ5HvO5yeo1rbSFE0SlpsEJHN+qWnBpobGfiAL4Uue
-RkXJrEJyAZEuPGcEq8D27ciGqZIQJmMLP/9GuX0+mELmGPOqKFLZaryBqsahGrVo
-kJu/iGDECeG/bTrczBm02rj4TAkJLcef/s4XESL3N0zFvu3w62ev0CJxFJDcHoh5
-WXXnuNgZ2uR1HjnCJojHnjyBYrOAY8PlPL/A3duuKZRS4t+O9nNCxd6/6SICV4eS
-XmXPmZ68uhUfDNVjyGhHDVGHjfmO3nqzXX2dDxAuKn+lZDwXguza03bX9bJVHdx+
-Tj91Addw0b1hPh6T25QIco3SDaQcf6jfTmpMW5pEgJQp/Z50u0Ku2w6rsSRYE8OD
-XyTDtLOPamHBgLNbEBJW7d7NJcbmsH/K/ucKXBeXUJo5qo4HijTkALl6dcpqF44Y
-uzJeSCwRzBh/DpDYpDyg5o6tmjZo42cLOSKHAvWZTsWRxT4JIOjVf4UHxEESHg4h
-Spd7Gp/ks8BeSQ78CkAfsusgn742wkiUE0ExDwyXQCW99mq3UEs=
-=ft4v
------END PGP SIGNATURE-----
-
---Sig_/W0kPe8=pA33zQt1ChIiblgo--
+diff --git a/arch/arm/mach-omap1/pm.c b/arch/arm/mach-omap1/pm.c
+--- a/arch/arm/mach-omap1/pm.c
++++ b/arch/arm/mach-omap1/pm.c
+@@ -610,11 +610,6 @@ static irqreturn_t omap_wakeup_interrupt(int irq, void *dev)
+ 	return IRQ_HANDLED;
+ }
+ 
+-static struct irqaction omap_wakeup_irq = {
+-	.name		= "peripheral wakeup",
+-	.handler	= omap_wakeup_interrupt
+-};
+-
+ 
+ 
+ static const struct platform_suspend_ops omap_pm_ops = {
+@@ -627,6 +622,7 @@ static const struct platform_suspend_ops omap_pm_ops = {
+ static int __init omap_pm_init(void)
+ {
+ 	int error = 0;
++	int irq;
+ 
+ 	if (!cpu_class_is_omap1())
+ 		return -ENODEV;
+@@ -670,9 +666,12 @@ static int __init omap_pm_init(void)
+ 	arm_pm_idle = omap1_pm_idle;
+ 
+ 	if (cpu_is_omap7xx())
+-		setup_irq(INT_7XX_WAKE_UP_REQ, &omap_wakeup_irq);
++		irq = INT_7XX_WAKE_UP_REQ;
+ 	else if (cpu_is_omap16xx())
+-		setup_irq(INT_1610_WAKE_UP_REQ, &omap_wakeup_irq);
++		irq = INT_1610_WAKE_UP_REQ;
++	if (request_irq(irq, omap_wakeup_interrupt, 0, "peripheral wakeup",
++			NULL))
++		pr_err("Failed to request irq %d (peripheral wakeup)\n", irq);
+ 
+ 	/* Program new power ramp-up time
+ 	 * (0 for most boards since we don't lower voltage when in deep sleep)
+diff --git a/arch/arm/mach-omap1/time.c b/arch/arm/mach-omap1/time.c
+--- a/arch/arm/mach-omap1/time.c
++++ b/arch/arm/mach-omap1/time.c
+@@ -155,15 +155,11 @@ static irqreturn_t omap_mpu_timer1_interrupt(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
+ 
+-static struct irqaction omap_mpu_timer1_irq = {
+-	.name		= "mpu_timer1",
+-	.flags		= IRQF_TIMER | IRQF_IRQPOLL,
+-	.handler	= omap_mpu_timer1_interrupt,
+-};
+-
+ static __init void omap_init_mpu_timer(unsigned long rate)
+ {
+-	setup_irq(INT_TIMER1, &omap_mpu_timer1_irq);
++	if (request_irq(INT_TIMER1, omap_mpu_timer1_interrupt,
++			IRQF_TIMER | IRQF_IRQPOLL, "mpu_timer1", NULL))
++		pr_err("Failed to request irq %d (mpu_timer1)\n", INT_TIMER1);
+ 	omap_mpu_timer_start(0, (rate / HZ) - 1, 1);
+ 
+ 	clockevent_mpu_timer1.cpumask = cpumask_of(0);
+diff --git a/arch/arm/mach-omap1/timer32k.c b/arch/arm/mach-omap1/timer32k.c
+--- a/arch/arm/mach-omap1/timer32k.c
++++ b/arch/arm/mach-omap1/timer32k.c
+@@ -148,15 +148,11 @@ static irqreturn_t omap_32k_timer_interrupt(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
+ 
+-static struct irqaction omap_32k_timer_irq = {
+-	.name		= "32KHz timer",
+-	.flags		= IRQF_TIMER | IRQF_IRQPOLL,
+-	.handler	= omap_32k_timer_interrupt,
+-};
+-
+ static __init void omap_init_32k_timer(void)
+ {
+-	setup_irq(INT_OS_TIMER, &omap_32k_timer_irq);
++	if (request_irq(INT_OS_TIMER, omap_32k_timer_interrupt,
++			IRQF_TIMER | IRQF_IRQPOLL, "32KHz timer", NULL))
++		pr_err("Failed to request irq %d(32KHz timer)\n", INT_OS_TIMER);
+ 
+ 	clockevent_32k_timer.cpumask = cpumask_of(0);
+ 	clockevents_config_and_register(&clockevent_32k_timer,
+diff --git a/arch/arm/mach-omap2/timer.c b/arch/arm/mach-omap2/timer.c
+--- a/arch/arm/mach-omap2/timer.c
++++ b/arch/arm/mach-omap2/timer.c
+@@ -92,12 +92,6 @@ static irqreturn_t omap2_gp_timer_interrupt(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
+ 
+-static struct irqaction omap2_gp_timer_irq = {
+-	.name		= "gp_timer",
+-	.flags		= IRQF_TIMER | IRQF_IRQPOLL,
+-	.handler	= omap2_gp_timer_interrupt,
+-};
+-
+ static int omap2_gp_timer_set_next_event(unsigned long cycles,
+ 					 struct clock_event_device *evt)
+ {
+@@ -383,8 +377,9 @@ static void __init omap2_gp_clockevent_init(int gptimer_id,
+ 				     &clockevent_gpt.name, OMAP_TIMER_POSTED);
+ 	BUG_ON(res);
+ 
+-	omap2_gp_timer_irq.dev_id = &clkev;
+-	setup_irq(clkev.irq, &omap2_gp_timer_irq);
++	if (request_irq(clkev.irq, omap2_gp_timer_interrupt,
++			IRQF_TIMER | IRQF_IRQPOLL, "gp_timer", &clkev))
++		pr_err("Failed to request irq %d (gp_timer)\n", clkev.irq);
+ 
+ 	__omap_dm_timer_int_enable(&clkev, OMAP_TIMER_INT_OVERFLOW);
+ 
+-- 
+2.32.0
