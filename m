@@ -2,242 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5616C3C2652
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:54:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 667C63C265B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232291AbhGIO4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 10:56:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37800 "EHLO
+        id S232376AbhGIO6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 10:58:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232231AbhGIO4m (ORCPT
+        with ESMTP id S232023AbhGIO6J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 10:56:42 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 399C5C0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 07:53:59 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id 37so10235189pgq.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 07:53:59 -0700 (PDT)
+        Fri, 9 Jul 2021 10:58:09 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54BE4C0613DD
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 07:55:25 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso6196982pjp.5
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 07:55:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:cc:from:to:message-id;
-        bh=7TOvEXp6CxyOVQ6kkvPnStcuSSRvU0Rq/k3nL7rrXds=;
-        b=hhd1UznzDHvfc5Q42o1PVvjw2WA2cBvDz7QSqBphthlexpRXkJdRKc8b58QgyAjxdh
-         d9AqMIv8uR08tPSEo7QDVRU0dpaAtcneEWE/F4OmbI+SBRUCq3X6LFNLCQs8zo5bXccz
-         u/9XuH9pIh3tep/4RQJImWYphQY7VZuTQfJqSxsOSKtj3TMP4N47C2SOOzrtEgpBJkJL
-         kwXgDyjlX0zgQK4iPSZUTgCnnK5/vie7ffOJmkD7Br7op8yh1AgW4k2nMjixdwz40Mse
-         YHneprS5lK3rqyHjh6u1xJysFBfoGIWsb9UZowOIj1R9dpIAqAdJnS1u2817nXd4dQqi
-         CYSg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=G2Y+pSSnUywEPTSJ2tPWcTaOWBhrih5Xt4GSOmadcn8=;
+        b=Ppt37Ib0qBxgOpUgzY7k88JVJaGwS/q/5GtHxj0FMBLd36ZPWtuM3qaX7v/v7cS+oq
+         q/oD0ADy2AXyu8QorB902T2rTH2n64p5zczs7oi1JKjKar2ulIAaAAn9oXgMhqFJnrrq
+         KMIXSN86XmDDUhFLIQjT88iBKQIPyJAJHqywRG92zvibzvOAmDo3A0WIPlgTb3RA8cuH
+         apsheeT44wjZnzZJ93xSKEc7xhjpN1Q3yhUr2rnuY74fQlNgn9I79sP9TgDTgTrLHvS1
+         ywGU3iJTV6S9ZMF+V1s+kbGF9o+HCSUesWZ81npXlqB4ihvj2xS9JxaWbobQFSUyET+M
+         cn7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:cc:from:to:message-id;
-        bh=7TOvEXp6CxyOVQ6kkvPnStcuSSRvU0Rq/k3nL7rrXds=;
-        b=ImobGDv58uYd8f+kQmaFVxe9SNxYHAdmwf+gE+ZK7wSw1TOCDFcDaK8on35bdjNsl1
-         aRpzWBQzPF8NMA5lAeYZSr/BLVlpmyokjMka4YCbOqCYOvIKBiK3UJFRxAhGvnInM3Eg
-         kJfYossY9WOvznhRcV6cokeI0tUnz7AxYKHycGCH3B/XRX+IQ48+uNnUfC9qzHfM8Uml
-         SOrD0TPwWA/XuBBvmjTWA6P8Lz7nAxsp6FiFigdCa9WXBi78oJtwOGniXhkrSeqPlhQW
-         sImiESAGiRNZtpAFOXkIKW5jL0oBO0jSHq0ZHWhBDjjIhmgdPKygXldoPTWfjnYxrylu
-         WNdA==
-X-Gm-Message-State: AOAM530KPOfngJ9rXzORWjCA7VaIppWaVCK/pamS4x4JEf9nX3Wsa+BD
-        JSWmvpKxSVw5/jIwzlL1qxBNllSve3pmIQ==
-X-Google-Smtp-Source: ABdhPJwJokbZrtZDQ6OXCcHH01AZn+eAlxXwE/yXMT5NU69MviNGWhd13kfai8Bc8VsvDy2gNC5xvA==
-X-Received: by 2002:a63:5903:: with SMTP id n3mr39025680pgb.104.1625842438616;
-        Fri, 09 Jul 2021 07:53:58 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id c141sm6885959pfc.13.2021.07.09.07.53.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 07:53:58 -0700 (PDT)
-Date:   Fri, 09 Jul 2021 07:53:58 -0700 (PDT)
-X-Google-Original-Date: Fri, 09 Jul 2021 07:53:41 PDT (-0700)
-Subject: [GIT PULL] RISC-V Patches for the 5.14 Merge Window, Part 1
-CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <mhng-423e8bdb-977e-4b99-a1bb-b8c530664a51@palmerdabbelt-glaptop>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G2Y+pSSnUywEPTSJ2tPWcTaOWBhrih5Xt4GSOmadcn8=;
+        b=nG0oORp6rDqfB5Jd28N0/+16GnHNqQXamkJsQ6FwIb43Tg2XSFY8DJ1g2lo/U1GWo1
+         xGvgpFPjciekQAD5S33SqHfYnnuLpVpxCkNAlpd9R02p2lobmgH7UYQPVgh2vimcYj4G
+         FzvYIhrNqbsEkJP85/Bl7EZ5/FCa9/qKX0GHWakttlB2Xp99E2JT7HNgCHTXr6YsZssV
+         HHgFSuWjoPPDx7U8YHdIji+GkpYrnVlh3GRYE3zkawZxjVtRfAw2Y57+esyohWuBlQZT
+         R5QpUCHDlVP0Frn79CYAWNPs8S86rRUDcXnHDTpnpPncxvTSkjKJi4qv/hoc3dz08kry
+         dvXg==
+X-Gm-Message-State: AOAM5319eTKjOctK8zQaRkox4M8DfQ+e2rro62+UcRB94d1dWFERKJTA
+        ls8RjQyyyuQx7XzxSwdVjsUZvFJ0y8+eMKjGTJGVowiXRrpViA==
+X-Google-Smtp-Source: ABdhPJzNwyX2+lS/K58nQAPnD/YBQvC2WrKAoUz1I6RR3DURC6lzpEpzkCzPhNKLw1P+2uj3WCOWhfRoRbUOUpLRbgs=
+X-Received: by 2002:a17:90a:17ad:: with SMTP id q42mr11501998pja.181.1625842524730;
+ Fri, 09 Jul 2021 07:55:24 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAHp75VfKyqy+vM0XkP9Yb+znGOTVT4zYCRY3A3nQ7C3WNUVN0g@mail.gmail.com>
+In-Reply-To: <CAHp75VfKyqy+vM0XkP9Yb+znGOTVT4zYCRY3A3nQ7C3WNUVN0g@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 9 Jul 2021 17:54:46 +0300
+Message-ID: <CAHp75VfUHPqccrxe81=jYmiskgWcgTpf3jBjXsPiFpox+Xuyyw@mail.gmail.com>
+Subject: Re: parallel panel display stopped working
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Lars Poeschel <poeschel@lemonage.de>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Geert Uytterhoeven <geert.uytterhoeven@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 8a4102a0cf07cc76a18f373f6b49485258cc6af4:
+On Fri, Jul 9, 2021 at 5:40 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> Parallel (4 bits)  panel display stopped working.
+> I have no time right now to bisect but I have noticed there was quite
+> a pile of patches from Lars to the driver recently (yeah, it seems for
+> a few months I haven't run my tests against the AUX display driver).
+>
+> I believe the issue is there somewhere.
+>
+> Moreover on the removal I have got an oops
+>
+> [  218.825445] kernel tried to execute NX-protected page - exploit
+> attempt? (uid: 0)
+> [  218.832965] BUG: unable to handle page fault for address: ffff8f8f06559dc0
+> [  218.839863] #PF: supervisor instruction fetch in kernel mode
+> [  218.845540] #PF: error_code(0x0011) - permissions violation
+> [  218.851132] PGD e601067 P4D e601067 PUD e602067 PMD 645a063 PTE
+> 8000000006559063
+> [  218.858587] Oops: 0011 [#1] SMP PTI
+> [  218.862099] CPU: 0 PID: 7 Comm: kworker/u4:0 Tainted: G         C
+>      5.13.0+ #23
+> [  218.869870] Hardware name: Intel Corporation Merrifield/BODEGA BAY,
+> BIOS 542 2015.01.21:18.19.48
+> [  218.878681] Workqueue: kacpi_hotplug acpi_device_del_work_fn
+> [  218.884380] RIP: 0010:0xffff8f8f06559dc0
+> [  218.888328] Code: ff ff d2 2b 21 8c ff ff ff ff 08 00 00 00 00 00
+> 00 00 78 34 fa 02 8f 8f ff ff 00 00 00 00 00
+> 00 00 00 00 00 00 00 00 00 00 00 <72> 65 67 75 6c 61 74 6f 72 3a 72 65
+> 67 75 6c 61 74 6f 72 2e 30 2d
+> [  218.907138] RSP: 0000:ffffad36c0043c90 EFLAGS: 00010246
+> [  218.912387] RAX: ffff8f8f06559dc0 RBX: ffff8f8f062cbc00 RCX: ffff8f8f01239fc8
+> [  218.919542] RDX: 000000002a3cccf8 RSI: 0000000000000001 RDI: ffff8f8f06559480
+> [  218.926701] RBP: ffffffffc037e279 R08: 00000000d5832520 R09: 0000000000000001
+> [  218.933856] R10: 0000000000000000 R11: 0000000000000001 R12: ffff8f8f062cbc00
+> [  218.941010] R13: ffffffffc038e028 R14: ffffffff8c5e0b60 R15: 00000000fffffffd
+> [  218.948166] FS:  0000000000000000(0000) GS:ffff8f8f3e200000(0000)
+> knlGS:0000000000000000
+> [  218.956286] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  218.962053] CR2: ffff8f8f06559dc0 CR3: 0000000002ef4000 CR4: 00000000001006f0
+> [  218.969208] Call Trace:
+> [  218.971678]  ? hd44780_common_clear_display+0x17/0x30 [hd44780_common]
+> [  218.978252]  ? charlcd_write_char+0x21a/0x810 [charlcd]
+> [  218.983519]  ? charlcd_puts+0x30/0x60 [charlcd]
+> [  218.988083]  ? charlcd_unregister+0x24/0x70 [charlcd]
+> [  218.993167]  ? hd44780_remove+0x1e/0x30 [hd44780]
+> [  218.997901]  ? platform_remove+0x1f/0x40
+> ...
+>
+> Just for your information and with hope that somebody may test and/or
+> reproduce this and fix it. Later on I might find time to bisect the
+> other issue I mentioned above.
 
-  riscv: mm: Fix W+X mappings at boot (2021-06-01 21:15:09 -0700)
+For time being confirmed the following:
+1. a2060f288e15 ("auxdisplay: Call charlcd_backlight in place") has a
+remove bug (above), while panel works
+2. 66ce7d5c1e12 ("auxdisplay: Use an enum for charlcd backlight on/off
+ops") everything works as expected
 
-are available in the Git repository at:
+So, the oops introduced in between those two.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.14-mw0
-
-for you to fetch changes up to 1958e5aef5098e28b7d6e6a2972649901ebecace:
-
-  riscv: xip: Fix duplicate included asm/pgtable.h (2021-07-06 16:17:40 -0700)
-
-----------------------------------------------------------------
-RISC-V Patches for the 5.14 Merge Window, Part 1
-
-In addition to We have a handful of new features for 5.14:
-
-* Support for transparent huge pages.
-* Support for generic PCI resources mapping.
-* Support for the mem= kernel parameter.
-* Support for KFENCE.
-* A handful of fixes to avoid W+X mappings in the kernel.
-* Support for VMAP_STACK based overflow detection.
-* An optimized copy_{to,from}_user.
-----------------------------------------------------------------
-There are some Kconfig merge conflicts.  They should be pretty
-straight-forward, but we do have a symbol out of order -- I thought I had a
-script to check for that, but I guess it doesn't work.  I just sent out a patch
-to fix it up.
-
-diff --cc arch/riscv/Kconfig
-index 3590eb76000e,469a70bd8da6..d36f3c5029fd
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@@ -60,12 -61,11 +61,12 @@@ config RISC
-        select GENERIC_TIME_VSYSCALL if MMU && 64BIT
-        select HANDLE_DOMAIN_IRQ
-        select HAVE_ARCH_AUDITSYSCALL
--       select HAVE_ARCH_JUMP_LABEL
--       select HAVE_ARCH_JUMP_LABEL_RELATIVE
-+       select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL
-+       select HAVE_ARCH_JUMP_LABEL_RELATIVE if !XIP_KERNEL
-        select HAVE_ARCH_KASAN if MMU && 64BIT
-        select HAVE_ARCH_KASAN_VMALLOC if MMU && 64BIT
- +      select HAVE_ARCH_KFENCE if MMU && 64BIT
--       select HAVE_ARCH_KGDB
-+       select HAVE_ARCH_KGDB if !XIP_KERNEL
-        select HAVE_ARCH_KGDB_QXFER_PKT
-        select HAVE_ARCH_MMAP_RND_BITS if MMU
-        select HAVE_ARCH_SECCOMP_FILTER
-@@@ -81,11 -80,9 +82,14 @@@
-        select HAVE_GCC_PLUGINS
-        select HAVE_GENERIC_VDSO if MMU && 64BIT
-        select HAVE_IRQ_TIME_ACCOUNTING
- +      select HAVE_KPROBES
- +      select HAVE_KPROBES_ON_FTRACE
- +      select HAVE_KRETPROBES
-+       select HAVE_KPROBES if !XIP_KERNEL
-+       select HAVE_KPROBES_ON_FTRACE if !XIP_KERNEL
-+       select HAVE_KRETPROBES if !XIP_KERNEL
- +      select HAVE_MOVE_PMD
- +      select HAVE_MOVE_PUD
-        select HAVE_PCI
-        select HAVE_PERF_EVENTS
-        select HAVE_PERF_REGS
-@@@ -108,7 -104,7 +112,8 @@@
-        select SYSCTL_EXCEPTION_TRACE
-        select THREAD_INFO_IN_TASK
-        select UACCESS_MEMCPY if !MMU
- +      select HAVE_ARCH_TRANSPARENT_HUGEPAGE if 64BIT && MMU
-+       select ZONE_DMA32 if 64BIT
-
-  config ARCH_MMAP_RND_BITS_MIN
-        default 18 if 64BIT
-----------------------------------------------------------------
-Akira Tsukamoto (1):
-      riscv: __asm_copy_to-from_user: Optimize unaligned memory access and pipeline stall
-
-Alexandre Ghiti (6):
-      riscv: Remove CONFIG_PHYS_RAM_BASE_FIXED
-      riscv: Simplify xip and !xip kernel address conversion macros
-      riscv: Introduce set_kernel_memory helper
-      riscv: Map the kernel with correct permissions the first time
-      riscv: Introduce structure that group all variables regarding kernel mapping
-      riscv: Fix PTDUMP output now BPF region moved back to module region
-
-Bixuan Cui (1):
-      riscv: fix build error when CONFIG_SMP is disabled
-
-Christoph Hellwig (1):
-      riscv: pass the mm_struct to __sbi_tlb_flush_range
-
-Guo Ren (3):
-      riscv: Use global mappings for kernel pages
-      riscv: Cleanup unused functions
-      riscv: add ASID-based tlbflushing methods
-
-Jeff Xie (1):
-      riscv: ptrace: add argn syntax
-
-Jiapeng Chong (1):
-      riscv: xip: Fix duplicate included asm/pgtable.h
-
-Jisheng Zhang (7):
-      riscv: mremap speedup - enable HAVE_MOVE_PUD and HAVE_MOVE_PMD
-      riscv: mm: Remove setup_zero_page()
-      riscv: Optimize switch_mm by passing "cpu" to flush_icache_deferred()
-      riscv: Turn has_fpu into a static key if FPU=y
-      riscv: kprobes: Remove redundant kprobe_step_ctx
-      riscv: Add __init section marker to some functions again
-      riscv: mm: init: Consolidate vars, functions
-
-Kefeng Wang (5):
-      riscv: Move setup_bootmem into paging_init
-      riscv: mm: Drop redundant _sdata and _edata declaration
-      riscv: mm: Use better bitmap_zalloc()
-      riscv: Only initialize swiotlb when necessary
-      riscv: Add mem kernel parameter support
-
-Liu Shixin (1):
-      riscv: Enable KFENCE for riscv64
-
-Nanyong Sun (5):
-      riscv: mm: add _PAGE_LEAF macro
-      riscv: mm: make pmd_bad() check leaf condition
-      riscv: mm: add param stride for __sbi_tlb_flush_range
-      riscv: mm: add THP support on 64-bit
-      riscv: mm: fix build errors caused by mk_pmd()
-
-Palmer Dabbelt (2):
-      RISC-V: Use asm-generic for {in,out}{bwlq}
-      Merge branch 'riscv-wx-mappings' into for-next
-
-Randy Dunlap (1):
-      riscv: TRANSPARENT_HUGEPAGE: depends on MMU
-
-Stanislaw Kardach (1):
-      riscv: enable generic PCI resource mapping
-
-Tong Tiangen (1):
-      riscv: add VMAP_STACK overflow detection
-
-Vitaly Wool (1):
-      riscv: fix typo in init.c
-
- arch/riscv/Kconfig                      |  12 +-
- arch/riscv/include/asm/asm-prototypes.h |   3 +
- arch/riscv/include/asm/io.h             |  13 --
- arch/riscv/include/asm/kfence.h         |  63 +++++++
- arch/riscv/include/asm/kprobes.h        |   7 -
- arch/riscv/include/asm/mmu_context.h    |   2 +
- arch/riscv/include/asm/page.h           |  81 +++++----
- arch/riscv/include/asm/pci.h            |   2 +
- arch/riscv/include/asm/pgtable-64.h     |   5 +-
- arch/riscv/include/asm/pgtable-bits.h   |   5 +
- arch/riscv/include/asm/pgtable.h        | 171 ++++++++++++++++++-
- arch/riscv/include/asm/ptrace.h         |  31 ++++
- arch/riscv/include/asm/sections.h       |  17 ++
- arch/riscv/include/asm/set_memory.h     |  24 ++-
- arch/riscv/include/asm/switch_to.h      |  11 +-
- arch/riscv/include/asm/thread_info.h    |  15 ++
- arch/riscv/include/asm/tlbflush.h       |   5 +
- arch/riscv/kernel/asm-offsets.c         |   2 +
- arch/riscv/kernel/cpufeature.c          |   6 +-
- arch/riscv/kernel/entry.S               | 108 ++++++++++++
- arch/riscv/kernel/head.S                |   4 +-
- arch/riscv/kernel/kexec_relocate.S      |   4 +-
- arch/riscv/kernel/machine_kexec.c       |   2 +-
- arch/riscv/kernel/probes/kprobes.c      |  40 +----
- arch/riscv/kernel/process.c             |   2 +-
- arch/riscv/kernel/setup.c               |  18 +-
- arch/riscv/kernel/signal.c              |   4 +-
- arch/riscv/kernel/traps.c               |  35 ++++
- arch/riscv/kernel/vmlinux-xip.lds.S     |   1 -
- arch/riscv/kernel/vmlinux.lds.S         |   2 +-
- arch/riscv/lib/uaccess.S                | 181 ++++++++++++++++----
- arch/riscv/mm/context.c                 |  14 +-
- arch/riscv/mm/fault.c                   |  11 +-
- arch/riscv/mm/init.c                    | 283 +++++++++++++++-----------------
- arch/riscv/mm/physaddr.c                |   2 +-
- arch/riscv/mm/ptdump.c                  |   6 +-
- arch/riscv/mm/tlbflush.c                |  69 ++++++--
- 37 files changed, 901 insertions(+), 360 deletions(-)
- create mode 100644 arch/riscv/include/asm/kfence.h
+-- 
+With Best Regards,
+Andy Shevchenko
