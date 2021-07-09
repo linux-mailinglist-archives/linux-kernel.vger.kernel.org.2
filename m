@@ -2,91 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C846A3C2194
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 11:29:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4067F3C2195
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 11:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231852AbhGIJbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 05:31:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231519AbhGIJbk (ORCPT
+        id S231931AbhGIJbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 05:31:42 -0400
+Received: from mail-m17640.qiye.163.com ([59.111.176.40]:47556 "EHLO
+        mail-m17640.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231494AbhGIJbl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 05:31:40 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A22A0C0613DD;
-        Fri,  9 Jul 2021 02:28:57 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id 21so8234592pfp.3;
-        Fri, 09 Jul 2021 02:28:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UlbdXK6HKZk/09qQVt3Me9VTXCht6e6ZTtTisWVBdt8=;
-        b=oumRki32Vm1coPwEZiIZqEH73Fqx5Co6+XkbmwKBRZ7x8kJjvB5pb18OxCM6L6WCY0
-         xMGf0opMO39m5XQ5ysJ2Pv4p5XY2wgo99Iv6RTieJ7fozeTBYCa2zFFnqOHzWcLagFwP
-         ymBWOCx94OknBMyHtBhconDRHBJyISX7vmeMqv2gcWhTGqLqwZgNDm60S08RMcdYk7cu
-         7336WG/tET/flbAxa2/eHimSOVvor7aeLM+DqLJgFYzQ/QQWUusyyhtFcjGFGFKR4dG6
-         VcEWZ/wOXAR4r+kO0iD6TSkmaFZ3H0W6yS3A7k19w1kOZPwoqf4iUrh5BH9NaAzktwa3
-         hbrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UlbdXK6HKZk/09qQVt3Me9VTXCht6e6ZTtTisWVBdt8=;
-        b=tQCT7bbuDDeUlt3yU7oixd7aw4m4DSJvsg5YJwTQ0pL6OLvtGw2LunYcK7Q7cAIF5e
-         3HvJas6PS29bIS+8OcPEa6gWI7npyJDIpUwwfM1xp8PPQfSR/uuCwmvtAukCXlM8dSvZ
-         bs5zayieDVLUz46fZBy8H/9HTkZcX24iTbIDNRn9tP7fXA44Xhalg896OmMDi/+h38Md
-         PTIyuASuyTLejBf7jkY+PauFeZjqTSQbcMsR+AaIH8AMdUi72+a1xTcFx3RXuKH4rY7H
-         +n4D5GnPS9mve5raUTFAyNcviBLK0MnagRQJjDpaYXCgo33/pz7Ho09owc0zouImfJN2
-         RutA==
-X-Gm-Message-State: AOAM532SELOa6F0GZjv3rkJriRLyzN05oCcz3I9APumYhTjof6JHWv1W
-        Hv/XbIp4yCEhnzsjOkvWDOQ=
-X-Google-Smtp-Source: ABdhPJxYBtCrvXlWT9e1VmEhguWvddB53UrxgpnQucxrADcQ3eGLzkJh3Lpa2EQtQtGOK6tII6esbw==
-X-Received: by 2002:a63:1c20:: with SMTP id c32mr36902480pgc.41.1625822931464;
-        Fri, 09 Jul 2021 02:28:51 -0700 (PDT)
-Received: from localhost.localdomain (f.a4.5177.ip4.static.sl-reverse.com. [119.81.164.15])
-        by smtp.gmail.com with ESMTPSA id 92sm12860460pjv.29.2021.07.09.02.28.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 09 Jul 2021 02:28:51 -0700 (PDT)
-From:   yaozhenguo <yaozhenguo1@gmail.com>
-To:     tony.luck@intel.com, youquan.song@intel.com
-Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yaozhenguo@jd.com, yaozhenguo <yaozhenguo1@gmail.com>
-Subject: [PATCH] mm,hwpoison: Don't call task_work_add when there is same work in the queue
-Date:   Fri,  9 Jul 2021 17:28:18 +0800
-Message-Id: <20210709092818.7795-1-yaozhenguo1@gmail.com>
+        Fri, 9 Jul 2021 05:31:41 -0400
+DKIM-Signature: a=rsa-sha256;
+        b=XAH0IEfcRfeZE7UB/65emWi7kublQJLvo590LGrtaCreJgfQ3tfTL5KYUQbqHQpCCf7fUxNcYQWtXWumlz6991kod97e02TJnGTpkApl6ZfItpt4Z0DbmbMswYCKvN8qRy4jXtehwsoX/aB6z5UBu0CXI8+zGBpRUYB/KiZ7Lnw=;
+        s=default; c=relaxed/relaxed; d=vivo.com; v=1;
+        bh=k9wd7HqyzcT7Q175fHyVzh2jv7YkhXwVzBNioWAiaPU=;
+        h=date:mime-version:subject:message-id:from;
+Received: from NJ-11133793.vivo.xyz (unknown [36.152.145.180])
+        by mail-m17640.qiye.163.com (Hmail) with ESMTPA id 5558954030E;
+        Fri,  9 Jul 2021 17:28:56 +0800 (CST)
+From:   Yang Huan <link@vivo.com>
+To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     kernel@vivo.com, Yang Huan <link@vivo.com>
+Subject: [PATCH] mm/vmalloc: try alloc_pages_bulk first to get order 0 pages fast
+Date:   Fri,  9 Jul 2021 17:28:31 +0800
+Message-Id: <20210709092831.10602-1-link@vivo.com>
 X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQklDQ1ZPTx5JHk1KTE5NSR9VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PlE6MSo6ST9CKhIcGikOUQwL
+        KBwaCTxVSlVKTUlOQ0lJQkhNQ0tOVTMWGhIXVRcSFRA7DRINFFUYFBZFWVdZEgtZQVlITVVKTklV
+        Sk9OVUpDS1lXWQgBWUFJTENPNwY+
+X-HM-Tid: 0a7a8a993d71d995kuws5558954030e
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-queue_task_work can be called more than once in one task before
-this task work is running. it can lead to task->task_works becomes
-an endless loop list and the task will never return to user mode.
-Don't call task_work_add when there is same work in the queue.
+Vmalloc may offen get pages by loop invoke alloc_pags, this is
+cost too much time in count watermark/cpuset or something.
+Let's just try alloc by alloc_pages_bulk, if failed, fullback in
+original path.
 
-Signed-off-by: yaozhenguo <yaozhenguo1@gmail.com>
+With my own test, simulate loop alloc_page and alloc_pages_bulk_array,
+get this:
+size		1M	10M	20M	30
+normal		44	1278	3665	5581
+test		34	889	2167	3300
+optimize	22%	30%	40%	40%
+And in my vmalloc top sort, zram/f2fs may alloc more than 20MB, so,
+It's worth to use alloc_pages_bulk.
+
+Signed-off-by: Yang Huan <link@vivo.com>
 ---
- arch/x86/kernel/cpu/mce/core.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ mm/vmalloc.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 22791aa..62c67ad 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1299,7 +1299,9 @@ static void queue_task_work(struct mce *m, int kill_current_task)
- 	else
- 		current->mce_kill_me.func = kill_me_maybe;
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index a13ac524f6ff..b5af7b4e30bc 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -2791,17 +2791,23 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+ 	}
  
--	task_work_add(current, &current->mce_kill_me, TWA_RESUME);
-+	/* Avoid endless loops in task_work_run */
-+	if (READ_ONCE(current->task_works) != &current->mce_kill_me)
-+		task_work_add(current, &current->mce_kill_me, TWA_RESUME);
- }
+ 	area->pages = pages;
+-	area->nr_pages = nr_small_pages;
++	area->nr_pages = 0;
+ 	set_vm_area_page_order(area, page_shift - PAGE_SHIFT);
  
- /*
+ 	page_order = vm_area_page_order(area);
+-
++	/* first try alloc in alloc bulk when order is 0*/
++	if (!page_order) {
++		area->nr_pages = alloc_pages_bulk_array(
++			gfp_mask, nr_small_pages, area->pages);
++		if (likely(area->nr_pages == nr_small_pages))
++			goto success;
++	}
+ 	/*
+ 	 * Careful, we allocate and map page_order pages, but tracking is done
+ 	 * per PAGE_SIZE page so as to keep the vm_struct APIs independent of
+ 	 * the physical/mapped size.
+ 	 */
+-	for (i = 0; i < area->nr_pages; i += 1U << page_order) {
++	for (i = area->nr_pages; i < nr_small_pages; i += 1U << page_order) {
+ 		struct page *page;
+ 		int p;
+ 
+@@ -2824,6 +2830,8 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+ 		if (gfpflags_allow_blocking(gfp_mask))
+ 			cond_resched();
+ 	}
++	area->nr_pages = nr_small_pages;
++success:
+ 	atomic_long_add(area->nr_pages, &nr_vmalloc_pages);
+ 
+ 	if (vmap_pages_range(addr, addr + size, prot, pages, page_shift) < 0) {
 -- 
-1.8.3.1
+2.32.0
 
