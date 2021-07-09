@@ -2,138 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B18B3C252D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A941B3C2532
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231938AbhGINsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 09:48:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231880AbhGINsb (ORCPT
+        id S232075AbhGINs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 09:48:58 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:37286
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231854AbhGINsz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 09:48:31 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 932F8C0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 06:45:47 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id r125so1744624qkf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 06:45:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:organization:mime-version
-         :content-transfer-encoding;
-        bh=c0nabnxYO3Pj1tSNnj4zugZjojE0WvtH+XiU1QLpplE=;
-        b=c6vP56wKhvfdWxYbh0FZ6eEWIP2TwTBo/IEIShGNTEady0yXtT35b9WNF3F3i4yuHt
-         dr8XkwhtxTKDFlAm1NUa0rfhhBnftLLbXdrB5dyn3//2AI6tu1tmm2uGXqwMEf7GVc/k
-         Z6cIvHwShz/A0EsHWhIvYtE0EJVKoV8NznZsN079akD/jEvRj3GgZ5F6OVjOgD3ruE5o
-         5G+m4gCLo9dryP06TmjBwkvpxf1bI5vXjfO3nZd2Ijb6YtNMqNPW+aAfL1CQz5iULmOq
-         Aa0KWkylTkLp4AQzz/NG5OdM+oWpaH+Q10gdi2DRzxpGsu8alQwmXUdES42Et/njhKB3
-         pT/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:organization
-         :mime-version:content-transfer-encoding;
-        bh=c0nabnxYO3Pj1tSNnj4zugZjojE0WvtH+XiU1QLpplE=;
-        b=fG9b33J5NYVbk5TPWu+0P92zpqRCDd5MUfeORJHy6A2yYv6unuGD/YDY6MtFeRzZKk
-         JZmo5owIk0nONU+g04orKELVYBiDzBu792+8o32CVc5Kn6Jws5h+SyF5PH9fKcOjtTdw
-         4zfzfh5NaGYVkZ8REu6s9hnR5SAgeveyVXaOLAaZaCAc/YovjZbAkBelcx/Mm4bI1uHf
-         FvKRhdpaQ7s+HyE9uqq3+qVqeKtkZxyHQyhesyQ3T/70hwxeYjLn4MdoxTuUa44H+W+K
-         6JZ4WeuGgZ6tE6Vr6gb3MXF4Rax71MXyX7FzNaoZRl3kwu7vqTWK1ZmbwT9kMydiZHtR
-         Aw4A==
-X-Gm-Message-State: AOAM533PPREvA1tTAUFOeRjqSL4DDWDVZh4YfUqw0VIR0lpep2dYkkOm
-        8nfzmN9n1gYW9BVmMkc7S6yBOA==
-X-Google-Smtp-Source: ABdhPJwaY/NYjnSHtnDtPk05bzLYGSIb2okWI7rBD7izjBQBs/PJERicaEGEYxglgF6fk2sIqYUdiw==
-X-Received: by 2002:a05:620a:1988:: with SMTP id bm8mr36222833qkb.222.1625838346722;
-        Fri, 09 Jul 2021 06:45:46 -0700 (PDT)
-Received: from iron-maiden.localnet ([50.225.136.98])
-        by smtp.gmail.com with ESMTPSA id k66sm2612711qke.28.2021.07.09.06.45.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 06:45:46 -0700 (PDT)
-From:   Carlos Bilbao <bilbao@vt.edu>
-To:     James.Bottomley@hansenpartnership.com, deller@gmx.de
-Cc:     linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drivers: parisc: Update sba_iommu driver with proper printks
-Date:   Fri, 09 Jul 2021 09:45:45 -0400
-Message-ID: <4359868.LvFx2qVVIh@iron-maiden>
-Organization: Virginia Tech
+        Fri, 9 Jul 2021 09:48:55 -0400
+Received: from [10.172.193.212] (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 40B024022A;
+        Fri,  9 Jul 2021 13:46:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1625838370;
+        bh=3ekPKtRlSLe5R2jClUwf0fuz6H5mk4TlWMoIZzUjV90=;
+        h=To:From:Subject:Message-ID:Date:MIME-Version:Content-Type;
+        b=mrGGfNbvP0awLpepuqZYTSWIq8RHw/T5fikiNNbDHS5UNK1G1KG/sXluk/g2dWJhs
+         l0RtwTEDsfHYehtmxEIZanQNHzjJ/erq2sechGYYy2izvB57wWF0ejvonjKaxDc3kc
+         tAlW1wQjoJn1+EMDelac6NCx3/KenZzT1P3/FUN6BPwLIMO3V+uSAsLlOPfcdNN73b
+         WOZSfus0RWudp2VcCCRwUjlVHE/MkTAdfkxqrllgDfJaj9Zv6nIgnhwsAhuQykd2p/
+         p2i7ySJgqBA4z2qKXYwEomKgKdWoh1pvH+vT5Fo0xlN7ASOkmGGSBt0ZD/YZWkIfu6
+         ucu8p4nCM/jAA==
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Colin Ian King <colin.king@canonical.com>
+Subject: issue with set_vlan_mode in starfire driver
+Message-ID: <31f2b9a1-19e8-e6db-6af8-77db17864dbb@canonical.com>
+Date:   Fri, 9 Jul 2021 14:46:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The code from the old SBA IOMMU manager is outdated when it comes to printks. 
-Fix applying proper indentation and using dev_dbg() instead of printk on 
-debugging blocks. Also add a KERN_<LEVEL> where it is missing.
+Hi,
 
-Signed-off-by: Carlos Bilbao <bilbao@vt.edu>
----
- drivers/parisc/sba_iommu.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+Static analysis with Coverity on the starfire driver has detected an
+issue introduced in function set_vlan_mode with the following commit:
 
-diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
-index dce4cdf786cd..ca5d43bb347d 100644
---- a/drivers/parisc/sba_iommu.c
-+++ b/drivers/parisc/sba_iommu.c
-@@ -16,6 +16,7 @@
- ** FIXME: add DMA hint support programming in both sba and lba modules.
- */
- 
-+#include <linux/dev_printk.h>
- #include <linux/types.h>
- #include <linux/kernel.h>
- #include <linux/spinlock.h>
-@@ -65,26 +66,26 @@
- #undef DEBUG_DMB_TRAP
- 
- #ifdef DEBUG_SBA_INIT
--#define DBG_INIT(x...)	printk(x)
-+#define DBG_INIT(x...)	dev_dbg(x)
- #else
- #define DBG_INIT(x...)
- #endif
- 
- #ifdef DEBUG_SBA_RUN
--#define DBG_RUN(x...)	printk(x)
-+#define DBG_RUN(x...)	dev_dbg(x)
- #else
- #define DBG_RUN(x...)
- #endif
- 
- #ifdef DEBUG_SBA_RUN_SG
--#define DBG_RUN_SG(x...)	printk(x)
-+#define DBG_RUN_SG(x...)	dev_dbg(x)
- #else
- #define DBG_RUN_SG(x...)
- #endif
- 
- 
- #ifdef DEBUG_SBA_RESOURCE
--#define DBG_RES(x...)	printk(x)
-+#define DBG_RES(x...)	dev_dbg(x)
- #else
- #define DBG_RES(x...)
- #endif
-@@ -1276,7 +1277,7 @@ sba_ioc_init_pluto(struct parisc_device *sba, struct ioc *ioc, int ioc_num)
- 	iova_space_size = ~(READ_REG(ioc->ioc_hpa + IOC_IMASK) & 0xFFFFFFFFUL) + 1;
- 
- 	if ((ioc->ibase < 0xfed00000UL) && ((ioc->ibase + iova_space_size) > 0xfee00000UL)) {
--		printk("WARNING: IOV space overlaps local config and interrupt message, truncating\n");
-+		printk(KERN_WARNING "WARNING: IOV space overlaps local config and interrupt message, truncating\n");
- 		iova_space_size /= 2;
- 	}
- 
-@@ -1550,7 +1551,7 @@ static void sba_hw_init(struct sba_device *sba_dev)
- 
- 
- #if 0
--printk("sba_hw_init(): mem_boot 0x%x 0x%x 0x%x 0x%x\n", PAGE0->mem_boot.hpa,
-+	dev_dbg("sba_hw_init(): mem_boot 0x%x 0x%x 0x%x 0x%x\n", PAGE0->mem_boot.hpa,
- 	PAGE0->mem_boot.spa, PAGE0->mem_boot.pad, PAGE0->mem_boot.cl_class);
- 
- 	/*
--- 
-2.25.1
+commit 5da96be53a16a62488316810d0c7c5d58ce3ee4f
+Author: Jiri Pirko <jpirko@redhat.com>
+Date:   Wed Jul 20 04:54:31 2011 +0000
 
+    starfire: do vlan cleanup
 
+The analysis is as follows:
+
+1743 static u32 set_vlan_mode(struct netdev_private *np)
+1744 {
+1745        u32 ret = VlanMode;
+1746        u16 vid;
+1747        void __iomem *filter_addr = np->base + HashTable + 8;
+1748        int vlan_count = 0;
+1749
+1750        for_each_set_bit(vid, np->active_vlans, VLAN_N_VID) {
+1751                if (vlan_count == 32)
+1752                        break;
+1753                writew(vid, filter_addr);
+1754                filter_addr += 16;
+1755                vlan_count++;
+1756        }
+
+cond_const: Condition vlan_count == 32, taking true branch. Now the
+value of vlan_count is equal to 32.
+
+1757        if (vlan_count == 32) {
+1758                ret |= PerfectFilterVlan;
+
+const: At condition vlan_count < 32, the value of vlan_count must be
+equal to 32.
+dead_error_condition: The condition vlan_count < 32 cannot be true.
+
+1759                while (vlan_count < 32) {
+
+Logically dead code (DEADCODE)
+dead_error_begin: Execution cannot reach this statement: writew(0,
+filter_addr);.
+
+1760                        writew(0, filter_addr);
+1761                        filter_addr += 16;
+1762                        vlan_count++;
+1763                }
+1764        }
+1765        return ret;
+1766 }
+
+Looking at commit 5da96be53a16a62488316810d0c7c5d58ce3ee4f it appears
+that the check if (vlan_count == 32) should be if (vid == VLAN_N_VID) if
+I understand things correctly.
+
+However, I'm not sure about the setting of ret |= PerfectFilterVlan -
+should that be set if the vlan_count reaches 32 or if vid reaches
+VLAN_N_VID.  I don't understand the semantics of setting the
+PerfectFilterVlan bit so I'm a bit stuck at figuring out an appropriate fix.
+
+Thought had better flag this up as an issue since I can't resolve it.
+
+Colin
 
