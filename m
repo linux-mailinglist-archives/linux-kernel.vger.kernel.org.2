@@ -2,177 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78AF53C1DE4
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 05:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A11233C1DE8
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 05:45:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231132AbhGIDq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 23:46:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56034 "EHLO
+        id S231247AbhGIDsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 23:48:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230462AbhGIDqz (ORCPT
+        with ESMTP id S231165AbhGIDsG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 23:46:55 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F6A5C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 20:44:11 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so5308470pjo.3
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 20:44:11 -0700 (PDT)
+        Thu, 8 Jul 2021 23:48:06 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8AE7C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 20:45:22 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id a6so8031127qka.4
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 20:45:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xkFDtexi/vMwk8I3d6YlTg5u37i8ZW2hQo1vPp5vAsk=;
-        b=CIGTDosxAQ1YjXeC3953YY48H+KIcktvFf+jUy6Mf3aKz9wBXD27lWDOaK7UCa23Hi
-         PWHBvkvblid2DvD713/emp6BmhVjoXVyyC2KDZPIRy9bs1eHgiqQztLd+28te0uYIV/O
-         gE66OE3UGusmNlh4Gfxj63fcFmrH7p3KLoSLwBeIpvE8SWMgRKT8LeCKgdCikjKxin4z
-         q9sDIgDhoRtFk21Pe8VMVmq1MAZf27Vv29rcFc6f72E1AEP2hbE15ClxubOUGaXvHSWm
-         gOn7MT3GAU2RrDIk4/5PtozgUlwa9FLExSwt7EkkI8N1iakD8beHuDX3Z8h1G3+eNNsw
-         36XA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=drcX60ClzQbMoVXgzd4rWY+QRIFMx2n+Mr8C5WvMyGg=;
+        b=VBybsezIjP0xlnWZs+L9ppdaYJUuua5rYXdYVT6X6+XDf2/MQNUMOL89AdpeonL0Wo
+         5w9mJ90a2H4f9lqsQ8iXWG5tLLzdOYs4ai49H12Ge4VAfFyqwaXpp5/WL1rFC+jzJETr
+         bb2RtTRUtECbIaWuSF+P9TDOFfMqGqCyh7GVEx16bj1LLz9mMJ0KYjeQqn0z/+kMh1td
+         eQYD2Y/0kl47XHREm+wAP775dMpFDrrVbCqDNrPVXYY/LqGYCKnhCl1jXVCaW8lQu4JM
+         rHFAgtjok67CV7Sfe6tAiogcrEdD41qMLRITYxzr5J8k/QvLxhVoXHKLitvWyXM5s0Kg
+         6nTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xkFDtexi/vMwk8I3d6YlTg5u37i8ZW2hQo1vPp5vAsk=;
-        b=mgo7hJ4vHXC1lWViykS+JGecL0CZWzLXNvYbQqR1lPf6/zdABJotuEj3DrxDW9F/E0
-         gHwgcb+++mndl4eZGCKQEXp4lQUS4Clhmhf/TtBDT3PBmKi1KflFjX65thf//dGSJVkj
-         PuZARIxx/+rhDOa0Fbjm6y950/B0kn1rIWSRcLlXdT2Vv9fBb3wKCkkSAE0W59ATxhLJ
-         cTtO9uqlTvbefLodRxnKCaWtVPV5VKo3yNFg0i4oxusvSjt/i4999vm7/Qz7IdgL9p2D
-         83rBu11b+agZvAL1+vnxqfX4rZ+3FTrC1FWcPlFDiZNBtCLH9femu5ybPaA9oR9LWg/b
-         w0MQ==
-X-Gm-Message-State: AOAM533gyI/eR8fwjtV6nAdmhQXJLfBun6vPDv+ADs7zWJGgRH5MKU95
-        ZP2Qo2gNTbLlDKdn4ZtTIkTs/A==
-X-Google-Smtp-Source: ABdhPJxH+A4xey9h58qu80WqGf4nd39LxWfRQeFFewlb+PDJOngfC5cTctLhAT7z2TUi+NJIe3vRxw==
-X-Received: by 2002:a17:90a:cd01:: with SMTP id d1mr8389091pju.106.1625802250390;
-        Thu, 08 Jul 2021 20:44:10 -0700 (PDT)
-Received: from localhost ([106.201.108.2])
-        by smtp.gmail.com with ESMTPSA id q21sm4218209pfh.26.2021.07.08.20.44.09
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=drcX60ClzQbMoVXgzd4rWY+QRIFMx2n+Mr8C5WvMyGg=;
+        b=CvPY++k974AqMgY25PdoYsfViPhITtbaMLZ7CU7+VOw2SCJxsHvmgr3A57jPZl42W7
+         7Uim/LqOXaM9vOe+ixn8SvX9hnGsXCDZyD0FmPB4spcWmsy0cmUcpr3ckw9omJM0UNWi
+         vT7cZpGkSHpGTJkMfwx3DBZtoI9uDzwmi9k9I7D+oUDzXTjolCvgYovRQhioibxrbHHB
+         LLdTG4/MxFMgFNaKP/k1H5mnBaxZA7kgNCcW3FkNthR4cToYhRAAMJUfaHmtalGKf7eT
+         MpRCQ+XMFStiYqheqrn+t/RUXUxKcNeV+eP8CgckANmwbJ5oZYOea6UwO/Ef0iFrhWHD
+         R+uA==
+X-Gm-Message-State: AOAM530Mc+iCO+kjoWWhzLVBxwyFw+m1CCVSGENO22hLJcERucZK4j5B
+        K8QnGJCjBoba9o+j0LpoOLAZBShOeJ4=
+X-Google-Smtp-Source: ABdhPJz6r3AA4LPsLyPg6A/j24bNS3e4pnADPPXHkto6rhFzrEL7fMEXM0plnLRAsqUlvDzUfs+u2A==
+X-Received: by 2002:a05:620a:22d6:: with SMTP id o22mr18083687qki.444.1625802321879;
+        Thu, 08 Jul 2021 20:45:21 -0700 (PDT)
+Received: from localhost ([207.98.216.60])
+        by smtp.gmail.com with ESMTPSA id o66sm2009265qkd.60.2021.07.08.20.45.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jul 2021 20:44:09 -0700 (PDT)
-Date:   Fri, 9 Jul 2021 09:14:07 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, wsa@kernel.org,
-        wsa+renesas@sang-engineering.com, mst@redhat.com, arnd@arndb.de,
-        jasowang@redhat.com, andriy.shevchenko@linux.intel.com,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, conghui.chen@intel.com,
-        stefanha@redhat.com, gregkh@linuxfoundation.org,
-        vincent.guittot@linaro.org, alex.bennee@linaro.org
-Subject: Re: [PATCH v14] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210709034407.xmglkgzubrztnxsg@vireshk-i7>
-References: <984ebecaf697058eb73389ed14ead9dd6d38fb53.1625796246.git.jie.deng@intel.com>
+        Thu, 08 Jul 2021 20:45:21 -0700 (PDT)
+From:   Yury Norov <yury.norov@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Yury Norov <yury.norov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Tejun Heo <tj@kernel.org>
+Subject: [PATCH 0/2] bitmap: introduce for_each_set_bitrange()
+Date:   Thu,  8 Jul 2021 20:45:17 -0700
+Message-Id: <20210709034519.2859777-1-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <984ebecaf697058eb73389ed14ead9dd6d38fb53.1625796246.git.jie.deng@intel.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09-07-21, 10:25, Jie Deng wrote:
-> Add an I2C bus driver for virtio para-virtualization.
-> 
-> The controller can be emulated by the backend driver in
-> any device model software by following the virtio protocol.
-> 
-> The device specification can be found on
-> https://lists.oasis-open.org/archives/virtio-comment/202101/msg00008.html.
-> 
-> By following the specification, people may implement different
-> backend drivers to emulate different controllers according to
-> their needs.
-> 
-> Co-developed-by: Conghui Chen <conghui.chen@intel.com>
-> Signed-off-by: Conghui Chen <conghui.chen@intel.com>
-> Signed-off-by: Jie Deng <jie.deng@intel.com>
-> ---
-> Changes v13 -> v14
-> 	- Put the headers in virtio_i2c.h in alphabetical order.
-> 	- Dropped I2C_FUNC_SMBUS_QUICK support.
-> 	- Dropped few unnecessary variables and checks.
-> 	- Use "num" everywhere instead of num or nr, to be consistent.
-> 	- Added few comments which make the design more clear. 
+Introduce for_each_set_bitrange() and improve bitmap_list_string().
 
-Thanks a lot for following this up so far :)
+On top of:
+https://lore.kernel.org/lkml/YNp3extAkTY8Aocd@yury-ThinkPad/T/ and
+https://lore.kernel.org/lkml/YNirnaYw1GSxg1jK@yury-ThinkPad/T/
 
-> +static int virtio_i2c_prepare_reqs(struct virtqueue *vq,
-> +				   struct virtio_i2c_req *reqs,
-> +				   struct i2c_msg *msgs, int num)
-> +{
-> +	struct scatterlist *sgs[3], out_hdr, msg_buf, in_hdr;
-> +	int i;
-> +
-> +	for (i = 0; i < num; i++) {
-> +		int outcnt = 0, incnt = 0;
-> +
-> +		/*
-> +		 * We don't support 0 length messages and so masked out
-> +		 * I2C_FUNC_SMBUS_QUICK in virtio_i2c_func().
-> +		 */
-> +		if (!msgs[i].len)
-> +			break;
-> +
-> +		/*
-> +		 * Only 7-bit mode supported for this moment. For the address
-> +		 * format, Please check the Virtio I2C Specification.
-> +		 */
-> +		reqs[i].out_hdr.addr = cpu_to_le16(msgs[i].addr << 1);
-> +
-> +		if (i != num - 1)
-> +			reqs[i].out_hdr.flags = cpu_to_le32(VIRTIO_I2C_FLAGS_FAIL_NEXT);
-> +
-> +		sg_init_one(&out_hdr, &reqs[i].out_hdr, sizeof(reqs[i].out_hdr));
-> +		sgs[outcnt++] = &out_hdr;
-> +
-> +		reqs[i].buf = i2c_get_dma_safe_msg_buf(&msgs[i], 1);
-> +		if (!reqs[i].buf)
-> +			break;
-> +
-> +		sg_init_one(&msg_buf, reqs[i].buf, msgs[i].len);
-> +
-> +		if (msgs[i].flags & I2C_M_RD)
-> +			sgs[outcnt + incnt++] = &msg_buf;
-> +		else
-> +			sgs[outcnt++] = &msg_buf;
-> +
-> +		sg_init_one(&in_hdr, &reqs[i].in_hdr, sizeof(reqs[i].in_hdr));
-> +		sgs[outcnt + incnt++] = &in_hdr;
-> +
-> +		if (virtqueue_add_sgs(vq, sgs, outcnt, incnt, &reqs[i], GFP_KERNEL)) {
-> +			i2c_put_dma_safe_msg_buf(reqs[i].buf, &msgs[i], false);
-> +			break;
-> +		}
-> +	}
-> +
-> +	return i;
-> +}
+The full series is here:
+https://github.com/norov/linux/commits/bm-f3
 
-Wolfram, in case you wonder why we don't error out early as discussed earlier,
-then ...
+Yury Norov (2):
+  lib: bitmap: add performance test for bitmap_print_to_pagebuf
+  bitmap: introduce for_each_set_bitrange{_from}
 
-> +static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
-> +			   int num)
-> +{
-
-...
-
-> +	/*
-> +	 * For the case where count < num, i.e. we weren't able to queue all the
-> +	 * msgs, ideally we should abort right away and return early, but some
-> +	 * of the messages are already sent to the remote I2C controller and the
-> +	 * virtqueue will be left in undefined state in that case. We kick the
-> +	 * remote here to clear the virtqueue, so we can try another set of
-> +	 * messages later on.
-> +	 */
-
-... here is the reasoning for that.
-
-Please see if you can still get it merged into 5.14-rc1/2. Thanks.
-
-Reviewed-by: Viresh Kumar <viresh.kumar@linaro.org>
-Tested-by: Viresh Kumar <viresh.kumar@linaro.org>
+ include/linux/find.h |  7 +++++++
+ lib/test_bitmap.c    | 37 +++++++++++++++++++++++++++++++++++++
+ lib/vsprintf.c       | 40 ++++++++++++++++------------------------
+ 3 files changed, 60 insertions(+), 24 deletions(-)
 
 -- 
-viresh
+2.30.2
+
