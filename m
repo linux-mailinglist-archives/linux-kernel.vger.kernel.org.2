@@ -2,123 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBCC23C25C7
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:19:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 142013C25C9
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232263AbhGIOWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 10:22:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231908AbhGIOWg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 10:22:36 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5916EC0613E5
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 07:19:52 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id u7so12577052ion.3
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 07:19:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bhHqxUlxcu/FlkKRb/gO8lzu6xUse6jQvhbl8eFYZdk=;
-        b=vXnEuPGUlWY0fazo+wWrLriShudF/YDNR0wefm0lD0auHy3oOVTHF8tYZRfQF7yRl4
-         hwEmOyY3dcLG2vRPHb/pSa3bjbZpPp5iQ65aeZ3PEOVqKPiCB/gh6d/+ajXfY1RJCqMf
-         kRvPswJEvqRGOhBQ+vBbLHfO4tPt4oBohvOkldoRf3hukeLFkIOEcv91BasPf+spYlwf
-         zBpaQXYJttlyVWQAkRmMXq5S9I8DuNoE8zXYw32LjoIUdiUBmYpHLBfTnwHNFqEzI37d
-         QAljjP6FuxEFKfUjREC2TRzOUGkBnxA28j1Rns2g8w3GtBn80qqGAOSjtxZRFAJcXhrE
-         L0Eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bhHqxUlxcu/FlkKRb/gO8lzu6xUse6jQvhbl8eFYZdk=;
-        b=TpDGLlQ6nsS2zwiGetDxT6cSScU+pnLc/JwveWaD3kcschYyN6YE0jJuDVAlvdj8hy
-         xoc+1wnfGMBi+cKfWbyipDHalkBkAN7wrjCqRiTC6JyH/o4TKs2rOaStUNO7v+dfn2Yh
-         X97eXj7VlFNny1s91VdjVYa3K1cMZTXKd8aARVA0SjJQQFHILYyAtgATeGZ/cXVbmtQq
-         HcK/2tRCXl0IKvRQBYr0NvWcSK/Ew5L1GHn4U1Vna+8IhM+GAZg7A+1YLlVH11C7st8N
-         yyQK4NvioHTIZwlvP6pMz61xAk+FtgzBB2LCl0lKXAiM2sJXdeygsCFKUxz+Z7oQEXxV
-         3d3w==
-X-Gm-Message-State: AOAM5307WK0vZNV0/K//ukUiNzF5lQ04EwSIlQlKeJQq7z5BA6XWEz0s
-        kT37//TmOoTfkekCpxGCVfPggyL38WEzHg==
-X-Google-Smtp-Source: ABdhPJy9C3+E4Cro9CTIolIQDhQ5jlejH3fxR5+yJpwB5ukwkxVCatJvDkc1mQGlvwAwKKnqqi2W2g==
-X-Received: by 2002:a02:c00c:: with SMTP id y12mr31977864jai.99.1625840391361;
-        Fri, 09 Jul 2021 07:19:51 -0700 (PDT)
-Received: from [192.168.1.134] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id q7sm2783002ilv.17.2021.07.09.07.19.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Jul 2021 07:19:50 -0700 (PDT)
-Subject: Re: potential null pointer deference (or maybe invalid null check) in
- io_uring io_poll_remove_double()
-To:     Colin Ian King <colin.king@canonical.com>
-Cc:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <fe70c532-e2a7-3722-58a1-0fa4e5c5ff2c@canonical.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <c2e31029-0d6d-6624-549e-381cd73adeeb@kernel.dk>
-Date:   Fri, 9 Jul 2021 08:19:48 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232050AbhGIOXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 10:23:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38710 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231764AbhGIOXQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 10:23:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 60B8A613B7;
+        Fri,  9 Jul 2021 14:20:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1625840431;
+        bh=2EBNLEHxe5/5UlnhGK1H1LyRAqcZYhaT9n2+AEngdoM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IvQs1lDelj81O+LcqB11HMdXNIm7XIf7wu/E5iJZDduea03tJERpgM1vG+4ieES5B
+         1Fbfw4nAHHn+YHA8e7EAu4Pl7c4Exq/N+5jH3nm67yZs6cVD5XacRu7E5vFN9DKyXJ
+         oyFTZLDqz8J57UVIrNixQ/ebykbFkqIrEXimWD9A=
+Date:   Fri, 9 Jul 2021 16:20:29 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Zheyu Ma <zheyuma97@gmail.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4] tty: serial: jsm: allocate queue buffer at probe time
+Message-ID: <YOhbLaeGKGJEFEOe@kroah.com>
+References: <1625489588-26079-1-git-send-email-zheyuma97@gmail.com>
+ <fde46fee-fad9-8f3b-79b0-ad426fd379dd@kernel.org>
+ <CAHp75Vceenv5ctk6f_eEtXBVzodXHhnpuudaniLM9A1edqYrXA@mail.gmail.com>
+ <ffa624c5-fc2a-780a-17d2-404cd94a289a@kernel.org>
+ <CAMhUBjmGD+KH_faMJyZGBpufxPVWw7uz4tUgFtrenx-HovjxZg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <fe70c532-e2a7-3722-58a1-0fa4e5c5ff2c@canonical.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMhUBjmGD+KH_faMJyZGBpufxPVWw7uz4tUgFtrenx-HovjxZg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/9/21 5:55 AM, Colin Ian King wrote:
-> Hi Jens,
+On Fri, Jul 09, 2021 at 10:00:32PM +0800, Zheyu Ma wrote:
+> On Thu, Jul 8, 2021 at 3:13 AM Jiri Slaby <jirislaby@kernel.org> wrote:
+> >
+> > On 07. 07. 21, 14:52, Andy Shevchenko wrote:
+> > > On Wed, Jul 7, 2021 at 10:50 AM Jiri Slaby <jirislaby@kernel.org> wrote:
+> > >> On 05. 07. 21, 14:53, Zheyu Ma wrote:
+> > >
+> > >> So how it comes an interrupt came before
+> > >> neo_param() in jsm_tty_open was called?
+> > >
+> > > If IRQ is shared we have a special debug feature to test shared IRQs
+> > > on freeing IRQ stage (*).
+> > > But it doesn't matter, the IRQ handler must survive at any stage after
+> > > the action has been listed.
+> >
+> > Yes, but IRQ_NONE is returned from the ISR in that case.
+> >
+> > The issue the patch is fixing is for a "malicious" device and I am not
+> > sure we want to fix this -- if I can put in a malicious device, I can
+> > use hammer to kill the box too…
 > 
-> I was triaging some outstanding Coverity static analysis warnings and
-> found a potential issue in the following commit:
+> Well, this threat assumption is indeed strong, but this attack may be
+> real. For example, some programmable USB devices (such as FaceDancer)
+> may exploit vulnerabilities in the USB device driver to attack. Of
+> course, there has not been such an attack in the real world for PCI
+> devices. Or, some devices with DMA functions may also send malicious
+> data and some previous kernel commits have also fixed such bugs.
 > 
-> commit 807abcb0883439af5ead73f3308310453b97b624
-> Author: Jens Axboe <axboe@kernel.dk>
-> Date:   Fri Jul 17 17:09:27 2020 -0600
-> 
->     io_uring: ensure double poll additions work with both request types
-> 
-> The analysis from Coverity is as follows:
-> 
-> 4962 static int io_poll_double_wake(struct wait_queue_entry *wait,
-> unsigned mode,
-> 4963                               int sync, void *key)
-> 4964 {
-> 4965        struct io_kiocb *req = wait->private;
-> 4966        struct io_poll_iocb *poll = io_poll_get_single(req);
-> 4967        __poll_t mask = key_to_poll(key);
-> 4968
-> 4969        /* for instances that support it check for an event match
-> first: */
-> 
->     deref_ptr: Directly dereferencing pointer poll.
-> 
-> 4970        if (mask && !(mask & poll->events))
-> 4971                return 0;
-> 4972        if (!(poll->events & EPOLLONESHOT))
-> 4973                return poll->wait.func(&poll->wait, mode, sync, key);
-> 4974
-> 4975        list_del_init(&wait->entry);
-> 4976
-> 
->   Dereference before null check (REVERSE_INULL)
->   check_after_deref: Null-checking poll suggests that it may be null,
-> but it has already been dereferenced on all paths leading to the check.
-> 
-> 4977        if (poll && poll->head) {
-> 4978                bool done;
-> 
-> pointer poll is being dereferenced on line 4970, however, on line 4977
-> it is being null checked. Either the null check is redundant (because it
-> can never be null) or it needs to be performed before the poll->events
-> read on line 4970.
+> Anyway, thanks for your patient comments.
 
-I think it's dead code, originally copied from the single poll wake
-side. The 'poll' non-zero check should just go.
+Right now, yes, we treat USB devices as "possibly malicious".  We do not
+do so for PCI devices yet.  If we want to do that, then we need to do a
+lot of work, not just "this one call in this one driver" type of thing
+as there are much bigger issues involved here.
 
--- 
-Jens Axboe
+If you wish to take on this work, as you feel PCI devices should be
+treated this way, please do so!  But start in the PCI core at the very
+least, before worrying about the thousands of individual drivers.
 
+good luck!
+
+greg k-h
