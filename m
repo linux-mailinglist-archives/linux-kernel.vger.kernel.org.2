@@ -2,247 +2,367 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B106C3C28EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90A453C28F0
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbhGISTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 14:19:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhGISTi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 14:19:38 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DC31C0613DD;
-        Fri,  9 Jul 2021 11:16:54 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id hc16so17788325ejc.12;
-        Fri, 09 Jul 2021 11:16:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ryc3vF5HekvHMjm6juhqPLOK8QW6aDQgeVLLAL9YpYA=;
-        b=Z/IIHPMpr6lc07o6wMRdQSI6H1h0WZlAu7nXHlUTDRM2bajhBzo7Jjgx90l0pm3ep3
-         MpqX7ShN5OF4uWIIstOVJ/5cNMT07nKnffWSVhgCGUG4hz+88yVQsaxTWIq/zoGs3GF7
-         PxEm32+tHRygYojxTI1SoNQuugjI+UBEcNlSqSMYzOI0irj7bLCLVw6zwzzVG8426VwU
-         jVY8LQSLqX7pkMDDWaMXco0X7p5MLaoQ4tkFr9NzK9oJNZ1igmgcBUUyvEhbtybMiCXx
-         AZwX4hI7NYwV5L0QO4B3zTvQwmDOvsuGW6l4Ab5rC+i2T2uqClpwGENn+n1HymnTi90n
-         rwww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ryc3vF5HekvHMjm6juhqPLOK8QW6aDQgeVLLAL9YpYA=;
-        b=EbaoUv9AHNSY8PlD7GD4Li1zxR3MQLRmk1XDVqmQ8UD2ugeWUtu4EJr4JrgdmUUc4S
-         hqXpKFLmGLB7qXolHcdy1qTpav+QNfjAZBMxFBH66eS43L0gWbS/znaLjH4l3TlFbcjm
-         4IaE719tNZ6JZYByZ+LAHxH/LLr/nhpeYcnI2FEM1wyl9JbLT5GVbMFLqM8QR/UCIO5r
-         rPWP8UjxVxM5JKR6c4OWhDZTUVDt+n69rO2cfjkdCHmT0ukJBleyJ5vDVoprQ5xQ4agp
-         vUVhk9VzKfsfn+Se2PiUbbeGyvkYiMbZNRPHmb7q4oGFbPlZdrRy3+SlgUAcOfV0wmE/
-         t9zg==
-X-Gm-Message-State: AOAM531cFqL6UJsdYrwThCGwMWwthoRFn0PTpZ8WnkV43inPlO6mdJc3
-        wb4ly3zDb2VpF2BwTms1O4w=
-X-Google-Smtp-Source: ABdhPJypTKPRCFNLOF1XlUsbAA/EKW0eX5/oveisBZ37nmtEzjrU5xPU9lsVDu/NOExOTyjr431LrQ==
-X-Received: by 2002:a17:906:179b:: with SMTP id t27mr38261202eje.70.1625854612906;
-        Fri, 09 Jul 2021 11:16:52 -0700 (PDT)
-Received: from [10.17.0.13] ([37.58.58.229])
-        by smtp.gmail.com with ESMTPSA id lz19sm2745912ejb.48.2021.07.09.11.16.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Jul 2021 11:16:52 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] mwifiex: pcie: add reset_d3cold quirk for Surface
- gen4+ devices
-To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
-Cc:     =?UTF-8?Q?Jonas_Dre=c3=9fler?= <verdre@v0yd.nl>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-References: <20210709145831.6123-1-verdre@v0yd.nl>
- <20210709145831.6123-3-verdre@v0yd.nl> <20210709151800.7b2qqezlcicbgrqn@pali>
- <b1002254-97c6-d271-c385-4a5c9fe0c914@mailbox.org>
- <20210709161251.g4cvq3l4fnh4ve4r@pali>
- <d9158206-8ebe-c857-7533-47155a6464e1@gmail.com>
- <20210709173013.vkavxrtz767vrmej@pali>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <89a60b06-b22d-2ea8-d164-b74e4c92c914@gmail.com>
-Date:   Fri, 9 Jul 2021 20:16:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230089AbhGISTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 14:19:43 -0400
+Received: from mga11.intel.com ([192.55.52.93]:34014 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229535AbhGISTk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 14:19:40 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10039"; a="206737045"
+X-IronPort-AV: E=Sophos;i="5.84,227,1620716400"; 
+   d="scan'208";a="206737045"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2021 11:16:57 -0700
+X-IronPort-AV: E=Sophos;i="5.84,227,1620716400"; 
+   d="scan'208";a="647141340"
+Received: from smtp.ostc.intel.com ([10.54.29.231])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2021 11:16:56 -0700
+Received: from mtg-dev.jf.intel.com (mtg-dev.jf.intel.com [10.54.74.10])
+        by smtp.ostc.intel.com (Postfix) with ESMTP id 379996375;
+        Fri,  9 Jul 2021 11:16:53 -0700 (PDT)
+Received: by mtg-dev.jf.intel.com (Postfix, from userid 1000)
+        id F362B36268D; Fri,  9 Jul 2021 11:17:06 -0700 (PDT)
+Date:   Fri, 9 Jul 2021 11:17:06 -0700
+From:   mark gross <mgross@linux.intel.com>
+To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
+        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
+        gregkh@linuxfoundation.org, corbet@lwn.net,
+        palmerdabbelt@google.com, paul.walmsley@sifive.com,
+        peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
+        jassisinghbrar@gmail.com
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 00/34] Intel Vision Processing base enabling
+Message-ID: <20210709181706.GA44982@linux.intel.com>
+Reply-To: mgross@linux.intel.com
+References: <20210212222304.110194-1-mgross@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210709173013.vkavxrtz767vrmej@pali>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210212222304.110194-1-mgross@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/9/21 7:30 PM, Pali Rohár wrote:
-> On Friday 09 July 2021 19:03:37 Maximilian Luz wrote:
->> On 7/9/21 6:12 PM, Pali Rohár wrote:
->>
->> [...]
->>
->>>>> Hello! Now I'm thinking loudly about this patch. Why this kind of reset
->>>>> is needed only for Surface devices? AFAIK these 88W8897 chips are same
->>>>> in all cards. Chip itself implements PCIe interface (and also SDIO) so
->>>>> for me looks very strange if this 88W8897 PCIe device needs DMI specific
->>>>> quirks. I cannot believe that Microsoft got some special version of
->>>>> these chips from Marvell which are different than version uses on cards
->>>>> in mPCIe form factor.
->>>>>
->>>>> And now when I'm reading comment below about PCIe bridge to which is
->>>>> this 88W8897 PCIe chip connected, is not this rather an issue in that
->>>>> PCIe bridge (instead of mwifiex/88W8897) or in ACPI firmware which
->>>>> controls this bridge?
->>>>>
->>>>> Or are having other people same issues on mPCIe form factor wifi cards
->>>>> with 88W8897 chips and then this quirk should not DMI dependent?
->>>>>
->>>>> Note that I'm seeing issues with reset and other things also on chip
->>>>> 88W8997 when is connected to system via SDIO. These chips have both PCIe
->>>>> and SDIO buses, it just depends which pins are used.
->>>>>
->>>>
->>>> Hi and thanks for the quick reply! Honestly I've no idea, this is just the
->>>> first method we found that allows for a proper reset of the chip. What I
->>>> know is that some Surface devices need that ACPI DSM call (the one that was
->>>> done in the commit I dropped in this version of the patchset) to reset the
->>>> chip instead of this method.
->>>>
->>>> Afaik other devices with this chip don't need this resetting method, at
->>>> least Marvell employees couldn't reproduce the issues on their testing
->>>> devices.
->>>>
->>>> So would you suggest we just try to match for the pci chip 88W8897 instead?
->>>
->>> Hello! Such suggestion makes sense when we know that it is 88W8897
->>> issue. But if you got information that issue cannot be reproduced on
->>> other 88W8897 cards then matching 88W8897 is not correct.
->>>
->>>   From all this information looks like that it is problem in (Microsoft?)
->>> PCIe bridge to which is card connected. Otherwise I do not reason how it
->>> can be 88W8897 affected. Either it is reproducible on 88W8897 cards also
->>> in other devices or issue is not on 88W8897 card.
->>
->> I doubt that it's an issue with the PCIe bridge (itself at least). The
->> same type of bridge is used for both dGPU and NVME SSD on my device (see
->> lspci output below) and those work fine. Also if I'm seeing that right
->> it's from the Intel CPU, so my guess is that a lot more people would
->> have issues with that then.
+I want to thank you for all the work and feedback given reviewing these series
+of patches.  Our upstream strategy for the VPU enabling has changed and we are
+regrouping and redesigning this stack in a significant way.
+
+To avoid legacy ABI compatibility issues with the redesigned stack we are
+dropping this set of patches.  Other KMB changes, that are not VPU related,
+will continue to be up streamed.
+
+Thanks again for all the valuable feedback and lessons given through the
+reviews.
+
+--mark
+
+On Fri, Feb 12, 2021 at 02:22:30PM -0800, mgross@linux.intel.com wrote:
+> From: Mark Gross <mgross@linux.intel.com>
 > 
->  From information below it seems to be related to surprise removal.
-> Therefore is surprise removal working without issue for dGPU or NVME
-> SSD? Not all PCIe bridges support surprise removal...
-
-The dGPU on the Surface Book 2 is detachable (the whole base where that
-is placed can be removed). As far as I can tell surprise removal works
-perfectly fine for that one. The only thing that it needs is a driver for
-out-of-band hot-plug signalling if the device is in D3cold while removed
-as hotplug/removal notifications via PCI don't work in D3cold (this
-works via ACPI, there is as far as I can tell no such mechanism for
-WiFi, probably since it's not intended to be hot-unplugged).
-
->> I don't know about the hardware side, so it might be possible that it's
->> an issue with integrating both bridge and wifi chip, in which case it's
->> still probably best handled via DMI quirks unless we know more.
->>
->> Also as Tsuchiya mentioned in his original submission, on Windows the
->> device is reset via this D3cold method. I've only skimmed that
->> errata.inf file mentioned, but I think this is what he's referring to:
->>
->>    Controls whether ACPIDeviceEnableD3ColdOnSurpriseRemoval rule will be
->>    evaluated or not on a given platform. Currently
->>    ACPIDeviceEnableD3ColdOnSurpriseRemoval rule only needs to be
->>    evaluated on Surface platforms which contain the Marvell WiFi
->>    controller which depends on device going through D3Cold as part of
->>    surprise-removal.
->>
->> and
->>
->>    Starting with Windows releases *after* Blue, ACPI will not put
->>    surprise-removed devices into D3Cold automatically. Some known
->>    scenarios (viz. WiFi reset/recovery) rely on the device cycling
->>    through D3Cold on surprise-removal. This hack allows surprise-removed
->>    devices to be put into D3Cold (if supported by the stack).
->>
->> So, as far as I can tell, the chip doesn't like to be surprise-removed
->> (which seems to happen during reset) and then needs to be power-cycled,
->> which I think is likely due to some issue with firmware state.
+> The Intel Vision Processing Unit (VPU) is an IP block that is showing up for
+> the first time as part of the Keem Bay SOC.  Keem Bay is a quad core A53 Arm
+> SOC.  It is designed to be used as a stand alone SOC as well as in an PCIe
+> Vision Processing accelerator add in card.
 > 
-> Thanks for information. This really does not look like PCIe bridge
-> specific if bridge itself can handle surprise-removed devices. lspci can
-> tell us if bridge supports it or not (see below).
+> This 6th version of this patch set includes more updates to the xlink SMBUS
+> patch correction some language in its Kconfig file.
 > 
->> So the quirk on Windows seems very Surface specific.
->>
->> There also seem a bunch of revisions of these chips around, for example
->> my SB2 is affected by a bug that we've tied to the specific hardware
->> revision which causes some issues with host-sleep (IIRC chip switches
->> rapidly between wake and sleep states without any external influence,
->> which is not how it should behave and how it does behave on a later
->> hardware revision).
+> At the bottom of this cover letter is the delta between v5 and this version for
+> easy review of the modifications.
 > 
-> Interesting... This looks like the issue can be in 88W8897 chip and
-> needs some special conditions to trigger? And Surface is triggering it
-> always?
-
-Not always. It's been a while since I've been actively looking at this
-and I'm not sure we ever had a good way to reproduce this. Also, I've
-never really dealt with it as in-depth as Tsuchiya and Jonas have.
-
-My (very) quick attempt ('echo 1 > /sys/bus/pci/.../reset) at
-reproducing this didn't work, so I think at very least a network
-connection needs to be active. Unfortunately I can't test that with a
-network connection (and without compiling a custom kernel for which I
-don't have the time right now) because there's currently another bug
-deadlocking on device removal if there's an active connection during
-removal (which also seems to trigger on reset). That one ill be fixed
-by
-
-   https://lore.kernel.org/linux-wireless/20210515024227.2159311-1-briannorris@chromium.org/
-
-Jonas might know more.
-
->>>> Then we'd probably have to check if there are any laptops where multiple
->>>> devices are connected to the pci bridge as Amey suggested in a review
->>>> before.
->>>
->>> Well, I do not know... But if this is issue with PCIe bridge then
->>> similar issue could be observed also for other PCIe devices with this
->>> PCIe bridge. But question is if there are other laptops with this PCIe
->>> bridge. And also it can be a problem in ACPI firmware on those Surface
->>> devices, which implements some PCIe bridge functionality. So it is
->>> possible that issue is with PCIe bridge, not in HW, but in SW/firmware
->>> part which can be Microsoft specific... So too many questions to which
->>> we do not know answers.
->>>
->>> Could you provide output of 'lspci -nn -vv' and 'lspci -tvnn' on
->>> affected machines? If you have already sent it in some previous email,
->>> just send a link. At least I'm not able to find it right now and output
->>> may contain something useful...
->>
->>  From my Surface Book 2 (with the same issue):
->>
->>   - lspci -tvnn: https://paste.ubuntu.com/p/mm3YpcZJ8N/
->>   - lspci -vv -nn: https://paste.ubuntu.com/p/dctTDP738N/
+> Thanks for looking at these and providing feedback.
 > 
-> Could you re-run lspci under root account? There are missing important
-> parts like "Capabilities: <access denied>" where is information if
-> bridge supports surprise removal or not.
-
-Ah sorry, sure thing. Here's the updated lspci -nn -vv log:
-
-   https://paste.ubuntu.com/p/fzsmCvm86Y/
-
-The log for lspci -tvnn is the same.
-
->> Regards,
->> Max
+> 
+> C, Udhayakumar (8):
+>   dt-bindings: misc: intel_tsens: Add tsens thermal bindings
+>     documentation
+>   misc: Tsens ARM host thermal driver.
+>   misc: Intel tsens IA host driver.
+>   Intel tsens i2c slave driver.
+>   misc:intel_tsens: Intel Keem Bay tsens driver.
+>   dt-bindings: misc: hddl_dev: Add hddl device management documentation
+>   misc: Hddl device management for local host
+>   misc: HDDL device management for IA host
+> 
+> Daniele Alessandrelli (4):
+>   dt-bindings: mailbox: Add Intel VPU IPC mailbox bindings
+>   mailbox: vpu-ipc-mailbox: Add support for Intel VPU IPC mailbox
+>   dt-bindings: Add bindings for Keem Bay IPC driver
+>   keembay-ipc: Add Keem Bay IPC module
+> 
+> Li, Tingqian (2):
+>   dt-bindings: misc: Add Keem Bay vpumgr
+>   misc: Add Keem Bay VPU manager
+> 
+> Paul Murphy (2):
+>   dt-bindings: Add bindings for Keem Bay VPU IPC driver
+>   keembay-vpu-ipc: Add Keem Bay VPU IPC module
+> 
+> Ramya P Karanth (1):
+>   Intel Keembay XLink SMBus driver
+> 
+> Seamus Kelly (7):
+>   xlink-ipc: Add xlink ipc device tree bindings
+>   xlink-ipc: Add xlink ipc driver
+>   xlink-core: Add xlink core device tree bindings
+>   xlink-core: Add xlink core driver xLink
+>   xlink-core: Enable xlink protocol over pcie
+>   xlink-core: Enable VPU IP management and runtime control
+>   xlink-core: add async channel and events
+> 
+> Srikanth Thokala (9):
+>   misc: xlink-pcie: Add documentation for XLink PCIe driver
+>   misc: xlink-pcie: lh: Add PCIe EPF driver for Local Host
+>   misc: xlink-pcie: lh: Add PCIe EP DMA functionality
+>   misc: xlink-pcie: lh: Add core communication logic
+>   misc: xlink-pcie: lh: Prepare changes for adding remote host driver
+>   misc: xlink-pcie: rh: Add PCIe EP driver for Remote Host
+>   misc: xlink-pcie: rh: Add core communication logic
+>   misc: xlink-pcie: Add XLink API interface
+>   misc: xlink-pcie: Add asynchronous event notification support for
+>     XLink
+> 
+> mark gross (1):
+>   Add Vision Processing Unit (VPU) documentation.
+> 
+>  .../mailbox/intel,vpu-ipc-mailbox.yaml        |   69 +
+>  .../bindings/misc/intel,hddl-client.yaml      |  117 +
+>  .../bindings/misc/intel,intel-tsens.yaml      |  122 +
+>  .../bindings/misc/intel,keembay-vpu-mgr.yaml  |   48 +
+>  .../misc/intel,keembay-xlink-ipc.yaml         |   51 +
+>  .../bindings/misc/intel,keembay-xlink.yaml    |   29 +
+>  .../bindings/soc/intel/intel,keembay-ipc.yaml |   45 +
+>  .../soc/intel/intel,keembay-vpu-ipc.yaml      |  143 ++
+>  Documentation/hwmon/index.rst                 |    2 +
+>  Documentation/hwmon/intel_tsens_host.rst      |   71 +
+>  Documentation/hwmon/intel_tsens_sensor.rst    |   67 +
+>  Documentation/i2c/busses/index.rst            |    1 +
+>  .../i2c/busses/intel-xlink-smbus.rst          |   71 +
+>  Documentation/index.rst                       |    1 +
+>  .../misc-devices/hddl_device_client.rst       |  212 ++
+>  .../misc-devices/hddl_device_server.rst       |  205 ++
+>  Documentation/misc-devices/index.rst          |    2 +
+>  Documentation/vpu/index.rst                   |   20 +
+>  Documentation/vpu/vpu-stack-overview.rst      |  270 +++
+>  Documentation/vpu/xlink-core.rst              |   81 +
+>  Documentation/vpu/xlink-ipc.rst               |   51 +
+>  Documentation/vpu/xlink-pcie.rst              |   90 +
+>  MAINTAINERS                                   |   54 +
+>  drivers/mailbox/Kconfig                       |   11 +
+>  drivers/mailbox/Makefile                      |    2 +
+>  drivers/mailbox/vpu-ipc-mailbox.c             |  297 +++
+>  drivers/misc/Kconfig                          |    7 +
+>  drivers/misc/Makefile                         |    7 +
+>  drivers/misc/hddl_device/Kconfig              |   26 +
+>  drivers/misc/hddl_device/Makefile             |    7 +
+>  drivers/misc/hddl_device/hddl_device.c        |  565 +++++
+>  drivers/misc/hddl_device/hddl_device_lh.c     |  764 +++++++
+>  drivers/misc/hddl_device/hddl_device_rh.c     |  837 +++++++
+>  drivers/misc/hddl_device/hddl_device_util.h   |   52 +
+>  drivers/misc/intel_tsens/Kconfig              |   54 +
+>  drivers/misc/intel_tsens/Makefile             |   10 +
+>  drivers/misc/intel_tsens/intel_tsens_host.c   |  352 +++
+>  drivers/misc/intel_tsens/intel_tsens_i2c.c    |  119 +
+>  .../misc/intel_tsens/intel_tsens_thermal.c    |  651 ++++++
+>  .../misc/intel_tsens/intel_tsens_thermal.h    |   38 +
+>  drivers/misc/intel_tsens/keembay_thermal.c    |  169 ++
+>  drivers/misc/intel_tsens/keembay_tsens.h      |  366 +++
+>  drivers/misc/vpumgr/Kconfig                   |    9 +
+>  drivers/misc/vpumgr/Makefile                  |    3 +
+>  drivers/misc/vpumgr/vpu_common.h              |   31 +
+>  drivers/misc/vpumgr/vpu_mgr.c                 |  370 +++
+>  drivers/misc/vpumgr/vpu_smm.c                 |  554 +++++
+>  drivers/misc/vpumgr/vpu_smm.h                 |   30 +
+>  drivers/misc/vpumgr/vpu_vcm.c                 |  584 +++++
+>  drivers/misc/vpumgr/vpu_vcm.h                 |   84 +
+>  drivers/misc/xlink-core/Kconfig               |   33 +
+>  drivers/misc/xlink-core/Makefile              |    5 +
+>  drivers/misc/xlink-core/xlink-core.c          | 1331 +++++++++++
+>  drivers/misc/xlink-core/xlink-core.h          |   25 +
+>  drivers/misc/xlink-core/xlink-defs.h          |  181 ++
+>  drivers/misc/xlink-core/xlink-dispatcher.c    |  436 ++++
+>  drivers/misc/xlink-core/xlink-dispatcher.h    |   26 +
+>  drivers/misc/xlink-core/xlink-ioctl.c         |  554 +++++
+>  drivers/misc/xlink-core/xlink-ioctl.h         |   36 +
+>  drivers/misc/xlink-core/xlink-multiplexer.c   | 1164 ++++++++++
+>  drivers/misc/xlink-core/xlink-multiplexer.h   |   35 +
+>  drivers/misc/xlink-core/xlink-platform.c      |  273 +++
+>  drivers/misc/xlink-core/xlink-platform.h      |   65 +
+>  drivers/misc/xlink-ipc/Kconfig                |    7 +
+>  drivers/misc/xlink-ipc/Makefile               |    4 +
+>  drivers/misc/xlink-ipc/xlink-ipc.c            |  878 +++++++
+>  drivers/misc/xlink-pcie/Kconfig               |   20 +
+>  drivers/misc/xlink-pcie/Makefile              |    2 +
+>  drivers/misc/xlink-pcie/common/core.h         |  245 ++
+>  drivers/misc/xlink-pcie/common/interface.c    |  124 +
+>  drivers/misc/xlink-pcie/common/util.c         |  373 +++
+>  drivers/misc/xlink-pcie/common/util.h         |   68 +
+>  drivers/misc/xlink-pcie/common/xpcie.h        |  100 +
+>  drivers/misc/xlink-pcie/local_host/Makefile   |    6 +
+>  drivers/misc/xlink-pcie/local_host/core.c     |  817 +++++++
+>  drivers/misc/xlink-pcie/local_host/dma.c      |  575 +++++
+>  drivers/misc/xlink-pcie/local_host/epf.c      |  482 ++++
+>  drivers/misc/xlink-pcie/local_host/epf.h      |  101 +
+>  drivers/misc/xlink-pcie/remote_host/Makefile  |    6 +
+>  drivers/misc/xlink-pcie/remote_host/core.c    |  621 +++++
+>  drivers/misc/xlink-pcie/remote_host/main.c    |   93 +
+>  drivers/misc/xlink-pcie/remote_host/pci.c     |  523 +++++
+>  drivers/misc/xlink-pcie/remote_host/pci.h     |   65 +
+>  drivers/misc/xlink-smbus/Kconfig              |   25 +
+>  drivers/misc/xlink-smbus/Makefile             |    5 +
+>  drivers/misc/xlink-smbus/xlink-smbus.c        |  467 ++++
+>  drivers/soc/Kconfig                           |    1 +
+>  drivers/soc/Makefile                          |    1 +
+>  drivers/soc/intel/Kconfig                     |   33 +
+>  drivers/soc/intel/Makefile                    |    5 +
+>  drivers/soc/intel/keembay-ipc.c               | 1364 +++++++++++
+>  drivers/soc/intel/keembay-vpu-ipc.c           | 2026 +++++++++++++++++
+>  include/linux/hddl_device.h                   |  153 ++
+>  include/linux/intel_tsens_host.h              |   34 +
+>  include/linux/soc/intel/keembay-ipc.h         |   30 +
+>  include/linux/soc/intel/keembay-vpu-ipc.h     |   62 +
+>  include/linux/xlink-ipc.h                     |   48 +
+>  include/linux/xlink.h                         |  146 ++
+>  include/linux/xlink_drv_inf.h                 |   70 +
+>  include/uapi/misc/vpumgr.h                    |   64 +
+>  include/uapi/misc/xlink_uapi.h                |  145 ++
+>  101 files changed, 21774 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mailbox/intel,vpu-ipc-mailbox.yaml
+>  create mode 100644 Documentation/devicetree/bindings/misc/intel,hddl-client.yaml
+>  create mode 100644 Documentation/devicetree/bindings/misc/intel,intel-tsens.yaml
+>  create mode 100644 Documentation/devicetree/bindings/misc/intel,keembay-vpu-mgr.yaml
+>  create mode 100644 Documentation/devicetree/bindings/misc/intel,keembay-xlink-ipc.yaml
+>  create mode 100644 Documentation/devicetree/bindings/misc/intel,keembay-xlink.yaml
+>  create mode 100644 Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
+>  create mode 100644 Documentation/devicetree/bindings/soc/intel/intel,keembay-vpu-ipc.yaml
+>  create mode 100644 Documentation/hwmon/intel_tsens_host.rst
+>  create mode 100644 Documentation/hwmon/intel_tsens_sensor.rst
+>  create mode 100644 Documentation/i2c/busses/intel-xlink-smbus.rst
+>  create mode 100644 Documentation/misc-devices/hddl_device_client.rst
+>  create mode 100644 Documentation/misc-devices/hddl_device_server.rst
+>  create mode 100644 Documentation/vpu/index.rst
+>  create mode 100644 Documentation/vpu/vpu-stack-overview.rst
+>  create mode 100644 Documentation/vpu/xlink-core.rst
+>  create mode 100644 Documentation/vpu/xlink-ipc.rst
+>  create mode 100644 Documentation/vpu/xlink-pcie.rst
+>  create mode 100644 drivers/mailbox/vpu-ipc-mailbox.c
+>  create mode 100644 drivers/misc/hddl_device/Kconfig
+>  create mode 100644 drivers/misc/hddl_device/Makefile
+>  create mode 100644 drivers/misc/hddl_device/hddl_device.c
+>  create mode 100644 drivers/misc/hddl_device/hddl_device_lh.c
+>  create mode 100644 drivers/misc/hddl_device/hddl_device_rh.c
+>  create mode 100644 drivers/misc/hddl_device/hddl_device_util.h
+>  create mode 100644 drivers/misc/intel_tsens/Kconfig
+>  create mode 100644 drivers/misc/intel_tsens/Makefile
+>  create mode 100644 drivers/misc/intel_tsens/intel_tsens_host.c
+>  create mode 100644 drivers/misc/intel_tsens/intel_tsens_i2c.c
+>  create mode 100644 drivers/misc/intel_tsens/intel_tsens_thermal.c
+>  create mode 100644 drivers/misc/intel_tsens/intel_tsens_thermal.h
+>  create mode 100644 drivers/misc/intel_tsens/keembay_thermal.c
+>  create mode 100644 drivers/misc/intel_tsens/keembay_tsens.h
+>  create mode 100644 drivers/misc/vpumgr/Kconfig
+>  create mode 100644 drivers/misc/vpumgr/Makefile
+>  create mode 100644 drivers/misc/vpumgr/vpu_common.h
+>  create mode 100644 drivers/misc/vpumgr/vpu_mgr.c
+>  create mode 100644 drivers/misc/vpumgr/vpu_smm.c
+>  create mode 100644 drivers/misc/vpumgr/vpu_smm.h
+>  create mode 100644 drivers/misc/vpumgr/vpu_vcm.c
+>  create mode 100644 drivers/misc/vpumgr/vpu_vcm.h
+>  create mode 100644 drivers/misc/xlink-core/Kconfig
+>  create mode 100644 drivers/misc/xlink-core/Makefile
+>  create mode 100644 drivers/misc/xlink-core/xlink-core.c
+>  create mode 100644 drivers/misc/xlink-core/xlink-core.h
+>  create mode 100644 drivers/misc/xlink-core/xlink-defs.h
+>  create mode 100644 drivers/misc/xlink-core/xlink-dispatcher.c
+>  create mode 100644 drivers/misc/xlink-core/xlink-dispatcher.h
+>  create mode 100644 drivers/misc/xlink-core/xlink-ioctl.c
+>  create mode 100644 drivers/misc/xlink-core/xlink-ioctl.h
+>  create mode 100644 drivers/misc/xlink-core/xlink-multiplexer.c
+>  create mode 100644 drivers/misc/xlink-core/xlink-multiplexer.h
+>  create mode 100644 drivers/misc/xlink-core/xlink-platform.c
+>  create mode 100644 drivers/misc/xlink-core/xlink-platform.h
+>  create mode 100644 drivers/misc/xlink-ipc/Kconfig
+>  create mode 100644 drivers/misc/xlink-ipc/Makefile
+>  create mode 100644 drivers/misc/xlink-ipc/xlink-ipc.c
+>  create mode 100644 drivers/misc/xlink-pcie/Kconfig
+>  create mode 100644 drivers/misc/xlink-pcie/Makefile
+>  create mode 100644 drivers/misc/xlink-pcie/common/core.h
+>  create mode 100644 drivers/misc/xlink-pcie/common/interface.c
+>  create mode 100644 drivers/misc/xlink-pcie/common/util.c
+>  create mode 100644 drivers/misc/xlink-pcie/common/util.h
+>  create mode 100644 drivers/misc/xlink-pcie/common/xpcie.h
+>  create mode 100644 drivers/misc/xlink-pcie/local_host/Makefile
+>  create mode 100644 drivers/misc/xlink-pcie/local_host/core.c
+>  create mode 100644 drivers/misc/xlink-pcie/local_host/dma.c
+>  create mode 100644 drivers/misc/xlink-pcie/local_host/epf.c
+>  create mode 100644 drivers/misc/xlink-pcie/local_host/epf.h
+>  create mode 100644 drivers/misc/xlink-pcie/remote_host/Makefile
+>  create mode 100644 drivers/misc/xlink-pcie/remote_host/core.c
+>  create mode 100644 drivers/misc/xlink-pcie/remote_host/main.c
+>  create mode 100644 drivers/misc/xlink-pcie/remote_host/pci.c
+>  create mode 100644 drivers/misc/xlink-pcie/remote_host/pci.h
+>  create mode 100644 drivers/misc/xlink-smbus/Kconfig
+>  create mode 100644 drivers/misc/xlink-smbus/Makefile
+>  create mode 100644 drivers/misc/xlink-smbus/xlink-smbus.c
+>  create mode 100644 drivers/soc/intel/Kconfig
+>  create mode 100644 drivers/soc/intel/Makefile
+>  create mode 100644 drivers/soc/intel/keembay-ipc.c
+>  create mode 100644 drivers/soc/intel/keembay-vpu-ipc.c
+>  create mode 100644 include/linux/hddl_device.h
+>  create mode 100644 include/linux/intel_tsens_host.h
+>  create mode 100644 include/linux/soc/intel/keembay-ipc.h
+>  create mode 100644 include/linux/soc/intel/keembay-vpu-ipc.h
+>  create mode 100644 include/linux/xlink-ipc.h
+>  create mode 100644 include/linux/xlink.h
+>  create mode 100644 include/linux/xlink_drv_inf.h
+>  create mode 100644 include/uapi/misc/vpumgr.h
+>  create mode 100644 include/uapi/misc/xlink_uapi.h
+> 
+> -- 
+> 2.17.1
+> 
+> diff --git a/drivers/misc/xlink-smbus/Kconfig b/drivers/misc/xlink-smbus/Kconfig
+> index e6cdf8b9a096..8d2451f8d1be 100644
+> --- a/drivers/misc/xlink-smbus/Kconfig
+> +++ b/drivers/misc/xlink-smbus/Kconfig
+> @@ -2,25 +2,24 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>  
+>  config XLINK_SMBUS
+> -	tristate "Enable smbus interface over Xlink PCIe"
+> +	tristate "Enable SMBUS interface over Xlink PCIe"
+>  	depends on XLINK_CORE
+>  	depends on HDDL_DEVICE_CLIENT || HDDL_DEVICE_SERVER
+>  	help
+> -	 Enable xlink-pcie as i2c adapter both slave and master. The server
+> -	 (Remote Host) will use this interface to get sensor data from the soc
+> -	 (vision accelerator - Local Host) which is connected over PCIe.
+> -	 This driver is loaded on both Remote Host and Local Host.
+> -	 Select M to compile the driver as a module, name is xlink-smbus.
+> -	 If unsure, select N.
+> -
+> +	  Enable xlink-pcie as I2C adapter both slave and master. The server
+> +	  (Remote Host) will use this interface to get sensor data from the SoC
+> +	  (vision accelerator - Local Host) which is connected over PCIe.
+> +	  This driver is loaded on both Remote Host and Local Host.
+> +	  Select M to compile the driver as a module, name is xlink-smbus.
+> +	  If unsure, select N.
+>  
+>  config XLINK_SMBUS_PROXY
+>  	tristate "Enable SMBUS adapter as proxy for I2C controller"
+>  	depends on XLINK_CORE
+>  	depends on XLINK_SMBUS
+>  	help
+> -	 Enable this config when SMBUS adapter is acting as proxy for
+> -	 another I2C controller.
+> -	 Select M or Y if building for Intel Vision Processing Unit (VPU)
+> -	 Local Host core.
+> -	 Select N, if building for a Remote Host kernel.
+> +	  Enable this config when SMBUS adapter is acting as proxy for
+> +	  another I2C controller.
+> +	  Select M or Y if building for Intel Vision Processing Unit (VPU)
+> +	  Local Host core.
+> +	  Select N, if building for a Remote Host kernel.
