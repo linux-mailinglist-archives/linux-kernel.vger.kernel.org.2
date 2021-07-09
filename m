@@ -2,182 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5B73C25B9
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1388A3C25BF
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:17:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232296AbhGIOTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 10:19:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232287AbhGIOTD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 10:19:03 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57085C0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 07:16:20 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id i5-20020a9d68c50000b02904b41fa91c97so5158571oto.5
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 07:16:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bxxtzhSqQ30ofxYR2wWVen9xadmyBMEFbPzU4Bge/7c=;
-        b=cZf6fFb7XZoW2XKC56KpK+eeM8OXh80i4CztX45RhXCNhmg1i0UIs4elevIQL3TC57
-         oDuSscvnClKFrdO7K67Hw/FPskzXYeHsJp4MRN0jgbS5fT1ixvWaflTgbJeOIPhG/EcP
-         GLTKSZy3GexSbMaz8CviEOADL1EPmE1bhx7tw2SOl9x89Q9ZMaJ1W7mMt5at6SAcUUvf
-         8e6P0f2BdmxIoa/zRgkSJGqjpxOdJ2u8qvQEcRY+3EdC+nqQGJEU92gh46aC7uhMYayX
-         MOix9SFPrEXKeUErZ6ebMYalGBVlRw3w3+wGzqxbLaLQnj6FHhwpi9agbAtWu7oLuyoK
-         o2Hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bxxtzhSqQ30ofxYR2wWVen9xadmyBMEFbPzU4Bge/7c=;
-        b=VAZa2i5G4j1NN7gihffgktVL+NqS6VUOR2KKcAcZGibzQ7GL+dBSfwN+tf8P5RtKqg
-         X8egEj3A+xYLznaI+KIzPkl7voQjeyWoZ2ITwkF2bnMFEBzDbPplAO1CpNbgJlBiIMJD
-         EKIv/6pi8WNqcXTHWQzhmvNMtrowAIwuyTQn91Lp4he6gbX8y3sSVvSzNIviy6QzmQP6
-         vgRXpcs+hVj+/xQ6tzeuTRPVFEtzpSoKIhIHFyHyy4sS6k6evytAt7sFZZdIjZVG9ceR
-         xaZWeGBn83PGIy55WKf2EZDTux7CNhDGGuUmPtCcZ1lNJ3LpFJDG3hq+3RsmbmK4p+OG
-         SfLQ==
-X-Gm-Message-State: AOAM533xCW1lip0Dcycy//8jbAkpGWDVkUnn8fXSRIqvAVqWvFUnJihq
-        ICA9nwYT8s3UloocfIcsHWPynA==
-X-Google-Smtp-Source: ABdhPJwud6BO9hWdFsO/4Wc/TioM7Cxa1/RTd2pqEJKFpQ/qRrxfYgYNRrztJ5OSG+CePaw8a+GTVw==
-X-Received: by 2002:a9d:4ea:: with SMTP id 97mr28601933otm.324.1625840179553;
-        Fri, 09 Jul 2021 07:16:19 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id l9sm1233261oii.20.2021.07.09.07.16.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 07:16:18 -0700 (PDT)
-Date:   Fri, 9 Jul 2021 09:16:16 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] PM: domains: Don't attach a device to genpd that
- corresponds to a provider
-Message-ID: <YOhaMFHd6QD6olpg@yoga>
-References: <20210709125611.135920-1-ulf.hansson@linaro.org>
- <CAMuHMdU0AVFVb3tXW4wkEibSx50nzYKW1GopgZPfKp1SS7Mf1g@mail.gmail.com>
- <CAPDyKFpzw0mQPFs-jyMX=T6WpZ+vFqrWmoKUWD+9wW8LWqyHuA@mail.gmail.com>
- <YOhTU0xUShJQXrL5@yoga>
- <CAPDyKFr+VtGvyfJip-Mu6Gdcj1jQNtkrHRg6tJsJtAKkg0Y9+g@mail.gmail.com>
+        id S232053AbhGIOUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 10:20:19 -0400
+Received: from mga04.intel.com ([192.55.52.120]:35272 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231797AbhGIOUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 10:20:19 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10039"; a="207882068"
+X-IronPort-AV: E=Sophos;i="5.84,226,1620716400"; 
+   d="scan'208";a="207882068"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2021 07:17:32 -0700
+X-IronPort-AV: E=Sophos;i="5.84,226,1620716400"; 
+   d="scan'208";a="488060340"
+Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.208.213]) ([10.254.208.213])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2021 07:17:28 -0700
+Cc:     baolu.lu@linux.intel.com,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        kumarpraveen@linux.microsoft.com, pasha.tatashin@soleen.com,
+        David Woodhouse <dwmw2@infradead.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        "open list:INTEL IOMMU (VT-d)" <iommu@lists.linux-foundation.org>
+Subject: Re: [RFC v1 4/8] intel/vt-d: export intel_iommu_get_resv_regions
+To:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
+References: <20210709114339.3467637-1-wei.liu@kernel.org>
+ <20210709114339.3467637-5-wei.liu@kernel.org>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <f32e17d4-e435-cd50-8afc-68f6133fd1a0@linux.intel.com>
+Date:   Fri, 9 Jul 2021 22:17:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPDyKFr+VtGvyfJip-Mu6Gdcj1jQNtkrHRg6tJsJtAKkg0Y9+g@mail.gmail.com>
+In-Reply-To: <20210709114339.3467637-5-wei.liu@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 09 Jul 08:58 CDT 2021, Ulf Hansson wrote:
+On 2021/7/9 19:43, Wei Liu wrote:
+> When Microsoft Hypervisor runs on Intel platforms it needs to know the
+> reserved regions to program devices correctly. There is no reason to
+> duplicate intel_iommu_get_resv_regions. Export it.
 
-> On Fri, 9 Jul 2021 at 15:47, Bjorn Andersson <bjorn.andersson@linaro.org> wrote:
-> >
-> > On Fri 09 Jul 08:22 CDT 2021, Ulf Hansson wrote:
-> >
-> > > On Fri, 9 Jul 2021 at 15:07, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > >
-> > > > Hi Ulf,
-> > > >
-> > > > Thanks for your patch!
-> > > >
-> > > > On Fri, Jul 9, 2021 at 2:56 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > > > > According to the common power domain DT bindings, a power domain provider
-> > > > > must have a "#power-domain-cells" property in its OF node. Additionally, if
-> > > > > a provider has a "power-domains" property, it means that it has a parent
-> > > > > domain.
-> > > >
-> > > > OK.
-> > > >
-> > > > > It has turned out that some OF nodes that represents a genpd provider may
-> > > > > also be compatible with a regular platform device. This leads to, during
-> > > > > probe, genpd_dev_pm_attach(), genpd_dev_pm_attach_by_name() and
-> > > > > genpd_dev_pm_attach_by_id() tries to attach the corresponding struct device
-> > > > > to the genpd provider's parent domain, which is wrong. Instead the genpd
-> > > >
-> > > > Why is that wrong?
-> > >
-> > > It may lead to that the struct device that corresponds to a genpd
-> > > provider may be attached to the parent domain. In other words, the
-> > > parent domain will not only be controlled by a child domain
-> > > (corresponding to the provider), but also through the provider's
-> > > struct device. As far as I can tell, this has never been the intent
-> > > for how things should work in genpd.
-> > >
-> > > So wrong or not, I guess it depends on what you expect to happen.
-> > >
-> > > Do you see an issue with changing this?
-> > >
-> >
-> > But this exactly what we have in the case of the "dispcc" in the
-> > Qualcomm platform that Dmitry is working on.
-> >
-> > The provider driver needs the parent power-domain to be powered in order
-> > to poke the registers and then it is the parent of the power-domains
-> > exposed.
-> >
-> > If I understand your proposed patch we'll have to manually attach the
-> > parent domain to the struct device of the controller with this patch?
-> 
-> Not even that would work after $subject patch, as it prevents
-> providers from being attached to a domain.
-> 
+Why not using iommu_get_resv_regions()?
 
-That's definitely going to be a problem.
+Best regards,
+baolu
 
-> It sure sounds like you need to control power for the parent domain,
-> not only by registering a child domain to it.
 > 
-
-Yes, we certainly need power to the genpd provider.
-
-> >
-> > Is the Qualcomm case unique or will this change cut power do other genpd
-> > providers assuming the same?
+> Signed-off-by: Wei Liu <wei.liu@kernel.org>
+> ---
+>   drivers/iommu/intel/iommu.c | 5 +++--
+>   include/linux/intel-iommu.h | 4 ++++
+>   2 files changed, 7 insertions(+), 2 deletions(-)
 > 
-> I think the Qualcomm case is a bit unique or at least the first I
-> heard of. However, this change would affect all and of course we must
-> not break things.
+> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+> index a4294d310b93..01973bc20080 100644
+> --- a/drivers/iommu/intel/iommu.c
+> +++ b/drivers/iommu/intel/iommu.c
+> @@ -5176,8 +5176,8 @@ static void intel_iommu_probe_finalize(struct device *dev)
+>   		set_dma_ops(dev, NULL);
+>   }
+>   
+> -static void intel_iommu_get_resv_regions(struct device *device,
+> -					 struct list_head *head)
+> +void intel_iommu_get_resv_regions(struct device *device,
+> +				 struct list_head *head)
+>   {
+>   	int prot = DMA_PTE_READ | DMA_PTE_WRITE;
+>   	struct iommu_resv_region *reg;
+> @@ -5232,6 +5232,7 @@ static void intel_iommu_get_resv_regions(struct device *device,
+>   		return;
+>   	list_add_tail(&reg->list, head);
+>   }
+> +EXPORT_SYMBOL_GPL(intel_iommu_get_resv_regions);
+>   
+>   int intel_iommu_enable_pasid(struct intel_iommu *iommu, struct device *dev)
+>   {
+> diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
+> index 03faf20a6817..f91869f765bc 100644
+> --- a/include/linux/intel-iommu.h
+> +++ b/include/linux/intel-iommu.h
+> @@ -814,6 +814,8 @@ extern int iommu_calculate_max_sagaw(struct intel_iommu *iommu);
+>   extern int dmar_disabled;
+>   extern int intel_iommu_enabled;
+>   extern int intel_iommu_gfx_mapped;
+> +extern void intel_iommu_get_resv_regions(struct device *device,
+> +				 struct list_head *head);
+>   #else
+>   static inline int iommu_calculate_agaw(struct intel_iommu *iommu)
+>   {
+> @@ -825,6 +827,8 @@ static inline int iommu_calculate_max_sagaw(struct intel_iommu *iommu)
+>   }
+>   #define dmar_disabled	(1)
+>   #define intel_iommu_enabled (0)
+> +static inline void intel_iommu_get_resv_regions(struct device *device,
+> +				 struct list_head *head) {}
+>   #endif
+>   
+>   #endif
 > 
-
-I'm surprised that we'd be alone one that needs power to our genpd
-provider. Does everyone else have their genpd providers in some
-always-on power domain?
-
-> >
-> >
-> >
-> > Worth mentioning as we discuss this is that we have another genpd
-> > provider, where I think the exposed genpds are parented by a few
-> > different (each one with a specific) parent domains. In this case we'd
-> > be forced to manually attach the genpd provider to the parent domain
-> > that it actually is powered by (as no automatic attachment happens when
-> > multiple domains are specified).
-> 
-> Yes, that's correct (assuming we don't apply $subject patch).
-> 
-
-Afaict this patch wouldn't change the case where the genpd provider has
-multiple power-domains, as it wouldn't automatically attach the device
-to any one of them anyways.
-
-Regards,
-Bjorn
-
-> To sum up:
-> 
-> Rafael I am withdrawing the $subject patch, it seems like it may break
-> existing expectations of what will happen during attach.
-> 
-> Moreover, it may actually be beneficial to allow the attach to succeed
-> for the Qcom case, so let's leave this as is.
-> 
-> Kind regards
-> Uffe
