@@ -2,91 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 283063C29EA
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 22:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A04F83C29F3
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 22:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230168AbhGIUDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 16:03:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhGIUDA (ORCPT
+        id S230166AbhGIUHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 16:07:00 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:45314 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230111AbhGIUG6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 16:03:00 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30392C0613DD;
-        Fri,  9 Jul 2021 13:00:16 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id y6so10523868ilj.13;
-        Fri, 09 Jul 2021 13:00:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=sq/c7pBmpsPdXLFCGKtcaECE0EhoU6nh5mlaTywOHLY=;
-        b=iyrIEOLLoBYwvE+N3N5pcYpzLHDfHPNd+IJEbjZJoK1CAwzoMh7tsDmRXumdWxFeee
-         edP5ufZioEBfRnKrlig5yh1hmWR20rlcQ6dNNbKM+vA6Z/8tgHLSr4mPoNtRSLlc3drN
-         iDWgwJhwYGf7C8Vj0ds49JYdzdShXqBcbg2IJBMVzofuGsz3VmoJHLzIE/Ak94oW+z2u
-         W2bvSkZWk3cmBaChmpZxxhO7OmIh8xDhlBPGNRSl4dQtBz6ogH2Gf7MMEuhM1AGOXVAk
-         Ieq64w76TFgH8FU5bzrRb2WapWe+tE9fWaw8XQtpKgmtNs18TR25jkQl+9FjDTIf3eDI
-         iUeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=sq/c7pBmpsPdXLFCGKtcaECE0EhoU6nh5mlaTywOHLY=;
-        b=X9KqgYfKgHm/vBXikxdBJyCOh4AP7Du96+JFrTL0MXmCXeLdKdzs0Nxd0JLRgMbbR7
-         kN71nvqh6SuLaZ8MMnfkHQdZruWjsSmDaMMvrq+DnCUesy31a28Sg49O9T2Yz9GpNNEl
-         j3mrLiObHT/Gk3LQrD7rdoM5vJpyhFx0QN1/R6Klfp83eGWL415wLRqOZVa1CqUb4Q1F
-         2SkzDqsvHKEEizdo+G8dL8QcJJL7+o8ck1Ti5x2WbE4Cy7TIkV8UfzaIOVaCneABjE4I
-         P5Tbi5HPic5Fmdc8tk/lNASESN92AQmow/IwbwJ6k+u02kAbqVVth9trIpvI3Vyw1hF0
-         7BSA==
-X-Gm-Message-State: AOAM531ze+Uv7s5W8ljGY7kHJLRuFmCiWYiOe7kYKy92iWgicvxXea/c
-        Lt8uUXYFcMwsUdzMGUWweEVZNp+r+IEyNk53BYlzvg==
-X-Google-Smtp-Source: ABdhPJy36mj0Z2W7FZjLfF2OBcX8xRH/fPoklP0iyRcnae8zlRFy5frO5TeWnzfMbykS7kcaUO6q4w==
-X-Received: by 2002:a05:6e02:1527:: with SMTP id i7mr13493082ilu.134.1625860815224;
-        Fri, 09 Jul 2021 13:00:15 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id x1sm3254165ioa.54.2021.07.09.13.00.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 13:00:14 -0700 (PDT)
-Message-ID: <60e8aace.1c69fb81.e3e34.5ecf@mx.google.com>
-Date:   Fri, 09 Jul 2021 13:00:14 -0700 (PDT)
-X-Google-Original-Date: Fri, 09 Jul 2021 20:00:13 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210709131537.035851348@linuxfoundation.org>
-Subject: RE: [PATCH 5.10 0/6] 5.10.49-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        Fri, 9 Jul 2021 16:06:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1625861055; x=1657397055;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=TXEmRj6c2Z2DMWwrtKF7LtWUScbHxh+quywEMervRf0=;
+  b=qUvJJ7Cr5KvienoTW1VhfbpoBN8bnshjVt0LTQKrYk5oQ+1/DerMmFYV
+   2UybkMP1Bo/rCDYGReTrSkt/3TAHPJ4sI2HuMQFvTAFnMWtrS8Qa9E+Na
+   2ahqgMvX2zhj+PUZtBB9kf8R+P3aV8DJWgiDYbXyFGt4RD4fON7tUMnps
+   k=;
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 09 Jul 2021 13:04:14 -0700
+X-QCInternal: smtphost
+Received: from nalasexr03e.na.qualcomm.com ([10.49.195.114])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 09 Jul 2021 13:04:13 -0700
+Received: from vamslank1-linux.qualcomm.com (10.80.80.8) by
+ nalasexr03e.na.qualcomm.com (10.49.195.114) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Fri, 9 Jul 2021 13:04:12 -0700
+From:   <quic_vamslank@quicinc.com>
+To:     <agross@kernel.org>, <bjorn.andersson@linaro.org>,
+        <linus.walleij@linaro.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <manivannan.sadhasivam@linaro.org>,
+        "Vamsi Krishna Lanka" <quic_vamslank@quicinc.com>
+Subject: [PATCH 0/5] Add Pdc, GCC and RPMh clock support for SDX65
+Date:   Fri, 9 Jul 2021 13:03:34 -0700
+Message-ID: <20210709200339.17638-1-quic_vamslank@quicinc.com>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanexm03d.na.qualcomm.com (10.85.0.91) To
+ nalasexr03e.na.qualcomm.com (10.49.195.114)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  9 Jul 2021 15:21:09 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.10.49 release.
-> There are 6 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 11 Jul 2021 13:14:09 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.49-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+From: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
 
-5.10.49-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+Hello,
+
+This patch series adds bindings and device driver changes for GCC, pdc and RPMh
+clock support for SDX65 Platform.
+
+Thanks,
+Vamsi 
+
+Vamsi krishna Lanka (5):
+  dt-bindings: clock: Add SDX65 GCC clock bindings
+  clk: qcom: Add SDX65 GCC support
+  dt-bindings: clock: Introduce RPMHCC bindings for SDX65
+  clk: qcom: Add support for SDX65 RPMh clocks
+  dt-bindings: clock: Introduce pdc bindings for SDX65
+
+ .../bindings/clock/qcom,gcc-sdx65.yaml        |   79 +
+ .../bindings/clock/qcom,rpmhcc.yaml           |    1 +
+ .../interrupt-controller/qcom,pdc.txt         |    1 +
+ drivers/clk/qcom/Kconfig                      |    8 +
+ drivers/clk/qcom/Makefile                     |    1 +
+ drivers/clk/qcom/clk-alpha-pll.c              |  170 ++
+ drivers/clk/qcom/clk-alpha-pll.h              |    4 +
+ drivers/clk/qcom/clk-rcg.h                    |    4 +
+ drivers/clk/qcom/clk-rpmh.c                   |   27 +
+ drivers/clk/qcom/gcc-sdx65.c                  | 1648 +++++++++++++++++
+ include/dt-bindings/clock/qcom,gcc-sdx65.h    |  122 ++
+ 11 files changed, 2065 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-sdx65.yaml
+ create mode 100644 drivers/clk/qcom/gcc-sdx65.c
+ create mode 100644 include/dt-bindings/clock/qcom,gcc-sdx65.h
+
+-- 
+2.32.0
 
