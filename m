@@ -2,97 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF5BA3C26DE
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 17:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8BC3C26E1
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 17:33:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232386AbhGIPfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 11:35:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231976AbhGIPfn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 11:35:43 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C23C6C0613DD;
-        Fri,  9 Jul 2021 08:32:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=y7YLHiF0t+l7CAiXRoEvkaZFeIRtHz06yPRep3Kg/LM=; b=cBaSGviwrp/QKpIQbEzA+mZFQt
-        gwNGWcl04gu8kPnL199xu/bBhXuhbNZRbCFyLnnY6WTYlGlXWVhJu0+MXdkdYFiI/6yYbV3bl32s0
-        JWG9A0CdPvNcpYS1YUnAv8QgA/UymEqfFn8bzWbKCHXwaWKUDNvPXQ16pM55my0DJt0ntdPFILt4E
-        uN2RM+XpsviEXdDjdC1SiPe1jN9t9R/U9mYpIViX4Ug97nhwdepiGqHj5+kYfhd7C7tMCdpr1/Ae2
-        JmCWzLhVPcTns+75Q1+sGe6vZFgLsSZR8BPvVXWz3N6IghXCyUFWCizmSgFMHhPnolCcE43NaSgk5
-        Rn3Q10SQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m1sUi-00EdZV-PT; Fri, 09 Jul 2021 15:32:50 +0000
-Date:   Fri, 9 Jul 2021 16:32:48 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        kumarpraveen@linux.microsoft.com, pasha.tatashin@soleen.com,
-        Jonathan Corbet <corbet@lwn.net>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Lillian Grassin-Drake <ligrassi@microsoft.com>,
-        Muminul Islam <muislam@microsoft.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Subject: Re: [RFC v1 7/8] mshv: implement in-kernel device framework
-Message-ID: <YOhsIDccgbUCzwqt@casper.infradead.org>
-References: <20210709114339.3467637-1-wei.liu@kernel.org>
- <20210709114339.3467637-8-wei.liu@kernel.org>
- <YOhIzJVPN9SwoRK0@casper.infradead.org>
- <20210709135013.t5axinjmufotpylf@liuwe-devbox-debian-v2>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210709135013.t5axinjmufotpylf@liuwe-devbox-debian-v2>
+        id S232416AbhGIPgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 11:36:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49630 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231976AbhGIPgT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 11:36:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A59BD613AF;
+        Fri,  9 Jul 2021 15:33:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625844816;
+        bh=xFQbgmxuolYLTy1axxONjEKSxdDD/CwUMCqfIpUvCWE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Q7llvPRkO7nBSIf2cKcoi8rfCLXpjRrvykEZQr+ueqZH83TNYcBK0mVud29CSze7U
+         OgfyiuKv8ZTWptBuiDXa0vr8ZjF/r8hes9RUfOewqoAqGBB7EjDd4P7mh8wlYfwFd3
+         DKq1LbQnfupa9A8QAazZULQx+R9dtpzTYRy4NESsu3gitdFsME5k5a/Gh3Egpm1ZpK
+         bA7fc+ziOi8PeI68F1KcTfSKcXTpeZV1zIkGenlB7ukjsCYkkciU/9o4V2l8V/4anG
+         JTjpnGav/E9yh4lAtADe0g1HftOjdqFCBlgpXDotw21enu6blNsNPATt+gREaXOMrY
+         dcs+NODyjfY2g==
+Date:   Sat, 10 Jul 2021 00:33:32 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Xiaoming Ni <nixiaoming@huawei.com>
+Cc:     Shaobo Huang <huangshaobo6@huawei.com>,
+        <gregkh@linuxfoundation.org>, <chenzefeng2@huawei.com>,
+        <kepler.chenxin@huawei.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux@arm.linux.org.uk>,
+        <liucheng32@huawei.com>, <tixy@linaro.org>, <xiaoqian9@huawei.com>,
+        <young.liuyang@huawei.com>, <zengweilin@huawei.com>
+Subject: Re: [PATCH 4.4.y] arm: kprobes: Allow to handle reentered kprobe on
+ single-stepping
+Message-Id: <20210710003332.8c3cf2a0e79c63278b3b70b6@kernel.org>
+In-Reply-To: <9ca81fb8-8d6e-1708-db01-a29e54c79343@huawei.com>
+References: <YOcOcNBRou5KlbOR@kroah.com>
+        <20210709024630.22268-1-huangshaobo6@huawei.com>
+        <20210709180031.adc7260b54645b0292a6f02a@kernel.org>
+        <9ca81fb8-8d6e-1708-db01-a29e54c79343@huawei.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 09, 2021 at 01:50:13PM +0000, Wei Liu wrote:
-> On Fri, Jul 09, 2021 at 02:02:04PM +0100, Matthew Wilcox wrote:
-> > On Fri, Jul 09, 2021 at 11:43:38AM +0000, Wei Liu wrote:
-> > > +static long
-> > > +mshv_partition_ioctl_create_device(struct mshv_partition *partition,
-> > > +	void __user *user_args)
-> > > +{
-> > [...]
-> > > +	mshv_partition_get(partition);
-> > > +	r = anon_inode_getfd(ops->name, &mshv_device_fops, dev, O_RDWR | O_CLOEXEC);
-> > > +	if (r < 0) {
-> > > +		mshv_partition_put_no_destroy(partition);
-> > > +		list_del(&dev->partition_node);
-> > > +		ops->destroy(dev);
-> > > +		goto out;
-> > > +	}
-> > > +
-> > > +	cd->fd = r;
-> > > +	r = 0;
-> > 
-> > Why return the fd in memory instead of returning the fd as the return
-> > value from the ioctl?
-> > 
-> > > +	if (copy_to_user(user_args, &tmp, sizeof(tmp))) {
-> > > +		r = -EFAULT;
-> > > +		goto out;
-> > > +	}
-> > 
-> > ... this could then disappear.
-> 
-> Thanks for your comment, Matthew.
-> 
-> This is intentionally because I didn't want to deviate from KVM's API.
-> The fewer differences the better.
+On Fri, 9 Jul 2021 19:39:30 +0800
+Xiaoming Ni <nixiaoming@huawei.com> wrote:
 
-Then don't define your own structure.  Use theirs.
+> On 2021/7/9 17:00, Masami Hiramatsu wrote:
+> > Hi Shaobo,
+> > 
+> > Thanks for backporting!
+> > Greg, it seems this patch can be applied to 4.9 too without any issue.
+> > 
+> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=linux-4.9.y&id=355a04fa1fc23c4fb1d16440e62d46a42691e96b
+> 
+> The v4.9 branch has been fixed.
+
+Oh, I might see wrong branch. Thank you for confirmation!
+
+Regards,
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
