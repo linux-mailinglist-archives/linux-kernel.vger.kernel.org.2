@@ -2,234 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C1983C201C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 09:38:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D0203C201D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 09:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231324AbhGIHkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 03:40:46 -0400
-Received: from muru.com ([72.249.23.125]:39314 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230526AbhGIHkp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 03:40:45 -0400
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id 461BD8050;
-        Fri,  9 Jul 2021 07:38:15 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     stable@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Keerthy <j-keerthy@ti.com>, Tero Kristo <kristo@kernel.org>
-Subject: [Backport for 4.19.y PATCH 4/4] clocksource/drivers/timer-ti-dm: Handle dra7 timer wrap errata i940
-Date:   Fri,  9 Jul 2021 10:37:45 +0300
-Message-Id: <20210709073745.13916-4-tony@atomide.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210709073745.13916-1-tony@atomide.com>
-References: <20210709073745.13916-1-tony@atomide.com>
+        id S231265AbhGIHmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 03:42:14 -0400
+Received: from wforward3-smtp.messagingengine.com ([64.147.123.22]:34431 "EHLO
+        wforward3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230505AbhGIHmN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 03:42:13 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailforward.west.internal (Postfix) with ESMTP id D094C1AC0BB7;
+        Fri,  9 Jul 2021 03:39:28 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Fri, 09 Jul 2021 03:39:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=MmHFnw
+        D/vmxcyGTiVsUB3xcr0vIvVuonBri13Nc/hoQ=; b=dm42RkXa9CJmEzzkU8nqBu
+        tNmNCcqCxT7yDVOKm0rew1blS/qzmArSFBYihxyR8jY6xHecfphzeTr1BWoUvP27
+        vvdpcxWgnzvfdq6C6n7rlCEIZ045x5Ia/p8dijh9lwLdQuAB+E0NUKjgqMPB56nf
+        jUN3izzXUx0iQkW7g4akBMBaMXSHmm4rbTaJ8mYkg2kP0sB4jcYMDM35gEJjwMql
+        4Gv5QcBCEMa8PoSPH7vo1tciAaAkcMO1chF2J2dfJCl29FnWlVVoLNVQiyBCa7xC
+        Sse7KZbVp1CdUxbAM1DpyzxGb6fFswBwFlujO1LXbQsrMiglpBB95YT9sjMl14rA
+        ==
+X-ME-Sender: <xms:L_3nYH6pJYCdu9DukapH1cxQaMXD3kTQ_pFlbw8GSsR9lKr878lUqQ>
+    <xme:L_3nYM56bjKLvJI9cJtYzz2uwMgwnA6QHHtcbwV43U0N7d4RKem6W6M8BGpG-FTsW
+    ciSROlYoA5w0906Acw>
+X-ME-Received: <xmr:L_3nYOe1p4wuFn4JqZsWJFF3uRJTQFOpSr4ixsms3_AsmzofkzP2lg4Br1aMnKRDJjYjM2IlGd_85CAE72Me5Z71BFdxSSzfN5sE6mqgVYY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrtdehgdelgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefvufgjfhfhfffkgggtsehttdertddttddtnecuhfhrohhmpeffrghvihguucfg
+    ughmohhnughsohhnuceoughmvgesughmvgdrohhrgheqnecuggftrfgrthhtvghrnheptd
+    dtgedttefhfeeugefffffffedvueekgfduhfevueehvdekveeitdelledvteetnecuffho
+    mhgrihhnpehgihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
+    grmhepmhgrihhlfhhrohhmpegumhgvsegumhgvrdhorhhg
+X-ME-Proxy: <xmx:L_3nYIJprdiY3kq9jVwTHx8V_1TBkGyYhljf8ZgCjSTM1eNEBZHkeQ>
+    <xmx:L_3nYLJ8vEpEsKA1fCYLtWg5-igtzJ_LQetwgrU-SNE9UiMH0r06xg>
+    <xmx:L_3nYBygR_vZJKqlI2JaXJLlqiupxa4T36xIioyf__gEekqS9IXL-w>
+    <xmx:MP3nYICf40OXZZ1Knph_CH3Y3cMmrkMrtBsZkpwdHCLhHVLppHbrnncJi-c>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 9 Jul 2021 03:39:26 -0400 (EDT)
+Received: from localhost (disaster-area.hh.sledj.net [local])
+        by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id 58528b94;
+        Fri, 9 Jul 2021 07:39:25 +0000 (UTC)
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>
+Cc:     Suleiman Souhlal <suleiman@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: Re: [PATCHv2 2/4] arm64: add guest pvstate support
+In-Reply-To: <20210709043713.887098-3-senozhatsky@chromium.org>
+References: <20210709043713.887098-1-senozhatsky@chromium.org>
+ <20210709043713.887098-3-senozhatsky@chromium.org>
+X-HGTTG: heart-of-gold
+From:   David Edmondson <dme@dme.org>
+Date:   Fri, 09 Jul 2021 08:39:25 +0100
+Message-ID: <m2v95k2axe.fsf@dme.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 25de4ce5ed02994aea8bc111d133308f6fd62566 upstream.
+On Friday, 2021-07-09 at 13:37:11 +09, Sergey Senozhatsky wrote:
 
-There is a timer wrap issue on dra7 for the ARM architected timer.
-In a typical clock configuration the timer fails to wrap after 388 days.
+> PV-vcpu-state is a per-CPU struct, which, for the time being,
+> holds boolean `preempted' vCPU state. During the startup,
+> given that host supports PV-state, each guest vCPU sends
+> a pointer to its per-CPU variable to the host as a payload
+> with the SMCCC HV call, so that host can update vCPU state
+> when it puts or loads vCPU.
+>
+> This has impact on the guest's scheduler:
+>
+> [..]
+>   wake_up_process()
+>    try_to_wake_up()
+>     select_task_rq_fair()
+>      available_idle_cpu()
+>       vcpu_is_preempted()
+>
+> Some sched benchmarks data is available on the github page [0].
+>
+> [0] https://github.com/sergey-senozhatsky/arm64-vcpu_is_preempted
+>
+> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> ---
+>  arch/arm64/include/asm/paravirt.h | 19 +++++++
+>  arch/arm64/kernel/paravirt.c      | 94 +++++++++++++++++++++++++++++++
+>  arch/arm64/kernel/smp.c           |  4 ++
+>  3 files changed, 117 insertions(+)
+>
+> diff --git a/arch/arm64/include/asm/paravirt.h b/arch/arm64/include/asm/paravirt.h
+> index 9aa193e0e8f2..a3f7665dff38 100644
+> --- a/arch/arm64/include/asm/paravirt.h
+> +++ b/arch/arm64/include/asm/paravirt.h
+> @@ -2,6 +2,11 @@
+>  #ifndef _ASM_ARM64_PARAVIRT_H
+>  #define _ASM_ARM64_PARAVIRT_H
+>  
+> +struct vcpu_state {
+> +	bool	preempted;
+> +	u8	reserved[63];
+> +};
+> +
+>  #ifdef CONFIG_PARAVIRT
+>  #include <linux/static_call_types.h>
+>  
+> @@ -20,8 +25,22 @@ static inline u64 paravirt_steal_clock(int cpu)
+>  
+>  int __init pv_time_init(void);
+>  
+> +bool dummy_vcpu_is_preempted(unsigned int cpu);
+> +
+> +extern struct static_key pv_vcpu_is_preempted_enabled;
+> +DECLARE_STATIC_CALL(pv_vcpu_is_preempted, dummy_vcpu_is_preempted);
+> +
+> +static inline bool paravirt_vcpu_is_preempted(unsigned int cpu)
+> +{
+> +	return static_call(pv_vcpu_is_preempted)(cpu);
+> +}
+> +
+> +int __init pv_vcpu_state_init(void);
+> +
+>  #else
+>  
+> +#define pv_vcpu_state_init() do {} while (0)
+> +
+>  #define pv_time_init() do {} while (0)
+>  
+>  #endif // CONFIG_PARAVIRT
+> diff --git a/arch/arm64/kernel/paravirt.c b/arch/arm64/kernel/paravirt.c
+> index 75fed4460407..d8fc46795d94 100644
+> --- a/arch/arm64/kernel/paravirt.c
+> +++ b/arch/arm64/kernel/paravirt.c
+> @@ -40,6 +40,11 @@ struct pv_time_stolen_time_region {
+>  
+>  static DEFINE_PER_CPU(struct pv_time_stolen_time_region, stolen_time_region);
+>  
+> +static DEFINE_PER_CPU(struct vcpu_state, vcpus_states);
+> +struct static_key pv_vcpu_is_preempted_enabled;
+> +
+> +DEFINE_STATIC_CALL(pv_vcpu_is_preempted, dummy_vcpu_is_preempted);
+> +
+>  static bool steal_acc = true;
+>  static int __init parse_no_stealacc(char *arg)
+>  {
+> @@ -165,3 +170,92 @@ int __init pv_time_init(void)
+>  
+>  	return 0;
+>  }
+> +
+> +bool dummy_vcpu_is_preempted(unsigned int cpu)
+> +{
+> +	return false;
+> +}
+> +
+> +static bool __vcpu_is_preempted(unsigned int cpu)
+> +{
+> +	struct vcpu_state *st;
+> +
+> +	st = &per_cpu(vcpus_states, cpu);
+> +	return READ_ONCE(st->preempted);
+> +}
+> +
+> +static bool has_pv_vcpu_state(void)
+> +{
+> +	struct arm_smccc_res res;
+> +
+> +	/* To detect the presence of PV time support we require SMCCC 1.1+ */
 
-To work around the issue, we need to use timer-ti-dm percpu timers instead.
+"PV VCPU state support" rather than "PV time support".
 
-Let's configure dmtimer3 and 4 as percpu timers by default, and warn about
-the issue if the dtb is not configured properly.
+> +	if (arm_smccc_1_1_get_conduit() == SMCCC_CONDUIT_NONE)
+> +		return false;
+> +
+> +	arm_smccc_1_1_invoke(ARM_SMCCC_ARCH_FEATURES_FUNC_ID,
+> +			     ARM_SMCCC_HV_PV_VCPU_STATE_FEATURES,
+> +			     &res);
+> +
+> +	if (res.a0 != SMCCC_RET_SUCCESS)
+> +		return false;
+> +	return true;
+> +}
+> +
+> +static int __pv_vcpu_state_hook(unsigned int cpu, int event)
+> +{
+> +	struct arm_smccc_res res;
+> +	struct vcpu_state *st;
+> +
+> +	st = &per_cpu(vcpus_states, cpu);
+> +	arm_smccc_1_1_invoke(event, virt_to_phys(st), &res);
+> +	if (res.a0 != SMCCC_RET_SUCCESS)
+> +		return -EINVAL;
+> +	return 0;
+> +}
+> +
+> +static int vcpu_state_init(unsigned int cpu)
+> +{
+> +	int ret = __pv_vcpu_state_hook(cpu, ARM_SMCCC_HV_PV_VCPU_STATE_INIT);
+> +
+> +	if (ret)
+> +		pr_warn("Unable to ARM_SMCCC_HV_PV_STATE_INIT\n");
+> +	return ret;
+> +}
+> +
+> +static int vcpu_state_release(unsigned int cpu)
+> +{
+> +	int ret = __pv_vcpu_state_hook(cpu, ARM_SMCCC_HV_PV_VCPU_STATE_RELEASE);
+> +
+> +	if (ret)
+> +		pr_warn("Unable to ARM_SMCCC_HV_PV_STATE_RELEASE\n");
+> +	return ret;
+> +}
+> +
+> +static int pv_vcpu_state_register_hooks(void)
+> +{
+> +	int ret;
+> +
+> +	ret = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN,
+> +				"hypervisor/arm/pvstate:starting",
+> +				vcpu_state_init,
+> +				vcpu_state_release);
+> +	if (ret < 0)
+> +		pr_warn("Failed to register CPU hooks\n");
 
-For more information, please see the errata for "AM572x Sitara Processors
-Silicon Revisions 1.1, 2.0":
+Include that it's PV VCPU state hooks?
 
-https://www.ti.com/lit/er/sprz429m/sprz429m.pdf
+> +	return 0;
+> +}
+> +
+> +int __init pv_vcpu_state_init(void)
+> +{
+> +	int ret;
+> +
+> +	if (!has_pv_vcpu_state())
+> +		return 0;
+> +
+> +	ret = pv_vcpu_state_register_hooks();
+> +	if (ret)
+> +		return ret;
+> +
+> +	static_call_update(pv_vcpu_is_preempted, __vcpu_is_preempted);
+> +	static_key_slow_inc(&pv_vcpu_is_preempted_enabled);
+> +	return 0;
+> +}
+> diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+> index 6f6ff072acbd..20d42e0f2a99 100644
+> --- a/arch/arm64/kernel/smp.c
+> +++ b/arch/arm64/kernel/smp.c
+> @@ -50,6 +50,7 @@
+>  #include <asm/tlbflush.h>
+>  #include <asm/ptrace.h>
+>  #include <asm/virt.h>
+> +#include <asm/paravirt.h>
+>  
+>  #define CREATE_TRACE_POINTS
+>  #include <trace/events/ipi.h>
+> @@ -756,6 +757,9 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
+>  	numa_store_cpu_info(this_cpu);
+>  	numa_add_cpu(this_cpu);
+>  
+> +	/* Init paravirt CPU state */
+> +	pv_vcpu_state_init();
+> +
+>  	/*
+>  	 * If UP is mandated by "nosmp" (which implies "maxcpus=0"), don't set
+>  	 * secondary CPUs present.
+> -- 
+> 2.32.0.93.g670b81a890-goog
 
-The concept is based on earlier reference patches done by Tero Kristo and
-Keerthy.
-
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: Keerthy <j-keerthy@ti.com>
-Cc: Tero Kristo <kristo@kernel.org>
-[tony@atomide.com: backported to 4.19.y]
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
- arch/arm/boot/dts/dra7.dtsi         | 11 ++++++
- arch/arm/mach-omap2/board-generic.c |  4 +--
- arch/arm/mach-omap2/timer.c         | 53 ++++++++++++++++++++++++++++-
- drivers/clk/ti/clk-7xx.c            |  1 +
- include/linux/cpuhotplug.h          |  1 +
- 5 files changed, 67 insertions(+), 3 deletions(-)
-
-diff --git a/arch/arm/boot/dts/dra7.dtsi b/arch/arm/boot/dts/dra7.dtsi
---- a/arch/arm/boot/dts/dra7.dtsi
-+++ b/arch/arm/boot/dts/dra7.dtsi
-@@ -48,6 +48,7 @@
- 
- 	timer {
- 		compatible = "arm,armv7-timer";
-+		status = "disabled";	/* See ARM architected timer wrap erratum i940 */
- 		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
- 			     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
- 			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
-@@ -910,6 +911,8 @@
- 			reg = <0x48032000 0x80>;
- 			interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
- 			ti,hwmods = "timer2";
-+			clock-names = "fck";
-+			clocks = <&l4per_clkctrl DRA7_TIMER2_CLKCTRL 24>;
- 		};
- 
- 		timer3: timer@48034000 {
-@@ -917,6 +920,10 @@
- 			reg = <0x48034000 0x80>;
- 			interrupts = <GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>;
- 			ti,hwmods = "timer3";
-+			clock-names = "fck";
-+			clocks = <&l4per_clkctrl DRA7_TIMER3_CLKCTRL 24>;
-+			assigned-clocks = <&l4per_clkctrl DRA7_TIMER3_CLKCTRL 24>;
-+			assigned-clock-parents = <&timer_sys_clk_div>;
- 		};
- 
- 		timer4: timer@48036000 {
-@@ -924,6 +931,10 @@
- 			reg = <0x48036000 0x80>;
- 			interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
- 			ti,hwmods = "timer4";
-+			clock-names = "fck";
-+			clocks = <&l4per_clkctrl DRA7_TIMER4_CLKCTRL 24>;
-+			assigned-clocks = <&l4per_clkctrl DRA7_TIMER4_CLKCTRL 24>;
-+			assigned-clock-parents = <&timer_sys_clk_div>;
- 		};
- 
- 		timer5: timer@48820000 {
-diff --git a/arch/arm/mach-omap2/board-generic.c b/arch/arm/mach-omap2/board-generic.c
---- a/arch/arm/mach-omap2/board-generic.c
-+++ b/arch/arm/mach-omap2/board-generic.c
-@@ -330,7 +330,7 @@ DT_MACHINE_START(DRA74X_DT, "Generic DRA74X (Flattened Device Tree)")
- 	.init_late	= dra7xx_init_late,
- 	.init_irq	= omap_gic_of_init,
- 	.init_machine	= omap_generic_init,
--	.init_time	= omap5_realtime_timer_init,
-+	.init_time	= omap3_gptimer_timer_init,
- 	.dt_compat	= dra74x_boards_compat,
- 	.restart	= omap44xx_restart,
- MACHINE_END
-@@ -353,7 +353,7 @@ DT_MACHINE_START(DRA72X_DT, "Generic DRA72X (Flattened Device Tree)")
- 	.init_late	= dra7xx_init_late,
- 	.init_irq	= omap_gic_of_init,
- 	.init_machine	= omap_generic_init,
--	.init_time	= omap5_realtime_timer_init,
-+	.init_time	= omap3_gptimer_timer_init,
- 	.dt_compat	= dra72x_boards_compat,
- 	.restart	= omap44xx_restart,
- MACHINE_END
-diff --git a/arch/arm/mach-omap2/timer.c b/arch/arm/mach-omap2/timer.c
---- a/arch/arm/mach-omap2/timer.c
-+++ b/arch/arm/mach-omap2/timer.c
-@@ -42,6 +42,7 @@
- #include <linux/platform_device.h>
- #include <linux/platform_data/dmtimer-omap.h>
- #include <linux/sched_clock.h>
-+#include <linux/cpu.h>
- 
- #include <asm/mach/time.h>
- #include <asm/smp_twd.h>
-@@ -421,6 +422,53 @@ static void __init dmtimer_clkevt_init_common(struct dmtimer_clockevent *clkevt,
- 		timer->rate);
- }
- 
-+static DEFINE_PER_CPU(struct dmtimer_clockevent, dmtimer_percpu_timer);
-+
-+static int omap_gptimer_starting_cpu(unsigned int cpu)
-+{
-+	struct dmtimer_clockevent *clkevt = per_cpu_ptr(&dmtimer_percpu_timer, cpu);
-+	struct clock_event_device *dev = &clkevt->dev;
-+	struct omap_dm_timer *timer = &clkevt->timer;
-+
-+	clockevents_config_and_register(dev, timer->rate, 3, ULONG_MAX);
-+	irq_force_affinity(dev->irq, cpumask_of(cpu));
-+
-+	return 0;
-+}
-+
-+static int __init dmtimer_percpu_quirk_init(void)
-+{
-+	struct dmtimer_clockevent *clkevt;
-+	struct clock_event_device *dev;
-+	struct device_node *arm_timer;
-+	struct omap_dm_timer *timer;
-+	int cpu = 0;
-+
-+	arm_timer = of_find_compatible_node(NULL, NULL, "arm,armv7-timer");
-+	if (of_device_is_available(arm_timer)) {
-+		pr_warn_once("ARM architected timer wrap issue i940 detected\n");
-+		return 0;
-+	}
-+
-+	for_each_possible_cpu(cpu) {
-+		clkevt = per_cpu_ptr(&dmtimer_percpu_timer, cpu);
-+		dev = &clkevt->dev;
-+		timer = &clkevt->timer;
-+
-+		dmtimer_clkevt_init_common(clkevt, 0, "timer_sys_ck",
-+					   CLOCK_EVT_FEAT_ONESHOT,
-+					   cpumask_of(cpu),
-+					   "assigned-clock-parents",
-+					   500, "percpu timer");
-+	}
-+
-+	cpuhp_setup_state(CPUHP_AP_OMAP_DM_TIMER_STARTING,
-+			  "clockevents/omap/gptimer:starting",
-+			  omap_gptimer_starting_cpu, NULL);
-+
-+	return 0;
-+}
-+
- /* Clocksource code */
- static struct omap_dm_timer clksrc;
- static bool use_gptimer_clksrc __initdata;
-@@ -565,6 +613,9 @@ static void __init __omap_sync32k_timer_init(int clkev_nr, const char *clkev_src
- 					3, /* Timer internal resynch latency */
- 					0xffffffff);
- 
-+	if (soc_is_dra7xx())
-+		dmtimer_percpu_quirk_init();
-+
- 	/* Enable the use of clocksource="gp_timer" kernel parameter */
- 	if (use_gptimer_clksrc || gptimer)
- 		omap2_gptimer_clocksource_init(clksrc_nr, clksrc_src,
-@@ -592,7 +643,7 @@ void __init omap3_secure_sync32k_timer_init(void)
- #endif /* CONFIG_ARCH_OMAP3 */
- 
- #if defined(CONFIG_ARCH_OMAP3) || defined(CONFIG_SOC_AM33XX) || \
--	defined(CONFIG_SOC_AM43XX)
-+	defined(CONFIG_SOC_AM43XX) || defined(CONFIG_SOC_DRA7XX)
- void __init omap3_gptimer_timer_init(void)
- {
- 	__omap_sync32k_timer_init(2, "timer_sys_ck", NULL,
-diff --git a/drivers/clk/ti/clk-7xx.c b/drivers/clk/ti/clk-7xx.c
---- a/drivers/clk/ti/clk-7xx.c
-+++ b/drivers/clk/ti/clk-7xx.c
-@@ -733,6 +733,7 @@ const struct omap_clkctrl_data dra7_clkctrl_data[] __initconst = {
- static struct ti_dt_clk dra7xx_clks[] = {
- 	DT_CLK(NULL, "timer_32k_ck", "sys_32k_ck"),
- 	DT_CLK(NULL, "sys_clkin_ck", "timer_sys_clk_div"),
-+	DT_CLK(NULL, "timer_sys_ck", "timer_sys_clk_div"),
- 	DT_CLK(NULL, "sys_clkin", "sys_clkin1"),
- 	DT_CLK(NULL, "atl_dpll_clk_mux", "atl_cm:0000:24"),
- 	DT_CLK(NULL, "atl_gfclk_mux", "atl_cm:0000:26"),
-diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
---- a/include/linux/cpuhotplug.h
-+++ b/include/linux/cpuhotplug.h
-@@ -118,6 +118,7 @@ enum cpuhp_state {
- 	CPUHP_AP_ARM_L2X0_STARTING,
- 	CPUHP_AP_EXYNOS4_MCT_TIMER_STARTING,
- 	CPUHP_AP_ARM_ARCH_TIMER_STARTING,
-+	CPUHP_AP_OMAP_DM_TIMER_STARTING,
- 	CPUHP_AP_ARM_GLOBAL_TIMER_STARTING,
- 	CPUHP_AP_JCORE_TIMER_STARTING,
- 	CPUHP_AP_ARM_TWD_STARTING,
+dme.
 -- 
-2.32.0
+If I could buy my reasoning, I'd pay to lose.
