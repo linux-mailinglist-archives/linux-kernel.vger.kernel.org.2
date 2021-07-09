@@ -2,156 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03F4E3C1E0B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 06:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A863C1E53
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 06:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229651AbhGIETN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 00:19:13 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:33314 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbhGIETM (ORCPT
+        id S229708AbhGIEeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 00:34:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhGIEeX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 00:19:12 -0400
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 334F320B7178;
-        Thu,  8 Jul 2021 21:16:29 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 334F320B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1625804189;
-        bh=7YN2MB1o16HhRHqHTGbU97I3iPMBzy7xhI6gkzcCu0w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qjAIcxU35cVdxuaBVKYVcDcj1mBtSyY9zOlFCNabzWRdVFAza31D36kjyq2xN0asx
-         BLbk7kKINgI/ODL8EoYCUSiwhRcqx2eF/gZ84xHnTmbUt02zvzR+uhR3vt70KUWDo3
-         1fyMoeXWCtnY16YtCDLpgiQk4TrtcsQSxIJocTrQ=
-Received: by mail-pg1-f175.google.com with SMTP id y4so6188455pgl.10;
-        Thu, 08 Jul 2021 21:16:29 -0700 (PDT)
-X-Gm-Message-State: AOAM530bq5emnfh5NK0tUDHTJsGKy6X6rSEWLxme/9fDVaAS8EaPelVK
-        xARTDDnS2eeXfFBnig+jEFtbK0r0bcK4coBjY8U=
-X-Google-Smtp-Source: ABdhPJxEqRVJU+XVeFuT1F5iksrgNMytcQvQQ+sMscueXp2JkOS8ADs6kJbwyH7yOpVW8c9rUjptMqZr60ii4FYX/k8=
-X-Received: by 2002:a63:fe41:: with SMTP id x1mr4010513pgj.272.1625804178026;
- Thu, 08 Jul 2021 21:16:18 -0700 (PDT)
+        Fri, 9 Jul 2021 00:34:23 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58711C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 21:31:40 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id y42so20669578lfa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 21:31:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6ZCukB0H7lhNNnQd+1bAW9ZLZj+MDCA+DrfCxB87atU=;
+        b=pUpRSDm2GW5P/FpEgw6wyQiZLxOd2tVKIXzj6A8zjb0KklDHXM+cZOnSDg6v0f7plo
+         W6aUpwu3UTZ9S6WvR/hcx/zHyBuzTN/zWGQRqERxd1u8GSxEYB0hX66gU7Bs/dlQrIjL
+         7YvkVCoKDXheMv7OEC+o/UvYwW6Qp3PZJ5qTdZhU+Y6jdsDVgu7lgzz5U8GhW77i7HZ0
+         4rmlUL47ubhtq5vLjMhoGlKKuGKCiUIN2u8Ds3Kr6Gf2SpqOrfEoi69U+WCaZ3RFoX7f
+         b3NH7o74U0kRayyVa1CbeL7zW4fe/xaxK29GdVedbsjQF88Jnm1iWVMGR1NbekBWLTS0
+         /K7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6ZCukB0H7lhNNnQd+1bAW9ZLZj+MDCA+DrfCxB87atU=;
+        b=isMWd/FVtsJChmDBkJ5VAO+kZCtkUoARh0GQP3Y+FvGJz+jB1TIeLcpWqTKkty6RQ2
+         C6Vqa3pecwGc8nQ7B+L5uyo5j8G+9oAju4IRDOM47rZ+klsYfkTyYYmck+TfHXt8JrlG
+         nCtDEq2FLh6VjRmehlXiRbnpDYcG4nl6u4/bsiIIw0juIgcIwXvXVwAHlJkn1ACW5HlB
+         4jWP0XpkWNw9kKJBsgk3OWpdgCh2fDHa2AlOamuchLoOzfnIbF+PBB/bmb8XxkiSYGNI
+         AOurGi7BUDg9ZBT8I74E2nzKGWZoXT5cqFA8uWASiax/oYCvesCScvLj0s1DVmodQuVr
+         D8Bg==
+X-Gm-Message-State: AOAM532ba2mSIVi1feo80OiFVqHNKas9haMDuJPu1jPIElcqdZqJLHe/
+        d0xVbac5qCcZ4HqOS9HjYhelmA==
+X-Google-Smtp-Source: ABdhPJycDcRQ51E+yA+HmmtPei7V60DaErQ5rNIFcsWod+olmwaSk4Z1kb/oTEqlMLkqP2IvNB35ig==
+X-Received: by 2002:a05:6512:3606:: with SMTP id f6mr15858081lfs.370.1625805098524;
+        Thu, 08 Jul 2021 21:31:38 -0700 (PDT)
+Received: from eriador.lan ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id h1sm13028lft.174.2021.07.08.21.31.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jul 2021 21:31:38 -0700 (PDT)
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Michael Turquette <mturquette@baylibre.com>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH v2 0/7] clk: qcom: use power-domain for sm8250's clock controllers
+Date:   Fri,  9 Jul 2021 07:31:29 +0300
+Message-Id: <20210709043136.533205-1-dmitry.baryshkov@linaro.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
- <20210702153947.7b44acdf@linux.microsoft.com> <20210706155131.GS22278@shell.armlinux.org.uk>
- <CAFnufp1hM6WRDigAsSfM94yneRhkmxBoGG7NxRUkbfTR2WQvyA@mail.gmail.com> <CAPv3WKdQ5jYtMyZuiKshXhLjcf9b+7Dm2Lt2cjE=ATDe+n9A5g@mail.gmail.com>
-In-Reply-To: <CAPv3WKdQ5jYtMyZuiKshXhLjcf9b+7Dm2Lt2cjE=ATDe+n9A5g@mail.gmail.com>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Fri, 9 Jul 2021 06:15:42 +0200
-X-Gmail-Original-Message-ID: <CAFnufp0NaPSkMQC-3ne49FL3Ak+UV0a7QoXELvVuMzBR4+GZ_g@mail.gmail.com>
-Message-ID: <CAFnufp0NaPSkMQC-3ne49FL3Ak+UV0a7QoXELvVuMzBR4+GZ_g@mail.gmail.com>
-Subject: Re: [PATCH net-next RFC 0/2] add elevated refcnt support for page pool
-To:     Marcin Wojtas <mw@semihalf.com>
-Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linuxarm@openeuler.org,
-        yisen.zhuang@huawei.com, salil.mehta@huawei.com,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Peter Xu <peterx@redhat.com>,
-        feng.tang@intel.com, Jason Gunthorpe <jgg@ziepe.ca>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>,
-        wenxu <wenxu@ucloud.cn>, Cong Wang <cong.wang@bytedance.com>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Marco Elver <elver@google.com>, netdev@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 7, 2021 at 6:50 PM Marcin Wojtas <mw@semihalf.com> wrote:
->
-> Hi,
->
->
-> =C5=9Br., 7 lip 2021 o 01:20 Matteo Croce <mcroce@linux.microsoft.com> na=
-pisa=C5=82(a):
-> >
-> > On Tue, Jul 6, 2021 at 5:51 PM Russell King (Oracle)
-> > <linux@armlinux.org.uk> wrote:
-> > >
-> > > On Fri, Jul 02, 2021 at 03:39:47PM +0200, Matteo Croce wrote:
-> > > > On Wed, 30 Jun 2021 17:17:54 +0800
-> > > > Yunsheng Lin <linyunsheng@huawei.com> wrote:
-> > > >
-> > > > > This patchset adds elevated refcnt support for page pool
-> > > > > and enable skb's page frag recycling based on page pool
-> > > > > in hns3 drvier.
-> > > > >
-> > > > > Yunsheng Lin (2):
-> > > > >   page_pool: add page recycling support based on elevated refcnt
-> > > > >   net: hns3: support skb's frag page recycling based on page pool
-> > > > >
-> > > > >  drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    |  79 +++++++=
--
-> > > > >  drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |   3 +
-> > > > >  drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c |   1 +
-> > > > >  drivers/net/ethernet/marvell/mvneta.c              |   6 +-
-> > > > >  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c    |   2 +-
-> > > > >  include/linux/mm_types.h                           |   2 +-
-> > > > >  include/linux/skbuff.h                             |   4 +-
-> > > > >  include/net/page_pool.h                            |  30 ++-
-> > > > >  net/core/page_pool.c                               | 215
-> > > > > +++++++++++++++++---- 9 files changed, 285 insertions(+), 57
-> > > > > deletions(-)
-> > > > >
-> > > >
-> > > > Interesting!
-> > > > Unfortunately I'll not have access to my macchiatobin anytime soon,=
- can
-> > > > someone test the impact, if any, on mvpp2?
-> > >
-> > > I'll try to test. Please let me know what kind of testing you're
-> > > looking for (I haven't been following these patches, sorry.)
-> > >
-> >
-> > A drop test or L2 routing will be enough.
-> > BTW I should have the macchiatobin back on friday.
->
-> I have a 10G packet generator connected to 10G ports of CN913x-DB - I
-> will stress mvpp2 in l2 forwarding early next week (I'm mostly AFK
-> this until Monday).
->
 
-I managed to to a drop test on mvpp2. Maybe there is a slowdown but
-it's below the measurement uncertainty.
+On SM8250 both the display and video clock controllers are powered up by
+the MMCX power domain. Handle this by linking clock controllers to the
+proper power domain, and using runtime power management to enable and
+disable the MMCX power domain.
 
-Perf top before:
+Dependencies:
+- https://lore.kernel.org/linux-pm/20210603093438.138705-1-ulf.hansson@linaro.org/ (merged in 5.14)
+- https://lore.kernel.org/linux-arm-msm/20210703005416.2668319-1-bjorn.andersson@linaro.org/
+  (pending)
 
-Overhead  Shared O  Symbol
-   8.48%  [kernel]  [k] page_pool_put_page
-   2.57%  [kernel]  [k] page_pool_refill_alloc_cache
-   1.58%  [kernel]  [k] page_pool_alloc_pages
-   0.75%  [kernel]  [k] page_pool_return_skb_page
+Patches resent because I missed one hunk in the PM domains patch, which
+got stuck in the git index. Now the patch is fixed.
 
-after:
+Changes since v1:
+ - Rebase on top of Bjorn's patches, removing the need for setting
+   performance state directly.
+ - Move runtime PM calls from GDSC code to generic genpd code.
+ - Always call pm_runtime_enable in the Qualcomm generic clock
+   controller code.
+ - Register GDSC power domains as subdomains of the domain powering the
+   clock controller if there is one.
 
-Overhead  Shared O  Symbol
-   8.34%  [kernel]  [k] page_pool_put_page
-   4.52%  [kernel]  [k] page_pool_return_skb_page
-   4.42%  [kernel]  [k] page_pool_sub_bias
-   3.16%  [kernel]  [k] page_pool_alloc_pages
-   2.43%  [kernel]  [k] page_pool_refill_alloc_cache
+----------------------------------------------------------------
+Dmitry Baryshkov (7):
+      dt-bindings: clock: qcom,dispcc-sm8x50: add mmcx power domain
+      dt-bindings: clock: qcom,videocc: add mmcx power domain
+      PM: domains: Add support for runtime PM
+      clk: qcom: gdsc: enable optional power domain support
+      arm64: dts: qcom: sm8250: remove mmcx regulator
+      clk: qcom: dispcc-sm8250: stop using mmcx regulator
+      clk: qcom: videocc-sm8250: stop using mmcx regulator
 
-Regards,
---=20
-per aspera ad upstream
+ .../bindings/clock/qcom,dispcc-sm8x50.yaml         |  7 ++++
+ .../devicetree/bindings/clock/qcom,videocc.yaml    |  7 ++++
+ arch/arm64/boot/dts/qcom/sm8250.dtsi               | 11 ++-----
+ drivers/base/power/domain.c                        | 33 +++++++++++++++++++
+ drivers/clk/qcom/common.c                          | 37 ++++++++++++++++++----
+ drivers/clk/qcom/dispcc-sm8250.c                   |  1 -
+ drivers/clk/qcom/gdsc.c                            |  5 +++
+ drivers/clk/qcom/videocc-sm8250.c                  |  4 ---
+ include/linux/pm_domain.h                          |  6 ++++
+ 9 files changed, 91 insertions(+), 20 deletions(-)
+
+
+
+
+
