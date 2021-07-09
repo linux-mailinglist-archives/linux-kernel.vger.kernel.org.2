@@ -2,134 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 556D03C2A6B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 22:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EA9A3C2A70
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 22:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230130AbhGIUid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 16:38:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhGIUic (ORCPT
+        id S230280AbhGIUj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 16:39:56 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:45661 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229506AbhGIUjz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 16:38:32 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3CEFC0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 13:35:46 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id u66so7920502oif.13
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 13:35:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kHHhyfCEkW/Vi1HiAXRAzBDCaqb5jnujVXbqXt6B/VI=;
-        b=QBAo5MrAzeb+QjdnVM+fmnW1p7a8EJaQumd0VGQeb8KCkDetUWM1EvEaTgEfhpIZVQ
-         PuD4ss+l6YpCGpcPMojzvU60kJB5+bEHC4suvelLBwX2x40IE0ABrAcDmCNMFy16hcYQ
-         knCM5AWV0Op7FTMN9qaT97LNFHcTnKOLrFJpqL26hENd0UDXTL19Y1jbSho/Cq38SpPZ
-         b4O92u7O0Ee4iqGnUfoeJkwYdM3HZlFIVyVQVlROigLaYcalSa1Ymze3DHdQo3tVvw9W
-         cvgU7RWXFXl5dPtv4SFB94N5RaSx7GRLGsbScr4Z95gzvQr52CrixacaGDujxJerv1Uq
-         xPCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kHHhyfCEkW/Vi1HiAXRAzBDCaqb5jnujVXbqXt6B/VI=;
-        b=WbtPpuGYdOPHtNAkqEjK/7tlqXe4BAE6mjkFxc2yAUUkHAudPhabu5lZ6QE8NzVaeQ
-         ry90wTP9iKRnkn6EAufxG++3etNpVCia49kIUUKYRABzTtQMuNF5xB4y1mrpjeRShePb
-         6fkWk2sOwzZwvTkQK9S2ztYxQJBEbA5wMXpuO/vyOdlAF+7ghXEVUQYYh8OC/xWT5aR4
-         FtfJbFQ1nz9PYAWPIMfypAIQ8qJF9RxurBn1c5SWiskm6whj+aOc1+UTCIJAyeFP08vS
-         XLU89BkDnJ/wKHRWq0KDg5X5htRI+ahmshlXcBX+zUeTDlRB6N5H0q+HD0wSGJYIClcw
-         DsLQ==
-X-Gm-Message-State: AOAM533cB6EAyXuvKaPD6qsoLBwWoS+Q196CiArllDL7NLf2a2lSzoQh
-        VHYgkqhc7z1E3TYzox34VlEdf0deelkG1BdP/dJdVg==
-X-Google-Smtp-Source: ABdhPJzayDEww+4shroJsd3DihWck//F1i010OrV/1OXo/8pneLuwkfxzMR5eKSwVek9gvCLe2W9VqCbqA7PQP/apCI=
-X-Received: by 2002:a05:6808:355:: with SMTP id j21mr618879oie.13.1625862945597;
- Fri, 09 Jul 2021 13:35:45 -0700 (PDT)
+        Fri, 9 Jul 2021 16:39:55 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 169KaXOm025930
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 9 Jul 2021 16:36:41 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 320F815C3C9E; Fri,  9 Jul 2021 16:36:33 -0400 (EDT)
+Date:   Fri, 9 Jul 2021 16:36:33 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Vivek Goyal <vgoyal@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, virtio-fs@redhat.com, dwalsh@redhat.com,
+        dgilbert@redhat.com, casey.schaufler@intel.com,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        miklos@szeredi.hu, gscrivan@redhat.com, jack@suse.cz,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH v2 1/1] xattr: Allow user.* xattr on symlink and special
+ files
+Message-ID: <YOizURuWJO9DYGGk@mit.edu>
+References: <20210708175738.360757-1-vgoyal@redhat.com>
+ <20210708175738.360757-2-vgoyal@redhat.com>
+ <20210709091915.2bd4snyfjndexw2b@wittgenstein>
+ <20210709152737.GA398382@redhat.com>
+ <710d1c6f-d477-384f-0cc1-8914258f1fb1@schaufler-ca.com>
 MIME-Version: 1.0
-References: <1625825111-6604-1-git-send-email-weijiang.yang@intel.com> <1625825111-6604-5-git-send-email-weijiang.yang@intel.com>
-In-Reply-To: <1625825111-6604-5-git-send-email-weijiang.yang@intel.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Fri, 9 Jul 2021 13:35:34 -0700
-Message-ID: <CALMp9eQveWT=5fzRe_T6BaDbgpeP+kvxBfWmooEPscqcT8KvBg@mail.gmail.com>
-Subject: Re: [PATCH v5 04/13] KVM: vmx/pmu: Emulate MSR_ARCH_LBR_DEPTH for
- guest Arch LBR
-To:     Yang Weijiang <weijiang.yang@intel.com>
-Cc:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
-        wei.w.wang@intel.com, like.xu.linux@gmail.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Like Xu <like.xu@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <710d1c6f-d477-384f-0cc1-8914258f1fb1@schaufler-ca.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 9, 2021 at 2:51 AM Yang Weijiang <weijiang.yang@intel.com> wrote:
->
-> From: Like Xu <like.xu@linux.intel.com>
->
-> The number of Arch LBR entries available is determined by the value
-> in host MSR_ARCH_LBR_DEPTH.DEPTH. The supported LBR depth values are
-> enumerated in CPUID.(EAX=01CH, ECX=0):EAX[7:0]. For each bit "n" set
-> in this field, the MSR_ARCH_LBR_DEPTH.DEPTH value of "8*(n+1)" is
-> supported.
->
-> On a guest write to MSR_ARCH_LBR_DEPTH, all LBR entries are reset to 0.
-> KVM emulates the reset behavior by introducing lbr_desc->arch_lbr_reset.
-> KVM writes guest requested value to the native ARCH_LBR_DEPTH MSR
-> (this is safe because the two values will be the same) when the Arch LBR
-> records MSRs are pass-through to the guest.
->
-> Signed-off-by: Like Xu <like.xu@linux.intel.com>
-> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
-> ---
+On Fri, Jul 09, 2021 at 08:34:41AM -0700, Casey Schaufler wrote:
+> >> One question, do all filesystem supporting xattrs deal with setting them
+> >> on symlinks/device files correctly?
+> > Wrote a simple bash script to do setfattr/getfattr user.foo xattr on
+> > symlink and device node on ext4, xfs and btrfs and it works fine.
+> 
+> How about nfs, tmpfs, overlayfs and/or some of the other less conventional
+> filesystems?
 
-> @@ -393,6 +417,7 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->  {
->         struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
->         struct kvm_pmc *pmc;
-> +       struct lbr_desc *lbr_desc = vcpu_to_lbr_desc(vcpu);
->         u32 msr = msr_info->index;
->         u64 data = msr_info->data;
->
-> @@ -427,6 +452,12 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->                         return 0;
->                 }
->                 break;
-> +       case MSR_ARCH_LBR_DEPTH:
-> +               if (!arch_lbr_depth_is_valid(vcpu, data))
-> +                       return 1;
+As a suggestion, perhaps you could take your bash script and turn it
+into an xfstests test so we can more easily test various file systems,
+both now and once the commit is accepted, to look for regressions?
 
-Does this imply that, when restoring a vCPU, KVM_SET_CPUID2 must be
-called before KVM_SET_MSRS, so that arch_lbr_depth_is_valid() knows
-what to do? Is this documented anywhere?
+Cheers,
 
-> +               lbr_desc->records.nr = data;
-> +               lbr_desc->arch_lbr_reset = true;
-
-Doesn't this make it impossible to restore vCPU state, since the LBRs
-will be reset on the next VM-entry? At the very least, you probably
-shouldn't set arch_lbr_reset when the MSR write is host-initiated.
-
-However, there is another problem: arch_lbr_reset isn't serialized
-anywhere. If you fix the host-initiated issue, then you still have a
-problem if the last guest instruction prior to suspending the vCPU was
-a write to IA32_LBR_DEPTH. If there is no subsequent VM-entry prior to
-saving the vCPU state, then the LBRs will be saved/restored as part of
-the guest XSAVE state, and they will not get cleared on resuming the
-vCPU.
-
-> +               return 0;
->         default:
->                 if ((pmc = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0)) ||
->                     (pmc = get_gp_pmc(pmu, msr, MSR_IA32_PMC0))) {
-> @@ -566,6 +597,7 @@ static void intel_pmu_init(struct kvm_vcpu *vcpu)
->         lbr_desc->records.nr = 0;
->         lbr_desc->event = NULL;
->         lbr_desc->msr_passthrough = false;
-> +       lbr_desc->arch_lbr_reset = false;
-
-I'm not sure this is entirely correct. If the last guest instruction
-prior to a warm reset was a write to IA32_LBR_DEPTH, then the LBRs
-should be cleared (and arch_lbr_reset will be true). However, if you
-clear that flag here, the LBRs will never get cleared.
-
->  }
->
+					- Ted
