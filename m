@@ -2,264 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 840223C2178
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 11:22:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 006413C217D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 11:23:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231880AbhGIJZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 05:25:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46578 "EHLO
+        id S231908AbhGIJZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 05:25:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231494AbhGIJZQ (ORCPT
+        with ESMTP id S229559AbhGIJZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 05:25:16 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8072C0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 02:22:32 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id y4so6878065pgl.10
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 02:22:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RlfCcmnaKjWMgGf+C5ZyjROOblJXlKUZxKhwFdlX48g=;
-        b=CnWTLC4bogv5Y7mzmfByF6quAwALIuZSTIvaOW83dBVRdcfaALVYOFVi1A/TDZD7ls
-         Fp+qdejH+M+gle+5gOEKVrPYHGKleNmJLn2uBTwzO3BaVINq2PCRCySVqpjx3YbfzJB2
-         LWQfZrRGWV35+jGtc54wuWJNRFN0niL7QnqAs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RlfCcmnaKjWMgGf+C5ZyjROOblJXlKUZxKhwFdlX48g=;
-        b=SVWLkSKOeBtpsfTeyz5edQZlDgJdRkIJ0IQW+P3YIuyg87jQDPP8ZdRVHKYe5fcTdW
-         hNE58m1ISTHVyJMLfOpSlN0QSDWIjegFiI1xohwf+JlThfZcYkBgm4g5g4FZYuamgNjV
-         UrCLr8Q6lPj7Vad5E+66Ic1fJZQmS7qtdpQ0exysr/7NCtp4wp24iR9PlR608Jg4MBUK
-         015R3wIKkV6vp0wMXAxdnSH9jIufuHCWrqkX8VE5PxCYkLZ503uty8AWbHCxz6wMzb6N
-         S1wR4ZVQj++3NMlQG1u1VELPcjU6OOOxJvByf5vQVTakgM6OKvaeeF2u5DrDRCA41/lO
-         4YvA==
-X-Gm-Message-State: AOAM533XW/DUBhB8+ItTGO7g7yoIZKhrqcAB/f6rrDs2+egZoJdUwiR8
-        RiXrEJ9y9l+/Abkv8Nn+eYcM1w==
-X-Google-Smtp-Source: ABdhPJwqj9MiHt6DYZiEJ2d/D4RKw62VV8Ta6btyeDPx0NISIHpwyDaibpJc2AK6094gkv5mHgjYEg==
-X-Received: by 2002:a63:1215:: with SMTP id h21mr36491635pgl.173.1625822552412;
-        Fri, 09 Jul 2021 02:22:32 -0700 (PDT)
-Received: from senozhatsky.flets-east.jp ([2409:10:2e40:5100:a30d:fc4:7834:ee08])
-        by smtp.gmail.com with ESMTPSA id 11sm6577640pge.7.2021.07.09.02.22.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 02:22:32 -0700 (PDT)
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Tomasz Figa <tfiga@chromium.org>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCH] v4l-compliance: re-introduce NON_COHERENT and cache hints tests
-Date:   Fri,  9 Jul 2021 18:22:27 +0900
-Message-Id: <20210709092227.1051346-1-senozhatsky@chromium.org>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+        Fri, 9 Jul 2021 05:25:52 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56AECC0613DD
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 02:23:09 -0700 (PDT)
+Date:   Fri, 09 Jul 2021 09:23:05 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1625822586;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BD9IA4lW18hMcxqDf8zG0RUBQ7QwW0N/dSCMjbStrJM=;
+        b=sQ4FKwB4g7IqftBKZJ29zPUb8rEYJnoyOv/KwvASYl3X6RnFou8PMhzMj2aF5hcFQC8y08
+        yDUTwYYaJP0zBXROlY1RTyAd0qn3FUp16YqQqaGg0UVCz6stGLjRb5zMQTe6bUXrkLQ9Z0
+        GFnrcMHqLG86srMS7DXKr++p7oxLbKJSG0IXapWV52gGX7v+lDqlbbP5JwYuz0+9ZNuanh
+        xF3QFYpVF+YVSJQj8HUgPfvL+FgCJOCk2cLyoSLplKAbTZfjr0UaLwWmZU07udYLR618Lm
+        WC37lVfF38Rog8N5lC+IDv1tV4yXzsORB46DBpll83MiWWuDsYZ0yJ6QBSNIyA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1625822586;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BD9IA4lW18hMcxqDf8zG0RUBQ7QwW0N/dSCMjbStrJM=;
+        b=96ZnaviVnTrytDa8PyZKVGsdc9Us27Tw+SkIc67t0/lJO5S9drzj/nuFxMQcrOyWpC+7gm
+        JhgJwAYQPEL7Q8BQ==
+From:   "irqchip-bot for Marc Zyngier" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
+Subject: [irqchip: irq/irqchip-fixes] irqchip/mips: Fix RCU violation when
+ using irqdomain lookup on interrupt entry
+Cc:     Guenter Roeck <linux@roeck-us.net>, Marc Zyngier <maz@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Serge Semin <fancer.lancer@gmail.com>, tglx@linutronix.de
+In-Reply-To: <20210705172352.GA56304@roeck-us.net>
+References: <20210705172352.GA56304@roeck-us.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <162582258557.395.2971332851330260594.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This returns back non-coherent (previously known as NON_COHERENT)
-memory flag and buffer cache management hints testing (for VB2_MEMORY_MMAP
-buffers).
+The following commit has been merged into the irq/irqchip-fixes branch of irqchip:
 
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+Commit-ID:     1fee9db9b42d821e8007289d4eea74bdf85b1543
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/1fee9db9b42d821e8007289d4eea74bdf85b1543
+Author:        Marc Zyngier <maz@kernel.org>
+AuthorDate:    Tue, 06 Jul 2021 11:38:59 +01:00
+Committer:     Marc Zyngier <maz@kernel.org>
+CommitterDate: Fri, 09 Jul 2021 10:18:58 +01:00
+
+irqchip/mips: Fix RCU violation when using irqdomain lookup on interrupt entry
+
+Since d4a45c68dc81 ("irqdomain: Protect the linear revmap with RCU"),
+any irqdomain lookup requires the RCU read lock to be held.
+
+This assumes that the architecture code will be structured such as
+irq_enter() will be called *before* the interrupt is looked up
+in the irq domain. However, this isn't the case for MIPS, and a number
+of drivers are structured to do it the other way around when handling
+an interrupt in their root irqchip (secondary irqchips are OK by
+construction).
+
+This results in a RCU splat on a lockdep-enabled kernel when the kernel
+takes an interrupt from idle, as reported by Guenter Roeck.
+
+Note that this could have fired previously if any driver had used
+tree-based irqdomain, which always had the RCU requirement.
+
+To solve this, provide a MIPS-specific helper (do_domain_IRQ())
+as the pendent of do_IRQ() that will do thing in the right order
+(and maybe save some cycles in the process).
+
+Ideally, MIPS would be moved over to using handle_domain_irq(),
+but that's much more ambitious.
+
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+[maz: add dependency on CONFIG_IRQ_DOMAIN after report from the kernelci bot]
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Serge Semin <fancer.lancer@gmail.com>
+Link: https://lore.kernel.org/r/20210705172352.GA56304@roeck-us.net
+Link: https://lore.kernel.org/r/20210706110647.3979002-1-maz@kernel.org
 ---
- utils/common/cv4l-helpers.h                 |  8 +--
- utils/common/v4l-helpers.h                  |  8 ++-
- utils/v4l2-compliance/v4l2-test-buffers.cpp | 65 ++++++++++++++++++---
- 3 files changed, 66 insertions(+), 15 deletions(-)
+ arch/mips/include/asm/irq.h      |  3 +++
+ arch/mips/kernel/irq.c           | 16 ++++++++++++++++
+ drivers/irqchip/irq-mips-cpu.c   | 10 ++++++----
+ drivers/irqchip/irq-mips-gic.c   |  8 ++++----
+ drivers/irqchip/irq-pic32-evic.c |  5 ++---
+ 5 files changed, 31 insertions(+), 11 deletions(-)
 
-diff --git a/utils/common/cv4l-helpers.h b/utils/common/cv4l-helpers.h
-index 712efde6..3cee372b 100644
---- a/utils/common/cv4l-helpers.h
-+++ b/utils/common/cv4l-helpers.h
-@@ -754,17 +754,17 @@ public:
- 	int g_fd(unsigned index, unsigned plane) const { return v4l_queue_g_fd(this, index, plane); }
- 	void s_fd(unsigned index, unsigned plane, int fd) { v4l_queue_s_fd(this, index, plane, fd); }
+diff --git a/arch/mips/include/asm/irq.h b/arch/mips/include/asm/irq.h
+index d1477ec..57561e0 100644
+--- a/arch/mips/include/asm/irq.h
++++ b/arch/mips/include/asm/irq.h
+@@ -57,6 +57,9 @@ asmlinkage void plat_irq_dispatch(void);
  
--	int reqbufs(cv4l_fd *fd, unsigned count = 0)
-+	int reqbufs(cv4l_fd *fd, unsigned count = 0, unsigned int flags = 0)
- 	{
--		return v4l_queue_reqbufs(fd->g_v4l_fd(), this, count);
-+		return v4l_queue_reqbufs(fd->g_v4l_fd(), this, count, flags);
- 	}
- 	bool has_create_bufs(cv4l_fd *fd) const
- 	{
- 		return v4l_queue_has_create_bufs(fd->g_v4l_fd(), this);
- 	}
--	int create_bufs(cv4l_fd *fd, unsigned count, const v4l2_format *fmt = NULL)
-+	int create_bufs(cv4l_fd *fd, unsigned count, const v4l2_format *fmt = NULL, unsigned int flags = 0)
- 	{
--		return v4l_queue_create_bufs(fd->g_v4l_fd(), this, count, fmt);
-+		return v4l_queue_create_bufs(fd->g_v4l_fd(), this, count, fmt, flags);
- 	}
- 	int mmap_bufs(cv4l_fd *fd, unsigned from = 0)
- 	{
-diff --git a/utils/common/v4l-helpers.h b/utils/common/v4l-helpers.h
-index f96b3c38..c09cd987 100644
---- a/utils/common/v4l-helpers.h
-+++ b/utils/common/v4l-helpers.h
-@@ -1515,7 +1515,7 @@ static inline int v4l_queue_querybufs(struct v4l_fd *f, struct v4l_queue *q, uns
+ extern void do_IRQ(unsigned int irq);
+ 
++struct irq_domain;
++extern void do_domain_IRQ(struct irq_domain *domain, unsigned int irq);
++
+ extern void arch_init_irq(void);
+ extern void spurious_interrupt(void);
+ 
+diff --git a/arch/mips/kernel/irq.c b/arch/mips/kernel/irq.c
+index 85b6c60..d20e002 100644
+--- a/arch/mips/kernel/irq.c
++++ b/arch/mips/kernel/irq.c
+@@ -21,6 +21,7 @@
+ #include <linux/kallsyms.h>
+ #include <linux/kgdb.h>
+ #include <linux/ftrace.h>
++#include <linux/irqdomain.h>
+ 
+ #include <linux/atomic.h>
+ #include <linux/uaccess.h>
+@@ -107,3 +108,18 @@ void __irq_entry do_IRQ(unsigned int irq)
+ 	irq_exit();
  }
  
- static inline int v4l_queue_reqbufs(struct v4l_fd *f,
--		struct v4l_queue *q, unsigned count)
-+		struct v4l_queue *q, unsigned count, unsigned int flags = 0)
++#ifdef CONFIG_IRQ_DOMAIN
++void __irq_entry do_domain_IRQ(struct irq_domain *domain, unsigned int hwirq)
++{
++	struct irq_desc *desc;
++
++	irq_enter();
++	check_stack_overflow();
++
++	desc = irq_resolve_mapping(domain, hwirq);
++	if (likely(desc))
++		handle_irq_desc(desc);
++
++	irq_exit();
++}
++#endif
+diff --git a/drivers/irqchip/irq-mips-cpu.c b/drivers/irqchip/irq-mips-cpu.c
+index 0bbb0b2..0c7ae71 100644
+--- a/drivers/irqchip/irq-mips-cpu.c
++++ b/drivers/irqchip/irq-mips-cpu.c
+@@ -127,7 +127,6 @@ static struct irq_chip mips_mt_cpu_irq_controller = {
+ asmlinkage void __weak plat_irq_dispatch(void)
  {
- 	struct v4l2_requestbuffers reqbufs;
- 	int ret;
-@@ -1523,6 +1523,7 @@ static inline int v4l_queue_reqbufs(struct v4l_fd *f,
- 	reqbufs.type = q->type;
- 	reqbufs.memory = q->memory;
- 	reqbufs.count = count;
-+	reqbufs.flags = flags;
- 	/*
- 	 * Problem: if REQBUFS returns an error, did it free any old
- 	 * buffers or not?
-@@ -1547,7 +1548,7 @@ static inline bool v4l_queue_has_create_bufs(struct v4l_fd *f, const struct v4l_
+ 	unsigned long pending = read_c0_cause() & read_c0_status() & ST0_IM;
+-	unsigned int virq;
+ 	int irq;
  
- static inline int v4l_queue_create_bufs(struct v4l_fd *f,
- 		struct v4l_queue *q, unsigned count,
--		const struct v4l2_format *fmt)
-+		const struct v4l2_format *fmt, unsigned int flags = 0)
- {
- 	struct v4l2_create_buffers createbufs;
- 	int ret;
-@@ -1555,6 +1556,7 @@ static inline int v4l_queue_create_bufs(struct v4l_fd *f,
- 	createbufs.format.type = q->type;
- 	createbufs.memory = q->memory;
- 	createbufs.count = count;
-+	createbufs.flags = flags;
- 	if (fmt) {
- 		createbufs.format = *fmt;
- 	} else {
-@@ -1733,7 +1735,7 @@ static inline void v4l_queue_free(struct v4l_fd *f, struct v4l_queue *q)
- 	v4l_ioctl(f, VIDIOC_STREAMOFF, &q->type);
- 	v4l_queue_release_bufs(f, q, 0);
- 	v4l_queue_close_exported_fds(q);
--	v4l_queue_reqbufs(f, q, 0);
-+	v4l_queue_reqbufs(f, q, 0, 0);
+ 	if (!pending) {
+@@ -137,12 +136,15 @@ asmlinkage void __weak plat_irq_dispatch(void)
+ 
+ 	pending >>= CAUSEB_IP;
+ 	while (pending) {
++		struct irq_domain *d;
++
+ 		irq = fls(pending) - 1;
+ 		if (IS_ENABLED(CONFIG_GENERIC_IRQ_IPI) && irq < 2)
+-			virq = irq_linear_revmap(ipi_domain, irq);
++			d = ipi_domain;
+ 		else
+-			virq = irq_linear_revmap(irq_domain, irq);
+-		do_IRQ(virq);
++			d = irq_domain;
++
++		do_domain_IRQ(d, irq);
+ 		pending &= ~BIT(irq);
+ 	}
+ }
+diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
+index b146e06..54c7092 100644
+--- a/drivers/irqchip/irq-mips-gic.c
++++ b/drivers/irqchip/irq-mips-gic.c
+@@ -169,8 +169,8 @@ static void gic_handle_shared_int(bool chained)
+ 			generic_handle_domain_irq(gic_irq_domain,
+ 						  GIC_SHARED_TO_HWIRQ(intr));
+ 		else
+-			do_IRQ(irq_find_mapping(gic_irq_domain,
+-						GIC_SHARED_TO_HWIRQ(intr)));
++			do_domain_IRQ(gic_irq_domain,
++				      GIC_SHARED_TO_HWIRQ(intr));
+ 	}
  }
  
- static inline void v4l_queue_buffer_update(const struct v4l_queue *q,
-diff --git a/utils/v4l2-compliance/v4l2-test-buffers.cpp b/utils/v4l2-compliance/v4l2-test-buffers.cpp
-index e40461bd..6997f40b 100644
---- a/utils/v4l2-compliance/v4l2-test-buffers.cpp
-+++ b/utils/v4l2-compliance/v4l2-test-buffers.cpp
-@@ -663,6 +663,10 @@ int testReqBufs(struct node *node)
- 		fail_on_test(q.reqbufs(node, 0));
+@@ -320,8 +320,8 @@ static void gic_handle_local_int(bool chained)
+ 			generic_handle_domain_irq(gic_irq_domain,
+ 						  GIC_LOCAL_TO_HWIRQ(intr));
+ 		else
+-			do_IRQ(irq_find_mapping(gic_irq_domain,
+-						GIC_LOCAL_TO_HWIRQ(intr)));
++			do_domain_IRQ(gic_irq_domain,
++				      GIC_LOCAL_TO_HWIRQ(intr));
+ 	}
+ }
  
- 		for (m = V4L2_MEMORY_MMAP; m <= V4L2_MEMORY_DMABUF; m++) {
-+			bool cache_hints_cap = false;
-+			bool coherent;
-+
-+			cache_hints_cap = q.g_capabilities() & V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS;
- 			if (!(node->valid_memorytype & (1 << m)))
- 				continue;
- 			cv4l_queue q2(i, m);
-@@ -678,8 +682,17 @@ int testReqBufs(struct node *node)
- 			reqbufs.count = 1;
- 			reqbufs.type = i;
- 			reqbufs.memory = m;
-+			reqbufs.flags = V4L2_MEMORY_FLAG_NON_COHERENT;
- 			fail_on_test(doioctl(node, VIDIOC_REQBUFS, &reqbufs));
--			fail_on_test(check_0(reqbufs.reserved, sizeof(reqbufs.reserved)));
-+			coherent = reqbufs.flags & V4L2_MEMORY_FLAG_NON_COHERENT;
-+			if (!cache_hints_cap) {
-+				fail_on_test(coherent);
-+			} else {
-+				if (m == V4L2_MEMORY_MMAP)
-+					fail_on_test(!coherent);
-+				else
-+					fail_on_test(coherent);
-+			}
- 			q.reqbufs(node);
+diff --git a/drivers/irqchip/irq-pic32-evic.c b/drivers/irqchip/irq-pic32-evic.c
+index 34c4b4f..1d9bb28 100644
+--- a/drivers/irqchip/irq-pic32-evic.c
++++ b/drivers/irqchip/irq-pic32-evic.c
+@@ -42,11 +42,10 @@ static void __iomem *evic_base;
  
- 			ret = q.create_bufs(node, 0);
-@@ -692,9 +705,32 @@ int testReqBufs(struct node *node)
- 			node->g_fmt(crbufs.format, i);
- 			crbufs.count = 1;
- 			crbufs.memory = m;
-+			crbufs.flags = V4L2_MEMORY_FLAG_NON_COHERENT;
- 			fail_on_test(doioctl(node, VIDIOC_CREATE_BUFS, &crbufs));
- 			fail_on_test(check_0(crbufs.reserved, sizeof(crbufs.reserved)));
- 			fail_on_test(crbufs.index != q.g_buffers());
-+
-+			coherent = crbufs.flags & V4L2_MEMORY_FLAG_NON_COHERENT;
-+			if (!cache_hints_cap) {
-+				fail_on_test(coherent);
-+			} else {
-+				if (m == V4L2_MEMORY_MMAP)
-+					fail_on_test(!coherent);
-+				else
-+					fail_on_test(coherent);
-+			}
-+
-+			if (cache_hints_cap) {
-+				/*
-+				 * Different memory consistency model. Should fail for MMAP
-+				 * queues which support cache hints.
-+				 */
-+				crbufs.flags = 0;
-+				if (m == V4L2_MEMORY_MMAP)
-+					fail_on_test(doioctl(node, VIDIOC_CREATE_BUFS, &crbufs) != EINVAL);
-+				else
-+					fail_on_test(doioctl(node, VIDIOC_CREATE_BUFS, &crbufs));
-+			}
- 			q.reqbufs(node);
+ asmlinkage void __weak plat_irq_dispatch(void)
+ {
+-	unsigned int irq, hwirq;
++	unsigned int hwirq;
  
- 			fail_on_test(q.create_bufs(node, 1));
-@@ -1207,10 +1243,16 @@ static int setupMmap(struct node *node, cv4l_queue &q)
- 		fail_on_test(buf.querybuf(node, i));
- 		fail_on_test(buf.check(q, Unqueued, i));
+ 	hwirq = readl(evic_base + REG_INTSTAT) & 0xFF;
+-	irq = irq_linear_revmap(evic_irq_domain, hwirq);
+-	do_IRQ(irq);
++	do_domain_IRQ(evic_irq_domain, hwirq);
+ }
  
--		flags = buf.g_flags();
--		flags |= V4L2_BUF_FLAG_NO_CACHE_INVALIDATE;
--		flags |= V4L2_BUF_FLAG_NO_CACHE_CLEAN;
--		buf.s_flags(flags);
-+		/*
-+		 * Do not set cache hints for all the buffers, but only on
-+		 * some of them, so that we can test more cases.
-+		 */
-+		if (i == 0) {
-+			flags = buf.g_flags();
-+			flags |= V4L2_BUF_FLAG_NO_CACHE_INVALIDATE;
-+			flags |= V4L2_BUF_FLAG_NO_CACHE_CLEAN;
-+			buf.s_flags(flags);
-+		}
- 
- 		for (unsigned p = 0; p < buf.g_num_planes(); p++) {
- 			// Try a random offset
-@@ -1250,8 +1292,15 @@ static int setupMmap(struct node *node, cv4l_queue &q)
- 		}
- 		flags = buf.g_flags();
- 		if (cache_hints) {
--			fail_on_test(!(flags & V4L2_BUF_FLAG_NO_CACHE_INVALIDATE));
--			fail_on_test(!(flags & V4L2_BUF_FLAG_NO_CACHE_CLEAN));
-+			if (i == 0) {
-+				/* We do expect cache hints on this buffer */
-+				fail_on_test(!(flags & V4L2_BUF_FLAG_NO_CACHE_INVALIDATE));
-+				fail_on_test(!(flags & V4L2_BUF_FLAG_NO_CACHE_CLEAN));
-+			} else {
-+				/* We expect no cache hints on this buffer */
-+				fail_on_test(flags & V4L2_BUF_FLAG_NO_CACHE_INVALIDATE);
-+				fail_on_test(flags & V4L2_BUF_FLAG_NO_CACHE_CLEAN);
-+			}
- 		} else if (node->might_support_cache_hints) {
- 			fail_on_test(flags & V4L2_BUF_FLAG_NO_CACHE_INVALIDATE);
- 			fail_on_test(flags & V4L2_BUF_FLAG_NO_CACHE_CLEAN);
-@@ -1341,7 +1390,7 @@ int testMmap(struct node *node, struct node *node_m2m_cap, unsigned frame_count,
- 			have_createbufs = false;
- 		if (have_createbufs) {
- 			q.reqbufs(node);
--			q.create_bufs(node, 2, &cur_fmt);
-+			q.create_bufs(node, 2, &cur_fmt, V4L2_MEMORY_FLAG_NON_COHERENT);
- 			fail_on_test(setupMmap(node, q));
- 			q.munmap_bufs(node);
- 			q.reqbufs(node, 2);
--- 
-2.27.0
-
+ static struct evic_chip_data *irqd_to_priv(struct irq_data *data)
