@@ -2,94 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71ED43C2119
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 10:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35B813C211E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 11:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231747AbhGIJBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 05:01:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52578 "EHLO mail.kernel.org"
+        id S231751AbhGIJDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 05:03:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231494AbhGIJBr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 05:01:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D61A761375;
-        Fri,  9 Jul 2021 08:58:59 +0000 (UTC)
-Date:   Fri, 9 Jul 2021 10:58:57 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Tim Murray <timmurray@google.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-Subject: Re: [PATCH 1/1] mm: introduce process_reap system call
-Message-ID: <20210709085857.zf5ik3btet3yw4ab@wittgenstein>
-References: <20210623192822.3072029-1-surenb@google.com>
- <CALCETrU577MD59P-+9sMYtS3t2sZYx-zi=VirhQpZLnhEck1vg@mail.gmail.com>
- <CAJuCfpFMTP-g9CFELMqNawX0FhF4vBNtRDP_R=WAi_RiuGW8-Q@mail.gmail.com>
- <YNzl6XNu2vxyCJu8@cmpxchg.org>
- <CALCETrWsVw4+jT_Z1uxidRAZ0SQbngYe7E2m-8iyX6qRbug6zA@mail.gmail.com>
- <CAJuCfpG5Ua7C4usJGEqTm6_UUd6VyRd0BsPgT97LWOzjb4Ry+g@mail.gmail.com>
- <20210702152724.7fv5tnik4qlap6do@wittgenstein>
- <af8e76f1-6625-25d1-98d2-a3c8a9bf2fd6@redhat.com>
- <YOWcj0+P238W1y+t@dhcp22.suse.cz>
- <CAJuCfpH8QQyxivztkC2-_Kk1MqA0mJVs91XXpvVsL=NzNebshw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAJuCfpH8QQyxivztkC2-_Kk1MqA0mJVs91XXpvVsL=NzNebshw@mail.gmail.com>
+        id S231494AbhGIJDR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 05:03:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA77A613D0;
+        Fri,  9 Jul 2021 09:00:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625821234;
+        bh=VJ16V2VpdcasUBiXG5p6TX1Xjj34GA6UfKAZNthInl4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=c3+1IFqJGIjEd4gUNkskhJH+38PycJK/HOnY83UZWpNB29PFUAxCmI/lzxEsA3rIW
+         2W+UX8Q4SqNmdC4y4UPMuZlldtD4xr72BMwn+7t6GpF8vxksW8JQSU51sjQbxBnagh
+         ZSOEuXyGpFlZthPklSvx4SUCzYz/BMgYW6rCC22LW9JtMm1XEIL6UIy+RX3SljlbNa
+         BsKbgGCnxDNTm30+Rzse4LUW6gE9Vm/PwixpxKxMcC+IOfIwbMFalhMtXKhNxDstoh
+         xYh/LsBlaH6Vx5nx5vlEhbiaoBpEF3clBRc7a4O9kxx94/EdUQDLHoGDaB90JZvcEF
+         tpJobRFVm/ojQ==
+Date:   Fri, 9 Jul 2021 18:00:31 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Shaobo Huang <huangshaobo6@huawei.com>
+Cc:     <gregkh@linuxfoundation.org>, <chenzefeng2@huawei.com>,
+        <kepler.chenxin@huawei.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux@arm.linux.org.uk>,
+        <liucheng32@huawei.com>, <mhiramat@kernel.org>,
+        <nixiaoming@huawei.com>, <tixy@linaro.org>, <xiaoqian9@huawei.com>,
+        <young.liuyang@huawei.com>, <zengweilin@huawei.com>
+Subject: Re: [PATCH 4.4.y] arm: kprobes: Allow to handle reentered kprobe on
+ single-stepping
+Message-Id: <20210709180031.adc7260b54645b0292a6f02a@kernel.org>
+In-Reply-To: <20210709024630.22268-1-huangshaobo6@huawei.com>
+References: <YOcOcNBRou5KlbOR@kroah.com>
+        <20210709024630.22268-1-huangshaobo6@huawei.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 02:14:23PM -0700, Suren Baghdasaryan wrote:
-> On Wed, Jul 7, 2021 at 5:38 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Mon 05-07-21 09:41:54, David Hildenbrand wrote:
-> > > On 02.07.21 17:27, Christian Brauner wrote:
-> > [...]
-> > > > That one was my favorite from the list I gave too but maybe we can
-> > > > satisfy Andy too if we use one of:
-> > > > - process_mfree()
-> > > > - process_mrelease()
-> > > >
-> > >
-> > > FWIW, I tend to like process_mrelease(), due to the implied "release" ("free
-> > > the memory if there are no other references") semantics.
-> >
-> > Agreed.
-> 
-> Ok, sounds like process_mrelease() would be an acceptable compromise.
-> 
-> >
-> > > Further, a new
-> > > syscall feels cleaner than some magic sysfs/procfs toggle. Just my 2 cents.
-> >
-> > Yeah, proc based interface is both tricky to use and kinda ugly now that
-> > pidfd can solve all at in once.
-> 
-> Sounds good. Will keep it as is then.
-> 
-> > My original preference was a more generic kill syscall to allow flags
-> > but a dedicated syscall doesn't look really bad either.
-> 
-> Yeah, I have tried that direction unsuccessfully before arriving at
-> this one. Hopefully it represents the right compromise which can
-> satisfy everyone's usecase.
+Hi Shaobo,
 
-I think a syscall is fine and it's not we're running out of numbers
-(anymore). :)
+Thanks for backporting!
+Greg, it seems this patch can be applied to 4.9 too without any issue.
 
-Christian
+Thank you,
+
+On Fri, 9 Jul 2021 10:46:30 +0800
+Shaobo Huang <huangshaobo6@huawei.com> wrote:
+
+> From: Masami Hiramatsu <mhiramat@kernel.org>
+> 
+> commit f3fbd7ec62dec1528fb8044034e2885f2b257941 upstream
+> 
+> This is arm port of commit 6a5022a56ac3 ("kprobes/x86: Allow to
+> handle reentered kprobe on single-stepping")
+> 
+> Since the FIQ handlers can interrupt in the single stepping
+> (or preparing the single stepping, do_debug etc.), we should
+> consider a kprobe is hit in the NMI handler. Even in that
+> case, the kprobe is allowed to be reentered as same as the
+> kprobes hit in kprobe handlers
+> (KPROBE_HIT_ACTIVE or KPROBE_HIT_SSDONE).
+> 
+> The real issue will happen when a kprobe hit while another
+> reentered kprobe is processing (KPROBE_REENTER), because
+> we already consumed a saved-area for the previous kprobe.
+> 
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> Signed-off-by: Jon Medhurst <tixy@linaro.org>
+> Fixes: 24ba613c9d6c ("ARM kprobes: core code")
+> Cc: stable@vger.kernel.org #v2.6.25~v4.11
+> Signed-off-by: huangshaobo <huangshaobo6@huawei.com>
+> ---
+>  arch/arm/probes/kprobes/core.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/arch/arm/probes/kprobes/core.c b/arch/arm/probes/kprobes/core.c
+> index 3eb018fa1a1f..c3362ddd6c4c 100644
+> --- a/arch/arm/probes/kprobes/core.c
+> +++ b/arch/arm/probes/kprobes/core.c
+> @@ -270,6 +270,7 @@ void __kprobes kprobe_handler(struct pt_regs *regs)
+>  			switch (kcb->kprobe_status) {
+>  			case KPROBE_HIT_ACTIVE:
+>  			case KPROBE_HIT_SSDONE:
+> +			case KPROBE_HIT_SS:
+>  				/* A pre- or post-handler probe got us here. */
+>  				kprobes_inc_nmissed_count(p);
+>  				save_previous_kprobe(kcb);
+> @@ -278,6 +279,11 @@ void __kprobes kprobe_handler(struct pt_regs *regs)
+>  				singlestep(p, regs, kcb);
+>  				restore_previous_kprobe(kcb);
+>  				break;
+> +			case KPROBE_REENTER:
+> +				/* A nested probe was hit in FIQ, it is a BUG */
+> +				pr_warn("Unrecoverable kprobe detected at %p.\n",
+> +					p->addr);
+> +				/* fall through */
+>  			default:
+>  				/* impossible cases */
+>  				BUG();
+> -- 
+> 2.12.3
+> 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
