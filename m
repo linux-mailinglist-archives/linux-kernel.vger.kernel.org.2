@@ -2,97 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0739B3C20E9
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 10:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C84AF3C20EB
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 10:39:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231539AbhGIIlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 04:41:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21661 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231361AbhGIIlF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 04:41:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625819902;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=z6Hk4bJ8S8lcwyhof3193pL12mlYl2MQc8nr7rUonLc=;
-        b=I4oKiRbBfwQ5/0j7WJZ48Wc4jyciMQIR50WnjUoqyYoT+F6TMR6vS076yv+oYTO+f/ZvkI
-        pKFQjVKE5nOyITagK49QcakAS+BZM44oKlmREiLwHaw4uz+Yo7p5NORMVJlXse0KuUKJLj
-        3mNyQbWA3taBXd2dKl7eAtnYGffqAts=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-442-kW-M2W2pOPeYf3W8V_w2gA-1; Fri, 09 Jul 2021 04:38:21 -0400
-X-MC-Unique: kW-M2W2pOPeYf3W8V_w2gA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3EA461018720;
-        Fri,  9 Jul 2021 08:38:20 +0000 (UTC)
-Received: from T590 (ovpn-13-13.pek2.redhat.com [10.72.13.13])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8C27E5C1A3;
-        Fri,  9 Jul 2021 08:38:13 +0000 (UTC)
-Date:   Fri, 9 Jul 2021 16:38:09 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     linux-nvme@lists.infradead.org, Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [bug report] iommu_dma_unmap_sg() is very slow then running IO from
- remote numa node
-Message-ID: <YOgK8fdv7dOQtkET@T590>
+        id S231587AbhGIImW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 04:42:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49986 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231361AbhGIImW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 04:42:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6F9B6127C;
+        Fri,  9 Jul 2021 08:39:36 +0000 (UTC)
+Date:   Fri, 9 Jul 2021 10:39:34 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Carlos Llamas <cmllamas@google.com>,
+        Arve =?utf-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Christian Brauner <christian@brauner.io>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Steven Moreland <smoreland@google.com>,
+        kernel-team@android.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ANDROID: binderfs: add capabilities support
+Message-ID: <20210709083934.ghkohnqq4x23rs7d@wittgenstein>
+References: <20210707162419.15510-1-cmllamas@google.com>
+ <YOXdgrmXAMV1ys/A@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <YOXdgrmXAMV1ys/A@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Jul 07, 2021 at 06:59:46PM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Jul 07, 2021 at 04:24:19PM +0000, Carlos Llamas wrote:
+> > Provide userspace with a mechanism to discover binder driver
+> > capabilities to refrain from using these unsupported features
+> > in the first place. Note that older capabilities are assumed
+> > to be supported and only new ones will be added.
+> 
+> What defines "new" vs. "old"?  Where was the line drawn?
+> 
+> > Signed-off-by: Carlos Llamas <cmllamas@google.com>
+> > ---
+> >  drivers/android/binderfs.c | 45 ++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 45 insertions(+)
+> > 
+> > diff --git a/drivers/android/binderfs.c b/drivers/android/binderfs.c
+> > index e80ba93c62a9..f793887f6dc8 100644
+> > --- a/drivers/android/binderfs.c
+> > +++ b/drivers/android/binderfs.c
+> > @@ -58,6 +58,10 @@ enum binderfs_stats_mode {
+> >  	binderfs_stats_mode_global,
+> >  };
+> >  
+> > +struct binder_capabilities {
+> > +	bool oneway_spam;
+> > +};
+> > +
+> >  static const struct constant_table binderfs_param_stats[] = {
+> >  	{ "global", binderfs_stats_mode_global },
+> >  	{}
+> > @@ -69,6 +73,10 @@ static const struct fs_parameter_spec binderfs_fs_parameters[] = {
+> >  	{}
+> >  };
+> >  
+> > +static struct binder_capabilities binder_caps = {
+> > +	.oneway_spam = true,
+> > +};
+> > +
+> >  static inline struct binderfs_info *BINDERFS_SB(const struct super_block *sb)
+> >  {
+> >  	return sb->s_fs_info;
+> > @@ -583,6 +591,39 @@ static struct dentry *binderfs_create_dir(struct dentry *parent,
+> >  	return dentry;
+> >  }
+> >  
+> > +static int binder_caps_show(struct seq_file *m, void *unused)
+> > +{
+> > +	bool *cap = m->private;
+> > +
+> > +	seq_printf(m, "%d\n", *cap);
+> > +
+> > +	return 0;
+> > +}
+> > +DEFINE_SHOW_ATTRIBUTE(binder_caps);
+> > +
+> > +static int init_binder_caps(struct super_block *sb)
+> > +{
+> > +	struct dentry *dentry, *root;
+> > +	int ret = 0;
+> > +
+> > +	root = binderfs_create_dir(sb->s_root, "caps");
+> > +	if (IS_ERR(root)) {
+> > +		ret = PTR_ERR(root);
+> > +		goto out;
+> > +	}
+> > +
+> > +	dentry = binderfs_create_file(root, "oneway_spam",
+> > +				      &binder_caps_fops,
+> > +				      &binder_caps.oneway_spam);
+> > +	if (IS_ERR(dentry)) {
+> > +		ret = PTR_ERR(dentry);
+> > +		goto out;
+> 
+> If this fails, you still report that an error happened, yet you do not
+> remove the directory?  Is that intended?
+> 
+> And where is this new file documented?  Where are the existing binderfs
+> files documented?
 
-I observed that NVMe performance is very bad when running fio on one
-CPU(aarch64) in remote numa node compared with the nvme pci numa node.
+When I wrote it I added documentation to:
 
-Please see the test result[1] 327K vs. 34.9K.
+Documentation/admin-guide/binderfs.rst
 
-Latency trace shows that one big difference is in iommu_dma_unmap_sg(),
-1111 nsecs vs 25437 nsecs.
+So the new caps directory and file should be documented there.
 
+I would also suggest to add a simple test reading this new caps
+directory and the new file in there to:
 
-[1] fio test & results
+tools/testing/selftests/filesystems/binderfs_test.c
 
-1) fio test result:
-
-- run fio on local CPU
-taskset -c 0 ~/git/tools/test/nvme/io_uring 10 1 /dev/nvme1n1 4k
-+ fio --bs=4k --ioengine=io_uring --fixedbufs --registerfiles --hipri --iodepth=64 --iodepth_batch_submit=16 --iodepth_batch_complete_min=16 --filename=/dev/nvme1n1 --direct=1 --runtime=10 --numjobs=1 --rw=randread --name=test --group_reporting
-
-IOPS: 327K
-avg latency of iommu_dma_unmap_sg(): 1111 nsecs
-
-
-- run fio on remote CPU
-taskset -c 80 ~/git/tools/test/nvme/io_uring 10 1 /dev/nvme1n1 4k
-+ fio --bs=4k --ioengine=io_uring --fixedbufs --registerfiles --hipri --iodepth=64 --iodepth_batch_submit=16 --iodepth_batch_complete_min=16 --filename=/dev/nvme1n1 --direct=1 --runtime=10 --numjobs=1 --rw=randread --name=test --group_reporting
-
-IOPS: 34.9K
-avg latency of iommu_dma_unmap_sg(): 25437 nsecs
-
-2) system info
-[root@ampere-mtjade-04 ~]# lscpu | grep NUMA
-NUMA node(s):                    2
-NUMA node0 CPU(s):               0-79
-NUMA node1 CPU(s):               80-159
-
-lspci | grep NVMe
-0003:01:00.0 Non-Volatile memory controller: Samsung Electronics Co Ltd NVMe SSD Controller SM981/PM981/PM983
-
-[root@ampere-mtjade-04 ~]# cat /sys/block/nvme1n1/device/device/numa_node
-0
-
-
-
-Thanks, 
-Ming
-
+Christian
