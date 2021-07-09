@@ -2,77 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 388943C2034
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 09:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B1783C203A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 09:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231391AbhGIHv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 03:51:59 -0400
-Received: from mail-vk1-f176.google.com ([209.85.221.176]:36709 "EHLO
-        mail-vk1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231236AbhGIHv6 (ORCPT
+        id S231296AbhGIHyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 03:54:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231146AbhGIHyu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 03:51:58 -0400
-Received: by mail-vk1-f176.google.com with SMTP id h9so1400858vkp.3;
-        Fri, 09 Jul 2021 00:49:14 -0700 (PDT)
+        Fri, 9 Jul 2021 03:54:50 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3185AC0613DD
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 00:52:06 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id p14-20020a17090ad30eb02901731c776526so5467129pju.4
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 00:52:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=O9yEJ/RI8DyqTUqQc7qvFOA41xcGAb9AUJUpJSi1YCk=;
+        b=hykJA/Js2Xkhhe70Ko9i6iWvtj5MCdYDu7B/4u+DpVpsKePBnWY5j4t4PmJ+/N5Tma
+         i74pAgLdfgxkaGf4SgAwZgceXKJ7rvLOQBWSmhuTfRMGbGSTEGg8Y90WlqU6AxZc1+ne
+         VnQDpGlScVjcXYoN01FMKeV5pUHPa6XpOQzAU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ehlBa+HtjKV4+ykQO254b/PW48csECL6xnzySzLyqo8=;
-        b=gObfKyggDkREeJNMs9B2nYQHQCO++VS4LVWB2LJ8AZXN6eb4uVR75bPyEdDDOeYCzw
-         GqrOevPX3K+zl6K/8V62X3dFZtyhhhi5B0BVNB0/yBFsdyIxK5/9lzAR0xlF0/qznmf5
-         zYk4WAG813/X+J5dh1rrOH6NWGU1qxiQPy/JZAGycpHdnlu85Pi8xfECYc6gqIQqaSqN
-         oys5q6WW38BGnYdbKWkVdFA22sdrbVmi00+tTblCkaf3fyttispPuw+TZPazTqftRsFr
-         eX9DWvv1iqw21jni4mg0c+kQrTGt5N/COskXavtzcRTZoYvQ3Y1oAkiKkYfMHE5eBIZ7
-         csFQ==
-X-Gm-Message-State: AOAM531NAatWibdFZGNgQapYufniG/GO5WJDEEtNNpLD95m3gPtkUeI4
-        tsEy4bkASF7oyZWKiGOUPlQjD+rqltVVz7nH/0I=
-X-Google-Smtp-Source: ABdhPJw2UDBcz9da1MB6qrpiT6AxAXFguCuHCKvYha65Fne8x78kJ+6SQYYVOOu55/IoqF0T6RhQj6eIUds0SfdAcrg=
-X-Received: by 2002:a05:6122:588:: with SMTP id i8mr20230622vko.6.1625816953655;
- Fri, 09 Jul 2021 00:49:13 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=O9yEJ/RI8DyqTUqQc7qvFOA41xcGAb9AUJUpJSi1YCk=;
+        b=H6MJXSUlPsksRRKYJqd+rDjk6Os5PPBbD7TR8sTde2K8LfFExh9gcW6nNmFBb2aasI
+         Nxuwsv7cJwPaZ9V2qOmRgzHmF3PvddXy5h8TWikZZJHG2M+gchzcjujt7a9m5QlwitRY
+         v48ci8pQiAlC08qRqGBCQun8bznOrTg7vV9CoshM+MEWCp5EpFWlyyK6Tvmuq8j4PDm6
+         6jY2OkG36fVjEOid3C2mTjin4FLpaNqZ4NiqlOdLvKYXRd4uo7Xb3/13omW88GtU4NQQ
+         9KvtYXP3L2lhUzKJjH1rf7FlwxV/upCjq8r2ErgAwD7GJkX2NwG8Nj/g0hxeCG43ti/N
+         vzeA==
+X-Gm-Message-State: AOAM530Bmbz2cgHa+4/xkRm1sQUpHaBbo1epPq1hFahMwXEHaS8ezqDQ
+        9GUqbJfKnNPLSzx0gnpiFvhTGQ==
+X-Google-Smtp-Source: ABdhPJy5Iba/1n9IqX8ohIsdLkvuWXlXJvMJv1c0Hhbuj+FFhPRYR/07l1fWcSHSalGaLyrQsw0tBg==
+X-Received: by 2002:a17:90a:5d16:: with SMTP id s22mr36261212pji.48.1625817125628;
+        Fri, 09 Jul 2021 00:52:05 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:a30d:fc4:7834:ee08])
+        by smtp.gmail.com with ESMTPSA id 194sm5349713pfy.51.2021.07.09.00.52.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Jul 2021 00:52:05 -0700 (PDT)
+Date:   Fri, 9 Jul 2021 16:52:00 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     David Edmondson <dme@dme.org>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCHv2 2/4] arm64: add guest pvstate support
+Message-ID: <YOgAIOBVhhD+on93@google.com>
+References: <20210709043713.887098-1-senozhatsky@chromium.org>
+ <20210709043713.887098-3-senozhatsky@chromium.org>
+ <m2v95k2axe.fsf@dme.org>
 MIME-Version: 1.0
-References: <20210709010055.86663-1-someguy@effective-light.com>
-In-Reply-To: <20210709010055.86663-1-someguy@effective-light.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 9 Jul 2021 09:49:02 +0200
-Message-ID: <CAMuHMdWhs4en-yR9ic+d4V9M_0BUFX40rP0M=tZRGMaUy2wv3g@mail.gmail.com>
-Subject: Re: [PATCH] fbcon: garbage collect fbdev scrolling acceleration
-To:     Hamza Mahfooz <someguy@effective-light.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        George Kennedy <george.kennedy@oracle.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Pavel Machek <pavel@ucw.cz>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <m2v95k2axe.fsf@dme.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 9, 2021 at 3:04 AM Hamza Mahfooz
-<someguy@effective-light.com> wrote:
-> As per commit 39aead8373b3 ("fbcon: Disable accelerated scrolling"), we can
-> now remove all of the code that was made redundant by disabling scrolling
-> acceleration.
+On (21/07/09 08:39), David Edmondson wrote:
+[..]
+> > +
+> > +static bool has_pv_vcpu_state(void)
+> > +{
+> > +	struct arm_smccc_res res;
+> > +
+> > +	/* To detect the presence of PV time support we require SMCCC 1.1+ */
+> 
+> "PV VCPU state support" rather than "PV time support".
 
-Bummer, more code to revert to re-enable acceleration in the _56_
-fbdev drivers using acceleration (some of them unusable without),
-despite commit 39aead8373b3 claiming "No other driver supportes
-accelerated fbcon"...
+Indeed. Thanks.
 
-Gr{oetje,eeting}s,
+[..]
+> > +static int pv_vcpu_state_register_hooks(void)
+> > +{
+> > +	int ret;
+> > +
+> > +	ret = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN,
+> > +				"hypervisor/arm/pvstate:starting",
+> > +				vcpu_state_init,
+> > +				vcpu_state_release);
+> > +	if (ret < 0)
+> > +		pr_warn("Failed to register CPU hooks\n");
+> 
+> Include that it's PV VCPU state hooks?
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Ack.
