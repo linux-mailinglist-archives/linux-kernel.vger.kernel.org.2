@@ -2,102 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A88263C224F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 12:38:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E5753C2254
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 12:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229877AbhGIKl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 06:41:27 -0400
-Received: from mout.gmx.net ([212.227.17.22]:50057 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229641AbhGIKl0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 06:41:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1625827104;
-        bh=dmnsbIWk0nset7dhBQ9h1s9ni+AQTT4cJf8My5/V3U0=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=f5WnjM+VaLylQA+8+GuXR7H8whZMW9Tth2ckqJdq2TXWnxDwCSwnE567o//z0d0Wd
-         nHqdImvP1Ttc3LSg1tGPzBMg/jheZDZA1SWPGpsfU5zaQ6xs6sNT9rrQv1S04w0zU4
-         xEl4kuYY62AjKgaLmt270S/dpdR4pFee94cDX4AA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [80.245.72.148] ([80.245.72.148]) by web-mail.gmx.net
- (3c-app-gmx-bap43.server.lan [172.19.172.113]) (via HTTP); Fri, 9 Jul 2021
- 12:38:24 +0200
-MIME-Version: 1.0
-Message-ID: <trinity-ac304676-173c-42c6-837c-38e62971ede0-1625827104214@3c-app-gmx-bap43>
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     Enric Balletbo Serra <eballetbo@gmail.com>
-Cc:     CK Hu <ck.hu@mediatek.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        chunkuang Hu <chunkuang.hu@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Collabora Kernel ML <kernel@collabora.com>
-Subject: Aw: Re: Re: BUG: MTK DRM/HDMI broken on 5.13 (mt7623/bpi-r2)
-Content-Type: text/plain; charset=UTF-8
-Date:   Fri, 9 Jul 2021 12:38:24 +0200
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <CAFqH_52OdB+H+yLh-b8ndbS_w3uwFyQEkZ-y2RQ2RnKnMEt6vQ@mail.gmail.com>
-References: <trinity-cc8f5927-9aaf-43ae-a107-6a6229f1b481-1625565279264@3c-app-gmx-bs60>
- <25d61873-38ae-5648-faab-03431b74f777@collabora.com>
- <trinity-e6443313-a436-4e9d-a93c-1bef1cce135d-1625736911475@3c-app-gmx-bap19>
- <trinity-3f4f4b55-7e39-4d80-8fc3-7d0e2b3026de-1625758259993@3c-app-gmx-bap19>
- <trinity-fd86a04e-81b6-45f0-8ab4-5c21655bdf53-1625824929532@3c-app-gmx-bap43>
- <CAFqH_52OdB+H+yLh-b8ndbS_w3uwFyQEkZ-y2RQ2RnKnMEt6vQ@mail.gmail.com>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:muffxs4aezILt2UyUlQ93ZSkDRulvqVdkx+j5agssMTXU875Oz1fv9Tz5iDhWeg2hjbH0
- Oye7YLDYcf8bJTz1b4Mjb7uuaoT3MSRq5wfNGatPq5goTj/ScVDQgSEoMD51RrO29pSyKmmbUYkH
- SAsQ5BRMA1VW6SXHxdzVNFrh+CRjugnh7YsHgmoYcPwUj69fIso0NpyE9Iv+jE5MsFSNwNWIu2ki
- JLLg0nC9oUUD1/Sa4zWUYdqh0AF4D8yU2g8WMZHQQj/sW5ZTKrtz1RYzLip534AEZ2shbixerJKt
- HA=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:06RW9iJ3g3w=:9nyJxXy0IvK8vq2Hqz7VvN
- sGc89fXVi02zmNnxVJdKosLH7WbITc7S/qreaebnMgE5yKeSVJkpcdLX/epI+52liEWiEKY7S
- kSggzV3S5Verwuf7Vp4BmIf0MHjuj18YI/UzuP+xLorATgozgIDCbqGI19Opj6L2IPB0jLuoY
- CRkJ7FpZZYNcm6jixMJ42PPVn5UJdGnBVdYicGuPn7bH3WvUOzy/GM1xVqdXa6GW9qrQGkLti
- YFKoP7Tg/uYlH3Tfdfi+W0BKQco1A+Xn86V3a4O8dhzd5Di+QrYIixueV1kNABIqYm3lFauWt
- jgoxvYd50G5+vAA49KE4vghVAVmagku16EDe+Ya0ymNMbcfEMyNlbxjra9SVOfJEd2GHTRaCa
- U/6TmPRyLtVsThALy9eRthvJLmDENGzkr64Fdb1OLr3b7XU6cSW9fmo/DX5dkgoiyvBdPOk3B
- IN4ZOf8EMlHZXW5IKA+VtkKHwOjV6FG0oOqTbNebD8Y2JxzPMpA/5XcoEuyt404EnLa/zx+o1
- 5CKCX6OPqrqxHLOtAbUqIiQXvrtyJaPTnNK5ReocJ8DW3Qh1tujpBoti2NEXhJfLGaVVBTwAa
- VyWjn6jgIrtjNq3OlwMhUdbQCFTEX/XHU+XcNHyUbVih1VIFmKyv7TlY03k0FWGPSeCebM2Ye
- hx2zd4Te4yhHjqExY0TJpD3MItuIUCdWpgqp2Lg0C31SjgoBTsuPlrEc8DJ2BJfHBJDSiUoQS
- pSwYsOe2GJtikn/K92rNoXOTtbbYFgpnvTzya89ZpmFNd1SyfTpB/QMeIt4Zh+lDB75LyMN8c
- V9rs2u8YXgLpe1IKwsqnTPje45N6bz9FH+0RRnSOZ0vD1tadrs=
-Content-Transfer-Encoding: quoted-printable
+        id S229986AbhGIKoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 06:44:11 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:55047 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229790AbhGIKoJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 06:44:09 -0400
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 09 Jul 2021 03:41:26 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 09 Jul 2021 03:41:24 -0700
+X-QCInternal: smtphost
+Received: from kalyant-linux.qualcomm.com ([10.204.66.210])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 09 Jul 2021 16:10:51 +0530
+Received: by kalyant-linux.qualcomm.com (Postfix, from userid 94428)
+        id 58BFB4B7F; Fri,  9 Jul 2021 03:40:49 -0700 (PDT)
+From:   Kalyan Thota <kalyan_t@codeaurora.org>
+To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
+Cc:     Kalyan Thota <kalyan_t@codeaurora.org>,
+        linux-kernel@vger.kernel.org, robdclark@gmail.com,
+        dianders@chromium.org, mkrishn@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, rnayak@codeaurora.org
+Subject: [v1] drm/msm/disp/dpu1: add safe lut config in dpu driver
+Date:   Fri,  9 Jul 2021 03:40:44 -0700
+Message-Id: <1625827244-23274-1-git-send-email-kalyan_t@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add safe lut configuration for all the targets in dpu
+driver as per QOS recommendation.
 
-> Gesendet: Freitag, 09. Juli 2021 um 12:24 Uhr
-> Von: "Enric Balletbo Serra" <eballetbo@gmail.com>
-> If this is the offending commit, could you try if the following patch
-> fixes the issue for you?
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/matthias.bgg/linux.git/c=
-ommit/?h=3Dv5.13-next/fixes&id=3Ddb39994e0bd852c6612a9709e63c09b98b161e00
->
-> If not, and that patch is the offending commit, it probably means that
-> the default routing table doesn't work for mt7623. Needs a specific
-> soc table.
+Issue reported on SC7280:
 
-Hi Eric,
+With wait-for-safe feature in smmu enabled, RT client
+buffer levels are checked to be safe before smmu invalidation.
+Since display was always set to unsafe it was delaying the
+invalidaiton process thus impacting the performance on NRT clients
+such as eMMC and NVMe.
 
-thanks for response, but it does not fix the issue for me. hdmi on mt7623 =
-is DPI not DSI. There is already a mt7623 specific routing-table defined (=
-one for DPI/HDMI and one for external=3DDSI/MIPI):
+Validated this change on SC7280, With this change eMMC performance
+has improved significantly.
 
-https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/mediatek/mt=
-k_drm_drv.c#L74
+Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-maybe it can be included or compared with the "default" route?
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+index d01c4c9..2e482cd 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+@@ -974,6 +974,7 @@ static const struct dpu_perf_cfg sdm845_perf_data = {
+ 	.amortizable_threshold = 25,
+ 	.min_prefill_lines = 24,
+ 	.danger_lut_tbl = {0xf, 0xffff, 0x0},
++	.safe_lut_tbl = {0xfff0, 0xf000, 0xffff},
+ 	.qos_lut_tbl = {
+ 		{.nentry = ARRAY_SIZE(sdm845_qos_linear),
+ 		.entries = sdm845_qos_linear
+@@ -1001,6 +1002,7 @@ static const struct dpu_perf_cfg sc7180_perf_data = {
+ 	.min_dram_ib = 1600000,
+ 	.min_prefill_lines = 24,
+ 	.danger_lut_tbl = {0xff, 0xffff, 0x0},
++	.safe_lut_tbl = {0xfff0, 0xff00, 0xffff},
+ 	.qos_lut_tbl = {
+ 		{.nentry = ARRAY_SIZE(sc7180_qos_linear),
+ 		.entries = sc7180_qos_linear
+@@ -1028,6 +1030,7 @@ static const struct dpu_perf_cfg sm8150_perf_data = {
+ 	.min_dram_ib = 800000,
+ 	.min_prefill_lines = 24,
+ 	.danger_lut_tbl = {0xf, 0xffff, 0x0},
++	.safe_lut_tbl = {0xfff8, 0xf000, 0xffff},
+ 	.qos_lut_tbl = {
+ 		{.nentry = ARRAY_SIZE(sm8150_qos_linear),
+ 		.entries = sm8150_qos_linear
+@@ -1056,6 +1059,7 @@ static const struct dpu_perf_cfg sm8250_perf_data = {
+ 	.min_dram_ib = 800000,
+ 	.min_prefill_lines = 35,
+ 	.danger_lut_tbl = {0xf, 0xffff, 0x0},
++	.safe_lut_tbl = {0xfff0, 0xff00, 0xffff},
+ 	.qos_lut_tbl = {
+ 		{.nentry = ARRAY_SIZE(sc7180_qos_linear),
+ 		.entries = sc7180_qos_linear
+@@ -1084,6 +1088,7 @@ static const struct dpu_perf_cfg sc7280_perf_data = {
+ 	.min_dram_ib = 1600000,
+ 	.min_prefill_lines = 24,
+ 	.danger_lut_tbl = {0xffff, 0xffff, 0x0},
++	.safe_lut_tbl = {0xff00, 0xff00, 0xffff},
+ 	.qos_lut_tbl = {
+ 		{.nentry = ARRAY_SIZE(sc7180_qos_macrotile),
+ 		.entries = sc7180_qos_macrotile
+-- 
+2.7.4
 
-regards Frank
