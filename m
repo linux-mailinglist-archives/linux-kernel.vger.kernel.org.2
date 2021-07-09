@@ -2,268 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C41AF3C23EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:02:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97CD33C23E8
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231682AbhGINFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 09:05:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231622AbhGINFF (ORCPT
+        id S231572AbhGINEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 09:04:52 -0400
+Received: from mxout70.expurgate.net ([194.37.255.70]:45479 "EHLO
+        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229671AbhGINEv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 09:05:05 -0400
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6157FC0613E6
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 06:02:22 -0700 (PDT)
-Received: by mail-vs1-xe31.google.com with SMTP id f7so4042573vsa.9
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 06:02:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TAIZJVlH8Y2YqNZo8d2pJK9Ss3UycuHLJWPexBI7axE=;
-        b=A16X2V42weuudBPxgonBeebw8re+EWAjOn3wZP98m7gV1L5RlqklKfjCFeKKq2vubB
-         IZMArHgMAToqcWDiPDV8U5GBOm+SQE9hgTLxqyBdoAx+cNMx/wcDnOEpu5lxWAZh+s5J
-         wDa+yhcRmrDI99UodVFIhL7bIhWqeHDr8vDbFkNd15DjrQo0ziTi6SiazD449lC6Tie1
-         nEHy09WmaPxidVJ69xUj4MsCQD8zqtQ2+fpxJ2R4H19NZy0b+m+my5U7+cxvb1eefzPH
-         GNTnhJQbcbTQtJYTJxYLQQfaup2gPfByEqRGlTbt5oC9A3nSSrj94KXk48ywk7cAhEqs
-         eL/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TAIZJVlH8Y2YqNZo8d2pJK9Ss3UycuHLJWPexBI7axE=;
-        b=V0dmmd7Q87ya+3S2chuvTL98qOMOSkPMm3gWy6uHeF9oGdjPTtcCt+TK885zMFX/V6
-         livBRLRT7fn1YZp2ajpHrkv6VCHoUp//l2qAeBhLWwQU/tmrIPKbEK60jTc3aR73uDK/
-         oCmCM/3ClvyrXf85d1D8oefhJSyJ33exATAy75kmqg+7ZF1bYLoo9shqOpAehWl7NRjm
-         kGHQesT6sT1gYgx9MMxrqDdK/xLrFhpc+IdT9pAXKeJ0JLv8tFmc4PiJOkXjxfFWuALY
-         R7Ro9Trf38uO/OE3Lt6kpGivHbfWp3T37jZzEZ6urYa/RG0817ujA0kscNF/WEBVVOQk
-         KUAg==
-X-Gm-Message-State: AOAM532lks40GuC3A/g3C+y6hbQF5/VD8YENNu2exvz3k9yrzi2fy3Zh
-        PNhlgRegPDjck8TrPb/oCB0CNrvOtgfIEcTy/juFxA==
-X-Google-Smtp-Source: ABdhPJyEvDZ4fadDrPqh33c2U9yNN2X8cR1YJgisOMsbHDKd7A3qWQidNaZTN61mOdKuvkYE5Eav6Sub5yE7kPQoEGM=
-X-Received: by 2002:a67:8c46:: with SMTP id o67mr35000628vsd.34.1625835741333;
- Fri, 09 Jul 2021 06:02:21 -0700 (PDT)
+        Fri, 9 Jul 2021 09:04:51 -0400
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.92)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1m1q8g-0007AX-Il; Fri, 09 Jul 2021 15:01:54 +0200
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1m1q8d-0002Wf-0i; Fri, 09 Jul 2021 15:01:51 +0200
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id 42704240041;
+        Fri,  9 Jul 2021 15:01:50 +0200 (CEST)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id 96504240040;
+        Fri,  9 Jul 2021 15:01:49 +0200 (CEST)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id 35DF220196;
+        Fri,  9 Jul 2021 15:01:49 +0200 (CEST)
 MIME-Version: 1.0
-References: <20210701232728.23591-1-digetx@gmail.com>
-In-Reply-To: <20210701232728.23591-1-digetx@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 9 Jul 2021 15:01:45 +0200
-Message-ID: <CAPDyKFry00yzp9upsVy+yb7oX-k-bBgfrff+Q7qbK0cGh8ishQ@mail.gmail.com>
-Subject: Re: [PATCH v7 00/37] NVIDIA Tegra power management patches for 5.15
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 09 Jul 2021 15:01:49 +0200
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     hauke@hauke-m.de, martin.blumenstingl@googlemail.com,
+        f.fainelli@gmail.com, andrew@lunn.ch, hkallweit1@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: phy: intel-xway: Add RGMII internal delay
+ configuration
+Organization: TDT AG
+In-Reply-To: <20210709122658.GA22278@shell.armlinux.org.uk>
+References: <20210709115726.11897-1-ms@dev.tdt.de>
+ <20210709122658.GA22278@shell.armlinux.org.uk>
+Message-ID: <2811b4b95827a8b2988e31afd47a6514@dev.tdt.de>
+X-Sender: ms@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.16
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED autolearn=ham
+        autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
+X-purgate-type: clean
+X-purgate-ID: 151534::1625835711-00007B90-695157FA/0/0
+X-purgate: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2 Jul 2021 at 01:28, Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> Hello,
->
-> This series continues the work on enabling voltage scaling of the core
-> power domain for NVIDIA Tegra SoCs. All the previous grounding work around
-> improving OPP API and adding the initial core power domain driver is now
-> landing into 5.14 kernel and already available in linux-next.
->
-> The biggest challenge left so far is the power management of the PLLs
-> and system clocks which don't have a dedicated hardware unit. I made a lot
-> of changes around it by going back to a variant where individual device
-> drivers are responsible for the power management in oppose to a recent
-> variant where the most of power management was done by the clk controller
-> driver. This allowed to drop the need of having a special lockdep
-> annotation for the power domain's mutex, which Ulf Hansson didn't like
-> previously. We don't have situations of a nested GENPD accesses anymore.
-> It also allowed to minimize the clk patch a lot. Now clk driver manages
-> power of the internal clocks only.
->
-> This series enables a full power management for Tegra20 and Tegra30 SoCs.
-> It doesn't include all the device-tree binding patches. I'll try to split
-> this series into a smaller parts that could be applied individually. For
-> now I want to get a feedback at least on the first six patches.
->
-> Example /sys/kernel/debug/pm_genpd/pm_genpd_summary from Tegra20 Acer A500:
->
-> domain                          status          children                           performance
->     /device                                             runtime status
-> ----------------------------------------------------------------------------------------------
-> mpe                             off-0                                              0
->     /devices/soc0/50000000.host1x/54040000.mpe          suspended                  0
-> vdec                            off-0                                              0
->     /devices/soc0/6001a000.vde                          suspended                  0
-> venc                            off-0                                              0
->     /devices/soc0/50000000.host1x/54080000.vi           suspended                  0
->     /devices/soc0/50000000.host1x/54100000.isp          suspended                  0
-> 3d                              off-0                                              0
->     /devices/soc0/50000000.host1x/54180000.gr3d         suspended                  0
-> core-domain                     on                                                 1100000
->                                                 3d, venc, vdec, mpe
->     /devices/soc0/50000000.host1x                       active                     1100000
->     /devices/soc0/50000000.host1x/540c0000.epp          suspended                  0
->     /devices/soc0/50000000.host1x/54140000.gr2d         suspended                  0
->     /devices/soc0/50000000.host1x/54280000.hdmi         suspended                  0
->     /devices/soc0/c5000000.usb                          active                     1100000
->     /devices/soc0/c5008000.usb                          active                     1100000
->     /devices/soc0/c8000000.mmc                          active                     1000000
->     /devices/soc0/c8000400.mmc                          active                     1000000
->     /devices/soc0/c8000600.mmc                          active                     1000000
->     /devices/soc0/7000f400.memory-controller            active                     1000000
->     /devices/platform/tegra_clk_sclk                    active                     950000
->     /devices/soc0/50000000.host1x/54200000.dc           active                     950000
->     /devices/soc0/50000000.host1x/54240000.dc           suspended                  0
->
->
-> Example /sys/kernel/debug/pm_genpd/pm_genpd_summary from Tegra30 Nexus 7:
->
-> domain                          status          children                           performance
->     /device                                             runtime status
-> ----------------------------------------------------------------------------------------------
-> heg                             on                                                 1000000
->     /devices/soc0/50000000.host1x                       active                     1000000
->     /devices/soc0/50000000.host1x/540c0000.epp          suspended                  0
->     /devices/soc0/50000000.host1x/54140000.gr2d         suspended                  0
-> mpe                             off-0                                              0
->     /devices/soc0/50000000.host1x/54040000.mpe          suspended                  0
-> vdec                            off-0                                              0
->     /devices/soc0/6001a000.vde                          suspended                  0
-> venc                            off-0                                              0
->     /devices/soc0/50000000.host1x/54080000.vi           suspended                  0
->     /devices/soc0/50000000.host1x/54100000.isp          suspended                  0
-> 3d1                             off-0                                              0
->     /devices/genpd:1:54180000.gr3d                      suspended                  0
-> 3d0                             off-0                                              0
->     /devices/genpd:0:54180000.gr3d                      suspended                  0
-> core-domain                     on                                                 1000000
->                                                 3d0, 3d1, venc, vdec, mpe, heg
->     /devices/soc0/7d000000.usb                          active                     1000000
->     /devices/soc0/78000400.mmc                          active                     950000
->     /devices/soc0/7000f400.memory-controller            active                     1000000
->     /devices/soc0/7000a000.pwm                          active                     1000000
->     /devices/platform/tegra_clk_pll_c                   active                     1000000
->     /devices/platform/tegra_clk_pll_e                   suspended                  0
->     /devices/platform/tegra_clk_pll_m                   active                     1000000
->     /devices/platform/tegra_clk_sclk                    active                     1000000
->     /devices/soc0/7000f800.fuse                         suspended                  0
->     /devices/soc0/50000000.host1x/54240000.dc           suspended                  0
->     /devices/soc0/50000000.host1x/54200000.dc           active                     1000000
->
-> Dmitry Osipenko (37):
->   soc/tegra: pmc: Temporarily disable PMC state syncing
->   soc/tegra: pmc: Implement attach_dev() of power domain drivers
->   soc/tegra: Don't print error message when OPPs not available
->   soc/tegra: Add devm_tegra_core_dev_init_opp_table_simple()
->   dt-bindings: clock: tegra-car: Document new tegra-clocks node
->   clk: tegra: Support runtime PM and power domain
->   dt-bindings: host1x: Document OPP and power domain properties
->   dt-bindings: host1x: Document Memory Client resets of Host1x, GR2D and
->     GR3D
->   gpu: host1x: Add host1x_channel_stop()
->   gpu: host1x: Add runtime PM support
->   gpu: host1x: Add stub driver for MPE, VI, EPP and ISP
->   drm/tegra: dc: Support OPP and SoC core voltage scaling
->   drm/tegra: hdmi: Add OPP support
->   drm/tegra: gr2d: Support OPP and power management
->   drm/tegra: gr3d: Support OPP and power management
->   drm/tegra: vic: Stop channel before suspending
->   usb: chipidea: tegra: Add runtime PM support
->   bus: tegra-gmi: Add runtime PM support
->   pwm: tegra: Add runtime PM and OPP support
->   mmc: sdhci-tegra: Add runtime PM and OPP support
->   mtd: rawnand: tegra: Add runtime PM support
->   soc/tegra: fuse: Clear fuse->clk on driver probe failure
->   soc/tegra: fuse: Add runtime PM support
->   soc/tegra: fuse: Enable fuse clock on suspend
->   clk: tegra: Remove CLK_IS_CRITICAL flag from fuse clock
->   spi: tegra20-slink: Improve runtime PM usage
->   spi: tegra20-slink: Add OPP support
->   memory: tegra20-emc: Add minimal runtime PM support
->   memory: tegra30-emc: Add minimal runtime PM support
->   media: dt: bindings: tegra-vde: Convert to schema
->   media: dt: bindings: tegra-vde: Document OPP and power domain
->   media: staging: tegra-vde: Support generic power domain
->   ARM: tegra: Add OPP tables and power domains to Tegra20 device-trees
->   ARM: tegra: Add OPP tables and power domains to Tegra30 device-trees
->   ARM: tegra: Add Memory Client resets to Tegra20 GR2D, GR3D and Host1x
->   ARM: tegra: Add Memory Client resets to Tegra30 GR2D, GR3D and Host1x
->   soc/tegra: pmc: Enable core domain support on Tegra20 and Tegra30
->
->  .../bindings/clock/nvidia,tegra20-car.yaml    |   51 +
->  .../display/tegra/nvidia,tegra20-host1x.txt   |   53 +
->  .../bindings/media/nvidia,tegra-vde.txt       |   64 -
->  .../bindings/media/nvidia,tegra-vde.yaml      |  119 ++
->  .../boot/dts/tegra20-acer-a500-picasso.dts    |    1 +
->  arch/arm/boot/dts/tegra20-colibri.dtsi        |    3 +-
->  arch/arm/boot/dts/tegra20-harmony.dts         |    3 +-
->  arch/arm/boot/dts/tegra20-paz00.dts           |    1 +
->  .../arm/boot/dts/tegra20-peripherals-opp.dtsi |  941 +++++++++++
->  arch/arm/boot/dts/tegra20-seaboard.dts        |    3 +-
->  arch/arm/boot/dts/tegra20-tamonten.dtsi       |    3 +-
->  arch/arm/boot/dts/tegra20-trimslice.dts       |    9 +
->  arch/arm/boot/dts/tegra20-ventana.dts         |    1 +
->  arch/arm/boot/dts/tegra20.dtsi                |  115 +-
->  .../tegra30-asus-nexus7-grouper-common.dtsi   |    1 +
->  arch/arm/boot/dts/tegra30-beaver.dts          |    1 +
->  arch/arm/boot/dts/tegra30-cardhu.dtsi         |    1 +
->  arch/arm/boot/dts/tegra30-colibri.dtsi        |   17 +-
->  arch/arm/boot/dts/tegra30-ouya.dts            |    1 +
->  .../arm/boot/dts/tegra30-peripherals-opp.dtsi | 1412 +++++++++++++++++
->  arch/arm/boot/dts/tegra30.dtsi                |  170 +-
->  drivers/bus/tegra-gmi.c                       |   44 +-
->  drivers/clk/tegra/Makefile                    |    1 +
->  drivers/clk/tegra/clk-device.c                |  222 +++
->  drivers/clk/tegra/clk-pll.c                   |    2 +-
->  drivers/clk/tegra/clk-super.c                 |    2 +-
->  drivers/clk/tegra/clk-tegra-periph.c          |    6 +-
->  drivers/clk/tegra/clk-tegra20.c               |   39 +-
->  drivers/clk/tegra/clk-tegra30.c               |   70 +-
->  drivers/clk/tegra/clk.c                       |   66 +
->  drivers/clk/tegra/clk.h                       |    2 +
->  drivers/gpu/drm/tegra/dc.c                    |   69 +
->  drivers/gpu/drm/tegra/dc.h                    |    2 +
->  drivers/gpu/drm/tegra/gr2d.c                  |  156 +-
->  drivers/gpu/drm/tegra/gr3d.c                  |  401 ++++-
->  drivers/gpu/drm/tegra/hdmi.c                  |    9 +-
->  drivers/gpu/drm/tegra/vic.c                   |   15 +
->  drivers/gpu/host1x/channel.c                  |    8 +
->  drivers/gpu/host1x/debug.c                    |   15 +
->  drivers/gpu/host1x/dev.c                      |  184 ++-
->  drivers/gpu/host1x/dev.h                      |    3 +-
->  drivers/gpu/host1x/hw/channel_hw.c            |   44 +-
->  drivers/gpu/host1x/intr.c                     |    3 -
->  drivers/gpu/host1x/syncpt.c                   |    5 +-
->  drivers/memory/tegra/tegra20-emc.c            |   31 +
->  drivers/memory/tegra/tegra30-emc.c            |   31 +
->  drivers/mmc/host/sdhci-tegra.c                |   81 +-
->  drivers/mtd/nand/raw/tegra_nand.c             |   44 +-
->  drivers/pwm/pwm-tegra.c                       |  104 +-
->  drivers/soc/tegra/common.c                    |    4 +-
->  drivers/soc/tegra/fuse/fuse-tegra.c           |   62 +
->  drivers/soc/tegra/fuse/fuse-tegra20.c         |   10 +-
->  drivers/soc/tegra/fuse/fuse-tegra30.c         |   10 +-
->  drivers/soc/tegra/fuse/fuse.h                 |    2 +
->  drivers/soc/tegra/pmc.c                       |  164 ++
->  drivers/spi/spi-tegra20-slink.c               |   76 +-
->  drivers/staging/media/tegra-vde/vde.c         |   59 +-
->  drivers/usb/chipidea/ci_hdrc_tegra.c          |   50 +-
->  include/linux/host1x.h                        |    1 +
->  include/soc/tegra/common.h                    |   13 +
->  60 files changed, 4710 insertions(+), 370 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/media/nvidia,tegra-vde.txt
->  create mode 100644 Documentation/devicetree/bindings/media/nvidia,tegra-vde.yaml
->  create mode 100644 drivers/clk/tegra/clk-device.c
->
+On 2021-07-09 14:26, Russell King (Oracle) wrote:
+> On Fri, Jul 09, 2021 at 01:57:26PM +0200, Martin Schiller wrote:
+>> +static int xway_gphy_of_reg_init(struct phy_device *phydev)
+>> +{
+>> +	struct device *dev = &phydev->mdio.dev;
+>> +	int delay_size = ARRAY_SIZE(xway_internal_delay);
+>> +	s32 rx_int_delay;
+>> +	s32 tx_int_delay;
+>> +	int err = 0;
+>> +	int val;
+>> +
+>> +	if (phy_interface_is_rgmii(phydev)) {
+>> +		val = phy_read(phydev, XWAY_MDIO_MIICTRL);
+>> +		if (val < 0)
+>> +			return val;
+>> +	}
+>> +
+>> +	/* Existing behavior was to use default pin strapping delay in rgmii
+>> +	 * mode, but rgmii should have meant no delay.  Warn existing users.
+>> +	 */
+>> +	if (phydev->interface == PHY_INTERFACE_MODE_RGMII) {
+>> +		const u16 txskew = (val & XWAY_MDIO_MIICTRL_TXSKEW_MASK) >>
+>> +				   XWAY_MDIO_MIICTRL_TXSKEW_SHIFT;
+>> +		const u16 rxskew = (val & XWAY_MDIO_MIICTRL_RXSKEW_MASK) >>
+>> +				   XWAY_MDIO_MIICTRL_RXSKEW_SHIFT;
+>> +
+>> +		if (txskew > 0 || rxskew > 0)
+>> +			phydev_warn(phydev,
+>> +				    "PHY has delays (e.g. via pin strapping), but phy-mode = 
+>> 'rgmii'\n"
+>> +				    "Should be 'rgmii-id' to use internal delays txskew:%x 
+>> rxskew:%x\n",
+>> +				    txskew, rxskew);
+>> +	}
+>> +
+>> +	/* RX delay *must* be specified if internal delay of RX is used. */
+>> +	if (phydev->interface == PHY_INTERFACE_MODE_RGMII_ID ||
+>> +	    phydev->interface == PHY_INTERFACE_MODE_RGMII_RXID) {
+>> +		rx_int_delay = phy_get_internal_delay(phydev, dev,
+>> +						      &xway_internal_delay[0],
+>> +						      delay_size, true);
+>> +
+>> +		if (rx_int_delay < 0) {
+>> +			phydev_err(phydev, "rx-internal-delay-ps must be specified\n");
+>> +			return rx_int_delay;
+>> +		}
+>> +
+>> +		val &= ~XWAY_MDIO_MIICTRL_RXSKEW_MASK;
+>> +		val |= rx_int_delay << XWAY_MDIO_MIICTRL_RXSKEW_SHIFT;
+>> +	}
+>> +
+>> +	/* TX delay *must* be specified if internal delay of TX is used. */
+>> +	if (phydev->interface == PHY_INTERFACE_MODE_RGMII_ID ||
+>> +	    phydev->interface == PHY_INTERFACE_MODE_RGMII_TXID) {
+>> +		tx_int_delay = phy_get_internal_delay(phydev, dev,
+>> +						      &xway_internal_delay[0],
+>> +						      delay_size, false);
+>> +
+>> +		if (tx_int_delay < 0) {
+>> +			phydev_err(phydev, "tx-internal-delay-ps must be specified\n");
+>> +			return tx_int_delay;
+>> +		}
+>> +
+>> +		val &= ~XWAY_MDIO_MIICTRL_TXSKEW_MASK;
+>> +		val |= tx_int_delay << XWAY_MDIO_MIICTRL_TXSKEW_SHIFT;
+>> +	}
+>> +
+>> +	if (phydev->interface == PHY_INTERFACE_MODE_RGMII_ID ||
+>> +	    phydev->interface == PHY_INTERFACE_MODE_RGMII_RXID ||
+>> +	    phydev->interface == PHY_INTERFACE_MODE_RGMII_TXID)
+>> +		err = phy_write(phydev, XWAY_MDIO_MIICTRL, val);
+>> +
+>> +	return err;
+>> +}
+> 
+> Please reconsider the above.  Maybe something like the following would
+> be better:
+> 
+> 	u16 mask = 0;
+> 	int val = 0;
+> 
+> 	if (!phy_interface_is_rgmii(phydev))
+> 		return;
+> 
+> 	if (phydev->interface == PHY_INTERFACE_MODE_RGMII) {
+> 		u16 txskew, rxskew;
+> 
+> 		val = phy_read(phydev, XWAY_MDIO_MIICTRL);
+> 		if (val < 0)
+> 			return val;
+> 
+> 		txskew = (val & XWAY_MDIO_MIICTRL_TXSKEW_MASK) >>
+> 			 XWAY_MDIO_MIICTRL_TXSKEW_SHIFT;
+> 		rxskew = (val & XWAY_MDIO_MIICTRL_RXSKEW_MASK) >>
+> 			 XWAY_MDIO_MIICTRL_RXSKEW_SHIFT;
+> 
+> 		if (txskew > 0 || rxskew > 0)
+> 			phydev_warn(phydev,
+> 				    "PHY has delays (e.g. via pin strapping), but phy-mode = 
+> 'rgmii'\n"
+> 				    "Should be 'rgmii-id' to use internal delays txskew:%x 
+> rxskew:%x\n",
+> 				    txskew, rxskew);
+> 		return;
+> 	}
+> 
+> 	if (phydev->interface == PHY_INTERFACE_MODE_RGMII_ID ||
+> 	    phydev->interface == PHY_INTERFACE_MODE_RGMII_RXID) {
+> 		...
+> 		mask |= XWAY_MDIO_MIICTRL_RXSKEW_MASK;
+> 		val |= rx_int_delay << XWAY_MDIO_MIICTRL_RXSKEW_SHIFT;
+> 	}
+> 
+> 	if (phydev->interface == PHY_INTERFACE_MODE_RGMII_ID ||
+> 	    phydev->interface == PHY_INTERFACE_MODE_RGMII_TXID) {
+> 		...
+> 		mask |= XWAY_MDIO_MIICTRL_TXSKEW_MASK;
+> 		val |= rx_int_delay << XWAY_MDIO_MIICTRL_TXSKEW_SHIFT;
+> 	}
+> 
+> 	return phy_modify(phydev, XWAY_MDIO_MIICTRL, mask, val);
+> 
+> Using phy_modify() has the advantage that the read-modify-write is
+> done as a locked transaction on the bus, meaning that it is atomic.
+> There isn't a high cost to writing functions in a way that makes use
+> of that as can be seen from the above.
+> 
 
-Dmitry, I am happy to help to review this, but unfortunately(?) I am
-moving into holiday mode for a couple of weeks, very soon. I will do
-my best to move forward with the review, but please be patient.
-
-Kind regards
-Uffe
+Thanks for the hint. I'll update my patch.
