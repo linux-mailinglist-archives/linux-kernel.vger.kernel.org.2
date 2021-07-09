@@ -2,196 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BAE63C23E1
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1791E3C2404
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231561AbhGINCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 09:02:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231252AbhGINCo (ORCPT
+        id S231704AbhGINM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 09:12:27 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:36158
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231419AbhGINM0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 09:02:44 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81A16C0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 05:59:59 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id s6so6313667qkc.8
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 05:59:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qHUKIAO+ag23hTE+JlEANC815kPjbkRicggysyG8Jlg=;
-        b=i3JcU8eAJ1FUfNlg79X+U4p7WO3GFW7qB8FvtBD5WhofvVvu2G56A3JOA5/vdgHN6c
-         zvfJGzH11cmDvGR5fGVJL4DPvmx2/a/mk9GYI28b5BrtQXpC0EDOEPpV90ZNeCLpph+b
-         OgqvUPA10mCm+2bqy/hBzMKrLS3GC9J6C2NdK1Xg04LO7jLBmsZGBezYvB2dXxvsdrQh
-         5ymM8/UDsXY81dWl0xecHiNrSkw8ubKlXwV6Z01SQZqIf7bMmA2kJzTMJl6rsfEJIin/
-         ayKkeJzm7ZDZgs/05IUiH2yMczzGls8HjeyD3OgYdwiA7vEDSMPwpXlDBRbHggWKPit3
-         BTkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qHUKIAO+ag23hTE+JlEANC815kPjbkRicggysyG8Jlg=;
-        b=j1AZBNGcIaSNR7NoBwizrjUqFjm/UCFBhm62JsWrVPgXWHumcQIIQD/bPScJnK73ad
-         kAE6ogyT38UR1vpututRudRQ2GZNXzA1ErYKR5qj8aQaLWzeY4rJcsXI2/OQWz7hPgmx
-         dn62rjXajaX7KJjgCT1bjupymnPe/w1M8LD4hIFduscznjWExbTk4wJ3vG/uRROtwVBC
-         uHhObFMQW5kzIflmJo8/UOyCbUsoZRd+WGZF0GaSB6NhbIEGi6ij6TXRC+/ufmiLVzQf
-         yy1qTM1z90gWKbM6MbUjLKzIjTqHckwVEukpiPSqLjPbr0WiZm8xE08V9CulIqHMQOt3
-         6Jxg==
-X-Gm-Message-State: AOAM5313AcG8qtiZ/5jBLHIR3lPbJtBFBfdBY1tncGPuiZzXyx4U+6HC
-        29rK32LqnUi2K/tJCy/ofawIhXjEr71frl2YzYigFw==
-X-Google-Smtp-Source: ABdhPJzndnsCyyGh8jUxDgcociSvc3ryge/5xkRw/ChC+jM3JKLtHvs2x6l09me2hWKF0pHigePtxJza/9DSKC6iXGA=
-X-Received: by 2002:ae9:e309:: with SMTP id v9mr13906999qkf.138.1625835598668;
- Fri, 09 Jul 2021 05:59:58 -0700 (PDT)
+        Fri, 9 Jul 2021 09:12:26 -0400
+X-Greylist: delayed 555 seconds by postgrey-1.27 at vger.kernel.org; Fri, 09 Jul 2021 09:12:26 EDT
+Received: from canonical.com (1.general.ppisati.uk.vpn [10.172.193.134])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 201A0401BE;
+        Fri,  9 Jul 2021 13:00:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1625835627;
+        bh=AxMIlOmaQ4Uu2aXRanEA5LyfXIZ8Qn+vel6oh6biIdI=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+        b=q3tfLZaSZGGU3NKlgimJLilAZHAPCZhronAZHCtRxrmgjXHnpEozeEERPe4CW7jvV
+         kHi+KxtSEUZzM2wNeqByfuAs71qNWMeyGJLYCBXiYzcl5nCq0NmwjYPECjZRKFFENZ
+         jBl20UfKcLVUgoKG41AxNjLzpm16IHKcfwNHAHbURO4vgmvZ1cL/3cA6vgbU3kMBjS
+         KHd4U4M79eOLq3EfKZBE4A/96Yjks8PBjW9vUIF6s1XFKy2dsWT4Ix6IEZtBS1anci
+         JVY9QaAWQ4EnCFNwTWxn6tv5rtRQGl1QF4f6NCJK/JXBdQn7Cb/oTdDEllut5Wiq5I
+         idE1Zz7toPa5A==
+Date:   Fri, 9 Jul 2021 15:00:26 +0200
+From:   Paolo Pisati <paolo.pisati@canonical.com>
+To:     Shuah Khan <shuah@kernel.org>
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selftests: memory-hotplug: avoid spamming logs with
+ dump_page(), ratio limit hot-remove error test
+Message-ID: <YOhIainrHwydNrGh@amaterasu>
+References: <20210630145740.54614-1-paolo.pisati@canonical.com>
 MIME-Version: 1.0
-References: <20210709043136.533205-1-dmitry.baryshkov@linaro.org>
- <20210709043136.533205-5-dmitry.baryshkov@linaro.org> <CAPDyKFprYK8bSk+rdnDt3xRUR9BRNdyRiBdefO+s7qzOwHf7hg@mail.gmail.com>
- <CAA8EJprrjz=o7Ymt1mNBZASzTeX==1ceRTeKA4f3QrVMcpO6xg@mail.gmail.com> <CAPDyKFoLcsYLisEiOF66dDsV+759c5k0PD64uxU11jc5VTdNYQ@mail.gmail.com>
-In-Reply-To: <CAPDyKFoLcsYLisEiOF66dDsV+759c5k0PD64uxU11jc5VTdNYQ@mail.gmail.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Fri, 9 Jul 2021 15:59:47 +0300
-Message-ID: <CAA8EJpr2HEm4R+bGrH6DHA_z8bjN69Zam9UUiAeKAr5vsCKr3A@mail.gmail.com>
-Subject: Re: [RESEND PATCH v2 4/7] clk: qcom: gdsc: enable optional power
- domain support
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210630145740.54614-1-paolo.pisati@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Jul 2021 at 15:18, Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> On Fri, 9 Jul 2021 at 13:46, Dmitry Baryshkov
-> <dmitry.baryshkov@linaro.org> wrote:
-> >
-> > On Fri, 9 Jul 2021 at 12:33, Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > >
-> > > On Fri, 9 Jul 2021 at 06:32, Dmitry Baryshkov
-> > > <dmitry.baryshkov@linaro.org> wrote:
-> > > >
-> > > > On sm8250 dispcc and videocc registers are powered up by the MMCX power
-> > > > domain. Currently we used a regulator to enable this domain on demand,
-> > > > however this has some consequences, as genpd code is not reentrant.
-> > > >
-> > > > Teach Qualcomm clock controller code about setting up power domains and
-> > > > using them for gdsc control.
-> > > >
-> > > > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > >
-> > > [...]
-> > >
-> > > > diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
-> > > > index 51ed640e527b..9401d01533c8 100644
-> > > > --- a/drivers/clk/qcom/gdsc.c
-> > > > +++ b/drivers/clk/qcom/gdsc.c
-> > > > @@ -427,6 +427,7 @@ int gdsc_register(struct gdsc_desc *desc,
-> > > >                         continue;
-> > > >                 scs[i]->regmap = regmap;
-> > > >                 scs[i]->rcdev = rcdev;
-> > > > +               scs[i]->pd.dev.parent = desc->dev;
-> > > >                 ret = gdsc_init(scs[i]);
-> > > >                 if (ret)
-> > > >                         return ret;
-> > > > @@ -439,6 +440,8 @@ int gdsc_register(struct gdsc_desc *desc,
-> > > >                         continue;
-> > > >                 if (scs[i]->parent)
-> > > >                         pm_genpd_add_subdomain(scs[i]->parent, &scs[i]->pd);
-> > > > +               else if (!IS_ERR_OR_NULL(dev->pm_domain))
-> > >
-> > > So dev_pm_domain_attach() (which calls genpd_dev_pm_attach() is being
-> > > called for gdsc platform device from the platform bus', to try to
-> > > attach the device to its corresponding PM domain.
-> > >
-> > > Looking a bit closer to genpd_dev_pm_attach(), I realize that we
-> > > shouldn't really try to attach a device to its PM domain, when its OF
-> > > node (dev->of_node) contains a "#power-domain-cells" specifier. This
-> > > is because it indicates that the device belongs to a genpd provider
-> > > itself. In this case, a "power-domains" specifier tells that it has a
-> > > parent domain.
-> > >
-> > > I will post a patch that fixes this asap.
-> >
-> > I think there is nothing to fix here. The dispcc/videocc drivers
-> > provide clocks in addition to the gdsc power domain. And provided
-> > clocks would definitely benefit from having the dispcc device being
-> > attached to the power domain which governs clock registers (MMCX in
-> > our case). Thus I think it is perfectly valid to have:
-> >
-> > rpmhpd device:
-> >  - provides MMCX domain.
-> >
-> > dispcc device:
-> >  - is attached to the MMCX domain,
->
-> We don't need this, it's redundant and weird to me.
->
-> Also I am kind of worried that you will hit another new path in genpd,
-> causing locking issues etc, as it has not been designed to work like
-> this (a provider device and a child domain sharing the same "parent").
+On Wed, Jun 30, 2021 at 04:57:40PM +0200, Paolo Pisati wrote:
+> While the offline memory test obey ratio limit, the same test with error
+> injection does not and tries to offline all the hotpluggable memory, spamming
+> system logs with hundreds of thousands of dump_page() entries, slowing system
+> down (to the point the test itself timeout and gets terminated) and excessive fs
+> occupation:
+> 
+> ...
 
-So, which domain should the dispcc device belong to? It's registers
-are powered by the MMCX domain. I can not attach it to the child
-(GDSC) domain either: in the case of videocc there are 4 child
-domains.
-An alternative would be to request that all users of the provided
-clocks power on one of the child domains. However this is also not
-perfect. If some generic code (e.g. clock framework) calls into
-provided clocks (e.g. because of assigned-clock-rates), this can
-happen w/o proper power domain being powered up yet.
-
->
-> >  - provides MDSS_GDSC
->
-> It's perfectly fine that dispcc acts as a genpd provider. In this
-> case, the corresponding PM domain should be assigned as a child for
-> the parent MMCX domain. That should make this work, I think.
->
-> >  - provides clocks
->
-> That sounds reasonable as well.
->
-> >
-> > >
-> > > > +                       pm_genpd_add_subdomain(pd_to_genpd(dev->pm_domain), &scs[i]->pd);
-> > > >         }
-> > > >
-> > > >         return of_genpd_add_provider_onecell(dev->of_node, data);
-> > > > @@ -457,6 +460,8 @@ void gdsc_unregister(struct gdsc_desc *desc)
-> > > >                         continue;
-> > > >                 if (scs[i]->parent)
-> > > >                         pm_genpd_remove_subdomain(scs[i]->parent, &scs[i]->pd);
-> > > > +               else if (!IS_ERR_OR_NULL(dev->pm_domain))
-> > >
-> > > Ditto.
-> > >
-> > > > +                       pm_genpd_remove_subdomain(pd_to_genpd(dev->pm_domain), &scs[i]->pd);
-> > > >         }
-> > > >         of_genpd_del_provider(dev->of_node);
-> > > >  }
-> > > > --
-> > > > 2.30.2
-> > > >
-> > >
->
-> Kind regards
-> Uffe
-
-
-
+Anyone with spare cycles could review this? It got one ack already.
 -- 
-With best wishes
-Dmitry
+bye,
+p.
