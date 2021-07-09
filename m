@@ -2,169 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8171F3C1CBF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 02:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FFFA3C1CC4
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 02:35:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbhGIAfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 20:35:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42350 "EHLO
+        id S230082AbhGIAiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 20:38:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhGIAfd (ORCPT
+        with ESMTP id S229741AbhGIAiJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 20:35:33 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C304EC061574;
-        Thu,  8 Jul 2021 17:32:50 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GLYz22zrRz9sWd;
-        Fri,  9 Jul 2021 10:32:46 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1625790767;
-        bh=+WN6vickkkMlDTyJCZqZwVOeIpzHZ/inZVOsfbJRzz8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=CUpfBaH2wcyTM+9arf0YKFUPUXSP4LWKeHygArB7q5aol3yrwlJpnn13JaW6/STiW
-         RK1QgKBdBtn/ewWKiOXbkYQQiBP9UdACPwuDxAct2vlV/OV+oyGfQGFdmxZcAcZgwh
-         h4nkFO1CeAsFSGOZArC5epPZ/kdyPMXLvT1r6HXkNMpJCHA/pWzxfouypcM5dNFDCH
-         2bAJ33IRWw6VkT7uQcWKSYOrKt7mSoMpOrLnenGb3m6843mMLpEDl7dzxpj0xO4lGb
-         Jmpx4VlBztWOplwqD/cOFxpWF+EllucfAEUWUwSOQCRN7dqjiXhdmT6s19/bREHHE6
-         1RP+ylNo1aNoA==
-Date:   Fri, 9 Jul 2021 10:32:44 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jens Axboe <axboe@kernel.dk>, Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>
-Subject: linux-next: manual merge of the block tree with the mmc-fixes tree
-Message-ID: <20210709103244.64b2f1de@canb.auug.org.au>
+        Thu, 8 Jul 2021 20:38:09 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B181EC061762
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 17:35:26 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id m3so10093339oig.10
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 17:35:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=feTmuUZ3YlEtdPQY+U32K276WevJpE+FiuInMlT3biM=;
+        b=kxOFARsh7VuHf7Gbgk6uYnq9+iGD5vIQxZUZa6FqpiEvuq9ectHlbA9j4wF2FrNgKL
+         HRejUsrkUE32G4Kj1gXp0FcxSaw5PuvnY2PHhL9QYEvt+o36gzyzRnibLOkHJwghQMsl
+         bbo/G/lk++UHbfj7dDUfTJO0DMAYdMOSe02JI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=feTmuUZ3YlEtdPQY+U32K276WevJpE+FiuInMlT3biM=;
+        b=Bb0rPXNsvPkcXv9L/M1Ft7CE4SGv9/EfgnfBgXyLX1xooo5ew5m2l/hlimFNzHpoGu
+         pZr8HXY2t6XM2j1yxcqnP7jUiK/aUDGfrkRRXUtfLa9TkKJ63+ve/cUG7Vk9ezdQhr6a
+         t/P3YTQdtITGSVTl1q/qVaM+rGFAFq/c2XqRgOCjQVpnVulI1SdUp+m1EPAO/1J6Fr3Y
+         Vn9TdZRtNnFIBulMFZdZfASnvGasWrVlF0nMxdSTRLjROo5c9E6eEaBc+hkJbqGFxpVn
+         kvDNY+7GYWIyIp+0AscvThQBpUQN0p9Mes0N1WwJZDeA0BM8vbNEVkMguVwWDWtsfZae
+         wUPw==
+X-Gm-Message-State: AOAM533aIkc6uAr5P3+Fzlp6iAEnn8LywIJD2EPOBQlugU9SfL5oL1V5
+        rpfItM7DsMmrgqII9fH740X9mP6HNEGdoE4ttN7yIQ==
+X-Google-Smtp-Source: ABdhPJxIBfTDfbmT1hRD2/wJx94a64VaxjCzvR+Lnx8ng77JFxc4MS7LQ1bcUZ2EhHWpvcjz0sg+NAVbt8qQv3G+nKY=
+X-Received: by 2002:aca:7545:: with SMTP id q66mr6173670oic.19.1625790925910;
+ Thu, 08 Jul 2021 17:35:25 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 9 Jul 2021 00:35:25 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/8JDPbODuzXKJlel5Nywvt_/";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <1625576413-12324-2-git-send-email-sanm@codeaurora.org>
+References: <1625576413-12324-1-git-send-email-sanm@codeaurora.org> <1625576413-12324-2-git-send-email-sanm@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Fri, 9 Jul 2021 00:35:25 +0000
+Message-ID: <CAE-0n50UtAVYDwDcFrwOWti+BrQvCSf4nZk+1ai53hRcG8mh1g@mail.gmail.com>
+Subject: Re: [PATCH v5 1/3] dt-bindings: phy: qcom,qmp-usb3-dp: Add support
+ for SC7280
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pratham Pratap <prathampratap@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/8JDPbODuzXKJlel5Nywvt_/
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Quoting Sandeep Maheswaram (2021-07-06 06:00:11)
+> Add compatible for SC7280 in QMP USB3 DP PHY bindings.
+>
+> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
+> ---
 
-Hi all,
-
-Today's linux-next merge of the block tree got a conflict in:
-
-  drivers/mmc/core/block.c
-
-between commit:
-
-  5c0777665b3e ("mmc: core: Use kref in place of struct mmc_blk_data::usage=
-")
-
-from the mmc-fixes tree and commits:
-
-  249cda3325e0 ("mmc: remove an extra blk_{get,put}_queue pair")
-  607d968a5769 ("mmc: switch to blk_mq_alloc_disk")
-
-from the block tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/mmc/core/block.c
-index d7b5c5ab75fa,9890a1532cb0..000000000000
---- a/drivers/mmc/core/block.c
-+++ b/drivers/mmc/core/block.c
-@@@ -195,26 -196,18 +195,25 @@@ static inline int mmc_get_devidx(struc
-  	return devidx;
-  }
- =20
- -static void mmc_blk_put(struct mmc_blk_data *md)
- +static void mmc_blk_kref_release(struct kref *ref)
-  {
- -	mutex_lock(&open_lock);
- -	md->usage--;
- -	if (md->usage =3D=3D 0) {
- -		int devidx =3D mmc_get_devidx(md->disk);
- +	struct mmc_blk_data *md =3D container_of(ref, struct mmc_blk_data, kref);
- +	int devidx;
- =20
- -		ida_simple_remove(&mmc_blk_ida, devidx);
- -		put_disk(md->disk);
- -		kfree(md);
- -	}
- +	devidx =3D mmc_get_devidx(md->disk);
-- 	blk_put_queue(md->queue.queue);
- +	ida_simple_remove(&mmc_blk_ida, devidx);
- +
- +	mutex_lock(&open_lock);
- +	md->disk->private_data =3D NULL;
-  	mutex_unlock(&open_lock);
- +
- +	put_disk(md->disk);
- +	kfree(md);
- +}
- +
- +static void mmc_blk_put(struct mmc_blk_data *md)
- +{
- +	kref_put(&md->kref, mmc_blk_kref_release);
-  }
- =20
-  static ssize_t power_ro_lock_show(struct device *dev,
-@@@ -2334,27 -2327,11 +2333,11 @@@ static struct mmc_blk_data *mmc_blk_all
- =20
-  	INIT_LIST_HEAD(&md->part);
-  	INIT_LIST_HEAD(&md->rpmbs);
- -	md->usage =3D 1;
- +	kref_init(&md->kref);
--=20
-- 	ret =3D mmc_init_queue(&md->queue, card);
-- 	if (ret)
-- 		goto err_putdisk;
--=20
-  	md->queue.blkdata =3D md;
- =20
-- 	/*
-- 	 * Keep an extra reference to the queue so that we can shutdown the
-- 	 * queue (i.e. call blk_cleanup_queue()) while there are still
-- 	 * references to the 'md'. The corresponding blk_put_queue() is in
-- 	 * mmc_blk_put().
-- 	 */
-- 	if (!blk_get_queue(md->queue.queue)) {
-- 		mmc_cleanup_queue(&md->queue);
-- 		ret =3D -ENODEV;
-- 		goto err_putdisk;
-- 	}
--=20
-  	md->disk->major	=3D MMC_BLOCK_MAJOR;
-+ 	md->disk->minors =3D perdev_minors;
-  	md->disk->first_minor =3D devidx * perdev_minors;
-  	md->disk->fops =3D &mmc_bdops;
-  	md->disk->private_data =3D md;
-
---Sig_/8JDPbODuzXKJlel5Nywvt_/
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDnmSwACgkQAVBC80lX
-0GxpEAf/TTd1pOJ2c3TF+OFt1CnJY43J47OxQh9rRSb7DEhZLTRuLrOSu6EWPRwV
-OMtFNkCLPFiPRcbGwm0WfFgrqnyoHY+bHf0lmLzLquU/goUjmn7pb8PXK8I04Oc8
-BEFv9s2deScbYWxXcPxL38sPLI9nFCBu3/sxj8zxYekZ8i4w4vT+4VRhlk5pKN27
-nUWK+TlF8KWOu/siqx+bY0527WhzqJF1ZFHeo6qQyN98SRIGeX6tOODGRxTxvj4v
-8k8SFjYHDpg1yW5T69vrhfxXAD0B53p+uUtRo9NvxYVAJtrvQoVkylMxZMKFUazP
-Odru69agAYnSL1mw9v1Nzec0cXHhfQ==
-=/4k3
------END PGP SIGNATURE-----
-
---Sig_/8JDPbODuzXKJlel5Nywvt_/--
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
