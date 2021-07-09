@@ -2,197 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D45DC3C27A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 18:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16CE03C27AB
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 18:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229568AbhGIQk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 12:40:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33112 "EHLO
+        id S229684AbhGIQla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 12:41:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbhGIQk6 (ORCPT
+        with ESMTP id S229491AbhGIQl3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 12:40:58 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4587C0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 09:38:14 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id y6so9891211ilj.13
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 09:38:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7UCUrnaTmnqC7zYMMxNNQdjhZOpOjJE48bbLnl0p6dU=;
-        b=YFbY9p6w6z668kazd9qXja8K4iAEjQKBYOJlN4YCe4GbC/i7bMYR6Q5dAvhNOI3pYV
-         xOO2qW7r88K8Y4CeYGeVHHyXETBZLajWVkxVv2XCtXq3STzvgjcQvzb5Y2KPrfb9y6A0
-         Id86/Q7ucM1fWiQu2+A522YF4tcjPA+n46YaQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7UCUrnaTmnqC7zYMMxNNQdjhZOpOjJE48bbLnl0p6dU=;
-        b=tb0GNeuNRzpdXm49T7BWw1k3KOGcAmTXrahH1b1Q1rNOJF0tHXMaOCPc1I/J6ReuqU
-         H0i0lVU8MJ0J3LON0cqm6WZ7H55Ok7ppaY+w/UFrxI1d2xSSOCfuR/ad4Acv9q0BjxZO
-         ZP7rPk+KNwOKolm1byKqYfV9SBZnsfPZQQ98s9d7WotJx80dJuW5DLs/j8TZQf3KIfUC
-         k3mzHskU9wKs/+dq2Me6/TL4+Gka7YB0Y19hey7DscI6Km3WYuQSiqCpvlwg6W1yQ249
-         ROPFh2RnjWTKQPKGzqKGACKp+DDRdMsZlYOV3lTWASAePG66+h20pJL3U7n6JedIYP85
-         9oCw==
-X-Gm-Message-State: AOAM530dY87Ve+fpeIBvD8xjtIdehYBob9n+qlXKULzsK6hz33AY0iaR
-        BnSdhIY8wdJu2Slxmk3X1MmVBg==
-X-Google-Smtp-Source: ABdhPJxqUJSl3Z8h2QoCF3YB5Yia+4f1Q/AMKKaaz2Ul2YNOF9piMZhvEqCQuAbbPxF+hWWNxsr06Q==
-X-Received: by 2002:a05:6e02:602:: with SMTP id t2mr2981225ils.118.1625848693961;
-        Fri, 09 Jul 2021 09:38:13 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id c16sm3193326ilo.72.2021.07.09.09.38.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Jul 2021 09:38:13 -0700 (PDT)
-Subject: Re: [PATCH] firmware_loader: Fix use-after-free Read in
- firmware_loading_store
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     mcgrof@kernel.org, gregkh@linuxfoundation.org, rafael@kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+77cea49e091776a57689@syzkaller.appspotmail.com,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210708031321.50800-1-skhan@linuxfoundation.org>
- <20210709091721.1869-1-hdanton@sina.com>
- <d851dd11-1b4f-4ed2-bad2-0c267e3d6021@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <3eb42554-c054-6e46-54ce-b9f637b72751@linuxfoundation.org>
-Date:   Fri, 9 Jul 2021 10:38:12 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 9 Jul 2021 12:41:29 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13BEAC0613DD;
+        Fri,  9 Jul 2021 09:38:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=PX3PqwK6mixbUhOlosWUIb/7eL4O6l7Xj2gwXvxxNgA=; b=OFNJq5TzEv/ro5xcnMclS41aX+
+        0zyePYOhtx0YoA9d2PzMw5E5TQpwJYttbMg0a6qsdv6WgQdJOwBaBMKppVSNFxdqsCZSBj2aApqDi
+        Bsd50WT9Q7Tg8IYZzoQ6p7x1yzeocwR3lissZIoP1TDLLR9/2dYWnQEUM2Bwvye4vM8CC5v4fxmaj
+        801dFamq6l+iT6JWruP1kQvVuOnn3IraLtsOatgM3EVbp24Oe7ZimzmsRY/LKb+2p/e17Le2ZmMhP
+        0n/2uqF7H5rGdjZf4W7Yjx+5zB/pYbCT5wxvlXGf3idG9GSIIIrTu+XUp2/bmy0viHRuNj1aOmm68
+        rAkRnzuA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m1tWC-00EgUK-Uu; Fri, 09 Jul 2021 16:38:29 +0000
+Date:   Fri, 9 Jul 2021 17:38:24 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        kumarpraveen@linux.microsoft.com, pasha.tatashin@soleen.com,
+        Jonathan Corbet <corbet@lwn.net>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Lillian Grassin-Drake <ligrassi@microsoft.com>,
+        Muminul Islam <muislam@microsoft.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Subject: Re: [RFC v1 7/8] mshv: implement in-kernel device framework
+Message-ID: <YOh7gO3MIDv5Eo8q@casper.infradead.org>
+References: <20210709114339.3467637-1-wei.liu@kernel.org>
+ <20210709114339.3467637-8-wei.liu@kernel.org>
+ <YOhIzJVPN9SwoRK0@casper.infradead.org>
+ <20210709135013.t5axinjmufotpylf@liuwe-devbox-debian-v2>
+ <YOhsIDccgbUCzwqt@casper.infradead.org>
+ <20210709162732.hnyzpf3uofzc7xqs@liuwe-devbox-debian-v2>
 MIME-Version: 1.0
-In-Reply-To: <d851dd11-1b4f-4ed2-bad2-0c267e3d6021@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210709162732.hnyzpf3uofzc7xqs@liuwe-devbox-debian-v2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/9/21 10:15 AM, Shuah Khan wrote:
-> On 7/9/21 3:17 AM, Hillf Danton wrote:
->> On Wed,  7 Jul 2021 21:13:21 -0600 Shuah Khan wrote:
->>>
->>> If user writes to 'loading' between loading aborted and 'loading'
->>> gets removed, __fw_load_abort() could be called twice in error
->>> path setting the state to load aborted. __fw_load_abort() checks
->>> for fw_sysfs_done() case, but doesn't check for abort case. This
->>> opens the window for use-after-free Read in firmware_loading_store().
->>>
->>> Fix it by adding check for fw load aborted in addition to done in
->>> __fw_load_abort() and return if either one of the states is true.
->>>
->>> BUG: KASAN: use-after-free in __list_del_entry_valid+0xd6/0xf0 lib/list_debug.c:54
->>> Read of size 8 at addr ffff88802b3da2c8 by task systemd-udevd/25252
->>>
->>> CPU: 0 PID: 25252 Comm: systemd-udevd Not tainted 5.13.0-rc1-syzkaller #0
->>> Hardware name: Google Compute Engine, BIOS Google 01/01/2011
->>> Call Trace:
->>> __dump_stack lib/dump_stack.c:79 [inline]
->>> dump_stack+0x141/0x1d7 lib/dump_stack.c:120
->>> print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:233
->>> __kasan_report mm/kasan/report.c:419 [inline]
->>> kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:436
->>> __list_del_entry_valid+0xd6/0xf0 lib/list_debug.c:54
->>> __list_del_entry include/linux/list.h:132 [inline]
->>> list_del_init include/linux/list.h:204 [inline]
->>> __fw_load_abort drivers/base/firmware_loader/fallback.c:97 [inline]
->>> __fw_load_abort drivers/base/firmware_loader/fallback.c:88 [inline]
->>> fw_load_abort drivers/base/firmware_loader/fallback.c:105 [inline]
->>> firmware_loading_store+0x141/0x650 drivers/base/firmware_loader/fallback.c:297
->>> dev_attr_store+0x50/0x80 drivers/base/core.c:2066
->>> sysfs_kf_write+0x110/0x160 fs/sysfs/file.c:139
->>> kernfs_fop_write_iter+0x342/0x500 fs/kernfs/file.c:296
->>> call_write_iter include/linux/fs.h:2114 [inline]
->>> new_sync_write+0x426/0x650 fs/read_write.c:518
->>> vfs_write+0x796/0xa30 fs/read_write.c:605
->>> ksys_write+0x12d/0x250 fs/read_write.c:658
->>> do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
->>> entry_SYSCALL_64_after_hwframe+0x44/0xae
->>> RIP: 0033:0x7f6d0b3fe970
->>> Code: 73 01 c3 48 8b 0d 28 d5 2b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 83 3d 99 2d 2c 00 00 75 10 b8 01 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 7e 9b 01 00 48 89 04 24
->>> RSP: 002b:00007ffde8a82ba8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
->>> RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007f6d0b3fe970
->>> RDX: 0000000000000002 RSI: 00005567e595b380 RDI: 0000000000000007
->>> RBP: 00005567e595b380 R08: 00007f6d0c58c8c0 R09: 0000000000000002
->>> R10: 0000000000000020 R11: 0000000000000246 R12: 0000000000000002
->>> R13: 0000000000000001 R14: 00005567e59427d0 R15: 0000000000000002
->>>
->>> Reported-by: syzbot+77cea49e091776a57689@syzkaller.appspotmail.com
->>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
->>> ---
->>> drivers/base/firmware_loader/fallback.c | 5 +++--
->>> 1 file changed, 3 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/base/firmware_loader/fallback.c b/drivers/base/firmware_loader/fallback.c
->>> index 91899d185e31..e6a18c2a6c43 100644
->>> --- a/drivers/base/firmware_loader/fallback.c
->>> +++ b/drivers/base/firmware_loader/fallback.c
->>> @@ -89,9 +89,10 @@ static void __fw_load_abort(struct fw_priv *fw_priv)
->>> {
->>>     /*
->>>      * There is a small window in which user can write to 'loading'
->>> -     * between loading done and disappearance of 'loading'
->>> +     * between loading done or aborted and disappearance of
->>> +     * 'loading'
->>>      */
->>> -    if (fw_sysfs_done(fw_priv))
->>> +    if (fw_sysfs_done(fw_priv) || fw_state_is_aborted(fw_priv))
->>>
->>
->> Given the fw_state_is_aborted() in firmware_loading_store(), could you specify
->> why it is a correct fix to check again?
->>
+On Fri, Jul 09, 2021 at 04:27:32PM +0000, Wei Liu wrote:
+> > Then don't define your own structure.  Use theirs.
 > 
-> Yes fw_state_is_aborted() is checked at the beginning of
-> firmware_loading_store(). Later on you will see that for
-> for case 0 logic it will do a variation on abort when
-> failure happens and sets the state to aborted. Note that
-> this would happen on failure case. Looking at the log from
-> the report this will be the case as I see errors in loading
-> path.
-> 
-> /*
->   * Same logic as fw_load_abort, only the DONE bit
->   * is ignored and we set ABORT only on failure.
->   */
->   list_del_init(&fw_priv->pending_list);
->   if (rc) {
->        fw_state_aborted(fw_priv);
->        written = rc;
->   } else {
->        fw_state_done(fw_priv);
->   }
->   break;
-> 
-> If another user writes to the "loading" file before it gets
-> deleted, if user writes 0 again, fw_sysfs_loading() will be
-> false, however the fallthrough will invoked fw_load_abort()
-> and list_del_init() will be called triggering user-after-free
-> 
+> I specifically mentioned in the cover letter I didn't do it because I
+> was not sure if that would be acceptable. I guess I will find out.
 
-fw_state_aborted() should have already marked the state aborted
-and the check at the firmware_loading_store() should catch this
-case ... all of this is done with fw_lock lock held ...
-
-However I am seeing the following over and over again in the
-log - hence I think it is safer to check the aborted status
-in __fw_load_abort().
-
-? __list_del_entry_valid+0xe0/0xf0
-[  348.604808][T12994]  __list_del_entry_valid+0xe0/0xf0
-[  348.610020][T12994]  firmware_loading_store+0x141/0x650
-[  348.615761][T12994]  ? firmware_data_write+0x4e0/0x4e0
-[  348.621064][T12994]  ? sysfs_file_ops+0x1c0/0x1c0
-[  348.625921][T12994]  dev_attr_store+0x50/0x80
-
-Also the fallback logic takes actions based on errors as in
-fw_load_sysfs_fallback() that returns -EAGAIN which would
-trigger request_firmware() again.
-
-Based on all of this I think this fix is needed, if only I can
-test for sure.
-
-thanks,
--- Shuah
+I only got patch 7/8.  You can't blame me for not reading 0/8 if you
+didn't send me 0/8.
