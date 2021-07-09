@@ -2,174 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D23C3C20E5
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 10:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0739B3C20E9
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 10:38:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231642AbhGIIhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 04:37:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231539AbhGIIhc (ORCPT
+        id S231539AbhGIIlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 04:41:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21661 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231361AbhGIIlF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 04:37:32 -0400
-Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EC82C0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 01:34:49 -0700 (PDT)
-Received: by mail-vk1-xa34.google.com with SMTP id d7so2023001vkf.2
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 01:34:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=egPmQST1yautWNSkUehH6XhRlwz1CmKbfNdRKaFhzi0=;
-        b=Fql88CYlK3C4DwWaVzv8oo9Ts65nrcapW3OTGLHfp9eyYIPrkZJHY9PSGBFo2LO3CI
-         genMuYRfTxpIrytRcuEWUwCIch+1CdoUZcAT+QRSklbLw59W1H12sfAK1+4YHPR+/yhH
-         SBfIv2+QftMaor4lP2RmKHfgBF/QQZ1oi6BSijkwZwpzORPyCL2wl+LA485AbRtKlcWK
-         T60ewssA+orSW3EDKnKZdumWbrVx/fzVKZgpvFxxX9WbgQanJzsechyK5LqnFZZj2q1d
-         syRET9UyFFL+1eUfG9V9tdYktrgXEhNzRzy4dWOaJ9CJyg3MDecFx4ze77u0hGYsRaen
-         BRpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=egPmQST1yautWNSkUehH6XhRlwz1CmKbfNdRKaFhzi0=;
-        b=i1lPYebbrVdZFVNwSGutHeh7cqxEq+Ne/2BsjCpdHgfh2eArZvhqA9lSbtJ5l+2Cjq
-         NJZNY3oZMSm93p3wS9lqhoTsn0lgr+BWrjkJMvr2EUsN7lznRUaz5EF9uQfwQKclCwEC
-         M+ifZWNfPkZyrvvDGMAITwd289JWL2+3tqDcmU0GGoAJeVZBTM+adAZmSWtNXsQitx5Y
-         FqY2+l5CXvMkpWF7Ps06GPx7hlbEV34dA3VSc+hDJ3H5d4OPa1YFEzSagntkLg5KKgkX
-         iklFSSdI6qTyCTtjIpJzbRTYUiJ0GEAHFmxwJ22O8t+rztjxtCNjSgVDW+FY7tGQ6wzY
-         K9Tg==
-X-Gm-Message-State: AOAM533oYM9z7k9i48NwqZZacbVn8+HI4x9VqLMdKEpwsPuOXZCyYI/8
-        99e5NJYX+ylQoR6DXLkXhw1PkFzpYmBXGL4MNTWTWyjBJHtqC0BU
-X-Google-Smtp-Source: ABdhPJwfDszzIkyinLHi8JzXVAgznfjvjbA0+4stGfqnbSiM50mpFZA2K8iJbRyhn7L0GafTO2T0hchpV6JyHgnwEGE=
-X-Received: by 2002:a1f:9d13:: with SMTP id g19mr4473518vke.15.1625819688126;
- Fri, 09 Jul 2021 01:34:48 -0700 (PDT)
+        Fri, 9 Jul 2021 04:41:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625819902;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=z6Hk4bJ8S8lcwyhof3193pL12mlYl2MQc8nr7rUonLc=;
+        b=I4oKiRbBfwQ5/0j7WJZ48Wc4jyciMQIR50WnjUoqyYoT+F6TMR6vS076yv+oYTO+f/ZvkI
+        pKFQjVKE5nOyITagK49QcakAS+BZM44oKlmREiLwHaw4uz+Yo7p5NORMVJlXse0KuUKJLj
+        3mNyQbWA3taBXd2dKl7eAtnYGffqAts=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-442-kW-M2W2pOPeYf3W8V_w2gA-1; Fri, 09 Jul 2021 04:38:21 -0400
+X-MC-Unique: kW-M2W2pOPeYf3W8V_w2gA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3EA461018720;
+        Fri,  9 Jul 2021 08:38:20 +0000 (UTC)
+Received: from T590 (ovpn-13-13.pek2.redhat.com [10.72.13.13])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8C27E5C1A3;
+        Fri,  9 Jul 2021 08:38:13 +0000 (UTC)
+Date:   Fri, 9 Jul 2021 16:38:09 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     linux-nvme@lists.infradead.org, Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [bug report] iommu_dma_unmap_sg() is very slow then running IO from
+ remote numa node
+Message-ID: <YOgK8fdv7dOQtkET@T590>
 MIME-Version: 1.0
-References: <20210709103244.64b2f1de@canb.auug.org.au>
-In-Reply-To: <20210709103244.64b2f1de@canb.auug.org.au>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 9 Jul 2021 10:34:11 +0200
-Message-ID: <CAPDyKFrO-KcrPWBLGvS9hO+rLJjr=yx1766Np2M8HHApgkwNKg@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the block tree with the mmc-fixes tree
-To:     Jens Axboe <axboe@kernel.dk>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Jul 2021 at 02:32, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> Today's linux-next merge of the block tree got a conflict in:
->
->   drivers/mmc/core/block.c
->
-> between commit:
->
->   5c0777665b3e ("mmc: core: Use kref in place of struct mmc_blk_data::usage")
->
-> from the mmc-fixes tree and commits:
->
->   249cda3325e0 ("mmc: remove an extra blk_{get,put}_queue pair")
->   607d968a5769 ("mmc: switch to blk_mq_alloc_disk")
->
-> from the block tree.
->
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->
-> --
-> Cheers,
-> Stephen Rothwell
+Hello,
 
-Stephen, thanks for the heads up!
+I observed that NVMe performance is very bad when running fio on one
+CPU(aarch64) in remote numa node compared with the nvme pci numa node.
 
-Jens, I noticed that you sent the PR with the mmc commits as of
-yesterday. Assuming Linus will pull it before rc1, I will rebase and
-fix up the conflict from my fixes branch on top. No action needed from
-your side.
+Please see the test result[1] 327K vs. 34.9K.
 
-Kind regards
-Uffe
+Latency trace shows that one big difference is in iommu_dma_unmap_sg(),
+1111 nsecs vs 25437 nsecs.
 
->
-> diff --cc drivers/mmc/core/block.c
-> index d7b5c5ab75fa,9890a1532cb0..000000000000
-> --- a/drivers/mmc/core/block.c
-> +++ b/drivers/mmc/core/block.c
-> @@@ -195,26 -196,18 +195,25 @@@ static inline int mmc_get_devidx(struc
->         return devidx;
->   }
->
->  -static void mmc_blk_put(struct mmc_blk_data *md)
->  +static void mmc_blk_kref_release(struct kref *ref)
->   {
->  -      mutex_lock(&open_lock);
->  -      md->usage--;
->  -      if (md->usage == 0) {
->  -              int devidx = mmc_get_devidx(md->disk);
->  +      struct mmc_blk_data *md = container_of(ref, struct mmc_blk_data, kref);
->  +      int devidx;
->
->  -              ida_simple_remove(&mmc_blk_ida, devidx);
->  -              put_disk(md->disk);
->  -              kfree(md);
->  -      }
->  +      devidx = mmc_get_devidx(md->disk);
-> -       blk_put_queue(md->queue.queue);
->  +      ida_simple_remove(&mmc_blk_ida, devidx);
->  +
->  +      mutex_lock(&open_lock);
->  +      md->disk->private_data = NULL;
->         mutex_unlock(&open_lock);
->  +
->  +      put_disk(md->disk);
->  +      kfree(md);
->  +}
->  +
->  +static void mmc_blk_put(struct mmc_blk_data *md)
->  +{
->  +      kref_put(&md->kref, mmc_blk_kref_release);
->   }
->
->   static ssize_t power_ro_lock_show(struct device *dev,
-> @@@ -2334,27 -2327,11 +2333,11 @@@ static struct mmc_blk_data *mmc_blk_all
->
->         INIT_LIST_HEAD(&md->part);
->         INIT_LIST_HEAD(&md->rpmbs);
->  -      md->usage = 1;
->  +      kref_init(&md->kref);
-> -
-> -       ret = mmc_init_queue(&md->queue, card);
-> -       if (ret)
-> -               goto err_putdisk;
-> -
->         md->queue.blkdata = md;
->
-> -       /*
-> -        * Keep an extra reference to the queue so that we can shutdown the
-> -        * queue (i.e. call blk_cleanup_queue()) while there are still
-> -        * references to the 'md'. The corresponding blk_put_queue() is in
-> -        * mmc_blk_put().
-> -        */
-> -       if (!blk_get_queue(md->queue.queue)) {
-> -               mmc_cleanup_queue(&md->queue);
-> -               ret = -ENODEV;
-> -               goto err_putdisk;
-> -       }
-> -
->         md->disk->major = MMC_BLOCK_MAJOR;
-> +       md->disk->minors = perdev_minors;
->         md->disk->first_minor = devidx * perdev_minors;
->         md->disk->fops = &mmc_bdops;
->         md->disk->private_data = md;
+
+[1] fio test & results
+
+1) fio test result:
+
+- run fio on local CPU
+taskset -c 0 ~/git/tools/test/nvme/io_uring 10 1 /dev/nvme1n1 4k
++ fio --bs=4k --ioengine=io_uring --fixedbufs --registerfiles --hipri --iodepth=64 --iodepth_batch_submit=16 --iodepth_batch_complete_min=16 --filename=/dev/nvme1n1 --direct=1 --runtime=10 --numjobs=1 --rw=randread --name=test --group_reporting
+
+IOPS: 327K
+avg latency of iommu_dma_unmap_sg(): 1111 nsecs
+
+
+- run fio on remote CPU
+taskset -c 80 ~/git/tools/test/nvme/io_uring 10 1 /dev/nvme1n1 4k
++ fio --bs=4k --ioengine=io_uring --fixedbufs --registerfiles --hipri --iodepth=64 --iodepth_batch_submit=16 --iodepth_batch_complete_min=16 --filename=/dev/nvme1n1 --direct=1 --runtime=10 --numjobs=1 --rw=randread --name=test --group_reporting
+
+IOPS: 34.9K
+avg latency of iommu_dma_unmap_sg(): 25437 nsecs
+
+2) system info
+[root@ampere-mtjade-04 ~]# lscpu | grep NUMA
+NUMA node(s):                    2
+NUMA node0 CPU(s):               0-79
+NUMA node1 CPU(s):               80-159
+
+lspci | grep NVMe
+0003:01:00.0 Non-Volatile memory controller: Samsung Electronics Co Ltd NVMe SSD Controller SM981/PM981/PM983
+
+[root@ampere-mtjade-04 ~]# cat /sys/block/nvme1n1/device/device/numa_node
+0
+
+
+
+Thanks, 
+Ming
+
