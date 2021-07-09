@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D8A93C285F
+	by mail.lfdr.de (Postfix) with ESMTP id B7D273C2860
 	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbhGIRex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 13:34:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45382 "EHLO
+        id S230193AbhGIRez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 13:34:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229887AbhGIRev (ORCPT
+        with ESMTP id S229707AbhGIRew (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 13:34:51 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFC1AC0613E8
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 10:32:06 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id q18so24734198lfc.7
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 10:32:06 -0700 (PDT)
+        Fri, 9 Jul 2021 13:34:52 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D140C0613DD
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 10:32:07 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id a18so24659176lfs.10
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 10:32:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=KLWZj85HgqkOqv1HxmNCRrODidaWLC0A2DygbxwWKbA=;
-        b=o6PnS0GeNa0e7e9IYLaOaw2dOPONtiUFh8iGm+grX09+xf9s+u3UnRFEcT+jYTQHnV
-         WEpXItGnvRJbeiYiS7aCO9/dI09CI3C0+NkCoBvacPZeDMej5vIphi+4vrIbjDQW3xJF
-         vDiwYl6+v2PmzA5r8Ll8sY6saB67KiDDc0VH+75xLCL6hhhU6CgckOqXCn8tPnJxQsNH
-         o9cXFxRV83CmhIB7HXDzl9fWBd9kCfQ0DUiEJycPQ1N0sgeHMATjzVxE2p+Lb+rP+xfh
-         3Or7cmus14QExq/lBPH874ms5L6m2fdjG335qnw51bkqMafMN3GpK4N4OEGt8kko8aZi
-         LJrg==
+        bh=+l6RNZfO6t53h33tKaqwIC7dbp1+6FXvY3b6ZyHCbIM=;
+        b=kQuxiBVKZRCQhRmh45OAszosxWefqx6abf0JSPJUbxbD9VD1vshSdblR4to5B1zeIM
+         gd8P/SUQNBTpNjdAGm/Vt/WxQYMdp1eyfknRL6zQz2yYIj8SjED/S67WvXdGuFsHcucV
+         yP7AV5XY9AkTDI7TM3U+dXuVLX1325XamDBt0rTAkgGP2JDMyPzB8GXg6cYbjBGMEMBA
+         cfWkwwa5VIvDB/nR3p/Mnpr4zWOd+f7R9OEUH0nlcdlJJit2FFVL11Wi+mdCgOesS+JZ
+         1Em+7pkqqScZifBTk7Jm6onIvpzJUbHEAe9vNdZgnPmHzI+OrF/rfvb/1XwAtWGOm+YA
+         nW/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=KLWZj85HgqkOqv1HxmNCRrODidaWLC0A2DygbxwWKbA=;
-        b=snskHC2mN9aj+A5DBaBWO2x4/z/lSg2SOQCAJIPr5wZEidqnq+q3YVUwAgCmNE8akV
-         SpLn53ZLJMzn3JFzQQBek/h4BcytgMXDcu3VLMI39dJndd3+Uz5Qt0i+H6xJI8nba9V4
-         iQ7WtZVvEIST5PC+FumLODDam/8cJVV5vQA+9xa85XGrCbP1rynTIKrKJYSU+vPJThz+
-         LYyjgbGTHSWdnUG7D7GiQ0Z659PbUhBQr3rYtgWxfpGLrmFk0Snh66ImVvegwsRJdO8x
-         Ly01mWLbZtc/Kaz7VCeR0z40+Wl3pWU9qC0Nx7oSV1qkC59+HMbTj/Rm7Z4W8GLqGVYw
-         HXjA==
-X-Gm-Message-State: AOAM532/q1PFE2VYdJTE1DVAcTVYIg6ne2IbDonG4iDoeQrBD2bTGCwS
-        FFz4/I0eBuyEqCBOQAgkZHGDlQ==
-X-Google-Smtp-Source: ABdhPJwEQLoRd1w6PfNkPyS9S5rZ2TWa8UqsLDK3TnyBxmXnZv1cIcW+tsqWV/9Ow4rAE/e4Pem26Q==
-X-Received: by 2002:a19:8c0f:: with SMTP id o15mr29897641lfd.509.1625851924989;
-        Fri, 09 Jul 2021 10:32:04 -0700 (PDT)
+        bh=+l6RNZfO6t53h33tKaqwIC7dbp1+6FXvY3b6ZyHCbIM=;
+        b=C8OWlBmHBjey8VHofFWmjlOzKYuadRaz4gy/ZJg1CHpiphJ1Fo6IOL+FBfQc+Oz2IT
+         Mhl/ocK+BL3T3yq1nLIrqO2pTMuq1YzcmfhdAhdBDUM+N6PUicrX5jw6idhYT5DdZbBH
+         GimedEmrf68+aDphlH2Stj2oe+EfNRloWqIIZDBxyMORozL8fog5MIkikpL7nM+xyfQL
+         NwUbznSf5xajCnKeBHsNy6gZ5Nc5M/Hl/juoD77NkPk0MxAP7d/PLPufG+cGw4aN1keS
+         GoRVPuWtFQNq8c99cMTqw6Le7oWr0kZHontHr8F8Z/wj/IpA6O6TRVRuPvHvF7rQv5K7
+         FdUA==
+X-Gm-Message-State: AOAM532dLYtkEqqNrHRylsvLF175R8P7MqMehqpsspU8XIcByj2phNk0
+        NSG84q4KjvayrnAF3BT7gxQ0Gw==
+X-Google-Smtp-Source: ABdhPJyYC2SMo3GbiZe2sCoQeOOag4DBODidkGofQbLQmNSpc0jDQUBnJbh9tjna+TVj5nncPrh8Xw==
+X-Received: by 2002:a19:6d01:: with SMTP id i1mr30576206lfc.422.1625851925764;
+        Fri, 09 Jul 2021 10:32:05 -0700 (PDT)
 Received: from eriador.lan ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id b14sm511129lfb.132.2021.07.09.10.32.04
+        by smtp.gmail.com with ESMTPSA id b14sm511129lfb.132.2021.07.09.10.32.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 10:32:04 -0700 (PDT)
+        Fri, 09 Jul 2021 10:32:05 -0700 (PDT)
 From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -62,9 +62,9 @@ Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         Mark Brown <broonie@kernel.org>,
         Ulf Hansson <ulf.hansson@linaro.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/7] dt-bindings: clock: qcom,dispcc-sm8x50: add mmcx power domain
-Date:   Fri,  9 Jul 2021 20:31:56 +0300
-Message-Id: <20210709173202.667820-2-dmitry.baryshkov@linaro.org>
+Subject: [PATCH v3 2/7] dt-bindings: clock: qcom,videocc: add mmcx power domain
+Date:   Fri,  9 Jul 2021 20:31:57 +0300
+Message-Id: <20210709173202.667820-3-dmitry.baryshkov@linaro.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210709173202.667820-1-dmitry.baryshkov@linaro.org>
 References: <20210709173202.667820-1-dmitry.baryshkov@linaro.org>
@@ -74,7 +74,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On sm8250 dispcc requires MMCX power domain to be powered up before
+On sm8250 videocc requires MMCX power domain to be powered up before
 clock controller's registers become available. For now sm8250 was using
 external regulator driven by the power domain to describe this
 relationship. Switch into specifying power-domain and required opp-state
@@ -82,14 +82,14 @@ directly.
 
 Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 ---
- .../devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml      | 7 +++++++
+ Documentation/devicetree/bindings/clock/qcom,videocc.yaml | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml b/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
-index 0cdf53f41f84..d5c4fed56b6e 100644
---- a/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
-+++ b/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
-@@ -55,6 +55,11 @@ properties:
+diff --git a/Documentation/devicetree/bindings/clock/qcom,videocc.yaml b/Documentation/devicetree/bindings/clock/qcom,videocc.yaml
+index 567202942b88..db4ada6acf27 100644
+--- a/Documentation/devicetree/bindings/clock/qcom,videocc.yaml
++++ b/Documentation/devicetree/bindings/clock/qcom,videocc.yaml
+@@ -47,6 +47,11 @@ properties:
    reg:
      maxItems: 1
  
@@ -101,15 +101,15 @@ index 0cdf53f41f84..d5c4fed56b6e 100644
  required:
    - compatible
    - reg
-@@ -69,6 +74,7 @@ additionalProperties: false
+@@ -61,6 +66,7 @@ additionalProperties: false
  examples:
    - |
      #include <dt-bindings/clock/qcom,rpmh.h>
 +    #include <dt-bindings/power/qcom-rpmpd.h>
-     clock-controller@af00000 {
-       compatible = "qcom,sm8250-dispcc";
-       reg = <0x0af00000 0x10000>;
-@@ -89,5 +95,6 @@ examples:
+     clock-controller@ab00000 {
+       compatible = "qcom,sdm845-videocc";
+       reg = <0x0ab00000 0x10000>;
+@@ -69,5 +75,6 @@ examples:
        #clock-cells = <1>;
        #reset-cells = <1>;
        #power-domain-cells = <1>;
