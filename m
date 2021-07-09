@@ -2,113 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B8743C2729
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 17:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C4763C2731
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 18:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232494AbhGIQCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 12:02:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232457AbhGIQB4 (ORCPT
+        id S232516AbhGIQCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 12:02:43 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:55718 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232351AbhGIQCl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 12:01:56 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 549F7C0613E7;
-        Fri,  9 Jul 2021 08:59:12 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id q190so9781215qkd.2;
-        Fri, 09 Jul 2021 08:59:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=14uw+zqS97Gsy9Jw8EWJMOHgB1wSw1hOg4uDSLTFU5c=;
-        b=dG76a9yH3Y1e18auAKPw1MrupE1KRYUQmlAFH7bwmoXRsHzuKUWXtHFwMrnzxnnBkE
-         1MUDWfQPlrNp1RJ3tH3cQJfYuRW9SAZbiwOXM/MD4jvizDLL77+mbEEKyBtJoLkK92nv
-         vHzD/QEl05O9Y+8EoFUXtgSWgRu78/QRJm2Y+LCeF3K4yshJs0+RPoRhc9imDFsc+HUW
-         Gpf06FMJ09/PAKQEUaDZcJK8YIF8iKxuTrdOBaR7xGLOhXmg74M/SWeCT01n3xLolg3u
-         YfhO1xvWFirUEs5XLyAYruv8+nRdBkCcBcKyHCcsgshdTWb5a6TXuKV1voTOdzWHKiE8
-         /lXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=14uw+zqS97Gsy9Jw8EWJMOHgB1wSw1hOg4uDSLTFU5c=;
-        b=GT8zFW1u/lQDJVBAPRq5n1vIZZB7Z16i9guydqd0Y239p5XBOePgLxtWrvmO5k87Q4
-         iJP4pjXvxQRB36QWgzs4PB1ZiIyjc/PsT48kq1oqo7ejM/pDJtPo0Vm6791lYxZ/59N2
-         VhtVeAYOLrrcoEaTNSEzl8iy3l9tX9VbB+BaVXDb6NOj2WgxFrdbMx361ZVdurzpOZzf
-         qLoqd6Kwne07Hlvd0vBSgKjw00soZir2Et5/yJINWIcu/M+dASyA01JKLTgnWrjF7Acv
-         mKgE10wROOJ4ZksQ5RyYxA3ISvYtkM5XzG/gteS0TlsgLcycp0wAJKRdu6Ljyyoc8xD5
-         eKOQ==
-X-Gm-Message-State: AOAM531fumE4ynUyRFRMl6uv0zn5jsF8GE9iqSJVrsN0NZ/xyxZxSsn9
-        GCgxdumBaZgYJsTjHU9SVY0=
-X-Google-Smtp-Source: ABdhPJw96U/oIuYyId/vjzXqqOD0KQWypdgvfJ37hY8C6oDIXfjseLPL45PBtUX4OmZcZdDRB2YOXw==
-X-Received: by 2002:a37:9306:: with SMTP id v6mr38918800qkd.476.1625846351589;
-        Fri, 09 Jul 2021 08:59:11 -0700 (PDT)
-Received: from shaak.xiphos.ca (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id x15sm2606071qkm.66.2021.07.09.08.59.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 08:59:11 -0700 (PDT)
-From:   Liam Beguin <liambeguin@gmail.com>
-To:     liambeguin@gmail.com, lars@metafoo.de,
-        Michael.Hennerich@analog.com, jic23@kernel.org,
-        charles-antoine.couret@essensium.com, Nuno.Sa@analog.com
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-Subject: [PATCH v2 4/4] dt-bindings: iio: adc: ad7949: add adi,reference-source
-Date:   Fri,  9 Jul 2021 11:58:56 -0400
-Message-Id: <20210709155856.1732245-5-liambeguin@gmail.com>
-X-Mailer: git-send-email 2.30.1.489.g328c10930387
-In-Reply-To: <20210709155856.1732245-1-liambeguin@gmail.com>
-References: <20210709155856.1732245-1-liambeguin@gmail.com>
+        Fri, 9 Jul 2021 12:02:41 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 169FWtDj181659;
+        Fri, 9 Jul 2021 11:59:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=1Po+rMtMFJxfuFZqCeL6KxfLyqZR7O/9IyCglXOMvmw=;
+ b=QRcFJ4IFOXT2/bFp1H7JBrOUzU/3dt7tXIjJjZcE9t6SkXFDRba3nFZEeZN0NZE8glbr
+ PIEOQD1ixymNS4gABUbSJIQq1xk7Tn8O3qyB5wuo83sZKqc0UJVqZ0g/5YnIKLmzZ4ZK
+ KdgjFia1ELuvwZ1oqMCyaW8bIiQ1Cz+WYWGdeTTwfmwueKmTf9qm2//w73qbG5YqOthW
+ Dmjxp2Nrt+0OgszOoQc54rR6bvWD/gsJ78vV5E9u/gF2W/Dc9bOqaYRrklnpa0cTiLqZ
+ 9QRyVwu2VUonUvJsPjD5cBl4e/wFpjNz+eZ4BFWThfDuY+sgbOkYFmAuaNF8QFVkHpb1 zA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39phqkwh5x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Jul 2021 11:59:24 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 169FX7Bo182394;
+        Fri, 9 Jul 2021 11:59:23 -0400
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39phqkwh5e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Jul 2021 11:59:23 -0400
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 169FwB1J028432;
+        Fri, 9 Jul 2021 15:59:22 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma04wdc.us.ibm.com with ESMTP id 39ju3dn5hq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Jul 2021 15:59:22 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 169FxLoY37945660
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 9 Jul 2021 15:59:21 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 740BE124073;
+        Fri,  9 Jul 2021 15:59:21 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A5A6C124066;
+        Fri,  9 Jul 2021 15:59:16 +0000 (GMT)
+Received: from li-4b5937cc-25c4-11b2-a85c-cea3a66903e4.ibm.com (unknown [9.163.3.233])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri,  9 Jul 2021 15:59:15 +0000 (GMT)
+Subject: Re: [PATCH RFC 00/12] Enroll kernel keys thru MOK
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        Eric Snowberg <eric.snowberg@oracle.com>
+Cc:     keyrings@vger.kernel.org,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>, keescook@chromium.org,
+        gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
+        scott.branden@broadcom.com, weiyongjun1@huawei.com,
+        nayna@linux.ibm.com, ebiggers@google.com, ardb@kernel.org,
+        nramas@linux.microsoft.com, lszubowi@redhat.com,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        James.Bottomley@HansenPartnership.com, pjones@redhat.com,
+        glin@suse.com, "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>
+References: <20210707024403.1083977-1-eric.snowberg@oracle.com>
+ <42b787dd3a20fe37c4de60daf75db06e409cfb6d.camel@linux.ibm.com>
+ <5BFB3C52-36D4-47A5-B1B8-977717C555A0@oracle.com>
+ <886f30dcf7b3d48644289acc3601c2f0207b19b6.camel@linux.ibm.com>
+ <D34A6328-91CA-4E1E-845C-FAC9B424819B@oracle.com>
+ <c0cf7f883a9252c17427f1f992e4973e78481304.camel@linux.ibm.com>
+ <21EFCB58-2D89-4D30-8DA2-B952A7E1B1BD@oracle.com>
+ <490941a5197bf4bcf0d6f95610085ee4d46ed9bb.camel@linux.ibm.com>
+ <839EF700-7A2C-4282-AF97-768FAD1A9957@oracle.com>
+ <ef480c8f83780eea4ff8fdcd35c6208760b5e1d7.camel@linux.ibm.com>
+From:   Nayna <nayna@linux.vnet.ibm.com>
+Message-ID: <51434508-e2ad-c9f9-2612-2a9162cec71d@linux.vnet.ibm.com>
+Date:   Fri, 9 Jul 2021 11:59:15 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
+In-Reply-To: <ef480c8f83780eea4ff8fdcd35c6208760b5e1d7.camel@linux.ibm.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: m6PXIplm1CJI8HDYe7ntOIno-_i_X63y
+X-Proofpoint-GUID: WKRt1Pulw0vog-lQfrySLYMyxXTXdSvD
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-09_09:2021-07-09,2021-07-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
+ lowpriorityscore=0 adultscore=0 suspectscore=0 priorityscore=1501
+ mlxscore=0 malwarescore=0 phishscore=0 mlxlogscore=999 clxscore=1011
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107090078
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liam Beguin <lvb@xiphos.com>
 
-Add bindings documentation for the adi,reference-source property.
-This property is required to properly configure the ADC sample request
-based on which reference source should be used for the calculation.
+On 7/8/21 9:10 PM, Mimi Zohar wrote:
+> Definitely not ".trusted_platform" keyring, as it would be too
+> confusing with the existing "trusted" key type [1].  At least for now,
+> leave it as ".mok".
 
-Signed-off-by: Liam Beguin <lvb@xiphos.com>
----
- .../bindings/iio/adc/adi,ad7949.yaml          | 21 +++++++++++++++++++
- 1 file changed, 21 insertions(+)
+Since this keyring is meant only for "CA" keys, can we name it as ".ca" ?
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
-index 9b56bd4d5510..eae3121cad01 100644
---- a/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
-+++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
-@@ -35,6 +35,27 @@ properties:
-   "#io-channel-cells":
-     const: 1
- 
-+  adi,reference-select:
-+    description: |
-+      Select the reference voltage source to use when converting samples.
-+      Acceptable values are:
-+      - 0: Internal reference and temperature sensor enabled.
-+           Vref=2.5V, buffered output
-+      - 1: Internal reference and temperature sensor enabled.
-+           Vref=4.096V, buffered output
-+      - 2: Use external reference, temperature sensor enabled.
-+           Internal buffer disabled
-+      - 3: Use external reference, internal buffer and temperature sensor
-+           enabled.
-+      - 6: Use external reference, internal buffer and temperature sensor
-+           disabled.
-+      - 7: Use external reference, internal buffer enabled.
-+           Internal reference and temperature sensor disabled.
-+
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [0, 1, 2, 3, 6, 7]
-+    default: 7
-+
- required:
-   - compatible
-   - reg
--- 
-2.30.1.489.g328c10930387
+Thanks & Regards,
+
+     - Nayna
 
