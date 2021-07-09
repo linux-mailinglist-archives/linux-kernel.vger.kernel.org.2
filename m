@@ -2,83 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B9E3C1F17
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 07:50:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8320B3C1F1F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 07:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229992AbhGIFxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 01:53:06 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:44913 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229618AbhGIFxF (ORCPT
+        id S229986AbhGIF4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 01:56:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbhGIF4g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 01:53:05 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UfBeBey_1625809818;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UfBeBey_1625809818)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 09 Jul 2021 13:50:19 +0800
-Date:   Fri, 9 Jul 2021 13:50:16 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Gao Xiang <hsiangkao@redhat.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Terrell <terrelln@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: Re: [linux-stable-rc:linux-5.4.y 7045/7049] mipsel-linux-ld:
- decompress.c:undefined reference to `memmove'
-Message-ID: <YOfjmCT6n61Yidvp@B-P7TQMD6M-0146.local>
-References: <202107070120.6dOj1kB7-lkp@intel.com>
+        Fri, 9 Jul 2021 01:56:36 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D0ABC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 22:53:53 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m1jSI-0007lA-QR; Fri, 09 Jul 2021 07:53:42 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m1jSE-0003cR-5b; Fri, 09 Jul 2021 07:53:38 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m1jSE-0000zp-38; Fri, 09 Jul 2021 07:53:38 +0200
+Date:   Fri, 9 Jul 2021 07:53:25 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>
+Subject: Re: [v8 2/2] pwm: Add Aspeed ast2600 PWM support
+Message-ID: <20210709055325.4y4ufjvoiwo2pcvi@pengutronix.de>
+References: <20210608064658.14262-1-billy_tsai@aspeedtech.com>
+ <20210608064658.14262-3-billy_tsai@aspeedtech.com>
+ <20210702143147.6a7psfup4tlidq2x@pengutronix.de>
+ <FC122EAB-46A9-4B6F-B75C-271B4E17F057@aspeedtech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="qqbiwvrhqx7yu7h3"
 Content-Disposition: inline
-In-Reply-To: <202107070120.6dOj1kB7-lkp@intel.com>
+In-Reply-To: <FC122EAB-46A9-4B6F-B75C-271B4E17F057@aspeedtech.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 01:15:28AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> head:   3909e2374335335c9504467caabc906d3f7487e4
-> commit: defcc2b5e54a4724fb5733f802edf5dd596018b6 [7045/7049] lib/lz4: explicitly support in-place decompression
-> config: mips-randconfig-r036-20210706 (attached as .config)
-> compiler: mipsel-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?id=defcc2b5e54a4724fb5733f802edf5dd596018b6
->         git remote add linux-stable-rc https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
->         git fetch --no-tags linux-stable-rc linux-5.4.y
->         git checkout defcc2b5e54a4724fb5733f802edf5dd596018b6
->         # save the attached .config to linux build tree
->         mkdir build_dir
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross O=build_dir ARCH=mips SHELL=/bin/bash
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
 
-Which is weird, does the preboot environment miss memmove() on mipsel?
-Just a guess, I may look into that myself later...
+--qqbiwvrhqx7yu7h3
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Gao Xiang
+Hello Billy,
 
-> 
-> All errors (new ones prefixed by >>):
-> 
->    mipsel-linux-ld: arch/mips/boot/compressed/decompress.o: in function `LZ4_decompress_safe_withSmallPrefix':
->    decompress.c:(.text+0x220): undefined reference to `memmove'
->    mipsel-linux-ld: arch/mips/boot/compressed/decompress.o: in function `LZ4_decompress_fast_extDict':
->    decompress.c:(.text+0x694): undefined reference to `memmove'
-> >> mipsel-linux-ld: decompress.c:(.text+0x774): undefined reference to `memmove'
->    mipsel-linux-ld: arch/mips/boot/compressed/decompress.o: in function `LZ4_decompress_safe':
->    decompress.c:(.text+0xb88): undefined reference to `memmove'
->    mipsel-linux-ld: arch/mips/boot/compressed/decompress.o: in function `LZ4_decompress_safe_partial':
->    decompress.c:(.text+0x1078): undefined reference to `memmove'
->    mipsel-linux-ld: arch/mips/boot/compressed/decompress.o:decompress.c:(.text+0x12f8): more undefined references to `memmove' follow
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+On Fri, Jul 09, 2021 at 05:40:45AM +0000, Billy Tsai wrote:
+> On 2021/7/2, 10:32 PM, "Uwe Kleine-K=F6nig" <u.kleine-koenig@pengutronix.=
+de> wrote:
+>     > The multiplication can be up to:
+>=20
+>     >	100000000 * (1 << 31) * (31 + 1) * (255 + 1)
+>=20
+>     > right? This needs 71 bits and so might overflow a u64.
+>=20
+> No, the multiplication can be up to:
+>=20
+> Max(div_h) =3D 15
+> Max(div_l) =3D 255
+> Max(clk_period) =3D 255
+> 1000000000 * (1 << 15) * (255 + 1) * (255 + 1) < 2^64 - 1
+> it doesn't overflow a u64.
 
+Ah, you're right. Please note this in a comment (not that you were
+right, but that it doesn't overflow :-)
 
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--qqbiwvrhqx7yu7h3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmDn5FAACgkQwfwUeK3K
+7AkCLgf/Wqw5mfuphqGF4+uRZjb+BVpbgi6TY8lgmZQS9hR+16ML35aNawrAo0J/
+c/2e0I8SQtbevb552QGX2eSStU0i/jPIWBpXRzYBxYNy4+tYOdpL59GEA5qZJeH7
+R83lXsYsQEOGoSufHH3MsHWZfPXNms1rxZAmQ1Zlp6AqRVwVNE+cLdC3ByC9qxxl
+Um2TbbOwVHvQfhXgfGLwlC1rmBeDU0I0rrdWNBnw3ifWKCCHuwytg/mJ0c/MXKzo
+44gxD+YqV0J1gy9vKLtNWEOFY8RBXV5UjPQLgH2bk5vD9xLOATF11c5wc2e58s6P
+aCwg6rvWFB+hrS+UP6aXQlO4CKM5uQ==
+=i2jo
+-----END PGP SIGNATURE-----
+
+--qqbiwvrhqx7yu7h3--
