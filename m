@@ -2,138 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98FBB3C25E1
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:25:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D433C25DF
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232261AbhGIO2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 10:28:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45676 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229561AbhGIO2C (ORCPT
+        id S232100AbhGIO15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 10:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229561AbhGIO14 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 10:28:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625840719;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CUy8DLM98BygG4ir4jGUsZKL/eD5/NIvpxp3p9erFnw=;
-        b=It1uB2gTKVvanYP91qzr/FGczjKndV5dqlBjh3NrJkmL19tPV7BXQdB0/wNh5qF/B/x8ao
-        HWuvUCfYcI1bylLfMU2i7kqvqaTCKhPhWA3eNhBqem1G+F/fhyvAMWB/koDVYzfBcyF0bt
-        wohG/pttadctH42l1sXQ5WioTzZBiYk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-25-KgxKnMkSORqNXMmSA8aypw-1; Fri, 09 Jul 2021 10:25:15 -0400
-X-MC-Unique: KgxKnMkSORqNXMmSA8aypw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3D2845074C;
-        Fri,  9 Jul 2021 14:25:14 +0000 (UTC)
-Received: from T590 (ovpn-12-94.pek2.redhat.com [10.72.12.94])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A378710016F7;
-        Fri,  9 Jul 2021 14:25:03 +0000 (UTC)
-Date:   Fri, 9 Jul 2021 22:24:58 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     linux-nvme@lists.infradead.org, Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [bug report] iommu_dma_unmap_sg() is very slow then running IO
- from remote numa node
-Message-ID: <YOhcOv1oOwm6fco+@T590>
-References: <YOgK8fdv7dOQtkET@T590>
- <23e7956b-f3b5-b585-3c18-724165994051@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <23e7956b-f3b5-b585-3c18-724165994051@arm.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        Fri, 9 Jul 2021 10:27:56 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D38EC0613DD;
+        Fri,  9 Jul 2021 07:25:13 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id e14so9432499qkl.9;
+        Fri, 09 Jul 2021 07:25:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:content-transfer-encoding:date:message-id:from:to:cc
+         :subject:references:in-reply-to;
+        bh=5EvyeeVq0zGR1aiMOlBfdhyawQhaQMkOJwagvR7vLi4=;
+        b=UqB4Y7FY0RcOFp5ceYvATO1c3w4ALAH7x1oc2xb1cDPg6n91Rap1XlYRVPgX353+lc
+         AQT1QCRR+FVfvxmjuWmntcAvphQUIE8xGgm7pk8Z3hpE7s3MdTybquyB9xF9gD7NhIm1
+         TyeI+hkglyNObRCnwsBkXimDFxSWrQ3LHumKz+HGmFMz5AdMFChDq9XXO2qfsA61hLsb
+         bxHqc1Rf/7LWs19zcZBkDAy/tptiqfRNoKHzRKwNuGkXoj8rzPfZJ1OcKiXfNjQlVnRD
+         sQR/xbfsq/Q2eKbaJkswFhcdbrY+/pUvkx/PAEU5IlgG5gBfb/k8Mc14KFt047VWWjGE
+         FqFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding:date
+         :message-id:from:to:cc:subject:references:in-reply-to;
+        bh=5EvyeeVq0zGR1aiMOlBfdhyawQhaQMkOJwagvR7vLi4=;
+        b=VIloLmaEQNyTe/zt1VV7/Ax8GZWIousYXLbS5y79+zNZ+UTAvQf2BZUH0TrQvsD9LP
+         Vgu3hOVkI49mpdKuTGSC5Zj11FzmVeRUt0QyNVLoGSb/GH0YXNti7usXcSjmNLRPpNkL
+         Dc7/Qu4sf/O4SX/d/8OVTi3EC3CQuM+JUWWcjY1TNC9jVLotJGoWJ3Y3C4R5RQKhITm1
+         zsxl2TSnGiH9qB34HE7GLgPp4obk8dPdphDOpMVGgYaPDhhQfTCoIV6vSbSHcQVVFTwU
+         sFXQc9347QUjwjvoEeR8NsxBb312+SYi8twb5F2Wy7UQzUWfTirKy75ltj57RAx7Z+AQ
+         9PYA==
+X-Gm-Message-State: AOAM530cBDdhXFPNvsPwNhneOBlo8SzMFXbqbI0qAj3XAHXbzXxhKDWw
+        cYSym5Y40/xGZT728YoyUIk=
+X-Google-Smtp-Source: ABdhPJx/Gy9Y9EOWESFDn/wtfiSJV1uiuhFQ89Wg2b8GNjz7upNSEavaqyBjyTTAeYhc1OqitrTPAw==
+X-Received: by 2002:a37:b6c1:: with SMTP id g184mr37921760qkf.270.1625840712634;
+        Fri, 09 Jul 2021 07:25:12 -0700 (PDT)
+Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
+        by smtp.gmail.com with ESMTPSA id w2sm2521850qkm.65.2021.07.09.07.25.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Jul 2021 07:25:12 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Fri, 09 Jul 2021 10:25:11 -0400
+Message-Id: <CCOOFJOC6MQV.2KZR4J2HPE7KP@shaak>
+From:   "Liam Beguin" <liambeguin@gmail.com>
+To:     "Sa, Nuno" <Nuno.Sa@analog.com>,
+        "lars@metafoo.de" <lars@metafoo.de>,
+        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        "jic23@kernel.org" <jic23@kernel.org>,
+        "charles-antoine.couret@essensium.com" 
+        <charles-antoine.couret@essensium.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+Subject: RE: [PATCH v1 2/4] iio: adc: ad7949: fix spi messages on non 14-bit
+ controllers
+References: <20210708235618.1541335-1-liambeguin@gmail.com>
+ <20210708235618.1541335-3-liambeguin@gmail.com>
+ <PH0PR03MB63662890FF4545AAF45E026199189@PH0PR03MB6366.namprd03.prod.outlook.com>
+In-Reply-To: <PH0PR03MB63662890FF4545AAF45E026199189@PH0PR03MB6366.namprd03.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 09, 2021 at 11:26:53AM +0100, Robin Murphy wrote:
-> On 2021-07-09 09:38, Ming Lei wrote:
-> > Hello,
-> > 
-> > I observed that NVMe performance is very bad when running fio on one
-> > CPU(aarch64) in remote numa node compared with the nvme pci numa node.
-> > 
-> > Please see the test result[1] 327K vs. 34.9K.
-> > 
-> > Latency trace shows that one big difference is in iommu_dma_unmap_sg(),
-> > 1111 nsecs vs 25437 nsecs.
-> 
-> Are you able to dig down further into that? iommu_dma_unmap_sg() itself
-> doesn't do anything particularly special, so whatever makes a difference is
-> probably happening at a lower level, and I suspect there's probably an SMMU
-> involved. If for instance it turns out to go all the way down to
-> __arm_smmu_cmdq_poll_until_consumed() because polling MMIO from the wrong
-> node is slow, there's unlikely to be much you can do about that other than
-> the global "go faster" knobs (iommu.strict and iommu.passthrough) with their
-> associated compromises.
+On Fri Jul 9, 2021 at 4:19 AM EDT, Sa, Nuno wrote:
+>
+>
+> > -----Original Message-----
+> > From: Liam Beguin <liambeguin@gmail.com>
+> > Sent: Friday, July 9, 2021 1:56 AM
+> > To: liambeguin@gmail.com; lars@metafoo.de; Hennerich, Michael
+> > <Michael.Hennerich@analog.com>; jic23@kernel.org; charles-
+> > antoine.couret@essensium.com
+> > Cc: linux-kernel@vger.kernel.org; linux-iio@vger.kernel.org;
+> > devicetree@vger.kernel.org; robh+dt@kernel.org
+> > Subject: [PATCH v1 2/4] iio: adc: ad7949: fix spi messages on non 14-bi=
+t
+> > controllers
+> >=20
+> > [External]
+> >=20
+> > From: Liam Beguin <lvb@xiphos.com>
+> >=20
+> > This driver supports devices with 14-bit and 16-bit sample sizes.
+> > This is not always handled properly by spi controllers and can fail. To
+> > work around this limitation, pad samples to 16-bit and split the sample
+> > into two 8-bit messages in the event that only 8-bit messages are
+> > supported by the controller.
+> >=20
+> > Signed-off-by: Liam Beguin <lvb@xiphos.com>
+> > ---
+> >  drivers/iio/adc/ad7949.c | 67
+> > ++++++++++++++++++++++++++++++++++------
+> >  1 file changed, 58 insertions(+), 9 deletions(-)
+> >=20
+> > diff --git a/drivers/iio/adc/ad7949.c b/drivers/iio/adc/ad7949.c
+> > index 93aacf4f680b..bbc6b56330a3 100644
+> > --- a/drivers/iio/adc/ad7949.c
+> > +++ b/drivers/iio/adc/ad7949.c
+> > @@ -11,6 +11,7 @@
+> >  #include <linux/module.h>
+> >  #include <linux/regulator/consumer.h>
+> >  #include <linux/spi/spi.h>
+> > +#include <linux/bitfield.h>
+> >=20
+> >  #define AD7949_MASK_TOTAL		GENMASK(13, 0)
+> >  #define AD7949_CFG_REG_SIZE_BITS	14
+> > @@ -57,6 +58,7 @@ static const struct ad7949_adc_spec
+> > ad7949_adc_spec[] =3D {
+> >   * @indio_dev: reference to iio structure
+> >   * @spi: reference to spi structure
+> >   * @resolution: resolution of the chip
+> > + * @bits_per_word: number of bits per SPI word
+> >   * @cfg: copy of the configuration register
+> >   * @current_channel: current channel in use
+> >   * @buffer: buffer to send / receive data to / from device
+> > @@ -67,28 +69,59 @@ struct ad7949_adc_chip {
+> >  	struct iio_dev *indio_dev;
+> >  	struct spi_device *spi;
+> >  	u8 resolution;
+> > +	u8 bits_per_word;
+> >  	u16 cfg;
+> >  	unsigned int current_channel;
+> > -	u16 buffer ____cacheline_aligned;
+> > +	union {
+> > +		__be16 buffer;
+> > +		u8 buf8[2];
+> > +	} ____cacheline_aligned;
+> >  };
+> >=20
+> > +static void ad7949_set_bits_per_word(struct ad7949_adc_chip
+> > *ad7949_adc)
+> > +{
+> > +	u32 adc_mask =3D SPI_BPW_MASK(ad7949_adc->resolution);
+> > +	u32 bpw =3D adc_mask & ad7949_adc->spi->controller-
+> > >bits_per_word_mask;
+> > +
+> > +	if (bpw =3D=3D adc_mask)
+> > +		ad7949_adc->bits_per_word =3D ad7949_adc-
+> > >resolution;
+> > +	else if (bpw =3D=3D SPI_BPW_MASK(16))
+> > +		ad7949_adc->bits_per_word =3D 16;
+> > +	else
+> > +		ad7949_adc->bits_per_word =3D 8;
+> > +}
+> > +
+> >  static int ad7949_spi_write_cfg(struct ad7949_adc_chip *ad7949_adc,
+> > u16 val,
+> >  				u16 mask)
+> >  {
+> >  	int ret;
+> > -	int bits_per_word =3D ad7949_adc->resolution;
+> > -	int shift =3D bits_per_word - AD7949_CFG_REG_SIZE_BITS;
+> >  	struct spi_message msg;
+> >  	struct spi_transfer tx[] =3D {
+> >  		{
+> >  			.tx_buf =3D &ad7949_adc->buffer,
+> >  			.len =3D 2,
+> > -			.bits_per_word =3D bits_per_word,
+> > +			.bits_per_word =3D ad7949_adc->bits_per_word,
+> >  		},
+> >  	};
+> >=20
+> > +	ad7949_adc->buffer =3D 0;
+> >  	ad7949_adc->cfg =3D (val & mask) | (ad7949_adc->cfg & ~mask);
+> > -	ad7949_adc->buffer =3D ad7949_adc->cfg << shift;
+> > +
+> > +	switch (ad7949_adc->bits_per_word) {
+> > +	case 16:
+> > +		ad7949_adc->buffer =3D ad7949_adc->cfg << 2;
+> > +		break;
+> > +	case 14:
+> > +		ad7949_adc->buffer =3D ad7949_adc->cfg;
+> > +		break;
+> > +	case 8:
+> > +		/* Pack 14-bit value into 2 bytes, MSB first */
+> > +		ad7949_adc->buf8[0] =3D FIELD_GET(GENMASK(13, 6),
+> > ad7949_adc->cfg);
+> > +		ad7949_adc->buf8[1] =3D FIELD_GET(GENMASK(5, 0),
+> > ad7949_adc->cfg);
+> > +		ad7949_adc->buf8[1] =3D ad7949_adc->buf8[1] << 2;
+> > +		break;
+> > +	}
+>
+> Honestly I didn't went through the driver but just a question... Are we
+> sure that 'ad7949_adc->resolution' will have something valid (8, 14,
+> 16)?
+> A default statement is always a nice to have :).
+> =20
 
-Follows the log of 'perf report'
+Thanks for pointing that out. You're right that based on this driver
+there's no guaranty that `ad7949_adc->resolution` will have a valid
+value. I'll add a default to 8-bit.
 
-1) good(run fio from cpus in the nvme's numa node)
+Thanks,
+Liam
 
--   34.86%     1.73%  fio       [nvme]              [k] nvme_process_cq                                                      ▒
-   - 33.13% nvme_process_cq                                                                                                  ▒
-      - 32.93% nvme_pci_complete_rq                                                                                          ▒
-         - 24.92% nvme_unmap_data                                                                                            ▒
-            - 20.08% dma_unmap_sg_attrs                                                                                      ▒
-               - 19.79% iommu_dma_unmap_sg                                                                                   ▒
-                  - 19.55% __iommu_dma_unmap                                                                                 ▒
-                     - 16.86% arm_smmu_iotlb_sync                                                                            ▒
-                        - 16.81% arm_smmu_tlb_inv_range_domain                                                               ▒
-                           - 14.73% __arm_smmu_tlb_inv_range                                                                 ▒
-                                14.44% arm_smmu_cmdq_issue_cmdlist                                                           ▒
-                             0.89% __pi_memset                                                                               ▒
-                             0.75% arm_smmu_atc_inv_domain                                                                   ▒
-                     + 1.58% iommu_unmap_fast                                                                                ▒
-                     + 0.71% iommu_dma_free_iova                                                                             ▒
-            - 3.25% dma_unmap_page_attrs                                                                                     ▒
-               - 3.21% iommu_dma_unmap_page                                                                                  ▒
-                  - 3.14% __iommu_dma_unmap_swiotlb                                                                          ▒
-                     - 2.86% __iommu_dma_unmap                                                                               ▒
-                        - 2.48% arm_smmu_iotlb_sync                                                                          ▒
-                           - 2.47% arm_smmu_tlb_inv_range_domain                                                             ▒
-                              - 2.19% __arm_smmu_tlb_inv_range                                                               ▒
-                                   2.16% arm_smmu_cmdq_issue_cmdlist                                                         ▒
-            + 1.34% mempool_free                                                                                             ▒
-         + 7.68% nvme_complete_rq                                                                                            ▒
-   + 1.73% _start
-
-
-2) bad(run fio from cpus not in the nvme's numa node)
--   49.25%     3.03%  fio       [nvme]              [k] nvme_process_cq                                                      ▒
-   - 46.22% nvme_process_cq                                                                                                  ▒
-      - 46.07% nvme_pci_complete_rq                                                                                          ▒
-         - 41.02% nvme_unmap_data                                                                                            ▒
-            - 34.92% dma_unmap_sg_attrs                                                                                      ▒
-               - 34.75% iommu_dma_unmap_sg                                                                                   ▒
-                  - 34.58% __iommu_dma_unmap                                                                                 ▒
-                     - 33.04% arm_smmu_iotlb_sync                                                                            ▒
-                        - 33.00% arm_smmu_tlb_inv_range_domain                                                               ▒
-                           - 31.86% __arm_smmu_tlb_inv_range                                                                 ▒
-                                31.71% arm_smmu_cmdq_issue_cmdlist                                                           ▒
-                     + 0.90% iommu_unmap_fast                                                                                ▒
-            - 5.17% dma_unmap_page_attrs                                                                                     ▒
-               - 5.15% iommu_dma_unmap_page                                                                                  ▒
-                  - 5.12% __iommu_dma_unmap_swiotlb                                                                          ▒
-                     - 5.05% __iommu_dma_unmap                                                                               ▒
-                        - 4.86% arm_smmu_iotlb_sync                                                                          ▒
-                           - 4.85% arm_smmu_tlb_inv_range_domain                                                             ▒
-                              - 4.70% __arm_smmu_tlb_inv_range                                                               ▒
-                                   4.67% arm_smmu_cmdq_issue_cmdlist                                                         ▒
-            + 0.74% mempool_free                                                                                             ▒
-         + 4.83% nvme_complete_rq                                                                                            ▒
-   + 3.03% _start
-
-
-Thanks, 
-Ming
+> >  	spi_message_init_with_transfers(&msg, tx, 1);
+> >  	ret =3D spi_sync(ad7949_adc->spi, &msg);
+> >=20
+> > @@ -105,14 +138,12 @@ static int ad7949_spi_read_channel(struct
+> > ad7949_adc_chip *ad7949_adc, int *val,
+> >  {
+> >  	int ret;
+> >  	int i;
+> > -	int bits_per_word =3D ad7949_adc->resolution;
+> > -	int mask =3D GENMASK(ad7949_adc->resolution - 1, 0);
+> >  	struct spi_message msg;
+> >  	struct spi_transfer tx[] =3D {
+> >  		{
+> >  			.rx_buf =3D &ad7949_adc->buffer,
+> >  			.len =3D 2,
+> > -			.bits_per_word =3D bits_per_word,
+> > +			.bits_per_word =3D ad7949_adc->bits_per_word,
+> >  		},
+> >  	};
+> >=20
+> > @@ -147,7 +178,24 @@ static int ad7949_spi_read_channel(struct
+> > ad7949_adc_chip *ad7949_adc, int *val,
+> >=20
+> >  	ad7949_adc->current_channel =3D channel;
+> >=20
+> > -	*val =3D ad7949_adc->buffer & mask;
+> > +	switch (ad7949_adc->bits_per_word) {
+> > +	case 16:
+> > +		*val =3D ad7949_adc->buffer;
+> > +		/* Shift-out padding bits */
+> > +		if (ad7949_adc->resolution =3D=3D 14)
+> > +			*val =3D *val >> 2;
+> > +		break;
+> > +	case 14:
+> > +		*val =3D ad7949_adc->buffer & GENMASK(13, 0);
+> > +		break;
+> > +	case 8:
+> > +		/* Convert byte array to u16, MSB first */
+> > +		*val =3D (ad7949_adc->buf8[0] << 8) | ad7949_adc-
+> > >buf8[1];
+> > +		/* Shift-out padding bits */
+> > +		if (ad7949_adc->resolution =3D=3D 14)
+> > +			*val =3D *val >> 2;
+> > +		break;
+> > +	}
+> >=20
+> >  	return 0;
+> >  }
+> > @@ -280,6 +328,7 @@ static int ad7949_spi_probe(struct spi_device
+> > *spi)
+> >  	spec =3D &ad7949_adc_spec[spi_get_device_id(spi)-
+> > >driver_data];
+> >  	indio_dev->num_channels =3D spec->num_channels;
+> >  	ad7949_adc->resolution =3D spec->resolution;
+> > +	ad7949_set_bits_per_word(ad7949_adc);
+> >=20
+> >  	ad7949_adc->vref =3D devm_regulator_get(dev, "vref");
+> >  	if (IS_ERR(ad7949_adc->vref)) {
+> > --
+> > 2.30.1.489.g328c10930387
 
