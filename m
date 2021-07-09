@@ -2,221 +2,351 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7684B3C20B5
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 10:18:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F32693C20B8
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 10:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231754AbhGIIUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 04:20:45 -0400
-Received: from mail-db8eur05on2066.outbound.protection.outlook.com ([40.107.20.66]:29408
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231701AbhGIIUm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 04:20:42 -0400
+        id S231480AbhGIIWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 04:22:48 -0400
+Received: from mx0b-00128a01.pphosted.com ([148.163.139.77]:40592 "EHLO
+        mx0b-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231361AbhGIIWr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 04:22:47 -0400
+Received: from pps.filterd (m0167090.ppops.net [127.0.0.1])
+        by mx0b-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1698BdK4007222;
+        Fri, 9 Jul 2021 04:19:50 -0400
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2173.outbound.protection.outlook.com [104.47.57.173])
+        by mx0b-00128a01.pphosted.com with ESMTP id 39nywamdjt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Jul 2021 04:19:50 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eDROowuCTnrci5mQWnQ4DomMvpkl1aVmZfpjglYf8CfUVXwUmwWkNA43LRl/szNvvaVzLHfFKsu2hyWNsfiR7uuNd0MgQNL7mll/edrA9AHwy6rOn++UP8C25ubnlCgmRmShnXzrwcJsXHDUy0iU7lbrTOlyX1L9z2FtC/YjsbSYbE0qNLWQz9/mfm+wcgeTqxIbpGmksGyAsRfIeb56yunMfy4y6vUVU1hUjiDq8ERaapyUizIU3jxtGuz8TPUtHQuL8clMqDtmIpbAy/jDmAa3RoQbpi6M1YlhG9iy86Y8Y32C5te/KJThdXOK4QUUFyC03CK4u8SRRHRXcyE1UQ==
+ b=d2GDZMhgzelciqvCMrmKAGnkpmUVibtkFj5MIwVIUsBB3plHa5o1gpRcndAz3X+9UkNY5+iQqikunGsPGgNDhE4UU7aRQCmpBe/Rh3JkoawK4gCoQjIWoRdT7jQbxXx+nDwj7tO3fx/saXTQm2FjdIjDEJK7Zw6ppo36uCGAYtVwq0/LWGZykeL4s5DnBqMFrVWg5VuDS5aaVzhY9wBPBMfX77MT+OGBAuoOpmD+XZI87HhSb2DJF9l704LZLDUFrmrC8ajtoidmaLmzEQ5sl9HiRnIKL3XOcbfOkH5t985i/zNvyMClWcikAs/tlMRCcnq0irnqle5fTfUymobcPQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kweURP6Gz/VziteuUY8Ennqc9aDvjbgDQe6WbvrroNY=;
- b=K/zXi0woZBWWKlos7OcVdnTP7iaC+NM0gZVHDfpZJtzCM3lcmMV007vYcv7j6o1aQIYjiRB41Q/bEggF8Yvuj9qL5xa6+QFyznxICLyrWk7ZOJlpqVVSxP2JV3h2xXq0G4qk4C4aohGaWQ18eQQL9aAqaIjmfwlxK/SE8AgvF8GEqWlDnxHw3+9Dq4D2lsuTIdutgxjku+y+LeQXiHn4bzFtf1v6YnBos8rYj0P47QtNv5/w+5tPlI47d76ICPhGpXFi4+RtBAL9iGHqk7L1Ur3uZ0idR0OLNgiAw4YpOzY7HbHUPw3SdbfsidmWmJXol3ISKr2usw0R8KjuJxIL7Q==
+ bh=AG6E6/MVwtgan4KF3lcSKVnhxa/SpGycFhStnXxXJM4=;
+ b=MWkweW41p/BM2QAW0wQRqneFVGJSiJefoZtDYqEytDqafKk1Wl5qDbgZYiFIjX7I7vRW/Mr0tcQ4k66a3SScfVNeaBy9btzNU+KCTYu/Lgk90Wi4+QiZ4rFwaAgSn8mbt8UTVheptulX0pwEdANpkM0kxGiWuGmC/zboL7uC+Irsd8c8s9I0dFTvExOzj3o6tS9YSNGDuHLdX+uNYaF1HSVdHKEgUAgQZOW/WBqTAQLakO3oZcXS69m1QOrxXqmiMxhyduQ1xkAjj92sM2u3gpm3CsoOlzSpEoBpL1jzMB44CmIKXW6G5Oqf9wzNh1gSVXHEOUL0p88y0wVZ0FdZ7A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
+ dkim=pass header.d=analog.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=analog.onmicrosoft.com; s=selector2-analog-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kweURP6Gz/VziteuUY8Ennqc9aDvjbgDQe6WbvrroNY=;
- b=FxcjbE9caY5rd91E8EXgLmnvrb2/FpbquSIpeDy8Q1SUm3gM8WCanZpXTGjHKmHOFcj3ZGCwVDfzGJUOV9LPgj0hkpmZpaqd22j+3WOSFBr06fg+D+BAiXN1GVpvVJYjxHthkweD9WqWCRkVEDQG+089YSMDt6yS5Hvbe7Cyz3s=
-Authentication-Results: davemloft.net; dkim=none (message not signed)
- header.d=none;davemloft.net; dmarc=none action=none header.from=nxp.com;
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
- by DB9PR04MB8201.eurprd04.prod.outlook.com (2603:10a6:10:25e::12) with
+ bh=AG6E6/MVwtgan4KF3lcSKVnhxa/SpGycFhStnXxXJM4=;
+ b=2dHC69mY2b3lbeuQG0MhE8lgucp3HuZrXCUEtopWBn7M5OzIgwE9BHK4hHyep//py17hWZwMF+Gc/vfD1AA6xU95gkqiHL0FsKJd38iudqrfzqK746VvOxUUmqxKi5osvJVOoSs/iZDgclqe2Ril5wgYGkNf0mMvdvMJ2xmZVwE=
+Received: from PH0PR03MB6366.namprd03.prod.outlook.com (2603:10b6:510:ab::22)
+ by PH0PR03MB5815.namprd03.prod.outlook.com (2603:10b6:510:37::21) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20; Fri, 9 Jul
- 2021 08:17:58 +0000
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::9c70:fd2f:f676:4802]) by DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::9c70:fd2f:f676:4802%7]) with mapi id 15.20.4308.023; Fri, 9 Jul 2021
- 08:17:58 +0000
-From:   Joakim Zhang <qiangqing.zhang@nxp.com>
-To:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
-        andrew@lunn.ch
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com
-Subject: [PATCH V1 net-next 5/5] net: fec: add MAC internal delayed clock feature support
-Date:   Fri,  9 Jul 2021 16:18:23 +0800
-Message-Id: <20210709081823.18696-6-qiangqing.zhang@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210709081823.18696-1-qiangqing.zhang@nxp.com>
-References: <20210709081823.18696-1-qiangqing.zhang@nxp.com>
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR02CA0021.apcprd02.prod.outlook.com
- (2603:1096:3:17::33) To DB8PR04MB6795.eurprd04.prod.outlook.com
- (2603:10a6:10:fa::15)
+ 2021 08:19:47 +0000
+Received: from PH0PR03MB6366.namprd03.prod.outlook.com
+ ([fe80::4b7:376:c5f2:3891]) by PH0PR03MB6366.namprd03.prod.outlook.com
+ ([fe80::4b7:376:c5f2:3891%3]) with mapi id 15.20.4242.023; Fri, 9 Jul 2021
+ 08:19:47 +0000
+From:   "Sa, Nuno" <Nuno.Sa@analog.com>
+To:     Liam Beguin <liambeguin@gmail.com>,
+        "lars@metafoo.de" <lars@metafoo.de>,
+        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        "jic23@kernel.org" <jic23@kernel.org>,
+        "charles-antoine.couret@essensium.com" 
+        <charles-antoine.couret@essensium.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+Subject: RE: [PATCH v1 2/4] iio: adc: ad7949: fix spi messages on non 14-bit
+ controllers
+Thread-Topic: [PATCH v1 2/4] iio: adc: ad7949: fix spi messages on non 14-bit
+ controllers
+Thread-Index: AQHXdFTvHL08lM5IPE+ISakQqzqQaas6TQwA
+Date:   Fri, 9 Jul 2021 08:19:47 +0000
+Message-ID: <PH0PR03MB63662890FF4545AAF45E026199189@PH0PR03MB6366.namprd03.prod.outlook.com>
+References: <20210708235618.1541335-1-liambeguin@gmail.com>
+ <20210708235618.1541335-3-liambeguin@gmail.com>
+In-Reply-To: <20210708235618.1541335-3-liambeguin@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcbnNhXGFwcGRh?=
+ =?us-ascii?Q?dGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEyOWUz?=
+ =?us-ascii?Q?NWJcbXNnc1xtc2ctNmFiYmFkMDItZTA4ZS0xMWViLThiNzEtZmM3Nzc0MjFm?=
+ =?us-ascii?Q?Y2FlXGFtZS10ZXN0XDZhYmJhZDA0LWUwOGUtMTFlYi04YjcxLWZjNzc3NDIx?=
+ =?us-ascii?Q?ZmNhZWJvZHkudHh0IiBzej0iNTg1NSIgdD0iMTMyNzAyOTIzODU1NTk0Mzcw?=
+ =?us-ascii?Q?IiBoPSJFbk5aSWpJZ3E3L3FpZDNocjQyY3BaSUoxL009IiBpZD0iIiBibD0i?=
+ =?us-ascii?Q?MCIgYm89IjEiIGNpPSJjQUFBQUVSSFUxUlNSVUZOQ2dVQUFJWURBQUNDZ3hF?=
+ =?us-ascii?Q?dG0zVFhBUXoxRERZL2JNWnFEUFVNTmo5c3htb0ZBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBSEFBQUFBV0F3QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFB?=
+ =?us-ascii?Q?UUFCQUFBQUJPWUdjZ0FBQUFBQUFBQUFBQUFBQUo0QUFBQmhBR1FBYVFCZkFI?=
+ =?us-ascii?Q?TUFaUUJqQUhVQWNnQmxBRjhBY0FCeUFHOEFhZ0JsQUdNQWRBQnpBRjhBWmdC?=
+ =?us-ascii?Q?aEFHd0Fjd0JsQUY4QVpnQnZBSE1BYVFCMEFHa0FkZ0JsQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFFQUFB?=
+ =?us-ascii?Q?QUFBQUFBQWdBQUFBQUFuZ0FBQUdFQVpBQnBBRjhBY3dCbEFHTUFkUUJ5QUdV?=
+ =?us-ascii?Q?QVh3QndBSElBYndCcUFHVUFZd0IwQUhNQVh3QjBBR2tBWlFCeUFERUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFBQUFD?=
+ =?us-ascii?Q?ZUFBQUFZUUJrQUdrQVh3QnpBR1VBWXdCMUFISUFaUUJmQUhBQWNnQnZBR29B?=
+ =?us-ascii?Q?WlFCakFIUUFjd0JmQUhRQWFRQmxBSElBTWdBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCaEFISUFhUUJo?=
+ =?us-ascii?Q?QUY4QVpBQnBBR01BZEFCcEFHOEFiZ0JoQUhJQWVRQmZBSFFBYVFCbEFISUFN?=
+ =?us-ascii?Q?UUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUVB?=
+ =?us-ascii?Q?QUFBQUFBQUFBZ0FBQUFBQW5nQUFBR0VBY2dCcEFHRUFYd0JrQUdrQVl3QjBB?=
+ =?us-ascii?Q?R2tBYndCdUFHRUFjZ0I1QUY4QWRBQnBBR1VBY2dBeUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FBQUFB?=
+ =?us-ascii?Q?QUE9Ii8+PC9tZXRhPg=3D=3D?=
+x-dg-rorf: true
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=analog.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 3e9ea61f-97bc-46e0-caf0-08d942b250a7
+x-ms-traffictypediagnostic: PH0PR03MB5815:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PH0PR03MB58154EE2E0F4977357C99E4A99189@PH0PR03MB5815.namprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5516;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Buhoc8fMIaaHqtfgjkDqcjEfb7dN55bUIosoegQBuV3luZTR8iqRaV47zzi35AzzLdtypDvCtWKqQyvanhWVOj21AT23FcUEoqtJ6Gawf/UxOeZ6wY0CSO7+BJaIpY7O/UJLr5TVj8OUpblKlbceyt+fo2GWo9lrUPc5oZfeYKhbiZV5qvrf3FSLpijSajc+wnS1NG/eSKCpYyDU+WVgkCUwGrH8AML5MaWMZTn7445kuD7CCse3pGce2RAM7pgi2ss9awxcOt/Gm/Iz9prcPrup9pTA/FnLABZ6QgdsOQe3/PPC8N753Ni6+nsw48XBPPCtNUwAGswr19fn3uzC2sTqrLfVMFPJdbxg9VDTIFCuBJnNopp4mQCrA99YeyAbRlb94dwxYyhLyD1rDzIXB31crzNow+MddqlbPtL5qHMuk1aZjIUhxBAhB8ImllECnEzw6B/+TKLgvqZp7GzTSSUjhg+RQfX62ngm3FS0PW9NjuG06ETRPVI2NGOAz+Ebi68Np96uTvXObbzWnQsKp1QJBaO+uvmmPNvvn1zrAEQWG0Qr4UJZpIbn+pLnU42AIpqnq6vtsw31fZLcTtobHT/sriTxzHjN+NumHbDSvEiY0RCIfV7Sru+FBWhezYaXgBRQgWUzSXz3PjOI2LZZ/A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR03MB6366.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(366004)(376002)(39860400002)(396003)(4326008)(316002)(53546011)(52536014)(6506007)(8676002)(110136005)(83380400001)(71200400001)(33656002)(9686003)(186003)(86362001)(122000001)(66476007)(55016002)(54906003)(5660300002)(8936002)(2906002)(7696005)(76116006)(66946007)(15650500001)(66556008)(38100700002)(64756008)(66446008)(478600001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?FuwfMGZnN4CtBvQ7lgNx2v3aSqYyyZIk+UD13L1OgNy4iy08C5dq5sn7A9er?=
+ =?us-ascii?Q?omyJfb+l7YBO7Zz9isBl46OshRCIJs4DWNdi1gO78XD3YmzWy9oOWSzsq5g2?=
+ =?us-ascii?Q?U6+Xytb5woSIuliMszMS5RIJHnP2ClR3Z/Il4irrbIXUNV852VIAjGG5MmPp?=
+ =?us-ascii?Q?E0NlDlUNkftI4J+55gH8+nl8W88e9MeeT9Xh7tfUAHeEY+zhUUV5EnC0jZCo?=
+ =?us-ascii?Q?F+vqa6JGbZ63wKitasmslIc9v387ivnky6pTpe4S9c5X62gN3D7j8575WuDX?=
+ =?us-ascii?Q?57BMac/ow/G3SRX1SlLqhOVPdqczlGtiEwewXv7kOIN9whp3hoHuGOepNTik?=
+ =?us-ascii?Q?ujezi0Yce4iEku4m1H8GTYwisdWsRrVS285Rk6dKacd53PcNjlgydPktXUam?=
+ =?us-ascii?Q?ei2xuN7b55fre72EnJxNpjRX7e/wBcfITbnCXUjOTQUQL7DvWLk4s5/JwGG2?=
+ =?us-ascii?Q?8/l6AK9mDM0NhRKIaVAEEl27wCQATiixQyAZlUQmNupRwyxQpwM2N7R8/M1j?=
+ =?us-ascii?Q?j87rQJdmeGpzG9LLUjXBwVcZvQSuHlmPRqEQygvRwBxOUUWZT36LONnYrIi6?=
+ =?us-ascii?Q?+Aq/B4O8ps/ibGLJdouHYHjdaHt6yOKYH+FbKGc5fHNvs25iQiFhD2esrTJ5?=
+ =?us-ascii?Q?5MDXeU0Emzh4Qm8jDCNqeUOAe/Y0B9CViaez9WGRwx/V6NY0ttC8XgtG6WUY?=
+ =?us-ascii?Q?VlyDV4YxAlPNzOZPVwBoNfr5Y53JpBTY7gL2pgBLPlSg1gxbFtpZIqLSx2hK?=
+ =?us-ascii?Q?EBjUl0732u5YJ7Rd2pqAbhjXCj3FlfQ5RoZarrlobVLYTPIt31P1wvE81UFm?=
+ =?us-ascii?Q?CtZK7rnkd5jY9GOvxXh2bXhgOxWZ+i5kxnGGJQwKpGU6T/f+ZgP8PSssq+n7?=
+ =?us-ascii?Q?4BJxmcKeLwr/UetBRWZKcz6UCvAhNi/R/W5ItHxBMyxOm6zfXqkxkEqetUKS?=
+ =?us-ascii?Q?H8WGgC3aJ7P0OSHL72n4X/LOGlWt5BL5k9/mwYP9u5yOO8O0iycmHdAeR6Pe?=
+ =?us-ascii?Q?mO5lFIJg6oLv/+BqQUwYUJQGlBMRwAv6VlgVzcOzMao+Ik/qrdZHorM90/Mh?=
+ =?us-ascii?Q?3a8jKeCHdQUyH/0aprRrFj4+v7/uE4bPaHcL90WOTYTP6t1TsB4sls4eREov?=
+ =?us-ascii?Q?rP5jq6WlIbG0zVmLhRcjmg/hkRpM1Ds8wBW/AvKp0NvlrZNnqW2uRYyqaKcn?=
+ =?us-ascii?Q?UJrxOqOExPdPPd1HCcb47WKi9M4//uRn5CqghDRKbBt5B+MGCpg/HuifrgYi?=
+ =?us-ascii?Q?I6RTL1NbhC9bOEoK4YwIfczjWiUArtWJuoAOMrh1pg+OFDjg55ZuuW3E9Hzl?=
+ =?us-ascii?Q?SROKK8eMYRsrNpfyQUdYG/ytXgIpmULzvlCSI+NYOhM1GXlCsLdj2iro5BFo?=
+ =?us-ascii?Q?ZCEy5IQVF1twzpvROIXwKFeVB/oq?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.71) by SG2PR02CA0021.apcprd02.prod.outlook.com (2603:1096:3:17::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend Transport; Fri, 9 Jul 2021 08:17:55 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a3cabebf-161d-4aa2-27c9-08d942b20f4b
-X-MS-TrafficTypeDiagnostic: DB9PR04MB8201:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB9PR04MB8201132CE9FF695760DDF0EFE6189@DB9PR04MB8201.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2399;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: F//q+vycfqBsak8hqZJC2lYj8Z3BwBTV/wZ4EYiT8k1r+q5edIrROhqBWppEaqlZweR86a5f8J/bBShXYAg6HrRENWoF54qCnd0sNN1h8K1JoWwftuAnuWPkpRU4IU+nDVVbLKcUiHrGNFbaxEppY/AaDuSLw3hP/phlQsw2+fXgjsi4qoOE/nasTxxy3qBcKL4xhqzNy8cIUyQHv9d1llB6nGDkuc5Am8cbe6ohXnx3OsMHTxn++8IgF7X1kcJ0neA9v/2QGjF5pzFzFvjoxmCFxPnjPON5kuoI/lv0foYhIlad7i77yXuEbih8OJJ+NpmaHqiqP+v+L4VGMxloIkE4jW2zODi6grL9lQQZBszM9p+UX92hmbz5ZLESbVS+IaIQNELW7xxAFfhOQzVDKvyDZ28uMozXcwWydLS51FrLhpt0/DUbCUN6MPKVA+2bFWIquNv/nAHiD3rLhKxFFQvwDcqieQGYetJAGz9O+SZvwuxuVf0aRF1pLEksdX+bFPoC7D9YX1Kjl9rwGgOVhaobHS05VRP/WHlkm77za30L/VIWl7Qq5Z2iETb0EfP/fqNAUI68jyPIKbVrNL12YY34tnMamp+uiSjiRZd3KE+QBRuFKz2YWgdzDg/VVoe0yVPDe3XhdGISuHwhEJ/NGksCs8yO13ijmW1b5+PQGDhfiSN5eYoAWRunvTSpIGTRuWuPMTK1sXUTYnTqPxYnJw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(396003)(346002)(376002)(366004)(26005)(86362001)(6666004)(186003)(2616005)(956004)(4326008)(52116002)(5660300002)(83380400001)(38350700002)(38100700002)(316002)(36756003)(8676002)(66476007)(8936002)(6486002)(6506007)(2906002)(66556008)(6512007)(66946007)(1076003)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?TISweeSNp9cBQwlRQIeregS4fyTIBPVp3ule5zMjI6RN/C/jQppUy9g3R6+H?=
- =?us-ascii?Q?7hTk/Egc/LfSKaoO9+9NDMNm4CiXb0ob2niLVxNnFBA3AvoNFumX6jx6LQm9?=
- =?us-ascii?Q?sxTaSFXjsTwKVvBGpDuLqzl5xukoTLcHHDAberdH4P+CNBdeqRP16CgkmiKi?=
- =?us-ascii?Q?eJ5nacXrsuZeeVQRusARDGskV3jRX4MXvtDzizS5oS+AbPmZigvKq1sUmKLy?=
- =?us-ascii?Q?AdT08xzV/VWdaJNV2LNgpqJbg7+flIgixAtyJrxjiWgeY8JS8cY+UoUmn0iN?=
- =?us-ascii?Q?AxvRxPmp38TqPwajYQ2hBvHeeunyJbNs7n9P0ZR4AeHSvOWWFNknBqsmXqPi?=
- =?us-ascii?Q?L+yCa21OaOswgDv9mP/ypMMmdSAV3f1cv/alKxDi724QG9jyzmeXDw6h3m92?=
- =?us-ascii?Q?BE/CFhCH6LPz6kbfyhPpHc5AzVSbrehQYqVhKvp01i/TGgpIBtaWv+xe5su0?=
- =?us-ascii?Q?4C+hfs1eYzOUdGASaV4kVGylx0VInBE6Zv1O1ICtJqIOgdH86Nh/rwpvVQfS?=
- =?us-ascii?Q?IxHJqWozfzR/NJP4v6yecl01Gw3Dfn0wVyVg/aHsbD3HSm40KRQoJsHzO414?=
- =?us-ascii?Q?USUbwVBFPRcOJTBCi91eCzY1SsAoo3tybI6QB3MoW9yE58g4t1YjY4+uD/gK?=
- =?us-ascii?Q?G8HY3KJo7xHDrAKva0KSFe9KwhGbHk/fqNMIuPJPD7oXoPK+gRY0rkIklt8S?=
- =?us-ascii?Q?605P7AeqhT3+lCoaXnNzE5IlRSq4VPdpABDjxy3Da9ZuRzJR6yPL/TXP8GUj?=
- =?us-ascii?Q?ONqmBx12no53t4ynChZSX8K3QPZm9aD/rct+6Ic01hoesTj1rLzjUNp6lFO0?=
- =?us-ascii?Q?Fr17eR0YrD2r/f438dcCDxSYJKBMqtjL/a3KkRzJuoTxiR62YsyqmXJ45lQL?=
- =?us-ascii?Q?Ykr1l+aqYstzdr/NRg8Nbjqa9C7GSgrL/TCgIPuvNYVelgzmoJuhzRhfeUBr?=
- =?us-ascii?Q?D5a3B67KRjTKvNKityQYjpPZ24bK5Cr5be4YJ5GtPX23KSFHr9m8FratQA4O?=
- =?us-ascii?Q?k0h0/nLjPVuyzaoaqalUvGCMKcLb6J7ZGDNVXOxMLt9zhI7jVOXb2n7Pge8Z?=
- =?us-ascii?Q?yo3s281daA/QbzboEwMPcHj/snaNKliQveP6Yhf7MejeQ/gcdQRMCaKAe6Y1?=
- =?us-ascii?Q?aWeksxpNpth7Zf69uuRBWH4vfPy1Lzs7hxzaJHXVzQPqlaKJBVMPkM1E4d3t?=
- =?us-ascii?Q?epbS3EvdW8eTaGGli6U7f3mMEOKIeiIu46ilYLe7FNk7GHLql1w/PQeygSIa?=
- =?us-ascii?Q?r/jXoYFUkf53NvGWTOu2SP5bg+BmUHhyViQ0RQoZKQ0LIgkn/ZHZsBXdaxon?=
- =?us-ascii?Q?KXXe5WJwp+dpa2Ucwr609Y78?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a3cabebf-161d-4aa2-27c9-08d942b20f4b
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-OriginatorOrg: analog.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jul 2021 08:17:58.0081
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR03MB6366.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3e9ea61f-97bc-46e0-caf0-08d942b250a7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jul 2021 08:19:47.3256
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8GBuPllJ9wjyIIZGuDwwivneUatZRLrb/SL+d85TBhYSYeYJX9nFsEq8t2B4WYBJu5oW6NN22KkajJ9BDhu7Qg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8201
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +Vr1i9ZqO7i6weYsAOsI2D/G33ZNEmqPXnmOVUK6TOVcVYOYBg3L1R7bqD+RP43DT4cwMaM6UM3cTUaEypj7Rg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR03MB5815
+X-Proofpoint-ORIG-GUID: sxlMpVb0ls5dz5EAJqfk4C9rNuPJ7plI
+X-Proofpoint-GUID: sxlMpVb0ls5dz5EAJqfk4C9rNuPJ7plI
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-09_04:2021-07-09,2021-07-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ bulkscore=0 mlxlogscore=999 priorityscore=1501 lowpriorityscore=0
+ suspectscore=0 clxscore=1015 mlxscore=0 spamscore=0 impostorscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107090041
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fugang Duan <fugang.duan@nxp.com>
 
-i.MX8QM ENET IP version support timing specification that MAC
-integrate clock delay in RGMII mode, the delayed TXC/RXC as an
-alternative option to work well with various PHYs.
 
-Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
----
- drivers/net/ethernet/freescale/fec.h      |  6 ++++++
- drivers/net/ethernet/freescale/fec_main.c | 26 +++++++++++++++++++++++
- 2 files changed, 32 insertions(+)
+> -----Original Message-----
+> From: Liam Beguin <liambeguin@gmail.com>
+> Sent: Friday, July 9, 2021 1:56 AM
+> To: liambeguin@gmail.com; lars@metafoo.de; Hennerich, Michael
+> <Michael.Hennerich@analog.com>; jic23@kernel.org; charles-
+> antoine.couret@essensium.com
+> Cc: linux-kernel@vger.kernel.org; linux-iio@vger.kernel.org;
+> devicetree@vger.kernel.org; robh+dt@kernel.org
+> Subject: [PATCH v1 2/4] iio: adc: ad7949: fix spi messages on non 14-bit
+> controllers
+>=20
+> [External]
+>=20
+> From: Liam Beguin <lvb@xiphos.com>
+>=20
+> This driver supports devices with 14-bit and 16-bit sample sizes.
+> This is not always handled properly by spi controllers and can fail. To
+> work around this limitation, pad samples to 16-bit and split the sample
+> into two 8-bit messages in the event that only 8-bit messages are
+> supported by the controller.
+>=20
+> Signed-off-by: Liam Beguin <lvb@xiphos.com>
+> ---
+>  drivers/iio/adc/ad7949.c | 67
+> ++++++++++++++++++++++++++++++++++------
+>  1 file changed, 58 insertions(+), 9 deletions(-)
+>=20
+> diff --git a/drivers/iio/adc/ad7949.c b/drivers/iio/adc/ad7949.c
+> index 93aacf4f680b..bbc6b56330a3 100644
+> --- a/drivers/iio/adc/ad7949.c
+> +++ b/drivers/iio/adc/ad7949.c
+> @@ -11,6 +11,7 @@
+>  #include <linux/module.h>
+>  #include <linux/regulator/consumer.h>
+>  #include <linux/spi/spi.h>
+> +#include <linux/bitfield.h>
+>=20
+>  #define AD7949_MASK_TOTAL		GENMASK(13, 0)
+>  #define AD7949_CFG_REG_SIZE_BITS	14
+> @@ -57,6 +58,7 @@ static const struct ad7949_adc_spec
+> ad7949_adc_spec[] =3D {
+>   * @indio_dev: reference to iio structure
+>   * @spi: reference to spi structure
+>   * @resolution: resolution of the chip
+> + * @bits_per_word: number of bits per SPI word
+>   * @cfg: copy of the configuration register
+>   * @current_channel: current channel in use
+>   * @buffer: buffer to send / receive data to / from device
+> @@ -67,28 +69,59 @@ struct ad7949_adc_chip {
+>  	struct iio_dev *indio_dev;
+>  	struct spi_device *spi;
+>  	u8 resolution;
+> +	u8 bits_per_word;
+>  	u16 cfg;
+>  	unsigned int current_channel;
+> -	u16 buffer ____cacheline_aligned;
+> +	union {
+> +		__be16 buffer;
+> +		u8 buf8[2];
+> +	} ____cacheline_aligned;
+>  };
+>=20
+> +static void ad7949_set_bits_per_word(struct ad7949_adc_chip
+> *ad7949_adc)
+> +{
+> +	u32 adc_mask =3D SPI_BPW_MASK(ad7949_adc->resolution);
+> +	u32 bpw =3D adc_mask & ad7949_adc->spi->controller-
+> >bits_per_word_mask;
+> +
+> +	if (bpw =3D=3D adc_mask)
+> +		ad7949_adc->bits_per_word =3D ad7949_adc-
+> >resolution;
+> +	else if (bpw =3D=3D SPI_BPW_MASK(16))
+> +		ad7949_adc->bits_per_word =3D 16;
+> +	else
+> +		ad7949_adc->bits_per_word =3D 8;
+> +}
+> +
+>  static int ad7949_spi_write_cfg(struct ad7949_adc_chip *ad7949_adc,
+> u16 val,
+>  				u16 mask)
+>  {
+>  	int ret;
+> -	int bits_per_word =3D ad7949_adc->resolution;
+> -	int shift =3D bits_per_word - AD7949_CFG_REG_SIZE_BITS;
+>  	struct spi_message msg;
+>  	struct spi_transfer tx[] =3D {
+>  		{
+>  			.tx_buf =3D &ad7949_adc->buffer,
+>  			.len =3D 2,
+> -			.bits_per_word =3D bits_per_word,
+> +			.bits_per_word =3D ad7949_adc->bits_per_word,
+>  		},
+>  	};
+>=20
+> +	ad7949_adc->buffer =3D 0;
+>  	ad7949_adc->cfg =3D (val & mask) | (ad7949_adc->cfg & ~mask);
+> -	ad7949_adc->buffer =3D ad7949_adc->cfg << shift;
+> +
+> +	switch (ad7949_adc->bits_per_word) {
+> +	case 16:
+> +		ad7949_adc->buffer =3D ad7949_adc->cfg << 2;
+> +		break;
+> +	case 14:
+> +		ad7949_adc->buffer =3D ad7949_adc->cfg;
+> +		break;
+> +	case 8:
+> +		/* Pack 14-bit value into 2 bytes, MSB first */
+> +		ad7949_adc->buf8[0] =3D FIELD_GET(GENMASK(13, 6),
+> ad7949_adc->cfg);
+> +		ad7949_adc->buf8[1] =3D FIELD_GET(GENMASK(5, 0),
+> ad7949_adc->cfg);
+> +		ad7949_adc->buf8[1] =3D ad7949_adc->buf8[1] << 2;
+> +		break;
+> +	}
 
-diff --git a/drivers/net/ethernet/freescale/fec.h b/drivers/net/ethernet/freescale/fec.h
-index 0a741bc440e4..ae3259164395 100644
---- a/drivers/net/ethernet/freescale/fec.h
-+++ b/drivers/net/ethernet/freescale/fec.h
-@@ -381,6 +381,9 @@ struct bufdesc_ex {
- #define FEC_DEFAULT_IMASK (FEC_ENET_TXF | FEC_ENET_RXF)
- #define FEC_RX_DISABLED_IMASK (FEC_DEFAULT_IMASK & (~FEC_ENET_RXF))
- 
-+#define FEC_ENET_TXC_DLY	((uint)0x00010000)
-+#define FEC_ENET_RXC_DLY	((uint)0x00020000)
-+
- /* ENET interrupt coalescing macro define */
- #define FEC_ITR_CLK_SEL		(0x1 << 30)
- #define FEC_ITR_EN		(0x1 << 31)
-@@ -543,6 +546,7 @@ struct fec_enet_private {
- 	struct clk *clk_ref;
- 	struct clk *clk_enet_out;
- 	struct clk *clk_ptp;
-+	struct clk *clk_2x_txclk;
- 
- 	bool ptp_clk_on;
- 	struct mutex ptp_clk_mutex;
-@@ -565,6 +569,8 @@ struct fec_enet_private {
- 	uint	phy_speed;
- 	phy_interface_t	phy_interface;
- 	struct device_node *phy_node;
-+	bool	rgmii_txc_dly;
-+	bool	rgmii_rxc_dly;
- 	int	link;
- 	int	full_duplex;
- 	int	speed;
-diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
-index 24082b3f2118..18ab60322688 100644
---- a/drivers/net/ethernet/freescale/fec_main.c
-+++ b/drivers/net/ethernet/freescale/fec_main.c
-@@ -1137,6 +1137,13 @@ fec_restart(struct net_device *ndev)
- 	if (fep->bufdesc_ex)
- 		ecntl |= (1 << 4);
- 
-+	if (fep->quirks & FEC_QUIRK_DELAYED_CLKS_SUPPORT &&
-+	    fep->rgmii_txc_dly)
-+		ecntl |= FEC_ENET_TXC_DLY;
-+	if (fep->quirks & FEC_QUIRK_DELAYED_CLKS_SUPPORT &&
-+	    fep->rgmii_rxc_dly)
-+		ecntl |= FEC_ENET_RXC_DLY;
-+
- #ifndef CONFIG_M5272
- 	/* Enable the MIB statistic event counters */
- 	writel(0 << 31, fep->hwp + FEC_MIB_CTRLSTAT);
-@@ -2000,6 +2007,10 @@ static int fec_enet_clk_enable(struct net_device *ndev, bool enable)
- 		if (ret)
- 			goto failed_clk_ref;
- 
-+		ret = clk_prepare_enable(fep->clk_2x_txclk);
-+		if (ret)
-+			goto failed_clk_2x_txclk;
-+
- 		fec_enet_phy_reset_after_clk_enable(ndev);
- 	} else {
- 		clk_disable_unprepare(fep->clk_enet_out);
-@@ -2010,10 +2021,14 @@ static int fec_enet_clk_enable(struct net_device *ndev, bool enable)
- 			mutex_unlock(&fep->ptp_clk_mutex);
- 		}
- 		clk_disable_unprepare(fep->clk_ref);
-+		clk_disable_unprepare(fep->clk_2x_txclk);
- 	}
- 
- 	return 0;
- 
-+failed_clk_2x_txclk:
-+	if (fep->clk_ref)
-+		clk_disable_unprepare(fep->clk_ref);
- failed_clk_ref:
- 	if (fep->clk_ptp) {
- 		mutex_lock(&fep->ptp_clk_mutex);
-@@ -3761,6 +3776,12 @@ fec_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto failed_stop_mode;
- 
-+	if (of_get_property(np, "fsl,rgmii_txc_dly", NULL))
-+		fep->rgmii_txc_dly = true;
-+
-+	if (of_get_property(np, "fsl,rgmii_rxc_dly", NULL))
-+		fep->rgmii_rxc_dly = true;
-+
- 	phy_node = of_parse_phandle(np, "phy-handle", 0);
- 	if (!phy_node && of_phy_is_fixed_link(np)) {
- 		ret = of_phy_register_fixed_link(np);
-@@ -3812,6 +3833,11 @@ fec_probe(struct platform_device *pdev)
- 		fep->clk_ref = NULL;
- 	fep->clk_ref_rate = clk_get_rate(fep->clk_ref);
- 
-+	/* clk_2x_txclk is optional, depends on board */
-+	fep->clk_2x_txclk = devm_clk_get(&pdev->dev, "enet_2x_txclk");
-+	if (IS_ERR(fep->clk_2x_txclk))
-+		fep->clk_2x_txclk = NULL;
-+
- 	fep->bufdesc_ex = fep->quirks & FEC_QUIRK_HAS_BUFDESC_EX;
- 	fep->clk_ptp = devm_clk_get(&pdev->dev, "ptp");
- 	if (IS_ERR(fep->clk_ptp)) {
--- 
-2.17.1
+Honestly I didn't went through the driver but just a question... Are we
+sure that 'ad7949_adc->resolution' will have something valid (8, 14, 16)?
+A default statement is always a nice to have :).
+=20
+>  	spi_message_init_with_transfers(&msg, tx, 1);
+>  	ret =3D spi_sync(ad7949_adc->spi, &msg);
+>=20
+> @@ -105,14 +138,12 @@ static int ad7949_spi_read_channel(struct
+> ad7949_adc_chip *ad7949_adc, int *val,
+>  {
+>  	int ret;
+>  	int i;
+> -	int bits_per_word =3D ad7949_adc->resolution;
+> -	int mask =3D GENMASK(ad7949_adc->resolution - 1, 0);
+>  	struct spi_message msg;
+>  	struct spi_transfer tx[] =3D {
+>  		{
+>  			.rx_buf =3D &ad7949_adc->buffer,
+>  			.len =3D 2,
+> -			.bits_per_word =3D bits_per_word,
+> +			.bits_per_word =3D ad7949_adc->bits_per_word,
+>  		},
+>  	};
+>=20
+> @@ -147,7 +178,24 @@ static int ad7949_spi_read_channel(struct
+> ad7949_adc_chip *ad7949_adc, int *val,
+>=20
+>  	ad7949_adc->current_channel =3D channel;
+>=20
+> -	*val =3D ad7949_adc->buffer & mask;
+> +	switch (ad7949_adc->bits_per_word) {
+> +	case 16:
+> +		*val =3D ad7949_adc->buffer;
+> +		/* Shift-out padding bits */
+> +		if (ad7949_adc->resolution =3D=3D 14)
+> +			*val =3D *val >> 2;
+> +		break;
+> +	case 14:
+> +		*val =3D ad7949_adc->buffer & GENMASK(13, 0);
+> +		break;
+> +	case 8:
+> +		/* Convert byte array to u16, MSB first */
+> +		*val =3D (ad7949_adc->buf8[0] << 8) | ad7949_adc-
+> >buf8[1];
+> +		/* Shift-out padding bits */
+> +		if (ad7949_adc->resolution =3D=3D 14)
+> +			*val =3D *val >> 2;
+> +		break;
+> +	}
+>=20
+>  	return 0;
+>  }
+> @@ -280,6 +328,7 @@ static int ad7949_spi_probe(struct spi_device
+> *spi)
+>  	spec =3D &ad7949_adc_spec[spi_get_device_id(spi)-
+> >driver_data];
+>  	indio_dev->num_channels =3D spec->num_channels;
+>  	ad7949_adc->resolution =3D spec->resolution;
+> +	ad7949_set_bits_per_word(ad7949_adc);
+>=20
+>  	ad7949_adc->vref =3D devm_regulator_get(dev, "vref");
+>  	if (IS_ERR(ad7949_adc->vref)) {
+> --
+> 2.30.1.489.g328c10930387
 
