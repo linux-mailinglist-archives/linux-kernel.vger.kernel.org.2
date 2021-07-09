@@ -2,159 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A33413C2113
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 10:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A9353C2116
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 10:57:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231665AbhGII6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 04:58:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52244 "EHLO mail.kernel.org"
+        id S231730AbhGII7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 04:59:50 -0400
+Received: from foss.arm.com ([217.140.110.172]:47870 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231494AbhGII6q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 04:58:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DE9161375;
-        Fri,  9 Jul 2021 08:56:00 +0000 (UTC)
-Date:   Fri, 9 Jul 2021 10:55:57 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Carlos Llamas <cmllamas@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?utf-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Christian Brauner <christian@brauner.io>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Steven Moreland <smoreland@google.com>,
-        kernel-team@android.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ANDROID: binderfs: add capabilities support
-Message-ID: <20210709085557.2bx2vojtyw23jzch@wittgenstein>
-References: <20210707162419.15510-1-cmllamas@google.com>
+        id S231494AbhGII7t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 04:59:49 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 892EEED1;
+        Fri,  9 Jul 2021 01:57:06 -0700 (PDT)
+Received: from localhost (unknown [10.1.195.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1FC0C3F5A1;
+        Fri,  9 Jul 2021 01:57:05 -0700 (PDT)
+Date:   Fri, 9 Jul 2021 09:57:04 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Kevin Wangtao <kevin.wangtao@hisilicon.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        zhongkaihua@huawei.com, Dmitry Osipenko <digetx@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 03/13] opp: Keep track of currently programmed OPP
+Message-ID: <20210709085704.GA10180@arm.com>
+References: <cover.1611227342.git.viresh.kumar@linaro.org>
+ <96b57316a2a307a5cc5ff7302b3cd0084123a2ed.1611227342.git.viresh.kumar@linaro.org>
+ <20210707102410.GA4357@arm.com>
+ <20210708075353.ivsuc4y47i6bbhgz@vireshk-i7>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210707162419.15510-1-cmllamas@google.com>
+In-Reply-To: <20210708075353.ivsuc4y47i6bbhgz@vireshk-i7>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 04:24:19PM +0000, Carlos Llamas wrote:
-> Provide userspace with a mechanism to discover binder driver
-> capabilities to refrain from using these unsupported features
+Hi Viresh,
 
-Hey Carlos,
-
-The model will be one file per feature?
-
-Instead of calling the directory "caps" should this maybe be called
-"features"? I'm not fuzzed about it and if you want to keep "caps"
-that's fine. The term is just a bit overused and makes me think of other
-things than this.
-
-> in the first place. Note that older capabilities are assumed
-> to be supported and only new ones will be added.
-
-What if you ever want to deprecate one? :)
-
+On Thursday 08 Jul 2021 at 13:23:53 (+0530), Viresh Kumar wrote:
+> On 07-07-21, 11:24, Ionela Voinescu wrote:
+> > Now comes the interesting part: what seems to fix it is a call to
+> > clk_get_rate(opp_table->clk) in _set_opp(), which is what basically
+> > happened before this patch, as _find_current_opp() was always called.
+> > I do not need to do anything with the returned frequency.
 > 
-> Signed-off-by: Carlos Llamas <cmllamas@google.com>
-> ---
->  drivers/android/binderfs.c | 45 ++++++++++++++++++++++++++++++++++++++
->  1 file changed, 45 insertions(+)
+> Wow, thanks for narrowing it down this far :)
 > 
-> diff --git a/drivers/android/binderfs.c b/drivers/android/binderfs.c
-> index e80ba93c62a9..f793887f6dc8 100644
-> --- a/drivers/android/binderfs.c
-> +++ b/drivers/android/binderfs.c
-> @@ -58,6 +58,10 @@ enum binderfs_stats_mode {
->  	binderfs_stats_mode_global,
->  };
->  
-> +struct binder_capabilities {
-> +	bool oneway_spam;
-> +};
-> +
->  static const struct constant_table binderfs_param_stats[] = {
->  	{ "global", binderfs_stats_mode_global },
->  	{}
-> @@ -69,6 +73,10 @@ static const struct fs_parameter_spec binderfs_fs_parameters[] = {
->  	{}
->  };
->  
-> +static struct binder_capabilities binder_caps = {
-> +	.oneway_spam = true,
+> I had a quick look and this is what I think is the problem here.
+> 
+> This platform uses mailbox API to send its frequency change requests to another
+> processor.  And the way it is written currently, I don't see any guarantee
+> whatsoever which say
+> 
+>   "once clk_set_rate() returns, the frequency would have already changed".
+> 
 
-I know this is the oneway spam _detection_ feature but this file makes
-it sound like the binder driver has the capability to generate one-way
-spam. :) Maybe name at least name the file "oneway_spam_detection".
+I think what was strange to me was that the frequency never seems to
+change, there isn't just a delay in the new frequency taking effect, as
+I would expect in these cases. Or if there is a delay, that's quite large
+- at least a second.
 
-> +};
+> And this may exactly be the thing you are able to hit, luckily because of this
+> patchset :)
+> 
+> As a quick way of checking if that is right or not, this may make it work:
+> 
+> diff --git a/drivers/mailbox/hi3660-mailbox.c b/drivers/mailbox/hi3660-mailbox.c
+> index 395ddc250828..9856c1c84dcf 100644
+> --- a/drivers/mailbox/hi3660-mailbox.c
+> +++ b/drivers/mailbox/hi3660-mailbox.c
+> @@ -201,6 +201,9 @@ static int hi3660_mbox_send_data(struct mbox_chan *chan, void *msg)
+> 
+>         /* Trigger data transferring */
+>         writel(BIT(mchan->ack_irq), base + MBOX_SEND_REG);
 > +
->  static inline struct binderfs_info *BINDERFS_SB(const struct super_block *sb)
->  {
->  	return sb->s_fs_info;
-> @@ -583,6 +591,39 @@ static struct dentry *binderfs_create_dir(struct dentry *parent,
->  	return dentry;
+> +       hi3660_mbox_check_state(chan);
+> +
+
+I gave this a try an it does work for me.
+
+>         return 0;
+>  }
+> 
+> -------------------------8<-------------------------
+> 
+> As a proper fix, something like this (not even compile tested) is required I
+> believe as I don't see the clients would know if the transfer is over. Cc'ing
+> mailbox guys to see what can be done.
+> 
+
+I'll give this a try as well when there is consensus. I might even try to
+review it, if the time allows.
+
+Many thanks,
+Ionela.
+
+> diff --git a/drivers/clk/hisilicon/clk-hi3660-stub.c b/drivers/clk/hisilicon/clk-hi3660-stub.c
+> index 3a653d54bee0..c1e62ea4cf01 100644
+> --- a/drivers/clk/hisilicon/clk-hi3660-stub.c
+> +++ b/drivers/clk/hisilicon/clk-hi3660-stub.c
+> @@ -89,7 +89,6 @@ static int hi3660_stub_clk_set_rate(struct clk_hw *hw, unsigned long rate,
+>                 stub_clk->msg[0], stub_clk->msg[1]);
+>  
+>         mbox_send_message(stub_clk_chan.mbox, stub_clk->msg);
+> -       mbox_client_txdone(stub_clk_chan.mbox, 0);
+>  
+>         stub_clk->rate = rate;
+>         return 0;
+> @@ -131,7 +130,7 @@ static int hi3660_stub_clk_probe(struct platform_device *pdev)
+>         /* Use mailbox client without blocking */
+>         stub_clk_chan.cl.dev = dev;
+>         stub_clk_chan.cl.tx_done = NULL;
+> -       stub_clk_chan.cl.tx_block = false;
+> +       stub_clk_chan.cl.tx_block = true;
+>         stub_clk_chan.cl.knows_txdone = false;
+>  
+>         /* Allocate mailbox channel */
+> diff --git a/drivers/mailbox/hi3660-mailbox.c b/drivers/mailbox/hi3660-mailbox.c
+> index 395ddc250828..8f6b787c0aba 100644
+> --- a/drivers/mailbox/hi3660-mailbox.c
+> +++ b/drivers/mailbox/hi3660-mailbox.c
+> @@ -1,5 +1,5 @@
+>  // SPDX-License-Identifier: GPL-2.0
+> -// Copyright (c) 2017-2018 HiSilicon Limited.
+> +// Copyright (c) 2017-2018 Hisilicon Limited.
+>  // Copyright (c) 2017-2018 Linaro Limited.
+>  
+>  #include <linux/bitops.h>
+> @@ -83,7 +83,7 @@ static struct hi3660_mbox *to_hi3660_mbox(struct mbox_controller *mbox)
+>         return container_of(mbox, struct hi3660_mbox, controller);
 >  }
 >  
-> +static int binder_caps_show(struct seq_file *m, void *unused)
-> +{
-> +	bool *cap = m->private;
-> +
-> +	seq_printf(m, "%d\n", *cap);
-> +
-> +	return 0;
-> +}
-> +DEFINE_SHOW_ATTRIBUTE(binder_caps);
-> +
-> +static int init_binder_caps(struct super_block *sb)
-
-You can drop the goto here and just always return directly.
-
-> +{
-> +	struct dentry *dentry, *root;
-
-Please name this "dir" instead of "root". "root" is conventionally used
-for sb->s_root and especially here in this file I only ever used it to
-indicate s_root.
-
-> +	int ret = 0;
-> +
-> +	root = binderfs_create_dir(sb->s_root, "caps");
-> +	if (IS_ERR(root)) {
-> +		ret = PTR_ERR(root);
-
-	return PTR_ERR(root);
-
-> +		goto out;
-> +	}
-> +
-> +	dentry = binderfs_create_file(root, "oneway_spam",
-> +				      &binder_caps_fops,
-> +				      &binder_caps.oneway_spam);
-> +	if (IS_ERR(dentry)) {
-> +		ret = PTR_ERR(dentry);
-
-	return PTR_ERR(root);
-
-> +		goto out;
-> +	}
-> +
-> +out:
-> +	return ret;
-> +}
-> +
->  static int init_binder_logs(struct super_block *sb)
+> -static int hi3660_mbox_check_state(struct mbox_chan *chan)
+> +static bool hi3660_mbox_last_tx_done(struct mbox_chan *chan)
 >  {
->  	struct dentry *binder_logs_root_dir, *dentry, *proc_log_dir;
-> @@ -723,6 +764,10 @@ static int binderfs_fill_super(struct super_block *sb, struct fs_context *fc)
->  			name++;
->  	}
+>         unsigned long ch = (unsigned long)chan->con_priv;
+>         struct hi3660_mbox *mbox = to_hi3660_mbox(chan->mbox);
+> @@ -94,20 +94,20 @@ static int hi3660_mbox_check_state(struct mbox_chan *chan)
 >  
-> +	ret = init_binder_caps(sb);
-> +	if (ret)
-> +		return ret;
-> +
->  	if (info->mount_opts.stats_mode == binderfs_stats_mode_global)
->  		return init_binder_logs(sb);
+>         /* Mailbox is ready to use */
+>         if (readl(base + MBOX_MODE_REG) & MBOX_STATE_READY)
+> -               return 0;
+> +               return true;
 >  
-> -- 
-> 2.32.0.93.g670b81a890-goog
+>         /* Wait for acknowledge from remote */
+>         ret = readx_poll_timeout_atomic(readl, base + MBOX_MODE_REG,
+>                         val, (val & MBOX_STATE_ACK), 1000, 300000);
+>         if (ret) {
+>                 dev_err(mbox->dev, "%s: timeout for receiving ack\n", __func__);
+> -               return ret;
+> +               return false;
+>         }
+>  
+>         /* clear ack state, mailbox will get back to ready state */
+>         writel(BIT(mchan->ack_irq), base + MBOX_ICLR_REG);
+>  
+> -       return 0;
+> +       return true;
+>  }
+>  
+>  static int hi3660_mbox_unlock(struct mbox_chan *chan)
+> @@ -182,10 +182,6 @@ static int hi3660_mbox_send_data(struct mbox_chan *chan, void *msg)
+>         unsigned int i;
+>         int ret;
+>  
+> -       ret = hi3660_mbox_check_state(chan);
+> -       if (ret)
+> -               return ret;
+> -
+>         /* Clear mask for destination interrupt */
+>         writel_relaxed(~BIT(mchan->dst_irq), base + MBOX_IMASK_REG);
+>  
+> @@ -207,6 +203,7 @@ static int hi3660_mbox_send_data(struct mbox_chan *chan, void *msg)
+>  static const struct mbox_chan_ops hi3660_mbox_ops = {
+>         .startup        = hi3660_mbox_startup,
+>         .send_data      = hi3660_mbox_send_data,
+> +       .last_tx_done   = hi3660_mbox_last_tx_done,
+>  };
+>  
+>  static struct mbox_chan *hi3660_mbox_xlate(struct mbox_controller *controller,
+> @@ -259,6 +256,7 @@ static int hi3660_mbox_probe(struct platform_device *pdev)
+>         mbox->controller.num_chans = MBOX_CHAN_MAX;
+>         mbox->controller.ops = &hi3660_mbox_ops;
+>         mbox->controller.of_xlate = hi3660_mbox_xlate;
+> +       mbox->controller.txdone_poll = true;
+>  
+>         /* Initialize mailbox channel data */
+>         chan = mbox->chan;
 > 
+> -- 
+> viresh
