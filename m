@@ -2,198 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C31E73C22B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 13:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B04973C22BE
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 13:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230416AbhGILWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 07:22:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21658 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230343AbhGILWs (ORCPT
+        id S230511AbhGILYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 07:24:07 -0400
+Received: from mail-oi1-f180.google.com ([209.85.167.180]:33338 "EHLO
+        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230091AbhGILYF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 07:22:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625829604;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=hKiczKxzAPI29UJiV3gO14mPIUiI0XC1F52rfsccKc4=;
-        b=THuhczr2nb/+8VESe3DhE9MOm1FlQT2RnP/datbI/ZFI138YgB40NRlc5Q479dtCqwW51b
-        m90Ic3kLARcT8EE91djlyk6TO/10eUAIREvqXO/hIkvzLbN30AZeCIRZcc7wchKAdc+dOV
-        YFgED124yfjYMjHBBPDi5JSXC0oErIk=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-370-0MLFBbZQNpmKUvck6VEg0w-1; Fri, 09 Jul 2021 07:20:03 -0400
-X-MC-Unique: 0MLFBbZQNpmKUvck6VEg0w-1
-Received: by mail-ed1-f69.google.com with SMTP id j25-20020aa7ca590000b029039c88110440so5052056edt.15
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 04:20:03 -0700 (PDT)
+        Fri, 9 Jul 2021 07:24:05 -0400
+Received: by mail-oi1-f180.google.com with SMTP id s17so11888814oij.0;
+        Fri, 09 Jul 2021 04:21:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=hKiczKxzAPI29UJiV3gO14mPIUiI0XC1F52rfsccKc4=;
-        b=oBT/32K09tGgiVwAoMNWlLYYf1rhcnMFQUNluH5cTp7zXTJFgnCXYZtu8VLLlGnsZ7
-         g4qlZDdqNiJcCXzPPIAk8JkUjGLs25uoRt8SN4aFD8/YGZkL+Z84lGjphqt9fIWXE86i
-         gRApQIWSEZEVr3SfFZQM8atV5cNXCAvmBNLzi+5IpaIid360uZPocTnHnN1UWqfUAHv8
-         ris8RAYTdz0fMVxDo1pINMP+MKcmeQKN7UeM6JpR82Uz/KZagJBdV4BoBXmhAo60carG
-         4aImF1Sm+yFY8BVn/kaRD6UgInVcCS5BblVocGeOzK/6hnhB5uqZz+wYCQtfPJiC8vQw
-         J2sA==
-X-Gm-Message-State: AOAM531h0R6tfpnP5xHUvCtqHchUj5/VgJByUYTnDQxJyAHg3hmoTnn/
-        egvQfTA3VUQi0fNYjL+1yGm9FdznmTyWbvxbgWaoGo4XU0LR3P2VMMWdl6UcP+Zc6e8n1bNGu0u
-        PLQ5LZlxnTsZICdF0Ut+sVL53
-X-Received: by 2002:a17:907:3d8e:: with SMTP id he14mr37164156ejc.374.1625829602175;
-        Fri, 09 Jul 2021 04:20:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwtc4xWGn+OHTWUqQ2ZN7QMBLRjQS+tqvvgK+bB1PKTcn/km2lYNbAnqdYoxRG3K4UGhWeOuQ==
-X-Received: by 2002:a17:907:3d8e:: with SMTP id he14mr37164137ejc.374.1625829601998;
-        Fri, 09 Jul 2021 04:20:01 -0700 (PDT)
-Received: from redhat.com ([2.55.150.102])
-        by smtp.gmail.com with ESMTPSA id s4sm2830932edu.49.2021.07.09.04.19.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 04:20:01 -0700 (PDT)
-Date:   Fri, 9 Jul 2021 07:19:52 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        abaci@linux.alibaba.com, dan.carpenter@oracle.com,
-        david@redhat.com, elic@nvidia.com, jasowang@redhat.com,
-        lingshan.zhu@intel.com, lkp@intel.com, michael.christie@oracle.com,
-        mst@redhat.com, sgarzare@redhat.com, sohaib.amhmd@gmail.com,
-        stefanha@redhat.com, wanjiabing@vivo.com, xieyongji@bytedance.com,
-        yang.lee@linux.alibaba.com, zhangshaokun@hisilicon.com
-Subject: [GIT PULL] virtio,vhost,vdpa: features, fixes
-Message-ID: <20210709071952-mutt-send-email-mst@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pJBfn8KrookS9VA95B+AE2i8GXpFZrKK3T2F0bIumXM=;
+        b=aRc+NklbSTsnfQpicbSPgqTYz7uxH4Q8uLRJtUa32G54awU6QbaW2vgeUK8UvhQ90J
+         MCSR0f4lYd9d6vZE+AjP4dflHDTq4VbmFDRNs690cQb0Tm+CQ5cfDAdXF+kvdhTokx4+
+         DhaYOncmRGQ4X8IsOUJt0w6kDg8B++en/su8IfnOBVqj03yipqbg67qWWlKp7GRQauNb
+         2Z72AY1X0vW+jEQkTWrLjl5U6nr66hm6EQ84me9bmqbXJnOUylwQnbhfytAiAHhajecV
+         N996kkk7wKMfbxEkja3FNfh4iDi5i/1PCNIpc8NOQBxxxd+SxcrY8Gs47DORuf1crdK8
+         ljUw==
+X-Gm-Message-State: AOAM53391wvwXp7Pz6saGQCmMj6BhrJ9dbJX5vchZzi3b7zSsXQ+7Lp2
+        IKEGwLKE0lxSYGpjlo0juyzzdXoBybK2/pkjWUE=
+X-Google-Smtp-Source: ABdhPJz9yAt/PUrlHk09vA7sJVdy62jMOZClvCnSc027dfScoZVvS7LtBwJ72GxAOGWJR67ndQvr7S5AgSL8Ny9/ozU=
+X-Received: by 2002:aca:c457:: with SMTP id u84mr17485471oif.69.1625829681556;
+ Fri, 09 Jul 2021 04:21:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mutt-Fcc: =sent
+References: <4327888.LvFx2qVVIh@kreacher> <5327028b-6e0b-e83c-b147-da083a23634c@gmail.com>
+In-Reply-To: <5327028b-6e0b-e83c-b147-da083a23634c@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 9 Jul 2021 13:21:09 +0200
+Message-ID: <CAJZ5v0iCyLircAL928bA4-+Pd1UtaBcZ-PVRNk3qJScSybzwCQ@mail.gmail.com>
+Subject: Re: [PATCH][RFT] PCI: Use pci_update_current_state() in pci_enable_device_flags()
+To:     Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 3dbdb38e286903ec220aaf1fb29a8d94297da246:
+On Thu, Jul 8, 2021 at 10:34 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
+>
+> On 7/8/21 3:25 PM, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > Updating the current_state field of struct pci_dev the way it is done
+> > in pci_enable_device_flags() before calling do_pci_enable_device() may
+> > not work.  For example, if the given PCI device depends on an ACPI
+> > power resource whose _STA method initially returns 0 ("off"), but the
+> > config space of the PCI device is accessible and the power state
+> > retrieved from the PCI_PM_CTRL register is D0, the current_state
+> > field in the struct pci_dev representing that device will get out of
+> > sync with the power.state of its ACPI companion object and that will
+> > lead to power management issues going forward.
+> >
+> > To avoid such issues, make pci_enable_device_flags() call
+> > pci_update_current_state() which takes ACPI device power management
+> > into account, if present, to retrieve the current power state of the
+> > device.
+> >
+> > Link: https://lore.kernel.org/lkml/20210314000439.3138941-1-luzmaximilian@gmail.com/
+> > Reported-by: Maximilian Luz <luzmaximilian@gmail.com>
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
+> >
+> > Hi Maximilian,
+> >
+> > Because commit 4514d991d992 ("PCI: PM: Do not read power state in
+> > pci_enable_device_flags()"), the issue addressed by it is back, so
+> > we need an alternative way to address it.
+> >
+> > Can you please check if this patch makes that issue go away?
+>
+> Hi,
+>
+> just tested this on v5.13 and it works, thanks! Feel free to add
+>
+> Tested-by: Maximilian Luz <luzmaximilian@gmail.com>
 
-  Merge branch 'for-5.14' of git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup (2021-07-01 17:22:14 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
-
-for you to fetch changes up to db7b337709a15d33cc5e901d2ee35d3bb3e42b2f:
-
-  virtio-mem: prioritize unplug from ZONE_MOVABLE in Big Block Mode (2021-07-08 07:49:02 -0400)
-
-----------------------------------------------------------------
-virtio,vhost,vdpa: features, fixes
-
-Doorbell remapping for ifcvf, mlx5.
-virtio_vdpa support for mlx5.
-Validate device input in several drivers (for SEV and friends).
-ZONE_MOVABLE aware handling in virtio-mem.
-Misc fixes, cleanups.
-
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-
-----------------------------------------------------------------
-David Hildenbrand (7):
-      virtio-mem: don't read big block size in Sub Block Mode
-      virtio-mem: use page_zonenum() in virtio_mem_fake_offline()
-      virtio-mem: simplify high-level plug handling in Sub Block Mode
-      virtio-mem: simplify high-level unplug handling in Sub Block Mode
-      virtio-mem: prioritize unplug from ZONE_MOVABLE in Sub Block Mode
-      virtio-mem: simplify high-level unplug handling in Big Block Mode
-      virtio-mem: prioritize unplug from ZONE_MOVABLE in Big Block Mode
-
-Eli Cohen (8):
-      vdpa/mlx5: Fix umem sizes assignments on VQ create
-      vdpa/mlx5: Fix possible failure in umem size calculation
-      vdpa/mlx5: Support creating resources with uid == 0
-      vdp/mlx5: Fix setting the correct dma_device
-      vdpa/mlx5: Add support for running with virtio_vdpa
-      vdpa/mlx5: Add support for doorbell bypassing
-      vdpa/mlx5: Clear vq ready indication upon device reset
-      virtio/vdpa: clear the virtqueue state during probe
-
-Jason Wang (11):
-      vp_vdpa: correct the return value when fail to map notification
-      virtio-ring: maintain next in extra state for packed virtqueue
-      virtio_ring: rename vring_desc_extra_packed
-      virtio-ring: factor out desc_extra allocation
-      virtio_ring: secure handling of mapping errors
-      virtio_ring: introduce virtqueue_desc_add_split()
-      virtio: use err label in __vring_new_virtqueue()
-      virtio-ring: store DMA metadata in desc_extra for split virtqueue
-      vdpa: support packed virtqueue for set/get_vq_state()
-      virtio-pci library: introduce vp_modern_get_driver_features()
-      vp_vdpa: allow set vq state to initial state after reset
-
-Michael S. Tsirkin (4):
-      virtio_net: move tx vq operation under tx queue lock
-      virtio_net: move txq wakeups under tx q lock
-      virtio: fix up virtio_disable_cb
-      virtio_net: disable cb aggressively
-
-Mike Christie (5):
-      vhost: remove work arg from vhost_work_flush
-      vhost-scsi: remove extra flushes
-      vhost-scsi: reduce flushes during endpoint clearing
-      vhost: fix poll coding style
-      vhost: fix up vhost_work coding style
-
-Shaokun Zhang (1):
-      vhost: Remove the repeated declaration
-
-Sohaib (1):
-      virtio_blk: cleanups: remove check obsoleted by CONFIG_LBDAF removal
-
-Stefan Hajnoczi (1):
-      virtio-blk: limit seg_max to a safe value
-
-Stefano Garzarella (1):
-      vhost-iotlb: fix vhost_iotlb_del_range() documentation
-
-Wan Jiabing (1):
-      vdpa_sim_blk: remove duplicate include of linux/blkdev.h
-
-Xie Yongji (3):
-      virtio-blk: Fix memory leak among suspend/resume procedure
-      virtio_net: Fix error handling in virtnet_restore()
-      virtio_console: Assure used length from device is limited
-
-Yang Li (1):
-      virtio_ring: Fix kernel-doc
-
-Zhu Lingshan (4):
-      vDPA/ifcvf: record virtio notify base
-      vDPA/ifcvf: implement doorbell mapping for ifcvf
-      virtio: update virtio id table, add transitional ids
-      vDPA/ifcvf: reuse pre-defined macros for device ids and vendor ids
-
- drivers/block/virtio_blk.c             |  17 +-
- drivers/char/virtio_console.c          |   4 +-
- drivers/net/virtio_net.c               |  53 +++--
- drivers/vdpa/ifcvf/ifcvf_base.c        |   4 +
- drivers/vdpa/ifcvf/ifcvf_base.h        |  14 +-
- drivers/vdpa/ifcvf/ifcvf_main.c        |  43 ++--
- drivers/vdpa/mlx5/core/mlx5_vdpa.h     |   2 +
- drivers/vdpa/mlx5/core/mr.c            |  97 ++++++---
- drivers/vdpa/mlx5/core/resources.c     |   7 +
- drivers/vdpa/mlx5/net/mlx5_vnet.c      |  67 +++++--
- drivers/vdpa/vdpa_sim/vdpa_sim.c       |   4 +-
- drivers/vdpa/vdpa_sim/vdpa_sim_blk.c   |   1 -
- drivers/vdpa/virtio_pci/vp_vdpa.c      |  43 +++-
- drivers/vhost/iotlb.c                  |   2 +-
- drivers/vhost/scsi.c                   |  21 +-
- drivers/vhost/vdpa.c                   |   4 +-
- drivers/vhost/vhost.c                  |   8 +-
- drivers/vhost/vhost.h                  |  21 +-
- drivers/vhost/vsock.c                  |   2 +-
- drivers/virtio/virtio_mem.c            | 346 +++++++++++++++++----------------
- drivers/virtio/virtio_pci_modern_dev.c |  21 ++
- drivers/virtio/virtio_ring.c           | 229 ++++++++++++++++------
- drivers/virtio/virtio_vdpa.c           |  15 ++
- include/linux/mlx5/mlx5_ifc.h          |   4 +-
- include/linux/vdpa.h                   |  25 ++-
- include/linux/virtio_pci_modern.h      |   1 +
- include/uapi/linux/virtio_ids.h        |  12 ++
- 27 files changed, 713 insertions(+), 354 deletions(-)
-
+Thank you!
