@@ -2,91 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5694F3C2854
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F14D3C285A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbhGIRek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 13:34:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45314 "EHLO
+        id S229868AbhGIRev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 13:34:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbhGIRek (ORCPT
+        with ESMTP id S229707AbhGIReu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 13:34:40 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F1C4C0613DD;
-        Fri,  9 Jul 2021 10:31:55 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id b6so1616805iln.12;
-        Fri, 09 Jul 2021 10:31:55 -0700 (PDT)
+        Fri, 9 Jul 2021 13:34:50 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB0BC0613DD
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 10:32:05 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id u25so9184324ljj.11
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 10:32:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:from:in-reply-to:subject:to:cc
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=7R/eXnDFe/uefGWsaEjBMEYCuOMTYCee6SzAAPxzjTY=;
-        b=J4OcEIcILv/o2QC8UnjogomUhDr3n7+bb0dAUBN/A06bA4wbFydMCnXjTBoZMBI3fm
-         BAQPuJx5ILcJHmwBdRziAB34+s8sZ2Zgsus3OCeJg1dDl5n6lGiSE+sxwXYJcC2uMybf
-         dUpg7tclGfeREj7SeSUEvMdRA1yFqVrcF0i9G41t0thr1b7NLSJuF3ikMOqQRyFiqI50
-         jFjGB6q/8J0mpaXI6TcSF3XOiZuwbrHCK4/KBiKyvcMeUvKt1VryVz++DMiPAEZyqBh4
-         giVsxZomTeKGQ5vB58CEom5a4c9z423wmPR3d4SaACPnfobEoXKgPaDcSMl6GzEDjAM9
-         y1VA==
+        bh=zurjrq0cjWsoLjJ82l7/G+ZPz9xVTNl1bQFZKNmCIz4=;
+        b=vY5VGvegEbBAQDLsiGjd3Z6fmafGVfAHansYs6vDurjf4qvtnzun6FtBF2hc6IOFP1
+         WzLDMPNYLckVmCjF9D41ANfGwPlWEtBQASMNaDdZxDKvYTyIpTQbz1ywC5eTCj2cMuVy
+         rECD9/tTg/0CtdUnuAsfSd1xpShlUY3Njve2VmuKmVvemT7QY2MTUTV4mqhool6vYfD+
+         3nN7wBSqPmqOMFwu0KiTmkO6BablOsws/EHzGGvCvSDsibrmUsu3cYN1xmU894VQWyXo
+         AKgs+nS55wo4Dou+vBmrwbz+OnxmCpbIkSZDW6uJ+9CfU7oavhLSw5swXkBHScPBdAAN
+         QWuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=7R/eXnDFe/uefGWsaEjBMEYCuOMTYCee6SzAAPxzjTY=;
-        b=AXRCdjPtxUBIussK/vv8P9YSrzqrPIOvgK5LRotrmNnASkCCzdTt8XEWnbPsLD6c9R
-         njdrg1FNPjOoRQhHulfOthOlqUzWSMgjOUw1NcmBoNAyUKQBHxS1lRaDpKRcTkEIrlUs
-         m1MJSoxb5RhOtm7QKPR6mHJKK4QkhC8k+yCysP3y7IDbEm3RRT/XyzXj8OVKKoEKZue0
-         dd56hxkJUzI/ubZpP4amwTI1sTxi52KiGTQO0DVfBPOPxDGNH6uYZhnJOxlSu06juO/h
-         zdsntTyjcWAM/DZuuJmm3czuyX64ojc6gxLC8SeJrbdUlAQXrG6vFZDJ2cR64OqBHen7
-         30ug==
-X-Gm-Message-State: AOAM532cx4mE1nnRFXWbPCKc39rWnj+ggEdhEUI1ngXZcXO2pRbxFarZ
-        8NjqK8yRZjzzCi02xJOhhCyb/5VUFDHcGcDQQWNW2A==
-X-Google-Smtp-Source: ABdhPJzpFYIdrOvUPFSwj5iMJH5ygxCzOBLpPJYgtahTtlleXWpB2EjoaIZXh19qHaZvcMWaP/sG5g==
-X-Received: by 2002:a05:6e02:168b:: with SMTP id f11mr22901807ila.6.1625851914414;
-        Fri, 09 Jul 2021 10:31:54 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id x9sm3261106iol.2.2021.07.09.10.31.53
+        bh=zurjrq0cjWsoLjJ82l7/G+ZPz9xVTNl1bQFZKNmCIz4=;
+        b=sn02JzTAM9MCLO4ZwDDKwf7VsxvJTHYcRtA2PSl1y3PdfUd4I/3WhegZTDs0HrAWk+
+         PwsiEWd6wGoQAepjLTTtXbYeGsXN3zmC0ebIpMqAt6DDnJIMry3RVZIMQ6Qk3rzcuVEN
+         6Im0uzk7NeTWDcP/SNW6k2B4e50fes5XBKQ+6iGmrrzeJQa32XXhn6rYe1SvSLoBXBrZ
+         kZvWR9IKKt9E/cWjF/gh+mNU3YzbqntXym0FqLxiZMCsrATd7qtMse9sLRXXavF6htgm
+         9DfMcg/SBZJ7JX/MglzJIAuN/v19k3aB/0uLZgGgYO0qiiAC0mxq5oMwthh4bVEmGnce
+         At1Q==
+X-Gm-Message-State: AOAM53241V0r+3VMqp/qmDAYsh1PBc4OQf917Dy3fVGD6bPtuMdXPDzU
+        cUIU7LnwfW7UZ46+aQNIQtQcLg==
+X-Google-Smtp-Source: ABdhPJxsANV4aNXVC9/SO84SsQPHBKNbv8Qac6D4KSgoSwy+kI1kP/W8QusifdOkojnPnrHEoAEhbA==
+X-Received: by 2002:a2e:a54f:: with SMTP id e15mr30095958ljn.42.1625851924190;
+        Fri, 09 Jul 2021 10:32:04 -0700 (PDT)
+Received: from eriador.lan ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id b14sm511129lfb.132.2021.07.09.10.32.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 10:31:53 -0700 (PDT)
-Message-ID: <60e88809.1c69fb81.65f70.51a0@mx.google.com>
-Date:   Fri, 09 Jul 2021 10:31:53 -0700 (PDT)
-X-Google-Original-Date: Fri, 09 Jul 2021 17:31:52 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210709131549.679160341@linuxfoundation.org>
-Subject: RE: [PATCH 5.12 00/11] 5.12.16-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        Fri, 09 Jul 2021 10:32:03 -0700 (PDT)
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Michael Turquette <mturquette@baylibre.com>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/7] clk: qcom: use power-domain for sm8250's clock controllers
+Date:   Fri,  9 Jul 2021 20:31:55 +0300
+Message-Id: <20210709173202.667820-1-dmitry.baryshkov@linaro.org>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  9 Jul 2021 15:21:37 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.12.16 release.
-> There are 11 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 11 Jul 2021 13:14:09 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.16-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On SM8250 both the display and video clock controllers are powered up by
+the MMCX power domain. Handle this by linking clock controllers to the
+proper power domain, and using runtime power management to enable and
+disable the MMCX power domain.
 
-5.12.16-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+Dependencies:
+- https://lore.kernel.org/linux-pm/20210603093438.138705-1-ulf.hansson@linaro.org/ (merged in 5.14)
+- https://lore.kernel.org/linux-arm-msm/20210703005416.2668319-1-bjorn.andersson@linaro.org/
+  (pending)
+
+Changes since v2:
+ - Move pm_runtime calls from generic genpd code to the gdsc code for
+   now (as suggested by Ulf & Bjorn)
+
+Changes since v1:
+ - Rebase on top of Bjorn's patches, removing the need for setting
+   performance state directly.
+ - Move runtime PM calls from GDSC code to generic genpd code.
+ - Always call pm_runtime_enable in the Qualcomm generic clock
+   controller code.
+ - Register GDSC power domains as subdomains of the domain powering the
+   clock controller if there is one.
+
+----------------------------------------------------------------
+Dmitry Baryshkov (7):
+      dt-bindings: clock: qcom,dispcc-sm8x50: add mmcx power domain
+      dt-bindings: clock: qcom,videocc: add mmcx power domain
+      clk: qcom: gdsc: enable optional power domain support
+      clk: qcom: gdsc: call runtime PM functions for the provider device
+      arm64: dts: qcom: sm8250: remove mmcx regulator
+      clk: qcom: dispcc-sm8250: stop using mmcx regulator
+      clk: qcom: videocc-sm8250: stop using mmcx regulator
+
+ .../bindings/clock/qcom,dispcc-sm8x50.yaml         |  7 +++
+ .../devicetree/bindings/clock/qcom,videocc.yaml    |  7 +++
+ arch/arm64/boot/dts/qcom/sm8250.dtsi               | 11 +---
+ drivers/clk/qcom/common.c                          | 37 ++++++++++--
+ drivers/clk/qcom/dispcc-sm8250.c                   |  1 -
+ drivers/clk/qcom/gdsc.c                            | 70 ++++++++++++++++++++--
+ drivers/clk/qcom/gdsc.h                            |  2 +
+ drivers/clk/qcom/videocc-sm8250.c                  |  4 --
+ 8 files changed, 115 insertions(+), 24 deletions(-)
+
 
