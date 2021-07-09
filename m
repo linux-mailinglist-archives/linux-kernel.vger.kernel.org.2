@@ -2,114 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 710233C2805
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB18A3C280A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:09:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229659AbhGIRHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 13:07:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35690 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229503AbhGIRHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 13:07:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A269611B0;
-        Fri,  9 Jul 2021 17:05:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625850300;
-        bh=3MIvlgM7Pep+oN8czuF6Ie0rH7/jYQOo7WsCFv5z/AE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BQ74sLgCunCPF+x5zXhF8b47XY0e5wrs7r20dQ4aLBwjJP3+79OWzgW/BJIEhGPOU
-         GF/teFKTIFqw0bWo6+stC0HoTXfA40FXwKfVEKAfOAs5CQ/iq0ixnfWZUHQMzFYZbS
-         Q29gOCi9bL8VGc4lg/eTTksV3eej6ZbjM24wAWLs1seHK5ehzyt83ChJgNxzDV5L/w
-         vY49fHpDDH0q1VZey/KRlqdzXDjDa6k0JksYh9c8VtfpfMCeawt5HMs8alihIlkCoS
-         Lu85dswNOO0j6+sYkSpj2TUpZg7jXI7jRSkUzpOaQexG77h79xmd0NiwUwNnBlsYgR
-         hF4LGb79kND/w==
-Date:   Fri, 9 Jul 2021 18:04:26 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        hdegoede@redhat.com, mgross@linux.intel.com,
-        luzmaximilian@gmail.com, lgirdwood@gmail.com,
-        andy.shevchenko@gmail.com, laurent.pinchart@ideasonboard.com,
-        kieran.bingham@ideasonboard.com
-Subject: Re: [RFC PATCH 0/2] Add software node support to regulator framework
-Message-ID: <20210709170426.GC4112@sirena.org.uk>
-References: <20210708224226.457224-1-djrscally@gmail.com>
+        id S229553AbhGIRMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 13:12:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229459AbhGIRML (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 13:12:11 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09731C0613E5
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 10:09:27 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id c28so24075111lfp.11
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 10:09:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KBhcYMUl2xlWqh1FOBf7oxdHmtzU8noyHn56sS3VewQ=;
+        b=HiGFi2E15x32PX3njJDWrVvTsLBOSaGOKg60iPGD69rXNs3jRSWIcD68BeSV/F9zVG
+         95W1G2I+8fkAiGUajAUSmuF1lboZBUyWzG61Qbu5Q4dg24vCbxRVzEuGHLP/42Lo8gm0
+         PqnJmXGQvoVg6B/nG2f2X5sNgX3X+1BgM8M1M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KBhcYMUl2xlWqh1FOBf7oxdHmtzU8noyHn56sS3VewQ=;
+        b=JifchpWD590ll9QZB65hPrSz6JGgRPEFo2a61G58wVWjqpbfe9ZjSOevEpQ4AUfubw
+         0QIW6lOGATpe3jfJxxzH2DBQFsdA77Ck1JklznpEzn+qPQSzVYwcqVAhJAGmYbqoOVcM
+         tSIum3Sr3mxGdZlMIR2Vpcm8QuDofJ+GIUHRlUhRzalTNPpUD+rJl9YdTrOM7avJFqSv
+         LmXG/teJeTkac2U7Q8OOSi5lcs7u9JWPIxBLn+eoCIhby6RMtg9H1gJKr9aUxBmoefub
+         FNvZNrsUh9cImppYj3xHBKtbC8/UwUG+goYB7dldOoud2sod8pk+969z+qxF9ZOcvxdS
+         diqw==
+X-Gm-Message-State: AOAM532pjV2CK4jeyu/PPJTnFulq9mySYUkazlfjpHyv4BnfR1z+QHRs
+        17jFQXQCPEde3d+Sjh2qt1fj2an/SLFw1dWoi9Y=
+X-Google-Smtp-Source: ABdhPJwmxWLrJDeTbIg3i7Q1ItEIgy0vvzzNQpGvpINw34BggrGvjgTyhxhfUAhi+EDWsqTAUTPHjA==
+X-Received: by 2002:a19:7716:: with SMTP id s22mr4581596lfc.272.1625850565197;
+        Fri, 09 Jul 2021 10:09:25 -0700 (PDT)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
+        by smtp.gmail.com with ESMTPSA id f8sm506757lfu.188.2021.07.09.10.09.24
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Jul 2021 10:09:25 -0700 (PDT)
+Received: by mail-lf1-f44.google.com with SMTP id x25so11820228lfu.13
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 10:09:24 -0700 (PDT)
+X-Received: by 2002:ac2:4475:: with SMTP id y21mr1343435lfl.487.1625850564418;
+ Fri, 09 Jul 2021 10:09:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="E/DnYTRukya0zdZ1"
-Content-Disposition: inline
-In-Reply-To: <20210708224226.457224-1-djrscally@gmail.com>
-X-Cookie: This fortune intentionally left blank.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <6809750d3e746fb0732995bb9a0c1fa846bbd486.camel@hammerspace.com>
+ <CAHk-=wjvNb9GVdbWz+xxY274kuw=xkYBoBYHHHO7tscr1V0YAQ@mail.gmail.com> <448e0f2b96b7fa85f1dd520b39a24747ea9487ed.camel@hammerspace.com>
+In-Reply-To: <448e0f2b96b7fa85f1dd520b39a24747ea9487ed.camel@hammerspace.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 9 Jul 2021 10:09:08 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjLAQPisWbcoc+YcUdtLp87TMc29bETJrS4f6pjoAAy5Q@mail.gmail.com>
+Message-ID: <CAHk-=wjLAQPisWbcoc+YcUdtLp87TMc29bETJrS4f6pjoAAy5Q@mail.gmail.com>
+Subject: Re: [GIT PULL] Please pull NFS client changes for 5.14
+To:     Trond Myklebust <trondmy@hammerspace.com>
+Cc:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 9, 2021 at 9:55 AM Trond Myklebust <trondmy@hammerspace.com> wrote:
+>
+> Thanks! It didn't result in any overall code changes or even changes to
+> the result of the merges. However if you're OK with the occasional
+> duplicate patch then I'll make sure to avoid this in the future.
 
---E/DnYTRukya0zdZ1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The occasional duplicate patch is actually completely normal.
 
-On Thu, Jul 08, 2021 at 11:42:24PM +0100, Daniel Scally wrote:
+Particularly when it is something like an important fix that gets
+pushed to mainline late in the -rc series: people often want them in
+their development trees as well for testing, and so you end up with
+the same fix both in mainline and in the "for next merge window"
+branch.
 
-> See previous series for some background context [1]
+In fact, that "important fix that goes to both branches" can be a very
+good thing, exactly because you want to test that -next branch, and
+you want to do it without having to worry about old bugs that might
+trigger or hide new issues.
 
-That's a link to a series "[PATCH v5 0/6] Introduce intel_skl_int3472
-module" which doesn't have any explanatory text as to what it's doing in
-the cover letter (just an inter version changelog) nor any obvious
-relevance to this series, are you sure that's the right link?  In
-general it's best if your patch series contains enough explanatory
-information to allow someone to have a reasonable idea what the series
-does without having to follow links like this.
+And then I very much want to pull that _tested_ development branch,
+not some "ok, I removed that fix from the branch before asking Linus
+to pull, because it's already in his tree".
 
-> This series is a prototype of an emulation of the device tree regulator
-> initialisation and lookup functions, using software nodes. Software nodes
+See?
 
-What is a software node and why would we want to use one here?
+And yes, sometimes they happen by mistake, and the duplication is not
+intentional, and it's not some "good thing". It happens just because
+the same patch was sent two different ways.
 
-> relating to each regulator are registered as children of the TPS68470's A=
-CPI
-> firmware node. Those regulators have properties describing their constrai=
-nts
-> (for example "regulator-min-microvolt"). Similarly, software nodes are
-> registered and assigned as secondary to the Camera's firmware node - these
-> software nodes have reference properties named after the supply in the sa=
-me
-> way as device tree's phandles, for example "avdd-supply", and linking to =
-the
-> software node assigned to the appropriate regulator. We can then use those
-> constraints to specify the appropriate voltages and the references to all=
-ow the
-> camera drivers to look up the correct regulator device.=20
+That's fine too.
 
-So these systems lack an enumerable description of the system provided
-by hardware or firmware (or given that these are ACPI systems I guess
-the firmware description is just broken) so we need to use board files.
-Why are we not just using board files, what does this new abstraction
-solve?
+It's a problem if they happen a _lot_ - partly because they do make it
+much more likely to cause pointless merge conflicts (and mistakes can
+happen during that stage), but even more because it shows that
+something is going wrong in the patch management, and people are
+stepping on each other's feet.
 
-> I'm posting this to see if people agree it's a good approach for tackling=
- the=20
-> problem; I may be overthinking this and there's a much easier way that I =
-should
+So then the duplicate patches is not necessarily a _technical_
+problem, but it's indicative that something is wrong with patch flow.
 
-I don't think I understand what the problem you are trying to solve is
-so it's hard to say if this is a good approach to solving it.
+But even then removing the duplicate patches is generally less
+important than trying to fix the maintenance issue.
 
---E/DnYTRukya0zdZ1
-Content-Type: application/pgp-signature; name="signature.asc"
+So on the whole, a couple of duplicate patches isn't a big deal, and
+not worth rebasing.
 
------BEGIN PGP SIGNATURE-----
+Aim to keep rebasing mainly for "oh, keeping that will cause actual
+problems" (and sometimes the "actual problems" can be about things
+like truly horribly mangled commit messages and wrong attribution
+etc).
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDogZoACgkQJNaLcl1U
-h9ANAQf+M9TONsSRsQlmFBCA2aVGotSOwxvK2eI+A5nP2zHCa4CxUR10Y1P80SvC
-iPCQxqN2JO0E3jgcMgbXubCMN38zqMGKDVY1EQ9J4l8iChUdwshdGqjIRAy1Xtib
-d2QWqJ2ucO6fjzPfFh5SB9nbPCI23nOipXuPmu7Cz3qWCGj3otBwPHSf51mLRdbV
-vzO5L1KV2DAxcJ5vhP1TUZLWvOfbhgeAxYoLXrLdK/lchq0bcthknQt2Ml64b9CF
-UgzbKV0hDjRKcUsatCD9VMqp5UBVIgjFzf9+pVN1Ad1pT5RZR/ZbMS2BThys5y5A
-jsdef9OYk/m9QNn6TRIhW3dEtKSFXw==
-=2klv
------END PGP SIGNATURE-----
+So rebasing isn't necessarily always "wrong", but it just needs to
+have a fairly compelling reason.
 
---E/DnYTRukya0zdZ1--
+              Linus
