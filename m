@@ -2,71 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16CE03C27AB
+	by mail.lfdr.de (Postfix) with ESMTP id 6117C3C27AE
 	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 18:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229684AbhGIQla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 12:41:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbhGIQl3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 12:41:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13BEAC0613DD;
-        Fri,  9 Jul 2021 09:38:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=PX3PqwK6mixbUhOlosWUIb/7eL4O6l7Xj2gwXvxxNgA=; b=OFNJq5TzEv/ro5xcnMclS41aX+
-        0zyePYOhtx0YoA9d2PzMw5E5TQpwJYttbMg0a6qsdv6WgQdJOwBaBMKppVSNFxdqsCZSBj2aApqDi
-        Bsd50WT9Q7Tg8IYZzoQ6p7x1yzeocwR3lissZIoP1TDLLR9/2dYWnQEUM2Bwvye4vM8CC5v4fxmaj
-        801dFamq6l+iT6JWruP1kQvVuOnn3IraLtsOatgM3EVbp24Oe7ZimzmsRY/LKb+2p/e17Le2ZmMhP
-        0n/2uqF7H5rGdjZf4W7Yjx+5zB/pYbCT5wxvlXGf3idG9GSIIIrTu+XUp2/bmy0viHRuNj1aOmm68
-        rAkRnzuA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m1tWC-00EgUK-Uu; Fri, 09 Jul 2021 16:38:29 +0000
-Date:   Fri, 9 Jul 2021 17:38:24 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        kumarpraveen@linux.microsoft.com, pasha.tatashin@soleen.com,
-        Jonathan Corbet <corbet@lwn.net>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Lillian Grassin-Drake <ligrassi@microsoft.com>,
-        Muminul Islam <muislam@microsoft.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Subject: Re: [RFC v1 7/8] mshv: implement in-kernel device framework
-Message-ID: <YOh7gO3MIDv5Eo8q@casper.infradead.org>
-References: <20210709114339.3467637-1-wei.liu@kernel.org>
- <20210709114339.3467637-8-wei.liu@kernel.org>
- <YOhIzJVPN9SwoRK0@casper.infradead.org>
- <20210709135013.t5axinjmufotpylf@liuwe-devbox-debian-v2>
- <YOhsIDccgbUCzwqt@casper.infradead.org>
- <20210709162732.hnyzpf3uofzc7xqs@liuwe-devbox-debian-v2>
+        id S229708AbhGIQle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 12:41:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59742 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229685AbhGIQlc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 12:41:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48B74613B4;
+        Fri,  9 Jul 2021 16:38:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625848728;
+        bh=a1GISkv/+pWga0fuN5hJ5ZjRXhhLHwqNa2THjWIVVyU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Iuk9WFJR/gnoHhhLixZZL1Qt8UMWvT704PCJFZaW9jX0oREYzGgmYNk2oAyCs1iZq
+         w1JFvLRVPZxmEpB+ttMRLb/1zUOhvk0rx3fzG6MIDJOF24q7KEt5D50OZs6Z2k6v/B
+         eMWGKaVcWEYVmQ3ZdHL3yxxu1JMBjbtBq8Pc2rpakCD6hOQrmD5IWR3f9FjuUVXLg1
+         Wa9ZoYZT9cARhFYknnYfIeLNBhSDe7yl4DlfeafStJLHpP00T9FN9FGs/kzBtdJhuc
+         ABel8KIJCbbBKJ5GUbLO9Ewacy0QO1ErxyXy5SYz7puEd5ZSaFfhaKcqobj9duT/9a
+         zYobmtu/RH1LA==
+Date:   Fri, 9 Jul 2021 19:38:46 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Michal Suchanek <msuchanek@suse.de>
+Cc:     linux-integrity@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?utf-8?B?TG/Dr2M=?= Yhuel <loic.yhuel@gmail.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        Matthew Garrett <mjg59@google.com>, linux-efi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] efi/tpm: Differentiate missing and invalid final event
+ log table.
+Message-ID: <20210709163846.3e753oectgbt7wh7@kernel.org>
+References: <20210708094654.4157-1-msuchanek@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210709162732.hnyzpf3uofzc7xqs@liuwe-devbox-debian-v2>
+In-Reply-To: <20210708094654.4157-1-msuchanek@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 09, 2021 at 04:27:32PM +0000, Wei Liu wrote:
-> > Then don't define your own structure.  Use theirs.
+On Thu, Jul 08, 2021 at 11:46:54AM +0200, Michal Suchanek wrote:
+> Missing TPM final event log table is not a firmware bug.
 > 
-> I specifically mentioned in the cover letter I didn't do it because I
-> was not sure if that would be acceptable. I guess I will find out.
+> Clearly if providing event log in the old format makes the final event
+> log invalid it should not be provided at least in that case.
+> 
+> Fixes: b4f1874c6216 ("tpm: check event log version before reading final events")
+> Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> ---
+>  drivers/firmware/efi/tpm.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/firmware/efi/tpm.c b/drivers/firmware/efi/tpm.c
+> index c1955d320fec..8f665678e9e3 100644
+> --- a/drivers/firmware/efi/tpm.c
+> +++ b/drivers/firmware/efi/tpm.c
+> @@ -62,9 +62,11 @@ int __init efi_tpm_eventlog_init(void)
+>  	tbl_size = sizeof(*log_tbl) + log_tbl->size;
+>  	memblock_reserve(efi.tpm_log, tbl_size);
+>  
+> -	if (efi.tpm_final_log == EFI_INVALID_TABLE_ADDR ||
+> -	    log_tbl->version != EFI_TCG2_EVENT_LOG_FORMAT_TCG_2) {
+> -		pr_warn(FW_BUG "TPM Final Events table missing or invalid\n");
+> +	if (efi.tpm_final_log == EFI_INVALID_TABLE_ADDR) {
+> +		pr_info("TPM Final Events table not present\n");
+> +		goto out;
+> +	} else if (log_tbl->version != EFI_TCG2_EVENT_LOG_FORMAT_TCG_2) {
+> +		pr_warn(FW_BUG "TPM Final Events table invalid\n");
+>  		goto out;
+>  	}
+>  
+> -- 
+> 2.26.2
+> 
+> 
 
-I only got patch 7/8.  You can't blame me for not reading 0/8 if you
-didn't send me 0/8.
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+
+/Jarkko
