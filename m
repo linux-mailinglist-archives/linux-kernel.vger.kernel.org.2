@@ -2,85 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 619243C20F6
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 10:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6F863C20FB
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 10:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231720AbhGIIpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 04:45:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50508 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231494AbhGIIpt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 04:45:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE5566135E;
-        Fri,  9 Jul 2021 08:43:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625820186;
-        bh=0cImG1X5ufWqEnPoqRKQx45VH1j1qXZqLZOS8MvKO7k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AG0dH8uKQ3h/dsgJoiy2tOZ+JYL4upetQCIjFcX2TdjaYO6mmM/WEWT8zCStuBl5D
-         080Ye2u8yItVTb2xFzzdckltPpdJnD9fsqltTbZkrg5xxxLFt/p0LThaMD02jEdZfy
-         +u8xALybFuIunnIPSr8/TJupvC3ZBDXbyEWi54j/KFHQiQDQ0+AdxGl5EgASHHddos
-         9ktJMdmu0Gy4rFu9zXk/kdSDrHH+xrqSY0QSQ4HauLWqGgCpbT0w0gIn2NN/MZMXZ0
-         JjGMIVFZUxvi0xJ9jdKNn9m/EY5fdOOtjttHhcMsl4dKqQsnmHcQsHF2hjm95HMIdZ
-         vjQwvtpIUpd1g==
-Date:   Fri, 9 Jul 2021 10:43:03 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     He Zhe <zhe.he@windriver.com>
-Cc:     anna-maria@linutronix.de, linux-kernel@vger.kernel.org,
-        tglx@linutronix.de
-Subject: Re: [PATCH v2] timers: Recalculate next timer interrupt only when
- necessary
-Message-ID: <20210709084303.GA17239@lothringen>
-References: <20200723151641.12236-1-frederic@kernel.org>
- <dfbf752e-91db-b128-76a8-98fde4c5d480@windriver.com>
- <20210708153620.GA6716@lothringen>
- <c7a5015a-2b93-17d2-29bc-cd03e40cc09c@windriver.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+        id S231733AbhGIIqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 04:46:31 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:59478 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231585AbhGIIqa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 04:46:30 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1698X3ui034061;
+        Fri, 9 Jul 2021 04:43:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=YGU1/GMvFydHj3oddOrY0kMV2Ha7vK1EMdXlqyXSdvY=;
+ b=AKCLp/hCQtoTj6eIGpIazqFDRhlEjljHN9HqN3SSoKBX7CP/OcHF63jgoAdFQYDIvDP9
+ bhVGmfpX2T2jPGbqsU1I68Ar/MSeh4VycLWdEWkfQYMpPptvfTokqzvx0wEy8MnaFK/n
+ NpP/UN+VphrGvKwj55XrPDPXTQje3USSyQOKiMIBvbOafl9kb6ZwoNbBogVSQyAs4nQU
+ 4smcQyX2CjgU15bTxG4qc/29MNVvCTZCQxEDSG886YfTHxaQMgC19VcToTwDA3iNwwKU
+ WSn9fHBL2Q0Oe60Dg2zj/NCVo++nhEz/Dydr2y6DuZRBUkV8/6GtE9bGSo9P+5OZvLf+ 0Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39p0hr8k7r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Jul 2021 04:43:38 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1698XGBR034456;
+        Fri, 9 Jul 2021 04:43:38 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39p0hr8k6g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Jul 2021 04:43:37 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1698eejn025403;
+        Fri, 9 Jul 2021 08:43:36 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06fra.de.ibm.com with ESMTP id 39jf5hhcuc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Jul 2021 08:43:36 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1698hWEG34472422
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 9 Jul 2021 08:43:33 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C82D9A405C;
+        Fri,  9 Jul 2021 08:43:32 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B572AA4054;
+        Fri,  9 Jul 2021 08:43:27 +0000 (GMT)
+Received: from localhost.localdomain.com (unknown [9.199.39.183])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  9 Jul 2021 08:43:27 +0000 (GMT)
+From:   Kajol Jain <kjain@linux.ibm.com>
+To:     will@kernel.org, hao.wu@intel.com, mark.rutland@arm.com
+Cc:     trix@redhat.com, yilun.xu@intel.com, mdf@kernel.org,
+        linux-fpga@vger.kernel.org, maddy@linux.ibm.com,
+        atrajeev@linux.vnet.ibm.com, kjain@linux.ibm.com,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        rnsastry@linux.ibm.com, linux-perf-users@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: [PATCH v2] fpga: dfl: fme: Fix cpu hotplug issue in performance reporting
+Date:   Fri,  9 Jul 2021 14:13:19 +0530
+Message-Id: <20210709084319.33776-1-kjain@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 5asgOQpK-L42J3lVBxCXJt5uqxvGUtbb
+X-Proofpoint-ORIG-GUID: 5m_umRQ0G3-bQzjaZVAZ1BURCgNMWqVG
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <c7a5015a-2b93-17d2-29bc-cd03e40cc09c@windriver.com>
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-09_04:2021-07-09,2021-07-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ suspectscore=0 priorityscore=1501 adultscore=0 lowpriorityscore=0
+ mlxscore=0 phishscore=0 impostorscore=0 clxscore=1015 bulkscore=0
+ malwarescore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107090042
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 09, 2021 at 01:37:11PM +0800, He Zhe wrote:
-> 
-> 
-> On 7/8/21 11:36 PM, Frederic Weisbecker wrote:
-> > On Thu, Jul 08, 2021 at 02:43:01PM +0800, He Zhe wrote:
-> >> Hi,
-> >>
-> >> Ever since this commit merged in, when nohz_full enabled, the counts of arch_timer interrupt on arm64 arches keep increasing on cores that have been isolated. This can be reproduced on several arm64 boards. After reverting the commit, the counts would stop increasing after boot. my .config is attached.
-> >>
-> >> root@qemuarm64:~# uname -a
-> >> Linux qemuarm64 5.13.0 #1 SMP PREEMPT Mon Jul 5 07:11:27 UTC 2021 aarch64 aarch64 aarch64 GNU/Linux
-> >> root@qemuarm64:~# cat /proc/cmdline
-> >> root=/dev/vda rw  mem=2048M ip=dhcp console=ttyAMA0 console=hvc0  earlyprintk isolcpus=1-5 nohz_full=1-5 rcu_nocbs=1-5
-> >> root@qemuarm64:~# cat /proc/interrupts
-> > And I'm not observing that on default aarch64 on qemu either.
-> > Are you emulating a specific machine?
-> 
-> Here is my qemu configuration.
-> 
-> qemu-system-aarch64 --version
-> QEMU emulator version 6.0.0
-> Copyright (c) 2003-2021 Fabrice Bellard and the QEMU Project developers
-> 
-> qemu-system-aarch64 -device virtio-net-device,netdev=net0,mac=52:54:00:12:35:02 -netdev user,id=net0,hostfwd=tcp::2222-:22,hostfwd=tcp::2323-:23,tftp=/qemuarm64 -object rng-random,filename=/dev/urandom,id=rng0 -device virtio-rng-pci,rng=rng0 -drive id=disk0,file=/qemuarm64/qemuarm64.rootfs.ext4,if=none,format=raw -device virtio-blk-device,drive=disk0 -device qemu-xhci -device usb-tablet -device usb-kbd  -machine virt -cpu cortex-a57 -smp 4 -m 2048  -smp 6 -m 2048 -serial mon:stdio -serial null -nographic -device VGA,edid=on -kernel /qemuarm64/Image.bin -append 'root=/dev/vda rw  mem=2048M ip=dhcp console=ttyAMA0 console=hvc0 earlyprintk isolcpus=1-5 nohz_full=1-5 rcu_nocbs=1-5'
-> 
-> >
-> > Can you enable the following trace events and send me the output from
-> > one of the isolated CPU trace, say CPU 3 for example:
-> 
-> output_to_send is attached.
-> I can confirm that during the sleep the count of arch_timer increases one on
-> each isolated core.
+The performance reporting driver added cpu hotplug
+feature but it didn't add pmu migration call in cpu
+offline function.
+This can create an issue incase the current designated
+cpu being used to collect fme pmu data got offline,
+as based on current code we are not migrating fme pmu to
+new target cpu. Because of that perf will still try to
+fetch data from that offline cpu and hence we will not
+get counter data.
 
-Oh that's the trace from CPU 0, precisely the only one I don't need :o)
+Patch fixed this issue by adding pmu_migrate_context call
+in fme_perf_offline_cpu function.
 
-It's my fault, the last line of the script should have been:
+Fixes: 724142f8c42a ("fpga: dfl: fme: add performance reporting support")
+Tested-by: Xu Yilun <yilun.xu@intel.com>
+Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+Cc: stable@vger.kernel.org
+---
+ drivers/fpga/dfl-fme-perf.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-cat $DIR/per_cpu/cpu3/trace > ~/output_to_send
+---
+Changelog:
+v1 -> v2:
+- Add stable@vger.kernel.org in cc list
 
-Sorry...
+RFC -> PATCH v1
+- Remove RFC tag
+- Did nits changes on subject and commit message as suggested by Xu Yilun
+- Added Tested-by tag
+- Link to rfc patch: https://lkml.org/lkml/2021/6/28/112
+---
+diff --git a/drivers/fpga/dfl-fme-perf.c b/drivers/fpga/dfl-fme-perf.c
+index 4299145ef347..b9a54583e505 100644
+--- a/drivers/fpga/dfl-fme-perf.c
++++ b/drivers/fpga/dfl-fme-perf.c
+@@ -953,6 +953,10 @@ static int fme_perf_offline_cpu(unsigned int cpu, struct hlist_node *node)
+ 		return 0;
+ 
+ 	priv->cpu = target;
++
++	/* Migrate fme_perf pmu events to the new target cpu */
++	perf_pmu_migrate_context(&priv->pmu, cpu, target);
++
+ 	return 0;
+ }
+ 
+-- 
+2.31.1
+
