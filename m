@@ -2,87 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 123C83C2782
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 18:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2A5D3C2787
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 18:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229568AbhGIQ2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 12:28:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57182 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229441AbhGIQ2j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 12:28:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2D9D61209;
-        Fri,  9 Jul 2021 16:25:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625847955;
-        bh=Un/4gy3/N+IE7EepqqCaGuWR/s9N9vQBl1fW927WYI4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GzssWKhqrkloCWwaM/eHvG7tOn8yQG7uccWmpmJF8nHdjbkBQb0Nyd0TBMuIkXTxE
-         W1S4vyhQAsgzF9St06Gqg8UOtSiIzz8t+TURxozqaPMyymgFX54Mkvgvm7jfF/ISGP
-         XIKJdCZyY/bp5pZXkHN2bAOYGKtJnmH4AgiahzfOV9ds1aOBKVXSNwj7u/um0OjVRS
-         yR7RucS2jVX0K0IeSdhLzPYKdu5KHev6BaftQ6OHwV4SBOHJgwPvkYWcZm8cdzRBsW
-         FZ5EwTnS010mOudYxSdT/GNaBj+DacD5FZrEtXshDFYF0lMm6kSInb3wfcBWyZXLwK
-         IOxIsCSOuQzUA==
-Date:   Fri, 9 Jul 2021 19:25:51 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Reinette Chatre <reinette.chatre@intel.com>,
-        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-        linux-sgx@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] selftests/sgx: Trigger the reclaimer and #PF handler
-Message-ID: <20210709162551.lqfkwusnarh7ugse@kernel.org>
-References: <20210705143652.116125-1-jarkko@kernel.org>
- <20210705143652.116125-5-jarkko@kernel.org>
- <715ed555-5044-6fee-1d09-1c4cfa827af3@intel.com>
- <20210706235016.uucukyrr3ckk57pi@kernel.org>
- <16505466-e001-c4b0-ec41-5384ddcf194b@intel.com>
- <20210707091736.6wzemgmtzuegk3uf@kernel.org>
- <10664754-7e53-d9d1-f00c-f9dbd4a2d877@intel.com>
- <20210707205019.6jy64s4uqcw65q4h@kernel.org>
- <15d563b8-ad41-76c4-a645-ac5c739d6cce@intel.com>
+        id S229592AbhGIQaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 12:30:19 -0400
+Received: from mail-wm1-f47.google.com ([209.85.128.47]:43608 "EHLO
+        mail-wm1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229441AbhGIQaT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 12:30:19 -0400
+Received: by mail-wm1-f47.google.com with SMTP id q18-20020a1ce9120000b02901f259f3a250so6643812wmc.2;
+        Fri, 09 Jul 2021 09:27:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=I99DluO6hRqkgYSy9adeh6Pd3SK+vpKFazlB7IMMB7o=;
+        b=hNpkF8hEgtbdgqV1iqAyS6wrfxT8je1AIHSjuFb0Vfap47sdtdvwCIdZ4LtaxrCa+m
+         hmPeV9O1Qgo9jfFAweVfqM9J8k6GHwP1IDXtwiDhFzqWYoDlPOcW8GoMhZlnzGGEQO5l
+         e4zIxQJ3V8bHR2o5c5z9BJ6oAYFJ+ubTgYm35aXhpAFx5dxnIH9wxt31K0Y3YqN4ThAz
+         OTJcCb/nqaw441+RkPSB9BA3yGbNDkwwVMQ+gA8a29V8rVJL4bm/FuMR9ZkSRcpfYSq9
+         5s6wmagrt/kVQTHedWqhXPu3kwDHPXEjSGL7SYwxfg4XqO/TXiNKt0gfhiLAEsBnpOzr
+         Kbbg==
+X-Gm-Message-State: AOAM530GjU0fMFsqssRYtpDLwjk3IHAkFEc17oIkj1w8TcJnIskvU69L
+        c8PHXkap/uGF4rd3kTalMQ0=
+X-Google-Smtp-Source: ABdhPJxWLVC5j6MOmWZdXOvzxW78iECo/y3MWcrXmouKrum9LKBYkGrdroMu/zQ7rohPFrbnB+R1qw==
+X-Received: by 2002:a05:600c:4f96:: with SMTP id n22mr41149353wmq.116.1625848054552;
+        Fri, 09 Jul 2021 09:27:34 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id n5sm5604124wri.31.2021.07.09.09.27.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Jul 2021 09:27:34 -0700 (PDT)
+Date:   Fri, 9 Jul 2021 16:27:32 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        kumarpraveen@linux.microsoft.com, pasha.tatashin@soleen.com,
+        Jonathan Corbet <corbet@lwn.net>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Lillian Grassin-Drake <ligrassi@microsoft.com>,
+        Muminul Islam <muislam@microsoft.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Subject: Re: [RFC v1 7/8] mshv: implement in-kernel device framework
+Message-ID: <20210709162732.hnyzpf3uofzc7xqs@liuwe-devbox-debian-v2>
+References: <20210709114339.3467637-1-wei.liu@kernel.org>
+ <20210709114339.3467637-8-wei.liu@kernel.org>
+ <YOhIzJVPN9SwoRK0@casper.infradead.org>
+ <20210709135013.t5axinjmufotpylf@liuwe-devbox-debian-v2>
+ <YOhsIDccgbUCzwqt@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <15d563b8-ad41-76c4-a645-ac5c739d6cce@intel.com>
+In-Reply-To: <YOhsIDccgbUCzwqt@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 02:20:07PM -0700, Dave Hansen wrote:
-> On 7/7/21 1:50 PM, Jarkko Sakkinen wrote:
-> > There is consistent known behaviour how reclaimer and also the page fault
-> > are exercised for each test. I think that is what matters most right now
-> > that the basic behaviour of both the page reclaimer and page fault handler
-> > gets exercised.
+On Fri, Jul 09, 2021 at 04:32:48PM +0100, Matthew Wilcox wrote:
+> On Fri, Jul 09, 2021 at 01:50:13PM +0000, Wei Liu wrote:
+> > On Fri, Jul 09, 2021 at 02:02:04PM +0100, Matthew Wilcox wrote:
+> > > On Fri, Jul 09, 2021 at 11:43:38AM +0000, Wei Liu wrote:
+> > > > +static long
+> > > > +mshv_partition_ioctl_create_device(struct mshv_partition *partition,
+> > > > +	void __user *user_args)
+> > > > +{
+> > > [...]
+> > > > +	mshv_partition_get(partition);
+> > > > +	r = anon_inode_getfd(ops->name, &mshv_device_fops, dev, O_RDWR | O_CLOEXEC);
+> > > > +	if (r < 0) {
+> > > > +		mshv_partition_put_no_destroy(partition);
+> > > > +		list_del(&dev->partition_node);
+> > > > +		ops->destroy(dev);
+> > > > +		goto out;
+> > > > +	}
+> > > > +
+> > > > +	cd->fd = r;
+> > > > +	r = 0;
+> > > 
+> > > Why return the fd in memory instead of returning the fd as the return
+> > > value from the ioctl?
+> > > 
+> > > > +	if (copy_to_user(user_args, &tmp, sizeof(tmp))) {
+> > > > +		r = -EFAULT;
+> > > > +		goto out;
+> > > > +	}
+> > > 
+> > > ... this could then disappear.
+> > 
+> > Thanks for your comment, Matthew.
+> > 
+> > This is intentionally because I didn't want to deviate from KVM's API.
+> > The fewer differences the better.
 > 
-> There's also a lot of value to ensuring that tests can run _quickly_.
-> If you have a test that fails one out of a million executions, it's a
-> lot easier find and debug if it takes 1 ms versus 10 seconds.
-> 
-> In other words, I think I'd prefer if we run two enclaves in each
-> execution of the selftest.  One can be as small as possible.  The other
-> can be the reclaim-triggering one.
-> 
-> That's good both for test coverage, and it makes it a *bit* more
-> straightforward to hack out the reclaim test if you need things to run
-> faster.
-> 
-> The pkeys selftest isn't a bad example here either.  It has a couple of
-> different "malloc()" options: THP, hugetlbfs, small-page mmap(), and a
-> bunch of tests it runs on each type.  As we add more SGX tests, we might
-> end up with "do reclaim" just being an option we pass.
+> Then don't define your own structure.  Use theirs.
 
-Even with large EPC's, the current test runs quite fast, because heap is
-left unmeasured. It's the EEXTEND operations that would cause a major
-slow-down.
+I specifically mentioned in the cover letter I didn't do it because I
+was not sure if that would be acceptable. I guess I will find out.
 
-I would go only to something "more complex" when the current test hits
-the roof. I don't like to make code more complicated, when that does not
-happen.
-
-When there's no compatibility requirements, it's not hard to refactor it
-later on.
-
-/Jarkko
+Wei.
