@@ -2,89 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D630A3C2935
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC2B73C2911
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:32:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230328AbhGISti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 14:49:38 -0400
-Received: from baldur.buserror.net ([165.227.176.147]:47032 "EHLO
-        baldur.buserror.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbhGISth (ORCPT
+        id S229956AbhGISe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 14:34:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229503AbhGISe4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 14:49:37 -0400
-X-Greylist: delayed 1180 seconds by postgrey-1.27 at vger.kernel.org; Fri, 09 Jul 2021 14:49:37 EDT
-Received: from [2601:449:8480:af0::97c7]
-        by baldur.buserror.net with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <oss@buserror.net>)
-        id 1m1vCw-0005iy-9K; Fri, 09 Jul 2021 13:26:38 -0500
-Message-ID: <3a17e91259b4f7538530ab652eb2a72fddbbc170.camel@buserror.net>
-From:   Scott Wood <oss@buserror.net>
-To:     Paul Gortmaker <paul.gortmaker@windriver.com>,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     linux-kernel@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>
-Date:   Fri, 09 Jul 2021 13:26:36 -0500
-In-Reply-To: <20210111082823.99562-1-paul.gortmaker@windriver.com>
-References: <20210111082823.99562-1-paul.gortmaker@windriver.com>
-Organization: Red Hat
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0-1 
+        Fri, 9 Jul 2021 14:34:56 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 665E4C0613DD;
+        Fri,  9 Jul 2021 11:32:11 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id nd37so17907451ejc.3;
+        Fri, 09 Jul 2021 11:32:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VtJq8ypnKS4eYlxtTrToZVYOT0P02GWDtqg+RJsp0r4=;
+        b=Tkbz1Uom9Ksoj+v6zQJZaJuFIwSvZIDFfKaTRmAiXfUIJF2JBtndq+A4uppjsoWdUM
+         GM0vQw7OtRYmvhAxcCTe45AImdH9fkmBjEKQnnSxvPH5UM32Z3vluY9iTVVYPk0OHGR4
+         +f9zEGyZs2xqSUb2cF7f6OpBum34xUfQ7G5oRSDmPZLJEMKInJIsfnHaS8CHGdpJ7DIO
+         1fxk6MANgtgIF3GMTsKSoMwCBhuXzgEM2cP28eBIPucYyD4+P5IK8P2EW0TAMjYWQSld
+         9RcievpykfBUz1OgbGkFWmPhIjXMOnpyXQ8tPceb+t8Fn7BdHJBoeBw1P1acSx2r3hr5
+         yGhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VtJq8ypnKS4eYlxtTrToZVYOT0P02GWDtqg+RJsp0r4=;
+        b=DJt+3az8JlGI6arRjbdQAZXCnGEnuuwRqC4vcIGmxyzYgo43KJMqWkMmYLfhPqzox+
+         Gcy5podWD9lfdkHtHvNo9b5hFxBhWIp6aGkIm7DTgVS89ar6DekDWuTsa0US5ULUSSVN
+         Lf7zPtxzaOcacUhmpzEfsYp8a/TiEFd4umb0//4JE8rQMcQ3lat26AvE4RnGWnbRRQwX
+         o3yj3NMXlRZTXb+764rvJgLRn4iXQl/oegF8eyvTaHYG62kEm4gOck+QtW4d/BSb1/1i
+         vZiI/s7Yyuv/0f6/ooJJiGAleGxvmnbxNcEGYKP22Gw4XAJXR/NeotHoFuQto5McNn3/
+         YUBQ==
+X-Gm-Message-State: AOAM533RQBU1hjriWwhul2bimLct5+9hrv4UOJziA+bMkRBnhctFdTS3
+        IxDPQ8Jy46koWbD77cAWHRzV+G7DvwrmO91lphE=
+X-Google-Smtp-Source: ABdhPJy81KXEn6X3hOLvrxh6D0GLTzilfT6rxFPn5rObGOLN7nn5gQc6vdYFUpHDi1l6cbGuWo99snz99LEm63ljuRY=
+X-Received: by 2002:a17:907:d28:: with SMTP id gn40mr39961662ejc.471.1625855529920;
+ Fri, 09 Jul 2021 11:32:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2601:449:8480:af0::97c7
-X-SA-Exim-Rcpt-To: paul.gortmaker@windriver.com, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, benh@kernel.crashing.org, mpe@ellerman.id.au, paulus@samba.org
-X-SA-Exim-Mail-From: oss@buserror.net
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on baldur.localdomain
-X-Spam-Level: 
-X-Spam-Status: No, score=-16.0 required=5.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  -15 BAYES_00 BODY: Bayes spam probability is 0 to 1%
-        *      [score: 0.0000]
-Subject: Re: [PATCH 0/3] Retire remaining WindRiver embedded SBC BSPs
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on baldur.buserror.net)
+References: <20210709164216.18561-1-ms@dev.tdt.de>
+In-Reply-To: <20210709164216.18561-1-ms@dev.tdt.de>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Fri, 9 Jul 2021 20:31:59 +0200
+Message-ID: <CAFBinCCw9+oCV==1DrNFU6Lu02h3OyZu9wM=78RKGMCZU6ObEA@mail.gmail.com>
+Subject: Re: [PATCH net-next v3] net: phy: intel-xway: Add RGMII internal
+ delay configuration
+To:     Martin Schiller <ms@dev.tdt.de>
+Cc:     Hauke Mehrtens <hauke@hauke-m.de>, f.fainelli@gmail.com,
+        andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-01-11 at 03:28 -0500, Paul Gortmaker wrote:
-> In v2.6.27 (2008, 917f0af9e5a9) the sbc8260 support was implicitly
-> retired by not being carried forward through the ppc --> powerpc
-> device tree transition.
-> 
-> Then, in v3.6 (2012, b048b4e17cbb) we retired the support for the
-> sbc8560 boards.
-> 
-> Next, in v4.18 (2017, 3bc6cf5a86e5) we retired the support for the
-> 2006 vintage sbc834x boards.
-> 
-> The sbc8548 and sbc8641d boards were maybe 1-2 years newer than the
-> sbc834x boards, but it is also 3+ years later, so it makes sense to
-> now retire them as well - which is what is done here.
-> 
-> These two remaining WR boards were based on the Freescale MPC8548-CDS
-> and the MPC8641D-HPCN reference board implementations.  Having had the
-> chance to use these and many other Fsl ref boards, I know this:  The
-> Freescale reference boards were typically produced in limited quantity
-> and primarily available to BSP developers and hardware designers, and
-> not likely to have found a 2nd life with hobbyists and/or collectors.
-> 
-> It was good to have that BSP code subjected to mainline review and
-> hence also widely available back in the day. But given the above, we
-> should probably also be giving serious consideration to retiring
-> additional similar age/type reference board platforms as well.
-> 
-> I've always felt it is important for us to be proactive in retiring
-> old code, since it has a genuine non-zero carrying cost, as described
-> in the 930d52c012b8 merge log.  But for the here and now, we just
-> clean up the remaining BSP code that I had added for SBC platforms.
+Hi Martin,
 
-Acked-by: Scott Wood <oss@buserror.net>
+overall this is looking good.
+A few comments below - I think none of them is a "must change" in my opinion.
 
--Scott
+On Fri, Jul 9, 2021 at 6:42 PM Martin Schiller <ms@dev.tdt.de> wrote:
+>
+> This adds the posibility to configure the RGMII RX/TX clock skew via
+typo: posibility -> possibility
+
+[...]
+> +#define XWAY_MDIO_MIICTRL_RXSKEW_MASK  GENMASK(14, 12)
+> +#define XWAY_MDIO_MIICTRL_RXSKEW_SHIFT 12
+if you use
+- FIELD_PREP(XWAY_MDIO_MIICTRL_RXSKEW_MASK, rxskew); (as for example [0] does)
+- and FIELD_GET(XWAY_MDIO_MIICTRL_RXSKEW_MASK, val);
+below then you can drop the _SHIFT #define
+this is purely cosmetic though, so nothing which blocks this from being merged
+
+> +#define XWAY_MDIO_MIICTRL_TXSKEW_MASK  GENMASK(10, 8)
+> +#define XWAY_MDIO_MIICTRL_TXSKEW_SHIFT 8
+same as above
+
+[...]
+> +#if IS_ENABLED(CONFIG_OF_MDIO)
+is there any particular reason why we need to guard this with CONFIG_OF_MDIO?
+The dp83822 driver does not use this #if either (as far as I
+understand at least)
+
+[...]
+> +static int xway_gphy_of_reg_init(struct phy_device *phydev)
+> +{
+> +       struct device *dev = &phydev->mdio.dev;
+> +       int delay_size = ARRAY_SIZE(xway_internal_delay);
+Some people in the kernel community are working on automatically
+detecting and fixing signedness issues.
+I am not sure if they would find this at some point suggesting that it
+can be an "unsigned int".
+
+> +       s32 rx_int_delay;
+> +       s32 tx_int_delay;
+xway_gphy14_config_aneg() below defines two variables in one line, so
+to be consistent this would be:
+    s32 rx_int_delay, tx_int_delay;
+another option is to just re-use one "int_delay" variable (as it seems
+that they're both used in different code-paths).
+
+> +       u16 mask = 0;
+I think this should be dropped and the phy_modify() call below should read:
+    return phy_modify(phydev, XWAY_MDIO_MIICTRL,
+                                  XWAY_MDIO_MIICTRL_RXSKEW_MASK |
+                                  XWAY_MDIO_MIICTRL_TXSKEW_MASK, val);
+For rgmii-txid the RX delay might be provided by the MAC or PCB trace
+length so the PHY should not add any RX delay.
+Similarly for rgmii-rxid the TX delay might be provided by the MAC or
+PCB trace length so the PHY should not add any TX delay.
+That means we always need to mask the RX and TX skew bits, regardless
+of what we're setting later on (as phy_modify is only called for one
+of: rgmii-id, rgmii-txid, rgmii-rxid).
+
+[...]
+> +       if (phydev->interface == PHY_INTERFACE_MODE_RGMII_ID ||
+> +           phydev->interface == PHY_INTERFACE_MODE_RGMII_RXID) {
+> +               rx_int_delay = phy_get_internal_delay(phydev, dev,
+> +                                                     &xway_internal_delay[0],
+I think above line can be simplified as:
+    xway_internal_delay,
+
+[...]
+> +       if (phydev->interface == PHY_INTERFACE_MODE_RGMII_ID ||
+> +           phydev->interface == PHY_INTERFACE_MODE_RGMII_TXID) {
+> +               tx_int_delay = phy_get_internal_delay(phydev, dev,
+> +                                                     &xway_internal_delay[0],
+same as above
 
 
+Best regards,
+Martin
+
+
+[0] https://elixir.bootlin.com/linux/v5.13/source/drivers/net/phy/dp83867.c#L438
