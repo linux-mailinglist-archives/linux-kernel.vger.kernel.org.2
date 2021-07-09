@@ -2,134 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B38CE3C23CB
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 14:56:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08FFB3C23D3
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 14:57:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231641AbhGIM7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 08:59:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231467AbhGIM7G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 08:59:06 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F1FDC0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 05:56:22 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id k8so7888421lja.4
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 05:56:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pmQouUwnHXSB4OdiUD3dDMTm+uNqG32/fIygOWS1rqk=;
-        b=TNKFzaJYG6b/K8hMZsQR7UYuFjKqUsAHnAEfeDxwl7ckEscf2i5Exwp88H0e7TaCgf
-         M1afe6FMM0NJYlHmc1SSrDADUNI7CMYsSyXfFNww2GK55OFVtTNVep48yJuhNHe07xSo
-         ZoLL+JQ20Yuwct0eB1oNBH1gJ650Z+SNC9hmpVOPQeDzNJLFYbh/WipSsiYTAlPUJbCg
-         ZytnNWUbSRGFe69YGizzFEevlVfn8N1Sdwz3y0j6SZMrZoaM6X1ULChOtDXQEFgy2NIL
-         ux+oyFxFuDHErBIjFhDiDFzwCyDPMyFNnpZeycoBxp4ToRXu4UyXZDsNymtrnLoihPA3
-         ABjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pmQouUwnHXSB4OdiUD3dDMTm+uNqG32/fIygOWS1rqk=;
-        b=BkiEXVKrc3nlCqwvZe4Qs1afbGfgOWLp2V3ScKQ7yRWgofVc0IfuACBtwaapIODsMb
-         NGBI/R/Q9zuRuocr0z7fkaZfNz+6IRq0YdDfa5+q5EAlqxWSMOY6xE96eXK6r9Ju74DF
-         c8h3RfAtqhayhzOd9C/L3YklraslLw8JYVrRYJzL6d9bMS+AyEV+4jpAyaKYKW9AZeST
-         3hBAlBwhbmI5ZkaLHfs+ot15fD3sGQvN6CU1yJ9nx4xHwaZKxIyBYeBmw+BNiuVfxX2E
-         sDAilunFilpe54Fc7q8e4il4Bup5/HkIjKjMkXGNpr8wtVbe87gj26xGQWwvsD+m1sjw
-         WGjA==
-X-Gm-Message-State: AOAM532DTttQqDBkCYbLVGHD1qaMf23QH00irX+ejj3Pj1ciAcxRpOP8
-        VLSjgyj0jUjJKQKzOp8YNo939DYcEsQe8oOgeGs=
-X-Google-Smtp-Source: ABdhPJws6OEf65ZuRSjGD6inMZ75FyrYIUnjQzy1kEHtRfxPsLOsHjSEXRvBaqrzpe/ko9aygtFZRA==
-X-Received: by 2002:a05:651c:210:: with SMTP id y16mr14067901ljn.437.1625835380940;
-        Fri, 09 Jul 2021 05:56:20 -0700 (PDT)
-Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
-        by smtp.gmail.com with ESMTPSA id q5sm462097lfr.37.2021.07.09.05.56.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 05:56:19 -0700 (PDT)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] PM: domains: Don't attach a device to genpd that corresponds to a provider
-Date:   Fri,  9 Jul 2021 14:56:11 +0200
-Message-Id: <20210709125611.135920-1-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        id S231574AbhGIM7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 08:59:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:52420 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231357AbhGIM7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 08:59:33 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 31DFFED1;
+        Fri,  9 Jul 2021 05:56:50 -0700 (PDT)
+Received: from [10.57.35.192] (unknown [10.57.35.192])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 258A53F66F;
+        Fri,  9 Jul 2021 05:56:48 -0700 (PDT)
+Subject: Re: [RFC v1 3/8] intel/vt-d: make DMAR table parsing code more
+ flexible
+To:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
+Cc:     pasha.tatashin@soleen.com, Will Deacon <will@kernel.org>,
+        kumarpraveen@linux.microsoft.com,
+        David Woodhouse <dwmw2@infradead.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        "open list:INTEL IOMMU VT-d" <iommu@lists.linux-foundation.org>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        virtualization@lists.linux-foundation.org,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+References: <20210709114339.3467637-1-wei.liu@kernel.org>
+ <20210709114339.3467637-4-wei.liu@kernel.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <e1dcc315-4ebb-661e-4289-d176b3db39b5@arm.com>
+Date:   Fri, 9 Jul 2021 13:56:46 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210709114339.3467637-4-wei.liu@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to the common power domain DT bindings, a power domain provider
-must have a "#power-domain-cells" property in its OF node. Additionally, if
-a provider has a "power-domains" property, it means that it has a parent
-domain.
+On 2021-07-09 12:43, Wei Liu wrote:
+> Microsoft Hypervisor provides a set of hypercalls to manage device
+> domains. The root kernel should parse the DMAR so that it can program
+> the IOMMU (with hypercalls) correctly.
+> 
+> The DMAR code was designed to work with Intel IOMMU only. Add two more
+> parameters to make it useful to Microsoft Hypervisor. Microsoft
+> Hypervisor does not need the DMAR parsing code to allocate an Intel
+> IOMMU structure; it also wishes to always reparse the DMAR table even
+> after it has been parsed before.
 
-It has turned out that some OF nodes that represents a genpd provider may
-also be compatible with a regular platform device. This leads to, during
-probe, genpd_dev_pm_attach(), genpd_dev_pm_attach_by_name() and
-genpd_dev_pm_attach_by_id() tries to attach the corresponding struct device
-to the genpd provider's parent domain, which is wrong. Instead the genpd
-provider should only assign a parent domain, through
-pm_genpd_add_subdomain() or of_genpd_add_subdomain().
+We've recently defined the VIOT table for describing paravirtualised 
+IOMMUs - would it make more sense to extend that to support the 
+Microsoft implementation than to abuse a hardware-specific table? Am I 
+right in assuming said hypervisor isn't intended to only ever run on 
+Intel hardware?
 
-Let's fix this problem in genpd by checking for the "#power-domain-cells"
-property in the OF node for the struct device that is about to be attached.
+Robin.
 
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
----
-
-This turned up when I was reviewing a couple of genpd realted Qcom patches [1],
-from Dmitry Baryshkov (on cc).
-
-I haven't been able to run much tests, so help with that would be greatly
-appreciated. If someone encounter issues, I am happy to help to fix those.
-
-Kind regards
-Ulf Hansson
-
-[1]
-https://lkml.org/lkml/2021/7/9/7
-https://lkml.org/lkml/2021/7/9/8
-
----
- drivers/base/power/domain.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-index a934c679e6ce..21991fb56a19 100644
---- a/drivers/base/power/domain.c
-+++ b/drivers/base/power/domain.c
-@@ -2699,6 +2699,10 @@ int genpd_dev_pm_attach(struct device *dev)
- 	if (!dev->of_node)
- 		return 0;
- 
-+	/* Don't try to attach a genpd provider. */
-+	if (of_find_property(dev->of_node, "#power-domain-cells", NULL))
-+		return NULL;
-+
- 	/*
- 	 * Devices with multiple PM domains must be attached separately, as we
- 	 * can only attach one PM domain per device.
-@@ -2737,6 +2741,10 @@ struct device *genpd_dev_pm_attach_by_id(struct device *dev,
- 	if (!dev->of_node)
- 		return NULL;
- 
-+	/* Don't try to attach a genpd provider. */
-+	if (of_find_property(dev->of_node, "#power-domain-cells", NULL))
-+		return NULL;
-+
- 	/* Verify that the index is within a valid range. */
- 	num_domains = of_count_phandle_with_args(dev->of_node, "power-domains",
- 						 "#power-domain-cells");
--- 
-2.25.1
-
+> Adjust Intel IOMMU code to use the new dmar_table_init. There should be
+> no functional change to Intel IOMMU code.
+> 
+> Signed-off-by: Wei Liu <wei.liu@kernel.org>
+> ---
+> We may be able to combine alloc and force_parse?
+> ---
+>   drivers/iommu/intel/dmar.c          | 38 ++++++++++++++++++++---------
+>   drivers/iommu/intel/iommu.c         |  2 +-
+>   drivers/iommu/intel/irq_remapping.c |  2 +-
+>   include/linux/dmar.h                |  2 +-
+>   4 files changed, 30 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+> index 84057cb9596c..bd72f47c728b 100644
+> --- a/drivers/iommu/intel/dmar.c
+> +++ b/drivers/iommu/intel/dmar.c
+> @@ -408,7 +408,8 @@ dmar_find_dmaru(struct acpi_dmar_hardware_unit *drhd)
+>    * structure which uniquely represent one DMA remapping hardware unit
+>    * present in the platform
+>    */
+> -static int dmar_parse_one_drhd(struct acpi_dmar_header *header, void *arg)
+> +static int dmar_parse_one_drhd_internal(struct acpi_dmar_header *header,
+> +		void *arg, bool alloc)
+>   {
+>   	struct acpi_dmar_hardware_unit *drhd;
+>   	struct dmar_drhd_unit *dmaru;
+> @@ -440,12 +441,14 @@ static int dmar_parse_one_drhd(struct acpi_dmar_header *header, void *arg)
+>   		return -ENOMEM;
+>   	}
+>   
+> -	ret = alloc_iommu(dmaru);
+> -	if (ret) {
+> -		dmar_free_dev_scope(&dmaru->devices,
+> -				    &dmaru->devices_cnt);
+> -		kfree(dmaru);
+> -		return ret;
+> +	if (alloc) {
+> +		ret = alloc_iommu(dmaru);
+> +		if (ret) {
+> +			dmar_free_dev_scope(&dmaru->devices,
+> +					    &dmaru->devices_cnt);
+> +			kfree(dmaru);
+> +			return ret;
+> +		}
+>   	}
+>   	dmar_register_drhd_unit(dmaru);
+>   
+> @@ -456,6 +459,16 @@ static int dmar_parse_one_drhd(struct acpi_dmar_header *header, void *arg)
+>   	return 0;
+>   }
+>   
+> +static int dmar_parse_one_drhd(struct acpi_dmar_header *header, void *arg)
+> +{
+> +	return dmar_parse_one_drhd_internal(header, arg, true);
+> +}
+> +
+> +int dmar_parse_one_drhd_noalloc(struct acpi_dmar_header *header, void *arg)
+> +{
+> +	return dmar_parse_one_drhd_internal(header, arg, false);
+> +}
+> +
+>   static void dmar_free_drhd(struct dmar_drhd_unit *dmaru)
+>   {
+>   	if (dmaru->devices && dmaru->devices_cnt)
+> @@ -633,7 +646,7 @@ static inline int dmar_walk_dmar_table(struct acpi_table_dmar *dmar,
+>    * parse_dmar_table - parses the DMA reporting table
+>    */
+>   static int __init
+> -parse_dmar_table(void)
+> +parse_dmar_table(bool alloc)
+>   {
+>   	struct acpi_table_dmar *dmar;
+>   	int drhd_count = 0;
+> @@ -650,6 +663,9 @@ parse_dmar_table(void)
+>   		.cb[ACPI_DMAR_TYPE_SATC] = &dmar_parse_one_satc,
+>   	};
+>   
+> +	if (!alloc)
+> +		cb.cb[ACPI_DMAR_TYPE_HARDWARE_UNIT] = &dmar_parse_one_drhd_noalloc;
+> +
+>   	/*
+>   	 * Do it again, earlier dmar_tbl mapping could be mapped with
+>   	 * fixed map.
+> @@ -840,13 +856,13 @@ void __init dmar_register_bus_notifier(void)
+>   }
+>   
+>   
+> -int __init dmar_table_init(void)
+> +int __init dmar_table_init(bool alloc, bool force_parse)
+>   {
+>   	static int dmar_table_initialized;
+>   	int ret;
+>   
+> -	if (dmar_table_initialized == 0) {
+> -		ret = parse_dmar_table();
+> +	if (dmar_table_initialized == 0 || force_parse) {
+> +		ret = parse_dmar_table(alloc);
+>   		if (ret < 0) {
+>   			if (ret != -ENODEV)
+>   				pr_info("Parse DMAR table failure.\n");
+> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+> index be35284a2016..a4294d310b93 100644
+> --- a/drivers/iommu/intel/iommu.c
+> +++ b/drivers/iommu/intel/iommu.c
+> @@ -4310,7 +4310,7 @@ int __init intel_iommu_init(void)
+>   	}
+>   
+>   	down_write(&dmar_global_lock);
+> -	if (dmar_table_init()) {
+> +	if (dmar_table_init(true, false)) {
+>   		if (force_on)
+>   			panic("tboot: Failed to initialize DMAR table\n");
+>   		goto out_free_dmar;
+> diff --git a/drivers/iommu/intel/irq_remapping.c b/drivers/iommu/intel/irq_remapping.c
+> index f912fe45bea2..0e8abef862e4 100644
+> --- a/drivers/iommu/intel/irq_remapping.c
+> +++ b/drivers/iommu/intel/irq_remapping.c
+> @@ -732,7 +732,7 @@ static int __init intel_prepare_irq_remapping(void)
+>   		return -ENODEV;
+>   	}
+>   
+> -	if (dmar_table_init() < 0)
+> +	if (dmar_table_init(true, false) < 0)
+>   		return -ENODEV;
+>   
+>   	if (intel_cap_audit(CAP_AUDIT_STATIC_IRQR, NULL))
+> diff --git a/include/linux/dmar.h b/include/linux/dmar.h
+> index e04436a7ff27..f88535d41a6e 100644
+> --- a/include/linux/dmar.h
+> +++ b/include/linux/dmar.h
+> @@ -106,7 +106,7 @@ static inline bool dmar_rcu_check(void)
+>   	for_each_dev_scope((devs), (cnt), (i), (tmp))			\
+>   		if (!(tmp)) { continue; } else
+>   
+> -extern int dmar_table_init(void);
+> +extern int dmar_table_init(bool alloc, bool force_parse);
+>   extern int dmar_dev_scope_init(void);
+>   extern void dmar_register_bus_notifier(void);
+>   extern int dmar_parse_dev_scope(void *start, void *end, int *cnt,
+> 
