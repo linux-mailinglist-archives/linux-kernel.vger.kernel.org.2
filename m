@@ -2,153 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C65AF3C295B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 421CC3C295D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230221AbhGIS7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 14:59:41 -0400
-Received: from mickerik.phytec.de ([195.145.39.210]:48624 "EHLO
-        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbhGIS7k (ORCPT
+        id S229606AbhGITBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 15:01:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229459AbhGITBJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 14:59:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
-        q=dns/txt; i=@phytec.de; t=1625857016; x=1628449016;
-        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=0JXfPfysFGsq4Gq53PoBe0ygA8ID7GtZoxIxCOiYc+Q=;
-        b=XcSy2sKQ3Ob/HR6ddpQNIXdrgfyhF2ZiTSF6zV53OvLEvPDa1UjMs06ZjHW+ccX3
-        PTMOOndi1JwF7+/PIBnfVTOVsgIfQQ9HTTNtTqFkGcAOACVL7m6kHe2MoLT4uyfF
-        u98vrkRh0UjXGohPOgRC3oIfg+WZgsX05UXwzXnn0ig=;
-X-AuditID: c39127d2-1e4f970000001daf-66-60e89bf8ff2d
-Received: from Diagnostix.phytec.de (Diagnostix.phytec.de [172.16.0.119])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id A8.E3.07599.8FB98E06; Fri,  9 Jul 2021 20:56:56 +0200 (CEST)
-Received: from Berlix.phytec.de (172.16.0.117) by Diagnostix.phytec.de
- (172.16.0.119) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Fri, 9 Jul 2021
- 20:56:55 +0200
-Received: from Berlix.phytec.de ([fe80::c131:350d:c471:aafd]) by
- berlix.phytec.de ([fe80::c131:350d:c471:aafd%3]) with mapi id 15.01.2308.008;
- Fri, 9 Jul 2021 20:56:55 +0200
-From:   Yunus Bas <Y.Bas@phytec.de>
-To:     "sam@ravnborg.org" <sam@ravnborg.org>
-CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "laurent.pinchart@ideasonboard.com" 
-        <laurent.pinchart@ideasonboard.com>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>
-Subject: Re: [PATCH v3 1/2] drm/panel: simple: Add support for EDT
- ETMV570G2DHU panel
-Thread-Topic: [PATCH v3 1/2] drm/panel: simple: Add support for EDT
- ETMV570G2DHU panel
-Thread-Index: AQHXdO1xpOZocCWCkkWX939PlmZPNas63PiA
-Date:   Fri, 9 Jul 2021 18:56:55 +0000
-Message-ID: <2371e4fad8a61511e1213c07b41117079628c5f9.camel@phytec.de>
-References: <20210706075908.907659-1-y.bas@phytec.de>
-         <YOiQo3B9JtE0kuO7@ravnborg.org>
-In-Reply-To: <YOiQo3B9JtE0kuO7@ravnborg.org>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.16.0.116]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A8FA7EC2EB930B4A8F5BC2BCEF473FD5@phytec.de>
-Content-Transfer-Encoding: base64
+        Fri, 9 Jul 2021 15:01:09 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2455C0613DD
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 11:58:24 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id e14so10324683qkl.9
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 11:58:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1Rq09e4FzKVmC8coozmBf2Y4P9tsiDVwZ27Wjq/A92M=;
+        b=DXZ7xOOrb+im+tg33i8mbTwsKlZOJPAfSLVS1lRsLDqp2+R0vdcuS+0zSmf1hozWid
+         h8N38TsVQ1QPBClHpe5emLu45mi3w5tBd5vkYjiI6beSJjrXTQS9Lis5m+m60gBYrsC3
+         Jtaz1JParBBvM4YHj99L6tC2DD0jJWHj3QIQZ+3nIZDUcW68SbAYvmvI8sPsQ8rrBf9m
+         DIbU5xPKHNZtJodbP2/6ps301q+e0hoyKM6Fse04usXf1IDGbmbscr/M14PPeovJ8vNW
+         Z0jX0S9BplBgXLHzIJNTXSkc81ZwJBu7AYVTyYRZxK2MfH9BfbKUzQx/G8a7Ik/pB8aU
+         o1CA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1Rq09e4FzKVmC8coozmBf2Y4P9tsiDVwZ27Wjq/A92M=;
+        b=JLZ4BoZK8Qt1VrceCKEKZ6WIkZsfO5z2qm1NYdNC7oD2LDCzUjvzPbrDQMQqQRbo/0
+         3viOtrU66g+J+mHinDVa0sZxIS3VG5r7ONSikwkcUKyF9Yy+6ufOlwM/H7q//Y9AJIEB
+         dgPHFvRhLeEjq2jlg20bwmBAkUjN97YOrTkxY06tTGU0C8gYNLmRZnDvhJWNZz4TISxx
+         6qzB3hKAp5IWAeuaHtSxUI+HL8TEbBp3VSBC1XgN4BwEZNZSN3Su98aJhJCA9Pu+Q1j3
+         IvjyXHixZ/x85ngTde/TJBhyTAhqTqL8hHJUD5yD/6GFN++uesla+j10sm9sX8LPCzor
+         01hg==
+X-Gm-Message-State: AOAM5333Y20Mk4fDsasRbfWv7H6h8cyf1ImMdS6Nx1F365z9Nqnce6xc
+        GDhisUbOS2ZLuu9X6JVabJPdYy+cIoVJJQyDhXjQfw==
+X-Google-Smtp-Source: ABdhPJx38EbV1FTTGhhuDjA8CTzpk9q6mzakZBUDCGz1zQ1TzLXHZcfuZU3Lo65MlCEwO1gJjRbol4iuazm9D4flAsc=
+X-Received: by 2002:ae9:dd43:: with SMTP id r64mr38651885qkf.216.1625857103581;
+ Fri, 09 Jul 2021 11:58:23 -0700 (PDT)
 MIME-Version: 1.0
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrLIsWRmVeSWpSXmKPExsWyRoChXPfH7BcJBst+cFj0njvJZPF/20Rm
-        iytf37NZdE5cwm5xedccNosVP7cyWvzcNY/Fgd1j77cFLB47Z91l95jdMZPVY/u3B6we97uP
-        M3ksmXaVzePzJrkA9igum5TUnMyy1CJ9uwSujDVrXrIXfNCp2LEko4HxjnYXIyeHhICJxO5P
-        Zxm7GLk4hATWM0lsWdjCAuE8YZR4cHMvG4SzkVHi0tYXQA4HB5uAosSVW/kg3SICmhIfX09i
-        B6lhFrjFJLHg7H5mkBphgXCJjv8BEDUREsvWPmGGsI0k9mzdywJSwiKgInF4rQdImFfATeLr
-        o/NMILYQUPnMwxPZQGxOAR2JLX8mgcUZBWQlNmw4DzaGWUBcYtOz76wQDwhILNkDEZcQEJV4
-        +fgfVFxBoq2nkwlkFTPQmet36UO0WkgcuLoMaoyixJTuh+wQJwhKnJz5hGUCo/gsJBtmIXTP
-        QtI9C0n3LCTdCxhZVzEK5WYmZ6cWZWbrFWRUlqQm66WkbmIERvHhieqXdjD2zfE4xMjEwXiI
-        UYKDWUmE12jGswQh3pTEyqrUovz4otKc1OJDjNIcLErivBt4S8KEBNITS1KzU1MLUotgskwc
-        nFINjCl3tye6+BWLz5zuKSh5yeNhodZZPqHV74853mCLXdnFxrDAZ1KZqxPf0apVX6uUq3b9
-        27jheLSxg9FErtyN1r4NUk8t+0InVjzReP5sxnwrP43U1o/2C7PV3ffnb2d3n/xf0mbe8r3l
-        DCt7ROL2XDRerrZf7GHGrTtbjNMVj4jE/fKaYRUjrMRSnJFoqMVcVJwIAK+VQiPQAgAA
+References: <20210709043713.887098-1-senozhatsky@chromium.org> <20210709043713.887098-3-senozhatsky@chromium.org>
+In-Reply-To: <20210709043713.887098-3-senozhatsky@chromium.org>
+From:   Joel Fernandes <joelaf@google.com>
+Date:   Fri, 9 Jul 2021 14:58:11 -0400
+Message-ID: <CAJWu+opFedsq6CdgUYErnxsv3-Pr7MHi0vz9=hhpMCujFPp8+A@mail.gmail.com>
+Subject: Re: [PATCHv2 2/4] arm64: add guest pvstate support
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgU2FtLA0KDQpBbSBGcmVpdGFnLCBkZW0gMDkuMDcuMjAyMSB1bSAyMDowOCArMDIwMCBzY2hy
-aWViIFNhbSBSYXZuYm9yZzoNCj4gSGkgWXVudXMsDQo+IA0KPiBPbiBUdWUsIEp1bCAwNiwgMjAy
-MSBhdCAwOTo1OTowN0FNICswMjAwLCBZdW51cyBCYXMgd3JvdGU6DQo+ID4gRnJvbTogU3RlZmFu
-IFJpZWRtdWVsbGVyIDxzLnJpZWRtdWVsbGVyQHBoeXRlYy5kZT4NCj4gPiANCj4gPiBUaGlzIHBh
-dGNoIGFkZHMgc3VwcG9ydCBmb3IgdGhlIEVEVCBFVE1WNTcwRzJESFUgNS43IiAoNjQweDQ4MCkg
-bGNkDQo+ID4gcGFuZWwNCj4gPiB0byBEUk0gc2ltcGxlIHBhbmVsIGRyaXZlci4NCj4gPiANCj4g
-PiBTaWduZWQtb2ZmLWJ5OiBTdGVmYW4gUmllZG11ZWxsZXIgPHMucmllZG11ZWxsZXJAcGh5dGVj
-LmRlPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFl1bnVzIEJhcyA8eS5iYXNAcGh5dGVjLmRlPg0KPiA+
-IC0tLQ0KPiA+IENoYW5nZXMgaW4gdjM6DQo+ID4gLSBObyBjaGFuZ2VzIGluIGdlbmVyYWwsIGFk
-ZGVkIGFkZGl0aW9uYWwgbWFpbnRhaW5lcnMgYW5kIGFsc28NCj4gPiBzZW5kaW5nDQo+ID4gdG8g
-Z2VuZXJhbCBrZXJuZWwgbWFpbGluZyBsaXN0DQo+ID4gLS0tDQo+ID4gwqBkcml2ZXJzL2dwdS9k
-cm0vcGFuZWwvcGFuZWwtc2ltcGxlLmMgfCAyOQ0KPiA+ICsrKysrKysrKysrKysrKysrKysrKysr
-KysrKysNCj4gPiDCoDEgZmlsZSBjaGFuZ2VkLCAyOSBpbnNlcnRpb25zKCspDQo+ID4gDQo+ID4g
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9wYW5lbC9wYW5lbC1zaW1wbGUuYw0KPiA+IGIv
-ZHJpdmVycy9ncHUvZHJtL3BhbmVsL3BhbmVsLXNpbXBsZS5jDQo+ID4gaW5kZXggMjE5MzlkNDM1
-MmNmLi4wNzQzM2JmZjZjMmIgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL3BhbmVs
-L3BhbmVsLXNpbXBsZS5jDQo+ID4gKysrIGIvZHJpdmVycy9ncHUvZHJtL3BhbmVsL3BhbmVsLXNp
-bXBsZS5jDQo+ID4gQEAgLTIwMDgsNiArMjAwOCwzMiBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHBh
-bmVsX2Rlc2MNCj4gPiBlZHRfZXQwNTcwOTBkaHUgPSB7DQo+ID4gwqDCoMKgwqDCoMKgwqDCoC5j
-b25uZWN0b3JfdHlwZSA9IERSTV9NT0RFX0NPTk5FQ1RPUl9EUEksDQo+ID4gwqB9Ow0KPiA+IMKg
-DQo+ID4gK3N0YXRpYyBjb25zdCBzdHJ1Y3QgZHJtX2Rpc3BsYXlfbW9kZSBlZHRfZXRtdjU3MGcy
-ZGh1X21vZGUgPSB7DQo+ID4gK8KgwqDCoMKgwqDCoMKgLmNsb2NrID0gMjUxNzUsDQo+ID4gK8Kg
-wqDCoMKgwqDCoMKgLmhkaXNwbGF5ID0gNjQwLA0KPiA+ICvCoMKgwqDCoMKgwqDCoC5oc3luY19z
-dGFydCA9IDY0MCwNCj4gPiArwqDCoMKgwqDCoMKgwqAuaHN5bmNfZW5kID0gNjQwICsgMTYsDQo+
-ID4gK8KgwqDCoMKgwqDCoMKgLmh0b3RhbCA9IDY0MCArIDE2ICsgMzAgKyAxMTQsDQo+ID4gK8Kg
-wqDCoMKgwqDCoMKgLnZkaXNwbGF5ID0gNDgwLA0KPiA+ICvCoMKgwqDCoMKgwqDCoC52c3luY19z
-dGFydCA9IDQ4MCArIDEwLA0KPiA+ICvCoMKgwqDCoMKgwqDCoC52c3luY19lbmQgPSA0ODAgKyAx
-MCArIDMsDQo+ID4gK8KgwqDCoMKgwqDCoMKgLnZ0b3RhbCA9IDQ4MCArIDEwICsgMyArIDM1LA0K
-PiA+ICvCoMKgwqDCoMKgwqDCoC5mbGFncyA9IERSTV9NT0RFX0ZMQUdfUFZTWU5DIHwgRFJNX01P
-REVfRkxBR19QSFNZTkMsDQo+ID4gK307DQo+ID4gKw0KPiA+ICtzdGF0aWMgY29uc3Qgc3RydWN0
-IHBhbmVsX2Rlc2MgZWR0X2V0bXY1NzBnMmRodSA9IHsNCj4gPiArwqDCoMKgwqDCoMKgwqAubW9k
-ZXMgPSAmZWR0X2V0bXY1NzBnMmRodV9tb2RlLA0KPiA+ICvCoMKgwqDCoMKgwqDCoC5udW1fbW9k
-ZXMgPSAxLA0KPiA+ICvCoMKgwqDCoMKgwqDCoC5icGMgPSA2LA0KPiA+ICvCoMKgwqDCoMKgwqDC
-oC5zaXplID0gew0KPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAud2lkdGggPSAx
-MTUsDQo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC5oZWlnaHQgPSA4NiwNCj4g
-PiArwqDCoMKgwqDCoMKgwqB9LA0KPiA+ICvCoMKgwqDCoMKgwqDCoC5idXNfZm9ybWF0ID0gTUVE
-SUFfQlVTX0ZNVF9SR0I4ODhfMVgyNCwNCj4gPiArwqDCoMKgwqDCoMKgwqAuYnVzX2ZsYWdzID0g
-RFJNX0JVU19GTEFHX0RFX0hJR0ggfA0KPiA+IERSTV9CVVNfRkxBR19QSVhEQVRBX0RSSVZFX05F
-R0VER0UsDQo+ID4gK8KgwqDCoMKgwqDCoMKgLmNvbm5lY3Rvcl90eXBlID0gRFJNX01PREVfQ09O
-TkVDVE9SX0RQSSwNCj4gPiArfTsNCj4gPiArDQo+ID4gwqBzdGF0aWMgY29uc3Qgc3RydWN0IGRy
-bV9kaXNwbGF5X21vZGUgZWR0X2V0bTA3MDBnMGRoNl9tb2RlID0gew0KPiA+IMKgwqDCoMKgwqDC
-oMKgwqAuY2xvY2sgPSAzMzI2MCwNCj4gPiDCoMKgwqDCoMKgwqDCoMKgLmhkaXNwbGF5ID0gODAw
-LA0KPiA+IEBAIC00MzM4LDYgKzQzNjQsOSBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IG9mX2Rldmlj
-ZV9pZA0KPiA+IHBsYXRmb3JtX29mX21hdGNoW10gPSB7DQo+ID4gwqDCoMKgwqDCoMKgwqDCoH0s
-IHsNCj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC5jb21wYXRpYmxlID0gImVk
-dCxldDA1NzA5MGRodSIsDQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAuZGF0
-YSA9ICZlZHRfZXQwNTcwOTBkaHUsDQo+ID4gK8KgwqDCoMKgwqDCoMKgfSwgew0KPiA+ICvCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAuY29tcGF0aWJsZSA9ICJlZHQsZXRtdjU3MGcyZGh1
-IiwNCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgLmRhdGEgPSAmZWR0X2V0bXY1
-NzBnMmRodSwNCj4gPiDCoMKgwqDCoMKgwqDCoMKgfSwgew0KPiA+IMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgLmNvbXBhdGlibGUgPSAiZWR0LGV0MDcwMDgwZGg2IiwNCj4gPiDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC5kYXRhID0gJmVkdF9ldG0wNzAwZzBkaDYsDQo+
-IA0KPiBUaGlzIGxpc3QgbXVzdCBiZSBhbHBoYWJldGljYWxseSBzb3J0ZWQgYWZ0ZXIgY29tcGF0
-aWJsZS4NCj4gDQo+ICJlZHQsZXRtdjU3MGcyZGh1IiBjb21lcyBhZnRlciAiZWR0LGV0MDcwMDgw
-ZGg2Ig0KPiANCj4gVGhlIHNhbWUgb3JkZXIgbXVzdCBiZSB1c2VkIHdoZXJlIGVkdF9ldG12NTcw
-ZzJkaHUgaXMgZGVmaW5lZC4NCj4gU29ycnkgZm9yIHRoaXMgbml0LCBidXQgaWYgd2UgZmFpbHMg
-dG8gZm9sbHcgaXQgd2Ugd2lsbCBzb29uIGhhdmUNCj4gY2hhb3MuDQoNCk9mIGNvdXJzZSwgc29y
-cnkgZm9yIG5vdCBub3RpY2luZyBlYXJsaWVyLiBJIHdpbGwgY2hhbmdlIHRoaXMuDQoNClJlZ2Fy
-ZHMsIFl1bnVzDQo+IA0KPiBUaGUgcmVzdCBsb29rcyBnb29kLCBldmVyeXRoaW5nIG5lZWRlZCBp
-cyBkZWZpbmVkLg0KPiANCj4gwqDCoMKgwqDCoMKgwqDCoFNhbQ0KDQotLSANCk1pdCBmcmV1bmRs
-aWNoZW4gR3LDvMOfZW4NCll1bnVzIEJhcw0KDQotU29mdHdhcmUgRW5naW5lZXItDQpQSFlURUMg
-TWVzc3RlY2huaWsgR21iSA0KUm9iZXJ0LUtvY2gtU3RyLiAzOQ0KNTUxMjkgTWFpbnoNCkdlcm1h
-bnkNClRlbC46ICs0OSAoMCk2MTMxIDkyMjEtIDQ2Ng0KV2ViOiB3d3cucGh5dGVjLmRlDQoNClNp
-ZSBmaW5kZW4gdW5zIGF1Y2ggYXVmOiBGYWNlYm9vaywgTGlua2VkSW4sIFhpbmcsIFlvdVR1YmUN
-Cg0KUEhZVEVDIE1lc3N0ZWNobmlrIEdtYkggfCBSb2JlcnQtS29jaC1TdHIuIDM5IHwgNTUxMjkg
-TWFpbnosIEdlcm1hbnkNCkdlc2Now6RmdHNmw7xocmVyOiBEaXBsLi1JbmcuIE1pY2hhZWwgTWl0
-ZXpraSwgRGlwbC4tSW5nLiBCb2RvIEh1YmVyIHwNCkhhbmRlbHNyZWdpc3RlciBNYWlueiBIUkIg
-NDY1NiB8IEZpbmFuemFtdCBNYWlueiB8IFN0Lk5yLiAyNjY1MDA2MDgsIERFDQoxNDkwNTk4NTUN
-ClRoaXMgRS1NYWlsIG1heSBjb250YWluIGNvbmZpZGVudGlhbCBvciBwcml2aWxlZ2VkIGluZm9y
-bWF0aW9uLiBJZiB5b3UNCmFyZSBub3QgdGhlIGludGVuZGVkIHJlY2lwaWVudCAob3IgaGF2ZSBy
-ZWNlaXZlZCB0aGlzIEUtTWFpbCBpbiBlcnJvcikNCnBsZWFzZSBub3RpZnkgdGhlIHNlbmRlciBp
-bW1lZGlhdGVseSBhbmQgZGVzdHJveSB0aGlzIEUtTWFpbC4gQW55DQp1bmF1dGhvcml6ZWQgY29w
-eWluZywgZGlzY2xvc3VyZSBvciBkaXN0cmlidXRpb24gb2YgdGhlIG1hdGVyaWFsIGluDQp0aGlz
-IEUtTWFpbCBpcyBzdHJpY3RseSBmb3JiaWRkZW4uDQoNCg==
+Hi, Just few nits, patch itself LGTM:
+
+On Fri, Jul 9, 2021 at 12:37 AM Sergey Senozhatsky
+<senozhatsky@chromium.org> wrote:
+>
+> PV-vcpu-state is a per-CPU struct, which, for the time being,
+> holds boolean `preempted' vCPU state. During the startup,
+> given that host supports PV-state, each guest vCPU sends
+> a pointer to its per-CPU variable to the host as a payload
+> with the SMCCC HV call, so that host can update vCPU state
+> when it puts or loads vCPU.
+>
+> This has impact on the guest's scheduler:
+>
+> [..]
+>   wake_up_process()
+>    try_to_wake_up()
+>     select_task_rq_fair()
+>      available_idle_cpu()
+>       vcpu_is_preempted()
+>
+> Some sched benchmarks data is available on the github page [0].
+>
+> [0] https://github.com/sergey-senozhatsky/arm64-vcpu_is_preempted
+>
+> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> ---
+>  arch/arm64/include/asm/paravirt.h | 19 +++++++
+>  arch/arm64/kernel/paravirt.c      | 94 +++++++++++++++++++++++++++++++
+>  arch/arm64/kernel/smp.c           |  4 ++
+>  3 files changed, 117 insertions(+)
+>
+> diff --git a/arch/arm64/include/asm/paravirt.h b/arch/arm64/include/asm/paravirt.h
+> index 9aa193e0e8f2..a3f7665dff38 100644
+> --- a/arch/arm64/include/asm/paravirt.h
+> +++ b/arch/arm64/include/asm/paravirt.h
+> @@ -2,6 +2,11 @@
+>  #ifndef _ASM_ARM64_PARAVIRT_H
+>  #define _ASM_ARM64_PARAVIRT_H
+>
+> +struct vcpu_state {
+> +       bool    preempted;
+> +       u8      reserved[63];
+> +};
+> +
+>  #ifdef CONFIG_PARAVIRT
+>  #include <linux/static_call_types.h>
+>
+> @@ -20,8 +25,22 @@ static inline u64 paravirt_steal_clock(int cpu)
+>
+>  int __init pv_time_init(void);
+>
+> +bool dummy_vcpu_is_preempted(unsigned int cpu);
+> +
+> +extern struct static_key pv_vcpu_is_preempted_enabled;.
+
+pv_vcpu_is_preempted_enabled static_key is not used in any patch.
+Maybe it is stale?
+
+> +DECLARE_STATIC_CALL(pv_vcpu_is_preempted, dummy_vcpu_is_preempted);
+> +
+> +static inline bool paravirt_vcpu_is_preempted(unsigned int cpu)
+> +{
+> +       return static_call(pv_vcpu_is_preempted)(cpu);
+> +}
+> +
+> +int __init pv_vcpu_state_init(void);
+> +
+>  #else
+>
+> +#define pv_vcpu_state_init() do {} while (0)
+> +
+>  #define pv_time_init() do {} while (0)
+>
+>  #endif // CONFIG_PARAVIRT
+> diff --git a/arch/arm64/kernel/paravirt.c b/arch/arm64/kernel/paravirt.c
+> index 75fed4460407..d8fc46795d94 100644
+> --- a/arch/arm64/kernel/paravirt.c
+> +++ b/arch/arm64/kernel/paravirt.c
+> @@ -40,6 +40,11 @@ struct pv_time_stolen_time_region {
+>
+>  static DEFINE_PER_CPU(struct pv_time_stolen_time_region, stolen_time_region);
+>
+> +static DEFINE_PER_CPU(struct vcpu_state, vcpus_states);
+> +struct static_key pv_vcpu_is_preempted_enabled;
+> +
+> +DEFINE_STATIC_CALL(pv_vcpu_is_preempted, dummy_vcpu_is_preempted);
+
+Could we use DEFINE_STATIC_CALL_NULL and get rid of the dummy
+function? I believe that makes the function trampoline as return
+instruction, till it is updated.
+
+> +
+>  static bool steal_acc = true;
+>  static int __init parse_no_stealacc(char *arg)
+>  {
+> @@ -165,3 +170,92 @@ int __init pv_time_init(void)
+>
+>         return 0;
+>  }
+> +
+> +bool dummy_vcpu_is_preempted(unsigned int cpu)
+> +{
+> +       return false;
+> +}
+> +
+> +static bool __vcpu_is_preempted(unsigned int cpu)
+> +{
+> +       struct vcpu_state *st;
+> +
+> +       st = &per_cpu(vcpus_states, cpu);
+> +       return READ_ONCE(st->preempted);
+
+I guess you could just do:
+{
+  return READ_ONCE(per_cpu(vcpus_states, cpu).preempted);
+}
+
+> +}
+> +
+> +static bool has_pv_vcpu_state(void)
+> +{
+> +       struct arm_smccc_res res;
+> +
+> +       /* To detect the presence of PV time support we require SMCCC 1.1+ */
+> +       if (arm_smccc_1_1_get_conduit() == SMCCC_CONDUIT_NONE)
+> +               return false;
+> +
+> +       arm_smccc_1_1_invoke(ARM_SMCCC_ARCH_FEATURES_FUNC_ID,
+> +                            ARM_SMCCC_HV_PV_VCPU_STATE_FEATURES,
+> +                            &res);
+> +
+> +       if (res.a0 != SMCCC_RET_SUCCESS)
+> +               return false;
+> +       return true;
+> +}
+> +
+> +static int __pv_vcpu_state_hook(unsigned int cpu, int event)
+> +{
+> +       struct arm_smccc_res res;
+> +       struct vcpu_state *st;
+> +
+> +       st = &per_cpu(vcpus_states, cpu);
+> +       arm_smccc_1_1_invoke(event, virt_to_phys(st), &res);
+> +       if (res.a0 != SMCCC_RET_SUCCESS)
+> +               return -EINVAL;
+> +       return 0;
+> +}
+> +
+> +static int vcpu_state_init(unsigned int cpu)
+> +{
+> +       int ret = __pv_vcpu_state_hook(cpu, ARM_SMCCC_HV_PV_VCPU_STATE_INIT);
+> +
+> +       if (ret)
+> +               pr_warn("Unable to ARM_SMCCC_HV_PV_STATE_INIT\n");
+> +       return ret;
+> +}
+> +
+> +static int vcpu_state_release(unsigned int cpu)
+> +{
+> +       int ret = __pv_vcpu_state_hook(cpu, ARM_SMCCC_HV_PV_VCPU_STATE_RELEASE);
+> +
+> +       if (ret)
+> +               pr_warn("Unable to ARM_SMCCC_HV_PV_STATE_RELEASE\n");
+> +       return ret;
+> +}
+> +
+> +static int pv_vcpu_state_register_hooks(void)
+> +{
+> +       int ret;
+> +
+> +       ret = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN,
+> +                               "hypervisor/arm/pvstate:starting",
+> +                               vcpu_state_init,
+> +                               vcpu_state_release);
+> +       if (ret < 0)
+> +               pr_warn("Failed to register CPU hooks\n");
+> +       return 0;
+> +}
+> +
+> +int __init pv_vcpu_state_init(void)
+> +{
+> +       int ret;
+> +
+> +       if (!has_pv_vcpu_state())
+> +               return 0;
+> +
+> +       ret = pv_vcpu_state_register_hooks();
+> +       if (ret)
+> +               return ret;
+> +
+> +       static_call_update(pv_vcpu_is_preempted, __vcpu_is_preempted);
+> +       static_key_slow_inc(&pv_vcpu_is_preempted_enabled);
+
+I think this static key inc is also stale.
+
+thanks,
+
+-Joel
