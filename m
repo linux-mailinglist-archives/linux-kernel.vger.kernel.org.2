@@ -2,125 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E38753C2540
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B28783C2543
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232018AbhGINwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 09:52:23 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:55027 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231454AbhGINwW (ORCPT
+        id S232083AbhGINxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 09:53:01 -0400
+Received: from mail-wr1-f44.google.com ([209.85.221.44]:34636 "EHLO
+        mail-wr1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231454AbhGINxA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 09:52:22 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R271e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UfDrXrP_1625838575;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UfDrXrP_1625838575)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 09 Jul 2021 21:49:36 +0800
-Date:   Fri, 9 Jul 2021 21:49:35 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable <stable@vger.kernel.org>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Nick Terrell <terrelln@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [linux-stable-rc:linux-5.4.y 7045/7049] mipsel-linux-ld:
- decompress.c:undefined reference to `memmove'
-Message-ID: <YOhT78jt3rkCmudH@B-P7TQMD6M-0146.local>
-References: <202107070120.6dOj1kB7-lkp@intel.com>
- <YOfjmCT6n61Yidvp@B-P7TQMD6M-0146.local>
- <YOf4yZIld6L6XP13@B-P7TQMD6M-0146.local>
- <YOglcE85xuwfD7It@kroah.com>
+        Fri, 9 Jul 2021 09:53:00 -0400
+Received: by mail-wr1-f44.google.com with SMTP id p8so12288720wrr.1;
+        Fri, 09 Jul 2021 06:50:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GoDqQzDQbxqFmqbu69TknlhRgwp/b+vsLpDJzZkaLpI=;
+        b=A7u/m/LMbrIXNThlyol64Vsn/TgD/P73G3UBPGZ981KTBK+fNByDp/tre4HLU1cBla
+         T6zjLLyZLuB5OuFVcOxs/14QJF2ezPzoFI8t0r478NSkgsuaVuqZ9CT7lJmySowoxM9x
+         yyf7ur2tjxFQAaeeINmXfqJtL4x61i42rCQFFRW/ogy+jRXW2HGcj6gE0gA8Uc8c2rws
+         Dx03anX0kXN5E9E32Oo20AqM+eRm0L9r5uaN0ZRFrnJV0o5YAdifIF2snIokxM/2p76J
+         lKNHh5TCVso4XhyegPY/TxSv25r7Swmphd1M4bY/0eqi2K3m3e5dSX1flv/0L0E/Yq9c
+         tO6w==
+X-Gm-Message-State: AOAM532L45xRDRn1I4LAUIOJ7bCp825ayw43ZNFAQmJnS52RLAUi7VGe
+        x6A2hEHXjJSIdCGqr2ZEPbU=
+X-Google-Smtp-Source: ABdhPJzqIo3dbkRJ9yXT6zzK0Z3dgsbYWCZD7236whK5CFs6O9bGHzd+llyNLK5mKQUsA9bpaYQxYg==
+X-Received: by 2002:a5d:6652:: with SMTP id f18mr16659403wrw.235.1625838615682;
+        Fri, 09 Jul 2021 06:50:15 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id g3sm5416303wrv.64.2021.07.09.06.50.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Jul 2021 06:50:15 -0700 (PDT)
+Date:   Fri, 9 Jul 2021 13:50:13 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        kumarpraveen@linux.microsoft.com, pasha.tatashin@soleen.com,
+        Jonathan Corbet <corbet@lwn.net>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Lillian Grassin-Drake <ligrassi@microsoft.com>,
+        Muminul Islam <muislam@microsoft.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Subject: Re: [RFC v1 7/8] mshv: implement in-kernel device framework
+Message-ID: <20210709135013.t5axinjmufotpylf@liuwe-devbox-debian-v2>
+References: <20210709114339.3467637-1-wei.liu@kernel.org>
+ <20210709114339.3467637-8-wei.liu@kernel.org>
+ <YOhIzJVPN9SwoRK0@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YOglcE85xuwfD7It@kroah.com>
+In-Reply-To: <YOhIzJVPN9SwoRK0@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 09, 2021 at 12:31:12PM +0200, Greg Kroah-Hartman wrote:
-> On Fri, Jul 09, 2021 at 03:20:41PM +0800, Gao Xiang wrote:
-> > Hi Greg, stable all,
-> > 
-> > On Fri, Jul 09, 2021 at 01:50:16PM +0800, Gao Xiang wrote:
-> > > On Wed, Jul 07, 2021 at 01:15:28AM +0800, kernel test robot wrote:
-> > > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> > > > head:   3909e2374335335c9504467caabc906d3f7487e4
-> > > > commit: defcc2b5e54a4724fb5733f802edf5dd596018b6 [7045/7049] lib/lz4: explicitly support in-place decompression
-> > > > config: mips-randconfig-r036-20210706 (attached as .config)
-> > > > compiler: mipsel-linux-gcc (GCC) 9.3.0
-> > > > reproduce (this is a W=1 build):
-> > > >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> > > >         chmod +x ~/bin/make.cross
-> > > >         # https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?id=defcc2b5e54a4724fb5733f802edf5dd596018b6
-> > > >         git remote add linux-stable-rc https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-> > > >         git fetch --no-tags linux-stable-rc linux-5.4.y
-> > > >         git checkout defcc2b5e54a4724fb5733f802edf5dd596018b6
-> > > >         # save the attached .config to linux build tree
-> > > >         mkdir build_dir
-> > > >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross O=build_dir ARCH=mips SHELL=/bin/bash
-> > > > 
-> > > > If you fix the issue, kindly add following tag as appropriate
-> > > > Reported-by: kernel test robot <lkp@intel.com>
-> > > 
-> > > Which is weird, does the preboot environment miss memmove() on mipsel?
-> > > Just a guess, I may look into that myself later...
-> > > 
-> > 
-> > After manually checking, I found memmove() for the mips preboot environment
-> > was incidentally introduced by commit a510b616131f ("MIPS: Add support for
-> > ZSTD-compressed kernels") which wasn't included in v5.4, but included in
-> > v5.10 as below (so v5.10.y is fine):
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/arch/mips/boot/compressed?h=v5.10&id=a510b616131f85215ba156ed67e5ed1c0701f80f
-> > 
-> > And when I applied the following patch partially from the original
-> > commit, the compile error with the command lines mentioned above was gone:
-> > 
-> > diff --git a/arch/mips/boot/compressed/string.c b/arch/mips/boot/compressed/string.c
-> > index 43beecc3587c..e9ab7ea592ba 100644
-> > --- a/arch/mips/boot/compressed/string.c
-> > +++ b/arch/mips/boot/compressed/string.c
-> > @@ -27,3 +27,19 @@ void *memset(void *s, int c, size_t n)
-> >  		ss[i] = c;
-> >  	return s;
-> >  }
-> > +
-> > +void * __weak memmove(void *dest, const void *src, size_t n)
+On Fri, Jul 09, 2021 at 02:02:04PM +0100, Matthew Wilcox wrote:
+> On Fri, Jul 09, 2021 at 11:43:38AM +0000, Wei Liu wrote:
+> > +static long
+> > +mshv_partition_ioctl_create_device(struct mshv_partition *partition,
+> > +	void __user *user_args)
 > > +{
-> > +	unsigned int i;
-> > +	const char *s = src;
-> > +	char *d = dest;
-> > +
-> > +	if ((uintptr_t)dest < (uintptr_t)src) {
-> > +		for (i = 0; i < n; i++)
-> > +			d[i] = s[i];
-> > +	} else {
-> > +		for (i = n; i > 0; i--)
-> > +			d[i - 1] = s[i - 1];
+> [...]
+> > +	mshv_partition_get(partition);
+> > +	r = anon_inode_getfd(ops->name, &mshv_device_fops, dev, O_RDWR | O_CLOEXEC);
+> > +	if (r < 0) {
+> > +		mshv_partition_put_no_destroy(partition);
+> > +		list_del(&dev->partition_node);
+> > +		ops->destroy(dev);
+> > +		goto out;
 > > +	}
-> > +	return dest;
-> > +}
-> > 
-> > How to backport such commit partially to the v5.4.y stable kernel?
+> > +
+> > +	cd->fd = r;
+> > +	r = 0;
 > 
-> Please submit it in a format which we can apply it.
+> Why return the fd in memory instead of returning the fd as the return
+> value from the ioctl?
+> 
+> > +	if (copy_to_user(user_args, &tmp, sizeof(tmp))) {
+> > +		r = -EFAULT;
+> > +		goto out;
+> > +	}
+> 
+> ... this could then disappear.
 
-I've sent out a patch (although not sure if the exact format like this):
-https://lore.kernel.org/r/20210709132408.174206-1-hsiangkao@linux.alibaba.com/
+Thanks for your comment, Matthew.
+
+This is intentionally because I didn't want to deviate from KVM's API.
+The fewer differences the better.
+
+Wei.
+
 
 > 
-> > ... Also, it would be better to check other mips compile combinations
-> > automatically since it's hard for me to check all such combinations
-> > one-by-one...
-> 
-> That's what kernelci is for, can you use that?
-
-I'm not sure how to use kernelci myself, maybe I missed something...
-
-Thanks,
-Gao Xiang
-
-> 
-> thanks,
-> 
-> greg k-h
