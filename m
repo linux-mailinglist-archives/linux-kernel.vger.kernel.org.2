@@ -2,209 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBA683C256C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B31C03C256E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232211AbhGIOAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 10:00:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34710 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232083AbhGIOAb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 10:00:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04FE5613C1;
-        Fri,  9 Jul 2021 13:57:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625839068;
-        bh=V7HJ8fMGt1R/rfzieoKwkAhPUtMkuM6FOH/wYJYnCGc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XwpnxKqaT9YJKkcKm1jsUKDwbkkL2mCvSU3FQ1bmEaOGeIJ9altd1QIzjJPY1CTSj
-         vtUQRqqUOnoIQ5Yu0ozbPas0SclC5rCBQERtqUu4ZQ+ORP9BOW9XcGOexsPq+52g5X
-         ry+65t2UbTDMsP2DweTu2GIHf9tmIRDo4Pf5GtifAY4q7GwZUM/jUtTau17COQNScq
-         hfjXnEMsxNeEhjj20dyJlxD2WC2DjFAmJ4d7vIL/FKccgIFwRlFI0L7Q+YJ/syAjiC
-         /N+Qj/HP473sIrpXnoVGguxvEGFl/Jvn3p5XTke8AieF4xJ6rcjKXg+xoeGDwllaWd
-         lqpZ5xOmVRGxg==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1m1r0i-0004lI-N6; Fri, 09 Jul 2021 15:57:44 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: [PATCH v3 2/2] dt-bindings: PCI: kirin-pcie.txt: convert it to yaml
-Date:   Fri,  9 Jul 2021 15:57:43 +0200
-Message-Id: <29d96d1b7fc27efd1437ba0cd73e21dfd354ac23.1625838920.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1625838920.git.mchehab+huawei@kernel.org>
-References: <cover.1625838920.git.mchehab+huawei@kernel.org>
+        id S231775AbhGIOAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 10:00:54 -0400
+Received: from mail-vk1-f170.google.com ([209.85.221.170]:42977 "EHLO
+        mail-vk1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231756AbhGIOAv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 10:00:51 -0400
+Received: by mail-vk1-f170.google.com with SMTP id u24so2164083vkn.9;
+        Fri, 09 Jul 2021 06:58:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OqwrPtiUbUVxHTFg3pSH8MqoUSojXNob/7BriSdkrf8=;
+        b=gnRRvKrPWANHwC1xE+Axg63VL4BUvwmQPhvaMDqYRvYZji+5xnilfJOUV8hX2pKCK7
+         NidO0XowM0rwN5fw/9aIYQjcTc4ZlbEnm5wkqKFm1vM8B09EYeSC82g52OYDryhIhHLp
+         jIJg0+wkLzPWfMa5/PN/kmOZJwTHRfU72teR4AfXpLtyiFWM8zwpPYyN7QOjLgz7E/0m
+         aeog13Sezcqm2HbAJLTjpc6JjswIDVUYVejicZnffuQN2xETplrQPMpbCvGZQwHNowaN
+         SK0B14ZX7W20iHzUQdQkTTjOKG0mcad74R6XmSghX/7NUBOwDpQkFNQXn8x0X3bafl09
+         37Tw==
+X-Gm-Message-State: AOAM533cqKjjCZ4QRXOshiJTSfTmPnqyAI9dCasM2T1fowqfhe8hi7Fu
+        czYqosN2JAFOsyP1YH3ubhPkteQWUhuea0pXRN8=
+X-Google-Smtp-Source: ABdhPJyKpb/CWPGeZyz112QJCtJJ35km7e2llXNdGdPmlumQm3JOCAyb/oib9Guj7mXMYqb2sdN+wgZU9UyiRAr8mA4=
+X-Received: by 2002:a05:6122:1207:: with SMTP id v7mr32752631vkc.2.1625839087123;
+ Fri, 09 Jul 2021 06:58:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <20210709125611.135920-1-ulf.hansson@linaro.org>
+ <CAMuHMdU0AVFVb3tXW4wkEibSx50nzYKW1GopgZPfKp1SS7Mf1g@mail.gmail.com>
+ <CAPDyKFpzw0mQPFs-jyMX=T6WpZ+vFqrWmoKUWD+9wW8LWqyHuA@mail.gmail.com>
+ <CAMuHMdWcvAeeif6HwBMrQUs2z+jKcfY1DuKRYeyB+GTkiXGjSw@mail.gmail.com> <CAPDyKFo8SCbmJXQJJ4OR8_Tg=+YdK76k2Sg=KcO3t7ve2zzaHw@mail.gmail.com>
+In-Reply-To: <CAPDyKFo8SCbmJXQJJ4OR8_Tg=+YdK76k2Sg=KcO3t7ve2zzaHw@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 9 Jul 2021 15:57:56 +0200
+Message-ID: <CAMuHMdW8f0YGwNBAzwG65OE+Wq59SqUFmHhDPE0Nju7OpDzLYA@mail.gmail.com>
+Subject: Re: [PATCH] PM: domains: Don't attach a device to genpd that
+ corresponds to a provider
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the file into a JSON description at the yaml format.
+Hi Ulf,
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- .../bindings/pci/hisilicon,kirin-pcie.yaml    | 79 +++++++++++++++++++
- .../devicetree/bindings/pci/kirin-pcie.txt    | 41 ----------
- MAINTAINERS                                   |  2 +-
- 3 files changed, 80 insertions(+), 42 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
- delete mode 100644 Documentation/devicetree/bindings/pci/kirin-pcie.txt
+On Fri, Jul 9, 2021 at 3:48 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> On Fri, 9 Jul 2021 at 15:35, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Fri, Jul 9, 2021 at 3:23 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > > On Fri, 9 Jul 2021 at 15:07, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > On Fri, Jul 9, 2021 at 2:56 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > > > > According to the common power domain DT bindings, a power domain provider
+> > > > > must have a "#power-domain-cells" property in its OF node. Additionally, if
+> > > > > a provider has a "power-domains" property, it means that it has a parent
+> > > > > domain.
+> > > >
+> > > > OK.
+> > > >
+> > > > > It has turned out that some OF nodes that represents a genpd provider may
+> > > > > also be compatible with a regular platform device. This leads to, during
+> > > > > probe, genpd_dev_pm_attach(), genpd_dev_pm_attach_by_name() and
+> > > > > genpd_dev_pm_attach_by_id() tries to attach the corresponding struct device
+> > > > > to the genpd provider's parent domain, which is wrong. Instead the genpd
+> > > >
+> > > > Why is that wrong?
+> > >
+> > > It may lead to that the struct device that corresponds to a genpd
+> > > provider may be attached to the parent domain. In other words, the
+> > > parent domain will not only be controlled by a child domain
+> > > (corresponding to the provider), but also through the provider's
+> > > struct device. As far as I can tell, this has never been the intent
+> > > for how things should work in genpd.
+> >
+> > Ah, you're worried about the case where the subdomain is a child of
+> > the parent domain, but the actual subdomain controller (represented
+> > by the platform device) isn't?
+>
+> Well, even if the platform device represents a subdomain controller,
+> should it really be attached to the parent domain?
 
-diff --git a/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml b/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
-new file mode 100644
-index 000000000000..66271419cd6e
---- /dev/null
-+++ b/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
-@@ -0,0 +1,79 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/pci/hisilicon,kirin-pcie.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: HiSilicon Kirin SoCs PCIe host DT description
-+
-+maintainers:
-+  - Xiaowei Song <songxiaowei@hisilicon.com>
-+  - Binghui Wang <wangbinghui@hisilicon.com>
-+
-+description: |
-+  Kirin PCIe host controller is based on the Synopsys DesignWare PCI core.
-+  It shares common functions with the PCIe DesignWare core driver and
-+  inherits common properties defined in
-+  Documentation/devicetree/bindings/pci/designware,pcie.yaml.
-+
-+allOf:
-+  - $ref: /schemas/pci/pci-bus.yaml#
-+
-+properties:
-+  compatible:
-+    const: hisilicon,kirin960-pcie
-+    const: hisilicon,kirin970-pcie
-+
-+  reg:
-+    description: |
-+      Should contain rc_dbi, apb, config registers location and length.
-+
-+  reg-names:
-+    items:
-+      - const: dbi          # controller configuration registers
-+      - const: apb          # apb Ctrl register defined by Kirin
-+      - const: config       # PCIe configuration space registers
-+
-+  "#address-cells":
-+    const: 3
-+
-+  "#size-cells":
-+    const: 2
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+    soc {
-+      #address-cells = <2>;
-+      #size-cells = <2>;
-+
-+      pcie: pcie@f4000000 {
-+        compatible = "hisilicon,kirin960-pcie";
-+        reg = <0x0 0xf4000000 0x0 0x1000>,
-+              <0x0 0xff3fe000 0x0 0x1000>,
-+              <0x0 0xf4000000 0 0x2000>;
-+        reg-names = "dbi","apb", "config";
-+        bus-range = <0x0  0x1>;
-+        #address-cells = <3>;
-+        #size-cells = <2>;
-+        device_type = "pci";
-+        ranges = <0x02000000 0x0 0x00000000 0x0 0xf5000000 0x0 0x2000000>;
-+        num-lanes = <1>;
-+        #interrupt-cells = <1>;
-+        interrupts = <0 283 4>;
-+        interrupt-names = "msi";
-+        interrupt-map-mask = <0xf800 0 0 7>;
-+        interrupt-map = <0x0 0 0 1 &gic GIC_SPI 282 IRQ_TYPE_LEVEL_HIGH>,
-+                        <0x0 0 0 2 &gic GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>,
-+                        <0x0 0 0 3 &gic GIC_SPI 284 IRQ_TYPE_LEVEL_HIGH>,
-+                        <0x0 0 0 4 &gic GIC_SPI 285 IRQ_TYPE_LEVEL_HIGH>;
-+      };
-+    };
-diff --git a/Documentation/devicetree/bindings/pci/kirin-pcie.txt b/Documentation/devicetree/bindings/pci/kirin-pcie.txt
-deleted file mode 100644
-index 3a36eeb1c434..000000000000
---- a/Documentation/devicetree/bindings/pci/kirin-pcie.txt
-+++ /dev/null
-@@ -1,41 +0,0 @@
--HiSilicon Kirin SoCs PCIe host DT description
--
--Kirin PCIe host controller is based on the Synopsys DesignWare PCI core.
--It shares common functions with the PCIe DesignWare core driver and
--inherits common properties defined in
--Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml.
--
--Additional properties are described here:
--
--Required properties
--- compatible:
--	"hisilicon,kirin960-pcie"
--	"hisilicon,kirin970-pcie"
--- reg: Should contain rc_dbi, apb, config registers location and length.
--- reg-names: Must include the following entries:
--  "dbi": controller configuration registers;
--  "apb": apb Ctrl register defined by Kirin;
--  "config": PCIe configuration space registers.
--
--Optional properties:
--
--Example based on kirin960:
--
--	pcie@f4000000 {
--		compatible = "hisilicon,kirin960-pcie";
--		reg = <0x0 0xf4000000 0x0 0x1000>, <0x0 0xff3fe000 0x0 0x1000>,
--		      <0x0 0xF4000000 0 0x2000>;
--		reg-names = "dbi","apb", "config";
--		bus-range = <0x0  0x1>;
--		#address-cells = <3>;
--		#size-cells = <2>;
--		device_type = "pci";
--		ranges = <0x02000000 0x0 0x00000000 0x0 0xf5000000 0x0 0x2000000>;
--		num-lanes = <1>;
--		#interrupt-cells = <1>;
--		interrupt-map-mask = <0xf800 0 0 7>;
--		interrupt-map = <0x0 0 0 1 &gic 0 0 0  282 4>,
--				<0x0 0 0 2 &gic 0 0 0  283 4>,
--				<0x0 0 0 3 &gic 0 0 0  284 4>,
--				<0x0 0 0 4 &gic 0 0 0  285 4>;
--	};
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 55ca4cac17b0..d5a592db84d9 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14369,7 +14369,7 @@ M:	Xiaowei Song <songxiaowei@hisilicon.com>
- M:	Binghui Wang <wangbinghui@hisilicon.com>
- L:	linux-pci@vger.kernel.org
- S:	Maintained
--F:	Documentation/devicetree/bindings/pci/kirin-pcie.txt
-+F:	Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
- F:	drivers/pci/controller/dwc/pcie-kirin.c
- 
- PCIE DRIVER FOR HISILICON STB
+That's what the presence of the "power-domains" property means,
+isn't it?
+If the subdomain controller itself is not part of the parent power
+domain, there should not be a "power-domains" property.  So perhaps
+we need a new property ("power-domain-parent"?) to indicate what is
+the parent domain for the subdomains in this case?
+
+> In any case, it means that the provider needs to manage runtime PM,
+> etc for its struct device to not prevent the parent domain from being
+> powered off.
+
+Shouldn't all drivers for devices that can be somewhere in a PM Domain
+hierarchy do that anyway? :-)  See e.g. commit 3a611e26e958b037
+("net/smsc911x: Add minimal runtime PM support").
+
+If "simple-bus" would do that, we could get rid of "simple-pm-bus"...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.31.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
