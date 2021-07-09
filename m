@@ -2,108 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B26B3C1DBB
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 05:09:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 315DE3C1DBF
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 05:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230513AbhGIDMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 23:12:24 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:41169 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230347AbhGIDMX (ORCPT
+        id S231142AbhGIDNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 23:13:22 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:53909 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230526AbhGIDNU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 23:12:23 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0UfAZH.L_1625800178;
-Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0UfAZH.L_1625800178)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 09 Jul 2021 11:09:38 +0800
-Subject: Re: [PATCH] KVM: X86: Also reload the debug registers before
- kvm_x86->run() when the host is using them
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-References: <20210628172632.81029-1-jiangshanlai@gmail.com>
- <46e0aaf1-b7cd-288f-e4be-ac59aa04908f@redhat.com>
-From:   Lai Jiangshan <laijs@linux.alibaba.com>
-Message-ID: <c79d0167-7034-ebe2-97b7-58354d81323d@linux.alibaba.com>
-Date:   Fri, 9 Jul 2021 11:09:38 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        Thu, 8 Jul 2021 23:13:20 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1625800237; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=gNgKFi+Rx9humaRZZCWImHDoeRjYG58E4EAJrmsAsoY=;
+ b=oxHKm7S8aEVtkYtWuFKYTszLTidkDHdffpx5jW5fmLg+ULsEkTV1VSXMFI9HA2PPlk+1rnHr
+ 8RDqEkwxj3iexBxgZecj53YUxNkOWwpaJvWL5xKZFa6Vyld50gGXcaLXggqVb9Zr8zXew4kt
+ 7oLvsMdi6pkRZBpJFGAoMRgnGLY=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 60e7be1501dd9a94317d7f9f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 09 Jul 2021 03:10:13
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D5B1EC4323A; Fri,  9 Jul 2021 03:10:13 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0A96CC433D3;
+        Fri,  9 Jul 2021 03:10:12 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <46e0aaf1-b7cd-288f-e4be-ac59aa04908f@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 08 Jul 2021 20:10:12 -0700
+From:   abhinavk@codeaurora.org
+To:     Souptick Joarder <jrdr.linux@gmail.com>
+Cc:     robdclark@gmail.com, sean@poorly.run, airlied@linux.ie,
+        daniel@ffwll.ch, khsieh@codeaurora.org, swboyd@chromium.org,
+        dmitry.baryshkov@linaro.org, chandanu@codeaurora.org,
+        tanmay@codeaurora.org, kernel test robot <lkp@intel.com>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org
+Subject: Re: [Freedreno] [PATCH] drm/msm/dp: Remove unused variable
+In-Reply-To: <20210709024834.29680-1-jrdr.linux@gmail.com>
+References: <20210709024834.29680-1-jrdr.linux@gmail.com>
+Message-ID: <63f89dfce0b33d16c3f774e2a1962b03@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/7/9 00:48, Paolo Bonzini wrote:
-> On 28/06/21 19:26, Lai Jiangshan wrote:
->> From: Lai Jiangshan <laijs@linux.alibaba.com>
->>
->> When the host is using debug registers but the guest is not using them
->> nor is the guest in guest-debug state, the kvm code does not reset
->> the host debug registers before kvm_x86->run().  Rather, it relies on
->> the hardware vmentry instruction to automatically reset the dr7 registers
->> which ensures that the host breakpoints do not affect the guest.
->>
->> But there are still problems:
->>     o The addresses of the host breakpoints can leak into the guest
->>       and the guest may use these information to attack the host.
+On 2021-07-08 19:48, Souptick Joarder wrote:
+> Kernel test roobot throws below warning ->
 > 
-> I don't think this is true, because DRn reads would exit (if they don't, switch_db_regs would be nonzero).  But 
-> otherwise it makes sense to do at least the DR7 write, and we might as well do all of them.
-
-Ahh.... you are right.
-
+> drivers/gpu/drm/msm/dp/dp_display.c:1017:21:
+> warning: variable 'drm' set but not used [-Wunused-but-set-variable]
 > 
->>     o It violates the non-instrumentable nature around VM entry and
->>       exit.  For example, when a host breakpoint is set on
->>       vcpu->arch.cr2, #DB will hit aftr kvm_guest_enter_irqoff().
->>
->> Beside the problems, the logic is not consistent either. When the guest
->> debug registers are active, the host breakpoints are reset before
->> kvm_x86->run(). But when the guest debug registers are inactive, the
->> host breakpoints are delayed to be disabled.  The host tracing tools may
->> see different results depending on there is any guest running or not.
+> Removed unused variable drm.
 > 
-> More precisely, the host tracing tools may see different results depending on what the guest is doing.
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
+> ---
+>  drivers/gpu/drm/msm/dp/dp_display.c | 2 --
+>  1 file changed, 2 deletions(-)
 > 
-> Queued (with fixed commit message), thanks!
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c
+> b/drivers/gpu/drm/msm/dp/dp_display.c
+> index 051c1be1de7e..d42635a86d20 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> @@ -1014,10 +1014,8 @@ int dp_display_get_test_bpp(struct msm_dp *dp)
+>  void msm_dp_snapshot(struct msm_disp_state *disp_state, struct msm_dp 
+> *dp)
+>  {
+>  	struct dp_display_private *dp_display;
+> -	struct drm_device *drm;
 > 
-> Paolo
-
-I just noticed that emulation.c fails to emulate with DBn.
-Is there any problem around it?
-
-For code breakpoint, if the instruction didn't cause vm-exit,
-(for example, the 2nd instruction when kvm emulates instructions
-back to back) emulation.c fails to emulate with DBn.
-
-For code breakpoint, if the instruction just caused vm-exit.
-It is difficult to analyze this case due to the complex priorities
-between vectored events and fault-like vm-exit.
-Anyway, if it is an instruction that vm-exit has priority over #DB,
-emulation.c fails to emulate with DBn.
-
-For data breakpoint, a #DB must be delivered to guest or to VMM (when
-guest-debug) after the instruction. But emulation.c doesn't do so.
-
-And the existence of both of effective DBn (guest debug) and guest DBn
-complicates the problem when we try to emulate them.
-
-Thanks.
-Lai.
-
-
+>  	dp_display = container_of(dp, struct dp_display_private, dp_display);
+> -	drm = dp->drm_dev;
+> 
+>  	/*
+>  	 * if we are reading registers we need the link clocks to be on
