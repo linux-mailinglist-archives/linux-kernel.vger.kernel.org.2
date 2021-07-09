@@ -2,106 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 278003C2344
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 14:06:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D423C2351
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 14:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231324AbhGIMIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 08:08:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230404AbhGIMIh (ORCPT
+        id S231156AbhGIMTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 08:19:12 -0400
+Received: from lucky1.263xmail.com ([211.157.147.130]:52556 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230209AbhGIMTL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 08:08:37 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D779C0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 05:05:53 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id f13so22675342lfh.6
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 05:05:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HC3TFVQETt12BDyl6iqYoB6JjOT22n0xQEi68NzER/g=;
-        b=JDqPMkLoBFDWAiSLbbp0X/e5Rlas72BS6rdCol34Q2vhzGcDTwlajprSXKrPx7K5Ul
-         SwglmConpphoedvpXxkfRbbcG8HOkIFMTjWSpOrKJf9wP5cqIJcpn8FSXBw1TN3Tjjfq
-         uStED7FFYE+Z71LZEfnMMKi/h1jekeLjkU5JFTeF2TP1ixOMmaoIKrh1etQN/3V0+wKT
-         +oQq0P+NonXAaDXdu6L//bIjy6J49pgNCTtn5q6LUbUnOxRTV5m1sFpXJDmICtkDVcoJ
-         mfZ1bYegJf+1FpiofhelbxKmTRtMfCuroik1yJ0qEyRYBWTwSIZTC53rHd4nObvn8Y4h
-         c5mQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HC3TFVQETt12BDyl6iqYoB6JjOT22n0xQEi68NzER/g=;
-        b=ujSn/TWGqitezRWn1sDuWS127rwJmwfh1wSzUIzLDhUZujB74wlMKp3CyZY8sZgt7e
-         B3uNjnunq2r+PJR4a8gU60GRcdNs2kzBRmGV+nCEF6oeoZSjdLoR97DgJ/bBAzpVSGOL
-         3n5ZVRB8chmPHO+vsFGJvFW0YhvIZ7RyTffdRnIfZ8dSiG9usi/ukEAB9kz5GNgUIRvf
-         iTFnLyyKDzEv6ZtIjheIrSmBJLcwzbibh1QViaSLvXW4DQ3trSIXmfJX2VCJ4ixUmP5k
-         Vhkpb9DHcc22KV10k/FNSej4vFvkpE/sWAA469hYjOhBcrKFw2J62du/Cj8YM87dIMME
-         Egjg==
-X-Gm-Message-State: AOAM5329Le2hauh8v41d7ssxQJFHj0Qj7VoaMtSjGiYxVvnsOGUIoGkF
-        QEkxg29m4dw18a7N/x9MxUM=
-X-Google-Smtp-Source: ABdhPJzAegaVvFnJ0lgzhNSBk18tRRuAn1UZGgi0QGaqH00c4Y2Y60YTShTgw+5NWGIpKQod6qkwQA==
-X-Received: by 2002:a19:e05c:: with SMTP id g28mr28826388lfj.299.1625832352025;
-        Fri, 09 Jul 2021 05:05:52 -0700 (PDT)
-Received: from octofox.metropolis ([5.18.185.11])
-        by smtp.gmail.com with ESMTPSA id q15sm583586ljg.126.2021.07.09.05.05.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 05:05:51 -0700 (PDT)
-From:   Max Filippov <jcmvbkbc@gmail.com>
-To:     linux-xtensa@linux-xtensa.org
-Cc:     Chris Zankel <chris@zankel.net>, linux-kernel@vger.kernel.org,
-        Max Filippov <jcmvbkbc@gmail.com>
-Subject: [PATCH] xtensa: add fairness to IRQ handling
-Date:   Fri,  9 Jul 2021 05:05:42 -0700
-Message-Id: <20210709120542.11551-1-jcmvbkbc@gmail.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 9 Jul 2021 08:19:11 -0400
+Received: from localhost (unknown [192.168.167.16])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 2097AD567B;
+        Fri,  9 Jul 2021 20:16:16 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P12363T139709705611008S1625832975658261_;
+        Fri, 09 Jul 2021 20:16:16 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <1edd35a63eca25bd31cf0c404e17181e>
+X-RL-SENDER: hjc@rock-chips.com
+X-SENDER: hjc@rock-chips.com
+X-LOGIN-NAME: hjc@rock-chips.com
+X-FST-TO: hjc@rock-chips.com
+X-RCPT-COUNT: 11
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Sandy Huang <hjc@rock-chips.com>
+To:     hjc@rock-chips.com, dri-devel@lists.freedesktop.org,
+        heiko@sntech.de,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     linux-arm-kernel@lists.infradead.org, ben.davis@arm.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1] drm: drm_fourcc: add NV20 and NV30 format
+Date:   Fri,  9 Jul 2021 20:15:50 +0800
+Message-Id: <20210709121550.17958-1-hjc@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Track which IRQs have been served at each level to make sure that no IRQ
-is served more than once while other IRQs at the same level are pending.
+DRM_FORMAT_NV20 and DRM_FORMAT_NV30 is a 2 plane format suitable for
+linear layouts, this two format is similar to NV15 has no padding
+between component, but NV15 is 4:2:0 sub-sampling, NV20 is 4:2:2
+sub-sampling and NV30 is no-sampling.
 
-Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+YYYY = UVUV = 4 * 10 bits = 40 bits = 5 bytes
+
+The '20' and '30' suffix refers to the optimum effective bits per
+pixel which is achieved.
+
+Signed-off-by: Sandy Huang <hjc@rock-chips.com>
+Change-Id: I84da7e03125e675f274c6307128b4b7b307767cc
 ---
- arch/xtensa/kernel/traps.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/gpu/drm/drm_fourcc.c  | 8 ++++++++
+ include/uapi/drm/drm_fourcc.h | 2 ++
+ 2 files changed, 10 insertions(+)
 
-diff --git a/arch/xtensa/kernel/traps.c b/arch/xtensa/kernel/traps.c
-index efc3a29cde80..874b6efc6fb3 100644
---- a/arch/xtensa/kernel/traps.c
-+++ b/arch/xtensa/kernel/traps.c
-@@ -268,6 +268,7 @@ void do_interrupt(struct pt_regs *regs)
- 		XCHAL_INTLEVEL7_MASK,
- 	};
- 	struct pt_regs *old_regs;
-+	unsigned unhandled = ~0u;
+diff --git a/drivers/gpu/drm/drm_fourcc.c b/drivers/gpu/drm/drm_fourcc.c
+index eda832f9200d..9498e9d466fb 100644
+--- a/drivers/gpu/drm/drm_fourcc.c
++++ b/drivers/gpu/drm/drm_fourcc.c
+@@ -258,6 +258,14 @@ const struct drm_format_info *__drm_format_info(u32 format)
+ 		  .num_planes = 2, .char_per_block = { 5, 5, 0 },
+ 		  .block_w = { 4, 2, 0 }, .block_h = { 1, 1, 0 }, .hsub = 2,
+ 		  .vsub = 2, .is_yuv = true },
++		{ .format = DRM_FORMAT_NV20,		.depth = 0,
++		  .num_planes = 2, .char_per_block = { 5, 5, 0 },
++		  .block_w = { 4, 2, 0 }, .block_h = { 1, 1, 0 }, .hsub = 2,
++		  .vsub = 1, .is_yuv = true },
++		{ .format = DRM_FORMAT_NV30,		.depth = 0,
++		  .num_planes = 2, .char_per_block = { 5, 5, 0 },
++		  .block_w = { 4, 2, 0 }, .block_h = { 1, 1, 0 }, .hsub = 1,
++		  .vsub = 1, .is_yuv = true },
+ 		{ .format = DRM_FORMAT_Q410,		.depth = 0,
+ 		  .num_planes = 3, .char_per_block = { 2, 2, 2 },
+ 		  .block_w = { 1, 1, 1 }, .block_h = { 1, 1, 1 }, .hsub = 0,
+diff --git a/include/uapi/drm/drm_fourcc.h b/include/uapi/drm/drm_fourcc.h
+index f7156322aba5..a30bb7ef7632 100644
+--- a/include/uapi/drm/drm_fourcc.h
++++ b/include/uapi/drm/drm_fourcc.h
+@@ -279,6 +279,8 @@ extern "C" {
+  * index 1 = Cr:Cb plane, [39:0] Cr1:Cb1:Cr0:Cb0 little endian
+  */
+ #define DRM_FORMAT_NV15		fourcc_code('N', 'V', '1', '5') /* 2x2 subsampled Cr:Cb plane */
++#define DRM_FORMAT_NV20		fourcc_code('N', 'V', '2', '0') /* 2x1 subsampled Cr:Cb plane */
++#define DRM_FORMAT_NV30		fourcc_code('N', 'V', '3', '0') /* non-subsampled Cr:Cb plane */
  
- 	trace_hardirqs_off();
- 
-@@ -283,6 +284,10 @@ void do_interrupt(struct pt_regs *regs)
- 		for (level = LOCKLEVEL; level > 0; --level) {
- 			if (int_at_level & int_level_mask[level]) {
- 				int_at_level &= int_level_mask[level];
-+				if (int_at_level & unhandled)
-+					int_at_level &= unhandled;
-+				else
-+					unhandled |= int_level_mask[level];
- 				break;
- 			}
- 		}
-@@ -290,6 +295,8 @@ void do_interrupt(struct pt_regs *regs)
- 		if (level == 0)
- 			break;
- 
-+		/* clear lowest pending irq in the unhandled mask */
-+		unhandled ^= (int_at_level & -int_at_level);
- 		do_IRQ(__ffs(int_at_level), regs);
- 	}
- 
+ /*
+  * 2 plane YCbCr MSB aligned
 -- 
-2.20.1
+2.17.1
+
+
 
