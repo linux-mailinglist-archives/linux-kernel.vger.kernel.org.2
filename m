@@ -2,114 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347B03C298A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 21:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3EC93C298E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 21:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231255AbhGITYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 15:24:43 -0400
-Received: from foss.arm.com ([217.140.110.172]:58602 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229552AbhGITYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 15:24:41 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3396531B;
-        Fri,  9 Jul 2021 12:21:57 -0700 (PDT)
-Received: from [10.57.33.207] (unknown [10.57.33.207])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B38DD3F66F;
-        Fri,  9 Jul 2021 12:21:52 -0700 (PDT)
-Subject: Re: [PATCH v2 0/3] iommu: Enable non-strict DMA on QCom SD/MMC
-To:     Joerg Roedel <joro@8bytes.org>,
-        Doug Anderson <dianders@chromium.org>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-pci@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Rajat Jain <rajatja@google.com>, Will Deacon <will@kernel.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Jonathan Corbet <corbet@lwn.net>, quic_c_gdjako@quicinc.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Sonny Rao <sonnyrao@chromium.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>
-References: <20210624171759.4125094-1-dianders@chromium.org>
- <YNXXwvuErVnlHt+s@8bytes.org>
- <CAD=FV=UFxZH7g8gH5+M=Fv4Y-e1bsLkNkPGJhNwhvVychcGQcQ@mail.gmail.com>
- <CAD=FV=W=HmgH3O3z+nThWL6U+X4Oh37COe-uTzVB9SanP2n86w@mail.gmail.com>
- <YOaymBHc4g2cIfRn@8bytes.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <0a2042ff-1604-d32d-35a7-d4df8f591459@arm.com>
-Date:   Fri, 9 Jul 2021 20:21:46 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <YOaymBHc4g2cIfRn@8bytes.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+        id S230082AbhGITZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 15:25:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhGITZg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 15:25:36 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66230C0613DD;
+        Fri,  9 Jul 2021 12:22:51 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id t19so10400280qkg.7;
+        Fri, 09 Jul 2021 12:22:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:content-transfer-encoding:date:message-id:cc:subject
+         :from:to:references:in-reply-to;
+        bh=vQkGzinhkqT/iZv4cDuuh/s29v6DWdWXkPVZxeAxu60=;
+        b=Bm0yOPvHvaihbWpTL3H1l+ncNdcvgWc4HLdCWsrd/V09y4anp3ctzRfTDNaMa5yz60
+         24ZGQLQVCFbYmj1Qg/jlkTrxjdAzafdpzNMro9XGXCVRNLvjKC5Qs7OOAnaR3W1SczDC
+         +Dz4I4u9MJq2FMdkVxcTyj2s+T76og+T6HGuRHxRQWiB6OGMt65syWouXHWFUPnI6kVJ
+         MjjSunieobs3Je53tubo1UvhKsCdxH4N3hQMBYM2NfzYja7l3UQ7nMfscgfrgT39rYQl
+         BdXCg6mtIjfHLGStXTe+53AD8nk87apX37lrtA2xG2vm5bDP20+e1Yb2GC/ES5JGJ5LK
+         CQQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding:date
+         :message-id:cc:subject:from:to:references:in-reply-to;
+        bh=vQkGzinhkqT/iZv4cDuuh/s29v6DWdWXkPVZxeAxu60=;
+        b=Yy3IwEclB+MKed7mdt8v/plL6XWY3Gt1DQbt/mteQuWn6MBkZudA3CdDA8zpRexs9W
+         DYMyVcDFCeblBDU8r1pIuJNSz4XkfJU87PK7OeZajdbRSPiSRmZPkcCYEZZr4AgzNOZq
+         j1O0qKXGOzJW4uAqZCPp22jtkFLYjigQxwXhDO2t7qHHkmhnklnLW2eJx2N4HK13VI6o
+         JV3EHMQ1pIWhPGziUzmEKL1SYvmBWOFMhft/nXla1cgbEKNo51F+70eqii6xNu+YyVne
+         O+VkW2ob1Vr6vjlY/8CRfGJJNac00QkR7la2VDf1HRV0NsVHldAUPcsusv1t/0cTC9XU
+         JhnQ==
+X-Gm-Message-State: AOAM5319UQOuiQZ+hlnp6R/HWrIkvCCdNmPcc22PI8aPN5X7DGoRM4li
+        8y8oYu72D8RW0cc47IVTpXw=
+X-Google-Smtp-Source: ABdhPJwBIyu/zhah/lD711nISLAwXF9sBZyt8KUBqq/nMgK5fMnwp05EBd1Sf3hS8EzBjiqSv7EMlw==
+X-Received: by 2002:a37:a402:: with SMTP id n2mr29946484qke.103.1625858570562;
+        Fri, 09 Jul 2021 12:22:50 -0700 (PDT)
+Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
+        by smtp.gmail.com with ESMTPSA id a20sm2905063qkg.44.2021.07.09.12.22.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Jul 2021 12:22:49 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Fri, 09 Jul 2021 15:22:48 -0400
+Message-Id: <CCOURFCFL6YC.1SGV7KHPWGIEI@shaak>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>
+Subject: Re: [PATCH v4 04/10] iio: afe: rescale: reduce risk of integer
+ overflow
+From:   "Liam Beguin" <liambeguin@gmail.com>
+To:     "Peter Rosin" <peda@axentia.se>, <jic23@kernel.org>,
+        <lars@metafoo.de>, <pmeerw@pmeerw.net>
+References: <20210706160942.3181474-1-liambeguin@gmail.com>
+ <20210706160942.3181474-5-liambeguin@gmail.com>
+ <13409f37-ecd4-5afb-e1ca-59f1f1f805b8@axentia.se>
+In-Reply-To: <13409f37-ecd4-5afb-e1ca-59f1f1f805b8@axentia.se>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-08 09:08, Joerg Roedel wrote:
-> On Wed, Jul 07, 2021 at 01:00:13PM -0700, Doug Anderson wrote:
->> a) Nothing is inherently broken with my current approach.
->>
->> b) My current approach doesn't make anybody terribly upset even if
->> nobody is totally in love with it.
-> 
-> Well, no, sorry :)
-> 
-> I don't think it is a good idea to allow drivers to opt-out of the
-> strict-setting. This is a platform or user decision, and the driver
-> should accept whatever it gets.
-> 
-> So the real question is still why strict is the default setting and how
-> to change that.
+On Fri Jul 9, 2021 at 12:24 PM EDT, Peter Rosin wrote:
+>
+> On 2021-07-06 18:09, Liam Beguin wrote:
+> > From: Liam Beguin <lvb@xiphos.com>
+> >=20
+> > Reduce the risk of integer overflow by doing the scale calculation with
+> > 64bit integers and looking for a Greatest Common Divider for both parts
+> > of the fractional value.
+> >=20
+> > Signed-off-by: Liam Beguin <lvb@xiphos.com>
+> > ---
+> >  drivers/iio/afe/iio-rescale.c | 12 +++++++++---
+> >  1 file changed, 9 insertions(+), 3 deletions(-)
+> >=20
+> > diff --git a/drivers/iio/afe/iio-rescale.c b/drivers/iio/afe/iio-rescal=
+e.c
+> > index 774eb3044edd..ba3bdcc69b16 100644
+> > --- a/drivers/iio/afe/iio-rescale.c
+> > +++ b/drivers/iio/afe/iio-rescale.c
+> > @@ -39,7 +39,8 @@ static int rescale_read_raw(struct iio_dev *indio_dev=
+,
+> >  			    int *val, int *val2, long mask)
+> >  {
+> >  	struct rescale *rescale =3D iio_priv(indio_dev);
+> > -	unsigned long long tmp;
+> > +	s64 tmp, tmp2;
+> > +	u32 factor;
+> >  	int ret;
+> > =20
+> >  	switch (mask) {
+> > @@ -67,8 +68,13 @@ static int rescale_read_raw(struct iio_dev *indio_de=
+v,
+> >  		}
+> >  		switch (ret) {
+> >  		case IIO_VAL_FRACTIONAL:
+> > -			*val *=3D rescale->numerator;
+> > -			*val2 *=3D rescale->denominator;
+> > +			tmp =3D (s64)*val * rescale->numerator;
+> > +			tmp2 =3D (s64)*val2 * rescale->denominator;
+> > +			factor =3D gcd(tmp, tmp2);
 
-It's occurred to me whilst hacking on the relevant area that there's an 
-important point I may have somewhat glossed over there: most of the 
-IOMMU drivers that are used for arm64 do not take advantage of 
-non-strict mode anyway. If anything it would be detrimental, since 
-iommu-dma would waste a bunch of time and memory managing flush queues 
-and firing off the batch invalidations while internally the drivers are 
-still invalidating each unmap synchronously.
+Hi Peter,
 
-Those IOMMUs in mobile and embedded SoCs are also mostly used for media 
-devices, where the buffers are relatively large and change relatively 
-infrequently, so they are less likely to gain significantly from 
-supporting non-strict mode. It's primarily the Arm SMMUs which get used 
-in the more "x86-like" paradigm (especially in larger systems) of being 
-stuck in front of everything including networking/storage/PCIe/etc. 
-where the workloads are far more varied.
+>
+> Hi!
+>
+> gcd() isn't exactly free. I do not think it is suitable to call it for
+> each
+> and every value. So, if you really need it, then it should only be used
+> when there is an actual overflow (or if there is a high risk if that's
+> somehow easier).
 
-Robin.
+Understood, digging into this a little bit, it seems like
+check_mul_overflow() could be used here.
 
-> Or document for the users that want performance how to
-> change the setting, so that they can decide.
-> 
-> Regards,
-> 
-> 	Joerg
-> 
-> _______________________________________________
-> iommu mailing list
-> iommu@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/iommu
-> 
+I'll give it a try and will look at implementing Jonathan's suggestion
+in case we're dealing with a case where gcd() returns 1.
+
+Thanks,
+Liam
+
+>
+> Cheers,
+> Peter
+>
+> > +			do_div(tmp, factor);
+> > +			*val =3D tmp;
+> > +			do_div(tmp2, factor);
+> > +			*val2 =3D tmp2;
+> >  			return ret;
+> >  		case IIO_VAL_INT:
+> >  			*val *=3D rescale->numerator;
+> >=20
+
