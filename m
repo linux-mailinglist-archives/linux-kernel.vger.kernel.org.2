@@ -2,534 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D5993C210A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 10:51:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F7253C210D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 10:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231605AbhGIIyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 04:54:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39484 "EHLO
+        id S231585AbhGIIyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 04:54:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231687AbhGIIyD (ORCPT
+        with ESMTP id S231665AbhGIIyc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 04:54:03 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33428C0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 01:51:20 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1m1mDz-0001zQ-LY; Fri, 09 Jul 2021 10:51:07 +0200
-Message-ID: <b1a0853e8491d817074042205db1951cb53da538.camel@pengutronix.de>
-Subject: Re: [PATCH V8 3/4] soc: imx: Add generic blk-ctl driver
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Peng Fan <peng.fan@nxp.com>,
-        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
-Cc:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "krzk@kernel.org" <krzk@kernel.org>,
-        "agx@sigxcpu.org" <agx@sigxcpu.org>,
-        "marex@denx.de" <marex@denx.de>,
-        "andrew.smirnov@gmail.com" <andrew.smirnov@gmail.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jacky Bai <ping.bai@nxp.com>,
-        "frieder.schrempf@kontron.de" <frieder.schrempf@kontron.de>,
-        "aford173@gmail.com" <aford173@gmail.com>,
-        Abel Vesa <abel.vesa@nxp.com>,
-        "jagan@amarulasolutions.com" <jagan@amarulasolutions.com>
-Date:   Fri, 09 Jul 2021 10:51:05 +0200
-In-Reply-To: <DB6PR0402MB2760EACC7F2457309F1D886C881A9@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-References: <20210629072941.7980-1-peng.fan@oss.nxp.com>
-         <20210629072941.7980-4-peng.fan@oss.nxp.com>
-         <0fc1f5043eeedb0c40ae9f76e245c648e0c88cde.camel@pengutronix.de>
-         <DB6PR0402MB2760EACC7F2457309F1D886C881A9@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
+        Fri, 9 Jul 2021 04:54:32 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A409C0613E6
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 01:51:48 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id q18so21892590lfc.7
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 01:51:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CwMW62WAAwpmyJgQD0h1DiuOTDS2nkEHBj7w1HcY3kM=;
+        b=bgFvcNDm4rzhzmnJI8gAgjkVoelxZQajuh6oKo+BWa46Q9cCE9K6N64k9sOSXxMk3+
+         XIuCvLx72F3RH2GfdNyic5FiPYqIG5U5SQPmzgnv99G+/A8dxyUL2VRdJZ312q+lI7Qn
+         V9zg1Ve0Sjmp8IYfmfRLzUJgG4coj1oJ2/4LE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CwMW62WAAwpmyJgQD0h1DiuOTDS2nkEHBj7w1HcY3kM=;
+        b=ILsK8TtWy8dJnsicp7LHyK6s3dxZU+9t6gtjP3cAfQyjnEJZc+ttoq/ZRwEqdHy0gC
+         dec3C9wnXV+xiezZEOCeKran9DTQAQAtqjIzMXtEA7k7QGMqvxKfDYFz6W6Rkyi+4ySe
+         Ih5S+lTVU1jhO4Lf2LKGLcgluFsuejeHGNc45/dvP/yWXG48P4iBIOAW+v7kr6ZQAcrp
+         Hn9IdsP3LaBkUmBew9v7XuXqX5+l9FYTwWcDrM4OmJH+PbrMeTosJhtVHdanMA0IDxEv
+         P0oCAs17Z/lGI4C65rq6FnBo+WmNtOIFLniXi5FYV+sM/otqthrHvr2TWw8j5c8c0cU0
+         AI+g==
+X-Gm-Message-State: AOAM530VqIwQvcjLOabwq89PoUtQUCeblUMAjoaTMYy44nIvXSD99tEL
+        hxdyUDTUg85qDFJ0jUZgV4qISQzj62xq2eugzHLm4A==
+X-Google-Smtp-Source: ABdhPJy2HfouwNNwkjfvfIGtS7PKmxFbKD3IPSiQtKRWJc8MEdZy4o5QBKE9wHvu2dWQOTcHB9oWvsAyTF66OmnsUz4=
+X-Received: by 2002:a05:6512:3f13:: with SMTP id y19mr27455181lfa.444.1625820706714;
+ Fri, 09 Jul 2021 01:51:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210616224743.5109-1-chun-jie.chen@mediatek.com> <20210616224743.5109-16-chun-jie.chen@mediatek.com>
+In-Reply-To: <20210616224743.5109-16-chun-jie.chen@mediatek.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Fri, 9 Jul 2021 16:51:35 +0800
+Message-ID: <CAGXv+5GHwmL82q5ibTAh_GVLPny7yzMacm34uUxdR33Pzc-t2g@mail.gmail.com>
+Subject: Re: [PATCH 15/22] clk: mediatek: Add MT8195 vdosys0 clock support
+To:     Chun-Jie Chen <chun-jie.chen@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, srv_heupstream@mediatek.com,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peng,
+Hi,
 
-Am Mittwoch, dem 07.07.2021 um 09:56 +0000 schrieb Peng Fan:
-> Hi Lucas,
-> 
-> > Subject: Re: [PATCH V8 3/4] soc: imx: Add generic blk-ctl driver
-> 
-> After rethinking about this driver, I think we still need
-> expose to pgc to touch the blk-ctl hardware bus handshake.
-> 
-> Currently we are assuming the blk-ctl probe will finish
-> the handshake. But there is another case, saying gpu.
-> 
-> ----------------------------------------------------------------------->
-> GPU on(1)
->           VPUMIX on (2)
->                         GPU off(3)
->         
-> Between GPU on/off, VPUMIX-BLK-CTL not done, so
-> vpumix pgc handshake not done. Then GPU off (3) will
-> trigger failed to command pgc, because the last pgc(vpu power on)
-> not finished.
-> 
-> I think this could be not avoided if we split the handshake into
-> blk-ctl driver. How do you think?
-> 
-This is really unfortunate. So the PGC state machine really waits for
-the ADB handshake? Until now my understanding was that this isn't
-hooked up in the state machine, but sequenced by software through
-writing and waiting for the bits in GPC_PU_PWRHSK.
+On Thu, Jun 17, 2021 at 7:03 AM Chun-Jie Chen
+<chun-jie.chen@mediatek.com> wrote:
+>
+> Add MT8195 vdosys0 clock provider
+>
+> Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
+> ---
+>  drivers/clk/mediatek/Kconfig           |   6 ++
+>  drivers/clk/mediatek/Makefile          |   1 +
+>  drivers/clk/mediatek/clk-mt8195-vdo0.c | 114 +++++++++++++++++++++++++
+>  3 files changed, 121 insertions(+)
+>  create mode 100644 drivers/clk/mediatek/clk-mt8195-vdo0.c
+>
+> diff --git a/drivers/clk/mediatek/Kconfig b/drivers/clk/mediatek/Kconfig
+> index b7881b8ebb23..6602f9ba13c7 100644
+> --- a/drivers/clk/mediatek/Kconfig
+> +++ b/drivers/clk/mediatek/Kconfig
+> @@ -648,6 +648,12 @@ config COMMON_CLK_MT8195_VDECSYS
+>         help
+>           This driver supports MediaTek MT8195 vdecsys clocks.
+>
+> +config COMMON_CLK_MT8195_VDOSYS0
+> +       bool "Clock driver for MediaTek MT8195 vdosys0"
+> +       depends on COMMON_CLK_MT8195
+> +       help
+> +         This driver supports MediaTek MT8195 vdosys0 clocks.
+> +
 
-> BTW: #linux-imx IRC moved to Libre.Chat     
-> 
-> > 
-> > Hi Peng,
-> > 
-> > Am Dienstag, dem 29.06.2021 um 15:29 +0800 schrieb Peng Fan (OSS):
-> > > From: Peng Fan <peng.fan@nxp.com>
-> > > 
-> > > The i.MX8MM introduces an IP named BLK_CTL and usually is comprised of
-> > > some GPRs.
-> > > 
-> > > The GPRs has some clock bits and reset bits, but here we take it as
-> > > virtual PDs, because of the clock and power domain A/B lock issue when
-> > > taking it as a clock controller.
-> > > 
-> > > For some bits, it might be good to also make it as a reset controller,
-> > > but to i.MX8MM, we not add that support for now.
-> > > 
-> > > Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> > > ---
-> > >  drivers/soc/imx/Makefile  |   2 +-
-> > >  drivers/soc/imx/blk-ctl.c | 324
-> > > ++++++++++++++++++++++++++++++++++++++
-> > >  drivers/soc/imx/blk-ctl.h |  85 ++++++++++
-> > >  3 files changed, 410 insertions(+), 1 deletion(-)  create mode 100644
-> > > drivers/soc/imx/blk-ctl.c  create mode 100644
-> > > drivers/soc/imx/blk-ctl.h
-> > > 
-> > > diff --git a/drivers/soc/imx/Makefile b/drivers/soc/imx/Makefile index
-> > > 078dc918f4f3..d3d2b49a386c 100644
-> > > --- a/drivers/soc/imx/Makefile
-> > > +++ b/drivers/soc/imx/Makefile
-> > > @@ -4,4 +4,4 @@ obj-$(CONFIG_ARCH_MXC) += soc-imx.o  endif
-> > >  obj-$(CONFIG_HAVE_IMX_GPC) += gpc.o
-> > >  obj-$(CONFIG_IMX_GPCV2_PM_DOMAINS) += gpcv2.o
-> > > -obj-$(CONFIG_SOC_IMX8M) += soc-imx8m.o
-> > > +obj-$(CONFIG_SOC_IMX8M) += soc-imx8m.o blk-ctl.o
-> > > diff --git a/drivers/soc/imx/blk-ctl.c b/drivers/soc/imx/blk-ctl.c new
-> > > file mode 100644 index 000000000000..cec1884202e0
-> > > --- /dev/null
-> > > +++ b/drivers/soc/imx/blk-ctl.c
-> > > @@ -0,0 +1,324 @@
-> > > +// SPDX-License-Identifier: GPL-2.0
-> > > +/*
-> > > + * Copyright 2021 NXP.
-> > > + */
-> > > +
-> > > +#include <linux/clk.h>
-> > > +#include <linux/err.h>
-> > > +#include <linux/io.h>
-> > > +#include <linux/module.h>
-> > > +#include <linux/mutex.h>
-> > > +#include <linux/of.h>
-> > > +#include <linux/of_address.h>
-> > > +#include <linux/of_device.h>
-> > > +#include <linux/platform_device.h>
-> > > +#include <linux/pm_runtime.h>
-> > > +#include <linux/pm_domain.h>
-> > > +#include <linux/regmap.h>
-> > > +#include <linux/slab.h>
-> > > +
-> > > +#include "blk-ctl.h"
-> > > +
-> > > +static inline struct imx_blk_ctl_domain *to_imx_blk_ctl_pd(struct
-> > > +generic_pm_domain *genpd) {
-> > > +	return container_of(genpd, struct imx_blk_ctl_domain, genpd); }
-> > > +
-> > > +static int imx_blk_ctl_enable_hsk(struct device *dev) {
-> > > +	struct imx_blk_ctl *blk_ctl = dev_get_drvdata(dev);
-> > > +	const struct imx_blk_ctl_hw *hw = blk_ctl->dev_data->hw_hsk;
-> > > +	struct regmap *regmap = blk_ctl->regmap;
-> > > +	int ret;
-> > > +
-> > > +	if (hw->flags & IMX_BLK_CTL_PD_RESET) {
-> > > +		ret = regmap_update_bits(regmap, hw->rst_offset, hw->rst_mask,
-> > hw->rst_mask);
-> > > +		if (ret)
-> > > +			return ret;
-> > > +	}
-> > > +
-> > > +	ret = regmap_update_bits(regmap, hw->offset, hw->mask, hw->mask);
-> > > +
-> > > +	/* Wait for handshake */
-> > > +	udelay(5);
-> > > +
-> > > +	return ret;
-> > > +}
-> > > +
-> > > +static int imx_blk_ctl_power_on(struct generic_pm_domain *domain) {
-> > > +	struct imx_blk_ctl_domain *pd = to_imx_blk_ctl_pd(domain);
-> > > +	struct imx_blk_ctl *blk_ctl = pd->blk_ctl;
-> > > +	struct regmap *regmap = blk_ctl->regmap;
-> > > +	const struct imx_blk_ctl_hw *hw = &blk_ctl->dev_data->pds[pd->id];
-> > > +	int ret;
-> > > +
-> > > +	mutex_lock(&blk_ctl->lock);
-> > > +
-> > > +	ret = clk_bulk_prepare_enable(blk_ctl->num_clks, blk_ctl->clks);
-> > 
-> > I'm still not a fan of enabling all the clocks going into the blk-ctl to power
-> > up/down one specific domain. It's not really a problem with clocks, where the
-> > parents are always on, as the clock gate/ungate is pretty cheap, but as soon
-> > as you get to something like the display pixel clock, where the parent PLL may
-> > be shut down, the clock enable may easily be the most costly operation of this
-> > whole function, even if this specific clock isn't even needed for the domain in
-> > question.
-> 
-> We had an agreement to use bulk clks in the beginning :)
-> But I could look into use dedicated clk, but that requires new logic to map each
-> pd with needed clks.
-> 
-Yea, I didn't totally reject using bulk clks, but looking at the number
-of different clocks going into e.g. the i.MX8MP MEDIAMIX blk-ctl, I
-fear that using bulk clocks is actually making the power up/down for
-the blk-ctl domains much more costly than it needs to be. I think we
-should really think about this now, as using bulk clks vs. individual
-clocks for each domain will most likely have an impact on the DT
-binding, so will be very hard to change once the driver is accepted
-upstream.
+Same comments about commit log and Kconfig option.
+
+>  config COMMON_CLK_MT8516
+>         bool "Clock driver for MediaTek MT8516"
+>         depends on ARCH_MEDIATEK || COMPILE_TEST
+> diff --git a/drivers/clk/mediatek/Makefile b/drivers/clk/mediatek/Makefile
+> index 9acfa705f1de..6aa1ba00342a 100644
+> --- a/drivers/clk/mediatek/Makefile
+> +++ b/drivers/clk/mediatek/Makefile
+> @@ -91,5 +91,6 @@ obj-$(CONFIG_COMMON_CLK_MT8195_MFGCFG) += clk-mt8195-mfg.o
+>  obj-$(CONFIG_COMMON_CLK_MT8195_SCP_ADSP) += clk-mt8195-scp_adsp.o
+>  obj-$(CONFIG_COMMON_CLK_MT8195_NNASYS) += clk-mt8195-nna.o
+>  obj-$(CONFIG_COMMON_CLK_MT8195_VDECSYS) += clk-mt8195-vdec.o
+> +obj-$(CONFIG_COMMON_CLK_MT8195_VDOSYS0) += clk-mt8195-vdo0.o
+>  obj-$(CONFIG_COMMON_CLK_MT8516) += clk-mt8516.o
+>  obj-$(CONFIG_COMMON_CLK_MT8516_AUDSYS) += clk-mt8516-aud.o
+> diff --git a/drivers/clk/mediatek/clk-mt8195-vdo0.c b/drivers/clk/mediatek/clk-mt8195-vdo0.c
+> new file mode 100644
+> index 000000000000..4a34ccb0beed
+> --- /dev/null
+> +++ b/drivers/clk/mediatek/clk-mt8195-vdo0.c
+> @@ -0,0 +1,114 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +//
+> +// Copyright (c) 2021 MediaTek Inc.
+> +// Author: Chun-Jie Chen <chun-jie.chen@mediatek.com>
+> +
+> +#include <linux/clk-provider.h>
+> +#include <linux/platform_device.h>
+> +
+> +#include "clk-mtk.h"
+> +#include "clk-gate.h"
+
+Alphabetical order within the same group please.
+
+> +
+> +#include <dt-bindings/clock/mt8195-clk.h>
+> +
+> +static const struct mtk_gate_regs vdo00_cg_regs = {
+> +       .set_ofs = 0x104,
+> +       .clr_ofs = 0x108,
+> +       .sta_ofs = 0x100,
+> +};
+> +
+> +static const struct mtk_gate_regs vdo01_cg_regs = {
+> +       .set_ofs = 0x114,
+> +       .clr_ofs = 0x118,
+> +       .sta_ofs = 0x110,
+> +};
+> +
+> +static const struct mtk_gate_regs vdo02_cg_regs = {
+> +       .set_ofs = 0x124,
+> +       .clr_ofs = 0x128,
+> +       .sta_ofs = 0x120,
+> +};
+> +
+> +#define GATE_VDO00(_id, _name, _parent, _shift)                        \
+> +       GATE_MTK(_id, _name, _parent, &vdo00_cg_regs, _shift, &mtk_clk_gate_ops_setclr)
+> +
+> +#define GATE_VDO01(_id, _name, _parent, _shift)                        \
+> +       GATE_MTK(_id, _name, _parent, &vdo01_cg_regs, _shift, &mtk_clk_gate_ops_setclr)
+> +
+> +#define GATE_VDO02(_id, _name, _parent, _shift)                        \
+> +       GATE_MTK(_id, _name, _parent, &vdo02_cg_regs, _shift, &mtk_clk_gate_ops_setclr)
+> +
+> +static const struct mtk_gate vdo0_clks[] = {
+> +       /* VDO00 */
+> +       GATE_VDO00(CLK_VDO0_DISP_OVL0, "vdo0_disp_ovl0", "vpp_sel", 0),
+> +       GATE_VDO00(CLK_VDO0_DISP_COLOR0, "vdo0_disp_color0", "vpp_sel", 2),
+> +       GATE_VDO00(CLK_VDO0_DISP_COLOR1, "vdo0_disp_color1", "vpp_sel", 3),
+> +       GATE_VDO00(CLK_VDO0_DISP_CCORR0, "vdo0_disp_ccorr0", "vpp_sel", 4),
+> +       GATE_VDO00(CLK_VDO0_DISP_CCORR1, "vdo0_disp_ccorr1", "vpp_sel", 5),
+> +       GATE_VDO00(CLK_VDO0_DISP_AAL0, "vdo0_disp_aal0", "vpp_sel", 6),
+> +       GATE_VDO00(CLK_VDO0_DISP_AAL1, "vdo0_disp_aal1", "vpp_sel", 7),
+> +       GATE_VDO00(CLK_VDO0_DISP_GAMMA0, "vdo0_disp_gamma0", "vpp_sel", 8),
+> +       GATE_VDO00(CLK_VDO0_DISP_GAMMA1, "vdo0_disp_gamma1", "vpp_sel", 9),
+> +       GATE_VDO00(CLK_VDO0_DISP_DITHER0, "vdo0_disp_dither0", "vpp_sel", 10),
+> +       GATE_VDO00(CLK_VDO0_DISP_DITHER1, "vdo0_disp_dither1", "vpp_sel", 11),
+> +       GATE_VDO00(CLK_VDO0_DISP_OVL1, "vdo0_disp_ovl1", "vpp_sel", 16),
+> +       GATE_VDO00(CLK_VDO0_DISP_WDMA0, "vdo0_disp_wdma0", "vpp_sel", 17),
+> +       GATE_VDO00(CLK_VDO0_DISP_WDMA1, "vdo0_disp_wdma1", "vpp_sel", 18),
+> +       GATE_VDO00(CLK_VDO0_DISP_RDMA0, "vdo0_disp_rdma0", "vpp_sel", 19),
+> +       GATE_VDO00(CLK_VDO0_DISP_RDMA1, "vdo0_disp_rdma1", "vpp_sel", 20),
+> +       GATE_VDO00(CLK_VDO0_DSI0, "vdo0_dsi0", "vpp_sel", 21),
+> +       GATE_VDO00(CLK_VDO0_DSI1, "vdo0_dsi1", "vpp_sel", 22),
+> +       GATE_VDO00(CLK_VDO0_DSC_WRAP0, "vdo0_dsc_wrap0", "vpp_sel", 23),
+> +       GATE_VDO00(CLK_VDO0_VPP_MERGE0, "vdo0_vpp_merge0", "vpp_sel", 24),
+> +       GATE_VDO00(CLK_VDO0_DP_INTF0, "vdo0_dp_intf0", "vpp_sel", 25),
+> +       GATE_VDO00(CLK_VDO0_DISP_MUTEX0, "vdo0_disp_mutex0", "vpp_sel", 26),
+> +       GATE_VDO00(CLK_VDO0_DISP_IL_ROT0, "vdo0_disp_il_rot0", "vpp_sel", 27),
+> +       GATE_VDO00(CLK_VDO0_APB_BUS, "vdo0_apb_bus", "vpp_sel", 28),
+> +       GATE_VDO00(CLK_VDO0_FAKE_ENG0, "vdo0_fake_eng0", "vpp_sel", 29),
+> +       GATE_VDO00(CLK_VDO0_FAKE_ENG1, "vdo0_fake_eng1", "vpp_sel", 30),
+> +       /* VDO01 */
+> +       GATE_VDO01(CLK_VDO0_DL_ASYNC0, "vdo0_dl_async0", "vpp_sel", 0),
+> +       GATE_VDO01(CLK_VDO0_DL_ASYNC1, "vdo0_dl_async1", "vpp_sel", 1),
+> +       GATE_VDO01(CLK_VDO0_DL_ASYNC2, "vdo0_dl_async2", "vpp_sel", 2),
+> +       GATE_VDO01(CLK_VDO0_DL_ASYNC3, "vdo0_dl_async3", "vpp_sel", 3),
+> +       GATE_VDO01(CLK_VDO0_DL_ASYNC4, "vdo0_dl_async4", "vpp_sel", 4),
+> +       GATE_VDO01(CLK_VDO0_DISP_MONITOR0, "vdo0_disp_monitor0", "vpp_sel", 5),
+> +       GATE_VDO01(CLK_VDO0_DISP_MONITOR1, "vdo0_disp_monitor1", "vpp_sel", 6),
+> +       GATE_VDO01(CLK_VDO0_DISP_MONITOR2, "vdo0_disp_monitor2", "vpp_sel", 7),
+> +       GATE_VDO01(CLK_VDO0_DISP_MONITOR3, "vdo0_disp_monitor3", "vpp_sel", 8),
+> +       GATE_VDO01(CLK_VDO0_DISP_MONITOR4, "vdo0_disp_monitor4", "vpp_sel", 9),
+> +       GATE_VDO01(CLK_VDO0_SMI_GALS, "vdo0_smi_gals", "vpp_sel", 10),
+> +       GATE_VDO01(CLK_VDO0_SMI_COMMON, "vdo0_smi_common", "vpp_sel", 11),
+> +       GATE_VDO01(CLK_VDO0_SMI_EMI, "vdo0_smi_emi", "vpp_sel", 12),
+> +       GATE_VDO01(CLK_VDO0_SMI_IOMMU, "vdo0_smi_iommu", "vpp_sel", 13),
+> +       GATE_VDO01(CLK_VDO0_SMI_LARB, "vdo0_smi_larb", "vpp_sel", 14),
+> +       GATE_VDO01(CLK_VDO0_SMI_RSI, "vdo0_smi_rsi", "vpp_sel", 15),
+> +       /* VDO02 */
+> +       GATE_VDO02(CLK_VDO0_DSI0_DSI, "vdo0_dsi0_dsi", "dsi_occ_sel", 0),
+> +       GATE_VDO02(CLK_VDO0_DSI1_DSI, "vdo0_dsi1_dsi", "dsi_occ_sel", 8),
+> +       GATE_VDO02(CLK_VDO0_DP_INTF0_DP_INTF, "vdo0_dp_intf0_dp_intf", "edp_sel", 16),
+> +};
+> +
+> +static const struct mtk_clk_desc vdo0_desc = {
+> +       .clks = vdo0_clks,
+> +       .num_clks = ARRAY_SIZE(vdo0_clks),
+> +};
+> +
+> +static const struct of_device_id of_match_clk_mt8195_vdo0[] = {
+> +       {
+> +               .compatible = "mediatek,mt8195-vdosys0",
+> +               .data = &vdo0_desc,
+> +       }, {
+> +               /* sentinel */
+> +       }
+> +};
+> +
+> +static struct platform_driver clk_mt8195_vdo0_drv = {
+> +       .probe = mtk_clk_simple_probe,
+> +       .driver = {
+> +               .name = "clk-mt8195-vdo0",
+> +               .of_match_table = of_match_clk_mt8195_vdo0,
+> +       },
+> +};
+> +
+
+Can drop the empty line here.
+
+Overall the code looks good.
 
 
-> > 
-> > > +	if (ret) {
-> > > +		mutex_unlock(&blk_ctl->lock);
-> > > +		return ret;
-> > > +	}
-> > > +
-> > > +	if (hw->flags & IMX_BLK_CTL_PD_HANDSHAKE) {
-> > > +		ret = imx_blk_ctl_enable_hsk(blk_ctl->dev);
-> > > +		if (ret)
-> > > +			dev_err(blk_ctl->dev, "Handshake failed when power on\n");
-> > > +
-> > > +		/* Expected, handshake already handle reset*/
-> > > +		goto disable_clk;
-> > > +	}
-> > > +
-> > > +	if (hw->flags & IMX_BLK_CTL_PD_RESET) {
-> > > +		ret = regmap_clear_bits(regmap, hw->rst_offset, hw->rst_mask);
-> > > +		if (ret)
-> > > +			goto disable_clk;
-> > > +
-> > > +		/* Wait for reset propagate */
-> > > +		udelay(5);
-> > > +
-> > > +		ret = regmap_update_bits(regmap, hw->rst_offset, hw->rst_mask,
-> > hw->rst_mask);
-> > > +		if (ret)
-> > > +			goto disable_clk;
-> > > +	}
-> > > +
-> > > +	ret = regmap_update_bits(regmap, hw->offset, hw->mask, hw->mask);
-> > > 
-> > 
-> > I find this very hard to follow and reason about. Why do we even need those
-> > different paths for domains with or without the handshake?
-> > 
-> > Shouldn't it be enough to just be enough to do the following in all
-> > cases:
-> > 1. release sft reset
-> > 2. enable sft clock
-> > 3. wait a little for reset to propagate or ADB to ack power up
-> 
-> Reset flow is: assert reset, deassert reset, enable clk
-> Handshake flow: deassert reset, enable clk.
-> 
-> Per my previous test, use reset flow for handshake seems
-> not work. I could recall clearly.
-> 
-That's surprising to me, given that the blk-ctl resets should be
-asserted when we power up the GPC mix domains. I don't dispute your
-testing, but I would be very interested to learn what's going on in
-hardware that asserting a already asserted reset would break the power-
-up flow.
+ChenYu
 
-> > 
-> > > +disable_clk:
-> > > +	clk_bulk_disable_unprepare(blk_ctl->num_clks, blk_ctl->clks);
-> > > +
-> > > +	mutex_unlock(&blk_ctl->lock);
-> > > +
-> > > +	return ret;
-> > > +}
-> > > +
-> > > +static int imx_blk_ctl_power_off(struct generic_pm_domain *domain) {
-> > > +	struct imx_blk_ctl_domain *pd = to_imx_blk_ctl_pd(domain);
-> > > +	struct imx_blk_ctl *blk_ctl = pd->blk_ctl;
-> > > +	struct regmap *regmap = blk_ctl->regmap;
-> > > +	const struct imx_blk_ctl_hw *hw = &blk_ctl->dev_data->pds[pd->id];
-> > > +	int ret = 0;
-> > > +
-> > > +	mutex_lock(&blk_ctl->lock);
-> > > +
-> > > +	ret = clk_bulk_prepare_enable(blk_ctl->num_clks, blk_ctl->clks);
-> > > +	if (ret) {
-> > > +		mutex_unlock(&blk_ctl->lock);
-> > > +		return ret;
-> > > +	}
-> > > +
-> > > +	if (!(hw->flags & IMX_BLK_CTL_PD_HANDSHAKE)) {
-> > > +		ret = regmap_clear_bits(regmap, hw->offset, hw->mask);
-> > > +		if (ret)
-> > > +			goto disable_clk;
-> > > +
-> > > +		if (hw->flags & IMX_BLK_CTL_PD_RESET) {
-> > > +			ret = regmap_clear_bits(regmap, hw->rst_offset,
-> > hw->rst_mask);
-> > > +			if (ret)
-> > > +				goto disable_clk;
-> > > +		}
-> > > +	} else {
-> > > +		ret = imx_blk_ctl_enable_hsk(blk_ctl->dev);
-> > 
-> > Why would we need to enable the handshake again in the power DOWN
-> > path?
-> > The clock/reset bits should still be set from the power up. The power down
-> > should probably just be a no-op for the blk-ctl bus domains, to allow the
-> > proper ADB handshake in the PGC domain power-down.
-> 
-> I exported VPU-H1 as VPU-BUS for handshake, because they share
-> same bits.  But you raise a valid idea, I think I could drop VPU-BUS,
-> then just no-op here.
 
-By share the same bits, you mean the ADB is connected to the same clock
-and reset as H1?
-
-> 
-> BTW: bus should be enabled when power down others.
-
-I guess bus should just be always enabled as long as the PGC mix domain
-is powered-up, right?
-
-> 
-> > 
-> > > +		if (ret)
-> > > +			dev_err(blk_ctl->dev, "Handshake failed when power off\n");
-> > > +	}
-> > > +
-> > > +disable_clk:
-> > > +	clk_bulk_disable_unprepare(blk_ctl->num_clks, blk_ctl->clks);
-> > > +
-> > > +	mutex_unlock(&blk_ctl->lock);
-> > > +
-> > > +	return ret;
-> > > +}
-> > > +
-> > > +static int imx_blk_ctl_probe(struct platform_device *pdev) {
-> > > +	struct imx_blk_ctl_domain *domain = pdev->dev.platform_data;
-> > > +	struct imx_blk_ctl *blk_ctl = domain->blk_ctl;
-> > > +	struct generic_pm_domain *parent_genpd;
-> > > +	struct device *dev = &pdev->dev;
-> > > +	struct device *active_pd;
-> > > +	int ret;
-> > > +
-> > > +	pdev->dev.of_node = blk_ctl->dev->of_node;
-> > > +
-> > > +	if (domain->hw->active_pd_name) {
-> > > +		active_pd = dev_pm_domain_attach_by_name(dev,
-> > domain->hw->active_pd_name);
-> > > +		if (IS_ERR_OR_NULL(active_pd)) {
-> > > +			ret = PTR_ERR(active_pd) ? : -ENODATA;
-> > > +			pdev->dev.of_node = NULL;
-> > 
-> > This is extremely ugly. I think we should not even have separate platform
-> > drivers for the blk-ctl domains, there is just no reason for it. See below for
-> > more comments in that direction.
-> > 
-> > > +			return ret;
-> > > +		}
-> > > +
-> > > +		domain->active_pd = active_pd;
-> > > +	} else {
-> > > +		if (!blk_ctl->bus_domain) {
-> > > +			pdev->dev.of_node = NULL;
-> > > +			return -EPROBE_DEFER;
-> > > +		}
-> > > +	}
-> > > +
-> > > +	if (domain->hw->active_pd_name)
-> > > +		parent_genpd = pd_to_genpd(active_pd->pm_domain);
-> > > +	else
-> > > +		parent_genpd = blk_ctl->bus_domain;
-> > > +
-> > > +	if (pm_genpd_add_subdomain(parent_genpd, &domain->genpd)) {
-> > > +		dev_warn(dev, "failed to add subdomain: %s\n",
-> > domain->genpd.name);
-> > 
-> > I don't see where the dispmix_bus domain and clock is kept enabled. I would
-> > guess that the bus domain should be some kind of parent to the lcdif and mipi
-> > domains,
-> 
-> Yes. vpumix-blk-ctl bus domain is parent to vpu-g1/g2 and similar to others.
-> 
->  as I don't think it would be okay to disable the bus clock, while any
-> > of the peripherals in the dispmix complex are still active. Am I missing
-> > something here?
-> 
-> You are right, bus clock should be always kept enable if any periphals in
-> dispmix is alive.
-> 
-> > 
-> > > +	} else {
-> > > +		mutex_lock(&blk_ctl->lock);
-> > > +		domain->hooked = true;
-> > > +		mutex_unlock(&blk_ctl->lock);
-> > > +	}
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static int imx_blk_ctl_remove(struct platform_device *pdev) {
-> > > +	struct imx_blk_ctl_domain *domain = pdev->dev.platform_data;
-> > > +	struct imx_blk_ctl *blk_ctl = domain->blk_ctl;
-> > > +	struct generic_pm_domain *parent_genpd;
-> > > +	struct device *active_pd;
-> > > +
-> > > +	if (domain->hw->active_pd_name)
-> > > +		parent_genpd = pd_to_genpd(active_pd->pm_domain);
-> > 
-> > This has probably never been tested. active_pd is undefined at this point, so
-> > will most likely lead to a kernel crash.
-> 
-> My bad. Indeed, remove not tested.
-> 
-> > > +	else
-> > > +		parent_genpd = blk_ctl->bus_domain;
-> > > +
-> > > +	pm_genpd_remove_subdomain(parent_genpd, &domain->genpd);
-> > > +
-> > > +	mutex_lock(&blk_ctl->lock);
-> > > +	domain->hooked = false;
-> > > +	mutex_unlock(&blk_ctl->lock);
-> > > +
-> > > +	if (domain->hw->active_pd_name)
-> > > +		dev_pm_domain_detach(domain->active_pd, false);
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static const struct platform_device_id imx_blk_ctl_id[] = {
-> > > +	{ "imx-vpumix-blk-ctl", },
-> > > +	{ "imx-dispmix-blk-ctl", },
-> > > +	{ },
-> > > +};
-> > > +
-> > > +static struct platform_driver imx_blk_ctl_driver = {
-> > > +	.driver = {
-> > > +		.name = "imx-blk-ctl",
-> > > +	},
-> > > +	.probe    = imx_blk_ctl_probe,
-> > > +	.remove   = imx_blk_ctl_remove,
-> > > +	.id_table = imx_blk_ctl_id,
-> > > +};
-> > > +builtin_platform_driver(imx_blk_ctl_driver)
-> > > +
-> > > +static struct generic_pm_domain *imx_blk_ctl_genpd_xlate(struct
-> > of_phandle_args *genpdspec,
-> > > +							 void *data)
-> > > +{
-> > > +	struct genpd_onecell_data *genpd_data = data;
-> > > +	unsigned int idx = genpdspec->args[0];
-> > > +	struct imx_blk_ctl_domain *domain;
-> > > +	struct generic_pm_domain *genpd = ERR_PTR(-EPROBE_DEFER);
-> > > +
-> > > +	if (genpdspec->args_count != 1)
-> > > +		return ERR_PTR(-EINVAL);
-> > > +
-> > > +	if (idx >= genpd_data->num_domains)
-> > > +		return ERR_PTR(-EINVAL);
-> > > +
-> > > +	if (!genpd_data->domains[idx])
-> > > +		return ERR_PTR(-ENOENT);
-> > > +
-> > > +	domain = to_imx_blk_ctl_pd(genpd_data->domains[idx]);
-> > > +
-> > > +	mutex_lock(&domain->blk_ctl->lock);
-> > > +	if (domain->hooked)
-> > > +		genpd = genpd_data->domains[idx];
-> > > +	mutex_unlock(&domain->blk_ctl->lock);
-> > > +
-> > > +	return genpd;
-> > > +}
-> > > +
-> > > +int imx_blk_ctl_register(struct device *dev) {
-> > > +	struct imx_blk_ctl *blk_ctl = dev_get_drvdata(dev);
-> > > +	const struct imx_blk_ctl_dev_data *dev_data = blk_ctl->dev_data;
-> > > +	int num = dev_data->pds_num;
-> > > +	struct imx_blk_ctl_domain *domain;
-> > > +	struct generic_pm_domain *genpd;
-> > > +	struct platform_device *pd_pdev;
-> > > +	int domain_index;
-> > > +	int i, ret;
-> > > +
-> > > +	blk_ctl->onecell_data.num_domains = num;
-> > > +	blk_ctl->onecell_data.xlate = imx_blk_ctl_genpd_xlate;
-> > > +	blk_ctl->onecell_data.domains = devm_kcalloc(dev, num, sizeof(struct
-> > generic_pm_domain *),
-> > > +						     GFP_KERNEL);
-> > > +	if (!blk_ctl->onecell_data.domains)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	for (i = 0; i < num; i++) {
-> > > +		domain_index = dev_data->pds[i].id;
-> > > +		if (domain_index >= num) {
-> > > +			dev_warn(dev, "Domain index %d is out of bounds\n",
-> > domain_index);
-> > > +			continue;
-> > > +		}
-> > > +
-> > > +		domain = devm_kzalloc(dev, sizeof(struct imx_blk_ctl_domain),
-> > GFP_KERNEL);
-> > > +		if (!domain)
-> > > +			goto error;
-> > > +
-> > > +		pd_pdev = platform_device_alloc(dev_data->name, domain_index);
-> > > +		if (!pd_pdev) {
-> > > +			dev_err(dev, "Failed to allocate platform device\n");
-> > > +			goto error;
-> > > +		}
-> > 
-> > We don't need a full blow platform device and a driver for the individual
-> > domains. The only point where we need the device is to attach the parent
-> > PGC power domains and for this we only need a device.
-> > 
-> > So we could either have a dummy device for this usage in the domain or we
-> > could even reuse the device in the genpd, which is initialized in
-> > pm_genpd_init.
-> > 
-> > Now while I think about it... genpd_dev_pm_attach_by_name already
-> > allocates the virtual dummy device. I don't think we need to do anything here
-> > on our own. Just get rid of the platform device and driver.
-> 
-> ok, let me rethink about it. If you have chance to be on IRC, I could talk
-> with you later if I come about new implementation.
-
-I'm in the IRC channel if you prefer to talk there.
-
-Regards,
-Lucas
-
+> +builtin_platform_driver(clk_mt8195_vdo0_drv);
+> --
+> 2.18.0
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
