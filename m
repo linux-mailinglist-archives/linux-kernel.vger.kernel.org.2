@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 456803C2B1E
+	by mail.lfdr.de (Postfix) with ESMTP id 8F32E3C2B1F
 	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 00:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231372AbhGIWDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 18:03:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50348 "EHLO mail.kernel.org"
+        id S231401AbhGIWDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 18:03:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229948AbhGIWDC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231133AbhGIWDC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 9 Jul 2021 18:03:02 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B309B613CA;
+        by mail.kernel.org (Postfix) with ESMTPSA id E47C3613E1;
         Fri,  9 Jul 2021 22:00:18 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@goodmis.org>)
-        id 1m1yXh-000CJr-PW; Fri, 09 Jul 2021 18:00:17 -0400
-Message-ID: <20210709220017.632244614@goodmis.org>
+        id 1m1yXh-000CKP-Va; Fri, 09 Jul 2021 18:00:17 -0400
+Message-ID: <20210709220017.813653831@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Fri, 09 Jul 2021 17:59:56 -0400
+Date:   Fri, 09 Jul 2021 17:59:57 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org,
         linux-rt-users <linux-rt-users@vger.kernel.org>
@@ -35,7 +35,7 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@kernel.org>,
         Valentin Schneider <valentin.schneider@arm.com>,
         Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: [PATCH RT 3/8] sched: Collate affine_move_task() stoppers
+Subject: [PATCH RT 4/8] sched: Optimize migration_cpu_stop()
 References: <20210709215953.122804544@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,65 +50,54 @@ If anyone has any objections, please let me know.
 
 From: Peter Zijlstra <peterz@infradead.org>
 
-commit 58b1a45086b5f80f2b2842aa7ed0da51a64a302b upstream.
+commit 3f1bc119cd7fc987c8ed25ffb717f99403bb308c upstream.
 
-The SCA_MIGRATE_ENABLE and task_running() cases are almost identical,
-collapse them to avoid further duplication.
+When the purpose of migration_cpu_stop() is to migrate the task to
+'any' valid CPU, don't migrate the task when it's already running on a
+valid CPU.
 
 Fixes: 6d337eab041d ("sched: Fix migrate_disable() vs set_cpus_allowed_ptr()")
 Cc: stable@kernel.org
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Link: https://lkml.kernel.org/r/20210224131355.500108964@infradead.org
+Link: https://lkml.kernel.org/r/20210224131355.569238629@infradead.org
 Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/sched/core.c | 23 ++++++++---------------
- 1 file changed, 8 insertions(+), 15 deletions(-)
+ kernel/sched/core.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index d497b13efb53..6880c300c624 100644
+index 6880c300c624..9cbe12d8c5bd 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -2275,30 +2275,23 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
- 		return -EINVAL;
- 	}
+@@ -1972,14 +1972,25 @@ static int migration_cpu_stop(void *data)
+ 			complete = true;
+ 		}
  
--	if (flags & SCA_MIGRATE_ENABLE) {
--
--		refcount_inc(&pending->refs); /* pending->{arg,stop_work} */
--		p->migration_flags &= ~MDF_PUSH;
--		task_rq_unlock(rq, p, rf);
--
--		stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
--				    &pending->arg, &pending->stop_work);
--
--		return 0;
--	}
--
- 	if (task_running(rq, p) || p->state == TASK_WAKING) {
- 		/*
--		 * Lessen races (and headaches) by delegating
--		 * is_migration_disabled(p) checks to the stopper, which will
--		 * run on the same CPU as said p.
-+		 * MIGRATE_ENABLE gets here because 'p == current', but for
-+		 * anything else we cannot do is_migration_disabled(), punt
-+		 * and have the stopper function handle it all race-free.
- 		 */
+-		if (dest_cpu < 0)
++		if (dest_cpu < 0) {
++			if (cpumask_test_cpu(task_cpu(p), &p->cpus_mask))
++				goto out;
 +
- 		refcount_inc(&pending->refs); /* pending->{arg,stop_work} */
-+		if (flags & SCA_MIGRATE_ENABLE)
-+			p->migration_flags &= ~MDF_PUSH;
- 		task_rq_unlock(rq, p, rf);
+ 			dest_cpu = cpumask_any_distribute(&p->cpus_mask);
++		}
  
- 		stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
- 				    &pending->arg, &pending->stop_work);
+ 		if (task_on_rq_queued(p))
+ 			rq = __migrate_task(rq, &rf, p, dest_cpu);
+ 		else
+ 			p->wake_cpu = dest_cpu;
  
-+		if (flags & SCA_MIGRATE_ENABLE)
-+			return 0;
- 	} else {
- 
- 		if (!is_migration_disabled(p)) {
++		/*
++		 * XXX __migrate_task() can fail, at which point we might end
++		 * up running on a dodgy CPU, AFAICT this can only happen
++		 * during CPU hotplug, at which point we'll get pushed out
++		 * anyway, so it's probably not a big deal.
++		 */
++
+ 	} else if (pending) {
+ 		/*
+ 		 * This happens when we get migrated between migrate_enable()'s
 -- 
 2.30.2
