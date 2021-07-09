@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E34EC3C2445
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 930BE3C243F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232129AbhGINWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 09:22:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52174 "EHLO mail.kernel.org"
+        id S231733AbhGINVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 09:21:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232059AbhGINVv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 09:21:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 87DAF613B6;
-        Fri,  9 Jul 2021 13:19:07 +0000 (UTC)
+        id S231761AbhGINVj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 09:21:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE95E61377;
+        Fri,  9 Jul 2021 13:18:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1625836747;
-        bh=CGm9XhMgrZ+2Q/0XN6jqh1tZS11gHciFs96Ptbuce3g=;
+        s=korg; t=1625836736;
+        bh=mhQaTVy8s+F/kumuxowScws01H/8UkfLxvLYMWg9T48=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CA2ZWAAScrWD0M9fWL5WOKmUkOcZJXrwjym/m6NxMWqOBlK324ewvcSyFs9MTTLjy
-         BLzzysM8dMJXyCHs/sNVB7P1kbE8kLVa8uKxS6lCvTwNLyAI77iSchRtdVD0p7+JB5
-         Kqs/LJnRIwOKazOixXwgtalRZrOXfxv2Rj8RaLw4=
+        b=OonZxvFjFZ/pk6eYWaPkpnBTeOuHM25wJxAS745WG1SM45ihXOsJIAlYvh0Zg9rhY
+         jSDHiQitWbQY8IQsX0nmx0jM2l3aIRez9p4nEBDtzR52PuYBh+NDY0Y0tVcftDaWN7
+         pSgxXnJ40S1Wh+laz+9Q+1LDTUk2bJZFxoOhjQCA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 01/25] include/linux/mmdebug.h: make VM_WARN* non-rvals
-Date:   Fri,  9 Jul 2021 15:18:32 +0200
-Message-Id: <20210709131628.757242241@linuxfoundation.org>
+Subject: [PATCH 4.9 6/9] drm/nouveau: fix dma_address check for CPU/GPU sync
+Date:   Fri,  9 Jul 2021 15:18:33 +0200
+Message-Id: <20210709131551.474917278@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210709131627.928131764@linuxfoundation.org>
-References: <20210709131627.928131764@linuxfoundation.org>
+In-Reply-To: <20210709131542.410636747@linuxfoundation.org>
+References: <20210709131542.410636747@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -44,53 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Hocko <mhocko@kernel.org>
+From: Christian König <christian.koenig@amd.com>
 
-[ Upstream commit 91241681c62a5a690c88eb2aca027f094125eaac ]
+[ Upstream commit d330099115597bbc238d6758a4930e72b49ea9ba ]
 
-At present the construct
+AGP for example doesn't have a dma_address array.
 
-	if (VM_WARN(...))
-
-will compile OK with CONFIG_DEBUG_VM=y and will fail with
-CONFIG_DEBUG_VM=n.  The reason is that VM_{WARN,BUG}* have always been
-special wrt.  {WARN/BUG}* and never generate any code when DEBUG_VM is
-disabled.  So we cannot really use it in conditionals.
-
-We considered changing things so that this construct works in both cases
-but that might cause unwanted code generation with CONFIG_DEBUG_VM=n.
-It is safer and simpler to make the build fail in both cases.
-
-[akpm@linux-foundation.org: changelog]
-Signed-off-by: Michal Hocko <mhocko@suse.com>
-Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Christian König <christian.koenig@amd.com>
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210614110517.1624-1-christian.koenig@amd.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/mmdebug.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/nouveau/nouveau_bo.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/mmdebug.h b/include/linux/mmdebug.h
-index 57b0030d3800..2ad72d2c8cc5 100644
---- a/include/linux/mmdebug.h
-+++ b/include/linux/mmdebug.h
-@@ -37,10 +37,10 @@ void dump_mm(const struct mm_struct *mm);
- 			BUG();						\
- 		}							\
- 	} while (0)
--#define VM_WARN_ON(cond) WARN_ON(cond)
--#define VM_WARN_ON_ONCE(cond) WARN_ON_ONCE(cond)
--#define VM_WARN_ONCE(cond, format...) WARN_ONCE(cond, format)
--#define VM_WARN(cond, format...) WARN(cond, format)
-+#define VM_WARN_ON(cond) (void)WARN_ON(cond)
-+#define VM_WARN_ON_ONCE(cond) (void)WARN_ON_ONCE(cond)
-+#define VM_WARN_ONCE(cond, format...) (void)WARN_ONCE(cond, format)
-+#define VM_WARN(cond, format...) (void)WARN(cond, format)
- #else
- #define VM_BUG_ON(cond) BUILD_BUG_ON_INVALID(cond)
- #define VM_BUG_ON_PAGE(cond, page) VM_BUG_ON(cond)
+diff --git a/drivers/gpu/drm/nouveau/nouveau_bo.c b/drivers/gpu/drm/nouveau/nouveau_bo.c
+index a2e6a81669e7..94b7798bdea4 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_bo.c
++++ b/drivers/gpu/drm/nouveau/nouveau_bo.c
+@@ -447,7 +447,7 @@ nouveau_bo_sync_for_device(struct nouveau_bo *nvbo)
+ 	struct ttm_dma_tt *ttm_dma = (struct ttm_dma_tt *)nvbo->bo.ttm;
+ 	int i;
+ 
+-	if (!ttm_dma)
++	if (!ttm_dma || !ttm_dma->dma_address)
+ 		return;
+ 
+ 	/* Don't waste time looping if the object is coherent */
+@@ -467,7 +467,7 @@ nouveau_bo_sync_for_cpu(struct nouveau_bo *nvbo)
+ 	struct ttm_dma_tt *ttm_dma = (struct ttm_dma_tt *)nvbo->bo.ttm;
+ 	int i;
+ 
+-	if (!ttm_dma)
++	if (!ttm_dma || !ttm_dma->dma_address)
+ 		return;
+ 
+ 	/* Don't waste time looping if the object is coherent */
 -- 
 2.30.2
 
