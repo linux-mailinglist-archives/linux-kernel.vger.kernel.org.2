@@ -2,171 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 716C53C2446
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6828E3C243C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231913AbhGINWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 09:22:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52240 "EHLO mail.kernel.org"
+        id S232026AbhGINVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 09:21:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51858 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231787AbhGINVy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 09:21:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F8C661357;
-        Fri,  9 Jul 2021 13:19:09 +0000 (UTC)
+        id S231934AbhGINVh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 09:21:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 74ED5613B6;
+        Fri,  9 Jul 2021 13:18:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1625836750;
-        bh=KAXRayC2x2u9eJ8yiuepek022ODdjR8LK9nnj7T6LRY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=0CAe+BBqa20wNLOUQ4qDsXq0UsHXsDtfY1a1HF1SsJ+IILR30mRetbl8jGZyEqv7f
-         xVjDErQFiIiyNFMAc8W//Jy9xmsHIeAJLGRSO1yAi2jDC6wKSb6hzbUXhbLA1z7dZK
-         yIyOMJ4nnJ4ku6wNW5OfF4Z8qeJbLo1ycter27I0=
+        s=korg; t=1625836733;
+        bh=2/6PFKcqQpIK27RimnGf9jRd+T7ijjCZEd7Fgyj2bVo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=nhFpbWdJUTz6/6Pmblr/mo+VrgQpt1AWgG80qHEXUChFZNDDiTgSMdigVJD8w3pQV
+         QWBGOGOsXdx9WjLiugDOCqBHFOKRuS2jXgJZ3Y9exOSQJZGuBBFvicmBJBUpActupL
+         6zvN2rVBmawM6+mApLennwznXnGUbpccWym38O1U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: [PATCH 4.14 00/25] 4.14.239-rc1 review
-Date:   Fri,  9 Jul 2021 15:18:31 +0200
-Message-Id: <20210709131627.928131764@linuxfoundation.org>
+        stable@vger.kernel.org, ManYi Li <limanyi@uniontech.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 5/9] scsi: sr: Return appropriate error code when disk is ejected
+Date:   Fri,  9 Jul 2021 15:18:32 +0200
+Message-Id: <20210709131550.250648459@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-MIME-Version: 1.0
+In-Reply-To: <20210709131542.410636747@linuxfoundation.org>
+References: <20210709131542.410636747@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.239-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.14.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.14.239-rc1
-X-KernelTest-Deadline: 2021-07-11T13:16+00:00
+MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 4.14.239 release.
-There are 25 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+From: ManYi Li <limanyi@uniontech.com>
 
-Responses should be made by Sun, 11 Jul 2021 13:14:09 +0000.
-Anything received after that time might be too late.
+[ Upstream commit 7dd753ca59d6c8cc09aa1ed24f7657524803c7f3 ]
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.239-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-and the diffstat can be found below.
+Handle a reported media event code of 3. This indicates that the media has
+been removed from the drive and user intervention is required to proceed.
+Return DISK_EVENT_EJECT_REQUEST in that case.
 
-thanks,
+Link: https://lore.kernel.org/r/20210611094402.23884-1-limanyi@uniontech.com
+Signed-off-by: ManYi Li <limanyi@uniontech.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/scsi/sr.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-greg k-h
+diff --git a/drivers/scsi/sr.c b/drivers/scsi/sr.c
+index 67a73ea0a615..5e51a39a0c27 100644
+--- a/drivers/scsi/sr.c
++++ b/drivers/scsi/sr.c
+@@ -216,6 +216,8 @@ static unsigned int sr_get_events(struct scsi_device *sdev)
+ 		return DISK_EVENT_EJECT_REQUEST;
+ 	else if (med->media_event_code == 2)
+ 		return DISK_EVENT_MEDIA_CHANGE;
++	else if (med->media_event_code == 3)
++		return DISK_EVENT_EJECT_REQUEST;
+ 	return 0;
+ }
+ 
+-- 
+2.30.2
 
--------------
-Pseudo-Shortlog of commits:
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 4.14.239-rc1
-
-Juergen Gross <jgross@suse.com>
-    xen/events: reset active flag for lateeoi events later
-
-Petr Mladek <pmladek@suse.com>
-    kthread: prevent deadlock when kthread_mod_delayed_work() races with kthread_cancel_delayed_work_sync()
-
-Petr Mladek <pmladek@suse.com>
-    kthread_worker: split code for canceling the delayed work timer
-
-Sean Young <sean@mess.org>
-    kfifo: DECLARE_KIFO_PTR(fifo, u64) does not work on arm 32 bit
-
-Christian König <christian.koenig@amd.com>
-    drm/nouveau: fix dma_address check for CPU/GPU sync
-
-ManYi Li <limanyi@uniontech.com>
-    scsi: sr: Return appropriate error code when disk is ejected
-
-Hugh Dickins <hughd@google.com>
-    mm, futex: fix shared futex pgoff on shmem huge page
-
-Hugh Dickins <hughd@google.com>
-    mm/thp: another PVMW_SYNC fix in page_vma_mapped_walk()
-
-Hugh Dickins <hughd@google.com>
-    mm/thp: fix page_vma_mapped_walk() if THP mapped by ptes
-
-Hugh Dickins <hughd@google.com>
-    mm: page_vma_mapped_walk(): get vma_address_end() earlier
-
-Hugh Dickins <hughd@google.com>
-    mm: page_vma_mapped_walk(): use goto instead of while (1)
-
-Hugh Dickins <hughd@google.com>
-    mm: page_vma_mapped_walk(): add a level of indentation
-
-Hugh Dickins <hughd@google.com>
-    mm: page_vma_mapped_walk(): crossing page table boundary
-
-Hugh Dickins <hughd@google.com>
-    mm: page_vma_mapped_walk(): prettify PVMW_MIGRATION block
-
-Hugh Dickins <hughd@google.com>
-    mm: page_vma_mapped_walk(): use pmde for *pvmw->pmd
-
-Hugh Dickins <hughd@google.com>
-    mm: page_vma_mapped_walk(): settle PageHuge on entry
-
-Hugh Dickins <hughd@google.com>
-    mm: page_vma_mapped_walk(): use page for pvmw->page
-
-Yang Shi <shy828301@gmail.com>
-    mm: thp: replace DEBUG_VM BUG with VM_WARN when unmap fails for split
-
-Jue Wang <juew@google.com>
-    mm/thp: fix page_address_in_vma() on file THP tails
-
-Hugh Dickins <hughd@google.com>
-    mm/thp: fix vma_address() if virtual address below file offset
-
-Hugh Dickins <hughd@google.com>
-    mm/thp: try_to_unmap() use TTU_SYNC for safe splitting
-
-Miaohe Lin <linmiaohe@huawei.com>
-    mm/rmap: use page_not_mapped in try_to_unmap()
-
-Miaohe Lin <linmiaohe@huawei.com>
-    mm/rmap: remove unneeded semicolon in page_not_mapped()
-
-Alex Shi <alex.shi@linux.alibaba.com>
-    mm: add VM_WARN_ON_ONCE_PAGE() macro
-
-Michal Hocko <mhocko@kernel.org>
-    include/linux/mmdebug.h: make VM_WARN* non-rvals
-
-
--------------
-
-Diffstat:
-
- Makefile                             |   4 +-
- drivers/gpu/drm/nouveau/nouveau_bo.c |   4 +-
- drivers/scsi/sr.c                    |   2 +
- drivers/xen/events/events_base.c     |  23 ++++-
- include/linux/hugetlb.h              |  16 ----
- include/linux/kfifo.h                |   3 +-
- include/linux/mmdebug.h              |  21 ++++-
- include/linux/pagemap.h              |  13 +--
- include/linux/rmap.h                 |   3 +-
- kernel/futex.c                       |   2 +-
- kernel/kthread.c                     |  77 +++++++++++------
- mm/huge_memory.c                     |  26 ++----
- mm/hugetlb.c                         |   5 +-
- mm/internal.h                        |  53 +++++++++---
- mm/page_vma_mapped.c                 | 160 ++++++++++++++++++++++-------------
- mm/rmap.c                            |  48 ++++++-----
- 16 files changed, 281 insertions(+), 179 deletions(-)
 
 
