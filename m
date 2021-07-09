@@ -2,205 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CB583C28D5
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF453C28E0
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229557AbhGISKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 14:10:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45274 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229459AbhGISKr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 14:10:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E7EFA613D1;
-        Fri,  9 Jul 2021 18:08:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625854083;
-        bh=g580cb8XE1EltER+O5uJzG51+6yzo/VUllKlQDQL0PM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J92z3dv+UUwreQ8GgWqq0beXpdRNvozazCwc1N5QVHivg3+pdY0TNe8mWyLx1jJBD
-         1FqE5cleRol+IE/4UsW8jMcr9SN9EtQLq+2UpCBa3O5w/QiZJXuREZoQvDDjZNWn5i
-         L+1viwDwHCO648jtrY2ry7r4vvkCa7MESWf/lwl2YTbRPkUFXQAcyc8EgSR26px46m
-         dG92LNanTCDHylp2S5BAZWb9TNRASTkLevV7iGNg9dgXiRwTB7/4rayiys2PwHuY7V
-         70BCDD7lEXjWfNxLTTYAmaRlhrX9oqh3xQm4bAAlmzxRjCSDqMOsSYPNo2yJ1kgxr0
-         kRQJvVf+UUh1Q==
-Date:   Fri, 9 Jul 2021 21:08:00 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Tony Luck <tony.luck@intel.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] x86/sgx: Track phase and type of SGX EPC pages
-Message-ID: <20210709180800.kpjlrvbljaknuncq@kernel.org>
-References: <20210708181423.1312359-1-tony.luck@intel.com>
- <20210708181423.1312359-2-tony.luck@intel.com>
+        id S230316AbhGISMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 14:12:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230109AbhGISMr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 14:12:47 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 976F0C0613DD
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 11:10:03 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so6505921pjo.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 11:10:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OS58rij80ElucW0PY66L5D8ExybPJH/1VgMC6duZHlU=;
+        b=go5RVxO2kU2+etrFfSYo+VyLT/24peH+yKtEuAV1pK4ASOt71ljZc69/msO+AOs6i7
+         fOyDdnkdLvrsk3LrtdRRlWFx3uTOD0xyo/L732NKQTseg8H7fmz5D82oLFNtGQIfcnK4
+         JhjVMtJB2lp2IQnICyNIWd4Dug0zI5FsholSkTe+T90w6bO02wObP/MQXq5GOKxqxP0J
+         K8YFOnkIZXZBItWwjYw+Li6GoBsR5yyMOggOOBa3Ick9gTbzVAsGG7w8+3CaMnZryQWr
+         PnSgP8cfXhax6lyhulFiDfQV4rOYiAnKeXt/+7Y8BMyIfZeJBvxxivt8hIthzRutqZ5t
+         FsEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OS58rij80ElucW0PY66L5D8ExybPJH/1VgMC6duZHlU=;
+        b=SSwN0/0I6jog/QS59rKys97/tMH70p4bO4FRJG/hN9EpG/LPpAJJPgxJOEGHkJDliF
+         QspgnFoHgwVCCCwdC3DH989GgBMFgYwf1yHgxT8ooouuT8Qz6VBPGoCkGR189AtXewUs
+         z0FJFztN0Ssc3hipP24He/G7MXxI2AjlMzU3XPGN3w8kgDK4GjXroSaWvIEaFQQW1FSB
+         gcfFqAptqZvbMuReL1IKNKNKT3tfceM1kc+es6mVczvXXmXQ5n5MvplAeVg1ije2p90W
+         rjhMHId6Ytg8wNXCslO3sr614zbSLDqhzetxxAJ7wmdSLIPZAge7HIiMDWRaYfDcdFgb
+         BU/g==
+X-Gm-Message-State: AOAM533u9JkBkL97Cs9dWaAXKdairMAu38ngrytXz+LWnaeO2ag96ZuS
+        qyXKSeaNnvj6L2R6Pq9mec0=
+X-Google-Smtp-Source: ABdhPJyEQMTdU+dbkSplr0x7yUpZrsCTQPP9k0UdRh8tLZ+tNWCO0MuXx7Hu1OoAykafDNxJuPcFXw==
+X-Received: by 2002:a17:90a:b00a:: with SMTP id x10mr176749pjq.77.1625854203158;
+        Fri, 09 Jul 2021 11:10:03 -0700 (PDT)
+Received: from tong-desktop.local ([2601:647:4200:13::844])
+        by smtp.googlemail.com with ESMTPSA id b65sm7003737pfa.32.2021.07.09.11.10.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Jul 2021 11:10:02 -0700 (PDT)
+From:   Tong Zhang <ztong0001@gmail.com>
+To:     VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Zack Rusin <zackr@vmware.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     Tong Zhang <ztong0001@gmail.com>
+Subject: [PATCH v1] fix vmwgfx compilation error due to a missing include
+Date:   Fri,  9 Jul 2021 11:09:43 -0700
+Message-Id: <20210709180944.2533114-1-ztong0001@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210708181423.1312359-2-tony.luck@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 08, 2021 at 11:14:20AM -0700, Tony Luck wrote:
-> Memory errors can be reported either synchronously as memory is accessed,
-> or asynchronously by speculative access or by a memory controller page
-> scrubber.  The life cycle of an EPC page takes it through:
-> 	dirty -> free -> in-use -> free.
-> 
-> Memory errors are reported using physical addresses. It is a simple
-> matter to find which sgx_epc_page structure maps a given address.
-> But then recovery code needs to be able to determine the current use of
-> the page to take the appropriate recovery action. Within the "in-use"
-> phase different actions are needed based on how the page is used in
-> the enclave.
-> 
-> Add new flags bits to describe the phase (with an extra bit for the new
-> phase of "poisoned"). Drop pages marked as poisoned instead of adding
-> them to a free list to make sure they are not re-used.
-> 
-> Add a type field to struct epc_page for how an in-use page has been
-> allocated. Re-use "enum sgx_page_type" for this type, with a couple
-> of additions for s/w types.
-> 
-> Signed-off-by: Tony Luck <tony.luck@intel.com>
-> ---
->  arch/x86/include/asm/sgx.h      |  6 ++++++
->  arch/x86/kernel/cpu/sgx/encl.c  |  4 ++--
->  arch/x86/kernel/cpu/sgx/ioctl.c |  4 ++--
->  arch/x86/kernel/cpu/sgx/main.c  | 21 +++++++++++++++++++--
->  arch/x86/kernel/cpu/sgx/sgx.h   | 14 ++++++++++++--
->  arch/x86/kernel/cpu/sgx/virt.c  |  2 +-
->  6 files changed, 42 insertions(+), 9 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/sgx.h b/arch/x86/include/asm/sgx.h
-> index 9c31e0ebc55b..9619a6d77a83 100644
-> --- a/arch/x86/include/asm/sgx.h
-> +++ b/arch/x86/include/asm/sgx.h
-> @@ -216,6 +216,8 @@ struct sgx_pageinfo {
->   * %SGX_PAGE_TYPE_REG:	a regular page
->   * %SGX_PAGE_TYPE_VA:	a VA page
->   * %SGX_PAGE_TYPE_TRIM:	a page in trimmed state
-> + *
-> + * Also used to track current use of &struct sgx_epc_page
->   */
->  enum sgx_page_type {
->  	SGX_PAGE_TYPE_SECS,
-> @@ -223,6 +225,10 @@ enum sgx_page_type {
->  	SGX_PAGE_TYPE_REG,
->  	SGX_PAGE_TYPE_VA,
->  	SGX_PAGE_TYPE_TRIM,
-> +
-> +	/* sgx_epc_page.type */
-> +	SGX_PAGE_TYPE_FREE = 100,
-> +	SGX_PAGE_TYPE_KVM = 101,
->  };
->  
->  #define SGX_NR_PAGE_TYPES	5
-> diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
-> index 3be203297988..abf6e1a704c0 100644
-> --- a/arch/x86/kernel/cpu/sgx/encl.c
-> +++ b/arch/x86/kernel/cpu/sgx/encl.c
-> @@ -72,7 +72,7 @@ static struct sgx_epc_page *sgx_encl_eldu(struct sgx_encl_page *encl_page,
->  	struct sgx_epc_page *epc_page;
->  	int ret;
->  
-> -	epc_page = sgx_alloc_epc_page(encl_page, false);
-> +	epc_page = sgx_alloc_epc_page(encl_page, SGX_PAGE_TYPE_REG, false);
->  	if (IS_ERR(epc_page))
->  		return epc_page;
->  
-> @@ -679,7 +679,7 @@ struct sgx_epc_page *sgx_alloc_va_page(void)
->  	struct sgx_epc_page *epc_page;
->  	int ret;
->  
-> -	epc_page = sgx_alloc_epc_page(NULL, true);
-> +	epc_page = sgx_alloc_epc_page(NULL,  SGX_PAGE_TYPE_VA, true);
->  	if (IS_ERR(epc_page))
->  		return ERR_CAST(epc_page);
->  
-> diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
-> index 83df20e3e633..a74ae00194cc 100644
-> --- a/arch/x86/kernel/cpu/sgx/ioctl.c
-> +++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-> @@ -83,7 +83,7 @@ static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
->  
->  	encl->backing = backing;
->  
-> -	secs_epc = sgx_alloc_epc_page(&encl->secs, true);
-> +	secs_epc = sgx_alloc_epc_page(&encl->secs, SGX_PAGE_TYPE_SECS, true);
->  	if (IS_ERR(secs_epc)) {
->  		ret = PTR_ERR(secs_epc);
->  		goto err_out_backing;
-> @@ -300,7 +300,7 @@ static int sgx_encl_add_page(struct sgx_encl *encl, unsigned long src,
->  	if (IS_ERR(encl_page))
->  		return PTR_ERR(encl_page);
->  
-> -	epc_page = sgx_alloc_epc_page(encl_page, true);
-> +	epc_page = sgx_alloc_epc_page(encl_page, SGX_PAGE_TYPE_REG, true);
->  	if (IS_ERR(epc_page)) {
->  		kfree(encl_page);
->  		return PTR_ERR(epc_page);
-> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-> index 63d3de02bbcc..643df87b3e01 100644
-> --- a/arch/x86/kernel/cpu/sgx/main.c
-> +++ b/arch/x86/kernel/cpu/sgx/main.c
-> @@ -401,7 +401,12 @@ static void sgx_reclaim_pages(void)
->  		section = &sgx_epc_sections[epc_page->section];
->  		node = section->node;
->  
-> +		/* drop poison pages instead of adding to free list */
-> +		if (epc_page->flags & SGX_EPC_PAGE_POISON)
-> +			continue;
-> +
->  		spin_lock(&node->lock);
-> +		epc_page->flags = SGX_EPC_PAGE_FREE;
->  		list_add_tail(&epc_page->list, &node->free_page_list);
->  		sgx_nr_free_pages++;
->  		spin_unlock(&node->lock);
-> @@ -560,6 +565,7 @@ int sgx_unmark_page_reclaimable(struct sgx_epc_page *page)
->  /**
->   * sgx_alloc_epc_page() - Allocate an EPC page
->   * @owner:	the owner of the EPC page
-> + * @type:	type of page being allocated
->   * @reclaim:	reclaim pages if necessary
->   *
->   * Iterate through EPC sections and borrow a free EPC page to the caller. When a
-> @@ -574,7 +580,7 @@ int sgx_unmark_page_reclaimable(struct sgx_epc_page *page)
->   *   an EPC page,
->   *   -errno on error
->   */
-> -struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
-> +struct sgx_epc_page *sgx_alloc_epc_page(void *owner, enum sgx_page_type type, bool reclaim)
->  {
->  	struct sgx_epc_page *page;
->  
-> @@ -582,6 +588,8 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
->  		page = __sgx_alloc_epc_page();
->  		if (!IS_ERR(page)) {
->  			page->owner = owner;
-> +			page->type = type;
-> +			page->flags = 0;
->  			break;
->  		}
->  
-> @@ -616,14 +624,22 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
->   * responsibility to make sure that the page is in uninitialized state. In other
->   * words, do EREMOVE, EWB or whatever operation is necessary before calling
->   * this function.
-> + *
-> + * Note that if the page has been tagged as poisoned, it is simply
-> + * dropped on the floor instead of added to the free list to make
-> + * sure we do not re-use it.
->   */
->  void sgx_free_epc_page(struct sgx_epc_page *page)
->  {
->  	struct sgx_epc_section *section = &sgx_epc_sections[page->section];
->  	struct sgx_numa_node *node = section->node;
->  
-> +	if (page->flags & SGX_EPC_PAGE_POISON)
-> +		return;
+This patch fixes vmwgfx driver compilation error due to a missing include
 
-I tend to think that it would be nice to collect them somewhere instead
-purposely leaking. E.g. this gives possibility to examine list with
-debugging tools.
+drivers/gpu/drm/vmwgfx/vmwgfx_drv.c: In function ‘vmw_vram_manager_init’:
+drivers/gpu/drm/vmwgfx/vmwgfx_drv.c:678:8: error: implicit declaration of function ‘ttm_range_man_init’ [-Werror=implicit-function-declaration]
+  678 |  ret = ttm_range_man_init(&dev_priv->bdev, TTM_PL_VRAM, false,
+      |        ^~~~~~~~~~~~~~~~~~
+drivers/gpu/drm/vmwgfx/vmwgfx_drv.c: In function ‘vmw_vram_manager_fini’:
+drivers/gpu/drm/vmwgfx/vmwgfx_drv.c:690:2: error: implicit declaration of function ‘ttm_range_man_fini’ [-Werror=implicit-function-declaration]
+  690 |  ttm_range_man_fini(&dev_priv->bdev, TTM_PL_VRAM);
+      |  ^~~~~~~~~~~~~~~~~~
+cc1: some warnings being treated as errors
 
-/Jarkko
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+---
+ drivers/gpu/drm/vmwgfx/vmwgfx_drv.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c b/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
+index 6f5ea00973e0..6eb93aa2f311 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
+@@ -37,6 +37,7 @@
+ #include <drm/drm_sysfs.h>
+ #include <drm/ttm/ttm_bo_driver.h>
+ #include <drm/ttm/ttm_placement.h>
++#include <drm/ttm/ttm_range_manager.h>
+ #include <generated/utsrelease.h>
+ 
+ #include "ttm_object.h"
+-- 
+2.25.1
+
