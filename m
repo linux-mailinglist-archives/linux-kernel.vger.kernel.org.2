@@ -2,411 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39D293C2B68
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 00:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47DEE3C2B65
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 00:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231163AbhGIWc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 18:32:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbhGIWcz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 18:32:55 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A65C0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 15:30:11 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id a2so11336141pgi.6
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 15:30:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Zu7nfuoGVnghpqd5EAwAWywe/m4wGfzvJeeGoNqQyKU=;
-        b=AMqEFY6pT7rbAO9aO3LJfW0n9bSGqFn8ToIg/HOXEb25aG4PSy8jaf+yUPQTSHmOu1
-         cte51ZFKFd6f1/ZvR15QXK+HCp5hEqTbI+PlhHLbRXWsVX9YqdeN0CFGl/Klohrg6Cpz
-         X4anR6PAKT3j+NIf07X1RJmZ3RaM2wXO+ck8Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Zu7nfuoGVnghpqd5EAwAWywe/m4wGfzvJeeGoNqQyKU=;
-        b=Tla1UOqBiNoIrwSyPJ4ZUK1qz+LXDI/MSW3UBy5X283f0TSjbCHgQlEjZH/TdUisRT
-         rXMl5tKHMUrV13BXy/k3ICai3eGM/qYn6pAG9E5tS91B8OOCI6DZA7KPPIRF2/MSSRg2
-         aA1NTXYPi2NYrfnbvD8/vOcP8Q0HET/4dtGQULqFDPRrmzdB87X7KnXcim3QWiXne/nj
-         ZOTLyLBCXzLgyDFCEFg1UJN6UXb+WRmQXfn3eoNxvCr2V9h9hZdLEB3Tlf04Dpxv8xQ7
-         sOnU/tzeSa7+NzrLFEX49AEXSx8xrTzWRZazaL/Q4HYEyRroqOOvi5PUmhDxCjQ8zNGe
-         SxPA==
-X-Gm-Message-State: AOAM532CRKjzS4TDD75hYm5jJs5mqgFFcUNnJKjVQCXcNLMkbony4z3X
-        LarXOYIxsz/kHcKa+XceS5sN8GiI/eTjmVl6
-X-Google-Smtp-Source: ABdhPJzB8Asoz56jdErTO4hhcvUSN2+/eRrvvEgtzxTJKPxbKfey86WR0Q2VYJRvcjab+k2YmV+R7Q==
-X-Received: by 2002:a65:568c:: with SMTP id v12mr41128093pgs.88.1625869811371;
-        Fri, 09 Jul 2021 15:30:11 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:b519:bd3e:1e31:1d0b])
-        by smtp.gmail.com with ESMTPSA id e1sm2596704pjc.5.2021.07.09.15.30.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 15:30:10 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Lyude Paul <lyude@redhat.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Robert Foss <robert.foss@linaro.org>
-Cc:     ville.syrjala@linux.intel.com,
-        Rajeev Nandan <rajeevny@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/dp: Move panel DP AUX backlight support to drm_dp_helper
-Date:   Fri,  9 Jul 2021 15:29:20 -0700
-Message-Id: <20210709152909.1.I23eb4cc5a680341e7b3e791632a635566fa5806a@changeid>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-MIME-Version: 1.0
+        id S230248AbhGIWce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 18:32:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53588 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229542AbhGIWcd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 18:32:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB7B96139A;
+        Fri,  9 Jul 2021 22:29:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1625869788;
+        bh=TAn+FzBS95wW3IA+etHMOKOSXxRjWCUe3WyWiWvBeTM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=UW3oTJyxZcXV4fosRLEHivkbSQC7f0D09pmKttrcLOu+PK2bFcBmO4NuqROC6TsCA
+         9BshaN7m2LiiD3wOzeTKmmkstc15l0HL68xuTx0lTUEbGZN+C77I4MJYVuvVNeLeHB
+         LqMzFlLjrKgeAPJ2mvtQUOzzpqC6rSaDpZOXA8sk=
+Date:   Fri, 9 Jul 2021 15:29:45 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     =?UTF-8?B?5p2o5qyi?= <link@vivo.com>
+Cc:     Mel Gorman <mgorman@techsingularity.net>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@vivo.com,
+        Uladzislau Rezki <urezki@gmail.com>
+Subject: Re: [PATCH] mm/vmalloc: try alloc_pages_bulk first to get order 0
+ pages fast
+Message-Id: <20210709152945.f2c373e8834d4b8488fd027f@linux-foundation.org>
+In-Reply-To: <ABEAoQDbD-*iJqfqrqFbUarq.3.1625824439751.Hmail.link@vivo.com>
+References: <20210709093852.GY3840@techsingularity.net>
+        <ABEAoQDbD-*iJqfqrqFbUarq.3.1625824439751.Hmail.link@vivo.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We were getting a depmod error:
-  depmod: ERROR: Cycle detected: drm_kms_helper -> drm -> drm_kms_helper
+On Fri, 9 Jul 2021 17:53:59 +0800 (GMT+08:00) 杨欢 <link@vivo.com> wrote:
 
-It looks like the rule is that drm_kms_helper can call into drm, but
-drm can't call into drm_kms_helper. That means we've got to move the
-DP AUX backlight support into drm_dp_helper.
+> >Thanks. I suggest you take a look at the current merge window and check
+> >if anything additional needs to be done after the vmalloc bulk allocation
+> Sorry for that, I will work in linux-next
 
-NOTE: as part of this, I didn't try to do any renames of the main
-registration function. Even though it's in the drm_dp_helper, it still
-feels very parallel to drm_panel_of_backlight().
-
-Fixes: 10f7b40e4f30 ("drm/panel: add basic DP AUX backlight support")
-Reported-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-Note that I've compile tested this, but I don't have a device setup
-yet that uses this code. Since the code is basically the same as it
-was this should be OK, but if Rajeev could confirm that nothing is
-broken that'd be nice.
-
- drivers/gpu/drm/drm_dp_helper.c | 108 ++++++++++++++++++++++++++++++++
- drivers/gpu/drm/drm_panel.c     | 108 --------------------------------
- include/drm/drm_dp_helper.h     |   3 +
- include/drm/drm_panel.h         |   8 ---
- 4 files changed, 111 insertions(+), 116 deletions(-)
-
-diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
-index 24bbc710c825..5b1c772e8f38 100644
---- a/drivers/gpu/drm/drm_dp_helper.c
-+++ b/drivers/gpu/drm/drm_dp_helper.c
-@@ -33,9 +33,17 @@
- #include <drm/drm_print.h>
- #include <drm/drm_vblank.h>
- #include <drm/drm_dp_mst_helper.h>
-+#include <drm/drm_panel.h>
- 
- #include "drm_crtc_helper_internal.h"
- 
-+struct dp_aux_backlight {
-+	struct backlight_device *base;
-+	struct drm_dp_aux *aux;
-+	struct drm_edp_backlight_info info;
-+	bool enabled;
-+};
-+
- /**
-  * DOC: dp helpers
-  *
-@@ -3462,3 +3470,103 @@ drm_edp_backlight_init(struct drm_dp_aux *aux, struct drm_edp_backlight_info *bl
- 	return 0;
- }
- EXPORT_SYMBOL(drm_edp_backlight_init);
-+
-+static int dp_aux_backlight_update_status(struct backlight_device *bd)
-+{
-+	struct dp_aux_backlight *bl = bl_get_data(bd);
-+	u16 brightness = backlight_get_brightness(bd);
-+	int ret = 0;
-+
-+	if (!backlight_is_blank(bd)) {
-+		if (!bl->enabled) {
-+			drm_edp_backlight_enable(bl->aux, &bl->info, brightness);
-+			bl->enabled = true;
-+			return 0;
-+		}
-+		ret = drm_edp_backlight_set_level(bl->aux, &bl->info, brightness);
-+	} else {
-+		if (bl->enabled) {
-+			drm_edp_backlight_disable(bl->aux, &bl->info);
-+			bl->enabled = false;
-+		}
-+	}
-+
-+	return ret;
-+}
-+
-+static const struct backlight_ops dp_aux_bl_ops = {
-+	.update_status = dp_aux_backlight_update_status,
-+};
-+
-+/**
-+ * drm_panel_dp_aux_backlight - create and use DP AUX backlight
-+ * @panel: DRM panel
-+ * @aux: The DP AUX channel to use
-+ *
-+ * Use this function to create and handle backlight if your panel
-+ * supports backlight control over DP AUX channel using DPCD
-+ * registers as per VESA's standard backlight control interface.
-+ *
-+ * When the panel is enabled backlight will be enabled after a
-+ * successful call to &drm_panel_funcs.enable()
-+ *
-+ * When the panel is disabled backlight will be disabled before the
-+ * call to &drm_panel_funcs.disable().
-+ *
-+ * A typical implementation for a panel driver supporting backlight
-+ * control over DP AUX will call this function at probe time.
-+ * Backlight will then be handled transparently without requiring
-+ * any intervention from the driver.
-+ *
-+ * drm_panel_dp_aux_backlight() must be called after the call to drm_panel_init().
-+ *
-+ * Return: 0 on success or a negative error code on failure.
-+ */
-+int drm_panel_dp_aux_backlight(struct drm_panel *panel, struct drm_dp_aux *aux)
-+{
-+	struct dp_aux_backlight *bl;
-+	struct backlight_properties props = { 0 };
-+	u16 current_level;
-+	u8 current_mode;
-+	u8 edp_dpcd[EDP_DISPLAY_CTL_CAP_SIZE];
-+	int ret;
-+
-+	if (!panel || !panel->dev || !aux)
-+		return -EINVAL;
-+
-+	ret = drm_dp_dpcd_read(aux, DP_EDP_DPCD_REV, edp_dpcd,
-+			       EDP_DISPLAY_CTL_CAP_SIZE);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (!drm_edp_backlight_supported(edp_dpcd)) {
-+		DRM_DEV_INFO(panel->dev, "DP AUX backlight is not supported\n");
-+		return 0;
-+	}
-+
-+	bl = devm_kzalloc(panel->dev, sizeof(*bl), GFP_KERNEL);
-+	if (!bl)
-+		return -ENOMEM;
-+
-+	bl->aux = aux;
-+
-+	ret = drm_edp_backlight_init(aux, &bl->info, 0, edp_dpcd,
-+				     &current_level, &current_mode);
-+	if (ret < 0)
-+		return ret;
-+
-+	props.type = BACKLIGHT_RAW;
-+	props.brightness = current_level;
-+	props.max_brightness = bl->info.max;
-+
-+	bl->base = devm_backlight_device_register(panel->dev, "dp_aux_backlight",
-+						  panel->dev, bl,
-+						  &dp_aux_bl_ops, &props);
-+	if (IS_ERR(bl->base))
-+		return PTR_ERR(bl->base);
-+
-+	panel->backlight = bl->base;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(drm_panel_dp_aux_backlight);
-diff --git a/drivers/gpu/drm/drm_panel.c b/drivers/gpu/drm/drm_panel.c
-index 4fa1e3bb1b78..f634371c717a 100644
---- a/drivers/gpu/drm/drm_panel.c
-+++ b/drivers/gpu/drm/drm_panel.c
-@@ -26,20 +26,12 @@
- #include <linux/module.h>
- 
- #include <drm/drm_crtc.h>
--#include <drm/drm_dp_helper.h>
- #include <drm/drm_panel.h>
- #include <drm/drm_print.h>
- 
- static DEFINE_MUTEX(panel_lock);
- static LIST_HEAD(panel_list);
- 
--struct dp_aux_backlight {
--	struct backlight_device *base;
--	struct drm_dp_aux *aux;
--	struct drm_edp_backlight_info info;
--	bool enabled;
--};
--
- /**
-  * DOC: drm panel
-  *
-@@ -350,106 +342,6 @@ int drm_panel_of_backlight(struct drm_panel *panel)
- 	return 0;
- }
- EXPORT_SYMBOL(drm_panel_of_backlight);
--
--static int dp_aux_backlight_update_status(struct backlight_device *bd)
--{
--	struct dp_aux_backlight *bl = bl_get_data(bd);
--	u16 brightness = backlight_get_brightness(bd);
--	int ret = 0;
--
--	if (!backlight_is_blank(bd)) {
--		if (!bl->enabled) {
--			drm_edp_backlight_enable(bl->aux, &bl->info, brightness);
--			bl->enabled = true;
--			return 0;
--		}
--		ret = drm_edp_backlight_set_level(bl->aux, &bl->info, brightness);
--	} else {
--		if (bl->enabled) {
--			drm_edp_backlight_disable(bl->aux, &bl->info);
--			bl->enabled = false;
--		}
--	}
--
--	return ret;
--}
--
--static const struct backlight_ops dp_aux_bl_ops = {
--	.update_status = dp_aux_backlight_update_status,
--};
--
--/**
-- * drm_panel_dp_aux_backlight - create and use DP AUX backlight
-- * @panel: DRM panel
-- * @aux: The DP AUX channel to use
-- *
-- * Use this function to create and handle backlight if your panel
-- * supports backlight control over DP AUX channel using DPCD
-- * registers as per VESA's standard backlight control interface.
-- *
-- * When the panel is enabled backlight will be enabled after a
-- * successful call to &drm_panel_funcs.enable()
-- *
-- * When the panel is disabled backlight will be disabled before the
-- * call to &drm_panel_funcs.disable().
-- *
-- * A typical implementation for a panel driver supporting backlight
-- * control over DP AUX will call this function at probe time.
-- * Backlight will then be handled transparently without requiring
-- * any intervention from the driver.
-- *
-- * drm_panel_dp_aux_backlight() must be called after the call to drm_panel_init().
-- *
-- * Return: 0 on success or a negative error code on failure.
-- */
--int drm_panel_dp_aux_backlight(struct drm_panel *panel, struct drm_dp_aux *aux)
--{
--	struct dp_aux_backlight *bl;
--	struct backlight_properties props = { 0 };
--	u16 current_level;
--	u8 current_mode;
--	u8 edp_dpcd[EDP_DISPLAY_CTL_CAP_SIZE];
--	int ret;
--
--	if (!panel || !panel->dev || !aux)
--		return -EINVAL;
--
--	ret = drm_dp_dpcd_read(aux, DP_EDP_DPCD_REV, edp_dpcd,
--			       EDP_DISPLAY_CTL_CAP_SIZE);
--	if (ret < 0)
--		return ret;
--
--	if (!drm_edp_backlight_supported(edp_dpcd)) {
--		DRM_DEV_INFO(panel->dev, "DP AUX backlight is not supported\n");
--		return 0;
--	}
--
--	bl = devm_kzalloc(panel->dev, sizeof(*bl), GFP_KERNEL);
--	if (!bl)
--		return -ENOMEM;
--
--	bl->aux = aux;
--
--	ret = drm_edp_backlight_init(aux, &bl->info, 0, edp_dpcd,
--				     &current_level, &current_mode);
--	if (ret < 0)
--		return ret;
--
--	props.type = BACKLIGHT_RAW;
--	props.brightness = current_level;
--	props.max_brightness = bl->info.max;
--
--	bl->base = devm_backlight_device_register(panel->dev, "dp_aux_backlight",
--						  panel->dev, bl,
--						  &dp_aux_bl_ops, &props);
--	if (IS_ERR(bl->base))
--		return PTR_ERR(bl->base);
--
--	panel->backlight = bl->base;
--
--	return 0;
--}
--EXPORT_SYMBOL(drm_panel_dp_aux_backlight);
- #endif
- 
- MODULE_AUTHOR("Thierry Reding <treding@nvidia.com>");
-diff --git a/include/drm/drm_dp_helper.h b/include/drm/drm_dp_helper.h
-index 729d5d82475e..4ca34f61ca01 100644
---- a/include/drm/drm_dp_helper.h
-+++ b/include/drm/drm_dp_helper.h
-@@ -30,6 +30,7 @@
- 
- struct drm_device;
- struct drm_dp_aux;
-+struct drm_panel;
- 
- /*
-  * Unless otherwise noted, all values are from the DP 1.1a spec.  Note that
-@@ -2200,6 +2201,8 @@ int drm_edp_backlight_enable(struct drm_dp_aux *aux, const struct drm_edp_backli
- 			     u16 level);
- int drm_edp_backlight_disable(struct drm_dp_aux *aux, const struct drm_edp_backlight_info *bl);
- 
-+int drm_panel_dp_aux_backlight(struct drm_panel *panel, struct drm_dp_aux *aux);
-+
- #ifdef CONFIG_DRM_DP_CEC
- void drm_dp_cec_irq(struct drm_dp_aux *aux);
- void drm_dp_cec_register_connector(struct drm_dp_aux *aux,
-diff --git a/include/drm/drm_panel.h b/include/drm/drm_panel.h
-index 71aac751a032..4602f833eb51 100644
---- a/include/drm/drm_panel.h
-+++ b/include/drm/drm_panel.h
-@@ -32,7 +32,6 @@ struct backlight_device;
- struct device_node;
- struct drm_connector;
- struct drm_device;
--struct drm_dp_aux;
- struct drm_panel;
- struct display_timing;
- 
-@@ -209,18 +208,11 @@ static inline int of_drm_get_panel_orientation(const struct device_node *np,
- #if IS_ENABLED(CONFIG_DRM_PANEL) && (IS_BUILTIN(CONFIG_BACKLIGHT_CLASS_DEVICE) || \
- 	(IS_MODULE(CONFIG_DRM) && IS_MODULE(CONFIG_BACKLIGHT_CLASS_DEVICE)))
- int drm_panel_of_backlight(struct drm_panel *panel);
--int drm_panel_dp_aux_backlight(struct drm_panel *panel, struct drm_dp_aux *aux);
- #else
- static inline int drm_panel_of_backlight(struct drm_panel *panel)
- {
- 	return 0;
- }
--
--static inline int drm_panel_dp_aux_backlight(struct drm_panel *panel,
--					     struct drm_dp_aux *aux)
--{
--	return 0;
--}
- #endif
- 
- #endif
--- 
-2.32.0.93.g670b81a890-goog
-
+That material is now in mainline, so work against Linus's 5.14-rc1 please.
