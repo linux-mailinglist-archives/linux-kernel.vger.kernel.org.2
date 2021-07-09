@@ -2,187 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D5E43C28CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 19:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A3A3C28D2
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 20:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230089AbhGISCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 14:02:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44686 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229459AbhGISCc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 14:02:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F3E7761283;
+        id S230139AbhGISCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 14:02:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55994 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230106AbhGISCm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 14:02:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625853598;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=41TcmMi84uP8FXnE7KMs91C429FUdwl3NuxFrKdIilI=;
+        b=RnVAPiDT/uXUXVt1PJDAdOcCrdnTD/zaR2Cx4ljIOPgVdzlAi9orPnmi8RNmsqD0JQTOkw
+        57r73R2QWH6dJDjVBCleyEiDo5EMiF04VhjcC6AC2yaS1xiuglymJF7DU85FpNhen67NeK
+        35Z33eCVoiAEqywolWPcrogEyWIRGZ8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-597-i47g4pAXP8-QiKd9E8HfUg-1; Fri, 09 Jul 2021 13:59:54 -0400
+X-MC-Unique: i47g4pAXP8-QiKd9E8HfUg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8F91E5074B;
+        Fri,  9 Jul 2021 17:59:52 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-116-62.rdu2.redhat.com [10.10.116.62])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6522819D9F;
         Fri,  9 Jul 2021 17:59:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625853589;
-        bh=f5Fvxbr/aBQAphMEZtDhZtTNqhCI3uozp6rs0YUYld0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iypEH2VRyJy22TmGmEQULP1P7HV2JE46MLZoAIc/0TZvYe4rxng5axBz9iHF9mXL+
-         Z0jDjor+anrQya7dvSbdA8GCxBE3sJ7ilfdfoOna/UXxpmnnXEuQAXw70meJfrWs1k
-         U1kJPvsD2/lMq1Q6xYUZnWplgSe2731yfwBKTLyug9h/vpv+a/g1jN7TqTLEEoMdCQ
-         xVSCsCTA15f6QitqvG2hKHwpy0xVUE2xLpHIo1pv6JklTmDPzOqUJPpTpxSwSCPkjZ
-         q8rAJvYnYyQeNP6fvVSY3v3QT3+JJYRo+z+aaxmCJCDbZmbFXep3zueZu0Q/nsby8j
-         m4zLWfYMsbJLQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 97D2740B1A; Fri,  9 Jul 2021 14:59:46 -0300 (-03)
-Date:   Fri, 9 Jul 2021 14:59:46 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>, nakamura.shun@fujitsu.com,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH 7/7] libperf: Add tests for perf_evlist__set_leader
- function
-Message-ID: <YOiOkgTnd8NC/k+P@kernel.org>
-References: <20210706151704.73662-1-jolsa@kernel.org>
- <20210706151704.73662-8-jolsa@kernel.org>
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id E840E22054F; Fri,  9 Jul 2021 13:59:47 -0400 (EDT)
+Date:   Fri, 9 Jul 2021 13:59:47 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, virtio-fs@redhat.com, dwalsh@redhat.com,
+        dgilbert@redhat.com, casey.schaufler@intel.com,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        tytso@mit.edu, miklos@szeredi.hu, gscrivan@redhat.com,
+        jack@suse.cz, Christoph Hellwig <hch@infradead.org>,
+        bfields@redhat.com
+Subject: Re: [PATCH v2 1/1] xattr: Allow user.* xattr on symlink and special
+ files
+Message-ID: <20210709175947.GB398382@redhat.com>
+References: <20210708175738.360757-1-vgoyal@redhat.com>
+ <20210708175738.360757-2-vgoyal@redhat.com>
+ <20210709091915.2bd4snyfjndexw2b@wittgenstein>
+ <20210709152737.GA398382@redhat.com>
+ <710d1c6f-d477-384f-0cc1-8914258f1fb1@schaufler-ca.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210706151704.73662-8-jolsa@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <710d1c6f-d477-384f-0cc1-8914258f1fb1@schaufler-ca.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Jul 06, 2021 at 05:17:04PM +0200, Jiri Olsa escreveu:
-> Adding test for newly added perf_evlist__set_leader function.
-
-Thanks, applied.
-
-- Arnaldo
-
- 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/lib/perf/tests/test-evlist.c | 27 +++++++++++++++++++++------
->  1 file changed, 21 insertions(+), 6 deletions(-)
+On Fri, Jul 09, 2021 at 08:34:41AM -0700, Casey Schaufler wrote:
+> On 7/9/2021 8:27 AM, Vivek Goyal wrote:
+> > On Fri, Jul 09, 2021 at 11:19:15AM +0200, Christian Brauner wrote:
+> >> On Thu, Jul 08, 2021 at 01:57:38PM -0400, Vivek Goyal wrote:
+> >>> Currently user.* xattr are not allowed on symlink and special files.
+> >>>
+> >>> man xattr and recent discussion suggested that primary reason for this
+> >>> restriction is how file permissions for symlinks and special files
+> >>> are little different from regular files and directories.
+> >>>
+> >>> For symlinks, they are world readable/writable and if user xattr were
+> >>> to be permitted, it will allow unpriviliged users to dump a huge amount
+> >>> of user.* xattrs on symlinks without any control.
+> >>>
+> >>> For special files, permissions typically control capability to read/write
+> >>> from devices (and not necessarily from filesystem). So if a user can
+> >>> write to device (/dev/null), does not necessarily mean it should be allowed
+> >>> to write large number of user.* xattrs on the filesystem device node is
+> >>> residing in.
+> >>>
+> >>> This patch proposes to relax the restrictions a bit and allow file owner
+> >>> or priviliged user (CAP_FOWNER), to be able to read/write user.* xattrs
+> >>> on symlink and special files.
+> >>>
+> >>> virtiofs daemon has a need to store user.* xatrrs on all the files
+> >>> (including symlinks and special files), and currently that fails. This
+> >>> patch should help.
+> >>>
+> >>> Link: https://lore.kernel.org/linux-fsdevel/20210625191229.1752531-1-vgoyal@redhat.com/
+> >>> Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+> >>> ---
+> >> Seems reasonable and useful.
+> >> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+> >>
+> >> One question, do all filesystem supporting xattrs deal with setting them
+> >> on symlinks/device files correctly?
+> > Wrote a simple bash script to do setfattr/getfattr user.foo xattr on
+> > symlink and device node on ext4, xfs and btrfs and it works fine.
 > 
-> diff --git a/tools/lib/perf/tests/test-evlist.c b/tools/lib/perf/tests/test-evlist.c
-> index 7435529fb21c..c67c83399170 100644
-> --- a/tools/lib/perf/tests/test-evlist.c
-> +++ b/tools/lib/perf/tests/test-evlist.c
-> @@ -19,6 +19,7 @@
->  #include <internal/tests.h>
->  #include <api/fs/fs.h>
->  #include "tests.h"
-> +#include <internal/evsel.h>
->  
->  static int libperf_print(enum libperf_print_level level,
->  			 const char *fmt, va_list ap)
-> @@ -30,7 +31,7 @@ static int test_stat_cpu(void)
->  {
->  	struct perf_cpu_map *cpus;
->  	struct perf_evlist *evlist;
-> -	struct perf_evsel *evsel;
-> +	struct perf_evsel *evsel, *leader;
->  	struct perf_event_attr attr1 = {
->  		.type	= PERF_TYPE_SOFTWARE,
->  		.config	= PERF_COUNT_SW_CPU_CLOCK,
-> @@ -47,7 +48,7 @@ static int test_stat_cpu(void)
->  	evlist = perf_evlist__new();
->  	__T("failed to create evlist", evlist);
->  
-> -	evsel = perf_evsel__new(&attr1);
-> +	evsel = leader = perf_evsel__new(&attr1);
->  	__T("failed to create evsel1", evsel);
->  
->  	perf_evlist__add(evlist, evsel);
-> @@ -57,6 +58,10 @@ static int test_stat_cpu(void)
->  
->  	perf_evlist__add(evlist, evsel);
->  
-> +	perf_evlist__set_leader(evlist);
-> +	__T("failed to set leader", leader->leader == leader);
-> +	__T("failed to set leader", evsel->leader  == leader);
-> +
->  	perf_evlist__set_maps(evlist, cpus, NULL);
->  
->  	err = perf_evlist__open(evlist);
-> @@ -85,7 +90,7 @@ static int test_stat_thread(void)
->  	struct perf_counts_values counts = { .val = 0 };
->  	struct perf_thread_map *threads;
->  	struct perf_evlist *evlist;
-> -	struct perf_evsel *evsel;
-> +	struct perf_evsel *evsel, *leader;
->  	struct perf_event_attr attr1 = {
->  		.type	= PERF_TYPE_SOFTWARE,
->  		.config	= PERF_COUNT_SW_CPU_CLOCK,
-> @@ -104,7 +109,7 @@ static int test_stat_thread(void)
->  	evlist = perf_evlist__new();
->  	__T("failed to create evlist", evlist);
->  
-> -	evsel = perf_evsel__new(&attr1);
-> +	evsel = leader = perf_evsel__new(&attr1);
->  	__T("failed to create evsel1", evsel);
->  
->  	perf_evlist__add(evlist, evsel);
-> @@ -114,6 +119,10 @@ static int test_stat_thread(void)
->  
->  	perf_evlist__add(evlist, evsel);
->  
-> +	perf_evlist__set_leader(evlist);
-> +	__T("failed to set leader", leader->leader == leader);
-> +	__T("failed to set leader", evsel->leader  == leader);
-> +
->  	perf_evlist__set_maps(evlist, NULL, threads);
->  
->  	err = perf_evlist__open(evlist);
-> @@ -136,7 +145,7 @@ static int test_stat_thread_enable(void)
->  	struct perf_counts_values counts = { .val = 0 };
->  	struct perf_thread_map *threads;
->  	struct perf_evlist *evlist;
-> -	struct perf_evsel *evsel;
-> +	struct perf_evsel *evsel, *leader;
->  	struct perf_event_attr attr1 = {
->  		.type	  = PERF_TYPE_SOFTWARE,
->  		.config	  = PERF_COUNT_SW_CPU_CLOCK,
-> @@ -157,7 +166,7 @@ static int test_stat_thread_enable(void)
->  	evlist = perf_evlist__new();
->  	__T("failed to create evlist", evlist);
->  
-> -	evsel = perf_evsel__new(&attr1);
-> +	evsel = leader = perf_evsel__new(&attr1);
->  	__T("failed to create evsel1", evsel);
->  
->  	perf_evlist__add(evlist, evsel);
-> @@ -167,6 +176,10 @@ static int test_stat_thread_enable(void)
->  
->  	perf_evlist__add(evlist, evsel);
->  
-> +	perf_evlist__set_leader(evlist);
-> +	__T("failed to set leader", leader->leader == leader);
-> +	__T("failed to set leader", evsel->leader  == leader);
-> +
->  	perf_evlist__set_maps(evlist, NULL, threads);
->  
->  	err = perf_evlist__open(evlist);
-> @@ -254,6 +267,7 @@ static int test_mmap_thread(void)
->  
->  	evsel = perf_evsel__new(&attr);
->  	__T("failed to create evsel1", evsel);
-> +	__T("failed to set leader", evsel->leader == evsel);
->  
->  	perf_evlist__add(evlist, evsel);
->  
-> @@ -339,6 +353,7 @@ static int test_mmap_cpus(void)
->  
->  	evsel = perf_evsel__new(&attr);
->  	__T("failed to create evsel1", evsel);
-> +	__T("failed to set leader", evsel->leader == evsel);
->  
->  	perf_evlist__add(evlist, evsel);
->  
-> -- 
-> 2.31.1
+> How about nfs, tmpfs, overlayfs and/or some of the other less conventional
+> filesystems?
+
+tmpfs does not support user.* xattr at all on any kind of files.
+
+overlayfs works fine. I updated my test too.
+
+nfs seems to have some issues. 
+
+- I can set user.foo xattr on symlink and query it back using xattr name.
+
+  getfattr -h -n user.foo foo-link.txt
+
+  But when I try to dump all xattrs on this file, user.foo is being
+  filtered out it looks like. Not sure why.
+
+- I can't set "user.foo" xattr on a device node on nfs and I get
+  "Permission denied". I am assuming nfs server is returning this.
+  I am using knfsd with following in /etc/exports.
+
+  /mnt/test/nfs-server 127.0.0.1(insecure,no_root_squash,rw,async)
+
+Copying Bruce. He might have an idea.
+
+Thanks
+Vivek
+
+> 
+> >
+> > https://github.com/rhvgoyal/misc/blob/master/generic-programs/user-xattr-special-files.sh
+> >
+> > I probably can add some more filesystems to test.
+> >
+> > Thanks
+> > Vivek
+> >
+> >>>  fs/xattr.c | 10 ++++++----
+> >>>  1 file changed, 6 insertions(+), 4 deletions(-)
+> >>>
+> >>> diff --git a/fs/xattr.c b/fs/xattr.c
+> >>> index 5c8c5175b385..2f1855c8b620 100644
+> >>> --- a/fs/xattr.c
+> >>> +++ b/fs/xattr.c
+> >>> @@ -120,12 +120,14 @@ xattr_permission(struct user_namespace *mnt_userns, struct inode *inode,
+> >>>  	}
+> >>>  
+> >>>  	/*
+> >>> -	 * In the user.* namespace, only regular files and directories can have
+> >>> -	 * extended attributes. For sticky directories, only the owner and
+> >>> -	 * privileged users can write attributes.
+> >>> +	 * In the user.* namespace, for symlinks and special files, only
+> >>> +	 * the owner and priviliged users can read/write attributes.
+> >>> +	 * For sticky directories, only the owner and privileged users can
+> >>> +	 * write attributes.
+> >>>  	 */
+> >>>  	if (!strncmp(name, XATTR_USER_PREFIX, XATTR_USER_PREFIX_LEN)) {
+> >>> -		if (!S_ISREG(inode->i_mode) && !S_ISDIR(inode->i_mode))
+> >>> +		if (!S_ISREG(inode->i_mode) && !S_ISDIR(inode->i_mode) &&
+> >>> +		    !inode_owner_or_capable(mnt_userns, inode))
+> >>>  			return (mask & MAY_WRITE) ? -EPERM : -ENODATA;
+> >>>  		if (S_ISDIR(inode->i_mode) && (inode->i_mode & S_ISVTX) &&
+> >>>  		    (mask & MAY_WRITE) &&
+> >>> -- 
+> >>> 2.25.4
+> >>>
 > 
 
--- 
-
-- Arnaldo
