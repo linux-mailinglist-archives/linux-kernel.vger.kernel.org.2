@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4AA13C1DD9
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 05:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09AC33C1DDA
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 05:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231256AbhGIDiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 23:38:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54108 "EHLO
+        id S231253AbhGIDiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 23:38:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231187AbhGIDiL (ORCPT
+        with ESMTP id S231252AbhGIDiQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 23:38:11 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A97C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 20:35:28 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id y4so6094993pgl.10
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 20:35:28 -0700 (PDT)
+        Thu, 8 Jul 2021 23:38:16 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 226ABC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Jul 2021 20:35:32 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id x3so3875703pfc.11
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Jul 2021 20:35:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=2VUfXQzWtFRM7U68C/zyfMuk93kjPlYa9PR0xxD2xic=;
-        b=B3jOGSNdch75Pk9zvvAHQWxHiYcXwurhghja4Glu3ELo0CQiPIkJpTVx4MhlAVQzHK
-         PsqQZHnJ+jdpSGgw30X1l+4YvHL9SsT5H+Oi9sWXRR1gz2SJC13mAu38I8tejIWNArHB
-         Ax+pBWP9zMHVtxVBgDkaoEw9myXHEF1xMrvv8=
+        bh=aPud1GyRqsHfWkLqb0FlXVgreTjJC2V6WztaIayyWSM=;
+        b=Oz19EtwvXHFJ9xThJtjG3VWdFo2q8LB56VxV2Ho+NUVxgWk2St/DulPnKjFgaZaIiB
+         pcj5R/byIMkf2u3WLU+JQEWFbNfaf5Cw/+k5BpV5evK5JfGnqmeBBrnTgSxbK6h/Ot3j
+         SRsxRPCMMc6Wc4sdI0avoGomEXuYl9aUN1nlI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=2VUfXQzWtFRM7U68C/zyfMuk93kjPlYa9PR0xxD2xic=;
-        b=HlPXVwpkXMuLKtQXEnLgHTdzEp5chMxWktIWaK0gEs0SPvejBx1Rui6A+7CFi6iW7a
-         aD9vdECDri8v8xPLCtfXDcmTWOUnTy1KqaZ4wZ6CmDcDg4/jVIRaElHm156FbZiBN3Om
-         eE7paVqK6dFmiFVe7GbHK09CpUH6utLuPAOu9wpxh+3gHourNyt6uJ6PTNzu9BhAQHlE
-         HIr8V4z0+entWzYW6fM6OvfvTk/tVCWcEN+hQ2Mj9FaiN6pm5b6dBsPPhAvEdoRh6gve
-         LLnAxRDYIZxXtO7S82CZeYtQOBhCQUgM+jg8J4GBD7DFJ+ztQHMy59nqd8Ith/qGkjUX
-         XEYA==
-X-Gm-Message-State: AOAM533bXOVfFFNOOFXr0Dvk7Xv5Zhjb75wOJJY6ekO8zl/H8u0f0rJh
-        ayOQLWEZc4H09w7e9KqhDCNaGg==
-X-Google-Smtp-Source: ABdhPJw3/4Aeqw6xIS1A2FgwKChh7mQPgc7V2haArsEw5MbJC4ev9VjMc/Ol2MIfkJ86tzswkqEJyA==
-X-Received: by 2002:a63:2009:: with SMTP id g9mr35199752pgg.105.1625801728043;
-        Thu, 08 Jul 2021 20:35:28 -0700 (PDT)
+        bh=aPud1GyRqsHfWkLqb0FlXVgreTjJC2V6WztaIayyWSM=;
+        b=OclgDj9XtgwnQMF4weUlHd9dNGp0QN2lqvvWXKgKPbu7b63+N/wey0fzjdNdRGXmf1
+         ZCnN79rzWt9Ds/TZ3imhnId0Zjxg/L6geYmfXVigl1C9d0e4mvebqXYatYWIOuXBNKLJ
+         6GPCeq79mzBhjGWTt3GF1QcDwPkVL2ck5ewQVIont0hSg/QkknnEQHih34To06LqFPMV
+         41qV/CZRuE3da7A9MzPT0LTwImqh4xi4oqAaPz3JQ0F60SpD5hA2rJUZOGwoEdmZjOWa
+         OnVsK4KTLwRMpKJxLoyRIHdDCNjXSGXUsKJ/2zyuYEHHfChUdvl2A3kfx/eq1T4SWCT2
+         ymxA==
+X-Gm-Message-State: AOAM532vvwhat9Nk/cIj9Xi51cDPzbMPoJnhlSG482QcWVJCbk22+o07
+        nJHnKoMwpgYFCKGd4QV2sAZMAQ==
+X-Google-Smtp-Source: ABdhPJygOn61MoRfFdo0T28bisoiZKhSuqrDH85f31YMxg2ilbL/TX1nGtNYAbIP3F/aEqnvt2zNIg==
+X-Received: by 2002:a63:794:: with SMTP id 142mr35500830pgh.198.1625801731764;
+        Thu, 08 Jul 2021 20:35:31 -0700 (PDT)
 Received: from localhost ([2401:fa00:8f:203:d47a:af0a:d5b9:e774])
-        by smtp.gmail.com with UTF8SMTPSA id u37sm4194501pfg.140.2021.07.08.20.35.26
+        by smtp.gmail.com with UTF8SMTPSA id g9sm247857pfr.133.2021.07.08.20.35.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Jul 2021 20:35:27 -0700 (PDT)
+        Thu, 08 Jul 2021 20:35:31 -0700 (PDT)
 From:   David Stevens <stevensd@chromium.org>
 X-Google-Original-From: David Stevens <stevensd@google.com>
 To:     Robin Murphy <robin.murphy@arm.com>
@@ -52,9 +52,9 @@ Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
         Lu Baolu <baolu.lu@linux.intel.com>,
         Tom Murphy <murphyt7@tcd.ie>, iommu@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org, David Stevens <stevensd@chromium.org>
-Subject: [PATCH v2 3/4] dma-iommu: pass SKIP_CPU_SYNC to swiotlb unmap
-Date:   Fri,  9 Jul 2021 12:35:01 +0900
-Message-Id: <20210709033502.3545820-4-stevensd@google.com>
+Subject: [PATCH v2 4/4] dma-iommu: Check CONFIG_SWIOTLB more broadly
+Date:   Fri,  9 Jul 2021 12:35:02 +0900
+Message-Id: <20210709033502.3545820-5-stevensd@google.com>
 X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
 In-Reply-To: <20210709033502.3545820-1-stevensd@google.com>
 References: <20210709033502.3545820-1-stevensd@google.com>
@@ -66,29 +66,104 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: David Stevens <stevensd@chromium.org>
 
-If SKIP_CPU_SYNC isn't already set, then iommu_dma_unmap_(page|sg) has
-already called iommu_dma_sync_(single|sg)_for_cpu, so there is no need
-to copy from the bounce buffer again.
+Introduce a new dev_use_swiotlb function to guard swiotlb code, instead
+of overloading dev_is_untrusted. This allows CONFIG_SWIOTLB to be
+checked more broadly, so the swiotlb related code can be removed more
+aggressively.
 
 Signed-off-by: David Stevens <stevensd@chromium.org>
 ---
- drivers/iommu/dma-iommu.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/iommu/dma-iommu.c | 24 ++++++++++++++----------
+ 1 file changed, 14 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-index e79e274d2dc5..0a9a9a343e64 100644
+index 0a9a9a343e64..d8a0764c69aa 100644
 --- a/drivers/iommu/dma-iommu.c
 +++ b/drivers/iommu/dma-iommu.c
-@@ -505,7 +505,8 @@ static void __iommu_dma_unmap_swiotlb(struct device *dev, dma_addr_t dma_addr,
- 	__iommu_dma_unmap(dev, dma_addr, size);
- 
- 	if (unlikely(is_swiotlb_buffer(phys)))
--		swiotlb_tbl_unmap_single(dev, phys, size, dir, attrs);
-+		swiotlb_tbl_unmap_single(dev, phys, size, dir,
-+					 attrs | DMA_ATTR_SKIP_CPU_SYNC);
+@@ -315,6 +315,11 @@ static bool dev_is_untrusted(struct device *dev)
+ 	return dev_is_pci(dev) && to_pci_dev(dev)->untrusted;
  }
  
- static dma_addr_t __iommu_dma_map(struct device *dev, phys_addr_t phys,
++static bool dev_use_swiotlb(struct device *dev)
++{
++	return IS_ENABLED(CONFIG_SWIOTLB) && dev_is_untrusted(dev);
++}
++
+ /**
+  * iommu_dma_init_domain - Initialise a DMA mapping domain
+  * @domain: IOMMU domain previously prepared by iommu_get_dma_cookie()
+@@ -552,8 +557,7 @@ static dma_addr_t __iommu_dma_map_swiotlb(struct device *dev, phys_addr_t phys,
+ 	 * If both the physical buffer start address and size are
+ 	 * page aligned, we don't need to use a bounce page.
+ 	 */
+-	if (IS_ENABLED(CONFIG_SWIOTLB) && dev_is_untrusted(dev) &&
+-	    iova_offset(iovad, phys | org_size)) {
++	if (dev_use_swiotlb(dev) && iova_offset(iovad, phys | org_size)) {
+ 		aligned_size = iova_align(iovad, org_size);
+ 		phys = swiotlb_tbl_map_single(dev, phys, org_size,
+ 					      aligned_size, dir, attrs);
+@@ -778,7 +782,7 @@ static void iommu_dma_sync_single_for_cpu(struct device *dev,
+ {
+ 	phys_addr_t phys;
+ 
+-	if (dev_is_dma_coherent(dev) && !dev_is_untrusted(dev))
++	if (dev_is_dma_coherent(dev) && !dev_use_swiotlb(dev))
+ 		return;
+ 
+ 	phys = iommu_iova_to_phys(iommu_get_dma_domain(dev), dma_handle);
+@@ -794,7 +798,7 @@ static void iommu_dma_sync_single_for_device(struct device *dev,
+ {
+ 	phys_addr_t phys;
+ 
+-	if (dev_is_dma_coherent(dev) && !dev_is_untrusted(dev))
++	if (dev_is_dma_coherent(dev) && !dev_use_swiotlb(dev))
+ 		return;
+ 
+ 	phys = iommu_iova_to_phys(iommu_get_dma_domain(dev), dma_handle);
+@@ -812,10 +816,10 @@ static void iommu_dma_sync_sg_for_cpu(struct device *dev,
+ 	struct scatterlist *sg;
+ 	int i;
+ 
+-	if (dev_is_dma_coherent(dev) && !dev_is_untrusted(dev))
++	if (dev_is_dma_coherent(dev) && !dev_use_swiotlb(dev))
+ 		return;
+ 
+-	if (dev_is_untrusted(dev))
++	if (dev_use_swiotlb(dev))
+ 		for_each_sg(sgl, sg, nelems, i)
+ 			iommu_dma_sync_single_for_cpu(dev, sg_dma_address(sg),
+ 						      sg->length, dir);
+@@ -832,10 +836,10 @@ static void iommu_dma_sync_sg_for_device(struct device *dev,
+ 	struct scatterlist *sg;
+ 	int i;
+ 
+-	if (dev_is_dma_coherent(dev) && !dev_is_untrusted(dev))
++	if (dev_is_dma_coherent(dev) && !dev_use_swiotlb(dev))
+ 		return;
+ 
+-	if (dev_is_untrusted(dev))
++	if (dev_use_swiotlb(dev))
+ 		for_each_sg(sgl, sg, nelems, i)
+ 			iommu_dma_sync_single_for_device(dev,
+ 							 sg_dma_address(sg),
+@@ -996,7 +1000,7 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
+ 	    iommu_deferred_attach(dev, domain))
+ 		return 0;
+ 
+-	if (dev_is_untrusted(dev))
++	if (dev_use_swiotlb(dev))
+ 		return iommu_dma_map_sg_swiotlb(dev, sg, nents, dir, attrs);
+ 
+ 	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+@@ -1071,7 +1075,7 @@ static void iommu_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
+ 	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+ 		iommu_dma_sync_sg_for_cpu(dev, sg, nents, dir);
+ 
+-	if (dev_is_untrusted(dev)) {
++	if (dev_use_swiotlb(dev)) {
+ 		iommu_dma_unmap_sg_swiotlb(dev, sg, nents, dir, attrs);
+ 		return;
+ 	}
 -- 
 2.32.0.93.g670b81a890-goog
 
