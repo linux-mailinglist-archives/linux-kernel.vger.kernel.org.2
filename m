@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 962983C2A35
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 22:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9502A3C2A36
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 22:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230233AbhGIURn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 16:17:43 -0400
+        id S230373AbhGIURs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 16:17:48 -0400
 Received: from alexa-out.qualcomm.com ([129.46.98.28]:38692 "EHLO
         alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhGIURm (ORCPT
+        with ESMTP id S230248AbhGIURq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 16:17:42 -0400
+        Fri, 9 Jul 2021 16:17:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1625861699; x=1657397699;
+  t=1625861702; x=1657397702;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=Wgo+omebJYEWKZ79ff1dd/pFYzm25o7WjIkM4InncOU=;
-  b=zfaGQSs2aySBeF4F4WYR38bqZOTlsnw/a3oPOhC/ZyWubTHrzK/jQS+E
-   0bipohzwj98jYKD+UIkWdZqt66pdZq1vNumyhIIJDOWN6+0ru+qQqRYkw
-   gXboQ1KXRqjKkbcSyxJ7sFT+ArNuZkM2sPmnpsp1qwNgtzLkAlDtKbnG4
+  bh=K0lIyjvUgoASwxEGub5vMi8lcTpYRSeKoIumEtCXMTY=;
+  b=ofpjg0iKHz5qEq9OECUVjEvwU4y/EEjA1Q3rFICiEQTOxdBXis8yjC2c
+   OMNJW3xlPTX/rf42s5+6GryU+YQJH7Mi8PPedsNTGG5tNGQph36jRPvef
+   UeH8nGEdFbFuJIOxIslCP5fkq1iG2Uc+22mqN/s9bBGqAJPzex5b6rTyQ
    Q=;
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 09 Jul 2021 13:14:58 -0700
+Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 09 Jul 2021 13:15:02 -0700
 X-QCInternal: smtphost
 Received: from nalasexr03e.na.qualcomm.com ([10.49.195.114])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 09 Jul 2021 13:14:58 -0700
+  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 09 Jul 2021 13:15:01 -0700
 Received: from vamslank1-linux.qualcomm.com (10.80.80.8) by
  nalasexr03e.na.qualcomm.com (10.49.195.114) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Fri, 9 Jul 2021 13:14:57 -0700
+ id 15.0.1497.18; Fri, 9 Jul 2021 13:15:00 -0700
 From:   <quic_vamslank@quicinc.com>
 To:     <agross@kernel.org>, <bjorn.andersson@linaro.org>,
         <alexandre.belloni@bootlin.com>, <viresh.kumar@linaro.org>
 CC:     <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <linux@armlinux.org.uk>,
         <mani@kernel.org>, Vamsi krishna Lanka <quic_vamslank@quicinc.com>
-Subject: [PATCH 1/2] ARM: configs: qcom_defconfig: Enable SDX65 GCC driver
-Date:   Fri, 9 Jul 2021 13:14:40 -0700
-Message-ID: <20210709201441.21078-2-quic_vamslank@quicinc.com>
+Subject: [PATCH 2/2] ARM: configs: qcom_defconfig: Enable SDX65 pinctrl driver
+Date:   Fri, 9 Jul 2021 13:14:41 -0700
+Message-ID: <20210709201441.21078-3-quic_vamslank@quicinc.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210709201441.21078-1-quic_vamslank@quicinc.com>
 References: <20210709201441.21078-1-quic_vamslank@quicinc.com>
@@ -54,7 +54,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Vamsi krishna Lanka <quic_vamslank@quicinc.com>
 
-Enable Qualcomm SDX65 GCC driver for clock support.
+Enable the Qcom SDX65 pinctrl driver.
 
 Signed-off-by: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
 ---
@@ -62,17 +62,17 @@ Signed-off-by: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
  1 file changed, 1 insertion(+)
 
 diff --git a/arch/arm/configs/qcom_defconfig b/arch/arm/configs/qcom_defconfig
-index 3f36887e8333..8409d240ad7b 100644
+index 8409d240ad7b..06b8f43f9a14 100644
 --- a/arch/arm/configs/qcom_defconfig
 +++ b/arch/arm/configs/qcom_defconfig
-@@ -227,6 +227,7 @@ CONFIG_MDM_LCC_9615=y
- CONFIG_MSM_MMCC_8960=y
- CONFIG_MSM_MMCC_8974=y
- CONFIG_SDX_GCC_55=y
-+CONFIG_SDX_GCC_65=y
- CONFIG_MSM_IOMMU=y
- CONFIG_ARM_SMMU=y
- CONFIG_HWSPINLOCK=y
+@@ -135,6 +135,7 @@ CONFIG_PINCTRL_MSM8960=y
+ CONFIG_PINCTRL_MDM9615=y
+ CONFIG_PINCTRL_MSM8X74=y
+ CONFIG_PINCTRL_SDX55=y
++CONFIG_PINCTRL_SDX65=y
+ CONFIG_PINCTRL_QCOM_SPMI_PMIC=y
+ CONFIG_PINCTRL_QCOM_SSBI_PMIC=y
+ CONFIG_GPIOLIB=y
 -- 
 2.32.0
 
