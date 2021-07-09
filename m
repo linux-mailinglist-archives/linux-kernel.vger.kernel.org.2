@@ -2,86 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 241123C258C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:06:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4354A3C258E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 16:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232230AbhGIOJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 10:09:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57516 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231857AbhGIOJP (ORCPT
+        id S232277AbhGIOKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 10:10:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229499AbhGIOKT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 10:09:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625839589;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uLtl/5oDqf8PcrF9UEzAhu9HDJICTavDVle2PbyDR/4=;
-        b=Mdc9VT2vEx1NIxuXYr33L1gDYymRixBs5CunJWmy8Dk6KlGYET0ls3c5t5N9Phh5AER0Va
-        ch1UU1FYMLZ6zWT9zteFC3HKbK5bqFMzzCrkoWeBo7DWUaqYoWzCnjwZ1PKoEbBVeJ2F5Z
-        8u523+wkAyYgtqxEbkNjw9xqHj7iDJA=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-94-nb3E8i1eNgedJPEVt0RucQ-1; Fri, 09 Jul 2021 10:06:26 -0400
-X-MC-Unique: nb3E8i1eNgedJPEVt0RucQ-1
-Received: by mail-wm1-f69.google.com with SMTP id v25-20020a1cf7190000b0290197a4be97b7so4072551wmh.9
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 07:06:24 -0700 (PDT)
+        Fri, 9 Jul 2021 10:10:19 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2195EC0613DD;
+        Fri,  9 Jul 2021 07:07:35 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id l7so11392144wrv.7;
+        Fri, 09 Jul 2021 07:07:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=Ma+hKPNbdiSLb5Fn2aElz4EmDXq6ZJG5Z0MvOylplGU=;
+        b=ZawjCCLSIQdbJ43VlHbzZG19bHsCqC0nn1EUJP+3n2vuEkFPCrhRPgkjWBdU6TmqLz
+         oXpay6xuM02dsr5yz0rM0yyVmcvRobOf2yenM0S0YXfjDFdjXRpJGyyOg8NVUM6pqKCQ
+         XUEeFPR2IF4bSDmb6AvE/ljNjCVpPJRkDeJtXNIJag0beGE1nmEIjEY52w7AMLWJpUDB
+         KgDqnIQWvkU9pvFwTbzB21o2ZXuShbQzl4VIqBVq7AERhHZ67Zam5LetTOM7hspTXk4X
+         bFGka89eD1cptjz8l/FxunNVRi4l0nrr6YQi/t/mB1iK41N7BYD7gBOw1DX/HX5zHJ/n
+         zmLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=uLtl/5oDqf8PcrF9UEzAhu9HDJICTavDVle2PbyDR/4=;
-        b=tfaxAQRjiE656nM6Q1BS2ToTpNoRiJ2tU9Yl5JQun2BjWIj7eSKxcl3b8COdzu/2SV
-         4GxfHOt/2mGbq/1ctpo3aA40vO7fJHlnikzvOTixy//0RV17dLd1pvwJrRccf7F70rtB
-         hw1W/oHzFFIl5OU5BBkmXyPcuTc1BMaSSp6KHD1UXBGxD46DYQeRXQj0mAbuV2uDuYwh
-         XGB8KCBTtWZ+jGNH9rdR2cGuFRfMh/0YVeWrO/c7g/gbVOhGEvpsmI9uBqc5xfB2UXsF
-         rRQ2sV9JWYJCfkz5E6S3eVS6i8/fT7jbhrb0QqNSEq2LPkSbRAQzTfgWTiHQsmZimUpp
-         qXgQ==
-X-Gm-Message-State: AOAM533aJI8guDJ7CZZQLlpk6kFTGJ/9DIkQhpH3iX8Ux8jf7KDELgBM
-        ruj1UjNcxj63DZEkK7/o6sf6FgOnFoP8bPbxPzreje+UiktdmBjh7OY5W4DE2f/G0Lbd7I6tJt+
-        CuBtJfgxmw5KU4JRPV5YAp7tl
-X-Received: by 2002:adf:eb43:: with SMTP id u3mr42287717wrn.83.1625839566973;
-        Fri, 09 Jul 2021 07:06:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzpWcE5dh0IytYK877PjYOYMVLad+vBaNwXr7nhI1jGzSpEVmKBe+hQ/WRrn5DS63kTML60BQ==
-X-Received: by 2002:adf:eb43:: with SMTP id u3mr42287698wrn.83.1625839566857;
-        Fri, 09 Jul 2021 07:06:06 -0700 (PDT)
-Received: from [192.168.1.136] ([79.116.5.179])
-        by smtp.gmail.com with ESMTPSA id z11sm5410723wru.65.2021.07.09.07.06.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 07:06:06 -0700 (PDT)
-Message-ID: <f520c8b87f56fcda0158853c5127f0488918503e.camel@redhat.com>
-Subject: Re: [PATCH v2] timers: Recalculate next timer interrupt only when
- necessary
-From:   Nicolas Saenz Julienne <nsaenzju@redhat.com>
-To:     He Zhe <zhe.he@windriver.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Cc:     anna-maria@linutronix.de, linux-kernel@vger.kernel.org,
-        tglx@linutronix.de, Nicolas Saenz Julienne <nsaenzju@redhat.com>
-Date:   Fri, 09 Jul 2021 16:06:05 +0200
-In-Reply-To: <11e85cd8-40ac-09fe-e1fe-0eafa351072c@windriver.com>
-References: <20200723151641.12236-1-frederic@kernel.org>
-         <dfbf752e-91db-b128-76a8-98fde4c5d480@windriver.com>
-         <20210708153620.GA6716@lothringen>
-         <c7a5015a-2b93-17d2-29bc-cd03e40cc09c@windriver.com>
-         <20210709084303.GA17239@lothringen>
-         <11e85cd8-40ac-09fe-e1fe-0eafa351072c@windriver.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ma+hKPNbdiSLb5Fn2aElz4EmDXq6ZJG5Z0MvOylplGU=;
+        b=XfZwFhxxMuDYSzlI4PxsEb7BcNnQEV08yKrO5RNTF5nzDhfUN9Zygb295wlIymMAb6
+         RTY5JZwRA7JtDe2zaWIwq3Xq89/7DUdW6z035bVfMgE1PqXAffqK0rzY1rZkTZzQVcqL
+         /K7G9s16EF6rMdUP2TZ5YJvCjZ/gQC4Qo5q/QEnFOXoFBGIhhYMJcht/EgC29GbbUg2Q
+         xGOAL2V1ZMElMjqN/25C430mnPQ4hH2SB5r8fa9xfD3I7iJ7O01oHfO3IwoW6SGMOmYt
+         79eQPduz6rX/MqtDLEhNgpQcI34C0WQCCDggQx4OpEU16DYR1iSjZJfy4cPxAyfmRtk3
+         vK9A==
+X-Gm-Message-State: AOAM531dWS7InlI4KWHye+ZTjAJl+QTXO+7jjnY9ueS8SZFDPNASiZ/A
+        u51YxcibFdQDvuDZdYzFxbljqBPLCDRxkQ==
+X-Google-Smtp-Source: ABdhPJz55a8D//r46cwmkz0jyB1Cpk0tq3qg2yn6tzx6JPRLH8WEyjti3Weeq2CDzMtHfz5gTmkLWQ==
+X-Received: by 2002:a5d:414b:: with SMTP id c11mr2082293wrq.162.1625839653797;
+        Fri, 09 Jul 2021 07:07:33 -0700 (PDT)
+Received: from [192.168.1.122] (cpc159425-cmbg20-2-0-cust403.5-4.cable.virginm.net. [86.7.189.148])
+        by smtp.gmail.com with ESMTPSA id f14sm12038373wmq.10.2021.07.09.07.07.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Jul 2021 07:07:33 -0700 (PDT)
+Subject: Re: [PATCH 1/3] sfc: revert "reduce the number of requested xdp ev
+ queues"
+To:     =?UTF-8?B?w43DsWlnbyBIdWd1ZXQ=?= <ihuguet@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, ivan@cloudflare.com,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210707081642.95365-1-ihuguet@redhat.com>
+ <0e6a7c74-96f6-686f-5cf5-cd30e6ca25f8@gmail.com>
+ <CACT4oudw=usQQNO0dL=xhJw9TN+9V3o=TsKGvGh7extu+JWCqA@mail.gmail.com>
+ <20210707130140.rgbbhvboozzvfoe3@gmail.com>
+ <CACT4oud6R3tPFpGuiyNM9kjV5kXqzRcg8J_exv-2MaHWLPm-sA@mail.gmail.com>
+From:   Edward Cree <ecree.xilinx@gmail.com>
+Message-ID: <b11886d2-d2de-35be-fab3-d1c65252a9a8@gmail.com>
+Date:   Fri, 9 Jul 2021 15:07:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CACT4oud6R3tPFpGuiyNM9kjV5kXqzRcg8J_exv-2MaHWLPm-sA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Frederic, Zhe,
+On 08/07/2021 13:14, Íñigo Huguet wrote:
+> In my opinion, there is no reason to make that distinction between
+> normal traffic and XDP traffic.
+> [...]
+> If the user wants to prevent XDP from mixing with normal traffic, just
+> not attaching an XDP program to the interface, or not using
+> XDP_TX/REDIRECT in it would be enough. Probably I don't understand
+> what you want to say here.
 
-I've stumbled upon an issue on my x86_64 nohz_full setups which looks a lot
-like Zhe's.
+I think it's less about that and more about avoiding lock contention.
+If two sources (XDP and the regular stack) are both trying to use a TXQ,
+ and contending for a lock, it's possible that the resulting total
+ throughput could be far less than either source alone would get if it
+ had exclusive use of a queue.
+There don't really seem to be any good answers to this; any CPU in the
+ system can initiate an XDP_REDIRECT at any time and if they can't each
+ get a queue to themselves then I don't see how the arbitration can be
+ performant.  (There is the middle-ground possibility of TXQs shared by
+ multiple XDP CPUs but not shared with the regular stack, in which case
+ if only a subset of CPUs are actually handling RX on the device(s) with
+ an XDP_REDIRECTing program it may be possible to avoid contention if
+ the core-to-XDP-TXQ mapping can be carefully configured.)
 
-I've got a potential fix, I'll post it as a reply to this mail.
-
-Regards,
-Nicolas
-
+-ed
