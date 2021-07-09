@@ -2,128 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6974B3C249B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1D513C24DE
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 15:23:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232525AbhGINYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 09:24:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232187AbhGINXu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 09:23:50 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE53C0613E8
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 06:21:07 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id t19so9221719qkg.7
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 06:21:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7IzGLjKVrrwjN0uTt13PXB3jJvt8l9fcKIkCTP7vqaM=;
-        b=ilZvJqekdiaNoyDUelqtd1Mr2MELdhK7NOPy97RgyCP0M/65g1uZgZ9UQ2c12JIUS0
-         Zj/nHUdDAdpCHCqhwHVYPL4uV0Jql3W8XsheURr1cyp13JMkeq9mm5KjdmWiKiGit3f+
-         e0jmeXNXHV3MDibDZkmtB+pzf3RgYofJMCgUIahjknN+uBmf92VM6L/OBpMjH7ROIO2p
-         vlK5A8BNbzwXIftIyjqVSfvCZ+l3lOQ18bMKdfJE7WujGTNFEwK8Y/Bq4V6iamP3vbFc
-         d1trFDgWRAxIT25wKPE8EfJecY99+N9NwYsBihnhuwz8URVrE3pU8OKf8l6PcTYMTAYR
-         UQoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7IzGLjKVrrwjN0uTt13PXB3jJvt8l9fcKIkCTP7vqaM=;
-        b=S9fVw9+xG1/N+y+31u33OWog/WTalqR0jj/Cytq3wk1oL9tNA4I+XqbE4gbWky44TA
-         E3/Cz5O56Am8cFGKhFS2s7xxkuOrjBefxZk6VBpsziFfqIxPJEYTY1AP+WRmTcEqHxVL
-         Hs1p0RLEepUq7p8X4Txkj5EE8735Cwn8cpc+F6y7vLN8Lqzi2dy7JogbYHvw2bD3NaLg
-         Ji8E28bq7hgVD7iQwL7zfbmh/wq1xqFnpAUXEui/LgI/deBAsoxLehR9zo1KRaALdwgX
-         /dY5hAw1vyyyfcZbrmwFeToF7GfaRmJ2Md+XfEKHyXCxc+ZwRFc3O+o3j792x2oFGhjK
-         ITbg==
-X-Gm-Message-State: AOAM531Wkw5Aa818pkvSrfWRg/CwouJFiSO0iVUntHoSIKsgzasz7zt6
-        iRmQxnv1roa8NA2fgq3qMZv1xQ==
-X-Google-Smtp-Source: ABdhPJznSn3h0MnwLX5ELC2apWnAD6ffHhakwHbcf/hDcrFHnP0g5lW4SvaTIjZo+RvkTwaQr/P99A==
-X-Received: by 2002:a05:620a:1996:: with SMTP id bm22mr2618839qkb.262.1625836866657;
-        Fri, 09 Jul 2021 06:21:06 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
-        by smtp.gmail.com with ESMTPSA id u4sm2132747qtw.86.2021.07.09.06.21.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 06:21:05 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1m1qRE-0075Wj-Qt; Fri, 09 Jul 2021 10:21:04 -0300
-Date:   Fri, 9 Jul 2021 10:21:04 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Anand Khoje <anand.a.khoje@oracle.com>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dledford@redhat.com, haakon.bugge@oracle.com, leon@kernel.org
-Subject: Re: [PATCH v7 for-next 0/3] IB/core: Obtaining subnet_prefix from
- cache in
-Message-ID: <20210709132104.GA1582827@ziepe.ca>
-References: <20210630094615.808-1-anand.a.khoje@oracle.com>
- <309d7800-73a3-41c6-542f-cdcb5a72e969@oracle.com>
+        id S231702AbhGINZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 09:25:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56330 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232917AbhGINZM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 09:25:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00D11613C8;
+        Fri,  9 Jul 2021 13:22:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1625836948;
+        bh=YXjNzQ4dgZy2zKG3SYF7k2Ax7yI8Pmm31un5fz+G228=;
+        h=From:To:Cc:Subject:Date:From;
+        b=nqSKejZUkY3P67Ekkbw+NcUER5dEMj3Ztu5MpC/i6Lgkvz7TvTj24betUOffkeVOw
+         3mBkeXoFMK344OpFLXQiRbmo3zUwf2azdvkhtWUtjgq9Ker4/je/CQVwWz+CNd7yZD
+         pWO1Go5O9nzNxz4QfI33B36tJ8aI9yRFThiH9B3A=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 5.10 0/6] 5.10.49-rc1 review
+Date:   Fri,  9 Jul 2021 15:21:09 +0200
+Message-Id: <20210709131537.035851348@linuxfoundation.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <309d7800-73a3-41c6-542f-cdcb5a72e969@oracle.com>
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.49-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.10.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.10.49-rc1
+X-KernelTest-Deadline: 2021-07-11T13:15+00:00
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 12:55:48PM +0530, Anand Khoje wrote:
-> On 6/30/2021 3:16 PM, Anand Khoje wrote:
-> > This v7 of patch series is used to read the port_attribute subnet_prefix
-> > from a valid cache entry instead of having to call
-> > device->ops.query_gid() for Infiniband link-layer devices in
-> > __ib_query_port().
-> > 
-> > In the event of a cache update, the value for subnet_prefix gets read
-> > using device->ops.query_gid() in config_non_roce_gid_cache().
-> > 
-> > Anand Khoje (3):
-> >    IB/core: Updating cache for subnet_prefix in
-> >      config_non_roce_gid_cache()
-> >    IB/core: Shifting initialization of device->cache_lock.
-> >    IB/core: Read subnet_prefix in ib_query_port via cache.
-> > v1 -> v2:
-> >      -   Split the v1 patch in 3 patches as per Leon's suggestion.
-> > 
-> > v2 -> v3:
-> >      -   Added changes as per Mark Zhang's suggestion of clearing
-> >          flags in git_table_cleanup_one().
-> > v3 -> v4:
-> >      -   Removed the enum ib_port_data_flags and 8 byte flags from
-> >          struct ib_port_data, and the set_bit()/clear_bit() API
-> >          used to update this flag as that was not necessary.
-> >          Done to keep the code simple.
-> >      -   Added code to read subnet_prefix from updated GID cache in the
-> >          event of cache update. Prior to this change, ib_cache_update
-> >          was reading the value for subnet_prefix via ib_query_port(),
-> >          due to this patch, we ended up reading a stale cached value of
-> >          subnet_prefix.
-> > v4 -> v5:
-> >      -   Removed the code to reset cache_is_initialised bit from cleanup
-> >          as per Leon's suggestion.
-> >      -   Removed ib_cache_is_initialised() function.
-> > 
-> > v5 -> v6:
-> >      -   Added changes as per Jason's suggestion of updating subnet_prefix
-> >          in config_non_roce_gid_cache() and removing the flag
-> >          cache_is_initialized in __ib_query_port().
-> > 
-> > v6 -> v7:
-> >      -	Reordering the initialization of cache_lock, as the previous
-> > 	version caused an access to uninitialized cache_lock.
-> > 
-> >   drivers/infiniband/core/cache.c  | 10 +++++-----
-> >   drivers/infiniband/core/device.c | 10 ++++------
-> >   2 files changed, 9 insertions(+), 11 deletions(-)
-> > 
-> 
-> Hi,
-> 
-> This is just a reminder note requesting review for this patch-set.
+This is the start of the stable review cycle for the 5.10.49 release.
+There are 6 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-You'll probably have to resend it after the merge window closed on
-Monday, rebased on the new rc1
+Responses should be made by Sun, 11 Jul 2021 13:14:09 +0000.
+Anything received after that time might be too late.
 
-Jason
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.49-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+and the diffstat can be found below.
+
+thanks,
+
+greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 5.10.49-rc1
+
+Juergen Gross <jgross@suse.com>
+    xen/events: reset active flag for lateeoi events later
+
+Sid Manning <sidneym@codeaurora.org>
+    Hexagon: change jumps to must-extend in futex_atomic_*
+
+Sid Manning <sidneym@codeaurora.org>
+    Hexagon: add target builtins to kernel
+
+Sid Manning <sidneym@codeaurora.org>
+    Hexagon: fix build errors
+
+Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+    media: uvcvideo: Support devices that report an OT as an entity source
+
+Fabiano Rosas <farosas@linux.ibm.com>
+    KVM: PPC: Book3S HV: Save and restore FSCR in the P9 path
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                 |  4 +-
+ arch/hexagon/Makefile                    |  6 +--
+ arch/hexagon/include/asm/futex.h         |  4 +-
+ arch/hexagon/include/asm/timex.h         |  3 +-
+ arch/hexagon/kernel/hexagon_ksyms.c      |  8 ++--
+ arch/hexagon/kernel/ptrace.c             |  4 +-
+ arch/hexagon/lib/Makefile                |  3 +-
+ arch/hexagon/lib/divsi3.S                | 67 ++++++++++++++++++++++++++++++++
+ arch/hexagon/lib/memcpy_likely_aligned.S | 56 ++++++++++++++++++++++++++
+ arch/hexagon/lib/modsi3.S                | 46 ++++++++++++++++++++++
+ arch/hexagon/lib/udivsi3.S               | 38 ++++++++++++++++++
+ arch/hexagon/lib/umodsi3.S               | 36 +++++++++++++++++
+ arch/powerpc/kvm/book3s_hv.c             |  4 ++
+ drivers/media/usb/uvc/uvc_driver.c       | 32 +++++++++++++++
+ drivers/xen/events/events_base.c         | 23 +++++++++--
+ 15 files changed, 315 insertions(+), 19 deletions(-)
+
+
