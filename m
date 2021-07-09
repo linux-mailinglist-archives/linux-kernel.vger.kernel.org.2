@@ -2,123 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5853C1CF7
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 03:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B523C3C1D05
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 03:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230168AbhGIBOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Jul 2021 21:14:15 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:29998 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229637AbhGIBOG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Jul 2021 21:14:06 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16913lvR179385;
-        Thu, 8 Jul 2021 21:11:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=FI1qzW9vg11HTR0gAlwlHCY0vo4meaCwC4bF1sUyszc=;
- b=QX3q5U2wrRa+C87k+scNfpcRlsHOkg2p1NA7GtPj0rSkVkL/b1Zbw4mmGBK+LVzItuPd
- izMijkJWK+3UAAMGLpHj1PUXcdB00EZOVNBjPDDdt+KmL0XhBNZGpM5i+PdJSfZxdY14
- hpR6WG8oD7FLbYgOs/B4Zjic/JkEiAq7ZoZwGvoShjHA7cau8sPoM2bjgaZwJ2WsaSaF
- n1vtYQ1BB8KIvri+xM8dUh/le70HXj1FLP0lgsNdlMTInUBlg6jY+OFuPAd+Ox5qNOYK
- MtOdJnWOx+gcCtpzxQOTvg2ndWFrV/bugKfeXhEu0wLPD1yLD88ixNYlNbCOCD2+qc5D 7g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39n287x0cy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Jul 2021 21:11:00 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16919xLj196388;
-        Thu, 8 Jul 2021 21:10:59 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39n287x0ca-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Jul 2021 21:10:59 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1691Av0W032007;
-        Fri, 9 Jul 2021 01:10:57 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04fra.de.ibm.com with ESMTP id 39jfh8h9ys-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Jul 2021 01:10:56 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1691AsJB31326546
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 9 Jul 2021 01:10:54 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4F4A642041;
-        Fri,  9 Jul 2021 01:10:54 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8C8C74203F;
-        Fri,  9 Jul 2021 01:10:48 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.81.156])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri,  9 Jul 2021 01:10:48 +0000 (GMT)
-Message-ID: <ef480c8f83780eea4ff8fdcd35c6208760b5e1d7.camel@linux.ibm.com>
-Subject: Re: [PATCH RFC 00/12] Enroll kernel keys thru MOK
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     keyrings@vger.kernel.org,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        id S230180AbhGIBdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Jul 2021 21:33:23 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:47014 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229953AbhGIBdX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Jul 2021 21:33:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=iR/91e9r/pV24uz7F/ZCZMYq8GdTcOgKPN8iEDrQRb8=; b=ljJbRil4n+6JOT76mK3vtCkveF
+        C2LNsuSXdXSMa33p02M3bMCMeg7pG/fthTEeE0tLgoSIPmnM+KjC9vIP5nGaP4+UxR0hsAGWhZzK/
+        tcxWx0uksOw18Anq1E0EHrtFWfzMUKLu8F8p7+vd39w3GejF5pVaIuxOzD/A6sXzSaiE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1m1fLS-00ChH2-OR; Fri, 09 Jul 2021 03:30:22 +0200
+Date:   Fri, 9 Jul 2021 03:30:22 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     "Ismail, Mohammad Athari" <mohammad.athari.ismail@intel.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
         "David S . Miller" <davem@davemloft.net>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>, keescook@chromium.org,
-        gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
-        scott.branden@broadcom.com, weiyongjun1@huawei.com,
-        nayna@linux.ibm.com, ebiggers@google.com, ardb@kernel.org,
-        nramas@linux.microsoft.com, lszubowi@redhat.com,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        James.Bottomley@HansenPartnership.com, pjones@redhat.com,
-        glin@suse.com, "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>
-Date:   Thu, 08 Jul 2021 21:10:47 -0400
-In-Reply-To: <839EF700-7A2C-4282-AF97-768FAD1A9957@oracle.com>
-References: <20210707024403.1083977-1-eric.snowberg@oracle.com>
-         <42b787dd3a20fe37c4de60daf75db06e409cfb6d.camel@linux.ibm.com>
-         <5BFB3C52-36D4-47A5-B1B8-977717C555A0@oracle.com>
-         <886f30dcf7b3d48644289acc3601c2f0207b19b6.camel@linux.ibm.com>
-         <D34A6328-91CA-4E1E-845C-FAC9B424819B@oracle.com>
-         <c0cf7f883a9252c17427f1f992e4973e78481304.camel@linux.ibm.com>
-         <21EFCB58-2D89-4D30-8DA2-B952A7E1B1BD@oracle.com>
-         <490941a5197bf4bcf0d6f95610085ee4d46ed9bb.camel@linux.ibm.com>
-         <839EF700-7A2C-4282-AF97-768FAD1A9957@oracle.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: FMn_hX5NZ_CCLtfcgqQvPGUn7SHHsF0z
-X-Proofpoint-ORIG-GUID: CZDy5YSAnV3UvrlJeOGW1sSUTSKHEugt
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-08_14:2021-07-08,2021-07-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- mlxscore=0 priorityscore=1501 malwarescore=0 suspectscore=0 spamscore=0
- phishscore=0 lowpriorityscore=0 mlxlogscore=999 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107090003
+        Russell King <linux@armlinux.org.uk>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net] net: phy: reconfigure PHY WOL in resume if WOL
+ option still enabled
+Message-ID: <YOemro4DJEBl+h6N@lunn.ch>
+References: <20210708004253.6863-1-mohammad.athari.ismail@intel.com>
+ <YOZTmfvVTj9eo+to@lunn.ch>
+ <4e159b98-ec02-33b7-862a-0e35832c3a5f@gmail.com>
+ <CO1PR11MB477144A2A055B390825A9FF4D5199@CO1PR11MB4771.namprd11.prod.outlook.com>
+ <9871a015-bcfb-0bdb-c481-5e8f2356e5ba@gmail.com>
+ <CO1PR11MB47719C284F178753C916519FD5199@CO1PR11MB4771.namprd11.prod.outlook.com>
+ <f167de1d-94cc-7465-2e6f-e1e71b66b009@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f167de1d-94cc-7465-2e6f-e1e71b66b009@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-07-08 at 17:17 -0600, Eric Snowberg wrote:
-> > Once all the CA keys in the MOK db are loaded onto the MOK keyring,
-> 
-> To avoid confusion with the new keyring name, would it be more appropriate 
-> to change what we are calling the .mok keyring to the .trusted_platform 
-> keyring instead? Or just leave it as .mok?
+> Ah yes you are right, we just skip resume in that case. OK let me think
+> about it some more.
 
-Definitely not ".trusted_platform" keyring, as it would be too
-confusing with the existing "trusted" key type [1].  At least for now,
-leave it as ".mok".
+The point here is, it is an interrupt, from the perspective of the PHY
+hardware and its driver. But the interrupt handler is never being
+called because the interrupt output from the chip is not causing an
+actual interrupt. Fix that, and your problem goes away. Or you need to
+add a whole new mechanism that you are using the interrupt hardware in
+the PHY some something else than an actual interrupt.
 
-thanks,
-
-Mimi
-
-[1] Documentation/security/keys/trusted-encrypted.rst
+    Andrew
 
