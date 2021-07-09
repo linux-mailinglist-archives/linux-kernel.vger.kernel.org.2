@@ -2,184 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C56073C2369
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 14:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFAED3C236A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Jul 2021 14:27:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231360AbhGIM3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 08:29:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60086 "EHLO
+        id S231384AbhGIMaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 08:30:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230230AbhGIM3w (ORCPT
+        with ESMTP id S231371AbhGIMaI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 08:29:52 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 205E9C0613DD;
-        Fri,  9 Jul 2021 05:27:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=YNYcekBKHKSeTsSsBYsi5hjnh5Bw7TL0AQNkB23wKdA=; b=EUwzOe//bY+37XTY2FfKmuLC6
-        8NNEwRS4joIDAigu1iPATUjlvJTQCqQY8bkxbG6Fga5ElAhj3nvl99jjv186crkTBpsKVDmuBZgHU
-        bQbQBs1hQdCIaukdP3X3ppf/a0W2sfx85jjq6cRh5ZoV0jPJZzU9fyYPZ8dPpif50XJGRbC6sYHA4
-        pOC7/SliENk5Mx1wEA1cnEClv4AW/wOqeSjnfJmNVJhkcymd1azssbKYI7w50XjbPoZ5EXYs/4fQ7
-        NQaYlGroWcic/0cFb9h/IupV8BuOhq/qwgDDQYGX6qL/jqAf/U0tcnCc7HIsjqedwsCcnOLdpg3+w
-        zRz07z+Sw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45916)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1m1paw-0001qK-Hk; Fri, 09 Jul 2021 13:27:02 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1m1pas-0004xd-VJ; Fri, 09 Jul 2021 13:26:58 +0100
-Date:   Fri, 9 Jul 2021 13:26:58 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Martin Schiller <ms@dev.tdt.de>
-Cc:     hauke@hauke-m.de, martin.blumenstingl@googlemail.com,
-        f.fainelli@gmail.com, andrew@lunn.ch, hkallweit1@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] net: phy: intel-xway: Add RGMII internal delay
- configuration
-Message-ID: <20210709122658.GA22278@shell.armlinux.org.uk>
-References: <20210709115726.11897-1-ms@dev.tdt.de>
+        Fri, 9 Jul 2021 08:30:08 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6180C0613DD
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 05:27:23 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id b12so8573762pfv.6
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 05:27:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fE0Dne1h5bAxI4O1/CQzPMn/t0RrZprT0Cm6d5DM/Zs=;
+        b=E5ff6SHHXOqKedBxsbjEoWoyB1JCax2IKfLx+Q7nq+RpHvUcgZdvB0FtgiI0gNpIbR
+         61F5C5weVZsQNmuN1nFAiiPKBztcykQfdAnktW0JyW7XKdTClGfoJE1RxclHW1NWU8Sv
+         98RT8gKPqv9CNMc80or06upJxbBmd7GT2If1dvdJgBpYVpbZbo1s5Dp5peEh6wRXI73W
+         2+MuIZYFNJlsraqeUzIsSzwdsC+97QKmQd702aM9nEzgPyg8C2oOveH9Bk4gUjBSN2rT
+         t8hdHC7ZMoKgkc2lzVonXOg+QkTF7enyOKYFMuKTsfCtgqxOQGk+GITOcWz3Z/IYs9+a
+         +JYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fE0Dne1h5bAxI4O1/CQzPMn/t0RrZprT0Cm6d5DM/Zs=;
+        b=FzUUsrRl2UxTg7hkQj0HiVHWZrNlTufCJCp7lk19DJceJG5PQvk+rNlDxBmiHg2Tc+
+         reoc/fmozTgxQ1dysQZuITXtPhGWSSM3F6wrfGBbVyohWoRCi4CvDNrOVJCQJpNFsxRb
+         d9ISuI4oORvZ4Vw/NO04MXWd5GKmMd1p6eN6/xsJ/Jmc6a+jqkx1eXc8kjnEaln8INYH
+         PAwIQpGFr6VK5wkSuHJc1Cvlr04UKrCTJHVXG23TJuDE5W/LcgHu52GR5+I9Q961WDNs
+         37tNek7FjDncseT+cLWvpCDDRsnEO3VcerSonGFqMM/fcNHAtXyAx4DfRz7WNy5X1GyT
+         AkRQ==
+X-Gm-Message-State: AOAM530Klqoa2LhORK/kX0Jrapt8d1o6p+hSKf1SvsPlWTrIu12SHgMs
+        wW4/e5A3emy9t+/9qVNQ7TI=
+X-Google-Smtp-Source: ABdhPJwJFVIItO27Z7piUEFt7/ryxpcK40iEMKLc5/nm1ZwQBuLckO8JKCPt0xFyLv3V5B020gOo5g==
+X-Received: by 2002:a05:6a00:bd5:b029:328:92ef:d3d8 with SMTP id x21-20020a056a000bd5b029032892efd3d8mr4747415pfu.51.1625833643284;
+        Fri, 09 Jul 2021 05:27:23 -0700 (PDT)
+Received: from localhost.localdomain (f.a4.5177.ip4.static.sl-reverse.com. [119.81.164.15])
+        by smtp.gmail.com with ESMTPSA id g7sm3885986pfm.5.2021.07.09.05.27.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 09 Jul 2021 05:27:23 -0700 (PDT)
+From:   yaozhenguo <yaozhenguo1@gmail.com>
+To:     axboe@kernel.dk, oleg@redhat.comm
+Cc:     linux-kernel@vger.kernel.org, yaozhenguo@jd.com,
+        yaozhenguo <yaozhenguo1@gmail.com>
+Subject: [PATCH] task_work: return -EBUSY when adding same work
+Date:   Fri,  9 Jul 2021 20:27:12 +0800
+Message-Id: <20210709122712.42844-1-yaozhenguo1@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210709115726.11897-1-ms@dev.tdt.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 09, 2021 at 01:57:26PM +0200, Martin Schiller wrote:
-> +static int xway_gphy_of_reg_init(struct phy_device *phydev)
-> +{
-> +	struct device *dev = &phydev->mdio.dev;
-> +	int delay_size = ARRAY_SIZE(xway_internal_delay);
-> +	s32 rx_int_delay;
-> +	s32 tx_int_delay;
-> +	int err = 0;
-> +	int val;
-> +
-> +	if (phy_interface_is_rgmii(phydev)) {
-> +		val = phy_read(phydev, XWAY_MDIO_MIICTRL);
-> +		if (val < 0)
-> +			return val;
-> +	}
-> +
-> +	/* Existing behavior was to use default pin strapping delay in rgmii
-> +	 * mode, but rgmii should have meant no delay.  Warn existing users.
-> +	 */
-> +	if (phydev->interface == PHY_INTERFACE_MODE_RGMII) {
-> +		const u16 txskew = (val & XWAY_MDIO_MIICTRL_TXSKEW_MASK) >>
-> +				   XWAY_MDIO_MIICTRL_TXSKEW_SHIFT;
-> +		const u16 rxskew = (val & XWAY_MDIO_MIICTRL_RXSKEW_MASK) >>
-> +				   XWAY_MDIO_MIICTRL_RXSKEW_SHIFT;
-> +
-> +		if (txskew > 0 || rxskew > 0)
-> +			phydev_warn(phydev,
-> +				    "PHY has delays (e.g. via pin strapping), but phy-mode = 'rgmii'\n"
-> +				    "Should be 'rgmii-id' to use internal delays txskew:%x rxskew:%x\n",
-> +				    txskew, rxskew);
-> +	}
-> +
-> +	/* RX delay *must* be specified if internal delay of RX is used. */
-> +	if (phydev->interface == PHY_INTERFACE_MODE_RGMII_ID ||
-> +	    phydev->interface == PHY_INTERFACE_MODE_RGMII_RXID) {
-> +		rx_int_delay = phy_get_internal_delay(phydev, dev,
-> +						      &xway_internal_delay[0],
-> +						      delay_size, true);
-> +
-> +		if (rx_int_delay < 0) {
-> +			phydev_err(phydev, "rx-internal-delay-ps must be specified\n");
-> +			return rx_int_delay;
-> +		}
-> +
-> +		val &= ~XWAY_MDIO_MIICTRL_RXSKEW_MASK;
-> +		val |= rx_int_delay << XWAY_MDIO_MIICTRL_RXSKEW_SHIFT;
-> +	}
-> +
-> +	/* TX delay *must* be specified if internal delay of TX is used. */
-> +	if (phydev->interface == PHY_INTERFACE_MODE_RGMII_ID ||
-> +	    phydev->interface == PHY_INTERFACE_MODE_RGMII_TXID) {
-> +		tx_int_delay = phy_get_internal_delay(phydev, dev,
-> +						      &xway_internal_delay[0],
-> +						      delay_size, false);
-> +
-> +		if (tx_int_delay < 0) {
-> +			phydev_err(phydev, "tx-internal-delay-ps must be specified\n");
-> +			return tx_int_delay;
-> +		}
-> +
-> +		val &= ~XWAY_MDIO_MIICTRL_TXSKEW_MASK;
-> +		val |= tx_int_delay << XWAY_MDIO_MIICTRL_TXSKEW_SHIFT;
-> +	}
-> +
-> +	if (phydev->interface == PHY_INTERFACE_MODE_RGMII_ID ||
-> +	    phydev->interface == PHY_INTERFACE_MODE_RGMII_RXID ||
-> +	    phydev->interface == PHY_INTERFACE_MODE_RGMII_TXID)
-> +		err = phy_write(phydev, XWAY_MDIO_MIICTRL, val);
-> +
-> +	return err;
-> +}
+when same work is added to task->task_works list one by one,
+the list becomes endless loop. So return -EBUSY when this
+situation happen.
 
-Please reconsider the above.  Maybe something like the following would
-be better:
+Signed-off-by: yaozhenguo <yaozhenguo1@gmail.com>
+---
+ kernel/task_work.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-	u16 mask = 0;
-	int val = 0;
-
-	if (!phy_interface_is_rgmii(phydev))
-		return;
-
-	if (phydev->interface == PHY_INTERFACE_MODE_RGMII) {
-		u16 txskew, rxskew;
-
-		val = phy_read(phydev, XWAY_MDIO_MIICTRL);
-		if (val < 0)
-			return val;
-
-		txskew = (val & XWAY_MDIO_MIICTRL_TXSKEW_MASK) >>
-			 XWAY_MDIO_MIICTRL_TXSKEW_SHIFT;
-		rxskew = (val & XWAY_MDIO_MIICTRL_RXSKEW_MASK) >>
-			 XWAY_MDIO_MIICTRL_RXSKEW_SHIFT;
-
-		if (txskew > 0 || rxskew > 0)
-			phydev_warn(phydev,
-				    "PHY has delays (e.g. via pin strapping), but phy-mode = 'rgmii'\n"
-				    "Should be 'rgmii-id' to use internal delays txskew:%x rxskew:%x\n",
-				    txskew, rxskew);
-		return;
-	}
-
-	if (phydev->interface == PHY_INTERFACE_MODE_RGMII_ID ||
-	    phydev->interface == PHY_INTERFACE_MODE_RGMII_RXID) {
-		...
-		mask |= XWAY_MDIO_MIICTRL_RXSKEW_MASK;
-		val |= rx_int_delay << XWAY_MDIO_MIICTRL_RXSKEW_SHIFT;
-	}
-
-	if (phydev->interface == PHY_INTERFACE_MODE_RGMII_ID ||
-	    phydev->interface == PHY_INTERFACE_MODE_RGMII_TXID) {
-		...
-		mask |= XWAY_MDIO_MIICTRL_TXSKEW_MASK;
-		val |= rx_int_delay << XWAY_MDIO_MIICTRL_TXSKEW_SHIFT;
-	}
-
-	return phy_modify(phydev, XWAY_MDIO_MIICTRL, mask, val);
-
-Using phy_modify() has the advantage that the read-modify-write is
-done as a locked transaction on the bus, meaning that it is atomic.
-There isn't a high cost to writing functions in a way that makes use
-of that as can be seen from the above.
-
-Thanks.
-
+diff --git a/kernel/task_work.c b/kernel/task_work.c
+index 1698fbe..5061ebf 100644
+--- a/kernel/task_work.c
++++ b/kernel/task_work.c
+@@ -27,7 +27,7 @@
+  * list is LIFO.
+  *
+  * RETURNS:
+- * 0 if succeeds or -ESRCH.
++ * 0 if succeeds or -ESRCH, -EBUSY.
+  */
+ int task_work_add(struct task_struct *task, struct callback_head *work,
+ 		  enum task_work_notify_mode notify)
+@@ -41,6 +41,8 @@ int task_work_add(struct task_struct *task, struct callback_head *work,
+ 		head = READ_ONCE(task->task_works);
+ 		if (unlikely(head == &work_exited))
+ 			return -ESRCH;
++		if (unlikely(head == work))
++			return -EBUSY;
+ 		work->next = head;
+ 	} while (cmpxchg(&task->task_works, head, work) != head);
+ 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+1.8.3.1
+
