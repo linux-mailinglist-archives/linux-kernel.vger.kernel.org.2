@@ -2,220 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C70E93C3323
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 07:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 513EA3C3326
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 08:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231513AbhGJF4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 01:56:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbhGJF4s (ORCPT
+        id S231827AbhGJGGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 02:06:44 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:50552 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229690AbhGJGGn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 01:56:48 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E31DC0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 22:54:04 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id j9so5096719pfc.5
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 22:54:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lzHviVNvR5n7emS5jVnr0QdpnJPgvQFxs4HYngfgJ6k=;
-        b=MiwshD6LXX9wwJxhyqr9fFHSeisZpFHFwXv5WnGAJIKB03U15wViUsuEEZ7T5JLeRV
-         VgVRyMatSuSYnZS0KlkVVOBGozRusOHJAyb0gq1CZQshUSFrFXszl1Sj5T/m/ZxtsX1e
-         fWgFS6CigmuPn/QI8FGeJUIJqAxWiJhBr46Obiw/HTjL6cSOePe7GTFASgMnuhresXvx
-         jJiRm23WzSCZUtgW5FZiAKWWNPXjtoOJwsHLi9ZZFhwPviVdpt479b7LZhst4IByJnNm
-         g4seX7S18xHiMVSrEUAp+xotqIYr4ua/qG5/00/31eT5xYMNhqAbusVvc5EoIqkAC/AT
-         Jstg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lzHviVNvR5n7emS5jVnr0QdpnJPgvQFxs4HYngfgJ6k=;
-        b=UTQ3uaF54xqg4v4TI+WmGplyKNBMjDFOs+ksXH1YJ3avvoUhQLL7lgzexNx+4kASXo
-         vbvmROwBm74AwyMvmW5ypbdtnqBiFhwGz9jrslR5dx8IBGiOrccZl08ITqGSyVmVc8q8
-         fiuv6cTl7YU/1Ha4BVsL1ffTNxY2izgYf5u1QPynxBkdp2wGmzTvjhfwsFb5Y9oAl7RZ
-         m+Ztb3fDTmoXd4v/mbGbpEQafKCpSaW3USBhkfziOjOazuPg5Cpd1Daq8X2Q1CzD1t16
-         v6GIzb3cWBiD4/KTJ3rC85lD0F4s3zRHq3PTk1i4fYkyGxhDGStMok7sXjb2630pe2hq
-         8jgA==
-X-Gm-Message-State: AOAM531mx2pY2X1jcUiF3wBdWHO03egsxoOLtdE1xGsfLYjD7D626RcM
-        wUA6Fp1TZpCCzdMRX2ntfwx9VFLqPbw=
-X-Google-Smtp-Source: ABdhPJxkNnp65dXE7+Qb/f+xs6Qk2FT9LF5tyPV8WersknaAnkgz1a+9JGlGHSEZFFZ6qQkmmd07KQ==
-X-Received: by 2002:a65:680b:: with SMTP id l11mr818733pgt.444.1625896443376;
-        Fri, 09 Jul 2021 22:54:03 -0700 (PDT)
-Received: from daehojeong-desktop.mtv.corp.google.com ([2620:15c:211:201:5944:1743:c40a:f492])
-        by smtp.gmail.com with ESMTPSA id y7sm8695007pfy.153.2021.07.09.22.54.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 22:54:02 -0700 (PDT)
-From:   Daeho Jeong <daeho43@gmail.com>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Daeho Jeong <daehojeong@google.com>
-Subject: [PATCH v3] f2fs: add sysfs nodes to get GC info for each GC mode
-Date:   Fri,  9 Jul 2021 22:53:57 -0700
-Message-Id: <20210710055357.1638111-1-daeho43@gmail.com>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sat, 10 Jul 2021 02:06:43 -0400
+Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client CN "mailhost.synopsys.com", Issuer "SNPSica2" (verified OK))
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id EFAE840170;
+        Sat, 10 Jul 2021 06:03:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1625897038; bh=c0ky0nucYPpag8qixdlzPW+7JgbM55OBHHAlv3x3TCU=;
+        h=Date:From:Subject:To:Cc:From;
+        b=cu+boN42aw7xlcu3rDPkoBu2FTBz+YJRj3mKIb7T0We/B7WeQ4Bvs9XQ8Sy0hychI
+         S97IPh1MQSNEcbbiKWn22DRv+yE0ZDgNmpkrQo1QgYH/1NVP2wUpfMLrFzKXDgO6YS
+         9HwShXbg7CY3M6MJa/XBlEGkOzdS2bXLKDmVYqCPy2zsSJ2k0yJ7bYb0c79hK5tftO
+         3EgUzYPDuaOxgFbtBidZcN8lYoAQwwk98k/D6tcBf8ylgnIxv8HGsjbaptnBJiB2n5
+         9+ROsbOu3H0sV1NsdcYPbOaMJxYPvKh1bIWfx3+Wphxh5TBmvronxjJ5VXwNa7qfFE
+         16iPG4dx4OlLw==
+Received: from razpc-HP (razpc-hp.internal.synopsys.com [10.116.75.64])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by mailhost.synopsys.com (Postfix) with ESMTPSA id 9C647A005D;
+        Sat, 10 Jul 2021 06:03:53 +0000 (UTC)
+Received: by razpc-HP (sSMTP sendmail emulation); Sat, 10 Jul 2021 10:03:51 +0400
+Date:   Sat, 10 Jul 2021 10:03:51 +0400
+Message-Id: <c0711737fe54efa72d35df42cc4b9db31c382e7a.1625896955.git.Arthur.Petrosyan@synopsys.com>
+X-SNPS-Relay: synopsys.com
+From:   Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
+Subject: [RFC PATCH] usb: phy: Fix handle page fault on usb_phy_uevent
+To:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
+        Peter Chen <peter.chen@kernel.org>
+Cc:     Artur Petrosyan <Arthur.Petrosyan@synopsys.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daeho Jeong <daehojeong@google.com>
+When the dwc2 platform device is removed, it unregisters the generic
+phy. usb_remove_phy() is called and the dwc2 usb_phy is removed from the
+"phy_list", but the uevent may still attempt to access the stale data
+resulting in a page fault bug. Currently we can't access the usb_phy
+from the "phy_list" after the device is removed. As a quick fix, check
+if the phy_list is empty before getting the usb_phy and ignore the
+uevent otherwise.
 
-Added gc_reclaimed_segments and gc_segment_mode sysfs nodes.
-1) "gc_reclaimed_segments" shows how many segments have been
-reclaimed by GC during a specific GC mode.
-2) "gc_segment_mode" is used to control for which gc mode
-the "gc_reclaimed_segments" node shows.
+[   84.949345] BUG: unable to handle page fault for address:00000007935688d8
+[   84.949349] #PF: supervisor read access in kernel mode
+[   84.949351] #PF: error_code(0x0000) - not-present page
+[   84.949353] PGD 0 P4D 0
+[   84.949356] Oops: 0000 [#1] SMP PTI
+[   84.949360] CPU: 2 PID: 2081 Comm: rmmod Not tainted 5.13.0-rc4-snps-16547-ga8534cb092d7-dirty #32
+[   84.949363] Hardware name: Hewlett-Packard HP Z400 Workstation/0B4Ch, BIOS 786G3 v03.54 11/02/2011
+[   84.949365] RIP: 0010:usb_phy_uevent+0x99/0x121
+[   84.949372] Code: 8d 83 f8 00 00 00 48 3d b0 12 22 94 74 05 4c 3b 23
+75 5b 8b 83 9c 00 00 00 be 32 00 00 00 48 8d 7c 24 04 48 c7 c2 d4 5d 7b
+93 <48> 8b 0c c5 e0 88 56 93 e8 0f 63 8a ff 8b 83 98 00 00 00 be 32 00
+[   84.949375] RSP: 0018:ffffa46bc0f2fc70 EFLAGS: 00010246
+[   84.949378] RAX: 00000000ffffffff RBX: ffffffff942211b8 RCX: 0000000000000027
+[   84.949380] RDX: ffffffff937b5dd4 RSI: 0000000000000032 RDI: ffffa46bc0f2fc74
+[   84.949383] RBP: ffff94a306613000 R08: 0000000000000000 R09: 00000000fffeffff
+[   84.949385] R10: ffffa46bc0f2faa8 R11: ffffa46bc0f2faa0 R12: ffff94a30186d410
+[   84.949387] R13: ffff94a32d188a80 R14: ffff94a30029f960 R15: ffffffff93522dd0
+[   84.949389] FS:  00007efdbd417540(0000) GS:ffff94a513a80000(0000) knlGS:0000000000000000
+[   84.949392] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   84.949394] CR2: 00000007935688d8 CR3: 0000000165606000 CR4: 00000000000006e0
+[   84.949396] Call Trace:
+[   84.949401]  dev_uevent+0x190/0x1ad
+[   84.949408]  kobject_uevent_env+0x18e/0x46c
+[   84.949414]  device_release_driver_internal+0x17f/0x18e
+[   84.949418]  bus_remove_device+0xd3/0xe5
+[   84.949421]  device_del+0x1c3/0x31d
+[   84.949425]  ? kobject_put+0x97/0xa8
+[   84.949428]  platform_device_del+0x1c/0x63
+[   84.949432]  platform_device_unregister+0xa/0x11
+[   84.949436]  dwc2_pci_remove+0x1e/0x2c [dwc2_pci]
+[   84.949440]  pci_device_remove+0x31/0x81
+[   84.949445]  device_release_driver_internal+0xea/0x18e
+[   84.949448]  driver_detach+0x68/0x72
+[   84.949450]  bus_remove_driver+0x63/0x82
+[   84.949453]  pci_unregister_driver+0x1a/0x75
+[   84.949457]  __do_sys_delete_module+0x149/0x1e9
+[   84.949462]  ? task_work_run+0x64/0x6e
+[   84.949465]  ? exit_to_user_mode_prepare+0xd4/0x10d
+[   84.949471]  do_syscall_64+0x5d/0x70
+[   84.949475]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[   84.949480] RIP: 0033:0x7efdbd563bcb
+[   84.949482] Code: 73 01 c3 48 8b 0d c5 82 0c 00 f7 d8 64 89 01 48 83
+c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa b8 b0 00 00 00 0f
+05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 95 82 0c 00 f7 d8 64 89 01 48
+[   84.949485] RSP: 002b:00007ffe944d7d98 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
+[   84.949489] RAX: ffffffffffffffda RBX: 00005651072eb700 RCX: 00007efdbd563bcb
+[   84.949491] RDX: 000000000000000a RSI: 0000000000000800 RDI: 00005651072eb768
+[   84.949493] RBP: 00007ffe944d7df8 R08: 0000000000000000 R09: 0000000000000000
+[   84.949495] R10: 00007efdbd5dfac0 R11: 0000000000000206 R12: 00007ffe944d7fd0
+[   84.949497] R13: 00007ffe944d8610 R14: 00005651072eb2a0 R15: 00005651072eb700
+[   84.949500] Modules linked in: uas configfs dwc2_pci(-) phy_generic fuse crc32c_intel [last unloaded: udc_core]
+[   84.949508] CR2: 00000007935688d8
+[   84.949510] ---[ end trace e40c871ca3e4dc9e ]---
+[   84.949512] RIP: 0010:usb_phy_uevent+0x99/0x121
 
-Signed-off-by: Daeho Jeong <daehojeong@google.com>
+Fixes: a8534cb092d7 ("usb: phy: introduce usb_phy device type with its own uevent handler")
+Signed-off-by: Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
+Signed-off-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
 ---
- Documentation/ABI/testing/sysfs-fs-f2fs | 14 +++++++++++++
- fs/f2fs/debug.c                         |  9 ++++++++
- fs/f2fs/f2fs.h                          |  5 +++++
- fs/f2fs/gc.c                            |  1 +
- fs/f2fs/sysfs.c                         | 28 +++++++++++++++++++++++++
- 5 files changed, 57 insertions(+)
+ drivers/usb/phy/phy.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
-index 95155e4ec7fe..3d1f853c6681 100644
---- a/Documentation/ABI/testing/sysfs-fs-f2fs
-+++ b/Documentation/ABI/testing/sysfs-fs-f2fs
-@@ -493,3 +493,17 @@ Contact:	"Chao Yu" <yuchao0@huawei.com>
- Description:	When ATGC is on, it controls age threshold to bypass GCing young
- 		candidates whose age is not beyond the threshold, by default it was
- 		initialized as 604800 seconds (equals to 7 days).
+diff --git a/drivers/usb/phy/phy.c b/drivers/usb/phy/phy.c
+index 83ed5089475a..5046d4a07348 100644
+--- a/drivers/usb/phy/phy.c
++++ b/drivers/usb/phy/phy.c
+@@ -151,6 +151,9 @@ static int usb_phy_uevent(struct device *dev, struct kobj_uevent_env *env)
+ 	char uchger_state[50] = { 0 };
+ 	char uchger_type[50] = { 0 };
+ 
++	if (list_empty(&phy_list))
++		return -ENODEV;
 +
-+What:		/sys/fs/f2fs/<disk>/gc_reclaimed_segments
-+Date:		July 2021
-+Contact:	"Daeho Jeong" <daehojeong@google.com>
-+Description:	Show how many segments have been reclaimed by GC during a specific
-+		GC mode (0: GC normal, 1: GC idle CB, 2: GC idle greedy,
-+		3: GC idle AT, 4: GC urgent high, 5: GC urgent low)
-+		You can re-initialize this value to "0".
-+
-+What:		/sys/fs/f2fs/<disk>/gc_segment_mode
-+Date:		July 2021
-+Contact:	"Daeho Jeong" <daehojeong@google.com>
-+Description:	You can control for which gc mode the "gc_reclaimed_segments" node shows.
-+		Refer to the description of the modes in "gc_reclaimed_segments".
-diff --git a/fs/f2fs/debug.c b/fs/f2fs/debug.c
-index 833325038ef3..53ed1e9191f0 100644
---- a/fs/f2fs/debug.c
-+++ b/fs/f2fs/debug.c
-@@ -450,6 +450,15 @@ static int stat_show(struct seq_file *s, void *v)
- 				si->data_segs, si->bg_data_segs);
- 		seq_printf(s, "  - node segments : %d (%d)\n",
- 				si->node_segs, si->bg_node_segs);
-+		seq_printf(s, "  - Reclaimed segs : Normal (%d), Idle CB (%d), "
-+				"Idle Greedy (%d), Idle AT (%d), "
-+				"Urgent High (%d), Urgent Low (%d)\n",
-+				si->sbi->gc_reclaimed_segs[GC_NORMAL],
-+				si->sbi->gc_reclaimed_segs[GC_IDLE_CB],
-+				si->sbi->gc_reclaimed_segs[GC_IDLE_GREEDY],
-+				si->sbi->gc_reclaimed_segs[GC_IDLE_AT],
-+				si->sbi->gc_reclaimed_segs[GC_URGENT_HIGH],
-+				si->sbi->gc_reclaimed_segs[GC_URGENT_LOW]);
- 		seq_printf(s, "Try to move %d blocks (BG: %d)\n", si->tot_blks,
- 				si->bg_data_blks + si->bg_node_blks);
- 		seq_printf(s, "  - data blocks : %d (%d)\n", si->data_blks,
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 16ce1ade9fa6..502e47936651 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -1251,6 +1251,7 @@ enum {
- 	GC_IDLE_AT,
- 	GC_URGENT_HIGH,
- 	GC_URGENT_LOW,
-+	MAX_GC_MODE,
- };
+ 	usb_phy = __device_to_usb_phy(dev);
  
- enum {
-@@ -1728,6 +1729,10 @@ struct f2fs_sb_info {
- 	struct kmem_cache *inline_xattr_slab;	/* inline xattr entry */
- 	unsigned int inline_xattr_slab_size;	/* default inline xattr slab size */
- 
-+	/* For reclaimed segs statistics per each GC mode */
-+	unsigned int gc_segment_mode;		/* GC state for reclaimed segments */
-+	unsigned int gc_reclaimed_segs[MAX_GC_MODE];	/* Reclaimed segs for each mode */
-+
- #ifdef CONFIG_F2FS_FS_COMPRESSION
- 	struct kmem_cache *page_array_slab;	/* page array entry */
- 	unsigned int page_array_slab_size;	/* default page array slab size */
-diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
-index da5947b30142..85f83ee38e24 100644
---- a/fs/f2fs/gc.c
-+++ b/fs/f2fs/gc.c
-@@ -1648,6 +1648,7 @@ static int do_garbage_collect(struct f2fs_sb_info *sbi,
- 							force_migrate);
- 
- 		stat_inc_seg_count(sbi, type, gc_type);
-+		sbi->gc_reclaimed_segs[sbi->gc_mode]++;
- 		migrated++;
- 
- freed:
-diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-index 6642246206bd..15fe30d3aeb5 100644
---- a/fs/f2fs/sysfs.c
-+++ b/fs/f2fs/sysfs.c
-@@ -307,6 +307,14 @@ static ssize_t f2fs_sbi_show(struct f2fs_attr *a,
- 		return sysfs_emit(buf, "%u\n", sbi->compr_new_inode);
- #endif
- 
-+	if (!strcmp(a->attr.name, "gc_segment_mode"))
-+		return sysfs_emit(buf, "%u\n", sbi->gc_segment_mode);
-+
-+	if (!strcmp(a->attr.name, "gc_reclaimed_segments")) {
-+		return sysfs_emit(buf, "%u\n",
-+			sbi->gc_reclaimed_segs[sbi->gc_segment_mode]);
-+	}
-+
- 	ui = (unsigned int *)(ptr + a->offset);
- 
- 	return sprintf(buf, "%u\n", *ui);
-@@ -515,6 +523,21 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
- 		return count;
- 	}
- 
-+	if (!strcmp(a->attr.name, "gc_segment_mode")) {
-+		if (t < MAX_GC_MODE)
-+			sbi->gc_segment_mode = t;
-+		else
-+			return -EINVAL;
-+		return count;
-+	}
-+
-+	if (!strcmp(a->attr.name, "gc_reclaimed_segments")) {
-+		if (t != 0)
-+			return -EINVAL;
-+		sbi->gc_reclaimed_segs[sbi->gc_segment_mode] = 0;
-+		return count;
-+	}
-+
- 	*ui = (unsigned int)t;
- 
- 	return count;
-@@ -740,6 +763,9 @@ F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_candidate_count, max_candidate_cou
- F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_age_weight, age_weight);
- F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_age_threshold, age_threshold);
- 
-+F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, gc_segment_mode, gc_segment_mode);
-+F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, gc_reclaimed_segments, gc_reclaimed_segs);
-+
- #define ATTR_LIST(name) (&f2fs_attr_##name.attr)
- static struct attribute *f2fs_attrs[] = {
- 	ATTR_LIST(gc_urgent_sleep_time),
-@@ -812,6 +838,8 @@ static struct attribute *f2fs_attrs[] = {
- 	ATTR_LIST(atgc_candidate_count),
- 	ATTR_LIST(atgc_age_weight),
- 	ATTR_LIST(atgc_age_threshold),
-+	ATTR_LIST(gc_segment_mode),
-+	ATTR_LIST(gc_reclaimed_segments),
- 	NULL,
- };
- ATTRIBUTE_GROUPS(f2fs);
+ 	snprintf(uchger_state, ARRAY_SIZE(uchger_state),
+
+base-commit: 77d34a4683b053108ecd466cc7c4193b45805528
 -- 
-2.32.0.93.g670b81a890-goog
+2.25.1
 
