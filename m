@@ -2,103 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F21C03C3734
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 00:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 996983C3738
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 01:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231314AbhGJXA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 19:00:56 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:52908 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbhGJXAz (ORCPT
+        id S229771AbhGJXLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 19:11:13 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:60098 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229515AbhGJXLM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 19:00:55 -0400
-Received: by mail-io1-f71.google.com with SMTP id p21-20020a6b8d150000b029050e9f519782so9004485iod.19
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 15:58:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=0wWgh8WDnJgLadErj8DWSwgmkIyzT68Is8EEUbs0ddQ=;
-        b=g6DbCIsAWraUQ10lNEMiTC0EPumzvXWCacVDgjeDwENSB+i7riw44CBZ6NOoH2x9m3
-         gqMaDAz95GqDD2aJRzAXkDbLsoCB9eLybrpZ0+PU/hVP0SwDJ9lDBnF7gCwKsR1PUU54
-         Uf9tRL7hCDeKKPiFYksfitvnXF0z170zH3LG8LJgnpbNrnKAwp4UJ0ZTqit7bwIkqrtC
-         dm18XNfWI3ztJjIbSRIqOu+K3WPO4PzsZnklO9ZCPoVQXBV2ndnYGQtp74O9GmUz1Rqr
-         daiNX/oFYqOAo6TeCLIuzcysTYqdJglvC30l0xo3v3f5XRrXx+muB5++ABqnqBBGaa0Y
-         k8lg==
-X-Gm-Message-State: AOAM532GzGgBBkUkVnrtrYGg4nc9Ovk39yejG/NQxEKUkR1UaZ2ShEM1
-        RnylDJ3IwYVyUvED1I/D9zOagUUuHXqkIkBkNSP7RHWxcyKL
-X-Google-Smtp-Source: ABdhPJwAk7j/AxYEQqJarBacdXTmM+yZUFZf9Fpye5npVWKkm6ieOMuaia0W7pJz+2O4hR6RcS/69icRLZzQItgboi+DNUlOEIOM
+        Sat, 10 Jul 2021 19:11:12 -0400
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 37D0120B83DE;
+        Sat, 10 Jul 2021 16:08:26 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 37D0120B83DE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1625958506;
+        bh=iI1FMzdW4VlFjZv/Q84Kju2c7nRPfQ1D8g1ol/lad8o=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=mqjRWbf+6qAnSEecmFTGrkQ4qqom1FTAb4ksGZNiN/l9ybsufLXb2fdmnzUrOn9iv
+         VBotjDq18WMYTO+9tBtHZ/zAyPyDXG6RpSXXdccx3qppBIcdzo235HmRRnOdJyb2Cx
+         F/SmxbSFCSiPaQgRH9gpclsfiL4ksZfbm2VKdfLc=
+Received: by mail-pg1-f169.google.com with SMTP id t9so14044877pgn.4;
+        Sat, 10 Jul 2021 16:08:26 -0700 (PDT)
+X-Gm-Message-State: AOAM5323W1aUkn6WK13g07xhdTPQu2JUHvsIItidNpxTBjzoxKRk2Zoa
+        TtDtho/7FLhSoFJNr37MsSU/i8EUhV3OXuwzQBc=
+X-Google-Smtp-Source: ABdhPJyBa7wMiayi1ErSAh3ldGm6dx2ZY5JoyPvQw5M4KtTZ2dOOWv17h2lZwMrUOjEQAXpV+yA5JCGWg7/gJP9llqY=
+X-Received: by 2002:a62:5b81:0:b029:32a:dfe:9bb0 with SMTP id
+ p123-20020a625b810000b029032a0dfe9bb0mr4818627pfb.0.1625958505677; Sat, 10
+ Jul 2021 16:08:25 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a92:bf0b:: with SMTP id z11mr33610032ilh.60.1625957890058;
- Sat, 10 Jul 2021 15:58:10 -0700 (PDT)
-Date:   Sat, 10 Jul 2021 15:58:10 -0700
-In-Reply-To: <20210710145003.GA271154@rowland.harvard.edu>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000074f06705c6ccd2a4@google.com>
-Subject: Re: [syzbot] WARNING in do_proc_control/usb_submit_urb
-From:   syzbot <syzbot+72af3105289dcb4c055b@syzkaller.appspotmail.com>
-To:     gregkh@linuxfoundation.org, johan@kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        mathias.nyman@linux.intel.com, stern@rowland.harvard.edu,
-        syzkaller-bugs@googlegroups.com
+References: <20210702123153.14093-1-mcroce@linux.microsoft.com> <20210710143109.fd5062902ef4d5d59e83f5bb@linux-foundation.org>
+In-Reply-To: <20210710143109.fd5062902ef4d5d59e83f5bb@linux-foundation.org>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Sun, 11 Jul 2021 01:07:49 +0200
+X-Gmail-Original-Message-ID: <CAFnufp1d+FH1K5QAx+Z=KvMUvrveJAVnjJJc8xoDCn2wmzUOoQ@mail.gmail.com>
+Message-ID: <CAFnufp1d+FH1K5QAx+Z=KvMUvrveJAVnjJJc8xoDCn2wmzUOoQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] lib/string: optimized mem* functions
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Guo Ren <guoren@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Laight <David.Laight@aculab.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Drew Fustini <drew@beagleboard.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, Jul 10, 2021 at 11:31 PM Andrew Morton
+<akpm@linux-foundation.org> wrote:
+>
+> On Fri,  2 Jul 2021 14:31:50 +0200 Matteo Croce <mcroce@linux.microsoft.com> wrote:
+>
+> > From: Matteo Croce <mcroce@microsoft.com>
+> >
+> > Rewrite the generic mem{cpy,move,set} so that memory is accessed with
+> > the widest size possible, but without doing unaligned accesses.
+> >
+> > This was originally posted as C string functions for RISC-V[1], but as
+> > there was no specific RISC-V code, it was proposed for the generic
+> > lib/string.c implementation.
+> >
+> > Tested on RISC-V and on x86_64 by undefining __HAVE_ARCH_MEM{CPY,SET,MOVE}
+> > and HAVE_EFFICIENT_UNALIGNED_ACCESS.
+> >
+> > These are the performances of memcpy() and memset() of a RISC-V machine
+> > on a 32 mbyte buffer:
+> >
+> > memcpy:
+> > original aligned:      75 Mb/s
+> > original unaligned:    75 Mb/s
+> > new aligned:          114 Mb/s
+> > new unaligned:                107 Mb/s
+> >
+> > memset:
+> > original aligned:     140 Mb/s
+> > original unaligned:   140 Mb/s
+> > new aligned:          241 Mb/s
+> > new unaligned:                241 Mb/s
+>
+> Did you record the x86_64 performance?
+>
+>
+> Which other architectures are affected by this change?
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-BUG: sleeping function called from invalid context in lock_sock_nested
+x86_64 won't use these functions because it defines __HAVE_ARCH_MEMCPY
+and has optimized implementations in arch/x86/lib.
+Anyway, I was curious and I tested them on x86_64 too, there was zero
+gain over the generic ones.
 
-BUG: sleeping function called from invalid context at net/core/sock.c:3159
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 8829, name: syz-executor.5
-1 lock held by syz-executor.5/8829:
- #0: ffffffff8d2ecee0 (hci_sk_list.lock){++++}-{2:2}, at: hci_sock_dev_event+0x3db/0x660 net/bluetooth/hci_sock.c:763
-Preemption disabled at:
-[<0000000000000000>] 0x0
-CPU: 1 PID: 8829 Comm: syz-executor.5 Not tainted 5.13.0-next-20210707-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:9171
- lock_sock_nested+0x25/0x120 net/core/sock.c:3159
- lock_sock include/net/sock.h:1613 [inline]
- hci_sock_dev_event+0x465/0x660 net/bluetooth/hci_sock.c:765
- hci_unregister_dev+0x2fd/0x1130 net/bluetooth/hci_core.c:4033
- vhci_release+0x70/0xe0 drivers/bluetooth/hci_vhci.c:340
- __fput+0x288/0x920 fs/file_table.c:280
- task_work_run+0xdd/0x1a0 kernel/task_work.c:164
- exit_task_work include/linux/task_work.h:32 [inline]
- do_exit+0xbd4/0x2a60 kernel/exit.c:825
- do_group_exit+0x125/0x310 kernel/exit.c:922
- __do_sys_exit_group kernel/exit.c:933 [inline]
- __se_sys_exit_group kernel/exit.c:931 [inline]
- __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665d9
-Code: Unable to access opcode bytes at RIP 0x4665af.
-RSP: 002b:00007ffd31aadb08 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 00007ffd31aae2c8 RCX: 00000000004665d9
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000043
-RBP: 0000000000000000 R08: 0000000000000025 R09: 00007ffd31aae2c8
-R10: 00000000ffffffff R11: 0000000000000246 R12: 00000000004bef54
-R13: 0000000000000010 R14: 0000000000000000 R15: 0000000000400538
+The only architecture which will use all the three function will be
+riscv, while memmove() will be used by arc, h8300, hexagon, ia64,
+openrisc and parisc.
+Keep in mind that memmove() isn't anything special, it just calls
+memcpy() when possible (e.g. buffers not overlapping), and fallbacks
+to the byte by byte copy otherwise.
 
-======================================================
+In future we can write two functions, one which copies forward and
+another one which copies backward, and call the right one depending on
+the buffers position.
+Then, we could alias memcpy() and memmove(), as proposed by Linus:
 
+https://bugzilla.redhat.com/show_bug.cgi?id=638477#c132
 
-Tested on:
-
-commit:         ee268dee Add linux-next specific files for 20210707
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=159cf1e2300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=59e1e3bbc3afca75
-dashboard link: https://syzkaller.appspot.com/bug?extid=72af3105289dcb4c055b
-compiler:       
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=163fd772300000
-
+Regards,
+-- 
+per aspera ad upstream
