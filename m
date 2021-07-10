@@ -2,60 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E70DF3C361E
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 20:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D28293C362E
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 20:46:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230443AbhGJShq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 14:37:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53910 "EHLO mail.kernel.org"
+        id S230025AbhGJSs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 14:48:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229599AbhGJSho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 14:37:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 97CA46138C;
-        Sat, 10 Jul 2021 18:34:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625942099;
-        bh=iZpV87su4CYAwsLdRAUv/eCrLdq88fEYAwJzybv4K7k=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=K135OQi1SqF0hIXJPvtKAESRUcW/Svmi47oOQmUY4brmsRaZYZHJs0jsqtCffKX4V
-         91nIM1VTvfmnrqR9prYv/VlcWumVTcGD/4quKXOSNsvFuOa5zA2DIayd8Liay90Jn2
-         jux4NijlI9YHDXbZiKSUqfyfr/DkTCenKmyuAGPWTgQaK6VFuVrTkRZ/qd28OZtgRR
-         rbnpFx3NzAjNn/D8BmUrpodURY2XtpgPK4nZ8iDouuTyqGHsTBYMDOuPP0G0QvGYMg
-         qnNy9beAGUNrZ+AaRU8Lou8kreplui1WypZ+B2oVk4oYEAQ3kxA5eY4oR/UoFd/OHy
-         tKyHLkMaB3B/A==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 90A88609CD;
-        Sat, 10 Jul 2021 18:34:59 +0000 (UTC)
-Subject: Re: [GIT PULL] Kbuild updates for v5.14-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAK7LNAT-9N_o_J8+pD5H9gnxzxuN-3ZBQ1wt-VmyHE=oEC295g@mail.gmail.com>
-References: <CAK7LNAT-9N_o_J8+pD5H9gnxzxuN-3ZBQ1wt-VmyHE=oEC295g@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAK7LNAT-9N_o_J8+pD5H9gnxzxuN-3ZBQ1wt-VmyHE=oEC295g@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-v5.14
-X-PR-Tracked-Commit-Id: 27932b6a2088eac7a5afa5471963b926cfbb4de7
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 81361b837a3450f0a44255fddfd7a4c72502b667
-Message-Id: <162594209958.22528.8831028585543954987.pr-tracker-bot@kernel.org>
-Date:   Sat, 10 Jul 2021 18:34:59 +0000
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+        id S229599AbhGJSs7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Jul 2021 14:48:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BD1D61279;
+        Sat, 10 Jul 2021 18:46:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1625942773;
+        bh=ZjhoTSsw3XgjxOm9U7sZ17N78UcAMbUtdDRXWELDlCA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ldgkQ1kfk2K3tXkAdSjnjdRjwMaXgO2kxxWxHtR0v5uEmqvU5I/mIUZVOxGtz3j1h
+         Xh682rpOcp6cVumqy9dRRytEaTH+ZM6pVMIO9TEGB+vNnwa82vY7nLHijXLQCu9/2b
+         EqLKz/ZLBbHR7ILZUN8u7orZUyaemLYKCSPze/iI=
+Date:   Sat, 10 Jul 2021 11:46:13 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     qiang.zhang@windriver.com
+Cc:     mgorman@techsingularity.net, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/page_alloc: avoid hard lockups in
+ __alloc_pages_bulk()
+Message-Id: <20210710114613.0db3ac139a7b3102a6ca3ad4@linux-foundation.org>
+In-Reply-To: <20210710112929.232268-1-qiang.zhang@windriver.com>
+References: <20210710112929.232268-1-qiang.zhang@windriver.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 10 Jul 2021 04:18:51 +0900:
+On Sat, 10 Jul 2021 19:29:29 +0800 qiang.zhang@windriver.com wrote:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-v5.14
+> From: Zqiang <qiang.zhang@windriver.com>
+> 
+> The __alloc_pages_bulk() mainly used for batch allocation of
+> order-0 pages, in the case of holding pagesets.lock, if too
+> many pages are required, maybe trigger hard lockup watchdog.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/81361b837a3450f0a44255fddfd7a4c72502b667
+Ouch.  Has this been observed in testing?  If so, can you please share
+the kernel debug output from that event?
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
