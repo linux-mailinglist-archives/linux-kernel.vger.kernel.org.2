@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A90883C3051
+	by mail.lfdr.de (Postfix) with ESMTP id 17DC43C304F
 	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 04:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235295AbhGJCem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 22:34:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42924 "EHLO mail.kernel.org"
+        id S235215AbhGJCej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 22:34:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233960AbhGJC2F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 22:28:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36DE461412;
-        Sat, 10 Jul 2021 02:24:55 +0000 (UTC)
+        id S234010AbhGJC2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 22:28:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B99661448;
+        Sat, 10 Jul 2021 02:25:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625883896;
-        bh=N9tg4uOowuFl6i9wi0x5B9WKbHwNGTjWXkUqtqYIuno=;
+        s=k20201202; t=1625883907;
+        bh=wHxVcjjAZcqC94MO5ze/Inx+2gIkGy+ugnixmUAKBmE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MbnlAEFrcOnNz+eoZYWQ6qSGcATngeQSXHn88v2ZmXoYB87ZTDdNzecleod16PvlR
-         angAofPTSIUcXxeiSeNyMrxcIjZiEDyAjT4fzOvqdNyTLGq5FuUvRZdDhqLf1aLmoG
-         K8yDtHNwbE169kkhbKRgst7h7Fkn1cjTnMquJQaJ2m34I5A45o8iKxHmTomlJKJvJP
-         MLb6NGbyg2PtxX2GFqxjh7tW6r61bMmjYNIK2uT1ft4WgTvWEoHUipDMYH2TIGXWMa
-         ZaUjpQ1G0oCa0IL+i3ArlPHT1zzDpz6TjdbR2qDYyANEtM5mGOrqtHhc7lA+iDR3Un
-         tR7qum+PXqvAQ==
+        b=IiaZqn6fJjPXltT8srZ37uXPh4M+VaqpDQLPStdreSIa5RJ2grajRGbOPislMHJcs
+         tPglnUvbkLrF5L/Wq+RWALZhB7uRvMgauWPrZn7HaNEzqB2MhM3ekGy7yb79wIXwOY
+         02iMaXJXnQe8VC6E3UDJGjMJXdrVv6os72cf2d6lOMsgrTot9M9JkAQeNhOnVQN7Ry
+         46rmP4G1PcmdL+Z/wq7M9Tr5vyljHriF+8PcaqfWqbq6uvKRJ5by3Gjof9CUsLsGGA
+         FLsez0e3VIi3SR+DdR8XNFXphmYLP7WpbucSZgBIpgqYah3CSaIpxTfWgHU1QJ8ja2
+         M8HgSdBGF8gjQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, linux-usb@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.10 20/93] usb: common: usb-conn-gpio: fix NULL pointer dereference of charger
-Date:   Fri,  9 Jul 2021 22:23:14 -0400
-Message-Id: <20210710022428.3169839-20-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux-serial@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 29/93] tty: serial: 8250: serial_cs: Fix a memory leak in error handling path
+Date:   Fri,  9 Jul 2021 22:23:23 -0400
+Message-Id: <20210710022428.3169839-29-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210710022428.3169839-1-sashal@kernel.org>
 References: <20210710022428.3169839-1-sashal@kernel.org>
@@ -44,96 +42,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunfeng Yun <chunfeng.yun@mediatek.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 880287910b1892ed2cb38977893b947382a09d21 ]
+[ Upstream commit fad92b11047a748c996ebd6cfb164a63814eeb2e ]
 
-When power on system with OTG cable, IDDIG's interrupt arises before
-the charger registration, it will cause a NULL pointer dereference,
-fix the issue by registering the power supply before requesting
-IDDIG/VBUS irq.
+In the probe function, if the final 'serial_config()' fails, 'info' is
+leaking.
 
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-Link: https://lore.kernel.org/r/1621406386-18838-1-git-send-email-chunfeng.yun@mediatek.com
+Add a resource handling path to free this memory.
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/dc25f96b7faebf42e60fe8d02963c941cf4d8124.1621971720.git.christophe.jaillet@wanadoo.fr
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/common/usb-conn-gpio.c | 44 ++++++++++++++++++------------
- 1 file changed, 26 insertions(+), 18 deletions(-)
+ drivers/tty/serial/8250/serial_cs.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/common/usb-conn-gpio.c b/drivers/usb/common/usb-conn-gpio.c
-index 6c4e3a19f42c..c9545a4eff66 100644
---- a/drivers/usb/common/usb-conn-gpio.c
-+++ b/drivers/usb/common/usb-conn-gpio.c
-@@ -149,14 +149,32 @@ static int usb_charger_get_property(struct power_supply *psy,
- 	return 0;
+diff --git a/drivers/tty/serial/8250/serial_cs.c b/drivers/tty/serial/8250/serial_cs.c
+index e3d10794dbba..612473a2dfe9 100644
+--- a/drivers/tty/serial/8250/serial_cs.c
++++ b/drivers/tty/serial/8250/serial_cs.c
+@@ -306,6 +306,7 @@ static int serial_resume(struct pcmcia_device *link)
+ static int serial_probe(struct pcmcia_device *link)
+ {
+ 	struct serial_info *info;
++	int ret;
+ 
+ 	dev_dbg(&link->dev, "serial_attach()\n");
+ 
+@@ -320,7 +321,15 @@ static int serial_probe(struct pcmcia_device *link)
+ 	if (do_sound)
+ 		link->config_flags |= CONF_ENABLE_SPKR;
+ 
+-	return serial_config(link);
++	ret = serial_config(link);
++	if (ret)
++		goto free_info;
++
++	return 0;
++
++free_info:
++	kfree(info);
++	return ret;
  }
  
--static int usb_conn_probe(struct platform_device *pdev)
-+static int usb_conn_psy_register(struct usb_conn_info *info)
- {
--	struct device *dev = &pdev->dev;
--	struct power_supply_desc *desc;
--	struct usb_conn_info *info;
-+	struct device *dev = info->dev;
-+	struct power_supply_desc *desc = &info->desc;
- 	struct power_supply_config cfg = {
- 		.of_node = dev->of_node,
- 	};
-+
-+	desc->name = "usb-charger";
-+	desc->properties = usb_charger_properties;
-+	desc->num_properties = ARRAY_SIZE(usb_charger_properties);
-+	desc->get_property = usb_charger_get_property;
-+	desc->type = POWER_SUPPLY_TYPE_USB;
-+	cfg.drv_data = info;
-+
-+	info->charger = devm_power_supply_register(dev, desc, &cfg);
-+	if (IS_ERR(info->charger))
-+		dev_err(dev, "Unable to register charger\n");
-+
-+	return PTR_ERR_OR_ZERO(info->charger);
-+}
-+
-+static int usb_conn_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct usb_conn_info *info;
- 	bool need_vbus = true;
- 	int ret = 0;
- 
-@@ -218,6 +236,10 @@ static int usb_conn_probe(struct platform_device *pdev)
- 		return PTR_ERR(info->role_sw);
- 	}
- 
-+	ret = usb_conn_psy_register(info);
-+	if (ret)
-+		goto put_role_sw;
-+
- 	if (info->id_gpiod) {
- 		info->id_irq = gpiod_to_irq(info->id_gpiod);
- 		if (info->id_irq < 0) {
-@@ -252,20 +274,6 @@ static int usb_conn_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	desc = &info->desc;
--	desc->name = "usb-charger";
--	desc->properties = usb_charger_properties;
--	desc->num_properties = ARRAY_SIZE(usb_charger_properties);
--	desc->get_property = usb_charger_get_property;
--	desc->type = POWER_SUPPLY_TYPE_USB;
--	cfg.drv_data = info;
--
--	info->charger = devm_power_supply_register(dev, desc, &cfg);
--	if (IS_ERR(info->charger)) {
--		dev_err(dev, "Unable to register charger\n");
--		return PTR_ERR(info->charger);
--	}
--
- 	platform_set_drvdata(pdev, info);
- 
- 	/* Perform initial detection */
+ static void serial_detach(struct pcmcia_device *link)
 -- 
 2.30.2
 
