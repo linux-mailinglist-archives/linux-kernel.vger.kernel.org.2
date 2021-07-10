@@ -2,105 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F7D3C346E
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 14:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7F73C3474
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 14:15:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232701AbhGJMHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 08:07:24 -0400
-Received: from mail.ispras.ru ([83.149.199.84]:50054 "EHLO mail.ispras.ru"
+        id S232718AbhGJMSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 08:18:33 -0400
+Received: from elvis.franken.de ([193.175.24.41]:50133 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230377AbhGJMHV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 08:07:21 -0400
-Received: from hellwig.intra.ispras.ru (unknown [83.149.199.249])
-        by mail.ispras.ru (Postfix) with ESMTPS id BC33040D4004;
-        Sat, 10 Jul 2021 12:04:33 +0000 (UTC)
-From:   Evgeny Novikov <novikov@ispras.ru>
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Evgeny Novikov <novikov@ispras.ru>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-media@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org
-Subject: [PATCH] media: platform: stm32: unprepare clocks at handling errors in probe
-Date:   Sat, 10 Jul 2021 15:04:32 +0300
-Message-Id: <20210710120432.6624-1-novikov@ispras.ru>
-X-Mailer: git-send-email 2.26.2
+        id S231303AbhGJMSc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Jul 2021 08:18:32 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1m2Bta-0004XW-00; Sat, 10 Jul 2021 14:15:46 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id C9424C0813; Sat, 10 Jul 2021 14:15:23 +0200 (CEST)
+Date:   Sat, 10 Jul 2021 14:15:23 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     torvalds@linux-foundation.org
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] MIPS fixes for v5.14
+Message-ID: <20210710121523.GA8431@alpha.franken.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-stm32_cec_probe() did not unprepare clocks on error handling paths. The
-patch fixes that.
+The following changes since commit cf02ce742f09188272bcc8b0e62d789eb671fc4c:
 
-Found by Linux Driver Verification project (linuxtesting.org).
+  MIPS: Fix PKMAP with 32-bit MIPS huge page support (2021-06-30 14:41:32 +0200)
 
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
----
- drivers/media/cec/platform/stm32/stm32-cec.c | 26 ++++++++++++++------
- 1 file changed, 18 insertions(+), 8 deletions(-)
+are available in the Git repository at:
 
-diff --git a/drivers/media/cec/platform/stm32/stm32-cec.c b/drivers/media/cec/platform/stm32/stm32-cec.c
-index ea4b1ebfca99..0ffd89712536 100644
---- a/drivers/media/cec/platform/stm32/stm32-cec.c
-+++ b/drivers/media/cec/platform/stm32/stm32-cec.c
-@@ -305,14 +305,16 @@ static int stm32_cec_probe(struct platform_device *pdev)
- 
- 	cec->clk_hdmi_cec = devm_clk_get(&pdev->dev, "hdmi-cec");
- 	if (IS_ERR(cec->clk_hdmi_cec) &&
--	    PTR_ERR(cec->clk_hdmi_cec) == -EPROBE_DEFER)
--		return -EPROBE_DEFER;
-+	    PTR_ERR(cec->clk_hdmi_cec) == -EPROBE_DEFER) {
-+		ret = -EPROBE_DEFER;
-+		goto err_unprepare_cec_clk;
-+	}
- 
- 	if (!IS_ERR(cec->clk_hdmi_cec)) {
- 		ret = clk_prepare(cec->clk_hdmi_cec);
- 		if (ret) {
- 			dev_err(&pdev->dev, "Can't prepare hdmi-cec clock\n");
--			return ret;
-+			goto err_unprepare_cec_clk;
- 		}
- 	}
- 
-@@ -324,19 +326,27 @@ static int stm32_cec_probe(struct platform_device *pdev)
- 			CEC_NAME, caps,	CEC_MAX_LOG_ADDRS);
- 	ret = PTR_ERR_OR_ZERO(cec->adap);
- 	if (ret)
--		return ret;
-+		goto err_unprepare_hdmi_cec_clk;
- 
- 	ret = cec_register_adapter(cec->adap, &pdev->dev);
--	if (ret) {
--		cec_delete_adapter(cec->adap);
--		return ret;
--	}
-+	if (ret)
-+		goto err_delete_adapter;
- 
- 	cec_hw_init(cec);
- 
- 	platform_set_drvdata(pdev, cec);
- 
- 	return 0;
-+
-+err_delete_adapter:
-+	cec_delete_adapter(cec->adap);
-+
-+err_unprepare_hdmi_cec_clk:
-+	clk_unprepare(cec->clk_hdmi_cec);
-+
-+err_unprepare_cec_clk:
-+	clk_unprepare(cec->clk_cec);
-+	return ret;
- }
- 
- static int stm32_cec_remove(struct platform_device *pdev)
+  git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_5.14_1
+
+for you to fetch changes up to 47ce8527fbba145a7723685bc9a27d9855e06491:
+
+  MIPS: vdso: Invalid GIC access through VDSO (2021-07-09 15:29:06 +0200)
+
+----------------------------------------------------------------
+- fix for accesing gic via vdso
+- two build fixes
+
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      mips: always link byteswap helpers into decompressor
+
+Martin Fäcknitz (1):
+      MIPS: vdso: Invalid GIC access through VDSO
+
+Randy Dunlap (1):
+      mips: disable branch profiling in boot/decompress.o
+
+ arch/mips/boot/compressed/Makefile     | 4 ++--
+ arch/mips/boot/compressed/decompress.c | 2 ++
+ arch/mips/include/asm/vdso/vdso.h      | 2 +-
+ 3 files changed, 5 insertions(+), 3 deletions(-)
+
 -- 
-2.26.2
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
