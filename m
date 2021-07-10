@@ -2,85 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CBFF3C359F
+	by mail.lfdr.de (Postfix) with ESMTP id D38733C35A0
 	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 19:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229803AbhGJQtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 12:49:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41120 "EHLO
+        id S229882AbhGJQu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 12:50:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbhGJQtF (ORCPT
+        with ESMTP id S229500AbhGJQu7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 12:49:05 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECE68C0613DD
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 09:46:18 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id hc16so22970835ejc.12
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 09:46:18 -0700 (PDT)
+        Sat, 10 Jul 2021 12:50:59 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B55C0613DD
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 09:48:13 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id f13so30451033lfh.6
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 09:48:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=FgRxku6Kq/BTQ7x6pg4bh4zbCPE8YN3oFjzx7M3K7qs=;
-        b=WgKlXYRcVOBD9y9PjMK9fKUTZsFPTbCVkhHuMCzUc96hMYva0qJioWThSmG0JfMMGe
-         qhPKm1C8s5HbOMag0/sloe9WZxglxXKQX58W6gL9DWZrTeRfCBaN9M8tFkRgiQeyQz59
-         1eqkGdlQw8ZuaU9EamXvm/Vk0YXpGJtk/RrQFlSlDB18edcbJ5fsPGxdaLAKIkuNlsEo
-         YymcPnt6rZLm1HEd7YOkRN7T0hZcBAQ8n5MD38SsQUMksMOTZ99P+PziiBofQJTrpKXL
-         WQR+xZWWV5zjHWE8Kfu5Z2q6xrEhwbJGdQHzTv9q19j5i9VQyZw+ZqXWX2Y6eTKfZc8d
-         YcWw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UMwYm3Z5kzi/jKsZNKzSHFnOUpat3NrlV7AI13eBog0=;
+        b=h1J+0nIt4sfDSPrqc3+zf1KmH1ZX/FyrDYTxSHYZF5cNvUWD5k8W0IacYSS/7Yp2Tw
+         S7byUrDkJ2y8Pi727vaVaRBdIS7p16mRkrIZeUy2OcEJTZ++6E5T29c6GoFamaUUS4pQ
+         ADhYcYMcoNqrSzQOTx3Mfd79GREJ8Quw1wzs8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=FgRxku6Kq/BTQ7x6pg4bh4zbCPE8YN3oFjzx7M3K7qs=;
-        b=YmBsGMsQwyn11FOlxOjAlnQ9eAMzZ7F/97mEqP2PvGftJ/BPJA8aR3KYdNcwyNzRFe
-         6vqHUqr2OkOXsIrJQ7dvdy2IL1mXvMWjJkgHi9Fsb5RmSQd6yMjUvVtEODhnB9DF7+1d
-         wF46sOF6I7i2wuK3C9ggFD/TMAKL118mPerQClpzya2ucFMe5tS6oghmaj9nYHW1Vrtl
-         3h/AXSQxWPrN4fBE2qDaoMFLxnGyejM1CqG0Dlj5bOGUxBJsAnVh2Ga7drEeqHmeKO81
-         MdtW+9Uqe/wIUBl/vMQZb6iECIoZfOgetBqSU/D3GyEbDU0uqb1kKcRhE6gF0H/PN5Rx
-         5jXA==
-X-Gm-Message-State: AOAM533R92YrjffQKe+w51sOFaXgYdOpjE1m1yXfaduOerZPiPd4Czjs
-        xG1+p7hrhJy8HizCrxh2QlqQ/k8sKIA=
-X-Google-Smtp-Source: ABdhPJwXNTFFablO4CB8vDpeLj4bBJB6IRJnqeT+134PmSKx88Q059C81g1pEL5wedTRgpU9XmU+mQ==
-X-Received: by 2002:a17:906:3181:: with SMTP id 1mr44566282ejy.36.1625935577303;
-        Sat, 10 Jul 2021 09:46:17 -0700 (PDT)
-Received: from pc ([196.235.212.194])
-        by smtp.gmail.com with ESMTPSA id o26sm3994026eje.96.2021.07.10.09.46.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Jul 2021 09:46:16 -0700 (PDT)
-Date:   Sat, 10 Jul 2021 17:46:15 +0100
-From:   Salah Triki <salah.triki@gmail.com>
-To:     dan.j.williams@intel.com, vishal.l.verma@intel.com,
-        dave.jiang@intel.com
-Cc:     nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH] dax: replace sprintf() by scnprintf()
-Message-ID: <20210710164615.GA690067@pc>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UMwYm3Z5kzi/jKsZNKzSHFnOUpat3NrlV7AI13eBog0=;
+        b=Q25t6g1HqnsLTYrlbIpMAaDQ7uRQeBPP8inG5+WRrmSBcyA1iXnxxwod94gjzJsS+c
+         JDPfqE5CVr66S/4hKMQiUGHblLRL9EIk7jvNYV/ETni/HCqBcHK96eles5vnkWPAJF67
+         Rsp21JkKJal/CpOglETRJe6PAIsQSDhNHczz95WEBtlFyhLLEEjPp8s+MdtCqyQwEMH7
+         mI4IJnQQeBS8jWG5f/TBPKNV/XTwCicZLyILSyytoF3rgyefW8tiyriBpmaB2bY5jsQ5
+         E0ZM0F0YT7VWXUI6trS327usk5a7YA2axj9lEQcGZjosJhQ7HWBsCmk55ET4DeCtAtCY
+         U+KA==
+X-Gm-Message-State: AOAM533kKt5UZqdnSOILDaHUdGml7GoyMTSC4eqnsiuMkacR5xEkru8b
+        F5MrskTSP7uqpBv6WPue2iOXryAjO+NZV2CU
+X-Google-Smtp-Source: ABdhPJxaMrGa9bogW5wc4swFx5alTfKE3kvK44l6gEplmg29gkMeauEWwH1cqkYCZPFicYcTFOKh2w==
+X-Received: by 2002:a19:7d04:: with SMTP id y4mr32924034lfc.201.1625935691270;
+        Sat, 10 Jul 2021 09:48:11 -0700 (PDT)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id o10sm8499lfi.41.2021.07.10.09.48.10
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 10 Jul 2021 09:48:10 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id v14so30665075lfb.4
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 09:48:10 -0700 (PDT)
+X-Received: by 2002:a19:7d04:: with SMTP id y4mr32924003lfc.201.1625935690648;
+ Sat, 10 Jul 2021 09:48:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210709234054.10288-1-olof@lixom.net> <20210709234054.10288-3-olof@lixom.net>
+In-Reply-To: <20210709234054.10288-3-olof@lixom.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 10 Jul 2021 09:47:54 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wg3Pb1LxbXkTX6itxRvgaV9JwBaSyGmE8zXUurJ98M2Bg@mail.gmail.com>
+Message-ID: <CAHk-=wg3Pb1LxbXkTX6itxRvgaV9JwBaSyGmE8zXUurJ98M2Bg@mail.gmail.com>
+Subject: Re: [GIT PULL 3/4] ARM: Drivers for 5.14
+To:     Olof Johansson <olof@lixom.net>
+Cc:     ARM SoC <arm@kernel.org>, SoC Team <soc@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace sprintf() by scnprintf() in order to avoid buffer overflows.
+On Fri, Jul 9, 2021 at 4:41 PM Olof Johansson <olof@lixom.net> wrote:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git tags/arm-drivers-5.14
 
-Signed-off-by: Salah Triki <salah.triki@gmail.com>
----
- drivers/dax/bus.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Ahh. You had switched the diffstats between pulls 2 and 3.
 
-diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
-index 5aee26e1bbd6..bcae4be6ae76 100644
---- a/drivers/dax/bus.c
-+++ b/drivers/dax/bus.c
-@@ -76,7 +76,7 @@ static ssize_t do_id_store(struct device_driver *drv, const char *buf,
- 	fields = sscanf(buf, "dax%d.%d", &region_id, &id);
- 	if (fields != 2)
- 		return -EINVAL;
--	sprintf(devname, "dax%d.%d", region_id, id);
-+	scnprintf(devname, DAX_NAME_LEN, "dax%d.%d", region_id, id);
- 	if (!sysfs_streq(buf, devname))
- 		return -EINVAL;
- 
--- 
-2.25.1
-
+            Linus
