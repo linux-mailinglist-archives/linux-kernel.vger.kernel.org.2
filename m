@@ -2,106 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E162D3C3611
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 20:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3CC13C361A
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 20:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229715AbhGJSYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 14:24:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbhGJSYj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 14:24:39 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43CC1C0613DD
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 11:21:53 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id f30so31105826lfj.1
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 11:21:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GFrC9GbYw2pfY1GNYl1j9fooO83KwnRoXAsiXo6YHdM=;
-        b=CET5A4Gg6UTWVQrmn0T1UFde0+VITgRXMOtF+pC+mv+1LrV+kNA9wWC2viZ4co6z2Z
-         GupTQr1pqFZgkylinpa4Eok8C1K+DAV+94Fj6fnpvqnGTSTbh7ZezFnFOIF3AiM7BxV0
-         3fi9D3iRZsJsnmsgjMjAz2eGZj55J4f0Av5j4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GFrC9GbYw2pfY1GNYl1j9fooO83KwnRoXAsiXo6YHdM=;
-        b=UvWt8LtomdY7bR5TNGGGZl0/GviMpkkbfDh6aMnKySZbmTugsVJmSO0Un60+0aGnbO
-         lAQskBe0qPIrNYxWovT4ZXfvG72oAV0oVTvesfvb69Y0aD2nNwvYAdZuk8QiJvQMBlKu
-         hhsstuiz99LH5+06DsEIFaumSdYIZt8ZBvdbWWt8w8PLGYcbqAZXMi+4K480lhxzruX7
-         JAIA6U9JcSshWp0ZE+UcQc7/yGPNr2sDB1/6bKikG4ztW6a/8/dZZJASqRHvZjn39mm/
-         fZBx3WVBz/ZzZ27Kzy8ylG0CSp+K9LyLBqn8J/5dQe6DYJixEjCUBMleWgTd3VfzZzF+
-         XobA==
-X-Gm-Message-State: AOAM5335FuNU32G8fPcmhJdIq5WbcqV7uLxCDnhKg+weTX5WsO6Z73wa
-        cVZHPhvGkfKqfC4j4rhAtoNW18fW3sol36iS
-X-Google-Smtp-Source: ABdhPJyp03vt9Y+Rrv7vxXqz3ueQkI9ACBSfkEPH+e7KR1mLNxqUxTZEZdPzlpAkLTLtLJ5lggfV5A==
-X-Received: by 2002:ac2:5590:: with SMTP id v16mr8191192lfg.453.1625941311260;
-        Sat, 10 Jul 2021 11:21:51 -0700 (PDT)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id i130sm756136lfd.304.2021.07.10.11.21.50
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 10 Jul 2021 11:21:50 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id y42so31075736lfa.3
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 11:21:50 -0700 (PDT)
-X-Received: by 2002:ac2:4475:: with SMTP id y21mr5344683lfl.487.1625941310223;
- Sat, 10 Jul 2021 11:21:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210708155647.44208-1-kaleshsingh@google.com>
-In-Reply-To: <20210708155647.44208-1-kaleshsingh@google.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 10 Jul 2021 11:21:34 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whDkekE8n2LdPiKHeTdRnV--ys0V0nPZ76oPaE0fn-d+g@mail.gmail.com>
-Message-ID: <CAHk-=whDkekE8n2LdPiKHeTdRnV--ys0V0nPZ76oPaE0fn-d+g@mail.gmail.com>
-Subject: Re: [PATCH] procfs: Prevent unpriveleged processes accessing fdinfo
-To:     Kalesh Singh <kaleshsingh@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S229846AbhGJShc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 14:37:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53810 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229599AbhGJShb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Jul 2021 14:37:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 00EE361249;
+        Sat, 10 Jul 2021 18:34:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625942086;
+        bh=+Mz2skLLGiwNxVacEnEorDly00hw4a/Ye+Y/TM8N08Q=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=VF7XwWXwfHAALWP/H7Mhhn/KX3V69Q55GSkHkbSJrElZJpAMNF3sFcuAZATIcFuw7
+         0bDTwxpAGOt1jnCoAmHNLtsduGWmUPQfUQvuk0UyxMV7HwoIv+X4vCdf9+0GDrx8qv
+         /D4QDnTUVUM+/PelULlMNyAER8FNcApFxeBspTDJEs+ErCjcdrAbGc2RQ7nd8cd5PL
+         o7SZTZ8o9395V22a2FDB1zUcd/loOPUUqdqFgLj/xMjbLaIXOVjP+tGYdcydI2TJ2G
+         gPkifm3SrFjcds39BNVkZrUolCZ7BvcvSHXXqtu99SbKRBdZ1cH0Z2wHhdh26Ds2Wk
+         Brn5yFbVUwDLA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DF806609CD;
+        Sat, 10 Jul 2021 18:34:45 +0000 (UTC)
+Subject: Re: [GIT PULL] s390 patches for the 5.14 merge window #2
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <your-ad-here.call-01625925176-ext-2826@work.hours>
+References: <your-ad-here.call-01625925176-ext-2826@work.hours>
+X-PR-Tracked-List-Id: <linux-s390.vger.kernel.org>
+X-PR-Tracked-Message-Id: <your-ad-here.call-01625925176-ext-2826@work.hours>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.14-2
+X-PR-Tracked-Commit-Id: 6a942f5780545ebd11aca8b3ac4b163397962322
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: e98e03d075537a14928661ebfbfcde34b0eced1a
+Message-Id: <162594208585.22528.16485351339073248775.pr-tracker-bot@kernel.org>
+Date:   Sat, 10 Jul 2021 18:34:45 +0000
+To:     Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 8, 2021 at 8:57 AM Kalesh Singh <kaleshsingh@google.com> wrote:
->
-> The file permissions on the fdinfo dir from were changed from
-> S_IRUSR|S_IXUSR to S_IRUGO|S_IXUGO, and a PTRACE_MODE_READ check was
-> added for opening the fdinfo files [1]. However, the ptrace permission
-> check was not added to the directory, allowing anyone to get the open FD
-> numbers by reading the fdinfo directory.
->
-> Add the missing ptrace permission check for opening the fdinfo directory.
+The pull request you sent on Sat, 10 Jul 2021 15:52:56 +0200:
 
-The more I look at this, the more I feel like we should look at
-instead changing how "get_proc_task()" works.
+> git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.14-2
 
-That's one of the core functions for /proc, and I wonder if we
-couldn't just make it refuse to look up a task that has gone through a
-suid execve() since the proc inode was opened.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/e98e03d075537a14928661ebfbfcde34b0eced1a
 
-I don't think it's basically ever ok to open something for one thread,
-and then use it after the thread has gone through a suid thing.
+Thank you!
 
-In fact, I wonder if we could make it even stricter, and go "any exec
-at all", but I think a suid exec might be the minimum we should do.
-
-Then the logic really becomes very simple: we did the permission
-checks at open time (like UNIX permission checks should be done), and
-"get_proc_task()" basically verifies that "yeah, that open-time
-decision is still valid".
-
-Wouldn't that make a lot of sense?
-
-             Linus
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
