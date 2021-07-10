@@ -2,92 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D713C3581
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 18:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6DA3C3586
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 18:27:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229614AbhGJQXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 12:23:39 -0400
-Received: from vern.gendns.com ([98.142.107.122]:58526 "EHLO vern.gendns.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229452AbhGJQXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 12:23:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ojyIBwloAwMN6eYxqUMzZGXJG9Wtq+1qb9RbHTEv0ks=; b=D5orH/qmYnTHFv9PZnhKELEg1v
-        kBSwdw3LQ1+4fczyjKmkhtc4JCNSTCL2CE7/mRck/3Av+HWFn/LDBMCyi8kuEgbqVmPssgmZVEzP6
-        TRnqYIoi5NdgWVTWn1zOHSgbAmUf8uH4kIdMg6W6r4M0CMx0xsyqrqEZV7k75EanUU+OsdvqfLiY2
-        qZRCElDSt12DRF3MWNC5XjGMWDCYVaLM3sPDATLhB6zhaL9ZrrH2ZILIxz/rGQwEJhBxv/7vRIq1C
-        iTHzfIHWbxFKN0Nd7Vq7gvZ+FOrrVa48QdCf3RL1poxdeZpSpFLSiUvkzRkrl3hQh5tRamLrEZ5Uk
-        7jQ10yWg==;
-Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:46202 helo=[192.168.0.134])
-        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <david@lechnology.com>)
-        id 1m2FiV-00GbOP-2s; Sat, 10 Jul 2021 12:20:50 -0400
-Subject: Re: [PATCH v12 13/17] counter: Implement signalZ_action_component_id
- sysfs attribute
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>, jic23@kernel.org
-Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
-        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        o.rempel@pengutronix.de, jarkko.nikula@linux.intel.com,
-        Dan Carpenter <dan.carpenter@oracle.com>
-References: <cover.1625471640.git.vilhelm.gray@gmail.com>
- <472b3f1cce1bbfedd2031cdb70d0348f3802e821.1625471640.git.vilhelm.gray@gmail.com>
-From:   David Lechner <david@lechnology.com>
-Message-ID: <a9bc17fa-2ba0-027c-2ad8-99e4e6a03b2a@lechnology.com>
-Date:   Sat, 10 Jul 2021 11:20:45 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229674AbhGJQaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 12:30:15 -0400
+Received: from smtprelay0252.hostedemail.com ([216.40.44.252]:35202 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229452AbhGJQaO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Jul 2021 12:30:14 -0400
+Received: from omf12.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 3C9BB181D3025;
+        Sat, 10 Jul 2021 16:27:28 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf12.hostedemail.com (Postfix) with ESMTPA id 1F0D3240236;
+        Sat, 10 Jul 2021 16:27:24 +0000 (UTC)
+Message-ID: <dd3ec20d371703c121a18e91908ab8faa76c852d.camel@perches.com>
+Subject: Re: [PATCH -tip 6/6] kprobes: Use bool type for functions which
+ returns boolean value
+From:   Joe Perches <joe@perches.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>, X86 ML <x86@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
+        yhs@fb.com, linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sat, 10 Jul 2021 09:27:22 -0700
+In-Reply-To: <162592897337.1158485.13933847832718343850.stgit@devnote2>
+References: <162592891873.1158485.768824457210707916.stgit@devnote2>
+         <162592897337.1158485.13933847832718343850.stgit@devnote2>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-In-Reply-To: <472b3f1cce1bbfedd2031cdb70d0348f3802e821.1625471640.git.vilhelm.gray@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 1F0D3240236
+X-Spam-Status: No, score=1.59
+X-Stat-Signature: g7d5ey6794yc3adwpqbjf4sfbzj4aa8s
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18NhvQmIVgwou9EnrL7AsJoLwMB4STNfdM=
+X-HE-Tag: 1625934444-490807
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/5/21 3:19 AM, William Breathitt Gray wrote:
-> The Generic Counter chrdev interface expects users to supply component
-> IDs in order to select Synapses for requests. In order for users to know
-> what component ID belongs to which Synapse this information must be
-> exposed. The signalZ_action_component_id attribute provides a way for
-> users to discover what component ID belongs to the respective Synapse.
+On Sat, 2021-07-10 at 23:56 +0900, Masami Hiramatsu wrote:
+> Use the 'bool' type instead of 'int' for the functions which
+> returns a boolean value, because this makes clear that those
+> functions don't return any error code.
+[]
+> diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+[]
+> @@ -104,25 +104,25 @@ struct kprobe {
+>  #define KPROBE_FLAG_FTRACE	8 /* probe is using ftrace */
+>  
 > 
-> Cc: David Lechner <david@lechnology.com>
-> Cc: Gwendal Grignou <gwendal@chromium.org>
-> Cc: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-> ---
+>  /* Has this kprobe gone ? */
+> -static inline int kprobe_gone(struct kprobe *p)
+> +static inline bool kprobe_gone(struct kprobe *p)
+>  {
+>  	return p->flags & KPROBE_FLAG_GONE;
+>  }
 
-I like this better than having to scrape the number from the
-attribute name.
+This change would also allow the removal of the !! from:
 
-Reviewed-by: David Lechner <david@lechnology.com>
+kernel/trace/trace_kprobe.c:104:        return !!(kprobe_gone(&tk->rp.kp));
+---
+ kernel/trace/trace_kprobe.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +	/* Allocate Counter attribute */
-> +	counter_attr = devm_kzalloc(dev, sizeof(*counter_attr), GFP_KERNEL);
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index ea6178cb5e334..c6e0345a44e94 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -101,7 +101,7 @@ static nokprobe_inline unsigned long trace_kprobe_offset(struct trace_kprobe *tk
+ 
+ static nokprobe_inline bool trace_kprobe_has_gone(struct trace_kprobe *tk)
+ {
+-	return !!(kprobe_gone(&tk->rp.kp));
++	return kprobe_gone(&tk->rp.kp);
+ }
+ 
+ static nokprobe_inline bool trace_kprobe_within_module(struct trace_kprobe *tk,
 
-nit: Comments like this are redundant and can be omitted. All 3 words
-in the comment are literally (abbreviated) in the next line of code so
-it doesn't add any new/useful information.
 
