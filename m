@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B7A93C361C
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 20:35:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E70DF3C361E
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 20:35:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230233AbhGJShk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 14:37:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53828 "EHLO mail.kernel.org"
+        id S230443AbhGJShq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 14:37:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229599AbhGJShj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 14:37:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4FAF261249;
-        Sat, 10 Jul 2021 18:34:54 +0000 (UTC)
+        id S229599AbhGJSho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Jul 2021 14:37:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 97CA46138C;
+        Sat, 10 Jul 2021 18:34:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625942094;
-        bh=seybo4Srl8mhlejim68PrwKNybnRL4PLjAd3mcpnNDQ=;
+        s=k20201202; t=1625942099;
+        bh=iZpV87su4CYAwsLdRAUv/eCrLdq88fEYAwJzybv4K7k=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=eRfjHcDsgLj5vbpqjRubKUBgf8uob4bcz8MuDNzrWOw2iivnZu5uAi/LUv7aoVl0W
-         6xEUo7pblrsJPBxlhUCiJkEidTGSrYk9hY6HT3BrtNHxBEbnM0Di/QJs/CkJg6r3J2
-         yjGqenIkiGpVZJ4v3w9Okr4rXwjwXu04DguZEX3nTtXMeiz/Z0EiXvYYs3ybopCD8/
-         JBcmev/qNOroRRksnX0k8ifIPSdCpJnv1Dlq5mc186+AgGujNfA0T4yG/oBe8qpGl1
-         cTCtx/L9STPWNqWEfNA0wJt5cvE1DqToxAr3cP98a9gFG7dW0qOQzP3ILHbrXkYkNu
-         F0d1fIXjyUw+A==
+        b=K135OQi1SqF0hIXJPvtKAESRUcW/Svmi47oOQmUY4brmsRaZYZHJs0jsqtCffKX4V
+         91nIM1VTvfmnrqR9prYv/VlcWumVTcGD/4quKXOSNsvFuOa5zA2DIayd8Liay90Jn2
+         jux4NijlI9YHDXbZiKSUqfyfr/DkTCenKmyuAGPWTgQaK6VFuVrTkRZ/qd28OZtgRR
+         rbnpFx3NzAjNn/D8BmUrpodURY2XtpgPK4nZ8iDouuTyqGHsTBYMDOuPP0G0QvGYMg
+         qnNy9beAGUNrZ+AaRU8Lou8kreplui1WypZ+B2oVk4oYEAQ3kxA5eY4oR/UoFd/OHy
+         tKyHLkMaB3B/A==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 48BA9609CD;
-        Sat, 10 Jul 2021 18:34:54 +0000 (UTC)
-Subject: Re: [GIT PULL] MIPS fixes for v5.14
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 90A88609CD;
+        Sat, 10 Jul 2021 18:34:59 +0000 (UTC)
+Subject: Re: [GIT PULL] Kbuild updates for v5.14-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210710121523.GA8431@alpha.franken.de>
-References: <20210710121523.GA8431@alpha.franken.de>
-X-PR-Tracked-List-Id: <linux-mips.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210710121523.GA8431@alpha.franken.de>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_5.14_1
-X-PR-Tracked-Commit-Id: 47ce8527fbba145a7723685bc9a27d9855e06491
+In-Reply-To: <CAK7LNAT-9N_o_J8+pD5H9gnxzxuN-3ZBQ1wt-VmyHE=oEC295g@mail.gmail.com>
+References: <CAK7LNAT-9N_o_J8+pD5H9gnxzxuN-3ZBQ1wt-VmyHE=oEC295g@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAK7LNAT-9N_o_J8+pD5H9gnxzxuN-3ZBQ1wt-VmyHE=oEC295g@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-v5.14
+X-PR-Tracked-Commit-Id: 27932b6a2088eac7a5afa5471963b926cfbb4de7
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 379cf80a9861e4356792185bc3fcdd7d4133f2f7
-Message-Id: <162594209429.22528.2441674279705679396.pr-tracker-bot@kernel.org>
-Date:   Sat, 10 Jul 2021 18:34:54 +0000
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     torvalds@linux-foundation.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+X-PR-Merge-Commit-Id: 81361b837a3450f0a44255fddfd7a4c72502b667
+Message-Id: <162594209958.22528.8831028585543954987.pr-tracker-bot@kernel.org>
+Date:   Sat, 10 Jul 2021 18:34:59 +0000
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 10 Jul 2021 14:15:23 +0200:
+The pull request you sent on Sat, 10 Jul 2021 04:18:51 +0900:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_5.14_1
+> git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-v5.14
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/379cf80a9861e4356792185bc3fcdd7d4133f2f7
+https://git.kernel.org/torvalds/c/81361b837a3450f0a44255fddfd7a4c72502b667
 
 Thank you!
 
