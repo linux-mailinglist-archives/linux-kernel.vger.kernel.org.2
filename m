@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 484853C2FA8
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 04:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD823C2FAA
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 04:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233752AbhGJCcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 22:32:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42146 "EHLO mail.kernel.org"
+        id S232665AbhGJCc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 22:32:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234317AbhGJC3W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 22:29:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B3D461437;
-        Sat, 10 Jul 2021 02:25:44 +0000 (UTC)
+        id S234439AbhGJC31 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 22:29:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DBB95613E4;
+        Sat, 10 Jul 2021 02:26:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625883944;
-        bh=3l0hm/n+PZ0Ti6m3rzVF1Hvo6vMMTW5neVE/CU70Buc=;
+        s=k20201202; t=1625883993;
+        bh=10RNsTQrpkHSe4TnEWFup4u2UnNAxuJ9x0CMgCgE4Oc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q+Q+BtW9ZSxXgVZCK6YABOWb6YUwR2rGVS7n6PdVtbxAcocKRdYOxupMWTiKxnnky
-         Mz5kIoZnV4DPCifqIsPZbJY9fGCaDh7/tvtLU/PoTBuzlQm7LtcONUZ41/iK9J9VyE
-         2+lJPWBheJySEtcVZXyxOU/Md4ObpuXT3SB1kz5+LbVMZ7LzXW9XGfVSS9NFq8xbEq
-         r451Y7to8LtLIgdqRHCY/GQQQH1s6NZzCo1WkV6nAuydLp1yMVGifwL8tqnHaKIpPL
-         ihHbHwYvxNP5VUw9Nw3Rrtj0NF9gNvCoAKuc8+vtk2l7EahgOta8nacmi4QeztggLT
-         3FAcU5XHg0MGw==
+        b=eozNLQgd72WRkQK59kff0cUgiia5zc+lL15DA1zVoI+G1ErjOsPvFta7oER9Gw4BK
+         Mgg/vBEcXbYGwmp70xtgShJWpCftIJBtFWzBH27RpGBazUslzu1xle9t5fbMz3buni
+         RBZ+qJhPzrzRRy5TYk5UE3tIYXLeKFO//ieVn8yhutwzaOPOU6vHuaXz1qKaawO43S
+         4s52unjGeCUoPfazFsfP6Lbdi99Ol/Um/qZ2B6Y+n7GzuDfjm6O+sGIEizKbkxURs/
+         pIfpNV3V3IhaYirKyZN3Sx68PT7ZkSmcBSJdWItqaSTWToQOVLwcy2BpQPtHhPfYjX
+         lZ5OEDFLEYZDA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.10 58/93] ASoC: soc-pcm: fix the return value in dpcm_apply_symmetry()
-Date:   Fri,  9 Jul 2021 22:23:52 -0400
-Message-Id: <20210710022428.3169839-58-sashal@kernel.org>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>, linux-s390@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 69/93] s390/processor: always inline stap() and __load_psw_mask()
+Date:   Fri,  9 Jul 2021 22:24:03 -0400
+Message-Id: <20210710022428.3169839-69-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210710022428.3169839-1-sashal@kernel.org>
 References: <20210710022428.3169839-1-sashal@kernel.org>
@@ -42,37 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jaroslav Kysela <perex@perex.cz>
+From: Heiko Carstens <hca@linux.ibm.com>
 
-[ Upstream commit 12ffd726824a2f52486f72338b6fd3244b512959 ]
+[ Upstream commit 9c9a915afd90f7534c16a71d1cd44b58596fddf3 ]
 
-In case, where the loops are not executed for a reason, the uninitialized
-variable 'err' is returned to the caller. Make code fully predictible
-and assign zero in the declaration.
+s390 is the only architecture which makes use of the __no_kasan_or_inline
+attribute for two functions. Given that both stap() and __load_psw_mask()
+are very small functions they can and should be always inlined anyway.
 
-Signed-off-by: Jaroslav Kysela <perex@perex.cz>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/20210614071746.1787072-1-perex@perex.cz
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Therefore get rid of __no_kasan_or_inline and always inline these
+functions.
+
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/soc-pcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/s390/include/asm/processor.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 91bf33958159..8b8a9aca2912 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1738,7 +1738,7 @@ static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
- 	struct snd_soc_dpcm *dpcm;
- 	struct snd_soc_pcm_runtime *fe = asoc_substream_to_rtd(fe_substream);
- 	struct snd_soc_dai *fe_cpu_dai;
--	int err;
-+	int err = 0;
- 	int i;
+diff --git a/arch/s390/include/asm/processor.h b/arch/s390/include/asm/processor.h
+index 962da04234af..0987c3fc45f5 100644
+--- a/arch/s390/include/asm/processor.h
++++ b/arch/s390/include/asm/processor.h
+@@ -211,7 +211,7 @@ static __always_inline unsigned long current_stack_pointer(void)
+ 	return sp;
+ }
  
- 	/* apply symmetry for FE */
+-static __no_kasan_or_inline unsigned short stap(void)
++static __always_inline unsigned short stap(void)
+ {
+ 	unsigned short cpu_address;
+ 
+@@ -250,7 +250,7 @@ static inline void __load_psw(psw_t psw)
+  * Set PSW mask to specified value, while leaving the
+  * PSW addr pointing to the next instruction.
+  */
+-static __no_kasan_or_inline void __load_psw_mask(unsigned long mask)
++static __always_inline void __load_psw_mask(unsigned long mask)
+ {
+ 	unsigned long addr;
+ 	psw_t psw;
 -- 
 2.30.2
 
