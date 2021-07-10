@@ -2,80 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46B023C36BB
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 22:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B186B3C36BE
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 22:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbhGJUJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 16:09:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbhGJUJR (ORCPT
+        id S231293AbhGJUME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 16:12:04 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:44487
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229515AbhGJUMC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 16:09:17 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C7F9C0613DD;
-        Sat, 10 Jul 2021 13:06:31 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id m17so19746288edc.9;
-        Sat, 10 Jul 2021 13:06:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=279SNIJJKJdalSwwK/+vCT2n7h+cZDK+CFjInEn12Wg=;
-        b=uVu5+H9B5kYnaNupC8Xwy5ddbiGdIwZ6h4819ZgV0eZsbn/O/x6KpU2l5/rGxRoI91
-         zziyFROarERB92ZIJ1Jk3Gp+Vn34gt0aQlq7MtbHaQw3bOvNEFy4fyTcyMrcoZKmwo5G
-         s4DLajdut5BdwH/k2/qsyu6P1NrhFkAYYim6p7kAitk3L4ecu/p5lnwtRnvlj3ZSGa4r
-         cjehgnCuzdV1Wq7Kl6trZa5QCf7i5IZMNPDyWUfvgFbMbBSI9i8UbAKTJcyo+dRbQnF5
-         womE5ahtNfEjiWTYhhlxWoqGVAM9gUSaGKzQ48Rb446Rzrauxio3Ut+5KHFtK9NHWBGM
-         +tfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=279SNIJJKJdalSwwK/+vCT2n7h+cZDK+CFjInEn12Wg=;
-        b=P8d6iCjFt8vSz+JkIz+UgnMpmWSLQUmQbM4QRZWbAzFIb3Pefs+9AClxPN3ihsqpEz
-         FJ4MYUhJU/qWRL7fMAKXz88j4dl1xBucrdEbDbDHkJDOSHDTQSQrlU8XU6SJzoem5mS8
-         ZS40u4pDu81g8lLCTRYwUY+WzD6iUYCiNHgb3zjY32GkWTb4ubdgylavsyLIkqHDNba9
-         yE2MTQf2LMq9FGnQ6VFDrqsMjxUA096EaAgNw5dzjAcZ8QdtsUhK9zrjAKC2UUrhxRpx
-         U7ruEWggv5a3E0DqQqMxeDo1ci6UniIK/uVlEVtRLD5YRe7YDGzf738/AahVX0hij8b+
-         ENDA==
-X-Gm-Message-State: AOAM531iTc2ZquGFyi0poeomdmR0foxNQEi0Qe57Jeebu2om9kW05nJb
-        03/4b78LkHH7E156m8+4ao8=
-X-Google-Smtp-Source: ABdhPJxOsZyaSugxbfGUGG4qRb0BqZb/E+AczvOYeRPetBKyCK6j+YF88vss+S269MvMZpaTP4zntw==
-X-Received: by 2002:a05:6402:2044:: with SMTP id bc4mr27541932edb.307.1625947590114;
-        Sat, 10 Jul 2021 13:06:30 -0700 (PDT)
-Received: from skbuf ([82.76.66.29])
-        by smtp.gmail.com with ESMTPSA id n13sm4138951ejk.97.2021.07.10.13.06.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Jul 2021 13:06:29 -0700 (PDT)
-Date:   Sat, 10 Jul 2021 23:06:28 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Colin Foster <colin.foster@in-advantage.com>
-Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
-        claudiu.manoil@nxp.com, alexandre.belloni@bootlin.com,
-        UNGLinuxDriver@microchip.com, linux@armlinux.org.uk,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 net-next 3/8] net: dsa: ocelot: felix: NULL check
- on variable
-Message-ID: <20210710200628.uwwyzuuou242anzq@skbuf>
-References: <20210710192602.2186370-1-colin.foster@in-advantage.com>
- <20210710192602.2186370-4-colin.foster@in-advantage.com>
+        Sat, 10 Jul 2021 16:12:02 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Ay1++66M4chlPfMBcTsajsMiBIKoaSvp037BL?=
+ =?us-ascii?q?7TEUdfU7SKelfqyV9sjzkCWUtN9zYgBEpTnjAsm9qBrnnPZICMsqTNSftWLd1l?=
+ =?us-ascii?q?dAQrsP0WKv+UyDJwTOst8Y76tmfqRkYeecMXFxh6/BjzWFLw=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.84,229,1620684000"; 
+   d="scan'208";a="387686079"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Jul 2021 22:09:15 +0200
+Date:   Sat, 10 Jul 2021 22:09:15 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Joe Perches <joe@perches.com>
+cc:     cocci <cocci@systeme.lip6.fr>, LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Subject: Re: cocci script to convert linux-kernel allocs with BITS_TO_LONGS
+ to bitmap_alloc
+In-Reply-To: <afd3a282ca57a4a400c8bae9879a7c57bc507c59.camel@perches.com>
+Message-ID: <alpine.DEB.2.22.394.2107102207560.46528@hadrien>
+References: <08b89608cfb1280624d1a89ead6547069f9a4c31.camel@perches.com>  <alpine.DEB.2.22.394.2107102149140.46528@hadrien> <afd3a282ca57a4a400c8bae9879a7c57bc507c59.camel@perches.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210710192602.2186370-4-colin.foster@in-advantage.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 10, 2021 at 12:25:57PM -0700, Colin Foster wrote:
-> Add NULL check before dereferencing array
-> 
-> Signed-off-by: Colin Foster <colin.foster@in-advantage.com>
-> ---
 
-The patch is correct but is insufficiently documented. In particular,
-people might interpret it as a bug fix and backport it to stable
-kernels.
+
+On Sat, 10 Jul 2021, Joe Perches wrote:
+
+> On Sat, 2021-07-10 at 21:50 +0200, Julia Lawall wrote:
+> > On Fri, 9 Jul 2021, Joe Perches wrote:
+> >
+> > > Here is a cocci script to convert various types of bitmap allocations
+> > > that use BITS_TO_LONGS to the more typical bitmap_alloc functions.
+> > >
+> > > Perhaps something like it could be added to scripts/coccinelle.
+> > > The diff produced by the script is also below.
+> > >
+> > > $ cat bitmap_allocs.cocci
+> > > // typical uses of bitmap allocations
+> []
+> > > @@
+> > > expression val;
+> > > expression e1;
+> > > expression e2;
+> > > @@
+> > >
+> > > -	val = kcalloc(BITS_TO_LONGS(e1), sizeof(*val), e2)
+> > > +	val = bitmap_zalloc(e1, e2)
+> >
+> > Is there something that guarantees that val has a type that has a size that
+> > is the same as a long?
+>
+> no, but afaict, all do.
+
+It might be nicer for the val metavariable to be declared as
+{long,unsigned long} val;, although that might lose some results if the
+type is something else that has the same size.  I can check what is the
+impact of adding that constraint.
+
+julia
