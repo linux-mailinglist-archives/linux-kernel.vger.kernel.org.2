@@ -2,87 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBBDE3C35D5
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 19:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC9D3C35DA
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 19:35:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbhGJRfm convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 10 Jul 2021 13:35:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47124 "EHLO mail.kernel.org"
+        id S230338AbhGJRi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 13:38:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229490AbhGJRfl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 13:35:41 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 46D5B61279;
-        Sat, 10 Jul 2021 17:32:52 +0000 (UTC)
-Date:   Sat, 10 Jul 2021 18:35:25 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Antti =?UTF-8?B?S2Vyw6RuZW4=?= <detegr@rbx.email>
-Cc:     linux-iio@vger.kernel.org, Hannu Hartikainen <hannu@hrtk.in>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Nuno Sa <nuno.sa@analog.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH v2] iio: adis: set GPIO reset pin direction
-Message-ID: <20210710183525.0684bd90@jic23-huawei>
-In-Reply-To: <20210708095425.13295-1-detegr@rbx.email>
-References: <60e5ac8c.1c69fb81.c69f0.abab@mx.google.com>
-        <20210708095425.13295-1-detegr@rbx.email>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+        id S229599AbhGJRiY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Jul 2021 13:38:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 75AB46135D;
+        Sat, 10 Jul 2021 17:35:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625938539;
+        bh=HlV20LLDOYS7hODFKi8+hnGlbfZ65tezqgNtx9Ei92Q=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=r31b7M38RQDDMm6PMIrZ6tH0+ax0GuKbNJ0v0Flfchila3GZLiCPcYw6QGhfap9Wq
+         s7/Q3GsUe90/legJgoanr+jzY/uGyTvxctcPyK2zXNzD4mtsBAnmLj64Uvl8dw2sHB
+         DS4xnTrbrpWElWRLuXWBjDvydm5iRWMzpAruwdSKZaMTDtrfpt1rguHNEUtdQZ6oIv
+         WaIcicOqfyMCCqwf5ZrzoLd0NWwUqieLl9EpkyadAz4pdASDDv30bHrRcy2dJ2167F
+         c7+Cb1LowujwjgWbm+TOKDH7fHXzrN05qsqU+h2ciDhVnoBbL6geB4ijGWSUmJMEha
+         cqMSX1kcnix8Q==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6E4E6609F6;
+        Sat, 10 Jul 2021 17:35:39 +0000 (UTC)
+Subject: Re: [GIT PULL] memblock, arm: fixup for the pfn_valid() rework for
+ v5.14-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YOiZif/oQWkVzDgg@kernel.org>
+References: <YOiZif/oQWkVzDgg@kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YOiZif/oQWkVzDgg@kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/rppt/memblock.git tags/fixes-2021-07-09
+X-PR-Tracked-Commit-Id: 024591f9a6e0164ec23301784d1e6d8f6cacbe59
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: b6fd9e259457b847646844ed202b830e585289dd
+Message-Id: <162593853944.16773.8514165115386216359.pr-tracker-bot@kernel.org>
+Date:   Sat, 10 Jul 2021 17:35:39 +0000
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  8 Jul 2021 12:54:29 +0300
-Antti Keränen <detegr@rbx.email> wrote:
+The pull request you sent on Fri, 9 Jul 2021 21:46:33 +0300:
 
-> Set reset pin direction to output as the reset pin needs to be an active
-> low output pin.
-> 
-> Co-developed-by: Hannu Hartikainen <hannu@hrtk.in>
-> Signed-off-by: Hannu Hartikainen <hannu@hrtk.in>
-> Signed-off-by: Antti Keränen <detegr@rbx.email>
+> https://git.kernel.org/pub/scm/linux/kernel/git/rppt/memblock.git tags/fixes-2021-07-09
 
-Hi Antti,
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/b6fd9e259457b847646844ed202b830e585289dd
 
-For future reference (in IIO anyway as not all maintainers agree on this!)
-please don't send a v2 in reply to v1.  It gets lots if anyone is using
-a threaded email client as it's buried deep.  If I'd not been following
-the discussion I'd probably have missed this.
+Thank you!
 
-Seems correct to me, but will leave on list a few more days as rc1 isn't
-out yet so I don't have a good based to start collecting fixes on a the
-moment.
-
-Jonathan
-
-> ---
-> Removed unnecessary toggling of the pin as requested by Lars-Peter. I
-> missed out on the conversation, but I agree this is better.
-> 
->  drivers/iio/imu/adis.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/iio/imu/adis.c b/drivers/iio/imu/adis.c
-> index 319b64b2fd88..f8b7837d8b8f 100644
-> --- a/drivers/iio/imu/adis.c
-> +++ b/drivers/iio/imu/adis.c
-> @@ -415,12 +415,11 @@ int __adis_initial_startup(struct adis *adis)
->  	int ret;
->  
->  	/* check if the device has rst pin low */
-> -	gpio = devm_gpiod_get_optional(&adis->spi->dev, "reset", GPIOD_ASIS);
-> +	gpio = devm_gpiod_get_optional(&adis->spi->dev, "reset", GPIOD_OUT_HIGH);
->  	if (IS_ERR(gpio))
->  		return PTR_ERR(gpio);
->  
->  	if (gpio) {
-> -		gpiod_set_value_cansleep(gpio, 1);
->  		msleep(10);
->  		/* bring device out of reset */
->  		gpiod_set_value_cansleep(gpio, 0);
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
