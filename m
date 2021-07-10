@@ -2,94 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E353C342C
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 12:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AABBA3C342F
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 12:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232631AbhGJKkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 06:40:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232523AbhGJKkM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 06:40:12 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D204C0613DD;
-        Sat, 10 Jul 2021 03:37:27 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id i94so15962204wri.4;
-        Sat, 10 Jul 2021 03:37:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hL7SVSUAiIxR+dtLxcbW5RDKonY03J4Ra3YH0BN5oQU=;
-        b=BeDVSXlwRWpMcoPYAzveA/zCOnwXmh4JOVYksppQaDUmXF+vLC6bJO2+EXVfbRp02U
-         JnVbKCUBenjPDgM9bGm6OVeOwgEjUVkV9JxXGXqhPLAkjDWx6uwxPX9eSTxCRmPMDRFU
-         kSheyqRxiFECEBAbkBR57NoaTU9qR0gemQaayzrOkf54ceoIefKE6W4XJ15E9gCeYHM8
-         zaoLJCuw1IK2qn7EDzNDrqJifzB/ovx8mbln3ABt93soUBAHS/ZN7De2gy3Yj2DB3lea
-         sw/PMVCKZ9LAX8WFShqC/WdeOnDf7eeuB4tZaZWuzvbIWchAmmgyDogYS1eRlcUiWMLl
-         7p1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hL7SVSUAiIxR+dtLxcbW5RDKonY03J4Ra3YH0BN5oQU=;
-        b=aqDkmpnUIlcSP2mOCZ6ijJyNjR/HFebAb1AJuVKEdGH52bctfhW5nUrZsNKRY1yx5m
-         xyyjwie9DJ1U2XUF9SJbsp4A3G7VXnJ3oAo+r7EdH7AtN8A0tHIeH+TPQqLH7vYi4VRM
-         arHf+B1vuzMPPTdPUL01XqQ7tUS7ZJL6GTMmJJzzI/fCdDxEuvUz8LmltdrryHtXTWc0
-         gNw8ZKuA43RMbiiNxzf9kX+kkA3isXm14JHq5Z0nlRSDtRJexy7CVAVR6Pi7BYS3q6Nb
-         k3WX9Hv1LniHS6sjh9ms/hI1bW2V9+8FLRLPJZz4DAr43dO6trCvDsJRnvn4RJBP5Dyu
-         G1nw==
-X-Gm-Message-State: AOAM531ohDtqWR55ZytRzIqvWux3XPuP+22UNv2ajP5n5Bv0gf2mO1E8
-        lSgeyAehIj1iVoa0LKOnMl0=
-X-Google-Smtp-Source: ABdhPJxWsZaIIcJ9D6/ReFgdhCKhUDZ1ELMxDG7cAk/c3yih299ktotPObAM0APKPjMfim4X0Wp4GA==
-X-Received: by 2002:adf:c448:: with SMTP id a8mr27029939wrg.103.1625913446308;
-        Sat, 10 Jul 2021 03:37:26 -0700 (PDT)
-Received: from debian ([78.40.148.180])
-        by smtp.gmail.com with ESMTPSA id p9sm7707306wrx.59.2021.07.10.03.37.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Jul 2021 03:37:25 -0700 (PDT)
-Date:   Sat, 10 Jul 2021 11:37:24 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.4 0/4] 5.4.131-rc1 review
-Message-ID: <YOl4ZCAZi9fFAbGM@debian>
-References: <20210709131531.277334979@linuxfoundation.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210709131531.277334979@linuxfoundation.org>
+        id S232650AbhGJKk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 06:40:58 -0400
+Received: from mga14.intel.com ([192.55.52.115]:34009 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232387AbhGJKk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Jul 2021 06:40:56 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10040"; a="209638432"
+X-IronPort-AV: E=Sophos;i="5.84,229,1620716400"; 
+   d="scan'208";a="209638432"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2021 03:38:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,229,1620716400"; 
+   d="scan'208";a="429090400"
+Received: from ahunter-desktop.fi.intel.com ([10.237.72.79])
+  by orsmga002.jf.intel.com with ESMTP; 10 Jul 2021 03:38:06 -0700
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     "Rafael J . Wysocki" <rafael@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        linux-scsi@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
+        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V3 0/3] driver core: Add ability to delete device links of unregistered devices
+Date:   Sat, 10 Jul 2021 13:38:16 +0300
+Message-Id: <20210710103819.12532-1-adrian.hunter@intel.com>
+X-Mailer: git-send-email 2.17.1
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Hi
 
-On Fri, Jul 09, 2021 at 03:20:14PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.131 release.
-> There are 4 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 11 Jul 2021 13:14:09 +0000.
-> Anything received after that time might be too late.
+There is an issue with the SCSI UFS driver when the optional
+BOOT well-known LUN fails to probe, which is not a fatal error.
+The issue is that the device and its "managed" device link do not
+then get deleted.  The device because the device link has a
+reference to it.  The device link because it can only be deleted
+by device_del(), but device_add() was never called, so device_del()
+never will be either.
 
-Build test:
-mips (gcc version 11.1.1 20210702): 65 configs -> no failure
-arm (gcc version 11.1.1 20210702): 107 configs -> no new failure
-arm64 (gcc version 11.1.1 20210702): 2 configs -> no failure
-x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
-
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression.
+Since V2, these patches fix the issue by amending device link removal to
+accept removal of a link with an unregistered consumer device, as suggested
+by Rafael.
 
 
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+Changes in V3:
 
---
+    driver core: Prevent warning when removing a device link from unregistered consumer
+	New patch split from "driver core: Add ability to delete device
+	links of unregistered devices" except first chunk from that patch
+	dropped as unnecessary
+
+    driver core: Add ability to delete device links of unregistered devices
+	Move warning fix to separate patch.
+
+
+Changes in V2:
+
+    Take approach suggested by Rafael
+
+
+Adrian Hunter (3):
+      driver core: Prevent warning when removing a device link from unregistered consumer
+      driver core: Add ability to delete device links of unregistered devices
+      scsi: ufshcd: Fix device links when BOOT WLUN fails to probe
+
+ drivers/base/core.c       |  8 ++++++--
+ drivers/scsi/ufs/ufshcd.c | 23 +++++++++++++++++++++--
+ 2 files changed, 27 insertions(+), 4 deletions(-)
+
+
 Regards
-Sudip
+Adrian
