@@ -2,161 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD613C31F8
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 04:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D957D3C3209
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 04:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234270AbhGJCsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 22:48:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234027AbhGJCsP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 22:48:15 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24D3BC0774D1
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 19:41:11 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id y38so17522710ybi.1
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 19:41:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vaOH/a0ClI8BnfBSu2/Cfw1Ys0GE4IDd1evZ+TmP3ZA=;
-        b=fqGFrgFBt2diwQKiTqZZNApiNANthCTvwlWzLq1LGuz4MZomNQvLrXmIZgsBA2SFKd
-         hjmdLhO4u6AYDcGOz2gZc3+/t8rJb1EjoQxXMtEtpg5OmELvHgf5PqtxzU0C25KBkbrb
-         F7rzClNNXbt2XSIsjAbC2Sp7Do2sMEc2OhIwS+P9W+DV1Pau5Oim5iwMrL8F4l4ehCde
-         7hxae14TM0EPT7UjMovs2uOxao8RC9KHrfKLSIu0KG7jC5ZIipR9n0fgZBYHic7gKUMg
-         Yn6MyAYOKSIeWEy3dRFWFKPw0RcSj8l3FaXi8i1b0a7VIKiv0of7ClqqVplpAQFw8QvN
-         1VrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vaOH/a0ClI8BnfBSu2/Cfw1Ys0GE4IDd1evZ+TmP3ZA=;
-        b=VtZwnuwX5bn1ytva5JoScsxGgyIMceYwTzkWF69FuUHRYvEGs32QNpmDw7SBhzeEjw
-         Mpd3P7m3kP7YZnRYY9l4EkKPD/n6H7Aol/L0KIQumrCt6vcSWqG7gQ/4sEwg2lGbUfwU
-         VVnEgug29QMiCyU2LqWRPCjM0l+Z5/VgpoC+a2p4dVIEVJTittHuN0SYB4X6steJqoA0
-         ZDkgT8tMVBe6zLJ4A7aFi+Hz9HwCfZ69ctTUXgp1smmbPtc8QUVfbW0HpZnAUrtQafL4
-         AhQrs93fa0dWILwgiGxfV2Ap82+aZN8j9xaEHdEXk3z2jHXKpQzdeLnXOkwBPpFTbVkf
-         9psA==
-X-Gm-Message-State: AOAM533OGoU+v8O1QjlrySnkuaTyVMYKC3WUL8dyOSftoqGA04CdbX+i
-        LQnWUcevHIBSin8uBo3SKnaASlIJTDS7S+m6O0Lk9A==
-X-Google-Smtp-Source: ABdhPJy7qqHRX2CAmAe4p2VINq/yJeKUxUZqu2Ihaq6YYMsoz4JKJFb+DjSJ/HrYbLx8yVhD94mMgXBYXn7exUad/Uk=
-X-Received: by 2002:a25:9945:: with SMTP id n5mr47307594ybo.294.1625884869986;
- Fri, 09 Jul 2021 19:41:09 -0700 (PDT)
+        id S231896AbhGJC4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 22:56:33 -0400
+Received: from relay.sw.ru ([185.231.240.75]:37668 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230317AbhGJC4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 22:56:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=DvvjK9wvjret8pU1Pj5Lq7SIL4y20uZLc1aae0vdGec=; b=DICbeliw9gTCfmXZ6
+        umqBTcFC6y0z4aLCHjZmYIoFqQvlqz+AFm5DePt69Xp/wwE8WE4p2vLK1z+sun2ewR3KPNZcW9kXq
+        gYEZzINKkFr5fRrNoNX8mP+K9DKzBwe+xyGpSqh+apJ06q4HjcKAOXsEzF4HgS3t2VIEVdXs+OPBw
+        =;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1m237g-003W99-5k; Sat, 10 Jul 2021 05:53:44 +0300
+Subject: Re: [PATCH IPV6 v2 1/4] ipv6: allocate enough headroom in
+ ip6_finish_output2()
+To:     David Miller <davem@davemloft.net>
+Cc:     yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
+        eric.dumazet@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1cbf3c7b-455e-f3a5-cc2c-c18ce8be4ce1@gmail.com>
+ <cover.1625818825.git.vvs@virtuozzo.com>
+ <4f6a2b28-a137-2e19-bf62-5a8767d0d0ac@virtuozzo.com>
+ <20210709.105847.2246373390622335461.davem@davemloft.net>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <e5c78a48-47b9-85f9-bc60-eda0b7164ceb@virtuozzo.com>
+Date:   Sat, 10 Jul 2021 05:53:43 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210710003626.3549282-1-surenb@google.com> <b29493f5-34d9-6e8f-ec41-179a043641f4@huawei.com>
-In-Reply-To: <b29493f5-34d9-6e8f-ec41-179a043641f4@huawei.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Fri, 9 Jul 2021 19:40:58 -0700
-Message-ID: <CAJuCfpEGEoA9Pb8iLdXNH9Q3fiGEaNkKWM6p+M1KzE69cmEJww@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] mm, memcg: add mem_cgroup_disabled checks in
- vmpressure and swap-related functions
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>, vdavydov.dev@gmail.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>, songmuchun@bytedance.com,
-        Yang Shi <shy828301@gmail.com>, alexs@kernel.org,
-        richard.weiyang@gmail.com, Vlastimil Babka <vbabka@suse.cz>,
-        Jens Axboe <axboe@kernel.dk>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>, apopple@nvidia.com,
-        Minchan Kim <minchan@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        cgroups mailinglist <cgroups@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>, Tejun Heo <tj@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210709.105847.2246373390622335461.davem@davemloft.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 9, 2021 at 6:52 PM Miaohe Lin <linmiaohe@huawei.com> wrote:
->
-> On 2021/7/10 8:36, Suren Baghdasaryan wrote:
-> > Add mem_cgroup_disabled check in vmpressure, mem_cgroup_uncharge_swap and
-> > cgroup_throttle_swaprate functions. This minimizes the memcg overhead in
-> > the pagefault and exit_mmap paths when memcgs are disabled using
-> > cgroup_disable=memory command-line option.
-> > This change results in ~2.1% overhead reduction when running PFT test
-> > comparing {CONFIG_MEMCG=n, CONFIG_MEMCG_SWAP=n} against {CONFIG_MEMCG=y,
-> > CONFIG_MEMCG_SWAP=y, cgroup_disable=memory} configuration on an 8-core
-> > ARM64 Android device.
-> >
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > Reviewed-by: Shakeel Butt <shakeelb@google.com>
-> > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> > ---
-> >  mm/memcontrol.c | 3 +++
-> >  mm/swapfile.c   | 3 +++
-> >  mm/vmpressure.c | 7 ++++++-
-> >  3 files changed, 12 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index ae1f5d0cb581..a228cd51c4bd 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -7305,6 +7305,9 @@ void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_pages)
-> >       struct mem_cgroup *memcg;
-> >       unsigned short id;
-> >
-> > +     if (mem_cgroup_disabled())
-> > +             return;
-> > +
-> >       id = swap_cgroup_record(entry, 0, nr_pages);
-> >       rcu_read_lock();
-> >       memcg = mem_cgroup_from_id(id);
-> > diff --git a/mm/swapfile.c b/mm/swapfile.c
-> > index 1e07d1c776f2..707fa0481bb4 100644
-> > --- a/mm/swapfile.c
-> > +++ b/mm/swapfile.c
-> > @@ -3778,6 +3778,9 @@ void cgroup_throttle_swaprate(struct page *page, gfp_t gfp_mask)
-> >       struct swap_info_struct *si, *next;
-> >       int nid = page_to_nid(page);
-> >
-> > +     if (mem_cgroup_disabled())
-> > +             return;
-> > +
->
-> Many thanks for your patch. But I'am somewhat confused about this change.
-> IMO, cgroup_throttle_swaprate() is only related to blk_cgroup and it seems
-> it's irrelevant to mem_cgroup. Could you please have a explanation for me?
+Dear David,
+I'm happy to hear you again.
 
-cgroup_throttle_swaprate() is a NoOp when CONFIG_MEMCG=n (see:
-https://elixir.bootlin.com/linux/latest/source/include/linux/swap.h#L699),
-therefore I assume we can safely skip it when memcgs are disabled via
-"cgroup_disable=memory". From perf results I also see no hits on this
-function when CONFIG_MEMCG=n.
-However, looking into the code, I'm not sure why it should depend on
-CONFIG_MEMCG. But it's Friday night and I might be missing some
-details here...
+On 7/9/21 8:58 PM, David Miller wrote:
+> Please do not use inline in foo.c files, let the compiler decde.
 
->
-> Thanks!
->
-> >       if (!(gfp_mask & __GFP_IO))
-> >               return;
-> >
-> > diff --git a/mm/vmpressure.c b/mm/vmpressure.c
-> > index d69019fc3789..9b172561fded 100644
-> > --- a/mm/vmpressure.c
-> > +++ b/mm/vmpressure.c
-> > @@ -240,7 +240,12 @@ static void vmpressure_work_fn(struct work_struct *work)
-> >  void vmpressure(gfp_t gfp, struct mem_cgroup *memcg, bool tree,
-> >               unsigned long scanned, unsigned long reclaimed)
-> >  {
-> > -     struct vmpressure *vmpr = memcg_to_vmpressure(memcg);
-> > +     struct vmpressure *vmpr;
-> > +
-> > +     if (mem_cgroup_disabled())
-> > +             return;
-> > +
-> > +     vmpr = memcg_to_vmpressure(memcg);
-> >
-> >       /*
-> >        * Here we only want to account pressure that userland is able to
-> >
->
+Thank you for the hint, I did not know it, and will follow him next time.
+This time I'm going to move this helper somewhere anyway: 
+either to net/core/skbuff.c as exported function where it will lost inline anyway,
+or to include/linux/skbuff.h where inline is (it seems?) acceptable.
+
+Could you please help me to find better name for this helper?
+
+I would like to change its current name: 'skb_expand_head' looks very similar
+to widely used 'pskb_expand_head' but have different semantic.
+I afraid they can be accidentally misused in future.
+
+Thank you,
+	Vasily Averin.
