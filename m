@@ -2,102 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46DF23C3742
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 01:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 310FF3C3744
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 01:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbhGJXZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 19:25:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbhGJXZq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 19:25:46 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A209C0613DD
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 16:22:59 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id t5so4397366wrw.12
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 16:22:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gcgwEK9v8zSJpfd9VO+CBZNaSHgtLXE//p5WtR3lQCE=;
-        b=u7OZRqdEPoGfT0m2KXNCC3xIq9WDPM14rVfz8wiLwaDmE34H20bLYqlaYuPYf3mblc
-         VzlOCBUn8Ty0sUSK6NsqCDxMqlaoDswLtdRnddlvWzS2ExOOiFCWYaZcSVTH99hIMQgQ
-         2Zz04kYyCM3a2wtHQ49KqONAyYDbAmt+HKDPfkRlFygOrYjFDVB2MeLE4A/LlKrBJCCO
-         Vtb5DAG0z9v5pQ4KaMvRluN618AMoAqVQG7ZoMSYUOkvIXc+u/9NPXiRn9H8yRtpzlB+
-         5NK9g+fl3y571sInt9wucy6ZmjiRjfnHho+GIF88O9BFHj84yj/3RzEACasMWUlz1oVg
-         IkBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gcgwEK9v8zSJpfd9VO+CBZNaSHgtLXE//p5WtR3lQCE=;
-        b=CqPRmcDMtGQ9cn+QMXFSw7UZKU7q2IHOBAz9CqnXb72xn2Rc/5N2fRZlb6rih0TrO/
-         aLF6XCxAavpRw6Ted1Z8pax6CFtLuiFPbMHYB6UtsQVNfwIj9YvY4nmTznc6jp3pPZoK
-         BtsWMED/EI4NdgGrMWyjX/ZMVhaF4Lh8Y+9qRanngF3CfuPx07fpeeOwVwMEnu9Iftyd
-         N1zvgyJJIJbQyFVkmX1HZ9dtfTDBzrOAhJpQrh+TQ9/gLHFsMhulwTNa89yLIkgyHxpW
-         t2/QoQdoH6ugVrAhxNhY/EJ7hNM+MioRDKNBhYiPLEBN1PtubDJudkRqkIXshq6LlpAQ
-         VmkA==
-X-Gm-Message-State: AOAM532N0WKO3fu4ybDWJwN5uwt4XHNcYyq1v5U8HfnpqXd7JDiy5QMZ
-        JrKd4vwLc5Q8jzk2q9JZav+PA1PwrtuqPrFD6eMKrA==
-X-Google-Smtp-Source: ABdhPJyjr2o2lYXOyUK90eGM8IbPtj8nRqDe5TB/NwNXIs0rrp5e2+ttpPWkCyymzklnKNiXGJscC0zFu6uE7PvUf84=
-X-Received: by 2002:adf:cf10:: with SMTP id o16mr18394680wrj.426.1625959377659;
- Sat, 10 Jul 2021 16:22:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210710100329.49174-1-linmiaohe@huawei.com> <20210710100329.49174-2-linmiaohe@huawei.com>
-In-Reply-To: <20210710100329.49174-2-linmiaohe@huawei.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Sat, 10 Jul 2021 17:22:46 -0600
-Message-ID: <CAOUHufZpU4uQOBb4p10uCXs-40MeETRUmGiqy96Eim1w3o_dgQ@mail.gmail.com>
-Subject: Re: [PATCH 1/5] mm/vmscan: put the redirtied MADV_FREE pages back to
- anonymous LRU list
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org, vbabka@suse.cz,
-        mhocko@suse.com, axboe@kernel.dk, iamjoonsoo.kim@lge.com,
-        alexs@kernel.org, apopple@nvidia.com, willy@infradead.org,
-        minchan@kernel.org, david@redhat.com, shli@fb.com,
-        hillf.zj@alibaba-inc.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S230514AbhGJX2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 19:28:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37090 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229515AbhGJX2Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Jul 2021 19:28:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 46F6161355;
+        Sat, 10 Jul 2021 23:25:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625959538;
+        bh=gTf2M+mLjp4xqfyBscrLPbx8BbNzNNwvgLn6uk/cBJ8=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=BsjNG5VcHD3fsxZO+qxIfRiWh7GuxQem534J1pimha+SO+376h3AgnuoEL+l7x92R
+         3CKsYCRw5wVZqahRXAxnDF8C0EQy9KPONekNhA+vkL9nVwscz+VOk/O78EgXnqJPHL
+         eIg0WwfJms9yP6P34MINJb3Q7iysq72uDygGhtTpUe5K/yuC1KPCeKI3BKY7VXUOaC
+         yP0Li21CxL9BMj53lIQoubRoa3oVb7EJhWGYOeiQdejoRF/FUaERrhlxhdwlOdy+Gv
+         wOo6PozqyCsSmtFo5KH3LUKNX0Z9AXaPcl4JS+AH/hQdat+nZkPZQ7+uPalIfYC2/r
+         pImv2pwbsR44A==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 334EF60A08;
+        Sat, 10 Jul 2021 23:25:38 +0000 (UTC)
+Subject: Re: [GIT PULL] RTC changes for 5.14
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YOoaQCvHNsCsUZnv@piout.net>
+References: <YOoaQCvHNsCsUZnv@piout.net>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YOoaQCvHNsCsUZnv@piout.net>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git tags/rtc-5.14
+X-PR-Tracked-Commit-Id: 4aa90c036df670b8757140e0dae2a94e7b0d42b4
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: de5540965853e514a85d3b775e9049deb85a2ff3
+Message-Id: <162595953814.3359.13213210647898768496.pr-tracker-bot@kernel.org>
+Date:   Sat, 10 Jul 2021 23:25:38 +0000
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 10, 2021 at 4:03 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
->
-> If the MADV_FREE pages are redirtied before they could be reclaimed, put
-> the pages back to anonymous LRU list by setting SwapBacked flag and the
-> pages will be reclaimed in normal swapout way. Otherwise MADV_FREE pages
-> won't be reclaimed as expected.
->
-> Fixes: 802a3a92ad7a ("mm: reclaim MADV_FREE pages")
+The pull request you sent on Sun, 11 Jul 2021 00:08:00 +0200:
 
-This is not a bug -- the dirty check isn't needed but it was copied
-from __remove_mapping().
+> git://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git tags/rtc-5.14
 
-The page has only one reference left, which is from the isolation.
-After the caller puts the page back on lru and drops the reference,
-the page will be freed anyway. It doesn't matter which lru it goes.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/de5540965853e514a85d3b775e9049deb85a2ff3
 
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->  mm/vmscan.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index a7602f71ec04..6483fe0e2065 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -1628,6 +1628,7 @@ static unsigned int shrink_page_list(struct list_head *page_list,
->                         if (!page_ref_freeze(page, 1))
->                                 goto keep_locked;
->                         if (PageDirty(page)) {
-> +                               SetPageSwapBacked(page);
->                                 page_ref_unfreeze(page, 1);
->                                 goto keep_locked;
->                         }
-> --
-> 2.23.0
->
->
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
