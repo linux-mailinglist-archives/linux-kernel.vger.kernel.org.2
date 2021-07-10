@@ -2,91 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC2EF3C334A
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 08:45:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEEF43C3351
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 08:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231455AbhGJGsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 02:48:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbhGJGsF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 02:48:05 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9352C0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 23:45:19 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id i13-20020aa78b4d0000b02902ea019ef670so7905146pfd.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 23:45:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=9CMx4bIcdXWpRX9qOXiz6bFTgQH2pecsmU1gY1OoGwk=;
-        b=hb7tV/VnMR0zjITwjQo9kcBwJbMt5Xl4lPxJMBHWl+wXBD04ICzAZUfbTjBughG6ND
-         cFWB0fGyo7hVciVd70kfkWVrVzBg9ISCUvwCFufzl8YJCJZHhEMLddxgCRnGgMUbbuA5
-         tP0h2rpj6iv9/g9ujZUEilyHtep2i9qkXIQvhUo5JMDN6wOoi4Lw/CW9AVky1ujx5LRi
-         2zTp+WXvoVbMn+3hAdAAQaEgJQ61qk5A2gEJYwcqcbIJUhGh+7klHPKdghy8pCywhQvG
-         bvv+A5bO7VufxD+sOryC7BQeFY1kC9mtpoTjXICTr4Xg2eo9u9k2DaiV7ACTXxWl0CBB
-         CXYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=9CMx4bIcdXWpRX9qOXiz6bFTgQH2pecsmU1gY1OoGwk=;
-        b=IcR1xpOLSqTY855AP8rWXGUhakrmWdYLzx3E8tUfxDW5y1JwiBuCvbPVQTCXoZ+9Jy
-         MJy/+jqY5d9LQhlhGWgS1f775gsrQdxUvFvmJaXifkEuG3iL1H7xW1wP4AHMTfQgiOb7
-         0TNQnpi5YxNpVV4AS0Z9lEV5ZmmEg37rvJha2KitaEaK92wFTLvSoEZ3JoSdGuk5LMpb
-         zbSJbiUhCE7GFnqU6yNKGfa0w8JlUwq71MtcROHbLPbbvRxFlIBzmQsWHStXoC0VH1vI
-         MVUca5OXs3OHczVgqgjZgSp7leb/8hEdBPu0M9+ghtmzvZEaLptdPf10GCUN0F/6p8eH
-         uuwA==
-X-Gm-Message-State: AOAM533Gm0tIcjCf0FAUE57BS8i9CCIxdR46PQ0+VnaIWhCmEiH6TwKg
-        fSP+vRisfcektgtNDsC7Vz9yd0Ea8NII9b9Qqy8=
-X-Google-Smtp-Source: ABdhPJwuWRRzdqbJqHwcxv8Nn5JDV30GafdKLv2JCFLlKFuEUJC6nTof1vswMR5ky+KhimYrkbRgjqbTf5svF5v+s3I=
-X-Received: from willmcvicker.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:2dd0])
- (user=willmcvicker job=sendgmr) by 2002:a17:903:3091:b029:12a:ed47:93c3 with
- SMTP id u17-20020a1709033091b029012aed4793c3mr1859770plc.34.1625899519125;
- Fri, 09 Jul 2021 23:45:19 -0700 (PDT)
-Date:   Sat, 10 Jul 2021 06:45:11 +0000
-Message-Id: <20210710064511.1288232-1-willmcvicker@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-Subject: [PATCH] drm/mipi: set fwnode when a mipi_dsi_device registers itself
-From:   Will McVicker <willmcvicker@google.com>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Will McVicker <willmcvicker@google.com>,
-        Saravana Kannan <saravanak@google.com>, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+        id S229988AbhGJGzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 02:55:15 -0400
+Received: from mga18.intel.com ([134.134.136.126]:5167 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229612AbhGJGzN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Jul 2021 02:55:13 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10040"; a="197085651"
+X-IronPort-AV: E=Sophos;i="5.84,229,1620716400"; 
+   d="scan'208";a="197085651"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2021 23:52:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,229,1620716400"; 
+   d="scan'208";a="647443087"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 09 Jul 2021 23:52:26 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1m26qg-000FSH-5K; Sat, 10 Jul 2021 06:52:26 +0000
+Date:   Sat, 10 Jul 2021 14:52:06 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:irq/urgent] BUILD SUCCESS
+ 48400483565f0b7e633cbef94b139ff295b59de3
+Message-ID: <60e94396.pf3Y4bDNpXLs/Li+%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is needed for fw_devlink to work properly with MIPI DSI devices.
-Without setting the device's fwnode, the sync state framework isn't able
-to properly track device links between the MIPI DSI device and its
-suppliers which may result in its supplier probing before the mipi
-device.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/urgent
+branch HEAD: 48400483565f0b7e633cbef94b139ff295b59de3  Merge tag 'irqchip-fixes-5.14-1' of git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/urgent
 
-Suggested-by: Saravana Kannan <saravanak@google.com>
-Signed-off-by: Will McVicker <willmcvicker@google.com>
+elapsed time: 1027m
+
+configs tested: 127
+configs skipped: 4
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+xtensa                generic_kc705_defconfig
+powerpc                    socrates_defconfig
+powerpc                      mgcoge_defconfig
+arm                             rpc_defconfig
+sh                          rsk7201_defconfig
+arm                          imote2_defconfig
+mips                      malta_kvm_defconfig
+arm                          pcm027_defconfig
+mips                       lemote2f_defconfig
+arm                         orion5x_defconfig
+mips                   sb1250_swarm_defconfig
+mips                           gcw0_defconfig
+m68k                            q40_defconfig
+mips                        jmr3927_defconfig
+sh                           se7705_defconfig
+powerpc64                           defconfig
+h8300                    h8300h-sim_defconfig
+arm                         s3c2410_defconfig
+arm                       spear13xx_defconfig
+powerpc                       maple_defconfig
+m68k                        m5307c3_defconfig
+powerpc                    gamecube_defconfig
+arm                            dove_defconfig
+mips                          ath79_defconfig
+arc                         haps_hs_defconfig
+arc                            hsdk_defconfig
+arm                         shannon_defconfig
+alpha                            alldefconfig
+mips                malta_qemu_32r6_defconfig
+powerpc                     taishan_defconfig
+sh                            hp6xx_defconfig
+powerpc                 mpc8540_ads_defconfig
+powerpc                      obs600_defconfig
+sh                           se7343_defconfig
+sh                             sh03_defconfig
+powerpc                      cm5200_defconfig
+arm                         s5pv210_defconfig
+riscv                             allnoconfig
+sh                           sh2007_defconfig
+m68k                         apollo_defconfig
+mips                     loongson1c_defconfig
+arm                           viper_defconfig
+s390                             allyesconfig
+arm                        mvebu_v5_defconfig
+mips                       capcella_defconfig
+mips                      pistachio_defconfig
+arc                                 defconfig
+mips                  maltasmvp_eva_defconfig
+mips                           xway_defconfig
+arc                    vdk_hs38_smp_defconfig
+mips                           rs90_defconfig
+powerpc                      ppc64e_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210709
+x86_64               randconfig-a005-20210709
+x86_64               randconfig-a002-20210709
+x86_64               randconfig-a006-20210709
+x86_64               randconfig-a003-20210709
+x86_64               randconfig-a001-20210709
+i386                 randconfig-a006-20210709
+i386                 randconfig-a004-20210709
+i386                 randconfig-a001-20210709
+i386                 randconfig-a003-20210709
+i386                 randconfig-a005-20210709
+i386                 randconfig-a002-20210709
+i386                 randconfig-a015-20210709
+i386                 randconfig-a016-20210709
+i386                 randconfig-a011-20210709
+i386                 randconfig-a012-20210709
+i386                 randconfig-a013-20210709
+i386                 randconfig-a014-20210709
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+x86_64                           allyesconfig
+
+clang tested configs:
+x86_64               randconfig-b001-20210709
+x86_64               randconfig-a015-20210709
+x86_64               randconfig-a011-20210709
+x86_64               randconfig-a012-20210709
+x86_64               randconfig-a014-20210709
+x86_64               randconfig-a016-20210709
+x86_64               randconfig-a013-20210709
+
 ---
- drivers/gpu/drm/drm_mipi_dsi.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/gpu/drm/drm_mipi_dsi.c b/drivers/gpu/drm/drm_mipi_dsi.c
-index 5dd475e82995..469d56cf2a50 100644
---- a/drivers/gpu/drm/drm_mipi_dsi.c
-+++ b/drivers/gpu/drm/drm_mipi_dsi.c
-@@ -222,6 +222,7 @@ mipi_dsi_device_register_full(struct mipi_dsi_host *host,
- 	}
- 
- 	dsi->dev.of_node = info->node;
-+	dsi->dev.fwnode = of_fwnode_handle(info->node);
- 	dsi->channel = info->channel;
- 	strlcpy(dsi->name, info->type, sizeof(dsi->name));
- 
--- 
-2.32.0.93.g670b81a890-goog
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
