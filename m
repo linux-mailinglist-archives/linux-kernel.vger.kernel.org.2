@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 120173C2F85
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 04:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3FA13C2FB3
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 04:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234415AbhGJCbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 22:31:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42616 "EHLO mail.kernel.org"
+        id S233577AbhGJCcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 22:32:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42072 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233847AbhGJC2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 22:28:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 76C2C613E4;
-        Sat, 10 Jul 2021 02:25:12 +0000 (UTC)
+        id S233919AbhGJC2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 22:28:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18BBA613E6;
+        Sat, 10 Jul 2021 02:25:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625883913;
-        bh=peK/yRLGmU4j94WUdNqjbMXbEbJqgP3hCL91x9cS0hU=;
+        s=k20201202; t=1625883918;
+        bh=vvNFKjo3S7GYrtBrbT3IM7WLg8q6w99zy/ti0f4UP0k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m2jPKj8S10Ig36lzUp77zY48HwvXvQ9nygEdWgWN2qCHfJ/qE7VFWX3OQaz9NEjwb
-         jElKQeTYjSwRGEzkeT0Ka6lGMqGYYwK9Mg+1vaZYXecDK7ot/d83RI+OGKyIIdDM9i
-         8vkyh4CpvQVRBnFCKEwwjrhgtK+i1y7Q6XI6mDNNGbzzdRvMFOEKILaywSwtQwS7Fw
-         vsDuTG635rE3I54dW9nQTZt5sujkH4OYWvr+gsLhfwGATXlSdw06RJQAV7c+YLqs89
-         xyOQxVQJem4SATtmqwwdO8j6QPoSlmuyaHd2348Cz/EhUEqedNPm2qcRRsImqwbmJ5
-         UELaAGvXam7hw==
+        b=F5M1LHgGEuh1bAlWyG4C5rhonM76Lp4pmnCKam/LTg5jZTJ3XSLxQDOZO6S8vcd6w
+         ZSGZwiXGt3b8nnAthyuggnM6syAVqbQws8+Nr8FQ3LQtgqnVfIDRxVsb3L3Tq452Mt
+         4lIeSz6WezVS1yqSuFj77j8ZkJOiYWQc/CrEgepflc3J/ImYkXY5AtfdBtVG423y4f
+         dzXfucmEZvPy6eGXV0BQ9ejdrKcrrm/T0v0TW9VRSuqHLjSKkoDR0gXUDlNdNTjdpn
+         Y3z2cOz4aPoePK/0WBceuBkiRIrRMfypTa2j0nqE+l1JM/15R+zfloLhXENwC/Cnl6
+         iBBSHDcPLUS8A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Chandrakanth Patil <chandrakanth.patil@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
+Cc:     Mike Christie <michael.christie@oracle.com>,
+        Lee Duncan <lduncan@suse.com>,
         "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>,
-        megaraidlinux.pdl@broadcom.com, linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 34/93] scsi: megaraid_sas: Fix resource leak in case of probe failure
-Date:   Fri,  9 Jul 2021 22:23:28 -0400
-Message-Id: <20210710022428.3169839-34-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, open-iscsi@googlegroups.com,
+        linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 37/93] scsi: iscsi: Add iscsi_cls_conn refcount helpers
+Date:   Fri,  9 Jul 2021 22:23:31 -0400
+Message-Id: <20210710022428.3169839-37-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210710022428.3169839-1-sashal@kernel.org>
 References: <20210710022428.3169839-1-sashal@kernel.org>
@@ -44,76 +44,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chandrakanth Patil <chandrakanth.patil@broadcom.com>
+From: Mike Christie <michael.christie@oracle.com>
 
-[ Upstream commit b5438f48fdd8e1c3f130d32637511efd32038152 ]
+[ Upstream commit b1d19e8c92cfb0ded180ef3376c20e130414e067 ]
 
-The driver doesn't clean up all the allocated resources properly when
-scsi_add_host(), megasas_start_aen() function fails during the PCI device
-probe.
+There are a couple places where we could free the iscsi_cls_conn while it's
+still in use. This adds some helpers to get/put a refcount on the struct
+and converts an exiting user. Subsequent commits will then use the helpers
+to fix 2 bugs in the eh code.
 
-Clean up all those resources.
-
-Link: https://lore.kernel.org/r/20210528131307.25683-3-chandrakanth.patil@broadcom.com
-Signed-off-by: Chandrakanth Patil <chandrakanth.patil@broadcom.com>
-Signed-off-by: Sumit Saxena <sumit.saxena@broadcom.com>
+Link: https://lore.kernel.org/r/20210525181821.7617-11-michael.christie@oracle.com
+Reviewed-by: Lee Duncan <lduncan@suse.com>
+Signed-off-by: Mike Christie <michael.christie@oracle.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/megaraid/megaraid_sas_base.c   | 13 +++++++++++++
- drivers/scsi/megaraid/megaraid_sas_fusion.c |  1 +
- 2 files changed, 14 insertions(+)
+ drivers/scsi/libiscsi.c             |  7 ++-----
+ drivers/scsi/scsi_transport_iscsi.c | 12 ++++++++++++
+ include/scsi/scsi_transport_iscsi.h |  2 ++
+ 3 files changed, 16 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
-index cc45cdac1384..e58b0e558981 100644
---- a/drivers/scsi/megaraid/megaraid_sas_base.c
-+++ b/drivers/scsi/megaraid/megaraid_sas_base.c
-@@ -7439,11 +7439,16 @@ static int megasas_probe_one(struct pci_dev *pdev,
- 	return 0;
+diff --git a/drivers/scsi/libiscsi.c b/drivers/scsi/libiscsi.c
+index 41b8192d207d..67ac0a46889c 100644
+--- a/drivers/scsi/libiscsi.c
++++ b/drivers/scsi/libiscsi.c
+@@ -1348,7 +1348,6 @@ void iscsi_session_failure(struct iscsi_session *session,
+ 			   enum iscsi_err err)
+ {
+ 	struct iscsi_conn *conn;
+-	struct device *dev;
  
- fail_start_aen:
-+	instance->unload = 1;
-+	scsi_remove_host(instance->host);
- fail_io_attach:
- 	megasas_mgmt_info.count--;
- 	megasas_mgmt_info.max_index--;
- 	megasas_mgmt_info.instance[megasas_mgmt_info.max_index] = NULL;
- 
-+	if (instance->requestorId && !instance->skip_heartbeat_timer_del)
-+		del_timer_sync(&instance->sriov_heartbeat_timer);
-+
- 	instance->instancet->disable_intr(instance);
- 	megasas_destroy_irqs(instance);
- 
-@@ -7451,8 +7456,16 @@ static int megasas_probe_one(struct pci_dev *pdev,
- 		megasas_release_fusion(instance);
- 	else
- 		megasas_release_mfi(instance);
-+
- 	if (instance->msix_vectors)
- 		pci_free_irq_vectors(instance->pdev);
-+	instance->msix_vectors = 0;
-+
-+	if (instance->fw_crash_state != UNAVAILABLE)
-+		megasas_free_host_crash_buffer(instance);
-+
-+	if (instance->adapter_type != MFI_SERIES)
-+		megasas_fusion_stop_watchdog(instance);
- fail_init_mfi:
- 	scsi_host_put(host);
- fail_alloc_instance:
-diff --git a/drivers/scsi/megaraid/megaraid_sas_fusion.c b/drivers/scsi/megaraid/megaraid_sas_fusion.c
-index b0c01cf0428f..35925e68bf55 100644
---- a/drivers/scsi/megaraid/megaraid_sas_fusion.c
-+++ b/drivers/scsi/megaraid/megaraid_sas_fusion.c
-@@ -5193,6 +5193,7 @@ megasas_alloc_fusion_context(struct megasas_instance *instance)
- 		if (!fusion->log_to_span) {
- 			dev_err(&instance->pdev->dev, "Failed from %s %d\n",
- 				__func__, __LINE__);
-+			kfree(instance->ctrl_context);
- 			return -ENOMEM;
- 		}
+ 	spin_lock_bh(&session->frwd_lock);
+ 	conn = session->leadconn;
+@@ -1357,10 +1356,8 @@ void iscsi_session_failure(struct iscsi_session *session,
+ 		return;
  	}
+ 
+-	dev = get_device(&conn->cls_conn->dev);
++	iscsi_get_conn(conn->cls_conn);
+ 	spin_unlock_bh(&session->frwd_lock);
+-	if (!dev)
+-	        return;
+ 	/*
+ 	 * if the host is being removed bypass the connection
+ 	 * recovery initialization because we are going to kill
+@@ -1370,7 +1367,7 @@ void iscsi_session_failure(struct iscsi_session *session,
+ 		iscsi_conn_error_event(conn->cls_conn, err);
+ 	else
+ 		iscsi_conn_failure(conn, err);
+-	put_device(dev);
++	iscsi_put_conn(conn->cls_conn);
+ }
+ EXPORT_SYMBOL_GPL(iscsi_session_failure);
+ 
+diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
+index c53c3f9fa526..a7db7c06f21c 100644
+--- a/drivers/scsi/scsi_transport_iscsi.c
++++ b/drivers/scsi/scsi_transport_iscsi.c
+@@ -2351,6 +2351,18 @@ int iscsi_destroy_conn(struct iscsi_cls_conn *conn)
+ }
+ EXPORT_SYMBOL_GPL(iscsi_destroy_conn);
+ 
++void iscsi_put_conn(struct iscsi_cls_conn *conn)
++{
++	put_device(&conn->dev);
++}
++EXPORT_SYMBOL_GPL(iscsi_put_conn);
++
++void iscsi_get_conn(struct iscsi_cls_conn *conn)
++{
++	get_device(&conn->dev);
++}
++EXPORT_SYMBOL_GPL(iscsi_get_conn);
++
+ /*
+  * iscsi interface functions
+  */
+diff --git a/include/scsi/scsi_transport_iscsi.h b/include/scsi/scsi_transport_iscsi.h
+index 8a26a2ffa952..600f12105791 100644
+--- a/include/scsi/scsi_transport_iscsi.h
++++ b/include/scsi/scsi_transport_iscsi.h
+@@ -433,6 +433,8 @@ extern void iscsi_remove_session(struct iscsi_cls_session *session);
+ extern void iscsi_free_session(struct iscsi_cls_session *session);
+ extern struct iscsi_cls_conn *iscsi_create_conn(struct iscsi_cls_session *sess,
+ 						int dd_size, uint32_t cid);
++extern void iscsi_put_conn(struct iscsi_cls_conn *conn);
++extern void iscsi_get_conn(struct iscsi_cls_conn *conn);
+ extern int iscsi_destroy_conn(struct iscsi_cls_conn *conn);
+ extern void iscsi_unblock_session(struct iscsi_cls_session *session);
+ extern void iscsi_block_session(struct iscsi_cls_session *session);
 -- 
 2.30.2
 
