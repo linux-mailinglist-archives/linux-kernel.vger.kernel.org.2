@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAEDD3C2FB0
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 04:30:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D2493C2FB1
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 04:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234115AbhGJCcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 22:32:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42484 "EHLO mail.kernel.org"
+        id S234169AbhGJCci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 22:32:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234627AbhGJC3i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 22:29:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CEF6613F0;
-        Sat, 10 Jul 2021 02:26:53 +0000 (UTC)
+        id S234813AbhGJC3q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 22:29:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1353A613DF;
+        Sat, 10 Jul 2021 02:27:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625884014;
-        bh=Wc+8IUEWEbx56kg+jURITthTR5thKLxkWh0FSVlJrVk=;
+        s=k20201202; t=1625884021;
+        bh=nro3MGa7h3qaKoTs4yw4efAa7zU3Ahe3U9SERvsOMXQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=npI42d2tWdQ8PuIEKVQrxgnwUMeeePP9RpI5scXVPBIAtaUWjPzVHvDxQDFPt6jR0
-         FB6tTZ+fzS9OyymL6Ifbw+BAXfQS+fS14Lc9n8+GPvuULZio7OORYdwxCtrDlzD6sK
-         5oYYs+mP8aWN0CiVpWDvSRqf/rrptm/aVWShFuTeAIeoduwB2Q6BJrwl7ykyasjioR
-         VDZjpmKiEcgUa8hbc8S/2LomMOQQrtM5Yz+aYhZ6CtwiL8w3M8hrzxZopU6OtIgFMx
-         fOvypUnuSab1ZCHEuz2D9SG0e2Px4Ykyf0fhkuKAuyFutvZGoFe1FzhPutWxd8eN9c
-         7PXlwt6/DMxtw==
+        b=PZaRvaPjZgKB7LWVnHcqjfNykrKAhY5LsNL/tSs6RuyncCFhJ8Q+tObvKS8NcIafB
+         cSNplMDAKLp7AH/mHUJ7WpAbHA4cbb5dmTiQ7E2kUjwSyCGUvGH9XeSlqL+GPnBJGk
+         P+fEYcMBEJ28VgPxcpWrW/lOEXBCChuX/E1F6YHPq2EMmJhDYL07CK6Rn1rqLoWByY
+         1Ja1v5uaYYQE7UHE56Y2aI/ffJ21Fwu2ugj7gJ19hYIO7lKqcvvYD8RLtpHkriR4Yq
+         LNufWWGzs85++g6fgpHZNUPVaKd4XBFhIP2E3KCEYxvzkAjunjS6BcOWXVuFOb1dMq
+         4MzLR3Qn0ZD2A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
-        alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.10 85/93] ALSA: firewire-motu: fix detection for S/PDIF source on optical interface in v2 protocol
-Date:   Fri,  9 Jul 2021 22:24:19 -0400
-Message-Id: <20210710022428.3169839-85-sashal@kernel.org>
+Cc:     Rashmi A <rashmi.a@intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>, linux-phy@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.10 91/93] phy: intel: Fix for warnings due to EMMC clock 175Mhz change in FIP
+Date:   Fri,  9 Jul 2021 22:24:25 -0400
+Message-Id: <20210710022428.3169839-91-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210710022428.3169839-1-sashal@kernel.org>
 References: <20210710022428.3169839-1-sashal@kernel.org>
@@ -42,62 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+From: Rashmi A <rashmi.a@intel.com>
 
-[ Upstream commit fa4db23233eb912234bdfb0b26a38be079c6b5ea ]
+[ Upstream commit 2f2b73a29d2aabf5ad0150856c3e5cb6e04dcfc1 ]
 
-The devices in protocol version 2 has a register with flag for IEC 60958
-signal detection as source of sampling clock without discrimination
-between coaxial and optical interfaces. On the other hand, current
-implementation of driver manage to interpret type of signal on optical
-interface instead.
+Since the EMMC clock was changed from 200Mhz to 175Mhz in FIP,
+there were some warnings introduced, as the frequency values
+being checked was still wrt 200Mhz in code. Hence, the frequency
+checks are now updated based on the current 175Mhz EMMC clock changed
+in FIP.
 
-This commit fixes the detection of optical/coaxial interface for S/PDIF
-signal.
+Spamming kernel log msg:
+"phy phy-20290000.mmc_phy.2: Unsupported rate: 43750000"
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Link: https://lore.kernel.org/r/20210623075941.72562-2-o-takashi@sakamocchi.jp
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Rashmi A <rashmi.a@intel.com>
+Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
+Acked-By: Vinod Koul <vkoul@kernel.org>
+Link: https://lore.kernel.org/r/20210603182242.25733-3-rashmi.a@intel.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/firewire/motu/motu-protocol-v2.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ drivers/phy/intel/phy-intel-keembay-emmc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/firewire/motu/motu-protocol-v2.c b/sound/firewire/motu/motu-protocol-v2.c
-index e59e69ab1538..f0d478c5edc8 100644
---- a/sound/firewire/motu/motu-protocol-v2.c
-+++ b/sound/firewire/motu/motu-protocol-v2.c
-@@ -86,24 +86,23 @@ static int detect_clock_source_optical_model(struct snd_motu *motu, u32 data,
- 		*src = SND_MOTU_CLOCK_SOURCE_INTERNAL;
- 		break;
- 	case 1:
-+		*src = SND_MOTU_CLOCK_SOURCE_ADAT_ON_OPT;
-+		break;
-+	case 2:
- 	{
- 		__be32 reg;
+diff --git a/drivers/phy/intel/phy-intel-keembay-emmc.c b/drivers/phy/intel/phy-intel-keembay-emmc.c
+index eb7c635ed89a..0eb11ac7c2e2 100644
+--- a/drivers/phy/intel/phy-intel-keembay-emmc.c
++++ b/drivers/phy/intel/phy-intel-keembay-emmc.c
+@@ -95,7 +95,8 @@ static int keembay_emmc_phy_power(struct phy *phy, bool on_off)
+ 	else
+ 		freqsel = 0x0;
  
- 		// To check the configuration of optical interface.
--		int err = snd_motu_transaction_read(motu, V2_IN_OUT_CONF_OFFSET,
--						    &reg, sizeof(reg));
-+		int err = snd_motu_transaction_read(motu, V2_IN_OUT_CONF_OFFSET, &reg, sizeof(reg));
- 		if (err < 0)
- 			return err;
+-	if (mhz < 50 || mhz > 200)
++	/* Check for EMMC clock rate*/
++	if (mhz > 175)
+ 		dev_warn(&phy->dev, "Unsupported rate: %d MHz\n", mhz);
  
--		if (be32_to_cpu(reg) & 0x00000200)
-+		if (((data & V2_OPT_IN_IFACE_MASK) >> V2_OPT_IN_IFACE_SHIFT) == V2_OPT_IFACE_MODE_SPDIF)
- 			*src = SND_MOTU_CLOCK_SOURCE_SPDIF_ON_OPT;
- 		else
--			*src = SND_MOTU_CLOCK_SOURCE_ADAT_ON_OPT;
-+			*src = SND_MOTU_CLOCK_SOURCE_SPDIF_ON_COAX;
- 		break;
- 	}
--	case 2:
--		*src = SND_MOTU_CLOCK_SOURCE_SPDIF_ON_COAX;
--		break;
- 	case 3:
- 		*src = SND_MOTU_CLOCK_SOURCE_SPH;
- 		break;
+ 	/*
 -- 
 2.30.2
 
