@@ -2,77 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3F5D3C2C4F
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 03:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 163923C2C52
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 03:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231401AbhGJBP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 21:15:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60354 "EHLO mail.kernel.org"
+        id S231631AbhGJBPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 21:15:43 -0400
+Received: from mout.gmx.net ([212.227.15.19]:49741 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229703AbhGJBP0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 21:15:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2D56613C2;
-        Sat, 10 Jul 2021 01:12:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1625879561;
-        bh=8C2HRs3eIFIr1CQbCC8Pz27G0ibVeUXMSPTvqYy2wFM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=S/QZQASL9Fy6yA1LR+TmZtuhwoALmZhPvkMDeIUoGlXugMlHsUuRUsMyaPSBklmFX
-         s4Rol3W1xJ7zXXTbCj0rbWDquD5+P1zKQx3o/0cuy7hDwArctBsK2rCd/8a+T/kW63
-         t+NOJthSfHzwToMcE5IJ2bVo5QGcuMsx1yNSN5oc=
-Date:   Fri, 9 Jul 2021 18:12:41 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
-Cc:     linux-kernel@vger.kernel.org, Milton Miller <miltonm@bga.com>,
-        Jack Miller <millerjo@us.ibm.com>,
-        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        Manfred Spraul <manfred@colorfullife.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: Re: [PATCH 0/2] shm: omit forced shm destroy if task IPC namespace
- was changed
-Message-Id: <20210709181241.cca57cf83c52964b2cd0dcf0@linux-foundation.org>
-In-Reply-To: <20210706132259.71740-1-alexander.mikhalitsyn@virtuozzo.com>
-References: <20210706132259.71740-1-alexander.mikhalitsyn@virtuozzo.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S231175AbhGJBPm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 21:15:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1625879566;
+        bh=AfbmQioaIgUOpX+3WohljVEyjO6jBjUFgGyewZhusW0=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=hje9zyy1oHWHBDlMvCmljG5K+eSqkDBwRFgLv33VWuDIp4eesCMiK7lar5t+cWvkw
+         3RZ2wwPXW3pecVpi9Tj47W4b+yBrud0CdZOwc8GFQUA2qDB5oVTHgopMZ20ia07KFe
+         XxV7WxDZjgRUvDUaOd/VibueFJJcXzFrhMaM6ByU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.150.248]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mg6e4-1lWWoa0sqk-00heEW; Sat, 10
+ Jul 2021 03:12:46 +0200
+Message-ID: <6c0e20dd84084036d5068e445746c3ed7e82ec4b.camel@gmx.de>
+Subject: Re: [rfc/patch] mm/slub: restore/expand unfreeze_partials() local
+ exclusion scope
+From:   Mike Galbraith <efault@gmx.de>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     linux-rt-users@vger.kernel.org,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Date:   Sat, 10 Jul 2021 03:12:45 +0200
+In-Reply-To: <878s2fnv79.ffs@nanos.tec.linutronix.de>
+References: <87tul5p2fa.ffs@nanos.tec.linutronix.de>
+         <8c0e0c486056b5185b58998f2cce62619ed3f05c.camel@gmx.de>
+         <878s2fnv79.ffs@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:xBaGWs5k2ch5diNHmWabjEqX0vryaK72xMsK6VLJRuTIyg73r8B
+ ksdfQLfPf0NIPnfTcGb/uHb9GyPoDgkTWq54+rjIYrBvB5ZimcKq24oN299Qsfy9YZh5lgD
+ M9IZW858fCNobJTvQdIuJ4TFhhp/Sg8IJZSUv5EaJjznN+4/8HsKDVm86Diymp+esYglTg6
+ RR7B9xVc9+YyDAFIrBsAA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:P8fbcXRQAGI=:3NFsYjLlOfHuO2tjsDGJk+
+ pK/DXi7v27Kh0us8yJyQkDGFzwaw6tj9G/nDQxXDTrEbudMUsaXXnBe700ymKwsg3BSD0ZQoZ
+ GgxK7N/Ha6YT9qrAD5at6awkhw8EZeix2RPLsUUukhapBl1Jl0GL7CvTZSChW/SNJ7AXNlq/c
+ 0VZ/IGR3lDRAsKz2e4F4MlZLe4+/ydzJzOkmJlroON8yjMzKjRsBK6TMvRfirM4K1hr2v7pK7
+ j4TqnfC1SOELcIpCViCzEf00bKl6iv6kKn/bI7rJYFlaiKP/Olaje25+HEihHnvVPMI56Xvdg
+ GDZGsqi08fD3hLFEBypqPxASWN8+7UEfZdmSA+3P/dmtzDTzlbYRNbsgLZj5wGva50BMDciO/
+ Ea9w+JlI8xh+owVpWTgqbHtHVRuvi2a+5aXLUQa7dl31WHnJqH0JPQL8LgI7vGQ0Hppkoxcap
+ n4oniSCaOAdOq5t83zd77T4532JNvQY8vcLsGf8pwB79Ft6Ua5a23eM0Ux14weonZzqKVqiRR
+ jfhAp8KasQN5m264Vs1o9S36G67i1pfL90QGQk8orob9QYIbiYIC6BicT3RJB7Aq0iXBlnMTj
+ azdke4/VJHOvJJLVFK8LfCe+2spZ8GKH0JtK0HUKUAQsSYGsOLLdINIDU9Ipz/bIrVDBf+8Fs
+ CSarbV6BnmPTH9EIOWljgSuzMLty2RWV9enNLVLT+wdr0eJZkQtAtKzqdm6HapmEw64NkEATF
+ 2yF49goJTCCzNfNQqcyePLKxVc913wRr+RNXK0oiNyL/Tz4AtI3/a9HdZVNW3bAI5zpj9MScL
+ bPDEoJAuEuTc1rn5xM7qUkQjkZ8AIDrA9pe0MGvzpQe+2ZEBdqWEPfmhLUWI0oM4aImmUr5du
+ CziOnofTEtihZqcZIwmm9Jvtxl1GTVm4ZNOtgUxL73C5tOwaqZTDaZlooX+Sh6Ay3ABrGtjBN
+ XuYbUIXSWOhmKoKhEQKWRlOsR1Yz/BohBdzv+DCnrqkPxmr7q1plJWWpPEF6saXhZBbuRJ8rT
+ JXXUi3Oi24Vn1I5d3aq+CySt8TmG1RZrr2xe9DgaYRDTXBptJ3wD45YwZYhq8d2CfxkUngpAR
+ 5++su8qJTOrj1t7nNIVDfjLk2OBdG6y8U06
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  6 Jul 2021 16:22:57 +0300 Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com> wrote:
+On Fri, 2021-07-09 at 21:28 +0200, Thomas Gleixner wrote:
+> On Fri, Jul 09 2021 at 07:21, Mike Galbraith wrote:
+> > static bool has_cpu_slab(int cpu, struct kmem_cache *s)
+> > @@ -2632,8 +2636,11 @@ static int slub_cpu_dead(unsigned int cp
+> >  	struct kmem_cache *s;
+> >
+> >  	mutex_lock(&slab_mutex);
+> > -	list_for_each_entry(s, &slab_caches, list)
+> > +	list_for_each_entry(s, &slab_caches, list) {
+> > +		local_lock(&s->cpu_slab->lock);
+>
+> This one is odd. It locks the cpu_slab lock of the CPU which runs
+> thiscallback and then flushes the slab of the dead CPU.
 
-> Hello,
-> 
-> Task IPC namespace shm's has shm_rmid_forced feature which is per IPC namespace
-> and controlled by kernel.shm_rmid_forced sysctl. When feature is turned on,
-> then during task exit (and unshare(CLONE_NEWIPC)) all sysvshm's will be destroyed
-> by exit_shm(struct task_struct *task) function. But there is a problem if task
-> was changed IPC namespace since shmget() call. In such situation exit_shm() function
-> will try to call
-> shm_destroy(<new_ipc_namespace_ptr>, <sysvshmem_from_old_ipc_namespace>)
-> which leads to the situation when sysvshm object still attached to old
-> IPC namespace but freed; later during old IPC namespace cleanup we will try to
-> free such sysvshm object for the second time and will get the problem :)
-> 
-> First patch solves this problem by postponing shm_destroy to the moment when
-> IPC namespace cleanup will be called.
-> Second patch is useful to prevent (or easy catch) such bugs in the future by
-> adding corresponding WARNings.
-> 
+That spot I put back only because it used to exist, ergo I documented
+it as an afterthought.  Yeah, it clearly has nada to do with the
+explosions, those were stopped by the other two as previously reported.
 
-(cc's added)
+	-Mike
 
-I assume that a
-
-Fixes: b34a6b1da371ed8af ("ipc: introduce shm_rmid_forced sysctl") is
-appropriate here?
-
-A double-free is serious.  Should this fix be backported into earlier
-kernels?
