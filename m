@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0369B3C3036
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 04:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 408AE3C3011
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 04:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234624AbhGJCdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 22:33:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42882 "EHLO mail.kernel.org"
+        id S232527AbhGJCdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 22:33:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232549AbhGJC3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 22:29:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 93B53613EE;
-        Sat, 10 Jul 2021 02:25:18 +0000 (UTC)
+        id S234112AbhGJC3H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 22:29:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A063613F3;
+        Sat, 10 Jul 2021 02:25:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625883919;
-        bh=PvjX7xW0sJ5JRFUqe1i8YaSMb3TRfJSr/FJf++lF5MA=;
+        s=k20201202; t=1625883927;
+        bh=4cmWkVFhdTzQWY9usqWWMyf40gKiTVqMUh3jZzfwEhU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ovNSWASCAntegdtMOjykxz7KTlI6ckNw27J6SzrZlFfaeHFugwZfUC6NXi0Oj9jDg
-         7q/S7dy4LD4ojAaiS9+LQbirXXftEVz0enSytaYcc6Y6nWTmlLJVFouH9gZAniHZqJ
-         p0HXi5p07rVq9W/REEkXvDwO1fFxkTKHamtbhLcbC3EwOM//cdKKQRnh+CvSsjb31S
-         w9y9o5Egj3oa3VTc5PRsm00PA3ir9agDRmobMvK2/E4F6eO99ZdPk0e8vevBvTHwJw
-         ATqoeqtoMoILnBH6UgVRKmr0PrAE0EH3jWW/TH8hPcwX5tUliOeoL2e3CWiX2cIzko
-         wFTxPEf/HmV3g==
+        b=spS3ZMzhuvRLldWvYZLnDgMJsez9zn6z1JLIeDKEDCG4tNa9F0i5uwrC9poTBDxz0
+         wSNIR10Pp9lFSSUw/cbf2lDY2RrnIckMhEj6klH06Dh9usuJVy6i8UqOTMjZ2n5KnC
+         yYYBE1Ff4fYR7WzhKjVUtipCqu8UekAubz9EHjym9CkECcitXWNEiLubgWZqZ/Si0f
+         VteAIs7tihFaSHhcdTUr1Ypv9F1BZN68MWyiSQHFi9Ux5S7FqinUWO/UdKnkoBKgZs
+         mPL2scJO33vwOiYGmcdscs+iVWphz/ZEc6lUUM31VOpJecZLNw6jPwzLmGSV71AKJE
+         ASKuMuWCMCZYQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mike Christie <michael.christie@oracle.com>,
-        Lee Duncan <lduncan@suse.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, open-iscsi@googlegroups.com,
-        linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 38/93] scsi: iscsi: Fix conn use after free during resets
-Date:   Fri,  9 Jul 2021 22:23:32 -0400
-Message-Id: <20210710022428.3169839-38-sashal@kernel.org>
+Cc:     Zou Wei <zou_wei@huawei.com>, Hulk Robot <hulkci@huawei.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.10 44/93] mfd: da9052/stmpe: Add and modify MODULE_DEVICE_TABLE
+Date:   Fri,  9 Jul 2021 22:23:38 -0400
+Message-Id: <20210710022428.3169839-44-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210710022428.3169839-1-sashal@kernel.org>
 References: <20210710022428.3169839-1-sashal@kernel.org>
@@ -44,410 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Christie <michael.christie@oracle.com>
+From: Zou Wei <zou_wei@huawei.com>
 
-[ Upstream commit ec29d0ac29be366450a7faffbcf8cba3a6a3b506 ]
+[ Upstream commit 4700ef326556ed74aba188f12396740a8c1c21dd ]
 
-If we haven't done a unbind target call we can race where
-iscsi_conn_teardown wakes up the EH thread and then frees the conn while
-those threads are still accessing the conn ehwait.
+This patch adds/modifies MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-We can only do one TMF per session so this just moves the TMF fields from
-the conn to the session. We can then rely on the
-iscsi_session_teardown->iscsi_remove_session->__iscsi_unbind_session call
-to remove the target and it's devices, and know after that point there is
-no device or scsi-ml callout trying to access the session.
-
-Link: https://lore.kernel.org/r/20210525181821.7617-14-michael.christie@oracle.com
-Reviewed-by: Lee Duncan <lduncan@suse.com>
-Signed-off-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/libiscsi.c | 115 +++++++++++++++++++---------------------
- include/scsi/libiscsi.h |  11 ++--
- 2 files changed, 60 insertions(+), 66 deletions(-)
+ drivers/mfd/da9052-i2c.c | 1 +
+ drivers/mfd/stmpe-i2c.c  | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/libiscsi.c b/drivers/scsi/libiscsi.c
-index 67ac0a46889c..bd050befbafb 100644
---- a/drivers/scsi/libiscsi.c
-+++ b/drivers/scsi/libiscsi.c
-@@ -230,11 +230,11 @@ static int iscsi_prep_ecdb_ahs(struct iscsi_task *task)
-  */
- static int iscsi_check_tmf_restrictions(struct iscsi_task *task, int opcode)
- {
--	struct iscsi_conn *conn = task->conn;
--	struct iscsi_tm *tmf = &conn->tmhdr;
-+	struct iscsi_session *session = task->conn->session;
-+	struct iscsi_tm *tmf = &session->tmhdr;
- 	u64 hdr_lun;
+diff --git a/drivers/mfd/da9052-i2c.c b/drivers/mfd/da9052-i2c.c
+index 47556d2d9abe..8ebfc7bbe4e0 100644
+--- a/drivers/mfd/da9052-i2c.c
++++ b/drivers/mfd/da9052-i2c.c
+@@ -113,6 +113,7 @@ static const struct i2c_device_id da9052_i2c_id[] = {
+ 	{"da9053-bc", DA9053_BC},
+ 	{}
+ };
++MODULE_DEVICE_TABLE(i2c, da9052_i2c_id);
  
--	if (conn->tmf_state == TMF_INITIAL)
-+	if (session->tmf_state == TMF_INITIAL)
- 		return 0;
+ #ifdef CONFIG_OF
+ static const struct of_device_id dialog_dt_ids[] = {
+diff --git a/drivers/mfd/stmpe-i2c.c b/drivers/mfd/stmpe-i2c.c
+index 61aa020199f5..cd2f45257dc1 100644
+--- a/drivers/mfd/stmpe-i2c.c
++++ b/drivers/mfd/stmpe-i2c.c
+@@ -109,7 +109,7 @@ static const struct i2c_device_id stmpe_i2c_id[] = {
+ 	{ "stmpe2403", STMPE2403 },
+ 	{ }
+ };
+-MODULE_DEVICE_TABLE(i2c, stmpe_id);
++MODULE_DEVICE_TABLE(i2c, stmpe_i2c_id);
  
- 	if ((tmf->opcode & ISCSI_OPCODE_MASK) != ISCSI_OP_SCSI_TMFUNC)
-@@ -254,24 +254,19 @@ static int iscsi_check_tmf_restrictions(struct iscsi_task *task, int opcode)
- 		 * Fail all SCSI cmd PDUs
- 		 */
- 		if (opcode != ISCSI_OP_SCSI_DATA_OUT) {
--			iscsi_conn_printk(KERN_INFO, conn,
--					  "task [op %x itt "
--					  "0x%x/0x%x] "
--					  "rejected.\n",
--					  opcode, task->itt,
--					  task->hdr_itt);
-+			iscsi_session_printk(KERN_INFO, session,
-+					     "task [op %x itt 0x%x/0x%x] rejected.\n",
-+					     opcode, task->itt, task->hdr_itt);
- 			return -EACCES;
- 		}
- 		/*
- 		 * And also all data-out PDUs in response to R2T
- 		 * if fast_abort is set.
- 		 */
--		if (conn->session->fast_abort) {
--			iscsi_conn_printk(KERN_INFO, conn,
--					  "task [op %x itt "
--					  "0x%x/0x%x] fast abort.\n",
--					  opcode, task->itt,
--					  task->hdr_itt);
-+		if (session->fast_abort) {
-+			iscsi_session_printk(KERN_INFO, session,
-+					     "task [op %x itt 0x%x/0x%x] fast abort.\n",
-+					     opcode, task->itt, task->hdr_itt);
- 			return -EACCES;
- 		}
- 		break;
-@@ -284,7 +279,7 @@ static int iscsi_check_tmf_restrictions(struct iscsi_task *task, int opcode)
- 		 */
- 		if (opcode == ISCSI_OP_SCSI_DATA_OUT &&
- 		    task->hdr_itt == tmf->rtt) {
--			ISCSI_DBG_SESSION(conn->session,
-+			ISCSI_DBG_SESSION(session,
- 					  "Preventing task %x/%x from sending "
- 					  "data-out due to abort task in "
- 					  "progress\n", task->itt,
-@@ -923,20 +918,21 @@ iscsi_data_in_rsp(struct iscsi_conn *conn, struct iscsi_hdr *hdr,
- static void iscsi_tmf_rsp(struct iscsi_conn *conn, struct iscsi_hdr *hdr)
- {
- 	struct iscsi_tm_rsp *tmf = (struct iscsi_tm_rsp *)hdr;
-+	struct iscsi_session *session = conn->session;
- 
- 	conn->exp_statsn = be32_to_cpu(hdr->statsn) + 1;
- 	conn->tmfrsp_pdus_cnt++;
- 
--	if (conn->tmf_state != TMF_QUEUED)
-+	if (session->tmf_state != TMF_QUEUED)
- 		return;
- 
- 	if (tmf->response == ISCSI_TMF_RSP_COMPLETE)
--		conn->tmf_state = TMF_SUCCESS;
-+		session->tmf_state = TMF_SUCCESS;
- 	else if (tmf->response == ISCSI_TMF_RSP_NO_TASK)
--		conn->tmf_state = TMF_NOT_FOUND;
-+		session->tmf_state = TMF_NOT_FOUND;
- 	else
--		conn->tmf_state = TMF_FAILED;
--	wake_up(&conn->ehwait);
-+		session->tmf_state = TMF_FAILED;
-+	wake_up(&session->ehwait);
- }
- 
- static int iscsi_send_nopout(struct iscsi_conn *conn, struct iscsi_nopin *rhdr)
-@@ -1784,15 +1780,14 @@ EXPORT_SYMBOL_GPL(iscsi_target_alloc);
- 
- static void iscsi_tmf_timedout(struct timer_list *t)
- {
--	struct iscsi_conn *conn = from_timer(conn, t, tmf_timer);
--	struct iscsi_session *session = conn->session;
-+	struct iscsi_session *session = from_timer(session, t, tmf_timer);
- 
- 	spin_lock(&session->frwd_lock);
--	if (conn->tmf_state == TMF_QUEUED) {
--		conn->tmf_state = TMF_TIMEDOUT;
-+	if (session->tmf_state == TMF_QUEUED) {
-+		session->tmf_state = TMF_TIMEDOUT;
- 		ISCSI_DBG_EH(session, "tmf timedout\n");
- 		/* unblock eh_abort() */
--		wake_up(&conn->ehwait);
-+		wake_up(&session->ehwait);
- 	}
- 	spin_unlock(&session->frwd_lock);
- }
-@@ -1815,8 +1810,8 @@ static int iscsi_exec_task_mgmt_fn(struct iscsi_conn *conn,
- 		return -EPERM;
- 	}
- 	conn->tmfcmd_pdus_cnt++;
--	conn->tmf_timer.expires = timeout * HZ + jiffies;
--	add_timer(&conn->tmf_timer);
-+	session->tmf_timer.expires = timeout * HZ + jiffies;
-+	add_timer(&session->tmf_timer);
- 	ISCSI_DBG_EH(session, "tmf set timeout\n");
- 
- 	spin_unlock_bh(&session->frwd_lock);
-@@ -1830,12 +1825,12 @@ static int iscsi_exec_task_mgmt_fn(struct iscsi_conn *conn,
- 	 * 3) session is terminated or restarted or userspace has
- 	 * given up on recovery
- 	 */
--	wait_event_interruptible(conn->ehwait, age != session->age ||
-+	wait_event_interruptible(session->ehwait, age != session->age ||
- 				 session->state != ISCSI_STATE_LOGGED_IN ||
--				 conn->tmf_state != TMF_QUEUED);
-+				 session->tmf_state != TMF_QUEUED);
- 	if (signal_pending(current))
- 		flush_signals(current);
--	del_timer_sync(&conn->tmf_timer);
-+	del_timer_sync(&session->tmf_timer);
- 
- 	mutex_lock(&session->eh_mutex);
- 	spin_lock_bh(&session->frwd_lock);
-@@ -2195,17 +2190,17 @@ int iscsi_eh_abort(struct scsi_cmnd *sc)
- 	}
- 
- 	/* only have one tmf outstanding at a time */
--	if (conn->tmf_state != TMF_INITIAL)
-+	if (session->tmf_state != TMF_INITIAL)
- 		goto failed;
--	conn->tmf_state = TMF_QUEUED;
-+	session->tmf_state = TMF_QUEUED;
- 
--	hdr = &conn->tmhdr;
-+	hdr = &session->tmhdr;
- 	iscsi_prep_abort_task_pdu(task, hdr);
- 
- 	if (iscsi_exec_task_mgmt_fn(conn, hdr, age, session->abort_timeout))
- 		goto failed;
- 
--	switch (conn->tmf_state) {
-+	switch (session->tmf_state) {
- 	case TMF_SUCCESS:
- 		spin_unlock_bh(&session->frwd_lock);
- 		/*
-@@ -2220,7 +2215,7 @@ int iscsi_eh_abort(struct scsi_cmnd *sc)
- 		 */
- 		spin_lock_bh(&session->frwd_lock);
- 		fail_scsi_task(task, DID_ABORT);
--		conn->tmf_state = TMF_INITIAL;
-+		session->tmf_state = TMF_INITIAL;
- 		memset(hdr, 0, sizeof(*hdr));
- 		spin_unlock_bh(&session->frwd_lock);
- 		iscsi_start_tx(conn);
-@@ -2231,7 +2226,7 @@ int iscsi_eh_abort(struct scsi_cmnd *sc)
- 		goto failed_unlocked;
- 	case TMF_NOT_FOUND:
- 		if (!sc->SCp.ptr) {
--			conn->tmf_state = TMF_INITIAL;
-+			session->tmf_state = TMF_INITIAL;
- 			memset(hdr, 0, sizeof(*hdr));
- 			/* task completed before tmf abort response */
- 			ISCSI_DBG_EH(session, "sc completed while abort	in "
-@@ -2240,7 +2235,7 @@ int iscsi_eh_abort(struct scsi_cmnd *sc)
- 		}
- 		fallthrough;
- 	default:
--		conn->tmf_state = TMF_INITIAL;
-+		session->tmf_state = TMF_INITIAL;
- 		goto failed;
- 	}
- 
-@@ -2297,11 +2292,11 @@ int iscsi_eh_device_reset(struct scsi_cmnd *sc)
- 	conn = session->leadconn;
- 
- 	/* only have one tmf outstanding at a time */
--	if (conn->tmf_state != TMF_INITIAL)
-+	if (session->tmf_state != TMF_INITIAL)
- 		goto unlock;
--	conn->tmf_state = TMF_QUEUED;
-+	session->tmf_state = TMF_QUEUED;
- 
--	hdr = &conn->tmhdr;
-+	hdr = &session->tmhdr;
- 	iscsi_prep_lun_reset_pdu(sc, hdr);
- 
- 	if (iscsi_exec_task_mgmt_fn(conn, hdr, session->age,
-@@ -2310,7 +2305,7 @@ int iscsi_eh_device_reset(struct scsi_cmnd *sc)
- 		goto unlock;
- 	}
- 
--	switch (conn->tmf_state) {
-+	switch (session->tmf_state) {
- 	case TMF_SUCCESS:
- 		break;
- 	case TMF_TIMEDOUT:
-@@ -2318,7 +2313,7 @@ int iscsi_eh_device_reset(struct scsi_cmnd *sc)
- 		iscsi_conn_failure(conn, ISCSI_ERR_SCSI_EH_SESSION_RST);
- 		goto done;
- 	default:
--		conn->tmf_state = TMF_INITIAL;
-+		session->tmf_state = TMF_INITIAL;
- 		goto unlock;
- 	}
- 
-@@ -2330,7 +2325,7 @@ int iscsi_eh_device_reset(struct scsi_cmnd *sc)
- 	spin_lock_bh(&session->frwd_lock);
- 	memset(hdr, 0, sizeof(*hdr));
- 	fail_scsi_tasks(conn, sc->device->lun, DID_ERROR);
--	conn->tmf_state = TMF_INITIAL;
-+	session->tmf_state = TMF_INITIAL;
- 	spin_unlock_bh(&session->frwd_lock);
- 
- 	iscsi_start_tx(conn);
-@@ -2353,8 +2348,7 @@ void iscsi_session_recovery_timedout(struct iscsi_cls_session *cls_session)
- 	spin_lock_bh(&session->frwd_lock);
- 	if (session->state != ISCSI_STATE_LOGGED_IN) {
- 		session->state = ISCSI_STATE_RECOVERY_FAILED;
--		if (session->leadconn)
--			wake_up(&session->leadconn->ehwait);
-+		wake_up(&session->ehwait);
- 	}
- 	spin_unlock_bh(&session->frwd_lock);
- }
-@@ -2399,7 +2393,7 @@ int iscsi_eh_session_reset(struct scsi_cmnd *sc)
- 	iscsi_conn_failure(conn, ISCSI_ERR_SCSI_EH_SESSION_RST);
- 
- 	ISCSI_DBG_EH(session, "wait for relogin\n");
--	wait_event_interruptible(conn->ehwait,
-+	wait_event_interruptible(session->ehwait,
- 				 session->state == ISCSI_STATE_TERMINATE ||
- 				 session->state == ISCSI_STATE_LOGGED_IN ||
- 				 session->state == ISCSI_STATE_RECOVERY_FAILED);
-@@ -2460,11 +2454,11 @@ static int iscsi_eh_target_reset(struct scsi_cmnd *sc)
- 	conn = session->leadconn;
- 
- 	/* only have one tmf outstanding at a time */
--	if (conn->tmf_state != TMF_INITIAL)
-+	if (session->tmf_state != TMF_INITIAL)
- 		goto unlock;
--	conn->tmf_state = TMF_QUEUED;
-+	session->tmf_state = TMF_QUEUED;
- 
--	hdr = &conn->tmhdr;
-+	hdr = &session->tmhdr;
- 	iscsi_prep_tgt_reset_pdu(sc, hdr);
- 
- 	if (iscsi_exec_task_mgmt_fn(conn, hdr, session->age,
-@@ -2473,7 +2467,7 @@ static int iscsi_eh_target_reset(struct scsi_cmnd *sc)
- 		goto unlock;
- 	}
- 
--	switch (conn->tmf_state) {
-+	switch (session->tmf_state) {
- 	case TMF_SUCCESS:
- 		break;
- 	case TMF_TIMEDOUT:
-@@ -2481,7 +2475,7 @@ static int iscsi_eh_target_reset(struct scsi_cmnd *sc)
- 		iscsi_conn_failure(conn, ISCSI_ERR_SCSI_EH_SESSION_RST);
- 		goto done;
- 	default:
--		conn->tmf_state = TMF_INITIAL;
-+		session->tmf_state = TMF_INITIAL;
- 		goto unlock;
- 	}
- 
-@@ -2493,7 +2487,7 @@ static int iscsi_eh_target_reset(struct scsi_cmnd *sc)
- 	spin_lock_bh(&session->frwd_lock);
- 	memset(hdr, 0, sizeof(*hdr));
- 	fail_scsi_tasks(conn, -1, DID_ERROR);
--	conn->tmf_state = TMF_INITIAL;
-+	session->tmf_state = TMF_INITIAL;
- 	spin_unlock_bh(&session->frwd_lock);
- 
- 	iscsi_start_tx(conn);
-@@ -2800,7 +2794,10 @@ iscsi_session_setup(struct iscsi_transport *iscsit, struct Scsi_Host *shost,
- 	session->tt = iscsit;
- 	session->dd_data = cls_session->dd_data + sizeof(*session);
- 
-+	session->tmf_state = TMF_INITIAL;
-+	timer_setup(&session->tmf_timer, iscsi_tmf_timedout, 0);
- 	mutex_init(&session->eh_mutex);
-+
- 	spin_lock_init(&session->frwd_lock);
- 	spin_lock_init(&session->back_lock);
- 
-@@ -2904,7 +2901,6 @@ iscsi_conn_setup(struct iscsi_cls_session *cls_session, int dd_size,
- 	conn->c_stage = ISCSI_CONN_INITIAL_STAGE;
- 	conn->id = conn_idx;
- 	conn->exp_statsn = 0;
--	conn->tmf_state = TMF_INITIAL;
- 
- 	timer_setup(&conn->transport_timer, iscsi_check_transport_timeouts, 0);
- 
-@@ -2930,8 +2926,7 @@ iscsi_conn_setup(struct iscsi_cls_session *cls_session, int dd_size,
- 		goto login_task_data_alloc_fail;
- 	conn->login_task->data = conn->data = data;
- 
--	timer_setup(&conn->tmf_timer, iscsi_tmf_timedout, 0);
--	init_waitqueue_head(&conn->ehwait);
-+	init_waitqueue_head(&session->ehwait);
- 
- 	return cls_conn;
- 
-@@ -2966,7 +2961,7 @@ void iscsi_conn_teardown(struct iscsi_cls_conn *cls_conn)
- 		 * leading connection? then give up on recovery.
- 		 */
- 		session->state = ISCSI_STATE_TERMINATE;
--		wake_up(&conn->ehwait);
-+		wake_up(&session->ehwait);
- 	}
- 	spin_unlock_bh(&session->frwd_lock);
- 
-@@ -3041,7 +3036,7 @@ int iscsi_conn_start(struct iscsi_cls_conn *cls_conn)
- 		 * commands after successful recovery
- 		 */
- 		conn->stop_stage = 0;
--		conn->tmf_state = TMF_INITIAL;
-+		session->tmf_state = TMF_INITIAL;
- 		session->age++;
- 		if (session->age == 16)
- 			session->age = 0;
-@@ -3055,7 +3050,7 @@ int iscsi_conn_start(struct iscsi_cls_conn *cls_conn)
- 	spin_unlock_bh(&session->frwd_lock);
- 
- 	iscsi_unblock_session(session->cls_session);
--	wake_up(&conn->ehwait);
-+	wake_up(&session->ehwait);
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(iscsi_conn_start);
-@@ -3142,7 +3137,7 @@ static void iscsi_start_session_recovery(struct iscsi_session *session,
- 	spin_lock_bh(&session->frwd_lock);
- 	fail_scsi_tasks(conn, -1, DID_TRANSPORT_DISRUPTED);
- 	fail_mgmt_tasks(session, conn);
--	memset(&conn->tmhdr, 0, sizeof(conn->tmhdr));
-+	memset(&session->tmhdr, 0, sizeof(session->tmhdr));
- 	spin_unlock_bh(&session->frwd_lock);
- 	mutex_unlock(&session->eh_mutex);
- }
-diff --git a/include/scsi/libiscsi.h b/include/scsi/libiscsi.h
-index b3bbd10eb3f0..2b5f97224f69 100644
---- a/include/scsi/libiscsi.h
-+++ b/include/scsi/libiscsi.h
-@@ -195,12 +195,6 @@ struct iscsi_conn {
- 	unsigned long		suspend_tx;	/* suspend Tx */
- 	unsigned long		suspend_rx;	/* suspend Rx */
- 
--	/* abort */
--	wait_queue_head_t	ehwait;		/* used in eh_abort() */
--	struct iscsi_tm		tmhdr;
--	struct timer_list	tmf_timer;
--	int			tmf_state;	/* see TMF_INITIAL, etc.*/
--
- 	/* negotiated params */
- 	unsigned		max_recv_dlength; /* initiator_max_recv_dsl*/
- 	unsigned		max_xmit_dlength; /* target_max_recv_dsl */
-@@ -270,6 +264,11 @@ struct iscsi_session {
- 	 * and recv lock.
- 	 */
- 	struct mutex		eh_mutex;
-+	/* abort */
-+	wait_queue_head_t	ehwait;		/* used in eh_abort() */
-+	struct iscsi_tm		tmhdr;
-+	struct timer_list	tmf_timer;
-+	int			tmf_state;	/* see TMF_INITIAL, etc.*/
- 
- 	/* iSCSI session-wide sequencing */
- 	uint32_t		cmdsn;
+ static struct i2c_driver stmpe_i2c_driver = {
+ 	.driver = {
 -- 
 2.30.2
 
