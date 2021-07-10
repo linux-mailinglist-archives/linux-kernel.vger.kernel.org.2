@@ -2,101 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D02D3C3347
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 08:41:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC2EF3C334A
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 08:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231952AbhGJGnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 02:43:45 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:6797 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231164AbhGJGno (ORCPT
+        id S231455AbhGJGsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 02:48:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229744AbhGJGsF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 02:43:44 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GMKz052HDzXrT8;
-        Sat, 10 Jul 2021 14:35:24 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sat, 10 Jul 2021 14:40:57 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Sat, 10 Jul 2021 14:40:56 +0800
-Subject: Re: [PATCH 5.4 0/4] 5.4.131-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210709131531.277334979@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <4aab68a1-a455-38e6-5de5-9bd0c25acd50@huawei.com>
-Date:   Sat, 10 Jul 2021 14:40:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20210709131531.277334979@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
+        Sat, 10 Jul 2021 02:48:05 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9352C0613DD
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 23:45:19 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id i13-20020aa78b4d0000b02902ea019ef670so7905146pfd.0
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 23:45:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=9CMx4bIcdXWpRX9qOXiz6bFTgQH2pecsmU1gY1OoGwk=;
+        b=hb7tV/VnMR0zjITwjQo9kcBwJbMt5Xl4lPxJMBHWl+wXBD04ICzAZUfbTjBughG6ND
+         cFWB0fGyo7hVciVd70kfkWVrVzBg9ISCUvwCFufzl8YJCJZHhEMLddxgCRnGgMUbbuA5
+         tP0h2rpj6iv9/g9ujZUEilyHtep2i9qkXIQvhUo5JMDN6wOoi4Lw/CW9AVky1ujx5LRi
+         2zTp+WXvoVbMn+3hAdAAQaEgJQ61qk5A2gEJYwcqcbIJUhGh+7klHPKdghy8pCywhQvG
+         bvv+A5bO7VufxD+sOryC7BQeFY1kC9mtpoTjXICTr4Xg2eo9u9k2DaiV7ACTXxWl0CBB
+         CXYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=9CMx4bIcdXWpRX9qOXiz6bFTgQH2pecsmU1gY1OoGwk=;
+        b=IcR1xpOLSqTY855AP8rWXGUhakrmWdYLzx3E8tUfxDW5y1JwiBuCvbPVQTCXoZ+9Jy
+         MJy/+jqY5d9LQhlhGWgS1f775gsrQdxUvFvmJaXifkEuG3iL1H7xW1wP4AHMTfQgiOb7
+         0TNQnpi5YxNpVV4AS0Z9lEV5ZmmEg37rvJha2KitaEaK92wFTLvSoEZ3JoSdGuk5LMpb
+         zbSJbiUhCE7GFnqU6yNKGfa0w8JlUwq71MtcROHbLPbbvRxFlIBzmQsWHStXoC0VH1vI
+         MVUca5OXs3OHczVgqgjZgSp7leb/8hEdBPu0M9+ghtmzvZEaLptdPf10GCUN0F/6p8eH
+         uuwA==
+X-Gm-Message-State: AOAM533Gm0tIcjCf0FAUE57BS8i9CCIxdR46PQ0+VnaIWhCmEiH6TwKg
+        fSP+vRisfcektgtNDsC7Vz9yd0Ea8NII9b9Qqy8=
+X-Google-Smtp-Source: ABdhPJwuWRRzdqbJqHwcxv8Nn5JDV30GafdKLv2JCFLlKFuEUJC6nTof1vswMR5ky+KhimYrkbRgjqbTf5svF5v+s3I=
+X-Received: from willmcvicker.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:2dd0])
+ (user=willmcvicker job=sendgmr) by 2002:a17:903:3091:b029:12a:ed47:93c3 with
+ SMTP id u17-20020a1709033091b029012aed4793c3mr1859770plc.34.1625899519125;
+ Fri, 09 Jul 2021 23:45:19 -0700 (PDT)
+Date:   Sat, 10 Jul 2021 06:45:11 +0000
+Message-Id: <20210710064511.1288232-1-willmcvicker@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+Subject: [PATCH] drm/mipi: set fwnode when a mipi_dsi_device registers itself
+From:   Will McVicker <willmcvicker@google.com>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Will McVicker <willmcvicker@google.com>,
+        Saravana Kannan <saravanak@google.com>, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is needed for fw_devlink to work properly with MIPI DSI devices.
+Without setting the device's fwnode, the sync state framework isn't able
+to properly track device links between the MIPI DSI device and its
+suppliers which may result in its supplier probing before the mipi
+device.
 
+Suggested-by: Saravana Kannan <saravanak@google.com>
+Signed-off-by: Will McVicker <willmcvicker@google.com>
+---
+ drivers/gpu/drm/drm_mipi_dsi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-On 2021/7/9 21:20, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.131 release.
-> There are 4 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 11 Jul 2021 13:14:09 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.131-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+diff --git a/drivers/gpu/drm/drm_mipi_dsi.c b/drivers/gpu/drm/drm_mipi_dsi.c
+index 5dd475e82995..469d56cf2a50 100644
+--- a/drivers/gpu/drm/drm_mipi_dsi.c
++++ b/drivers/gpu/drm/drm_mipi_dsi.c
+@@ -222,6 +222,7 @@ mipi_dsi_device_register_full(struct mipi_dsi_host *host,
+ 	}
+ 
+ 	dsi->dev.of_node = info->node;
++	dsi->dev.fwnode = of_fwnode_handle(info->node);
+ 	dsi->channel = info->channel;
+ 	strlcpy(dsi->name, info->type, sizeof(dsi->name));
+ 
+-- 
+2.32.0.93.g670b81a890-goog
 
-Tested on arm64 and x86 for 5.4.131-rc1,
-
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.4.y
-Version: 5.4.131-rc1
-Commit: 901498b2630533698a5037666f2d140b120ac995
-Compiler: gcc version 7.3.0 (GCC)
-
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8905
-passed: 8905
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8905
-passed: 8905
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
