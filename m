@@ -2,88 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 163923C2C52
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 03:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BE753C2C57
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 03:18:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231631AbhGJBPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 21:15:43 -0400
-Received: from mout.gmx.net ([212.227.15.19]:49741 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231175AbhGJBPm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 21:15:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1625879566;
-        bh=AfbmQioaIgUOpX+3WohljVEyjO6jBjUFgGyewZhusW0=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=hje9zyy1oHWHBDlMvCmljG5K+eSqkDBwRFgLv33VWuDIp4eesCMiK7lar5t+cWvkw
-         3RZ2wwPXW3pecVpi9Tj47W4b+yBrud0CdZOwc8GFQUA2qDB5oVTHgopMZ20ia07KFe
-         XxV7WxDZjgRUvDUaOd/VibueFJJcXzFrhMaM6ByU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.150.248]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mg6e4-1lWWoa0sqk-00heEW; Sat, 10
- Jul 2021 03:12:46 +0200
-Message-ID: <6c0e20dd84084036d5068e445746c3ed7e82ec4b.camel@gmx.de>
-Subject: Re: [rfc/patch] mm/slub: restore/expand unfreeze_partials() local
- exclusion scope
-From:   Mike Galbraith <efault@gmx.de>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     linux-rt-users@vger.kernel.org,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Date:   Sat, 10 Jul 2021 03:12:45 +0200
-In-Reply-To: <878s2fnv79.ffs@nanos.tec.linutronix.de>
-References: <87tul5p2fa.ffs@nanos.tec.linutronix.de>
-         <8c0e0c486056b5185b58998f2cce62619ed3f05c.camel@gmx.de>
-         <878s2fnv79.ffs@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S231285AbhGJBUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 21:20:53 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:52391 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229703AbhGJBUw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 21:20:52 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 4DDDA5C00D3;
+        Fri,  9 Jul 2021 21:18:07 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Fri, 09 Jul 2021 21:18:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=bZemiW
+        HC6mJXf+fhe+/akDBGDyErdmDCwBUBBwrstFs=; b=v1jOmZPSyEypAaXv8ZWizy
+        uj8/zR28wuNNzcFqz5dRUCE8sKP6rFwYY8c/ZSPl2ifaRRphg7HKG5NXiYQWgCwc
+        H/LKqHdIyU/Vg15VhRfwxu2Ul5WQ8Ac8kXGTAjkgIW7OXzEn6xtxkHLqDpVbf2Zq
+        7BJp0/oxYqKI+YFPifTqa+NoAJaX7YwUuMiZHTkBG7WN800bNi5WjmAcz/gawOQS
+        /2UDltySyhtfAiLkqi5avdYbbGg+U3Ll+P5Akx4lKeYT2qzPhPA/OKAfjV07DvZW
+        q3e0Z3FZT/Vkhs8peZ4T+na0eKxovG0tQqwoQaRjMZflqhG8fZ/Z8m7w1tkGLcjw
+        ==
+X-ME-Sender: <xms:TvXoYCFSe4NyrgJzz6TBoSxqsgAXmcHA_cCmLhhzPtWxgiRYUiDNpw>
+    <xme:TvXoYDW6rWMZ2AeZY4RZSutQD71AQfjhONWVJnY8C5jAA-ebjssYoU-P4UcLCDZTZ
+    jDzFUna0nJX3A>
+X-ME-Received: <xmr:TvXoYMI-gBzGNZ0-i51wiO-fyqQt8fo0ZKgH7FqUvl5cRgc0Cs7hZw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrtdejgdefgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtjeenucfhrhhomhepofgrrhgvkhcu
+    ofgrrhgtiiihkhhofihskhhiqdfikphrvggtkhhiuceomhgrrhhmrghrvghksehinhhvih
+    hsihgslhgvthhhihhnghhslhgrsgdrtghomheqnecuggftrfgrthhtvghrnhepvedvlefh
+    udevlefgvddvkeeftddvudejgfethedvveelkefhleevheegfedvgfdunecuffhomhgrih
+    hnpeigvghnphhrohhjvggtthdrohhrghdpkhgvrhhnvghlrdhorhhgnecuvehluhhsthgv
+    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgrrhhmrghrvghksehinh
+    hvihhsihgslhgvthhhihhnghhslhgrsgdrtghomh
+X-ME-Proxy: <xmx:TvXoYMFwuLami-TOm7JV-2p9DvvMeQcJ3qdLQvpAU6AK1dYqvnE55Q>
+    <xmx:TvXoYIUsBQ7JeqSdM81i7dEGMnrHjrVD4cwg7axesw4R5uJnyYqsLA>
+    <xmx:TvXoYPMOtn_z3__hx7s_S5VHU6xwi52aAxJvsHk8Ub6-vtNtfzIUmg>
+    <xmx:T_XoYKKBVZsRGqBIE5i2o9KXolVbCqBHgqOEt_4Fa8T7F_npwlrRrA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 9 Jul 2021 21:18:05 -0400 (EDT)
+Date:   Sat, 10 Jul 2021 03:18:02 +0200
+From:   Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= 
+        <marmarek@invisiblethingslab.com>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        xen-devel@lists.xenproject.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH v2 0/3] xen: harden blkfront against malicious backends
+Message-ID: <YOj1Spa1hitL61j/@mail-itl>
+References: <20210708124345.10173-1-jgross@suse.com>
+ <YOcKJ6m31tHuq2kh@char.us.oracle.com>
+ <0baeba93-39eb-2bae-1abd-d4e17e6e025e@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:xBaGWs5k2ch5diNHmWabjEqX0vryaK72xMsK6VLJRuTIyg73r8B
- ksdfQLfPf0NIPnfTcGb/uHb9GyPoDgkTWq54+rjIYrBvB5ZimcKq24oN299Qsfy9YZh5lgD
- M9IZW858fCNobJTvQdIuJ4TFhhp/Sg8IJZSUv5EaJjznN+4/8HsKDVm86Diymp+esYglTg6
- RR7B9xVc9+YyDAFIrBsAA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:P8fbcXRQAGI=:3NFsYjLlOfHuO2tjsDGJk+
- pK/DXi7v27Kh0us8yJyQkDGFzwaw6tj9G/nDQxXDTrEbudMUsaXXnBe700ymKwsg3BSD0ZQoZ
- GgxK7N/Ha6YT9qrAD5at6awkhw8EZeix2RPLsUUukhapBl1Jl0GL7CvTZSChW/SNJ7AXNlq/c
- 0VZ/IGR3lDRAsKz2e4F4MlZLe4+/ydzJzOkmJlroON8yjMzKjRsBK6TMvRfirM4K1hr2v7pK7
- j4TqnfC1SOELcIpCViCzEf00bKl6iv6kKn/bI7rJYFlaiKP/Olaje25+HEihHnvVPMI56Xvdg
- GDZGsqi08fD3hLFEBypqPxASWN8+7UEfZdmSA+3P/dmtzDTzlbYRNbsgLZj5wGva50BMDciO/
- Ea9w+JlI8xh+owVpWTgqbHtHVRuvi2a+5aXLUQa7dl31WHnJqH0JPQL8LgI7vGQ0Hppkoxcap
- n4oniSCaOAdOq5t83zd77T4532JNvQY8vcLsGf8pwB79Ft6Ua5a23eM0Ux14weonZzqKVqiRR
- jfhAp8KasQN5m264Vs1o9S36G67i1pfL90QGQk8orob9QYIbiYIC6BicT3RJB7Aq0iXBlnMTj
- azdke4/VJHOvJJLVFK8LfCe+2spZ8GKH0JtK0HUKUAQsSYGsOLLdINIDU9Ipz/bIrVDBf+8Fs
- CSarbV6BnmPTH9EIOWljgSuzMLty2RWV9enNLVLT+wdr0eJZkQtAtKzqdm6HapmEw64NkEATF
- 2yF49goJTCCzNfNQqcyePLKxVc913wRr+RNXK0oiNyL/Tz4AtI3/a9HdZVNW3bAI5zpj9MScL
- bPDEoJAuEuTc1rn5xM7qUkQjkZ8AIDrA9pe0MGvzpQe+2ZEBdqWEPfmhLUWI0oM4aImmUr5du
- CziOnofTEtihZqcZIwmm9Jvtxl1GTVm4ZNOtgUxL73C5tOwaqZTDaZlooX+Sh6Ay3ABrGtjBN
- XuYbUIXSWOhmKoKhEQKWRlOsR1Yz/BohBdzv+DCnrqkPxmr7q1plJWWpPEF6saXhZBbuRJ8rT
- JXXUi3Oi24Vn1I5d3aq+CySt8TmG1RZrr2xe9DgaYRDTXBptJ3wD45YwZYhq8d2CfxkUngpAR
- 5++su8qJTOrj1t7nNIVDfjLk2OBdG6y8U06
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Ge6yG1DC6TeEMfry"
+Content-Disposition: inline
+In-Reply-To: <0baeba93-39eb-2bae-1abd-d4e17e6e025e@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-07-09 at 21:28 +0200, Thomas Gleixner wrote:
-> On Fri, Jul 09 2021 at 07:21, Mike Galbraith wrote:
-> > static bool has_cpu_slab(int cpu, struct kmem_cache *s)
-> > @@ -2632,8 +2636,11 @@ static int slub_cpu_dead(unsigned int cp
-> >  	struct kmem_cache *s;
-> >
-> >  	mutex_lock(&slab_mutex);
-> > -	list_for_each_entry(s, &slab_caches, list)
-> > +	list_for_each_entry(s, &slab_caches, list) {
-> > +		local_lock(&s->cpu_slab->lock);
->
-> This one is odd. It locks the cpu_slab lock of the CPU which runs
-> thiscallback and then flushes the slab of the dead CPU.
 
-That spot I put back only because it used to exist, ergo I documented
-it as an afterthought.  Yeah, it clearly has nada to do with the
-explosions, those were stopped by the other two as previously reported.
+--Ge6yG1DC6TeEMfry
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Date: Sat, 10 Jul 2021 03:18:02 +0200
+From: Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= <marmarek@invisiblethingslab.com>
+To: Juergen Gross <jgross@suse.com>
+Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+	xen-devel@lists.xenproject.org, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+	Stefano Stabellini <sstabellini@kernel.org>,
+	Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>,
+	Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH v2 0/3] xen: harden blkfront against malicious backends
 
-	-Mike
+On Thu, Jul 08, 2021 at 04:39:58PM +0200, Juergen Gross wrote:
+> On 08.07.21 16:22, Konrad Rzeszutek Wilk wrote:
+> > On Thu, Jul 08, 2021 at 02:43:42PM +0200, Juergen Gross wrote:
+> > > Xen backends of para-virtualized devices can live in dom0 kernel, dom0
+> > > user land, or in a driver domain. This means that a backend might
+> > > reside in a less trusted environment than the Xen core components, so
+> > > a backend should not be able to do harm to a Xen guest (it can still
+> > > mess up I/O data, but it shouldn't be able to e.g. crash a guest by
+> > > other means or cause a privilege escalation in the guest).
+> > >=20
+> > > Unfortunately blkfront in the Linux kernel is fully trusting its
+> > > backend. This series is fixing blkfront in this regard.
+> > >=20
+> > > It was discussed to handle this as a security problem, but the topic
+> > > was discussed in public before, so it isn't a real secret.
+> >=20
+> > Wow. This looks like what Marek did .. in 2018!
+> >=20
+> > https://lists.xenproject.org/archives/html/xen-devel/2018-04/msg02336.h=
+tml
+>=20
+> Yes, seems to have been a similar goal.
+>=20
+> > Would it be worth crediting Marek?
+>=20
+> I'm fine mentioning his patches, but I didn't know of his patches until
+> having sent out V1 of my series.
 
+Some email issue likely? You were on explicit CC in that series.
+
+> I'd be interested in learning why his patches haven't been taken back
+> then.
+
+Mostly it was waiting in limbo on "public: add RING_COPY_RESPONSE()"[1] pat=
+ch
+to the Xen tree, to be then synchronized back to Linux headers. That patch
+was finally committed in March this year. I should've followed up on it,
+earlier than 3 years later...
+
+[1] https://lore.kernel.org/xen-devel/20180430215436.21062-1-marmarek@invis=
+iblethingslab.com/T/#u
+
+--=20
+Best Regards,
+Marek Marczykowski-G=C3=B3recki
+Invisible Things Lab
+
+--Ge6yG1DC6TeEMfry
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhrpukzGPukRmQqkK24/THMrX1ywFAmDo9UsACgkQ24/THMrX
+1yw/9gf5AU6+c7KNNXatKEEkWqWF9n+TvflptjRsFCE3FC/WAeidzxn6Rgz/mRSx
+m0BR7Q6h3UhVOTTF5c/CmcVcrHOs8BZUeL0MAZuyDDYpa8bZWgfFFsW8k5//deh6
+fRkX91YuB0uh2Bopgug/CujeGfvg4AbbDweI16OmECqx1sjqX6KrZmj8uHUz8A0f
+AX2vTmWi1tEI9E+tJY5nNxaTIjzFEmB1aTgbbFUjbtvedzpDUhWkjCcB2oSza5+c
+eiUIsuxB+Vtjbs/FOPflhSwE7mZTWeoohdhPxY9k8kRxlE7Q9FORNFMX6vSxVpLy
+hVAz0mhhmdDTi252V/zLYuABcymTQQ==
+=c9JX
+-----END PGP SIGNATURE-----
+
+--Ge6yG1DC6TeEMfry--
