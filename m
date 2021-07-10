@@ -2,89 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78EA93C3377
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 09:22:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E67DE3C337A
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 09:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232024AbhGJHZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 03:25:19 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:44714 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229754AbhGJHZP (ORCPT
+        id S232050AbhGJHcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 03:32:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230044AbhGJHcb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 03:25:15 -0400
-X-UUID: f635367113e34859af3624ef951ce161-20210710
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=Vg7kkK3ymZSbjBH6a6slF/p57CVU3Geh15a8IH3+LaE=;
-        b=JqHit2EqUSUG6yOXk3Ol1AXuWrSJdhaiq9T61TPSiNc8Rk34zlRTckvxLyFOoK9ZzVvJpLKfneOPZ6hNklwhWzq8bsLYmHKf5Qm4TLIlHtaWAGx3FuJ79J5r8e/ectwaNz/Dm78ld66qZQl91zlPDMPIb8SjIXm/7ewf57AxLUU=;
-X-UUID: f635367113e34859af3624ef951ce161-20210710
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <jason-jh.lin@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2007800678; Sat, 10 Jul 2021 15:22:26 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sat, 10 Jul 2021 15:22:25 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 10 Jul 2021 15:22:25 +0800
-Message-ID: <ffb03cb6a7f473791731df60641bedb45bcdd85c.camel@mediatek.com>
-Subject: Re: [PATCH v1 12/17] drm/mediatek: add CCORR support for MT8195
-From:   Jason-JH Lin <jason-jh.lin@mediatek.com>
-To:     CK Hu <ck.hu@mediatek.com>
-CC:     <chunkuang.hu@kernel.org>, <matthias.bgg@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        <fshao@google.com>, <nancy.lin@mediatek.com>,
-        <singo.chang@mediatek.com>
-Date:   Sat, 10 Jul 2021 15:22:25 +0800
-In-Reply-To: <1625637767.7824.23.camel@mtksdaap41>
-References: <20210707041249.29816-1-jason-jh.lin@mediatek.com>
-         <20210707041249.29816-13-jason-jh.lin@mediatek.com>
-         <1625637767.7824.23.camel@mtksdaap41>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Sat, 10 Jul 2021 03:32:31 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE305C0613DD;
+        Sat, 10 Jul 2021 00:29:46 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id l24so17463596edr.11;
+        Sat, 10 Jul 2021 00:29:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2Dh72EK5/SiBR8KllN0qdcxlDb8Yo3mwu0VvIG7FbaQ=;
+        b=LE0Sl+w9F4cSsBo7FXAOGX3qh+jKFMWCwJEUrpFXg4yYAZHS319uYULD+w0XSEO3hs
+         N/enlJhmljGwIRmoGg1vKiYBbaaLM7L5TwEz9aAzJJDUqU6k2+lhpwSbBTxC/m3KbQVc
+         K//Nl1GNzFcfVpmJ5uvydYxE1szm+PgqZggs32dk9CdGLJS1/0lkegN40VmB3IMW4vhV
+         UrgxnDCmBSoHTpmgKcZx5cKDzo9vUquzjWGdT1oLrHr+7nHHHAbyMGAserwa8Cjcy8o/
+         vrQcZ/XTWBeABPDQ7TowavBhAzciCicELs+1iyDljLst6lxbAefiYc8S5ZPNPcBcT2dS
+         TkBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2Dh72EK5/SiBR8KllN0qdcxlDb8Yo3mwu0VvIG7FbaQ=;
+        b=Pp9BQSW8+Z6nbqakoGSftFfcV/rywQXSN2v56seWZRCC5dnVxF2gZNJ8pjG2o1RF7q
+         SZFGXqeoYIP6hu3LjkU2RnPEm2sXB7H7F5HBs3EwdqdhKrNLuCyIAIe851ww4UoM1L4O
+         NCppSVWj+6GH31GTk42CT7MQuPpGDeVKxniVwdm/q1vWoz+Erjncpkaq7Uzqzmk7y7sy
+         4uQNbz5CzHDGPD1Fx9/sqlJTxCjj9BVy/tHUxkR26u9zCrM1QIumgIpfPEnhlYuP7Ooy
+         cDmrTfpwjFEz0OQIfMtIbHd+SkkDkqYRLUmjrfLADObxFqLP3JywONdZBI+jS1Qqei9f
+         FDyQ==
+X-Gm-Message-State: AOAM533uM6ntv7b5e8RwnI27AqAiGGc3cIoOXw2eJZRfvrifqGdFGOj+
+        Arfpe22adHR8jReFa++YOiuBqqugwcFx3hfFpaI=
+X-Google-Smtp-Source: ABdhPJymGtBFX5ZyugF1Tt11f6RgkZcMDgjthoIIWOKIBs1HvxOIXVx6WNapqXNLKsE5fUJRBD2vIfpmIhdmSaiNW7k=
+X-Received: by 2002:a05:6402:5114:: with SMTP id m20mr52905547edd.174.1625902185185;
+ Sat, 10 Jul 2021 00:29:45 -0700 (PDT)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <cover.1625900431.git.paskripkin@gmail.com> <cec894625531da243df3a9f05466b83e107e50d7.1625900431.git.paskripkin@gmail.com>
+In-Reply-To: <cec894625531da243df3a9f05466b83e107e50d7.1625900431.git.paskripkin@gmail.com>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Sat, 10 Jul 2021 15:29:19 +0800
+Message-ID: <CAD-N9QWcOv0s4uzPW0kGk70tpkCjorQCKpa3RrtbxyMmSW5b=Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] net: cipso: fix memory leak in cipso_v4_doi_free
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     Paul Moore <paul@paul-moore.com>,
+        "David S. Miller" <davem@davemloft.net>, yoshfuji@linux-ipv6.org,
+        dsahern@kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        linux-security-module@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTA3LTA3IGF0IDE0OjAyICswODAwLCBDSyBIdSB3cm90ZToNCj4gSGksIEph
-c29uOg0KPiANCj4gT24gV2VkLCAyMDIxLTA3LTA3IGF0IDEyOjEyICswODAwLCBqYXNvbi1qaC5s
-aW4gd3JvdGU6DQo+ID4gQWRkIENDT1JSIHN1cHBvcnQgZm9yIE1UODE5NS4NCj4gPiANCj4gPiBT
-aWduZWQtb2ZmLWJ5OiBqYXNvbi1qaC5saW4gPGphc29uLWpoLmxpbkBtZWRpYXRlay5jb20+DQo+
-ID4gLS0tDQo+ID4gIGRyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZGlzcF9jY29yci5jIHwg
-MiArKw0KPiA+ICBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kcnYuYyAgICB8IDIg
-KysNCj4gPiAgMiBmaWxlcyBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKykNCj4gPiANCj4gPiBkaWZm
-IC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kaXNwX2Njb3JyLmMNCj4gPiBi
-L2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZGlzcF9jY29yci5jDQo+ID4gaW5kZXggMTQx
-Y2IzNmI5YzA3Li44MTg4YjIyMGNjNmQgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9ncHUvZHJt
-L21lZGlhdGVrL210a19kaXNwX2Njb3JyLmMNCj4gPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vbWVk
-aWF0ZWsvbXRrX2Rpc3BfY2NvcnIuYw0KPiA+IEBAIC0yMDgsNiArMjA4LDggQEAgc3RhdGljIGNv
-bnN0IHN0cnVjdCBtdGtfZGlzcF9jY29ycl9kYXRhDQo+ID4gbXQ4MTgzX2Njb3JyX2RyaXZlcl9k
-YXRhID0gew0KPiA+ICBzdGF0aWMgY29uc3Qgc3RydWN0IG9mX2RldmljZV9pZCBtdGtfZGlzcF9j
-Y29ycl9kcml2ZXJfZHRfbWF0Y2hbXQ0KPiA+ID0gew0KPiA+ICAJeyAuY29tcGF0aWJsZSA9ICJt
-ZWRpYXRlayxtdDgxODMtZGlzcC1jY29yciIsDQo+ID4gIAkgIC5kYXRhID0gJm10ODE4M19jY29y
-cl9kcml2ZXJfZGF0YX0sDQo+ID4gKwl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE5NS1k
-aXNwLWNjb3JyIiwNCj4gPiArCSAgLmRhdGEgPSAmbXQ4MTgzX2Njb3JyX2RyaXZlcl9kYXRhfSwN
-Cj4gPiAgCXt9LA0KPiA+ICB9Ow0KPiA+ICBNT0RVTEVfREVWSUNFX1RBQkxFKG9mLCBtdGtfZGlz
-cF9jY29ycl9kcml2ZXJfZHRfbWF0Y2gpOw0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9k
-cm0vbWVkaWF0ZWsvbXRrX2RybV9kcnYuYw0KPiA+IGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVr
-L210a19kcm1fZHJ2LmMNCj4gPiBpbmRleCAyOGJmNGExMWVmYjAuLjA1OGI1MGQwZTY0YiAxMDA2
-NDQNCj4gPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kcnYuYw0KPiA+
-ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2Rydi5jDQo+ID4gQEAgLTQ0
-MCw2ICs0NDAsOCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IG9mX2RldmljZV9pZA0KPiA+IG10a19k
-ZHBfY29tcF9kdF9pZHNbXSA9IHsNCj4gPiAgCSAgLmRhdGEgPSAodm9pZCAqKU1US19ESVNQX1dE
-TUEgfSwNCj4gPiAgCXsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTgzLWRpc3AtY2NvcnIi
-LA0KPiA+ICAJICAuZGF0YSA9ICh2b2lkICopTVRLX0RJU1BfQ0NPUlIgfSwNCj4gPiArCXsgLmNv
-bXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTk1LWRpc3AtY2NvcnIiLA0KPiA+ICsJICAuZGF0YSA9
-ICh2b2lkICopTVRLX0RJU1BfQ0NPUlIgfSwNCj4gDQo+IFRoZSBzYW1lIHF1ZXN0aW9uIGFzIE9W
-TCBhbmQgQ09MT1IuDQo+IA0KPiBSZWdhcmRzLA0KPiBDSw0KPiANCkhpIENLLA0KDQpPSywgSSds
-bCByZW1vdmUgdGhpcyBwYXRjaCBhdCB0aGUgbmV4dCB2ZXJzaW9uLg0KDQpSZWdhcmQsDQpKYXNv
-bi1KSC5MaW4NCj4gPiAgCXsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQyNzAxLWRpc3AtY29s
-b3IiLA0KPiA+ICAJICAuZGF0YSA9ICh2b2lkICopTVRLX0RJU1BfQ09MT1IgfSwNCj4gPiAgCXsg
-LmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTczLWRpc3AtY29sb3IiLA0KPiANCj4gDQo=
+On Sat, Jul 10, 2021 at 3:10 PM Pavel Skripkin <paskripkin@gmail.com> wrote:
+>
+> When doi_def->type == CIPSO_V4_MAP_TRANS doi_def->map.std should
+> be freed to avoid memory leak.
+>
+> Fail log:
+>
+> BUG: memory leak
+> unreferenced object 0xffff88801b936d00 (size 64):
+> comm "a.out", pid 8478, jiffies 4295042353 (age 15.260s)
+> hex dump (first 32 bytes):
+> 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+> 00 00 00 00 15 b8 12 26 00 00 00 00 00 00 00 00  .......&........
+> backtrace:
+> netlbl_cipsov4_add (net/netlabel/netlabel_cipso_v4.c:145 net/netlabel/netlabel_cipso_v4.c:416)
+> genl_family_rcv_msg_doit (net/netlink/genetlink.c:741)
+> genl_rcv_msg (net/netlink/genetlink.c:783 net/netlink/genetlink.c:800)
+> netlink_rcv_skb (net/netlink/af_netlink.c:2505)
+> genl_rcv (net/netlink/genetlink.c:813)
+>
+> Fixes: b1edeb102397 ("netlabel: Replace protocol/NetLabel linking with refrerence
+> counts")
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+> ---
+>  net/ipv4/cipso_ipv4.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/net/ipv4/cipso_ipv4.c b/net/ipv4/cipso_ipv4.c
+> index bfaf327e9d12..e0480c6cebaa 100644
+> --- a/net/ipv4/cipso_ipv4.c
+> +++ b/net/ipv4/cipso_ipv4.c
+> @@ -472,6 +472,7 @@ void cipso_v4_doi_free(struct cipso_v4_doi *doi_def)
+>                 kfree(doi_def->map.std->lvl.local);
+>                 kfree(doi_def->map.std->cat.cipso);
+>                 kfree(doi_def->map.std->cat.local);
+> +               kfree(doi_def->map.std);
+>                 break;
+>         }
+>         kfree(doi_def);
+> --
 
+Hi Paval,
+
+this patch is already merged by Paul. See [1] for more details.
+
+[1] https://lore.kernel.org/netdev/CAHC9VhQZVOmy7n14nTSRGHzwN-y=E_JTUP+NpRCgD8rJN5sOGA@mail.gmail.com/T/
+
+> 2.32.0
+>
