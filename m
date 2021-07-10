@@ -2,77 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 704DF3C33C5
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 10:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA6CA3C33CA
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 11:01:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232135AbhGJI7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 04:59:30 -0400
-Received: from vps5.brixit.nl ([192.81.221.234]:54474 "EHLO vps5.brixit.nl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231873AbhGJI71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 04:59:27 -0400
-Received: from lexxgentoo.collabio.net (unknown [77.239.252.99])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by vps5.brixit.nl (Postfix) with ESMTPSA id C60776089A;
-        Sat, 10 Jul 2021 08:56:38 +0000 (UTC)
-From:   Alexey Minnekhanov <alexeymin@postmarketos.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org (open list:ARM/QUALCOMM SUPPORT),
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        Alexey Minnekhanov <alexeymin@postmarketos.org>
-Subject: [PATCH] ARM: dts: qcom: msm8974-klte: Enable remote processors
-Date:   Sat, 10 Jul 2021 11:55:08 +0300
-Message-Id: <20210710085509.105320-1-alexeymin@postmarketos.org>
-X-Mailer: git-send-email 2.31.1
+        id S232261AbhGJJDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 05:03:54 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:38178 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230083AbhGJJDx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Jul 2021 05:03:53 -0400
+X-UUID: 63f9c0c360884c218d9327f087a74969-20210710
+X-UUID: 63f9c0c360884c218d9327f087a74969-20210710
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <zhiyong.tao@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1717240993; Sat, 10 Jul 2021 17:01:07 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sat, 10 Jul 2021 17:01:05 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sat, 10 Jul 2021 17:01:04 +0800
+From:   Zhiyong Tao <zhiyong.tao@mediatek.com>
+To:     <timur@kernel.org>, <linux@armlinux.org.uk>, <alcooperx@gmail.com>,
+        <tklauser@distanz.ch>, <sean.wang@kernel.org>
+CC:     <srv_heupstream@mediatek.com>, <zhiyong.tao@mediatek.com>,
+        <hui.liu@mediatek.com>, <yuchen.huang@mediatek.com>,
+        <huihui.wang@mediatek.com>, <eddie.huang@mediatek.com>,
+        <sean.wang@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-serial@vger.kernel.org>
+Subject: [PATCH 0/1] Mediatek uart patch 
+Date:   Sat, 10 Jul 2021 17:01:02 +0800
+Message-ID: <20210710090103.2643-1-zhiyong.tao@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam: Yes
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Override power supplies to proper ones, thus enabling to power on ADSP
-and modem remoteprocs.
+This series includes 1 patches:
+1.fix uart access memory corruption issue
 
-Signed-off-by: Alexey Minnekhanov <alexeymin@postmarketos.org>
----
- arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Zhiyong Tao (1):
+  uart: mediatek: fix memory corruption issue
 
-diff --git a/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts b/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
-index e346d0c7c829..ca5853563f9e 100644
---- a/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
-+++ b/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
-@@ -315,6 +315,10 @@ vreg_panel: panel-regulator {
- 	};
- 
- 	/delete-node/ vreg-boost;
-+
-+	adsp-pil {
-+		cx-supply = <&pma8084_s2>;
-+	};
- };
- 
- &soc {
-@@ -832,6 +836,13 @@ dsi-phy@fd922a00 {
- 			vddio-supply = <&pma8084_l12>;
- 		};
- 	};
-+
-+	remoteproc@fc880000 {
-+		cx-supply = <&pma8084_s2>;
-+		mss-supply = <&pma8084_s6>;
-+		mx-supply = <&pma8084_s1>;
-+		pll-supply = <&pma8084_l12>;
-+	};
- };
- 
- &spmi_bus {
--- 
-2.31.1
+ drivers/tty/serial/8250/8250_mtk.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
+
+--
+2.18.0
+
 
