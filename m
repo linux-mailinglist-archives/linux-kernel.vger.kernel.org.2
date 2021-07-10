@@ -2,144 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 610063C3642
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 21:02:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 009123C3647
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 21:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230423AbhGJTEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 15:04:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44252 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229599AbhGJTEy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 15:04:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625943728;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WY2G4cBLrLCEOZ7o93bnRE51RtVPXt+mCwJHsXQT/sk=;
-        b=XXTZkcvHZkq1so90VDRAz0j+m4P+ZCdDIse+eHWthPDjt++jhDdeUMf3YkIGHpCQBNTQB0
-        vSTFufMDopBvItrDeYaiEuHUYVj6+tWPQ3yr1ZMK2+yRK4HwrMv2QQC9kk2h0SBFlJjinU
-        LUK5/BC64MjIko5pAPrQQ+p/rKlcdp0=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-120-T-rFOrsDOLadi0KBxkComA-1; Sat, 10 Jul 2021 15:02:07 -0400
-X-MC-Unique: T-rFOrsDOLadi0KBxkComA-1
-Received: by mail-qk1-f200.google.com with SMTP id a6-20020a37b1060000b02903b488f9d348so9764869qkf.20
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 12:02:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WY2G4cBLrLCEOZ7o93bnRE51RtVPXt+mCwJHsXQT/sk=;
-        b=AwOYv4psFbyyDxB4yOAaFNUDH4sqt4/49uZvbyvGfQXQ78pEWCg6OjGO6H9DyMwZME
-         nBkd9/Mg8Z2wpVeLA6j5eOwNx24orB1NU3oazcwSrlM4hh2ScoraCuQQXNPVptNRbiIg
-         hBgl2sUPN4GknwzN1lABG7tFTs/RxkQCxNvpufMV25d7Yh5ZVXfOiS2priR8dM1Khcbg
-         G3vDY+EALzxSqyzK3kEnmrEoqAJzdTXFNJe/hTWP/yzQpf7IPXcz3ASN9G1qTY0erDSS
-         cLYDiVjbvyYTxi2gbB3apt+yzIW9nByQT0O8m13dAFXBYD2dcsWQh9LsuN5LILfqPaXV
-         75nA==
-X-Gm-Message-State: AOAM5339c5q7vJVcCtALJptftx7paGnxK+trywPHQS83lFEw0Sw3tY/l
-        wn+FRwrV9kGHTySVRtQEqTrUxDA3gBk5TLzcwOB9kQ98I4VNCY5U0Zlj2MbZ0Z5cE9t55AY0MBu
-        vzgpMFDJa/7YPF54E1Ee4Fbqg
-X-Received: by 2002:a05:620a:109a:: with SMTP id g26mr9206574qkk.25.1625943726997;
-        Sat, 10 Jul 2021 12:02:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJztUJiZ/ZNUppr/6J4ZCg3hmaNYpwXWSc+GqtgxVLS57QtktubXhbB9VGMXm/96TlpSOgzoDw==
-X-Received: by 2002:a05:620a:109a:: with SMTP id g26mr9206558qkk.25.1625943726757;
-        Sat, 10 Jul 2021 12:02:06 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id 5sm3597556qtb.22.2021.07.10.12.02.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Jul 2021 12:02:06 -0700 (PDT)
-Date:   Sat, 10 Jul 2021 12:01:43 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
-        yhs@fb.com, linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH -tip v8 05/13] x86/kprobes: Add UNWIND_HINT_FUNC on
- kretprobe_trampoline code
-Message-ID: <20210710190143.lrcsyal2ggubv43v@treble>
-References: <162399992186.506599.8457763707951687195.stgit@devnote2>
- <162399996966.506599.810050095040575221.stgit@devnote2>
- <YOK8pzp8B2V+1EaU@gmail.com>
- <20210710003140.8e561ad33d42f9ac78de6a15@kernel.org>
- <20210710104104.3a270168811ac38420093276@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210710104104.3a270168811ac38420093276@kernel.org>
+        id S230447AbhGJTLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 15:11:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56458 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229599AbhGJTLa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Jul 2021 15:11:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 0AA9561356;
+        Sat, 10 Jul 2021 19:08:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625944125;
+        bh=b6DzQXZFI2jA9bLWkmCKhlPpRMpg1hht2O+OL+cH024=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=ERLkhv4509tUThPm47nw9gU1QY3/EvXrMxjglpCE19crnCuqZzeivb9zOevVK4Adu
+         cWBhsOqN0zMsZen+EbIWzbGLreY/I/ovMiY9tKDlO4+70sTENWYFubcA4T0D2DKfun
+         n0ch477dd6dVvcd67SJaa8ymk/HYi26/XVQtSwcKiL4s8GvaAKJe2Si7mkJoUY3fqH
+         NQAbvSaekrKlTsFqbERBoY8VIq/Tq83KV7W9a/1GgJA5PJjil5ZRDNPN1DLVJvWn9P
+         K6zuUJkTRnFbcW07n7qrRFGEc9W8+RBAng1JeEQGdyMpBCLLi2mRZu6dlc4sRGsVbY
+         S3LPRntQDS9iQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E9DC560986;
+        Sat, 10 Jul 2021 19:08:44 +0000 (UTC)
+Subject: Re: [GIT PULL] thermal for v5.14-rc1 #2
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <8b2470a5-3090-87c3-0fad-d8eefdf54f4f@linaro.org>
+References: <8b2470a5-3090-87c3-0fad-d8eefdf54f4f@linaro.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <8b2470a5-3090-87c3-0fad-d8eefdf54f4f@linaro.org>
+X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git tags/thermal-v5.14-rc1
+X-PR-Tracked-Commit-Id: fe6a6de6692e7f7159c1ff42b07ecd737df712b4
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: f7ea4be434fe7ea38699d14c1192481899e6ac94
+Message-Id: <162594412489.8052.12475027127622760227.pr-tracker-bot@kernel.org>
+Date:   Sat, 10 Jul 2021 19:08:44 +0000
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Linux PM mailing list <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Chunyan Zhang <zhang.chunyan@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Rajeshwari Ravindra Kamble <rkambl@codeaurora.org>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        =?UTF-8?Q?Niklas_S=c3=b6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Finley Xiao <finley.xiao@rock-chips.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 10, 2021 at 10:41:04AM +0900, Masami Hiramatsu wrote:
-> Hi Ingo and Josh,
-> 
-> On Sat, 10 Jul 2021 00:31:40 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
-> > > > +STACK_FRAME_NON_STANDARD(kretprobe_trampoline);
-> > > > +#undef UNWIND_HINT_FUNC
-> > > > +#define UNWIND_HINT_FUNC
-> > > > +#endif
-> > > >  /*
-> > > >   * When a retprobed function returns, this code saves registers and
-> > > >   * calls trampoline_handler() runs, which calls the kretprobe's handler.
-> > > > @@ -1031,6 +1044,7 @@ asm(
-> > > >  	/* We don't bother saving the ss register */
-> > > >  #ifdef CONFIG_X86_64
-> > > >  	"	pushq %rsp\n"
-> > > > +	UNWIND_HINT_FUNC
-> > > >  	"	pushfq\n"
-> > > >  	SAVE_REGS_STRING
-> > > >  	"	movq %rsp, %rdi\n"
-> > > > @@ -1041,6 +1055,7 @@ asm(
-> > > >  	"	popfq\n"
-> > > >  #else
-> > > >  	"	pushl %esp\n"
-> > > > +	UNWIND_HINT_FUNC
-> > > >  	"	pushfl\n"
-> > > >  	SAVE_REGS_STRING
-> > > >  	"	movl %esp, %eax\n"
-> > > 
-> > > Why not provide an appropriate annotation method in <asm/unwind_hints.h>, 
-> > > so that other future code can use it too instead of reinventing the wheel?
-> 
-> I think I got what you meant. Let me summarize the issue.
-> 
-> In case of CONFIG_FRAME_POINTER=n, it is OK just adding UNWIND_HINT_FUNC.
-> 
-> In case of CONFIG_FRAME_POINTER=y, without STACK_FRAME_NON_STANDARD(),
-> the objtool complains that a CALL instruction without the frame pointer.
-> ---
->   arch/x86/kernel/kprobes/core.o: warning: objtool: __kretprobe_trampoline()+0x25: call without frame pointer save/setup
-> ---
-> 
-> If we just add STACK_FRAME_NON_STANDARD() with UNWIND_HINT_FUNC macro,
-> the objtool complains that non-standard function has unwind hint.
-> ---
-> arch/x86/kernel/kprobes/core.o: warning: objtool: __kretprobe_trampoline()+0x1: BUG: why am I validating an ignored function?
+The pull request you sent on Thu, 8 Jul 2021 17:40:37 +0200:
 
-I'm thinking this latter warning indicates an objtool bug (as the BUG
-warning claims).  If a function is ignored with
-STACK_FRAME_NON_STANDARD() then objtool should probably also ignore its
-hints.  Then we should be able to get rid of the #undef/#ifdef
-UNWIND_HINT_FUNC silliness.
+> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git tags/thermal-v5.14-rc1
 
-The other warning is correct and STACK_FRAME_NON_STANDARD() still needs
-to be behind '#ifdef CONFIG_FRAME_POINTER' since the function is missing
-a frame pointer.  So maybe we can make a STACK_FRAME_NON_STANDARD_FP()
-or similar.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/f7ea4be434fe7ea38699d14c1192481899e6ac94
 
-I'll post a few patches.
+Thank you!
 
 -- 
-Josh
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
