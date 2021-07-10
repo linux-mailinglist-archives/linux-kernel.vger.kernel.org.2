@@ -2,121 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F36343C36CF
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 22:36:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C5D73C36D2
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 22:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230497AbhGJUjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 16:39:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbhGJUjk (ORCPT
+        id S230443AbhGJUo4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 10 Jul 2021 16:44:56 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:24631 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229515AbhGJUoy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 16:39:40 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD8C2C0613DD;
-        Sat, 10 Jul 2021 13:36:54 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id h8so6596513eds.4;
-        Sat, 10 Jul 2021 13:36:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wZoGYVD7fTRgT5wK85r18uGGhTvztJHkjBILIZcXG6E=;
-        b=rFVjdPrrtWXdT5OYdHE4ylW0nw/S5d/5nOY8DphMOtDdBXiVRWNPtzb+bT9Ez/+LrF
-         YOzoRSK1k9dHtcYyMrcOLgRny7EM+yO93h4zefRI4f875e2S5aJcbDSm0tzt1ZuFXEEn
-         yPsSKBJaHpNeMR1Js7wVAudwCN8j9w9lI1P7icduRSosX+gCn0ZI1/OOmg7+xvs7WIkE
-         LmKAT269cz3CI2EKMFm1oA0yIL8lpGQZRYYBkGv1eDbfLcv5EwJfimQuxcTG/QyC3SoA
-         cH+stPXWw0vbV87YIYO+R6r13B9uJLK4IHB7bhpJeG0LjW/27pUJlbNu6rsEmtPPK1Ku
-         o7dA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wZoGYVD7fTRgT5wK85r18uGGhTvztJHkjBILIZcXG6E=;
-        b=ogG/u1nscI9A3QlxOn5gqSpo9I2YkbsrZAba8KI15ZTcIikYh2RG0GGZcRNj24e82/
-         nViRoavBpgPFBwhpKz1OlMh09sBf9TkwzejNt5qhNci8vQRJ5Jtibm/qDtoj14ZfEJA4
-         9rTW2S2z4ENw42QjGf6kZ3AJg96KkjLAa2umjIjrO9NxnkcwDGmaXTcK6KD/aohp8Vu0
-         devJt6Yai9LnOI9LLuqwZ1qeY0PA6SO1AfdbnoO2kvZkf5ALTWuA+YZvWKvjGp9OeGNl
-         HTKXae3JYh6DuE+Bmk3O08Q74GTKLIA64ibon0fXxuRgThDkOorDcPJfuucuLA7J8hAq
-         hx7A==
-X-Gm-Message-State: AOAM530xAC0D6k/3NN0zzMxRbz70k9zwccaVOLwgiRe3mFqv7zCMvHlT
-        s0W7KknEztXV9WOjCBtbTWs=
-X-Google-Smtp-Source: ABdhPJyHtc9Eok2zTTZJ69yARyVvJ/hPq3lLkJKKeNhpJUBxMY+Ujutl5DmvDKlNV1u/0SxYY+jUMQ==
-X-Received: by 2002:a05:6402:430f:: with SMTP id m15mr43679851edc.113.1625949413505;
-        Sat, 10 Jul 2021 13:36:53 -0700 (PDT)
-Received: from skbuf ([82.76.66.29])
-        by smtp.gmail.com with ESMTPSA id u4sm4124207eje.81.2021.07.10.13.36.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Jul 2021 13:36:53 -0700 (PDT)
-Date:   Sat, 10 Jul 2021 23:36:51 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Colin Foster <colin.foster@in-advantage.com>
-Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
-        claudiu.manoil@nxp.com, alexandre.belloni@bootlin.com,
-        UNGLinuxDriver@microchip.com, linux@armlinux.org.uk,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 net-next 6/8] net: mscc: ocelot: expose ocelot wm
- functions
-Message-ID: <20210710203651.k76teuhovyob52wq@skbuf>
-References: <20210710192602.2186370-1-colin.foster@in-advantage.com>
- <20210710192602.2186370-7-colin.foster@in-advantage.com>
+        Sat, 10 Jul 2021 16:44:54 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-288-KIu4VRrmNiiz93j7OdgeJQ-1; Sat, 10 Jul 2021 21:42:03 +0100
+X-MC-Unique: KIu4VRrmNiiz93j7OdgeJQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.18; Sat, 10 Jul 2021 21:42:02 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.018; Sat, 10 Jul 2021 21:42:02 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'Fabio M. De Francesco'" <fmdefrancesco@gmail.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel test robot" <lkp@intel.com>
+CC:     "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
+        "fabioaiuto83@gmail.com" <fabioaiuto83@gmail.com>
+Subject: RE: [PATCH] staging: rtl8188eu: Replace a custom function with
+ crc32_le()
+Thread-Topic: [PATCH] staging: rtl8188eu: Replace a custom function with
+ crc32_le()
+Thread-Index: AQHXdZlS7uKLeikeukSCM0Q+7FrN3Ks8qnww
+Date:   Sat, 10 Jul 2021 20:42:02 +0000
+Message-ID: <d53fb195104a4b269a7cd320049a133b@AcuMS.aculab.com>
+References: <20210701133809.26534-1-fmdefrancesco@gmail.com>
+ <202107100829.RxcC1tei-lkp@intel.com> <1790135.9ZQ2ZFNHWj@linux.local>
+In-Reply-To: <1790135.9ZQ2ZFNHWj@linux.local>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210710192602.2186370-7-colin.foster@in-advantage.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 10, 2021 at 12:26:00PM -0700, Colin Foster wrote:
-> diff --git a/drivers/net/ethernet/mscc/ocelot_wm.c b/drivers/net/ethernet/mscc/ocelot_wm.c
-> new file mode 100644
-> index 000000000000..f9a11a6a059d
-> --- /dev/null
-> +++ b/drivers/net/ethernet/mscc/ocelot_wm.c
-> @@ -0,0 +1,40 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/*
-> + * Microsemi Ocelot Switch driver
-> + *
-> + * Copyright (c) 2017 Microsemi Corporation
-> + */
-> +
-> +#include "ocelot.h"
-> +
-> +/* Watermark encode
-> + * Bit 8:   Unit; 0:1, 1:16
-> + * Bit 7-0: Value to be multiplied with unit
-> + */
-> +u16 ocelot_wm_enc(u16 value)
-> +{
-> +	WARN_ON(value >= 16 * BIT(8));
-> +
-> +	if (value >= BIT(8))
-> +		return BIT(8) | (value / 16);
-> +
-> +	return value;
-> +}
-> +EXPORT_SYMBOL(ocelot_wm_enc);
-> +
-> +u16 ocelot_wm_dec(u16 wm)
-> +{
-> +	if (wm & BIT(8))
-> +		return (wm & GENMASK(7, 0)) * 16;
-> +
-> +	return wm;
-> +}
-> +EXPORT_SYMBOL(ocelot_wm_dec);
-> +
-> +void ocelot_wm_stat(u32 val, u32 *inuse, u32 *maxuse)
-> +{
-> +	*inuse = (val & GENMASK(23, 12)) >> 12;
-> +	*maxuse = val & GENMASK(11, 0);
-> +}
-> +EXPORT_SYMBOL(ocelot_wm_stat);
-> +
+From: Fabio M. De Francesco
+> Sent: 10 July 2021 15:39
+...
+> [CUT]
+[PASTE}
+> 597						*((__le32 *)crc) = ~crc32_le(~0, payload, length);
+> 
+> I suppose that these warnings are false positives for the reasons explained in
+> my patch.
 
-Do not use blank lines at the end of files, 'git am' will complain that
-the patches are whitespace damaged.
+No they are an indication you aren't doing things 'right'.
+You shouldn't need an __le32 cast in this code.
+'crc' should be defined as __le32 (not u8[4]) and IIRC
+get_unaligned_le32() used in the latter check.
+
+Actually what is this code actually doing.
+ISTR it is doing a crc32() and then comparing the result with the
+crc in the buffer?
+No hardware ever does that.
+What happens is the receiver does the crc of the whole buffer
+including the transmitted crc and then checks the value is the
+required 'magic' constant'.
+This all works because the crc is inverted before transmission.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
