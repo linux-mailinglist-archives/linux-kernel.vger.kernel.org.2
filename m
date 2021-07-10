@@ -2,144 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 007763C336F
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 09:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A11F03C336D
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 09:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232208AbhGJHIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 03:08:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232184AbhGJHIA (ORCPT
+        id S232240AbhGJHID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 03:08:03 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:51596 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232184AbhGJHID (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 03:08:00 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5988C0613DD
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 00:05:15 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id b12so10884085pfv.6
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 00:05:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NyelH3y/Sii7PCvkumT3IvAArvEB9YXUeii5v7j0syg=;
-        b=ej+0sNuNNat0KE9bTIFKRP3jvF3IVHdpZRQVd6NLSVB28jEsDw0mk5ks6v/pvu4YGR
-         PxWl9bsnKhrjJBhj5MaLxCcZyRKwOpMSmqF7Wg9cFRuNr1uijseCpES9gt9RMkissZnA
-         Y80EXBB3mEjif194IEWYktBKRHnAyDaDpSVSvD2GQrbSoEEnwjIIfBFMOyD93qazqW2C
-         7Jh8PucurSVmXZ/aA8SlJDFRMag4wqM5trDo6xIO38fT9TUk65aweePEMR/hl7l+BxMs
-         xqULkEoKf12A4ml2KU8Ivbpv8ayDd/eUQ0eS5bWhze81NQ9PydPqLckL9cOXYWkDo3r5
-         36/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NyelH3y/Sii7PCvkumT3IvAArvEB9YXUeii5v7j0syg=;
-        b=W5TZbtGQ1uSRQOBGBjTPLj0uoJYWLzHjbgSG8xkgZghUZkTr7/QGXslTxmAMoaejGb
-         KTiAEkrO5zDexwtmgurmNeAshF3Mp3esng6HDHlNNkXLqTjOhuOTeD7NCQg2Ih4IPL/j
-         DqO4TGJijimQwt3egI6NjDBY0vWCkDQm31d9xtQBTP2pdT/kNN8wCykM9XDro0gIVKW0
-         hdpn1V2NvBIEpyHvwRIHENMlxNJyjKcQqMq9YiPaJeQUmvYsx5q5q1oDiyra9EMbbzL2
-         SV+Mx1HYcK1mv2nn4lGvTv8XRBVndoFUAieZ8osCjqGS2WX0Sh3P+uhLCpSpvBKSPOah
-         KiOg==
-X-Gm-Message-State: AOAM533B377ApiD630o/oOFAX5SWAPyWnUwpnG6QXrXy9QyLDMCnm8RC
-        PqcbOt7JPKG0MU3qnpSP3Mdbmg==
-X-Google-Smtp-Source: ABdhPJyTt9ua5bgo9EOj/fAnBbinirlp0+fwpueIPjCZCx3LPza4hc9vG92Nc+5IYw3IO8dTkY71Fw==
-X-Received: by 2002:a62:2ec7:0:b029:301:fe50:7d4b with SMTP id u190-20020a622ec70000b0290301fe507d4bmr41511393pfu.78.1625900715175;
-        Sat, 10 Jul 2021 00:05:15 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([202.131.71.237])
-        by smtp.gmail.com with ESMTPSA id i8sm8428557pfo.154.2021.07.10.00.05.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Jul 2021 00:05:14 -0700 (PDT)
-Date:   Sat, 10 Jul 2021 15:05:09 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] coresight: tmc-etr: Speed up for bounce buffer in
- flat mode
-Message-ID: <20210710070509.GB273828@leoy-ThinkPad-X240s>
-References: <20210710050046.414669-1-leo.yan@linaro.org>
+        Sat, 10 Jul 2021 03:08:03 -0400
+X-UUID: dc6bb35f46f546ef952f407b44f49aa7-20210710
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=eICC1osrLRCB6HLoWQS3KtrDniyt/REFGqRN9fWm7CQ=;
+        b=psNgez2bIsRLeRkwSfxf2djya4uarAkmnHvEV4OkPjjYFb1SEn53vVhX5hbnTqQk7I8nsp6SVEAA8+UOa6IRSLlBr1xZxCRgDYmSRITlJegPoquBw2hZwejI1T1AeGtX9wB8/4tF1MRlh0qBxtSATzLUIZA4QJmPwwaeSmQCWGo=;
+X-UUID: dc6bb35f46f546ef952f407b44f49aa7-20210710
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+        (envelope-from <jason-jh.lin@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1103890991; Sat, 10 Jul 2021 15:05:14 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sat, 10 Jul 2021 15:05:13 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sat, 10 Jul 2021 15:05:13 +0800
+Message-ID: <257730816d127729e18909d2c23582d0cc07d493.camel@mediatek.com>
+Subject: Re: [PATCH v1 07/17] drm/mediatek: add OVL support for MT8195
+From:   Jason-JH Lin <jason-jh.lin@mediatek.com>
+To:     CK Hu <ck.hu@mediatek.com>
+CC:     <chunkuang.hu@kernel.org>, <matthias.bgg@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        <fshao@google.com>, <nancy.lin@mediatek.com>,
+        <singo.chang@mediatek.com>
+Date:   Sat, 10 Jul 2021 15:05:12 +0800
+In-Reply-To: <1625634196.7824.13.camel@mtksdaap41>
+References: <20210707041249.29816-1-jason-jh.lin@mediatek.com>
+         <20210707041249.29816-8-jason-jh.lin@mediatek.com>
+         <1625634196.7824.13.camel@mtksdaap41>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210710050046.414669-1-leo.yan@linaro.org>
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+T24gV2VkLCAyMDIxLTA3LTA3IGF0IDEzOjAzICswODAwLCBDSyBIdSB3cm90ZToNCj4gSGksIEph
+c29uOg0KPiANCj4gT24gV2VkLCAyMDIxLTA3LTA3IGF0IDEyOjEyICswODAwLCBqYXNvbi1qaC5s
+aW4gd3JvdGU6DQo+ID4gQWRkIE9WTCBzdXBwb3J0IGZvciBNVDgxOTUuDQo+ID4gDQo+ID4gU2ln
+bmVkLW9mZi1ieTogamFzb24tamgubGluIDxqYXNvbi1qaC5saW5AbWVkaWF0ZWsuY29tPg0KPiA+
+IC0tLQ0KPiA+ICBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3Bfb3ZsLmMgfCA5ICsr
+KysrKysrKw0KPiA+ICBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kcnYuYyAgfCAy
+ICsrDQo+ID4gIDIgZmlsZXMgY2hhbmdlZCwgMTEgaW5zZXJ0aW9ucygrKQ0KPiA+IA0KPiA+IGRp
+ZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3Bfb3ZsLmMNCj4gPiBi
+L2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZGlzcF9vdmwuYw0KPiA+IGluZGV4IDk2MWY4
+N2Y4ZDRkMS4uOTljMzk0ODcwMjZkIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9t
+ZWRpYXRlay9tdGtfZGlzcF9vdmwuYw0KPiA+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRl
+ay9tdGtfZGlzcF9vdmwuYw0KPiA+IEBAIC00NTUsNiArNDU1LDEzIEBAIHN0YXRpYyBjb25zdCBz
+dHJ1Y3QgbXRrX2Rpc3Bfb3ZsX2RhdGENCj4gPiBtdDgxODNfb3ZsXzJsX2RyaXZlcl9kYXRhID0g
+ew0KPiA+ICAJLmZtdF9yZ2I1NjVfaXNfMCA9IHRydWUsDQo+ID4gIH07DQo+ID4gIA0KPiA+ICtz
+dGF0aWMgY29uc3Qgc3RydWN0IG10a19kaXNwX292bF9kYXRhIG10ODE5NV9vdmxfZHJpdmVyX2Rh
+dGEgPSB7DQo+ID4gKwkuYWRkciA9IERJU1BfUkVHX09WTF9BRERSX01UODE3MywNCj4gPiArCS5n
+bWNfYml0cyA9IDEwLA0KPiA+ICsJLmxheWVyX25yID0gNCwNCj4gPiArCS5mbXRfcmdiNTY1X2lz
+XzAgPSB0cnVlLA0KPiA+ICt9Ow0KPiANCj4gbXQ4MTk1X292bF9kcml2ZXJfZGF0YSBpcyBpZGVu
+dGljYWwgdG8gbXQ4MTgzX292bF9kcml2ZXJfZGF0YSwgc28NCj4gcmVtb3ZlDQo+IG10ODE5NV9v
+dmxfZHJpdmVyX2RhdGEgYW5kIHVzZSBtdDgxODNfb3ZsX2RyaXZlcl9kYXRhLg0KPiANCj4gPiAr
+DQo+ID4gIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkIG10a19kaXNwX292bF9kcml2
+ZXJfZHRfbWF0Y2hbXSA9DQo+ID4gew0KPiA+ICAJeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxt
+dDI3MDEtZGlzcC1vdmwiLA0KPiA+ICAJICAuZGF0YSA9ICZtdDI3MDFfb3ZsX2RyaXZlcl9kYXRh
+fSwNCj4gPiBAQCAtNDY0LDYgKzQ3MSw4IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgb2ZfZGV2aWNl
+X2lkDQo+ID4gbXRrX2Rpc3Bfb3ZsX2RyaXZlcl9kdF9tYXRjaFtdID0gew0KPiA+ICAJICAuZGF0
+YSA9ICZtdDgxODNfb3ZsX2RyaXZlcl9kYXRhfSwNCj4gPiAgCXsgLmNvbXBhdGlibGUgPSAibWVk
+aWF0ZWssbXQ4MTgzLWRpc3Atb3ZsLTJsIiwNCj4gPiAgCSAgLmRhdGEgPSAmbXQ4MTgzX292bF8y
+bF9kcml2ZXJfZGF0YX0sDQo+ID4gKwl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE5NS1k
+aXNwLW92bCIsDQo+ID4gKwkgIC5kYXRhID0gJm10ODE5NV9vdmxfZHJpdmVyX2RhdGF9LA0KPiAN
+Cj4gT25lIHF1ZXN0aW9uLCBpcyBtZWRpYXRlayxtdDgxOTUtZGlzcC1vdmwgaWRlbnRpY2FsIHRv
+DQo+IG1lZGlhdGVrLG10ODE4My1kaXNwLW92bCBpbiBoYXJkd2FyZSBmdW5jdGlvbj8gSWYgc28s
+IHVzZSB0aGUNCj4gY29tcGF0aWJsZQ0KPiBhcw0KPiANCj4gY29tcGF0aWJsZSA9ICJtZWRpYXRl
+ayxtdDgxOTUtZGlzcC1vdmwiLCAibWVkaWF0ZWssbXQ4MTgzLWRpc3Atb3ZsIjsNCj4gDQo+IEFu
+ZCBkcml2ZXIganVzdCBrZWVwICJtZWRpYXRlayxtdDgxODMtZGlzcC1vdmwiIGFuZCByZW1vdmUN
+Cj4gIm1lZGlhdGVrLG10ODE5NS1kaXNwLW92bCIuDQo+IA0KPiBJZiB0aGUgaGFyZHdhcmUgZnVu
+Y3Rpb24gaGFzIHNvbWUgZGlmZmVyZW50LCBqdXN0IGZvcmdldCB0aGlzLg0KPiANCj4gUmVnYXJk
+cywNCj4gQ0sNCj4gDQpIaSBDSywNCg0KT0ssIEknbGwgcmVtb3ZlIHRoaXMgcGF0Y2ggYXQgdGhl
+IG5leHQgdmVyc2lvbi4NCg0KUmVnYXJkLA0KSmFzb24tSkguTGluDQo+ID4gIAl7fSwNCj4gPiAg
+fTsNCj4gPiAgTU9EVUxFX0RFVklDRV9UQUJMRShvZiwgbXRrX2Rpc3Bfb3ZsX2RyaXZlcl9kdF9t
+YXRjaCk7DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJt
+X2Rydi5jDQo+ID4gYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kcnYuYw0KPiA+
+IGluZGV4IDViN2VhZDQ5MzQ4Ny4uNjUwMzhkNWIxOWNiIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZl
+cnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2Rydi5jDQo+ID4gKysrIGIvZHJpdmVycy9ncHUv
+ZHJtL21lZGlhdGVrL210a19kcm1fZHJ2LmMNCj4gPiBAQCAtNDI0LDYgKzQyNCw4IEBAIHN0YXRp
+YyBjb25zdCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkDQo+ID4gbXRrX2RkcF9jb21wX2R0X2lkc1tdID0g
+ew0KPiA+ICAJICAuZGF0YSA9ICh2b2lkICopTVRLX0RJU1BfT1ZMIH0sDQo+ID4gIAl7IC5jb21w
+YXRpYmxlID0gIm1lZGlhdGVrLG10ODE4My1kaXNwLW92bCIsDQo+ID4gIAkgIC5kYXRhID0gKHZv
+aWQgKilNVEtfRElTUF9PVkwgfSwNCj4gPiArCXsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4
+MTk1LWRpc3Atb3ZsIiwNCj4gPiArCSAgLmRhdGEgPSAodm9pZCAqKU1US19ESVNQX09WTCB9LA0K
+PiA+ICAJeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxODMtZGlzcC1vdmwtMmwiLA0KPiA+
+ICAJICAuZGF0YSA9ICh2b2lkICopTVRLX0RJU1BfT1ZMXzJMIH0sDQo+ID4gIAl7IC5jb21wYXRp
+YmxlID0gIm1lZGlhdGVrLG10MjcwMS1kaXNwLXJkbWEiLA0KPiANCj4gDQo=
 
-On Sat, Jul 10, 2021 at 01:00:46PM +0800, Leo Yan wrote:
-
-[...]
-
-> --- a/drivers/hwtracing/coresight/coresight-tmc-etr.c
-> +++ b/drivers/hwtracing/coresight/coresight-tmc-etr.c
-> @@ -21,6 +21,7 @@
->  
->  struct etr_flat_buf {
->  	struct device	*dev;
-> +	struct page	*pages;
->  	dma_addr_t	daddr;
->  	void		*vaddr;
->  	size_t		size;
-> @@ -600,6 +601,7 @@ static int tmc_etr_alloc_flat_buf(struct tmc_drvdata *drvdata,
->  {
->  	struct etr_flat_buf *flat_buf;
->  	struct device *real_dev = drvdata->csdev->dev.parent;
-> +	ssize_t	aligned_size;
->  
->  	/* We cannot reuse existing pages for flat buf */
->  	if (pages)
-> @@ -609,12 +611,17 @@ static int tmc_etr_alloc_flat_buf(struct tmc_drvdata *drvdata,
->  	if (!flat_buf)
->  		return -ENOMEM;
->  
-> -	flat_buf->vaddr = dma_alloc_coherent(real_dev, etr_buf->size,
-> -					     &flat_buf->daddr, GFP_KERNEL);
-> -	if (!flat_buf->vaddr) {
-> -		kfree(flat_buf);
-> -		return -ENOMEM;
-> -	}
-> +	aligned_size = PAGE_ALIGN(etr_buf->size);
-> +	flat_buf->pages = alloc_pages_node(node, GFP_KERNEL | __GFP_ZERO,
-> +					   get_order(aligned_size));
-> +	if (!flat_buf->pages)
-> +		goto fail_alloc_pages;
-> +
-> +	flat_buf->vaddr = page_address(flat_buf->pages);
-> +	flat_buf->daddr = dma_map_page(real_dev, flat_buf->pages, 0,
-> +				       aligned_size, DMA_FROM_DEVICE);
-> +	if (dma_mapping_error(real_dev, flat_buf->daddr))
-> +		goto fail_dma_map_page;
->  
->  	flat_buf->size = etr_buf->size;
->  	flat_buf->dev = &drvdata->csdev->dev;
-> @@ -622,23 +629,34 @@ static int tmc_etr_alloc_flat_buf(struct tmc_drvdata *drvdata,
->  	etr_buf->mode = ETR_MODE_FLAT;
->  	etr_buf->private = flat_buf;
->  	return 0;
-> +
-> +fail_dma_map_page:
-> +	__free_pages(flat_buf->pages, get_order(aligned_size));
-> +fail_alloc_pages:
-> +	kfree(flat_buf);
-> +	return -ENOMEM;
->  }
->  
->  static void tmc_etr_free_flat_buf(struct etr_buf *etr_buf)
->  {
->  	struct etr_flat_buf *flat_buf = etr_buf->private;
->  
-> -	if (flat_buf && flat_buf->daddr) {
-> +	if (flat_buf && flat_buf->vaddr) {
-
-I found here I introduced an unexpected change for checking
-"flat_buf->vaddr", we should still check "flat_buf->daddr".
-
-Sent patch v2 to address this issue; please directly review patch
-v2.
-
-Thanks,
-Leo
