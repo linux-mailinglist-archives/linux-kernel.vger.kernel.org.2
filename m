@@ -2,53 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D58DD3C333B
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 08:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AD333C333E
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 08:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231276AbhGJGhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 02:37:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51172 "EHLO mail.kernel.org"
+        id S231670AbhGJGjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 02:39:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229612AbhGJGhS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 02:37:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE618611ED;
-        Sat, 10 Jul 2021 06:34:33 +0000 (UTC)
+        id S229612AbhGJGju (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Jul 2021 02:39:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CAC961375;
+        Sat, 10 Jul 2021 06:37:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1625898874;
-        bh=oHDiNnrS3PM2micTiMuaBqRrE7hJHCyDRvav3f6SkgU=;
+        s=korg; t=1625899025;
+        bh=gV2Pfj2NN055Q0X+lsNhoIQOi7ituo+LVpl15VX3Qrg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dNsdWZgRthAIaqhT3FWY2GFB+gz6CYGZai2NL2i3vFzopeGMorodM7zWZKA4GwfbR
-         ieCc9RDELaDIinNh3Sv5WRnY/Ch89/DVwDISj3CzGXsFuf+t47h7DFVMahC3L1Tc4Q
-         wNxF5+y+wz2oumaEGClMLUxhp8Kjpvb4X1e/jU+I=
-Date:   Sat, 10 Jul 2021 08:34:31 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Evan Green <evgreen@chromium.org>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        gil.fine@intel.com, rajmohan.mani@intel.com,
-        linux-usb@vger.kernel.org, Prashant Malani <pmalani@google.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: thunderbolt: Warning and 20 second delay in S4
-Message-ID: <YOk/dzmF9sRg4uBn@kroah.com>
-References: <CAE=gft50j2D_UmNNVOj-h6Hyi5ctMztAVDBP442SPinmCwcnpw@mail.gmail.com>
+        b=iEVZdslJuwgHl1Srn3duqBR3Jq8/GB/5xleLtRueB22Bu6QKo8kD1wKLtcP1DUuYb
+         beLL3TiJyKW6LS+CMwlzKhA0XEKb/4ZbFUePsoutrpMHHu3qlGbHrpdcKRlphAGHAW
+         UCFSE2sxxI4o6shXYxjYeAo7d4BFhuxnJ1nVUubM=
+Date:   Sat, 10 Jul 2021 08:37:03 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Hridya Valsaraju <hridya@google.com>
+Cc:     daniel@ffwll.ch, Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        kernel-team@android.com, john.stultz@linaro.org, surenb@google.com
+Subject: Re: [PATCH] dma-buf: Delete the DMA-BUF attachment sysfs statistics
+Message-ID: <YOlADy6gdrUDNltl@kroah.com>
+References: <20210710051027.42828-1-hridya@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAE=gft50j2D_UmNNVOj-h6Hyi5ctMztAVDBP442SPinmCwcnpw@mail.gmail.com>
+In-Reply-To: <20210710051027.42828-1-hridya@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 09, 2021 at 02:31:35PM -0700, Evan Green wrote:
-> Hi Mika et al,
+On Fri, Jul 09, 2021 at 10:10:24PM -0700, Hridya Valsaraju wrote:
+> The DMA-BUF attachment statistics form a subset of the DMA-BUF
+> sysfs statistics that recently merged to the drm-misc tree.
+> Since there has been a reported a performance regression due to the
+> overhead of sysfs directory creation/teardown during
+> dma_buf_attach()/dma_buf_detach(), this patch deletes the DMA-BUF
+> attachment statistics from sysfs.
 > 
-> I'm experimenting with suspending to disk (hibernate) on a Tigerlake
-> Chromebook running the chromeos-5.4 kernel. I don't have any USB4
-> peripherals plugged in. I'm getting this warning, along with a 20
-> second stall, both when going down for hibernate and coming back up.
+> Fixes: bdb8d06dfefd (dmabuf: Add the capability to expose DMA-BUF stats
+> in sysfs)
+> Signed-off-by: Hridya Valsaraju <hridya@google.com>
+> ---
 
-5.4 is pretty old, especially for thunderbolt issues, can you try 5.13
-please?
-
-thanks,
-
-greg k-h
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
