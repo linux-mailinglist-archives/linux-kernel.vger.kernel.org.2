@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27AF13C3049
+	by mail.lfdr.de (Postfix) with ESMTP id B99003C304B
 	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 04:47:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234989AbhGJCe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 22:34:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41746 "EHLO mail.kernel.org"
+        id S235050AbhGJCec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 22:34:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234604AbhGJC3h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 22:29:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DD81613D1;
-        Sat, 10 Jul 2021 02:26:51 +0000 (UTC)
+        id S234653AbhGJC3j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 22:29:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8315A60BD3;
+        Sat, 10 Jul 2021 02:26:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625884012;
-        bh=CW1WmbuVl1Tuj60stuh6NuzXVGlP0X1tiTCK37+XWn8=;
+        s=k20201202; t=1625884015;
+        bh=mwAXzCQTCpeyzRqdPBQBVEoSYtdysFiIiiFsm4R9IlM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RJIz0NEmeuHE4si3NSRmtnVbRNFN4+nhFv1kwuks5tQD79MjAg508uCfb4HrFXVBn
-         XR1TIc83AqfnMOogRV/lSVplqVX1PFOaCAwbd/aHVHQiFBMsjZid6iUC0Ag3Rrf42V
-         LAHYwNQbVEQt56B9Z9YPT3aKGpUDNz/nqwxh9zLrCxqZSOHTmYnBs/oy167GbDmCOV
-         gmvGKn8toD04J5KwbAzfdXaKSaJcpCxeKI3stc1iTVhrmvn6rLU2gRhSIP/o57hjqy
-         lD55wVnH7UYUyzrwqhBzi290V4VzPJELm+ddj2rr9vJHC435+kZkO3LJp4eGCbq+fN
-         apSkuziOYV/cA==
+        b=gX8nVLYDusUOkI+laedW/dd1q2li9XoDtkIlGKIuUf41hMz6ICniOQEyCFJWFvh5W
+         n2CF9cW9M9NA9A2c8QxTkGvcTTeqDAs9/NSr50Iom6HRY79X9cabh44qULYIf88CJx
+         wcZz84Eass1fYr7cXb7vUQ0ZkDnlgegnH2h1xeQKMWnRN/l/SK2kGywL64BG+wyTyX
+         hOgjb0oa4BoBUFiyGuOXxaP1vhpTiBCm76c2CUeVTZvr4nwTvu7hIIXTP9FWbdqSBj
+         RoMmZLxCi7VGDug1FsthdDcqFkH3WLO3U4j2eXFR07/1ZlhgvpwdhDGkyOfhSRpIE9
+         RuWV1uDm5m4Sg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Geoffrey D. Bennett" <g@b4.vu>, Takashi Iwai <tiwai@suse.de>,
-        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.10 84/93] ALSA: usb-audio: scarlett2: Fix 6i6 Gen 2 line out descriptions
-Date:   Fri,  9 Jul 2021 22:24:18 -0400
-Message-Id: <20210710022428.3169839-84-sashal@kernel.org>
+Cc:     Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+0a89a7b56db04c21a656@syzkaller.appspotmail.com,
+        Dave Kleikamp <dave.kleikamp@oracle.com>,
+        Sasha Levin <sashal@kernel.org>,
+        jfs-discussion@lists.sourceforge.net
+Subject: [PATCH AUTOSEL 5.10 86/93] jfs: fix GPF in diFree
+Date:   Fri,  9 Jul 2021 22:24:20 -0400
+Message-Id: <20210710022428.3169839-86-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210710022428.3169839-1-sashal@kernel.org>
 References: <20210710022428.3169839-1-sashal@kernel.org>
@@ -41,40 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Geoffrey D. Bennett" <g@b4.vu>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit c712c6c0ff2d60478582e337185bcdd520a7dc2e ]
+[ Upstream commit 9d574f985fe33efd6911f4d752de6f485a1ea732 ]
 
-There are two headphone outputs, and they map to the four analogue
-outputs.
+Avoid passing inode with
+JFS_SBI(inode->i_sb)->ipimap == NULL to
+diFree()[1]. GFP will appear:
 
-Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
-Link: https://lore.kernel.org/r/205e5e5348f08ded0cc4da5446f604d4b91db5bf.1624294591.git.g@b4.vu
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+	struct inode *ipimap = JFS_SBI(ip->i_sb)->ipimap;
+	struct inomap *imap = JFS_IP(ipimap)->i_imap;
+
+JFS_IP() will return invalid pointer when ipimap == NULL
+
+Call Trace:
+ diFree+0x13d/0x2dc0 fs/jfs/jfs_imap.c:853 [1]
+ jfs_evict_inode+0x2c9/0x370 fs/jfs/inode.c:154
+ evict+0x2ed/0x750 fs/inode.c:578
+ iput_final fs/inode.c:1654 [inline]
+ iput.part.0+0x3fe/0x820 fs/inode.c:1680
+ iput+0x58/0x70 fs/inode.c:1670
+
+Reported-and-tested-by: syzbot+0a89a7b56db04c21a656@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/mixer_scarlett_gen2.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/jfs/inode.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
-index 6d7805d3c39a..d93ae8c244ba 100644
---- a/sound/usb/mixer_scarlett_gen2.c
-+++ b/sound/usb/mixer_scarlett_gen2.c
-@@ -254,10 +254,10 @@ static const struct scarlett2_device_info s6i6_gen2_info = {
- 	.pad_input_count = 2,
+diff --git a/fs/jfs/inode.c b/fs/jfs/inode.c
+index 6f65bfa9f18d..b0eb9c85eea0 100644
+--- a/fs/jfs/inode.c
++++ b/fs/jfs/inode.c
+@@ -151,7 +151,8 @@ void jfs_evict_inode(struct inode *inode)
+ 			if (test_cflag(COMMIT_Freewmap, inode))
+ 				jfs_free_zero_link(inode);
  
- 	.line_out_descrs = {
--		"Monitor L",
--		"Monitor R",
--		"Headphones L",
--		"Headphones R",
-+		"Headphones 1 L",
-+		"Headphones 1 R",
-+		"Headphones 2 L",
-+		"Headphones 2 R",
- 	},
+-			diFree(inode);
++			if (JFS_SBI(inode->i_sb)->ipimap)
++				diFree(inode);
  
- 	.ports = {
+ 			/*
+ 			 * Free the inode from the quota allocation.
 -- 
 2.30.2
 
