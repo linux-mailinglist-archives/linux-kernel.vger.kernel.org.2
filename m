@@ -2,116 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C140B3C353D
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 17:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89DBF3C3544
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 17:43:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232340AbhGJPo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 11:44:27 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:35480 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230325AbhGJPo0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 11:44:26 -0400
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 953C420B7178;
-        Sat, 10 Jul 2021 08:41:40 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 953C420B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1625931700;
-        bh=KhF9I+Y91rxYPQlmhH47nudYd4aSbMl0azX4Aaq10yE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=J3TN/kzDcpLltdM5dLTvzYscS5+4ibNr5/MjNHBx/0DdxPI4uKALRgGhYLjQMtJ+R
-         XQFPyVFSvBU3tAfj6jTnXfy6PraPb1VNoI0pdCbGmTzRQq4xsGdy+CevZDR3HlWJLU
-         RzYVJr4+HIJyoMsgYoTujLpj/US39oSqJnP4fS44=
-Received: by mail-oi1-f171.google.com with SMTP id c145so1337604oib.2;
-        Sat, 10 Jul 2021 08:41:40 -0700 (PDT)
-X-Gm-Message-State: AOAM533wV/76MYn0FEx61k7EWOwBwmEK6YyjBKy59qCmWTjXs4ZIhe1Q
-        w3HQg8ZS097KfjXn67CkAI3IqDEQFClRv/SUEZM=
-X-Google-Smtp-Source: ABdhPJy/uy2dwsXHp5mBB6WF61ieJ7+JBRsl6NCE+f81Nd3pkshmqTHllqDLOxL6ZlRxSd1DHCUMmmE3JxUoNRKS4/o=
-X-Received: by 2002:a17:90a:43c3:: with SMTP id r61mr4950050pjg.11.1625931689477;
- Sat, 10 Jul 2021 08:41:29 -0700 (PDT)
+        id S232371AbhGJPqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 11:46:16 -0400
+Received: from vern.gendns.com ([98.142.107.122]:53572 "EHLO vern.gendns.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230325AbhGJPqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Jul 2021 11:46:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=MkQ/Slfts7ACEfWSN/fpQzxSSjabaiQStVowDOxpxEc=; b=z+zONT8Jj4Iy/OXEkcL3LY6jcM
+        eRSGZXlyfS6KcTgQ8SnUBI17hNj7oee+zC2i4wlxfLlfi4HM5/DyLDDrsTSVJG859csv8B4zuy5+l
+        c4sBVP1GFnYYhXHiPpB5A3sqJkte1gStaqRnZpQPUrVj6Xux27LU+nMVlOIu9qFVwCqyca/iWFiZC
+        6yvBdcV22zxsJmTSKIDxLRiD1s53g9byv8i1OYhZZXiY+6lMVEXHkLZSI4pp+b6B5gvMT8FVFbyiF
+        Z7tEn+7fjLw+XY7dLTIE5MhSZ8vvlqC3wimHuEt+BLkVdpZA0axXnxhp89t9pqmBVUtjBTQhXkNLo
+        8KuWrxLg==;
+Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:45586 helo=[192.168.0.134])
+        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <david@lechnology.com>)
+        id 1m2F8J-00GUFW-Jv; Sat, 10 Jul 2021 11:43:26 -0400
+Subject: Re: [PATCH v12 15/17] counter: Implement events_queue_size sysfs
+ attribute
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc:     jic23@kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        kernel@pengutronix.de, a.fatoum@pengutronix.de,
+        kamel.bouhara@bootlin.com, gwendal@chromium.org,
+        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, o.rempel@pengutronix.de
+References: <cover.1625471640.git.vilhelm.gray@gmail.com>
+ <e298043c880b350a42bdc40452376a3708bf533b.1625471640.git.vilhelm.gray@gmail.com>
+ <1a624011-0b43-ac42-be53-a42f81923e5a@linux.intel.com>
+ <YOl1frCrophjhk7y@shinobu>
+From:   David Lechner <david@lechnology.com>
+Message-ID: <fbf1ba4c-412b-fe22-0e79-76e968a00fb4@lechnology.com>
+Date:   Sat, 10 Jul 2021 10:43:22 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <1625903002-31619-1-git-send-email-linyunsheng@huawei.com>
-In-Reply-To: <1625903002-31619-1-git-send-email-linyunsheng@huawei.com>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Sat, 10 Jul 2021 17:40:53 +0200
-X-Gmail-Original-Message-ID: <CAFnufp3RXwrJy24r50dHG6ouM2tsGY3JgPq9h1B5C0TOYCDHrQ@mail.gmail.com>
-Message-ID: <CAFnufp3RXwrJy24r50dHG6ouM2tsGY3JgPq9h1B5C0TOYCDHrQ@mail.gmail.com>
-Subject: Re: [PATCH rfc v2 0/5] add elevated refcnt support for page pool
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, alexander.duyck@gmail.com,
-        Russell King <linux@armlinux.org.uk>,
-        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
-        yisen.zhuang@huawei.com, salil.mehta@huawei.com,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Peter Xu <peterx@redhat.com>,
-        feng.tang@intel.com, Jason Gunthorpe <jgg@ziepe.ca>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>,
-        wenxu <wenxu@ucloud.cn>, Cong Wang <cong.wang@bytedance.com>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Marco Elver <elver@google.com>, netdev@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YOl1frCrophjhk7y@shinobu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vern.gendns.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lechnology.com
+X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 10, 2021 at 9:44 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->
-> This patchset adds elevated refcnt support for page pool
-> and enable skb's page frag recycling based on page pool
-> in hns3 drvier.
->
-> RFC v2:
-> 1. Split patch 1 to more reviewable one.
-> 2. Repurpose the lower 12 bits of the dma address to store the
->    pagecnt_bias as suggested by Alexander.
-> 3. support recycling to pool->alloc for elevated refcnt case
->    too.
->
-> Yunsheng Lin (5):
->   page_pool: keep pp info as long as page pool owns the page
->   page_pool: add interface for getting and setting pagecnt_bias
->   page_pool: add page recycling support based on elevated refcnt
->   page_pool: support page frag API for page pool
->   net: hns3: support skb's frag page recycling based on page pool
->
->  drivers/net/ethernet/hisilicon/hns3/hns3_enet.c |  79 ++++++++++-
->  drivers/net/ethernet/hisilicon/hns3/hns3_enet.h |   3 +
->  drivers/net/ethernet/marvell/mvneta.c           |   6 +-
->  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c |   2 +-
->  drivers/net/ethernet/ti/cpsw.c                  |   2 +-
->  drivers/net/ethernet/ti/cpsw_new.c              |   2 +-
->  include/linux/skbuff.h                          |   4 +-
->  include/net/page_pool.h                         |  50 +++++--
->  net/core/page_pool.c                            | 172 ++++++++++++++++++++----
->  9 files changed, 266 insertions(+), 54 deletions(-)
->
-> --
-> 2.7.4
->
+On 7/10/21 5:25 AM, William Breathitt Gray wrote:
+>> and after that
+>>
+>> [   16.564403] ================================================
+>> [   16.570725] WARNING: lock held when returning to user space!
+>> [   16.577044] 5.13.0-next-20210706+ #4 Not tainted
+>> [   16.582198] ------------------------------------------------
+>> [   16.588507] cat/331 is leaving the kernel with locks still held!
+>> [   16.595214] 1 lock held by cat/331:
+>> [   16.599103]  #0: ffff888102bb3630
+>> (&counter->chrdev_lock){+.+.}-{3:3}, at: counter_chrdev_open+0x21/0x60
+>> [counter]
+>>
+>> Jarkko
+> I'm not sure how to resolve this warning. The purpose of this lock is to
+> limit chrdev to a single open at a time. To accomplish this I grab this
+> lock in counter_chrdev_open() and hold it until counter_chrdev_release()
+> is called. Is there a better way to accomplish this?
 
-For mvpp2:
-
-Tested-by: Matteo Croce <mcroce@microsoft.com>
-
--- 
-per aspera ad upstream
+How about using an atomic flag, e.g test_and_set_bit()?
