@@ -2,44 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 843993C2FB2
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 04:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A90883C3051
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 04:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233815AbhGJCck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 22:32:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43326 "EHLO mail.kernel.org"
+        id S235295AbhGJCem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 22:34:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234866AbhGJC3s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 22:29:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C958613D1;
-        Sat, 10 Jul 2021 02:27:02 +0000 (UTC)
+        id S233960AbhGJC2F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 22:28:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 36DE461412;
+        Sat, 10 Jul 2021 02:24:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625884023;
-        bh=+uFTDpvKhWHlQ5H7ysMc7Ohh59fU2zT9cKN7k1vT62k=;
+        s=k20201202; t=1625883896;
+        bh=N9tg4uOowuFl6i9wi0x5B9WKbHwNGTjWXkUqtqYIuno=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MURAU9aWG/WrLQ1f4jQglZtZLHRScfwejL2yy3TBpN5ghb0Nbz5YHaJQx1vvH+15U
-         D/qISoJmrsKyUEkP3kJc1A+ytbU0jCGNHyGf7zwVXOWEDy6aDDB8Cq9WIxEyZGfLmP
-         ax0uJFHXh4fPZeylSP7IWJEFWuDb5ysX4ssN5YHzPn2Hr3kZbNyyeIjyHUQoNBWRhP
-         4WczDGEaIg2Nwhof0S2tWMD4UizoRXhnCEig7kYZt7CDuTQZeG5OJCfwDoyggxMzlB
-         sAFOQX17ifgFL+wLjcI+HAOqg/wNMYZwH+VuDbI7iGIc1iOxT02Igz5uUVhw9q23HC
-         zT9nuBJFbJksg==
+        b=MbnlAEFrcOnNz+eoZYWQ6qSGcATngeQSXHn88v2ZmXoYB87ZTDdNzecleod16PvlR
+         angAofPTSIUcXxeiSeNyMrxcIjZiEDyAjT4fzOvqdNyTLGq5FuUvRZdDhqLf1aLmoG
+         K8yDtHNwbE169kkhbKRgst7h7Fkn1cjTnMquJQaJ2m34I5A45o8iKxHmTomlJKJvJP
+         MLb6NGbyg2PtxX2GFqxjh7tW6r61bMmjYNIK2uT1ft4WgTvWEoHUipDMYH2TIGXWMa
+         ZaUjpQ1G0oCa0IL+i3ArlPHT1zzDpz6TjdbR2qDYyANEtM5mGOrqtHhc7lA+iDR3Un
+         tR7qum+PXqvAQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dimitri John Ledkov <dimitri.ledkov@canonical.com>,
-        Kyungsik Lee <kyungsik.lee@lge.com>,
-        Yinghai Lu <yinghai@kernel.org>,
-        Bongkyu Kim <bongkyu.kim@lge.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sven Schmidt <4sschmid@informatik.uni-hamburg.de>,
-        Rajat Asthana <thisisrast7@gmail.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Gao Xiang <hsiangkao@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.10 92/93] lib/decompress_unlz4.c: correctly handle zero-padding around initrds.
-Date:   Fri,  9 Jul 2021 22:24:26 -0400
-Message-Id: <20210710022428.3169839-92-sashal@kernel.org>
+Cc:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, linux-usb@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.10 20/93] usb: common: usb-conn-gpio: fix NULL pointer dereference of charger
+Date:   Fri,  9 Jul 2021 22:23:14 -0400
+Message-Id: <20210710022428.3169839-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210710022428.3169839-1-sashal@kernel.org>
 References: <20210710022428.3169839-1-sashal@kernel.org>
@@ -51,97 +44,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+From: Chunfeng Yun <chunfeng.yun@mediatek.com>
 
-[ Upstream commit 2c484419efc09e7234c667aa72698cb79ba8d8ed ]
+[ Upstream commit 880287910b1892ed2cb38977893b947382a09d21 ]
 
-lz4 compatible decompressor is simple.  The format is underspecified and
-relies on EOF notification to determine when to stop.  Initramfs buffer
-format[1] explicitly states that it can have arbitrary number of zero
-padding.  Thus when operating without a fill function, be extra careful to
-ensure that sizes less than 4, or apperantly empty chunksizes are treated
-as EOF.
+When power on system with OTG cable, IDDIG's interrupt arises before
+the charger registration, it will cause a NULL pointer dereference,
+fix the issue by registering the power supply before requesting
+IDDIG/VBUS irq.
 
-To test this I have created two cpio initrds, first a normal one,
-main.cpio.  And second one with just a single /test-file with content
-"second" second.cpio.  Then i compressed both of them with gzip, and with
-lz4 -l.  Then I created a padding of 4 bytes (dd if=/dev/zero of=pad4 bs=1
-count=4).  To create four testcase initrds:
-
- 1) main.cpio.gzip + extra.cpio.gzip = pad0.gzip
- 2) main.cpio.lz4  + extra.cpio.lz4 = pad0.lz4
- 3) main.cpio.gzip + pad4 + extra.cpio.gzip = pad4.gzip
- 4) main.cpio.lz4  + pad4 + extra.cpio.lz4 = pad4.lz4
-
-The pad4 test-cases replicate the initrd load by grub, as it pads and
-aligns every initrd it loads.
-
-All of the above boot, however /test-file was not accessible in the initrd
-for the testcase #4, as decoding in lz4 decompressor failed.  Also an
-error message printed which usually is harmless.
-
-Whith a patched kernel, all of the above testcases now pass, and
-/test-file is accessible.
-
-This fixes lz4 initrd decompress warning on every boot with grub.  And
-more importantly this fixes inability to load multiple lz4 compressed
-initrds with grub.  This patch has been shipping in Ubuntu kernels since
-January 2021.
-
-[1] ./Documentation/driver-api/early-userspace/buffer-format.rst
-
-BugLink: https://bugs.launchpad.net/bugs/1835660
-Link: https://lore.kernel.org/lkml/20210114200256.196589-1-xnox@ubuntu.com/ # v0
-Link: https://lkml.kernel.org/r/20210513104831.432975-1-dimitri.ledkov@canonical.com
-Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-Cc: Kyungsik Lee <kyungsik.lee@lge.com>
-Cc: Yinghai Lu <yinghai@kernel.org>
-Cc: Bongkyu Kim <bongkyu.kim@lge.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Sven Schmidt <4sschmid@informatik.uni-hamburg.de>
-Cc: Rajat Asthana <thisisrast7@gmail.com>
-Cc: Nick Terrell <terrelln@fb.com>
-Cc: Gao Xiang <hsiangkao@redhat.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+Link: https://lore.kernel.org/r/1621406386-18838-1-git-send-email-chunfeng.yun@mediatek.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/decompress_unlz4.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/usb/common/usb-conn-gpio.c | 44 ++++++++++++++++++------------
+ 1 file changed, 26 insertions(+), 18 deletions(-)
 
-diff --git a/lib/decompress_unlz4.c b/lib/decompress_unlz4.c
-index c0cfcfd486be..e6327391b6b6 100644
---- a/lib/decompress_unlz4.c
-+++ b/lib/decompress_unlz4.c
-@@ -112,6 +112,9 @@ STATIC inline int INIT unlz4(u8 *input, long in_len,
- 				error("data corrupted");
- 				goto exit_2;
- 			}
-+		} else if (size < 4) {
-+			/* empty or end-of-file */
-+			goto exit_3;
- 		}
+diff --git a/drivers/usb/common/usb-conn-gpio.c b/drivers/usb/common/usb-conn-gpio.c
+index 6c4e3a19f42c..c9545a4eff66 100644
+--- a/drivers/usb/common/usb-conn-gpio.c
++++ b/drivers/usb/common/usb-conn-gpio.c
+@@ -149,14 +149,32 @@ static int usb_charger_get_property(struct power_supply *psy,
+ 	return 0;
+ }
  
- 		chunksize = get_unaligned_le32(inp);
-@@ -125,6 +128,10 @@ STATIC inline int INIT unlz4(u8 *input, long in_len,
- 			continue;
- 		}
+-static int usb_conn_probe(struct platform_device *pdev)
++static int usb_conn_psy_register(struct usb_conn_info *info)
+ {
+-	struct device *dev = &pdev->dev;
+-	struct power_supply_desc *desc;
+-	struct usb_conn_info *info;
++	struct device *dev = info->dev;
++	struct power_supply_desc *desc = &info->desc;
+ 	struct power_supply_config cfg = {
+ 		.of_node = dev->of_node,
+ 	};
++
++	desc->name = "usb-charger";
++	desc->properties = usb_charger_properties;
++	desc->num_properties = ARRAY_SIZE(usb_charger_properties);
++	desc->get_property = usb_charger_get_property;
++	desc->type = POWER_SUPPLY_TYPE_USB;
++	cfg.drv_data = info;
++
++	info->charger = devm_power_supply_register(dev, desc, &cfg);
++	if (IS_ERR(info->charger))
++		dev_err(dev, "Unable to register charger\n");
++
++	return PTR_ERR_OR_ZERO(info->charger);
++}
++
++static int usb_conn_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct usb_conn_info *info;
+ 	bool need_vbus = true;
+ 	int ret = 0;
  
-+		if (!fill && chunksize == 0) {
-+			/* empty or end-of-file */
-+			goto exit_3;
-+		}
+@@ -218,6 +236,10 @@ static int usb_conn_probe(struct platform_device *pdev)
+ 		return PTR_ERR(info->role_sw);
+ 	}
  
- 		if (posp)
- 			*posp += 4;
-@@ -184,6 +191,7 @@ STATIC inline int INIT unlz4(u8 *input, long in_len,
++	ret = usb_conn_psy_register(info);
++	if (ret)
++		goto put_role_sw;
++
+ 	if (info->id_gpiod) {
+ 		info->id_irq = gpiod_to_irq(info->id_gpiod);
+ 		if (info->id_irq < 0) {
+@@ -252,20 +274,6 @@ static int usb_conn_probe(struct platform_device *pdev)
  		}
  	}
  
-+exit_3:
- 	ret = 0;
- exit_2:
- 	if (!input)
+-	desc = &info->desc;
+-	desc->name = "usb-charger";
+-	desc->properties = usb_charger_properties;
+-	desc->num_properties = ARRAY_SIZE(usb_charger_properties);
+-	desc->get_property = usb_charger_get_property;
+-	desc->type = POWER_SUPPLY_TYPE_USB;
+-	cfg.drv_data = info;
+-
+-	info->charger = devm_power_supply_register(dev, desc, &cfg);
+-	if (IS_ERR(info->charger)) {
+-		dev_err(dev, "Unable to register charger\n");
+-		return PTR_ERR(info->charger);
+-	}
+-
+ 	platform_set_drvdata(pdev, info);
+ 
+ 	/* Perform initial detection */
 -- 
 2.30.2
 
