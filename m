@@ -2,173 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C563C35A9
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 19:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B86E13C35AF
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 19:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230233AbhGJQ6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 12:58:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbhGJQ6K (ORCPT
+        id S230365AbhGJRBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 13:01:35 -0400
+Received: from smtprelay0154.hostedemail.com ([216.40.44.154]:57112 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229546AbhGJRBf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 12:58:10 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0A86C0613DD;
-        Sat, 10 Jul 2021 09:55:23 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id i20so23024475ejw.4;
-        Sat, 10 Jul 2021 09:55:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wFOGf0fHXSe0uYH1tmI6V0veKuGmSA46Np9pjLsOr6k=;
-        b=vYfZROn7ptBqkU3Im7OlwsNbe/A2Gh3aliTChdfXPR3HHyB3RQdZXuaH/u1YLJLAqb
-         YZFhdLcpfF0SrC0yZ2QCXChwsYwest+lwWRQnWfLK1hB1R7198ESuok07s177eyVAdWN
-         AGW5fYKM9GWzOi/M6+b68CPq/NCpWBe8+G9CCLimRRzulDt8pccOPon4wEwxDIorI4Pi
-         3SBUVyOav/Wdq+GFKw1Vryp+qtRc2JBKCSo6Zby7Y7BFx4e8GlyqwcdKi314+TOt/RNQ
-         LuMlBhxKBGwXAMs/By/irykQ7bYBaLSLx7GrUiMZpma09hTy4LCiJGfHTgZxckWrX7bL
-         7KDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wFOGf0fHXSe0uYH1tmI6V0veKuGmSA46Np9pjLsOr6k=;
-        b=PHb6FOLLx6vAs7lv4ZRNUx7ZO0TeDOeMBsA1ZrBVWZHYpm5IMpxIoP6i06IGgfaExn
-         /Nbhnr81r1FULAKtwxoOZ4mLO5e9m0ppV40pp/FqlJX2z6jjDjCRCAGBEcFSXjXfWcOS
-         IbtyvOY8zmJPUj1xYjUUKE6dotEcScuxpW6pSYdWRJlKXaftuK30NtB1DmGZ5T23LX0u
-         ZZe/83usY/26bkTx1ONejbDfdgI5vlAleSNtP4KkvhlgankB3/XqLTY925RmFiRsQAOD
-         Cbic7yZ8AhyScv8T9WF+R0ex5onupIp4AclJ0TxU2EPkBWK6WI1LWaR00tgXmG0kK0ac
-         ESQg==
-X-Gm-Message-State: AOAM530N/Rse/AkNo1qo8lUQSdo1H/MYg5wcby/ySxLipiDtwMVZGwD4
-        cuSXyEJtlLrzz6qs1mQDOtHaL8kREvVT1cGSzCs=
-X-Google-Smtp-Source: ABdhPJxxt9ODBsxBDJLnHxPdf/hDZpSZAa+uRdNkcG6qKfOlipYLs/GxUeR682DoS7+WWT3ZyRlwTrWTwAthPpVKyNQ=
-X-Received: by 2002:a17:907:1ca4:: with SMTP id nb36mr43839266ejc.33.1625936122151;
- Sat, 10 Jul 2021 09:55:22 -0700 (PDT)
+        Sat, 10 Jul 2021 13:01:35 -0400
+Received: from omf03.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 2274F18012002;
+        Sat, 10 Jul 2021 16:58:49 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf03.hostedemail.com (Postfix) with ESMTPA id C8A9F13D93;
+        Sat, 10 Jul 2021 16:58:47 +0000 (UTC)
+Message-ID: <d95595021eb8da542960fff9b40dc7c308661c9e.camel@perches.com>
+Subject: Re: [RESEND] edac: replace sprintf() by scnprintf()
+From:   Joe Perches <joe@perches.com>
+To:     Salah Triki <salah.triki@gmail.com>, bp@alien8.de,
+        mchehab@kernel.org, tony.luck@intel.com, james.morse@arm.com,
+        rric@kernel.org
+Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Sat, 10 Jul 2021 09:58:46 -0700
+In-Reply-To: <20210710163505.GA689509@pc>
+References: <20210710163505.GA689509@pc>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-References: <1625903002-31619-1-git-send-email-linyunsheng@huawei.com> <1625903002-31619-3-git-send-email-linyunsheng@huawei.com>
-In-Reply-To: <1625903002-31619-3-git-send-email-linyunsheng@huawei.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Sat, 10 Jul 2021 09:55:10 -0700
-Message-ID: <CAKgT0UcRqRcj_zewRUH4Qe-AP_ykArK0hu76kcw2xjtvkTw07g@mail.gmail.com>
-Subject: Re: [PATCH rfc v2 2/5] page_pool: add interface for getting and
- setting pagecnt_bias
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
-        yisen.zhuang@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
-        thomas.petazzoni@bootlin.com, hawk@kernel.org,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, fenghua.yu@intel.com,
-        guro@fb.com, Peter Xu <peterx@redhat.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>, wenxu@ucloud.cn,
-        Cong Wang <cong.wang@bytedance.com>,
-        Kevin Hao <haokexin@gmail.com>, nogikh@google.com,
-        Marco Elver <elver@google.com>,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: C8A9F13D93
+X-Spam-Status: No, score=1.60
+X-Stat-Signature: zbsk4wxe1dq9ow4qkp4dca31rg6w5x9f
+X-Rspamd-Server: rspamout02
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+eE83VJUeJeyyUpGGi7QAvFfznHecaVyQ=
+X-HE-Tag: 1625936327-540020
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 10, 2021 at 12:44 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->
-> As suggested by Alexander, "A DMA mapping should be page
-> aligned anyway so the lower 12 bits would be reserved 0",
-> so it might make more sense to repurpose the lower 12 bits
-> of the dma address to store the pagecnt_bias for elevated
-> refcnt case in page pool.
->
-> As newly added page_pool_get_pagecnt_bias() may be called
-> outside of the softirq context, so annotate the access to
-> page->dma_addr[0] with READ_ONCE() and WRITE_ONCE().
->
-> Other three interfaces using page->dma_addr[0] is only called
-> in the softirq context during normal rx processing, hopefully
-> the barrier in the rx processing will ensure the correct order
-> between getting and setting pagecnt_bias.
->
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> ---
->  include/net/page_pool.h | 24 ++++++++++++++++++++++--
->  1 file changed, 22 insertions(+), 2 deletions(-)
->
-> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
-> index 8d7744d..5746f17 100644
-> --- a/include/net/page_pool.h
-> +++ b/include/net/page_pool.h
-> @@ -200,7 +200,7 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
->
->  static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
->  {
-> -       dma_addr_t ret = page->dma_addr[0];
-> +       dma_addr_t ret = READ_ONCE(page->dma_addr[0]) & PAGE_MASK;
->         if (sizeof(dma_addr_t) > sizeof(unsigned long))
->                 ret |= (dma_addr_t)page->dma_addr[1] << 16 << 16;
->         return ret;
-> @@ -208,11 +208,31 @@ static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
->
->  static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
->  {
-> -       page->dma_addr[0] = addr;
-> +       unsigned long dma_addr_0 = READ_ONCE(page->dma_addr[0]);
-> +
-> +       dma_addr_0 &= ~PAGE_MASK;
-> +       dma_addr_0 |= (addr & PAGE_MASK);
+On Sat, 2021-07-10 at 17:35 +0100, Salah Triki wrote:
+> Replace sprintf() by scnprintf() in order to avoid buffer overflows.
 
-So rather than doing all this testing and clearing it would probably
-be better to add a return value to the function and do something like:
+While of course safe, this is not strictly necessary as the
+maximum length of any edac_layer_name is 8 bytes.
 
-if (WARN_ON(dma_addr_0 & ~PAGE_MASK))
-    return -1;
+drivers/edac/edac_mc.c:const char *edac_layer_name[] = {
+drivers/edac/edac_mc.c- [EDAC_MC_LAYER_BRANCH] = "branch",
+drivers/edac/edac_mc.c- [EDAC_MC_LAYER_CHANNEL] = "channel",
+drivers/edac/edac_mc.c- [EDAC_MC_LAYER_SLOT] = "slot",
+drivers/edac/edac_mc.c- [EDAC_MC_LAYER_CHIP_SELECT] = "csrow",
+drivers/edac/edac_mc.c- [EDAC_MC_LAYER_ALL_MEM] = "memory",
+drivers/edac/edac_mc.c-};
 
-That way you could have page_pool_dma_map unmap, free the page, and
-return false indicating that the DMA mapping failed with a visible
-error in the event that our expectionat that the dma_addr is page
-aligned is ever violated.
+And name is:
 
-> +       WRITE_ONCE(page->dma_addr[0], dma_addr_0);
-> +
->         if (sizeof(dma_addr_t) > sizeof(unsigned long))
->                 page->dma_addr[1] = upper_32_bits(addr);
->  }
->
-> +static inline int page_pool_get_pagecnt_bias(struct page *page)
-> +{
-> +       return (READ_ONCE(page->dma_addr[0]) & ~PAGE_MASK);
+		char name[80];
 
-You don't need the parenthesis around the READ_ONCE and PAGE_MASK.
+I suppose name[80] could be changed to name[32] or so
+at the same time to reduce stack usage.
 
-> +}
-> +
-> +static inline void page_pool_set_pagecnt_bias(struct page *page, int bias)
-> +{
-> +       unsigned long dma_addr_0 = READ_ONCE(page->dma_addr[0]);
-> +
-> +       dma_addr_0 &= PAGE_MASK;
-> +       dma_addr_0 |= (bias & ~PAGE_MASK);
-> +
-> +       WRITE_ONCE(page->dma_addr[0], dma_addr_0);
-> +}
-> +
->  static inline bool is_page_pool_compiled_in(void)
->  {
->  #ifdef CONFIG_PAGE_POOL
-> --
-> 2.7.4
->
+Maybe name should be moved into the loop too.
+
+---
+ drivers/edac/debugfs.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/edac/debugfs.c b/drivers/edac/debugfs.c
+index 4804332d99465..a41071f2ad428 100644
+--- a/drivers/edac/debugfs.c
++++ b/drivers/edac/debugfs.c
+@@ -55,14 +55,15 @@ void edac_debugfs_exit(void)
+ void edac_create_debugfs_nodes(struct mem_ctl_info *mci)
+ {
+ 	struct dentry *parent;
+-	char name[80];
+ 	int i;
+ 
+ 	parent = debugfs_create_dir(mci->dev.kobj.name, edac_debugfs);
+ 
+ 	for (i = 0; i < mci->n_layers; i++) {
+-		sprintf(name, "fake_inject_%s",
+-			     edac_layer_name[mci->layers[i].type]);
++		char name[32];
++
++		scnprintf(name, sizeof(name), "fake_inject_%s",
++			  edac_layer_name[mci->layers[i].type]);
+ 		debugfs_create_u8(name, S_IRUGO | S_IWUSR, parent,
+ 				  &mci->fake_inject_layer[i]);
+ 	}
+
+
