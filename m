@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1873C2F55
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 04:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D58543C2F7D
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 04:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233654AbhGJCbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 22:31:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43192 "EHLO mail.kernel.org"
+        id S233946AbhGJCbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 22:31:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234006AbhGJC2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 22:28:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1ED8F61416;
-        Sat, 10 Jul 2021 02:25:05 +0000 (UTC)
+        id S233829AbhGJC2S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 22:28:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 275CD6141E;
+        Sat, 10 Jul 2021 02:25:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625883905;
-        bh=cjFLiYvpXgJg5R8/A0oRgy/TxHOhY+yBWW71dNTeMZw=;
+        s=k20201202; t=1625883910;
+        bh=JPtE6/POe2kzDiNAsnf2rJwrMZwZuBqlLA51f9qPsE8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L9umgiQfqrdqTdzF5zKmfjDNWNmalbjvbGnfZ3ByVawwYj22L6ltxIGhrhkKZlroi
-         EMCsUyxkCB/cgMQG1QiQ/gt9pA81ttwhdTavIl6dAoWjECUijyBxJySYdROYQEps/a
-         5F1w/ooMrAUCIEEZIDJ4vBq0l+OyiPLFkneNhKz4EJd703iUZZPZkautWB8NG+f1Ge
-         dxSKhTTkEq8P5/T8jq8ZHBfI047Jpk303Uvr+3gszAtpZhOKyXKK8UqOV+lx6RQqlz
-         hlsUiGBI30Laf8Tbqlf39J/Drbpwqy/8A9zdKX1ee+8pdjbJG9ZXHZ3WPhjILpqpJ8
-         AkHoeKw4LLMuQ==
+        b=rmeREEa1SADrSV3P5GBGeq+y/0yimPz0dpdu6PGid/RSDmAXuKnuGeVaLPSoIGDqd
+         rEY7SuUKCXv4f03MY/MVwVorhahf2SYTc89Pv3N5yy0QT1lQKBEEWPOum9x9Yl2KAF
+         c3pT2GFzQAJQUs7+P4rT9q7Gn8DCIIL19O/HxYWbI91EsJcKNM+96E7byg6zCmPGCL
+         MV258sc0YMKeoeITpEhD7TL3UtROzIP/w/VppaBVcyERlfMhmnifhJ1B4+HTdJBRjf
+         799o+M3ZdFO8Lw7M6DIF0lve7CPMZFUFBcLQFpci4cW536lG75Oivd5+Ymm8Xtl4YF
+         b/gqfdCLeiSMQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yufen Yu <yuyufen@huawei.com>, Hulk Robot <hulkci@huawei.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
-        alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.10 28/93] ALSA: ac97: fix PM reference leak in ac97_bus_remove()
-Date:   Fri,  9 Jul 2021 22:23:22 -0400
-Message-Id: <20210710022428.3169839-28-sashal@kernel.org>
+Cc:     Hannes Reinecke <hare@suse.de>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 32/93] scsi: scsi_dh_alua: Check for negative result value
+Date:   Fri,  9 Jul 2021 22:23:26 -0400
+Message-Id: <20210710022428.3169839-32-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210710022428.3169839-1-sashal@kernel.org>
 References: <20210710022428.3169839-1-sashal@kernel.org>
@@ -42,37 +42,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yufen Yu <yuyufen@huawei.com>
+From: Hannes Reinecke <hare@suse.de>
 
-[ Upstream commit a38e93302ee25b2ca6f4ee76c6c974cf3637985e ]
+[ Upstream commit 7e26e3ea028740f934477ec01ba586ab033c35aa ]
 
-pm_runtime_get_sync will increment pm usage counter even it failed.
-Forgetting to putting operation will result in reference leak here.
-Fix it by replacing it with pm_runtime_resume_and_get to keep usage
-counter balanced.
+scsi_execute() will now return a negative error if there was an error prior
+to command submission; evaluate that instead if checking for DRIVER_ERROR.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yufen Yu <yuyufen@huawei.com>
-Link: https://lore.kernel.org/r/20210524093811.612302-1-yuyufen@huawei.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+[mkp: build fix]
+
+Link: https://lore.kernel.org/r/20210427083046.31620-6-hare@suse.de
+Signed-off-by: Hannes Reinecke <hare@suse.de>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/ac97/bus.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/device_handler/scsi_dh_alua.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/ac97/bus.c b/sound/ac97/bus.c
-index 7985dd8198b6..99e1728b52ae 100644
---- a/sound/ac97/bus.c
-+++ b/sound/ac97/bus.c
-@@ -520,7 +520,7 @@ static int ac97_bus_remove(struct device *dev)
- 	struct ac97_codec_driver *adrv = to_ac97_driver(dev->driver);
- 	int ret;
+diff --git a/drivers/scsi/device_handler/scsi_dh_alua.c b/drivers/scsi/device_handler/scsi_dh_alua.c
+index df5a3bbeba5e..4743317a269a 100644
+--- a/drivers/scsi/device_handler/scsi_dh_alua.c
++++ b/drivers/scsi/device_handler/scsi_dh_alua.c
+@@ -548,12 +548,12 @@ static int alua_rtpg(struct scsi_device *sdev, struct alua_port_group *pg)
+ 			kfree(buff);
+ 			return SCSI_DH_OK;
+ 		}
+-		if (!scsi_sense_valid(&sense_hdr)) {
++		if (retval < 0 || !scsi_sense_valid(&sense_hdr)) {
+ 			sdev_printk(KERN_INFO, sdev,
+ 				    "%s: rtpg failed, result %d\n",
+ 				    ALUA_DH_NAME, retval);
+ 			kfree(buff);
+-			if (driver_byte(retval) == DRIVER_ERROR)
++			if (retval < 0)
+ 				return SCSI_DH_DEV_TEMP_BUSY;
+ 			return SCSI_DH_IO;
+ 		}
+@@ -775,11 +775,11 @@ static unsigned alua_stpg(struct scsi_device *sdev, struct alua_port_group *pg)
+ 	retval = submit_stpg(sdev, pg->group_id, &sense_hdr);
  
--	ret = pm_runtime_get_sync(dev);
-+	ret = pm_runtime_resume_and_get(dev);
- 	if (ret < 0)
- 		return ret;
- 
+ 	if (retval) {
+-		if (!scsi_sense_valid(&sense_hdr)) {
++		if (retval < 0 || !scsi_sense_valid(&sense_hdr)) {
+ 			sdev_printk(KERN_INFO, sdev,
+ 				    "%s: stpg failed, result %d",
+ 				    ALUA_DH_NAME, retval);
+-			if (driver_byte(retval) == DRIVER_ERROR)
++			if (retval < 0)
+ 				return SCSI_DH_DEV_TEMP_BUSY;
+ 		} else {
+ 			sdev_printk(KERN_INFO, sdev, "%s: stpg failed\n",
 -- 
 2.30.2
 
