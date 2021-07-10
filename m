@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C25D3C3037
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 04:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 996603C303B
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 04:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234000AbhGJCds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 22:33:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42542 "EHLO mail.kernel.org"
+        id S234633AbhGJCdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 22:33:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234440AbhGJC31 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 22:29:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CABDD613DC;
-        Sat, 10 Jul 2021 02:26:31 +0000 (UTC)
+        id S234478AbhGJC33 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 22:29:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A02161400;
+        Sat, 10 Jul 2021 02:26:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625883992;
-        bh=MPu6yhW027A+a3bpr3RxNiEK5BOI8kgsJdNz0Na3NPQ=;
+        s=k20201202; t=1625883996;
+        bh=UtV+5Mfb4ddK6eXEUtXr8DMtasuEylQWx52zy2Y8cig=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KZCTNXHGF2IGPlBo9j4fGSRf5s4FSSjJEOaRdiwz5roF/hqZxlXjGBZ9o2pGpt5Oc
-         1H5WB6ddbDUidjdDJvU3DTcEqhm1W2LZqMMqoh2wV5le57gwywxoFQhQTLOxGTI20p
-         4PjzK+2128Ad1DzB8ZlNVkcN59U/ZlKIdWaEPjr9Vz0RowYmkHYbpuS0pM81LMV/Gn
-         e4f6tAHdoZM8XL6bTTI40BxADZtjZbQwVhmwDF75iUN8WCrVCVxCswCkceolsI3Ns3
-         caYvEo75QYpJs/iwYwmHjSgpfVZ9XeV9hH+HNwcsvje8iXLINdjbY4OAwCzGg9lzfY
-         QPh6YP8iCPbQQ==
+        b=ItXtuTJHEA/+f9KcUHEVauDgnF5zYAjdihIr5MbmU/UOXOt+bJRijOnLhREyBqNJO
+         sen1UmdZVOeLnwgdBATfxn8Bzh99sV3+RSsF9LKlYc+aeU1wSwmMXoCZ/4khLdwXVg
+         wZNJO4f4LxePfEQV/yOGOyIAk3+T43175TqhHP2og6ecrzkmSF3VxbWS6fQDrqs0Ts
+         0COggjkwem4xsgtK6p3Ui0Sih5tC27RHdx9nZmCr6xoUMLrmyg6+6cORnnGGj+IKKr
+         TKLMAxVjfMmZz+btfPGaCBKXWRNSYD2Qjtyff8+wMmoQEzaN0HWvBlkXdd3iUqbkOf
+         xFoSvMievtIkg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Koby Elbaz <kelbaz@habana.ai>, Oded Gabbay <ogabbay@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.10 68/93] habanalabs: remove node from list before freeing the node
-Date:   Fri,  9 Jul 2021 22:24:02 -0400
-Message-Id: <20210710022428.3169839-68-sashal@kernel.org>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>, linux-s390@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 71/93] s390/mem_detect: fix diag260() program check new psw handling
+Date:   Fri,  9 Jul 2021 22:24:05 -0400
+Message-Id: <20210710022428.3169839-71-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210710022428.3169839-1-sashal@kernel.org>
 References: <20210710022428.3169839-1-sashal@kernel.org>
@@ -41,51 +42,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Koby Elbaz <kelbaz@habana.ai>
+From: Heiko Carstens <hca@linux.ibm.com>
 
-[ Upstream commit f5eb7bf0c487a212ebda3c1b048fc3ccabacc147 ]
+[ Upstream commit 86807f348f418a84970eebb8f9912a7eea16b497 ]
 
-fix the following smatch warnings:
+The __diag260() inline asm temporarily changes the program check new
+psw to redirect a potential program check on the diag instruction.
+Restoring of the program check new psw is done in C code behind the
+inline asm.
 
-goya_pin_memory_before_cs()
-warn: '&userptr->job_node' not removed from list
+This can be problematic, especially if the function is inlined, since
+the compiler can reorder instructions in such a way that a different
+instruction, which may result in a program check, might be executed
+before the program check new psw has been restored.
 
-gaudi_pin_memory_before_cs()
-warn: '&userptr->job_node' not removed from list
+To avoid such a scenario move restoring into the inline asm. For
+consistency reasons move also saving of the original program check new
+psw into the inline asm.
 
-Signed-off-by: Koby Elbaz <kelbaz@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/habanalabs/gaudi/gaudi.c | 1 +
- drivers/misc/habanalabs/goya/goya.c   | 1 +
- 2 files changed, 2 insertions(+)
+ arch/s390/boot/mem_detect.c | 19 +++++++++++--------
+ 1 file changed, 11 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index 044b2ae196f9..37edd663603f 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -3708,6 +3708,7 @@ static int gaudi_pin_memory_before_cs(struct hl_device *hdev,
- 	return 0;
+diff --git a/arch/s390/boot/mem_detect.c b/arch/s390/boot/mem_detect.c
+index 62e7c13ce85c..032d68165216 100644
+--- a/arch/s390/boot/mem_detect.c
++++ b/arch/s390/boot/mem_detect.c
+@@ -70,24 +70,27 @@ static int __diag260(unsigned long rx1, unsigned long rx2)
+ 	register unsigned long _ry asm("4") = 0x10; /* storage configuration */
+ 	int rc = -1;				    /* fail */
+ 	unsigned long reg1, reg2;
+-	psw_t old = S390_lowcore.program_new_psw;
++	psw_t old;
  
- unpin_memory:
-+	list_del(&userptr->job_node);
- 	hl_unpin_host_memory(hdev, userptr);
- free_userptr:
- 	kfree(userptr);
-diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
-index 986ed3c07208..5b5d6275c249 100644
---- a/drivers/misc/habanalabs/goya/goya.c
-+++ b/drivers/misc/habanalabs/goya/goya.c
-@@ -3190,6 +3190,7 @@ static int goya_pin_memory_before_cs(struct hl_device *hdev,
- 	return 0;
+ 	asm volatile(
++		"	mvc	0(16,%[psw_old]),0(%[psw_pgm])\n"
+ 		"	epsw	%0,%1\n"
+-		"	st	%0,%[psw_pgm]\n"
+-		"	st	%1,%[psw_pgm]+4\n"
++		"	st	%0,0(%[psw_pgm])\n"
++		"	st	%1,4(%[psw_pgm])\n"
+ 		"	larl	%0,1f\n"
+-		"	stg	%0,%[psw_pgm]+8\n"
++		"	stg	%0,8(%[psw_pgm])\n"
+ 		"	diag	%[rx],%[ry],0x260\n"
+ 		"	ipm	%[rc]\n"
+ 		"	srl	%[rc],28\n"
+-		"1:\n"
++		"1:	mvc	0(16,%[psw_pgm]),0(%[psw_old])\n"
+ 		: "=&d" (reg1), "=&a" (reg2),
+-		  [psw_pgm] "=Q" (S390_lowcore.program_new_psw),
++		  "+Q" (S390_lowcore.program_new_psw),
++		  "=Q" (old),
+ 		  [rc] "+&d" (rc), [ry] "+d" (_ry)
+-		: [rx] "d" (_rx1), "d" (_rx2)
++		: [rx] "d" (_rx1), "d" (_rx2),
++		  [psw_old] "a" (&old),
++		  [psw_pgm] "a" (&S390_lowcore.program_new_psw)
+ 		: "cc", "memory");
+-	S390_lowcore.program_new_psw = old;
+ 	return rc == 0 ? _ry : -1;
+ }
  
- unpin_memory:
-+	list_del(&userptr->job_node);
- 	hl_unpin_host_memory(hdev, userptr);
- free_userptr:
- 	kfree(userptr);
 -- 
 2.30.2
 
