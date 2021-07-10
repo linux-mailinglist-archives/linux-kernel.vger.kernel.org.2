@@ -2,311 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 274433C3214
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 04:56:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EFC43C321F
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 05:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231205AbhGJC66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 22:58:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231577AbhGJC6x (ORCPT
+        id S231195AbhGJDEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 23:04:47 -0400
+Received: from mx0b-0064b401.pphosted.com ([205.220.178.238]:10416 "EHLO
+        mx0b-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230317AbhGJDEp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 22:58:53 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A65D4C0613E8
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 19:56:08 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id 59-20020a9d0ac10000b0290462f0ab0800so11487640otq.11
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 19:56:08 -0700 (PDT)
+        Fri, 9 Jul 2021 23:04:45 -0400
+Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
+        by mx0a-0064b401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16A31thj016946;
+        Sat, 10 Jul 2021 03:01:55 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2102.outbound.protection.outlook.com [104.47.55.102])
+        by mx0a-0064b401.pphosted.com with ESMTP id 39q2h9r0ra-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 10 Jul 2021 03:01:55 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=m9ALA0seTc95U9hTLZNzyFhssYcQU7M1UqPXt+fgQLOS78ggOtuuaTXfAeQf3tj3KfpIWZrB1+Di94AoOCQwwmeBrljXyIJxhWQLfG69cKbh8kxD6DQvQec7OmB59S407PGg5RsX2Tnrk5GlnIo9CnTWsr6XKkzlVR0EX1IMctUK5KrNAggD5UU39tT/lZhLCHD2HSyQcFmW20J1mRAWR2NlCuhvdXVaDJBUvUEmKqYKaN0s/eo/UZDTFYLG5FTULQ5LrCT02q90p1osYi1pNHa9C/ST3qXgFjbv7ArUAFB9AIATCKHWxYsY2C1aU8wQ7upAlz6rlSMgLMXYHYx1ng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7w/uWXVt1ZM0of5sjNayMMl9dYuya3MWdTylSWZhMjg=;
+ b=EGFE8CjKqLY0DwnHvrr9ozwctrFmZjZ+lsPOEeFi3rLHe+lvVaOVL9e5MoZUcH9L0a4clCMBuaej4zDdSllS6UTu6o/KDkQufMF1S/Fco64kMlzpVyowxACqcNQK0fM6N0Wffj0dR7QwPArxDPQUndb3S5YXdd966gxO8Ni3tByiX8eKdbHN52QCzVL8JJfubIIi18XSi6LABz0tQ1xzzTcyPICdd3JJUm9pBaAPS+wL2SmIUx4ltR/KkteR7SI7gskVGVrjP6zy4xH+m91h1PAOImvpPtxaIZq3rLgFa3DC+IU8MqK5gflU9OUPtkh4p8FnyA4XmU714/yC7XtFUA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=q7U9qOUSDsrK43rTblnVFlDzcLe5oOcvy0x/FulEFg4=;
-        b=Q5KihE7myg2Fa2kbHoO6bSWVzJ9OoS4CYqKXpk/YDl5w0Fq+YgHptlXWsozdB66+xb
-         thwdX5c2fHAYONlIN76homPwsmufgljdBkPO5vAmYKz7hXDa/KkTXGha7O1D5hyCkjOZ
-         gKCTMYZChCezzcVTfPk7J6YDmigv46yjCIdcTnO8+lmtS02aI8fYrvbKTSzQTjTz7QjJ
-         bUQO6VuwJ+rVFVtUhr+TDGbJp+qnZIqr0ZDNF1Lbw4I5DX3rZjsoNIlwjXejfzv0iWvu
-         BuUDSx6WAoIEeSHdsuuA1efKO8jxyJgL+GRTh1VyjiJsTD4pq9hC4pk1n4m6I+tqYSxN
-         h3gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=q7U9qOUSDsrK43rTblnVFlDzcLe5oOcvy0x/FulEFg4=;
-        b=kx2HYzcTqcPqJCAxV6QI6TqcqDOxCD3dO812gcwnz3rkd/p21dC6j2GaHy/K0eE/CI
-         tP+7WTp8NuWJ6kIgFRD8odza3BKi1xOnVy6yRV055MFzJqdktdO5FVa3Vq9/QAkH8urk
-         wC27hSZGckPywv2j+FpfPUUaFmI2PoluNpm9YrM9bqc8WNMHAHosgvViT6i+2q+IUNjh
-         scLEn7ahpk/RCkPwaSKXBsBWgSBepWd9dNV1bO/evMMp8SYpaHvMO64og3tYd3Rc7TcF
-         Lp1C6695nQTpqLTCBLTY1JRlzXKoh+zCV1LG/jnRk+TlhLb6LEGVCLeWr+Uk3xjXpbAs
-         FweA==
-X-Gm-Message-State: AOAM533gMiTKJE8gFaZJW7enVFZMrRi9lSH77rdZFzZy4j8xmACpJZmQ
-        1KY7RLnc8W6Yl/ql+vrPZfpxQg==
-X-Google-Smtp-Source: ABdhPJyfqhCT/qHSmLTE+M5EyuvsusE1Dn0OTmnRU1cjJlyhVjfgSmGkSzQqdxhjf1j17G8E4xNrMw==
-X-Received: by 2002:a9d:7f0d:: with SMTP id j13mr7672945otq.322.1625885767876;
-        Fri, 09 Jul 2021 19:56:07 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id b16sm1637278oic.5.2021.07.09.19.56.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 19:56:07 -0700 (PDT)
-Date:   Fri, 9 Jul 2021 21:56:05 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     quic_vamslank@quicinc.com
-Cc:     agross@kernel.org, linus.walleij@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, manivannan.sadhasivam@linaro.org
-Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: qcom: Add SDX65 pinctrl
- bindings
-Message-ID: <YOkMRZamuFplNyT/@yoga>
-References: <20210709200618.20230-1-quic_vamslank@quicinc.com>
- <20210709200618.20230-2-quic_vamslank@quicinc.com>
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7w/uWXVt1ZM0of5sjNayMMl9dYuya3MWdTylSWZhMjg=;
+ b=jiIQ1ZCjTXzcm298J/irNj4NyS/r8SnoNYq7HC8ATH92Kewun1DZZoSV+eoYRedHT5qlKl22jOUEHyhbc93Y8nTmiqz77MoK/GM/nXZ3AaqZ34d2wbiVjM7MmpC2hrsTBHiYpHCHnRAUIXRXQ4etSSYGf+8biyTKcdqaWCVc1H8=
+Authentication-Results: holtmann.org; dkim=none (message not signed)
+ header.d=none;holtmann.org; dmarc=none action=none header.from=windriver.com;
+Received: from DM6PR11MB2587.namprd11.prod.outlook.com (2603:10b6:5:c3::16) by
+ DM6PR11MB2794.namprd11.prod.outlook.com (2603:10b6:5:c5::32) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4219.20; Sat, 10 Jul 2021 03:01:52 +0000
+Received: from DM6PR11MB2587.namprd11.prod.outlook.com
+ ([fe80::7071:ef90:3130:cc76]) by DM6PR11MB2587.namprd11.prod.outlook.com
+ ([fe80::7071:ef90:3130:cc76%6]) with mapi id 15.20.4287.030; Sat, 10 Jul 2021
+ 03:01:51 +0000
+From:   Jun Miao <jun.miao@windriver.com>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
+Cc:     kiran.k@intel.com, chethan.tumkur.narayan@intel.com,
+        AyappadasX.Ps@intel.com, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] Bluetooth: btusb: Fix a unspported condition to set debug features
+Date:   Sat, 10 Jul 2021 11:01:36 +0800
+Message-Id: <20210710030136.1567673-1-jun.miao@windriver.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: HK2PR02CA0160.apcprd02.prod.outlook.com
+ (2603:1096:201:1f::20) To DM6PR11MB2587.namprd11.prod.outlook.com
+ (2603:10b6:5:c3::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210709200618.20230-2-quic_vamslank@quicinc.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-lpggp7.wrs.com (60.247.85.82) by HK2PR02CA0160.apcprd02.prod.outlook.com (2603:1096:201:1f::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.21 via Frontend Transport; Sat, 10 Jul 2021 03:01:49 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3b4ceeaf-3b55-49c9-58e4-08d9434f10dd
+X-MS-TrafficTypeDiagnostic: DM6PR11MB2794:
+X-Microsoft-Antispam-PRVS: <DM6PR11MB2794616CEEF6BE6605DFF9888E179@DM6PR11MB2794.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3cNnxw8SiAgKCQxhMFQj13UkiDO1FArx4Np99xZsUY3C8+/ff1ZnzZUL0TmCM7RinEu8G2P5QFxqFaEXuG4b1qVm71XzXbPc2yaovmbCl49qPcFZ9JPIgcHW52OAB/ciJHgH2ehMK7JxZI5tGU5IwB8OFsNjo8mxrmgdKE2PacsBD9lTtGEG4RhiZ6AvxrpqBbNucyGcsu0b1yXN8F/4Xw3D38PRxfuh6XElFW1ZhAT12nG9RJq8LdEhwf/Lsbj1xCHGyN/+7weFnJAdaHK9HKs/N9lZJnFfbnGo66ckl37DZYDLQY04uGuXG4OOFb0H8P8a/FKwataweKx5BiqkhWTHnSYByZWWT7xBl7wAv0ybuk+2/pzRDFtQoFzM3akgslIyjpjhe+kyNWOzShZDQiVDmLZT6fssf6B+g7kEF7hJbN0IRYnJXZ7vRr1MPHXJVFf/HzAeIGHQYsXoRYu6WUj47U31RHPhHvt88Dll/jddBOKqMzcF5X3EcNELqUi28sECNwZbKlhxFUbHqJ5SVbqrfygiXqvyLtnWtDiMo+Xk9NH7d25fxa0ycpbuSRVSfUyOwOpApqEWmfSjc2LRg+NOHNe1gXpMy8SVeUX0KqgjHsCbd/EzvZmDk7JAvMTh5d0rh0SRfF3NDYL42OWzjQ8ycc9Vu0xm5tOuTl7zsTHjc4gMDbBlPvK/Bdw2Badq6iHBw+N1njG3TW1uiUWiIg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB2587.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(39850400004)(376002)(366004)(4326008)(52116002)(83380400001)(478600001)(316002)(38100700002)(38350700002)(6486002)(1076003)(186003)(26005)(6506007)(8936002)(6666004)(2906002)(5660300002)(2616005)(86362001)(6512007)(956004)(66476007)(44832011)(66946007)(8676002)(66556008)(36756003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8VmmLO0lfYS/IsTIoog1rrDpFTE5OuEBPIHfpgp/+fFvRQ561uK8qzaDPcVD?=
+ =?us-ascii?Q?CvLva5OqSR4mJVhMGPqWoxOXanqiceYrFpo+kx0H/hK3PkwA+dYClQV2dht/?=
+ =?us-ascii?Q?ztfxZiY+eCVk1BsPua7frw4LdL3oo9xOa0l1L/nTmzQZHcpJidrt/JePAadY?=
+ =?us-ascii?Q?ATJpXnCm+Pvoa9LSTH5Iu7MjQHQafQEDswhldPnE8Ypho2VH75I0AOcW9hrg?=
+ =?us-ascii?Q?pAeNHx4dd8XIPw7O2csC1yuTgrkiK773T5dnC+MsXeTCYUNVTxM/SKcU4WJc?=
+ =?us-ascii?Q?Km0s4Ncg6xV1emjyasHAbTTz+BoedSN+lNwyAJn5f5MacMYAwKkmCCpistPB?=
+ =?us-ascii?Q?dmsHGmrJuNfWuTAG6gkXnnxbHDt3zJvLPZCo15e1F2tz2lQF5/dj6KCcUVgK?=
+ =?us-ascii?Q?dcdacjw1F9zx5a6LYlDciDfKpCZ85tZOvWVPGijXad1IG/twWp74HCa2Is9W?=
+ =?us-ascii?Q?zInCYCPmgaBzH43E3EW9fJnAJyv9f+4KMFYwZGX/AaWpEGdeHYNK0+MhhTIP?=
+ =?us-ascii?Q?eO5qgF70McM2Mj6wMjQp/mf6ixU62R+/+4y/8P9JNBn6gpCdXsBZ6rlMJpQc?=
+ =?us-ascii?Q?+DU/0vK0Rvpf4r49mjV2T/qyLYnhVD/kVmX7at0ZT/lxjCEGGGxpN98vqCV+?=
+ =?us-ascii?Q?aiDqiW+us0DqnmPwQk7ITIErWEyvhWPgI3OuNdjsJjQvavnjCf5l/nnT5Jj5?=
+ =?us-ascii?Q?80EPc+0HyC/OMYIvT7mVdP5PZo7UE/Ul3DM7HmJYKbhaxzjCALYOduhcS6Fu?=
+ =?us-ascii?Q?FfDS9y/6w73bXsekSgPCiUPxAstmaZkcxdcBzVZ7CKGguj4bNSuIz0BUtZoM?=
+ =?us-ascii?Q?OmRQPFRP4w17NdSivhed2zyCb4l98UtGh4jJ9sdGPI8mHj3Yz6MuyydT01WN?=
+ =?us-ascii?Q?jRDUbKaVBhih6/aGqTOZZBo+aAIs9eo9xXEwO3DRAk56R1RHfEzXNZAq3Rre?=
+ =?us-ascii?Q?npJnx0fg3bH479cGm6cazUE7hVmrzZS3AZYPJi31KhMfD6I2wS1Qxau7nTeE?=
+ =?us-ascii?Q?XyhsYWn8xSF93P7mXqUfRrGhYGgZ7Wz/HM7FMgzqGDigfwj9XO1x+wGDaSZW?=
+ =?us-ascii?Q?0JIYOMWYM4dWe7sreR6foaKq5fTl2FIYwQmN0jOVvdLMLUaOwAHbHfTGNQFy?=
+ =?us-ascii?Q?aHWCFaX9K04qBZKTXsu5RKQWvzGgSzIkZjWvd8OVs+RB5hcHWdbhGm1lOexU?=
+ =?us-ascii?Q?VhQ91dz+ILtJLMh7gDmif/tlDphxeNGJoibaQOm/yQThLlt6/7GDaVjLpN7Y?=
+ =?us-ascii?Q?0/q+5Xgl7mJ9sNd9qnrGeJ4ejekWXHD9eYdLyb1+f6WoooT/ZRoi8kDeXAys?=
+ =?us-ascii?Q?Nz6q4fYTfibCnFZ8OZf0CjFS?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3b4ceeaf-3b55-49c9-58e4-08d9434f10dd
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB2587.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jul 2021 03:01:51.6573
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: L827JKwPOMZAcBkfHS2ONBkU0L081hPYI8u68WLImDmaylcovbc7sY7QkKlozTJFNwdUbpfUDC3HXp9m8qP4gQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB2794
+X-Proofpoint-GUID: e0iURfw2mhG4YAKkjPqBRkiA_izVx2SN
+X-Proofpoint-ORIG-GUID: e0iURfw2mhG4YAKkjPqBRkiA_izVx2SN
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-10_02:2021-07-09,2021-07-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
+ clxscore=1011 malwarescore=0 bulkscore=0 priorityscore=1501 adultscore=0
+ suspectscore=0 impostorscore=0 mlxlogscore=999 lowpriorityscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107100016
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 09 Jul 15:06 CDT 2021, quic_vamslank@quicinc.com wrote:
+When reading the support debug features failed, there are not available
+features init. Continue to set the debug features is illogical, we should
+skip btintel_set_debug_features(), even if checked by "if (!features)".
 
-> From: Vamsi krishna Lanka <quic_vamslank@quicinc.com>
-> 
-> Add device tree binding Documentation details for Qualcomm SDX65
-> pinctrl driver.
-> 
-> Signed-off-by: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
-> ---
->  .../bindings/pinctrl/qcom,sdx65-pinctrl.yaml  | 175 ++++++++++++++++++
->  1 file changed, 175 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sdx65-pinctrl.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sdx65-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sdx65-pinctrl.yaml
-> new file mode 100644
-> index 000000000000..0d04bba4d8e0
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,sdx65-pinctrl.yaml
-> @@ -0,0 +1,175 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pinctrl/qcom,sdx65-pinctrl.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm Technologies, Inc. SDX65 TLMM block
-> +
-> +maintainers:
-> +  - Vamsi krishna Lanka <quic_vamslank@quicinc.com>
-> +
-> +description: |
-> +  This binding describes the Top Level Mode Multiplexer block found in the
-> +  SDX65 platform.
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,sdx65-pinctrl
+Fixes: c453b10c2b28 ("Bluetooth: btusb: Configure Intel debug feature based on available support")
+Signed-off-by: Jun Miao <jun.miao@windriver.com>
+---
+ drivers/bluetooth/btusb.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-Please make this qcom,sdx65-tlmm
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index a9855a2dd561..20c804069991 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -2907,10 +2907,11 @@ static int btusb_setup_intel_new(struct hci_dev *hdev)
+ 	/* Read the Intel supported features and if new exception formats
+ 	 * supported, need to load the additional DDC config to enable.
+ 	 */
+-	btintel_read_debug_features(hdev, &features);
+-
+-	/* Set DDC mask for available debug features */
+-	btintel_set_debug_features(hdev, &features);
++	err = btintel_read_debug_features(hdev, &features);
++	if (!err) {
++		/* Set DDC mask for available debug features */
++		btintel_set_debug_features(hdev, &features);
++	}
+ 
+ 	/* Read the Intel version information after loading the FW  */
+ 	err = btintel_read_version(hdev, &ver);
+@@ -3003,10 +3004,11 @@ static int btusb_setup_intel_newgen(struct hci_dev *hdev)
+ 	/* Read the Intel supported features and if new exception formats
+ 	 * supported, need to load the additional DDC config to enable.
+ 	 */
+-	btintel_read_debug_features(hdev, &features);
+-
+-	/* Set DDC mask for available debug features */
+-	btintel_set_debug_features(hdev, &features);
++	err = btintel_read_debug_features(hdev, &features);
++	if (!err) {
++		/* Set DDC mask for available debug features */
++		btintel_set_debug_features(hdev, &features);
++	}
+ 
+ 	/* Read the Intel version information after loading the FW  */
+ 	err = btintel_read_version_tlv(hdev, &version);
+-- 
+2.32.0
 
-> +
-> +  reg:
-> +    description: Specifies the base address and size of the TLMM register space
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    description: Specifies the TLMM summary IRQ
-> +    maxItems: 1
-> +
-> +  interrupt-controller: true
-> +
-> +  '#interrupt-cells':
-> +    description: Specifies the PIN numbers and Flags, as defined in
-> +      include/dt-bindings/interrupt-controller/irq.h
-> +    const: 2
-> +
-> +  gpio-controller: true
-> +
-> +  '#gpio-cells':
-> +    description: Specifying the pin number and flags, as defined in
-> +      include/dt-bindings/gpio/gpio.h
-> +    const: 2
-> +
-> +  gpio-ranges:
-> +    maxItems: 1
-> +
-> +  gpio-reserved-ranges:
-> +    maxItems: 1
-> +
-> +#PIN CONFIGURATION NODES
-> +patternProperties:
-> +  '-pins$':
-
-This only allows:
-
-&tlmm {
-	some-pins {
-		pins = "gpio1";
-		properties...;
-	};
-};
-
-Not:
-
-&tlmm {
-	some-pins {
-		foo {
-			pins = "gpio1";
-			properties...;
-		};
-
-		bar {
-			pins = "gpio2";
-			other-properties;
-		};
-	};
-};
-
-And we want to be able to use both styles.
-
-Also, the thing we describe here isn't a bunch of pins, but rather a
-"state".
-
-So please rework this following qcom,sc8180x-pinctrl.yaml and how it
-uses qcom,tlmm-common.yaml.
-
-> +    type: object
-> +    description:
-> +      Pinctrl node's client devices use subnodes for desired pin configuration.
-> +      Client device subnodes use below standard properties.
-> +    $ref: "/schemas/pinctrl/pincfg-node.yaml"
-> +
-> +    properties:
-> +      pins:
-> +        description:
-> +          List of gpio pins affected by the properties specified in this subnode.
-> +        items:
-> +          oneOf:
-> +            - pattern: "^gpio([0-9]|[1-9][0-9]|1[0-1][0-6])$"
-> +            - enum: [ sdc1_clk, sdc1_cmd, sdc1_data, sdc2_clk, sdc2_cmd, sdc2_data, sdc1_rclk ]
-
-Your driver has "ufs_reset" as a pin a well.
-
-> +        minItems: 1
-> +	maxItems: 150
-> +
-> +      function:
-> +        description:
-> +          Specify the alternative function to be configured for the specified
-> +          pins. Functions are only valid for gpio pins.
-> +        enum: [ blsp_uart1, blsp_spi1, blsp_i2c1, blsp_uim1, atest_tsens,
-> +          bimc_dte1, dac_calib0, blsp_spi8, blsp_uart8, blsp_uim8,
-> +          qdss_cti_trig_out_b, bimc_dte0, dac_calib1, qdss_cti_trig_in_b,
-> +          dac_calib2, atest_tsens2, atest_usb1, blsp_spi10, blsp_uart10,
-> +          blsp_uim10, atest_bbrx1, atest_usb13, atest_bbrx0, atest_usb12,
-> +          mdp_vsync, edp_lcd, blsp_i2c10, atest_gpsadc1, atest_usb11,
-> +          atest_gpsadc0, edp_hot, atest_usb10, m_voc, dac_gpio, atest_char,
-> +          cam_mclk, pll_bypassnl, qdss_stm7, blsp_i2c8, qdss_tracedata_b,
-> +          pll_reset, qdss_stm6, qdss_stm5, qdss_stm4, atest_usb2, cci_i2c,
-> +          qdss_stm3, dac_calib3, atest_usb23, atest_char3, dac_calib4,
-> +          qdss_stm2, atest_usb22, atest_char2, qdss_stm1, dac_calib5,
-> +          atest_usb21, atest_char1, dbg_out, qdss_stm0, dac_calib6,
-> +          atest_usb20, atest_char0, dac_calib10, qdss_stm10,
-> +          qdss_cti_trig_in_a, cci_timer4, blsp_spi6, blsp_uart6, blsp_uim6,
-> +          blsp2_spi, qdss_stm9, qdss_cti_trig_out_a, dac_calib11,
-> +          qdss_stm8, cci_timer0, qdss_stm13, dac_calib7, cci_timer1,
-> +          qdss_stm12, dac_calib8, cci_timer2, blsp1_spi, qdss_stm11,
-> +          dac_calib9, cci_timer3, cci_async, dac_calib12, blsp_i2c6,
-> +          qdss_tracectl_a, dac_calib13, qdss_traceclk_a, dac_calib14,
-> +          dac_calib15, hdmi_rcv, dac_calib16, hdmi_cec, pwr_modem,
-> +          dac_calib17, hdmi_ddc, pwr_nav, dac_calib18, pwr_crypto,
-> +          dac_calib19, hdmi_hot, dac_calib20, dac_calib21, pci_e0,
-> +          dac_calib22, dac_calib23, dac_calib24, tsif1_sync, dac_calib25,
-> +          sd_write, tsif1_error, blsp_spi2, blsp_uart2, blsp_uim2,
-> +          qdss_cti, blsp_i2c2, blsp_spi3, blsp_uart3, blsp_uim3, blsp_i2c3,
-> +          uim3, blsp_spi9, blsp_uart9, blsp_uim9, blsp10_spi, blsp_i2c9,
-> +          blsp_spi7, blsp_uart7, blsp_uim7, qdss_tracedata_a, blsp_i2c7,
-> +          qua_mi2s, gcc_gp1_clk_a, ssc_irq, uim4, blsp_spi11, blsp_uart11,
-> +          blsp_uim11, gcc_gp2_clk_a, gcc_gp3_clk_a, blsp_i2c11, cri_trng0,
-> +          cri_trng1, cri_trng, qdss_stm18, pri_mi2s, qdss_stm17, blsp_spi4,
-> +          blsp_uart4, blsp_uim4, qdss_stm16, qdss_stm15, blsp_i2c4,
-> +          qdss_stm14, dac_calib26, spkr_i2s, audio_ref, lpass_slimbus,
-> +          isense_dbg, tsense_pwm1, tsense_pwm2, btfm_slimbus, ter_mi2s,
-> +          qdss_stm22, qdss_stm21, qdss_stm20, qdss_stm19, gcc_gp1_clk_b,
-> +          sec_mi2s, blsp_spi5, blsp_uart5, blsp_uim5, gcc_gp2_clk_b,
-> +          gcc_gp3_clk_b, blsp_i2c5, blsp_spi12, blsp_uart12, blsp_uim12,
-> +          qdss_stm25, qdss_stm31, blsp_i2c12, qdss_stm30, qdss_stm29,
-> +          tsif1_clk, qdss_stm28, tsif1_en, tsif1_data, sdc4_cmd, qdss_stm27,
-> +          qdss_traceclk_b, tsif2_error, sdc43, vfr_1, qdss_stm26, tsif2_clk,
-> +          sdc4_clk, qdss_stm24, tsif2_en, sdc42, qdss_stm23, qdss_tracectl_b,
-> +          sd_card, tsif2_data, sdc41, tsif2_sync, sdc40, mdp_vsync_p_b,
-> +          ldo_en, mdp_vsync_s_b, ldo_update, blsp11_uart_tx_b, blsp11_uart_rx_b,
-> +          blsp11_i2c_sda_b, prng_rosc, blsp11_i2c_scl_b, uim2, uim1, uim_batt,
-> +          pci_e2, pa_indicator, adsp_ext, ddr_bist, qdss_tracedata_11,
-> +          qdss_tracedata_12, modem_tsync, nav_dr, nav_pps, pci_e1, gsm_tx,
-> +          qspi_cs, ssbi2, ssbi1, mss_lte, qspi_clk, qspi0, qspi1, qspi2, qspi3,
-> +          gpio ]
-> +
-> +      drive-strength:
-> +        enum: [2, 4, 6, 8, 10, 12, 14, 16]
-> +        default: 2
-> +        description:
-> +          Selects the drive strength for the specified pins, in mA.
-> +
-> +      bias-pull-down: true
-> +
-> +      bias-pull-up: true
-> +
-> +      bias-disable: true
-> +
-> +      output-high: true
-> +
-> +      output-low: true
-> +
-> +    required:
-> +      - pins
-> +      - function
-> +
-> +    additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - interrupt-controller
-> +  - '#interrupt-cells'
-> +  - gpio-controller
-> +  - '#gpio-cells'
-> +  - gpio-ranges
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +        #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +        tlmm: pinctrl@f100000{
-> +                compatible = "qcom,sdx65-pinctrl";
-> +                reg = <0x03000000 0xdc2000>;
-> +                gpio-controller;
-> +                #gpio-cells = <2>;
-> +                gpio-ranges = <&tlmm 0 0 108>;
-> +                interrupt-controller;
-> +                #interrupt-cells = <2>;
-> +                interrupts = <GIC_SPI 212 IRQ_TYPE_LEVEL_HIGH>;
-> +
-> +                serial-pins {
-> +                        pins = "gpio8", "gpio9";
-> +                        function = "blsp_uart3";
-> +                        drive-strength = <2>;
-> +                        bias-disable;
-> +                };
-> +        };
-> +
-
-Please drop this empty line.
-
-Regards,
-Bjorn
-
-> +...
-> -- 
-> 2.32.0
-> 
