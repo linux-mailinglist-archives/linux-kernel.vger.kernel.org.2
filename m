@@ -2,95 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B86E13C35AF
+	by mail.lfdr.de (Postfix) with ESMTP id 262B33C35AD
 	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 19:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230365AbhGJRBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 13:01:35 -0400
-Received: from smtprelay0154.hostedemail.com ([216.40.44.154]:57112 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229546AbhGJRBf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 13:01:35 -0400
-Received: from omf03.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 2274F18012002;
-        Sat, 10 Jul 2021 16:58:49 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf03.hostedemail.com (Postfix) with ESMTPA id C8A9F13D93;
-        Sat, 10 Jul 2021 16:58:47 +0000 (UTC)
-Message-ID: <d95595021eb8da542960fff9b40dc7c308661c9e.camel@perches.com>
-Subject: Re: [RESEND] edac: replace sprintf() by scnprintf()
-From:   Joe Perches <joe@perches.com>
-To:     Salah Triki <salah.triki@gmail.com>, bp@alien8.de,
-        mchehab@kernel.org, tony.luck@intel.com, james.morse@arm.com,
-        rric@kernel.org
-Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Sat, 10 Jul 2021 09:58:46 -0700
-In-Reply-To: <20210710163505.GA689509@pc>
-References: <20210710163505.GA689509@pc>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        id S230338AbhGJRAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 13:00:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44514 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229551AbhGJRAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Jul 2021 13:00:18 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 63FE561208;
+        Sat, 10 Jul 2021 16:57:30 +0000 (UTC)
+Date:   Sat, 10 Jul 2021 18:00:01 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Liam Beguin <liambeguin@gmail.com>
+Cc:     lars@metafoo.de, Michael.Hennerich@analog.com,
+        charles-antoine.couret@essensium.com, Nuno.Sa@analog.com,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+Subject: Re: [PATCH v2 4/4] dt-bindings: iio: adc: ad7949: add
+ adi,reference-source
+Message-ID: <20210710180001.051f7367@jic23-huawei>
+In-Reply-To: <20210709155856.1732245-5-liambeguin@gmail.com>
+References: <20210709155856.1732245-1-liambeguin@gmail.com>
+        <20210709155856.1732245-5-liambeguin@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: C8A9F13D93
-X-Spam-Status: No, score=1.60
-X-Stat-Signature: zbsk4wxe1dq9ow4qkp4dca31rg6w5x9f
-X-Rspamd-Server: rspamout02
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+eE83VJUeJeyyUpGGi7QAvFfznHecaVyQ=
-X-HE-Tag: 1625936327-540020
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-07-10 at 17:35 +0100, Salah Triki wrote:
-> Replace sprintf() by scnprintf() in order to avoid buffer overflows.
+On Fri,  9 Jul 2021 11:58:56 -0400
+Liam Beguin <liambeguin@gmail.com> wrote:
 
-While of course safe, this is not strictly necessary as the
-maximum length of any edac_layer_name is 8 bytes.
+> From: Liam Beguin <lvb@xiphos.com>
+> 
+> Add bindings documentation for the adi,reference-source property.
+> This property is required to properly configure the ADC sample request
+> based on which reference source should be used for the calculation.
 
-drivers/edac/edac_mc.c:const char *edac_layer_name[] = {
-drivers/edac/edac_mc.c- [EDAC_MC_LAYER_BRANCH] = "branch",
-drivers/edac/edac_mc.c- [EDAC_MC_LAYER_CHANNEL] = "channel",
-drivers/edac/edac_mc.c- [EDAC_MC_LAYER_SLOT] = "slot",
-drivers/edac/edac_mc.c- [EDAC_MC_LAYER_CHIP_SELECT] = "csrow",
-drivers/edac/edac_mc.c- [EDAC_MC_LAYER_ALL_MEM] = "memory",
-drivers/edac/edac_mc.c-};
+Should this be per channel? That will effect some of what I say below...
 
-And name is:
+> 
+> Signed-off-by: Liam Beguin <lvb@xiphos.com>
+> ---
+>  .../bindings/iio/adc/adi,ad7949.yaml          | 21 +++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
+> index 9b56bd4d5510..eae3121cad01 100644
+> --- a/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
+> +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
+> @@ -35,6 +35,27 @@ properties:
+>    "#io-channel-cells":
+>      const: 1
+>  
+> +  adi,reference-select:
 
-		char name[80];
+This is one field in the register, but it's not one thing, so lets break it up
+in DT.  We should do this both to make for more readable dts files and to
+enforce the requirements on regulators...
 
-I suppose name[80] could be changed to name[32] or so
-at the same time to reduce stack usage.
+> +    description: |
+> +      Select the reference voltage source to use when converting samples.
+> +      Acceptable values are:
+> +      - 0: Internal reference and temperature sensor enabled.
+> +           Vref=2.5V, buffered output
+> +      - 1: Internal reference and temperature sensor enabled.
+> +           Vref=4.096V, buffered output
+> +      - 2: Use external reference, temperature sensor enabled.
+> +           Internal buffer disabled
+> +      - 3: Use external reference, internal buffer and temperature sensor
+> +           enabled.
+> +      - 6: Use external reference, internal buffer and temperature sensor
+> +           disabled.
+> +      - 7: Use external reference, internal buffer enabled.
+> +           Internal reference and temperature sensor disabled.
 
-Maybe name should be moved into the loop too.
+So question 1 is whether to use an external or internal reference.
+Normally we'd make the coarse decision of whether to use an external reference
+by whether there is a regulator provided.  That won't work so well if we make
+this per channel.
 
----
- drivers/edac/debugfs.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Question 2, assuming internal reference, what voltage?  Those should take
+an actual voltage (probably in mV and match against an enum of the two possible values).
+Binding should check to make sure this isn't specified as well as saying we
+are using an external refernce.
 
-diff --git a/drivers/edac/debugfs.c b/drivers/edac/debugfs.c
-index 4804332d99465..a41071f2ad428 100644
---- a/drivers/edac/debugfs.c
-+++ b/drivers/edac/debugfs.c
-@@ -55,14 +55,15 @@ void edac_debugfs_exit(void)
- void edac_create_debugfs_nodes(struct mem_ctl_info *mci)
- {
- 	struct dentry *parent;
--	char name[80];
- 	int i;
- 
- 	parent = debugfs_create_dir(mci->dev.kobj.name, edac_debugfs);
- 
- 	for (i = 0; i < mci->n_layers; i++) {
--		sprintf(name, "fake_inject_%s",
--			     edac_layer_name[mci->layers[i].type]);
-+		char name[32];
-+
-+		scnprintf(name, sizeof(name), "fake_inject_%s",
-+			  edac_layer_name[mci->layers[i].type]);
- 		debugfs_create_u8(name, S_IRUGO | S_IWUSR, parent,
- 				  &mci->fake_inject_layer[i]);
- 	}
+Question 3, assuming external reference, is temperature sensor enabled?
+- actually dumb question, but why would anyone not want this enabled?  Maybe turn it
+off in runtime pm, but in general if you've fitted a chip with a temperature sensor
+you at least sometimes want to measure temperature!  So my gut feeling is don't
+allow this to be controlled (effectively drop cases 6 and 7 above as being
+unlikely to be of interest to anyone)
 
+Question 4, Is the internal buffer enabled when using and external reference.
+This one is interesting.   We could just expose it in general, but I wonder
+if we can do something that reflects how it is used.  From the various figures in
+the datasheet this seems to be coupled to whether the external reference is on
+pin REF_IN or pin REF.  If that's the case can we have two optional regs only
+one of which should be supplied?  However, this gets more fiddly because
+the default right now is vref-supply actually being connected to the vrefin connection.
+That's annoying as it stops us using the obvious naming...
+Hence I think we can have
+vref-supply (actually connected to vrefin) and vref-unbuffered-supply
+
+
+
+> +
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [0, 1, 2, 3, 6, 7]
+> +    default: 7
+> +
+>  required:
+>    - compatible
+>    - reg
 
