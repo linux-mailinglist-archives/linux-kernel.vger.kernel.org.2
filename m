@@ -2,91 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DA103C3682
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 21:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC4E43C369D
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 21:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231183AbhGJTur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 15:50:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbhGJTup (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 15:50:45 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E398C0613DD;
-        Sat, 10 Jul 2021 12:47:59 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id nd37so23751952ejc.3;
-        Sat, 10 Jul 2021 12:47:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9VoCeaEveZ8HDe5aNV8uZi+sK3K1wmWPsEr1ebKlPbg=;
-        b=soTJB/WZ3yC4A3ZZUqTTnXY4RAsi4uTxd+Dxzzrt6yPovDI0d1/fImpIvxOLKpq3k0
-         qS4l0p+f091oPUlwbEKEW9eb0Nbv3xcGaTUhF4b1uoDppeG3iKx14tGn3F2WjN7vxPiY
-         +4oDtOD2iUeoxelkxb0yRtKOSLUvTZZbuc3FJMrHs7YJ54jjeR53rAMNfLGUrRxjUaay
-         kA7Yz++t9UyUzCKWDGhXhnZ//PkInMKjVm6BPpDLOzGlZBiYtQyc/13frPspfU3bSFbs
-         IZtpBLCB7PrSkT7uQeqY4DLhwIsd2Av9WynYixnnxzPkuZL753+YQBy5VaLmvFTs8w2/
-         GwJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9VoCeaEveZ8HDe5aNV8uZi+sK3K1wmWPsEr1ebKlPbg=;
-        b=e5j4Hn5eXN8NNJ6d1bOJ1n8QI108WrufqvWc7wJ+FWDaX0bDUX43LgVPO/1rupS3P5
-         Y+Z2v37+lP98tj4PZqj3O2ny/U0JQ3hX8jEtRaUj0/f0vCrUCqd4wOnL5PfeYS8JULo0
-         vOsdfC5VkUAP3xQMmxuzlGmUFedZ/6BfVDjOOZgMkKZQH3xxHB/rJvtM2SwtbUSq1UGi
-         NMzXAXu7E8Jf6DNM9Q0AYhbPERY/qxFKToyowOjeyjPJNWeA2/ZJaN3vrUfiK3VIJjiO
-         9Qxp/9iarM+uCv4+SeDMuW3h2y4Y7fJlDifOU0i5uUqgjnrqiQd2a2br3zg6h/vNXkbc
-         czew==
-X-Gm-Message-State: AOAM531ds/G63uIhH1Kld2W9mITWmpg15n6lyhr8Tf+l6BKG+2y8/jqQ
-        7oKzGeD1Jm/u4sPKwX0FhDM=
-X-Google-Smtp-Source: ABdhPJxhJyZ7sNMI7im3tLUUdqajn+gq3RTGfSBL3ice3P1cDERLnWXEEJGj3pV0WClWpbzCEnp/8Q==
-X-Received: by 2002:a17:907:990d:: with SMTP id ka13mr45353356ejc.392.1625946477480;
-        Sat, 10 Jul 2021 12:47:57 -0700 (PDT)
-Received: from skbuf ([82.76.66.29])
-        by smtp.gmail.com with ESMTPSA id n10sm5155152edw.70.2021.07.10.12.47.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Jul 2021 12:47:57 -0700 (PDT)
-Date:   Sat, 10 Jul 2021 22:47:55 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Colin Foster <colin.foster@in-advantage.com>
-Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
-        claudiu.manoil@nxp.com, alexandre.belloni@bootlin.com,
-        UNGLinuxDriver@microchip.com, linux@armlinux.org.uk,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 net-next 0/8] Add support for VSC7511-7514 chips
- over SPI
-Message-ID: <20210710194755.xmt5jnaanh45dmlm@skbuf>
-References: <20210710192602.2186370-1-colin.foster@in-advantage.com>
+        id S229771AbhGJTyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 15:54:08 -0400
+Received: from mga18.intel.com ([134.134.136.126]:28006 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229515AbhGJTyH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Jul 2021 15:54:07 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10041"; a="197114993"
+X-IronPort-AV: E=Sophos;i="5.84,229,1620716400"; 
+   d="scan'208";a="197114993"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2021 12:51:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,229,1620716400"; 
+   d="scan'208";a="411671328"
+Received: from otcpl-manager.jf.intel.com (HELO localhost.localdomain) ([10.54.39.234])
+  by orsmga006.jf.intel.com with ESMTP; 10 Jul 2021 12:51:21 -0700
+From:   Gayatri Kammela <gayatri.kammela@intel.com>
+To:     platform-driver-x86@vger.kernel.org
+Cc:     mgross@linux.intel.com, hdegoede@redhat.com,
+        irenic.rajneesh@gmail.com, andriy.shevchenko@linux.intel.com,
+        vicamo.yang@canonical.com, srinivas.pandruvada@intel.com,
+        david.e.box@intel.com, linux-kernel@vger.kernel.org,
+        tamar.mashiah@intel.com, gregkh@linuxfoundation.org,
+        rajatja@google.com, Shyam-sundar.S-k@amd.com,
+        Alexander.Deucher@amd.com, mlimonci@amd.com,
+        Gayatri Kammela <gayatri.kammela@intel.com>
+Subject: [PATCH v3 0/5] Add Alder Lake PCH-S support to PMC core driver
+Date:   Sat, 10 Jul 2021 12:48:12 -0700
+Message-Id: <cover.1625944730.git.gayatri.kammela@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210710192602.2186370-1-colin.foster@in-advantage.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 10, 2021 at 12:25:54PM -0700, Colin Foster wrote:
-> 1. The first probe of the internal MDIO bus fails. I suspect this is related to
-> power supplies / grounding issues that would not appear on standard hardware.
+Hi,
+The patch series move intel_pmc_core* files to pmc subfolder as well as
+add Alder Lake PCH-S support to PMC core driver.
 
-Where and with what error code does it fail exactly? I don't understand
-the concept of "the first probe"? You mean that there is an
--EPROBE_DEFER and it tries again immediately afterwards? Or you need to
-unbind and rebind the driver to the device, or what?
+Patch 1: Move intel_pmc_core* files to pmc subfolder
+Patch 2: Add Alderlake support to pmc core driver
+Patch 3: Add Latency Tolerance Reporting (LTR) support to Alder Lake
+Patch 4: Add Alder Lake low power mode support for pmc core
+Patch 5: Add GBE Package C10 fix for Alder Lake
 
-> 2. Communication to the CPU bus doesn't seem to function properly. I suspect
-> this is due to the fact that ocelot / felix assumes it is using the built-in CPU
-> / NPI port for forwarding, though I am not positive.
+Changes since v1:
+1) Add patch 1 to v2 i.e., Move intel_pmc_core* files to pmc subfolder
+2) Modify commit message for patch 2.
 
-What is the CPU bus and what doesn't function properly about it?
+Changes since v2:
+1) Dropped intel_pmc_ prefix from the file names 
 
-> Nonetheless, these two issues likely won't require a large architecture change,
-> and perhaps those who know much more about the ocelot chips than I could chime
-> in.
+David E. Box (1):
+  platform/x86/intel: pmc/core: Add GBE Package C10 fix for Alder Lake
+    PCH
 
-I guess you don't know if that's the case or not until you know what the
-problem is...
+Gayatri Kammela (4):
+  platform/x86/intel: intel_pmc_core: Move intel_pmc_core* files to pmc
+    subfolder
+  platform/x86/intel: pmc/core: Add Alderlake support to pmc core driver
+  platform/x86/intel: pmc/core: Add Latency Tolerance Reporting (LTR)
+    support to Alder Lake
+  platform/x86/intel: pmc/core: Add Alder Lake low power mode support
+    for pmc core
+
+ drivers/platform/x86/Kconfig                  |  21 --
+ drivers/platform/x86/Makefile                 |   1 -
+ drivers/platform/x86/intel/Kconfig            |   1 +
+ drivers/platform/x86/intel/Makefile           |   1 +
+ drivers/platform/x86/intel/pmc/Kconfig        |  22 ++
+ drivers/platform/x86/intel/pmc/Makefile       |   5 +
+ .../{intel_pmc_core.c => intel/pmc/core.c}    | 307 +++++++++++++++++-
+ .../{intel_pmc_core.h => intel/pmc/core.h}    |  17 +
+ .../pmc/pltdrv.c}                             |   0
+ 9 files changed, 350 insertions(+), 25 deletions(-)
+ create mode 100644 drivers/platform/x86/intel/pmc/Kconfig
+ create mode 100644 drivers/platform/x86/intel/pmc/Makefile
+ rename drivers/platform/x86/{intel_pmc_core.c => intel/pmc/core.c} (85%)
+ rename drivers/platform/x86/{intel_pmc_core.h => intel/pmc/core.h} (95%)
+ rename drivers/platform/x86/{intel_pmc_core_pltdrv.c => intel/pmc/pltdrv.c} (100%)
+
+Cc: Srinivas Pandruvada <srinivas.pandruvada@intel.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: David Box <david.e.box@intel.com>
+Cc: You-Sheng Yang <vicamo.yang@canonical.com>
+Cc: Hans de Goede <hdegoede@redhat.com>
+Cc: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
+
+base-commit: 81361b837a3450f0a44255fddfd7a4c72502b667
+-- 
+2.25.1
+
