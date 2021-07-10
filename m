@@ -2,328 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 155EC3C32E7
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 06:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 752D83C32EC
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 07:01:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbhGJE75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 00:59:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56192 "EHLO
+        id S231232AbhGJFDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 01:03:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbhGJE7w (ORCPT
+        with ESMTP id S229567AbhGJFDh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 00:59:52 -0400
-Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A81DFC0613DD
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 21:57:06 -0700 (PDT)
-Received: by mail-oo1-xc2e.google.com with SMTP id p22-20020a4a3c560000b0290256475d95fbso2807203oof.12
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 21:57:06 -0700 (PDT)
+        Sat, 10 Jul 2021 01:03:37 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5170EC0613DD
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 22:00:53 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id h1-20020a17090a3d01b0290172d33bb8bcso9443621pjc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 22:00:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UDGTF4bnijwcKjYKNVG9NXGEhqZ5ES+EVweJisBftjo=;
-        b=rb//oRKhjIIg8WRDqovlx6mFGLBpj+DC7Hu8AT+FB+MK92XuIgtBA4qqJ11Oo+K5Ab
-         FmwNtZPVEDfz3+dSBucQuFVqvvhF5Xdcgp5+XNu5plRC428resz87Mf9mMfAf+Jzj6lG
-         5dzuJE35SpsXpWhoOfi5Ko+ENGFNRvzMiZQsEjLDoUcjkyJlcossnmVqE92unXm/ap7I
-         Npi6Pfn18AJqgwbSXaezIzoGDHiM/NOUmxTBWUXtqNfiUyE4Ouex/zTeN57FuKgzjCf6
-         Yck+fXyxuA4FPgGrjohgUTcUcZjD+eKaZ8bzZaaupimz+te9M1eJnpB/DDNWW5MuAHdz
-         aoUA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VcwItNZ7VMmtWqMy9kb+USrQm64KGF/wTocx0UJTLmY=;
+        b=Yo8MPJJFqYRj6I1y1qWr1H7m9/q/z2W3G40ZdBkUcDDqNK+bfwzTb0Cy3w9BpPrzz9
+         OxuG7ioqb2m3x8o81cvwZea/hMBez/sSfXydSSIzJ5iYvODa7KKiubBfmSAkgNBtaaOb
+         n4DSGLVW0v98dFNkms3Lx48PTJ6CoTMUBcO8KaFUjnNcxDjqzy7yAT8J/+s+eb2UQMwf
+         XSCLoBhSFKGKfuuDgnTB9pIZ7FNdz3z5b9QnsiACXubf+lLdYeYT1IrHx0LbVgOd3xQQ
+         dL4Gj9F/FuU7UVm0M3rsS+qQk6zGf2GzdvUmuJ63M42qPndcNiFw0MUQAPUSgIaH/Cey
+         7VVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UDGTF4bnijwcKjYKNVG9NXGEhqZ5ES+EVweJisBftjo=;
-        b=QXFOAcOY42hNURDJsvFkSTE2Y3jV9j/ZHp+OF6E3RRwfUmy7cbYUeZZqD51/g6p+k/
-         +4j18zLAqqGbkOP9UWTTZNBCEk9t3ze9TvCYnRdkQk9iefofQZpKziixYwpeBz5nLY5e
-         sjW09VZ8XibjCUFHfB4AtD5WbvwChRmjnCyCuIkiYEBlokASrqG1yVFMiSPdvDOsYQv/
-         NxWLmYwZj9kzRWsodwRlaSwznoI0hid+9atXpY64BmiuES07c/Y5D5+XPj9cdcIWS7VX
-         9ZZdehyt2Z1uA1XkeLY2pv78ZeOQ+qwvHVnnODUqJc6/IP4scqCm3rhs+QZyeEli9CHl
-         2LlQ==
-X-Gm-Message-State: AOAM532BSpe2g2F+16pWyjx3WCnyemyQyWN330keJLg8ZRLWxJ+3TeLK
-        XXsH+irlsYWsIN5wWU3+/Z/JjQ==
-X-Google-Smtp-Source: ABdhPJwi8B3nEaX1k9oQq1OTRwAMZTmvLYql2ghMjn78ZCJrWqd7ytG1skgLtqbKBG7LaL/31O5Qqg==
-X-Received: by 2002:a4a:8749:: with SMTP id a9mr29155288ooi.71.1625893025163;
-        Fri, 09 Jul 2021 21:57:05 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id t15sm1718639oiw.16.2021.07.09.21.57.03
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VcwItNZ7VMmtWqMy9kb+USrQm64KGF/wTocx0UJTLmY=;
+        b=NHMHQM3xF+cNfRGRslWePi/UjgvbIEEcbXP34/WtNv0V3FLDlXI7UbPDAy+NVfsmLN
+         J+Mwaxcbqonyu4u/5uqDB7l8Owo6HafdDh61+qjn4sn5Vhre01OmkkC23Q9fWn3+L3i7
+         /3/A/zz8BDZ21UBYxUqAbb1QeUUVgG+s+WyAkqIJfYB+v6xFyHYIDBsIxBlCbjq+AQqY
+         CQusfK/K86SE/rAXxaFWYMk9njjYmG/eu+khC57298pM9buTL3g1VQMCDhAwLo76h6Zi
+         BUEzgfbCf3uowa1ON9Y+30nvmRVxr7brC6qww9VlJnC3iCYG5P2h/XJe27zOKJSvGA4d
+         sWig==
+X-Gm-Message-State: AOAM530kB8H3gmPzHORKyWLWTy1k//qHUkdQXihVPoTbstRf9umEvbvo
+        w5q6YGuA7dIamD5tG8J1yqiSKZ19OB5zfQ==
+X-Google-Smtp-Source: ABdhPJxybbAadTrNo73EVv+PkEJlQ8ET9MR98Sg4dOjmHm1+eNdi7vIFrNy/GqXnIhkYm9rxmvTr6A==
+X-Received: by 2002:a17:90a:390d:: with SMTP id y13mr42028483pjb.52.1625893252597;
+        Fri, 09 Jul 2021 22:00:52 -0700 (PDT)
+Received: from localhost ([103.127.241.250])
+        by smtp.gmail.com with ESMTPSA id z3sm9174589pgl.77.2021.07.09.22.00.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 21:57:04 -0700 (PDT)
-Date:   Fri, 9 Jul 2021 23:57:01 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     agross@kernel.org, rui.zhang@intel.com, daniel.lezcano@linaro.org,
-        viresh.kumar@linaro.org, rjw@rjwysocki.net, robh+dt@kernel.org,
-        tdas@codeaurora.org, mka@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [Patch v3 3/6] cpufreq: qcom-cpufreq-hw: Add dcvs interrupt
- support
-Message-ID: <YOkonX2F+xP5fcuT@yoga>
-References: <20210708120656.663851-1-thara.gopinath@linaro.org>
- <20210708120656.663851-4-thara.gopinath@linaro.org>
+        Fri, 09 Jul 2021 22:00:51 -0700 (PDT)
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Leo Yan <leo.yan@linaro.org>
+Subject: [PATCH v1] coresight: tmc-etr: Speed up for bounce buffer in flat mode
+Date:   Sat, 10 Jul 2021 13:00:46 +0800
+Message-Id: <20210710050046.414669-1-leo.yan@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210708120656.663851-4-thara.gopinath@linaro.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 08 Jul 07:06 CDT 2021, Thara Gopinath wrote:
+The AUX bounce buffer is allocated with API dma_alloc_coherent(), in the
+low level's architecture code, e.g. for Arm64, it maps the memory with
+the attribution "Normal non-cacheable"; this can be concluded from the
+definition for pgprot_dmacoherent() in arch/arm64/include/asm/pgtable.h.
 
-> Add interrupt support to notify the kernel of h/w initiated frequency
-> throttling by LMh. Convey this to scheduler via thermal presssure
-> interface.
-> 
-> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
-> ---
-> 
-> v2->v3:
-> 	- Cosmetic fixes from review comments on the list.
-> 	- Moved all LMh initializations to qcom_cpufreq_hw_lmh_init.
-> 	- Added freeing of LMh interrupt and cancelling the polling worker to
-> 	  qcom_cpufreq_hw_cpu_exit as per Viresh's suggestion.
-> 	- LMh interrupts are now tied to cpu dev and not cpufreq dev. This will be
-> 	  useful for further generation of SoCs where the same interrupt signals
-> 	  multiple cpu clusters.
-> 
-> v1->v2:
-> 	- Introduced qcom_cpufreq_hw_lmh_init to consolidate LMh related initializations
-> 	  as per Viresh's review comment.
-> 	- Moved the piece of code restarting polling/re-enabling LMh interrupt to
-> 	  qcom_lmh_dcvs_notify therby simplifying isr and timer callback as per Viresh's
-> 	  suggestion.
-> 	- Droped cpus from qcom_cpufreq_data and instead using cpus from cpufreq_policy in
-> 	  qcom_lmh_dcvs_notify as per Viresh's review comment.
-> 	- Dropped dt property qcom,support-lmh as per Bjorn's suggestion.
-> 	- Other minor/cosmetic fixes
-> 
->  drivers/cpufreq/qcom-cpufreq-hw.c | 118 ++++++++++++++++++++++++++++++
->  1 file changed, 118 insertions(+)
-> 
-> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
-> index f86859bf76f1..bb5fc700d913 100644
-> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
-> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
-> @@ -7,6 +7,7 @@
->  #include <linux/cpufreq.h>
->  #include <linux/init.h>
->  #include <linux/interconnect.h>
-> +#include <linux/interrupt.h>
->  #include <linux/kernel.h>
->  #include <linux/module.h>
->  #include <linux/of_address.h>
-> @@ -22,10 +23,13 @@
->  #define CLK_HW_DIV			2
->  #define LUT_TURBO_IND			1
->  
-> +#define HZ_PER_KHZ			1000
-> +
->  struct qcom_cpufreq_soc_data {
->  	u32 reg_enable;
->  	u32 reg_freq_lut;
->  	u32 reg_volt_lut;
-> +	u32 reg_current_vote;
->  	u32 reg_perf_state;
->  	u8 lut_row_size;
->  };
-> @@ -33,7 +37,10 @@ struct qcom_cpufreq_soc_data {
->  struct qcom_cpufreq_data {
->  	void __iomem *base;
->  	struct resource *res;
-> +	struct delayed_work lmh_dcvs_poll_work;
+Later when access the AUX bounce buffer, since the memory mapping is
+non-cacheable, it's low efficiency due to every load instruction must
+reach out DRAM.
 
-How about dropping "lmh" from this variable name?
+This patch changes to allocate pages with alloc_pages_node(), thus the
+driver can access the memory with cacheable mapping in the kernel linear
+virtual address; therefore, because load instructions can fetch data
+from cache lines rather than always read data from DRAM, the driver can
+boost memory coping performance.  After using the cacheable mapping, the
+driver uses dma_sync_single_for_cpu() to invalidate cacheline prior to
+read bounce buffer so can avoid read stale trace data.
 
-Perhaps "throttle_work" or something like that?
+By measurement the duration for function tmc_update_etr_buffer() with
+ftrace function_graph tracer, it shows the performance significant
+improvement for copying 4MiB data from bounce buffer:
 
->  	const struct qcom_cpufreq_soc_data *soc_data;
-> +	struct cpufreq_policy *policy;
-> +	int lmh_dcvs_irq;
+  # echo tmc_etr_get_data_flat_buf > set_graph_notrace // avoid noise
+  # echo tmc_update_etr_buffer > set_graph_function
+  # echo function_graph > current_tracer
 
-throttle_irq ?
+  before:
 
->  };
->  
->  static unsigned long cpu_hw_rate, xo_rate;
-> @@ -251,10 +258,84 @@ static void qcom_get_related_cpus(int index, struct cpumask *m)
->  	}
->  }
->  
-> +static inline unsigned long qcom_lmh_vote_to_freq(u32 val)
-> +{
-> +	return (val & 0x3FF) * 19200;
-> +}
-> +
-> +static void qcom_lmh_dcvs_notify(struct qcom_cpufreq_data *data)
-> +{
-> +	struct cpufreq_policy *policy = data->policy;
-> +	struct dev_pm_opp *opp;
-> +	struct device *dev;
-> +	unsigned long max_capacity, capacity, freq_hz, throttled_freq;
-> +	unsigned int val, freq;
-> +
-> +	/*
-> +	 * Get the h/w throttled frequency, normalize it using the
-> +	 * registered opp table and use it to calculate thermal pressure.
-> +	 */
-> +	val = readl_relaxed(data->base + data->soc_data->reg_current_vote);
+  # CPU  DURATION                  FUNCTION CALLS
+  # |     |   |                     |   |   |   |
+  2)               |    tmc_update_etr_buffer() {
+  ...
+  2) # 8148.320 us |    }
 
-I would find it cleaner to move the readl() into the helper function, as
-you don't care about the register value, only the resulting frequency.
+  after:
 
-> +	freq = qcom_lmh_vote_to_freq(val);
-> +	freq_hz = freq * HZ_PER_KHZ;
-> +
-> +	dev = get_cpu_device(cpumask_first(policy->cpus));
-> +	opp = dev_pm_opp_find_freq_floor(dev, &freq_hz);
-> +	if (IS_ERR(opp) && PTR_ERR(opp) == -ERANGE)
-> +		opp = dev_pm_opp_find_freq_ceil(dev, &freq_hz);
-> +
-> +	throttled_freq = freq_hz / HZ_PER_KHZ;
-> +
-> +	/* Update thermal pressure */
-> +
-> +	max_capacity = arch_scale_cpu_capacity(cpumask_first(policy->cpus));
-> +	capacity = throttled_freq * max_capacity;
-> +	capacity /= policy->cpuinfo.max_freq;
+  # CPU  DURATION                  FUNCTION CALLS
+  # |     |   |                     |   |   |   |
+  2)               |  tmc_update_etr_buffer() {
+  ...
+  2) # 2463.980 us |  }
 
-Perhaps, to avoid overflows if this is ever used on a 32-bit platform
-use:
+Signed-off-by: Leo Yan <leo.yan@linaro.org>
+---
+ .../hwtracing/coresight/coresight-tmc-etr.c   | 58 ++++++++++++++++---
+ 1 file changed, 49 insertions(+), 9 deletions(-)
 
-	mult_frac(max_capacity, throttled_freq, policy->cpuinfo.max_freq)
+diff --git a/drivers/hwtracing/coresight/coresight-tmc-etr.c b/drivers/hwtracing/coresight/coresight-tmc-etr.c
+index acdb59e0e661..94558dc5bcf4 100644
+--- a/drivers/hwtracing/coresight/coresight-tmc-etr.c
++++ b/drivers/hwtracing/coresight/coresight-tmc-etr.c
+@@ -21,6 +21,7 @@
+ 
+ struct etr_flat_buf {
+ 	struct device	*dev;
++	struct page	*pages;
+ 	dma_addr_t	daddr;
+ 	void		*vaddr;
+ 	size_t		size;
+@@ -600,6 +601,7 @@ static int tmc_etr_alloc_flat_buf(struct tmc_drvdata *drvdata,
+ {
+ 	struct etr_flat_buf *flat_buf;
+ 	struct device *real_dev = drvdata->csdev->dev.parent;
++	ssize_t	aligned_size;
+ 
+ 	/* We cannot reuse existing pages for flat buf */
+ 	if (pages)
+@@ -609,12 +611,17 @@ static int tmc_etr_alloc_flat_buf(struct tmc_drvdata *drvdata,
+ 	if (!flat_buf)
+ 		return -ENOMEM;
+ 
+-	flat_buf->vaddr = dma_alloc_coherent(real_dev, etr_buf->size,
+-					     &flat_buf->daddr, GFP_KERNEL);
+-	if (!flat_buf->vaddr) {
+-		kfree(flat_buf);
+-		return -ENOMEM;
+-	}
++	aligned_size = PAGE_ALIGN(etr_buf->size);
++	flat_buf->pages = alloc_pages_node(node, GFP_KERNEL | __GFP_ZERO,
++					   get_order(aligned_size));
++	if (!flat_buf->pages)
++		goto fail_alloc_pages;
++
++	flat_buf->vaddr = page_address(flat_buf->pages);
++	flat_buf->daddr = dma_map_page(real_dev, flat_buf->pages, 0,
++				       aligned_size, DMA_FROM_DEVICE);
++	if (dma_mapping_error(real_dev, flat_buf->daddr))
++		goto fail_dma_map_page;
+ 
+ 	flat_buf->size = etr_buf->size;
+ 	flat_buf->dev = &drvdata->csdev->dev;
+@@ -622,23 +629,34 @@ static int tmc_etr_alloc_flat_buf(struct tmc_drvdata *drvdata,
+ 	etr_buf->mode = ETR_MODE_FLAT;
+ 	etr_buf->private = flat_buf;
+ 	return 0;
++
++fail_dma_map_page:
++	__free_pages(flat_buf->pages, get_order(aligned_size));
++fail_alloc_pages:
++	kfree(flat_buf);
++	return -ENOMEM;
+ }
+ 
+ static void tmc_etr_free_flat_buf(struct etr_buf *etr_buf)
+ {
+ 	struct etr_flat_buf *flat_buf = etr_buf->private;
+ 
+-	if (flat_buf && flat_buf->daddr) {
++	if (flat_buf && flat_buf->vaddr) {
+ 		struct device *real_dev = flat_buf->dev->parent;
++		ssize_t aligned_size = PAGE_ALIGN(etr_buf->size);
+ 
+-		dma_free_coherent(real_dev, flat_buf->size,
+-				  flat_buf->vaddr, flat_buf->daddr);
++		dma_unmap_page(real_dev, flat_buf->daddr, aligned_size,
++			       DMA_FROM_DEVICE);
++		__free_pages(flat_buf->pages, get_order(aligned_size));
+ 	}
+ 	kfree(flat_buf);
+ }
+ 
+ static void tmc_etr_sync_flat_buf(struct etr_buf *etr_buf, u64 rrp, u64 rwp)
+ {
++	struct etr_flat_buf *flat_buf = etr_buf->private;
++	struct device *real_dev = flat_buf->dev->parent;
++
+ 	/*
+ 	 * Adjust the buffer to point to the beginning of the trace data
+ 	 * and update the available trace data.
+@@ -648,6 +666,28 @@ static void tmc_etr_sync_flat_buf(struct etr_buf *etr_buf, u64 rrp, u64 rwp)
+ 		etr_buf->len = etr_buf->size;
+ 	else
+ 		etr_buf->len = rwp - rrp;
++
++	if (etr_buf->offset + etr_buf->len > etr_buf->size) {
++		int len1, len2;
++
++		/*
++		 * If trace data is wrapped around, sync AUX bounce buffer
++		 * for two chunks: "len1" is for the trace date length at
++		 * the tail of bounce buffer, and "len2" is the length from
++		 * the start of the buffer after wrapping around.
++		 */
++		len1 = etr_buf->size - etr_buf->offset;
++		len2 = etr_buf->len - len1;
++		dma_sync_single_for_cpu(real_dev,
++					flat_buf->daddr + etr_buf->offset,
++					len1, DMA_FROM_DEVICE);
++		dma_sync_single_for_cpu(real_dev, flat_buf->daddr,
++					len2, DMA_FROM_DEVICE);
++	} else {
++		dma_sync_single_for_cpu(real_dev,
++					flat_buf->daddr + etr_buf->offset,
++					etr_buf->len, DMA_FROM_DEVICE);
++	}
+ }
+ 
+ static ssize_t tmc_etr_get_data_flat_buf(struct etr_buf *etr_buf,
+-- 
+2.25.1
 
-> +
-> +	/* Don't pass boost capacity to scheduler */
-> +	if (capacity > max_capacity)
-> +		capacity = max_capacity;
-> +
-> +	arch_set_thermal_pressure(policy->cpus, max_capacity - capacity);
-> +
-> +	/*
-> +	 * If h/w throttled frequency is higher than what cpufreq has requested for, stop
-> +	 * polling and switch back to interrupt mechanism
-> +	 */
-> +
-> +	if (throttled_freq >= qcom_cpufreq_hw_get(cpumask_first(policy->cpus)))
-> +		/* Clear the existing interrupts and enable it back */
-> +		enable_irq(data->lmh_dcvs_irq);
-> +	else
-> +		mod_delayed_work(system_highpri_wq, &data->lmh_dcvs_poll_work,
-> +				 msecs_to_jiffies(10));
-> +}
-> +
-> +static void qcom_lmh_dcvs_poll(struct work_struct *work)
-> +{
-> +	struct qcom_cpufreq_data *data;
-> +
-> +	data = container_of(work, struct qcom_cpufreq_data, lmh_dcvs_poll_work.work);
-> +
-> +	qcom_lmh_dcvs_notify(data);
-> +}
-> +
-> +static irqreturn_t qcom_lmh_dcvs_handle_irq(int irq, void *data)
-> +{
-> +	struct qcom_cpufreq_data *c_data = data;
-> +
-> +	/* Disable interrupt and enable polling */
-> +	disable_irq_nosync(c_data->lmh_dcvs_irq);
-> +	qcom_lmh_dcvs_notify(c_data);
-> +
-> +	return 0;
-> +}
-> +
->  static const struct qcom_cpufreq_soc_data qcom_soc_data = {
->  	.reg_enable = 0x0,
->  	.reg_freq_lut = 0x110,
->  	.reg_volt_lut = 0x114,
-> +	.reg_current_vote = 0x704,
->  	.reg_perf_state = 0x920,
->  	.lut_row_size = 32,
->  };
-> @@ -274,6 +355,35 @@ static const struct of_device_id qcom_cpufreq_hw_match[] = {
->  };
->  MODULE_DEVICE_TABLE(of, qcom_cpufreq_hw_match);
->  
-> +static int qcom_cpufreq_hw_lmh_init(struct cpufreq_policy *policy, int index)
-> +{
-> +	struct qcom_cpufreq_data *data = policy->driver_data;
-> +	struct platform_device *pdev = cpufreq_get_driver_data();
-> +	struct device *cpu_dev = get_cpu_device(policy->cpu);
-> +	char irq_name[15];
-> +	int ret;
-> +
-> +	/*
-> +	 * Look for LMh interrupt. If no interrupt line is specified /
-> +	 * if there is an error, allow cpufreq to be enabled as usual.
-> +	 */
-> +	data->lmh_dcvs_irq = platform_get_irq(pdev, index);
-> +	if (data->lmh_dcvs_irq <= 0)
-> +		return data->lmh_dcvs_irq == -EPROBE_DEFER ? -EPROBE_DEFER : 0;
-> +
-> +	snprintf(irq_name, sizeof(irq_name), "dcvsh-irq-%u", policy->cpu);
-> +	ret = devm_request_irq(cpu_dev, data->lmh_dcvs_irq, qcom_lmh_dcvs_handle_irq,
-> +			       0, irq_name, data);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "Error %d registering irq %x\n", ret, data->lmh_dcvs_irq);
-
-The irq number here won't have any meaning, and %x wouldn't be suitable.
-
-How about ..."Error registering %s: %d\n", irq_name, ret); ?
-
-> +		return 0;
-
-This sounds like a problem, wouldn't it be suitable to treat it as a
-problem?
-
-> +	}
-> +	data->policy = policy;
-
-Afaict, no one is going to access data->policy unless devm_request_irq()
-succeeds and if it does and the interrupt fires immediately it would be
-too late to set it here. So better move it earlier.
-
-> +	INIT_DEFERRABLE_WORK(&data->lmh_dcvs_poll_work, qcom_lmh_dcvs_poll);
-
-What if the interrupt fires before you initialize the work? Better move
-this higher up.
-
-> +
-> +	return 0;
-> +}
-> +
->  static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
->  {
->  	struct platform_device *pdev = cpufreq_get_driver_data();
-> @@ -370,6 +480,10 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
->  			dev_warn(cpu_dev, "failed to enable boost: %d\n", ret);
->  	}
->  
-> +	ret = qcom_cpufreq_hw_lmh_init(policy, index);
-> +	if (ret)
-> +		goto error;
-> +
->  	return 0;
->  error:
->  	kfree(data);
-> @@ -389,6 +503,10 @@ static int qcom_cpufreq_hw_cpu_exit(struct cpufreq_policy *policy)
->  
->  	dev_pm_opp_remove_all_dynamic(cpu_dev);
->  	dev_pm_opp_of_cpumask_remove_table(policy->related_cpus);
-> +	if (data->lmh_dcvs_irq > 0) {
-> +		devm_free_irq(cpu_dev, data->lmh_dcvs_irq, data);
-
-As init/exit are called multiple times you should avoid the devm
-variants.
-
-Regards,
-Bjorn
-
-> +		cancel_delayed_work_sync(&data->lmh_dcvs_poll_work);
-> +	}
->  	kfree(policy->freq_table);
->  	kfree(data);
->  	iounmap(base);
-> -- 
-> 2.25.1
-> 
