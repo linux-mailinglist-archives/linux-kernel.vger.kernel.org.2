@@ -2,195 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 436B33C343F
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 13:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 282A03C3442
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 13:01:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232629AbhGJK6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 06:58:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230512AbhGJK6c (ORCPT
+        id S232672AbhGJLEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 07:04:08 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:55887 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230512AbhGJLEG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 06:58:32 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30731C0613DD
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 03:55:46 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id h8so4792886eds.4
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 03:55:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mihalicyn.com; s=mihalicyn;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/ByFVcUaAGe1Rb6HqOSzOj9JWWPxEVOQXRYO3t6bXJI=;
-        b=iAkiJ4jWknbMvuqKzCFBi8C2Q/On7oSVj2FXIzUGlr99wKImh1JlJhxgtGM2wt6tyJ
-         FqDrQXmcdy3w7GpPGWFtk0jc1GqWBGMzxyj0TfWCTSZDgoqGQuh7Btn5CTAx6/wzzfEe
-         mxN4YFBpbQwnZqVpeGmJyyCIA8/85OhrP5t/0=
+        Sat, 10 Jul 2021 07:04:06 -0400
+Received: by mail-il1-f198.google.com with SMTP id a15-20020a927f0f0000b02901ac2bdd733dso7664391ild.22
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 04:01:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/ByFVcUaAGe1Rb6HqOSzOj9JWWPxEVOQXRYO3t6bXJI=;
-        b=aXTa4Q+f81KSOf+v+bJdAiv+fmLwMKf5UWOSV186T9/BRNttu8IAZ1PVR/2gwUqVnN
-         FqOEb9tg808p8c5hcGLinhv2Kg8C7Y1oNAyQMs01vT+NBzU6+4gI1bGNl/2JcAKK4L/I
-         0zfu1YBqXF/wSBwdBl2ZlSTmzuqe+ymDRlB27KtpoD8mhDX/6cdjaCfuPoFtp9Fzk6bX
-         EjR6n66LG+Xd7hBKi4qCeWlLVwLo8FvRrgUfcIlVLOjnnDdav3QzKhXGK4TRAbTKaDTQ
-         ZGb4TYkj77zicz5lvm6v6Bbp8LeVmslibPAHcfN0a8QLeJf5gIppITP/VhwqnE43k3IM
-         67Tw==
-X-Gm-Message-State: AOAM533zgGXyEgRQA3MfsjyLRtdmpw5KCLPCOnVOPCoohCUHSocK3Q53
-        xR2wZaJid7RUWtJ2/hWlxH3kyhVh1UhV6dI6SlnI/w==
-X-Google-Smtp-Source: ABdhPJzFd87Wruz8+MnTciPkGuNRiOmuzMEqglt/Jlv7WEo/NPHl66gIBdQYSU0toGkMKYHDr4ljvC7Laf8SDiySl8I=
-X-Received: by 2002:a05:6402:2044:: with SMTP id bc4mr25069679edb.307.1625914544719;
- Sat, 10 Jul 2021 03:55:44 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=+FcDO2zOq13VzQYFsm3JgNyCt0LszFez/T4skcJUOkY=;
+        b=ttlzkIFaNRASr2hRIapko2GGDfDk1I2DpTfAdAUOffU9js9VNCHGlt3soQPhsBynAO
+         aicFMrt5MLBAb+6cYepRRp5MoVb4xsqgXe8ngjqGEnCUYcpYEePS3r66PY16PYZM2hii
+         KhGYJXLeTQBpNUSgwZdAwcZ5p7l3H4qcgi3sXCA6b6UlMFarv8ZGfuBwpemdNx4G7Iwf
+         ezHA+mp4e8AXZIyteNIg2MW1HEfPeEHSeCroymu6FhtA+4nkGCRsLnsnBdlGWv3zq8k/
+         3+sPMJWZsBjudS22tZwTVVcWHpME/IND3tqcMMohdaS5TRGORfXOJZOAE8OVDuTkq93k
+         aRDQ==
+X-Gm-Message-State: AOAM531cFHX8t53NytrNyQbRtovv4JwhMiY9AfmXtbsn3JwBQbLT9mcl
+        xgs/R+F9tscAgTysV5L03IG9TfC7QjOYCaJ/BwdrezSTrNS4
+X-Google-Smtp-Source: ABdhPJxRdBUdD5MFGHv/t6NV7ztbcmaZ6T/HtQ72FN68KckmLwOvQxHT58AKrnV7YAIo2zBZlVWXcpaGATVAbB8f4CLvmV/ANErq
 MIME-Version: 1.0
-References: <20210706132259.71740-1-alexander.mikhalitsyn@virtuozzo.com> <20210709181241.cca57cf83c52964b2cd0dcf0@linux-foundation.org>
-In-Reply-To: <20210709181241.cca57cf83c52964b2cd0dcf0@linux-foundation.org>
-From:   Alexander Mihalicyn <alexander@mihalicyn.com>
-Date:   Sat, 10 Jul 2021 13:55:33 +0300
-Message-ID: <CAJqdLrpx+xEMGQLZo7jS5BTAw-k2sWPrv9fCt0x8t=6Nbn7u+w@mail.gmail.com>
-Subject: Re: [PATCH 0/2] shm: omit forced shm destroy if task IPC namespace
- was changed
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Milton Miller <miltonm@bga.com>,
-        Jack Miller <millerjo@us.ibm.com>,
-        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
-        Manfred Spraul <manfred@colorfullife.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        Christian Brauner <christian@brauner.io>
+X-Received: by 2002:a02:a913:: with SMTP id n19mr6111996jam.7.1625914881080;
+ Sat, 10 Jul 2021 04:01:21 -0700 (PDT)
+Date:   Sat, 10 Jul 2021 04:01:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ec01e405c6c2cee3@google.com>
+Subject: [syzbot] possible deadlock in loop_add
+From:   syzbot <syzbot+118992efda475c16dfb0@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, bp@alien8.de, christian.brauner@ubuntu.com,
+        corbet@lwn.net, hch@lst.de, hpa@zytor.com, jmattson@google.com,
+        johannes.thumshirn@wdc.com, joro@8bytes.org, josef@toxicpanda.com,
+        kvm@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        pbonzini@redhat.com, seanjc@google.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        viro@zeniv.linux.org.uk, vkuznets@redhat.com,
+        wanpengli@tencent.com, x86@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 10, 2021 at 4:12 AM Andrew Morton <akpm@linux-foundation.org> wrote:
->
-> On Tue,  6 Jul 2021 16:22:57 +0300 Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com> wrote:
->
-> > Hello,
-> >
-> > Task IPC namespace shm's has shm_rmid_forced feature which is per IPC namespace
-> > and controlled by kernel.shm_rmid_forced sysctl. When feature is turned on,
-> > then during task exit (and unshare(CLONE_NEWIPC)) all sysvshm's will be destroyed
-> > by exit_shm(struct task_struct *task) function. But there is a problem if task
-> > was changed IPC namespace since shmget() call. In such situation exit_shm() function
-> > will try to call
-> > shm_destroy(<new_ipc_namespace_ptr>, <sysvshmem_from_old_ipc_namespace>)
-> > which leads to the situation when sysvshm object still attached to old
-> > IPC namespace but freed; later during old IPC namespace cleanup we will try to
-> > free such sysvshm object for the second time and will get the problem :)
-> >
-> > First patch solves this problem by postponing shm_destroy to the moment when
-> > IPC namespace cleanup will be called.
-> > Second patch is useful to prevent (or easy catch) such bugs in the future by
-> > adding corresponding WARNings.
-> >
+Hello,
 
-Andrew,
+syzbot found the following issue on:
 
-thanks for your attention to the patches!
+HEAD commit:    ee268dee Add linux-next specific files for 20210707
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=12c39ae2300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=59e1e3bbc3afca75
+dashboard link: https://syzkaller.appspot.com/bug?extid=118992efda475c16dfb0
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14698794300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13e25ee4300000
 
->
-> (cc's added)
->
-> I assume that a
->
-> Fixes: b34a6b1da371ed8af ("ipc: introduce shm_rmid_forced sysctl") is
-> appropriate here?
+The issue was bisected to:
 
-Really not, this patch looks fully safe because it always takes
-objects to free from
-concrete IPC namespace idr with appropriate locking. For example
-/* Destroy all already created segments, but not mapped yet */
-down_write(&shm_ids(ns).rw_mutex);
-idr_for_each(&shm_ids(ns).ipcs_idr, &shm_try_destroy_current, ns);
-up_write(&shm_ids(ns).rw_mutex);
-here we take ns from current->nsproxy, lock idr, and destroy only shms
-from this particular IPC ns.
+commit 0f00b82e5413571ed225ddbccad6882d7ea60bc7
+Author: Christoph Hellwig <hch@lst.de>
+Date:   Mon Mar 8 07:45:50 2021 +0000
 
-But after b34a6b1da ("shm: make exit_shm work proportional to task
-activity") we introduced
-new field (struct sysv_shm sysvshm) on task_struct. exit_shm()
-function was changed so:
+    block: remove the revalidate_disk method
 
-list_for_each_entry_safe(shp, n, &task->sysvshm.shm_clist, shm_clist)
-    shm_mark_orphan(shp, ns);
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14bb406c300000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=16bb406c300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12bb406c300000
 
-instead of previous idr_for_each(&shm_ids(ns).ipcs_idr,
-&shm_try_destroy_current, ns);
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+118992efda475c16dfb0@syzkaller.appspotmail.com
+Fixes: 0f00b82e5413 ("block: remove the revalidate_disk method")
 
-Now, using setns() syscall, we can construct situation when on
-task->sysvshm.shm_clist list
-we have shm items from several (!) IPC namespaces. Before this patch
-we always destroying
-shmems only from current->nsproxy->ipc_ns, but now we can do something
-like this:
+======================================================
+WARNING: possible circular locking dependency detected
+5.13.0-next-20210707-syzkaller #0 Not tainted
+------------------------------------------------------
+systemd-udevd/8674 is trying to acquire lock:
+ffffffff8c4875c8 (loop_ctl_mutex){+.+.}-{3:3}, at: loop_add+0x9c/0x8c0 drivers/block/loop.c:2250
 
-shmget(0xAAAA, 4096, IPC_CREAT|0700); <-- add item to task->sysvshm.shm_clist
-setns(fd, CLONE_NEWIPC);
-shmget(0xAAAA, 4096, IPC_CREAT|0700); <-- add item to task->sysvshm.shm_clist
-*now we have two items in task->sysvshm.shm_clist but from different
-IPC namespaces*
+but task is already holding lock:
+ffffffff8c1f3e08 (major_names_lock){+.+.}-{3:3}, at: blk_request_module+0x25/0x1d0 block/genhd.c:657
 
-(I've reproducer program and can send it privately)
+which lock already depends on the new lock.
 
-That's a problem. If we take a look on
-int ksys_unshare(unsigned long unshare_flags)
 
-we can see following part:
+the existing dependency chain (in reverse order) is:
 
-if (unshare_flags & CLONE_NEWIPC) {
-   /* Orphan segments in old ns (see sem above). */
-   exit_shm(current);
-   shm_init_task(current);
-}
+-> #3 (major_names_lock){+.+.}-{3:3}:
+       __mutex_lock_common kernel/locking/mutex.c:959 [inline]
+       __mutex_lock+0x12a/0x10a0 kernel/locking/mutex.c:1104
+       __register_blkdev+0x2b/0x3e0 block/genhd.c:216
+       register_mtd_blktrans+0x85/0x3c0 drivers/mtd/mtd_blkdevs.c:531
+       do_one_initcall+0x103/0x650 init/main.c:1285
+       do_initcall_level init/main.c:1360 [inline]
+       do_initcalls init/main.c:1376 [inline]
+       do_basic_setup init/main.c:1396 [inline]
+       kernel_init_freeable+0x6b8/0x741 init/main.c:1598
+       kernel_init+0x1a/0x1d0 init/main.c:1490
+       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
 
-here we cleaning up this list BEFORE changing IPC namespace. So, if we
-do something like:
-shmget(0xAAAA, 4096, IPC_CREAT|0700); <-- add item to task->sysvshm.shm_clist
-unshare(CLONE_NEWIPC); <-- task->sysvshm.shm_clist is cleaned and
-reinitialized here
-shmget(0xAAAA, 4096, IPC_CREAT|0700); <-- add item to task->sysvshm.shm_clist
+-> #2 (mtd_table_mutex){+.+.}-{3:3}:
+       __mutex_lock_common kernel/locking/mutex.c:959 [inline]
+       __mutex_lock+0x12a/0x10a0 kernel/locking/mutex.c:1104
+       blktrans_open+0x69/0x600 drivers/mtd/mtd_blkdevs.c:210
+       blkdev_get_whole+0xa1/0x420 fs/block_dev.c:1251
+       blkdev_get_by_dev.part.0+0x30c/0xdd0 fs/block_dev.c:1415
+       blkdev_get_by_dev fs/block_dev.c:1504 [inline]
+       blkdev_open+0x295/0x300 fs/block_dev.c:1510
+       do_dentry_open+0x4c8/0x11d0 fs/open.c:826
+       do_open fs/namei.c:3374 [inline]
+       path_openat+0x1c23/0x27f0 fs/namei.c:3507
+       do_filp_open+0x1aa/0x400 fs/namei.c:3534
+       do_sys_openat2+0x16d/0x420 fs/open.c:1204
+       do_sys_open fs/open.c:1220 [inline]
+       __do_sys_open fs/open.c:1228 [inline]
+       __se_sys_open fs/open.c:1224 [inline]
+       __x64_sys_open+0x119/0x1c0 fs/open.c:1224
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-and all fine!
+-> #1 (&disk->open_mutex){+.+.}-{3:3}:
+       __mutex_lock_common kernel/locking/mutex.c:959 [inline]
+       __mutex_lock+0x12a/0x10a0 kernel/locking/mutex.c:1104
+       del_gendisk+0x8b/0x770 block/genhd.c:587
+       loop_remove drivers/block/loop.c:2347 [inline]
+       loop_control_remove drivers/block/loop.c:2396 [inline]
+       loop_control_ioctl+0x3b5/0x450 drivers/block/loop.c:2428
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:1069 [inline]
+       __se_sys_ioctl fs/ioctl.c:1055 [inline]
+       __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-So, semantics of setns() and unshare() is different here. We can fix
-this problem by adding
-analogical calls to exit_shm(), shm_init_task() into
+-> #0 (loop_ctl_mutex){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3051 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3174 [inline]
+       validate_chain kernel/locking/lockdep.c:3789 [inline]
+       __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5015
+       lock_acquire kernel/locking/lockdep.c:5625 [inline]
+       lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
+       __mutex_lock_common kernel/locking/mutex.c:959 [inline]
+       __mutex_lock+0x12a/0x10a0 kernel/locking/mutex.c:1104
+       loop_add+0x9c/0x8c0 drivers/block/loop.c:2250
+       loop_probe+0x6a/0x80 drivers/block/loop.c:2360
+       blk_request_module+0x111/0x1d0 block/genhd.c:660
+       blkdev_get_no_open+0x1d5/0x250 fs/block_dev.c:1332
+       blkdev_get_by_dev.part.0+0x25/0xdd0 fs/block_dev.c:1395
+       blkdev_get_by_dev fs/block_dev.c:1504 [inline]
+       blkdev_open+0x295/0x300 fs/block_dev.c:1510
+       do_dentry_open+0x4c8/0x11d0 fs/open.c:826
+       do_open fs/namei.c:3374 [inline]
+       path_openat+0x1c23/0x27f0 fs/namei.c:3507
+       do_filp_open+0x1aa/0x400 fs/namei.c:3534
+       do_sys_openat2+0x16d/0x420 fs/open.c:1204
+       do_sys_open fs/open.c:1220 [inline]
+       __do_sys_open fs/open.c:1228 [inline]
+       __se_sys_open fs/open.c:1224 [inline]
+       __x64_sys_open+0x119/0x1c0 fs/open.c:1224
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-static void commit_nsset(struct nsset *nsset)
-...
-#ifdef CONFIG_IPC_NS
-if (flags & CLONE_NEWIPC) {
-     exit_sem(me);
-+   shm_init_task(current);
-+  exit_shm(current);
-}
-#endif
+other info that might help us debug this:
 
-with this change semantics of unshare() and setns() will be equal in
-terms of the shm_rmid_forced
-feature. But this may break some applications which using setns() and
-IPC resources not destroying
-after that syscall. (CRIU using setns() extensively and we have to
-change our IPC ns C/R implementation
-a little bit if we take this way of fixing the problem).
+Chain exists of:
+  loop_ctl_mutex --> mtd_table_mutex --> major_names_lock
 
-I've proposed a change which keeps the old behaviour of setns() but
-fixes double free.
+ Possible unsafe locking scenario:
 
->
-> A double-free is serious.  Should this fix be backported into earlier
-> kernels?
+       CPU0                    CPU1
+       ----                    ----
+  lock(major_names_lock);
+                               lock(mtd_table_mutex);
+                               lock(major_names_lock);
+  lock(loop_ctl_mutex);
 
-Yes, the IPC namespace code was not changed seriously, so it means
-that we can easily apply this patch to older kernels.
-(I've CCed stable lists in the patch where the fix was)
+ *** DEADLOCK ***
 
-CCed: Andrei Vagin and Christian Brauner
+1 lock held by systemd-udevd/8674:
+ #0: ffffffff8c1f3e08 (major_names_lock){+.+.}-{3:3}, at: blk_request_module+0x25/0x1d0 block/genhd.c:657
 
-Regards,
-Alex
+stack backtrace:
+CPU: 0 PID: 8674 Comm: systemd-udevd Not tainted 5.13.0-next-20210707-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2131
+ check_prev_add kernel/locking/lockdep.c:3051 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3174 [inline]
+ validate_chain kernel/locking/lockdep.c:3789 [inline]
+ __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5015
+ lock_acquire kernel/locking/lockdep.c:5625 [inline]
+ lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
+ __mutex_lock_common kernel/locking/mutex.c:959 [inline]
+ __mutex_lock+0x12a/0x10a0 kernel/locking/mutex.c:1104
+ loop_add+0x9c/0x8c0 drivers/block/loop.c:2250
+ loop_probe+0x6a/0x80 drivers/block/loop.c:2360
+ blk_request_module+0x111/0x1d0 block/genhd.c:660
+ blkdev_get_no_open+0x1d5/0x250 fs/block_dev.c:1332
+ blkdev_get_by_dev.part.0+0x25/0xdd0 fs/block_dev.c:1395
+ blkdev_get_by_dev fs/block_dev.c:1504 [inline]
+ blkdev_open+0x295/0x300 fs/block_dev.c:1510
+ do_dentry_open+0x4c8/0x11d0 fs/open.c:826
+ do_open fs/namei.c:3374 [inline]
+ path_openat+0x1c23/0x27f0 fs/namei.c:3507
+ do_filp_open+0x1aa/0x400 fs/namei.c:3534
+ do_sys_openat2+0x16d/0x420 fs/open.c:1204
+ do_sys_open fs/open.c:1220 [inline]
+ __do_sys_open fs/open.c:1228 [inline]
+ __se_sys_open fs/open.c:1224 [inline]
+ __x64_sys_open+0x119/0x1c0 fs/open.c:1224
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fb26e980840
+Code: 73 01 c3 48 8b 0d 68 77 20 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 83 3d 89 bb 20 00 00 75 10 b8 02 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 1e f6 ff ff 48 89 04 24
+RSP: 002b:00007fff25793e98 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
+RAX: ffffffffffffffda RBX: 0000563b22a5f910 RCX: 00007fb26e980840
+RDX: 0000563b21ce5fe3 RSI: 00000000000a0800 RDI: 0000563b22a5f850
+RBP: 00007fff25794010 R08: 0000563b21ce5670 R09: 0000000000000010
+R10: 0000563b21ce5d0c R11: 0000000000000246 R12: 00007fff25793f60
+R13: 0000563b22a61030 R14: 0000000000000003 R15: 000000000000000e
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
