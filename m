@@ -2,78 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E29453C35BA
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 19:16:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56C513C35C1
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 19:22:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229960AbhGJRTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 13:19:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47728 "EHLO
+        id S229666AbhGJRZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 13:25:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbhGJRTR (ORCPT
+        with ESMTP id S229490AbhGJRZK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 13:19:17 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8F6BC0613DD;
-        Sat, 10 Jul 2021 10:16:30 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id a6so14132154ljq.3;
-        Sat, 10 Jul 2021 10:16:30 -0700 (PDT)
+        Sat, 10 Jul 2021 13:25:10 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 775E7C0613DD;
+        Sat, 10 Jul 2021 10:22:24 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id i5so948705lfe.2;
+        Sat, 10 Jul 2021 10:22:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hy8XAx5SW4pN/d1sv4D22sAv4w67Kioti8n7i7I249E=;
-        b=luir/OONiz7OkA/vaFoOF1Odmn/TdO/z6/+KqBylNkwDcqUp67qqc8JTMnCryu6w4T
-         Qa97grtM4qeuE7gBGcAzX7E1DGtqTQbHY72bCc4e0REelL6Si8kzSHJYhW342hKIhu9X
-         6m1m399bkQpgjBYD0dwJ783m5eRJ98aaX+QqpnJjMWO4rH85gQ2UNhWprj+/g6WAuxXn
-         r//ugg4F1hXusgifjVyvtxTNcZpeT1Uzx68kmm7PjrF8/W4//XJLfL6PFlzBAkKfSnvx
-         CwiU2Pla98+2G9p02+dLrhb8tF2fphm+eIBf5XS/SgOG50UW7dXA910MpkF3F8IJZnML
-         Dftg==
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=6YX7n/0G7hjYNnCmuOR6k6VICUFdkr2zTrzlk9Tos1U=;
+        b=CJLAAN46ROcQlzXm7xWXow9DZq+yH8Vd+9w8njKP/9VsFwMIW3IRQR7ZxeOYbZ+AGm
+         ttd55Br6bAsQC4JACj2QCrfSXqHEOzRdQUCS2swCO1zQbwWaiIB7Uf7DrICQgFixC0+f
+         lrZp/B1UpZkF+8pXGwupE+Z9m6fInCUiKiOG4QJWVAMxczF4q0UYDbbyFA20ESPTuEXq
+         jdvXqVPOPIZLHcRSLZZy5Lle6lnw8DFrJB6+1TaO+jKuzOt5PEGUA8sNkm5EvdnocE0/
+         LQlhk9wJgzRqz3hX/mhJ9bAv1eLcqRkkoO3d9LfIOz7vqiSGJeDfPsusisMreJifLKU0
+         zahg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hy8XAx5SW4pN/d1sv4D22sAv4w67Kioti8n7i7I249E=;
-        b=BX/FCCubYrH+7ydh+geDS82XXqkta811bJUjWTDj+oGChGO72Yw/WJOQMPtEXC50m1
-         H38/MkG3hwiF7AAEeAOxQIqc0RvBLIoH+dGtD97UWlY3GwIb82WmRbeVIrQnhmKFH03O
-         2lK4tobV+Pnm5dY6RtJvYDUbUG107M5FC+bBm8yIHP/6Wb5WcOrpmFM+6LGvilhhLwgV
-         3YR5hu/pR9N3ZnOo0wJOZZBS3lGyyd8nw3nrZ1AWS0Hq1IYLaItVlwba4MwWT4nEU79J
-         zU+vzCF7QTR4sHbHvDJdnrHgyizfqHdo38ZYrHY3dDbSapip17w+y/kijRo/I/NmdGQr
-         8PMg==
-X-Gm-Message-State: AOAM530KRjvsNFBnJNN5ozPOzxmC19cKTIvywSFbpzcxvDqfgLt/5dcZ
-        jHIryLB1mAjhTHdzcN7PrQc4BzRMtuB0CfLAOGo=
-X-Google-Smtp-Source: ABdhPJwwDe6c1AoHRmBi0VMaLZNB373LGZjAcoLRD9/SkLAVxvIhTTANZepWPY/GUqY57ZkwXsCXmI9BhkAwkwpZWqw=
-X-Received: by 2002:a2e:a785:: with SMTP id c5mr35009741ljf.490.1625937388938;
- Sat, 10 Jul 2021 10:16:28 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=6YX7n/0G7hjYNnCmuOR6k6VICUFdkr2zTrzlk9Tos1U=;
+        b=tiMKIVh7FV4q1gJcK33EQ5A3UFigZXZu7rOEFR2SsL1zzsDC3tzoYGBfUfgw6qt9kz
+         47Ni9oVsPVkZmTMeJ9uu+PHbgg4+mYZeqw6MfdVzMhVc43oQmsAnxQBHJ/s1sqWJXex5
+         39iXm6iaXxq0F3mpVIfyFD+Wef/b13qScU33z4xDUWSfqdtXLp0v+pTE0lkWEIn2DbHZ
+         HyeTg9+cVctbjjk/bnmCekFj4wKTAmopxhxyX4PG9B3yj9+yJRhws6zFuJ+2kB4Foyjl
+         BKC1Fi0nGMlFWJ+vymLIzYE7UCIeLlrgU9E83SI+1A+ylyMB+y2zsVF0KEj9VCp2uQ1e
+         LeOw==
+X-Gm-Message-State: AOAM531wUEchj8cH2JE3QTP3y+6Hq/llwuaEu/ALQQBRLB5JKhnoSsuM
+        YpjqfAkpH0O6lFW/7Xyh7nzbxE2Ri20LaDrT3Bw=
+X-Google-Smtp-Source: ABdhPJzbcOMG6AdlkGtbwFYxCcKvszc68f7rW1yUk/AFG9a313SUewlr2zAuBKWANS1n6ihBAOirqCs4Cm1LPg/TUWM=
+X-Received: by 2002:ac2:5149:: with SMTP id q9mr34423098lfd.313.1625937742681;
+ Sat, 10 Jul 2021 10:22:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210709031526.30746-1-jrdr.linux@gmail.com> <CAOMZO5BHDBR5y5q559UexTmYbhPwSp1MV3TJ3k+z4W8ehE-5_Q@mail.gmail.com>
- <20210709064838.wtuqgm3qwguhpfjn@skn-laptop>
-In-Reply-To: <20210709064838.wtuqgm3qwguhpfjn@skn-laptop>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Sat, 10 Jul 2021 14:16:17 -0300
-Message-ID: <CAOMZO5By=qBZ-Xm-QoXGQ9TfCXJsFQaYHvG0_SoxtKERBRizYw@mail.gmail.com>
-Subject: Re: [PATCH] iio: accel: fxls8962af: Initialize return value
-To:     Sean Nyekjaer <sean@geanix.com>
-Cc:     Souptick Joarder <jrdr.linux@gmail.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-iio@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
+From:   Steve French <smfrench@gmail.com>
+Date:   Sat, 10 Jul 2021 12:22:09 -0500
+Message-ID: <CAH2r5mvVySsTqqQfzZ0q9kR5qmYvmCTf_sybHLWw2UtnPAKpSA@mail.gmail.com>
+Subject: [GIT PULL] CIFS Fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sean,
+Please pull the following changes since commit
+bbd91626f71c1582301044f5942751eeb4ca98ba:
 
-On Fri, Jul 9, 2021 at 3:48 AM Sean Nyekjaer <sean@geanix.com> wrote:
+  Merge tag '5.14-rc-smb3-fixes-part1' of
+git://git.samba.org/sfrench/cifs-2.6 (2021-06-29 20:18:16 -0700)
 
-> I have already submitted a patch for this :)
-> https://patchwork.kernel.org/project/linux-iio/patch/20210623113115.581609-1-sean@geanix.com/
+are available in the Git repository at:
 
-Please resubmit your patch with a commit log.
+  git://git.samba.org/sfrench/cifs-2.6.git tags/5.14-rc-smb3-fixes-part2
 
-Thanks
+for you to fetch changes up to 4d069f6022e938bc51667da637f2483a37a77e19:
+
+  cifs: update internal version number (2021-07-09 13:03:36 -0500)
+
+----------------------------------------------------------------
+13 cifs/smb3 fixes. Most are to address minor issues pointed out by
+Coverity. Also includes a packet signing enhancement and a mount
+improvement.
+
+There is an important set of multichannel fixes still being tested
+which is not included yet.
+
+Regression test results:
+http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/2/builds/711
+----------------------------------------------------------------
+Paulo Alcantara (1):
+      cifs: prevent NULL deref in cifs_compose_mount_options()
+
+Ronnie Sahlberg (1):
+      cifs: use helpers when parsing uid/gid mount options and validate them
+
+Steve French (11):
+      cifs: make locking consistent around the server session status
+      cifs: clarify SMB1 code for UnixCreateHardLink
+      CIFS: Clarify SMB1 code for UnixCreateSymLink
+      CIFS: Clarify SMB1 code for UnixSetPathInfo
+      smb3: fix typo in header file
+      CIFS: Clarify SMB1 code for SetFileSize
+      CIFS: Clarify SMB1 code for delete
+      CIFS: Clarify SMB1 code for rename open file
+      CIFS: Clarify SMB1 code for POSIX Lock
+      SMB3.1.1: Add support for negotiating signing algorithm
+      cifs: update internal version number
+
+ fs/cifs/cifs_dfs_ref.c |  3 ++
+ fs/cifs/cifsfs.c       |  4 +++
+ fs/cifs/cifsfs.h       |  2 +-
+ fs/cifs/cifsglob.h     |  6 +++-
+ fs/cifs/cifspdu.h      |  1 +
+ fs/cifs/cifssmb.c      | 24 ++++++++------
+ fs/cifs/connect.c      |  5 +++
+ fs/cifs/fs_context.c   | 24 +++++++++++---
+ fs/cifs/fs_context.h   |  1 +
+ fs/cifs/smb2pdu.c      | 85 ++++++++++++++++++++++++++++++++++++++++++++------
+ fs/cifs/smb2pdu.h      |  7 +++--
+ fs/cifs/transport.c    |  2 ++
+ 12 files changed, 135 insertions(+), 29 deletions(-)
+
+-- 
+Thanks,
+
+Steve
