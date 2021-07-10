@@ -2,112 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09AF43C3232
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 05:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60D973C3225
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 05:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231455AbhGJDPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 23:15:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33402 "EHLO
+        id S231314AbhGJDQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 23:16:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231314AbhGJDPb (ORCPT
+        with ESMTP id S231312AbhGJDQI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 23:15:31 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E80ACC0613E8
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 20:12:45 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id 53-20020a9d0eb80000b02904b6c4d33e84so2832724otj.13
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 20:12:45 -0700 (PDT)
+        Fri, 9 Jul 2021 23:16:08 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28405C0613E5
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Jul 2021 20:13:23 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so11550893otl.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Jul 2021 20:13:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=eazz+RPiPjL3cNRuOI983DWMBua4N7N7F/aRJn5tHYI=;
-        b=YUzbwhpOX5TTXByAqzLVTQg2Ld5Adcq6Ao/RZ3m4Bd7IKpn2W7KnEjcMyBnYX5XCe+
-         kuzm2RwkaYP6C/FRfb7nBEASntTpH5dSkA9Gyq46swFvD0YHynylLgt781RgKg/CyDB+
-         ZzkBleoAJWRzKHFaB+nrH2ecb4p4DxEBMbspgodlzBro6GSkag8Q7oDU7R4I2TKI4cG/
-         cY7A3bt1LLP7nXvoJ1V0/Xp85x3/m2gqmAwKm6dpadygnG20BlYV1HbD7PimNGlRcGri
-         xG3NbfyIvuJYB2CUC/xH7x17G947c5gtT8lAsf9/qvFxEU0ZwuyvJyvqZRJWi5ZTJpDw
-         ZuCQ==
+        bh=D2/Au7VaseimhuhhJwLg2yXBVIiRM0wy8fddWmx2Lg4=;
+        b=MGHpYGTvVEgEFsRtHucZchqHBpfrG9awMe48Awe/WAAcmDrW/gQGlO5z5U9gHTyuES
+         +BpX3XwuVxIR9odq5jAeC8XF2sT4HJLmypaOqaLzCeVSfBSLZNziuxXAJrMDLHMfuwYk
+         irAB/s5GOZXgLyYrRGZFkE/ZVKkfe6uPH8LICxavVbZEzq0t4cONlgbuC/9Fdx2/KbaH
+         B0ZXsCaTdwd+7oNMyeFYXZAOGjgGLZ8VKxrApHpiCV1KCg8xbHPxzF73IScZsNWPWIxj
+         rJ57RjPzJ2Juw5wd2Ueey65PJIrpmFFavvxU4RKqLS0NC0KfD2bbaTp13tP4zMDP7dNr
+         aLBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=eazz+RPiPjL3cNRuOI983DWMBua4N7N7F/aRJn5tHYI=;
-        b=csyzdG/X+czSc2dOAVqYS+8861Qz0G9BXjIUjmkQZ9aFn+X5PJ8ZJLSiGnqP0CQAjv
-         xsNhLB/5fRoCVPXhyB3RunQmLMVgrNv0ScsY6QN62Qt4b7yT9tXT3Ng8jObmtc+d2ycf
-         eXFkTUm8i7twv0kbUN0DoFYi+qEtmgKhjVBK46HPpb65Gr1JcsXsR0wcjENuCDo6N9n2
-         0O5PAmd5AvuExmjOMuOI3Kz6lsSF4az0PRXgloGKlX+KGAO+i1jdBOHjPKrixscz8b0k
-         luNkSaHnHsR0mhV34p7ULhRgsYbeqcPKHGpeblgCuyLaPx3lHOL38vleJZq+3cfdrhw1
-         uFqQ==
-X-Gm-Message-State: AOAM530dSuA9mtTMA3aea8CaUf0/l1PdSyGgUGxCnpTMYVRYtO/KZHHx
-        3E5Ud8BSdYaJkqduuq98/hvxsg==
-X-Google-Smtp-Source: ABdhPJxIz/4eGDDoxN1i1tug+1xliP67hhpFQgC0pAim8BZIAJJF2cZyUeTRB96b9K2RO2NY7dW7cg==
-X-Received: by 2002:a9d:39e3:: with SMTP id y90mr31741958otb.257.1625886765244;
-        Fri, 09 Jul 2021 20:12:45 -0700 (PDT)
+        bh=D2/Au7VaseimhuhhJwLg2yXBVIiRM0wy8fddWmx2Lg4=;
+        b=FfgVn90g5vI9uVazhHFRLxA1gK9VPbdQszcPDmpOe6GwPJy5A2yydbtrE/nTCp14+n
+         yHHKCz7XaE54pfpDX+R2c5jJR9uDaoy00Bd3zhiVcQVbjOrCo8q1EAxW8dB8+ftF9hbA
+         Y5Topd6AIvovs6/rRkzAmd5F9Ln8E5/gXT+mOz625C8j8ilTXDrh01H6XKHmjbLlLWv1
+         giOuy9LSRIcwz2d7acEQ+sXte2L18Z3WAwJOW3koeCJPIEkwb0DbUyDxJ383j5CHPsDS
+         5kDvVLEV4Hv1sBxKLxeG0Oy3gUTZu6W62yR/TDxLmzavxGaaZ4DnwhEQ1J87HPN7sdfZ
+         bcYA==
+X-Gm-Message-State: AOAM5326oWnXt3Nmf51TsXnxi110/YfZsZw70P8Mckww+Tv5acy2do8r
+        93LIz+vBjGcmI4VxVYo3e8buug==
+X-Google-Smtp-Source: ABdhPJy15VgTgdSDdAw23jwT5C34wukcHFZcKs5Shy0thIg10hPpd1ref+uvlNItcjtIKV0tm6UO/w==
+X-Received: by 2002:a9d:77c6:: with SMTP id w6mr8117447otl.123.1625886802556;
+        Fri, 09 Jul 2021 20:13:22 -0700 (PDT)
 Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 76sm1540357otj.28.2021.07.09.20.12.44
+        by smtp.gmail.com with ESMTPSA id v2sm1604837ots.8.2021.07.09.20.13.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 20:12:44 -0700 (PDT)
-Date:   Fri, 9 Jul 2021 22:12:42 -0500
+        Fri, 09 Jul 2021 20:13:22 -0700 (PDT)
+Date:   Fri, 9 Jul 2021 22:13:20 -0500
 From:   Bjorn Andersson <bjorn.andersson@linaro.org>
 To:     quic_vamslank@quicinc.com
 Cc:     agross@kernel.org, robh+dt@kernel.org, linus.walleij@linaro.org,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, manivannan.sadhasivam@linaro.org
-Subject: Re: [PATCH 1/1] ARM: dts: qcom: sdx65: Add pincontrol node
-Message-ID: <YOkQKkUMO3cvR4yz@yoga>
-References: <20210709200819.20373-1-quic_vamslank@quicinc.com>
- <20210709200819.20373-2-quic_vamslank@quicinc.com>
+Subject: Re: [PATCH 1/2] dt-bindings: arm: qcom: Document SDX65 platform and
+ boards
+Message-ID: <YOkQUED397xH+RlB@yoga>
+References: <20210709200506.20046-1-quic_vamslank@quicinc.com>
+ <20210709200506.20046-2-quic_vamslank@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210709200819.20373-2-quic_vamslank@quicinc.com>
+In-Reply-To: <20210709200506.20046-2-quic_vamslank@quicinc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 09 Jul 15:08 CDT 2021, quic_vamslank@quicinc.com wrote:
+On Fri 09 Jul 15:05 CDT 2021, quic_vamslank@quicinc.com wrote:
 
 > From: Vamsi krishna Lanka <quic_vamslank@quicinc.com>
 > 
-> This commit adds pincontrol node to SDX65 dts.
+> Document the SDX65 platform binding and also the boards using it.
 > 
 > Signed-off-by: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
-> ---
->  arch/arm/boot/dts/qcom-sdx65.dtsi | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/qcom-sdx65.dtsi b/arch/arm/boot/dts/qcom-sdx65.dtsi
-> index 4b5e7248c34d..155635d1de2f 100644
-> --- a/arch/arm/boot/dts/qcom-sdx65.dtsi
-> +++ b/arch/arm/boot/dts/qcom-sdx65.dtsi
-> @@ -96,6 +96,17 @@ blsp1_uart3: serial@831000 {
->  			status = "disabled";
->  		};
->  
-> +		tlmm: pinctrl@f100000 {
-> +			compatible = "qcom,sdx65-pinctrl";
-> +			reg = <0xf100000 0x300000>;
-> +			interrupts = <GIC_SPI 212 IRQ_TYPE_LEVEL_HIGH>;
-> +			gpio-controller;
-> +			#gpio-cells = <2>;
-> +			interrupt-controller;
-> +			interrupt-parent = <&intc>;
-> +			#interrupt-cells = <2>;
 
-You're missing gpio-ranges.
-
-
-Please squash this with the other dts patch.
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
 Thanks,
 Bjorn
 
-> +		};
+> ---
+>  Documentation/devicetree/bindings/arm/qcom.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+> index 174134f920e1..bdf1da8fc557 100644
+> --- a/Documentation/devicetree/bindings/arm/qcom.yaml
+> +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+> @@ -41,6 +41,7 @@ description: |
+>          sdm660
+>          sdm845
+>          sdx55
+> +        sdx65
+>          sm8250
+>          sm8350
+>  
+> @@ -174,6 +175,11 @@ properties:
+>                - qcom,sdx55-mtp
+>            - const: qcom,sdx55
+>  
+> +      - items:
+> +          - enum:
+> +              - qcom,sdx65-mtp
+> +          - const: qcom,sdx65
 > +
->  		pdc: interrupt-controller@b210000 {
->  			compatible = "qcom,sdx65-pdc", "qcom,pdc";
->  			reg = <0xb210000 0x10000>;
+>        - items:
+>            - enum:
+>                - qcom,ipq6018-cp01-c1
 > -- 
 > 2.32.0
 > 
