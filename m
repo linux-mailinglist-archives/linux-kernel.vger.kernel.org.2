@@ -2,195 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07D93C36C2
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 22:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B5E3C36CC
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 22:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231241AbhGJUSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 16:18:02 -0400
-Received: from vern.gendns.com ([98.142.107.122]:51978 "EHLO vern.gendns.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229515AbhGJUSA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 16:18:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=mmrCsDKGg86DQETWy6BobZbDY2kT6MR0c3riTEr4thk=; b=KacMMKoG+0WtEDhcw+lgOF/35x
-        3lK13tF+e++/gUqQx7Q6SMx3zusqNmWUOwNOT033Ur1X54nERUkodGS7ogUCjB1RnOu7rR2419zMN
-        JVKABhzqd0x+UsS6HMnhbozTk7gugRtfLTFzXwi+lk9Me/W1BRmAT8RSExKcQuycpF2wb9bJzx0TN
-        HdXi7iZEwpd+Gb9sDiuXyiJfscxyikXYujg9BbaE9fnOmC2AE8oQH2qRc2jpEyH4AGEtKNlqC6dVL
-        0Ca60yb75prcvc+XAUra/+FmUExSZN4Yi07UWDaH2qTOmJqesmx86AcP+bhVXi5M4VN56z6ZYa/JM
-        wxV7exqw==;
-Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:50632 helo=[192.168.0.134])
-        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <david@lechnology.com>)
-        id 1m2JNI-00HTJW-0w; Sat, 10 Jul 2021 16:15:11 -0400
-Subject: Re: [PATCH v12 11/17] docs: counter: Document character device
- interface
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>, jic23@kernel.org
-Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
-        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        o.rempel@pengutronix.de, jarkko.nikula@linux.intel.com
-References: <cover.1625471640.git.vilhelm.gray@gmail.com>
- <186e7a1cd7dc822cc9290683b463c3e675959e1a.1625471640.git.vilhelm.gray@gmail.com>
-From:   David Lechner <david@lechnology.com>
-Message-ID: <10ae3615-1fe4-0dce-5aa6-e865de2655a7@lechnology.com>
-Date:   Sat, 10 Jul 2021 15:15:06 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230168AbhGJUhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 16:37:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229515AbhGJUhB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Jul 2021 16:37:01 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B729C0613DD;
+        Sat, 10 Jul 2021 13:34:15 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id c17so23840989ejk.13;
+        Sat, 10 Jul 2021 13:34:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MPITH6hW87Dzz+BA0F4dfZufHvIwz3mBp2b8LY0PIYI=;
+        b=decWn1Dd9gN9XIO9xOLyFCgQ7wDLRDEsezyAG4ecduWDshNQWqfBo/xQRN3AcXMEg9
+         SqTs2IclFYAJGCm4fETpjeT22ZBJyL5mQHhrOk4aMn7JyAD/jMpW/puSJK1f5lU/ndgz
+         /JeZy2jp+h2jr0sh0WLZRKYycqrD3MDw8rx8VxEitN95VRFkCU+Ccvs7twNF/L6cIJow
+         BW71fNxOCCXXn5H+KkQGqzWC4tTB4XC6812HgwkrrFs0Cnd3wPo7tNjBKXmv3vaRwZze
+         KmJUQQrNhaBsja5DtppWpqD/Sni0NoSsx0LbCvIKHHqU4SUNvTNkI/uKhe9pt+LAI9Gj
+         98BQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MPITH6hW87Dzz+BA0F4dfZufHvIwz3mBp2b8LY0PIYI=;
+        b=U4cSsERGTFPHWKAJJehbnI6Iz7oLM+ANkARv+RwtgxoavLhrGlx21Jb447hIafmFSH
+         OjBbvbPO8NZlDegUpjxXgyqO2q1fZ8dRCWMJ9jQfRqJzmyylHqPKourAPdZCT4P9OwHQ
+         qG+m+fVfVe9+/QA5o8O6B+pXJsfRFLMDBcQT0cJYnY5hvLR/JL2vGpnqbq1JoDij//6x
+         +fDOyoLXWHB0MIzvWBctBATGDIRyuEGxcdo8INI1bzoHjOcSPNYEyfmHfWuIo2HiHOjB
+         xqCl8PY/fWLEWYHZqCXq7YqaNJ1NlOXr3cv53eYPmBAIYlReqxaJXblq+KacG4l3ZrB6
+         llqw==
+X-Gm-Message-State: AOAM532ppkq2tLQZSQ0UImt3+oEYseHiWj/COOcN1O2V5ufKaGlKT6Ft
+        FYhcuSBR3mIIxBUs8rL/yNg=
+X-Google-Smtp-Source: ABdhPJyn+eqeGLvY0gTYmezpnwhOahOq/E7NuaQ1DLn6l7tVFb18HFvb58ZhcaUI6Y+tsf9Afnh/2g==
+X-Received: by 2002:a17:906:c34b:: with SMTP id ci11mr18969519ejb.223.1625949253688;
+        Sat, 10 Jul 2021 13:34:13 -0700 (PDT)
+Received: from skbuf ([82.76.66.29])
+        by smtp.gmail.com with ESMTPSA id n13sm4159652ejk.97.2021.07.10.13.34.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Jul 2021 13:34:13 -0700 (PDT)
+Date:   Sat, 10 Jul 2021 23:34:11 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Colin Foster <colin.foster@in-advantage.com>
+Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        claudiu.manoil@nxp.com, alexandre.belloni@bootlin.com,
+        UNGLinuxDriver@microchip.com, linux@armlinux.org.uk,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 net-next 8/8] Update documentation for the VSC7512
+ SPI device
+Message-ID: <20210710203411.nahqkyy4umqbtfwm@skbuf>
+References: <20210710192602.2186370-1-colin.foster@in-advantage.com>
+ <20210710192602.2186370-9-colin.foster@in-advantage.com>
 MIME-Version: 1.0
-In-Reply-To: <186e7a1cd7dc822cc9290683b463c3e675959e1a.1625471640.git.vilhelm.gray@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210710192602.2186370-9-colin.foster@in-advantage.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/5/21 3:18 AM, William Breathitt Gray wrote:
-> This patch adds high-level documentation about the Counter subsystem
-> character device interface.
-> 
-> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+On Sat, Jul 10, 2021 at 12:26:02PM -0700, Colin Foster wrote:
+> Signed-off-by: Colin Foster <colin.foster@in-advantage.com>
 > ---
->   Documentation/driver-api/generic-counter.rst  | 185 ++++++++++++++----
->   .../userspace-api/ioctl/ioctl-number.rst      |   1 +
->   2 files changed, 145 insertions(+), 41 deletions(-)
+>  .../devicetree/bindings/net/dsa/ocelot.txt    | 68 +++++++++++++++++++
+>  1 file changed, 68 insertions(+)
 > 
-> diff --git a/Documentation/driver-api/generic-counter.rst b/Documentation/driver-api/generic-counter.rst
-> index f6397218aa4c..62a702e7f994 100644
-> --- a/Documentation/driver-api/generic-counter.rst
-> +++ b/Documentation/driver-api/generic-counter.rst
+> diff --git a/Documentation/devicetree/bindings/net/dsa/ocelot.txt b/Documentation/devicetree/bindings/net/dsa/ocelot.txt
+> index 7a271d070b72..f5d05bf8b093 100644
+> --- a/Documentation/devicetree/bindings/net/dsa/ocelot.txt
+> +++ b/Documentation/devicetree/bindings/net/dsa/ocelot.txt
+> @@ -8,6 +8,7 @@ Currently the switches supported by the felix driver are:
+>  
+>  - VSC9959 (Felix)
+>  - VSC9953 (Seville)
+> +- VSC7511, VSC7512, VSC7513, VSC7514 via SPI
+>  
+>  The VSC9959 switch is found in the NXP LS1028A. It is a PCI device, part of the
+>  larger ENETC root complex. As a result, the ethernet-switch node is a sub-node
+> @@ -211,3 +212,70 @@ Example:
+>  		};
+>  	};
+>  };
+> +
+> +The VSC7513 and VSC7514 switches can be controlled internally via the MIPS
+> +processor. The VSC7511 and VSC7512 don't have this internal processor, but all
+> +four chips can be controlled externally through SPI with the following required
+> +properties:
+> +
+> +- compatible:
+> +	Can be "mscc,vsc7511", "mscc,vsc7512", "mscc,vsc7513", or
+> +	"mscc,vsc7514".
+> +
+> +Supported phy modes for all chips are:
+> +
+> +* phy_mode = "internal": on ports 0, 1, 2, 3
+> +
+> +Additionally, the VSC7512 and VSC7514 support SGMII and QSGMII on various ports,
+> +though that is currently untested.
+> +
+> +Example for control from a BeagleBone Black
+> +
+> +&spi0 {
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +	status = "okay";
+> +
+> +	vsc7512: vsc7512@0 {
 
+ethernet-switch@0
 
+> +		compatible = "mscc,vsc7512";
+> +		spi-max-frequency = <250000>;
+> +		reg = <0>;
 > +
-> +Counter Character Device
-> +========================
+> +		ports {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
 > +
-> +Counter character device nodes are created under the ``/dev`` directory
-> +as ``counterX``, where ``X`` is the respective counter device id.
-> +Defines for the standard Counter data types are exposed via the
-> +userspace ``include/uapi/linux/counter.h`` file.
+> +			port@0 {
+> +				reg = <0>;
+> +				ethernet = <&mac>;
+> +				phy-mode = "internal";
 > +
-> +Counter events
-> +--------------
-> +Counter device drivers can support Counter events by utilizing the
-> +``counter_push_event`` function::
+> +				fixed-link {
+> +					speed = <100>;
+> +					full-duplex;
+> +				};
+> +			};
 > +
-> +        void counter_push_event(struct counter_device *const counter, const u8 event,
-> +                                const u8 channel);
-> +
-> +The event id is specified by the ``event`` parameter; the event channel
-> +id is specified by the ``channel`` parameter. When this function is
-> +called, the Counter data associated with the respective event is
-> +gathered, and a ``struct counter_event`` is generated for each datum and
-> +pushed to userspace.
-> +
-> +Counter events can be configured by users to report various Counter
-> +data of interest. This can be conceptualized as a list of Counter
-> +component read calls to perform. For example::
+> +			port@1 {
+> +				reg = <1>;
+> +				label = "swp1";
+> +				status = "okay";
 
-Won't the :: here make this appear as text instead of an HTML table?
+I am not convinced that the status = "okay" lines are useful in the
+example.
 
-(might need to change ~~~ to --- [top line] and === [middle line])
+> +				phy-mode = "internal";
 
-> +
-> +        +~~~~~~~~~~~~~~~~~~~~~~~~+~~~~~~~~~~~~~~~~~~~~~~~~+
-> +        | COUNTER_EVENT_OVERFLOW | COUNTER_EVENT_INDEX    |
-> +        +~~~~~~~~~~~~~~~~~~~~~~~~+~~~~~~~~~~~~~~~~~~~~~~~~+
-> +        | Channel 0              | Channel 0              |
-> +        +------------------------+------------------------+
-> +        | * Count 0              | * Signal 0             |
-> +        | * Count 1              | * Signal 0 Extension 0 |
-> +        | * Signal 3             | * Extension 4          |
-> +        | * Count 4 Extension 2  +------------------------+
-> +        | * Signal 5 Extension 0 | Channel 1              |
-> +        |                        +------------------------+
-> +        |                        | * Signal 4             |
-> +        |                        | * Signal 4 Extension 0 |
-> +        |                        | * Count 7              |
-> +        +------------------------+------------------------+
-> +
-> +When ``counter_push_event(counter, COUNTER_EVENT_INDEX, 1)`` is called
-> +for example, it will go down the list for the ``COUNTER_EVENT_INDEX``
-> +event channel 1 and execute the read callbacks for Signal 4, Signal 4
-> +Extension 0, and Count 4 -- the data returned for each is pushed to a
-> +kfifo as a ``struct counter_event``, which userspace can retrieve via a
-> +standard read operation on the respective character device node.
-> +
-> +Userspace
-> +---------
-> +Userspace applications can configure Counter events via ioctl operations
-> +on the Counter character device node. There following ioctl codes are
-> +supported and provided by the ``linux/counter.h`` userspace header file:
-> +
-> +* COUNTER_ADD_WATCH_IOCTL:
-> +  Queues a Counter watch for the specified event. The queued watches
-> +  will not be applied until ``COUNTER_ENABLE_EVENTS_IOCTL`` is called.
-> +
-> +* COUNTER_ENABLE_EVENTS_IOCTL:
-> +  Enables monitoring the events specified by the Counter watches that
-> +  were queued by ``COUNTER_ADD_WATCH_IOCTL``. If events are already
-> +  enabled, the new set of watches replaces the old one. Calling this
-> +  ioctl also has the effect of clearing the queue of watches added by
-> +  ``COUNTER_ADD_WATCH_IOCTL``.
-> +
-> +* COUNTER_DISABLE_EVENTS_IOCTL:
-> +  Stops monitoring the previously enabled events.
+This syntax is ambiguous and does not obviously mean that the port has
+an internal copper PHY. Please see this discussion for other meanings of
+no 'phy-handle' and no 'fixed-link'.
 
-I wouldn't mind seeing more of this documentation in the actual header
-file and just referenced here with :c:macro:`COUNTER_ADD_WATCH_IOCTL`
+https://www.mail-archive.com/u-boot@lists.denx.de/msg409571.html
 
+I think it would be in the best interest of everyone to go through
+phylink_of_phy_connect() instead of phylink_connect_phy(), aka use the
+standard phy-handle property and create an mdio node under
+ethernet-switch@0 where the internal PHY OF nodes are defined.
+
+I don't know if this is true for VSC7512 or not, but for example on
+NXP SJA1110, the internal PHYs can be accessed in 2 modes:
+(a) through SPI transfers
+(b) through an MDIO slave access point exposed by the switch chip, which
+    can be connected to an external MDIO controller
+
+Some boards will use method (a), and others will use method (b).
+
+Requiring a phy-handle under the port property is an absolutely generic
+way to seamlessly deal with both cases. In case (a), the phy-handle
+points to a child of an MDIO bus provided by the ocelot driver, in case
+(b) the phy-handle points to a child provided by some other MDIO
+controller driver.
+
+> +			};
 > +
-> +To configure events to gather Counter data, users first populate a
-> +``struct counter_watch`` with the relevant event id, event channel id,
-> +and the information for the desired Counter component from which to
-> +read, and then pass it via the ``COUNTER_ADD_WATCH_IOCTL`` ioctl
-> +command.
+> +			port@2 {
+> +				reg = <2>;
+> +				label = "swp2";
+> +				status = "okay";
+> +				phy-mode = "internal";
+> +			};
 > +
-> +Note that an event can be watched without gathering Counter data by
-> +setting the ``component.type`` member equal to
-> +``COUNTER_COMPONENT_NONE``. With this configuration the Counter
-> +character device will simply populate the event timestamps for those
-> +respective ``struct counter_event`` elements and ignore the component
-> +value.
-
-To make sure I am understanding this correctly, scope + parent
-determines this part of the path:
-
-	/sys/.../counterX/<scope><parent>/<component>
-
-Or in the case that scope == COUNTER_SCOPE_DEVICE then parent
-is not applicable:
-
-	/sys/.../counterX/<component>
-
-I suggested parent_id instead of parent earlier, but maybe
-scope_id would be a better name? (Or rename scope to parent_type?)
-
-> +
-> +The ``COUNTER_ADD_WATCH_IOCTL`` command will buffer these Counter
-> +watches. When ready, the ``COUNTER_ENABLE_EVENTS_IOCTL`` ioctl command
-> +may be used to activate these Counter watches.
-> +
-> +Userspace applications can then execute a ``read`` operation (optionally
-> +calling ``poll`` first) on the Counter character device node to retrieve
-> +``struct counter_event`` elements with the desired data.
+> +			port@3 {
+> +				reg = <3>;
+> +				label = "swp3";
+> +				status = "okay";
+> +				phy-mode = "internal";
+> +			};
+> +		};
+> +	};
+> +};
+> -- 
+> 2.25.1
+> 
