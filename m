@@ -2,103 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95B163C33E5
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 11:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BF163C33F6
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 11:23:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232560AbhGJJQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 05:16:38 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:32002 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232491AbhGJJQf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 05:16:35 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1625908430; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=nZjdf/YIZuObh/zYQVUmteSyPqAUYoSWQnYeQyM+fME=; b=E6ntbJL1HzzGP80OzrGwKDY1ZzY/uz6EzjbaRnEpto/yjNoevSPB9IpRrLu32pWUsJuqgaIV
- ca1/t6L4cjRgt+/+7J+l2TYnRcmqF8nmVQv5d1qiPwUoZWFfyP1OmVFa5AzGyl00EjnnQi2+
- E/NAU8GA7oKU0XzfCaG90E1bZ+I=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 60e964b57b2963a282fff861 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 10 Jul 2021 09:13:25
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 798F7C4338A; Sat, 10 Jul 2021 09:13:24 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 49133C4360C;
-        Sat, 10 Jul 2021 09:13:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 49133C4360C
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-From:   Wesley Cheng <wcheng@codeaurora.org>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        frowand.list@gmail.com
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        jackp@codeaurora.org, Wesley Cheng <wcheng@codeaurora.org>
-Subject: [PATCH v14 6/6] dt-bindings: usb: dwc3: Update dwc3 TX fifo properties
-Date:   Sat, 10 Jul 2021 02:13:15 -0700
-Message-Id: <1625908395-5498-7-git-send-email-wcheng@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1625908395-5498-1-git-send-email-wcheng@codeaurora.org>
-References: <1625908395-5498-1-git-send-email-wcheng@codeaurora.org>
+        id S232448AbhGJJZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 05:25:03 -0400
+Received: from mxout02.lancloud.ru ([45.84.86.82]:36286 "EHLO
+        mxout02.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231877AbhGJJZC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Jul 2021 05:25:02 -0400
+Received: from LanCloud
+DKIM-Filter: OpenDKIM Filter v2.11.0 mxout02.lancloud.ru D6FF323421C7
+Received: from LanCloud
+Received: from LanCloud
+Received: from LanCloud
+Subject: Re: [PATCH AUTOSEL 4.14 05/33] scsi: hisi_sas: Propagate errors in
+ interrupt_init_v1_hw()
+To:     Sasha Levin <sashal@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stable@vger.kernel.org>
+CC:     John Garry <john.garry@huawei.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>
+References: <20210710023516.3172075-1-sashal@kernel.org>
+ <20210710023516.3172075-5-sashal@kernel.org>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <56cc4caa-bf15-86c7-48f2-54f9e688b437@omp.ru>
+Date:   Sat, 10 Jul 2021 12:14:47 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210710023516.3172075-5-sashal@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.11.198]
+X-ClientProxiedBy: LFEXT01.lancloud.ru (fd00:f066::141) To
+ LFEX1907.lancloud.ru (fd00:f066::207)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the tx-fifo-resize property with a better description, while
-adding the tx-fifo-max-num, which is a new parameter allowing
-adjustments for the maximum number of packets the txfifo resizing logic
-can account for while resizing the endpoints.
+On 10.07.2021 5:34, Sasha Levin wrote:
 
-Reviewed-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
----
- Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+> From: Sergey Shtylyov <s.shtylyov@omp.ru>
+> 
+> [ Upstream commit ab17122e758ef68fb21033e25c041144067975f5 ]
+> 
+> After commit 6c11dc060427 ("scsi: hisi_sas: Fix IRQ checks") we have the
+> error codes returned by platform_get_irq() ready for the propagation
+> upsream in interrupt_init_v1_hw() -- that will fix still broken deferred
+> probing. Let's propagate the error codes from devm_request_irq() as well
+> since I don't see the reason to override them with -ENOENT...
+> 
+> Link: https://lore.kernel.org/r/49ba93a3-d427-7542-d85a-b74fe1a33a73@omp.ru
+> Acked-by: John Garry <john.garry@huawei.com>
+> Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+> Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>   drivers/scsi/hisi_sas/hisi_sas_v1_hw.c | 12 ++++++------
+>   1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c
+> index 08eca20b0b81..8b41545ff8d9 100644
+> --- a/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c
+> +++ b/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c
+[...]
+> @@ -1766,7 +1766,7 @@ static int interrupt_init_v1_hw(struct hisi_hba *hisi_hba)
+>   		if (!irq) {
+>   			dev_err(dev, "irq init: could not map cq interrupt %d\n",
+>   				idx);
+> -			return -ENOENT;
+> +			return irq;
 
-diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-index 41416fb..078fb78 100644
---- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-+++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-@@ -289,10 +289,21 @@ properties:
-     maximum: 16
- 
-   tx-fifo-resize:
--    description: Determines if the FIFO *has* to be reallocated
--    deprecated: true
-+    description: Determines if the TX fifos can be dynamically resized depending
-+      on the number of IN endpoints used and if bursting is supported.  This
-+      may help improve bandwidth on platforms with higher system latencies, as
-+      increased fifo space allows for the controller to prefetch data into its
-+      internal memory.
-     type: boolean
- 
-+  tx-fifo-max-num:
-+    description: Specifies the max number of packets the txfifo resizing logic
-+      can account for when higher endpoint bursting is used. (bMaxBurst > 6) The
-+      higher the number, the more fifo space the txfifo resizing logic will
-+      allocate for that endpoint.
-+    $ref: /schemas/types.yaml#/definitions/uint8
-+    minimum: 3
-+
-   snps,incr-burst-type-adjustment:
-     description:
-       Value for INCR burst type of GSBUSCFG0 register, undefined length INCR
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+    Wait! You apparently hadn't ported back the commit 
+6c11dc060427e07ca144eacaccd696106b361b06. Please either do that or drop this 
+patch.
 
+[...]
+
+MBR, Sergey
