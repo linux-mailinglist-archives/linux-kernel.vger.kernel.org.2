@@ -2,106 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21C213C336B
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 09:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 007763C336F
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 09:10:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232172AbhGJHGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 03:06:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55332 "EHLO
+        id S232208AbhGJHIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 03:08:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230332AbhGJHGN (ORCPT
+        with ESMTP id S232184AbhGJHIA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 03:06:13 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E258AC0613E5;
-        Sat, 10 Jul 2021 00:03:27 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id v14so28217866lfb.4;
-        Sat, 10 Jul 2021 00:03:27 -0700 (PDT)
+        Sat, 10 Jul 2021 03:08:00 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5988C0613DD
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 00:05:15 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id b12so10884085pfv.6
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 00:05:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=RoAygn85CqSsjA+ZP3tE/tDUqjjTDbTT9PVg83fTW1Q=;
-        b=Qk0M31hpLFQuZ101Z7OCsnl/DFh07uLcSdbJyOMSFQuqHdob7iXbLGmemYWt/lfub5
-         EP9sj0t53DYqp1W5+g37adrSfcG0qcwDYdrZHBcy3apVTnmM+Jz2MXLU3kxuPXKa1Y9w
-         PNTI0y3bknbuJH8YyX67X7z1T+1R7LZjx61tEPvtHNiljlrvAug2dyit7wb48X73zFgP
-         IGdWrEDfByHJ33MLetB6+mIA+CFRvqqqcAMd6Z+esO5ilKyk88pt6gpf3zEWP8I3smlz
-         G/ZGtaJs/Pm/Lf2WCtTokYQyQXDw4cWPNx5RWeekJY/pBozggYukO9jOaOzEQ4Pa3Ias
-         x0+Q==
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NyelH3y/Sii7PCvkumT3IvAArvEB9YXUeii5v7j0syg=;
+        b=ej+0sNuNNat0KE9bTIFKRP3jvF3IVHdpZRQVd6NLSVB28jEsDw0mk5ks6v/pvu4YGR
+         PxWl9bsnKhrjJBhj5MaLxCcZyRKwOpMSmqF7Wg9cFRuNr1uijseCpES9gt9RMkissZnA
+         Y80EXBB3mEjif194IEWYktBKRHnAyDaDpSVSvD2GQrbSoEEnwjIIfBFMOyD93qazqW2C
+         7Jh8PucurSVmXZ/aA8SlJDFRMag4wqM5trDo6xIO38fT9TUk65aweePEMR/hl7l+BxMs
+         xqULkEoKf12A4ml2KU8Ivbpv8ayDd/eUQ0eS5bWhze81NQ9PydPqLckL9cOXYWkDo3r5
+         36/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=RoAygn85CqSsjA+ZP3tE/tDUqjjTDbTT9PVg83fTW1Q=;
-        b=ML/wi8iJ2lFOvtBjpmHrM/fopaaWBPF7HdM8CgDAMl1UxTDZ5FqbqZHlt7MsVm+ue3
-         +aFvLqLS9B7wfDARtmf+RuQiKywzTRtdIa1OawcofdVNchWBnrYyTkIfQn1+TL9YsqyM
-         LV+35Ref5aHaIEfKYo+wkrmoBs0luNPS7nRKoU6WeKSIyipanFd21RNiXCS/nQ3/bKjN
-         iBjPx0UXWq0jmtN5d/YOgqte5O8O+GRcIMCgZ4eOiaWISbpQ9CZsUu1bKsc0aMhICVej
-         Pu2FbzW4+woYN+HrAK8/j82I+m6Fl+c4LEQpvW/natIlLTpdf3tz4nDjWhtHrA4IW2dq
-         +pZQ==
-X-Gm-Message-State: AOAM5304sbVui5huUBjN+/0muMVVEamcDTH9euw67lmTJm0IGcTJpBNx
-        tS4TH6Ww/0bcdRSoGBpt4FU=
-X-Google-Smtp-Source: ABdhPJzu16VvgFv4ofhB8NgsK1+b27btX0redgywactLG0cYGLYM5EsK6UcWcvU+fcDRCFQs/oyaVA==
-X-Received: by 2002:a05:6512:4007:: with SMTP id br7mr23604831lfb.271.1625900606277;
-        Sat, 10 Jul 2021 00:03:26 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.225.155])
-        by smtp.gmail.com with ESMTPSA id a1sm616309lff.232.2021.07.10.00.03.25
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NyelH3y/Sii7PCvkumT3IvAArvEB9YXUeii5v7j0syg=;
+        b=W5TZbtGQ1uSRQOBGBjTPLj0uoJYWLzHjbgSG8xkgZghUZkTr7/QGXslTxmAMoaejGb
+         KTiAEkrO5zDexwtmgurmNeAshF3Mp3esng6HDHlNNkXLqTjOhuOTeD7NCQg2Ih4IPL/j
+         DqO4TGJijimQwt3egI6NjDBY0vWCkDQm31d9xtQBTP2pdT/kNN8wCykM9XDro0gIVKW0
+         hdpn1V2NvBIEpyHvwRIHENMlxNJyjKcQqMq9YiPaJeQUmvYsx5q5q1oDiyra9EMbbzL2
+         SV+Mx1HYcK1mv2nn4lGvTv8XRBVndoFUAieZ8osCjqGS2WX0Sh3P+uhLCpSpvBKSPOah
+         KiOg==
+X-Gm-Message-State: AOAM533B377ApiD630o/oOFAX5SWAPyWnUwpnG6QXrXy9QyLDMCnm8RC
+        PqcbOt7JPKG0MU3qnpSP3Mdbmg==
+X-Google-Smtp-Source: ABdhPJyTt9ua5bgo9EOj/fAnBbinirlp0+fwpueIPjCZCx3LPza4hc9vG92Nc+5IYw3IO8dTkY71Fw==
+X-Received: by 2002:a62:2ec7:0:b029:301:fe50:7d4b with SMTP id u190-20020a622ec70000b0290301fe507d4bmr41511393pfu.78.1625900715175;
+        Sat, 10 Jul 2021 00:05:15 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([202.131.71.237])
+        by smtp.gmail.com with ESMTPSA id i8sm8428557pfo.154.2021.07.10.00.05.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Jul 2021 00:03:25 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     paul@paul-moore.com, davem@davemloft.net, yoshfuji@linux-ipv6.org,
-        dsahern@kernel.org, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>
-Subject: [PATCH 2/2] net: cipso: fix memory leak in cipso_v4_doi_free
-Date:   Sat, 10 Jul 2021 10:03:23 +0300
-Message-Id: <cec894625531da243df3a9f05466b83e107e50d7.1625900431.git.paskripkin@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <cover.1625900431.git.paskripkin@gmail.com>
-References: <cover.1625900431.git.paskripkin@gmail.com>
+        Sat, 10 Jul 2021 00:05:14 -0700 (PDT)
+Date:   Sat, 10 Jul 2021 15:05:09 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] coresight: tmc-etr: Speed up for bounce buffer in
+ flat mode
+Message-ID: <20210710070509.GB273828@leoy-ThinkPad-X240s>
+References: <20210710050046.414669-1-leo.yan@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210710050046.414669-1-leo.yan@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When doi_def->type == CIPSO_V4_MAP_TRANS doi_def->map.std should
-be freed to avoid memory leak.
+Hi all,
 
-Fail log:
+On Sat, Jul 10, 2021 at 01:00:46PM +0800, Leo Yan wrote:
 
-BUG: memory leak
-unreferenced object 0xffff88801b936d00 (size 64):
-comm "a.out", pid 8478, jiffies 4295042353 (age 15.260s)
-hex dump (first 32 bytes):
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-00 00 00 00 15 b8 12 26 00 00 00 00 00 00 00 00  .......&........
-backtrace:
-netlbl_cipsov4_add (net/netlabel/netlabel_cipso_v4.c:145 net/netlabel/netlabel_cipso_v4.c:416)
-genl_family_rcv_msg_doit (net/netlink/genetlink.c:741)
-genl_rcv_msg (net/netlink/genetlink.c:783 net/netlink/genetlink.c:800)
-netlink_rcv_skb (net/netlink/af_netlink.c:2505)
-genl_rcv (net/netlink/genetlink.c:813)
+[...]
 
-Fixes: b1edeb102397 ("netlabel: Replace protocol/NetLabel linking with refrerence
-counts")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- net/ipv4/cipso_ipv4.c | 1 +
- 1 file changed, 1 insertion(+)
+> --- a/drivers/hwtracing/coresight/coresight-tmc-etr.c
+> +++ b/drivers/hwtracing/coresight/coresight-tmc-etr.c
+> @@ -21,6 +21,7 @@
+>  
+>  struct etr_flat_buf {
+>  	struct device	*dev;
+> +	struct page	*pages;
+>  	dma_addr_t	daddr;
+>  	void		*vaddr;
+>  	size_t		size;
+> @@ -600,6 +601,7 @@ static int tmc_etr_alloc_flat_buf(struct tmc_drvdata *drvdata,
+>  {
+>  	struct etr_flat_buf *flat_buf;
+>  	struct device *real_dev = drvdata->csdev->dev.parent;
+> +	ssize_t	aligned_size;
+>  
+>  	/* We cannot reuse existing pages for flat buf */
+>  	if (pages)
+> @@ -609,12 +611,17 @@ static int tmc_etr_alloc_flat_buf(struct tmc_drvdata *drvdata,
+>  	if (!flat_buf)
+>  		return -ENOMEM;
+>  
+> -	flat_buf->vaddr = dma_alloc_coherent(real_dev, etr_buf->size,
+> -					     &flat_buf->daddr, GFP_KERNEL);
+> -	if (!flat_buf->vaddr) {
+> -		kfree(flat_buf);
+> -		return -ENOMEM;
+> -	}
+> +	aligned_size = PAGE_ALIGN(etr_buf->size);
+> +	flat_buf->pages = alloc_pages_node(node, GFP_KERNEL | __GFP_ZERO,
+> +					   get_order(aligned_size));
+> +	if (!flat_buf->pages)
+> +		goto fail_alloc_pages;
+> +
+> +	flat_buf->vaddr = page_address(flat_buf->pages);
+> +	flat_buf->daddr = dma_map_page(real_dev, flat_buf->pages, 0,
+> +				       aligned_size, DMA_FROM_DEVICE);
+> +	if (dma_mapping_error(real_dev, flat_buf->daddr))
+> +		goto fail_dma_map_page;
+>  
+>  	flat_buf->size = etr_buf->size;
+>  	flat_buf->dev = &drvdata->csdev->dev;
+> @@ -622,23 +629,34 @@ static int tmc_etr_alloc_flat_buf(struct tmc_drvdata *drvdata,
+>  	etr_buf->mode = ETR_MODE_FLAT;
+>  	etr_buf->private = flat_buf;
+>  	return 0;
+> +
+> +fail_dma_map_page:
+> +	__free_pages(flat_buf->pages, get_order(aligned_size));
+> +fail_alloc_pages:
+> +	kfree(flat_buf);
+> +	return -ENOMEM;
+>  }
+>  
+>  static void tmc_etr_free_flat_buf(struct etr_buf *etr_buf)
+>  {
+>  	struct etr_flat_buf *flat_buf = etr_buf->private;
+>  
+> -	if (flat_buf && flat_buf->daddr) {
+> +	if (flat_buf && flat_buf->vaddr) {
 
-diff --git a/net/ipv4/cipso_ipv4.c b/net/ipv4/cipso_ipv4.c
-index bfaf327e9d12..e0480c6cebaa 100644
---- a/net/ipv4/cipso_ipv4.c
-+++ b/net/ipv4/cipso_ipv4.c
-@@ -472,6 +472,7 @@ void cipso_v4_doi_free(struct cipso_v4_doi *doi_def)
- 		kfree(doi_def->map.std->lvl.local);
- 		kfree(doi_def->map.std->cat.cipso);
- 		kfree(doi_def->map.std->cat.local);
-+		kfree(doi_def->map.std);
- 		break;
- 	}
- 	kfree(doi_def);
--- 
-2.32.0
+I found here I introduced an unexpected change for checking
+"flat_buf->vaddr", we should still check "flat_buf->daddr".
 
+Sent patch v2 to address this issue; please directly review patch
+v2.
+
+Thanks,
+Leo
