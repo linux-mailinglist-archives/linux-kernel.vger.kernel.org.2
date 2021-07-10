@@ -2,119 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C44CA3C35D2
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 19:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBBDE3C35D5
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 19:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbhGJRej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 13:34:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbhGJRei (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 13:34:38 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A2AC0613DD;
-        Sat, 10 Jul 2021 10:31:53 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id l2so19320051edt.1;
-        Sat, 10 Jul 2021 10:31:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Zduc9jpX7e7ip13ou3ijSJWzMOCnUHnEmxXUSbY5bJU=;
-        b=C/P2TgL9cTJl1yI9f+phOSafGQBnJS5mZXs9udeyY4KKHXeif1izj9c0XCynBI6Gow
-         jzeskIMwthwCHcyYcivZOSh2G1l05+Qe6rnKXQy4WsBmAmxGDOJl80BD2s773df1fR1j
-         qQxZnZXKWhUfY6NxzcEfzIFOimmG1sHPH5xQAveYfd//7aHZP7A97QXhhCsDbDrBS6sJ
-         cKy3pKveko5G5SF9OGb/tCuTfF1P6Encmj96T96QzHHVnUHbGhLi9qE/nXU6xRUvUPNj
-         k+OMs2RqAYaNYAy3U+WOK5Rq6qm6M/0o7BjuF6o8k00IdGdS+LfD1u0HxV6Z8ZXCBwoL
-         bQ/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Zduc9jpX7e7ip13ou3ijSJWzMOCnUHnEmxXUSbY5bJU=;
-        b=uEDUPoYT7AX9jWXCVOfgs2EP8JCLgr8HLWSYnr4MCTzR5Gw9RnTMIPokKnIQL0Q1wr
-         CXBIpKWM5t3J/0McFStBHm9NRgT0HHnS/zS2Orqz2WP8vdgtasnCvr80kEZkFXoxpT1Y
-         fhFWmM9xIcvjXyNCOGWatTqqONprdlW40YsyqPmc1PxP3ziUbllBtNYgbSYnjZ4PA6zq
-         jjf1jy6fBpkBpMVFxzw3bwFvRLS+im8WJ9Rjr61gMre2KEJjtZLy88FazNTsgx8E4bQF
-         O8JENA/Gy/X0nnEsLXHKH+hiDJRB+N8yKx+aSaeHOt6RCFZ2jw3oWXFzbQziAtoOVmva
-         TgkA==
-X-Gm-Message-State: AOAM533cN1B2c6jfIdwkc3IGxmKSwYXYPRAjSWJ5fZWfdSTecAJzlgVs
-        QE6u+uk8vu3Jho3dePrwCDJvT8a1YMc7fqjL8sM=
-X-Google-Smtp-Source: ABdhPJyg1jRGhmZQTptVGcxevUXjZHvrJwenNbSbMbtZFCyCAsyOajHY7yoULfJluUj6Ks8aq5llIrezy6kNlO/fsYM=
-X-Received: by 2002:a05:6402:40c4:: with SMTP id z4mr55523898edb.364.1625938311902;
- Sat, 10 Jul 2021 10:31:51 -0700 (PDT)
+        id S230057AbhGJRfm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 10 Jul 2021 13:35:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47124 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229490AbhGJRfl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Jul 2021 13:35:41 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 46D5B61279;
+        Sat, 10 Jul 2021 17:32:52 +0000 (UTC)
+Date:   Sat, 10 Jul 2021 18:35:25 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Antti =?UTF-8?B?S2Vyw6RuZW4=?= <detegr@rbx.email>
+Cc:     linux-iio@vger.kernel.org, Hannu Hartikainen <hannu@hrtk.in>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Nuno Sa <nuno.sa@analog.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH v2] iio: adis: set GPIO reset pin direction
+Message-ID: <20210710183525.0684bd90@jic23-huawei>
+In-Reply-To: <20210708095425.13295-1-detegr@rbx.email>
+References: <60e5ac8c.1c69fb81.c69f0.abab@mx.google.com>
+        <20210708095425.13295-1-detegr@rbx.email>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <1625903002-31619-1-git-send-email-linyunsheng@huawei.com> <1625903002-31619-4-git-send-email-linyunsheng@huawei.com>
-In-Reply-To: <1625903002-31619-4-git-send-email-linyunsheng@huawei.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Sat, 10 Jul 2021 10:31:41 -0700
-Message-ID: <CAKgT0Udnb_KgHyWiwxDF+r+DkytgZd4CQJz4QR85JpinhZAJzw@mail.gmail.com>
-Subject: Re: [PATCH rfc v2 3/5] page_pool: add page recycling support based on
- elevated refcnt
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
-        yisen.zhuang@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
-        thomas.petazzoni@bootlin.com, hawk@kernel.org,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, fenghua.yu@intel.com,
-        guro@fb.com, Peter Xu <peterx@redhat.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>, wenxu@ucloud.cn,
-        Cong Wang <cong.wang@bytedance.com>,
-        Kevin Hao <haokexin@gmail.com>, nogikh@google.com,
-        Marco Elver <elver@google.com>,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 10, 2021 at 12:44 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
-<snip>
-> @@ -419,6 +471,20 @@ static __always_inline struct page *
->  __page_pool_put_page(struct page_pool *pool, struct page *page,
->                      unsigned int dma_sync_size, bool allow_direct)
->  {
-> +       int bias = page_pool_get_pagecnt_bias(page);
-> +
-> +       /* Handle the elevated refcnt case first */
-> +       if (bias) {
-> +               /* It is not the last user yet */
-> +               if (!page_pool_bias_page_recyclable(page, bias))
-> +                       return NULL;
-> +
-> +               if (likely(!page_is_pfmemalloc(page)))
-> +                       goto recyclable;
-> +               else
-> +                       goto unrecyclable;
-> +       }
-> +
+On Thu,  8 Jul 2021 12:54:29 +0300
+Antti Keränen <detegr@rbx.email> wrote:
 
-So this part is still broken. Anything that takes a reference to the
-page and holds it while this is called will cause it to break. For
-example with the recent fixes we put in place all it would take is a
-skb_clone followed by pskb_expand_head and this starts leaking memory.
+> Set reset pin direction to output as the reset pin needs to be an active
+> low output pin.
+> 
+> Co-developed-by: Hannu Hartikainen <hannu@hrtk.in>
+> Signed-off-by: Hannu Hartikainen <hannu@hrtk.in>
+> Signed-off-by: Antti Keränen <detegr@rbx.email>
 
-One of the key bits in order for pagecnt_bias to work is that you have
-to deduct the bias once there are no more parties using it. Otherwise
-you leave the reference count artificially inflated and the page will
-never be freed. It works fine for the single producer single consumer
-case but once you introduce multiple consumers this is going to fall
-apart.
+Hi Antti,
+
+For future reference (in IIO anyway as not all maintainers agree on this!)
+please don't send a v2 in reply to v1.  It gets lots if anyone is using
+a threaded email client as it's buried deep.  If I'd not been following
+the discussion I'd probably have missed this.
+
+Seems correct to me, but will leave on list a few more days as rc1 isn't
+out yet so I don't have a good based to start collecting fixes on a the
+moment.
+
+Jonathan
+
+> ---
+> Removed unnecessary toggling of the pin as requested by Lars-Peter. I
+> missed out on the conversation, but I agree this is better.
+> 
+>  drivers/iio/imu/adis.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iio/imu/adis.c b/drivers/iio/imu/adis.c
+> index 319b64b2fd88..f8b7837d8b8f 100644
+> --- a/drivers/iio/imu/adis.c
+> +++ b/drivers/iio/imu/adis.c
+> @@ -415,12 +415,11 @@ int __adis_initial_startup(struct adis *adis)
+>  	int ret;
+>  
+>  	/* check if the device has rst pin low */
+> -	gpio = devm_gpiod_get_optional(&adis->spi->dev, "reset", GPIOD_ASIS);
+> +	gpio = devm_gpiod_get_optional(&adis->spi->dev, "reset", GPIOD_OUT_HIGH);
+>  	if (IS_ERR(gpio))
+>  		return PTR_ERR(gpio);
+>  
+>  	if (gpio) {
+> -		gpiod_set_value_cansleep(gpio, 1);
+>  		msleep(10);
+>  		/* bring device out of reset */
+>  		gpiod_set_value_cansleep(gpio, 0);
+
