@@ -2,55 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AD333C333E
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 08:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 689AE3C3344
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 08:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231670AbhGJGjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 02:39:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51340 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229612AbhGJGju (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 02:39:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CAC961375;
-        Sat, 10 Jul 2021 06:37:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1625899025;
-        bh=gV2Pfj2NN055Q0X+lsNhoIQOi7ituo+LVpl15VX3Qrg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iEVZdslJuwgHl1Srn3duqBR3Jq8/GB/5xleLtRueB22Bu6QKo8kD1wKLtcP1DUuYb
-         beLL3TiJyKW6LS+CMwlzKhA0XEKb/4ZbFUePsoutrpMHHu3qlGbHrpdcKRlphAGHAW
-         UCFSE2sxxI4o6shXYxjYeAo7d4BFhuxnJ1nVUubM=
-Date:   Sat, 10 Jul 2021 08:37:03 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Hridya Valsaraju <hridya@google.com>
-Cc:     daniel@ffwll.ch, Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        kernel-team@android.com, john.stultz@linaro.org, surenb@google.com
-Subject: Re: [PATCH] dma-buf: Delete the DMA-BUF attachment sysfs statistics
-Message-ID: <YOlADy6gdrUDNltl@kroah.com>
-References: <20210710051027.42828-1-hridya@google.com>
+        id S231933AbhGJGnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 02:43:35 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:10347 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231783AbhGJGne (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Jul 2021 02:43:34 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GML0665gNz77dB;
+        Sat, 10 Jul 2021 14:36:22 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Sat, 10 Jul 2021 14:40:47 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Sat, 10 Jul 2021 14:40:46 +0800
+Subject: Re: [PATCH 5.10 0/6] 5.10.49-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210709131537.035851348@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <78c131c4-16bc-1a43-79b0-02af9ed7459a@huawei.com>
+Date:   Sat, 10 Jul 2021 14:40:45 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210710051027.42828-1-hridya@google.com>
+In-Reply-To: <20210709131537.035851348@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggemi762-chm.china.huawei.com (10.1.198.148)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 09, 2021 at 10:10:24PM -0700, Hridya Valsaraju wrote:
-> The DMA-BUF attachment statistics form a subset of the DMA-BUF
-> sysfs statistics that recently merged to the drm-misc tree.
-> Since there has been a reported a performance regression due to the
-> overhead of sysfs directory creation/teardown during
-> dma_buf_attach()/dma_buf_detach(), this patch deletes the DMA-BUF
-> attachment statistics from sysfs.
-> 
-> Fixes: bdb8d06dfefd (dmabuf: Add the capability to expose DMA-BUF stats
-> in sysfs)
-> Signed-off-by: Hridya Valsaraju <hridya@google.com>
-> ---
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+On 2021/7/9 21:21, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.49 release.
+> There are 6 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 11 Jul 2021 13:14:09 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.49-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
+
+Tested on arm64 and x86 for 5.10.49-rc1,
+
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-5.10.y
+Version: 5.10.49-rc1
+Commit: 5b40bcb16853d5fa948446202f43ea3fbcc14f33
+Compiler: gcc version 7.3.0 (GCC)
+
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8906
+passed: 8906
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8906
+passed: 8906
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
