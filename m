@@ -2,230 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DBF93C34CC
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 16:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 803D33C34CE
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 16:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231438AbhGJOIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 10:08:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34418 "EHLO
+        id S231490AbhGJOJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 10:09:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229917AbhGJOIX (ORCPT
+        with ESMTP id S229835AbhGJOJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 10:08:23 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A0C2C0613DD
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 07:05:37 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id l2so18679163edt.1
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 07:05:36 -0700 (PDT)
+        Sat, 10 Jul 2021 10:09:41 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B4C6C0613DD;
+        Sat, 10 Jul 2021 07:06:56 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id h4so13000278pgp.5;
+        Sat, 10 Jul 2021 07:06:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=EYwqPF/Efyc/51Og33CRU1VurVxgBcOLAgbCveQdHqc=;
-        b=Js/sNv5bECh9nP6bOR4pevkrlWEfNrCchqyUTtblwQs8gS01hZNHjg189/wy4YMHgE
-         34QdFmUf4zVxRTjuVMi18B/0w1ON1RKc/5Nj1dUn9c9WkkZpJHLKhvzmQ0ZCP333mk1F
-         zIaijOk9YGp/tbSowpkggRlwHovxW9CE4QmhmVCB9qXVQfKFtcouG+SbT9u1rtnJgJAY
-         pTRjSHh1JIH35UhuCnqwhGFlQbfqbI4CneNocNgzizyHe9JvCVrr5Dl35JcgodPkfqR+
-         +B8A1oIN1cAceOcPBfL+oM+0skIXsnB7LV/W5zFpps1aUoo/h6MsFJBn07fd24GedOYw
-         hxOA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=URDqb9zjYQ7mZTdIlVsIzvmo/ii4zncZrJ90YneZcyY=;
+        b=gqqMCxij/XjH4AyVVdem0KOcqKv0gqzjpC2t8bb0/eaPaw3t51jkERWQT+uCPrXf7p
+         pVmgTVQHCaWoEg5FuQ4EH3ydf682GFo2ZTvzM3S4pbNI8+K1KeU14ZnBiokcnB+xU7Fo
+         cm001Py37h6vG8zeroxIj7mlpg+rnqrlvLfPTISPWPWS0hCtwhsWRdmzAw8rwWXV6FfC
+         qUfr1IDYKBC2xv/oFJSLPqB2vmXaBqNpibJ8A48o4SNZ16qPxriXdqkymYCSL9ufkZwG
+         gx8Htt0FRzK4/u3iMeGRzs4jPWBCj9ZwafXe9BFhFAx+7FWSsjMYpIMgptIDYPjS6LAv
+         Efgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=EYwqPF/Efyc/51Og33CRU1VurVxgBcOLAgbCveQdHqc=;
-        b=IWS9NfT+KgnZM78LRidACslSiubLObVNK0Blw6dLclT4z56B+89mjAKVfJpymZEkZL
-         g05R9JJdMtozBJSazx9wv+HLqs9dP3I3BZl1Zx5Zlz0q6uksMv8OLQoJtFIWYGnCHBOx
-         u7hOTvgPf6yitejkFacMoneiz/gwKakbTW95uV1CnjOujpQlchoK2egWQUbn4UZwBW5y
-         tyNiCNBLtROEUe9GRDhUsgnxZbKFywfBglFw+o4PncfFwRDQ9gRxrPuFxegZu3lHtqdp
-         JKhasCFN8HQF3TFJAGeJ5pi5zPNOGpLRqjlBeL16+ibZMVas+JBvicxb4hHJNfQFFYR1
-         YMdw==
-X-Gm-Message-State: AOAM532RUqupnxBt4pnm/l8ZQgc0wZR7BjzQuygFtKa2KNceZ9HzTlhD
-        1Y+TP1XLiaFCFosK59BONdoK082CFCLIreZFI6FmZA==
-X-Google-Smtp-Source: ABdhPJzrFD5UQZXt9OAU76wAjkdfw4LYgKlh++OOD1LfW8Du8j58JVEcvCx/XMxDQwNZ+6kcWp2WbmYuGxirdjamb9k=
-X-Received: by 2002:a05:6402:1e8e:: with SMTP id f14mr40981426edf.52.1625925935363;
- Sat, 10 Jul 2021 07:05:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210709131627.928131764@linuxfoundation.org>
-In-Reply-To: <20210709131627.928131764@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 10 Jul 2021 19:35:24 +0530
-Message-ID: <CA+G9fYtqJqR2_cL7B8SbBJkQuhwx+TLGK28TwaJm9tLCJ+O6Xw@mail.gmail.com>
-Subject: Re: [PATCH 4.14 00/25] 4.14.239-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=URDqb9zjYQ7mZTdIlVsIzvmo/ii4zncZrJ90YneZcyY=;
+        b=PtFcHI0cDBJX8du9AwsqM0zAPSYYGFHyXzRRcB0F9j7ZcfvDFTPPp3Y1vndL04OKYD
+         Du4DQRbN4Q2FGYYazKCV4iRX80K3SMTekSNKYHs7Jn34xYZDYYvBApJ52yfW7hNms0O/
+         kCDUanXX3FqavLa4qyx5/nUOEQC/0Gc22llO+sMVXSej9+AL9FsbZBzk6ml1xeEBh8QA
+         Fs9cs0rjLVFfncm3IDr2pldc2ZIenifvMh48CeVULE85n2CweYRKZc0IlXUCXTlVqwg5
+         Em2yu3ZOz3ahCA9olshPRdPpMXWi1E5Y1NoLGIKwlnKoo0IQj6/AuPRBjleGMcRJ0FXi
+         5xmg==
+X-Gm-Message-State: AOAM530+uEvov+Frc8L4IHyHt9X1EZPqtrWi4IY99sLKi4w2rCiEXelm
+        oPOY5HSlNKqh93K6qLRQUw==
+X-Google-Smtp-Source: ABdhPJyLW1CP6LcdW3Chz1lwiQWjy8RLz86QjeEOnRG+SGlLWTfw64NhqIDEPSBqHHRstWoIafFOzA==
+X-Received: by 2002:a62:86c5:0:b029:328:e1fb:8332 with SMTP id x188-20020a6286c50000b0290328e1fb8332mr8205621pfd.35.1625926015353;
+        Sat, 10 Jul 2021 07:06:55 -0700 (PDT)
+Received: from vultr.guest ([107.191.53.97])
+        by smtp.gmail.com with ESMTPSA id l12sm9734123pff.105.2021.07.10.07.06.53
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 10 Jul 2021 07:06:54 -0700 (PDT)
+From:   Zheyu Ma <zheyuma97@gmail.com>
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        rclemsmith@gmail.com
+Cc:     zheyuma97@gmail.com, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] tty: serial: jsm: hold port lock when reporting modem line changes
+Date:   Sat, 10 Jul 2021 14:05:59 +0000
+Message-Id: <1625925959-11086-1-git-send-email-zheyuma97@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Jul 2021 at 18:49, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.14.239 release.
-> There are 25 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sun, 11 Jul 2021 13:14:09 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.14.239-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+uart_handle_dcd_change() requires a port lock to be held and will emit a
+warning when lockdep is enabled.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Held corresponding lock to fix warnings.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+---
+ drivers/tty/serial/jsm/jsm_neo.c | 2 ++
+ drivers/tty/serial/jsm/jsm_tty.c | 3 +++
+ 2 files changed, 5 insertions(+)
 
-## Build
-* kernel: 4.14.239-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-4.14.y
-* git commit: 89bdc2d2afb34594a4865d7be3a8b4b898e0d955
-* git describe: v4.14.238-26-g89bdc2d2afb3
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14.y/build/v4.14=
-.238-26-g89bdc2d2afb3
+diff --git a/drivers/tty/serial/jsm/jsm_neo.c b/drivers/tty/serial/jsm/jsm_neo.c
+index bf0e2a4cb0ce..c6f927a76c3b 100644
+--- a/drivers/tty/serial/jsm/jsm_neo.c
++++ b/drivers/tty/serial/jsm/jsm_neo.c
+@@ -815,7 +815,9 @@ static void neo_parse_isr(struct jsm_board *brd, u32 port)
+ 		/* Parse any modem signal changes */
+ 		jsm_dbg(INTR, &ch->ch_bd->pci_dev,
+ 			"MOD_STAT: sending to parse_modem_sigs\n");
++		spin_lock_irqsave(&ch->uart_port.lock, lock_flags);
+ 		neo_parse_modem(ch, readb(&ch->ch_neo_uart->msr));
++		spin_unlock_irqrestore(&ch->uart_port.lock, lock_flags);
+ 	}
+ }
+ 
+diff --git a/drivers/tty/serial/jsm/jsm_tty.c b/drivers/tty/serial/jsm/jsm_tty.c
+index 8e42a7682c63..d74cbbbf33c6 100644
+--- a/drivers/tty/serial/jsm/jsm_tty.c
++++ b/drivers/tty/serial/jsm/jsm_tty.c
+@@ -187,6 +187,7 @@ static void jsm_tty_break(struct uart_port *port, int break_state)
+ 
+ static int jsm_tty_open(struct uart_port *port)
+ {
++	unsigned long lock_flags;
+ 	struct jsm_board *brd;
+ 	struct jsm_channel *channel =
+ 		container_of(port, struct jsm_channel, uart_port);
+@@ -240,6 +241,7 @@ static int jsm_tty_open(struct uart_port *port)
+ 	channel->ch_cached_lsr = 0;
+ 	channel->ch_stops_sent = 0;
+ 
++	spin_lock_irqsave(&port->lock, lock_flags);
+ 	termios = &port->state->port.tty->termios;
+ 	channel->ch_c_cflag	= termios->c_cflag;
+ 	channel->ch_c_iflag	= termios->c_iflag;
+@@ -259,6 +261,7 @@ static int jsm_tty_open(struct uart_port *port)
+ 	jsm_carrier(channel);
+ 
+ 	channel->ch_open_count++;
++	spin_unlock_irqrestore(&port->lock, lock_flags);
+ 
+ 	jsm_dbg(OPEN, &channel->ch_bd->pci_dev, "finish\n");
+ 	return 0;
+-- 
+2.17.6
 
-## No regressions (compared to v4.14.238-22-g6fb138f75307)
-
-
-## No fixes (compared to v4.14.238-22-g6fb138f75307)
-
-
-## Test result summary
- total: 66243, pass: 52214, fail: 682, skip: 11377, xfail: 1970,
-
-## Build Summary
-* arm: 97 total, 97 passed, 0 failed
-* arm64: 24 total, 24 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 14 total, 14 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 36 total, 36 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 14 total, 14 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
