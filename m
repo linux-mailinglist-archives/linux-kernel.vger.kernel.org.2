@@ -2,103 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 329AE3C34B3
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 15:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C123C34B9
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 15:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232999AbhGJNNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 09:13:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50366 "EHLO
+        id S230325AbhGJNcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 09:32:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232839AbhGJNNA (ORCPT
+        with ESMTP id S229501AbhGJNcv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 09:13:00 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E9FAC0613B4;
-        Sat, 10 Jul 2021 06:10:01 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id m17so18454985edc.9;
-        Sat, 10 Jul 2021 06:10:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=m+2uDLVnJqvxnopDKdmW/+zUCo6k/oZnFyd1ECUsC0Q=;
-        b=P68we8SNJ2sqUT2CvfLm2T71TYpBDWvsKg7gFB24igqRL7zT7U5KJ4j7qMX8OIU8G8
-         dmGkQTSUg0f/xE52cnGQSgoqqz0wsZcJ3llsDjDB4r4Ax/Tdvub9hdu/wbYOryb5W0e+
-         /4Rh1O0Uxtm7X7IXR4UJPnJd4lw1sBFlpX8WUyOobvs76B+6J8ypOZQEuM1SVdJ4NIp5
-         XdrBK+wvaymKhxtV6Y9U46g50WbmQwuItykLbxabWbyS5BaUVOrZgD7UjkVjEET1TEC6
-         46Dc0+ZgkkKey+v5EKI7TpE5jeGJZsLWoAro4vDawKiuIhVYy/+qy5+BMoBQxZRKGdzJ
-         wJMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=m+2uDLVnJqvxnopDKdmW/+zUCo6k/oZnFyd1ECUsC0Q=;
-        b=lYhE9GC0/E+XZzx3F/zadr+eHdIBljVIpv0VCmNlt8fXV/7YeImfwN8pjSrjt6e5Gc
-         QDE8PI5N3nrEbQoNknJQEHMVgjR/DNfXFQ4jGox4pnWbM5I/rI+M5a2l+cveQnNmDApv
-         d2OXpbG164ziAH/8DGiOcpHzV9ENioNBooDk5FmZVdLBm/0UezRqyTyxhEnMa3LA+YvF
-         d/Xlwx6VIuNf/9eGDYiHRheGQhjh3wxfkAHGQJxpG+oiSpetSqPzzCQSLmIXIPhY6gtx
-         XIwxpYbNQeWflMSJJHLpSil9sSSbiHuXQwXUf2gOd9MmiQkVCnbVVKXB0f/TCdgMpa8J
-         3geg==
-X-Gm-Message-State: AOAM532sdlyR1EzpzsPV60e3PATvlYpXr86YGUvq4PBoHrMJkeUeJkhc
-        wDt33pCGc/SEowI108C3cGM=
-X-Google-Smtp-Source: ABdhPJxLMZjNkBTHposEZBtwu92P2ac+tWFu+M8LeM7SSsF/AYfd57LXQAjUn40pivT1nrTwBo9L2w==
-X-Received: by 2002:a05:6402:20e:: with SMTP id t14mr52600538edv.193.1625922600001;
-        Sat, 10 Jul 2021 06:10:00 -0700 (PDT)
-Received: from eldamar (host-80-104-22-174.retail.telecomitalia.it. [80.104.22.174])
-        by smtp.gmail.com with ESMTPSA id l16sm3748873ejb.26.2021.07.10.06.09.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Jul 2021 06:09:58 -0700 (PDT)
-Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
-Date:   Sat, 10 Jul 2021 15:09:55 +0200
-From:   Salvatore Bonaccorso <carnil@debian.org>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@siol.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Chen-Yu Tsai <wens@kernel.org>,
-        Vagrant Cascadian <vagrant@reproducible-builds.org>,
-        "B.R. Oake" <broake@mailfence.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] ARM: dts: sun8i: h3: orangepi-plus: Fix ethernet phy-mode
-Message-ID: <YOmcI191mbxXCrp1@eldamar.lan>
-References: <20210524122111.416885-1-carnil@debian.org>
- <20210524123506.cuwwtqgtejquuq5e@gilmour>
+        Sat, 10 Jul 2021 09:32:51 -0400
+Received: from mxwww.masterlogin.de (mxwww.masterlogin.de [IPv6:2a03:2900:1:1::a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C69C0613DD
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 06:30:05 -0700 (PDT)
+Received: from mxout1.routing.net (unknown [192.168.10.81])
+        by backup.mxwww.masterlogin.de (Postfix) with ESMTPS id 3A0F62C503
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 13:24:55 +0000 (UTC)
+Received: from mxbox1.masterlogin.de (unknown [192.168.10.88])
+        by mxout1.routing.net (Postfix) with ESMTP id 2986F3FD96;
+        Sat, 10 Jul 2021 13:24:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
+        s=20200217; t=1625923491;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=wJMDjXBafhvNxiRagDqsC9dExnn1uVvik0Aoqi/lvZI=;
+        b=ruW1qKc5g+v4UdI4glw06pkfB6z/CEmSNZ2fbqGvtkz5r8U2uPBmt2o81uf0x9Qar5Jyoc
+        h8npIE7M/MrDu5bN6K18ta6p/uyENMSxDR723doL4+UYGpniOaFqjcxvsEVMVJn14HqK2H
+        pYp8a3n0BgMdnU3P4umwQUYF4N05Ml4=
+Received: from localhost.localdomain (fttx-pool-217.61.146.228.bambit.de [217.61.146.228])
+        by mxbox1.masterlogin.de (Postfix) with ESMTPSA id 429C94005D;
+        Sat, 10 Jul 2021 13:24:50 +0000 (UTC)
+From:   Frank Wunderlich <linux@fw-web.de>
+To:     linux-mediatek@lists.infradead.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        CK Hu <ck.hu@mediatek.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Enric Balletbo Serra <eballetbo@gmail.com>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>
+Subject: [PATCH] soc: mediatek: mmsys: fix HDMI output on mt7623/bananapi-r2
+Date:   Sat, 10 Jul 2021 15:24:31 +0200
+Message-Id: <20210710132431.265985-1-linux@fw-web.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210524123506.cuwwtqgtejquuq5e@gilmour>
+Content-Transfer-Encoding: 8bit
+X-Mail-ID: 1f821dd4-763b-4f4a-a1cd-dc3fe34c2e99
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime,
+From: Frank Wunderlich <frank-w@public-files.de>
 
-On Mon, May 24, 2021 at 02:35:06PM +0200, Maxime Ripard wrote:
-> On Mon, May 24, 2021 at 02:21:11PM +0200, Salvatore Bonaccorso wrote:
-> > Commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay
-> > config") sets the RX/TX delay according to the phy-mode property in the
-> > device tree. For the Orange Pi Plus board this is "rgmii", which is the
-> > wrong setting.
-> > 
-> > Following the example of a900cac3750b ("ARM: dts: sun7i: a20: bananapro:
-> > Fix ethernet phy-mode") the phy-mode is changed to "rgmii-id" which gets
-> > the Ethernet working again on this board.
-> > 
-> > Fixes: bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay config")
-> > Reported-by: "B.R. Oake" <broake@mailfence.com>
-> > Reported-by: Vagrant Cascadian <vagrant@reproducible-builds.org>
-> > Link: https://bugs.debian.org/988574
-> > Signed-off-by: Salvatore Bonaccorso <carnil@debian.org>
-> 
-> Applied, thanks!
+HDMI output was broken on mt7623/BPI-R2 in 5.13 because function for
+special output selection (mtk_mmsys_ddp_sout_sel) was dropped.
+This function wrote 3 registers at one time and so it is not compatible
+with the array-approach.
 
-Did this fall trough the cracks? 
+I re-added the old function and call this after the default routing table
+was applied. This default routing table can still be used as the only
+connection handled by mmsys on BPI-R2 is OVL0->RDMA0 and this is already
+present in the default routing table
 
-I see it in
-https://git.kernel.org/pub/scm/linux/kernel/git/sunxi/linux.git/commit/?id=b19d3479f25e8a0ff24df0b46c82e50ef0f900dd
-but got not merged yet in mainline.
+Fixes: 440147639ac7 ("soc: mediatek: mmsys: Use an array for setting the routing registers")
+Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+---
+ drivers/soc/mediatek/mtk-mmsys.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-Thank you for your work!
+diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-mmsys.c
+index 080660ef11bf..f91b7fdd417a 100644
+--- a/drivers/soc/mediatek/mtk-mmsys.c
++++ b/drivers/soc/mediatek/mtk-mmsys.c
+@@ -57,6 +57,25 @@ struct mtk_mmsys {
+ 	const struct mtk_mmsys_driver_data *data;
+ };
+ 
++static void mtk_mmsys_ddp_sout_sel(struct device *dev,
++				   enum mtk_ddp_comp_id cur,
++				   enum mtk_ddp_comp_id next)
++{
++	struct mtk_mmsys *mmsys = dev_get_drvdata(dev);
++
++	if (cur == DDP_COMPONENT_BLS && next == DDP_COMPONENT_DSI0) {
++		writel_relaxed(BLS_TO_DSI_RDMA1_TO_DPI1,
++			       mmsys->regs + DISP_REG_CONFIG_OUT_SEL);
++	} else if (cur == DDP_COMPONENT_BLS && next == DDP_COMPONENT_DPI0) {
++		writel_relaxed(BLS_TO_DPI_RDMA1_TO_DSI,
++			       mmsys->regs + DISP_REG_CONFIG_OUT_SEL);
++		writel_relaxed(DSI_SEL_IN_RDMA,
++			       mmsys->regs + DISP_REG_CONFIG_DSI_SEL);
++		writel_relaxed(DPI_SEL_IN_BLS,
++			       mmsys->regs + DISP_REG_CONFIG_DPI_SEL);
++	}
++}
++
+ void mtk_mmsys_ddp_connect(struct device *dev,
+ 			   enum mtk_ddp_comp_id cur,
+ 			   enum mtk_ddp_comp_id next)
+@@ -71,6 +90,8 @@ void mtk_mmsys_ddp_connect(struct device *dev,
+ 			reg = readl_relaxed(mmsys->regs + routes[i].addr) | routes[i].val;
+ 			writel_relaxed(reg, mmsys->regs + routes[i].addr);
+ 		}
++
++	mtk_mmsys_ddp_sout_sel(dev, cur, next);
+ }
+ EXPORT_SYMBOL_GPL(mtk_mmsys_ddp_connect);
+ 
+-- 
+2.25.1
 
-Regards,
-Salvatore
