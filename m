@@ -2,71 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ADB13C2C04
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 02:22:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC253C2C06
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 02:23:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231582AbhGJAYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 20:24:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45806 "EHLO mail.kernel.org"
+        id S231195AbhGJAZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 20:25:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230280AbhGJAYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 20:24:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B3DA61375;
-        Sat, 10 Jul 2021 00:21:44 +0000 (UTC)
+        id S229854AbhGJAZb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 20:25:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9131B613C5;
+        Sat, 10 Jul 2021 00:22:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625876506;
-        bh=6rpgsXcYHXTRiRxbsoV4Xmj8XUN/0RGWjpURDGJOTU0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=khpmeHzHN9ANnhwgb/6Hh+zDei/BGn1Yv6fWJvX9q+xdlxcyuI6aJ0M7MMJ33DFy6
-         xMKaA1pmznYabKV1vi96XwpCw6LLEMzrtOWHBJnC/XR2dEsdGctle2dbM0sdMGM9gH
-         szJv+Z/b7+yy1f2mTapBPl6L7uwGgPvA0/BmtOtQH0jpnf4qu5ZtY6t7vdvgu1y1Vu
-         lVGfQREyLTfsZ+h8AXFShiT97BMhYG+oNgqrmlaOYeSSmRYRIryKlrvi//CztYEk7A
-         gt9hAqe2wcnBztBRBDciLTlrUccsEY560yhwScNcxXkgtbxX0BEHfttWWPhCJTLRD9
-         j3YLbFmfOj4YQ==
-From:   Chao Yu <chao@kernel.org>
-To:     jaegeuk@kernel.org
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Chao Yu <chao.yu@linux.dev>,
-        Chao Yu <chao@kernel.org>, 5kft <5kft@5kft.org>
-Subject: [PATCH] f2fs: compress: fix to set zstd compress level correctly
-Date:   Sat, 10 Jul 2021 08:21:41 +0800
-Message-Id: <20210710002141.25086-1-chao@kernel.org>
-X-Mailer: git-send-email 2.22.1
+        s=k20201202; t=1625876566;
+        bh=twV0s5fvSE7IUuMhVn1kd9rjGDN52nK26wZqofDxqvM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=r9pOrXLu65AyG0ErQDbxA26gdIzlgBIMKmF5Iw3eMjtoYJlCcqdjQ5DBPK1gQqCzH
+         ud/Maz6KeMIOx5RxCZcisNYQK3hayBoAQIn+k/lPPcf3nMfYFiKZviDdtqBHvebQq2
+         C6f76C9HyyO4xpj/lHXHypur22a8f0r5T1eMm+rRA8VOKpugxUb/rky3W7r+UM8nOC
+         qEtYEYGVOYUokgaAxp5YGDj8Koc90ZJqrtEAJkHaKb3rkQ/cZhEMAKdgwDoNICvsg0
+         59c+HRGnzruoKbB1lNLdBMEDbtsSLnd8fpzVklQ6ohM05fQg3Xk/4oNV0QQr+Q6yve
+         Er6W/Qhr06ijg==
+Date:   Fri, 9 Jul 2021 19:22:45 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: [GIT PULL] PCI fixes for v5.14
+Message-ID: <20210710002245.GA1190136@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As 5kft reported in [1]:
+The following changes since commit 50be9417e23af5a8ac860d998e1e3f06b8fd79d7:
 
-set_compress_context() should set compress level into .i_compress_flag
-for zstd as well as lz4hc, otherwise, zstd compressor will still use
-default zstd compress level during compression, fix it.
+  Merge tag 'io_uring-5.14-2021-07-09' of git://git.kernel.dk/linux-block (2021-07-09 12:17:38 -0700)
 
-[1] https://lore.kernel.org/linux-f2fs-devel/8e29f52b-6b0d-45ec-9520-e63eb254287a@www.fastmail.com/T/#u
+are available in the Git repository at:
 
-Fixes: 3fde13f817e2 ("f2fs: compress: support compress level")
-Reported-by: 5kft <5kft@5kft.org>
-Signed-off-by: Chao Yu <chao@kernel.org>
----
- fs/f2fs/f2fs.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+  git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git tags/pci-v5.14-fixes-1
 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 5099652c260b..4bc89dd9487e 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -4160,7 +4160,8 @@ static inline void set_compress_context(struct inode *inode)
- 				1 << COMPRESS_CHKSUM : 0;
- 	F2FS_I(inode)->i_cluster_size =
- 			1 << F2FS_I(inode)->i_log_cluster_size;
--	if (F2FS_I(inode)->i_compress_algorithm == COMPRESS_LZ4 &&
-+	if ((F2FS_I(inode)->i_compress_algorithm == COMPRESS_LZ4 ||
-+		F2FS_I(inode)->i_compress_algorithm == COMPRESS_ZSTD) &&
- 			F2FS_OPTION(sbi).compress_level)
- 		F2FS_I(inode)->i_compress_flag |=
- 				F2FS_OPTION(sbi).compress_level <<
--- 
-2.22.1
+for you to fetch changes up to 62efe3eebc8bfc351961eee769a5c2fc30221451:
 
+  Revert "PCI: Coalesce host bridge contiguous apertures" (2021-07-09 18:51:46 -0500)
+
+
+This is a clean revert for a regression that was just reported, so it
+hasn't been through linux-next yet, but I'd like to merge this before -rc1
+so we don't release it with a known regression.
+
+----------------------------------------------------------------
+
+PCI fixes:
+
+  - Revert host bridge window patch that fixed HP EliteDesk 805 G6, but
+    broke ppc:sam460ex (Bjorn Helgaas)
+
+----------------------------------------------------------------
+Bjorn Helgaas (1):
+      Revert "PCI: Coalesce host bridge contiguous apertures"
+
+ drivers/pci/probe.c | 52 +++++-----------------------------------------------
+ 1 file changed, 5 insertions(+), 47 deletions(-)
