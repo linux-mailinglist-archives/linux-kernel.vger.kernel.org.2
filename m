@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B78A13C3012
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 04:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45C463C3025
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 04:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234338AbhGJCdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 22:33:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42738 "EHLO mail.kernel.org"
+        id S234493AbhGJCdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 22:33:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234235AbhGJC3R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 22:29:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C68B6143E;
-        Sat, 10 Jul 2021 02:25:41 +0000 (UTC)
+        id S234318AbhGJC3W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 22:29:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F1C061419;
+        Sat, 10 Jul 2021 02:25:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625883942;
-        bh=LTVGr3f4WlwQKL+UpiRVjG7mfst75GqkV/0rmOgPNRw=;
+        s=k20201202; t=1625883946;
+        bh=ryTTaVA44sGuLatGbFmEcoxmJyTLZaMZkUGnrbDWVsQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T+fy2BUGifbytIs6zFt6gLzABm3TBBWBBmdqY/gbsUB3qYUu3xTlezQw6YIfWih6D
-         SrBMdCiogUC5hLX8VL1bJ91LhuTUrn7dRXFU7Q0N38VTF8SPi80ZktBjrO01I46vpV
-         iCj7Ptx+n/OzQ4Vt563WuvKRg04gvdQF8PaFL5Bvg0/9dmV3PghYcQtkZoKrGieI5X
-         qMATxjD6TtDJ9PrAFZXKBH8Eabd9djW2i1esMvUxYbGuvUQVF4UUOnH8itBtI0MVAh
-         ghD+XFd1ECxiAfLbQ/Uy8B5HtOMSiPZzmoSEevRpqIbShs8UjHgDpfUQ47EEPArEnA
-         OzJ7bRvPPs/eA==
+        b=bCMQSpbKGPDE0Qd7nMh+MB6aFoxO4WoJhCUpXYz4nFkK+n+RHlwyd7IOdXkGdBrMI
+         5kQ7t+xmf2yAPm3e0FPvrqTLfTu86DkGdbH0KxBdm2euvm+ir+uxro7Pd7RGvePzYN
+         RzYTVXSJxZZ17+R8wwEV2vX3MtZbh1uxeUoF2Z1oS27judiiYg6EESkLnhrf6CK1+Q
+         XFMBOidRY/I9ymir+ONaG8hUpW50ZGkhFsIMGhoyee59zRM1/9/ttcizq67/FEvX5Q
+         0dZC+2HsjlUoS9Tpuki4Ybvt8fLN03MLO7rztTE7Jy1t6A44ueonYtJvgsEyPSinpK
+         cc+Hv3hPqnhKw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>, Will Deacon <will@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org
-Subject: [PATCH AUTOSEL 5.10 56/93] iommu/arm-smmu: Fix arm_smmu_device refcount leak when arm_smmu_rpm_get fails
-Date:   Fri,  9 Jul 2021 22:23:50 -0400
-Message-Id: <20210710022428.3169839-56-sashal@kernel.org>
+Cc:     Srinivas Neeli <srinivas.neeli@xilinx.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Sasha Levin <sashal@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.10 59/93] gpio: zynq: Check return value of pm_runtime_get_sync
+Date:   Fri,  9 Jul 2021 22:23:53 -0400
+Message-Id: <20210710022428.3169839-59-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210710022428.3169839-1-sashal@kernel.org>
 References: <20210710022428.3169839-1-sashal@kernel.org>
@@ -44,44 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+From: Srinivas Neeli <srinivas.neeli@xilinx.com>
 
-[ Upstream commit 1adf30f198c26539a62d761e45af72cde570413d ]
+[ Upstream commit a51b2fb94b04ab71e53a71b9fad03fa826941254 ]
 
-arm_smmu_rpm_get() invokes pm_runtime_get_sync(), which increases the
-refcount of the "smmu" even though the return value is less than 0.
+Return value of "pm_runtime_get_sync" API was neither captured nor checked.
+Fixed it by capturing the return value and then checking for any warning.
 
-The reference counting issue happens in some error handling paths of
-arm_smmu_rpm_get() in its caller functions. When arm_smmu_rpm_get()
-fails, the caller functions forget to decrease the refcount of "smmu"
-increased by arm_smmu_rpm_get(), causing a refcount leak.
-
-Fix this issue by calling pm_runtime_resume_and_get() instead of
-pm_runtime_get_sync() in arm_smmu_rpm_get(), which can keep the refcount
-balanced in case of failure.
-
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Link: https://lore.kernel.org/r/1623293672-17954-1-git-send-email-xiyuyang19@fudan.edu.cn
-Signed-off-by: Will Deacon <will@kernel.org>
+Addresses-Coverity: "check_return"
+Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/arm/arm-smmu/arm-smmu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpio/gpio-zynq.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-index bcbacf22331d..052f0a1bf037 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-@@ -74,7 +74,7 @@ static bool using_legacy_binding, using_generic_binding;
- static inline int arm_smmu_rpm_get(struct arm_smmu_device *smmu)
+diff --git a/drivers/gpio/gpio-zynq.c b/drivers/gpio/gpio-zynq.c
+index 3521c1dc3ac0..fb8684d70fe3 100644
+--- a/drivers/gpio/gpio-zynq.c
++++ b/drivers/gpio/gpio-zynq.c
+@@ -1001,8 +1001,11 @@ static int zynq_gpio_probe(struct platform_device *pdev)
+ static int zynq_gpio_remove(struct platform_device *pdev)
  {
- 	if (pm_runtime_enabled(smmu->dev))
--		return pm_runtime_get_sync(smmu->dev);
-+		return pm_runtime_resume_and_get(smmu->dev);
+ 	struct zynq_gpio *gpio = platform_get_drvdata(pdev);
++	int ret;
  
- 	return 0;
- }
+-	pm_runtime_get_sync(&pdev->dev);
++	ret = pm_runtime_get_sync(&pdev->dev);
++	if (ret < 0)
++		dev_warn(&pdev->dev, "pm_runtime_get_sync() Failed\n");
+ 	gpiochip_remove(&gpio->chip);
+ 	clk_disable_unprepare(gpio->clk);
+ 	device_set_wakeup_capable(&pdev->dev, 0);
 -- 
 2.30.2
 
