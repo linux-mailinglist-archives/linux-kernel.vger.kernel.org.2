@@ -2,119 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E0653C3650
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 21:16:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B6793C3654
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 21:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbhGJTTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 15:19:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229599AbhGJTTN (ORCPT
+        id S230417AbhGJT1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 15:27:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22858 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229614AbhGJT1X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 15:19:13 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2916AC0613DD
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 12:16:26 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id i20so23599979ejw.4
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 12:16:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8nodBAC64Gyqtfmql1e40Caz7cCmdDoy7IjMy2zV/mU=;
-        b=Z4f7VBkIzlcYRr+YbTfERtR4Ux7GGD5MiCn0XFXoW7diN7D/aHyKvr/p+pwo2s/scl
-         aoGkW5rmoQ0KH0jQQX4yz8BjO8S+8+wKHOAkKK3nk1F4DBsywU+Yn3XNfY3v0LLTMWaX
-         sZ4vB+5hf4gF2eagmxi30VdRNw7DeYu+xZdbCxevJSaw5rkDDTz7cm47/XGM6a1cKqgk
-         8jXnnaoZQBQsiIq/2ceNQYpYMBsi1IbzbhgLHz7XlGfO+kG0zkzxXqnnESroopMzvLMW
-         8Vluw30Hv8Ic9qVujq7PEnlbXKvRTrKwMZT+l4xV4pzowcv2gR3QEleNjPZN2eM+oYlS
-         8WZw==
+        Sat, 10 Jul 2021 15:27:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625945077;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nRNmgWFE2tnoZRp6zNRhltOEmrGrbsSTJkaXswq9W80=;
+        b=ICoimJkEBfgTcfnklY/giIIHQM0+aRRASQy/gpI3NrT3TdNvyjjlBy/QowvBDZnYqtTeLI
+        l01ILxMK9sQ9GHsKcc0AeASc8KZ2UCZVXYCmWMxvAzF0dOmIfyAUZUbSpx1fVI5n5cjTF1
+        iD6zp1ywTG3i/XR4g+Ziuz43jHOcrbU=
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
+ [209.85.167.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-260-I49uvLWgNPGqXzEFGepGlg-1; Sat, 10 Jul 2021 15:24:36 -0400
+X-MC-Unique: I49uvLWgNPGqXzEFGepGlg-1
+Received: by mail-oi1-f200.google.com with SMTP id l4-20020aca57040000b0290240a9d123c6so9460990oib.0
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 12:24:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8nodBAC64Gyqtfmql1e40Caz7cCmdDoy7IjMy2zV/mU=;
-        b=fPQQequPO/TUVRHqH/XJhIyUmM7IgBw60qCF02Ql6MruxuLC6xCOaOGZKCeP0d5b6G
-         6L2/T8qOlFJgDldYFE/KTCidFNcsdpWeAkj/ZIFtamLBLmKFqdCHjtEOCuXsGvSbDKCG
-         W71lrIK57NH5OHCd6R9FU0oie8IOOAtao9jGtytd/Iy2rWgRwVlzzTPxyZevdzMaN1iF
-         Kcc4NPRfLVQ0T3MNFXO3iA4dsH0sw7wX+yfzBxkjnP5s8PtTjsL+dcdGM+efeWIFUU5H
-         Jr58HtacoymJn09Uvpa8OiiH28DHNqIIvCyl3+yW+EZXqH9tK0KnIhEsTEU2vx2bcV6U
-         uhUQ==
-X-Gm-Message-State: AOAM531DAgdDMNWobqcI9NgPl9UYt7qpPgZ9YZfWwiNBBZiCQlftbBju
-        wnnP4CMk/ucTEW2x8qh5xPiIIqDP9oVdAW8MbR8=
-X-Google-Smtp-Source: ABdhPJyQ8SvVwGswC37G1weWxDpS+Y3lxCitTlDDr2BEWZh6aU0jb1VwqRHJnz+tx5PgFC4PUuALzXeW0z7fQIVTLWs=
-X-Received: by 2002:a17:906:660f:: with SMTP id b15mr45125075ejp.443.1625944584624;
- Sat, 10 Jul 2021 12:16:24 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nRNmgWFE2tnoZRp6zNRhltOEmrGrbsSTJkaXswq9W80=;
+        b=VQX0FxcWD1oOtzN7YvT4eo8KXR7VmZ/hSJHUqwzI/v1SD3Ya6C1mtH44+Nq/LWFhPG
+         6ChQyVbuD9KVcQTttcGWcgs6nJE1aXlLG8L4if3YOLWwNrpqXlJgdAf3Lr+pdhpUWePr
+         bfjnmmwMpvwbRNsvMscJaiPtCu/Ld0pdew5erFhH2oy7JzoI7aMaxyMinhlVEQO0LxPc
+         TiW0Hdo1euoz3TxrcOL8eBgDfksKPul80JcqmJMHQ2DUYvD61Oyj/C3hUvatPnNjLsQB
+         gGTEfjRgG8hRWPpI8RxJ5lXaZ432NgylW3GpPZjDdrerNyJKUWaCRuBaEIQaD1Dlllxb
+         Z2Mw==
+X-Gm-Message-State: AOAM532n5JEOrpDX0kKVn+SDHLQXjMQ5LJThGW7CErqZlVxLWCSXJkrD
+        35Uj8jX41oHG38miF+JcLUAUCHgMAAcJWiwaqYI0v8PRdGLB/EW552HlBGfne5pdxILRO9XM9yT
+        9h/InnsGOY0z1clj4j2P0U2+4
+X-Received: by 2002:a05:6808:208a:: with SMTP id s10mr4471717oiw.97.1625945075775;
+        Sat, 10 Jul 2021 12:24:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz6kAn54z8yV+qVOMdVTMNE4oEPeAO1ygF2PHbv1jV7pZwgBekWPRTCzyHlv3bqX1K/Cjmoaw==
+X-Received: by 2002:a05:6808:208a:: with SMTP id s10mr4471700oiw.97.1625945075571;
+        Sat, 10 Jul 2021 12:24:35 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id t21sm1943667otl.29.2021.07.10.12.24.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Jul 2021 12:24:35 -0700 (PDT)
+Date:   Sat, 10 Jul 2021 12:24:33 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
+        yhs@fb.com, linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: [PATCH 1/2] objtool: Add frame-pointer-specific function ignore
+Message-ID: <20210710192433.x5cgjsq2ksvaqnss@treble>
+References: <162399992186.506599.8457763707951687195.stgit@devnote2>
+ <162399996966.506599.810050095040575221.stgit@devnote2>
+ <YOK8pzp8B2V+1EaU@gmail.com>
+ <20210710003140.8e561ad33d42f9ac78de6a15@kernel.org>
+ <20210710104104.3a270168811ac38420093276@kernel.org>
+ <20210710190143.lrcsyal2ggubv43v@treble>
 MIME-Version: 1.0
-References: <20210708144411.25467-1-mark.rutland@arm.com>
-In-Reply-To: <20210708144411.25467-1-mark.rutland@arm.com>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Sat, 10 Jul 2021 21:16:14 +0200
-Message-ID: <CA+fCnZdHADek_3bFcLdkk7=XiRL25F0n6VaGGOrw-uUpDLxYYw@mail.gmail.com>
-Subject: Re: [PATCH] kasan: fix build for CONFIG_KASAN_HW_TAGS
-To:     Mark Rutland <mark.rutland@arm.com>, Sam Tebbs <sam.tebbs@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Will Deacon <will@kernel.org>, Marco Elver <elver@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210710190143.lrcsyal2ggubv43v@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 8, 2021 at 4:44 PM Mark Rutland <mark.rutland@arm.com> wrote:
->
-> When CONFIG_KASAN_HW_TAGS is selected, <linux/kasan.h> uses _RET_IP_,
-> but doesn't explicitly include <linux/kernel.h> where this is defined.
->
-> We used to get this via a transitive include, but since commit:
->
->   f39650de687e3576 ("kernel.h: split out panic and oops helpers")
->
-> ... this is no longer the case, and so we get a build failure:
->
-> |   CC      arch/arm64/mm/kasan_init.o
-> | In file included from arch/arm64/mm/kasan_init.c:10:
-> | ./include/linux/kasan.h: In function 'kasan_slab_free':
-> | ./include/linux/kasan.h:211:39: error: '_RET_IP_' undeclared (first use in this function)
-> |   211 |   return __kasan_slab_free(s, object, _RET_IP_, init);
-> |       |                                       ^~~~~~~~
-> | ./include/linux/kasan.h:211:39: note: each undeclared identifier is reported only once for each function it appears in
-> | ./include/linux/kasan.h: In function 'kasan_kfree_large':
-> | ./include/linux/kasan.h:219:28: error: '_RET_IP_' undeclared (first use in this function)
-> |   219 |   __kasan_kfree_large(ptr, _RET_IP_);
-> |       |                            ^~~~~~~~
-> | ./include/linux/kasan.h: In function 'kasan_slab_free_mempool':
-> | ./include/linux/kasan.h:226:34: error: '_RET_IP_' undeclared (first use in this function)
-> |   226 |   __kasan_slab_free_mempool(ptr, _RET_IP_);
-> |       |                                  ^~~~~~~~
-> | ./include/linux/kasan.h: In function 'kasan_check_byte':
-> | ./include/linux/kasan.h:277:35: error: '_RET_IP_' undeclared (first use in this function)
-> |   277 |   return __kasan_check_byte(addr, _RET_IP_);
-> |       |                                   ^~~~~~~~
->
-> Fix this by including <linux/kernel.h> explicitly.
+Add a CONFIG_FRAME_POINTER-specific version of
+STACK_FRAME_NON_STANDARD() for the case where a function is
+intentionally missing frame pointer setup, but otherwise needs
+objtool/ORC coverage when frame pointers are disabled.
 
-Hi Mark,
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+---
+ include/linux/objtool.h       | 11 +++++++++++
+ tools/include/linux/objtool.h | 11 +++++++++++
+ 2 files changed, 22 insertions(+)
 
-Marco already sent a fix for this. It should be in the mm tree.
-(Although the link to it in the Andrew's notification email doesn't
-work. But they rarely do :)
+diff --git a/include/linux/objtool.h b/include/linux/objtool.h
+index 7e72d975cb76..c9575ed91052 100644
+--- a/include/linux/objtool.h
++++ b/include/linux/objtool.h
+@@ -66,6 +66,17 @@ struct unwind_hint {
+ 	static void __used __section(".discard.func_stack_frame_non_standard") \
+ 		*__func_stack_frame_non_standard_##func = func
+ 
++/*
++ * STACK_FRAME_NON_STANDARD_FP() is a frame-pointer-specific function ignore
++ * for the case where a function is intentionally missing frame pointer setup,
++ * but otherwise needs objtool/ORC coverage when frame pointers are disabled.
++ */
++#ifdef CONFIG_FRAME_POINTER
++#define STACK_FRAME_NON_STANDARD_FP(func) STACK_FRAME_NON_STANDARD(func)
++#else
++#define STACK_FRAME_NON_STANDARD_FP(func)
++#endif
++
+ #else /* __ASSEMBLY__ */
+ 
+ /*
+diff --git a/tools/include/linux/objtool.h b/tools/include/linux/objtool.h
+index 7e72d975cb76..c9575ed91052 100644
+--- a/tools/include/linux/objtool.h
++++ b/tools/include/linux/objtool.h
+@@ -66,6 +66,17 @@ struct unwind_hint {
+ 	static void __used __section(".discard.func_stack_frame_non_standard") \
+ 		*__func_stack_frame_non_standard_##func = func
+ 
++/*
++ * STACK_FRAME_NON_STANDARD_FP() is a frame-pointer-specific function ignore
++ * for the case where a function is intentionally missing frame pointer setup,
++ * but otherwise needs objtool/ORC coverage when frame pointers are disabled.
++ */
++#ifdef CONFIG_FRAME_POINTER
++#define STACK_FRAME_NON_STANDARD_FP(func) STACK_FRAME_NON_STANDARD(func)
++#else
++#define STACK_FRAME_NON_STANDARD_FP(func)
++#endif
++
+ #else /* __ASSEMBLY__ */
+ 
+ /*
+-- 
+2.31.1
 
-> As a heads-up, there are some unrelated runtime issues with
-> CONFIG_KASAN_HW_TAGS and the recent arm64 string routines rework, which
-> I'm looking into now. If you boot-test with this applied, you should
-> expect to see those.
-
-+Sam, +Robin
-
-Looks like the new strlen routine is making accesses past the allocated buffer.
-
-The guilty commit is 325a1de81287 ("arm64: Import updated version of
-Cortex Strings' strlen").
-
-Thanks!
