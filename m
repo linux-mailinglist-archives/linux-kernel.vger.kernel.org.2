@@ -2,59 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 310FF3C3744
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 01:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA4BD3C3752
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 01:49:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230514AbhGJX2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 19:28:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37090 "EHLO mail.kernel.org"
+        id S231124AbhGJXvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 19:51:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229515AbhGJX2Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 19:28:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 46F6161355;
-        Sat, 10 Jul 2021 23:25:38 +0000 (UTC)
+        id S229674AbhGJXvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Jul 2021 19:51:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D256861355;
+        Sat, 10 Jul 2021 23:48:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625959538;
-        bh=gTf2M+mLjp4xqfyBscrLPbx8BbNzNNwvgLn6uk/cBJ8=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=BsjNG5VcHD3fsxZO+qxIfRiWh7GuxQem534J1pimha+SO+376h3AgnuoEL+l7x92R
-         3CKsYCRw5wVZqahRXAxnDF8C0EQy9KPONekNhA+vkL9nVwscz+VOk/O78EgXnqJPHL
-         eIg0WwfJms9yP6P34MINJb3Q7iysq72uDygGhtTpUe5K/yuC1KPCeKI3BKY7VXUOaC
-         yP0Li21CxL9BMj53lIQoubRoa3oVb7EJhWGYOeiQdejoRF/FUaERrhlxhdwlOdy+Gv
-         wOo6PozqyCsSmtFo5KH3LUKNX0Z9AXaPcl4JS+AH/hQdat+nZkPZQ7+uPalIfYC2/r
-         pImv2pwbsR44A==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 334EF60A08;
-        Sat, 10 Jul 2021 23:25:38 +0000 (UTC)
-Subject: Re: [GIT PULL] RTC changes for 5.14
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YOoaQCvHNsCsUZnv@piout.net>
-References: <YOoaQCvHNsCsUZnv@piout.net>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YOoaQCvHNsCsUZnv@piout.net>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git tags/rtc-5.14
-X-PR-Tracked-Commit-Id: 4aa90c036df670b8757140e0dae2a94e7b0d42b4
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: de5540965853e514a85d3b775e9049deb85a2ff3
-Message-Id: <162595953814.3359.13213210647898768496.pr-tracker-bot@kernel.org>
-Date:   Sat, 10 Jul 2021 23:25:38 +0000
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+        s=k20201202; t=1625960939;
+        bh=LxXAEoD5Ila78o+YYGT3jjqLa2D/vUuiuMAS6PHKgPI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=q/4Bgtf5a2ZzoJCiMBmjmqMDrwldiG+JiBY0N2DCa28G5uJOqjzeDDRjaeLauN58H
+         okuRtU4t7lrOkSxJ+J0k3VwaKKeopmz+luA/Ds5dF38P1PMT7oy7aDxbP+c0956A5/
+         LBluaMzZQopsSkNrIF4sCuCC31F0z/P+1CaNLqIanpq+XoUKfCxUVvPI7RrtQD+g4h
+         HNPYSBA0A1VCaClijH7zXN6l3cjLN9xEQDUG7+fusW57JxC6BQiTTC/6tnfdG456pG
+         Ag2zv/TXM+A+cJwU1LzUMYUY+2NznovYsyXKd0KQnKDztTyuJutjp3J3DmmvRI+2sr
+         nZwBREniUhbUg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Zou Wei <zou_wei@huawei.com>, Hulk Robot <hulkci@huawei.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Sasha Levin <sashal@kernel.org>, linux-pm@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.13 01/53] power: supply: sc27xx: Add missing MODULE_DEVICE_TABLE
+Date:   Sat, 10 Jul 2021 19:48:05 -0400
+Message-Id: <20210710234857.3220040-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 11 Jul 2021 00:08:00 +0200:
+From: Zou Wei <zou_wei@huawei.com>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git tags/rtc-5.14
+[ Upstream commit 603fcfb9d4ec1cad8d66d3bb37f3613afa8a661a ]
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/de5540965853e514a85d3b775e9049deb85a2ff3
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-Thank you!
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/power/supply/sc27xx_fuel_gauge.c | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/drivers/power/supply/sc27xx_fuel_gauge.c b/drivers/power/supply/sc27xx_fuel_gauge.c
+index 9c627618c224..1ae8374e1ceb 100644
+--- a/drivers/power/supply/sc27xx_fuel_gauge.c
++++ b/drivers/power/supply/sc27xx_fuel_gauge.c
+@@ -1342,6 +1342,7 @@ static const struct of_device_id sc27xx_fgu_of_match[] = {
+ 	{ .compatible = "sprd,sc2731-fgu", },
+ 	{ }
+ };
++MODULE_DEVICE_TABLE(of, sc27xx_fgu_of_match);
+ 
+ static struct platform_driver sc27xx_fgu_driver = {
+ 	.probe = sc27xx_fgu_probe,
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.30.2
+
