@@ -2,610 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE2B3C335B
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 09:00:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AA943C335C
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 09:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231860AbhGJHDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 03:03:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54638 "EHLO
+        id S231908AbhGJHEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 03:04:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbhGJHDT (ORCPT
+        with ESMTP id S229690AbhGJHEF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 03:03:19 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB7EEC0613DD
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 00:00:33 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id a127so10864785pfa.10
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 00:00:33 -0700 (PDT)
+        Sat, 10 Jul 2021 03:04:05 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D6FC0613DD
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 00:01:20 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id p17so5674173plf.12
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 00:01:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=J9B7vUzcMYmlfJs3JxHtzsh6WoRADSmadnJpxNgK5Rs=;
-        b=kVf90kG5pilkaQmkRkYrxKKu9rpAetcIf2+Pk3G0GVY5WeYCV3ZeV7awfaeaLlFV8Z
-         Xs93EsBrh5MLW1N0IkQ5rF0yQyHkTvnBzP1s86AcOaNRIy84Z6it19HGCLLd7pqhYs41
-         i1lzR//byupewS4NoGAhGY32WHrd+crVz2L2kMSJcvFJ2kz7kMX8k0NPmxXBQ2zaAL9w
-         Js1mV0jA0V2fSd0r2Wvz2ojdfjhJB5YRWk8UJQ5uf45VC6PiT+QvlCGVsOvNWAgLvEbw
-         3yNztopR9nfB+syhK1nRiQY8WgBLSg9d/YMKz0aagCUSy1IAkYhZ4gfJsJlV/40sdjhf
-         j2qg==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gRxQ1Imlo1o6LoMENe44lEkVB1Lq1SxOmIRVr1+XIjk=;
+        b=udQugjiUxnU3JISFgL6nJ6aj9D/VOokdRj5eO0ztnkzYoIc/vjxZEDA3lDgNyKMK92
+         FmwQvaQyanxs+QtuVdGpzna/iukRnMQeubegP7AT3HgetTU5/gq8Bj5l5IdB2sXnzk2g
+         oukC4Re0Odm4tpIteHr+pDbyK/qLudApX3ceLG6r13jlcYBXoQHw08AB9zNPa/4zhpe1
+         Szzy4c9/M4jTvzRSE+QFe9cOthuc9SnwZzSvcGxf2/X/VkSnrSJ8c308KMhtlrF9zlBd
+         zpibiuW78KMrmp1WtFbOjja2TXup1mwfcmv3WXSgzLeBP2BFFwGaELOCgtiCJmsO0QcK
+         iN/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=J9B7vUzcMYmlfJs3JxHtzsh6WoRADSmadnJpxNgK5Rs=;
-        b=UmT6Z0kVOjCo3TEcRvLxvmwPpHpyRKQVxW96lAi8YOUuJxq0fLboTaS22L7LicyuLH
-         5yX5aU0omLrXBvSOW45GScU1O5kU0NfdJwKOficXbxWoruhZNSwfXobpQbjxuw4zEowI
-         7EdwZOyGT1AVXxhiqyD9XWNRcjOopk+taiSoJlIFitM2yhtBNzAIX8gzHakV0mKgvBa8
-         pV3un9gIvCmlu2rZ1piHOQBwpLwlom1g835e+nUiAOtzQOA1kv9K7/WT8/VdDmEfrpoV
-         VpAcjQe3/4w9zuz5bfMejhfZpIcteO/OC1rAFYqSrMgFJTtxn8c47o3kE9p+7s7Kbjs2
-         n9XQ==
-X-Gm-Message-State: AOAM531ZYayhIT2o6oIwR66Ui9wTwkxDOSzgurlLpX5BK1d6XrjsKH3y
-        UZ4J0zpiQpC0YWagc9BvxNZNrr1Np2FM+tzAew==
-X-Google-Smtp-Source: ABdhPJzvNhFZiUUeGQXo6Tlf2mnwkwcy8vbhm64CQGTEonlfO0xe9U/XimHERFlcYipyt6si9reXL0uOw2jV8fk+rQk=
-X-Received: by 2002:a63:dc4e:: with SMTP id f14mr41540990pgj.378.1625900433333;
- Sat, 10 Jul 2021 00:00:33 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gRxQ1Imlo1o6LoMENe44lEkVB1Lq1SxOmIRVr1+XIjk=;
+        b=KT+UJOl7YJ/JzfsXvGSu/hUZebhBK+nsNgFsqZzEgwI/9GmnHEPbY6MoszQV5E0nBW
+         WwNEIRSxTr0HeDbs/e8H+k0YwikBY/l7SXX6G/9lk/R8BmEbmuiS/Jw3yMVGxYMsocrG
+         Pcn34gID7bmyUk0OfY16TNfj+YpVLXhIgJACdi09iyOwVEYS0wtF1VhCA2E901a9VW1z
+         wIj/TDmQPu0jdvuR8Z0VTQb8QLH3RuGrcslSXmknbl2bP4FAoiO1cpEwycBc31gqzIwW
+         ji5dnstNkxYbBQ82VuYom75vPRShafPm1fbBul23DTXspxstCGOu1riVauRP8YtzpRjK
+         m1XA==
+X-Gm-Message-State: AOAM5309r7NqXeRsp7ANl7km4RUuklHn1hnCQLOUFU7TxliE6dPOvhIG
+        9Whmmz43JD0WO9JxCtHiJduNXA==
+X-Google-Smtp-Source: ABdhPJzeLdFdrL3o+iTQzpKjSswpyEDkSHrKAXiwU//V6MR7B6JcAnlmtkdY2yecpASQ+7+f3Jey3g==
+X-Received: by 2002:a17:902:9695:b029:117:2072:88a8 with SMTP id n21-20020a1709029695b0290117207288a8mr34410670plp.64.1625900479991;
+        Sat, 10 Jul 2021 00:01:19 -0700 (PDT)
+Received: from localhost ([103.127.241.250])
+        by smtp.gmail.com with ESMTPSA id m13sm8179970pfo.102.2021.07.10.00.01.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Jul 2021 00:01:19 -0700 (PDT)
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Leo Yan <leo.yan@linaro.org>
+Subject: [PATCH v2] coresight: tmc-etr: Speed up for bounce buffer in flat mode
+Date:   Sat, 10 Jul 2021 15:01:15 +0800
+Message-Id: <20210710070115.462674-1-leo.yan@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210704092109.40670-1-fengzheng923@gmail.com> <d50b2b79-3882-5324-073d-873f3521ce38@sholland.org>
-In-Reply-To: <d50b2b79-3882-5324-073d-873f3521ce38@sholland.org>
-From:   =?UTF-8?B?54+t5rab?= <fengzheng923@gmail.com>
-Date:   Sat, 10 Jul 2021 15:00:21 +0800
-Message-ID: <CAE=m619aGd5jQd0iVoOABeT44U+v0qFNGn7=t769Fjg0eb4PYw@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] ASoC: sunxi: Add Allwinner H6 Digital MIC driver
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
-        perex@perex.cz, tiwai@suse.com, mripard@kernel.org, wens@csie.org,
-        jernej.skrabec@gmail.com, p.zabel@pengutronix.de, krzk@kernel.org,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The AUX bounce buffer is allocated with API dma_alloc_coherent(), in the
+low level's architecture code, e.g. for Arm64, it maps the memory with
+the attribution "Normal non-cacheable"; this can be concluded from the
+definition for pgprot_dmacoherent() in arch/arm64/include/asm/pgtable.h.
 
-Samuel Holland <samuel@sholland.org> =E4=BA=8E2021=E5=B9=B47=E6=9C=885=E6=
-=97=A5=E5=91=A8=E4=B8=80 =E4=B8=8A=E5=8D=884:10=E5=86=99=E9=81=93=EF=BC=9A
->
-> Hi,
->
-> On 7/4/21 4:21 AM, fengzheng923@gmail.com wrote:
-> > From: Ban Tao <fengzheng923@gmail.com>
-> >
-> > The Allwinner H6 and later SoCs have an DMIC block
-> > which is capable of capture.
-> >
-> > Signed-off-by: Ban Tao <fengzheng923@gmail.com>
-> >
-> > ---
-> > v1->v2:
-> > 1.Fix some compilation errors.
-> > 2.Modify some code styles.
-> > ---
-> > v2->v3:
-> > None.
-> > ---
-> > v3->v4:
-> > 1.add sig_bits.
-> > ---
-> > v4->v5:
-> > None.
-> > ---
->
-> Thanks for the updates! The driver is looking good. I found a couple more=
- small
-> things (below) when reading through it again.
->
-> >  MAINTAINERS                   |   7 +
-> >  sound/soc/sunxi/Kconfig       |   8 +
-> >  sound/soc/sunxi/Makefile      |   1 +
-> >  sound/soc/sunxi/sun50i-dmic.c | 405 ++++++++++++++++++++++++++++++++++
-> >  4 files changed, 421 insertions(+)
-> >  create mode 100644 sound/soc/sunxi/sun50i-dmic.c
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index e924f9e5df97..8d700baaa3ca 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -760,6 +760,13 @@ L:       linux-media@vger.kernel.org
-> >  S:   Maintained
-> >  F:   drivers/staging/media/sunxi/cedrus/
-> >
-> > +ALLWINNER DMIC DRIVERS
-> > +M:   Ban Tao <fengzheng923@gmail.com>
-> > +L:   alsa-devel@alsa-project.org (moderated for non-subscribers)
-> > +S:   Maintained
-> > +F:   Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmic.=
-yaml
-> > +F:   sound/soc/sunxi/sun50i-dmic.c
-> > +
-> >  ALPHA PORT
-> >  M:   Richard Henderson <rth@twiddle.net>
-> >  M:   Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-> > diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
-> > index ddcaaa98d3cb..2a3bf7722e11 100644
-> > --- a/sound/soc/sunxi/Kconfig
-> > +++ b/sound/soc/sunxi/Kconfig
-> > @@ -56,6 +56,14 @@ config SND_SUN4I_SPDIF
-> >         Say Y or M to add support for the S/PDIF audio block in the All=
-winner
-> >         A10 and affiliated SoCs.
-> >
-> > +config SND_SUN50I_DMIC
-> > +     tristate "Allwinner H6 DMIC Support"
-> > +     depends on (OF && ARCH_SUNXI) || COMPILE_TEST
-> > +     select SND_SOC_GENERIC_DMAENGINE_PCM
-> > +     help
-> > +       Say Y or M to add support for the DMIC audio block in the Allwi=
-nner
-> > +       H6 and affiliated SoCs.
-> > +
-> >  config SND_SUN8I_ADDA_PR_REGMAP
-> >       tristate
-> >       select REGMAP
-> > diff --git a/sound/soc/sunxi/Makefile b/sound/soc/sunxi/Makefile
-> > index a86be340a076..4483fe9c94ef 100644
-> > --- a/sound/soc/sunxi/Makefile
-> > +++ b/sound/soc/sunxi/Makefile
-> > @@ -6,3 +6,4 @@ obj-$(CONFIG_SND_SUN8I_CODEC_ANALOG) +=3D sun8i-codec-a=
-nalog.o
-> >  obj-$(CONFIG_SND_SUN50I_CODEC_ANALOG) +=3D sun50i-codec-analog.o
-> >  obj-$(CONFIG_SND_SUN8I_CODEC) +=3D sun8i-codec.o
-> >  obj-$(CONFIG_SND_SUN8I_ADDA_PR_REGMAP) +=3D sun8i-adda-pr-regmap.o
-> > +obj-$(CONFIG_SND_SUN50I_DMIC) +=3D sun50i-dmic.o
-> > diff --git a/sound/soc/sunxi/sun50i-dmic.c b/sound/soc/sunxi/sun50i-dmi=
-c.c
-> > new file mode 100644
-> > index 000000000000..720d15e4b8ba
-> > --- /dev/null
-> > +++ b/sound/soc/sunxi/sun50i-dmic.c
-> > @@ -0,0 +1,405 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > +//
-> > +// This driver supports the DMIC in Allwinner's H6 SoCs.
-> > +//
-> > +// Copyright 2021 Ban Tao <fengzheng923@gmail.com>
-> > +
-> > +#include <linux/clk.h>
-> > +#include <linux/device.h>
-> > +#include <linux/of_device.h>
-> > +#include <linux/module.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/pm_runtime.h>
-> > +#include <linux/reset.h>
-> > +#include <sound/dmaengine_pcm.h>
-> > +#include <sound/pcm_params.h>
-> > +#include <sound/soc.h>
-> > +
-> > +#define SUN50I_DMIC_EN_CTL           (0x00)
-> > +     #define SUN50I_DMIC_EN_CTL_GLOBE                        BIT(8)
-> > +     #define SUN50I_DMIC_EN_CTL_CHAN(v)              ((v) << 0)
-> > +     #define SUN50I_DMIC_EN_CTL_CHAN_MASK            GENMASK(7, 0)
-> > +#define SUN50I_DMIC_SR                       (0x04)
-> > +     #define SUN50I_DMIC_SR_SAMOLE_RATE(v)           ((v) << 0)
-> > +     #define SUN50I_DMIC_SR_SAMOLE_RATE_MASK         GENMASK(2, 0)
->
-> Typo: SAMPLE
+Later when access the AUX bounce buffer, since the memory mapping is
+non-cacheable, it's low efficiency due to every load instruction must
+reach out DRAM.
 
-Thanks.
->
-> > +#define SUN50I_DMIC_CTL                      (0x08)
-> > +     #define SUN50I_DMIC_CTL_OVERSAMPLE_RATE         BIT(0)
-> > +#define SUN50I_DMIC_DATA                     (0x10)
-> > +#define SUN50I_DMIC_INTC                     (0x14)
-> > +     #define SUN50I_DMIC_FIFO_DRQ_EN                 BIT(2)
-> > +#define SUN50I_DMIC_INT_STA          (0x18)
-> > +     #define SUN50I_DMIC_INT_STA_OVERRUN_IRQ_PENDING BIT(1)
-> > +     #define SUN50I_DMIC_INT_STA_DATA_IRQ_PENDING    BIT(0)
-> > +#define SUN50I_DMIC_RXFIFO_CTL               (0x1c)
-> > +     #define SUN50I_DMIC_RXFIFO_CTL_FLUSH            BIT(31)
-> > +     #define SUN50I_DMIC_RXFIFO_CTL_MODE             BIT(9)
-> > +     #define SUN50I_DMIC_RXFIFO_CTL_RESOLUTION       BIT(8)
-> > +#define SUN50I_DMIC_CH_NUM           (0x24)
-> > +     #define SUN50I_DMIC_CH_NUM_N(v)                 ((v) << 0)
-> > +     #define SUN50I_DMIC_CH_NUM_N_MASK               GENMASK(2, 0)
-> > +#define SUN50I_DMIC_CNT                      (0x2c)
-> > +     #define SUN50I_DMIC_CNT_N                       BIT(0)
-> > +#define SUN50I_DMIC_HPF_CTRL         (0x38)
-> > +#define SUN50I_DMIC_VERSION          (0x50)
-> > +
-> > +
-> > +struct sun50i_dmic_dev {
-> > +     struct clk *dmic_clk;
-> > +     struct clk *bus_clk;
-> > +     struct reset_control *rst;
-> > +     struct regmap *regmap;
-> > +     struct snd_dmaengine_dai_dma_data dma_params_rx;
-> > +     unsigned int chan_en;
-> > +};
-> > +
-> > +struct dmic_rate {
-> > +     unsigned int samplerate;
-> > +     unsigned int rate_bit;
-> > +};
-> > +
-> > +static int sun50i_dmic_startup(struct snd_pcm_substream *substream,
-> > +                            struct snd_soc_dai *cpu_dai)
-> > +{
-> > +     struct snd_soc_pcm_runtime *rtd =3D substream->private_data;
-> > +     struct sun50i_dmic_dev *host =3D snd_soc_dai_get_drvdata(asoc_rtd=
-_to_cpu(rtd, 0));
-> > +
-> > +     /* only support capture */
-> > +     if (substream->stream !=3D SNDRV_PCM_STREAM_CAPTURE)
-> > +             return -EINVAL;
-> > +
-> > +     regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
-> > +                        SUN50I_DMIC_RXFIFO_CTL_FLUSH,
-> > +                        SUN50I_DMIC_RXFIFO_CTL_FLUSH);
-> > +     regmap_write(host->regmap, SUN50I_DMIC_CNT, SUN50I_DMIC_CNT_N);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int sun50i_dmic_hw_params(struct snd_pcm_substream *substream,
-> > +                              struct snd_pcm_hw_params *params,
-> > +                              struct snd_soc_dai *cpu_dai)
-> > +{
-> > +     int i =3D 0;
-> > +     unsigned long rate =3D params_rate(params);
-> > +     unsigned int mclk =3D 0;
-> > +     unsigned int channels =3D params_channels(params);
-> > +     struct sun50i_dmic_dev *host =3D snd_soc_dai_get_drvdata(cpu_dai)=
-;
-> > +     struct dmic_rate dmic_rate_s[] =3D {
->
-> This needs to be static, or it will get initialized every time the functi=
-on is
-> called.
->
-> > +             {44100, 0x0},
-> > +             {48000, 0x0},
-> > +             {22050, 0x2},
-> > +             {24000, 0x2},
-> > +             {11025, 0x4},
-> > +             {12000, 0x4},
-> > +             {32000, 0x1},
-> > +             {16000, 0x3},
-> > +             {8000,  0x5},
-> > +     };
-> > +
-> > +     /* DMIC num is N+1 */
-> > +     regmap_update_bits(host->regmap, SUN50I_DMIC_CH_NUM,
-> > +                        SUN50I_DMIC_CH_NUM_N_MASK,
-> > +                        SUN50I_DMIC_CH_NUM_N(channels - 1));
-> > +     host->chan_en =3D (1 << channels) - 1;
-> > +     regmap_write(host->regmap, SUN50I_DMIC_HPF_CTRL, host->chan_en);
-> > +
-> > +     switch (params_format(params)) {
-> > +     case SNDRV_PCM_FORMAT_S16_LE:
-> > +             regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
-> > +                                SUN50I_DMIC_RXFIFO_CTL_MODE,
-> > +                                SUN50I_DMIC_RXFIFO_CTL_MODE);
-> > +             regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
-> > +                                SUN50I_DMIC_RXFIFO_CTL_RESOLUTION, 0);
-> > +             break;
-> > +     case SNDRV_PCM_FORMAT_S24_LE:
-> > +             regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
-> > +                                SUN50I_DMIC_RXFIFO_CTL_MODE, 0);
->
-> I still believe this should be mode 1, but I don't have any hardware to t=
-est
-> with and know for sure.
->
-> Have you tested this driver with S24_LE? Even if it doesn't quite make se=
-nse to
-> me, I am fine with the current code as long as it works.
->
-> With these resolved, I am happy to give my Reviewed-by.
->
-> Cheers,
-> Samuel
->
-I reviewed the DMIC specifications, yes, you are right.
-I will fix it in the next patch.
+This patch changes to allocate pages with alloc_pages_node(), thus the
+driver can access the memory with cacheable mapping in the kernel linear
+virtual address; therefore, because load instructions can fetch data
+from cache lines rather than always read data from DRAM, the driver can
+boost memory coping performance.  After using the cacheable mapping, the
+driver uses dma_sync_single_for_cpu() to invalidate cacheline prior to
+read bounce buffer so can avoid read stale trace data.
 
-> > +             regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
-> > +                                SUN50I_DMIC_RXFIFO_CTL_RESOLUTION,
-> > +                                SUN50I_DMIC_RXFIFO_CTL_RESOLUTION);
-> > +             break;
-> > +     default:
-> > +             dev_err(cpu_dai->dev, "Invalid format!\n");
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     switch (rate) {
-> > +     case 11025:
-> > +     case 22050:
-> > +     case 44100:
-> > +             mclk =3D 22579200;
-> > +             break;
-> > +     case 8000:
-> > +     case 12000:
-> > +     case 16000:
-> > +     case 24000:
-> > +     case 32000:
-> > +     case 48000:
-> > +             mclk =3D 24576000;
-> > +             break;
-> > +     default:
-> > +             dev_err(cpu_dai->dev, "Invalid rate!\n");
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     if (clk_set_rate(host->dmic_clk, mclk)) {
-> > +             dev_err(cpu_dai->dev, "mclk : %u not support\n", mclk);
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     for (i =3D 0; i < ARRAY_SIZE(dmic_rate_s); i++) {
-> > +             if (dmic_rate_s[i].samplerate =3D=3D rate) {
-> > +                     regmap_update_bits(host->regmap, SUN50I_DMIC_SR,
-> > +                                        SUN50I_DMIC_SR_SAMOLE_RATE_MAS=
-K,
-> > +                                        SUN50I_DMIC_SR_SAMOLE_RATE(dmi=
-c_rate_s[i].rate_bit));
-> > +                     break;
-> > +             }
-> > +     }
-> > +
-> > +     switch (params_physical_width(params)) {
-> > +     case 16:
-> > +             host->dma_params_rx.addr_width =3D DMA_SLAVE_BUSWIDTH_2_B=
-YTES;
-> > +             break;
-> > +     case 32:
-> > +             host->dma_params_rx.addr_width =3D DMA_SLAVE_BUSWIDTH_4_B=
-YTES;
-> > +             break;
-> > +     default:
-> > +             dev_err(cpu_dai->dev, "Unsupported physical sample width:=
- %d\n",
-> > +                     params_physical_width(params));
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     /* oversamplerate adjust */
-> > +     if (params_rate(params) >=3D 24000)
-> > +             regmap_update_bits(host->regmap, SUN50I_DMIC_CTL,
-> > +                                SUN50I_DMIC_CTL_OVERSAMPLE_RATE,
-> > +                                SUN50I_DMIC_CTL_OVERSAMPLE_RATE);
-> > +     else
-> > +             regmap_update_bits(host->regmap, SUN50I_DMIC_CTL,
-> > +                                SUN50I_DMIC_CTL_OVERSAMPLE_RATE, 0);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int sun50i_dmic_trigger(struct snd_pcm_substream *substream, in=
-t cmd,
-> > +                            struct snd_soc_dai *dai)
-> > +{
-> > +     int ret =3D 0;
-> > +     struct sun50i_dmic_dev *host =3D snd_soc_dai_get_drvdata(dai);
-> > +
-> > +     if (substream->stream !=3D SNDRV_PCM_STREAM_CAPTURE)
-> > +             return -EINVAL;
-> > +
-> > +     switch (cmd) {
-> > +     case SNDRV_PCM_TRIGGER_START:
-> > +     case SNDRV_PCM_TRIGGER_RESUME:
-> > +     case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-> > +             /* DRQ ENABLE */
-> > +             regmap_update_bits(host->regmap, SUN50I_DMIC_INTC,
-> > +                                SUN50I_DMIC_FIFO_DRQ_EN,
-> > +                                SUN50I_DMIC_FIFO_DRQ_EN);
-> > +             regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
-> > +                                SUN50I_DMIC_EN_CTL_CHAN_MASK,
-> > +                                SUN50I_DMIC_EN_CTL_CHAN(host->chan_en)=
-);
-> > +             /* Global enable */
-> > +             regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
-> > +                                SUN50I_DMIC_EN_CTL_GLOBE,
-> > +                                SUN50I_DMIC_EN_CTL_GLOBE);
-> > +             break;
-> > +
-> > +     case SNDRV_PCM_TRIGGER_STOP:
-> > +     case SNDRV_PCM_TRIGGER_SUSPEND:
-> > +     case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-> > +             /* DRQ DISABLE */
-> > +             regmap_update_bits(host->regmap, SUN50I_DMIC_INTC,
-> > +                                SUN50I_DMIC_FIFO_DRQ_EN, 0);
-> > +             regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
-> > +                                SUN50I_DMIC_EN_CTL_CHAN_MASK,
-> > +                                SUN50I_DMIC_EN_CTL_CHAN(0));
-> > +             /* Global disable */
-> > +             regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
-> > +                                SUN50I_DMIC_EN_CTL_GLOBE, 0);
-> > +             break;
-> > +
-> > +     default:
-> > +             ret =3D -EINVAL;
-> > +             break;
-> > +     }
-> > +     return ret;
-> > +}
-> > +
-> > +static int sun50i_dmic_soc_dai_probe(struct snd_soc_dai *dai)
-> > +{
-> > +     struct sun50i_dmic_dev *host =3D snd_soc_dai_get_drvdata(dai);
-> > +
-> > +     snd_soc_dai_init_dma_data(dai, NULL, &host->dma_params_rx);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static const struct snd_soc_dai_ops sun50i_dmic_dai_ops =3D {
-> > +     .startup        =3D sun50i_dmic_startup,
-> > +     .trigger        =3D sun50i_dmic_trigger,
-> > +     .hw_params      =3D sun50i_dmic_hw_params,
-> > +};
-> > +
-> > +static const struct regmap_config sun50i_dmic_regmap_config =3D {
-> > +     .reg_bits =3D 32,
-> > +     .reg_stride =3D 4,
-> > +     .val_bits =3D 32,
-> > +     .max_register =3D SUN50I_DMIC_VERSION,
-> > +     .cache_type =3D REGCACHE_NONE,
-> > +};
-> > +
-> > +#define      SUN50I_DMIC_RATES (SNDRV_PCM_RATE_8000_48000)
-> > +#define SUN50I_FORMATS       (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTB=
-IT_S24_LE)
-> > +
-> > +static struct snd_soc_dai_driver sun50i_dmic_dai =3D {
-> > +     .capture =3D {
-> > +             .channels_min =3D 1,
-> > +             .channels_max =3D 8,
-> > +             .rates =3D SUN50I_DMIC_RATES,
-> > +             .formats =3D SUN50I_FORMATS,
-> > +             .sig_bits =3D 21,
-> > +     },
-> > +     .probe =3D sun50i_dmic_soc_dai_probe,
-> > +     .ops =3D &sun50i_dmic_dai_ops,
-> > +     .name =3D "dmic",
-> > +};
-> > +
-> > +static const struct of_device_id sun50i_dmic_of_match[] =3D {
-> > +     {
-> > +             .compatible =3D "allwinner,sun50i-h6-dmic",
-> > +     },
-> > +     { /* sentinel */ }
-> > +};
-> > +MODULE_DEVICE_TABLE(of, sun50i_dmic_of_match);
-> > +
-> > +static const struct snd_soc_component_driver sun50i_dmic_component =3D=
+By measurement the duration for function tmc_update_etr_buffer() with
+ftrace function_graph tracer, it shows the performance significant
+improvement for copying 4MiB data from bounce buffer:
+
+  # echo tmc_etr_get_data_flat_buf > set_graph_notrace // avoid noise
+  # echo tmc_update_etr_buffer > set_graph_function
+  # echo function_graph > current_tracer
+
+  before:
+
+  # CPU  DURATION                  FUNCTION CALLS
+  # |     |   |                     |   |   |   |
+  2)               |    tmc_update_etr_buffer() {
+  ...
+  2) # 8148.320 us |    }
+
+  after:
+
+  # CPU  DURATION                  FUNCTION CALLS
+  # |     |   |                     |   |   |   |
+  2)               |  tmc_update_etr_buffer() {
+  ...
+  2) # 2463.980 us |  }
+
+Signed-off-by: Leo Yan <leo.yan@linaro.org>
+---
+
+Changes from v1:
+Set "flat_buf->daddr" to 0 when fails to map DMA region; and dropped the
+unexpected if condition change in tmc_etr_free_flat_buf().
+
+ .../hwtracing/coresight/coresight-tmc-etr.c   | 56 ++++++++++++++++---
+ 1 file changed, 49 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/hwtracing/coresight/coresight-tmc-etr.c b/drivers/hwtracing/coresight/coresight-tmc-etr.c
+index acdb59e0e661..888b0f929d33 100644
+--- a/drivers/hwtracing/coresight/coresight-tmc-etr.c
++++ b/drivers/hwtracing/coresight/coresight-tmc-etr.c
+@@ -21,6 +21,7 @@
+ 
+ struct etr_flat_buf {
+ 	struct device	*dev;
++	struct page	*pages;
+ 	dma_addr_t	daddr;
+ 	void		*vaddr;
+ 	size_t		size;
+@@ -600,6 +601,7 @@ static int tmc_etr_alloc_flat_buf(struct tmc_drvdata *drvdata,
  {
-> > +     .name           =3D "sun50i-dmic",
-> > +};
-> > +
-> > +static int sun50i_dmic_runtime_suspend(struct device *dev)
-> > +{
-> > +     struct sun50i_dmic_dev *host  =3D dev_get_drvdata(dev);
-> > +
-> > +     clk_disable_unprepare(host->dmic_clk);
-> > +     clk_disable_unprepare(host->bus_clk);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int sun50i_dmic_runtime_resume(struct device *dev)
-> > +{
-> > +     struct sun50i_dmic_dev *host  =3D dev_get_drvdata(dev);
-> > +     int ret;
-> > +
-> > +     ret =3D clk_prepare_enable(host->dmic_clk);
-> > +     if (ret)
-> > +             return ret;
-> > +     ret =3D clk_prepare_enable(host->bus_clk);
-> > +     if (ret)
-> > +             clk_disable_unprepare(host->dmic_clk);
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +static int sun50i_dmic_probe(struct platform_device *pdev)
-> > +{
-> > +     struct sun50i_dmic_dev *host;
-> > +     struct resource *res;
-> > +     int ret;
-> > +     void __iomem *base;
-> > +
-> > +     host =3D devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
-> > +     if (!host)
-> > +             return -ENOMEM;
-> > +
-> > +     /* Get the addresses */
-> > +     res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> > +     base =3D devm_ioremap_resource(&pdev->dev, res);
-> > +     if (IS_ERR(base))
-> > +             return dev_err_probe(&pdev->dev, PTR_ERR(base),
-> > +                                  "get resource failed.\n");
-> > +
-> > +     host->regmap =3D devm_regmap_init_mmio(&pdev->dev, base,
-> > +                                             &sun50i_dmic_regmap_confi=
-g);
-> > +
-> > +     /* Clocks */
-> > +     host->bus_clk =3D devm_clk_get(&pdev->dev, "bus");
-> > +     if (IS_ERR(host->bus_clk))
-> > +             return dev_err_probe(&pdev->dev, PTR_ERR(host->bus_clk),
-> > +                                  "failed to get bus clock.\n");
-> > +
-> > +     host->dmic_clk =3D devm_clk_get(&pdev->dev, "mod");
-> > +     if (IS_ERR(host->dmic_clk))
-> > +             return dev_err_probe(&pdev->dev, PTR_ERR(host->dmic_clk),
-> > +                                  "failed to get dmic clock.\n");
-> > +
-> > +     host->dma_params_rx.addr =3D res->start + SUN50I_DMIC_DATA;
-> > +     host->dma_params_rx.maxburst =3D 8;
-> > +
-> > +     platform_set_drvdata(pdev, host);
-> > +
-> > +     host->rst =3D devm_reset_control_get_optional_exclusive(&pdev->de=
-v, NULL);
-> > +     if (IS_ERR(host->rst))
-> > +             return dev_err_probe(&pdev->dev, PTR_ERR(host->rst),
-> > +                                  "Failed to get reset.\n");
-> > +     reset_control_deassert(host->rst);
-> > +
-> > +     ret =3D devm_snd_soc_register_component(&pdev->dev,
-> > +                             &sun50i_dmic_component, &sun50i_dmic_dai,=
- 1);
-> > +     if (ret)
-> > +             return dev_err_probe(&pdev->dev, ret,
-> > +                                  "failed to register component.\n");
-> > +
-> > +     pm_runtime_enable(&pdev->dev);
-> > +     if (!pm_runtime_enabled(&pdev->dev)) {
-> > +             ret =3D sun50i_dmic_runtime_resume(&pdev->dev);
-> > +             if (ret)
-> > +                     goto err_unregister;
-> > +     }
-> > +
-> > +     ret =3D devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
-> > +     if (ret)
-> > +             goto err_suspend;
-> > +
-> > +     return 0;
-> > +err_suspend:
-> > +     if (!pm_runtime_status_suspended(&pdev->dev))
-> > +             sun50i_dmic_runtime_suspend(&pdev->dev);
-> > +err_unregister:
-> > +     pm_runtime_disable(&pdev->dev);
-> > +     return ret;
-> > +}
-> > +
-> > +static int sun50i_dmic_remove(struct platform_device *pdev)
-> > +{
-> > +     pm_runtime_disable(&pdev->dev);
-> > +     if (!pm_runtime_status_suspended(&pdev->dev))
-> > +             sun50i_dmic_runtime_suspend(&pdev->dev);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static const struct dev_pm_ops sun50i_dmic_pm =3D {
-> > +     SET_RUNTIME_PM_OPS(sun50i_dmic_runtime_suspend,
-> > +                        sun50i_dmic_runtime_resume, NULL)
-> > +};
-> > +
-> > +static struct platform_driver sun50i_dmic_driver =3D {
-> > +     .driver         =3D {
-> > +             .name   =3D "sun50i-dmic",
-> > +             .of_match_table =3D of_match_ptr(sun50i_dmic_of_match),
-> > +             .pm     =3D &sun50i_dmic_pm,
-> > +     },
-> > +     .probe          =3D sun50i_dmic_probe,
-> > +     .remove         =3D sun50i_dmic_remove,
-> > +};
-> > +
-> > +module_platform_driver(sun50i_dmic_driver);
-> > +
-> > +MODULE_DESCRIPTION("Allwinner sun50i DMIC SoC Interface");
-> > +MODULE_AUTHOR("Ban Tao <fengzheng923@gmail.com>");
-> > +MODULE_LICENSE("GPL");
-> > +MODULE_ALIAS("platform:sun50i-dmic");
-> >
->
+ 	struct etr_flat_buf *flat_buf;
+ 	struct device *real_dev = drvdata->csdev->dev.parent;
++	ssize_t	aligned_size;
+ 
+ 	/* We cannot reuse existing pages for flat buf */
+ 	if (pages)
+@@ -609,11 +611,18 @@ static int tmc_etr_alloc_flat_buf(struct tmc_drvdata *drvdata,
+ 	if (!flat_buf)
+ 		return -ENOMEM;
+ 
+-	flat_buf->vaddr = dma_alloc_coherent(real_dev, etr_buf->size,
+-					     &flat_buf->daddr, GFP_KERNEL);
+-	if (!flat_buf->vaddr) {
+-		kfree(flat_buf);
+-		return -ENOMEM;
++	aligned_size = PAGE_ALIGN(etr_buf->size);
++	flat_buf->pages = alloc_pages_node(node, GFP_KERNEL | __GFP_ZERO,
++					   get_order(aligned_size));
++	if (!flat_buf->pages)
++		goto fail_alloc_pages;
++
++	flat_buf->vaddr = page_address(flat_buf->pages);
++	flat_buf->daddr = dma_map_page(real_dev, flat_buf->pages, 0,
++				       aligned_size, DMA_FROM_DEVICE);
++	if (dma_mapping_error(real_dev, flat_buf->daddr)) {
++		flat_buf->daddr = 0;
++		goto fail_dma_map_page;
+ 	}
+ 
+ 	flat_buf->size = etr_buf->size;
+@@ -622,6 +631,12 @@ static int tmc_etr_alloc_flat_buf(struct tmc_drvdata *drvdata,
+ 	etr_buf->mode = ETR_MODE_FLAT;
+ 	etr_buf->private = flat_buf;
+ 	return 0;
++
++fail_dma_map_page:
++	__free_pages(flat_buf->pages, get_order(aligned_size));
++fail_alloc_pages:
++	kfree(flat_buf);
++	return -ENOMEM;
+ }
+ 
+ static void tmc_etr_free_flat_buf(struct etr_buf *etr_buf)
+@@ -630,15 +645,20 @@ static void tmc_etr_free_flat_buf(struct etr_buf *etr_buf)
+ 
+ 	if (flat_buf && flat_buf->daddr) {
+ 		struct device *real_dev = flat_buf->dev->parent;
++		ssize_t aligned_size = PAGE_ALIGN(etr_buf->size);
+ 
+-		dma_free_coherent(real_dev, flat_buf->size,
+-				  flat_buf->vaddr, flat_buf->daddr);
++		dma_unmap_page(real_dev, flat_buf->daddr, aligned_size,
++			       DMA_FROM_DEVICE);
++		__free_pages(flat_buf->pages, get_order(aligned_size));
+ 	}
+ 	kfree(flat_buf);
+ }
+ 
+ static void tmc_etr_sync_flat_buf(struct etr_buf *etr_buf, u64 rrp, u64 rwp)
+ {
++	struct etr_flat_buf *flat_buf = etr_buf->private;
++	struct device *real_dev = flat_buf->dev->parent;
++
+ 	/*
+ 	 * Adjust the buffer to point to the beginning of the trace data
+ 	 * and update the available trace data.
+@@ -648,6 +668,28 @@ static void tmc_etr_sync_flat_buf(struct etr_buf *etr_buf, u64 rrp, u64 rwp)
+ 		etr_buf->len = etr_buf->size;
+ 	else
+ 		etr_buf->len = rwp - rrp;
++
++	if (etr_buf->offset + etr_buf->len > etr_buf->size) {
++		int len1, len2;
++
++		/*
++		 * If trace data is wrapped around, sync AUX bounce buffer
++		 * for two chunks: "len1" is for the trace date length at
++		 * the tail of bounce buffer, and "len2" is the length from
++		 * the start of the buffer after wrapping around.
++		 */
++		len1 = etr_buf->size - etr_buf->offset;
++		len2 = etr_buf->len - len1;
++		dma_sync_single_for_cpu(real_dev,
++					flat_buf->daddr + etr_buf->offset,
++					len1, DMA_FROM_DEVICE);
++		dma_sync_single_for_cpu(real_dev, flat_buf->daddr,
++					len2, DMA_FROM_DEVICE);
++	} else {
++		dma_sync_single_for_cpu(real_dev,
++					flat_buf->daddr + etr_buf->offset,
++					etr_buf->len, DMA_FROM_DEVICE);
++	}
+ }
+ 
+ static ssize_t tmc_etr_get_data_flat_buf(struct etr_buf *etr_buf,
+-- 
+2.25.1
+
