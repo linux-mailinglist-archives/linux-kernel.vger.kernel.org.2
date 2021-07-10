@@ -2,25 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA6E3C3701
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 00:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5550D3C3702
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 00:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229785AbhGJWKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 18:10:49 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:49959 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbhGJWKs (ORCPT
+        id S230059AbhGJWLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 18:11:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229515AbhGJWLG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 18:10:48 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 3B0CE20005;
-        Sat, 10 Jul 2021 22:08:01 +0000 (UTC)
-Date:   Sun, 11 Jul 2021 00:08:00 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] RTC changes for 5.14
-Message-ID: <YOoaQCvHNsCsUZnv@piout.net>
+        Sat, 10 Jul 2021 18:11:06 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C4ECC0613DD
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 15:08:21 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id w13so8566282wmc.3
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 15:08:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:mime-version
+         :content-disposition;
+        bh=o8XLWvLfLieNELF1M0DS0d6X+htDnd1bnaWzmXo8vbg=;
+        b=I+wR7SgJHOmOJRpJZ8EZDAGde+mW7Sv8Gs19PaFlqzTvnbowhU7mXM35hoMRlj3mec
+         cl3+Bj663jqtz8EXw9+uT1gR94cY3uyvQlip0r7faBFuARSmIxhjiYc+SJUFmPuUyM4O
+         mFzdkLuzG6Fbio/J4Xm1fMZhTerRN4TVlJQNxZ3AzoJmiuYjR5g72mbRlkvwpahlHWm0
+         IG2n2F243ORPZkHUaAuIocAvz7KzgoR2rzVntWpvdDBGht8uFM3JyUnyhZ1tPiQuo8yp
+         7LxF1MrLas//Y7iSu/HIQxE8WxDZncB0J7Ie7q4tCVsdnGyORxZPS09nozDMuSZjXdC/
+         3BJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:mime-version:content-disposition;
+        bh=o8XLWvLfLieNELF1M0DS0d6X+htDnd1bnaWzmXo8vbg=;
+        b=KXG+JPXFCQsLyTcizCqqZlGSZxb68OogRo3ue7a+yyBhtTSBhxBeW3dYu3SWKZdi/X
+         CcKZxMDxWwnCif3mj/4miqYezT0/5N2eJoJ6U+WCc59aUToEcyGkjgAxcbNhqpvkz8F5
+         ymDylQdGRYR0LcB2lF9cpmhUJtuipMqQMIgJ5qq1qy+QSDcWVUBdU8iKE4b0OcwC7CtW
+         OOFirb24So/zJ1Pbd26Y5nmuypWDml0CEVc/V2IASBpp526nvpFfUw3VNJGii3d1tVaa
+         vs7wr4RVuhd1gXNmD8mTKtX0j2B+Hna7RVYScW9D0h0Qz8mEmPnbP+TE+tguNGtWXLkH
+         DFFg==
+X-Gm-Message-State: AOAM532m2Bsp9kSY//zZsI9F5aLo/TLEdHyXGprXrMsf2WnNaqDVMPcG
+        mNFzGbPaZ3UJhHMPr459siJ+FkMo+K9I/IUK
+X-Google-Smtp-Source: ABdhPJxq7oGqGgccr5nDua4JzQjAWDF8kGwQbSNjmZkJrDi8QKA0NHu/CFxDtMPdOuTJ+lcDLL6k8A==
+X-Received: by 2002:a1c:2985:: with SMTP id p127mr47451939wmp.165.1625954898932;
+        Sat, 10 Jul 2021 15:08:18 -0700 (PDT)
+Received: from alexlaptop ([102.182.144.99])
+        by smtp.gmail.com with ESMTPSA id q19sm15244987wmq.38.2021.07.10.15.08.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Jul 2021 15:08:18 -0700 (PDT)
+Date:   Sun, 11 Jul 2021 00:08:15 +0200
+From:   Alexander Greyling <alexandergreyling5@gmail.com>
+To:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
+        florian.c.schilhabel@googlemail.com
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: rtl8712: Fix alignment
+Message-ID: <20210710220815.GA1654486@alexlaptop>
+Mail-Followup-To: gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
+        florian.c.schilhabel@googlemail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -28,146 +65,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+This patch fixes the checkpatch.pl issue:
 
-Here is the RTC subsystem pull request for v5.14. I know it is very late
-but there is nothing too scary:
-Mostly documentation/comment changes and non urgent fixes.
+CHECK: Alignment should match open parenthesis.
 
-The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
+Signed-off-by: Alexander Greyling <alexandergreyling5@gmail.com>
+---
+ drivers/staging/rtl8712/osdep_service.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git tags/rtc-5.14
-
-for you to fetch changes up to 4aa90c036df670b8757140e0dae2a94e7b0d42b4:
-
-  rtc: pcf8523: rename register and bit defines (2021-07-10 23:18:30 +0200)
-
-----------------------------------------------------------------
-RTC for 5.14
-
-Drivers:
- - add or fix SPDX identifiers
- - NXP pcf*: fix datasheet URLs
- - imxdi: add wakeup support
- - pcf2127: handle timestamp interrupts, this fixes a possible interrupt storm
- - bd70528: Drop BD70528 support
-
-----------------------------------------------------------------
-Alexandre Belloni (2):
-      dt-bindings: rtc: ti,bq32k: take maintainership
-      rtc: pcf8523: rename register and bit defines
-
-Arnd Bergmann (1):
-      rtc: bd70528: fix BD71815 watchdog dependency
-
-Bixuan Cui (1):
-      rtc: mxc_v2: add missing MODULE_DEVICE_TABLE
-
-Colin Ian King (1):
-      rtc: v3020: remove redundant initialization of variable retval
-
-Corentin Labbe (1):
-      dt-bindings: convert rtc/faraday,ftrtc01 to yaml
-
-Dan Carpenter (1):
-      rtc: fix snprintf() checking in is_rtc_hctosys()
-
-Fabio Estevam (4):
-      rtc: pcf2127: Fix the datasheet URL
-      rtc: pcf85063: Fix the datasheet URL
-      rtc: pcf8563: Fix the datasheet URL
-      rtc: pcf85063: Update the PCF85063A datasheet revision
-
-Geert Uytterhoeven (1):
-      dt-bindings: rtc: ti,bq32k: Convert to json-schema
-
-Krzysztof Kozlowski (1):
-      rtc: max77686: Do not enforce (incorrect) interrupt trigger type
-
-Marek Vasut (1):
-      dt-bindings: rtc: rx8900: Convert to YAML schema
-
-Martin Fuzzey (1):
-      rtc: stm32: Fix unbalanced clk_disable_unprepare() on probe error path
-
-Martin Kaiser (1):
-      rtc: imxdi: add wakeup support
-
-Matti Vaittinen (1):
-      rtc: bd70528: Drop BD70528 support
-
-Mian Yousaf Kaukab (1):
-      rtc: pcf2127: handle timestamp interrupts
-
-Nobuhiro Iwamatsu (11):
-      rtc: au1xxx: convert to SPDX identifier
-      rtc: ds1374: convert to SPDX identifier
-      rtc: max6900: convert to SPDX identifier
-      rtc: palmas: convert to SPDX identifier
-      rtc: sc27xx: Fix format of SPDX identifier
-      rtc: rtd119x: Fix format of SPDX identifier
-      rtc: tps80031: convert to SPDX identifier
-      rtc: tps6586x: convert to SPDX identifier
-      rtc: spear: convert to SPDX identifier
-      rtc: s5m: Check return value of s5m_check_peding_alarm_interrupt()
-      rtc: at91sam9: Remove unnecessary offset variable checks
-
-Sebastian Reichel (1):
-      rtc: m41t80: add support for fixed clock
-
-Shaokun Zhang (1):
-      rtc: efi: Remove the repeated module alias
-
-Yang Yingliang (2):
-      rtc: sysfs: Correct kerneldoc function name hctosys_show()
-      rtc: m41t80: correct kerneldoc function names
-
- .../devicetree/bindings/rtc/epson,rx8900.txt       |  22 --
- .../devicetree/bindings/rtc/epson,rx8900.yaml      |  49 ++++
- .../devicetree/bindings/rtc/faraday,ftrtc010.txt   |  28 --
- .../devicetree/bindings/rtc/faraday,ftrtc010.yaml  |  59 ++++
- .../devicetree/bindings/rtc/rtc-m41t80.txt         |   9 +
- .../devicetree/bindings/rtc/ti,bq32000.yaml        |  49 ++++
- Documentation/devicetree/bindings/rtc/ti,bq32k.txt |  18 --
- drivers/rtc/Kconfig                                |   6 +-
- drivers/rtc/proc.c                                 |   4 +-
- drivers/rtc/rtc-at91sam9.c                         |   2 +-
- drivers/rtc/rtc-au1xxx.c                           |   5 +-
- drivers/rtc/rtc-bd70528.c                          | 316 +--------------------
- drivers/rtc/rtc-ds1374.c                           |   7 +-
- drivers/rtc/rtc-efi.c                              |   1 -
- drivers/rtc/rtc-imxdi.c                            |   4 +
- drivers/rtc/rtc-m41t80.c                           |  32 ++-
- drivers/rtc/rtc-max6900.c                          |   8 +-
- drivers/rtc/rtc-max77686.c                         |   4 +-
- drivers/rtc/rtc-mxc_v2.c                           |   1 +
- drivers/rtc/rtc-palmas.c                           |  15 +-
- drivers/rtc/rtc-pcf2127.c                          | 194 +++++++++----
- drivers/rtc/rtc-pcf85063.c                         |   6 +-
- drivers/rtc/rtc-pcf8523.c                          | 146 +++++-----
- drivers/rtc/rtc-pcf8563.c                          |   2 +-
- drivers/rtc/rtc-rtd119x.c                          |   3 +-
- drivers/rtc/rtc-s5m.c                              |   4 +-
- drivers/rtc/rtc-sc27xx.c                           |   2 +-
- drivers/rtc/rtc-spear.c                            |   5 +-
- drivers/rtc/rtc-stm32.c                            |   6 +-
- drivers/rtc/rtc-tps6586x.c                         |  15 +-
- drivers/rtc/rtc-tps80031.c                         |  15 +-
- drivers/rtc/rtc-v3020.c                            |   2 +-
- drivers/rtc/sysfs.c                                |   2 +-
- 33 files changed, 440 insertions(+), 601 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/rtc/epson,rx8900.txt
- create mode 100644 Documentation/devicetree/bindings/rtc/epson,rx8900.yaml
- delete mode 100644 Documentation/devicetree/bindings/rtc/faraday,ftrtc010.txt
- create mode 100644 Documentation/devicetree/bindings/rtc/faraday,ftrtc010.yaml
- create mode 100644 Documentation/devicetree/bindings/rtc/ti,bq32000.yaml
- delete mode 100644 Documentation/devicetree/bindings/rtc/ti,bq32k.txt
-
+diff --git a/drivers/staging/rtl8712/osdep_service.h b/drivers/staging/rtl8712/osdep_service.h
+index e939c4a954b3..d33ddffb7ad9 100644
+--- a/drivers/staging/rtl8712/osdep_service.h
++++ b/drivers/staging/rtl8712/osdep_service.h
+@@ -46,7 +46,7 @@ struct	__queue	{
+ 	} while (0)
+ 
+ static inline u32 end_of_queue_search(struct list_head *head,
+-		struct list_head *plist)
++				      struct list_head *plist)
+ {
+ 	return (head == plist);
+ }
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.25.1
+
