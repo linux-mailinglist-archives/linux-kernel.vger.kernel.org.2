@@ -2,391 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFC9D3C34F3
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 16:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 750CF3C3504
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 16:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231879AbhGJO6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 10:58:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57922 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231536AbhGJO6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 10:58:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 981826135E;
-        Sat, 10 Jul 2021 14:55:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625928931;
-        bh=KxoYMgzLmpcmIgHN19FIp548doIwKV3u+HaYVSmr4so=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VV89EdHFMoPuqpYiz1LSQjbpMF53mK0M9+5ibK/r6WAgcYN/3yjOecX0t37YSwRbJ
-         kS/+XD32PdR7nYi2IJHL2C2Xqk28Ga34m8xNucOSbwe3wg4stzjJAiD5K5oiQK32Mv
-         c7CeUMtQzie7HvJozjjqCBuXH96MpZ+LpvOnszBIoqbWOsyevH40Eh6sFDVp/zAKUn
-         fiD3A6BReIZHd7ESKM6ELbIxwvWCq5iTdMSkBqgVxPRU42GasFxzIYcAX+X9oyHTGm
-         iVMn/ziHl8w2dXVPuDipICEQ1Fc3sKYF9nhqROOtKWbNbVuulYpPUuFNdoTqeNpbMa
-         Fs07GMe7nSb8A==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     X86 ML <x86@kernel.org>, Ingo Molnar <mingo@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
-        yhs@fb.com, linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: [PATCH -tip 1/6] kprobes: treewide: Cleanup the error messages for kprobes
-Date:   Sat, 10 Jul 2021 23:55:28 +0900
-Message-Id: <162592892814.1158485.8237595120918549408.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <162592891873.1158485.768824457210707916.stgit@devnote2>
-References: <162592891873.1158485.768824457210707916.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S232478AbhGJO7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 10:59:06 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:59408 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232467AbhGJO7F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Jul 2021 10:59:05 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16AD3WL8015891;
+        Sat, 10 Jul 2021 14:55:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : content-type : in-reply-to : mime-version;
+ s=corp-2020-01-29; bh=xVnjX1GVeq+Z5vKqehmp+nRxFp3HU3RmMBsy54Nujrg=;
+ b=ByTH60bAa/yZCnAcBJVt6B+V5OtMfn97COBnf7/oBNS0+JRcC7UITze11vCQafmH8IuB
+ 5iHPtckb6qcVq4Rm9MdYwulFreK2QP+fzkGGHBIOSG08eEVrbUmzZ0mfQ5oSlcwSjz2r
+ FSkTMyDspTtBdqvV7ivssaEtjA5ErLRsj94kGOpaQ7qI4YoWZivBLkXtAcTfbuZTul1t
+ 5OueUfQma8+f0ZHGYEjf0el6UguJXxAtEdXzBCbcEDXuNRgkvViEw0MswWr+hBvGgdtJ
+ jpRAe1NvYABgyKWOWTUh6SNnSF7qagxojo7CKaUZgmJXKOR5p9jOmlYBoVcFs2MzzXAw Rg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39q3eagfm4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 10 Jul 2021 14:55:58 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16AC7gEQ094739;
+        Sat, 10 Jul 2021 14:55:57 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2170.outbound.protection.outlook.com [104.47.59.170])
+        by aserp3030.oracle.com with ESMTP id 39q1kaxrb7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 10 Jul 2021 14:55:57 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ivg6pZyWjQaF8M2OYxxJD0/UA9CyeMs2Bh5FWbIGlKVmDRThN3+CaN52yCAMJ/r8kA3VE1FskttFeSasd+L0ST1DBnTkxFI9EPKMLLrXvYxdsgwWoaAdSdhwbqpNXLwoJuwnVcqtyshSiMtudZlfw4uR/OHHR9QH1SmhcdYnRMzCdTnTqeJruBKzBPEvWqmRHgO5qZW+8a7blOVzHqMe1IpftuG98ju8r/swZxGesco8NB6g2aSh5ExMNTfyAiehpwo8vHR7Ro7m8+OpCjsnIuRIc6kaQRF5Nmtup7rh5SaR/Ob3FazxkUu4os73ul3X9okNO8K1LUCJZjZO5WB2bQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xVnjX1GVeq+Z5vKqehmp+nRxFp3HU3RmMBsy54Nujrg=;
+ b=J53HAXqw0pFlPR1Qiqi9dqleEKT9cdB5fTgtmQRzoXOf4bXRumTIGve5BdLPiyOT45brwvix75lSDtQ8UC1/tEg26neknttOLiXTcQ0kVKmlChuAj10oOKzgC+Bagy8GMELPSSH6UWI5LTjxfrcqUJl6yp6xRwTxLHb6aZTXIMtz68SX/shPcvOJN+lp9dUDElF7NEi3hmeNPe+kPmcWlechnzgooO87vQK8N/GiETPL6RTiBK0ATsdrmHyvpKCxYid1A36FX0uYzdufIBRuj2AkSNACXhI5nH+HcpYgP3AIpwzpw+FaxOhpU2dMHSY7ZbP/XkwOZYPMubxCIH1t1Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xVnjX1GVeq+Z5vKqehmp+nRxFp3HU3RmMBsy54Nujrg=;
+ b=UJdth1YhJmI8GbM5k3Fp8vkHpVEPB48Ixo5yMQRfBAs5TTtjWScy2V8i5Ip6I+ud/Y3/JXkqys6SLAZDKsuJLf1buXrpjYy7HD9iacvs8VZR3zuxqcNdg0aH8gKn56dQUb2qe2DWZW+67+/c/fkXyt9MQil7awKUMNsx2w+IDmE=
+Authentication-Results: lists.01.org; dkim=none (message not signed)
+ header.d=none;lists.01.org; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by MWHPR10MB1486.namprd10.prod.outlook.com
+ (2603:10b6:300:24::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20; Sat, 10 Jul
+ 2021 14:55:55 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::3413:3c61:5067:ba73]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::3413:3c61:5067:ba73%5]) with mapi id 15.20.4287.033; Sat, 10 Jul 2021
+ 14:55:55 +0000
+Date:   Sat, 10 Jul 2021 17:55:31 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     kbuild@lists.01.org, Maxim Kochetkov <fido_max@inbox.ru>,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     lkp@intel.com, kbuild-all@lists.01.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        saravanak@google.com, leoyang.li@nxp.com, qiang.zhao@nxp.com,
+        gregkh@linuxfoundation.org, Maxim Kochetkov <fido_max@inbox.ru>
+Subject: Re: [PATCH] soc: fsl: qe: convert QE interrupt controller to
+ platform_device
+Message-ID: <202107100655.2aRikOP4-lkp@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210705111250.1513634-1-fido_max@inbox.ru>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JNAP275CA0064.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4f::20)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kadam (102.222.70.252) by JNAP275CA0064.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4f::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.23 via Frontend Transport; Sat, 10 Jul 2021 14:55:46 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6a455a18-7a4d-4aeb-a2db-08d943b2d14f
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1486:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR10MB1486555A00062CB3FF137EEE8E179@MWHPR10MB1486.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xJv08PkXxv5xhmYqoGqN8oubFHRCV4wdxkFmFwWO8FOfbKwEs4elwJxX3pgpMlKX322TbTIwpsbZxpCL0CXH69wernuDhR5Dd7vw/vXGOauf4kwso4uqC5SABuRQktBpDxB3clVjWicNvb0PFspMQDnSe4GEtSoHudfla+ZVKQyL6E9q0uNjPEutCSiI+4g07PwAsZ30bY0w5C9ZSCG2U1VttPGkU/mZ9PUcuf/1SNmrPlP47doyzTM6RVNni9pSkE+1Mmb0c9tunb95apeT559G5TbQ/r4PhEnBeDCbD742aRl18l5HkVxac7Njlbo0oGrOIvuV81JYrdbg0EIXC8GWdKUw9nRhBWXwxC8wgPRlyqjtKnwhBFfYmEuKSHt+n2hqnFSlgPOkkMYw1MFWOifeKj/8Lk5fT5zInley5g9CbfcCNbER0u3zuGEjdtxnqeyGU7+t823ZDmY1Odfdws1nnhl5WUIPPX3OqEak9eltX/W82A5d4U1vCO+SS+pDFtlnElxinFBNi1n7MSEekVgKCyJmiXcUPuPP7UY/TUsMwepiSixlmlOInsCvmavkIXbM9CKiPtYtBrFVdzUwRcOdsgeNN1l/9mPDJVvDvqxDv/2HKbixmsNHwws0FqO5f9lurSQMWiEL7ZE6xXpSfoZjjIjE8Ls+eR7spBQviflB3XadfR7vLCuLdan2glXWcUAcIlG1lYCB0SWpmSqxSF2SrU8ywTbxW9A/jZL+bWPNKXT4cSOPstFL0iUKLeXdF66N3Ew6Z6TC2xr2ZWXUzaznPjWcpnImieE5v35gbviiRJoDfTc+95TKisyPW2px
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(136003)(346002)(366004)(376002)(83380400001)(956004)(7416002)(186003)(26005)(36756003)(316002)(6486002)(2906002)(8936002)(52116002)(4326008)(6496006)(6666004)(86362001)(1076003)(44832011)(38350700002)(66556008)(66476007)(66946007)(966005)(8676002)(38100700002)(4001150100001)(5660300002)(9686003)(478600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?lCdC7zG7kVV38boHnMJdyrKNpNVvgAlNuOPuymUkhaKQ1uiV9uvJVzvLmig3?=
+ =?us-ascii?Q?ijny7Sp8FqBhwcMwfkioCNZNMeTWlwW2aXrveVDRYv4nngAhVNC8Go5yjj4j?=
+ =?us-ascii?Q?iyu7syhLSqi25HmgdeTYTBxntPlDpMEXDpbMnQwLwrQxub7T1XIfY3YPAT+R?=
+ =?us-ascii?Q?UUwmiFJo/jsO3WFZSkJnA4sehwnBlD0QT4DcIco+KdaRjti3QEF0ycspMtqe?=
+ =?us-ascii?Q?izKl7NYvdP/IKrHo+BPez+bP+XBhmbw5X2PAu86WLiVvSAmUeqsNpqcSvppM?=
+ =?us-ascii?Q?iXbelL7ttQpxWNKGkSaws52BC4FSvqkGgGuyGVakhfGSUzi2beKnwpakuCBl?=
+ =?us-ascii?Q?/Gg5uXaBp+CahOqCBNwiSq96A7bvlnN8MQx5kcLgygr8zscBsZkWy2T/iSpH?=
+ =?us-ascii?Q?yTPN19MIwWh25JY4eo9N+4nOniJRCC0T0odVEOO8iIt07955bRe+mgCOY94T?=
+ =?us-ascii?Q?UINAhaG0WeW4qPqemj1BDZ99PUWZdjF6+0qAJaGfJht4AgCDzROFstuOdI1N?=
+ =?us-ascii?Q?wo8R15j92be3Y0ipg4fujXJeh+trOOM8Id9bZPpNPZ8Oo1NdVqv4bAD6jCyp?=
+ =?us-ascii?Q?pOlQTlfYbm7b8yV4sRF2TqBYnb4k2Dm4JM7Wi/5GVrNU6IW9k/F5rxW4W90x?=
+ =?us-ascii?Q?dad2aoxC9drmUD/QDAsFMb6v/MNGYo6augX+RdC5qtDPduvHAo+1feAY5l5M?=
+ =?us-ascii?Q?cZca7W3REy2YbliJ7WkI9KVStGZQLMeC75MUGw9G1J+1PmsMZA4e9Y0x/NHP?=
+ =?us-ascii?Q?ePTtAxkm/7qTfoo28JCgwmPz29nw8F2sAcg0KrEMzxGizME1eax6bPp2JJZZ?=
+ =?us-ascii?Q?HLhvJbD00B8KluubqB4zHZ03rgNOjRtvfqsR6XYZKA9mG0pQMB5CvWnM/5Qs?=
+ =?us-ascii?Q?fnDw0LpQ6cmEQWiB6nW/TjhJFVZctdYnmoS30GzapQLhFTjSsVEOA6PeEn4S?=
+ =?us-ascii?Q?J/8kE7olfW+ERnWYV+6ZAgVLBrZJINgy2m12igBoiJITuAfpXb3B6JSJLalD?=
+ =?us-ascii?Q?nRRHUaicT1TzpzIq+Rb4JXCL7Ok53/cLTD3t9Lu/IFm4DkCVbjSASClFZl3m?=
+ =?us-ascii?Q?UgueEHmFpAPAP30IclCwwXgpjdVvuQhZW4HXPItHjs+GQD4rAYXYQshmpuF/?=
+ =?us-ascii?Q?TWyYqAptUYlafuhaIlsz/u/rQP61Pt1shy69W/wFLi5+XmU6K4JJbNbtbjkZ?=
+ =?us-ascii?Q?GZz5IPpNIG+nie8T55l7L9LUXaGa06fYa+CfeLRxkC2STx+E3Vny8Clszevj?=
+ =?us-ascii?Q?Oip6IDarwNHwEZbAj99wSfuGvw0mqboKWfEyVYnTEpVqyhu9WwfBBzdNxhgv?=
+ =?us-ascii?Q?WbL23+LsaMvBx+csxU1Rv8l3?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6a455a18-7a4d-4aeb-a2db-08d943b2d14f
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jul 2021 14:55:54.9190
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 93sM1MZ2mO9vOxZDuvfSjXBM39mhnv3zv4LXGjzDSSmKjMJD27gpVP+LLC/f3ELGUdjysAX85nD2X/ivj1Hd7cDabZnYy/tYgGdS0jl1rng=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1486
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10040 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0 mlxscore=0
+ malwarescore=0 bulkscore=0 spamscore=0 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107100024
+X-Proofpoint-GUID: _y1pVKxSYaZQg1oSBYZvETCIP1iybr51
+X-Proofpoint-ORIG-GUID: _y1pVKxSYaZQg1oSBYZvETCIP1iybr51
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This clean up the error/notification messages in kprobes related code.
-Basically this defines 'pr_fmt()' macros for each files and update
-the messages which describes
+Hi Maxim,
 
- - what happened,
- - what is the kernel going to do or not do,
- - is the kernel fine,
- - what can the user do about it.
+url:    https://github.com/0day-ci/linux/commits/Maxim-Kochetkov/soc-fsl-qe-convert-QE-interrupt-controller-to-platform_device/20210705-191227
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git for-next
+config: openrisc-randconfig-m031-20210709 (attached as .config)
+compiler: or1k-linux-gcc (GCC) 9.3.0
 
-Also, if the message is not needed (e.g. the function returns unique
-error code, or other error message is already shown.) remove it,
-and replace the message with WARN_*() macros if suitable.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+smatch warnings:
+drivers/soc/fsl/qe/qe_ic.c:461 qe_ic_init() warn: 'qe_ic->regs' not released on lines: 442.
+
+vim +461 drivers/soc/fsl/qe/qe_ic.c
+
+43f09464f68dbb drivers/soc/fsl/qe/qe_ic.c         Maxim Kochetkov  2021-07-05  408  static int qe_ic_init(struct platform_device *pdev)
+9865853851313e arch/powerpc/sysdev/qe_lib/qe_ic.c Li Yang          2006-10-03  409  {
+4e0e161d3cc403 drivers/soc/fsl/qe/qe_ic.c         Rasmus Villemoes 2019-11-28  410  	void (*low_handler)(struct irq_desc *desc);
+4e0e161d3cc403 drivers/soc/fsl/qe/qe_ic.c         Rasmus Villemoes 2019-11-28  411  	void (*high_handler)(struct irq_desc *desc);
+9865853851313e arch/powerpc/sysdev/qe_lib/qe_ic.c Li Yang          2006-10-03  412  	struct qe_ic *qe_ic;
+9865853851313e arch/powerpc/sysdev/qe_lib/qe_ic.c Li Yang          2006-10-03  413  	struct resource res;
+43f09464f68dbb drivers/soc/fsl/qe/qe_ic.c         Maxim Kochetkov  2021-07-05  414  	struct device_node *node = pdev->dev.of_node;
+882c626d1d4650 drivers/soc/fsl/qe/qe_ic.c         Rasmus Villemoes 2019-11-28  415  	u32 ret;
+9865853851313e arch/powerpc/sysdev/qe_lib/qe_ic.c Li Yang          2006-10-03  416  
+2272a55f16c998 arch/powerpc/sysdev/qe_lib/qe_ic.c Michael Ellerman 2008-05-26  417  	ret = of_address_to_resource(node, 0, &res);
+2272a55f16c998 arch/powerpc/sysdev/qe_lib/qe_ic.c Michael Ellerman 2008-05-26  418  	if (ret)
+43f09464f68dbb drivers/soc/fsl/qe/qe_ic.c         Maxim Kochetkov  2021-07-05  419  		return -ENODEV;
+2272a55f16c998 arch/powerpc/sysdev/qe_lib/qe_ic.c Michael Ellerman 2008-05-26  420  
+ea96025a26ab89 arch/powerpc/sysdev/qe_lib/qe_ic.c Anton Vorontsov  2009-07-01  421  	qe_ic = kzalloc(sizeof(*qe_ic), GFP_KERNEL);
+9865853851313e arch/powerpc/sysdev/qe_lib/qe_ic.c Li Yang          2006-10-03  422  	if (qe_ic == NULL)
+43f09464f68dbb drivers/soc/fsl/qe/qe_ic.c         Maxim Kochetkov  2021-07-05  423  		return -ENOMEM;
+9865853851313e arch/powerpc/sysdev/qe_lib/qe_ic.c Li Yang          2006-10-03  424  
+a8db8cf0d894df arch/powerpc/sysdev/qe_lib/qe_ic.c Grant Likely     2012-02-14  425  	qe_ic->irqhost = irq_domain_add_linear(node, NR_QE_IC_INTS,
+a8db8cf0d894df arch/powerpc/sysdev/qe_lib/qe_ic.c Grant Likely     2012-02-14  426  					       &qe_ic_host_ops, qe_ic);
+3475dd8a68a7c7 arch/powerpc/sysdev/qe_lib/qe_ic.c Julia Lawall     2009-08-01  427  	if (qe_ic->irqhost == NULL) {
+                                                                                            ^^^^^^^^^^^^^^
+Does this need to be cleaned up?
+
+3475dd8a68a7c7 arch/powerpc/sysdev/qe_lib/qe_ic.c Julia Lawall     2009-08-01  428  		kfree(qe_ic);
+43f09464f68dbb drivers/soc/fsl/qe/qe_ic.c         Maxim Kochetkov  2021-07-05  429  		return -ENODEV;
+3475dd8a68a7c7 arch/powerpc/sysdev/qe_lib/qe_ic.c Julia Lawall     2009-08-01  430  	}
+9865853851313e arch/powerpc/sysdev/qe_lib/qe_ic.c Li Yang          2006-10-03  431  
+28f65c11f2ffb3 arch/powerpc/sysdev/qe_lib/qe_ic.c Joe Perches      2011-06-09  432  	qe_ic->regs = ioremap(res.start, resource_size(&res));
+                                                                                        ^^^^^^^^^^^^^^^^^^^^^
+
+9865853851313e arch/powerpc/sysdev/qe_lib/qe_ic.c Li Yang          2006-10-03  433  
+9865853851313e arch/powerpc/sysdev/qe_lib/qe_ic.c Li Yang          2006-10-03  434  	qe_ic->hc_irq = qe_ic_irq_chip;
+9865853851313e arch/powerpc/sysdev/qe_lib/qe_ic.c Li Yang          2006-10-03  435  
+9865853851313e arch/powerpc/sysdev/qe_lib/qe_ic.c Li Yang          2006-10-03  436  	qe_ic->virq_high = irq_of_parse_and_map(node, 0);
+9865853851313e arch/powerpc/sysdev/qe_lib/qe_ic.c Li Yang          2006-10-03  437  	qe_ic->virq_low = irq_of_parse_and_map(node, 1);
+9865853851313e arch/powerpc/sysdev/qe_lib/qe_ic.c Li Yang          2006-10-03  438  
+10d7930dbb51a8 drivers/soc/fsl/qe/qe_ic.c         Rasmus Villemoes 2019-11-28  439  	if (!qe_ic->virq_low) {
+9865853851313e arch/powerpc/sysdev/qe_lib/qe_ic.c Li Yang          2006-10-03  440  		printk(KERN_ERR "Failed to map QE_IC low IRQ\n");
+3475dd8a68a7c7 arch/powerpc/sysdev/qe_lib/qe_ic.c Julia Lawall     2009-08-01  441  		kfree(qe_ic);
+43f09464f68dbb drivers/soc/fsl/qe/qe_ic.c         Maxim Kochetkov  2021-07-05  442  		return -ENODEV;
+
+Call iounmap() before returning?
+
+9865853851313e arch/powerpc/sysdev/qe_lib/qe_ic.c Li Yang          2006-10-03  443  	}
+4e0e161d3cc403 drivers/soc/fsl/qe/qe_ic.c         Rasmus Villemoes 2019-11-28  444  	if (qe_ic->virq_high != qe_ic->virq_low) {
+523eef1d206a67 drivers/soc/fsl/qe/qe_ic.c         Rasmus Villemoes 2019-11-28  445  		low_handler = qe_ic_cascade_low;
+523eef1d206a67 drivers/soc/fsl/qe/qe_ic.c         Rasmus Villemoes 2019-11-28  446  		high_handler = qe_ic_cascade_high;
+4e0e161d3cc403 drivers/soc/fsl/qe/qe_ic.c         Rasmus Villemoes 2019-11-28  447  	} else {
+4e0e161d3cc403 drivers/soc/fsl/qe/qe_ic.c         Rasmus Villemoes 2019-11-28  448  		low_handler = qe_ic_cascade_muxed_mpic;
+4e0e161d3cc403 drivers/soc/fsl/qe/qe_ic.c         Rasmus Villemoes 2019-11-28  449  		high_handler = NULL;
+4e0e161d3cc403 drivers/soc/fsl/qe/qe_ic.c         Rasmus Villemoes 2019-11-28  450  	}
+9865853851313e arch/powerpc/sysdev/qe_lib/qe_ic.c Li Yang          2006-10-03  451  
+882c626d1d4650 drivers/soc/fsl/qe/qe_ic.c         Rasmus Villemoes 2019-11-28  452  	qe_ic_write(qe_ic->regs, QEIC_CICR, 0);
+9865853851313e arch/powerpc/sysdev/qe_lib/qe_ic.c Li Yang          2006-10-03  453  
+ec775d0e70eb6b arch/powerpc/sysdev/qe_lib/qe_ic.c Thomas Gleixner  2011-03-25  454  	irq_set_handler_data(qe_ic->virq_low, qe_ic);
+ec775d0e70eb6b arch/powerpc/sysdev/qe_lib/qe_ic.c Thomas Gleixner  2011-03-25  455  	irq_set_chained_handler(qe_ic->virq_low, low_handler);
+9865853851313e arch/powerpc/sysdev/qe_lib/qe_ic.c Li Yang          2006-10-03  456  
+10d7930dbb51a8 drivers/soc/fsl/qe/qe_ic.c         Rasmus Villemoes 2019-11-28  457  	if (qe_ic->virq_high && qe_ic->virq_high != qe_ic->virq_low) {
+ec775d0e70eb6b arch/powerpc/sysdev/qe_lib/qe_ic.c Thomas Gleixner  2011-03-25  458  		irq_set_handler_data(qe_ic->virq_high, qe_ic);
+ec775d0e70eb6b arch/powerpc/sysdev/qe_lib/qe_ic.c Thomas Gleixner  2011-03-25  459  		irq_set_chained_handler(qe_ic->virq_high, high_handler);
+9865853851313e arch/powerpc/sysdev/qe_lib/qe_ic.c Li Yang          2006-10-03  460  	}
+43f09464f68dbb drivers/soc/fsl/qe/qe_ic.c         Maxim Kochetkov  2021-07-05 @461  	return 0;
+9865853851313e arch/powerpc/sysdev/qe_lib/qe_ic.c Li Yang          2006-10-03  462  }
+
 ---
- arch/arm/probes/kprobes/core.c     |    4 +++-
- arch/arm64/kernel/probes/kprobes.c |    5 ++++-
- arch/csky/kernel/probes/kprobes.c  |   10 +++++-----
- arch/mips/kernel/kprobes.c         |   11 +++++------
- arch/riscv/kernel/probes/kprobes.c |   11 +++++------
- arch/s390/kernel/kprobes.c         |    4 +++-
- kernel/kprobes.c                   |   36 ++++++++++++++++--------------------
- 7 files changed, 41 insertions(+), 40 deletions(-)
-
-diff --git a/arch/arm/probes/kprobes/core.c b/arch/arm/probes/kprobes/core.c
-index 27e0af78e88b..a59e38de4a03 100644
---- a/arch/arm/probes/kprobes/core.c
-+++ b/arch/arm/probes/kprobes/core.c
-@@ -11,6 +11,8 @@
-  * Copyright (C) 2007 Marvell Ltd.
-  */
- 
-+#define pr_fmt(fmt) "kprobes: " fmt
-+
- #include <linux/kernel.h>
- #include <linux/kprobes.h>
- #include <linux/module.h>
-@@ -278,7 +280,7 @@ void __kprobes kprobe_handler(struct pt_regs *regs)
- 				break;
- 			case KPROBE_REENTER:
- 				/* A nested probe was hit in FIQ, it is a BUG */
--				pr_warn("Unrecoverable kprobe detected.\n");
-+				pr_warn("Failed to recover from reentered kprobes.\n");
- 				dump_kprobe(p);
- 				fallthrough;
- 			default:
-diff --git a/arch/arm64/kernel/probes/kprobes.c b/arch/arm64/kernel/probes/kprobes.c
-index 6dbcc89f6662..ce429cbacd35 100644
---- a/arch/arm64/kernel/probes/kprobes.c
-+++ b/arch/arm64/kernel/probes/kprobes.c
-@@ -7,6 +7,9 @@
-  * Copyright (C) 2013 Linaro Limited.
-  * Author: Sandeepa Prabhu <sandeepa.prabhu@linaro.org>
-  */
-+
-+#define pr_fmt(fmt) "kprobes: " fmt
-+
- #include <linux/extable.h>
- #include <linux/kasan.h>
- #include <linux/kernel.h>
-@@ -218,7 +221,7 @@ static int __kprobes reenter_kprobe(struct kprobe *p,
- 		break;
- 	case KPROBE_HIT_SS:
- 	case KPROBE_REENTER:
--		pr_warn("Unrecoverable kprobe detected.\n");
-+		pr_warn("Failed to recover from reentered kprobes.\n");
- 		dump_kprobe(p);
- 		BUG();
- 		break;
-diff --git a/arch/csky/kernel/probes/kprobes.c b/arch/csky/kernel/probes/kprobes.c
-index 68b22b499aeb..e823c3051b24 100644
---- a/arch/csky/kernel/probes/kprobes.c
-+++ b/arch/csky/kernel/probes/kprobes.c
-@@ -1,5 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0+
- 
-+#define pr_fmt(fmt) "kprobes: " fmt
-+
- #include <linux/kprobes.h>
- #include <linux/extable.h>
- #include <linux/slab.h>
-@@ -77,10 +79,8 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
- {
- 	unsigned long probe_addr = (unsigned long)p->addr;
- 
--	if (probe_addr & 0x1) {
--		pr_warn("Address not aligned.\n");
--		return -EINVAL;
--	}
-+	if (probe_addr & 0x1)
-+		return -EILSEQ;
- 
- 	/* copy instruction */
- 	p->opcode = le32_to_cpu(*p->addr);
-@@ -225,7 +225,7 @@ static int __kprobes reenter_kprobe(struct kprobe *p,
- 		break;
- 	case KPROBE_HIT_SS:
- 	case KPROBE_REENTER:
--		pr_warn("Unrecoverable kprobe detected.\n");
-+		pr_warn("Failed to recover from reentered kprobes.\n");
- 		dump_kprobe(p);
- 		BUG();
- 		break;
-diff --git a/arch/mips/kernel/kprobes.c b/arch/mips/kernel/kprobes.c
-index 75bff0f77319..b0934a0d7aed 100644
---- a/arch/mips/kernel/kprobes.c
-+++ b/arch/mips/kernel/kprobes.c
-@@ -11,6 +11,8 @@
-  *   Copyright (C) IBM Corporation, 2002, 2004
-  */
- 
-+#define pr_fmt(fmt) "kprobes: " fmt
-+
- #include <linux/kprobes.h>
- #include <linux/preempt.h>
- #include <linux/uaccess.h>
-@@ -80,8 +82,7 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
- 	insn = p->addr[0];
- 
- 	if (insn_has_ll_or_sc(insn)) {
--		pr_notice("Kprobes for ll and sc instructions are not"
--			  "supported\n");
-+		pr_notice("Kprobes for ll and sc instructions are not supported\n");
- 		ret = -EINVAL;
- 		goto out;
- 	}
-@@ -219,7 +220,7 @@ static int evaluate_branch_instruction(struct kprobe *p, struct pt_regs *regs,
- 	return 0;
- 
- unaligned:
--	pr_notice("%s: unaligned epc - sending SIGBUS.\n", current->comm);
-+	pr_notice("Failed to emulate branch instruction because of unaligned epc - sending SIGBUS to %s.\n", current->comm);
- 	force_sig(SIGBUS);
- 	return -EFAULT;
- 
-@@ -238,10 +239,8 @@ static void prepare_singlestep(struct kprobe *p, struct pt_regs *regs,
- 		regs->cp0_epc = (unsigned long)p->addr;
- 	else if (insn_has_delayslot(p->opcode)) {
- 		ret = evaluate_branch_instruction(p, regs, kcb);
--		if (ret < 0) {
--			pr_notice("Kprobes: Error in evaluating branch\n");
-+		if (ret < 0)
- 			return;
--		}
- 	}
- 	regs->cp0_epc = (unsigned long)&p->ainsn.insn[0];
- }
-diff --git a/arch/riscv/kernel/probes/kprobes.c b/arch/riscv/kernel/probes/kprobes.c
-index 247e33fa5bc7..dcf7c1f6d136 100644
---- a/arch/riscv/kernel/probes/kprobes.c
-+++ b/arch/riscv/kernel/probes/kprobes.c
-@@ -1,5 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0+
- 
-+#define pr_fmt(fmt) "kprobes: " fmt
-+
- #include <linux/kprobes.h>
- #include <linux/extable.h>
- #include <linux/slab.h>
-@@ -50,11 +52,8 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
- {
- 	unsigned long probe_addr = (unsigned long)p->addr;
- 
--	if (probe_addr & 0x1) {
--		pr_warn("Address not aligned.\n");
--
--		return -EINVAL;
--	}
-+	if (probe_addr & 0x1)
-+		return -EILSEQ;
- 
- 	/* copy instruction */
- 	p->opcode = *p->addr;
-@@ -208,7 +207,7 @@ static int __kprobes reenter_kprobe(struct kprobe *p,
- 		break;
- 	case KPROBE_HIT_SS:
- 	case KPROBE_REENTER:
--		pr_warn("Unrecoverable kprobe detected.\n");
-+		pr_warn("Failed to recover from reentered kprobes.\n");
- 		dump_kprobe(p);
- 		BUG();
- 		break;
-diff --git a/arch/s390/kernel/kprobes.c b/arch/s390/kernel/kprobes.c
-index 528bb31815c3..9bca57fe6b6a 100644
---- a/arch/s390/kernel/kprobes.c
-+++ b/arch/s390/kernel/kprobes.c
-@@ -7,6 +7,8 @@
-  * s390 port, used ppc64 as template. Mike Grundy <grundym@us.ibm.com>
-  */
- 
-+#define pr_fmt(fmt) "kprobes: " fmt
-+
- #include <linux/moduleloader.h>
- #include <linux/kprobes.h>
- #include <linux/ptrace.h>
-@@ -264,7 +266,7 @@ static void kprobe_reenter_check(struct kprobe_ctlblk *kcb, struct kprobe *p)
- 		 * is a BUG. The code path resides in the .kprobes.text
- 		 * section and is executed with interrupts disabled.
- 		 */
--		pr_err("Invalid kprobe detected.\n");
-+		pr_err("Failed to recover from reentered kprobes.\n");
- 		dump_kprobe(p);
- 		BUG();
- 	}
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 790a573bbe00..63532991ccb4 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -18,6 +18,9 @@
-  *		<jkenisto@us.ibm.com> and Prasanna S Panchamukhi
-  *		<prasanna@in.ibm.com> added function-return probes.
-  */
-+
-+#define pr_fmt(fmt) "kprobes: " fmt
-+
- #include <linux/kprobes.h>
- #include <linux/hash.h>
- #include <linux/init.h>
-@@ -892,7 +895,7 @@ static void optimize_all_kprobes(void)
- 				optimize_kprobe(p);
- 	}
- 	cpus_read_unlock();
--	printk(KERN_INFO "Kprobes globally optimized\n");
-+	pr_info("kprobe jump-optimization is enabled. All kprobes are optimized if possible.\n");
- out:
- 	mutex_unlock(&kprobe_mutex);
- }
-@@ -925,7 +928,7 @@ static void unoptimize_all_kprobes(void)
- 
- 	/* Wait for unoptimizing completion */
- 	wait_for_kprobe_optimizer();
--	printk(KERN_INFO "Kprobes globally unoptimized\n");
-+	pr_info("kprobe jump-optimization is disabled. All kprobes are based on software breakpoint.\n");
- }
- 
- static DEFINE_MUTEX(kprobe_sysctl_mutex);
-@@ -1003,7 +1006,7 @@ static int reuse_unused_kprobe(struct kprobe *ap)
- 	 * unregistered.
- 	 * Thus there should be no chance to reuse unused kprobe.
- 	 */
--	printk(KERN_ERR "Error: There should be no unused kprobe here.\n");
-+	WARN_ON_ONCE(1);
- 	return -EINVAL;
- }
- 
-@@ -1049,18 +1052,13 @@ static int __arm_kprobe_ftrace(struct kprobe *p, struct ftrace_ops *ops,
- 	int ret = 0;
- 
- 	ret = ftrace_set_filter_ip(ops, (unsigned long)p->addr, 0, 0);
--	if (ret) {
--		pr_debug("Failed to arm kprobe-ftrace at %pS (%d)\n",
--			 p->addr, ret);
-+	if (WARN_ONCE(ret < 0, "Failed to arm kprobe-ftrace at %pS (error %d)\n", p->addr, ret))
- 		return ret;
--	}
- 
- 	if (*cnt == 0) {
- 		ret = register_ftrace_function(ops);
--		if (ret) {
--			pr_debug("Failed to init kprobe-ftrace (%d)\n", ret);
-+		if (WARN(ret < 0, "Failed to register kprobe-ftrace (error %d)\n", ret))
- 			goto err_ftrace;
--		}
- 	}
- 
- 	(*cnt)++;
-@@ -1092,14 +1090,14 @@ static int __disarm_kprobe_ftrace(struct kprobe *p, struct ftrace_ops *ops,
- 
- 	if (*cnt == 1) {
- 		ret = unregister_ftrace_function(ops);
--		if (WARN(ret < 0, "Failed to unregister kprobe-ftrace (%d)\n", ret))
-+		if (WARN(ret < 0, "Failed to unregister kprobe-ftrace (error %d)\n", ret))
- 			return ret;
- 	}
- 
- 	(*cnt)--;
- 
- 	ret = ftrace_set_filter_ip(ops, (unsigned long)p->addr, 1, 0);
--	WARN_ONCE(ret < 0, "Failed to disarm kprobe-ftrace at %pS (%d)\n",
-+	WARN_ONCE(ret < 0, "Failed to disarm kprobe-ftrace at %pS (error %d)\n",
- 		  p->addr, ret);
- 	return ret;
- }
-@@ -1885,7 +1883,7 @@ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
- 
- 		node = node->next;
- 	}
--	pr_err("Oops! Kretprobe fails to find correct return address.\n");
-+	pr_err("kretprobe: Return address not found, not execute handler. Maybe there is a bug in the kernel.\n");
- 	BUG_ON(1);
- 
- found:
-@@ -2214,8 +2212,7 @@ EXPORT_SYMBOL_GPL(enable_kprobe);
- /* Caller must NOT call this in usual path. This is only for critical case */
- void dump_kprobe(struct kprobe *kp)
- {
--	pr_err("Dumping kprobe:\n");
--	pr_err("Name: %s\nOffset: %x\nAddress: %pS\n",
-+	pr_err("Dump kprobe:\n.symbol_name = %s, .offset = %x, .addr = %pS\n",
- 	       kp->symbol_name, kp->offset, kp->addr);
- }
- NOKPROBE_SYMBOL(dump_kprobe);
-@@ -2478,8 +2475,7 @@ static int __init init_kprobes(void)
- 	err = populate_kprobe_blacklist(__start_kprobe_blacklist,
- 					__stop_kprobe_blacklist);
- 	if (err) {
--		pr_err("kprobes: failed to populate blacklist: %d\n", err);
--		pr_err("Please take care of using kprobes.\n");
-+		pr_err("Failed to populate blacklist (error %d), kprobes not restricted, be careful using them!\n", err);
- 	}
- 
- 	if (kretprobe_blacklist_size) {
-@@ -2488,7 +2484,7 @@ static int __init init_kprobes(void)
- 			kretprobe_blacklist[i].addr =
- 				kprobe_lookup_name(kretprobe_blacklist[i].name, 0);
- 			if (!kretprobe_blacklist[i].addr)
--				printk("kretprobe: lookup failed: %s\n",
-+				pr_err("Failed to lookup symbol '%s' for kretprobe blacklist. Maybe the target function is removed or renamed.\n",
- 				       kretprobe_blacklist[i].name);
- 		}
- 	}
-@@ -2692,7 +2688,7 @@ static int arm_all_kprobes(void)
- 	}
- 
- 	if (errors)
--		pr_warn("Kprobes globally enabled, but failed to arm %d out of %d probes\n",
-+		pr_warn("Kprobes globally enabled, but failed to enable %d out of %d probes. Please check which kprobes are kept disabled via debugfs.\n",
- 			errors, total);
- 	else
- 		pr_info("Kprobes globally enabled\n");
-@@ -2735,7 +2731,7 @@ static int disarm_all_kprobes(void)
- 	}
- 
- 	if (errors)
--		pr_warn("Kprobes globally disabled, but failed to disarm %d out of %d probes\n",
-+		pr_warn("Kprobes globally disabled, but failed to disable %d out of %d probes. Please check which kprobes are kept enabled via debugfs.\n",
- 			errors, total);
- 	else
- 		pr_info("Kprobes globally disabled\n");
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
