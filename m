@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 408AE3C3011
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 04:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7963C3013
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Jul 2021 04:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232527AbhGJCdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Jul 2021 22:33:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43064 "EHLO mail.kernel.org"
+        id S231920AbhGJCdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Jul 2021 22:33:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234112AbhGJC3H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Jul 2021 22:29:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A063613F3;
-        Sat, 10 Jul 2021 02:25:26 +0000 (UTC)
+        id S234234AbhGJC3R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Jul 2021 22:29:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 54411613F0;
+        Sat, 10 Jul 2021 02:25:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625883927;
-        bh=4cmWkVFhdTzQWY9usqWWMyf40gKiTVqMUh3jZzfwEhU=;
+        s=k20201202; t=1625883941;
+        bh=7OMGQHovSHqEfqr3GzUmZ7OZb7ckknSuqjlhS9W7XGw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=spS3ZMzhuvRLldWvYZLnDgMJsez9zn6z1JLIeDKEDCG4tNa9F0i5uwrC9poTBDxz0
-         wSNIR10Pp9lFSSUw/cbf2lDY2RrnIckMhEj6klH06Dh9usuJVy6i8UqOTMjZ2n5KnC
-         yYYBE1Ff4fYR7WzhKjVUtipCqu8UekAubz9EHjym9CkECcitXWNEiLubgWZqZ/Si0f
-         VteAIs7tihFaSHhcdTUr1Ypv9F1BZN68MWyiSQHFi9Ux5S7FqinUWO/UdKnkoBKgZs
-         mPL2scJO33vwOiYGmcdscs+iVWphz/ZEc6lUUM31VOpJecZLNw6jPwzLmGSV71AKJE
-         ASKuMuWCMCZYQ==
+        b=A9u2btOq2FEim1ShNSTgt+oowXcMb8+NooAznDMaQy43g3mXazCICbMOXbsnlKLGI
+         Tm2a0mIj54lTCxc0bhq7Es2MX44dv2H3EJQpp/05IMKWslG4b8Aaumxlm0IJV8v+WT
+         DyNjdOVlf1Xh9h36024cfALGT4Qj90tLd6f9g32eYCIi89rk08NQX5kYNZWcwigMGK
+         vLm0ApO9b75LUbcLA0XL5Zhc4b2w7+ZiSLK6N3iTGkwcuE315HvR2W/8Et/FjR9rzs
+         cOSkGngZpvHohjARga4tbajljiuhuI3Jy8Z0+bYVGx//0X2pFsJjmW/G3RDfBpIDSZ
+         EsibFhdJKtlZQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zou Wei <zou_wei@huawei.com>, Hulk Robot <hulkci@huawei.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.10 44/93] mfd: da9052/stmpe: Add and modify MODULE_DEVICE_TABLE
-Date:   Fri,  9 Jul 2021 22:23:38 -0400
-Message-Id: <20210710022428.3169839-44-sashal@kernel.org>
+Cc:     Geoff Levand <geoff@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH AUTOSEL 5.10 55/93] powerpc/ps3: Add dma_mask to ps3_dma_region
+Date:   Fri,  9 Jul 2021 22:23:49 -0400
+Message-Id: <20210710022428.3169839-55-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210710022428.3169839-1-sashal@kernel.org>
 References: <20210710022428.3169839-1-sashal@kernel.org>
@@ -44,48 +42,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Geoff Levand <geoff@infradead.org>
 
-[ Upstream commit 4700ef326556ed74aba188f12396740a8c1c21dd ]
+[ Upstream commit 9733862e50fdba55e7f1554e4286fcc5302ff28e ]
 
-This patch adds/modifies MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this driver when it is built
-as an external module.
+Commit f959dcd6ddfd29235030e8026471ac1b022ad2b0 (dma-direct: Fix
+potential NULL pointer dereference) added a null check on the
+dma_mask pointer of the kernel's device structure.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Add a dma_mask variable to the ps3_dma_region structure and set
+the device structure's dma_mask pointer to point to this new variable.
+
+Fixes runtime errors like these:
+# WARNING: Fixes tag on line 10 doesn't match correct format
+# WARNING: Fixes tag on line 10 doesn't match correct format
+
+  ps3_system_bus_match:349: dev=8.0(sb_01), drv=8.0(ps3flash): match
+  WARNING: CPU: 0 PID: 1 at kernel/dma/mapping.c:151 .dma_map_page_attrs+0x34/0x1e0
+  ps3flash sb_01: ps3stor_setup:193: map DMA region failed
+
+Signed-off-by: Geoff Levand <geoff@infradead.org>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/562d0c9ea0100a30c3b186bcc7adb34b0bbd2cd7.1622746428.git.geoff@infradead.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mfd/da9052-i2c.c | 1 +
- drivers/mfd/stmpe-i2c.c  | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ arch/powerpc/include/asm/ps3.h  |  2 ++
+ arch/powerpc/platforms/ps3/mm.c | 12 ++++++++++++
+ 2 files changed, 14 insertions(+)
 
-diff --git a/drivers/mfd/da9052-i2c.c b/drivers/mfd/da9052-i2c.c
-index 47556d2d9abe..8ebfc7bbe4e0 100644
---- a/drivers/mfd/da9052-i2c.c
-+++ b/drivers/mfd/da9052-i2c.c
-@@ -113,6 +113,7 @@ static const struct i2c_device_id da9052_i2c_id[] = {
- 	{"da9053-bc", DA9053_BC},
- 	{}
- };
-+MODULE_DEVICE_TABLE(i2c, da9052_i2c_id);
+diff --git a/arch/powerpc/include/asm/ps3.h b/arch/powerpc/include/asm/ps3.h
+index cb89e4bf55ce..964063765662 100644
+--- a/arch/powerpc/include/asm/ps3.h
++++ b/arch/powerpc/include/asm/ps3.h
+@@ -71,6 +71,7 @@ struct ps3_dma_region_ops;
+  * @bus_addr: The 'translated' bus address of the region.
+  * @len: The length in bytes of the region.
+  * @offset: The offset from the start of memory of the region.
++ * @dma_mask: Device dma_mask.
+  * @ioid: The IOID of the device who owns this region
+  * @chunk_list: Opaque variable used by the ioc page manager.
+  * @region_ops: struct ps3_dma_region_ops - dma region operations
+@@ -85,6 +86,7 @@ struct ps3_dma_region {
+ 	enum ps3_dma_region_type region_type;
+ 	unsigned long len;
+ 	unsigned long offset;
++	u64 dma_mask;
  
- #ifdef CONFIG_OF
- static const struct of_device_id dialog_dt_ids[] = {
-diff --git a/drivers/mfd/stmpe-i2c.c b/drivers/mfd/stmpe-i2c.c
-index 61aa020199f5..cd2f45257dc1 100644
---- a/drivers/mfd/stmpe-i2c.c
-+++ b/drivers/mfd/stmpe-i2c.c
-@@ -109,7 +109,7 @@ static const struct i2c_device_id stmpe_i2c_id[] = {
- 	{ "stmpe2403", STMPE2403 },
- 	{ }
- };
--MODULE_DEVICE_TABLE(i2c, stmpe_id);
-+MODULE_DEVICE_TABLE(i2c, stmpe_i2c_id);
+ 	/* driver variables  (set by ps3_dma_region_create) */
+ 	unsigned long bus_addr;
+diff --git a/arch/powerpc/platforms/ps3/mm.c b/arch/powerpc/platforms/ps3/mm.c
+index d094321964fb..a81eac35d900 100644
+--- a/arch/powerpc/platforms/ps3/mm.c
++++ b/arch/powerpc/platforms/ps3/mm.c
+@@ -6,6 +6,7 @@
+  *  Copyright 2006 Sony Corp.
+  */
  
- static struct i2c_driver stmpe_i2c_driver = {
- 	.driver = {
++#include <linux/dma-mapping.h>
+ #include <linux/kernel.h>
+ #include <linux/export.h>
+ #include <linux/memblock.h>
+@@ -1118,6 +1119,7 @@ int ps3_dma_region_init(struct ps3_system_bus_device *dev,
+ 	enum ps3_dma_region_type region_type, void *addr, unsigned long len)
+ {
+ 	unsigned long lpar_addr;
++	int result;
+ 
+ 	lpar_addr = addr ? ps3_mm_phys_to_lpar(__pa(addr)) : 0;
+ 
+@@ -1129,6 +1131,16 @@ int ps3_dma_region_init(struct ps3_system_bus_device *dev,
+ 		r->offset -= map.r1.offset;
+ 	r->len = len ? len : ALIGN(map.total, 1 << r->page_size);
+ 
++	dev->core.dma_mask = &r->dma_mask;
++
++	result = dma_set_mask_and_coherent(&dev->core, DMA_BIT_MASK(32));
++
++	if (result < 0) {
++		dev_err(&dev->core, "%s:%d: dma_set_mask_and_coherent failed: %d\n",
++			__func__, __LINE__, result);
++		return result;
++	}
++
+ 	switch (dev->dev_type) {
+ 	case PS3_DEVICE_TYPE_SB:
+ 		r->region_ops =  (USE_DYNAMIC_DMA)
 -- 
 2.30.2
 
