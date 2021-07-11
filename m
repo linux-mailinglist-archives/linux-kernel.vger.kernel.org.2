@@ -2,201 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0CA13C3BE0
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 13:28:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A01E23C3BE9
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 13:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232601AbhGKLbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 07:31:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232540AbhGKLbS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 07:31:18 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67447C0613E8
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 04:28:32 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id p14-20020a17090ad30eb02901731c776526so8654271pju.4
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 04:28:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XJqaYNuAhx03VwNz0nBHeMeBm3MIj1+un/V3SAMY9Y4=;
-        b=YbQPULznAFWlcyQEfotPQ6Vd2/Z/zQFWcnjtaVIe0y6OjzI5vyyTvYyFuJd/swEV/r
-         G76DopUvMWN4bEGq1s8wxQZpUxEEz9/wtn3Xay2e6MwZ/9hCrQ8dRmmBBksXgSGeTNjb
-         wjgHuLgEsIjcWD4J0p1fR+B6IlMNAs/u2I8gEnIMtdej2jUjGP/D3Fmtg8xIgX0weu3V
-         5iy7lFlor5kq1zRFNgoS+G/vrM4jb+o7ORle7y9+PU8EGpd6wR9UCCc+5LPCx4rqW8Jj
-         t3yrtfBxCKkSaXRFOTyaQOLGVidtuvl1k41T0MXWkvLUXNDiorwfC9WNvw4zrSFBjNND
-         qtLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XJqaYNuAhx03VwNz0nBHeMeBm3MIj1+un/V3SAMY9Y4=;
-        b=dQeeKog1NVIqegKXDHpIbpKRSTbaJvNjkppj6rjkIcnIn1Q/BQhG7RbUeoLDoD90R0
-         5/kYjcSWYzKgNViGFQNmt8MWV5o4D47frzMo7eaHTbQEoJak7byNMF0p8LTtLYdQWF7/
-         KbgUs+AM0hSc2JyhIay8PhQv1Ukaczg8Dk86IFsFgdGKKp4lOnw5yJTdQcI+CFbvPX2z
-         YhvA6QPddPEP/9iLKyT7vBrlLCQeyfTSU6DnmiQC+A43xHxSykjynCm4o4+can8woJvC
-         ZBZoWTb30GgMm2LuWGaIAuiClSxxtPfPSY5+DeRu86mbqsNh42P+5Y59zlE0qzusvQ9H
-         zyUg==
-X-Gm-Message-State: AOAM53122lCvgNHFdl1ZC0oFwpL/X2hu3G4ao4tTQjR3whWTZTl5Htcx
-        K1YMqLGH3czGtsPzJCJp780=
-X-Google-Smtp-Source: ABdhPJxo3youatxyZWxLBBreYWrXeVGWLK7TP89pTPaDjT7duO2vlYst58Piv+hlJjZfYK4JBXz5Jg==
-X-Received: by 2002:a17:90b:314d:: with SMTP id ip13mr22207735pjb.131.1626002911875;
-        Sun, 11 Jul 2021 04:28:31 -0700 (PDT)
-Received: from ojas ([122.177.24.64])
-        by smtp.gmail.com with ESMTPSA id l6sm12222720pff.74.2021.07.11.04.28.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Jul 2021 04:28:31 -0700 (PDT)
-Date:   Sun, 11 Jul 2021 16:58:21 +0530
-From:   Ojaswin Mujoo <ojaswin98@gmail.com>
-To:     Stefan Wahren <stefan.wahren@i2se.com>
-Cc:     nsaenz@kernel.org, gregkh@linuxfoundation.org, arnd@arndb.de,
-        dan.carpenter@oracle.com, phil@raspberrypi.com,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 5/5] staging: vchiq: Combine vchiq platform code into
- single file
-Message-ID: <20210711112821.GA5049@ojas>
-References: <cover.1625401927.git.ojaswin98@gmail.com>
- <b2e9eaee3e6d8f278a3277aaa284c5ca8b76d756.1625401928.git.ojaswin98@gmail.com>
- <b1b867c1-476c-8a5d-721b-ac19854efcbc@i2se.com>
+        id S232674AbhGKLes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 07:34:48 -0400
+Received: from mail-dm6nam10on2059.outbound.protection.outlook.com ([40.107.93.59]:4737
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229688AbhGKLeq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Jul 2021 07:34:46 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GWGOa/Q5Q9ZcJVLbS8pxqgpsLRzT85PDRUVMknH75ihu/THUUT/lZc2W7wZI3YMA9inq1EXoZIJj6aB9XjXD37DCkex1oAvLL9I10BS5c8XFTfyAltT57EFahIYj2voUeBe056F3mAjreK15U37ib+8mTURW+8qgQyV4BK0pm3EuFTHv2fXPl9P4K92jiu+NZgs4Nm4Bndprd+rSXY7bTbuqEnys2mn2GgXLpd6h4QYDKj2U6K9Wl8gpSM4ShqKutC2SZRKqg5CmfywbXTGCNao5wc13lTu/PLfhE23o8wAqvj+CvJxMK/UGhan5i5kS+r+6Q8cPIlRk1+Cl7w+kmg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gLmFq1NT9wyJVX3wU45wjrJ4uSHRQzzBD9C+tn6D1L8=;
+ b=YiKgTWjCcE+eRMxSIIMQglKwpKqQJ8SzwhobQogazC1VS0M6ClMLr95wFP6faPG6wch8MOe9da/NxEBYtAduyeBHL/p80+LxKPdujx41EK5DZBQ2TACtMP2OVmpTPnahVSRUs74CxEBIJtnWiB7cve2RFbBSZtwaASy43g/+/4C8dK6pQi1AnQEn8yj9Ld5QsB+QULbvtrYmgrhkQraPGHTlO99/Vd+ZcRUe2GSnZzxbcVdZpwBeulhlOaQyOjJ3yXMwFX2oV7NM5H4Yt3jX9aBl7GIxRKd1mLCT6dQTXLmG6NnFzkuFnlG9lHJ07wpwpkY0QPlj5hqo7GRPAydOCA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=broadcom.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gLmFq1NT9wyJVX3wU45wjrJ4uSHRQzzBD9C+tn6D1L8=;
+ b=IkCfwJEL6aR9UJILiuSRDr5txR/lMKxDA7IIkUWrfo2waHXe9xcJ0j/xhzf164Gjw1lymwWIRhcbmX8XcAosmIsK0LGmD/8sqxZ37NeTBOpPuGi8mQRuwKiWRw8jDEaL6e5+y8+jc9Fpg0NnGdyxf1GOmnW+4XbHPy2Xqf7iZLMz/kdaiHOCKK6hhwebchhvF5e8TuhPuAE3E+jVwYgzw1WlpAEPsvQRMqQmrLB/8ssa5/HSS3FomH//vgfVNTn0+RQH6LqRALjOZeBLqOevodoqhKXb4ZdmJFByOpJpg2kYWBYezAc1mJOiwoyG/p5pDkLY2FQ2O1G/44u35Ilc3w==
+Received: from MWHPR02CA0016.namprd02.prod.outlook.com (2603:10b6:300:4b::26)
+ by BN6PR1201MB2480.namprd12.prod.outlook.com (2603:10b6:404:b0::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20; Sun, 11 Jul
+ 2021 11:31:57 +0000
+Received: from CO1NAM11FT004.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:300:4b:cafe::67) by MWHPR02CA0016.outlook.office365.com
+ (2603:10b6:300:4b::26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.19 via Frontend
+ Transport; Sun, 11 Jul 2021 11:31:57 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; broadcom.com; dkim=none (message not signed)
+ header.d=none;broadcom.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ CO1NAM11FT004.mail.protection.outlook.com (10.13.175.89) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4308.20 via Frontend Transport; Sun, 11 Jul 2021 11:31:56 +0000
+Received: from localhost (172.20.187.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 11 Jul
+ 2021 11:31:56 +0000
+Date:   Sun, 11 Jul 2021 14:31:52 +0300
+From:   Leon Romanovsky <leonro@nvidia.com>
+To:     Nitesh Lal <nilal@redhat.com>
+CC:     Nitesh Narayan Lal <nitesh@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-api@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        "Robin Murphy" <robin.murphy@arm.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        "Ingo Molnar" <mingo@kernel.org>, <jbrandeb@kernel.org>,
+        <frederic@kernel.org>, "Juri Lelli" <juri.lelli@redhat.com>,
+        Alex Belits <abelits@marvell.com>,
+        "Bjorn Helgaas" <bhelgaas@google.com>, <rostedt@goodmis.org>,
+        <peterz@infradead.org>, <davem@davemloft.net>,
+        <akpm@linux-foundation.org>, <sfr@canb.auug.org.au>,
+        <stephen@networkplumber.org>, <rppt@linux.vnet.ibm.com>,
+        <chris.friesen@windriver.com>, Marc Zyngier <maz@kernel.org>,
+        Neil Horman <nhorman@tuxdriver.com>, <pjwaskiewicz@gmail.com>,
+        Stefan Assmann <sassmann@redhat.com>,
+        Tomas Henzl <thenzl@redhat.com>, <kashyap.desai@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        <shivasharan.srikanteshwara@broadcom.com>,
+        <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        <suganath-prabu.subramani@broadcom.com>,
+        <james.smart@broadcom.com>, <dick.kennedy@broadcom.com>,
+        Ken Cox <jkc@redhat.com>, <faisal.latif@intel.com>,
+        <shiraz.saleem@intel.com>, <tariqt@nvidia.com>,
+        Alaa Hleihel <ahleihel@redhat.com>,
+        Kamal Heib <kheib@redhat.com>, <borisp@nvidia.com>,
+        <saeedm@nvidia.com>, <benve@cisco.com>, <govind@gmx.com>,
+        <jassisinghbrar@gmail.com>, <ajit.khaparde@broadcom.com>,
+        <sriharsha.basavapatna@broadcom.com>, <somnath.kotur@broadcom.com>,
+        "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        Al Stone <ahs3@redhat.com>
+Subject: Re: [PATCH v2 00/14] genirq: Cleanup the usage of
+ irq_set_affinity_hint
+Message-ID: <YOrWqPYPkZp6nRLS@unreal>
+References: <20210629152746.2953364-1-nitesh@redhat.com>
+ <CAFki+LnUGiEE-7Uf-x8-TQZYZ+3Migrr=81gGLYszxaK-6A9WQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <b1b867c1-476c-8a5d-721b-ac19854efcbc@i2se.com>
+In-Reply-To: <CAFki+LnUGiEE-7Uf-x8-TQZYZ+3Migrr=81gGLYszxaK-6A9WQ@mail.gmail.com>
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d87f20f0-bfa6-4f23-06fb-08d9445f7da0
+X-MS-TrafficTypeDiagnostic: BN6PR1201MB2480:
+X-Microsoft-Antispam-PRVS: <BN6PR1201MB24802983309FFE6EE0AB5D2EBD169@BN6PR1201MB2480.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +RDWxT3KGcmiN03387OXHoMdOimG53fjS211NOgNHqEsaFDF/iJ/h7kSd61L5hjwro2cNly7eIF4V839JfrglEP1KqFrHh0QehBZvMtaiD3xdZW8FQRJy2NICUUla0RcchXFiVCUU4AS2V1qttRa7oFPxiDzjsCCH8/eQwqz7G6HGu55S/kvLu0A9iKDldFa9vRNszvp/oiNQudeD83UDv6OVLdMHFFY9paug0qsyDq2pUSx8dZdFfLk1JwP09mI3Pj5KjZdMohGR14H6q/y1kjWtVax4ziObk1sZfVa9t3rX2FRxc9Z5h6lgZzZBTe+o2GwxF0bsCHdelP56wtd+Z4Go/Kn4GpalSg2VgRp8aRwnPkgPjaUkk6iG6t8DaP6X2x6AFJCOGjjH3gjxGbfXQqlXTg36hWNYs0cW6GHhpVMuJGEPjbG3AEqPzal3FDoukAcv129Y7QuIFBGMYaq29TZlpJ1GrxDlhsCJarmmu9N7LQSUvq9bHZ5NYP6zGTw1/hFnmmXs32wZbr9WJJdBUUUtlyYe8TU4QvZyczOEA4ypkt0pvIDXVFhClpLNADEYhA1Jz39EF00bRGiZoWrhi4cvITrQhEQgUDhDopgHfC6qdZkPoEtY80fTQ18TCP3wit71ouoDuqAIkgr7wlbJa3JOykhaW3bOt9HwVfIjlC6mVvh/G/7RgeT8W70iU1zxwChwx/6XiIyeODQe4ets/2sKiqSpslRt4v86UOK55I=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(7916004)(4636009)(346002)(136003)(396003)(376002)(39860400002)(46966006)(36840700001)(5660300002)(82310400003)(426003)(7636003)(34020700004)(478600001)(9686003)(356005)(33716001)(70206006)(70586007)(8676002)(6916009)(316002)(7416002)(36906005)(186003)(16526019)(83380400001)(47076005)(6666004)(86362001)(36860700001)(82740400003)(53546011)(7366002)(7406005)(4326008)(336012)(26005)(2906002)(54906003)(8936002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jul 2021 11:31:56.8568
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d87f20f0-bfa6-4f23-06fb-08d9445f7da0
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT004.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1201MB2480
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 11, 2021 at 12:49:35PM +0200, Stefan Wahren wrote:
-> Am 04.07.21 um 17:59 schrieb Ojaswin Mujoo:
-> > Combine the vchiq platform initialization code into a single file by
-> > merging vchiq_2835_arm.c into vchiq_arm.c
+On Thu, Jul 08, 2021 at 03:24:20PM -0400, Nitesh Lal wrote:
+> On Tue, Jun 29, 2021 at 11:28 AM Nitesh Narayan Lal <nitesh@redhat.com> wrote:
+
+<...>
+
 > >
-> > Signed-off-by: Ojaswin Mujoo <ojaswin98@gmail.com>
-> > ---
-> >  drivers/staging/vc04_services/Makefile        |   1 -
-> >  .../interface/vchiq_arm/vchiq_2835_arm.c      | 564 ------------------
-> >  .../interface/vchiq_arm/vchiq_arm.c           | 549 +++++++++++++++++
-> >  3 files changed, 549 insertions(+), 565 deletions(-)
-> >  delete mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_2835_arm.c
+> >  drivers/infiniband/hw/i40iw/i40iw_main.c      |  4 +-
+> >  drivers/mailbox/bcm-flexrm-mailbox.c          |  4 +-
+> >  drivers/net/ethernet/cisco/enic/enic_main.c   |  8 +--
+> >  drivers/net/ethernet/emulex/benet/be_main.c   |  4 +-
+> >  drivers/net/ethernet/huawei/hinic/hinic_rx.c  |  4 +-
+> >  drivers/net/ethernet/intel/i40e/i40e_main.c   |  8 +--
+> >  drivers/net/ethernet/intel/iavf/iavf_main.c   |  8 +--
+> >  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 10 ++--
+> >  drivers/net/ethernet/mellanox/mlx4/eq.c       |  8 ++-
+> >  .../net/ethernet/mellanox/mlx5/core/pci_irq.c |  6 +--
+> >  drivers/scsi/lpfc/lpfc_init.c                 |  4 +-
+> >  drivers/scsi/megaraid/megaraid_sas_base.c     | 27 +++++-----
+> >  drivers/scsi/mpt3sas/mpt3sas_base.c           | 21 ++++----
+> >  include/linux/interrupt.h                     | 53 ++++++++++++++++++-
+> >  kernel/irq/manage.c                           |  8 +--
+> >  15 files changed, 113 insertions(+), 64 deletions(-)
 > >
-> > diff --git a/drivers/staging/vc04_services/Makefile b/drivers/staging/vc04_services/Makefile
-> > index 0a04338fc962..1fd191e2e2a5 100644
-> > --- a/drivers/staging/vc04_services/Makefile
-> > +++ b/drivers/staging/vc04_services/Makefile
-> > @@ -4,7 +4,6 @@ obj-$(CONFIG_BCM2835_VCHIQ)	+= vchiq.o
-> >  vchiq-objs := \
-> >     interface/vchiq_arm/vchiq_core.o  \
-> >     interface/vchiq_arm/vchiq_arm.o \
-> > -   interface/vchiq_arm/vchiq_2835_arm.o \
-> >     interface/vchiq_arm/vchiq_debugfs.o \
-> >     interface/vchiq_arm/vchiq_connected.o \
-> >  
-> ...
-> > diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-> > index 0f2de571eba7..9057d01ffd48 100644
-> > --- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-> > +++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-> > @@ -25,15 +25,32 @@
-> >  #include <linux/rcupdate.h>
-> >  #include <linux/delay.h>
-> >  #include <linux/slab.h>
-> > +#include <linux/interrupt.h>
-> > +#include <linux/io.h>
-> > +#include <linux/uaccess.h>
-> >  #include <soc/bcm2835/raspberrypi-firmware.h>
-> >  
-> >  #include "vchiq_core.h"
-> >  #include "vchiq_ioctl.h"
-> >  #include "vchiq_arm.h"
-> >  #include "vchiq_debugfs.h"
-> > +#include "vchiq_connected.h"
-> > +#include "vchiq_pagelist.h"
-> >  
-> >  #define DEVICE_NAME "vchiq"
-> >  
-> > +#define TOTAL_SLOTS (VCHIQ_SLOT_ZERO_SLOTS + 2 * 32)
-> > +
-> > +#define MAX_FRAGMENTS (VCHIQ_NUM_CURRENT_BULKS * 2)
-> > +
-> > +#define VCHIQ_PLATFORM_FRAGMENTS_OFFSET_IDX 0
-> > +#define VCHIQ_PLATFORM_FRAGMENTS_COUNT_IDX  1
-> > +
-> > +#define BELL0	0x00
-> > +#define BELL2	0x08
-> > +
-> > +#define ARM_DS_ACTIVE	BIT(2)
-> > +
-> >  /* Override the default prefix, which would be vchiq_arm (from the filename) */
-> >  #undef MODULE_PARAM_PREFIX
-> >  #define MODULE_PARAM_PREFIX DEVICE_NAME "."
-> > @@ -59,10 +76,542 @@ static struct vchiq_drvdata bcm2836_drvdata = {
-> >  	.cache_line_size = 64,
-> >  };
-> >  
-> > +struct vchiq_2835_state {
-> > +	int inited;
-> > +	struct vchiq_arm_state arm_state;
-> > +};
-> > +
-> > +struct vchiq_pagelist_info {
-> > +	struct pagelist *pagelist;
-> > +	size_t pagelist_buffer_size;
-> > +	dma_addr_t dma_addr;
-> > +	enum dma_data_direction dma_dir;
-> > +	unsigned int num_pages;
-> > +	unsigned int pages_need_release;
-> > +	struct page **pages;
-> > +	struct scatterlist *scatterlist;
-> > +	unsigned int scatterlist_mapped;
-> > +};
-> > +
-> > +static void __iomem *g_regs;
-> > +/* This value is the size of the L2 cache lines as understood by the
-> > + * VPU firmware, which determines the required alignment of the
-> > + * offsets/sizes in pagelists.
-> > + *
-> > + * Modern VPU firmware looks for a DT "cache-line-size" property in
-> > + * the VCHIQ node and will overwrite it with the actual L2 cache size,
-> > + * which the kernel must then respect.  That property was rejected
-> > + * upstream, so we have to use the VPU firmware's compatibility value
-> > + * of 32.
-> > + */
-> > +static unsigned int g_cache_line_size = 32;
-> > +static unsigned int g_fragments_size;
-> > +static char *g_fragments_base;
-> > +static char *g_free_fragments;
-> > +static struct semaphore g_free_fragments_sema;
-> > +static struct device *g_dev;
-> > +
-> > +static DEFINE_SEMAPHORE(g_free_fragments_mutex);
-> > +
-> > +static irqreturn_t
-> > +vchiq_doorbell_irq(int irq, void *dev_id);
-> > +
-> > +static struct vchiq_pagelist_info *
-> > +create_pagelist(char *buf, char __user *ubuf, size_t count, unsigned short type);
-> > +
-> > +static void
-> > +free_pagelist(struct vchiq_pagelist_info *pagelistinfo,
-> > +	      int actual);
+> > --
+> >
+> >
 > 
-> please no forward declarations of these 3 functions. Put them into the
-> right order instead ...
-> 
-> Since this patch is independent from the other ones from the series,
-> maybe Greg can merg the rest of the series.
-> 
-> 
-> 
+> Gentle ping.
+> Any comments or suggestions on any of the patches included in this series?
 
-Hello Stefan,
+Please wait for -rc1, rebase and resend.
+At least i40iw was deleted during merge window.
 
-Thanks for the review. As for the forward declerations, sure I can fix
-these 3 functions and send an independent patch for this.
+Thanks
 
-Regards,
-Ojaswin
+> 
+> -- 
+> Thanks
+> Nitesh
+> 
