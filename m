@@ -2,98 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9B63C3FA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 00:29:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6DE93C3FBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 00:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbhGKWby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 18:31:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33866 "EHLO
+        id S232457AbhGKWes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 18:34:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhGKWbx (ORCPT
+        with ESMTP id S229893AbhGKWen (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 18:31:53 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA79C0613DD;
-        Sun, 11 Jul 2021 15:29:06 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id n10so944352plk.1;
-        Sun, 11 Jul 2021 15:29:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ns02cmkmVIYQ5wbcmNgNQuVbou4Z986ogp+yKH0hor4=;
-        b=iJlrqhUEIvQRmqR+fNg1eITRwoyLnzHX7yFQOvIJB6reWbwkEIuqI4ZM71UIPw+3M7
-         /QBzzB4n1oYcqXRipI1sV43eyVRvKXMg+ihGfp6gKhyso89sheXd/tlENwGcehM3KfoZ
-         3wzHgxMgD61SFJpUKzyEllmmRRmUcpYiB7CDhzxlc58az+i7ZLUUR2Atps7QOB0sCKRR
-         ysucNIWPYLSxiW+bWH0nY2uABIGUJ+6TfuoIRJM4oHgzSkdZoAv/6fl1BPGuDbwN9GBa
-         Jr2W4GWCDP0WrwAvPDMISco520LkRgLayUWYOZ9vK18RAD582BfgsDUJl0KU7zPJaPZv
-         BJqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ns02cmkmVIYQ5wbcmNgNQuVbou4Z986ogp+yKH0hor4=;
-        b=OWxavaLo8lqT/9XUaIJ0xw0ft230RyMjIH3oZWGRC9KLqZ7bPG2ddtOoIvx6t0L79u
-         VrTwpdkghq8K/82Vx6pVFEdZ2xedru3Tc+5aUhS4vYL+upmOtlOd/23lYKRCxHGfTZpI
-         l7BrOYRnWIDgu5rizxOzPxi6WdXRE7k/WpTnpKf42PbXIK5mRPiDdY2hff3QNIxrGRuP
-         Wc/bc+rYsZk70RfO5lddgHVaDPMeUZ3rjrRRyTEtIAkllOfrfbSHyIm+zDiO+/li01o5
-         jO2XX1LCTdRVUVa7eHfj2ILqMBbf3VXo9cs51+XnVZGkMRwlxNF/h7+wqWgVxZrWQq2j
-         48WA==
-X-Gm-Message-State: AOAM5310CH05Fj8Oy1yIsTR/yxTGuqIX6SIpahWjwt0MjfztSx/8L0Ja
-        uM2zjKAZJrp4vW53zULVj2fWyE1ZGqqyGg==
-X-Google-Smtp-Source: ABdhPJwJzDowqPOM9e2+NQEE8BBaJfR4japCjLF0oRpU+sjU5JYMHTNjbyHsy1kXT1g9ahlSBsnvTw==
-X-Received: by 2002:a17:90a:65c8:: with SMTP id i8mr11121560pjs.207.1626042545564;
-        Sun, 11 Jul 2021 15:29:05 -0700 (PDT)
-Received: from [10.230.31.46] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id u125sm13768377pfu.95.2021.07.11.15.29.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Jul 2021 15:29:05 -0700 (PDT)
-Subject: Re: [PATCH 5.12 00/11] 5.12.16-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210709131549.679160341@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <8d3355c0-e6c9-38de-55e2-f553b9eeea9a@gmail.com>
-Date:   Sun, 11 Jul 2021 15:28:56 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Sun, 11 Jul 2021 18:34:43 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95563C0613E8;
+        Sun, 11 Jul 2021 15:31:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=Mo6qpJjml5U8iLYgc9vnqw2QRu2qtGojLIGPXWhslFE=; b=KScQpnoW/TzXIY7cNb0X+9rSTc
+        VObwFUOiCt5HhPY75lZjfPLHLVTbCMD/VuuLAIMQ6hApemoQ3hw+wz9SbNb1RYnuqNuz9S+iJZ+qC
+        qpwFw/szYblDg5BxhQ6jVt5jV5/IgXdKU5VdSizKG8cz9ymXhlV4DVkqXcDBzZ7ZHVtx/kbFP+gAT
+        2xBpaSPyAWZdj1ri7FYqhc25RuGLS9aH0tO+XVxQvViZyD8FqCesqZvCyGJ3VPiVzrGrb2MIdT0i3
+        u85KjU46Lwn0uiOOAqTZbFPM8Kx/3MxtWtNzLLZXUIJrII87eXv7QPEgz3iehZU173pcqyK7SzmnD
+        JpVvManQ==;
+Received: from [2601:1c0:6280:3f0::aefb] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m2hzK-005U4u-Es; Sun, 11 Jul 2021 22:31:50 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andres Salomon <dilinger@queued.net>,
+        linux-geode@lists.infradead.org, Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-crypto@vger.kernel.org,
+        Christian Gromm <christian.gromm@microchip.com>,
+        Krzysztof Halasa <khc@pm.waw.pl>, netdev@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Martin Schiller <ms@dev.tdt.de>, linux-x25@vger.kernel.org,
+        wireguard@lists.zx2c4.com
+Subject: [PATCH 0/6 v2] treewide: rename 'mod_init' & 'mod_exit' functions to be module-specific
+Date:   Sun, 11 Jul 2021 15:31:42 -0700
+Message-Id: <20210711223148.5250-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20210709131549.679160341@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+There are multiple (16) modules which use a module_init() function
+with the name 'mod_init' and a module_exit() function with the name
+'mod_exit'. This can lead to confusion or ambiguity when reading
+crashes/oops/bugs etc. and when reading an initcall_debug log.
+
+Example 1: (System.map file)
+
+ffffffff83446d10 t mod_init
+ffffffff83446d18 t mod_init
+ffffffff83446d20 t mod_init
+...
+ffffffff83454665 t mod_init
+ffffffff834548a4 t mod_init
+ffffffff83454a53 t mod_init
+...
+ffffffff8345bd42 t mod_init
+...
+ffffffff8345c916 t mod_init
+ffffffff8345c92a t mod_init
+ffffffff8345c93e t mod_init
+ffffffff8345c952 t mod_init
+ffffffff8345c966 t mod_init
+...
+ffffffff834672c9 t mod_init
+
+Example 2: (boot log when using 'initcall_debug')
+
+[    0.252157] initcall mod_init+0x0/0x8 returned 0 after 0 usecs
+[    0.252180] initcall mod_init+0x0/0x8 returned 0 after 0 usecs
+[    0.252202] initcall mod_init+0x0/0x8 returned 0 after 0 usecs
+...
+[    0.892907] initcall mod_init+0x0/0x23f returned -19 after 104 usecs
+[    0.913788] initcall mod_init+0x0/0x1af returned -19 after 9 usecs
+[    0.934353] initcall mod_init+0x0/0x49 returned -19 after 0 usecs
+...
+[    1.454870] initcall mod_init+0x0/0x66 returned 0 after 72 usecs
+...
+[    1.455527] initcall mod_init+0x0/0x14 returned 0 after 0 usecs
+[    1.455531] initcall mod_init+0x0/0x14 returned 0 after 0 usecs
+[    1.455536] initcall mod_init+0x0/0x14 returned 0 after 0 usecs
+[    1.455541] initcall mod_init+0x0/0x14 returned 0 after 0 usecs
+[    1.455545] initcall mod_init+0x0/0x52 returned 0 after 0 usecs
+...
+[    1.588162] initcall mod_init+0x0/0xef returned 0 after 45 usecs
 
 
-On 7/9/2021 6:21 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.12.16 release.
-> There are 11 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 11 Jul 2021 13:14:09 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.16-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+v2: wireguard: changes per Jason
+    arm/crypto/curve25519-glue: add Russell's Acked-by
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+Cc: Jason A. Donenfeld <Jason@zx2c4.com>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Andres Salomon <dilinger@queued.net>
+Cc: linux-geode@lists.infradead.org
+Cc: Matt Mackall <mpm@selenic.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: linux-crypto@vger.kernel.org
+Cc: Christian Gromm <christian.gromm@microchip.com>
+Cc: Krzysztof Halasa <khc@pm.waw.pl>
+Cc: netdev@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Martin Schiller <ms@dev.tdt.de>
+Cc: linux-x25@vger.kernel.org
+Cc: wireguard@lists.zx2c4.com
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+[PATCH 1/6 v2] arm: crypto: rename 'mod_init' & 'mod_exit' functions to be module-specific
+[PATCH 2/6 v2] hw_random: rename 'mod_init' & 'mod_exit' functions to be module-specific
+[PATCH 3/6 v2] lib: crypto: rename 'mod_init' & 'mod_exit' functions to be module-specific
+[PATCH 4/6 v2] MOST: cdev: rename 'mod_init' & 'mod_exit' functions to be module-specific
+[PATCH 5/6 v2] net: hdlc: rename 'mod_init' & 'mod_exit' functions to be module-specific
+[PATCH 6/6 v2] net: wireguard: rename 'mod_init' & 'mod_exit' functions to be module-specific
+
+ arch/arm/crypto/curve25519-glue.c  |    8 ++++----
+ drivers/char/hw_random/amd-rng.c   |    8 ++++----
+ drivers/char/hw_random/geode-rng.c |    8 ++++----
+ drivers/char/hw_random/intel-rng.c |    8 ++++----
+ drivers/char/hw_random/via-rng.c   |    8 ++++----
+ drivers/most/most_cdev.c           |    8 ++++----
+ drivers/net/wan/hdlc_cisco.c       |    8 ++++----
+ drivers/net/wan/hdlc_fr.c          |    8 ++++----
+ drivers/net/wan/hdlc_ppp.c         |    8 ++++----
+ drivers/net/wan/hdlc_raw.c         |    8 ++++----
+ drivers/net/wan/hdlc_raw_eth.c     |    8 ++++----
+ drivers/net/wan/hdlc_x25.c         |    8 ++++----
+ drivers/net/wireguard/main.c       |    8 ++++----
+ lib/crypto/blake2s.c               |    8 ++++----
+ lib/crypto/chacha20poly1305.c      |    8 ++++----
+ lib/crypto/curve25519.c            |    8 ++++----
+ 16 files changed, 64 insertions(+), 64 deletions(-)
