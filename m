@@ -2,255 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 016233C3BA1
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 12:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 371C83C3B94
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 12:41:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232689AbhGKKoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 06:44:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48666 "EHLO
+        id S232240AbhGKKoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 06:44:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232676AbhGKKog (ORCPT
+        with ESMTP id S232172AbhGKKoE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 06:44:36 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11D28C0613EE
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 03:41:49 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id w15so14951513pgk.13
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 03:41:49 -0700 (PDT)
+        Sun, 11 Jul 2021 06:44:04 -0400
+Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E73C7C0613E8;
+        Sun, 11 Jul 2021 03:41:16 -0700 (PDT)
+Received: by mail-vk1-xa2f.google.com with SMTP id j190so3251695vkg.12;
+        Sun, 11 Jul 2021 03:41:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=r/tGyqhrBoK91o4eCemyjadg6GlA9KSC6VamX5cgheU=;
-        b=eFEcv+8r6OlhUaVPY7jy/IUCvqioh3wDxBp8UB6a6cxPKtq2AdIghdUkDBI7pMTDI3
-         TO7wKKfEWqmjQyPzh1I4DEb30+sVaHqfj09ksvynYZUN/MzRCXr85cfRBwcvxLLUUtOC
-         /dEn3LUrOo/nwNUROrdfcv+59/VVU7n/na/fhM2NQyLGzuu6Ew2c4VmIHf5Pq3yGX9tL
-         FNPEcwlIo62hlmuLXdC43OE5EISgH4eEuH1xQJl12c6awQWoU8pIDHbhlvXoHtFed/9O
-         CTdA0E+i+/5szy48J0ZDSi+/EBH9urStYc3kjpb/c+uocuCAcE8wadWo35FWION6VQlp
-         XXuQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uSIeU9Xrm6MFsRdcAvqJwzm/06Dgie5NAiMN24JshYA=;
+        b=GnRCuYox65Nvn/yJKM14od1VNX/q+4m6AMt/tenIK+ZUPI8++wpi+DbjxZDoEJzo0X
+         BQGPsSGSaD7qN4VRISd43VBjSjSGMigBBAXPrK/TEktC3ImYdgoieEJ3yge1We5qTFte
+         6NYwTAJZQCz2Q0vQ74jFGz6XL2nc4pzIjuSvJ66JYpMmjaMnQrmaiI9dh1x6GUssCefj
+         mM+CixforZsmC0Rzc91fRdUeiVqIU2FfVIkV1ax0iVds9dCz5Jg7fCzkOqtr9oPAgyJb
+         T8BLzLqhzJZQR4q3yb1dmZG1d+9zQLYyKAdBfBAEd1BjcCDmBuzeyAZa+3QYHXnnjB0y
+         v23A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=r/tGyqhrBoK91o4eCemyjadg6GlA9KSC6VamX5cgheU=;
-        b=L1TNUGs/RdN0nk6/lC/Qres84NCAcGk0NGxijKDWsNoCAHZ08d01jYyk0vIKDocQaC
-         m+5erj1MnYg0Rf35yez//rGqS2kPB4zWCt8joUbUZxrU4XJA5lbRWtC+UkLfj/TSCMnT
-         0boYDuMmviu5SrkVjg2dQHYoS38l3QiIuVZ5ILmeH0hGQ8HMjI8R6GKt67wu5SuncxRq
-         KaOisufQLs5u3eG+o/8VhXb/mUIPywpLEOLc0O6fuUNk9Cnk6ozG7vemwqqhu6gNzXNo
-         sJZy206+fk93H3M4D/eY4QPnzPo1Ruib7aOMUAvPZrAdXDg5tSyjnPpLGqDhg3pZu668
-         CaEg==
-X-Gm-Message-State: AOAM530DrMLm9NN65k1EFLSiACTcXr93kLxT8V9mnxe9lSpQjC1yQP8e
-        HDSgST9nq5gSHoD6UGljVbx5cg==
-X-Google-Smtp-Source: ABdhPJwAoXkLeUcaQpHcDt4kwAI6BVMAiNJjmO8p0o2fJKXs7tVEnzR/EhPW0ZB3udHnBB5QMHLlNw==
-X-Received: by 2002:a63:515f:: with SMTP id r31mr47275292pgl.406.1626000108577;
-        Sun, 11 Jul 2021 03:41:48 -0700 (PDT)
-Received: from localhost ([103.127.241.250])
-        by smtp.gmail.com with ESMTPSA id s33sm1628476pfw.158.2021.07.11.03.41.47
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uSIeU9Xrm6MFsRdcAvqJwzm/06Dgie5NAiMN24JshYA=;
+        b=btaKfKzvqIcmUvLP7PhBuq80+qzJaxSJ7f4hNJiJbzToLFEatpLR0lXAXcwyJxu+/r
+         /X3Wy+ploA9nh5/mBisocsDZpcHzukV+A6VSz6lEERlFesPPd77p6AYX7NKd+czXSuPQ
+         JNi1RS2qTZjZVkoG3g2idZD56tu67x9fVQ+ur1IrcX77OBWRXjkuaVrBx0L0sH5EFMmo
+         S/6auu8GMBBdYzXsCslgSxnkdlNK5ff4/SFzEEkCBTEz6L7l+mxt+1O4/TStrcZwFHQh
+         1NAnvgmTqoaBsw749WhWxEk7ntMcUeNfQxgWe1PZeTiRwNoXify/PHPSy8AAX/NwXfa8
+         cPlQ==
+X-Gm-Message-State: AOAM531ZSEEnrWWb8KTUQ+JGpq62aaLVkz6RZe4bT40WqjK4lr4uJbb0
+        v57CM39IVn4wNP/DZfbRkPU=
+X-Google-Smtp-Source: ABdhPJxZofoDN0krXK3CMRsXndP+JzoeJBdlb9RcGd843oJbomuw8VvoUx+xxCiXQGzxQiSENjZMzw==
+X-Received: by 2002:a1f:1d94:: with SMTP id d142mr39857184vkd.6.1626000075861;
+        Sun, 11 Jul 2021 03:41:15 -0700 (PDT)
+Received: from shinobu ([193.27.12.133])
+        by smtp.gmail.com with ESMTPSA id d184sm1570664vsd.34.2021.07.11.03.41.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Jul 2021 03:41:48 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v4 11/11] perf auxtrace: Add compat_auxtrace_mmap__{read_head|write_tail}
-Date:   Sun, 11 Jul 2021 18:41:05 +0800
-Message-Id: <20210711104105.505728-12-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210711104105.505728-1-leo.yan@linaro.org>
-References: <20210711104105.505728-1-leo.yan@linaro.org>
+        Sun, 11 Jul 2021 03:41:15 -0700 (PDT)
+Date:   Sun, 11 Jul 2021 19:41:07 +0900
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     David Lechner <david@lechnology.com>
+Cc:     jic23@kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        kernel@pengutronix.de, a.fatoum@pengutronix.de,
+        kamel.bouhara@bootlin.com, gwendal@chromium.org,
+        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, o.rempel@pengutronix.de,
+        jarkko.nikula@linux.intel.com
+Subject: Re: [PATCH v12 11/17] docs: counter: Document character device
+ interface
+Message-ID: <YOrKw04fw43AEeWQ@shinobu>
+References: <cover.1625471640.git.vilhelm.gray@gmail.com>
+ <186e7a1cd7dc822cc9290683b463c3e675959e1a.1625471640.git.vilhelm.gray@gmail.com>
+ <10ae3615-1fe4-0dce-5aa6-e865de2655a7@lechnology.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="dVrT+04cp+VrrbAK"
+Content-Disposition: inline
+In-Reply-To: <10ae3615-1fe4-0dce-5aa6-e865de2655a7@lechnology.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When perf runs in compat mode (kernel in 64-bit mode and the perf is in
-32-bit mode), the 64-bit value atomicity in the user space cannot be
-assured, E.g. on some architectures, the 64-bit value accessing is split
-into two instructions, one is for the low 32-bit word accessing and
-another is for the high 32-bit word.
 
-This patch introduces two functions compat_auxtrace_mmap__read_head()
-and compat_auxtrace_mmap__write_tail(), as their naming indicates, when
-perf tool works in compat mode, it uses these two functions to access
-the AUX head and tail.  These two functions can allow the perf tool to
-work properly in certain conditions, e.g. when perf tool works in
-snapshot mode with only using AUX head pointer, or perf tool uses the
-AUX buffer and the incremented tail is not bigger than 4GB.
+--dVrT+04cp+VrrbAK
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-When perf tool cannot handle the case when the AUX tail is bigger than
-4GB, the function compat_auxtrace_mmap__write_tail() returns -1 and
-tells the caller to bail out for the error.
+On Sat, Jul 10, 2021 at 03:15:06PM -0500, David Lechner wrote:
+> On 7/5/21 3:18 AM, William Breathitt Gray wrote:
+> > This patch adds high-level documentation about the Counter subsystem
+> > character device interface.
+> >=20
+> > Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+> > ---
+> >   Documentation/driver-api/generic-counter.rst  | 185 ++++++++++++++----
+> >   .../userspace-api/ioctl/ioctl-number.rst      |   1 +
+> >   2 files changed, 145 insertions(+), 41 deletions(-)
+> >=20
+> > diff --git a/Documentation/driver-api/generic-counter.rst b/Documentati=
+on/driver-api/generic-counter.rst
+> > index f6397218aa4c..62a702e7f994 100644
+> > --- a/Documentation/driver-api/generic-counter.rst
+> > +++ b/Documentation/driver-api/generic-counter.rst
+>=20
+>=20
+> > +
+> > +Counter Character Device
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+> > +
+> > +Counter character device nodes are created under the ``/dev`` directory
+> > +as ``counterX``, where ``X`` is the respective counter device id.
+> > +Defines for the standard Counter data types are exposed via the
+> > +userspace ``include/uapi/linux/counter.h`` file.
+> > +
+> > +Counter events
+> > +--------------
+> > +Counter device drivers can support Counter events by utilizing the
+> > +``counter_push_event`` function::
+> > +
+> > +        void counter_push_event(struct counter_device *const counter, =
+const u8 event,
+> > +                                const u8 channel);
+> > +
+> > +The event id is specified by the ``event`` parameter; the event channel
+> > +id is specified by the ``channel`` parameter. When this function is
+> > +called, the Counter data associated with the respective event is
+> > +gathered, and a ``struct counter_event`` is generated for each datum a=
+nd
+> > +pushed to userspace.
+> > +
+> > +Counter events can be configured by users to report various Counter
+> > +data of interest. This can be conceptualized as a list of Counter
+> > +component read calls to perform. For example::
+>=20
+> Won't the :: here make this appear as text instead of an HTML table?
+>=20
+> (might need to change ~~~ to --- [top line] and =3D=3D=3D [middle line])
 
-Suggested-by: Adrian Hunter <adrian.hunter@intel.com>
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
----
- tools/perf/util/auxtrace.c |  9 ++--
- tools/perf/util/auxtrace.h | 94 +++++++++++++++++++++++++++++++++++++-
- 2 files changed, 98 insertions(+), 5 deletions(-)
+Ack, I'll change this to an HTML table.
 
-diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
-index 6a63be8b2430..d6fc250fbf97 100644
---- a/tools/perf/util/auxtrace.c
-+++ b/tools/perf/util/auxtrace.c
-@@ -1766,10 +1766,13 @@ static int __auxtrace_mmap__read(struct mmap *map,
- 	mm->prev = head;
- 
- 	if (!snapshot) {
--		auxtrace_mmap__write_tail(mm, head);
--		if (itr->read_finish) {
--			int err;
-+		int err;
- 
-+		err = auxtrace_mmap__write_tail(mm, head);
-+		if (err < 0)
-+			return err;
-+
-+		if (itr->read_finish) {
- 			err = itr->read_finish(itr, mm->idx);
- 			if (err < 0)
- 				return err;
-diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
-index d68a5e80b217..66de7b6e65ec 100644
---- a/tools/perf/util/auxtrace.h
-+++ b/tools/perf/util/auxtrace.h
-@@ -18,6 +18,8 @@
- #include <asm/bitsperlong.h>
- #include <asm/barrier.h>
- 
-+#include "env.h"
-+
- union perf_event;
- struct perf_session;
- struct evlist;
-@@ -440,23 +442,111 @@ struct auxtrace_cache;
- 
- #ifdef HAVE_AUXTRACE_SUPPORT
- 
-+/*
-+ * In the compat mode kernel runs in 64-bit and perf tool runs in 32-bit mode,
-+ * 32-bit perf tool cannot access 64-bit value atomically, which might lead to
-+ * the issues caused by the below sequence on multiple CPUs: when perf tool
-+ * accesses either the load operation or the store operation for 64-bit value,
-+ * on some architectures the operation is divided into two instructions, one
-+ * is for accessing the low 32-bit value and another is for the high 32-bit;
-+ * thus these two user operations can give the kernel chances to access the
-+ * 64-bit value, and thus leads to the unexpected load values.
-+ *
-+ *   kernel (64-bit)                        user (32-bit)
-+ *
-+ *   if (LOAD ->aux_tail) { --,             LOAD ->aux_head_lo
-+ *       STORE $aux_data      |       ,--->
-+ *       FLUSH $aux_data      |       |     LOAD ->aux_head_hi
-+ *       STORE ->aux_head   --|-------`     smp_rmb()
-+ *   }                        |             LOAD $data
-+ *                            |             smp_mb()
-+ *                            |             STORE ->aux_tail_lo
-+ *                            `----------->
-+ *                                          STORE ->aux_tail_hi
-+ *
-+ * For this reason, it's impossible for the perf tool to work correctly when
-+ * the AUX head or tail is bigger than 4GB (more than 32 bits length); and we
-+ * can not simply limit the AUX ring buffer to less than 4GB, the reason is
-+ * the pointers can be increased monotonically (e.g in snapshot mode), whatever
-+ * the buffer size it is, at the end the head and tail can be bigger than 4GB
-+ * and carry out to the high 32-bit.
-+ *
-+ * To mitigate the issues and improve the user experience, we can allow the
-+ * perf tool working in certain conditions and bail out with error if detect
-+ * any overflow cannot be handled.
-+ *
-+ * For reading the AUX head, it reads out the values for three times, and
-+ * compares the high 4 bytes of the values between the first time and the last
-+ * time, if there has no change for high 4 bytes injected by the kernel during
-+ * the user reading sequence, it's safe for use the second value.
-+ *
-+ * When update the AUX tail and detects any carrying in the high 32 bits, it
-+ * means there have two store operations in user space and it cannot promise
-+ * the atomicity for 64-bit write, so return '-1' in this case to tell the
-+ * caller an overflow error has happened.
-+ */
-+static inline u64 compat_auxtrace_mmap__read_head(struct auxtrace_mmap *mm)
-+{
-+	struct perf_event_mmap_page *pc = mm->userpg;
-+	u64 first, second, last;
-+	u64 mask = (u64)(UINT32_MAX) << 32;
-+
-+	do {
-+		first = READ_ONCE(pc->aux_head);
-+		/* Ensure all reads are done after we read the head */
-+		smp_rmb();
-+		second = READ_ONCE(pc->aux_head);
-+		/* Ensure all reads are done after we read the head */
-+		smp_rmb();
-+		last = READ_ONCE(pc->aux_head);
-+	} while ((first & mask) != (last & mask));
-+
-+	return second;
-+}
-+
-+static inline int compat_auxtrace_mmap__write_tail(struct auxtrace_mmap *mm,
-+						    u64 tail)
-+{
-+	struct perf_event_mmap_page *pc = mm->userpg;
-+	u64 mask = (u64)(UINT32_MAX) << 32;
-+
-+	if (tail & mask)
-+		return -1;
-+
-+	/* Ensure all reads are done before we write the tail out */
-+	smp_mb();
-+	WRITE_ONCE(pc->aux_tail, tail);
-+	return 0;
-+}
-+
- static inline u64 auxtrace_mmap__read_head(struct auxtrace_mmap *mm)
- {
- 	struct perf_event_mmap_page *pc = mm->userpg;
--	u64 head = READ_ONCE(pc->aux_head);
-+	u64 head;
-+
-+#if BITS_PER_LONG == 32
-+	if (kernel_is_64_bit)
-+		return compat_auxtrace_mmap__read_head(mm);
-+#endif
-+	head = READ_ONCE(pc->aux_head);
- 
- 	/* Ensure all reads are done after we read the head */
- 	smp_rmb();
- 	return head;
- }
- 
--static inline void auxtrace_mmap__write_tail(struct auxtrace_mmap *mm, u64 tail)
-+static inline int auxtrace_mmap__write_tail(struct auxtrace_mmap *mm, u64 tail)
- {
- 	struct perf_event_mmap_page *pc = mm->userpg;
- 
-+#if BITS_PER_LONG == 32
-+	if (kernel_is_64_bit)
-+		return compat_auxtrace_mmap__write_tail(mm, tail);
-+#endif
- 	/* Ensure all reads are done before we write the tail out */
- 	smp_mb();
- 	WRITE_ONCE(pc->aux_tail, tail);
-+	return 0;
- }
- 
- int auxtrace_mmap__mmap(struct auxtrace_mmap *mm,
--- 
-2.25.1
+> > +
+> > +        +~~~~~~~~~~~~~~~~~~~~~~~~+~~~~~~~~~~~~~~~~~~~~~~~~+
+> > +        | COUNTER_EVENT_OVERFLOW | COUNTER_EVENT_INDEX    |
+> > +        +~~~~~~~~~~~~~~~~~~~~~~~~+~~~~~~~~~~~~~~~~~~~~~~~~+
+> > +        | Channel 0              | Channel 0              |
+> > +        +------------------------+------------------------+
+> > +        | * Count 0              | * Signal 0             |
+> > +        | * Count 1              | * Signal 0 Extension 0 |
+> > +        | * Signal 3             | * Extension 4          |
+> > +        | * Count 4 Extension 2  +------------------------+
+> > +        | * Signal 5 Extension 0 | Channel 1              |
+> > +        |                        +------------------------+
+> > +        |                        | * Signal 4             |
+> > +        |                        | * Signal 4 Extension 0 |
+> > +        |                        | * Count 7              |
+> > +        +------------------------+------------------------+
+> > +
+> > +When ``counter_push_event(counter, COUNTER_EVENT_INDEX, 1)`` is called
+> > +for example, it will go down the list for the ``COUNTER_EVENT_INDEX``
+> > +event channel 1 and execute the read callbacks for Signal 4, Signal 4
+> > +Extension 0, and Count 4 -- the data returned for each is pushed to a
+> > +kfifo as a ``struct counter_event``, which userspace can retrieve via a
+> > +standard read operation on the respective character device node.
+> > +
+> > +Userspace
+> > +---------
+> > +Userspace applications can configure Counter events via ioctl operatio=
+ns
+> > +on the Counter character device node. There following ioctl codes are
+> > +supported and provided by the ``linux/counter.h`` userspace header fil=
+e:
+> > +
+> > +* COUNTER_ADD_WATCH_IOCTL:
+> > +  Queues a Counter watch for the specified event. The queued watches
+> > +  will not be applied until ``COUNTER_ENABLE_EVENTS_IOCTL`` is called.
+> > +
+> > +* COUNTER_ENABLE_EVENTS_IOCTL:
+> > +  Enables monitoring the events specified by the Counter watches that
+> > +  were queued by ``COUNTER_ADD_WATCH_IOCTL``. If events are already
+> > +  enabled, the new set of watches replaces the old one. Calling this
+> > +  ioctl also has the effect of clearing the queue of watches added by
+> > +  ``COUNTER_ADD_WATCH_IOCTL``.
+> > +
+> > +* COUNTER_DISABLE_EVENTS_IOCTL:
+> > +  Stops monitoring the previously enabled events.
+>=20
+> I wouldn't mind seeing more of this documentation in the actual header
+> file and just referenced here with :c:macro:`COUNTER_ADD_WATCH_IOCTL`
 
+Ack.
+
+> > +
+> > +To configure events to gather Counter data, users first populate a
+> > +``struct counter_watch`` with the relevant event id, event channel id,
+> > +and the information for the desired Counter component from which to
+> > +read, and then pass it via the ``COUNTER_ADD_WATCH_IOCTL`` ioctl
+> > +command.
+> > +
+> > +Note that an event can be watched without gathering Counter data by
+> > +setting the ``component.type`` member equal to
+> > +``COUNTER_COMPONENT_NONE``. With this configuration the Counter
+> > +character device will simply populate the event timestamps for those
+> > +respective ``struct counter_event`` elements and ignore the component
+> > +value.
+>=20
+> To make sure I am understanding this correctly, scope + parent
+> determines this part of the path:
+>=20
+> 	/sys/.../counterX/<scope><parent>/<component>
+>=20
+> Or in the case that scope =3D=3D COUNTER_SCOPE_DEVICE then parent
+> is not applicable:
+>=20
+> 	/sys/.../counterX/<component>
+
+Yes, that understanding is correct.
+
+> I suggested parent_id instead of parent earlier, but maybe
+> scope_id would be a better name? (Or rename scope to parent_type?)
+
+I can see the benefit of more specific naming, but perhaps the current
+names are clear enough when they appear in the context of user code. It
+becomes rather obvious in a snippet of code that `component.scope`
+refers to the scope type of a component while `component.parent` refers
+to the specific parent of the component; I don't think the more verbose
+`scope_type`/`parent_type` or `scope_id`/`parent_id` namings really add
+much benefit here.
+
+I'm not entirely opposed to renaming this, so if other maintainers also
+feel this is better renamed then I'll change it. If we do change the
+naming, then remaing `scope` to `scope_type` and `parent` to `parent_id`
+might be the way to go; "scope_id" seems strange to me because I
+envision `scope` as a type rather than an identifiable component.
+
+William Breathitt Gray
+
+--dVrT+04cp+VrrbAK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmDqyrAACgkQhvpINdm7
+VJKKIA/+Kmcau65hlY3YM9GQBi1Yb1yKwxEJd8EusAFH+ZKZqS7iq9PPNfdBSoSg
+D19UlOjTHN+T735ZVtlxOgjW6gH9t7HLpVRx7bUp1F3BwhMY6alDoH/wfbHv5fDv
+Vf76N2yZqW5oBMIsl5PoIveu74huWZG77dKy5drFUb1hOmh4jMRZOOx3zYR0C5Co
+9NRy8vjJBijy3WuELG2UbPcgh9b/SFXDt4ffsZNOJjFpPYSpYNnuuzWLcN+N5bzm
+6vA7OaYao0JDKzzaWBQMUbMzF5EDxD+GgYdrtzgw5BSq75lS7TC3D5F+K6UxVwU0
+VL82mrUxFG5KGK6muZWMlF9SGPx+IowqLcKUb4ZtBJ4RBphIyjCEVLpBTb2McCKs
+PRqsWpKJvDWdEvCoBObJJOL2LJnnNMdaAu3Y9jp5P1WDDm7MJGRPQ29/NBmm1lIb
+LX/+hj68lZBSeCHykHeCi8YVqU0wKdx1ELE71UQUSmOo0Vw7tV8YWnPkZUza8CJY
+jrTlHbc0a/Vp2bD/dxJ3cfP83n75SlKTgibf7eApW5EWjiW6DAz9ZNIPnbYXxTo6
+FqAppe5ucHuUFt4r0S+0hHWRI6nLuT76/L+NiaBRo3LaMApbJs+W6ak3JweFW7mD
+rpV2XzMTziXyWfy4F/CKk0ZDMyJuxduRcfc4Qktrf82lV+67EZI=
+=02sW
+-----END PGP SIGNATURE-----
+
+--dVrT+04cp+VrrbAK--
