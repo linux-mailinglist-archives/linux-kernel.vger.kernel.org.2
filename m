@@ -2,130 +2,376 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C88A3C3E0B
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 18:42:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EFEA3C3E0D
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 18:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232679AbhGKQos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 12:44:48 -0400
-Received: from mail-bn7nam10on2094.outbound.protection.outlook.com ([40.107.92.94]:54832
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229817AbhGKQoq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 12:44:46 -0400
+        id S232772AbhGKQpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 12:45:49 -0400
+Received: from mx0a-002c1b01.pphosted.com ([148.163.151.68]:64372 "EHLO
+        mx0a-002c1b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229817AbhGKQps (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Jul 2021 12:45:48 -0400
+Received: from pps.filterd (m0127840.ppops.net [127.0.0.1])
+        by mx0a-002c1b01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16BGeinP012606;
+        Sun, 11 Jul 2021 09:42:49 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nutanix.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version;
+ s=proofpoint20171006; bh=M/Bz+PjQXRkBKZcTnUESgIerSn+ST8eP+q/+NvfHI2k=;
+ b=t7qwcRMl/D22OzlLmnnswsXHOPiQJ90Zh1eHwv5DgcQB053ONZRTUPJG9rKqGbsVkJru
+ hbFQo7eOLtXm9tRgm5cVjN2ad0BNiPYYVcq3nSHVni0rkNgRV05j5eht6NQEK0BQidRl
+ 2Piv+LLRcsv8JKijKQbql3tAqDgMRz8eyKdmra3HBWugk6eMpOpyjOPFuTj47xf2OeaE
+ uukujgBJXfZ5ImhtS40h6gDGGyoc5y1TFWPesjPcvnG62fuFNNAoJzIVi5YdgOwcsfrV
+ GJAXkEhkcqT3N/w4iBCUNTGQSinLRzNuxClmXkde0+FnDVpORvPV7bM1Cxn7xZTkfMes tQ== 
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2171.outbound.protection.outlook.com [104.47.58.171])
+        by mx0a-002c1b01.pphosted.com with ESMTP id 39q7vwsurw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 11 Jul 2021 09:42:49 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aqoGVmkeriw4I51KIvD56MpdGr26qCHOUt/i3p4iXAZtE96kSYye0kbmEePhNc+DZLt+49jPGdZdhSGu65gQZmGA0CQh7eLWjqwtFtf19cGaxD81HGd2FUXoxiLn80dvBuAjgvoH+O0Ss+VXClIrhcFUYLAZKlHFUNfclmZuw8NZDXDNiV9/3M9JeHlC3pbY5npGfyFNCiNQ+Qo3s22MJIKjAlFZpUhqQxNduldpc6O2oJ95QKEPMTWTnUbkBe/KgIt80saNwyzm5BNjiv8/fiVG+MM7zY4DgWEmGrCrTpLVlK1ZidhYiJUDuWMAhAj12EenVBUHmHm5uR/9H8Ya7A==
+ b=mzf5cnpBf8q9WM8zt0E8juUnqsk1ZF3Ug/XuaHEnG8RA7nu2a0oy1D/6sbZxDexfCEeZA6h38ca+suKFYBFjFiVvBKOtZ9DidlcVDOpFAGI2KG200WR6hxrx+n3KlbNYCQ447yhWh9llcTnn89ilyTBuWSFoK6f3FoKe/s+bVryDb9/1F489wR1L1UT5ssNBbGIKGBYEzz+CF35KtQqDSH9fsH14LYfwYwZrWeFVMV13JlMhtSI1y4fJ23mGtdSBo0JU8yQIBJn8l5vpdRaS3WGbaJi6ewiktcIIhwdSnUaNUFpxlNZTPuctO2w0hp8J7F2HugeCavfAILnshsa9qw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K49tqi3VqJ7BwS60/L4FCGdontYv7TtrmjwvPwvlCSM=;
- b=eRNdFY+/IbCqLi1wJkpDxQiyYlbOCOD7O+0Jr5tnuIktpE4+08/oXVv9WNfkJXSx+5kmbrcddLJ/qWtVpPciQVSwKd1Yp2NNvRvYex8DDpFFOg6k23gPN0XEYs/fmbV/usd0WZVTV5CxmLxf4cU763W3Vd+SjFjFw9GgH56LfaBCFiq560oXalYO/WvPvgeKq6yp8pMhWt1ffitOTZSkVuEsz7a+/sD3cHp2LO9zFzZ1zVd81DNT89J6zUFfFs507GWG4UMTQuxK74OM4rke+pR5ln0GBLj2tEnL86JxqPRfDvvH4InkQK1OgHOuEV0KFG79Zan89VGlw+AvJ19QbQ==
+ bh=M/Bz+PjQXRkBKZcTnUESgIerSn+ST8eP+q/+NvfHI2k=;
+ b=la6XeqcZqMSSSvwbqnepbyePSqg5Pc+hinvg1mXSy5aRS/+fTtLqgxOVxv9d8aZQJUfMfiDgR0Nfa0ilEPCOjw0LIK1zWJtudAR2T5Q1GklW9/LDddbMCMhCAsrpKQjwjt2d9t4WEVuZ37fpYqNzEoL7ZdUJToSH3XK1fxtH1p4NH9J9RWOmX9uZigiXYuA1tu53L1Lbz8f9npRbDbZen/3SVka8gFIDtbgPjlqHL63DXVjjjA/BhcCX16CaemN1DjSea4tTCa13PkzIBGgZ/PzYnqeYibaHi5H/MDnv3H2WyBst3AKniJ68wRrkmreWvF4Nv6us7L185Qc3CEtztQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=in-advantage.com; dmarc=pass action=none
- header.from=in-advantage.com; dkim=pass header.d=in-advantage.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=inadvantage.onmicrosoft.com; s=selector2-inadvantage-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K49tqi3VqJ7BwS60/L4FCGdontYv7TtrmjwvPwvlCSM=;
- b=mwtybTVOSf34FmfR1n44sOJ5JtFs9vC2LDK8CMVfKWrh0OxadVlmFMn0GpJoVr91xYYvpEERcy2kUIPkERPwvczUG5Ze3axPalYr2OGiOk7gIWEmmsnH1025oLvw3wsfMV+/xeaYnoiDL1M+ZBUFPDEGngfiuvQaEVQl744uaY8=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=in-advantage.com;
-Received: from MWHPR1001MB2351.namprd10.prod.outlook.com
- (2603:10b6:301:35::37) by CO1PR10MB4611.namprd10.prod.outlook.com
- (2603:10b6:303:92::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.19; Sun, 11 Jul
- 2021 16:41:56 +0000
-Received: from MWHPR1001MB2351.namprd10.prod.outlook.com
- ([fe80::e81f:cf8e:6ad6:d24d]) by MWHPR1001MB2351.namprd10.prod.outlook.com
- ([fe80::e81f:cf8e:6ad6:d24d%3]) with mapi id 15.20.4308.026; Sun, 11 Jul 2021
- 16:41:56 +0000
-Date:   Sun, 11 Jul 2021 09:41:53 -0700
-From:   Colin Foster <colin.foster@in-advantage.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
-        claudiu.manoil@nxp.com, alexandre.belloni@bootlin.com,
-        UNGLinuxDriver@microchip.com, linux@armlinux.org.uk,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 net-next 2/8] net: dsa: ocelot: felix: move MDIO
- access to a common location
-Message-ID: <20210711164153.GC2219684@euler>
-References: <20210710192602.2186370-1-colin.foster@in-advantage.com>
- <20210710192602.2186370-3-colin.foster@in-advantage.com>
- <20210710195913.owqvc7llnya74axl@skbuf>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210710195913.owqvc7llnya74axl@skbuf>
-X-ClientProxiedBy: SJ0PR03CA0222.namprd03.prod.outlook.com
- (2603:10b6:a03:39f::17) To MWHPR1001MB2351.namprd10.prod.outlook.com
- (2603:10b6:301:35::37)
+ smtp.mailfrom=nutanix.com; dmarc=pass action=none header.from=nutanix.com;
+ dkim=pass header.d=nutanix.com; arc=none
+Received: from SN6PR02MB4543.namprd02.prod.outlook.com (2603:10b6:805:b1::24)
+ by SA0PR02MB7241.namprd02.prod.outlook.com (2603:10b6:806:ef::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.21; Sun, 11 Jul
+ 2021 16:42:46 +0000
+Received: from SN6PR02MB4543.namprd02.prod.outlook.com
+ ([fe80::182b:62b8:51c1:ba59]) by SN6PR02MB4543.namprd02.prod.outlook.com
+ ([fe80::182b:62b8:51c1:ba59%5]) with mapi id 15.20.4308.026; Sun, 11 Jul 2021
+ 16:42:46 +0000
+From:   Raphael Norwitz <raphael.norwitz@nutanix.com>
+To:     Amey Narkhede <ameynarkhede03@gmail.com>
+CC:     Bjorn Helgaas <bhelgaas@google.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kw@linux.com" <kw@linux.com>,
+        Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v9 2/8] PCI: Add new array for keeping track of ordering
+ of reset methods
+Thread-Topic: [PATCH v9 2/8] PCI: Add new array for keeping track of ordering
+ of reset methods
+Thread-Index: AQHXcakn/n1M7adXa0e/+KY+mruWx6s+BDWA
+Date:   Sun, 11 Jul 2021 16:42:46 +0000
+Message-ID: <20210711164241.GB30406@raphael-debian-dev>
+References: <20210705142138.2651-1-ameynarkhede03@gmail.com>
+ <20210705142138.2651-3-ameynarkhede03@gmail.com>
+In-Reply-To: <20210705142138.2651-3-ameynarkhede03@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mutt/1.10.1 (2018-07-13)
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=nutanix.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 6e4484f3-de40-4558-ef16-08d9448ae9d2
+x-ms-traffictypediagnostic: SA0PR02MB7241:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SA0PR02MB72419CFEAD6613AA4FDD95ECEA169@SA0PR02MB7241.namprd02.prod.outlook.com>
+x-proofpoint-crosstenant: true
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: G2VGEnMMYIIjKS5T6FhCXJAZnk1K6zY+UGcGxzzosCga4XkM5NCDXImBeE1oFqdfcC8skwK5xqzxN4MVpaiKOhCUdzlWxQyc5f6A0JqXzDet5kVaezanpsht2RZuXNRy8HfVqdorCG0wgNM/gj6OILOgjNIBnAUQtDCJ8I+tcrl+HVcFZvOS9VURx5+xoyHHDr90wcNwVHZukcDk2SVdrWWN6ouyRv7A4eVWBc0hYhzxgB0jMZJMaW6rSBX4PQHd8KJEvlN0nN0ZAw6GKcldzOLOCOPO9uII8wtCvA0D2jaAwElYToGnlPXQwXl/G8dvY95ow6spPNVMOEyqLus4tnrJV335UEIucD0KVO7RmloI17eT8Mx9VuqDkbai6Y2KbNJUEMdO+1AR7Jd2tLDdNieNWqrfoS8qw3zOet7JZsR5X6ojUg5T2Mz581HYlGxNSO460CXbihpl69aJ0s/HIJ86WCIszR5ONUrZqZ+PFNpZer8GTTfsvCPeRZvo+cHKHnvT4vyq0PwgCoiJw5HvVEcf1vGF7sv9aLX4Xd0/2xXRsGV+T9dgBqTp6haTEsHdQnvMgcy36RIph9Fj+ovE60Pa3HCE9SOhoPSsq+lMmIzGgugNELBxufYy6xmUjPx2hRFXphsTjnq4qfS1ggzNiw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR02MB4543.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(376002)(396003)(346002)(39850400004)(136003)(366004)(8936002)(38100700002)(33656002)(83380400001)(76116006)(8676002)(6916009)(4326008)(44832011)(6486002)(86362001)(7416002)(1076003)(9686003)(64756008)(54906003)(478600001)(122000001)(186003)(66476007)(66556008)(316002)(66446008)(71200400001)(5660300002)(2906002)(66946007)(6506007)(33716001)(6512007)(26005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?TMPlsoAqYSYjs/SLw0EsLk3jDPFdEYeqnnUAqzNrOOobmTGlyltv3qnx2iVz?=
+ =?us-ascii?Q?wAatIMAlW8d3WV/U1cZb3LN7x+1GPRcB0KQnbgpVFQuOXVS3klgThHj0mHI3?=
+ =?us-ascii?Q?WoVnHBJuyuagb6vhcq2Az/cihEgYqov41yid+JhzmX9fdf+5Z6r/ksNBYqeb?=
+ =?us-ascii?Q?HdAE1ZwRxzcHie6oPgGNUTbSN5DVlhw+3e/s/GQuXhOP+5c7SjBH1AhVqKN3?=
+ =?us-ascii?Q?HJno9ugkHBTlNS8TNNapsPVEXJ418a3avVULtA5NgVDh92Qj3FbzZyfFxxhq?=
+ =?us-ascii?Q?cQh3xIQ9/Me2iXF88+Nx9OepGquKdWCQauOswcs7cwQilXC8u2yzrEKCn7fy?=
+ =?us-ascii?Q?79kp/ji914D/pBeejjQNtVV8dlPE0w7CoJd9CiFS+iRe0ka2zRC5AZGAZdhv?=
+ =?us-ascii?Q?FIINYI3/afh8iDvRTu4GwLGReqf0xeLnQqznWOTd8WR2+PbXylztxhVjn8Vy?=
+ =?us-ascii?Q?YoY5Ug96zHv6ObANpS9is9IZMWPM+Z6x8JpnSNC0skAAoso5lJNthvoz6X0x?=
+ =?us-ascii?Q?JsJNOlIv8jwpGe+iJ0OJv54Wh1h0NdYCrjI9hnGQVgfC0Hg06wqtOVPhVf+N?=
+ =?us-ascii?Q?yrdhQgQwHgBo1A7MIcyAEOU5Srv9k+XU+y6qyZcGzHPDXR48+gRY+/RsGsfT?=
+ =?us-ascii?Q?jirfKDupGqKxGnp/xt+82jdrGcW7VmcG/tBkZaiq29FoidzFMv4AwvycqBYW?=
+ =?us-ascii?Q?DjXerVNocS8qw5Pl0roRRn8gMnY8Er4uD2+ZE6+1WyGy4x5G6HsZ1afZU4Cz?=
+ =?us-ascii?Q?PWqpcsYU4ZM9Ofi6o2YOMYLn8DztR+Sh1n54Fpk77NDptAaRWzP0ORNi0hX8?=
+ =?us-ascii?Q?hqkIn6mi9o6TZdQv6KYIgcaG4+6Mmq7piyDtwPRAG6Kwur4nQktd9NtA7L2b?=
+ =?us-ascii?Q?COHoQ21B2/vWdrc1i6to8tY3069qaTiBrJvvLFjoGHLlA5nMIOOkD2ezN89N?=
+ =?us-ascii?Q?AKNHXmkq9XNLmS/RjtxdAq2qW/XT9cEBqZGLn42gc3w724k5yEgSW1vA2iJU?=
+ =?us-ascii?Q?0iiQ6UkBJ4WxMcvuMnmEifohJTdXMh/Ii6v/ZZF0LUxvliILExhtfp8sjq/m?=
+ =?us-ascii?Q?eKW7rfuBRJFYoZQ7D8BnOyC2VwwTmGAEwoI6sA39bCNazP+iKca2l2Q3kD+o?=
+ =?us-ascii?Q?xX5eaT6Us04BTUjkas4cB3eypxHw1Z+ryki1a1ZC7QsX9+wqveFcHcj3ceqx?=
+ =?us-ascii?Q?nB6Nu/rzBYohisWb62tgnedTr/S9W6aQI8wIehVXBG0A8/GyRBc1RZBpnA0L?=
+ =?us-ascii?Q?cFZEOMwH2wewPXe3hdMzr4rkuXw2cCoDFy4SohB+nv7v4zSCW0wHzoK+SDGB?=
+ =?us-ascii?Q?qFAQO5G9CWFkq8/siCJSJNdn?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <80ADDE1035B8384A91446226B5DE5B5E@namprd02.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from euler (67.185.175.147) by SJ0PR03CA0222.namprd03.prod.outlook.com (2603:10b6:a03:39f::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.19 via Frontend Transport; Sun, 11 Jul 2021 16:41:55 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 164a69ce-6943-42f3-42bc-08d9448acbab
-X-MS-TrafficTypeDiagnostic: CO1PR10MB4611:
-X-Microsoft-Antispam-PRVS: <CO1PR10MB46111C92D5D197A500C7AD59A4169@CO1PR10MB4611.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: U3LlQP4BNZAd1p/7faD2JkJQTzsxA4DUn45fa7XFAkqzeCnEr5CJuyQvre9pDfKZcIIPzFtk0AcUpuGdW5AvVMJGlLUhp42ZoQ5NpnNwjHzHgmNS5tz8WWiv/46PxLo7cw5fjRC+GG75qAzu7kAK3WcIOAqYigLBjQNWn0dsLi44ccdGnok0BeQaCvZn9C7C3fjFojMxgkYaEAKAVHkju2a+u2D+gFFiv+zZqENPQmAiMtqDRyxVLdSv4qfhZRg8OMiAIGZkdUfmTuexJlstxsltDurcTArQNsxR/Xb4RzlQWjMgKz2L0QGpasiEFQlE4JZtMRDh4oZWdARX4cp76wx2fGjzTbXdjJYUPQIqrc86Q5WqWUQwqPovEud6Mxm8fYa2Srjs/G8yWsWApENsU3n//xNLlfbMaNHbKjYKKmm8rKU65enGFLLZVk81U/ZFumhSBMSo2fWj1j8prQTDOf9C1nifvinJckOAaKeoisoYeu+N0MT43U2N02+DXifPj8/TM1c8tePnmSmu3Nc+VTwwDOMrTwIG10BkbRWrtAIwfbDyS5VtoEGzBVwgn9wCPTVnbMHlGav75EEiHz9CxnfnE9Eeu1ACK0GIoRJuNvPd1raZcnA8hbX51QpdKsMurLrp4cdhfdnOwr2rAHdSqUdNHpxqOO8tCzFmOLC9GNER0Z7AKiUOR/BJrW1JOR+TCD5RU+1Ps49wHtoWZ4Z9vw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2351.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(376002)(366004)(346002)(39840400004)(66556008)(66476007)(26005)(956004)(478600001)(55016002)(8676002)(9576002)(86362001)(33656002)(83380400001)(52116002)(6496006)(38350700002)(316002)(66946007)(2906002)(9686003)(44832011)(33716001)(8936002)(4326008)(38100700002)(1076003)(186003)(4744005)(5660300002)(6916009)(7416002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8ro3128sZcAMCszi7+M2WlXYvxM6yOl38Cj3qI/0P1GCeM0w4I8IxBArUIfN?=
- =?us-ascii?Q?U/ZqV9VbEVo4KvMabGFVNcKTR+feo2IAabrXsqyjaor7lImT+6D9NFYsZu7v?=
- =?us-ascii?Q?5aYdHTNIAjeT/FFTCSfVAIjYaSrHabEohcuAK3SeuFOabOj4m420H7oqcNDw?=
- =?us-ascii?Q?C97pVCAE0lhXrwHuNDqPV3VE3i1Cg69L6SZW4VJlCQ/qbZsrTgb7HxdAfchu?=
- =?us-ascii?Q?LewVbE7celwiRFV+vQUNXXR/0WWNtdBa0aQuPKNGxzOF4Nn5EezTJxsVU/aO?=
- =?us-ascii?Q?hCFoK6JX5AFx1H2VbYip6L4e7+n/60xeqEwnre/Jh7Fq0WjmNpm8ddYMITx2?=
- =?us-ascii?Q?k5TtrjtbguprEhfuaG45gSkFMjFQLfhHG9WpNlBTX5VAzXTSKBqBr0hkYTc2?=
- =?us-ascii?Q?GQ8tGfS/KteA1sXV4n0khuAPihzPJZkOUsCCKCiTBzV2UsKLvzKpqQwtKNEx?=
- =?us-ascii?Q?kmunOrJ3LaYp6zmUG8GjQei5q1/TjDbzmpMzvI4px+tI19DCIbDdOxvMFgv/?=
- =?us-ascii?Q?875gQ1w03r0cllie7sqEJeT1bCEodUeUa8Rd0uwv28B8Jl1Gtg2/zqE7TFUz?=
- =?us-ascii?Q?zA8Kl4CkIsdIs41hFQD8HxXzzUC69jXxOnRa+13EVtV6h3QlLtM1VHUOZ0rs?=
- =?us-ascii?Q?w5pqSZvQPel6/qE/1RBD+WDJ12EuelzlqyhTb3u2B0SdleGW6O3rrYf+afUM?=
- =?us-ascii?Q?6drmLV5hPpFjj8j0PThQ+cWGqGwBjV4jNjj8CRpqlFQ1NTKtd4PMvTrbU6MS?=
- =?us-ascii?Q?xnJNc2LNx/smdgPum5buTgAN5Rdy6z7HPSiO6Ff4msCW63IoVosTkbvSzgKn?=
- =?us-ascii?Q?LpnKQ0IZaMSwJSwNrGnSk4+9KuH8n0skahOsLHSCngKPz9ePYHDL2p9wIhdo?=
- =?us-ascii?Q?9TjZ0MlplfOPpHsqActn5iSLB9lfTCZ8D1ai1LWQV6fJ0iNPlFXC6ATbgWFD?=
- =?us-ascii?Q?qp2mK0OX/9kjPzvrKEO+1rj35fr7Dob0eBkk0pspxPTi4hgMwi8VOlml1Pz/?=
- =?us-ascii?Q?nega8jpRszXaexQPTu0d+4Uj443oZZwq6Xskbx6cFQWo023GdLWjUmawWj67?=
- =?us-ascii?Q?7rvkrPrXduRjuqheEgrJidmquCUXTWNG42aUg+PjEfqOZqCpm1xCQKOcHC4s?=
- =?us-ascii?Q?TB/9LUFw5KuQJjwkt290uzaL5j//OMuOSaR0S51UgzbuMzqfmZvbChKSJRf2?=
- =?us-ascii?Q?qZ9i/Hmh/wMRILjAYJe6V9y+29Is1hDa3wmX7X8rybytnzwc8y1J+QL4lYFM?=
- =?us-ascii?Q?3LnmqX5jb2j0QtGwTghe79isz8C3emNqoX3lLHQeV7y8SvBn/OsVKJ4Z3H8E?=
- =?us-ascii?Q?p7FyLKyDj60+slg2PE7+09jU?=
-X-OriginatorOrg: in-advantage.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 164a69ce-6943-42f3-42bc-08d9448acbab
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2351.namprd10.prod.outlook.com
+X-OriginatorOrg: nutanix.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jul 2021 16:41:56.5368
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4543.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6e4484f3-de40-4558-ef16-08d9448ae9d2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jul 2021 16:42:46.7427
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 48e842ca-fbd8-4633-a79d-0c955a7d3aae
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FVbUjJZFyanI5nwvbmAkhYPNXsShTCxtNysh7IgW74CARPZGdLEBARfbP5+EgQe4idb2E8EW7kQsufSnJFuAo+kCPLuIKKAfx4pNdl2Weng=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4611
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: bb047546-786f-4de1-bd75-24e5b6f79043
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: l9Fujxi9N6wpSwc0LJ0FS59H7lkwchGQhptJ1oQMldwiVQiKPFbegHx1ljuFtc8PYbF02ESykqv4xgIjnGV6JlanVOnlij3cM78m0iLYv/Q=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR02MB7241
+X-Proofpoint-ORIG-GUID: Kz8_wZDmyUHfdlKCH-Eu6A_N-MiG_O_x
+X-Proofpoint-GUID: Kz8_wZDmyUHfdlKCH-Eu6A_N-MiG_O_x
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-11_10:2021-07-09,2021-07-11 signatures=0
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 10, 2021 at 10:59:13PM +0300, Vladimir Oltean wrote:
-> On Sat, Jul 10, 2021 at 12:25:56PM -0700, Colin Foster wrote:
-> > Indirect MDIO access is a feature that doesn't need to be specific to the
-> > Seville driver. Separate the feature to a common file so it can be shared.
-> > 
-> > Signed-off-by: Colin Foster <colin.foster@in-advantage.com>
-> > ---
-> 
-> In fact, this same piece of hardware has a dedicated driver inside
-> drivers/net/mdio/mdio-mscc-miim.c. The only problem is that it doesn't
-> work with regmap, and especially not with a caller-supplied regmap. I
-> was too lazy to do that, but it is probably what should have been done.
-> 
-> By comparison, felix_vsc9959.c was coded up to work with an internal
-> MDIO bus whose ops are implemented by another driver (enetc_mdio). Maybe
-> you could take that as an example and have mdio-mscc-miim.c drive both
-> seville and ocelot.
+On Mon, Jul 05, 2021 at 07:51:32PM +0530, Amey Narkhede wrote:
+> Introduce a new array reset_methods in struct pci_dev to keep track of
+> reset mechanisms supported by the device and their ordering.
+>=20
+> Also refactor probing and reset functions to take advantage of calling
+> convention of reset functions.
+>=20
+> Co-developed-by: Alex Williamson <alex.williamson@redhat.com>
+> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
 
-I didn't know about that code. I'll definitely look into it.
+Reviewed-by: Raphael Norwitz <raphael.norwitz@nutanix.com>
+
+> ---
+>  drivers/pci/pci.c   | 92 ++++++++++++++++++++++++++-------------------
+>  drivers/pci/pci.h   |  9 ++++-
+>  drivers/pci/probe.c |  5 +--
+>  include/linux/pci.h |  7 ++++
+>  4 files changed, 70 insertions(+), 43 deletions(-)
+>=20
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index fefa6d7b3..42440cb10 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -72,6 +72,14 @@ static void pci_dev_d3_sleep(struct pci_dev *dev)
+>  		msleep(delay);
+>  }
+> =20
+> +int pci_reset_supported(struct pci_dev *dev)
+> +{
+> +	u8 null_reset_methods[PCI_NUM_RESET_METHODS] =3D { 0 };
+> +
+> +	return memcmp(null_reset_methods,
+> +		      dev->reset_methods, sizeof(null_reset_methods));
+> +}
+> +
+>  #ifdef CONFIG_PCI_DOMAINS
+>  int pci_domains_supported =3D 1;
+>  #endif
+> @@ -5104,6 +5112,15 @@ static void pci_dev_restore(struct pci_dev *dev)
+>  		err_handler->reset_done(dev);
+>  }
+> =20
+> +const struct pci_reset_fn_method pci_reset_fn_methods[] =3D {
+> +	{ },
+> +	{ &pci_dev_specific_reset, .name =3D "device_specific" },
+> +	{ &pcie_reset_flr, .name =3D "flr" },
+> +	{ &pci_af_flr, .name =3D "af_flr" },
+> +	{ &pci_pm_reset, .name =3D "pm" },
+> +	{ &pci_reset_bus_function, .name =3D "bus" },
+> +};
+> +
+>  /**
+>   * __pci_reset_function_locked - reset a PCI device function while holdi=
+ng
+>   * the @dev mutex lock.
+> @@ -5126,65 +5143,62 @@ static void pci_dev_restore(struct pci_dev *dev)
+>   */
+>  int __pci_reset_function_locked(struct pci_dev *dev)
+>  {
+> -	int rc;
+> +	int i, m, rc =3D -ENOTTY;
+> =20
+>  	might_sleep();
+> =20
+>  	/*
+> -	 * A reset method returns -ENOTTY if it doesn't support this device
+> -	 * and we should try the next method.
+> +	 * A reset method returns -ENOTTY if it doesn't support this device and
+> +	 * we should try the next method.
+>  	 *
+> -	 * If it returns 0 (success), we're finished.  If it returns any
+> -	 * other error, we're also finished: this indicates that further
+> -	 * reset mechanisms might be broken on the device.
+> +	 * If it returns 0 (success), we're finished.  If it returns any other
+> +	 * error, we're also finished: this indicates that further reset
+> +	 * mechanisms might be broken on the device.
+>  	 */
+> -	rc =3D pci_dev_specific_reset(dev, 0);
+> -	if (rc !=3D -ENOTTY)
+> -		return rc;
+> -	rc =3D pcie_reset_flr(dev, 0);
+> -	if (rc !=3D -ENOTTY)
+> -		return rc;
+> -	rc =3D pci_af_flr(dev, 0);
+> -	if (rc !=3D -ENOTTY)
+> -		return rc;
+> -	rc =3D pci_pm_reset(dev, 0);
+> -	if (rc !=3D -ENOTTY)
+> -		return rc;
+> -	return pci_reset_bus_function(dev, 0);
+> +	for (i =3D 0; i <  PCI_NUM_RESET_METHODS && (m =3D dev->reset_methods[i=
+]); i++) {
+> +		rc =3D pci_reset_fn_methods[m].reset_fn(dev, 0);
+> +		if (!rc)
+> +			return 0;
+> +		if (rc !=3D -ENOTTY)
+> +			return rc;
+> +	}
+> +
+> +	return -ENOTTY;
+>  }
+>  EXPORT_SYMBOL_GPL(__pci_reset_function_locked);
+> =20
+>  /**
+> - * pci_probe_reset_function - check whether the device can be safely res=
+et
+> - * @dev: PCI device to reset
+> + * pci_init_reset_methods - check whether device can be safely reset
+> + * and store supported reset mechanisms.
+> + * @dev: PCI device to check for reset mechanisms
+>   *
+>   * Some devices allow an individual function to be reset without affecti=
+ng
+>   * other functions in the same device.  The PCI device must be responsiv=
+e
+> - * to PCI config space in order to use this function.
+> + * to reads and writes to its PCI config space in order to use this func=
+tion.
+>   *
+> - * Returns 0 if the device function can be reset or negative if the
+> - * device doesn't support resetting a single function.
+> + * Stores reset mechanisms supported by device in reset_methods byte arr=
+ay
+> + * which is a member of struct pci_dev.
+>   */
+> -int pci_probe_reset_function(struct pci_dev *dev)
+> +void pci_init_reset_methods(struct pci_dev *dev)
+>  {
+> -	int rc;
+> +	int i, n, rc;
+> +	u8 reset_methods[PCI_NUM_RESET_METHODS] =3D { 0 };
+> +
+> +	n =3D 0;
+> +
+> +	BUILD_BUG_ON(ARRAY_SIZE(pci_reset_fn_methods) !=3D PCI_NUM_RESET_METHOD=
+S);
+> =20
+>  	might_sleep();
+> =20
+> -	rc =3D pci_dev_specific_reset(dev, 1);
+> -	if (rc !=3D -ENOTTY)
+> -		return rc;
+> -	rc =3D pcie_reset_flr(dev, 1);
+> -	if (rc !=3D -ENOTTY)
+> -		return rc;
+> -	rc =3D pci_af_flr(dev, 1);
+> -	if (rc !=3D -ENOTTY)
+> -		return rc;
+> -	rc =3D pci_pm_reset(dev, 1);
+> -	if (rc !=3D -ENOTTY)
+> -		return rc;
+> +	for (i =3D 1; i < PCI_NUM_RESET_METHODS; i++) {
+> +		rc =3D pci_reset_fn_methods[i].reset_fn(dev, 1);
+> +		if (!rc)
+> +			reset_methods[n++] =3D i;
+> +		else if (rc !=3D -ENOTTY)
+> +			break;
+> +	}
+> =20
+> -	return pci_reset_bus_function(dev, 1);
+> +	memcpy(dev->reset_methods, reset_methods, sizeof(reset_methods));
+>  }
+> =20
+>  /**
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index 37c913bbc..db1ad94e7 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -33,7 +33,8 @@ enum pci_mmap_api {
+>  int pci_mmap_fits(struct pci_dev *pdev, int resno, struct vm_area_struct=
+ *vmai,
+>  		  enum pci_mmap_api mmap_api);
+> =20
+> -int pci_probe_reset_function(struct pci_dev *dev);
+> +int pci_reset_supported(struct pci_dev *dev);
+> +void pci_init_reset_methods(struct pci_dev *dev);
+>  int pci_bridge_secondary_bus_reset(struct pci_dev *dev);
+>  int pci_bus_error_reset(struct pci_dev *dev);
+> =20
+> @@ -606,6 +607,12 @@ struct pci_dev_reset_methods {
+>  	int (*reset)(struct pci_dev *dev, int probe);
+>  };
+> =20
+> +struct pci_reset_fn_method {
+> +	int (*reset_fn)(struct pci_dev *pdev, int probe);
+> +	char *name;
+> +};
+> +
+> +extern const struct pci_reset_fn_method pci_reset_fn_methods[];
+>  #ifdef CONFIG_PCI_QUIRKS
+>  int pci_dev_specific_reset(struct pci_dev *dev, int probe);
+>  #else
+> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> index a95252113..a3e9a9c88 100644
+> --- a/drivers/pci/probe.c
+> +++ b/drivers/pci/probe.c
+> @@ -2406,9 +2406,8 @@ static void pci_init_capabilities(struct pci_dev *d=
+ev)
+>  	pci_rcec_init(dev);		/* Root Complex Event Collector */
+> =20
+>  	pcie_report_downtraining(dev);
+> -
+> -	if (pci_probe_reset_function(dev) =3D=3D 0)
+> -		dev->reset_fn =3D 1;
+> +	pci_init_reset_methods(dev);
+> +	dev->reset_fn =3D pci_reset_supported(dev);
+>  }
+> =20
+>  /*
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index d432428fd..9f3e85f33 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -49,6 +49,9 @@
+>  			       PCI_STATUS_SIG_TARGET_ABORT | \
+>  			       PCI_STATUS_PARITY)
+> =20
+> +/* Number of reset methods used in pci_reset_fn_methods array in pci.c *=
+/
+> +#define PCI_NUM_RESET_METHODS 6
+> +
+>  /*
+>   * The PCI interface treats multi-function devices as independent
+>   * devices.  The slot/function address of each device is encoded
+> @@ -506,6 +509,10 @@ struct pci_dev {
+>  	char		*driver_override; /* Driver name to force a match */
+> =20
+>  	unsigned long	priv_flags;	/* Private flags for the PCI driver */
+> +	/*
+> +	 * See pci_reset_fn_methods array in pci.c for ordering.
+> +	 */
+> +	u8 reset_methods[PCI_NUM_RESET_METHODS];	/* Reset methods ordered by pr=
+iority */
+>  };
+> =20
+>  static inline struct pci_dev *pci_physfn(struct pci_dev *dev)
+> --=20
+> 2.32.0
+>=20
+> =
