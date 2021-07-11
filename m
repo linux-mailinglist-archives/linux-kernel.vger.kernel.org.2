@@ -2,137 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECF0E3C3D38
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 16:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DE133C3D3C
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 16:09:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233007AbhGKOLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 10:11:22 -0400
-Received: from vern.gendns.com ([98.142.107.122]:37378 "EHLO vern.gendns.com"
+        id S233053AbhGKOMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 10:12:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232544AbhGKOLV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 10:11:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=SjKdPzzJwOkoEQ37ddBWCEPWtTZUjYn/71x1w88WbP0=; b=sXIu2lJx7Nb5MopNnoomv0l8qo
-        sSvv1bb7Wn8Uco3YNySuWhGH/eroDYKrWxiWxQrVeSysdmbf/R/mvhjWwnArocnZPR2i1ADXmIm8x
-        EFYGpgM7VVGhV9MCkmknXy+J5RaXglWmR0vJaSQzFX7plGTz+JzQ02B5z4gsGglyqJsO5Wg833sCu
-        XEYhAitYQDQTqZBY7n3JGSocSqHAt0gDkudEuyRHLHC/eDYvHxbpVSqjecbht4hn9SM4hNkRlZX9C
-        zGf2gjYEZCDJXUQxtHP6kZ725zTtXAv1ZaqEz/YzdMzOGb1Tf2y+7QxDBSDONT9wrozy1iTXnqVqf
-        aP+eOAag==;
-Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:51996 helo=[192.168.0.134])
-        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <david@lechnology.com>)
-        id 1m2a8F-003idm-GK; Sun, 11 Jul 2021 10:08:32 -0400
-Subject: Re: [PATCH v12 14/17] counter: Implement *_component_id sysfs
- attributes
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     William Breathitt Gray <vilhelm.gray@gmail.com>,
-        linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
-        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        o.rempel@pengutronix.de, jarkko.nikula@linux.intel.com,
-        Dan Carpenter <dan.carpenter@oracle.com>
-References: <cover.1625471640.git.vilhelm.gray@gmail.com>
- <0e04a9e6455faf171e5dd7885676e55b5321b1ea.1625471640.git.vilhelm.gray@gmail.com>
- <bd0313ce-22fa-0516-93a1-ff3a5cb1fdd1@lechnology.com>
- <20210711142800.60e94cc7@jic23-huawei>
-From:   David Lechner <david@lechnology.com>
-Message-ID: <72d6513c-c7fc-c53d-b750-ebd2e8f3b848@lechnology.com>
-Date:   Sun, 11 Jul 2021 09:08:29 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210711142800.60e94cc7@jic23-huawei>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S232544AbhGKOMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Jul 2021 10:12:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C7EE61156;
+        Sun, 11 Jul 2021 14:09:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626012554;
+        bh=i2fNzSjVsNS7h5czCODLDyPYDvbmFr0lvLFj67DgUho=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AH/UnpLXKJqBzTKfaPEPvgAFQbwrjI/ubNwdP4j8ChqB6Vb/rAIATXv/NqnImWz4K
+         sZ+lOMp407S3ym1dvHf7rCvYggASAeQlGNuY9Rau0fgVKjA6mMOyjLJqFPGWVAyARd
+         vmHwVw3SjMas3CZibt1oUT+M4kz9P1Lkz3EbYpwjeUFdMMeR1wW7oGB7O444NFWFMm
+         BIBEKy4QGXiOO9j/Z9qM2lP2kVFERtNbx1vdFsjTHXjWx9Y2uLh+I5hKoPpgWt5MhO
+         4bI7ThCIsfTDzHt99iawJP/Kf3MIsHxWj0roiAmKhO1ON6yo9AmYlVM+G0UgCzkntd
+         eqf3YHN7Fm7Lw==
+Date:   Sun, 11 Jul 2021 23:09:09 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Matt Wu <wuqiang.matt@bytedance.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, kernel-team@fb.com, yhs@fb.com,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH -tip v8 11/13] x86/unwind: Recover kretprobe trampoline
+ entry
+Message-Id: <20210711230909.dac1ff010a94831d5e9c25cd@kernel.org>
+In-Reply-To: <3fc578e0-5b26-6067-d026-5b5d230d6720@bytedance.com>
+References: <162399992186.506599.8457763707951687195.stgit@devnote2>
+        <162400002631.506599.2413605639666466945.stgit@devnote2>
+        <YOLurg5mGHdBc+fz@hirez.programming.kicks-ass.net>
+        <20210706004257.9e282b98f447251a380f658f@kernel.org>
+        <YOQMV8uE/2bVkPOY@hirez.programming.kicks-ass.net>
+        <20210706111136.7c5e9843@oasis.local.home>
+        <YOVj2VoyrcOvJfEB@hirez.programming.kicks-ass.net>
+        <20210707191510.cb48ca4a20f0502ce6c46508@kernel.org>
+        <YOWACec65qVdTD1y@hirez.programming.kicks-ass.net>
+        <20210707194530.766a9c8364f3b2d7714ca590@kernel.org>
+        <20210707222925.87ecc1391d0ab61db3d8398e@kernel.org>
+        <3fc578e0-5b26-6067-d026-5b5d230d6720@bytedance.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/11/21 8:28 AM, Jonathan Cameron wrote:
-> On Sat, 10 Jul 2021 12:06:53 -0500
-> David Lechner <david@lechnology.com> wrote:
-> 
->> On 7/5/21 3:19 AM, William Breathitt Gray wrote:
->>> The Generic Counter chrdev interface expects users to supply component
->>> IDs in order to select extensions for requests. In order for users to
->>> know what component ID belongs to which extension this information must
->>> be exposed. The *_component_id attribute provides a way for users to
->>> discover what component ID belongs to which respective extension.
->>>
->>> Cc: David Lechner <david@lechnology.com>
->>> Cc: Gwendal Grignou <gwendal@chromium.org>
->>> Cc: Dan Carpenter <dan.carpenter@oracle.com>
->>> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
->>> ---
->>>    Documentation/ABI/testing/sysfs-bus-counter | 16 ++++++++++-
->>>    drivers/counter/counter-sysfs.c             | 30 ++++++++++++++++-----
->>>    2 files changed, 39 insertions(+), 7 deletions(-)
->>>
->>> diff --git a/Documentation/ABI/testing/sysfs-bus-counter b/Documentation/ABI/testing/sysfs-bus-counter
->>> index 9809d8a47431..e0e99adb0ecc 100644
->>> --- a/Documentation/ABI/testing/sysfs-bus-counter
->>> +++ b/Documentation/ABI/testing/sysfs-bus-counter
->>> @@ -203,12 +203,26 @@ Description:
->>>    		both edges:
->>>    			Any state transition.
->>>    
->>> +What:		/sys/bus/counter/devices/counterX/countY/ceiling_component_id
->>> +What:		/sys/bus/counter/devices/counterX/countY/floor_component_id
->>> +What:		/sys/bus/counter/devices/counterX/countY/count_mode_component_id
->>> +What:		/sys/bus/counter/devices/counterX/countY/direction_component_id
->>> +What:		/sys/bus/counter/devices/counterX/countY/enable_component_id
->>> +What:		/sys/bus/counter/devices/counterX/countY/error_noise_component_id
->>> +What:		/sys/bus/counter/devices/counterX/countY/prescaler_component_id
->>> +What:		/sys/bus/counter/devices/counterX/countY/preset_component_id
->>> +What:		/sys/bus/counter/devices/counterX/countY/preset_enable_component_id
->>>    What:		/sys/bus/counter/devices/counterX/countY/signalZ_action_component_id
->>> +What:		/sys/bus/counter/devices/counterX/signalY/cable_fault_component_id
->>> +What:		/sys/bus/counter/devices/counterX/signalY/cable_fault_enable_component_id
->>> +What:		/sys/bus/counter/devices/counterX/signalY/filter_clock_prescaler_component_id
->>> +What:		/sys/bus/counter/devices/counterX/signalY/index_polarity_component_id
->>> +What:		/sys/bus/counter/devices/counterX/signalY/synchronous_mode_component_id
->>
->> Could we just write a single line?
->>
->> What:		/sys/bus/counter/devices/counterX/signalY/<component>_component_id
-> 
-> Not nice for grepping so I think it's better to call them out explicitly.
-> 
-> There has been a proposal to check this ABI doc against running kernels, and if we have
-> too many wild cards that becomes very difficult to do.
-> 
-> Jonathan
-> 
->>
->>>    KernelVersion:	5.15
+On Wed, 7 Jul 2021 22:42:47 +0800
+Matt Wu <wuqiang.matt@bytedance.com> wrote:
 
-Makes sense. Do we start a new group of similar names with the same
-description for each kernel release that includes new attributes then?
+> On 2021/7/7 PM9:29, Masami Hiramatsu wrote:
+> > On Wed, 7 Jul 2021 19:45:30 +0900
+> > Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> > 
+> >> On Wed, 7 Jul 2021 12:20:57 +0200
+> >> Peter Zijlstra <peterz@infradead.org> wrote:
+> >>
+> >>> On Wed, Jul 07, 2021 at 07:15:10PM +0900, Masami Hiramatsu wrote:
+> >>>
+> >>>> I actually don't want to keep this feature because no one use it.
+> >>>> (only systemtap needs it?)
+> >>>
+> >>> Yeah, you mentioned systemtap, but since that's out-of-tree I don't
+> >>> care. Their problem.
+> > 
+> > Yeah, maybe it is not hard to update.
+> > 
+> >>>
+> >>>> Anyway, if we keep the idea-level compatibility (not code level),
+> >>>> what we need is 'void *data' in the struct kretprobe_instance.
+> >>>> User who needs it can allocate their own instance data for their
+> >>>> kretprobes when initialising it and sets in their entry handler.
+> >>>>
+> >>>> Then we can have a simple kretprobe_instance.
+> >>>
+> >>> When would you do the alloc? When installing the retprobe, but that
+> >>> might be inside the allocator, which means you can't call the allocator
+> >>> etc.. :-)
+> >>
+> >> Yes, so the user may need to allocate a pool right before register_kretprobe().
+> >> (whether per-kretprobe or per-task or global pool, that is user's choice.)
+> >>
+> >>>
+> >>> If we look at struct ftrace_ret_stack, it has a few fixed function
+> >>> fields. The calltime one is all that is needed for the kretprobe
+> >>> example code.
+> >>
+> >> kretprobe consumes 3 fields, a pointer to 'struct kretprobe' (which
+> >> stores callee function address in 'kretprobe::kp.addr'), a return
+> >> address and a frame pointer (*).
+> >  > Oops, I forgot to add "void *data" for storing user data.
+> > 
+> 
+> Should use "struct kretprobe_holder *rph", since "struct kretprobe" belongs
+> to 3rd-party module (which might be unloaded any time).
 
->>>    Contact:	linux-iio@vger.kernel.org
->>>    Description:
->>>    		Read-only attribute that indicates the component ID of the
->>> -		respective Synapse of Count Y for Signal Z.
->>> +		respective extension or Synapse.
->>>    
+Good catch. Yes, instead of 'struct kretprobe', we need to use the holder.
+
+> User's own pool might not work if the module can be unloaded. Better manage
+> the pool in kretprobe_holder, which needs no changes from user side.
+
+No, since the 'data' will be only refered from user handler. If the kretprobe
+is released, then the kretprobe_holder will clear the refernce to the 'struct
+kretprobe'. Then, the user handler is never called. No one access the 'data'.
+
+Thank you,
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
