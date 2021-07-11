@@ -2,191 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A86143C3DCD
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 18:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABD673C3DD2
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 18:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230430AbhGKQFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 12:05:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27419 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229660AbhGKQFG (ORCPT
+        id S231658AbhGKQJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 12:09:57 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:37472 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhGKQJ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 12:05:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626019339;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=izt5w5x+G/7QEzY8+umsah51hf3F075Loda4jzNu39I=;
-        b=d/qlnvuqniruufTFCI44ewFiH5V2Yo0GK9WXJl6QB/OsdULjpjVtUIwVg0lK1CzaldY4ff
-        sYZMiM1F42Eq4S0EpXj9MgGJfdeeJJ+rhRxeq7I5ogVb5Nr9ozUtUuDJhpCzklyFOahFfI
-        J9z68gJi8TYkeirmaWNssa+T4wVSIJw=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-586-N2gAihLmNFyB-So_XVk9rA-1; Sun, 11 Jul 2021 12:02:18 -0400
-X-MC-Unique: N2gAihLmNFyB-So_XVk9rA-1
-Received: by mail-ed1-f72.google.com with SMTP id v14-20020a056402184eb029039994f9cab9so2619846edy.22
-        for <Linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 09:02:17 -0700 (PDT)
+        Sun, 11 Jul 2021 12:09:56 -0400
+Received: by mail-io1-f69.google.com with SMTP id p7-20020a6b63070000b029050017e563a6so9922863iog.4
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 09:07:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=izt5w5x+G/7QEzY8+umsah51hf3F075Loda4jzNu39I=;
-        b=oMIS9qYqpgAQsQyagpY1cR7FlDMLe3HoZM+lwEk743BFD4v42fyRXu3npTMEQJ/alw
-         l8bTkqFxzYfMTDD1T0vECutfy197NI8qbg9gkIwtZYmMAK5GlcRQcZMU6QRgBr5YF5t8
-         25kAsY6o3WmSleS8MXEi03Nb2ru2RGQhZ1goWSoWn8ATiWDuCQzwj4KDj8JX+oBX/7xK
-         vO3Y7MliC6ei4PugalvMSimf+/dmSd40LnCJ+p+9oreAAhjSRFncAehJkaZjuQ3i9gb0
-         yAOlm9dLpyK0NB/gW0AThpwfnMv0g/ZbvwsreThGOtGONePf8ksrv00wnDuJCZpkvsZ2
-         S5Eg==
-X-Gm-Message-State: AOAM533aaXM0iQFPzWnJJuntWJaxUol6901G0XAPu9mLC6Zoc39BQOEk
-        U6+mufWFC+23xsqDTKlKZdWiuG8bAQxGZ84jbIZYQYV4d7KMQQuwW/R27Ons9m3tuo/7nqm0Tc2
-        WaOaal+SCSgH0T5JsAFp46n8A
-X-Received: by 2002:a17:906:354a:: with SMTP id s10mr21365983eja.9.1626019336957;
-        Sun, 11 Jul 2021 09:02:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx6PaTau/7o4zjDMxMmudv7FKHK0DCuUpebKeJLDg9lYU28HZTCTGrS3a2l7+Pj4Iu3raxUOw==
-X-Received: by 2002:a17:906:354a:: with SMTP id s10mr21365968eja.9.1626019336790;
-        Sun, 11 Jul 2021 09:02:16 -0700 (PDT)
-Received: from krava ([5.171.249.81])
-        by smtp.gmail.com with ESMTPSA id x1sm6060536edd.25.2021.07.11.09.02.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Jul 2021 09:02:16 -0700 (PDT)
-Date:   Sun, 11 Jul 2021 18:02:13 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v2] perf stat: Merge uncore events by default for hybrid
- platform
-Message-ID: <YOsWBdoGFkDZKh94@krava>
-References: <20210707055652.962-1-yao.jin@linux.intel.com>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=TtrQNtrKpfTZETCk/MtLAd7VMSf7/rHn12CLyW1+bOY=;
+        b=rZAGCDyGs9z+lLamjw8VXaSHyXjsYtNvj7JSOe4HRWHa7xxmATOpQaXABTUwbjJttS
+         u1Yile8OaEISyfA+5epUKN3B8SM1tN1VTYJuRWekHiFAIQIKAOcv8IgLYIHevsocVYsC
+         NqRrnE4lhDkIlEWTR6t2OuqY/hiyI4Y+nT5JvkHzAgjvD28yX+alqof5fN7qTsK7CyQB
+         X3NiBlrOCHIoCO9CVu1Xg2NQKNHo7oG8PEOx2iq7bWm9uGXCNOxCzKvO9YRAEMpNpBbd
+         QczgiEbcv4QJPZ4alM143UuY3ARQPpXqgJCcFoZmrMnJIuRNLIttiZry7T+EppxnZJEJ
+         ev2Q==
+X-Gm-Message-State: AOAM533L+ZX3pXzHP0YW2wJIoWL2oW3t96emHBqitFHgYrRQWQ+EnluY
+        wqZoo9itC9A2xGH6UWcOiCQg9y44dx+xRpAr5Zx9cSt8yKFg
+X-Google-Smtp-Source: ABdhPJxD31LB3TxRn4SX/4l5WrsJf/MuagqZiFLhmBwwzru4pVyNv7v44FQgZg7ZkY0vt7+16JLztafQom7cslxha7cs1UkAShn7
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210707055652.962-1-yao.jin@linux.intel.com>
+X-Received: by 2002:a6b:cf15:: with SMTP id o21mr36847302ioa.9.1626019629410;
+ Sun, 11 Jul 2021 09:07:09 -0700 (PDT)
+Date:   Sun, 11 Jul 2021 09:07:09 -0700
+In-Reply-To: <20210711155345.GB293743@rowland.harvard.edu>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000068b24405c6db3249@google.com>
+Subject: Re: [syzbot] WARNING in do_proc_control/usb_submit_urb
+From:   syzbot <syzbot+72af3105289dcb4c055b@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, johan@kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        mathias.nyman@linux.intel.com, stern@rowland.harvard.edu,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 01:56:52PM +0800, Jin Yao wrote:
-> On hybrid platform, by default stat aggregates and reports the event counts
-> per pmu. For example,
-> 
->   # perf stat -e cycles -a true
-> 
->    Performance counter stats for 'system wide':
-> 
->            1,400,445      cpu_core/cycles/
->              680,881      cpu_atom/cycles/
-> 
->          0.001770773 seconds time elapsed
-> 
-> While for uncore events, that's not a suitable method. Uncore has nothing
-> to do with hybrid. So for uncore events, we aggregate event counts from all
-> PMUs and report the counts without PMUs.
-> 
-> Before:
-> 
->   # perf stat -e arb/event=0x81,umask=0x1/,arb/event=0x84,umask=0x1/ -a true
-> 
->    Performance counter stats for 'system wide':
-> 
->                2,058      uncore_arb_0/event=0x81,umask=0x1/
->                2,028      uncore_arb_1/event=0x81,umask=0x1/
->                    0      uncore_arb_0/event=0x84,umask=0x1/
->                    0      uncore_arb_1/event=0x84,umask=0x1/
-> 
->          0.000614498 seconds time elapsed
-> 
-> After:
-> 
->   # perf stat -e arb/event=0x81,umask=0x1/,arb/event=0x84,umask=0x1/ -a true
-> 
->    Performance counter stats for 'system wide':
-> 
->                3,996      arb/event=0x81,umask=0x1/
->                    0      arb/event=0x84,umask=0x1/
-> 
->          0.000630046 seconds time elapsed
-> 
-> Of course, we also keep the '--no-merge' working for uncore events.
-> 
->   # perf stat -e arb/event=0x81,umask=0x1/,arb/event=0x84,umask=0x1/ --no-merge true
-> 
->    Performance counter stats for 'system wide':
-> 
->                1,952      uncore_arb_0/event=0x81,umask=0x1/
->                1,921      uncore_arb_1/event=0x81,umask=0x1/
->                    0      uncore_arb_0/event=0x84,umask=0x1/
->                    0      uncore_arb_1/event=0x84,umask=0x1/
-> 
->          0.000575536 seconds time elapsed
-> 
-> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-> ---
-> v2:
->  - Use evsel__find_pmu() to find uncore pmu.
->  - Create hybrid_uniquify() to check if uniquify the event name for hybrid.
+Hello,
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+WARNING in do_proc_control/usb_submit_urb
 
-thanks,
-jirka
+------------[ cut here ]------------
+usb usb2: BOGUS control dir, pipe 80000180 doesn't match bRequestType 80
+WARNING: CPU: 0 PID: 10164 at drivers/usb/core/urb.c:410 usb_submit_urb+0x149d/0x18a0 drivers/usb/core/urb.c:410
+Modules linked in:
+CPU: 1 PID: 10164 Comm: syz-executor.2 Tainted: G        W         5.13.0-next-20210707-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:usb_submit_urb+0x149d/0x18a0 drivers/usb/core/urb.c:410
+Code: 7c 24 40 e8 45 1e 20 fc 48 8b 7c 24 40 e8 6b 40 0c ff 45 89 e8 44 89 f1 4c 89 e2 48 89 c6 48 c7 c7 a0 99 27 8a e8 5a a4 91 03 <0f> 0b e9 a5 ee ff ff e8 17 1e 20 fc 0f b6 1d 21 86 02 08 31 ff 41
+RSP: 0018:ffffc9000a33f9a8 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: ffff8881468f1058 RCX: 0000000000000000
+RDX: ffff88802a830000 RSI: ffffffff815d7735 RDI: fffff52001467f27
+RBP: ffff888142fe0578 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815d156e R11: 0000000000000000 R12: ffff888146811500
+R13: 0000000000000080 R14: 0000000080000180 R15: ffff8880135f2700
+FS:  00007f1b9bc83700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffcfa7f3720 CR3: 000000003de67000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ usb_start_wait_urb+0x101/0x4c0 drivers/usb/core/message.c:58
+ usb_internal_control_msg drivers/usb/core/message.c:102 [inline]
+ usb_control_msg+0x31c/0x4a0 drivers/usb/core/message.c:153
+ do_proc_control+0x6c4/0x920 drivers/usb/core/devio.c:1141
+ proc_control drivers/usb/core/devio.c:1191 [inline]
+ usbdev_do_ioctl drivers/usb/core/devio.c:2540 [inline]
+ usbdev_ioctl+0x10e2/0x36c0 drivers/usb/core/devio.c:2713
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:1069 [inline]
+ __se_sys_ioctl fs/ioctl.c:1055 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665d9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f1b9bc83188 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665d9
+RDX: 0000000020000000 RSI: 00000000c0185500 RDI: 0000000000000003
+RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
+R13: 00007ffed6acd58f R14: 00007f1b9bc83300 R15: 0000000000022000
 
 
-> 
->  tools/perf/builtin-stat.c      |  3 ---
->  tools/perf/util/stat-display.c | 14 +++++++++++++-
->  2 files changed, 13 insertions(+), 4 deletions(-)
-> 
-> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-> index f9f74a514315..b67a44982b61 100644
-> --- a/tools/perf/builtin-stat.c
-> +++ b/tools/perf/builtin-stat.c
-> @@ -2442,9 +2442,6 @@ int cmd_stat(int argc, const char **argv)
->  
->  	evlist__check_cpu_maps(evsel_list);
->  
-> -	if (perf_pmu__has_hybrid())
-> -		stat_config.no_merge = true;
-> -
->  	/*
->  	 * Initialize thread_map with comm names,
->  	 * so we could print it out on output.
-> diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
-> index c588a6b7a8db..87f77016b9cc 100644
-> --- a/tools/perf/util/stat-display.c
-> +++ b/tools/perf/util/stat-display.c
-> @@ -593,6 +593,18 @@ static void collect_all_aliases(struct perf_stat_config *config, struct evsel *c
->  	}
->  }
->  
-> +static bool is_uncore(struct evsel *evsel)
-> +{
-> +	struct perf_pmu *pmu = evsel__find_pmu(evsel);
-> +
-> +	return pmu && pmu->is_uncore;
-> +}
-> +
-> +static bool hybrid_uniquify(struct evsel *evsel)
-> +{
-> +	return perf_pmu__has_hybrid() && !is_uncore(evsel);
-> +}
-> +
->  static bool collect_data(struct perf_stat_config *config, struct evsel *counter,
->  			    void (*cb)(struct perf_stat_config *config, struct evsel *counter, void *data,
->  				       bool first),
-> @@ -601,7 +613,7 @@ static bool collect_data(struct perf_stat_config *config, struct evsel *counter,
->  	if (counter->merged_stat)
->  		return false;
->  	cb(config, counter, data, true);
-> -	if (config->no_merge)
-> +	if (config->no_merge || hybrid_uniquify(counter))
->  		uniquify_event_name(counter);
->  	else if (counter->auto_merge_stats)
->  		collect_all_aliases(config, counter, cb, data);
-> -- 
-> 2.27.0
-> 
+Tested on:
+
+commit:         ee268dee Add linux-next specific files for 20210707
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=13f337b4300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=59e1e3bbc3afca75
+dashboard link: https://syzkaller.appspot.com/bug?extid=72af3105289dcb4c055b
+compiler:       
 
