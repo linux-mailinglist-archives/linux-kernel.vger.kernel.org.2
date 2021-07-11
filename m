@@ -2,113 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9B93C3D9B
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 17:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAEB43C3D9E
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 17:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235485AbhGKPZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 11:25:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48920 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235453AbhGKPZi (ORCPT
+        id S235627AbhGKP2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 11:28:07 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:56115 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235616AbhGKP2G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 11:25:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626016971;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VTnUpGQrEV+LSYMbonQQeBGOolBQlW/k+1JZ7zxRtwc=;
-        b=NyIzS1euL60l2QsR8Na5PinMEy4wOvjY4avmZNFOV/SkXZxNkT2lX7gCzGGak/naUU9mP5
-        mu3lFTdPH8a7a9bm85DYU+d7SYVMaP5kQqMV/w1t9w869Lyjaodkl3Jo0hK4yMkjz+DfzT
-        vrEc+tvnK8IzVgLtjy+n6XJeHLTdbZA=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-295-AfXzvMpmN7iMJPW3JfcHHQ-1; Sun, 11 Jul 2021 11:22:50 -0400
-X-MC-Unique: AfXzvMpmN7iMJPW3JfcHHQ-1
-Received: by mail-qv1-f69.google.com with SMTP id k12-20020a0cfd6c0000b029020df9543019so11771690qvs.14
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 08:22:49 -0700 (PDT)
+        Sun, 11 Jul 2021 11:28:06 -0400
+Received: by mail-io1-f71.google.com with SMTP id i13-20020a5d88cd0000b02904e5ab8bdc6cso9827291iol.22
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 08:25:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=VTnUpGQrEV+LSYMbonQQeBGOolBQlW/k+1JZ7zxRtwc=;
-        b=oQhD8ElYmQmVDol9+LqSXNPl2YMd+QdaidEgQhE6nUJ9HCtL12YCO2eEjXo2tb7vaW
-         GNcRX9eBVvvzxvMklNA1f206qpYeXGhckaUQ2uJR9I+v7mKzjWeMn7R0eNWIAk3+zk1u
-         hIgtpH/rDehQorBFjCyH/6Hf3x+9hGlV5aVReP/Y9U6+XuHoFPsytONplvtnaQ+3xtlf
-         6t9G9wBNz9MU+EtfntSvbkovSDVC2kcg1Ijg/wE8UZloeYbhSRzfPhi9NbUm4SYnv9NI
-         vChy1Cvi09NBhY0TkJxzKBH8pw+QLGSYp0FScEcaU6A6nlC1NHeJJDMfBC85JrdYsnru
-         7E9g==
-X-Gm-Message-State: AOAM530BW33Crj5Nl8zPxZTlPqCrZwOPKyTk4YvnvYqRc4ME6k+89gcS
-        o0gIofLMkVr0ygxLGZPDAfS47GBTAZZEHMPmQYKIJctEqpLD/LFS+9oHqCR0G0bLTCzdn98RWry
-        g2bKtbuMfrQ2c9iXMD3LiQDdJ
-X-Received: by 2002:a37:b0a:: with SMTP id 10mr1347228qkl.291.1626016969650;
-        Sun, 11 Jul 2021 08:22:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxNLdwFZM7zPxEdkWxzuSN3LFaXjkzAGfA1VfJCMjMZ/geXXJIWsoquAERpxBvyIEk6lhhTDQ==
-X-Received: by 2002:a37:b0a:: with SMTP id 10mr1347214qkl.291.1626016969501;
-        Sun, 11 Jul 2021 08:22:49 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id l6sm5345585qkk.117.2021.07.11.08.22.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Jul 2021 08:22:49 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v1 3/3] locking/lockdep,doc: Correct the max number of
- lock classes
-To:     Xiongwei Song <sxwjean@me.com>, peterz@infradead.org,
-        mingo@redhat.com, will@kernel.org, boqun.feng@gmail.com
-Cc:     linux-kernel@vger.kernel.org, Xiongwei Song <sxwjean@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-References: <20210711141430.896595-1-sxwjean@me.com>
- <20210711141430.896595-3-sxwjean@me.com>
-Message-ID: <93ccb871-7f57-9109-9072-8fc26f3b811c@redhat.com>
-Date:   Sun, 11 Jul 2021 11:22:48 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=NIgq3uh+Hjjwi2oxrtORLjfC9P7t2E8mL5wuw+P+97E=;
+        b=Qi/fIgt6rrBSC1B74X+Pj0bBPKEdvyho/UKxtQFWYfzJmswzMUrHNicJUrFQLUcBeB
+         bCZ4bXicUbI/KDwE60HA02ZWAKzmXbBX/jwbnoU8Q9y5UgZld2zcVSa0l6TRskgNrQ5p
+         W/g3ahtRRnaMwfIFyTey0JtPGvLP+xSSs5R43+IHlZ1q5nN2bvpIrT1mlrD3byyLtAG3
+         T1r+FNvhv7RlRNL2PTXgDFKVOKelXOcgFwcwWvvjr8JeApZzvhRE98BTNQAtEGRtfZed
+         1GOiJvtggvWfq/So71tBTJ7EzoCQhJvdWUqe+MS1G3tYGNzF8PH458Koi/IYKUITIo33
+         dX6Q==
+X-Gm-Message-State: AOAM531yjsosW82GzYoXOmhIWtYcEqCW9fFbouVoKKl58fy8BRHO1IfK
+        lf6swDNRPrhy0DovERBNZDNR/uhCdHSyln3ez00Px3K3AW/q
+X-Google-Smtp-Source: ABdhPJyWaAHrLW1elRgVV+7cbOyIFhtTK+7A6xQtj6HSJZmbYtmoamFG2SdlnBtuSsx7DOKuaq+rx3Scb9mqmuTjz3F6yV3k3NfR
 MIME-Version: 1.0
-In-Reply-To: <20210711141430.896595-3-sxwjean@me.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-Received: by 2002:a5e:dd42:: with SMTP id u2mr25445953iop.135.1626017119844;
+ Sun, 11 Jul 2021 08:25:19 -0700 (PDT)
+Date:   Sun, 11 Jul 2021 08:25:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d3be7905c6da9c25@google.com>
+Subject: [syzbot] WARNING in usb_remove_ep_devs
+From:   syzbot <syzbot+a0c54eb26c7b8130c9b9@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, rafael@kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/11/21 10:14 AM, Xiongwei Song wrote:
-> From: Xiongwei Song <sxwjean@gmail.com>
->
-> The max number of lock classes is 8192.
->
-> Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: linux-doc@vger.kernel.org
-> ---
->   Documentation/locking/lockdep-design.rst | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/locking/lockdep-design.rst b/Documentation/locking/lockdep-design.rst
-> index 82f36cab61bd..5c2dcec684ff 100644
-> --- a/Documentation/locking/lockdep-design.rst
-> +++ b/Documentation/locking/lockdep-design.rst
-> @@ -341,7 +341,7 @@ Exceeding this number will trigger the following lockdep warning::
->   
->   	(DEBUG_LOCKS_WARN_ON(id >= MAX_LOCKDEP_KEYS))
->   
-> -By default, MAX_LOCKDEP_KEYS is currently set to 8191, and typical
-> +By default, MAX_LOCKDEP_KEYS is currently set to 8192, and typical
->   desktop systems have less than 1,000 lock classes, so this warning
->   normally results from lock-class leakage or failure to properly
->   initialize locks.  These two problems are illustrated below:
-> @@ -383,7 +383,7 @@ you the number of lock classes currently in use along with the maximum::
->   
->   This command produces the following output on a modest system::
->   
-> -	lock-classes:                          748 [max: 8191]
-> +	lock-classes:                          748 [max: 8192]
->   
->   If the number allocated (748 above) increases continually over time,
->   then there is likely a leak.  The following command can be used to
+Hello,
 
-Acked-by: Waiman Long <longman@redhat.com>
+syzbot found the following issue on:
 
+HEAD commit:    7756f1d6 phy: qcom-qusb2: Add configuration for SM4250 and..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+console output: https://syzkaller.appspot.com/x/log.txt?x=15d03bac300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8df8c74fda98ee5f
+dashboard link: https://syzkaller.appspot.com/bug?extid=a0c54eb26c7b8130c9b9
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a0c54eb26c7b8130c9b9@syzkaller.appspotmail.com
+
+usb 6-1: ath9k_htc: USB layer deinitialized
+------------[ cut here ]------------
+DEBUG_LOCKS_WARN_ON(lock->magic != lock)
+WARNING: CPU: 0 PID: 7255 at kernel/locking/mutex.c:941 __mutex_lock_common kernel/locking/mutex.c:941 [inline]
+WARNING: CPU: 0 PID: 7255 at kernel/locking/mutex.c:941 __mutex_lock+0xb8d/0x1080 kernel/locking/mutex.c:1104
+Modules linked in:
+CPU: 0 PID: 7255 Comm: kworker/0:7 Not tainted 5.13.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+RIP: 0010:__mutex_lock_common kernel/locking/mutex.c:941 [inline]
+RIP: 0010:__mutex_lock+0xb8d/0x1080 kernel/locking/mutex.c:1104
+Code: 08 84 d2 0f 85 ab 04 00 00 8b 05 46 7c b6 02 85 c0 0f 85 8f f5 ff ff 48 c7 c6 60 3a 07 86 48 c7 c7 20 38 07 86 e8 22 77 d3 ff <0f> 0b e9 75 f5 ff ff 65 48 8b 1c 25 40 ef 01 00 be 08 00 00 00 48
+RSP: 0018:ffffc9000566f810 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000040000 RSI: ffffffff812a6723 RDI: fffff52000acdef4
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+R10: ffffffff814b9bef R11: 0000000000000000 R12: dffffc0000000000
+R13: ffff888147adc120 R14: ffff88811a3e10a8 R15: ffff88810f5fe008
+FS:  0000000000000000(0000) GS:ffff8881f6a00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005635c64e9457 CR3: 000000013faf2000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ device_lock include/linux/device.h:763 [inline]
+ device_del+0x9e/0xd40 drivers/base/core.c:3502
+ device_unregister+0x22/0xc0 drivers/base/core.c:3573
+ usb_remove_ep_devs+0x3e/0x80 drivers/usb/core/endpoint.c:188
+ usb_disconnect.cold+0x4ab/0x791 drivers/usb/core/hub.c:2240
+ hub_port_connect drivers/usb/core/hub.c:5151 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5440 [inline]
+ port_event drivers/usb/core/hub.c:5586 [inline]
+ hub_event+0x1c9c/0x4330 drivers/usb/core/hub.c:5668
+ process_one_work+0x98d/0x1580 kernel/workqueue.c:2276
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2422
+ kthread+0x38c/0x460 kernel/kthread.c:313
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
