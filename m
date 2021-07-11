@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 221BD3C3B97
+	by mail.lfdr.de (Postfix) with ESMTP id 6B88C3C3B98
 	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 12:41:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232439AbhGKKoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 06:44:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48494 "EHLO
+        id S232466AbhGKKoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 06:44:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232335AbhGKKoM (ORCPT
+        with ESMTP id S232380AbhGKKoP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 06:44:12 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0DE1C0613E5
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 03:41:25 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id me13-20020a17090b17cdb0290173bac8b9c9so378185pjb.3
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 03:41:25 -0700 (PDT)
+        Sun, 11 Jul 2021 06:44:15 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90DACC0613E5
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 03:41:28 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id d12so14947933pgd.9
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 03:41:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=MxgwZHP/NxGkiYvHiVeQZZDAd7piMTreovHUTu3tJE4=;
-        b=JnuDDQXdPNRWlCR6EUfqkyGZnRvs0mSk1aPj/Uw0zb9ip1uVoMooO0nZVAE95eQfnv
-         kfCjTMTDJ/fMr+7C5yf8Okx2Jjki94LXLE+IyjUJpC3C8ekWoOjmhx2ZET2xjTshaek8
-         SE+r8bWo5Ny0o+tjd21vcqXk6NLBsdwYVnC+XePA7mrnPJ+wc29/fqwkhDczXnHsjWiz
-         DzKbhXhthyWAdTC7z+XEpYoprPi+T5VTVvRX4KOGes1D9ZtC1iuAOxJ1Odpy27OSUcLk
-         k1egAO/BrwnfRXozDkX5tpWtT+FL1XQ86ru3oeKW8+VurrYCqZzm2B5Xiw0IFu6PyEyV
-         cVqw==
+        bh=Q5Wf8ghZ23c6vSvSmNVjb2NVOeSumBPmpt+tM4X+4G0=;
+        b=lyx0w/3i2J+y8CQc61EkPiIT6/dGLPzkaz7rfy+3+zdS2LKYhCN3ohFbBOQVnkr5vo
+         c2QSHAkUQmYjofvTN++VJ8GVQlmbwsW/LHW82wh4QnkGR8pye+CS6TAQDUQUnd3Cwogk
+         HNhZAvfFkccsVf++cXdroo8L9TMDDQzJTJjkuzpuz3Ysh+WXgzQzQ6cEsgs387G+liSe
+         0YRNVEQJyrH8s6PyNWZ7gQnmGD8BwkOHe0yOdZVXvAz+26Tjns4lpRZQVkZqrmNMKMvL
+         JNEzSOgyosIHx1ZjVZlafGpAY1c22KJvTAf946Df3Ic2yJcQdUgzaA1UwDVMSsHL+VyA
+         5j1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=MxgwZHP/NxGkiYvHiVeQZZDAd7piMTreovHUTu3tJE4=;
-        b=SkYMVj2TcfAZvN/K5UrkbOn4lqKekaBd2t4N62FA6rfD96jgsnSmZGoIIoxrBi2asC
-         2OWt2hGQA9yH2dSp3HxbNGH0EjINwTXU+DE9J7d//eip56P5mBSNcS+INyWeo76Qu7J9
-         40zgOTNBCvaZU8NYZsCNT6bvLG0p93UmLeI4G+f/6rw3O6Goi7lm9SVztOXqw3TRsB/j
-         kvja5Ke02aAZxEqzn2EG5pTSyiYw1Rl/epv0LCWH3Z3osUXoCka4scIg7h6TupZFqx3s
-         1qresZeSO5R+xFYue8nuz9duDSqqNHjyRCGFqYH66cPxXRS8DP4t8dRkruXKSuZd22Y8
-         Lj/w==
-X-Gm-Message-State: AOAM532LNV1nu52My5MYwGROLe0R+47RG4WwXi3c7EzTBIrJYiPbVBt/
-        J4IlX+pOYHH4x869tanbBahdeQ==
-X-Google-Smtp-Source: ABdhPJzNZQip/BwALlXE7Z7NBJGyg6SKSf+M0vJ6RYGbUSs5QT+KzgE2IUOJho/3zqy/j8F/SKOUnA==
-X-Received: by 2002:a17:90b:3844:: with SMTP id nl4mr8431143pjb.78.1626000085273;
-        Sun, 11 Jul 2021 03:41:25 -0700 (PDT)
+        bh=Q5Wf8ghZ23c6vSvSmNVjb2NVOeSumBPmpt+tM4X+4G0=;
+        b=Pdn+NbPTczsDRcZ7p02DBj1dSYdY7TSFgS/XVJoj8+ZSnrRT1y3JHrljxE7SsvfWmZ
+         vovZT5510OnRCoilTGWeKTPbg1IRfel3nhxZsFJKwNE2D/dnENaDmBTnejAk5PUvg/uZ
+         uJxBgn5pG1Slgx2ufBiyUSuXcg0q+vnF5Ecn4UOhc6f6iybKJX9Q07QC2gDq47TG6/6a
+         44F5xEO1YIAIbpwSds8yTb7d0Ahz5op2BjA2c7Md4gSQEZ9tCmL/juTMJLjzDyJ/amRg
+         s7QTsTiByZKWvYo6S/Iq2jKesaKWeiLO+sB6d6QSaeKbjVhrNHEfIAs33pUz0ysy08KK
+         aI5g==
+X-Gm-Message-State: AOAM533shfcQ5d27CyBDAPTNuvjB9JfomcEodyZkB3RYJ8QzARrDwmve
+        Y8ZLXdmN139VQk/KdnydDjuOUw==
+X-Google-Smtp-Source: ABdhPJy7rSDkFVxHKzcS361rBBVWk82TUHhXPNVEgieYnRflyQ2XrW4SpdiE8S9LYx0A8Mr01spdNA==
+X-Received: by 2002:a63:e211:: with SMTP id q17mr25685112pgh.363.1626000088096;
+        Sun, 11 Jul 2021 03:41:28 -0700 (PDT)
 Received: from localhost ([103.127.241.250])
-        by smtp.gmail.com with ESMTPSA id j6sm10570265pji.23.2021.07.11.03.41.24
+        by smtp.gmail.com with ESMTPSA id x13sm10181726pjh.30.2021.07.11.03.41.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Jul 2021 03:41:24 -0700 (PDT)
+        Sun, 11 Jul 2021 03:41:27 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Adrian Hunter <adrian.hunter@intel.com>,
@@ -66,9 +66,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
         coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v4 03/11] coresight: tmc-etf: Add comment for store ordering
-Date:   Sun, 11 Jul 2021 18:40:57 +0800
-Message-Id: <20210711104105.505728-4-leo.yan@linaro.org>
+Subject: [PATCH v4 04/11] perf/x86: Add barrier after updating bts
+Date:   Sun, 11 Jul 2021 18:40:58 +0800
+Message-Id: <20210711104105.505728-5-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210711104105.505728-1-leo.yan@linaro.org>
 References: <20210711104105.505728-1-leo.yan@linaro.org>
@@ -78,35 +78,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AUX ring buffer is required to separate the data store and aux_head
-store, since the function CS_LOCK() has contained memory barrier mb(),
-mb() is a more conservative barrier than smp_wmb() on Arm32/Arm64, thus
-it's needless to add any explicit barrier anymore.
-
-Add comment to make clear for the barrier usage for ETF.
+Add barrier wmb() to separate the AUX data store and aux_head store.
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 ---
- drivers/hwtracing/coresight/coresight-tmc-etf.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/x86/events/intel/bts.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/hwtracing/coresight/coresight-tmc-etf.c b/drivers/hwtracing/coresight/coresight-tmc-etf.c
-index 45b85edfc690..9a42ee689921 100644
---- a/drivers/hwtracing/coresight/coresight-tmc-etf.c
-+++ b/drivers/hwtracing/coresight/coresight-tmc-etf.c
-@@ -553,6 +553,12 @@ static unsigned long tmc_update_etf_buffer(struct coresight_device *csdev,
- 	if (buf->snapshot)
- 		handle->head += to_read;
+diff --git a/arch/x86/events/intel/bts.c b/arch/x86/events/intel/bts.c
+index 6320d2cfd9d3..4a015d160bc5 100644
+--- a/arch/x86/events/intel/bts.c
++++ b/arch/x86/events/intel/bts.c
+@@ -209,6 +209,9 @@ static void bts_update(struct bts_ctx *bts)
+ 	} else {
+ 		local_set(&buf->data_size, head);
+ 	}
++
++	/* The WMB separates data store and aux_head store matches. */
++	wmb();
+ }
  
-+	/*
-+	 * AUX ring buffer requires to use memory barrier to separate the trace
-+	 * data store and aux_head store, because CS_LOCK() contains mb() which
-+	 * gives more heavy barrier than smp_wmb(), it's not necessary to
-+	 * explicitly invoke any barrier.
-+	 */
- 	CS_LOCK(drvdata->base);
- out:
- 	spin_unlock_irqrestore(&drvdata->spinlock, flags);
+ static int
 -- 
 2.25.1
 
