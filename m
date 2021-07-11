@@ -2,281 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6B1C3C3BDE
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 13:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0CA13C3BE0
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 13:28:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232481AbhGKLbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 07:31:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58942 "EHLO
+        id S232601AbhGKLbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 07:31:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231567AbhGKLbH (ORCPT
+        with ESMTP id S232540AbhGKLbS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 07:31:07 -0400
-Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD436C0613DD;
-        Sun, 11 Jul 2021 04:28:20 -0700 (PDT)
-Received: by mail-ua1-x92a.google.com with SMTP id 109so1453398uar.10;
-        Sun, 11 Jul 2021 04:28:20 -0700 (PDT)
+        Sun, 11 Jul 2021 07:31:18 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67447C0613E8
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 04:28:32 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id p14-20020a17090ad30eb02901731c776526so8654271pju.4
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 04:28:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=2UbdQq4lzRnyLqpnoKRSKm5CIBGEvXxu2D17blGP0rc=;
-        b=uZO275xN/xrbBY/7UUArNmoCsAwrZGS9wg9y7eVGgpV7a3h2KA794rjOITby78slb3
-         kk/o6kwBR4DF9m+u76fTJW2UzfgQQv7R7p6rjJ/5uhkYGP4ywLvbd/aVfq1pYTMhavl0
-         xYxzOXpePRViDIGKb5y4VA+AN1+RfZtp2gkqHX4YFetudLxMorwL0xLn610Pfjn1f5zH
-         aTfMixTPHU52Nj1BpRHOkKHLpnpIDw2BLGx+Ndz31IMFP+reL+o9al5Wg546PoL/tEGj
-         42zkH9BYvc3dy3o60lTTZYEnMcSBFtwwEN50xPEj3Xe4NPbQkgblk9XG6t67wffNNDCH
-         axQw==
+        bh=XJqaYNuAhx03VwNz0nBHeMeBm3MIj1+un/V3SAMY9Y4=;
+        b=YbQPULznAFWlcyQEfotPQ6Vd2/Z/zQFWcnjtaVIe0y6OjzI5vyyTvYyFuJd/swEV/r
+         G76DopUvMWN4bEGq1s8wxQZpUxEEz9/wtn3Xay2e6MwZ/9hCrQ8dRmmBBksXgSGeTNjb
+         wjgHuLgEsIjcWD4J0p1fR+B6IlMNAs/u2I8gEnIMtdej2jUjGP/D3Fmtg8xIgX0weu3V
+         5iy7lFlor5kq1zRFNgoS+G/vrM4jb+o7ORle7y9+PU8EGpd6wR9UCCc+5LPCx4rqW8Jj
+         t3yrtfBxCKkSaXRFOTyaQOLGVidtuvl1k41T0MXWkvLUXNDiorwfC9WNvw4zrSFBjNND
+         qtLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=2UbdQq4lzRnyLqpnoKRSKm5CIBGEvXxu2D17blGP0rc=;
-        b=E8MyPgxWXyGvePirIU3HubiH+Wbc2561nhngEvTK+UN5feOlt03Ij4xt3jo0DC1a/V
-         Z7gsWmBGoV/98k2H4hDj8HcSgTVBOqotn6o59Mo/o5QkSryH/+Xs96uiNPEcnXqSS7OR
-         H98ak30JgugDsxwHLeLnCYuzp1MqYhuibV0LLRN7QlgdlKQ6bft+lm1erq5CYTXejZvw
-         t7nDHSShr5TwLZl0wsCiAo0jy4ps0vk6xVsUQYt6+zY9QkvM0lfXFyTAvS9U6dg1A3DS
-         9GcJhhLaQafH5RnRjppdFE9LZVddDlr6RIria2V2DYN0dxLdbph4HgyMubuSDqYVoGeh
-         Gezg==
-X-Gm-Message-State: AOAM5335zkyS7oK8mevuwEPdNkZVGRiA/qG49qOJLSBzUgFtO/9OeoN0
-        ALIQZSnWOQTk+5LiBZiW4ME=
-X-Google-Smtp-Source: ABdhPJyfXiuANdIugYW/0ijyHB9PsLd9AbrGVY8e174gPdjELQV0JHTLolVn9IfYR+kXf3ROujFpgA==
-X-Received: by 2002:ab0:d97:: with SMTP id i23mr11710027uak.61.1626002899806;
-        Sun, 11 Jul 2021 04:28:19 -0700 (PDT)
-Received: from shinobu ([193.27.12.133])
-        by smtp.gmail.com with ESMTPSA id m16sm1558726vkm.47.2021.07.11.04.28.14
+        bh=XJqaYNuAhx03VwNz0nBHeMeBm3MIj1+un/V3SAMY9Y4=;
+        b=dQeeKog1NVIqegKXDHpIbpKRSTbaJvNjkppj6rjkIcnIn1Q/BQhG7RbUeoLDoD90R0
+         5/kYjcSWYzKgNViGFQNmt8MWV5o4D47frzMo7eaHTbQEoJak7byNMF0p8LTtLYdQWF7/
+         KbgUs+AM0hSc2JyhIay8PhQv1Ukaczg8Dk86IFsFgdGKKp4lOnw5yJTdQcI+CFbvPX2z
+         YhvA6QPddPEP/9iLKyT7vBrlLCQeyfTSU6DnmiQC+A43xHxSykjynCm4o4+can8woJvC
+         ZBZoWTb30GgMm2LuWGaIAuiClSxxtPfPSY5+DeRu86mbqsNh42P+5Y59zlE0qzusvQ9H
+         zyUg==
+X-Gm-Message-State: AOAM53122lCvgNHFdl1ZC0oFwpL/X2hu3G4ao4tTQjR3whWTZTl5Htcx
+        K1YMqLGH3czGtsPzJCJp780=
+X-Google-Smtp-Source: ABdhPJxo3youatxyZWxLBBreYWrXeVGWLK7TP89pTPaDjT7duO2vlYst58Piv+hlJjZfYK4JBXz5Jg==
+X-Received: by 2002:a17:90b:314d:: with SMTP id ip13mr22207735pjb.131.1626002911875;
+        Sun, 11 Jul 2021 04:28:31 -0700 (PDT)
+Received: from ojas ([122.177.24.64])
+        by smtp.gmail.com with ESMTPSA id l6sm12222720pff.74.2021.07.11.04.28.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Jul 2021 04:28:19 -0700 (PDT)
-Date:   Sun, 11 Jul 2021 20:28:11 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     David Lechner <david@lechnology.com>
-Cc:     jic23@kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        kernel@pengutronix.de, a.fatoum@pengutronix.de,
-        kamel.bouhara@bootlin.com, gwendal@chromium.org,
-        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, o.rempel@pengutronix.de,
-        jarkko.nikula@linux.intel.com, Pavel Machek <pavel@ucw.cz>
-Subject: Re: [PATCH v12 12/17] tools/counter: Create Counter tools
-Message-ID: <YOrVy7Ba117s1maQ@shinobu>
-References: <cover.1625471640.git.vilhelm.gray@gmail.com>
- <e97aa3e529f54d5651df7edcc1b43a8157d9e9c3.1625471640.git.vilhelm.gray@gmail.com>
- <343a2bd3-38b7-7462-bc52-d3f6493bede0@lechnology.com>
+        Sun, 11 Jul 2021 04:28:31 -0700 (PDT)
+Date:   Sun, 11 Jul 2021 16:58:21 +0530
+From:   Ojaswin Mujoo <ojaswin98@gmail.com>
+To:     Stefan Wahren <stefan.wahren@i2se.com>
+Cc:     nsaenz@kernel.org, gregkh@linuxfoundation.org, arnd@arndb.de,
+        dan.carpenter@oracle.com, phil@raspberrypi.com,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 5/5] staging: vchiq: Combine vchiq platform code into
+ single file
+Message-ID: <20210711112821.GA5049@ojas>
+References: <cover.1625401927.git.ojaswin98@gmail.com>
+ <b2e9eaee3e6d8f278a3277aaa284c5ca8b76d756.1625401928.git.ojaswin98@gmail.com>
+ <b1b867c1-476c-8a5d-721b-ac19854efcbc@i2se.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="PD3Ct3y1jwnkQ/rs"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <343a2bd3-38b7-7462-bc52-d3f6493bede0@lechnology.com>
+In-Reply-To: <b1b867c1-476c-8a5d-721b-ac19854efcbc@i2se.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---PD3Ct3y1jwnkQ/rs
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sat, Jul 10, 2021 at 11:53:35AM -0500, David Lechner wrote:
-> On 7/5/21 3:19 AM, William Breathitt Gray wrote:
-> > This creates an example Counter program under tools/counter/*
-> > to exemplify the Counter character device interface.
-> >=20
-> > Cc: Pavel Machek <pavel@ucw.cz>
-> > Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+On Sun, Jul 11, 2021 at 12:49:35PM +0200, Stefan Wahren wrote:
+> Am 04.07.21 um 17:59 schrieb Ojaswin Mujoo:
+> > Combine the vchiq platform initialization code into a single file by
+> > merging vchiq_2835_arm.c into vchiq_arm.c
+> >
+> > Signed-off-by: Ojaswin Mujoo <ojaswin98@gmail.com>
 > > ---
->=20
->=20
-> > --- a/tools/Makefile
-> > +++ b/tools/Makefile
-> > @@ -12,6 +12,7 @@ help:
-> >   	@echo '  acpi                   - ACPI tools'
-> >   	@echo '  bpf                    - misc BPF tools'
-> >   	@echo '  cgroup                 - cgroup tools'
-> > +	@echo '  counter                - Counter tools'
->=20
-> nit: other descriptions start with lower case letter, so to be
-> consistent, this should too
-
-Ack.
-
-> > --- /dev/null
-> > +++ b/tools/counter/counter_example.c
-> > @@ -0,0 +1,95 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/* Counter - example userspace application
-> > + *
-> > + * The userspace application opens /dev/counter0, configures the
-> > + * COUNTER_EVENT_INDEX event channel 0 to gather Count 0 count and Cou=
-nt
-> > + * 1 count, and prints out the data as it becomes available on the
-> > + * character device node.
-> > + *
-> > + * Copyright (C) 2021 William Breathitt Gray
-> > + */
-> > +#include <errno.h>
-> > +#include <fcntl.h>
-> > +#include <linux/counter.h>
-> > +#include <stdio.h>
-> > +#include <string.h>
-> > +#include <sys/ioctl.h>
-> > +#include <unistd.h>
+> >  drivers/staging/vc04_services/Makefile        |   1 -
+> >  .../interface/vchiq_arm/vchiq_2835_arm.c      | 564 ------------------
+> >  .../interface/vchiq_arm/vchiq_arm.c           | 549 +++++++++++++++++
+> >  3 files changed, 549 insertions(+), 565 deletions(-)
+> >  delete mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_2835_arm.c
+> >
+> > diff --git a/drivers/staging/vc04_services/Makefile b/drivers/staging/vc04_services/Makefile
+> > index 0a04338fc962..1fd191e2e2a5 100644
+> > --- a/drivers/staging/vc04_services/Makefile
+> > +++ b/drivers/staging/vc04_services/Makefile
+> > @@ -4,7 +4,6 @@ obj-$(CONFIG_BCM2835_VCHIQ)	+= vchiq.o
+> >  vchiq-objs := \
+> >     interface/vchiq_arm/vchiq_core.o  \
+> >     interface/vchiq_arm/vchiq_arm.o \
+> > -   interface/vchiq_arm/vchiq_2835_arm.o \
+> >     interface/vchiq_arm/vchiq_debugfs.o \
+> >     interface/vchiq_arm/vchiq_connected.o \
+> >  
+> ...
+> > diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+> > index 0f2de571eba7..9057d01ffd48 100644
+> > --- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+> > +++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+> > @@ -25,15 +25,32 @@
+> >  #include <linux/rcupdate.h>
+> >  #include <linux/delay.h>
+> >  #include <linux/slab.h>
+> > +#include <linux/interrupt.h>
+> > +#include <linux/io.h>
+> > +#include <linux/uaccess.h>
+> >  #include <soc/bcm2835/raspberrypi-firmware.h>
+> >  
+> >  #include "vchiq_core.h"
+> >  #include "vchiq_ioctl.h"
+> >  #include "vchiq_arm.h"
+> >  #include "vchiq_debugfs.h"
+> > +#include "vchiq_connected.h"
+> > +#include "vchiq_pagelist.h"
+> >  
+> >  #define DEVICE_NAME "vchiq"
+> >  
+> > +#define TOTAL_SLOTS (VCHIQ_SLOT_ZERO_SLOTS + 2 * 32)
 > > +
-> > +struct counter_watch watches[2] =3D {
->=20
-> nit: this can be static
-
-Ack.
-
-> > +	{
-> > +		/* Component data: Count 0 count */
-> > +		.component.type =3D COUNTER_COMPONENT_COUNT,
-> > +		.component.scope =3D COUNTER_SCOPE_COUNT,
-> > +		.component.parent =3D 0,
-> > +		/* Event type: Index */
-> > +		.event =3D COUNTER_EVENT_INDEX,
-> > +		/* Device event channel 0 */
-> > +		.channel =3D 0,
-> > +	},
-> > +	{
-> > +		/* Component data: Count 1 count */
-> > +		.component.type =3D COUNTER_COMPONENT_COUNT,
-> > +		.component.scope =3D COUNTER_SCOPE_COUNT,
-> > +		.component.parent =3D 1,
-> > +		/* Event type: Index */
-> > +		.event =3D COUNTER_EVENT_INDEX,
-> > +		/* Device event channel 0 */
-> > +		.channel =3D 0,
-> > +	},
+> > +#define MAX_FRAGMENTS (VCHIQ_NUM_CURRENT_BULKS * 2)
+> > +
+> > +#define VCHIQ_PLATFORM_FRAGMENTS_OFFSET_IDX 0
+> > +#define VCHIQ_PLATFORM_FRAGMENTS_COUNT_IDX  1
+> > +
+> > +#define BELL0	0x00
+> > +#define BELL2	0x08
+> > +
+> > +#define ARM_DS_ACTIVE	BIT(2)
+> > +
+> >  /* Override the default prefix, which would be vchiq_arm (from the filename) */
+> >  #undef MODULE_PARAM_PREFIX
+> >  #define MODULE_PARAM_PREFIX DEVICE_NAME "."
+> > @@ -59,10 +76,542 @@ static struct vchiq_drvdata bcm2836_drvdata = {
+> >  	.cache_line_size = 64,
+> >  };
+> >  
+> > +struct vchiq_2835_state {
+> > +	int inited;
+> > +	struct vchiq_arm_state arm_state;
 > > +};
 > > +
-> > +int main(void)
-> > +{
-> > +	int fd;
-> > +	int ret;
-> > +	struct counter_event event_data[2];
+> > +struct vchiq_pagelist_info {
+> > +	struct pagelist *pagelist;
+> > +	size_t pagelist_buffer_size;
+> > +	dma_addr_t dma_addr;
+> > +	enum dma_data_direction dma_dir;
+> > +	unsigned int num_pages;
+> > +	unsigned int pages_need_release;
+> > +	struct page **pages;
+> > +	struct scatterlist *scatterlist;
+> > +	unsigned int scatterlist_mapped;
+> > +};
 > > +
-> > +	fd =3D open("/dev/counter0", O_RDWR);
-> > +	if (fd =3D=3D -1) {
-> > +		perror("Unable to open /dev/counter0");
-> > +		return -errno;
->=20
-> errno is no longer valid after calling perror(). Since this
-> is example code, we can just return 1 instead (exit codes
-> positive number between 0 and 255 so -1 would be 255).
-
-Ack.
-
-> > +	}
+> > +static void __iomem *g_regs;
+> > +/* This value is the size of the L2 cache lines as understood by the
+> > + * VPU firmware, which determines the required alignment of the
+> > + * offsets/sizes in pagelists.
+> > + *
+> > + * Modern VPU firmware looks for a DT "cache-line-size" property in
+> > + * the VCHIQ node and will overwrite it with the actual L2 cache size,
+> > + * which the kernel must then respect.  That property was rejected
+> > + * upstream, so we have to use the VPU firmware's compatibility value
+> > + * of 32.
+> > + */
+> > +static unsigned int g_cache_line_size = 32;
+> > +static unsigned int g_fragments_size;
+> > +static char *g_fragments_base;
+> > +static char *g_free_fragments;
+> > +static struct semaphore g_free_fragments_sema;
+> > +static struct device *g_dev;
 > > +
-> > +	ret =3D ioctl(fd, COUNTER_ADD_WATCH_IOCTL, watches);
-> > +	if (ret =3D=3D -1) {
-> > +		perror("Error adding watches[0]");
-> > +		return -errno;
-> > +	}
-> > +	ret =3D ioctl(fd, COUNTER_ADD_WATCH_IOCTL, watches + 1);
-> > +	if (ret =3D=3D -1) {
-> > +		perror("Error adding watches[1]");
-> > +		return -errno;
-> > +	}
-> > +	ret =3D ioctl(fd, COUNTER_ENABLE_EVENTS_IOCTL);
-> > +	if (ret =3D=3D -1) {
-> > +		perror("Error enabling events");
-> > +		return -errno;
-> > +	}
+> > +static DEFINE_SEMAPHORE(g_free_fragments_mutex);
 > > +
-> > +	for (;;) {
-> > +		ret =3D read(fd, event_data, sizeof(event_data));
-> > +		if (ret =3D=3D -1) {
-> > +			perror("Failed to read event data");
-> > +			return -errno;
-> > +		}
+> > +static irqreturn_t
+> > +vchiq_doorbell_irq(int irq, void *dev_id);
 > > +
-> > +		if (ret !=3D sizeof(event_data)) {
-> > +			fprintf(stderr, "Failed to read event data\n");
-> > +			return -EIO;
-> > +		}
+> > +static struct vchiq_pagelist_info *
+> > +create_pagelist(char *buf, char __user *ubuf, size_t count, unsigned short type);
 > > +
-> > +		printf("Timestamp 0: %llu\tCount 0: %llu\n"
-> > +		       "Error Message 0: %s\n"
-> > +		       "Timestamp 1: %llu\tCount 1: %llu\n"
-> > +		       "Error Message 1: %s\n",
-> > +		       (unsigned long long)event_data[0].timestamp,
-> > +		       (unsigned long long)event_data[0].value,
-> > +		       strerror(event_data[0].status),
-> > +		       (unsigned long long)event_data[1].timestamp,
-> > +		       (unsigned long long)event_data[1].value,
-> > +		       strerror(event_data[1].status));
-> > +	}
->=20
-> Aren't the Count 0 and Count 1 events independent? Why should we expect to
-> always get both events at the same time in the same order?
+> > +static void
+> > +free_pagelist(struct vchiq_pagelist_info *pagelistinfo,
+> > +	      int actual);
+> 
+> please no forward declarations of these 3 functions. Put them into the
+> right order instead ...
+> 
+> Since this patch is independent from the other ones from the series,
+> maybe Greg can merg the rest of the series.
+> 
+> 
+> 
 
-Watch 0 and Watch 1 are both triggered by the same event: a
-COUNTER_EVENT_INDEX event on device event channel 0. If we had set
-channel to 1 for Watch 1, then we would have two independent events, but
-in this case both Watches have their respective channel set to 0.
+Hello Stefan,
 
-To make the sequence of events clearer, here's a timeline:
+Thanks for the review. As for the forward declerations, sure I can fix
+these 3 functions and send an independent patch for this.
 
-* The user configures the watch list via COUNTER_ADD_WATCH_IOCTL.
-
-* The watch list consists of Watch 0 and Watch 1. Watch 0 is configured
-  to report the Count 0 count, while Watch 1 is configured to report the
-  Count 1 count. Both watches are configured to trigger on the same
-  event (COUNTER_EVENT_INDEX on device event channel 0).
-
-* The user enables Counter events via COUNTER_ENABLE_EVENTS_IOCTL.
-
-* The user calls read() from userspace and blocks until data is
-  available in the Counter events list kfifo; this corresponds to
-  wait_event_interruptible() in counter_chrdev_read().
-
-* A COUNTER_EVENT_INDEX event occurs on device event channel 0.
-
-* All Watches in the watch list that are waiting for COUNTER_EVENT_INDEX
-  on device event channel 0 will now trigger; both Watch 0 and Watch 1
-  will trigger, one after the other.
-
-* A read operation is performed for the Count 0 count component; the
-  data is pushed to the Counter event list.
-
-* A read operation is performed for the Count 1 count component; the
-  data is pushed to the Counter event list.
-
-* Counter subsystem notifies that data is available in the Counter
-  events list kfifo; this corresponds to the wake_up_poll() in
-  counter_push_event().
-
-* The userspace read() call returns the Counter event list data.
-
-So in the counter_example.c reference code, we will always get both
-event data elements returned to the user at the same time (with the
-exception of errors which break early).
-
-William Breathitt Gray
-
---PD3Ct3y1jwnkQ/rs
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmDq1boACgkQhvpINdm7
-VJK6HQ//dIi8jTzPIXeL6Knwf7G4fe8H9LQroDGDqCGexaFo0UpsuCsGaeJmXmrB
-pOiHPae9g2jiJU0z8z22nKjSogQEGf/gl5ZwoRTDjzNDh7cjxjgwdGSKne8ss4WX
-oC8bkBI9UQVzG6t6+aHP6+BLkNfhV/eeJYG0P/Oc33ydZ+UAgKNk97bZPdTy2eml
-Yh3f/EqqkDlKMRaQl6bKc/4rm4qtRmhG2bYAtmQb+rDj4J98zR5nXSm2J8j+cJw0
-cT8G91vBlpIZ5nj8fOHMkv67F/+/7xfYDOaKTxnx9jixnOUKj1z2hWZAjlGvYlbr
-KWqblaysowmOw4Lgi60oT4DGQ0yYbtkfh0J+9AUyi0OMRc9sih8Gzz6/+KPh6yIY
-eCNSaqjaJxVEh4j75OKFGj1+rWQrQyfu4voaGUxT17pEpQiKlUsidTU5VN23Apu2
-jdbDtYltreEVaT6X0AoDOankevkepDo5kTev9Ltv3Y7VOVCg/yqNeoG2x1AEnr7z
-xV30LUWv/ATDNp0NNT/BngzXxn0HG+gtcxFq8pBfmYUUFbj6scVWVGhcaM+VIipO
-Kc94JZ7ixz/nCo8nBJQ482I5vpQ8hqOfmW2KCPIOutqfpAf+jV/yx/IaTN4Lf//6
-YQAPl8tFXfuB61KoABX8JoIeHQ2j8b9vikHVN3D7TRZBAfTYiEs=
-=e6Uj
------END PGP SIGNATURE-----
-
---PD3Ct3y1jwnkQ/rs--
+Regards,
+Ojaswin
