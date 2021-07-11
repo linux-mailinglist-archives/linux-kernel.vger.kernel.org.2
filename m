@@ -2,114 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 175283C3C45
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 14:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82CE93C3C5D
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 14:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232823AbhGKM1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 08:27:04 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:53170 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbhGKM1D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 08:27:03 -0400
-Received: by mail-il1-f199.google.com with SMTP id a7-20020a9233070000b02901edc50cdfdcso9833378ilf.19
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 05:24:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=CLbGI7UkfbxLcnvn5/PVcxj3iqrwRfUbR/u6hvGyPHw=;
-        b=n2JkirWvAtNFkThYTUS8p8gVlf3KcIaMPfQjj40g5jd2e6BIjW4OXnujkH6TELySj4
-         ln37SW+F8lLNqE9mmAaQbPAZgy9yckfNC+wIwu07UuMmP1u74kLkcBCs79+WG98eHhs8
-         XjTRrurbuzQEXDXC+g1Yc5d3SZCLNeAQVdhY/2Jq/UJIfxGL8uF5+/p//Rp/z8m1h7AP
-         RYKKsYMc8sJJ094qZyM4idHFVme3kiXkj94ydUe2pLBokDjBGIwoxJH4dSTje8HCmxiT
-         4By/LplIhOsLLVkP9AASumgdhKSGUbwQSB817f7ovMID/nTxC5+ncknBp/FOSYSzDdeM
-         gcSA==
-X-Gm-Message-State: AOAM530g0+x3LRFI8NWzsrURzH/LkTuhS1Gtg5SQ+8x7E+tjrsnL9K+4
-        P8PmfATzKypBG6BvjxqFf5rHJL4+fOfTumFaw3Buw3HzdEbs
-X-Google-Smtp-Source: ABdhPJzrfCNPWGCQUPqweJmxs97VxuJWg+ZMI5qRCs0PQmwsKbFm7S4uojcjSkgxprgoaafagHn8KMEpOyrswojgMznGXL+9EPHH
+        id S232799AbhGKMgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 08:36:24 -0400
+Received: from mx4.wp.pl ([212.77.101.11]:25728 "EHLO mx4.wp.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232554AbhGKMgX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Jul 2021 08:36:23 -0400
+Received: (wp-smtpd smtp.wp.pl 30827 invoked from network); 11 Jul 2021 14:33:34 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
+          t=1626006814; bh=yGD3+h86TDL0Au0dytegwySUcFcEQ6eQwHK3EqtKFOE=;
+          h=Subject:To:Cc:From;
+          b=gQ7B3LwZBxyuYVWozeXPPeSje5qiyZJsCYPaZKt9h1uec5e4nz6md1NPA8uvQiWb4
+           Bq3cm7MrtltPqrGRw5dqPKxHJKn3b0nzf4/ufsBztz9L+Awlk4p/NFOl0evqJxYDaz
+           w6nEcPteqrPN9RSdJT5jNCsNSPuvSjl9qOH4PDUQ=
+Received: from ip-5-172-255-228.free.aero2.net.pl (HELO [100.82.33.98]) (olek2@wp.pl@[5.172.255.228])
+          (envelope-sender <olek2@wp.pl>)
+          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <roid@nvidia.com>; 11 Jul 2021 14:33:34 +0200
+Subject: Re: [PATCH nf] Revert "netfilter: flowtable: Remove redundant hw
+ refresh bit"
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        pablo@netfilter.org
+Cc:     nbd@nbd.name, coreteam@netfilter.org, davem@davemloft.net,
+        fw@strlen.de, kadlec@netfilter.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, roid@nvidia.com
+References: <20210614215351.GA734@salvia>
+ <20210711010244.1709329-1-martin.blumenstingl@googlemail.com>
+From:   Aleksander Bajkowski <olek2@wp.pl>
+Message-ID: <74c866f1-48e6-eccc-5bde-e9051f1c51cb@wp.pl>
+Date:   Sun, 11 Jul 2021 14:33:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-Received: by 2002:a02:380b:: with SMTP id b11mr4836839jaa.83.1626006256570;
- Sun, 11 Jul 2021 05:24:16 -0700 (PDT)
-Date:   Sun, 11 Jul 2021 05:24:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000053572d05c6d81503@google.com>
-Subject: [syzbot] INFO: task hung in io_uring_cancel_generic
-From:   syzbot <syzbot+ba6fcd859210f4e9e109@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210711010244.1709329-1-martin.blumenstingl@googlemail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-WP-MailID: 87004a05ed87b34b5ad386b03fa5ffb3
+X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
+X-WP-SPAM: NO 0000005 [AQbA]                               
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Martin,
 
-syzbot found the following issue on:
+Thanks for the IRC log. Today I repeated my previous tests. I think I had to have Hardware flow offloading enabled before, even though Lantiq xRX200 doesn't support it. With only the software flow offloading turned on, I do not see a significant performance drop.
 
-HEAD commit:    3dbdb38e Merge branch 'for-5.14' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14cd9efbd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a1fcf15a09815757
-dashboard link: https://syzkaller.appspot.com/bug?extid=ba6fcd859210f4e9e109
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13bbf280300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1111ec9c300000
+Today's results (IPv6 routing with DSA driver and Burst Length Patch):
+Device	Kernel	Flow offload	Upload	Download
+HH5A	5.4.128	Disabled	101	170
+HH5A	5.10.46	Disabled	95.4	159
+HH5A	5.10.42	Disabled	96.6	165
+HH5A	5.10.41	Disabled	101	165
+HH5A	5.4.128	Soft		471	463
+HH5A	5.10.46	Soft		553	472
+HH5A	5.10.42	Soft		556	468
+HH5A	5.10.41	Soft		558	492
+HH5A	5.4.128	Soft+Hard	434	460
+HH5A	5.10.46	Soft+Hard	229	181
+HH5A	5.10.42	Soft+Hard	228	177
+HH5A	5.10.41	Soft+Hard	577	482
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ba6fcd859210f4e9e109@syzkaller.appspotmail.com
+It seems my workaround is unnecessary.
 
-INFO: task syz-executor015:8439 blocked for more than 143 seconds.
-      Tainted: G        W         5.13.0-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor015 state:D stack:28184 pid: 8439 ppid:  8438 flags:0x00000004
-Call Trace:
- context_switch kernel/sched/core.c:4683 [inline]
- __schedule+0x934/0x2710 kernel/sched/core.c:5940
- schedule+0xd3/0x270 kernel/sched/core.c:6019
- io_uring_cancel_generic+0x54d/0x890 fs/io_uring.c:9203
- io_uring_files_cancel include/linux/io_uring.h:16 [inline]
- do_exit+0x28b/0x2a50 kernel/exit.c:780
- do_group_exit+0x125/0x310 kernel/exit.c:922
- __do_sys_exit_group kernel/exit.c:933 [inline]
- __se_sys_exit_group kernel/exit.c:931 [inline]
- __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43eac9
-RSP: 002b:00007ffc2d1b6378 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 00000000004b02f0 RCX: 000000000043eac9
-RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
-RBP: 0000000000000000 R08: ffffffffffffffc0 R09: 00000000f0ffffff
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004b02f0
-R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
-INFO: lockdep is turned off.
-NMI backtrace for cpu 0
-CPU: 0 PID: 1650 Comm: khungtaskd Tainted: G        W         5.13.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
- nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
- nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:209 [inline]
- watchdog+0xd4b/0xfb0 kernel/hung_task.c:294
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1 skipped: idling at native_safe_halt arch/x86/include/asm/irqflags.h:51 [inline]
-NMI backtrace for cpu 1 skipped: idling at arch_safe_halt arch/x86/include/asm/irqflags.h:89 [inline]
-NMI backtrace for cpu 1 skipped: idling at acpi_safe_halt drivers/acpi/processor_idle.c:109 [inline]
-NMI backtrace for cpu 1 skipped: idling at acpi_idle_do_entry+0x1c6/0x250 drivers/acpi/processor_idle.c:553
+Best regards,
+Aleksander Jan Bajkowski
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+On 7/11/21 3:02 AM, Martin Blumenstingl wrote:
+> Hi Aleksander,
+> 
+>> The xt_flowoffload module is inconditionally setting on the hardware
+>> offload flag:
+> [...]
+>>
+>> which is triggering the slow down because packet path is allocating
+>> work to offload the entry to hardware, however, this driver does not
+>> support for hardware offload.
+>>
+>> Probably this module can be updated to unset the flowtable flag if the
+>> harware does not support hardware offload.
+> 
+> yesterday there was a discussion about this on the #openwrt-devel IRC
+> channel. I am adding the IRC log to the end of this email because I am
+> not sure if you're using IRC.
+> 
+> I typically don't test with flow offloading enabled (I am testing with
+> OpenWrt's "default" network configuration, where flow offloading is
+> disabled by default). Also I am not familiar with the flow offloading
+> code at all and reading the xt_FLOWOFFLOAD code just raised more
+> questions for me.
+> 
+> Maybe you can share some info whether your workaround from [0] "fixes"
+> this issue. I am aware that it will probably break other devices. But
+> maybe it helps Pablo to confirm whether it's really an xt_FLOWOFFLOAD
+> bug or rather some generic flow offload issue (as Felix suggested on
+> IRC).
+> 
+> 
+> Best regards,
+> Martin
+> 
+> 
+> [0] https://github.com/abajk/openwrt/commit/ee4d790574c0edd170e1710d7cd4819727b23721
+> 
+> 
+> <rsalvaterra> nbd: I saw your flow offloading updates. Just to make sure, this issue hasn't been addressed yet, has it? https://lore.kernel.org/netdev/20210614215351.GA734@salvia/
+> <nbd> i don't think so
+> <nbd> can you reproduce it?
+> <rsalvaterra> nbd: Not really, I don't have the hardware.
+> <rsalvaterra> It's lantiq, I think (bthh5a).
+> <rsalvaterra> However, I believe dwmw2_gone has one, iirc.
+> <xdarklight> nbd: I also have a HH5A. if you have any patch ready you can also send it as RFC on the mailing list and Cc Aleksander
+> <rsalvaterra> xdarklight: Have you been able to reproduce the flow offloading regression?
+> <xdarklight> I can try (typically I test with a "default" network configuration, where flow offloading is disabled)
+> <rsalvaterra> xdarklight: I don't have a lot of details, only this thread: https://github.com/openwrt/openwrt/pull/4225#issuecomment-855454607
+> <xdarklight> rsalvaterra: this is the workaround that Aleksander has in his tree: https://github.com/abajk/openwrt/commit/ee4d790574c0edd170e1710d7cd4819727b23721
+> <rsalvaterra> xdarklight: Well, but that basically breaks hw flow offloading everywhere else, if I'm reading correctly. :)
+> <xdarklight> rsalvaterra: I am not arguing with that :). I wanted to point out that Pablo's finding on the netfilter mailing list seems to be correct
+> <rsalvaterra> xdarklight: Sure, which is why I pinged nbd, since he's the original author of the xt_FLOWOFFLOAD target.
+> <rsalvaterra> What it seems is that it isn't such trivial fix. :)
+> <xdarklight> I looked at the xt_FLOWOFFLOAD code myself and it raised more questions than I had before looking at the code. so I decided to wait for someone with better knowledge to look into that issue :)
+> <rsalvaterra> Same here. I just went "oh, this requires divine intervention" and set it aside. :P
+> <nbd> xdarklight: which finding did you mean?
+> <xdarklight> nbd: "The xt_flowoffload module is inconditionally setting on the hardware offload flag" [...] flowtable[1].ft.flags = NF_FLOWTABLE_HW_OFFLOAD;
+> <xdarklight> nbd: from this email: https://lore.kernel.org/netdev/20210614215351.GA734@salvia/
+> <nbd> i actually think that finding is wrong
+> <nbd> xt_FLOWOFFLOAD registers two flowtables
+> <nbd> one with hw offload, one without
+> <nbd> the target code does this:
+> <nbd> table = &flowtable[!!(info->flags & XT_FLOWOFFLOAD_HW)];
+> <nbd> so it selects flowtable[1] only if info->flags has XT_FLOWOFFLOAD_HW set
+> <rsalvaterra> nbd: That's between you and Pablo, I mustn't interfere. :)
+> <nbd> i did reply to pablo, but never heard back from him
+> <rsalvaterra> nbd: The merge window is still open, he's probably busy at the moment… maybe ping him on Monday?
+> <xdarklight> nbd: it seems that your mail also didn't make it to the netdev mailing list (at least I can't find it)
+> <rsalvaterra> xdarklight: Now that you mention it, neither do I.
+> <nbd> he wrote to me in private for some reason
+> <xdarklight> oh okay. so for me to summarize: you're saying that the xt_FLOWOFFLOAD code should be fine. in that case Aleksander's workaround (https://github.com/abajk/openwrt/commit/ee4d790574c0edd170e1710d7cd4819727b23721) is also a no-op and the original problem would still be seen
+> <rsalvaterra> xdarklight: I don't think it's a no-op, otherwise he wouldn't carry it in his tree… maybe something's wrong in the table selection? table = &flowtable[!!(info->flags & XT_FLOWOFFLOAD_HW)]; does look correct, though.
+> <nbd> xdarklight: well, it's not a no-op if the issue was reproduced with option flow_offloading_hw 1 in the config
+> <rsalvaterra> nbd: Uh… If he has option flow_offloading_hw '1' on a system which doesn't support hw flow offloading… he gets to keep the pieces, right?
+> <nbd> it shouldn't break
+> <nbd> and normally i'd expect the generic flow offload api to be able to deal with it without attempting to re-enable hw offload over and over again
+> 
