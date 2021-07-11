@@ -2,135 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D553C3D19
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 15:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A17BD3C3D25
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 16:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232944AbhGKN5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 09:57:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232880AbhGKN5D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 09:57:03 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E034C0613E5
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 06:54:17 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id k16so18854995ios.10
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 06:54:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=/YvtWPTJ/Sigm91P10YlQHwW65x9ity0qL45ceSgdKk=;
-        b=iPNutmJnLXLrwwKl3+eHeJw0m/JtLIMKQG/fnmhIPi4acO7onTqbJnzX5ZicROFtuS
-         725KyfWn8YWQKsGb3DFmuHFoVArpWd09AYG1J72UgovKOSV0n3lLOS/mEndRiwFRAava
-         2X6IVCIb2/I+5QxVwM60Ip4TIoSXBLEv5nZ4a4Lf/iQQkxadYMUiRCPsL8MEQO0dx3Qm
-         5Yj9swtUrLR8p0uxaT6uYrEa1tGMOKzTQIyk/WkPubtnUtxiTMCgxdyoUvnwXA0hnZeb
-         uy1nnF/JbbG37wcELDYRRXeKXs1is6uYf9vIT1lA9dKu3/d5iR0/q7jsAYuly5RRE6wi
-         2iIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/YvtWPTJ/Sigm91P10YlQHwW65x9ity0qL45ceSgdKk=;
-        b=SCUg8qZ0caawkItJIcz/6xs4L+KQvKTRHXKo0Txj9lwzRJ2+56z97c9tjn9nYYmYpV
-         r17XPZMq8SNOS+ax3kvoSKR9ELgFd0oefcPB2/t9ZPDe52RNz9x5bRGjP4o3JQTIGeTG
-         iZ2QuGGQfUbhd20IYMV+yNP3vgfTJxLrQWE6NxUc3RRP8bLnr6VcYTYEe2wlshbvpMsA
-         jzzLxOmQ2IiSOCn7tK/wO2JAWUZU6jeJgYMilzd+4Cva93R8PnSyZ01SPfVOL9IA9F6a
-         +nAWuzwOUVrk0mvVl4OhHTf/UlCm01EVJG48JBB5/JU0AL0ssyvHuBd0GnluwRJfrgoE
-         w9kg==
-X-Gm-Message-State: AOAM530oYXBqI0VCTJ9PGJxnqiMsSb8ZAzEM93YMZ4A4gs8IdnrHHKlu
-        ks5SCUJYcq0KZ6kODceovONOAA==
-X-Google-Smtp-Source: ABdhPJy7pDUFMoPB6r1+9pQY5PZ0DttVp7+4GJ0tDVw6llrCi88gvq4EOetqVa9aKUnvCt62S9DrVQ==
-X-Received: by 2002:a5d:928f:: with SMTP id s15mr7925042iom.142.1626011656603;
-        Sun, 11 Jul 2021 06:54:16 -0700 (PDT)
-Received: from [192.168.1.134] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id o7sm6494063ilt.29.2021.07.11.06.54.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Jul 2021 06:54:16 -0700 (PDT)
-Subject: Re: [syzbot] INFO: task hung in io_uring_cancel_generic
-To:     syzbot <syzbot+ba6fcd859210f4e9e109@syzkaller.appspotmail.com>,
-        asml.silence@gmail.com, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <00000000000053572d05c6d81503@google.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <f48e63f0-f193-586a-a98d-640359631ee4@kernel.dk>
-Date:   Sun, 11 Jul 2021 07:54:22 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232974AbhGKOIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 10:08:31 -0400
+Received: from vern.gendns.com ([98.142.107.122]:37108 "EHLO vern.gendns.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232907AbhGKOI3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Jul 2021 10:08:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=opiyXzz03XSvATCVRQY9c1WK7Xfz/7xyqkaDVHpblnA=; b=fUrBhWtbCVrd2/MswDdJf3BmcI
+        gGdKTBwUzBrOarv9W9KDAElabrY2h4DzMS7WhUpPq0qqVdEICnlwj+hPFRRK2jDDWfg9xDV9FmASi
+        qlUIpSImfp56d28SrY+WB4CrhtDId+3+LGSVDPZmR5powvHKj0EDfGw5j+G1pz/d8mpjXw5y9HF5i
+        oRpK3aeSGWYPLHuP5Tk9HBl8+lDkw3IlkUJUa3qndZxMwyDQJORADABi2+cBXW3CsR1rKp8DJ6BzV
+        jQlJlfpCfsGsiO/bkNQmylp9UgcW34SykCbPyrhmuQQbrxGYJj48RkRFrdr7rlypLPMJIew1OpD29
+        4qdDwXDw==;
+Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:51930 helo=[192.168.0.134])
+        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <david@lechnology.com>)
+        id 1m2a5R-003hqX-91; Sun, 11 Jul 2021 10:05:38 -0400
+Subject: Re: [PATCH v12 12/17] tools/counter: Create Counter tools
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     jic23@kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        kernel@pengutronix.de, a.fatoum@pengutronix.de,
+        kamel.bouhara@bootlin.com, gwendal@chromium.org,
+        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, o.rempel@pengutronix.de,
+        jarkko.nikula@linux.intel.com, Pavel Machek <pavel@ucw.cz>
+References: <cover.1625471640.git.vilhelm.gray@gmail.com>
+ <e97aa3e529f54d5651df7edcc1b43a8157d9e9c3.1625471640.git.vilhelm.gray@gmail.com>
+ <343a2bd3-38b7-7462-bc52-d3f6493bede0@lechnology.com>
+ <YOrVy7Ba117s1maQ@shinobu>
+From:   David Lechner <david@lechnology.com>
+Message-ID: <56fb48ac-335d-f112-6370-38ad35ad72f0@lechnology.com>
+Date:   Sun, 11 Jul 2021 09:05:32 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <00000000000053572d05c6d81503@google.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YOrVy7Ba117s1maQ@shinobu>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vern.gendns.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lechnology.com
+X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/11/21 6:24 AM, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    3dbdb38e Merge branch 'for-5.14' of git://git.kernel.org/p..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=14cd9efbd00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=a1fcf15a09815757
-> dashboard link: https://syzkaller.appspot.com/bug?extid=ba6fcd859210f4e9e109
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13bbf280300000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1111ec9c300000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+ba6fcd859210f4e9e109@syzkaller.appspotmail.com
-> 
-> INFO: task syz-executor015:8439 blocked for more than 143 seconds.
->       Tainted: G        W         5.13.0-syzkaller #0
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:syz-executor015 state:D stack:28184 pid: 8439 ppid:  8438 flags:0x00000004
-> Call Trace:
->  context_switch kernel/sched/core.c:4683 [inline]
->  __schedule+0x934/0x2710 kernel/sched/core.c:5940
->  schedule+0xd3/0x270 kernel/sched/core.c:6019
->  io_uring_cancel_generic+0x54d/0x890 fs/io_uring.c:9203
->  io_uring_files_cancel include/linux/io_uring.h:16 [inline]
->  do_exit+0x28b/0x2a50 kernel/exit.c:780
->  do_group_exit+0x125/0x310 kernel/exit.c:922
->  __do_sys_exit_group kernel/exit.c:933 [inline]
->  __se_sys_exit_group kernel/exit.c:931 [inline]
->  __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x43eac9
-> RSP: 002b:00007ffc2d1b6378 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-> RAX: ffffffffffffffda RBX: 00000000004b02f0 RCX: 000000000043eac9
-> RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
-> RBP: 0000000000000000 R08: ffffffffffffffc0 R09: 00000000f0ffffff
-> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004b02f0
-> R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
-> INFO: lockdep is turned off.
-> NMI backtrace for cpu 0
-> CPU: 0 PID: 1650 Comm: khungtaskd Tainted: G        W         5.13.0-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:79 [inline]
->  dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
->  nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
->  nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
->  trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
->  check_hung_uninterruptible_tasks kernel/hung_task.c:209 [inline]
->  watchdog+0xd4b/0xfb0 kernel/hung_task.c:294
->  kthread+0x3e5/0x4d0 kernel/kthread.c:319
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-> Sending NMI from CPU 0 to CPUs 1:
-> NMI backtrace for cpu 1 skipped: idling at native_safe_halt arch/x86/include/asm/irqflags.h:51 [inline]
-> NMI backtrace for cpu 1 skipped: idling at arch_safe_halt arch/x86/include/asm/irqflags.h:89 [inline]
-> NMI backtrace for cpu 1 skipped: idling at acpi_safe_halt drivers/acpi/processor_idle.c:109 [inline]
-> NMI backtrace for cpu 1 skipped: idling at acpi_idle_do_entry+0x1c6/0x250 drivers/acpi/processor_idle.c:553
+On 7/11/21 6:28 AM, William Breathitt Gray wrote:
+> On Sat, Jul 10, 2021 at 11:53:35AM -0500, David Lechner wrote:
+>> On 7/5/21 3:19 AM, William Breathitt Gray wrote:
 
-#syz test: git://git.kernel.dk/linux-block io_uring-5.14
+>>> +	{
+>>> +		/* Component data: Count 0 count */
+>>> +		.component.type = COUNTER_COMPONENT_COUNT,
+>>> +		.component.scope = COUNTER_SCOPE_COUNT,
+>>> +		.component.parent = 0,
+>>> +		/* Event type: Index */
+>>> +		.event = COUNTER_EVENT_INDEX,
+>>> +		/* Device event channel 0 */
+>>> +		.channel = 0,
+>>> +	},
+>>> +	{
+>>> +		/* Component data: Count 1 count */
+>>> +		.component.type = COUNTER_COMPONENT_COUNT,
+>>> +		.component.scope = COUNTER_SCOPE_COUNT,
+>>> +		.component.parent = 1,
+>>> +		/* Event type: Index */
+>>> +		.event = COUNTER_EVENT_INDEX,
+>>> +		/* Device event channel 0 */
+>>> +		.channel = 0,
+>>> +	},
+>>> +};
+>>> +
+>>> +int main(void)
+>>> +{
+>>> +	int fd;
+>>> +	int ret;
+>>> +	struct counter_event event_data[2];
+>>> +
+>>> +	fd = open("/dev/counter0", O_RDWR);
+>>> +	if (fd == -1) {
+>>> +		perror("Unable to open /dev/counter0");
+>>> +		return -errno;
+>>
+>> errno is no longer valid after calling perror(). Since this
+>> is example code, we can just return 1 instead (exit codes
+>> positive number between 0 and 255 so -1 would be 255).
+> 
+> Ack.
+> 
+>>> +	}
+>>> +
+>>> +	ret = ioctl(fd, COUNTER_ADD_WATCH_IOCTL, watches);
+>>> +	if (ret == -1) {
+>>> +		perror("Error adding watches[0]");
+>>> +		return -errno;
+>>> +	}
+>>> +	ret = ioctl(fd, COUNTER_ADD_WATCH_IOCTL, watches + 1);
+>>> +	if (ret == -1) {
+>>> +		perror("Error adding watches[1]");
+>>> +		return -errno;
+>>> +	}
+>>> +	ret = ioctl(fd, COUNTER_ENABLE_EVENTS_IOCTL);
+>>> +	if (ret == -1) {
+>>> +		perror("Error enabling events");
+>>> +		return -errno;
+>>> +	}
+>>> +
+>>> +	for (;;) {
+>>> +		ret = read(fd, event_data, sizeof(event_data));
+>>> +		if (ret == -1) {
+>>> +			perror("Failed to read event data");
+>>> +			return -errno;
+>>> +		}
+>>> +
+>>> +		if (ret != sizeof(event_data)) {
+>>> +			fprintf(stderr, "Failed to read event data\n");
+>>> +			return -EIO;
+>>> +		}
+>>> +
+>>> +		printf("Timestamp 0: %llu\tCount 0: %llu\n"
+>>> +		       "Error Message 0: %s\n"
+>>> +		       "Timestamp 1: %llu\tCount 1: %llu\n"
+>>> +		       "Error Message 1: %s\n",
+>>> +		       (unsigned long long)event_data[0].timestamp,
+>>> +		       (unsigned long long)event_data[0].value,
+>>> +		       strerror(event_data[0].status),
+>>> +		       (unsigned long long)event_data[1].timestamp,
+>>> +		       (unsigned long long)event_data[1].value,
+>>> +		       strerror(event_data[1].status));
+>>> +	}
+>>
+>> Aren't the Count 0 and Count 1 events independent? Why should we expect to
+>> always get both events at the same time in the same order?
+> 
+> Watch 0 and Watch 1 are both triggered by the same event: a
+> COUNTER_EVENT_INDEX event on device event channel 0. If we had set
+> channel to 1 for Watch 1, then we would have two independent events, but
+> in this case both Watches have their respective channel set to 0.
 
--- 
-Jens Axboe
+The thing that jumped out to me is that they have different parents.
+But I guess I forgot that the event itself always has a scope of
+device and that the component just says what value to record and
+is otherwise independent of the event.
 
