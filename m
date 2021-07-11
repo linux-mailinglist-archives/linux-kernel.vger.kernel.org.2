@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09BD43C3B34
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 10:48:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DAD03C3B36
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 10:51:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230435AbhGKIve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 04:51:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52164 "EHLO
+        id S231772AbhGKIxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 04:53:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhGKIve (ORCPT
+        with ESMTP id S229523AbhGKIxe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 04:51:34 -0400
+        Sun, 11 Jul 2021 04:53:34 -0400
 Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14257C0613DD
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 01:48:48 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id x16so13179862pfa.13
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 01:48:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21F4CC0613DD
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 01:50:48 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id y4so13190979pfi.9
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 01:50:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=xmBVNF3cEBAMpjIOzV2ide26sZ9VrHqywYMernlO7hs=;
-        b=LkEkzqdLvypYuo/eqLIYSlLgNFVDbNLJpcjYRypiK9Ph7GStF0gf+bi1Fo5j1H4bbk
-         ab6uSKGdSXkj0hYBtv4PKd+KkQy3LNTFX+WYIbgQlGCNxtpDtxzVezMA7VvKTcAu2AE9
-         X/lJKjvIMiS5fHwM4NoDlytoTFToyG7TsaduEJ9UTgW3d4VYLVFGdmx/fHulF5uqRZjj
-         RB/PX3OSJNLatH7lMR1x9X3FeMzovf8hxk6sLejA5dFQfiiBHsQc09gcVDZK6mW87MVC
-         iinFXc61szICO0Kib9fz+j5O1m3Il+wm3+2jXGyX/9AyeIOXZbU0N+RMqEDHEAGIhZev
-         uzqA==
+        bh=fiuAO62+7h7s9nSyvEm63tvLNu0SfPaEdE1IBzqVth0=;
+        b=TDmSZmVie/dyu8SHyYbkDDM+qqdCjrqdgh5/P5Hm03vkA6wgJzgwajW7tog8kSSpig
+         JKTaeAxeKkcttBLAnqQZWJS0d5CsYOKWDuAAg/8fFGkamr6eOq/W8HaNKtP/D+fHtmsG
+         M1c5DAEIB73uC4YQyTPC2I0QuUes1UFHd/WawvXXwCsXn44x8z+FI049X38q/+piG3ll
+         RaLiGcV0AbhRnbOJsjFpK6fNvm0t+pku8J9wPQlFc7rTdaH9pkqeYR4+rAUSE3ksRFfw
+         WeeKDTe6g4r/ip3f4+o6Lp4UVBR5/YCbvr9mQUAbg3ASKD8+HbSb6sHFJIcNgyh/syQS
+         XKxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=xmBVNF3cEBAMpjIOzV2ide26sZ9VrHqywYMernlO7hs=;
-        b=Ps55XAgnS8BC+fBEAeis+9EKu7jNGh39ohOexD/sNZ6A5u3ib4NwVhQvIU29gQOMbm
-         7VqKaN7tgSobPt3ZkhH9RnBldQIMMZkYE2pXg0xRhT4ANtcUAPfK4uV/QsF77nnYLO4d
-         lY9I/mOKt6OK/kBSHHGHTpLwPS9GN0PUu7SemgMlDFxafhv/9MEz76hz2KsCcA8tELm0
-         7Q4QhbBgoSUqoqf4NGZz+Q/5amwoOx+Nu6g53sot3wsjIrHzS/sb2PnaZoqhrXw2xH7h
-         TxLJKVTWlLRn8k42IAa+FldSy57hTYBlgFUJxJVUPDo+KvkgILrPCS7FJ8MytclWrLYb
-         cSOg==
-X-Gm-Message-State: AOAM530yL4lF1BBAu2k+cTCgsbsUxpSncHpa8s/nRSyYgx8loF8K6ZoU
-        SuVKIMrN5PXo4sCYh1a5aTc=
-X-Google-Smtp-Source: ABdhPJyvwqx3QOCEdzsxNk78mGBi5hTyzOowe2ourrWyab/rUaYP+DuL5+++J63nX9SFsbscrp0BGw==
-X-Received: by 2002:a63:5802:: with SMTP id m2mr33046720pgb.171.1625993327511;
-        Sun, 11 Jul 2021 01:48:47 -0700 (PDT)
+        bh=fiuAO62+7h7s9nSyvEm63tvLNu0SfPaEdE1IBzqVth0=;
+        b=cW+qoq4dEtxsv8MTmfupMucUlScX21dyGpnS6SjBUq+sFZh0aHVs9NZVlFk9hn/xrm
+         lgaaFu5+P4lj/+hj3/yvlMbcUN7DSlNSAsFd+VBZs0uufSh9YUBCRZL+bXPEo1XJpPgF
+         ryZR8dqWD+WeOearBbdSzIxMdRihLt9obOafQ+U/ynLa2XrRqvY+5Z7J1cz5TnZjOzpe
+         81aenaJArvSr4TmnDUfrIgM9xRgiknTycxntsTpuJmKXs0pKq7DNH10xQC4wSYfw3DC2
+         hfzTQW09K4b5bYxd7XM5I21/8m+xLin43vtoJhLe0oIFyayTRdPJLWWic82YaP6ns9sY
+         kHQA==
+X-Gm-Message-State: AOAM533HVymw8tet0Fq3yyCxDfXqK78qJ4Yycfrur8ZuSZWBkpK9/p52
+        +xCYBOcCHHTegAzn9SaPzA4=
+X-Google-Smtp-Source: ABdhPJwsO8DE8Sk8noo2PuY6bWKqC6vmA6roIRoJ1kzEdEgol51DnfQmTBeze8YwXxwirGqEd53ToQ==
+X-Received: by 2002:a63:1661:: with SMTP id 33mr5901358pgw.443.1625993447486;
+        Sun, 11 Jul 2021 01:50:47 -0700 (PDT)
 Received: from localhost.localdomain ([49.37.51.242])
-        by smtp.gmail.com with ESMTPSA id y5sm927018pfn.87.2021.07.11.01.48.44
+        by smtp.gmail.com with ESMTPSA id f19sm959714pjj.22.2021.07.11.01.50.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Jul 2021 01:48:47 -0700 (PDT)
+        Sun, 11 Jul 2021 01:50:47 -0700 (PDT)
 From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org
-Cc:     lukas.bulwahn@gmail.com, linuxppc-dev@lists.ozlabs.org,
+To:     airlied@linux.ie, daniel@ffwll.ch
+Cc:     lukas.bulwahn@gmail.com, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org,
         Dwaipayan Ray <dwaipayanray1@gmail.com>
-Subject: [PATCH] arch:powerpc:platforms:powernv: cleanup __FUNCTION__ usage
-Date:   Sun, 11 Jul 2021 14:18:37 +0530
-Message-Id: <20210711084837.95577-1-dwaipayanray1@gmail.com>
+Subject: [PATCH] drivers:gpu:drm:selftests: cleanup __FUNCTION__ usage
+Date:   Sun, 11 Jul 2021 14:20:30 +0530
+Message-Id: <20210711085030.95725-1-dwaipayanray1@gmail.com>
 X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -68,22 +68,22 @@ with old gcc versions. Replace it with __func__.
 
 Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
 ---
- arch/powerpc/platforms/powernv/opal-imc.c | 2 +-
+ drivers/gpu/drm/selftests/test-drm_modeset_common.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/platforms/powernv/opal-imc.c b/arch/powerpc/platforms/powernv/opal-imc.c
-index 7824cc364bc4..5bafbf34e820 100644
---- a/arch/powerpc/platforms/powernv/opal-imc.c
-+++ b/arch/powerpc/platforms/powernv/opal-imc.c
-@@ -211,7 +211,7 @@ static void disable_core_pmu_counters(void)
- 					    get_hard_smp_processor_id(cpu));
- 		if (rc)
- 			pr_err("%s: Failed to stop Core (cpu = %d)\n",
--				__FUNCTION__, cpu);
-+				__func__, cpu);
- 	}
- 	put_online_cpus();
- }
+diff --git a/drivers/gpu/drm/selftests/test-drm_modeset_common.h b/drivers/gpu/drm/selftests/test-drm_modeset_common.h
+index cfb51d8da2bc..a4e9d9bacc89 100644
+--- a/drivers/gpu/drm/selftests/test-drm_modeset_common.h
++++ b/drivers/gpu/drm/selftests/test-drm_modeset_common.h
+@@ -9,7 +9,7 @@
+ #define FAIL(test, msg, ...) \
+ 	do { \
+ 		if (test) { \
+-			pr_err("%s/%u: " msg, __FUNCTION__, __LINE__, ##__VA_ARGS__); \
++			pr_err("%s/%u: " msg, __func__, __LINE__, ##__VA_ARGS__); \
+ 			return -EINVAL; \
+ 		} \
+ 	} while (0)
 -- 
 2.28.0
 
