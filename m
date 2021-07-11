@@ -2,124 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE133C3D3C
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 16:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF8743C3D40
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 16:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233053AbhGKOMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 10:12:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40930 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232544AbhGKOMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 10:12:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C7EE61156;
-        Sun, 11 Jul 2021 14:09:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626012554;
-        bh=i2fNzSjVsNS7h5czCODLDyPYDvbmFr0lvLFj67DgUho=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=AH/UnpLXKJqBzTKfaPEPvgAFQbwrjI/ubNwdP4j8ChqB6Vb/rAIATXv/NqnImWz4K
-         sZ+lOMp407S3ym1dvHf7rCvYggASAeQlGNuY9Rau0fgVKjA6mMOyjLJqFPGWVAyARd
-         vmHwVw3SjMas3CZibt1oUT+M4kz9P1Lkz3EbYpwjeUFdMMeR1wW7oGB7O444NFWFMm
-         BIBEKy4QGXiOO9j/Z9qM2lP2kVFERtNbx1vdFsjTHXjWx9Y2uLh+I5hKoPpgWt5MhO
-         4bI7ThCIsfTDzHt99iawJP/Kf3MIsHxWj0roiAmKhO1ON6yo9AmYlVM+G0UgCzkntd
-         eqf3YHN7Fm7Lw==
-Date:   Sun, 11 Jul 2021 23:09:09 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Matt Wu <wuqiang.matt@bytedance.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, kernel-team@fb.com, yhs@fb.com,
-        linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH -tip v8 11/13] x86/unwind: Recover kretprobe trampoline
- entry
-Message-Id: <20210711230909.dac1ff010a94831d5e9c25cd@kernel.org>
-In-Reply-To: <3fc578e0-5b26-6067-d026-5b5d230d6720@bytedance.com>
-References: <162399992186.506599.8457763707951687195.stgit@devnote2>
-        <162400002631.506599.2413605639666466945.stgit@devnote2>
-        <YOLurg5mGHdBc+fz@hirez.programming.kicks-ass.net>
-        <20210706004257.9e282b98f447251a380f658f@kernel.org>
-        <YOQMV8uE/2bVkPOY@hirez.programming.kicks-ass.net>
-        <20210706111136.7c5e9843@oasis.local.home>
-        <YOVj2VoyrcOvJfEB@hirez.programming.kicks-ass.net>
-        <20210707191510.cb48ca4a20f0502ce6c46508@kernel.org>
-        <YOWACec65qVdTD1y@hirez.programming.kicks-ass.net>
-        <20210707194530.766a9c8364f3b2d7714ca590@kernel.org>
-        <20210707222925.87ecc1391d0ab61db3d8398e@kernel.org>
-        <3fc578e0-5b26-6067-d026-5b5d230d6720@bytedance.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S233065AbhGKONf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 10:13:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232544AbhGKONd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Jul 2021 10:13:33 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3FA6C0613DD;
+        Sun, 11 Jul 2021 07:10:46 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso8888577pjp.5;
+        Sun, 11 Jul 2021 07:10:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jvtFH6dEWxmgm2kiz53lVWar4+wf2bsTVAhGnY9CGHk=;
+        b=DYGvn1hpRHdduWc3mlLqhyakAtce3w9M0miP85VIx/fajBuYq4sQr0n6XJARM3wzxB
+         LxIafI2UfaLVN7OyeKTgWGDzXku8UYGKOh9izrCe/TLunnFb5/II5Aow2tILRsU6vCmO
+         UIXhZgSjUAjXnxRrYaO1nO5addrr38+joDqLiHmkCrO6MRa3gD3SS+7AGF4lmZ+SMVtx
+         NBntF5UMv65ufiDsCYuscIH5ml6TO4V+THYZJGtOduGYuSVPejMr55mH3TYX7vGm+Bif
+         Djorv5N24xYEaIUNbhEmgCtbjVn9DLqo9PpsKb7VQDBvldZ7PpOOR5qcfVkoVO13RUse
+         8XzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jvtFH6dEWxmgm2kiz53lVWar4+wf2bsTVAhGnY9CGHk=;
+        b=Yi2I0stV9ExhBdzIo9+tejNH4gE92vGTCcjS7lCRSKoNHm35lImCo0iV6IOXX1lyVP
+         3K5PzI9S0ebAoCGjQZFnA48W/LeQCewTk8wlLrOsvHHnf3QalOzpLC0zyZ1SwsmjiNHU
+         O5rGrN69U1xoViRZc0f8mHEdEudaIDkADjY+W7v5tM4Dxd7kPhVRSGiHs+LLC06ozVm3
+         Kiyyf/Tbc7R7HMkjI0+JHeNHhFY84IODpn/ieYF/AL/gPXpvLLHWE2mF+sC8KzCZkkYi
+         J7BsL2Oqw8ZnrDgzcNOkpMi7iy2lIc5nSe65yfxiLd+CxHXR0jBtIqqBlJW+pCe5GP6c
+         x1AQ==
+X-Gm-Message-State: AOAM533m2ilfwovoTdH1IaY/4MxTCtcGuOzy17wyl0zg3znMFsF3PcpP
+        GQRQGCWhlO26FLTiVEVCqHY=
+X-Google-Smtp-Source: ABdhPJwc1FFA67AgWbdXPKJpA582Ve/YYu7UVpw9+PMok4DfYeA9UvkcTr238uMUe+WJYKhEVr+JCA==
+X-Received: by 2002:a17:90a:4491:: with SMTP id t17mr9540645pjg.30.1626012646188;
+        Sun, 11 Jul 2021 07:10:46 -0700 (PDT)
+Received: from localhost.localdomain ([49.37.49.148])
+        by smtp.gmail.com with ESMTPSA id gb10sm1680584pjb.43.2021.07.11.07.10.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Jul 2021 07:10:45 -0700 (PDT)
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+To:     yazen.ghannam@amd.com, bp@alien8.de, mchehab@kernel.org,
+        tony.luck@intel.com, james.morse@arm.com, rric@kernel.org
+Cc:     lukas.bulwahn@gmail.com, kbuild-all@lists.01.org,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lkp@intel.com, Dwaipayan Ray <dwaipayanray1@gmail.com>
+Subject: [PATCH v2] drivers:edac: Use DEVICE_ATTR helper macros
+Date:   Sun, 11 Jul 2021 19:40:02 +0530
+Message-Id: <20210711141002.103445-1-dwaipayanray1@gmail.com>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 7 Jul 2021 22:42:47 +0800
-Matt Wu <wuqiang.matt@bytedance.com> wrote:
+Instead of "open coding" DEVICE_ATTR, use the corresponding
+helper macros DEVICE_ATTR_{RW,RO_WO} in amd64_edac.c
 
-> On 2021/7/7 PM9:29, Masami Hiramatsu wrote:
-> > On Wed, 7 Jul 2021 19:45:30 +0900
-> > Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > 
-> >> On Wed, 7 Jul 2021 12:20:57 +0200
-> >> Peter Zijlstra <peterz@infradead.org> wrote:
-> >>
-> >>> On Wed, Jul 07, 2021 at 07:15:10PM +0900, Masami Hiramatsu wrote:
-> >>>
-> >>>> I actually don't want to keep this feature because no one use it.
-> >>>> (only systemtap needs it?)
-> >>>
-> >>> Yeah, you mentioned systemtap, but since that's out-of-tree I don't
-> >>> care. Their problem.
-> > 
-> > Yeah, maybe it is not hard to update.
-> > 
-> >>>
-> >>>> Anyway, if we keep the idea-level compatibility (not code level),
-> >>>> what we need is 'void *data' in the struct kretprobe_instance.
-> >>>> User who needs it can allocate their own instance data for their
-> >>>> kretprobes when initialising it and sets in their entry handler.
-> >>>>
-> >>>> Then we can have a simple kretprobe_instance.
-> >>>
-> >>> When would you do the alloc? When installing the retprobe, but that
-> >>> might be inside the allocator, which means you can't call the allocator
-> >>> etc.. :-)
-> >>
-> >> Yes, so the user may need to allocate a pool right before register_kretprobe().
-> >> (whether per-kretprobe or per-task or global pool, that is user's choice.)
-> >>
-> >>>
-> >>> If we look at struct ftrace_ret_stack, it has a few fixed function
-> >>> fields. The calltime one is all that is needed for the kretprobe
-> >>> example code.
-> >>
-> >> kretprobe consumes 3 fields, a pointer to 'struct kretprobe' (which
-> >> stores callee function address in 'kretprobe::kp.addr'), a return
-> >> address and a frame pointer (*).
-> >  > Oops, I forgot to add "void *data" for storing user data.
-> > 
-> 
-> Should use "struct kretprobe_holder *rph", since "struct kretprobe" belongs
-> to 3rd-party module (which might be unloaded any time).
+Some function names needed to be changed to match the device
+conventions <foo>_show and <foo>_store, but the functionality
+itself is unchanged.
 
-Good catch. Yes, instead of 'struct kretprobe', we need to use the holder.
+The devices using EDAC_DCT_ATTR_SHOW() are left unchanged.
 
-> User's own pool might not work if the module can be unloaded. Better manage
-> the pool in kretprobe_holder, which needs no changes from user side.
+Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+---
 
-No, since the 'data' will be only refered from user handler. If the kretprobe
-is released, then the kretprobe_holder will clear the refernce to the 'struct
-kretprobe'. Then, the user handler is never called. No one access the 'data'.
+Changes in v2:
+- Revert back the device name changes which broke
+  the kernel. These were using the macro EDAC_DCT_ATTR_SHOW()
+  to construct the show methods based on device name.
+  Reported by Kernel test bot.
 
-Thank you,
+ drivers/edac/amd64_edac.c | 21 ++++++++-------------
+ 1 file changed, 8 insertions(+), 13 deletions(-)
 
+diff --git a/drivers/edac/amd64_edac.c b/drivers/edac/amd64_edac.c
+index f0d8f60acee1..99b06a3e8fb1 100644
+--- a/drivers/edac/amd64_edac.c
++++ b/drivers/edac/amd64_edac.c
+@@ -571,8 +571,8 @@ EDAC_DCT_ATTR_SHOW(dbam0);
+ EDAC_DCT_ATTR_SHOW(top_mem);
+ EDAC_DCT_ATTR_SHOW(top_mem2);
+ 
+-static ssize_t hole_show(struct device *dev, struct device_attribute *mattr,
+-			 char *data)
++static ssize_t dram_hole_show(struct device *dev, struct device_attribute *mattr,
++			      char *data)
+ {
+ 	struct mem_ctl_info *mci = to_mci(dev);
+ 
+@@ -593,7 +593,7 @@ static DEVICE_ATTR(dhar, S_IRUGO, dhar_show, NULL);
+ static DEVICE_ATTR(dbam, S_IRUGO, dbam0_show, NULL);
+ static DEVICE_ATTR(topmem, S_IRUGO, top_mem_show, NULL);
+ static DEVICE_ATTR(topmem2, S_IRUGO, top_mem2_show, NULL);
+-static DEVICE_ATTR(dram_hole, S_IRUGO, hole_show, NULL);
++static DEVICE_ATTR_RO(dram_hole);
+ 
+ static struct attribute *dbg_attrs[] = {
+ 	&dev_attr_dhar.attr,
+@@ -802,16 +802,11 @@ static ssize_t inject_write_store(struct device *dev,
+  * update NUM_INJ_ATTRS in case you add new members
+  */
+ 
+-static DEVICE_ATTR(inject_section, S_IRUGO | S_IWUSR,
+-		   inject_section_show, inject_section_store);
+-static DEVICE_ATTR(inject_word, S_IRUGO | S_IWUSR,
+-		   inject_word_show, inject_word_store);
+-static DEVICE_ATTR(inject_ecc_vector, S_IRUGO | S_IWUSR,
+-		   inject_ecc_vector_show, inject_ecc_vector_store);
+-static DEVICE_ATTR(inject_write, S_IWUSR,
+-		   NULL, inject_write_store);
+-static DEVICE_ATTR(inject_read,  S_IWUSR,
+-		   NULL, inject_read_store);
++static DEVICE_ATTR_RW(inject_section);
++static DEVICE_ATTR_RW(inject_word);
++static DEVICE_ATTR_RW(inject_ecc_vector);
++static DEVICE_ATTR_WO(inject_write);
++static DEVICE_ATTR_WO(inject_read);
+ 
+ static struct attribute *inj_attrs[] = {
+ 	&dev_attr_inject_section.attr,
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.28.0
+
