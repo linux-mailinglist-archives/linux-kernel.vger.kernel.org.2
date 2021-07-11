@@ -2,241 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C360A3C3D74
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 16:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D69873C3D7B
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 16:55:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233723AbhGKOya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 10:54:30 -0400
-Received: from out07.smtpout.orange.fr ([193.252.22.91]:55631 "EHLO
-        out.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233711AbhGKOy3 (ORCPT
+        id S233967AbhGKO6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 10:58:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233953AbhGKO6I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 10:54:29 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d67 with ME
-        id Tqrb2500921Fzsu03qrbGm; Sun, 11 Jul 2021 16:51:39 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 11 Jul 2021 16:51:39 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     m.chetan.kumar@intel.com, linuxwwan@intel.com,
-        loic.poulain@linaro.org, ryazanov.s.a@gmail.com,
-        johannes@sipsolutions.net, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] net: wwan: iosm: switch from 'pci_' to 'dma_' API
-Date:   Sun, 11 Jul 2021 16:51:33 +0200
-Message-Id: <dd34ecd3c8afe5a9a29e026035a4a11c63e033ae.1626014972.git.christophe.jaillet@wanadoo.fr>
+        Sun, 11 Jul 2021 10:58:08 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B16C0613E8
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 07:55:21 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id g24so8536011pji.4
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 07:55:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c3ykowIwDTRKsInbKYf/ek7DP95JkPgh9oE6DtLLi+A=;
+        b=f8oRiz7tCeeeXv/MqXq5OZOEzZswGECCi/HKTpvgEkbG0cllAp+VR+0I4HSYLIxAB+
+         24hZbfG6kZ/VSWsE/If4A/XA+e82SHh49PTD47WSoB6zeJWqaPwHUE7eU4Y9Fwj0mgIh
+         YmQF1alZ3ON6hCFsBykpcyyGmu8zyYbilzDJk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c3ykowIwDTRKsInbKYf/ek7DP95JkPgh9oE6DtLLi+A=;
+        b=G8ejesgm0IhbkeHJA2EbW6XutnIB3dpnVH1AIJzETYUvXKMsCeiZJpRNV7okghjchp
+         u5Rlh4iXorHmAliwkX98ov46eSnYw0RZTZlX+9Aa3e/Ta35olCpoZ0JzMQ1ED3qBhWax
+         8cHvLriAhbaRUDfGGOm4zqjFe2KflukFOI0+He7SzhJTIbhdpgK3WCllR5LBLt3Nj3lH
+         Jy9osaanF0TR8SLOajmf0rU9RTTYo3VhWZT6mbiG7LEdu2qbYszpIezwMdkPT8V3EBOS
+         tjYAg67oqyQ+8hQ7gFVQaS4xsk44iyZIWw9RJon0uWLWc6KM7g56XP0m2Rf7FUAqv/ke
+         og8g==
+X-Gm-Message-State: AOAM532z+moC/nCwUZNUTMuYPah6c3kBMfta+251Y6flSSDAHQMP19jV
+        dYHFXpbiXA5d+1CCxAoKJKXZfw==
+X-Google-Smtp-Source: ABdhPJzWwSuvGf7jsorlyDuYO0Lb3IQ103oXQCwHaS7V5m6oxgrlvvImbzsl+aKWkIQc8R8vXy4oVw==
+X-Received: by 2002:a17:90b:4b52:: with SMTP id mi18mr31807452pjb.37.1626015320918;
+        Sun, 11 Jul 2021 07:55:20 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id b4sm10932548pji.52.2021.07.11.07.55.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Jul 2021 07:55:20 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] rpmsg: glink: Replace strncpy() with strscpy_pad()
+Date:   Sun, 11 Jul 2021 07:55:17 -0700
+Message-Id: <20210711145517.1434486-1-keescook@chromium.org>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1814; h=from:subject; bh=CGejJDIBWoCTMrdLfdYOlKTt2khst8/bmsGsqzGrjiA=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBg6wZVj+vEe7YcbCfgSji3keoTaHrI/ZHofnZ1HVRt kwNnps2JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYOsGVQAKCRCJcvTf3G3AJjp7D/ 4xOOjTrRSPqTRBymI1eoBS8GYyPpRa2EVxvB8ZW9jVsORyPMd+qrSptl1PBlgEtLrz91zlFDHigp3M Cl4XecxDPkow1jRbAEfCks39EzVxzHMY9gV7fpYG5qIPKFeKciIn4Ou6vwXPFl6E9iPBqm4F8t6yo+ IkCfBrhLyVYo4u4B1Ri8wj6ztXeIIzQNVxEmzxWzh5UcNp4l7IAkoru3ZgFHoE3yfbABsX4Qitw+cz LELsLx3KrcqETDczzGGSdZKT83iChx4H4B/y1xGvK7azhx/1PnCisiui7W8V0D/LswCl8qeTrj3XFB TZfCKs/qRQe60vO6/Se8gJkLnzovkODC9RxeVAkqGpq78fD6QoDryD8F8QoS2xn3AoJz2SiMBV0pPs CoQfmYM4IKYxecE1UxDmzwdup5vtSvb0xVobHYXQt+i9sbpferpFh2pjYPn6I43Gpju1PfUSyXQ2ZD 1NcASe91/pxA/1TD0+ccRSdz3olzulteWAdzMPKVEyU9X5/PEjJ2VZ+diHDzcN0EEPc64XCwBDyrfe ZKGvs1VDZT9hwo4Gy3N8hdikkUEOyjpvJWA+97P1iu0BOdnlCFIS5TwnOnY1zKvkfAMt5rRnKsWVdP MXSFMMpvhblVW8gDISa8TsXX5a7UVzuihmcw5yXT/PxOqiJn51exkx9Tl2SQ==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+The use of strncpy() is considered deprecated for NUL-terminated
+strings[1]. Replace strncpy() with strscpy_pad() (as it seems this case
+expects the NUL padding to fill the allocation following the flexible
+array). This additionally silences a warning seen when building under
+-Warray-bounds:
 
-The patch has been generated with the coccinelle script below and has been
-hand modified to replace GFP_ with a correct flag.
-It has been compile tested.
+./include/linux/fortify-string.h:38:30: warning: '__builtin_strncpy' offset 24 from the object at '__mptr' is out of the bounds of referenced subobject 'data' with type 'u8[]' {aka 'unsigned char[]'} at offset 24 [-Warray-bounds]
+   38 | #define __underlying_strncpy __builtin_strncpy
+      |                              ^
+./include/linux/fortify-string.h:50:9: note: in expansion of macro '__underlying_strncpy'
+   50 |  return __underlying_strncpy(p, q, size);
+      |         ^~~~~~~~~~~~~~~~~~~~
+drivers/rpmsg/qcom_glink_native.c: In function 'qcom_glink_work':
+drivers/rpmsg/qcom_glink_native.c:36:5: note: subobject 'data' declared here
+   36 |  u8 data[];
+      |     ^~~~
 
-When memory is allocated in 'ipc_protocol_init()' GFP_KERNEL can be used
-because this flag is already used a few lines above and no lock is
-acquired in the between.
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
 
-When memory is allocated in 'ipc_protocol_msg_prepipe_open()' GFP_ATOMIC
-should be used because this flag is already used a few lines above.
-
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
-
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
-
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
-
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
-
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+ drivers/rpmsg/qcom_glink_native.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-When memory is allocated in 'ipc_protocol_msg_prepipe_open()', I think
-that GFP_KERNEL could be used, but I've not dug enough to be sure. So,
-better safe that sorry.
----
- drivers/net/wwan/iosm/iosm_ipc_protocol.c     | 10 +++++-----
- drivers/net/wwan/iosm/iosm_ipc_protocol_ops.c | 13 ++++++-------
- 2 files changed, 11 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/net/wwan/iosm/iosm_ipc_protocol.c b/drivers/net/wwan/iosm/iosm_ipc_protocol.c
-index 834d8b146a94..63fc7012f09f 100644
---- a/drivers/net/wwan/iosm/iosm_ipc_protocol.c
-+++ b/drivers/net/wwan/iosm/iosm_ipc_protocol.c
-@@ -239,9 +239,9 @@ struct iosm_protocol *ipc_protocol_init(struct iosm_imem *ipc_imem)
- 	ipc_protocol->old_msg_tail = 0;
+diff --git a/drivers/rpmsg/qcom_glink_native.c b/drivers/rpmsg/qcom_glink_native.c
+index 05533c71b10e..c7b9de655080 100644
+--- a/drivers/rpmsg/qcom_glink_native.c
++++ b/drivers/rpmsg/qcom_glink_native.c
+@@ -1440,7 +1440,7 @@ static int qcom_glink_rx_open(struct qcom_glink *glink, unsigned int rcid,
+ 		}
  
- 	ipc_protocol->p_ap_shm =
--		pci_alloc_consistent(ipc_protocol->pcie->pci,
--				     sizeof(*ipc_protocol->p_ap_shm),
--				     &ipc_protocol->phy_ap_shm);
-+		dma_alloc_coherent(&ipc_protocol->pcie->pci->dev,
-+				   sizeof(*ipc_protocol->p_ap_shm),
-+				   &ipc_protocol->phy_ap_shm, GFP_KERNEL);
- 
- 	if (!ipc_protocol->p_ap_shm) {
- 		dev_err(ipc_protocol->dev, "pci shm alloc error");
-@@ -275,8 +275,8 @@ struct iosm_protocol *ipc_protocol_init(struct iosm_imem *ipc_imem)
- 
- void ipc_protocol_deinit(struct iosm_protocol *proto)
- {
--	pci_free_consistent(proto->pcie->pci, sizeof(*proto->p_ap_shm),
--			    proto->p_ap_shm, proto->phy_ap_shm);
-+	dma_free_coherent(&proto->pcie->pci->dev, sizeof(*proto->p_ap_shm),
-+			  proto->p_ap_shm, proto->phy_ap_shm);
- 
- 	ipc_pm_deinit(proto);
- 	kfree(proto);
-diff --git a/drivers/net/wwan/iosm/iosm_ipc_protocol_ops.c b/drivers/net/wwan/iosm/iosm_ipc_protocol_ops.c
-index 91109e27efd3..a53ad97abb98 100644
---- a/drivers/net/wwan/iosm/iosm_ipc_protocol_ops.c
-+++ b/drivers/net/wwan/iosm/iosm_ipc_protocol_ops.c
-@@ -74,9 +74,9 @@ static int ipc_protocol_msg_prepipe_open(struct iosm_protocol *ipc_protocol,
- 		return -ENOMEM;
- 
- 	/* Allocate the transfer descriptors for the pipe. */
--	tdr = pci_alloc_consistent(ipc_protocol->pcie->pci,
--				   pipe->nr_of_entries * sizeof(*tdr),
--				   &pipe->phy_tdr_start);
-+	tdr = dma_alloc_coherent(&ipc_protocol->pcie->pci->dev,
-+				 pipe->nr_of_entries * sizeof(*tdr),
-+				 &pipe->phy_tdr_start, GFP_ATOMIC);
- 	if (!tdr) {
- 		kfree(skbr);
- 		dev_err(ipc_protocol->dev, "tdr alloc error");
-@@ -492,10 +492,9 @@ void ipc_protocol_pipe_cleanup(struct iosm_protocol *ipc_protocol,
- 
- 	/* Free and reset the td and skbuf circular buffers. kfree is save! */
- 	if (pipe->tdr_start) {
--		pci_free_consistent(ipc_protocol->pcie->pci,
--				    sizeof(*pipe->tdr_start) *
--					    pipe->nr_of_entries,
--				    pipe->tdr_start, pipe->phy_tdr_start);
-+		dma_free_coherent(&ipc_protocol->pcie->pci->dev,
-+				  sizeof(*pipe->tdr_start) * pipe->nr_of_entries,
-+				  pipe->tdr_start, pipe->phy_tdr_start);
- 
- 		pipe->tdr_start = NULL;
- 	}
+ 		rpdev->ept = &channel->ept;
+-		strncpy(rpdev->id.name, name, RPMSG_NAME_SIZE);
++		strscpy_pad(rpdev->id.name, name, RPMSG_NAME_SIZE);
+ 		rpdev->src = RPMSG_ADDR_ANY;
+ 		rpdev->dst = RPMSG_ADDR_ANY;
+ 		rpdev->ops = &glink_device_ops;
 -- 
 2.30.2
 
