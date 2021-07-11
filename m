@@ -2,5721 +2,881 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F38B3C3B57
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 11:54:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EA833C3B60
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 11:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbhGKJwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 05:52:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbhGKJwX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 05:52:23 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0243C0613DD;
-        Sun, 11 Jul 2021 02:49:36 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id z1so15927056ils.0;
-        Sun, 11 Jul 2021 02:49:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=UifErnrfUevuKx3Ect53Sj6o6SQ8Ql1Ip98jbngKx/Q=;
-        b=Etocc65JEwgE3oPOPzaw8lyjNBlDazm7Pgz3RlSWWPvcuik8qianFQDNeEYSEOb/cI
-         pgvSIbaj6BSpImOYQpgvbUWVoIFVYqYUCkjnDYw0aKlnKGY/g5sRrNFzyQXlArcOs0E4
-         yg6dCFLG0PzNSenDBzHd68nV6KANHVqO8Rw327aYANqXPpEjmUCS6Qs6vFVC/BrBgr/U
-         93rqlAUekeoUMT2o7e9kyxMgwYyIbgztjYD/Dbw+hiyoMfLqA9LhQJUdXPneQqm4xS62
-         52sUkS8E0NBKiHQznyBqb5iB9/vcG7827Ne8xQ6u1CWEe9GnmUr4KUt8tX9EnoHmey9l
-         Grig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=UifErnrfUevuKx3Ect53Sj6o6SQ8Ql1Ip98jbngKx/Q=;
-        b=rEiNjyVq/YPbVQDMpzvwL9rsy/+7+GyGPbG9VSVJl+mWkKX89GBqXgivndC3CsO/+D
-         BbF3WF/8XsASOdmXoyDHxcK2INk1h9tCKRqlGG4tT8zOThS3+hL9M9ngtn/ekG9BedVC
-         dUPbmGqhVDw/hNAzIZ8BgwQ0885rzsVpFSWle7ygXtGyjVrjuV5mv0fclwxK//Fqvj+C
-         FSkx6d+z/oGzAr6UuHFWDLAGm8BKShFSzlSUEM0pa4geuVg7iILvf5sFomRo9Gr4pyyM
-         xd2ZD9QBPqOlIiphTieA0uI1LZZJ2cIDYnZygpy7ItCfoEvrzGFYwBvZ1kZ88B+7TcW9
-         ifhA==
-X-Gm-Message-State: AOAM533FGMZhK//fFS8iahSgD0L4fBDSutacmbm43VZ2sVGPO+KSitcB
-        JfYP4VrtbIJsruumUU+khhuTVrmHo1JY2rWIL3k=
-X-Google-Smtp-Source: ABdhPJxOBRUGxdKqaBGkLvufjRBcbGXBCFm2ROKfHSkwy8/UVH1cg3hxNygObyCFb2/1QK3tKvhIjxl6v76Jhx0Id6U=
-X-Received: by 2002:a05:6e02:106d:: with SMTP id q13mr11638142ilj.164.1625996975557;
- Sun, 11 Jul 2021 02:49:35 -0700 (PDT)
+        id S232066AbhGKJ7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 05:59:08 -0400
+Received: from mga06.intel.com ([134.134.136.31]:64994 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229688AbhGKJ7G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Jul 2021 05:59:06 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10041"; a="270980704"
+X-IronPort-AV: E=Sophos;i="5.84,231,1620716400"; 
+   d="gz'50?scan'50,208,50";a="270980704"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jul 2021 02:56:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,231,1620716400"; 
+   d="gz'50?scan'50,208,50";a="425209967"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 11 Jul 2021 02:56:17 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1m2WC8-000GKn-JP; Sun, 11 Jul 2021 09:56:16 +0000
+Date:   Sun, 11 Jul 2021 17:56:00 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Fenghua Yu <fenghua.yu@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [linux-stable-rc:linux-5.10.y 4305/4974] resctrlfs.c:641:28: error:
+ 'CMT_STR' undeclared; did you mean 'CAT_STR'?
+Message-ID: <202107111747.4qfenPoL-lkp@intel.com>
 MIME-Version: 1.0
-References: <cover.1625471640.git.vilhelm.gray@gmail.com> <834dadaa68af74c703f19f8ddcca5512dd1d177e.1625471640.git.vilhelm.gray@gmail.com>
-In-Reply-To: <834dadaa68af74c703f19f8ddcca5512dd1d177e.1625471640.git.vilhelm.gray@gmail.com>
-From:   Syed Nayyar Waris <syednwaris@gmail.com>
-Date:   Sun, 11 Jul 2021 15:19:20 +0530
-Message-ID: <CACG_h5rzvSKZKtxkRpen_G03+B+uFf9rjpcmFZVqrEqb7dNbbg@mail.gmail.com>
-Subject: Re: [PATCH v12 06/17] counter: Internalize sysfs interface code
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        Gwendal Grignou <gwendal@chromium.org>,
-        alexandre.belloni@bootlin.com, david@lechnology.com,
-        linux-iio@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        o.rempel@pengutronix.de, jarkko.nikula@linux.intel.com,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="vkogqOf2sHV7VnPd"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 5, 2021 at 1:49 PM William Breathitt Gray
-<vilhelm.gray@gmail.com> wrote:
->
-> This is a reimplementation of the Generic Counter driver interface.
-> There are no modifications to the Counter subsystem userspace interface,
-> so existing userspace applications should continue to run seamlessly.
->
-> The purpose of this patch is to internalize the sysfs interface code
-> among the various counter drivers into a shared module. Counter drivers
-> pass and take data natively (i.e. u8, u64, etc.) and the shared counter
-> module handles the translation between the sysfs interface and the
-> device drivers. This guarantees a standard userspace interface for all
-> counter drivers, and helps generalize the Generic Counter driver ABI in
-> order to support the Generic Counter chrdev interface (introduced in a
-> subsequent patch) without significant changes to the existing counter
-> drivers.
->
-> Note, Counter device registration is the same as before: drivers
-> populate a struct counter_device with components and callbacks, then
-> pass the structure to the devm_counter_register function. However,
-> what's different now is how the Counter subsystem code handles this
-> registration internally.
->
-> Whereas before callbacks would interact directly with sysfs data, this
-> interaction is now abstracted and instead callbacks interact with native
-> C data types. The counter_comp structure forms the basis for Counter
-> extensions.
->
-> The counter-sysfs.c file contains the code to parse through the
-> counter_device structure and register the requested components and
-> extensions. Attributes are created and populated based on type, with
-> respective translation functions to handle the mapping between sysfs and
-> the counter driver callbacks.
->
-> The translation performed for each attribute is straightforward: the
-> attribute type and data is parsed from the counter_attribute structure,
-> the respective counter driver read/write callback is called, and sysfs
-> I/O is handled before or after the driver read/write function is called.
->
-> Cc: Syed Nayyar Waris <syednwaris@gmail.com>
-> Cc: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-> Cc: Patrick Havelange <patrick.havelange@essensium.com>
-> Cc: Kamel Bouhara <kamel.bouhara@bootlin.com>
-> Cc: Fabrice Gasnier <fabrice.gasnier@st.com>
-> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-> Cc: Alexandre Torgue <alexandre.torgue@st.com>
-> Cc: Dan Carpenter <dan.carpenter@oracle.com>
-> Reviewed-by: David Lechner <david@lechnology.com>
-> Tested-by: David Lechner <david@lechnology.com>
-> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-> ---
->  MAINTAINERS                             |    1 -
->  drivers/counter/104-quad-8.c            |  449 +++----
 
-For 104-Quad-8,
+--vkogqOf2sHV7VnPd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Acked-by: Syed Nayyar Waris <syednwaris@gmail.com>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+head:   77806d1ee43e1bea3aa5095445eb7a69f02ec8d3
+commit: 19eaad1400eab34e97ec4467cd2ab694d1caf20c [4305/4974] selftests/resctrl: Use resctrl/info for feature detection
+config: x86_64-rhel-8.3-kselftests (attached as .config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce (this is a W=1 build):
+        # https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?id=19eaad1400eab34e97ec4467cd2ab694d1caf20c
+        git remote add linux-stable-rc https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+        git fetch --no-tags linux-stable-rc linux-5.10.y
+        git checkout 19eaad1400eab34e97ec4467cd2ab694d1caf20c
+        # save the attached .config to linux build tree
+        mkdir build_dir
+        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash -C tools/testing/selftests/resctrl install
 
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
->  drivers/counter/Makefile                |    1 +
->  drivers/counter/counter-core.c          |  145 +++
->  drivers/counter/counter-sysfs.c         |  846 +++++++++++++
->  drivers/counter/counter-sysfs.h         |   13 +
->  drivers/counter/counter.c               | 1496 -----------------------
->  drivers/counter/ftm-quaddec.c           |   56 +-
->  drivers/counter/intel-qep.c             |  144 +--
->  drivers/counter/interrupt-cnt.c         |   62 +-
->  drivers/counter/microchip-tcb-capture.c |   93 +-
->  drivers/counter/stm32-lptimer-cnt.c     |  162 ++-
->  drivers/counter/stm32-timer-cnt.c       |  147 +--
->  drivers/counter/ti-eqep.c               |  180 +--
->  include/linux/counter.h                 |  658 +++++-----
->  include/linux/counter_enum.h            |   45 -
->  16 files changed, 1920 insertions(+), 2578 deletions(-)
->  create mode 100644 drivers/counter/counter-core.c
->  create mode 100644 drivers/counter/counter-sysfs.c
->  create mode 100644 drivers/counter/counter-sysfs.h
->  delete mode 100644 drivers/counter/counter.c
->  delete mode 100644 include/linux/counter_enum.h
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 9bf553e53f0f..2cac15216ba9 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -4687,7 +4687,6 @@ F:        Documentation/ABI/testing/sysfs-bus-count=
-er
->  F:     Documentation/driver-api/generic-counter.rst
->  F:     drivers/counter/
->  F:     include/linux/counter.h
-> -F:     include/linux/counter_enum.h
->
->  CP2615 I2C DRIVER
->  M:     Bence Cs=C3=B3k=C3=A1s <bence98@sch.bme.hu>
-> diff --git a/drivers/counter/104-quad-8.c b/drivers/counter/104-quad-8.c
-> index 5283ff128c17..d1161c27c488 100644
-> --- a/drivers/counter/104-quad-8.c
-> +++ b/drivers/counter/104-quad-8.c
-> @@ -116,7 +116,7 @@ static int quad8_signal_read(struct counter_device *c=
-ounter,
->  }
->
->  static int quad8_count_read(struct counter_device *counter,
-> -       struct counter_count *count, unsigned long *val)
-> +                           struct counter_count *count, u64 *val)
->  {
->         struct quad8 *const priv =3D counter->priv;
->         const int base_offset =3D priv->base + 2 * count->id;
-> @@ -147,7 +147,7 @@ static int quad8_count_read(struct counter_device *co=
-unter,
->  }
->
->  static int quad8_count_write(struct counter_device *counter,
-> -       struct counter_count *count, unsigned long val)
-> +                            struct counter_count *count, u64 val)
->  {
->         struct quad8 *const priv =3D counter->priv;
->         const int base_offset =3D priv->base + 2 * count->id;
-> @@ -187,22 +187,16 @@ static int quad8_count_write(struct counter_device =
-*counter,
->         return 0;
->  }
->
-> -enum quad8_count_function {
-> -       QUAD8_COUNT_FUNCTION_PULSE_DIRECTION =3D 0,
-> -       QUAD8_COUNT_FUNCTION_QUADRATURE_X1,
-> -       QUAD8_COUNT_FUNCTION_QUADRATURE_X2,
-> -       QUAD8_COUNT_FUNCTION_QUADRATURE_X4
-> -};
-> -
->  static const enum counter_function quad8_count_functions_list[] =3D {
-> -       [QUAD8_COUNT_FUNCTION_PULSE_DIRECTION] =3D COUNTER_FUNCTION_PULSE=
-_DIRECTION,
-> -       [QUAD8_COUNT_FUNCTION_QUADRATURE_X1] =3D COUNTER_FUNCTION_QUADRAT=
-URE_X1_A,
-> -       [QUAD8_COUNT_FUNCTION_QUADRATURE_X2] =3D COUNTER_FUNCTION_QUADRAT=
-URE_X2_A,
-> -       [QUAD8_COUNT_FUNCTION_QUADRATURE_X4] =3D COUNTER_FUNCTION_QUADRAT=
-URE_X4
-> +       COUNTER_FUNCTION_PULSE_DIRECTION,
-> +       COUNTER_FUNCTION_QUADRATURE_X1_A,
-> +       COUNTER_FUNCTION_QUADRATURE_X2_A,
-> +       COUNTER_FUNCTION_QUADRATURE_X4,
->  };
->
-> -static int quad8_function_get(struct counter_device *counter,
-> -       struct counter_count *count, size_t *function)
-> +static int quad8_function_read(struct counter_device *counter,
-> +                              struct counter_count *count,
-> +                              enum counter_function *function)
->  {
->         struct quad8 *const priv =3D counter->priv;
->         const int id =3D count->id;
-> @@ -212,25 +206,26 @@ static int quad8_function_get(struct counter_device=
- *counter,
->         if (priv->quadrature_mode[id])
->                 switch (priv->quadrature_scale[id]) {
->                 case 0:
-> -                       *function =3D QUAD8_COUNT_FUNCTION_QUADRATURE_X1;
-> +                       *function =3D COUNTER_FUNCTION_QUADRATURE_X1_A;
->                         break;
->                 case 1:
-> -                       *function =3D QUAD8_COUNT_FUNCTION_QUADRATURE_X2;
-> +                       *function =3D COUNTER_FUNCTION_QUADRATURE_X2_A;
->                         break;
->                 case 2:
-> -                       *function =3D QUAD8_COUNT_FUNCTION_QUADRATURE_X4;
-> +                       *function =3D COUNTER_FUNCTION_QUADRATURE_X4;
->                         break;
->                 }
->         else
-> -               *function =3D QUAD8_COUNT_FUNCTION_PULSE_DIRECTION;
-> +               *function =3D COUNTER_FUNCTION_PULSE_DIRECTION;
->
->         mutex_unlock(&priv->lock);
->
->         return 0;
->  }
->
-> -static int quad8_function_set(struct counter_device *counter,
-> -       struct counter_count *count, size_t function)
-> +static int quad8_function_write(struct counter_device *counter,
-> +                               struct counter_count *count,
-> +                               enum counter_function function)
->  {
->         struct quad8 *const priv =3D counter->priv;
->         const int id =3D count->id;
-> @@ -246,7 +241,7 @@ static int quad8_function_set(struct counter_device *=
-counter,
->         mode_cfg =3D priv->count_mode[id] << 1;
->         idr_cfg =3D priv->index_polarity[id] << 1;
->
-> -       if (function =3D=3D QUAD8_COUNT_FUNCTION_PULSE_DIRECTION) {
-> +       if (function =3D=3D COUNTER_FUNCTION_PULSE_DIRECTION) {
->                 *quadrature_mode =3D 0;
->
->                 /* Quadrature scaling only available in quadrature mode *=
-/
-> @@ -262,15 +257,15 @@ static int quad8_function_set(struct counter_device=
- *counter,
->                 *quadrature_mode =3D 1;
->
->                 switch (function) {
-> -               case QUAD8_COUNT_FUNCTION_QUADRATURE_X1:
-> +               case COUNTER_FUNCTION_QUADRATURE_X1_A:
->                         *scale =3D 0;
->                         mode_cfg |=3D QUAD8_CMR_QUADRATURE_X1;
->                         break;
-> -               case QUAD8_COUNT_FUNCTION_QUADRATURE_X2:
-> +               case COUNTER_FUNCTION_QUADRATURE_X2_A:
->                         *scale =3D 1;
->                         mode_cfg |=3D QUAD8_CMR_QUADRATURE_X2;
->                         break;
-> -               case QUAD8_COUNT_FUNCTION_QUADRATURE_X4:
-> +               case COUNTER_FUNCTION_QUADRATURE_X4:
->                         *scale =3D 2;
->                         mode_cfg |=3D QUAD8_CMR_QUADRATURE_X4;
->                         break;
-> @@ -289,8 +284,9 @@ static int quad8_function_set(struct counter_device *=
-counter,
->         return 0;
->  }
->
-> -static void quad8_direction_get(struct counter_device *counter,
-> -       struct counter_count *count, enum counter_count_direction *direct=
-ion)
-> +static int quad8_direction_read(struct counter_device *counter,
-> +                               struct counter_count *count,
-> +                               enum counter_count_direction *direction)
->  {
->         const struct quad8 *const priv =3D counter->priv;
->         unsigned int ud_flag;
-> @@ -301,76 +297,74 @@ static void quad8_direction_get(struct counter_devi=
-ce *counter,
->
->         *direction =3D (ud_flag) ? COUNTER_COUNT_DIRECTION_FORWARD :
->                 COUNTER_COUNT_DIRECTION_BACKWARD;
-> -}
->
-> -enum quad8_synapse_action {
-> -       QUAD8_SYNAPSE_ACTION_NONE =3D 0,
-> -       QUAD8_SYNAPSE_ACTION_RISING_EDGE,
-> -       QUAD8_SYNAPSE_ACTION_FALLING_EDGE,
-> -       QUAD8_SYNAPSE_ACTION_BOTH_EDGES
-> -};
-> +       return 0;
-> +}
->
->  static const enum counter_synapse_action quad8_index_actions_list[] =3D =
-{
-> -       [QUAD8_SYNAPSE_ACTION_NONE] =3D COUNTER_SYNAPSE_ACTION_NONE,
-> -       [QUAD8_SYNAPSE_ACTION_RISING_EDGE] =3D COUNTER_SYNAPSE_ACTION_RIS=
-ING_EDGE
-> +       COUNTER_SYNAPSE_ACTION_NONE,
-> +       COUNTER_SYNAPSE_ACTION_RISING_EDGE,
->  };
->
->  static const enum counter_synapse_action quad8_synapse_actions_list[] =
-=3D {
-> -       [QUAD8_SYNAPSE_ACTION_NONE] =3D COUNTER_SYNAPSE_ACTION_NONE,
-> -       [QUAD8_SYNAPSE_ACTION_RISING_EDGE] =3D COUNTER_SYNAPSE_ACTION_RIS=
-ING_EDGE,
-> -       [QUAD8_SYNAPSE_ACTION_FALLING_EDGE] =3D COUNTER_SYNAPSE_ACTION_FA=
-LLING_EDGE,
-> -       [QUAD8_SYNAPSE_ACTION_BOTH_EDGES] =3D COUNTER_SYNAPSE_ACTION_BOTH=
-_EDGES
-> +       COUNTER_SYNAPSE_ACTION_NONE,
-> +       COUNTER_SYNAPSE_ACTION_RISING_EDGE,
-> +       COUNTER_SYNAPSE_ACTION_FALLING_EDGE,
-> +       COUNTER_SYNAPSE_ACTION_BOTH_EDGES,
->  };
->
-> -static int quad8_action_get(struct counter_device *counter,
-> -       struct counter_count *count, struct counter_synapse *synapse,
-> -       size_t *action)
-> +static int quad8_action_read(struct counter_device *counter,
-> +                            struct counter_count *count,
-> +                            struct counter_synapse *synapse,
-> +                            enum counter_synapse_action *action)
->  {
->         struct quad8 *const priv =3D counter->priv;
->         int err;
-> -       size_t function =3D 0;
-> +       enum counter_function function;
->         const size_t signal_a_id =3D count->synapses[0].signal->id;
->         enum counter_count_direction direction;
->
->         /* Handle Index signals */
->         if (synapse->signal->id >=3D 16) {
->                 if (priv->preset_enable[count->id])
-> -                       *action =3D QUAD8_SYNAPSE_ACTION_RISING_EDGE;
-> +                       *action =3D COUNTER_SYNAPSE_ACTION_RISING_EDGE;
->                 else
-> -                       *action =3D QUAD8_SYNAPSE_ACTION_NONE;
-> +                       *action =3D COUNTER_SYNAPSE_ACTION_NONE;
->
->                 return 0;
->         }
->
-> -       err =3D quad8_function_get(counter, count, &function);
-> +       err =3D quad8_function_read(counter, count, &function);
->         if (err)
->                 return err;
->
->         /* Default action mode */
-> -       *action =3D QUAD8_SYNAPSE_ACTION_NONE;
-> +       *action =3D COUNTER_SYNAPSE_ACTION_NONE;
->
->         /* Determine action mode based on current count function mode */
->         switch (function) {
-> -       case QUAD8_COUNT_FUNCTION_PULSE_DIRECTION:
-> +       case COUNTER_FUNCTION_PULSE_DIRECTION:
->                 if (synapse->signal->id =3D=3D signal_a_id)
-> -                       *action =3D QUAD8_SYNAPSE_ACTION_RISING_EDGE;
-> +                       *action =3D COUNTER_SYNAPSE_ACTION_RISING_EDGE;
->                 return 0;
-> -       case QUAD8_COUNT_FUNCTION_QUADRATURE_X1:
-> +       case COUNTER_FUNCTION_QUADRATURE_X1_A:
->                 if (synapse->signal->id =3D=3D signal_a_id) {
-> -                       quad8_direction_get(counter, count, &direction);
-> +                       err =3D quad8_direction_read(counter, count, &dir=
-ection);
-> +                       if (err)
-> +                               return err;
->
->                         if (direction =3D=3D COUNTER_COUNT_DIRECTION_FORW=
-ARD)
-> -                               *action =3D QUAD8_SYNAPSE_ACTION_RISING_E=
-DGE;
-> +                               *action =3D COUNTER_SYNAPSE_ACTION_RISING=
-_EDGE;
->                         else
-> -                               *action =3D QUAD8_SYNAPSE_ACTION_FALLING_=
-EDGE;
-> +                               *action =3D COUNTER_SYNAPSE_ACTION_FALLIN=
-G_EDGE;
->                 }
->                 return 0;
-> -       case QUAD8_COUNT_FUNCTION_QUADRATURE_X2:
-> +       case COUNTER_FUNCTION_QUADRATURE_X2_A:
->                 if (synapse->signal->id =3D=3D signal_a_id)
-> -                       *action =3D QUAD8_SYNAPSE_ACTION_BOTH_EDGES;
-> +                       *action =3D COUNTER_SYNAPSE_ACTION_BOTH_EDGES;
->                 return 0;
-> -       case QUAD8_COUNT_FUNCTION_QUADRATURE_X4:
-> -               *action =3D QUAD8_SYNAPSE_ACTION_BOTH_EDGES;
-> +       case COUNTER_FUNCTION_QUADRATURE_X4:
-> +               *action =3D COUNTER_SYNAPSE_ACTION_BOTH_EDGES;
->                 return 0;
->         default:
->                 /* should never reach this path */
-> @@ -382,9 +376,9 @@ static const struct counter_ops quad8_ops =3D {
->         .signal_read =3D quad8_signal_read,
->         .count_read =3D quad8_count_read,
->         .count_write =3D quad8_count_write,
-> -       .function_get =3D quad8_function_get,
-> -       .function_set =3D quad8_function_set,
-> -       .action_get =3D quad8_action_get
-> +       .function_read =3D quad8_function_read,
-> +       .function_write =3D quad8_function_write,
-> +       .action_read =3D quad8_action_read
->  };
->
->  static const char *const quad8_index_polarity_modes[] =3D {
-> @@ -393,7 +387,8 @@ static const char *const quad8_index_polarity_modes[]=
- =3D {
->  };
->
->  static int quad8_index_polarity_get(struct counter_device *counter,
-> -       struct counter_signal *signal, size_t *index_polarity)
-> +                                   struct counter_signal *signal,
-> +                                   u32 *index_polarity)
->  {
->         const struct quad8 *const priv =3D counter->priv;
->         const size_t channel_id =3D signal->id - 16;
-> @@ -404,7 +399,8 @@ static int quad8_index_polarity_get(struct counter_de=
-vice *counter,
->  }
->
->  static int quad8_index_polarity_set(struct counter_device *counter,
-> -       struct counter_signal *signal, size_t index_polarity)
-> +                                   struct counter_signal *signal,
-> +                                   u32 index_polarity)
->  {
->         struct quad8 *const priv =3D counter->priv;
->         const size_t channel_id =3D signal->id - 16;
-> @@ -425,20 +421,14 @@ static int quad8_index_polarity_set(struct counter_=
-device *counter,
->         return 0;
->  }
->
-> -static struct counter_signal_enum_ext quad8_index_pol_enum =3D {
-> -       .items =3D quad8_index_polarity_modes,
-> -       .num_items =3D ARRAY_SIZE(quad8_index_polarity_modes),
-> -       .get =3D quad8_index_polarity_get,
-> -       .set =3D quad8_index_polarity_set
-> -};
-> -
->  static const char *const quad8_synchronous_modes[] =3D {
->         "non-synchronous",
->         "synchronous"
->  };
->
->  static int quad8_synchronous_mode_get(struct counter_device *counter,
-> -       struct counter_signal *signal, size_t *synchronous_mode)
-> +                                     struct counter_signal *signal,
-> +                                     u32 *synchronous_mode)
->  {
->         const struct quad8 *const priv =3D counter->priv;
->         const size_t channel_id =3D signal->id - 16;
-> @@ -449,7 +439,8 @@ static int quad8_synchronous_mode_get(struct counter_=
-device *counter,
->  }
->
->  static int quad8_synchronous_mode_set(struct counter_device *counter,
-> -       struct counter_signal *signal, size_t synchronous_mode)
-> +                                     struct counter_signal *signal,
-> +                                     u32 synchronous_mode)
->  {
->         struct quad8 *const priv =3D counter->priv;
->         const size_t channel_id =3D signal->id - 16;
-> @@ -476,22 +467,18 @@ static int quad8_synchronous_mode_set(struct counte=
-r_device *counter,
->         return 0;
->  }
->
-> -static struct counter_signal_enum_ext quad8_syn_mode_enum =3D {
-> -       .items =3D quad8_synchronous_modes,
-> -       .num_items =3D ARRAY_SIZE(quad8_synchronous_modes),
-> -       .get =3D quad8_synchronous_mode_get,
-> -       .set =3D quad8_synchronous_mode_set
-> -};
-> -
-> -static ssize_t quad8_count_floor_read(struct counter_device *counter,
-> -       struct counter_count *count, void *private, char *buf)
-> +static int quad8_count_floor_read(struct counter_device *counter,
-> +                                 struct counter_count *count, u64 *floor=
-)
->  {
->         /* Only a floor of 0 is supported */
-> -       return sprintf(buf, "0\n");
-> +       *floor =3D 0;
-> +
-> +       return 0;
->  }
->
-> -static int quad8_count_mode_get(struct counter_device *counter,
-> -       struct counter_count *count, size_t *cnt_mode)
-> +static int quad8_count_mode_read(struct counter_device *counter,
-> +                                struct counter_count *count,
-> +                                enum counter_count_mode *cnt_mode)
->  {
->         const struct quad8 *const priv =3D counter->priv;
->
-> @@ -514,26 +501,28 @@ static int quad8_count_mode_get(struct counter_devi=
-ce *counter,
->         return 0;
->  }
->
-> -static int quad8_count_mode_set(struct counter_device *counter,
-> -       struct counter_count *count, size_t cnt_mode)
-> +static int quad8_count_mode_write(struct counter_device *counter,
-> +                                 struct counter_count *count,
-> +                                 enum counter_count_mode cnt_mode)
->  {
->         struct quad8 *const priv =3D counter->priv;
-> +       unsigned int count_mode;
->         unsigned int mode_cfg;
->         const int base_offset =3D priv->base + 2 * count->id + 1;
->
->         /* Map Generic Counter count mode to 104-QUAD-8 count mode */
->         switch (cnt_mode) {
->         case COUNTER_COUNT_MODE_NORMAL:
-> -               cnt_mode =3D 0;
-> +               count_mode =3D 0;
->                 break;
->         case COUNTER_COUNT_MODE_RANGE_LIMIT:
-> -               cnt_mode =3D 1;
-> +               count_mode =3D 1;
->                 break;
->         case COUNTER_COUNT_MODE_NON_RECYCLE:
-> -               cnt_mode =3D 2;
-> +               count_mode =3D 2;
->                 break;
->         case COUNTER_COUNT_MODE_MODULO_N:
-> -               cnt_mode =3D 3;
-> +               count_mode =3D 3;
->                 break;
->         default:
->                 /* should never reach this path */
-> @@ -542,10 +531,10 @@ static int quad8_count_mode_set(struct counter_devi=
-ce *counter,
->
->         mutex_lock(&priv->lock);
->
-> -       priv->count_mode[count->id] =3D cnt_mode;
-> +       priv->count_mode[count->id] =3D count_mode;
->
->         /* Set count mode configuration value */
-> -       mode_cfg =3D cnt_mode << 1;
-> +       mode_cfg =3D count_mode << 1;
->
->         /* Add quadrature mode configuration */
->         if (priv->quadrature_mode[count->id])
-> @@ -559,56 +548,35 @@ static int quad8_count_mode_set(struct counter_devi=
-ce *counter,
->         return 0;
->  }
->
-> -static struct counter_count_enum_ext quad8_cnt_mode_enum =3D {
-> -       .items =3D counter_count_mode_str,
-> -       .num_items =3D ARRAY_SIZE(counter_count_mode_str),
-> -       .get =3D quad8_count_mode_get,
-> -       .set =3D quad8_count_mode_set
-> -};
-> -
-> -static ssize_t quad8_count_direction_read(struct counter_device *counter=
-,
-> -       struct counter_count *count, void *priv, char *buf)
-> -{
-> -       enum counter_count_direction dir;
-> -
-> -       quad8_direction_get(counter, count, &dir);
-> -
-> -       return sprintf(buf, "%s\n", counter_count_direction_str[dir]);
-> -}
-> -
-> -static ssize_t quad8_count_enable_read(struct counter_device *counter,
-> -       struct counter_count *count, void *private, char *buf)
-> +static int quad8_count_enable_read(struct counter_device *counter,
-> +                                  struct counter_count *count, u8 *enabl=
-e)
->  {
->         const struct quad8 *const priv =3D counter->priv;
->
-> -       return sprintf(buf, "%u\n", priv->ab_enable[count->id]);
-> +       *enable =3D priv->ab_enable[count->id];
-> +
-> +       return 0;
->  }
->
-> -static ssize_t quad8_count_enable_write(struct counter_device *counter,
-> -       struct counter_count *count, void *private, const char *buf, size=
-_t len)
-> +static int quad8_count_enable_write(struct counter_device *counter,
-> +                                   struct counter_count *count, u8 enabl=
-e)
->  {
->         struct quad8 *const priv =3D counter->priv;
->         const int base_offset =3D priv->base + 2 * count->id;
-> -       int err;
-> -       bool ab_enable;
->         unsigned int ior_cfg;
->
-> -       err =3D kstrtobool(buf, &ab_enable);
-> -       if (err)
-> -               return err;
-> -
->         mutex_lock(&priv->lock);
->
-> -       priv->ab_enable[count->id] =3D ab_enable;
-> +       priv->ab_enable[count->id] =3D enable;
->
-> -       ior_cfg =3D ab_enable | priv->preset_enable[count->id] << 1;
-> +       ior_cfg =3D enable | priv->preset_enable[count->id] << 1;
->
->         /* Load I/O control configuration */
->         outb(QUAD8_CTR_IOR | ior_cfg, base_offset + 1);
->
->         mutex_unlock(&priv->lock);
->
-> -       return len;
-> +       return 0;
->  }
->
->  static const char *const quad8_noise_error_states[] =3D {
-> @@ -617,7 +585,7 @@ static const char *const quad8_noise_error_states[] =
-=3D {
->  };
->
->  static int quad8_error_noise_get(struct counter_device *counter,
-> -       struct counter_count *count, size_t *noise_error)
-> +                                struct counter_count *count, u32 *noise_=
-error)
->  {
->         const struct quad8 *const priv =3D counter->priv;
->         const int base_offset =3D priv->base + 2 * count->id + 1;
-> @@ -627,18 +595,14 @@ static int quad8_error_noise_get(struct counter_dev=
-ice *counter,
->         return 0;
->  }
->
-> -static struct counter_count_enum_ext quad8_error_noise_enum =3D {
-> -       .items =3D quad8_noise_error_states,
-> -       .num_items =3D ARRAY_SIZE(quad8_noise_error_states),
-> -       .get =3D quad8_error_noise_get
-> -};
-> -
-> -static ssize_t quad8_count_preset_read(struct counter_device *counter,
-> -       struct counter_count *count, void *private, char *buf)
-> +static int quad8_count_preset_read(struct counter_device *counter,
-> +                                  struct counter_count *count, u64 *pres=
-et)
->  {
->         const struct quad8 *const priv =3D counter->priv;
->
-> -       return sprintf(buf, "%u\n", priv->preset[count->id]);
-> +       *preset =3D priv->preset[count->id];
-> +
-> +       return 0;
->  }
->
->  static void quad8_preset_register_set(struct quad8 *const priv, const in=
-t id,
-> @@ -657,16 +621,10 @@ static void quad8_preset_register_set(struct quad8 =
-*const priv, const int id,
->                 outb(preset >> (8 * i), base_offset);
->  }
->
-> -static ssize_t quad8_count_preset_write(struct counter_device *counter,
-> -       struct counter_count *count, void *private, const char *buf, size=
-_t len)
-> +static int quad8_count_preset_write(struct counter_device *counter,
-> +                                   struct counter_count *count, u64 pres=
-et)
->  {
->         struct quad8 *const priv =3D counter->priv;
-> -       unsigned int preset;
-> -       int ret;
-> -
-> -       ret =3D kstrtouint(buf, 0, &preset);
-> -       if (ret)
-> -               return ret;
->
->         /* Only 24-bit values are supported */
->         if (preset > 0xFFFFFF)
-> @@ -678,11 +636,11 @@ static ssize_t quad8_count_preset_write(struct coun=
-ter_device *counter,
->
->         mutex_unlock(&priv->lock);
->
-> -       return len;
-> +       return 0;
->  }
->
-> -static ssize_t quad8_count_ceiling_read(struct counter_device *counter,
-> -       struct counter_count *count, void *private, char *buf)
-> +static int quad8_count_ceiling_read(struct counter_device *counter,
-> +                                   struct counter_count *count, u64 *cei=
-ling)
->  {
->         struct quad8 *const priv =3D counter->priv;
->
-> @@ -692,26 +650,23 @@ static ssize_t quad8_count_ceiling_read(struct coun=
-ter_device *counter,
->         switch (priv->count_mode[count->id]) {
->         case 1:
->         case 3:
-> -               mutex_unlock(&priv->lock);
-> -               return sprintf(buf, "%u\n", priv->preset[count->id]);
-> +               *ceiling =3D priv->preset[count->id];
-> +               break;
-> +       default:
-> +               /* By default 0x1FFFFFF (25 bits unsigned) is maximum cou=
-nt */
-> +               *ceiling =3D 0x1FFFFFF;
-> +               break;
->         }
->
->         mutex_unlock(&priv->lock);
->
-> -       /* By default 0x1FFFFFF (25 bits unsigned) is maximum count */
-> -       return sprintf(buf, "33554431\n");
-> +       return 0;
->  }
->
-> -static ssize_t quad8_count_ceiling_write(struct counter_device *counter,
-> -       struct counter_count *count, void *private, const char *buf, size=
-_t len)
-> +static int quad8_count_ceiling_write(struct counter_device *counter,
-> +                                    struct counter_count *count, u64 cei=
-ling)
->  {
->         struct quad8 *const priv =3D counter->priv;
-> -       unsigned int ceiling;
-> -       int ret;
-> -
-> -       ret =3D kstrtouint(buf, 0, &ceiling);
-> -       if (ret)
-> -               return ret;
->
->         /* Only 24-bit values are supported */
->         if (ceiling > 0xFFFFFF)
-> @@ -725,7 +680,7 @@ static ssize_t quad8_count_ceiling_write(struct count=
-er_device *counter,
->         case 3:
->                 quad8_preset_register_set(priv, count->id, ceiling);
->                 mutex_unlock(&priv->lock);
-> -               return len;
-> +               return 0;
->         }
->
->         mutex_unlock(&priv->lock);
-> @@ -733,27 +688,25 @@ static ssize_t quad8_count_ceiling_write(struct cou=
-nter_device *counter,
->         return -EINVAL;
->  }
->
-> -static ssize_t quad8_count_preset_enable_read(struct counter_device *cou=
-nter,
-> -       struct counter_count *count, void *private, char *buf)
-> +static int quad8_count_preset_enable_read(struct counter_device *counter=
-,
-> +                                         struct counter_count *count,
-> +                                         u8 *preset_enable)
->  {
->         const struct quad8 *const priv =3D counter->priv;
->
-> -       return sprintf(buf, "%u\n", !priv->preset_enable[count->id]);
-> +       *preset_enable =3D !priv->preset_enable[count->id];
-> +
-> +       return 0;
->  }
->
-> -static ssize_t quad8_count_preset_enable_write(struct counter_device *co=
-unter,
-> -       struct counter_count *count, void *private, const char *buf, size=
-_t len)
-> +static int quad8_count_preset_enable_write(struct counter_device *counte=
-r,
-> +                                          struct counter_count *count,
-> +                                          u8 preset_enable)
->  {
->         struct quad8 *const priv =3D counter->priv;
->         const int base_offset =3D priv->base + 2 * count->id + 1;
-> -       bool preset_enable;
-> -       int ret;
->         unsigned int ior_cfg;
->
-> -       ret =3D kstrtobool(buf, &preset_enable);
-> -       if (ret)
-> -               return ret;
-> -
->         /* Preset enable is active low in Input/Output Control register *=
-/
->         preset_enable =3D !preset_enable;
->
-> @@ -761,25 +714,24 @@ static ssize_t quad8_count_preset_enable_write(stru=
-ct counter_device *counter,
->
->         priv->preset_enable[count->id] =3D preset_enable;
->
-> -       ior_cfg =3D priv->ab_enable[count->id] | (unsigned int)preset_ena=
-ble << 1;
-> +       ior_cfg =3D priv->ab_enable[count->id] | preset_enable << 1;
->
->         /* Load I/O control configuration to Input / Output Control Regis=
-ter */
->         outb(QUAD8_CTR_IOR | ior_cfg, base_offset);
->
->         mutex_unlock(&priv->lock);
->
-> -       return len;
-> +       return 0;
->  }
->
-> -static ssize_t quad8_signal_cable_fault_read(struct counter_device *coun=
-ter,
-> -                                            struct counter_signal *signa=
-l,
-> -                                            void *private, char *buf)
-> +static int quad8_signal_cable_fault_read(struct counter_device *counter,
-> +                                        struct counter_signal *signal,
-> +                                        u8 *cable_fault)
->  {
->         struct quad8 *const priv =3D counter->priv;
->         const size_t channel_id =3D signal->id / 2;
->         bool disabled;
->         unsigned int status;
-> -       unsigned int fault;
->
->         mutex_lock(&priv->lock);
->
-> @@ -796,36 +748,31 @@ static ssize_t quad8_signal_cable_fault_read(struct=
- counter_device *counter,
->         mutex_unlock(&priv->lock);
->
->         /* Mask respective channel and invert logic */
-> -       fault =3D !(status & BIT(channel_id));
-> +       *cable_fault =3D !(status & BIT(channel_id));
->
-> -       return sprintf(buf, "%u\n", fault);
-> +       return 0;
->  }
->
-> -static ssize_t quad8_signal_cable_fault_enable_read(
-> -       struct counter_device *counter, struct counter_signal *signal,
-> -       void *private, char *buf)
-> +static int quad8_signal_cable_fault_enable_read(struct counter_device *c=
-ounter,
-> +                                               struct counter_signal *si=
-gnal,
-> +                                               u8 *enable)
->  {
->         const struct quad8 *const priv =3D counter->priv;
->         const size_t channel_id =3D signal->id / 2;
-> -       const unsigned int enb =3D !!(priv->cable_fault_enable & BIT(chan=
-nel_id));
->
-> -       return sprintf(buf, "%u\n", enb);
-> +       *enable =3D !!(priv->cable_fault_enable & BIT(channel_id));
-> +
-> +       return 0;
->  }
->
-> -static ssize_t quad8_signal_cable_fault_enable_write(
-> -       struct counter_device *counter, struct counter_signal *signal,
-> -       void *private, const char *buf, size_t len)
-> +static int quad8_signal_cable_fault_enable_write(struct counter_device *=
-counter,
-> +                                                struct counter_signal *s=
-ignal,
-> +                                                u8 enable)
->  {
->         struct quad8 *const priv =3D counter->priv;
->         const size_t channel_id =3D signal->id / 2;
-> -       bool enable;
-> -       int ret;
->         unsigned int cable_fault_enable;
->
-> -       ret =3D kstrtobool(buf, &enable);
-> -       if (ret)
-> -               return ret;
-> -
->         mutex_lock(&priv->lock);
->
->         if (enable)
-> @@ -840,31 +787,27 @@ static ssize_t quad8_signal_cable_fault_enable_writ=
-e(
->
->         mutex_unlock(&priv->lock);
->
-> -       return len;
-> +       return 0;
->  }
->
-> -static ssize_t quad8_signal_fck_prescaler_read(struct counter_device *co=
-unter,
-> -       struct counter_signal *signal, void *private, char *buf)
-> +static int quad8_signal_fck_prescaler_read(struct counter_device *counte=
-r,
-> +                                          struct counter_signal *signal,
-> +                                          u8 *prescaler)
->  {
->         const struct quad8 *const priv =3D counter->priv;
-> -       const size_t channel_id =3D signal->id / 2;
->
-> -       return sprintf(buf, "%u\n", priv->fck_prescaler[channel_id]);
-> +       *prescaler =3D priv->fck_prescaler[signal->id / 2];
-> +
-> +       return 0;
->  }
->
-> -static ssize_t quad8_signal_fck_prescaler_write(struct counter_device *c=
-ounter,
-> -       struct counter_signal *signal, void *private, const char *buf,
-> -       size_t len)
-> +static int quad8_signal_fck_prescaler_write(struct counter_device *count=
-er,
-> +                                           struct counter_signal *signal=
-,
-> +                                           u8 prescaler)
->  {
->         struct quad8 *const priv =3D counter->priv;
->         const size_t channel_id =3D signal->id / 2;
->         const int base_offset =3D priv->base + 2 * channel_id;
-> -       u8 prescaler;
-> -       int ret;
-> -
-> -       ret =3D kstrtou8(buf, 0, &prescaler);
-> -       if (ret)
-> -               return ret;
->
->         mutex_lock(&priv->lock);
->
-> @@ -880,31 +823,30 @@ static ssize_t quad8_signal_fck_prescaler_write(str=
-uct counter_device *counter,
->
->         mutex_unlock(&priv->lock);
->
-> -       return len;
-> +       return 0;
->  }
->
-> -static const struct counter_signal_ext quad8_signal_ext[] =3D {
-> -       {
-> -               .name =3D "cable_fault",
-> -               .read =3D quad8_signal_cable_fault_read
-> -       },
-> -       {
-> -               .name =3D "cable_fault_enable",
-> -               .read =3D quad8_signal_cable_fault_enable_read,
-> -               .write =3D quad8_signal_cable_fault_enable_write
-> -       },
-> -       {
-> -               .name =3D "filter_clock_prescaler",
-> -               .read =3D quad8_signal_fck_prescaler_read,
-> -               .write =3D quad8_signal_fck_prescaler_write
-> -       }
-> +static struct counter_comp quad8_signal_ext[] =3D {
-> +       COUNTER_COMP_SIGNAL_BOOL("cable_fault", quad8_signal_cable_fault_=
-read,
-> +                                NULL),
-> +       COUNTER_COMP_SIGNAL_BOOL("cable_fault_enable",
-> +                                quad8_signal_cable_fault_enable_read,
-> +                                quad8_signal_cable_fault_enable_write),
-> +       COUNTER_COMP_SIGNAL_U8("filter_clock_prescaler",
-> +                              quad8_signal_fck_prescaler_read,
-> +                              quad8_signal_fck_prescaler_write)
->  };
->
-> -static const struct counter_signal_ext quad8_index_ext[] =3D {
-> -       COUNTER_SIGNAL_ENUM("index_polarity", &quad8_index_pol_enum),
-> -       COUNTER_SIGNAL_ENUM_AVAILABLE("index_polarity", &quad8_index_pol_=
-enum),
-> -       COUNTER_SIGNAL_ENUM("synchronous_mode", &quad8_syn_mode_enum),
-> -       COUNTER_SIGNAL_ENUM_AVAILABLE("synchronous_mode", &quad8_syn_mode=
-_enum)
-> +static DEFINE_COUNTER_ENUM(quad8_index_pol_enum, quad8_index_polarity_mo=
-des);
-> +static DEFINE_COUNTER_ENUM(quad8_synch_mode_enum, quad8_synchronous_mode=
-s);
-> +
-> +static struct counter_comp quad8_index_ext[] =3D {
-> +       COUNTER_COMP_SIGNAL_ENUM("index_polarity", quad8_index_polarity_g=
-et,
-> +                                quad8_index_polarity_set,
-> +                                quad8_index_pol_enum),
-> +       COUNTER_COMP_SIGNAL_ENUM("synchronous_mode", quad8_synchronous_mo=
-de_get,
-> +                                quad8_synchronous_mode_set,
-> +                                quad8_synch_mode_enum),
->  };
->
->  #define QUAD8_QUAD_SIGNAL(_id, _name) {                \
-> @@ -973,39 +915,30 @@ static struct counter_synapse quad8_count_synapses[=
-][3] =3D {
->         QUAD8_COUNT_SYNAPSES(6), QUAD8_COUNT_SYNAPSES(7)
->  };
->
-> -static const struct counter_count_ext quad8_count_ext[] =3D {
-> -       {
-> -               .name =3D "ceiling",
-> -               .read =3D quad8_count_ceiling_read,
-> -               .write =3D quad8_count_ceiling_write
-> -       },
-> -       {
-> -               .name =3D "floor",
-> -               .read =3D quad8_count_floor_read
-> -       },
-> -       COUNTER_COUNT_ENUM("count_mode", &quad8_cnt_mode_enum),
-> -       COUNTER_COUNT_ENUM_AVAILABLE("count_mode", &quad8_cnt_mode_enum),
-> -       {
-> -               .name =3D "direction",
-> -               .read =3D quad8_count_direction_read
-> -       },
-> -       {
-> -               .name =3D "enable",
-> -               .read =3D quad8_count_enable_read,
-> -               .write =3D quad8_count_enable_write
-> -       },
-> -       COUNTER_COUNT_ENUM("error_noise", &quad8_error_noise_enum),
-> -       COUNTER_COUNT_ENUM_AVAILABLE("error_noise", &quad8_error_noise_en=
-um),
-> -       {
-> -               .name =3D "preset",
-> -               .read =3D quad8_count_preset_read,
-> -               .write =3D quad8_count_preset_write
-> -       },
-> -       {
-> -               .name =3D "preset_enable",
-> -               .read =3D quad8_count_preset_enable_read,
-> -               .write =3D quad8_count_preset_enable_write
-> -       }
-> +static const enum counter_count_mode quad8_cnt_modes[] =3D {
-> +       COUNTER_COUNT_MODE_NORMAL,
-> +       COUNTER_COUNT_MODE_RANGE_LIMIT,
-> +       COUNTER_COUNT_MODE_NON_RECYCLE,
-> +       COUNTER_COUNT_MODE_MODULO_N,
-> +};
-> +
-> +static DEFINE_COUNTER_AVAILABLE(quad8_count_mode_available, quad8_cnt_mo=
-des);
-> +
-> +static DEFINE_COUNTER_ENUM(quad8_error_noise_enum, quad8_noise_error_sta=
-tes);
-> +
-> +static struct counter_comp quad8_count_ext[] =3D {
-> +       COUNTER_COMP_CEILING(quad8_count_ceiling_read,
-> +                            quad8_count_ceiling_write),
-> +       COUNTER_COMP_FLOOR(quad8_count_floor_read, NULL),
-> +       COUNTER_COMP_COUNT_MODE(quad8_count_mode_read, quad8_count_mode_w=
-rite,
-> +                               quad8_count_mode_available),
-> +       COUNTER_COMP_DIRECTION(quad8_direction_read),
-> +       COUNTER_COMP_ENABLE(quad8_count_enable_read, quad8_count_enable_w=
-rite),
-> +       COUNTER_COMP_COUNT_ENUM("error_noise", quad8_error_noise_get, NUL=
-L,
-> +                               quad8_error_noise_enum),
-> +       COUNTER_COMP_PRESET(quad8_count_preset_read, quad8_count_preset_w=
-rite),
-> +       COUNTER_COMP_PRESET_ENABLE(quad8_count_preset_enable_read,
-> +                                  quad8_count_preset_enable_write),
->  };
->
->  #define QUAD8_COUNT(_id, _cntname) {                                   \
-> diff --git a/drivers/counter/Makefile b/drivers/counter/Makefile
-> index 19742e6f5e3e..1ab7e087fdc2 100644
-> --- a/drivers/counter/Makefile
-> +++ b/drivers/counter/Makefile
-> @@ -4,6 +4,7 @@
->  #
->
->  obj-$(CONFIG_COUNTER) +=3D counter.o
-> +counter-y :=3D counter-core.o counter-sysfs.o
->
->  obj-$(CONFIG_104_QUAD_8)       +=3D 104-quad-8.o
->  obj-$(CONFIG_INTERRUPT_CNT)            +=3D interrupt-cnt.o
-> diff --git a/drivers/counter/counter-core.c b/drivers/counter/counter-cor=
-e.c
-> new file mode 100644
-> index 000000000000..15f735ef296e
-> --- /dev/null
-> +++ b/drivers/counter/counter-core.c
-> @@ -0,0 +1,145 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Generic Counter interface
-> + * Copyright (C) 2020 William Breathitt Gray
-> + */
-> +#include <linux/counter.h>
-> +#include <linux/device.h>
-> +#include <linux/export.h>
-> +#include <linux/gfp.h>
-> +#include <linux/idr.h>
-> +#include <linux/init.h>
-> +#include <linux/module.h>
-> +
-> +#include "counter-sysfs.h"
-> +
-> +/* Provides a unique ID for each counter device */
-> +static DEFINE_IDA(counter_ida);
-> +
-> +static void counter_device_release(struct device *dev)
-> +{
-> +       struct counter_device *const counter =3D dev_get_drvdata(dev);
-> +
-> +       counter_chrdev_remove(counter);
-> +       ida_free(&counter_ida, dev->id);
-> +}
-> +
-> +static struct device_type counter_device_type =3D {
-> +       .name =3D "counter_device",
-> +       .release =3D counter_device_release,
-> +};
-> +
-> +static struct bus_type counter_bus_type =3D {
-> +       .name =3D "counter",
-> +       .dev_name =3D "counter",
-> +};
-> +
-> +/**
-> + * counter_register - register Counter to the system
-> + * @counter:   pointer to Counter to register
-> + *
-> + * This function registers a Counter to the system. A sysfs "counter" di=
-rectory
-> + * will be created and populated with sysfs attributes correlating with =
-the
-> + * Counter Signals, Synapses, and Counts respectively.
-> + */
-> +int counter_register(struct counter_device *const counter)
-> +{
-> +       struct device *const dev =3D &counter->dev;
-> +       int id;
-> +       int err;
-> +
-> +       /* Acquire unique ID */
-> +       id =3D ida_alloc(&counter_ida, GFP_KERNEL);
-> +       if (id < 0)
-> +               return id;
-> +
-> +       /* Configure device structure for Counter */
-> +       dev->id =3D id;
-> +       dev->type =3D &counter_device_type;
-> +       dev->bus =3D &counter_bus_type;
-> +       if (counter->parent) {
-> +               dev->parent =3D counter->parent;
-> +               dev->of_node =3D counter->parent->of_node;
-> +       }
-> +       device_initialize(dev);
-> +       dev_set_drvdata(dev, counter);
-> +
-> +       /* Add Counter sysfs attributes */
-> +       err =3D counter_sysfs_add(counter);
-> +       if (err < 0)
-> +               goto err_free_id;
-> +
-> +       /* Add device to system */
-> +       err =3D device_add(dev);
-> +       if (err < 0)
-> +               goto err_free_id;
-> +
-> +       return 0;
-> +
-> +err_free_id:
-> +       put_device(dev);
-> +       return err;
-> +}
-> +EXPORT_SYMBOL_GPL(counter_register);
-> +
-> +/**
-> + * counter_unregister - unregister Counter from the system
-> + * @counter:   pointer to Counter to unregister
-> + *
-> + * The Counter is unregistered from the system.
-> + */
-> +void counter_unregister(struct counter_device *const counter)
-> +{
-> +       if (!counter)
-> +               return;
-> +
-> +       device_unregister(&counter->dev);
-> +}
-> +EXPORT_SYMBOL_GPL(counter_unregister);
-> +
-> +static void devm_counter_release(void *counter)
-> +{
-> +       counter_unregister(counter);
-> +}
-> +
-> +/**
-> + * devm_counter_register - Resource-managed counter_register
-> + * @dev:       device to allocate counter_device for
-> + * @counter:   pointer to Counter to register
-> + *
-> + * Managed counter_register. The Counter registered with this function i=
-s
-> + * automatically unregistered on driver detach. This function calls
-> + * counter_register internally. Refer to that function for more informat=
-ion.
-> + *
-> + * RETURNS:
-> + * 0 on success, negative error number on failure.
-> + */
-> +int devm_counter_register(struct device *dev,
-> +                         struct counter_device *const counter)
-> +{
-> +       int err;
-> +
-> +       err =3D counter_register(counter);
-> +       if (err < 0)
-> +               return err;
-> +
-> +       return devm_add_action_or_reset(dev, devm_counter_release, counte=
-r);
-> +}
-> +EXPORT_SYMBOL_GPL(devm_counter_register);
-> +
-> +static int __init counter_init(void)
-> +{
-> +       return bus_register(&counter_bus_type);
-> +}
-> +
-> +static void __exit counter_exit(void)
-> +{
-> +       bus_unregister(&counter_bus_type);
-> +}
-> +
-> +subsys_initcall(counter_init);
-> +module_exit(counter_exit);
-> +
-> +MODULE_AUTHOR("William Breathitt Gray <vilhelm.gray@gmail.com>");
-> +MODULE_DESCRIPTION("Generic Counter interface");
-> +MODULE_LICENSE("GPL v2");
-> diff --git a/drivers/counter/counter-sysfs.c b/drivers/counter/counter-sy=
-sfs.c
-> new file mode 100644
-> index 000000000000..07588130600a
-> --- /dev/null
-> +++ b/drivers/counter/counter-sysfs.c
-> @@ -0,0 +1,846 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Generic Counter sysfs interface
-> + * Copyright (C) 2020 William Breathitt Gray
-> + */
-> +#include <linux/counter.h>
-> +#include <linux/device.h>
-> +#include <linux/err.h>
-> +#include <linux/gfp.h>
-> +#include <linux/kernel.h>
-> +#include <linux/list.h>
-> +#include <linux/string.h>
-> +#include <linux/sysfs.h>
-> +#include <linux/types.h>
-> +
-> +#include "counter-sysfs.h"
-> +
-> +/**
-> + * struct counter_attribute - Counter sysfs attribute
-> + * @dev_attr:  device attribute for sysfs
-> + * @l:         node to add Counter attribute to attribute group list
-> + * @comp:      Counter component callbacks and data
-> + * @scope:     Counter scope of the attribute
-> + * @parent:    pointer to the parent component
-> + */
-> +struct counter_attribute {
-> +       struct device_attribute dev_attr;
-> +       struct list_head l;
-> +
-> +       struct counter_comp comp;
-> +       enum counter_scope scope;
-> +       void *parent;
-> +};
-> +
-> +#define to_counter_attribute(_dev_attr) \
-> +       container_of(_dev_attr, struct counter_attribute, dev_attr)
-> +
-> +/**
-> + * struct counter_attribute_group - container for attribute group
-> + * @name:      name of the attribute group
-> + * @attr_list: list to keep track of created attributes
-> + * @num_attr:  number of attributes
-> + */
-> +struct counter_attribute_group {
-> +       const char *name;
-> +       struct list_head attr_list;
-> +       size_t num_attr;
-> +};
-> +
-> +static const char *const counter_function_str[] =3D {
-> +       [COUNTER_FUNCTION_INCREASE] =3D "increase",
-> +       [COUNTER_FUNCTION_DECREASE] =3D "decrease",
-> +       [COUNTER_FUNCTION_PULSE_DIRECTION] =3D "pulse-direction",
-> +       [COUNTER_FUNCTION_QUADRATURE_X1_A] =3D "quadrature x1 a",
-> +       [COUNTER_FUNCTION_QUADRATURE_X1_B] =3D "quadrature x1 b",
-> +       [COUNTER_FUNCTION_QUADRATURE_X2_A] =3D "quadrature x2 a",
-> +       [COUNTER_FUNCTION_QUADRATURE_X2_B] =3D "quadrature x2 b",
-> +       [COUNTER_FUNCTION_QUADRATURE_X4] =3D "quadrature x4"
-> +};
-> +
-> +static const char *const counter_signal_value_str[] =3D {
-> +       [COUNTER_SIGNAL_LEVEL_LOW] =3D "low",
-> +       [COUNTER_SIGNAL_LEVEL_HIGH] =3D "high"
-> +};
-> +
-> +static const char *const counter_synapse_action_str[] =3D {
-> +       [COUNTER_SYNAPSE_ACTION_NONE] =3D "none",
-> +       [COUNTER_SYNAPSE_ACTION_RISING_EDGE] =3D "rising edge",
-> +       [COUNTER_SYNAPSE_ACTION_FALLING_EDGE] =3D "falling edge",
-> +       [COUNTER_SYNAPSE_ACTION_BOTH_EDGES] =3D "both edges"
-> +};
-> +
-> +static const char *const counter_count_direction_str[] =3D {
-> +       [COUNTER_COUNT_DIRECTION_FORWARD] =3D "forward",
-> +       [COUNTER_COUNT_DIRECTION_BACKWARD] =3D "backward"
-> +};
-> +
-> +static const char *const counter_count_mode_str[] =3D {
-> +       [COUNTER_COUNT_MODE_NORMAL] =3D "normal",
-> +       [COUNTER_COUNT_MODE_RANGE_LIMIT] =3D "range limit",
-> +       [COUNTER_COUNT_MODE_NON_RECYCLE] =3D "non-recycle",
-> +       [COUNTER_COUNT_MODE_MODULO_N] =3D "modulo-n"
-> +};
-> +
-> +static ssize_t counter_comp_u8_show(struct device *dev,
-> +                                   struct device_attribute *attr, char *=
-buf)
-> +{
-> +       const struct counter_attribute *const a =3D to_counter_attribute(=
-attr);
-> +       struct counter_device *const counter =3D dev_get_drvdata(dev);
-> +       int err;
-> +       u8 data =3D 0;
-> +
-> +       switch (a->scope) {
-> +       case COUNTER_SCOPE_DEVICE:
-> +               err =3D a->comp.device_u8_read(counter, &data);
-> +               break;
-> +       case COUNTER_SCOPE_SIGNAL:
-> +               err =3D a->comp.signal_u8_read(counter, a->parent, &data)=
-;
-> +               break;
-> +       case COUNTER_SCOPE_COUNT:
-> +               err =3D a->comp.count_u8_read(counter, a->parent, &data);
-> +               break;
-> +       default:
-> +               return -EINVAL;
-> +       }
-> +       if (err < 0)
-> +               return err;
-> +
-> +       if (a->comp.type =3D=3D COUNTER_COMP_BOOL)
-> +               data =3D !!data;
-> +
-> +       return sprintf(buf, "%u\n", (unsigned int)data);
-> +}
-> +
-> +static ssize_t counter_comp_u8_store(struct device *dev,
-> +                                    struct device_attribute *attr,
-> +                                    const char *buf, size_t len)
-> +{
-> +       const struct counter_attribute *const a =3D to_counter_attribute(=
-attr);
-> +       struct counter_device *const counter =3D dev_get_drvdata(dev);
-> +       int err;
-> +       bool bool_data =3D 0;
-> +       u8 data =3D 0;
-> +
-> +       if (a->comp.type =3D=3D COUNTER_COMP_BOOL) {
-> +               err =3D kstrtobool(buf, &bool_data);
-> +               data =3D bool_data;
-> +       } else
-> +               err =3D kstrtou8(buf, 0, &data);
-> +       if (err < 0)
-> +               return err;
-> +
-> +       switch (a->scope) {
-> +       case COUNTER_SCOPE_DEVICE:
-> +               err =3D a->comp.device_u8_write(counter, data);
-> +               break;
-> +       case COUNTER_SCOPE_SIGNAL:
-> +               err =3D a->comp.signal_u8_write(counter, a->parent, data)=
-;
-> +               break;
-> +       case COUNTER_SCOPE_COUNT:
-> +               err =3D a->comp.count_u8_write(counter, a->parent, data);
-> +               break;
-> +       default:
-> +               return -EINVAL;
-> +       }
-> +       if (err < 0)
-> +               return err;
-> +
-> +       return len;
-> +}
-> +
-> +static ssize_t counter_comp_u32_show(struct device *dev,
-> +                                    struct device_attribute *attr, char =
-*buf)
-> +{
-> +       const struct counter_attribute *const a =3D to_counter_attribute(=
-attr);
-> +       struct counter_device *const counter =3D dev_get_drvdata(dev);
-> +       const struct counter_available *const avail =3D a->comp.priv;
-> +       int err;
-> +       u32 data =3D 0;
-> +
-> +       switch (a->scope) {
-> +       case COUNTER_SCOPE_DEVICE:
-> +               err =3D a->comp.device_u32_read(counter, &data);
-> +               break;
-> +       case COUNTER_SCOPE_SIGNAL:
-> +               err =3D a->comp.signal_u32_read(counter, a->parent, &data=
-);
-> +               break;
-> +       case COUNTER_SCOPE_COUNT:
-> +               if (a->comp.type =3D=3D COUNTER_COMP_SYNAPSE_ACTION)
-> +                       err =3D a->comp.action_read(counter, a->parent,
-> +                                                 a->comp.priv, &data);
-> +               else
-> +                       err =3D a->comp.count_u32_read(counter, a->parent=
-, &data);
-> +               break;
-> +       default:
-> +               return -EINVAL;
-> +       }
-> +       if (err < 0)
-> +               return err;
-> +
-> +       switch (a->comp.type) {
-> +       case COUNTER_COMP_FUNCTION:
-> +               return sysfs_emit(buf, "%s\n", counter_function_str[data]=
-);
-> +       case COUNTER_COMP_SIGNAL_LEVEL:
-> +               return sysfs_emit(buf, "%s\n", counter_signal_value_str[d=
-ata]);
-> +       case COUNTER_COMP_SYNAPSE_ACTION:
-> +               return sysfs_emit(buf, "%s\n", counter_synapse_action_str=
-[data]);
-> +       case COUNTER_COMP_ENUM:
-> +               return sysfs_emit(buf, "%s\n", avail->strs[data]);
-> +       case COUNTER_COMP_COUNT_DIRECTION:
-> +               return sysfs_emit(buf, "%s\n", counter_count_direction_st=
-r[data]);
-> +       case COUNTER_COMP_COUNT_MODE:
-> +               return sysfs_emit(buf, "%s\n", counter_count_mode_str[dat=
-a]);
-> +       default:
-> +               return sprintf(buf, "%u\n", (unsigned int)data);
-> +       }
-> +}
-> +
-> +static int counter_find_enum(u32 *const enum_item, const u32 *const enum=
-s,
-> +                            const size_t num_enums, const char *const bu=
-f,
-> +                            const char *const string_array[])
-> +{
-> +       size_t index;
-> +
-> +       for (index =3D 0; index < num_enums; index++) {
-> +               *enum_item =3D enums[index];
-> +               if (sysfs_streq(buf, string_array[*enum_item]))
-> +                       return 0;
-> +       }
-> +
-> +       return -EINVAL;
-> +}
-> +
-> +static ssize_t counter_comp_u32_store(struct device *dev,
-> +                                     struct device_attribute *attr,
-> +                                     const char *buf, size_t len)
-> +{
-> +       const struct counter_attribute *const a =3D to_counter_attribute(=
-attr);
-> +       struct counter_device *const counter =3D dev_get_drvdata(dev);
-> +       struct counter_count *const count =3D a->parent;
-> +       struct counter_synapse *const synapse =3D a->comp.priv;
-> +       const struct counter_available *const avail =3D a->comp.priv;
-> +       int err;
-> +       u32 data =3D 0;
-> +
-> +       switch (a->comp.type) {
-> +       case COUNTER_COMP_FUNCTION:
-> +               err =3D counter_find_enum(&data, count->functions_list,
-> +                                       count->num_functions, buf,
-> +                                       counter_function_str);
-> +               break;
-> +       case COUNTER_COMP_SYNAPSE_ACTION:
-> +               err =3D counter_find_enum(&data, synapse->actions_list,
-> +                                       synapse->num_actions, buf,
-> +                                       counter_synapse_action_str);
-> +               break;
-> +       case COUNTER_COMP_ENUM:
-> +               err =3D __sysfs_match_string(avail->strs, avail->num_item=
-s, buf);
-> +               data =3D err;
-> +               break;
-> +       case COUNTER_COMP_COUNT_MODE:
-> +               err =3D counter_find_enum(&data, avail->enums, avail->num=
-_items,
-> +                                       buf, counter_count_mode_str);
-> +               break;
-> +       default:
-> +               err =3D kstrtou32(buf, 0, &data);
-> +               break;
-> +       }
-> +       if (err < 0)
-> +               return err;
-> +
-> +       switch (a->scope) {
-> +       case COUNTER_SCOPE_DEVICE:
-> +               err =3D a->comp.device_u32_write(counter, data);
-> +               break;
-> +       case COUNTER_SCOPE_SIGNAL:
-> +               err =3D a->comp.signal_u32_write(counter, a->parent, data=
-);
-> +               break;
-> +       case COUNTER_SCOPE_COUNT:
-> +               if (a->comp.type =3D=3D COUNTER_COMP_SYNAPSE_ACTION)
-> +                       err =3D a->comp.action_write(counter, count, syna=
-pse,
-> +                                                  data);
-> +               else
-> +                       err =3D a->comp.count_u32_write(counter, count, d=
-ata);
-> +               break;
-> +       default:
-> +               return -EINVAL;
-> +       }
-> +       if (err < 0)
-> +               return err;
-> +
-> +       return len;
-> +}
-> +
-> +static ssize_t counter_comp_u64_show(struct device *dev,
-> +                                    struct device_attribute *attr, char =
-*buf)
-> +{
-> +       const struct counter_attribute *const a =3D to_counter_attribute(=
-attr);
-> +       struct counter_device *const counter =3D dev_get_drvdata(dev);
-> +       int err;
-> +       u64 data =3D 0;
-> +
-> +       switch (a->scope) {
-> +       case COUNTER_SCOPE_DEVICE:
-> +               err =3D a->comp.device_u64_read(counter, &data);
-> +               break;
-> +       case COUNTER_SCOPE_SIGNAL:
-> +               err =3D a->comp.signal_u64_read(counter, a->parent, &data=
-);
-> +               break;
-> +       case COUNTER_SCOPE_COUNT:
-> +               err =3D a->comp.count_u64_read(counter, a->parent, &data)=
-;
-> +               break;
-> +       default:
-> +               return -EINVAL;
-> +       }
-> +       if (err < 0)
-> +               return err;
-> +
-> +       return sprintf(buf, "%llu\n", (unsigned long long)data);
-> +}
-> +
-> +static ssize_t counter_comp_u64_store(struct device *dev,
-> +                                     struct device_attribute *attr,
-> +                                     const char *buf, size_t len)
-> +{
-> +       const struct counter_attribute *const a =3D to_counter_attribute(=
-attr);
-> +       struct counter_device *const counter =3D dev_get_drvdata(dev);
-> +       int err;
-> +       u64 data =3D 0;
-> +
-> +       err =3D kstrtou64(buf, 0, &data);
-> +       if (err < 0)
-> +               return err;
-> +
-> +       switch (a->scope) {
-> +       case COUNTER_SCOPE_DEVICE:
-> +               err =3D a->comp.device_u64_write(counter, data);
-> +               break;
-> +       case COUNTER_SCOPE_SIGNAL:
-> +               err =3D a->comp.signal_u64_write(counter, a->parent, data=
-);
-> +               break;
-> +       case COUNTER_SCOPE_COUNT:
-> +               err =3D a->comp.count_u64_write(counter, a->parent, data)=
-;
-> +               break;
-> +       default:
-> +               return -EINVAL;
-> +       }
-> +       if (err < 0)
-> +               return err;
-> +
-> +       return len;
-> +}
-> +
-> +static ssize_t enums_available_show(const u32 *const enums,
-> +                                   const size_t num_enums,
-> +                                   const char *const strs[], char *buf)
-> +{
-> +       size_t len =3D 0;
-> +       size_t index;
-> +
-> +       for (index =3D 0; index < num_enums; index++)
-> +               len +=3D sysfs_emit_at(buf, len, "%s\n", strs[enums[index=
-]]);
-> +
-> +       return len;
-> +}
-> +
-> +static ssize_t strs_available_show(const struct counter_available *const=
- avail,
-> +                                  char *buf)
-> +{
-> +       size_t len =3D 0;
-> +       size_t index;
-> +
-> +       for (index =3D 0; index < avail->num_items; index++)
-> +               len +=3D sysfs_emit_at(buf, len, "%s\n", avail->strs[inde=
-x]);
-> +
-> +       return len;
-> +}
-> +
-> +static ssize_t counter_comp_available_show(struct device *dev,
-> +                                          struct device_attribute *attr,
-> +                                          char *buf)
-> +{
-> +       const struct counter_attribute *const a =3D to_counter_attribute(=
-attr);
-> +       const struct counter_count *const count =3D a->parent;
-> +       const struct counter_synapse *const synapse =3D a->comp.priv;
-> +       const struct counter_available *const avail =3D a->comp.priv;
-> +
-> +       switch (a->comp.type) {
-> +       case COUNTER_COMP_FUNCTION:
-> +               return enums_available_show(count->functions_list,
-> +                                           count->num_functions,
-> +                                           counter_function_str, buf);
-> +       case COUNTER_COMP_SYNAPSE_ACTION:
-> +               return enums_available_show(synapse->actions_list,
-> +                                           synapse->num_actions,
-> +                                           counter_synapse_action_str, b=
-uf);
-> +       case COUNTER_COMP_ENUM:
-> +               return strs_available_show(avail, buf);
-> +       case COUNTER_COMP_COUNT_MODE:
-> +               return enums_available_show(avail->enums, avail->num_item=
-s,
-> +                                           counter_count_mode_str, buf);
-> +       default:
-> +               return -EINVAL;
-> +       }
-> +}
-> +
-> +static int counter_avail_attr_create(struct device *const dev,
-> +       struct counter_attribute_group *const group,
-> +       const struct counter_comp *const comp, void *const parent)
-> +{
-> +       struct counter_attribute *counter_attr;
-> +       struct device_attribute *dev_attr;
-> +
-> +       /* Allocate Counter attribute */
-> +       counter_attr =3D devm_kzalloc(dev, sizeof(*counter_attr), GFP_KER=
-NEL);
-> +       if (!counter_attr)
-> +               return -ENOMEM;
-> +
-> +       /* Configure Counter attribute */
-> +       counter_attr->comp.type =3D comp->type;
-> +       counter_attr->comp.priv =3D comp->priv;
-> +       counter_attr->parent =3D parent;
-> +
-> +       /* Initialize sysfs attribute */
-> +       dev_attr =3D &counter_attr->dev_attr;
-> +       sysfs_attr_init(&dev_attr->attr);
-> +
-> +       /* Configure device attribute */
-> +       dev_attr->attr.name =3D devm_kasprintf(dev, GFP_KERNEL, "%s_avail=
-able",
-> +                                            comp->name);
-> +       if (!dev_attr->attr.name)
-> +               return -ENOMEM;
-> +       dev_attr->attr.mode =3D 0444;
-> +       dev_attr->show =3D counter_comp_available_show;
-> +
-> +       /* Store list node */
-> +       list_add(&counter_attr->l, &group->attr_list);
-> +       group->num_attr++;
-> +
-> +       return 0;
-> +}
-> +
-> +static int counter_attr_create(struct device *const dev,
-> +                              struct counter_attribute_group *const grou=
-p,
-> +                              const struct counter_comp *const comp,
-> +                              const enum counter_scope scope,
-> +                              void *const parent)
-> +{
-> +       struct counter_attribute *counter_attr;
-> +       struct device_attribute *dev_attr;
-> +
-> +       /* Allocate Counter attribute */
-> +       counter_attr =3D devm_kzalloc(dev, sizeof(*counter_attr), GFP_KER=
-NEL);
-> +       if (!counter_attr)
-> +               return -ENOMEM;
-> +
-> +       /* Configure Counter attribute */
-> +       counter_attr->comp =3D *comp;
-> +       counter_attr->scope =3D scope;
-> +       counter_attr->parent =3D parent;
-> +
-> +       /* Configure device attribute */
-> +       dev_attr =3D &counter_attr->dev_attr;
-> +       sysfs_attr_init(&dev_attr->attr);
-> +       dev_attr->attr.name =3D comp->name;
-> +       switch (comp->type) {
-> +       case COUNTER_COMP_U8:
-> +       case COUNTER_COMP_BOOL:
-> +               if (comp->device_u8_read) {
-> +                       dev_attr->attr.mode |=3D 0444;
-> +                       dev_attr->show =3D counter_comp_u8_show;
-> +               }
-> +               if (comp->device_u8_write) {
-> +                       dev_attr->attr.mode |=3D 0200;
-> +                       dev_attr->store =3D counter_comp_u8_store;
-> +               }
-> +               break;
-> +       case COUNTER_COMP_SIGNAL_LEVEL:
-> +       case COUNTER_COMP_FUNCTION:
-> +       case COUNTER_COMP_SYNAPSE_ACTION:
-> +       case COUNTER_COMP_ENUM:
-> +       case COUNTER_COMP_COUNT_DIRECTION:
-> +       case COUNTER_COMP_COUNT_MODE:
-> +               if (comp->device_u32_read) {
-> +                       dev_attr->attr.mode |=3D 0444;
-> +                       dev_attr->show =3D counter_comp_u32_show;
-> +               }
-> +               if (comp->device_u32_write) {
-> +                       dev_attr->attr.mode |=3D 0200;
-> +                       dev_attr->store =3D counter_comp_u32_store;
-> +               }
-> +               break;
-> +       case COUNTER_COMP_U64:
-> +               if (comp->device_u64_read) {
-> +                       dev_attr->attr.mode |=3D 0444;
-> +                       dev_attr->show =3D counter_comp_u64_show;
-> +               }
-> +               if (comp->device_u64_write) {
-> +                       dev_attr->attr.mode |=3D 0200;
-> +                       dev_attr->store =3D counter_comp_u64_store;
-> +               }
-> +               break;
-> +       default:
-> +               return -EINVAL;
-> +       }
-> +
-> +       /* Store list node */
-> +       list_add(&counter_attr->l, &group->attr_list);
-> +       group->num_attr++;
-> +
-> +       /* Create "*_available" attribute if needed */
-> +       switch (comp->type) {
-> +       case COUNTER_COMP_FUNCTION:
-> +       case COUNTER_COMP_SYNAPSE_ACTION:
-> +       case COUNTER_COMP_ENUM:
-> +       case COUNTER_COMP_COUNT_MODE:
-> +               return counter_avail_attr_create(dev, group, comp, parent=
-);
-> +       default:
-> +               return 0;
-> +       }
-> +}
-> +
-> +static ssize_t counter_comp_name_show(struct device *dev,
-> +                                     struct device_attribute *attr, char=
- *buf)
-> +{
-> +       return sysfs_emit(buf, "%s\n", to_counter_attribute(attr)->comp.n=
-ame);
-> +}
-> +
-> +static int counter_name_attr_create(struct device *const dev,
-> +                                   struct counter_attribute_group *const=
- group,
-> +                                   const char *const name)
-> +{
-> +       struct counter_attribute *counter_attr;
-> +
-> +       /* Allocate Counter attribute */
-> +       counter_attr =3D devm_kzalloc(dev, sizeof(*counter_attr), GFP_KER=
-NEL);
-> +       if (!counter_attr)
-> +               return -ENOMEM;
-> +
-> +       /* Configure Counter attribute */
-> +       counter_attr->comp.name =3D name;
-> +
-> +       /* Configure device attribute */
-> +       sysfs_attr_init(&counter_attr->dev_attr.attr);
-> +       counter_attr->dev_attr.attr.name =3D "name";
-> +       counter_attr->dev_attr.attr.mode =3D 0444;
-> +       counter_attr->dev_attr.show =3D counter_comp_name_show;
-> +
-> +       /* Store list node */
-> +       list_add(&counter_attr->l, &group->attr_list);
-> +       group->num_attr++;
-> +
-> +       return 0;
-> +}
-> +
-> +static struct counter_comp counter_signal_comp =3D {
-> +       .type =3D COUNTER_COMP_SIGNAL_LEVEL,
-> +       .name =3D "signal",
-> +};
-> +
-> +static int counter_signal_attrs_create(struct counter_device *const coun=
-ter,
-> +       struct counter_attribute_group *const group,
-> +       struct counter_signal *const signal)
-> +{
-> +       const enum counter_scope scope =3D COUNTER_SCOPE_SIGNAL;
-> +       struct device *const dev =3D &counter->dev;
-> +       int err;
-> +       struct counter_comp comp;
-> +       size_t i;
-> +
-> +       /* Create main Signal attribute */
-> +       comp =3D counter_signal_comp;
-> +       comp.signal_u32_read =3D counter->ops->signal_read;
-> +       err =3D counter_attr_create(dev, group, &comp, scope, signal);
-> +       if (err < 0)
-> +               return err;
-> +
-> +       /* Create Signal name attribute */
-> +       err =3D counter_name_attr_create(dev, group, signal->name);
-> +       if (err < 0)
-> +               return err;
-> +
-> +       /* Create an attribute for each extension */
-> +       for (i =3D 0; i < signal->num_ext; i++) {
-> +               err =3D counter_attr_create(dev, group, signal->ext + i, =
-scope,
-> +                                         signal);
-> +               if (err < 0)
-> +                       return err;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static int counter_sysfs_signals_add(struct counter_device *const counte=
-r,
-> +       struct counter_attribute_group *const groups)
-> +{
-> +       size_t i;
-> +       int err;
-> +
-> +       /* Add each Signal */
-> +       for (i =3D 0; i < counter->num_signals; i++) {
-> +               /* Generate Signal attribute directory name */
-> +               groups[i].name =3D devm_kasprintf(&counter->dev, GFP_KERN=
-EL,
-> +                                               "signal%zu", i);
-> +               if (!groups[i].name)
-> +                       return -ENOMEM;
-> +
-> +               /* Create all attributes associated with Signal */
-> +               err =3D counter_signal_attrs_create(counter, groups + i,
-> +                                                 counter->signals + i);
-> +               if (err < 0)
-> +                       return err;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static int counter_sysfs_synapses_add(struct counter_device *const count=
-er,
-> +       struct counter_attribute_group *const group,
-> +       struct counter_count *const count)
-> +{
-> +       size_t i;
-> +
-> +       /* Add each Synapse */
-> +       for (i =3D 0; i < count->num_synapses; i++) {
-> +               struct device *const dev =3D &counter->dev;
-> +               struct counter_synapse *synapse;
-> +               size_t id;
-> +               struct counter_comp comp;
-> +               int err;
-> +
-> +               synapse =3D count->synapses + i;
-> +
-> +               /* Generate Synapse action name */
-> +               id =3D synapse->signal - counter->signals;
-> +               comp.name =3D devm_kasprintf(dev, GFP_KERNEL, "signal%zu_=
-action",
-> +                                          id);
-> +               if (!comp.name)
-> +                       return -ENOMEM;
-> +
-> +               /* Create action attribute */
-> +               comp.type =3D COUNTER_COMP_SYNAPSE_ACTION;
-> +               comp.action_read =3D counter->ops->action_read;
-> +               comp.action_write =3D counter->ops->action_write;
-> +               comp.priv =3D synapse;
-> +               err =3D counter_attr_create(dev, group, &comp,
-> +                                         COUNTER_SCOPE_COUNT, count);
-> +               if (err < 0)
-> +                       return err;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static struct counter_comp counter_count_comp =3D
-> +       COUNTER_COMP_COUNT_U64("count", NULL, NULL);
-> +
-> +static struct counter_comp counter_function_comp =3D {
-> +       .type =3D COUNTER_COMP_FUNCTION,
-> +       .name =3D "function",
-> +};
-> +
-> +static int counter_count_attrs_create(struct counter_device *const count=
-er,
-> +       struct counter_attribute_group *const group,
-> +       struct counter_count *const count)
-> +{
-> +       const enum counter_scope scope =3D COUNTER_SCOPE_COUNT;
-> +       struct device *const dev =3D &counter->dev;
-> +       int err;
-> +       struct counter_comp comp;
-> +       size_t i;
-> +
-> +       /* Create main Count attribute */
-> +       comp =3D counter_count_comp;
-> +       comp.count_u64_read =3D counter->ops->count_read;
-> +       comp.count_u64_write =3D counter->ops->count_write;
-> +       err =3D counter_attr_create(dev, group, &comp, scope, count);
-> +       if (err < 0)
-> +               return err;
-> +
-> +       /* Create Count name attribute */
-> +       err =3D counter_name_attr_create(dev, group, count->name);
-> +       if (err < 0)
-> +               return err;
-> +
-> +       /* Create Count function attribute */
-> +       comp =3D counter_function_comp;
-> +       comp.count_u32_read =3D counter->ops->function_read;
-> +       comp.count_u32_write =3D counter->ops->function_write;
-> +       err =3D counter_attr_create(dev, group, &comp, scope, count);
-> +       if (err < 0)
-> +               return err;
-> +
-> +       /* Create an attribute for each extension */
-> +       for (i =3D 0; i < count->num_ext; i++) {
-> +               err =3D counter_attr_create(dev, group, count->ext + i, s=
-cope,
-> +                                         count);
-> +               if (err < 0)
-> +                       return err;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static int counter_sysfs_counts_add(struct counter_device *const counter=
-,
-> +       struct counter_attribute_group *const groups)
-> +{
-> +       size_t i;
-> +       struct counter_count *count;
-> +       int err;
-> +
-> +       /* Add each Count */
-> +       for (i =3D 0; i < counter->num_counts; i++) {
-> +               count =3D counter->counts + i;
-> +
-> +               /* Generate Count attribute directory name */
-> +               groups[i].name =3D devm_kasprintf(&counter->dev, GFP_KERN=
-EL,
-> +                                               "count%zu", i);
-> +               if (!groups[i].name)
-> +                       return -ENOMEM;
-> +
-> +               /* Add sysfs attributes of the Synapses */
-> +               err =3D counter_sysfs_synapses_add(counter, groups + i, c=
-ount);
-> +               if (err < 0)
-> +                       return err;
-> +
-> +               /* Create all attributes associated with Count */
-> +               err =3D counter_count_attrs_create(counter, groups + i, c=
-ount);
-> +               if (err < 0)
-> +                       return err;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static int counter_num_signals_read(struct counter_device *counter, u8 *=
-val)
-> +{
-> +       *val =3D counter->num_signals;
-> +       return 0;
-> +}
-> +
-> +static int counter_num_counts_read(struct counter_device *counter, u8 *v=
-al)
-> +{
-> +       *val =3D counter->num_counts;
-> +       return 0;
-> +}
-> +
-> +static struct counter_comp counter_num_signals_comp =3D
-> +       COUNTER_COMP_DEVICE_U8("num_signals", counter_num_signals_read, N=
-ULL);
-> +
-> +static struct counter_comp counter_num_counts_comp =3D
-> +       COUNTER_COMP_DEVICE_U8("num_counts", counter_num_counts_read, NUL=
-L);
-> +
-> +static int counter_sysfs_attr_add(struct counter_device *const counter,
-> +                                 struct counter_attribute_group *group)
-> +{
-> +       const enum counter_scope scope =3D COUNTER_SCOPE_DEVICE;
-> +       struct device *const dev =3D &counter->dev;
-> +       int err;
-> +       size_t i;
-> +
-> +       /* Add Signals sysfs attributes */
-> +       err =3D counter_sysfs_signals_add(counter, group);
-> +       if (err < 0)
-> +               return err;
-> +       group +=3D counter->num_signals;
-> +
-> +       /* Add Counts sysfs attributes */
-> +       err =3D counter_sysfs_counts_add(counter, group);
-> +       if (err < 0)
-> +               return err;
-> +       group +=3D counter->num_counts;
-> +
-> +       /* Create name attribute */
-> +       err =3D counter_name_attr_create(dev, group, counter->name);
-> +       if (err < 0)
-> +               return err;
-> +
-> +       /* Create num_signals attribute */
-> +       err =3D counter_attr_create(dev, group, &counter_num_signals_comp=
-, scope,
-> +                                 NULL);
-> +       if (err < 0)
-> +               return err;
-> +
-> +       /* Create num_counts attribute */
-> +       err =3D counter_attr_create(dev, group, &counter_num_counts_comp,=
- scope,
-> +                                 NULL);
-> +       if (err < 0)
-> +               return err;
-> +
-> +       /* Create an attribute for each extension */
-> +       for (i =3D 0; i < counter->num_ext; i++) {
-> +               err =3D counter_attr_create(dev, group, counter->ext + i,=
- scope,
-> +                                         NULL);
-> +               if (err < 0)
-> +                       return err;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +/**
-> + * counter_sysfs_add - Adds Counter sysfs attributes to the device struc=
-ture
-> + * @counter:   Pointer to the Counter device structure
-> + *
-> + * Counter sysfs attributes are created and added to the respective devi=
-ce
-> + * structure for later registration to the system. Resource-managed memo=
-ry
-> + * allocation is performed by this function, and this memory should be f=
-reed
-> + * when no longer needed (automatically by a device_unregister call, or
-> + * manually by a devres_release_all call).
-> + */
-> +int counter_sysfs_add(struct counter_device *const counter)
-> +{
-> +       struct device *const dev =3D &counter->dev;
-> +       const size_t num_groups =3D counter->num_signals + counter->num_c=
-ounts + 1;
-> +       struct counter_attribute_group *groups;
-> +       size_t i, j;
-> +       int err;
-> +       struct attribute_group *group;
-> +       struct counter_attribute *p;
-> +
-> +       /* Allocate space for attribute groups (signals, counts, and ext)=
- */
-> +       groups =3D devm_kcalloc(dev, num_groups, sizeof(*groups), GFP_KER=
-NEL);
-> +       if (!groups)
-> +               return -ENOMEM;
-> +
-> +       /* Initialize attribute lists */
-> +       for (i =3D 0; i < num_groups; i++)
-> +               INIT_LIST_HEAD(&groups[i].attr_list);
-> +
-> +       /* Add Counter device sysfs attributes */
-> +       err =3D counter_sysfs_attr_add(counter, groups);
-> +       if (err < 0)
-> +               return err;
-> +
-> +       /* Allocate attribute groups for association with device */
-> +       dev->groups =3D devm_kcalloc(dev, num_groups + 1, sizeof(*dev->gr=
-oups),
-> +                                  GFP_KERNEL);
-> +       if (!dev->groups)
-> +               return -ENOMEM;
-> +
-> +       /* Prepare each group of attributes for association */
-> +       for (i =3D 0; i < num_groups; i++) {
-> +               /* Allocate space for attribute group */
-> +               group =3D devm_kzalloc(dev, sizeof(*group), GFP_KERNEL);
-> +               if (!group)
-> +                       return -ENOMEM;
-> +               group->name =3D groups[i].name;
-> +
-> +               /* Allocate space for attribute pointers */
-> +               group->attrs =3D devm_kcalloc(dev, groups[i].num_attr + 1=
-,
-> +                                           sizeof(*group->attrs), GFP_KE=
-RNEL);
-> +               if (!group->attrs)
-> +                       return -ENOMEM;
-> +
-> +               /* Add attribute pointers to attribute group */
-> +               j =3D 0;
-> +               list_for_each_entry(p, &groups[i].attr_list, l)
-> +                       group->attrs[j++] =3D &p->dev_attr.attr;
-> +
-> +               /* Associate attribute group */
-> +               dev->groups[i] =3D group;
-> +       }
-> +
-> +       return 0;
-> +}
-> diff --git a/drivers/counter/counter-sysfs.h b/drivers/counter/counter-sy=
-sfs.h
-> new file mode 100644
-> index 000000000000..14fe566aca0e
-> --- /dev/null
-> +++ b/drivers/counter/counter-sysfs.h
-> @@ -0,0 +1,13 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Counter sysfs interface
-> + * Copyright (C) 2020 William Breathitt Gray
-> + */
-> +#ifndef _COUNTER_SYSFS_H_
-> +#define _COUNTER_SYSFS_H_
-> +
-> +#include <linux/counter.h>
-> +
-> +int counter_sysfs_add(struct counter_device *const counter);
-> +
-> +#endif /* _COUNTER_SYSFS_H_ */
-> diff --git a/drivers/counter/counter.c b/drivers/counter/counter.c
-> deleted file mode 100644
-> index de921e8a3f72..000000000000
-> --- a/drivers/counter/counter.c
-> +++ /dev/null
-> @@ -1,1496 +0,0 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> -/*
-> - * Generic Counter interface
-> - * Copyright (C) 2018 William Breathitt Gray
-> - */
-> -#include <linux/counter.h>
-> -#include <linux/device.h>
-> -#include <linux/err.h>
-> -#include <linux/export.h>
-> -#include <linux/fs.h>
-> -#include <linux/gfp.h>
-> -#include <linux/idr.h>
-> -#include <linux/init.h>
-> -#include <linux/kernel.h>
-> -#include <linux/list.h>
-> -#include <linux/module.h>
-> -#include <linux/printk.h>
-> -#include <linux/slab.h>
-> -#include <linux/string.h>
-> -#include <linux/sysfs.h>
-> -#include <linux/types.h>
-> -
-> -const char *const counter_count_direction_str[2] =3D {
-> -       [COUNTER_COUNT_DIRECTION_FORWARD] =3D "forward",
-> -       [COUNTER_COUNT_DIRECTION_BACKWARD] =3D "backward"
-> -};
-> -EXPORT_SYMBOL_GPL(counter_count_direction_str);
-> -
-> -const char *const counter_count_mode_str[4] =3D {
-> -       [COUNTER_COUNT_MODE_NORMAL] =3D "normal",
-> -       [COUNTER_COUNT_MODE_RANGE_LIMIT] =3D "range limit",
-> -       [COUNTER_COUNT_MODE_NON_RECYCLE] =3D "non-recycle",
-> -       [COUNTER_COUNT_MODE_MODULO_N] =3D "modulo-n"
-> -};
-> -EXPORT_SYMBOL_GPL(counter_count_mode_str);
-> -
-> -ssize_t counter_signal_enum_read(struct counter_device *counter,
-> -                                struct counter_signal *signal, void *pri=
-v,
-> -                                char *buf)
-> -{
-> -       const struct counter_signal_enum_ext *const e =3D priv;
-> -       int err;
-> -       size_t index;
-> -
-> -       if (!e->get)
-> -               return -EINVAL;
-> -
-> -       err =3D e->get(counter, signal, &index);
-> -       if (err)
-> -               return err;
-> -
-> -       if (index >=3D e->num_items)
-> -               return -EINVAL;
-> -
-> -       return sprintf(buf, "%s\n", e->items[index]);
-> -}
-> -EXPORT_SYMBOL_GPL(counter_signal_enum_read);
-> -
-> -ssize_t counter_signal_enum_write(struct counter_device *counter,
-> -                                 struct counter_signal *signal, void *pr=
-iv,
-> -                                 const char *buf, size_t len)
-> -{
-> -       const struct counter_signal_enum_ext *const e =3D priv;
-> -       ssize_t index;
-> -       int err;
-> -
-> -       if (!e->set)
-> -               return -EINVAL;
-> -
-> -       index =3D __sysfs_match_string(e->items, e->num_items, buf);
-> -       if (index < 0)
-> -               return index;
-> -
-> -       err =3D e->set(counter, signal, index);
-> -       if (err)
-> -               return err;
-> -
-> -       return len;
-> -}
-> -EXPORT_SYMBOL_GPL(counter_signal_enum_write);
-> -
-> -ssize_t counter_signal_enum_available_read(struct counter_device *counte=
-r,
-> -                                          struct counter_signal *signal,
-> -                                          void *priv, char *buf)
-> -{
-> -       const struct counter_signal_enum_ext *const e =3D priv;
-> -       size_t i;
-> -       size_t len =3D 0;
-> -
-> -       if (!e->num_items)
-> -               return 0;
-> -
-> -       for (i =3D 0; i < e->num_items; i++)
-> -               len +=3D sprintf(buf + len, "%s\n", e->items[i]);
-> -
-> -       return len;
-> -}
-> -EXPORT_SYMBOL_GPL(counter_signal_enum_available_read);
-> -
-> -ssize_t counter_count_enum_read(struct counter_device *counter,
-> -                               struct counter_count *count, void *priv,
-> -                               char *buf)
-> -{
-> -       const struct counter_count_enum_ext *const e =3D priv;
-> -       int err;
-> -       size_t index;
-> -
-> -       if (!e->get)
-> -               return -EINVAL;
-> -
-> -       err =3D e->get(counter, count, &index);
-> -       if (err)
-> -               return err;
-> -
-> -       if (index >=3D e->num_items)
-> -               return -EINVAL;
-> -
-> -       return sprintf(buf, "%s\n", e->items[index]);
-> -}
-> -EXPORT_SYMBOL_GPL(counter_count_enum_read);
-> -
-> -ssize_t counter_count_enum_write(struct counter_device *counter,
-> -                                struct counter_count *count, void *priv,
-> -                                const char *buf, size_t len)
-> -{
-> -       const struct counter_count_enum_ext *const e =3D priv;
-> -       ssize_t index;
-> -       int err;
-> -
-> -       if (!e->set)
-> -               return -EINVAL;
-> -
-> -       index =3D __sysfs_match_string(e->items, e->num_items, buf);
-> -       if (index < 0)
-> -               return index;
-> -
-> -       err =3D e->set(counter, count, index);
-> -       if (err)
-> -               return err;
-> -
-> -       return len;
-> -}
-> -EXPORT_SYMBOL_GPL(counter_count_enum_write);
-> -
-> -ssize_t counter_count_enum_available_read(struct counter_device *counter=
-,
-> -                                         struct counter_count *count,
-> -                                         void *priv, char *buf)
-> -{
-> -       const struct counter_count_enum_ext *const e =3D priv;
-> -       size_t i;
-> -       size_t len =3D 0;
-> -
-> -       if (!e->num_items)
-> -               return 0;
-> -
-> -       for (i =3D 0; i < e->num_items; i++)
-> -               len +=3D sprintf(buf + len, "%s\n", e->items[i]);
-> -
-> -       return len;
-> -}
-> -EXPORT_SYMBOL_GPL(counter_count_enum_available_read);
-> -
-> -ssize_t counter_device_enum_read(struct counter_device *counter, void *p=
-riv,
-> -                                char *buf)
-> -{
-> -       const struct counter_device_enum_ext *const e =3D priv;
-> -       int err;
-> -       size_t index;
-> -
-> -       if (!e->get)
-> -               return -EINVAL;
-> -
-> -       err =3D e->get(counter, &index);
-> -       if (err)
-> -               return err;
-> -
-> -       if (index >=3D e->num_items)
-> -               return -EINVAL;
-> -
-> -       return sprintf(buf, "%s\n", e->items[index]);
-> -}
-> -EXPORT_SYMBOL_GPL(counter_device_enum_read);
-> -
-> -ssize_t counter_device_enum_write(struct counter_device *counter, void *=
-priv,
-> -                                 const char *buf, size_t len)
-> -{
-> -       const struct counter_device_enum_ext *const e =3D priv;
-> -       ssize_t index;
-> -       int err;
-> -
-> -       if (!e->set)
-> -               return -EINVAL;
-> -
-> -       index =3D __sysfs_match_string(e->items, e->num_items, buf);
-> -       if (index < 0)
-> -               return index;
-> -
-> -       err =3D e->set(counter, index);
-> -       if (err)
-> -               return err;
-> -
-> -       return len;
-> -}
-> -EXPORT_SYMBOL_GPL(counter_device_enum_write);
-> -
-> -ssize_t counter_device_enum_available_read(struct counter_device *counte=
-r,
-> -                                          void *priv, char *buf)
-> -{
-> -       const struct counter_device_enum_ext *const e =3D priv;
-> -       size_t i;
-> -       size_t len =3D 0;
-> -
-> -       if (!e->num_items)
-> -               return 0;
-> -
-> -       for (i =3D 0; i < e->num_items; i++)
-> -               len +=3D sprintf(buf + len, "%s\n", e->items[i]);
-> -
-> -       return len;
-> -}
-> -EXPORT_SYMBOL_GPL(counter_device_enum_available_read);
-> -
-> -struct counter_attr_parm {
-> -       struct counter_device_attr_group *group;
-> -       const char *prefix;
-> -       const char *name;
-> -       ssize_t (*show)(struct device *dev, struct device_attribute *attr=
-,
-> -                       char *buf);
-> -       ssize_t (*store)(struct device *dev, struct device_attribute *att=
-r,
-> -                        const char *buf, size_t len);
-> -       void *component;
-> -};
-> -
-> -struct counter_device_attr {
-> -       struct device_attribute dev_attr;
-> -       struct list_head l;
-> -       void *component;
-> -};
-> -
-> -static int counter_attribute_create(const struct counter_attr_parm *cons=
-t parm)
-> -{
-> -       struct counter_device_attr *counter_attr;
-> -       struct device_attribute *dev_attr;
-> -       int err;
-> -       struct list_head *const attr_list =3D &parm->group->attr_list;
-> -
-> -       /* Allocate a Counter device attribute */
-> -       counter_attr =3D kzalloc(sizeof(*counter_attr), GFP_KERNEL);
-> -       if (!counter_attr)
-> -               return -ENOMEM;
-> -       dev_attr =3D &counter_attr->dev_attr;
-> -
-> -       sysfs_attr_init(&dev_attr->attr);
-> -
-> -       /* Configure device attribute */
-> -       dev_attr->attr.name =3D kasprintf(GFP_KERNEL, "%s%s", parm->prefi=
-x,
-> -                                       parm->name);
-> -       if (!dev_attr->attr.name) {
-> -               err =3D -ENOMEM;
-> -               goto err_free_counter_attr;
-> -       }
-> -       if (parm->show) {
-> -               dev_attr->attr.mode |=3D 0444;
-> -               dev_attr->show =3D parm->show;
-> -       }
-> -       if (parm->store) {
-> -               dev_attr->attr.mode |=3D 0200;
-> -               dev_attr->store =3D parm->store;
-> -       }
-> -
-> -       /* Store associated Counter component with attribute */
-> -       counter_attr->component =3D parm->component;
-> -
-> -       /* Keep track of the attribute for later cleanup */
-> -       list_add(&counter_attr->l, attr_list);
-> -       parm->group->num_attr++;
-> -
-> -       return 0;
-> -
-> -err_free_counter_attr:
-> -       kfree(counter_attr);
-> -       return err;
-> -}
-> -
-> -#define to_counter_attr(_dev_attr) \
-> -       container_of(_dev_attr, struct counter_device_attr, dev_attr)
-> -
-> -struct counter_signal_unit {
-> -       struct counter_signal *signal;
-> -};
-> -
-> -static const char *const counter_signal_level_str[] =3D {
-> -       [COUNTER_SIGNAL_LEVEL_LOW] =3D "low",
-> -       [COUNTER_SIGNAL_LEVEL_HIGH] =3D "high"
-> -};
-> -
-> -static ssize_t counter_signal_show(struct device *dev,
-> -                                  struct device_attribute *attr, char *b=
-uf)
-> -{
-> -       struct counter_device *const counter =3D dev_get_drvdata(dev);
-> -       const struct counter_device_attr *const devattr =3D to_counter_at=
-tr(attr);
-> -       const struct counter_signal_unit *const component =3D devattr->co=
-mponent;
-> -       struct counter_signal *const signal =3D component->signal;
-> -       int err;
-> -       enum counter_signal_level level;
-> -
-> -       err =3D counter->ops->signal_read(counter, signal, &level);
-> -       if (err)
-> -               return err;
-> -
-> -       return sprintf(buf, "%s\n", counter_signal_level_str[level]);
-> -}
-> -
-> -struct counter_name_unit {
-> -       const char *name;
-> -};
-> -
-> -static ssize_t counter_device_attr_name_show(struct device *dev,
-> -                                            struct device_attribute *att=
-r,
-> -                                            char *buf)
-> -{
-> -       const struct counter_name_unit *const comp =3D to_counter_attr(at=
-tr)->component;
-> -
-> -       return sprintf(buf, "%s\n", comp->name);
-> -}
-> -
-> -static int counter_name_attribute_create(
-> -       struct counter_device_attr_group *const group,
-> -       const char *const name)
-> -{
-> -       struct counter_name_unit *name_comp;
-> -       struct counter_attr_parm parm;
-> -       int err;
-> -
-> -       /* Skip if no name */
-> -       if (!name)
-> -               return 0;
-> -
-> -       /* Allocate name attribute component */
-> -       name_comp =3D kmalloc(sizeof(*name_comp), GFP_KERNEL);
-> -       if (!name_comp)
-> -               return -ENOMEM;
-> -       name_comp->name =3D name;
-> -
-> -       /* Allocate Signal name attribute */
-> -       parm.group =3D group;
-> -       parm.prefix =3D "";
-> -       parm.name =3D "name";
-> -       parm.show =3D counter_device_attr_name_show;
-> -       parm.store =3D NULL;
-> -       parm.component =3D name_comp;
-> -       err =3D counter_attribute_create(&parm);
-> -       if (err)
-> -               goto err_free_name_comp;
-> -
-> -       return 0;
-> -
-> -err_free_name_comp:
-> -       kfree(name_comp);
-> -       return err;
-> -}
-> -
-> -struct counter_signal_ext_unit {
-> -       struct counter_signal *signal;
-> -       const struct counter_signal_ext *ext;
-> -};
-> -
-> -static ssize_t counter_signal_ext_show(struct device *dev,
-> -                                      struct device_attribute *attr, cha=
-r *buf)
-> -{
-> -       const struct counter_device_attr *const devattr =3D to_counter_at=
-tr(attr);
-> -       const struct counter_signal_ext_unit *const comp =3D devattr->com=
-ponent;
-> -       const struct counter_signal_ext *const ext =3D comp->ext;
-> -
-> -       return ext->read(dev_get_drvdata(dev), comp->signal, ext->priv, b=
-uf);
-> -}
-> -
-> -static ssize_t counter_signal_ext_store(struct device *dev,
-> -                                       struct device_attribute *attr,
-> -                                       const char *buf, size_t len)
-> -{
-> -       const struct counter_device_attr *const devattr =3D to_counter_at=
-tr(attr);
-> -       const struct counter_signal_ext_unit *const comp =3D devattr->com=
-ponent;
-> -       const struct counter_signal_ext *const ext =3D comp->ext;
-> -
-> -       return ext->write(dev_get_drvdata(dev), comp->signal, ext->priv, =
-buf,
-> -               len);
-> -}
-> -
-> -static void counter_device_attr_list_free(struct list_head *attr_list)
-> -{
-> -       struct counter_device_attr *p, *n;
-> -
-> -       list_for_each_entry_safe(p, n, attr_list, l) {
-> -               /* free attribute name and associated component memory */
-> -               kfree(p->dev_attr.attr.name);
-> -               kfree(p->component);
-> -               list_del(&p->l);
-> -               kfree(p);
-> -       }
-> -}
-> -
-> -static int counter_signal_ext_register(
-> -       struct counter_device_attr_group *const group,
-> -       struct counter_signal *const signal)
-> -{
-> -       const size_t num_ext =3D signal->num_ext;
-> -       size_t i;
-> -       const struct counter_signal_ext *ext;
-> -       struct counter_signal_ext_unit *signal_ext_comp;
-> -       struct counter_attr_parm parm;
-> -       int err;
-> -
-> -       /* Create an attribute for each extension */
-> -       for (i =3D 0 ; i < num_ext; i++) {
-> -               ext =3D signal->ext + i;
-> -
-> -               /* Allocate signal_ext attribute component */
-> -               signal_ext_comp =3D kmalloc(sizeof(*signal_ext_comp), GFP=
-_KERNEL);
-> -               if (!signal_ext_comp) {
-> -                       err =3D -ENOMEM;
-> -                       goto err_free_attr_list;
-> -               }
-> -               signal_ext_comp->signal =3D signal;
-> -               signal_ext_comp->ext =3D ext;
-> -
-> -               /* Allocate a Counter device attribute */
-> -               parm.group =3D group;
-> -               parm.prefix =3D "";
-> -               parm.name =3D ext->name;
-> -               parm.show =3D (ext->read) ? counter_signal_ext_show : NUL=
-L;
-> -               parm.store =3D (ext->write) ? counter_signal_ext_store : =
-NULL;
-> -               parm.component =3D signal_ext_comp;
-> -               err =3D counter_attribute_create(&parm);
-> -               if (err) {
-> -                       kfree(signal_ext_comp);
-> -                       goto err_free_attr_list;
-> -               }
-> -       }
-> -
-> -       return 0;
-> -
-> -err_free_attr_list:
-> -       counter_device_attr_list_free(&group->attr_list);
-> -       return err;
-> -}
-> -
-> -static int counter_signal_attributes_create(
-> -       struct counter_device_attr_group *const group,
-> -       const struct counter_device *const counter,
-> -       struct counter_signal *const signal)
-> -{
-> -       struct counter_signal_unit *signal_comp;
-> -       struct counter_attr_parm parm;
-> -       int err;
-> -
-> -       /* Allocate Signal attribute component */
-> -       signal_comp =3D kmalloc(sizeof(*signal_comp), GFP_KERNEL);
-> -       if (!signal_comp)
-> -               return -ENOMEM;
-> -       signal_comp->signal =3D signal;
-> -
-> -       /* Create main Signal attribute */
-> -       parm.group =3D group;
-> -       parm.prefix =3D "";
-> -       parm.name =3D "signal";
-> -       parm.show =3D (counter->ops->signal_read) ? counter_signal_show :=
- NULL;
-> -       parm.store =3D NULL;
-> -       parm.component =3D signal_comp;
-> -       err =3D counter_attribute_create(&parm);
-> -       if (err) {
-> -               kfree(signal_comp);
-> -               return err;
-> -       }
-> -
-> -       /* Create Signal name attribute */
-> -       err =3D counter_name_attribute_create(group, signal->name);
-> -       if (err)
-> -               goto err_free_attr_list;
-> -
-> -       /* Register Signal extension attributes */
-> -       err =3D counter_signal_ext_register(group, signal);
-> -       if (err)
-> -               goto err_free_attr_list;
-> -
-> -       return 0;
-> -
-> -err_free_attr_list:
-> -       counter_device_attr_list_free(&group->attr_list);
-> -       return err;
-> -}
-> -
-> -static int counter_signals_register(
-> -       struct counter_device_attr_group *const groups_list,
-> -       const struct counter_device *const counter)
-> -{
-> -       const size_t num_signals =3D counter->num_signals;
-> -       size_t i;
-> -       struct counter_signal *signal;
-> -       const char *name;
-> -       int err;
-> -
-> -       /* Register each Signal */
-> -       for (i =3D 0; i < num_signals; i++) {
-> -               signal =3D counter->signals + i;
-> -
-> -               /* Generate Signal attribute directory name */
-> -               name =3D kasprintf(GFP_KERNEL, "signal%d", signal->id);
-> -               if (!name) {
-> -                       err =3D -ENOMEM;
-> -                       goto err_free_attr_groups;
-> -               }
-> -               groups_list[i].attr_group.name =3D name;
-> -
-> -               /* Create all attributes associated with Signal */
-> -               err =3D counter_signal_attributes_create(groups_list + i,=
- counter,
-> -                                                      signal);
-> -               if (err)
-> -                       goto err_free_attr_groups;
-> -       }
-> -
-> -       return 0;
-> -
-> -err_free_attr_groups:
-> -       do {
-> -               kfree(groups_list[i].attr_group.name);
-> -               counter_device_attr_list_free(&groups_list[i].attr_list);
-> -       } while (i--);
-> -       return err;
-> -}
-> -
-> -static const char *const counter_synapse_action_str[] =3D {
-> -       [COUNTER_SYNAPSE_ACTION_NONE] =3D "none",
-> -       [COUNTER_SYNAPSE_ACTION_RISING_EDGE] =3D "rising edge",
-> -       [COUNTER_SYNAPSE_ACTION_FALLING_EDGE] =3D "falling edge",
-> -       [COUNTER_SYNAPSE_ACTION_BOTH_EDGES] =3D "both edges"
-> -};
-> -
-> -struct counter_action_unit {
-> -       struct counter_synapse *synapse;
-> -       struct counter_count *count;
-> -};
-> -
-> -static ssize_t counter_action_show(struct device *dev,
-> -                                  struct device_attribute *attr, char *b=
-uf)
-> -{
-> -       const struct counter_device_attr *const devattr =3D to_counter_at=
-tr(attr);
-> -       int err;
-> -       struct counter_device *const counter =3D dev_get_drvdata(dev);
-> -       const struct counter_action_unit *const component =3D devattr->co=
-mponent;
-> -       struct counter_count *const count =3D component->count;
-> -       struct counter_synapse *const synapse =3D component->synapse;
-> -       size_t action_index;
-> -       enum counter_synapse_action action;
-> -
-> -       err =3D counter->ops->action_get(counter, count, synapse, &action=
-_index);
-> -       if (err)
-> -               return err;
-> -
-> -       synapse->action =3D action_index;
-> -
-> -       action =3D synapse->actions_list[action_index];
-> -       return sprintf(buf, "%s\n", counter_synapse_action_str[action]);
-> -}
-> -
-> -static ssize_t counter_action_store(struct device *dev,
-> -                                   struct device_attribute *attr,
-> -                                   const char *buf, size_t len)
-> -{
-> -       const struct counter_device_attr *const devattr =3D to_counter_at=
-tr(attr);
-> -       const struct counter_action_unit *const component =3D devattr->co=
-mponent;
-> -       struct counter_synapse *const synapse =3D component->synapse;
-> -       size_t action_index;
-> -       const size_t num_actions =3D synapse->num_actions;
-> -       enum counter_synapse_action action;
-> -       int err;
-> -       struct counter_device *const counter =3D dev_get_drvdata(dev);
-> -       struct counter_count *const count =3D component->count;
-> -
-> -       /* Find requested action mode */
-> -       for (action_index =3D 0; action_index < num_actions; action_index=
-++) {
-> -               action =3D synapse->actions_list[action_index];
-> -               if (sysfs_streq(buf, counter_synapse_action_str[action]))
-> -                       break;
-> -       }
-> -       /* If requested action mode not found */
-> -       if (action_index >=3D num_actions)
-> -               return -EINVAL;
-> -
-> -       err =3D counter->ops->action_set(counter, count, synapse, action_=
-index);
-> -       if (err)
-> -               return err;
-> -
-> -       synapse->action =3D action_index;
-> -
-> -       return len;
-> -}
-> -
-> -struct counter_action_avail_unit {
-> -       const enum counter_synapse_action *actions_list;
-> -       size_t num_actions;
-> -};
-> -
-> -static ssize_t counter_synapse_action_available_show(struct device *dev,
-> -       struct device_attribute *attr, char *buf)
-> -{
-> -       const struct counter_device_attr *const devattr =3D to_counter_at=
-tr(attr);
-> -       const struct counter_action_avail_unit *const component =3D devat=
-tr->component;
-> -       size_t i;
-> -       enum counter_synapse_action action;
-> -       ssize_t len =3D 0;
-> -
-> -       for (i =3D 0; i < component->num_actions; i++) {
-> -               action =3D component->actions_list[i];
-> -               len +=3D sprintf(buf + len, "%s\n",
-> -                              counter_synapse_action_str[action]);
-> -       }
-> -
-> -       return len;
-> -}
-> -
-> -static int counter_synapses_register(
-> -       struct counter_device_attr_group *const group,
-> -       const struct counter_device *const counter,
-> -       struct counter_count *const count, const char *const count_attr_n=
-ame)
-> -{
-> -       size_t i;
-> -       struct counter_synapse *synapse;
-> -       const char *prefix;
-> -       struct counter_action_unit *action_comp;
-> -       struct counter_attr_parm parm;
-> -       int err;
-> -       struct counter_action_avail_unit *avail_comp;
-> -
-> -       /* Register each Synapse */
-> -       for (i =3D 0; i < count->num_synapses; i++) {
-> -               synapse =3D count->synapses + i;
-> -
-> -               /* Generate attribute prefix */
-> -               prefix =3D kasprintf(GFP_KERNEL, "signal%d_",
-> -                                  synapse->signal->id);
-> -               if (!prefix) {
-> -                       err =3D -ENOMEM;
-> -                       goto err_free_attr_list;
-> -               }
-> -
-> -               /* Allocate action attribute component */
-> -               action_comp =3D kmalloc(sizeof(*action_comp), GFP_KERNEL)=
-;
-> -               if (!action_comp) {
-> -                       err =3D -ENOMEM;
-> -                       goto err_free_prefix;
-> -               }
-> -               action_comp->synapse =3D synapse;
-> -               action_comp->count =3D count;
-> -
-> -               /* Create action attribute */
-> -               parm.group =3D group;
-> -               parm.prefix =3D prefix;
-> -               parm.name =3D "action";
-> -               parm.show =3D (counter->ops->action_get) ? counter_action=
-_show : NULL;
-> -               parm.store =3D (counter->ops->action_set) ? counter_actio=
-n_store : NULL;
-> -               parm.component =3D action_comp;
-> -               err =3D counter_attribute_create(&parm);
-> -               if (err) {
-> -                       kfree(action_comp);
-> -                       goto err_free_prefix;
-> -               }
-> -
-> -               /* Allocate action available attribute component */
-> -               avail_comp =3D kmalloc(sizeof(*avail_comp), GFP_KERNEL);
-> -               if (!avail_comp) {
-> -                       err =3D -ENOMEM;
-> -                       goto err_free_prefix;
-> -               }
-> -               avail_comp->actions_list =3D synapse->actions_list;
-> -               avail_comp->num_actions =3D synapse->num_actions;
-> -
-> -               /* Create action_available attribute */
-> -               parm.group =3D group;
-> -               parm.prefix =3D prefix;
-> -               parm.name =3D "action_available";
-> -               parm.show =3D counter_synapse_action_available_show;
-> -               parm.store =3D NULL;
-> -               parm.component =3D avail_comp;
-> -               err =3D counter_attribute_create(&parm);
-> -               if (err) {
-> -                       kfree(avail_comp);
-> -                       goto err_free_prefix;
-> -               }
-> -
-> -               kfree(prefix);
-> -       }
-> -
-> -       return 0;
-> -
-> -err_free_prefix:
-> -       kfree(prefix);
-> -err_free_attr_list:
-> -       counter_device_attr_list_free(&group->attr_list);
-> -       return err;
-> -}
-> -
-> -struct counter_count_unit {
-> -       struct counter_count *count;
-> -};
-> -
-> -static ssize_t counter_count_show(struct device *dev,
-> -                                 struct device_attribute *attr,
-> -                                 char *buf)
-> -{
-> -       struct counter_device *const counter =3D dev_get_drvdata(dev);
-> -       const struct counter_device_attr *const devattr =3D to_counter_at=
-tr(attr);
-> -       const struct counter_count_unit *const component =3D devattr->com=
-ponent;
-> -       struct counter_count *const count =3D component->count;
-> -       int err;
-> -       unsigned long val;
-> -
-> -       err =3D counter->ops->count_read(counter, count, &val);
-> -       if (err)
-> -               return err;
-> -
-> -       return sprintf(buf, "%lu\n", val);
-> -}
-> -
-> -static ssize_t counter_count_store(struct device *dev,
-> -                                  struct device_attribute *attr,
-> -                                  const char *buf, size_t len)
-> -{
-> -       struct counter_device *const counter =3D dev_get_drvdata(dev);
-> -       const struct counter_device_attr *const devattr =3D to_counter_at=
-tr(attr);
-> -       const struct counter_count_unit *const component =3D devattr->com=
-ponent;
-> -       struct counter_count *const count =3D component->count;
-> -       int err;
-> -       unsigned long val;
-> -
-> -       err =3D kstrtoul(buf, 0, &val);
-> -       if (err)
-> -               return err;
-> -
-> -       err =3D counter->ops->count_write(counter, count, val);
-> -       if (err)
-> -               return err;
-> -
-> -       return len;
-> -}
-> -
-> -static const char *const counter_function_str[] =3D {
-> -       [COUNTER_FUNCTION_INCREASE] =3D "increase",
-> -       [COUNTER_FUNCTION_DECREASE] =3D "decrease",
-> -       [COUNTER_FUNCTION_PULSE_DIRECTION] =3D "pulse-direction",
-> -       [COUNTER_FUNCTION_QUADRATURE_X1_A] =3D "quadrature x1 a",
-> -       [COUNTER_FUNCTION_QUADRATURE_X1_B] =3D "quadrature x1 b",
-> -       [COUNTER_FUNCTION_QUADRATURE_X2_A] =3D "quadrature x2 a",
-> -       [COUNTER_FUNCTION_QUADRATURE_X2_B] =3D "quadrature x2 b",
-> -       [COUNTER_FUNCTION_QUADRATURE_X4] =3D "quadrature x4"
-> -};
-> -
-> -static ssize_t counter_function_show(struct device *dev,
-> -                                    struct device_attribute *attr, char =
-*buf)
-> -{
-> -       int err;
-> -       struct counter_device *const counter =3D dev_get_drvdata(dev);
-> -       const struct counter_device_attr *const devattr =3D to_counter_at=
-tr(attr);
-> -       const struct counter_count_unit *const component =3D devattr->com=
-ponent;
-> -       struct counter_count *const count =3D component->count;
-> -       size_t func_index;
-> -       enum counter_function function;
-> -
-> -       err =3D counter->ops->function_get(counter, count, &func_index);
-> -       if (err)
-> -               return err;
-> -
-> -       count->function =3D func_index;
-> -
-> -       function =3D count->functions_list[func_index];
-> -       return sprintf(buf, "%s\n", counter_function_str[function]);
-> -}
-> -
-> -static ssize_t counter_function_store(struct device *dev,
-> -                                     struct device_attribute *attr,
-> -                                     const char *buf, size_t len)
-> -{
-> -       const struct counter_device_attr *const devattr =3D to_counter_at=
-tr(attr);
-> -       const struct counter_count_unit *const component =3D devattr->com=
-ponent;
-> -       struct counter_count *const count =3D component->count;
-> -       const size_t num_functions =3D count->num_functions;
-> -       size_t func_index;
-> -       enum counter_function function;
-> -       int err;
-> -       struct counter_device *const counter =3D dev_get_drvdata(dev);
-> -
-> -       /* Find requested Count function mode */
-> -       for (func_index =3D 0; func_index < num_functions; func_index++) =
-{
-> -               function =3D count->functions_list[func_index];
-> -               if (sysfs_streq(buf, counter_function_str[function]))
-> -                       break;
-> -       }
-> -       /* Return error if requested Count function mode not found */
-> -       if (func_index >=3D num_functions)
-> -               return -EINVAL;
-> -
-> -       err =3D counter->ops->function_set(counter, count, func_index);
-> -       if (err)
-> -               return err;
-> -
-> -       count->function =3D func_index;
-> -
-> -       return len;
-> -}
-> -
-> -struct counter_count_ext_unit {
-> -       struct counter_count *count;
-> -       const struct counter_count_ext *ext;
-> -};
-> -
-> -static ssize_t counter_count_ext_show(struct device *dev,
-> -                                     struct device_attribute *attr, char=
- *buf)
-> -{
-> -       const struct counter_device_attr *const devattr =3D to_counter_at=
-tr(attr);
-> -       const struct counter_count_ext_unit *const comp =3D devattr->comp=
-onent;
-> -       const struct counter_count_ext *const ext =3D comp->ext;
-> -
-> -       return ext->read(dev_get_drvdata(dev), comp->count, ext->priv, bu=
-f);
-> -}
-> -
-> -static ssize_t counter_count_ext_store(struct device *dev,
-> -                                      struct device_attribute *attr,
-> -                                      const char *buf, size_t len)
-> -{
-> -       const struct counter_device_attr *const devattr =3D to_counter_at=
-tr(attr);
-> -       const struct counter_count_ext_unit *const comp =3D devattr->comp=
-onent;
-> -       const struct counter_count_ext *const ext =3D comp->ext;
-> -
-> -       return ext->write(dev_get_drvdata(dev), comp->count, ext->priv, b=
-uf,
-> -               len);
-> -}
-> -
-> -static int counter_count_ext_register(
-> -       struct counter_device_attr_group *const group,
-> -       struct counter_count *const count)
-> -{
-> -       size_t i;
-> -       const struct counter_count_ext *ext;
-> -       struct counter_count_ext_unit *count_ext_comp;
-> -       struct counter_attr_parm parm;
-> -       int err;
-> -
-> -       /* Create an attribute for each extension */
-> -       for (i =3D 0 ; i < count->num_ext; i++) {
-> -               ext =3D count->ext + i;
-> -
-> -               /* Allocate count_ext attribute component */
-> -               count_ext_comp =3D kmalloc(sizeof(*count_ext_comp), GFP_K=
-ERNEL);
-> -               if (!count_ext_comp) {
-> -                       err =3D -ENOMEM;
-> -                       goto err_free_attr_list;
-> -               }
-> -               count_ext_comp->count =3D count;
-> -               count_ext_comp->ext =3D ext;
-> -
-> -               /* Allocate count_ext attribute */
-> -               parm.group =3D group;
-> -               parm.prefix =3D "";
-> -               parm.name =3D ext->name;
-> -               parm.show =3D (ext->read) ? counter_count_ext_show : NULL=
-;
-> -               parm.store =3D (ext->write) ? counter_count_ext_store : N=
-ULL;
-> -               parm.component =3D count_ext_comp;
-> -               err =3D counter_attribute_create(&parm);
-> -               if (err) {
-> -                       kfree(count_ext_comp);
-> -                       goto err_free_attr_list;
-> -               }
-> -       }
-> -
-> -       return 0;
-> -
-> -err_free_attr_list:
-> -       counter_device_attr_list_free(&group->attr_list);
-> -       return err;
-> -}
-> -
-> -struct counter_func_avail_unit {
-> -       const enum counter_function *functions_list;
-> -       size_t num_functions;
-> -};
-> -
-> -static ssize_t counter_function_available_show(struct device *dev,
-> -       struct device_attribute *attr, char *buf)
-> -{
-> -       const struct counter_device_attr *const devattr =3D to_counter_at=
-tr(attr);
-> -       const struct counter_func_avail_unit *const component =3D devattr=
-->component;
-> -       const enum counter_function *const func_list =3D component->funct=
-ions_list;
-> -       const size_t num_functions =3D component->num_functions;
-> -       size_t i;
-> -       enum counter_function function;
-> -       ssize_t len =3D 0;
-> -
-> -       for (i =3D 0; i < num_functions; i++) {
-> -               function =3D func_list[i];
-> -               len +=3D sprintf(buf + len, "%s\n",
-> -                              counter_function_str[function]);
-> -       }
-> -
-> -       return len;
-> -}
-> -
-> -static int counter_count_attributes_create(
-> -       struct counter_device_attr_group *const group,
-> -       const struct counter_device *const counter,
-> -       struct counter_count *const count)
-> -{
-> -       struct counter_count_unit *count_comp;
-> -       struct counter_attr_parm parm;
-> -       int err;
-> -       struct counter_count_unit *func_comp;
-> -       struct counter_func_avail_unit *avail_comp;
-> -
-> -       /* Allocate count attribute component */
-> -       count_comp =3D kmalloc(sizeof(*count_comp), GFP_KERNEL);
-> -       if (!count_comp)
-> -               return -ENOMEM;
-> -       count_comp->count =3D count;
-> -
-> -       /* Create main Count attribute */
-> -       parm.group =3D group;
-> -       parm.prefix =3D "";
-> -       parm.name =3D "count";
-> -       parm.show =3D (counter->ops->count_read) ? counter_count_show : N=
-ULL;
-> -       parm.store =3D (counter->ops->count_write) ? counter_count_store =
-: NULL;
-> -       parm.component =3D count_comp;
-> -       err =3D counter_attribute_create(&parm);
-> -       if (err) {
-> -               kfree(count_comp);
-> -               return err;
-> -       }
-> -
-> -       /* Allocate function attribute component */
-> -       func_comp =3D kmalloc(sizeof(*func_comp), GFP_KERNEL);
-> -       if (!func_comp) {
-> -               err =3D -ENOMEM;
-> -               goto err_free_attr_list;
-> -       }
-> -       func_comp->count =3D count;
-> -
-> -       /* Create Count function attribute */
-> -       parm.group =3D group;
-> -       parm.prefix =3D "";
-> -       parm.name =3D "function";
-> -       parm.show =3D (counter->ops->function_get) ? counter_function_sho=
-w : NULL;
-> -       parm.store =3D (counter->ops->function_set) ? counter_function_st=
-ore : NULL;
-> -       parm.component =3D func_comp;
-> -       err =3D counter_attribute_create(&parm);
-> -       if (err) {
-> -               kfree(func_comp);
-> -               goto err_free_attr_list;
-> -       }
-> -
-> -       /* Allocate function available attribute component */
-> -       avail_comp =3D kmalloc(sizeof(*avail_comp), GFP_KERNEL);
-> -       if (!avail_comp) {
-> -               err =3D -ENOMEM;
-> -               goto err_free_attr_list;
-> -       }
-> -       avail_comp->functions_list =3D count->functions_list;
-> -       avail_comp->num_functions =3D count->num_functions;
-> -
-> -       /* Create Count function_available attribute */
-> -       parm.group =3D group;
-> -       parm.prefix =3D "";
-> -       parm.name =3D "function_available";
-> -       parm.show =3D counter_function_available_show;
-> -       parm.store =3D NULL;
-> -       parm.component =3D avail_comp;
-> -       err =3D counter_attribute_create(&parm);
-> -       if (err) {
-> -               kfree(avail_comp);
-> -               goto err_free_attr_list;
-> -       }
-> -
-> -       /* Create Count name attribute */
-> -       err =3D counter_name_attribute_create(group, count->name);
-> -       if (err)
-> -               goto err_free_attr_list;
-> -
-> -       /* Register Count extension attributes */
-> -       err =3D counter_count_ext_register(group, count);
-> -       if (err)
-> -               goto err_free_attr_list;
-> -
-> -       return 0;
-> -
-> -err_free_attr_list:
-> -       counter_device_attr_list_free(&group->attr_list);
-> -       return err;
-> -}
-> -
-> -static int counter_counts_register(
-> -       struct counter_device_attr_group *const groups_list,
-> -       const struct counter_device *const counter)
-> -{
-> -       size_t i;
-> -       struct counter_count *count;
-> -       const char *name;
-> -       int err;
-> -
-> -       /* Register each Count */
-> -       for (i =3D 0; i < counter->num_counts; i++) {
-> -               count =3D counter->counts + i;
-> -
-> -               /* Generate Count attribute directory name */
-> -               name =3D kasprintf(GFP_KERNEL, "count%d", count->id);
-> -               if (!name) {
-> -                       err =3D -ENOMEM;
-> -                       goto err_free_attr_groups;
-> -               }
-> -               groups_list[i].attr_group.name =3D name;
-> -
-> -               /* Register the Synapses associated with each Count */
-> -               err =3D counter_synapses_register(groups_list + i, counte=
-r, count,
-> -                                               name);
-> -               if (err)
-> -                       goto err_free_attr_groups;
-> -
-> -               /* Create all attributes associated with Count */
-> -               err =3D counter_count_attributes_create(groups_list + i, =
-counter,
-> -                                                     count);
-> -               if (err)
-> -                       goto err_free_attr_groups;
-> -       }
-> -
-> -       return 0;
-> -
-> -err_free_attr_groups:
-> -       do {
-> -               kfree(groups_list[i].attr_group.name);
-> -               counter_device_attr_list_free(&groups_list[i].attr_list);
-> -       } while (i--);
-> -       return err;
-> -}
-> -
-> -struct counter_size_unit {
-> -       size_t size;
-> -};
-> -
-> -static ssize_t counter_device_attr_size_show(struct device *dev,
-> -                                            struct device_attribute *att=
-r,
-> -                                            char *buf)
-> -{
-> -       const struct counter_size_unit *const comp =3D to_counter_attr(at=
-tr)->component;
-> -
-> -       return sprintf(buf, "%zu\n", comp->size);
-> -}
-> -
-> -static int counter_size_attribute_create(
-> -       struct counter_device_attr_group *const group,
-> -       const size_t size, const char *const name)
-> -{
-> -       struct counter_size_unit *size_comp;
-> -       struct counter_attr_parm parm;
-> -       int err;
-> -
-> -       /* Allocate size attribute component */
-> -       size_comp =3D kmalloc(sizeof(*size_comp), GFP_KERNEL);
-> -       if (!size_comp)
-> -               return -ENOMEM;
-> -       size_comp->size =3D size;
-> -
-> -       parm.group =3D group;
-> -       parm.prefix =3D "";
-> -       parm.name =3D name;
-> -       parm.show =3D counter_device_attr_size_show;
-> -       parm.store =3D NULL;
-> -       parm.component =3D size_comp;
-> -       err =3D counter_attribute_create(&parm);
-> -       if (err)
-> -               goto err_free_size_comp;
-> -
-> -       return 0;
-> -
-> -err_free_size_comp:
-> -       kfree(size_comp);
-> -       return err;
-> -}
-> -
-> -struct counter_ext_unit {
-> -       const struct counter_device_ext *ext;
-> -};
-> -
-> -static ssize_t counter_device_ext_show(struct device *dev,
-> -                                      struct device_attribute *attr, cha=
-r *buf)
-> -{
-> -       const struct counter_device_attr *const devattr =3D to_counter_at=
-tr(attr);
-> -       const struct counter_ext_unit *const component =3D devattr->compo=
-nent;
-> -       const struct counter_device_ext *const ext =3D component->ext;
-> -
-> -       return ext->read(dev_get_drvdata(dev), ext->priv, buf);
-> -}
-> -
-> -static ssize_t counter_device_ext_store(struct device *dev,
-> -                                       struct device_attribute *attr,
-> -                                       const char *buf, size_t len)
-> -{
-> -       const struct counter_device_attr *const devattr =3D to_counter_at=
-tr(attr);
-> -       const struct counter_ext_unit *const component =3D devattr->compo=
-nent;
-> -       const struct counter_device_ext *const ext =3D component->ext;
-> -
-> -       return ext->write(dev_get_drvdata(dev), ext->priv, buf, len);
-> -}
-> -
-> -static int counter_device_ext_register(
-> -       struct counter_device_attr_group *const group,
-> -       struct counter_device *const counter)
-> -{
-> -       size_t i;
-> -       struct counter_ext_unit *ext_comp;
-> -       struct counter_attr_parm parm;
-> -       int err;
-> -
-> -       /* Create an attribute for each extension */
-> -       for (i =3D 0 ; i < counter->num_ext; i++) {
-> -               /* Allocate extension attribute component */
-> -               ext_comp =3D kmalloc(sizeof(*ext_comp), GFP_KERNEL);
-> -               if (!ext_comp) {
-> -                       err =3D -ENOMEM;
-> -                       goto err_free_attr_list;
-> -               }
-> -
-> -               ext_comp->ext =3D counter->ext + i;
-> -
-> -               /* Allocate extension attribute */
-> -               parm.group =3D group;
-> -               parm.prefix =3D "";
-> -               parm.name =3D counter->ext[i].name;
-> -               parm.show =3D (counter->ext[i].read) ? counter_device_ext=
-_show : NULL;
-> -               parm.store =3D (counter->ext[i].write) ? counter_device_e=
-xt_store : NULL;
-> -               parm.component =3D ext_comp;
-> -               err =3D counter_attribute_create(&parm);
-> -               if (err) {
-> -                       kfree(ext_comp);
-> -                       goto err_free_attr_list;
-> -               }
-> -       }
-> -
-> -       return 0;
-> -
-> -err_free_attr_list:
-> -       counter_device_attr_list_free(&group->attr_list);
-> -       return err;
-> -}
-> -
-> -static int counter_global_attr_register(
-> -       struct counter_device_attr_group *const group,
-> -       struct counter_device *const counter)
-> -{
-> -       int err;
-> -
-> -       /* Create name attribute */
-> -       err =3D counter_name_attribute_create(group, counter->name);
-> -       if (err)
-> -               return err;
-> -
-> -       /* Create num_counts attribute */
-> -       err =3D counter_size_attribute_create(group, counter->num_counts,
-> -                                           "num_counts");
-> -       if (err)
-> -               goto err_free_attr_list;
-> -
-> -       /* Create num_signals attribute */
-> -       err =3D counter_size_attribute_create(group, counter->num_signals=
-,
-> -                                           "num_signals");
-> -       if (err)
-> -               goto err_free_attr_list;
-> -
-> -       /* Register Counter device extension attributes */
-> -       err =3D counter_device_ext_register(group, counter);
-> -       if (err)
-> -               goto err_free_attr_list;
-> -
-> -       return 0;
-> -
-> -err_free_attr_list:
-> -       counter_device_attr_list_free(&group->attr_list);
-> -       return err;
-> -}
-> -
-> -static void counter_device_groups_list_free(
-> -       struct counter_device_attr_group *const groups_list,
-> -       const size_t num_groups)
-> -{
-> -       struct counter_device_attr_group *group;
-> -       size_t i;
-> -
-> -       /* loop through all attribute groups (signals, counts, global, et=
-c.) */
-> -       for (i =3D 0; i < num_groups; i++) {
-> -               group =3D groups_list + i;
-> -
-> -               /* free all attribute group and associated attributes mem=
-ory */
-> -               kfree(group->attr_group.name);
-> -               kfree(group->attr_group.attrs);
-> -               counter_device_attr_list_free(&group->attr_list);
-> -       }
-> -
-> -       kfree(groups_list);
-> -}
-> -
-> -static int counter_device_groups_list_prepare(
-> -       struct counter_device *const counter)
-> -{
-> -       const size_t total_num_groups =3D
-> -               counter->num_signals + counter->num_counts + 1;
-> -       struct counter_device_attr_group *groups_list;
-> -       size_t i;
-> -       int err;
-> -       size_t num_groups =3D 0;
-> -
-> -       /* Allocate space for attribute groups (signals, counts, and ext)=
- */
-> -       groups_list =3D kcalloc(total_num_groups, sizeof(*groups_list),
-> -                             GFP_KERNEL);
-> -       if (!groups_list)
-> -               return -ENOMEM;
-> -
-> -       /* Initialize attribute lists */
-> -       for (i =3D 0; i < total_num_groups; i++)
-> -               INIT_LIST_HEAD(&groups_list[i].attr_list);
-> -
-> -       /* Register Signals */
-> -       err =3D counter_signals_register(groups_list, counter);
-> -       if (err)
-> -               goto err_free_groups_list;
-> -       num_groups +=3D counter->num_signals;
-> -
-> -       /* Register Counts and respective Synapses */
-> -       err =3D counter_counts_register(groups_list + num_groups, counter=
-);
-> -       if (err)
-> -               goto err_free_groups_list;
-> -       num_groups +=3D counter->num_counts;
-> -
-> -       /* Register Counter global attributes */
-> -       err =3D counter_global_attr_register(groups_list + num_groups, co=
-unter);
-> -       if (err)
-> -               goto err_free_groups_list;
-> -       num_groups++;
-> -
-> -       /* Store groups_list in device_state */
-> -       counter->device_state->groups_list =3D groups_list;
-> -       counter->device_state->num_groups =3D num_groups;
-> -
-> -       return 0;
-> -
-> -err_free_groups_list:
-> -       counter_device_groups_list_free(groups_list, num_groups);
-> -       return err;
-> -}
-> -
-> -static int counter_device_groups_prepare(
-> -       struct counter_device_state *const device_state)
-> -{
-> -       size_t i, j;
-> -       struct counter_device_attr_group *group;
-> -       int err;
-> -       struct counter_device_attr *p;
-> -
-> -       /* Allocate attribute groups for association with device */
-> -       device_state->groups =3D kcalloc(device_state->num_groups + 1,
-> -                                      sizeof(*device_state->groups),
-> -                                      GFP_KERNEL);
-> -       if (!device_state->groups)
-> -               return -ENOMEM;
-> -
-> -       /* Prepare each group of attributes for association */
-> -       for (i =3D 0; i < device_state->num_groups; i++) {
-> -               group =3D device_state->groups_list + i;
-> -
-> -               /* Allocate space for attribute pointers in attribute gro=
-up */
-> -               group->attr_group.attrs =3D kcalloc(group->num_attr + 1,
-> -                       sizeof(*group->attr_group.attrs), GFP_KERNEL);
-> -               if (!group->attr_group.attrs) {
-> -                       err =3D -ENOMEM;
-> -                       goto err_free_groups;
-> -               }
-> -
-> -               /* Add attribute pointers to attribute group */
-> -               j =3D 0;
-> -               list_for_each_entry(p, &group->attr_list, l)
-> -                       group->attr_group.attrs[j++] =3D &p->dev_attr.att=
-r;
-> -
-> -               /* Group attributes in attribute group */
-> -               device_state->groups[i] =3D &group->attr_group;
-> -       }
-> -       /* Associate attributes with device */
-> -       device_state->dev.groups =3D device_state->groups;
-> -
-> -       return 0;
-> -
-> -err_free_groups:
-> -       do {
-> -               group =3D device_state->groups_list + i;
-> -               kfree(group->attr_group.attrs);
-> -               group->attr_group.attrs =3D NULL;
-> -       } while (i--);
-> -       kfree(device_state->groups);
-> -       return err;
-> -}
-> -
-> -/* Provides a unique ID for each counter device */
-> -static DEFINE_IDA(counter_ida);
-> -
-> -static void counter_device_release(struct device *dev)
-> -{
-> -       struct counter_device *const counter =3D dev_get_drvdata(dev);
-> -       struct counter_device_state *const device_state =3D counter->devi=
-ce_state;
-> -
-> -       kfree(device_state->groups);
-> -       counter_device_groups_list_free(device_state->groups_list,
-> -                                       device_state->num_groups);
-> -       ida_simple_remove(&counter_ida, device_state->id);
-> -       kfree(device_state);
-> -}
-> -
-> -static struct device_type counter_device_type =3D {
-> -       .name =3D "counter_device",
-> -       .release =3D counter_device_release
-> -};
-> -
-> -static struct bus_type counter_bus_type =3D {
-> -       .name =3D "counter"
-> -};
-> -
-> -/**
-> - * counter_register - register Counter to the system
-> - * @counter:   pointer to Counter to register
-> - *
-> - * This function registers a Counter to the system. A sysfs "counter" di=
-rectory
-> - * will be created and populated with sysfs attributes correlating with =
-the
-> - * Counter Signals, Synapses, and Counts respectively.
-> - */
-> -int counter_register(struct counter_device *const counter)
-> -{
-> -       struct counter_device_state *device_state;
-> -       int err;
-> -
-> -       /* Allocate internal state container for Counter device */
-> -       device_state =3D kzalloc(sizeof(*device_state), GFP_KERNEL);
-> -       if (!device_state)
-> -               return -ENOMEM;
-> -       counter->device_state =3D device_state;
-> -
-> -       /* Acquire unique ID */
-> -       device_state->id =3D ida_simple_get(&counter_ida, 0, 0, GFP_KERNE=
-L);
-> -       if (device_state->id < 0) {
-> -               err =3D device_state->id;
-> -               goto err_free_device_state;
-> -       }
-> -
-> -       /* Configure device structure for Counter */
-> -       device_state->dev.type =3D &counter_device_type;
-> -       device_state->dev.bus =3D &counter_bus_type;
-> -       if (counter->parent) {
-> -               device_state->dev.parent =3D counter->parent;
-> -               device_state->dev.of_node =3D counter->parent->of_node;
-> -       }
-> -       dev_set_name(&device_state->dev, "counter%d", device_state->id);
-> -       device_initialize(&device_state->dev);
-> -       dev_set_drvdata(&device_state->dev, counter);
-> -
-> -       /* Prepare device attributes */
-> -       err =3D counter_device_groups_list_prepare(counter);
-> -       if (err)
-> -               goto err_free_id;
-> -
-> -       /* Organize device attributes to groups and match to device */
-> -       err =3D counter_device_groups_prepare(device_state);
-> -       if (err)
-> -               goto err_free_groups_list;
-> -
-> -       /* Add device to system */
-> -       err =3D device_add(&device_state->dev);
-> -       if (err)
-> -               goto err_free_groups;
-> -
-> -       return 0;
-> -
-> -err_free_groups:
-> -       kfree(device_state->groups);
-> -err_free_groups_list:
-> -       counter_device_groups_list_free(device_state->groups_list,
-> -                                       device_state->num_groups);
-> -err_free_id:
-> -       ida_simple_remove(&counter_ida, device_state->id);
-> -err_free_device_state:
-> -       kfree(device_state);
-> -       return err;
-> -}
-> -EXPORT_SYMBOL_GPL(counter_register);
-> -
-> -/**
-> - * counter_unregister - unregister Counter from the system
-> - * @counter:   pointer to Counter to unregister
-> - *
-> - * The Counter is unregistered from the system; all allocated memory is =
-freed.
-> - */
-> -void counter_unregister(struct counter_device *const counter)
-> -{
-> -       if (counter)
-> -               device_del(&counter->device_state->dev);
-> -}
-> -EXPORT_SYMBOL_GPL(counter_unregister);
-> -
-> -static void devm_counter_unreg(struct device *dev, void *res)
-> -{
-> -       counter_unregister(*(struct counter_device **)res);
-> -}
-> -
-> -/**
-> - * devm_counter_register - Resource-managed counter_register
-> - * @dev:       device to allocate counter_device for
-> - * @counter:   pointer to Counter to register
-> - *
-> - * Managed counter_register. The Counter registered with this function i=
-s
-> - * automatically unregistered on driver detach. This function calls
-> - * counter_register internally. Refer to that function for more informat=
-ion.
-> - *
-> - * If an Counter registered with this function needs to be unregistered
-> - * separately, devm_counter_unregister must be used.
-> - *
-> - * RETURNS:
-> - * 0 on success, negative error number on failure.
-> - */
-> -int devm_counter_register(struct device *dev,
-> -                         struct counter_device *const counter)
-> -{
-> -       struct counter_device **ptr;
-> -       int ret;
-> -
-> -       ptr =3D devres_alloc(devm_counter_unreg, sizeof(*ptr), GFP_KERNEL=
-);
-> -       if (!ptr)
-> -               return -ENOMEM;
-> -
-> -       ret =3D counter_register(counter);
-> -       if (!ret) {
-> -               *ptr =3D counter;
-> -               devres_add(dev, ptr);
-> -       } else {
-> -               devres_free(ptr);
-> -       }
-> -
-> -       return ret;
-> -}
-> -EXPORT_SYMBOL_GPL(devm_counter_register);
-> -
-> -static int devm_counter_match(struct device *dev, void *res, void *data)
-> -{
-> -       struct counter_device **r =3D res;
-> -
-> -       if (!r || !*r) {
-> -               WARN_ON(!r || !*r);
-> -               return 0;
-> -       }
-> -
-> -       return *r =3D=3D data;
-> -}
-> -
-> -/**
-> - * devm_counter_unregister - Resource-managed counter_unregister
-> - * @dev:       device this counter_device belongs to
-> - * @counter:   pointer to Counter associated with the device
-> - *
-> - * Unregister Counter registered with devm_counter_register.
-> - */
-> -void devm_counter_unregister(struct device *dev,
-> -                            struct counter_device *const counter)
-> -{
-> -       int rc;
-> -
-> -       rc =3D devres_release(dev, devm_counter_unreg, devm_counter_match=
-,
-> -                           counter);
-> -       WARN_ON(rc);
-> -}
-> -EXPORT_SYMBOL_GPL(devm_counter_unregister);
-> -
-> -static int __init counter_init(void)
-> -{
-> -       return bus_register(&counter_bus_type);
-> -}
-> -
-> -static void __exit counter_exit(void)
-> -{
-> -       bus_unregister(&counter_bus_type);
-> -}
-> -
-> -subsys_initcall(counter_init);
-> -module_exit(counter_exit);
-> -
-> -MODULE_AUTHOR("William Breathitt Gray <vilhelm.gray@gmail.com>");
-> -MODULE_DESCRIPTION("Generic Counter interface");
-> -MODULE_LICENSE("GPL v2");
-> diff --git a/drivers/counter/ftm-quaddec.c b/drivers/counter/ftm-quaddec.=
-c
-> index 53c15f84909b..092a806a46d8 100644
-> --- a/drivers/counter/ftm-quaddec.c
-> +++ b/drivers/counter/ftm-quaddec.c
-> @@ -14,6 +14,7 @@
->  #include <linux/mutex.h>
->  #include <linux/counter.h>
->  #include <linux/bitfield.h>
-> +#include <linux/types.h>
->
->  #define FTM_FIELD_UPDATE(ftm, offset, mask, val)                       \
->         ({                                                              \
-> @@ -115,8 +116,7 @@ static void ftm_quaddec_disable(void *ftm)
->  }
->
->  static int ftm_quaddec_get_prescaler(struct counter_device *counter,
-> -                                    struct counter_count *count,
-> -                                    size_t *cnt_mode)
-> +                                    struct counter_count *count, u32 *cn=
-t_mode)
->  {
->         struct ftm_quaddec *ftm =3D counter->priv;
->         uint32_t scflags;
-> @@ -129,8 +129,7 @@ static int ftm_quaddec_get_prescaler(struct counter_d=
-evice *counter,
->  }
->
->  static int ftm_quaddec_set_prescaler(struct counter_device *counter,
-> -                                    struct counter_count *count,
-> -                                    size_t cnt_mode)
-> +                                    struct counter_count *count, u32 cnt=
-_mode)
->  {
->         struct ftm_quaddec *ftm =3D counter->priv;
->
-> @@ -151,33 +150,21 @@ static const char * const ftm_quaddec_prescaler[] =
-=3D {
->         "1", "2", "4", "8", "16", "32", "64", "128"
->  };
->
-> -static struct counter_count_enum_ext ftm_quaddec_prescaler_enum =3D {
-> -       .items =3D ftm_quaddec_prescaler,
-> -       .num_items =3D ARRAY_SIZE(ftm_quaddec_prescaler),
-> -       .get =3D ftm_quaddec_get_prescaler,
-> -       .set =3D ftm_quaddec_set_prescaler
-> -};
-> -
-> -enum ftm_quaddec_synapse_action {
-> -       FTM_QUADDEC_SYNAPSE_ACTION_BOTH_EDGES,
-> -};
-> -
->  static const enum counter_synapse_action ftm_quaddec_synapse_actions[] =
-=3D {
-> -       [FTM_QUADDEC_SYNAPSE_ACTION_BOTH_EDGES] =3D
->         COUNTER_SYNAPSE_ACTION_BOTH_EDGES
->  };
->
->  enum ftm_quaddec_count_function {
-> -       FTM_QUADDEC_COUNT_ENCODER_MODE_1,
-> +       FTM_QUADDEC_COUNT_ENCODER_MODE_1 =3D COUNTER_FUNCTION_QUADRATURE_=
-X4,
->  };
->
->  static const enum counter_function ftm_quaddec_count_functions[] =3D {
-> -       [FTM_QUADDEC_COUNT_ENCODER_MODE_1] =3D COUNTER_FUNCTION_QUADRATUR=
-E_X4
-> +       FTM_QUADDEC_COUNT_ENCODER_MODE_1
->  };
->
->  static int ftm_quaddec_count_read(struct counter_device *counter,
->                                   struct counter_count *count,
-> -                                 unsigned long *val)
-> +                                 u64 *val)
->  {
->         struct ftm_quaddec *const ftm =3D counter->priv;
->         uint32_t cntval;
-> @@ -191,7 +178,7 @@ static int ftm_quaddec_count_read(struct counter_devi=
-ce *counter,
->
->  static int ftm_quaddec_count_write(struct counter_device *counter,
->                                    struct counter_count *count,
-> -                                  const unsigned long val)
-> +                                  const u64 val)
->  {
->         struct ftm_quaddec *const ftm =3D counter->priv;
->
-> @@ -205,21 +192,21 @@ static int ftm_quaddec_count_write(struct counter_d=
-evice *counter,
->         return 0;
->  }
->
-> -static int ftm_quaddec_count_function_get(struct counter_device *counter=
-,
-> -                                         struct counter_count *count,
-> -                                         size_t *function)
-> +static int ftm_quaddec_count_function_read(struct counter_device *counte=
-r,
-> +                                          struct counter_count *count,
-> +                                          enum counter_function *functio=
-n)
->  {
->         *function =3D FTM_QUADDEC_COUNT_ENCODER_MODE_1;
->
->         return 0;
->  }
->
-> -static int ftm_quaddec_action_get(struct counter_device *counter,
-> -                                 struct counter_count *count,
-> -                                 struct counter_synapse *synapse,
-> -                                 size_t *action)
-> +static int ftm_quaddec_action_read(struct counter_device *counter,
-> +                                  struct counter_count *count,
-> +                                  struct counter_synapse *synapse,
-> +                                  enum counter_synapse_action *action)
->  {
-> -       *action =3D FTM_QUADDEC_SYNAPSE_ACTION_BOTH_EDGES;
-> +       *action =3D COUNTER_SYNAPSE_ACTION_BOTH_EDGES;
->
->         return 0;
->  }
-> @@ -227,8 +214,8 @@ static int ftm_quaddec_action_get(struct counter_devi=
-ce *counter,
->  static const struct counter_ops ftm_quaddec_cnt_ops =3D {
->         .count_read =3D ftm_quaddec_count_read,
->         .count_write =3D ftm_quaddec_count_write,
-> -       .function_get =3D ftm_quaddec_count_function_get,
-> -       .action_get =3D ftm_quaddec_action_get,
-> +       .function_read =3D ftm_quaddec_count_function_read,
-> +       .action_read =3D ftm_quaddec_action_read,
->  };
->
->  static struct counter_signal ftm_quaddec_signals[] =3D {
-> @@ -255,9 +242,12 @@ static struct counter_synapse ftm_quaddec_count_syna=
-pses[] =3D {
->         }
->  };
->
-> -static const struct counter_count_ext ftm_quaddec_count_ext[] =3D {
-> -       COUNTER_COUNT_ENUM("prescaler", &ftm_quaddec_prescaler_enum),
-> -       COUNTER_COUNT_ENUM_AVAILABLE("prescaler", &ftm_quaddec_prescaler_=
-enum),
-> +static DEFINE_COUNTER_ENUM(ftm_quaddec_prescaler_enum, ftm_quaddec_presc=
-aler);
-> +
-> +static struct counter_comp ftm_quaddec_count_ext[] =3D {
-> +       COUNTER_COMP_COUNT_ENUM("prescaler", ftm_quaddec_get_prescaler,
-> +                               ftm_quaddec_set_prescaler,
-> +                               ftm_quaddec_prescaler_enum),
->  };
->
->  static struct counter_count ftm_quaddec_counts =3D {
-> diff --git a/drivers/counter/intel-qep.c b/drivers/counter/intel-qep.c
-> index f4be9d78c84c..ec056f31fa55 100644
-> --- a/drivers/counter/intel-qep.c
-> +++ b/drivers/counter/intel-qep.c
-> @@ -63,13 +63,6 @@
->
->  #define INTEL_QEP_CLK_PERIOD_NS                10
->
-> -#define INTEL_QEP_COUNTER_EXT_RW(_name)                                \
-> -{                                                              \
-> -       .name =3D #_name,                                         \
-> -       .read =3D _name##_read,                                   \
-> -       .write =3D _name##_write,                                 \
-> -}
-> -
->  struct intel_qep {
->         struct counter_device counter;
->         struct mutex lock;
-> @@ -115,8 +108,7 @@ static void intel_qep_init(struct intel_qep *qep)
->  }
->
->  static int intel_qep_count_read(struct counter_device *counter,
-> -                               struct counter_count *count,
-> -                               unsigned long *val)
-> +                               struct counter_count *count, u64 *val)
->  {
->         struct intel_qep *const qep =3D counter->priv;
->
-> @@ -131,11 +123,11 @@ static const enum counter_function intel_qep_count_=
-functions[] =3D {
->         COUNTER_FUNCTION_QUADRATURE_X4,
->  };
->
-> -static int intel_qep_function_get(struct counter_device *counter,
-> -                                 struct counter_count *count,
-> -                                 size_t *function)
-> +static int intel_qep_function_read(struct counter_device *counter,
-> +                                  struct counter_count *count,
-> +                                  enum counter_function *function)
->  {
-> -       *function =3D 0;
-> +       *function =3D COUNTER_FUNCTION_QUADRATURE_X4;
->
->         return 0;
->  }
-> @@ -144,19 +136,19 @@ static const enum counter_synapse_action intel_qep_=
-synapse_actions[] =3D {
->         COUNTER_SYNAPSE_ACTION_BOTH_EDGES,
->  };
->
-> -static int intel_qep_action_get(struct counter_device *counter,
-> -                               struct counter_count *count,
-> -                               struct counter_synapse *synapse,
-> -                               size_t *action)
-> +static int intel_qep_action_read(struct counter_device *counter,
-> +                                struct counter_count *count,
-> +                                struct counter_synapse *synapse,
-> +                                enum counter_synapse_action *action)
->  {
-> -       *action =3D 0;
-> +       *action =3D COUNTER_SYNAPSE_ACTION_BOTH_EDGES;
->         return 0;
->  }
->
->  static const struct counter_ops intel_qep_counter_ops =3D {
->         .count_read =3D intel_qep_count_read,
-> -       .function_get =3D intel_qep_function_get,
-> -       .action_get =3D intel_qep_action_get,
-> +       .function_read =3D intel_qep_function_read,
-> +       .action_read =3D intel_qep_action_read,
->  };
->
->  #define INTEL_QEP_SIGNAL(_id, _name) {                         \
-> @@ -182,31 +174,27 @@ static struct counter_synapse intel_qep_count_synap=
-ses[] =3D {
->         INTEL_QEP_SYNAPSE(2),
->  };
->
-> -static ssize_t ceiling_read(struct counter_device *counter,
-> -                           struct counter_count *count,
-> -                           void *priv, char *buf)
-> +static int intel_qep_ceiling_read(struct counter_device *counter,
-> +                                 struct counter_count *count, u64 *ceili=
-ng)
->  {
->         struct intel_qep *qep =3D counter->priv;
-> -       u32 reg;
->
->         pm_runtime_get_sync(qep->dev);
-> -       reg =3D intel_qep_readl(qep, INTEL_QEPMAX);
-> +       *ceiling =3D intel_qep_readl(qep, INTEL_QEPMAX);
->         pm_runtime_put(qep->dev);
->
-> -       return sysfs_emit(buf, "%u\n", reg);
-> +       return 0;
->  }
->
-> -static ssize_t ceiling_write(struct counter_device *counter,
-> -                            struct counter_count *count,
-> -                            void *priv, const char *buf, size_t len)
-> +static int intel_qep_ceiling_write(struct counter_device *counter,
-> +                                  struct counter_count *count, u64 max)
->  {
->         struct intel_qep *qep =3D counter->priv;
-> -       u32 max;
-> -       int ret;
-> +       int ret =3D 0;
->
-> -       ret =3D kstrtou32(buf, 0, &max);
-> -       if (ret < 0)
-> -               return ret;
-> +       /* Intel QEP ceiling configuration only supports 32-bit values */
-> +       if (max !=3D (u32)max)
-> +               return -ERANGE;
->
->         mutex_lock(&qep->lock);
->         if (qep->enabled) {
-> @@ -217,34 +205,28 @@ static ssize_t ceiling_write(struct counter_device =
-*counter,
->         pm_runtime_get_sync(qep->dev);
->         intel_qep_writel(qep, INTEL_QEPMAX, max);
->         pm_runtime_put(qep->dev);
-> -       ret =3D len;
->
->  out:
->         mutex_unlock(&qep->lock);
->         return ret;
->  }
->
-> -static ssize_t enable_read(struct counter_device *counter,
-> -                          struct counter_count *count,
-> -                          void *priv, char *buf)
-> +static int intel_qep_enable_read(struct counter_device *counter,
-> +                                struct counter_count *count, u8 *enable)
->  {
->         struct intel_qep *qep =3D counter->priv;
->
-> -       return sysfs_emit(buf, "%u\n", qep->enabled);
-> +       *enable =3D qep->enabled;
-> +
-> +       return 0;
->  }
->
-> -static ssize_t enable_write(struct counter_device *counter,
-> -                           struct counter_count *count,
-> -                           void *priv, const char *buf, size_t len)
-> +static int intel_qep_enable_write(struct counter_device *counter,
-> +                                 struct counter_count *count, u8 val)
->  {
->         struct intel_qep *qep =3D counter->priv;
->         u32 reg;
-> -       bool val, changed;
-> -       int ret;
-> -
-> -       ret =3D kstrtobool(buf, &val);
-> -       if (ret)
-> -               return ret;
-> +       bool changed;
->
->         mutex_lock(&qep->lock);
->         changed =3D val ^ qep->enabled;
-> @@ -268,12 +250,12 @@ static ssize_t enable_write(struct counter_device *=
-counter,
->
->  out:
->         mutex_unlock(&qep->lock);
-> -       return len;
-> +       return 0;
->  }
->
-> -static ssize_t spike_filter_ns_read(struct counter_device *counter,
-> -                                   struct counter_count *count,
-> -                                   void *priv, char *buf)
-> +static int intel_qep_spike_filter_ns_read(struct counter_device *counter=
-,
-> +                                         struct counter_count *count,
-> +                                         u64 *length)
->  {
->         struct intel_qep *qep =3D counter->priv;
->         u32 reg;
-> @@ -282,26 +264,24 @@ static ssize_t spike_filter_ns_read(struct counter_=
-device *counter,
->         reg =3D intel_qep_readl(qep, INTEL_QEPCON);
->         if (!(reg & INTEL_QEPCON_FLT_EN)) {
->                 pm_runtime_put(qep->dev);
-> -               return sysfs_emit(buf, "0\n");
-> +               return 0;
->         }
->         reg =3D INTEL_QEPFLT_MAX_COUNT(intel_qep_readl(qep, INTEL_QEPFLT)=
-);
->         pm_runtime_put(qep->dev);
->
-> -       return sysfs_emit(buf, "%u\n", (reg + 2) * INTEL_QEP_CLK_PERIOD_N=
-S);
-> +       *length =3D (reg + 2) * INTEL_QEP_CLK_PERIOD_NS;
-> +
-> +       return 0;
->  }
->
-> -static ssize_t spike_filter_ns_write(struct counter_device *counter,
-> -                                    struct counter_count *count,
-> -                                    void *priv, const char *buf, size_t =
-len)
-> +static int intel_qep_spike_filter_ns_write(struct counter_device *counte=
-r,
-> +                                          struct counter_count *count,
-> +                                          u64 length)
->  {
->         struct intel_qep *qep =3D counter->priv;
-> -       u32 reg, length;
-> +       u32 reg;
->         bool enable;
-> -       int ret;
-> -
-> -       ret =3D kstrtou32(buf, 0, &length);
-> -       if (ret < 0)
-> -               return ret;
-> +       int ret =3D 0;
->
->         /*
->          * Spike filter length is (MAX_COUNT + 2) clock periods.
-> @@ -337,16 +317,15 @@ static ssize_t spike_filter_ns_write(struct counter=
-_device *counter,
->         intel_qep_writel(qep, INTEL_QEPFLT, length);
->         intel_qep_writel(qep, INTEL_QEPCON, reg);
->         pm_runtime_put(qep->dev);
-> -       ret =3D len;
->
->  out:
->         mutex_unlock(&qep->lock);
->         return ret;
->  }
->
-> -static ssize_t preset_enable_read(struct counter_device *counter,
-> -                                 struct counter_count *count,
-> -                                 void *priv, char *buf)
-> +static int intel_qep_preset_enable_read(struct counter_device *counter,
-> +                                       struct counter_count *count,
-> +                                       u8 *preset_enable)
->  {
->         struct intel_qep *qep =3D counter->priv;
->         u32 reg;
-> @@ -354,21 +333,18 @@ static ssize_t preset_enable_read(struct counter_de=
-vice *counter,
->         pm_runtime_get_sync(qep->dev);
->         reg =3D intel_qep_readl(qep, INTEL_QEPCON);
->         pm_runtime_put(qep->dev);
-> -       return sysfs_emit(buf, "%u\n", !(reg & INTEL_QEPCON_COUNT_RST_MOD=
-E));
-> +
-> +       *preset_enable =3D !(reg & INTEL_QEPCON_COUNT_RST_MODE);
-> +
-> +       return 0;
->  }
->
-> -static ssize_t preset_enable_write(struct counter_device *counter,
-> -                                  struct counter_count *count,
-> -                                  void *priv, const char *buf, size_t le=
-n)
-> +static int intel_qep_preset_enable_write(struct counter_device *counter,
-> +                                        struct counter_count *count, u8 =
-val)
->  {
->         struct intel_qep *qep =3D counter->priv;
->         u32 reg;
-> -       bool val;
-> -       int ret;
-> -
-> -       ret =3D kstrtobool(buf, &val);
-> -       if (ret)
-> -               return ret;
-> +       int ret =3D 0;
->
->         mutex_lock(&qep->lock);
->         if (qep->enabled) {
-> @@ -385,7 +361,6 @@ static ssize_t preset_enable_write(struct counter_dev=
-ice *counter,
->
->         intel_qep_writel(qep, INTEL_QEPCON, reg);
->         pm_runtime_put(qep->dev);
-> -       ret =3D len;
->
->  out:
->         mutex_unlock(&qep->lock);
-> @@ -393,11 +368,14 @@ static ssize_t preset_enable_write(struct counter_d=
-evice *counter,
->         return ret;
->  }
->
-> -static const struct counter_count_ext intel_qep_count_ext[] =3D {
-> -       INTEL_QEP_COUNTER_EXT_RW(ceiling),
-> -       INTEL_QEP_COUNTER_EXT_RW(enable),
-> -       INTEL_QEP_COUNTER_EXT_RW(spike_filter_ns),
-> -       INTEL_QEP_COUNTER_EXT_RW(preset_enable)
-> +static struct counter_comp intel_qep_count_ext[] =3D {
-> +       COUNTER_COMP_ENABLE(intel_qep_enable_read, intel_qep_enable_write=
-),
-> +       COUNTER_COMP_CEILING(intel_qep_ceiling_read, intel_qep_ceiling_wr=
-ite),
-> +       COUNTER_COMP_PRESET_ENABLE(intel_qep_preset_enable_read,
-> +                                  intel_qep_preset_enable_write),
-> +       COUNTER_COMP_COUNT_U64("spike_filter_ns",
-> +                              intel_qep_spike_filter_ns_read,
-> +                              intel_qep_spike_filter_ns_write),
->  };
->
->  static struct counter_count intel_qep_counter_count[] =3D {
-> diff --git a/drivers/counter/interrupt-cnt.c b/drivers/counter/interrupt-=
-cnt.c
-> index 1de4243db488..8514a87fcbee 100644
-> --- a/drivers/counter/interrupt-cnt.c
-> +++ b/drivers/counter/interrupt-cnt.c
-> @@ -10,6 +10,7 @@
->  #include <linux/mod_devicetable.h>
->  #include <linux/module.h>
->  #include <linux/platform_device.h>
-> +#include <linux/types.h>
->
->  #define INTERRUPT_CNT_NAME "interrupt-cnt"
->
-> @@ -33,30 +34,23 @@ static irqreturn_t interrupt_cnt_isr(int irq, void *d=
-ev_id)
->         return IRQ_HANDLED;
->  }
->
-> -static ssize_t interrupt_cnt_enable_read(struct counter_device *counter,
-> -                                        struct counter_count *count,
-> -                                        void *private, char *buf)
-> +static int interrupt_cnt_enable_read(struct counter_device *counter,
-> +                                    struct counter_count *count, u8 *ena=
-ble)
->  {
->         struct interrupt_cnt_priv *priv =3D counter->priv;
->
-> -       return sysfs_emit(buf, "%d\n", priv->enabled);
-> +       *enable =3D priv->enabled;
-> +
-> +       return 0;
->  }
->
-> -static ssize_t interrupt_cnt_enable_write(struct counter_device *counter=
-,
-> -                                         struct counter_count *count,
-> -                                         void *private, const char *buf,
-> -                                         size_t len)
-> +static int interrupt_cnt_enable_write(struct counter_device *counter,
-> +                                     struct counter_count *count, u8 ena=
-ble)
->  {
->         struct interrupt_cnt_priv *priv =3D counter->priv;
-> -       bool enable;
-> -       ssize_t ret;
-> -
-> -       ret =3D kstrtobool(buf, &enable);
-> -       if (ret)
-> -               return ret;
->
->         if (priv->enabled =3D=3D enable)
-> -               return len;
-> +               return 0;
->
->         if (enable) {
->                 priv->enabled =3D true;
-> @@ -66,33 +60,30 @@ static ssize_t interrupt_cnt_enable_write(struct coun=
-ter_device *counter,
->                 priv->enabled =3D false;
->         }
->
-> -       return len;
-> +       return 0;
->  }
->
-> -static const struct counter_count_ext interrupt_cnt_ext[] =3D {
-> -       {
-> -               .name =3D "enable",
-> -               .read =3D interrupt_cnt_enable_read,
-> -               .write =3D interrupt_cnt_enable_write,
-> -       },
-> +static struct counter_comp interrupt_cnt_ext[] =3D {
-> +       COUNTER_COMP_ENABLE(interrupt_cnt_enable_read,
-> +                           interrupt_cnt_enable_write),
->  };
->
->  static const enum counter_synapse_action interrupt_cnt_synapse_actions[]=
- =3D {
->         COUNTER_SYNAPSE_ACTION_RISING_EDGE,
->  };
->
-> -static int interrupt_cnt_action_get(struct counter_device *counter,
-> -                                   struct counter_count *count,
-> -                                   struct counter_synapse *synapse,
-> -                                   size_t *action)
-> +static int interrupt_cnt_action_read(struct counter_device *counter,
-> +                                    struct counter_count *count,
-> +                                    struct counter_synapse *synapse,
-> +                                    enum counter_synapse_action *action)
->  {
-> -       *action =3D 0;
-> +       *action =3D COUNTER_SYNAPSE_ACTION_RISING_EDGE;
->
->         return 0;
->  }
->
->  static int interrupt_cnt_read(struct counter_device *counter,
-> -                             struct counter_count *count, unsigned long =
-*val)
-> +                             struct counter_count *count, u64 *val)
->  {
->         struct interrupt_cnt_priv *priv =3D counter->priv;
->
-> @@ -102,8 +93,7 @@ static int interrupt_cnt_read(struct counter_device *c=
-ounter,
->  }
->
->  static int interrupt_cnt_write(struct counter_device *counter,
-> -                              struct counter_count *count,
-> -                              const unsigned long val)
-> +                              struct counter_count *count, const u64 val=
-)
->  {
->         struct interrupt_cnt_priv *priv =3D counter->priv;
->
-> @@ -119,11 +109,11 @@ static const enum counter_function interrupt_cnt_fu=
-nctions[] =3D {
->         COUNTER_FUNCTION_INCREASE,
->  };
->
-> -static int interrupt_cnt_function_get(struct counter_device *counter,
-> -                                     struct counter_count *count,
-> -                                     size_t *function)
-> +static int interrupt_cnt_function_read(struct counter_device *counter,
-> +                                      struct counter_count *count,
-> +                                      enum counter_function *function)
->  {
-> -       *function =3D 0;
-> +       *function =3D COUNTER_FUNCTION_INCREASE;
->
->         return 0;
->  }
-> @@ -148,10 +138,10 @@ static int interrupt_cnt_signal_read(struct counter=
-_device *counter,
->  }
->
->  static const struct counter_ops interrupt_cnt_ops =3D {
-> -       .action_get =3D interrupt_cnt_action_get,
-> +       .action_read =3D interrupt_cnt_action_read,
->         .count_read =3D interrupt_cnt_read,
->         .count_write =3D interrupt_cnt_write,
-> -       .function_get =3D interrupt_cnt_function_get,
-> +       .function_read =3D interrupt_cnt_function_read,
->         .signal_read  =3D interrupt_cnt_signal_read,
->  };
->
-> diff --git a/drivers/counter/microchip-tcb-capture.c b/drivers/counter/mi=
-crochip-tcb-capture.c
-> index 4c57d43e7d66..79e0c84a3b81 100644
-> --- a/drivers/counter/microchip-tcb-capture.c
-> +++ b/drivers/counter/microchip-tcb-capture.c
-> @@ -32,28 +32,16 @@ struct mchp_tc_data {
->         bool trig_inverted;
->  };
->
-> -enum mchp_tc_count_function {
-> -       MCHP_TC_FUNCTION_INCREASE,
-> -       MCHP_TC_FUNCTION_QUADRATURE,
-> -};
-> -
-> -static const enum counter_count_function mchp_tc_count_functions[] =3D {
-> -       [MCHP_TC_FUNCTION_INCREASE] =3D COUNTER_FUNCTION_INCREASE,
-> -       [MCHP_TC_FUNCTION_QUADRATURE] =3D COUNTER_FUNCTION_QUADRATURE_X4,
-> -};
-> -
-> -enum mchp_tc_synapse_action {
-> -       MCHP_TC_SYNAPSE_ACTION_NONE =3D 0,
-> -       MCHP_TC_SYNAPSE_ACTION_RISING_EDGE,
-> -       MCHP_TC_SYNAPSE_ACTION_FALLING_EDGE,
-> -       MCHP_TC_SYNAPSE_ACTION_BOTH_EDGE
-> +static const enum counter_function mchp_tc_count_functions[] =3D {
-> +       COUNTER_FUNCTION_INCREASE,
-> +       COUNTER_FUNCTION_QUADRATURE_X4,
->  };
->
->  static const enum counter_synapse_action mchp_tc_synapse_actions[] =3D {
-> -       [MCHP_TC_SYNAPSE_ACTION_NONE] =3D COUNTER_SYNAPSE_ACTION_NONE,
-> -       [MCHP_TC_SYNAPSE_ACTION_RISING_EDGE] =3D COUNTER_SYNAPSE_ACTION_R=
-ISING_EDGE,
-> -       [MCHP_TC_SYNAPSE_ACTION_FALLING_EDGE] =3D COUNTER_SYNAPSE_ACTION_=
-FALLING_EDGE,
-> -       [MCHP_TC_SYNAPSE_ACTION_BOTH_EDGE] =3D COUNTER_SYNAPSE_ACTION_BOT=
-H_EDGES,
-> +       COUNTER_SYNAPSE_ACTION_NONE,
-> +       COUNTER_SYNAPSE_ACTION_RISING_EDGE,
-> +       COUNTER_SYNAPSE_ACTION_FALLING_EDGE,
-> +       COUNTER_SYNAPSE_ACTION_BOTH_EDGES,
->  };
->
->  static struct counter_signal mchp_tc_count_signals[] =3D {
-> @@ -80,23 +68,23 @@ static struct counter_synapse mchp_tc_count_synapses[=
-] =3D {
->         }
->  };
->
-> -static int mchp_tc_count_function_get(struct counter_device *counter,
-> -                                     struct counter_count *count,
-> -                                     size_t *function)
-> +static int mchp_tc_count_function_read(struct counter_device *counter,
-> +                                      struct counter_count *count,
-> +                                      enum counter_function *function)
->  {
->         struct mchp_tc_data *const priv =3D counter->priv;
->
->         if (priv->qdec_mode)
-> -               *function =3D MCHP_TC_FUNCTION_QUADRATURE;
-> +               *function =3D COUNTER_FUNCTION_QUADRATURE_X4;
->         else
-> -               *function =3D MCHP_TC_FUNCTION_INCREASE;
-> +               *function =3D COUNTER_FUNCTION_INCREASE;
->
->         return 0;
->  }
->
-> -static int mchp_tc_count_function_set(struct counter_device *counter,
-> -                                     struct counter_count *count,
-> -                                     size_t function)
-> +static int mchp_tc_count_function_write(struct counter_device *counter,
-> +                                       struct counter_count *count,
-> +                                       enum counter_function function)
->  {
->         struct mchp_tc_data *const priv =3D counter->priv;
->         u32 bmr, cmr;
-> @@ -108,7 +96,7 @@ static int mchp_tc_count_function_set(struct counter_d=
-evice *counter,
->         cmr &=3D ~ATMEL_TC_WAVE;
->
->         switch (function) {
-> -       case MCHP_TC_FUNCTION_INCREASE:
-> +       case COUNTER_FUNCTION_INCREASE:
->                 priv->qdec_mode =3D 0;
->                 /* Set highest rate based on whether soc has gclk or not =
-*/
->                 bmr &=3D ~(ATMEL_TC_QDEN | ATMEL_TC_POSEN);
-> @@ -120,7 +108,7 @@ static int mchp_tc_count_function_set(struct counter_=
-device *counter,
->                 cmr |=3D  ATMEL_TC_CMR_MASK;
->                 cmr &=3D ~(ATMEL_TC_ABETRG | ATMEL_TC_XC0);
->                 break;
-> -       case MCHP_TC_FUNCTION_QUADRATURE:
-> +       case COUNTER_FUNCTION_QUADRATURE_X4:
->                 if (!priv->tc_cfg->has_qdec)
->                         return -EINVAL;
->                 /* In QDEC mode settings both channels 0 and 1 are requir=
-ed */
-> @@ -176,10 +164,10 @@ static int mchp_tc_count_signal_read(struct counter=
-_device *counter,
->         return 0;
->  }
->
-> -static int mchp_tc_count_action_get(struct counter_device *counter,
-> -                                   struct counter_count *count,
-> -                                   struct counter_synapse *synapse,
-> -                                   size_t *action)
-> +static int mchp_tc_count_action_read(struct counter_device *counter,
-> +                                    struct counter_count *count,
-> +                                    struct counter_synapse *synapse,
-> +                                    enum counter_synapse_action *action)
->  {
->         struct mchp_tc_data *const priv =3D counter->priv;
->         u32 cmr;
-> @@ -188,26 +176,26 @@ static int mchp_tc_count_action_get(struct counter_=
-device *counter,
->
->         switch (cmr & ATMEL_TC_ETRGEDG) {
->         default:
-> -               *action =3D MCHP_TC_SYNAPSE_ACTION_NONE;
-> +               *action =3D COUNTER_SYNAPSE_ACTION_NONE;
->                 break;
->         case ATMEL_TC_ETRGEDG_RISING:
-> -               *action =3D MCHP_TC_SYNAPSE_ACTION_RISING_EDGE;
-> +               *action =3D COUNTER_SYNAPSE_ACTION_RISING_EDGE;
->                 break;
->         case ATMEL_TC_ETRGEDG_FALLING:
-> -               *action =3D MCHP_TC_SYNAPSE_ACTION_FALLING_EDGE;
-> +               *action =3D COUNTER_SYNAPSE_ACTION_FALLING_EDGE;
->                 break;
->         case ATMEL_TC_ETRGEDG_BOTH:
-> -               *action =3D MCHP_TC_SYNAPSE_ACTION_BOTH_EDGE;
-> +               *action =3D COUNTER_SYNAPSE_ACTION_BOTH_EDGES;
->                 break;
->         }
->
->         return 0;
->  }
->
-> -static int mchp_tc_count_action_set(struct counter_device *counter,
-> -                                   struct counter_count *count,
-> -                                   struct counter_synapse *synapse,
-> -                                   size_t action)
-> +static int mchp_tc_count_action_write(struct counter_device *counter,
-> +                                     struct counter_count *count,
-> +                                     struct counter_synapse *synapse,
-> +                                     enum counter_synapse_action action)
->  {
->         struct mchp_tc_data *const priv =3D counter->priv;
->         u32 edge =3D ATMEL_TC_ETRGEDG_NONE;
-> @@ -217,16 +205,16 @@ static int mchp_tc_count_action_set(struct counter_=
-device *counter,
->                 return -EINVAL;
->
->         switch (action) {
-> -       case MCHP_TC_SYNAPSE_ACTION_NONE:
-> +       case COUNTER_SYNAPSE_ACTION_NONE:
->                 edge =3D ATMEL_TC_ETRGEDG_NONE;
->                 break;
-> -       case MCHP_TC_SYNAPSE_ACTION_RISING_EDGE:
-> +       case COUNTER_SYNAPSE_ACTION_RISING_EDGE:
->                 edge =3D ATMEL_TC_ETRGEDG_RISING;
->                 break;
-> -       case MCHP_TC_SYNAPSE_ACTION_FALLING_EDGE:
-> +       case COUNTER_SYNAPSE_ACTION_FALLING_EDGE:
->                 edge =3D ATMEL_TC_ETRGEDG_FALLING;
->                 break;
-> -       case MCHP_TC_SYNAPSE_ACTION_BOTH_EDGE:
-> +       case COUNTER_SYNAPSE_ACTION_BOTH_EDGES:
->                 edge =3D ATMEL_TC_ETRGEDG_BOTH;
->                 break;
->         default:
-> @@ -240,8 +228,7 @@ static int mchp_tc_count_action_set(struct counter_de=
-vice *counter,
->  }
->
->  static int mchp_tc_count_read(struct counter_device *counter,
-> -                             struct counter_count *count,
-> -                             unsigned long *val)
-> +                             struct counter_count *count, u64 *val)
->  {
->         struct mchp_tc_data *const priv =3D counter->priv;
->         u32 cnt;
-> @@ -264,12 +251,12 @@ static struct counter_count mchp_tc_counts[] =3D {
->  };
->
->  static const struct counter_ops mchp_tc_ops =3D {
-> -       .signal_read  =3D mchp_tc_count_signal_read,
-> -       .count_read   =3D mchp_tc_count_read,
-> -       .function_get =3D mchp_tc_count_function_get,
-> -       .function_set =3D mchp_tc_count_function_set,
-> -       .action_get   =3D mchp_tc_count_action_get,
-> -       .action_set   =3D mchp_tc_count_action_set
-> +       .signal_read    =3D mchp_tc_count_signal_read,
-> +       .count_read     =3D mchp_tc_count_read,
-> +       .function_read  =3D mchp_tc_count_function_read,
-> +       .function_write =3D mchp_tc_count_function_write,
-> +       .action_read    =3D mchp_tc_count_action_read,
-> +       .action_write   =3D mchp_tc_count_action_write
->  };
->
->  static const struct atmel_tcb_config tcb_rm9200_config =3D {
-> diff --git a/drivers/counter/stm32-lptimer-cnt.c b/drivers/counter/stm32-=
-lptimer-cnt.c
-> index 13656957c45f..aef78a4217b5 100644
-> --- a/drivers/counter/stm32-lptimer-cnt.c
-> +++ b/drivers/counter/stm32-lptimer-cnt.c
-> @@ -17,6 +17,7 @@
->  #include <linux/module.h>
->  #include <linux/pinctrl/consumer.h>
->  #include <linux/platform_device.h>
-> +#include <linux/types.h>
->
->  struct stm32_lptim_cnt {
->         struct counter_device counter;
-> @@ -130,32 +131,46 @@ static int stm32_lptim_setup(struct stm32_lptim_cnt=
- *priv, int enable)
->   * +---------+----------+----------+---------+----------+---------+
->   */
->  enum stm32_lptim_cnt_function {
-> -       STM32_LPTIM_COUNTER_INCREASE,
-> -       STM32_LPTIM_ENCODER_BOTH_EDGE,
-> +       STM32_LPTIM_COUNTER_INCREASE =3D COUNTER_FUNCTION_INCREASE,
-> +       STM32_LPTIM_ENCODER_BOTH_EDGE =3D COUNTER_FUNCTION_QUADRATURE_X4,
->  };
->
->  static const enum counter_function stm32_lptim_cnt_functions[] =3D {
-> -       [STM32_LPTIM_COUNTER_INCREASE] =3D COUNTER_FUNCTION_INCREASE,
-> -       [STM32_LPTIM_ENCODER_BOTH_EDGE] =3D COUNTER_FUNCTION_QUADRATURE_X=
-4,
-> +       STM32_LPTIM_COUNTER_INCREASE,
-> +       STM32_LPTIM_ENCODER_BOTH_EDGE,
->  };
->
->  enum stm32_lptim_synapse_action {
-> +       /* Index must match with stm32_lptim_cnt_polarity[] (priv->polari=
-ty) */
->         STM32_LPTIM_SYNAPSE_ACTION_RISING_EDGE,
->         STM32_LPTIM_SYNAPSE_ACTION_FALLING_EDGE,
->         STM32_LPTIM_SYNAPSE_ACTION_BOTH_EDGES,
->         STM32_LPTIM_SYNAPSE_ACTION_NONE,
->  };
->
-> -static const enum counter_synapse_action stm32_lptim_cnt_synapse_actions=
-[] =3D {
-> -       /* Index must match with stm32_lptim_cnt_polarity[] (priv->polari=
-ty) */
-> +static const enum stm32_lptim_synapse_action stm32_lptim_c2l_actions_map=
-[] =3D {
-> +       [COUNTER_SYNAPSE_ACTION_RISING_EDGE] =3D STM32_LPTIM_SYNAPSE_ACTI=
-ON_RISING_EDGE,
-> +       [COUNTER_SYNAPSE_ACTION_FALLING_EDGE] =3D STM32_LPTIM_SYNAPSE_ACT=
-ION_FALLING_EDGE,
-> +       [COUNTER_SYNAPSE_ACTION_BOTH_EDGES] =3D STM32_LPTIM_SYNAPSE_ACTIO=
-N_BOTH_EDGES,
-> +       [COUNTER_SYNAPSE_ACTION_NONE] =3D STM32_LPTIM_SYNAPSE_ACTION_NONE=
-,
-> +};
-> +
-> +static const enum counter_synapse_action stm32_lptim_l2c_actions_map[] =
-=3D {
->         [STM32_LPTIM_SYNAPSE_ACTION_RISING_EDGE] =3D COUNTER_SYNAPSE_ACTI=
-ON_RISING_EDGE,
->         [STM32_LPTIM_SYNAPSE_ACTION_FALLING_EDGE] =3D COUNTER_SYNAPSE_ACT=
-ION_FALLING_EDGE,
->         [STM32_LPTIM_SYNAPSE_ACTION_BOTH_EDGES] =3D COUNTER_SYNAPSE_ACTIO=
-N_BOTH_EDGES,
->         [STM32_LPTIM_SYNAPSE_ACTION_NONE] =3D COUNTER_SYNAPSE_ACTION_NONE=
-,
->  };
->
-> +static const enum counter_synapse_action stm32_lptim_cnt_synapse_actions=
-[] =3D {
-> +       COUNTER_SYNAPSE_ACTION_RISING_EDGE,
-> +       COUNTER_SYNAPSE_ACTION_FALLING_EDGE,
-> +       COUNTER_SYNAPSE_ACTION_BOTH_EDGES,
-> +       COUNTER_SYNAPSE_ACTION_NONE,
-> +};
-> +
->  static int stm32_lptim_cnt_read(struct counter_device *counter,
-> -                               struct counter_count *count, unsigned lon=
-g *val)
-> +                               struct counter_count *count, u64 *val)
->  {
->         struct stm32_lptim_cnt *const priv =3D counter->priv;
->         u32 cnt;
-> @@ -170,9 +185,9 @@ static int stm32_lptim_cnt_read(struct counter_device=
- *counter,
->         return 0;
->  }
->
-> -static int stm32_lptim_cnt_function_get(struct counter_device *counter,
-> -                                       struct counter_count *count,
-> -                                       size_t *function)
-> +static int stm32_lptim_cnt_function_read(struct counter_device *counter,
-> +                                        struct counter_count *count,
-> +                                        enum counter_function *function)
->  {
->         struct stm32_lptim_cnt *const priv =3D counter->priv;
->
-> @@ -189,9 +204,9 @@ static int stm32_lptim_cnt_function_get(struct counte=
-r_device *counter,
->         return -EINVAL;
->  }
->
-> -static int stm32_lptim_cnt_function_set(struct counter_device *counter,
-> -                                       struct counter_count *count,
-> -                                       size_t function)
-> +static int stm32_lptim_cnt_function_write(struct counter_device *counter=
-,
-> +                                         struct counter_count *count,
-> +                                         enum counter_function function)
->  {
->         struct stm32_lptim_cnt *const priv =3D counter->priv;
->
-> @@ -212,9 +227,9 @@ static int stm32_lptim_cnt_function_set(struct counte=
-r_device *counter,
->         }
->  }
->
-> -static ssize_t stm32_lptim_cnt_enable_read(struct counter_device *counte=
-r,
-> -                                          struct counter_count *count,
-> -                                          void *private, char *buf)
-> +static int stm32_lptim_cnt_enable_read(struct counter_device *counter,
-> +                                      struct counter_count *count,
-> +                                      u8 *enable)
->  {
->         struct stm32_lptim_cnt *const priv =3D counter->priv;
->         int ret;
-> @@ -223,22 +238,18 @@ static ssize_t stm32_lptim_cnt_enable_read(struct c=
-ounter_device *counter,
->         if (ret < 0)
->                 return ret;
->
-> -       return scnprintf(buf, PAGE_SIZE, "%u\n", ret);
-> +       *enable =3D ret;
-> +
-> +       return 0;
->  }
->
-> -static ssize_t stm32_lptim_cnt_enable_write(struct counter_device *count=
-er,
-> -                                           struct counter_count *count,
-> -                                           void *private,
-> -                                           const char *buf, size_t len)
-> +static int stm32_lptim_cnt_enable_write(struct counter_device *counter,
-> +                                       struct counter_count *count,
-> +                                       u8 enable)
->  {
->         struct stm32_lptim_cnt *const priv =3D counter->priv;
-> -       bool enable;
->         int ret;
->
-> -       ret =3D kstrtobool(buf, &enable);
-> -       if (ret)
-> -               return ret;
-> -
->         /* Check nobody uses the timer, or already disabled/enabled */
->         ret =3D stm32_lptim_is_enabled(priv);
->         if ((ret < 0) || (!ret && !enable))
-> @@ -254,65 +265,54 @@ static ssize_t stm32_lptim_cnt_enable_write(struct =
-counter_device *counter,
->         if (ret)
->                 return ret;
->
-> -       return len;
-> +       return 0;
->  }
->
-> -static ssize_t stm32_lptim_cnt_ceiling_read(struct counter_device *count=
-er,
-> -                                           struct counter_count *count,
-> -                                           void *private, char *buf)
-> +static int stm32_lptim_cnt_ceiling_read(struct counter_device *counter,
-> +                                       struct counter_count *count,
-> +                                       u64 *ceiling)
->  {
->         struct stm32_lptim_cnt *const priv =3D counter->priv;
->
-> -       return snprintf(buf, PAGE_SIZE, "%u\n", priv->ceiling);
-> +       *ceiling =3D priv->ceiling;
-> +
-> +       return 0;
->  }
->
-> -static ssize_t stm32_lptim_cnt_ceiling_write(struct counter_device *coun=
-ter,
-> -                                            struct counter_count *count,
-> -                                            void *private,
-> -                                            const char *buf, size_t len)
-> +static int stm32_lptim_cnt_ceiling_write(struct counter_device *counter,
-> +                                        struct counter_count *count,
-> +                                        u64 ceiling)
->  {
->         struct stm32_lptim_cnt *const priv =3D counter->priv;
-> -       unsigned int ceiling;
-> -       int ret;
->
->         if (stm32_lptim_is_enabled(priv))
->                 return -EBUSY;
->
-> -       ret =3D kstrtouint(buf, 0, &ceiling);
-> -       if (ret)
-> -               return ret;
-> -
->         if (ceiling > STM32_LPTIM_MAX_ARR)
->                 return -ERANGE;
->
->         priv->ceiling =3D ceiling;
->
-> -       return len;
-> +       return 0;
->  }
->
-> -static const struct counter_count_ext stm32_lptim_cnt_ext[] =3D {
-> -       {
-> -               .name =3D "enable",
-> -               .read =3D stm32_lptim_cnt_enable_read,
-> -               .write =3D stm32_lptim_cnt_enable_write
-> -       },
-> -       {
-> -               .name =3D "ceiling",
-> -               .read =3D stm32_lptim_cnt_ceiling_read,
-> -               .write =3D stm32_lptim_cnt_ceiling_write
-> -       },
-> +static struct counter_comp stm32_lptim_cnt_ext[] =3D {
-> +       COUNTER_COMP_ENABLE(stm32_lptim_cnt_enable_read,
-> +                           stm32_lptim_cnt_enable_write),
-> +       COUNTER_COMP_CEILING(stm32_lptim_cnt_ceiling_read,
-> +                            stm32_lptim_cnt_ceiling_write),
->  };
->
-> -static int stm32_lptim_cnt_action_get(struct counter_device *counter,
-> -                                     struct counter_count *count,
-> -                                     struct counter_synapse *synapse,
-> -                                     size_t *action)
-> +static int stm32_lptim_cnt_action_read(struct counter_device *counter,
-> +                                      struct counter_count *count,
-> +                                      struct counter_synapse *synapse,
-> +                                      enum counter_synapse_action *actio=
-n)
->  {
->         struct stm32_lptim_cnt *const priv =3D counter->priv;
-> -       size_t function;
-> +       enum counter_function function;
->         int err;
->
-> -       err =3D stm32_lptim_cnt_function_get(counter, count, &function);
-> +       err =3D stm32_lptim_cnt_function_read(counter, count, &function);
->         if (err)
->                 return err;
->
-> @@ -320,12 +320,12 @@ static int stm32_lptim_cnt_action_get(struct counte=
-r_device *counter,
->         case STM32_LPTIM_COUNTER_INCREASE:
->                 /* LP Timer acts as up-counter on input 1 */
->                 if (synapse->signal->id =3D=3D count->synapses[0].signal-=
->id)
-> -                       *action =3D priv->polarity;
-> +                       *action =3D stm32_lptim_l2c_actions_map[priv->pol=
-arity];
->                 else
-> -                       *action =3D STM32_LPTIM_SYNAPSE_ACTION_NONE;
-> +                       *action =3D COUNTER_SYNAPSE_ACTION_NONE;
->                 return 0;
->         case STM32_LPTIM_ENCODER_BOTH_EDGE:
-> -               *action =3D priv->polarity;
-> +               *action =3D stm32_lptim_l2c_actions_map[priv->polarity];
->                 return 0;
->         default:
->                 /* should never reach this path */
-> @@ -333,43 +333,39 @@ static int stm32_lptim_cnt_action_get(struct counte=
-r_device *counter,
->         }
->  }
->
-> -static int stm32_lptim_cnt_action_set(struct counter_device *counter,
-> -                                     struct counter_count *count,
-> -                                     struct counter_synapse *synapse,
-> -                                     size_t action)
-> +static int stm32_lptim_cnt_action_write(struct counter_device *counter,
-> +                                       struct counter_count *count,
-> +                                       struct counter_synapse *synapse,
-> +                                       enum counter_synapse_action actio=
-n)
->  {
->         struct stm32_lptim_cnt *const priv =3D counter->priv;
-> -       size_t function;
-> +       enum counter_function function;
->         int err;
->
->         if (stm32_lptim_is_enabled(priv))
->                 return -EBUSY;
->
-> -       err =3D stm32_lptim_cnt_function_get(counter, count, &function);
-> +       err =3D stm32_lptim_cnt_function_read(counter, count, &function);
->         if (err)
->                 return err;
->
->         /* only set polarity when in counter mode (on input 1) */
-> -       if (function =3D=3D STM32_LPTIM_COUNTER_INCREASE
-> -           && synapse->signal->id =3D=3D count->synapses[0].signal->id) =
-{
-> -               switch (action) {
-> -               case STM32_LPTIM_SYNAPSE_ACTION_RISING_EDGE:
-> -               case STM32_LPTIM_SYNAPSE_ACTION_FALLING_EDGE:
-> -               case STM32_LPTIM_SYNAPSE_ACTION_BOTH_EDGES:
-> -                       priv->polarity =3D action;
-> -                       return 0;
-> -               }
-> -       }
-> +       if ((enum stm32_lptim_cnt_function)function !=3D STM32_LPTIM_COUN=
-TER_INCREASE
-> +           || synapse->signal->id !=3D count->synapses[0].signal->id
-> +           || action =3D=3D COUNTER_SYNAPSE_ACTION_NONE)
-> +               return -EINVAL;
->
-> -       return -EINVAL;
-> +       priv->polarity =3D stm32_lptim_c2l_actions_map[action];
-> +
-> +       return 0;
->  }
->
->  static const struct counter_ops stm32_lptim_cnt_ops =3D {
->         .count_read =3D stm32_lptim_cnt_read,
-> -       .function_get =3D stm32_lptim_cnt_function_get,
-> -       .function_set =3D stm32_lptim_cnt_function_set,
-> -       .action_get =3D stm32_lptim_cnt_action_get,
-> -       .action_set =3D stm32_lptim_cnt_action_set,
-> +       .function_read =3D stm32_lptim_cnt_function_read,
-> +       .function_write =3D stm32_lptim_cnt_function_write,
-> +       .action_read =3D stm32_lptim_cnt_action_read,
-> +       .action_write =3D stm32_lptim_cnt_action_write,
->  };
->
->  static struct counter_signal stm32_lptim_cnt_signals[] =3D {
-> diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-ti=
-mer-cnt.c
-> index 3fb0debd7425..c690b76e5dab 100644
-> --- a/drivers/counter/stm32-timer-cnt.c
-> +++ b/drivers/counter/stm32-timer-cnt.c
-> @@ -13,6 +13,7 @@
->  #include <linux/module.h>
->  #include <linux/pinctrl/consumer.h>
->  #include <linux/platform_device.h>
-> +#include <linux/types.h>
->
->  #define TIM_CCMR_CCXS  (BIT(8) | BIT(0))
->  #define TIM_CCMR_MASK  (TIM_CCMR_CC1S | TIM_CCMR_CC2S | \
-> @@ -44,21 +45,21 @@ struct stm32_timer_cnt {
->   * @STM32_COUNT_ENCODER_MODE_3: counts on both TI1FP1 and TI2FP2 edges
->   */
->  enum stm32_count_function {
-> +       STM32_COUNT_SLAVE_MODE_DISABLED =3D COUNTER_FUNCTION_INCREASE,
-> +       STM32_COUNT_ENCODER_MODE_1 =3D COUNTER_FUNCTION_QUADRATURE_X2_A,
-> +       STM32_COUNT_ENCODER_MODE_2 =3D COUNTER_FUNCTION_QUADRATURE_X2_B,
-> +       STM32_COUNT_ENCODER_MODE_3 =3D COUNTER_FUNCTION_QUADRATURE_X4,
-> +};
-> +
-> +static const enum counter_function stm32_count_functions[] =3D {
->         STM32_COUNT_SLAVE_MODE_DISABLED,
->         STM32_COUNT_ENCODER_MODE_1,
->         STM32_COUNT_ENCODER_MODE_2,
->         STM32_COUNT_ENCODER_MODE_3,
->  };
->
-> -static const enum counter_function stm32_count_functions[] =3D {
-> -       [STM32_COUNT_SLAVE_MODE_DISABLED] =3D COUNTER_FUNCTION_INCREASE,
-> -       [STM32_COUNT_ENCODER_MODE_1] =3D COUNTER_FUNCTION_QUADRATURE_X2_A=
-,
-> -       [STM32_COUNT_ENCODER_MODE_2] =3D COUNTER_FUNCTION_QUADRATURE_X2_B=
-,
-> -       [STM32_COUNT_ENCODER_MODE_3] =3D COUNTER_FUNCTION_QUADRATURE_X4,
-> -};
-> -
->  static int stm32_count_read(struct counter_device *counter,
-> -                           struct counter_count *count, unsigned long *v=
-al)
-> +                           struct counter_count *count, u64 *val)
->  {
->         struct stm32_timer_cnt *const priv =3D counter->priv;
->         u32 cnt;
-> @@ -70,8 +71,7 @@ static int stm32_count_read(struct counter_device *coun=
-ter,
->  }
->
->  static int stm32_count_write(struct counter_device *counter,
-> -                            struct counter_count *count,
-> -                            const unsigned long val)
-> +                            struct counter_count *count, const u64 val)
->  {
->         struct stm32_timer_cnt *const priv =3D counter->priv;
->         u32 ceiling;
-> @@ -83,9 +83,9 @@ static int stm32_count_write(struct counter_device *cou=
-nter,
->         return regmap_write(priv->regmap, TIM_CNT, val);
->  }
->
-> -static int stm32_count_function_get(struct counter_device *counter,
-> -                                   struct counter_count *count,
-> -                                   size_t *function)
-> +static int stm32_count_function_read(struct counter_device *counter,
-> +                                    struct counter_count *count,
-> +                                    enum counter_function *function)
->  {
->         struct stm32_timer_cnt *const priv =3D counter->priv;
->         u32 smcr;
-> @@ -110,9 +110,9 @@ static int stm32_count_function_get(struct counter_de=
-vice *counter,
->         }
->  }
->
-> -static int stm32_count_function_set(struct counter_device *counter,
-> -                                   struct counter_count *count,
-> -                                   size_t function)
-> +static int stm32_count_function_write(struct counter_device *counter,
-> +                                     struct counter_count *count,
-> +                                     enum counter_function function)
->  {
->         struct stm32_timer_cnt *const priv =3D counter->priv;
->         u32 cr1, sms;
-> @@ -150,44 +150,37 @@ static int stm32_count_function_set(struct counter_=
-device *counter,
->         return 0;
->  }
->
-> -static ssize_t stm32_count_direction_read(struct counter_device *counter=
-,
-> +static int stm32_count_direction_read(struct counter_device *counter,
->                                       struct counter_count *count,
-> -                                     void *private, char *buf)
-> +                                     enum counter_count_direction *direc=
-tion)
->  {
->         struct stm32_timer_cnt *const priv =3D counter->priv;
-> -       const char *direction;
->         u32 cr1;
->
->         regmap_read(priv->regmap, TIM_CR1, &cr1);
-> -       direction =3D (cr1 & TIM_CR1_DIR) ? "backward" : "forward";
-> +       *direction =3D (cr1 & TIM_CR1_DIR) ? COUNTER_COUNT_DIRECTION_BACK=
-WARD :
-> +               COUNTER_COUNT_DIRECTION_FORWARD;
->
-> -       return scnprintf(buf, PAGE_SIZE, "%s\n", direction);
-> +       return 0;
->  }
->
-> -static ssize_t stm32_count_ceiling_read(struct counter_device *counter,
-> -                                       struct counter_count *count,
-> -                                       void *private, char *buf)
-> +static int stm32_count_ceiling_read(struct counter_device *counter,
-> +                                   struct counter_count *count, u64 *cei=
-ling)
->  {
->         struct stm32_timer_cnt *const priv =3D counter->priv;
->         u32 arr;
->
->         regmap_read(priv->regmap, TIM_ARR, &arr);
->
-> -       return snprintf(buf, PAGE_SIZE, "%u\n", arr);
-> +       *ceiling =3D arr;
-> +
-> +       return 0;
->  }
->
-> -static ssize_t stm32_count_ceiling_write(struct counter_device *counter,
-> -                                        struct counter_count *count,
-> -                                        void *private,
-> -                                        const char *buf, size_t len)
-> +static int stm32_count_ceiling_write(struct counter_device *counter,
-> +                                    struct counter_count *count, u64 cei=
-ling)
->  {
->         struct stm32_timer_cnt *const priv =3D counter->priv;
-> -       unsigned int ceiling;
-> -       int ret;
-> -
-> -       ret =3D kstrtouint(buf, 0, &ceiling);
-> -       if (ret)
-> -               return ret;
->
->         if (ceiling > priv->max_arr)
->                 return -ERANGE;
-> @@ -196,34 +189,27 @@ static ssize_t stm32_count_ceiling_write(struct cou=
-nter_device *counter,
->         regmap_update_bits(priv->regmap, TIM_CR1, TIM_CR1_ARPE, 0);
->         regmap_write(priv->regmap, TIM_ARR, ceiling);
->
-> -       return len;
-> +       return 0;
->  }
->
-> -static ssize_t stm32_count_enable_read(struct counter_device *counter,
-> -                                      struct counter_count *count,
-> -                                      void *private, char *buf)
-> +static int stm32_count_enable_read(struct counter_device *counter,
-> +                                  struct counter_count *count, u8 *enabl=
-e)
->  {
->         struct stm32_timer_cnt *const priv =3D counter->priv;
->         u32 cr1;
->
->         regmap_read(priv->regmap, TIM_CR1, &cr1);
->
-> -       return scnprintf(buf, PAGE_SIZE, "%d\n", (bool)(cr1 & TIM_CR1_CEN=
-));
-> +       *enable =3D cr1 & TIM_CR1_CEN;
-> +
-> +       return 0;
->  }
->
-> -static ssize_t stm32_count_enable_write(struct counter_device *counter,
-> -                                       struct counter_count *count,
-> -                                       void *private,
-> -                                       const char *buf, size_t len)
-> +static int stm32_count_enable_write(struct counter_device *counter,
-> +                                   struct counter_count *count, u8 enabl=
-e)
->  {
->         struct stm32_timer_cnt *const priv =3D counter->priv;
-> -       int err;
->         u32 cr1;
-> -       bool enable;
-> -
-> -       err =3D kstrtobool(buf, &enable);
-> -       if (err)
-> -               return err;
->
->         if (enable) {
->                 regmap_read(priv->regmap, TIM_CR1, &cr1);
-> @@ -242,70 +228,55 @@ static ssize_t stm32_count_enable_write(struct coun=
-ter_device *counter,
->         /* Keep enabled state to properly handle low power states */
->         priv->enabled =3D enable;
->
-> -       return len;
-> +       return 0;
->  }
->
-> -static const struct counter_count_ext stm32_count_ext[] =3D {
-> -       {
-> -               .name =3D "direction",
-> -               .read =3D stm32_count_direction_read,
-> -       },
-> -       {
-> -               .name =3D "enable",
-> -               .read =3D stm32_count_enable_read,
-> -               .write =3D stm32_count_enable_write
-> -       },
-> -       {
-> -               .name =3D "ceiling",
-> -               .read =3D stm32_count_ceiling_read,
-> -               .write =3D stm32_count_ceiling_write
-> -       },
-> -};
-> -
-> -enum stm32_synapse_action {
-> -       STM32_SYNAPSE_ACTION_NONE,
-> -       STM32_SYNAPSE_ACTION_BOTH_EDGES
-> +static struct counter_comp stm32_count_ext[] =3D {
-> +       COUNTER_COMP_DIRECTION(stm32_count_direction_read),
-> +       COUNTER_COMP_ENABLE(stm32_count_enable_read, stm32_count_enable_w=
-rite),
-> +       COUNTER_COMP_CEILING(stm32_count_ceiling_read,
-> +                            stm32_count_ceiling_write),
->  };
->
->  static const enum counter_synapse_action stm32_synapse_actions[] =3D {
-> -       [STM32_SYNAPSE_ACTION_NONE] =3D COUNTER_SYNAPSE_ACTION_NONE,
-> -       [STM32_SYNAPSE_ACTION_BOTH_EDGES] =3D COUNTER_SYNAPSE_ACTION_BOTH=
-_EDGES
-> +       COUNTER_SYNAPSE_ACTION_NONE,
-> +       COUNTER_SYNAPSE_ACTION_BOTH_EDGES
->  };
->
-> -static int stm32_action_get(struct counter_device *counter,
-> -                           struct counter_count *count,
-> -                           struct counter_synapse *synapse,
-> -                           size_t *action)
-> +static int stm32_action_read(struct counter_device *counter,
-> +                            struct counter_count *count,
-> +                            struct counter_synapse *synapse,
-> +                            enum counter_synapse_action *action)
->  {
-> -       size_t function;
-> +       enum counter_function function;
->         int err;
->
-> -       err =3D stm32_count_function_get(counter, count, &function);
-> +       err =3D stm32_count_function_read(counter, count, &function);
->         if (err)
->                 return err;
->
->         switch (function) {
->         case STM32_COUNT_SLAVE_MODE_DISABLED:
->                 /* counts on internal clock when CEN=3D1 */
-> -               *action =3D STM32_SYNAPSE_ACTION_NONE;
-> +               *action =3D COUNTER_SYNAPSE_ACTION_NONE;
->                 return 0;
->         case STM32_COUNT_ENCODER_MODE_1:
->                 /* counts up/down on TI1FP1 edge depending on TI2FP2 leve=
-l */
->                 if (synapse->signal->id =3D=3D count->synapses[0].signal-=
->id)
-> -                       *action =3D STM32_SYNAPSE_ACTION_BOTH_EDGES;
-> +                       *action =3D COUNTER_SYNAPSE_ACTION_BOTH_EDGES;
->                 else
-> -                       *action =3D STM32_SYNAPSE_ACTION_NONE;
-> +                       *action =3D COUNTER_SYNAPSE_ACTION_NONE;
->                 return 0;
->         case STM32_COUNT_ENCODER_MODE_2:
->                 /* counts up/down on TI2FP2 edge depending on TI1FP1 leve=
-l */
->                 if (synapse->signal->id =3D=3D count->synapses[1].signal-=
->id)
-> -                       *action =3D STM32_SYNAPSE_ACTION_BOTH_EDGES;
-> +                       *action =3D COUNTER_SYNAPSE_ACTION_BOTH_EDGES;
->                 else
-> -                       *action =3D STM32_SYNAPSE_ACTION_NONE;
-> +                       *action =3D COUNTER_SYNAPSE_ACTION_NONE;
->                 return 0;
->         case STM32_COUNT_ENCODER_MODE_3:
->                 /* counts up/down on both TI1FP1 and TI2FP2 edges */
-> -               *action =3D STM32_SYNAPSE_ACTION_BOTH_EDGES;
-> +               *action =3D COUNTER_SYNAPSE_ACTION_BOTH_EDGES;
->                 return 0;
->         default:
->                 return -EINVAL;
-> @@ -315,9 +286,9 @@ static int stm32_action_get(struct counter_device *co=
-unter,
->  static const struct counter_ops stm32_timer_cnt_ops =3D {
->         .count_read =3D stm32_count_read,
->         .count_write =3D stm32_count_write,
-> -       .function_get =3D stm32_count_function_get,
-> -       .function_set =3D stm32_count_function_set,
-> -       .action_get =3D stm32_action_get,
-> +       .function_read =3D stm32_count_function_read,
-> +       .function_write =3D stm32_count_function_write,
-> +       .action_read =3D stm32_action_read,
->  };
->
->  static struct counter_signal stm32_signals[] =3D {
-> diff --git a/drivers/counter/ti-eqep.c b/drivers/counter/ti-eqep.c
-> index 94fe58bb3eab..09817c953f9a 100644
-> --- a/drivers/counter/ti-eqep.c
-> +++ b/drivers/counter/ti-eqep.c
-> @@ -13,6 +13,7 @@
->  #include <linux/platform_device.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/regmap.h>
-> +#include <linux/types.h>
->
->  /* 32-bit registers */
->  #define QPOSCNT                0x0
-> @@ -73,19 +74,13 @@ enum {
->  };
->
->  /* Position Counter Input Modes */
-> -enum {
-> +enum ti_eqep_count_func {
->         TI_EQEP_COUNT_FUNC_QUAD_COUNT,
->         TI_EQEP_COUNT_FUNC_DIR_COUNT,
->         TI_EQEP_COUNT_FUNC_UP_COUNT,
->         TI_EQEP_COUNT_FUNC_DOWN_COUNT,
->  };
->
-> -enum {
-> -       TI_EQEP_SYNAPSE_ACTION_BOTH_EDGES,
-> -       TI_EQEP_SYNAPSE_ACTION_RISING_EDGE,
-> -       TI_EQEP_SYNAPSE_ACTION_NONE,
-> -};
-> -
->  struct ti_eqep_cnt {
->         struct counter_device counter;
->         struct regmap *regmap32;
-> @@ -93,7 +88,7 @@ struct ti_eqep_cnt {
->  };
->
->  static int ti_eqep_count_read(struct counter_device *counter,
-> -                             struct counter_count *count, unsigned long =
-*val)
-> +                             struct counter_count *count, u64 *val)
->  {
->         struct ti_eqep_cnt *priv =3D counter->priv;
->         u32 cnt;
-> @@ -105,7 +100,7 @@ static int ti_eqep_count_read(struct counter_device *=
-counter,
->  }
->
->  static int ti_eqep_count_write(struct counter_device *counter,
-> -                              struct counter_count *count, unsigned long=
- val)
-> +                              struct counter_count *count, u64 val)
->  {
->         struct ti_eqep_cnt *priv =3D counter->priv;
->         u32 max;
-> @@ -117,64 +112,100 @@ static int ti_eqep_count_write(struct counter_devi=
-ce *counter,
->         return regmap_write(priv->regmap32, QPOSCNT, val);
->  }
->
-> -static int ti_eqep_function_get(struct counter_device *counter,
-> -                               struct counter_count *count, size_t *func=
-tion)
-> +static int ti_eqep_function_read(struct counter_device *counter,
-> +                                struct counter_count *count,
-> +                                enum counter_function *function)
->  {
->         struct ti_eqep_cnt *priv =3D counter->priv;
->         u32 qdecctl;
->
->         regmap_read(priv->regmap16, QDECCTL, &qdecctl);
-> -       *function =3D (qdecctl & QDECCTL_QSRC) >> QDECCTL_QSRC_SHIFT;
-> +
-> +       switch ((qdecctl & QDECCTL_QSRC) >> QDECCTL_QSRC_SHIFT) {
-> +       case TI_EQEP_COUNT_FUNC_QUAD_COUNT:
-> +               *function =3D COUNTER_FUNCTION_QUADRATURE_X4;
-> +               break;
-> +       case TI_EQEP_COUNT_FUNC_DIR_COUNT:
-> +               *function =3D COUNTER_FUNCTION_PULSE_DIRECTION;
-> +               break;
-> +       case TI_EQEP_COUNT_FUNC_UP_COUNT:
-> +               *function =3D COUNTER_FUNCTION_INCREASE;
-> +               break;
-> +       case TI_EQEP_COUNT_FUNC_DOWN_COUNT:
-> +               *function =3D COUNTER_FUNCTION_DECREASE;
-> +               break;
-> +       }
->
->         return 0;
->  }
->
-> -static int ti_eqep_function_set(struct counter_device *counter,
-> -                               struct counter_count *count, size_t funct=
-ion)
-> +static int ti_eqep_function_write(struct counter_device *counter,
-> +                                 struct counter_count *count,
-> +                                 enum counter_function function)
->  {
->         struct ti_eqep_cnt *priv =3D counter->priv;
-> +       enum ti_eqep_count_func qsrc;
-> +
-> +       switch (function) {
-> +       case COUNTER_FUNCTION_QUADRATURE_X4:
-> +               qsrc =3D TI_EQEP_COUNT_FUNC_QUAD_COUNT;
-> +               break;
-> +       case COUNTER_FUNCTION_PULSE_DIRECTION:
-> +               qsrc =3D TI_EQEP_COUNT_FUNC_DIR_COUNT;
-> +               break;
-> +       case COUNTER_FUNCTION_INCREASE:
-> +               qsrc =3D TI_EQEP_COUNT_FUNC_UP_COUNT;
-> +               break;
-> +       case COUNTER_FUNCTION_DECREASE:
-> +               qsrc =3D TI_EQEP_COUNT_FUNC_DOWN_COUNT;
-> +               break;
-> +       default:
-> +               /* should never reach this path */
-> +               return -EINVAL;
-> +       }
->
->         return regmap_write_bits(priv->regmap16, QDECCTL, QDECCTL_QSRC,
-> -                                function << QDECCTL_QSRC_SHIFT);
-> +                                qsrc << QDECCTL_QSRC_SHIFT);
->  }
->
-> -static int ti_eqep_action_get(struct counter_device *counter,
-> -                             struct counter_count *count,
-> -                             struct counter_synapse *synapse, size_t *ac=
-tion)
-> +static int ti_eqep_action_read(struct counter_device *counter,
-> +                              struct counter_count *count,
-> +                              struct counter_synapse *synapse,
-> +                              enum counter_synapse_action *action)
->  {
->         struct ti_eqep_cnt *priv =3D counter->priv;
-> -       size_t function;
-> +       enum counter_function function;
->         u32 qdecctl;
->         int err;
->
-> -       err =3D ti_eqep_function_get(counter, count, &function);
-> +       err =3D ti_eqep_function_read(counter, count, &function);
->         if (err)
->                 return err;
->
->         switch (function) {
-> -       case TI_EQEP_COUNT_FUNC_QUAD_COUNT:
-> +       case COUNTER_FUNCTION_QUADRATURE_X4:
->                 /* In quadrature mode, the rising and falling edge of bot=
-h
->                  * QEPA and QEPB trigger QCLK.
->                  */
-> -               *action =3D TI_EQEP_SYNAPSE_ACTION_BOTH_EDGES;
-> +               *action =3D COUNTER_SYNAPSE_ACTION_BOTH_EDGES;
->                 return 0;
-> -       case TI_EQEP_COUNT_FUNC_DIR_COUNT:
-> +       case COUNTER_FUNCTION_PULSE_DIRECTION:
->                 /* In direction-count mode only rising edge of QEPA is co=
-unted
->                  * and QEPB gives direction.
->                  */
->                 switch (synapse->signal->id) {
->                 case TI_EQEP_SIGNAL_QEPA:
-> -                       *action =3D TI_EQEP_SYNAPSE_ACTION_RISING_EDGE;
-> +                       *action =3D COUNTER_SYNAPSE_ACTION_RISING_EDGE;
->                         return 0;
->                 case TI_EQEP_SIGNAL_QEPB:
-> -                       *action =3D TI_EQEP_SYNAPSE_ACTION_NONE;
-> +                       *action =3D COUNTER_SYNAPSE_ACTION_NONE;
->                         return 0;
->                 default:
->                         /* should never reach this path */
->                         return -EINVAL;
->                 }
-> -       case TI_EQEP_COUNT_FUNC_UP_COUNT:
-> -       case TI_EQEP_COUNT_FUNC_DOWN_COUNT:
-> +       case COUNTER_FUNCTION_INCREASE:
-> +       case COUNTER_FUNCTION_DECREASE:
->                 /* In up/down-count modes only QEPA is counted and QEPB i=
-s not
->                  * used.
->                  */
-> @@ -185,12 +216,12 @@ static int ti_eqep_action_get(struct counter_device=
- *counter,
->                                 return err;
->
->                         if (qdecctl & QDECCTL_XCR)
-> -                               *action =3D TI_EQEP_SYNAPSE_ACTION_BOTH_E=
-DGES;
-> +                               *action =3D COUNTER_SYNAPSE_ACTION_BOTH_E=
-DGES;
->                         else
-> -                               *action =3D TI_EQEP_SYNAPSE_ACTION_RISING=
-_EDGE;
-> +                               *action =3D COUNTER_SYNAPSE_ACTION_RISING=
-_EDGE;
->                         return 0;
->                 case TI_EQEP_SIGNAL_QEPB:
-> -                       *action =3D TI_EQEP_SYNAPSE_ACTION_NONE;
-> +                       *action =3D COUNTER_SYNAPSE_ACTION_NONE;
->                         return 0;
->                 default:
->                         /* should never reach this path */
-> @@ -205,82 +236,67 @@ static int ti_eqep_action_get(struct counter_device=
- *counter,
->  static const struct counter_ops ti_eqep_counter_ops =3D {
->         .count_read     =3D ti_eqep_count_read,
->         .count_write    =3D ti_eqep_count_write,
-> -       .function_get   =3D ti_eqep_function_get,
-> -       .function_set   =3D ti_eqep_function_set,
-> -       .action_get     =3D ti_eqep_action_get,
-> +       .function_read  =3D ti_eqep_function_read,
-> +       .function_write =3D ti_eqep_function_write,
-> +       .action_read    =3D ti_eqep_action_read,
->  };
->
-> -static ssize_t ti_eqep_position_ceiling_read(struct counter_device *coun=
-ter,
-> -                                            struct counter_count *count,
-> -                                            void *ext_priv, char *buf)
-> +static int ti_eqep_position_ceiling_read(struct counter_device *counter,
-> +                                        struct counter_count *count,
-> +                                        u64 *ceiling)
->  {
->         struct ti_eqep_cnt *priv =3D counter->priv;
->         u32 qposmax;
->
->         regmap_read(priv->regmap32, QPOSMAX, &qposmax);
->
-> -       return sprintf(buf, "%u\n", qposmax);
-> +       *ceiling =3D qposmax;
-> +
-> +       return 0;
->  }
->
-> -static ssize_t ti_eqep_position_ceiling_write(struct counter_device *cou=
-nter,
-> -                                             struct counter_count *count=
-,
-> -                                             void *ext_priv, const char =
-*buf,
-> -                                             size_t len)
-> +static int ti_eqep_position_ceiling_write(struct counter_device *counter=
-,
-> +                                         struct counter_count *count,
-> +                                         u64 ceiling)
->  {
->         struct ti_eqep_cnt *priv =3D counter->priv;
-> -       int err;
-> -       u32 res;
->
-> -       err =3D kstrtouint(buf, 0, &res);
-> -       if (err < 0)
-> -               return err;
-> +       if (ceiling !=3D (u32)ceiling)
-> +               return -ERANGE;
->
-> -       regmap_write(priv->regmap32, QPOSMAX, res);
-> +       regmap_write(priv->regmap32, QPOSMAX, ceiling);
->
-> -       return len;
-> +       return 0;
->  }
->
-> -static ssize_t ti_eqep_position_enable_read(struct counter_device *count=
-er,
-> -                                           struct counter_count *count,
-> -                                           void *ext_priv, char *buf)
-> +static int ti_eqep_position_enable_read(struct counter_device *counter,
-> +                                       struct counter_count *count, u8 *=
-enable)
->  {
->         struct ti_eqep_cnt *priv =3D counter->priv;
->         u32 qepctl;
->
->         regmap_read(priv->regmap16, QEPCTL, &qepctl);
->
-> -       return sprintf(buf, "%u\n", !!(qepctl & QEPCTL_PHEN));
-> +       *enable =3D !!(qepctl & QEPCTL_PHEN);
-> +
-> +       return 0;
->  }
->
-> -static ssize_t ti_eqep_position_enable_write(struct counter_device *coun=
-ter,
-> -                                            struct counter_count *count,
-> -                                            void *ext_priv, const char *=
-buf,
-> -                                            size_t len)
-> +static int ti_eqep_position_enable_write(struct counter_device *counter,
-> +                                        struct counter_count *count, u8 =
-enable)
->  {
->         struct ti_eqep_cnt *priv =3D counter->priv;
-> -       int err;
-> -       bool res;
-> -
-> -       err =3D kstrtobool(buf, &res);
-> -       if (err < 0)
-> -               return err;
->
-> -       regmap_write_bits(priv->regmap16, QEPCTL, QEPCTL_PHEN, res ? -1 :=
- 0);
-> +       regmap_write_bits(priv->regmap16, QEPCTL, QEPCTL_PHEN, enable ? -=
-1 : 0);
->
-> -       return len;
-> +       return 0;
->  }
->
-> -static struct counter_count_ext ti_eqep_position_ext[] =3D {
-> -       {
-> -               .name   =3D "ceiling",
-> -               .read   =3D ti_eqep_position_ceiling_read,
-> -               .write  =3D ti_eqep_position_ceiling_write,
-> -       },
-> -       {
-> -               .name   =3D "enable",
-> -               .read   =3D ti_eqep_position_enable_read,
-> -               .write  =3D ti_eqep_position_enable_write,
-> -       },
-> +static struct counter_comp ti_eqep_position_ext[] =3D {
-> +       COUNTER_COMP_CEILING(ti_eqep_position_ceiling_read,
-> +                            ti_eqep_position_ceiling_write),
-> +       COUNTER_COMP_ENABLE(ti_eqep_position_enable_read,
-> +                           ti_eqep_position_enable_write),
->  };
->
->  static struct counter_signal ti_eqep_signals[] =3D {
-> @@ -295,16 +311,16 @@ static struct counter_signal ti_eqep_signals[] =3D =
-{
->  };
->
->  static const enum counter_function ti_eqep_position_functions[] =3D {
-> -       [TI_EQEP_COUNT_FUNC_QUAD_COUNT] =3D COUNTER_FUNCTION_QUADRATURE_X=
-4,
-> -       [TI_EQEP_COUNT_FUNC_DIR_COUNT]  =3D COUNTER_FUNCTION_PULSE_DIRECT=
-ION,
-> -       [TI_EQEP_COUNT_FUNC_UP_COUNT]   =3D COUNTER_FUNCTION_INCREASE,
-> -       [TI_EQEP_COUNT_FUNC_DOWN_COUNT] =3D COUNTER_FUNCTION_DECREASE,
-> +       COUNTER_FUNCTION_QUADRATURE_X4,
-> +       COUNTER_FUNCTION_PULSE_DIRECTION,
-> +       COUNTER_FUNCTION_INCREASE,
-> +       COUNTER_FUNCTION_DECREASE,
->  };
->
->  static const enum counter_synapse_action ti_eqep_position_synapse_action=
-s[] =3D {
-> -       [TI_EQEP_SYNAPSE_ACTION_BOTH_EDGES]     =3D COUNTER_SYNAPSE_ACTIO=
-N_BOTH_EDGES,
-> -       [TI_EQEP_SYNAPSE_ACTION_RISING_EDGE]    =3D COUNTER_SYNAPSE_ACTIO=
-N_RISING_EDGE,
-> -       [TI_EQEP_SYNAPSE_ACTION_NONE]           =3D COUNTER_SYNAPSE_ACTIO=
-N_NONE,
-> +       COUNTER_SYNAPSE_ACTION_BOTH_EDGES,
-> +       COUNTER_SYNAPSE_ACTION_RISING_EDGE,
-> +       COUNTER_SYNAPSE_ACTION_NONE,
->  };
->
->  static struct counter_synapse ti_eqep_position_synapses[] =3D {
-> diff --git a/include/linux/counter.h b/include/linux/counter.h
-> index d16ce2819b48..b69277f5c4c5 100644
-> --- a/include/linux/counter.h
-> +++ b/include/linux/counter.h
-> @@ -6,42 +6,184 @@
->  #ifndef _COUNTER_H_
->  #define _COUNTER_H_
->
-> -#include <linux/counter_enum.h>
->  #include <linux/device.h>
-> +#include <linux/kernel.h>
->  #include <linux/types.h>
->
-> +struct counter_device;
-> +struct counter_count;
-> +struct counter_synapse;
-> +struct counter_signal;
-> +
-> +enum counter_comp_type {
-> +       COUNTER_COMP_U8,
-> +       COUNTER_COMP_U64,
-> +       COUNTER_COMP_BOOL,
-> +       COUNTER_COMP_SIGNAL_LEVEL,
-> +       COUNTER_COMP_FUNCTION,
-> +       COUNTER_COMP_SYNAPSE_ACTION,
-> +       COUNTER_COMP_ENUM,
-> +       COUNTER_COMP_COUNT_DIRECTION,
-> +       COUNTER_COMP_COUNT_MODE,
-> +};
-> +
-> +enum counter_scope {
-> +       COUNTER_SCOPE_DEVICE,
-> +       COUNTER_SCOPE_SIGNAL,
-> +       COUNTER_SCOPE_COUNT,
-> +};
-> +
->  enum counter_count_direction {
-> -       COUNTER_COUNT_DIRECTION_FORWARD =3D 0,
-> -       COUNTER_COUNT_DIRECTION_BACKWARD
-> +       COUNTER_COUNT_DIRECTION_FORWARD,
-> +       COUNTER_COUNT_DIRECTION_BACKWARD,
->  };
-> -extern const char *const counter_count_direction_str[2];
->
->  enum counter_count_mode {
-> -       COUNTER_COUNT_MODE_NORMAL =3D 0,
-> +       COUNTER_COUNT_MODE_NORMAL,
->         COUNTER_COUNT_MODE_RANGE_LIMIT,
->         COUNTER_COUNT_MODE_NON_RECYCLE,
-> -       COUNTER_COUNT_MODE_MODULO_N
-> +       COUNTER_COUNT_MODE_MODULO_N,
->  };
-> -extern const char *const counter_count_mode_str[4];
->
-> -struct counter_device;
-> -struct counter_signal;
-> +enum counter_function {
-> +       COUNTER_FUNCTION_INCREASE,
-> +       COUNTER_FUNCTION_DECREASE,
-> +       COUNTER_FUNCTION_PULSE_DIRECTION,
-> +       COUNTER_FUNCTION_QUADRATURE_X1_A,
-> +       COUNTER_FUNCTION_QUADRATURE_X1_B,
-> +       COUNTER_FUNCTION_QUADRATURE_X2_A,
-> +       COUNTER_FUNCTION_QUADRATURE_X2_B,
-> +       COUNTER_FUNCTION_QUADRATURE_X4,
-> +};
-> +
-> +enum counter_signal_level {
-> +       COUNTER_SIGNAL_LEVEL_LOW,
-> +       COUNTER_SIGNAL_LEVEL_HIGH,
-> +};
-> +
-> +enum counter_synapse_action {
-> +       COUNTER_SYNAPSE_ACTION_NONE,
-> +       COUNTER_SYNAPSE_ACTION_RISING_EDGE,
-> +       COUNTER_SYNAPSE_ACTION_FALLING_EDGE,
-> +       COUNTER_SYNAPSE_ACTION_BOTH_EDGES,
-> +};
->
->  /**
-> - * struct counter_signal_ext - Counter Signal extensions
-> - * @name:      attribute name
-> - * @read:      read callback for this attribute; may be NULL
-> - * @write:     write callback for this attribute; may be NULL
-> - * @priv:      data private to the driver
-> + * struct counter_comp - Counter component node
-> + * @type:              Counter component data type
-> + * @name:              device-specific component name
-> + * @priv:              component-relevant data
-> + * @action_read                Synapse action mode read callback. The re=
-ad value of the
-> + *                     respective Synapse action mode should be passed b=
-ack via
-> + *                     the action parameter.
-> + * @device_u8_read     Device u8 component read callback. The read value=
- of the
-> + *                     respective Device u8 component should be passed b=
-ack via
-> + *                     the val parameter.
-> + * @count_u8_read      Count u8 component read callback. The read value =
-of the
-> + *                     respective Count u8 component should be passed ba=
-ck via
-> + *                     the val parameter.
-> + * @signal_u8_read     Signal u8 component read callback. The read value=
- of the
-> + *                     respective Signal u8 component should be passed b=
-ack via
-> + *                     the val parameter.
-> + * @device_u32_read    Device u32 component read callback. The read valu=
-e of
-> + *                     the respective De
+All errors (new ones prefixed by >>):
+
+   resctrlfs.c: In function 'validate_resctrl_feature_request':
+>> resctrlfs.c:641:28: error: 'CMT_STR' undeclared (first use in this function); did you mean 'CAT_STR'?
+     641 |      !strncmp(resctrl_val, CMT_STR, sizeof(CMT_STR))) {
+         |                            ^~~~~~~
+         |                            CAT_STR
+   resctrlfs.c:641:28: note: each undeclared identifier is reported only once for each function it appears in
+--
+   /usr/bin/ld: /tmp/ccDCv7Po.o: warning: relocation against `tests_run' in read-only section `.text.startup'
+   /usr/bin/ld: /tmp/ccDCv7Po.o: in function `detect_amd':
+>> tools/testing/selftests/resctrl/resctrl_tests.c:26: undefined reference to `fgrep'
+   /usr/bin/ld: /tmp/ccDCv7Po.o: in function `tests_cleanup':
+>> tools/testing/selftests/resctrl/resctrl_tests.c:51: undefined reference to `mbm_test_cleanup'
+>> /usr/bin/ld: tools/testing/selftests/resctrl/resctrl_tests.c:52: undefined reference to `mba_test_cleanup'
+>> /usr/bin/ld: tools/testing/selftests/resctrl/resctrl_tests.c:53: undefined reference to `cqm_test_cleanup'
+>> /usr/bin/ld: tools/testing/selftests/resctrl/resctrl_tests.c:54: undefined reference to `cat_test_cleanup'
+   /usr/bin/ld: /tmp/ccDCv7Po.o: in function `main':
+>> tools/testing/selftests/resctrl/resctrl_tests.c:158: undefined reference to `check_resctrlfs_support'
+>> /usr/bin/ld: tools/testing/selftests/resctrl/resctrl_tests.c:159: undefined reference to `filter_dmesg'
+   /usr/bin/ld: /tmp/ccDCv7Po.o: in function `printf':
+>> /usr/include/x86_64-linux-gnu/bits/stdio2.h:107: undefined reference to `tests_run'
+   /usr/bin/ld: /tmp/ccDCv7Po.o: in function `main':
+>> tools/testing/selftests/resctrl/resctrl_tests.c:158: undefined reference to `check_resctrlfs_support'
+>> /usr/bin/ld: tools/testing/selftests/resctrl/resctrl_tests.c:159: undefined reference to `filter_dmesg'
+>> /usr/bin/ld: tools/testing/selftests/resctrl/resctrl_tests.c:165: undefined reference to `mbm_bw_change'
+>> /usr/bin/ld: tools/testing/selftests/resctrl/resctrl_tests.c:167: undefined reference to `mbm_test_cleanup'
+>> /usr/bin/ld: tools/testing/selftests/resctrl/resctrl_tests.c:168: undefined reference to `tests_run'
+>> /usr/bin/ld: tools/testing/selftests/resctrl/resctrl_tests.c:193: undefined reference to `cat_perf_miss_val'
+   /usr/bin/ld: tools/testing/selftests/resctrl/resctrl_tests.c:195: undefined reference to `tests_run'
+   /usr/bin/ld: tools/testing/selftests/resctrl/resctrl_tests.c:196: undefined reference to `cat_test_cleanup'
+>> /usr/bin/ld: tools/testing/selftests/resctrl/resctrl_tests.c:185: undefined reference to `cqm_resctrl_val'
+   /usr/bin/ld: tools/testing/selftests/resctrl/resctrl_tests.c:187: undefined reference to `cqm_test_cleanup'
+   /usr/bin/ld: tools/testing/selftests/resctrl/resctrl_tests.c:188: undefined reference to `tests_run'
+>> /usr/bin/ld: tools/testing/selftests/resctrl/resctrl_tests.c:175: undefined reference to `mba_schemata_change'
+   /usr/bin/ld: tools/testing/selftests/resctrl/resctrl_tests.c:177: undefined reference to `mba_test_cleanup'
+   /usr/bin/ld: tools/testing/selftests/resctrl/resctrl_tests.c:178: undefined reference to `tests_run'
+   /usr/bin/ld: warning: creating DT_TEXTREL in a PIE
+   collect2: error: ld returned 1 exit status
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+--vkogqOf2sHV7VnPd
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
+
+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
+5CXE4vC7/wPaRVo2yKACAA==
+
+--vkogqOf2sHV7VnPd--
