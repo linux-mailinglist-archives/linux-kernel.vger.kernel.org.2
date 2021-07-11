@@ -2,253 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 371C83C3B94
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 12:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC5813C3BA3
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 12:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232240AbhGKKoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 06:44:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232172AbhGKKoE (ORCPT
+        id S232201AbhGKKwn convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 11 Jul 2021 06:52:43 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:43357 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231183AbhGKKwm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 06:44:04 -0400
-Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E73C7C0613E8;
-        Sun, 11 Jul 2021 03:41:16 -0700 (PDT)
-Received: by mail-vk1-xa2f.google.com with SMTP id j190so3251695vkg.12;
-        Sun, 11 Jul 2021 03:41:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uSIeU9Xrm6MFsRdcAvqJwzm/06Dgie5NAiMN24JshYA=;
-        b=GnRCuYox65Nvn/yJKM14od1VNX/q+4m6AMt/tenIK+ZUPI8++wpi+DbjxZDoEJzo0X
-         BQGPsSGSaD7qN4VRISd43VBjSjSGMigBBAXPrK/TEktC3ImYdgoieEJ3yge1We5qTFte
-         6NYwTAJZQCz2Q0vQ74jFGz6XL2nc4pzIjuSvJ66JYpMmjaMnQrmaiI9dh1x6GUssCefj
-         mM+CixforZsmC0Rzc91fRdUeiVqIU2FfVIkV1ax0iVds9dCz5Jg7fCzkOqtr9oPAgyJb
-         T8BLzLqhzJZQR4q3yb1dmZG1d+9zQLYyKAdBfBAEd1BjcCDmBuzeyAZa+3QYHXnnjB0y
-         v23A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uSIeU9Xrm6MFsRdcAvqJwzm/06Dgie5NAiMN24JshYA=;
-        b=btaKfKzvqIcmUvLP7PhBuq80+qzJaxSJ7f4hNJiJbzToLFEatpLR0lXAXcwyJxu+/r
-         /X3Wy+ploA9nh5/mBisocsDZpcHzukV+A6VSz6lEERlFesPPd77p6AYX7NKd+czXSuPQ
-         JNi1RS2qTZjZVkoG3g2idZD56tu67x9fVQ+ur1IrcX77OBWRXjkuaVrBx0L0sH5EFMmo
-         S/6auu8GMBBdYzXsCslgSxnkdlNK5ff4/SFzEEkCBTEz6L7l+mxt+1O4/TStrcZwFHQh
-         1NAnvgmTqoaBsw749WhWxEk7ntMcUeNfQxgWe1PZeTiRwNoXify/PHPSy8AAX/NwXfa8
-         cPlQ==
-X-Gm-Message-State: AOAM531ZSEEnrWWb8KTUQ+JGpq62aaLVkz6RZe4bT40WqjK4lr4uJbb0
-        v57CM39IVn4wNP/DZfbRkPU=
-X-Google-Smtp-Source: ABdhPJxZofoDN0krXK3CMRsXndP+JzoeJBdlb9RcGd843oJbomuw8VvoUx+xxCiXQGzxQiSENjZMzw==
-X-Received: by 2002:a1f:1d94:: with SMTP id d142mr39857184vkd.6.1626000075861;
-        Sun, 11 Jul 2021 03:41:15 -0700 (PDT)
-Received: from shinobu ([193.27.12.133])
-        by smtp.gmail.com with ESMTPSA id d184sm1570664vsd.34.2021.07.11.03.41.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Jul 2021 03:41:15 -0700 (PDT)
-Date:   Sun, 11 Jul 2021 19:41:07 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     David Lechner <david@lechnology.com>
-Cc:     jic23@kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        kernel@pengutronix.de, a.fatoum@pengutronix.de,
-        kamel.bouhara@bootlin.com, gwendal@chromium.org,
-        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, o.rempel@pengutronix.de,
-        jarkko.nikula@linux.intel.com
-Subject: Re: [PATCH v12 11/17] docs: counter: Document character device
- interface
-Message-ID: <YOrKw04fw43AEeWQ@shinobu>
-References: <cover.1625471640.git.vilhelm.gray@gmail.com>
- <186e7a1cd7dc822cc9290683b463c3e675959e1a.1625471640.git.vilhelm.gray@gmail.com>
- <10ae3615-1fe4-0dce-5aa6-e865de2655a7@lechnology.com>
+        Sun, 11 Jul 2021 06:52:42 -0400
+Received: from [192.168.1.107] ([37.4.249.97]) by mrelayeu.kundenserver.de
+ (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MYvTy-1lgW2q0daS-00UoxR; Sun, 11 Jul 2021 12:49:36 +0200
+Subject: Re: [PATCH v3 5/5] staging: vchiq: Combine vchiq platform code into
+ single file
+To:     Ojaswin Mujoo <ojaswin98@gmail.com>, nsaenz@kernel.org
+Cc:     gregkh@linuxfoundation.org, arnd@arndb.de,
+        dan.carpenter@oracle.com, phil@raspberrypi.com,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <cover.1625401927.git.ojaswin98@gmail.com>
+ <b2e9eaee3e6d8f278a3277aaa284c5ca8b76d756.1625401928.git.ojaswin98@gmail.com>
+From:   Stefan Wahren <stefan.wahren@i2se.com>
+Autocrypt: addr=stefan.wahren@i2se.com; keydata=
+ LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tClZlcnNpb246IEdudVBHIHYy
+ CgptUUlOQkZ0NmdCTUJFQUN1Yi9wQmV2SHhidkplZnlaRzMySklObW4yYnNFUFgyNVY2ZmVq
+ bXlZd21DR0tqRnRMCi9Eb1VNRVZIRHhDSjQ3Qk1YbzM0NGZIVjFDM0FudWRnTjFCZWhMb0J0
+ TEh4bW5lQ3pnSDNLY1B0V1c3cHRqNEcKdEp2OUNRRFp5MjdTS29FUHh5YUk4Q0YweWdSeEpj
+ NzJNOUk5d21zUFo1YlVIc0x1WVdNcVE3SmNSbVBzNkQ4ZwpCa2srOC95bmdFeU5FeHd4SnBS
+ MXlsajVianhXREh5WVF2dUo1THpaS3VPOUxCM2xYVnNjNGJxWEVqYzZWRnVaCkZDQ2svc3lp
+ by9ZaHNlOE4rUXN4N01RYWd6NHdLVWtRUWJmWGcxVnFrVG5BaXZYczQyVm5Ja211NWd6SXcv
+ MHQKUkp2NTBGUmhIaHhweUtBSThCOG5oTjhRdng3TVZrUGM1dkRmZDN1R1lXNDdKUGhWUUJj
+ VXdKd05rLzQ5RjllQQp2ZzJtdE1QRm5GT1JrV1VSdlArRzZGSmZtNitDdk92N1lmUDF1ZXdB
+ aTRsbitKTzFnK2dqVklXbC9XSnB5MG5UCmlwZGZlSDlkSGtnU2lmUXVuWWN1Y2lzTXlvUmJG
+ OTU1dENna0VZOUVNRWRZMXQ4aUdEaUNnWDZzNTBMSGJpM2sKNDUzdWFjcHhmUVhTYUF3UGtz
+ bDhNa0NPc3YyZUVyNElOQ0hZUUR5WmljbEJ1dUNnOEVOYlI2QUdWdFpTUGNRYgplbnpTektS
+ Wm9POUNhcUlEK2ZhdkxpQi9kaHptSEErOWJnSWhtWGZ2WFJMRFp6ZThwbzFkeXQzRTFzaFhp
+ ZGRaClBBOE51SlZ6RUl0MmxtSTZWOHBaRHBuMjIxcmZLaml2UlFpYW9zNTRUZ1pqak1ZSTdu
+ bko3ZTZ4endBUkFRQUIKdENCVGRHVm1ZVzRnVjJGb2NtVnVJRHgzWVdoeVpXNXpkRUJuYlhn
+ dWJtVjBQb2tDTndRVEFRZ0FJUVVDWElkYwo0Z0liQXdVTENRZ0hBZ1lWQ0FrS0N3SUVGZ0lE
+ QVFJZUFRSVhnQUFLQ1JDVWdld1BFWkR5MjFPVEQvOUdpWkxkCnRSWWNteVJKZ2x0aVFRekFp
+ UWRjSUQ3OGxHb1dwL3grci92Y1U2YjZqdVl1ZVR3Z1Iwclc3djdsMklSQnlEN24KSEp4YSt0
+ SVNvUVpCZ2hvbE1JZmI5TXRoR09KTENZNzdrL1FoQWhuMzJOR1prZWp3OXR6a3MvNDBtclpT
+ VVQ4NApaeWJzUVhyTE0vSFI2VElJL0RlUEIwbktEM0ppcHBzMlVIUUQ5cUQySWpFd1NRUGxI
+ akNPckVaaDQ1UFo3bTkrClo5M0x6aVRlc1dabFlRdUxpSndzNHJLcHRIVzFkL3dSZWxzaG1t
+ NlFxY0wybDRDL2U0MGVEQjlncTRkU1poOVgKUEVZbGxpeU5RaDdhMkxTZHVtRTFyK2NTd0lq
+ RS91ZHRSdmRPOWFLb0psT2JVSzVkTmpTUEg3d0tUYndkWGRZRApHUHdEaFhkNThOQXdyK1BY
+ QmxQajB0STFMQ3ErTEJ4ZUt6aFdYK0dWcTlEb2pWanlVREV4Rk5Ga1h1b0M3ZzhtClY5VDB0
+ ZUJpdVpSbm91WEt3VjJGcHRaT0hIN0JVRVd0a0t0aGgxZXRmT1dwaWdCemtVN2JQc2ZJWVQr
+ cnk5dGIKMW9KK3Y0MVBOYXFaRW1QVXBKeHZmek5UN3Ayd01lRDdaajlmMHJ1YlJQdExBSjJR
+ R2pyRkhzdVh3QU9xcHl6ZQoxOEVidHNZazBOMHp1SEVoY2orUEJJQmZoMFlJWWQ1MW9mNkdJ
+ aU95UjlxMFhYdHBsVUo3VDIvSDF1UXFrWGxwCitnVzRWa2lmc2NJckl1eWZueFpXMTJlSXZq
+ NnlicVdMN2FZS0dZbVQ2aUxDUGJIWXlZY2F5bDRFa0ZjckNGN0UKZTBXVC9zY1ZNaE8vNVgv
+ SGFOQTVIQngvcjUycGdMY3Y0aTlNeExRbVUzUmxabUZ1SUZkaGFISmxiaUE4YzNSbApabUZ1
+ TG5kaGFISmxia0JwTW5ObExtTnZiVDZKQWpnRUV3RUNBQ0lGQWx0NmdCTUNHd01HQ3drSUJ3
+ TUNCaFVJCkFna0tDd1FXQWdNQkFoNEJBaGVBQUFvSkVKU0I3QThSa1BMYmpic1AvamdqYVNz
+ NUh0bGtBSXZXUytGcm15N2MKaG5jT0F4TFRWL0Q2UkV3SU95R0poRkt3d29pck55UTJnOXZV
+ YTNZQ1lDZjFmSjh3RWhhS09COWQwTHBNUm5MNApkRVQ4ZDgyMzhFL3BLK0hxTktpSXNKaHM2
+ SnNLOFpnalZRR3JtbWZua0dyWisxdjBIQnV4ZGljZ0duUC9XdHVBClVsOGw2Mi9BTGJheXlq
+ KzYxQ2xyc0V0UklhcU82N0xJWXdQaVBEUkkrWGlNek5pR3pIRi8xUTZHUjAyUkg2YTMKRjg5
+ ejhhUHhjSGkxWnZDdDJ5a3o2VUVjaHpQMHI1Z3FGSisvTC9VcHU4ME1YaVk0djVlSWFCNTJn
+ VlBnaXlNQQpsTDJkRHMxbUladm5yUkxSWTJ0YjNtQVlOa1Y1QjVJRFQzcGtXeTZrS281T0Nn
+ SytZZFlPUjhGTloyb04ydDhPCnJLK1ZudGFLN01NU0tIbG1ZL3NPd3RSbEVoMU9CbXJjQ3dH
+ d21wLzA1R2tSNDZmL0lzaFJWZUZPUmF3K0dBcXQKUDIrQ0ZhMkNOQS9JSG5aTm95aWtsRHpQ
+ UUhVVUdzck5wcERyaFg5Sm1oQm1nMXYyeXdIMU5YdTFpRGZQMUJBdwpLZ29rdDVmNVVhUkY5
+ c0FBNTN2V0V2YlVVTjllZXNGR0x6UFdkSkdRNWhwZC9WSDVJUXk5U0JyaC93SWNla3E1Cm4w
+ a042cGJUSHhHRTUyU2kvTVZJa05UdURaM2FwbjJqbERaNHBPdHBCWEkydlAzYlBPK05pcUJa
+ anNVM3R4TGkKV2R2MkZqeXp6NlhMUndlV1JZVkw1SGE2TER0eG9yMnZ1NlVQMDdwOXh6MXhS
+ WmFPRFczb1lsSEZ6WXBhNFc1ZwpMSGIybEVrSXVVZlNjaWNHYmpqQXRDbFRkR1ZtWVc0Z1Yy
+ Rm9jbVZ1SUR4emRHVm1ZVzR1ZDJGb2NtVnVRR2x1CkxYUmxZMmd1WTI5dFBva0NOd1FUQVFn
+ QUlRVUNYSWRlaHdJYkF3VUxDUWdIQWdZVkNBa0tDd0lFRmdJREFRSWUKQVFJWGdBQUtDUkNV
+ Z2V3UEVaRHkyeUhURC85VUY3UWxEa0d4elE3QWFDSTZOOTVpUWY4LzFvU1VhRE51Mlk2SQpL
+ K0R6UXBiMVRiVE9yM1ZKd3dZOGEzT1d6NU5MU09MTVdlVnh0K29zTW1sUUlHdWJEM09EWko4
+ aXpQbEcvSnJOCnQ1elNkbU41SUE1ZjNlc1dXUVZLdmdoWkFnVERxZHB2K1pIVzJFbXhuQUox
+ dUxGWFhlUWQzVVpjQzVyMy9nL3YKU2FNbzl4ZWszSjVtTnVEbTcxbEVXc0FzL0JBY0ZjK3lu
+ TGh4d0JXQld3c3Z3UjhiSHRKNURPTVd2YUt1RHNrcApJR0ZVZS9LYjJCK2pyYXZRM1RuNnMv
+ SHFKTTBjZXhTSHo1cGUrMHNHdlArdDlKNzIzNEJGUXdlRkV4cmlleThVCkl4T3I0WEFiYWFi
+ U3J5WW5VL3pWSDlVMWkyQUlRWk1XSkFldkN2VmdRL1UrTmVSaFh1ZGU5WVVtRE1EbzJzQjIK
+ VkFGRUFxaUYyUVVIUEEybThhN0VPM3lmTDRyTWswaUh6TElLdmg2L3JIOFFDWThpM1h4VE5M
+ OWlDTHpCV3UvTgpPbkNBYlMremx2TFphaVNNaDVFZnV4VHR2NFBsVmRFamY2MlArWkhJRDE2
+ Z1VEd0VtYXpMQU1yeDY2NmpINWt1ClVDVFZ5bWJMMFR2Qis2TDZBUmw4QU55TTRBRG1rV2tw
+ eU0yMmtDdUlTWUFFZlFSM3VXWFo5WWd4YVBNcWJWK3cKQnJoSmc0SGFONkM2eFRxR3YzcjRC
+ MmFxYjc3L0NWb1JKMVo5Y3BIQ3dpT3pJYUFtdnl6UFU2TXhDRFhaOEZnWQpsVDR2MjNHNWlt
+ SlAyemdYNXMrRjZBQ1VKOVVRUEQwdVRmK0o5RGEycitza2gvc1dPbloreWNvSE5CUXZvY1pF
+ Ck5BSFFmN2tDRFFSYmVvQVRBUkFBMkhkMGZzRFZLNzJSTFNESGJ5ME9oZ0RjRGxWQk0yTSto
+ WVlwTzNmWDFyKysKc2hpcVBLQ0hWQXNRNWJ4ZTdIbUppbUhhNEtLWXMya3YvbWx0L0NhdUNK
+ Ly9wbWN5Y0JNN0d2d25Lem11WHp1QQpHbVZUWkM2V1I1TGtha0ZydEhPelZtc0VHcE52NVJj
+ OWw2SFlGcExrYlNrVmk1U1BRWkp5K0VNZ01DRmdqclpmClZGNnlvdHdFMWFmN0hOdE1oTlBh
+ TEROMW9VS0Y1aitSeVJnNWl3SnVDRGtuSGp3QlFWNHBndzIvNXZTOEE3WlEKdjJNYlcvVExF
+ eXBLWGlmNzhJaGdBelh0RTJYck0xbi9vNlpINzFvUkZGS096NDJsRmR6ZHJTWDBZc3FYZ0hD
+ WAo1Z0l0TGZxemoxcHNNYTlvMWVpTlRFbTFkVlFyVHFueXMwbDE4b2FsUk5zd1lsUW1uWUJ3
+ cHdDa2FUSExNSHdLCmZHQmJvNWRMUEVzaHRWb3dJNm5zZ3FMVHlRSG1xSFlxVVpZSXBpZ21t
+ QzNTd0JXWTFWNmZmVUVta3FwQUFDRW4KTDQvZ1Vnbjd5US81ZDBzZXFuQXEycFNCSE1VVW9D
+ Y1R6RVFVV1ZraUR2M1JrN2hURm1oVHNNcTc4eHYyWFJzWApNUjZ5UWhTVFBGWkNZRFVFeEVs
+ RXNTbzlGV0hXcjZ6SHlZY2M4cURMRnZHOUZQaG1RdVQyczlCbHg2Z0kzMjNHCm5FcTFsd1dQ
+ SlZ6UDRqUWtKS0lBWHdGcHYrVzhDV0xxekRXT3ZkbHJEYVRhVk1zY0ZUZUg1VzZVcHJsNjVq
+ cUYKUUdNcGNSR0NzOEdDVVcxM0gwSXlPdFF0d1dYQTRueStTTDgxcHZpQW1hU1hVOGxhS2FS
+ dTkxVk9WYUY5ZjRzQQpFUUVBQVlrQ0h3UVlBUUlBQ1FVQ1czcUFFd0liREFBS0NSQ1VnZXdQ
+ RVpEeTIrb1hELzljSEhSa0JaT2ZrbVNxCjE0U3Z4MDYyUHRVMEtWNDcwVFNucC9qV29ZSm5L
+ SXczRzBtWElSZ3J0SDJkUHdwSWdWanNZeVJTVk1LbVNwdDUKWnJEZjlOdFRiTldnazhWb0xl
+ WnpZRW8rSjNvUHFGclRNczNhWVl2N2U0K0pLNjk1WW5tUSttT0Q5bmlhOTE1dApyNUFaajk1
+ VWZTVGx5VW15aWMxZDhvdnNmMWZQN1hDVVZSRmNSamZOZkRGMW9ML3BEZ01QNUdaMk93YVRl
+ am15CkN1SGpNOElSMUNpYXZCcFlEbUJuVFlrN1B0aHk2YXRXdllsMGZ5L0NxYWpUS3N4Nytw
+ OXh6aXU4WmZWWCtpS0IKQ2MrSGUrRURFZEdJRGh2TlovSVFIZk9CMlBVWFdHUytzOUZOVHhy
+ L0E2bkxHWG5BOVk2dzkzaVBkWUl3eFM3SwpYTG9LSmVlMTBEamx6c1lzUmZsRk9XMFpPaVNp
+ aElDWGlRVjF1cU02dHpGRzlndFJjaXVzNVVBdGhXYU8xT3dVClNDUW1mQ09tNGZ2TUlKSUE5
+ cnh0b1M2T3FSUWNpRjNjcm1vMHJKQ3ROMmF3WmZnaThYRWlmN2Q2aGp2MEVLTTkKWFpvaUFa
+ WVpEKy9pTG01VGFLV042b0dJdGkwVmpKdjhaWk9aT2ZDYjZ2cUZJa0pXK2FPdTRvclRMRk16
+ MjhhbwpVM1F5V3BOQzhGRm1kWXNWdWE4czZnTjFOSWE2eTNxYS9aQjhiQS9pa3k1OUFFejRp
+ RElScmdVek1FZzhBazdUCmZtMUtpWWVpVHRCRENvMjVCdlhqYnFzeXhrUUQxbmtSbTZGQVZ6
+ RXVPUEllOEp1cVcyeEQ5aXhHWXZqVTVoa1IKZ0pwM2dQNWIrY25HM0xQcXF1UTJFNmdvS1VN
+ TEFia0NEUVJiZmw5REFSQUFzRExjYStMbFAydm5mdEVHaHBjQQpCR1ZOUUVGbkdQckNhdVU2
+ SGhOODA1V3RQVHRtc1JPdUp6cWdVVDBtcHFXSWZacTZzTXd5dkhLOVRzL0tIM0paClVWYlJD
+ M3oyaDNLZmhIL0RhZjk1cGQ2bVBjL2g5dkYvT3kzK2VUV2hnR25QNmNBNWtsUitmTzFXaEc4
+ VnJpWHYKck5lUkcyMHN6emplSG9jblNJY1Q1WHVaUjB1REhPaUd4T2l6MXNNUkZUR3h6R095
+ MTlSOXJ2dTYzdGlJM2Q3dgpnYzc1T0NBZGtlQi9TZUNFbGFSdzBUZjdMWmJQampzRjI2M0JZ
+ bk1mNGtrTkVLdnFXY1UyaWNNcCtxZXpqeW5CCnB2ZXVlMHJDVFFCWUFRbG9GQ1ZUR0hyV1dB
+ NkQ0VzVPMkFmSWRJYzF1MUpDWnAyZjVMV1ZvVUZUVklyUW5RUVUKU0hDaWZyOU1aeExUdFBK
+ ZFU1Mm9TUHczZGs0aExQOGlKSUx1dnYvYXZhakNzUVlIRXR3WXNiZUZaeGl1TGdscApBN1lj
+ Sk5ObXBnQ3BNRDR3VWh2bEN0QUtOQlFXeXIyOTc2OThFUVRuNDZlQmVVNkttMkNpaFhrZ3dD
+ eWY4ZXlLCkxFM3NYZXdhcTVrZ1pXdk5xNml1NXFZSVJCOXl3K2NYYzYwZE9aRE9scTkzWDVT
+ QVJZemFvZXBrSHo0cmtMa1AKUG8rdENIeUhRUHNHblBYYzlXVDgwREM5Tm5KR2R2VWx5NXJk
+ TUk0eHBaeWdlb2tqd293VlFsUFV1Y1M2TXluNwpmOHc4Y2dmQjdDMklBSWNEeDJwUC9IendY
+ dmtDT1FOQTdtVjFsTTA4bitnVmtUcnpweGlwNURicTRDSW9ZeDJNCkpaVDhiR1JINlhqY1VE
+ S2EwOVFoeVpzQUVRRUFBWWtFUkFRWUFRZ0FEd1VDVzM1ZlF3SWJBZ1VKQThKbkFBSXAKQ1JD
+ VWdld1BFWkR5MjhGZElBUVpBUWdBQmdVQ1czNWZRd0FLQ1JCVnhETFBjVk1NamNkc0QvMFJo
+ QXN1UVlPeQpyMTNCbDNOaFhrWUFaR3AyWkZER3VrZTdPU2tWOG9qT09UZFR5ei9jT1JHQ2J5
+ ZEQrRGd2cUZ5VmRuT1hLZ08wCmxKbUd3ckdlTGRnZ0F2aDBpaHJwNU8wWVVKOWJCU1htR01t
+ UVRZSC9BbUxUR2FkYnVqQ1dqNWZGVWtDeXd4aW0KSHV5MFBiMjRwelR2UzUwR1k1WStxSDBG
+ SE5haWdka2tpV04zcnVnN0haRXUvQ3lsUFpqT1h6K0QxUVBNckV4dwo3ZC9NS2FiVis5YU5i
+ UVlabGRJajk4UXd2VUYxS1N6YThqbFVJdnBoUnEyN0FUOGZER1lHUGZERU1nMmNCT2FlCkty
+ N29uUXM0YjdhV082aWZEbHhRVHB6c3pvK0FuODA3Tk1TdFZFRmYrczNBaFZEM2U3bmY4SkJh
+ dmJWckFlMGsKb20yNm96elBubnh6K2xxVlZ0dzZVazRYTUl6dGl4L0h3SFl3dUNuY1VYWndL
+ MEkzeUFKd2pZd29vck9DaEozUwpFVWJKUVB0R3NneFJERXhWQkZlNk5MUC82MnhQOU82dGFj
+ d09kYjBNbVAxYjM5cFJBVEM3YmdkMWxkVUxpNzVaCmxKckowL1NpVkVyb3FOWXk3OXRmbWdB
+ WjJVeFptczlTckV5Nm85UVNmc24xYVh2K01QTDlKYUNHbWtQNnpiTFEKTm5kajBKY2FRbmtD
+ MHZneWRPMUJtNk11OTZQOXVmbEtaY0FTNndtTE01SWRIT3lqTDg4d0h3anVjakFPQnRjdwpw
+ MG9HVG5WT25Sc05ZU084VzhZWi9LZGJ1Nzg1ZGF6TXFKMmlOakFEdUJiZG02TjRqNUVkTW5r
+ TG4wQklmUEpwCmRnbTR2bDJVcExqd1JHci9NM3dtbTVwdnMrNnVCN2hrL0ZKaUQvNGxsRU5Q
+ NGVNMWg3U200aitWcTZOMSt6VEIKSVhKQWViSXFhc0RwNXlaUzdYcnk0STM2bjg1WEVZZkcw
+ MWx0QXlob05WMkRPOFNJUlFwdWkydHErOVJQM1JLMQpKREJ4eEVKWTJFTzVKWjhNeGFQSFEw
+ RFQwNWxSRmpLMkFsaGRFSXRqTGpwSjNmVW05c3FMeE1XeHpQNlV6M2lpCjJ1YTR1bnJ0Nk9D
+ VHFRd2lqRi8zYlRXaXd2VkFBSG5NRlVpb1hzaEhhb2hWRGNWZm5lSU1mVjBiUUNYWWkzTnAK
+ WTB2MFp3Y2lGSCtnU0M3cUQ2WE51aHBWR1NMNElpbGlGeS9TemNhSkV6QUhlTERTaFpQMkNX
+ ZG5DNHZnbDM3dApocHg4aDU1WWhKbjZIU3VVelBnaGFLdFZCMmsrajdaZXlaK1NGeHA3SXVi
+ SEN3TEhsUWhUNzVSd1EzaUF4S242CjBxajUxY1lUbnF4ZFpYVzZmSDNQa3VNellVNUdwcVIv
+ MU9sNWMvd2ZJNmc2QW04eUtXLzBFVUx0K0tuNExGc1MKbTdZM201SDV2MTJVNkpCWXZWK3Ix
+ M2paaW9zNEVFREU5M0Q1c05IMk1JeVJ6Q0RxMXpkZHQ0WHV5S0ZqUEtXMQo5aWJaRGZGVjdL
+ dUNzdnVMMjNzQmMxc0NNb3ArRTFtVC9ReE9JQTZvRFQxTVFzdHdPVnVReURDdi9PdktTZ2Z6
+ CjhGWEdMNkFQY2xqQ3FqOEFKaHhReXN4ZG9pUVA4bS92dStialdHR3Z4dzVzMWxncGlSRFRS
+ VVBnY0pKTmFHWTIKVklEclpRaTROU2lOUTBOSWkrZGp1NGZOTW1DcFFxZzh0YkMzY0FhNnl3
+ bTZvUUIxU0JobURYMmUxMWdSbGx1SQpPblRHUEUwSFRvM2w3MmxoYmc9PQo9cVpNVgotLS0t
+ LUVORCBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCg==
+Message-ID: <b1b867c1-476c-8a5d-721b-ac19854efcbc@i2se.com>
+Date:   Sun, 11 Jul 2021 12:49:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="dVrT+04cp+VrrbAK"
-Content-Disposition: inline
-In-Reply-To: <10ae3615-1fe4-0dce-5aa6-e865de2655a7@lechnology.com>
+In-Reply-To: <b2e9eaee3e6d8f278a3277aaa284c5ca8b76d756.1625401928.git.ojaswin98@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-US
+X-Provags-ID: V03:K1:O5yJPazFMqxnVGQNhEVlXSD2aYpt/ImNzJpUOtFyU2a6jWi9QEk
+ t+Fj0QUV8B2j2eGzSKB5bmglPWFZP7uN6SyTNoc3USzXiUZX4fBQhE8zPzvLdsjYQDQIBGF
+ cVr9TmP1ao5Dc8++NemZfqmajsLfHhNjA8/zS6rJJ0/pwjv1CVRVznP5MvurX6mGqNT8eEb
+ 2hoYR8EB2hO4o0p6+YTYA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:oO0tyG9W/UY=:oqtE0tC2HZgxh0BE5cCg+I
+ egYWy9axVK6MKohn4j/4riizGWxORmngHFubpuPaPYb1jEFhJnY9nuhCkgijuwlim5Ku5mI2z
+ hYPORNRGDsJDEEcFm1fui+PKzEtfPd/kSAzotF45ihCoUfo71zdYZcXkaGtwuLXzyTGg6W0o0
+ toQ5Mu96ehqNZgac03VNIyzwSVgrFF46HXzeZR6VqctkSWDc4C+sUhrn7Gx/NWtyPbvk09QkM
+ GVbfbg/DFFoWPE++0XRMtwJ7fC+M2wLjwHwZRWOrjLU7mvaZXHGmG9IdRdqt+mSuWmf6E8OU+
+ iPR5EBTcXqNeEowdtThSKr6XpwjKIA1IZNfZMEcd2JE80oZ0eVJlI18KkABM50mdVTSbJSWRu
+ Gr769tIOGtIQr0nHrbTttfXOccMnSv6UGFpt8hheX8l4thTGs6Nmk0dcBnzTZQ33EesSOCHXy
+ /PeU0i2D+5qrymMPSAmIvFr1VQok3IJVu94OY5DXqYi3T9nK18TszZ1jyYsgFOTU9GS//AXKc
+ YSmiN7BId08zeiXm9GVKGApPkWsOTYDV2KdQ1DBLN6uP33GPAhHaAC/vUlvT8svE3zDPYnsiT
+ +cZJpVtbeveQmFmmYJMiEpx+ni6ZSXALkeibPSWzKYb0fZH85LhqrxoQlx7wVghK/Cs0xwuxC
+ wuIsQC7byBIVPQUwzxGyjBEzjNarPq5j/oPfitK6h764nTLzz5EXjm4CKxg81ErffdaalTyVs
+ zvXLafA+kSK633pQeHzU3nhBBOjRMCuyR1myLhiVHzBH6mAr9n5JOFgWbt3F+1WZbjcLQrVYp
+ 3LHsjEvMo11/WURcrjt4qk0rRnPnzpPYm+HlcE17kpwOGgHg12nHmBoN1Ie3ERIgRoccj2qY5
+ at79sZG1420n8FIpmGkw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am 04.07.21 um 17:59 schrieb Ojaswin Mujoo:
+> Combine the vchiq platform initialization code into a single file by
+> merging vchiq_2835_arm.c into vchiq_arm.c
+>
+> Signed-off-by: Ojaswin Mujoo <ojaswin98@gmail.com>
+> ---
+>  drivers/staging/vc04_services/Makefile        |   1 -
+>  .../interface/vchiq_arm/vchiq_2835_arm.c      | 564 ------------------
+>  .../interface/vchiq_arm/vchiq_arm.c           | 549 +++++++++++++++++
+>  3 files changed, 549 insertions(+), 565 deletions(-)
+>  delete mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_2835_arm.c
+>
+> diff --git a/drivers/staging/vc04_services/Makefile b/drivers/staging/vc04_services/Makefile
+> index 0a04338fc962..1fd191e2e2a5 100644
+> --- a/drivers/staging/vc04_services/Makefile
+> +++ b/drivers/staging/vc04_services/Makefile
+> @@ -4,7 +4,6 @@ obj-$(CONFIG_BCM2835_VCHIQ)	+= vchiq.o
+>  vchiq-objs := \
+>     interface/vchiq_arm/vchiq_core.o  \
+>     interface/vchiq_arm/vchiq_arm.o \
+> -   interface/vchiq_arm/vchiq_2835_arm.o \
+>     interface/vchiq_arm/vchiq_debugfs.o \
+>     interface/vchiq_arm/vchiq_connected.o \
+>  
+...
+> diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+> index 0f2de571eba7..9057d01ffd48 100644
+> --- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+> +++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+> @@ -25,15 +25,32 @@
+>  #include <linux/rcupdate.h>
+>  #include <linux/delay.h>
+>  #include <linux/slab.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/io.h>
+> +#include <linux/uaccess.h>
+>  #include <soc/bcm2835/raspberrypi-firmware.h>
+>  
+>  #include "vchiq_core.h"
+>  #include "vchiq_ioctl.h"
+>  #include "vchiq_arm.h"
+>  #include "vchiq_debugfs.h"
+> +#include "vchiq_connected.h"
+> +#include "vchiq_pagelist.h"
+>  
+>  #define DEVICE_NAME "vchiq"
+>  
+> +#define TOTAL_SLOTS (VCHIQ_SLOT_ZERO_SLOTS + 2 * 32)
+> +
+> +#define MAX_FRAGMENTS (VCHIQ_NUM_CURRENT_BULKS * 2)
+> +
+> +#define VCHIQ_PLATFORM_FRAGMENTS_OFFSET_IDX 0
+> +#define VCHIQ_PLATFORM_FRAGMENTS_COUNT_IDX  1
+> +
+> +#define BELL0	0x00
+> +#define BELL2	0x08
+> +
+> +#define ARM_DS_ACTIVE	BIT(2)
+> +
+>  /* Override the default prefix, which would be vchiq_arm (from the filename) */
+>  #undef MODULE_PARAM_PREFIX
+>  #define MODULE_PARAM_PREFIX DEVICE_NAME "."
+> @@ -59,10 +76,542 @@ static struct vchiq_drvdata bcm2836_drvdata = {
+>  	.cache_line_size = 64,
+>  };
+>  
+> +struct vchiq_2835_state {
+> +	int inited;
+> +	struct vchiq_arm_state arm_state;
+> +};
+> +
+> +struct vchiq_pagelist_info {
+> +	struct pagelist *pagelist;
+> +	size_t pagelist_buffer_size;
+> +	dma_addr_t dma_addr;
+> +	enum dma_data_direction dma_dir;
+> +	unsigned int num_pages;
+> +	unsigned int pages_need_release;
+> +	struct page **pages;
+> +	struct scatterlist *scatterlist;
+> +	unsigned int scatterlist_mapped;
+> +};
+> +
+> +static void __iomem *g_regs;
+> +/* This value is the size of the L2 cache lines as understood by the
+> + * VPU firmware, which determines the required alignment of the
+> + * offsets/sizes in pagelists.
+> + *
+> + * Modern VPU firmware looks for a DT "cache-line-size" property in
+> + * the VCHIQ node and will overwrite it with the actual L2 cache size,
+> + * which the kernel must then respect.  That property was rejected
+> + * upstream, so we have to use the VPU firmware's compatibility value
+> + * of 32.
+> + */
+> +static unsigned int g_cache_line_size = 32;
+> +static unsigned int g_fragments_size;
+> +static char *g_fragments_base;
+> +static char *g_free_fragments;
+> +static struct semaphore g_free_fragments_sema;
+> +static struct device *g_dev;
+> +
+> +static DEFINE_SEMAPHORE(g_free_fragments_mutex);
+> +
+> +static irqreturn_t
+> +vchiq_doorbell_irq(int irq, void *dev_id);
+> +
+> +static struct vchiq_pagelist_info *
+> +create_pagelist(char *buf, char __user *ubuf, size_t count, unsigned short type);
+> +
+> +static void
+> +free_pagelist(struct vchiq_pagelist_info *pagelistinfo,
+> +	      int actual);
 
---dVrT+04cp+VrrbAK
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+please no forward declarations of these 3 functions. Put them into the
+right order instead ...
 
-On Sat, Jul 10, 2021 at 03:15:06PM -0500, David Lechner wrote:
-> On 7/5/21 3:18 AM, William Breathitt Gray wrote:
-> > This patch adds high-level documentation about the Counter subsystem
-> > character device interface.
-> >=20
-> > Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-> > ---
-> >   Documentation/driver-api/generic-counter.rst  | 185 ++++++++++++++----
-> >   .../userspace-api/ioctl/ioctl-number.rst      |   1 +
-> >   2 files changed, 145 insertions(+), 41 deletions(-)
-> >=20
-> > diff --git a/Documentation/driver-api/generic-counter.rst b/Documentati=
-on/driver-api/generic-counter.rst
-> > index f6397218aa4c..62a702e7f994 100644
-> > --- a/Documentation/driver-api/generic-counter.rst
-> > +++ b/Documentation/driver-api/generic-counter.rst
->=20
->=20
-> > +
-> > +Counter Character Device
-> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-> > +
-> > +Counter character device nodes are created under the ``/dev`` directory
-> > +as ``counterX``, where ``X`` is the respective counter device id.
-> > +Defines for the standard Counter data types are exposed via the
-> > +userspace ``include/uapi/linux/counter.h`` file.
-> > +
-> > +Counter events
-> > +--------------
-> > +Counter device drivers can support Counter events by utilizing the
-> > +``counter_push_event`` function::
-> > +
-> > +        void counter_push_event(struct counter_device *const counter, =
-const u8 event,
-> > +                                const u8 channel);
-> > +
-> > +The event id is specified by the ``event`` parameter; the event channel
-> > +id is specified by the ``channel`` parameter. When this function is
-> > +called, the Counter data associated with the respective event is
-> > +gathered, and a ``struct counter_event`` is generated for each datum a=
-nd
-> > +pushed to userspace.
-> > +
-> > +Counter events can be configured by users to report various Counter
-> > +data of interest. This can be conceptualized as a list of Counter
-> > +component read calls to perform. For example::
->=20
-> Won't the :: here make this appear as text instead of an HTML table?
->=20
-> (might need to change ~~~ to --- [top line] and =3D=3D=3D [middle line])
+Since this patch is independent from the other ones from the series,
+maybe Greg can merg the rest of the series.
 
-Ack, I'll change this to an HTML table.
 
-> > +
-> > +        +~~~~~~~~~~~~~~~~~~~~~~~~+~~~~~~~~~~~~~~~~~~~~~~~~+
-> > +        | COUNTER_EVENT_OVERFLOW | COUNTER_EVENT_INDEX    |
-> > +        +~~~~~~~~~~~~~~~~~~~~~~~~+~~~~~~~~~~~~~~~~~~~~~~~~+
-> > +        | Channel 0              | Channel 0              |
-> > +        +------------------------+------------------------+
-> > +        | * Count 0              | * Signal 0             |
-> > +        | * Count 1              | * Signal 0 Extension 0 |
-> > +        | * Signal 3             | * Extension 4          |
-> > +        | * Count 4 Extension 2  +------------------------+
-> > +        | * Signal 5 Extension 0 | Channel 1              |
-> > +        |                        +------------------------+
-> > +        |                        | * Signal 4             |
-> > +        |                        | * Signal 4 Extension 0 |
-> > +        |                        | * Count 7              |
-> > +        +------------------------+------------------------+
-> > +
-> > +When ``counter_push_event(counter, COUNTER_EVENT_INDEX, 1)`` is called
-> > +for example, it will go down the list for the ``COUNTER_EVENT_INDEX``
-> > +event channel 1 and execute the read callbacks for Signal 4, Signal 4
-> > +Extension 0, and Count 4 -- the data returned for each is pushed to a
-> > +kfifo as a ``struct counter_event``, which userspace can retrieve via a
-> > +standard read operation on the respective character device node.
-> > +
-> > +Userspace
-> > +---------
-> > +Userspace applications can configure Counter events via ioctl operatio=
-ns
-> > +on the Counter character device node. There following ioctl codes are
-> > +supported and provided by the ``linux/counter.h`` userspace header fil=
-e:
-> > +
-> > +* COUNTER_ADD_WATCH_IOCTL:
-> > +  Queues a Counter watch for the specified event. The queued watches
-> > +  will not be applied until ``COUNTER_ENABLE_EVENTS_IOCTL`` is called.
-> > +
-> > +* COUNTER_ENABLE_EVENTS_IOCTL:
-> > +  Enables monitoring the events specified by the Counter watches that
-> > +  were queued by ``COUNTER_ADD_WATCH_IOCTL``. If events are already
-> > +  enabled, the new set of watches replaces the old one. Calling this
-> > +  ioctl also has the effect of clearing the queue of watches added by
-> > +  ``COUNTER_ADD_WATCH_IOCTL``.
-> > +
-> > +* COUNTER_DISABLE_EVENTS_IOCTL:
-> > +  Stops monitoring the previously enabled events.
->=20
-> I wouldn't mind seeing more of this documentation in the actual header
-> file and just referenced here with :c:macro:`COUNTER_ADD_WATCH_IOCTL`
 
-Ack.
-
-> > +
-> > +To configure events to gather Counter data, users first populate a
-> > +``struct counter_watch`` with the relevant event id, event channel id,
-> > +and the information for the desired Counter component from which to
-> > +read, and then pass it via the ``COUNTER_ADD_WATCH_IOCTL`` ioctl
-> > +command.
-> > +
-> > +Note that an event can be watched without gathering Counter data by
-> > +setting the ``component.type`` member equal to
-> > +``COUNTER_COMPONENT_NONE``. With this configuration the Counter
-> > +character device will simply populate the event timestamps for those
-> > +respective ``struct counter_event`` elements and ignore the component
-> > +value.
->=20
-> To make sure I am understanding this correctly, scope + parent
-> determines this part of the path:
->=20
-> 	/sys/.../counterX/<scope><parent>/<component>
->=20
-> Or in the case that scope =3D=3D COUNTER_SCOPE_DEVICE then parent
-> is not applicable:
->=20
-> 	/sys/.../counterX/<component>
-
-Yes, that understanding is correct.
-
-> I suggested parent_id instead of parent earlier, but maybe
-> scope_id would be a better name? (Or rename scope to parent_type?)
-
-I can see the benefit of more specific naming, but perhaps the current
-names are clear enough when they appear in the context of user code. It
-becomes rather obvious in a snippet of code that `component.scope`
-refers to the scope type of a component while `component.parent` refers
-to the specific parent of the component; I don't think the more verbose
-`scope_type`/`parent_type` or `scope_id`/`parent_id` namings really add
-much benefit here.
-
-I'm not entirely opposed to renaming this, so if other maintainers also
-feel this is better renamed then I'll change it. If we do change the
-naming, then remaing `scope` to `scope_type` and `parent` to `parent_id`
-might be the way to go; "scope_id" seems strange to me because I
-envision `scope` as a type rather than an identifiable component.
-
-William Breathitt Gray
-
---dVrT+04cp+VrrbAK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmDqyrAACgkQhvpINdm7
-VJKKIA/+Kmcau65hlY3YM9GQBi1Yb1yKwxEJd8EusAFH+ZKZqS7iq9PPNfdBSoSg
-D19UlOjTHN+T735ZVtlxOgjW6gH9t7HLpVRx7bUp1F3BwhMY6alDoH/wfbHv5fDv
-Vf76N2yZqW5oBMIsl5PoIveu74huWZG77dKy5drFUb1hOmh4jMRZOOx3zYR0C5Co
-9NRy8vjJBijy3WuELG2UbPcgh9b/SFXDt4ffsZNOJjFpPYSpYNnuuzWLcN+N5bzm
-6vA7OaYao0JDKzzaWBQMUbMzF5EDxD+GgYdrtzgw5BSq75lS7TC3D5F+K6UxVwU0
-VL82mrUxFG5KGK6muZWMlF9SGPx+IowqLcKUb4ZtBJ4RBphIyjCEVLpBTb2McCKs
-PRqsWpKJvDWdEvCoBObJJOL2LJnnNMdaAu3Y9jp5P1WDDm7MJGRPQ29/NBmm1lIb
-LX/+hj68lZBSeCHykHeCi8YVqU0wKdx1ELE71UQUSmOo0Vw7tV8YWnPkZUza8CJY
-jrTlHbc0a/Vp2bD/dxJ3cfP83n75SlKTgibf7eApW5EWjiW6DAz9ZNIPnbYXxTo6
-FqAppe5ucHuUFt4r0S+0hHWRI6nLuT76/L+NiaBRo3LaMApbJs+W6ak3JweFW7mD
-rpV2XzMTziXyWfy4F/CKk0ZDMyJuxduRcfc4Qktrf82lV+67EZI=
-=02sW
------END PGP SIGNATURE-----
-
---dVrT+04cp+VrrbAK--
