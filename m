@@ -2,106 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D69873C3D7B
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 16:55:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 186563C3D81
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 16:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233967AbhGKO6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 10:58:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48030 "EHLO
+        id S234229AbhGKPB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 11:01:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233953AbhGKO6I (ORCPT
+        with ESMTP id S234200AbhGKPB4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 10:58:08 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B16C0613E8
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 07:55:21 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id g24so8536011pji.4
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 07:55:21 -0700 (PDT)
+        Sun, 11 Jul 2021 11:01:56 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F66C0613DD;
+        Sun, 11 Jul 2021 07:59:09 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id o5so28149354ejy.7;
+        Sun, 11 Jul 2021 07:59:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=c3ykowIwDTRKsInbKYf/ek7DP95JkPgh9oE6DtLLi+A=;
-        b=f8oRiz7tCeeeXv/MqXq5OZOEzZswGECCi/HKTpvgEkbG0cllAp+VR+0I4HSYLIxAB+
-         24hZbfG6kZ/VSWsE/If4A/XA+e82SHh49PTD47WSoB6zeJWqaPwHUE7eU4Y9Fwj0mgIh
-         YmQF1alZ3ON6hCFsBykpcyyGmu8zyYbilzDJk=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=kVKa/qYsm/LpBgzMfgFjq0sOew6IiQd+6gndsgTAoYI=;
+        b=Ykk/6xz1usz9fsC1y04TF/bA30koNu2R8BTHIxArpRCZDmuJrslu6KANI2roRVhGBS
+         VM+vZkL8+Y+BuIPs8o6l60nvMUc7b8R5ArvXkFIZzV7w8TVdRzg7w3aMp2uP5MCZNGsU
+         J6Fob66RzlCNPB0Ta8ZRBbmb//bhNd0oWxTujujnk2GUkmH13ReXUD9l1wrBtx/MDwck
+         T8aIuJvLv1/VrCAaTw2RVRN3xIDNPTb2Q2F1uPMFYUlPFNIDaYD2HNTzkC9qC3lFr2v6
+         8xDvjKJm1oHANCEKYPcIdBvHNkc1v0BAUsrchPvVh8REUsoqtZGl7z/c4x2+mbjmjJKu
+         WOnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=c3ykowIwDTRKsInbKYf/ek7DP95JkPgh9oE6DtLLi+A=;
-        b=G8ejesgm0IhbkeHJA2EbW6XutnIB3dpnVH1AIJzETYUvXKMsCeiZJpRNV7okghjchp
-         u5Rlh4iXorHmAliwkX98ov46eSnYw0RZTZlX+9Aa3e/Ta35olCpoZ0JzMQ1ED3qBhWax
-         8cHvLriAhbaRUDfGGOm4zqjFe2KflukFOI0+He7SzhJTIbhdpgK3WCllR5LBLt3Nj3lH
-         Jy9osaanF0TR8SLOajmf0rU9RTTYo3VhWZT6mbiG7LEdu2qbYszpIezwMdkPT8V3EBOS
-         tjYAg67oqyQ+8hQ7gFVQaS4xsk44iyZIWw9RJon0uWLWc6KM7g56XP0m2Rf7FUAqv/ke
-         og8g==
-X-Gm-Message-State: AOAM532z+moC/nCwUZNUTMuYPah6c3kBMfta+251Y6flSSDAHQMP19jV
-        dYHFXpbiXA5d+1CCxAoKJKXZfw==
-X-Google-Smtp-Source: ABdhPJzWwSuvGf7jsorlyDuYO0Lb3IQ103oXQCwHaS7V5m6oxgrlvvImbzsl+aKWkIQc8R8vXy4oVw==
-X-Received: by 2002:a17:90b:4b52:: with SMTP id mi18mr31807452pjb.37.1626015320918;
-        Sun, 11 Jul 2021 07:55:20 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id b4sm10932548pji.52.2021.07.11.07.55.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Jul 2021 07:55:20 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH] rpmsg: glink: Replace strncpy() with strscpy_pad()
-Date:   Sun, 11 Jul 2021 07:55:17 -0700
-Message-Id: <20210711145517.1434486-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1814; h=from:subject; bh=CGejJDIBWoCTMrdLfdYOlKTt2khst8/bmsGsqzGrjiA=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBg6wZVj+vEe7YcbCfgSji3keoTaHrI/ZHofnZ1HVRt kwNnps2JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYOsGVQAKCRCJcvTf3G3AJjp7D/ 4xOOjTrRSPqTRBymI1eoBS8GYyPpRa2EVxvB8ZW9jVsORyPMd+qrSptl1PBlgEtLrz91zlFDHigp3M Cl4XecxDPkow1jRbAEfCks39EzVxzHMY9gV7fpYG5qIPKFeKciIn4Ou6vwXPFl6E9iPBqm4F8t6yo+ IkCfBrhLyVYo4u4B1Ri8wj6ztXeIIzQNVxEmzxWzh5UcNp4l7IAkoru3ZgFHoE3yfbABsX4Qitw+cz LELsLx3KrcqETDczzGGSdZKT83iChx4H4B/y1xGvK7azhx/1PnCisiui7W8V0D/LswCl8qeTrj3XFB TZfCKs/qRQe60vO6/Se8gJkLnzovkODC9RxeVAkqGpq78fD6QoDryD8F8QoS2xn3AoJz2SiMBV0pPs CoQfmYM4IKYxecE1UxDmzwdup5vtSvb0xVobHYXQt+i9sbpferpFh2pjYPn6I43Gpju1PfUSyXQ2ZD 1NcASe91/pxA/1TD0+ccRSdz3olzulteWAdzMPKVEyU9X5/PEjJ2VZ+diHDzcN0EEPc64XCwBDyrfe ZKGvs1VDZT9hwo4Gy3N8hdikkUEOyjpvJWA+97P1iu0BOdnlCFIS5TwnOnY1zKvkfAMt5rRnKsWVdP MXSFMMpvhblVW8gDISa8TsXX5a7UVzuihmcw5yXT/PxOqiJn51exkx9Tl2SQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=kVKa/qYsm/LpBgzMfgFjq0sOew6IiQd+6gndsgTAoYI=;
+        b=DcnrJML7h/mWejlndhBOsL0E6dRsgvUbs2+dAeEAQcGQdHjG6I4fda7GYcO1s8H641
+         Ggdcyj6ws6P8KcqB/aE/E7DoMkAuWlZmcwqD8DEQFwxU7q+2ZFOzQLsT3tQI2HOf6XlC
+         nSJIeczuGv/W9KynJlVyS18vzURf/lT3qLsvvKQQghLaJyzDRH1VsWrMHct+dMcS225o
+         YATvMB+DBp7fklArgDVqONiAIvgG78JV7AUhox6xPWw3epBtRTeITELdQoQzWJ5d8uOG
+         wYj198VTkKH1I+/wpJbdz/w3hNHCdxzBFI2rl1rrdsKyuZH9eZeFL6IpDaq1uL+bWj8d
+         0IxA==
+X-Gm-Message-State: AOAM531VJ3qTYptFGxDZXWnSl1+zpEdK6QFVwt+M8II4n1FSFVg7pkVN
+        +vV+GzfLlHn47lgvFdnmT2r8UOJFKq2Z/Q==
+X-Google-Smtp-Source: ABdhPJxiqiHLAFDJEPlGH9Q9L7eaaJxjFmJd+1auawdbNyKHUZxhCQNu7/YDdiqHmB1tyW9wPQY6Xw==
+X-Received: by 2002:a17:906:660f:: with SMTP id b15mr48961130ejp.443.1626015548161;
+        Sun, 11 Jul 2021 07:59:08 -0700 (PDT)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id t4sm1318045ejo.125.2021.07.11.07.59.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 11 Jul 2021 07:59:07 -0700 (PDT)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: rockchip: rename flash nodenames
+Date:   Sun, 11 Jul 2021 16:59:00 +0200
+Message-Id: <20210711145900.15443-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The use of strncpy() is considered deprecated for NUL-terminated
-strings[1]. Replace strncpy() with strscpy_pad() (as it seems this case
-expects the NUL padding to fill the allocation following the flexible
-array). This additionally silences a warning seen when building under
--Warray-bounds:
+Nodes with compatible "jedec,spi-nor" are now checked with
+jedec,spi-nor.yaml and mtd.yaml. The pattern is now
+"^flash(@.*)?$", so change that for the boards with a
+Rockchip SoC.
 
-./include/linux/fortify-string.h:38:30: warning: '__builtin_strncpy' offset 24 from the object at '__mptr' is out of the bounds of referenced subobject 'data' with type 'u8[]' {aka 'unsigned char[]'} at offset 24 [-Warray-bounds]
-   38 | #define __underlying_strncpy __builtin_strncpy
-      |                              ^
-./include/linux/fortify-string.h:50:9: note: in expansion of macro '__underlying_strncpy'
-   50 |  return __underlying_strncpy(p, q, size);
-      |         ^~~~~~~~~~~~~~~~~~~~
-drivers/rpmsg/qcom_glink_native.c: In function 'qcom_glink_work':
-drivers/rpmsg/qcom_glink_native.c:36:5: note: subobject 'data' declared here
-   36 |  u8 data[];
-      |     ^~~~
-
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
-
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 ---
- drivers/rpmsg/qcom_glink_native.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/rockchip/rk3328-rock64.dts | 2 +-
+ arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/rpmsg/qcom_glink_native.c b/drivers/rpmsg/qcom_glink_native.c
-index 05533c71b10e..c7b9de655080 100644
---- a/drivers/rpmsg/qcom_glink_native.c
-+++ b/drivers/rpmsg/qcom_glink_native.c
-@@ -1440,7 +1440,7 @@ static int qcom_glink_rx_open(struct qcom_glink *glink, unsigned int rcid,
- 		}
+diff --git a/arch/arm64/boot/dts/rockchip/rk3328-rock64.dts b/arch/arm64/boot/dts/rockchip/rk3328-rock64.dts
+index 1b0f7e455..f69a38f42 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3328-rock64.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3328-rock64.dts
+@@ -345,7 +345,7 @@
+ &spi0 {
+ 	status = "okay";
  
- 		rpdev->ept = &channel->ept;
--		strncpy(rpdev->id.name, name, RPMSG_NAME_SIZE);
-+		strscpy_pad(rpdev->id.name, name, RPMSG_NAME_SIZE);
- 		rpdev->src = RPMSG_ADDR_ANY;
- 		rpdev->dst = RPMSG_ADDR_ANY;
- 		rpdev->ops = &glink_device_ops;
+-	spiflash@0 {
++	flash@0 {
+ 		compatible = "jedec,spi-nor";
+ 		reg = <0>;
+ 
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi
+index c1bcc8ca3..e310b51ab 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi
+@@ -543,7 +543,7 @@ ap_i2c_audio: &i2c8 {
+ 	pinctrl-names = "default", "sleep";
+ 	pinctrl-1 = <&spi1_sleep>;
+ 
+-	spiflash@0 {
++	flash@0 {
+ 		compatible = "jedec,spi-nor";
+ 		reg = <0>;
+ 
 -- 
-2.30.2
+2.11.0
 
