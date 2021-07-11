@@ -2,158 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D4CA3C3D16
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 15:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D553C3D19
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 15:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232978AbhGKNs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 09:48:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54836 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231658AbhGKNs7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 09:48:59 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 982D26115B;
-        Sun, 11 Jul 2021 13:46:09 +0000 (UTC)
-Date:   Sun, 11 Jul 2021 14:48:28 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        david@lechnology.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, o.rempel@pengutronix.de,
-        jarkko.nikula@linux.intel.com
-Subject: Re: [PATCH v12 00/17] Introduce the Counter character device
- interface
-Message-ID: <20210711144828.795ca342@jic23-huawei>
-In-Reply-To: <cover.1625471640.git.vilhelm.gray@gmail.com>
-References: <cover.1625471640.git.vilhelm.gray@gmail.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S232944AbhGKN5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 09:57:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232880AbhGKN5D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Jul 2021 09:57:03 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E034C0613E5
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 06:54:17 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id k16so18854995ios.10
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 06:54:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=/YvtWPTJ/Sigm91P10YlQHwW65x9ity0qL45ceSgdKk=;
+        b=iPNutmJnLXLrwwKl3+eHeJw0m/JtLIMKQG/fnmhIPi4acO7onTqbJnzX5ZicROFtuS
+         725KyfWn8YWQKsGb3DFmuHFoVArpWd09AYG1J72UgovKOSV0n3lLOS/mEndRiwFRAava
+         2X6IVCIb2/I+5QxVwM60Ip4TIoSXBLEv5nZ4a4Lf/iQQkxadYMUiRCPsL8MEQO0dx3Qm
+         5Yj9swtUrLR8p0uxaT6uYrEa1tGMOKzTQIyk/WkPubtnUtxiTMCgxdyoUvnwXA0hnZeb
+         uy1nnF/JbbG37wcELDYRRXeKXs1is6uYf9vIT1lA9dKu3/d5iR0/q7jsAYuly5RRE6wi
+         2iIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/YvtWPTJ/Sigm91P10YlQHwW65x9ity0qL45ceSgdKk=;
+        b=SCUg8qZ0caawkItJIcz/6xs4L+KQvKTRHXKo0Txj9lwzRJ2+56z97c9tjn9nYYmYpV
+         r17XPZMq8SNOS+ax3kvoSKR9ELgFd0oefcPB2/t9ZPDe52RNz9x5bRGjP4o3JQTIGeTG
+         iZ2QuGGQfUbhd20IYMV+yNP3vgfTJxLrQWE6NxUc3RRP8bLnr6VcYTYEe2wlshbvpMsA
+         jzzLxOmQ2IiSOCn7tK/wO2JAWUZU6jeJgYMilzd+4Cva93R8PnSyZ01SPfVOL9IA9F6a
+         +nAWuzwOUVrk0mvVl4OhHTf/UlCm01EVJG48JBB5/JU0AL0ssyvHuBd0GnluwRJfrgoE
+         w9kg==
+X-Gm-Message-State: AOAM530oYXBqI0VCTJ9PGJxnqiMsSb8ZAzEM93YMZ4A4gs8IdnrHHKlu
+        ks5SCUJYcq0KZ6kODceovONOAA==
+X-Google-Smtp-Source: ABdhPJy7pDUFMoPB6r1+9pQY5PZ0DttVp7+4GJ0tDVw6llrCi88gvq4EOetqVa9aKUnvCt62S9DrVQ==
+X-Received: by 2002:a5d:928f:: with SMTP id s15mr7925042iom.142.1626011656603;
+        Sun, 11 Jul 2021 06:54:16 -0700 (PDT)
+Received: from [192.168.1.134] ([198.8.77.61])
+        by smtp.gmail.com with ESMTPSA id o7sm6494063ilt.29.2021.07.11.06.54.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 11 Jul 2021 06:54:16 -0700 (PDT)
+Subject: Re: [syzbot] INFO: task hung in io_uring_cancel_generic
+To:     syzbot <syzbot+ba6fcd859210f4e9e109@syzkaller.appspotmail.com>,
+        asml.silence@gmail.com, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <00000000000053572d05c6d81503@google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <f48e63f0-f193-586a-a98d-640359631ee4@kernel.dk>
+Date:   Sun, 11 Jul 2021 07:54:22 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <00000000000053572d05c6d81503@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  5 Jul 2021 17:18:48 +0900
-William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
-
-> Changes in v12:
->  - Move unlock to after register set in quad8_count_ceiling_write()
->  - Add locking protection to counter_set_event_node()
->  - Fix sparse warning by using {} instead of {0}
->  - Clean up and organize comments for clarity
->  - Reduce boilerplate by utilizing devm_add_action_or_reset()
->  - Use switch statements in ti_eqep_action_read() to make possible cases
->    more obvious
+On 7/11/21 6:24 AM, syzbot wrote:
+> Hello,
 > 
-> I pulled out a lot of bits and pieces to their own patches; hopefully
-> that makes reviewing this patchset much simpler than before. This
-> patchset is also available on my personal git repo for convenience:
-> https://gitlab.com/vilhelmgray/iio/-/tree/counter_chrdev_v12
+> syzbot found the following issue on:
 > 
-> The patches preceding "counter: Internalize sysfs interface code" are
-> primarily cleanup and fixes that can be picked up and applied now to the
-> IIO tree if so desired. The "counter: Internalize sysfs interface code"
-> patch as well may be considered for pickup because it is relatively safe
-> and makes no changes to the userspace interface.
+> HEAD commit:    3dbdb38e Merge branch 'for-5.14' of git://git.kernel.org/p..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=14cd9efbd00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=a1fcf15a09815757
+> dashboard link: https://syzkaller.appspot.com/bug?extid=ba6fcd859210f4e9e109
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13bbf280300000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1111ec9c300000
 > 
-> To summarize the main points of this patchset: there are no changes to
-> the existing Counter sysfs userspace interface; a Counter character
-> device interface is introduced that allows Counter events and associated
-> data to be read() by userspace; the events_configure() and
-> watch_validate() driver callbacks are introduced to support Counter
-> events; and IRQ support is added to the 104-QUAD-8 driver, serving as an
-> example of how to support the new Counter events functionality.
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+ba6fcd859210f4e9e109@syzkaller.appspotmail.com
 > 
-> Something that should still be discussed: should the struct
-> counter_event "status" member be 8 bits or 32 bits wide? This member
-> will provide the return status (system error number) of an event
-> operation.
+> INFO: task syz-executor015:8439 blocked for more than 143 seconds.
+>       Tainted: G        W         5.13.0-syzkaller #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor015 state:D stack:28184 pid: 8439 ppid:  8438 flags:0x00000004
+> Call Trace:
+>  context_switch kernel/sched/core.c:4683 [inline]
+>  __schedule+0x934/0x2710 kernel/sched/core.c:5940
+>  schedule+0xd3/0x270 kernel/sched/core.c:6019
+>  io_uring_cancel_generic+0x54d/0x890 fs/io_uring.c:9203
+>  io_uring_files_cancel include/linux/io_uring.h:16 [inline]
+>  do_exit+0x28b/0x2a50 kernel/exit.c:780
+>  do_group_exit+0x125/0x310 kernel/exit.c:922
+>  __do_sys_exit_group kernel/exit.c:933 [inline]
+>  __se_sys_exit_group kernel/exit.c:931 [inline]
+>  __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x43eac9
+> RSP: 002b:00007ffc2d1b6378 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+> RAX: ffffffffffffffda RBX: 00000000004b02f0 RCX: 000000000043eac9
+> RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
+> RBP: 0000000000000000 R08: ffffffffffffffc0 R09: 00000000f0ffffff
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004b02f0
+> R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
+> INFO: lockdep is turned off.
+> NMI backtrace for cpu 0
+> CPU: 0 PID: 1650 Comm: khungtaskd Tainted: G        W         5.13.0-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
+>  nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
+>  nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
+>  trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+>  check_hung_uninterruptible_tasks kernel/hung_task.c:209 [inline]
+>  watchdog+0xd4b/0xfb0 kernel/hung_task.c:294
+>  kthread+0x3e5/0x4d0 kernel/kthread.c:319
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+> Sending NMI from CPU 0 to CPUs 1:
+> NMI backtrace for cpu 1 skipped: idling at native_safe_halt arch/x86/include/asm/irqflags.h:51 [inline]
+> NMI backtrace for cpu 1 skipped: idling at arch_safe_halt arch/x86/include/asm/irqflags.h:89 [inline]
+> NMI backtrace for cpu 1 skipped: idling at acpi_safe_halt drivers/acpi/processor_idle.c:109 [inline]
+> NMI backtrace for cpu 1 skipped: idling at acpi_idle_do_entry+0x1c6/0x250 drivers/acpi/processor_idle.c:553
 
-Hi william,
+#syz test: git://git.kernel.dk/linux-block io_uring-5.14
 
-I've looked through the lot and where I haven't commented, I had nothing
-much to add to David's comments.
-
-I'm not planning to go through the whole thing again unless major changes
-occur. Fingers crossed for v13.
-
-If it looks like there are still some unresolved issues after that, perhaps
-applying up to patch 8 or so makes sense to reduced the volume of code you
-are carrying.  Let me know if you'd like me to do that.
-
-Thanks,
-
-Jonathan
-
-> 
-> William Breathitt Gray (17):
->   counter: 104-quad-8: Return error when invalid mode during
->     ceiling_write
->   counter: Return error code on invalid modes
->   counter: Standardize to ERANGE for limit exceeded errors
->   counter: Rename counter_signal_value to counter_signal_level
->   counter: Rename counter_count_function to counter_function
->   counter: Internalize sysfs interface code
->   counter: Update counter.h comments to reflect sysfs internalization
->   docs: counter: Update to reflect sysfs internalization
->   counter: Move counter enums to uapi header
->   counter: Add character device interface
->   docs: counter: Document character device interface
->   tools/counter: Create Counter tools
->   counter: Implement signalZ_action_component_id sysfs attribute
->   counter: Implement *_component_id sysfs attributes
->   counter: Implement events_queue_size sysfs attribute
->   counter: 104-quad-8: Replace mutex with spinlock
->   counter: 104-quad-8: Add IRQ support for the ACCES 104-QUAD-8
-> 
->  Documentation/ABI/testing/sysfs-bus-counter   |   38 +-
->  Documentation/driver-api/generic-counter.rst  |  366 +++-
->  .../userspace-api/ioctl/ioctl-number.rst      |    1 +
->  MAINTAINERS                                   |    3 +-
->  drivers/counter/104-quad-8.c                  |  728 ++++----
->  drivers/counter/Kconfig                       |    6 +-
->  drivers/counter/Makefile                      |    1 +
->  drivers/counter/counter-chrdev.c              |  498 ++++++
->  drivers/counter/counter-chrdev.h              |   14 +
->  drivers/counter/counter-core.c                |  182 ++
->  drivers/counter/counter-sysfs.c               |  953 +++++++++++
->  drivers/counter/counter-sysfs.h               |   13 +
->  drivers/counter/counter.c                     | 1496 -----------------
->  drivers/counter/ftm-quaddec.c                 |   59 +-
->  drivers/counter/intel-qep.c                   |  150 +-
->  drivers/counter/interrupt-cnt.c               |   73 +-
->  drivers/counter/microchip-tcb-capture.c       |  103 +-
->  drivers/counter/stm32-lptimer-cnt.c           |  176 +-
->  drivers/counter/stm32-timer-cnt.c             |  147 +-
->  drivers/counter/ti-eqep.c                     |  205 ++-
->  include/linux/counter.h                       |  716 ++++----
->  include/linux/counter_enum.h                  |   45 -
->  include/uapi/linux/counter.h                  |  133 ++
->  tools/Makefile                                |   13 +-
->  tools/counter/Build                           |    1 +
->  tools/counter/Makefile                        |   53 +
->  tools/counter/counter_example.c               |   95 ++
->  27 files changed, 3501 insertions(+), 2767 deletions(-)
->  create mode 100644 drivers/counter/counter-chrdev.c
->  create mode 100644 drivers/counter/counter-chrdev.h
->  create mode 100644 drivers/counter/counter-core.c
->  create mode 100644 drivers/counter/counter-sysfs.c
->  create mode 100644 drivers/counter/counter-sysfs.h
->  delete mode 100644 drivers/counter/counter.c
->  delete mode 100644 include/linux/counter_enum.h
->  create mode 100644 include/uapi/linux/counter.h
->  create mode 100644 tools/counter/Build
->  create mode 100644 tools/counter/Makefile
->  create mode 100644 tools/counter/counter_example.c
-> 
-> 
-> base-commit: 6cbb3aa0f9d5d23221df787cf36f74d3866fdb78
+-- 
+Jens Axboe
 
