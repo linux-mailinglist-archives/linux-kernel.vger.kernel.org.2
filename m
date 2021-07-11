@@ -2,134 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 266263C3DDC
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 18:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD173C3DE0
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 18:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232507AbhGKQLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 12:11:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45519 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229688AbhGKQLd (ORCPT
+        id S232443AbhGKQPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 12:15:46 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:62471 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229688AbhGKQPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 12:11:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626019725;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=plvdWyXd4qV9pRAdncULs2MVIZL8MtO+i2JcuYf646o=;
-        b=Yey2Uu8ulg5vzV2a9OjOhboVgaC7AjEkRHHgjWsYgj393QGsbxLSVh5pfb7ksWx+sqacoa
-        KZ8yI+1/Xskz9V09s9w5rju9fP/ELiQqppI4t78owi8t0fi9QUNRMIjlVI/+FpMit5vyFi
-        26hYPmDHQIwLDZyA77vunyD/p9tQxF8=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-76-vWxHKKG-P3KAGSnorYASFQ-1; Sun, 11 Jul 2021 12:08:44 -0400
-X-MC-Unique: vWxHKKG-P3KAGSnorYASFQ-1
-Received: by mail-ed1-f69.google.com with SMTP id s6-20020a0564020146b029039578926b8cso8425677edu.20
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 09:08:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=plvdWyXd4qV9pRAdncULs2MVIZL8MtO+i2JcuYf646o=;
-        b=Wx8BYFksVJughprK5JzfG2bLjaeMgDTNW4zysGAWPb9phVAL7ty1lVkz/ehxMTwEF8
-         o05xMs4M+s7lPDb0QAotlFSoptEfw58sfiZ67Vt81ML4gttHMb2Da7XUAndIMhgq8dV3
-         xS1whvDlmyyt+0qWYhdamkJJkCNEDhZHJK7Z3BLqfIt47k/7IbH09bgQzXsp9Uo1WEME
-         AKeYglyAkcVbiMO+HKmsvBxowC5FhUeqzsgtfGrv7jJJ8ORqblA4soYrtER6YPsTojkI
-         Ov0IJRYIvQ8cFNVo/Hh3XNqzzeUBD5prAoIUQUexrNaoXAjgrrXTXVjffQlFMbaAlzgx
-         YEnA==
-X-Gm-Message-State: AOAM533IF12CJz8aoV5C1nK0kfXqlV1a+O5j784EiKfQpGdTIpYb6JWq
-        VLApkOoj8jLdusQ/FUWEZ32joXThQst4+EK7QoSzxaXLpHk9abwZE0DaXd0GdUWrwIcC2hJMWri
-        1yzE6Gn9+kVufoYBI4ed3v9nt
-X-Received: by 2002:a05:6402:334:: with SMTP id q20mr7782575edw.384.1626019723356;
-        Sun, 11 Jul 2021 09:08:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw5DbXTPixgKQ7SAA5myg1QUAzpzti+8oHSmlPRSSCZOaBtsoWfnjplFHvrs4qVGWvzNiKsUw==
-X-Received: by 2002:a05:6402:334:: with SMTP id q20mr7782566edw.384.1626019723238;
-        Sun, 11 Jul 2021 09:08:43 -0700 (PDT)
-Received: from redhat.com ([2.55.136.76])
-        by smtp.gmail.com with ESMTPSA id f12sm5266367ejz.99.2021.07.11.09.08.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Jul 2021 09:08:42 -0700 (PDT)
-Date:   Sun, 11 Jul 2021 12:08:36 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, xieyongji@bytedance.com,
-        stefanha@redhat.com, file@sect.tu-berlin.de, ashish.kalra@amd.com,
-        konrad.wilk@oracle.com, kvm@vger.kernel.org, hch@infradead.org,
-        ak@linux.intel.com, luto@kernel.org
-Subject: Re: [PATCH 0/7] Do not read from descriptor ring
-Message-ID: <20210711120824-mutt-send-email-mst@kernel.org>
-References: <20210604055350.58753-1-jasowang@redhat.com>
+        Sun, 11 Jul 2021 12:15:45 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AGO3MtKBQts1LjwjlHenG55DYdb4zR+YMi2TD?=
+ =?us-ascii?q?tnoddfU7SKOlfqyV8sjzqyWZtN95YhhJ8uxoU5PrfZqzz/9I3bU=3D?=
+X-IronPort-AV: E=Sophos;i="5.84,231,1620684000"; 
+   d="scan'208";a="519399375"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 11 Jul 2021 18:12:56 +0200
+Date:   Sun, 11 Jul 2021 18:12:56 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Alexander Lobakin <alobakin@pm.me>
+cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] dsa: fix for_each_child.cocci warnings
+Message-ID: <alpine.DEB.2.22.394.2107111810480.13622@hadrien>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210604055350.58753-1-jasowang@redhat.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 01:53:43PM +0800, Jason Wang wrote:
-> Hi:
-> 
-> The virtio driver should not trust the device. This beame more urgent
-> for the case of encrtpyed VM or VDUSE[1]. In both cases, technology
-> like swiotlb/IOMMU is used to prevent the poking/mangling of memory
-> from the device. But this is not sufficient since current virtio
-> driver may trust what is stored in the descriptor table (coherent
-> mapping) for performing the DMA operations like unmap and bounce so
-> the device may choose to utilize the behaviour of swiotlb to perform
-> attacks[2].
-> 
-> To protect from a malicous device, this series store and use the
-> descriptor metadata in an auxiliay structure which can not be accessed
-> via swiotlb/device instead of the ones in the descriptor table. This
-> means the descriptor table is write-only from the view of the driver.
-> 
-> Actually, we've almost achieved that through packed virtqueue and we
-> just need to fix a corner case of handling mapping errors. For split
-> virtqueue we just follow what's done in the packed.
-> 
-> Note that we don't duplicate descriptor medata for indirect
-> descriptors since it uses stream mapping which is read only so it's
-> safe if the metadata of non-indirect descriptors are correct.
-> 
-> For split virtqueue, the change increase the footprint due the the
-> auxiliary metadata but it's almost neglectlable in simple test like
-> pktgen and netperf TCP stream (slightly noticed in a 40GBE environment
-> with more CPU usage).
-> 
-> Slightly tested with packed on/off, iommu on/of, swiotlb force/off in
-> the guest.
-> 
-> Note that this series tries to fix the attack via descriptor
-> ring. The other cases (used ring and config space) will be fixed by
-> other series or patches.
-> 
-> Please review.
+From: kernel test robot <lkp@intel.com>
 
-This needs a rebase - can you do it pls?
+For_each_available_child_of_node should have of_node_put() before
+return around line 423.
 
-> Changes from RFC V2:
-> - no code change
-> - twaeak the commit log a little bit
-> 
-> Changes from RFC V1:
-> - Always use auxiliary metadata for split virtqueue
-> - Don't read from descripto when detaching indirect descriptor
-> 
-> Jason Wang (7):
->   virtio-ring: maintain next in extra state for packed virtqueue
->   virtio_ring: rename vring_desc_extra_packed
->   virtio-ring: factor out desc_extra allocation
->   virtio_ring: secure handling of mapping errors
->   virtio_ring: introduce virtqueue_desc_add_split()
->   virtio: use err label in __vring_new_virtqueue()
->   virtio-ring: store DMA metadata in desc_extra for split virtqueue
-> 
->  drivers/virtio/virtio_ring.c | 201 +++++++++++++++++++++++++----------
->  1 file changed, 144 insertions(+), 57 deletions(-)
-> 
-> -- 
-> 2.25.1
+Generated by: scripts/coccinelle/iterators/for_each_child.cocci
 
+CC: Alexander Lobakin <alobakin@pm.me>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+---
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   de5540965853e514a85d3b775e9049deb85a2ff3
+commit: 227d72063fccb2d19b30fb4197fba478514f7d83 dsa: simplify Kconfig symbols and dependencies
+:::::: branch date: 15 hours ago
+:::::: commit date: 4 months ago
+
+ ksz_common.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+--- a/drivers/net/dsa/microchip/ksz_common.c
++++ b/drivers/net/dsa/microchip/ksz_common.c
+@@ -419,8 +419,10 @@ int ksz_switch_register(struct ksz_devic
+ 				if (of_property_read_u32(port, "reg",
+ 							 &port_num))
+ 					continue;
+-				if (!(dev->port_mask & BIT(port_num)))
++				if (!(dev->port_mask & BIT(port_num))) {
++					of_node_put(port);
+ 					return -EINVAL;
++				}
+ 				of_get_phy_mode(port,
+ 						&dev->ports[port_num].interface);
+ 			}
