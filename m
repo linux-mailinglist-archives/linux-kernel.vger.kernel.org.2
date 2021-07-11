@@ -2,97 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C15943C3E14
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 18:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C83BC3C3E17
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 18:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232039AbhGKQsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 12:48:14 -0400
-Received: from esa3.mentor.iphmx.com ([68.232.137.180]:61095 "EHLO
-        esa3.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229758AbhGKQsN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 12:48:13 -0400
-IronPort-SDR: zfzqZvBauRO7fZoSZqkHp75sZ8flIyaVDY+LYqSGOIIK9wxEWJ4ZtHg5ey6f4+CkHqNlVqpWWO
- y3FhaD7oDaYtPZFkRnfLnZwYHqbdUtrHdQ8NlJ0uQb1rYfZbkdMmBvzRyO2trnpQtvNqYN6s3d
- PzcnUalYfHqeC1YWDIAjHkT2LeRid7bqwlElpjSAiIDmkq/1HB62Jh4gjf5svMOTNgUBrnRO3c
- lLX5HcpDuYyXJOvpNv0wK7xQ57L/MMrXksnTGNQhspGgmFOmnoXX+zqQ3QSnTxpSRqXyAHA+ri
- EwU=
-X-IronPort-AV: E=Sophos;i="5.84,231,1620720000"; 
-   d="scan'208";a="63387415"
-Received: from orw-gwy-02-in.mentorg.com ([192.94.38.167])
-  by esa3.mentor.iphmx.com with ESMTP; 11 Jul 2021 08:45:26 -0800
-IronPort-SDR: DA7UUw46pOmUW53YgI1CRHoHoeJkmcy5JRxye7qDt7oyG8H+jD0JrT39cGgkk77/Gsc6PRuGZF
- HXIrMyJA4hmY1OpnF26Y2CH3OjCVRdEPOolKGGhtEZuN9lVQS6KFgARbFnRJdFSUN9x6FlG1Dt
- CKI8jo7Oc5iZUZJjRMU+z2+POLWdzMRp5n/I7qIheCyv7nQMsGsSEe/qwqdHjaMmrLILdEJ9fq
- 84PNb7iRTPTI1h6GNDMtwKF23thJQ2WE2rVcs2HccISMXPI+qmvtQDI7eqXxGIRLlPnM9sEtWM
- uJA=
-From:   Andrew Gabbasov <andrew_gabbasov@mentor.com>
-To:     'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
-CC:     Macpaul Lin <macpaul.lin@mediatek.com>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>, Felipe Balbi <balbi@kernel.org>,
-        Eugeniu Rosca <roscaeugeniu@gmail.com>,
-        Eddie Hung <eddie.hung@mediatek.com>
-References: <20210603171507.22514-1-andrew_gabbasov@mentor.com> <20210604110503.GA23002@vmlxhi-102.adit-jv.com> <CACCg+XO+D+2SWJq0C=_sWXj53L1fh-wra8dmCb3VQ4bYCZQryA@mail.gmail.com> <20210702184957.4479-1-andrew_gabbasov@mentor.com> <20210702184957.4479-2-andrew_gabbasov@mentor.com> <YOKvz2WzYuV0PaXD@kroah.com> <000001d77187$e9782dd0$bc688970$@mentor.com> <YOLiDSs/9+RzMKqE@kroah.com> <000001d7766a$a755ada0$f60108e0$@mentor.com> <20210711155130.16305-1-andrew_gabbasov@mentor.com> <YOsXQfWvIPXUydFv@kroah.com>
-In-Reply-To: <YOsXQfWvIPXUydFv@kroah.com>
-Subject: RE: [PATCH v4.14] usb: gadget: f_fs: Fix setting of device and driver data cross-references
-Date:   Sun, 11 Jul 2021 19:44:41 +0300
-Organization: Mentor Graphics Corporation
-Message-ID: <000001d77674$0fd59b20$2f80d160$@mentor.com>
+        id S232319AbhGKQuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 12:50:10 -0400
+Received: from mail-bn7nam10on2104.outbound.protection.outlook.com ([40.107.92.104]:19531
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229934AbhGKQuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Jul 2021 12:50:09 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VKCNEtSyN7Xm0+cDGLwJ+HfL68xH/Y+fXBYqA+7zdBHnwAJGS7yK11gBw0xz8scG+oaXiVEoL7Ozi0rdE+Z97jMfpQI4D0FPhydWl8sYeZH4Oy31GMfTdPWx9Wj6xCdAwRYGYLM8opmX6QQ7N2pYO50QQx+v1FpKesY5f6mi0XbFZc0pdWeMnQhuGwgwqn/NcZ6aK14xAbJPPJRbZB/TmZyEN/f2sXU+2y2OCfYRvj8S1b9b839UAmPI2+s2JhEX41MqEipXnnFwqanwB1ASgNGrXjyUtRxrPguJpemgxag2dGN9l2rEvS0CRuSuf2YK0Wlk6gpxn7ZKgpJSGzhKGA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yjW7PSxiOOBh1849434axFfr33n8doQUQnG1J0H9iW8=;
+ b=SkytxZx6F3qSKYGPEyrCgyihH/mV7dy5zLMz2437Q1Fpag9shfiUqptgTnvxzsUY2I9bC3c3xRO6+BtyDBxF00A+Mc6pb7NdVipdQ/voBOL5oJhzXptDCblmIzuRL3W/MlVnSRv2Lqgo+Y3BOjxBUhvY7P4wdrX9aMUWUME7aVAofhSHTMrI9FO37S+jfe1hUW88GVtFi0pAmsN6dMNUMueU138+50DrqqYV9au2VuqWywNiYXCGlLITZxbYcBCfr62qHtLvVE7GlDa3amQGjhzX1pBQjp0XK4QEe+UpkLyNEJ+iYo4h1ZBym1JYRcB7P14zLQeq97gBU9j/KHPcRA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=in-advantage.com; dmarc=pass action=none
+ header.from=in-advantage.com; dkim=pass header.d=in-advantage.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=inadvantage.onmicrosoft.com; s=selector2-inadvantage-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yjW7PSxiOOBh1849434axFfr33n8doQUQnG1J0H9iW8=;
+ b=kTFup1b2dodflw5OXRscn/t/P3BQyW/B4Mpclk6uUCKB95sZn+QtfTNFqcLozVru9PFgLT+T/NzJKc0ickFrI2CKvBAwCCCzQPzidzmh5ya4vUDN/dFQW+PuluyXPpIZ/ev3nreYmZMKGKPsgQYPxJj3H94q7ibsVcGA4WgoGm4=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=in-advantage.com;
+Received: from MWHPR1001MB2351.namprd10.prod.outlook.com
+ (2603:10b6:301:35::37) by CO1PR10MB4611.namprd10.prod.outlook.com
+ (2603:10b6:303:92::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.19; Sun, 11 Jul
+ 2021 16:47:20 +0000
+Received: from MWHPR1001MB2351.namprd10.prod.outlook.com
+ ([fe80::e81f:cf8e:6ad6:d24d]) by MWHPR1001MB2351.namprd10.prod.outlook.com
+ ([fe80::e81f:cf8e:6ad6:d24d%3]) with mapi id 15.20.4308.026; Sun, 11 Jul 2021
+ 16:47:20 +0000
+Date:   Sun, 11 Jul 2021 09:47:17 -0700
+From:   Colin Foster <colin.foster@in-advantage.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        claudiu.manoil@nxp.com, alexandre.belloni@bootlin.com,
+        UNGLinuxDriver@microchip.com, linux@armlinux.org.uk,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 net-next 3/8] net: dsa: ocelot: felix: NULL check
+ on variable
+Message-ID: <20210711164717.GE2219684@euler>
+References: <20210710192602.2186370-1-colin.foster@in-advantage.com>
+ <20210710192602.2186370-4-colin.foster@in-advantage.com>
+ <20210710200628.uwwyzuuou242anzq@skbuf>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210710200628.uwwyzuuou242anzq@skbuf>
+X-ClientProxiedBy: MWHPR14CA0067.namprd14.prod.outlook.com
+ (2603:10b6:300:81::29) To MWHPR1001MB2351.namprd10.prod.outlook.com
+ (2603:10b6:301:35::37)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQHXb3MiK5x8JbQzK0Wthg8LyVovu6sz6U+AgABMtp+ACcRkOv//85+AgAAZ4+A=
-Content-Language: en-us
-X-Originating-IP: [137.202.0.90]
-X-ClientProxiedBy: svr-ies-mbx-01.mgc.mentorg.com (139.181.222.1) To
- svr-ies-mbx-01.mgc.mentorg.com (139.181.222.1)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from euler (67.185.175.147) by MWHPR14CA0067.namprd14.prod.outlook.com (2603:10b6:300:81::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend Transport; Sun, 11 Jul 2021 16:47:19 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2d1cd406-13a3-4d3f-26af-08d9448b8cb6
+X-MS-TrafficTypeDiagnostic: CO1PR10MB4611:
+X-Microsoft-Antispam-PRVS: <CO1PR10MB4611E6545F9CD8AD729DA405A4169@CO1PR10MB4611.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: WSr3+42PI8FEISbYHGKEF/t3uGHJ/b6ouYxTQy8ANYdwrAqLTnW3oJ2iu59tXj3u5inSMuP0daUC/slHeaa2wy8nzev1bpnOJ5GQgkzXkoBya05wtLPC2SdlFcL8yopne7mtNO//UF7dMVWsXwUoDX8w6ruN0l2610wRUyDpJ1gTXGzRcpmPagEw1SZXWSECurKWcN71FAGAgvet9wBffeQwC4Nh1gcEqvk2+3PxbbsCzjafmwzCFjmXiEBJuwiTlJatW7IzJGg7rYpKavyR8p6DzxhI1iYoWrWDxDyApZajaA/NBp9Li+jN7NOuJv9CuVlR7TetZQ1LBdXTmS70Zh95ogpFLbk6LS6srOlz9zKIQTu1RYN4XkqQc+kABJHginKFkMK8+CEq+RJWwk75KmX+35cNyOCiVPIVzjg33HYdJJyfxFN8BPg8s3lfT97su1d6u5dlaiV8CIfOjEXpbrVbxblAwqD4JQKuz7jMQ/W97r5VZgsD3ExTrf8REX4RM5zvOh2q/Jgr2wXzZSbplr6b/f33Wbap1R8xgajbXIqN/HCOsEnSuooQYBey/ol+OOLL5w4/QOzSLnB0CfW0CUmnb29MpIe0Nn6mjyI+WsiKvu0YWpwc2pM+xvtO0m9DCY1mmmoZbxRXcxqzQ9NCMExKN4Sno4SQTIVQSuy/L7oURDWwJnf3bg5w4574/91birEsxbjjNoSd2her9vLm3Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2351.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(39830400003)(376002)(366004)(346002)(66556008)(66476007)(26005)(956004)(478600001)(55016002)(8676002)(9576002)(86362001)(33656002)(52116002)(6496006)(38350700002)(316002)(66946007)(2906002)(9686003)(44832011)(33716001)(8936002)(4326008)(38100700002)(1076003)(186003)(4744005)(5660300002)(6916009)(7416002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?RjCIWOjpt3vZRFFV1sC9sFMpBaw770KzKNpMQZZmxq+v3NXsn0Xt0X+TMrog?=
+ =?us-ascii?Q?j7xSSF8sAMSZk3rQrp29fzbEBwV2bHXvVVcP9tAxartqRk+SkhLYNH5YI3fV?=
+ =?us-ascii?Q?mAuZl7+rGShTF5Xh8ncXzdj6djn+uL4DN4HHOWFnaOXrWcrHtdBrhTOEMMYw?=
+ =?us-ascii?Q?TPfbjYahilHXwtqKSd2Rak3ze+I8YtJZWU1kiN/xRrSFUlkuvjADMLQFz3Dg?=
+ =?us-ascii?Q?X5ovwBgmjc0eMUXZ7+i6mXB0pXCEmPYNhCvJqc9RKZF1XMnQI0QDV111oUs2?=
+ =?us-ascii?Q?8fPoq33ZfwoTDEPAFvfWVHCVR5CLAwHWp0BlcKTWNNnx/9+5ApXEFhPXB/wv?=
+ =?us-ascii?Q?1g89pOMq9uPAW7ce9ITwIbB3pi+Sequ9dWSNCxXzixdhLYmNvgvkxXjDJr03?=
+ =?us-ascii?Q?JujyZDtrmmpg2oMOchJtcGt/IOYdg4qGN15xxitf3CSpjHudAHuI1rj4lD55?=
+ =?us-ascii?Q?jN6tNn1oNrL6rPZoafOa46lC1ZLflSqRkCBcXnwfZ9ipcJqDLwSR7WMEpqnr?=
+ =?us-ascii?Q?cI5k5xBqqxvg3LUWuVG2tg+me8u9T2i1f3pcTF1dGobdSYjcDQMt5SlCZAsR?=
+ =?us-ascii?Q?8PCLpEIojNrN4Sn2tIlTvwY3csYNpvgngx6Ej/lsLVHwfRCA9JihHGb66+3K?=
+ =?us-ascii?Q?ghzpyiMyF2VWiekx0I1Qk2b0kAVxzNWWnn2akEW4O9hBNtSdUF9f6nVriTNe?=
+ =?us-ascii?Q?aUoKc7DHjPuSBrC97CammyeEtko0gm52s+8wIsXbxstEaM7vh3Blht9PZIJ+?=
+ =?us-ascii?Q?q2M4O6xzLMCdWq5DOikiLvwqtyoJ2MLZPTq9+rEhvXrEGzo3LhqvTAvtok1/?=
+ =?us-ascii?Q?jQvRwreCwFazwz3IzLVR+ml4LDIdtJdCSop9tYCNcDpDfvtFYGoAHxIdTJu3?=
+ =?us-ascii?Q?Y/1Etix4VoP4kjBDjXd+G2bEJ6R2G5m0hGWH32chtb+xpaLSX5iPLwLFV8GL?=
+ =?us-ascii?Q?K6lV/ClAFCz8Csw848OiBwF7acpjAbP79qsEJIezBXD/RyS/deUXBuOFsno2?=
+ =?us-ascii?Q?DkYVFnroJOFfvl1B0tD2nrHIVoMCieL75OnbQzp3UiXx9LXn7eL8qEYF/8HH?=
+ =?us-ascii?Q?w8QvM5DmG408dV8wCG/KlvI+qtrPav2gQPfMEr2iz45IKjfICQEussidywlY?=
+ =?us-ascii?Q?FcgeHkHipJgYHm+QM3zP8yz+0QMhhU+7HgxYzMruh6DEN0qjI5pyNDmP83HW?=
+ =?us-ascii?Q?Bk0eJGzeP2GbrUe6YbGP6GwF2UI0mlY1LEcMtmxbTjp3dWh8goW9ddhJ3M6U?=
+ =?us-ascii?Q?gbfQcuU/Xyg+q+fBvVSJC0+v2PSyHSR87hRNtPQYpYaysv/EGaowdNuU/OQf?=
+ =?us-ascii?Q?Thv8mzfjpUaLKIJndz1XmWOH?=
+X-OriginatorOrg: in-advantage.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2d1cd406-13a3-4d3f-26af-08d9448b8cb6
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2351.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jul 2021 16:47:20.3485
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 48e842ca-fbd8-4633-a79d-0c955a7d3aae
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vfwlA7QVwNLzMV7ubF1MidxnKtvwovkDTFB0wGtZdLyWCisT+7EtXUWGnmZnRSN/7LKqZ3gDMhDCth7eBoVqWRhsFdE/wEFZ842A/dB7G90=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4611
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Greg,
-
-> -----Original Message-----
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Sent: Sunday, July 11, 2021 7:07 PM
-> To: Gabbasov, Andrew <Andrew_Gabbasov@mentor.com>
-> Cc: Macpaul Lin <macpaul.lin@mediatek.com>; Eugeniu Rosca <erosca@de.adit-jv.com>; linux-usb@vger.kernel.org;
-> linux-kernel@vger.kernel.org; stable@vger.kernel.org; Felipe Balbi <balbi@kernel.org>; Eugeniu Rosca
-> <roscaeugeniu@gmail.com>; Eddie Hung <eddie.hung@mediatek.com>
-> Subject: Re: [PATCH v4.14] usb: gadget: f_fs: Fix setting of device and driver data cross-references
-> 
-> On Sun, Jul 11, 2021 at 10:51:30AM -0500, Andrew Gabbasov wrote:
-> > commit ecfbd7b9054bddb12cea07fda41bb3a79a7b0149 upstream.
-> >
-
-[ skipped ]
-
-> > Fixes: 4b187fceec3c ("usb: gadget: FunctionFS: add devices management code")
-> > Fixes: 3262ad824307 ("usb: gadget: f_fs: Stop ffs_closed NULL pointer dereference")
-> > Fixes: cdafb6d8b8da ("usb: gadget: f_fs: Fix use-after-free in ffs_free_inst")
-> > Reported-by: Bhuvanesh Surachari <bhuvanesh_surachari@mentor.com>
-> > Tested-by: Eugeniu Rosca <erosca@de.adit-jv.com>
-> > Reviewed-by: Eugeniu Rosca <erosca@de.adit-jv.com>
-> > Signed-off-by: Andrew Gabbasov <andrew_gabbasov@mentor.com>
-> > Link: https://lore.kernel.org/r/20210603171507.22514-1-andrew_gabbasov@mentor.com
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > [agabbasov: Backported to earlier mount API, resolved context conflicts]
+On Sat, Jul 10, 2021 at 11:06:28PM +0300, Vladimir Oltean wrote:
+> On Sat, Jul 10, 2021 at 12:25:57PM -0700, Colin Foster wrote:
+> > Add NULL check before dereferencing array
+> > 
+> > Signed-off-by: Colin Foster <colin.foster@in-advantage.com>
 > > ---
-> >  drivers/usb/gadget/function/f_fs.c | 67 ++++++++++++++----------------
-> >  1 file changed, 32 insertions(+), 35 deletions(-)
 > 
-> I also need a 4.19 version of this commit, as you do not want to upgrade
-> to a newer kernel and regress.  Can you also provide that?
+> The patch is correct but is insufficiently documented. In particular,
+> people might interpret it as a bug fix and backport it to stable
+> kernels.
 
-If I correctly understand, this particular file has a very minor difference
-between 4.14 and 4.19. So, this same patch for 4.14 can be just applied / cherry-picked
-cleanly on top of latest stable 4.19.
-
-Thanks!
-
-Best regards,
-Andrew
-
+That makes sense. I'll clarify that it is only something that'll affect
+future drivers and not a bug fix.
