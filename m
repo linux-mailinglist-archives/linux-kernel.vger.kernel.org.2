@@ -2,230 +2,386 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B233C3D0F
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 15:40:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A1A3C3D13
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 15:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232935AbhGKNnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 09:43:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232544AbhGKNnU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 09:43:20 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B06C0613DD
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 06:40:33 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id c17so27719264ejk.13
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 06:40:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=HhngoEJSkbQEoJJyLEArTQq/2LlVlkBzYrfwiJJ+96A=;
-        b=OtIsGU2VKjbh1hj9TV87ULh+UylJ0sxDnPKIRWkNXrY5yucEgKTS2v8rAk7D8H4RRF
-         AIPYfamGibFBgp5iFpZGBWz64RgHJsuZLX1jQ62LmUehBbJsexYkW/45EMh8rIrcvFgU
-         +rZHGBYVxfWUw5GafR62poyYN0KuZwpHlW3w02lODoC2CxewhKdvlERWVZLDNedw9Vlp
-         lRIpGIAfuADOWAgAehPBbAIlhLoYmX6pMN6fX2QkRMbMworA3PZUVNctGFMrYw6rFboP
-         hB53Hn4cVNYYphvPDYvQWcMKLDwK/J2MippZ5KOmt0YO7U7teFkMp2E+6H7J0efJ1p3A
-         B2Rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=HhngoEJSkbQEoJJyLEArTQq/2LlVlkBzYrfwiJJ+96A=;
-        b=pSK20rOZ0eiFhoYrvObCrs8UF0lUhYbFHP+KRUlZyiO+EzQ6GyjMTPWn+MmmuGBFrX
-         DYQsF+jI3Cp4hpxe25f4PsTPkEwnUwnfWxrLohNvjlU50DCUzujqjCq0kxxTykVc+1G5
-         phcCpjyYnPxMsKa/w7FZ0mmTFZzRBrY2erTqj6ZU7RiZWMhMpLLYHuRll5NGavrbvfML
-         AwOklyQuY2wwBoO37TvRSk+SQDDd9y+WheDkWcrJNrhdLMDzr07LGOQLlz2GkcG6njGS
-         QS7ZdHJAk53+PFeQCkG81Odm9pDSJKfUz537UvxCk5A84X8/y5ItGjNC5GZXlUDRrooG
-         UZKA==
-X-Gm-Message-State: AOAM531uW5QBa9q8VWUy75Hw5n35lWS0dGfDOP9k9Mwmt0/FTTwKHt4j
-        gPEJ3k/sbTP6hOszLPBVxyplqkbgC5E=
-X-Google-Smtp-Source: ABdhPJw+AQXIqgNKTU14ouku/kcoVDHwinG+mH/tstGQ0tqc3hXPa4/ytZ2GlFIVLThWqdW2jTxthg==
-X-Received: by 2002:a17:907:7683:: with SMTP id jv3mr19699525ejc.272.1626010831952;
-        Sun, 11 Jul 2021 06:40:31 -0700 (PDT)
-Received: from gmail.com (77-234-64-154.pool.digikabel.hu. [77.234.64.154])
-        by smtp.gmail.com with ESMTPSA id ze15sm5114146ejb.79.2021.07.11.06.40.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Jul 2021 06:40:31 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Sun, 11 Jul 2021 15:40:29 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [GIT PULL] IRQ fixes
-Message-ID: <YOr0zV5US6ajbTaM@gmail.com>
+        id S232924AbhGKNp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 09:45:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54224 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232544AbhGKNp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Jul 2021 09:45:27 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0881761186;
+        Sun, 11 Jul 2021 13:42:33 +0000 (UTC)
+Date:   Sun, 11 Jul 2021 14:44:49 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
+        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
+        gwendal@chromium.org, alexandre.belloni@bootlin.com,
+        david@lechnology.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, o.rempel@pengutronix.de,
+        jarkko.nikula@linux.intel.com
+Subject: Re: [PATCH v12 17/17] counter: 104-quad-8: Add IRQ support for the
+ ACCES 104-QUAD-8
+Message-ID: <20210711144449.65cf28d9@jic23-huawei>
+In-Reply-To: <4ce9f9d36b756801457523e3832f09c36fa8e9ef.1625471640.git.vilhelm.gray@gmail.com>
+References: <cover.1625471640.git.vilhelm.gray@gmail.com>
+        <4ce9f9d36b756801457523e3832f09c36fa8e9ef.1625471640.git.vilhelm.gray@gmail.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Mon,  5 Jul 2021 17:19:05 +0900
+William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
 
-Please pull the latest irq/urgent git tree from:
+> The LSI/CSI LS7266R1 chip provides programmable output via the FLG pins.
+> When interrupts are enabled on the ACCES 104-QUAD-8, they occur whenever
+> FLG1 is active. Four functions are available for the FLG1 signal: Carry,
+> Compare, Carry-Borrow, and Index.
+> 
+> 	Carry:
+> 		Interrupt generated on active low Carry signal. Carry
+> 		signal toggles every time the respective channel's
+> 		counter overflows.
+> 
+> 	Compare:
+> 		Interrupt generated on active low Compare signal.
+> 		Compare signal toggles every time respective channel's
+> 		preset register is equal to the respective channel's
+> 		counter.
+> 
+> 	Carry-Borrow:
+> 		Interrupt generated on active low Carry signal and
+> 		active low Borrow signal. Carry signal toggles every
+> 		time the respective channel's counter overflows. Borrow
+> 		signal toggles every time the respective channel's
+> 		counter underflows.
+> 
+> 	Index:
+> 		Interrupt generated on active high Index signal.
+> 
+> These four functions correspond respectivefly to the following four
+> Counter event types: COUNTER_EVENT_OVERFLOW, COUNTER_EVENT_THRESHOLD,
+> COUNTER_EVENT_OVERFLOW_UNDERFLOW, and COUNTER_EVENT_INDEX. Interrupts
+> push Counter events to event channel X, where 'X' is the respective
+> channel whose FLG1 activated.
+> 
+> This patch adds IRQ support for the ACCES 104-QUAD-8. The interrupt line
+> numbers for the devices may be configured via the irq array module
+> parameter.
+> 
+> Acked-by: Syed Nayyar Waris <syednwaris@gmail.com>
+> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq-urgent-2021-07-11
+Trivial comment inline.
 
-   # HEAD: 48400483565f0b7e633cbef94b139ff295b59de3 Merge tag 'irqchip-fixes-5.14-1' of git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/urgent
+> ---
+>  drivers/counter/104-quad-8.c | 167 +++++++++++++++++++++++++++++++++--
+>  drivers/counter/Kconfig      |   6 +-
+>  2 files changed, 164 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/counter/104-quad-8.c b/drivers/counter/104-quad-8.c
+> index a56751bf1e9b..1cbd60aaed69 100644
+> --- a/drivers/counter/104-quad-8.c
+> +++ b/drivers/counter/104-quad-8.c
+> @@ -11,6 +11,7 @@
+>  #include <linux/errno.h>
+>  #include <linux/io.h>
+>  #include <linux/ioport.h>
+> +#include <linux/interrupt.h>
+>  #include <linux/isa.h>
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+> @@ -25,6 +26,10 @@ static unsigned int num_quad8;
+>  module_param_hw_array(base, uint, ioport, &num_quad8, 0);
+>  MODULE_PARM_DESC(base, "ACCES 104-QUAD-8 base addresses");
+>  
+> +static unsigned int irq[max_num_isa_dev(QUAD8_EXTENT)];
+> +module_param_hw_array(irq, uint, irq, NULL, 0);
+> +MODULE_PARM_DESC(irq, "ACCES 104-QUAD-8 interrupt line numbers");
+> +
+>  #define QUAD8_NUM_COUNTERS 8
+>  
+>  /**
+> @@ -38,6 +43,8 @@ MODULE_PARM_DESC(base, "ACCES 104-QUAD-8 base addresses");
+>   * @quadrature_scale:	array of quadrature mode scale configurations
+>   * @ab_enable:		array of A and B inputs enable configurations
+>   * @preset_enable:	array of set_to_preset_on_index attribute configurations
+> + * @irq_trigger:	array of current IRQ trigger function configurations
+> + * @next_irq_trigger:	array of next IRQ trigger function configurations
+>   * @synchronous_mode:	array of index function synchronous mode configurations
+>   * @index_polarity:	array of index function polarity configurations
+>   * @cable_fault_enable:	differential encoder cable status enable configurations
+> @@ -53,13 +60,17 @@ struct quad8 {
+>  	unsigned int quadrature_scale[QUAD8_NUM_COUNTERS];
+>  	unsigned int ab_enable[QUAD8_NUM_COUNTERS];
+>  	unsigned int preset_enable[QUAD8_NUM_COUNTERS];
+> +	unsigned int irq_trigger[QUAD8_NUM_COUNTERS];
+> +	unsigned int next_irq_trigger[QUAD8_NUM_COUNTERS];
+>  	unsigned int synchronous_mode[QUAD8_NUM_COUNTERS];
+>  	unsigned int index_polarity[QUAD8_NUM_COUNTERS];
+>  	unsigned int cable_fault_enable;
+>  	unsigned int base;
+>  };
+>  
+> +#define QUAD8_REG_INTERRUPT_STATUS 0x10
+>  #define QUAD8_REG_CHAN_OP 0x11
+> +#define QUAD8_REG_INDEX_INTERRUPT 0x12
+>  #define QUAD8_REG_INDEX_INPUT_LEVELS 0x16
+>  #define QUAD8_DIFF_ENCODER_CABLE_STATUS 0x17
+>  /* Borrow Toggle flip-flop */
+> @@ -92,8 +103,8 @@ struct quad8 {
+>  #define QUAD8_RLD_CNTR_OUT 0x10
+>  /* Transfer Preset Register LSB to FCK Prescaler */
+>  #define QUAD8_RLD_PRESET_PSC 0x18
+> -#define QUAD8_CHAN_OP_ENABLE_COUNTERS 0x00
+>  #define QUAD8_CHAN_OP_RESET_COUNTERS 0x01
+> +#define QUAD8_CHAN_OP_ENABLE_INTERRUPT_FUNC 0x04
+>  #define QUAD8_CMR_QUADRATURE_X1 0x08
+>  #define QUAD8_CMR_QUADRATURE_X2 0x10
+>  #define QUAD8_CMR_QUADRATURE_X4 0x18
+> @@ -378,13 +389,103 @@ static int quad8_action_read(struct counter_device *counter,
+>  	}
+>  }
+>  
+> +enum {
+> +	QUAD8_EVENT_NONE = -1,
+> +	QUAD8_EVENT_CARRY = 0,
+> +	QUAD8_EVENT_COMPARE = 1,
+> +	QUAD8_EVENT_CARRY_BORROW = 2,
+> +	QUAD8_EVENT_INDEX = 3,
+> +};
+> +
+> +static int quad8_events_configure(struct counter_device *counter)
+> +{
+> +	struct quad8 *const priv = counter->priv;
+> +	unsigned long irq_enabled = 0;
+> +	unsigned long irqflags;
+> +	size_t channel;
+> +	unsigned long ior_cfg;
+> +	unsigned long base_offset;
+> +
+> +	spin_lock_irqsave(&priv->lock, irqflags);
+> +
+> +	/* Enable interrupts for the requested channels, disable for the rest */
+> +	for (channel = 0; channel < QUAD8_NUM_COUNTERS; channel++) {
+> +		if (priv->next_irq_trigger[channel] == QUAD8_EVENT_NONE)
+> +			continue;
+> +
+> +		if (priv->irq_trigger[channel] != priv->next_irq_trigger[channel]) {
+> +			/* Save new IRQ function configuration */
+> +			priv->irq_trigger[channel] = priv->next_irq_trigger[channel];
+> +
+> +			/* Load configuration to I/O Control Register */
+> +			ior_cfg = priv->ab_enable[channel] |
+> +				  priv->preset_enable[channel] << 1 |
+> +				  priv->irq_trigger[channel] << 3;
 
-Two fixes:
+Nicer to define masks and use FIELD_PREP etc for these rather than hiding shifts
+down here in the code.
 
- - Fix a MIPS IRQ handling RCU bug
- - Remove a DocBook annotation for a parameter that doesn't exist anymore
+> +			base_offset = priv->base + 2 * channel + 1;
+> +			outb(QUAD8_CTR_IOR | ior_cfg, base_offset);
+> +		}
+> +
+> +		/* Reset next IRQ trigger function configuration */
+> +		priv->next_irq_trigger[channel] = QUAD8_EVENT_NONE;
+> +
+> +		/* Enable IRQ line */
+> +		irq_enabled |= BIT(channel);
+> +	}
+> +
+> +	outb(irq_enabled, priv->base + QUAD8_REG_INDEX_INTERRUPT);
+> +
+> +	spin_unlock_irqrestore(&priv->lock, irqflags);
+> +
+> +	return 0;
+> +}
+> +
+> +static int quad8_watch_validate(struct counter_device *counter,
+> +				const struct counter_watch *watch)
+> +{
+> +	struct quad8 *const priv = counter->priv;
+> +
+> +	if (watch->channel > QUAD8_NUM_COUNTERS - 1)
+> +		return -EINVAL;
+> +
+> +	switch (watch->event) {
+> +	case COUNTER_EVENT_OVERFLOW:
+> +		if (priv->next_irq_trigger[watch->channel] == QUAD8_EVENT_NONE)
+> +			priv->next_irq_trigger[watch->channel] = QUAD8_EVENT_CARRY;
+> +		else if (priv->next_irq_trigger[watch->channel] != QUAD8_EVENT_CARRY)
+> +			return -EINVAL;
+> +		return 0;
+> +	case COUNTER_EVENT_THRESHOLD:
+> +		if (priv->next_irq_trigger[watch->channel] == QUAD8_EVENT_NONE)
+> +			priv->next_irq_trigger[watch->channel] = QUAD8_EVENT_COMPARE;
+> +		else if (priv->next_irq_trigger[watch->channel] != QUAD8_EVENT_COMPARE)
+> +			return -EINVAL;
+> +		return 0;
+> +	case COUNTER_EVENT_OVERFLOW_UNDERFLOW:
+> +		if (priv->next_irq_trigger[watch->channel] == QUAD8_EVENT_NONE)
+> +			priv->next_irq_trigger[watch->channel] = QUAD8_EVENT_CARRY_BORROW;
+> +		else if (priv->next_irq_trigger[watch->channel] != QUAD8_EVENT_CARRY_BORROW)
+> +			return -EINVAL;
+> +		return 0;
+> +	case COUNTER_EVENT_INDEX:
+> +		if (priv->next_irq_trigger[watch->channel] == QUAD8_EVENT_NONE)
+> +			priv->next_irq_trigger[watch->channel] = QUAD8_EVENT_INDEX;
+> +		else if (priv->next_irq_trigger[watch->channel] != QUAD8_EVENT_INDEX)
+> +			return -EINVAL;
+> +		return 0;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+>  static const struct counter_ops quad8_ops = {
+>  	.signal_read = quad8_signal_read,
+>  	.count_read = quad8_count_read,
+>  	.count_write = quad8_count_write,
+>  	.function_read = quad8_function_read,
+>  	.function_write = quad8_function_write,
+> -	.action_read = quad8_action_read
+> +	.action_read = quad8_action_read,
+> +	.events_configure = quad8_events_configure,
+> +	.watch_validate = quad8_watch_validate,
+>  };
+>  
+>  static const char *const quad8_index_polarity_modes[] = {
+> @@ -579,7 +680,8 @@ static int quad8_count_enable_write(struct counter_device *counter,
+>  
+>  	priv->ab_enable[count->id] = enable;
+>  
+> -	ior_cfg = enable | priv->preset_enable[count->id] << 1;
+> +	ior_cfg = enable | priv->preset_enable[count->id] << 1 |
+> +		  priv->irq_trigger[count->id] << 3;
+>  
+>  	/* Load I/O control configuration */
+>  	outb(QUAD8_CTR_IOR | ior_cfg, base_offset + 1);
+> @@ -728,7 +830,8 @@ static int quad8_count_preset_enable_write(struct counter_device *counter,
+>  
+>  	priv->preset_enable[count->id] = preset_enable;
+>  
+> -	ior_cfg = priv->ab_enable[count->id] | preset_enable << 1;
+> +	ior_cfg = priv->ab_enable[count->id] | preset_enable << 1 |
+> +		  priv->irq_trigger[count->id] << 3;
+>  
+>  	/* Load I/O control configuration to Input / Output Control Register */
+>  	outb(QUAD8_CTR_IOR | ior_cfg, base_offset);
+> @@ -980,11 +1083,54 @@ static struct counter_count quad8_counts[] = {
+>  	QUAD8_COUNT(7, "Channel 8 Count")
+>  };
+>  
+> +static irqreturn_t quad8_irq_handler(int irq, void *private)
+> +{
+> +	struct quad8 *const priv = private;
+> +	const unsigned long base = priv->base;
+> +	unsigned long irq_status;
+> +	unsigned long channel;
+> +	u8 event;
+> +
+> +	irq_status = inb(base + QUAD8_REG_INTERRUPT_STATUS);
+> +	if (!irq_status)
+> +		return IRQ_NONE;
+> +
+> +	for_each_set_bit(channel, &irq_status, QUAD8_NUM_COUNTERS) {
+> +		switch (priv->irq_trigger[channel]) {
+> +		case QUAD8_EVENT_CARRY:
+> +			event = COUNTER_EVENT_OVERFLOW;
+> +				break;
+> +		case QUAD8_EVENT_COMPARE:
+> +			event = COUNTER_EVENT_THRESHOLD;
+> +				break;
+> +		case QUAD8_EVENT_CARRY_BORROW:
+> +			event = COUNTER_EVENT_OVERFLOW_UNDERFLOW;
+> +				break;
+> +		case QUAD8_EVENT_INDEX:
+> +			event = COUNTER_EVENT_INDEX;
+> +				break;
+> +		default:
+> +			/* should never reach this path */
+> +			WARN_ONCE(true, "invalid interrupt trigger function %u configured for channel %lu\n",
+> +				  priv->irq_trigger[channel], channel);
+> +			continue;
+> +		}
+> +
+> +		counter_push_event(&priv->counter, event, channel);
+> +	}
+> +
+> +	/* Clear pending interrupts on device */
+> +	outb(QUAD8_CHAN_OP_ENABLE_INTERRUPT_FUNC, base + QUAD8_REG_CHAN_OP);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+>  static int quad8_probe(struct device *dev, unsigned int id)
+>  {
+>  	struct quad8 *priv;
+>  	int i, j;
+>  	unsigned int base_offset;
+> +	int err;
+>  
+>  	if (!devm_request_region(dev, base[id], QUAD8_EXTENT, dev_name(dev))) {
+>  		dev_err(dev, "Unable to lock port addresses (0x%X-0x%X)\n",
+> @@ -1009,6 +1155,8 @@ static int quad8_probe(struct device *dev, unsigned int id)
+>  
+>  	spin_lock_init(&priv->lock);
+>  
+> +	/* Reset Index/Interrupt Register */
+> +	outb(0x00, base[id] + QUAD8_REG_INDEX_INTERRUPT);
+>  	/* Reset all counters and disable interrupt function */
+>  	outb(QUAD8_CHAN_OP_RESET_COUNTERS, base[id] + QUAD8_REG_CHAN_OP);
+>  	/* Set initial configuration for all counters */
+> @@ -1035,11 +1183,18 @@ static int quad8_probe(struct device *dev, unsigned int id)
+>  		outb(QUAD8_CTR_IOR, base_offset + 1);
+>  		/* Disable index function; negative index polarity */
+>  		outb(QUAD8_CTR_IDR, base_offset + 1);
+> +		/* Initialize next IRQ trigger function configuration */
+> +		priv->next_irq_trigger[i] = QUAD8_EVENT_NONE;
+>  	}
+>  	/* Disable Differential Encoder Cable Status for all channels */
+>  	outb(0xFF, base[id] + QUAD8_DIFF_ENCODER_CABLE_STATUS);
+> -	/* Enable all counters */
+> -	outb(QUAD8_CHAN_OP_ENABLE_COUNTERS, base[id] + QUAD8_REG_CHAN_OP);
+> +	/* Enable all counters and enable interrupt function */
+> +	outb(QUAD8_CHAN_OP_ENABLE_INTERRUPT_FUNC, base[id] + QUAD8_REG_CHAN_OP);
+> +
+> +	err = devm_request_irq(dev, irq[id], quad8_irq_handler, IRQF_SHARED,
+> +			       priv->counter.name, priv);
+> +	if (err)
+> +		return err;
+>  
+>  	return devm_counter_register(dev, &priv->counter);
+>  }
+> diff --git a/drivers/counter/Kconfig b/drivers/counter/Kconfig
+> index d5d2540b30c2..3dcdb681c4e4 100644
+> --- a/drivers/counter/Kconfig
+> +++ b/drivers/counter/Kconfig
+> @@ -23,11 +23,11 @@ config 104_QUAD_8
+>  	  A counter's respective error flag may be cleared by performing a write
+>  	  operation on the respective count value attribute. Although the
+>  	  104-QUAD-8 counters have a 25-bit range, only the lower 24 bits may be
+> -	  set, either directly or via the counter's preset attribute. Interrupts
+> -	  are not supported by this driver.
+> +	  set, either directly or via the counter's preset attribute.
+>  
+>  	  The base port addresses for the devices may be configured via the base
+> -	  array module parameter.
+> +	  array module parameter. The interrupt line numbers for the devices may
+> +	  be configured via the irq array module parameter.
+>  
+>  config INTERRUPT_CNT
+>  	tristate "Interrupt counter driver"
 
- Thanks,
-
-	Ingo
-
------------------->
-Marc Zyngier (1):
-      irqchip/mips: Fix RCU violation when using irqdomain lookup on interrupt entry
-
-Randy Dunlap (1):
-      genirq/irqdesc: Drop excess kernel-doc entry @lookup
-
-
- arch/mips/include/asm/irq.h      |  3 +++
- arch/mips/kernel/irq.c           | 16 ++++++++++++++++
- drivers/irqchip/irq-mips-cpu.c   | 10 ++++++----
- drivers/irqchip/irq-mips-gic.c   |  8 ++++----
- drivers/irqchip/irq-pic32-evic.c |  5 ++---
- kernel/irq/irqdesc.c             |  1 -
- 6 files changed, 31 insertions(+), 12 deletions(-)
-
-diff --git a/arch/mips/include/asm/irq.h b/arch/mips/include/asm/irq.h
-index d1477ecb1af9..57561e0e6e8d 100644
---- a/arch/mips/include/asm/irq.h
-+++ b/arch/mips/include/asm/irq.h
-@@ -57,6 +57,9 @@ asmlinkage void plat_irq_dispatch(void);
- 
- extern void do_IRQ(unsigned int irq);
- 
-+struct irq_domain;
-+extern void do_domain_IRQ(struct irq_domain *domain, unsigned int irq);
-+
- extern void arch_init_irq(void);
- extern void spurious_interrupt(void);
- 
-diff --git a/arch/mips/kernel/irq.c b/arch/mips/kernel/irq.c
-index 85b6c60f285d..d20e002b3246 100644
---- a/arch/mips/kernel/irq.c
-+++ b/arch/mips/kernel/irq.c
-@@ -21,6 +21,7 @@
- #include <linux/kallsyms.h>
- #include <linux/kgdb.h>
- #include <linux/ftrace.h>
-+#include <linux/irqdomain.h>
- 
- #include <linux/atomic.h>
- #include <linux/uaccess.h>
-@@ -107,3 +108,18 @@ void __irq_entry do_IRQ(unsigned int irq)
- 	irq_exit();
- }
- 
-+#ifdef CONFIG_IRQ_DOMAIN
-+void __irq_entry do_domain_IRQ(struct irq_domain *domain, unsigned int hwirq)
-+{
-+	struct irq_desc *desc;
-+
-+	irq_enter();
-+	check_stack_overflow();
-+
-+	desc = irq_resolve_mapping(domain, hwirq);
-+	if (likely(desc))
-+		handle_irq_desc(desc);
-+
-+	irq_exit();
-+}
-+#endif
-diff --git a/drivers/irqchip/irq-mips-cpu.c b/drivers/irqchip/irq-mips-cpu.c
-index 0bbb0b2d0dd5..0c7ae71a0af0 100644
---- a/drivers/irqchip/irq-mips-cpu.c
-+++ b/drivers/irqchip/irq-mips-cpu.c
-@@ -127,7 +127,6 @@ static struct irq_chip mips_mt_cpu_irq_controller = {
- asmlinkage void __weak plat_irq_dispatch(void)
- {
- 	unsigned long pending = read_c0_cause() & read_c0_status() & ST0_IM;
--	unsigned int virq;
- 	int irq;
- 
- 	if (!pending) {
-@@ -137,12 +136,15 @@ asmlinkage void __weak plat_irq_dispatch(void)
- 
- 	pending >>= CAUSEB_IP;
- 	while (pending) {
-+		struct irq_domain *d;
-+
- 		irq = fls(pending) - 1;
- 		if (IS_ENABLED(CONFIG_GENERIC_IRQ_IPI) && irq < 2)
--			virq = irq_linear_revmap(ipi_domain, irq);
-+			d = ipi_domain;
- 		else
--			virq = irq_linear_revmap(irq_domain, irq);
--		do_IRQ(virq);
-+			d = irq_domain;
-+
-+		do_domain_IRQ(d, irq);
- 		pending &= ~BIT(irq);
- 	}
- }
-diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
-index b146e069bf5b..54c7092cc61d 100644
---- a/drivers/irqchip/irq-mips-gic.c
-+++ b/drivers/irqchip/irq-mips-gic.c
-@@ -169,8 +169,8 @@ static void gic_handle_shared_int(bool chained)
- 			generic_handle_domain_irq(gic_irq_domain,
- 						  GIC_SHARED_TO_HWIRQ(intr));
- 		else
--			do_IRQ(irq_find_mapping(gic_irq_domain,
--						GIC_SHARED_TO_HWIRQ(intr)));
-+			do_domain_IRQ(gic_irq_domain,
-+				      GIC_SHARED_TO_HWIRQ(intr));
- 	}
- }
- 
-@@ -320,8 +320,8 @@ static void gic_handle_local_int(bool chained)
- 			generic_handle_domain_irq(gic_irq_domain,
- 						  GIC_LOCAL_TO_HWIRQ(intr));
- 		else
--			do_IRQ(irq_find_mapping(gic_irq_domain,
--						GIC_LOCAL_TO_HWIRQ(intr)));
-+			do_domain_IRQ(gic_irq_domain,
-+				      GIC_LOCAL_TO_HWIRQ(intr));
- 	}
- }
- 
-diff --git a/drivers/irqchip/irq-pic32-evic.c b/drivers/irqchip/irq-pic32-evic.c
-index 34c4b4ffacd1..1d9bb28d13e5 100644
---- a/drivers/irqchip/irq-pic32-evic.c
-+++ b/drivers/irqchip/irq-pic32-evic.c
-@@ -42,11 +42,10 @@ static void __iomem *evic_base;
- 
- asmlinkage void __weak plat_irq_dispatch(void)
- {
--	unsigned int irq, hwirq;
-+	unsigned int hwirq;
- 
- 	hwirq = readl(evic_base + REG_INTSTAT) & 0xFF;
--	irq = irq_linear_revmap(evic_irq_domain, hwirq);
--	do_IRQ(irq);
-+	do_domain_IRQ(evic_irq_domain, hwirq);
- }
- 
- static struct evic_chip_data *irqd_to_priv(struct irq_data *data)
-diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
-index f4dd5186858a..fadb93766020 100644
---- a/kernel/irq/irqdesc.c
-+++ b/kernel/irq/irqdesc.c
-@@ -682,7 +682,6 @@ EXPORT_SYMBOL_GPL(generic_handle_domain_irq);
-  *                     usually for a root interrupt controller
-  * @domain:	The domain where to perform the lookup
-  * @hwirq:	The HW irq number to convert to a logical one
-- * @lookup:	Whether to perform the domain lookup or not
-  * @regs:	Register file coming from the low-level handling code
-  *
-  * Returns:	0 on success, or -EINVAL if conversion has failed
