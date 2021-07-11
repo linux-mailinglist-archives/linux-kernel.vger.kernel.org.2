@@ -2,165 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A01E23C3BE9
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 13:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 733273C3BF0
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 13:39:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232674AbhGKLes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 07:34:48 -0400
-Received: from mail-dm6nam10on2059.outbound.protection.outlook.com ([40.107.93.59]:4737
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229688AbhGKLeq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 07:34:46 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GWGOa/Q5Q9ZcJVLbS8pxqgpsLRzT85PDRUVMknH75ihu/THUUT/lZc2W7wZI3YMA9inq1EXoZIJj6aB9XjXD37DCkex1oAvLL9I10BS5c8XFTfyAltT57EFahIYj2voUeBe056F3mAjreK15U37ib+8mTURW+8qgQyV4BK0pm3EuFTHv2fXPl9P4K92jiu+NZgs4Nm4Bndprd+rSXY7bTbuqEnys2mn2GgXLpd6h4QYDKj2U6K9Wl8gpSM4ShqKutC2SZRKqg5CmfywbXTGCNao5wc13lTu/PLfhE23o8wAqvj+CvJxMK/UGhan5i5kS+r+6Q8cPIlRk1+Cl7w+kmg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gLmFq1NT9wyJVX3wU45wjrJ4uSHRQzzBD9C+tn6D1L8=;
- b=YiKgTWjCcE+eRMxSIIMQglKwpKqQJ8SzwhobQogazC1VS0M6ClMLr95wFP6faPG6wch8MOe9da/NxEBYtAduyeBHL/p80+LxKPdujx41EK5DZBQ2TACtMP2OVmpTPnahVSRUs74CxEBIJtnWiB7cve2RFbBSZtwaASy43g/+/4C8dK6pQi1AnQEn8yj9Ld5QsB+QULbvtrYmgrhkQraPGHTlO99/Vd+ZcRUe2GSnZzxbcVdZpwBeulhlOaQyOjJ3yXMwFX2oV7NM5H4Yt3jX9aBl7GIxRKd1mLCT6dQTXLmG6NnFzkuFnlG9lHJ07wpwpkY0QPlj5hqo7GRPAydOCA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=broadcom.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gLmFq1NT9wyJVX3wU45wjrJ4uSHRQzzBD9C+tn6D1L8=;
- b=IkCfwJEL6aR9UJILiuSRDr5txR/lMKxDA7IIkUWrfo2waHXe9xcJ0j/xhzf164Gjw1lymwWIRhcbmX8XcAosmIsK0LGmD/8sqxZ37NeTBOpPuGi8mQRuwKiWRw8jDEaL6e5+y8+jc9Fpg0NnGdyxf1GOmnW+4XbHPy2Xqf7iZLMz/kdaiHOCKK6hhwebchhvF5e8TuhPuAE3E+jVwYgzw1WlpAEPsvQRMqQmrLB/8ssa5/HSS3FomH//vgfVNTn0+RQH6LqRALjOZeBLqOevodoqhKXb4ZdmJFByOpJpg2kYWBYezAc1mJOiwoyG/p5pDkLY2FQ2O1G/44u35Ilc3w==
-Received: from MWHPR02CA0016.namprd02.prod.outlook.com (2603:10b6:300:4b::26)
- by BN6PR1201MB2480.namprd12.prod.outlook.com (2603:10b6:404:b0::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20; Sun, 11 Jul
- 2021 11:31:57 +0000
-Received: from CO1NAM11FT004.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:4b:cafe::67) by MWHPR02CA0016.outlook.office365.com
- (2603:10b6:300:4b::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.19 via Frontend
- Transport; Sun, 11 Jul 2021 11:31:57 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; broadcom.com; dkim=none (message not signed)
- header.d=none;broadcom.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT004.mail.protection.outlook.com (10.13.175.89) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4308.20 via Frontend Transport; Sun, 11 Jul 2021 11:31:56 +0000
-Received: from localhost (172.20.187.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 11 Jul
- 2021 11:31:56 +0000
-Date:   Sun, 11 Jul 2021 14:31:52 +0300
-From:   Leon Romanovsky <leonro@nvidia.com>
-To:     Nitesh Lal <nilal@redhat.com>
-CC:     Nitesh Narayan Lal <nitesh@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-api@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        "Robin Murphy" <robin.murphy@arm.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        "Ingo Molnar" <mingo@kernel.org>, <jbrandeb@kernel.org>,
-        <frederic@kernel.org>, "Juri Lelli" <juri.lelli@redhat.com>,
-        Alex Belits <abelits@marvell.com>,
-        "Bjorn Helgaas" <bhelgaas@google.com>, <rostedt@goodmis.org>,
-        <peterz@infradead.org>, <davem@davemloft.net>,
-        <akpm@linux-foundation.org>, <sfr@canb.auug.org.au>,
-        <stephen@networkplumber.org>, <rppt@linux.vnet.ibm.com>,
-        <chris.friesen@windriver.com>, Marc Zyngier <maz@kernel.org>,
-        Neil Horman <nhorman@tuxdriver.com>, <pjwaskiewicz@gmail.com>,
-        Stefan Assmann <sassmann@redhat.com>,
-        Tomas Henzl <thenzl@redhat.com>, <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        <shivasharan.srikanteshwara@broadcom.com>,
-        <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        <suganath-prabu.subramani@broadcom.com>,
-        <james.smart@broadcom.com>, <dick.kennedy@broadcom.com>,
-        Ken Cox <jkc@redhat.com>, <faisal.latif@intel.com>,
-        <shiraz.saleem@intel.com>, <tariqt@nvidia.com>,
-        Alaa Hleihel <ahleihel@redhat.com>,
-        Kamal Heib <kheib@redhat.com>, <borisp@nvidia.com>,
-        <saeedm@nvidia.com>, <benve@cisco.com>, <govind@gmx.com>,
-        <jassisinghbrar@gmail.com>, <ajit.khaparde@broadcom.com>,
-        <sriharsha.basavapatna@broadcom.com>, <somnath.kotur@broadcom.com>,
-        "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        Al Stone <ahs3@redhat.com>
-Subject: Re: [PATCH v2 00/14] genirq: Cleanup the usage of
- irq_set_affinity_hint
-Message-ID: <YOrWqPYPkZp6nRLS@unreal>
-References: <20210629152746.2953364-1-nitesh@redhat.com>
- <CAFki+LnUGiEE-7Uf-x8-TQZYZ+3Migrr=81gGLYszxaK-6A9WQ@mail.gmail.com>
+        id S232588AbhGKLlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 07:41:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229688AbhGKLlw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Jul 2021 07:41:52 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A712EC0613DD;
+        Sun, 11 Jul 2021 04:39:05 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id o201so8353373pfd.1;
+        Sun, 11 Jul 2021 04:39:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=WuN9YEdeKHzmcs5Gv+FngZF07X8K6zFoL5FtKiToRfI=;
+        b=IyUXOQkjkFRBj+1C5YcmizL+iMY6nl24Fa15nZ0BOP3Xr5TOCkRZoMEzDwnX9LdLFT
+         DmP25pxlaBLCDLqDcPJBiKmPSUucgLTyVR9Tyh7tseQWBpgi8qRw0IJul6bQcLga21rl
+         wGeJf0niga0Lt1dbea2TXtoruGCMyB9FiZxGSvC3HzTgV1ZBsbmjw7BdhURaxVUTbfv0
+         ujYosIlrthOSDBq89uCBWGrg7SvfGK4e/pbIaJi89lDgMBJwjRyiTlBHhsZ07k/yFAFU
+         Mqd4Gz5lMrZukZTLeUKwXQiCe7jKUpw7NmCGPhbLQ341tezvfbHAOQl90B0pJtZbW7Dl
+         eumA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=WuN9YEdeKHzmcs5Gv+FngZF07X8K6zFoL5FtKiToRfI=;
+        b=pjBuPVznMXlmOtha4czNKPQGMADzPAerxYfaGjmjFi0KhzzIJQJUaYbPFlUpa1jjDp
+         Llx6mfK+4LBPxv37qErSpY8/Q5hMPJbsp8lkmTVmsZ2Y3ujtO70jm8S/I/X7f3RobE2A
+         Z8aRto1gKV5t6ttToVS74/kmbxRYaFr5ZGPatdxbET8/g+0FXR2/X/XhfVX1mY0h4mEa
+         /AppgneWcVq+IFl6S6V1Pis3mLCR1P4SfgoDntMuFcdk7nymJC3zxyVqyDFKzk7uXkWA
+         IU+ne5vXFyqkzWDjANe0RS6vwnSgPMbj+dbQ1fkvWafBpKUJkl8RSxRYK5x1WPnnDHKJ
+         sRrA==
+X-Gm-Message-State: AOAM533vT42rKl0dFtVaIv6MyWIPi4iX1Xx/Viu6BFvKb2zSKTGhCjH0
+        pAWVW8/3QkGaIAH8ryq6iQ8=
+X-Google-Smtp-Source: ABdhPJxXdGnOH99gb8PNarkRMPZvuqMdr7vrgeHi4BTAOa4zYyRnyuGAboGEYNDtURkDJJWZLvC4sA==
+X-Received: by 2002:a63:d347:: with SMTP id u7mr48317802pgi.434.1626003545170;
+        Sun, 11 Jul 2021 04:39:05 -0700 (PDT)
+Received: from localhost.lan ([2400:4070:175b:7500::7a7])
+        by smtp.gmail.com with ESMTPSA id a31sm13934551pgm.73.2021.07.11.04.39.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Jul 2021 04:39:04 -0700 (PDT)
+Received: from localhost (localhost [IPv6:::1])
+        by localhost.lan (Postfix) with ESMTPSA id 386D09011C2;
+        Sun, 11 Jul 2021 11:39:02 +0000 (GMT)
+Date:   Sun, 11 Jul 2021 11:39:01 +0000
+From:   Vincent Pelletier <plr.vincent@gmail.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Opensource [Steve Twiss]" <stwiss.opensource@diasemi.com>
+Subject: Re: [PATCH v3 2/3] hwmon: da9063: HWMON driver
+Message-ID: <20210711113901.1cfa948f@gmail.com>
+In-Reply-To: <d41a36e4-c36e-b5ab-429a-91506768bf3e@roeck-us.net>
+References: <c06db13bb5076a8ee48e38a74caf3b81e4a2d1f8.1625662290.git.plr.vincent@gmail.com>
+        <2c24ef5953401e80d92c907704bffeff1d024de0.1625662290.git.plr.vincent@gmail.com>
+        <20210710160813.GA3560663@roeck-us.net>
+        <20210711025502.347af8ff@gmail.com>
+        <d41a36e4-c36e-b5ab-429a-91506768bf3e@roeck-us.net>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAFki+LnUGiEE-7Uf-x8-TQZYZ+3Migrr=81gGLYszxaK-6A9WQ@mail.gmail.com>
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d87f20f0-bfa6-4f23-06fb-08d9445f7da0
-X-MS-TrafficTypeDiagnostic: BN6PR1201MB2480:
-X-Microsoft-Antispam-PRVS: <BN6PR1201MB24802983309FFE6EE0AB5D2EBD169@BN6PR1201MB2480.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +RDWxT3KGcmiN03387OXHoMdOimG53fjS211NOgNHqEsaFDF/iJ/h7kSd61L5hjwro2cNly7eIF4V839JfrglEP1KqFrHh0QehBZvMtaiD3xdZW8FQRJy2NICUUla0RcchXFiVCUU4AS2V1qttRa7oFPxiDzjsCCH8/eQwqz7G6HGu55S/kvLu0A9iKDldFa9vRNszvp/oiNQudeD83UDv6OVLdMHFFY9paug0qsyDq2pUSx8dZdFfLk1JwP09mI3Pj5KjZdMohGR14H6q/y1kjWtVax4ziObk1sZfVa9t3rX2FRxc9Z5h6lgZzZBTe+o2GwxF0bsCHdelP56wtd+Z4Go/Kn4GpalSg2VgRp8aRwnPkgPjaUkk6iG6t8DaP6X2x6AFJCOGjjH3gjxGbfXQqlXTg36hWNYs0cW6GHhpVMuJGEPjbG3AEqPzal3FDoukAcv129Y7QuIFBGMYaq29TZlpJ1GrxDlhsCJarmmu9N7LQSUvq9bHZ5NYP6zGTw1/hFnmmXs32wZbr9WJJdBUUUtlyYe8TU4QvZyczOEA4ypkt0pvIDXVFhClpLNADEYhA1Jz39EF00bRGiZoWrhi4cvITrQhEQgUDhDopgHfC6qdZkPoEtY80fTQ18TCP3wit71ouoDuqAIkgr7wlbJa3JOykhaW3bOt9HwVfIjlC6mVvh/G/7RgeT8W70iU1zxwChwx/6XiIyeODQe4ets/2sKiqSpslRt4v86UOK55I=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(7916004)(4636009)(346002)(136003)(396003)(376002)(39860400002)(46966006)(36840700001)(5660300002)(82310400003)(426003)(7636003)(34020700004)(478600001)(9686003)(356005)(33716001)(70206006)(70586007)(8676002)(6916009)(316002)(7416002)(36906005)(186003)(16526019)(83380400001)(47076005)(6666004)(86362001)(36860700001)(82740400003)(53546011)(7366002)(7406005)(4326008)(336012)(26005)(2906002)(54906003)(8936002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jul 2021 11:31:56.8568
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d87f20f0-bfa6-4f23-06fb-08d9445f7da0
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT004.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1201MB2480
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 08, 2021 at 03:24:20PM -0400, Nitesh Lal wrote:
-> On Tue, Jun 29, 2021 at 11:28 AM Nitesh Narayan Lal <nitesh@redhat.com> wrote:
+Hello,
 
-<...>
-
-> >
-> >  drivers/infiniband/hw/i40iw/i40iw_main.c      |  4 +-
-> >  drivers/mailbox/bcm-flexrm-mailbox.c          |  4 +-
-> >  drivers/net/ethernet/cisco/enic/enic_main.c   |  8 +--
-> >  drivers/net/ethernet/emulex/benet/be_main.c   |  4 +-
-> >  drivers/net/ethernet/huawei/hinic/hinic_rx.c  |  4 +-
-> >  drivers/net/ethernet/intel/i40e/i40e_main.c   |  8 +--
-> >  drivers/net/ethernet/intel/iavf/iavf_main.c   |  8 +--
-> >  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 10 ++--
-> >  drivers/net/ethernet/mellanox/mlx4/eq.c       |  8 ++-
-> >  .../net/ethernet/mellanox/mlx5/core/pci_irq.c |  6 +--
-> >  drivers/scsi/lpfc/lpfc_init.c                 |  4 +-
-> >  drivers/scsi/megaraid/megaraid_sas_base.c     | 27 +++++-----
-> >  drivers/scsi/mpt3sas/mpt3sas_base.c           | 21 ++++----
-> >  include/linux/interrupt.h                     | 53 ++++++++++++++++++-
-> >  kernel/irq/manage.c                           |  8 +--
-> >  15 files changed, 113 insertions(+), 64 deletions(-)
-> >
-> > --
-> >
-> >
+On Sat, 10 Jul 2021 21:22:35 -0700, Guenter Roeck <linux@roeck-us.net> wrote:
+> int main()
+> {
+>          unsigned int v1 = 247;
+>          int v2;
+>          int v3;
 > 
-> Gentle ping.
-> Any comments or suggestions on any of the patches included in this series?
-
-Please wait for -rc1, rebase and resend.
-At least i40iw was deleted during merge window.
-
-Thanks
-
+>          v2 = (char)v1;
+>          v3 = (int)((char)v1);
 > 
-> -- 
-> Thanks
-> Nitesh
+>          printf("%d %d %d\n", v1, v2, v3);
 > 
+>          return 0;
+> }
+> 
+> produces 247 -9 -9, so I don't fully follow what your (int)((char)tmp)
+> looks like.
+
+On the riscv machine I am writing this driver for (and the only one I
+have with this chip), I get:
+  $ gcc test.c
+  $ ./a.out
+  247 247 247
+  $ file a.out
+  a.out: ELF 64-bit LSB pie executable, UCB RISC-V, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-riscv64-lp64d.so.1, BuildID[sha1]=0a146933fa8f9ab982a7aedb91b6e43b1bd8c668, for GNU/Linux 4.15.0, not stripped
+
+It turns out that "char", without specifiers, is unsigned in the riscv
+ABI:
+  https://github.com/riscv/riscv-elf-psabi-doc/blob/master/riscv-elf.md#c-type-representations
+
+And indeed with:
+  v2 = (signed char)v1;
+  v3 = (int)((signed char)v1);
+I get the expected output:
+  247 -9 -9
+
+This means I will be leaving a (signed char) in the code, and I am
+unsure if it needs anything else:
+- someone eventually dropping the apparently useless qualifier will
+  break the code on riscv, so a comment would be good
+- OTOH, if this is an ABI-level specificity and not something unique to
+  this driver, then such comment would surely be needed in a lot of
+  places, which would just get in the way.
+
+What is your opinion ?
+
+> > With this in mind, could the time from regmap_update_bits() to
+> > {,re}init_completion() be longer than the time the IRQ could take to
+> > trigger ? In which case adc_ready would be marked as completed, then it
+> > would be cleared, and wait_for_completion_timeout() would reach its
+> > timeout despite the conversion being already over.
+> >   
+> ... but what I do know is that I don't understand why you insist having
+> the reinit_completion() _after_ the  wait call.
+
+Sorry that I gave you this impression, as this is definitely not my
+intention.
+I am rather trying to understand why moving {,re}init_completion() just
+before the wait call is enough to fix the issue, as I am under the
+impression that I may need to do more:
+The hardware IRQ could have been received before the DA9063_ADC_MAN
+write, and I guess the threaded handler can be delayed. So what is
+preventing the interrupt handler from running right between
+{,re}init_completion() and the wait ?
+
+I'm leaning towards masking the interrupt when outside
+da9063_adc_manual_read:
+- acquire measure lock
+- if ADC is not ready, return some error (-EIO ? -EAGAIN ? -EBUSY ?)
+  as there does not seem to be a way to cancel an already triggered
+  conversion, so no way to prevent an interrupt triggering at an
+  unexpected time
+- clear any pending ADC IRQ
+- unmask ADC IRQ
+- clear completion
+- trigger measure
+- wait for completion
+- if timeout, return -ETIMEDOUT
+- decode measure
+- mask ADC IRQ
+- release measure lock
+
+(plus a few gotos to cleanup code, and register read/write error
+propagation)
+This looks race-free to me, at the cost of a 3 extra register writes.
+
+> Also: a return value of 0 from wait_for_completion_timeout()
+> already indicates a timeout. The subsequent regmap_read() to check
+> if the conversion is complete should not be necessary. If it does,
+> it really indicates a non-timeout problem. Are there situations
+> (other than the race condition I am concerned about) where
+> an interrupt can happen but DA9063_ADC_MAN is still set ?
+
+Not as far as I know: only the ADC triggers this interrupt, and only
+this driver should trigger an ADC conversion.
+The chip can trigger the ADC internally, but these should not trigger
+the IRQ according to the chip's documentation.
+
+> If so, I think this needs a comment in the code, especially since there
+> is an extra i2c read which, after all, is costly.
+
+I was curious about the cost, so I checked with regmap events in
+debug/tracing (hopefully this is representative enough). Here is the
+breakdown (as of patchset v3, so without the IRQ masking scheme I am
+considering):
+- writing to DA9063_ADC_MAN to select the channel and initiate the
+  measure (3 reads, 1 write): 3.5ms
+- ADC measure, based on the time between the end of DA9063_ADC_MAN
+  write and when the GPIO driver masks its interrupt line: 1.6ms
+- clearing the IRQ in the DA9063 (3 reads, 1 write): 2ms
+- reading DA9063_ADC_MAN back (2 reads): 1ms
+- reading the conversion result (2 reads): 1ms
+Total (including scheduling to and from the threaded interrupt
+handler): 9.3ms
+
+Regards,
+-- 
+Vincent Pelletier
+GPG fingerprint 983A E8B7 3B91 1598 7A92 3845 CAC9 3691 4257 B0C1
