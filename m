@@ -2,96 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A7A3C3B39
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 10:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64D803C3B3A
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 10:54:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231864AbhGKIy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 04:54:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhGKIy6 (ORCPT
+        id S230289AbhGKI5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 04:57:11 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:42708 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229523AbhGKI5K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 04:54:58 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB9FC0613DD;
-        Sun, 11 Jul 2021 01:52:11 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id bt15so3181297pjb.2;
-        Sun, 11 Jul 2021 01:52:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AO84Rj9d4JTCVtMc0GFQEjjZrGayiHrdPf63NXsjTXk=;
-        b=V6+MLYUKdwPuNCKa40xLrfBNXa1WJ+LsGO5wz4YrDV3j06rBL4dWtojpz5aezPi6Sg
-         t8O3SLqKB/wFE6idh0b/Xp2wLoUMMUU9YsMB0v+a1FdTFUIzpSb96dzC6Gp7d+qj7thq
-         SOIJGJ2MceFPAQMnh351ivwl8o8HJDn3RPTPjlTy4ETgf5grtfsNwmN9pskj3HgEiAD1
-         pzk+zA+qG8KMxv/E2AcdKDS8inMDS/Oc8LvZOq3AaJ57coFIBOd04jPWEru4ps7AYpKR
-         kdZVADBnpFsaUF82YsZ0qm6tloZ/TaYdrN/tIx+BIRSkSjt3CJwoLjTBXUM4p/g/MPCx
-         rplQ==
+        Sun, 11 Jul 2021 04:57:10 -0400
+Received: by mail-il1-f198.google.com with SMTP id d17-20020a9236110000b02901cf25fcfdcdso9483946ila.9
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 01:54:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AO84Rj9d4JTCVtMc0GFQEjjZrGayiHrdPf63NXsjTXk=;
-        b=gzNe2SNXrk3hiBhFAg2l7bvEWF/qLZQaEp8n/2XA0P6/PCFV2Z5PTP/XShY5xaf0Zb
-         4d6RxnljJMJ+ZVczkLrRmwtzoODrucKFkVx2gc05xf2/Eoj94pMMepky1rr0rQyqlNgw
-         QFPP3prkoeptzVtFHk9KyUEQv7cck6pZhsk1pfvZsix+2n/bvUCkZLyVpibVcuKNebAg
-         voXKi4CrEi/1seQW4nBgAOuYuOR1its+f72T2V6aiDqNzZ6AkggtJhy2X9wDsWcI1JAR
-         DfkR2v+RshVAGYk3x6Zq63ASeGSCuCDNkymb7XHCAzaUA4jhaMdalBygFubggRizQV7X
-         Dg/A==
-X-Gm-Message-State: AOAM531+3SnHmmD5hMPq40ksN9l+tC8sPUmDk56oIQAbyOgaoHcYiHoG
-        zCcBOzkAcjCwP0Kieq5FAgk=
-X-Google-Smtp-Source: ABdhPJy+td5j+G5CiMGpUv60KPDVXAOvs0eL+/nOewNXQ/0NTmwSAcdVeI/dxN4yywPJpxuqjUkUjA==
-X-Received: by 2002:a17:90b:33c8:: with SMTP id lk8mr7670420pjb.0.1625993531235;
-        Sun, 11 Jul 2021 01:52:11 -0700 (PDT)
-Received: from localhost.localdomain ([49.37.51.242])
-        by smtp.gmail.com with ESMTPSA id h76sm12378486pfe.77.2021.07.11.01.52.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Jul 2021 01:52:10 -0700 (PDT)
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-To:     djwong@kernel.org
-Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lukas.bulwahn@gmail.com, Dwaipayan Ray <dwaipayanray1@gmail.com>
-Subject: [PATCH] fs:xfs: cleanup __FUNCTION__ usage
-Date:   Sun, 11 Jul 2021 14:21:53 +0530
-Message-Id: <20210711085153.95856-1-dwaipayanray1@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=HZ9eJXdff4hUgy6B3FUPxsf4D0BH4h3zoABzOZUQOoo=;
+        b=nf7ThsGKpyxCS+K4bLenXtbtven6woQOiL+9/U07b6xfWEVnWg35vPAtHxl0T2LhgI
+         p1rJB8jUwyjJspZKZ4TU91JbW1Kpo7SE157xB81im6egOZeF3UhvBPVLmO89+BnEz2NJ
+         ui8DDB6W8wc8u2WVVuWvmKhWOkzSzWWVnp5Sy/gK7ytXWo7FRL3aYoF7ifwvKZ7EPnBS
+         LFvaHC2GvhcvDPKANt3Zpy0uONfyRsDMAAXVF0/gUKMF7dKGq+BrEXcyhl6MGcSw8cBx
+         svaw6yi/OTmBEA3aopg9Hh2d4fnk5bMIIxJBKRWDYmSXX1Z8GZHT9+z5XYOYk5FK9Mjt
+         HaZA==
+X-Gm-Message-State: AOAM531xXg+9IJWh8PBCDc54pa62vrE9u/dhiw6B7VgJSN4vYo+xQ0dD
+        aUcSdJnd9MUPnVavrpc/RWkwAU8/xRg7dqEvaw1W6+jNL92/
+X-Google-Smtp-Source: ABdhPJxttJ5+IE4VKoJ5IrMWBfWhngFtpFkpLVl1ev6xX5+d3JwRro3/Yb6X9OTbPFJ/FipuA+wuiop8Bpcv2dEIrPassiL5TUhA
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:700b:: with SMTP id l11mr32853114ilc.48.1625993663929;
+ Sun, 11 Jul 2021 01:54:23 -0700 (PDT)
+Date:   Sun, 11 Jul 2021 01:54:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000bee44405c6d5269b@google.com>
+Subject: [syzbot] linux-next test error: BUG: sleeping function called from
+ invalid context in stack_depot_save
+From:   syzbot <syzbot+70e88b8ebb12fa2bdedf@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-next@vger.kernel.org,
+        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__FUNCTION__ exists only for backwards compatibility reasons
-with old gcc versions. Replace it with __func__.
+Hello,
 
-Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+syzbot found the following issue on:
+
+HEAD commit:    e2f74b13 Add linux-next specific files for 20210708
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=15458794300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=59e1e3bbc3afca75
+dashboard link: https://syzkaller.appspot.com/bug?extid=70e88b8ebb12fa2bdedf
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+70e88b8ebb12fa2bdedf@syzkaller.appspotmail.com
+
+BUG: sleeping function called from invalid context at mm/page_alloc.c:5178
+in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 8439, name: syz-fuzzer
+INFO: lockdep is turned off.
+irq event stamp: 0
+hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+hardirqs last disabled at (0): [<ffffffff8144098d>] copy_process+0x1dcd/0x74d0 kernel/fork.c:2112
+softirqs last  enabled at (0): [<ffffffff814409ce>] copy_process+0x1e0e/0x74d0 kernel/fork.c:2116
+softirqs last disabled at (0): [<0000000000000000>] 0x0
+CPU: 0 PID: 8439 Comm: syz-fuzzer Tainted: G        W         5.13.0-next-20210708-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
+ ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:9171
+ prepare_alloc_pages+0x3da/0x580 mm/page_alloc.c:5178
+ __alloc_pages+0x12f/0x500 mm/page_alloc.c:5374
+ alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2244
+ stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
+ save_stack+0x15e/0x1e0 mm/page_owner.c:120
+ __set_page_owner+0x50/0x290 mm/page_owner.c:181
+ prep_new_page mm/page_alloc.c:2444 [inline]
+ __alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5312
+ alloc_pages_bulk_array_node include/linux/gfp.h:557 [inline]
+ vm_area_alloc_pages mm/vmalloc.c:2793 [inline]
+ __vmalloc_area_node mm/vmalloc.c:2863 [inline]
+ __vmalloc_node_range+0x39d/0x960 mm/vmalloc.c:2966
+ __vmalloc_node mm/vmalloc.c:3015 [inline]
+ __vmalloc+0x69/0x80 mm/vmalloc.c:3029
+ snd_dma_vmalloc_alloc+0x57/0xa0 sound/core/memalloc.c:236
+ __snd_dma_alloc_pages+0xc1/0x130 sound/core/memalloc.c:38
+ snd_dma_alloc_pages+0x13b/0x230 sound/core/memalloc.c:71
+ do_alloc_pages+0x9b/0x160 sound/core/pcm_memory.c:43
+ snd_pcm_lib_malloc_pages+0x3f6/0x880 sound/core/pcm_memory.c:383
+ snd_pcm_hw_params+0x1408/0x1990 sound/core/pcm_native.c:705
+ snd_pcm_kernel_ioctl+0xd1/0x240 sound/core/pcm_native.c:3338
+ snd_pcm_oss_change_params_locked+0x1958/0x3990 sound/core/oss/pcm_oss.c:947
+ snd_pcm_oss_change_params sound/core/oss/pcm_oss.c:1091 [inline]
+ snd_pcm_oss_make_ready+0xe7/0x1b0 sound/core/oss/pcm_oss.c:1150
+ snd_pcm_oss_sync+0x1de/0x800 sound/core/oss/pcm_oss.c:1717
+ snd_pcm_oss_release+0x276/0x300 sound/core/oss/pcm_oss.c:2571
+ __fput+0x288/0x920 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
+ exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:209
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4af19b
+Code: fb ff eb bd e8 a6 b6 fb ff e9 61 ff ff ff cc e8 9b 82 fb ff 48 8b 7c 24 10 48 8b 74 24 18 48 8b 54 24 20 48 8b 44 24 08 0f 05 <48> 3d 01 f0 ff ff 76 20 48 c7 44 24 28 ff ff ff ff 48 c7 44 24 30
+RSP: 002b:000000c000331430 EFLAGS: 00000206 ORIG_RAX: 0000000000000003
+RAX: 0000000000000000 RBX: 000000c00001e800 RCX: 00000000004af19b
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000006
+RBP: 000000c000331470 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000206 R12: 000000000000013f
+R13: 000000000000013e R14: 0000000000000200 R15: 000000c0004cc0a0
+can: request_module (can-proto-0) failed.
+can: request_module (can-proto-0) failed.
+can: request_module (can-proto-0) failed.
+
+
 ---
- fs/xfs/xfs_icreate_item.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/fs/xfs/xfs_icreate_item.c b/fs/xfs/xfs_icreate_item.c
-index 9b3994b9c716..017904a34c02 100644
---- a/fs/xfs/xfs_icreate_item.c
-+++ b/fs/xfs/xfs_icreate_item.c
-@@ -201,7 +201,7 @@ xlog_recover_icreate_commit_pass2(
- 	if (length != igeo->ialloc_blks &&
- 	    length != igeo->ialloc_min_blks) {
- 		xfs_warn(log->l_mp,
--			 "%s: unsupported chunk length", __FUNCTION__);
-+			 "%s: unsupported chunk length", __func__);
- 		return -EINVAL;
- 	}
- 
-@@ -209,7 +209,7 @@ xlog_recover_icreate_commit_pass2(
- 	if ((count >> mp->m_sb.sb_inopblog) != length) {
- 		xfs_warn(log->l_mp,
- 			 "%s: inconsistent inode count and chunk length",
--			 __FUNCTION__);
-+			 __func__);
- 		return -EINVAL;
- 	}
- 
--- 
-2.28.0
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
