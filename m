@@ -2,86 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE383C3E81
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 19:44:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4AFC3C3E89
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 19:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232950AbhGKRrb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 11 Jul 2021 13:47:31 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:53612 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230353AbhGKRra (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 13:47:30 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1m2dV2-0008H7-WF; Sun, 11 Jul 2021 19:44:17 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Lee Jones <lee.jones@linaro.org>,
-        Uwe =?ISO-8859-1?Q?Kleine=2DK=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     cl@rock-chips.com, thierry.reding@gmail.com, robh+dt@kernel.org,
-        jagan@amarulasolutions.com, wens@csie.org, uwe@kleine-koenig.org,
-        mail@david-bauer.net, jbx6244@gmail.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        jensenhuang@friendlyarm.com, michael@amarulasolutions.com,
-        cnsztl@gmail.com, devicetree@vger.kernel.org,
-        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
-        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-i2c@vger.kernel.org, jay.xu@rock-chips.com,
-        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
-        zhangqing@rock-chips.com, huangtao@rock-chips.com,
-        wim@linux-watchdog.org, linux@roeck-us.net, jamie@jamieiles.com,
-        linux-watchdog@vger.kernel.org, maz@kernel.org,
-        linux-pwm@vger.kernel.org
-Subject: Re: [RESEND PATCH v5 1/4] dt-bindings: pwm: rockchip: add description for rk3568
-Date:   Sun, 11 Jul 2021 19:44:12 +0200
-Message-ID: <5069193.2yuIWEeYC1@diego>
-In-Reply-To: <20210705074405.uj62h4evd6htftf3@pengutronix.de>
-References: <20210622020517.13100-1-cl@rock-chips.com> <YOK1+pMy+N64eR75@dell> <20210705074405.uj62h4evd6htftf3@pengutronix.de>
+        id S232878AbhGKRsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 13:48:42 -0400
+Received: from smtprelay0145.hostedemail.com ([216.40.44.145]:56318 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230399AbhGKRsl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Jul 2021 13:48:41 -0400
+Received: from omf09.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 37FAE182CF66A;
+        Sun, 11 Jul 2021 17:45:54 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf09.hostedemail.com (Postfix) with ESMTPA id 7BF461E04D4;
+        Sun, 11 Jul 2021 17:45:50 +0000 (UTC)
+Message-ID: <a8f75357ab3bd3b37269e51a38aafa997307570f.camel@perches.com>
+Subject: Re: [PATCH] drm/amd/display: Fix identical code for different
+ branches
+From:   Joe Perches <joe@perches.com>
+To:     Len Baker <len.baker@gmx.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Wenjing Liu <wenjing.liu@amd.com>,
+        Martin Tsai <martin.tsai@amd.com>,
+        Kees Cook <keescook@chromium.org>,
+        George Shen <George.Shen@amd.com>,
+        Yu-ting Shen <Yu-ting.Shen@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Date:   Sun, 11 Jul 2021 10:45:48 -0700
+In-Reply-To: <20210711172433.2777-1-len.baker@gmx.com>
+References: <20210711172433.2777-1-len.baker@gmx.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 7BF461E04D4
+X-Spam-Status: No, score=0.11
+X-Stat-Signature: 7ma6bo74edffc1o15s1gyp3aqp9y57xd
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/HO52DK1P6z6FVcGIy7yHO2Mioju5SxhI=
+X-HE-Tag: 1626025550-417702
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Montag, 5. Juli 2021, 09:44:05 CEST schrieb Uwe Kleine-König:
-> Hello Lee,
+On Sun, 2021-07-11 at 19:24 +0200, Len Baker wrote:
+> The branches of the "if" statement are the same. So remove the
+> unnecessary if and goto statements.
 > 
-> On Mon, Jul 05, 2021 at 08:34:18AM +0100, Lee Jones wrote:
-> > On Mon, 05 Jul 2021, Uwe Kleine-König wrote:
-> > > On Wed, Jun 23, 2021 at 10:13:03AM +0800, cl@rock-chips.com wrote:
-> > > > From: Liang Chen <cl@rock-chips.com>
-> > > > 
-> > > > add "rockchip,rk3568-pwm", "rockchip,rk3328-pwm" for pwm nodes on
-> > > > a rk3568 platform to pwm-rockchip.yaml.
-> > > 
-> > > [...]
-> > > 
-> > > Who is supposed to apply this patch? Does this need blessing by Rob?
-> > 
-> > There is no standard. [...]
+> Addresses-Coverity-ID: 1456916 ("Identical code for different branches")
+> Fixes: 4c283fdac08ab ("drm/amd/display: Add HDCP module")
+> Signed-off-by: Len Baker <len.baker@gmx.com>
+
+I'm not a big fan of this type of change.
+
+It's currently the same style used for six tests in this function
+and changing this last one would just make it harder to see the
+code blocks as consistent.
+
+I doubt any reasonable compiler would produce different objects.
+
+> diff --git a/drivers/gpu/drm/amd/display/modules/hdcp/hdcp1_execution.c b/drivers/gpu/drm/amd/display/modules/hdcp/hdcp1_execution.c
+[]
+> @@ -305,10 +305,8 @@ static enum mod_hdcp_status wait_for_ready(struct mod_hdcp *hdcp,
+>  				hdcp, "bcaps_read"))
+>  			goto out;
+>  	}
+> -	if (!mod_hdcp_execute_and_set(check_ksv_ready,
+> -			&input->ready_check, &status,
+> -			hdcp, "ready_check"))
+> -		goto out;
+> +	mod_hdcp_execute_and_set(check_ksv_ready, &input->ready_check, &status,
+> +				 hdcp, "ready_check");
+>  out:
+>  	return status;
+>  }
+> --
+> 2.25.1
 > 
-> I'm aware of that. That's why I asked to prevent that everybody thinks
-> some other maintainer will care for it.
-
-I suppose Thierry would be the one responsible?
-
-I.e. bindings normally go through the subsystem tree and
-	$ scripts/get_maintainer.pl drivers/pwm
-returns:
-
-Thierry Reding <thierry.reding@gmail.com> (maintainer:PWM SUBSYSTEM)
-"Uwe Kleine-König" <u.kleine-koenig@pengutronix.de> (reviewer:PWM SUBSYSTEM)
-Lee Jones <lee.jones@linaro.org> (maintainer:PWM SUBSYSTEM)
-linux-pwm@vger.kernel.org (open list:PWM SUBSYSTEM)
-linux-kernel@vger.kernel.org (open list)
-
-
-See my reply to the original pwm binding patch from 2021-06-21.
-
-Heiko
 
 
