@@ -2,109 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56CEF3C39DB
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 03:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E033C39DD
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 03:48:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230408AbhGKBou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 21:44:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45066 "EHLO
+        id S231335AbhGKBvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 21:51:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbhGKBot (ORCPT
+        with ESMTP id S230432AbhGKBvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 21:44:49 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 289CFC0613DD
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 18:42:03 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id k16so17615387ios.10
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 18:42:03 -0700 (PDT)
+        Sat, 10 Jul 2021 21:51:23 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13AE3C0613DD;
+        Sat, 10 Jul 2021 18:48:36 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id k20so7283744pgg.7;
+        Sat, 10 Jul 2021 18:48:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lixom-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DviByeW/MRd4o8QAxjQbNiyDl13TlKgHIeZcYevPf8U=;
-        b=aEKYNlLyKmBIhtj2zpIjSnRJ+Qd4EOAwRFeseUtJvCj6OD+ekcsQK39PN/zn6cNbHl
-         WGSEQ2S8qlVvBsOEXTGLUc/zrTpNltS/TXx2jqMA41Jqqjmj/Af+gcz+Wfc2H871qsbD
-         kKOMiwfZo5T7EKQAU1PHMq4l/nkGMMHdValSnpEVrSptiF7e6jcC1kJ19HoiU7LfIZkF
-         /XwH6CJ/JhwJf3FzqaXGVRZUtIzo6ZiOIzO6wkbPoi+W9jHLWPTMvUOdtbP8FR5nZFlA
-         lC/t59OmgEJe5VGRTKxlrBEtrR3vgxjt1E3MV5HMMAyFnqCO9LazZ+8fTjSIz9M7RjA3
-         IFVA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=j6FUklx2d93VEwoC/aTsauLvZ4Bb1dQXPxIN1KFt7ro=;
+        b=NXIYwC+gMfjj6KNzCgcJTDlNp6oLaom/ykzQRdmk8//zNabcRkF9hKYPPCnn5ec8DZ
+         3fUN7LIYaR/dDdtyo/r9d+5VAbtYmt8BxymSaRnJaJZ5lzCjMZC1nV6H1hjuCCLzZ/8E
+         0Dal6efvtIKNa5LblGzm/LW1vtz39DwaTJYpJqmESm6TtCNJ/ISL6kFxCfB7ITD3BpUa
+         xNmypbDqfyii/peNe7vyBgh2PTKSTzJHD28RfaIUxo39U1quEn5q2QcH2EZCM7C8tLW1
+         2H1TRawutXsIxqTkFQREOM1GKF+ZEUwQI8GtS4IexGYoKR8Rj8CfeMH015osA5oz62gt
+         o4CQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DviByeW/MRd4o8QAxjQbNiyDl13TlKgHIeZcYevPf8U=;
-        b=ZOt1gTdVgFUZdT8J5ho3yHu0V7qu7LGh04WLhADNz76Rib7e5FrPiIONUA4tjk3ofL
-         zEAv72O+MOP/ON89LQF8lRftV4Kvc+i8OylFxbV844hIAxz4neCsIEPnkMEsrrly4JsH
-         uy2sZtZ0FKCMKUhH9cJD75/yPXMJz0jJj1VCb8oxL6lSM6zaElUQEj0AzMd8GJu2A+sJ
-         LeqHWE+KTIOHUGoj5OLYWDwqAvkp7jXVo5AVNuM07XCPYSAr7yUSTxfQZWSwYDWbkVew
-         D0c4J1nT9o8omYTGMbQt1w4IYx0GGGZL21gh7eZQb69u5GS1+iS+rYAJ1ayYNeFVRl0E
-         YZBw==
-X-Gm-Message-State: AOAM530aU2Ux4Zm9Tn6miqDl4XJMHVFpJQ5Z2kpEo1AhHw4SRATMSoXk
-        NH5BA5g3auoZ70VujHkWlub99LQ1EPPQMm3BftJAJZtOLWw=
-X-Google-Smtp-Source: ABdhPJx+rpq4HSXSp6jfp7UQ0J9hdUAfM226zfK6hZLavZmabddYLhfL+ajhRe1PyVE3+Be8kXbBeehdncaxRpDO7es=
-X-Received: by 2002:a5d:9051:: with SMTP id v17mr33836994ioq.81.1625967721832;
- Sat, 10 Jul 2021 18:42:01 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=j6FUklx2d93VEwoC/aTsauLvZ4Bb1dQXPxIN1KFt7ro=;
+        b=f3gza9VZCtIo+sS6w8pf9SOj/uUslWL4bwLCi3Opwgo5rl+TSEGWK+eijviVb302bx
+         x4lWJh7ZHCYzJMmHFeXgDX/ft6rGOYE0bBxq41Xfatpj/xCvfkclWseLMhMOUzLStP05
+         aADX9j5tMqPSRYOPYVIymYPkh3ZYM8jbNaQ8Xtr6xHwtpCQmEmoK9cY53slcPPUKcbUA
+         uaRiairXMwVEm2zIAAno3nXXrTTxjTAjYQROsF7PuBH7PkEd8hfcdq87dyYn73P5O2NT
+         Jv1/ehDUITaSffySsNNtIgJY3uOZRugrNphYkdS2NfCOPZh/bITDVvkKOZHZCxWa9bhd
+         rJ0A==
+X-Gm-Message-State: AOAM5317xlHCwXJ0jMtXTxzOCz44MyKNvB1P6foFTE4umHJ8pBDy/7gR
+        fEo0Gjy3IkSqzPr9WVNiRexMM2FdQBkwYP7k70CI
+X-Google-Smtp-Source: ABdhPJz2NNiGHlfJpQ8t2Flv1qtaFT4+WhuG3KXJ03BhHwJY1JETcHHOsXBj37+QT1adrCKeBrXWvQ==
+X-Received: by 2002:a05:6a00:b86:b029:31d:9798:bab7 with SMTP id g6-20020a056a000b86b029031d9798bab7mr37722574pfj.12.1625968115015;
+        Sat, 10 Jul 2021 18:48:35 -0700 (PDT)
+Received: from [10.72.0.6] ([154.16.166.162])
+        by smtp.gmail.com with ESMTPSA id a23sm10792478pfn.117.2021.07.10.18.48.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 10 Jul 2021 18:48:34 -0700 (PDT)
+Subject: Re: [PATCH] tools: PCI: Zero-initialize param
+To:     bhelgaas@google.com, kishon@ti.com, lorenzo.pieralisi@arm.com,
+        kw@linux.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210627003937.6249-1-yang.shunyong@gmail.com>
+From:   Shunyong Yang <yang.shunyong@gmail.com>
+Message-ID: <d4c250af-aa50-0ec0-c66a-104092646e15@gmail.com>
+Date:   Sun, 11 Jul 2021 09:48:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210709234054.10288-1-olof@lixom.net> <20210709234054.10288-2-olof@lixom.net>
- <CAHk-=wg2G+4K=wCnHBsiFX2HXH+zN5X_VhmMa9-RsFLL+xMFyg@mail.gmail.com>
-In-Reply-To: <CAHk-=wg2G+4K=wCnHBsiFX2HXH+zN5X_VhmMa9-RsFLL+xMFyg@mail.gmail.com>
-From:   Olof Johansson <olof@lixom.net>
-Date:   Sat, 10 Jul 2021 18:41:50 -0700
-Message-ID: <CAOesGMjzU7bgX97_N08sLPsEew_6iHeQAi4EKgFK9EZVmMP+sQ@mail.gmail.com>
-Subject: Re: [GIT PULL 2/4] ARM: Devicetree material for 5.14
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ARM SoC <arm@kernel.org>, SoC Team <soc@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210627003937.6249-1-yang.shunyong@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 10, 2021 at 9:45 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+Hi, Bjorn and Kishon,
+
+   Gentle ping. Would you please help to review and merge this tiny change?
+
+Thansk.
+
+Shunyong.
+
+On 2021/6/27 8:39, Shunyong Yang wrote:
+> The values in param may be random if they are not initialized, which
+> may cause use_dma flag set even when "-d" option is not provided
+> in command line. Initializing all members to 0 to solve this.
 >
-> What?
+> Signed-off-by: Shunyong Yang <yang.shunyong@gmail.com>
+> ---
+>   tools/pci/pcitest.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> My shortlog matches yours, but my diffstat isn't even close.
->
-> You show 554 commits, but then your diffstat as not a single file from
-> arch/arm*/boot/dts, and says:
->
-> On Fri, Jul 9, 2021 at 4:41 PM Olof Johansson <olof@lixom.net> wrote:
-> >
-> >  97 files changed, 8428 insertions(+), 5174 deletions(-)
->
-> while mine is very different indeed:
->
->  552 files changed, 24060 insertions(+), 3691 deletions(-)
->
-> I suspect you got the diffstat from something else entirely, because
-> mine looks a lot more believable and matches the commits listed in the
-> shortlog a lot better..
-
-Yeah, this was an operator error at my end due to the workflow I have
-when I generate the pull requests. Thanks for noticing, and as you saw
-on the 3rd branch, the info was swapped between them.
-
-For more detail in case anyone is interested:
-
-I merge the set of pull requests one by one on top of your branch, and
-then run a script that generates the pull requests. At least when we
-started out, git request-pull got confused and generated wrong info
-when we had complex merges.
-
-This time around I generated them backwards: Merged all 4, then
-generated the last pull request email, reset back to the next head
-(with the previous branch), generated that, etc.
-
-The mistake here is that I mixed up the order of the two middle ones.
-So I specified the tag (and got the commit message from it), but
-obviously the diffstats and the shortlogs ended up generated from what
-was in the working tree, i.e. the other branch.
-
-My bad, and something I'll double check for in the future or add a
-sanity-check for in the script.
-
-
--Olof
+> diff --git a/tools/pci/pcitest.c b/tools/pci/pcitest.c
+> index 0a1344c45213..59bcd6220a58 100644
+> --- a/tools/pci/pcitest.c
+> +++ b/tools/pci/pcitest.c
+> @@ -40,7 +40,7 @@ struct pci_test {
+>   
+>   static int run_test(struct pci_test *test)
+>   {
+> -	struct pci_endpoint_test_xfer_param param;
+> +	struct pci_endpoint_test_xfer_param param = {0};
+>   	int ret = -EINVAL;
+>   	int fd;
+>   
