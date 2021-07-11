@@ -2,98 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1E033C39DD
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 03:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2203C39E1
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 04:07:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231335AbhGKBvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 21:51:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230432AbhGKBvX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 21:51:23 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13AE3C0613DD;
-        Sat, 10 Jul 2021 18:48:36 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id k20so7283744pgg.7;
-        Sat, 10 Jul 2021 18:48:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=j6FUklx2d93VEwoC/aTsauLvZ4Bb1dQXPxIN1KFt7ro=;
-        b=NXIYwC+gMfjj6KNzCgcJTDlNp6oLaom/ykzQRdmk8//zNabcRkF9hKYPPCnn5ec8DZ
-         3fUN7LIYaR/dDdtyo/r9d+5VAbtYmt8BxymSaRnJaJZ5lzCjMZC1nV6H1hjuCCLzZ/8E
-         0Dal6efvtIKNa5LblGzm/LW1vtz39DwaTJYpJqmESm6TtCNJ/ISL6kFxCfB7ITD3BpUa
-         xNmypbDqfyii/peNe7vyBgh2PTKSTzJHD28RfaIUxo39U1quEn5q2QcH2EZCM7C8tLW1
-         2H1TRawutXsIxqTkFQREOM1GKF+ZEUwQI8GtS4IexGYoKR8Rj8CfeMH015osA5oz62gt
-         o4CQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=j6FUklx2d93VEwoC/aTsauLvZ4Bb1dQXPxIN1KFt7ro=;
-        b=f3gza9VZCtIo+sS6w8pf9SOj/uUslWL4bwLCi3Opwgo5rl+TSEGWK+eijviVb302bx
-         x4lWJh7ZHCYzJMmHFeXgDX/ft6rGOYE0bBxq41Xfatpj/xCvfkclWseLMhMOUzLStP05
-         aADX9j5tMqPSRYOPYVIymYPkh3ZYM8jbNaQ8Xtr6xHwtpCQmEmoK9cY53slcPPUKcbUA
-         uaRiairXMwVEm2zIAAno3nXXrTTxjTAjYQROsF7PuBH7PkEd8hfcdq87dyYn73P5O2NT
-         Jv1/ehDUITaSffySsNNtIgJY3uOZRugrNphYkdS2NfCOPZh/bITDVvkKOZHZCxWa9bhd
-         rJ0A==
-X-Gm-Message-State: AOAM5317xlHCwXJ0jMtXTxzOCz44MyKNvB1P6foFTE4umHJ8pBDy/7gR
-        fEo0Gjy3IkSqzPr9WVNiRexMM2FdQBkwYP7k70CI
-X-Google-Smtp-Source: ABdhPJz2NNiGHlfJpQ8t2Flv1qtaFT4+WhuG3KXJ03BhHwJY1JETcHHOsXBj37+QT1adrCKeBrXWvQ==
-X-Received: by 2002:a05:6a00:b86:b029:31d:9798:bab7 with SMTP id g6-20020a056a000b86b029031d9798bab7mr37722574pfj.12.1625968115015;
-        Sat, 10 Jul 2021 18:48:35 -0700 (PDT)
-Received: from [10.72.0.6] ([154.16.166.162])
-        by smtp.gmail.com with ESMTPSA id a23sm10792478pfn.117.2021.07.10.18.48.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 10 Jul 2021 18:48:34 -0700 (PDT)
-Subject: Re: [PATCH] tools: PCI: Zero-initialize param
-To:     bhelgaas@google.com, kishon@ti.com, lorenzo.pieralisi@arm.com,
-        kw@linux.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210627003937.6249-1-yang.shunyong@gmail.com>
-From:   Shunyong Yang <yang.shunyong@gmail.com>
-Message-ID: <d4c250af-aa50-0ec0-c66a-104092646e15@gmail.com>
-Date:   Sun, 11 Jul 2021 09:48:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210627003937.6249-1-yang.shunyong@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        id S231513AbhGKCKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 22:10:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53958 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231376AbhGKCK3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Jul 2021 22:10:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EA5A610A1;
+        Sun, 11 Jul 2021 02:07:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625969263;
+        bh=haxQ3gshZCmVQEAZFEN8JV7jIw4Yf+8/Et/CYbeJzew=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DAuxHJ0iwVukl21etWafOvyhowQhaDrXrznRUBdaekF7ErUPzyt9h56EORxLHTtHu
+         dkWhjWMUwmF4BrLj8iBc7OXs9/cEijxzNWKtcj/mYWNuCrBMZRdRXjLiTI2cQ0EJ04
+         GdxWl+RVGRUPf8hxP34Ju5cFEBRCf3NBizWGBkorwHPH3wP7CpcmFjyZ9KP5EJKmCD
+         DLQo+qLbtPjG385NsFdrDPxAK3D/HG9rBol7ZjTT/fXGHoVy6LwpUFsybdmZBz9V76
+         m4GRHMsG6KAzsKvoOx1grjTnv97muyfuRchOadyLSZbZjq2NPdu4vQ5E4hpg/QOjzA
+         GuUhu06h+xktg==
+Date:   Sun, 11 Jul 2021 11:07:38 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
+        yhs@fb.com, linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH 2/2] objtool: Ignore unwind hints for ignored functions
+Message-Id: <20210711110738.f745f62b6858e2d5d9006cd6@kernel.org>
+In-Reply-To: <20210710192514.ghvksi3ozhez4lvb@treble>
+References: <162399992186.506599.8457763707951687195.stgit@devnote2>
+        <162399996966.506599.810050095040575221.stgit@devnote2>
+        <YOK8pzp8B2V+1EaU@gmail.com>
+        <20210710003140.8e561ad33d42f9ac78de6a15@kernel.org>
+        <20210710104104.3a270168811ac38420093276@kernel.org>
+        <20210710190143.lrcsyal2ggubv43v@treble>
+        <20210710192514.ghvksi3ozhez4lvb@treble>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Bjorn and Kishon,
+On Sat, 10 Jul 2021 12:25:14 -0700
+Josh Poimboeuf <jpoimboe@redhat.com> wrote:
 
-   Gentle ping. Would you please help to review and merge this tiny change?
+> If a function is ignored, also ignore its hints.  This is useful for the
+> case where the function ignore is conditional on frame pointers, e.g.
+> STACK_FRAME_NON_STANDARD_FP().
 
-Thansk.
+This also looks good to me, and test with my series works fine.
 
-Shunyong.
+Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
+Tested-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-On 2021/6/27 8:39, Shunyong Yang wrote:
-> The values in param may be random if they are not initialized, which
-> may cause use_dma flag set even when "-d" option is not provided
-> in command line. Initializing all members to 0 to solve this.
->
-> Signed-off-by: Shunyong Yang <yang.shunyong@gmail.com>
+Thanks!
+
+> 
+> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 > ---
->   tools/pci/pcitest.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/pci/pcitest.c b/tools/pci/pcitest.c
-> index 0a1344c45213..59bcd6220a58 100644
-> --- a/tools/pci/pcitest.c
-> +++ b/tools/pci/pcitest.c
-> @@ -40,7 +40,7 @@ struct pci_test {
->   
->   static int run_test(struct pci_test *test)
->   {
-> -	struct pci_endpoint_test_xfer_param param;
-> +	struct pci_endpoint_test_xfer_param param = {0};
->   	int ret = -EINVAL;
->   	int fd;
->   
+>  tools/objtool/check.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+> index e5947fbb9e7a..67cbdcfcabae 100644
+> --- a/tools/objtool/check.c
+> +++ b/tools/objtool/check.c
+> @@ -2909,7 +2909,7 @@ static int validate_unwind_hints(struct objtool_file *file, struct section *sec)
+>  	}
+>  
+>  	while (&insn->list != &file->insn_list && (!sec || insn->sec == sec)) {
+> -		if (insn->hint && !insn->visited) {
+> +		if (insn->hint && !insn->visited && !insn->ignore) {
+>  			ret = validate_branch(file, insn->func, insn, state);
+>  			if (ret && backtrace)
+>  				BT_FUNC("<=== (hint)", insn);
+> -- 
+> 2.31.1
+> 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
