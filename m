@@ -2,76 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FD173C3DE0
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 18:13:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A849A3C3DE9
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 18:17:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232443AbhGKQPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 12:15:46 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:62471 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229688AbhGKQPp (ORCPT
+        id S232305AbhGKQUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 12:20:15 -0400
+Received: from smtprelay0191.hostedemail.com ([216.40.44.191]:51588 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229665AbhGKQUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 12:15:45 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AGO3MtKBQts1LjwjlHenG55DYdb4zR+YMi2TD?=
- =?us-ascii?q?tnoddfU7SKOlfqyV8sjzqyWZtN95YhhJ8uxoU5PrfZqzz/9I3bU=3D?=
-X-IronPort-AV: E=Sophos;i="5.84,231,1620684000"; 
-   d="scan'208";a="519399375"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 11 Jul 2021 18:12:56 +0200
-Date:   Sun, 11 Jul 2021 18:12:56 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Alexander Lobakin <alobakin@pm.me>
-cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] dsa: fix for_each_child.cocci warnings
-Message-ID: <alpine.DEB.2.22.394.2107111810480.13622@hadrien>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Sun, 11 Jul 2021 12:20:14 -0400
+Received: from omf02.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 2410B20311;
+        Sun, 11 Jul 2021 16:17:26 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf02.hostedemail.com (Postfix) with ESMTPA id 04E321D42F6;
+        Sun, 11 Jul 2021 16:17:22 +0000 (UTC)
+Message-ID: <e9f8186b3b96ba909f156fd750ba0aaf3d60a5fa.camel@perches.com>
+Subject: Re: [RFC PATCH v2 1/4] drm_print.h: rewrap
+ __DRM_DEFINE_DBG_RATELIMITED macro
+From:   Joe Perches <joe@perches.com>
+To:     Jim Cromie <jim.cromie@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org
+Cc:     jbaron@akamai.com
+Date:   Sun, 11 Jul 2021 09:17:21 -0700
+In-Reply-To: <20210711055003.528167-2-jim.cromie@gmail.com>
+References: <20210711055003.528167-1-jim.cromie@gmail.com>
+         <20210711055003.528167-2-jim.cromie@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 04E321D42F6
+X-Spam-Status: No, score=1.57
+X-Stat-Signature: 5sc5j7osyk4uzjqrwctk5jkkaxhwfr41
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18KeCdceO2yu0931OqGiBOrYctRL24z4Ps=
+X-HE-Tag: 1626020242-383074
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+On Sat, 2021-07-10 at 23:49 -0600, Jim Cromie wrote:
+> whitespace only, to diff-minimize a later commit.
+> no functional changes
+[]
+> diff --git a/include/drm/drm_print.h b/include/drm/drm_print.h
+[]
+> @@ -524,19 +524,24 @@ void __drm_err(const char *format, ...);
+>  #define DRM_DEBUG_DP(fmt, ...)						\
+>  	__drm_dbg(DRM_UT_DP, fmt, ## __VA_ARGS__)
+>  
+> 
+> -#define __DRM_DEFINE_DBG_RATELIMITED(category, drm, fmt, ...)					\
+> -({												\
+> -	static DEFINE_RATELIMIT_STATE(rs_, DEFAULT_RATELIMIT_INTERVAL, DEFAULT_RATELIMIT_BURST);\
+> -	const struct drm_device *drm_ = (drm);							\
+> -												\
+> -	if (drm_debug_enabled(DRM_UT_ ## category) && __ratelimit(&rs_))			\
+> -		drm_dev_printk(drm_ ? drm_->dev : NULL, KERN_DEBUG, fmt, ## __VA_ARGS__);	\
+> +#define __DRM_DEFINE_DBG_RATELIMITED(category, drm, fmt, ...)		\
+> +({									\
+> +	static DEFINE_RATELIMIT_STATE(rs_,				\
+> +				      DEFAULT_RATELIMIT_INTERVAL,	\
+> +				      DEFAULT_RATELIMIT_BURST);		\
+> +	const struct drm_device *drm_ = (drm);				\
+> +									\
+> +	if (drm_debug_enabled(DRM_UT_ ## category)			\
+> +	    && __ratelimit(&rs_))					\
 
-For_each_available_child_of_node should have of_node_put() before
-return around line 423.
+Though I don't really see the need for the change, the typical style
+has the logical continuation at the end of the test.
 
-Generated by: scripts/coccinelle/iterators/for_each_child.cocci
+	if (drm_debug_enabled(DRM_UT_ ## category) &&			\
+	    __ratelimit(&rs_))						\
 
-CC: Alexander Lobakin <alobakin@pm.me>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
----
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   de5540965853e514a85d3b775e9049deb85a2ff3
-commit: 227d72063fccb2d19b30fb4197fba478514f7d83 dsa: simplify Kconfig symbols and dependencies
-:::::: branch date: 15 hours ago
-:::::: commit date: 4 months ago
-
- ksz_common.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
---- a/drivers/net/dsa/microchip/ksz_common.c
-+++ b/drivers/net/dsa/microchip/ksz_common.c
-@@ -419,8 +419,10 @@ int ksz_switch_register(struct ksz_devic
- 				if (of_property_read_u32(port, "reg",
- 							 &port_num))
- 					continue;
--				if (!(dev->port_mask & BIT(port_num)))
-+				if (!(dev->port_mask & BIT(port_num))) {
-+					of_node_put(port);
- 					return -EINVAL;
-+				}
- 				of_get_phy_mode(port,
- 						&dev->ports[port_num].interface);
- 			}
