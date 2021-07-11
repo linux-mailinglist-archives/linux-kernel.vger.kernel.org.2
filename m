@@ -2,83 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85D173C4024
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 01:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DB023C4027
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 01:49:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232629AbhGKXtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 19:49:14 -0400
-Received: from smtprelay0067.hostedemail.com ([216.40.44.67]:37796 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230014AbhGKXtN (ORCPT
+        id S230348AbhGKXwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 19:52:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhGKXwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 19:49:13 -0400
-Received: from omf19.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 2031B2289C;
-        Sun, 11 Jul 2021 23:46:25 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf19.hostedemail.com (Postfix) with ESMTPA id D810E20D75C;
-        Sun, 11 Jul 2021 23:46:23 +0000 (UTC)
-Message-ID: <111b2612313dc85eb6cffb5ec93423e92aadef15.camel@perches.com>
-Subject: Re: drm/amd/display: Simplify hdcp validate_bksv
-From:   Joe Perches <joe@perches.com>
-To:     kernel test robot <lkp@intel.com>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>
-Cc:     kbuild-all@lists.01.org, Kees Cook <keescook@chromium.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        amd-gfx@lists.freedesktop.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Sun, 11 Jul 2021 16:46:22 -0700
-In-Reply-To: <202107120638.fhBzNbDi-lkp@intel.com>
-References: <d3a180c3dc8db68a25440edf466cfeddcaae5a64.camel@perches.com>
-         <202107120638.fhBzNbDi-lkp@intel.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Sun, 11 Jul 2021 19:52:37 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF86C0613DD;
+        Sun, 11 Jul 2021 16:49:49 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id j184so16249403qkd.6;
+        Sun, 11 Jul 2021 16:49:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xW4jQBvbvUVw8gg3M/LBXb1/rCq2KW812j/E1/gOeak=;
+        b=j11jSfND5lIZeQchB5la2gGDTrUyNZn8INL8U/sF2znAEIxm5huKahwI0DUMSnnGDs
+         q6f76zPtWIIvo4qrtrimu5zVy/EKW0ZSPWg4iA5lsoX/Vow6V91CA80ePggrLYbp5VbS
+         CZ441KOZGMlocvyutwJd5Tl+mYuS9nKAyHEdm/oMpbgbMEHQbLsKQlXiWuSDvLEkwZj9
+         3C0GPpx6UGVl4KUv8Wd6KWCtm+FN9rZ/HZr+9vIdWZPAeRZFVm1lmi5wHLXlMClqjWf4
+         TjJdmFUyoU4IAv6yEFBdfx/a/90Y+lTx0pLDJKUl3KVxNLtIKDbiWGGmv6o/xtyfgkC1
+         VpBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xW4jQBvbvUVw8gg3M/LBXb1/rCq2KW812j/E1/gOeak=;
+        b=aHIfFMcgBiN4zYPHqB7GWqjlOa6wiLruLuP60VINIfD16l1IhF2IsGqIx96Cjr+aOQ
+         FIUOMQRpSdKpahd1Txyd0tv0DOOeS/mH84K7vJH/TKB4do43E304srUBHfPY+Gw2W3MP
+         oad3+O/V+cKkzhpg18FRREVMvQEs2rVjBnbWSsDEcapTxP+4oO6FLCyoL/6sKL1rjmpo
+         KibVs2YtUrOTC95M9yV09hpy3cOVmqdoP8aJATTzL3OsvptyM8KCC1osKCF9em0rCjce
+         36oQjcU2zozTPt6OgeTIfe4gdDO9y0/9WKMubZsTQ4El+yF61PBjg+sZlsjTT4dhfmfi
+         V5tA==
+X-Gm-Message-State: AOAM532/FiZHRsbl+qTdcjSfXo/hvNTDhlKCt3ZgLh1rlSoJZwhdtySH
+        TCdRplgilUojbU322rx2Njg=
+X-Google-Smtp-Source: ABdhPJwHrjMAGnkAB2st8ODKl/lqbNtbZcZaW4exuIA0WpIaAWSrxPoUmQZ60L5/2vbwCJotcQ4VxA==
+X-Received: by 2002:a05:620a:1519:: with SMTP id i25mr24839698qkk.228.1626047388333;
+        Sun, 11 Jul 2021 16:49:48 -0700 (PDT)
+Received: from localhost.localdomain (94-29-37-113.dynamic.spd-mgts.ru. [94.29.37.113])
+        by smtp.gmail.com with ESMTPSA id d7sm5003072qth.70.2021.07.11.16.49.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Jul 2021 16:49:48 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: [PATCH v1 0/1] Tegra ARM64 device-tree improvements for 5.15
+Date:   Mon, 12 Jul 2021 02:49:38 +0300
+Message-Id: <20210711234939.28103-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: D810E20D75C
-X-Spam-Status: No, score=-0.78
-X-Stat-Signature: 4w3xb16q81jdos9h7m1m6o7oixokhp8p
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19RtmqfZkbsFeCZmvi7tQ9HuVjqDlNgdx4=
-X-HE-Tag: 1626047183-174502
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-07-12 at 07:02 +0800, kernel test robot wrote:
-> Hi Joe,
-> 
-> I love your patch! Yet something to improve:
-> 
-> [auto build test ERROR on drm-intel/for-linux-next]
-> [also build test ERROR on drm-exynos/exynos-drm-next linus/master next-20210709]
-> [cannot apply to kees/for-next/pstore tegra-drm/drm/tegra/for-next drm/drm-next v5.13]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Joe-Perches/drm-amd-display-Simplify-hdcp-validate_bksv/20210712-034708
-> base:   git://anongit.freedesktop.org/drm-intel for-linux-next
-> config: i386-randconfig-a003-20210712 (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> reproduce (this is a W=1 build):
->         # https://github.com/0day-ci/linux/commit/66fae2c1becdcb71c95f2c6a6413de4dfe1deb51
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Joe-Perches/drm-amd-display-Simplify-hdcp-validate_bksv/20210712-034708
->         git checkout 66fae2c1becdcb71c95f2c6a6413de4dfe1deb51
->         # save the attached .config to linux build tree
->         make W=1 ARCH=i386 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>, old ones prefixed by <<):
-> 
-> > > ERROR: modpost: "__popcountdi2" [drivers/gpu/drm/amd/amdgpu/amdgpu.ko] undefined!
+A single patch here that doesn't fit into the ARM32 series of improvements,
+but fixes the same problem that affects the ARM32 boards too.
 
-curious.
+Dmitry Osipenko (1):
+  arm64: tegra194: p2888: Correct interrupt trigger type of temperature
+    sensor
 
-Anyone know why?
+ arch/arm64/boot/dts/nvidia/tegra194-p2888.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+-- 
+2.32.0
 
