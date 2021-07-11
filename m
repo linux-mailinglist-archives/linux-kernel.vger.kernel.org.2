@@ -2,61 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 397A33C3F98
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 00:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8852D3C3F9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 00:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbhGKWH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 18:07:56 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:50828 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhGKWHz (ORCPT
+        id S231318AbhGKWQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 18:16:17 -0400
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:61429 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229544AbhGKWQQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 18:07:55 -0400
-Received: by mail-io1-f72.google.com with SMTP id x3-20020a5e83030000b029050f93606dd4so10296206iom.17
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 15:05:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=MLkBS3KT/C1xWdnQv4mpgem4i/D3ft2NwGzrdexe+l4=;
-        b=t56DbUH7aSCNnIQpMsPKGGc2wHTAqB8gnsKA88a1m7pA4QCTbUT9bVW/2qaL/oNRgy
-         MXolh+ci5tdpRpaORWDnjVA+jzwSryvVmJtbKXxjou7GC7YuIrREYwSueSu7XcRjltKO
-         aLHM0Ek7M+W3rlQLPfiihbtLO3+ttcLCs/dyjEokXG/tQw4FG5u/44hDFhHjfeb+fUZV
-         BF/1bWiDhknT/yL54nEO3rTFIgHOag+mgfJgQ0ysV4+7xF1jcif2LjU8x6Zy2I67uerY
-         MieRgJxe7Trf7q2lVPKLXyoJly5GEy0Ohiy7OL0XV9mUNNWhbyRfMONF+JzV9jKpkoBG
-         rHyg==
-X-Gm-Message-State: AOAM531coTb/PaIIYHhQpkPfr7y6VuWmRToLO8YBmzVS3OmwKjCNafhT
-        iRe0BMBo4sR0VohSlu/ChErQMI1PMqF6Ggtrorot0Am4TsWm
-X-Google-Smtp-Source: ABdhPJxQEaFbT8ZPZ5vkDb06CFAtXVfmVLqYpkYhIJ+dgydxAHWEByp1j5TtQDHamkf8o2ezJNsadfWZyoW8JNFdcM3zJRUQhGhW
+        Sun, 11 Jul 2021 18:16:16 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 0C4BC40004;
+        Sun, 11 Jul 2021 22:13:24 +0000 (UTC)
+Date:   Mon, 12 Jul 2021 00:13:24 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Colin Foster <colin.foster@in-advantage.com>
+Cc:     Vladimir Oltean <olteanv@gmail.com>, andrew@lunn.ch,
+        vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        claudiu.manoil@nxp.com, UNGLinuxDriver@microchip.com,
+        linux@armlinux.org.uk, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 net-next 7/8] net: dsa: ocelot: felix: add support
+ for VSC75XX control over SPI
+Message-ID: <YOttBHN7AJvqDXe8@piout.net>
+References: <20210710192602.2186370-1-colin.foster@in-advantage.com>
+ <20210710192602.2186370-8-colin.foster@in-advantage.com>
+ <20210710205205.blitrpvdwmf4au7z@skbuf>
+ <20210711170927.GG2219684@euler>
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9958:: with SMTP id v24mr36817517ios.4.1626041108475;
- Sun, 11 Jul 2021 15:05:08 -0700 (PDT)
-Date:   Sun, 11 Jul 2021 15:05:08 -0700
-In-Reply-To: <f58dd424-b33b-ebaf-b38c-235bd42b643f@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a9315305c6e032ee@google.com>
-Subject: Re: [syzbot] INFO: task hung in io_uring_cancel_generic
-From:   syzbot <syzbot+ba6fcd859210f4e9e109@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210711170927.GG2219684@euler>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 11/07/2021 10:09:27-0700, Colin Foster wrote:
+> On Sat, Jul 10, 2021 at 11:52:05PM +0300, Vladimir Oltean wrote:
+> > On Sat, Jul 10, 2021 at 12:26:01PM -0700, Colin Foster wrote:
+> > > +static const struct felix_info ocelot_spi_info = {
+> > > +	.target_io_res			= vsc7512_target_io_res,
+> > > +	.port_io_res			= vsc7512_port_io_res,
+> > > +	.regfields			= vsc7512_regfields,
+> > > +	.map				= vsc7512_regmap,
+> > > +	.ops				= &vsc7512_ops,
+> > > +	.stats_layout			= vsc7512_stats_layout,
+> > > +	.num_stats			= ARRAY_SIZE(vsc7512_stats_layout),
+> > > +	.vcap				= vsc7512_vcap_props,
+> > > +	.num_mact_rows			= 1024,
+> > > +
+> > > +	/* The 7512 and 7514 both have support for up to 10 ports. The 7511 and
+> > > +	 * 7513 have support for 4. Due to lack of hardware to test and
+> > > +	 * validate external phys, this is currently limited to 4 ports.
+> > > +	 * Expanding this to 10 for the 7512 and 7514 and defining the
+> > > +	 * appropriate phy-handle values in the device tree should be possible.
+> > > +	 */
+> > > +	.num_ports			= 4,
+> > 
+> > Ouch, this was probably not a good move.
+> > felix_setup() -> felix_init_structs sets ocelot->num_phys_ports based on
+> > this value.
+> > If you search for ocelot->num_phys_ports in ocelot and in felix, it is
+> > widely used to denote "the index of the CPU port module within the
+> > analyzer block", since the CPU port module's number is equal to the
+> > number of the last physical port + 1. If VSC7512 has 10 ports, then the
+> > CPU port module is port 10, and if you set num_ports to 4 you will cause
+> > the driver to misbehave.
+> 
+> Yes, this is part of my concern with the CPU / NPI module mentioned
+> before. In my hardware, I'd have port 0 plugged to the external CPU. In
+> Ocelot it is the internal bus, and in Felix it is the NPI. In this SPI
+> design, does the driver lose significant functionality by not having
+> access to those ports?
+> 
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+From the switchdev driver perspective, the CPU port is special because
+it is the one allowing to send and receive frames to/from the exposed
+ethernet interfaces. However, the goal is definitively to use that as
+little as possible (especially since as implemented right now,
+throughput is about 20Mbps).
 
-Reported-and-tested-by: syzbot+ba6fcd859210f4e9e109@syzkaller.appspotmail.com
+I didn't have a look at the DSA implementation but I wouldn't expect the
+NPI port to be that special.
 
-Tested on:
+> In my test setup (and our expected production) we'd have port 0
+> connected to the external chip, and ports 1-3 exposed. Does Ocelot need
+> to be modified to allow a parameter for the CPU port?
+> 
 
-commit:         66af6ccf io_uring: fix io_drain_req()
-git tree:       https://github.com/isilence/linux.git drain_fix_syztest
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c650d78cfe48974c
-dashboard link: https://syzkaller.appspot.com/bug?extid=ba6fcd859210f4e9e109
-compiler:       
+DSA is what allows you to select which of the port is the port connected
+to the BBB (this is the CPU port in DSA parlance). This is what you see
+in the example in Documentation/devicetree/bindings/net/dsa/ocelot.txt
 
-Note: testing is done by a robot and is best-effort only.
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
