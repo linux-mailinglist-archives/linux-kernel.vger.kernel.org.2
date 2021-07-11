@@ -2,185 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3607E3C3EA0
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 19:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE643C3EB4
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 20:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234933AbhGKR5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 13:57:31 -0400
-Received: from mail-wr1-f53.google.com ([209.85.221.53]:40935 "EHLO
-        mail-wr1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233049AbhGKR5X (ORCPT
+        id S235730AbhGKSTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 14:19:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235375AbhGKSTl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 13:57:23 -0400
-Received: by mail-wr1-f53.google.com with SMTP id l7so20477192wrv.7;
-        Sun, 11 Jul 2021 10:54:35 -0700 (PDT)
+        Sun, 11 Jul 2021 14:19:41 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17309C0613DD
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 11:16:54 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id e20so19285537ljn.8
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 11:16:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/AmFTjQ0lkF23rzKntrhpc3RsBuUQRY3cmjok7st+BM=;
+        b=XvyTCtLmBbiUUUSd27coMfkiax6APcEE8PpLXEyKlMTY+6NQENsj8L4nFeaW+gL5hU
+         amDXVb2KTgJzwJppLtxlcNEl7kuP+hibJ3c2s8AWHSNvNs+BpfTvaKns3aHvbt2mWaY+
+         25se6M8mKafNdfP8baczTRwTEr+HJHSj3ySB0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=LrlTFAH0C/xNxlpM9mhI5GLrVPci93g3pcmgXyE6rhA=;
-        b=IhAj/uiceL7IjhThDpNcjjok1BjsAnLCBlcsQNk8wQJAI+K803iaj0VavzlErhpzYt
-         1/wc3aN8+l7NEIhU10AtnIleBhZqLQKzxVcliX6u0/61M26tt3Qx747BGaAtWe2fgvG0
-         e1iDyhyPoNZ/Er7JoTmy68RN9NBlrEjRg4gRu/VZ7T5AgoO6FvkHmNMtMaljmI4LWOHq
-         k9bVdjd6o3yzYiVuj9MUZMhBfJbv6Ez2M1N25q4/dnrJDsGLOVsHlBUt761/aCdA1krE
-         BwOdthc5qXwwa7woSZsx7YxCt5Mq5OyAm677OvSSzHr70WagsGIkoYmHD1W3VIm7BR+V
-         z2HA==
-X-Gm-Message-State: AOAM533959vgitkPveAHfEYY0J0CsqdV4hL42VedBgsyqKm0o05+//mc
-        S47tZzLEEcHnwBXTwHoqP6/NZdPsxACOiQ==
-X-Google-Smtp-Source: ABdhPJzpzdgg3Oi8ZDxu/OTKyc8emWdMxyy9xx6RBDkRTAvhgz6Eii5wizYWGalgcpcS/xAULUbNAw==
-X-Received: by 2002:adf:d088:: with SMTP id y8mr6370887wrh.69.1626026074435;
-        Sun, 11 Jul 2021 10:54:34 -0700 (PDT)
-Received: from msft-t490s.teknoraver.net (net-2-44-206-93.cust.vodafonedsl.it. [2.44.206.93])
-        by smtp.gmail.com with ESMTPSA id f5sm12741376wrg.67.2021.07.11.10.54.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Jul 2021 10:54:34 -0700 (PDT)
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     linux-kernel@vger.kernel.org,
-        Lennart Poettering <lennart@poettering.net>,
-        Luca Boccassi <bluca@debian.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Tejun Heo <tj@kernel.org>,
-        =?UTF-8?q?Javier=20Gonz=C3=A1lez?= <javier@javigon.com>,
-        Niklas Cassel <niklas.cassel@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        JeffleXu <jefflexu@linux.alibaba.com>
-Subject: [PATCH v4 5/5] loop: raise media_change event
-Date:   Sun, 11 Jul 2021 19:54:15 +0200
-Message-Id: <20210711175415.80173-6-mcroce@linux.microsoft.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210711175415.80173-1-mcroce@linux.microsoft.com>
-References: <20210711175415.80173-1-mcroce@linux.microsoft.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/AmFTjQ0lkF23rzKntrhpc3RsBuUQRY3cmjok7st+BM=;
+        b=Gw3sQt8q+xQWWPpqnUpffS+FvGXsrcno/JS8Gb+2qvhfwO9FofNlxZ1fnRhtBwAUM1
+         21q1JKeUzrSlCXNgWc4Sn3vDFcP6kLgzDgSENszm7AiaXCtcCuqIVhAOVSe9tpzvI0TW
+         LvHYTXSwwG3Vb3v1qrEISkYl4aHsFUFzLSJDyKO25MbFLjKWqvmLlo/K5nQmy5fanJcH
+         hG6GwTGLsFYwSO5qDny23oLxBLOo9yuWh7ydKrnCeofYbszgrNLsoWDXwGPWPbvz0Bso
+         EpkFfkNBQmIwRByIBl/MBhnm0eehj9bohyIVjUWCICdsNjXuH8RvlzMSqL3iut6xshGT
+         GhUw==
+X-Gm-Message-State: AOAM532zuZL4RGSZwqVd6Unmx46ZfqzWeCZfTZXAAz78hRfIKc2JNxph
+        xQvL7GK3c7leL5+VC+VJzydc9UELtI82ceOd
+X-Google-Smtp-Source: ABdhPJzlA/7woDV5prWpYkN6bWj1DXLwJ1KTnsC/q7XA40bj9YW1Nh6Rru7JC9/tYqVGin79gLr6eg==
+X-Received: by 2002:a2e:743:: with SMTP id i3mr34357984ljd.266.1626027411397;
+        Sun, 11 Jul 2021 11:16:51 -0700 (PDT)
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id u14sm935945lfn.47.2021.07.11.11.16.49
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 11 Jul 2021 11:16:49 -0700 (PDT)
+Received: by mail-lj1-f169.google.com with SMTP id h19so8417403ljl.4
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 11:16:49 -0700 (PDT)
+X-Received: by 2002:a2e:84c7:: with SMTP id q7mr3219975ljh.61.1626027409058;
+ Sun, 11 Jul 2021 11:16:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <YOrzBvSv4xoU3OAX@gmail.com>
+In-Reply-To: <YOrzBvSv4xoU3OAX@gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 11 Jul 2021 11:16:33 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whjS48-_nDub4G7pgQ26-0MS2MuuNRyfDsLhp568cUfPA@mail.gmail.com>
+Message-ID: <CAHk-=whjS48-_nDub4G7pgQ26-0MS2MuuNRyfDsLhp568cUfPA@mail.gmail.com>
+Subject: Re: [GIT PULL] scheduler fixes
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
+On Sun, Jul 11, 2021 at 6:32 AM Ingo Molnar <mingo@kernel.org> wrote:
+>
+>  - Fix load tracking bug/inconsistency
 
-Make the loop device raise a DISK_MEDIA_CHANGE event on attach or detach.
+I was going to report that I still see that
 
-	# udevadm monitor -up |grep -e DISK_MEDIA_CHANGE -e DEVNAME &
+  cfs_rq->avg.load_avg || cfs_rq->avg.util_avg || cfs_rq->avg.runnable_avg
+  WARNING: CPU: 8 PID: 52 at kernel/sched/fair.c:3308
+update_blocked_averages+0x4c1/0x5f0
 
-	# losetup -f zero
-	[    7.454235] loop0: detected capacity change from 0 to 16384
-	DISK_MEDIA_CHANGE=1
-	DEVNAME=/dev/loop0
-	DEVNAME=/dev/loop0
-	DEVNAME=/dev/loop0
+but I'm hoping/assuming that commit ceb6ba45dc80 ("sched/fair: Sync
+load_sum with load_avg after dequeue") finally fixes it for good.
 
-	# losetup -f zero
-	[   10.205245] loop1: detected capacity change from 0 to 16384
-	DISK_MEDIA_CHANGE=1
-	DEVNAME=/dev/loop1
-	DEVNAME=/dev/loop1
-	DEVNAME=/dev/loop1
+Hmm?
 
-	# losetup -f zero2
-	[   13.532368] loop2: detected capacity change from 0 to 40960
-	DISK_MEDIA_CHANGE=1
-	DEVNAME=/dev/loop2
-	DEVNAME=/dev/loop2
-
-	# losetup -D
-	DEVNAME=/dev/loop1
-	DISK_MEDIA_CHANGE=1
-	DEVNAME=/dev/loop1
-	DEVNAME=/dev/loop2
-	DISK_MEDIA_CHANGE=1
-	DEVNAME=/dev/loop2
-	DEVNAME=/dev/loop0
-	DISK_MEDIA_CHANGE=1
-	DEVNAME=/dev/loop0
-
-Signed-off-by: Matteo Croce <mcroce@microsoft.com>
----
- drivers/block/loop.c | 20 ++++++++++++++++++++
- drivers/block/loop.h |  1 +
- 2 files changed, 21 insertions(+)
-
-diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index f37b9e3d833c..c632f9bd33ba 100644
---- a/drivers/block/loop.c
-+++ b/drivers/block/loop.c
-@@ -731,6 +731,8 @@ static int loop_change_fd(struct loop_device *lo, struct block_device *bdev,
- 		goto out_err;
- 
- 	/* and ... switch */
-+	lo->changed = true;
-+	bdev_check_media_change(bdev);
- 	blk_mq_freeze_queue(lo->lo_queue);
- 	mapping_set_gfp_mask(old_file->f_mapping, lo->old_gfp_mask);
- 	lo->lo_backing_file = file;
-@@ -1205,6 +1207,9 @@ static int loop_configure(struct loop_device *lo, fmode_t mode,
- 		goto out_unlock;
- 	}
- 
-+	lo->changed = true;
-+	bdev_check_media_change(bdev);
-+
- 	set_disk_ro(lo->lo_disk, (lo->lo_flags & LO_FLAGS_READ_ONLY) != 0);
- 
- 	INIT_WORK(&lo->rootcg_work, loop_rootcg_workfn);
-@@ -1349,6 +1354,8 @@ static int __loop_clr_fd(struct loop_device *lo, bool release)
- 
- 	partscan = lo->lo_flags & LO_FLAGS_PARTSCAN && bdev;
- 	lo_number = lo->lo_number;
-+	lo->changed = true;
-+	bdev_check_media_change(bdev);
- out_unlock:
- 	mutex_unlock(&lo->lo_mutex);
- 	if (partscan) {
-@@ -2016,11 +2023,22 @@ static void lo_release(struct gendisk *disk, fmode_t mode)
- 	mutex_unlock(&lo->lo_mutex);
- }
- 
-+static unsigned int lo_check_events(struct gendisk *disk, unsigned int clearing)
-+{
-+	struct loop_device *lo = disk->private_data;
-+	bool changed = lo->changed;
-+
-+	lo->changed = false;
-+
-+	return changed ? DISK_EVENT_MEDIA_CHANGE : 0;
-+}
-+
- static const struct block_device_operations lo_fops = {
- 	.owner =	THIS_MODULE,
- 	.open =		lo_open,
- 	.release =	lo_release,
- 	.ioctl =	lo_ioctl,
-+	.check_events = lo_check_events,
- #ifdef CONFIG_COMPAT
- 	.compat_ioctl =	lo_compat_ioctl,
- #endif
-@@ -2325,6 +2343,8 @@ static int loop_add(int i)
- 	disk->fops		= &lo_fops;
- 	disk->private_data	= lo;
- 	disk->queue		= lo->lo_queue;
-+	disk->events		= DISK_EVENT_MEDIA_CHANGE;
-+	disk->event_flags	= DISK_EVENT_FLAG_UEVENT;
- 	sprintf(disk->disk_name, "loop%d", i);
- 	add_disk(disk);
- 	mutex_unlock(&loop_ctl_mutex);
-diff --git a/drivers/block/loop.h b/drivers/block/loop.h
-index 1988899db63a..a2fdfd27e6a7 100644
---- a/drivers/block/loop.h
-+++ b/drivers/block/loop.h
-@@ -63,6 +63,7 @@ struct loop_device {
- 	struct timer_list       timer;
- 	bool			use_dio;
- 	bool			sysfs_inited;
-+	bool 			changed;
- 
- 	struct request_queue	*lo_queue;
- 	struct blk_mq_tag_set	tag_set;
--- 
-2.31.1
-
+                   Linus
