@@ -2,151 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F10B3C3DB9
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 17:50:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AF863C3DBA
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 17:51:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236238AbhGKPwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 11:52:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59966 "EHLO
+        id S236245AbhGKPyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 11:54:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234738AbhGKPwp (ORCPT
+        with ESMTP id S234738AbhGKPyR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 11:52:45 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F651C0613DD
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 08:49:58 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id hr1so28380303ejc.1
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 08:49:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=eIvRill5LnmjWkouRCFhqrQjOtTIYxe1H69dV2Y1RJo=;
-        b=nYR/kijdCRfoSH0anbcD7Ksf0sA/5Cru2dsChJu6Koh2lwuEzSDX5c2pqRoBlsQ8y4
-         uCdaurizOuDYQzGN/kEDE35OwaP+teKRaX9JJzvj/M64WwoxCmRIBxtaiqe/PD0GcGwI
-         lk7ESvwIr3mk8MNpoa0tZo9Lriu63q3dxCAY1X1E1csj/D4ZTsyiuyu2mTWzRXrKNSjn
-         2K9qMiJxUp7PVZfAD+RICNaUuey2kL/OlQYeii3MV9F1TrS1ed3vxckETnK8CvAnVWJF
-         HpwsRd0vL5Ex3M8eHc2qmg9C8u35Ichx1PtNsd1tS6dG7aeNUeLBQAVtjprX1kM5oIyn
-         zhyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=eIvRill5LnmjWkouRCFhqrQjOtTIYxe1H69dV2Y1RJo=;
-        b=oApiN8nupEB9fSdkiKvdJldWCAu6NU7fBNH3r0GdIBOZnPUudHkWJzy6GFr+7q0h2i
-         iB3wF4leeApaqypACtlqg+bT0iSOv6o6NSR+ANDC5XYwk2+mrVEm6bhL9kcLoTt84f+1
-         eycY/rCi10XQoHr4RxpV3T6VCoiO7F+f7Fm05Sg6Kpfh4prRcrgx7C7vjd4cRLIC9xf9
-         JoIhIUyrVOXwShOb5iqh96mHMbKI60+/ZprR0B29lRsEHoZb1+6FLymfjboaq0yJy3Nk
-         5EmcoYovn3h+zc7KpOvsKb1y8xtaaRbsaYD32EEzORjdcKHX5f/rfBGf3ph122gpkwlJ
-         epcg==
-X-Gm-Message-State: AOAM533bhwKKN8UjPh7nv7BYA9dRSx/ndWMfbu/7CZja/+YfqYLxgwHx
-        H6WhgNlfp1/WYZLYTfjqmSc=
-X-Google-Smtp-Source: ABdhPJzemHfd+kKpEnJol0TcY0b6gw8pRCoDSLO+bRTi9CfgjKUrTviIdMyCDV6UnEKSj5rkca9dlQ==
-X-Received: by 2002:a17:906:6acd:: with SMTP id q13mr41925654ejs.377.1626018596844;
-        Sun, 11 Jul 2021 08:49:56 -0700 (PDT)
-Received: from localhost (ipv6-39dbcbd9b111821c.ost.clients.hamburg.freifunk.net. [2a03:2267:4:0:39db:cbd9:b111:821c])
-        by smtp.gmail.com with ESMTPSA id n3sm2873293edd.53.2021.07.11.08.49.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 11 Jul 2021 08:49:56 -0700 (PDT)
-From:   Oliver Graute <oliver.graute@gmail.com>
-To:     thierry.reding@gmail.com
-Cc:     oliver.graute@gmail.com, Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH v4] drm/panel: simple: add SGD GKTW70SDAD1SD
-Date:   Sun, 11 Jul 2021 17:49:29 +0200
-Message-Id: <1626018569-25963-1-git-send-email-oliver.graute@gmail.com>
-X-Mailer: git-send-email 2.7.4
-X-Patchwork-Bot: notify
+        Sun, 11 Jul 2021 11:54:17 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ABB0C0613DD
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 08:51:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=IFHlYKqTo5g1KI9wdW9PxpmMJe002Z8/bWNtBvFoP5k=; b=wM7MtehhUJc8uDrV0Ww3UWwkVE
+        Sjat6Kmo7Dr0+7M6EKcZSht4D54DEjjy+PDxeeDf9Beb8yQrjB+I48BklqJUomWcF2T+EvJT3fQSK
+        p87Qua6s2/1RFubhqe516u6MBUfc7ZMUHf8vBPMcpmVFW4cdaV3JjYf8G08qnj8EtWBYR65DyWFgF
+        CI7L8yHOkqLgqV+rZoVY6T2hLyi6yCvaLRE8S64ZNVBEKugNy2iw4qLcj4bcJsZd6G9qkVUItPmkB
+        9FfpOiQT7F0ozw3KzkxR8tDQHV3IHkdYuekoCwQGUEJOAzu4PISsxl3wd6U/jVw6nXibEXog7cWry
+        1duqEFCA==;
+Received: from [2601:1c0:6280:3f0::aefb]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m2bjm-005GCv-Kq; Sun, 11 Jul 2021 15:51:22 +0000
+Subject: Re: stackdepot.c:undefined reference to `__irqentry_text_start'
+To:     kernel test robot <lkp@intel.com>,
+        Oliver Glitta <glittao@gmail.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Guenter Roeck <linux@roeck-us.net>
+References: <202107112307.R9jiyVzw-lkp@intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <f24ab355-1d38-2050-13ea-4fd4f7556304@infradead.org>
+Date:   Sun, 11 Jul 2021 08:51:19 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <202107112307.R9jiyVzw-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the Solomon Goldentek Display Model: GKTW70SDAD1SD
-to panel-simple.
+On 7/11/21 8:13 AM, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   de5540965853e514a85d3b775e9049deb85a2ff3
+> commit: 788691464c29455346dc613a3b43c2fb9e5757a4 mm/slub: use stackdepot to save stack trace in objects
+> date:   3 days ago
+> config: arc-randconfig-r004-20210711 (attached as .config)
+> compiler: arc-elf-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=788691464c29455346dc613a3b43c2fb9e5757a4
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 788691464c29455346dc613a3b43c2fb9e5757a4
+>         # save the attached .config to linux build tree
+>         mkdir build_dir
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross O=build_dir ARCH=arc SHELL=/bin/bash
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    arc-elf-ld: lib/stackdepot.o: in function `filter_irq_stacks':
+>>> stackdepot.c:(.text+0x5a): undefined reference to `__irqentry_text_start'
+>>> arc-elf-ld: stackdepot.c:(.text+0x5a): undefined reference to `__irqentry_text_start'
+>    arc-elf-ld: stackdepot.c:(.text+0x62): undefined reference to `__irqentry_text_end'
+>    arc-elf-ld: stackdepot.c:(.text+0x62): undefined reference to `__irqentry_text_end'
+>    arc-elf-ld: stackdepot.c:(.text+0x6a): undefined reference to `__softirqentry_text_start'
+>    arc-elf-ld: stackdepot.c:(.text+0x6a): undefined reference to `__softirqentry_text_start'
+>    arc-elf-ld: stackdepot.c:(.text+0x72): undefined reference to `__softirqentry_text_end'
+>    arc-elf-ld: stackdepot.c:(.text+0x72): undefined reference to `__softirqentry_text_end'
 
-The panel spec from Variscite can be found at:
-https://www.variscite.com/wp-content/uploads/2017/12/VLCD-CAP-GLD-RGB.pdf
 
-Signed-off-by: Oliver Graute <oliver.graute@gmail.com>
-Reviewed-by: Marco Felsch <m.felsch@pengutronix.de>
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
----
+Please see https://lore.kernel.org/lkml/20210710145033.2804047-1-linux@roeck-us.net/
 
-v4:
-
-- added the datasheet labels
-- added Reviewed-by
-
-v3:
-
-- added flags
-- added delay
-
-v2:
-
-- changed bpc to 6
-- set max value of pixelclock
-- increased hfront_porch and hback_porch
-- dropped connector-type
-
-adding of bus_format = MEDIA_BUS_FMT_RGB666_1X18 results in wrong colors.
-omitting bus_format and using some default is better (Tux Pinguin is colored
-fine)
-
- drivers/gpu/drm/panel/panel-simple.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
-
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index 2be358f..c63f6a8 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -3336,6 +3336,36 @@ static const struct panel_desc satoz_sat050at40h12r2 = {
- 	.connector_type = DRM_MODE_CONNECTOR_LVDS,
- };
- 
-+static const struct display_timing sgd_gktw70sdad1sd_timing = {
-+	.pixelclock = {30000000, 30000000, 40000000},
-+	.hactive = { 800, 800, 800},
-+	.hfront_porch = {40, 40, 40},
-+	.hback_porch = {40, 40, 40},
-+	.hsync_len = {48, 48, 48},
-+	.vactive = {480, 480, 480},
-+	.vfront_porch = {13, 13, 13},
-+	.vback_porch = {29, 29, 29},
-+	.vsync_len = {3, 3, 3},
-+	.flags = DISPLAY_FLAGS_HSYNC_LOW | DISPLAY_FLAGS_VSYNC_LOW |
-+			DISPLAY_FLAGS_DE_HIGH | DISPLAY_FLAGS_PIXDATA_NEGEDGE,
-+};
-+
-+static const struct panel_desc sgd_gktw70sdad1sd = {
-+	.timings = &sgd_gktw70sdad1sd_timing,
-+	.num_timings = 1,
-+	.bpc = 6,
-+	.size = {
-+		.width = 153,
-+		.height = 86,
-+	},
-+	.delay = {
-+		.prepare = 20 + 20 + 10 + 10, /* T0 + T2 + T3 + T4 */
-+		.enable = 50, /* T5 */
-+		.disable = 50, /* T5 */
-+		.unprepare =  10 + 10 + 20 + 20, /* T4 + T3 + T2 + T0 */
-+	},
-+};
-+
- static const struct drm_display_mode sharp_ld_d5116z01b_mode = {
- 	.clock = 168480,
- 	.hdisplay = 1920,
-@@ -4222,6 +4252,9 @@ static const struct of_device_id platform_of_match[] = {
- 		.compatible = "satoz,sat050at40h12r2",
- 		.data = &satoz_sat050at40h12r2,
- 	}, {
-+		.compatible = "sgd,gktw70sdad1sd",
-+		.data = &sgd_gktw70sdad1sd,
-+	}, {
- 		.compatible = "sharp,ld-d5116z01b",
- 		.data = &sharp_ld_d5116z01b,
- 	}, {
--- 
-2.7.4
 
