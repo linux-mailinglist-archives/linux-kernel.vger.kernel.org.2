@@ -2,197 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B60EE3C39B5
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 03:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4153C39B8
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 03:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231286AbhGKBC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 21:02:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60029 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229771AbhGKBCz (ORCPT
+        id S231354AbhGKBFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 21:05:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229640AbhGKBFe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 21:02:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625965209;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ib12whr0TI5EJxJbfZnuqGZ4brCYijHN/MYKHEGojws=;
-        b=f6sE2yoZf0s9vg5ks+i/1TAURpbq16j0dvHsz7zBIJFYy/nIsx/ztvIjkXw+5m+c5zZYyN
-        dzaSbQ78qr1tzxNedOs4cIZ0RxD/mNJCD1/SeJGCHEhwkn9g5r+DojERvEyIF0LoRTENGY
-        X8OrDON5O9DtxLg6xYPkBecmuu5v4lk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-567-MyP71OAEMMejluC2ZkzmeQ-1; Sat, 10 Jul 2021 21:00:07 -0400
-X-MC-Unique: MyP71OAEMMejluC2ZkzmeQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 394CF18414A0;
-        Sun, 11 Jul 2021 01:00:06 +0000 (UTC)
-Received: from [10.64.54.119] (vpn2-54-119.bne.redhat.com [10.64.54.119])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B20DF100F49F;
-        Sun, 11 Jul 2021 01:00:02 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: [PATCH v5] Documentation, dt, numa: Add note to empty NUMA node
-From:   Gavin Shan <gshan@redhat.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org, drjones@redhat.com, shan.gavin@gmail.com
-References: <20210628093411.88805-1-gshan@redhat.com>
- <20210701172527.GA2567910@robh.at.kernel.org>
- <1c43cd39-7bf6-b99c-36ec-798b81b1aba1@redhat.com>
-Message-ID: <6168ef6a-53a0-403c-0412-0ec3c0546c61@redhat.com>
-Date:   Sun, 11 Jul 2021 10:59:58 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        Sat, 10 Jul 2021 21:05:34 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0DD1C0613DD;
+        Sat, 10 Jul 2021 18:02:48 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id p8so18540034wrr.1;
+        Sat, 10 Jul 2021 18:02:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=GVe3eJclmn+wBIMr6wtrhEVKg5cevdvrMqaw2kVlG4A=;
+        b=RRR1OVyRjAENjc2sIbLLT+XM2+m4MfGCdlQ9oJG7TGjZilJyrQrYhi7sQ+wuu9deQf
+         qfd8q58CjEFtZZ+N8NFVoKydZ0c6iLN9nghtjQqdJSglcY6+Y4OQiGut+Hhps+xabeWD
+         HrrUifAwd23bstSTDkbr/u5VCnk6H80qEQMEScCA4i8EK56Qgtq/mcf3w7QeCRvJOnKp
+         B3sOfnQ5FieEHBAJzY6g1E9WNibdFiB8YjKRD9HH0DRYzti73GELGNbs+v43bfp8N4no
+         KokKnn54t/+lX3J1FqCnM5CyrB/nk2sDJ0SpXg08N5EnvjcEV0ypjTHsZBEMRgA0L6QF
+         ru+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=GVe3eJclmn+wBIMr6wtrhEVKg5cevdvrMqaw2kVlG4A=;
+        b=OXPXBn376P7FysB6fS/jWXyZDBDmEsB5vBEp9QqAjWhsuVvo58MnTi28oIOlxbdBsD
+         k0YdRf/B7DeVSP/JKFOpXNWVtM/QdcI1YJEZJSdkpx5w54f8bEJg0b8kdjGS8RLkjV+D
+         7nUwghCcZJVcwlqqciO6eJ0Jb0t0/62vKPzNBTn15u1V6Go2B58SPiKb3abKI3kAXGxF
+         2BjOBrYxXBUwZwmc+M+y/mNgx6BUQvO1y8uOZ3Vf6PyGAqGy92CevJLiwvivEzdzCWgM
+         6k8+OmT66EVZbEFNXqzB0WoxVNvcImUEJMtYmRMe6Z6J80KYToMvYkrt22uKZlk1Hy9Q
+         ntSQ==
+X-Gm-Message-State: AOAM530csV9btTt28SEBAtR4X9JIIuRstYFxh76TGKE4rnodPXc36fqB
+        TqAHi7LsqM9kVSaq1xbbN+g=
+X-Google-Smtp-Source: ABdhPJxhv/RR4EMs9VzVwCaj90GBtMSVco2KEdl3KuvH+4/ZGQBtb/MJU+P6/G1dkmKJ6bFh4Hbz+A==
+X-Received: by 2002:a05:6000:108:: with SMTP id o8mr12056590wrx.154.1625965366752;
+        Sat, 10 Jul 2021 18:02:46 -0700 (PDT)
+Received: from localhost.localdomain (dynamic-2a01-0c22-721c-fc00-f22f-74ff-fe21-0725.c22.pool.telefonica.de. [2a01:c22:721c:fc00:f22f:74ff:fe21:725])
+        by smtp.googlemail.com with ESMTPSA id g3sm10027914wrv.64.2021.07.10.18.02.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Jul 2021 18:02:46 -0700 (PDT)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     pablo@netfilter.org
+Cc:     nbd@nbd.name, coreteam@netfilter.org, davem@davemloft.net,
+        fw@strlen.de, kadlec@netfilter.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, olek2@wp.pl, roid@nvidia.com
+Subject: Re: [PATCH nf] Revert "netfilter: flowtable: Remove redundant hw refresh bit"
+Date:   Sun, 11 Jul 2021 03:02:44 +0200
+Message-Id: <20210711010244.1709329-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210614215351.GA734@salvia>
+References: <20210614215351.GA734@salvia>
 MIME-Version: 1.0
-In-Reply-To: <1c43cd39-7bf6-b99c-36ec-798b81b1aba1@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+Hi Aleksander,
 
-On 7/2/21 10:02 AM, Gavin Shan wrote:
-> On 7/2/21 3:25 AM, Rob Herring wrote:
->> On Mon, Jun 28, 2021 at 05:34:11PM +0800, Gavin Shan wrote:
->>> The empty memory nodes, where no memory resides in, are allowed.
->>> For these empty memory nodes, the 'len' of 'reg' property is zero.
->>> The NUMA node IDs are still valid and parsed, but memory may be
->>> added to them through hotplug afterwards. I finds difficulty to
->>> get where it's properly documented.
->>
->> This is already in use? If so, what platform(s)?
->>
+> The xt_flowoffload module is inconditionally setting on the hardware
+> offload flag:
+[...]
+>
+> which is triggering the slow down because packet path is allocating
+> work to offload the entry to hardware, however, this driver does not
+> support for hardware offload.
 > 
-> It's not used yet, but will be used by QEMU once this patch is merged.
-> In QEMU, ARM64 could have multiple empty memory nodes. The corresponding
-> NUMA ID and distance map are still valid because memory may be added into
-> these empty memory nodes in future.
-> 
-> For the QEMU case, the names of empty memory nodes are the biggest concern.
-> According to device-tree specification, the name follows the format of
-> 'memory@unit-address' and the 'unit-address' is equivalent to 'base-address'.
-> However, the 'base-address' should be invalid one. In current QEMU implementation,
-> the valid 'base-address' and 'unit-address' are provided to these empty
-> memory nodes. Another issue in QEMU is trying to populate two empty memory
-> nodes, which have same names. This leads to failure of device-tree population
-> because of the duplicated memory node names, blocking VM from booting.
-> 
->>> So lets add a section for empty memory nodes in NUMA binding
->>> document. Also, the 'unit-address', equivalent to 'base-address'
->>> in the 'reg' property of these empty memory nodes is suggested to
->>> be the summation of highest memory address plus the NUMA node ID.
->>
->> What purpose does this serve? The kernel won't do anything with it other
->> than validate the numa-node-id range.
->>
-> 
-> As mentioned above, the point is to have dummy, invalid and non-overlapped
-> 'base-address' and 'unit-address' for these empty memory nodes, to avoid
-> duplicated memory node names in devcie-tree.
-> 
->>>
->>> Signed-off-by: Gavin Shan <gshan@redhat.com>
->>> ---
->>> v5: Separate section for empty memory node
->>> ---
->>>   Documentation/devicetree/bindings/numa.txt | 61 +++++++++++++++++++++-
->>>   1 file changed, 60 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/Documentation/devicetree/bindings/numa.txt b/Documentation/devicetree/bindings/numa.txt
->>> index 21b35053ca5a..230c734af948 100644
->>> --- a/Documentation/devicetree/bindings/numa.txt
->>> +++ b/Documentation/devicetree/bindings/numa.txt
->>> @@ -103,7 +103,66 @@ Example:
->>>           };
->>>   ==============================================================================
->>> -4 - Example dts
->>> +4 - Empty memory nodes
->>> +==============================================================================
->>> +
->>> +Empty memory nodes, which no memory resides in, are allowed. The 'length'
->>> +field of the 'reg' property is zero, but the 'base-address' is a dummy
->>> +address and invalid. The 'base-address' could be the summation of highest
->>> +memory address plus the NUMA node ID. However, the NUMA node IDs and
->>> +distance maps are still valid and memory may be added into them through
->>> +hotplug afterwards.
->>> +
->>> +Example:
->>> +
->>> +    memory@0 {
->>> +        device_type = "memory";
->>> +        reg = <0x0 0x0 0x0 0x80000000>;
->>> +        numa-node-id = <0>;
->>> +    };
->>> +
->>> +    memory@0x80000000 {
->>
->> unit-address should not have '0x'.
->>
-> 
-> Ok. Lets fix it in v6 after it's agreed to add the section into the
-> NUMA binding document. Actually, the '0x' is copied from the existing
-> example in same document. After this patch is finalized, I will post
-> separate patch to fix all wrong formats in same document as well.
-> 
+> Probably this module can be updated to unset the flowtable flag if the
+> harware does not support hardware offload.
 
-I posted v6 just now, where '0x' in 'unit-address' is dropped. After
-this is merged, I will post followup patch to remove '0x' in 'unit-address'
-for existing examples.
+yesterday there was a discussion about this on the #openwrt-devel IRC
+channel. I am adding the IRC log to the end of this email because I am
+not sure if you're using IRC.
 
-Thanks,
-Gavin
+I typically don't test with flow offloading enabled (I am testing with
+OpenWrt's "default" network configuration, where flow offloading is
+disabled by default). Also I am not familiar with the flow offloading
+code at all and reading the xt_FLOWOFFLOAD code just raised more
+questions for me.
 
->>> +        device_type = "memory";
->>> +        reg = <0x0 0x80000000 0x0 0x80000000>;
->>> +        numa-node-id = <1>;
->>> +    };
->>> +
->>> +    /* Empty memory node */
->>> +    memory@0x100000002 {
->>> +        device_type = "memory";
->>> +        reg = <0x1 0x2 0x0 0x0>;
->>> +        numa-node-id = <2>;
->>> +    };
->>> +
->>> +    /* Empty memory node */
->>> +    memory@0x100000003 {
->>> +        device_type = "memory";
->>> +        reg = <0x1 0x3 0x0 0x0>;
->>> +        numa-node-id = <3>;
->>> +    };
->>> +
->>> +    distance-map {
->>> +        compatible = "numa-distance-map-v1";
->>> +        distance-matrix = <0 0  10>,
->>> +                  <0 1  20>,
->>> +                  <0 2  40>,
->>> +                  <0 3  20>,
->>> +                  <1 0  20>,
->>> +                  <1 1  10>,
->>> +                  <1 2  20>,
->>> +                  <1 3  40>,
->>> +                  <2 0  40>,
->>> +                  <2 1  20>,
->>> +                  <2 2  10>,
->>> +                  <2 3  20>,
->>> +                  <3 0  20>,
->>> +                  <3 1  40>,
->>> +                  <3 2  20>,
->>> +                  <3 3  10>;
->>> +    };
->>> +
->>> +==============================================================================
->>> +5 - Example dts
->>>   ==============================================================================
->>>   Dual socket system consists of 2 boards connected through ccn bus and
->>> -- 
+Maybe you can share some info whether your workaround from [0] "fixes"
+this issue. I am aware that it will probably break other devices. But
+maybe it helps Pablo to confirm whether it's really an xt_FLOWOFFLOAD
+bug or rather some generic flow offload issue (as Felix suggested on
+IRC).
 
+
+Best regards,
+Martin
+
+
+[0] https://github.com/abajk/openwrt/commit/ee4d790574c0edd170e1710d7cd4819727b23721
+
+
+<rsalvaterra> nbd: I saw your flow offloading updates. Just to make sure, this issue hasn't been addressed yet, has it? https://lore.kernel.org/netdev/20210614215351.GA734@salvia/
+<nbd> i don't think so
+<nbd> can you reproduce it?
+<rsalvaterra> nbd: Not really, I don't have the hardware.
+<rsalvaterra> It's lantiq, I think (bthh5a).
+<rsalvaterra> However, I believe dwmw2_gone has one, iirc.
+<xdarklight> nbd: I also have a HH5A. if you have any patch ready you can also send it as RFC on the mailing list and Cc Aleksander
+<rsalvaterra> xdarklight: Have you been able to reproduce the flow offloading regression?
+<xdarklight> I can try (typically I test with a "default" network configuration, where flow offloading is disabled)
+<rsalvaterra> xdarklight: I don't have a lot of details, only this thread: https://github.com/openwrt/openwrt/pull/4225#issuecomment-855454607
+<xdarklight> rsalvaterra: this is the workaround that Aleksander has in his tree: https://github.com/abajk/openwrt/commit/ee4d790574c0edd170e1710d7cd4819727b23721
+<rsalvaterra> xdarklight: Well, but that basically breaks hw flow offloading everywhere else, if I'm reading correctly. :)
+<xdarklight> rsalvaterra: I am not arguing with that :). I wanted to point out that Pablo's finding on the netfilter mailing list seems to be correct
+<rsalvaterra> xdarklight: Sure, which is why I pinged nbd, since he's the original author of the xt_FLOWOFFLOAD target.
+<rsalvaterra> What it seems is that it isn't such trivial fix. :)
+<xdarklight> I looked at the xt_FLOWOFFLOAD code myself and it raised more questions than I had before looking at the code. so I decided to wait for someone with better knowledge to look into that issue :)
+<rsalvaterra> Same here. I just went "oh, this requires divine intervention" and set it aside. :P
+<nbd> xdarklight: which finding did you mean?
+<xdarklight> nbd: "The xt_flowoffload module is inconditionally setting on the hardware offload flag" [...] flowtable[1].ft.flags = NF_FLOWTABLE_HW_OFFLOAD;
+<xdarklight> nbd: from this email: https://lore.kernel.org/netdev/20210614215351.GA734@salvia/
+<nbd> i actually think that finding is wrong
+<nbd> xt_FLOWOFFLOAD registers two flowtables
+<nbd> one with hw offload, one without
+<nbd> the target code does this:
+<nbd> table = &flowtable[!!(info->flags & XT_FLOWOFFLOAD_HW)];
+<nbd> so it selects flowtable[1] only if info->flags has XT_FLOWOFFLOAD_HW set
+<rsalvaterra> nbd: That's between you and Pablo, I mustn't interfere. :)
+<nbd> i did reply to pablo, but never heard back from him
+<rsalvaterra> nbd: The merge window is still open, he's probably busy at the moment… maybe ping him on Monday?
+<xdarklight> nbd: it seems that your mail also didn't make it to the netdev mailing list (at least I can't find it)
+<rsalvaterra> xdarklight: Now that you mention it, neither do I.
+<nbd> he wrote to me in private for some reason
+<xdarklight> oh okay. so for me to summarize: you're saying that the xt_FLOWOFFLOAD code should be fine. in that case Aleksander's workaround (https://github.com/abajk/openwrt/commit/ee4d790574c0edd170e1710d7cd4819727b23721) is also a no-op and the original problem would still be seen
+<rsalvaterra> xdarklight: I don't think it's a no-op, otherwise he wouldn't carry it in his tree… maybe something's wrong in the table selection? table = &flowtable[!!(info->flags & XT_FLOWOFFLOAD_HW)]; does look correct, though.
+<nbd> xdarklight: well, it's not a no-op if the issue was reproduced with option flow_offloading_hw 1 in the config
+<rsalvaterra> nbd: Uh… If he has option flow_offloading_hw '1' on a system which doesn't support hw flow offloading… he gets to keep the pieces, right?
+<nbd> it shouldn't break
+<nbd> and normally i'd expect the generic flow offload api to be able to deal with it without attempting to re-enable hw offload over and over again
