@@ -2,127 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 595463C3E25
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 18:59:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8003C3E29
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 19:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232577AbhGKRBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 13:01:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229801AbhGKRBq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 13:01:46 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1621AC0613DD
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 09:59:00 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id t19so15381529qkg.7
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 09:59:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WBrOScKV3V16Gyn7bGSSQx+6TsqpJhHYRyGGGXA76Gw=;
-        b=XDFA9W2l1rFNr7zIb0SxhYtrGZi0uF2umXU/lKQCUzrolek4SiNuvCz8QlhhppcOQA
-         x9j0221CuPLl2I0O4BiflTtMbarRMobfBt+5l2bTLfAfG+Ywex5sQuHCJqTdIoXfnLoO
-         CHpgwOGgkdaZqWTMoJfSA9JjfVYRw6Xv22o6kRJ/MjYm6deqSp6TRD0WgS9DuwyBtTCb
-         fuigYcMH87jTxs5XBY56KByk8PnjJO/AhHvfcTRG1NM7cyWfFJL5XM1MjlHcD0q49cP6
-         4w6Mj+4CiFZz1JEaBhJ35SSJ7LDplkfgDIoi2YzFvUEgxxmBz8NTIoLy+LrOLPnMlWhO
-         IQUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WBrOScKV3V16Gyn7bGSSQx+6TsqpJhHYRyGGGXA76Gw=;
-        b=r7D3U+vY7wq+pt0Fclo9t5p6mP4g9WuM8G3bmwTXFZBtOc71JeTyacJb6Es1xXZQVo
-         EEqnxi1eI6m+d1E1/Bb4eO7NTbOFXrmRlzhvBGzGPemaitS26qMfXDt+2SCQ3A9dd/u/
-         xd5BqS7nPQyHXQVGiPMEmvJ5RQu3u5iTP6v6yNYubWvgp6sR8teytfaNMhDMc4iWEZxw
-         WAxgaU3qAeMBZ/nk/5yfCh35qQ/waW0NoN1BK3wxMtqyPrEv/KBB9IKGXLnvq6TNcgwl
-         R0CPtCJsNLNQDCutvNAcDmlFQxvBLxs/rHK+slXRZ03+dt7rppCLmOiB42DInntx4hZT
-         miIw==
-X-Gm-Message-State: AOAM532jwXMhP+HZYLgPaFNwUNP/nPStbo/cUzqb5MZoGx4zpI9GWLVZ
-        GYLSRRxBgrYlnY2hpzR5iHDimeca6/0nNvFX4TRa7g==
-X-Google-Smtp-Source: ABdhPJxXCOIObgL8OrlRPXQtRuJlWZZ+YUWJD9kYGloo0i/JQjCzHExS9EJkLyVI5sIdVJoID4+63EbWKLVtdPFxhl8=
-X-Received: by 2002:ae9:dd43:: with SMTP id r64mr47648567qkf.216.1626022738963;
- Sun, 11 Jul 2021 09:58:58 -0700 (PDT)
+        id S232719AbhGKREp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 13:04:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38906 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229688AbhGKREp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Jul 2021 13:04:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8AE1610A6;
+        Sun, 11 Jul 2021 17:01:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626022918;
+        bh=XiwSCptAfKifULMy9fRRaw604V6wMcanQF7EaUJ+Kb0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=V2up30sic42QEo3JlF7zsEZXxqmAEpu7iqQnAjKt47MhF0clgWLmKkFjNPsWeaAjq
+         dCJtXpKdXPArMWt4k7WGeLZq0LYZrpe7miqE1X6liSvXrD9JE1jxOp0SX3j+0pKHfS
+         HpgWa9apHIx0zZB6BR7HWRB0LZw16uybzKXh82s2+mtHSYgX9tNeQHXcPf7ZO3WrAo
+         WZCsKucUVUdZ1dEo60fLQV3gUZK+Yk9vFfcRAEKG8t46Z6e7PANvzb4YUMgJTGhO4i
+         evKlsPRR90/v1oniEUQJDgcbRu+0ggpvBB0l+13lU3HIZ6Mndoi7cQUzDLbYJCKnyT
+         eYGRMkpRF6PUQ==
+Received: by pali.im (Postfix)
+        id 9577C773; Sun, 11 Jul 2021 19:01:55 +0200 (CEST)
+Date:   Sun, 11 Jul 2021 19:01:55 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Jonas =?utf-8?Q?Dre=C3=9Fler?= <verdre@v0yd.nl>
+Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v2 2/2] mwifiex: pcie: add reset_d3cold quirk for Surface
+ gen4+ devices
+Message-ID: <20210711170155.zt5mpig6sgusifs3@pali>
+References: <4e35bfc1-c38d-7198-dedf-a1f2ec28c788@gmail.com>
+ <20210709212505.mmqxdplmxbemqzlo@pali>
+ <bfbb3b4d-07f7-1b97-54f0-21eba4766798@gmail.com>
+ <20210709225433.axpzdsfbyvieahvr@pali>
+ <89c9d1b8-c204-d028-9f2c-80d580dabb8b@gmail.com>
+ <20210710000756.4j3tte63t5u6bbt4@pali>
+ <1d45c961-d675-ea80-abe4-8d4bcf3cf8d4@gmail.com>
+ <20210710003826.clnk5sh3cvlamwjr@pali>
+ <2d7eef37-aab3-8986-800f-74ffc27b62c5@gmail.com>
+ <fc1f39b0-2d61-387f-303f-9715781a2c4a@mailbox.org>
 MIME-Version: 1.0
-References: <20210709043713.887098-1-senozhatsky@chromium.org>
- <20210709043713.887098-3-senozhatsky@chromium.org> <CAJWu+opFedsq6CdgUYErnxsv3-Pr7MHi0vz9=hhpMCujFPp8+A@mail.gmail.com>
- <YOjFWZzgQxjPWaXw@google.com>
-In-Reply-To: <YOjFWZzgQxjPWaXw@google.com>
-From:   Joel Fernandes <joelaf@google.com>
-Date:   Sun, 11 Jul 2021 12:58:47 -0400
-Message-ID: <CAJWu+op31kGH9BpHS5+8ARPuote4n_3XUB=W6YF8yS0ePS1dMA@mail.gmail.com>
-Subject: Re: [PATCHv2 2/4] arm64: add guest pvstate support
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        Suleiman Souhlal <suleiman@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fc1f39b0-2d61-387f-303f-9715781a2c4a@mailbox.org>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 9, 2021 at 5:53 PM Sergey Senozhatsky
-<senozhatsky@chromium.org> wrote:
+On Sunday 11 July 2021 18:53:32 Jonas Dreßler wrote:
+> On 7/10/21 3:07 AM, Maximilian Luz wrote:
+> > On 7/10/21 2:38 AM, Pali Rohár wrote:
+> > > On Saturday 10 July 2021 02:18:12 Maximilian Luz wrote:
+> > > > On 7/10/21 2:07 AM, Pali Rohár wrote:
+> > > > 
+> > > > [...]
+> > > > 
+> > > > > > Interesting, I was not aware of this. IIRC we've been
+> > > > > > experimenting with
+> > > > > > the mwlwifi driver (which that lrdmwl driver seems to be
+> > > > > > based on?), but
+> > > > > > couldn't get that to work with the firmware we have.
+> > > > > 
+> > > > > mwlwifi is that soft-mac driver and uses completely different firmware.
+> > > > > For sure it would not work with current full-mac firmware.
+> > > > > 
+> > > > > > IIRC it also didn't
+> > > > > > work with the Windows firmware (which seems to be significantly
+> > > > > > different from the one we have for Linux and seems to
+> > > > > > use or be modeled
+> > > > > > after some special Windows WiFi driver interface).
+> > > > > 
+> > > > > So... Microsoft has different firmware for this chip? And it is working
+> > > > > with mwifiex driver?
+> > > > 
+> > > > I'm not sure how special that firmware really is (i.e. if it is Surface
+> > > > specific or just what Marvell uses on Windows), only that it doesn't
+> > > > look like the firmware included in the linux-firmware repo. The Windows
+> > > > firmware doesn't work with either mwlwifi or mwifiex drivers (IIRC) and
+> > > > on Linux we use the official firmware from the linux-firmware repo.
+> > > 
+> > > Version available in the linux-firmware repo is also what big companies
+> > > (like google) receive for their systems... sometimes just only older
+> > > version as Marvell/NXP is slow in updating files in linux-firmware.
+> > > Seems that it is also same what receive customers under NDA as more
+> > > companies dropped "proprietary" ex-Marvell/NXP driver on internet and it
+> > > contained this firmware with some sources of driver which looks like a
+> > > fork of mwifiex (or maybe mwifiex is "cleaned fork" of that driver :D)
+> > > 
+> > > There is old firmware documentation which describe RPC communication
+> > > between OS and firmware:
+> > > http://wiki.laptop.org/images/f/f3/Firmware-Spec-v5.1-MV-S103752-00.pdf
+> > > 
+> > > It is really old for very old wifi chips and when I checked it, it still
+> > > matches what mwifiex is doing with new chips. Just there are new and
+> > > more commands. And documentation is OS-neutral.
+> > > 
+> > > So if Microsoft has some "incompatible" firmware with this, it could
+> > > mean that they got something special which nobody else have? Maybe it
+> > > can explain that "connected standby" and maybe also better stability?
+> > > 
+> > > Or just windows distribute firmware in different format and needs to
+> > > "unpack" or "preprocess" prior downloading it to device?
+> > 
+> > If memory serves me right, Jonas did some reverse engineering on the
+> > Windows driver and found that it uses the "new" WDI Miniport API: It
+> > seems that originally both Windows and Linux drivers (and firmware)
+> > were pretty much the same (he mentioned there were similarities in
+> > terminology), but then they switched to that new API on Windows and
+> > changed the firmware with it, so that the driver now essentially only
+> > forwards the commands from that API to the firmware and the firmware
+> > handles the rest.
+> > 
+> > By reading the Windows docs on that API, that change might have been
+> > forced on them as some Windows 10 features apparently only work via
+> > that API.
+> > 
+> > He'll probably know more about that than I do.
+> 
+> Not much I can add there, it seemed a lot like both mwifiex and the Windows
+> 10 WDI miniport driver were both derived from the same codebase originally,
+> but in order to be compatible with the WDI miniport API and other stuff
+> Windows requires from wifi devices (I recall there was some SAR-value
+> control/reporting stuff too), some parts of the firmware had to be
+> rewritten.
+> 
+> In the end, the Windows firmware is updated a lot more often and likely
+> includes a bunch of bugfixes the linux firmware doesn't have, but it can't
+> be used on linux without a ton of work that would probably include
+> rebuilding proprietary APIs from Windows.
+> 
+> Also, from my testing with custom APs and sniffing packets with Wireshark,
+> the functionality, limitations and weird "semi-spec-compliant" behaviors
+> were exactly the same with the Windows firmware: It doesn't support WPA3, it
+> can't connect to fast transition APs (funnily enough that's opposed to what
+> MS claims) and it also can't spawn an AP with WPA-PSK-SHA256 AKM ciphers. So
+> not sure there's a lot of sense in spending more time trying to go down that
+> path.
 
-> > > +DECLARE_STATIC_CALL(pv_vcpu_is_preempted, dummy_vcpu_is_preempted);
-> > > +
-> > > +static inline bool paravirt_vcpu_is_preempted(unsigned int cpu)
-> > > +{
-> > > +       return static_call(pv_vcpu_is_preempted)(cpu);
-> > > +}
-> > > +
-> > > +int __init pv_vcpu_state_init(void);
-> > > +
-> > >  #else
-> > >
-> > > +#define pv_vcpu_state_init() do {} while (0)
-> > > +
-> > >  #define pv_time_init() do {} while (0)
-> > >
-> > >  #endif // CONFIG_PARAVIRT
-> > > diff --git a/arch/arm64/kernel/paravirt.c b/arch/arm64/kernel/paravirt.c
-> > > index 75fed4460407..d8fc46795d94 100644
-> > > --- a/arch/arm64/kernel/paravirt.c
-> > > +++ b/arch/arm64/kernel/paravirt.c
-> > > @@ -40,6 +40,11 @@ struct pv_time_stolen_time_region {
-> > >
-> > >  static DEFINE_PER_CPU(struct pv_time_stolen_time_region, stolen_time_region);
-> > >
-> > > +static DEFINE_PER_CPU(struct vcpu_state, vcpus_states);
-> > > +struct static_key pv_vcpu_is_preempted_enabled;
-> > > +
-> > > +DEFINE_STATIC_CALL(pv_vcpu_is_preempted, dummy_vcpu_is_preempted);
-> >
-> > Could we use DEFINE_STATIC_CALL_NULL and get rid of the dummy
-> > function? I believe that makes the function trampoline as return
-> > instruction, till it is updated.
->
-> Is DEFINE_STATIC_CALL_NULL for cases when function returns void?
->
-> We need something that returns `false` to vcpu_is_preempted() or
-> per_cpu(vcpus_states) once pv vcpu-state is initialised.
+New version of firmware files are available on NXP portal, where are
+updated more frequently, but only for companies which have NXP accounts
+and signed NDA with NXP. Not for end users.
 
-Ah, that might be problematic. In which case what you did is fine. Thanks,
-
-- Joel
-
-
-
->
-> [..]
-> > > +static bool __vcpu_is_preempted(unsigned int cpu)
-> > > +{
-> > > +       struct vcpu_state *st;
-> > > +
-> > > +       st = &per_cpu(vcpus_states, cpu);
-> > > +       return READ_ONCE(st->preempted);
-> >
-> > I guess you could just do:
-> > {
-> >   return READ_ONCE(per_cpu(vcpus_states, cpu).preempted);
-> > }
->
-> Ack.
+If you want these new firmware files, you need to ask NXP developers as
+only they can ask for non-NDA distribution and include new version into
+linux-firmware repository. Like in this pull request where is new SDIO
+firmware for 88W8897:
+https://lore.kernel.org/linux-firmware/DB7PR04MB453855B0D6C41923BCB0922EFC1C9@DB7PR04MB4538.eurprd04.prod.outlook.com/
