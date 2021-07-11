@@ -2,95 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2203C39E1
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 04:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFD4F3C39E6
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 04:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231513AbhGKCKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 22:10:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53958 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231376AbhGKCK3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 22:10:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EA5A610A1;
-        Sun, 11 Jul 2021 02:07:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625969263;
-        bh=haxQ3gshZCmVQEAZFEN8JV7jIw4Yf+8/Et/CYbeJzew=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DAuxHJ0iwVukl21etWafOvyhowQhaDrXrznRUBdaekF7ErUPzyt9h56EORxLHTtHu
-         dkWhjWMUwmF4BrLj8iBc7OXs9/cEijxzNWKtcj/mYWNuCrBMZRdRXjLiTI2cQ0EJ04
-         GdxWl+RVGRUPf8hxP34Ju5cFEBRCf3NBizWGBkorwHPH3wP7CpcmFjyZ9KP5EJKmCD
-         DLQo+qLbtPjG385NsFdrDPxAK3D/HG9rBol7ZjTT/fXGHoVy6LwpUFsybdmZBz9V76
-         m4GRHMsG6KAzsKvoOx1grjTnv97muyfuRchOadyLSZbZjq2NPdu4vQ5E4hpg/QOjzA
-         GuUhu06h+xktg==
-Date:   Sun, 11 Jul 2021 11:07:38 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
-        yhs@fb.com, linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH 2/2] objtool: Ignore unwind hints for ignored functions
-Message-Id: <20210711110738.f745f62b6858e2d5d9006cd6@kernel.org>
-In-Reply-To: <20210710192514.ghvksi3ozhez4lvb@treble>
-References: <162399992186.506599.8457763707951687195.stgit@devnote2>
-        <162399996966.506599.810050095040575221.stgit@devnote2>
-        <YOK8pzp8B2V+1EaU@gmail.com>
-        <20210710003140.8e561ad33d42f9ac78de6a15@kernel.org>
-        <20210710104104.3a270168811ac38420093276@kernel.org>
-        <20210710190143.lrcsyal2ggubv43v@treble>
-        <20210710192514.ghvksi3ozhez4lvb@treble>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S231183AbhGKCm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 22:42:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229734AbhGKCm6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Jul 2021 22:42:58 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B09C0613E5
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 19:40:11 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id v1so20899539edt.6
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 19:40:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=5hLOnlcGooPP+0XvtSeeNz1VtXJ9AXoHVgYzYI06KsA=;
+        b=wkdHk+afyxyHMGoc0KokYkOdx/rvGBdiKTFECi9e2QruXp5rG7f40HCtNY5753os7c
+         tkWgobmSiAXx/z1c5JckxWWgOKAOxKjPKTYyjOqREMTT4Gftc5oJtDA9I94KBcPtdcUM
+         wgsR8uTEp/FyDwDh0dooO61F1j28JGWeYq+DQ9GHtcUtNKtJZBFO/KhNpE2CSaWbMlxk
+         MkSBpUC0mSEp0A98ZCNC1NcPV9kIeCLVWNOZR5b6LX+8BM0FLghEkec7LP3kWUlam0oj
+         xOKOOqeceQkWnbIaWkDTC49P4jpP3We4NXjUP6+IITud3ja4e8QN9uyX0V4n5B9HjI/I
+         l2Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5hLOnlcGooPP+0XvtSeeNz1VtXJ9AXoHVgYzYI06KsA=;
+        b=M0N/VoWD24SlIPUgRRHXSYW3tVITxRZeq2IRW9LpNMoh2HOJ33g7jkNKhAn2biShUf
+         XRePv7i/nje0JE6tm1L9mgXmXoK+VzaY0vxXFLOiuj8eqRh2LxqPa0slikzko1YMfICa
+         yBgWk3CXEi2TRGMFLBEMczIfxB+MuweDMtl6c5WuR8q2FS/qZBCjwtUE8sQvJx3a40mt
+         Q04dNNLar64CzpZUAiqSGqIe832DhvbpJRh8wiXoyg93bvv7qHlKEp5SsQb8wbxSiJyi
+         T8UprARbzUYjaEUlrCKWgA4oO7LKN2Fs7XH30ZSryK8qVhX1vQ4+1o/sUnnj4yBsUb46
+         7sbg==
+X-Gm-Message-State: AOAM530/zJ6Ql5PRjKIdfyfTNHDxWhJjsYfWeqMHFgStQ95FXrfSXMl3
+        vZdVstsJ1wYtU29KFq1vQdJ9Aytp3KMKr0ZiFK1gWA==
+X-Google-Smtp-Source: ABdhPJxYYJUzDJIQIRkCN9sF34FnxMIAVGCsuFuq1HIAF6U59wUzQTqHWmRiqxOFEAwEu3njJaFbRzFxdY86LhNXKRE=
+X-Received: by 2002:a05:6402:152:: with SMTP id s18mr56526545edu.221.1625971210207;
+ Sat, 10 Jul 2021 19:40:10 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210709131529.395072769@linuxfoundation.org>
+In-Reply-To: <20210709131529.395072769@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sun, 11 Jul 2021 08:09:58 +0530
+Message-ID: <CA+G9fYvBmvrivr+gnBhTPsYzzMPnRHigGGRNewp6X76n1Qw=Yw@mail.gmail.com>
+Subject: Re: [PATCH 4.4 0/4] 4.4.275-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 10 Jul 2021 12:25:14 -0700
-Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+On Fri, 9 Jul 2021 at 18:48, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.4.275 release.
+> There are 4 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 11 Jul 2021 13:14:09 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.4.275-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-> If a function is ignored, also ignore its hints.  This is useful for the
-> case where the function ignore is conditional on frame pointers, e.g.
-> STACK_FRAME_NON_STANDARD_FP().
+Results from Linaro=E2=80=99s test farm.
+Regressions on arm64 noticed.
 
-This also looks good to me, and test with my series works fine.
+GOOD: v4.4.273
+BAD: v4.4.274
 
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-Tested-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-Thanks!
-
-> 
-> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> ---
->  tools/objtool/check.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-> index e5947fbb9e7a..67cbdcfcabae 100644
-> --- a/tools/objtool/check.c
-> +++ b/tools/objtool/check.c
-> @@ -2909,7 +2909,7 @@ static int validate_unwind_hints(struct objtool_file *file, struct section *sec)
->  	}
->  
->  	while (&insn->list != &file->insn_list && (!sec || insn->sec == sec)) {
-> -		if (insn->hint && !insn->visited) {
-> +		if (insn->hint && !insn->visited && !insn->ignore) {
->  			ret = validate_branch(file, insn->func, insn, state);
->  			if (ret && backtrace)
->  				BT_FUNC("<=== (hint)", insn);
-> -- 
-> 2.31.1
-> 
+Regressions found on  arm64 juno-r2 and qemu_arm64 device.
+ltp-containers-tests failed:
+- netns_comm_ip_ipv6_ioctl
+- netns_comm_ns_exec_ipv6_ioctl
+- netns_comm_ip_ipv6_netlink
+- netns_breakns_ns_exec_ipv6_netlink
+- netns_breakns_ns_exec_ipv4_ioctl
+- netns_netlink
+- netns_comm_ip_ipv4_netlink
+- netns_breakns_ns_exec_ipv4_netlink
+- netns_breakns_ip_ipv6_netlink
+- netns_breakns_ip_ipv4_ioctl
+- netns_comm_ns_exec_ipv4_netlink
+- netns_comm_ip_ipv4_ioctl
+- netns_comm_ns_exec_ipv4_ioctl
+- netns_comm_ns_exec_ipv6_netlink
+- netns_breakns_ip_ipv6_ioctl
+- netns_breakns_ip_ipv4_netlink
+- netns_breakns_ns_exec_ipv6_ioctl
 
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+
+Test output log:
+-----------------
+module tun: overflow in relocation type 261 val fffffdfffc000654
+open: No such device
+netns_netlink.c:103: TBROK: adding interface failed
+
+netns_breakns 1 TINFO: timeout per run is 0h 15m 0s
+module veth: overflow in relocation type 261 val fffffdfffc040000
+module veth: overflow in relocation type 261 val fffffdfffc080000
+RTNETLINK answers: Operation not supported
+netns_breakns 1 TBROK: unable to create veth pair devices
+Cannot find device \"veth0\"
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+step to reproduce:
+-------------------------
+ # boot qemu arm64 and run ltp netns_netlink test.
+
+          - cd /opt/ltp
+          - ./runltp -s netns_netlink
+
+We have started the git bisection script to find the first bad commit
+causing these LTP netns test failures.
+
+--
+Linaro LKFT
+https://lkft.linaro.org
