@@ -2,328 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 296153C3EED
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 21:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BB8E3C3EFA
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 22:21:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbhGKUBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 16:01:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57756 "EHLO
+        id S230022AbhGKUXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 16:23:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhGKUBR (ORCPT
+        with ESMTP id S229544AbhGKUXk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 16:01:17 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 459F1C0613DD;
-        Sun, 11 Jul 2021 12:58:30 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id z9so1762807qkg.5;
-        Sun, 11 Jul 2021 12:58:30 -0700 (PDT)
+        Sun, 11 Jul 2021 16:23:40 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C69F9C0613DD;
+        Sun, 11 Jul 2021 13:20:52 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id j34so9909892wms.5;
+        Sun, 11 Jul 2021 13:20:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:content-transfer-encoding:date:message-id:cc:subject
-         :from:to:references:in-reply-to;
-        bh=o63e5uLzQ3XRQXbyWYElVkYc2hnM+AZGWyQYyvpfVzo=;
-        b=QwPuANSHO/noElZSrwF28yagZA1ldrNrJUITzaiPHAXcYr+Lz0JX53qLQwYFyPPJxl
-         HaNe6zin6DSEWn5emmPX1iFhYtC0xcNps+gzQ6x93a28KK+rQo6Qy6YDMZU2rMyTEdl5
-         SJZGg56tMH78ejELdOEmasIov0sYXUoTcA3M/yUd1UXobvYjO3rrCmDlAxsH6ddv4cLJ
-         ZbuRZSZhMSg4N0rprEKDDHLF65hxLnmYeO1zsSKUA52LFh/ZYsi+Hvs4aTBHTSehLMgL
-         Z79BYUvlAhVx6K6PZbvNrLMZwNbtm3OR3ud24K2aIW6zIIfGJ+9XlR80hCgDoJvnwEFC
-         45FA==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=JSlHXk9BHMt80GPxoiflId7IfPNR2wsCAP6MgQRmlMY=;
+        b=MV6Bc1WQtlLNBsLev+r+nREErvsLMtiN04X49s3xIyRDbNXnT7PYnTniMJFOBMucT4
+         EzZTQ6hfSNYUbM6OWKFbPdKAVHTqqkL1UhcaiWiLc2MoEh4r6IQ7vy1qnw0pystDEF16
+         ur6VwGo8nSaBKVR1DuSKS7APj2Z/GF+t5Gqii1exzU6f/arYOK62VPgDODhjU+4cdfnH
+         qGr5+YSac3hscRYh6y48rVj7RrU7sC4ZaPuvDWMJ2PBFuBhc5CEdbY+2lB5n08JqxQxl
+         e1h+qjtvy6UsZiIPxEFYzauC7SCMEghmOly8La9emdC/1uBvbUkKj7y3El55Tf9bavNu
+         ZZQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding:date
-         :message-id:cc:subject:from:to:references:in-reply-to;
-        bh=o63e5uLzQ3XRQXbyWYElVkYc2hnM+AZGWyQYyvpfVzo=;
-        b=E36Ro1RZ2lDpZPLl8wO1UwSxcwixklbZOrPwlcoPYUX+kXl5puv6O5O8lcqcTLZcwM
-         Cv1qPstbvBvSYk3PqKKJkdKkIG6MFc6kK59HGwVgJ9gGSf7bRSe4yQMmHnIf8//hIwLr
-         a33gcQ7nI2PT8Rgh9KNWfQXMqoNz59WGJWy/wwI5UnOsAVN/GH4cWI4MsR3DL454nYR/
-         vzwJls+OhdwCkNqRxSD3zQfWzC5rshaQoiiWVDmfmfuUgWAA92PBmNeQm6SCa2jhPMmL
-         H9hlJOhFLu/Q8Z1f1vlw74S5ZqbzE/Sh/Qe3n3KLLyCV8H/8Tc2GIGWVHwnZmGMHV7cd
-         ef1A==
-X-Gm-Message-State: AOAM530cZkRGt87mESvTnLzxwGThUWwk9czwyRn0On16TFln3xefGMIn
-        NChpzy86KFHB7lYgcmGLYck=
-X-Google-Smtp-Source: ABdhPJyvJiTYFOoPbVRhxCqbvl1k4qviXshYTY31+p/wppTSr5VuogK1X8jte3ImwPHKJuNr3DWzJQ==
-X-Received: by 2002:a37:b942:: with SMTP id j63mr49190790qkf.430.1626033509429;
-        Sun, 11 Jul 2021 12:58:29 -0700 (PDT)
-Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id u184sm5517180qkd.53.2021.07.11.12.58.28
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JSlHXk9BHMt80GPxoiflId7IfPNR2wsCAP6MgQRmlMY=;
+        b=WMyuqZz2dvijrJK/zdcOjPtCUXX6yV5U5TnGT90LlEEYrg7ticBBTLi7dBj9SaWpe8
+         +ROnjjADaFHoUML3GWi7crFVx3YX2zTwV6KbJdWkg+6jeLwWJGxaBldfmGYbeHeMqs/4
+         B2A7LcuOHtVUeGo17NsnHtUlL4NxDtEBAFqnoNRZT4OHq3/WduMX7Eu3lExsDYXjLXbE
+         mJwAVbe51Clfr7Kr1NkyuudNoN+S3n9MaIGzrR60oLn31TWzJAtsXaeR2PprCJFRYRNB
+         IdC3bQAD9rzVvIGMjxXkLRgBOBPPsvz0Ftr7Upm3IWROs7877+pBUFDgY5Daxo+CCwbl
+         LhfQ==
+X-Gm-Message-State: AOAM530jYApYuHHHXnonJ7mZ+lx7E7QU5dfly3cuckuNWuLJCK2tdjy6
+        XPVdxqNHx7FHWSRSUaoOAEs=
+X-Google-Smtp-Source: ABdhPJyl6IC0D06Z6Ot7miLvhK+279WlR04GkQE2HGkRsB58gVhRhKyOi/brT6OoSUYieRzC3Xq/1w==
+X-Received: by 2002:a1c:f613:: with SMTP id w19mr10899365wmc.136.1626034851468;
+        Sun, 11 Jul 2021 13:20:51 -0700 (PDT)
+Received: from [192.168.8.197] ([85.255.233.168])
+        by smtp.gmail.com with ESMTPSA id d15sm1240783wri.39.2021.07.11.13.20.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Jul 2021 12:58:28 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Sun, 11 Jul 2021 15:58:27 -0400
-Message-Id: <CCQKRT3BAWMZ.808X3PQPIH4R@shaak>
-Cc:     <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
-        <charles-antoine.couret@essensium.com>, <Nuno.Sa@analog.com>,
-        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>
-Subject: Re: [PATCH v2 2/4] iio: adc: ad7949: fix spi messages on non 14-bit
- controllers
-From:   "Liam Beguin" <liambeguin@gmail.com>
-To:     "Jonathan Cameron" <jic23@kernel.org>
-References: <20210709155856.1732245-1-liambeguin@gmail.com>
- <20210709155856.1732245-3-liambeguin@gmail.com>
- <20210710173940.60764398@jic23-huawei>
-In-Reply-To: <20210710173940.60764398@jic23-huawei>
+        Sun, 11 Jul 2021 13:20:50 -0700 (PDT)
+Subject: Re: [syzbot] INFO: task hung in io_uring_cancel_generic
+To:     syzbot <syzbot+ba6fcd859210f4e9e109@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <0000000000003f0feb05c6daa326@google.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Message-ID: <abb0b94a-1bfb-1fe4-06fc-daed6c0112b6@gmail.com>
+Date:   Sun, 11 Jul 2021 21:20:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <0000000000003f0feb05c6daa326@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat Jul 10, 2021 at 12:39 PM EDT, Jonathan Cameron wrote:
-> On Fri, 9 Jul 2021 11:58:54 -0400
-> Liam Beguin <liambeguin@gmail.com> wrote:
->
-> > From: Liam Beguin <lvb@xiphos.com>
-> >=20
-> > This driver supports devices with 14-bit and 16-bit sample sizes.
-> > This is not always handled properly by spi controllers and can fail. To
-> > work around this limitation, pad samples to 16-bit and split the sample
-> > into two 8-bit messages in the event that only 8-bit messages are
-> > supported by the controller.
->
-> Hmm. I assumed spi controllers would all support 16 bits, but a quick
-> grep confirms otherwise... ah well!
->
-> >=20
-> > Signed-off-by: Liam Beguin <lvb@xiphos.com>
-> > ---
-> >  drivers/iio/adc/ad7949.c | 69 ++++++++++++++++++++++++++++++++++------
-> >  1 file changed, 60 insertions(+), 9 deletions(-)
-> >=20
-> > diff --git a/drivers/iio/adc/ad7949.c b/drivers/iio/adc/ad7949.c
-> > index 93aacf4f680b..770112ac820f 100644
-> > --- a/drivers/iio/adc/ad7949.c
-> > +++ b/drivers/iio/adc/ad7949.c
-> > @@ -11,6 +11,7 @@
-> >  #include <linux/module.h>
-> >  #include <linux/regulator/consumer.h>
-> >  #include <linux/spi/spi.h>
-> > +#include <linux/bitfield.h>
-> > =20
-> >  #define AD7949_MASK_TOTAL		GENMASK(13, 0)
-> >  #define AD7949_CFG_REG_SIZE_BITS	14
-> > @@ -57,6 +58,7 @@ static const struct ad7949_adc_spec ad7949_adc_spec[]=
- =3D {
-> >   * @indio_dev: reference to iio structure
-> >   * @spi: reference to spi structure
-> >   * @resolution: resolution of the chip
-> > + * @bits_per_word: number of bits per SPI word
-> >   * @cfg: copy of the configuration register
-> >   * @current_channel: current channel in use
-> >   * @buffer: buffer to send / receive data to / from device
-> > @@ -67,28 +69,60 @@ struct ad7949_adc_chip {
-> >  	struct iio_dev *indio_dev;
-> >  	struct spi_device *spi;
-> >  	u8 resolution;
-> > +	u8 bits_per_word;
-> >  	u16 cfg;
-> >  	unsigned int current_channel;
-> > -	u16 buffer ____cacheline_aligned;
-> > +	union {
-> > +		__be16 buffer;
-> > +		u8 buf8[2];
-> > +	} ____cacheline_aligned;
+On 7/11/21 4:27 PM, syzbot wrote:
+> Hello,
+> 
+> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+> INFO: task hung in io_uring_cancel_generic
 
-Hi Jonathan,
+I think I see what it is. To not duplicate efforts...
 
->
-> This union made me a little nervous given issues with them under c spec,
-> but
-> seems that you only use buffer or buf8, there is no mixing. I think I'd
-> rather you didn't have the union though as it makes it look like there
-> might be.
+> 
+> INFO: task syz-executor.5:10156 blocked for more than 143 seconds.
+>       Tainted: G        W         5.13.0-syzkaller #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor.5  state:D stack:27976 pid:10156 ppid:  8832 flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:4683 [inline]
+>  __schedule+0x934/0x2710 kernel/sched/core.c:5940
+>  schedule+0xd3/0x270 kernel/sched/core.c:6019
+>  io_uring_cancel_generic+0x54d/0x890 fs/io_uring.c:9148
+>  io_uring_files_cancel include/linux/io_uring.h:16 [inline]
+>  do_exit+0x28b/0x2a50 kernel/exit.c:780
+>  do_group_exit+0x125/0x310 kernel/exit.c:922
+>  get_signal+0x47f/0x2150 kernel/signal.c:2796
+>  arch_do_signal_or_restart+0x2a9/0x1eb0 arch/x86/kernel/signal.c:789
+>  handle_signal_work kernel/entry/common.c:148 [inline]
+>  exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+>  exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:209
+>  __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+>  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
+>  do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x4665d9
+> RSP: 002b:00007fc32f0d4218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+> RAX: fffffffffffffe00 RBX: 000000000056bf88 RCX: 00000000004665d9
+> RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000056bf88
+> RBP: 000000000056bf80 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf8c
+> R13: 00007ffee94563df R14: 00007fc32f0d4300 R15: 0000000000022000
+> INFO: task syz-executor.2:10228 blocked for more than 143 seconds.
+>       Tainted: G        W         5.13.0-syzkaller #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor.2  state:D stack:29192 pid:10228 ppid:  8825 flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:4683 [inline]
+>  __schedule+0x934/0x2710 kernel/sched/core.c:5940
+>  schedule+0xd3/0x270 kernel/sched/core.c:6019
+>  io_uring_cancel_generic+0x54d/0x890 fs/io_uring.c:9148
+>  io_uring_files_cancel include/linux/io_uring.h:16 [inline]
+>  do_exit+0x28b/0x2a50 kernel/exit.c:780
+>  do_group_exit+0x125/0x310 kernel/exit.c:922
+>  get_signal+0x47f/0x2150 kernel/signal.c:2796
+>  arch_do_signal_or_restart+0x2a9/0x1eb0 arch/x86/kernel/signal.c:789
+>  handle_signal_work kernel/entry/common.c:148 [inline]
+>  exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+>  exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:209
+>  __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+>  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
+>  do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x4665d9
+> RSP: 002b:00007f48eed2e218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+> RAX: 0000000000000000 RBX: 000000000056bf88 RCX: 00000000004665d9
+> RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000056bf88
+> RBP: 000000000056bf80 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf8c
+> R13: 00007ffc352d975f R14: 00007f48eed2e300 R15: 0000000000022000
+> INFO: task syz-executor.3:10229 blocked for more than 143 seconds.
+>       Tainted: G        W         5.13.0-syzkaller #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor.3  state:D stack:27976 pid:10229 ppid:  8828 flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:4683 [inline]
+>  __schedule+0x934/0x2710 kernel/sched/core.c:5940
+>  schedule+0xd3/0x270 kernel/sched/core.c:6019
+>  io_uring_cancel_generic+0x54d/0x890 fs/io_uring.c:9148
+>  io_uring_files_cancel include/linux/io_uring.h:16 [inline]
+>  do_exit+0x28b/0x2a50 kernel/exit.c:780
+>  do_group_exit+0x125/0x310 kernel/exit.c:922
+>  get_signal+0x47f/0x2150 kernel/signal.c:2796
+>  arch_do_signal_or_restart+0x2a9/0x1eb0 arch/x86/kernel/signal.c:789
+>  handle_signal_work kernel/entry/common.c:148 [inline]
+>  exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+>  exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:209
+>  __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+>  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
+>  do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x4665d9
+> RSP: 002b:00007fb1b5eac218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+> RAX: 0000000000000000 RBX: 000000000056bf88 RCX: 00000000004665d9
+> RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000056bf88
+> RBP: 000000000056bf80 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf8c
+> R13: 00007ffdb651a9bf R14: 00007fb1b5eac300 R15: 0000000000022000
+> INFO: task syz-executor.0:10241 blocked for more than 144 seconds.
+>       Tainted: G        W         5.13.0-syzkaller #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor.0  state:D stack:27976 pid:10241 ppid:  8830 flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:4683 [inline]
+>  __schedule+0x934/0x2710 kernel/sched/core.c:5940
+>  schedule+0xd3/0x270 kernel/sched/core.c:6019
+>  io_uring_cancel_generic+0x54d/0x890 fs/io_uring.c:9148
+>  io_uring_files_cancel include/linux/io_uring.h:16 [inline]
+>  do_exit+0x28b/0x2a50 kernel/exit.c:780
+>  do_group_exit+0x125/0x310 kernel/exit.c:922
+>  get_signal+0x47f/0x2150 kernel/signal.c:2796
+>  arch_do_signal_or_restart+0x2a9/0x1eb0 arch/x86/kernel/signal.c:789
+>  handle_signal_work kernel/entry/common.c:148 [inline]
+>  exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+>  exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:209
+>  __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+>  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
+>  do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x4665d9
+> RSP: 002b:00007fa3ce68b218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+> RAX: 0000000000000000 RBX: 000000000056bf88 RCX: 00000000004665d9
+> RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000056bf88
+> RBP: 000000000056bf80 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf8c
+> R13: 00007ffcf35d4ebf R14: 00007fa3ce68b300 R15: 0000000000022000
+> INFO: task syz-executor.1:10247 blocked for more than 144 seconds.
+>       Tainted: G        W         5.13.0-syzkaller #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor.1  state:D stack:27976 pid:10247 ppid:  8831 flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:4683 [inline]
+>  __schedule+0x934/0x2710 kernel/sched/core.c:5940
+>  schedule+0xd3/0x270 kernel/sched/core.c:6019
+>  io_uring_cancel_generic+0x54d/0x890 fs/io_uring.c:9148
+>  io_uring_files_cancel include/linux/io_uring.h:16 [inline]
+>  do_exit+0x28b/0x2a50 kernel/exit.c:780
+>  do_group_exit+0x125/0x310 kernel/exit.c:922
+>  get_signal+0x47f/0x2150 kernel/signal.c:2796
+>  arch_do_signal_or_restart+0x2a9/0x1eb0 arch/x86/kernel/signal.c:789
+>  handle_signal_work kernel/entry/common.c:148 [inline]
+>  exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+>  exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:209
+>  __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+>  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
+>  do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x4665d9
+> RSP: 002b:00007f7c4a218218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+> RAX: 0000000000000000 RBX: 000000000056bf88 RCX: 00000000004665d9
+> RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000056bf88
+> RBP: 000000000056bf80 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf8c
+> R13: 00007ffdaa7cc7af R14: 00007f7c4a218300 R15: 0000000000022000
+> INFO: task syz-executor.4:10271 blocked for more than 144 seconds.
+>       Tainted: G        W         5.13.0-syzkaller #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor.4  state:D stack:27976 pid:10271 ppid:  8827 flags:0x00004004
+> Call Trace:
+>  context_switch kernel/sched/core.c:4683 [inline]
+>  __schedule+0x934/0x2710 kernel/sched/core.c:5940
+>  schedule+0xd3/0x270 kernel/sched/core.c:6019
+>  io_uring_cancel_generic+0x54d/0x890 fs/io_uring.c:9148
+>  io_uring_files_cancel include/linux/io_uring.h:16 [inline]
+>  do_exit+0x28b/0x2a50 kernel/exit.c:780
+>  do_group_exit+0x125/0x310 kernel/exit.c:922
+>  get_signal+0x47f/0x2150 kernel/signal.c:2796
+>  arch_do_signal_or_restart+0x2a9/0x1eb0 arch/x86/kernel/signal.c:789
+>  handle_signal_work kernel/entry/common.c:148 [inline]
+>  exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+>  exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:209
+>  __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+>  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
+>  do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x4665d9
+> RSP: 002b:00007fcb3ff30218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+> RAX: 0000000000000000 RBX: 000000000056bf88 RCX: 00000000004665d9
+> RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000056bf88
+> RBP: 000000000056bf80 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf8c
+> R13: 00007ffd6fb6745f R14: 00007fcb3ff30300 R15: 0000000000022000
+> INFO: lockdep is turned off.
+> NMI backtrace for cpu 1
+> CPU: 1 PID: 1635 Comm: khungtaskd Tainted: G        W         5.13.0-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
+>  nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
+>  nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
+>  trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+>  check_hung_uninterruptible_tasks kernel/hung_task.c:209 [inline]
+>  watchdog+0xd4b/0xfb0 kernel/hung_task.c:294
+>  kthread+0x3e5/0x4d0 kernel/kthread.c:319
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+> Sending NMI from CPU 1 to CPUs 0:
+> NMI backtrace for cpu 0
+> CPU: 0 PID: 8 Comm: kworker/0:2 Tainted: G        W         5.13.0-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Workqueue: events_power_efficient toggle_allocation_gate
+> RIP: 0010:__kasan_check_read+0x4/0x10 mm/kasan/shadow.c:31
+> Code: 24 07 48 85 db 0f 85 f6 0d 26 07 48 83 c4 60 5b 5d 41 5c 41 5d c3 c3 e9 f6 0e 26 07 cc cc cc cc cc cc cc cc cc cc 48 8b 0c 24 <89> f6 31 d2 e9 03 f9 ff ff 0f 1f 00 48 8b 0c 24 89 f6 ba 01 00 00
+> RSP: 0018:ffffc90000cd79a8 EFLAGS: 00000046
+> RAX: 0000000000000001 RBX: ffff888140158660 RCX: ffffffff81347c5f
+> RDX: ffffed102802b0cd RSI: 0000000000000008 RDI: ffffffff8baa4870
+> RBP: ffffffff8baa4460 R08: 0000000000000001 R09: ffff888140158667
+> R10: ffffed102802b0cc R11: 000000000000003f R12: ffff888140158000
+> R13: ffffffff8baa4870 R14: ffff888140158660 R15: ffffffff8baa4400
+> FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f089e135020 CR3: 000000013fe38000 CR4: 0000000000350ef0
+> Call Trace:
+>  instrument_atomic_read include/linux/instrumented.h:71 [inline]
+>  atomic64_read include/asm-generic/atomic-instrumented.h:605 [inline]
+>  switch_mm_irqs_off+0x1df/0x9b0 arch/x86/mm/tlb.c:556
+>  unuse_temporary_mm arch/x86/kernel/alternative.c:763 [inline]
+>  __text_poke+0x541/0x8c0 arch/x86/kernel/alternative.c:859
+>  text_poke_bp_batch+0x3d7/0x560 arch/x86/kernel/alternative.c:1178
+>  text_poke_flush arch/x86/kernel/alternative.c:1268 [inline]
+>  text_poke_flush arch/x86/kernel/alternative.c:1265 [inline]
+>  text_poke_finish+0x16/0x30 arch/x86/kernel/alternative.c:1275
+>  arch_jump_label_transform_apply+0x13/0x20 arch/x86/kernel/jump_label.c:145
+>  jump_label_update+0x1d5/0x430 kernel/jump_label.c:827
+>  static_key_enable_cpuslocked+0x1b1/0x260 kernel/jump_label.c:177
+>  static_key_enable+0x16/0x20 kernel/jump_label.c:190
+>  toggle_allocation_gate mm/kfence/core.c:623 [inline]
+>  toggle_allocation_gate+0x100/0x390 mm/kfence/core.c:615
+>  process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
+>  worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
+>  kthread+0x3e5/0x4d0 kernel/kthread.c:319
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+> 
+> 
+> Tested on:
+> 
+> commit:         dfa01077 io_uring: use right task for exiting checks
+> git tree:       git://git.kernel.dk/linux-block io_uring-5.14-test
+> console output: https://syzkaller.appspot.com/x/log.txt?x=13b501e2300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=c650d78cfe48974c
+> dashboard link: https://syzkaller.appspot.com/bug?extid=ba6fcd859210f4e9e109
+> compiler:       
+> 
 
-I don't particularly like unions either..
-If I'm not mistaken, the only place where the union is useful is
-in the spi_transfer struct definitions. I'll use a local buf8 there
-instead.
-
->
-> Given we are doing cacheline spacing anyway for dma safety it take no
-> more
-> real space to just have
->
-> __be16 buffer ____cacheline_aligned;
-> buf8[2];
->
->
->
-> >  };
-> > =20
-> > +static void ad7949_set_bits_per_word(struct ad7949_adc_chip *ad7949_ad=
-c)
-> > +{
-> > +	u32 adc_mask =3D SPI_BPW_MASK(ad7949_adc->resolution);
-> > +	u32 bpw =3D adc_mask & ad7949_adc->spi->controller->bits_per_word_mas=
-k;
-> > +
-> > +	if (bpw =3D=3D adc_mask)
->
-> if (bpw) is sufficient I think.
->
-> > +		ad7949_adc->bits_per_word =3D ad7949_adc->resolution;
-> > +	else if (bpw =3D=3D SPI_BPW_MASK(16))
->
-> I'm missing something here... If the resolution is 14, but the SPI
-> controller
-> supports 8 and 16 I'd expect us to hit here . adc_mask will not have the
-> 16bit
-> bit set though so bpw =3D=3D 0..
->
-> else if (ad7949_adc->spi->controller_bits_per_word_mask &
-> SPI_BPW_MASK(16))
->
-> should do the right thing.
->
-> > +		ad7949_adc->bits_per_word =3D 16;
-> > +	else
-> > +		ad7949_adc->bits_per_word =3D 8;
->
-> I'd like a comment here on why this is the right default. Took me a
-> while
-> to think through it.
->
-
-I'll rework this function based on your comments and fail early on
-unsupported cases.
-
-> > +}
-> > +
-> >  static int ad7949_spi_write_cfg(struct ad7949_adc_chip *ad7949_adc, u1=
-6 val,
-> >  				u16 mask)
-> >  {
-> >  	int ret;
-> > -	int bits_per_word =3D ad7949_adc->resolution;
-> > -	int shift =3D bits_per_word - AD7949_CFG_REG_SIZE_BITS;
-> >  	struct spi_message msg;
-> >  	struct spi_transfer tx[] =3D {
-> >  		{
-> >  			.tx_buf =3D &ad7949_adc->buffer,
-> >  			.len =3D 2,
-> > -			.bits_per_word =3D bits_per_word,
-> > +			.bits_per_word =3D ad7949_adc->bits_per_word,
-> >  		},
-> >  	};
-> > =20
-> > +	ad7949_adc->buffer =3D 0;
-> >  	ad7949_adc->cfg =3D (val & mask) | (ad7949_adc->cfg & ~mask);
-> > -	ad7949_adc->buffer =3D ad7949_adc->cfg << shift;
-> > +
-> > +	switch (ad7949_adc->bits_per_word) {
-> > +	case 16:
-> > +		ad7949_adc->buffer =3D ad7949_adc->cfg << 2;
-> > +		break;
-> > +	case 14:
-> > +		ad7949_adc->buffer =3D ad7949_adc->cfg;
-> > +		break;
-> > +	case 8:
-> > +	default:
->
-> Default here should be an error. Imagine a 12 bit device is added. Then
-> the above set_bits_per_word() might return either 12 or 8. If it returns
-> 12 then this is not the right thing to do. I'd argue we want to know
-> about
-> that rather than papering over it. Possibly we want to not let anything
-> other
-> than 14 bits through in set_bits_per_word() so we print an error
-> early...
->
-
-Sorry about that, I added that default case maybe a little too quickly.
-I'll fix that.
-
-> > +		/* Pack 14-bit value into 2 bytes, MSB first */
-> > +		ad7949_adc->buf8[0] =3D FIELD_GET(GENMASK(13, 6), ad7949_adc->cfg);
-> > +		ad7949_adc->buf8[1] =3D FIELD_GET(GENMASK(5, 0), ad7949_adc->cfg);
-> > +		ad7949_adc->buf8[1] =3D ad7949_adc->buf8[1] << 2;
-> > +		break;
-> > +	}
-> > +
-> >  	spi_message_init_with_transfers(&msg, tx, 1);
-> >  	ret =3D spi_sync(ad7949_adc->spi, &msg);
-> > =20
-> > @@ -105,14 +139,12 @@ static int ad7949_spi_read_channel(struct ad7949_=
-adc_chip *ad7949_adc, int *val,
-> >  {
-> >  	int ret;
-> >  	int i;
-> > -	int bits_per_word =3D ad7949_adc->resolution;
-> > -	int mask =3D GENMASK(ad7949_adc->resolution - 1, 0);
-> >  	struct spi_message msg;
-> >  	struct spi_transfer tx[] =3D {
-> >  		{
-> >  			.rx_buf =3D &ad7949_adc->buffer,
-> >  			.len =3D 2,
-> > -			.bits_per_word =3D bits_per_word,
-> > +			.bits_per_word =3D ad7949_adc->bits_per_word,
-> >  		},
-> >  	};
-> > =20
-> > @@ -147,7 +179,25 @@ static int ad7949_spi_read_channel(struct ad7949_a=
-dc_chip *ad7949_adc, int *val,
-> > =20
-> >  	ad7949_adc->current_channel =3D channel;
-> > =20
-> > -	*val =3D ad7949_adc->buffer & mask;
-> > +	switch (ad7949_adc->bits_per_word) {
-> > +	case 16:
-> > +		*val =3D ad7949_adc->buffer;
->
-> buffer is __be16 and *val is an int so this isn't valid.
->
-> Now curious bit is I'm assuming original code worked... Given big endian
-> platforms are rare, that makes me suspect something odd is going on.
-> =20
-
-Hum... that's probably my fault. I changed the type of buffer from u16
-to _be16.
-I'll add calls to be16_to_cpu() around this and the 14 bit case.
-
-> > +		/* Shift-out padding bits */
-> > +		if (ad7949_adc->resolution =3D=3D 14)
-> > +			*val =3D *val >> 2;
->
-> *val >>=3D 16 - ad7949_adc->resolution;
->
-> No one likes conditionals if we don't need them!
-
-Will do.
-
->
->
-> > +		break;
-> > +	case 14:
-> > +		*val =3D ad7949_adc->buffer & GENMASK(13, 0);
-> > +		break;
-> > +	case 8:
-> > +	default:
-> > +		/* Convert byte array to u16, MSB first */
-> > +		*val =3D (ad7949_adc->buf8[0] << 8) | ad7949_adc->buf8[1];
->
-> Use unaligned_get_be16()
->
-> > +		/* Shift-out padding bits */
-> > +		if (ad7949_adc->resolution =3D=3D 14)
-> > +			*val =3D *val >> 2;
->
-> As above make this unconditional.
->
-
-Thanks,
-Liam
-
-> > +		break;
-> > +	}
-> > =20
-> >  	return 0;
-> >  }
-> > @@ -280,6 +330,7 @@ static int ad7949_spi_probe(struct spi_device *spi)
-> >  	spec =3D &ad7949_adc_spec[spi_get_device_id(spi)->driver_data];
-> >  	indio_dev->num_channels =3D spec->num_channels;
-> >  	ad7949_adc->resolution =3D spec->resolution;
-> > +	ad7949_set_bits_per_word(ad7949_adc);
-> > =20
-> >  	ad7949_adc->vref =3D devm_regulator_get(dev, "vref");
-> >  	if (IS_ERR(ad7949_adc->vref)) {
-
+-- 
+Pavel Begunkov
