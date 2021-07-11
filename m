@@ -2,65 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C6C3C3C05
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 13:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A47703C3C0B
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 13:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232705AbhGKL6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 07:58:20 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:52722 "EHLO gloria.sntech.de"
+        id S232783AbhGKL6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 07:58:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229688AbhGKL6S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 07:58:18 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1m2Y3R-0007Bq-TM; Sun, 11 Jul 2021 13:55:25 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Alex Bee <knaerzche@gmail.com>, Lee Jones <lee.jones@linaro.org>
-Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        id S229688AbhGKL6x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Jul 2021 07:58:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C8D5F61090;
+        Sun, 11 Jul 2021 11:56:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626004566;
+        bh=WzhpHgoJ55znqI9v2KgCulY11RVSrhkw90oNP0TAaNo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rfjwd3SrnEITNEfGHks9pZLMimE7BuMh6egQEIoqoSaepy6W8Ye1fCzaKtYPXOjSQ
+         JQMF9CHURnTFGs9BydGrLmr19o/orWyGyk3//Lx9su6Z1nrCjAH6MCxVYBAnFIazRT
+         xS/hVXOi4psGZHwjHUUZYV1t9aCUNjTPsa1V8wvY5MYSIU6mm6oaQ2P+oxkehFVNBY
+         WhAq/YqIYrUM5LoOLZrAgD0WwwkNOkTK4K7yJ6W5HtYOkAQNZ1vkCfdF494qKFlDvo
+         K9CJBDj6IYhCzj/tW2fA2bXGf2Qr8g/y4FD4bisQcsJ2WcsfGw4WZIEEW8Hdl1Dku/
+         nfYtc6Kz3GF6A==
+Date:   Sun, 11 Jul 2021 14:56:01 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Shunyong Yang <yang.shunyong@gmail.com>
+Cc:     bhelgaas@google.com, kishon@ti.com, lorenzo.pieralisi@arm.com,
+        kw@linux.com, linux-pci@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 01/12] dt-bindings: mfd: syscon: add Rockchip RK3036/RK3228 qos compatibles
-Date:   Sun, 11 Jul 2021 13:55:25 +0200
-Message-ID: <3527273.z0yIoBN5P9@diego>
-In-Reply-To: <20210601154651.GE2159518@dell>
-References: <20210525152225.154302-1-knaerzche@gmail.com> <20210527154455.358869-2-knaerzche@gmail.com> <20210601154651.GE2159518@dell>
+Subject: Re: [PATCH] tools: PCI: Zero-initialize param
+Message-ID: <YOrcUcx2PdaBxRQi@unreal>
+References: <20210627003937.6249-1-yang.shunyong@gmail.com>
+ <d4c250af-aa50-0ec0-c66a-104092646e15@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d4c250af-aa50-0ec0-c66a-104092646e15@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee,
-
-Am Dienstag, 1. Juni 2021, 17:46:51 CEST schrieb Lee Jones:
-> On Thu, 27 May 2021, Alex Bee wrote:
+On Sun, Jul 11, 2021 at 09:48:17AM +0800, Shunyong Yang wrote:
+> Hi, Bjorn and Kishon,
 > 
-> > Document Rockchip RK3036/RK3228 qos compatibles
+>   Gentle ping. Would you please help to review and merge this tiny change?
+> 
+> Thansk.
+> 
+> Shunyong.
+> 
+> On 2021/6/27 8:39, Shunyong Yang wrote:
+> > The values in param may be random if they are not initialized, which
+> > may cause use_dma flag set even when "-d" option is not provided
+> > in command line. Initializing all members to 0 to solve this.
 > > 
-> > Signed-off-by: Alex Bee <knaerzche@gmail.com>
-> > Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+> > Signed-off-by: Shunyong Yang <yang.shunyong@gmail.com>
 > > ---
+> >   tools/pci/pcitest.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
 > > 
-> >  Changes in v2:
-> >  - collect Reviewed tag
-> > 
-> >  Documentation/devicetree/bindings/mfd/syscon.yaml | 2 ++
-> >  1 file changed, 2 insertions(+)
-> 
-> Applied, thanks.
+> > diff --git a/tools/pci/pcitest.c b/tools/pci/pcitest.c
+> > index 0a1344c45213..59bcd6220a58 100644
+> > --- a/tools/pci/pcitest.c
+> > +++ b/tools/pci/pcitest.c
+> > @@ -40,7 +40,7 @@ struct pci_test {
+> >   static int run_test(struct pci_test *test)
+> >   {
+> > -	struct pci_endpoint_test_xfer_param param;
+> > +	struct pci_endpoint_test_xfer_param param = {0};
 
-not sure if I'm missing something, but this patch wasn't part of your 5.14?
-And I also don't see it in your for-mfd-next branch. Did it get lost somewhere?
+You can simply write {} instead of {0} - zero is not needed.
 
 Thanks
-Heiko
 
-
+> >   	int ret = -EINVAL;
+> >   	int fd;
