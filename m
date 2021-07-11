@@ -2,606 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C843C3BF2
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 13:40:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2C83C3BFC
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 13:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232650AbhGKLm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 07:42:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46518 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229688AbhGKLm5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 07:42:57 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 576B861220;
-        Sun, 11 Jul 2021 11:40:04 +0000 (UTC)
-Date:   Sun, 11 Jul 2021 12:42:20 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        david@lechnology.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, o.rempel@pengutronix.de,
-        jarkko.nikula@linux.intel.com,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v12 06/17] counter: Internalize sysfs interface code
-Message-ID: <20210711124220.0a601741@jic23-huawei>
-In-Reply-To: <834dadaa68af74c703f19f8ddcca5512dd1d177e.1625471640.git.vilhelm.gray@gmail.com>
-References: <cover.1625471640.git.vilhelm.gray@gmail.com>
-        <834dadaa68af74c703f19f8ddcca5512dd1d177e.1625471640.git.vilhelm.gray@gmail.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S232662AbhGKLuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 07:50:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232376AbhGKLuN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Jul 2021 07:50:13 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E178DC0613DD
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 04:47:26 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id e14so14838914qkl.9
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 04:47:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorfullife-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CBrsDqkq69rAkGnQw9ciaTonWDlFwcC46W319ljmNk8=;
+        b=dt+BBfMnPw925saz6owXUJgZlIvmw2GoPAO9S5263p9qfyg0N5kfHscsLBqcCvIGlr
+         TQnYuYrABRUuhFiM6kP3Ch8wZd324h1G+r5I8NqjBIs2kCwUrQMQWlXt+sKbJ5+0jMVU
+         EvPwGf4/AAhTV3o1ZTcCbVsP9/Fw8lEe1GAO1THQMrVvig/U44qRw+UhrvjT9eyW0qgf
+         t0MGwXb7tV+2VoY73VQxupbK3iiJN+xzdMglDoSgi+DTLJedHcDMiozx26tHfTF6L/hU
+         /v4F7v0HvARfBDYCfHX+4gUA6WqwOMVij1yLibgj7hoaNfLzzw8lAEQLAAjoIv7oBQh5
+         3F6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CBrsDqkq69rAkGnQw9ciaTonWDlFwcC46W319ljmNk8=;
+        b=JidhlKCeSCV/8PbTZ4fM6RqaImV3zykSRh1zCPb3Dqf9Y3wsqkfuepnZdquSoZPMl8
+         gVG59VanMsqRWHCOs1tGX+xtYLgbDIFdO1W3Hkv2ai2tn64Mtt/crKi9nvdAPWkxcAED
+         6puTYVh+Qk+eEbWqb5LdZwsFlwtZF9IuvK8VZBeH2RmmqMsi6LTTOFPGyOH7LzxLpdEM
+         iAu7CZUpejlH9U23DlSuS3Up7MeC9t0Pq+7cT0RuKLrFczpufcxpOHEi2wYnbjNys324
+         seBNGeFV6az6dUTWCtPXzctS8O0jrVz1Yta2C+y0y/WG0liDqI8WMLCk6Dwmuz2q6dtn
+         svQg==
+X-Gm-Message-State: AOAM530EgxSp1iNoMlF+RQGC1JBG7M2XwO6MAK3oFhKRnCRi7XVXnpGm
+        2/KvRbjOf9CVJMdXfvqSHNYoW1BNnmmXALH+28gTDA==
+X-Google-Smtp-Source: ABdhPJyU+LafUpqLY79qvyPUombGeIFpD9TCg2AKkMOkQWWrGJkI/x2Dh7NtV11VV3NiCg4uaq7BvZLk8EEauGyUiIc=
+X-Received: by 2002:a05:620a:7d3:: with SMTP id 19mr343404qkb.351.1626004046097;
+ Sun, 11 Jul 2021 04:47:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210706132259.71740-1-alexander.mikhalitsyn@virtuozzo.com>
+ <20210709181241.cca57cf83c52964b2cd0dcf0@linux-foundation.org>
+ <CAJqdLrpx+xEMGQLZo7jS5BTAw-k2sWPrv9fCt0x8t=6Nbn7u+w@mail.gmail.com>
+ <CALgW_8VUk0us_umLncUv2DUMkOi3qixmT+YkHV4Dhpt_nNMZHw@mail.gmail.com> <CAJqdLrofd76x_hziq7F3wY3jqZfE1LNZbQ8sD6MUFXbPHVcdVw@mail.gmail.com>
+In-Reply-To: <CAJqdLrofd76x_hziq7F3wY3jqZfE1LNZbQ8sD6MUFXbPHVcdVw@mail.gmail.com>
+From:   Manfred Spraul <manfred@colorfullife.com>
+Date:   Sun, 11 Jul 2021 13:46:58 +0200
+Message-ID: <CALgW_8WHq051ifcYPta5reoVZ10=fA5Rb1EZuyaievK+OUw99Q@mail.gmail.com>
+Subject: Re: [PATCH 0/2] shm: omit forced shm destroy if task IPC namespace
+ was changed
+To:     Alexander Mihalicyn <alexander@mihalicyn.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Milton Miller <miltonm@bga.com>,
+        Jack Miller <millerjo@us.ibm.com>,
+        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        Christian Brauner <christian@brauner.io>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  5 Jul 2021 17:18:54 +0900
-William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
-
-> This is a reimplementation of the Generic Counter driver interface.
-> There are no modifications to the Counter subsystem userspace interface,
-> so existing userspace applications should continue to run seamlessly.
-> 
-> The purpose of this patch is to internalize the sysfs interface code
-> among the various counter drivers into a shared module. Counter drivers
-> pass and take data natively (i.e. u8, u64, etc.) and the shared counter
-> module handles the translation between the sysfs interface and the
-> device drivers. This guarantees a standard userspace interface for all
-> counter drivers, and helps generalize the Generic Counter driver ABI in
-> order to support the Generic Counter chrdev interface (introduced in a
-> subsequent patch) without significant changes to the existing counter
-> drivers.
-> 
-> Note, Counter device registration is the same as before: drivers
-> populate a struct counter_device with components and callbacks, then
-> pass the structure to the devm_counter_register function. However,
-> what's different now is how the Counter subsystem code handles this
-> registration internally.
-> 
-> Whereas before callbacks would interact directly with sysfs data, this
-> interaction is now abstracted and instead callbacks interact with native
-> C data types. The counter_comp structure forms the basis for Counter
-> extensions.
-> 
-> The counter-sysfs.c file contains the code to parse through the
-> counter_device structure and register the requested components and
-> extensions. Attributes are created and populated based on type, with
-> respective translation functions to handle the mapping between sysfs and
-> the counter driver callbacks.
-> 
-> The translation performed for each attribute is straightforward: the
-> attribute type and data is parsed from the counter_attribute structure,
-> the respective counter driver read/write callback is called, and sysfs
-> I/O is handled before or after the driver read/write function is called.
-> 
-> Cc: Syed Nayyar Waris <syednwaris@gmail.com>
-> Cc: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-> Cc: Patrick Havelange <patrick.havelange@essensium.com>
-> Cc: Kamel Bouhara <kamel.bouhara@bootlin.com>
-> Cc: Fabrice Gasnier <fabrice.gasnier@st.com>
-> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-> Cc: Alexandre Torgue <alexandre.torgue@st.com>
-> Cc: Dan Carpenter <dan.carpenter@oracle.com>
-> Reviewed-by: David Lechner <david@lechnology.com>
-> Tested-by: David Lechner <david@lechnology.com>
-> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-
-Hi William,
-
-There is some type confusion going on in the stm32_lptim driver that should
-be cleaned up.
-
-A few other minor things but basically looks good to me so I probably won't
-look through this one again for v13 unless some discussion starts!
-
-One to note is that Andy just moved the kstrtoxx definitions to a new header,
-so we should include that where they are used going forwards.  Can do that
-as a cleanup later though given you probably don't want to rebase this on
-a mid merge window state.
-
-Jonathan
+Hi Alex,
 
 
-> ---
+Am Sonntag, 11. Juli 2021 schrieb Alexander Mihalicyn <alexander@mihalicyn.com>:
+>
+> Hi, Manfred,
+>
+> On Sun, Jul 11, 2021 at 12:13 PM Manfred Spraul
+> <manfred@colorfullife.com> wrote:
+> >
+> > Hi,
+> >
+> >
+> > Am Samstag, 10. Juli 2021 schrieb Alexander Mihalicyn <alexander@mihalicyn.com>:
+> >>
+> >>
+> >> Now, using setns() syscall, we can construct situation when on
+> >> task->sysvshm.shm_clist list
+> >> we have shm items from several (!) IPC namespaces.
+> >>
+> >>
+> > Does this imply that locking ist affected as well? According to the initial patch, accesses to shm_clist are protected by "the" IPC shm namespace rwsem. This can't work if the list contains objects from several namespaces.
+>
+> Of course, you are right. I've to rework this part -> I can add check into
+> static int newseg(struct ipc_namespace *ns, struct ipc_params *params)
+> function and before adding new shm into task list check that list is empty OR
+> an item which is present on the list from the same namespace as
+> current->nsproxy->ipc_ns.
+>
+Ok. (Sorry, I have only smartphone internet, thus I could not check
+the patch fully)
 
-...
+> >> I've proposed a change which keeps the old behaviour of setns() but
+> >> fixes double free.
+> >>
+> > Assuming that locking works, I would consider this as a namespace design question: Do we want to support that a task contains shm objects from several ipc namespaces?
+>
+> This depends on what we mean by "task contains shm objects from
+> several ipc namespaces". There are two meanings:
+>
+> 1. Task has attached shm object from different ipc namespaces
+>
+> We already support that by design. When we doing a change of namespace
+> using unshare(CLONE_NEWIPC) even with
+> sysctl shm_rmid_forced=1 we not detach all ipc's from task!
 
-> diff --git a/drivers/counter/counter-sysfs.c b/drivers/counter/counter-sysfs.c
-> new file mode 100644
-> index 000000000000..07588130600a
-> --- /dev/null
-> +++ b/drivers/counter/counter-sysfs.c
+OK. Thus shm and sem have different behavior anyways.
 
+>
+> 2. Task task->sysvshm.shm_clist list has items from different IPC namespaces.
+>
+> I'm not sure, do we need that or not. But I'm ready to prepare a patch
+> for any of the options which we choose:
+> a) just add exit_shm(current)+shm_init_task(current);
+> b) prepare PATCHv2 with appropriate check in the newseg() to prevent
+> adding new items from different namespace to the list
+> c) rework algorithm so we can safely have items from different
+> namespaces in task->sysvshm.shm_clist
+>
+Before you write something, let's wait what the others say. I don't
+qualify AS shm expert
 
-...
+a) is user space visible, without any good excuse
+c) is probably highest amount of Changes
+b) Impact for me not clear. Would it mean that shm_rmid_forced would
+stop to work after setns()
 
-> +static ssize_t counter_comp_u8_show(struct device *dev,
-> +				    struct device_attribute *attr, char *buf)
-> +{
-> +	const struct counter_attribute *const a = to_counter_attribute(attr);
-> +	struct counter_device *const counter = dev_get_drvdata(dev);
-> +	int err;
-> +	u8 data = 0;
-> +
-> +	switch (a->scope) {
-> +	case COUNTER_SCOPE_DEVICE:
-> +		err = a->comp.device_u8_read(counter, &data);
-> +		break;
-> +	case COUNTER_SCOPE_SIGNAL:
-> +		err = a->comp.signal_u8_read(counter, a->parent, &data);
-> +		break;
-> +	case COUNTER_SCOPE_COUNT:
-> +		err = a->comp.count_u8_read(counter, a->parent, &data);
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +	if (err < 0)
-> +		return err;
-> +
-> +	if (a->comp.type == COUNTER_COMP_BOOL)
-> +		data = !!data;
+Correct?
 
-You have some drivers that do this internally then you replicate it here?
-An example is cable_fault in the quad 8.  That is not necessarily a
-problem, but perhaps a comment to say this one should be paranoia and
-expectation is drivers will deliver 0 or 1.
-
-> +
-> +	return sprintf(buf, "%u\n", (unsigned int)data);
-> +}
-> +
-
-
-...
-
-> +static int counter_sysfs_attr_add(struct counter_device *const counter,
-> +				  struct counter_attribute_group *group)
-
-As below, group is a confusing name, so I'd prefix it with something.
-
-> +{
-> +	const enum counter_scope scope = COUNTER_SCOPE_DEVICE;
-> +	struct device *const dev = &counter->dev;
-> +	int err;
-> +	size_t i;
-> +
-> +	/* Add Signals sysfs attributes */
-> +	err = counter_sysfs_signals_add(counter, group);
-> +	if (err < 0)
-> +		return err;
-> +	group += counter->num_signals;
-> +
-> +	/* Add Counts sysfs attributes */
-> +	err = counter_sysfs_counts_add(counter, group);
-> +	if (err < 0)
-> +		return err;
-> +	group += counter->num_counts;
-> +
-> +	/* Create name attribute */
-> +	err = counter_name_attr_create(dev, group, counter->name);
-> +	if (err < 0)
-> +		return err;
-> +
-> +	/* Create num_signals attribute */
-> +	err = counter_attr_create(dev, group, &counter_num_signals_comp, scope,
-> +				  NULL);
-> +	if (err < 0)
-> +		return err;
-> +
-> +	/* Create num_counts attribute */
-> +	err = counter_attr_create(dev, group, &counter_num_counts_comp, scope,
-> +				  NULL);
-> +	if (err < 0)
-> +		return err;
-> +
-> +	/* Create an attribute for each extension */
-> +	for (i = 0; i < counter->num_ext; i++) {
-> +		err = counter_attr_create(dev, group, counter->ext + i, scope,
-> +					  NULL);
-> +		if (err < 0)
-> +			return err;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * counter_sysfs_add - Adds Counter sysfs attributes to the device structure
-> + * @counter:	Pointer to the Counter device structure
-> + *
-> + * Counter sysfs attributes are created and added to the respective device
-> + * structure for later registration to the system. Resource-managed memory
-> + * allocation is performed by this function, and this memory should be freed
-> + * when no longer needed (automatically by a device_unregister call, or
-> + * manually by a devres_release_all call).
-> + */
-> +int counter_sysfs_add(struct counter_device *const counter)
-> +{
-> +	struct device *const dev = &counter->dev;
-> +	const size_t num_groups = counter->num_signals + counter->num_counts + 1;
-> +	struct counter_attribute_group *groups;
-
-Naming is a bit too similar to 'group' to lead to nice readable code.  Maybe
-cattr_groups or something like that?  groups and dev->groups not being the same
-thing is definitely confusing!
-
-> +	size_t i, j;
-> +	int err;
-> +	struct attribute_group *group;
-> +	struct counter_attribute *p;
-> +
-> +	/* Allocate space for attribute groups (signals, counts, and ext) */
-> +	groups = devm_kcalloc(dev, num_groups, sizeof(*groups), GFP_KERNEL);
-> +	if (!groups)
-> +		return -ENOMEM;
-> +
-> +	/* Initialize attribute lists */
-> +	for (i = 0; i < num_groups; i++)
-> +		INIT_LIST_HEAD(&groups[i].attr_list);
-> +
-> +	/* Add Counter device sysfs attributes */
-> +	err = counter_sysfs_attr_add(counter, groups);
-> +	if (err < 0)
-> +		return err;
-> +
-> +	/* Allocate attribute groups for association with device */
-> +	dev->groups = devm_kcalloc(dev, num_groups + 1, sizeof(*dev->groups),
-> +				   GFP_KERNEL);
-> +	if (!dev->groups)
-> +		return -ENOMEM;
-> +
-> +	/* Prepare each group of attributes for association */
-> +	for (i = 0; i < num_groups; i++) {
-> +		/* Allocate space for attribute group */
-> +		group = devm_kzalloc(dev, sizeof(*group), GFP_KERNEL);
-> +		if (!group)
-> +			return -ENOMEM;
-
-Slight nitpick, is I'd have been tempted to reduce the number of allocations
-by doing this as a single array allocation then use the groups within this
-loop.  Really trivial though!
-
-> +		group->name = groups[i].name;
-> +
-> +		/* Allocate space for attribute pointers */
-> +		group->attrs = devm_kcalloc(dev, groups[i].num_attr + 1,
-> +					    sizeof(*group->attrs), GFP_KERNEL);
-> +		if (!group->attrs)
-> +			return -ENOMEM;
-> +
-> +		/* Add attribute pointers to attribute group */
-> +		j = 0;
-> +		list_for_each_entry(p, &groups[i].attr_list, l)
-> +			group->attrs[j++] = &p->dev_attr.attr;
-> +
-> +		/* Associate attribute group */
-> +		dev->groups[i] = group;
-> +	}
-> +
-> +	return 0;
-> +}
-
-
-
-...
-
-> diff --git a/drivers/counter/stm32-lptimer-cnt.c b/drivers/counter/stm32-lptimer-cnt.c
-> index 13656957c45f..aef78a4217b5 100644
-> --- a/drivers/counter/stm32-lptimer-cnt.c
-> +++ b/drivers/counter/stm32-lptimer-cnt.c
-> @@ -17,6 +17,7 @@
->  #include <linux/module.h>
->  #include <linux/pinctrl/consumer.h>
->  #include <linux/platform_device.h>
-> +#include <linux/types.h>
->  
->  struct stm32_lptim_cnt {
->  	struct counter_device counter;
-> @@ -130,32 +131,46 @@ static int stm32_lptim_setup(struct stm32_lptim_cnt *priv, int enable)
->   * +---------+----------+----------+---------+----------+---------+
->   */
->  enum stm32_lptim_cnt_function {
-> -	STM32_LPTIM_COUNTER_INCREASE,
-> -	STM32_LPTIM_ENCODER_BOTH_EDGE,
-> +	STM32_LPTIM_COUNTER_INCREASE = COUNTER_FUNCTION_INCREASE,
-> +	STM32_LPTIM_ENCODER_BOTH_EDGE = COUNTER_FUNCTION_QUADRATURE_X4,
->  };
->  
->  static const enum counter_function stm32_lptim_cnt_functions[] = {
-> -	[STM32_LPTIM_COUNTER_INCREASE] = COUNTER_FUNCTION_INCREASE,
-> -	[STM32_LPTIM_ENCODER_BOTH_EDGE] = COUNTER_FUNCTION_QUADRATURE_X4,
-> +	STM32_LPTIM_COUNTER_INCREASE,
-> +	STM32_LPTIM_ENCODER_BOTH_EDGE,
->  };
->  
->  enum stm32_lptim_synapse_action {
-> +	/* Index must match with stm32_lptim_cnt_polarity[] (priv->polarity) */
->  	STM32_LPTIM_SYNAPSE_ACTION_RISING_EDGE,
->  	STM32_LPTIM_SYNAPSE_ACTION_FALLING_EDGE,
->  	STM32_LPTIM_SYNAPSE_ACTION_BOTH_EDGES,
->  	STM32_LPTIM_SYNAPSE_ACTION_NONE,
->  };
->  
-> -static const enum counter_synapse_action stm32_lptim_cnt_synapse_actions[] = {
-> -	/* Index must match with stm32_lptim_cnt_polarity[] (priv->polarity) */
-> +static const enum stm32_lptim_synapse_action stm32_lptim_c2l_actions_map[] = {
-> +	[COUNTER_SYNAPSE_ACTION_RISING_EDGE] = STM32_LPTIM_SYNAPSE_ACTION_RISING_EDGE,
-> +	[COUNTER_SYNAPSE_ACTION_FALLING_EDGE] = STM32_LPTIM_SYNAPSE_ACTION_FALLING_EDGE,
-> +	[COUNTER_SYNAPSE_ACTION_BOTH_EDGES] = STM32_LPTIM_SYNAPSE_ACTION_BOTH_EDGES,
-> +	[COUNTER_SYNAPSE_ACTION_NONE] = STM32_LPTIM_SYNAPSE_ACTION_NONE,
-> +};
-> +
-> +static const enum counter_synapse_action stm32_lptim_l2c_actions_map[] = {
->  	[STM32_LPTIM_SYNAPSE_ACTION_RISING_EDGE] = COUNTER_SYNAPSE_ACTION_RISING_EDGE,
->  	[STM32_LPTIM_SYNAPSE_ACTION_FALLING_EDGE] = COUNTER_SYNAPSE_ACTION_FALLING_EDGE,
->  	[STM32_LPTIM_SYNAPSE_ACTION_BOTH_EDGES] = COUNTER_SYNAPSE_ACTION_BOTH_EDGES,
->  	[STM32_LPTIM_SYNAPSE_ACTION_NONE] = COUNTER_SYNAPSE_ACTION_NONE,
->  };
->  
-> +static const enum counter_synapse_action stm32_lptim_cnt_synapse_actions[] = {
-> +	COUNTER_SYNAPSE_ACTION_RISING_EDGE,
-> +	COUNTER_SYNAPSE_ACTION_FALLING_EDGE,
-> +	COUNTER_SYNAPSE_ACTION_BOTH_EDGES,
-> +	COUNTER_SYNAPSE_ACTION_NONE,
-> +};
-> +
->  static int stm32_lptim_cnt_read(struct counter_device *counter,
-> -				struct counter_count *count, unsigned long *val)
-> +				struct counter_count *count, u64 *val)
->  {
->  	struct stm32_lptim_cnt *const priv = counter->priv;
->  	u32 cnt;
-> @@ -170,9 +185,9 @@ static int stm32_lptim_cnt_read(struct counter_device *counter,
->  	return 0;
->  }
->  
-> -static int stm32_lptim_cnt_function_get(struct counter_device *counter,
-> -					struct counter_count *count,
-> -					size_t *function)
-> +static int stm32_lptim_cnt_function_read(struct counter_device *counter,
-> +					 struct counter_count *count,
-> +					 enum counter_function *function)
->  {
->  	struct stm32_lptim_cnt *const priv = counter->priv;
->  
-> @@ -189,9 +204,9 @@ static int stm32_lptim_cnt_function_get(struct counter_device *counter,
->  	return -EINVAL;
->  }
->  
-> -static int stm32_lptim_cnt_function_set(struct counter_device *counter,
-> -					struct counter_count *count,
-> -					size_t function)
-> +static int stm32_lptim_cnt_function_write(struct counter_device *counter,
-> +					  struct counter_count *count,
-> +					  enum counter_function function)
-
-As mentioned below, there is a bit of a mess of types here that you should clean up.
-
->  {
->  	struct stm32_lptim_cnt *const priv = counter->priv;
->  
-> @@ -212,9 +227,9 @@ static int stm32_lptim_cnt_function_set(struct counter_device *counter,
->  	}
->  }
->  
-> -static ssize_t stm32_lptim_cnt_enable_read(struct counter_device *counter,
-> -					   struct counter_count *count,
-> -					   void *private, char *buf)
-> +static int stm32_lptim_cnt_enable_read(struct counter_device *counter,
-> +				       struct counter_count *count,
-> +				       u8 *enable)
->  {
->  	struct stm32_lptim_cnt *const priv = counter->priv;
->  	int ret;
-> @@ -223,22 +238,18 @@ static ssize_t stm32_lptim_cnt_enable_read(struct counter_device *counter,
->  	if (ret < 0)
->  		return ret;
->  
-> -	return scnprintf(buf, PAGE_SIZE, "%u\n", ret);
-> +	*enable = ret;
-> +
-> +	return 0;
->  }
->  
-> -static ssize_t stm32_lptim_cnt_enable_write(struct counter_device *counter,
-> -					    struct counter_count *count,
-> -					    void *private,
-> -					    const char *buf, size_t len)
-> +static int stm32_lptim_cnt_enable_write(struct counter_device *counter,
-> +					struct counter_count *count,
-> +					u8 enable)
->  {
->  	struct stm32_lptim_cnt *const priv = counter->priv;
-> -	bool enable;
->  	int ret;
->  
-> -	ret = kstrtobool(buf, &enable);
-> -	if (ret)
-> -		return ret;
-> -
->  	/* Check nobody uses the timer, or already disabled/enabled */
->  	ret = stm32_lptim_is_enabled(priv);
->  	if ((ret < 0) || (!ret && !enable))
-> @@ -254,65 +265,54 @@ static ssize_t stm32_lptim_cnt_enable_write(struct counter_device *counter,
->  	if (ret)
->  		return ret;
->  
-> -	return len;
-> +	return 0;
->  }
->  
-> -static ssize_t stm32_lptim_cnt_ceiling_read(struct counter_device *counter,
-> -					    struct counter_count *count,
-> -					    void *private, char *buf)
-> +static int stm32_lptim_cnt_ceiling_read(struct counter_device *counter,
-> +					struct counter_count *count,
-> +					u64 *ceiling)
->  {
->  	struct stm32_lptim_cnt *const priv = counter->priv;
->  
-> -	return snprintf(buf, PAGE_SIZE, "%u\n", priv->ceiling);
-> +	*ceiling = priv->ceiling;
-> +
-> +	return 0;
->  }
->  
-> -static ssize_t stm32_lptim_cnt_ceiling_write(struct counter_device *counter,
-> -					     struct counter_count *count,
-> -					     void *private,
-> -					     const char *buf, size_t len)
-> +static int stm32_lptim_cnt_ceiling_write(struct counter_device *counter,
-> +					 struct counter_count *count,
-> +					 u64 ceiling)
->  {
->  	struct stm32_lptim_cnt *const priv = counter->priv;
-> -	unsigned int ceiling;
-> -	int ret;
->  
->  	if (stm32_lptim_is_enabled(priv))
->  		return -EBUSY;
->  
-> -	ret = kstrtouint(buf, 0, &ceiling);
-> -	if (ret)
-> -		return ret;
-> -
->  	if (ceiling > STM32_LPTIM_MAX_ARR)
->  		return -ERANGE;
->  
->  	priv->ceiling = ceiling;
->  
-> -	return len;
-> +	return 0;
->  }
->  
-> -static const struct counter_count_ext stm32_lptim_cnt_ext[] = {
-> -	{
-> -		.name = "enable",
-> -		.read = stm32_lptim_cnt_enable_read,
-> -		.write = stm32_lptim_cnt_enable_write
-> -	},
-> -	{
-> -		.name = "ceiling",
-> -		.read = stm32_lptim_cnt_ceiling_read,
-> -		.write = stm32_lptim_cnt_ceiling_write
-> -	},
-> +static struct counter_comp stm32_lptim_cnt_ext[] = {
-> +	COUNTER_COMP_ENABLE(stm32_lptim_cnt_enable_read,
-> +			    stm32_lptim_cnt_enable_write),
-> +	COUNTER_COMP_CEILING(stm32_lptim_cnt_ceiling_read,
-> +			     stm32_lptim_cnt_ceiling_write),
->  };
->  
-> -static int stm32_lptim_cnt_action_get(struct counter_device *counter,
-> -				      struct counter_count *count,
-> -				      struct counter_synapse *synapse,
-> -				      size_t *action)
-> +static int stm32_lptim_cnt_action_read(struct counter_device *counter,
-> +				       struct counter_count *count,
-> +				       struct counter_synapse *synapse,
-> +				       enum counter_synapse_action *action)
->  {
->  	struct stm32_lptim_cnt *const priv = counter->priv;
-> -	size_t function;
-> +	enum counter_function function;
->  	int err;
->  
-> -	err = stm32_lptim_cnt_function_get(counter, count, &function);
-> +	err = stm32_lptim_cnt_function_read(counter, count, &function);
->  	if (err)
->  		return err;
->  
-> @@ -320,12 +320,12 @@ static int stm32_lptim_cnt_action_get(struct counter_device *counter,
->  	case STM32_LPTIM_COUNTER_INCREASE:
->  		/* LP Timer acts as up-counter on input 1 */
->  		if (synapse->signal->id == count->synapses[0].signal->id)
-> -			*action = priv->polarity;
-> +			*action = stm32_lptim_l2c_actions_map[priv->polarity];
->  		else
-> -			*action = STM32_LPTIM_SYNAPSE_ACTION_NONE;
-> +			*action = COUNTER_SYNAPSE_ACTION_NONE;
->  		return 0;
->  	case STM32_LPTIM_ENCODER_BOTH_EDGE:
-> -		*action = priv->polarity;
-> +		*action = stm32_lptim_l2c_actions_map[priv->polarity];
->  		return 0;
->  	default:
->  		/* should never reach this path */
-> @@ -333,43 +333,39 @@ static int stm32_lptim_cnt_action_get(struct counter_device *counter,
->  	}
->  }
->  
-> -static int stm32_lptim_cnt_action_set(struct counter_device *counter,
-> -				      struct counter_count *count,
-> -				      struct counter_synapse *synapse,
-> -				      size_t action)
-> +static int stm32_lptim_cnt_action_write(struct counter_device *counter,
-> +					struct counter_count *count,
-> +					struct counter_synapse *synapse,
-> +					enum counter_synapse_action action)
->  {
->  	struct stm32_lptim_cnt *const priv = counter->priv;
-> -	size_t function;
-> +	enum counter_function function;
->  	int err;
->  
->  	if (stm32_lptim_is_enabled(priv))
->  		return -EBUSY;
->  
-> -	err = stm32_lptim_cnt_function_get(counter, count, &function);
-> +	err = stm32_lptim_cnt_function_read(counter, count, &function);
->  	if (err)
->  		return err;
->  
->  	/* only set polarity when in counter mode (on input 1) */
-> -	if (function == STM32_LPTIM_COUNTER_INCREASE
-> -	    && synapse->signal->id == count->synapses[0].signal->id) {
-> -		switch (action) {
-> -		case STM32_LPTIM_SYNAPSE_ACTION_RISING_EDGE:
-> -		case STM32_LPTIM_SYNAPSE_ACTION_FALLING_EDGE:
-> -		case STM32_LPTIM_SYNAPSE_ACTION_BOTH_EDGES:
-> -			priv->polarity = action;
-> -			return 0;
-> -		}
-> -	}
-> +	if ((enum stm32_lptim_cnt_function)function != STM32_LPTIM_COUNTER_INCREASE
-
-This bothers me a little. Why are you casting from enum counter_function to enum stm32_lptim_cnt_function?
-That function is indeed putting an enum stm32_lptim_cnt_function into function and it really shouldn't
-be.  Whilst the values of the enums are the same, it would be better to have explicit item by
-item conversion if that's necessary.  I 'think' you can just get rid of the
-enum stm32_lptim_cnt_function though and use the counter one throughout the driver.
-
-If you want to keep changes minimal, put a conversion function in place.
-
-> +	    || synapse->signal->id != count->synapses[0].signal->id
-> +	    || action == COUNTER_SYNAPSE_ACTION_NONE)
-> +		return -EINVAL;
->  
-> -	return -EINVAL;
-> +	priv->polarity = stm32_lptim_c2l_actions_map[action];
-> +
-> +	return 0;
->  }
->  
->  static const struct counter_ops stm32_lptim_cnt_ops = {
->  	.count_read = stm32_lptim_cnt_read,
-> -	.function_get = stm32_lptim_cnt_function_get,
-> -	.function_set = stm32_lptim_cnt_function_set,
-> -	.action_get = stm32_lptim_cnt_action_get,
-> -	.action_set = stm32_lptim_cnt_action_set,
-> +	.function_read = stm32_lptim_cnt_function_read,
-> +	.function_write = stm32_lptim_cnt_function_write,
-> +	.action_read = stm32_lptim_cnt_action_read,
-> +	.action_write = stm32_lptim_cnt_action_write,
->  };
->  
->  static struct counter_signal stm32_lptim_cnt_signals[] = {
-
+--
+   Manfred
