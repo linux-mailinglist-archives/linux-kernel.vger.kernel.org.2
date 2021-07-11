@@ -2,160 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FD0A3C3D0B
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 15:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B233C3D0F
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 15:40:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233034AbhGKNkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 09:40:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49670 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233186AbhGKNj4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 09:39:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65A55613BE;
-        Sun, 11 Jul 2021 13:37:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626010629;
-        bh=EA+8ZaxGT189GQkRT4MyyUpyFhpU0OscBHCXHquT7pY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hW8laBCQicDcEORU6dyr71h2iympcLwMkxaYXh2gF4hBiiqrxPjPFdeDGUktIQwrb
-         7F6F6tE529ATwn0o+XEC0q2c9oQX4h/EJBbDgU1vdv86J17r/YLkgaJlcMOikhOEEP
-         Z+QEH8M1Qjd05Ac18Yz8V1RXJU9CotL5EVZpJYc7yPYyjc1HAhra+dsxYE+xd7KClg
-         nnmpHmj7QQAG4x6Ym4i+TdYaRDhcdJavl3jp+rLWn9KicE7qRv40xPO9q6/cCO1Lg6
-         KmkDTBajyv0eEgNyjz5uZLrLS5nJxrdYJoygHC2JCqa75oRtpXqcJxp5b5nlu6Ka86
-         sHrBu6aVNN5sg==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
-        yhs@fb.com, linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: [PATCH -tip v9 14/14] x86/kprobes: Fixup return address in generic trampoline handler
-Date:   Sun, 11 Jul 2021 22:37:06 +0900
-Message-Id: <162601062597.1318837.16157770826588124346.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <162601048053.1318837.1550594515476777588.stgit@devnote2>
-References: <162601048053.1318837.1550594515476777588.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S232935AbhGKNnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 09:43:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232544AbhGKNnU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Jul 2021 09:43:20 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B06C0613DD
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 06:40:33 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id c17so27719264ejk.13
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 06:40:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=HhngoEJSkbQEoJJyLEArTQq/2LlVlkBzYrfwiJJ+96A=;
+        b=OtIsGU2VKjbh1hj9TV87ULh+UylJ0sxDnPKIRWkNXrY5yucEgKTS2v8rAk7D8H4RRF
+         AIPYfamGibFBgp5iFpZGBWz64RgHJsuZLX1jQ62LmUehBbJsexYkW/45EMh8rIrcvFgU
+         +rZHGBYVxfWUw5GafR62poyYN0KuZwpHlW3w02lODoC2CxewhKdvlERWVZLDNedw9Vlp
+         lRIpGIAfuADOWAgAehPBbAIlhLoYmX6pMN6fX2QkRMbMworA3PZUVNctGFMrYw6rFboP
+         hB53Hn4cVNYYphvPDYvQWcMKLDwK/J2MippZ5KOmt0YO7U7teFkMp2E+6H7J0efJ1p3A
+         B2Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=HhngoEJSkbQEoJJyLEArTQq/2LlVlkBzYrfwiJJ+96A=;
+        b=pSK20rOZ0eiFhoYrvObCrs8UF0lUhYbFHP+KRUlZyiO+EzQ6GyjMTPWn+MmmuGBFrX
+         DYQsF+jI3Cp4hpxe25f4PsTPkEwnUwnfWxrLohNvjlU50DCUzujqjCq0kxxTykVc+1G5
+         phcCpjyYnPxMsKa/w7FZ0mmTFZzRBrY2erTqj6ZU7RiZWMhMpLLYHuRll5NGavrbvfML
+         AwOklyQuY2wwBoO37TvRSk+SQDDd9y+WheDkWcrJNrhdLMDzr07LGOQLlz2GkcG6njGS
+         QS7ZdHJAk53+PFeQCkG81Odm9pDSJKfUz537UvxCk5A84X8/y5ItGjNC5GZXlUDRrooG
+         UZKA==
+X-Gm-Message-State: AOAM531uW5QBa9q8VWUy75Hw5n35lWS0dGfDOP9k9Mwmt0/FTTwKHt4j
+        gPEJ3k/sbTP6hOszLPBVxyplqkbgC5E=
+X-Google-Smtp-Source: ABdhPJw+AQXIqgNKTU14ouku/kcoVDHwinG+mH/tstGQ0tqc3hXPa4/ytZ2GlFIVLThWqdW2jTxthg==
+X-Received: by 2002:a17:907:7683:: with SMTP id jv3mr19699525ejc.272.1626010831952;
+        Sun, 11 Jul 2021 06:40:31 -0700 (PDT)
+Received: from gmail.com (77-234-64-154.pool.digikabel.hu. [77.234.64.154])
+        by smtp.gmail.com with ESMTPSA id ze15sm5114146ejb.79.2021.07.11.06.40.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Jul 2021 06:40:31 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Sun, 11 Jul 2021 15:40:29 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [GIT PULL] IRQ fixes
+Message-ID: <YOr0zV5US6ajbTaM@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In x86, the fake return address on the stack saved by
-__kretprobe_trampoline() will be replaced with the real return
-address after returning from trampoline_handler(). Before fixing
-the return address, the real return address can be found in the
-'current->kretprobe_instances'.
+Linus,
 
-However, since there is a window between updating the
-'current->kretprobe_instances' and fixing the address on the stack,
-if an interrupt happens at that timing and the interrupt handler
-does stacktrace, it may fail to unwind because it can not get
-the correct return address from 'current->kretprobe_instances'.
+Please pull the latest irq/urgent git tree from:
 
-This will eliminate that window by fixing the return address
-right before updating 'current->kretprobe_instances'.
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq-urgent-2021-07-11
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Tested-by: Andrii Nakryiko <andrii@kernel.org>
----
- Changes in v9:
-  - Fixes the changelog. This can eliminate the window.
-  - Add more comment how it works.
- Changes in v7:
-  - Add a prototype for arch_kretprobe_fixup_return()
----
- arch/x86/kernel/kprobes/core.c |   18 ++++++++++++++++--
- include/linux/kprobes.h        |    3 +++
- kernel/kprobes.c               |   11 +++++++++++
- 3 files changed, 30 insertions(+), 2 deletions(-)
+   # HEAD: 48400483565f0b7e633cbef94b139ff295b59de3 Merge tag 'irqchip-fixes-5.14-1' of git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/urgent
 
-diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-index 7e1111c19605..fce99e249d61 100644
---- a/arch/x86/kernel/kprobes/core.c
-+++ b/arch/x86/kernel/kprobes/core.c
-@@ -1065,6 +1065,16 @@ NOKPROBE_SYMBOL(__kretprobe_trampoline);
-  */
- STACK_FRAME_NON_STANDARD_FP(__kretprobe_trampoline);
+Two fixes:
+
+ - Fix a MIPS IRQ handling RCU bug
+ - Remove a DocBook annotation for a parameter that doesn't exist anymore
+
+ Thanks,
+
+	Ingo
+
+------------------>
+Marc Zyngier (1):
+      irqchip/mips: Fix RCU violation when using irqdomain lookup on interrupt entry
+
+Randy Dunlap (1):
+      genirq/irqdesc: Drop excess kernel-doc entry @lookup
+
+
+ arch/mips/include/asm/irq.h      |  3 +++
+ arch/mips/kernel/irq.c           | 16 ++++++++++++++++
+ drivers/irqchip/irq-mips-cpu.c   | 10 ++++++----
+ drivers/irqchip/irq-mips-gic.c   |  8 ++++----
+ drivers/irqchip/irq-pic32-evic.c |  5 ++---
+ kernel/irq/irqdesc.c             |  1 -
+ 6 files changed, 31 insertions(+), 12 deletions(-)
+
+diff --git a/arch/mips/include/asm/irq.h b/arch/mips/include/asm/irq.h
+index d1477ecb1af9..57561e0e6e8d 100644
+--- a/arch/mips/include/asm/irq.h
++++ b/arch/mips/include/asm/irq.h
+@@ -57,6 +57,9 @@ asmlinkage void plat_irq_dispatch(void);
  
-+/* This is called from kretprobe_trampoline_handler(). */
-+void arch_kretprobe_fixup_return(struct pt_regs *regs,
-+				 kprobe_opcode_t *correct_ret_addr)
-+{
-+	unsigned long *frame_pointer = &regs->sp + 1;
+ extern void do_IRQ(unsigned int irq);
+ 
++struct irq_domain;
++extern void do_domain_IRQ(struct irq_domain *domain, unsigned int irq);
 +
-+	/* Replace fake return address with real one. */
-+	*frame_pointer = (unsigned long)correct_ret_addr;
-+}
-+
- /*
-  * Called from __kretprobe_trampoline
-  */
-@@ -1082,8 +1092,12 @@ __used __visible void trampoline_handler(struct pt_regs *regs)
- 	regs->sp += sizeof(long);
- 	frame_pointer = &regs->sp + 1;
+ extern void arch_init_irq(void);
+ extern void spurious_interrupt(void);
  
--	/* Replace fake return address with real one. */
--	*frame_pointer = kretprobe_trampoline_handler(regs, frame_pointer);
-+	/*
-+	 * The return address at 'frame_pointer' is recovered by the
-+	 * arch_kretprobe_fixup_return() which called from the
-+	 * kretprobe_trampoline_handler().
-+	 */
-+	kretprobe_trampoline_handler(regs, frame_pointer);
+diff --git a/arch/mips/kernel/irq.c b/arch/mips/kernel/irq.c
+index 85b6c60f285d..d20e002b3246 100644
+--- a/arch/mips/kernel/irq.c
++++ b/arch/mips/kernel/irq.c
+@@ -21,6 +21,7 @@
+ #include <linux/kallsyms.h>
+ #include <linux/kgdb.h>
+ #include <linux/ftrace.h>
++#include <linux/irqdomain.h>
  
- 	/*
- 	 * Copy FLAGS to 'pt_regs::sp' so that __kretprobe_trapmoline()
-diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-index 4715a67d39fc..bfd73263496e 100644
---- a/include/linux/kprobes.h
-+++ b/include/linux/kprobes.h
-@@ -188,6 +188,9 @@ extern void arch_prepare_kretprobe(struct kretprobe_instance *ri,
- 				   struct pt_regs *regs);
- extern int arch_trampoline_kprobe(struct kprobe *p);
- 
-+void arch_kretprobe_fixup_return(struct pt_regs *regs,
-+				 kprobe_opcode_t *correct_ret_addr);
-+
- void __kretprobe_trampoline(void);
- /*
-  * Since some architecture uses structured function pointer,
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index e7c75725934b..ab861b4bd6dd 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1909,6 +1909,15 @@ unsigned long kretprobe_find_ret_addr(struct task_struct *tsk, void *fp,
+ #include <linux/atomic.h>
+ #include <linux/uaccess.h>
+@@ -107,3 +108,18 @@ void __irq_entry do_IRQ(unsigned int irq)
+ 	irq_exit();
  }
- NOKPROBE_SYMBOL(kretprobe_find_ret_addr);
  
-+void __weak arch_kretprobe_fixup_return(struct pt_regs *regs,
-+					kprobe_opcode_t *correct_ret_addr)
++#ifdef CONFIG_IRQ_DOMAIN
++void __irq_entry do_domain_IRQ(struct irq_domain *domain, unsigned int hwirq)
 +{
-+	/*
-+	 * Do nothing by default. Please fill this to update the fake return
-+	 * address on the stack with the correct one on each arch if possible.
-+	 */
++	struct irq_desc *desc;
++
++	irq_enter();
++	check_stack_overflow();
++
++	desc = irq_resolve_mapping(domain, hwirq);
++	if (likely(desc))
++		handle_irq_desc(desc);
++
++	irq_exit();
 +}
-+
- unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
- 					     void *frame_pointer)
++#endif
+diff --git a/drivers/irqchip/irq-mips-cpu.c b/drivers/irqchip/irq-mips-cpu.c
+index 0bbb0b2d0dd5..0c7ae71a0af0 100644
+--- a/drivers/irqchip/irq-mips-cpu.c
++++ b/drivers/irqchip/irq-mips-cpu.c
+@@ -127,7 +127,6 @@ static struct irq_chip mips_mt_cpu_irq_controller = {
+ asmlinkage void __weak plat_irq_dispatch(void)
  {
-@@ -1954,6 +1963,8 @@ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
- 		first = first->next;
- 	}
+ 	unsigned long pending = read_c0_cause() & read_c0_status() & ST0_IM;
+-	unsigned int virq;
+ 	int irq;
  
-+	arch_kretprobe_fixup_return(regs, correct_ret_addr);
+ 	if (!pending) {
+@@ -137,12 +136,15 @@ asmlinkage void __weak plat_irq_dispatch(void)
+ 
+ 	pending >>= CAUSEB_IP;
+ 	while (pending) {
++		struct irq_domain *d;
 +
- 	/* Unlink all nodes for this frame. */
- 	first = current->kretprobe_instances.first;
- 	current->kretprobe_instances.first = node->next;
-
+ 		irq = fls(pending) - 1;
+ 		if (IS_ENABLED(CONFIG_GENERIC_IRQ_IPI) && irq < 2)
+-			virq = irq_linear_revmap(ipi_domain, irq);
++			d = ipi_domain;
+ 		else
+-			virq = irq_linear_revmap(irq_domain, irq);
+-		do_IRQ(virq);
++			d = irq_domain;
++
++		do_domain_IRQ(d, irq);
+ 		pending &= ~BIT(irq);
+ 	}
+ }
+diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
+index b146e069bf5b..54c7092cc61d 100644
+--- a/drivers/irqchip/irq-mips-gic.c
++++ b/drivers/irqchip/irq-mips-gic.c
+@@ -169,8 +169,8 @@ static void gic_handle_shared_int(bool chained)
+ 			generic_handle_domain_irq(gic_irq_domain,
+ 						  GIC_SHARED_TO_HWIRQ(intr));
+ 		else
+-			do_IRQ(irq_find_mapping(gic_irq_domain,
+-						GIC_SHARED_TO_HWIRQ(intr)));
++			do_domain_IRQ(gic_irq_domain,
++				      GIC_SHARED_TO_HWIRQ(intr));
+ 	}
+ }
+ 
+@@ -320,8 +320,8 @@ static void gic_handle_local_int(bool chained)
+ 			generic_handle_domain_irq(gic_irq_domain,
+ 						  GIC_LOCAL_TO_HWIRQ(intr));
+ 		else
+-			do_IRQ(irq_find_mapping(gic_irq_domain,
+-						GIC_LOCAL_TO_HWIRQ(intr)));
++			do_domain_IRQ(gic_irq_domain,
++				      GIC_LOCAL_TO_HWIRQ(intr));
+ 	}
+ }
+ 
+diff --git a/drivers/irqchip/irq-pic32-evic.c b/drivers/irqchip/irq-pic32-evic.c
+index 34c4b4ffacd1..1d9bb28d13e5 100644
+--- a/drivers/irqchip/irq-pic32-evic.c
++++ b/drivers/irqchip/irq-pic32-evic.c
+@@ -42,11 +42,10 @@ static void __iomem *evic_base;
+ 
+ asmlinkage void __weak plat_irq_dispatch(void)
+ {
+-	unsigned int irq, hwirq;
++	unsigned int hwirq;
+ 
+ 	hwirq = readl(evic_base + REG_INTSTAT) & 0xFF;
+-	irq = irq_linear_revmap(evic_irq_domain, hwirq);
+-	do_IRQ(irq);
++	do_domain_IRQ(evic_irq_domain, hwirq);
+ }
+ 
+ static struct evic_chip_data *irqd_to_priv(struct irq_data *data)
+diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
+index f4dd5186858a..fadb93766020 100644
+--- a/kernel/irq/irqdesc.c
++++ b/kernel/irq/irqdesc.c
+@@ -682,7 +682,6 @@ EXPORT_SYMBOL_GPL(generic_handle_domain_irq);
+  *                     usually for a root interrupt controller
+  * @domain:	The domain where to perform the lookup
+  * @hwirq:	The HW irq number to convert to a logical one
+- * @lookup:	Whether to perform the domain lookup or not
+  * @regs:	Register file coming from the low-level handling code
+  *
+  * Returns:	0 on success, or -EINVAL if conversion has failed
