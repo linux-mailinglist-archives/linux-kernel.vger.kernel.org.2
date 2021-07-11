@@ -2,158 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 245F93C3DAD
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 17:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4C2F3C3DB6
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 17:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235849AbhGKPcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 11:32:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235840AbhGKPb6 (ORCPT
+        id S236231AbhGKPr6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 11 Jul 2021 11:47:58 -0400
+Received: from esa1.mentor.iphmx.com ([68.232.129.153]:51538 "EHLO
+        esa1.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234738AbhGKPr6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 11:31:58 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10A49C0613E8
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 08:29:12 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id cu14so3262593pjb.0
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 08:29:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=n3YRHkj0c58PDufExs5GW5EqSsqejMDzvuIBPPdMvOg=;
-        b=cftgdsHyZHCgsdByowpFdQGqA8FjOTGeVyz2P4bO1ZPaUO0n6CJX5jUm0hkxED8zJU
-         xq0gPh0zyTrbhWUCVnYCl9bXBNqoDAEEFBtUYF9VTbhlnbXwl7oof186KaSl6kpWyLdC
-         TPuQygx25GH/YQdmFAbmgOvPIn0iGuugXMqezVWieGdmwgTAI2lb39QeTGSKIGO6ZukQ
-         QemdQWgetrSXQJ/NuI0UGINfnUhbQW6KvuPJlat/l9Rfe1IgacNIagJ1La0M6T0Ivy84
-         qPq40yPnzuWfNAjtVjtqbmf+/FATYadA9qE7b2wNo75WEtZ7/r3epXFna48S+AgdmBri
-         xM9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=n3YRHkj0c58PDufExs5GW5EqSsqejMDzvuIBPPdMvOg=;
-        b=g6YeJK910DOVoJJKb1zaTZYunpTjqcUVsRPOVJPHXerS5Sw8V53KwSXj1vb6DfQ5Sj
-         Y7mpChnoWY9Z4C8d5KXzhDRIxKujY07vAgxvMDFJp/fbwyRnZVDSMjY2exjX4qR7j4pC
-         JzOHxvu+q9GQNCZ4Xwz3nDMyQqAujygC5RG5e3f8kXBr6atY7Ku4gIlEQVcaOIykHmLC
-         akmDDNVULMds8HhU7cTiTIeLTXDuFQBRLydUnIRlA2lY+p77AnIqsKOuJaX0ieePVZcp
-         ZiDtRoJaqTWDLBuRLpGVQobT9Bjun1VhPixhuYT/36LtRcjmnX+mlNcVmN77BTjgcNSx
-         iB2g==
-X-Gm-Message-State: AOAM533CawmpE6M1nlDgXGRyiuw2FS8u/+PfZ4794bSgP8Sj3Q4fhJyM
-        qStX7VjHTo1V60avUoXcQdjfEA==
-X-Google-Smtp-Source: ABdhPJz0wCI+ok2I8JvUEiK3CSWSTqh3K3oYq6HltM2HravvA/Af1qVij8wZ0KUEEG9Ey2GdBpymAA==
-X-Received: by 2002:a17:90a:7d13:: with SMTP id g19mr49022034pjl.163.1626017351507;
-        Sun, 11 Jul 2021 08:29:11 -0700 (PDT)
-Received: from ?IPv6:240e:38a:3604:2400:8585:964d:c4ab:ba4c? ([240e:38a:3604:2400:8585:964d:c4ab:ba4c])
-        by smtp.gmail.com with ESMTPSA id j20sm9964157pfc.203.2021.07.11.08.28.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Jul 2021 08:29:10 -0700 (PDT)
-Subject: Re: [PATCH -tip v8 11/13] x86/unwind: Recover kretprobe trampoline
- entry
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, kernel-team@fb.com, yhs@fb.com,
-        linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-References: <162399992186.506599.8457763707951687195.stgit@devnote2>
- <162400002631.506599.2413605639666466945.stgit@devnote2>
- <YOLurg5mGHdBc+fz@hirez.programming.kicks-ass.net>
- <20210706004257.9e282b98f447251a380f658f@kernel.org>
- <YOQMV8uE/2bVkPOY@hirez.programming.kicks-ass.net>
- <20210706111136.7c5e9843@oasis.local.home>
- <YOVj2VoyrcOvJfEB@hirez.programming.kicks-ass.net>
- <20210707191510.cb48ca4a20f0502ce6c46508@kernel.org>
- <YOWACec65qVdTD1y@hirez.programming.kicks-ass.net>
- <20210707194530.766a9c8364f3b2d7714ca590@kernel.org>
- <20210707222925.87ecc1391d0ab61db3d8398e@kernel.org>
- <3fc578e0-5b26-6067-d026-5b5d230d6720@bytedance.com>
- <20210711230909.dac1ff010a94831d5e9c25cd@kernel.org>
-From:   Matt Wu <wuqiang.matt@bytedance.com>
-Message-ID: <9c160404-ad6d-816a-93ed-91bb6e7c26a9@bytedance.com>
-Date:   Sun, 11 Jul 2021 23:28:49 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        Sun, 11 Jul 2021 11:47:58 -0400
+X-Greylist: delayed 427 seconds by postgrey-1.27 at vger.kernel.org; Sun, 11 Jul 2021 11:47:58 EDT
+IronPort-SDR: 0r/OgIl75ZHcK8wxrSlMvY/RtYbSgGHcSexNWRNtk5XKWbzlO/UzHFgwufAIoHc+gdO06/w6GH
+ Hhys9/dkPC3MUI6b5axtq/OKU5R/hfg3fEZUYdIsaX3FJVogaVDvnjJ6pvGSCmuhHostzzsAcv
+ WuJuGZX4gusb9wgWC/3fch81MbkhG8DcI39Apcm4q26hmwOAbEACAkGtb4oAlp27XexC0ITtJk
+ 0lJDhLyVCx4z4GG/zaioakaJwuCJ8b8p3vrQB8oFZwehUbtG9I0L25TOY5Yr5K68ftqj1bRRtu
+ Uh8=
+X-IronPort-AV: E=Sophos;i="5.84,231,1620720000"; 
+   d="scan'208";a="65827291"
+Received: from orw-gwy-01-in.mentorg.com ([192.94.38.165])
+  by esa1.mentor.iphmx.com with ESMTP; 11 Jul 2021 07:38:05 -0800
+IronPort-SDR: DMxmtnnmzBvukntamkj5o3aI9byTsHCH5W4epPaOkgDXh8IshSJueuHpO33SHXmcMiqheeVFag
+ B3+17LIlNc2XeZcAlzNmO9Tfn8xSvCei9biJ3953XSD0jHRBY2HTX4CIghCcQAcTotbp3x5rxa
+ 58ZLnRbqY/ZRovv/wPTGih0d8PX8+fOML+UbKdo/5aGI50uMJRWuqHGgmZc4pL1HzfMfVdl9Ig
+ FoXLMB21O08U+or/YIw3HeNNi6Om0Ggja9JdT5DPoS2fApohTaCfhOvjtqYz5Wkx3fQ5xkt18G
+ MvA=
+From:   Andrew Gabbasov <andrew_gabbasov@mentor.com>
+To:     'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
+CC:     Macpaul Lin <macpaul.lin@mediatek.com>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stable@vger.kernel.org>, Felipe Balbi <balbi@kernel.org>,
+        Eugeniu Rosca <roscaeugeniu@gmail.com>,
+        Eddie Hung <eddie.hung@mediatek.com>
+References: <20210603171507.22514-1-andrew_gabbasov@mentor.com> <20210604110503.GA23002@vmlxhi-102.adit-jv.com> <CACCg+XO+D+2SWJq0C=_sWXj53L1fh-wra8dmCb3VQ4bYCZQryA@mail.gmail.com> <20210702184957.4479-1-andrew_gabbasov@mentor.com> <20210702184957.4479-2-andrew_gabbasov@mentor.com> <YOKvz2WzYuV0PaXD@kroah.com> <000001d77187$e9782dd0$bc688970$@mentor.com> <YOLiDSs/9+RzMKqE@kroah.com>
+In-Reply-To: <YOLiDSs/9+RzMKqE@kroah.com>
+Subject: RE: [PATCH v4.14] usb: gadget: f_fs: Fix setting of device and driver data cross-references
+Date:   Sun, 11 Jul 2021 18:37:20 +0300
+Organization: Mentor Graphics Corporation
+Message-ID: <000001d7766a$a755ada0$f60108e0$@mentor.com>
 MIME-Version: 1.0
-In-Reply-To: <20210711230909.dac1ff010a94831d5e9c25cd@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQHXb3MiK5x8JbQzK0Wthg8LyVovu6sz6U+AgABMtp+ACb8xgA==
+Content-Language: en-us
+X-Originating-IP: [137.202.0.90]
+X-ClientProxiedBy: SVR-IES-MBX-08.mgc.mentorg.com (139.181.222.8) To
+ svr-ies-mbx-01.mgc.mentorg.com (139.181.222.1)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/11 PM10:09, Masami Hiramatsu wrote:
-> On Wed, 7 Jul 2021 22:42:47 +0800
-> Matt Wu <wuqiang.matt@bytedance.com> wrote:
-> 
->> On 2021/7/7 PM9:29, Masami Hiramatsu wrote:
->>> On Wed, 7 Jul 2021 19:45:30 +0900
->>> Masami Hiramatsu <mhiramat@kernel.org> wrote:
->>>
->>>> On Wed, 7 Jul 2021 12:20:57 +0200
->>>> Peter Zijlstra <peterz@infradead.org> wrote:
->>>>
->>>>> On Wed, Jul 07, 2021 at 07:15:10PM +0900, Masami Hiramatsu wrote:
->>>>>
->>>>>> I actually don't want to keep this feature because no one use it.
->>>>>> (only systemtap needs it?)
->>>>>
->>>>> Yeah, you mentioned systemtap, but since that's out-of-tree I don't
->>>>> care. Their problem.
->>>
->>> Yeah, maybe it is not hard to update.
->>>
->>>>>
->>>>>> Anyway, if we keep the idea-level compatibility (not code level),
->>>>>> what we need is 'void *data' in the struct kretprobe_instance.
->>>>>> User who needs it can allocate their own instance data for their
->>>>>> kretprobes when initialising it and sets in their entry handler.
->>>>>>
->>>>>> Then we can have a simple kretprobe_instance.
->>>>>
->>>>> When would you do the alloc? When installing the retprobe, but that
->>>>> might be inside the allocator, which means you can't call the allocator
->>>>> etc.. :-)
->>>>
->>>> Yes, so the user may need to allocate a pool right before register_kretprobe().
->>>> (whether per-kretprobe or per-task or global pool, that is user's choice.)
->>>>
->>>>>
->>>>> If we look at struct ftrace_ret_stack, it has a few fixed function
->>>>> fields. The calltime one is all that is needed for the kretprobe
->>>>> example code.
->>>>
->>>> kretprobe consumes 3 fields, a pointer to 'struct kretprobe' (which
->>>> stores callee function address in 'kretprobe::kp.addr'), a return
->>>> address and a frame pointer (*).
->>>   > Oops, I forgot to add "void *data" for storing user data.
->>>
->>
->> Should use "struct kretprobe_holder *rph", since "struct kretprobe" belongs
->> to 3rd-party module (which might be unloaded any time).
-> 
-> Good catch. Yes, instead of 'struct kretprobe', we need to use the holder.
-> 
->> User's own pool might not work if the module can be unloaded. Better manage
->> the pool in kretprobe_holder, which needs no changes from user side.
-> 
-> No, since the 'data' will be only refered from user handler. If the kretprobe
-> is released, then the kretprobe_holder will clear the refernce to the 'struct
-> kretprobe'. Then, the user handler is never called. No one access the 'data'.
+Hello Greg,
 
-Indeed, there is no race of "data" accessing, since unregister_kretprobes()
-is taking care of it.
+> -----Original Message-----
+> From: 'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
+> Sent: Monday, July 05, 2021 1:42 PM
+> To: Gabbasov, Andrew <Andrew_Gabbasov@mentor.com>
+> Cc: Macpaul Lin <macpaul.lin@mediatek.com>; Eugeniu Rosca <erosca@de.adit-jv.com>; linux-usb@vger.kernel.org;
+> linux-kernel@vger.kernel.org; stable@vger.kernel.org; Felipe Balbi <balbi@kernel.org>; Eugeniu Rosca
+> <roscaeugeniu@gmail.com>; Eddie Hung <eddie.hung@mediatek.com>
+> Subject: Re: [PATCH v4.14] usb: gadget: f_fs: Fix setting of device and driver data cross-references
+> 
+> On Mon, Jul 05, 2021 at 01:24:10PM +0300, Andrew Gabbasov wrote:
+> > Hello Greg,
+> >
+> > > -----Original Message-----
+> > > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > Sent: Monday, July 05, 2021 10:08 AM
+> > > To: Gabbasov, Andrew <Andrew_Gabbasov@mentor.com>
+> > > Cc: Macpaul Lin <macpaul.lin@mediatek.com>; Eugeniu Rosca <erosca@de.adit-jv.com>; linux-usb@vger.kernel.org;
+> > > linux-kernel@vger.kernel.org; stable@vger.kernel.org; Felipe Balbi <balbi@kernel.org>; Eugeniu Rosca
+> > > <roscaeugeniu@gmail.com>; Eddie Hung <eddie.hung@mediatek.com>
+> > > Subject: Re: [PATCH v4.14] usb: gadget: f_fs: Fix setting of device and driver data cross-references
+> > >
+> > > On Fri, Jul 02, 2021 at 01:49:57PM -0500, Andrew Gabbasov wrote:
+> > > > Fixes: 4b187fceec3c ("usb: gadget: FunctionFS: add devices management code")
+> > > > Fixes: 3262ad824307 ("usb: gadget: f_fs: Stop ffs_closed NULL pointer dereference")
+> > > > Fixes: cdafb6d8b8da ("usb: gadget: f_fs: Fix use-after-free in ffs_free_inst")
+> > > > Reported-by: Bhuvanesh Surachari <bhuvanesh_surachari@mentor.com>
+> > > > Tested-by: Eugeniu Rosca <erosca@de.adit-jv.com>
+> > > > Reviewed-by: Eugeniu Rosca <erosca@de.adit-jv.com>
+> > > > Signed-off-by: Andrew Gabbasov <andrew_gabbasov@mentor.com>
+> > > > Link: https://lore.kernel.org/r/20210603171507.22514-1-andrew_gabbasov@mentor.com
+> > > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > > (cherry-picked from commit ecfbd7b9054bddb12cea07fda41bb3a79a7b0149)
+> > >
+> > > There is no such commit id in Linus's tree :(
+> > >
+> > > Please resubmit with the correct id.
+> >
+> > This commit is not yet included to the mainline, it only exists in linux-next:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-
+> next.git/commit/?id=ecfbd7b9054bddb12cea07fda41bb3a79a7b0149
+> >
+> > Could you please advise if I need to somehow denote the linux-next repo in the "cherry picked from" line,
+> > or just remove this line, or so far wait and re-submit the patch after the original commit is merged to Linus'
+> tree?
+> > BTW, I just noticed that the line contains incorrect "cherry-picked" instead of "cherry picked",
+> > so I'll have to re-submit the patch anyway 😉
+> 
+> This is not the correct way to submit patches for inclusion in the
+> stable kernel tree.  Please read:
+>     https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+> for how to do this properly.
+> 
+> Patches have to be in Linus's tree first before we can take it into a
+> stable tree.  Please feel free to resubmit this once it is in a -rc
+> release.
 
-This implementation just increases the complexity of caller to keep track
-of all allocated instances and release them after unregistration.
+Sorry I was one day early before the commit was included to Linus' tree.
+Now it is there and I'm re-submitting the patch, back-ported to v4.14.
 
-But guys are likely to use kmalloc in pre-handler and kfree in post-handler,
-which will lead to memory leaks.
+Thanks!
+
+Best regards,
+Andrew
+
+
