@@ -2,824 +2,551 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEFB13C3C34
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 14:18:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B6603C3C38
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 14:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232786AbhGKMUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 08:20:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52874 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232071AbhGKMUl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 08:20:41 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2318261165;
-        Sun, 11 Jul 2021 12:17:47 +0000 (UTC)
-Date:   Sun, 11 Jul 2021 13:20:03 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        david@lechnology.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, o.rempel@pengutronix.de,
-        jarkko.nikula@linux.intel.com,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v12 10/17] counter: Add character device interface
-Message-ID: <20210711132003.0e870bc2@jic23-huawei>
-In-Reply-To: <10cf764604827dea1b842cfe7a3cd31ca8ef6539.1625471640.git.vilhelm.gray@gmail.com>
-References: <cover.1625471640.git.vilhelm.gray@gmail.com>
-        <10cf764604827dea1b842cfe7a3cd31ca8ef6539.1625471640.git.vilhelm.gray@gmail.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232710AbhGKMYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 08:24:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229688AbhGKMYF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Jul 2021 08:24:05 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43724C0613DD
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 05:21:18 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id b12so13457292pfv.6
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 05:21:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=8IOcKozzGlVx1VuxUicQjTeyhfFfCaKJwMoqwS/ZyuA=;
+        b=HzWIYwOkREYM/ToWHourqXYah3Jd+Mxx9sMEnM1elTV14W2vFescNyJjNkCoxN0hhQ
+         Zg8FfspuIGSudRuDT0nOeFXbk8cNCrCaAacU5T7gsvcheCk0SbpH3mKd1p9Jtw596oP1
+         06Fc17Ugcf+FjI6iT4L1TDYm/ITzbjopXDHewqXzV2LWXVVQdf7C8AOHmblYJIuV5syh
+         BBRoyzjVLRXRZuEYuK3l9jn/quP04ouK6pdULs7MjHcgRIk+XlIV5KtrDrzJY0a2ny1n
+         SiOXp7hU1o8+FhvfEobWJocrG67cgvlYvEI/t2ZA+jQb2y7dOUC9X1UK6GGu9AX48gAU
+         WlxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=8IOcKozzGlVx1VuxUicQjTeyhfFfCaKJwMoqwS/ZyuA=;
+        b=sfkgUNZ7rQV6Cfvaj/VAn9xQUeKXC5zaNMtpunElk4XrFvoBbZu8ZGTVackHsjESgH
+         E2JDSTF0HAplW6xB6llxxp0DiJvByL/5JdrKp3ndyTyN9dgf9/aAss7XT1Lfq7SyVKpC
+         WfpUD/8BXoX0L0oDjOfylAL4TSJal0cfFlraGdKKuL9p69F+tfQF6rWTs3AaSs5gK94D
+         Zrm4M+BmI/EbhOPJiZq3290a4elM963kMlWwvvafXL5Q/mNrPhtWE2V9LYrwBQU6lfVc
+         vIL3IQVCDxxw3g9Wn07R+n9ffAKy/E9CmpUiyEm0oIzUcQfvBCggbw5c+kEUQm80tvst
+         Cr6w==
+X-Gm-Message-State: AOAM533ZsySuxBPzqcaWrN97FiVh86hWeSo8HzJbl7HwMYBq+dk5cE1M
+        JDyjVDLltP9z1qjmtEu+Zg==
+X-Google-Smtp-Source: ABdhPJwKEVh8vZZalpaJZsT8U9kv/5aa80aO8+/438tXW1Fq1wqk0h4LNgNL4/Ufno2rrOaa8vGJvw==
+X-Received: by 2002:a63:ea0e:: with SMTP id c14mr47916888pgi.117.1626006071909;
+        Sun, 11 Jul 2021 05:21:11 -0700 (PDT)
+Received: from localhost.localdomain ([113.104.213.237])
+        by smtp.gmail.com with ESMTPSA id 123sm12365870pfw.33.2021.07.11.05.21.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Jul 2021 05:21:11 -0700 (PDT)
+From:   fengzheng923@gmail.com
+To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, mripard@kernel.org, wens@csie.org,
+        jernej.skrabec@gmail.com, fengzheng923@gmail.com,
+        p.zabel@pengutronix.de, samuel@sholland.org, krzk@kernel.org
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
+Subject: [PATCH v6 1/2] ASoC: sunxi: Add Allwinner H6 Digital MIC driver
+Date:   Sun, 11 Jul 2021 08:20:55 -0400
+Message-Id: <20210711122055.4529-1-fengzheng923@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  5 Jul 2021 17:18:58 +0900
-William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+From: Ban Tao <fengzheng923@gmail.com>
 
-> This patch introduces a character device interface for the Counter
-> subsystem. Device data is exposed through standard character device read
-> operations. Device data is gathered when a Counter event is pushed by
-> the respective Counter device driver. Configuration is handled via ioctl
-> operations on the respective Counter character device node.
-> 
-> Cc: David Lechner <david@lechnology.com>
-> Cc: Gwendal Grignou <gwendal@chromium.org>
-> Cc: Dan Carpenter <dan.carpenter@oracle.com>
-> Cc: Oleksij Rempel <o.rempel@pengutronix.de>
-> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-> ---
->  drivers/counter/Makefile         |   2 +-
->  drivers/counter/counter-chrdev.c | 494 +++++++++++++++++++++++++++++++
->  drivers/counter/counter-chrdev.h |  14 +
->  drivers/counter/counter-core.c   |  44 ++-
->  include/linux/counter.h          |  45 +++
->  include/uapi/linux/counter.h     |  77 +++++
->  6 files changed, 670 insertions(+), 6 deletions(-)
->  create mode 100644 drivers/counter/counter-chrdev.c
->  create mode 100644 drivers/counter/counter-chrdev.h
-> 
-> diff --git a/drivers/counter/Makefile b/drivers/counter/Makefile
-> index 1ab7e087fdc2..8fde6c100ebc 100644
-> --- a/drivers/counter/Makefile
-> +++ b/drivers/counter/Makefile
-> @@ -4,7 +4,7 @@
->  #
->  
->  obj-$(CONFIG_COUNTER) += counter.o
-> -counter-y := counter-core.o counter-sysfs.o
-> +counter-y := counter-core.o counter-sysfs.o counter-chrdev.o
->  
->  obj-$(CONFIG_104_QUAD_8)	+= 104-quad-8.o
->  obj-$(CONFIG_INTERRUPT_CNT)		+= interrupt-cnt.o
-> diff --git a/drivers/counter/counter-chrdev.c b/drivers/counter/counter-chrdev.c
-> new file mode 100644
-> index 000000000000..92805b1f65b8
-> --- /dev/null
-> +++ b/drivers/counter/counter-chrdev.c
-> @@ -0,0 +1,494 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Generic Counter character device interface
-> + * Copyright (C) 2020 William Breathitt Gray
-> + */
-> +
-> +#include <linux/cdev.h>
-> +#include <linux/counter.h>
-> +#include <linux/err.h>
-> +#include <linux/errno.h>
-> +#include <linux/export.h>
-> +#include <linux/fs.h>
-> +#include <linux/kfifo.h>
-> +#include <linux/list.h>
-> +#include <linux/mutex.h>
-> +#include <linux/nospec.h>
-> +#include <linux/poll.h>
-> +#include <linux/slab.h>
-> +#include <linux/spinlock.h>
-> +#include <linux/timekeeping.h>
-> +#include <linux/types.h>
-> +#include <linux/wait.h>
-> +#include <linux/uaccess.h>
-> +
-> +#include "counter-chrdev.h"
-> +
-> +struct counter_comp_node {
-> +	struct list_head l;
-> +	struct counter_component component;
-> +	struct counter_comp comp;
-> +	void *parent;
-> +};
-> +
-> +static ssize_t counter_chrdev_read(struct file *filp, char __user *buf,
-> +				   size_t len, loff_t *f_ps)
-> +{
-> +	struct counter_device *const counter = filp->private_data;
-> +	int err;
-> +	unsigned int copied;
-> +
-> +	if (len < sizeof(struct counter_event))
-> +		return -EINVAL;
+The Allwinner H6 and later SoCs have an DMIC block
+which is capable of capture.
 
-There is a lot of discussion going on buried in a rust on linux thread
-around the use of devm when chardevs are involved.  I'd kind of forgotten
-that Lars-Peter Clausen did a lot of work to make IIO safe to these races
-some time ago.  One of those elements was to make we dropped out quickly
-from read functions if we were on the way 'down'.  Could you make sure to
-run some tests to ensure we are safe with driver unbinds when the cdev is
-still open?  Another part of that was to ensure a blocking read unblocks
-when the device goes away (with an error of course!)  Some of this stuff
-isn't 'necessary' for correctness, but it is desirable for device removal
-to occur in finite time.
+Signed-off-by: Ban Tao <fengzheng923@gmail.com>
 
-https://lore.kernel.org/ksummit/CANiq72nkNrekzbxMci6vW02w=Q2L-SVTk_U4KN_LT8u_b=YPgw@mail.gmail.com/T/#m6db86a574237c22a32ecf49b596b3c2917967c5e
+---
+v1->v2:
+1.Fix some compilation errors.
+2.Modify some code styles.
+---
+v2->v3:
+None.
+---
+v3->v4:
+1.add sig_bits.
+---
+v4->v5:
+None.
+---
+v5->v6:
+1.Modify RXFIFO_CTL_MODE to mode 1.
+---
+ MAINTAINERS                   |   7 +
+ sound/soc/sunxi/Kconfig       |   8 +
+ sound/soc/sunxi/Makefile      |   1 +
+ sound/soc/sunxi/sun50i-dmic.c | 403 ++++++++++++++++++++++++++++++++++
+ 4 files changed, 419 insertions(+)
+ create mode 100644 sound/soc/sunxi/sun50i-dmic.c
 
-Note I want to take another look at the IIO code around this as well
-just in case we missed anything that has come up in that discussion.
-I think we are fine but maybe can move to more 'standard' code patterns
-if those get formalised. 
-
-Anyhow, it's fiddly stuff, so make sure to test those cases.
-
-Jonathan
-
-
-> +
-> +	do {
-> +		if (kfifo_is_empty(&counter->events)) {
-> +			if (filp->f_flags & O_NONBLOCK)
-> +				return -EAGAIN;
-> +
-> +			err = wait_event_interruptible(counter->events_wait,
-> +					!kfifo_is_empty(&counter->events));
-> +			if (err < 0)
-> +				return err;
-> +		}
-> +
-> +		if (mutex_lock_interruptible(&counter->events_lock))
-> +			return -ERESTARTSYS;
-> +		err = kfifo_to_user(&counter->events, buf, len, &copied);
-> +		mutex_unlock(&counter->events_lock);
-> +		if (err < 0)
-> +			return err;
-> +	} while (!copied);
-> +
-> +	return copied;
-> +}
-> +
-> +static __poll_t counter_chrdev_poll(struct file *filp,
-> +				    struct poll_table_struct *pollt)
-> +{
-> +	struct counter_device *const counter = filp->private_data;
-> +	__poll_t events = 0;
-> +
-> +	poll_wait(filp, &counter->events_wait, pollt);
-> +
-> +	if (!kfifo_is_empty(&counter->events))
-> +		events = EPOLLIN | EPOLLRDNORM;
-> +
-> +	return events;
-> +}
-> +
-> +static void counter_events_list_free(struct list_head *const events_list)
-> +{
-> +	struct counter_event_node *p, *n;
-> +	struct counter_comp_node *q, *o;
-> +
-> +	list_for_each_entry_safe(p, n, events_list, l) {
-> +		/* Free associated component nodes */
-> +		list_for_each_entry_safe(q, o, &p->comp_list, l) {
-> +			list_del(&q->l);
-> +			kfree(q);
-> +		}
-> +
-> +		/* Free event node */
-> +		list_del(&p->l);
-> +		kfree(p);
-> +	}
-> +}
-> +
-> +static int counter_set_event_node(struct counter_device *const counter,
-> +				  struct counter_watch *const watch,
-> +				  const struct counter_comp_node *const cfg)
-> +{
-> +	unsigned long flags;
-> +	struct counter_event_node *event_node;
-> +	int err = 0;
-> +	struct counter_comp_node *comp_node;
-> +
-> +	spin_lock_irqsave(&counter->events_list_lock, flags);
-> +
-> +	/* Search for event in the list */
-> +	list_for_each_entry(event_node, &counter->next_events_list, l)
-> +		if (event_node->event == watch->event &&
-> +		    event_node->channel == watch->channel)
-> +			break;
-> +
-> +	/* If event is not already in the list */
-> +	if (&event_node->l == &counter->next_events_list) {
-> +		/* Allocate new event node */
-> +		event_node = kmalloc(sizeof(*event_node), GFP_ATOMIC);
-> +		if (!event_node) {
-> +			err = -ENOMEM;
-> +			goto exit_early;
-> +		}
-> +
-> +		/* Configure event node and add to the list */
-> +		event_node->event = watch->event;
-> +		event_node->channel = watch->channel;
-> +		INIT_LIST_HEAD(&event_node->comp_list);
-> +		list_add(&event_node->l, &counter->next_events_list);
-> +	}
-> +
-> +	/* Check if component watch has already been set before */
-> +	list_for_each_entry(comp_node, &event_node->comp_list, l)
-> +		if (comp_node->parent == cfg->parent &&
-> +		    comp_node->comp.count_u8_read == cfg->comp.count_u8_read) {
-> +			err = -EINVAL;
-> +			goto exit_early;
-> +		}
-> +
-> +	/* Allocate component node */
-> +	comp_node = kmalloc(sizeof(*comp_node), GFP_ATOMIC);
-> +	if (!comp_node) {
-> +		/* Free event node if no one else is watching */
-> +		if (list_empty(&event_node->comp_list)) {
-> +			list_del(&event_node->l);
-> +			kfree(event_node);
-> +		}
-> +		err = -ENOMEM;
-> +		goto exit_early;
-> +	}
-> +	*comp_node = *cfg;
-> +
-> +	/* Add component node to event node */
-> +	list_add_tail(&comp_node->l, &event_node->comp_list);
-> +
-> +exit_early:
-> +	spin_unlock_irqrestore(&counter->events_list_lock, flags);
-> +
-> +	return err;
-> +}
-> +
-> +static int counter_disable_events(struct counter_device *const counter)
-> +{
-> +	unsigned long flags;
-> +	int err = 0;
-> +
-> +	spin_lock_irqsave(&counter->events_list_lock, flags);
-> +
-> +	counter_events_list_free(&counter->events_list);
-> +
-> +	if (counter->ops->events_configure)
-> +		err = counter->ops->events_configure(counter);
-> +
-> +	spin_unlock_irqrestore(&counter->events_list_lock, flags);
-> +
-> +	counter_events_list_free(&counter->next_events_list);
-> +
-> +	return err;
-> +}
-> +
-> +static int counter_add_watch(struct counter_device *const counter,
-> +			     const unsigned long arg)
-> +{
-> +	void __user *const uwatch = (void __user *)arg;
-> +	struct counter_watch watch;
-> +	struct counter_comp_node comp_node = {};
-> +	size_t parent, id;
-> +	struct counter_comp *ext;
-> +	size_t num_ext;
-> +	int err;
-> +
-> +	if (copy_from_user(&watch, uwatch, sizeof(watch)))
-> +		return -EFAULT;
-> +
-> +	if (watch.component.type == COUNTER_COMPONENT_NONE)
-> +		goto no_component;
-> +
-> +	parent = watch.component.parent;
-> +
-> +	/* Configure parent component info for comp node */
-> +	switch (watch.component.scope) {
-> +	case COUNTER_SCOPE_DEVICE:
-> +		ext = counter->ext;
-> +		num_ext = counter->num_ext;
-> +		break;
-> +	case COUNTER_SCOPE_SIGNAL:
-> +		if (parent >= counter->num_signals)
-> +			return -EINVAL;
-> +		parent = array_index_nospec(parent, counter->num_signals);
-> +
-> +		comp_node.parent = counter->signals + parent;
-> +
-> +		ext = counter->signals[parent].ext;
-> +		num_ext = counter->signals[parent].num_ext;
-> +		break;
-> +	case COUNTER_SCOPE_COUNT:
-> +		if (parent >= counter->num_counts)
-> +			return -EINVAL;
-> +		parent = array_index_nospec(parent, counter->num_counts);
-> +
-> +		comp_node.parent = counter->counts + parent;
-> +
-> +		ext = counter->counts[parent].ext;
-> +		num_ext = counter->counts[parent].num_ext;
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	id = watch.component.id;
-> +
-> +	/* Configure component info for comp node */
-> +	switch (watch.component.type) {
-> +	case COUNTER_COMPONENT_SIGNAL:
-> +		if (watch.component.scope != COUNTER_SCOPE_SIGNAL)
-> +			return -EINVAL;
-> +
-> +		comp_node.comp.type = COUNTER_COMP_SIGNAL_LEVEL;
-> +		comp_node.comp.signal_u32_read = counter->ops->signal_read;
-> +		break;
-> +	case COUNTER_COMPONENT_COUNT:
-> +		if (watch.component.scope != COUNTER_SCOPE_COUNT)
-> +			return -EINVAL;
-> +
-> +		comp_node.comp.type = COUNTER_COMP_U64;
-> +		comp_node.comp.count_u64_read = counter->ops->count_read;
-> +		break;
-> +	case COUNTER_COMPONENT_FUNCTION:
-> +		if (watch.component.scope != COUNTER_SCOPE_COUNT)
-> +			return -EINVAL;
-> +
-> +		comp_node.comp.type = COUNTER_COMP_FUNCTION;
-> +		comp_node.comp.count_u32_read = counter->ops->function_read;
-> +		break;
-> +	case COUNTER_COMPONENT_SYNAPSE_ACTION:
-> +		if (watch.component.scope != COUNTER_SCOPE_COUNT)
-> +			return -EINVAL;
-> +		if (id >= counter->counts[parent].num_synapses)
-> +			return -EINVAL;
-> +		id = array_index_nospec(id, counter->counts[parent].num_synapses);
-> +
-> +		comp_node.comp.type = COUNTER_COMP_SYNAPSE_ACTION;
-> +		comp_node.comp.action_read = counter->ops->action_read;
-> +		comp_node.comp.priv = counter->counts[parent].synapses + id;
-> +		break;
-> +	case COUNTER_COMPONENT_EXTENSION:
-> +		if (id >= num_ext)
-> +			return -EINVAL;
-> +		id = array_index_nospec(id, num_ext);
-> +
-> +		comp_node.comp = ext[id];
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +	/* Check if any read callback is set; this is part of a union */
-> +	if (!comp_node.comp.count_u8_read)
-> +		return -EOPNOTSUPP;
-> +
-> +no_component:
-> +	if (counter->ops->watch_validate) {
-> +		err = counter->ops->watch_validate(counter, &watch);
-> +		if (err < 0)
-> +			return err;
-> +	}
-> +
-> +	comp_node.component = watch.component;
-> +
-> +	return counter_set_event_node(counter, &watch, &comp_node);
-> +}
-> +
-> +static long counter_chrdev_ioctl(struct file *filp, unsigned int cmd,
-> +				 unsigned long arg)
-> +{
-> +	struct counter_device *const counter = filp->private_data;
-> +	unsigned long flags;
-> +	int err = 0;
-> +
-> +	switch (cmd) {
-> +	case COUNTER_ADD_WATCH_IOCTL:
-> +		return counter_add_watch(counter, arg);
-> +	case COUNTER_ENABLE_EVENTS_IOCTL:
-> +		spin_lock_irqsave(&counter->events_list_lock, flags);
-> +
-> +		counter_events_list_free(&counter->events_list);
-> +		list_replace_init(&counter->next_events_list,
-> +				  &counter->events_list);
-> +
-> +		if (counter->ops->events_configure)
-> +			err = counter->ops->events_configure(counter);
-> +
-> +		spin_unlock_irqrestore(&counter->events_list_lock, flags);
-> +		return err;
-> +	case COUNTER_DISABLE_EVENTS_IOCTL:
-> +		return counter_disable_events(counter);
-> +	default:
-> +		return -ENOIOCTLCMD;
-> +	}
-> +}
-> +
-> +static int counter_chrdev_open(struct inode *inode, struct file *filp)
-> +{
-> +	struct counter_device *const counter = container_of(inode->i_cdev,
-> +							    typeof(*counter),
-> +							    chrdev);
-> +
-
-What stops multiple simultaneous openings?  I'm going to assume this isn't
-safe to those, or at least that crazy things could happen if you had it
-open twice at the same time.
-
-> +	get_device(&counter->dev);
-> +	filp->private_data = counter;
-> +
-> +	return nonseekable_open(inode, filp);
-> +}
-> +
-> +static int counter_chrdev_release(struct inode *inode, struct file *filp)
-> +{
-> +	struct counter_device *const counter = filp->private_data;
-> +	int err;
-> +
-> +	err = counter_disable_events(counter);
-> +	if (err < 0)
-> +		return err;
-> +
-> +	put_device(&counter->dev);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct file_operations counter_fops = {
-> +	.llseek = no_llseek,
-> +	.read = counter_chrdev_read,
-> +	.poll = counter_chrdev_poll,
-> +	.unlocked_ioctl = counter_chrdev_ioctl,
-> +	.open = counter_chrdev_open,
-> +	.release = counter_chrdev_release,
-> +};
-> +
-> +int counter_chrdev_add(struct counter_device *const counter)
-> +{
-> +	/* Initialize Counter events lists */
-> +	INIT_LIST_HEAD(&counter->events_list);
-> +	INIT_LIST_HEAD(&counter->next_events_list);
-> +	spin_lock_init(&counter->events_list_lock);
-> +	init_waitqueue_head(&counter->events_wait);
-> +	mutex_init(&counter->events_lock);
-> +
-> +	/* Initialize character device */
-> +	cdev_init(&counter->chrdev, &counter_fops);
-> +
-> +	/* Allocate Counter events queue */
-> +	return kfifo_alloc(&counter->events, 64, GFP_ATOMIC);
-> +}
-> +
-> +void counter_chrdev_remove(struct counter_device *const counter)
-> +{
-> +	kfifo_free(&counter->events);
-> +}
-> +
-
-...
-
-
-> diff --git a/drivers/counter/counter-chrdev.h b/drivers/counter/counter-chrdev.h
-> new file mode 100644
-> index 000000000000..5529d16703c4
-> --- /dev/null
-> +++ b/drivers/counter/counter-chrdev.h
-> @@ -0,0 +1,14 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Counter character device interface
-> + * Copyright (C) 2020 William Breathitt Gray
-> + */
-> +#ifndef _COUNTER_CHRDEV_H_
-> +#define _COUNTER_CHRDEV_H_
-> +
-> +#include <linux/counter.h>
-> +
-> +int counter_chrdev_add(struct counter_device *const counter);
-> +void counter_chrdev_remove(struct counter_device *const counter);
-> +
-> +#endif /* _COUNTER_CHRDEV_H_ */
-> diff --git a/drivers/counter/counter-core.c b/drivers/counter/counter-core.c
-> index 9442e3b91468..dd7f3f69328e 100644
-> --- a/drivers/counter/counter-core.c
-> +++ b/drivers/counter/counter-core.c
-> @@ -3,14 +3,20 @@
->   * Generic Counter interface
->   * Copyright (C) 2020 William Breathitt Gray
->   */
-> +#include <linux/cdev.h>
->  #include <linux/counter.h>
->  #include <linux/device.h>
-> +#include <linux/device/bus.h>
->  #include <linux/export.h>
-> +#include <linux/fs.h>
->  #include <linux/gfp.h>
->  #include <linux/idr.h>
->  #include <linux/init.h>
-> +#include <linux/kdev_t.h>
->  #include <linux/module.h>
-> +#include <linux/types.h>
->  
-> +#include "counter-chrdev.h"
->  #include "counter-sysfs.h"
->  
->  /* Provides a unique ID for each counter device */
-> @@ -34,6 +40,8 @@ static struct bus_type counter_bus_type = {
->  	.dev_name = "counter",
->  };
->  
-> +static dev_t counter_devt;
-> +
->  /**
->   * counter_register - register Counter to the system
->   * @counter:	pointer to Counter to register
-> @@ -60,6 +68,7 @@ int counter_register(struct counter_device *const counter)
->  	dev->id = id;
->  	dev->type = &counter_device_type;
->  	dev->bus = &counter_bus_type;
-> +	dev->devt = MKDEV(MAJOR(counter_devt), id);
->  	if (counter->parent) {
->  		dev->parent = counter->parent;
->  		dev->of_node = counter->parent->of_node;
-> @@ -67,18 +76,25 @@ int counter_register(struct counter_device *const counter)
->  	device_initialize(dev);
->  	dev_set_drvdata(dev, counter);
->  
-> +	/* Add Counter character device */
-> +	err = counter_chrdev_add(counter);
-> +	if (err < 0)
-> +		goto err_free_id;
-> +
->  	/* Add Counter sysfs attributes */
->  	err = counter_sysfs_add(counter);
->  	if (err < 0)
-> -		goto err_free_id;
-> +		goto err_remove_chrdev;
->  
->  	/* Add device to system */
-> -	err = device_add(dev);
-> +	err = cdev_device_add(&counter->chrdev, dev);
->  	if (err < 0)
-> -		goto err_free_id;
-> +		goto err_remove_chrdev;
->  
->  	return 0;
->  
-> +err_remove_chrdev:
-> +	counter_chrdev_remove(counter);
->  err_free_id:
->  	put_device(dev);
->  	return err;
-> @@ -96,7 +112,8 @@ void counter_unregister(struct counter_device *const counter)
->  	if (!counter)
->  		return;
->  
-> -	device_unregister(&counter->dev);
-> +	cdev_device_del(&counter->chrdev, &counter->dev);
-> +	put_device(&counter->dev);
->  }
->  EXPORT_SYMBOL_GPL(counter_unregister);
->  
-> @@ -130,13 +147,30 @@ int devm_counter_register(struct device *dev,
->  }
->  EXPORT_SYMBOL_GPL(devm_counter_register);
->  
-> +#define COUNTER_DEV_MAX 256
-> +
->  static int __init counter_init(void)
->  {
-> -	return bus_register(&counter_bus_type);
-> +	int err;
-> +
-> +	err = bus_register(&counter_bus_type);
-> +	if (err < 0)
-> +		return err;
-> +
-> +	err = alloc_chrdev_region(&counter_devt, 0, COUNTER_DEV_MAX, "counter");
-> +	if (err < 0)
-> +		goto err_unregister_bus;
-> +
-> +	return 0;
-> +
-> +err_unregister_bus:
-> +	bus_unregister(&counter_bus_type);
-> +	return err;
->  }
->  
->  static void __exit counter_exit(void)
->  {
-> +	unregister_chrdev_region(counter_devt, COUNTER_DEV_MAX);
->  	bus_unregister(&counter_bus_type);
->  }
->  
-> diff --git a/include/linux/counter.h b/include/linux/counter.h
-> index eee85db8e332..3f0bbe4ff702 100644
-> --- a/include/linux/counter.h
-> +++ b/include/linux/counter.h
-> @@ -6,9 +6,14 @@
->  #ifndef _COUNTER_H_
->  #define _COUNTER_H_
->  
-> +#include <linux/cdev.h>
->  #include <linux/device.h>
->  #include <linux/kernel.h>
-> +#include <linux/kfifo.h>
-> +#include <linux/mutex.h>
-> +#include <linux/spinlock_types.h>
->  #include <linux/types.h>
-> +#include <linux/wait.h>
->  #include <uapi/linux/counter.h>
->  
->  struct counter_device;
-> @@ -199,6 +204,20 @@ struct counter_count {
->  	size_t num_ext;
->  };
->  
-> +/**
-> + * struct counter_event_node - Counter Event node
-> + * @l:		list of current watching Counter events
-> + * @event:	event that triggers
-> + * @channel:	event channel
-> + * @comp_list:	list of components to watch when event triggers
-> + */
-> +struct counter_event_node {
-> +	struct list_head l;
-> +	u8 event;
-> +	u8 channel;
-> +	struct list_head comp_list;
-> +};
-> +
->  /**
->   * struct counter_ops - Callbacks from driver
->   * @signal_read:	read callback for Signals. The read level of the
-> @@ -221,6 +240,13 @@ struct counter_count {
->   * @action_write:	write callback for Synapse action modes. The action mode
->   *			to write for the respective Synapse is passed in via the
->   *			action parameter.
-> + * @events_configure:	write callback to configure events. The list of struct
-> + *			counter_event_node may be accessed via the events_list
-> + *			member of the counter parameter.
-> + * @watch_validate:	callback to validate a watch. The Counter component
-> + *			watch configuration is passed in via the watch
-> + *			parameter. A return value of 0 indicates a valid Counter
-> + *			component watch configuration.
->   */
->  struct counter_ops {
->  	int (*signal_read)(struct counter_device *counter,
-> @@ -244,6 +270,9 @@ struct counter_ops {
->  			    struct counter_count *count,
->  			    struct counter_synapse *synapse,
->  			    enum counter_synapse_action action);
-> +	int (*events_configure)(struct counter_device *counter);
-> +	int (*watch_validate)(struct counter_device *counter,
-> +			      const struct counter_watch *watch);
->  };
->  
->  /**
-> @@ -259,6 +288,13 @@ struct counter_ops {
->   * @num_ext:		number of Counter device extensions specified in @ext
->   * @priv:		optional private data supplied by driver
->   * @dev:		internal device structure
-> + * @chrdev:		internal character device structure
-> + * @events_list:	list of current watching Counter events
-> + * @events_list_lock:	lock to protect Counter events list operations
-> + * @next_events_list:	list of next watching Counter events
-> + * @events:		queue of detected Counter events
-> + * @events_wait:	wait queue to allow blocking reads of Counter events
-> + * @events_lock:	lock to protect Counter events queue read operations
->   */
->  struct counter_device {
->  	const char *name;
-> @@ -277,12 +313,21 @@ struct counter_device {
->  	void *priv;
->  
->  	struct device dev;
-> +	struct cdev chrdev;
-> +	struct list_head events_list;
-> +	spinlock_t events_list_lock;
-> +	struct list_head next_events_list;
-> +	DECLARE_KFIFO_PTR(events, struct counter_event);
-> +	wait_queue_head_t events_wait;
-> +	struct mutex events_lock;
->  };
->  
->  int counter_register(struct counter_device *const counter);
->  void counter_unregister(struct counter_device *const counter);
->  int devm_counter_register(struct device *dev,
->  			  struct counter_device *const counter);
-> +void counter_push_event(struct counter_device *const counter, const u8 event,
-> +			const u8 channel);
->  
->  #define COUNTER_COMP_DEVICE_U8(_name, _read, _write) \
->  { \
-> diff --git a/include/uapi/linux/counter.h b/include/uapi/linux/counter.h
-> index 6113938a6044..e55dfc9de887 100644
-> --- a/include/uapi/linux/counter.h
-> +++ b/include/uapi/linux/counter.h
-> @@ -6,6 +6,19 @@
->  #ifndef _UAPI_COUNTER_H_
->  #define _UAPI_COUNTER_H_
->  
-> +#include <linux/ioctl.h>
-> +#include <linux/types.h>
-> +
-> +/* Component type definitions */
-> +enum counter_component_type {
-> +	COUNTER_COMPONENT_NONE,
-> +	COUNTER_COMPONENT_SIGNAL,
-> +	COUNTER_COMPONENT_COUNT,
-> +	COUNTER_COMPONENT_FUNCTION,
-> +	COUNTER_COMPONENT_SYNAPSE_ACTION,
-> +	COUNTER_COMPONENT_EXTENSION,
-> +};
-> +
->  /* Component scope definitions */
->  enum counter_scope {
->  	COUNTER_SCOPE_DEVICE,
-> @@ -13,6 +26,70 @@ enum counter_scope {
->  	COUNTER_SCOPE_COUNT,
->  };
->  
-> +/**
-> + * struct counter_component - Counter component identification
-> + * @type: component type (one of enum counter_component_type)
-> + * @scope: component scope (one of enum counter_scope)
-> + * @parent: parent ID (matching the ID suffix of the respective parent sysfs
-> + *          path as described by the ABI documentation file
-> + *          Documentation/ABI/testing/sysfs-bus-counter; e.g. if the component
-> + *          attribute path is /sys/bus/counter/devices/counter4/count2/count,
-> + *          the parent is count2 and thus parent ID is 2)
-> + * @id: component ID (matching the ID provided by the respective *_component_id
-> + *      sysfs attribute of the desired component; for example, if the component
-> + *      attribute path is /sys/bus/counter/devices/counter4/count2/ceiling, the
-> + *      respective /sys/bus/counter/devices/counter4/count2/ceiling_component_id
-> + *      attribute will provide the necessary component ID)
-> + * )
-> + */
-> +struct counter_component {
-> +	__u8 type;
-> +	__u8 scope;
-> +	__u8 parent;
-> +	__u8 id;
-> +};
-> +
-> +/* Event type definitions */
-> +enum counter_event_type {
-> +	COUNTER_EVENT_OVERFLOW,
-> +	COUNTER_EVENT_UNDERFLOW,
-> +	COUNTER_EVENT_OVERFLOW_UNDERFLOW,
-> +	COUNTER_EVENT_THRESHOLD,
-> +	COUNTER_EVENT_INDEX,
-> +};
-> +
-> +/**
-> + * struct counter_watch - Counter component watch configuration
-> + * @component: component to watch when event triggers
-> + * @event: event that triggers (one of enum counter_event_type)
-> + * @channel: event channel (typically 0 unless the device supports concurrent
-> + *	     events of the same type)
-> + */
-> +struct counter_watch {
-> +	struct counter_component component;
-> +	__u8 event;
-> +	__u8 channel;
-> +};
-> +
-> +/* ioctl commands */
-> +#define COUNTER_ADD_WATCH_IOCTL _IOW(0x3E, 0x00, struct counter_watch)
-> +#define COUNTER_ENABLE_EVENTS_IOCTL _IO(0x3E, 0x01)
-> +#define COUNTER_DISABLE_EVENTS_IOCTL _IO(0x3E, 0x02)
-> +
-> +/**
-> + * struct counter_event - Counter event data
-> + * @timestamp: best estimate of time of event occurrence, in nanoseconds
-> + * @value: component value
-> + * @watch: component watch configuration
-> + * @status: return status (system error number)
-> + */
-> +struct counter_event {
-> +	__aligned_u64 timestamp;
-> +	__aligned_u64 value;
-> +	struct counter_watch watch;
-> +	__u8 status;
-> +};
-> +
->  /* Count direction values */
->  enum counter_count_direction {
->  	COUNTER_COUNT_DIRECTION_FORWARD,
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e924f9e5df97..8d700baaa3ca 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -760,6 +760,13 @@ L:	linux-media@vger.kernel.org
+ S:	Maintained
+ F:	drivers/staging/media/sunxi/cedrus/
+ 
++ALLWINNER DMIC DRIVERS
++M:	Ban Tao <fengzheng923@gmail.com>
++L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
++S:	Maintained
++F:	Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmic.yaml
++F:	sound/soc/sunxi/sun50i-dmic.c
++
+ ALPHA PORT
+ M:	Richard Henderson <rth@twiddle.net>
+ M:	Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
+index ddcaaa98d3cb..2a3bf7722e11 100644
+--- a/sound/soc/sunxi/Kconfig
++++ b/sound/soc/sunxi/Kconfig
+@@ -56,6 +56,14 @@ config SND_SUN4I_SPDIF
+ 	  Say Y or M to add support for the S/PDIF audio block in the Allwinner
+ 	  A10 and affiliated SoCs.
+ 
++config SND_SUN50I_DMIC
++	tristate "Allwinner H6 DMIC Support"
++	depends on (OF && ARCH_SUNXI) || COMPILE_TEST
++	select SND_SOC_GENERIC_DMAENGINE_PCM
++	help
++	  Say Y or M to add support for the DMIC audio block in the Allwinner
++	  H6 and affiliated SoCs.
++
+ config SND_SUN8I_ADDA_PR_REGMAP
+ 	tristate
+ 	select REGMAP
+diff --git a/sound/soc/sunxi/Makefile b/sound/soc/sunxi/Makefile
+index a86be340a076..4483fe9c94ef 100644
+--- a/sound/soc/sunxi/Makefile
++++ b/sound/soc/sunxi/Makefile
+@@ -6,3 +6,4 @@ obj-$(CONFIG_SND_SUN8I_CODEC_ANALOG) += sun8i-codec-analog.o
+ obj-$(CONFIG_SND_SUN50I_CODEC_ANALOG) += sun50i-codec-analog.o
+ obj-$(CONFIG_SND_SUN8I_CODEC) += sun8i-codec.o
+ obj-$(CONFIG_SND_SUN8I_ADDA_PR_REGMAP) += sun8i-adda-pr-regmap.o
++obj-$(CONFIG_SND_SUN50I_DMIC) += sun50i-dmic.o
+diff --git a/sound/soc/sunxi/sun50i-dmic.c b/sound/soc/sunxi/sun50i-dmic.c
+new file mode 100644
+index 000000000000..bbac836ba4de
+--- /dev/null
++++ b/sound/soc/sunxi/sun50i-dmic.c
+@@ -0,0 +1,403 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++//
++// This driver supports the DMIC in Allwinner's H6 SoCs.
++//
++// Copyright 2021 Ban Tao <fengzheng923@gmail.com>
++
++#include <linux/clk.h>
++#include <linux/device.h>
++#include <linux/of_device.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
++#include <linux/reset.h>
++#include <sound/dmaengine_pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++
++#define SUN50I_DMIC_EN_CTL		(0x00)
++	#define SUN50I_DMIC_EN_CTL_GLOBE			BIT(8)
++	#define SUN50I_DMIC_EN_CTL_CHAN(v)		((v) << 0)
++	#define SUN50I_DMIC_EN_CTL_CHAN_MASK		GENMASK(7, 0)
++#define SUN50I_DMIC_SR			(0x04)
++	#define SUN50I_DMIC_SR_SAMPLE_RATE(v)		((v) << 0)
++	#define SUN50I_DMIC_SR_SAMPLE_RATE_MASK		GENMASK(2, 0)
++#define SUN50I_DMIC_CTL			(0x08)
++	#define SUN50I_DMIC_CTL_OVERSAMPLE_RATE		BIT(0)
++#define SUN50I_DMIC_DATA			(0x10)
++#define SUN50I_DMIC_INTC			(0x14)
++	#define SUN50I_DMIC_FIFO_DRQ_EN			BIT(2)
++#define SUN50I_DMIC_INT_STA		(0x18)
++	#define SUN50I_DMIC_INT_STA_OVERRUN_IRQ_PENDING	BIT(1)
++	#define SUN50I_DMIC_INT_STA_DATA_IRQ_PENDING	BIT(0)
++#define SUN50I_DMIC_RXFIFO_CTL		(0x1c)
++	#define SUN50I_DMIC_RXFIFO_CTL_FLUSH		BIT(31)
++	#define SUN50I_DMIC_RXFIFO_CTL_MODE		BIT(9)
++	#define SUN50I_DMIC_RXFIFO_CTL_RESOLUTION	BIT(8)
++#define SUN50I_DMIC_CH_NUM		(0x24)
++	#define SUN50I_DMIC_CH_NUM_N(v)			((v) << 0)
++	#define SUN50I_DMIC_CH_NUM_N_MASK		GENMASK(2, 0)
++#define SUN50I_DMIC_CNT			(0x2c)
++	#define SUN50I_DMIC_CNT_N			BIT(0)
++#define SUN50I_DMIC_HPF_CTRL		(0x38)
++#define SUN50I_DMIC_VERSION		(0x50)
++
++
++struct sun50i_dmic_dev {
++	struct clk *dmic_clk;
++	struct clk *bus_clk;
++	struct reset_control *rst;
++	struct regmap *regmap;
++	struct snd_dmaengine_dai_dma_data dma_params_rx;
++	unsigned int chan_en;
++};
++
++struct dmic_rate {
++	unsigned int samplerate;
++	unsigned int rate_bit;
++};
++
++static int sun50i_dmic_startup(struct snd_pcm_substream *substream,
++			       struct snd_soc_dai *cpu_dai)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct sun50i_dmic_dev *host = snd_soc_dai_get_drvdata(asoc_rtd_to_cpu(rtd, 0));
++
++	/* only support capture */
++	if (substream->stream != SNDRV_PCM_STREAM_CAPTURE)
++		return -EINVAL;
++
++	regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
++			   SUN50I_DMIC_RXFIFO_CTL_FLUSH,
++			   SUN50I_DMIC_RXFIFO_CTL_FLUSH);
++	regmap_write(host->regmap, SUN50I_DMIC_CNT, SUN50I_DMIC_CNT_N);
++
++	return 0;
++}
++
++static int sun50i_dmic_hw_params(struct snd_pcm_substream *substream,
++				 struct snd_pcm_hw_params *params,
++				 struct snd_soc_dai *cpu_dai)
++{
++	int i = 0;
++	unsigned long rate = params_rate(params);
++	unsigned int mclk = 0;
++	unsigned int channels = params_channels(params);
++	struct sun50i_dmic_dev *host = snd_soc_dai_get_drvdata(cpu_dai);
++	static struct dmic_rate dmic_rate_s[] = {
++		{44100, 0x0},
++		{48000, 0x0},
++		{22050, 0x2},
++		{24000, 0x2},
++		{11025, 0x4},
++		{12000, 0x4},
++		{32000, 0x1},
++		{16000, 0x3},
++		{8000,  0x5},
++	};
++
++	/* DMIC num is N+1 */
++	regmap_update_bits(host->regmap, SUN50I_DMIC_CH_NUM,
++			   SUN50I_DMIC_CH_NUM_N_MASK,
++			   SUN50I_DMIC_CH_NUM_N(channels - 1));
++	host->chan_en = (1 << channels) - 1;
++	regmap_write(host->regmap, SUN50I_DMIC_HPF_CTRL, host->chan_en);
++
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_S16_LE:
++		regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
++				   SUN50I_DMIC_RXFIFO_CTL_RESOLUTION, 0);
++		break;
++	case SNDRV_PCM_FORMAT_S24_LE:
++		regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
++				   SUN50I_DMIC_RXFIFO_CTL_RESOLUTION,
++				   SUN50I_DMIC_RXFIFO_CTL_RESOLUTION);
++		break;
++	default:
++		dev_err(cpu_dai->dev, "Invalid format!\n");
++		return -EINVAL;
++	}
++	regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
++			   SUN50I_DMIC_RXFIFO_CTL_MODE,
++			   SUN50I_DMIC_RXFIFO_CTL_MODE);
++
++	switch (rate) {
++	case 11025:
++	case 22050:
++	case 44100:
++		mclk = 22579200;
++		break;
++	case 8000:
++	case 12000:
++	case 16000:
++	case 24000:
++	case 32000:
++	case 48000:
++		mclk = 24576000;
++		break;
++	default:
++		dev_err(cpu_dai->dev, "Invalid rate!\n");
++		return -EINVAL;
++	}
++
++	if (clk_set_rate(host->dmic_clk, mclk)) {
++		dev_err(cpu_dai->dev, "mclk : %u not support\n", mclk);
++		return -EINVAL;
++	}
++
++	for (i = 0; i < ARRAY_SIZE(dmic_rate_s); i++) {
++		if (dmic_rate_s[i].samplerate == rate) {
++			regmap_update_bits(host->regmap, SUN50I_DMIC_SR,
++					   SUN50I_DMIC_SR_SAMPLE_RATE_MASK,
++					   SUN50I_DMIC_SR_SAMPLE_RATE(dmic_rate_s[i].rate_bit));
++			break;
++		}
++	}
++
++	switch (params_physical_width(params)) {
++	case 16:
++		host->dma_params_rx.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
++		break;
++	case 32:
++		host->dma_params_rx.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
++		break;
++	default:
++		dev_err(cpu_dai->dev, "Unsupported physical sample width: %d\n",
++			params_physical_width(params));
++		return -EINVAL;
++	}
++
++	/* oversamplerate adjust */
++	if (params_rate(params) >= 24000)
++		regmap_update_bits(host->regmap, SUN50I_DMIC_CTL,
++				   SUN50I_DMIC_CTL_OVERSAMPLE_RATE,
++				   SUN50I_DMIC_CTL_OVERSAMPLE_RATE);
++	else
++		regmap_update_bits(host->regmap, SUN50I_DMIC_CTL,
++				   SUN50I_DMIC_CTL_OVERSAMPLE_RATE, 0);
++
++	return 0;
++}
++
++static int sun50i_dmic_trigger(struct snd_pcm_substream *substream, int cmd,
++			       struct snd_soc_dai *dai)
++{
++	int ret = 0;
++	struct sun50i_dmic_dev *host = snd_soc_dai_get_drvdata(dai);
++
++	if (substream->stream != SNDRV_PCM_STREAM_CAPTURE)
++		return -EINVAL;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		/* DRQ ENABLE */
++		regmap_update_bits(host->regmap, SUN50I_DMIC_INTC,
++				   SUN50I_DMIC_FIFO_DRQ_EN,
++				   SUN50I_DMIC_FIFO_DRQ_EN);
++		regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
++				   SUN50I_DMIC_EN_CTL_CHAN_MASK,
++				   SUN50I_DMIC_EN_CTL_CHAN(host->chan_en));
++		/* Global enable */
++		regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
++				   SUN50I_DMIC_EN_CTL_GLOBE,
++				   SUN50I_DMIC_EN_CTL_GLOBE);
++		break;
++
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		/* DRQ DISABLE */
++		regmap_update_bits(host->regmap, SUN50I_DMIC_INTC,
++				   SUN50I_DMIC_FIFO_DRQ_EN, 0);
++		regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
++				   SUN50I_DMIC_EN_CTL_CHAN_MASK,
++				   SUN50I_DMIC_EN_CTL_CHAN(0));
++		/* Global disable */
++		regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
++				   SUN50I_DMIC_EN_CTL_GLOBE, 0);
++		break;
++
++	default:
++		ret = -EINVAL;
++		break;
++	}
++	return ret;
++}
++
++static int sun50i_dmic_soc_dai_probe(struct snd_soc_dai *dai)
++{
++	struct sun50i_dmic_dev *host = snd_soc_dai_get_drvdata(dai);
++
++	snd_soc_dai_init_dma_data(dai, NULL, &host->dma_params_rx);
++
++	return 0;
++}
++
++static const struct snd_soc_dai_ops sun50i_dmic_dai_ops = {
++	.startup	= sun50i_dmic_startup,
++	.trigger	= sun50i_dmic_trigger,
++	.hw_params	= sun50i_dmic_hw_params,
++};
++
++static const struct regmap_config sun50i_dmic_regmap_config = {
++	.reg_bits = 32,
++	.reg_stride = 4,
++	.val_bits = 32,
++	.max_register = SUN50I_DMIC_VERSION,
++	.cache_type = REGCACHE_NONE,
++};
++
++#define	SUN50I_DMIC_RATES (SNDRV_PCM_RATE_8000_48000)
++#define SUN50I_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE)
++
++static struct snd_soc_dai_driver sun50i_dmic_dai = {
++	.capture = {
++		.channels_min = 1,
++		.channels_max = 8,
++		.rates = SUN50I_DMIC_RATES,
++		.formats = SUN50I_FORMATS,
++		.sig_bits = 21,
++	},
++	.probe = sun50i_dmic_soc_dai_probe,
++	.ops = &sun50i_dmic_dai_ops,
++	.name = "dmic",
++};
++
++static const struct of_device_id sun50i_dmic_of_match[] = {
++	{
++		.compatible = "allwinner,sun50i-h6-dmic",
++	},
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, sun50i_dmic_of_match);
++
++static const struct snd_soc_component_driver sun50i_dmic_component = {
++	.name		= "sun50i-dmic",
++};
++
++static int sun50i_dmic_runtime_suspend(struct device *dev)
++{
++	struct sun50i_dmic_dev *host  = dev_get_drvdata(dev);
++
++	clk_disable_unprepare(host->dmic_clk);
++	clk_disable_unprepare(host->bus_clk);
++
++	return 0;
++}
++
++static int sun50i_dmic_runtime_resume(struct device *dev)
++{
++	struct sun50i_dmic_dev *host  = dev_get_drvdata(dev);
++	int ret;
++
++	ret = clk_prepare_enable(host->dmic_clk);
++	if (ret)
++		return ret;
++	ret = clk_prepare_enable(host->bus_clk);
++	if (ret)
++		clk_disable_unprepare(host->dmic_clk);
++
++	return ret;
++}
++
++static int sun50i_dmic_probe(struct platform_device *pdev)
++{
++	struct sun50i_dmic_dev *host;
++	struct resource *res;
++	int ret;
++	void __iomem *base;
++
++	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
++	if (!host)
++		return -ENOMEM;
++
++	/* Get the addresses */
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	base = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(base))
++		return dev_err_probe(&pdev->dev, PTR_ERR(base),
++				     "get resource failed.\n");
++
++	host->regmap = devm_regmap_init_mmio(&pdev->dev, base,
++						&sun50i_dmic_regmap_config);
++
++	/* Clocks */
++	host->bus_clk = devm_clk_get(&pdev->dev, "bus");
++	if (IS_ERR(host->bus_clk))
++		return dev_err_probe(&pdev->dev, PTR_ERR(host->bus_clk),
++				     "failed to get bus clock.\n");
++
++	host->dmic_clk = devm_clk_get(&pdev->dev, "mod");
++	if (IS_ERR(host->dmic_clk))
++		return dev_err_probe(&pdev->dev, PTR_ERR(host->dmic_clk),
++				     "failed to get dmic clock.\n");
++
++	host->dma_params_rx.addr = res->start + SUN50I_DMIC_DATA;
++	host->dma_params_rx.maxburst = 8;
++
++	platform_set_drvdata(pdev, host);
++
++	host->rst = devm_reset_control_get_optional_exclusive(&pdev->dev, NULL);
++	if (IS_ERR(host->rst))
++		return dev_err_probe(&pdev->dev, PTR_ERR(host->rst),
++				     "Failed to get reset.\n");
++	reset_control_deassert(host->rst);
++
++	ret = devm_snd_soc_register_component(&pdev->dev,
++				&sun50i_dmic_component, &sun50i_dmic_dai, 1);
++	if (ret)
++		return dev_err_probe(&pdev->dev, ret,
++				     "failed to register component.\n");
++
++	pm_runtime_enable(&pdev->dev);
++	if (!pm_runtime_enabled(&pdev->dev)) {
++		ret = sun50i_dmic_runtime_resume(&pdev->dev);
++		if (ret)
++			goto err_unregister;
++	}
++
++	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
++	if (ret)
++		goto err_suspend;
++
++	return 0;
++err_suspend:
++	if (!pm_runtime_status_suspended(&pdev->dev))
++		sun50i_dmic_runtime_suspend(&pdev->dev);
++err_unregister:
++	pm_runtime_disable(&pdev->dev);
++	return ret;
++}
++
++static int sun50i_dmic_remove(struct platform_device *pdev)
++{
++	pm_runtime_disable(&pdev->dev);
++	if (!pm_runtime_status_suspended(&pdev->dev))
++		sun50i_dmic_runtime_suspend(&pdev->dev);
++
++	return 0;
++}
++
++static const struct dev_pm_ops sun50i_dmic_pm = {
++	SET_RUNTIME_PM_OPS(sun50i_dmic_runtime_suspend,
++			   sun50i_dmic_runtime_resume, NULL)
++};
++
++static struct platform_driver sun50i_dmic_driver = {
++	.driver		= {
++		.name	= "sun50i-dmic",
++		.of_match_table = of_match_ptr(sun50i_dmic_of_match),
++		.pm	= &sun50i_dmic_pm,
++	},
++	.probe		= sun50i_dmic_probe,
++	.remove		= sun50i_dmic_remove,
++};
++
++module_platform_driver(sun50i_dmic_driver);
++
++MODULE_DESCRIPTION("Allwinner sun50i DMIC SoC Interface");
++MODULE_AUTHOR("Ban Tao <fengzheng923@gmail.com>");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:sun50i-dmic");
+-- 
+2.17.1
 
