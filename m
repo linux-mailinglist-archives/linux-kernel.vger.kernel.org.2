@@ -2,128 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64D803C3B3A
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 10:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56FDA3C3B45
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 11:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbhGKI5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 04:57:11 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:42708 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhGKI5K (ORCPT
+        id S230022AbhGKJPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 05:15:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229523AbhGKJPU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 04:57:10 -0400
-Received: by mail-il1-f198.google.com with SMTP id d17-20020a9236110000b02901cf25fcfdcdso9483946ila.9
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 01:54:24 -0700 (PDT)
+        Sun, 11 Jul 2021 05:15:20 -0400
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD6DC0613DD;
+        Sun, 11 Jul 2021 02:12:34 -0700 (PDT)
+Received: by mail-vs1-xe32.google.com with SMTP id o7so8307247vss.5;
+        Sun, 11 Jul 2021 02:12:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DOZ/sOH8+Rsjf9K6KjxQGtE06rD3YjMce9ekhraHpxU=;
+        b=raHJHXqXoadd7fB11PI/hhlLA5jkvLxzqckn09EqGMk9zwQ9Afw7soUgyZGaJbVTK7
+         mJiAwhhPLcHUm3fS1dMHR+qHYCIMboe7z+C4hYDgjupKfwL2+H8eoBHm6V4P0Cqaqpdk
+         a3j3AhhdRxMhx25uqvQJULvi5+YzZHR424jmJTperMKDtwFw/4mGBR6wM5pYYe2VQFYZ
+         keLvgnIUg6yX9v5y44S7qLtsYCNYMkfkUeNtkTbrQ7/QBuWvImRkyuz5DZgyFiKI8A31
+         K8TJ8aWz9W1t4LmIAjs7pp0AHyrVlk3EA3VhEUQl7OYPw0uhUWltdT3ETlakiU18auGv
+         dQkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=HZ9eJXdff4hUgy6B3FUPxsf4D0BH4h3zoABzOZUQOoo=;
-        b=nf7ThsGKpyxCS+K4bLenXtbtven6woQOiL+9/U07b6xfWEVnWg35vPAtHxl0T2LhgI
-         p1rJB8jUwyjJspZKZ4TU91JbW1Kpo7SE157xB81im6egOZeF3UhvBPVLmO89+BnEz2NJ
-         ui8DDB6W8wc8u2WVVuWvmKhWOkzSzWWVnp5Sy/gK7ytXWo7FRL3aYoF7ifwvKZ7EPnBS
-         LFvaHC2GvhcvDPKANt3Zpy0uONfyRsDMAAXVF0/gUKMF7dKGq+BrEXcyhl6MGcSw8cBx
-         svaw6yi/OTmBEA3aopg9Hh2d4fnk5bMIIxJBKRWDYmSXX1Z8GZHT9+z5XYOYk5FK9Mjt
-         HaZA==
-X-Gm-Message-State: AOAM531xXg+9IJWh8PBCDc54pa62vrE9u/dhiw6B7VgJSN4vYo+xQ0dD
-        aUcSdJnd9MUPnVavrpc/RWkwAU8/xRg7dqEvaw1W6+jNL92/
-X-Google-Smtp-Source: ABdhPJxttJ5+IE4VKoJ5IrMWBfWhngFtpFkpLVl1ev6xX5+d3JwRro3/Yb6X9OTbPFJ/FipuA+wuiop8Bpcv2dEIrPassiL5TUhA
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DOZ/sOH8+Rsjf9K6KjxQGtE06rD3YjMce9ekhraHpxU=;
+        b=k6RTvibveJHWWJ03PWoW5YRfT5QjSsfBF2M4gP8HYqCREr7pkoq+vwUh5mPKtk6w3t
+         2J68ZrZIPKTDMhn8oMuzQSCvdvYdIvwfBV/FewHphhX2lh4L+usHlGwkujCe8+/IirFg
+         XrkOUmIyTgXdLY6olpkMWgoGOXRO1ZzIkd9gsaT1fPyFgKcYZ/8tkoHbUtrGk/KnF9Ix
+         kf+ENk3ueEbb7RJSx194PkFrtR/WBKKWllFtCO1x3KPOv/OQPYIVXosEdB1heE08miR0
+         Ff+MjQ0HWr03cfqD9+X/QyzYvca570505wHXz9+LMENTbRN9i0Dov2YSf++U2sBFY69a
+         PYUw==
+X-Gm-Message-State: AOAM532JdZGelJr7BytSmoX7Y5cXZFlzea1jWPxnPL5AGcuBUeRXFfot
+        y4pThpTjBHN/5Ah+pz8MWzM=
+X-Google-Smtp-Source: ABdhPJy4sYlbAvD925USY3o7g3cekIAiQWfPOcpJSUajkbSVOf7KKojVP1744YeqH/lV+OQ7fAEwHg==
+X-Received: by 2002:a67:8013:: with SMTP id b19mr3288366vsd.33.1625994752311;
+        Sun, 11 Jul 2021 02:12:32 -0700 (PDT)
+Received: from shinobu ([193.27.12.133])
+        by smtp.gmail.com with ESMTPSA id e20sm1570374vsb.22.2021.07.11.02.12.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Jul 2021 02:12:31 -0700 (PDT)
+Date:   Sun, 11 Jul 2021 18:12:23 +0900
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     David Lechner <david@lechnology.com>
+Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>, jic23@kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
+        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
+        gwendal@chromium.org, alexandre.belloni@bootlin.com,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
+        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
+        o.rempel@pengutronix.de
+Subject: Re: [PATCH v12 15/17] counter: Implement events_queue_size sysfs
+ attribute
+Message-ID: <YOq19zTsOzKA8v7c@shinobu>
+References: <cover.1625471640.git.vilhelm.gray@gmail.com>
+ <e298043c880b350a42bdc40452376a3708bf533b.1625471640.git.vilhelm.gray@gmail.com>
+ <1a624011-0b43-ac42-be53-a42f81923e5a@linux.intel.com>
+ <YOl1frCrophjhk7y@shinobu>
+ <fbf1ba4c-412b-fe22-0e79-76e968a00fb4@lechnology.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:700b:: with SMTP id l11mr32853114ilc.48.1625993663929;
- Sun, 11 Jul 2021 01:54:23 -0700 (PDT)
-Date:   Sun, 11 Jul 2021 01:54:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bee44405c6d5269b@google.com>
-Subject: [syzbot] linux-next test error: BUG: sleeping function called from
- invalid context in stack_depot_save
-From:   syzbot <syzbot+70e88b8ebb12fa2bdedf@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-next@vger.kernel.org,
-        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="QSOFuI5CHXQO+dHV"
+Content-Disposition: inline
+In-Reply-To: <fbf1ba4c-412b-fe22-0e79-76e968a00fb4@lechnology.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot found the following issue on:
+--QSOFuI5CHXQO+dHV
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-HEAD commit:    e2f74b13 Add linux-next specific files for 20210708
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=15458794300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=59e1e3bbc3afca75
-dashboard link: https://syzkaller.appspot.com/bug?extid=70e88b8ebb12fa2bdedf
+On Sat, Jul 10, 2021 at 10:43:22AM -0500, David Lechner wrote:
+> On 7/10/21 5:25 AM, William Breathitt Gray wrote:
+> >> and after that
+> >>
+> >> [   16.564403] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+> >> [   16.570725] WARNING: lock held when returning to user space!
+> >> [   16.577044] 5.13.0-next-20210706+ #4 Not tainted
+> >> [   16.582198] ------------------------------------------------
+> >> [   16.588507] cat/331 is leaving the kernel with locks still held!
+> >> [   16.595214] 1 lock held by cat/331:
+> >> [   16.599103]  #0: ffff888102bb3630
+> >> (&counter->chrdev_lock){+.+.}-{3:3}, at: counter_chrdev_open+0x21/0x60
+> >> [counter]
+> >>
+> >> Jarkko
+> > I'm not sure how to resolve this warning. The purpose of this lock is to
+> > limit chrdev to a single open at a time. To accomplish this I grab this
+> > lock in counter_chrdev_open() and hold it until counter_chrdev_release()
+> > is called. Is there a better way to accomplish this?
+>=20
+> How about using an atomic flag, e.g test_and_set_bit()?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+70e88b8ebb12fa2bdedf@syzkaller.appspotmail.com
+Yes, I think this might work: atomically test and set the bit to lock
+and atomically clear it to unlock. I'll replace the mutex with an atomic
+flag.
 
-BUG: sleeping function called from invalid context at mm/page_alloc.c:5178
-in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 8439, name: syz-fuzzer
-INFO: lockdep is turned off.
-irq event stamp: 0
-hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-hardirqs last disabled at (0): [<ffffffff8144098d>] copy_process+0x1dcd/0x74d0 kernel/fork.c:2112
-softirqs last  enabled at (0): [<ffffffff814409ce>] copy_process+0x1e0e/0x74d0 kernel/fork.c:2116
-softirqs last disabled at (0): [<0000000000000000>] 0x0
-CPU: 0 PID: 8439 Comm: syz-fuzzer Tainted: G        W         5.13.0-next-20210708-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:9171
- prepare_alloc_pages+0x3da/0x580 mm/page_alloc.c:5178
- __alloc_pages+0x12f/0x500 mm/page_alloc.c:5374
- alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2244
- stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
- save_stack+0x15e/0x1e0 mm/page_owner.c:120
- __set_page_owner+0x50/0x290 mm/page_owner.c:181
- prep_new_page mm/page_alloc.c:2444 [inline]
- __alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5312
- alloc_pages_bulk_array_node include/linux/gfp.h:557 [inline]
- vm_area_alloc_pages mm/vmalloc.c:2793 [inline]
- __vmalloc_area_node mm/vmalloc.c:2863 [inline]
- __vmalloc_node_range+0x39d/0x960 mm/vmalloc.c:2966
- __vmalloc_node mm/vmalloc.c:3015 [inline]
- __vmalloc+0x69/0x80 mm/vmalloc.c:3029
- snd_dma_vmalloc_alloc+0x57/0xa0 sound/core/memalloc.c:236
- __snd_dma_alloc_pages+0xc1/0x130 sound/core/memalloc.c:38
- snd_dma_alloc_pages+0x13b/0x230 sound/core/memalloc.c:71
- do_alloc_pages+0x9b/0x160 sound/core/pcm_memory.c:43
- snd_pcm_lib_malloc_pages+0x3f6/0x880 sound/core/pcm_memory.c:383
- snd_pcm_hw_params+0x1408/0x1990 sound/core/pcm_native.c:705
- snd_pcm_kernel_ioctl+0xd1/0x240 sound/core/pcm_native.c:3338
- snd_pcm_oss_change_params_locked+0x1958/0x3990 sound/core/oss/pcm_oss.c:947
- snd_pcm_oss_change_params sound/core/oss/pcm_oss.c:1091 [inline]
- snd_pcm_oss_make_ready+0xe7/0x1b0 sound/core/oss/pcm_oss.c:1150
- snd_pcm_oss_sync+0x1de/0x800 sound/core/oss/pcm_oss.c:1717
- snd_pcm_oss_release+0x276/0x300 sound/core/oss/pcm_oss.c:2571
- __fput+0x288/0x920 fs/file_table.c:280
- task_work_run+0xdd/0x1a0 kernel/task_work.c:164
- tracehook_notify_resume include/linux/tracehook.h:189 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
- exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:209
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
- do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4af19b
-Code: fb ff eb bd e8 a6 b6 fb ff e9 61 ff ff ff cc e8 9b 82 fb ff 48 8b 7c 24 10 48 8b 74 24 18 48 8b 54 24 20 48 8b 44 24 08 0f 05 <48> 3d 01 f0 ff ff 76 20 48 c7 44 24 28 ff ff ff ff 48 c7 44 24 30
-RSP: 002b:000000c000331430 EFLAGS: 00000206 ORIG_RAX: 0000000000000003
-RAX: 0000000000000000 RBX: 000000c00001e800 RCX: 00000000004af19b
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000006
-RBP: 000000c000331470 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000206 R12: 000000000000013f
-R13: 000000000000013e R14: 0000000000000200 R15: 000000c0004cc0a0
-can: request_module (can-proto-0) failed.
-can: request_module (can-proto-0) failed.
-can: request_module (can-proto-0) failed.
+By the way, what is the difference between test_and_set_bit() and
+test_and_set_bit_lock()?
 
+William Breathitt Gray
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+--QSOFuI5CHXQO+dHV
+Content-Type: application/pgp-signature; name="signature.asc"
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmDqtfcACgkQhvpINdm7
+VJJoJw/8DNxxfECJciiVQx9aysjKNMY0qReiNt0Ua1DGfW7g2h9MFwl+YZo/NqN0
+JySbFvJ4DHIeUed1KOfr7bH4J0/PEG20xbEO14wHUyWBehXomn5/67lrDnzJ82Px
+ih54U7JEEqdoda6eswt3U1dkvCwJF9lOzQDLe4xLFy127I/bctSDVncYpbFRcYlJ
+VHf6EuD4Tu30IGYhLbDWIrZgv+nMXWzpx4m0cUPFhFJO2oW83GSYVKo0yB14NLJo
+lmfzrmoX+9SPI3LLiu47yphY2nKSfvvb7Wi+ScOnUSvDd9a43Tb51tiZGoobbgGa
+pWu5WXPnNcR5XYmIXx2vxxWx7XLAR+mxW85VO2MeQGQtsbiFeGUHuvbexqAu3JeA
+EC6wySkTB35hgaesvsJMsBNfGdlQZjzydIidJqK0/uKEfqTL0+wJrnq5YsSkJ//o
+DSRjEZor8+mYj6rDHLH2AIZRUKA7ddqzZWII693FJ6075iMWW2ptqznPx1ln/uiB
+kXD3tuAuOv0fN4J7FJ+pOBWSszVUOIV26CoidHSmWXAKjdrx7HAwuYCgI/TaIgsy
+G971rJubdTI0t/G1LOmQh0QvRcqeSiaOjMK8kbF1XGEJcRAOGM2ih8klUCZhDt6r
+UyvmHW85UUQly1l4G7vtXa6X0cQ8sckFlwEQz1kjP/i3HAP/qbo=
+=Lh1x
+-----END PGP SIGNATURE-----
+
+--QSOFuI5CHXQO+dHV--
