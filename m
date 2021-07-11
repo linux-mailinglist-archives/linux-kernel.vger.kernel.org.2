@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E1EC3C3B88
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 12:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B70D3C3B89
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 12:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232165AbhGKKhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 06:37:42 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:47363 "EHLO
+        id S232193AbhGKKik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 06:38:40 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:50953 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231183AbhGKKhl (ORCPT
+        with ESMTP id S231183AbhGKKij (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 06:37:41 -0400
+        Sun, 11 Jul 2021 06:38:39 -0400
 Received: from [192.168.1.107] ([37.4.249.97]) by mrelayeu.kundenserver.de
- (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MirfG-1lYiLa2m3g-00exV1; Sun, 11 Jul 2021 12:34:38 +0200
-Subject: Re: [PATCH v3 2/5] staging: vchiq: Move certain declarations to
- vchiq_arm.h
+ (mreue108 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MrQR7-1lPfwD3FdX-00oVAw; Sun, 11 Jul 2021 12:35:30 +0200
+Subject: Re: [PATCH v3 3/5] staging: vchiq: Move vchiq char driver to its own
+ file
 To:     Ojaswin Mujoo <ojaswin98@gmail.com>, nsaenz@kernel.org
 Cc:     gregkh@linuxfoundation.org, arnd@arndb.de,
         dan.carpenter@oracle.com, phil@raspberrypi.com,
@@ -24,7 +24,7 @@ Cc:     gregkh@linuxfoundation.org, arnd@arndb.de,
         linux-arm-kernel@lists.infradead.org,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
 References: <cover.1625401927.git.ojaswin98@gmail.com>
- <3ed6ab5cbcc5647c9837a2a20428e954b6fb4de1.1625401927.git.ojaswin98@gmail.com>
+ <3b7178086322f774772d95141764ed99d0698139.1625401927.git.ojaswin98@gmail.com>
 From:   Stefan Wahren <stefan.wahren@i2se.com>
 Autocrypt: addr=stefan.wahren@i2se.com; keydata=
  LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tClZlcnNpb246IEdudVBHIHYy
@@ -156,42 +156,48 @@ Autocrypt: addr=stefan.wahren@i2se.com; keydata=
  VVBnY0pKTmFHWTIKVklEclpRaTROU2lOUTBOSWkrZGp1NGZOTW1DcFFxZzh0YkMzY0FhNnl3
  bTZvUUIxU0JobURYMmUxMWdSbGx1SQpPblRHUEUwSFRvM2w3MmxoYmc9PQo9cVpNVgotLS0t
  LUVORCBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCg==
-Message-ID: <db8a387a-77bc-e78e-ef32-da530a80197b@i2se.com>
-Date:   Sun, 11 Jul 2021 12:34:37 +0200
+Message-ID: <3adbf977-3155-753d-2f81-51a375bce35d@i2se.com>
+Date:   Sun, 11 Jul 2021 12:35:29 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <3ed6ab5cbcc5647c9837a2a20428e954b6fb4de1.1625401927.git.ojaswin98@gmail.com>
+In-Reply-To: <3b7178086322f774772d95141764ed99d0698139.1625401927.git.ojaswin98@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-Provags-ID: V03:K1:DPqyN6BtmbvqW8MNlsOuD6gkWVcf7ZdKKl/oa7tLCcSroOcLpfX
- et2VZ6mZJ2v1sb8UBXaXNWnFFMK9H/U5F1+Z8/JnSOOUNJ+GvTGUhK+Xcs5iuJgNcQ7Wg2d
- G7PYchmLY4KqLyguOYpM+cgFl/v/wxWlkMk0RfrETBR2vYs3QW3uAKi7wMjtrr9sEqAlaRF
- JEq2o8vg+HExLJ0EIjJOg==
+X-Provags-ID: V03:K1:4CakpANodNf83UXIrZNmx2jSLS32gEPQQl2r/X0wZGFyGcQ6/io
+ k8J2HSZV1bVUPQcDu4+EPNOKmA6PLvYFfm5I0TxpFTULTe69BhMS+bbIURdRn6JsQDPX1pw
+ GBHAaToOn1VsTDxkOQrJcaeAhb9kd5by8LcJvfFWCQGXshQzMjyPNxtvarAVm31LqbAX5K3
+ 0b3v/amVtNA9frK4uEp8A==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:mW0SHLfpC+w=:nmeQLrcTDqXsSSR9fiJmSH
- sjbFWPa384vcTxRmFcts0uwKy4AX3ZOvp3ZT8aU/RNmRZoqUZ39bQ4Nie9e99PGmnonwo6FSE
- c57TPLryJACsKSjDsku0Xvyy7ijxTcGqkZOL7aIsCaHuyCk3zXCw2doIyHOID9jY4qQBWvXfE
- RRN4zYUqOLIt3EvY77eYIbVZ39MUFfYviZkTn6TjrfIeO99ohDjCzQ9OQIkH/wmSFu1A3/3Xq
- DTOzGn/jwl0lcvgHy2tkCSWmRC8+vSy9pucJewrr7xqeo7XE6Wa45WehoAr2Nbq87F8DvZzuG
- DNm1svufyVjjIW+O/9CTHFBo6ntL09u1Efx2tP+7NAsxXtsZBVb/FbzsAzuupdUPb4TLjPGPa
- Ni49gJxd046A/iKKBYbFEX5xT8VbpNaLlsKb9K9RNbPsJLxoK/wKxqlimpHqzxaWswjtupEd9
- iJnfc33TzFCbNomvdgclXPGaYmQXpqs8uo7ds1nV3sdNBuBGHCYW0Qq7L4l62oSeMRUuxlDJd
- 638WicGT/UYK5+Wb1JoayJ1ikP0GSdsiraZHkULpo8hpeP66bRHBjOfHsQSrEhFoohJunQJBm
- +owQ2tETL4hr4mRMUk5BELTf7RW3w4y3Wj2/MMFdsrmyJz7sS+HqjqvNQlovRY4OGuzm+gdum
- ahfPLFAdzJtSU+/9L1bY4Z6dvQrkzDfCCuFK/gXskEqwaZ7sWYhiJJxiDyC7xdvMwhGYXAxXJ
- 13JeNavpu9fvavoL66G9s+/kFrlMF+FWiEqnilk8vYnIssnO0zeBmU1eLVS8fb5CKU0FigCmh
- JJbxxamOFeB9QkWYUzsCl2lJD8Ow0zKRXMHJ3ElWLjS0WXLoeVSyoKYpFZ/rW/bmnFlXMK6Mm
- 9RfKwnxN39Wt3xqaCVZA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:s5wP4+O7dwc=:7tQMkzpNgI12Kj2PnIe6xd
+ sEBY6ainb/vfhDpIZdvsiMb3rb6ZLG6P6YhZ8TA6dyEGaFLTzYpEmfxabosiER4Hv6wcEYYIS
+ ZAJ07hQ+K6Xdo9pVJdGWth8C410y6dumtaDLu/18awNoFHgmDRTpF6tANWk+KuS6Y3E7AZskf
+ x+obkMwL52c/tgyhQ5ZOMnGvOcXwvF/hmh1niyFY9vVigTKWCRuA0CsIOgH9rLXnn/A07SfCv
+ egJi00YicB2woaHNVcOSU6fzCzIbbAln9HMgmhHaxo7b6JkRdUzsIKZLzbv8CetHBFobXByJ1
+ hTsd+gD9gbPNFxNaYBLztX9DzpuHhrMrFquW2pv6JEDW+DBrAgneYuSKexTXNFuA2/ul/fegs
+ I60x40p+1Zny8XvcAN/J3KfP2wOS09esfEONwNfy71e+fUX8l9CsfVB44EFWIPo46VdsdBXUK
+ JSF0pYtr4qpH1HvFVc4+YBX3c8VideaMmdXToSJw+SqcvkG2Lcifg51rknKStefSbCwKKHN0w
+ c0Duk9u1IiNyUfKCvPvZnHcq7rys9KOB5nVDJiN0e1HGCqjafndjkjbg+V0Yw6GnUDwvcCbno
+ MtoUmcmHWBIMhZKJA5o8x25EuTcppiXqtTWO8EQbIH5Q+BQOo0YnJMicXCbw7lPRb56E/gn53
+ weuvrmPy+UW/4W7v7XByc6iXuo1Fdp1GHxTjRhYsQjtuaMYFEmhPyOn9tmT7/eI50rWJTOiWJ
+ DhqhUTLj1d5u/BXvULVop9kyeUW+TkjH3VzFpcWsiKUE4eaKXSJtPUIQGqHmzvjRXVjis1h6k
+ bqzR790S40b4cG3v7rv0BiVlijMuPCHGj8HiIulzfDNuE5G6QQEFMwCFf4sP3dHgK010aliwl
+ Sn7YBhUY3HKzDVpoEUl/xP9bzM59t9DtVBSIzv7UEasPiKhv9cE3hGlp5dWYu4P69tcWQom91
+ JDEHeOfP2+h80Lh11xYtUD/Kc9eYOaT8=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 04.07.21 um 17:57 schrieb Ojaswin Mujoo:
-> Move certain declarations from vchiq_arm.c to vchiq_arm.h to allow
-> code sharing. This will be useful when we eventually separate the vchiq
-> char driver code from platform code, into its own file.
+Am 04.07.21 um 17:58 schrieb Ojaswin Mujoo:
+> Split the initialization code of vchiq char driver and device files from
+> that of vchiq platform. The char driver code now resides in vchiq_dev.c
+> and the platform code resides in the original vchiq_arm.c file.
+>
+> This commit focuses on separating the code into different files while
+> maintaining the same functionality. It does not completely decouple them
+> as the cdev init code is still called from the platform's vchiq_probe()
+> function.
 >
 > Signed-off-by: Ojaswin Mujoo <ojaswin98@gmail.com>
 Reviewed-by: Stefan Wahren <stefan.wahren@i2se.com>
