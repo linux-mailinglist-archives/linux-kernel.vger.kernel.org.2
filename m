@@ -2,86 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE643C3EB4
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 20:17:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0B523C3EB7
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 20:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235730AbhGKSTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 14:19:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235375AbhGKSTl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 14:19:41 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17309C0613DD
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 11:16:54 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id e20so19285537ljn.8
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 11:16:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/AmFTjQ0lkF23rzKntrhpc3RsBuUQRY3cmjok7st+BM=;
-        b=XvyTCtLmBbiUUUSd27coMfkiax6APcEE8PpLXEyKlMTY+6NQENsj8L4nFeaW+gL5hU
-         amDXVb2KTgJzwJppLtxlcNEl7kuP+hibJ3c2s8AWHSNvNs+BpfTvaKns3aHvbt2mWaY+
-         25se6M8mKafNdfP8baczTRwTEr+HJHSj3ySB0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/AmFTjQ0lkF23rzKntrhpc3RsBuUQRY3cmjok7st+BM=;
-        b=Gw3sQt8q+xQWWPpqnUpffS+FvGXsrcno/JS8Gb+2qvhfwO9FofNlxZ1fnRhtBwAUM1
-         21q1JKeUzrSlCXNgWc4Sn3vDFcP6kLgzDgSENszm7AiaXCtcCuqIVhAOVSe9tpzvI0TW
-         LvHYTXSwwG3Vb3v1qrEISkYl4aHsFUFzLSJDyKO25MbFLjKWqvmLlo/K5nQmy5fanJcH
-         hG6GwTGLsFYwSO5qDny23oLxBLOo9yuWh7ydKrnCeofYbszgrNLsoWDXwGPWPbvz0Bso
-         EpkFfkNBQmIwRByIBl/MBhnm0eehj9bohyIVjUWCICdsNjXuH8RvlzMSqL3iut6xshGT
-         GhUw==
-X-Gm-Message-State: AOAM532zuZL4RGSZwqVd6Unmx46ZfqzWeCZfTZXAAz78hRfIKc2JNxph
-        xQvL7GK3c7leL5+VC+VJzydc9UELtI82ceOd
-X-Google-Smtp-Source: ABdhPJzlA/7woDV5prWpYkN6bWj1DXLwJ1KTnsC/q7XA40bj9YW1Nh6Rru7JC9/tYqVGin79gLr6eg==
-X-Received: by 2002:a2e:743:: with SMTP id i3mr34357984ljd.266.1626027411397;
-        Sun, 11 Jul 2021 11:16:51 -0700 (PDT)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
-        by smtp.gmail.com with ESMTPSA id u14sm935945lfn.47.2021.07.11.11.16.49
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Jul 2021 11:16:49 -0700 (PDT)
-Received: by mail-lj1-f169.google.com with SMTP id h19so8417403ljl.4
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 11:16:49 -0700 (PDT)
-X-Received: by 2002:a2e:84c7:: with SMTP id q7mr3219975ljh.61.1626027409058;
- Sun, 11 Jul 2021 11:16:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <YOrzBvSv4xoU3OAX@gmail.com>
-In-Reply-To: <YOrzBvSv4xoU3OAX@gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 11 Jul 2021 11:16:33 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whjS48-_nDub4G7pgQ26-0MS2MuuNRyfDsLhp568cUfPA@mail.gmail.com>
-Message-ID: <CAHk-=whjS48-_nDub4G7pgQ26-0MS2MuuNRyfDsLhp568cUfPA@mail.gmail.com>
-Subject: Re: [GIT PULL] scheduler fixes
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S235779AbhGKSYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 14:24:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45092 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231284AbhGKSYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Jul 2021 14:24:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 94005610CB;
+        Sun, 11 Jul 2021 18:22:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626027727;
+        bh=E1VtGmzoVKxaGP0CiLhEmL9NHK1CXxyOsprbQytnoA4=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=FNgAPKUJX3URNPDf2IAIaFf7Cm67TNufbg+dWUXhRb0pNHUPEocJi6juQieSN0qV7
+         sXzSMvAuUQ1qlVOtIXuk3boqg07/XWA+UYMTtpFDfNwEaA9lu/JHDPkEte8DUvuikt
+         QypC+UL9cA5lPykKsKwzuZaFjb3U+dKworITModpj5BIys1MMvYjsDQcAvCfztgtvd
+         qR7gOL4TMmUc+FQ9ywoJGzVpifAUVcMIW28UF+kj8yaVLUJrQxJamRDPFB5d3uuzII
+         gJU5zGUvqrObP77HC8T1dUP3Lu470AgKpGGjpsFgAvOWaEorUVpVvfkXeREoJ6wN1m
+         tXjclomnz3Fow==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7E3F7609CD;
+        Sun, 11 Jul 2021 18:22:07 +0000 (UTC)
+Subject: Re: [GIT PULL] perf tools changes for v5.14: 2nd batch
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210710205240.1343120-1-acme@kernel.org>
+References: <20210710205240.1343120-1-acme@kernel.org>
+X-PR-Tracked-List-Id: <linux-perf-users.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210710205240.1343120-1-acme@kernel.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-for-v5.14-2021-07-10
+X-PR-Tracked-Commit-Id: eb7261f14e1a86f0fd299a2ec408990d349ce3d1
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: b1412bd75abe8b1c57ecca4a85f92c8ddb4ccd39
+Message-Id: <162602772745.20558.13948980429567261337.pr-tracker-bot@kernel.org>
+Date:   Sun, 11 Jul 2021 18:22:07 +0000
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Justin M . Forbes" <jforbes@fedoraproject.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Nageswara R Sastry <rnsastry@linux.ibm.com>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 11, 2021 at 6:32 AM Ingo Molnar <mingo@kernel.org> wrote:
->
->  - Fix load tracking bug/inconsistency
+The pull request you sent on Sat, 10 Jul 2021 17:52:40 -0300:
 
-I was going to report that I still see that
+> git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-for-v5.14-2021-07-10
 
-  cfs_rq->avg.load_avg || cfs_rq->avg.util_avg || cfs_rq->avg.runnable_avg
-  WARNING: CPU: 8 PID: 52 at kernel/sched/fair.c:3308
-update_blocked_averages+0x4c1/0x5f0
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/b1412bd75abe8b1c57ecca4a85f92c8ddb4ccd39
 
-but I'm hoping/assuming that commit ceb6ba45dc80 ("sched/fair: Sync
-load_sum with load_avg after dequeue") finally fixes it for good.
+Thank you!
 
-Hmm?
-
-                   Linus
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
