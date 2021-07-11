@@ -2,115 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB5FD3C39C7
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 03:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4FF93C39D4
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 03:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231253AbhGKB11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Jul 2021 21:27:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47808 "EHLO mail.kernel.org"
+        id S231335AbhGKB3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Jul 2021 21:29:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230408AbhGKB1Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Jul 2021 21:27:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DCF06135E
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 01:24:40 +0000 (UTC)
+        id S229640AbhGKB3R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Jul 2021 21:29:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C3F961278;
+        Sun, 11 Jul 2021 01:26:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625966680;
-        bh=aIP2rlDtTS95T8nU3RpDMo/i3IGTjw9lAhxt99Ve+t4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Aehw4Ww2zJPJDh2kaIPxE80Co270FEMDET0Acek5TQh13xsNVh561M2xT++vfYzAE
-         GDWY6JH+DQJooHuscpBRD/nlbV02w+t+BoKwUAujiUiSuochhFm1Yot8Lau4UxZTCc
-         WrdVfG1xL7Eizcop2AJ17RstOFCqZqb/zsr8bG1W028mB05f+4P07C9DG4lwKrzOuj
-         bG/XYsr7bFyTK0iwiDKDsVRYmEfcpbnhoMOCPFtgR0HvrGYezZcIQ9dq+HgjXuern2
-         NEY1N/7EVGcw6Lxt0nALOn3CaDfj+/6Nw0BdsIkfAMtyoZnQg4U23qkAJYAzln2erw
-         +YvId/DzB/zgA==
-Received: by mail-ej1-f45.google.com with SMTP id v20so25081664eji.10
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Jul 2021 18:24:39 -0700 (PDT)
-X-Gm-Message-State: AOAM532MPNFG7Z4umFQ6K/PhgzSY6B4AFatocRAHP8G+Byk5yYWtAspN
-        LCTse9I7082Nfw0rsQkhyWfYaG55ng+yIJvhtQ==
-X-Google-Smtp-Source: ABdhPJzOB3OuozcAvCO20qScosy+mz5YpXjiMYn8K2UdgrwIS1/Jxx9i8zT/7TyLVmk2TgpB4VxmTEd5nCx53LCPzaQ=
-X-Received: by 2002:a17:906:7e4f:: with SMTP id z15mr42435846ejr.194.1625966678643;
- Sat, 10 Jul 2021 18:24:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210710113819.5170-1-jason-jh.lin@mediatek.com>
-In-Reply-To: <20210710113819.5170-1-jason-jh.lin@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Sun, 11 Jul 2021 09:24:27 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_9wvVJ6zZDmOt-8zJK2BkLtEO-h6QQRVkbc8q5QXtns3g@mail.gmail.com>
-Message-ID: <CAAOTY_9wvVJ6zZDmOt-8zJK2BkLtEO-h6QQRVkbc8q5QXtns3g@mail.gmail.com>
-Subject: Re: [PATCH v2 0/9] Add MediaTek SoC DRM (vdosys0) support for mt8195
-To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        fshao@google.com, Nancy Lin <nancy.lin@mediatek.com>,
-        singo.chang@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        s=k20201202; t=1625966791;
+        bh=PV9N7JnYv9F98KCENyu3s5fMBWIhEK3SUc/c5d6y7v8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=g1TllhmIQ9ljDTRH9sWoeexIgYLsX6dEtnqqIKX8KawgDfOGy8Z7ETKuuofy40dsv
+         JmGHt3VEM2gen4OW0A9RLAAxRwXz3cjuneBakkonYtMx5FCHjJsAzq00OPbOl8Gu1u
+         0QUB3OC8V9J7DS1ZPaw3z+4lBialGPinQzmPzwErTNqbOwomDz//38Ho3GtC5/ftGM
+         la4cAF5zvsRoNX80JDeuYIIGtoxRec+O92+FG49RoXH1dSQBSIiZiVanYW6E0hhLLK
+         cmh9u9Bk4T1ZXc5u7seYbGBgxCTN1QByTWZD1U/YNTxr5lEQo17nIrMyvikATJOScT
+         6vcp1Uq2wx1TA==
+Date:   Sun, 11 Jul 2021 10:26:27 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     X86 ML <x86@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
+        yhs@fb.com, linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH -tip 6/6] kprobes: Use bool type for functions which
+ returns boolean value
+Message-Id: <20210711102627.aacd375107225da46473e2ee@kernel.org>
+In-Reply-To: <dd3ec20d371703c121a18e91908ab8faa76c852d.camel@perches.com>
+References: <162592891873.1158485.768824457210707916.stgit@devnote2>
+        <162592897337.1158485.13933847832718343850.stgit@devnote2>
+        <dd3ec20d371703c121a18e91908ab8faa76c852d.camel@perches.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Jason:
+On Sat, 10 Jul 2021 09:27:22 -0700
+Joe Perches <joe@perches.com> wrote:
 
-jason-jh.lin <jason-jh.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B47=E6=9C=881=
-0=E6=97=A5 =E9=80=B1=E5=85=AD =E4=B8=8B=E5=8D=887:38=E5=AF=AB=E9=81=93=EF=
-=BC=9A
->
-> The hardware path of vdosys0 with eDP panel output need to go through
-> by several modules, such as, OVL, RDMA, COLOR, CCORR, AAL, GAMMA,
-> DITHER, DSC and MERGE.
+> On Sat, 2021-07-10 at 23:56 +0900, Masami Hiramatsu wrote:
+> > Use the 'bool' type instead of 'int' for the functions which
+> > returns a boolean value, because this makes clear that those
+> > functions don't return any error code.
+> []
+> > diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+> []
+> > @@ -104,25 +104,25 @@ struct kprobe {
+> >  #define KPROBE_FLAG_FTRACE	8 /* probe is using ftrace */
+> >  
+> > 
+> >  /* Has this kprobe gone ? */
+> > -static inline int kprobe_gone(struct kprobe *p)
+> > +static inline bool kprobe_gone(struct kprobe *p)
+> >  {
+> >  	return p->flags & KPROBE_FLAG_GONE;
+> >  }
+> 
+> This change would also allow the removal of the !! from:
+> 
+> kernel/trace/trace_kprobe.c:104:        return !!(kprobe_gone(&tk->rp.kp));
 
-You should add the difference in each version. [1] is an example for this.
+Good catch! OK, I'll update 
 
-[1] https://patchwork.kernel.org/project/linux-mediatek/cover/2021070902232=
-4.1607884-1-eizan@chromium.org/
+Thank you,
 
-Regards,
-Chun-Kuang.
+> ---
+>  kernel/trace/trace_kprobe.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+> index ea6178cb5e334..c6e0345a44e94 100644
+> --- a/kernel/trace/trace_kprobe.c
+> +++ b/kernel/trace/trace_kprobe.c
+> @@ -101,7 +101,7 @@ static nokprobe_inline unsigned long trace_kprobe_offset(struct trace_kprobe *tk
+>  
+>  static nokprobe_inline bool trace_kprobe_has_gone(struct trace_kprobe *tk)
+>  {
+> -	return !!(kprobe_gone(&tk->rp.kp));
+> +	return kprobe_gone(&tk->rp.kp);
+>  }
+>  
+>  static nokprobe_inline bool trace_kprobe_within_module(struct trace_kprobe *tk,
+> 
+> 
 
->
-> Add DRM and these modules support by the patches below:
->
-> jason-jh.lin (9):
->   dt-bindings: mediatek: add definition for mt8195 display
->   dt-bindings: mediatek: add DSC definition for mt8195
->   dt-bindings: arm: mediatek: add definition for mt8195 mmsys
->   arm64: dts: mt8195: add display node for vdosys0
->   soc: mediatek: add mtk-mmsys support for mt8195 vdosys0
->   soc: mediatek: add mtk-mutex support for mt8195 vdosys0
->   drm/mediatek: add mediatek-drm of vdosys0 support for MT8195
->   drm/mediatek: add DSC support for MT8195
->   drm/mediatek: add MERGE support for MT8195
->
->  .../bindings/arm/mediatek/mediatek,mmsys.txt  |  15 +
->  .../display/mediatek/mediatek,disp.txt        |   9 +-
->  .../display/mediatek/mediatek,dsc.yaml        |  57 ++
->  arch/arm64/boot/dts/mediatek/mt8195.dtsi      | 111 ++++
->  drivers/gpu/drm/mediatek/Makefile             |   2 +
->  drivers/gpu/drm/mediatek/mtk_disp_drv.h       |  16 +
->  drivers/gpu/drm/mediatek/mtk_disp_dsc.c       | 205 +++++++
->  drivers/gpu/drm/mediatek/mtk_disp_merge.c     | 525 ++++++++++++++++++
->  drivers/gpu/drm/mediatek/mtk_disp_rdma.c      |   6 +
->  drivers/gpu/drm/mediatek/mtk_drm_crtc.h       |  14 +
->  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c   |  29 +
->  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h   |   2 +
->  drivers/gpu/drm/mediatek/mtk_drm_drv.c        |  32 ++
->  drivers/gpu/drm/mediatek/mtk_drm_drv.h        |   2 +
->  drivers/soc/mediatek/mt8195-mmsys.h           | 191 +++++++
->  drivers/soc/mediatek/mtk-mmsys.c              |  11 +
->  drivers/soc/mediatek/mtk-mutex.c              | 107 +++-
->  include/linux/soc/mediatek/mtk-mmsys.h        |  10 +
->  18 files changed, 1337 insertions(+), 7 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/display/mediatek/me=
-diatek,dsc.yaml
->  create mode 100644 drivers/gpu/drm/mediatek/mtk_disp_dsc.c
->  create mode 100644 drivers/gpu/drm/mediatek/mtk_disp_merge.c
->  create mode 100644 drivers/soc/mediatek/mt8195-mmsys.h
->
-> --
-> 2.18.0
->
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
