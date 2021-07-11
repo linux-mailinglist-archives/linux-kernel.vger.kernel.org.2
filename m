@@ -2,157 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7803C3E1D
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 18:53:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9CF3C3E20
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Jul 2021 18:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232443AbhGKQ4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 12:56:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46016 "EHLO
+        id S232010AbhGKQ71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 12:59:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhGKQ4e (ORCPT
+        with ESMTP id S229660AbhGKQ71 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 12:56:34 -0400
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 710EBC0613DD;
-        Sun, 11 Jul 2021 09:53:47 -0700 (PDT)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4GNCf16kVVzQjxW;
-        Sun, 11 Jul 2021 18:53:45 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by spamfilter03.heinlein-hosting.de (spamfilter03.heinlein-hosting.de [80.241.56.117]) (amavisd-new, port 10030)
-        with ESMTP id QyD4CyZlz4gw; Sun, 11 Jul 2021 18:53:39 +0200 (CEST)
-Subject: Re: [PATCH v2 2/2] mwifiex: pcie: add reset_d3cold quirk for Surface
- gen4+ devices
-To:     Maximilian Luz <luzmaximilian@gmail.com>,
-        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
-Cc:     =?UTF-8?Q?Jonas_Dre=c3=9fler?= <verdre@v0yd.nl>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-References: <20210709184443.fxcbc77te6ptypar@pali>
- <251bd696-9029-ec5a-8b0c-da78a0c8b2eb@gmail.com>
- <20210709194401.7lto67x6oij23uc5@pali>
- <4e35bfc1-c38d-7198-dedf-a1f2ec28c788@gmail.com>
- <20210709212505.mmqxdplmxbemqzlo@pali>
- <bfbb3b4d-07f7-1b97-54f0-21eba4766798@gmail.com>
- <20210709225433.axpzdsfbyvieahvr@pali>
- <89c9d1b8-c204-d028-9f2c-80d580dabb8b@gmail.com>
- <20210710000756.4j3tte63t5u6bbt4@pali>
- <1d45c961-d675-ea80-abe4-8d4bcf3cf8d4@gmail.com>
- <20210710003826.clnk5sh3cvlamwjr@pali>
- <2d7eef37-aab3-8986-800f-74ffc27b62c5@gmail.com>
-From:   =?UTF-8?Q?Jonas_Dre=c3=9fler?= <verdre@v0yd.nl>
-Message-ID: <fc1f39b0-2d61-387f-303f-9715781a2c4a@mailbox.org>
-Date:   Sun, 11 Jul 2021 18:53:32 +0200
+        Sun, 11 Jul 2021 12:59:27 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 073EFC0613DD;
+        Sun, 11 Jul 2021 09:56:40 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D8625CC;
+        Sun, 11 Jul 2021 18:56:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1626022598;
+        bh=OAV9028X7mooFx38v1481CRNJKaYwJ6Njdf6WbNJJ6s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aQS/Akx5nj/Qr995P43WPtUrHuQ5ch4efl+rkYUEpHr2pJn9CQQLaHh8PHRIZnplm
+         odqkuKoYaHhj2b75Jddda6S3aRwBfggjh8mdNtyIVaE66LChAzkT4KKKNelSqTiDOi
+         n1/1suVJjajgcov4gYKYIY/uT1UmfzcasnTd0FZg=
+Date:   Sun, 11 Jul 2021 19:55:52 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        hdegoede@redhat.com, mgross@linux.intel.com,
+        luzmaximilian@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+        andy.shevchenko@gmail.com, kieran.bingham@ideasonboard.com
+Subject: Re: [RFC PATCH 0/2] Add software node support to regulator framework
+Message-ID: <YOsimBVS/mElfiA7@pendragon.ideasonboard.com>
+References: <20210708224226.457224-1-djrscally@gmail.com>
+ <YOofAUshZQBPsBR0@pendragon.ideasonboard.com>
+ <4381a32a-e6ca-a456-887d-6b343182aed4@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <2d7eef37-aab3-8986-800f-74ffc27b62c5@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -3.11 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 6E94D1842
-X-Rspamd-UID: 54db4e
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <4381a32a-e6ca-a456-887d-6b343182aed4@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/10/21 3:07 AM, Maximilian Luz wrote:
-> On 7/10/21 2:38 AM, Pali Rohár wrote:
->> On Saturday 10 July 2021 02:18:12 Maximilian Luz wrote:
->>> On 7/10/21 2:07 AM, Pali Rohár wrote:
->>>
->>> [...]
->>>
->>>>> Interesting, I was not aware of this. IIRC we've been experimenting 
->>>>> with
->>>>> the mwlwifi driver (which that lrdmwl driver seems to be based 
->>>>> on?), but
->>>>> couldn't get that to work with the firmware we have.
->>>>
->>>> mwlwifi is that soft-mac driver and uses completely different firmware.
->>>> For sure it would not work with current full-mac firmware.
->>>>
->>>>> IIRC it also didn't
->>>>> work with the Windows firmware (which seems to be significantly
->>>>> different from the one we have for Linux and seems to use or be 
->>>>> modeled
->>>>> after some special Windows WiFi driver interface).
->>>>
->>>> So... Microsoft has different firmware for this chip? And it is working
->>>> with mwifiex driver?
->>>
->>> I'm not sure how special that firmware really is (i.e. if it is Surface
->>> specific or just what Marvell uses on Windows), only that it doesn't
->>> look like the firmware included in the linux-firmware repo. The Windows
->>> firmware doesn't work with either mwlwifi or mwifiex drivers (IIRC) and
->>> on Linux we use the official firmware from the linux-firmware repo.
->>
->> Version available in the linux-firmware repo is also what big companies
->> (like google) receive for their systems... sometimes just only older
->> version as Marvell/NXP is slow in updating files in linux-firmware.
->> Seems that it is also same what receive customers under NDA as more
->> companies dropped "proprietary" ex-Marvell/NXP driver on internet and it
->> contained this firmware with some sources of driver which looks like a
->> fork of mwifiex (or maybe mwifiex is "cleaned fork" of that driver :D)
->>
->> There is old firmware documentation which describe RPC communication
->> between OS and firmware:
->> http://wiki.laptop.org/images/f/f3/Firmware-Spec-v5.1-MV-S103752-00.pdf
->>
->> It is really old for very old wifi chips and when I checked it, it still
->> matches what mwifiex is doing with new chips. Just there are new and
->> more commands. And documentation is OS-neutral.
->>
->> So if Microsoft has some "incompatible" firmware with this, it could
->> mean that they got something special which nobody else have? Maybe it
->> can explain that "connected standby" and maybe also better stability?
->>
->> Or just windows distribute firmware in different format and needs to
->> "unpack" or "preprocess" prior downloading it to device?
-> 
-> If memory serves me right, Jonas did some reverse engineering on the
-> Windows driver and found that it uses the "new" WDI Miniport API: It
-> seems that originally both Windows and Linux drivers (and firmware)
-> were pretty much the same (he mentioned there were similarities in
-> terminology), but then they switched to that new API on Windows and
-> changed the firmware with it, so that the driver now essentially only
-> forwards the commands from that API to the firmware and the firmware
-> handles the rest.
-> 
-> By reading the Windows docs on that API, that change might have been
-> forced on them as some Windows 10 features apparently only work via
-> that API.
-> 
-> He'll probably know more about that than I do.
+Hi Dan,
 
-Not much I can add there, it seemed a lot like both mwifiex and the 
-Windows 10 WDI miniport driver were both derived from the same codebase 
-originally, but in order to be compatible with the WDI miniport API and 
-other stuff Windows requires from wifi devices (I recall there was some 
-SAR-value control/reporting stuff too), some parts of the firmware had 
-to be rewritten.
+On Sat, Jul 10, 2021 at 11:54:26PM +0100, Daniel Scally wrote:
+> On 10/07/2021 23:28, Laurent Pinchart wrote:
+> > On Thu, Jul 08, 2021 at 11:42:24PM +0100, Daniel Scally wrote:
+> >> Hello all
+> >>
+> >> See previous series for some background context [1]
+> >>
+> >> Some x86 laptops with ACPI tables designed for Windows have a TPS68470
+> >> PMIC providing regulators and clocks to camera modules. The DSDT tables for
+> >> those cameras lack any power control methods, declaring only a
+> >> dependency on the ACPI device representing the TPS68470. This leaves the
+> >> regulator framework with no means of determining appropriate voltages for the
+> >> regulators provided by the PMIC, or of determining which regulators relate to
+> >> which of the sensor's requested supplies. 
+> >>
+> >> This series is a prototype of an emulation of the device tree regulator
+> >> initialisation and lookup functions, using software nodes. Software nodes
+> >> relating to each regulator are registered as children of the TPS68470's ACPI
+> >> firmware node. Those regulators have properties describing their constraints
+> >> (for example "regulator-min-microvolt"). Similarly, software nodes are
+> >> registered and assigned as secondary to the Camera's firmware node - these
+> >> software nodes have reference properties named after the supply in the same
+> >> way as device tree's phandles, for example "avdd-supply", and linking to the
+> >> software node assigned to the appropriate regulator. We can then use those
+> >> constraints to specify the appropriate voltages and the references to allow the
+> >> camera drivers to look up the correct regulator device. 
+> >>
+> >> Although not included in this series, I would plan to use a similar method for
+> >> linking the clocks provided by the TPS68470 to the sensor so that it can be
+> >> discovered too.
+> >>
+> >> I'm posting this to see if people agree it's a good approach for tackling the 
+> >> problem; I may be overthinking this and there's a much easier way that I should
+> >> be looking at instead. It will have knock-ons in the cio2-bridge code [2], as
+> >> that is adding software nodes to the same sensors to connect them to the media
+> >> graph. Similarly, is the board file an acceptable solution, or should we just
+> >> define the configuration for these devices (there's three orf our laptop models
+> >> in scope) in int3472-tps68470 instead?
+> >
+> > I may have missed something, but if you load the SGo2 board file, won't
+> > it create the regulator software nodes if it finds an INT3472,
+> > regardless of whether the device is an SGo2 ? If you happen to do so on
+> > a machine that requires different voltages, that sounds dangerous.
+> 
+> Ah, yes - hadn't thought of that. If a driver registered regulators with
+> those names, it would try to apply those voltages during registration.
+> Good point.
+> 
+> > Given that INT3472 models the virtual "Intel Skylake and Kabylake camera
+> > PMIC", I think moving device-specific information to the int3472 driver
+> > may make sense. I'm unsure what option is best though, having all the
+> > data (regulators, clocks, but also data currently stored in the
+> > cio2-bridge driver) in a single file (or a single file per machine) is
+> > tempting.
+> 
+> It is tempting, particularly because (assuming we do end up using this
+> approach) setting the references to the supplies in a board file like
+> this complicated the cio2-bridge code quite a bit, since it then needs
+> to extend the properties array against an already-existing software node
+> rather than registering a new one. But then, I don't particularly want
+> to handle that aspect of the problem in two separate places.
 
-In the end, the Windows firmware is updated a lot more often and likely 
-includes a bunch of bugfixes the linux firmware doesn't have, but it 
-can't be used on linux without a ton of work that would probably include 
-rebuilding proprietary APIs from Windows.
+If technically feasible, gathering all the data in a single place would
+be my preference. Whether that should take the form of software nodes in
+all cases, or be modelled as custom data that the int3472 driver would
+interpret to create the regulators and clocks is a different (but
+related) question.
 
-Also, from my testing with custom APs and sniffing packets with 
-Wireshark, the functionality, limitations and weird 
-"semi-spec-compliant" behaviors were exactly the same with the Windows 
-firmware: It doesn't support WPA3, it can't connect to fast transition 
-APs (funnily enough that's opposed to what MS claims) and it also can't 
-spawn an AP with WPA-PSK-SHA256 AKM ciphers. So not sure there's a lot 
-of sense in spending more time trying to go down that path.
+The very important part is to ensure that the correct board data will be
+used, as otherwise we could damage the hardware.
+
+> >> [1] https://lore.kernel.org/lkml/20210603224007.120560-1-djrscally@gmail.com/
+> >> [2] https://elixir.bootlin.com/linux/latest/source/drivers/media/pci/intel/ipu3/cio2-bridge.c#L166
+> >>
+> >>
+> >> Daniel Scally (2):
+> >>   regulator: Add support for software node connections
+> >>   platform/surface: Add Surface Go 2 board file
+> >>
+> >>  MAINTAINERS                                |   6 +
+> >>  drivers/platform/surface/Kconfig           |  10 ++
+> >>  drivers/platform/surface/Makefile          |   1 +
+> >>  drivers/platform/surface/surface_go_2.c    | 135 +++++++++++++++++++++
+> >>  drivers/regulator/Kconfig                  |   6 +
+> >>  drivers/regulator/Makefile                 |   1 +
+> >>  drivers/regulator/core.c                   |  23 ++++
+> >>  drivers/regulator/swnode_regulator.c       | 111 +++++++++++++++++
+> >>  include/linux/regulator/swnode_regulator.h |  33 +++++
+> >>  9 files changed, 326 insertions(+)
+> >>  create mode 100644 drivers/platform/surface/surface_go_2.c
+> >>  create mode 100644 drivers/regulator/swnode_regulator.c
+> >>  create mode 100644 include/linux/regulator/swnode_regulator.h
+
+-- 
+Regards,
+
+Laurent Pinchart
