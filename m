@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 917AC3C4685
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C9603C4689
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:25:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234374AbhGLG0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:26:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39904 "EHLO mail.kernel.org"
+        id S234585AbhGLG0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:26:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234971AbhGLGYY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:24:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC5BC61176;
-        Mon, 12 Jul 2021 06:20:49 +0000 (UTC)
+        id S233375AbhGLGXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:23:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3C5861182;
+        Mon, 12 Jul 2021 06:20:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626070850;
-        bh=bOg2/nG4co4ufHOpK1QNEbi7qmzkBLenOpPJ2QzvbHw=;
+        s=korg; t=1626070820;
+        bh=ec0DTRDZZoP7Xk1QIlbZvNssTM/fA4eBhV6oX6O5bR8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YSqOMYBO8XswC5eXx5+ueYTxkuhNEJ2qfEcX2QmDYDoTThzQwjPOW8zozeJczG77o
-         zqWfysS+TLLNJWPgMUCyrCVr7inR07S7/Vgv/+nJiTRNlCjGXoVp/jICb2iwVgrqUg
-         fcGYuek2NtQ2S8vRsK6mzhcMfe29dUVtEdWbIrSg=
+        b=Nw0BFCLF1o9N6wwrtk4wX15MCrHjyYeIBKVx+7iYZYYn1AFKApcEhGedH/9EKceZ/
+         a2r0/1UKM0PIm+6K7jXSBX26126L4yvOENtfMQvIbPkLN8JJ6bNqe7yv7OzCgXISgc
+         xC36PvuBqGtuXv39UH0SM9Kotlqjong+E/yHpPn8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Manuel Krause <manuelkrause@netscape.net>,
-        Hui Wang <hui.wang@canonical.com>,
+        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 124/348] ACPI: resources: Add checks for ACPI IRQ override
-Date:   Mon, 12 Jul 2021 08:08:28 +0200
-Message-Id: <20210712060717.830109597@linuxfoundation.org>
+Subject: [PATCH 5.4 153/348] media: exynos4-is: Fix a use after free in isp_video_release
+Date:   Mon, 12 Jul 2021 08:08:57 +0200
+Message-Id: <20210712060721.375488725@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060659.886176320@linuxfoundation.org>
 References: <20210712060659.886176320@linuxfoundation.org>
@@ -42,80 +41,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Wang <hui.wang@canonical.com>
+From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 
-[ Upstream commit 0ec4e55e9f571f08970ed115ec0addc691eda613 ]
+[ Upstream commit 01fe904c9afd26e79c1f73aa0ca2e3d785e5e319 ]
 
-The laptop keyboard doesn't work on many MEDION notebooks, but the
-keyboard works well under Windows and Unix.
+In isp_video_release, file->private_data is freed via
+_vb2_fop_release()->v4l2_fh_release(). But the freed
+file->private_data is still used in v4l2_fh_is_singular_file()
+->v4l2_fh_is_singular(file->private_data), which is a use
+after free bug.
 
-Through debugging, we found this log in the dmesg:
+My patch uses a variable 'is_singular_file' to avoid the uaf.
+v3: https://lore.kernel.org/patchwork/patch/1419058/
 
- ACPI: IRQ 1 override to edge, high
- pnp 00:03: Plug and Play ACPI device, IDs PNP0303 (active)
-
- And we checked the IRQ definition in the DSDT, it is:
-
-    IRQ (Level, ActiveLow, Exclusive, )
-        {1}
-
-So the BIOS defines the keyboard IRQ to Level_Low, but the Linux
-kernel override it to Edge_High. If the Linux kernel is modified
-to skip the IRQ override, the keyboard will work normally.
-
->From the existing comment in acpi_dev_get_irqresource(), the override
-function only needs to be called when IRQ() or IRQNoFlags() is used
-to populate the resource descriptor, and according to Section 6.4.2.1
-of ACPI 6.4 [1], if IRQ() is empty or IRQNoFlags() is used, the IRQ
-is High true, edge sensitive and non-shareable. ACPICA also assumes
-that to be the case (see acpi_rs_set_irq[] in rsirq.c).
-
-In accordance with the above, check 3 additional conditions
-(EdgeSensitive, ActiveHigh and Exclusive) when deciding whether or
-not to treat an ACPI_RESOURCE_TYPE_IRQ resource as "legacy", in which
-case the IRQ override is applicable to it.
-
-Link: https://uefi.org/specs/ACPI/6.4/06_Device_Configuration/Device_Configuration.html#irq-descriptor # [1]
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=213031
-BugLink: http://bugs.launchpad.net/bugs/1909814
-Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Reported-by: Manuel Krause <manuelkrause@netscape.net>
-Tested-by: Manuel Krause <manuelkrause@netscape.net>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
-[ rjw: Subject rewrite, changelog edits ]
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fixes: 34947b8aebe3f ("[media] exynos4-is: Add the FIMC-IS ISP capture DMA driver")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/resource.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/media/platform/exynos4-is/fimc-isp-video.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/acpi/resource.c b/drivers/acpi/resource.c
-index 48ca9a844f06..55c57b703ea3 100644
---- a/drivers/acpi/resource.c
-+++ b/drivers/acpi/resource.c
-@@ -430,6 +430,13 @@ static void acpi_dev_get_irqresource(struct resource *res, u32 gsi,
- 	}
- }
+diff --git a/drivers/media/platform/exynos4-is/fimc-isp-video.c b/drivers/media/platform/exynos4-is/fimc-isp-video.c
+index d2cbcdca0463..370cdf007012 100644
+--- a/drivers/media/platform/exynos4-is/fimc-isp-video.c
++++ b/drivers/media/platform/exynos4-is/fimc-isp-video.c
+@@ -305,17 +305,20 @@ static int isp_video_release(struct file *file)
+ 	struct fimc_is_video *ivc = &isp->video_capture;
+ 	struct media_entity *entity = &ivc->ve.vdev.entity;
+ 	struct media_device *mdev = entity->graph_obj.mdev;
++	bool is_singular_file;
  
-+static bool irq_is_legacy(struct acpi_resource_irq *irq)
-+{
-+	return irq->triggering == ACPI_EDGE_SENSITIVE &&
-+		irq->polarity == ACPI_ACTIVE_HIGH &&
-+		irq->shareable == ACPI_EXCLUSIVE;
-+}
+ 	mutex_lock(&isp->video_lock);
+ 
+-	if (v4l2_fh_is_singular_file(file) && ivc->streaming) {
++	is_singular_file = v4l2_fh_is_singular_file(file);
 +
- /**
-  * acpi_dev_resource_interrupt - Extract ACPI interrupt resource information.
-  * @ares: Input ACPI resource object.
-@@ -468,7 +475,7 @@ bool acpi_dev_resource_interrupt(struct acpi_resource *ares, int index,
- 		}
- 		acpi_dev_get_irqresource(res, irq->interrupts[index],
- 					 irq->triggering, irq->polarity,
--					 irq->shareable, true);
-+					 irq->shareable, irq_is_legacy(irq));
- 		break;
- 	case ACPI_RESOURCE_TYPE_EXTENDED_IRQ:
- 		ext_irq = &ares->data.extended_irq;
++	if (is_singular_file && ivc->streaming) {
+ 		media_pipeline_stop(entity);
+ 		ivc->streaming = 0;
+ 	}
+ 
+ 	_vb2_fop_release(file, NULL);
+ 
+-	if (v4l2_fh_is_singular_file(file)) {
++	if (is_singular_file) {
+ 		fimc_pipeline_call(&ivc->ve, close);
+ 
+ 		mutex_lock(&mdev->graph_mutex);
 -- 
 2.30.2
 
