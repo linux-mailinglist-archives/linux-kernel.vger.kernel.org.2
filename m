@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D4C3C4AE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D4F3C5124
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241022AbhGLGy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:54:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33550 "EHLO mail.kernel.org"
+        id S1344468AbhGLHiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:38:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238000AbhGLGjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:39:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB369611ED;
-        Mon, 12 Jul 2021 06:36:00 +0000 (UTC)
+        id S244129AbhGLHK0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:10:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06EB5610A6;
+        Mon, 12 Jul 2021 07:06:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071761;
-        bh=88rBcWl6sunatmsjmRtYYsUX0LPKpSxD9cgBG3cZC8o=;
+        s=korg; t=1626073571;
+        bh=lyu8th6dsieXuaidPYvsAExlMqh1296PAjIaPJrI9BI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iiCesqxPw/ZOc0I5+Jc++WBXv+3enfvGmnDFFG7F7EpdYKApOy/ztzE8x8MlOxT+o
-         mc7ddETjh9SJNJ6HViXc7MWoNhlKMG+qXVrKlfmG+gI5Mx8Ytk6N7WzAdA1qAK+Fgv
-         A4vFeI5gjTjzj6zuP6Pt/a6Tm3Wye/kvXOhFuSGc=
+        b=FDvfVn4a8leCUh5V9c5/yGtQzPkHaRR9ekbsZeTMsARGKVlYoVF5m4CgmDb2PP+g3
+         asLwhfHf+bXkCfx4olgs9C/MkoCDFGSa/PeAHeXXc1cx+rGUxJz1Z0FAoJmrUVsloE
+         jfqtPutLTwbNnyNajD5J1rJDXbIG0oxARnyOsEfo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Hongbo Li <herberthbli@tencent.com>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 209/593] spi: Allow to have all native CSs in use along with GPIOs
+Subject: [PATCH 5.12 286/700] crypto: sm2 - fix a memory leak in sm2
 Date:   Mon, 12 Jul 2021 08:06:09 +0200
-Message-Id: <20210712060905.936042667@linuxfoundation.org>
+Message-Id: <20210712061006.647142056@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,51 +41,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Hongbo Li <herberthbli@tencent.com>
 
-[ Upstream commit dbaca8e56ea3f23fa215f48c2d46dd03ede06e02 ]
+[ Upstream commit 5cd259ca5d466f65ffd21e2e2fa00fb648a8c555 ]
 
-The commit 7d93aecdb58d ("spi: Add generic support for unused native cs
-with cs-gpios") excludes the valid case for the controllers that doesn't
-need to switch native CS in order to perform the transfer, i.e. when
+SM2 module alloc ec->Q in sm2_set_pub_key(), when doing alg test in
+test_akcipher_one(), it will set public key for every test vector,
+and don't free ec->Q. This will cause a memory leak.
 
-  0		native
-  ...		...
-  <n> - 1	native
-  <n>		GPIO
-  <n> + 1	GPIO
-  ...		...
+This patch alloc ec->Q in sm2_ec_ctx_init().
 
-where <n> defines maximum of native CSs supported by the controller.
-
-To allow this, bail out from spi_get_gpio_descs() conditionally for
-the controllers which explicitly marked with SPI_MASTER_GPIO_SS.
-
-Fixes: 7d93aecdb58d ("spi: Add generic support for unused native cs with cs-gpios")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Link: https://lore.kernel.org/r/20210420164425.40287-1-andriy.shevchenko@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: ea7ecb66440b ("crypto: sm2 - introduce OSCCA SM2 asymmetric cipher algorithm")
+Signed-off-by: Hongbo Li <herberthbli@tencent.com>
+Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ crypto/sm2.c | 24 ++++++++++--------------
+ 1 file changed, 10 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index bd8b1f79dce2..a1a85f0baf7c 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -2615,8 +2615,9 @@ static int spi_get_gpio_descs(struct spi_controller *ctlr)
- 	}
+diff --git a/crypto/sm2.c b/crypto/sm2.c
+index b21addc3ac06..db8a4a265669 100644
+--- a/crypto/sm2.c
++++ b/crypto/sm2.c
+@@ -79,10 +79,17 @@ static int sm2_ec_ctx_init(struct mpi_ec_ctx *ec)
+ 		goto free;
  
- 	ctlr->unused_native_cs = ffz(native_cs_mask);
--	if (num_cs_gpios && ctlr->max_native_cs &&
--	    ctlr->unused_native_cs >= ctlr->max_native_cs) {
+ 	rc = -ENOMEM;
 +
-+	if ((ctlr->flags & SPI_MASTER_GPIO_SS) && num_cs_gpios &&
-+	    ctlr->max_native_cs && ctlr->unused_native_cs >= ctlr->max_native_cs) {
- 		dev_err(dev, "No unused native chip select available\n");
- 		return -EINVAL;
++	ec->Q = mpi_point_new(0);
++	if (!ec->Q)
++		goto free;
++
+ 	/* mpi_ec_setup_elliptic_curve */
+ 	ec->G = mpi_point_new(0);
+-	if (!ec->G)
++	if (!ec->G) {
++		mpi_point_release(ec->Q);
+ 		goto free;
++	}
+ 
+ 	mpi_set(ec->G->x, x);
+ 	mpi_set(ec->G->y, y);
+@@ -91,6 +98,7 @@ static int sm2_ec_ctx_init(struct mpi_ec_ctx *ec)
+ 	rc = -EINVAL;
+ 	ec->n = mpi_scanval(ecp->n);
+ 	if (!ec->n) {
++		mpi_point_release(ec->Q);
+ 		mpi_point_release(ec->G);
+ 		goto free;
  	}
+@@ -386,27 +394,15 @@ static int sm2_set_pub_key(struct crypto_akcipher *tfm,
+ 	MPI a;
+ 	int rc;
+ 
+-	ec->Q = mpi_point_new(0);
+-	if (!ec->Q)
+-		return -ENOMEM;
+-
+ 	/* include the uncompressed flag '0x04' */
+-	rc = -ENOMEM;
+ 	a = mpi_read_raw_data(key, keylen);
+ 	if (!a)
+-		goto error;
++		return -ENOMEM;
+ 
+ 	mpi_normalize(a);
+ 	rc = sm2_ecc_os2ec(ec->Q, a);
+ 	mpi_free(a);
+-	if (rc)
+-		goto error;
+-
+-	return 0;
+ 
+-error:
+-	mpi_point_release(ec->Q);
+-	ec->Q = NULL;
+ 	return rc;
+ }
+ 
 -- 
 2.30.2
 
