@@ -2,121 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBAB93C59A2
+	by mail.lfdr.de (Postfix) with ESMTP id 578313C59A0
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347939AbhGLJGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:06:33 -0400
-Received: from mout.gmx.net ([212.227.15.18]:56291 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351457AbhGLIOM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:14:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1626077468;
-        bh=JMgyay+YyzCR7cAHs9mF7PoljaYXpFKpYzGhoYj6ySs=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=jiXTB2QZoVu1buvDckNv8rMN2n8KbDsE01Vh/TJJ2KOaWPsE4DTAObtWrh3psjZOk
-         2C8oOsSDA6boztueZFoRkSh9EX49p+0RWB4lKrAlLWwD/xmMHOiRjvRpRZu+oLKt6k
-         sVj42IUtrjM5r4+BLlf2rMjxREjT2qhCFH1dUjRw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [157.180.225.139] ([157.180.225.139]) by web-mail.gmx.net
- (3c-app-gmx-bs28.server.lan [172.19.170.80]) (via HTTP); Mon, 12 Jul 2021
- 10:11:08 +0200
+        id S1345178AbhGLJGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:06:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1357564AbhGLIRX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:17:23 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14383C05BD1A;
+        Mon, 12 Jul 2021 01:13:04 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id g16so14445331wrw.5;
+        Mon, 12 Jul 2021 01:13:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=gEW2I9s2+ajZXfRkmBqAsnkDquHOdtAkhp+k4q/Aqb0=;
+        b=qyLxvTzi8AlkkKDheupXQsCjsTnlOiSLnhJlV/QNryDTxPsNZSrUMGRisS3PsX5CyT
+         ezDbXebX/ghNr2qMQuBB0opvRZWI59lRVjt8GVlu1aSNmKGPtANerYSuOSC1f30KkvMO
+         Bc3MVfJ6U0Y26j96bB/VGF60kwtlEmS8szOtH5SWWsEJQC0unkwDqtIS+2vmwLfZcFaK
+         sM9UZ/9Hmn6l+K43twnDD1J9pLiAfBKUP3vgckcKmOdPOKsgHsMmYwvEyecl5Gcd4Pmc
+         lny36/3X8RdQ2B6UWIGfU66sBlwUFsS7d4MPFnm40lhmkaunjHlvsYUfYAEjnr04thJH
+         9DIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=gEW2I9s2+ajZXfRkmBqAsnkDquHOdtAkhp+k4q/Aqb0=;
+        b=WlO79XOP8hjHVor7ma0h3YcxdyiM5Ie9g+W+Swpub5zMvvQ68xZR9RWJ4A1DNHcoS7
+         sYQOte7r2T2U8JlmH5r6PVQ00DfQGjFyIXiRUGNXAs71wcbrWGWewKBRFwTd3AiNp6FY
+         y6SOf0kEzXY+mk1cHhqN1LVTA/3TvOpwX7ceQcxK/8+4YhCBjsnbLu6Xz+/wTw6qVxKB
+         v7PUX6Q8A5yV3hsAEFbMCSyAjJ8tamkIyeTRE59z/r0KZwWYMX7Edx+pmHNGwCIvydyJ
+         FNdnPgEYrzThTNAK9NXzQ72vCwKyLSmWInN4NsYxLm3M/PGwvGGaYiK3FoCYQ9iuJgWC
+         21Fg==
+X-Gm-Message-State: AOAM530g949LZ+J1eEHD2yQPEcQ8sJ5scBlPURxE1qJRqArP1St3EThl
+        72JMOBG69ZLSCHo98LEDno0=
+X-Google-Smtp-Source: ABdhPJwn31VOrL46/k4EKcVttzMmyFyK5ySZSC4dW82D80R5X8dYDjEojSSrti1RcNW128579TuEJw==
+X-Received: by 2002:a5d:5286:: with SMTP id c6mr53166341wrv.75.1626077582670;
+        Mon, 12 Jul 2021 01:13:02 -0700 (PDT)
+Received: from [192.168.1.211] ([2.29.20.111])
+        by smtp.gmail.com with ESMTPSA id f15sm5282157wmj.15.2021.07.12.01.13.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Jul 2021 01:13:02 -0700 (PDT)
+Subject: Re: [RFC PATCH 0/2] Add software node support to regulator framework
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        hdegoede@redhat.com, mgross@linux.intel.com,
+        luzmaximilian@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+        andy.shevchenko@gmail.com, kieran.bingham@ideasonboard.com
+References: <20210708224226.457224-1-djrscally@gmail.com>
+ <YOofAUshZQBPsBR0@pendragon.ideasonboard.com>
+ <4381a32a-e6ca-a456-887d-6b343182aed4@gmail.com>
+ <YOsimBVS/mElfiA7@pendragon.ideasonboard.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <1944291d-1486-fe7f-376b-fe3250ee6b7d@gmail.com>
+Date:   Mon, 12 Jul 2021 09:13:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Message-ID: <trinity-2d1b055a-73b0-4a15-9677-08fd13fd486d-1626077468706@3c-app-gmx-bs28>
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc:     chunkuang Hu <chunkuang.hu@kernel.org>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        David Airlie <airlied@linux.ie>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Subject: Aw: Re: Re: Re: BUG: MTK DRM/HDMI broken on 5.13 (mt7623/bpi-r2)
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 12 Jul 2021 10:11:08 +0200
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <CAAOTY_-yi5NP_U-m==ZHeBNC9-6NrjUacKWdmmgVXZjH+sFZKw@mail.gmail.com>
-References: <trinity-cc8f5927-9aaf-43ae-a107-6a6229f1b481-1625565279264@3c-app-gmx-bs60>
- <25d61873-38ae-5648-faab-03431b74f777@collabora.com>
- <trinity-e6443313-a436-4e9d-a93c-1bef1cce135d-1625736911475@3c-app-gmx-bap19>
- <trinity-3f4f4b55-7e39-4d80-8fc3-7d0e2b3026de-1625758259993@3c-app-gmx-bap19>
- <trinity-fd86a04e-81b6-45f0-8ab4-5c21655bdf53-1625824929532@3c-app-gmx-bap43>
- <CAFqH_52OdB+H+yLh-b8ndbS_w3uwFyQEkZ-y2RQ2RnKnMEt6vQ@mail.gmail.com>
- <trinity-ac304676-173c-42c6-837c-38e62971ede0-1625827104214@3c-app-gmx-bap43>
- <trinity-937ebfa3-d123-42de-a289-3ad0dbc09782-1625830110576@3c-app-gmx-bap43>
- <CAAOTY_-yi5NP_U-m==ZHeBNC9-6NrjUacKWdmmgVXZjH+sFZKw@mail.gmail.com>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:xkpAQRS+6hCibb8IREI/4+UQBOmHX66bpR+hfwPP9SZMr+UzKW47NfS8x+VrAsKc4Ee5V
- sIYOpYqt00E6MnbGXUEbYNR8D1Zb5iXk3A7u8WZJxQaLQ31WsFcV65jqxqMbdmZNGIfmfFO2knQR
- l33LYvxaOw+3bw1BE5fAQxl9rCVJmr4U+W6DpVwcBAG2f/Akxl9QpPBlUyVlzcaHtsxieRTPn3fC
- tcir/G8tjeb1Ouz7HEKFPXmzNL/L/CAHcd/CaMK/0iElTmacIp7HFjyzhPQ7VPPGdPB5toqPtgjP
- J8=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:H9QCYfZhSGs=:W7cfrvRAps8n+FW/OAKwdS
- iHxEnjulsqPZzWiVhu5n3Ia7k3tCAv4joj0nrsa1qBgUmu0nYCe8FLU6Ub7N5DaDuT7FGGvQn
- 51yvZ3KBZ2/s9+xSexf50nthtcFraIOecX26xaWgYW6my9wgObmCFHwkWEdkMYOaNVzgoAusp
- /tOOhLG7m+Wflrh2MCcjDNKkD6uA+hQ5vEVWYCaV+s+0H5MsaYUGA9BUbjc/WwhCcQ6RUB1ET
- ynYMr0Dd0eOqRKRxtzYz29ti2W400016aLbone4X2tmy9bIz4TZB/ccx7fJvMaUIEGP0V7GL+
- EWFQD8EqZs6Yv2uMX6MtxqVxFEsq6Do5XdIpE9BJ8/i1RgVGGLykigqelZMQIBFA1BWo5thxz
- kXcRKDWLjs69li/A9Gsit/97cZIqdV5lTc1IR0IiG3WOpQTClszM6qYjl17949OCX47szg2uz
- 1ollY2XbCxPn/SW5U0jLqQXfR98z3ho5ucND7Lcp2FcOvczlnViXBhyhHtHfjFasgjfpNtyUP
- rvqIDJW3j0uo8o2wXym5mLLMayrfLawbeOWpDjJCiIyH9IdJC3Lzc9SIMr+Z4Gn6E10csHqI6
- P2aOZIi76e09tYNloftsw0qRqIOX9LghYaL688hWlhJWWLZgEHljX6yY+/fsRnivX4wxeevQL
- f4F//ttTtiFL9mk08aJnfYuIihCXQ1dLOnIBTZtsdTibhg8yOacpaBNGvCTDVoXbxR8v0QPm6
- mEOH4IO3BzOPj4En32ukb3vkzsWf+xO6b2DIkKffNzaOffYqADcdOiCtn9gO9pU7/Pw/T8vS2
- 04CoVBBivmnUa1TXL4oT2rxFvNRCPfuwsn5QuafxuX5sQfv99k=
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YOsimBVS/mElfiA7@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Laurent
 
-HDMI is broken again in 5.14-rc1 (of course i have applied my patch [1])
+On 11/07/2021 17:55, Laurent Pinchart wrote:
+> Hi Dan,
+>
+> On Sat, Jul 10, 2021 at 11:54:26PM +0100, Daniel Scally wrote:
+>> On 10/07/2021 23:28, Laurent Pinchart wrote:
+>>> On Thu, Jul 08, 2021 at 11:42:24PM +0100, Daniel Scally wrote:
+>>>> Hello all
+>>>>
+>>>> See previous series for some background context [1]
+>>>>
+>>>> Some x86 laptops with ACPI tables designed for Windows have a TPS68470
+>>>> PMIC providing regulators and clocks to camera modules. The DSDT tables for
+>>>> those cameras lack any power control methods, declaring only a
+>>>> dependency on the ACPI device representing the TPS68470. This leaves the
+>>>> regulator framework with no means of determining appropriate voltages for the
+>>>> regulators provided by the PMIC, or of determining which regulators relate to
+>>>> which of the sensor's requested supplies. 
+>>>>
+>>>> This series is a prototype of an emulation of the device tree regulator
+>>>> initialisation and lookup functions, using software nodes. Software nodes
+>>>> relating to each regulator are registered as children of the TPS68470's ACPI
+>>>> firmware node. Those regulators have properties describing their constraints
+>>>> (for example "regulator-min-microvolt"). Similarly, software nodes are
+>>>> registered and assigned as secondary to the Camera's firmware node - these
+>>>> software nodes have reference properties named after the supply in the same
+>>>> way as device tree's phandles, for example "avdd-supply", and linking to the
+>>>> software node assigned to the appropriate regulator. We can then use those
+>>>> constraints to specify the appropriate voltages and the references to allow the
+>>>> camera drivers to look up the correct regulator device. 
+>>>>
+>>>> Although not included in this series, I would plan to use a similar method for
+>>>> linking the clocks provided by the TPS68470 to the sensor so that it can be
+>>>> discovered too.
+>>>>
+>>>> I'm posting this to see if people agree it's a good approach for tackling the 
+>>>> problem; I may be overthinking this and there's a much easier way that I should
+>>>> be looking at instead. It will have knock-ons in the cio2-bridge code [2], as
+>>>> that is adding software nodes to the same sensors to connect them to the media
+>>>> graph. Similarly, is the board file an acceptable solution, or should we just
+>>>> define the configuration for these devices (there's three orf our laptop models
+>>>> in scope) in int3472-tps68470 instead?
+>>> I may have missed something, but if you load the SGo2 board file, won't
+>>> it create the regulator software nodes if it finds an INT3472,
+>>> regardless of whether the device is an SGo2 ? If you happen to do so on
+>>> a machine that requires different voltages, that sounds dangerous.
+>> Ah, yes - hadn't thought of that. If a driver registered regulators with
+>> those names, it would try to apply those voltages during registration.
+>> Good point.
+>>
+>>> Given that INT3472 models the virtual "Intel Skylake and Kabylake camera
+>>> PMIC", I think moving device-specific information to the int3472 driver
+>>> may make sense. I'm unsure what option is best though, having all the
+>>> data (regulators, clocks, but also data currently stored in the
+>>> cio2-bridge driver) in a single file (or a single file per machine) is
+>>> tempting.
+>> It is tempting, particularly because (assuming we do end up using this
+>> approach) setting the references to the supplies in a board file like
+>> this complicated the cio2-bridge code quite a bit, since it then needs
+>> to extend the properties array against an already-existing software node
+>> rather than registering a new one. But then, I don't particularly want
+>> to handle that aspect of the problem in two separate places.
+> If technically feasible, gathering all the data in a single place would
+> be my preference. Whether that should take the form of software nodes in
+> all cases, or be modelled as custom data that the int3472 driver would
+> interpret to create the regulators and clocks is a different (but
+> related) question.
 
-now i've got a NULL pointer dereference
 
-[   21.883641] PC is at mtk_dpi_bridge_atomic_check+0x38/0x78
-[   21.889158] LR is at drm_atomic_bridge_chain_check+0x150/0x30c
+I'll have to think on that one then; the problem there is that the
+cio2-bridge is just given ACPI HIDs for the sensors as "ok to parse
+this", and of course the INT347A that is being dealt with here should
+already be supported on most Surface platforms via the intel-skl-int3472
+stuff, so once the ov8865 edits are (posted and) accepted and that
+driver is supported my plan would be to add it into the bridge. So we'd
+need a way to exclude Go2 from that if we wanted to define all the
+software nodes parts in a single board file instead.
 
-"dpi" is  not set correctly in mtk_dpi_bridge_atomic_check
+>
+> The very important part is to ensure that the correct board data will be
+> used, as otherwise we could damage the hardware.
 
-this function is new since
 
-commit ec8747c52434b69cea2b18068e72f051e23d3839
-    drm/mediatek: dpi: Add bus format negotiation
+Not sure how this is usually guarded against; we could do a DMI match at
+the start of the init function to confirm it's running on a Go2 and exit
+if not?
 
-i do not see where bridge->driver_private is set, but in other function it=
- is solved like this:
-
-bridge_to_dpi(bridge)
-
-this fixes the NULL-pointer dereference, and system starts to xserver, but=
- i do not see fbcon...it looks like drm is now initialized later (~ at log=
-in prompt on serial console). i stopped lightdm and still do not see login=
-prompt on hdmi, so it looks like fbcon is broken
-
-send out fix for NULL issue, but fbcon ist still unclear...but i see this =
-in dmesg:
-
-dmesg | grep -i fbcon
-[    0.000000] Kernel command line: root=3D/dev/mmcblk0p2 rw rootwait earl=
-yprintk console=3DttyS0,115200 video=3D1280x1024 console=3Dtty1 fbcon=3Dma=
-p:0
-[    0.000000] Unknown command line parameters: fbcon=3Dmap:0
-[    7.040167]     fbcon=3Dmap:0
-
-and no framebuffer/fb0 in dmesg
-
-regards Frank
-
-[1] https://patchwork.kernel.org/project/linux-mediatek/patch/202107101324=
-31.265985-1-linux@fw-web.de/
+>
+>>>> [1] https://lore.kernel.org/lkml/20210603224007.120560-1-djrscally@gmail.com/
+>>>> [2] https://elixir.bootlin.com/linux/latest/source/drivers/media/pci/intel/ipu3/cio2-bridge.c#L166
+>>>>
+>>>>
+>>>> Daniel Scally (2):
+>>>>   regulator: Add support for software node connections
+>>>>   platform/surface: Add Surface Go 2 board file
+>>>>
+>>>>  MAINTAINERS                                |   6 +
+>>>>  drivers/platform/surface/Kconfig           |  10 ++
+>>>>  drivers/platform/surface/Makefile          |   1 +
+>>>>  drivers/platform/surface/surface_go_2.c    | 135 +++++++++++++++++++++
+>>>>  drivers/regulator/Kconfig                  |   6 +
+>>>>  drivers/regulator/Makefile                 |   1 +
+>>>>  drivers/regulator/core.c                   |  23 ++++
+>>>>  drivers/regulator/swnode_regulator.c       | 111 +++++++++++++++++
+>>>>  include/linux/regulator/swnode_regulator.h |  33 +++++
+>>>>  9 files changed, 326 insertions(+)
+>>>>  create mode 100644 drivers/platform/surface/surface_go_2.c
+>>>>  create mode 100644 drivers/regulator/swnode_regulator.c
+>>>>  create mode 100644 include/linux/regulator/swnode_regulator.h
