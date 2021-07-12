@@ -2,106 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5ADE3C5F41
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 17:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A3D63C5F49
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 17:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235415AbhGLPc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 11:32:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44170 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229987AbhGLPc2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 11:32:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D997760E08;
-        Mon, 12 Jul 2021 15:29:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626103779;
-        bh=yhz9CUpwyJleUtb3S7n67XZS0ryrpqybNAxPTMxmyO8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Q7UC50se7bINSukV5ZcCfu67MX0Pzc1r5Uw1iaCJ7xGrTK0ufuDVEj516jEYEXo0e
-         1quzgk+H0yMVqSt1hC4ZMiH7lTIcMipZ1UVWv2VYLG0jmcE7b7s/Tg8mtR5fSUs9ON
-         CP3p9MSkfkZXA6hy6G4TiOf84+bCbAigJ9pJcw6C8RZNQ6r5HADkxP+JTaUM/Vb4q3
-         COILjySTMVox+5ZFc4yMrNiy04Q/AbVKUxo9/EXGS9e0SY8hDcVHK/7vW6a/nYQOH/
-         gYWYMOa1uguPqHTMcpZgGAoVgOuvoi0EdiX1wk3KHijV50RB6vCxlfx4G4MdSR9bE1
-         4/L/KS1KCOvKg==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1m2xs0-0007QP-KB; Mon, 12 Jul 2021 17:29:21 +0200
-Date:   Mon, 12 Jul 2021 17:29:20 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     syzbot <syzbot+72af3105289dcb4c055b@syzkaller.appspotmail.com>,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, mathias.nyman@linux.intel.com,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] WARNING in do_proc_control/usb_submit_urb
-Message-ID: <YOxf0OvoGOvWf14m@hovoldconsulting.com>
-References: <20210711155345.GB293743@rowland.harvard.edu>
- <00000000000068b24405c6db3249@google.com>
- <20210712140004.GA316776@rowland.harvard.edu>
+        id S235465AbhGLPdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 11:33:08 -0400
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:44560 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234676AbhGLPdF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 11:33:05 -0400
+Received: by mail-ot1-f41.google.com with SMTP id 59-20020a9d0ac10000b0290462f0ab0800so19225004otq.11;
+        Mon, 12 Jul 2021 08:30:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cIcjLpM0TOpXZTd92NOgPEpW4iOJiRiNmUMPa8oLMG8=;
+        b=hRYtu88Uj6zLgLFEge+NF62ZR8FTddxvs/Dx+/7tBY9TnX2o41sMRhjFw8p/LL8WP3
+         hwTfZqp8qzxRgjrQTUNjM/6SNXNutsjt8jQKnaRMbXLxP3Onx0ce/drdIqiNkbPH+rK7
+         0sxJEzJ9ofFV2AVn/VOm2A1IDNW2x75tmrrow0PcvCZoY6+vTYtO7co9s4bAbauN8QyL
+         bTE+SFWFWPsOc1baiRYmAQDGxwKtxxBzeCrV3DoinKrPgVbFu1pkRf3vERiE7WD7YCTT
+         3Qra0G5bPjDyNLi+37OZJ74Vw/xpBE+QAPSKpsBq1DKDiZcPZtok4Hs5uPeiHT6mX/fo
+         vDkQ==
+X-Gm-Message-State: AOAM532Yu9IQsdXQfXMl7ZctVzzspRe1hMeNl84P2D6bo4jL6HYZSYPQ
+        tYJlT5XpLb4X8rxWfhl5Oa3bGjcWBOHvB60CF7Y=
+X-Google-Smtp-Source: ABdhPJyM8Pg8fUSod2fGtTmWMy+1+OppLgJBSgWphicleWbqL+fCTp26P9e1YMHyR4B7RvoPYwFe2uTmHr/YbHfPV/c=
+X-Received: by 2002:a9d:604e:: with SMTP id v14mr41175279otj.260.1626103815664;
+ Mon, 12 Jul 2021 08:30:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210712140004.GA316776@rowland.harvard.edu>
+References: <4327888.LvFx2qVVIh@kreacher> <5327028b-6e0b-e83c-b147-da083a23634c@gmail.com>
+ <CAJZ5v0iCyLircAL928bA4-+Pd1UtaBcZ-PVRNk3qJScSybzwCQ@mail.gmail.com>
+In-Reply-To: <CAJZ5v0iCyLircAL928bA4-+Pd1UtaBcZ-PVRNk3qJScSybzwCQ@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 12 Jul 2021 17:30:04 +0200
+Message-ID: <CAJZ5v0iw==AbxPR9P=SBWYWKi8PVwp9DafoXe3MTuqA8BVmAsw@mail.gmail.com>
+Subject: Re: [PATCH][RFT] PCI: Use pci_update_current_state() in pci_enable_device_flags()
+To:     Michael <phyre@rogers.com>
+Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 10:00:04AM -0400, Alan Stern wrote:
-> On Sun, Jul 11, 2021 at 09:07:09AM -0700, syzbot wrote:
-> > Hello,
-> > 
-> > syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-> > WARNING in do_proc_control/usb_submit_urb
-> > 
-> > ------------[ cut here ]------------
-> > usb usb2: BOGUS control dir, pipe 80000180 doesn't match bRequestType 80
-> > WARNING: CPU: 0 PID: 10164 at drivers/usb/core/urb.c:410 usb_submit_urb+0x149d/0x18a0 drivers/usb/core/urb.c:410
-> > Modules linked in:
-> > CPU: 1 PID: 10164 Comm: syz-executor.2 Tainted: G        W         5.13.0-next-20210707-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > RIP: 0010:usb_submit_urb+0x149d/0x18a0 drivers/usb/core/urb.c:410
-> > Code: 7c 24 40 e8 45 1e 20 fc 48 8b 7c 24 40 e8 6b 40 0c ff 45 89 e8 44 89 f1 4c 89 e2 48 89 c6 48 c7 c7 a0 99 27 8a e8 5a a4 91 03 <0f> 0b e9 a5 ee ff ff e8 17 1e 20 fc 0f b6 1d 21 86 02 08 31 ff 41
-> > RSP: 0018:ffffc9000a33f9a8 EFLAGS: 00010286
-> > RAX: 0000000000000000 RBX: ffff8881468f1058 RCX: 0000000000000000
-> > RDX: ffff88802a830000 RSI: ffffffff815d7735 RDI: fffff52001467f27
-> > RBP: ffff888142fe0578 R08: 0000000000000000 R09: 0000000000000000
-> > R10: ffffffff815d156e R11: 0000000000000000 R12: ffff888146811500
-> > R13: 0000000000000080 R14: 0000000080000180 R15: ffff8880135f2700
-> > FS:  00007f1b9bc83700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 00007ffcfa7f3720 CR3: 000000003de67000 CR4: 00000000001506e0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > Call Trace:
-> >  usb_start_wait_urb+0x101/0x4c0 drivers/usb/core/message.c:58
-> >  usb_internal_control_msg drivers/usb/core/message.c:102 [inline]
-> >  usb_control_msg+0x31c/0x4a0 drivers/usb/core/message.c:153
-> >  do_proc_control+0x6c4/0x920 drivers/usb/core/devio.c:1141
-> >  proc_control drivers/usb/core/devio.c:1191 [inline]
-> >  usbdev_do_ioctl drivers/usb/core/devio.c:2540 [inline]
-> >  usbdev_ioctl+0x10e2/0x36c0 drivers/usb/core/devio.c:2713
-> 
-> I don't get this.  It shouldn't be possible.  The fact that the 
-> direction bit is set in both bRequestType and pipe means that the URB 
-> was submitted as a control-IN but had length 0.  But the patch addresses 
-> exactly that case:
-> 
-> --- usb-devel.orig/drivers/usb/core/devio.c
-> +++ usb-devel/drivers/usb/core/devio.c
-> @@ -1133,7 +1133,7 @@ static int do_proc_control(struct usb_de
->  		"wIndex=%04x wLength=%04x\n",
->  		ctrl->bRequestType, ctrl->bRequest, ctrl->wValue,
->  		ctrl->wIndex, ctrl->wLength);
-> -	if (ctrl->bRequestType & 0x80) {
-> +	if ((ctrl->bRequestType & USB_DIR_IN) && ctrl->wLength) {
->  		pipe = usb_rcvctrlpipe(dev, 0);
->  		snoop_urb(dev, NULL, pipe, ctrl->wLength, tmo, SUBMIT, NULL, 0);
->  
-> and causes the kernel to handle it as a control-OUT instead.
-> 
-> Johan, any ideas?
+On Fri, Jul 9, 2021 at 1:21 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Thu, Jul 8, 2021 at 10:34 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
+> >
+> > On 7/8/21 3:25 PM, Rafael J. Wysocki wrote:
+> > > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > >
+> > > Updating the current_state field of struct pci_dev the way it is done
+> > > in pci_enable_device_flags() before calling do_pci_enable_device() may
+> > > not work.  For example, if the given PCI device depends on an ACPI
+> > > power resource whose _STA method initially returns 0 ("off"), but the
+> > > config space of the PCI device is accessible and the power state
+> > > retrieved from the PCI_PM_CTRL register is D0, the current_state
+> > > field in the struct pci_dev representing that device will get out of
+> > > sync with the power.state of its ACPI companion object and that will
+> > > lead to power management issues going forward.
+> > >
+> > > To avoid such issues, make pci_enable_device_flags() call
+> > > pci_update_current_state() which takes ACPI device power management
+> > > into account, if present, to retrieve the current power state of the
+> > > device.
+> > >
+> > > Link: https://lore.kernel.org/lkml/20210314000439.3138941-1-luzmaximilian@gmail.com/
+> > > Reported-by: Maximilian Luz <luzmaximilian@gmail.com>
+> > > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > > ---
+> > >
+> > > Hi Maximilian,
+> > >
+> > > Because commit 4514d991d992 ("PCI: PM: Do not read power state in
+> > > pci_enable_device_flags()"), the issue addressed by it is back, so
+> > > we need an alternative way to address it.
+> > >
+> > > Can you please check if this patch makes that issue go away?
+> >
+> > Hi,
+> >
+> > just tested this on v5.13 and it works, thanks! Feel free to add
+> >
+> > Tested-by: Maximilian Luz <luzmaximilian@gmail.com>
 
-Did syzbot actually test the patch? I can't see how the direction bit of
-the pipe argument can be set with the above applied either.
+Michael, Salvatore, since this alternative to commit 4514d991d992
+works for Maximilian, I'm going to queue it up for 5.15 (barring any
+objections from Bjorn), so I would appreciate it if you could test it
+and let me know whether or not there were any problems with it.
 
-Johan
+The patch can be downloaded from
+https://patchwork.kernel.org/project/linux-pm/patch/4327888.LvFx2qVVIh@kreacher
+
+Thanks!
