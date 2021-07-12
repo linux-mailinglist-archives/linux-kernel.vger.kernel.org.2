@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DF513C5793
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D146C3C4A45
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377245AbhGLIfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:35:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53604 "EHLO mail.kernel.org"
+        id S239956AbhGLGuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:50:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244398AbhGLHsm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:48:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8F756194F;
-        Mon, 12 Jul 2021 07:42:52 +0000 (UTC)
+        id S238214AbhGLGkB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:40:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B16B8610D0;
+        Mon, 12 Jul 2021 06:36:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075773;
-        bh=+i3+4hrDKdKfcpUgVB4gwBBcbk7Iyuv/9hrJvYtkh6g=;
+        s=korg; t=1626071791;
+        bh=sNgqsupDBF6XI7+2oFx/KGIlFDXOTMzao2opdZquDLM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HbhwFnRZP0y3nuPix/PI0sngeWmszDiA1LUaet3FZ1tclmLMhHTeZ1WDkjd4EUN0c
-         Zli17mjYX9hfZM4ALhTaGruEhzk5cPCc58rPDnmviyf4EUOmEwbEVSj/gEsmt8+njv
-         zCXcHCEv97Y/cD8HxdLWYX7gX1CdcnKu2enMnCsg=
+        b=O7HzcJIHjXivnIq2t9aAudv+OdNRpZ8W+KwvljylR604QutsPgC6qdqUjUCNPrXYt
+         ag0qOzitB2aMmrdzki9KaMvp0RUp31ujko1NI9Ngw+xcAVr/cFJ4vUY9CnKzjz5u2R
+         dX4Ql8XxCdBGhPdrClbhHqFKU7zlHeT3vAkqydcw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Christoph Hellwig <hch@lst.de>,
-        John Garry <john.garry@huawei.com>,
-        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org, Quentin Perret <qperret@google.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 358/800] block: avoid double io accounting for flush request
+Subject: [PATCH 5.10 221/593] sched/uclamp: Fix locking around cpu_util_update_eff()
 Date:   Mon, 12 Jul 2021 08:06:21 +0200
-Message-Id: <20210712061005.186043769@linuxfoundation.org>
+Message-Id: <20210712060907.236723407@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,50 +41,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ming Lei <ming.lei@redhat.com>
+From: Qais Yousef <qais.yousef@arm.com>
 
-[ Upstream commit 84da7acc3ba53af26f15c4b0ada446127b7a7836 ]
+[ Upstream commit 93b73858701fd01de26a4a874eb95f9b7156fd4b ]
 
-For flush request, rq->end_io() may be called two times, one is from
-timeout handling(blk_mq_check_expired()), another is from normal
-completion(__blk_mq_end_request()).
+cpu_cgroup_css_online() calls cpu_util_update_eff() without holding the
+uclamp_mutex or rcu_read_lock() like other call sites, which is
+a mistake.
 
-Move blk_account_io_flush() after flush_rq->ref drops to zero, so
-io accounting can be done just once for flush request.
+The uclamp_mutex is required to protect against concurrent reads and
+writes that could update the cgroup hierarchy.
 
-Fixes: b68663186577 ("block: add iostat counters for flush requests")
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Tested-by: John Garry <john.garry@huawei.com>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Link: https://lore.kernel.org/r/20210511152236.763464-2-ming.lei@redhat.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+The rcu_read_lock() is required to traverse the cgroup data structures
+in cpu_util_update_eff().
+
+Surround the caller with the required locks and add some asserts to
+better document the dependency in cpu_util_update_eff().
+
+Fixes: 7226017ad37a ("sched/uclamp: Fix a bug in propagating uclamp value in new cgroups")
+Reported-by: Quentin Perret <qperret@google.com>
+Signed-off-by: Qais Yousef <qais.yousef@arm.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20210510145032.1934078-3-qais.yousef@arm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-flush.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ kernel/sched/core.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/block/blk-flush.c b/block/blk-flush.c
-index 7942ca6ed321..1002f6c58181 100644
---- a/block/blk-flush.c
-+++ b/block/blk-flush.c
-@@ -219,8 +219,6 @@ static void flush_end_io(struct request *flush_rq, blk_status_t error)
- 	unsigned long flags = 0;
- 	struct blk_flush_queue *fq = blk_get_flush_queue(q, flush_rq->mq_ctx);
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index c561c3b993b5..d4bbead59ad2 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -7620,7 +7620,11 @@ static int cpu_cgroup_css_online(struct cgroup_subsys_state *css)
  
--	blk_account_io_flush(flush_rq);
--
- 	/* release the tag's ownership to the req cloned from */
- 	spin_lock_irqsave(&fq->mq_flush_lock, flags);
+ #ifdef CONFIG_UCLAMP_TASK_GROUP
+ 	/* Propagate the effective uclamp value for the new group */
++	mutex_lock(&uclamp_mutex);
++	rcu_read_lock();
+ 	cpu_util_update_eff(css);
++	rcu_read_unlock();
++	mutex_unlock(&uclamp_mutex);
+ #endif
  
-@@ -230,6 +228,7 @@ static void flush_end_io(struct request *flush_rq, blk_status_t error)
- 		return;
- 	}
+ 	return 0;
+@@ -7710,6 +7714,9 @@ static void cpu_util_update_eff(struct cgroup_subsys_state *css)
+ 	enum uclamp_id clamp_id;
+ 	unsigned int clamps;
  
-+	blk_account_io_flush(flush_rq);
- 	/*
- 	 * Flush request has to be marked as IDLE when it is really ended
- 	 * because its .end_io() is called from timeout code path too for
++	lockdep_assert_held(&uclamp_mutex);
++	SCHED_WARN_ON(!rcu_read_lock_held());
++
+ 	css_for_each_descendant_pre(css, top_css) {
+ 		uc_parent = css_tg(css)->parent
+ 			? css_tg(css)->parent->uclamp : NULL;
 -- 
 2.30.2
 
