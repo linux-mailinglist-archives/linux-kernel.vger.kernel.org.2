@@ -2,130 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5F83C5C0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 14:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDAE33C5C11
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 14:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230058AbhGLMY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 08:24:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbhGLMYz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 08:24:55 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6296C0613E5
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 05:22:06 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id p12-20020a05683019ccb02904b7e9d93563so6565348otp.13
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 05:22:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=I/gZ2fUbn7t9xYKR9dZLDy2ZzC/5pFr4YyA2ECocRro=;
-        b=q/c4kmMeNUJ4UJVpgs277eyJ67KR/RXiTs5rhy5iuJbhZ26ho24MnzGQJIwZTuD+cp
-         cCxMUPlJD6Ov4Q8hm+kc5kigiR4M1SEwP1fL3ScjwglyMVAB8B6NCLViQAGhOLku+kL2
-         3VzxLJqoAmQyKux+5QotFS7I1u54mkxHaH7ctebIs0DjLo+V1vscv8K61BASkYyXkzjE
-         SdGSxK7XWWqsCRXiYwQXQ5ayy9I6ne51BnMCj5BNXlTGH/LIFYcBRXZnob3SzifaSR9V
-         LkD5NyIckOCmu+fs9PFy8ojHC2F4dktocKUQzL2Dv4pPAW4UeZUFZzPZeV/uOyegZTrD
-         zF/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=I/gZ2fUbn7t9xYKR9dZLDy2ZzC/5pFr4YyA2ECocRro=;
-        b=JhWit9JHxOJyfEwqh8/dx7tw1+Gbm+JK43pak+87C7WMtafCg7+rFTyfIGvbSpl8pI
-         /Lzh39FaNFzuNrDVYV4hQ11vzWkbDWTwQ4Wbbf5rhykZ6hFGC90Viv1TQK8cSYJaoX84
-         813cWdi+kbyQD2bSh2imme0OLn+qdEuJf0O0odxSv3BS6B6jDVYYXCfK0KnfuYe0EQwr
-         1fC8jwIQszHu5yuLkwXMYViwLDaNwkqs/6E/WExjroNVX4xKDhlcQn/uBMWfXncxedIE
-         GlguzMgcZLI+nu73vr3+JJwtXgQkL+KGjOP7k2fZMZ4vraXeYKKIUhUOtsbSnSKld3Bz
-         uX5Q==
-X-Gm-Message-State: AOAM531QE9bHFAKA0sULzhZQ0lb0d4dgcTM+fKJ6Rc8FE1ezJlubEBOb
-        hMKceLxAFh5gGUoYrfJAcjMpmvjI2+Y4wKrNjXyyKA==
-X-Google-Smtp-Source: ABdhPJy7wrbsGVIJqq5cMY18TfWKud3VMsSDkmPO8RnG788kNXP3X5+c5WbOZwOe7MypM6lKqOCHJP46ctNq8wc2HtQ=
-X-Received: by 2002:a05:6830:242f:: with SMTP id k15mr47595ots.72.1626092525463;
- Mon, 12 Jul 2021 05:22:05 -0700 (PDT)
+        id S230382AbhGLM11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 08:27:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37996 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229910AbhGLM11 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 08:27:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D5FA460FF3;
+        Mon, 12 Jul 2021 12:24:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626092679;
+        bh=39UDyHmtvOvV95HVEQniIReLPUgxxMG9Orayrb4XS8s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M8SaYHYX0KXistxYO3gZheS3K/a4uVcqEH2wWVz2vMpyzLtMehlRP79auLe2mEFrB
+         ZMwbOO7bzHqn/qf4AO+Dlp4WuZ2XicziQRZ4iMI7Gp/bNLjVyXoR6bnbbxULDhImhT
+         5i4afyquJqZ6l/knqLSeWzeYssEL9mYtdBmDH+4Ke5Xdb9LkEmdf38BlpiGURyMoy9
+         uywuS6JjqM4sPnU4Qq+DFfZavJt3pHR8MBc7vUtYmHzvjhjCSW/EPDdjdnrsyGGNag
+         XkbsOKyJNv91V/Kq7986IYUKdRPxuzWv2KIivt5RQWSYDW0IrX1PQISNXJ6ANlB6YA
+         b2PVVAfIeEIDg==
+Date:   Mon, 12 Jul 2021 13:24:34 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] arm64: Restrict ARM64_BTI_KERNEL to clang 12.0.0 and
+ newer
+Message-ID: <20210712122433.GA28536@willie-the-truck>
+References: <20210709000627.3183718-1-nathan@kernel.org>
 MIME-Version: 1.0
-References: <20210712060843.180606720@linuxfoundation.org>
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 12 Jul 2021 17:51:53 +0530
-Message-ID: <CA+G9fYtdYvUse1Osfrux6DVU_DiLAKveQqnEZ36eoG-fThJBqw@mail.gmail.com>
-Subject: Re: [PATCH 5.10 000/593] 5.10.50-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Nathan Lynch <nathanl@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210709000627.3183718-1-nathan@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Jul 2021 at 11:59, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.10.50 release.
-> There are 593 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 14 Jul 2021 06:02:46 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.50-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Hi Nathan,
 
-Results from Linaro=E2=80=99s test farm.
-Regression detected on powerpc,
+On Thu, Jul 08, 2021 at 05:06:27PM -0700, Nathan Chancellor wrote:
+> Commit 97fed779f2a6 ("arm64: bti: Provide Kconfig for kernel mode BTI")
+> disabled CONFIG_ARM64_BTI_KERNEL when CONFIG_GCOV_KERNEL was enabled and
+> compilign with clang because of warnings that occur because LLVM was not
 
-Regressions found on powerpc:
- - build/gcc-10-cell_defconfig
- - build/gcc-10-maple_defconfig
- - build/gcc-10-defconfig
- - build/gcc-8-defconfig
- - build/gcc-9-defconfig
- - build/gcc-9-maple_defconfig
- - build/gcc-8-maple_defconfig
- - build/gcc-8-cell_defconfig
- - build/gcc-9-cell_defconfig
+Typo: "compilign"
 
-The following patch caused build warnings / errors on powerpc.
+> emitting PAC/BTI instructions for compiler generated functions.
+> 
+> This was an adequate fix to avoid the warnings with allmodconfig until
+> commit 51c2ee6d121c ("Kconfig: Introduce ARCH_WANTS_NO_INSTR and
+> CC_HAS_NO_PROFILE_FN_ATTR"), which prevented CONFIG_GCOV_KERNEL from
+> being selected with clang 12.0.0 and older because it does not support
+> the no_profile_instrument_function attribute. As a result,
+> CONFIG_ARM64_BTI_KERNEL gets enabled and there are more warnings of this
+> nature.
 
-> Michael Ellerman <mpe@ellerman.id.au>
->     powerpc/stacktrace: Fix spurious "stale" traces in raise_backtrace_ip=
-i()
+I'm half asleep today, but I'm struggling to follow what GCOV_KERNEL has
+to do with the warnings here. Prior to 51c2ee6d121c, you could still go
+and turn that option off and so wouldn't the same warnings be triggered
+in that configuration?
 
-Build error:
---------------
-arch/powerpc/kernel/stacktrace.c: In function 'raise_backtrace_ipi':
-arch/powerpc/kernel/stacktrace.c:248:5: error: implicit declaration of
-function 'udelay' [-Werror=3Dimplicit-function-declaration]
-  248 |     udelay(1);
-      |     ^~~~~~
-cc1: all warnings being treated as errors
+In other words, I think there are two aspects to this patch:
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+	1. Removing the (now useless) !GCOV_KERNEL dependency
+	2. Requiring Clang >= version 12
 
-link to build log:
-https://builds.tuxbuild.com/1vCh34NozLpcdYwjDS72K2fkiM3/
+but the commit message doesn't really say where these warnings are coming
+from or why Clang 12 gets rid of them.
 
---
-Linaro LKFT
-https://lkft.linaro.org
+Thanks,
+
+Will
