@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 683383C4EAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 403203C4CF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:39:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344493AbhGLHUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:20:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44286 "EHLO mail.kernel.org"
+        id S244996AbhGLHLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:11:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239108AbhGLGt3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239117AbhGLGt3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Jul 2021 02:49:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00C7A611F1;
-        Mon, 12 Jul 2021 06:46:07 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D547561006;
+        Mon, 12 Jul 2021 06:46:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072368;
-        bh=UOpH3YNj+eG3pE6j/EzLsOnZAqG1KKV2yLr1Dk1/QvY=;
+        s=korg; t=1626072373;
+        bh=bwRteTtT9gexEzgA33yurM3tSPxiHhwE1Fg4A9bl0uI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J9YJCDACm8DNNCFenOh7diXIJuIEIWvWQfhR2h4wtcT+Z+K/VmYsOx0G5pjoesMyv
-         J++lepWeGIyvYwH1fcHU4TaxJQ2Uy4gWz43zdVvfQPWfOGjopfkI4lJGd8KLmjrzSF
-         5cPRv/gttZ1c5eyqojQjiIHdBC1H8NE4oo+AlUkg=
+        b=xbeKWZzBRzv9Q6bgOr7VYOUsN2zz+unelUfnK2cFYy57U+QOEpPoQMyHt48aZv7Js
+         wg4PqNlVFjOcTaBKFXIjaAFHUPEYcq3YWkq+Ue2YWlm46e+U4Hs9qefHC1qDuzk+2+
+         KzMhK1l37UEvwITGbQ015X2eAagScXnYf+hT6Kgw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Yang Yingliang <yangyingliang@huawei.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 467/593] ASoC: rk3328: fix missing clk_disable_unprepare() on error in rk3328_platform_probe()
-Date:   Mon, 12 Jul 2021 08:10:27 +0200
-Message-Id: <20210712060941.279849602@linuxfoundation.org>
+Subject: [PATCH 5.10 468/593] ASoC: hisilicon: fix missing clk_disable_unprepare() on error in hi6210_i2s_startup()
+Date:   Mon, 12 Jul 2021 08:10:28 +0200
+Message-Id: <20210712060941.421191520@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
 References: <20210712060843.180606720@linuxfoundation.org>
@@ -43,75 +43,59 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit d14eece945a8068a017995f7512ea2beac21e34b ]
+[ Upstream commit 375904e3931955fcf0a847f029b2492a117efc43 ]
 
-Fix the missing clk_disable_unprepare() before return
-from rk3328_platform_probe() in the error handling case.
+After calling clk_prepare_enable(), clk_disable_unprepare() need
+be called when calling clk_set_rate() failed.
 
-Fixes: c32759035ad2 ("ASoC: rockchip: support ACODEC for rk3328")
+Fixes: 0bf750f4cbe1 ("ASoC: hisilicon: Add hi6210 i2s audio driver")
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20210518075847.1116983-1-yangyingliang@huawei.com
+Link: https://lore.kernel.org/r/20210518044514.607010-1-yangyingliang@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rk3328_codec.c | 28 ++++++++++++++++++++++------
- 1 file changed, 22 insertions(+), 6 deletions(-)
+ sound/soc/hisilicon/hi6210-i2s.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/rk3328_codec.c b/sound/soc/codecs/rk3328_codec.c
-index 940a2fa933ed..aed18cbb9f68 100644
---- a/sound/soc/codecs/rk3328_codec.c
-+++ b/sound/soc/codecs/rk3328_codec.c
-@@ -474,7 +474,8 @@ static int rk3328_platform_probe(struct platform_device *pdev)
- 	rk3328->pclk = devm_clk_get(&pdev->dev, "pclk");
- 	if (IS_ERR(rk3328->pclk)) {
- 		dev_err(&pdev->dev, "can't get acodec pclk\n");
--		return PTR_ERR(rk3328->pclk);
-+		ret = PTR_ERR(rk3328->pclk);
-+		goto err_unprepare_mclk;
+diff --git a/sound/soc/hisilicon/hi6210-i2s.c b/sound/soc/hisilicon/hi6210-i2s.c
+index 907f5f1f7b44..ff05b9779e4b 100644
+--- a/sound/soc/hisilicon/hi6210-i2s.c
++++ b/sound/soc/hisilicon/hi6210-i2s.c
+@@ -102,18 +102,15 @@ static int hi6210_i2s_startup(struct snd_pcm_substream *substream,
+ 
+ 	for (n = 0; n < i2s->clocks; n++) {
+ 		ret = clk_prepare_enable(i2s->clk[n]);
+-		if (ret) {
+-			while (n--)
+-				clk_disable_unprepare(i2s->clk[n]);
+-			return ret;
+-		}
++		if (ret)
++			goto err_unprepare_clk;
  	}
  
- 	ret = clk_prepare_enable(rk3328->pclk);
-@@ -484,19 +485,34 @@ static int rk3328_platform_probe(struct platform_device *pdev)
+ 	ret = clk_set_rate(i2s->clk[CLK_I2S_BASE], 49152000);
+ 	if (ret) {
+ 		dev_err(i2s->dev, "%s: setting 49.152MHz base rate failed %d\n",
+ 			__func__, ret);
+-		return ret;
++		goto err_unprepare_clk;
  	}
  
- 	base = devm_platform_ioremap_resource(pdev, 0);
--	if (IS_ERR(base))
--		return PTR_ERR(base);
-+	if (IS_ERR(base)) {
-+		ret = PTR_ERR(base);
-+		goto err_unprepare_pclk;
-+	}
+ 	/* enable clock before frequency division */
+@@ -165,6 +162,11 @@ static int hi6210_i2s_startup(struct snd_pcm_substream *substream,
+ 	hi6210_write_reg(i2s, HII2S_SW_RST_N, val);
  
- 	rk3328->regmap = devm_regmap_init_mmio(&pdev->dev, base,
- 					       &rk3328_codec_regmap_config);
--	if (IS_ERR(rk3328->regmap))
--		return PTR_ERR(rk3328->regmap);
-+	if (IS_ERR(rk3328->regmap)) {
-+		ret = PTR_ERR(rk3328->regmap);
-+		goto err_unprepare_pclk;
-+	}
- 
- 	platform_set_drvdata(pdev, rk3328);
- 
--	return devm_snd_soc_register_component(&pdev->dev, &soc_codec_rk3328,
-+	ret = devm_snd_soc_register_component(&pdev->dev, &soc_codec_rk3328,
- 					       rk3328_dai,
- 					       ARRAY_SIZE(rk3328_dai));
-+	if (ret)
-+		goto err_unprepare_pclk;
+ 	return 0;
 +
-+	return 0;
-+
-+err_unprepare_pclk:
-+	clk_disable_unprepare(rk3328->pclk);
-+
-+err_unprepare_mclk:
-+	clk_disable_unprepare(rk3328->mclk);
++err_unprepare_clk:
++	while (n--)
++		clk_disable_unprepare(i2s->clk[n]);
 +	return ret;
  }
  
- static const struct of_device_id rk3328_codec_of_match[] = {
+ static void hi6210_i2s_shutdown(struct snd_pcm_substream *substream,
 -- 
 2.30.2
 
