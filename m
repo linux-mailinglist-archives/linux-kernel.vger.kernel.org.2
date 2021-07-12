@@ -2,44 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55DC33C4F91
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 664FC3C48E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:31:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243739AbhGLH0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:26:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34396 "EHLO mail.kernel.org"
+        id S238602AbhGLGlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:41:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242176AbhGLG7t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:59:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 170086102A;
-        Mon, 12 Jul 2021 06:57:01 +0000 (UTC)
+        id S236284AbhGLGdM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:33:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 860E06112D;
+        Mon, 12 Jul 2021 06:29:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073021;
-        bh=VxsMsNEiiHntLXbNFK2z5oizrRdubsB1rGTW5mKr68U=;
+        s=korg; t=1626071392;
+        bh=QAMvyzPm1ebL8mXaSbdObeYmO45nRKY2HF4Rg6n7cqw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vKjDDZPs0Brtqig1Runf6e0jMiR4cSTb6GMUEK2TGPsPJBVOnGMQbGmh57Bnez03S
-         7N6nxCuwQhngDqwKDo2F4igjqavmrGB9iBevPkOkYM1h8QlgL3b9P/xcLa9SvLdv1h
-         lC5NPbYBqFtmP9sPbfjbUKXrjg6L4q3KUTlV7A8s=
+        b=XllcV7pHmncMtnDgCD8ub0IcXxmwS+NpkjRl/+WPy9+ymX8iLX22Y8ilbMTEqUuq7
+         /tO+eYx03DOrgg1igz5wKnIcI3ovzhL6gUaBgTmyBB078IjsVKDkXR9MZC1hRldoaV
+         QfbtD7LJ81hka11JLXqgPMduT2qhPxFZhhZLKqWQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
-        Amitkumar Karwar <amit.karwar@redpinesignals.com>,
-        Angus Ainslie <angus@akkea.ca>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Karun Eagalapati <karun256@gmail.com>,
-        Martin Kepplinger <martink@posteo.de>,
-        Prameela Rani Garnepudi <prameela.j04cs@gmail.com>,
-        Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>,
-        Siva Rebbagondla <siva8118@gmail.com>, netdev@vger.kernel.org
-Subject: [PATCH 5.12 100/700] rsi: Assign beacon rate settings to the correct rate_info descriptor field
+        stable@vger.kernel.org, Hannu Hartikainen <hannu@hrtk.in>
+Subject: [PATCH 5.10 023/593] USB: cdc-acm: blacklist Heimann USB Appset device
 Date:   Mon, 12 Jul 2021 08:03:03 +0200
-Message-Id: <20210712060938.952747681@linuxfoundation.org>
+Message-Id: <20210712060845.742493111@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,51 +38,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Vasut <marex@denx.de>
+From: Hannu Hartikainen <hannu@hrtk.in>
 
-commit b1c3a24897bd528f2f4fda9fea7da08a84ae25b6 upstream.
+commit 4897807753e078655a78de39ed76044d784f3e63 upstream.
 
-The RSI_RATE_x bits must be assigned to struct rsi_data_desc rate_info
-field. The rest of the driver does it correctly, except this one place,
-so fix it. This is also aligned with the RSI downstream vendor driver.
-Without this patch, an AP operating at 5 GHz does not transmit any
-beacons at all, this patch fixes that.
+The device (32a7:0000 Heimann Sensor GmbH USB appset demo) claims to be
+a CDC-ACM device in its descriptors but in fact is not. If it is run
+with echo disabled it returns garbled data, probably due to something
+that happens in the TTY layer. And when run with echo enabled (the
+default), it will mess up the calibration data of the sensor the first
+time any data is sent to the device.
 
-Fixes: d26a9559403c ("rsi: add beacon changes for AP mode")
-Signed-off-by: Marek Vasut <marex@denx.de>
-Cc: Amitkumar Karwar <amit.karwar@redpinesignals.com>
-Cc: Angus Ainslie <angus@akkea.ca>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Cc: Karun Eagalapati <karun256@gmail.com>
-Cc: Martin Kepplinger <martink@posteo.de>
-Cc: Prameela Rani Garnepudi <prameela.j04cs@gmail.com>
-Cc: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
-Cc: Siva Rebbagondla <siva8118@gmail.com>
-Cc: netdev@vger.kernel.org
-Cc: stable@vger.kernel.org
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210507213105.140138-1-marex@denx.de
+In short, I had a bad time after connecting the sensor and trying to get
+it to work. I hope blacklisting it in the cdc-acm driver will save
+someone else a bit of trouble.
+
+Signed-off-by: Hannu Hartikainen <hannu@hrtk.in>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210622141454.337948-1-hannu@hrtk.in
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/wireless/rsi/rsi_91x_hal.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/class/cdc-acm.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/net/wireless/rsi/rsi_91x_hal.c
-+++ b/drivers/net/wireless/rsi/rsi_91x_hal.c
-@@ -470,9 +470,9 @@ int rsi_prepare_beacon(struct rsi_common
- 	}
+--- a/drivers/usb/class/cdc-acm.c
++++ b/drivers/usb/class/cdc-acm.c
+@@ -1948,6 +1948,11 @@ static const struct usb_device_id acm_id
+ 	.driver_info = IGNORE_DEVICE,
+ 	},
  
- 	if (common->band == NL80211_BAND_2GHZ)
--		bcn_frm->bbp_info |= cpu_to_le16(RSI_RATE_1);
-+		bcn_frm->rate_info |= cpu_to_le16(RSI_RATE_1);
- 	else
--		bcn_frm->bbp_info |= cpu_to_le16(RSI_RATE_6);
-+		bcn_frm->rate_info |= cpu_to_le16(RSI_RATE_6);
- 
- 	if (mac_bcn->data[tim_offset + 2] == 0)
- 		bcn_frm->frame_info |= cpu_to_le16(RSI_DATA_DESC_DTIM_BEACON);
++	/* Exclude Heimann Sensor GmbH USB appset demo */
++	{ USB_DEVICE(0x32a7, 0x0000),
++	.driver_info = IGNORE_DEVICE,
++	},
++
+ 	/* control interfaces without any protocol set */
+ 	{ USB_INTERFACE_INFO(USB_CLASS_COMM, USB_CDC_SUBCLASS_ACM,
+ 		USB_CDC_PROTO_NONE) },
 
 
