@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45BEA3C525C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17AEF3C57B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345881AbhGLHpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:45:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47878 "EHLO mail.kernel.org"
+        id S1350010AbhGLIgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:36:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240099AbhGLHMn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:12:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EC7E610FA;
-        Mon, 12 Jul 2021 07:09:53 +0000 (UTC)
+        id S1350457AbhGLHvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:51:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B6881619D0;
+        Mon, 12 Jul 2021 07:45:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073794;
-        bh=7ZGpz8llyWui7Z9BbsoSQs+FUFVD67qfNy5qg8f+6q8=;
+        s=korg; t=1626075932;
+        bh=o0ALqB1ehHsVL1B4E3RwKML4QUqsBldf04g31gZzXF0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ghHzkSQaqfqcCmTSHy7K6eUsW2V42GO1gFO83kzAt/JTdbVjZnIjRoQ0zOoN02KMz
-         BExhr4EQbVi0nBv6OjdoXYAf190vP2C350NFsVEFqD6OA88cjhv/Cuo4jGTFe/ktSu
-         qY2T1CKnqOB/27hyORx26zUjjtZeSzJ6glCAemYs=
+        b=dIAKfLZMlFzNC1CKsJMcbgluNf1ewCIapToc1Zj81/qy92kHKM9Xs2pDE7nRTqWkI
+         eiQyLBPJmp14PChZ/Aew+dx6XazRjwFZGF6TD6TWlzO2OEJmRWeU9jMRGrd4Mj/UWL
+         Nu9s/mP6plTbnz5AW5xPevf3CeHKbGchmziNnkB8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yixian Liu <liuyixian@huawei.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        Jianguo Wu <wujianguo@chinatelecom.cn>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 363/700] RDMA/hns: Remove the condition of light load for posting DWQE
-Date:   Mon, 12 Jul 2021 08:07:26 +0200
-Message-Id: <20210712061014.994788047@linuxfoundation.org>
+Subject: [PATCH 5.13 424/800] mptcp: fix pr_debug in mptcp_token_new_connect
+Date:   Mon, 12 Jul 2021 08:07:27 +0200
+Message-Id: <20210712061012.255088225@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yixian Liu <liuyixian@huawei.com>
+From: Jianguo Wu <wujianguo@chinatelecom.cn>
 
-[ Upstream commit 591f762b2750c628df9412d1c795b56e83a34b3e ]
+[ Upstream commit 2f1af441fd5dd5caf0807bb19ce9bbf9325ce534 ]
 
-Even in the case of heavy load, direct WQE can still be posted. The
-hardware will decide whether to drop the DWQE or not. Thus, the limit
-needs to be removed.
+After commit 2c5ebd001d4f ("mptcp: refactor token container"),
+pr_debug() is called before mptcp_crypto_key_gen_sha() in
+mptcp_token_new_connect(), so the output local_key, token and
+idsn are 0, like:
 
-Fixes: 01584a5edcc4 ("RDMA/hns: Add support of direct wqe")
-Link: https://lore.kernel.org/r/1619593950-29414-1-git-send-email-liweihang@huawei.com
-Signed-off-by: Yixian Liu <liuyixian@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+  MPTCP: ssk=00000000f6b3c4a2, local_key=0, token=0, idsn=0
+
+Move pr_debug() after mptcp_crypto_key_gen_sha().
+
+Fixes: 2c5ebd001d4f ("mptcp: refactor token container")
+Acked-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: Jianguo Wu <wujianguo@chinatelecom.cn>
+Signed-off-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ net/mptcp/token.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index ad3cee54140e..3344b80ecf04 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -750,8 +750,7 @@ out:
- 		qp->sq.head += nreq;
- 		qp->next_sge = sge_idx;
+diff --git a/net/mptcp/token.c b/net/mptcp/token.c
+index 8f0270a780ce..72a24e63b131 100644
+--- a/net/mptcp/token.c
++++ b/net/mptcp/token.c
+@@ -156,9 +156,6 @@ int mptcp_token_new_connect(struct sock *sk)
+ 	int retries = TOKEN_MAX_RETRIES;
+ 	struct token_bucket *bucket;
  
--		if (nreq == 1 && qp->sq.head == qp->sq.tail + 1 &&
--		    (qp->en_flags & HNS_ROCE_QP_CAP_DIRECT_WQE))
-+		if (nreq == 1 && (qp->en_flags & HNS_ROCE_QP_CAP_DIRECT_WQE))
- 			write_dwqe(hr_dev, qp, wqe);
- 		else
- 			update_sq_db(hr_dev, qp);
+-	pr_debug("ssk=%p, local_key=%llu, token=%u, idsn=%llu\n",
+-		 sk, subflow->local_key, subflow->token, subflow->idsn);
+-
+ again:
+ 	mptcp_crypto_key_gen_sha(&subflow->local_key, &subflow->token,
+ 				 &subflow->idsn);
+@@ -172,6 +169,9 @@ again:
+ 		goto again;
+ 	}
+ 
++	pr_debug("ssk=%p, local_key=%llu, token=%u, idsn=%llu\n",
++		 sk, subflow->local_key, subflow->token, subflow->idsn);
++
+ 	WRITE_ONCE(msk->token, subflow->token);
+ 	__sk_nulls_add_node_rcu((struct sock *)msk, &bucket->msk_chain);
+ 	bucket->chain_len++;
 -- 
 2.30.2
 
