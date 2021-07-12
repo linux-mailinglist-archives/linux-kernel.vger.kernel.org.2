@@ -2,638 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A7A3C5F9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 17:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE6E23C5F95
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 17:44:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235666AbhGLPrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 11:47:08 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:21492 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235587AbhGLPrH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 11:47:07 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16CFZ5OZ036764;
-        Mon, 12 Jul 2021 11:43:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : subject :
- in-reply-to : references : date : message-id : mime-version :
- content-type; s=pp1; bh=hcNjE0DkD6Psk1ihwE22iQEYC6Tpvp+dtlO74niJLnI=;
- b=FjtibpCV8og/Nn/KO0Y7NUnfge2xpxQcjKLNTHjIvVVL1b3PClpE+UMOh3ZbTbTPOwId
- Ivf3+pFLQrOEOTd17+ukFAjBxaOwOyRZT5s5QqJhiRyDwppkMnZpyr8PyWY7vurSuciD
- Ka3RhwkVf/1gDqvae35UncOiqrQpQzoC893hVnk3o5zJOu8/OFfTOvB8uAAXvsVu9TRG
- A+abngNs72ARmdtHRQ5icT+bTtcHZflVsfDldZOzvNfDYmXVBT2mzygAHp/SQKt5V4Yq
- S0i06lZCYs20wvssxzSCVPqw69g394wd3aCC5ILAgqdo62rk4iZq+GcUlljYVgR4KSdp 7Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39qrf76t2q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 12 Jul 2021 11:43:53 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16CFb5c4046757;
-        Mon, 12 Jul 2021 11:43:53 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39qrf76t1y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 12 Jul 2021 11:43:52 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16CFfOgS017290;
-        Mon, 12 Jul 2021 15:43:51 GMT
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by ppma05wdc.us.ibm.com with ESMTP id 39q36b85hq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 12 Jul 2021 15:43:51 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16CFhpVt39780670
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 12 Jul 2021 15:43:51 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 28FF5112069;
-        Mon, 12 Jul 2021 15:43:51 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2F283112065;
-        Mon, 12 Jul 2021 15:43:50 +0000 (GMT)
-Received: from localhost (unknown [9.211.32.192])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTPS;
-        Mon, 12 Jul 2021 15:43:49 +0000 (GMT)
-From:   Fabiano Rosas <farosas@linux.ibm.com>
-To:     "Pratik R. Sampat" <psampat@linux.ibm.com>, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-ppc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, psampat@linux.ibm.com,
-        pratik.r.sampat@gmail.com
-Subject: Re: [PATCH v3 1/1] powerpc/pseries: Interface to represent PAPR
- firmware attributes
-In-Reply-To: <20210712105140.33388-2-psampat@linux.ibm.com>
-References: <20210712105140.33388-1-psampat@linux.ibm.com>
- <20210712105140.33388-2-psampat@linux.ibm.com>
-Date:   Mon, 12 Jul 2021 12:43:47 -0300
-Message-ID: <87lf6bo7v0.fsf@linux.ibm.com>
+        id S235621AbhGLPqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 11:46:45 -0400
+Received: from mail-dm6nam11on2071.outbound.protection.outlook.com ([40.107.223.71]:63798
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233648AbhGLPqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 11:46:43 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dYaiNzuehDezsAchzqllv2y3Bghwmnqz6zFgMajQMebjYD800RaZINqO8cAGzNwJXJ7G7StG0R3epFfOnlIytXkFRlu7BJhT/Fc+txLC7GwJoA1li4HMG4FAldphMUkzlkoiFyBnH47gR+/ddN3SDFtwkjOgLHx/DlFaWuSUExyxEMg99F9IPn1jkhs/GdhU4Dm900+60BLTfz/rNVsvstUqfVwiainwxuJrbLuD7IOdmeh3qGbg5DFc6nc/lBqME/4CwR81E+P6FbUbrFIqWMQXEqQpOc7UQrA23ft2wOstD1yEjpWD9otbML2PJWhGYQqaKywG9Ea0YyBQ4mcnrA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vhZMqfmdvvHgDadJ5qKwIEnnwTxAFLEDjplxDEWClgo=;
+ b=j9RAp+IKQNprN1h6eoZQzZOLd01T4ixnlj4ddqqC9Il+laKhVc3p2klsJpUUz66m0C7Xk2b6N0WHdATYqG1T8kwFIAGtlf9vNl/FvaVmCpKuo4zdrDn/xJkOqrChC0RpclVydFh/lO3VLiwMmrc49nEhCfb0A0jfN8uSA9+YSdZ++cGCVmZ9wLmtb3pvZMlbN43l1V7MTPuqYD5oIHJtYq//XOsMpGUh3jDgu01GIaKZZyaBvwFWdeipR/tR+gVwiBF8wGAcbcBf8mUZIKbh3tmEmCpbnp0P0vgDZloarXBPlikpjKZBeanFeF/9vAe35QBJ+E6LG7L21jORYo2cNQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vhZMqfmdvvHgDadJ5qKwIEnnwTxAFLEDjplxDEWClgo=;
+ b=5ShUy4gAS5Jylbm+g0UdvaH/CywZrKyAPc5trGrp6WSijHNTHrUdQNvD4RtrC32RidNB5eHN+qYbOAdYCORGjKOdTdGgbWP3X0qsISqOL5fI4J479qEhpHxyk0feU4oJT02P8/+tq7KJOH/VujsCp5l7U0o5fXzmbtgFGfY6x88=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
+ by SN6PR12MB4672.namprd12.prod.outlook.com (2603:10b6:805:12::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.22; Mon, 12 Jul
+ 2021 15:43:52 +0000
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::a8a9:2aac:4fd1:88fa]) by SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::a8a9:2aac:4fd1:88fa%3]) with mapi id 15.20.4308.026; Mon, 12 Jul 2021
+ 15:43:52 +0000
+Cc:     brijesh.singh@amd.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
+        npmccallum@redhat.com, brijesh.ksingh@gmail.com
+Subject: Re: [PATCH Part2 RFC v4 10/40] x86/fault: Add support to handle the
+ RMP fault for user address
+To:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org
+References: <20210707183616.5620-1-brijesh.singh@amd.com>
+ <20210707183616.5620-11-brijesh.singh@amd.com>
+ <3c6b6fc4-05b2-8d18-2eb8-1bd1a965c632@intel.com>
+From:   Brijesh Singh <brijesh.singh@amd.com>
+Message-ID: <2b4accb6-b68e-02d3-6fed-975f90558099@amd.com>
+Date:   Mon, 12 Jul 2021 10:43:50 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <3c6b6fc4-05b2-8d18-2eb8-1bd1a965c632@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA0PR11CA0152.namprd11.prod.outlook.com
+ (2603:10b6:806:1bb::7) To SN6PR12MB2718.namprd12.prod.outlook.com
+ (2603:10b6:805:6f::22)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 0qvlwGFuq9AMYk_34XjUULo6CcVPC7Hs
-X-Proofpoint-GUID: V-9IA_NzQigPRtyN9k8MJ11CvgumFJEX
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-12_09:2021-07-12,2021-07-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
- adultscore=0 mlxlogscore=999 phishscore=0 lowpriorityscore=0 spamscore=0
- impostorscore=0 bulkscore=0 suspectscore=0 priorityscore=1501
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107120120
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.31.95] (165.204.77.1) by SA0PR11CA0152.namprd11.prod.outlook.com (2603:10b6:806:1bb::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.19 via Frontend Transport; Mon, 12 Jul 2021 15:43:51 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c880322d-f5c8-40b8-a976-08d9454bd962
+X-MS-TrafficTypeDiagnostic: SN6PR12MB4672:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN6PR12MB467203570B027D0CC7C3436CE5159@SN6PR12MB4672.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: v/6jgsvITKYPdR3twnWbnMUit7aFF08L8l6jsHw2OAXAA5qTaRSPdnVW3L8p2A/7N6GCPDRWvCfXSCTd2r5OTXVX7MYZiKUTddl5qJXcqIidzx/VK82Q87ZUlH9RfPxlL6dm/XWCA2crBgDv0SQF6eC1EPlt0sCmEyqTblgxBmQaFiLOGquwvOog6dl1pHwppPFvWEjE79QOHuK//r717XaPCkcZkTZszwoOkN+D0cwsBjQIML2oGjf/25FmzjHpORRDs92TMtI2GaroYGdlv0j6AFRMSdAwX3luMuIz+88s7BTGH9FwKW1fnt/ZU/YPFdhipaiMQBO8joJymn0+pmXL6qWOcAwAgp/47wGqFxto+hjFNr9VwlRBxWvTM0whpwgFPhdpRB25XkTyZqUkJAeAXpBPONj02AxvNhtsfxCxeDs11v3Cmzp5ss/BOGONvhsjvbe0mSsqYm+kYMgz7rEztzGWNhfmc38ILmTcOGVHAmUAYhf0zvPMdgiP+jLe1HK5Sb9YW/2whwAek/la7KRiZ/TtqQPrbdOJAlUFw0DJM9VAuIXflljjWxH9ylN9BivjWTJHYb8AYLaRblQA6z74QaQnvtAt8f9on/F1Mk1INU7c2C8JzwnYvdOR4P+x7f93BmgpUBfT3bvmYIz9xDOG8PiWoxTJwdP4DLkcgz2duvbO8JScH9w8y2m6SeQAd9cszVNWz6OjzNBruJmlK0SuF46v2oXDrjSA5neduWl131k56n/NVcuqJL3IZMnxEuB2nC1ImjZ5zvJzCmZvNA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(39860400002)(396003)(346002)(136003)(53546011)(86362001)(2906002)(52116002)(31696002)(44832011)(956004)(2616005)(478600001)(8936002)(16576012)(8676002)(316002)(54906003)(4326008)(7416002)(7406005)(6486002)(38350700002)(26005)(186003)(31686004)(36756003)(66556008)(66476007)(38100700002)(66946007)(5660300002)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZUxoQytoVTlXOGRhUlVGazhMSzJaOGhXRjVQK3cyejBJR0tDdWx0dkFyL3Vz?=
+ =?utf-8?B?L0FBYjUxbnN5OURlQlhLdjJOendnclpnZHlMNUVFbEM2S0dTOVBDUUd6QlpN?=
+ =?utf-8?B?WDJ5Nk9MWkg5cjVaa1RQVWRLRjZ6MUtSYkgxUTVlRWZxait2R0tERkJ6Y2sx?=
+ =?utf-8?B?cmhBQUJsT3hmbkZzV3Y5a2FPMmEweUpYc2x4Ty9uREJpSnZqdWRUNjA0dExN?=
+ =?utf-8?B?RitiV2xCZHJoZjBLZm5JckUzNS81aDU4RERqajJPdHhLNTQwMGc4SjRiYkZO?=
+ =?utf-8?B?NDNxdFFqQ3dPZzZlMEpCaHE4Slh1SDNsbG9mbWtHUHNIa1FDYkdXUVI0LzF2?=
+ =?utf-8?B?QkpJU1V0aVRvUWNuRWE3Q0MybkNVWkp6Wjlwd2Jvd3ZHMFJBcUxraktsd2JF?=
+ =?utf-8?B?b0QrS1VScmU0WVJvSFN4Zmg3eTlUb1dtQm1wRWQvNitTMUNFUm42eEpZWUFI?=
+ =?utf-8?B?QTRlVW1TQjcwV3FwbkJGVDJIUy9HQXRsbnpodDYzQ3BWc3NDRDR6Y3lzd2l4?=
+ =?utf-8?B?VWd5d1U1aHdybFp0dllPdm9yRkxwRTZpU1RFbU42V0hPSTFQUFlPRHMrRlVZ?=
+ =?utf-8?B?b0hVV3RVcHNOcXNKNVBXMnpUd05KZ2JSb0M0ZWtIZ0RVcnZPVHZ4UUx6WHgw?=
+ =?utf-8?B?T3FHS2JOOGZjbnA5YWpRVVVqZVV5KzhmMExmY3JTZ2kxZkQ5MmxZT1ROelJu?=
+ =?utf-8?B?cmducnJKQzFrUnBEOUFDSVQ4SUdoM2p6VGFoVmVSeXlYVE5sL2Z1U2ZVNVNN?=
+ =?utf-8?B?dEY3OFczSDQzMVdTbXc5LzBwRUYyWjhYMU1PVi85NG5Ic2RPSThRR29qQzh6?=
+ =?utf-8?B?eTQ0YW85OG9WSHhEVmtUalBiUWZDRjZUcTFBZzIrVzJka2U4VWp5bURiN2xF?=
+ =?utf-8?B?eVhnUEIvbFFSa1hBSHZ4MlY4MXRqRmw3UW5UaVRvdWkzbEI5N1NoNDJTaFlq?=
+ =?utf-8?B?SXMvbUxrcWU4bnV5d3RhVHAzMjdlV1lRbjZCTU50eTc1eHVqZGpHczZzREdo?=
+ =?utf-8?B?NmJLZlVleFc2Mm96QXAvZzRkbUVCWUUzTTc4Ny9NaDF2T29vT3ZXYk1aZjI5?=
+ =?utf-8?B?VHh5VVdHdnRla0IzbWMrVGFIVW9XTkJhUXl3WFhnQU9TcFNQZ21xUldFeVBr?=
+ =?utf-8?B?VExsZGxyZmd5Z2F3WGowcWdqYXFMNUhtdzhQcEFVZWlqalpQRVdmcVpCa3Jl?=
+ =?utf-8?B?QnFLYW1ON3Y0bzVSNU1NbEFJUlBFMGpsZmJKYkoxWCt0Z2cwR1ZacW05LzVZ?=
+ =?utf-8?B?VjNpNnZJL0RpUUp0MFNqejFneHRQMGxSblFhd0ZWUUFzRmh1ZG9JVWE0b080?=
+ =?utf-8?B?Z09oMVBsWHVVbEREMHQ3SDlPaFBrOGltK05sd3VYcFhZUWpBV3FSWDB2UWVF?=
+ =?utf-8?B?MGdWU1ZLc1hxZ2JtNWx0Q09uOWFmZnR4bWRCMThuYXpnM2Y3Z01MdGp3cjlh?=
+ =?utf-8?B?Tk41a1ZXSGUwVGNjb2I0c0dyY2FIaFRBWlQ5WEFxdENhRE03ZTRvM2dDcjM5?=
+ =?utf-8?B?bTc0cjY1cnNoblNhK3BjME9rd1Nyd2o0UXVjanFIOGNKZE10bjB5K01wY2hu?=
+ =?utf-8?B?dmxaYlJ4QjdtMWNabzM2aFRCQnYvd3VSUWlBMlgwdGtmRFNrZzc2YUJUTUJp?=
+ =?utf-8?B?N2lnVDdCWWZkY2xHY3dneFpkbXgzUUI4VS9XLzJmTzAxUkQvRHpPNnAzSjlD?=
+ =?utf-8?B?N0dUOVZoVUpQdTEydzQyemRvakNLdkYweVhxbzMyeE91QVlEUTl4M2dQRTFR?=
+ =?utf-8?Q?RxDpm3tkCEE2sX9+yBNtW+jI7LRiRwY1aH+YoXK?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c880322d-f5c8-40b8-a976-08d9454bd962
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jul 2021 15:43:52.5009
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: y5LYYdAmnYwMfFC4OvFg1fqq3rot/HaaJTml/FxvV60f7wS4Z8sHD26yOVMzZaUnSrAurkK6n5zVjjJrQviMAg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB4672
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Pratik R. Sampat" <psampat@linux.ibm.com> writes:
+Hi Dave,
 
-Hi, have you seen Documentation/core-api/kobject.rst, particularly the
-part that says:
 
-"When you see a sysfs directory full of other directories, generally each
-   of those directories corresponds to a kobject in the same kset."
+On 7/8/21 11:16 AM, Dave Hansen wrote:
+> 
+> "SIGBUG"?
 
-Taking a look at samples/kobject/kset-example.c, it seems to provide an
-overall structure that is closer to what other modules do when creating
-sysfs entries. It uses less dynamic allocations and deals a bit better
-with cleaning up the state afterwards.
+Its typo, it should be SIGBUS
 
-> Adds a generic interface to represent the energy and frequency related
-> PAPR attributes on the system using the new H_CALL
-> "H_GET_ENERGY_SCALE_INFO".
->
-> H_GET_EM_PARMS H_CALL was previously responsible for exporting this
-> information in the lparcfg, however the H_GET_EM_PARMS H_CALL
-> will be deprecated P10 onwards.
->
-> The H_GET_ENERGY_SCALE_INFO H_CALL is of the following call format:
-> hcall(
->   uint64 H_GET_ENERGY_SCALE_INFO,  // Get energy scale info
->   uint64 flags,           // Per the flag request
->   uint64 firstAttributeId,// The attribute id
->   uint64 bufferAddress,   // Guest physical address of the output buffer
->   uint64 bufferSize       // The size in bytes of the output buffer
-> );
->
-> This H_CALL can query either all the attributes at once with
-> firstAttributeId = 0, flags = 0 as well as query only one attribute
-> at a time with firstAttributeId = id, flags = 1.
->
-> The output buffer consists of the following
-> 1. number of attributes              - 8 bytes
-> 2. array offset to the data location - 8 bytes
-> 3. version info                      - 1 byte
-> 4. A data array of size num attributes, which contains the following:
->   a. attribute ID              - 8 bytes
->   b. attribute value in number - 8 bytes
->   c. attribute name in string  - 64 bytes
->   d. attribute value in string - 64 bytes
->
-> The new H_CALL exports information in direct string value format, hence
-> a new interface has been introduced in
-> /sys/firmware/papr/energy_scale_info to export this information to
-> userspace in an extensible pass-through format.
->
-> The H_CALL returns the name, numeric value and string value (if exists)
->
-> The format of exposing the sysfs information is as follows:
-> /sys/firmware/papr/energy_scale_info/
->    |-- <id>/
->      |-- desc
->      |-- value
->      |-- value_desc (if exists)
->    |-- <id>/
->      |-- desc
->      |-- value
->      |-- value_desc (if exists)
-> ...
->
-> The energy information that is exported is useful for userspace tools
-> such as powerpc-utils. Currently these tools infer the
-> "power_mode_data" value in the lparcfg, which in turn is obtained from
-> the to be deprecated H_GET_EM_PARMS H_CALL.
-> On future platforms, such userspace utilities will have to look at the
-> data returned from the new H_CALL being populated in this new sysfs
-> interface and report this information directly without the need of
-> interpretation.
->
-> Signed-off-by: Pratik R. Sampat <psampat@linux.ibm.com>
-> Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
-> ---
->  .../sysfs-firmware-papr-energy-scale-info     |  26 ++
->  arch/powerpc/include/asm/hvcall.h             |  24 +-
->  arch/powerpc/kvm/trace_hv.h                   |   1 +
->  arch/powerpc/platforms/pseries/Makefile       |   3 +-
->  .../pseries/papr_platform_attributes.c        | 320 ++++++++++++++++++
->  5 files changed, 372 insertions(+), 2 deletions(-)
->  create mode 100644 Documentation/ABI/testing/sysfs-firmware-papr-energy-scale-info
->  create mode 100644 arch/powerpc/platforms/pseries/papr_platform_attributes.c
->
-> diff --git a/Documentation/ABI/testing/sysfs-firmware-papr-energy-scale-info b/Documentation/ABI/testing/sysfs-firmware-papr-energy-scale-info
-> new file mode 100644
-> index 000000000000..fd82f2bfafe5
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-firmware-papr-energy-scale-info
-> @@ -0,0 +1,26 @@
-> +What:		/sys/firmware/papr/energy_scale_info
-> +Date:		June 2021
-> +Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-> +Description:	Directory hosting a set of platform attributes like
-> +		energy/frequency on Linux running as a PAPR guest.
-> +
-> +		Each file in a directory contains a platform
-> +		attribute hierarchy pertaining to performance/
-> +		energy-savings mode and processor frequency.
-> +
-> +What:		/sys/firmware/papr/energy_scale_info/<id>
-> +		/sys/firmware/papr/energy_scale_info/<id>/desc
-> +		/sys/firmware/papr/energy_scale_info/<id>/value
-> +		/sys/firmware/papr/energy_scale_info/<id>/value_desc
-> +Date:		June 2021
-> +Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-> +Description:	Energy, frequency attributes directory for POWERVM servers
-> +
-> +		This directory provides energy, erequency, folding information. It
+>> +
+>> +	if (unlikely(!cpu_feature_enabled(X86_FEATURE_SEV_SNP)))
+>> +		return RMP_FAULT_KILL;
+> 
+> Shouldn't this be a WARN_ON_ONCE()?  How can we get RMP faults without
+> SEV-SNP?
 
-s/erequency/frequency/
+Yes, we should *not* get RMP fault if SEV-SNP is not enabled. I can use 
+the WARN_ON_ONCE().
 
-> +		contains below sysfs attributes:
-> +
-> +		- desc: String description of the attribute <id>
-> +
-> +		- value: Numeric value of attribute <id>
-> +
-> +		- value_desc: String value of attribute <id>
-> diff --git a/arch/powerpc/include/asm/hvcall.h b/arch/powerpc/include/asm/hvcall.h
-> index e3b29eda8074..c91714ea6719 100644
-> --- a/arch/powerpc/include/asm/hvcall.h
-> +++ b/arch/powerpc/include/asm/hvcall.h
-> @@ -316,7 +316,8 @@
->  #define H_SCM_PERFORMANCE_STATS 0x418
->  #define H_RPT_INVALIDATE	0x448
->  #define H_SCM_FLUSH		0x44C
-> -#define MAX_HCALL_OPCODE	H_SCM_FLUSH
-> +#define H_GET_ENERGY_SCALE_INFO	0x450
-> +#define MAX_HCALL_OPCODE	H_GET_ENERGY_SCALE_INFO
->
->  /* Scope args for H_SCM_UNBIND_ALL */
->  #define H_UNBIND_SCOPE_ALL (0x1)
-> @@ -631,6 +632,27 @@ struct hv_gpci_request_buffer {
->  	uint8_t bytes[HGPCI_MAX_DATA_BYTES];
->  } __packed;
->
-> +#define ESI_VERSION	0x1
-> +#define MAX_ESI_ATTRS	10
-> +#define MAX_BUF_SZ	(sizeof(struct h_energy_scale_info_hdr) + \
-> +			(sizeof(struct energy_scale_attribute) * MAX_ESI_ATTRS))
-> +
-> +struct energy_scale_attribute {
-> +	__be64 id;
-> +	__be64 value;
-> +	unsigned char desc[64];
-> +	unsigned char value_desc[64];
-> +} __packed;
-> +
-> +struct h_energy_scale_info_hdr {
-> +	__be64 num_attrs;
-> +	__be64 array_offset;
-> +	__u8 data_header_version;
-> +} __packed;
-> +
-> +/* /sys/firmware/papr */
-> +extern struct kobject *papr_kobj;
-> +
->  #endif /* __ASSEMBLY__ */
->  #endif /* __KERNEL__ */
->  #endif /* _ASM_POWERPC_HVCALL_H */
-> diff --git a/arch/powerpc/kvm/trace_hv.h b/arch/powerpc/kvm/trace_hv.h
-> index 830a126e095d..38cd0ed0a617 100644
-> --- a/arch/powerpc/kvm/trace_hv.h
-> +++ b/arch/powerpc/kvm/trace_hv.h
-> @@ -115,6 +115,7 @@
->  	{H_VASI_STATE,			"H_VASI_STATE"}, \
->  	{H_ENABLE_CRQ,			"H_ENABLE_CRQ"}, \
->  	{H_GET_EM_PARMS,		"H_GET_EM_PARMS"}, \
-> +	{H_GET_ENERGY_SCALE_INFO,	"H_GET_ENERGY_SCALE_INFO"}, \
->  	{H_SET_MPP,			"H_SET_MPP"}, \
->  	{H_GET_MPP,			"H_GET_MPP"}, \
->  	{H_HOME_NODE_ASSOCIATIVITY,	"H_HOME_NODE_ASSOCIATIVITY"}, \
-> diff --git a/arch/powerpc/platforms/pseries/Makefile b/arch/powerpc/platforms/pseries/Makefile
-> index c8a2b0b05ac0..d14fca89ac25 100644
-> --- a/arch/powerpc/platforms/pseries/Makefile
-> +++ b/arch/powerpc/platforms/pseries/Makefile
-> @@ -6,7 +6,8 @@ obj-y			:= lpar.o hvCall.o nvram.o reconfig.o \
->  			   of_helpers.o \
->  			   setup.o iommu.o event_sources.o ras.o \
->  			   firmware.o power.o dlpar.o mobility.o rng.o \
-> -			   pci.o pci_dlpar.o eeh_pseries.o msi.o
-> +			   pci.o pci_dlpar.o eeh_pseries.o msi.o \
-> +			   papr_platform_attributes.o
->  obj-$(CONFIG_SMP)	+= smp.o
->  obj-$(CONFIG_SCANLOG)	+= scanlog.o
->  obj-$(CONFIG_KEXEC_CORE)	+= kexec.o
-> diff --git a/arch/powerpc/platforms/pseries/papr_platform_attributes.c b/arch/powerpc/platforms/pseries/papr_platform_attributes.c
-> new file mode 100644
-> index 000000000000..43c620132b4d
-> --- /dev/null
-> +++ b/arch/powerpc/platforms/pseries/papr_platform_attributes.c
-> @@ -0,0 +1,320 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Platform energy and frequency attributes driver
-> + *
-> + * This driver creates a sys file at /sys/firmware/papr/ which encapsulates a
-> + * directory structure containing files in keyword - value pairs that specify
-> + * energy and frequency configuration of the system.
-> + *
-> + * The format of exposing the sysfs information is as follows:
-> + * /sys/firmware/papr/energy_scale_info/
-> + *  |-- <id>/
-> + *    |-- desc
-> + *    |-- value
-> + *    |-- value_desc (if exists)
-> + *  |-- <id>/
-> + *    |-- desc
-> + *    |-- value
-> + *    |-- value_desc (if exists)
-> + *
-> + * Copyright 2021 IBM Corp.
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/types.h>
-> +#include <linux/errno.h>
-> +#include <linux/init.h>
-> +#include <linux/seq_file.h>
-> +#include <linux/slab.h>
-> +#include <linux/uaccess.h>
-> +#include <linux/hugetlb.h>
-> +#include <asm/lppaca.h>
-> +#include <asm/hvcall.h>
-> +#include <asm/firmware.h>
-> +#include <asm/time.h>
-> +#include <asm/prom.h>
-> +#include <asm/vdso_datapage.h>
-> +#include <asm/vio.h>
-> +#include <asm/mmu.h>
-> +#include <asm/machdep.h>
-> +#include <asm/drmem.h>
-> +
-> +#include "pseries.h"
-> +
-> +#define MAX_ATTRS		3
-> +#define MAX_NAME_LEN		16
-> +
-> +/*
-> + * Flag attributes to fetch either all or one attribute from the HCALL
-> + * flag = BE(0) => fetch all attributes with firstAttributeId = 0
-> + * flag = BE(1) => fetch a single attribute with firstAttributeId = id
-> + */
-> +#define ESI_FLAGS_ALL		0
-> +#define ESI_FLAGS_SINGLE	PPC_BIT(0)
-> +
-> +struct papr_attr {
-> +	u64 id;
-> +	struct kobj_attribute kobj_attr;
-> +};
-> +struct papr_group {
-> +	char name[MAX_NAME_LEN];
 
-This is unused.
+> 
+>> +	/* Get the native page level */
+>> +	pte = lookup_address_in_mm(current->mm, address, &level);
+>> +	if (unlikely(!pte))
+>> +		return RMP_FAULT_KILL;
+> 
+> What would this mean?  There was an RMP fault on a non-present page?
+> How could that happen?  What if there was a race between an unmapping
+> event and the RMP fault delivery?
 
-> +	struct attribute_group pg;
-> +	struct papr_attr *pgattrs;
+We should not have RMP fault for non-present pages. But you have a good 
+point that there maybe a race between the unmap event and RMP fault. 
+Instead of terminating the process we should simply retry.
 
-This is always MAX_ATTRS long, we could define it statically and avoid a
-kmalloc later.
 
-> +} *pgs;
-> +
-> +/* /sys/firmware/papr */
-> +struct kobject *papr_kobj;
-> +/* /sys/firmware/papr/energy_scale_info */
-> +struct kobject *esi_kobj;
-> +
-> +struct h_energy_scale_info_hdr *esi_hdr;
-> +struct energy_scale_attribute *esi_attrs;
-> +
-> +/*
-> + * Extract and export the description of the energy scale attribute
-> + *
-> + * As We do not expect the name to change, hence use the old description and
-> + * save a call to the H_GET_ENERGY_SCALE_INFO HCALL
-> + */
-> +static ssize_t papr_show_desc(struct kobject *kobj,
-> +			       struct kobj_attribute *kobj_attr,
-> +			       char *buf)
-> +{
-> +	struct papr_attr *pattr = container_of(kobj_attr, struct papr_attr,
-> +					       kobj_attr);
-> +	int idx, ret = 0;
-> +
-> +	for (idx = 0; idx < be64_to_cpu(esi_hdr->num_attrs); idx++) {
-> +		if (pattr->id == be64_to_cpu(esi_attrs[idx].id)) {
-> +			ret = sprintf(buf, "%s\n", esi_attrs[idx].desc);
+> 
+>> +	pfn = pte_pfn(*pte);
+>> +	if (level > PG_LEVEL_4K) {
+>> +		mask = pages_per_hpage(level) - pages_per_hpage(level - 1);
+>> +		pfn |= (address >> PAGE_SHIFT) & mask;
+>> +	}
+> 
+> This looks inherently racy.  What happens if there are two parallel RMP
+> faults on the same 2M page.  One of them splits the page tables, the
+> other gets a fault for an already-split page table.
+>  > Is that handled here somehow?
 
-We know the size of desc, so could use snprintf here.
+Yes, in this particular case we simply retry and hardware should 
+re-evaluate the page level and take the corrective action.
 
-> +			if (ret < 0)
-> +				ret = -EIO;
-> +			break;
-> +		}
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +/*
-> + * Extract and export the numeric value of the energy scale attributes
-> + */
-> +static ssize_t papr_show_value(struct kobject *kobj,
-> +				struct kobj_attribute *kobj_attr,
-> +				char *buf)
-> +{
-> +	struct papr_attr *pattr = container_of(kobj_attr, struct papr_attr,
-> +					       kobj_attr);
-> +	char *t_buf;
-> +	struct h_energy_scale_info_hdr *t_hdr;
-> +	struct energy_scale_attribute *t_esi;
-> +	int ret = 0;
-> +
-> +	t_buf = kmalloc(MAX_BUF_SZ, GFP_KERNEL);
-> +	if (t_buf == NULL)
-> +		return -ENOMEM;
-> +
-> +	ret = plpar_hcall_norets(H_GET_ENERGY_SCALE_INFO, ESI_FLAGS_SINGLE,
-> +				 pattr->id, virt_to_phys(t_buf),
-> +				 MAX_BUF_SZ);
-> +
-> +	if (ret != H_SUCCESS) {
-> +		pr_warn("hcall failed: H_GET_ENERGY_SCALE_INFO");
-> +		goto out;
-> +	}
-> +
-> +	t_hdr = (struct h_energy_scale_info_hdr *) t_buf;
-> +	t_esi = (struct energy_scale_attribute *)
-> +		(t_buf + be64_to_cpu(t_hdr->array_offset));
-> +
-> +	ret = sprintf(buf, "%llu\n", be64_to_cpu(t_esi->value));
 
-snprintf
+> 
+>> +	/* Get the page level from the RMP entry. */
+>> +	e = snp_lookup_page_in_rmptable(pfn_to_page(pfn), &rmp_level);
+>> +	if (!e)
+>> +		return RMP_FAULT_KILL;
+> 
+> The snp_lookup_page_in_rmptable() failure cases looks WARN-worthly.
+> Either you're doing a lookup for something not *IN* the RMP table, or
+> you don't support SEV-SNP, in which case you shouldn't be in this code
+> in the first place.
 
-> +	if (ret < 0)
-> +		ret = -EIO;
-> +out:
-> +	kfree(t_buf);
-> +
-> +	return ret;
-> +}
-> +
-> +/*
-> + * Extract and export the value description in string format of the energy
-> + * scale attributes
-> + */
-> +static ssize_t papr_show_value_desc(struct kobject *kobj,
-> +				     struct kobj_attribute *kobj_attr,
-> +				     char *buf)
-> +{
-> +	struct papr_attr *pattr = container_of(kobj_attr, struct papr_attr,
-> +					       kobj_attr);
-> +	char *t_buf;
-> +	struct h_energy_scale_info_hdr *t_hdr;
-> +	struct energy_scale_attribute *t_esi;
-> +	int ret = 0;
-> +
-> +	t_buf = kmalloc(MAX_BUF_SZ, GFP_KERNEL);
-> +	if (t_buf == NULL)
-> +		return -ENOMEM;
-> +
-> +	ret = plpar_hcall_norets(H_GET_ENERGY_SCALE_INFO, ESI_FLAGS_SINGLE,
-> +				 pattr->id, virt_to_phys(t_buf),
-> +				 MAX_BUF_SZ);
-> +
-> +	if (ret != H_SUCCESS) {
-> +		pr_warn("hcall failed: H_GET_ENERGY_SCALE_INFO");
-> +		goto out;
-> +	}
-> +
-> +	t_hdr = (struct h_energy_scale_info_hdr *) t_buf;
-> +	t_esi = (struct energy_scale_attribute *)
-> +		(t_buf + be64_to_cpu(t_hdr->array_offset));
-> +
-> +	ret = sprintf(buf, "%s\n", t_esi->value_desc);
+Noted.
 
-snprintf
+> 
+>> +	/*
+>> +	 * Check if the RMP violation is due to the guest private page access.
+>> +	 * We can not resolve this RMP fault, ask to kill the guest.
+>> +	 */
+>> +	if (rmpentry_assigned(e))
+>> +		return RMP_FAULT_KILL;
+> 
+> No "We's", please.  Speak in imperative voice.
 
-> +	if (ret < 0)
-> +		ret = -EIO;
-> +out:
-> +	kfree(t_buf);
-> +
-> +	return ret;
-> +}
-> +
-> +static struct papr_ops_info {
-> +	const char *attr_name;
-> +	ssize_t (*show)(struct kobject *kobj, struct kobj_attribute *kobj_attr,
-> +			char *buf);
-> +} ops_info[MAX_ATTRS] = {
-> +	{ "desc", papr_show_desc },
-> +	{ "value", papr_show_value },
-> +	{ "value_desc", papr_show_value_desc },
-> +};
-> +
-> +static void add_attr(u64 id, int index, struct papr_attr *attr)
-> +{
-> +	attr->id = id;
-> +	sysfs_attr_init(&attr->kobj_attr.attr);
-> +	attr->kobj_attr.attr.name = ops_info[index].attr_name;
-> +	attr->kobj_attr.attr.mode = 0444;
-> +	attr->kobj_attr.show = ops_info[index].show;
-> +}
-> +
-> +static int add_attr_group(u64 id, int len, struct papr_group *pg,
-> +			  bool show_val_desc)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < len; i++) {
-> +		if (!strcmp(ops_info[i].attr_name, "value_desc") &&
-> +		    !show_val_desc) {
-> +			continue;
-> +		}
-> +		add_attr(id, i, &pg->pgattrs[i]);
-> +		pg->pg.attrs[i] = &pg->pgattrs[i].kobj_attr.attr;
-> +	}
-> +
-> +	return sysfs_create_group(esi_kobj, &pg->pg);
-> +}
-> +
-> +static int __init papr_init(void)
-> +{
-> +	uint64_t num_attrs;
-> +	int ret, idx, i;
-> +	char *esi_buf;
-> +
-> +	if (!firmware_has_feature(FW_FEATURE_LPAR))
-> +		return -ENXIO;
-> +
-> +	esi_buf = kmalloc(MAX_BUF_SZ, GFP_KERNEL);
+Noted.
 
-This memory is never released. I don't think it's worth it just to save
-a hcall.
+> 
+>> +	/*
+>> +	 * The backing page level is higher than the RMP page level, request
+>> +	 * to split the page.
+>> +	 */
+>> +	if (level > rmp_level)
+>> +		return RMP_FAULT_PAGE_SPLIT;
+> 
+> This can theoretically trigger on a hugetlbfs page.  Right?
+> 
 
-> +	if (esi_buf == NULL)
-> +		return -ENOMEM;
-> +	/*
-> +	 * hcall(
-> +	 * uint64 H_GET_ENERGY_SCALE_INFO,  // Get energy scale info
-> +	 * uint64 flags,            // Per the flag request
-> +	 * uint64 firstAttributeId, // The attribute id
-> +	 * uint64 bufferAddress,    // Guest physical address of the output buffer
-> +	 * uint64 bufferSize);      // The size in bytes of the output buffer
-> +	 */
-> +	ret = plpar_hcall_norets(H_GET_ENERGY_SCALE_INFO, ESI_FLAGS_ALL, 0,
-> +				 virt_to_phys(esi_buf), MAX_BUF_SZ);
-> +	esi_hdr = (struct h_energy_scale_info_hdr *) esi_buf;
-> +	if (ret != H_SUCCESS || esi_hdr->data_header_version != ESI_VERSION) {
+Yes, theoretically.
 
-I really dislike this. If you want to bail due to version change, then
-at least include in the ABI document that we might not give the
-userspace any data at all.
+In the current implementation, the VMM is enlightened to not use the 
+hugetlbfs for backing page when creating the SEV-SNP guests.
 
-> +		pr_warn("hcall failed: H_GET_ENERGY_SCALE_INFO");
-> +		goto out;
-> +	}
-> +
-> +	num_attrs = be64_to_cpu(esi_hdr->num_attrs);
-> +	/*
-> +	 * Typecast the energy buffer to the attribute structure at the offset
-> +	 * specified in the buffer
-> +	 */
 
-I think the code is now simple enough that this comment could be
-removed.
+> I thought I asked about this before... more below...
+> 
+>> +	return RMP_FAULT_RETRY;
+>> +}
+>> +
+>>   /*
+>>    * Handle faults in the user portion of the address space.  Nothing in here
+>>    * should check X86_PF_USER without a specific justification: for almost
+>> @@ -1298,6 +1350,7 @@ void do_user_addr_fault(struct pt_regs *regs,
+>>   	struct task_struct *tsk;
+>>   	struct mm_struct *mm;
+>>   	vm_fault_t fault;
+>> +	int ret;
+>>   	unsigned int flags = FAULT_FLAG_DEFAULT;
+>>   
+>>   	tsk = current;
+>> @@ -1378,6 +1431,22 @@ void
+> (struct pt_regs *regs,
+>>   	if (error_code & X86_PF_INSTR)
+>>   		flags |= FAULT_FLAG_INSTRUCTION;
+>>   
+>> +	/*
+>> +	 * If its an RMP violation, try resolving it.
+>> +	 */
+>> +	if (error_code & X86_PF_RMP) {
+>> +		ret = handle_user_rmp_page_fault(error_code, address);
+>> +		if (ret == RMP_FAULT_PAGE_SPLIT) {
+>> +			flags |= FAULT_FLAG_PAGE_SPLIT;
+>> +		} else if (ret == RMP_FAULT_KILL) {
+>> +			fault |= VM_FAULT_SIGBUS;
+>> +			do_sigbus(regs, error_code, address, fault);
+>> +			return;
+>> +		} else {
+>> +			return;
+>> +		}
+>> +	}
+> 
+> Why not just have handle_user_rmp_page_fault() return a VM_FAULT_* code
+> directly?
+> 
 
-> +	esi_attrs = (struct energy_scale_attribute *)
-> +		    (esi_buf + be64_to_cpu(esi_hdr->array_offset));
-> +
-> +	pgs = kcalloc(num_attrs, sizeof(*pgs), GFP_KERNEL);
+I don't have any strong reason against it. In next rev, I can update to 
+use the VM_FAULT_* code and call the do_sigbus() etc.
 
-This is never freed.
+> I also suspect you can just set VM_FAULT_SIGBUS and let the do_sigbus()
+> call later on in the function do its work.
+>>   
+>> +static int handle_split_page_fault(struct vm_fault *vmf)
+>> +{
+>> +	if (!IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT))
+>> +		return VM_FAULT_SIGBUS;
+>> +
+>> +	__split_huge_pmd(vmf->vma, vmf->pmd, vmf->address, false, NULL);
+>> +	return 0;
+>> +}
+> 
+> What will this do when you hand it a hugetlbfs page?
+> 
 
-> +	if (!pgs)
-> +		goto out_pgs;
-> +
-> +	papr_kobj = kobject_create_and_add("papr", firmware_kobj);
-> +	if (!papr_kobj) {
-> +		pr_warn("kobject_create_and_add papr failed\n");
-> +		goto out_kobj;
-> +	}
-> +
-> +	esi_kobj = kobject_create_and_add("energy_scale_info", papr_kobj);
-> +	if (!esi_kobj) {
-> +		pr_warn("kobject_create_and_add energy_scale_info failed\n");
-> +		goto out_ekobj;
-> +	}
-> +
-> +	for (idx = 0; idx < num_attrs; idx++) {
-> +		char buf[4];
-> +		bool show_val_desc = true;
-> +
-> +		pgs[idx].pgattrs = kcalloc(MAX_ATTRS,
-> +					   sizeof(*pgs[idx].pgattrs),
-> +					   GFP_KERNEL);
-> +		if (!pgs[idx].pgattrs)
-> +			goto out_kobj;
-> +
-> +		pgs[idx].pg.attrs = kcalloc(MAX_ATTRS + 1,
-> +					    sizeof(*pgs[idx].pg.attrs),
-> +					    GFP_KERNEL);
+VMM is updated to not use the hugetlbfs when creating SEV-SNP guests. 
+So, we should not run into it.
 
-I think the kobject code expects this to be statically allocated, so
-you'd need to override the release function in some way to be able to
-free this.
-
-> +		if (!pgs[idx].pg.attrs) {
-> +			kfree(pgs[idx].pgattrs);
-> +			goto out_kobj;
-> +		}
-> +
-> +		sprintf(buf, "%lld", be64_to_cpu(esi_attrs[idx].id));
-
-Do you mean pgs[idx].name instead of buf? Otherwise you're passing this
-stack allocated 'buf' to another function.
-
-> +		pgs[idx].pg.name = buf;
-> +
-> +		/* Do not add the value description if it does not exist */
-> +		if (strlen(esi_attrs[idx].value_desc) == 0)
-> +			show_val_desc = false;
-> +
-> +		if (add_attr_group(be64_to_cpu(esi_attrs[idx].id),
-> +				   MAX_ATTRS, &pgs[idx], show_val_desc)) {
-> +			pr_warn("Failed to create papr attribute group %s\n",
-> +				pgs[idx].pg.name);
-> +			goto out_pgattrs;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +
-> +out_pgattrs:
-> +	for (i = 0; i < MAX_ATTRS; i++) {
-> +		kfree(pgs[i].pgattrs);
-> +		kfree(pgs[i].pg.attrs);
-> +	}
-> +out_ekobj:
-> +	kobject_put(esi_kobj);
-> +out_kobj:
-> +	kobject_put(papr_kobj);
-> +out_pgs:
-> +	kfree(pgs);
-> +out:
-> +	kfree(esi_buf);
-> +
-> +	return -ENOMEM;
-> +}
-> +
-> +machine_device_initcall(pseries, papr_init);
+-Brijesh
