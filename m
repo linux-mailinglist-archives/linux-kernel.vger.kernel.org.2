@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC2B83C56C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1E73C5001
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354400AbhGLIYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:24:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46040 "EHLO mail.kernel.org"
+        id S1345723AbhGLHaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:30:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37742 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347863AbhGLHkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:40:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F17F6191F;
-        Mon, 12 Jul 2021 07:36:36 +0000 (UTC)
+        id S238451AbhGLHCO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:02:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52D5B60FE3;
+        Mon, 12 Jul 2021 06:59:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075397;
-        bh=AvVlSDNy0AAtQWk8lZb/vzYhrKvuJa3s3p+idilQiEg=;
+        s=korg; t=1626073166;
+        bh=TSvhwjjIRCuy4ZF5RtOACoeAoEzRBrwReraD+c3BIGQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eaRx7X9mn7eBKBVOh6TiUH8+TgiNEOIV7cncqcb/Esm0/VhIJ26jCdg0RyNS4kJJX
-         FTck45hPI8d0W2BaLKkAAYwTpvlDFgH+/jDLCx5aRotKGvGiU+zxsnI2wtYcoeK2Bt
-         za4ywuBQrpncXEAaGP47a2uoPyxm8UZN3utNjxxs=
+        b=Mzd3uF8brMmKyfvTiUfydHGnxHMIB9VWnIic/vL3mto7jciKZkrgKbn0FfDtLdhSr
+         9H8sanvy7WsgiPrAy3Q/SVX/IC3gO9UX0JSo91gGuRs2EX31xmb6VC0NLPbQlBoM0Z
+         +RzUyi6IL9ILNN5Vl6jeVLDlv9Ab7p+6Or1YsS3k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 208/800] HID: do not use down_interruptible() when unbinding devices
-Date:   Mon, 12 Jul 2021 08:03:51 +0200
-Message-Id: <20210712060942.574914577@linuxfoundation.org>
+        stable@vger.kernel.org, Jack Xu <jack.xu@intel.com>,
+        Zhehui Xiang <zhehui.xiang@intel.com>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 149/700] crypto: qat - remove unused macro in FW loader
+Date:   Mon, 12 Jul 2021 08:03:52 +0200
+Message-Id: <20210712060946.619923213@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+From: Jack Xu <jack.xu@intel.com>
 
-[ Upstream commit f2145f8dc566c4f3b5a8deb58dcd12bed4e20194 ]
+[ Upstream commit 9afe77cf25d9670e61b489fd52cc6f75fd7f6803 ]
 
-Action of unbinding driver from a device is not cancellable and should not
-fail, and driver core does not pay attention to the result of "remove"
-method, therefore using down_interruptible() in hid_device_remove() does
-not make sense.
+Remove the unused macro ICP_DH895XCC_PESRAM_BAR_SIZE in the firmware
+loader.
 
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+This is to fix the following warning when compiling the driver using the
+clang compiler with CC=clang W=2:
+
+    drivers/crypto/qat/qat_common/qat_uclo.c:345:9: warning: macro is not used [-Wunused-macros]
+
+Signed-off-by: Jack Xu <jack.xu@intel.com>
+Co-developed-by: Zhehui Xiang <zhehui.xiang@intel.com>
+Signed-off-by: Zhehui Xiang <zhehui.xiang@intel.com>
+Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-core.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ drivers/crypto/qat/qat_common/qat_uclo.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
-index 0de2788b9814..7db332139f7d 100644
---- a/drivers/hid/hid-core.c
-+++ b/drivers/hid/hid-core.c
-@@ -2306,12 +2306,8 @@ static int hid_device_remove(struct device *dev)
- {
- 	struct hid_device *hdev = to_hid_device(dev);
- 	struct hid_driver *hdrv;
--	int ret = 0;
- 
--	if (down_interruptible(&hdev->driver_input_lock)) {
--		ret = -EINTR;
--		goto end;
--	}
-+	down(&hdev->driver_input_lock);
- 	hdev->io_started = false;
- 
- 	hdrv = hdev->driver;
-@@ -2326,8 +2322,8 @@ static int hid_device_remove(struct device *dev)
- 
- 	if (!hdev->io_started)
- 		up(&hdev->driver_input_lock);
--end:
--	return ret;
-+
-+	return 0;
+diff --git a/drivers/crypto/qat/qat_common/qat_uclo.c b/drivers/crypto/qat/qat_common/qat_uclo.c
+index 1fb5fc852f6b..6d95160e451e 100644
+--- a/drivers/crypto/qat/qat_common/qat_uclo.c
++++ b/drivers/crypto/qat/qat_common/qat_uclo.c
+@@ -342,7 +342,6 @@ static int qat_uclo_init_umem_seg(struct icp_qat_fw_loader_handle *handle,
+ 	return 0;
  }
  
- static ssize_t modalias_show(struct device *dev, struct device_attribute *a,
+-#define ICP_DH895XCC_PESRAM_BAR_SIZE 0x80000
+ static int qat_uclo_init_ae_memory(struct icp_qat_fw_loader_handle *handle,
+ 				   struct icp_qat_uof_initmem *init_mem)
+ {
 -- 
 2.30.2
 
