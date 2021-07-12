@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57FDA3C4BCB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC59A3C4BAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242345AbhGLHAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:00:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41510 "EHLO mail.kernel.org"
+        id S240260AbhGLG6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:58:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237620AbhGLGnO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:43:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CA186112D;
-        Mon, 12 Jul 2021 06:39:31 +0000 (UTC)
+        id S237977AbhGLGna (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:43:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9342661108;
+        Mon, 12 Jul 2021 06:39:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071971;
-        bh=fs9g7JYrnZlnzidhysPAffg6ZQJRUvw+SgCjBP5HL5k=;
+        s=korg; t=1626071974;
+        bh=cykE8PT6WlgINg+8kQuOxx/fDlyOW64asYjCQwdEUFA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IdfbDSu+k6wHqWR6EcjUTZ+u3IOjsEiJmX0fRN61HExRYsE/TKCee2e6eUV7qcm0L
-         CE+ALwMRw8o1e6+lDDHu8fjcPhyeiFf+AOJMa4df+bx7QB4p3eTkYa0ynBo5yUVCAj
-         +Uzg7kVHXHkmqEz6C+toUfW1qAJKBePT3C0hvbsA=
+        b=tSyIw5phhI9K3BNdlVCc52fkvbmVQ5iuTSr9EOl1obdc4YXCSu7jT4//euqrqJ+BY
+         QPeabGctxZW2tqh5yWaBYAmuiL3m+g0ujdSTOPRFRW2iXg9Rot7OWy4uv+Da73smFy
+         eqvRIo2eVA7afu72vLMxuFuCdzAVe0eRaV3D4yM8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
+        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 300/593] drm/bridge/sii8620: fix dependency on extcon
-Date:   Mon, 12 Jul 2021 08:07:40 +0200
-Message-Id: <20210712060917.825000547@linuxfoundation.org>
+Subject: [PATCH 5.10 301/593] drm/bridge: Fix the stop condition of drm_bridge_chain_pre_enable()
+Date:   Mon, 12 Jul 2021 08:07:41 +0200
+Message-Id: <20210712060917.979198453@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
 References: <20210712060843.180606720@linuxfoundation.org>
@@ -41,41 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robert Foss <robert.foss@linaro.org>
+From: Douglas Anderson <dianders@chromium.org>
 
-[ Upstream commit 08319adbdde15ef7cee1970336f63461254baa2a ]
+[ Upstream commit bab5cca7e609952b069a550e39fe4893149fb658 ]
 
-The DRM_SIL_SII8620 kconfig has a weak `imply` dependency
-on EXTCON, which causes issues when sii8620 is built
-as a builtin and EXTCON is built as a module.
+The drm_bridge_chain_pre_enable() is not the proper opposite of
+drm_bridge_chain_post_disable(). It continues along the chain to
+_before_ the starting bridge. Let's fix that.
 
-The symptoms are 'undefined reference' errors caused
-by the symbols in EXTCON not being available
-to the sii8620 driver.
-
-Fixes: 688838442147 ("drm/bridge/sii8620: use micro-USB cable detection logic to detect MHL")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Robert Foss <robert.foss@linaro.org>
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210419090124.153560-1-robert.foss@linaro.org
+Fixes: 05193dc38197 ("drm/bridge: Make the bridge chain a double-linked list")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210416153909.v4.1.If62a003f76a2bc4ccc6c53565becc05d2aad4430@changeid
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/bridge/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/drm_bridge.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
-index e145cbb35bac..4e82647a621e 100644
---- a/drivers/gpu/drm/bridge/Kconfig
-+++ b/drivers/gpu/drm/bridge/Kconfig
-@@ -130,7 +130,7 @@ config DRM_SIL_SII8620
- 	tristate "Silicon Image SII8620 HDMI/MHL bridge"
- 	depends on OF
- 	select DRM_KMS_HELPER
--	imply EXTCON
-+	select EXTCON
- 	depends on RC_CORE || !RC_CORE
- 	help
- 	  Silicon Image SII8620 HDMI/MHL bridge chip driver.
+diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
+index 64f0effb52ac..044acd07c153 100644
+--- a/drivers/gpu/drm/drm_bridge.c
++++ b/drivers/gpu/drm/drm_bridge.c
+@@ -522,6 +522,9 @@ void drm_bridge_chain_pre_enable(struct drm_bridge *bridge)
+ 	list_for_each_entry_reverse(iter, &encoder->bridge_chain, chain_node) {
+ 		if (iter->funcs->pre_enable)
+ 			iter->funcs->pre_enable(iter);
++
++		if (iter == bridge)
++			break;
+ 	}
+ }
+ EXPORT_SYMBOL(drm_bridge_chain_pre_enable);
 -- 
 2.30.2
 
