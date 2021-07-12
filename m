@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 650143C57D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93DEB3C5840
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245271AbhGLIiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:38:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35416 "EHLO mail.kernel.org"
+        id S1355595AbhGLIny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:43:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350683AbhGLHvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:51:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5982461450;
-        Mon, 12 Jul 2021 07:47:37 +0000 (UTC)
+        id S1350724AbhGLHvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:51:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AFD5461432;
+        Mon, 12 Jul 2021 07:47:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076057;
-        bh=iyJJED7STGiKbuwD/N9uBYcsecrSk4aVuOy+pHuJ+58=;
+        s=korg; t=1626076060;
+        bh=+aM4i4J7M0YxZ389qnDW7KEGrT3myv5TtXd0q2clvaM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Stt+LbMJsvV3LlJH0cVcT0TITIXC6ZIzFHLJBouiGjOrF7JF+gokKiYfVT8gEcyLt
-         TGIhIPGxJ4t584GfOAy/83OpltwjTXZUHoyG4Khhnrk8Ig0mk6liT8TPnXKRoVUMrL
-         h9taPXKFUzoiU+E5eoxVHL/tTRYg3eKhj+0pF9xQ=
+        b=mbPcw+y8bisP/fTi4uj/3QVylwIhIbSFBVobzfCsk1wSDaSLQGqgWEjzDKggM8NMI
+         KsJq+whUTGYoSOsfb0MKN2xHtZzmoqel2QKmVCDocVSg2OzasgkDBZBnoVAK6r9hD/
+         0010ZiOYb4iqjl36zb9+gsc/S374pretUHBDZq7o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
+        stable@vger.kernel.org, Tony Ambardar <Tony.Ambardar@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 481/800] xsk: Fix broken Tx ring validation
-Date:   Mon, 12 Jul 2021 08:08:24 +0200
-Message-Id: <20210712061018.362462713@linuxfoundation.org>
+        Jiri Olsa <jolsa@redhat.com>, Frank Eigler <fche@redhat.com>,
+        Mark Wielaard <mark@klomp.org>, Jiri Olsa <jolsa@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 482/800] bpf: Fix libelf endian handling in resolv_btfids
+Date:   Mon, 12 Jul 2021 08:08:25 +0200
+Message-Id: <20210712061018.469169346@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -43,60 +42,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Magnus Karlsson <magnus.karlsson@intel.com>
+From: Tony Ambardar <tony.ambardar@gmail.com>
 
-[ Upstream commit f654fae47e83e56b454fbbfd0af0a4f232e356d6 ]
+[ Upstream commit 61e8aeda9398925f8c6fc290585bdd9727d154c4 ]
 
-Fix broken Tx ring validation for AF_XDP. The commit under the Fixes
-tag, fixed an off-by-one error in the validation but introduced
-another error. Descriptors are now let through even if they straddle a
-chunk boundary which they are not allowed to do in aligned mode. Worse
-is that they are let through even if they straddle the end of the umem
-itself, tricking the kernel to read data outside the allowed umem
-region which might or might not be mapped at all.
+The vmlinux ".BTF_ids" ELF section is declared in btf_ids.h to hold a list
+of zero-filled BTF IDs, which is then patched at link-time with correct
+values by resolv_btfids. The section is flagged as "allocable" to preclude
+compression, but notably the section contents (BTF IDs) are untyped.
 
-Fix this by reintroducing the old code, but subtract the length by one
-to fix the off-by-one error that the original patch was
-addressing. The test chunk != chunk_end makes sure packets do not
-straddle chunk boundraries. Note that packets of zero length are
-allowed in the interface, therefore the test if the length is
-non-zero.
+When patching the BTF IDs, resolve_btfids writes in host-native endianness
+and relies on libelf for any required translation on reading and updating
+vmlinux. However, since the type of the .BTF_ids section content defaults
+to ELF_T_BYTE (i.e. unsigned char), no translation occurs. This results in
+incorrect patched values when cross-compiling to non-native endianness,
+and can manifest as kernel Oops and test failures which are difficult to
+troubleshoot [1].
 
-Fixes: ac31565c2193 ("xsk: Fix for xp_aligned_validate_desc() when len == chunk_size")
-Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+Explicitly set the type of patched data to ELF_T_WORD, the architecture-
+neutral ELF type corresponding to the u32 BTF IDs. This enables libelf to
+transparently perform any needed endian conversions.
+
+Fixes: fbbb68de80a4 ("bpf: Add resolve_btfids tool to resolve BTF IDs in ELF object")
+Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Björn Töpel <bjorn@kernel.org>
-Link: https://lore.kernel.org/bpf/20210618075805.14412-1-magnus.karlsson@gmail.com
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+Cc: Frank Eigler <fche@redhat.com>
+Cc: Mark Wielaard <mark@klomp.org>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Yonghong Song <yhs@fb.com>
+Link: https://lore.kernel.org/bpf/CAPGftE_eY-Zdi3wBcgDfkz_iOr1KF10n=9mJHm1_a_PykcsoeA@mail.gmail.com [1]
+Link: https://lore.kernel.org/bpf/20210618061404.818569-1-Tony.Ambardar@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/xdp/xsk_queue.h | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ tools/bpf/resolve_btfids/main.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-index 9d2a89d793c0..9ae13cccfb28 100644
---- a/net/xdp/xsk_queue.h
-+++ b/net/xdp/xsk_queue.h
-@@ -128,12 +128,15 @@ static inline bool xskq_cons_read_addr_unchecked(struct xsk_queue *q, u64 *addr)
- static inline bool xp_aligned_validate_desc(struct xsk_buff_pool *pool,
- 					    struct xdp_desc *desc)
- {
--	u64 chunk;
--
--	if (desc->len > pool->chunk_size)
--		return false;
-+	u64 chunk, chunk_end;
+diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+index 7550fd9c3188..3ad9301b0f00 100644
+--- a/tools/bpf/resolve_btfids/main.c
++++ b/tools/bpf/resolve_btfids/main.c
+@@ -655,6 +655,9 @@ static int symbols_patch(struct object *obj)
+ 	if (sets_patch(obj))
+ 		return -1;
  
- 	chunk = xp_aligned_extract_addr(pool, desc->addr);
-+	if (likely(desc->len)) {
-+		chunk_end = xp_aligned_extract_addr(pool, desc->addr + desc->len - 1);
-+		if (chunk != chunk_end)
-+			return false;
-+	}
++	/* Set type to ensure endian translation occurs. */
++	obj->efile.idlist->d_type = ELF_T_WORD;
 +
- 	if (chunk >= pool->addrs_cnt)
- 		return false;
+ 	elf_flagdata(obj->efile.idlist, ELF_C_SET, ELF_F_DIRTY);
  
+ 	err = elf_update(obj->efile.elf, ELF_C_WRITE);
 -- 
 2.30.2
 
