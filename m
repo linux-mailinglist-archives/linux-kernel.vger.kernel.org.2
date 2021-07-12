@@ -2,99 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E823C5DAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 15:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C09153C5DC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 15:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234712AbhGLNvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 09:51:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47182 "EHLO
+        id S234255AbhGLN4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 09:56:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhGLNva (ORCPT
+        with ESMTP id S230518AbhGLN4M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 09:51:30 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71EC4C0613DD;
-        Mon, 12 Jul 2021 06:48:40 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id s23so9687643oij.0;
-        Mon, 12 Jul 2021 06:48:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=34VJOkAIsK76d6i1p/hMWZkvES6TvGjNy8eVswPlFJc=;
-        b=B5OeUgYS8ekKIc41fYUulPnudLvdTW2OxW+9CeApnBImBHhTZRc33hVkht1VAniq3T
-         mltgdW74/pHYJ/vc5eebqiyP5HV+mSlJc2tTPi9PNRj/4GptyekeQEkA1pylO7soULlm
-         yQaks/BkHmdvIVB+KiMeomwVyTUnMMETIqSQEt+R07qRJBEQN00g4ED6kMaTjsQjANDJ
-         vEdW4EquYr873Y3LtKhVqDuuY2b+Lbp7Dh5Y0lPc8PgEkEY24JIgwBF/B7JU/SPZl1Rh
-         XV6wofn8fp38nXNAGe4ok7j02mXeHfFIIcNrf6IUQGXj2wZO7zINUYUBZ8NhQdZRxLcQ
-         H8Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=34VJOkAIsK76d6i1p/hMWZkvES6TvGjNy8eVswPlFJc=;
-        b=OMpMLtRsJivmnTwTHAHJdA1KH2n7zqIQBQg/yJgmRjzXPOKqVzNopkV32wDvjHHTQ9
-         7sDzxq76a9Zr9T2w2d/f3yDVootCTlQHEYX+85orLZnk0+BhNNNkp7Tw0kRJGld1mMwZ
-         1oysrAjgDZaohDS1h565Y5ERaeS7XKODykNJRLMWO7GPWO8LTBXSl7+2t9OWYQKKZexM
-         eWz7SugDHrsnrL/eZ5yM+JXOCiuNm1ie0ge6I4PojNPiwziqRF44vhDN98xaIhvKxBD1
-         0r5izd1ADdixU8iRHJJDbqDranoHrKoZymRd4w/fug+Qzs0nlps95+JeB9aYkt3Vvknn
-         RAag==
-X-Gm-Message-State: AOAM530QiZt7f5yOGk1ARaS+RkN/hU7Spso1sCPHHMD3e2qjvTPpvWNn
-        8vzh6XFjaF2IQ8EpBBgYIS88c5xkniY=
-X-Google-Smtp-Source: ABdhPJzJhemnkyKbA0EWjcVVb6hfqVduUICpI1AjYRt+xvBI/3STj/shRT2ffYofmmmeRrR6qa08Yw==
-X-Received: by 2002:aca:1b09:: with SMTP id b9mr38636744oib.22.1626097719585;
-        Mon, 12 Jul 2021 06:48:39 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id q9sm3069131otk.18.2021.07.12.06.48.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Jul 2021 06:48:38 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 5.12 000/700] 5.12.17-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-References: <20210712060924.797321836@linuxfoundation.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <6c0d205c-6f8a-fc16-1083-76ea36358c65@roeck-us.net>
-Date:   Mon, 12 Jul 2021 06:48:34 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 12 Jul 2021 09:56:12 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 414F3C0613DD;
+        Mon, 12 Jul 2021 06:53:24 -0700 (PDT)
+Received: from maud (unknown [IPv6:2600:8800:8c04:8c00::ffa6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: alyssa)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 198401F4249E;
+        Mon, 12 Jul 2021 14:53:16 +0100 (BST)
+Date:   Mon, 12 Jul 2021 09:53:11 -0400
+From:   Alyssa Rosenzweig <alyssa@collabora.com>
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Arnd Bergmann <arnd@kernel.org>, devicetree@vger.kernel.org,
+        Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org,
+        Marc Zyngier <maz@kernel.org>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Petr Mladek via iommu <iommu@lists.linux-foundation.org>,
+        Alexander Graf <graf@amazon.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Rouven Czerwinski <r.czerwinski@pengutronix.de>
+Subject: Re: [PATCH v4 3/3] iommu: dart: Add DART iommu driver
+Message-ID: <YOxJRw9H08pwnRgc@maud>
+References: <20210627143405.77298-1-sven@svenpeter.dev>
+ <20210627143405.77298-4-sven@svenpeter.dev>
+ <YNx2U4GPoKxV3PWd@maud>
+ <16ffb4ec-86a4-4300-b175-5d7a1fcbf994@www.fastmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <16ffb4ec-86a4-4300-b175-5d7a1fcbf994@www.fastmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/11/21 11:01 PM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.12.17 release.
-> There are 700 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> > Should we be checking alignment here? Something like
+> > 
+> >     BUG_ON(paddr & ((1 << DART_TTBR_SHIFT) - 1));
+> > 
 > 
-> Responses should be made by Wed, 14 Jul 2021 06:02:46 +0000.
-> Anything received after that time might be too late.
-> 
+> Sure, right now paddr will always be aligned but adding that
+> BUG_ON doesn't hurt :)
 
-
-Build results:
-	total: 154 pass: 153 fail: 1
-Failed builds:
-	riscv32:allmodconfig
-Qemu test results:
-	total: 462 pass: 462 fail: 0
-
-riscv32 build failure as before, inherited from mainline.
-
-Error log:
-cc1: error: '10208' is not a valid offset in '-mstack-protector-guard-offset='
-
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-
-Guenter
+Probably should have suggested WARN_ON instead of BUG_ON but yes.
