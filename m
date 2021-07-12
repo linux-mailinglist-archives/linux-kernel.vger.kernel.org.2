@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BA573C56AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21CD73C48FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347786AbhGLIWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:22:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43060 "EHLO mail.kernel.org"
+        id S235755AbhGLGlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:41:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55532 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346331AbhGLHjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:39:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 22193610D1;
-        Mon, 12 Jul 2021 07:34:27 +0000 (UTC)
+        id S237109AbhGLGeJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:34:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56A8961158;
+        Mon, 12 Jul 2021 06:30:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075268;
-        bh=LX8MytkC20dE/E1lNwDIxGB7QpmzBK0Wy9YYqWHXUwo=;
+        s=korg; t=1626071424;
+        bh=V+1jT8dQ4yqVyUYSiGrM5IoWp0DqNd8wD2MMeZNawdE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gtozNg+WGQGh1kWh5xocWpiFXmb3KorSlXI2mvf2HLqZvWNLqK2t/OJsGDcTMC00J
-         y/uII4laO0VB4ZCn8RU8PlnYYRzcRIL/6fVYufRhRCsAlXgnLIBcUbkxwggZ+RLEU2
-         LV7ALs+nNQZJbvvZ5544dZHSPBhghVBNdb77Nx0o=
+        b=mq7meqjxd8EIf2G7ZlvPwgESp0zOk2x6SUrK110kMtx2Q6ci+7nBOiPcvbAfM0qP6
+         2PK+JRZ0OVNruY4FFL/HkhB8RPg6Vthqwo8QTnUR5/5OEWbJzhxqo+Z5bEnS4doDBD
+         dT3kFXSzfAKq7f2cQqPfR2aAKukE6ycuGzV+t2Sg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 163/800] ima: Dont remove security.ima if file must not be appraised
+        stable@vger.kernel.org,
+        Jiantao Zhang <water.zhangjiantao@huawei.com>,
+        Tao Xue <xuetao09@huawei.com>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: [PATCH 5.10 026/593] xhci: solve a double free problem while doing s4
 Date:   Mon, 12 Jul 2021 08:03:06 +0200
-Message-Id: <20210712060935.924793830@linuxfoundation.org>
+Message-Id: <20210712060846.062008987@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +41,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roberto Sassu <roberto.sassu@huawei.com>
+From: Zhangjiantao (Kirin, nanjing) <water.zhangjiantao@huawei.com>
 
-[ Upstream commit ed1b472fc15aeaa20ddeeb93fd25190014e50d17 ]
+commit b31d9d6d7abbf6483b871b6370bc31c930d53f54 upstream.
 
-Files might come from a remote source and might have xattrs, including
-security.ima. It should not be IMA task to decide whether security.ima
-should be kept or not. This patch removes the removexattr() system
-call in ima_inode_post_setattr().
+when system is doing s4, the process of xhci_resume may be as below:
+1、xhci_mem_cleanup
+2、xhci_init->xhci_mem_init->xhci_mem_cleanup(when memory is not enough).
+xhci_mem_cleanup will be executed twice when system is out of memory.
+xhci->port_caps is freed in xhci_mem_cleanup,but it isn't set to NULL.
+It will be freed twice when xhci_mem_cleanup is called the second time.
 
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+We got following bug when system resumes from s4:
+
+kernel BUG at mm/slub.c:309!
+Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
+CPU: 0 PID: 5929 Tainted: G S   W   5.4.96-arm64-desktop #1
+pc : __slab_free+0x5c/0x424
+lr : kfree+0x30c/0x32c
+
+Call trace:
+ __slab_free+0x5c/0x424
+ kfree+0x30c/0x32c
+ xhci_mem_cleanup+0x394/0x3cc
+ xhci_mem_init+0x9ac/0x1070
+ xhci_init+0x8c/0x1d0
+ xhci_resume+0x1cc/0x5fc
+ xhci_plat_resume+0x64/0x70
+ platform_pm_thaw+0x28/0x60
+ dpm_run_callback+0x54/0x24c
+ device_resume+0xd0/0x200
+ async_resume+0x24/0x60
+ async_run_entry_fn+0x44/0x110
+ process_one_work+0x1f0/0x490
+ worker_thread+0x5c/0x450
+ kthread+0x158/0x160
+ ret_from_fork+0x10/0x24
+
+Original patch that caused this issue was backported to 4.4 stable,
+so this should be backported to 4.4 stabe as well.
+
+Fixes: cf0ee7c60c89 ("xhci: Fix memory leak when caching protocol extended capability PSI tables - take 2")
+Cc: stable@vger.kernel.org # v4.4+
+Signed-off-by: Jiantao Zhang <water.zhangjiantao@huawei.com>
+Signed-off-by: Tao Xue <xuetao09@huawei.com>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20210617150354.1512157-5-mathias.nyman@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- security/integrity/ima/ima_appraise.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/usb/host/xhci-mem.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity/ima/ima_appraise.c
-index 4e5eb0236278..55dac618f2a1 100644
---- a/security/integrity/ima/ima_appraise.c
-+++ b/security/integrity/ima/ima_appraise.c
-@@ -522,8 +522,6 @@ void ima_inode_post_setattr(struct user_namespace *mnt_userns,
- 		return;
+--- a/drivers/usb/host/xhci-mem.c
++++ b/drivers/usb/host/xhci-mem.c
+@@ -1938,6 +1938,7 @@ no_bw:
+ 	xhci->hw_ports = NULL;
+ 	xhci->rh_bw = NULL;
+ 	xhci->ext_caps = NULL;
++	xhci->port_caps = NULL;
  
- 	action = ima_must_appraise(mnt_userns, inode, MAY_ACCESS, POST_SETATTR);
--	if (!action)
--		__vfs_removexattr(&init_user_ns, dentry, XATTR_NAME_IMA);
- 	iint = integrity_iint_find(inode);
- 	if (iint) {
- 		set_bit(IMA_CHANGE_ATTR, &iint->atomic_flags);
--- 
-2.30.2
-
+ 	xhci->page_size = 0;
+ 	xhci->page_shift = 0;
 
 
