@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3AB3C4BAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35FB73C52A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240259AbhGLG6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:58:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42444 "EHLO mail.kernel.org"
+        id S1346656AbhGLHsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:48:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238406AbhGLGn7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:43:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A27461176;
-        Mon, 12 Jul 2021 06:39:45 +0000 (UTC)
+        id S240067AbhGLHOA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:14:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CA0D61151;
+        Mon, 12 Jul 2021 07:11:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071985;
-        bh=zj0XD1CTy4x98lKYpiOHM108zp46GP6JCxM+t2ZB4B8=;
+        s=korg; t=1626073861;
+        bh=ZHPtdMtLw+LRQMoNHxOGGo1Ztxl6VU7JJPy7gPvtOSA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qol/UrrLg19i2EZi6xd4X5w6ivKLWcBiuJz7UZWBgBv0dLdRBmJH4/whZc5dF2E+3
-         OOowZ1zyytSOiGWFmkZ7oMMNKacC2+nPJ5UzdyK+3H7cdYUyjNpEXQTi4bYWUVGq2Q
-         psJ/lEzFWqvDIk1/oeSqyOkKYYc8xWw2KoRtFDXE=
+        b=cm8cKMckuf2PgEad02UpJ/gJmRoN6BwxKVHL77AOqk35k0lO/EoA7+6mw9nh2xvl0
+         GxRLmCr491TFmTsGM8R8PfAs7K3R/YeM+WFYxjFV7ILe8Ojkup2KtdJ2BL3MrCn60L
+         lo50biayHLvs2M7hOulsDr0Y4H/ddXar8hDxx4VU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Flavio Suligoi <f.suligoi@asem.it>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Md Haris Iqbal <haris.iqbal@ionos.com>,
+        Gioh Kim <gi-oh.kim@ionos.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 306/593] net: pch_gbe: Propagate error from devm_gpio_request_one()
+Subject: [PATCH 5.12 383/700] RDMA/rtrs-clt: Check state of the rtrs_clt_sess before reading its stats
 Date:   Mon, 12 Jul 2021 08:07:46 +0200
-Message-Id: <20210712060918.734145022@linuxfoundation.org>
+Message-Id: <20210712061017.119323222@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,53 +41,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
 
-[ Upstream commit 9e3617a7b84512bf96c04f9cf82d1a7257d33794 ]
+[ Upstream commit 41db63a7efe1c8c2dd282c1849a6ebfbbedbaf67 ]
 
-If GPIO controller is not available yet we need to defer
-the probe of GBE until provider will become available.
+When get_next_path_min_inflight is called to select the next path, it
+iterates over the list of available rtrs_clt_sess (paths). It then reads
+the number of inflight IOs for that path to select one which has the least
+inflight IO.
 
-While here, drop GPIOF_EXPORT because it's deprecated and
-may not be available.
+But it may so happen that rtrs_clt_sess (path) is no longer in the
+connected state because closing or error recovery paths can change the status
+of the rtrs_clt_Sess.
 
-Fixes: f1a26fdf5944 ("pch_gbe: Add MinnowBoard support")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Tested-by: Flavio Suligoi <f.suligoi@asem.it>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+For example, the client sent the heart-beat and did not get the
+response, it would change the session status and stop IO processing.
+The added checking of this patch can prevent accessing the broken path
+and generating duplicated error messages.
+
+It is ok if the status is changed after checking the status because
+the error recovery path does not free memory and only tries to
+reconnection. And also it is ok if the session is closed after checking
+the status because closing the session changes the session status and
+flush all IO beforing free memory. If the session is being accessed for
+IO processing, the closing session will wait.
+
+Fixes: 6a98d71daea18 ("RDMA/rtrs: client: main functionality")
+Link: https://lore.kernel.org/r/20210528113018.52290-13-jinpu.wang@ionos.com
+Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
+Reviewed-by: Gioh Kim <gi-oh.kim@ionos.com>
+Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
-index ade8c44c01cd..9a0870dc2f03 100644
---- a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
-+++ b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
-@@ -2536,9 +2536,13 @@ static int pch_gbe_probe(struct pci_dev *pdev,
- 	adapter->pdev = pdev;
- 	adapter->hw.back = adapter;
- 	adapter->hw.reg = pcim_iomap_table(pdev)[PCH_GBE_PCI_BAR];
-+
- 	adapter->pdata = (struct pch_gbe_privdata *)pci_id->driver_data;
--	if (adapter->pdata && adapter->pdata->platform_init)
--		adapter->pdata->platform_init(pdev);
-+	if (adapter->pdata && adapter->pdata->platform_init) {
-+		ret = adapter->pdata->platform_init(pdev);
-+		if (ret)
-+			goto err_free_netdev;
-+	}
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+index 959ba0462ef0..cb6f5c7610a0 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+@@ -805,6 +805,9 @@ static struct rtrs_clt_sess *get_next_path_min_inflight(struct path_it *it)
+ 	int inflight;
  
- 	adapter->ptp_pdev =
- 		pci_get_domain_bus_and_slot(pci_domain_nr(adapter->pdev->bus),
-@@ -2633,7 +2637,7 @@ err_free_netdev:
-  */
- static int pch_gbe_minnow_platform_init(struct pci_dev *pdev)
- {
--	unsigned long flags = GPIOF_DIR_OUT | GPIOF_INIT_HIGH | GPIOF_EXPORT;
-+	unsigned long flags = GPIOF_OUT_INIT_HIGH;
- 	unsigned gpio = MINNOW_PHY_RESET_GPIO;
- 	int ret;
+ 	list_for_each_entry_rcu(sess, &clt->paths_list, s.entry) {
++		if (unlikely(READ_ONCE(sess->state) != RTRS_CLT_CONNECTED))
++			continue;
++
+ 		if (unlikely(!list_empty(raw_cpu_ptr(sess->mp_skip_entry))))
+ 			continue;
  
 -- 
 2.30.2
