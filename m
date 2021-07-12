@@ -2,304 +2,591 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A056B3C5BD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 14:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8767E3C5BDB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 14:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233038AbhGLMFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 08:05:52 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:58943 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233279AbhGLMFk (ORCPT
+        id S233605AbhGLMHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 08:07:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233266AbhGLMHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 08:05:40 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UfXFBmR_1626091362;
-Received: from e18g09479.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UfXFBmR_1626091362)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 12 Jul 2021 20:02:50 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     linux-erofs@lists.ozlabs.org
-Cc:     linux-fsdevel@vger.kernel.org, nvdimm@lists.linux.dev,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Chao Yu <chao@kernel.org>,
-        Liu Bo <bo.liu@linux.alibaba.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Liu Jiang <gerry@linux.alibaba.com>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>
-Subject: [PATCH v2 2/2] erofs: dax support for non-tailpacking regular file
-Date:   Mon, 12 Jul 2021 20:02:41 +0800
-Message-Id: <20210712120241.199903-3-hsiangkao@linux.alibaba.com>
-X-Mailer: git-send-email 2.24.4
-In-Reply-To: <20210712120241.199903-1-hsiangkao@linux.alibaba.com>
-References: <20210712120241.199903-1-hsiangkao@linux.alibaba.com>
+        Mon, 12 Jul 2021 08:07:48 -0400
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62CC4C0613E5
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 05:05:00 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:f017:d84b:501f:cdd7])
+        by laurent.telenet-ops.be with bizsmtp
+        id UC4y250013dzGBx01C4ysE; Mon, 12 Jul 2021 14:04:58 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1m2ugD-000YCi-Nk; Mon, 12 Jul 2021 14:04:57 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1m2ugD-00HHcR-56; Mon, 12 Jul 2021 14:04:57 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     linux-m68k@lists.linux-m68k.org
+Cc:     linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: defconfig: Update defconfigs for v5.14-rc1:
+Date:   Mon, 12 Jul 2021 14:04:56 +0200
+Message-Id: <20210712120456.4119260-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DAX is quite useful for some VM use cases in order to save guest
-memory extremely with minimal lightweight EROFS.
+  - Enable modular build of the new Netfilter base hook dump support,
+  - Drop CONFIG_SCSI=y (selected by ATA, as enabled since commit
+    b90257bfddbd01f3 ("m68k: use libata instead of the legacy ide
+    driver")),
+  - Disable CIFS_STATS2 (defaults to enabled since commit
+    0d52df81e07739db ("cifs: enable extended stats by default")),
+  - Enable modular build of the glob self-test (visible since commit
+    b90257bfddbd01f3 ("m68k: use libata instead of the legacy ide
+    driver")),
+  - Drop CONFIG_TEST_LIST_SORT=m (auto-enabled since commit
+    ebd09577be6c15ee ("lib/test: convert lib/test_list_sort.c to use
+    KUnit")),
+  - Enable modular build of the new test for the scanf() family of
+    functions.
 
-In order to prepare for such use cases, add preliminary dax support
-for non-tailpacking regular files for now.
-
-Tested with the DRAM-emulated PMEM and the EROFS image generated by
-"mkfs.erofs -Enoinline_data enwik9.fsdax.img enwik9"
-
-Cc: nvdimm@lists.linux.dev
-Cc: linux-fsdevel@vger.kernel.org
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- fs/erofs/data.c     | 42 +++++++++++++++++++++++++++++--
- fs/erofs/inode.c    |  4 +++
- fs/erofs/internal.h |  3 +++
- fs/erofs/super.c    | 60 +++++++++++++++++++++++++++++++++++++++++++--
- 4 files changed, 105 insertions(+), 4 deletions(-)
+Perhaps we do want to keep the changed default for CONFIG_CIFS_STATS2?
 
-diff --git a/fs/erofs/data.c b/fs/erofs/data.c
-index 0f82b4cb474c..00493855319a 100644
---- a/fs/erofs/data.c
-+++ b/fs/erofs/data.c
-@@ -6,7 +6,7 @@
- #include "internal.h"
- #include <linux/prefetch.h>
- #include <linux/iomap.h>
--
-+#include <linux/dax.h>
- #include <trace/events/erofs.h>
- 
- static void erofs_readendio(struct bio *bio)
-@@ -323,6 +323,7 @@ static int erofs_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
- 		return ret;
- 
- 	iomap->bdev = inode->i_sb->s_bdev;
-+	iomap->dax_dev = EROFS_I_SB(inode)->dax_dev;
- 	iomap->offset = map.m_la;
- 	iomap->length = map.m_llen;
- 
-@@ -382,6 +383,10 @@ static ssize_t erofs_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
- 	if (!iov_iter_count(to))
- 		return 0;
- 
-+#ifdef CONFIG_FS_DAX
-+	if (IS_DAX(iocb->ki_filp->f_mapping->host))
-+		return dax_iomap_rw(iocb, to, &erofs_iomap_ops);
-+#endif
- 	if (iocb->ki_flags & IOCB_DIRECT) {
- 		int err = erofs_prepare_dio(iocb, to);
- 
-@@ -410,9 +415,42 @@ const struct address_space_operations erofs_raw_access_aops = {
- 	.direct_IO = noop_direct_IO,
- };
- 
-+#ifdef CONFIG_FS_DAX
-+static vm_fault_t erofs_dax_huge_fault(struct vm_fault *vmf,
-+		enum page_entry_size pe_size)
-+{
-+	return dax_iomap_fault(vmf, pe_size, NULL, NULL, &erofs_iomap_ops);
-+}
-+
-+static vm_fault_t erofs_dax_fault(struct vm_fault *vmf)
-+{
-+	return erofs_dax_huge_fault(vmf, PE_SIZE_PTE);
-+}
-+
-+static const struct vm_operations_struct erofs_dax_vm_ops = {
-+	.fault		= erofs_dax_fault,
-+	.huge_fault	= erofs_dax_huge_fault,
-+};
-+
-+static int erofs_file_mmap(struct file *file, struct vm_area_struct *vma)
-+{
-+	if (!IS_DAX(file_inode(file)))
-+		return generic_file_readonly_mmap(file, vma);
-+
-+	if ((vma->vm_flags & VM_SHARED) && (vma->vm_flags & VM_MAYWRITE))
-+		return -EINVAL;
-+
-+	vma->vm_ops = &erofs_dax_vm_ops;
-+	vma->vm_flags |= VM_HUGEPAGE;
-+	return 0;
-+}
-+#else
-+#define erofs_file_mmap	generic_file_readonly_mmap
-+#endif
-+
- const struct file_operations erofs_file_fops = {
- 	.llseek		= generic_file_llseek,
- 	.read_iter	= erofs_file_read_iter,
--	.mmap		= generic_file_readonly_mmap,
-+	.mmap		= erofs_file_mmap,
- 	.splice_read	= generic_file_splice_read,
- };
-diff --git a/fs/erofs/inode.c b/fs/erofs/inode.c
-index 00edb7562fea..e875fba18159 100644
---- a/fs/erofs/inode.c
-+++ b/fs/erofs/inode.c
-@@ -174,6 +174,10 @@ static struct page *erofs_read_inode(struct inode *inode,
- 	inode->i_mtime.tv_nsec = inode->i_ctime.tv_nsec;
- 	inode->i_atime.tv_nsec = inode->i_ctime.tv_nsec;
- 
-+	inode->i_flags &= ~S_DAX;
-+	if (test_opt(&sbi->ctx, DAX_ALWAYS) && S_ISREG(inode->i_mode) &&
-+	    vi->datalayout == EROFS_INODE_FLAT_PLAIN)
-+		inode->i_flags |= S_DAX;
- 	if (!nblks)
- 		/* measure inode.i_blocks as generic filesystems */
- 		inode->i_blocks = roundup(inode->i_size, EROFS_BLKSIZ) >> 9;
-diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
-index 2669c785d548..7c9abfc93109 100644
---- a/fs/erofs/internal.h
-+++ b/fs/erofs/internal.h
-@@ -83,6 +83,7 @@ struct erofs_sb_info {
- 
- 	struct erofs_sb_lz4_info lz4;
- #endif	/* CONFIG_EROFS_FS_ZIP */
-+	struct dax_device *dax_dev;
- 	u32 blocks;
- 	u32 meta_blkaddr;
- #ifdef CONFIG_EROFS_FS_XATTR
-@@ -115,6 +116,8 @@ struct erofs_sb_info {
- /* Mount flags set via mount options or defaults */
- #define EROFS_MOUNT_XATTR_USER		0x00000010
- #define EROFS_MOUNT_POSIX_ACL		0x00000020
-+#define EROFS_MOUNT_DAX_ALWAYS		0x00000040
-+#define EROFS_MOUNT_DAX_NEVER		0x00000080
- 
- #define clear_opt(ctx, option)	((ctx)->mount_opt &= ~EROFS_MOUNT_##option)
- #define set_opt(ctx, option)	((ctx)->mount_opt |= EROFS_MOUNT_##option)
-diff --git a/fs/erofs/super.c b/fs/erofs/super.c
-index 8fc6c04b54f4..d5b110fd365d 100644
---- a/fs/erofs/super.c
-+++ b/fs/erofs/super.c
-@@ -11,6 +11,7 @@
- #include <linux/crc32c.h>
- #include <linux/fs_context.h>
- #include <linux/fs_parser.h>
-+#include <linux/dax.h>
- #include "xattr.h"
- 
- #define CREATE_TRACE_POINTS
-@@ -355,6 +356,8 @@ enum {
- 	Opt_user_xattr,
- 	Opt_acl,
- 	Opt_cache_strategy,
-+	Opt_dax,
-+	Opt_dax_enum,
- 	Opt_err
- };
- 
-@@ -365,14 +368,47 @@ static const struct constant_table erofs_param_cache_strategy[] = {
- 	{}
- };
- 
-+static const struct constant_table erofs_dax_param_enums[] = {
-+	{"always",	EROFS_MOUNT_DAX_ALWAYS},
-+	{"never",	EROFS_MOUNT_DAX_NEVER},
-+	{}
-+};
-+
- static const struct fs_parameter_spec erofs_fs_parameters[] = {
- 	fsparam_flag_no("user_xattr",	Opt_user_xattr),
- 	fsparam_flag_no("acl",		Opt_acl),
- 	fsparam_enum("cache_strategy",	Opt_cache_strategy,
- 		     erofs_param_cache_strategy),
-+	fsparam_flag("dax",             Opt_dax),
-+	fsparam_enum("dax",		Opt_dax_enum, erofs_dax_param_enums),
- 	{}
- };
- 
-+static bool erofs_fc_set_dax_mode(struct fs_context *fc, unsigned int mode)
-+{
-+#ifdef CONFIG_FS_DAX
-+	struct erofs_fs_context *ctx = fc->fs_private;
-+
-+	switch (mode) {
-+	case EROFS_MOUNT_DAX_ALWAYS:
-+		warnfc(fc, "DAX enabled. Warning: EXPERIMENTAL, use at your own risk");
-+		set_opt(ctx, DAX_ALWAYS);
-+		clear_opt(ctx, DAX_NEVER);
-+		return true;
-+	case EROFS_MOUNT_DAX_NEVER:
-+		set_opt(ctx, DAX_NEVER);
-+		clear_opt(ctx, DAX_ALWAYS);
-+		return true;
-+	default:
-+		DBG_BUGON(1);
-+		return false;
-+	}
-+#else
-+	errorfc(fc, "dax options not supported");
-+	return false;
-+#endif
-+}
-+
- static int erofs_fc_parse_param(struct fs_context *fc,
- 				struct fs_parameter *param)
- {
-@@ -412,6 +448,14 @@ static int erofs_fc_parse_param(struct fs_context *fc,
- 		errorfc(fc, "compression not supported, cache_strategy ignored");
- #endif
- 		break;
-+	case Opt_dax:
-+		if (!erofs_fc_set_dax_mode(fc, EROFS_MOUNT_DAX_ALWAYS))
-+			return -EINVAL;
-+		break;
-+	case Opt_dax_enum:
-+		if (!erofs_fc_set_dax_mode(fc, result.uint_32))
-+			return -EINVAL;
-+		break;
- 	default:
- 		return -ENOPARAM;
- 	}
-@@ -496,10 +540,16 @@ static int erofs_fc_fill_super(struct super_block *sb, struct fs_context *fc)
- 		return -ENOMEM;
- 
- 	sb->s_fs_info = sbi;
-+	sbi->dax_dev = fs_dax_get_by_bdev(sb->s_bdev);
- 	err = erofs_read_superblock(sb);
- 	if (err)
- 		return err;
- 
-+	if (test_opt(ctx, DAX_ALWAYS) &&
-+	    !bdev_dax_supported(sb->s_bdev, EROFS_BLKSIZ)) {
-+		errorfc(fc, "DAX unsupported by block device. Turning off DAX.");
-+		clear_opt(ctx, DAX_ALWAYS);
-+	}
- 	sb->s_flags |= SB_RDONLY | SB_NOATIME;
- 	sb->s_maxbytes = MAX_LFS_FILESIZE;
- 	sb->s_time_gran = 1;
-@@ -609,6 +659,8 @@ static void erofs_kill_sb(struct super_block *sb)
- 	sbi = EROFS_SB(sb);
- 	if (!sbi)
- 		return;
-+	if (sbi->dax_dev)
-+		fs_put_dax(sbi->dax_dev);
- 	kfree(sbi);
- 	sb->s_fs_info = NULL;
- }
-@@ -711,8 +763,8 @@ static int erofs_statfs(struct dentry *dentry, struct kstatfs *buf)
- 
- static int erofs_show_options(struct seq_file *seq, struct dentry *root)
- {
--	struct erofs_sb_info *sbi __maybe_unused = EROFS_SB(root->d_sb);
--	struct erofs_fs_context *ctx __maybe_unused = &sbi->ctx;
-+	struct erofs_sb_info *sbi = EROFS_SB(root->d_sb);
-+	struct erofs_fs_context *ctx = &sbi->ctx;
- 
- #ifdef CONFIG_EROFS_FS_XATTR
- 	if (test_opt(ctx, XATTR_USER))
-@@ -734,6 +786,10 @@ static int erofs_show_options(struct seq_file *seq, struct dentry *root)
- 	else if (ctx->cache_strategy == EROFS_ZIP_CACHE_READAROUND)
- 		seq_puts(seq, ",cache_strategy=readaround");
- #endif
-+	if (test_opt(ctx, DAX_ALWAYS))
-+		seq_puts(seq, ",dax=always");
-+	if (test_opt(ctx, DAX_NEVER))
-+		seq_puts(seq, ",dax=never");
- 	return 0;
- }
- 
+To be queued in the m68k tree for v5.15.
+---
+ arch/m68k/configs/amiga_defconfig    | 6 ++++--
+ arch/m68k/configs/apollo_defconfig   | 4 +++-
+ arch/m68k/configs/atari_defconfig    | 6 ++++--
+ arch/m68k/configs/bvme6000_defconfig | 4 +++-
+ arch/m68k/configs/hp300_defconfig    | 4 +++-
+ arch/m68k/configs/mac_defconfig      | 6 ++++--
+ arch/m68k/configs/multi_defconfig    | 6 ++++--
+ arch/m68k/configs/mvme147_defconfig  | 4 +++-
+ arch/m68k/configs/mvme16x_defconfig  | 4 +++-
+ arch/m68k/configs/q40_defconfig      | 6 ++++--
+ arch/m68k/configs/sun3_defconfig     | 4 +++-
+ arch/m68k/configs/sun3x_defconfig    | 4 +++-
+ 12 files changed, 41 insertions(+), 17 deletions(-)
+
+diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+index 0a2cacf7be08255c..5f536286f5fce88d 100644
+--- a/arch/m68k/configs/amiga_defconfig
++++ b/arch/m68k/configs/amiga_defconfig
+@@ -84,6 +84,7 @@ CONFIG_IPV6_ILA=m
+ CONFIG_IPV6_VTI=m
+ CONFIG_IPV6_GRE=m
+ CONFIG_NETFILTER=y
++CONFIG_NETFILTER_NETLINK_HOOK=m
+ CONFIG_NF_CONNTRACK=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+ # CONFIG_NF_CONNTRACK_PROCFS is not set
+@@ -323,7 +324,6 @@ CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+ CONFIG_RAID_ATTRS=m
+-CONFIG_SCSI=y
+ CONFIG_BLK_DEV_SD=y
+ CONFIG_CHR_DEV_ST=m
+ CONFIG_BLK_DEV_SR=y
+@@ -502,6 +502,7 @@ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
+ CONFIG_NFSD_V3=y
+ CONFIG_CIFS=m
++# CONFIG_CIFS_STATS2 is not set
+ # CONFIG_CIFS_DEBUG is not set
+ CONFIG_CODA_FS=m
+ CONFIG_NLS_CODEPAGE_437=y
+@@ -616,6 +617,7 @@ CONFIG_PRIME_NUMBERS=m
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+ CONFIG_XZ_DEC_TEST=m
++CONFIG_GLOB_SELFTEST=m
+ CONFIG_STRING_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+@@ -624,7 +626,6 @@ CONFIG_WW_MUTEX_SELFTEST=m
+ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
+-CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_SORT=m
+ CONFIG_TEST_DIV64=m
+@@ -636,6 +637,7 @@ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_STRSCPY=m
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
++CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
+diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
+index 4dc6dcfaf28ab323..d9568644051adb24 100644
+--- a/arch/m68k/configs/apollo_defconfig
++++ b/arch/m68k/configs/apollo_defconfig
+@@ -80,6 +80,7 @@ CONFIG_IPV6_ILA=m
+ CONFIG_IPV6_VTI=m
+ CONFIG_IPV6_GRE=m
+ CONFIG_NETFILTER=y
++CONFIG_NETFILTER_NETLINK_HOOK=m
+ CONFIG_NF_CONNTRACK=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+ # CONFIG_NF_CONNTRACK_PROCFS is not set
+@@ -458,6 +459,7 @@ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
+ CONFIG_NFSD_V3=y
+ CONFIG_CIFS=m
++# CONFIG_CIFS_STATS2 is not set
+ # CONFIG_CIFS_DEBUG is not set
+ CONFIG_CODA_FS=m
+ CONFIG_NLS_CODEPAGE_437=y
+@@ -580,7 +582,6 @@ CONFIG_WW_MUTEX_SELFTEST=m
+ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
+-CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_SORT=m
+ CONFIG_TEST_DIV64=m
+@@ -592,6 +593,7 @@ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_STRSCPY=m
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
++CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
+diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
+index ac57c699f03bfac7..55fa03710ccca852 100644
+--- a/arch/m68k/configs/atari_defconfig
++++ b/arch/m68k/configs/atari_defconfig
+@@ -87,6 +87,7 @@ CONFIG_IPV6_ILA=m
+ CONFIG_IPV6_VTI=m
+ CONFIG_IPV6_GRE=m
+ CONFIG_NETFILTER=y
++CONFIG_NETFILTER_NETLINK_HOOK=m
+ CONFIG_NF_CONNTRACK=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+ # CONFIG_NF_CONNTRACK_PROCFS is not set
+@@ -324,7 +325,6 @@ CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+ CONFIG_RAID_ATTRS=m
+-CONFIG_SCSI=y
+ CONFIG_BLK_DEV_SD=y
+ CONFIG_CHR_DEV_ST=m
+ CONFIG_BLK_DEV_SR=y
+@@ -491,6 +491,7 @@ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
+ CONFIG_NFSD_V3=y
+ CONFIG_CIFS=m
++# CONFIG_CIFS_STATS2 is not set
+ # CONFIG_CIFS_DEBUG is not set
+ CONFIG_CODA_FS=m
+ CONFIG_NLS_CODEPAGE_437=y
+@@ -605,6 +606,7 @@ CONFIG_PRIME_NUMBERS=m
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+ CONFIG_XZ_DEC_TEST=m
++CONFIG_GLOB_SELFTEST=m
+ CONFIG_STRING_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+@@ -613,7 +615,6 @@ CONFIG_WW_MUTEX_SELFTEST=m
+ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
+-CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_SORT=m
+ CONFIG_TEST_DIV64=m
+@@ -625,6 +626,7 @@ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_STRSCPY=m
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
++CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
+diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
+index 2c3f428338469686..7620db3e33e7fabc 100644
+--- a/arch/m68k/configs/bvme6000_defconfig
++++ b/arch/m68k/configs/bvme6000_defconfig
+@@ -77,6 +77,7 @@ CONFIG_IPV6_ILA=m
+ CONFIG_IPV6_VTI=m
+ CONFIG_IPV6_GRE=m
+ CONFIG_NETFILTER=y
++CONFIG_NETFILTER_NETLINK_HOOK=m
+ CONFIG_NF_CONNTRACK=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+ # CONFIG_NF_CONNTRACK_PROCFS is not set
+@@ -451,6 +452,7 @@ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
+ CONFIG_NFSD_V3=y
+ CONFIG_CIFS=m
++# CONFIG_CIFS_STATS2 is not set
+ # CONFIG_CIFS_DEBUG is not set
+ CONFIG_CODA_FS=m
+ CONFIG_NLS_CODEPAGE_437=y
+@@ -573,7 +575,6 @@ CONFIG_WW_MUTEX_SELFTEST=m
+ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
+-CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_SORT=m
+ CONFIG_TEST_DIV64=m
+@@ -585,6 +586,7 @@ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_STRSCPY=m
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
++CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
+diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
+index 5b1898d4b249a467..113a02d47ebbfae9 100644
+--- a/arch/m68k/configs/hp300_defconfig
++++ b/arch/m68k/configs/hp300_defconfig
+@@ -79,6 +79,7 @@ CONFIG_IPV6_ILA=m
+ CONFIG_IPV6_VTI=m
+ CONFIG_IPV6_GRE=m
+ CONFIG_NETFILTER=y
++CONFIG_NETFILTER_NETLINK_HOOK=m
+ CONFIG_NF_CONNTRACK=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+ # CONFIG_NF_CONNTRACK_PROCFS is not set
+@@ -460,6 +461,7 @@ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
+ CONFIG_NFSD_V3=y
+ CONFIG_CIFS=m
++# CONFIG_CIFS_STATS2 is not set
+ # CONFIG_CIFS_DEBUG is not set
+ CONFIG_CODA_FS=m
+ CONFIG_NLS_CODEPAGE_437=y
+@@ -582,7 +584,6 @@ CONFIG_WW_MUTEX_SELFTEST=m
+ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
+-CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_SORT=m
+ CONFIG_TEST_DIV64=m
+@@ -594,6 +595,7 @@ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_STRSCPY=m
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
++CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
+diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
+index 9606ccd8dafa8956..a8e006e8da6688fc 100644
+--- a/arch/m68k/configs/mac_defconfig
++++ b/arch/m68k/configs/mac_defconfig
+@@ -78,6 +78,7 @@ CONFIG_IPV6_ILA=m
+ CONFIG_IPV6_VTI=m
+ CONFIG_IPV6_GRE=m
+ CONFIG_NETFILTER=y
++CONFIG_NETFILTER_NETLINK_HOOK=m
+ CONFIG_NF_CONNTRACK=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+ # CONFIG_NF_CONNTRACK_PROCFS is not set
+@@ -315,7 +316,6 @@ CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+ CONFIG_RAID_ATTRS=m
+-CONFIG_SCSI=y
+ CONFIG_BLK_DEV_SD=y
+ CONFIG_CHR_DEV_ST=m
+ CONFIG_BLK_DEV_SR=y
+@@ -482,6 +482,7 @@ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
+ CONFIG_NFSD_V3=y
+ CONFIG_CIFS=m
++# CONFIG_CIFS_STATS2 is not set
+ # CONFIG_CIFS_DEBUG is not set
+ CONFIG_CODA_FS=m
+ CONFIG_NLS_CODEPAGE_437=y
+@@ -596,6 +597,7 @@ CONFIG_PRIME_NUMBERS=m
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+ CONFIG_XZ_DEC_TEST=m
++CONFIG_GLOB_SELFTEST=m
+ CONFIG_STRING_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+@@ -604,7 +606,6 @@ CONFIG_WW_MUTEX_SELFTEST=m
+ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
+-CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_SORT=m
+ CONFIG_TEST_DIV64=m
+@@ -616,6 +617,7 @@ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_STRSCPY=m
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
++CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
+diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
+index 3175ba5007e1f5d2..b6655907a1f3cc3f 100644
+--- a/arch/m68k/configs/multi_defconfig
++++ b/arch/m68k/configs/multi_defconfig
+@@ -98,6 +98,7 @@ CONFIG_IPV6_ILA=m
+ CONFIG_IPV6_VTI=m
+ CONFIG_IPV6_GRE=m
+ CONFIG_NETFILTER=y
++CONFIG_NETFILTER_NETLINK_HOOK=m
+ CONFIG_NF_CONNTRACK=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+ # CONFIG_NF_CONNTRACK_PROCFS is not set
+@@ -344,7 +345,6 @@ CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+ CONFIG_RAID_ATTRS=m
+-CONFIG_SCSI=y
+ CONFIG_BLK_DEV_SD=y
+ CONFIG_CHR_DEV_ST=m
+ CONFIG_BLK_DEV_SR=y
+@@ -567,6 +567,7 @@ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
+ CONFIG_NFSD_V3=y
+ CONFIG_CIFS=m
++# CONFIG_CIFS_STATS2 is not set
+ # CONFIG_CIFS_DEBUG is not set
+ CONFIG_CODA_FS=m
+ CONFIG_NLS_CODEPAGE_437=y
+@@ -681,6 +682,7 @@ CONFIG_PRIME_NUMBERS=m
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+ CONFIG_XZ_DEC_TEST=m
++CONFIG_GLOB_SELFTEST=m
+ CONFIG_STRING_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+@@ -689,7 +691,6 @@ CONFIG_WW_MUTEX_SELFTEST=m
+ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
+-CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_SORT=m
+ CONFIG_TEST_DIV64=m
+@@ -701,6 +702,7 @@ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_STRSCPY=m
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
++CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
+diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
+index 793085f00c99f551..563ba47db8c68dd0 100644
+--- a/arch/m68k/configs/mvme147_defconfig
++++ b/arch/m68k/configs/mvme147_defconfig
+@@ -76,6 +76,7 @@ CONFIG_IPV6_ILA=m
+ CONFIG_IPV6_VTI=m
+ CONFIG_IPV6_GRE=m
+ CONFIG_NETFILTER=y
++CONFIG_NETFILTER_NETLINK_HOOK=m
+ CONFIG_NF_CONNTRACK=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+ # CONFIG_NF_CONNTRACK_PROCFS is not set
+@@ -450,6 +451,7 @@ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
+ CONFIG_NFSD_V3=y
+ CONFIG_CIFS=m
++# CONFIG_CIFS_STATS2 is not set
+ # CONFIG_CIFS_DEBUG is not set
+ CONFIG_CODA_FS=m
+ CONFIG_NLS_CODEPAGE_437=y
+@@ -572,7 +574,6 @@ CONFIG_WW_MUTEX_SELFTEST=m
+ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
+-CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_SORT=m
+ CONFIG_TEST_DIV64=m
+@@ -584,6 +585,7 @@ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_STRSCPY=m
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
++CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
+diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
+index 56fbac7943b2ee8c..9f1b44de4706e1b0 100644
+--- a/arch/m68k/configs/mvme16x_defconfig
++++ b/arch/m68k/configs/mvme16x_defconfig
+@@ -77,6 +77,7 @@ CONFIG_IPV6_ILA=m
+ CONFIG_IPV6_VTI=m
+ CONFIG_IPV6_GRE=m
+ CONFIG_NETFILTER=y
++CONFIG_NETFILTER_NETLINK_HOOK=m
+ CONFIG_NF_CONNTRACK=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+ # CONFIG_NF_CONNTRACK_PROCFS is not set
+@@ -451,6 +452,7 @@ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
+ CONFIG_NFSD_V3=y
+ CONFIG_CIFS=m
++# CONFIG_CIFS_STATS2 is not set
+ # CONFIG_CIFS_DEBUG is not set
+ CONFIG_CODA_FS=m
+ CONFIG_NLS_CODEPAGE_437=y
+@@ -573,7 +575,6 @@ CONFIG_WW_MUTEX_SELFTEST=m
+ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
+-CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_SORT=m
+ CONFIG_TEST_DIV64=m
+@@ -585,6 +586,7 @@ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_STRSCPY=m
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
++CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
+diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
+index 0e15431b65e2ac44..1993433d08406eeb 100644
+--- a/arch/m68k/configs/q40_defconfig
++++ b/arch/m68k/configs/q40_defconfig
+@@ -78,6 +78,7 @@ CONFIG_IPV6_ILA=m
+ CONFIG_IPV6_VTI=m
+ CONFIG_IPV6_GRE=m
+ CONFIG_NETFILTER=y
++CONFIG_NETFILTER_NETLINK_HOOK=m
+ CONFIG_NF_CONNTRACK=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+ # CONFIG_NF_CONNTRACK_PROCFS is not set
+@@ -314,7 +315,6 @@ CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+ CONFIG_RAID_ATTRS=m
+-CONFIG_SCSI=y
+ CONFIG_BLK_DEV_SD=y
+ CONFIG_CHR_DEV_ST=m
+ CONFIG_BLK_DEV_SR=y
+@@ -469,6 +469,7 @@ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
+ CONFIG_NFSD_V3=y
+ CONFIG_CIFS=m
++# CONFIG_CIFS_STATS2 is not set
+ # CONFIG_CIFS_DEBUG is not set
+ CONFIG_CODA_FS=m
+ CONFIG_NLS_CODEPAGE_437=y
+@@ -583,6 +584,7 @@ CONFIG_PRIME_NUMBERS=m
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+ CONFIG_XZ_DEC_TEST=m
++CONFIG_GLOB_SELFTEST=m
+ CONFIG_STRING_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+@@ -591,7 +593,6 @@ CONFIG_WW_MUTEX_SELFTEST=m
+ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
+-CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_SORT=m
+ CONFIG_TEST_DIV64=m
+@@ -603,6 +604,7 @@ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_STRSCPY=m
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
++CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
+diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
+index 3490a05f29b82d40..56dbc63cef5bc48b 100644
+--- a/arch/m68k/configs/sun3_defconfig
++++ b/arch/m68k/configs/sun3_defconfig
+@@ -74,6 +74,7 @@ CONFIG_IPV6_ILA=m
+ CONFIG_IPV6_VTI=m
+ CONFIG_IPV6_GRE=m
+ CONFIG_NETFILTER=y
++CONFIG_NETFILTER_NETLINK_HOOK=m
+ CONFIG_NF_CONNTRACK=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+ # CONFIG_NF_CONNTRACK_PROCFS is not set
+@@ -453,6 +454,7 @@ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
+ CONFIG_NFSD_V3=y
+ CONFIG_CIFS=m
++# CONFIG_CIFS_STATS2 is not set
+ # CONFIG_CIFS_DEBUG is not set
+ CONFIG_CODA_FS=m
+ CONFIG_NLS_CODEPAGE_437=y
+@@ -574,7 +576,6 @@ CONFIG_TEST_LOCKUP=m
+ CONFIG_WW_MUTEX_SELFTEST=m
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
+-CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_SORT=m
+ CONFIG_TEST_DIV64=m
+@@ -586,6 +587,7 @@ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_STRSCPY=m
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
++CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
+diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
+index 4e92c8c332fc5f97..6bd1bba81ac32876 100644
+--- a/arch/m68k/configs/sun3x_defconfig
++++ b/arch/m68k/configs/sun3x_defconfig
+@@ -74,6 +74,7 @@ CONFIG_IPV6_ILA=m
+ CONFIG_IPV6_VTI=m
+ CONFIG_IPV6_GRE=m
+ CONFIG_NETFILTER=y
++CONFIG_NETFILTER_NETLINK_HOOK=m
+ CONFIG_NF_CONNTRACK=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+ # CONFIG_NF_CONNTRACK_PROCFS is not set
+@@ -452,6 +453,7 @@ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
+ CONFIG_NFSD_V3=y
+ CONFIG_CIFS=m
++# CONFIG_CIFS_STATS2 is not set
+ # CONFIG_CIFS_DEBUG is not set
+ CONFIG_CODA_FS=m
+ CONFIG_NLS_CODEPAGE_437=y
+@@ -574,7 +576,6 @@ CONFIG_WW_MUTEX_SELFTEST=m
+ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
+-CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_SORT=m
+ CONFIG_TEST_DIV64=m
+@@ -586,6 +587,7 @@ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_STRSCPY=m
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_PRINTF=m
++CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
 -- 
-2.24.4
+2.25.1
 
