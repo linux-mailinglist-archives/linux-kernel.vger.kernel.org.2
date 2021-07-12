@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00C203C4D7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1C63C5890
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239161AbhGLHNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:13:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45530 "EHLO mail.kernel.org"
+        id S1379320AbhGLIuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:50:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238416AbhGLGsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:48:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB3E360233;
-        Mon, 12 Jul 2021 06:44:28 +0000 (UTC)
+        id S1347681AbhGLHxm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:53:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AE7C613D2;
+        Mon, 12 Jul 2021 07:50:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072269;
-        bh=G8YL6T1iBH1nBWOx2yCzGcu378wr6uJX+MtL00NrUdo=;
+        s=korg; t=1626076253;
+        bh=ln+t5VxhROXKBz66MmlU7JLtuWd1efLc+sppj0XjlUY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WJAyepVaxpgyaDgoODqS2LcVi+K6I9iKPaNGPGGQ59413ggzJ5N889S9R8A57/bfg
-         BRVTKjO9YqpAr7ul3FQraUwWsvLOMDFalcuCyGxTqaveCw4gHrNeHyAiMBIfPqzv++
-         N4QOcRKttw3W+MvEK+9X0yQAa97+bHhlxKZFQ38U=
+        b=ec58xoK7DPVZ1yGrqOgiWfs/BcBCB+Akbd4GyEn53toIpizaP0VsGrZLnArp+TAR5
+         lIYjmXmIuy0KK93moTVP67d05NNgmRciBxEXySZOp7C88t3iLSoJFhTJ/T+rILiA78
+         UZkqVXzRmuPwevC1dti/tKebR5BbflDr2Y2Y+H7M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robert Hancock <robert.hancock@calian.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org,
+        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 424/593] clk: si5341: Check for input clock presence and PLL lock on startup
-Date:   Mon, 12 Jul 2021 08:09:44 +0200
-Message-Id: <20210712060934.964551890@linuxfoundation.org>
+Subject: [PATCH 5.13 562/800] Revert "ibmvnic: simplify reset_long_term_buff function"
+Date:   Mon, 12 Jul 2021 08:09:45 +0200
+Message-Id: <20210712061027.223197681@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,80 +41,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robert Hancock <robert.hancock@calian.com>
+From: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
 
-[ Upstream commit 71dcc4d1f7d2ad97ff7ab831281bc6893ff713a2 ]
+[ Upstream commit 0ec13aff058a82426c8d44b688c804cc4a5a0a3d ]
 
-After initializing the device, wait for it to report that the input
-clock is present and the PLL has locked before declaring success.
+This reverts commit 1c7d45e7b2c29080bf6c8cd0e213cc3cbb62a054.
 
-Fixes: 3044a860fd ("clk: Add Si5341/Si5340 driver")
-Signed-off-by: Robert Hancock <robert.hancock@calian.com>
-Link: https://lore.kernel.org/r/20210325192643.2190069-5-robert.hancock@calian.com
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+We tried to optimize the number of hcalls we send and skipped sending
+the REQUEST_MAP calls for some maps. However during resets, we need to
+resend all the maps to the VIOS since the VIOS does not remember the
+old values. In fact we may have failed over to a new VIOS which will
+not have any of the mappings.
+
+When we send packets with map ids the VIOS does not know about, it
+triggers a FATAL reset. While the client does recover from the FATAL
+error reset, we are seeing a large number of such resets. Handling
+FATAL resets is lot more unnecessary work than issuing a few more
+hcalls so revert the commit and resend the maps to the VIOS.
+
+Fixes: 1c7d45e7b2c ("ibmvnic: simplify reset_long_term_buff function")
+Signed-off-by: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/clk-si5341.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ drivers/net/ethernet/ibm/ibmvnic.c | 46 ++++++++++++++++++++++++------
+ 1 file changed, 38 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/clk/clk-si5341.c b/drivers/clk/clk-si5341.c
-index ac1ccec2b681..da40b90c2aa8 100644
---- a/drivers/clk/clk-si5341.c
-+++ b/drivers/clk/clk-si5341.c
-@@ -92,6 +92,9 @@ struct clk_si5341_output_config {
- #define SI5341_PN_BASE		0x0002
- #define SI5341_DEVICE_REV	0x0005
- #define SI5341_STATUS		0x000C
-+#define SI5341_LOS		0x000D
-+#define SI5341_STATUS_STICKY	0x0011
-+#define SI5341_LOS_STICKY	0x0012
- #define SI5341_SOFT_RST		0x001C
- #define SI5341_IN_SEL		0x0021
- #define SI5341_DEVICE_READY	0x00FE
-@@ -99,6 +102,12 @@ struct clk_si5341_output_config {
- #define SI5341_IN_EN		0x0949
- #define SI5341_INX_TO_PFD_EN	0x094A
+diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
+index 5788bb956d73..4b4eccc496a8 100644
+--- a/drivers/net/ethernet/ibm/ibmvnic.c
++++ b/drivers/net/ethernet/ibm/ibmvnic.c
+@@ -257,12 +257,40 @@ static void free_long_term_buff(struct ibmvnic_adapter *adapter,
+ 	dma_free_coherent(dev, ltb->size, ltb->buff, ltb->addr);
+ }
  
-+/* Status bits */
-+#define SI5341_STATUS_SYSINCAL	BIT(0)
-+#define SI5341_STATUS_LOSXAXB	BIT(1)
-+#define SI5341_STATUS_LOSREF	BIT(2)
-+#define SI5341_STATUS_LOL	BIT(3)
+-static int reset_long_term_buff(struct ibmvnic_long_term_buff *ltb)
++static int reset_long_term_buff(struct ibmvnic_adapter *adapter,
++				struct ibmvnic_long_term_buff *ltb)
+ {
+-	if (!ltb->buff)
+-		return -EINVAL;
++	struct device *dev = &adapter->vdev->dev;
++	int rc;
+ 
+ 	memset(ltb->buff, 0, ltb->size);
 +
- /* Input selection */
- #define SI5341_IN_SEL_MASK	0x06
- #define SI5341_IN_SEL_SHIFT	1
-@@ -1416,6 +1425,7 @@ static int si5341_probe(struct i2c_client *client,
- 	unsigned int i;
- 	struct clk_si5341_output_config config[SI5341_MAX_NUM_OUTPUTS];
- 	bool initialization_required;
-+	u32 status;
++	mutex_lock(&adapter->fw_lock);
++	adapter->fw_done_rc = 0;
++
++	reinit_completion(&adapter->fw_done);
++	rc = send_request_map(adapter, ltb->addr, ltb->size, ltb->map_id);
++	if (rc) {
++		mutex_unlock(&adapter->fw_lock);
++		return rc;
++	}
++
++	rc = ibmvnic_wait_for_completion(adapter, &adapter->fw_done, 10000);
++	if (rc) {
++		dev_info(dev,
++			 "Reset failed, long term map request timed out or aborted\n");
++		mutex_unlock(&adapter->fw_lock);
++		return rc;
++	}
++
++	if (adapter->fw_done_rc) {
++		dev_info(dev,
++			 "Reset failed, attempting to free and reallocate buffer\n");
++		free_long_term_buff(adapter, ltb);
++		mutex_unlock(&adapter->fw_lock);
++		return alloc_long_term_buff(adapter, ltb, ltb->size);
++	}
++	mutex_unlock(&adapter->fw_lock);
+ 	return 0;
+ }
  
- 	data = devm_kzalloc(&client->dev, sizeof(*data), GFP_KERNEL);
- 	if (!data)
-@@ -1583,6 +1593,22 @@ static int si5341_probe(struct i2c_client *client,
- 			return err;
+@@ -484,7 +512,8 @@ static int reset_rx_pools(struct ibmvnic_adapter *adapter)
+ 						  rx_pool->size *
+ 						  rx_pool->buff_size);
+ 		} else {
+-			rc = reset_long_term_buff(&rx_pool->long_term_buff);
++			rc = reset_long_term_buff(adapter,
++						  &rx_pool->long_term_buff);
+ 		}
+ 
+ 		if (rc)
+@@ -607,11 +636,12 @@ static int init_rx_pools(struct net_device *netdev)
+ 	return 0;
+ }
+ 
+-static int reset_one_tx_pool(struct ibmvnic_tx_pool *tx_pool)
++static int reset_one_tx_pool(struct ibmvnic_adapter *adapter,
++			     struct ibmvnic_tx_pool *tx_pool)
+ {
+ 	int rc, i;
+ 
+-	rc = reset_long_term_buff(&tx_pool->long_term_buff);
++	rc = reset_long_term_buff(adapter, &tx_pool->long_term_buff);
+ 	if (rc)
+ 		return rc;
+ 
+@@ -638,10 +668,10 @@ static int reset_tx_pools(struct ibmvnic_adapter *adapter)
+ 
+ 	tx_scrqs = adapter->num_active_tx_pools;
+ 	for (i = 0; i < tx_scrqs; i++) {
+-		rc = reset_one_tx_pool(&adapter->tso_pool[i]);
++		rc = reset_one_tx_pool(adapter, &adapter->tso_pool[i]);
+ 		if (rc)
+ 			return rc;
+-		rc = reset_one_tx_pool(&adapter->tx_pool[i]);
++		rc = reset_one_tx_pool(adapter, &adapter->tx_pool[i]);
+ 		if (rc)
+ 			return rc;
  	}
- 
-+	/* wait for device to report input clock present and PLL lock */
-+	err = regmap_read_poll_timeout(data->regmap, SI5341_STATUS, status,
-+		!(status & (SI5341_STATUS_LOSREF | SI5341_STATUS_LOL)),
-+	       10000, 250000);
-+	if (err) {
-+		dev_err(&client->dev, "Error waiting for input clock or PLL lock\n");
-+		return err;
-+	}
-+
-+	/* clear sticky alarm bits from initialization */
-+	err = regmap_write(data->regmap, SI5341_STATUS_STICKY, 0);
-+	if (err) {
-+		dev_err(&client->dev, "unable to clear sticky status\n");
-+		return err;
-+	}
-+
- 	/* Free the names, clk framework makes copies */
- 	for (i = 0; i < data->num_synth; ++i)
- 		 devm_kfree(&client->dev, (void *)synth_clock_names[i]);
 -- 
 2.30.2
 
