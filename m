@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0E63C4A40
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E98973C5160
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239636AbhGLGt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:49:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34412 "EHLO mail.kernel.org"
+        id S1347946AbhGLHk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:40:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238156AbhGLGj7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:39:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E23A661205;
-        Mon, 12 Jul 2021 06:36:23 +0000 (UTC)
+        id S244023AbhGLHKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:10:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 63067613AE;
+        Mon, 12 Jul 2021 07:05:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071784;
-        bh=fzRpnx2vPU6mQq96uyKWuxG9StcxCh97J7gGpygdDYE=;
+        s=korg; t=1626073544;
+        bh=Hzbmz1ERa12td2nOKxQf8zAtrP8eXDP3CAkhoV0GZ5Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HgqncR6NF4M+iozHjLwK61k2cTCGtUNZhtO6lecx9uDQz5wBI0ISoe7eLy6ADJWNN
-         kHEla00HQTUpG2gT9qIVSY/lnU8gnY9BLywUrAv4mLQyXGJyHKutjT/TJCaO0KG0hL
-         n0ERVbwan2Qnf/rr+2pzFw4dnIs2NX0bXWMrhcME=
+        b=eW7aISbJa3xcTSaFd7Zrr8fazChAsLGZ923jl/j8z7IP/W15AARoP5fSywTVNgbeA
+         ufakUDlmlXUFiKDdKAYCDDYuYNu8Gt/eN1WiRbeiDa/XZG5LxUySKpqOFN4Wlw4WUt
+         oRwOgIzdn5HD7Dic/7aXLXplPm5z7TLfOo39RWEI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Joe Richey <joerichey@google.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 201/593] ACPI: tables: Add custom DSDT file as makefile prerequisite
+Subject: [PATCH 5.12 278/700] media: vicodec: Use _BITUL() macro in UAPI headers
 Date:   Mon, 12 Jul 2021 08:06:01 +0200
-Message-Id: <20210712060905.141248014@linuxfoundation.org>
+Message-Id: <20210712061005.825558430@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,41 +41,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+From: Joe Richey <joerichey@google.com>
 
-[ Upstream commit d1059c1b1146870c52f3dac12cb7b6cbf39ed27f ]
+[ Upstream commit ce67eaca95f8ab5c6aae41a10adfe9a6e8efa58c ]
 
-A custom DSDT file is mostly used during development or debugging,
-and in that case it is quite likely to want to rebuild the kernel
-after changing ONLY the content of the DSDT.
+Replace BIT() in v4l2's UPAI header with _BITUL(). BIT() is not defined
+in the UAPI headers and its usage may cause userspace build errors.
 
-This patch adds the custom DSDT as a prerequisite to tables.o
-to ensure a rebuild if the DSDT file is updated. Make will merge
-the prerequisites from multiple rules for the same target.
-
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fixes: 206bc0f6fb94 ("media: vicodec: mark the stateless FWHT API as stable")
+Signed-off-by: Joe Richey <joerichey@google.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/Makefile | 5 +++++
- 1 file changed, 5 insertions(+)
+ include/uapi/linux/v4l2-controls.h | 23 ++++++++++++-----------
+ 1 file changed, 12 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile
-index 44e412506317..4466156474ee 100644
---- a/drivers/acpi/Makefile
-+++ b/drivers/acpi/Makefile
-@@ -8,6 +8,11 @@ ccflags-$(CONFIG_ACPI_DEBUG)	+= -DACPI_DEBUG_OUTPUT
- #
- # ACPI Boot-Time Table Parsing
- #
-+ifeq ($(CONFIG_ACPI_CUSTOM_DSDT),y)
-+tables.o: $(src)/../../include/$(subst $\",,$(CONFIG_ACPI_CUSTOM_DSDT_FILE)) ;
-+
-+endif
-+
- obj-$(CONFIG_ACPI)		+= tables.o
- obj-$(CONFIG_X86)		+= blacklist.o
+diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+index 039c0d7add1b..c7fe032df185 100644
+--- a/include/uapi/linux/v4l2-controls.h
++++ b/include/uapi/linux/v4l2-controls.h
+@@ -50,6 +50,7 @@
+ #ifndef __LINUX_V4L2_CONTROLS_H
+ #define __LINUX_V4L2_CONTROLS_H
  
++#include <linux/const.h>
+ #include <linux/types.h>
+ 
+ /* Control classes */
+@@ -1593,30 +1594,30 @@ struct v4l2_ctrl_h264_decode_params {
+ #define V4L2_FWHT_VERSION			3
+ 
+ /* Set if this is an interlaced format */
+-#define V4L2_FWHT_FL_IS_INTERLACED		BIT(0)
++#define V4L2_FWHT_FL_IS_INTERLACED		_BITUL(0)
+ /* Set if this is a bottom-first (NTSC) interlaced format */
+-#define V4L2_FWHT_FL_IS_BOTTOM_FIRST		BIT(1)
++#define V4L2_FWHT_FL_IS_BOTTOM_FIRST		_BITUL(1)
+ /* Set if each 'frame' contains just one field */
+-#define V4L2_FWHT_FL_IS_ALTERNATE		BIT(2)
++#define V4L2_FWHT_FL_IS_ALTERNATE		_BITUL(2)
+ /*
+  * If V4L2_FWHT_FL_IS_ALTERNATE was set, then this is set if this
+  * 'frame' is the bottom field, else it is the top field.
+  */
+-#define V4L2_FWHT_FL_IS_BOTTOM_FIELD		BIT(3)
++#define V4L2_FWHT_FL_IS_BOTTOM_FIELD		_BITUL(3)
+ /* Set if the Y' plane is uncompressed */
+-#define V4L2_FWHT_FL_LUMA_IS_UNCOMPRESSED	BIT(4)
++#define V4L2_FWHT_FL_LUMA_IS_UNCOMPRESSED	_BITUL(4)
+ /* Set if the Cb plane is uncompressed */
+-#define V4L2_FWHT_FL_CB_IS_UNCOMPRESSED		BIT(5)
++#define V4L2_FWHT_FL_CB_IS_UNCOMPRESSED		_BITUL(5)
+ /* Set if the Cr plane is uncompressed */
+-#define V4L2_FWHT_FL_CR_IS_UNCOMPRESSED		BIT(6)
++#define V4L2_FWHT_FL_CR_IS_UNCOMPRESSED		_BITUL(6)
+ /* Set if the chroma plane is full height, if cleared it is half height */
+-#define V4L2_FWHT_FL_CHROMA_FULL_HEIGHT		BIT(7)
++#define V4L2_FWHT_FL_CHROMA_FULL_HEIGHT		_BITUL(7)
+ /* Set if the chroma plane is full width, if cleared it is half width */
+-#define V4L2_FWHT_FL_CHROMA_FULL_WIDTH		BIT(8)
++#define V4L2_FWHT_FL_CHROMA_FULL_WIDTH		_BITUL(8)
+ /* Set if the alpha plane is uncompressed */
+-#define V4L2_FWHT_FL_ALPHA_IS_UNCOMPRESSED	BIT(9)
++#define V4L2_FWHT_FL_ALPHA_IS_UNCOMPRESSED	_BITUL(9)
+ /* Set if this is an I Frame */
+-#define V4L2_FWHT_FL_I_FRAME			BIT(10)
++#define V4L2_FWHT_FL_I_FRAME			_BITUL(10)
+ 
+ /* A 4-values flag - the number of components - 1 */
+ #define V4L2_FWHT_FL_COMPONENTS_NUM_MSK		GENMASK(18, 16)
 -- 
 2.30.2
 
