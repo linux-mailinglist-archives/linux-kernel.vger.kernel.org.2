@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 177163C56E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7175B3C498B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358193AbhGLIZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:25:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49008 "EHLO mail.kernel.org"
+        id S236312AbhGLGpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:45:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348646AbhGLHlO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:41:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2892E60724;
-        Mon, 12 Jul 2021 07:38:23 +0000 (UTC)
+        id S237888AbhGLGe4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:34:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EB23610CA;
+        Mon, 12 Jul 2021 06:32:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075504;
-        bh=US1hJ2G3OSXq4i3pt6pdZkmGAzaPlgomDJpyu+3aiJ0=;
+        s=korg; t=1626071524;
+        bh=Lz+/JlLUf0y6vdpM5zzN5Pg+5vyv1ERRqgWrhzFUI5w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XrMriaWZzfnf8RJnAHxiFa5JWqsFTdCvlpdgyR0QU3J0l15q8/lRhMrL7gO9NKhFS
-         szuuMO30czq5F67B6BR8ZYYTLcxDr5KF2K9sBLRajEZMFKhtVzf/thahKFLWNEes8N
-         cg1ydy2iQPLofPjviS8dEcwVva0KFg9ASYqQ4GGo=
+        b=ag0LdVq8fMlx1G9/oHXNnaJd1aciwTKHipISoT544OL8FKHmoPNohYWkiqs0u54Az
+         jN3Fn7EfkIHp3mRclLCJ/ef08xMS4C0PS/LzqbWiACNIqhAa32/5tIBLVq2i+skM7u
+         EGSoagVix94TVk4D5FFl+MDdaj4nXV3ekxlDL118=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
-        James Smart <jsmart2021@gmail.com>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 241/800] nvmet-fc: do not check for invalid target port in nvmet_fc_handle_fcp_rqst()
-Date:   Mon, 12 Jul 2021 08:04:24 +0200
-Message-Id: <20210712060947.693631497@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 105/593] media: s5p: fix pm_runtime_get_sync() usage count
+Date:   Mon, 12 Jul 2021 08:04:25 +0200
+Message-Id: <20210712060854.770175643@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +43,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hannes Reinecke <hare@suse.de>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-[ Upstream commit 2a4a910aa4f0acc428dc8d10227c42e14ed21d10 ]
+[ Upstream commit fdc34e82c0f968ac4c157bd3d8c299ebc24c9c63 ]
 
-When parsing a request in nvmet_fc_handle_fcp_rqst() we should not
-check for invalid target ports; if we do the command is aborted
-from the fcp layer, causing the host to assume a transport error.
-Rather we should still forward this request to the nvmet layer, which
-will then correctly fail the command with an appropriate error status.
+The pm_runtime_get_sync() internally increments the
+dev->power.usage_count without decrementing it, even on errors.
+Replace it by the new pm_runtime_resume_and_get(), introduced by:
+commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+in order to properly decrement the usage counter, avoiding
+a potential PM usage counter leak.
 
-Signed-off-by: Hannes Reinecke <hare@suse.de>
-Reviewed-by: James Smart <jsmart2021@gmail.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+While here, check if the PM runtime error was caught at
+s5p_cec_adap_enable().
+
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/target/fc.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ drivers/media/cec/platform/s5p/s5p_cec.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/nvme/target/fc.c b/drivers/nvme/target/fc.c
-index 19e113240fff..22b5108168a6 100644
---- a/drivers/nvme/target/fc.c
-+++ b/drivers/nvme/target/fc.c
-@@ -2510,13 +2510,6 @@ nvmet_fc_handle_fcp_rqst(struct nvmet_fc_tgtport *tgtport,
- 	u32 xfrlen = be32_to_cpu(cmdiu->data_len);
- 	int ret;
+diff --git a/drivers/media/cec/platform/s5p/s5p_cec.c b/drivers/media/cec/platform/s5p/s5p_cec.c
+index 2a3e7ffefe0a..2250c1cbc64e 100644
+--- a/drivers/media/cec/platform/s5p/s5p_cec.c
++++ b/drivers/media/cec/platform/s5p/s5p_cec.c
+@@ -35,10 +35,13 @@ MODULE_PARM_DESC(debug, "debug level (0-2)");
  
--	/*
--	 * if there is no nvmet mapping to the targetport there
--	 * shouldn't be requests. just terminate them.
--	 */
--	if (!tgtport->pe)
--		goto transport_error;
--
- 	/*
- 	 * Fused commands are currently not supported in the linux
- 	 * implementation.
-@@ -2544,7 +2537,8 @@ nvmet_fc_handle_fcp_rqst(struct nvmet_fc_tgtport *tgtport,
+ static int s5p_cec_adap_enable(struct cec_adapter *adap, bool enable)
+ {
++	int ret;
+ 	struct s5p_cec_dev *cec = cec_get_drvdata(adap);
  
- 	fod->req.cmd = &fod->cmdiubuf.sqe;
- 	fod->req.cqe = &fod->rspiubuf.cqe;
--	fod->req.port = tgtport->pe->port;
-+	if (tgtport->pe)
-+		fod->req.port = tgtport->pe->port;
+ 	if (enable) {
+-		pm_runtime_get_sync(cec->dev);
++		ret = pm_runtime_resume_and_get(cec->dev);
++		if (ret < 0)
++			return ret;
  
- 	/* clear any response payload */
- 	memset(&fod->rspiubuf, 0, sizeof(fod->rspiubuf));
+ 		s5p_cec_reset(cec);
+ 
 -- 
 2.30.2
 
