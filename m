@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0553C587D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F9DA3C53C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:52:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357052AbhGLIsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:48:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41480 "EHLO mail.kernel.org"
+        id S1348605AbhGLHzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:55:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244199AbhGLHw6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:52:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E6E9610FB;
-        Mon, 12 Jul 2021 07:50:09 +0000 (UTC)
+        id S241498AbhGLHVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:21:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BC2561153;
+        Mon, 12 Jul 2021 07:18:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076209;
-        bh=51sHy3bhoALP3+EQcat70uFH9WrQV/g67kmV6WlglbU=;
+        s=korg; t=1626074313;
+        bh=VbYQrgvhe0aVkGjfUOiJLFo0lotve3uY4ypn/0VDXcM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rqFoLm1pp2Y7sN/xzPm3R2k2vonbFsnGgT3FRB8GfjCvO1dopUWT/wuSt08HPv+sj
-         fe3APBPxl+45G003o9LiPLPkMMXPwKYvtWph+nNiKD8ydSnOmYdyBwR7/rVSaRFTYJ
-         cklMX/0m1T1dhgz6j37LDsdb6xOsq5OEKmNNCJQo=
+        b=z5G5NR4PNcdO1Y7Rub/DEFETeH593Dx6wVCVuB85m6r0Uzku12npRwA6xofYqdtdR
+         gSTsopSfVRDXHmyPgjo8FSjhC1rpCU5yowlAUR4OXxP1/s+ep996YzVWfaZIP+3/FQ
+         CJ7OlCj1o00GqaiERzgJ00qc24srAC9g5sh0gnKw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+b80c9959009a9325cdff@syzkaller.appspotmail.com,
-        Dongliang Mu <mudongliangabcd@gmail.com>,
-        Alexander Aring <aahringo@redhat.com>,
-        Stefan Schmidt <stefan@datenfreihafen.org>,
+        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 545/800] ieee802154: hwsim: Fix memory leak in hwsim_add_one
+Subject: [PATCH 5.12 485/700] ibmvnic: set ltb->buff to NULL after freeing
 Date:   Mon, 12 Jul 2021 08:09:28 +0200
-Message-Id: <20210712061025.326695674@linuxfoundation.org>
+Message-Id: <20210712061028.183649390@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,58 +41,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongliang Mu <mudongliangabcd@gmail.com>
+From: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
 
-[ Upstream commit 28a5501c3383f0e6643012c187b7c2027ef42aea ]
+[ Upstream commit 552a33729f1a7cc5115d0752064fe9abd6e3e336 ]
 
-No matter from hwsim_remove or hwsim_del_radio_nl, hwsim_del fails to
-remove the entry in the edges list. Take the example below, phy0, phy1
-and e0 will be deleted, resulting in e1 not freed and accessed in the
-future.
+free_long_term_buff() checks ltb->buff to decide whether we have a long
+term buffer to free. So set ltb->buff to NULL afer freeing. While here,
+also clear ->map_id, fix up some coding style and log an error.
 
-              hwsim_phys
-                  |
-    ------------------------------
-    |                            |
-phy0 (edges)                 phy1 (edges)
-   ----> e1 (idx = 1)             ----> e0 (idx = 0)
-
-Fix this by deleting and freeing all the entries in the edges list
-between hwsim_edge_unsubscribe_me and list_del(&phy->list).
-
-Reported-by: syzbot+b80c9959009a9325cdff@syzkaller.appspotmail.com
-Fixes: 1c9f4a3fce77 ("ieee802154: hwsim: fix rcu handling")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-Acked-by: Alexander Aring <aahringo@redhat.com>
-Link: https://lore.kernel.org/r/20210616020901.2759466-1-mudongliangabcd@gmail.com
-Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
+Fixes: 9c4eaabd1bb39 ("Check CRQ command return codes")
+Signed-off-by: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ieee802154/mac802154_hwsim.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/net/ethernet/ibm/ibmvnic.c | 26 +++++++++++++++-----------
+ 1 file changed, 15 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/ieee802154/mac802154_hwsim.c b/drivers/net/ieee802154/mac802154_hwsim.c
-index 366eaae3550a..baa7e21b7f4f 100644
---- a/drivers/net/ieee802154/mac802154_hwsim.c
-+++ b/drivers/net/ieee802154/mac802154_hwsim.c
-@@ -824,12 +824,17 @@ err_pib:
- static void hwsim_del(struct hwsim_phy *phy)
- {
- 	struct hwsim_pib *pib;
-+	struct hwsim_edge *e;
+diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
+index f1a6f454fe97..accf362193f8 100644
+--- a/drivers/net/ethernet/ibm/ibmvnic.c
++++ b/drivers/net/ethernet/ibm/ibmvnic.c
+@@ -211,12 +211,11 @@ static int alloc_long_term_buff(struct ibmvnic_adapter *adapter,
+ 	mutex_lock(&adapter->fw_lock);
+ 	adapter->fw_done_rc = 0;
+ 	reinit_completion(&adapter->fw_done);
+-	rc = send_request_map(adapter, ltb->addr,
+-			      ltb->size, ltb->map_id);
++
++	rc = send_request_map(adapter, ltb->addr, ltb->size, ltb->map_id);
+ 	if (rc) {
+-		dma_free_coherent(dev, ltb->size, ltb->buff, ltb->addr);
+-		mutex_unlock(&adapter->fw_lock);
+-		return rc;
++		dev_err(dev, "send_request_map failed, rc = %d\n", rc);
++		goto out;
+ 	}
  
- 	hwsim_edge_unsubscribe_me(phy);
+ 	rc = ibmvnic_wait_for_completion(adapter, &adapter->fw_done, 10000);
+@@ -224,20 +223,23 @@ static int alloc_long_term_buff(struct ibmvnic_adapter *adapter,
+ 		dev_err(dev,
+ 			"Long term map request aborted or timed out,rc = %d\n",
+ 			rc);
+-		dma_free_coherent(dev, ltb->size, ltb->buff, ltb->addr);
+-		mutex_unlock(&adapter->fw_lock);
+-		return rc;
++		goto out;
+ 	}
  
- 	list_del(&phy->list);
- 
- 	rcu_read_lock();
-+	list_for_each_entry_rcu(e, &phy->edges, list) {
-+		list_del_rcu(&e->list);
-+		hwsim_free_edge(e);
+ 	if (adapter->fw_done_rc) {
+ 		dev_err(dev, "Couldn't map long term buffer,rc = %d\n",
+ 			adapter->fw_done_rc);
++		rc = -1;
++		goto out;
 +	}
- 	pib = rcu_dereference(phy->pib);
- 	rcu_read_unlock();
++	rc = 0;
++out:
++	if (rc) {
+ 		dma_free_coherent(dev, ltb->size, ltb->buff, ltb->addr);
+-		mutex_unlock(&adapter->fw_lock);
+-		return -1;
++		ltb->buff = NULL;
+ 	}
+ 	mutex_unlock(&adapter->fw_lock);
+-	return 0;
++	return rc;
+ }
  
+ static void free_long_term_buff(struct ibmvnic_adapter *adapter,
+@@ -257,6 +259,8 @@ static void free_long_term_buff(struct ibmvnic_adapter *adapter,
+ 	    adapter->reset_reason != VNIC_RESET_TIMEOUT)
+ 		send_request_unmap(adapter, ltb->map_id);
+ 	dma_free_coherent(dev, ltb->size, ltb->buff, ltb->addr);
++	ltb->buff = NULL;
++	ltb->map_id = 0;
+ }
+ 
+ static int reset_long_term_buff(struct ibmvnic_adapter *adapter,
 -- 
 2.30.2
 
