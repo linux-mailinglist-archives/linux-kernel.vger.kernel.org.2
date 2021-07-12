@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E62B53C4BDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 398C13C57D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238861AbhGLHAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:00:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36804 "EHLO mail.kernel.org"
+        id S1354804AbhGLIh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:37:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239106AbhGLGos (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:44:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6363E611C1;
-        Mon, 12 Jul 2021 06:40:41 +0000 (UTC)
+        id S1350665AbhGLHvM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:51:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01F1D61C33;
+        Mon, 12 Jul 2021 07:47:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072041;
-        bh=MCwjGlUhMs9fRJNOMQKclYgS0+8CWreKuf7GuCiuqT4=;
+        s=korg; t=1626076027;
+        bh=+kn2t7F8N6gHn30c1y7H9Zqs2VZPF+DtrHblFRjYkQw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t+QJmdhLov3aIxT8cp+ooDbHejE+DEtBTX4FT6orzyDehMhKNqwGSqNN56P9tsrcG
-         m3Q/6rIM/rPJDASaV1SyuLRiqibYAYC+nSo3Eges19lxQJOUvs2a1Nt/ZV3mqP3DJs
-         jU2N59V+rWPWfc/h5FM51b7psnsPF9qN0aimwXQo=
+        b=kndxg35JxOVyq+g8/hfdzbsK1JlWgDtqcY03rOpZQus0+hDH6ARECUWXb0Q3fJbYU
+         jNpqu+EQbe8ZN1I2mDCheBHOiQoMT19oEV/5Y7NHpgaNu8HSkSFubBh8DZgyBHCjAi
+         gIeFgKuts17P7U+kMJTM5whI9of4cnFPwpEIisPY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Matthias Brugger <mbrugger@suse.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 328/593] ehea: fix error return code in ehea_restart_qps()
+Subject: [PATCH 5.13 465/800] brcmfmac: Delete second brcm folder hierarchy
 Date:   Mon, 12 Jul 2021 08:08:08 +0200
-Message-Id: <20210712060921.835284510@linuxfoundation.org>
+Message-Id: <20210712061016.592834772@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,67 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Matthias Brugger <mbrugger@suse.com>
 
-[ Upstream commit 015dbf5662fd689d581c0bc980711b073ca09a1a ]
+[ Upstream commit 4a26aafe4886a4ec9965171c280ce16df30dc362 ]
 
-Fix to return -EFAULT from the error handling case instead of 0, as done
-elsewhere in this function.
+BRCMF_FW_DEFAULT_PATH already defines the brcm folder, delete the second
+folder to match with Linux firmware repository layout.
 
-By the way, when get_zeroed_page() fails, directly return -ENOMEM to
-simplify code.
-
-Fixes: 2c69448bbced ("ehea: DLPAR memory add fix")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Link: https://lore.kernel.org/r/20210528085555.9390-1-thunder.leizhen@huawei.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 75729e110e68 ("brcmfmac: expose firmware config files through modinfo")
+Signed-off-by: Matthias Brugger <mbrugger@suse.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210602144305.4481-1-matthias.bgg@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ibm/ehea/ehea_main.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/ibm/ehea/ehea_main.c b/drivers/net/ethernet/ibm/ehea/ehea_main.c
-index c2e740475786..f63066736425 100644
---- a/drivers/net/ethernet/ibm/ehea/ehea_main.c
-+++ b/drivers/net/ethernet/ibm/ehea/ehea_main.c
-@@ -2617,10 +2617,8 @@ static int ehea_restart_qps(struct net_device *dev)
- 	u16 dummy16 = 0;
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+index 3a1c98a046f0..faf5f8e5eee3 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+@@ -626,8 +626,8 @@ BRCMF_FW_DEF(4373, "brcmfmac4373-sdio");
+ BRCMF_FW_DEF(43012, "brcmfmac43012-sdio");
  
- 	cb0 = (void *)get_zeroed_page(GFP_KERNEL);
--	if (!cb0) {
--		ret = -ENOMEM;
--		goto out;
--	}
-+	if (!cb0)
-+		return -ENOMEM;
+ /* firmware config files */
+-MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac*-sdio.*.txt");
+-MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcm/brcmfmac*-pcie.*.txt");
++MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcmfmac*-sdio.*.txt");
++MODULE_FIRMWARE(BRCMF_FW_DEFAULT_PATH "brcmfmac*-pcie.*.txt");
  
- 	for (i = 0; i < (port->num_def_qps); i++) {
- 		struct ehea_port_res *pr =  &port->port_res[i];
-@@ -2640,6 +2638,7 @@ static int ehea_restart_qps(struct net_device *dev)
- 					    cb0);
- 		if (hret != H_SUCCESS) {
- 			netdev_err(dev, "query_ehea_qp failed (1)\n");
-+			ret = -EFAULT;
- 			goto out;
- 		}
- 
-@@ -2652,6 +2651,7 @@ static int ehea_restart_qps(struct net_device *dev)
- 					     &dummy64, &dummy16, &dummy16);
- 		if (hret != H_SUCCESS) {
- 			netdev_err(dev, "modify_ehea_qp failed (1)\n");
-+			ret = -EFAULT;
- 			goto out;
- 		}
- 
-@@ -2660,6 +2660,7 @@ static int ehea_restart_qps(struct net_device *dev)
- 					    cb0);
- 		if (hret != H_SUCCESS) {
- 			netdev_err(dev, "query_ehea_qp failed (2)\n");
-+			ret = -EFAULT;
- 			goto out;
- 		}
- 
+ static const struct brcmf_firmware_mapping brcmf_sdio_fwnames[] = {
+ 	BRCMF_FW_ENTRY(BRCM_CC_43143_CHIP_ID, 0xFFFFFFFF, 43143),
 -- 
 2.30.2
 
