@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F1A3C4D98
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1F063C5467
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:53:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241483AbhGLHNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:13:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49252 "EHLO mail.kernel.org"
+        id S1351845AbhGLH6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:58:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238817AbhGLGtS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:49:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B3B06120D;
-        Mon, 12 Jul 2021 06:45:16 +0000 (UTC)
+        id S1344750AbhGLHUt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:20:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45EFE610A6;
+        Mon, 12 Jul 2021 07:18:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072316;
-        bh=COx7KGEwyBUGakUkzfRySLpuKRMns13vFF5+zf6Cogc=;
+        s=korg; t=1626074281;
+        bh=7zs5AeFZlLMDbFtSpYQLgvmceUf9VKifAhC3x3e3esE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nuLr4rpKfK/pIAfCNk3qbrGTFqi4I0kMsfe3B1xF3yx0FGbsifO3XnbX3UQoFtgVd
-         Mw1Q6OOALF1jFUWxOcH+HDr5y6dvhmmfq9qlr/1e4dPqowh4+DIu3bTH59yR00kBHn
-         0hEZODFH4KGoCDD4gaYwB4vM+faStWxMHiIVHCEo=
+        b=z3rhl2oSgj016D9Pa9F1rep+QVc+Furvb1wRC95mHOhNtUKAUVra183L8w83cljm0
+         E5augWSHiTVvyijYqALINyb5bbfkI89/o0nP6G57EJYZqMXNkR5gRRaSrQPrsQvo3c
+         xv1cghdsrraGaErFzO/uFh1mjLYUWjDJiWRvxI+k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 447/593] iio: accel: hid: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
-Date:   Mon, 12 Jul 2021 08:10:07 +0200
-Message-Id: <20210712060938.272326983@linuxfoundation.org>
+Subject: [PATCH 5.12 525/700] serial: 8250_omap: fix a timeout loop condition
+Date:   Mon, 12 Jul 2021 08:10:08 +0200
+Message-Id: <20210712061032.287839327@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,65 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit c6559bf796ccdb3a0c79db846af96c8f7046880b ]
+[ Upstream commit d7e325aaa8c3593b5a572b583ecad79e95f32e7f ]
 
-To make code more readable, use a structure to express the channel
-layout and ensure the timestamp is 8 byte aligned.
-Note this matches what was done in all the other hid sensor drivers.
-This one was missed previously due to an extra level of indirection.
+This loop ends on -1 so the error message will never be printed.
 
-Found during an audit of all calls of this function.
-
-Fixes: a96cd0f901ee ("iio: accel: hid-sensor-accel-3d: Add timestamp")
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20210501170121.512209-4-jic23@kernel.org
+Fixes: 4bcf59a5dea0 ("serial: 8250: 8250_omap: Account for data in flight during DMA teardown")
+Reviewed-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/YIpd+kOpXKMpEXPf@mwanda
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/accel/hid-sensor-accel-3d.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/tty/serial/8250/8250_omap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/iio/accel/hid-sensor-accel-3d.c b/drivers/iio/accel/hid-sensor-accel-3d.c
-index 4c5e594024f8..f05840d17fb7 100644
---- a/drivers/iio/accel/hid-sensor-accel-3d.c
-+++ b/drivers/iio/accel/hid-sensor-accel-3d.c
-@@ -27,8 +27,11 @@ struct accel_3d_state {
- 	struct hid_sensor_hub_callbacks callbacks;
- 	struct hid_sensor_common common_attributes;
- 	struct hid_sensor_hub_attribute_info accel[ACCEL_3D_CHANNEL_MAX];
--	/* Reserve for 3 channels + padding + timestamp */
--	u32 accel_val[ACCEL_3D_CHANNEL_MAX + 3];
-+	/* Ensure timestamp is naturally aligned */
-+	struct {
-+		u32 accel_val[3];
-+		s64 timestamp __aligned(8);
-+	} scan;
- 	int scale_pre_decml;
- 	int scale_post_decml;
- 	int scale_precision;
-@@ -239,8 +242,8 @@ static int accel_3d_proc_event(struct hid_sensor_hub_device *hsdev,
- 			accel_state->timestamp = iio_get_time_ns(indio_dev);
+diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
+index 23e0decde33e..3161d3655670 100644
+--- a/drivers/tty/serial/8250/8250_omap.c
++++ b/drivers/tty/serial/8250/8250_omap.c
+@@ -813,7 +813,7 @@ static void __dma_rx_do_complete(struct uart_8250_port *p)
+ 			       poll_count--)
+ 				cpu_relax();
  
- 		hid_sensor_push_data(indio_dev,
--				     accel_state->accel_val,
--				     sizeof(accel_state->accel_val),
-+				     &accel_state->scan,
-+				     sizeof(accel_state->scan),
- 				     accel_state->timestamp);
- 
- 		accel_state->timestamp = 0;
-@@ -265,7 +268,7 @@ static int accel_3d_capture_sample(struct hid_sensor_hub_device *hsdev,
- 	case HID_USAGE_SENSOR_ACCEL_Y_AXIS:
- 	case HID_USAGE_SENSOR_ACCEL_Z_AXIS:
- 		offset = usage_id - HID_USAGE_SENSOR_ACCEL_X_AXIS;
--		accel_state->accel_val[CHANNEL_SCAN_INDEX_X + offset] =
-+		accel_state->scan.accel_val[CHANNEL_SCAN_INDEX_X + offset] =
- 						*(u32 *)raw_data;
- 		ret = 0;
- 	break;
+-			if (!poll_count)
++			if (poll_count == -1)
+ 				dev_err(p->port.dev, "teardown incomplete\n");
+ 		}
+ 	}
 -- 
 2.30.2
 
