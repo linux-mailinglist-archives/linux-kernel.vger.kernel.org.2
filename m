@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4013C4571
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 08:23:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B2F3C4577
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 08:23:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235017AbhGLGZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:25:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39102 "EHLO mail.kernel.org"
+        id S234172AbhGLGZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:25:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235014AbhGLGY0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235020AbhGLGY0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Jul 2021 02:24:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BE03D61185;
-        Mon, 12 Jul 2021 06:20:56 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B6E3D61186;
+        Mon, 12 Jul 2021 06:21:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626070857;
-        bh=VdU5if/H3h+GWxk3WVaJSJnSIav16mMlfhXKIH2qt40=;
+        s=korg; t=1626070864;
+        bh=n+KLKmhYLsIkH/9PCdHkKTuX0Vlmc6T3wEKfw8lSxsU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mZmGzhM1pvyTnI2wb3Bl7vQptBJ/C7nPZdoTGK+uaTM2mrfv8PaOQin1sSFisK4G0
-         rUapk/YoPdfIPMQJ5zRJDoHkTJ/FTT/SJ5/pb1MlIAPFaX9fZv1G9GEmBt4tNZ/iEV
-         TKYRbijfZFovKNOnUdtXaPWZjTQeYGOo6Ci+kYg0=
+        b=hq+JPOC3TPuZU/EgTbMWUo5YfIkkDijGUT4t2BmQlZYyxY5bxvkCia2NZgGxRmNmI
+         itxtXCPLNOtHiNVhWFqPcE8lY00NxVHqKxek4lPPM749uDWeYFC4PgJK9z0H4O7ell
+         irCP22S35xaf/5z/Ei3Hyc2fezLMNfscOJOjyX3A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
+        stable@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 171/348] sched/rt: Fix Deadline utilization tracking during policy change
-Date:   Mon, 12 Jul 2021 08:09:15 +0200
-Message-Id: <20210712060723.545687840@linuxfoundation.org>
+Subject: [PATCH 5.4 174/348] crypto: nx - Fix RCU warning in nx842_OF_upd_status
+Date:   Mon, 12 Jul 2021 08:09:18 +0200
+Message-Id: <20210712060723.991457019@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060659.886176320@linuxfoundation.org>
 References: <20210712060659.886176320@linuxfoundation.org>
@@ -42,50 +39,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Donnefort <vincent.donnefort@arm.com>
+From: Herbert Xu <herbert@gondor.apana.org.au>
 
-[ Upstream commit d7d607096ae6d378b4e92d49946d22739c047d4c ]
+[ Upstream commit 2a96726bd0ccde4f12b9b9a9f61f7b1ac5af7e10 ]
 
-DL keeps track of the utilization on a per-rq basis with the structure
-avg_dl. This utilization is updated during task_tick_dl(),
-put_prev_task_dl() and set_next_task_dl(). However, when the current
-running task changes its policy, set_next_task_dl() which would usually
-take care of updating the utilization when the rq starts running DL
-tasks, will not see a such change, leaving the avg_dl structure outdated.
-When that very same task will be dequeued later, put_prev_task_dl() will
-then update the utilization, based on a wrong last_update_time, leading to
-a huge spike in the DL utilization signal.
+The function nx842_OF_upd_status triggers a sparse RCU warning when
+it directly dereferences the RCU-protected devdata.  This appears
+to be an accident as there was another variable of the same name
+that was passed in from the caller.
 
-The signal would eventually recover from this issue after few ms. Even
-if no DL tasks are run, avg_dl is also updated in
-__update_blocked_others(). But as the CPU capacity depends partly on the
-avg_dl, this issue has nonetheless a significant impact on the scheduler.
+After it was removed (because the main purpose of using it, to
+update the status member was itself removed) the global variable
+unintenionally stood in as its replacement.
 
-Fix this issue by ensuring a load update when a running task changes
-its policy to DL.
+This patch restores the devdata parameter.
 
-Fixes: 3727e0e ("sched/dl: Add dl_rq utilization tracking")
-Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lore.kernel.org/r/1624271872-211872-3-git-send-email-vincent.donnefort@arm.com
+Fixes: 90fd73f912f0 ("crypto: nx - remove pSeries NX 'status' field")
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/deadline.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/crypto/nx/nx-842-pseries.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index 4ce8c11e5e4a..3cf776d5bce8 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -2392,6 +2392,8 @@ static void switched_to_dl(struct rq *rq, struct task_struct *p)
- 			check_preempt_curr_dl(rq, p, 0);
- 		else
- 			resched_curr(rq);
-+	} else {
-+		update_dl_rq_load_avg(rq_clock_pelt(rq), rq, 0);
- 	}
- }
+diff --git a/drivers/crypto/nx/nx-842-pseries.c b/drivers/crypto/nx/nx-842-pseries.c
+index 258c5e38a551..c5ec50a28f30 100644
+--- a/drivers/crypto/nx/nx-842-pseries.c
++++ b/drivers/crypto/nx/nx-842-pseries.c
+@@ -538,13 +538,15 @@ static int nx842_OF_set_defaults(struct nx842_devdata *devdata)
+  * The status field indicates if the device is enabled when the status
+  * is 'okay'.  Otherwise the device driver will be disabled.
+  *
+- * @prop - struct property point containing the maxsyncop for the update
++ * @devdata: struct nx842_devdata to use for dev_info
++ * @prop: struct property point containing the maxsyncop for the update
+  *
+  * Returns:
+  *  0 - Device is available
+  *  -ENODEV - Device is not available
+  */
+-static int nx842_OF_upd_status(struct property *prop)
++static int nx842_OF_upd_status(struct nx842_devdata *devdata,
++			       struct property *prop)
+ {
+ 	const char *status = (const char *)prop->value;
+ 
+@@ -758,7 +760,7 @@ static int nx842_OF_upd(struct property *new_prop)
+ 		goto out;
+ 
+ 	/* Perform property updates */
+-	ret = nx842_OF_upd_status(status);
++	ret = nx842_OF_upd_status(new_devdata, status);
+ 	if (ret)
+ 		goto error_out;
  
 -- 
 2.30.2
