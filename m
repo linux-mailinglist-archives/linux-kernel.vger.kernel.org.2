@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB19E3C4AC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6833C5148
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240539AbhGLGxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:53:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34936 "EHLO mail.kernel.org"
+        id S1345854AbhGLHjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:39:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237422AbhGLGj0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:39:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B47EB6113A;
-        Mon, 12 Jul 2021 06:35:09 +0000 (UTC)
+        id S244186AbhGLHK3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:10:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AED52613D7;
+        Mon, 12 Jul 2021 07:07:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071710;
-        bh=Hi72H4vpydvpusMY78ye/fDIfPcyxsKCW15xwy/CiO0=;
+        s=korg; t=1626073627;
+        bh=kDZcUNlg8Zo7TUb2wJFOiS67BH/jS2vB68YPXGZ4zbk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B8RcB0BElt0HJxsTdbg/cCMPDlzSUI2aXsbTNmKN00hySPBY94RcBQ9e38J1gT9KV
-         X3IEXzVHseUZKgx/PWhDMjyEk/Ma+XmqGFDelN47+SBiHkI3NgOyL/Y1UDlgnhDtwq
-         UX1c6KEbbyXwX+SHM08KodHxAtjkHEAjSZr35hE4=
+        b=BTIwR89y6D23htOvfswrlL5fB/62377u3P4KUb2DFHiab07UDjtkmuGB44GX9hT6V
+         SzgoajuBNBoir8+AJOYqz/vhpAsXTNv+JlCip3OVNM3VnX1PfzDnRGuYNj35zAafyv
+         3uD1ZDViO5j7KkPPiPJ8UgR9wzJRxx/uNpb5haAM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Bob Moore <robert.moore@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 185/593] ACPICA: Fix memory leak caused by _CID repair function
+Subject: [PATCH 5.12 262/700] kbuild: Fix objtool dependency for OBJECT_FILES_NON_STANDARD_<obj> := n
 Date:   Mon, 12 Jul 2021 08:05:45 +0200
-Message-Id: <20210712060903.356631530@linuxfoundation.org>
+Message-Id: <20210712061004.052317180@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,53 +40,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Erik Kaneda <erik.kaneda@intel.com>
+From: Josh Poimboeuf <jpoimboe@redhat.com>
 
-[ Upstream commit c27bac0314131b11bccd735f7e8415ac6444b667 ]
+[ Upstream commit 8852c552402979508fdc395ae07aa8761aa46045 ]
 
-ACPICA commit 180cb53963aa876c782a6f52cc155d951b26051a
+"OBJECT_FILES_NON_STANDARD_vma.o := n" has a dependency bug.  When
+objtool source is updated, the affected object doesn't get re-analyzed
+by objtool.
 
-According to the ACPI spec, _CID returns a package containing
-hardware ID's. Each element of an ASL package contains a reference
-count from the parent package as well as the element itself.
+Peter's new variable-sized jump label feature relies on objtool
+rewriting the object file.  Otherwise the system can fail to boot.  That
+effectively upgrades this minor dependency issue to a major bug.
 
-Name (TEST, Package() {
-    "String object" // this package element has a reference count of 2
-})
+The problem is that variables in prerequisites are expanded early,
+during the read-in phase.  The '$(objtool_dep)' variable indirectly uses
+'$@', which isn't yet available when the target prerequisites are
+evaluated.
 
-A memory leak was caused in the _CID repair function because it did
-not decrement the reference count created by the package. Fix the
-memory leak by calling acpi_ut_remove_reference on _CID package elements
-that represent a hardware ID (_HID).
+Use '.SECONDEXPANSION:' which causes '$(objtool_dep)' to be expanded in
+a later phase, after the target-specific '$@' variable has been defined.
 
-Link: https://github.com/acpica/acpica/commit/180cb539
-Tested-by: Shawn Guo <shawn.guo@linaro.org>
-Signed-off-by: Erik Kaneda <erik.kaneda@intel.com>
-Signed-off-by: Bob Moore <robert.moore@intel.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fixes: b9ab5ebb14ec ("objtool: Add CONFIG_STACK_VALIDATION option")
+Fixes: ab3257042c26 ("jump_label, x86: Allow short NOPs")
+Reported-by: Matthew Wilcox <willy@infradead.org>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/acpica/nsrepair2.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ scripts/Makefile.build | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/acpi/acpica/nsrepair2.c b/drivers/acpi/acpica/nsrepair2.c
-index 125143c41bb8..8768594c79e5 100644
---- a/drivers/acpi/acpica/nsrepair2.c
-+++ b/drivers/acpi/acpica/nsrepair2.c
-@@ -375,6 +375,13 @@ acpi_ns_repair_CID(struct acpi_evaluate_info *info,
+diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+index 1b6094a13034..73701d637ed5 100644
+--- a/scripts/Makefile.build
++++ b/scripts/Makefile.build
+@@ -267,7 +267,8 @@ define rule_as_o_S
+ endef
  
- 			(*element_ptr)->common.reference_count =
- 			    original_ref_count;
-+
-+			/*
-+			 * The original_element holds a reference from the package object
-+			 * that represents _HID. Since a new element was created by _HID,
-+			 * remove the reference from the _CID package.
-+			 */
-+			acpi_ut_remove_reference(original_element);
- 		}
+ # Built-in and composite module parts
+-$(obj)/%.o: $(src)/%.c $(recordmcount_source) $(objtool_dep) FORCE
++.SECONDEXPANSION:
++$(obj)/%.o: $(src)/%.c $(recordmcount_source) $$(objtool_dep) FORCE
+ 	$(call if_changed_rule,cc_o_c)
+ 	$(call cmd,force_checksrc)
  
- 		element_ptr++;
+@@ -348,7 +349,7 @@ cmd_modversions_S =								\
+ 	fi
+ endif
+ 
+-$(obj)/%.o: $(src)/%.S $(objtool_dep) FORCE
++$(obj)/%.o: $(src)/%.S $$(objtool_dep) FORCE
+ 	$(call if_changed_rule,as_o_S)
+ 
+ targets += $(filter-out $(subdir-builtin), $(real-obj-y))
 -- 
 2.30.2
 
