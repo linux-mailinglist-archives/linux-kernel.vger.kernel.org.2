@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13BFD3C48F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6EF13C4FDE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235932AbhGLGlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:41:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55076 "EHLO mail.kernel.org"
+        id S1343687AbhGLH2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:28:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233686AbhGLGdm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:33:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D0F906113E;
-        Mon, 12 Jul 2021 06:30:00 +0000 (UTC)
+        id S240795AbhGLHBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:01:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E699A613CA;
+        Mon, 12 Jul 2021 06:58:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071401;
-        bh=ObtccxhA6maFkNuGS8SVMVX4ToKpiiF2Cefv679MDRw=;
+        s=korg; t=1626073107;
+        bh=VvBNWVfKMUPM1hXDvZqcj89kC+byaY2wtn0l6MzVFvM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=urr+86/tbhWaTO9FY2fPH3tWUNlEwZJIYc+ehKllpQtZgwvTHdp2r0FAcwIwXgUWT
-         jIbDRL3AIvZjHliWzh+SR8Jf2DIoy3g3SYcxtL872IUn6l9gS8UIEwQDK/THtY6KpE
-         OBF/VqHnRNCUW9ZYwQugPmjafAAIhRql8jE4UCtw=
+        b=0rvy1BbhA+wIitwM/11TDGcBbHJlITuXnN5ZvGLKMLstM2YlKDRCjoWtQfGAsRsvk
+         ITaj0B8acJlC47GX6zDPULbJl1+Bw7ky1B6GZS5HQLJgJUEmeq2FSE3Wo6pgywAxAj
+         I3uGADlgcftwqNnsMFhHIVaRa5LPfDOZmgiqdTdI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        syzbot+bdf710cfc41c186fdff3@syzkaller.appspotmail.com,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 5.10 053/593] can: j1939: j1939_sk_init(): set SOCK_RCU_FREE to call sk_destruct() after RCU is done
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 130/700] media: sunxi: fix pm_runtime_get_sync() usage count
 Date:   Mon, 12 Jul 2021 08:03:33 +0200
-Message-Id: <20210712060848.948404539@linuxfoundation.org>
+Message-Id: <20210712060943.650099586@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,52 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-commit 22c696fed25c63c7f67508309820358b94a96b6d upstream.
+[ Upstream commit 9c298f82d8392f799a0595f50076afa1d91e9092 ]
 
-Set SOCK_RCU_FREE to let RCU to call sk_destruct() on completion.
-Without this patch, we will run in to j1939_can_recv() after priv was
-freed by j1939_sk_release()->j1939_sk_sock_destruct()
+The pm_runtime_get_sync() internally increments the
+dev->power.usage_count without decrementing it, even on errors.
+Replace it by the new pm_runtime_resume_and_get(), introduced by:
+commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+in order to properly decrement the usage counter, avoiding
+a potential PM usage counter leak.
 
-Fixes: 25fe97cb7620 ("can: j1939: move j1939_priv_put() into sk_destruct callback")
-Link: https://lore.kernel.org/r/20210617130623.12705-1-o.rempel@pengutronix.de
-Cc: linux-stable <stable@vger.kernel.org>
-Reported-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Reported-by: syzbot+bdf710cfc41c186fdff3@syzkaller.appspotmail.com
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/can/j1939/main.c   |    4 ++++
- net/can/j1939/socket.c |    3 +++
- 2 files changed, 7 insertions(+)
+ drivers/media/platform/sunxi/sun8i-rotate/sun8i_rotate.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/can/j1939/main.c
-+++ b/net/can/j1939/main.c
-@@ -193,6 +193,10 @@ static void j1939_can_rx_unregister(stru
- 	can_rx_unregister(dev_net(ndev), ndev, J1939_CAN_ID, J1939_CAN_MASK,
- 			  j1939_can_recv, priv);
+diff --git a/drivers/media/platform/sunxi/sun8i-rotate/sun8i_rotate.c b/drivers/media/platform/sunxi/sun8i-rotate/sun8i_rotate.c
+index 3f81dd17755c..fbcca59a0517 100644
+--- a/drivers/media/platform/sunxi/sun8i-rotate/sun8i_rotate.c
++++ b/drivers/media/platform/sunxi/sun8i-rotate/sun8i_rotate.c
+@@ -494,7 +494,7 @@ static int rotate_start_streaming(struct vb2_queue *vq, unsigned int count)
+ 		struct device *dev = ctx->dev->dev;
+ 		int ret;
  
-+	/* The last reference of priv is dropped by the RCU deferred
-+	 * j1939_sk_sock_destruct() of the last socket, so we can
-+	 * safely drop this reference here.
-+	 */
- 	j1939_priv_put(priv);
- }
+-		ret = pm_runtime_get_sync(dev);
++		ret = pm_runtime_resume_and_get(dev);
+ 		if (ret < 0) {
+ 			dev_err(dev, "Failed to enable module\n");
  
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -398,6 +398,9 @@ static int j1939_sk_init(struct sock *sk
- 	atomic_set(&jsk->skb_pending, 0);
- 	spin_lock_init(&jsk->sk_session_queue_lock);
- 	INIT_LIST_HEAD(&jsk->sk_session_queue);
-+
-+	/* j1939_sk_sock_destruct() depends on SOCK_RCU_FREE flag */
-+	sock_set_flag(sk, SOCK_RCU_FREE);
- 	sk->sk_destruct = j1939_sk_sock_destruct;
- 	sk->sk_protocol = CAN_J1939;
- 
+-- 
+2.30.2
+
 
 
