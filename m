@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E17333C5482
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F7D03C4E3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:41:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352565AbhGLH7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:59:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60556 "EHLO mail.kernel.org"
+        id S244267AbhGLHRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:17:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242138AbhGLHWD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:22:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9410960FF1;
-        Mon, 12 Jul 2021 07:19:14 +0000 (UTC)
+        id S240066AbhGLGuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:50:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 295D760FD8;
+        Mon, 12 Jul 2021 06:47:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074355;
-        bh=s5UggJJEWOO+8gC4srYh9VAdDV8ssDPtUY6Bb8+qKZo=;
+        s=korg; t=1626072455;
+        bh=7lAdnIC+IS9y3dqbml/aSQCH1+mOE6hdrUUPm9pLZf0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YTjl1FJTkAuDndja0NcVR3tG7UN3QICXbx89lvcjYdxJVB6uHs1KEDz7i5OXu2hqm
-         dMaZEgbmhKKhtNzYAU4bzytqaI/GW8C4jvWzO/oNtLO/KrVH73cXBWRHR6s2mHXY2Y
-         M1KQPYhBMRc9A88S0bD9BP2OO8V0H4wfTymeAjCk=
+        b=w/FUEcONBc/gx1gKoimXW7ea6fbh2JFp3Vj1XKWDxDHwXq9IMFnTdIsM0eMts6A91
+         zRVh2uYbHNxoVcJiU5xCSCNCeRenw1+haQgxIjU39I85duLP/veZvriilRbj8ixUuE
+         egto9iRmR6Vx8FmW3tNsfMiDXP/8Y/JwHPZmvk7w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 552/700] iio: cros_ec_sensors: Fix alignment of buffer in iio_push_to_buffers_with_timestamp()
-Date:   Mon, 12 Jul 2021 08:10:35 +0200
-Message-Id: <20210712061034.994361335@linuxfoundation.org>
+Subject: [PATCH 5.10 476/593] char: pcmcia: error out if num_bytes_read is greater than 4 in set_protocol()
+Date:   Mon, 12 Jul 2021 08:10:36 +0200
+Message-Id: <20210712060942.643553321@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Yu Kuai <yukuai3@huawei.com>
 
-[ Upstream commit 8dea228b174ac9637b567e5ef54f4c40db4b3c41 ]
+[ Upstream commit 37188559c610f1b7eec83c8e448936c361c578de ]
 
-The samples buffer is passed to iio_push_to_buffers_with_timestamp()
-which requires a buffer aligned to 8 bytes as it is assumed that
-the timestamp will be naturally aligned if present.
+Theoretically, it will cause index out of bounds error if
+'num_bytes_read' is greater than 4. As we expect it(and was tested)
+never to be greater than 4, error out if it happens.
 
-Fixes tag is inaccurate but prior to that likely manual backporting needed
-(for anything before 4.18) Earlier than that the include file to fix is
-drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.h:
-commit 974e6f02e27 ("iio: cros_ec_sensors_core: Add common functions
-for the ChromeOS EC Sensor Hub.") present since kernel stable 4.10.
-(Thanks to Gwendal for tracking this down)
-
-Fixes: 5a0b8cb46624c ("iio: cros_ec: Move cros_ec_sensors_core.h in /include")
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Gwendal Grignou <gwendal@chromium.org
-Link: https://lore.kernel.org/r/20210501171352.512953-7-jic23@kernel.org
+Fixes: c1986ee9bea3 ("[PATCH] New Omnikey Cardman 4000 driver")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Link: https://lore.kernel.org/r/20210521120617.138396-1-yukuai3@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/iio/common/cros_ec_sensors_core.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/char/pcmcia/cm4000_cs.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/include/linux/iio/common/cros_ec_sensors_core.h b/include/linux/iio/common/cros_ec_sensors_core.h
-index c9b80be82440..f82857bd693f 100644
---- a/include/linux/iio/common/cros_ec_sensors_core.h
-+++ b/include/linux/iio/common/cros_ec_sensors_core.h
-@@ -77,7 +77,7 @@ struct cros_ec_sensors_core_state {
- 		u16 scale;
- 	} calib[CROS_EC_SENSOR_MAX_AXIS];
- 	s8 sign[CROS_EC_SENSOR_MAX_AXIS];
--	u8 samples[CROS_EC_SAMPLE_SIZE];
-+	u8 samples[CROS_EC_SAMPLE_SIZE] __aligned(8);
- 
- 	int (*read_ec_sensors_data)(struct iio_dev *indio_dev,
- 				    unsigned long scan_mask, s16 *data);
+diff --git a/drivers/char/pcmcia/cm4000_cs.c b/drivers/char/pcmcia/cm4000_cs.c
+index 89681f07bc78..9468e9520cee 100644
+--- a/drivers/char/pcmcia/cm4000_cs.c
++++ b/drivers/char/pcmcia/cm4000_cs.c
+@@ -544,6 +544,10 @@ static int set_protocol(struct cm4000_dev *dev, struct ptsreq *ptsreq)
+ 		io_read_num_rec_bytes(iobase, &num_bytes_read);
+ 		if (num_bytes_read >= 4) {
+ 			DEBUGP(2, dev, "NumRecBytes = %i\n", num_bytes_read);
++			if (num_bytes_read > 4) {
++				rc = -EIO;
++				goto exit_setprotocol;
++			}
+ 			break;
+ 		}
+ 		usleep_range(10000, 11000);
 -- 
 2.30.2
 
