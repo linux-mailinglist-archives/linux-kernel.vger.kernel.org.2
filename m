@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7673C4DBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C533C4DBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237993AbhGLHOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:14:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49562 "EHLO mail.kernel.org"
+        id S239546AbhGLHOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:14:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239425AbhGLGto (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:49:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E034060FE3;
-        Mon, 12 Jul 2021 06:46:55 +0000 (UTC)
+        id S239451AbhGLGts (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:49:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 46FFB60241;
+        Mon, 12 Jul 2021 06:46:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072416;
-        bh=/MDQwBPu25sWYyJOfvgD8JgN3k4F4npfdpPyF70b98g=;
+        s=korg; t=1626072418;
+        bh=vn/VPJBysEMnVybQe14G/wmQ9C23wb6BVbVn/IuU1J0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=msZzFBLfyb2cgHoeLstqHWuh14qN0aUskSLBt5JN4kE4IgXM/Mo9i9MTJdZX3hUl5
-         uLZevaXDAJhGqs7HyR+UaRhYpev2A53Q1qeib5Ttu2KmTwcIHZ4gOMiXNvbE/eJY5k
-         tfHjsR3l5hF3WSMFFLUVe7QZuuyKFO/otVCXvWUA=
+        b=JlRGk11w8dWdDaAuCkHx7rxfelB76QmLBKAJ14TWgBjA91Dmc/HT8ecZZqcssbUXK
+         qLh2jmGbI34IbwOYTyYkk0y1mbCdpOw3QneSkFKIsJh9s3fiJk4Odp1qj7l/oBAwa7
+         SPYiXcZAK30E4zbMWZMX+dy7Ly5ZsJwL1SZQU8yE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Jeremy Kerr <jk@ozlabs.org>, Joel Stanley <joel@jms.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 489/593] fsi: core: Fix return of error values on failures
-Date:   Mon, 12 Jul 2021 08:10:49 +0200
-Message-Id: <20210712060945.009263437@linuxfoundation.org>
+        stable@vger.kernel.org, Eddie James <eajames@linux.ibm.com>,
+        Joel Stanley <joel@jms.id.au>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 490/593] fsi: scom: Reset the FSI2PIB engine for any error
+Date:   Mon, 12 Jul 2021 08:10:50 +0200
+Message-Id: <20210712060945.152341220@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
 References: <20210712060843.180606720@linuxfoundation.org>
@@ -40,48 +39,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Eddie James <eajames@linux.ibm.com>
 
-[ Upstream commit 910810945707fe9877ca86a0dca4e585fd05e37b ]
+[ Upstream commit a5c317dac5567206ca7b6bc9d008dd6890c8bced ]
 
-Currently the cfam_read and cfam_write functions return the provided
-number of bytes given in the count parameter and not the error return
-code in variable rc, hence all failures of read/writes are being
-silently ignored. Fix this by returning the error code in rc.
+The error bits in the FSI2PIB status are only cleared by a reset. So
+the driver needs to perform a reset after seeing any of the FSI2PIB
+errors, otherwise subsequent operations will also look like failures.
 
-Addresses-Coverity: ("Unused value")
-Fixes: d1dcd6782576 ("fsi: Add cfam char devices")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Reviewed-by: Jeremy Kerr <jk@ozlabs.org>
-Link: https://lore.kernel.org/r/20210603122812.83587-1-colin.king@canonical.com
+Fixes: 6b293258cded ("fsi: scom: Major overhaul")
+Signed-off-by: Eddie James <eajames@linux.ibm.com>
+Reviewed-by: Joel Stanley <joel@jms.id.au>
+Link: https://lore.kernel.org/r/20210329151344.14246-1-eajames@linux.ibm.com
 Signed-off-by: Joel Stanley <joel@jms.id.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/fsi/fsi-core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/fsi/fsi-scom.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/fsi/fsi-core.c b/drivers/fsi/fsi-core.c
-index 4e60e84cd17a..59ddc9fd5bca 100644
---- a/drivers/fsi/fsi-core.c
-+++ b/drivers/fsi/fsi-core.c
-@@ -724,7 +724,7 @@ static ssize_t cfam_read(struct file *filep, char __user *buf, size_t count,
- 	rc = count;
-  fail:
- 	*offset = off;
--	return count;
-+	return rc;
- }
+diff --git a/drivers/fsi/fsi-scom.c b/drivers/fsi/fsi-scom.c
+index b45bfab7b7f5..75d1389e2626 100644
+--- a/drivers/fsi/fsi-scom.c
++++ b/drivers/fsi/fsi-scom.c
+@@ -38,9 +38,10 @@
+ #define SCOM_STATUS_PIB_RESP_MASK	0x00007000
+ #define SCOM_STATUS_PIB_RESP_SHIFT	12
  
- static ssize_t cfam_write(struct file *filep, const char __user *buf,
-@@ -761,7 +761,7 @@ static ssize_t cfam_write(struct file *filep, const char __user *buf,
- 	rc = count;
-  fail:
- 	*offset = off;
--	return count;
-+	return rc;
- }
+-#define SCOM_STATUS_ANY_ERR		(SCOM_STATUS_PROTECTION | \
+-					 SCOM_STATUS_PARITY |	  \
+-					 SCOM_STATUS_PIB_ABORT | \
++#define SCOM_STATUS_FSI2PIB_ERROR	(SCOM_STATUS_PROTECTION |	\
++					 SCOM_STATUS_PARITY |		\
++					 SCOM_STATUS_PIB_ABORT)
++#define SCOM_STATUS_ANY_ERR		(SCOM_STATUS_FSI2PIB_ERROR |	\
+ 					 SCOM_STATUS_PIB_RESP_MASK)
+ /* SCOM address encodings */
+ #define XSCOM_ADDR_IND_FLAG		BIT_ULL(63)
+@@ -240,13 +241,14 @@ static int handle_fsi2pib_status(struct scom_device *scom, uint32_t status)
+ {
+ 	uint32_t dummy = -1;
  
- static loff_t cfam_llseek(struct file *file, loff_t offset, int whence)
+-	if (status & SCOM_STATUS_PROTECTION)
+-		return -EPERM;
+-	if (status & SCOM_STATUS_PARITY) {
++	if (status & SCOM_STATUS_FSI2PIB_ERROR)
+ 		fsi_device_write(scom->fsi_dev, SCOM_FSI2PIB_RESET_REG, &dummy,
+ 				 sizeof(uint32_t));
++
++	if (status & SCOM_STATUS_PROTECTION)
++		return -EPERM;
++	if (status & SCOM_STATUS_PARITY)
+ 		return -EIO;
+-	}
+ 	/* Return -EBUSY on PIB abort to force a retry */
+ 	if (status & SCOM_STATUS_PIB_ABORT)
+ 		return -EBUSY;
 -- 
 2.30.2
 
