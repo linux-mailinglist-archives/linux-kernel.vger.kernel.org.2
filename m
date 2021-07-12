@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A4EE3C589D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F903C4EBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379588AbhGLIum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:50:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44600 "EHLO mail.kernel.org"
+        id S239318AbhGLHVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:21:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352136AbhGLHyK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:54:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65AFF61412;
-        Mon, 12 Jul 2021 07:51:21 +0000 (UTC)
+        id S238184AbhGLGtJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:49:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 54B7361182;
+        Mon, 12 Jul 2021 06:44:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076281;
-        bh=mnc3HnjhywSJDp5rW3/0SkA46lf//5+ozcBkRiPDFUY=;
+        s=korg; t=1626072299;
+        bh=iYtyygymfS8A+JEXlHMTE+XnnocETtXD3I1oGDqkrdI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sUyfucS5lrcF5mwaqWPXybyksDoY216FCzTl6POH0DlAZRpXnAWFOO6SP1Xe1tDtd
-         3wt7NoqdSd5Yr4hf1n31T12WxbDA1D5CvUVIKZPI+sUe37gXPAObAEGW/jiKG+I9ku
-         upbTAkXWqUTS2mSAwqwwk9amXnpvxLk4AmviEkFo=
+        b=nUnHKgc1/JrnbafqQUVtc7PhPY8ZghsR9g2uxyy7i/SpFuTdjE3pe7I6WQaUIXQeh
+         naK2gpnjO16rIJeoSjTwWu6dHi//sflP269n6MQnhVW42Gv9dA66ILu3uTxC3BbUni
+         Q40hwbWfV7tpoXeQ2oH1KXWSdtomrr1J+7PsUPis=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bailey Forrest <bcf@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 577/800] gve: Fix swapped vars when fetching max queues
+Subject: [PATCH 5.10 440/593] tty: nozomi: Fix a resource leak in an error handling function
 Date:   Mon, 12 Jul 2021 08:10:00 +0200
-Message-Id: <20210712061028.743242861@linuxfoundation.org>
+Message-Id: <20210712060937.206478289@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,33 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bailey Forrest <bcf@google.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 1db1a862a08f85edc36aad091236ac9b818e949e ]
+[ Upstream commit 31a9a318255960d32ae183e95d0999daf2418608 ]
 
-Fixes: 893ce44df565 ("gve: Add basic driver framework for Compute Engine Virtual NIC")
-Signed-off-by: Bailey Forrest <bcf@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+A 'request_irq()' call is not balanced by a corresponding 'free_irq()' in
+the error handling path, as already done in the remove function.
+
+Add it.
+
+Fixes: 9842c38e9176 ("kfifo: fix warn_unused_result")
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/4f0d2b3038e82f081d370ccb0cade3ad88463fe7.1620580838.git.christophe.jaillet@wanadoo.fr
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/google/gve/gve_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/tty/nozomi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/google/gve/gve_main.c b/drivers/net/ethernet/google/gve/gve_main.c
-index bbc423e93122..79cefe85a799 100644
---- a/drivers/net/ethernet/google/gve/gve_main.c
-+++ b/drivers/net/ethernet/google/gve/gve_main.c
-@@ -1295,8 +1295,8 @@ static int gve_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 
- 	gve_write_version(&reg_bar->driver_version);
- 	/* Get max queues to alloc etherdev */
--	max_rx_queues = ioread32be(&reg_bar->max_tx_queues);
--	max_tx_queues = ioread32be(&reg_bar->max_rx_queues);
-+	max_tx_queues = ioread32be(&reg_bar->max_tx_queues);
-+	max_rx_queues = ioread32be(&reg_bar->max_rx_queues);
- 	/* Alloc and setup the netdev and priv */
- 	dev = alloc_etherdev_mqs(sizeof(*priv), max_tx_queues, max_rx_queues);
- 	if (!dev) {
+diff --git a/drivers/tty/nozomi.c b/drivers/tty/nozomi.c
+index d42b854cb7df..9a251a1b0d00 100644
+--- a/drivers/tty/nozomi.c
++++ b/drivers/tty/nozomi.c
+@@ -1436,6 +1436,7 @@ err_free_tty:
+ 		tty_unregister_device(ntty_driver, dc->index_start + i);
+ 		tty_port_destroy(&dc->port[i].port);
+ 	}
++	free_irq(pdev->irq, dc);
+ err_free_kfifo:
+ 	for (i = 0; i < MAX_PORT; i++)
+ 		kfifo_free(&dc->port[i].fifo_ul);
 -- 
 2.30.2
 
