@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A126B3C4961
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 311583C4FED
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238896AbhGLGo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:44:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55302 "EHLO mail.kernel.org"
+        id S1344079AbhGLH3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:29:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236730AbhGLGeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:34:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B250610A7;
-        Mon, 12 Jul 2021 06:30:14 +0000 (UTC)
+        id S241354AbhGLHBe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:01:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A4256124C;
+        Mon, 12 Jul 2021 06:58:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071415;
-        bh=6rehgkk6c0Q/VSE3KGmObeul32/8wNq14hF6Au8PopE=;
+        s=korg; t=1626073125;
+        bh=D1SZFDaMxPzzvYQFmKOyEyui/MyeIasJrxDmGU7ek9o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rt7ZgOz4GpgnSXUmTjJBHy2BoZRgrnceifAdqZARk6WPsqWGwAguOqDd4zBIreBHB
-         nKfEuhUsWdd+7Yw/x/DOYh1hClh8c86EWcf2CURyvD6dQekinF+Cl0+ereJgs3VyVE
-         Xwpm8zgGaAmb4dvGKhvVQjwJrdejrImN00cFDJw4=
+        b=qwAxLX/f00/ULi5Eg7d+aDgyuQkT1GnlWj/xL2Dv1c2biAKI+ek1RdmP08G9b7OZ+
+         KZb7YHuZdxnnOrFI870RfVARBQT81mvoakZ3MVTQU1aUIW52PyzISk1lbN4xayiOiG
+         +2g96a5YQTFuAokqpOy1hNoP7uOzp+KhsTD0ci+c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jann Horn <jannh@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Jan Kara <jack@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 059/593] mm/gup: fix try_grab_compound_head() race with split_huge_page()
+        stable@vger.kernel.org, Tian Tao <tiantao6@hisilicon.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 136/700] spi: omap-100k: Fix the length judgment problem
 Date:   Mon, 12 Jul 2021 08:03:39 +0200
-Message-Id: <20210712060849.625402990@linuxfoundation.org>
+Message-Id: <20210712060944.719901975@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,166 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jann Horn <jannh@google.com>
+From: Tian Tao <tiantao6@hisilicon.com>
 
-commit c24d37322548a6ec3caec67100d28b9c1f89f60a upstream.
+[ Upstream commit e7a1a3abea373e41ba7dfe0fbc93cb79b6a3a529 ]
 
-try_grab_compound_head() is used to grab a reference to a page from
-get_user_pages_fast(), which is only protected against concurrent freeing
-of page tables (via local_irq_save()), but not against concurrent TLB
-flushes, freeing of data pages, or splitting of compound pages.
+word_len should be checked in the omap1_spi100k_setup_transfer
+function to see if it exceeds 32.
 
-Because no reference is held to the page when try_grab_compound_head() is
-called, the page may have been freed and reallocated by the time its
-refcount has been elevated; therefore, once we're holding a stable
-reference to the page, the caller re-checks whether the PTE still points
-to the same page (with the same access rights).
-
-The problem is that try_grab_compound_head() has to grab a reference on
-the head page; but between the time we look up what the head page is and
-the time we actually grab a reference on the head page, the compound page
-may have been split up (either explicitly through split_huge_page() or by
-freeing the compound page to the buddy allocator and then allocating its
-individual order-0 pages).  If that happens, get_user_pages_fast() may end
-up returning the right page but lifting the refcount on a now-unrelated
-page, leading to use-after-free of pages.
-
-To fix it: Re-check whether the pages still belong together after lifting
-the refcount on the head page.  Move anything else that checks
-compound_head(page) below the refcount increment.
-
-This can't actually happen on bare-metal x86 (because there, disabling
-IRQs locks out remote TLB flushes), but it can happen on virtualized x86
-(e.g.  under KVM) and probably also on arm64.  The race window is pretty
-narrow, and constantly allocating and shattering hugepages isn't exactly
-fast; for now I've only managed to reproduce this in an x86 KVM guest with
-an artificially widened timing window (by adding a loop that repeatedly
-calls `inl(0x3f8 + 5)` in `try_get_compound_head()` to force VM exits, so
-that PV TLB flushes are used instead of IPIs).
-
-As requested on the list, also replace the existing VM_BUG_ON_PAGE() with
-a warning and bailout.  Since the existing code only performed the BUG_ON
-check on DEBUG_VM kernels, ensure that the new code also only performs the
-check under that configuration - I don't want to mix two logically
-separate changes together too much.  The macro VM_WARN_ON_ONCE_PAGE()
-doesn't return a value on !DEBUG_VM, so wrap the whole check in an #ifdef
-block.  An alternative would be to change the VM_WARN_ON_ONCE_PAGE()
-definition for !DEBUG_VM such that it always returns false, but since that
-would differ from the behavior of the normal WARN macros, it might be too
-confusing for readers.
-
-Link: https://lkml.kernel.org/r/20210615012014.1100672-1-jannh@google.com
-Fixes: 7aef4172c795 ("mm: handle PTE-mapped tail pages in gerneric fast gup implementaiton")
-Signed-off-by: Jann Horn <jannh@google.com>
-Reviewed-by: John Hubbard <jhubbard@nvidia.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Kirill A. Shutemov <kirill@shutemov.name>
-Cc: Jan Kara <jack@suse.cz>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+Link: https://lore.kernel.org/r/1619695248-39045-1-git-send-email-tiantao6@hisilicon.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/gup.c |   58 +++++++++++++++++++++++++++++++++++++++++++---------------
- 1 file changed, 43 insertions(+), 15 deletions(-)
+ drivers/spi/spi-omap-100k.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -44,6 +44,23 @@ static void hpage_pincount_sub(struct pa
- 	atomic_sub(refs, compound_pincount_ptr(page));
- }
+diff --git a/drivers/spi/spi-omap-100k.c b/drivers/spi/spi-omap-100k.c
+index ccd817ee4917..0d0cd061d356 100644
+--- a/drivers/spi/spi-omap-100k.c
++++ b/drivers/spi/spi-omap-100k.c
+@@ -241,7 +241,7 @@ static int omap1_spi100k_setup_transfer(struct spi_device *spi,
+ 	else
+ 		word_len = spi->bits_per_word;
  
-+/* Equivalent to calling put_page() @refs times. */
-+static void put_page_refs(struct page *page, int refs)
-+{
-+#ifdef CONFIG_DEBUG_VM
-+	if (VM_WARN_ON_ONCE_PAGE(page_ref_count(page) < refs, page))
-+		return;
-+#endif
-+
-+	/*
-+	 * Calling put_page() for each ref is unnecessarily slow. Only the last
-+	 * ref needs a put_page().
-+	 */
-+	if (refs > 1)
-+		page_ref_sub(page, refs - 1);
-+	put_page(page);
-+}
-+
- /*
-  * Return the compound head page with ref appropriately incremented,
-  * or NULL if that failed.
-@@ -56,6 +73,21 @@ static inline struct page *try_get_compo
- 		return NULL;
- 	if (unlikely(!page_cache_add_speculative(head, refs)))
- 		return NULL;
-+
-+	/*
-+	 * At this point we have a stable reference to the head page; but it
-+	 * could be that between the compound_head() lookup and the refcount
-+	 * increment, the compound page was split, in which case we'd end up
-+	 * holding a reference on a page that has nothing to do with the page
-+	 * we were given anymore.
-+	 * So now that the head page is stable, recheck that the pages still
-+	 * belong together.
-+	 */
-+	if (unlikely(compound_head(page) != head)) {
-+		put_page_refs(head, refs);
-+		return NULL;
-+	}
-+
- 	return head;
- }
+-	if (spi->bits_per_word > 32)
++	if (word_len > 32)
+ 		return -EINVAL;
+ 	cs->word_len = word_len;
  
-@@ -96,6 +128,14 @@ static __maybe_unused struct page *try_g
- 			return NULL;
- 
- 		/*
-+		 * CAUTION: Don't use compound_head() on the page before this
-+		 * point, the result won't be stable.
-+		 */
-+		page = try_get_compound_head(page, refs);
-+		if (!page)
-+			return NULL;
-+
-+		/*
- 		 * When pinning a compound page of order > 1 (which is what
- 		 * hpage_pincount_available() checks for), use an exact count to
- 		 * track it, via hpage_pincount_add/_sub().
-@@ -103,15 +143,10 @@ static __maybe_unused struct page *try_g
- 		 * However, be sure to *also* increment the normal page refcount
- 		 * field at least once, so that the page really is pinned.
- 		 */
--		if (!hpage_pincount_available(page))
--			refs *= GUP_PIN_COUNTING_BIAS;
--
--		page = try_get_compound_head(page, refs);
--		if (!page)
--			return NULL;
--
- 		if (hpage_pincount_available(page))
- 			hpage_pincount_add(page, refs);
-+		else
-+			page_ref_add(page, refs * (GUP_PIN_COUNTING_BIAS - 1));
- 
- 		mod_node_page_state(page_pgdat(page), NR_FOLL_PIN_ACQUIRED,
- 				    orig_refs);
-@@ -135,14 +170,7 @@ static void put_compound_head(struct pag
- 			refs *= GUP_PIN_COUNTING_BIAS;
- 	}
- 
--	VM_BUG_ON_PAGE(page_ref_count(page) < refs, page);
--	/*
--	 * Calling put_page() for each ref is unnecessarily slow. Only the last
--	 * ref needs a put_page().
--	 */
--	if (refs > 1)
--		page_ref_sub(page, refs - 1);
--	put_page(page);
-+	put_page_refs(page, refs);
- }
- 
- /**
+-- 
+2.30.2
+
 
 
