@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C263C57D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A21FE3C4C0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376775AbhGLIiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:38:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36642 "EHLO mail.kernel.org"
+        id S241308AbhGLHB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:01:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350692AbhGLHvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:51:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6202E61C36;
-        Mon, 12 Jul 2021 07:47:16 +0000 (UTC)
+        id S239153AbhGLGot (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:44:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 05611611CD;
+        Mon, 12 Jul 2021 06:40:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076036;
-        bh=0b/YuAoCh8t96THwiH8qIsROPJqr3iST3x+hyxvR1WA=;
+        s=korg; t=1626072053;
+        bh=rKR/EJcxu+a1sOuNFRnuRlLYwjjS1UyUgNprgK+cSYo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VZK1Uv+nGmB1uMt5XjsdcysTmRpEkF5N0BrsWdVyOm5OIFYxEMFYNZXaNYMI7qu2u
-         aMP3za8x6iPXVMJthDxhp/cv7hKXkkScOfcPej4yQ3rB5TfhII8N3NK0Lv3HrDt6aV
-         nuMSFv8RgstdqMTtExi0Q7UtOQTcRQtIdjwv9euk=
+        b=cyf5hS/x93KKGWgr/ry/U1lyMgkcMT/cije9nqlTxQPoipSY2aVtb42kRdid+Kajg
+         5LItkdAVAL22PcNZpmZZFjTHQc/S2z5s8IaAkmBUqBiym2HkSTOsLLgkUfsqcJcOlX
+         6R539z+dxbE8sStjbp++goYIQb/MyeYsGAoQdov4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 469/800] ath10k: Fix an error code in ath10k_add_interface()
+Subject: [PATCH 5.10 332/593] RDMA/core: Sanitize WQ state received from the userspace
 Date:   Mon, 12 Jul 2021 08:08:12 +0200
-Message-Id: <20210712061017.067667099@linuxfoundation.org>
+Message-Id: <20210712060922.351549430@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,41 +42,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Li <yang.lee@linux.alibaba.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-[ Upstream commit e9ca70c735ce66fc6a0e02c8b6958434f74ef8de ]
+[ Upstream commit f97442887275d11c88c2899e720fe945c1f61488 ]
 
-When the code execute this if statement, the value of ret is 0.
-However, we can see from the ath10k_warn() log that the value of
-ret should be -EINVAL.
+The mlx4 and mlx5 implemented differently the WQ input checks.  Instead of
+duplicating mlx4 logic in the mlx5, let's prepare the input in the central
+place.
 
-Clean up smatch warning:
+The mlx5 implementation didn't check for validity of state input.  It is
+not real bug because our FW checked that, but still worth to fix.
 
-drivers/net/wireless/ath/ath10k/mac.c:5596 ath10k_add_interface() warn:
-missing error code 'ret'
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Fixes: ccec9038c721 ("ath10k: enable raw encap mode and software crypto engine")
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1621939577-62218-1-git-send-email-yang.lee@linux.alibaba.com
+Fixes: f213c0527210 ("IB/uverbs: Add WQ support")
+Link: https://lore.kernel.org/r/ac41ad6a81b095b1a8ad453dcf62cf8d3c5da779.1621413310.git.leonro@nvidia.com
+Reported-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/infiniband/core/uverbs_cmd.c | 21 +++++++++++++++++++--
+ drivers/infiniband/hw/mlx4/qp.c      |  9 ++-------
+ drivers/infiniband/hw/mlx5/qp.c      |  6 ++----
+ 3 files changed, 23 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 5ce4f8d038b9..c272b290fa73 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -5592,6 +5592,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
+index 418d133a8fb0..466026825dd7 100644
+--- a/drivers/infiniband/core/uverbs_cmd.c
++++ b/drivers/infiniband/core/uverbs_cmd.c
+@@ -3000,12 +3000,29 @@ static int ib_uverbs_ex_modify_wq(struct uverbs_attr_bundle *attrs)
+ 	if (!wq)
+ 		return -EINVAL;
  
- 	if (arvif->nohwcrypt &&
- 	    !test_bit(ATH10K_FLAG_RAW_MODE, &ar->dev_flags)) {
-+		ret = -EINVAL;
- 		ath10k_warn(ar, "cryptmode module param needed for sw crypto\n");
- 		goto err;
+-	wq_attr.curr_wq_state = cmd.curr_wq_state;
+-	wq_attr.wq_state = cmd.wq_state;
+ 	if (cmd.attr_mask & IB_WQ_FLAGS) {
+ 		wq_attr.flags = cmd.flags;
+ 		wq_attr.flags_mask = cmd.flags_mask;
  	}
++
++	if (cmd.attr_mask & IB_WQ_CUR_STATE) {
++		if (cmd.curr_wq_state > IB_WQS_ERR)
++			return -EINVAL;
++
++		wq_attr.curr_wq_state = cmd.curr_wq_state;
++	} else {
++		wq_attr.curr_wq_state = wq->state;
++	}
++
++	if (cmd.attr_mask & IB_WQ_STATE) {
++		if (cmd.wq_state > IB_WQS_ERR)
++			return -EINVAL;
++
++		wq_attr.wq_state = cmd.wq_state;
++	} else {
++		wq_attr.wq_state = wq_attr.curr_wq_state;
++	}
++
+ 	ret = wq->device->ops.modify_wq(wq, &wq_attr, cmd.attr_mask,
+ 					&attrs->driver_udata);
+ 	rdma_lookup_put_uobject(&wq->uobject->uevent.uobject,
+diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
+index 5cb8e602294c..6bc0818f4b2c 100644
+--- a/drivers/infiniband/hw/mlx4/qp.c
++++ b/drivers/infiniband/hw/mlx4/qp.c
+@@ -4244,13 +4244,8 @@ int mlx4_ib_modify_wq(struct ib_wq *ibwq, struct ib_wq_attr *wq_attr,
+ 	if (wq_attr_mask & IB_WQ_FLAGS)
+ 		return -EOPNOTSUPP;
+ 
+-	cur_state = wq_attr_mask & IB_WQ_CUR_STATE ? wq_attr->curr_wq_state :
+-						     ibwq->state;
+-	new_state = wq_attr_mask & IB_WQ_STATE ? wq_attr->wq_state : cur_state;
+-
+-	if (cur_state  < IB_WQS_RESET || cur_state  > IB_WQS_ERR ||
+-	    new_state < IB_WQS_RESET || new_state > IB_WQS_ERR)
+-		return -EINVAL;
++	cur_state = wq_attr->curr_wq_state;
++	new_state = wq_attr->wq_state;
+ 
+ 	if ((new_state == IB_WQS_RDY) && (cur_state == IB_WQS_ERR))
+ 		return -EINVAL;
+diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+index 6d2715f65d78..8beba002e5dd 100644
+--- a/drivers/infiniband/hw/mlx5/qp.c
++++ b/drivers/infiniband/hw/mlx5/qp.c
+@@ -5236,10 +5236,8 @@ int mlx5_ib_modify_wq(struct ib_wq *wq, struct ib_wq_attr *wq_attr,
+ 
+ 	rqc = MLX5_ADDR_OF(modify_rq_in, in, ctx);
+ 
+-	curr_wq_state = (wq_attr_mask & IB_WQ_CUR_STATE) ?
+-		wq_attr->curr_wq_state : wq->state;
+-	wq_state = (wq_attr_mask & IB_WQ_STATE) ?
+-		wq_attr->wq_state : curr_wq_state;
++	curr_wq_state = wq_attr->curr_wq_state;
++	wq_state = wq_attr->wq_state;
+ 	if (curr_wq_state == IB_WQS_ERR)
+ 		curr_wq_state = MLX5_RQC_STATE_ERR;
+ 	if (wq_state == IB_WQS_ERR)
 -- 
 2.30.2
 
