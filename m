@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0020B3C4CFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 263053C5489
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:53:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245072AbhGLHLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:11:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44976 "EHLO mail.kernel.org"
+        id S1352727AbhGLH7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:59:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239128AbhGLGta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:49:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C00361369;
-        Mon, 12 Jul 2021 06:46:15 +0000 (UTC)
+        id S238665AbhGLHVm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:21:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0DFC60FF1;
+        Mon, 12 Jul 2021 07:18:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072375;
-        bh=/XH8VHetpeGGKDyF4zoCyzPHBVjcwLilhPt4VCDmUkI=;
+        s=korg; t=1626074334;
+        bh=Ktf0grcfzbxyC5USj04FzTLhNlEuNC8SKhMXtbgkEEs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CpQsw5V/Q/psNZMEfEPxVKO6MYtvGtZ2lHghSN2VQhZ9EakkXprVlASLqagcp6dTq
-         IRXkVJplL+dZ7jhtU/fKE8KIqpxqb4QwQGrzrOw9vOClmmmNo0I+NiyGJqHayAi3my
-         W8JlHRt6A/h0f9269l0rgJsYu43i0p/xa8op3llg=
+        b=sDxpgI8MlyWscteD3yyumHG3GAEn3+4S03hggFFks647Xnrk0YRMzah3u22H886SB
+         nE7tx4WsiUCs67dmThSviBELTbKGvmTrEypLSU9XKli3DUd8owuCu7n8hB9+cyaxUh
+         UhZUFmGgHkO/0oXHhu2BaGtRssWUDIGXHVwZQhXo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brian Masney <masneyb@onstation.org>,
-        Dan Murphy <dmurphy@ti.com>,
+        stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 469/593] backlight: lm3630a_bl: Put fwnode in error case during ->probe()
+Subject: [PATCH 5.12 546/700] iio: magn: hmc5843: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
 Date:   Mon, 12 Jul 2021 08:10:29 +0200
-Message-Id: <20210712060941.570793408@linuxfoundation.org>
+Message-Id: <20210712061034.421788183@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,41 +41,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit 6d1c32dbedd7d7e7372aa38033ec8782c39f6379 ]
+[ Upstream commit 1ef2f51e9fe424ccecca5bb0373d71b900c2cd41 ]
 
-device_for_each_child_node() bumps a reference counting of a returned variable.
-We have to balance it whenever we return to the caller.
+To make code more readable, use a structure to express the channel
+layout and ensure the timestamp is 8 byte aligned.
 
-Cc: Brian Masney <masneyb@onstation.org>
-Cc: Dan Murphy <dmurphy@ti.com>
-Fixes: 8fbce8efe15cd ("backlight: lm3630a: Add firmware node support")
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Reviewed-by: Brian Masney <masneyb@onstation.org>
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Found during an audit of all calls of uses of
+iio_push_to_buffers_with_timestamp()
+
+Fixes: 7247645f6865 ("iio: hmc5843: Move hmc5843 out of staging")
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Link: https://lore.kernel.org/r/20210501170121.512209-16-jic23@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/backlight/lm3630a_bl.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/iio/magnetometer/hmc5843.h      | 8 ++++++--
+ drivers/iio/magnetometer/hmc5843_core.c | 4 ++--
+ 2 files changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/video/backlight/lm3630a_bl.c b/drivers/video/backlight/lm3630a_bl.c
-index e88a2b0e5904..662029d6a3dc 100644
---- a/drivers/video/backlight/lm3630a_bl.c
-+++ b/drivers/video/backlight/lm3630a_bl.c
-@@ -482,8 +482,10 @@ static int lm3630a_parse_node(struct lm3630a_chip *pchip,
+diff --git a/drivers/iio/magnetometer/hmc5843.h b/drivers/iio/magnetometer/hmc5843.h
+index 3f6c0b662941..242f742f2643 100644
+--- a/drivers/iio/magnetometer/hmc5843.h
++++ b/drivers/iio/magnetometer/hmc5843.h
+@@ -33,7 +33,8 @@ enum hmc5843_ids {
+  * @lock:		update and read regmap data
+  * @regmap:		hardware access register maps
+  * @variant:		describe chip variants
+- * @buffer:		3x 16-bit channels + padding + 64-bit timestamp
++ * @scan:		buffer to pack data for passing to
++ *			iio_push_to_buffers_with_timestamp()
+  */
+ struct hmc5843_data {
+ 	struct device *dev;
+@@ -41,7 +42,10 @@ struct hmc5843_data {
+ 	struct regmap *regmap;
+ 	const struct hmc5843_chip_info *variant;
+ 	struct iio_mount_matrix orientation;
+-	__be16 buffer[8];
++	struct {
++		__be16 chans[3];
++		s64 timestamp __aligned(8);
++	} scan;
+ };
  
- 	device_for_each_child_node(pchip->dev, node) {
- 		ret = lm3630a_parse_bank(pdata, node, &seen_led_sources);
--		if (ret)
-+		if (ret) {
-+			fwnode_handle_put(node);
- 			return ret;
-+		}
+ int hmc5843_common_probe(struct device *dev, struct regmap *regmap,
+diff --git a/drivers/iio/magnetometer/hmc5843_core.c b/drivers/iio/magnetometer/hmc5843_core.c
+index 780faea61d82..221563e0c18f 100644
+--- a/drivers/iio/magnetometer/hmc5843_core.c
++++ b/drivers/iio/magnetometer/hmc5843_core.c
+@@ -446,13 +446,13 @@ static irqreturn_t hmc5843_trigger_handler(int irq, void *p)
  	}
  
- 	return ret;
+ 	ret = regmap_bulk_read(data->regmap, HMC5843_DATA_OUT_MSB_REGS,
+-			       data->buffer, 3 * sizeof(__be16));
++			       data->scan.chans, sizeof(data->scan.chans));
+ 
+ 	mutex_unlock(&data->lock);
+ 	if (ret < 0)
+ 		goto done;
+ 
+-	iio_push_to_buffers_with_timestamp(indio_dev, data->buffer,
++	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
+ 					   iio_get_time_ns(indio_dev));
+ 
+ done:
 -- 
 2.30.2
 
