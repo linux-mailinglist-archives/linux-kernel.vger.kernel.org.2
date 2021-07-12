@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 839123C574F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 126D93C4A2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376983AbhGLIbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:31:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51092 "EHLO mail.kernel.org"
+        id S237956AbhGLGtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:49:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349612AbhGLHoV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:44:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4120661153;
-        Mon, 12 Jul 2021 07:40:56 +0000 (UTC)
+        id S237150AbhGLGiY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:38:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A459061008;
+        Mon, 12 Jul 2021 06:34:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075656;
-        bh=TYvHY0Nd+78uOboMF2XfNFz13DUaUYEErLtDj5rRiI0=;
+        s=korg; t=1626071673;
+        bh=7g9jhVIr9Cc13wM4e9OXLZCfqQy3d5sLELCLtpInqeg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cpoFm7ddoKBAb3SNzDI8mTwdPlgaPZYYAJaf0y+0xHMN2qapKhGlrENlKQCJaWLnX
-         dZGkK1s3y9sC45oECB8/vfjYP/i3CSNGdL/qYxhWJMM14EP26wSZCDIunyCChb0NHK
-         x5rbdBZ4yw/15tcKEkhWLVvpsOKMcspmXMYpPZKA=
+        b=SpE7RIUIz9vpj/VUxNkQ0bF/Tctf0gLarq8Xutt1fN6ww24istfAyxJ5eJuElpyi+
+         Y1Tw2D44jJeRYrNhU2eRRNHlb2PffZ8ieP4n+HNaQyzyh5FDfFqoMV1pg/yH+cXqAw
+         1+6qlv8a4+qbYdJpnM0Zqnu4arUbB35zCWwXbLfE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Axel Lin <axel.lin@ingics.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 308/800] regulator: fan53880: Fix vsel_mask setting for FAN53880_BUCK
+        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
+        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 171/593] hv_utils: Fix passing zero to PTR_ERR warning
 Date:   Mon, 12 Jul 2021 08:05:31 +0200
-Message-Id: <20210712060958.235840115@linuxfoundation.org>
+Message-Id: <20210712060901.846037162@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Axel Lin <axel.lin@ingics.com>
+From: YueHaibing <yuehaibing@huawei.com>
 
-[ Upstream commit 2e11737a772b95c6587df73f216eec1762431432 ]
+[ Upstream commit c6a8625fa4c6b0a97860d053271660ccedc3d1b3 ]
 
-According to the datasheet:
-REGISTER DETAILS − 0x02 BUCK, BUCK_OUT is BIT0 ~ BIT7.
+Sparse warn this:
 
-So vsel_mask for FAN53880_BUCK should be 0xFF.
+drivers/hv/hv_util.c:753 hv_timesync_init() warn:
+ passing zero to 'PTR_ERR'
 
-Fixes: e6dea51e2d41 ("regulator: fan53880: Add initial support")
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Link: https://lore.kernel.org/r/20210607142907.1599905-1-axel.lin@ingics.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Use PTR_ERR_OR_ZERO instead of PTR_ERR to fix this.
+
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Link: https://lore.kernel.org/r/20210514070116.16800-1-yuehaibing@huawei.com
+[ wei: change %ld to %d ]
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/fan53880.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/hv/hv_util.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/regulator/fan53880.c b/drivers/regulator/fan53880.c
-index 1684faf82ed2..94f02f3099dd 100644
---- a/drivers/regulator/fan53880.c
-+++ b/drivers/regulator/fan53880.c
-@@ -79,7 +79,7 @@ static const struct regulator_desc fan53880_regulators[] = {
- 		.n_linear_ranges = 2,
- 		.n_voltages =	   0xf8,
- 		.vsel_reg =	   FAN53880_BUCKVOUT,
--		.vsel_mask =	   0x7f,
-+		.vsel_mask =	   0xff,
- 		.enable_reg =	   FAN53880_ENABLE,
- 		.enable_mask =	   0x10,
- 		.enable_time =	   480,
+diff --git a/drivers/hv/hv_util.c b/drivers/hv/hv_util.c
+index 05566ecdbe4b..1b914e418e41 100644
+--- a/drivers/hv/hv_util.c
++++ b/drivers/hv/hv_util.c
+@@ -696,8 +696,8 @@ static int hv_timesync_init(struct hv_util_service *srv)
+ 	 */
+ 	hv_ptp_clock = ptp_clock_register(&ptp_hyperv_info, NULL);
+ 	if (IS_ERR_OR_NULL(hv_ptp_clock)) {
+-		pr_err("cannot register PTP clock: %ld\n",
+-		       PTR_ERR(hv_ptp_clock));
++		pr_err("cannot register PTP clock: %d\n",
++		       PTR_ERR_OR_ZERO(hv_ptp_clock));
+ 		hv_ptp_clock = NULL;
+ 	}
+ 
 -- 
 2.30.2
 
