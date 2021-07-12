@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F5343C4C47
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 347BB3C57DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240084AbhGLHCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:02:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45050 "EHLO mail.kernel.org"
+        id S1346019AbhGLIjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:39:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237284AbhGLGqJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:46:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF42A6112D;
-        Mon, 12 Jul 2021 06:41:48 +0000 (UTC)
+        id S1350766AbhGLHvR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:51:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9ABCA60FF1;
+        Mon, 12 Jul 2021 07:48:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072109;
-        bh=EqOVOBlPobOlKTw3Zj46xqvHEq8KJr8JVBdzSS3wo6E=;
+        s=korg; t=1626076093;
+        bh=0KdloTFyTu4iZAS6iDvxMQ/hOTX7F1EjYJaTOFf8c5w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XlFt555QmdO7A3SGmssXWunT1Owxw43XQBwxqCePoB7oGwZGVt3zu5Lfza+Ry8rXh
-         BUu1cHxTrHuevATeG08add3SaVL4Rzjnn1jaNrOashpLjW0CYS64P8jLCXONMjYO2A
-         mgVkS3/Ln1PXlVV3VpGrr3nOILTLk444gVc8m5No=
+        b=oK6Dzj4Kf5+ldFp202ldqmPQhrNXNfJh/JCH4aqR2OzbmqmcdoItEhYaip1iVUQeh
+         6RW+0sv8QWrfZsNKkLYQ3Ak3uyOIghTGnpJjdI3EVE+2r/DquwP5fIOF+PSqTztOvp
+         FnE6TW4GQPb3WPWvWbwxEOejY6O+z+iQAGrQvpkM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
-        kernel test robot <lkp@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 358/593] netfilter: nft_osf: check for TCP packet before further processing
+        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 495/800] mt76: mt7921: consider the invalid value for to_rssi
 Date:   Mon, 12 Jul 2021 08:08:38 +0200
-Message-Id: <20210712060925.784704456@linuxfoundation.org>
+Message-Id: <20210712061019.850273551@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Sean Wang <sean.wang@mediatek.com>
 
-[ Upstream commit 8f518d43f89ae00b9cf5460e10b91694944ca1a8 ]
+[ Upstream commit edb5aebc1c3db312e74e1dcf75b8626ee5300596 ]
 
-The osf expression only supports for TCP packets, add a upfront sanity
-check to skip packet parsing if this is not a TCP packet.
+It is possible the RCPI from the certain antenna is an invalid value,
+especially packets are receiving while the system is frequently entering
+deep sleep mode, so consider calculating RSSI with the reasonable upper
+bound to avoid report the wrong value to the mac80211 layer.
 
-Fixes: b96af92d6eaf ("netfilter: nf_tables: implement Passive OS fingerprint module in nft_osf")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: 163f4d22c118 ("mt76: mt7921: add MAC support")
+Reviewed-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Signed-off-by: Sean Wang <sean.wang@mediatek.com>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nft_osf.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/net/wireless/mediatek/mt76/mt7921/mac.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/net/netfilter/nft_osf.c b/net/netfilter/nft_osf.c
-index c261d57a666a..2c957629ea66 100644
---- a/net/netfilter/nft_osf.c
-+++ b/net/netfilter/nft_osf.c
-@@ -28,6 +28,11 @@ static void nft_osf_eval(const struct nft_expr *expr, struct nft_regs *regs,
- 	struct nf_osf_data data;
- 	struct tcphdr _tcph;
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/mac.c b/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
+index decf2d5f0ce3..9bb88b2e28a9 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
+@@ -444,16 +444,19 @@ int mt7921_mac_fill_rx(struct mt7921_dev *dev, struct sk_buff *skb)
+ 		status->chain_signal[1] = to_rssi(MT_PRXV_RCPI1, v1);
+ 		status->chain_signal[2] = to_rssi(MT_PRXV_RCPI2, v1);
+ 		status->chain_signal[3] = to_rssi(MT_PRXV_RCPI3, v1);
+-		status->signal = status->chain_signal[0];
+-
+-		for (i = 1; i < hweight8(mphy->antenna_mask); i++) {
+-			if (!(status->chains & BIT(i)))
++		status->signal = -128;
++		for (i = 0; i < hweight8(mphy->antenna_mask); i++) {
++			if (!(status->chains & BIT(i)) ||
++			    status->chain_signal[i] >= 0)
+ 				continue;
  
-+	if (pkt->tprot != IPPROTO_TCP) {
-+		regs->verdict.code = NFT_BREAK;
-+		return;
-+	}
+ 			status->signal = max(status->signal,
+ 					     status->chain_signal[i]);
+ 		}
+ 
++		if (status->signal == -128)
++			status->flag |= RX_FLAG_NO_SIGNAL_VAL;
 +
- 	tcp = skb_header_pointer(skb, ip_hdrlen(skb),
- 				 sizeof(struct tcphdr), &_tcph);
- 	if (!tcp) {
+ 		stbc = FIELD_GET(MT_PRXV_STBC, v0);
+ 		gi = FIELD_GET(MT_PRXV_SGI, v0);
+ 		cck = false;
 -- 
 2.30.2
 
