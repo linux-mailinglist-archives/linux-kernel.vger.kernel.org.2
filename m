@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3803C5764
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 183713C576F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354300AbhGLIcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:32:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51044 "EHLO mail.kernel.org"
+        id S1358178AbhGLId3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:33:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349821AbhGLHos (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:44:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E519613B2;
-        Mon, 12 Jul 2021 07:41:19 +0000 (UTC)
+        id S1345946AbhGLHpd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:45:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 638AF613DA;
+        Mon, 12 Jul 2021 07:41:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075679;
-        bh=8Y+8ynbx2OCSKfxB71y/b0xJs0zIgHjnEj/SFWeN/FU=;
+        s=korg; t=1626075705;
+        bh=9woMd5Q1TJ4Br7c6mG+NyaMf0CefBOFGC093iL4zKWA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u671Mm/aEondtJRQW8oG3iPewxVaQTPsI1auN68O0ccIm+bl2COhfIMIevjJ3ggvB
-         AFzP1TTm/Kj1uMkbNfPVZp+oX02rSjoEyLJVI541y4XDtQlpwKgTnpq0goeylvYeiC
-         iCfLxpyZn/96wULprfdQs5hBd+/MwTxFOTUm0CKQ=
+        b=J77W0TK1yTZXpcjMzoIKx1G9Qp8Qd6B45tceqnMOlzleZYUkTNsdMjVDBhajL8OY8
+         BJn/0EfOyANeGBUgKmgWaBwCv/glPTwVx8WscmJnhW+DzKL+b++WR2UDRHEgCS4pIb
+         qthysTw6w1ACaecY6fPA1/qGmxiFv6P63DCufB3s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 291/800] media: rc: i2c: Fix an error message
-Date:   Mon, 12 Jul 2021 08:05:14 +0200
-Message-Id: <20210712060955.947846459@linuxfoundation.org>
+Subject: [PATCH 5.13 292/800] regulator: bd71815: add select to fix build
+Date:   Mon, 12 Jul 2021 08:05:15 +0200
+Message-Id: <20210712060956.092023386@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -42,38 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 9c87ae1a0dbeb5794957421157fd266d38a869b4 ]
+[ Upstream commit 5ba3747dbc9ade2d22a8f5bff3c928cb41d35030 ]
 
-'ret' is known to be 1 here. In fact 'i' is expected instead.
-Store the return value of 'i2c_master_recv()' in 'ret' so that the error
-message print the correct error code.
+Mend the Kconfig for REGULATOR_BD71815 to prevent build errors:
 
-Fixes: acaa34bf06e9 ("media: rc: implement zilog transmitter")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+riscv32-linux-ld: drivers/regulator/bd71815-regulator.o: in function `.L0 ':
+regulator.c:289: undefined reference to `rohm_regulator_set_dvs_levels'
+riscv32-linux-ld: drivers/regulator/bd71815-regulator.c:370: undefined reference to `rohm_regulator_set_dvs_levels'
+
+Fixes: 1aad39001e85 ("regulator: Support ROHM BD71815 regulators")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc: Lee Jones <lee.jones@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Reviewed-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Link: https://lore.kernel.org/r/20210523001427.13500-1-rdunlap@infradead.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/ir-kbd-i2c.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/regulator/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/media/i2c/ir-kbd-i2c.c b/drivers/media/i2c/ir-kbd-i2c.c
-index e8119ad0bc71..92376592455e 100644
---- a/drivers/media/i2c/ir-kbd-i2c.c
-+++ b/drivers/media/i2c/ir-kbd-i2c.c
-@@ -678,8 +678,8 @@ static int zilog_tx(struct rc_dev *rcdev, unsigned int *txbuf,
- 		goto out_unlock;
- 	}
- 
--	i = i2c_master_recv(ir->tx_c, buf, 1);
--	if (i != 1) {
-+	ret = i2c_master_recv(ir->tx_c, buf, 1);
-+	if (ret != 1) {
- 		dev_err(&ir->rc->dev, "i2c_master_recv failed with %d\n", ret);
- 		ret = -EIO;
- 		goto out_unlock;
+diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
+index 3e7a38525cb3..fc9e8f589d16 100644
+--- a/drivers/regulator/Kconfig
++++ b/drivers/regulator/Kconfig
+@@ -207,6 +207,7 @@ config REGULATOR_BD70528
+ config REGULATOR_BD71815
+ 	tristate "ROHM BD71815 Power Regulator"
+ 	depends on MFD_ROHM_BD71828
++	select REGULATOR_ROHM
+ 	help
+ 	  This driver supports voltage regulators on ROHM BD71815 PMIC.
+ 	  This will enable support for the software controllable buck
 -- 
 2.30.2
 
