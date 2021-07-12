@@ -2,114 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B00C43C5BEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 14:21:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84A973C5BF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 14:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233825AbhGLMQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 08:16:48 -0400
-Received: from mga18.intel.com ([134.134.136.126]:26721 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230074AbhGLMQo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 08:16:44 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10042"; a="197241595"
-X-IronPort-AV: E=Sophos;i="5.84,232,1620716400"; 
-   d="scan'208";a="197241595"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 05:13:55 -0700
-X-IronPort-AV: E=Sophos;i="5.84,232,1620716400"; 
-   d="scan'208";a="502106140"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 05:13:52 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1m2uok-00CDPn-3s; Mon, 12 Jul 2021 15:13:46 +0300
-Date:   Mon, 12 Jul 2021 15:13:46 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     Henning Schild <henning.schild@siemens.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Jean Delvare <jdelvare@suse.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Tan Jui Nee <jui.nee.tan@intel.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Jonathan Yong <jonathan.yong@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pci@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Peter Tyser <ptyser@xes-inc.com>, hdegoede@redhat.com
-Subject: Re: [PATCH v1 3/7] PCI: New Primary to Sideband (P2SB) bridge
- support library
-Message-ID: <YOwx+gM79lnMjqeg@smile.fi.intel.com>
-References: <20210308122020.57071-1-andriy.shevchenko@linux.intel.com>
- <20210308122020.57071-4-andriy.shevchenko@linux.intel.com>
- <20210313104557.321de08e@md1za8fc.ad001.siemens.net>
- <YGXqDxSJhCO9bD1X@smile.fi.intel.com>
- <20210401180617.GL2542@lahna.fi.intel.com>
- <YGYPSoXDn8GW5iSI@smile.fi.intel.com>
- <20210401183236.GN2542@lahna.fi.intel.com>
+        id S233872AbhGLMRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 08:17:41 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:53964
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230074AbhGLMRh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 08:17:37 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 5174B405AE;
+        Mon, 12 Jul 2021 12:14:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1626092081;
+        bh=9cd7SB+YDylOyt5Q5dBTF8mzwTTXz59sqh18sE/UjxM=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=siSb/6wSXYwWx+DNORGB6EzQlm7CHMJFGVlLZNSB05IJkhUNQhl/VaepdhWdi0u7X
+         SIeKZP1dWfcSa+LuFRtWFNz40UMNjioQoGJe9Y5nAT40qp5bgEvqjAfjlA1MJjRgSW
+         92a7aGdOqs/aU0yDuJYB9T3Z3EaUbsFZvWNOLUdvGHK44UScXBK1UFHKSvisxDczLn
+         sp3T2G4Vb6tw5SkMh9oocoZMduXmS1VQwZbNVdLay2/kxdAyVGX5k8rnqP9YeL6cqw
+         GV0iwaXi0msLt1PtoEnn9Gv75RqGozxf5JnSzSiKw9/HKdRr53tuZZYcLyDrJRe3OW
+         3Hrm6BaTEIYvg==
+From:   Colin King <colin.king@canonical.com>
+To:     Alexander Aring <alex.aring@gmail.com>,
+        Jukka Rissanen <jukka.rissanen@linux.intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stefan Schmidt <stefan@osg.samsung.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        linux-bluetooth@vger.kernel.org, linux-wpan@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] 6lowpan: iphc: Fix an off-by-one check of array index
+Date:   Mon, 12 Jul 2021 13:14:40 +0100
+Message-Id: <20210712121440.17860-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210401183236.GN2542@lahna.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 09:32:36PM +0300, Mika Westerberg wrote:
-> On Thu, Apr 01, 2021 at 09:22:02PM +0300, Andy Shevchenko wrote:
-> > On Thu, Apr 01, 2021 at 09:06:17PM +0300, Mika Westerberg wrote:
-> > > On Thu, Apr 01, 2021 at 06:43:11PM +0300, Andy Shevchenko wrote:
-> > > > On Sat, Mar 13, 2021 at 10:45:57AM +0100, Henning Schild wrote:
-> > > > > Am Mon, 8 Mar 2021 14:20:16 +0200
-> > > > > schrieb Andy Shevchenko <andriy.shevchenko@linux.intel.com>:
-> > > > 
-> > > > ...
-> > > > 
-> > > > > > + * pci_p2sb_bar - Get Primary to Sideband bridge (P2SB) device BAR
-> > > > > > + * @pdev:	PCI device to get a PCI bus to communicate with
-> > > > > > + * @devfn:	PCI slot and function to communicate with
-> > > > > > + * @mem:	memory resource to be filled in
-> > > > > 
-> > > > > Do we really need that many arguments to it?
-> > > > > 
-> > > > > Before i had, in a platform driver that never had its own pci_dev or bus
-> > > > > 
-> > > > >   res->start = simatic_ipc_get_membase0(PCI_DEVFN(13, 0));
-> > > > >   if (res-start == 0)
-> > > > >     return -ENODEV;
-> > > > > 
-> > > > > So helper only asked for the devfn, returned base and no dedicated
-> > > > > error code.
-> > > > > 
-> > > > > With this i need
-> > > > > 
-> > > > >   struct pci_bus *bus = pci_find_bus(0, 0);
-> > > > >   struct pci_dev *pci_dev = bus->self;
-> > > > >   unsigned int magic_i_do_not_want =  PCI_DEVFN(13, 0);
-> > > > 
-> > > > What confuses me is the use for SPI NOR controller on Broxton. And I think
-> > > > we actually can indeed hide all this under the hood by exposing P2SB to the OS.
-> > > > 
-> > > > Mika, what do you think?
-> > > 
-> > > Not sure I follow. Do you mean we force unhide P2SB and then bind (MFD)
-> > > driver to that?
-> > 
-> > Not MFD, SPI NOR (if I understood correctly the code in MFD driver for SPI NOR
-> > in regards to P2SB case).
-> 
-> I mean a new MFD driver that binds to the P2SB and that one then exposes
-> the stuff needed by the SPI-NOR driver.
+From: Colin Ian King <colin.king@canonical.com>
 
-But as far as I understood it doesn't binds to P2SB since we do not have that
-device present at PCI enumeration stage.
+The bounds check of id is off-by-one and the comparison should
+be >= rather >. Currently the WARN_ON_ONCE check does not stop
+the out of range indexing of &ldev->ctx.table[id] so also add
+a return path if the bounds are out of range.
 
-Maybe at the end of the day the P2SB driver should be located in drivers/mfd
-and take over the SPI NOR enumeration as well on platforms in question?
+Addresses-Coverity: ("Illegal address computation").
+Fixes: 5609c185f24d ("6lowpan: iphc: add support for stateful compression")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ net/6lowpan/debugfs.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/net/6lowpan/debugfs.c b/net/6lowpan/debugfs.c
+index 1c140af06d52..600b9563bfc5 100644
+--- a/net/6lowpan/debugfs.c
++++ b/net/6lowpan/debugfs.c
+@@ -170,7 +170,8 @@ static void lowpan_dev_debugfs_ctx_init(struct net_device *dev,
+ 	struct dentry *root;
+ 	char buf[32];
+ 
+-	WARN_ON_ONCE(id > LOWPAN_IPHC_CTX_TABLE_SIZE);
++	if (WARN_ON_ONCE(id >= LOWPAN_IPHC_CTX_TABLE_SIZE))
++		return;
+ 
+ 	sprintf(buf, "%d", id);
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.31.1
 
