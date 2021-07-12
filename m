@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEEA23C4FFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 988253C499E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345660AbhGLHaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:30:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37404 "EHLO mail.kernel.org"
+        id S236809AbhGLGpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:45:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236833AbhGLHCE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:02:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E18761402;
-        Mon, 12 Jul 2021 06:59:14 +0000 (UTC)
+        id S236436AbhGLGfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:35:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D6D260FE3;
+        Mon, 12 Jul 2021 06:32:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073154;
-        bh=NqquWzSIogHiNbc+mOfyAf5MHz7LQsbJLXdaAmrFqaI=;
+        s=korg; t=1626071534;
+        bh=dV9evPm4c2ZbaBBpgB8FzfTBMxhDUnAlW3rio1MYS8Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bPoqlqqFjtFSps2lKiDaWOLKXuMIcfN8PHQ5KEggFdCAfDzwXynCuFGmn0338QnIS
-         Hv5YTOGUlh4pZ07gjfnOlF6S/aiMi2998eZyGraYfDGscyWutzZmODGDwr9RkATM9G
-         SFLxBCbCqv4RsDx0ESMveDQrhcq1RfTAJ3OYDKTY=
+        b=BdGI3jb2TZ+9mRuNMwARZw7UazRfJ5acR+TZqPzU0ZrxY43gfQckuHgnsLNXp0hCd
+         wj7Np+DAWeZNg+GMaxzsB5Xh9hfODKd2FlpX6BWU+KMH3TjwrSHW0flei3SVVRT0Qo
+         LjYyr5/m3XiwXqSwdx3Z9HsL5mxdJC+WGkom8NrA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 145/700] media: hevc: Fix dependent slice segment flags
+        stable@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Subject: [PATCH 5.10 068/593] clk: agilex/stratix10/n5x: fix how the bypass_reg is handled
 Date:   Mon, 12 Jul 2021 08:03:48 +0200
-Message-Id: <20210712060946.047685686@linuxfoundation.org>
+Message-Id: <20210712060850.646680444@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,88 +39,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jernej Skrabec <jernej.skrabec@siol.net>
+From: Dinh Nguyen <dinguyen@kernel.org>
 
-[ Upstream commit 67a7e53d5b21f3a84efc03a4e62db7caf97841ef ]
+commit dfd1427c3769ba51297777dbb296f1802d72dbf6 upstream.
 
-Dependent slice segment flag for PPS control is misnamed. It should have
-"enabled" at the end. It only tells if this flag is present in slice
-header or not and not the actual value.
+If the bypass_reg is set, then we can return the bypass parent, however,
+if there is not a bypass_reg, we need to figure what the correct parent
+mux is.
 
-Fix this by renaming the PPS flag and introduce another flag for slice
-control which tells actual value.
+The previous code never handled the parent mux if there was a
+bypass_reg.
 
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 80c6b7a0894f ("clk: socfpga: agilex: add clock driver for the Agilex platform")
+Cc: stable@vger.kernel.org
+Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+Link: https://lore.kernel.org/r/20210611025201.118799-4-dinguyen@kernel.org
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 5 ++++-
- drivers/staging/media/sunxi/cedrus/cedrus_h265.c          | 4 ++--
- include/media/hevc-ctrls.h                                | 3 ++-
- 3 files changed, 8 insertions(+), 4 deletions(-)
+ drivers/clk/socfpga/clk-periph-s10.c |   11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-index 00944e97d638..09f28ba60e6f 100644
---- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-+++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-@@ -3285,7 +3285,7 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
-     :stub-columns: 0
-     :widths:       1 1 2
+--- a/drivers/clk/socfpga/clk-periph-s10.c
++++ b/drivers/clk/socfpga/clk-periph-s10.c
+@@ -49,16 +49,21 @@ static u8 clk_periclk_get_parent(struct
+ {
+ 	struct socfpga_periph_clk *socfpgaclk = to_periph_clk(hwclk);
+ 	u32 clk_src, mask;
+-	u8 parent;
++	u8 parent = 0;
  
--    * - ``V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT``
-+    * - ``V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT_ENABLED``
-       - 0x00000001
-       -
-     * - ``V4L2_HEVC_PPS_FLAG_OUTPUT_FLAG_PRESENT``
-@@ -3493,6 +3493,9 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
-     * - ``V4L2_HEVC_SLICE_PARAMS_FLAG_SLICE_LOOP_FILTER_ACROSS_SLICES_ENABLED``
-       - 0x00000100
-       -
-+    * - ``V4L2_HEVC_SLICE_PARAMS_FLAG_DEPENDENT_SLICE_SEGMENT``
-+      - 0x00000200
-+      -
- 
- .. c:type:: v4l2_hevc_dpb_entry
- 
-diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
-index ce497d0197df..10744fab7cea 100644
---- a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
-+++ b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
-@@ -477,8 +477,8 @@ static void cedrus_h265_setup(struct cedrus_ctx *ctx,
- 				slice_params->flags);
- 
- 	reg |= VE_DEC_H265_FLAG(VE_DEC_H265_DEC_SLICE_HDR_INFO0_FLAG_DEPENDENT_SLICE_SEGMENT,
--				V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT,
--				pps->flags);
-+				V4L2_HEVC_SLICE_PARAMS_FLAG_DEPENDENT_SLICE_SEGMENT,
-+				slice_params->flags);
- 
- 	/* FIXME: For multi-slice support. */
- 	reg |= VE_DEC_H265_DEC_SLICE_HDR_INFO0_FLAG_FIRST_SLICE_SEGMENT_IN_PIC;
-diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
-index b4cb2ef02f17..226fcfa0e026 100644
---- a/include/media/hevc-ctrls.h
-+++ b/include/media/hevc-ctrls.h
-@@ -81,7 +81,7 @@ struct v4l2_ctrl_hevc_sps {
- 	__u64	flags;
- };
- 
--#define V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT		(1ULL << 0)
-+#define V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT_ENABLED	(1ULL << 0)
- #define V4L2_HEVC_PPS_FLAG_OUTPUT_FLAG_PRESENT			(1ULL << 1)
- #define V4L2_HEVC_PPS_FLAG_SIGN_DATA_HIDING_ENABLED		(1ULL << 2)
- #define V4L2_HEVC_PPS_FLAG_CABAC_INIT_PRESENT			(1ULL << 3)
-@@ -160,6 +160,7 @@ struct v4l2_hevc_pred_weight_table {
- #define V4L2_HEVC_SLICE_PARAMS_FLAG_USE_INTEGER_MV		(1ULL << 6)
- #define V4L2_HEVC_SLICE_PARAMS_FLAG_SLICE_DEBLOCKING_FILTER_DISABLED (1ULL << 7)
- #define V4L2_HEVC_SLICE_PARAMS_FLAG_SLICE_LOOP_FILTER_ACROSS_SLICES_ENABLED (1ULL << 8)
-+#define V4L2_HEVC_SLICE_PARAMS_FLAG_DEPENDENT_SLICE_SEGMENT	(1ULL << 9)
- 
- struct v4l2_ctrl_hevc_slice_params {
- 	__u32	bit_size;
--- 
-2.30.2
-
++	/* handle the bypass first */
+ 	if (socfpgaclk->bypass_reg) {
+ 		mask = (0x1 << socfpgaclk->bypass_shift);
+ 		parent = ((readl(socfpgaclk->bypass_reg) & mask) >>
+ 			   socfpgaclk->bypass_shift);
+-	} else {
++		if (parent)
++			return parent;
++	}
++
++	if (socfpgaclk->hw.reg) {
+ 		clk_src = readl(socfpgaclk->hw.reg);
+ 		parent = (clk_src >> CLK_MGR_FREE_SHIFT) &
+-			CLK_MGR_FREE_MASK;
++			  CLK_MGR_FREE_MASK;
+ 	}
+ 	return parent;
+ }
 
 
