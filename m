@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF06C3C5978
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F173C5979
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384234AbhGLJDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:03:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56278 "EHLO mail.kernel.org"
+        id S1384304AbhGLJDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:03:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353850AbhGLIDD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1353849AbhGLIDD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Jul 2021 04:03:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D331961D13;
-        Mon, 12 Jul 2021 07:58:08 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3389E6199C;
+        Mon, 12 Jul 2021 07:58:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076689;
-        bh=C6FoM+xYZeA5SH4Pz8i7cBlg5IgyUnJrBgKTOc1lWsk=;
+        s=korg; t=1626076691;
+        bh=p8MZCwApEeJkSMpx58w+IZ/YfyUklulrNMrzGhhLz0Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tOqAmw9gkInlU5z2/sf9TZ5g95n3hUsxrBKdED+1cEs9gElbbOHkd3aHRAQZDzJSX
-         PJIL7E8Ws41tSOMvnhhsXKQ7iu2xUNBXzwMrAPbzI1dLJcdsT2YXWSTNJhThNCMlqh
-         JE5RnP6UeBmlm8nMXAop4CDhDeK/SOvxD9Ahk6+8=
+        b=1oqoByQTDl35RpRbqIVP41aZGxko26i6XU9yZY1bdJJisvsI1ztHkMED/vbPglXg6
+         SamUpbdusnu2cNbAshVs7LrLilGf1FFNXsPCGawD2cA3sgkewMNGsU73AyYNjq3bZw
+         gkMyAOcC8YvuGbigFcMc0D+RE6g5XgR0rH5FZKXo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
+        stable@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 708/800] iio: dummy: Fix build error when CONFIG_IIO_TRIGGERED_BUFFER is not set
-Date:   Mon, 12 Jul 2021 08:12:11 +0200
-Message-Id: <20210712061042.064846171@linuxfoundation.org>
+Subject: [PATCH 5.13 709/800] iio: adc: at91-sama5d2: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
+Date:   Mon, 12 Jul 2021 08:12:12 +0200
+Message-Id: <20210712061042.163067165@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -41,40 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit 94588c1bf1c8701392e1dc105c670d0d2fc7676a ]
+[ Upstream commit 8f884758966259fa8c50c137ac6d4ce9bb7859db ]
 
-Gcc reports build error when CONFIG_IIO_TRIGGERED_BUFFER is not set:
+To make code more readable, use a structure to express the channel
+layout and ensure the timestamp is 8 byte aligned.
 
-riscv64-linux-gnu-ld: drivers/iio/dummy/iio_simple_dummy_buffer.o: in function `iio_simple_dummy_configure_buffer':
-iio_simple_dummy_buffer.c:(.text+0x2b0): undefined reference to `iio_triggered_buffer_setup_ext'
-riscv64-linux-gnu-ld: drivers/iio/dummy/iio_simple_dummy_buffer.o: in function `.L0 ':
-iio_simple_dummy_buffer.c:(.text+0x2fc): undefined reference to `iio_triggered_buffer_cleanup'
+Found during an audit of all calls of this function.
 
-Fix it by select IIO_TRIGGERED_BUFFER for config IIO_SIMPLE_DUMMY_BUFFER.
-
-Fixes: 738f6ba11800 ("iio: dummy: iio_simple_dummy_buffer: use triggered buffer core calls")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Fixes: 5e1a1da0f8c9 ("iio: adc: at91-sama5d2_adc: add hw trigger and buffer support")
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: Eugen Hristev <eugen.hristev@microchip.com>
+Reviewed-by: Nuno Sá <nuno.sa@analog.com>
+Link: https://lore.kernel.org/r/20210613152301.571002-2-jic23@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/dummy/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/iio/adc/at91-sama5d2_adc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/iio/dummy/Kconfig b/drivers/iio/dummy/Kconfig
-index 5c5c2f8c55f3..1f46cb9e51b7 100644
---- a/drivers/iio/dummy/Kconfig
-+++ b/drivers/iio/dummy/Kconfig
-@@ -34,6 +34,7 @@ config IIO_SIMPLE_DUMMY_BUFFER
- 	select IIO_BUFFER
- 	select IIO_TRIGGER
- 	select IIO_KFIFO_BUF
-+	select IIO_TRIGGERED_BUFFER
- 	help
- 	  Add buffered data capture to the simple dummy driver.
- 
+diff --git a/drivers/iio/adc/at91-sama5d2_adc.c b/drivers/iio/adc/at91-sama5d2_adc.c
+index a7826f097b95..d356b515df09 100644
+--- a/drivers/iio/adc/at91-sama5d2_adc.c
++++ b/drivers/iio/adc/at91-sama5d2_adc.c
+@@ -403,7 +403,8 @@ struct at91_adc_state {
+ 	struct at91_adc_dma		dma_st;
+ 	struct at91_adc_touch		touch_st;
+ 	struct iio_dev			*indio_dev;
+-	u16				buffer[AT91_BUFFER_MAX_HWORDS];
++	/* Ensure naturally aligned timestamp */
++	u16				buffer[AT91_BUFFER_MAX_HWORDS] __aligned(8);
+ 	/*
+ 	 * lock to prevent concurrent 'single conversion' requests through
+ 	 * sysfs.
 -- 
 2.30.2
 
