@@ -2,109 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F38C3C61C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 332F13C61C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:20:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235102AbhGLRXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 13:23:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234856AbhGLRXG (ORCPT
+        id S234771AbhGLRXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 13:23:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58854 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234224AbhGLRXk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 13:23:06 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD406C0613DD
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 10:20:16 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id q16so11129423oiw.6
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 10:20:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=/g8dTtqEdW34OwE46m1MAAewcTdXVykzo2F4gfcfFFQ=;
-        b=FgzYbYWWchiFEX7JgzLKKjpNjSXbJFtN64/66JKLT7nxtDXqKdS6dmH55joKAL+sXz
-         BxIQNE9emF49HbPJ+lPO2V++Kc5y++hSFU0F+z7Lv7o2iYOub3UWC1bAA0cp3kD/dOf6
-         ji4OkDM89dDb2iK2vZzHUwweAI7g6BoUt7h6FmNNTDcQIyGIeuJofzEzyKxvL1Bvwz+O
-         zQP9ciarNI2bFATzZ7+oGOi7/BoKEAC78+KpGDYMm/aySIVbDs9mJwnGFnjBAUkr15mJ
-         iws9TWsO9v5liXhfcImCSsWYTZjUlhEtD6LHxZg14KIwkotAg7CKC4nCFuHiGlHCWWNx
-         8OEA==
+        Mon, 12 Jul 2021 13:23:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626110452;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GTa3P9ZWFrJfV2ObKCtTAuiG3I+N8Ir5qQrelfNdXg4=;
+        b=Dq8tVSyxBYrF/i+jc+6IVNDjmN44NmMIcz7J7GcDFG6DQxgYIW3QjINNWcTANhM3p82l5v
+        K5JjnyKzvRhyoMsqOeUjOUJQW81UFh+oKbl+yN6fqK7tHV3Ma8SS9XWz+FrxedVCr/LTdJ
+        WRs+7hpbtwEbMUd9y6JTojyxxbD11pU=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-278-XjVCubaIMeiDcy7bVcb0Yw-1; Mon, 12 Jul 2021 13:20:50 -0400
+X-MC-Unique: XjVCubaIMeiDcy7bVcb0Yw-1
+Received: by mail-wm1-f69.google.com with SMTP id n5-20020a05600c3b85b02902152e9caa1dso5944709wms.3
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 10:20:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=/g8dTtqEdW34OwE46m1MAAewcTdXVykzo2F4gfcfFFQ=;
-        b=J2pVgLucXfAC0mbTYTtElw3CvD+wYUZgVSWmMlZtSgX9o+Jd2gQWKfdt3a2/t6jndN
-         35O4bp2OesEMe6pEL7h17W7t8JQta7H4Tz6TwzucyiuNMXsneNUk375zhWmzqdsK0tuM
-         RIrIl+31/5Z73mGrb/GScFgalZQpNAJJFZuMAp7HVfX0mhLX0HyQQdanGyvNUmCytGsp
-         TZEDe/MhISmVD8Kr7HABU9dCfNyiiCX2Ibfhy7/d5goxcx3FlhZDgPNQW73aQac2Sgvz
-         tYtoS7pOjr6VvNKp4zyYCDlZdlk8Z8bB8+7ng4eHsMI8CMIRWOCiWrs1eIcflnVo42nK
-         thFw==
-X-Gm-Message-State: AOAM532lPYFNuiRIkhd3EmBmu+Vp0WwUJSTUww+DteigzgywuMsxl9CM
-        jPasLCwMq+67HINROw8Rwck/tULtU8h/m55DVr5b0Q==
-X-Google-Smtp-Source: ABdhPJwCTwS+1GiIchwcl2et26v1BPVnXTvxhpqTj7f2o9f4uQ8NqprnWvmsykCIPGrQTpb07BkYbdGEmxSQSDOApoo=
-X-Received: by 2002:aca:1e07:: with SMTP id m7mr38610835oic.28.1626110415883;
- Mon, 12 Jul 2021 10:20:15 -0700 (PDT)
+        h=x-gm-message-state:from:cc:subject:to:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GTa3P9ZWFrJfV2ObKCtTAuiG3I+N8Ir5qQrelfNdXg4=;
+        b=TkeTM4erfGTxUSDsytEkQyLkfYNEIuSjhw8xEULQ9IDwk2zE8masoN6x7tyORi2YBG
+         V02b46B6vAPVfU8KN8fxHzfH/A65jtoRXEQ59t0kJD7jroOzTzIlcQktKKGX4aDYFFvX
+         4gHhSuCSvooljwHbLwsi53U4b+tqmB6kkaJL22AtCUHXUL1X6jEZlsSDbMJ+Q9jybzMk
+         t1NUiiEyGe9prNBaLLVLu88EjXxTNPbSlncf4BkblYZiFzJMOa+wweDevioxlXZd9+xG
+         61FB6n/W7XxyWQoy6dYR1+oegNG4VVJhxIfbvAK+pGTPVUGE8ihLVsvYewc2xX+SMjtn
+         zqrQ==
+X-Gm-Message-State: AOAM533L4QPtGIVh/dWW8kQbbk0PtvAF+wW/ptOzM77jAu2O0VpPrVkS
+        lR+jGrkQ6VzLg7hNQ1CPwFoOO7yRu+75OvggbsjeEWx76JsOKWkQ6i+HithLl3nEhyFDCcRA2Qf
+        I6WU50VkjihwC3T3MBrbmEEM9
+X-Received: by 2002:adf:facf:: with SMTP id a15mr59287wrs.39.1626110449729;
+        Mon, 12 Jul 2021 10:20:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy+d/U8vl8SdYAtGo2IkkoAiNENGSESyGiWUbqzEMUERbu/JIM77t4J+I7Z2Njn7zh2uPwhcw==
+X-Received: by 2002:adf:facf:: with SMTP id a15mr59222wrs.39.1626110449396;
+        Mon, 12 Jul 2021 10:20:49 -0700 (PDT)
+Received: from [192.168.42.238] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
+        by smtp.gmail.com with ESMTPSA id w15sm567272wmi.3.2021.07.12.10.20.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Jul 2021 10:20:48 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     brouer@redhat.com, David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
+        yisen.zhuang@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
+        thomas.petazzoni@bootlin.com, hawk@kernel.org,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, fenghua.yu@intel.com,
+        guro@fb.com, Peter Xu <peterx@redhat.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>, wenxu@ucloud.cn,
+        Cong Wang <cong.wang@bytedance.com>,
+        Kevin Hao <haokexin@gmail.com>, nogikh@google.com,
+        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
+        kpsingh@kernel.org, andrii@kernel.org,
+        Martin KaFai Lau <kafai@fb.com>, songliubraving@fb.com,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH rfc v3 2/4] page_pool: add interface for getting and
+ setting pagecnt_bias
+To:     Alexander Duyck <alexander.duyck@gmail.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>
+References: <1626092196-44697-1-git-send-email-linyunsheng@huawei.com>
+ <1626092196-44697-3-git-send-email-linyunsheng@huawei.com>
+ <CAKgT0Uf1W1H_0jK+zTDHdQnpa-dFSfcAtANqhPTJyZ21VeGmjg@mail.gmail.com>
+Message-ID: <2d9a3d29-8e6b-8462-c410-6b7fd4518c9d@redhat.com>
+Date:   Mon, 12 Jul 2021 19:20:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <1625825111-6604-1-git-send-email-weijiang.yang@intel.com>
- <1625825111-6604-7-git-send-email-weijiang.yang@intel.com>
- <CALMp9eQEs9pUyy1PpwLPG0_PtF07tR2Opw+1b=w4-knOwYPvvg@mail.gmail.com>
- <CALMp9eQ+9czB0ayBFR3-nW-ynKuH0v9uHAGeV4wgkXYJMSs1=w@mail.gmail.com>
- <20210712095305.GE12162@intel.com> <d73eb316-4e09-a924-5f60-e3778db91df4@gmail.com>
-In-Reply-To: <d73eb316-4e09-a924-5f60-e3778db91df4@gmail.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Mon, 12 Jul 2021 10:20:04 -0700
-Message-ID: <CALMp9eQmK+asv7fXeUpF2UiRKL7VmZx44HMGj67aSqm0k9nKVg@mail.gmail.com>
-Subject: Re: [PATCH v5 06/13] KVM: x86/vmx: Save/Restore host MSR_ARCH_LBR_CTL state
-To:     Like Xu <like.xu.linux@gmail.com>
-Cc:     Yang Weijiang <weijiang.yang@intel.com>, pbonzini@redhat.com,
-        seanjc@google.com, vkuznets@redhat.com, wei.w.wang@intel.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "kan.liang@linux.intel.com" <kan.liang@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAKgT0Uf1W1H_0jK+zTDHdQnpa-dFSfcAtANqhPTJyZ21VeGmjg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 3:19 AM Like Xu <like.xu.linux@gmail.com> wrote:
->
-> On 12/7/2021 5:53 pm, Yang Weijiang wrote:
-> > On Fri, Jul 09, 2021 at 04:41:30PM -0700, Jim Mattson wrote:
-> >> On Fri, Jul 9, 2021 at 3:54 PM Jim Mattson <jmattson@google.com> wrote=
-:
-> >>>
-> >>> On Fri, Jul 9, 2021 at 2:51 AM Yang Weijiang <weijiang.yang@intel.com=
-> wrote:
-> >>>>
-> >>>> If host is using MSR_ARCH_LBR_CTL then save it before vm-entry
-> >>>> and reload it after vm-exit.
-> >>>
-> >>> I don't see anything being done here "before VM-entry" or "after
-> >>> VM-exit." This code seems to be invoked on vcpu_load and vcpu_put.
-> >>>
-> >>> In any case, I don't see why this one MSR is special. It seems that i=
-f
-> >>> the host is using the architectural LBR MSRs, then *all* of the host
-> >>> architectural LBR MSRs have to be saved on vcpu_load and restored on
-> >>> vcpu_put. Shouldn't  kvm_load_guest_fpu() and kvm_put_guest_fpu() do
-> >>> that via the calls to kvm_save_current_fpu(vcpu->arch.user_fpu) and
-> >>> restore_fpregs_from_fpstate(&vcpu->arch.user_fpu->state)?
-> >>
-> >> It does seem like there is something special about IA32_LBR_DEPTH, tho=
-ugh...
-> >>
-> >> Section 7.3.1 of the Intel=C2=AE Architecture Instruction Set Extensio=
-ns
-> >> and Future Features Programming Reference
-> >> says, "IA32_LBR_DEPTH is saved by XSAVES, but it is not written by
-> >> XRSTORS in any circumstance." It seems like that would require some
-> >> special handling if the host depth and the guest depth do not match.
-> > In our vPMU design, guest depth is alway kept the same as that of host,
-> > so this won't be a problem. But I'll double check the code again, thank=
-s!
->
-> KVM only exposes the host's depth value to the user space
-> so the guest can only use the same depth as the host.
 
-The allowed depth supplied by KVM_GET_SUPPORTED_CPUID isn't enforced,
-though, is it?
+
+On 12/07/2021 18.02, Alexander Duyck wrote:
+> On Mon, Jul 12, 2021 at 5:17 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>
+>> As suggested by Alexander, "A DMA mapping should be page
+>> aligned anyway so the lower 12 bits would be reserved 0",
+>> so it might make more sense to repurpose the lower 12 bits
+>> of the dma address to store the pagecnt_bias for frag page
+>> support in page pool.
+>>
+>> As newly added page_pool_get_pagecnt_bias() may be called
+>> outside of the softirq context, so annotate the access to
+>> page->dma_addr[0] with READ_ONCE() and WRITE_ONCE().
+>>
+>> And page_pool_get_pagecnt_bias_ptr() is added to implement
+>> the pagecnt_bias atomic updating when a page is passsed to
+>> the user.
+>>
+>> Other three interfaces using page->dma_addr[0] is only called
+>> in the softirq context during normal rx processing, hopefully
+>> the barrier in the rx processing will ensure the correct order
+>> between getting and setting pagecnt_bias.
+>>
+>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+>> ---
+>>   include/net/page_pool.h | 29 +++++++++++++++++++++++++++--
+>>   net/core/page_pool.c    |  8 +++++++-
+>>   2 files changed, 34 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+>> index 8d7744d..84cd972 100644
+>> --- a/include/net/page_pool.h
+>> +++ b/include/net/page_pool.h
+>> @@ -200,17 +200,42 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
+>>
+>>   static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
+>>   {
+>> -       dma_addr_t ret = page->dma_addr[0];
+>> +       dma_addr_t ret = READ_ONCE(page->dma_addr[0]) & PAGE_MASK;
+>>          if (sizeof(dma_addr_t) > sizeof(unsigned long))
+>>                  ret |= (dma_addr_t)page->dma_addr[1] << 16 << 16;
+>>          return ret;
+>>   }
+>>
+>> -static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
+>> +static inline bool page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
+>>   {
+>> +       if (WARN_ON(addr & ~PAGE_MASK))
+>> +               return false;
+>> +
+>>          page->dma_addr[0] = addr;
+>>          if (sizeof(dma_addr_t) > sizeof(unsigned long))
+>>                  page->dma_addr[1] = upper_32_bits(addr);
+>> +
+>> +       return true;
+>> +}
+>> +
+> 
+> Rather than making this a part of the check here it might make more
+> sense to pull this out and perform the WARN_ON after the check for
+> dma_mapping_error.
+
+I need to point out that I don't like WARN_ON and BUG_ON code in 
+fast-path code, because compiler adds 'ud2' assembler instructions that 
+influences the instruction-cache fetching in the CPU.  Yes, I have seen 
+a measuresable impact from this before.
+
+
+> Also it occurs to me that we only really have to do this in the case
+> where dma_addr_t is larger than the size of a long. Otherwise we could
+> just have the code split things so that dma_addr[0] is the dma_addr
+> and dma_addr[1] is our pagecnt_bias value in which case we could
+> probably just skip the check.
+
+The dance to get 64-bit DMA addr on 32-bit systems is rather ugly and 
+confusing, sadly.  We could take advantage of this, I just hope this 
+will not make it uglier.
+
+
+>> +static inline int page_pool_get_pagecnt_bias(struct page *page)
+>> +{
+>> +       return READ_ONCE(page->dma_addr[0]) & ~PAGE_MASK;
+>> +}
+>> +
+>> +static inline unsigned long *page_pool_pagecnt_bias_ptr(struct page *page)
+>> +{
+>> +       return page->dma_addr;
+>> +}
+>> +
+>> +static inline void page_pool_set_pagecnt_bias(struct page *page, int bias)
+>> +{
+>> +       unsigned long dma_addr_0 = READ_ONCE(page->dma_addr[0]);
+>> +
+>> +       dma_addr_0 &= PAGE_MASK;
+>> +       dma_addr_0 |= bias;
+>> +
+>> +       WRITE_ONCE(page->dma_addr[0], dma_addr_0);
+>>   }
+>>
+>>   static inline bool is_page_pool_compiled_in(void)
+>> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+>> index 78838c6..1abefc6 100644
+>> --- a/net/core/page_pool.c
+>> +++ b/net/core/page_pool.c
+>> @@ -198,7 +198,13 @@ static bool page_pool_dma_map(struct page_pool *pool, struct page *page)
+>>          if (dma_mapping_error(pool->p.dev, dma))
+>>                  return false;
+>>
+> 
+> So instead of adding to the function below you could just add your
+> WARN_ON check here with the unmapping call.
+> 
+>> -       page_pool_set_dma_addr(page, dma);
+>> +       if (unlikely(!page_pool_set_dma_addr(page, dma))) {
+>> +               dma_unmap_page_attrs(pool->p.dev, dma,
+>> +                                    PAGE_SIZE << pool->p.order,
+>> +                                    pool->p.dma_dir,
+>> +                                    DMA_ATTR_SKIP_CPU_SYNC);
+>> +               return false;
+>> +       }
+>>
+>>          if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
+>>                  page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
+>> --
+>> 2.7.4
+>>
+> 
+
