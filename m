@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2954D3C56F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 053473C49DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358891AbhGLI0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:26:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50144 "EHLO mail.kernel.org"
+        id S238278AbhGLGrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:47:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241485AbhGLHmL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:42:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DBAEC60FF3;
-        Mon, 12 Jul 2021 07:39:21 +0000 (UTC)
+        id S236592AbhGLGgB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:36:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FAAA601FC;
+        Mon, 12 Jul 2021 06:33:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075562;
-        bh=wuYBQikMXNYd05AGJgDvwASn3Bsn0eVghu0dotM456Y=;
+        s=korg; t=1626071581;
+        bh=mC9SpIMNdjIXkgAOLrpkfT294wYQRw21/wTtAHQFV/Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QxAdbgXfcqYDssR2dtcCyJCx7ZcauccGvWVe4c5NN11kH/ycFn0u+nv75++EjyXHp
-         GbrvXxlCQTxcQDmPRj+RO5dWAiVYM6eY9kCcbdINtb9wLsN2hffcV880Hvg4h4QH29
-         3yVm5qCSoR2BbtFmq64lMjG0Np3TpxPgrKOFFlmk=
+        b=xZ2watzv/yrML+yg+gLibdqQFymkAm5s/L55RCiXACP+d/y4k28g7yeUWw4GSnk9R
+         KQLvkFO6dhzxUR7SDRsyE0y7U6CVFN+OOiTEtmTdwJGNQ8UNGNELpR3RAFwNsIXOQv
+         UG77zl6JvYNqu5sUlrbCuJyMUy6mGcodGJHp26y8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Odin Ugedal <odin@uged.al>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 267/800] spi: Allow to have all native CSs in use along with GPIOs
-Date:   Mon, 12 Jul 2021 08:04:50 +0200
-Message-Id: <20210712060952.294609846@linuxfoundation.org>
+Subject: [PATCH 5.10 131/593] sched/fair: Fix ascii art by relpacing tabs
+Date:   Mon, 12 Jul 2021 08:04:51 +0200
+Message-Id: <20210712060857.536900755@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,51 +41,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Odin Ugedal <odin@uged.al>
 
-[ Upstream commit dbaca8e56ea3f23fa215f48c2d46dd03ede06e02 ]
+[ Upstream commit 08f7c2f4d0e9f4283f5796b8168044c034a1bfcb ]
 
-The commit 7d93aecdb58d ("spi: Add generic support for unused native cs
-with cs-gpios") excludes the valid case for the controllers that doesn't
-need to switch native CS in order to perform the transfer, i.e. when
+When using something other than 8 spaces per tab, this ascii art
+makes not sense, and the reader might end up wondering what this
+advanced equation "is".
 
-  0		native
-  ...		...
-  <n> - 1	native
-  <n>		GPIO
-  <n> + 1	GPIO
-  ...		...
-
-where <n> defines maximum of native CSs supported by the controller.
-
-To allow this, bail out from spi_get_gpio_descs() conditionally for
-the controllers which explicitly marked with SPI_MASTER_GPIO_SS.
-
-Fixes: 7d93aecdb58d ("spi: Add generic support for unused native cs with cs-gpios")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Link: https://lore.kernel.org/r/20210420164425.40287-1-andriy.shevchenko@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Odin Ugedal <odin@uged.al>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Vincent Guittot <vincent.guittot@linaro.org>
+Link: https://lkml.kernel.org/r/20210518125202.78658-4-odin@uged.al
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ kernel/sched/fair.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index d83f91a6ab13..ae04ae79e56a 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -2623,8 +2623,9 @@ static int spi_get_gpio_descs(struct spi_controller *ctlr)
- 	}
- 
- 	ctlr->unused_native_cs = ffz(native_cs_mask);
--	if (num_cs_gpios && ctlr->max_native_cs &&
--	    ctlr->unused_native_cs >= ctlr->max_native_cs) {
-+
-+	if ((ctlr->flags & SPI_MASTER_GPIO_SS) && num_cs_gpios &&
-+	    ctlr->max_native_cs && ctlr->unused_native_cs >= ctlr->max_native_cs) {
- 		dev_err(dev, "No unused native chip select available\n");
- 		return -EINVAL;
- 	}
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index d6e1c90de570..3d92de7909bf 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -3141,7 +3141,7 @@ void reweight_task(struct task_struct *p, int prio)
+  *
+  *                     tg->weight * grq->load.weight
+  *   ge->load.weight = -----------------------------               (1)
+- *			  \Sum grq->load.weight
++ *                       \Sum grq->load.weight
+  *
+  * Now, because computing that sum is prohibitively expensive to compute (been
+  * there, done that) we approximate it with this average stuff. The average
+@@ -3155,7 +3155,7 @@ void reweight_task(struct task_struct *p, int prio)
+  *
+  *                     tg->weight * grq->avg.load_avg
+  *   ge->load.weight = ------------------------------              (3)
+- *				tg->load_avg
++ *                             tg->load_avg
+  *
+  * Where: tg->load_avg ~= \Sum grq->avg.load_avg
+  *
+@@ -3171,7 +3171,7 @@ void reweight_task(struct task_struct *p, int prio)
+  *
+  *                     tg->weight * grq->load.weight
+  *   ge->load.weight = ----------------------------- = tg->weight   (4)
+- *			    grp->load.weight
++ *                         grp->load.weight
+  *
+  * That is, the sum collapses because all other CPUs are idle; the UP scenario.
+  *
+@@ -3190,7 +3190,7 @@ void reweight_task(struct task_struct *p, int prio)
+  *
+  *                     tg->weight * grq->load.weight
+  *   ge->load.weight = -----------------------------		   (6)
+- *				tg_load_avg'
++ *                             tg_load_avg'
+  *
+  * Where:
+  *
 -- 
 2.30.2
 
