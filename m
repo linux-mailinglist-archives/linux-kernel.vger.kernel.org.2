@@ -2,95 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A877E3C4056
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 02:24:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69F723C408A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 02:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231166AbhGLA1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 20:27:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhGLA1F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 20:27:05 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF5AC0613DD;
-        Sun, 11 Jul 2021 17:24:16 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id e14so16279162qkl.9;
-        Sun, 11 Jul 2021 17:24:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=H7a9eq7wZxPQFQwI3zuFeYX1K7ObSWQ2BOFHF5Y37r4=;
-        b=LrTG6jSuNYP2KLXY3Sg1oI8YVomTr6ejvQpaWvQBc/kSNm7yLGlYehHIe6msSHNAeD
-         Y9j90nnpSRE1qYAWUf9M8rodWVyAk9mCOSXlZu+FH39kFB+2SYATPIkquqzzvFdpdW7N
-         mQlNtGGUhLlnfbfgpBgRnTuVtczUW8QYPiYftvzu+kfLf6pM1VR1wPZNW+b5XZFFYRdw
-         IDpYRXReYfHhDuMU4IRAkwSqKahppPt1i8b4zEHqWPN69XvvDRAdy0HyI8kJuSanSn1c
-         G27qTmyQRZ67kNtpi0dBgI+sgtivJn8b6uQGl6bQI/kQgtyzNLmCGUfdBICtEZOuXqcm
-         dPYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=H7a9eq7wZxPQFQwI3zuFeYX1K7ObSWQ2BOFHF5Y37r4=;
-        b=E1iyPFR3SBM7eQwYROMHwisBke6N+oNKkrwRc+AAobjdG/C7DE1/xwKOKiUecCSpq0
-         pX530jFd9WCau67pWtYIQBYK5nE/wvSXB5KVPRIvry2eXTC/2gptydUAP39q3qFulTsB
-         81gTaZodtA4BRwFLeiOGaAYCPFZ8hWQRmjkUTEUMggsj4xTrSJmsoBnzDxpe4rKVnMYI
-         vxDWvy2snWmNDZV1uHmvO2NG7fcZ5qfbW21qjgG2+0+liMI5sSLfelv22m7m0+XmlAqO
-         fAJKZfIcBK5rYjB3TA5kNBP6P+kdUoNPFI8VFpnJo6CpgLrYQFoxMi5FKEhxkEManiXo
-         F7EA==
-X-Gm-Message-State: AOAM532zaYrQVUgtPtDQP9FBrXyqFbr+1Cq0DuV+0H2ADf7/oWVyazTB
-        3GLPZ3fVsjJVBX2dskcOPxw=
-X-Google-Smtp-Source: ABdhPJxfBTp4T49Mv2FPNU/JPT/VkuLWO727r+QA6VRfGDv/OKPt8IM/+h/Z1eG9QNGD5tIm8wajDA==
-X-Received: by 2002:a37:2d04:: with SMTP id t4mr6426682qkh.160.1626049455843;
-        Sun, 11 Jul 2021 17:24:15 -0700 (PDT)
-Received: from localhost.localdomain (94-29-37-113.dynamic.spd-mgts.ru. [94.29.37.113])
-        by smtp.gmail.com with ESMTPSA id h13sm5860762qkg.13.2021.07.11.17.24.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Jul 2021 17:24:15 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: [PATCH v1] thermal/drivers/tegra-soctherm: Silence message about clamped temperature
-Date:   Mon, 12 Jul 2021 03:23:53 +0300
-Message-Id: <20210712002353.17276-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        id S232307AbhGLAkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 20:40:09 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:34651 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229660AbhGLAkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Jul 2021 20:40:08 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GNPwr6GXQz9sV8;
+        Mon, 12 Jul 2021 10:37:16 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1626050239;
+        bh=U048ebzJE4FLKmIjv0zcGUtfyQKWWElJJmfx/ZZ/poA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=CsfsAdt77vOqemjgps5YiHT6AZJiUOmCvarRzHSfP5/T5HZPEmtnh87+fom4rII5d
+         ++TWRm4Yer1LQ3EWe2kFNi8Zyr1owNoHIMe0oa928t7fWhsyC41l9ylDhjJpqhHrXn
+         kx7wJfFjCnhytHITXejtqIZe5ssFwkKoXQJ7k+MlVaIEyXKx7KDXmJTgkmBIwTNcI4
+         nVDiVlDS5NYmoyzyxjQOPfszUQS8A+tkLGnKlQMPAjnT43covGAzK3m9/vmnQ2hC5C
+         NEr/NMnDYJ0U8/epGBv/nqwi+/w8RIKCiGMGj4UgI28iqemr9kJeK+XSOF3vLDMzBk
+         Z2jxqz7SaLJQg==
+Date:   Mon, 12 Jul 2021 10:37:15 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Bixuan Cui <cuibixuan@huawei.com>, Finn Behrens <me@kloenk.de>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Wedson Almeida Filho <wedsonaf@google.com>
+Subject: linux-next: manual merge of the rust tree with Linus' tree
+Message-ID: <20210712103715.0993fdf2@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/R6_yau2ETXRxwIh2NJ4ZVyx";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Tegra soctherm driver prints message about the clamped temperature
-trip each time when thermal core disables the low/high trip. The message
-is confusing and creates illusion that driver is malfunctioning. Turn that
-noisy info message into a debug message.
+--Sig_/R6_yau2ETXRxwIh2NJ4ZVyx
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/thermal/tegra/soctherm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Hi all,
 
-diff --git a/drivers/thermal/tegra/soctherm.c b/drivers/thermal/tegra/soctherm.c
-index 8e303e9d1dc0..210325f92559 100644
---- a/drivers/thermal/tegra/soctherm.c
-+++ b/drivers/thermal/tegra/soctherm.c
-@@ -450,8 +450,8 @@ static int enforce_temp_range(struct device *dev, int trip_temp)
- 
- 	temp = clamp_val(trip_temp, min_low_temp, max_high_temp);
- 	if (temp != trip_temp)
--		dev_info(dev, "soctherm: trip temperature %d forced to %d\n",
--			 trip_temp, temp);
-+		dev_dbg(dev, "soctherm: trip temperature %d forced to %d\n",
-+			trip_temp, temp);
- 	return temp;
- }
- 
--- 
-2.32.0
+Today's linux-next merge of the rust tree got a conflict in:
 
+  include/linux/kallsyms.h
+
+between commit:
+
+  9294523e3768 ("module: add printk formats to add module build ID to stack=
+traces")
+
+from Linus' tree and commit:
+
+  f2f6175186f4 ("kallsyms: increase maximum kernel symbol length to 512")
+
+from the rust tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc include/linux/kallsyms.h
+index a1d6fc82d7f0,5cdc6903abca..000000000000
+--- a/include/linux/kallsyms.h
++++ b/include/linux/kallsyms.h
+@@@ -15,11 -14,9 +15,11 @@@
+ =20
+  #include <asm/sections.h>
+ =20
+- #define KSYM_NAME_LEN 128
++ #define KSYM_NAME_LEN 512
+ -#define KSYM_SYMBOL_LEN (sizeof("%s+%#lx/%#lx [%s]") + (KSYM_NAME_LEN - 1=
+) + \
+ -			 2*(BITS_PER_LONG*3/10) + (MODULE_NAME_LEN - 1) + 1)
+ +#define KSYM_SYMBOL_LEN (sizeof("%s+%#lx/%#lx [%s %s]") + \
+ +			(KSYM_NAME_LEN - 1) + \
+ +			2*(BITS_PER_LONG*3/10) + (MODULE_NAME_LEN - 1) + \
+ +			(BUILD_ID_SIZE_MAX * 2) + 1)
+ =20
+  struct cred;
+  struct module;
+
+--Sig_/R6_yau2ETXRxwIh2NJ4ZVyx
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDrjrsACgkQAVBC80lX
+0Gz8Xwf/aMcjVj9OpLfmwu0SYAFbjitFfXU16zIGdhkxzWIxrga4H4ZxE9Uh4GkV
+fngSCR0bpTM2qi2sprca20yakxvr5AeFH4diihOXUbHIGfoH9IMsWy5FoAHwXT9F
+h9kuZ+Xt25lQnoqDPablGmp7n3BRnlQz9WPx74dKa14u+SEWxFQVC3BdMWCBcCG7
+ux2DBGafp03/4Buh2jccCx9V4aINpmfZsBvAnETzs8GvWW+2Ytc/4mno4NmEbTbz
+bzQJiXVmoZ106zNK1vgEPtnb9IgW4sqEqWgi+vu9CNqwCfCRQOj1XOquKbKUIcfh
+cqUDXa4o1vippYZ8IOuUcxywyk59lQ==
+=FA7C
+-----END PGP SIGNATURE-----
+
+--Sig_/R6_yau2ETXRxwIh2NJ4ZVyx--
