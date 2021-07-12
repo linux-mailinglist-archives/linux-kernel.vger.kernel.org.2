@@ -2,47 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4DC73C4A3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F1663C5809
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239587AbhGLGtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:49:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34399 "EHLO mail.kernel.org"
+        id S1378640AbhGLIlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:41:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238155AbhGLGj7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:39:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10A526120D;
-        Mon, 12 Jul 2021 06:36:26 +0000 (UTC)
+        id S1346469AbhGLHsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:48:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 043CC6195A;
+        Mon, 12 Jul 2021 07:42:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071786;
-        bh=XTC+YKX3ocXcwictiV/m5xtn32u8Ldi+fRvfKkV3vbA=;
+        s=korg; t=1626075768;
+        bh=qTNBvR7k5wCiJjIz7H7WoJUxLxMfhe0AXKF36Vxkxmo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1kC34tyJ/6KB8yOOU1gUOKXdl2qLdfySOOtV9rbbTYiCx3aMOBsGAnYDqI8BoT37l
-         LhXPcGku0ESWGCXGKBdSQMFt3zyxRRQ5Vb+xNZ/z2D5nHZBKiqZzA2xtcapLpyrQbf
-         Xf9DLdtf2yluMtH95ai93CVRwPx/5NGnomOnEqcY=
+        b=128pbFBQFfPYphxH+PrR5frLvWm6yUxkJuXLfPGPebT33/KxxHqHLR7iav7UQ7863
+         LAHGc0rzW1T/m6jdGZ06fUQIrWOxR1shItoJE1mdl+5I4MeZ7c0JdFcvKv/8sFmSm2
+         oUadFL6YoeSqXDxrqb0FDUYfdBbw1W57o3nXBWCA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org (moderated for non-subscribers),
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Sangwook Lee <sangwook.lee@linaro.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 219/593] media: I2C: change RST to "RSET" to fix multiple build errors
+Subject: [PATCH 5.13 356/800] PM / devfreq: Add missing error code in devfreq_add_device()
 Date:   Mon, 12 Jul 2021 08:06:19 +0200
-Message-Id: <20210712060907.006313315@linuxfoundation.org>
+Message-Id: <20210712061004.961641795@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -51,242 +40,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: YueHaibing <yuehaibing@huawei.com>
 
-[ Upstream commit 8edcb5049ac29aa3c8acc5ef15dd4036543d747e ]
+[ Upstream commit 18b380ed61f892ed06838d1f1a5124d966292ed3 ]
 
-The use of an enum named 'RST' conflicts with a #define macro
-named 'RST' in arch/mips/include/asm/mach-rc32434/rb.h.
+Set err code in the error path before jumping to the end of the function.
 
-The MIPS use of RST was there first (AFAICT), so change the
-media/i2c/ uses of RST to be named 'RSET'.
-'git grep -w RSET' does not report any naming conflicts with the
-new name.
-
-This fixes multiple build errors:
-
-arch/mips/include/asm/mach-rc32434/rb.h:15:14: error: expected identifier before '(' token
-   15 | #define RST  (1 << 15)
-      |              ^
-drivers/media/i2c/s5c73m3/s5c73m3.h:356:2: note: in expansion of macro 'RST'
-  356 |  RST,
-      |  ^~~
-
-../arch/mips/include/asm/mach-rc32434/rb.h:15:14: error: expected identifier before '(' token
-   15 | #define RST  (1 << 15)
-      |              ^
-../drivers/media/i2c/s5k6aa.c:180:2: note: in expansion of macro 'RST'
-  180 |  RST,
-      |  ^~~
-
-../arch/mips/include/asm/mach-rc32434/rb.h:15:14: error: expected identifier before '(' token
-   15 | #define RST  (1 << 15)
-      |              ^
-../drivers/media/i2c/s5k5baf.c:238:2: note: in expansion of macro 'RST'
-  238 |  RST,
-      |  ^~~
-
-and some others that I have trimmed.
-
-Fixes: cac47f1822fc ("[media] V4L: Add S5C73M3 camera driver")
-Fixes: 8b99312b7214 ("[media] Add v4l2 subdev driver for S5K4ECGX sensor")
-Fixes: 7d459937dc09 ("[media] Add driver for Samsung S5K5BAF camera sensor")
-Fixes: bfa8dd3a0524 ("[media] v4l: Add v4l2 subdev driver for S5K6AAFX sensor")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Shawn Guo <shawnguo@kernel.org>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
-Cc: Fabio Estevam <festevam@gmail.com>
-Cc: NXP Linux Team <linux-imx@nxp.com>
-Cc: linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-Cc: Andrzej Hajda <a.hajda@samsung.com>
-Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: Sangwook Lee <sangwook.lee@linaro.org>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 4dc3bab8687f ("PM / devfreq: Add support delayed timer for polling mode")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/s5c73m3/s5c73m3-core.c |  6 +++---
- drivers/media/i2c/s5c73m3/s5c73m3.h      |  2 +-
- drivers/media/i2c/s5k4ecgx.c             | 10 +++++-----
- drivers/media/i2c/s5k5baf.c              |  6 +++---
- drivers/media/i2c/s5k6aa.c               | 10 +++++-----
- 5 files changed, 17 insertions(+), 17 deletions(-)
+ drivers/devfreq/devfreq.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/media/i2c/s5c73m3/s5c73m3-core.c b/drivers/media/i2c/s5c73m3/s5c73m3-core.c
-index 5b4c4a3547c9..71804a70bc6d 100644
---- a/drivers/media/i2c/s5c73m3/s5c73m3-core.c
-+++ b/drivers/media/i2c/s5c73m3/s5c73m3-core.c
-@@ -1386,7 +1386,7 @@ static int __s5c73m3_power_on(struct s5c73m3 *state)
- 	s5c73m3_gpio_deassert(state, STBY);
- 	usleep_range(100, 200);
- 
--	s5c73m3_gpio_deassert(state, RST);
-+	s5c73m3_gpio_deassert(state, RSET);
- 	usleep_range(50, 100);
- 
- 	return 0;
-@@ -1401,7 +1401,7 @@ static int __s5c73m3_power_off(struct s5c73m3 *state)
- {
- 	int i, ret;
- 
--	if (s5c73m3_gpio_assert(state, RST))
-+	if (s5c73m3_gpio_assert(state, RSET))
- 		usleep_range(10, 50);
- 
- 	if (s5c73m3_gpio_assert(state, STBY))
-@@ -1606,7 +1606,7 @@ static int s5c73m3_get_platform_data(struct s5c73m3 *state)
- 
- 		state->mclk_frequency = pdata->mclk_frequency;
- 		state->gpio[STBY] = pdata->gpio_stby;
--		state->gpio[RST] = pdata->gpio_reset;
-+		state->gpio[RSET] = pdata->gpio_reset;
- 		return 0;
+diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+index fe08c46642f7..28f3e0ba6cdd 100644
+--- a/drivers/devfreq/devfreq.c
++++ b/drivers/devfreq/devfreq.c
+@@ -823,6 +823,7 @@ struct devfreq *devfreq_add_device(struct device *dev,
+ 	if (devfreq->profile->timer < 0
+ 		|| devfreq->profile->timer >= DEVFREQ_TIMER_NUM) {
+ 		mutex_unlock(&devfreq->lock);
++		err = -EINVAL;
+ 		goto err_dev;
  	}
  
-diff --git a/drivers/media/i2c/s5c73m3/s5c73m3.h b/drivers/media/i2c/s5c73m3/s5c73m3.h
-index ef7e85b34263..c3fcfdd3ea66 100644
---- a/drivers/media/i2c/s5c73m3/s5c73m3.h
-+++ b/drivers/media/i2c/s5c73m3/s5c73m3.h
-@@ -353,7 +353,7 @@ struct s5c73m3_ctrls {
- 
- enum s5c73m3_gpio_id {
- 	STBY,
--	RST,
-+	RSET,
- 	GPIO_NUM,
- };
- 
-diff --git a/drivers/media/i2c/s5k4ecgx.c b/drivers/media/i2c/s5k4ecgx.c
-index b2d53417badf..4e97309a67f4 100644
---- a/drivers/media/i2c/s5k4ecgx.c
-+++ b/drivers/media/i2c/s5k4ecgx.c
-@@ -173,7 +173,7 @@ static const char * const s5k4ecgx_supply_names[] = {
- 
- enum s5k4ecgx_gpio_id {
- 	STBY,
--	RST,
-+	RSET,
- 	GPIO_NUM,
- };
- 
-@@ -476,7 +476,7 @@ static int __s5k4ecgx_power_on(struct s5k4ecgx *priv)
- 	if (s5k4ecgx_gpio_set_value(priv, STBY, priv->gpio[STBY].level))
- 		usleep_range(30, 50);
- 
--	if (s5k4ecgx_gpio_set_value(priv, RST, priv->gpio[RST].level))
-+	if (s5k4ecgx_gpio_set_value(priv, RSET, priv->gpio[RSET].level))
- 		usleep_range(30, 50);
- 
- 	return 0;
-@@ -484,7 +484,7 @@ static int __s5k4ecgx_power_on(struct s5k4ecgx *priv)
- 
- static int __s5k4ecgx_power_off(struct s5k4ecgx *priv)
- {
--	if (s5k4ecgx_gpio_set_value(priv, RST, !priv->gpio[RST].level))
-+	if (s5k4ecgx_gpio_set_value(priv, RSET, !priv->gpio[RSET].level))
- 		usleep_range(30, 50);
- 
- 	if (s5k4ecgx_gpio_set_value(priv, STBY, !priv->gpio[STBY].level))
-@@ -872,7 +872,7 @@ static int s5k4ecgx_config_gpios(struct s5k4ecgx *priv,
- 	int ret;
- 
- 	priv->gpio[STBY].gpio = -EINVAL;
--	priv->gpio[RST].gpio  = -EINVAL;
-+	priv->gpio[RSET].gpio  = -EINVAL;
- 
- 	ret = s5k4ecgx_config_gpio(gpio->gpio, gpio->level, "S5K4ECGX_STBY");
- 
-@@ -891,7 +891,7 @@ static int s5k4ecgx_config_gpios(struct s5k4ecgx *priv,
- 		s5k4ecgx_free_gpios(priv);
- 		return ret;
- 	}
--	priv->gpio[RST] = *gpio;
-+	priv->gpio[RSET] = *gpio;
- 	if (gpio_is_valid(gpio->gpio))
- 		gpio_set_value(gpio->gpio, 0);
- 
-diff --git a/drivers/media/i2c/s5k5baf.c b/drivers/media/i2c/s5k5baf.c
-index ec6f22efe19a..ec65a8e084c6 100644
---- a/drivers/media/i2c/s5k5baf.c
-+++ b/drivers/media/i2c/s5k5baf.c
-@@ -235,7 +235,7 @@ struct s5k5baf_gpio {
- 
- enum s5k5baf_gpio_id {
- 	STBY,
--	RST,
-+	RSET,
- 	NUM_GPIOS,
- };
- 
-@@ -969,7 +969,7 @@ static int s5k5baf_power_on(struct s5k5baf *state)
- 
- 	s5k5baf_gpio_deassert(state, STBY);
- 	usleep_range(50, 100);
--	s5k5baf_gpio_deassert(state, RST);
-+	s5k5baf_gpio_deassert(state, RSET);
- 	return 0;
- 
- err_reg_dis:
-@@ -987,7 +987,7 @@ static int s5k5baf_power_off(struct s5k5baf *state)
- 	state->apply_cfg = 0;
- 	state->apply_crop = 0;
- 
--	s5k5baf_gpio_assert(state, RST);
-+	s5k5baf_gpio_assert(state, RSET);
- 	s5k5baf_gpio_assert(state, STBY);
- 
- 	if (!IS_ERR(state->clock))
-diff --git a/drivers/media/i2c/s5k6aa.c b/drivers/media/i2c/s5k6aa.c
-index 72439fae7968..6516e205e9a3 100644
---- a/drivers/media/i2c/s5k6aa.c
-+++ b/drivers/media/i2c/s5k6aa.c
-@@ -177,7 +177,7 @@ static const char * const s5k6aa_supply_names[] = {
- 
- enum s5k6aa_gpio_id {
- 	STBY,
--	RST,
-+	RSET,
- 	GPIO_NUM,
- };
- 
-@@ -841,7 +841,7 @@ static int __s5k6aa_power_on(struct s5k6aa *s5k6aa)
- 		ret = s5k6aa->s_power(1);
- 	usleep_range(4000, 5000);
- 
--	if (s5k6aa_gpio_deassert(s5k6aa, RST))
-+	if (s5k6aa_gpio_deassert(s5k6aa, RSET))
- 		msleep(20);
- 
- 	return ret;
-@@ -851,7 +851,7 @@ static int __s5k6aa_power_off(struct s5k6aa *s5k6aa)
- {
- 	int ret;
- 
--	if (s5k6aa_gpio_assert(s5k6aa, RST))
-+	if (s5k6aa_gpio_assert(s5k6aa, RSET))
- 		usleep_range(100, 150);
- 
- 	if (s5k6aa->s_power) {
-@@ -1510,7 +1510,7 @@ static int s5k6aa_configure_gpios(struct s5k6aa *s5k6aa,
- 	int ret;
- 
- 	s5k6aa->gpio[STBY].gpio = -EINVAL;
--	s5k6aa->gpio[RST].gpio  = -EINVAL;
-+	s5k6aa->gpio[RSET].gpio  = -EINVAL;
- 
- 	gpio = &pdata->gpio_stby;
- 	if (gpio_is_valid(gpio->gpio)) {
-@@ -1533,7 +1533,7 @@ static int s5k6aa_configure_gpios(struct s5k6aa *s5k6aa,
- 		if (ret < 0)
- 			return ret;
- 
--		s5k6aa->gpio[RST] = *gpio;
-+		s5k6aa->gpio[RSET] = *gpio;
- 	}
- 
- 	return 0;
 -- 
 2.30.2
 
