@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F7173C579F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F3CC3C4A61
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:35:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377496AbhGLIgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:36:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37770 "EHLO mail.kernel.org"
+        id S240766AbhGLGwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:52:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349994AbhGLHuU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:50:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1871161879;
-        Mon, 12 Jul 2021 07:43:36 +0000 (UTC)
+        id S238388AbhGLGkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:40:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48F93610D1;
+        Mon, 12 Jul 2021 06:37:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075817;
-        bh=rNG5DcWA9KDHMgAglAzkWJWc5snz95lOb8j/k4helOw=;
+        s=korg; t=1626071832;
+        bh=Ch82OYIDsRo81Cuja4H7oydcuVXT7gxqIowUZ+MzaI8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vA4+DHV4MNgN0jkM4r6dnE/IIaPYw2vseRj5QmPe03dbTnr0VhpmlDhGHNvW4aVqf
-         UIgpbfLBu24ST+x/0rqVkU24a5w4aCZnQVYIzxK+D1nxh4AqZBKZ0qdy7dVjtHCy1h
-         Mxg2WIHrwAlQK9mz/0f8eLvQKsm6ngoDHcVSHDSQ=
+        b=qSn+NRsE7m/VShbxiExcaTpZ41XJQjG3G5fLN6BGcI0c57GJVOjEbX95jSf86Vb8K
+         F+Q0TL62tBgW8zLrURK1u7Tfr7XYjzZwbKCmFCZv8sJZkRf+9LpBydmyJD3pUx1DQT
+         qMcLCGrq/5RpsFaXM0jfcvHcCtZKlhD/sv7Z8C7A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 375/800] ACPI: bgrt: Fix CFI violation
+Subject: [PATCH 5.10 238/593] media: siano: Fix out-of-bounds warnings in smscore_load_firmware_family2()
 Date:   Mon, 12 Jul 2021 08:06:38 +0200
-Message-Id: <20210712061006.967584970@linuxfoundation.org>
+Message-Id: <20210712060909.072554786@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,123 +40,161 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <nathan@kernel.org>
+From: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-[ Upstream commit f37ccf8fce155d08ae2a4fb3db677911ced0c21a ]
+[ Upstream commit 13dfead49db07225335d4f587a560a2210391a1a ]
 
-clang's Control Flow Integrity requires that every indirect call has a
-valid target, which is based on the type of the function pointer. The
-*_show() functions in this file are written as if they will be called
-from dev_attr_show(); however, they will be called from
-sysfs_kf_seq_show() because the files were created by
-sysfs_create_group() and the sysfs ops are based on kobj_sysfs_ops
-because of kobject_add_and_create(). Because the *_show() functions do
-not match the type of the show() member in struct kobj_attribute, there
-is a CFI violation.
+Rename struct sms_msg_data4 to sms_msg_data5 and increase the size of
+its msg_data array from 4 to 5 elements. Notice that at some point
+the 5th element of msg_data is being accessed in function
+smscore_load_firmware_family2():
 
-$ cat /sys/firmware/acpi/bgrt/{status,type,version,{x,y}offset}}
-1
-0
-1
-522
-307
+1006                 trigger_msg->msg_data[4] = 4; /* Task ID */
 
-$ dmesg | grep "CFI failure"
-[  267.761825] CFI failure (target: type_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
-[  267.762246] CFI failure (target: xoffset_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
-[  267.762584] CFI failure (target: status_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
-[  267.762973] CFI failure (target: yoffset_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
-[  267.763330] CFI failure (target: version_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
+Also, there is no need for the object _trigger_msg_ of type struct
+sms_msg_data *, when _msg_ can be used, directly. Notice that msg_data
+in struct sms_msg_data is a one-element array, which causes multiple
+out-of-bounds warnings when accessing beyond its first element
+in function smscore_load_firmware_family2():
 
-Convert these functions to the type of the show() member in struct
-kobj_attribute so that there is no more CFI violation. Because these
-functions are all so similar, combine them into a macro.
+ 992                 struct sms_msg_data *trigger_msg =
+ 993                         (struct sms_msg_data *) msg;
+ 994
+ 995                 pr_debug("sending MSG_SMS_SWDOWNLOAD_TRIGGER_REQ\n");
+ 996                 SMS_INIT_MSG(&msg->x_msg_header,
+ 997                                 MSG_SMS_SWDOWNLOAD_TRIGGER_REQ,
+ 998                                 sizeof(struct sms_msg_hdr) +
+ 999                                 sizeof(u32) * 5);
+1000
+1001                 trigger_msg->msg_data[0] = firmware->start_address;
+1002                                         /* Entry point */
+1003                 trigger_msg->msg_data[1] = 6; /* Priority */
+1004                 trigger_msg->msg_data[2] = 0x200; /* Stack size */
+1005                 trigger_msg->msg_data[3] = 0; /* Parameter */
+1006                 trigger_msg->msg_data[4] = 4; /* Task ID */
 
-Fixes: d1ff4b1cdbab ("ACPI: Add support for exposing BGRT data")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1406
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+even when enough dynamic memory is allocated for _msg_:
+
+ 929         /* PAGE_SIZE buffer shall be enough and dma aligned */
+ 930         msg = kmalloc(PAGE_SIZE, GFP_KERNEL | coredev->gfp_buf_flags);
+
+but as _msg_ is casted to (struct sms_msg_data *):
+
+ 992                 struct sms_msg_data *trigger_msg =
+ 993                         (struct sms_msg_data *) msg;
+
+the out-of-bounds warnings are actually valid and should be addressed.
+
+Fix this by declaring object _msg_ of type struct sms_msg_data5 *,
+which contains a 5-elements array, instead of just 4. And use
+_msg_ directly, instead of creating object trigger_msg.
+
+This helps with the ongoing efforts to enable -Warray-bounds by fixing
+the following warnings:
+
+  CC [M]  drivers/media/common/siano/smscoreapi.o
+drivers/media/common/siano/smscoreapi.c: In function ‘smscore_load_firmware_family2’:
+drivers/media/common/siano/smscoreapi.c:1003:24: warning: array subscript 1 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+ 1003 |   trigger_msg->msg_data[1] = 6; /* Priority */
+      |   ~~~~~~~~~~~~~~~~~~~~~^~~
+In file included from drivers/media/common/siano/smscoreapi.c:12:
+drivers/media/common/siano/smscoreapi.h:619:6: note: while referencing ‘msg_data’
+  619 |  u32 msg_data[1];
+      |      ^~~~~~~~
+drivers/media/common/siano/smscoreapi.c:1004:24: warning: array subscript 2 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+ 1004 |   trigger_msg->msg_data[2] = 0x200; /* Stack size */
+      |   ~~~~~~~~~~~~~~~~~~~~~^~~
+In file included from drivers/media/common/siano/smscoreapi.c:12:
+drivers/media/common/siano/smscoreapi.h:619:6: note: while referencing ‘msg_data’
+  619 |  u32 msg_data[1];
+      |      ^~~~~~~~
+drivers/media/common/siano/smscoreapi.c:1005:24: warning: array subscript 3 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+ 1005 |   trigger_msg->msg_data[3] = 0; /* Parameter */
+      |   ~~~~~~~~~~~~~~~~~~~~~^~~
+In file included from drivers/media/common/siano/smscoreapi.c:12:
+drivers/media/common/siano/smscoreapi.h:619:6: note: while referencing ‘msg_data’
+  619 |  u32 msg_data[1];
+      |      ^~~~~~~~
+drivers/media/common/siano/smscoreapi.c:1006:24: warning: array subscript 4 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+ 1006 |   trigger_msg->msg_data[4] = 4; /* Task ID */
+      |   ~~~~~~~~~~~~~~~~~~~~~^~~
+In file included from drivers/media/common/siano/smscoreapi.c:12:
+drivers/media/common/siano/smscoreapi.h:619:6: note: while referencing ‘msg_data’
+  619 |  u32 msg_data[1];
+      |      ^~~~~~~~
+
+Fixes: 018b0c6f8acb ("[media] siano: make load firmware logic to work with newer firmwares")
+Co-developed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/bgrt.c | 57 ++++++++++++++-------------------------------
- 1 file changed, 18 insertions(+), 39 deletions(-)
+ drivers/media/common/siano/smscoreapi.c | 22 +++++++++-------------
+ drivers/media/common/siano/smscoreapi.h |  4 ++--
+ 2 files changed, 11 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/acpi/bgrt.c b/drivers/acpi/bgrt.c
-index 19bb7f870204..e0d14017706e 100644
---- a/drivers/acpi/bgrt.c
-+++ b/drivers/acpi/bgrt.c
-@@ -15,40 +15,19 @@
- static void *bgrt_image;
- static struct kobject *bgrt_kobj;
+diff --git a/drivers/media/common/siano/smscoreapi.c b/drivers/media/common/siano/smscoreapi.c
+index c1511094fdc7..b735e2370137 100644
+--- a/drivers/media/common/siano/smscoreapi.c
++++ b/drivers/media/common/siano/smscoreapi.c
+@@ -908,7 +908,7 @@ static int smscore_load_firmware_family2(struct smscore_device_t *coredev,
+ 					 void *buffer, size_t size)
+ {
+ 	struct sms_firmware *firmware = (struct sms_firmware *) buffer;
+-	struct sms_msg_data4 *msg;
++	struct sms_msg_data5 *msg;
+ 	u32 mem_address,  calc_checksum = 0;
+ 	u32 i, *ptr;
+ 	u8 *payload = firmware->payload;
+@@ -989,24 +989,20 @@ static int smscore_load_firmware_family2(struct smscore_device_t *coredev,
+ 		goto exit_fw_download;
  
--static ssize_t version_show(struct device *dev,
--			    struct device_attribute *attr, char *buf)
--{
--	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.version);
--}
--static DEVICE_ATTR_RO(version);
+ 	if (coredev->mode == DEVICE_MODE_NONE) {
+-		struct sms_msg_data *trigger_msg =
+-			(struct sms_msg_data *) msg;
 -
--static ssize_t status_show(struct device *dev,
--			   struct device_attribute *attr, char *buf)
--{
--	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.status);
--}
--static DEVICE_ATTR_RO(status);
--
--static ssize_t type_show(struct device *dev,
--			 struct device_attribute *attr, char *buf)
--{
--	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.image_type);
--}
--static DEVICE_ATTR_RO(type);
--
--static ssize_t xoffset_show(struct device *dev,
--			    struct device_attribute *attr, char *buf)
--{
--	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.image_offset_x);
--}
--static DEVICE_ATTR_RO(xoffset);
--
--static ssize_t yoffset_show(struct device *dev,
--			    struct device_attribute *attr, char *buf)
--{
--	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.image_offset_y);
--}
--static DEVICE_ATTR_RO(yoffset);
-+#define BGRT_SHOW(_name, _member) \
-+	static ssize_t _name##_show(struct kobject *kobj,			\
-+				    struct kobj_attribute *attr, char *buf)	\
-+	{									\
-+		return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab._member);	\
-+	}									\
-+	struct kobj_attribute bgrt_attr_##_name = __ATTR_RO(_name)
-+
-+BGRT_SHOW(version, version);
-+BGRT_SHOW(status, status);
-+BGRT_SHOW(type, image_type);
-+BGRT_SHOW(xoffset, image_offset_x);
-+BGRT_SHOW(yoffset, image_offset_y);
+ 		pr_debug("sending MSG_SMS_SWDOWNLOAD_TRIGGER_REQ\n");
+ 		SMS_INIT_MSG(&msg->x_msg_header,
+ 				MSG_SMS_SWDOWNLOAD_TRIGGER_REQ,
+-				sizeof(struct sms_msg_hdr) +
+-				sizeof(u32) * 5);
++				sizeof(*msg));
  
- static ssize_t image_read(struct file *file, struct kobject *kobj,
- 	       struct bin_attribute *attr, char *buf, loff_t off, size_t count)
-@@ -60,11 +39,11 @@ static ssize_t image_read(struct file *file, struct kobject *kobj,
- static BIN_ATTR_RO(image, 0);	/* size gets filled in later */
+-		trigger_msg->msg_data[0] = firmware->start_address;
++		msg->msg_data[0] = firmware->start_address;
+ 					/* Entry point */
+-		trigger_msg->msg_data[1] = 6; /* Priority */
+-		trigger_msg->msg_data[2] = 0x200; /* Stack size */
+-		trigger_msg->msg_data[3] = 0; /* Parameter */
+-		trigger_msg->msg_data[4] = 4; /* Task ID */
++		msg->msg_data[1] = 6; /* Priority */
++		msg->msg_data[2] = 0x200; /* Stack size */
++		msg->msg_data[3] = 0; /* Parameter */
++		msg->msg_data[4] = 4; /* Task ID */
  
- static struct attribute *bgrt_attributes[] = {
--	&dev_attr_version.attr,
--	&dev_attr_status.attr,
--	&dev_attr_type.attr,
--	&dev_attr_xoffset.attr,
--	&dev_attr_yoffset.attr,
-+	&bgrt_attr_version.attr,
-+	&bgrt_attr_status.attr,
-+	&bgrt_attr_type.attr,
-+	&bgrt_attr_xoffset.attr,
-+	&bgrt_attr_yoffset.attr,
- 	NULL,
+-		rc = smscore_sendrequest_and_wait(coredev, trigger_msg,
+-					trigger_msg->x_msg_header.msg_length,
++		rc = smscore_sendrequest_and_wait(coredev, msg,
++					msg->x_msg_header.msg_length,
+ 					&coredev->trigger_done);
+ 	} else {
+ 		SMS_INIT_MSG(&msg->x_msg_header, MSG_SW_RELOAD_EXEC_REQ,
+diff --git a/drivers/media/common/siano/smscoreapi.h b/drivers/media/common/siano/smscoreapi.h
+index b3b793b5caf3..16c45afabc53 100644
+--- a/drivers/media/common/siano/smscoreapi.h
++++ b/drivers/media/common/siano/smscoreapi.h
+@@ -629,9 +629,9 @@ struct sms_msg_data2 {
+ 	u32 msg_data[2];
  };
  
+-struct sms_msg_data4 {
++struct sms_msg_data5 {
+ 	struct sms_msg_hdr x_msg_header;
+-	u32 msg_data[4];
++	u32 msg_data[5];
+ };
+ 
+ struct sms_data_download {
 -- 
 2.30.2
 
