@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B9893C4BC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B166B3C52BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241900AbhGLG7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:59:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41508 "EHLO mail.kernel.org"
+        id S244311AbhGLHtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:49:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238852AbhGLGoY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:44:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C91F611AD;
-        Mon, 12 Jul 2021 06:40:08 +0000 (UTC)
+        id S241575AbhGLHOl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:14:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FB99613BE;
+        Mon, 12 Jul 2021 07:11:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072009;
-        bh=zaS61qxelV4ai8TDO50YLAGe/WQFT3qtYWqPKSLj+9U=;
+        s=korg; t=1626073890;
+        bh=uqv8mcvuAL0IiTE5LBvoOhLWHQTLzapLqUNAu/erNP4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c67+3fnuN6Sn+g79N1blPM3q3WnpcGn5oA51UzasLjPQ7rv4YiDVIm4xV6MaBZSCr
-         4mMwOMd49yZe1VqVZl2FX+WILhhN2zNhO30AvC8c0I4lG/B8Bo61nPCTeeY8PLtegC
-         0XX6Dj1Yh/T7w/0g6hGEQmrTV1SHVSMuaB9xdLHM=
+        b=yLBHkiuth972hxcKhwKIU6u40Ucl3VdwSMPvLSaAK/KzEYZCqXVdO9b7Ppf7AjnN/
+         t2LRE8d2xOflogYFaAM75tNuLYDQB77bwXWS9MDwHRL9un0agKfpEGJJ+K6dFnr9TC
+         Jol72lts4BVB3h2ujnGEWdtKrTS9w+PQNW6P6nAE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Heiko Stuebner <heiko@sntech.de>,
+        stable@vger.kernel.org,
+        Boris Sukholitko <boris.sukholitko@broadcom.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 315/593] drm/rockchip: cdn-dp-core: add missing clk_disable_unprepare() on error in cdn_dp_grf_write()
+Subject: [PATCH 5.12 392/700] net/sched: act_vlan: Fix modify to allow 0
 Date:   Mon, 12 Jul 2021 08:07:55 +0200
-Message-Id: <20210712060920.038816866@linuxfoundation.org>
+Message-Id: <20210712061018.097314256@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +41,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Boris Sukholitko <boris.sukholitko@broadcom.com>
 
-[ Upstream commit ae41d925c75b53798f289c69ee8d9f7d36432f6d ]
+[ Upstream commit 9c5eee0afca09cbde6bd00f77876754aaa552970 ]
 
-After calling clk_prepare_enable(), clk_disable_unprepare() need
-be called when calling regmap_write() failed.
+Currently vlan modification action checks existence of vlan priority by
+comparing it to 0. Therefore it is impossible to modify existing vlan
+tag to have priority 0.
 
-Fixes: 1a0f7ed3abe2 ("drm/rockchip: cdn-dp: add cdn DP support for rk3399")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210519134928.2696617-1-yangyingliang@huawei.com
+For example, the following tc command will change the vlan id but will
+not affect vlan priority:
+
+tc filter add dev eth1 ingress matchall action vlan modify id 300 \
+        priority 0 pipe mirred egress redirect dev eth2
+
+The incoming packet on eth1:
+
+ethertype 802.1Q (0x8100), vlan 200, p 4, ethertype IPv4
+
+will be changed to:
+
+ethertype 802.1Q (0x8100), vlan 300, p 4, ethertype IPv4
+
+although the user has intended to have p == 0.
+
+The fix is to add tcfv_push_prio_exists flag to struct tcf_vlan_params
+and rely on it when deciding to set the priority.
+
+Fixes: 45a497f2d149a4a8061c (net/sched: act_vlan: Introduce TCA_VLAN_ACT_MODIFY vlan action)
+Signed-off-by: Boris Sukholitko <boris.sukholitko@broadcom.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/rockchip/cdn-dp-core.c | 1 +
- 1 file changed, 1 insertion(+)
+ include/net/tc_act/tc_vlan.h | 1 +
+ net/sched/act_vlan.c         | 7 +++++--
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/rockchip/cdn-dp-core.c b/drivers/gpu/drm/rockchip/cdn-dp-core.c
-index a4a45daf93f2..6802d9b65f82 100644
---- a/drivers/gpu/drm/rockchip/cdn-dp-core.c
-+++ b/drivers/gpu/drm/rockchip/cdn-dp-core.c
-@@ -73,6 +73,7 @@ static int cdn_dp_grf_write(struct cdn_dp_device *dp,
- 	ret = regmap_write(dp->grf, reg, val);
- 	if (ret) {
- 		DRM_DEV_ERROR(dp->dev, "Could not write to GRF: %d\n", ret);
-+		clk_disable_unprepare(dp->grf_clk);
- 		return ret;
- 	}
+diff --git a/include/net/tc_act/tc_vlan.h b/include/net/tc_act/tc_vlan.h
+index f051046ba034..f94b8bc26f9e 100644
+--- a/include/net/tc_act/tc_vlan.h
++++ b/include/net/tc_act/tc_vlan.h
+@@ -16,6 +16,7 @@ struct tcf_vlan_params {
+ 	u16               tcfv_push_vid;
+ 	__be16            tcfv_push_proto;
+ 	u8                tcfv_push_prio;
++	bool              tcfv_push_prio_exists;
+ 	struct rcu_head   rcu;
+ };
  
+diff --git a/net/sched/act_vlan.c b/net/sched/act_vlan.c
+index 1cac3c6fbb49..a108469c664f 100644
+--- a/net/sched/act_vlan.c
++++ b/net/sched/act_vlan.c
+@@ -70,7 +70,7 @@ static int tcf_vlan_act(struct sk_buff *skb, const struct tc_action *a,
+ 		/* replace the vid */
+ 		tci = (tci & ~VLAN_VID_MASK) | p->tcfv_push_vid;
+ 		/* replace prio bits, if tcfv_push_prio specified */
+-		if (p->tcfv_push_prio) {
++		if (p->tcfv_push_prio_exists) {
+ 			tci &= ~VLAN_PRIO_MASK;
+ 			tci |= p->tcfv_push_prio << VLAN_PRIO_SHIFT;
+ 		}
+@@ -121,6 +121,7 @@ static int tcf_vlan_init(struct net *net, struct nlattr *nla,
+ 	struct tc_action_net *tn = net_generic(net, vlan_net_id);
+ 	struct nlattr *tb[TCA_VLAN_MAX + 1];
+ 	struct tcf_chain *goto_ch = NULL;
++	bool push_prio_exists = false;
+ 	struct tcf_vlan_params *p;
+ 	struct tc_vlan *parm;
+ 	struct tcf_vlan *v;
+@@ -189,7 +190,8 @@ static int tcf_vlan_init(struct net *net, struct nlattr *nla,
+ 			push_proto = htons(ETH_P_8021Q);
+ 		}
+ 
+-		if (tb[TCA_VLAN_PUSH_VLAN_PRIORITY])
++		push_prio_exists = !!tb[TCA_VLAN_PUSH_VLAN_PRIORITY];
++		if (push_prio_exists)
+ 			push_prio = nla_get_u8(tb[TCA_VLAN_PUSH_VLAN_PRIORITY]);
+ 		break;
+ 	case TCA_VLAN_ACT_POP_ETH:
+@@ -241,6 +243,7 @@ static int tcf_vlan_init(struct net *net, struct nlattr *nla,
+ 	p->tcfv_action = action;
+ 	p->tcfv_push_vid = push_vid;
+ 	p->tcfv_push_prio = push_prio;
++	p->tcfv_push_prio_exists = push_prio_exists || action == TCA_VLAN_ACT_PUSH;
+ 	p->tcfv_push_proto = push_proto;
+ 
+ 	if (action == TCA_VLAN_ACT_PUSH_ETH) {
 -- 
 2.30.2
 
