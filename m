@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0413F3C5698
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 165083C4F63
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351827AbhGLIUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:20:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57416 "EHLO mail.kernel.org"
+        id S1345334AbhGLHZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:25:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245047AbhGLHgx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:36:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EDF1761920;
-        Mon, 12 Jul 2021 07:32:51 +0000 (UTC)
+        id S239832AbhGLG6a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:58:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A39B7611C1;
+        Mon, 12 Jul 2021 06:55:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075172;
-        bh=+kWkDaGTsPPxJT4uqZ2LrjFWemhGoRnIa21NCqiEzNg=;
+        s=korg; t=1626072942;
+        bh=jkvrJ9JJB+8IeYJsAfh6cOEFd8g4QNfThvYQZ3Jxse8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bulauw7eGZWwEGtMYf4s4W8QABshbp0Jen9Tjmba6mVrcCdYr4HDSfpN6GyVuNkwX
-         P8aAZdbA88qnC0xDowOTCl94az+dq897lhbrPxCIFtHJB8EcPfmHJF9FLHlllo0OLw
-         YqqqYvXYUqrylJ8owy5CtTLtfsm8ITN1BYClqxOc=
+        b=xwn8A6l195SU5j1SCn6gvdor10J6wwLAF0kRHHeOf7vRT/9JkNZg/RB0xdbIaDpl2
+         3TlckaNyLJBIUXus+UCWhTEJAkvDnxwfvfi4gtoF90XqzO3DET9Grm/pUVndzzdPcZ
+         4uY87LYRwfWz3y2AF0/ojgnUdTSnr3plcsBHH7XI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 130/800] media: i2c: imx334: fix the pm runtime get logic
-Date:   Mon, 12 Jul 2021 08:02:33 +0200
-Message-Id: <20210712060931.290952540@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.12 071/700] KVM: PPC: Book3S HV: Workaround high stack usage with clang
+Date:   Mon, 12 Jul 2021 08:02:34 +0200
+Message-Id: <20210712060934.745734647@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,60 +40,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: Nathan Chancellor <nathan@kernel.org>
 
-[ Upstream commit 62c90446868b439929cb04395f04a709a64ae04b ]
+commit 51696f39cbee5bb684e7959c0c98b5f54548aa34 upstream.
 
-The PM runtime get logic is currently broken, as it checks if
-ret is zero instead of checking if it is an error code,
-as reported by Dan Carpenter.
+LLVM does not emit optimal byteswap assembly, which results in high
+stack usage in kvmhv_enter_nested_guest() due to the inlining of
+byteswap_pt_regs(). With LLVM 12.0.0:
 
-While here, use the pm_runtime_resume_and_get() as added by:
-commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-added pm_runtime_resume_and_get() in order to automatically handle
-dev->power.usage_count decrement on errors. As a bonus, such function
-always return zero on success.
+arch/powerpc/kvm/book3s_hv_nested.c:289:6: error: stack frame size of
+2512 bytes in function 'kvmhv_enter_nested_guest' [-Werror,-Wframe-larger-than=]
+long kvmhv_enter_nested_guest(struct kvm_vcpu *vcpu)
+     ^
+1 error generated.
 
-It should also be noticed that a fail of pm_runtime_get_sync() would
-potentially result in a spurious runtime_suspend(), instead of
-using pm_runtime_put_noidle().
+While this gets fixed in LLVM, mark byteswap_pt_regs() as
+noinline_for_stack so that it does not get inlined and break the build
+due to -Werror by default in arch/powerpc/. Not inlining saves
+approximately 800 bytes with LLVM 12.0.0:
 
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+arch/powerpc/kvm/book3s_hv_nested.c:290:6: warning: stack frame size of
+1728 bytes in function 'kvmhv_enter_nested_guest' [-Wframe-larger-than=]
+long kvmhv_enter_nested_guest(struct kvm_vcpu *vcpu)
+     ^
+1 warning generated.
+
+Cc: stable@vger.kernel.org # v4.20+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://github.com/ClangBuiltLinux/linux/issues/1292
+Link: https://bugs.llvm.org/show_bug.cgi?id=49610
+Link: https://lore.kernel.org/r/202104031853.vDT0Qjqj-lkp@intel.com/
+Link: https://gist.github.com/ba710e3703bf45043a31e2806c843ffd
+Link: https://lore.kernel.org/r/20210621182440.990242-1-nathan@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/media/i2c/imx334.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ arch/powerpc/kvm/book3s_hv_nested.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/i2c/imx334.c b/drivers/media/i2c/imx334.c
-index 047aa7658d21..23f28606e570 100644
---- a/drivers/media/i2c/imx334.c
-+++ b/drivers/media/i2c/imx334.c
-@@ -717,9 +717,9 @@ static int imx334_set_stream(struct v4l2_subdev *sd, int enable)
- 	}
+--- a/arch/powerpc/kvm/book3s_hv_nested.c
++++ b/arch/powerpc/kvm/book3s_hv_nested.c
+@@ -53,7 +53,8 @@ void kvmhv_save_hv_regs(struct kvm_vcpu
+ 	hr->dawrx1 = vcpu->arch.dawrx1;
+ }
  
- 	if (enable) {
--		ret = pm_runtime_get_sync(imx334->dev);
--		if (ret)
--			goto error_power_off;
-+		ret = pm_runtime_resume_and_get(imx334->dev);
-+		if (ret < 0)
-+			goto error_unlock;
+-static void byteswap_pt_regs(struct pt_regs *regs)
++/* Use noinline_for_stack due to https://bugs.llvm.org/show_bug.cgi?id=49610 */
++static noinline_for_stack void byteswap_pt_regs(struct pt_regs *regs)
+ {
+ 	unsigned long *addr = (unsigned long *) regs;
  
- 		ret = imx334_start_streaming(imx334);
- 		if (ret)
-@@ -737,6 +737,7 @@ static int imx334_set_stream(struct v4l2_subdev *sd, int enable)
- 
- error_power_off:
- 	pm_runtime_put(imx334->dev);
-+error_unlock:
- 	mutex_unlock(&imx334->mutex);
- 
- 	return ret;
--- 
-2.30.2
-
 
 
