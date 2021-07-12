@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D91703C5920
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 938AD3C5977
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357147AbhGLI6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:58:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55672 "EHLO mail.kernel.org"
+        id S1384190AbhGLJDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:03:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353827AbhGLIDB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1353825AbhGLIDB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Jul 2021 04:03:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F7A361959;
-        Mon, 12 Jul 2021 07:57:38 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE78661970;
+        Mon, 12 Jul 2021 07:57:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076659;
-        bh=A7AgJxwX7sbP8mUwlIqfPATdBVFwKm82LCNlPcLGtqw=;
+        s=korg; t=1626076661;
+        bh=+Jwy2Y+r3LS7zrL1B3+VLBIKTSRVLsCphhgnIesgfRQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RxYktpDWXtlqHG+HaiQfB7zNopIiw99Jt/YNpT2W4bOKRxXHQtuU8MUTrdWDC2K4K
-         IDalEPk6pA/qRCB64OUlhyhLmlnC8pqIzj7xE7VM2JpvgG7kzPFo3SHM/So/a9ACJD
-         QHD1Yms20NDajYKt+qSGHj4+anqxW3s0CH+Yisdc=
+        b=d7BPJfR420EGz7CN6BBx+rJ8nRL8NcgO8fBwVFot91lHMrIhRaCXEA5s8/grIfR4+
+         nFlEHpMfZDkNcO29TKFjdWQf4T62b1wTfdPX6Bqz5xAu+Ry6sTwe41QrqQURQX6qbL
+         23pzr8+ecJu8BP9n/Tp7byMYmAsH32kF04JeH6kQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 737/800] powerpc/powernv: Fix machine check reporting of async store errors
-Date:   Mon, 12 Jul 2021 08:12:40 +0200
-Message-Id: <20210712061045.166407437@linuxfoundation.org>
+Subject: [PATCH 5.13 738/800] ASoC: atmel-i2s: Set symmetric sample bits
+Date:   Mon, 12 Jul 2021 08:12:41 +0200
+Message-Id: <20210712061045.259495553@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -40,132 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 
-[ Upstream commit 3729e0ec59a20825bd4c8c70996b2df63915e1dd ]
+[ Upstream commit 489a830a25e1730aebf7ff53430c170db9a1771b ]
 
-POWER9 and POWER10 asynchronous machine checks due to stores have their
-cause reported in SRR1 but SRR1[42] is set, which in other cases
-indicates DSISR cause.
+The I2S needs to have the same sample bits for both capture and playback
+streams.
 
-Check for these cases and clear SRR1[42], so the cause matching uses
-the i-side (SRR1) table.
-
-Fixes: 7b9f71f974a1 ("powerpc/64s: POWER9 machine check handler")
-Fixes: 201220bb0e8c ("powerpc/powernv: Machine check handler for POWER10")
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210517140355.2325406-1-npiggin@gmail.com
+Fixes: b543e467d1a9 ("ASoC: atmel-i2s: add driver for the new Atmel I2S controller")
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Link: https://lore.kernel.org/r/20210618150741.401739-1-codrin.ciubotariu@microchip.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/mce_power.c | 48 +++++++++++++++++++++++++++------
- 1 file changed, 40 insertions(+), 8 deletions(-)
+ sound/soc/atmel/atmel-i2s.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/powerpc/kernel/mce_power.c b/arch/powerpc/kernel/mce_power.c
-index 667104d4c455..2fff886c549d 100644
---- a/arch/powerpc/kernel/mce_power.c
-+++ b/arch/powerpc/kernel/mce_power.c
-@@ -481,12 +481,11 @@ static int mce_find_instr_ea_and_phys(struct pt_regs *regs, uint64_t *addr,
- 	return -1;
- }
+diff --git a/sound/soc/atmel/atmel-i2s.c b/sound/soc/atmel/atmel-i2s.c
+index 584656cc7d3c..48c158535ff6 100644
+--- a/sound/soc/atmel/atmel-i2s.c
++++ b/sound/soc/atmel/atmel-i2s.c
+@@ -542,6 +542,7 @@ static struct snd_soc_dai_driver atmel_i2s_dai = {
+ 	},
+ 	.ops = &atmel_i2s_dai_ops,
+ 	.symmetric_rate = 1,
++	.symmetric_sample_bits = 1,
+ };
  
--static int mce_handle_ierror(struct pt_regs *regs,
-+static int mce_handle_ierror(struct pt_regs *regs, unsigned long srr1,
- 		const struct mce_ierror_table table[],
- 		struct mce_error_info *mce_err, uint64_t *addr,
- 		uint64_t *phys_addr)
- {
--	uint64_t srr1 = regs->msr;
- 	int handled = 0;
- 	int i;
- 
-@@ -695,19 +694,19 @@ static long mce_handle_ue_error(struct pt_regs *regs,
- }
- 
- static long mce_handle_error(struct pt_regs *regs,
-+		unsigned long srr1,
- 		const struct mce_derror_table dtable[],
- 		const struct mce_ierror_table itable[])
- {
- 	struct mce_error_info mce_err = { 0 };
- 	uint64_t addr, phys_addr = ULONG_MAX;
--	uint64_t srr1 = regs->msr;
- 	long handled;
- 
- 	if (SRR1_MC_LOADSTORE(srr1))
- 		handled = mce_handle_derror(regs, dtable, &mce_err, &addr,
- 				&phys_addr);
- 	else
--		handled = mce_handle_ierror(regs, itable, &mce_err, &addr,
-+		handled = mce_handle_ierror(regs, srr1, itable, &mce_err, &addr,
- 				&phys_addr);
- 
- 	if (!handled && mce_err.error_type == MCE_ERROR_TYPE_UE)
-@@ -723,16 +722,20 @@ long __machine_check_early_realmode_p7(struct pt_regs *regs)
- 	/* P7 DD1 leaves top bits of DSISR undefined */
- 	regs->dsisr &= 0x0000ffff;
- 
--	return mce_handle_error(regs, mce_p7_derror_table, mce_p7_ierror_table);
-+	return mce_handle_error(regs, regs->msr,
-+			mce_p7_derror_table, mce_p7_ierror_table);
- }
- 
- long __machine_check_early_realmode_p8(struct pt_regs *regs)
- {
--	return mce_handle_error(regs, mce_p8_derror_table, mce_p8_ierror_table);
-+	return mce_handle_error(regs, regs->msr,
-+			mce_p8_derror_table, mce_p8_ierror_table);
- }
- 
- long __machine_check_early_realmode_p9(struct pt_regs *regs)
- {
-+	unsigned long srr1 = regs->msr;
-+
- 	/*
- 	 * On POWER9 DD2.1 and below, it's possible to get a machine check
- 	 * caused by a paste instruction where only DSISR bit 25 is set. This
-@@ -746,10 +749,39 @@ long __machine_check_early_realmode_p9(struct pt_regs *regs)
- 	if (SRR1_MC_LOADSTORE(regs->msr) && regs->dsisr == 0x02000000)
- 		return 1;
- 
--	return mce_handle_error(regs, mce_p9_derror_table, mce_p9_ierror_table);
-+	/*
-+	 * Async machine check due to bad real address from store or foreign
-+	 * link time out comes with the load/store bit (PPC bit 42) set in
-+	 * SRR1, but the cause comes in SRR1 not DSISR. Clear bit 42 so we're
-+	 * directed to the ierror table so it will find the cause (which
-+	 * describes it correctly as a store error).
-+	 */
-+	if (SRR1_MC_LOADSTORE(srr1) &&
-+			((srr1 & 0x081c0000) == 0x08140000 ||
-+			 (srr1 & 0x081c0000) == 0x08180000)) {
-+		srr1 &= ~PPC_BIT(42);
-+	}
-+
-+	return mce_handle_error(regs, srr1,
-+			mce_p9_derror_table, mce_p9_ierror_table);
- }
- 
- long __machine_check_early_realmode_p10(struct pt_regs *regs)
- {
--	return mce_handle_error(regs, mce_p10_derror_table, mce_p10_ierror_table);
-+	unsigned long srr1 = regs->msr;
-+
-+	/*
-+	 * Async machine check due to bad real address from store comes with
-+	 * the load/store bit (PPC bit 42) set in SRR1, but the cause comes in
-+	 * SRR1 not DSISR. Clear bit 42 so we're directed to the ierror table
-+	 * so it will find the cause (which describes it correctly as a store
-+	 * error).
-+	 */
-+	if (SRR1_MC_LOADSTORE(srr1) &&
-+			(srr1 & 0x081c0000) == 0x08140000) {
-+		srr1 &= ~PPC_BIT(42);
-+	}
-+
-+	return mce_handle_error(regs, srr1,
-+			mce_p10_derror_table, mce_p10_ierror_table);
- }
+ static const struct snd_soc_component_driver atmel_i2s_component = {
 -- 
 2.30.2
 
