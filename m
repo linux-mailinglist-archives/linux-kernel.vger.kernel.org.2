@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 594CC3C592A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B9923C597A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381007AbhGLI7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:59:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55670 "EHLO mail.kernel.org"
+        id S1384365AbhGLJDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:03:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353868AbhGLIDF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:03:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A05A611AF;
-        Mon, 12 Jul 2021 07:58:20 +0000 (UTC)
+        id S1353888AbhGLIDG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:03:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D97FA61941;
+        Mon, 12 Jul 2021 07:58:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076701;
-        bh=RUgYJU9lVBC2ICShtr/4xi1A1kUmM72HxXtGzTEXXgk=;
+        s=korg; t=1626076703;
+        bh=ZRMDoZWoA2P8hiekASzkXbUfXYZp2iQhJ1y5qwSSpA8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0VY1+43r8/+QNnI/PVUOuh3qobEEokzYUMXg4ZUD+CJtQsBEryM7HWMio85iPm828
-         tm7fi3VDNDG2Zrj5JzFVTMyBBhqXU7dToBxIULwbx7ZwJXv1y95KAnlysrT5Pr4tLW
-         kg+HZoMI/oLj+RS9ivIJzKG2P7Ogz4Zx1hvhovkQ=
+        b=MQHcQcBmIwKnX8zeBX+UyIBKZBpPhbWo8nh3nn4SHnADRryvLjk76bjfxgJul5jGY
+         WU+j64tEivD4UdGKKaxMxFfttbiinz0MZJUsuEOaIqVJpy4QCX9D17aok2vJzLB7Hm
+         VFl42jiceCoNJL8P2YL4N8SoVrG58B9OFeI5IcYA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 757/800] ALSA: firewire-lib: Fix amdtp_domain_start() when no AMDTP_OUT_STREAM stream is found
-Date:   Mon, 12 Jul 2021 08:13:00 +0200
-Message-Id: <20210712061047.329480916@linuxfoundation.org>
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 758/800] serial: mvebu-uart: do not allow changing baudrate when uartclk is not available
+Date:   Mon, 12 Jul 2021 08:13:01 +0200
+Message-Id: <20210712061047.443531352@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -41,50 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit 0cbbeaf370221fc469c95945dd3c1198865c5fe4 ]
+[ Upstream commit ecd6b010d81f97b06b2f64d2d4f50ebf5acddaa9 ]
 
-The intent here is to return an error code if we don't find what we are
-looking for in the 'list_for_each_entry()' loop.
+Testing mvuart->clk for non-error is not enough as mvuart->clk may contain
+valid clk pointer but when clk_prepare_enable(mvuart->clk) failed then
+port->uartclk is zero.
 
-'s' is not NULL if the list is empty or if we scan the complete list.
-Introduce a new 'found' variable to handle such cases.
+When mvuart->clk is not available then port->uartclk is zero too.
 
-Fixes: 60dd49298ec5 ("ALSA: firewire-lib: handle several AMDTP streams in callback handler of IRQ target")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Acked-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Link: https://lore.kernel.org/r/9c9a53a4905984a570ba5672cbab84f2027dedc1.1624560484.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Parent clock rate port->uartclk is needed to calculate UART clock divisor
+and without it is not possible to change baudrate.
+
+So fix test condition when it is possible to change baudrate.
+
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Fixes: 68a0db1d7da2 ("serial: mvebu-uart: add function to change baudrate")
+Link: https://lore.kernel.org/r/20210624224909.6350-3-pali@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/firewire/amdtp-stream.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/tty/serial/mvebu-uart.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index 5805c5de39fb..7a282d8e7148 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -1404,14 +1404,17 @@ int amdtp_domain_start(struct amdtp_domain *d, unsigned int ir_delay_cycle)
- 	unsigned int queue_size;
- 	struct amdtp_stream *s;
- 	int cycle;
-+	bool found = false;
- 	int err;
+diff --git a/drivers/tty/serial/mvebu-uart.c b/drivers/tty/serial/mvebu-uart.c
+index 908a4ac6b5a7..9638ae6aae79 100644
+--- a/drivers/tty/serial/mvebu-uart.c
++++ b/drivers/tty/serial/mvebu-uart.c
+@@ -445,12 +445,11 @@ static void mvebu_uart_shutdown(struct uart_port *port)
  
- 	// Select an IT context as IRQ target.
- 	list_for_each_entry(s, &d->streams, list) {
--		if (s->direction == AMDTP_OUT_STREAM)
-+		if (s->direction == AMDTP_OUT_STREAM) {
-+			found = true;
- 			break;
-+		}
- 	}
--	if (!s)
-+	if (!found)
- 		return -ENXIO;
- 	d->irq_target = s;
+ static int mvebu_uart_baud_rate_set(struct uart_port *port, unsigned int baud)
+ {
+-	struct mvebu_uart *mvuart = to_mvuart(port);
+ 	unsigned int d_divisor, m_divisor;
+ 	u32 brdv, osamp;
  
+-	if (IS_ERR(mvuart->clk))
+-		return -PTR_ERR(mvuart->clk);
++	if (!port->uartclk)
++		return -EOPNOTSUPP;
+ 
+ 	/*
+ 	 * The baudrate is derived from the UART clock thanks to two divisors:
 -- 
 2.30.2
 
