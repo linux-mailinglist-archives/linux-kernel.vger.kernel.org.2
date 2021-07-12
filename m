@@ -2,84 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8EF03C5B63
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 846FF3C5B6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235822AbhGLLVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 07:21:20 -0400
-Received: from mail-vs1-f48.google.com ([209.85.217.48]:37721 "EHLO
-        mail-vs1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237507AbhGLLTR (ORCPT
+        id S236625AbhGLLVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 07:21:25 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:11263 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237966AbhGLLTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 07:19:17 -0400
-Received: by mail-vs1-f48.google.com with SMTP id bf5so2649668vsb.4;
-        Mon, 12 Jul 2021 04:16:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wb2gUE9RppEYjBtkun4RSMhw4ORgLmf2nLZuAw7U5rs=;
-        b=StPlbCjAFgQdBd0aTM1bWpS0OvScsaQmYapsRIMhn174Fud8LhKNm+u71Zlg9DqEs8
-         64GRj+RyaOXTeCOKUmnpxgSE03ayMzuqO0NxjEH0zzXJwP8634yn9siQaw/7MqDa4LmD
-         SMUMcD//lUlzGhfbYOw1qWQJtON/202hr/owRoU//gh0QBp7z5Nzij8+8Gr2xtumA6BO
-         ZIqv57XLia74g8srgrg9Kmz4Nwqn3qesWKLrr7XKyOByuk+nwQCJC7Vrfas27IbFVGf7
-         a1vAcCBXeQCzilFtYoepkS8en5iABu6668OUezUbjXnEl8m+LPRcNWQd01g6FrALdn71
-         9pXw==
-X-Gm-Message-State: AOAM531mdFxOMVLfommr9UjjDsUGAC71n7tBwld6xrvkCQOrsRr6ggCN
-        1bzsJsCkOiputudnHKII2xmNM0fP0QleRFAwRew=
-X-Google-Smtp-Source: ABdhPJz0UtKPrQqYn0Fh3Lvo66wMSx+CxMp4eWOcF50Zng7y+eFTenh5uXzhQL0cCTFvRF5k0AF5lklpAfR2sB4/kAY=
-X-Received: by 2002:a67:f98c:: with SMTP id b12mr47329347vsq.40.1626088588696;
- Mon, 12 Jul 2021 04:16:28 -0700 (PDT)
+        Mon, 12 Jul 2021 07:19:38 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GNh0J6FPSz1CJ2k;
+        Mon, 12 Jul 2021 19:11:12 +0800 (CST)
+Received: from [10.174.178.125] (10.174.178.125) by
+ dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 12 Jul 2021 19:16:47 +0800
+Subject: Re: [PATCH 5/5] mm/vmscan: fix misleading comment in
+ isolate_lru_pages()
+To:     Michal Hocko <mhocko@suse.com>
+CC:     <akpm@linux-foundation.org>, <hannes@cmpxchg.org>,
+        <vbabka@suse.cz>, <axboe@kernel.dk>, <iamjoonsoo.kim@lge.com>,
+        <alexs@kernel.org>, <apopple@nvidia.com>, <willy@infradead.org>,
+        <minchan@kernel.org>, <david@redhat.com>, <shli@fb.com>,
+        <hillf.zj@alibaba-inc.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210710100329.49174-1-linmiaohe@huawei.com>
+ <20210710100329.49174-6-linmiaohe@huawei.com>
+ <YOvvFaYMBhISeGEI@dhcp22.suse.cz>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <ed30bbc5-8438-d399-a9ef-462eda1b6d4e@huawei.com>
+Date:   Mon, 12 Jul 2021 19:16:47 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210709010055.86663-1-someguy@effective-light.com>
- <CAMuHMdWhs4en-yR9ic+d4V9M_0BUFX40rP0M=tZRGMaUy2wv3g@mail.gmail.com> <UBYZVQ.O83H1QJFD7TX@effective-light.com>
-In-Reply-To: <UBYZVQ.O83H1QJFD7TX@effective-light.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 12 Jul 2021 13:16:17 +0200
-Message-ID: <CAMuHMdUpGDarCkvAxe1V0c4kn68dHZozdDOq+Tyx9qsCWWZU6w@mail.gmail.com>
-Subject: Re: [PATCH] fbcon: garbage collect fbdev scrolling acceleration
-To:     Hamza Mahfooz <someguy@effective-light.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        George Kennedy <george.kennedy@oracle.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Pavel Machek <pavel@ucw.cz>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YOvvFaYMBhISeGEI@dhcp22.suse.cz>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.125]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hamza,
+On 2021/7/12 15:28, Michal Hocko wrote:
+> On Sat 10-07-21 18:03:29, Miaohe Lin wrote:
+>> We couldn't know whether the page is being freed elsewhere until we failed
+>> to increase the page count.
+> 
+> This is moving a hard to understand comment from one place to another.
 
-On Fri, Jul 9, 2021 at 11:28 PM Hamza Mahfooz
-<someguy@effective-light.com> wrote:
-> On Fri, Jul 9 2021 at 09:49:02 AM +0200, Geert Uytterhoeven
-> <geert@linux-m68k.org> wrote:
-> > Bummer, more code to revert to re-enable acceleration in the _56_
-> > fbdev drivers using acceleration (some of them unusable without),
-> > despite commit 39aead8373b3 claiming "No other driver supportes
-> > accelerated fbcon"...
-> Should they be refactored to DRM drivers? (I don't mind looking into it
-> if you believe it's worthwhile.)
+If get_page_unless_zero failed, the page could have been freed elsewhere. I think
+this looks straightforward but doesn't help a lot. Are you preferring to just
+remove this comment ?
 
-Probably some of them can be converted.
-Others must wait for DRM to gain e.g. more "low color" support
-(plus whatever other dead bodies to be found during the conversion).
+Thank you.
 
-Gr{oetje,eeting}s,
+> If anything this would benefit from what that elsewhere might be
+> typically or simply drop the comment altogether.
+> 
+>>
+>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>> ---
+>>  mm/vmscan.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/mm/vmscan.c b/mm/vmscan.c
+>> index a74760c48bd8..6e26b3c93242 100644
+>> --- a/mm/vmscan.c
+>> +++ b/mm/vmscan.c
+>> @@ -1891,7 +1891,6 @@ static unsigned long isolate_lru_pages(unsigned long nr_to_scan,
+>>  		 */
+>>  		scan += nr_pages;
+>>  		if (!__isolate_lru_page_prepare(page, mode)) {
+>> -			/* It is being freed elsewhere */
+>>  			list_move(&page->lru, src);
+>>  			continue;
+>>  		}
+>> @@ -1901,6 +1900,7 @@ static unsigned long isolate_lru_pages(unsigned long nr_to_scan,
+>>  		 * page release code relies on it.
+>>  		 */
+>>  		if (unlikely(!get_page_unless_zero(page))) {
+>> +			/* It is being freed elsewhere. */
+>>  			list_move(&page->lru, src);
+>>  			continue;
+>>  		}
+>> -- 
+>> 2.23.0
+> 
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
