@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299EB3C58F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 347233C4E11
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:41:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349419AbhGLIxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:53:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55948 "EHLO mail.kernel.org"
+        id S243379AbhGLHQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:16:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52296 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353513AbhGLICa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:02:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED1C761C7E;
-        Mon, 12 Jul 2021 07:55:23 +0000 (UTC)
+        id S238628AbhGLGw3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:52:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 43E5160FDB;
+        Mon, 12 Jul 2021 06:49:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076524;
-        bh=wMt7nRVus3lmaRdqGWJ7+Gs+xV4E1Qe41YpxEodJPRI=;
+        s=korg; t=1626072575;
+        bh=4Jr3p/RqNI6ZrnEMGC0lFoTUS4xbl6iXLvrxf8vMD2U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EiEjtMK904Yuk/hTkz8wSlDlVkJQMyys/WFre1FIJCO7ph+q+C778QxMQpHsbzgva
-         EDBa9oWVAoWcyay+HTgqF8FLaWhenbwZuD0AvJK83KkTVzSxSXMBUnSkWFPn+bKvMK
-         ESytVy5Oj/pGNq7HrslQ3Gicx5gd+8+dialKYpzs=
+        b=asiJJNlsltN1+pYbrHz9w2ZLAJ1W/HkSDBC7sPAOXj/m+qQr0X4FSQEB4+AEmtRtG
+         JU8jc91r5HjsS6yT/0K5cBfasZVYYbNf0oxVqCvsQ+omZBeyoGZn93WMHuLlNxYXMt
+         Kzuo2SKv8krq108+l+GXJk2T2F3gXQCE14pwSy70=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 680/800] s390: appldata depends on PROC_SYSCTL
+        stable@vger.kernel.org, Chung-Chiang Cheng <cccheng@synology.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 543/593] configfs: fix memleak in configfs_release_bin_file
 Date:   Mon, 12 Jul 2021 08:11:43 +0200
-Message-Id: <20210712061039.215174188@linuxfoundation.org>
+Message-Id: <20210712060953.766451698@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,44 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Chung-Chiang Cheng <shepjeng@gmail.com>
 
-[ Upstream commit 5d3516b3647621d5a1180672ea9e0817fb718ada ]
+[ Upstream commit 3c252b087de08d3cb32468b54a158bd7ad0ae2f7 ]
 
-APPLDATA_BASE should depend on PROC_SYSCTL instead of PROC_FS.
-Building with PROC_FS but not PROC_SYSCTL causes a build error,
-since appldata_base.c uses data and APIs from fs/proc/proc_sysctl.c.
+When reading binary attributes in progress, buffer->bin_buffer is setup in
+configfs_read_bin_file() but never freed.
 
-arch/s390/appldata/appldata_base.o: in function `appldata_generic_handler':
-appldata_base.c:(.text+0x192): undefined reference to `sysctl_vals'
-
-Fixes: c185b783b099 ("[S390] Remove config options.")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-Cc: linux-s390@vger.kernel.org
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-Link: https://lore.kernel.org/r/20210528002420.17634-1-rdunlap@infradead.org
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Fixes: 03607ace807b4 ("configfs: implement binary attributes")
+Signed-off-by: Chung-Chiang Cheng <cccheng@synology.com>
+[hch: move the vfree rather than duplicating it]
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/configfs/file.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index d6582f57e0a1..93488bbf491b 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -854,7 +854,7 @@ config CMM_IUCV
- config APPLDATA_BASE
- 	def_bool n
- 	prompt "Linux - VM Monitor Stream, base infrastructure"
--	depends on PROC_FS
-+	depends on PROC_SYSCTL
- 	help
- 	  This provides a kernel interface for creating and updating z/VM APPLDATA
- 	  monitor records. The monitor records are updated at certain time
+diff --git a/fs/configfs/file.c b/fs/configfs/file.c
+index da8351d1e455..4d0825213116 100644
+--- a/fs/configfs/file.c
++++ b/fs/configfs/file.c
+@@ -482,13 +482,13 @@ static int configfs_release_bin_file(struct inode *inode, struct file *file)
+ 					buffer->bin_buffer_size);
+ 		}
+ 		up_read(&frag->frag_sem);
+-		/* vfree on NULL is safe */
+-		vfree(buffer->bin_buffer);
+-		buffer->bin_buffer = NULL;
+-		buffer->bin_buffer_size = 0;
+-		buffer->needs_read_fill = 1;
+ 	}
+ 
++	vfree(buffer->bin_buffer);
++	buffer->bin_buffer = NULL;
++	buffer->bin_buffer_size = 0;
++	buffer->needs_read_fill = 1;
++
+ 	configfs_release(inode, file);
+ 	return 0;
+ }
 -- 
 2.30.2
 
