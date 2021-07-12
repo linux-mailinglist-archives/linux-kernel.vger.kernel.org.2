@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 017FA3C52FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F8E73C4BC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351363AbhGLHvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:51:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48836 "EHLO mail.kernel.org"
+        id S241804AbhGLG7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:59:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243732AbhGLHRG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:17:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 03FA06140C;
-        Mon, 12 Jul 2021 07:14:07 +0000 (UTC)
+        id S238858AbhGLGoY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:44:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 539626101E;
+        Mon, 12 Jul 2021 06:40:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074048;
-        bh=q+26ziyUGgj2kiHF3QL/5cJOVVtKYvVckwkSe3TtHQI=;
+        s=korg; t=1626072013;
+        bh=JpTXsiQQ9JH2gK0bxZG6EvoQAV5Q+UX4WjpJvVL3vfw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xAVzqC1CyI43OsdSaPN4ZwUkqDsbMUUMlN8tpzGGy5VOLUxqX2aB10Gf+C0RyH1Sv
-         SSFfNLoD7C4xSQlPa0/eJi/Kt5oXVKP6hhqFSIAjdU3QHe4iAjtRpGgDhclf1qI9ZY
-         kWtvk8zi3530Y+p62zZmn6tMFfkYbQXa4dk72y68=
+        b=V94qmf0uRA6Sc1dg0n/yYMKYYrm+FaFwXvsPjWrfVIwGi8YM5cyOXz75uexXO5U82
+         cEFBmUAHkHdBzpl9GyumFv0+9jeCfdKIG8lPdOgA6ge7Kbngz/KVteu6phqwY/gF3L
+         6K868w/aOgWNGe5WDSXFnNeqXui7xTdrqDfBOq5I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Heiko Stuebner <heiko@sntech.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 394/700] drm/pl111: depend on CONFIG_VEXPRESS_CONFIG
+Subject: [PATCH 5.10 317/593] drm/rockchip: lvds: Fix an error handling path
 Date:   Mon, 12 Jul 2021 08:07:57 +0200
-Message-Id: <20210712061018.308455666@linuxfoundation.org>
+Message-Id: <20210712060920.314791372@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 4dc7c97d04dcaa9f19482f70dcfdbeb52cc7193f ]
+[ Upstream commit 3dfa159f6b0c054eb63673fbf643a5f2cc862e63 ]
 
-Avoid randconfig build failures by requiring VEXPRESS_CONFIG:
+'ret' is know to be 0 a this point. Checking the return value of
+'phy_init()' and 'phy_set_mode()' was intended instead.
 
-aarch64-linux-gnu-ld: drivers/gpu/drm/pl111/pl111_versatile.o: in function `pl111_vexpress_clcd_init':
-pl111_versatile.c:(.text+0x220): undefined reference to `devm_regmap_init_vexpress_config'
+So add the missing assignments.
 
-Fixes: 826fc86b5903 ("drm: pl111: Move VExpress setup into versatile init")
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210602215252.695994-4-keescook@chromium.org
+Fixes: cca1705c3d89 ("drm/rockchip: lvds: Add PX30 support")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Link: https://patchwork.freedesktop.org/patch/msgid/248220d4815dc8c8088cebfab7d6df5f70518438.1619881852.git.christophe.jaillet@wanadoo.fr
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/pl111/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/rockchip/rockchip_lvds.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/pl111/Kconfig b/drivers/gpu/drm/pl111/Kconfig
-index 80f6748055e3..c5210a5bef1b 100644
---- a/drivers/gpu/drm/pl111/Kconfig
-+++ b/drivers/gpu/drm/pl111/Kconfig
-@@ -2,7 +2,7 @@
- config DRM_PL111
- 	tristate "DRM Support for PL111 CLCD Controller"
- 	depends on DRM
--	depends on ARM || ARM64 || COMPILE_TEST
-+	depends on VEXPRESS_CONFIG
- 	depends on COMMON_CLK
- 	select DRM_KMS_HELPER
- 	select DRM_KMS_CMA_HELPER
+diff --git a/drivers/gpu/drm/rockchip/rockchip_lvds.c b/drivers/gpu/drm/rockchip/rockchip_lvds.c
+index 41edd0a421b2..7c20b4a24a7e 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_lvds.c
++++ b/drivers/gpu/drm/rockchip/rockchip_lvds.c
+@@ -499,11 +499,11 @@ static int px30_lvds_probe(struct platform_device *pdev,
+ 	if (IS_ERR(lvds->dphy))
+ 		return PTR_ERR(lvds->dphy);
+ 
+-	phy_init(lvds->dphy);
++	ret = phy_init(lvds->dphy);
+ 	if (ret)
+ 		return ret;
+ 
+-	phy_set_mode(lvds->dphy, PHY_MODE_LVDS);
++	ret = phy_set_mode(lvds->dphy, PHY_MODE_LVDS);
+ 	if (ret)
+ 		return ret;
+ 
 -- 
 2.30.2
 
