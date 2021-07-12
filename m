@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBA863C5549
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98A153C5538
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:55:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355503AbhGLIJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:09:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44518 "EHLO mail.kernel.org"
+        id S1355420AbhGLIJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:09:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345429AbhGLH3p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:29:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CBE5061411;
-        Mon, 12 Jul 2021 07:26:40 +0000 (UTC)
+        id S1345439AbhGLH3s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:29:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D49B611AD;
+        Mon, 12 Jul 2021 07:26:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074801;
-        bh=optXwOXMS2qovq5WMFhk9md7VrmEVNNvk1BRIHK/2Gk=;
+        s=korg; t=1626074804;
+        bh=fob3s5mDsTJVZqnRf2jvmECc0ABXF+X68QEkJbejXo4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=19cDDaYNeIjk7sNaQnHZKWRTO9vlbM1rHWqOh0wrv9iWBa57A5Nh6OxwrX5bz2B/N
-         i7qH9XXyYPJ4FmA9jPA4D9nH+GxJSZmG+D2bQlFb98OXSKboh8DmBZIZGgAslFww71
-         Xd5kA5aMHkro2mB3fvldcK8/23vumIXkqe0UA0Xk=
+        b=x/6qpiCBczaaNX47V8JXOCWx5k9FI3qiEqrdbFS74pMNLiDZCy3wJgPQqnTIBS6PA
+         DEkcfxpF4ijuTsKVm5yD2qQIT4nZZRUYelaKONQk5FVtB1yUSuITLpLgiCjAoTkRIT
+         uwNBYRYPvZsjL9J7deQUAPlHwVB+CJo4zArSEs3Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Seth Jennings <sjenning@redhat.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
+        stable@vger.kernel.org, Trent Piepho <tpiepho@gmail.com>,
+        Yiyuan Guo <yguoaz@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Oskar Schirmer <oskar@scara.com>,
+        Daniel Latypov <dlatypov@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 673/700] mm/zswap.c: fix two bugs in zswap_writeback_entry()
-Date:   Mon, 12 Jul 2021 08:12:36 +0200
-Message-Id: <20210712061047.489462284@linuxfoundation.org>
+Subject: [PATCH 5.12 674/700] lib/math/rational.c: fix divide by zero
+Date:   Mon, 12 Jul 2021 08:12:37 +0200
+Message-Id: <20210712061047.590680388@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
 References: <20210712060924.797321836@linuxfoundation.org>
@@ -48,69 +45,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miaohe Lin <linmiaohe@huawei.com>
+From: Trent Piepho <tpiepho@gmail.com>
 
-[ Upstream commit 46b76f2e09dc35f70aca2f4349eb0d158f53fe93 ]
+[ Upstream commit 65a0d3c14685663ba111038a35db70f559e39336 ]
 
-In the ZSWAP_SWAPCACHE_FAIL and ZSWAP_SWAPCACHE_EXIST case, we forgot to
-call zpool_unmap_handle() when zpool can't sleep. And we might sleep in
-zswap_get_swap_cache_page() while zpool can't sleep. To fix all of these,
-zpool_unmap_handle() should be done before zswap_get_swap_cache_page()
-when zpool can't sleep.
+If the input is out of the range of the allowed values, either larger than
+the largest value or closer to zero than the smallest non-zero allowed
+value, then a division by zero would occur.
 
-Link: https://lkml.kernel.org/r/20210522092242.3233191-4-linmiaohe@huawei.com
-Fixes: fc6697a89f56 ("mm/zswap: add the flag can_sleep_mapped")
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Cc: Colin Ian King <colin.king@canonical.com>
-Cc: Dan Streetman <ddstreet@ieee.org>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Seth Jennings <sjenning@redhat.com>
-Cc: Tian Tao <tiantao6@hisilicon.com>
-Cc: Vitaly Wool <vitaly.wool@konsulko.com>
+In the case of input too large, the division by zero will occur on the
+first iteration.  The best result (largest allowed value) will be found by
+always choosing the semi-convergent and excluding the denominator based
+limit when finding it.
+
+In the case of the input too small, the division by zero will occur on the
+second iteration.  The numerator based semi-convergent should not be
+calculated to avoid the division by zero.  But the semi-convergent vs
+previous convergent test is still needed, which effectively chooses
+between 0 (the previous convergent) vs the smallest allowed fraction (best
+semi-convergent) as the result.
+
+Link: https://lkml.kernel.org/r/20210525144250.214670-1-tpiepho@gmail.com
+Fixes: 323dd2c3ed0 ("lib/math/rational.c: fix possible incorrect result from rational fractions helper")
+Signed-off-by: Trent Piepho <tpiepho@gmail.com>
+Reported-by: Yiyuan Guo <yguoaz@gmail.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Oskar Schirmer <oskar@scara.com>
+Cc: Daniel Latypov <dlatypov@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/zswap.c | 17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
+ lib/math/rational.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 578d9f256920..91f7439fde7f 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -967,6 +967,13 @@ static int zswap_writeback_entry(struct zpool *pool, unsigned long handle)
- 	spin_unlock(&tree->lock);
- 	BUG_ON(offset != entry->offset);
+diff --git a/lib/math/rational.c b/lib/math/rational.c
+index 9781d521963d..c0ab51d8fbb9 100644
+--- a/lib/math/rational.c
++++ b/lib/math/rational.c
+@@ -12,6 +12,7 @@
+ #include <linux/compiler.h>
+ #include <linux/export.h>
+ #include <linux/minmax.h>
++#include <linux/limits.h>
  
-+	src = (u8 *)zhdr + sizeof(struct zswap_header);
-+	if (!zpool_can_sleep_mapped(pool)) {
-+		memcpy(tmp, src, entry->length);
-+		src = tmp;
-+		zpool_unmap_handle(pool, handle);
-+	}
+ /*
+  * calculate best rational approximation for a given fraction
+@@ -78,13 +79,18 @@ void rational_best_approximation(
+ 		 * found below as 't'.
+ 		 */
+ 		if ((n2 > max_numerator) || (d2 > max_denominator)) {
+-			unsigned long t = min((max_numerator - n0) / n1,
+-					      (max_denominator - d0) / d1);
++			unsigned long t = ULONG_MAX;
+ 
+-			/* This tests if the semi-convergent is closer
+-			 * than the previous convergent.
++			if (d1)
++				t = (max_denominator - d0) / d1;
++			if (n1)
++				t = min(t, (max_numerator - n0) / n1);
 +
- 	/* try to allocate swap cache page */
- 	switch (zswap_get_swap_cache_page(swpentry, &page)) {
- 	case ZSWAP_SWAPCACHE_FAIL: /* no memory or invalidate happened */
-@@ -982,17 +989,7 @@ static int zswap_writeback_entry(struct zpool *pool, unsigned long handle)
- 	case ZSWAP_SWAPCACHE_NEW: /* page is locked */
- 		/* decompress */
- 		acomp_ctx = raw_cpu_ptr(entry->pool->acomp_ctx);
--
- 		dlen = PAGE_SIZE;
--		src = (u8 *)zhdr + sizeof(struct zswap_header);
--
--		if (!zpool_can_sleep_mapped(pool)) {
--
--			memcpy(tmp, src, entry->length);
--			src = tmp;
--
--			zpool_unmap_handle(pool, handle);
--		}
- 
- 		mutex_lock(acomp_ctx->mutex);
- 		sg_init_one(&input, src, entry->length);
++			/* This tests if the semi-convergent is closer than the previous
++			 * convergent.  If d1 is zero there is no previous convergent as this
++			 * is the 1st iteration, so always choose the semi-convergent.
+ 			 */
+-			if (2u * t > a || (2u * t == a && d0 * dp > d1 * d)) {
++			if (!d1 || 2u * t > a || (2u * t == a && d0 * dp > d1 * d)) {
+ 				n1 = n0 + t * n1;
+ 				d1 = d0 + t * d1;
+ 			}
 -- 
 2.30.2
 
