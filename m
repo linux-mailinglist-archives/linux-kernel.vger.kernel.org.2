@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15FA63C52BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 733FC3C5807
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242224AbhGLHs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:48:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48836 "EHLO mail.kernel.org"
+        id S1378602AbhGLIlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:41:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241517AbhGLHOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:14:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5A17613E6;
-        Mon, 12 Jul 2021 07:11:21 +0000 (UTC)
+        id S1350600AbhGLHvL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:51:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE4DB61C27;
+        Mon, 12 Jul 2021 07:46:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073882;
-        bh=MCwjGlUhMs9fRJNOMQKclYgS0+8CWreKuf7GuCiuqT4=;
+        s=korg; t=1626075985;
+        bh=WBqR+ffR0R5GHptgZ3/zjCvkFUPazoiR9oqfXZyyTKU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XYhUYgHUpBlYrDjxJUt4kcVZ8tP+i49eUdLj/ldgVJPT4enAN8Ctbkgmts59P9lrG
-         ntpoFDL3WUhOwmmlZG2PzGm2HkN1xuV2RvgogdJCS1y945Rq99jbOQ1g6n1lhMmD5l
-         kixD9+CjV0IIov2tZ08N0hqgsnCw2c+sHN/iog8s=
+        b=y/L0pjO5PalWyVNb5XNA1uqHzHOFEgVPY7uu87/eLLyO8pHx9cdKeFHXovmZdc+0P
+         U7KKIzHjQNppXmVw9W0NPit0s4mjaGmaBbrL0DK4hkgcCw/ECgyuTkY+Xgh3D67MkO
+         ecFE41Oh2jgTrTSzMhxtUzEELX+Z4+LzjHy651OQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 389/700] ehea: fix error return code in ehea_restart_qps()
+Subject: [PATCH 5.13 449/800] drm: qxl: ensure surf.data is ininitialized
 Date:   Mon, 12 Jul 2021 08:07:52 +0200
-Message-Id: <20210712061017.785496687@linuxfoundation.org>
+Message-Id: <20210712061014.876665332@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,67 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 015dbf5662fd689d581c0bc980711b073ca09a1a ]
+[ Upstream commit fbbf23ddb2a1cc0c12c9f78237d1561c24006f50 ]
 
-Fix to return -EFAULT from the error handling case instead of 0, as done
-elsewhere in this function.
+The object surf is not fully initialized and the uninitialized
+field surf.data is being copied by the call to qxl_bo_create
+via the call to qxl_gem_object_create. Set surf.data to zero
+to ensure garbage data from the stack is not being copied.
 
-By the way, when get_zeroed_page() fails, directly return -ENOMEM to
-simplify code.
-
-Fixes: 2c69448bbced ("ehea: DLPAR memory add fix")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Link: https://lore.kernel.org/r/20210528085555.9390-1-thunder.leizhen@huawei.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Addresses-Coverity: ("Uninitialized scalar variable")
+Fixes: f64122c1f6ad ("drm: add new QXL driver. (v1.4)")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Link: http://patchwork.freedesktop.org/patch/msgid/20210608161313.161922-1-colin.king@canonical.com
+Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ibm/ehea/ehea_main.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/qxl/qxl_dumb.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/ethernet/ibm/ehea/ehea_main.c b/drivers/net/ethernet/ibm/ehea/ehea_main.c
-index c2e740475786..f63066736425 100644
---- a/drivers/net/ethernet/ibm/ehea/ehea_main.c
-+++ b/drivers/net/ethernet/ibm/ehea/ehea_main.c
-@@ -2617,10 +2617,8 @@ static int ehea_restart_qps(struct net_device *dev)
- 	u16 dummy16 = 0;
- 
- 	cb0 = (void *)get_zeroed_page(GFP_KERNEL);
--	if (!cb0) {
--		ret = -ENOMEM;
--		goto out;
--	}
-+	if (!cb0)
-+		return -ENOMEM;
- 
- 	for (i = 0; i < (port->num_def_qps); i++) {
- 		struct ehea_port_res *pr =  &port->port_res[i];
-@@ -2640,6 +2638,7 @@ static int ehea_restart_qps(struct net_device *dev)
- 					    cb0);
- 		if (hret != H_SUCCESS) {
- 			netdev_err(dev, "query_ehea_qp failed (1)\n");
-+			ret = -EFAULT;
- 			goto out;
- 		}
- 
-@@ -2652,6 +2651,7 @@ static int ehea_restart_qps(struct net_device *dev)
- 					     &dummy64, &dummy16, &dummy16);
- 		if (hret != H_SUCCESS) {
- 			netdev_err(dev, "modify_ehea_qp failed (1)\n");
-+			ret = -EFAULT;
- 			goto out;
- 		}
- 
-@@ -2660,6 +2660,7 @@ static int ehea_restart_qps(struct net_device *dev)
- 					    cb0);
- 		if (hret != H_SUCCESS) {
- 			netdev_err(dev, "query_ehea_qp failed (2)\n");
-+			ret = -EFAULT;
- 			goto out;
- 		}
- 
+diff --git a/drivers/gpu/drm/qxl/qxl_dumb.c b/drivers/gpu/drm/qxl/qxl_dumb.c
+index 48a58ba1db96..686485b19d0f 100644
+--- a/drivers/gpu/drm/qxl/qxl_dumb.c
++++ b/drivers/gpu/drm/qxl/qxl_dumb.c
+@@ -58,6 +58,8 @@ int qxl_mode_dumb_create(struct drm_file *file_priv,
+ 	surf.height = args->height;
+ 	surf.stride = pitch;
+ 	surf.format = format;
++	surf.data = 0;
++
+ 	r = qxl_gem_object_create_with_handle(qdev, file_priv,
+ 					      QXL_GEM_DOMAIN_CPU,
+ 					      args->size, &surf, &qobj,
 -- 
 2.30.2
 
