@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66E973C5472
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:53:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60AC33C4CE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348856AbhGLH6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:58:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55768 "EHLO mail.kernel.org"
+        id S244301AbhGLHKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:10:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245140AbhGLHTZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:19:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DDE660FF1;
-        Mon, 12 Jul 2021 07:16:36 +0000 (UTC)
+        id S236878AbhGLGsd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:48:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C79661106;
+        Mon, 12 Jul 2021 06:44:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074197;
-        bh=6I2T8XFbIhEBcVIl9KYv5WDOP3d9fa/YF363DrriMpc=;
+        s=korg; t=1626072259;
+        bh=2ew9wTCj0SV6KOtEPridqdekKVUmxJTm74fuKIxFFJc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YZ2PX4LWtnTlLTUGfWM2c67lm3iVhEKjozHPTSgVVv03H9ZAm8z8EUCWr69Z5rw2h
-         Z9glEpnjmGCmTiGwVk97vNXoJnBz231Jb53xfr/eTkXMCrfZcDjIef0YOYOeQtFbT9
-         3gyyo3jId5+2H5tE6FWbYpTvYH7X6Hy+ZBJc6HWY=
+        b=0yawUl30Wjwpewq3UWvC1CFdiIiviU6xPEAg80QXvY7RoB56Jrp9d1qucFvHaNjcX
+         7k/98V85zUdhoLtFgbYCVmpeOI/oLSA9WKbyZiovdL2PcC7LIy38A9MLaHFZ9RrLz2
+         DlIvOmz51+prFW1BFJwVVNKLrVfLtEVhZn1bQaDo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        stable@vger.kernel.org, Jonathan Marek <jonathan@marek.ca>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 498/700] Bluetooth: mgmt: Fix slab-out-of-bounds in tlv_data_is_valid
+Subject: [PATCH 5.10 421/593] clk: qcom: clk-alpha-pll: fix CAL_L write in alpha_pll_fabia_prepare
 Date:   Mon, 12 Jul 2021 08:09:41 +0200
-Message-Id: <20210712061029.472362450@linuxfoundation.org>
+Message-Id: <20210712060934.525951776@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,63 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+From: Jonathan Marek <jonathan@marek.ca>
 
-[ Upstream commit 799acb9347915bfe4eac0ff2345b468f0a1ca207 ]
+[ Upstream commit 7f54bf2640e877c8a9b4cc7e2b29f82e3ca1a284 ]
 
-This fixes parsing of LTV entries when the length is 0.
+Caught this when looking at alpha-pll code. Untested but it is clear that
+this was intended to write to PLL_CAL_L_VAL and not PLL_ALPHA_VAL.
 
-Found with:
-
-tools/mgmt-tester -s "Add Advertising - Success (ScRsp only)"
-
-Add Advertising - Success (ScRsp only) - run
-  Sending Add Advertising (0x003e)
-  Test condition added, total 1
-[   11.004577] ==================================================================
-[   11.005292] BUG: KASAN: slab-out-of-bounds in tlv_data_is_valid+0x87/0xe0
-[   11.005984] Read of size 1 at addr ffff888002c695b0 by task mgmt-tester/87
-[   11.006711]
-[   11.007176]
-[   11.007429] Allocated by task 87:
-[   11.008151]
-[   11.008438] The buggy address belongs to the object at ffff888002c69580
-[   11.008438]  which belongs to the cache kmalloc-64 of size 64
-[   11.010526] The buggy address is located 48 bytes inside of
-[   11.010526]  64-byte region [ffff888002c69580, ffff888002c695c0)
-[   11.012423] The buggy address belongs to the page:
-[   11.013291]
-[   11.013544] Memory state around the buggy address:
-[   11.014359]  ffff888002c69480: fa fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-[   11.015453]  ffff888002c69500: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-[   11.016232] >ffff888002c69580: 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc fc
-[   11.017010]                                      ^
-[   11.017547]  ffff888002c69600: 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc fc
-[   11.018296]  ffff888002c69680: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-[   11.019116] ==================================================================
-
-Fixes: 2bb36870e8cb2 ("Bluetooth: Unify advertising instance flags check")
-Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Fixes: 691865bad627 ("clk: qcom: clk-alpha-pll: Add support for Fabia PLL calibration")
+Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+Link: https://lore.kernel.org/r/20210609022852.4151-1-jonathan@marek.ca
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/mgmt.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/clk/qcom/clk-alpha-pll.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
-index 939c6f77fecc..71de147f5558 100644
---- a/net/bluetooth/mgmt.c
-+++ b/net/bluetooth/mgmt.c
-@@ -7579,6 +7579,9 @@ static bool tlv_data_is_valid(struct hci_dev *hdev, u32 adv_flags, u8 *data,
- 	for (i = 0, cur_len = 0; i < len; i += (cur_len + 1)) {
- 		cur_len = data[i];
+diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
+index 564431130a76..1a571c04a76c 100644
+--- a/drivers/clk/qcom/clk-alpha-pll.c
++++ b/drivers/clk/qcom/clk-alpha-pll.c
+@@ -1214,7 +1214,7 @@ static int alpha_pll_fabia_prepare(struct clk_hw *hw)
+ 		return -EINVAL;
  
-+		if (!cur_len)
-+			continue;
-+
- 		if (data[i + 1] == EIR_FLAGS &&
- 		    (!is_adv_data || flags_managed(adv_flags)))
- 			return false;
+ 	/* Setup PLL for calibration frequency */
+-	regmap_write(pll->clkr.regmap, PLL_ALPHA_VAL(pll), cal_l);
++	regmap_write(pll->clkr.regmap, PLL_CAL_L_VAL(pll), cal_l);
+ 
+ 	/* Bringup the PLL at calibration frequency */
+ 	ret = clk_alpha_pll_enable(hw);
 -- 
 2.30.2
 
