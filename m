@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EF683C4A31
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBBE83C5750
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238723AbhGLGtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:49:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34334 "EHLO mail.kernel.org"
+        id S244254AbhGLIbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:31:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236532AbhGLGjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:39:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95E5B610FB;
-        Mon, 12 Jul 2021 06:34:39 +0000 (UTC)
+        id S1349642AbhGLHo0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:44:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D1F42611CC;
+        Mon, 12 Jul 2021 07:41:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071680;
-        bh=eM8hCoUT7pQxHAolavTM2YgZVGuSIS2E+h8/fmFb1wM=;
+        s=korg; t=1626075661;
+        bh=mnRYRODX2g7er1tqw8vcCWPLTh7bVw7/p8chobbMU7E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jh2HA0Fa9qTeTOdHjhszltIlOCNdpLr1187n7v20SfN5me+ITY2T/iFuED9kBPm93
-         E4HhRMBV78KYiSP6Sba1YyepOe6eWNRbSylAZrZkLUBz4SrPVcG3yZnWLZnrSLd2Tr
-         TnltYBgLFYhYGW2tudZdVMN8Mpcibjr4b/LHWaiU=
+        b=Y7L77RilTo4HT7zzOqu3E4QD9aMxo/XB7/n6bovWKUxjIKOCgQEgf7gcRF3nDAP5I
+         wbtUsrnr/CSolz5VUe/gRw4NWtBwkPQ42z4kZA/0MEy4g1P0QRMBMm4LnMAl+gEVBs
+         4+8xBBD2MgpUR7WVUnimFmCKGqpcWql/nqvenYfQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 173/593] Input: goodix - platform/x86: touchscreen_dmi - Move upside down quirks to touchscreen_dmi.c
+Subject: [PATCH 5.13 310/800] crypto: omap-sham - Fix PM reference leak in omap sham ops
 Date:   Mon, 12 Jul 2021 08:05:33 +0200
-Message-Id: <20210712060902.063396459@linuxfoundation.org>
+Message-Id: <20210712060958.502806554@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,189 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit 5a6f0dbe621a5c20dc912ac474debf9f11129e03 ]
+[ Upstream commit ca323b2c61ec321eb9f2179a405b9c34cdb4f553 ]
 
-Move the DMI quirks for upside-down mounted Goodix touchscreens from
-drivers/input/touchscreen/goodix.c to
-drivers/platform/x86/touchscreen_dmi.c,
-where all the other x86 touchscreen quirks live.
+pm_runtime_get_sync will increment pm usage counter
+even it failed. Forgetting to putting operation will
+result in reference leak here. We fix it by replacing
+it with pm_runtime_resume_and_get to keep usage counter
+balanced.
 
-Note the touchscreen_dmi.c code attaches standard touchscreen
-device-properties to an i2c-client device based on a combination of a
-DMI match + a device-name match. I've verified that the: Teclast X98 Pro,
-WinBook TW100 and WinBook TW700 uses an ACPI devicename of "GDIX1001:00"
-based on acpidumps and/or dmesg output available on the web.
-
-This patch was tested on a Teclast X89 tablet.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20210504185746.175461-2-hdegoede@redhat.com
+Fixes: 604c31039dae4 ("crypto: omap-sham - Check for return value from pm_runtime_get_sync")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/touchscreen/goodix.c     | 52 ------------------------
- drivers/platform/x86/touchscreen_dmi.c | 56 ++++++++++++++++++++++++++
- 2 files changed, 56 insertions(+), 52 deletions(-)
+ drivers/crypto/omap-sham.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/input/touchscreen/goodix.c b/drivers/input/touchscreen/goodix.c
-index 45113767db96..a06385c55af2 100644
---- a/drivers/input/touchscreen/goodix.c
-+++ b/drivers/input/touchscreen/goodix.c
-@@ -178,51 +178,6 @@ static const unsigned long goodix_irq_flags[] = {
- 	IRQ_TYPE_LEVEL_HIGH,
- };
+diff --git a/drivers/crypto/omap-sham.c b/drivers/crypto/omap-sham.c
+index ae0d320d3c60..dd53ad9987b0 100644
+--- a/drivers/crypto/omap-sham.c
++++ b/drivers/crypto/omap-sham.c
+@@ -372,7 +372,7 @@ static int omap_sham_hw_init(struct omap_sham_dev *dd)
+ {
+ 	int err;
  
--/*
-- * Those tablets have their coordinates origin at the bottom right
-- * of the tablet, as if rotated 180 degrees
-- */
--static const struct dmi_system_id rotated_screen[] = {
--#if defined(CONFIG_DMI) && defined(CONFIG_X86)
--	{
--		.ident = "Teclast X89",
--		.matches = {
--			/* tPAD is too generic, also match on bios date */
--			DMI_MATCH(DMI_BOARD_VENDOR, "TECLAST"),
--			DMI_MATCH(DMI_BOARD_NAME, "tPAD"),
--			DMI_MATCH(DMI_BIOS_DATE, "12/19/2014"),
--		},
--	},
--	{
--		.ident = "Teclast X98 Pro",
--		.matches = {
--			/*
--			 * Only match BIOS date, because the manufacturers
--			 * BIOS does not report the board name at all
--			 * (sometimes)...
--			 */
--			DMI_MATCH(DMI_BOARD_VENDOR, "TECLAST"),
--			DMI_MATCH(DMI_BIOS_DATE, "10/28/2015"),
--		},
--	},
--	{
--		.ident = "WinBook TW100",
--		.matches = {
--			DMI_MATCH(DMI_SYS_VENDOR, "WinBook"),
--			DMI_MATCH(DMI_PRODUCT_NAME, "TW100")
--		}
--	},
--	{
--		.ident = "WinBook TW700",
--		.matches = {
--			DMI_MATCH(DMI_SYS_VENDOR, "WinBook"),
--			DMI_MATCH(DMI_PRODUCT_NAME, "TW700")
--		},
--	},
--#endif
--	{}
--};
--
- static const struct dmi_system_id nine_bytes_report[] = {
- #if defined(CONFIG_DMI) && defined(CONFIG_X86)
- 	{
-@@ -1121,13 +1076,6 @@ static int goodix_configure_dev(struct goodix_ts_data *ts)
- 				  ABS_MT_POSITION_Y, ts->prop.max_y);
- 	}
+-	err = pm_runtime_get_sync(dd->dev);
++	err = pm_runtime_resume_and_get(dd->dev);
+ 	if (err < 0) {
+ 		dev_err(dd->dev, "failed to get sync: %d\n", err);
+ 		return err;
+@@ -2244,7 +2244,7 @@ static int omap_sham_suspend(struct device *dev)
  
--	if (dmi_check_system(rotated_screen)) {
--		ts->prop.invert_x = true;
--		ts->prop.invert_y = true;
--		dev_dbg(&ts->client->dev,
--			"Applying '180 degrees rotated screen' quirk\n");
--	}
--
- 	if (dmi_check_system(nine_bytes_report)) {
- 		ts->contact_size = 9;
- 
-diff --git a/drivers/platform/x86/touchscreen_dmi.c b/drivers/platform/x86/touchscreen_dmi.c
-index 3743d895399e..e52ff09b81de 100644
---- a/drivers/platform/x86/touchscreen_dmi.c
-+++ b/drivers/platform/x86/touchscreen_dmi.c
-@@ -299,6 +299,23 @@ static const struct ts_dmi_data estar_beauty_hd_data = {
- 	.properties	= estar_beauty_hd_props,
- };
- 
-+/* Generic props + data for upside-down mounted GDIX1001 touchscreens */
-+static const struct property_entry gdix1001_upside_down_props[] = {
-+	PROPERTY_ENTRY_BOOL("touchscreen-inverted-x"),
-+	PROPERTY_ENTRY_BOOL("touchscreen-inverted-y"),
-+	{ }
-+};
-+
-+static const struct ts_dmi_data gdix1001_00_upside_down_data = {
-+	.acpi_name	= "GDIX1001:00",
-+	.properties	= gdix1001_upside_down_props,
-+};
-+
-+static const struct ts_dmi_data gdix1001_01_upside_down_data = {
-+	.acpi_name	= "GDIX1001:01",
-+	.properties	= gdix1001_upside_down_props,
-+};
-+
- static const struct property_entry gp_electronic_t701_props[] = {
- 	PROPERTY_ENTRY_U32("touchscreen-size-x", 960),
- 	PROPERTY_ENTRY_U32("touchscreen-size-y", 640),
-@@ -1268,6 +1285,16 @@ const struct dmi_system_id touchscreen_dmi_table[] = {
- 			DMI_MATCH(DMI_BOARD_NAME, "X3 Plus"),
- 		},
- 	},
-+	{
-+		/* Teclast X89 (Windows version / BIOS) */
-+		.driver_data = (void *)&gdix1001_01_upside_down_data,
-+		.matches = {
-+			/* tPAD is too generic, also match on bios date */
-+			DMI_MATCH(DMI_BOARD_VENDOR, "TECLAST"),
-+			DMI_MATCH(DMI_BOARD_NAME, "tPAD"),
-+			DMI_MATCH(DMI_BIOS_DATE, "12/19/2014"),
-+		},
-+	},
- 	{
- 		/* Teclast X98 Plus II */
- 		.driver_data = (void *)&teclast_x98plus2_data,
-@@ -1276,6 +1303,19 @@ const struct dmi_system_id touchscreen_dmi_table[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "X98 Plus II"),
- 		},
- 	},
-+	{
-+		/* Teclast X98 Pro */
-+		.driver_data = (void *)&gdix1001_00_upside_down_data,
-+		.matches = {
-+			/*
-+			 * Only match BIOS date, because the manufacturers
-+			 * BIOS does not report the board name at all
-+			 * (sometimes)...
-+			 */
-+			DMI_MATCH(DMI_BOARD_VENDOR, "TECLAST"),
-+			DMI_MATCH(DMI_BIOS_DATE, "10/28/2015"),
-+		},
-+	},
- 	{
- 		/* Trekstor Primebook C11 */
- 		.driver_data = (void *)&trekstor_primebook_c11_data,
-@@ -1351,6 +1391,22 @@ const struct dmi_system_id touchscreen_dmi_table[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "VINGA Twizzle J116"),
- 		},
- 	},
-+	{
-+		/* "WinBook TW100" */
-+		.driver_data = (void *)&gdix1001_00_upside_down_data,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "WinBook"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "TW100")
-+		}
-+	},
-+	{
-+		/* WinBook TW700 */
-+		.driver_data = (void *)&gdix1001_00_upside_down_data,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "WinBook"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "TW700")
-+		},
-+	},
- 	{
- 		/* Yours Y8W81, same case and touchscreen as Chuwi Vi8 */
- 		.driver_data = (void *)&chuwi_vi8_data,
+ static int omap_sham_resume(struct device *dev)
+ {
+-	int err = pm_runtime_get_sync(dev);
++	int err = pm_runtime_resume_and_get(dev);
+ 	if (err < 0) {
+ 		dev_err(dev, "failed to get sync: %d\n", err);
+ 		return err;
 -- 
 2.30.2
 
