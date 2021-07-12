@@ -2,78 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E45C83C637E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 21:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F3653C6381
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 21:17:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236335AbhGLTTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 15:19:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233183AbhGLTTX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 15:19:23 -0400
-Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE3D2C0613DD;
-        Mon, 12 Jul 2021 12:16:34 -0700 (PDT)
-Received: by a3.inai.de (Postfix, from userid 25121)
-        id 63C0659F3A1E9; Mon, 12 Jul 2021 21:16:33 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by a3.inai.de (Postfix) with ESMTP id 5F16460E710FD;
-        Mon, 12 Jul 2021 21:16:33 +0200 (CEST)
-Date:   Mon, 12 Jul 2021 21:16:33 +0200 (CEST)
-From:   Jan Engelhardt <jengelh@inai.de>
-To:     Suren Baghdasaryan <surenb@google.com>
-cc:     Florian Weimer <fweimer@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Tim Murray <timmurray@google.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Subject: Re: [PATCH 1/1] mm: introduce process_reap system call
-In-Reply-To: <CAJuCfpF6v9QMzo81kn9zT1VEftKTHsot1ytE8Gfh3UZzqZ9WBA@mail.gmail.com>
-Message-ID: <o4sq1573-2715-rs9-11qp-2nq016nr68n2@vanv.qr>
-References: <20210623192822.3072029-1-surenb@google.com> <87sg0qa22l.fsf@oldenburg.str.redhat.com> <CAJuCfpEWpvw+gW+NvBPOdGqUOEyucFoT8gdC2uk18dMBQFbhqw@mail.gmail.com> <87wnq1z7kl.fsf@oldenburg.str.redhat.com> <CAJuCfpFt55Dw1uW3S6_AincNfPaAtwdi6iXYVvFr7x3fvt4uzw@mail.gmail.com>
- <q2s48op3-n660-p8r4-op50-po43r2249r24@vanv.qr> <CAJuCfpF6v9QMzo81kn9zT1VEftKTHsot1ytE8Gfh3UZzqZ9WBA@mail.gmail.com>
-User-Agent: Alpine 2.24 (LSU 510 2020-10-10)
+        id S236308AbhGLTTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 15:19:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59434 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233183AbhGLTTi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 15:19:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0C076120A;
+        Mon, 12 Jul 2021 19:16:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626117409;
+        bh=IHcOwBmPaeJBX2DDHP2ZsXMyNaAXQsOnf8j8Kq3ksbk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LaAoid0gm89HjKLE0eXmC9rHlC2VegZzLpoDmHJY5j/Qca9LUGyeANuvy+IwXvMfb
+         59tu+mBklhBpdfQMFsJoJuNEAGDDCzSYD1o2nXIDLV9Jt9XCAGM/l6QVU/FbwkanKO
+         b9K4//Iy79S7nE29IVeaoWkpkNUVYu7Rz3V8CNuA=
+Date:   Mon, 12 Jul 2021 21:16:47 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Mikulas Patocka <mpatocka@redhat.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nico Schottelius <nico-linuxsetlocalversion@schottelius.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] scripts/setlocalversion: fix a bug when LOCALVERSION
+ is empty
+Message-ID: <YOyVH3qD9O3qsNUL@kroah.com>
+References: <alpine.LRH.2.02.2107120957300.14207@file01.intranet.prod.int.rdu2.redhat.com>
+ <YOyGrUvA4LjydcP3@kroah.com>
+ <alpine.LRH.2.02.2107121502380.8445@file01.intranet.prod.int.rdu2.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LRH.2.02.2107121502380.8445@file01.intranet.prod.int.rdu2.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jul 12, 2021 at 03:06:48PM -0400, Mikulas Patocka wrote:
+> 
+> 
+> On Mon, 12 Jul 2021, Greg Kroah-Hartman wrote:
+> 
+> > On Mon, Jul 12, 2021 at 10:00:59AM -0400, Mikulas Patocka wrote:
+> > > The patch 042da426f8ebde012be9429ff705232af7ad7469 
+> > > ("scripts/setlocalversion: simplify the short version part") reduces the 
+> > > indentation. Unfortunatelly, it also changes behavior in a subtle way - if 
+> > > the user has empty "LOCALVERSION" variable, the plus sign is appended to 
+> > > the kernel version. It wasn't appended before.
+> > > 
+> > > This patch reverts to the old behavior - we append the plus sign only if
+> > > the LOCALVERSION variable is not set.
+> > > 
+> > > Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+> > > Fixes: 042da426f8eb ("scripts/setlocalversion: simplify the short version part")
+> > > 
+> > > ---
+> > >  scripts/setlocalversion |    2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > Index: linux-2.6/scripts/setlocalversion
+> > > ===================================================================
+> > > --- linux-2.6.orig/scripts/setlocalversion	2021-07-12 15:29:07.000000000 +0200
+> > > +++ linux-2.6/scripts/setlocalversion	2021-07-12 15:50:29.000000000 +0200
+> > > @@ -131,7 +131,7 @@ res="${res}${CONFIG_LOCALVERSION}${LOCAL
+> > >  if test "$CONFIG_LOCALVERSION_AUTO" = "y"; then
+> > >  	# full scm version string
+> > >  	res="$res$(scm_version)"
+> > > -elif [ -z "${LOCALVERSION}" ]; then
+> > > +elif [ "${LOCALVERSION+set}" != "set" ]; then
+> > 
+> > That's really subtle, can you add a comment here that this handles an
+> > empty file?
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> 
+> OK.
+> 
+> 
+> From: Mikulas Patocka <mpatocka@redhat.com>
+> 
 
-On Monday 2021-07-12 20:39, Suren Baghdasaryan wrote:
->>
->> The way I understood the request is that a userspace program (or perhaps two,
->> if so desired) should issue _two_ calls, one to deliver the signal,
->> one to perform the reap portion:
->>
->>         uinfo.si_code = SI_QUEUE;
->>         sigqueue(pid, SIGKILL, &uinfo);
->>         uinfo.si_code = SI_REAP;
->>         sigqueue(pid, SIGKILL, &uinfo);
->
->This approach would still lead to the same discussion: by design,
->sigqueue/kill/pidfd_send_signal deliver the signal but do not wait for
->the signal to be processed by the recipient.
+I can't take a patch like this :(
 
-Oh, so the only reason not to do that is because there is some POSIX
-specification that says the sigqueue API should be non-waiting for all
-possible parameter values (with an implied "present and future
-values!"), not because there's some hurdle to actually add a wait
-inside within rt_sigqueueinfo if the REAP flag is set.
-Gotcha.
+> The patch 042da426f8ebde012be9429ff705232af7ad7469
+> ("scripts/setlocalversion: simplify the short version part") reduces
+
+Properly quote commits, the documentation says you do not need to use
+the full sha1.
+
+
+> indentation. Unfortunatelly, it also changes behavior in a subtle way - if
+> the user has empty "LOCALVERSION" variable, the plus sign is appended to
+> the kernel version. It wasn't appended before.
+> 
+> This patch reverts to the old behavior - we append the plus sign only if
+> the LOCALVERSION variable is not set.
+> 
+> Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+> Fixes: 042da426f8eb ("scripts/setlocalversion: simplify the short version part")
+
+See, use that way to quote a commit.
+
+thanks,
+
+greg k-h
