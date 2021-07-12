@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2FB13C571D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BECE43C49A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350394AbhGLI2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:28:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49330 "EHLO mail.kernel.org"
+        id S233971AbhGLGpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:45:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348917AbhGLHl2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:41:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CBE0A60724;
-        Mon, 12 Jul 2021 07:38:39 +0000 (UTC)
+        id S236630AbhGLGfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:35:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0061B610CD;
+        Mon, 12 Jul 2021 06:32:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075520;
-        bh=xX8VyNOodZXaJbZ6Zo8s39DpvovzD6FKkh4MDY9d7wE=;
+        s=korg; t=1626071536;
+        bh=vzE+OBnD7NeBjzxA/wmC7jhzZnfZH8OmraS2hjnEYN4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jKwAkcuUk2FCTcEtZ/1nilPn7OfhMAxdmRdgjLSe+gNYBbZVXyPAGk5aXSw7RFUdo
-         qEKIcXI6Me4oGTXRe46ojYrkbY2wEFlROjelRKDhe4CRHM+8QS+Mq4GkS6BQxvYvHM
-         77EEFPT2QQWaL/Za2x+25dF5lSafyAm/9SE0pyZE=
+        b=x/3ggcUNWqVKNAYT5911VOzHUlHpm2GmgHMhIpOcoGR3uyzoQkNDNJqsMldofdf5u
+         Suun7j/Yf3JLtwqcbbF+cSyN6Bd1G6IkNEkCh/asYbHyNrLmlcmhcTZXv+ZQ9691ig
+         i+TXK+MHtNqOLpxAiN7JEcP8ykl3KWEdDwB266v0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 206/800] media: Fix Media Controller API config checks
+        stable@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Subject: [PATCH 5.10 069/593] clk: agilex/stratix10: remove noc_clk
 Date:   Mon, 12 Jul 2021 08:03:49 +0200
-Message-Id: <20210712060942.217068246@linuxfoundation.org>
+Message-Id: <20210712060850.748945078@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,88 +39,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuah Khan <skhan@linuxfoundation.org>
+From: Dinh Nguyen <dinguyen@kernel.org>
 
-[ Upstream commit 50e7a31d30e8221632675abed3be306382324ca2 ]
+commit efbe21df3e889c0f4bf682c2b7e2465d60b0127c upstream.
 
-Smatch static checker warns that "mdev" can be null:
+Early documentation had a noc_clk, but in reality, it's just the
+noc_free_clk. Remove the noc_clk clock and just use the noc_free_clk.
 
-sound/usb/media.c:287 snd_media_device_create()
-    warn: 'mdev' can also be NULL
+Fixes: 80c6b7a0894f ("clk: socfpga: agilex: add clock driver for the Agilex platform")
+Cc: stable@vger.kernel.org
+Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+Link: https://lore.kernel.org/r/20210611025201.118799-1-dinguyen@kernel.org
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-If CONFIG_MEDIA_CONTROLLER is disabled, this file should not be included
-in the build.
-
-The below conditions in the sound/usb/Makefile are in place to ensure that
-media.c isn't included in the build.
-
-sound/usb/Makefile:
-snd-usb-audio-$(CONFIG_SND_USB_AUDIO_USE_MEDIA_CONTROLLER) += media.o
-
-select SND_USB_AUDIO_USE_MEDIA_CONTROLLER if MEDIA_CONTROLLER &&
-       (MEDIA_SUPPORT=y || MEDIA_SUPPORT=SND_USB_AUDIO)
-
-The following config check in include/media/media-dev-allocator.h is
-in place to enable the API only when CONFIG_MEDIA_CONTROLLER and
-CONFIG_USB are enabled.
-
- #if defined(CONFIG_MEDIA_CONTROLLER) && defined(CONFIG_USB)
-
-This check doesn't work as intended when CONFIG_USB=m. When CONFIG_USB=m,
-CONFIG_USB_MODULE is defined and CONFIG_USB is not. The above config check
-doesn't catch that CONFIG_USB is defined as a module and disables the API.
-This results in sound/usb enabling Media Controller specific ALSA driver
-code, while Media disables the Media Controller API.
-
-Fix the problem requires two changes:
-
-1. Change the check to use IS_ENABLED to detect when CONFIG_USB is enabled
-   as a module or static. Since CONFIG_MEDIA_CONTROLLER is a bool, leave
-   the check unchanged to be consistent with drivers/media/Makefile.
-
-2. Change the drivers/media/mc/Makefile to include mc-dev-allocator.o
-   in mc-objs when CONFIG_USB is enabled.
-
-Link: https://lore.kernel.org/alsa-devel/YLeAvT+R22FQ%2FEyw@mwanda/
-
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/mc/Makefile           | 2 +-
- include/media/media-dev-allocator.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/clk/socfpga/clk-agilex.c |   32 +++++++++++++++-----------------
+ drivers/clk/socfpga/clk-s10.c    |   32 +++++++++++++++-----------------
+ 2 files changed, 30 insertions(+), 34 deletions(-)
 
-diff --git a/drivers/media/mc/Makefile b/drivers/media/mc/Makefile
-index 119037f0e686..2b7af42ba59c 100644
---- a/drivers/media/mc/Makefile
-+++ b/drivers/media/mc/Makefile
-@@ -3,7 +3,7 @@
- mc-objs	:= mc-device.o mc-devnode.o mc-entity.o \
- 	   mc-request.o
- 
--ifeq ($(CONFIG_USB),y)
-+ifneq ($(CONFIG_USB),)
- 	mc-objs += mc-dev-allocator.o
- endif
- 
-diff --git a/include/media/media-dev-allocator.h b/include/media/media-dev-allocator.h
-index b35ea6062596..2ab54d426c64 100644
---- a/include/media/media-dev-allocator.h
-+++ b/include/media/media-dev-allocator.h
-@@ -19,7 +19,7 @@
- 
- struct usb_device;
- 
--#if defined(CONFIG_MEDIA_CONTROLLER) && defined(CONFIG_USB)
-+#if defined(CONFIG_MEDIA_CONTROLLER) && IS_ENABLED(CONFIG_USB)
- /**
-  * media_device_usb_allocate() - Allocate and return struct &media device
-  *
--- 
-2.30.2
-
+--- a/drivers/clk/socfpga/clk-agilex.c
++++ b/drivers/clk/socfpga/clk-agilex.c
+@@ -211,11 +211,9 @@ static const struct stratix10_perip_cnt_
+ 	{ AGILEX_MPU_FREE_CLK, "mpu_free_clk", NULL, mpu_free_mux, ARRAY_SIZE(mpu_free_mux),
+ 	   0, 0x3C, 0, 0, 0},
+ 	{ AGILEX_NOC_FREE_CLK, "noc_free_clk", NULL, noc_free_mux, ARRAY_SIZE(noc_free_mux),
+-	  0, 0x40, 0, 0, 1},
+-	{ AGILEX_L4_SYS_FREE_CLK, "l4_sys_free_clk", "noc_free_clk", NULL, 1, 0,
+-	  0, 4, 0, 0},
+-	{ AGILEX_NOC_CLK, "noc_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux),
+-	  0, 0, 0, 0x30, 1},
++	  0, 0x40, 0, 0, 0},
++	{ AGILEX_L4_SYS_FREE_CLK, "l4_sys_free_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), 0,
++	  0, 4, 0x30, 1},
+ 	{ AGILEX_EMAC_A_FREE_CLK, "emaca_free_clk", NULL, emaca_free_mux, ARRAY_SIZE(emaca_free_mux),
+ 	  0, 0xD4, 0, 0x88, 0},
+ 	{ AGILEX_EMAC_B_FREE_CLK, "emacb_free_clk", NULL, emacb_free_mux, ARRAY_SIZE(emacb_free_mux),
+@@ -241,24 +239,24 @@ static const struct stratix10_gate_clock
+ 	  0, 0, 0, 0, 0, 0, 4},
+ 	{ AGILEX_MPU_CCU_CLK, "mpu_ccu_clk", "mpu_clk", NULL, 1, 0, 0x24,
+ 	  0, 0, 0, 0, 0, 0, 2},
+-	{ AGILEX_L4_MAIN_CLK, "l4_main_clk", "noc_clk", NULL, 1, 0, 0x24,
+-	  1, 0x44, 0, 2, 0, 0, 0},
+-	{ AGILEX_L4_MP_CLK, "l4_mp_clk", "noc_clk", NULL, 1, 0, 0x24,
+-	  2, 0x44, 8, 2, 0, 0, 0},
++	{ AGILEX_L4_MAIN_CLK, "l4_main_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), 0, 0x24,
++	  1, 0x44, 0, 2, 0x30, 1, 0},
++	{ AGILEX_L4_MP_CLK, "l4_mp_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), 0, 0x24,
++	  2, 0x44, 8, 2, 0x30, 1, 0},
+ 	/*
+ 	 * The l4_sp_clk feeds a 100 MHz clock to various peripherals, one of them
+ 	 * being the SP timers, thus cannot get gated.
+ 	 */
+-	{ AGILEX_L4_SP_CLK, "l4_sp_clk", "noc_clk", NULL, 1, CLK_IS_CRITICAL, 0x24,
+-	  3, 0x44, 16, 2, 0, 0, 0},
+-	{ AGILEX_CS_AT_CLK, "cs_at_clk", "noc_clk", NULL, 1, 0, 0x24,
+-	  4, 0x44, 24, 2, 0, 0, 0},
+-	{ AGILEX_CS_TRACE_CLK, "cs_trace_clk", "noc_clk", NULL, 1, 0, 0x24,
+-	  4, 0x44, 26, 2, 0, 0, 0},
++	{ AGILEX_L4_SP_CLK, "l4_sp_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), CLK_IS_CRITICAL, 0x24,
++	  3, 0x44, 16, 2, 0x30, 1, 0},
++	{ AGILEX_CS_AT_CLK, "cs_at_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), 0, 0x24,
++	  4, 0x44, 24, 2, 0x30, 1, 0},
++	{ AGILEX_CS_TRACE_CLK, "cs_trace_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), 0, 0x24,
++	  4, 0x44, 26, 2, 0x30, 1, 0},
+ 	{ AGILEX_CS_PDBG_CLK, "cs_pdbg_clk", "cs_at_clk", NULL, 1, 0, 0x24,
+ 	  4, 0x44, 28, 1, 0, 0, 0},
+-	{ AGILEX_CS_TIMER_CLK, "cs_timer_clk", "noc_clk", NULL, 1, 0, 0x24,
+-	  5, 0, 0, 0, 0, 0, 0},
++	{ AGILEX_CS_TIMER_CLK, "cs_timer_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), 0, 0x24,
++	  5, 0, 0, 0, 0x30, 1, 0},
+ 	{ AGILEX_S2F_USER0_CLK, "s2f_user0_clk", NULL, s2f_usr0_mux, ARRAY_SIZE(s2f_usr0_mux), 0, 0x24,
+ 	  6, 0, 0, 0, 0, 0, 0},
+ 	{ AGILEX_EMAC0_CLK, "emac0_clk", NULL, emac_mux, ARRAY_SIZE(emac_mux), 0, 0x7C,
+--- a/drivers/clk/socfpga/clk-s10.c
++++ b/drivers/clk/socfpga/clk-s10.c
+@@ -167,7 +167,7 @@ static const struct stratix10_perip_cnt_
+ 	{ STRATIX10_MPU_FREE_CLK, "mpu_free_clk", NULL, mpu_free_mux, ARRAY_SIZE(mpu_free_mux),
+ 	   0, 0x48, 0, 0, 0},
+ 	{ STRATIX10_NOC_FREE_CLK, "noc_free_clk", NULL, noc_free_mux, ARRAY_SIZE(noc_free_mux),
+-	  0, 0x4C, 0, 0, 0},
++	  0, 0x4C, 0, 0x3C, 1},
+ 	{ STRATIX10_MAIN_EMACA_CLK, "main_emaca_clk", "main_noc_base_clk", NULL, 1, 0,
+ 	  0x50, 0, 0, 0},
+ 	{ STRATIX10_MAIN_EMACB_CLK, "main_emacb_clk", "main_noc_base_clk", NULL, 1, 0,
+@@ -200,10 +200,8 @@ static const struct stratix10_perip_cnt_
+ 	  0, 0xD4, 0, 0, 0},
+ 	{ STRATIX10_PERI_PSI_REF_CLK, "peri_psi_ref_clk", "peri_noc_base_clk", NULL, 1, 0,
+ 	  0xD8, 0, 0, 0},
+-	{ STRATIX10_L4_SYS_FREE_CLK, "l4_sys_free_clk", "noc_free_clk", NULL, 1, 0,
+-	  0, 4, 0, 0},
+-	{ STRATIX10_NOC_CLK, "noc_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux),
+-	  0, 0, 0, 0x3C, 1},
++	{ STRATIX10_L4_SYS_FREE_CLK, "l4_sys_free_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), 0,
++	  0, 4, 0x3C, 1},
+ 	{ STRATIX10_EMAC_A_FREE_CLK, "emaca_free_clk", NULL, emaca_free_mux, ARRAY_SIZE(emaca_free_mux),
+ 	  0, 0, 2, 0xB0, 0},
+ 	{ STRATIX10_EMAC_B_FREE_CLK, "emacb_free_clk", NULL, emacb_free_mux, ARRAY_SIZE(emacb_free_mux),
+@@ -227,20 +225,20 @@ static const struct stratix10_gate_clock
+ 	  0, 0, 0, 0, 0, 0, 4},
+ 	{ STRATIX10_MPU_L2RAM_CLK, "mpu_l2ram_clk", "mpu_clk", NULL, 1, 0, 0x30,
+ 	  0, 0, 0, 0, 0, 0, 2},
+-	{ STRATIX10_L4_MAIN_CLK, "l4_main_clk", "noc_clk", NULL, 1, 0, 0x30,
+-	  1, 0x70, 0, 2, 0, 0, 0},
+-	{ STRATIX10_L4_MP_CLK, "l4_mp_clk", "noc_clk", NULL, 1, 0, 0x30,
+-	  2, 0x70, 8, 2, 0, 0, 0},
+-	{ STRATIX10_L4_SP_CLK, "l4_sp_clk", "noc_clk", NULL, 1, CLK_IS_CRITICAL, 0x30,
+-	  3, 0x70, 16, 2, 0, 0, 0},
+-	{ STRATIX10_CS_AT_CLK, "cs_at_clk", "noc_clk", NULL, 1, 0, 0x30,
+-	  4, 0x70, 24, 2, 0, 0, 0},
+-	{ STRATIX10_CS_TRACE_CLK, "cs_trace_clk", "noc_clk", NULL, 1, 0, 0x30,
+-	  4, 0x70, 26, 2, 0, 0, 0},
++	{ STRATIX10_L4_MAIN_CLK, "l4_main_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), 0, 0x30,
++	  1, 0x70, 0, 2, 0x3C, 1, 0},
++	{ STRATIX10_L4_MP_CLK, "l4_mp_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), 0, 0x30,
++	  2, 0x70, 8, 2, 0x3C, 1, 0},
++	{ STRATIX10_L4_SP_CLK, "l4_sp_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), CLK_IS_CRITICAL, 0x30,
++	  3, 0x70, 16, 2, 0x3C, 1, 0},
++	{ STRATIX10_CS_AT_CLK, "cs_at_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), 0, 0x30,
++	  4, 0x70, 24, 2, 0x3C, 1, 0},
++	{ STRATIX10_CS_TRACE_CLK, "cs_trace_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), 0, 0x30,
++	  4, 0x70, 26, 2, 0x3C, 1, 0},
+ 	{ STRATIX10_CS_PDBG_CLK, "cs_pdbg_clk", "cs_at_clk", NULL, 1, 0, 0x30,
+ 	  4, 0x70, 28, 1, 0, 0, 0},
+-	{ STRATIX10_CS_TIMER_CLK, "cs_timer_clk", "noc_clk", NULL, 1, 0, 0x30,
+-	  5, 0, 0, 0, 0, 0, 0},
++	{ STRATIX10_CS_TIMER_CLK, "cs_timer_clk", NULL, noc_mux, ARRAY_SIZE(noc_mux), 0, 0x30,
++	  5, 0, 0, 0, 0x3C, 1, 0},
+ 	{ STRATIX10_S2F_USER0_CLK, "s2f_user0_clk", NULL, s2f_usr0_mux, ARRAY_SIZE(s2f_usr0_mux), 0, 0x30,
+ 	  6, 0, 0, 0, 0, 0, 0},
+ 	{ STRATIX10_EMAC0_CLK, "emac0_clk", NULL, emac_mux, ARRAY_SIZE(emac_mux), 0, 0xA4,
 
 
