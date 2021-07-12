@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F3E3C5015
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0835E3C4929
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346460AbhGLHau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:30:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38818 "EHLO mail.kernel.org"
+        id S238093AbhGLGmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:42:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237322AbhGLHDL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:03:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 94AA4610A6;
-        Mon, 12 Jul 2021 07:00:22 +0000 (UTC)
+        id S235749AbhGLGcq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:32:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E15B1610E6;
+        Mon, 12 Jul 2021 06:29:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073223;
-        bh=Lz+/JlLUf0y6vdpM5zzN5Pg+5vyv1ERRqgWrhzFUI5w=;
+        s=korg; t=1626071387;
+        bh=+sZEZrHmHmdqH8UCcxerHUyNuFkWGKJIk6DG+Yq6UfM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G9ZbSv4vDZXQNB8j5Asq7AjxMIbvPAAFH28uU9FwEn1Gn/yegbPFK2SAR5swYDLOt
-         SFckCZMhrinImuCSC3TSxvsy6/hP9KAAadDIefe8HEExvamuLp9wrfRvFc6uAzkIH+
-         4B9ZUJAiwkRRqAOJBc5IQTNCyQ1NlE+HtIhomrZE=
+        b=LW4fw1dRJyAtmAvcT7HFCNbf9YsXSAww3N/sEA1tkQ7hI9wkv8khojkuXFJ3ADe0D
+         zt7J9PzkVLJ9I4Dfotz463jawlEKc8wezn+QYhTl66vqtDKVElmWd5kMi9fZspodka
+         h/pqeCMUhJY7VgfkO4fWWPPsfwuJNFhYCF0Az/NY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 125/700] media: s5p: fix pm_runtime_get_sync() usage count
+        stable@vger.kernel.org, stable@kernel.org,
+        Pan Dong <pandong.peter@bytedance.com>,
+        Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 5.10 048/593] ext4: fix avefreec in find_group_orlov
 Date:   Mon, 12 Jul 2021 08:03:28 +0200
-Message-Id: <20210712060942.700636556@linuxfoundation.org>
+Message-Id: <20210712060848.419000877@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,50 +40,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: Pan Dong <pandong.peter@bytedance.com>
 
-[ Upstream commit fdc34e82c0f968ac4c157bd3d8c299ebc24c9c63 ]
+commit c89849cc0259f3d33624cc3bd127685c3c0fa25d upstream.
 
-The pm_runtime_get_sync() internally increments the
-dev->power.usage_count without decrementing it, even on errors.
-Replace it by the new pm_runtime_resume_and_get(), introduced by:
-commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-in order to properly decrement the usage counter, avoiding
-a potential PM usage counter leak.
+The avefreec should be average free clusters instead
+of average free blocks, otherwize Orlov's allocator
+will not work properly when bigalloc enabled.
 
-While here, check if the PM runtime error was caught at
-s5p_cec_adap_enable().
+Cc: stable@kernel.org
+Signed-off-by: Pan Dong <pandong.peter@bytedance.com>
+Link: https://lore.kernel.org/r/20210525073656.31594-1-pandong.peter@bytedance.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/cec/platform/s5p/s5p_cec.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ fs/ext4/ialloc.c |   11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/media/cec/platform/s5p/s5p_cec.c b/drivers/media/cec/platform/s5p/s5p_cec.c
-index 2a3e7ffefe0a..2250c1cbc64e 100644
---- a/drivers/media/cec/platform/s5p/s5p_cec.c
-+++ b/drivers/media/cec/platform/s5p/s5p_cec.c
-@@ -35,10 +35,13 @@ MODULE_PARM_DESC(debug, "debug level (0-2)");
+--- a/fs/ext4/ialloc.c
++++ b/fs/ext4/ialloc.c
+@@ -402,7 +402,7 @@ static void get_orlov_stats(struct super
+  *
+  * We always try to spread first-level directories.
+  *
+- * If there are blockgroups with both free inodes and free blocks counts
++ * If there are blockgroups with both free inodes and free clusters counts
+  * not worse than average we return one with smallest directory count.
+  * Otherwise we simply return a random group.
+  *
+@@ -411,7 +411,7 @@ static void get_orlov_stats(struct super
+  * It's OK to put directory into a group unless
+  * it has too many directories already (max_dirs) or
+  * it has too few free inodes left (min_inodes) or
+- * it has too few free blocks left (min_blocks) or
++ * it has too few free clusters left (min_clusters) or
+  * Parent's group is preferred, if it doesn't satisfy these
+  * conditions we search cyclically through the rest. If none
+  * of the groups look good we just look for a group with more
+@@ -427,7 +427,7 @@ static int find_group_orlov(struct super
+ 	ext4_group_t real_ngroups = ext4_get_groups_count(sb);
+ 	int inodes_per_group = EXT4_INODES_PER_GROUP(sb);
+ 	unsigned int freei, avefreei, grp_free;
+-	ext4_fsblk_t freeb, avefreec;
++	ext4_fsblk_t freec, avefreec;
+ 	unsigned int ndirs;
+ 	int max_dirs, min_inodes;
+ 	ext4_grpblk_t min_clusters;
+@@ -446,9 +446,8 @@ static int find_group_orlov(struct super
  
- static int s5p_cec_adap_enable(struct cec_adapter *adap, bool enable)
- {
-+	int ret;
- 	struct s5p_cec_dev *cec = cec_get_drvdata(adap);
+ 	freei = percpu_counter_read_positive(&sbi->s_freeinodes_counter);
+ 	avefreei = freei / ngroups;
+-	freeb = EXT4_C2B(sbi,
+-		percpu_counter_read_positive(&sbi->s_freeclusters_counter));
+-	avefreec = freeb;
++	freec = percpu_counter_read_positive(&sbi->s_freeclusters_counter);
++	avefreec = freec;
+ 	do_div(avefreec, ngroups);
+ 	ndirs = percpu_counter_read_positive(&sbi->s_dirs_counter);
  
- 	if (enable) {
--		pm_runtime_get_sync(cec->dev);
-+		ret = pm_runtime_resume_and_get(cec->dev);
-+		if (ret < 0)
-+			return ret;
- 
- 		s5p_cec_reset(cec);
- 
--- 
-2.30.2
-
 
 
