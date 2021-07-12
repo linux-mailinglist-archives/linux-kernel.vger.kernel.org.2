@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9BE3C5AFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 970C93C5B02
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234647AbhGLKul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 06:50:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35148 "EHLO mail.kernel.org"
+        id S234573AbhGLKuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 06:50:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234288AbhGLKuD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 06:50:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BBB8A61154;
-        Mon, 12 Jul 2021 10:47:14 +0000 (UTC)
+        id S234348AbhGLKuI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 06:50:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A582E610A7;
+        Mon, 12 Jul 2021 10:47:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626086835;
-        bh=ONWe2l21GigqNp5iTgFw6yypYHKVqWp4IvDTNnU3EHc=;
+        s=k20201202; t=1626086838;
+        bh=mN7D9P4k746unRS5uALz6+b275Czv7Yz5sEt5ATJ3tw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q2Tb5rfHjuxz0RpXe2zHIxYZgxK7Bza7hdeGhCSNf1aAkDCfBuSzRyb6ATkZNF7Ku
-         ckrox5yp4nHa3fUFszT/nGHxdnoXiYeQNhPQsrqp8PPqqoyZ1X8HuHxHpnbQur3ZTQ
-         U2cdDFnpulewVQNHzJVCwzdXbTGZwT8utnwrW+E4K8wzEpoc+b7cfkMzAoyIX8tbey
-         fkAoveq+aeVdRiJA9gReiZfDgrW2+lFZaKjHblxW4bC04I3QRSdGan1836ntZln6bS
-         oWOQw2mp3FPx3MkkKyrXV7+JgC9xaG0ipErt1pwBdKhK7GPzHiyOonQTAqkjJM75fw
-         i4yw0pogdnKKQ==
+        b=ho/C5ybnzpPNS8MM7sTsQV3nOVL+akTarE7Li26/rJgyM+5YSmzxY59PYB5C1y3pU
+         OrSPF432jdc60+ntuE1YLvpagFSYiHnB7K8Gwe4CNBrdX3Z02YNrYPx4nHpYE/E0Aw
+         4tWSHJnFCr0y9VjeKjaI7bXvW5/eZW2AmG3WzOeQz7G7EzgzexHPaL32+aqNDQdEBH
+         Y96WIoOYkvn89Iw8zHgv7CFj+JuH7axkzS4Acn3BElWDgsRLO0w8WqVKIS94cN5zEI
+         evzib6VkrOluS0r6Ow2ktIx/9RecbWPDzZSyc/77D1EjlCz0Gkxtvouwx7psYikbES
+         0d9KMf/hOh5xw==
 From:   Mark Brown <broonie@kernel.org>
-To:     Axel Lin <axel.lin@ingics.com>
+To:     lee.jones@linaro.org, cy_huang <u0084500@gmail.com>
 Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        Guodong Xu <guodong.xu@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Subject: Re: [PATCH RFT] regulator: hi6421: Fix getting wrong drvdata
-Date:   Mon, 12 Jul 2021 11:45:48 +0100
-Message-Id: <162608654079.4419.14681068957546195673.b4-ty@kernel.org>
+        cy_huang@richtek.com, axel.lin@ingics.com, lgirdwood@gmail.com
+Subject: Re: [PATCH v2] regulator: rt5033: Use linear ranges to map all voltage selection
+Date:   Mon, 12 Jul 2021 11:45:49 +0100
+Message-Id: <162608654079.4419.15869422318938555013.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210630095959.2411543-1-axel.lin@ingics.com>
-References: <20210630095959.2411543-1-axel.lin@ingics.com>
+In-Reply-To: <1625553939-9109-1-git-send-email-u0084500@gmail.com>
+References: <1625553939-9109-1-git-send-email-u0084500@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,14 +40,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Jun 2021 17:59:59 +0800, Axel Lin wrote:
-> Since config.dev = pdev->dev.parent in current code, so
-> dev_get_drvdata(rdev->dev.parent) call in hi6421_regulator_enable
-> returns the drvdata of the mfd device rather than the regulator. Fix it.
-> 
-> This was broken while converting to use simplified DT parsing because the
-> config.dev changed from pdev->dev to pdev->dev.parent for parsing the
-> parent's of_node.
+On Tue, 6 Jul 2021 14:45:39 +0800, cy_huang wrote:
+> Instead of linear mapping, Use linear range to map all voltage selection.
 
 Applied to
 
@@ -56,8 +49,8 @@ Applied to
 
 Thanks!
 
-[1/1] regulator: hi6421: Fix getting wrong drvdata
-      commit: 1c73daee4bf30ccdff5e86dc400daa6f74735da5
+[1/1] regulator: rt5033: Use linear ranges to map all voltage selection
+      commit: 6eb891cf73bd2ecc877e9916951a19f3e4f3c493
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
