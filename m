@@ -2,148 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E8053C59C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1749B3C59C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:03:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351874AbhGLJIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:08:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56078 "EHLO
+        id S1350989AbhGLJIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:08:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377710AbhGLIgT (ORCPT
+        with ESMTP id S1354141AbhGLIhR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:36:19 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCF04C0613DD;
-        Mon, 12 Jul 2021 01:33:31 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id w8-20020a0568304108b02904b3da3d49e5so14104994ott.1;
-        Mon, 12 Jul 2021 01:33:31 -0700 (PDT)
+        Mon, 12 Jul 2021 04:37:17 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA77C061787
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 01:34:25 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 141so6344797ljj.2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 01:34:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=SZxKyapcP95t3Qouqp7FF9LfmDjUWdzEBklTYWphkD4=;
-        b=AqgwP0m7QXx6dnrcT1SEtsn//U14Fy1BMa8c18UQ1dFsB/vG4uCfbpCHLWWrF6raoC
-         9+J7iqg++LqULNo1+GsN7Vpyamy1CZNzrAO5W9pJGpKWzA54QIZxkyGX4I3I2tzqnsIl
-         Ob5Ja4V5ILkmJIq6GFYHXMdDElBRZWYDPoZ549jwR2UA5+xd0VwBPiNx99Xm8+x+wrAB
-         Ckgv/8Ka/WiqFOLS2eMIMb9uIxwHXp78WhtQe6Zetr/v1Hyea1M0M8bzDvuYxhU2N7X9
-         6QD0laCm4smuNktELur4Ei1Df5YGLOnOnicGRiV7/1A7adPhAV6bdi+TvtvY4OnGSIFE
-         5eYw==
+         :cc;
+        bh=zJuNTiw2bAkp/x3xoDaz/4iXGg6QuhO9H12Y5RswVAY=;
+        b=Upj1aAMvSSjVrIBLSBG1/ArPEg+RtCIqWSn8VtfvPFm+4dLX/hYh/lN9B2+SjtJ0VD
+         dsqrzKohAQn11rgT0yvIotdYQd8LmgTU2axJuDOwhvzFEtUxyIgycMsEhY2wdyoWMeLC
+         CzGpXBvSewJUnVQMHlbXXkQyOHm1BMnZX9GbQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=SZxKyapcP95t3Qouqp7FF9LfmDjUWdzEBklTYWphkD4=;
-        b=seqv+4jX3VXwlpy8up0jNcaSaJLxb9Qk3kh3y8rc/Gkx8i2jGGkTyzmN33jt/zxFp2
-         FXTkTkd94eULcBTjSXSJl6RGdet1EeVpKfWu2ayjjf1npTKSXaj17/Q/qLbfptbi/QHC
-         29WYIRhR90UD6MNKxyG+Q8chiTpsJyOgmdGW1MiOK2s1Jc7CNKs93ltU6wLQMYqkrXkn
-         +S687WH+SPp0Up5ZwZUu/j+azUAAypZKhaA0o/M+Lk698+fFht+hmhbeH14T3jXdo6ig
-         Yt1q2Hw/++5pYoN+CFC4OQJR7kUFHgU4RkFWs2XMV0cY9+/eGE7XErvIT+U+6G4Vau+W
-         sIdw==
-X-Gm-Message-State: AOAM5328Hx6SaPdhG/puU2B/X+MC370v3RNRmEkoI96Q3cJ6KNnXe0hK
-        nA1Sor9HhsADe7TlwVryCiYl320VRH0101l4IkQ=
-X-Google-Smtp-Source: ABdhPJyivpVPZ8cdSEoA3/WXmOk0cdeaWr9nSTp1nse+5dNXooOzccEZM5/E78bvn5OIBE8WXXCRvZClpvQy7pBbQH4=
-X-Received: by 2002:a9d:7686:: with SMTP id j6mr39672095otl.232.1626078811219;
- Mon, 12 Jul 2021 01:33:31 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=zJuNTiw2bAkp/x3xoDaz/4iXGg6QuhO9H12Y5RswVAY=;
+        b=SccZiVER8CiF4Smg33w/jLTdoy4uRXpPDjyVtB+V1C07VTAu1gwkkfI+u8hsG+uRlC
+         ikiJ/IAEWvH4FeTGFxWz8gOLW4RNmupqn1TB9Bw1/EaxtTPVgz5mtqP+SGiYZFDVdwq/
+         RqXFTbeI0GIi9kvciGIC6jdwZRfyRXTMU6wRyXjQ5U6+2duk4T0y1fBBERirL5X2BprE
+         7o4U2Ec1XhSJzEW0vaA3o1ZqlBvOzFAPrso+1eN452CwVhELYn4m8bTESNCtNvzwUIIt
+         sGck4p8Gs8beWTAn9CtQIcPOzM3fp9OJKAlKLq3KFS7SBayLX1WrPE0mARwOpUXaMs2F
+         55jg==
+X-Gm-Message-State: AOAM531hqI79YhUJRITHWD143CY43h+c5mtaG1cqIf4DBL7v7mDRCaCr
+        baZ2MlYQ5zsyWAlvKG+P7TATr6fIdZDCSX4kfgiBIw==
+X-Google-Smtp-Source: ABdhPJxTwmQouyNY1518GgGLKn95Fz9OMBBHdc/D2dJN+ng1GSyTFAPjXSgn07w0W+HnJc3plqNsRFgWxNDSx2LRQ8g=
+X-Received: by 2002:a2e:a583:: with SMTP id m3mr41341251ljp.305.1626078863525;
+ Mon, 12 Jul 2021 01:34:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210524152427.123856-1-gene.chen.richtek@gmail.com>
-In-Reply-To: <20210524152427.123856-1-gene.chen.richtek@gmail.com>
-From:   Gene Chen <gene.chen.richtek@gmail.com>
-Date:   Mon, 12 Jul 2021 16:33:19 +0800
-Message-ID: <CAE+NS37kf1JAJ2Zt7UGsfsubp6O=xBNtnJgVEnz8-mm2rxFa+g@mail.gmail.com>
-Subject: Re: [PATCH v14 0/2] leds: mt6360: Add LED driver for MT6360
-To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Dan Murphy <dmurphy@ti.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, ChiYuan Huang <cy_huang@richtek.com>,
-        benjamin.chao@mediatek.com
+References: <20210616224743.5109-1-chun-jie.chen@mediatek.com> <20210616224743.5109-22-chun-jie.chen@mediatek.com>
+In-Reply-To: <20210616224743.5109-22-chun-jie.chen@mediatek.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Mon, 12 Jul 2021 16:34:12 +0800
+Message-ID: <CAGXv+5G1-ruOkK4R1J-ZUzVARHHdyZ88hri6u3ej-+v1Ox8bKw@mail.gmail.com>
+Subject: Re: [PATCH 21/22] clk: mediatek: Add MT8195 imp i2c wrapper clock support
+To:     Chun-Jie Chen <chun-jie.chen@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gene Chen <gene.chen.richtek@gmail.com> =E6=96=BC 2021=E5=B9=B45=E6=9C=8824=
-=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=8811:24=E5=AF=AB=E9=81=93=EF=
-=BC=9A
->
-> This patch series add MT6360 LED support contains driver and binding docu=
-ment
->
-> Gene Chen (2)
->  dt-bindings: leds: Add bindings for MT6360 LED
->  leds: mt6360: Add LED driver for MT6360
->
->  Documentation/devicetree/bindings/leds/leds-mt6360.yaml |  159 ++
->  drivers/leds/flash/Kconfig                              |   13
->  drivers/leds/flash/Makefile                             |    1
->  drivers/leds/flash/leds-mt6360.c                        |  910 +++++++++=
-+++++++
->  4 files changed, 1083 insertions(+)
->
-> changelogs between v1 & v2
->  - add led driver with mfd
->
-> changelogs between v2 & v3
->  - independent add led driver
->  - add dt-binding document
->  - refactor macros definition for easy to debug
->  - parse device tree by fwnode
->  - use devm*ext to register led class device
->
-> changelogs between v3 & v4
->  - fix binding document description
->  - use GENMASK and add unit postfix to definition
->  - isink register led class device
->
-> changelogs between v4 & v5
->  - change rgb isink to multicolor control
->  - add binding reference to mfd yaml
->
-> changelogs between v5 & v6
->  - Use DT to decide RGB LED is multicolor device or indicator device only
->
-> changelogs between v6 & v7
->  - Add binding multicolor device sample code
->  - Add flash ops mutex lock
->  - Remove V4L2 init with indicator device
->
-> changelogs between v7 & v8
->  - Add mutex for led fault get ops
->  - Fix flash and multicolor no-ops return 0
->  - Add LED_FUNCTION_MOONLIGHT
->
-> changelogs between v8 & v9
->  - reuse api in flash and multicolor header
->
-> changelogs between v9 & v10
->  - add comment for reuse registration functions in flash and multicolor
->
-> changelogs between v10 & v11
->  - match dt-binding reg property comment to the functionality name
->  - remove exist patch in linux-next
->  - dicide multicolor channel by color definitiion
->
-> changelogs between v11 & v12
->  - Fix print size_t by %zu
->  - Fix dt-binding name regular experssion
->
-> changelogs between v12 & v13
->  - Fix kbuild test rebot build error
->
-> changelogs between v13 & v14
->  - Move driver to flash folder
->  - Remove LED FUNCTION MOONLIGHT
->  - Keep 80 char per line
->
->
+Hi,
 
-Dear Reviewers,
+On Thu, Jun 17, 2021 at 6:59 AM Chun-Jie Chen
+<chun-jie.chen@mediatek.com> wrote:
+>
+> Add MT8195 imp i2c wrapper clock providers
+>
+> Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
+> ---
+>  drivers/clk/mediatek/Kconfig                  |  6 ++
+>  drivers/clk/mediatek/Makefile                 |  1 +
+>  .../clk/mediatek/clk-mt8195-imp_iic_wrap.c    | 68 +++++++++++++++++++
+>  3 files changed, 75 insertions(+)
+>  create mode 100644 drivers/clk/mediatek/clk-mt8195-imp_iic_wrap.c
+>
+> diff --git a/drivers/clk/mediatek/Kconfig b/drivers/clk/mediatek/Kconfig
+> index 5089bacdf0a5..ade85a52b7ed 100644
+> --- a/drivers/clk/mediatek/Kconfig
+> +++ b/drivers/clk/mediatek/Kconfig
+> @@ -684,6 +684,12 @@ config COMMON_CLK_MT8195_WPESYS
+>         help
+>           This driver supports MediaTek MT8195 wpesys clocks.
+>
+> +config COMMON_CLK_MT8195_IMP_IIC_WRAP
+> +       bool "Clock driver for MediaTek MT8195 imp_iic_wrap"
+> +       depends on COMMON_CLK_MT8195
+> +       help
+> +         This driver supports MediaTek MT8195 imp_iic_wrap clocks.
+> +
 
-Please let me know if any update.
+General comments from other patches also apply.
+
+>  config COMMON_CLK_MT8516
+>         bool "Clock driver for MediaTek MT8516"
+>         depends on ARCH_MEDIATEK || COMPILE_TEST
+> diff --git a/drivers/clk/mediatek/Makefile b/drivers/clk/mediatek/Makefile
+> index 32cfb0030d92..b10c6267ba98 100644
+> --- a/drivers/clk/mediatek/Makefile
+> +++ b/drivers/clk/mediatek/Makefile
+> @@ -97,5 +97,6 @@ obj-$(CONFIG_COMMON_CLK_MT8195_VENCSYS) += clk-mt8195-venc.o
+>  obj-$(CONFIG_COMMON_CLK_MT8195_VPPSYS0) += clk-mt8195-vpp0.o
+>  obj-$(CONFIG_COMMON_CLK_MT8195_VPPSYS1) += clk-mt8195-vpp1.o
+>  obj-$(CONFIG_COMMON_CLK_MT8195_WPESYS) += clk-mt8195-wpe.o
+> +obj-$(CONFIG_COMMON_CLK_MT8195_IMP_IIC_WRAP) += clk-mt8195-imp_iic_wrap.o
+>  obj-$(CONFIG_COMMON_CLK_MT8516) += clk-mt8516.o
+>  obj-$(CONFIG_COMMON_CLK_MT8516_AUDSYS) += clk-mt8516-aud.o
+> diff --git a/drivers/clk/mediatek/clk-mt8195-imp_iic_wrap.c b/drivers/clk/mediatek/clk-mt8195-imp_iic_wrap.c
+> new file mode 100644
+> index 000000000000..efb62f484bbe
+> --- /dev/null
+> +++ b/drivers/clk/mediatek/clk-mt8195-imp_iic_wrap.c
+> @@ -0,0 +1,68 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +//
+> +// Copyright (c) 2021 MediaTek Inc.
+> +// Author: Chun-Jie Chen <chun-jie.chen@mediatek.com>
+> +
+> +#include <linux/clk-provider.h>
+> +#include <linux/platform_device.h>
+> +
+> +#include "clk-mtk.h"
+> +#include "clk-gate.h"
+> +
+> +#include <dt-bindings/clock/mt8195-clk.h>
+> +
+> +static const struct mtk_gate_regs imp_iic_wrap_cg_regs = {
+> +       .set_ofs = 0xe08,
+> +       .clr_ofs = 0xe04,
+> +       .sta_ofs = 0xe00,
+> +};
+> +
+> +#define GATE_IMP_IIC_WRAP(_id, _name, _parent, _shift)                         \
+> +       GATE_MTK_FLAGS(_id, _name, _parent, &imp_iic_wrap_cg_regs, _shift,      \
+> +               &mtk_clk_gate_ops_setclr, CLK_OPS_PARENT_ENABLE)
+> +
+> +static const struct mtk_gate imp_iic_wrap_s_clks[] = {
+> +       GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_S_I2C5, "imp_iic_wrap_s_i2c5", "i2c_sel", 0),
+> +       GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_S_I2C6, "imp_iic_wrap_s_i2c6", "i2c_sel", 1),
+> +       GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_S_I2C7, "imp_iic_wrap_s_i2c7", "i2c_sel", 2),
+> +};
+> +
+> +static const struct mtk_gate imp_iic_wrap_w_clks[] = {
+> +       GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_W_I2C0, "imp_iic_wrap_w_i2c0", "i2c_sel", 0),
+> +       GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_W_I2C1, "imp_iic_wrap_w_i2c1", "i2c_sel", 1),
+> +       GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_W_I2C2, "imp_iic_wrap_w_i2c2", "i2c_sel", 2),
+> +       GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_W_I2C3, "imp_iic_wrap_w_i2c3", "i2c_sel", 3),
+> +       GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_W_I2C4, "imp_iic_wrap_w_i2c4", "i2c_sel", 4),
+
+The datasheet doesn't provide the actual index numbers for each bit,
+but based on the address range groupings I'd say the numbering here
+is reasonable.
+
+
+ChenYu
+
+> +};
+> +
+> +static const struct mtk_clk_desc imp_iic_wrap_s_desc = {
+> +       .clks = imp_iic_wrap_s_clks,
+> +       .num_clks = ARRAY_SIZE(imp_iic_wrap_s_clks),
+> +};
+> +
+> +static const struct mtk_clk_desc imp_iic_wrap_w_desc = {
+> +       .clks = imp_iic_wrap_w_clks,
+> +       .num_clks = ARRAY_SIZE(imp_iic_wrap_w_clks),
+> +};
+> +
+> +static const struct of_device_id of_match_clk_mt8195_imp_iic_wrap[] = {
+> +       {
+> +               .compatible = "mediatek,mt8195-imp_iic_wrap_s",
+> +               .data = &imp_iic_wrap_s_desc,
+> +       }, {
+> +               .compatible = "mediatek,mt8195-imp_iic_wrap_w",
+> +               .data = &imp_iic_wrap_w_desc,
+> +       }, {
+> +               /* sentinel */
+> +       }
+> +};
+> +
+> +static struct platform_driver clk_mt8195_imp_iic_wrap_drv = {
+> +       .probe = mtk_clk_simple_probe,
+> +       .driver = {
+> +               .name = "clk-mt8195-imp_iic_wrap",
+> +               .of_match_table = of_match_clk_mt8195_imp_iic_wrap,
+> +       },
+> +};
+> +
+> +builtin_platform_driver(clk_mt8195_imp_iic_wrap_drv);
+> --
+> 2.18.0
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
