@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4DB73C511D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1C0D3C577D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245028AbhGLHgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:36:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43022 "EHLO mail.kernel.org"
+        id S1359289AbhGLIed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:34:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243941AbhGLHKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:10:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0E8A6128C;
-        Mon, 12 Jul 2021 07:05:29 +0000 (UTC)
+        id S1346733AbhGLHql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:46:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45D32611AD;
+        Mon, 12 Jul 2021 07:42:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073530;
-        bh=Q6uplDChbEBqte+TK32Zhd+p4+vSYHTt4Dj9koKMMvc=;
+        s=korg; t=1626075733;
+        bh=Ad1QaYFKtYxej+92/SHOPT3od7Ey5p0YsEvKIxx2Fx0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=04U05or+PJOubIlmUfeCkpfISQrUviSPpFGw3jDEzxN6zKH+f1L8zgTaIhHr2GXxN
-         MVzXpFMWOE1LQpyLiSVZAgj99sqZBUT8Cv963l7WB8JjLwcGqbKKapQzUpRiwCRag3
-         BgSpamvjS35yEcHWx68bQzpfBlmD8bC23+CpyQo4=
+        b=ks3/Hb7FLVKEXf2JoRzpcGv0J5ZawUZ3EQBjb5D4XKejL4IsIqgkhoBWtY1o9BRO3
+         25Mmwz44lBvHV+XiifzUAkUeq668BPcomAsD2iXIaXhGOmOmc9O9JIYnxE2fCZ2452
+         B0j/zXIaRS48ZQAtjNEomYzNsO254V4e9ARNSgzA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ezequiel Garcia <ezequiel@collabora.com>,
-        Adrian Ratiu <adrian.ratiu@collabora.com>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Axel Lin <axel.lin@ingics.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 274/700] media: rkvdec: Fix .buf_prepare
+Subject: [PATCH 5.13 334/800] regulator: hi6421v600: Fix setting idle mode
 Date:   Mon, 12 Jul 2021 08:05:57 +0200
-Message-Id: <20210712061005.413101068@linuxfoundation.org>
+Message-Id: <20210712061002.065850410@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,52 +40,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ezequiel Garcia <ezequiel@collabora.com>
+From: Axel Lin <axel.lin@ingics.com>
 
-[ Upstream commit ba1ed4ae760a81caf39f54232e089d95157a0dba ]
+[ Upstream commit 57c045bc727001c43b6a65adb0418aa7b3e6dbd0 ]
 
-The driver should only set the payload on .buf_prepare if the
-buffer is CAPTURE type. If an OUTPUT buffer has a zero bytesused
-set by userspace then v4l2-core will set it to buffer length.
+commit db27f8294cd7 changed eco_mode << (ffs(sreg->eco_mode_mask) - 1)
+to sreg->eco_mode_mask << (ffs(sreg->eco_mode_mask) - 1) which is wrong.
+Fix it by simply set val = sreg->eco_mode_mask.
 
-If we overwrite bytesused for OUTPUT buffers, too, then
-vb2_get_plane_payload() will return incorrect value which might be then
-written to hw registers by the driver in rkvdec-h264.c.
+In additional, sreg->eco_mode_mask can be 0 (LDO3, LDO33, LDO34).
+Return -EINVAL if idle mode is not supported when sreg->eco_mode_mask is 0.
 
-[Changed the comment and used V4L2_TYPE_IS_CAPTURE macro]
+While at it, also use unsigned int for reg_val/val which is the expected
+type for regmap_read and regmap_update_bits.
 
-Fixes: cd33c830448ba ("media: rkvdec: Add the rkvdec driver")
-Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
-Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: db27f8294cd7 ("staging: regulator: hi6421v600-regulator: use shorter names for OF properties")
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Link: https://lore.kernel.org/r/20210619123423.4091429-1-axel.lin@ingics.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/media/rkvdec/rkvdec.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/regulator/hi6421v600-regulator.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/media/rkvdec/rkvdec.c
-index 8c17615f3a7a..7131156c1f2c 100644
---- a/drivers/staging/media/rkvdec/rkvdec.c
-+++ b/drivers/staging/media/rkvdec/rkvdec.c
-@@ -481,7 +481,15 @@ static int rkvdec_buf_prepare(struct vb2_buffer *vb)
- 		if (vb2_plane_size(vb, i) < sizeimage)
- 			return -EINVAL;
- 	}
--	vb2_set_plane_payload(vb, 0, f->fmt.pix_mp.plane_fmt[0].sizeimage);
-+
-+	/*
-+	 * Buffer's bytesused must be written by driver for CAPTURE buffers.
-+	 * (for OUTPUT buffers, if userspace passes 0 bytesused, v4l2-core sets
-+	 * it to buffer length).
-+	 */
-+	if (V4L2_TYPE_IS_CAPTURE(vq->type))
-+		vb2_set_plane_payload(vb, 0, f->fmt.pix_mp.plane_fmt[0].sizeimage);
-+
- 	return 0;
- }
+diff --git a/drivers/regulator/hi6421v600-regulator.c b/drivers/regulator/hi6421v600-regulator.c
+index d6340bb49296..d1e9406b2e3e 100644
+--- a/drivers/regulator/hi6421v600-regulator.c
++++ b/drivers/regulator/hi6421v600-regulator.c
+@@ -129,7 +129,7 @@ static unsigned int hi6421_spmi_regulator_get_mode(struct regulator_dev *rdev)
+ {
+ 	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
+ 	struct hi6421_spmi_pmic *pmic = sreg->pmic;
+-	u32 reg_val;
++	unsigned int reg_val;
  
+ 	regmap_read(pmic->regmap, rdev->desc->enable_reg, &reg_val);
+ 
+@@ -144,14 +144,17 @@ static int hi6421_spmi_regulator_set_mode(struct regulator_dev *rdev,
+ {
+ 	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
+ 	struct hi6421_spmi_pmic *pmic = sreg->pmic;
+-	u32 val;
++	unsigned int val;
+ 
+ 	switch (mode) {
+ 	case REGULATOR_MODE_NORMAL:
+ 		val = 0;
+ 		break;
+ 	case REGULATOR_MODE_IDLE:
+-		val = sreg->eco_mode_mask << (ffs(sreg->eco_mode_mask) - 1);
++		if (!sreg->eco_mode_mask)
++			return -EINVAL;
++
++		val = sreg->eco_mode_mask;
+ 		break;
+ 	default:
+ 		return -EINVAL;
 -- 
 2.30.2
 
