@@ -2,107 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 352153C5E46
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 16:21:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39EA73C5E4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 16:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234992AbhGLOXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 10:23:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233949AbhGLOXs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 10:23:48 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43BADC0613DD;
-        Mon, 12 Jul 2021 07:20:59 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id v5so25878354wrt.3;
-        Mon, 12 Jul 2021 07:20:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=McfcRUwTJvvEYnGyx2zdV84R9Ua8X5MJL0mSzDDl3X4=;
-        b=CWROun1CdjvGboSFTQkv6sAppvuuPS7f/l3PB0E3owikaOeqb3QUYdUA8EKGraNI40
-         sGpwFUAQad1jcHO8OpB04og6pmdgnkYlGL9JvgR5MXlLbjNXFOi2U1p+EtMfBCKoh6SU
-         bWYI8AH/ki/7khGQD1zCeWfVwMoghgNmaOOHyTki8ALhdPtYuWiKGK8zK+pFoqN8OFop
-         yHWyshAjGPkFswLS1uYoO29xmFNEDepggh1QBrEw/Azz283rLG7S0H6RCDeuIDrPjs07
-         KZ2y9ISe4n+tRS4jlsiDQWyzhiCt7ZgyO+2AZ08obLfQ8e2iSTEp7XhS51tX6XGclKa/
-         1ETA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=McfcRUwTJvvEYnGyx2zdV84R9Ua8X5MJL0mSzDDl3X4=;
-        b=GKooTqY4zj/YN03ZPbcDdzQ8XpcjLZN5QQLJ5xuTPA20zXabMZbbhg84aWih1q1wPz
-         +k7Q6x2aqEb//v6f0BrIGnPiaSndQUb4HIyo8u1LAnJ073K7RPa/boWkLga2CaeRoiKB
-         rr5dMz8Ke4urjOltiaXQiypFl6Nyj2HAmwghXJC7P/PhU33I3zrZ1sNH5WK3/mozPiay
-         8wea57+K8Z7RnpFFBZ9bU/TvkCBw6l2TUb1o9Nxrexo7bm8KFabY2H5XtwkNJwAjCldO
-         RHbTSN4PUJkaSowWBrb6Cq4N3ddWZXYSULKjC2l0bdWFpoSKhdGpDBL3tHqoGOFkawXJ
-         Uynw==
-X-Gm-Message-State: AOAM532B+Ozujqcla8om1Vgxv2ulQqVZ1gCQ3XllaZZ/lgc4mo0LLyik
-        TdYqGDI1f9tfBb4TrF8bhXvqyvRvAp1IgSC3Qrw=
-X-Google-Smtp-Source: ABdhPJyYd9ZGZO8Zy9KQ4TQfI1VbC3hvQCkAR0yvDXiUTY27zHOidGVlcOMRfd35ZqGKgtbYnT8ZTmVl+s+zu16wlMc=
-X-Received: by 2002:a5d:420b:: with SMTP id n11mr15661968wrq.395.1626099657917;
- Mon, 12 Jul 2021 07:20:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <162609463116.3133237.11899334298425929820.stgit@warthog.procyon.org.uk>
- <162609464716.3133237.10354897554363093252.stgit@warthog.procyon.org.uk>
-In-Reply-To: <162609464716.3133237.10354897554363093252.stgit@warthog.procyon.org.uk>
-From:   Marc Dionne <marc.c.dionne@gmail.com>
-Date:   Mon, 12 Jul 2021 11:20:47 -0300
-Message-ID: <CAB9dFdvHsLsw7CMnB+4cgciWDSqVjuij4mH3TaXnHQB8sz5rHw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] afs: check function return
-To:     David Howells <dhowells@redhat.com>
-Cc:     linux-afs@lists.infradead.org, Tom Rix <trix@redhat.com>,
-        linux-fsdevel@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S235002AbhGLOZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 10:25:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33366 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230070AbhGLOZa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 10:25:30 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3C51F61026;
+        Mon, 12 Jul 2021 14:22:42 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1m2wpU-00CqmO-6C; Mon, 12 Jul 2021 15:22:40 +0100
+Date:   Mon, 12 Jul 2021 15:22:40 +0100
+Message-ID: <878s2b393j.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCHv2 1/4] arm64: smccc: Add SMCCC pv-vcpu-state function call IDs
+In-Reply-To: <20210709043713.887098-2-senozhatsky@chromium.org>
+References: <20210709043713.887098-1-senozhatsky@chromium.org>
+        <20210709043713.887098-2-senozhatsky@chromium.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: senozhatsky@chromium.org, will@kernel.org, suleiman@google.com, joelaf@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, virtualization@lists.linux-foundation.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 9:57 AM David Howells <dhowells@redhat.com> wrote:
->
-> From: Tom Rix <trix@redhat.com>
->
-> Static analysis reports this problem
->
-> write.c:773:29: warning: Assigned value is garbage or undefined
->   mapping->writeback_index = next;
->                            ^ ~~~~
-> The call to afs_writepages_region() can return without setting
-> next.  So check the function return before using next.
->
-> Fixes: e87b03f5830e ("afs: Prepare for use of THPs")
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> Link: https://lore.kernel.org/r/20210430155031.3287870-1-trix@redhat.com
+On Fri, 09 Jul 2021 05:37:10 +0100,
+Sergey Senozhatsky <senozhatsky@chromium.org> wrote:
+> 
+> Add the definitions of the SMCCC functions that will be
+> used to paravirt VCPU state configuration.
+> 
+> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
 > ---
->
->  fs/afs/write.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/afs/write.c b/fs/afs/write.c
-> index 3104b62c2082..2794147f82ff 100644
-> --- a/fs/afs/write.c
-> +++ b/fs/afs/write.c
-> @@ -777,7 +777,7 @@ int afs_writepages(struct address_space *mapping,
->                 mapping->writeback_index = next / PAGE_SIZE;
+>  include/linux/arm-smccc.h | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/include/linux/arm-smccc.h b/include/linux/arm-smccc.h
+> index 7d1cabe15262..dbf0d658e54a 100644
+> --- a/include/linux/arm-smccc.h
+> +++ b/include/linux/arm-smccc.h
+> @@ -177,6 +177,24 @@
+>  			   ARM_SMCCC_OWNER_STANDARD,		\
+>  			   0x53)
+>  
+> +#define ARM_SMCCC_HV_PV_VCPU_STATE_FEATURES			\
+> +	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,			\
+> +			   ARM_SMCCC_SMC_64,			\
+> +			   ARM_SMCCC_OWNER_STANDARD_HYP,	\
+> +			   0x60)
+> +
+> +#define ARM_SMCCC_HV_PV_VCPU_STATE_INIT			\
+> +	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,			\
+> +			   ARM_SMCCC_SMC_64,			\
+> +			   ARM_SMCCC_OWNER_STANDARD_HYP,	\
+> +			   0x61)
+> +
+> +#define ARM_SMCCC_HV_PV_VCPU_STATE_RELEASE			\
+> +	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,			\
+> +			   ARM_SMCCC_SMC_64,			\
+> +			   ARM_SMCCC_OWNER_STANDARD_HYP,	\
+> +			   0x62)
+> +
 
-Isn't there the same issue with the use of next here.
+This is definitely the *wrong* namespace for this. The "STANDARD_HYP"
+space is owned by ARM for hypercalls that are implementable by any
+hypervisors, and for which there is an ARM-owned specification.
 
->         } else if (wbc->range_start == 0 && wbc->range_end == LLONG_MAX) {
->                 ret = afs_writepages_region(mapping, wbc, 0, LLONG_MAX, &next);
-> -               if (wbc->nr_to_write > 0)
-> +               if (wbc->nr_to_write > 0 && ret == 0)
->                         mapping->writeback_index = next;
+Unless you plan to get this adopted as an ARM spec (pretty doubtful),
+this should go instead in the KVM-specific space, which currently has
+a single user (the PTP stuff), although I plan to add a couple more
+shortly.
 
-Unrelated to this patch, but since next is a byte offset, should this
-also divide by PAGE_SIZE as above.
+	M.
 
->         } else {
->                 ret = afs_writepages_region(mapping, wbc,
->
->
-
-Marc
+-- 
+Without deviation from the norm, progress is not possible.
