@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D146C3C4A45
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED4A3C4AED
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239956AbhGLGuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:50:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34600 "EHLO mail.kernel.org"
+        id S241249AbhGLGyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:54:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238214AbhGLGkB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:40:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B16B8610D0;
-        Mon, 12 Jul 2021 06:36:30 +0000 (UTC)
+        id S238230AbhGLGkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:40:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 08C27610CC;
+        Mon, 12 Jul 2021 06:36:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071791;
-        bh=sNgqsupDBF6XI7+2oFx/KGIlFDXOTMzao2opdZquDLM=;
+        s=korg; t=1626071793;
+        bh=RCHGY0c7RhcBv2l7xAuERXhf02mGxCiIEyM9qidHIqY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O7HzcJIHjXivnIq2t9aAudv+OdNRpZ8W+KwvljylR604QutsPgC6qdqUjUCNPrXYt
-         ag0qOzitB2aMmrdzki9KaMvp0RUp31ujko1NI9Ngw+xcAVr/cFJ4vUY9CnKzjz5u2R
-         dX4Ql8XxCdBGhPdrClbhHqFKU7zlHeT3vAkqydcw=
+        b=mJ2Fi94dSKnMXNLMATLFXhywrCcWrccBGIQFTBLRYU28puJVailE9eLXM0lN9Cth8
+         V42INkbHpuB4tInYHI+257azvbTS0feQNKP+q9q6UjC6hv+vfQW+5kbsvSj8YQPuc7
+         xLX+v2sKrKTdIIcffLm65ADVMiATp2x6v/0KdN1A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Quentin Perret <qperret@google.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        stable@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 221/593] sched/uclamp: Fix locking around cpu_util_update_eff()
-Date:   Mon, 12 Jul 2021 08:06:21 +0200
-Message-Id: <20210712060907.236723407@linuxfoundation.org>
+Subject: [PATCH 5.10 222/593] kbuild: Fix objtool dependency for OBJECT_FILES_NON_STANDARD_<obj> := n
+Date:   Mon, 12 Jul 2021 08:06:22 +0200
+Message-Id: <20210712060907.352266759@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
 References: <20210712060843.180606720@linuxfoundation.org>
@@ -41,59 +40,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qais Yousef <qais.yousef@arm.com>
+From: Josh Poimboeuf <jpoimboe@redhat.com>
 
-[ Upstream commit 93b73858701fd01de26a4a874eb95f9b7156fd4b ]
+[ Upstream commit 8852c552402979508fdc395ae07aa8761aa46045 ]
 
-cpu_cgroup_css_online() calls cpu_util_update_eff() without holding the
-uclamp_mutex or rcu_read_lock() like other call sites, which is
-a mistake.
+"OBJECT_FILES_NON_STANDARD_vma.o := n" has a dependency bug.  When
+objtool source is updated, the affected object doesn't get re-analyzed
+by objtool.
 
-The uclamp_mutex is required to protect against concurrent reads and
-writes that could update the cgroup hierarchy.
+Peter's new variable-sized jump label feature relies on objtool
+rewriting the object file.  Otherwise the system can fail to boot.  That
+effectively upgrades this minor dependency issue to a major bug.
 
-The rcu_read_lock() is required to traverse the cgroup data structures
-in cpu_util_update_eff().
+The problem is that variables in prerequisites are expanded early,
+during the read-in phase.  The '$(objtool_dep)' variable indirectly uses
+'$@', which isn't yet available when the target prerequisites are
+evaluated.
 
-Surround the caller with the required locks and add some asserts to
-better document the dependency in cpu_util_update_eff().
+Use '.SECONDEXPANSION:' which causes '$(objtool_dep)' to be expanded in
+a later phase, after the target-specific '$@' variable has been defined.
 
-Fixes: 7226017ad37a ("sched/uclamp: Fix a bug in propagating uclamp value in new cgroups")
-Reported-by: Quentin Perret <qperret@google.com>
-Signed-off-by: Qais Yousef <qais.yousef@arm.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210510145032.1934078-3-qais.yousef@arm.com
+Fixes: b9ab5ebb14ec ("objtool: Add CONFIG_STACK_VALIDATION option")
+Fixes: ab3257042c26 ("jump_label, x86: Allow short NOPs")
+Reported-by: Matthew Wilcox <willy@infradead.org>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/core.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ scripts/Makefile.build | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index c561c3b993b5..d4bbead59ad2 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -7620,7 +7620,11 @@ static int cpu_cgroup_css_online(struct cgroup_subsys_state *css)
+diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+index 4c058f12dd73..8bd4e673383f 100644
+--- a/scripts/Makefile.build
++++ b/scripts/Makefile.build
+@@ -275,7 +275,8 @@ define rule_as_o_S
+ endef
  
- #ifdef CONFIG_UCLAMP_TASK_GROUP
- 	/* Propagate the effective uclamp value for the new group */
-+	mutex_lock(&uclamp_mutex);
-+	rcu_read_lock();
- 	cpu_util_update_eff(css);
-+	rcu_read_unlock();
-+	mutex_unlock(&uclamp_mutex);
- #endif
+ # Built-in and composite module parts
+-$(obj)/%.o: $(src)/%.c $(recordmcount_source) $(objtool_dep) FORCE
++.SECONDEXPANSION:
++$(obj)/%.o: $(src)/%.c $(recordmcount_source) $$(objtool_dep) FORCE
+ 	$(call if_changed_rule,cc_o_c)
+ 	$(call cmd,force_checksrc)
  
- 	return 0;
-@@ -7710,6 +7714,9 @@ static void cpu_util_update_eff(struct cgroup_subsys_state *css)
- 	enum uclamp_id clamp_id;
- 	unsigned int clamps;
+@@ -356,7 +357,7 @@ cmd_modversions_S =								\
+ 	fi
+ endif
  
-+	lockdep_assert_held(&uclamp_mutex);
-+	SCHED_WARN_ON(!rcu_read_lock_held());
-+
- 	css_for_each_descendant_pre(css, top_css) {
- 		uc_parent = css_tg(css)->parent
- 			? css_tg(css)->parent->uclamp : NULL;
+-$(obj)/%.o: $(src)/%.S $(objtool_dep) FORCE
++$(obj)/%.o: $(src)/%.S $$(objtool_dep) FORCE
+ 	$(call if_changed_rule,as_o_S)
+ 
+ targets += $(filter-out $(subdir-builtin), $(real-obj-y))
 -- 
 2.30.2
 
