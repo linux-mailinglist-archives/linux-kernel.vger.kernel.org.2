@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0563C5120
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95ECF3C577F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344255AbhGLHiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:38:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41260 "EHLO mail.kernel.org"
+        id S1359401AbhGLIel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:34:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244053AbhGLHKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:10:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8BB5610E6;
-        Mon, 12 Jul 2021 07:06:04 +0000 (UTC)
+        id S241750AbhGLHqm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:46:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 98DE1611AF;
+        Mon, 12 Jul 2021 07:42:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073565;
-        bh=PwLa1igOKSV8BZprhQw0f1RZYwQaR324yKmmiYBmM44=;
+        s=korg; t=1626075743;
+        bh=jl+ad3IWHu5y9beWDWIxlhAtdfOYXOdzXGlC3+FatsE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vZXrUp5E3vFxnMITI4XE5IVD0whW8gwbqL/3FJbEvXAARkVuvewWhjjfOD6E6vihd
-         ODVPuvRClG3ttpbf7kbloY05eZUYv2onCUsHgYpgVUpHoD8/5CDXqhuhRoah2GyZaa
-         hOH+2MtGHFngywQ+PMIBmElJI4YzG/VHGkeMoP8I=
+        b=QF9JNXCMg/XyIvEqhFOPDNvapLZeGQwanKTZKJ6CrZap6lmvdO1NGal/Zmum/H8n4
+         2856F6nTkgZr+P8MoVRfMhLxE56TMhpOUkZZmbt2w5XCVQ4RXqx37gdIRMHrn9VWkz
+         UjiAyBHSCb4K0JfeqlrkmBqNsAs+O/PpV+a0j2d4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, Kan Liang <kan.liang@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 285/700] crypto: x86/curve25519 - fix cpu feature checking logic in mod_exit
-Date:   Mon, 12 Jul 2021 08:06:08 +0200
-Message-Id: <20210712061006.556370599@linuxfoundation.org>
+Subject: [PATCH 5.13 346/800] perf: Fix task context PMU for Hetero
+Date:   Mon, 12 Jul 2021 08:06:09 +0200
+Message-Id: <20210712061003.817282982@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +40,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hangbin Liu <liuhangbin@gmail.com>
+From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit 1b82435d17774f3eaab35dce239d354548aa9da2 ]
+[ Upstream commit 012669c740e6e2afa8bdb95394d06676f933dd2d ]
 
-In curve25519_mod_init() the curve25519_alg will be registered only when
-(X86_FEATURE_BMI2 && X86_FEATURE_ADX). But in curve25519_mod_exit()
-it still checks (X86_FEATURE_BMI2 || X86_FEATURE_ADX) when do crypto
-unregister. This will trigger a BUG_ON in crypto_unregister_alg() as
-alg->cra_refcnt is 0 if the cpu only supports one of X86_FEATURE_BMI2
-and X86_FEATURE_ADX.
+On HETEROGENEOUS hardware (ARM big.Little, Intel Alderlake etc.) each
+CPU might have a different hardware PMU. Since each such PMU is
+represented by a different struct pmu, but we only have a single HW
+task context.
 
-Fixes: 07b586fe0662 ("crypto: x86/curve25519 - replace with formally verified implementation")
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-Reviewed-by: Jason A. Donenfeld <Jason@zx2c4.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+That means that the task context needs to switch PMU type when it
+switches CPUs.
+
+Not doing this means that ctx->pmu calls (pmu_{dis,en}able(),
+{start,commit,cancel}_txn() etc.) are called against the wrong PMU and
+things will go wobbly.
+
+Fixes: f83d2f91d259 ("perf/x86/intel: Add Alder Lake Hybrid support")
+Reported-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Tested-by: Kan Liang <kan.liang@linux.intel.com>
+Link: https://lkml.kernel.org/r/YMsy7BuGT8nBTspT@hirez.programming.kicks-ass.net
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/crypto/curve25519-x86_64.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/events/core.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/crypto/curve25519-x86_64.c b/arch/x86/crypto/curve25519-x86_64.c
-index 5af8021b98ce..11b4c83c715e 100644
---- a/arch/x86/crypto/curve25519-x86_64.c
-+++ b/arch/x86/crypto/curve25519-x86_64.c
-@@ -1500,7 +1500,7 @@ static int __init curve25519_mod_init(void)
- static void __exit curve25519_mod_exit(void)
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index fe88d6eea3c2..9ebac2a79467 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -3821,9 +3821,16 @@ static void perf_event_context_sched_in(struct perf_event_context *ctx,
+ 					struct task_struct *task)
  {
- 	if (IS_REACHABLE(CONFIG_CRYPTO_KPP) &&
--	    (boot_cpu_has(X86_FEATURE_BMI2) || boot_cpu_has(X86_FEATURE_ADX)))
-+	    static_branch_likely(&curve25519_use_bmi2_adx))
- 		crypto_unregister_kpp(&curve25519_alg);
- }
+ 	struct perf_cpu_context *cpuctx;
+-	struct pmu *pmu = ctx->pmu;
++	struct pmu *pmu;
  
+ 	cpuctx = __get_cpu_context(ctx);
++
++	/*
++	 * HACK: for HETEROGENEOUS the task context might have switched to a
++	 * different PMU, force (re)set the context,
++	 */
++	pmu = ctx->pmu = cpuctx->ctx.pmu;
++
+ 	if (cpuctx->task_ctx == ctx) {
+ 		if (cpuctx->sched_cb_usage)
+ 			__perf_pmu_sched_task(cpuctx, true);
 -- 
 2.30.2
 
