@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71E473C4BEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B2AA3C52D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242521AbhGLHAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:00:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41192 "EHLO mail.kernel.org"
+        id S1350053AbhGLHu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:50:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239150AbhGLGot (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:44:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B9E960FD8;
-        Mon, 12 Jul 2021 06:40:50 +0000 (UTC)
+        id S243450AbhGLHPn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:15:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4994961106;
+        Mon, 12 Jul 2021 07:12:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072051;
-        bh=uqv8mcvuAL0IiTE5LBvoOhLWHQTLzapLqUNAu/erNP4=;
+        s=korg; t=1626073932;
+        bh=yEFcNEXpnicFUGlpyGK9hl4vpdiXNqemBYdU9G+Xx14=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xzi0Ci4CC2rLxH4S8bHK5SEk64sit7bdhj7V+xAx6G+1h0xJXnaDrTkVA3QYr9kyp
-         v6rJU/V43n41oaN+gCiVBpdDOUOHLoRc074KgC1u3hWNcMu8teE+NLgbadWvWkyww7
-         LOqQ18tC9+7HhQk1mG4cGqzGVAvIbAsn94qyIuVU=
+        b=U+mechaR1U5CJf7YBWBr2snzMhETEQZAUEz1C4vGvXS+TF+HxgFNeV85ik8bvsskr
+         xdvQVsUvfMRMVuQAElCUoemuzlA59NJ9asIGeNeZ128WUIFInuLDFCJtv9HSDsqtYD
+         f+ZyohH7MMp1Cs95DLYTAp4AuxOuXV8+b92vzLxg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Boris Sukholitko <boris.sukholitko@broadcom.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 331/593] net/sched: act_vlan: Fix modify to allow 0
-Date:   Mon, 12 Jul 2021 08:08:11 +0200
-Message-Id: <20210712060922.228844724@linuxfoundation.org>
+Subject: [PATCH 5.12 409/700] brcmfmac: correctly report average RSSI in station info
+Date:   Mon, 12 Jul 2021 08:08:12 +0200
+Message-Id: <20210712061019.915507092@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,93 +41,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Boris Sukholitko <boris.sukholitko@broadcom.com>
+From: Alvin Šipraga <ALSI@bang-olufsen.dk>
 
-[ Upstream commit 9c5eee0afca09cbde6bd00f77876754aaa552970 ]
+[ Upstream commit 9a1590934d9a02e570636432b93052c0c035f31f ]
 
-Currently vlan modification action checks existence of vlan priority by
-comparing it to 0. Therefore it is impossible to modify existing vlan
-tag to have priority 0.
+The rx_lastpkt_rssi field provided by the firmware is suitable for
+NL80211_STA_INFO_{SIGNAL,CHAIN_SIGNAL}, while the rssi field is an
+average. Fix up the assignments and set the correct STA_INFO bits. This
+lets userspace know that the average RSSI is part of the station info.
 
-For example, the following tc command will change the vlan id but will
-not affect vlan priority:
-
-tc filter add dev eth1 ingress matchall action vlan modify id 300 \
-        priority 0 pipe mirred egress redirect dev eth2
-
-The incoming packet on eth1:
-
-ethertype 802.1Q (0x8100), vlan 200, p 4, ethertype IPv4
-
-will be changed to:
-
-ethertype 802.1Q (0x8100), vlan 300, p 4, ethertype IPv4
-
-although the user has intended to have p == 0.
-
-The fix is to add tcfv_push_prio_exists flag to struct tcf_vlan_params
-and rely on it when deciding to set the priority.
-
-Fixes: 45a497f2d149a4a8061c (net/sched: act_vlan: Introduce TCA_VLAN_ACT_MODIFY vlan action)
-Signed-off-by: Boris Sukholitko <boris.sukholitko@broadcom.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: cae355dc90db ("brcmfmac: Add RSSI information to get_station.")
+Signed-off-by: Alvin Šipraga <alsi@bang-olufsen.dk>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210506132010.3964484-2-alsi@bang-olufsen.dk
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/tc_act/tc_vlan.h | 1 +
- net/sched/act_vlan.c         | 7 +++++--
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ .../broadcom/brcm80211/brcmfmac/cfg80211.c    | 36 ++++++++++---------
+ 1 file changed, 20 insertions(+), 16 deletions(-)
 
-diff --git a/include/net/tc_act/tc_vlan.h b/include/net/tc_act/tc_vlan.h
-index f051046ba034..f94b8bc26f9e 100644
---- a/include/net/tc_act/tc_vlan.h
-+++ b/include/net/tc_act/tc_vlan.h
-@@ -16,6 +16,7 @@ struct tcf_vlan_params {
- 	u16               tcfv_push_vid;
- 	__be16            tcfv_push_proto;
- 	u8                tcfv_push_prio;
-+	bool              tcfv_push_prio_exists;
- 	struct rcu_head   rcu;
- };
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+index afa75cb83221..d8822a01d277 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+@@ -2767,8 +2767,9 @@ brcmf_cfg80211_get_station(struct wiphy *wiphy, struct net_device *ndev,
+ 	struct brcmf_sta_info_le sta_info_le;
+ 	u32 sta_flags;
+ 	u32 is_tdls_peer;
+-	s32 total_rssi;
+-	s32 count_rssi;
++	s32 total_rssi_avg = 0;
++	s32 total_rssi = 0;
++	s32 count_rssi = 0;
+ 	int rssi;
+ 	u32 i;
  
-diff --git a/net/sched/act_vlan.c b/net/sched/act_vlan.c
-index 1cac3c6fbb49..a108469c664f 100644
---- a/net/sched/act_vlan.c
-+++ b/net/sched/act_vlan.c
-@@ -70,7 +70,7 @@ static int tcf_vlan_act(struct sk_buff *skb, const struct tc_action *a,
- 		/* replace the vid */
- 		tci = (tci & ~VLAN_VID_MASK) | p->tcfv_push_vid;
- 		/* replace prio bits, if tcfv_push_prio specified */
--		if (p->tcfv_push_prio) {
-+		if (p->tcfv_push_prio_exists) {
- 			tci &= ~VLAN_PRIO_MASK;
- 			tci |= p->tcfv_push_prio << VLAN_PRIO_SHIFT;
+@@ -2834,24 +2835,27 @@ brcmf_cfg80211_get_station(struct wiphy *wiphy, struct net_device *ndev,
+ 			sinfo->filled |= BIT_ULL(NL80211_STA_INFO_RX_BYTES);
+ 			sinfo->rx_bytes = le64_to_cpu(sta_info_le.rx_tot_bytes);
  		}
-@@ -121,6 +121,7 @@ static int tcf_vlan_init(struct net *net, struct nlattr *nla,
- 	struct tc_action_net *tn = net_generic(net, vlan_net_id);
- 	struct nlattr *tb[TCA_VLAN_MAX + 1];
- 	struct tcf_chain *goto_ch = NULL;
-+	bool push_prio_exists = false;
- 	struct tcf_vlan_params *p;
- 	struct tc_vlan *parm;
- 	struct tcf_vlan *v;
-@@ -189,7 +190,8 @@ static int tcf_vlan_init(struct net *net, struct nlattr *nla,
- 			push_proto = htons(ETH_P_8021Q);
+-		total_rssi = 0;
+-		count_rssi = 0;
+ 		for (i = 0; i < BRCMF_ANT_MAX; i++) {
+-			if (sta_info_le.rssi[i]) {
+-				sinfo->chains |= BIT(count_rssi);
+-				sinfo->chain_signal_avg[count_rssi] =
+-					sta_info_le.rssi[i];
+-				sinfo->chain_signal[count_rssi] =
+-					sta_info_le.rssi[i];
+-				total_rssi += sta_info_le.rssi[i];
+-				count_rssi++;
+-			}
++			if (sta_info_le.rssi[i] == 0 ||
++			    sta_info_le.rx_lastpkt_rssi[i] == 0)
++				continue;
++			sinfo->chains |= BIT(count_rssi);
++			sinfo->chain_signal[count_rssi] =
++				sta_info_le.rx_lastpkt_rssi[i];
++			sinfo->chain_signal_avg[count_rssi] =
++				sta_info_le.rssi[i];
++			total_rssi += sta_info_le.rx_lastpkt_rssi[i];
++			total_rssi_avg += sta_info_le.rssi[i];
++			count_rssi++;
  		}
- 
--		if (tb[TCA_VLAN_PUSH_VLAN_PRIORITY])
-+		push_prio_exists = !!tb[TCA_VLAN_PUSH_VLAN_PRIORITY];
-+		if (push_prio_exists)
- 			push_prio = nla_get_u8(tb[TCA_VLAN_PUSH_VLAN_PRIORITY]);
- 		break;
- 	case TCA_VLAN_ACT_POP_ETH:
-@@ -241,6 +243,7 @@ static int tcf_vlan_init(struct net *net, struct nlattr *nla,
- 	p->tcfv_action = action;
- 	p->tcfv_push_vid = push_vid;
- 	p->tcfv_push_prio = push_prio;
-+	p->tcfv_push_prio_exists = push_prio_exists || action == TCA_VLAN_ACT_PUSH;
- 	p->tcfv_push_proto = push_proto;
- 
- 	if (action == TCA_VLAN_ACT_PUSH_ETH) {
+ 		if (count_rssi) {
+-			sinfo->filled |= BIT_ULL(NL80211_STA_INFO_CHAIN_SIGNAL);
+ 			sinfo->filled |= BIT_ULL(NL80211_STA_INFO_SIGNAL);
+-			total_rssi /= count_rssi;
+-			sinfo->signal = total_rssi;
++			sinfo->filled |= BIT_ULL(NL80211_STA_INFO_SIGNAL_AVG);
++			sinfo->filled |= BIT_ULL(NL80211_STA_INFO_CHAIN_SIGNAL);
++			sinfo->filled |=
++				BIT_ULL(NL80211_STA_INFO_CHAIN_SIGNAL_AVG);
++			sinfo->signal = total_rssi / count_rssi;
++			sinfo->signal_avg = total_rssi_avg / count_rssi;
+ 		} else if (test_bit(BRCMF_VIF_STATUS_CONNECTED,
+ 			&ifp->vif->sme_state)) {
+ 			memset(&scb_val, 0, sizeof(scb_val));
 -- 
 2.30.2
 
