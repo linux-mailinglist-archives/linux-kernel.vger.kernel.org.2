@@ -2,68 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDDCC3C619B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D60E13C61A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:12:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234891AbhGLRPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 13:15:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37918 "EHLO
+        id S235503AbhGLRPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 13:15:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230255AbhGLRPC (ORCPT
+        with ESMTP id S235321AbhGLRPP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 13:15:02 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A628C0613DD;
-        Mon, 12 Jul 2021 10:12:14 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 4DC8136E;
-        Mon, 12 Jul 2021 17:12:14 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 4DC8136E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1626109934; bh=GENBQY4du2/5sQ8IaBN99MefXBtrjByovb0MtqXhn+U=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=aMDfeutSvyJyAWfWy7nPBz3qkR3ic5xYhCvaJOed04aNtVuaxt7fr6LIQ7LKNraRw
-         S2C5haz/4eiz3weYcTBnu8PaWuRM4QtVMMbTxZmAe0HF0UtpyaOiS/ErHWa41Y8Dte
-         YtaKRtdkdccdr/1cdAzDUwiWJHfZny/ZT+2WjYjolp4oGz9v181T8xrF5ezEB+WNqf
-         wPF/NcQ0qMSOXbo+WjRCEUBUNDVH1aQ4v6ZJlLgVuSwznbwp/hPV/GbOUSnW2uUv/1
-         rVnMRdzfkES0pLgRSvdxasxbPhtgBnLOsgkTQucraB+brLF/ZXYkcWmWxjhCYZMxkl
-         wqzcjoy3MfPxw==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Hu Jialun <hujialun@comp.nus.edu.sg>,
-        =?utf-8?B?5byg5LmQ?= Zhang Le <r0bertz@gentoo.org>,
-        Alex Shi <alexs@kernel.org>
-Cc:     Hu Jialun <hujialun@comp.nus.edu.sg>,
-        Wei Ming Chen <jj251510319013@gmail.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs/zh_CN: Remove the Microsoft rhetoric
-In-Reply-To: <20210703164834.460447-1-hujialun@comp.nus.edu.sg>
-References: <20210703164834.460447-1-hujialun@comp.nus.edu.sg>
-Date:   Mon, 12 Jul 2021 11:12:13 -0600
-Message-ID: <87mtqrpic2.fsf@meer.lwn.net>
+        Mon, 12 Jul 2021 13:15:15 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1887AC0613E8;
+        Mon, 12 Jul 2021 10:12:26 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id o201so11949513pfd.1;
+        Mon, 12 Jul 2021 10:12:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WCRRaRl9ViNQYcLjj8Pvk5/hKyaKb5DkmBptNf5pL0k=;
+        b=uyatqZ5ZeHy3PJMUMFcxhxH7aTF/fb375LvlXwn8t73XShIGnvgGOgdsLYWCJQtz1s
+         KU3uHw/86BCDYGNsL8MuXFMF54RVnr5BkaXVXlKxSIG+y3BDdhS95QucB+/CEnKwyjoF
+         pC66NlwmWAu8rLVNsN2foSdk8HKDvWJNrwMhdJgy9400dAfZKcv5bQlG4/OqZmbsAEJX
+         ah3GHM5HSnUpE3tZ6KI9idxqsNo7frovW/y3FC3nI3kx8jccFYgGddIjxyp0hn+XsGu4
+         L1wcko+uKXhwuW6fJTIRH+WN4N9YRND4hqBHoiyaDIyomqqqN0QUJ5SZBmUKNeogFvV1
+         rLpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WCRRaRl9ViNQYcLjj8Pvk5/hKyaKb5DkmBptNf5pL0k=;
+        b=tI0nxXkQVGStD04I9UxyFACm5AnOJRvoMl4XDu66cOvT3gaRfTkoEuyZBEhgfyjchx
+         +B6EMiPrtM7plmOqZsr+lXEjsimK6Mjw79A0+zyt6Fp1nBYjeXlLkawZLyhHLfKRcuDn
+         +8YKOjalMDAE7/Mv9f3a/aEiLIw3ftja7AN34gPmmY51aWKSvGxqGju0yL1RrdMg2fF0
+         v1txl9gg7+Q8CdYdGGBpplBiQVSpAMddzipUO7gvg1yXvCUIdxemDE0XsEoDvxTvXQgr
+         /zxioRpqgiDcsuVeuPQsSNStCLJ0H16vXoQX2nTKrHzih39PiU5a2AXlch2pwNU/ks+X
+         LtjA==
+X-Gm-Message-State: AOAM533gStTjyowaUgZ9AV250Wu/cISav+2LQxXNSKryT64roBBjn2jV
+        weD2w9KqVls8vW7/+DWAIrIgU5ytQfDbUw==
+X-Google-Smtp-Source: ABdhPJxawsD+n7HhDtAS+H52YtXnjq8g1Cp+UOxGtvqbzGMfGhWtNxOvC4+7J9fnGK+Zpe49PQsKcg==
+X-Received: by 2002:a62:2ec7:0:b029:301:fe50:7d4b with SMTP id u190-20020a622ec70000b0290301fe507d4bmr73328pfu.78.1626109945219;
+        Mon, 12 Jul 2021 10:12:25 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id bk16sm8451377pjb.54.2021.07.12.10.12.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Jul 2021 10:12:24 -0700 (PDT)
+Subject: Re: [PATCH 5.12 000/700] 5.12.17-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210712060924.797321836@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <46e6dd5b-ccd4-7e1f-fff5-be080c7d07a7@gmail.com>
+Date:   Mon, 12 Jul 2021 10:12:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hu Jialun <hujialun@comp.nus.edu.sg> writes:
+On 7/11/21 11:01 PM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.12.17 release.
+> There are 700 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 14 Jul 2021 06:02:46 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.17-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-> Update Chinese translation on par with original English coding-style.rst
-> Related commit b7592e5b82db19b72a34b471f3296ad3f651c8b9
->
-> Signed-off-by: Hu Jialun <hujialun@comp.nus.edu.sg>
-> ---
-> This is more of a crude first attempt to begin getting accustomed to
-> mailing list conventions of open-source communities.
-> While efforts have been made to conform to the patch submission
-> conventions, there is still inevitably certain omissions.
-> Any corrections and suggestions would be greatly appreciated! :)
->
->  Documentation/translations/zh_CN/process/coding-style.rst | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
 
-Applied, thanks.
-
-jon
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
