@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ACA03C5AFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F9BE3C5AFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234618AbhGLKui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 06:50:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35082 "EHLO mail.kernel.org"
+        id S234647AbhGLKul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 06:50:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234231AbhGLKuB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 06:50:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DE4761106;
-        Mon, 12 Jul 2021 10:47:11 +0000 (UTC)
+        id S234288AbhGLKuD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 06:50:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BBB8A61154;
+        Mon, 12 Jul 2021 10:47:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626086832;
-        bh=aG/LoA6/Vk90nA8XXp1zTMNEBK2UxUpaR3cQWgczELo=;
+        s=k20201202; t=1626086835;
+        bh=ONWe2l21GigqNp5iTgFw6yypYHKVqWp4IvDTNnU3EHc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vB0Im2iQepR6UJzSJcdY2myRVT1Iv76jmQBa7H3HsWxokcxvQSEO+Ja6jrrP7jYsm
-         XYAsCH9g71RWw9Skia4QVuUON4IgdhfWbU2EFSStq35ZRdkRaLyMXfeT4hG0hq6lIt
-         gK7C8bTbLVako0H3aakuhWdTy6nVXRWBzoskG8hZnRscFnSw7hcwiuJumUsmN/XFhh
-         q3eTZPp7Q4jOzc9y2lY0i6X15LMXLYc8bs9Ftn+dxYTLrkaNnasdfOViBIDUZRc4Bi
-         1EvN0M/K/4lI/RiAT8vgMAgEfEQ7Z2ySyLb/zHDz3lvYPaKd1c65LuwghbjGiJNbID
-         5Zpsp55jj+jXg==
+        b=Q2Tb5rfHjuxz0RpXe2zHIxYZgxK7Bza7hdeGhCSNf1aAkDCfBuSzRyb6ATkZNF7Ku
+         ckrox5yp4nHa3fUFszT/nGHxdnoXiYeQNhPQsrqp8PPqqoyZ1X8HuHxHpnbQur3ZTQ
+         U2cdDFnpulewVQNHzJVCwzdXbTGZwT8utnwrW+E4K8wzEpoc+b7cfkMzAoyIX8tbey
+         fkAoveq+aeVdRiJA9gReiZfDgrW2+lFZaKjHblxW4bC04I3QRSdGan1836ntZln6bS
+         oWOQw2mp3FPx3MkkKyrXV7+JgC9xaG0ipErt1pwBdKhK7GPzHiyOonQTAqkjJM75fw
+         i4yw0pogdnKKQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-power@fi.rohmeurope.com,
-        linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
-Subject: Re: [PATCH] regulator: bd718x7: Suopport configuring UVP/OVP state
-Date:   Mon, 12 Jul 2021 11:45:47 +0100
-Message-Id: <162608654079.4419.9645634631307763759.b4-ty@kernel.org>
+To:     Axel Lin <axel.lin@ingics.com>
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        Guodong Xu <guodong.xu@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Subject: Re: [PATCH RFT] regulator: hi6421: Fix getting wrong drvdata
+Date:   Mon, 12 Jul 2021 11:45:48 +0100
+Message-Id: <162608654079.4419.14681068957546195673.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210705105416.GA1189560@localhost.localdomain>
-References: <20210705105416.GA1189560@localhost.localdomain>
+In-Reply-To: <20210630095959.2411543-1-axel.lin@ingics.com>
+References: <20210630095959.2411543-1-axel.lin@ingics.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,10 +41,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 5 Jul 2021 13:54:33 +0300, Matti Vaittinen wrote:
-> The ROHM BD71837/47/50/78 do support enabling/disabling the under/over
-> voltage protection. Add support for enabling/disabling the protection
-> according to the device-tree information.
+On Wed, 30 Jun 2021 17:59:59 +0800, Axel Lin wrote:
+> Since config.dev = pdev->dev.parent in current code, so
+> dev_get_drvdata(rdev->dev.parent) call in hi6421_regulator_enable
+> returns the drvdata of the mfd device rather than the regulator. Fix it.
+> 
+> This was broken while converting to use simplified DT parsing because the
+> config.dev changed from pdev->dev to pdev->dev.parent for parsing the
+> parent's of_node.
 
 Applied to
 
@@ -52,8 +56,8 @@ Applied to
 
 Thanks!
 
-[1/1] regulator: bd718x7: Suopport configuring UVP/OVP state
-      commit: fedbfea13cc0e513956abfa5c22158f0523d5687
+[1/1] regulator: hi6421: Fix getting wrong drvdata
+      commit: 1c73daee4bf30ccdff5e86dc400daa6f74735da5
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
