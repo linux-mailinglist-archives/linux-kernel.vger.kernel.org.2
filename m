@@ -2,66 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9323C404D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 02:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBC193C4051
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 02:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbhGLALh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 20:11:37 -0400
-Received: from mga01.intel.com ([192.55.52.88]:24723 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229660AbhGLALg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 20:11:36 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10042"; a="231686456"
-X-IronPort-AV: E=Sophos;i="5.84,232,1620716400"; 
-   d="scan'208";a="231686456"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jul 2021 17:08:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,232,1620716400"; 
-   d="scan'208";a="652608483"
-Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 11 Jul 2021 17:08:47 -0700
-Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1m2jV8-000Gio-Jd; Mon, 12 Jul 2021 00:08:46 +0000
-Date:   Mon, 12 Jul 2021 08:07:55 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Murali Karicheri <m-karicheri2@ti.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Subject: [RFC PATCH ti] net: ti: prueth_core: hsr/prp: fix duplicated
- inclusion
-Message-ID: <20210712000755.GA62038@64f9af9da1db>
-References: <202107120841.2B0XTVCA-lkp@intel.com>
+        id S230026AbhGLAR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 20:17:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhGLAR1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Jul 2021 20:17:27 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83951C0613DD;
+        Sun, 11 Jul 2021 17:14:40 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id f5so7680327qvu.8;
+        Sun, 11 Jul 2021 17:14:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cbWrCRAXNKnrsAOs9jzjwaP+o7LOU1NoMDrvo6psqh0=;
+        b=pcZhmUBcBartxQVH+z7tpAIZMC86HC+ySHISakIRBBaS3KGUJa+s9ghxKBdpT3cesy
+         LaKgepCTVBG43f87Q5L7av2e1NvU43Ui0UtZSSwGOIkiuxunRYGoitmjF+Q8fyPB7F9F
+         G6S2trIQ8lVL1wploYqYw6O1vSea0sQXACuZBcd91DrQLo+ygk6V4DGlxpHX1TWpnFYM
+         FzQrhG020laUrHf6orAxZWFOduVXCsGpxcGYlF0qDatd75s0qZwNyK5ROHlCcB75D225
+         uk5HVuwBS1XGf5dzg7pzOlHN9iQZy0ehNZWwlTBnrGsuhpVgrJlltmJyCJAhYHPkgTjg
+         rMpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cbWrCRAXNKnrsAOs9jzjwaP+o7LOU1NoMDrvo6psqh0=;
+        b=K60Ds9LR7VhhO+P5xSCyGCONSAd495NsVSxvupedKztcsF9QeCysnMVxvIiu6CRk5N
+         cS0LqwtyiXZdI0osG/W4OGktL3gsWKOdUDxg3oX4eGy0xJ691GUJUNz9B6qddETM6TFJ
+         lNGLDe3VWvaPB3N6t/IDTbTht1/nZNs81gvRzeCeyKir6BbDtDqxTxkOLUq87E86zKfw
+         GzayhPRosq16wq7VLo0r9H9+rC7rW1OyzRoOwBUpZTSzjS9Fk4yyQg9qbJAAJ0vqy4M4
+         LBfqNbvFrCzO8smqQC8BrtpiPVVZHIl2fuRbCl80GMZgxko00aYQ/T8AZcinwEjr4x0/
+         vICQ==
+X-Gm-Message-State: AOAM532e0TLCZtIbmmqh9p60XuiLoZwVsjsztvlZ0A3jaSsoIVMGxiOa
+        JeSvNGnMHC7zWRKbjG+qejU=
+X-Google-Smtp-Source: ABdhPJxOe5ByYnSBkxL9fC/fx33DHCY7UT7W1x8vp0k92vpxW0k3wg+UPpWI9Vis/OijUYmVaG97+Q==
+X-Received: by 2002:a0c:9e6a:: with SMTP id z42mr34205762qve.37.1626048879641;
+        Sun, 11 Jul 2021 17:14:39 -0700 (PDT)
+Received: from localhost.localdomain (94-29-37-113.dynamic.spd-mgts.ru. [94.29.37.113])
+        by smtp.gmail.com with ESMTPSA id b5sm687481qtk.46.2021.07.11.17.14.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Jul 2021 17:14:39 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
+Cc:     linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1] iommu/tegra-smmu: Change debugfs directory name
+Date:   Mon, 12 Jul 2021 03:13:41 +0300
+Message-Id: <20210712001341.11166-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202107120841.2B0XTVCA-lkp@intel.com>
-X-Patchwork-Hint: ignore
-drivers/net/ethernet/ti/prueth.h: linux/types.h is included more than once.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Generated by: scripts/checkincludes.pl
+Change debugfs directory name to "smmu", which is a much more obvious name
+than the generic name of the memory controller device-tree node.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- prueth.h |    1 -
- 1 file changed, 1 deletion(-)
+ drivers/iommu/tegra-smmu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/ti/prueth.h b/drivers/net/ethernet/ti/prueth.h
-index bc308af9dd309..9f8d783904113 100644
---- a/drivers/net/ethernet/ti/prueth.h
-+++ b/drivers/net/ethernet/ti/prueth.h
-@@ -8,7 +8,6 @@
- #ifndef __NET_TI_PRUETH_H
- #define __NET_TI_PRUETH_H
+diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
+index 0a281833f611..093c270b9245 100644
+--- a/drivers/iommu/tegra-smmu.c
++++ b/drivers/iommu/tegra-smmu.c
+@@ -1141,7 +1141,7 @@ struct tegra_smmu *tegra_smmu_probe(struct device *dev,
  
--#include <linux/types.h>
- #include <linux/phy.h>
- #include <linux/pruss.h>
- #include <linux/types.h>
+ 	tegra_smmu_ahb_enable();
+ 
+-	err = iommu_device_sysfs_add(&smmu->iommu, dev, NULL, dev_name(dev));
++	err = iommu_device_sysfs_add(&smmu->iommu, dev, NULL, "smmu");
+ 	if (err)
+ 		return ERR_PTR(err);
+ 
+-- 
+2.32.0
+
