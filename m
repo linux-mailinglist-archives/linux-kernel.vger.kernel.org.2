@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A5A43C4587
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 08:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E62933C4560
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 08:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233438AbhGLG0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:26:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40254 "EHLO mail.kernel.org"
+        id S234761AbhGLGZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:25:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233946AbhGLGXc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:23:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 60E37610CD;
-        Mon, 12 Jul 2021 06:20:17 +0000 (UTC)
+        id S234750AbhGLGXq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:23:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 098F56113C;
+        Mon, 12 Jul 2021 06:20:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626070817;
-        bh=y5VGwTrzuQwT2plzHSrl2/5rCfn4r0bcXrI0UDrKkDk=;
+        s=korg; t=1626070822;
+        bh=Kfq4+vFQ/+PIcxjEuUir11AQzB6rvxUK1mBV1FAM6gw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kPUnDxz+XA3LUa+2oUjF5kZfoQuO5mW+dAeVLbnioM7lk788CNih+Mn7TS9NWH5nQ
-         8Tw+pLwdZCAyvFBPUmwr0a0GjJ0mG5a3rifhVJgQ1GEpyoiPyLGQnD1oxTeM8zWCXX
-         UlaU9efIgEpr7L/ViF1SbebmfxrdBqHxjubgQE/o=
+        b=zcC8/5UHLKTsFpnzwtu4PAUYFRaZtBnpRVWqiYe/vwyf80nm0Evsu9nUjBpYoj7ng
+         Ud3k8f/7vvZFKwUaQYB4WdB6bEt7Nl2A0VcTmCu9raRxCxVRIJ6cw5J07UQ7bG3HNK
+         xx0J23k1vTnu3mFFlEv0rdEiMPLO5/Hoa8/aeJGU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 152/348] pata_ep93xx: fix deferred probing
-Date:   Mon, 12 Jul 2021 08:08:56 +0200
-Message-Id: <20210712060721.250916595@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 154/348] media: au0828: fix a NULL vs IS_ERR() check
+Date:   Mon, 12 Jul 2021 08:08:58 +0200
+Message-Id: <20210712060721.502432533@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060659.886176320@linuxfoundation.org>
 References: <20210712060659.886176320@linuxfoundation.org>
@@ -39,37 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 5c8121262484d99bffb598f39a0df445cecd8efb ]
+[ Upstream commit 8f2e452730d2bcd59fe05246f0e19a4c52e0012d ]
 
-The driver overrides the error codes returned by platform_get_irq() to
--ENXIO, so if it returns -EPROBE_DEFER, the driver would fail the probe
-permanently instead of the deferred probing.  Propagate the error code
-upstream, as it should have been done from the start...
+The media_device_usb_allocate() function returns error pointers when
+it's enabled and something goes wrong.  It can return NULL as well, but
+only if CONFIG_MEDIA_CONTROLLER is disabled so that doesn't apply here.
 
-Fixes: 2fff27512600 ("PATA host controller driver for ep93xx")
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
-Link: https://lore.kernel.org/r/509fda88-2e0d-2cc7-f411-695d7e94b136@omprussia.ru
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: 812658d88d26 ("media: change au0828 to use Media Device Allocator API")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ata/pata_ep93xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/usb/au0828/au0828-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/ata/pata_ep93xx.c b/drivers/ata/pata_ep93xx.c
-index badab6708893..46208ececbb6 100644
---- a/drivers/ata/pata_ep93xx.c
-+++ b/drivers/ata/pata_ep93xx.c
-@@ -928,7 +928,7 @@ static int ep93xx_pata_probe(struct platform_device *pdev)
- 	/* INT[3] (IRQ_EP93XX_EXT3) line connected as pull down */
- 	irq = platform_get_irq(pdev, 0);
- 	if (irq < 0) {
--		err = -ENXIO;
-+		err = irq;
- 		goto err_rel_gpio;
- 	}
+diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
+index a8a72d5fbd12..caefac07af92 100644
+--- a/drivers/media/usb/au0828/au0828-core.c
++++ b/drivers/media/usb/au0828/au0828-core.c
+@@ -199,8 +199,8 @@ static int au0828_media_device_init(struct au0828_dev *dev,
+ 	struct media_device *mdev;
  
+ 	mdev = media_device_usb_allocate(udev, KBUILD_MODNAME, THIS_MODULE);
+-	if (!mdev)
+-		return -ENOMEM;
++	if (IS_ERR(mdev))
++		return PTR_ERR(mdev);
+ 
+ 	dev->media_dev = mdev;
+ #endif
 -- 
 2.30.2
 
