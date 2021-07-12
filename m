@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 148C03C4CB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7703C587B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242489AbhGLHGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:06:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45050 "EHLO mail.kernel.org"
+        id S1356914AbhGLIsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:48:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236538AbhGLGrj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:47:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 20A16611F1;
-        Mon, 12 Jul 2021 06:43:36 +0000 (UTC)
+        id S243451AbhGLHwv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:52:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D7086112D;
+        Mon, 12 Jul 2021 07:50:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072217;
-        bh=LJbD7DrUYPmRZAMlDFkz4WBP7lE88JkaDf4HFPrxDdw=;
+        s=korg; t=1626076202;
+        bh=bRID1WUDRBSGxPTH2JaoPg+8jnffbPLQFx/rjbCmz2c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sNMXDPf52N79YsKJIRkVlfkqvAPpTsgcPRESiLx3xIMY+xNd84U8xutDGzkmUQusI
-         2+rshdkA0aqQLbHDAIIONaV1xX8DpXIcZd3jq23JPEW5eOeIcCTugyrI+imA/rj175
-         ewUnO0st2NWvnY17Uw3tgpT9Vam6BTY0Fkz5F8rY=
+        b=l25kAKjNaPn2IaumB4Jt1dIqDUHqRjtAl7ypoabBdqzA0HKbzVkxKDw/zdST7uKp9
+         y/zJ/dARVA1Sl5f0OKW+WPQW8g8ka8jWs3J77kxgCt/WHh4grjLb1KU/zY3+xOu1Tm
+         DyMwa9KlDfmMhaeJScimV1C9fRMOx60JUdm/DTso=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lior Nahmanson <liorna@nvidia.com>,
-        Antoine Tenart <atenart@kernel.org>,
+        stable@vger.kernel.org,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 404/593] net: phy: mscc: fix macsec key length
-Date:   Mon, 12 Jul 2021 08:09:24 +0200
-Message-Id: <20210712060932.145829882@linuxfoundation.org>
+Subject: [PATCH 5.13 542/800] tc-testing: fix list handling
+Date:   Mon, 12 Jul 2021 08:09:25 +0200
+Message-Id: <20210712061025.025802800@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,54 +41,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Antoine Tenart <atenart@kernel.org>
+From: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
 
-[ Upstream commit c309217f91f2d2097c2a0a832d9bff50b88c81dc ]
+[ Upstream commit b4fd096cbb871340be837491fa1795864a48b2d9 ]
 
-The key length used to store the macsec key was set to MACSEC_KEYID_LEN
-(16), which is an issue as:
-- This was never meant to be the key length.
-- The key length can be > 16.
+python lists don't have an 'add' method, but 'append'.
 
-Fix this by using MACSEC_MAX_KEY_LEN instead (the max length accepted in
-uAPI).
-
-Fixes: 28c5107aa904 ("net: phy: mscc: macsec support")
-Reported-by: Lior Nahmanson <liorna@nvidia.com>
-Signed-off-by: Antoine Tenart <atenart@kernel.org>
+Fixes: 14e5175e9e04 ("tc-testing: introduce scapyPlugin for basic traffic")
+Signed-off-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/mscc/mscc_macsec.c | 2 +-
- drivers/net/phy/mscc/mscc_macsec.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ tools/testing/selftests/tc-testing/plugin-lib/scapyPlugin.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/phy/mscc/mscc_macsec.c b/drivers/net/phy/mscc/mscc_macsec.c
-index 10be266e48e8..b7b2521c73fb 100644
---- a/drivers/net/phy/mscc/mscc_macsec.c
-+++ b/drivers/net/phy/mscc/mscc_macsec.c
-@@ -501,7 +501,7 @@ static u32 vsc8584_macsec_flow_context_id(struct macsec_flow *flow)
- }
- 
- /* Derive the AES key to get a key for the hash autentication */
--static int vsc8584_macsec_derive_key(const u8 key[MACSEC_KEYID_LEN],
-+static int vsc8584_macsec_derive_key(const u8 key[MACSEC_MAX_KEY_LEN],
- 				     u16 key_len, u8 hkey[16])
- {
- 	const u8 input[AES_BLOCK_SIZE] = {0};
-diff --git a/drivers/net/phy/mscc/mscc_macsec.h b/drivers/net/phy/mscc/mscc_macsec.h
-index 9c6d25e36de2..453304bae778 100644
---- a/drivers/net/phy/mscc/mscc_macsec.h
-+++ b/drivers/net/phy/mscc/mscc_macsec.h
-@@ -81,7 +81,7 @@ struct macsec_flow {
- 	/* Highest takes precedence [0..15] */
- 	u8 priority;
- 
--	u8 key[MACSEC_KEYID_LEN];
-+	u8 key[MACSEC_MAX_KEY_LEN];
- 
- 	union {
- 		struct macsec_rx_sa *rx_sa;
+diff --git a/tools/testing/selftests/tc-testing/plugin-lib/scapyPlugin.py b/tools/testing/selftests/tc-testing/plugin-lib/scapyPlugin.py
+index 229ee185b27e..a7b21658af9b 100644
+--- a/tools/testing/selftests/tc-testing/plugin-lib/scapyPlugin.py
++++ b/tools/testing/selftests/tc-testing/plugin-lib/scapyPlugin.py
+@@ -36,7 +36,7 @@ class SubPlugin(TdcPlugin):
+         for k in scapy_keys:
+             if k not in scapyinfo:
+                 keyfail = True
+-                missing_keys.add(k)
++                missing_keys.append(k)
+         if keyfail:
+             print('{}: Scapy block present in the test, but is missing info:'
+                 .format(self.sub_class))
 -- 
 2.30.2
 
