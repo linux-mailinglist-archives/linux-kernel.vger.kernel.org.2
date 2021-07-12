@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DB473C5956
+	by mail.lfdr.de (Postfix) with ESMTP id 569C33C5957
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382838AbhGLJCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:02:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54124 "EHLO mail.kernel.org"
+        id S1382857AbhGLJC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:02:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352941AbhGLIAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:00:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BCCC619AB;
-        Mon, 12 Jul 2021 07:53:54 +0000 (UTC)
+        id S1352933AbhGLIAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:00:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 63BF961C44;
+        Mon, 12 Jul 2021 07:53:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076435;
-        bh=uDSGNbL8k/NbeguoVn9XbQ/6gbY4OE3sqXBGJc9U9Rw=;
+        s=korg; t=1626076437;
+        bh=krQEekz+xGXC4oBXdWpzNl12PyKLo+4Onj6x+/Cdqwg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oGjgAEuJ8i5pnPO/VVgPgUNSTu85oy54+o8mSt3L1gqxg8vU3SVvQyX8yesTfkcf5
-         1xHvK1hB80rDl3c28B9fXnjissjWCbq6v+JlZNyY9uvR8bAVL9pX0+WzI9Z3hRi+JU
-         ENxlFFXHG/4ycFfFM9Mjgf51uxgqYvtpAdFrLIZ4=
+        b=xmPrRFr1o+I6hIOYVIWiazEqlPKNCNDdnk/p6uRgEDAlhy7Pl4xOwXfgPZW2r9QTR
+         wiena/XlNcdN22gaNfqDL7RyjfscasEqIcHlLkVXdYHhpjHW5MO9VnWs5PTufZhEzg
+         9M9LIcr94uE0yU+C7bSII7vVI2r67zzhSm6QVtZM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Badhri Jagan Sridharan <badhri@google.com>,
+        stable@vger.kernel.org,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 641/800] usb: typec: tcpm: Fix up PR_SWAP when vsafe0v is signalled
-Date:   Mon, 12 Jul 2021 08:11:04 +0200
-Message-Id: <20210712061035.288489009@linuxfoundation.org>
+Subject: [PATCH 5.13 642/800] ASoC: rsnd: tidyup loop on rsnd_adg_clk_query()
+Date:   Mon, 12 Jul 2021 08:11:05 +0200
+Message-Id: <20210712061035.383158207@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -41,39 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Badhri Jagan Sridharan <badhri@google.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-[ Upstream commit d112efbe6dbf7d4c482e2a3f381fa315aabfe63b ]
+[ Upstream commit cf9d5c6619fadfc41cf8f5154cb990cc38e3da85 ]
 
-During PR_SWAP, When TCPM is in PR_SWAP_SNK_SRC_SINK_OFF, vbus is
-expected to reach VSAFE0V when source turns off vbus. Do not move
-to SNK_UNATTACHED state when this happens.
+commit 06e8f5c842f2d ("ASoC: rsnd: don't call clk_get_rate() under
+atomic context") used saved clk_rate, thus for_each_rsnd_clk()
+is no longer needed. This patch fixes it.
 
-Fixes: 28b43d3d746b ("usb: typec: tcpm: Introduce vsafe0v for vbus")
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-Link: https://lore.kernel.org/r/20210517192112.40934-1-badhri@google.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 06e8f5c842f2d ("ASoC: rsnd: don't call clk_get_rate() under atomic context")
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/87v978oe2u.wl-kuninori.morimoto.gx@renesas.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/typec/tcpm/tcpm.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/sh/rcar/adg.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index c67533191091..1b7f18d35df4 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -5225,6 +5225,9 @@ static void _tcpm_pd_vbus_vsafe0v(struct tcpm_port *port)
- 				tcpm_set_state(port, SNK_UNATTACHED, 0);
- 		}
- 		break;
-+	case PR_SWAP_SNK_SRC_SINK_OFF:
-+		/* Do nothing, vsafe0v is expected during transition */
-+		break;
- 	default:
- 		if (port->pwr_role == TYPEC_SINK && port->auto_vbus_discharge_enabled)
- 			tcpm_set_state(port, SNK_UNATTACHED, 0);
+diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
+index 0b8ae3eee148..93751099465d 100644
+--- a/sound/soc/sh/rcar/adg.c
++++ b/sound/soc/sh/rcar/adg.c
+@@ -290,7 +290,6 @@ static void rsnd_adg_set_ssi_clk(struct rsnd_mod *ssi_mod, u32 val)
+ int rsnd_adg_clk_query(struct rsnd_priv *priv, unsigned int rate)
+ {
+ 	struct rsnd_adg *adg = rsnd_priv_to_adg(priv);
+-	struct clk *clk;
+ 	int i;
+ 	int sel_table[] = {
+ 		[CLKA] = 0x1,
+@@ -303,10 +302,9 @@ int rsnd_adg_clk_query(struct rsnd_priv *priv, unsigned int rate)
+ 	 * find suitable clock from
+ 	 * AUDIO_CLKA/AUDIO_CLKB/AUDIO_CLKC/AUDIO_CLKI.
+ 	 */
+-	for_each_rsnd_clk(clk, adg, i) {
++	for (i = 0; i < CLKMAX; i++)
+ 		if (rate == adg->clk_rate[i])
+ 			return sel_table[i];
+-	}
+ 
+ 	/*
+ 	 * find divided clock from BRGA/BRGB
 -- 
 2.30.2
 
