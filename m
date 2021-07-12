@@ -2,138 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC1D3C64AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 22:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B47563C64B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 22:05:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234394AbhGLUG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 16:06:26 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:44984 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233686AbhGLUGZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 16:06:25 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1m329P-00GBKY-Tg; Mon, 12 Jul 2021 14:03:35 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:60510 helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1m329O-002iY0-KP; Mon, 12 Jul 2021 14:03:35 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Kalesh Singh <kaleshsingh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <20210708155647.44208-1-kaleshsingh@google.com>
-        <CAHk-=whDkekE8n2LdPiKHeTdRnV--ys0V0nPZ76oPaE0fn-d+g@mail.gmail.com>
-Date:   Mon, 12 Jul 2021 15:02:38 -0500
-In-Reply-To: <CAHk-=whDkekE8n2LdPiKHeTdRnV--ys0V0nPZ76oPaE0fn-d+g@mail.gmail.com>
-        (Linus Torvalds's message of "Sat, 10 Jul 2021 11:21:34 -0700")
-Message-ID: <87czrn8fmp.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S236298AbhGLUIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 16:08:07 -0400
+Received: from mail-co1nam11on2081.outbound.protection.outlook.com ([40.107.220.81]:45344
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231693AbhGLUIF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 16:08:05 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GgT656WVTYbSzrWfcpN8hvWhZVzHLoBpBVdOFV5/NoCadohRbyHar2flZR9kBiuBOzIwz1ten4bVrhHZG7EzBSzSgKFClS1nz0JvCLrkGohJLf2GGBtNe4BGEZ5/k51qjGsisYqQ2WuVI5Klaat+uCCydJb/dVLcX6CmPCo6VTTnuvkvbIAz+gAmTC8LZGQxEM9B6gJ3wPQ6XJFAJ0+I8nQQZKADb2XErtA4WRtYp+iRTl5jaO50YwRz9r6vizDuWQm3JGGtGa1kOoXljiTwTQXcfRaDeE197r0P33SNYfZw3A55/VmlcnTIyNkJnQLtjdeBLjaOSdCatSibuqQtFA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qD3eMhZaPQW9rr3sgBBOmZjvmp2gUxke6MHYHu3/B3U=;
+ b=L6mT1Mo2pdgzL1ndvy6TQ6OmLCAO6/GCeFaeW9IxC75DJcqUduVLwAY3jKPFmYh3yX/r38mLfd0kSHqm7VYSbXnh4qlWLaV6BOaFZxGTS7J1NqEk/3P57aeHWv5PGm8iRcxTLDIFMeS3mm4Gf8feyfE72Uj0FHRdIWw3LaJxOiVFiFOCHZMSaWEGrdcl7rKW95Df2fY2mrZVas3moqk85YWAjYs8cROV04BxugDk6rfvS24QbTj7Jk+KP5ZDlDVA0GaJuZYDPMQYDsuQl3T7fUhfo+PunNpodWY3Miwp9vEEsGOqkp3h+cjWGLfzBZIJ2+FAQMFRAa01wMHCLQiGeQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qD3eMhZaPQW9rr3sgBBOmZjvmp2gUxke6MHYHu3/B3U=;
+ b=OsVJd5qoH+81sbFAMu1QviFoL7Nkcf6FW06QAXc6RymqTsHgFA2GMb5ujXVCkQ1/V6iYQmZQ+qOoGByLOMn0vtjUwVf8NYIT4pAJgRzCpGb+ILTDV+j4b51ReEjAiJRKsYvTNm5Kr28JbSopmT7SmKYukF76SiZBzswK23eyqa0=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
+ by SN1PR12MB2543.namprd12.prod.outlook.com (2603:10b6:802:2a::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.21; Mon, 12 Jul
+ 2021 20:05:15 +0000
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::a8a9:2aac:4fd1:88fa]) by SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::a8a9:2aac:4fd1:88fa%3]) with mapi id 15.20.4308.026; Mon, 12 Jul 2021
+ 20:05:15 +0000
+Cc:     brijesh.singh@amd.com, Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        David Rientjes <rientjes@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] KVM, SEV: Refactor out function for unregistering
+ encrypted regions
+To:     Peter Gonda <pgonda@google.com>, kvm@vger.kernel.org
+References: <20210621163118.1040170-1-pgonda@google.com>
+ <20210621163118.1040170-2-pgonda@google.com>
+From:   Brijesh Singh <brijesh.singh@amd.com>
+Message-ID: <11c371de-88d0-32a9-a262-45e62c623b4d@amd.com>
+Date:   Mon, 12 Jul 2021 15:05:14 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210621163118.1040170-2-pgonda@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN6PR01CA0036.prod.exchangelabs.com (2603:10b6:805:b6::49)
+ To SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1m329O-002iY0-KP;;;mid=<87czrn8fmp.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+kWxupuXErFY3jJxeNcvha9YzdyoVp6Nk=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4763]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Linus Torvalds <torvalds@linux-foundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 520 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 10 (2.0%), b_tie_ro: 9 (1.7%), parse: 0.90 (0.2%),
-         extract_message_metadata: 12 (2.3%), get_uri_detail_list: 1.74 (0.3%),
-         tests_pri_-1000: 5 (1.0%), tests_pri_-950: 1.22 (0.2%),
-        tests_pri_-900: 1.00 (0.2%), tests_pri_-90: 119 (22.8%), check_bayes:
-        108 (20.7%), b_tokenize: 8 (1.5%), b_tok_get_all: 8 (1.5%),
-        b_comp_prob: 2.5 (0.5%), b_tok_touch_all: 86 (16.5%), b_finish: 0.92
-        (0.2%), tests_pri_0: 358 (68.8%), check_dkim_signature: 0.52 (0.1%),
-        check_dkim_adsp: 2.7 (0.5%), poll_dns_idle: 1.01 (0.2%), tests_pri_10:
-        2.2 (0.4%), tests_pri_500: 7 (1.4%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH] procfs: Prevent unpriveleged processes accessing fdinfo
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.31.95] (165.204.77.1) by SN6PR01CA0036.prod.exchangelabs.com (2603:10b6:805:b6::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend Transport; Mon, 12 Jul 2021 20:05:15 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b5c33b7c-2a76-4d0c-fe54-08d945705d5c
+X-MS-TrafficTypeDiagnostic: SN1PR12MB2543:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN1PR12MB2543E6CB835EFAF5468E7668E5159@SN1PR12MB2543.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:843;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RX7Tz+MJWmWdL270hU0PfjmKf30d0z/0+qAxc0GN0NRb3dzSFWajE1hFH4It+1M3maK2fPYbsyuWef7tN6ii2TFvTrKzKSgzOnVR2CeoWyKgTUEGbzEWCe2oH0xfm6rNwzW54VUX0cTYNLBEyfB8qtmK/FLVJeqwzm/ozukMyc00480leS0tTwRUlP8ZLaCCcB2iY3D863YOxvIAVoSpnUqKfR0bKCUoMRI4lPDuT0hLsEY0dCij5i9xfoFpas3MRPm/dJbe62iV+8xwJvtqmqovr4wbOfbMdqw7zD0ac7lwgcornRKZoKTj7Geql8e5S2bjZcLnOioDkR1I6eF3DGjG1xpvGK9NQZcgF0cbplrJxBoTgI+lJYw0hEcg9FVmJyCQtUi8qA/ef9DbxlQNvhYGh6briXNEWo2z5vWKraYKzxhOLm41lNyVtVdnH9qA4v18dKNkxR4hrenwvLqGCPrZBFYtxveJVgl8ZB0GMhklo9SWNCne20z2b9wfuqRjRVVGAxRvlhNvZbjjLyFUzDFnFAUlbjGDIawtgZueFWB1uuttFx9R6SILEIwGKENkoSv1a3B6riyJBPTcaWfP0iQkC8+Tlb12hu6p0rnBdaLgvJR92pHxzx6yTCqYeUvwpZpsuqF30hCEJ9KyugaAwii11OkUFp2DDiZJ+NYm9Iyaj04xcuPOaBprwFax+Wg2gDrB75v+Z4Pqwd+1gRr1xYrobKLCT072tASPBhQNUow=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(346002)(39860400002)(376002)(396003)(478600001)(53546011)(316002)(16576012)(186003)(52116002)(7416002)(8936002)(38350700002)(54906003)(38100700002)(2906002)(26005)(36756003)(6486002)(2616005)(31686004)(44832011)(8676002)(66476007)(4326008)(5660300002)(31696002)(66946007)(956004)(66556008)(86362001)(4744005)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aHBGaHlMSnhLMFRaSndpd0pJMU9qVldtV3NiMGZ2V0dLRlRlVUtjK0tqRFRs?=
+ =?utf-8?B?L1hUSXMzNjhHWUR4YmU0TTRCWCtzcG9jRWlzOEh2Y3JzeXBNRGpiZ0U3bTdu?=
+ =?utf-8?B?LzFteFJOL0FXR3JtRG9mdWZxVXRvVDh3clh6UWV0TnBkV3JVa3VsN0R5S0c3?=
+ =?utf-8?B?SmFBZ2R4RnBoMklFNWJTM0twUStReGRuNjBFZEczZDA5UWxrdjBKZDVYeXFz?=
+ =?utf-8?B?aDZHNFlqdUYza2M0TTlCbGwzdlhMajMxcVFsMzdNVlBid0xYTTZLQmxvcFZl?=
+ =?utf-8?B?a1hKUSsvV2pVU0xnU2xUalI4SWpldU9nayt0MzFwOTZNYmFxQ0YwVHhUOUtR?=
+ =?utf-8?B?STBqQUdweS9DMzEwRVh4YVQxS3daYWJ4Wmk2WnlPaUN3dExvMlk4TlRqcnNH?=
+ =?utf-8?B?NkRMeWNoL2o2MS9IdjdzcEhxL0N4OVpGMTlMOTlFSHBTeUlsdXdDYUdZeXZU?=
+ =?utf-8?B?eXBMckZybDQ1eTY3VTZHUEZIQ3AxeG9uZWdTa0pUcXkrY2N0aG9CZ3M1aUNn?=
+ =?utf-8?B?T0Z2N0Y3SmF3UE1wYWNKVmRTMGhhaWpXVTNqbldiRnd5R0E2NFRUdEFsN2xv?=
+ =?utf-8?B?SG5hWkErSndMMHlPQzBtYTI2UHlvTWlKdDBXK3YrVkd5T0dWZ2JpUXhHRk4v?=
+ =?utf-8?B?MG80Zm12R3pKOXRYR1RnM3poZ1EvMk94djIzRVVNRkRVVEJZdHJSWFNaVDdt?=
+ =?utf-8?B?dWF0SDFvVFJteFJ6bkxaeU1MeVp0OVJGWWtjRXdCYjF6d1pWTE5pK0xUQnd6?=
+ =?utf-8?B?UFpFWEMvRWxsYXYybXU4b01UNVpGR3haVWtUSzFmTkpjaFBTWHFPYnd3M3Zu?=
+ =?utf-8?B?eWJjTkQ3K0M5bjdTYzRZKzdPYTd6Zk5HeDZXb0F4bjFML01pSFNwS3VLYkZR?=
+ =?utf-8?B?YzB6eXZRTUdBS3FyY2wrSTRsNzhpUHhFS2d4MjJtR21jOEVsV3d1Y1Q3K3dv?=
+ =?utf-8?B?YkM0TXJ5ekQ5TlVpR2IxM3RHLzUxdS9pc0c4dXh5bXNTeXVnUm90eFRScEFU?=
+ =?utf-8?B?RW9MenFxQlZYNzBsUHBXREpqVzJTc0Y3dWQ2aENPd3Y1T3lSZER2dFY1Rnlu?=
+ =?utf-8?B?U3dKV21iVHQ0Kzk4YmpvUjhXOG1CK3dMbXNKSVZyRk4wNUJzSldOaXJWb1lF?=
+ =?utf-8?B?UStRQW5hV3piQ2pUNjF2YWU4SGk3a3hXRk0wUWZ0N1hteVIrczJoZW9CNThh?=
+ =?utf-8?B?TnhQVlFjUnpVZjdQSkl4MFBkRldIU0kzQjh5bHlJN0NCL3RWZ2x3RG42RzVX?=
+ =?utf-8?B?Y0JreU1xdE1uQXNpUHFkY3VtT3cvQU42QmFrckZjRFdZbVh4Zm1MbzdEZjNE?=
+ =?utf-8?B?TVpMVGY1aTRGODZXRHlTYXp3L0VuZ2VKcTlXMndFVUZ1Wm12VktSSmhMVTFy?=
+ =?utf-8?B?eTNJaHBPbHlCMzVabWpyU1ZiL2JQZFVLSmRSOTljSUlUZkNnQnFXUWdLbFVq?=
+ =?utf-8?B?RGpvZHhmWHZ3SWE1YkJENTcwaGs2Wm90S0JNeEZkSUJISGlZNGtYbElLMmx3?=
+ =?utf-8?B?YTJjc0ZLVlBCQTFrdGJJWEV2WVBwTVVnZ2VyeFBZTDVTTFpGZVVGMkErWEU1?=
+ =?utf-8?B?djJqV0JzUy9yaFgxTVBybWNJT29QVktZbGxqRVViZHFGajRoNzFvR3dzbEdD?=
+ =?utf-8?B?WDZZanNrYzltTlRSRkFPSXFla2lGR2dkTkpaTXBkM3RKTG5hek40RTZISnlM?=
+ =?utf-8?B?cnZmLzhXSU05TDZvSk9BSWNpdmhRaUpTUTdBendyelZ2MU9HU3ZhNXV5aENV?=
+ =?utf-8?Q?hju78GHrLq3oNm3+/nKuoG2DXQFjilYNVAPyzdF?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b5c33b7c-2a76-4d0c-fe54-08d945705d5c
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jul 2021 20:05:15.6284
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: m32Fmw+uaV8/v/bpxvONUCtYSNjGTiMzHHu3LwAokmlb5/mcarDUvXnSqUvrYXEu5j3PVILFORhWOg7cqCdZbQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2543
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-> On Thu, Jul 8, 2021 at 8:57 AM Kalesh Singh <kaleshsingh@google.com> wrote:
->>
->> The file permissions on the fdinfo dir from were changed from
->> S_IRUSR|S_IXUSR to S_IRUGO|S_IXUGO, and a PTRACE_MODE_READ check was
->> added for opening the fdinfo files [1]. However, the ptrace permission
->> check was not added to the directory, allowing anyone to get the open FD
->> numbers by reading the fdinfo directory.
->>
->> Add the missing ptrace permission check for opening the fdinfo directory.
->
-> The more I look at this, the more I feel like we should look at
-> instead changing how "get_proc_task()" works.
 
-The practical implementation that I can see is to add a
-exec_id attribute into the proc inode and to modify proc_pid_make_inode
-to take a new exec_id parameter.
+On 6/21/21 11:31 AM, Peter Gonda wrote:
+> Factor out helper function for freeing the encrypted region list.
+> 
+> Signed-off-by: Peter Gonda <pgonda@google.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Dr. David Alan Gilbert <dgilbert@redhat.com>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Cc: Wanpeng Li <wanpengli@tencent.com>
+> Cc: Jim Mattson <jmattson@google.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: kvm@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> 
 
-There are some directories like /proc/PPP/, /proc/PPP/task/TTT/,
-/proc/PPP/net where it is both safe and appropriate to allow caching the
-reference over a suid exec.
+Reviewed-by: Brijesh Singh <brijesh.singh@amd.com>
 
-To handle that I would have a flag somewhere (possibly a special exec_id
-value) that indicates we don't care about the exec id.
-
-Once get_proc_task is taught to handle both cases and the appropriate
-exec_id is passed to proc_pid_make_inode proc_pid_invalidate works
-automatically.  So I think that is all we really need to do.
-
-> That's one of the core functions for /proc, and I wonder if we
-> couldn't just make it refuse to look up a task that has gone through a
-> suid execve() since the proc inode was opened.
->
-> I don't think it's basically ever ok to open something for one thread,
-> and then use it after the thread has gone through a suid thing.
->
-> In fact, I wonder if we could make it even stricter, and go "any exec
-> at all", but I think a suid exec might be the minimum we should do.
->
-> Then the logic really becomes very simple: we did the permission
-> checks at open time (like UNIX permission checks should be done), and
-> "get_proc_task()" basically verifies that "yeah, that open-time
-> decision is still valid".
->
-> Wouldn't that make a lot of sense?
-
-Roughly.  I want to use reuse exec_id but that seems a bit strong for
-have the permissions changed.  Checking ->cred is too sensitive.
-So it is a bit fiddly to get right.
-
-Limiting this to suid-exec (and equivalent) seems like the proper
-filter, because it is when the permissions have fundamentally changed.
-
-I just don't think this should be blanket for everything that uses
-get_prock_task.
-
-Eric
+thanks
