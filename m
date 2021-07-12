@@ -2,235 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D71323C4E19
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:41:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 852553C4EC7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241830AbhGLHQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:16:46 -0400
-Received: from mga03.intel.com ([134.134.136.65]:25894 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240156AbhGLGus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:50:48 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10042"; a="209973443"
-X-IronPort-AV: E=Sophos;i="5.84,232,1620716400"; 
-   d="scan'208";a="209973443"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jul 2021 23:47:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,232,1620716400"; 
-   d="scan'208";a="491916419"
-Received: from nntpat99-84.inn.intel.com ([10.125.99.84])
-  by FMSMGA003.fm.intel.com with ESMTP; 11 Jul 2021 23:47:50 -0700
-From:   Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Riccardo Mancini <rickyman7@gmail.com>
-Subject: [PATCH v10 24/24] perf session: Load data directory files for analysis
-Date:   Mon, 12 Jul 2021 09:46:24 +0300
-Message-Id: <7038392fb4eeb0fe0c59bc6769d72fb7c831373f.1626072009.git.alexey.v.bayduraev@linux.intel.com>
-X-Mailer: git-send-email 2.19.0
-In-Reply-To: <cover.1626072008.git.alexey.v.bayduraev@linux.intel.com>
-References: <cover.1626072008.git.alexey.v.bayduraev@linux.intel.com>
+        id S1344932AbhGLHVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:21:39 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:57546 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240402AbhGLG4H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:56:07 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 30F8E1FD58;
+        Mon, 12 Jul 2021 06:53:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1626072794; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FNwOMLlKi66VGmHIEbOBTG2Q2a8j2sNDoQXhXFwpAR4=;
+        b=IXDNvguctsJNRlVZYB5/iqcdnyk4ksoJh4wgcYvvL38b8rwNbkaY4dKfOL5OnDhQfvOoGQ
+        5yvc4yGRQrtqcLYd07XqgUI3n0eoIdPpe090BX+65Bgwo8Hd8ecuhgY1S4aAT3YL7DJGGe
+        aaLWCt+/xHFLyzo26PEr6ZdyUAtGMyM=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id D6BF5A4E93;
+        Mon, 12 Jul 2021 06:53:13 +0000 (UTC)
+Date:   Mon, 12 Jul 2021 08:53:13 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Chao Yu <chao@kernel.org>
+Cc:     Mel Gorman <mgorman@techsingularity.net>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org
+Subject: Re: [f2fs-dev] [PATCH] f2fs: initialize page->private when using for
+ our internal use
+Message-ID: <YOvm2faBUjKmZI7Q@dhcp22.suse.cz>
+References: <c32642d6-6de2-eb2d-5771-c7cefa62fab5@kernel.org>
+ <YOLJW0IgCagMk2tF@google.com>
+ <e2fdf628-f25c-7495-cfd1-952899f7ff9a@kernel.org>
+ <YOLxZAnaKSwBIlK9@casper.infradead.org>
+ <YONJpQapR7BRnW/J@google.com>
+ <YONTRlrJugeVq6Fj@casper.infradead.org>
+ <20210706091211.GR3840@techsingularity.net>
+ <85bb893b-0dc4-5f57-23ec-3f84814b7072@kernel.org>
+ <20210707095706.GT3840@techsingularity.net>
+ <fc0de0c2-a3b6-df91-5b90-524768a85d82@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fc0de0c2-a3b6-df91-5b90-524768a85d82@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Load data directory files and provide basic raw dump and aggregated
-analysis support of data directories in report mode, still with no
-memory consumption optimizations.
+On Sat 10-07-21 16:11:38, Chao Yu wrote:
+> On 2021/7/7 17:57, Mel Gorman wrote:
+> > I think it would work but it would be preferable to find out why the
+> > tail page has an order set in the first place. I've looked over
+> 
+> Agreed.
+> 
+> > mm/page_alloc.c and mm/compaction.c a few times and did not spot where
+> > set_private_page(page, 0) is missed when it should be covered by
+> > clear_page_guard or del_page_from_free_list :(
+> 
+> I didn't enable CONFIG_DEBUG_PAGEALLOC, so we will expect page private
+> should be cleared by del_page_from_free_list(), but I guess it only clears
+> the buddy's private field rather than original page's, so I added below
+> diff and check the dmesg, it looks stall private value in original page
+> will be left commonly... Let me know if I missed something?
 
-Design and implementation are based on the prototype [1], [2].
+Page private should be cleared when the page is freed to the allocator.
+Have a look at PAGE_FLAGS_CHECK_AT_FREE.
 
-[1] git clone https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git -b perf/record_threads
-[2] https://lore.kernel.org/lkml/20180913125450.21342-1-jolsa@kernel.org/
+> ---
+>  mm/page_alloc.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index a06bcfe6f786..1e7031ff548e 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -1029,6 +1029,7 @@ static inline void __free_one_page(struct page *page,
+>  	unsigned long combined_pfn;
+>  	unsigned int max_order;
+>  	struct page *buddy;
+> +	struct page *orig_page = page;
+>  	bool to_tail;
+> 
+>  	max_order = min_t(unsigned int, MAX_ORDER - 1, pageblock_order);
+> @@ -1097,6 +1098,10 @@ static inline void __free_one_page(struct page *page,
+> 
+>  done_merging:
+>  	set_buddy_order(page, order);
+> +	if (orig_page != page) {
+> +		if (WARN_ON_ONCE(orig_page->private))
+> +			pr_info("2order:%x, origpage.private:%x", order, orig_page->private);
+> +	}
 
-Suggested-by: Jiri Olsa <jolsa@kernel.org>
-Acked-by: Namhyung Kim <namhyung@gmail.com>
-Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
----
- tools/perf/util/session.c | 131 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 131 insertions(+)
-
-diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-index 63811fec2583..021f543c22a4 100644
---- a/tools/perf/util/session.c
-+++ b/tools/perf/util/session.c
-@@ -48,6 +48,13 @@
- #define NUM_MMAPS 128
- #endif
- 
-+/*
-+ * Processing 10MBs of data from each reader in sequence,
-+ * because that's the way the ordered events sorting works
-+ * most efficiently.
-+ */
-+#define READER_MAX_SIZE (10 * 1024 * 1024)
-+
- struct reader;
- 
- typedef s64 (*reader_cb_t)(struct perf_session *session,
-@@ -65,6 +72,7 @@ struct reader_state {
- 	u64	 data_size;
- 	u64	 head;
- 	bool	 eof;
-+	u64	 size;
- };
- 
- enum {
-@@ -2326,6 +2334,7 @@ reader__read_event(struct reader *rd, struct perf_session *session,
- 	if (skip)
- 		size += skip;
- 
-+	st->size += size;
- 	st->head += size;
- 	st->file_pos += size;
- 
-@@ -2425,6 +2434,125 @@ static int __perf_session__process_events(struct perf_session *session)
- 	return err;
- }
- 
-+/*
-+ * This function reads, merge and process directory data.
-+ * It assumens the version 1 of directory data, where each
-+ * data file holds per-cpu data, already sorted by kernel.
-+ */
-+static int __perf_session__process_dir_events(struct perf_session *session)
-+{
-+	struct perf_data *data = session->data;
-+	struct perf_tool *tool = session->tool;
-+	int i, ret = 0, readers = 1;
-+	struct ui_progress prog;
-+	u64 total_size = perf_data__size(session->data);
-+	struct reader *rd;
-+
-+	perf_tool__fill_defaults(tool);
-+
-+	ui_progress__init_size(&prog, total_size, "Sorting events...");
-+
-+	for (i = 0; i < data->dir.nr; i++) {
-+		if (data->dir.files[i].size)
-+			readers++;
-+	}
-+
-+	rd = session->readers = zalloc(readers * sizeof(struct reader));
-+	if (!rd)
-+		return -ENOMEM;
-+	session->nr_readers = readers;
-+	readers = 0;
-+
-+	rd[readers] = (struct reader) {
-+		.fd		 = perf_data__fd(session->data),
-+		.path		 = session->data->file.path,
-+		.data_size	 = session->header.data_size,
-+		.data_offset	 = session->header.data_offset,
-+		.in_place_update = session->data->in_place_update,
-+	};
-+	ret = reader__init(&rd[readers], NULL);
-+	if (ret)
-+		goto out_err;
-+	ret = reader__mmap(&rd[readers], session);
-+	if (ret != READER_OK) {
-+		if (ret == READER_EOF)
-+			ret = -EINVAL;
-+		goto out_err;
-+	}
-+	readers++;
-+
-+	for (i = 0; i < data->dir.nr; i++) {
-+		if (!data->dir.files[i].size)
-+			continue;
-+		rd[readers] = (struct reader) {
-+			.fd		 = data->dir.files[i].fd,
-+			.path		 = data->dir.files[i].path,
-+			.data_size	 = data->dir.files[i].size,
-+			.data_offset	 = 0,
-+			.in_place_update = session->data->in_place_update,
-+		};
-+		ret = reader__init(&rd[readers], NULL);
-+		if (ret)
-+			goto out_err;
-+		ret = reader__mmap(&rd[readers], session);
-+		if (ret != READER_OK) {
-+			if (ret == READER_EOF)
-+				ret = -EINVAL;
-+			goto out_err;
-+		}
-+		readers++;
-+	}
-+
-+	i = 0;
-+
-+	while ((ret >= 0) && readers) {
-+		if (session_done())
-+			return 0;
-+
-+		if (rd[i].state.eof) {
-+			i = (i + 1) % session->nr_readers;
-+			continue;
-+		}
-+
-+		ret = reader__read_event(&rd[i], session, &prog);
-+		if (ret < 0)
-+			break;
-+		if (ret == READER_NODATA) {
-+			ret = reader__mmap(&rd[i], session);
-+			if (ret < 0)
-+				goto out_err;
-+			if (ret == READER_EOF)
-+				readers--;
-+		}
-+
-+		if (rd[i].state.size >= READER_MAX_SIZE) {
-+			rd[i].state.size = 0;
-+			i = (i + 1) % session->nr_readers;
-+		}
-+	}
-+
-+	ret = ordered_events__flush(&session->ordered_events, OE_FLUSH__FINAL);
-+	if (ret)
-+		goto out_err;
-+
-+	ret = perf_session__flush_thread_stacks(session);
-+out_err:
-+	ui_progress__finish();
-+
-+	if (!tool->no_warn)
-+		perf_session__warn_about_errors(session);
-+
-+	/*
-+	 * We may switching perf.data output, make ordered_events
-+	 * reusable.
-+	 */
-+	ordered_events__reinit(&session->ordered_events);
-+
-+	session->one_mmap = false;
-+
-+	return ret;
-+}
-+
- int perf_session__process_events(struct perf_session *session)
- {
- 	if (perf_session__register_idle_thread(session) < 0)
-@@ -2433,6 +2561,9 @@ int perf_session__process_events(struct perf_session *session)
- 	if (perf_data__is_pipe(session->data))
- 		return __perf_session__process_pipe_events(session);
- 
-+	if (perf_data__is_dir(session->data))
-+		return __perf_session__process_dir_events(session);
-+
- 	return __perf_session__process_events(session);
- }
- 
+Why is this expected? Buddy allocator uses page private to store order.
+Whether we are merging to the freed page or coalesce it to a different
+page is not all that important.
 -- 
-2.19.0
-
+Michal Hocko
+SUSE Labs
