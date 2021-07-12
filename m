@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D56F63C4C08
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE34D3C583E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241087AbhGLHBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:01:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41508 "EHLO mail.kernel.org"
+        id S1355548AbhGLInq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:43:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239161AbhGLGou (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:44:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B1E36113E;
-        Mon, 12 Jul 2021 06:40:55 +0000 (UTC)
+        id S1350696AbhGLHvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:51:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9D3061C37;
+        Mon, 12 Jul 2021 07:47:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072055;
-        bh=q+26ziyUGgj2kiHF3QL/5cJOVVtKYvVckwkSe3TtHQI=;
+        s=korg; t=1626076039;
+        bh=bRA9MO+/azoqErmAuG1xTKjP9xrXDSRYaQe+GYuEIKs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x9i6mUccSL7+uN/egzKu6gyUrtq5DvC0NMOfF6XYEIqlUAjphUWonOWnV+2+Uva5h
-         16hGc4/cQmglibnvjW0jHD8C3P6rT4QquPBMIyoY91Xo4349pIDrChlWg9Tq+If+F7
-         zLKtND9YB6vEbKUryoG3ALZ2/TdCaIXPjd1R8BvE=
+        b=ToNBlwm/xDg6fRWfBJIAtabBv45Db5qANqQYohZhuhYX7Cd8lS/loZPaYKg78iYYH
+         MJkNETkFz+d8rdzyey3C9LYY6G2VbIpjCbdBDCnVEZRFB2OlsxU3ffKctkhuw9xxu3
+         CxsMi7xoC9fCmgUsiZmOeVBMFpWcVNVL59qsGYTs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        stable@vger.kernel.org,
+        Seevalamuthu Mariappan <seevalam@codeaurora.org>,
+        Sven Eckelmann <sven@narfation.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 333/593] drm/pl111: depend on CONFIG_VEXPRESS_CONFIG
+Subject: [PATCH 5.13 470/800] ath11k: send beacon template after vdev_start/restart during csa
 Date:   Mon, 12 Jul 2021 08:08:13 +0200
-Message-Id: <20210712060922.493241587@linuxfoundation.org>
+Message-Id: <20210712061017.163035485@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +42,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Seevalamuthu Mariappan <seevalam@codeaurora.org>
 
-[ Upstream commit 4dc7c97d04dcaa9f19482f70dcfdbeb52cc7193f ]
+[ Upstream commit 979ebc54cf13bd1e3eb6e21766d208d5de984fb8 ]
 
-Avoid randconfig build failures by requiring VEXPRESS_CONFIG:
+Firmware has added assert if beacon template is received after
+vdev_down. Firmware expects beacon template after vdev_start
+and before vdev_up. This change is needed to support MBSSID EMA
+cases in firmware.
 
-aarch64-linux-gnu-ld: drivers/gpu/drm/pl111/pl111_versatile.o: in function `pl111_vexpress_clcd_init':
-pl111_versatile.c:(.text+0x220): undefined reference to `devm_regmap_init_vexpress_config'
+Hence, Change the sequence in ath11k as expected from firmware.
+This new change is not causing any issues with older
+firmware.
 
-Fixes: 826fc86b5903 ("drm: pl111: Move VExpress setup into versatile init")
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210602215252.695994-4-keescook@chromium.org
+Tested-on: IPQ8074 hw2.0 AHB WLAN.HK.2.5.0.1.r3-00011-QCAHKSWPL_SILICONZ-1
+Tested-on: IPQ8074 hw2.0 AHB WLAN.HK.2.5.0.1.r4-00008-QCAHKSWPL_SILICONZ-1
+
+Fixes: d5c65159f289 ("ath11k: driver for Qualcomm IEEE 802.11ax devices")
+Signed-off-by: Seevalamuthu Mariappan <seevalam@codeaurora.org>
+[sven@narfation.org: added tested-on/fixes information]
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210525133028.2805615-1-sven@narfation.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/pl111/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath11k/mac.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/gpu/drm/pl111/Kconfig b/drivers/gpu/drm/pl111/Kconfig
-index 80f6748055e3..c5210a5bef1b 100644
---- a/drivers/gpu/drm/pl111/Kconfig
-+++ b/drivers/gpu/drm/pl111/Kconfig
-@@ -2,7 +2,7 @@
- config DRM_PL111
- 	tristate "DRM Support for PL111 CLCD Controller"
- 	depends on DRM
--	depends on ARM || ARM64 || COMPILE_TEST
-+	depends on VEXPRESS_CONFIG
- 	depends on COMMON_CLK
- 	select DRM_KMS_HELPER
- 	select DRM_KMS_CMA_HELPER
+diff --git a/drivers/net/wireless/ath/ath11k/mac.c b/drivers/net/wireless/ath/ath11k/mac.c
+index 9d0ff150ec30..eb52332dbe3f 100644
+--- a/drivers/net/wireless/ath/ath11k/mac.c
++++ b/drivers/net/wireless/ath/ath11k/mac.c
+@@ -5379,11 +5379,6 @@ ath11k_mac_update_vif_chan(struct ath11k *ar,
+ 		if (WARN_ON(!arvif->is_up))
+ 			continue;
+ 
+-		ret = ath11k_mac_setup_bcn_tmpl(arvif);
+-		if (ret)
+-			ath11k_warn(ab, "failed to update bcn tmpl during csa: %d\n",
+-				    ret);
+-
+ 		ret = ath11k_mac_vdev_restart(arvif, &vifs[i].new_ctx->def);
+ 		if (ret) {
+ 			ath11k_warn(ab, "failed to restart vdev %d: %d\n",
+@@ -5391,6 +5386,11 @@ ath11k_mac_update_vif_chan(struct ath11k *ar,
+ 			continue;
+ 		}
+ 
++		ret = ath11k_mac_setup_bcn_tmpl(arvif);
++		if (ret)
++			ath11k_warn(ab, "failed to update bcn tmpl during csa: %d\n",
++				    ret);
++
+ 		ret = ath11k_wmi_vdev_up(arvif->ar, arvif->vdev_id, arvif->aid,
+ 					 arvif->bssid);
+ 		if (ret) {
 -- 
 2.30.2
 
