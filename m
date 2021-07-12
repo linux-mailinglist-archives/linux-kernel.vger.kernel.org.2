@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71B3B3C5479
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0020B3C4CFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:39:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237880AbhGLH6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:58:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59618 "EHLO mail.kernel.org"
+        id S245072AbhGLHLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:11:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344930AbhGLHVk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:21:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CFEF61153;
-        Mon, 12 Jul 2021 07:18:50 +0000 (UTC)
+        id S239128AbhGLGta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:49:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C00361369;
+        Mon, 12 Jul 2021 06:46:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074331;
-        bh=mwf9hJLWPNOdLFUEIsrdC1GGvFET8eaxuSIu33tcvkM=;
+        s=korg; t=1626072375;
+        bh=/XH8VHetpeGGKDyF4zoCyzPHBVjcwLilhPt4VCDmUkI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bMly7Guo+CcQX/fsFsSmu282rOxULTq5Bwu5GnlvblvAH7MgH0Lxq6C8HP5HbxI50
-         B2oZe/O8xL7wJMUJs66+YGdZGAvrGfwryk5gigNznoW7vnHSpaj/oRF62/K03bT7W7
-         aTr7IthC/ojRoja+SSg6jMbUVtLZOptf4rjL2AaM=
+        b=CpQsw5V/Q/psNZMEfEPxVKO6MYtvGtZ2lHghSN2VQhZ9EakkXprVlASLqagcp6dTq
+         IRXkVJplL+dZ7jhtU/fKE8KIqpxqb4QwQGrzrOw9vOClmmmNo0I+NiyGJqHayAi3my
+         W8JlHRt6A/h0f9269l0rgJsYu43i0p/xa8op3llg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Matt Ranostay <matt.ranostay@konsulko.com>,
+        stable@vger.kernel.org, Brian Masney <masneyb@onstation.org>,
+        Dan Murphy <dmurphy@ti.com>,
         Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 545/700] iio: prox: as3935: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
-Date:   Mon, 12 Jul 2021 08:10:28 +0200
-Message-Id: <20210712061034.323154380@linuxfoundation.org>
+Subject: [PATCH 5.10 469/593] backlight: lm3630a_bl: Put fwnode in error case during ->probe()
+Date:   Mon, 12 Jul 2021 08:10:29 +0200
+Message-Id: <20210712060941.570793408@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,55 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-[ Upstream commit 37eb8d8c64f2ecb3a5521ba1cc1fad973adfae41 ]
+[ Upstream commit 6d1c32dbedd7d7e7372aa38033ec8782c39f6379 ]
 
-To make code more readable, use a structure to express the channel
-layout and ensure the timestamp is 8 byte aligned.
+device_for_each_child_node() bumps a reference counting of a returned variable.
+We have to balance it whenever we return to the caller.
 
-Found during an audit of all calls of uses of
-iio_push_to_buffers_with_timestamp()
-
-Fixes: 37b1ba2c68cf ("iio: proximity: as3935: fix buffer stack trashing")
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Matt Ranostay <matt.ranostay@konsulko.com>
-Acked-by: Matt Ranostay <matt.ranostay@konsulko.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20210501170121.512209-15-jic23@kernel.org
+Cc: Brian Masney <masneyb@onstation.org>
+Cc: Dan Murphy <dmurphy@ti.com>
+Fixes: 8fbce8efe15cd ("backlight: lm3630a: Add firmware node support")
+Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Reviewed-by: Brian Masney <masneyb@onstation.org>
+Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/proximity/as3935.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/video/backlight/lm3630a_bl.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/iio/proximity/as3935.c b/drivers/iio/proximity/as3935.c
-index b79ada839e01..98330e26ac3b 100644
---- a/drivers/iio/proximity/as3935.c
-+++ b/drivers/iio/proximity/as3935.c
-@@ -59,7 +59,11 @@ struct as3935_state {
- 	unsigned long noise_tripped;
- 	u32 tune_cap;
- 	u32 nflwdth_reg;
--	u8 buffer[16]; /* 8-bit data + 56-bit padding + 64-bit timestamp */
-+	/* Ensure timestamp is naturally aligned */
-+	struct {
-+		u8 chan;
-+		s64 timestamp __aligned(8);
-+	} scan;
- 	u8 buf[2] ____cacheline_aligned;
- };
+diff --git a/drivers/video/backlight/lm3630a_bl.c b/drivers/video/backlight/lm3630a_bl.c
+index e88a2b0e5904..662029d6a3dc 100644
+--- a/drivers/video/backlight/lm3630a_bl.c
++++ b/drivers/video/backlight/lm3630a_bl.c
+@@ -482,8 +482,10 @@ static int lm3630a_parse_node(struct lm3630a_chip *pchip,
  
-@@ -225,8 +229,8 @@ static irqreturn_t as3935_trigger_handler(int irq, void *private)
- 	if (ret)
- 		goto err_read;
+ 	device_for_each_child_node(pchip->dev, node) {
+ 		ret = lm3630a_parse_bank(pdata, node, &seen_led_sources);
+-		if (ret)
++		if (ret) {
++			fwnode_handle_put(node);
+ 			return ret;
++		}
+ 	}
  
--	st->buffer[0] = val & AS3935_DATA_MASK;
--	iio_push_to_buffers_with_timestamp(indio_dev, &st->buffer,
-+	st->scan.chan = val & AS3935_DATA_MASK;
-+	iio_push_to_buffers_with_timestamp(indio_dev, &st->scan,
- 					   iio_get_time_ns(indio_dev));
- err_read:
- 	iio_trigger_notify_done(indio_dev->trig);
+ 	return ret;
 -- 
 2.30.2
 
