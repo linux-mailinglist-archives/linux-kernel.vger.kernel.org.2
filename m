@@ -2,68 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F39A53C64C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 22:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08DE33C64C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 22:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236692AbhGLUJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 16:09:59 -0400
-Received: from mail-il1-f180.google.com ([209.85.166.180]:40729 "EHLO
-        mail-il1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231693AbhGLUJ6 (ORCPT
+        id S236563AbhGLUOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 16:14:18 -0400
+Received: from mail-io1-f42.google.com ([209.85.166.42]:40711 "EHLO
+        mail-io1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231693AbhGLUOR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 16:09:58 -0400
-Received: by mail-il1-f180.google.com with SMTP id b14so7711819ilf.7;
-        Mon, 12 Jul 2021 13:07:09 -0700 (PDT)
+        Mon, 12 Jul 2021 16:14:17 -0400
+Received: by mail-io1-f42.google.com with SMTP id l5so24221785iok.7;
+        Mon, 12 Jul 2021 13:11:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=XaY5P13QTe8euUqHWNilvxRWXAenzeNcAcuUtAh0nfg=;
-        b=Adr6xfzQCQpRLVZ7NkcMZn/aZPTovIRz2nBAcGZj09wvq/qgM/yXEWudU8id1hhb/L
-         dlPq/EYhECl+oksWcBGUmZjtZjbc2bcGMKB6rSLKW5Y3t4mHdsBIPuLH3OvewvZY3Iyj
-         6njkgRAruLQaJQRFOnsTRW3XmcqKVoWqdoIWBX4iQH5i+w+AjJyJkhDrGdaxGUJyIbTo
-         iS3Geuj+mMqav0U5Pj0fKYM+a+mPqLCIoT1mtOn7orRPZxMtIxgLYsm14/29YaCX/iER
-         hA3yl6PCx8fbVudGwXnP6dT29g6iQDH6pJWvb348aACKFJbPzyDpmoGKJnHUXdDMv5Tm
-         QVMA==
-X-Gm-Message-State: AOAM53065UYCrzqc3IzueJkVE0kknUyov8RLq89H34R/C0I1G2dNJ/Qj
-        tPW1N0ZILN3GrtO6tScnwA==
-X-Google-Smtp-Source: ABdhPJxtJIaEfT9Jfk2r9Q+q7xvAKbTSyWLDAuftGR8HZNIueK4kNBCA72i9T2wC8qD9sW/Xk3exTw==
-X-Received: by 2002:a05:6e02:1c02:: with SMTP id l2mr412433ilh.9.1626120429493;
-        Mon, 12 Jul 2021 13:07:09 -0700 (PDT)
+        bh=8vx4roC1t44uRDMKvtWy4G2yQadZ8UNHNbyeeJaYsn8=;
+        b=LAVFBR4oVqYY59xvJp8Iqdlh+9CY2iBYYRo/peTDXCNvknUbLH5fkgOyXQhxDP/rWH
+         PZjS78GOv+CECylGdII/NLSbwSedwzz2DP9ylelmP2icKq9spycQI5ixrz49vqEqCxo4
+         SNK3rg546ThkybPbOXi0tKzzKAmHiLLznJPSEF9iJJXWOziQPylIKQUCa2PjcXjjjxf3
+         D32v7FO/8iBZmDw8wch2Y0Tz2lpmVNl4w0Ka70WReXZ8jguU025pxYZVXplnm5wghayC
+         Z1cz6RiaRpJd8D8wqdVsuTZAWc6Hl3AyBiGxP9LzaBFBprisfBZrnoSKmGRMq34VI26B
+         CsJQ==
+X-Gm-Message-State: AOAM531kfHPY71seyoMCV1MU+P0kQMsrWQWbZmtibO7CztMly59m6a/U
+        A/YGvU4Lk+aOwIGHmOaiQw==
+X-Google-Smtp-Source: ABdhPJzP9Tl9BuIS+smxRdFk4eVQWlMsI8BnrQqgRg+s0VguhaQEmbN+761bl/F8klabtu8ZkVtT5Q==
+X-Received: by 2002:a02:6946:: with SMTP id e67mr674179jac.4.1626120688898;
+        Mon, 12 Jul 2021 13:11:28 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id k19sm7559760ilh.60.2021.07.12.13.07.07
+        by smtp.gmail.com with ESMTPSA id m20sm2261259ioc.39.2021.07.12.13.11.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 13:07:08 -0700 (PDT)
-Received: (nullmailer pid 2401065 invoked by uid 1000);
-        Mon, 12 Jul 2021 20:07:06 -0000
-Date:   Mon, 12 Jul 2021 14:07:06 -0600
+        Mon, 12 Jul 2021 13:11:28 -0700 (PDT)
+Received: (nullmailer pid 2407738 invoked by uid 1000);
+        Mon, 12 Jul 2021 20:11:25 -0000
+Date:   Mon, 12 Jul 2021 14:11:25 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Alex Bee <knaerzche@gmail.com>
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Johan Jonker <jbx6244@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v2 1/5] dt-bindings: Add doc for ROCK Pi 4 A+ and B+
-Message-ID: <20210712200706.GA2401021@robh.at.kernel.org>
-References: <20210618181256.27992-1-knaerzche@gmail.com>
- <20210618181256.27992-2-knaerzche@gmail.com>
+To:     Corentin Labbe <clabbe@baylibre.com>
+Cc:     arnd@arndb.de, linus.walleij@linaro.org, olof@lixom.net,
+        soc@kernel.org, ulli.kroll@googlemail.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 5/5] ARM: gemini: add device tree for ssi1328
+Message-ID: <20210712201125.GA2401230@robh.at.kernel.org>
+References: <20210618205533.1527384-1-clabbe@baylibre.com>
+ <20210618205533.1527384-6-clabbe@baylibre.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210618181256.27992-2-knaerzche@gmail.com>
+In-Reply-To: <20210618205533.1527384-6-clabbe@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Jun 2021 20:12:52 +0200, Alex Bee wrote:
-> ROCK Pi 4 got 2 more variants called A+ and B+.
-> Add the dt-bindings documentation for it.
+On Fri, Jun 18, 2021 at 08:55:33PM +0000, Corentin Labbe wrote:
+> The SSI 1328 is a NAS box running a SL3516 SoC.
 > 
-> Signed-off-by: Alex Bee <knaerzche@gmail.com>
+> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 > ---
->  Documentation/devicetree/bindings/arm/rockchip.yaml | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>  arch/arm/boot/dts/Makefile           |   1 +
+>  arch/arm/boot/dts/gemini-ssi1328.dts | 138 +++++++++++++++++++++++++++
+>  2 files changed, 139 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/gemini-ssi1328.dts
 > 
+> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+> index 806715f3266d..49bf7af72111 100644
+> --- a/arch/arm/boot/dts/Makefile
+> +++ b/arch/arm/boot/dts/Makefile
+> @@ -221,6 +221,7 @@ dtb-$(CONFIG_ARCH_GEMINI) += \
+>  	gemini-rut1xx.dtb \
+>  	gemini-sl93512r.dtb \
+>  	gemini-sq201.dtb \
+> +	gemini-ssi1328.dtb \
+>  	gemini-wbd111.dtb \
+>  	gemini-wbd222.dtb
+>  dtb-$(CONFIG_ARCH_HI3xxx) += \
+> diff --git a/arch/arm/boot/dts/gemini-ssi1328.dts b/arch/arm/boot/dts/gemini-ssi1328.dts
+> new file mode 100644
+> index 000000000000..2b3e7db84fed
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/gemini-ssi1328.dts
+> @@ -0,0 +1,138 @@
+> +// SPDX-License-Identifier: GPL-2.0
 
-Acked-by: Rob Herring <robh@kernel.org>
+Dual license? No one runs BSD or other OS on these devices?
+
+> +/*
+> + * Copyright (C) 2021 Corentin Labbe <clabbe@baylibre.com>
+> + * Device Tree file for SSI 1328
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "gemini.dtsi"
+
+Though the license should match this file.
+
+> +
+> +/ {
+> +	model = "SSI 1328";
+> +	compatible = "ssi,1328", "cortina,gemini";
+
+Where's ssi,1328 documented?
+
+> +	#address-cells = <1>;
+> +	#size-cells = <1>;
+> +
+> +	memory@0 {
+> +		/* 128 MB */
+> +		device_type = "memory";
+> +		reg = <0x00000000 0x8000000>;
+> +	};
+> +
+> +	aliases {
+> +		mdio-gpio0 = &mdio0;
+> +	};
+> +
+> +	chosen {
+> +		bootargs = "console=ttyS0,19200n8 initrd=0x900000,9M";
+> +		stdout-path = &uart0;
+
+Don't need both 'console' and stdout-path. (console should be removed)
+
+> +	};
+> +
+> +	mdio0: mdio {
+> +		compatible = "virtual,mdio-gpio";
+> +		gpios = <&gpio0 22 GPIO_ACTIVE_HIGH>, /* MDC */
+> +			<&gpio0 21 GPIO_ACTIVE_HIGH>; /* MDIO */
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		/* LAN Marvell 88E1118 */
+> +		phy0: ethernet-phy@1 {
+> +			reg = <1>;
+> +			device_type = "ethernet-phy";
+> +			/* We lack the knowledge of necessary GPIO to achieve
+> +			 * Gigabit
+> +			 */
+> +			max-speed = <100>;
+> +		};
+> +		/* WAN ICPlus IP101A */
+> +		phy1: ethernet-phy@2 {
+> +			reg = <2>;
+> +			device_type = "ethernet-phy";
+> +		};
+> +	};
+> +};
+> +
+> +&ethernet {
+> +	status = "okay";
+> +	ethernet-port@0 {
+> +		phy-mode = "rgmii";
+> +		phy-handle = <&phy0>;
+> +	};
+> +	ethernet-port@1 {
+> +		phy-mode = "rgmii";
+> +		phy-handle = <&phy1>;
+> +	};
+> +};
+> +
+> +&flash {
+> +	status = "okay";
+> +	/* 32MB of flash */
+> +	reg = <0x30000000 0x03200000>;
+> +
+> +	pinctrl-names = "enabled", "disabled";
+> +	pinctrl-0 = <&pflash_default_pins>;
+> +	pinctrl-1 = <&pflash_disabled_pins>;
+> +
+> +	partitions {
+> +		compatible = "redboot-fis";
+> +		/* Eraseblock at 0xfe0000 */
+> +		fis-index-block = <0x7F>;
+> +	};
+> +};
+> +
+> +&gpio0 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&gpio0_default_pins>;
+> +};
+> +
+> +&ide0 {
+> +	status = "okay";
+> +};
+> +
+> +&ide1 {
+> +	status = "okay";
+> +};
+> +
+> +&sata {
+> +	cortina,gemini-ata-muxmode = <0>;
+> +	cortina,gemini-enable-sata-bridge;
+> +	status = "okay";
+> +};
+> +
+> +&syscon {
+> +	pinctrl {
+> +		/*
+> +		 * gpio0agrp cover line 0-4
+> +		 * gpio0bgrp cover line 5
+> +		 */
+> +		gpio0_default_pins: pinctrl-gpio0 {
+> +			mux {
+> +				function = "gpio0";
+> +				groups = "gpio0agrp", "gpio0bgrp";
+> +			};
+> +		};
+> +		pflash_disabled_pins: pinctrl-pflash-disabled {
+> +			mux {
+> +				function = "gpio0";
+> +				groups = "gpio0ggrp", "gpio0igrp", "gpio0jgrp",
+> +					 "gpio0kgrp";
+> +			};
+> +		};
+> +		pinctrl-gmii {
+> +			/* This platform use both the ethernet ports */
+> +			mux {
+> +				function = "gmii";
+> +				groups = "gmii_gmac0_grp", "gmii_gmac1_grp";
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&usb0 {
+> +	status = "okay";
+> +};
+> +
+> +&usb1 {
+> +	status = "okay";
+> +};
+> -- 
+> 2.31.1
+> 
+> 
