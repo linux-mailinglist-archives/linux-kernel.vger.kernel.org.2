@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3F1C3C5174
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BFAF3C4ABA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348636AbhGLHlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:41:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42764 "EHLO mail.kernel.org"
+        id S240203AbhGLGxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:53:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244235AbhGLHKb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:10:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 961C260FE7;
-        Mon, 12 Jul 2021 07:07:18 +0000 (UTC)
+        id S237240AbhGLGjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:39:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D8E661185;
+        Mon, 12 Jul 2021 06:34:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073639;
-        bh=3KBamJziqWM1gjAHRVWgeK8tl5GhP7KQcl75Bslf1q8=;
+        s=korg; t=1626071694;
+        bh=1gAzKclJqXIFGVlkDDdMp+ulq/FMKN39+IusWIkZcZ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lqxDV3Z/fQfUza1da4RlzNRtrpgcwFAc+Ac1EZV+KQMPjGYcIMf3UygYMGmnwK9Hv
-         XYl/+VbfDc6rpOzTNX/q+zmBpbpmt53P/gXLj2NWXTq6WI+Xpvp1GFKymMNxOx/Y+h
-         6GrEkg2Pb7nFWaIJmrDNbtMx48dNLxLWG2VMIB9s=
+        b=ziNiMWCYrc/f0JM6dvkN1XSzYA0DdXygnfLkmgDpFxCZE9zO0wmoKNkMA21GWU/V7
+         QvcQBuGDODxpyZLyz3cnI90jUShoVnmJeOvaXv+nqlryZUjjvX0uHyD5widk4bMViW
+         47snd+o6gUWDxMqhss77FvVE2Gkzsol+BicqJpwc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, John Garry <john.garry@huawei.com>,
+        David Jeffery <djeffery@redhat.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 256/700] crypto: ux500 - Fix error return code in hash_hw_final()
+Subject: [PATCH 5.10 179/593] blk-mq: clear stale request in tags->rq[] before freeing one request pool
 Date:   Mon, 12 Jul 2021 08:05:39 +0200
-Message-Id: <20210712061003.245068477@linuxfoundation.org>
+Message-Id: <20210712060902.726273702@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,35 +42,159 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Ming Lei <ming.lei@redhat.com>
 
-[ Upstream commit b01360384009ab066940b45f34880991ea7ccbfb ]
+[ Upstream commit bd63141d585bef14f4caf111f6d0e27fe2300ec6 ]
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+refcount_inc_not_zero() in bt_tags_iter() still may read one freed
+request.
 
-Fixes: 8a63b1994c50 ("crypto: ux500 - Add driver for HASH hardware")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fix the issue by the following approach:
+
+1) hold a per-tags spinlock when reading ->rqs[tag] and calling
+refcount_inc_not_zero in bt_tags_iter()
+
+2) clearing stale request referred via ->rqs[tag] before freeing
+request pool, the per-tags spinlock is held for clearing stale
+->rq[tag]
+
+So after we cleared stale requests, bt_tags_iter() won't observe
+freed request any more, also the clearing will wait for pending
+request reference.
+
+The idea of clearing ->rqs[] is borrowed from John Garry's previous
+patch and one recent David's patch.
+
+Tested-by: John Garry <john.garry@huawei.com>
+Reviewed-by: David Jeffery <djeffery@redhat.com>
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Link: https://lore.kernel.org/r/20210511152236.763464-4-ming.lei@redhat.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/ux500/hash/hash_core.c | 1 +
- 1 file changed, 1 insertion(+)
+ block/blk-mq-tag.c |  9 +++++++--
+ block/blk-mq-tag.h |  6 ++++++
+ block/blk-mq.c     | 46 +++++++++++++++++++++++++++++++++++++++++-----
+ 3 files changed, 54 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/crypto/ux500/hash/hash_core.c b/drivers/crypto/ux500/hash/hash_core.c
-index da284b0ea1b2..243515df609b 100644
---- a/drivers/crypto/ux500/hash/hash_core.c
-+++ b/drivers/crypto/ux500/hash/hash_core.c
-@@ -1010,6 +1010,7 @@ static int hash_hw_final(struct ahash_request *req)
- 			goto out;
+diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+index 6772c3728865..c4f2f6c123ae 100644
+--- a/block/blk-mq-tag.c
++++ b/block/blk-mq-tag.c
+@@ -202,10 +202,14 @@ struct bt_iter_data {
+ static struct request *blk_mq_find_and_get_req(struct blk_mq_tags *tags,
+ 		unsigned int bitnr)
+ {
+-	struct request *rq = tags->rqs[bitnr];
++	struct request *rq;
++	unsigned long flags;
+ 
++	spin_lock_irqsave(&tags->lock, flags);
++	rq = tags->rqs[bitnr];
+ 	if (!rq || !refcount_inc_not_zero(&rq->ref))
+-		return NULL;
++		rq = NULL;
++	spin_unlock_irqrestore(&tags->lock, flags);
+ 	return rq;
+ }
+ 
+@@ -538,6 +542,7 @@ struct blk_mq_tags *blk_mq_init_tags(unsigned int total_tags,
+ 
+ 	tags->nr_tags = total_tags;
+ 	tags->nr_reserved_tags = reserved_tags;
++	spin_lock_init(&tags->lock);
+ 
+ 	if (flags & BLK_MQ_F_TAG_HCTX_SHARED)
+ 		return tags;
+diff --git a/block/blk-mq-tag.h b/block/blk-mq-tag.h
+index 7d3e6b333a4a..f887988e5ef6 100644
+--- a/block/blk-mq-tag.h
++++ b/block/blk-mq-tag.h
+@@ -20,6 +20,12 @@ struct blk_mq_tags {
+ 	struct request **rqs;
+ 	struct request **static_rqs;
+ 	struct list_head page_list;
++
++	/*
++	 * used to clear request reference in rqs[] before freeing one
++	 * request pool
++	 */
++	spinlock_t lock;
+ };
+ 
+ extern struct blk_mq_tags *blk_mq_init_tags(unsigned int nr_tags,
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 50d3527a5d97..00d6ed2fe812 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -2276,6 +2276,45 @@ queue_exit:
+ 	return BLK_QC_T_NONE;
+ }
+ 
++static size_t order_to_size(unsigned int order)
++{
++	return (size_t)PAGE_SIZE << order;
++}
++
++/* called before freeing request pool in @tags */
++static void blk_mq_clear_rq_mapping(struct blk_mq_tag_set *set,
++		struct blk_mq_tags *tags, unsigned int hctx_idx)
++{
++	struct blk_mq_tags *drv_tags = set->tags[hctx_idx];
++	struct page *page;
++	unsigned long flags;
++
++	list_for_each_entry(page, &tags->page_list, lru) {
++		unsigned long start = (unsigned long)page_address(page);
++		unsigned long end = start + order_to_size(page->private);
++		int i;
++
++		for (i = 0; i < set->queue_depth; i++) {
++			struct request *rq = drv_tags->rqs[i];
++			unsigned long rq_addr = (unsigned long)rq;
++
++			if (rq_addr >= start && rq_addr < end) {
++				WARN_ON_ONCE(refcount_read(&rq->ref) != 0);
++				cmpxchg(&drv_tags->rqs[i], rq, NULL);
++			}
++		}
++	}
++
++	/*
++	 * Wait until all pending iteration is done.
++	 *
++	 * Request reference is cleared and it is guaranteed to be observed
++	 * after the ->lock is released.
++	 */
++	spin_lock_irqsave(&drv_tags->lock, flags);
++	spin_unlock_irqrestore(&drv_tags->lock, flags);
++}
++
+ void blk_mq_free_rqs(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
+ 		     unsigned int hctx_idx)
+ {
+@@ -2294,6 +2333,8 @@ void blk_mq_free_rqs(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
  		}
- 	} else if (req->nbytes == 0 && ctx->keylen > 0) {
-+		ret = -EPERM;
- 		dev_err(device_data->dev, "%s: Empty message with keylength > 0, NOT supported\n",
- 			__func__);
- 		goto out;
+ 	}
+ 
++	blk_mq_clear_rq_mapping(set, tags, hctx_idx);
++
+ 	while (!list_empty(&tags->page_list)) {
+ 		page = list_first_entry(&tags->page_list, struct page, lru);
+ 		list_del_init(&page->lru);
+@@ -2353,11 +2394,6 @@ struct blk_mq_tags *blk_mq_alloc_rq_map(struct blk_mq_tag_set *set,
+ 	return tags;
+ }
+ 
+-static size_t order_to_size(unsigned int order)
+-{
+-	return (size_t)PAGE_SIZE << order;
+-}
+-
+ static int blk_mq_init_request(struct blk_mq_tag_set *set, struct request *rq,
+ 			       unsigned int hctx_idx, int node)
+ {
 -- 
 2.30.2
 
