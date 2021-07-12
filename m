@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AF3F3C5608
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:56:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A13F3C4E88
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351233AbhGLINY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:13:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43438 "EHLO mail.kernel.org"
+        id S245537AbhGLHTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:19:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55656 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245435AbhGLH2e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:28:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B484761469;
-        Mon, 12 Jul 2021 07:24:01 +0000 (UTC)
+        id S241498AbhGLGzG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:55:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CCA4A60233;
+        Mon, 12 Jul 2021 06:52:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074642;
-        bh=ISme6h0r/FtyvzCUzDjV9rmS4uc2dDEySDlIAW33QY0=;
+        s=korg; t=1626072738;
+        bh=CrNiUpvVdssbfpCQSRuDsw6FoeW/iZSxE+l3CEWMafg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ImdLtJ+yLFfO9eBNgTYfHh8XR7ENeQtJDjzcAIiw0pwPevMTBnSVr8yFCyupbJ7LI
-         0jMUsHFLUf3XOc0JwVGWNarFf1hWKXEZYUndmI6seBr/t6TvKFa6r9wX1oZLRGQ4GE
-         x/qr8JMRwcGVqKf1WGAytUW4OVGOIIeobcd73+Hk=
+        b=YlwNWIhE2SwsHJBdQ1Uo0Y9nra9dzDkHrkG0LWHUbMgkI63CuwrPnWbPo2wG9mYwq
+         oHA1P09yykoE5yj+dK9WgwzneXbdaqY7I/PFqIoobZR/TCARJjN6ZIz1bhE0NMoffZ
+         4jllcsbqJqwpUB0tQgGijYsk2gi5PShhlOLUbVvs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
+        Vitaly Wool <vitaly.wool@konsulko.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 648/700] ASoC: Intel: sof_sdw: use mach data for ADL RVP DMIC count
-Date:   Mon, 12 Jul 2021 08:12:11 +0200
-Message-Id: <20210712061044.809775750@linuxfoundation.org>
+Subject: [PATCH 5.10 572/593] mm/z3fold: use release_z3fold_page_locked() to release locked z3fold page
+Date:   Mon, 12 Jul 2021 08:12:12 +0200
+Message-Id: <20210712060957.891281147@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+From: Miaohe Lin <linmiaohe@huawei.com>
 
-[ Upstream commit 505351329d26e684588a6919c0407b8a0f5c3813 ]
+[ Upstream commit 28473d91ff7f686d58047ff55f2fa98ab59114a4 ]
 
-On the reference boards, number of PCH dmics may vary and the number
-should be taken from driver machine data. Remove the SOF_SDW_PCH_DMIC
-quirk to make DMIC number configurable.
+We should use release_z3fold_page_locked() to release z3fold page when
+it's locked, although it looks harmless to use release_z3fold_page() now.
 
-Fixes:d25bbe80485f8 ("ASoC: Intel: sof_sdw: add quirk for new ADL-P Rvp")
-
-BugLink: https://github.com/thesofproject/sof/issues/4185
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210621194057.21711-2-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lkml.kernel.org/r/20210619093151.1492174-7-linmiaohe@huawei.com
+Fixes: dcf5aedb24f8 ("z3fold: stricter locking and more careful reclaim")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Vitaly Wool <vitaly.wool@konsulko.com>
+Cc: Hillf Danton <hdanton@sina.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/sof_sdw.c | 1 -
- 1 file changed, 1 deletion(-)
+ mm/z3fold.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 35ad448902c7..dd93f663803b 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -197,7 +197,6 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
- 		.driver_data = (void *)(SOF_RT711_JD_SRC_JD1 |
- 					SOF_SDW_TGL_HDMI |
- 					SOF_RT715_DAI_ID_FIX |
--					SOF_SDW_PCH_DMIC |
- 					SOF_BT_OFFLOAD_SSP(2) |
- 					SOF_SSP_BT_OFFLOAD_PRESENT),
- 	},
+diff --git a/mm/z3fold.c b/mm/z3fold.c
+index 636a71c291bf..912ac9a64a15 100644
+--- a/mm/z3fold.c
++++ b/mm/z3fold.c
+@@ -1387,7 +1387,7 @@ static int z3fold_reclaim_page(struct z3fold_pool *pool, unsigned int retries)
+ 			if (zhdr->foreign_handles ||
+ 			    test_and_set_bit(PAGE_CLAIMED, &page->private)) {
+ 				if (kref_put(&zhdr->refcount,
+-						release_z3fold_page))
++						release_z3fold_page_locked))
+ 					atomic64_dec(&pool->pages_nr);
+ 				else
+ 					z3fold_page_unlock(zhdr);
 -- 
 2.30.2
 
