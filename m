@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AB8B3C5924
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 349753C5925
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355774AbhGLI6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:58:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55948 "EHLO mail.kernel.org"
+        id S1357501AbhGLI7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:59:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353839AbhGLIDC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1353845AbhGLIDC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Jul 2021 04:03:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 323CE61D0C;
-        Mon, 12 Jul 2021 07:57:57 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 845D96197B;
+        Mon, 12 Jul 2021 07:57:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076677;
-        bh=ISme6h0r/FtyvzCUzDjV9rmS4uc2dDEySDlIAW33QY0=;
+        s=korg; t=1626076680;
+        bh=9HLm1UMd4ET5mv916NAy10z2QUCLqQIwFit+BsH9Jyg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eju+i3KCZ0fMr/YhkleL8WK36i+hqJwO3iAVHWU7eZDIsjidbCmdyS4TOv/aGQdQk
-         3PqoDhqWYI1Dy3K2uF0u7usbOSVZMAHs3sGP8NVoZp8bzlF4RAp39lkYEUtm+GMWR/
-         shGdyb3x6Z2QlbpFnHDRsThe8Gt6wG2qaYDW9xDY=
+        b=Th31q7oX+jpL4Z/RIKf5CcelKv2v/P0GPjbXCVdeTRSRJ9OdHRE0GSKZ6NCNtOlV9
+         TYjKtgs/Np+Y2/Usgld45g51Rdbl4VS/UzsqY30yFY1F46jqFyhfxNWrr935GHovBq
+         oZlERRrtJpD0hLaINPZaus7bnYUL/uPplvOJOavQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        stable@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 744/800] ASoC: Intel: sof_sdw: use mach data for ADL RVP DMIC count
-Date:   Mon, 12 Jul 2021 08:12:47 +0200
-Message-Id: <20210712061045.935169155@linuxfoundation.org>
+Subject: [PATCH 5.13 745/800] ASoC: fsl_spdif: Fix unexpected interrupt after suspend
+Date:   Mon, 12 Jul 2021 08:12:48 +0200
+Message-Id: <20210712061046.052141841@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -42,38 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-[ Upstream commit 505351329d26e684588a6919c0407b8a0f5c3813 ]
+[ Upstream commit a7a0a2feb957e446b2bcf732f245ba04fc8b6314 ]
 
-On the reference boards, number of PCH dmics may vary and the number
-should be taken from driver machine data. Remove the SOF_SDW_PCH_DMIC
-quirk to make DMIC number configurable.
+When system enter suspend, the machine driver suspend callback
+function will be called, then the cpu driver trigger callback
+(SNDRV_PCM_TRIGGER_SUSPEND) be called, it would disable the
+interrupt.
 
-Fixes:d25bbe80485f8 ("ASoC: Intel: sof_sdw: add quirk for new ADL-P Rvp")
+But the machine driver suspend and cpu dai driver suspend order
+maybe changed, the cpu dai driver's suspend callback is called before
+machine driver's suppend callback, then the interrupt is not cleared
+successfully in trigger callback.
 
-BugLink: https://github.com/thesofproject/sof/issues/4185
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210621194057.21711-2-pierre-louis.bossart@linux.intel.com
+So need to clear interrupts in cpu dai driver's suspend callback
+to avoid such issue.
+
+Fixes: 9cb2b3796e08 ("ASoC: fsl_spdif: Add pm runtime function")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Link: https://lore.kernel.org/r/1624365084-7934-1-git-send-email-shengjiu.wang@nxp.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/sof_sdw.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/fsl/fsl_spdif.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 35ad448902c7..dd93f663803b 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -197,7 +197,6 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
- 		.driver_data = (void *)(SOF_RT711_JD_SRC_JD1 |
- 					SOF_SDW_TGL_HDMI |
- 					SOF_RT715_DAI_ID_FIX |
--					SOF_SDW_PCH_DMIC |
- 					SOF_BT_OFFLOAD_SSP(2) |
- 					SOF_SSP_BT_OFFLOAD_PRESENT),
- 	},
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index 5636837eb511..53499bc71fa9 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -1404,6 +1404,9 @@ static int fsl_spdif_runtime_suspend(struct device *dev)
+ 	struct fsl_spdif_priv *spdif_priv = dev_get_drvdata(dev);
+ 	int i;
+ 
++	/* Disable all the interrupts */
++	regmap_update_bits(spdif_priv->regmap, REG_SPDIF_SIE, 0xffffff, 0);
++
+ 	regmap_read(spdif_priv->regmap, REG_SPDIF_SRPC,
+ 			&spdif_priv->regcache_srpc);
+ 	regcache_cache_only(spdif_priv->regmap, true);
 -- 
 2.30.2
 
