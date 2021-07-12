@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A13F3C4E88
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E313C5618
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:57:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245537AbhGLHTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:19:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55656 "EHLO mail.kernel.org"
+        id S1352677AbhGLIOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:14:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241498AbhGLGzG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:55:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCA4A60233;
-        Mon, 12 Jul 2021 06:52:17 +0000 (UTC)
+        id S1343571AbhGLH2e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:28:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C820561921;
+        Mon, 12 Jul 2021 07:24:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072738;
-        bh=CrNiUpvVdssbfpCQSRuDsw6FoeW/iZSxE+l3CEWMafg=;
+        s=korg; t=1626074645;
+        bh=uuDOYGr39R0SKAOdikfpujbED331JVwA4d41fRH3ZSI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YlwNWIhE2SwsHJBdQ1Uo0Y9nra9dzDkHrkG0LWHUbMgkI63CuwrPnWbPo2wG9mYwq
-         oHA1P09yykoE5yj+dK9WgwzneXbdaqY7I/PFqIoobZR/TCARJjN6ZIz1bhE0NMoffZ
-         4jllcsbqJqwpUB0tQgGijYsk2gi5PShhlOLUbVvs=
+        b=odAtxMZnkLm3qWLMM/ym7xLYrcBC98daUCBS2u8AOTrvKGMm3inNhIaEg1H3Q/zTc
+         KMsaFjwQoGrt5JUADPxfdKK+AvO2CMLvpVW96hW8b33MgDegy5qIhrsKnIgX17EtQu
+         yo09rlRMSVMV8sG/VIwKhPYFnenLVwNWez9S5Ixg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 572/593] mm/z3fold: use release_z3fold_page_locked() to release locked z3fold page
+Subject: [PATCH 5.12 649/700] ASoC: fsl_spdif: Fix unexpected interrupt after suspend
 Date:   Mon, 12 Jul 2021 08:12:12 +0200
-Message-Id: <20210712060957.891281147@linuxfoundation.org>
+Message-Id: <20210712061044.913234845@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,38 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miaohe Lin <linmiaohe@huawei.com>
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-[ Upstream commit 28473d91ff7f686d58047ff55f2fa98ab59114a4 ]
+[ Upstream commit a7a0a2feb957e446b2bcf732f245ba04fc8b6314 ]
 
-We should use release_z3fold_page_locked() to release z3fold page when
-it's locked, although it looks harmless to use release_z3fold_page() now.
+When system enter suspend, the machine driver suspend callback
+function will be called, then the cpu driver trigger callback
+(SNDRV_PCM_TRIGGER_SUSPEND) be called, it would disable the
+interrupt.
 
-Link: https://lkml.kernel.org/r/20210619093151.1492174-7-linmiaohe@huawei.com
-Fixes: dcf5aedb24f8 ("z3fold: stricter locking and more careful reclaim")
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Reviewed-by: Vitaly Wool <vitaly.wool@konsulko.com>
-Cc: Hillf Danton <hdanton@sina.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+But the machine driver suspend and cpu dai driver suspend order
+maybe changed, the cpu dai driver's suspend callback is called before
+machine driver's suppend callback, then the interrupt is not cleared
+successfully in trigger callback.
+
+So need to clear interrupts in cpu dai driver's suspend callback
+to avoid such issue.
+
+Fixes: 9cb2b3796e08 ("ASoC: fsl_spdif: Add pm runtime function")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Link: https://lore.kernel.org/r/1624365084-7934-1-git-send-email-shengjiu.wang@nxp.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/z3fold.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/fsl/fsl_spdif.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/mm/z3fold.c b/mm/z3fold.c
-index 636a71c291bf..912ac9a64a15 100644
---- a/mm/z3fold.c
-+++ b/mm/z3fold.c
-@@ -1387,7 +1387,7 @@ static int z3fold_reclaim_page(struct z3fold_pool *pool, unsigned int retries)
- 			if (zhdr->foreign_handles ||
- 			    test_and_set_bit(PAGE_CLAIMED, &page->private)) {
- 				if (kref_put(&zhdr->refcount,
--						release_z3fold_page))
-+						release_z3fold_page_locked))
- 					atomic64_dec(&pool->pages_nr);
- 				else
- 					z3fold_page_unlock(zhdr);
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index e5d366b2a6a4..6d5e9c0acdb4 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -1429,6 +1429,9 @@ static int fsl_spdif_runtime_suspend(struct device *dev)
+ 	struct fsl_spdif_priv *spdif_priv = dev_get_drvdata(dev);
+ 	int i;
+ 
++	/* Disable all the interrupts */
++	regmap_update_bits(spdif_priv->regmap, REG_SPDIF_SIE, 0xffffff, 0);
++
+ 	regmap_read(spdif_priv->regmap, REG_SPDIF_SRPC,
+ 			&spdif_priv->regcache_srpc);
+ 	regcache_cache_only(spdif_priv->regmap, true);
 -- 
 2.30.2
 
