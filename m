@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F853C58D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAD8E3C54D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381445AbhGLIwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:52:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56518 "EHLO mail.kernel.org"
+        id S1354945AbhGLIFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:05:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353051AbhGLIBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:01:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65D15619B0;
-        Mon, 12 Jul 2021 07:54:04 +0000 (UTC)
+        id S245271AbhGLH1E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:27:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 023EC6112D;
+        Mon, 12 Jul 2021 07:23:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076445;
-        bh=YLpnRZwbYrMs34c6jbdfXkIubDmJKgkXjrhsClIoAN0=;
+        s=korg; t=1626074585;
+        bh=vn/VPJBysEMnVybQe14G/wmQ9C23wb6BVbVn/IuU1J0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qKsJtzVe3WIO2qqFuRMsB3iilZgWsfZdyiUO4WytxTnMStc+TpExJ9BTPuXLiTDFS
-         GkYun4VNgP5DG2B43iaNcE4eJpM+165q7XRhYqJ+EOVtdcb0jmV7SpJ0OH62A9R9W7
-         WToHL+I3txUVPf7FaZ8ncIGdfmertN/OzsWYg/9Y=
+        b=SYXT9iY/OLC+B0a/5qkK8Rfg2FK/wG/RLEgwqXcCU4PjrBcQasDwo2cM4ngGqpYfQ
+         ufoixqkYSYEcK9l0hJ9T/5IyBFWrP42JSVcOkoVmmtO6OZEcz8aaFWT70PQbvRE/DO
+         aCx3oXQd19DYiPH3j028qxKfOHSBQs4wp2H0BFjA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 645/800] mtd: partitions: redboot: seek fis-index-block in the right node
-Date:   Mon, 12 Jul 2021 08:11:08 +0200
-Message-Id: <20210712061035.690393729@linuxfoundation.org>
+        stable@vger.kernel.org, Eddie James <eajames@linux.ibm.com>,
+        Joel Stanley <joel@jms.id.au>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 586/700] fsi: scom: Reset the FSI2PIB engine for any error
+Date:   Mon, 12 Jul 2021 08:11:09 +0200
+Message-Id: <20210712061038.379656696@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,49 +39,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Corentin Labbe <clabbe@baylibre.com>
+From: Eddie James <eajames@linux.ibm.com>
 
-[ Upstream commit 237960880960863fb41888763d635b384cffb104 ]
+[ Upstream commit a5c317dac5567206ca7b6bc9d008dd6890c8bced ]
 
-fis-index-block is seeked in the master node and not in the partitions node.
-For following binding and current usage, the driver need to check the
-partitions subnode.
+The error bits in the FSI2PIB status are only cleared by a reset. So
+the driver needs to perform a reset after seeing any of the FSI2PIB
+errors, otherwise subsequent operations will also look like failures.
 
-Fixes: c0e118c8a1a3 ("mtd: partitions: Add OF support to RedBoot partitions")
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20210520114851.1274609-1-clabbe@baylibre.com
+Fixes: 6b293258cded ("fsi: scom: Major overhaul")
+Signed-off-by: Eddie James <eajames@linux.ibm.com>
+Reviewed-by: Joel Stanley <joel@jms.id.au>
+Link: https://lore.kernel.org/r/20210329151344.14246-1-eajames@linux.ibm.com
+Signed-off-by: Joel Stanley <joel@jms.id.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/parsers/redboot.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/fsi/fsi-scom.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/parsers/redboot.c b/drivers/mtd/parsers/redboot.c
-index 91146bdc4713..3ccd6363ee8c 100644
---- a/drivers/mtd/parsers/redboot.c
-+++ b/drivers/mtd/parsers/redboot.c
-@@ -45,6 +45,7 @@ static inline int redboot_checksum(struct fis_image_desc *img)
- static void parse_redboot_of(struct mtd_info *master)
+diff --git a/drivers/fsi/fsi-scom.c b/drivers/fsi/fsi-scom.c
+index b45bfab7b7f5..75d1389e2626 100644
+--- a/drivers/fsi/fsi-scom.c
++++ b/drivers/fsi/fsi-scom.c
+@@ -38,9 +38,10 @@
+ #define SCOM_STATUS_PIB_RESP_MASK	0x00007000
+ #define SCOM_STATUS_PIB_RESP_SHIFT	12
+ 
+-#define SCOM_STATUS_ANY_ERR		(SCOM_STATUS_PROTECTION | \
+-					 SCOM_STATUS_PARITY |	  \
+-					 SCOM_STATUS_PIB_ABORT | \
++#define SCOM_STATUS_FSI2PIB_ERROR	(SCOM_STATUS_PROTECTION |	\
++					 SCOM_STATUS_PARITY |		\
++					 SCOM_STATUS_PIB_ABORT)
++#define SCOM_STATUS_ANY_ERR		(SCOM_STATUS_FSI2PIB_ERROR |	\
+ 					 SCOM_STATUS_PIB_RESP_MASK)
+ /* SCOM address encodings */
+ #define XSCOM_ADDR_IND_FLAG		BIT_ULL(63)
+@@ -240,13 +241,14 @@ static int handle_fsi2pib_status(struct scom_device *scom, uint32_t status)
  {
- 	struct device_node *np;
-+	struct device_node *npart;
- 	u32 dirblock;
- 	int ret;
+ 	uint32_t dummy = -1;
  
-@@ -52,7 +53,11 @@ static void parse_redboot_of(struct mtd_info *master)
- 	if (!np)
- 		return;
- 
--	ret = of_property_read_u32(np, "fis-index-block", &dirblock);
-+	npart = of_get_child_by_name(np, "partitions");
-+	if (!npart)
-+		return;
+-	if (status & SCOM_STATUS_PROTECTION)
+-		return -EPERM;
+-	if (status & SCOM_STATUS_PARITY) {
++	if (status & SCOM_STATUS_FSI2PIB_ERROR)
+ 		fsi_device_write(scom->fsi_dev, SCOM_FSI2PIB_RESET_REG, &dummy,
+ 				 sizeof(uint32_t));
 +
-+	ret = of_property_read_u32(npart, "fis-index-block", &dirblock);
- 	if (ret)
- 		return;
- 
++	if (status & SCOM_STATUS_PROTECTION)
++		return -EPERM;
++	if (status & SCOM_STATUS_PARITY)
+ 		return -EIO;
+-	}
+ 	/* Return -EBUSY on PIB abort to force a retry */
+ 	if (status & SCOM_STATUS_PIB_ABORT)
+ 		return -EBUSY;
 -- 
 2.30.2
 
