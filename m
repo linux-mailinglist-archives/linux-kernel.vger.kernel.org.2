@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FEA83C5499
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 011953C54B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353161AbhGLIBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:01:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34436 "EHLO mail.kernel.org"
+        id S1353719AbhGLICr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:02:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240231AbhGLHXF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:23:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FC54611AF;
-        Mon, 12 Jul 2021 07:20:16 +0000 (UTC)
+        id S242729AbhGLHXI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:23:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 751EA61364;
+        Mon, 12 Jul 2021 07:20:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074417;
-        bh=npUCgBotvC7g50sxRQ8mv5F5Iv7WgH9ZXNco0MCndDI=;
+        s=korg; t=1626074420;
+        bh=+aKlfOpXTWW0aBttBOjoTHH8sdSifCqeNs0g4GNCclc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0DcSNCOoUZaa04qym04VSTOuFCzJp34Dr9llX24ewDQmA4nVW9fAduFZ8pilhFhaB
-         9HFWagpuEXmFa8y3yj+95nPvhcbZwmJo5P92k35vNUTVez/9G8/4Kwyb9ELxkSIjBY
-         ot6FXuFqnvv0vmSL4ojrwIABiZpN9F22blrlG5AM=
+        b=SF/UoZ9lRwLNrigzd5WVXzixhp9IhvagkWBz2I3W1PzT0cPRQ/jEqUO85UCjCp7bU
+         6B/Xbzenaj/ALLgBh4ogN1sGafZ4NvomyLpHKyd2pp9gqRpvvBA+GgcM5QMi+H6oMS
+         bP800Wt2gvpS2YOw3eSmC/5+xGTrrEid1GX27K2s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>,
         Andy Shevchenko <andy.shevchenko@gmail.com>,
         Pavel Machek <pavel@ucw.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 571/700] leds: lm3532: select regmap I2C API
-Date:   Mon, 12 Jul 2021 08:10:54 +0200
-Message-Id: <20210712061036.838936292@linuxfoundation.org>
+Subject: [PATCH 5.12 572/700] leds: lm36274: Put fwnode in error case during ->probe()
+Date:   Mon, 12 Jul 2021 08:10:55 +0200
+Message-Id: <20210712061036.933778120@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
 References: <20210712060924.797321836@linuxfoundation.org>
@@ -42,33 +43,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-[ Upstream commit 99be74f61cb0292b518f5e6d7e5c6611555c2ec7 ]
+[ Upstream commit 3c5f655c44bb65cb7e3c219d08c130ce5fa45d7f ]
 
-Regmap APIs should be selected, otherwise link can fail
+device_get_next_child_node() bumps a reference counting of a returned variable.
+We have to balance it whenever we return to the caller.
 
-ERROR: modpost: "__devm_regmap_init_i2c" [drivers/leds/leds-lm3532.ko] undefined!
+In the older code the same is implied with device_for_each_child_node().
 
-Fixes: bc1b8492c764 ("leds: lm3532: Introduce the lm3532 LED driver")
+Fixes: 11e1bbc116a7 ("leds: lm36274: Introduce the TI LM36274 LED driver")
+Fixes: a448fcf19c9c ("leds: lm36274: don't iterate through children since there is only one")
 Cc: Dan Murphy <dmurphy@ti.com>
+Cc: Marek Behún <marek.behun@nic.cz>
 Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 Signed-off-by: Pavel Machek <pavel@ucw.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/leds/Kconfig | 1 +
+ drivers/leds/leds-lm36274.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
-index b6742b4231bf..258247dd5e3d 100644
---- a/drivers/leds/Kconfig
-+++ b/drivers/leds/Kconfig
-@@ -199,6 +199,7 @@ config LEDS_LM3530
+diff --git a/drivers/leds/leds-lm36274.c b/drivers/leds/leds-lm36274.c
+index aadb03468a40..a23a9424c2f3 100644
+--- a/drivers/leds/leds-lm36274.c
++++ b/drivers/leds/leds-lm36274.c
+@@ -127,6 +127,7 @@ static int lm36274_probe(struct platform_device *pdev)
  
- config LEDS_LM3532
- 	tristate "LCD Backlight driver for LM3532"
-+	select REGMAP_I2C
- 	depends on LEDS_CLASS
- 	depends on I2C
- 	help
+ 	ret = lm36274_init(chip);
+ 	if (ret) {
++		fwnode_handle_put(init_data.fwnode);
+ 		dev_err(chip->dev, "Failed to init the device\n");
+ 		return ret;
+ 	}
 -- 
 2.30.2
 
