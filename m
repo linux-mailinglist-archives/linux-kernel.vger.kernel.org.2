@@ -2,87 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA7BC3C6517
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 22:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDF6E3C6525
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 22:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233414AbhGLUsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 16:48:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230058AbhGLUsk (ORCPT
+        id S233741AbhGLUxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 16:53:43 -0400
+Received: from mail-il1-f181.google.com ([209.85.166.181]:34710 "EHLO
+        mail-il1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229910AbhGLUxm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 16:48:40 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E30DC0613DD;
-        Mon, 12 Jul 2021 13:45:51 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id s15so29915945edt.13;
-        Mon, 12 Jul 2021 13:45:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=dDg6dKdVLJtJjWTE5YR4R8BahCCcS2EwH/pICn0zM0g=;
-        b=VvA9gF1cQzfsFJJuZw2k6deH0TrKgAqzG7Lh3UsbcHfVdGVULX6QCCBcDJkyEzUz6S
-         4M0lhD/f0O3zOV/qW/FH+AdiIPmjmsUduCXl6hYUHdp0jGxO78/bsxoJe7yL4u47uXAT
-         tIbgGLcdyJo2USYyUEiAAC42fyPLUXRMCVa3JkgqjQ4V0cgkjc3wrkDUPdEYzp64M1/4
-         kW+QcOi3Npa4jrni6tUvOEtIWOGIx/uQf0sSsamDOx8HwRbNEELxMo2PCR1eJWjfQjNo
-         XuctAP+IH3aZE96KMW8ZiFzNDr+Jwl7oANfweKQq9/jpchIKc9rys4gkFmtEyMKvWiCa
-         /JgA==
+        Mon, 12 Jul 2021 16:53:42 -0400
+Received: by mail-il1-f181.google.com with SMTP id e13so21015069ilc.1;
+        Mon, 12 Jul 2021 13:50:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=dDg6dKdVLJtJjWTE5YR4R8BahCCcS2EwH/pICn0zM0g=;
-        b=uFRD2yGrsEjFTeQcKxAHvGrQId5fahUUNMCTUEIS54Y9YO9NtJ17PuLB7GqSxBOYhl
-         S9eSbrf16awof7Vq3R75Bx3OYEF1YF3rL/4KMHa9BqlYbRalgtHajgEikwLTnyUvV7qc
-         grLoB27GuPQVSXCmupMypWXEh3gxzNuJjJsJs9sPxjkTM0qDmpVAw35NDbj7QMxptw0l
-         53g5z6DOf1/OSeMB2W6lx2F8OvuDVY+q7dQHVGgmAN+IRj0p0PYL9HsA9pnVNeXaJtYa
-         yfoG0Yd7Ml1FkThjGvYFq0WVkh9bN3F76DAmADrJtdjrwSoEMyvkaPgihx43SUTjepd3
-         8TpA==
-X-Gm-Message-State: AOAM531aXxX44/AaSt1SXpNE/RzAbLYsTacBv1aeNiD7/7Fo+LtCnWxE
-        XvKxD6bqtu0eJ/3Ba7PDdZ8=
-X-Google-Smtp-Source: ABdhPJxTE8FRlr/SGGLVlQazu5h0rWf2qLy5L/iBr8vz6rqGAo+osxrbvsDwkpP/yPqJf49D1JCo5Q==
-X-Received: by 2002:aa7:d5c8:: with SMTP id d8mr882407eds.165.1626122750086;
-        Mon, 12 Jul 2021 13:45:50 -0700 (PDT)
-Received: from pc ([196.235.212.194])
-        by smtp.gmail.com with ESMTPSA id p26sm6814303ejd.80.2021.07.12.13.45.48
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dyW6AQCD8dT4rLHB87N795/rYHLaBj89s9/CYrVn1Gc=;
+        b=cMV7UVvoR/px8L9ZJvO/CokEildd2RZ+Tg5FXFCnzwtfol4+54aC2UVbta5XZVSPnZ
+         y4AEEw+HFbooRuNOQURr7a5LyP0hEhSlupXfai48OBkNuKsvo5s+92MfF2Kp/KhNMCdu
+         Bkwkv/JNbYe3MLNq74fRrMtFov4PjG9EDuGVqF7L75IyVp7Ud2ib1hEk3sOcDTyC3Uj5
+         iSOouLajRSwX5QlcQEF3hLtSRb+NwlYWVEUkFV01dszQNqVtCLy4b4l5VDLqnrVVV0v6
+         R3pNm/bblgDGfPNOrSquie2vbAAHMNn7NP+n9vetASt0uIJuuJcFQx4pCQyw2aAp9IA8
+         S7jg==
+X-Gm-Message-State: AOAM533Um6j3nelVe/TDQcTM34tgUIuLNkr936ZRKWtqvMAnzXME0KQu
+        3CYEFpPx6dx56KYzuiwuqQ==
+X-Google-Smtp-Source: ABdhPJxpOuOpBRh0sIf6RuIoSvvX/6R6eovpNj7Y7nawoA/C3jsHmDmLufR35alnfbHXaM4z3whCoQ==
+X-Received: by 2002:a92:d84a:: with SMTP id h10mr487066ilq.55.1626123052934;
+        Mon, 12 Jul 2021 13:50:52 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id w10sm4189956ilo.17.2021.07.12.13.50.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 13:45:49 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 21:45:46 +0100
-From:   Salah Triki <salah.triki@gmail.com>
-To:     haren@us.ibm.com, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org, herbert@gondor.apana.org.au, davem@davemloft.net
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] replace if with min
-Message-ID: <20210712204546.GA1492390@pc>
+        Mon, 12 Jul 2021 13:50:52 -0700 (PDT)
+Received: (nullmailer pid 2469475 invoked by uid 1000);
+        Mon, 12 Jul 2021 20:50:49 -0000
+Date:   Mon, 12 Jul 2021 14:50:49 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+Cc:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Nishanth Menon <nm@ti.com>, devicetree@vger.kernel.org,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Mark Brown <broonie@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>
+Subject: Re: [PATCH v3] dt-bindings: spi: omap-spi: Convert to json-schema
+Message-ID: <20210712205049.GA2469429@robh.at.kernel.org>
+References: <20210621092900.951-1-a-govindraju@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210621092900.951-1-a-govindraju@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace if with min in order to make code more clean.
+On Mon, 21 Jun 2021 14:58:58 +0530, Aswath Govindraju wrote:
+> Convert omap-spi dt-binding documentation from txt to yaml format.
+> 
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+> ---
+> 
+> changes since v2:
+> - added myself as the maintainer
+> - added reference to spi-controller.yaml
+> - removed properties already defined in spi-controller.yaml
+> - removed unused labels in dt example
+> - changed additionalProperties to unevaluatedProperties
+>   as a reference is used
+> 
+> changes since v1:
+> - split the series according to their respective trees
+> 
+> link to v1:
+> https://lore.kernel.org/patchwork/project/lkml/list/?series=502255
+> 
+>  .../devicetree/bindings/spi/omap-spi.txt      |  48 -------
+>  .../devicetree/bindings/spi/omap-spi.yaml     | 117 ++++++++++++++++++
+>  2 files changed, 117 insertions(+), 48 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/spi/omap-spi.txt
+>  create mode 100644 Documentation/devicetree/bindings/spi/omap-spi.yaml
+> 
 
-Signed-off-by: Salah Triki <salah.triki@gmail.com>
----
- drivers/crypto/nx/nx-842.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/crypto/nx/nx-842.c b/drivers/crypto/nx/nx-842.c
-index 2ab90ec10e61..0d1d5a463899 100644
---- a/drivers/crypto/nx/nx-842.c
-+++ b/drivers/crypto/nx/nx-842.c
-@@ -134,8 +134,7 @@ EXPORT_SYMBOL_GPL(nx842_crypto_exit);
- static void check_constraints(struct nx842_constraints *c)
- {
- 	/* limit maximum, to always have enough bounce buffer to decompress */
--	if (c->maximum > BOUNCE_BUFFER_SIZE)
--		c->maximum = BOUNCE_BUFFER_SIZE;
-+	c->maximum = min(c->maximum, BOUNCE_BUFFER_SIZE);
- }
- 
- static int nx842_crypto_add_header(struct nx842_crypto_header *hdr, u8 *buf)
--- 
-2.25.1
-
+Reviewed-by: Rob Herring <robh@kernel.org>
