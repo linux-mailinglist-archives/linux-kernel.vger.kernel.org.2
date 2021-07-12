@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03DD73C5769
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A963C515D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354618AbhGLIcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:32:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52930 "EHLO mail.kernel.org"
+        id S1347877AbhGLHkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:40:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349795AbhGLHoq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:44:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 815CE61186;
-        Mon, 12 Jul 2021 07:41:05 +0000 (UTC)
+        id S242804AbhGLHHc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:07:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 847876108B;
+        Mon, 12 Jul 2021 07:04:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075666;
-        bh=lyu8th6dsieXuaidPYvsAExlMqh1296PAjIaPJrI9BI=;
+        s=korg; t=1626073474;
+        bh=Pm43KLEJ9eqBgNsDtKpe91gbsGOS/dk4S1pFa3w48nM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yjUSBReUXPQ4s3yV/4m7qAU6ud6AMMxF0D45Tss9DybXfrkhfO8jdqkvUCtPt1+XT
-         BvUKuHuH3uBhaq+qxE0gpuLuu7J2I6KnrTImTyaIg17U8+SQ0ZRz3Ahkio2yHPoIKF
-         jm5udN8xAPW7mp/eKFtXJMHLH1GNhrLsEj9D6Lm4=
+        b=N/sPZdVMtNcuTLAZSjVgMBcyoPMGRYRYPe5XlAUWFFCsWpcHpPHiK880Aix6vWvP8
+         wCxk/O0sx0Bm+BCen4zyV+a4zCzo9fXdPMqQrqjiQS9WvQOek59YJVBBpOofTzE03n
+         Tr6XH+s61H1SzjaQiRPtG5zl49RFP+QIoMEaU2lw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hongbo Li <herberthbli@tencent.com>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 312/800] crypto: sm2 - fix a memory leak in sm2
+Subject: [PATCH 5.12 252/700] media: i2c: ccs-core: return the right error code at suspend
 Date:   Mon, 12 Jul 2021 08:05:35 +0200
-Message-Id: <20210712060958.776077777@linuxfoundation.org>
+Message-Id: <20210712061002.657287214@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,85 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hongbo Li <herberthbli@tencent.com>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-[ Upstream commit 5cd259ca5d466f65ffd21e2e2fa00fb648a8c555 ]
+[ Upstream commit 6005a8e955e4e451e4bf6000affaab566d4cab5e ]
 
-SM2 module alloc ec->Q in sm2_set_pub_key(), when doing alg test in
-test_akcipher_one(), it will set public key for every test vector,
-and don't free ec->Q. This will cause a memory leak.
+If pm_runtime resume logic fails, return the error code
+provided by it, instead of -EAGAIN, as, depending on what
+caused it to fail, it may not be something that would be
+recovered.
 
-This patch alloc ec->Q in sm2_ec_ctx_init().
-
-Fixes: ea7ecb66440b ("crypto: sm2 - introduce OSCCA SM2 asymmetric cipher algorithm")
-Signed-off-by: Hongbo Li <herberthbli@tencent.com>
-Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: cbba45d43631 ("[media] smiapp: Use runtime PM")
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- crypto/sm2.c | 24 ++++++++++--------------
- 1 file changed, 10 insertions(+), 14 deletions(-)
+ drivers/media/i2c/ccs/ccs-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/crypto/sm2.c b/crypto/sm2.c
-index b21addc3ac06..db8a4a265669 100644
---- a/crypto/sm2.c
-+++ b/crypto/sm2.c
-@@ -79,10 +79,17 @@ static int sm2_ec_ctx_init(struct mpi_ec_ctx *ec)
- 		goto free;
+diff --git a/drivers/media/i2c/ccs/ccs-core.c b/drivers/media/i2c/ccs/ccs-core.c
+index 4505594996bd..fde0c51f0406 100644
+--- a/drivers/media/i2c/ccs/ccs-core.c
++++ b/drivers/media/i2c/ccs/ccs-core.c
+@@ -3093,7 +3093,7 @@ static int __maybe_unused ccs_suspend(struct device *dev)
+ 	if (rval < 0) {
+ 		pm_runtime_put_noidle(dev);
  
- 	rc = -ENOMEM;
-+
-+	ec->Q = mpi_point_new(0);
-+	if (!ec->Q)
-+		goto free;
-+
- 	/* mpi_ec_setup_elliptic_curve */
- 	ec->G = mpi_point_new(0);
--	if (!ec->G)
-+	if (!ec->G) {
-+		mpi_point_release(ec->Q);
- 		goto free;
-+	}
- 
- 	mpi_set(ec->G->x, x);
- 	mpi_set(ec->G->y, y);
-@@ -91,6 +98,7 @@ static int sm2_ec_ctx_init(struct mpi_ec_ctx *ec)
- 	rc = -EINVAL;
- 	ec->n = mpi_scanval(ecp->n);
- 	if (!ec->n) {
-+		mpi_point_release(ec->Q);
- 		mpi_point_release(ec->G);
- 		goto free;
+-		return -EAGAIN;
++		return rval;
  	}
-@@ -386,27 +394,15 @@ static int sm2_set_pub_key(struct crypto_akcipher *tfm,
- 	MPI a;
- 	int rc;
  
--	ec->Q = mpi_point_new(0);
--	if (!ec->Q)
--		return -ENOMEM;
--
- 	/* include the uncompressed flag '0x04' */
--	rc = -ENOMEM;
- 	a = mpi_read_raw_data(key, keylen);
- 	if (!a)
--		goto error;
-+		return -ENOMEM;
- 
- 	mpi_normalize(a);
- 	rc = sm2_ecc_os2ec(ec->Q, a);
- 	mpi_free(a);
--	if (rc)
--		goto error;
--
--	return 0;
- 
--error:
--	mpi_point_release(ec->Q);
--	ec->Q = NULL;
- 	return rc;
- }
- 
+ 	if (sensor->streaming)
 -- 
 2.30.2
 
