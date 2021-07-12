@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 038E93C5118
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D1AC3C5112
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244142AbhGLHgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:36:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42596 "EHLO mail.kernel.org"
+        id S243594AbhGLHgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:36:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243527AbhGLHKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S243932AbhGLHKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Jul 2021 03:10:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C5C261175;
-        Mon, 12 Jul 2021 07:05:20 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E3A161351;
+        Mon, 12 Jul 2021 07:05:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073520;
-        bh=7RHGcgWTWKwphXIpuv4skHUa6/6IMA5IT/NC8/GFqxM=;
+        s=korg; t=1626073524;
+        bh=IEo8snFy3HtpvzPHtquWZOolpEjDD5J5/6/kQK4Wytg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r0+99S3giKhm5qpiinP296Z+JKTANCAvITCvhVks3qg7kq+3TH7qxnvWO1iWBpn9H
-         iPpANFnDRA8npJ/tnq2lefwYUUCYsm3gA8rrBhs/5hMU58EP8M3gJMECTFlTuT2fTf
-         qNc/zXy0XDPZ5HE98PEDY31gcogjnklCD9v6rE/k=
+        b=aUDoiVhoKpyxw2vHysVus6BuPcsnkgFT1JUmn1/6rFt03jNohFU6kuTi3q4FXkAi9
+         DYUwqrcIEvPS62zoJlwm+fBRYVwkMYRGTCbbHb2nNBTNuAxz9voMsiOwF+psyYw/Lz
+         jEy6XGb+1F8wAP69qwuKtQPIG4sELF/q3TXdKVgQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        stable@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Waiman Long <longman@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 271/700] locking/lockdep: Reduce LOCKDEP dependency list
-Date:   Mon, 12 Jul 2021 08:05:54 +0200
-Message-Id: <20210712061005.094693950@linuxfoundation.org>
+Subject: [PATCH 5.12 272/700] sched: Dont defer CPU pick to migration_cpu_stop()
+Date:   Mon, 12 Jul 2021 08:05:55 +0200
+Message-Id: <20210712061005.202907029@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
 References: <20210712060924.797321836@linuxfoundation.org>
@@ -41,60 +41,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Valentin Schneider <valentin.schneider@arm.com>
 
-[ Upstream commit b8e00abe7d9fe21dd13609e2e3a707e38902b105 ]
+[ Upstream commit 475ea6c60279e9f2ddf7e4cf2648cd8ae0608361 ]
 
-Some arches (um, sparc64, riscv, xtensa) cause a Kconfig warning for
-LOCKDEP.
-These arch-es select LOCKDEP_SUPPORT but they are not listed as one
-of the arch-es that LOCKDEP depends on.
+Will reported that the 'XXX __migrate_task() can fail' in migration_cpu_stop()
+can happen, and it *is* sort of a big deal. Looking at it some more, one
+will note there is a glaring hole in the deferred CPU selection:
 
-Since (16) arch-es define the Kconfig symbol LOCKDEP_SUPPORT if they
-intend to have LOCKDEP support, replace the awkward list of
-arch-es that LOCKDEP depends on with the LOCKDEP_SUPPORT symbol.
+  (w/ CONFIG_CPUSET=n, so that the affinity mask passed via taskset doesn't
+  get AND'd with cpu_online_mask)
 
-But wait. LOCKDEP_SUPPORT is included in LOCK_DEBUGGING_SUPPORT,
-which is already a dependency here, so LOCKDEP_SUPPORT is redundant
-and not needed.
-That leaves the FRAME_POINTER dependency, but it is part of an
-expression like this:
-	depends on (A && B) && (FRAME_POINTER || B')
-where B' is a dependency of B so if B is true then B' is true
-and the value of FRAME_POINTER does not matter.
-Thus we can also delete the FRAME_POINTER dependency.
+  $ taskset -pc 0-2 $PID
+  # offline CPUs 3-4
+  $ taskset -pc 3-5 $PID
+    `\
+      $PID may stay on 0-2 due to the cpumask_any_distribute() picking an
+      offline CPU and __migrate_task() refusing to do anything due to
+      cpu_is_allowed().
 
-Fixes this kconfig warning: (for um, sparc64, riscv, xtensa)
+set_cpus_allowed_ptr() goes to some length to pick a dest_cpu that matches
+the right constraints vs affinity and the online/active state of the
+CPUs. Reuse that instead of discarding it in the affine_move_task() case.
 
-WARNING: unmet direct dependencies detected for LOCKDEP
-  Depends on [n]: DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y] && (FRAME_POINTER [=n] || MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86)
-  Selected by [y]:
-  - PROVE_LOCKING [=y] && DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y]
-  - LOCK_STAT [=y] && DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y]
-  - DEBUG_LOCK_ALLOC [=y] && DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y]
-
-Fixes: 7d37cb2c912d ("lib: fix kconfig dependency on ARCH_WANT_FRAME_POINTERS")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Fixes: 6d337eab041d ("sched: Fix migrate_disable() vs set_cpus_allowed_ptr()")
+Reported-by: Will Deacon <will@kernel.org>
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Waiman Long <longman@redhat.com>
-Link: https://lkml.kernel.org/r/20210524224150.8009-1-rdunlap@infradead.org
+Link: https://lkml.kernel.org/r/20210526205751.842360-2-valentin.schneider@arm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/Kconfig.debug | 1 -
- 1 file changed, 1 deletion(-)
+ kernel/sched/core.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 417c3d3e521b..5c9f528dd46d 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -1363,7 +1363,6 @@ config LOCKDEP
- 	bool
- 	depends on DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT
- 	select STACKTRACE
--	depends on FRAME_POINTER || MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86
- 	select KALLSYMS
- 	select KALLSYMS_ALL
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index f59166fe499a..fe5da692dd7a 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1919,7 +1919,6 @@ static int migration_cpu_stop(void *data)
+ 	struct migration_arg *arg = data;
+ 	struct set_affinity_pending *pending = arg->pending;
+ 	struct task_struct *p = arg->task;
+-	int dest_cpu = arg->dest_cpu;
+ 	struct rq *rq = this_rq();
+ 	bool complete = false;
+ 	struct rq_flags rf;
+@@ -1952,19 +1951,15 @@ static int migration_cpu_stop(void *data)
+ 			if (p->migration_pending == pending)
+ 				p->migration_pending = NULL;
+ 			complete = true;
+-		}
  
+-		if (dest_cpu < 0) {
+ 			if (cpumask_test_cpu(task_cpu(p), &p->cpus_mask))
+ 				goto out;
+-
+-			dest_cpu = cpumask_any_distribute(&p->cpus_mask);
+ 		}
+ 
+ 		if (task_on_rq_queued(p))
+-			rq = __migrate_task(rq, &rf, p, dest_cpu);
++			rq = __migrate_task(rq, &rf, p, arg->dest_cpu);
+ 		else
+-			p->wake_cpu = dest_cpu;
++			p->wake_cpu = arg->dest_cpu;
+ 
+ 		/*
+ 		 * XXX __migrate_task() can fail, at which point we might end
+@@ -2243,7 +2238,7 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
+ 			init_completion(&my_pending.done);
+ 			my_pending.arg = (struct migration_arg) {
+ 				.task = p,
+-				.dest_cpu = -1,		/* any */
++				.dest_cpu = dest_cpu,
+ 				.pending = &my_pending,
+ 			};
+ 
+@@ -2251,6 +2246,15 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
+ 		} else {
+ 			pending = p->migration_pending;
+ 			refcount_inc(&pending->refs);
++			/*
++			 * Affinity has changed, but we've already installed a
++			 * pending. migration_cpu_stop() *must* see this, else
++			 * we risk a completion of the pending despite having a
++			 * task on a disallowed CPU.
++			 *
++			 * Serialized by p->pi_lock, so this is safe.
++			 */
++			pending->arg.dest_cpu = dest_cpu;
+ 		}
+ 	}
+ 	pending = p->migration_pending;
 -- 
 2.30.2
 
