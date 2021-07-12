@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF28D3C54C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92DDD3C54C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354498AbhGLIEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:04:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33068 "EHLO mail.kernel.org"
+        id S1354581AbhGLIEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:04:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345341AbhGLHZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1345346AbhGLHZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Jul 2021 03:25:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFC4A613CC;
-        Mon, 12 Jul 2021 07:22:26 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF30B613D2;
+        Mon, 12 Jul 2021 07:22:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074547;
-        bh=sENWkQ5uR0IMnAxF0xKSzpMQnClAuWfwxn0h+ba6SMU=;
+        s=korg; t=1626074550;
+        bh=vBbUJ1KOM+k1JuZjtSVaPmtW/lBhC0FJdTVBRm1SK3k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vsLz/S+FmVuUc2yEEr7jEK/6f0SLK/cQUMWqezp+4Szas/K3w9T5djoOoynK0irug
-         o7HFA3Uhyhu5kyfvYri7sKCWTlTt7jslftyfZpQiORKnwXnJs8M6sw+ndrqZDEQq9X
-         z9SW/O2A1wuuwhmAGz/tuPEPj1zcAkzWH1jO6pgg=
+        b=qZfhBxEF2v7rpJ4LzpMSaSUvKheyij7BjqAyeHhPg1S/b8O8QuCKhaY8xxsjfKl1+
+         Fld3zslydN97suy+M916c5FAR1QrrCA9SdbowGZAg2/e050rAGggmVa0R/UJWfSKnG
+         JTu28IY/SdNfBrGXM2axWMx6fT4WEPuBhXNkb588=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Andreas Klinger <ak@it-klinger.de>,
         =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 615/700] iio: adc: mxs-lradc: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
-Date:   Mon, 12 Jul 2021 08:11:38 +0200
-Message-Id: <20210712061041.314283145@linuxfoundation.org>
+Subject: [PATCH 5.12 616/700] iio: adc: ti-ads8688: Fix alignment of buffer in iio_push_to_buffers_with_timestamp()
+Date:   Mon, 12 Jul 2021 08:11:39 +0200
+Message-Id: <20210712061041.413400885@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
 References: <20210712060924.797321836@linuxfoundation.org>
@@ -44,39 +43,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit 6a6be221b8bd561b053f0701ec752a5ed9007f69 ]
+[ Upstream commit 61fa5dfa5f52806f5ce37a0ba5712c271eb22f98 ]
 
-To make code more readable, use a structure to express the channel
-layout and ensure the timestamp is 8 byte aligned.
-Add a comment on why the buffer is the size it is as not immediately
-obvious.
+Add __aligned(8) to ensure the buffer passed to
+iio_push_to_buffers_with_timestamp() is suitable for the naturally
+aligned timestamp that will be inserted.
 
-Found during an audit of all calls of this function.
-
-Fixes: 6dd112b9f85e ("iio: adc: mxs-lradc: Add support for ADC driver")
+Fixes: f214ff521fb1 ("iio: ti-ads8688: Update buffer allocation for timestamps")
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Andreas Klinger <ak@it-klinger.de>
 Reviewed-by: Nuno Sá <nuno.sa@analog.com>
-Link: https://lore.kernel.org/r/20210613152301.571002-4-jic23@kernel.org
+Link: https://lore.kernel.org/r/20210613152301.571002-5-jic23@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/adc/mxs-lradc-adc.c | 3 ++-
+ drivers/iio/adc/ti-ads8688.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/iio/adc/mxs-lradc-adc.c b/drivers/iio/adc/mxs-lradc-adc.c
-index 30e29f44ebd2..c480cb489c1a 100644
---- a/drivers/iio/adc/mxs-lradc-adc.c
-+++ b/drivers/iio/adc/mxs-lradc-adc.c
-@@ -115,7 +115,8 @@ struct mxs_lradc_adc {
- 	struct device		*dev;
+diff --git a/drivers/iio/adc/ti-ads8688.c b/drivers/iio/adc/ti-ads8688.c
+index 16bcb37eebb7..79c803537dc4 100644
+--- a/drivers/iio/adc/ti-ads8688.c
++++ b/drivers/iio/adc/ti-ads8688.c
+@@ -383,7 +383,8 @@ static irqreturn_t ads8688_trigger_handler(int irq, void *p)
+ {
+ 	struct iio_poll_func *pf = p;
+ 	struct iio_dev *indio_dev = pf->indio_dev;
+-	u16 buffer[ADS8688_MAX_CHANNELS + sizeof(s64)/sizeof(u16)];
++	/* Ensure naturally aligned timestamp */
++	u16 buffer[ADS8688_MAX_CHANNELS + sizeof(s64)/sizeof(u16)] __aligned(8);
+ 	int i, j = 0;
  
- 	void __iomem		*base;
--	u32			buffer[10];
-+	/* Maximum of 8 channels + 8 byte ts */
-+	u32			buffer[10] __aligned(8);
- 	struct iio_trigger	*trig;
- 	struct completion	completion;
- 	spinlock_t		lock;
+ 	for (i = 0; i < indio_dev->masklength; i++) {
 -- 
 2.30.2
 
