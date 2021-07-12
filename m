@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DDB63C48D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 607673C56B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238571AbhGLGlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:41:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55532 "EHLO mail.kernel.org"
+        id S1346743AbhGLIXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:23:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46858 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236998AbhGLGc0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:32:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 96B2E60551;
-        Mon, 12 Jul 2021 06:29:37 +0000 (UTC)
+        id S1347679AbhGLHkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:40:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E71261457;
+        Mon, 12 Jul 2021 07:35:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071378;
-        bh=wmqnq9Vp+80gBd6WB5AOLCgk5SyK0FIL3EKx9C//Qxk=;
+        s=korg; t=1626075328;
+        bh=raElE/LTi6RdTWtu6Qz0VjOIA0GIV9i4FphLeAtxHu8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JdaZMs6xDGqQNno0ij0W4Jt1TlZyZyJJ4w943TZsBN18F7HobhWPlQFtRvBGGbq6B
-         xclqTZ0LiRIKSI2ka5yQzNyXEe4CUG/ElbCS8mUMSNW9EvG5GZsyeVRbG6LQy/mcOy
-         v2xg/axOFRztQAV4qbbfHZRJ4sDDRxRzvJlT6sL8=
+        b=eVYU8COEA6CdTh6koAPrsi05QEDnVNADP+0xx9ZLVWH6xE3Yuwl1tNrzkH0vMJlz6
+         bR8HTCv1H8BY95xdOmfg3aFHEhBrNDYGkTij4eON+/1r4qyrrYdhuZADow+OXLwBkC
+         dlBKR+PAo5khdavnkKqpujYN7cwLPLWAIBJfvOz0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org, Jan Kara <jack@suse.cz>,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.10 044/593] ext4: fix overflow in ext4_iomap_alloc()
-Date:   Mon, 12 Jul 2021 08:03:24 +0200
-Message-Id: <20210712060847.998655270@linuxfoundation.org>
+        stable@vger.kernel.org, Axel Lin <axel.lin@ingics.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 182/800] regulator: mt6315: Fix checking return value of devm_regmap_init_spmi_ext
+Date:   Mon, 12 Jul 2021 08:03:25 +0200
+Message-Id: <20210712060938.647227929@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,36 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Axel Lin <axel.lin@ingics.com>
 
-commit d0b040f5f2557b2f507c01e88ad8cff424fdc6a9 upstream.
+[ Upstream commit 70d654ea3de937d7754c107bb8eeb20e30262c89 ]
 
-A code in iomap alloc may overflow block number when converting it to
-byte offset. Luckily this is mostly harmless as we will just use more
-expensive method of writing using unwritten extents even though we are
-writing beyond i_size.
+devm_regmap_init_spmi_ext() returns ERR_PTR() on error.
 
-Cc: stable@kernel.org
-Fixes: 378f32bab371 ("ext4: introduce direct I/O write using iomap infrastructure")
-Signed-off-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20210412102333.2676-4-jack@suse.cz
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Link: https://lore.kernel.org/r/20210615132934.3453965-1-axel.lin@ingics.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/inode.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/regulator/mt6315-regulator.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -3419,7 +3419,7 @@ retry:
- 	 * i_disksize out to i_size. This could be beyond where direct I/O is
- 	 * happening and thus expose allocated blocks to direct I/O reads.
- 	 */
--	else if ((map->m_lblk * (1 << blkbits)) >= i_size_read(inode))
-+	else if (((loff_t)map->m_lblk << blkbits) >= i_size_read(inode))
- 		m_flags = EXT4_GET_BLOCKS_CREATE;
- 	else if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
- 		m_flags = EXT4_GET_BLOCKS_IO_CREATE_EXT;
+diff --git a/drivers/regulator/mt6315-regulator.c b/drivers/regulator/mt6315-regulator.c
+index 6b8be52c3772..7514702f78cf 100644
+--- a/drivers/regulator/mt6315-regulator.c
++++ b/drivers/regulator/mt6315-regulator.c
+@@ -223,8 +223,8 @@ static int mt6315_regulator_probe(struct spmi_device *pdev)
+ 	int i;
+ 
+ 	regmap = devm_regmap_init_spmi_ext(pdev, &mt6315_regmap_config);
+-	if (!regmap)
+-		return -ENODEV;
++	if (IS_ERR(regmap))
++		return PTR_ERR(regmap);
+ 
+ 	chip = devm_kzalloc(dev, sizeof(struct mt6315_chip), GFP_KERNEL);
+ 	if (!chip)
+-- 
+2.30.2
+
 
 
