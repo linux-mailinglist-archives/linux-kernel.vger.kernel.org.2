@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C651D3C54A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAE053C58D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353345AbhGLIBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:01:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35402 "EHLO mail.kernel.org"
+        id S1381423AbhGLIwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:52:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241553AbhGLHXn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:23:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ACB25613B2;
-        Mon, 12 Jul 2021 07:20:52 +0000 (UTC)
+        id S1352890AbhGLIAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:00:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57F2961629;
+        Mon, 12 Jul 2021 07:53:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074453;
-        bh=xQKtFhwk1WIY5bQOMEul0K5e0geDXLbfz/Sw8EAC1rM=;
+        s=korg; t=1626076430;
+        bh=bwRteTtT9gexEzgA33yurM3tSPxiHhwE1Fg4A9bl0uI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2iJElUB2VdCNqBnwgvOiVbmU9vOKchZQ0Ck8jPuKELWNHJ9FDLAqUlSE8/ia6yUWy
-         2cMLCPrQNKfPUFGv7rDwyKU5NaEHSUvHKF7RswPdGT8/LZgRy7q+rMC6ODk28h/MWN
-         wA/IvdfAxNn39Z+YHvynCklnL/uDC/NPNnsaLO/0=
+        b=CxApHAkOUOlhy0UOAOhBx9LQaJWIyhEvRLqTZ6E6nkocEM1SWQ/O9bWbaRqI7OR0w
+         4aNxxD5wylZ+D47gqyfJJi12wI9c1/z+J8NDwfIW1Fqcxp3dwzBYDNXC+s8bQOWRIp
+         wH9ASvzewiRiH+JhiRGVS7tti7l4Abw/+BNBq9JY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mike Christie <michael.christie@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 578/700] scsi: iscsi: Force immediate failure during shutdown
-Date:   Mon, 12 Jul 2021 08:11:01 +0200
-Message-Id: <20210712061037.525233556@linuxfoundation.org>
+Subject: [PATCH 5.13 639/800] ASoC: hisilicon: fix missing clk_disable_unprepare() on error in hi6210_i2s_startup()
+Date:   Mon, 12 Jul 2021 08:11:02 +0200
+Message-Id: <20210712061035.085335299@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,57 +41,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Christie <michael.christie@oracle.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 06c203a5566beecebb1f8838d026de8a61c8df71 ]
+[ Upstream commit 375904e3931955fcf0a847f029b2492a117efc43 ]
 
-If the system is not up, we can just fail immediately since iscsid is not
-going to ever answer our netlink events. We are already setting the
-recovery_tmo to 0, but by passing stop_conn STOP_CONN_TERM we never will
-block the session and start the recovery timer, because for that flag
-userspace will do the unbind and destroy events which would remove the
-devices and wake up and kill the eh.
+After calling clk_prepare_enable(), clk_disable_unprepare() need
+be called when calling clk_set_rate() failed.
 
-Since the conn is dead and the system is going dowm this just has us use
-STOP_CONN_RECOVER with recovery_tmo=0 so we fail immediately. However, if
-the user has set the recovery_tmo=-1 we let the system hang like they
-requested since they might have used that setting for specific reasons
-(one known reason is for buggy cluster software).
-
-Link: https://lore.kernel.org/r/20210525181821.7617-5-michael.christie@oracle.com
-Signed-off-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 0bf750f4cbe1 ("ASoC: hisilicon: Add hi6210 i2s audio driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Link: https://lore.kernel.org/r/20210518044514.607010-1-yangyingliang@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/scsi_transport_iscsi.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ sound/soc/hisilicon/hi6210-i2s.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
-index 82491343e94a..d134156d67f0 100644
---- a/drivers/scsi/scsi_transport_iscsi.c
-+++ b/drivers/scsi/scsi_transport_iscsi.c
-@@ -2513,11 +2513,17 @@ static void stop_conn_work_fn(struct work_struct *work)
- 		session = iscsi_session_lookup(sid);
- 		if (session) {
- 			if (system_state != SYSTEM_RUNNING) {
--				session->recovery_tmo = 0;
--				iscsi_if_stop_conn(conn, STOP_CONN_TERM);
--			} else {
--				iscsi_if_stop_conn(conn, STOP_CONN_RECOVER);
-+				/*
-+				 * If the user has set up for the session to
-+				 * never timeout then hang like they wanted.
-+				 * For all other cases fail right away since
-+				 * userspace is not going to relogin.
-+				 */
-+				if (session->recovery_tmo > 0)
-+					session->recovery_tmo = 0;
- 			}
-+
-+			iscsi_if_stop_conn(conn, STOP_CONN_RECOVER);
- 		}
+diff --git a/sound/soc/hisilicon/hi6210-i2s.c b/sound/soc/hisilicon/hi6210-i2s.c
+index 907f5f1f7b44..ff05b9779e4b 100644
+--- a/sound/soc/hisilicon/hi6210-i2s.c
++++ b/sound/soc/hisilicon/hi6210-i2s.c
+@@ -102,18 +102,15 @@ static int hi6210_i2s_startup(struct snd_pcm_substream *substream,
  
- 		list_del_init(&conn->conn_list_err);
+ 	for (n = 0; n < i2s->clocks; n++) {
+ 		ret = clk_prepare_enable(i2s->clk[n]);
+-		if (ret) {
+-			while (n--)
+-				clk_disable_unprepare(i2s->clk[n]);
+-			return ret;
+-		}
++		if (ret)
++			goto err_unprepare_clk;
+ 	}
+ 
+ 	ret = clk_set_rate(i2s->clk[CLK_I2S_BASE], 49152000);
+ 	if (ret) {
+ 		dev_err(i2s->dev, "%s: setting 49.152MHz base rate failed %d\n",
+ 			__func__, ret);
+-		return ret;
++		goto err_unprepare_clk;
+ 	}
+ 
+ 	/* enable clock before frequency division */
+@@ -165,6 +162,11 @@ static int hi6210_i2s_startup(struct snd_pcm_substream *substream,
+ 	hi6210_write_reg(i2s, HII2S_SW_RST_N, val);
+ 
+ 	return 0;
++
++err_unprepare_clk:
++	while (n--)
++		clk_disable_unprepare(i2s->clk[n]);
++	return ret;
+ }
+ 
+ static void hi6210_i2s_shutdown(struct snd_pcm_substream *substream,
 -- 
 2.30.2
 
