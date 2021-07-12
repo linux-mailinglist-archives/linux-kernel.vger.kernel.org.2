@@ -2,234 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 332F13C61C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:20:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA2AB3C61C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234771AbhGLRXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 13:23:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58854 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234224AbhGLRXk (ORCPT
+        id S235385AbhGLRYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 13:24:13 -0400
+Received: from mail-io1-f51.google.com ([209.85.166.51]:37518 "EHLO
+        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235514AbhGLRYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 13:23:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626110452;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GTa3P9ZWFrJfV2ObKCtTAuiG3I+N8Ir5qQrelfNdXg4=;
-        b=Dq8tVSyxBYrF/i+jc+6IVNDjmN44NmMIcz7J7GcDFG6DQxgYIW3QjINNWcTANhM3p82l5v
-        K5JjnyKzvRhyoMsqOeUjOUJQW81UFh+oKbl+yN6fqK7tHV3Ma8SS9XWz+FrxedVCr/LTdJ
-        WRs+7hpbtwEbMUd9y6JTojyxxbD11pU=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-278-XjVCubaIMeiDcy7bVcb0Yw-1; Mon, 12 Jul 2021 13:20:50 -0400
-X-MC-Unique: XjVCubaIMeiDcy7bVcb0Yw-1
-Received: by mail-wm1-f69.google.com with SMTP id n5-20020a05600c3b85b02902152e9caa1dso5944709wms.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 10:20:50 -0700 (PDT)
+        Mon, 12 Jul 2021 13:24:11 -0400
+Received: by mail-io1-f51.google.com with SMTP id l18so18654973iow.4;
+        Mon, 12 Jul 2021 10:21:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:cc:subject:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GTa3P9ZWFrJfV2ObKCtTAuiG3I+N8Ir5qQrelfNdXg4=;
-        b=TkeTM4erfGTxUSDsytEkQyLkfYNEIuSjhw8xEULQ9IDwk2zE8masoN6x7tyORi2YBG
-         V02b46B6vAPVfU8KN8fxHzfH/A65jtoRXEQ59t0kJD7jroOzTzIlcQktKKGX4aDYFFvX
-         4gHhSuCSvooljwHbLwsi53U4b+tqmB6kkaJL22AtCUHXUL1X6jEZlsSDbMJ+Q9jybzMk
-         t1NUiiEyGe9prNBaLLVLu88EjXxTNPbSlncf4BkblYZiFzJMOa+wweDevioxlXZd9+xG
-         61FB6n/W7XxyWQoy6dYR1+oegNG4VVJhxIfbvAK+pGTPVUGE8ihLVsvYewc2xX+SMjtn
-         zqrQ==
-X-Gm-Message-State: AOAM533L4QPtGIVh/dWW8kQbbk0PtvAF+wW/ptOzM77jAu2O0VpPrVkS
-        lR+jGrkQ6VzLg7hNQ1CPwFoOO7yRu+75OvggbsjeEWx76JsOKWkQ6i+HithLl3nEhyFDCcRA2Qf
-        I6WU50VkjihwC3T3MBrbmEEM9
-X-Received: by 2002:adf:facf:: with SMTP id a15mr59287wrs.39.1626110449729;
-        Mon, 12 Jul 2021 10:20:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy+d/U8vl8SdYAtGo2IkkoAiNENGSESyGiWUbqzEMUERbu/JIM77t4J+I7Z2Njn7zh2uPwhcw==
-X-Received: by 2002:adf:facf:: with SMTP id a15mr59222wrs.39.1626110449396;
-        Mon, 12 Jul 2021 10:20:49 -0700 (PDT)
-Received: from [192.168.42.238] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
-        by smtp.gmail.com with ESMTPSA id w15sm567272wmi.3.2021.07.12.10.20.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Jul 2021 10:20:48 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     brouer@redhat.com, David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
-        yisen.zhuang@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
-        thomas.petazzoni@bootlin.com, hawk@kernel.org,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, fenghua.yu@intel.com,
-        guro@fb.com, Peter Xu <peterx@redhat.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>, wenxu@ucloud.cn,
-        Cong Wang <cong.wang@bytedance.com>,
-        Kevin Hao <haokexin@gmail.com>, nogikh@google.com,
-        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
-        kpsingh@kernel.org, andrii@kernel.org,
-        Martin KaFai Lau <kafai@fb.com>, songliubraving@fb.com,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH rfc v3 2/4] page_pool: add interface for getting and
- setting pagecnt_bias
-To:     Alexander Duyck <alexander.duyck@gmail.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>
-References: <1626092196-44697-1-git-send-email-linyunsheng@huawei.com>
- <1626092196-44697-3-git-send-email-linyunsheng@huawei.com>
- <CAKgT0Uf1W1H_0jK+zTDHdQnpa-dFSfcAtANqhPTJyZ21VeGmjg@mail.gmail.com>
-Message-ID: <2d9a3d29-8e6b-8462-c410-6b7fd4518c9d@redhat.com>
-Date:   Mon, 12 Jul 2021 19:20:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=po5Mrb+fjJQ2Xn5LewDjFuCzmgPRfNYcYqBaBw+bAEI=;
+        b=UDN0L6oXuFupvyZt5i8DgIYJAkjcsbeu/HR9wEPJwZpyhmotJkeplP7r2P/wgmG4ex
+         R+RRMI36ySvYHid2eIdk5FPqODBPB0Ok1Imy8RHKbSvJJIww5MHRzkp7vN4kAYBfQs01
+         0trW3fMv++MjS7ru1pZfSoM+vzRP1v7MLYhgnpTLvszRRaUpbC/BiYnUD1FOSkpN60+s
+         twyCogLnM1K5jJHu9y37S+tGi3587jOK+1hZVrI2ZlrmbJbk9cqPpzCaM905b0gR4kRm
+         GrVNNCWwgvpVl+NFyR8TmEULp33HUEGlUjzoosqd+06By00QB7QYoMk8Afk+vQGR6a+Z
+         pMFg==
+X-Gm-Message-State: AOAM533LZ2S6IyjdPodZeRBKOqauM9Rh4KdAxlHlJcLGOtlovvLksVzs
+        XEVk56xiIhK0bC+V4d4eWw==
+X-Google-Smtp-Source: ABdhPJw0K3bLJnLUad1dDRzKcmvCLK2WB8ZmWMg9QqX77L909j5Xy50vEAUVr847MaDWxAzlmcMKgA==
+X-Received: by 2002:a5d:8198:: with SMTP id u24mr4396ion.81.1626110482359;
+        Mon, 12 Jul 2021 10:21:22 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id b21sm3872375iot.35.2021.07.12.10.21.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jul 2021 10:21:21 -0700 (PDT)
+Received: (nullmailer pid 2141274 invoked by uid 1000);
+        Mon, 12 Jul 2021 17:21:16 -0000
+Date:   Mon, 12 Jul 2021 11:21:16 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Alistair Francis <alistair@alistair23.me>
+Cc:     dmitry.torokhov@gmail.com, linux-input@vger.kernel.org,
+        linux-imx@nxp.com, kernel@pengutronix.de, pinglinux@gmail.com,
+        tatsunosuke.tobita@wacom.com, junkpainting@gmail.com,
+        ping.cheng@wacom.com, linux-kernel@vger.kernel.org,
+        alistair23@gmail.com, devicetree@vger.kernel.org
+Subject: Re: [PATCH v7 2/9] dt-bindings: touchscreen: Initial commit of
+ wacom,i2c
+Message-ID: <20210712172116.GA2137814@robh.at.kernel.org>
+References: <20210708115853.281-1-alistair@alistair23.me>
+ <20210708115853.281-3-alistair@alistair23.me>
 MIME-Version: 1.0
-In-Reply-To: <CAKgT0Uf1W1H_0jK+zTDHdQnpa-dFSfcAtANqhPTJyZ21VeGmjg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210708115853.281-3-alistair@alistair23.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/07/2021 18.02, Alexander Duyck wrote:
-> On Mon, Jul 12, 2021 at 5:17 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>
->> As suggested by Alexander, "A DMA mapping should be page
->> aligned anyway so the lower 12 bits would be reserved 0",
->> so it might make more sense to repurpose the lower 12 bits
->> of the dma address to store the pagecnt_bias for frag page
->> support in page pool.
->>
->> As newly added page_pool_get_pagecnt_bias() may be called
->> outside of the softirq context, so annotate the access to
->> page->dma_addr[0] with READ_ONCE() and WRITE_ONCE().
->>
->> And page_pool_get_pagecnt_bias_ptr() is added to implement
->> the pagecnt_bias atomic updating when a page is passsed to
->> the user.
->>
->> Other three interfaces using page->dma_addr[0] is only called
->> in the softirq context during normal rx processing, hopefully
->> the barrier in the rx processing will ensure the correct order
->> between getting and setting pagecnt_bias.
->>
->> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->> ---
->>   include/net/page_pool.h | 29 +++++++++++++++++++++++++++--
->>   net/core/page_pool.c    |  8 +++++++-
->>   2 files changed, 34 insertions(+), 3 deletions(-)
->>
->> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
->> index 8d7744d..84cd972 100644
->> --- a/include/net/page_pool.h
->> +++ b/include/net/page_pool.h
->> @@ -200,17 +200,42 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
->>
->>   static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
->>   {
->> -       dma_addr_t ret = page->dma_addr[0];
->> +       dma_addr_t ret = READ_ONCE(page->dma_addr[0]) & PAGE_MASK;
->>          if (sizeof(dma_addr_t) > sizeof(unsigned long))
->>                  ret |= (dma_addr_t)page->dma_addr[1] << 16 << 16;
->>          return ret;
->>   }
->>
->> -static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
->> +static inline bool page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
->>   {
->> +       if (WARN_ON(addr & ~PAGE_MASK))
->> +               return false;
->> +
->>          page->dma_addr[0] = addr;
->>          if (sizeof(dma_addr_t) > sizeof(unsigned long))
->>                  page->dma_addr[1] = upper_32_bits(addr);
->> +
->> +       return true;
->> +}
->> +
+On Thu, Jul 08, 2021 at 09:58:46PM +1000, Alistair Francis wrote:
+> Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: devicetree@vger.kernel.org
+> ---
+>  .../input/touchscreen/wacom,generic.yaml      | 48 +++++++++++++++++++
+>  1 file changed, 48 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/wacom,generic.yaml
 > 
-> Rather than making this a part of the check here it might make more
-> sense to pull this out and perform the WARN_ON after the check for
-> dma_mapping_error.
+> diff --git a/Documentation/devicetree/bindings/input/touchscreen/wacom,generic.yaml b/Documentation/devicetree/bindings/input/touchscreen/wacom,generic.yaml
+> new file mode 100644
+> index 000000000000..48c611d63bd8
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/input/touchscreen/wacom,generic.yaml
+> @@ -0,0 +1,48 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/input/touchscreen/wacom,generic.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Wacom I2C Controller
+> +
+> +maintainers:
+> +  - Alistair Francis <alistair@alistair23.me>
+> +
+> +allOf:
+> +  - $ref: touchscreen.yaml#
 
-I need to point out that I don't like WARN_ON and BUG_ON code in 
-fast-path code, because compiler adds 'ud2' assembler instructions that 
-influences the instruction-cache fetching in the CPU.  Yes, I have seen 
-a measuresable impact from this before.
+If you use properties from here...
 
+> +
+> +properties:
+> +  compatible:
+> +    const: wacom,i2c-30
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  vdd-supply:
+> +    description: Power Supply
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +additionalProperties: false
 
-> Also it occurs to me that we only really have to do this in the case
-> where dma_addr_t is larger than the size of a long. Otherwise we could
-> just have the code split things so that dma_addr[0] is the dma_addr
-> and dma_addr[1] is our pagecnt_bias value in which case we could
-> probably just skip the check.
+then this needs to be 'unevaluatedProperties: false' instead. 
 
-The dance to get 64-bit DMA addr on 32-bit systems is rather ugly and 
-confusing, sadly.  We could take advantage of this, I just hope this 
-will not make it uglier.
-
-
->> +static inline int page_pool_get_pagecnt_bias(struct page *page)
->> +{
->> +       return READ_ONCE(page->dma_addr[0]) & ~PAGE_MASK;
->> +}
->> +
->> +static inline unsigned long *page_pool_pagecnt_bias_ptr(struct page *page)
->> +{
->> +       return page->dma_addr;
->> +}
->> +
->> +static inline void page_pool_set_pagecnt_bias(struct page *page, int bias)
->> +{
->> +       unsigned long dma_addr_0 = READ_ONCE(page->dma_addr[0]);
->> +
->> +       dma_addr_0 &= PAGE_MASK;
->> +       dma_addr_0 |= bias;
->> +
->> +       WRITE_ONCE(page->dma_addr[0], dma_addr_0);
->>   }
->>
->>   static inline bool is_page_pool_compiled_in(void)
->> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
->> index 78838c6..1abefc6 100644
->> --- a/net/core/page_pool.c
->> +++ b/net/core/page_pool.c
->> @@ -198,7 +198,13 @@ static bool page_pool_dma_map(struct page_pool *pool, struct page *page)
->>          if (dma_mapping_error(pool->p.dev, dma))
->>                  return false;
->>
+> +
+> +examples:
+> +  - |
+> +    #include "dt-bindings/interrupt-controller/irq.h"
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        digitiser@9 {
+> +                compatible = "wacom,i2c-30";
+> +                reg = <0x9>;
+> +                interrupt-parent = <&gpio1>;
+> +                interrupts = <9 IRQ_TYPE_LEVEL_LOW>;
+> +                vdd-supply = <&reg_touch>;
+> +        };
+> +    };
+> -- 
+> 2.31.1
 > 
-> So instead of adding to the function below you could just add your
-> WARN_ON check here with the unmapping call.
 > 
->> -       page_pool_set_dma_addr(page, dma);
->> +       if (unlikely(!page_pool_set_dma_addr(page, dma))) {
->> +               dma_unmap_page_attrs(pool->p.dev, dma,
->> +                                    PAGE_SIZE << pool->p.order,
->> +                                    pool->p.dma_dir,
->> +                                    DMA_ATTR_SKIP_CPU_SYNC);
->> +               return false;
->> +       }
->>
->>          if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
->>                  page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
->> --
->> 2.7.4
->>
-> 
-
