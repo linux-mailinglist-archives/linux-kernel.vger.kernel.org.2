@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58CF13C5494
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 072B03C4DB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353062AbhGLIBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:01:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34004 "EHLO mail.kernel.org"
+        id S237775AbhGLHOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:14:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239366AbhGLHWx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:22:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD8FB6052B;
-        Mon, 12 Jul 2021 07:20:01 +0000 (UTC)
+        id S239463AbhGLGts (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:49:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8F8660FD8;
+        Mon, 12 Jul 2021 06:47:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074402;
-        bh=JtG1JLljfS8M88vlJnnVTirxk2SkKYS2fizuKzP7JAk=;
+        s=korg; t=1626072421;
+        bh=pLyHru/6LPL5ZD8EdeUCxgMJ0rk2W/O2xl6joVuYubI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KrCtB0AnT+AICPdTlgUJ2GpcVrETvYL3iCxnA/8/ciPgYXLHd86Gha5Qd4bAOcmoh
-         3124Ds/DWlbhYKVpnFlp80JOdkIxxurFuvqYr9TbtRaXWEQWGh9xbmfqNdlDgTXa/t
-         p/7UMcBfO+xUjkS2qFRF7ihkOLvbPbXND0jjU5Bg=
+        b=Tx9LNGbkbcTGr9xLNmBhJPHrD6nqB+kIzeJjfWQkJuEB+aGcmTgAkLvtPDV1t3kyD
+         d0u+pJ7cAcxksmk3zAczUqdQgslJ/T1A3piVZkpYzDcW+BUS4wtLkfrN80xNNb5BBl
+         TevHrViOk20BaYT/musPjYEj0d+ZSyN+hhzPX1+E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 567/700] tty: nozomi: Fix the error handling path of nozomi_card_init()
-Date:   Mon, 12 Jul 2021 08:10:50 +0200
-Message-Id: <20210712061036.463413432@linuxfoundation.org>
+        stable@vger.kernel.org, Eddie James <eajames@linux.ibm.com>,
+        Joel Stanley <joel@jms.id.au>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 491/593] fsi: occ: Dont accept response from un-initialized OCC
+Date:   Mon, 12 Jul 2021 08:10:51 +0200
+Message-Id: <20210712060945.296010908@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,56 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Eddie James <eajames@linux.ibm.com>
 
-[ Upstream commit 6ae7d0f5a92b9619f6e3c307ce56b2cefff3f0e9 ]
+[ Upstream commit 8a4659be08576141f47d47d94130eb148cb5f0df ]
 
-The error handling path is broken and we may un-register things that have
-never been registered.
+If the OCC is not initialized and responds as such, the driver
+should continue waiting for a valid response until the timeout
+expires.
 
-Update the loops index accordingly.
-
-Fixes: 9842c38e9176 ("kfifo: fix warn_unused_result")
-Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/e28c2e92c7475da25b03d022ea2d6dcf1ba807a2.1621968629.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Eddie James <eajames@linux.ibm.com>
+Reviewed-by: Joel Stanley <joel@jms.id.au>
+Fixes: 7ed98dddb764 ("fsi: Add On-Chip Controller (OCC) driver")
+Link: https://lore.kernel.org/r/20210209171235.20624-2-eajames@linux.ibm.com
+Signed-off-by: Joel Stanley <joel@jms.id.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/nozomi.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/fsi/fsi-occ.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/tty/nozomi.c b/drivers/tty/nozomi.c
-index 0b10c2da4364..1076f884d9f9 100644
---- a/drivers/tty/nozomi.c
-+++ b/drivers/tty/nozomi.c
-@@ -1391,7 +1391,7 @@ static int nozomi_card_init(struct pci_dev *pdev,
- 			NOZOMI_NAME, dc);
- 	if (unlikely(ret)) {
- 		dev_err(&pdev->dev, "can't request irq %d\n", pdev->irq);
--		goto err_free_kfifo;
-+		goto err_free_all_kfifo;
- 	}
+diff --git a/drivers/fsi/fsi-occ.c b/drivers/fsi/fsi-occ.c
+index 9eeb856c8905..a691f9732a13 100644
+--- a/drivers/fsi/fsi-occ.c
++++ b/drivers/fsi/fsi-occ.c
+@@ -445,6 +445,7 @@ int fsi_occ_submit(struct device *dev, const void *request, size_t req_len,
+ 			goto done;
  
- 	DBG1("base_addr: %p", dc->base_addr);
-@@ -1429,13 +1429,15 @@ static int nozomi_card_init(struct pci_dev *pdev,
- 	return 0;
+ 		if (resp->return_status == OCC_RESP_CMD_IN_PRG ||
++		    resp->return_status == OCC_RESP_CRIT_INIT ||
+ 		    resp->seq_no != seq_no) {
+ 			rc = -ETIMEDOUT;
  
- err_free_tty:
--	for (i = 0; i < MAX_PORT; ++i) {
-+	for (i--; i >= 0; i--) {
- 		tty_unregister_device(ntty_driver, dc->index_start + i);
- 		tty_port_destroy(&dc->port[i].port);
- 	}
- 	free_irq(pdev->irq, dc);
-+err_free_all_kfifo:
-+	i = MAX_PORT;
- err_free_kfifo:
--	for (i = 0; i < MAX_PORT; i++)
-+	for (i--; i >= PORT_MDM; i--)
- 		kfifo_free(&dc->port[i].fifo_ul);
- err_free_sbuf:
- 	kfree(dc->send_buf);
 -- 
 2.30.2
 
