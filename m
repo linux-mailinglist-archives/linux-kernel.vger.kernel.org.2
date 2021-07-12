@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97CB73C49D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 869EF3C505E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236274AbhGLGrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:47:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53450 "EHLO mail.kernel.org"
+        id S1347091AbhGLHcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:32:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236968AbhGLGfj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:35:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77B2E610D1;
-        Mon, 12 Jul 2021 06:32:41 +0000 (UTC)
+        id S243294AbhGLHEu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:04:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29A0D610FA;
+        Mon, 12 Jul 2021 07:02:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071561;
-        bh=RYXMFqHcSr4bL2PoGyJZ5nwwl1DauA2EAjLBUbL/NXg=;
+        s=korg; t=1626073321;
+        bh=v+VIvlqJca6np511IJQuvDTwN6v7AyjLVGnrinKZhHY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I7s8Qe79thB93km4Vd5zisy/TU+8fBpdyt8pZGWBTcqNY5/SlqqN9jIot6WAOeFW2
-         AauE1YWn6U3c/NTEkS2FVHxD+SZ8y64j8j2X/zMm6ewrALZTVXZkb1wAhqoQV+tW/b
-         z63ZRQcSwkPlJDlffyRVcGgijmTQ6tkGFc+9O/u4=
+        b=XC3i4E06gTJvyuTgTmCJTp+YOy1krIN44udFXqqa/HwtKioO7I7SBD13jpjJ7zJtw
+         qQR5cXdPCiKTTI2lritA1mlJe4RqeXdviqgHB781kkkkzDpwxU+HdXVQyVh25Iz+4Q
+         Ql0dgPZ6ELxAN3+Jc5jjMcpOvd6zG2vNhOhnz9EE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 124/593] media: hevc: Fix dependent slice segment flags
+        stable@vger.kernel.org,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Petr Mladek <pmladek@suse.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 201/700] lib: vsprintf: Fix handling of number field widths in vsscanf
 Date:   Mon, 12 Jul 2021 08:04:44 +0200
-Message-Id: <20210712060856.803388908@linuxfoundation.org>
+Message-Id: <20210712060955.276659073@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,86 +40,231 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jernej Skrabec <jernej.skrabec@siol.net>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-[ Upstream commit 67a7e53d5b21f3a84efc03a4e62db7caf97841ef ]
+[ Upstream commit 900fdc4573766dd43b847b4f54bd4a1ee2bc7360 ]
 
-Dependent slice segment flag for PPS control is misnamed. It should have
-"enabled" at the end. It only tells if this flag is present in slice
-header or not and not the actual value.
+The existing code attempted to handle numbers by doing a strto[u]l(),
+ignoring the field width, and then repeatedly dividing to extract the
+field out of the full converted value. If the string contains a run of
+valid digits longer than will fit in a long or long long, this would
+overflow and no amount of dividing can recover the correct value.
 
-Fix this by renaming the PPS flag and introduce another flag for slice
-control which tells actual value.
+This patch fixes vsscanf() to obey number field widths when parsing
+the number.
 
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+A new _parse_integer_limit() is added that takes a limit for the number
+of characters to parse. The number field conversion in vsscanf is changed
+to use this new function.
+
+If a number starts with a radix prefix, the field width  must be long
+enough for at last one digit after the prefix. If not, it will be handled
+like this:
+
+ sscanf("0x4", "%1i", &i): i=0, scanning continues with the 'x'
+ sscanf("0x4", "%2i", &i): i=0, scanning continues with the '4'
+
+This is consistent with the observed behaviour of userland sscanf.
+
+Note that this patch does NOT fix the problem of a single field value
+overflowing the target type. So for example:
+
+  sscanf("123456789abcdef", "%x", &i);
+
+Will not produce the correct result because the value obviously overflows
+INT_MAX. But sscanf will report a successful conversion.
+
+Note that where a very large number is used to mean "unlimited", the value
+INT_MAX is used for consistency with the behaviour of vsnprintf().
+
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+Signed-off-by: Petr Mladek <pmladek@suse.com>
+Link: https://lore.kernel.org/r/20210514161206.30821-2-rf@opensource.cirrus.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 5 ++++-
- drivers/staging/media/sunxi/cedrus/cedrus_h265.c          | 4 ++--
- include/media/hevc-ctrls.h                                | 3 ++-
- 3 files changed, 8 insertions(+), 4 deletions(-)
+ lib/kstrtox.c  | 13 ++++++--
+ lib/kstrtox.h  |  2 ++
+ lib/vsprintf.c | 82 +++++++++++++++++++++++++++++---------------------
+ 3 files changed, 60 insertions(+), 37 deletions(-)
 
-diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-index ce728c757eaf..b864869b42bc 100644
---- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-+++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-@@ -4030,7 +4030,7 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
-     :stub-columns: 0
-     :widths:       1 1 2
+diff --git a/lib/kstrtox.c b/lib/kstrtox.c
+index a118b0b1e9b2..0b5fe8b41173 100644
+--- a/lib/kstrtox.c
++++ b/lib/kstrtox.c
+@@ -39,20 +39,22 @@ const char *_parse_integer_fixup_radix(const char *s, unsigned int *base)
  
--    * - ``V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT``
-+    * - ``V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT_ENABLED``
-       - 0x00000001
-       -
-     * - ``V4L2_HEVC_PPS_FLAG_OUTPUT_FLAG_PRESENT``
-@@ -4238,6 +4238,9 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
-     * - ``V4L2_HEVC_SLICE_PARAMS_FLAG_SLICE_LOOP_FILTER_ACROSS_SLICES_ENABLED``
-       - 0x00000100
-       -
-+    * - ``V4L2_HEVC_SLICE_PARAMS_FLAG_DEPENDENT_SLICE_SEGMENT``
-+      - 0x00000200
-+      -
+ /*
+  * Convert non-negative integer string representation in explicitly given radix
+- * to an integer.
++ * to an integer. A maximum of max_chars characters will be converted.
++ *
+  * Return number of characters consumed maybe or-ed with overflow bit.
+  * If overflow occurs, result integer (incorrect) is still returned.
+  *
+  * Don't you dare use this function.
+  */
+-unsigned int _parse_integer(const char *s, unsigned int base, unsigned long long *p)
++unsigned int _parse_integer_limit(const char *s, unsigned int base, unsigned long long *p,
++				  size_t max_chars)
+ {
+ 	unsigned long long res;
+ 	unsigned int rv;
  
- .. c:type:: v4l2_hevc_dpb_entry
+ 	res = 0;
+ 	rv = 0;
+-	while (1) {
++	while (max_chars--) {
+ 		unsigned int c = *s;
+ 		unsigned int lc = c | 0x20; /* don't tolower() this line */
+ 		unsigned int val;
+@@ -82,6 +84,11 @@ unsigned int _parse_integer(const char *s, unsigned int base, unsigned long long
+ 	return rv;
+ }
  
-diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
-index ce497d0197df..10744fab7cea 100644
---- a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
-+++ b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
-@@ -477,8 +477,8 @@ static void cedrus_h265_setup(struct cedrus_ctx *ctx,
- 				slice_params->flags);
++unsigned int _parse_integer(const char *s, unsigned int base, unsigned long long *p)
++{
++	return _parse_integer_limit(s, base, p, INT_MAX);
++}
++
+ static int _kstrtoull(const char *s, unsigned int base, unsigned long long *res)
+ {
+ 	unsigned long long _res;
+diff --git a/lib/kstrtox.h b/lib/kstrtox.h
+index 3b4637bcd254..158c400ca865 100644
+--- a/lib/kstrtox.h
++++ b/lib/kstrtox.h
+@@ -4,6 +4,8 @@
  
- 	reg |= VE_DEC_H265_FLAG(VE_DEC_H265_DEC_SLICE_HDR_INFO0_FLAG_DEPENDENT_SLICE_SEGMENT,
--				V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT,
--				pps->flags);
-+				V4L2_HEVC_SLICE_PARAMS_FLAG_DEPENDENT_SLICE_SEGMENT,
-+				slice_params->flags);
+ #define KSTRTOX_OVERFLOW	(1U << 31)
+ const char *_parse_integer_fixup_radix(const char *s, unsigned int *base);
++unsigned int _parse_integer_limit(const char *s, unsigned int base, unsigned long long *res,
++				  size_t max_chars);
+ unsigned int _parse_integer(const char *s, unsigned int base, unsigned long long *res);
  
- 	/* FIXME: For multi-slice support. */
- 	reg |= VE_DEC_H265_DEC_SLICE_HDR_INFO0_FLAG_FIRST_SLICE_SEGMENT_IN_PIC;
-diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
-index 1009cf0891cc..a3b650ab00f6 100644
---- a/include/media/hevc-ctrls.h
-+++ b/include/media/hevc-ctrls.h
-@@ -81,7 +81,7 @@ struct v4l2_ctrl_hevc_sps {
- 	__u64	flags;
- };
+ #endif
+diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+index 39ef2e314da5..9d6722199390 100644
+--- a/lib/vsprintf.c
++++ b/lib/vsprintf.c
+@@ -53,6 +53,31 @@
+ #include <linux/string_helpers.h>
+ #include "kstrtox.h"
  
--#define V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT		(1ULL << 0)
-+#define V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT_ENABLED	(1ULL << 0)
- #define V4L2_HEVC_PPS_FLAG_OUTPUT_FLAG_PRESENT			(1ULL << 1)
- #define V4L2_HEVC_PPS_FLAG_SIGN_DATA_HIDING_ENABLED		(1ULL << 2)
- #define V4L2_HEVC_PPS_FLAG_CABAC_INIT_PRESENT			(1ULL << 3)
-@@ -160,6 +160,7 @@ struct v4l2_hevc_pred_weight_table {
- #define V4L2_HEVC_SLICE_PARAMS_FLAG_USE_INTEGER_MV		(1ULL << 6)
- #define V4L2_HEVC_SLICE_PARAMS_FLAG_SLICE_DEBLOCKING_FILTER_DISABLED (1ULL << 7)
- #define V4L2_HEVC_SLICE_PARAMS_FLAG_SLICE_LOOP_FILTER_ACROSS_SLICES_ENABLED (1ULL << 8)
-+#define V4L2_HEVC_SLICE_PARAMS_FLAG_DEPENDENT_SLICE_SEGMENT	(1ULL << 9)
++static unsigned long long simple_strntoull(const char *startp, size_t max_chars,
++					   char **endp, unsigned int base)
++{
++	const char *cp;
++	unsigned long long result = 0ULL;
++	size_t prefix_chars;
++	unsigned int rv;
++
++	cp = _parse_integer_fixup_radix(startp, &base);
++	prefix_chars = cp - startp;
++	if (prefix_chars < max_chars) {
++		rv = _parse_integer_limit(cp, base, &result, max_chars - prefix_chars);
++		/* FIXME */
++		cp += (rv & ~KSTRTOX_OVERFLOW);
++	} else {
++		/* Field too short for prefix + digit, skip over without converting */
++		cp = startp + max_chars;
++	}
++
++	if (endp)
++		*endp = (char *)cp;
++
++	return result;
++}
++
+ /**
+  * simple_strtoull - convert a string to an unsigned long long
+  * @cp: The start of the string
+@@ -63,18 +88,7 @@
+  */
+ unsigned long long simple_strtoull(const char *cp, char **endp, unsigned int base)
+ {
+-	unsigned long long result;
+-	unsigned int rv;
+-
+-	cp = _parse_integer_fixup_radix(cp, &base);
+-	rv = _parse_integer(cp, base, &result);
+-	/* FIXME */
+-	cp += (rv & ~KSTRTOX_OVERFLOW);
+-
+-	if (endp)
+-		*endp = (char *)cp;
+-
+-	return result;
++	return simple_strntoull(cp, INT_MAX, endp, base);
+ }
+ EXPORT_SYMBOL(simple_strtoull);
  
- struct v4l2_ctrl_hevc_slice_params {
- 	__u32	bit_size;
+@@ -109,6 +123,21 @@ long simple_strtol(const char *cp, char **endp, unsigned int base)
+ }
+ EXPORT_SYMBOL(simple_strtol);
+ 
++static long long simple_strntoll(const char *cp, size_t max_chars, char **endp,
++				 unsigned int base)
++{
++	/*
++	 * simple_strntoull() safely handles receiving max_chars==0 in the
++	 * case cp[0] == '-' && max_chars == 1.
++	 * If max_chars == 0 we can drop through and pass it to simple_strntoull()
++	 * and the content of *cp is irrelevant.
++	 */
++	if (*cp == '-' && max_chars > 0)
++		return -simple_strntoull(cp + 1, max_chars - 1, endp, base);
++
++	return simple_strntoull(cp, max_chars, endp, base);
++}
++
+ /**
+  * simple_strtoll - convert a string to a signed long long
+  * @cp: The start of the string
+@@ -119,10 +148,7 @@ EXPORT_SYMBOL(simple_strtol);
+  */
+ long long simple_strtoll(const char *cp, char **endp, unsigned int base)
+ {
+-	if (*cp == '-')
+-		return -simple_strtoull(cp + 1, endp, base);
+-
+-	return simple_strtoull(cp, endp, base);
++	return simple_strntoll(cp, INT_MAX, endp, base);
+ }
+ EXPORT_SYMBOL(simple_strtoll);
+ 
+@@ -3475,25 +3501,13 @@ int vsscanf(const char *buf, const char *fmt, va_list args)
+ 			break;
+ 
+ 		if (is_sign)
+-			val.s = qualifier != 'L' ?
+-				simple_strtol(str, &next, base) :
+-				simple_strtoll(str, &next, base);
++			val.s = simple_strntoll(str,
++						field_width >= 0 ? field_width : INT_MAX,
++						&next, base);
+ 		else
+-			val.u = qualifier != 'L' ?
+-				simple_strtoul(str, &next, base) :
+-				simple_strtoull(str, &next, base);
+-
+-		if (field_width > 0 && next - str > field_width) {
+-			if (base == 0)
+-				_parse_integer_fixup_radix(str, &base);
+-			while (next - str > field_width) {
+-				if (is_sign)
+-					val.s = div_s64(val.s, base);
+-				else
+-					val.u = div_u64(val.u, base);
+-				--next;
+-			}
+-		}
++			val.u = simple_strntoull(str,
++						 field_width >= 0 ? field_width : INT_MAX,
++						 &next, base);
+ 
+ 		switch (qualifier) {
+ 		case 'H':	/* that's 'hh' in format */
 -- 
 2.30.2
 
