@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F115A3C5772
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E91D3C5150
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358489AbhGLIdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:33:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52144 "EHLO mail.kernel.org"
+        id S1346732AbhGLHjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:39:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346067AbhGLHpq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:45:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 15861613DB;
-        Mon, 12 Jul 2021 07:41:49 +0000 (UTC)
+        id S243803AbhGLHKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:10:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AF9F61289;
+        Mon, 12 Jul 2021 07:05:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075710;
-        bh=+Tz/rXInQc51XqYA3blowg3jBoRAtHYIoA8tPYksn7I=;
+        s=korg; t=1626073514;
+        bh=8Y+8ynbx2OCSKfxB71y/b0xJs0zIgHjnEj/SFWeN/FU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ynhoP1G9JoE3OaNLIT8EHtRli0kn7vTutN/bSRzJPyFvblADkvqHdpCNfyfWDt0WR
-         m7XmY1Fnn/1Wa5OQ2qYL+Hq+1XMtpYI+hmDj2xQsCVzDcS5ivkZ1ucPhqVLlW5YeTp
-         +25oCmZClIFy7k77UfTuQ08Az2d6ANRshzuMtQ1k=
+        b=EioYxrbll2q4rTDIkq8bxHxz6RJGzdRKwYESJ0E3qX+n2Yw2pZs7OEmc3igOPO9FY
+         jTqhZZqZjdH10f5sT4TM6wdMBcYG+m2hfQlnHnhGY/mGyVgqduziYp/Rg+HVnh1Gf9
+         2mFNtjFwYjluauPFeNdiPZGs3vVoxV7OdjwTsdMs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 329/800] KVM: x86/mmu: Fix pf_fixed count in tdp_mmu_map_handle_target_level()
+Subject: [PATCH 5.12 269/700] media: rc: i2c: Fix an error message
 Date:   Mon, 12 Jul 2021 08:05:52 +0200
-Message-Id: <20210712061001.382207167@linuxfoundation.org>
+Message-Id: <20210712061004.862003774@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,54 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai Huang <kai.huang@intel.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 857f84743e4b78500afae010d866675642e18e90 ]
+[ Upstream commit 9c87ae1a0dbeb5794957421157fd266d38a869b4 ]
 
-Currently pf_fixed is not increased when prefault is true.  This is not
-correct, since prefault here really means "async page fault completed".
-In that case, the original page fault from the guest was morphed into as
-async page fault and pf_fixed was not increased.  So when prefault
-indicates async page fault is completed, pf_fixed should be increased.
+'ret' is known to be 1 here. In fact 'i' is expected instead.
+Store the return value of 'i2c_master_recv()' in 'ret' so that the error
+message print the correct error code.
 
-Additionally, currently pf_fixed is also increased even when page fault
-is spurious, while legacy MMU increases pf_fixed when page fault returns
-RET_PF_EMULATE or RET_PF_FIXED.
-
-To fix above two issues, change to increase pf_fixed when return value
-is not RET_PF_SPURIOUS (RET_PF_RETRY has already been ruled out by
-reaching here).
-
-More information:
-https://lore.kernel.org/kvm/cover.1620200410.git.kai.huang@intel.com/T/#mbb5f8083e58a2cd262231512b9211cbe70fc3bd5
-
-Fixes: bb18842e2111 ("kvm: x86/mmu: Add TDP MMU PF handler")
-Reviewed-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Kai Huang <kai.huang@intel.com>
-Message-Id: <2ea8b7f5d4f03c99b32bc56fc982e1e4e3d3fc6b.1623717884.git.kai.huang@intel.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Fixes: acaa34bf06e9 ("media: rc: implement zilog transmitter")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/mmu/tdp_mmu.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/media/i2c/ir-kbd-i2c.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 35b0ece7beff..8773bd5287da 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -949,7 +949,11 @@ static int tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu, int write,
- 				       rcu_dereference(iter->sptep));
+diff --git a/drivers/media/i2c/ir-kbd-i2c.c b/drivers/media/i2c/ir-kbd-i2c.c
+index e8119ad0bc71..92376592455e 100644
+--- a/drivers/media/i2c/ir-kbd-i2c.c
++++ b/drivers/media/i2c/ir-kbd-i2c.c
+@@ -678,8 +678,8 @@ static int zilog_tx(struct rc_dev *rcdev, unsigned int *txbuf,
+ 		goto out_unlock;
  	}
  
--	if (!prefault)
-+	/*
-+	 * Increase pf_fixed in both RET_PF_EMULATE and RET_PF_FIXED to be
-+	 * consistent with legacy MMU behavior.
-+	 */
-+	if (ret != RET_PF_SPURIOUS)
- 		vcpu->stat.pf_fixed++;
- 
- 	return ret;
+-	i = i2c_master_recv(ir->tx_c, buf, 1);
+-	if (i != 1) {
++	ret = i2c_master_recv(ir->tx_c, buf, 1);
++	if (ret != 1) {
+ 		dev_err(&ir->rc->dev, "i2c_master_recv failed with %d\n", ret);
+ 		ret = -EIO;
+ 		goto out_unlock;
 -- 
 2.30.2
 
