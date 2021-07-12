@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26DD43C5008
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D2B3C4950
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346023AbhGLHa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:30:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37954 "EHLO mail.kernel.org"
+        id S238312AbhGLGns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:43:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237496AbhGLHC1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:02:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34FC4610CC;
-        Mon, 12 Jul 2021 06:59:38 +0000 (UTC)
+        id S237582AbhGLGej (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:34:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5D5B61181;
+        Mon, 12 Jul 2021 06:30:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073178;
-        bh=U22md1fiLFhqHVO0DXdfZM26MVUAJZq1Lq19F9yOlwI=;
+        s=korg; t=1626071450;
+        bh=Y7MBsejTqP5jbUJzRJcT4hEOWtadSAMUvNkusXB/BjA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iFdiuaWPuQlD+bNNfmt2XD6HfhoDJBcBkQZu68jjCgqGhNTKbOxCVMKwq6jXIcQ99
-         dVLilRYe+UL+RGKPi5ukQHKRtzJ7ed4N7GoQ6oWQDfhGBr0Nkxz3w/HBIzg7gWEpES
-         6Ov5SEFWgsW4qu+YfNZGpgCmNBvQErpJ//gcE3o4=
+        b=0Ny8yWHxCojIff0iCmW8rOF5SmRrvksC8GwQ4MFe0n0kMSmIXH1+9GcMW7hq1Y+au
+         hvAl9PHatbM5tea/Re9Zfe5qAA/EAtLyX8qLaLE2oPMX0lRknEN17QqFhDLKVVFW//
+         dp2EG/LZ0JcJyIS2uBS1xGURAQkl6BwnWRho+i7I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Odin Ugedal <odin@uged.al>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 152/700] sched/fair: Fix ascii art by relpacing tabs
-Date:   Mon, 12 Jul 2021 08:03:55 +0200
-Message-Id: <20210712060947.061827569@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Oliver Lang <Oliver.Lang@gossenmetrawatt.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>, Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Nikita Travkin <nikita@trvn.ru>
+Subject: [PATCH 5.10 076/593] iio: ltr501: ltr501_read_ps(): add missing endianness conversion
+Date:   Mon, 12 Jul 2021 08:03:56 +0200
+Message-Id: <20210712060851.501088191@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,65 +43,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Odin Ugedal <odin@uged.al>
+From: Oliver Lang <Oliver.Lang@gossenmetrawatt.com>
 
-[ Upstream commit 08f7c2f4d0e9f4283f5796b8168044c034a1bfcb ]
+commit 71b33f6f93ef9462c84560e2236ed22209d26a58 upstream.
 
-When using something other than 8 spaces per tab, this ascii art
-makes not sense, and the reader might end up wondering what this
-advanced equation "is".
+The PS ADC Channel data is spread over 2 registers in little-endian
+form. This patch adds the missing endianness conversion.
 
-Signed-off-by: Odin Ugedal <odin@uged.al>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lkml.kernel.org/r/20210518125202.78658-4-odin@uged.al
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 2690be905123 ("iio: Add Lite-On ltr501 ambient light / proximity sensor driver")
+Signed-off-by: Oliver Lang <Oliver.Lang@gossenmetrawatt.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Tested-by: Nikita Travkin <nikita@trvn.ru> # ltr559
+Link: https://lore.kernel.org/r/20210610134619.2101372-4-mkl@pengutronix.de
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- kernel/sched/fair.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/iio/light/ltr501.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 47fcc3fe9dc5..272c583fc167 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3134,7 +3134,7 @@ void reweight_task(struct task_struct *p, int prio)
-  *
-  *                     tg->weight * grq->load.weight
-  *   ge->load.weight = -----------------------------               (1)
-- *			  \Sum grq->load.weight
-+ *                       \Sum grq->load.weight
-  *
-  * Now, because computing that sum is prohibitively expensive to compute (been
-  * there, done that) we approximate it with this average stuff. The average
-@@ -3148,7 +3148,7 @@ void reweight_task(struct task_struct *p, int prio)
-  *
-  *                     tg->weight * grq->avg.load_avg
-  *   ge->load.weight = ------------------------------              (3)
-- *				tg->load_avg
-+ *                             tg->load_avg
-  *
-  * Where: tg->load_avg ~= \Sum grq->avg.load_avg
-  *
-@@ -3164,7 +3164,7 @@ void reweight_task(struct task_struct *p, int prio)
-  *
-  *                     tg->weight * grq->load.weight
-  *   ge->load.weight = ----------------------------- = tg->weight   (4)
-- *			    grp->load.weight
-+ *                         grp->load.weight
-  *
-  * That is, the sum collapses because all other CPUs are idle; the UP scenario.
-  *
-@@ -3183,7 +3183,7 @@ void reweight_task(struct task_struct *p, int prio)
-  *
-  *                     tg->weight * grq->load.weight
-  *   ge->load.weight = -----------------------------		   (6)
-- *				tg_load_avg'
-+ *                             tg_load_avg'
-  *
-  * Where:
-  *
--- 
-2.30.2
-
+--- a/drivers/iio/light/ltr501.c
++++ b/drivers/iio/light/ltr501.c
+@@ -409,18 +409,19 @@ static int ltr501_read_als(const struct
+ 
+ static int ltr501_read_ps(const struct ltr501_data *data)
+ {
+-	int ret, status;
++	__le16 status;
++	int ret;
+ 
+ 	ret = ltr501_drdy(data, LTR501_STATUS_PS_RDY);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	ret = regmap_bulk_read(data->regmap, LTR501_PS_DATA,
+-			       &status, 2);
++			       &status, sizeof(status));
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	return status;
++	return le16_to_cpu(status);
+ }
+ 
+ static int ltr501_read_intr_prst(const struct ltr501_data *data,
 
 
