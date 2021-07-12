@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C007B3C578D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E8083C4AEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377135AbhGLIfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:35:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53510 "EHLO mail.kernel.org"
+        id S241320AbhGLGy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:54:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244817AbhGLHsl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:48:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5942861955;
-        Mon, 12 Jul 2021 07:42:50 +0000 (UTC)
+        id S238211AbhGLGkB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:40:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62528610E6;
+        Mon, 12 Jul 2021 06:36:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075770;
-        bh=gXplEzUOyCMiNyG6N2ZSavNxAt8N4u+N6We5ranqKsA=;
+        s=korg; t=1626071788;
+        bh=ePXeI3KnSjXsPum+/3rVz3QuM1R2/mGc7U6nF5hIO/k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vbALuFmga9/vfgDwTO8K8/rsf5gQTRmb+b9GUm3q5+cAcUz5XQkNKW/uIBSQStVbG
-         urXgJB8SX9DGpdMZVuHQ9muFnN2CWlO55GbJuwaAlAA62QQAsAIKhEsdLvgI5ZaXGG
-         YxctwAkLFnSsnObk7f6GcfreRLRYosq+JOAn1/4k=
+        b=hDCW5DrjWssuCcyHaxAOKJHw5hFf6SRGHnvGjNlxNwuE9blPfxajqkIvJCRC08QDN
+         trUYJtjJbl1i9xJhjp/mfQMY2jmpd22gFgCrru//hMGyb7VWxJNMVGLlmVgvxViQnB
+         K8WFRf2SG0k7qMqdiMwTiXm8umFjvyNQxpXVo7ZQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Qais Yousef <qais.yousef@arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 357/800] ACPI: PM / fan: Put fan device IDs into separate header file
+Subject: [PATCH 5.10 220/593] sched/uclamp: Fix wrong implementation of cpu.uclamp.min
 Date:   Mon, 12 Jul 2021 08:06:20 +0200
-Message-Id: <20210712061005.077238128@linuxfoundation.org>
+Message-Id: <20210712060907.113109095@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,100 +40,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Qais Yousef <qais.yousef@arm.com>
 
-[ Upstream commit b9370dceabb7841c5e65ce4ee4405b9db5231fc4 ]
+[ Upstream commit 0c18f2ecfcc274a4bcc1d122f79ebd4001c3b445 ]
 
-The ACPI fan device IDs are shared between the fan driver and the
-device power management code.  The former is modular, so it needs
-to include the table of device IDs for module autoloading and the
-latter needs that list to avoid attaching the generic ACPI PM domain
-to fan devices (which doesn't make sense) possibly before the fan
-driver module is loaded.
+cpu.uclamp.min is a protection as described in cgroup-v2 Resource
+Distribution Model
 
-Unfortunately, that requires the list of fan device IDs to be
-updated in two places which is prone to mistakes, so put it into
-a symbol definition in a separate header file so there is only one
-copy of it in case it needs to be updated again in the future.
+	Documentation/admin-guide/cgroup-v2.rst
 
-Fixes: b9ea0bae260f ("ACPI: PM: Avoid attaching ACPI PM domain to certain devices")
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+which means we try our best to preserve the minimum performance point of
+tasks in this group. See full description of cpu.uclamp.min in the
+cgroup-v2.rst.
+
+But the current implementation makes it a limit, which is not what was
+intended.
+
+For example:
+
+	tg->cpu.uclamp.min = 20%
+
+	p0->uclamp[UCLAMP_MIN] = 0
+	p1->uclamp[UCLAMP_MIN] = 50%
+
+	Previous Behavior (limit):
+
+		p0->effective_uclamp = 0
+		p1->effective_uclamp = 20%
+
+	New Behavior (Protection):
+
+		p0->effective_uclamp = 20%
+		p1->effective_uclamp = 50%
+
+Which is inline with how protections should work.
+
+With this change the cgroup and per-task behaviors are the same, as
+expected.
+
+Additionally, we remove the confusing relationship between cgroup and
+!user_defined flag.
+
+We don't want for example RT tasks that are boosted by default to max to
+change their boost value when they attach to a cgroup. If a cgroup wants
+to limit the max performance point of tasks attached to it, then
+cpu.uclamp.max must be set accordingly.
+
+Or if they want to set different boost value based on cgroup, then
+sysctl_sched_util_clamp_min_rt_default must be used to NOT boost to max
+and set the right cpu.uclamp.min for each group to let the RT tasks
+obtain the desired boost value when attached to that group.
+
+As it stands the dependency on !user_defined flag adds an extra layer of
+complexity that is not required now cpu.uclamp.min behaves properly as
+a protection.
+
+The propagation model of effective cpu.uclamp.min in child cgroups as
+implemented by cpu_util_update_eff() is still correct. The parent
+protection sets an upper limit of what the child cgroups will
+effectively get.
+
+Fixes: 3eac870a3247 (sched/uclamp: Use TG's clamps to restrict TASK's clamps)
+Signed-off-by: Qais Yousef <qais.yousef@arm.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20210510145032.1934078-2-qais.yousef@arm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/device_pm.c |  6 ++----
- drivers/acpi/fan.c       |  7 +++----
- drivers/acpi/fan.h       | 13 +++++++++++++
- 3 files changed, 18 insertions(+), 8 deletions(-)
- create mode 100644 drivers/acpi/fan.h
+ kernel/sched/core.c | 21 +++++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/acpi/device_pm.c b/drivers/acpi/device_pm.c
-index d260bc1f3e6e..9d2d3b9bb8b5 100644
---- a/drivers/acpi/device_pm.c
-+++ b/drivers/acpi/device_pm.c
-@@ -20,6 +20,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/suspend.h>
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index bd3fa14fda1f..c561c3b993b5 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1065,7 +1065,6 @@ uclamp_tg_restrict(struct task_struct *p, enum uclamp_id clamp_id)
+ {
+ 	struct uclamp_se uc_req = p->uclamp_req[clamp_id];
+ #ifdef CONFIG_UCLAMP_TASK_GROUP
+-	struct uclamp_se uc_max;
  
-+#include "fan.h"
- #include "internal.h"
+ 	/*
+ 	 * Tasks in autogroups or root task group will be
+@@ -1076,9 +1075,23 @@ uclamp_tg_restrict(struct task_struct *p, enum uclamp_id clamp_id)
+ 	if (task_group(p) == &root_task_group)
+ 		return uc_req;
  
- /**
-@@ -1310,10 +1311,7 @@ int acpi_dev_pm_attach(struct device *dev, bool power_on)
- 	 * with the generic ACPI PM domain.
- 	 */
- 	static const struct acpi_device_id special_pm_ids[] = {
--		{"PNP0C0B", }, /* Generic ACPI fan */
--		{"INT3404", }, /* Fan */
--		{"INTC1044", }, /* Fan for Tiger Lake generation */
--		{"INTC1048", }, /* Fan for Alder Lake generation */
-+		ACPI_FAN_DEVICE_IDS,
- 		{}
- 	};
- 	struct acpi_device *adev = ACPI_COMPANION(dev);
-diff --git a/drivers/acpi/fan.c b/drivers/acpi/fan.c
-index 66c3983f0ccc..5cd0ceb50bc8 100644
---- a/drivers/acpi/fan.c
-+++ b/drivers/acpi/fan.c
-@@ -16,6 +16,8 @@
- #include <linux/platform_device.h>
- #include <linux/sort.h>
+-	uc_max = task_group(p)->uclamp[clamp_id];
+-	if (uc_req.value > uc_max.value || !uc_req.user_defined)
+-		return uc_max;
++	switch (clamp_id) {
++	case UCLAMP_MIN: {
++		struct uclamp_se uc_min = task_group(p)->uclamp[clamp_id];
++		if (uc_req.value < uc_min.value)
++			return uc_min;
++		break;
++	}
++	case UCLAMP_MAX: {
++		struct uclamp_se uc_max = task_group(p)->uclamp[clamp_id];
++		if (uc_req.value > uc_max.value)
++			return uc_max;
++		break;
++	}
++	default:
++		WARN_ON_ONCE(1);
++		break;
++	}
+ #endif
  
-+#include "fan.h"
-+
- MODULE_AUTHOR("Paul Diefenbaugh");
- MODULE_DESCRIPTION("ACPI Fan Driver");
- MODULE_LICENSE("GPL");
-@@ -24,10 +26,7 @@ static int acpi_fan_probe(struct platform_device *pdev);
- static int acpi_fan_remove(struct platform_device *pdev);
- 
- static const struct acpi_device_id fan_device_ids[] = {
--	{"PNP0C0B", 0},
--	{"INT3404", 0},
--	{"INTC1044", 0},
--	{"INTC1048", 0},
-+	ACPI_FAN_DEVICE_IDS,
- 	{"", 0},
- };
- MODULE_DEVICE_TABLE(acpi, fan_device_ids);
-diff --git a/drivers/acpi/fan.h b/drivers/acpi/fan.h
-new file mode 100644
-index 000000000000..dc9a6efa514b
---- /dev/null
-+++ b/drivers/acpi/fan.h
-@@ -0,0 +1,13 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+
-+/*
-+ * ACPI fan device IDs are shared between the fan driver and the device power
-+ * management code.
-+ *
-+ * Add new device IDs before the generic ACPI fan one.
-+ */
-+#define ACPI_FAN_DEVICE_IDS	\
-+	{"INT3404", }, /* Fan */ \
-+	{"INTC1044", }, /* Fan for Tiger Lake generation */ \
-+	{"INTC1048", }, /* Fan for Alder Lake generation */ \
-+	{"PNP0C0B", } /* Generic ACPI fan */
+ 	return uc_req;
 -- 
 2.30.2
 
