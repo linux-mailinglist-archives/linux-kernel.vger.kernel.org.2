@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3905D3C4B70
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:36:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A6B3C57A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240206AbhGLG5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:57:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36944 "EHLO mail.kernel.org"
+        id S1377728AbhGLIgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:36:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236921AbhGLGlR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:41:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 032AF6052B;
-        Mon, 12 Jul 2021 06:38:23 +0000 (UTC)
+        id S1350348AbhGLHu5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:50:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EE7A61492;
+        Mon, 12 Jul 2021 07:44:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071904;
-        bh=n+KLKmhYLsIkH/9PCdHkKTuX0Vlmc6T3wEKfw8lSxsU=;
+        s=korg; t=1626075887;
+        bh=AzgD081GVOj1nSJ9aqmz22YnS93jMMGKGDUINaY2tRA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1+Dw1oNre7fRsCnbR+5oZ6yLjs0+5JD9RFlmOyZg5Cv3Lc3iDF3+k8ldCwp12E9cA
-         LA1T+VbpkdkYC65/vlVAUYcKlrMiyXTvxMddNtsfoR191PDQxWllSj4uQtP8g9WQyP
-         5ftJ/LA/vslbXjj+pfVZrksF7+/LlAYkGnCC0yzY=
+        b=kJZTgoVG5fzsGGXXfy98hdjYJZ+i7sDtyTtft8Z+sl/vPsFk5ysimnitjJBxxOm7u
+         BcPMMoh+VAVhs/Z39TSqZkxc4cnzc/spFmfkWTvXMsSQAWeIQtyYwb4pqA2tU4lDOV
+         LL31WioAcL9slt0e4wJZskBlWXcOLB2QMtIt5fx0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 270/593] crypto: nx - Fix RCU warning in nx842_OF_upd_status
+        stable@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        dri-devel@lists.freedesktop.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 407/800] drm/i915: Merge fix for "drm: Switch to %p4cc format modifier"
 Date:   Mon, 12 Jul 2021 08:07:10 +0200
-Message-Id: <20210712060913.272364820@linuxfoundation.org>
+Message-Id: <20210712061010.458667018@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,59 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Herbert Xu <herbert@gondor.apana.org.au>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
 
-[ Upstream commit 2a96726bd0ccde4f12b9b9a9f61f7b1ac5af7e10 ]
+[ Upstream commit e3c2f1870af43fc95f6fe141537f5142c5fe4717 ]
 
-The function nx842_OF_upd_status triggers a sparse RCU warning when
-it directly dereferences the RCU-protected devdata.  This appears
-to be an accident as there was another variable of the same name
-that was passed in from the caller.
-
-After it was removed (because the main purpose of using it, to
-update the status member was itself removed) the global variable
-unintenionally stood in as its replacement.
-
-This patch restores the devdata parameter.
-
-Fixes: 90fd73f912f0 ("crypto: nx - remove pSeries NX 'status' field")
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+Fixes: 92f1d09ca4ed ("drm: Switch to %p4cc format modifier")
+Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: dri-devel@lists.freedesktop.org
+Link: https://lore.kernel.org/dri-devel/20210514115307.4364aff9@canb.auug.org.au/T/#macc61d4e0b17ca0da2b26aae8fbbcbf47324da13
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/nx/nx-842-pseries.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/i915/display/skl_universal_plane.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/crypto/nx/nx-842-pseries.c b/drivers/crypto/nx/nx-842-pseries.c
-index 258c5e38a551..c5ec50a28f30 100644
---- a/drivers/crypto/nx/nx-842-pseries.c
-+++ b/drivers/crypto/nx/nx-842-pseries.c
-@@ -538,13 +538,15 @@ static int nx842_OF_set_defaults(struct nx842_devdata *devdata)
-  * The status field indicates if the device is enabled when the status
-  * is 'okay'.  Otherwise the device driver will be disabled.
-  *
-- * @prop - struct property point containing the maxsyncop for the update
-+ * @devdata: struct nx842_devdata to use for dev_info
-+ * @prop: struct property point containing the maxsyncop for the update
-  *
-  * Returns:
-  *  0 - Device is available
-  *  -ENODEV - Device is not available
-  */
--static int nx842_OF_upd_status(struct property *prop)
-+static int nx842_OF_upd_status(struct nx842_devdata *devdata,
-+			       struct property *prop)
- {
- 	const char *status = (const char *)prop->value;
+diff --git a/drivers/gpu/drm/i915/display/skl_universal_plane.c b/drivers/gpu/drm/i915/display/skl_universal_plane.c
+index 7ffd7b570b54..538682f882b1 100644
+--- a/drivers/gpu/drm/i915/display/skl_universal_plane.c
++++ b/drivers/gpu/drm/i915/display/skl_universal_plane.c
+@@ -1082,7 +1082,6 @@ static int skl_plane_check_fb(const struct intel_crtc_state *crtc_state,
+ 	struct drm_i915_private *dev_priv = to_i915(plane->base.dev);
+ 	const struct drm_framebuffer *fb = plane_state->hw.fb;
+ 	unsigned int rotation = plane_state->hw.rotation;
+-	struct drm_format_name_buf format_name;
  
-@@ -758,7 +760,7 @@ static int nx842_OF_upd(struct property *new_prop)
- 		goto out;
- 
- 	/* Perform property updates */
--	ret = nx842_OF_upd_status(status);
-+	ret = nx842_OF_upd_status(new_devdata, status);
- 	if (ret)
- 		goto error_out;
- 
+ 	if (!fb)
+ 		return 0;
+@@ -1130,9 +1129,8 @@ static int skl_plane_check_fb(const struct intel_crtc_state *crtc_state,
+ 		case DRM_FORMAT_XVYU12_16161616:
+ 		case DRM_FORMAT_XVYU16161616:
+ 			drm_dbg_kms(&dev_priv->drm,
+-				    "Unsupported pixel format %s for 90/270!\n",
+-				    drm_get_format_name(fb->format->format,
+-							&format_name));
++				    "Unsupported pixel format %p4cc for 90/270!\n",
++				    &fb->format->format);
+ 			return -EINVAL;
+ 		default:
+ 			break;
 -- 
 2.30.2
 
