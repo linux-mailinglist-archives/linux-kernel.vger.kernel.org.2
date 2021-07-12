@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 589453C56B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA793C4FD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350672AbhGLIWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:22:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46796 "EHLO mail.kernel.org"
+        id S1343529AbhGLH2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:28:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347671AbhGLHkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:40:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDC736141C;
-        Mon, 12 Jul 2021 07:35:19 +0000 (UTC)
+        id S240341AbhGLHBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:01:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D5733611C2;
+        Mon, 12 Jul 2021 06:58:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075320;
-        bh=svsv6M47GusGxdoHHlZTnG/iyReb7Lr39eIxDeEHyp8=;
+        s=korg; t=1626073104;
+        bh=HZKz708QQAe/6KtyqJ8F5LJ5x4ZN6OM3xsa305vbhbM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oM/QiFFliKaWTO7X9oMNq+pUkPEa75xM8RiJ++4Tpf4FhmDeuRtkDZIqyIAte/F7X
-         wk8YNzQeOMlVNdnLW/3Bh53fvVoIMBPqfmtxhFE4LZpE8EYH2gjiI8A78bdP4RmkAT
-         cRW7UnClRgf4u/XHwsKpGOX6vS7SQOJd8hgi1mms=
+        b=GE/x/HbL7+Xmw23vqTSQ2DK3WyYeBD6/gjcmUvRMpV2/Jpl0p7gvTPX2AcU9LnpU+
+         n/U/9UeIq7gTDM9kPoIvMXyd8NYhwipM4poN4KShRDm+KtMqBOlq0RMZlR6Spfbnva
+         XRYU/hoEUjyHKHVJUKYDhyGokGk9YQRcxHuTXrlk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, zpershuai <zpershuai@gmail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Ezequiel Garcia <ezequiel@collabora.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 180/800] spi: meson-spicc: fix a wrong goto jump for avoiding memory leak.
-Date:   Mon, 12 Jul 2021 08:03:23 +0200
-Message-Id: <20210712060938.342636891@linuxfoundation.org>
+Subject: [PATCH 5.12 121/700] staging: media: rkvdec: fix pm_runtime_get_sync() usage count
+Date:   Mon, 12 Jul 2021 08:03:24 +0200
+Message-Id: <20210712060942.035425005@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zpershuai <zpershuai@gmail.com>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-[ Upstream commit 95730d5eb73170a6d225a9998c478be273598634 ]
+[ Upstream commit e90812c47b958407b54d05780dc483fdc1b57a93 ]
 
-In meson_spifc_probe function, when enable the device pclk clock is
-error, it should use clk_disable_unprepare to release the core clock.
+The pm_runtime_get_sync() internally increments the
+dev->power.usage_count without decrementing it, even on errors.
+Replace it by the new pm_runtime_resume_and_get(), introduced by:
+commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+in order to properly decrement the usage counter, avoiding
+a potential PM usage counter leak.
 
-Signed-off-by: zpershuai <zpershuai@gmail.com>
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
-Link: https://lore.kernel.org/r/1623562172-22056-1-git-send-email-zpershuai@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-meson-spicc.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/staging/media/rkvdec/rkvdec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-meson-spicc.c b/drivers/spi/spi-meson-spicc.c
-index ecba6b4a5d85..51aef2c6e966 100644
---- a/drivers/spi/spi-meson-spicc.c
-+++ b/drivers/spi/spi-meson-spicc.c
-@@ -725,7 +725,7 @@ static int meson_spicc_probe(struct platform_device *pdev)
- 	ret = clk_prepare_enable(spicc->pclk);
- 	if (ret) {
- 		dev_err(&pdev->dev, "pclk clock enable failed\n");
--		goto out_master;
-+		goto out_core_clk;
- 	}
+diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/media/rkvdec/rkvdec.c
+index d821661d30f3..8c17615f3a7a 100644
+--- a/drivers/staging/media/rkvdec/rkvdec.c
++++ b/drivers/staging/media/rkvdec/rkvdec.c
+@@ -658,7 +658,7 @@ static void rkvdec_device_run(void *priv)
+ 	if (WARN_ON(!desc))
+ 		return;
  
- 	device_reset_optional(&pdev->dev);
-@@ -764,9 +764,11 @@ static int meson_spicc_probe(struct platform_device *pdev)
- 	return 0;
- 
- out_clk:
--	clk_disable_unprepare(spicc->core);
- 	clk_disable_unprepare(spicc->pclk);
- 
-+out_core_clk:
-+	clk_disable_unprepare(spicc->core);
-+
- out_master:
- 	spi_master_put(master);
- 
+-	ret = pm_runtime_get_sync(rkvdec->dev);
++	ret = pm_runtime_resume_and_get(rkvdec->dev);
+ 	if (ret < 0) {
+ 		rkvdec_job_finish_no_pm(ctx, VB2_BUF_STATE_ERROR);
+ 		return;
 -- 
 2.30.2
 
