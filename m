@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B4F53C56C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 971833C4936
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352445AbhGLIYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:24:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46906 "EHLO mail.kernel.org"
+        id S236902AbhGLGmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:42:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347864AbhGLHkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:40:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62E866192B;
-        Mon, 12 Jul 2021 07:36:43 +0000 (UTC)
+        id S237497AbhGLGec (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:34:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF0D9610CA;
+        Mon, 12 Jul 2021 06:30:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075404;
-        bh=F0ZOtPaLg7ZLUv7+BtbmeLGwPX6I3v75FrJSUcAv5ag=;
+        s=korg; t=1626071443;
+        bh=0G7WDUneSnvB3wdCJmnVPCLfW7xqQoNe83QOSnntyTs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LqT+OcnSMPj0r0vgZYaVBhPA6Hdy3yTWmyx+EBajDfJaTQMypW2pekW3jbMJQbkHD
-         2c+rb4AFuCcI6+L2P9a2/optQYMCvs+bNOL2Q5JbGxqaATTcl/tKCY+Xq95n8h74ev
-         7i6S8JWAyTdwCQbQVNVkHizWWIoNT+rPfcnWnt4Q=
+        b=OAdUoluhBtltGfpUXCCbmolgsYv1CB8gAvsQUpJVb74IENIbt1g/tQv1iA/Mc6tEm
+         iS0N+vCyDr/1WPZbSnznqEzjPB5SOSElKNIOxNnejZIU61lCOuk0sT0EY6wIE0ZPJm
+         JiKpJEPj9Yhv1YyUs453fFp/Pb2mEN20rm5QFe2E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 210/800] ACPI: PM: s2idle: Add missing LPS0 functions for AMD
+        stable@vger.kernel.org, frank zago <frank@zago.net>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.10 073/593] iio: light: tcs3472: do not free unallocated IRQ
 Date:   Mon, 12 Jul 2021 08:03:53 +0200
-Message-Id: <20210712060942.989503947@linuxfoundation.org>
+Message-Id: <20210712060851.173417192@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,56 +40,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Deucher <alexander.deucher@amd.com>
+From: frank zago <frank@zago.net>
 
-[ Upstream commit f59a905b962c34642e862b5edec35c0eda72d70d ]
+commit 7cd04c863f9e1655d607705455e7714f24451984 upstream.
 
-These are supposedly not required for AMD platforms,
-but at least some HP laptops seem to require it to
-properly turn off the keyboard backlight.
+Allocating an IRQ is conditional to the IRQ existence, but freeing it
+was not. If no IRQ was allocate, the driver would still try to free
+IRQ 0. Add the missing checks.
 
-Based on a patch from Marcin Bachry <hegel666@gmail.com>.
+This fixes the following trace when the driver is removed:
 
-Bug: https://gitlab.freedesktop.org/drm/amd/-/issues/1230
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+[  100.667788] Trying to free already-free IRQ 0
+[  100.667793] WARNING: CPU: 0 PID: 2315 at kernel/irq/manage.c:1826 free_irq+0x1fd/0x370
+...
+[  100.667914] Call Trace:
+[  100.667920]  tcs3472_remove+0x3a/0x90 [tcs3472]
+[  100.667927]  i2c_device_remove+0x2b/0xa0
+
+Signed-off-by: frank zago <frank@zago.net>
+Link: https://lore.kernel.org/r/20210427022017.19314-2-frank@zago.net
+Fixes: 9d2f715d592e ("iio: light: tcs3472: support out-of-threshold events")
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/acpi/x86/s2idle.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/iio/light/tcs3472.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/acpi/x86/s2idle.c b/drivers/acpi/x86/s2idle.c
-index 2b69536cdccb..2d7ddb8a8cb6 100644
---- a/drivers/acpi/x86/s2idle.c
-+++ b/drivers/acpi/x86/s2idle.c
-@@ -42,6 +42,8 @@ static const struct acpi_device_id lps0_device_ids[] = {
+--- a/drivers/iio/light/tcs3472.c
++++ b/drivers/iio/light/tcs3472.c
+@@ -531,7 +531,8 @@ static int tcs3472_probe(struct i2c_clie
+ 	return 0;
  
- /* AMD */
- #define ACPI_LPS0_DSM_UUID_AMD      "e3f32452-febc-43ce-9039-932122d37721"
-+#define ACPI_LPS0_ENTRY_AMD         2
-+#define ACPI_LPS0_EXIT_AMD          3
- #define ACPI_LPS0_SCREEN_OFF_AMD    4
- #define ACPI_LPS0_SCREEN_ON_AMD     5
+ free_irq:
+-	free_irq(client->irq, indio_dev);
++	if (client->irq)
++		free_irq(client->irq, indio_dev);
+ buffer_cleanup:
+ 	iio_triggered_buffer_cleanup(indio_dev);
+ 	return ret;
+@@ -559,7 +560,8 @@ static int tcs3472_remove(struct i2c_cli
+ 	struct iio_dev *indio_dev = i2c_get_clientdata(client);
  
-@@ -408,6 +410,7 @@ int acpi_s2idle_prepare_late(void)
+ 	iio_device_unregister(indio_dev);
+-	free_irq(client->irq, indio_dev);
++	if (client->irq)
++		free_irq(client->irq, indio_dev);
+ 	iio_triggered_buffer_cleanup(indio_dev);
+ 	tcs3472_powerdown(iio_priv(indio_dev));
  
- 	if (acpi_s2idle_vendor_amd()) {
- 		acpi_sleep_run_lps0_dsm(ACPI_LPS0_SCREEN_OFF_AMD);
-+		acpi_sleep_run_lps0_dsm(ACPI_LPS0_ENTRY_AMD);
- 	} else {
- 		acpi_sleep_run_lps0_dsm(ACPI_LPS0_SCREEN_OFF);
- 		acpi_sleep_run_lps0_dsm(ACPI_LPS0_ENTRY);
-@@ -422,6 +425,7 @@ void acpi_s2idle_restore_early(void)
- 		return;
- 
- 	if (acpi_s2idle_vendor_amd()) {
-+		acpi_sleep_run_lps0_dsm(ACPI_LPS0_EXIT_AMD);
- 		acpi_sleep_run_lps0_dsm(ACPI_LPS0_SCREEN_ON_AMD);
- 	} else {
- 		acpi_sleep_run_lps0_dsm(ACPI_LPS0_EXIT);
--- 
-2.30.2
-
 
 
