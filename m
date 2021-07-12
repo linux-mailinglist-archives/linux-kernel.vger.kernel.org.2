@@ -2,81 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E4D83C64CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 22:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 399463C64D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 22:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236737AbhGLUQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 16:16:28 -0400
-Received: from mail-il1-f170.google.com ([209.85.166.170]:43934 "EHLO
-        mail-il1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234060AbhGLUQ1 (ORCPT
+        id S236721AbhGLUSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 16:18:06 -0400
+Received: from fgw20-7.mail.saunalahti.fi ([62.142.5.81]:43132 "EHLO
+        fgw20-7.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233478AbhGLUSF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 16:16:27 -0400
-Received: by mail-il1-f170.google.com with SMTP id w1so18856981ilg.10;
-        Mon, 12 Jul 2021 13:13:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=J4BE9HfxaLZmCvwhgA1QvJulPQBGkW1jQI+e/oTW1Ho=;
-        b=Mk/VZqQvX6PmBHfwLfr+QU3Nvr3oeRKmiKf9EhtjLR8C5wHqA+O5JWs8PiLTtGF17X
-         K13YNaEuPqN7WqmWmeGdpnExKRqF2E7r/PN1bh2m9i1/v1W7TE91Nd7mw8Bm34VAMhFw
-         zWbHRhRWT9rIOGU3OBeYVQCL4BE09asbjyrTRmtmArIhX8D6TP5by+bN2BSkanWvRJo+
-         kYxmi1wtTHa+f99ERSDYyGumI0CbFCVpT2TefN0eypp6VbV0uBNUlKJmiUX02TfpfU/u
-         E7Qs6SoJ9WTWBnd/PLXCmNSAL5zY1WpgywGqf3YmQFhGhp7g8NuGR7RV0W1swswFKRja
-         G4iA==
-X-Gm-Message-State: AOAM530Aq1jHt+cJRGnhc5xYoPgCLuUNiekHM/Uf+TTOnTB0GSHfTC1d
-        q+tin7HBeR7ocjZSrXIP7w==
-X-Google-Smtp-Source: ABdhPJzJvSIq3juD8meJlVB+592itIP+P7qaJQlR7fMQnSh7K72wyxxHPKOD+Z2WC0QkyDA4uWbBtQ==
-X-Received: by 2002:a92:3302:: with SMTP id a2mr436832ilf.62.1626120817448;
-        Mon, 12 Jul 2021 13:13:37 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id p19sm8586263iob.7.2021.07.12.13.13.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 13:13:36 -0700 (PDT)
-Received: (nullmailer pid 2411363 invoked by uid 1000);
-        Mon, 12 Jul 2021 20:13:33 -0000
-Date:   Mon, 12 Jul 2021 14:13:33 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     "Mirela Rabulea (OSS)" <mirela.rabulea@oss.nxp.com>
-Cc:     devicetree@vger.kernel.org, robert.chiras@nxp.com,
-        linux-arm-kernel@lists.infradead.org, daniel.baluta@nxp.com,
-        hverkuil-cisco@xs4all.nl, peng.fan@nxp.com, aisheng.dong@nxp.com,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
-        s.hauer@pengutronix.de, Mirela Rabulea <mirela.rabulea@nxp.com>,
-        laurentiu.palcu@nxp.com, guoniu.zhou@nxp.com,
-        paul.kocialkowski@bootlin.com, mchehab@kernel.org,
-        robh+dt@kernel.org, linux-media@vger.kernel.org,
-        shawnguo@kernel.org, kernel@pengutronix.de, ezequiel@collabora.com,
-        p.zabel@pengutronix.de
-Subject: Re: [PATCH v14 1/2] media: dt-bindings: imx-jpeg: Add compatible for
- i.MX8QM JPEG codec
-Message-ID: <20210712201333.GA2411329@robh.at.kernel.org>
-References: <20210619143611.17280-1-mirela.rabulea@oss.nxp.com>
- <20210619143611.17280-2-mirela.rabulea@oss.nxp.com>
+        Mon, 12 Jul 2021 16:18:05 -0400
+Received: from localhost (88-115-248-186.elisa-laajakaista.fi [88.115.248.186])
+        by fgw20.mail.saunalahti.fi (Halon) with ESMTP
+        id ddcb796d-e34d-11eb-ba24-005056bd6ce9;
+        Mon, 12 Jul 2021 23:15:14 +0300 (EEST)
+Date:   Mon, 12 Jul 2021 23:15:13 +0300
+From:   andy@surfacebook.localdomain
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] serial: 8250: Add proper clock handling for
+ OxSemi PCIe devices
+Message-ID: <YOyi0cPdIVSCcpmw@surfacebook.localdomain>
+References: <alpine.DEB.2.21.2106260539240.37803@angie.orcam.me.uk>
+ <alpine.DEB.2.21.2106260604540.37803@angie.orcam.me.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210619143611.17280-2-mirela.rabulea@oss.nxp.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <alpine.DEB.2.21.2106260604540.37803@angie.orcam.me.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 19 Jun 2021 17:36:10 +0300, Mirela Rabulea (OSS) wrote:
-> From: Mirela Rabulea <mirela.rabulea@nxp.com>
+Sat, Jun 26, 2021 at 06:11:32AM +0200, Maciej W. Rozycki kirjoitti:
+> Oxford Semiconductor PCIe (Tornado) serial port devices are driven by a
+> fixed 62.5MHz clock input derived from the 100MHz PCI Express clock.
 > 
-> Add two more compatibles: "nxp,imx8qm-jpgdec" and " nxp,imx8qm-jpgenc".
-> Also update the compatible property to ensure mutually exclusive usage of
-> encoder and decoder compatibles.
-> Update examples.
+> We currently drive the device using its default oversampling rate of 16 
+> and the clock prescaler disabled, consequently yielding the baud base of 
+> 3906250.  This base is inadequate for some of the high-speed baud rates 
+> such as 460800bps, for which the closest rate possible can be obtained 
+> by dividing the baud base by 8, yielding the baud rate of 488281.25bps, 
+> which is off by 5.9638%.  This is enough for data communication to break 
+> with the remote end talking actual 460800bps where missed stop bits have 
+> been observed.
 > 
-> Signed-off-by: Mirela Rabulea <mirela.rabulea@nxp.com>
-> ---
-> Changes in v14:
->   Address feedback from Aisheng Dong, do not use anyOf
+> We can do better however, by taking advantage of a reduced oversampling 
+> rate, which can be set to any integer value from 4 to 16 inclusive by 
+> programming the TCR register, and by using the clock prescaler, which 
+> can be set to any value from 1 to 63.875 in increments of 0.125 in the 
+> CPR/CPR2 register pair[1][2][3][4].  The prescaler has to be explicitly 
+> enabled though by setting bit 7 in the MCR or otherwise it is bypassed 
+> as if the value of 1 was used.
 > 
->  .../bindings/media/nxp,imx8-jpeg.yaml         | 19 ++++++++++++-------
->  1 file changed, 12 insertions(+), 7 deletions(-)
+> By using these parameters rates from 15625000bps down to 1bps can be 
+> obtained, with either exact or highly-accurate actual bit rates for 
+> standard and many non-standard rates.
 > 
+> Make use of these features then as follows:
+> 
+> - Set the baud base to 15625000, reflecting the minimum oversampling 
+>   rate of 4 with the clock prescaler and divisor both set to 1.
+> 
+> - Set the MCR mask and force bits in the UART template so as to have 
+>   MCR[7] always set and then have 8250 core propagate those settings, if 
+>   supplied as non-zero, overriding the ALPHA_KLUDGE_MCR default.
+> 
+> - Override the `get_divisor' handler and determine a good combination of
+>   parameters by using a lookup table with predetermined value pairs of 
+>   the oversampling rate and the clock prescaler and finding a pair that 
+>   divides the input clock such that the quotient, when rounded to the 
+>   nearest integer, deviates the least from the exact result.  Calculate 
+>   the clock divisor accordingly.
+> 
+>   Scale the resulting oversampling rate (only by powers of two) if 
+>   possible so as to maximise it, reducing the divisor accordingly, and 
+>   avoid a divisor overflow for very low baud rates by scaling the 
+>   oversampling rate and/or the prescaler even if that causes some 
+>   accuracy loss.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+>   Also handle the historic spd_cust feature so as to allow one to set 
+>   all the three parameters manually to arbitrary values, by keeping the 
+>   low 16 bits for the divisor and then putting TCR in bits 19:16 and 
+>   CPR/CPR2 in bits 28:20, sanitising the bit pattern supplied such as
+>   to clamp CPR/CPR2 values between 0.000 and 0.875 inclusive to 1.000.
+>   This preserves compatibility with any existing setups, that is where 
+>   requesting a custom divisor that only has any bits set among the low 
+>   16 the oversampling rate of 16 and the clock prescaler of 1 will be 
+>   used.
+
+Please no. We really would like to get rid of that ugly hack. The BOTHER exists
+for ages.
+
+>   Finally abuse the `frac' argument to store the determined bit patterns 
+>   for the TCR, CPR and CPR2 registers.
+> 
+> - Override the `set_divisor' handler so as to set the TCR, CPR and CPR2 
+>   registers from the `frac' value supplied.  Set the divisor as usually.
+> 
+> With the baud base set to 15625000 and the unsigned 16-bit UART_DIV_MAX 
+> limitation imposed by `serial8250_get_baud_rate' standard baud rates 
+> below 300bps become unavailable in the regular way, e.g. the rate of 
+> 200bps requires the baud base to be divided by 78125 and that is beyond 
+> the unsigned 16-bit range.  The historic spd_cust feature can still be 
+> used to obtain such rates if so required.
+> 
+> Here are the figures for the standard and some non-standard baud rates 
+> (including those quoted in Oxford Semiconductor documentation), giving 
+> the requested rate (r), the actual rate yielded (a) and its deviation 
+> from the requested rate (d), and the values of the oversampling rate 
+> (tcr), the clock prescaler (cpr) and the divisor (div) produced by the 
+> new `get_divisor' handler:
+> 
+> r: 15625000, a: 15625000.00, d:  0.0000%, tcr:  4, cpr:  1.000, div:     1
+> r: 12500000, a: 12500000.00, d:  0.0000%, tcr:  5, cpr:  1.000, div:     1
+> r: 10416666, a: 10416666.67, d:  0.0000%, tcr:  6, cpr:  1.000, div:     1
+> r:  8928571, a:  8928571.43, d:  0.0000%, tcr:  7, cpr:  1.000, div:     1
+> r:  7812500, a:  7812500.00, d:  0.0000%, tcr:  8, cpr:  1.000, div:     1
+> r:  4000000, a:  4000000.00, d:  0.0000%, tcr:  5, cpr:  3.125, div:     1
+> r:  3686400, a:  3676470.59, d: -0.2694%, tcr:  8, cpr:  2.125, div:     1
+> r:  3500000, a:  3496503.50, d: -0.0999%, tcr: 13, cpr:  1.375, div:     1
+> r:  3000000, a:  2976190.48, d: -0.7937%, tcr: 14, cpr:  1.500, div:     1
+> r:  2500000, a:  2500000.00, d:  0.0000%, tcr: 10, cpr:  2.500, div:     1
+> r:  2000000, a:  2000000.00, d:  0.0000%, tcr: 10, cpr:  3.125, div:     1
+> r:  1843200, a:  1838235.29, d: -0.2694%, tcr: 16, cpr:  2.125, div:     1
+> r:  1500000, a:  1492537.31, d: -0.4975%, tcr:  5, cpr:  8.375, div:     1
+> r:  1152000, a:  1152073.73, d:  0.0064%, tcr: 14, cpr:  3.875, div:     1
+> r:   921600, a:   919117.65, d: -0.2694%, tcr: 16, cpr:  2.125, div:     2
+> r:   576000, a:   576036.87, d:  0.0064%, tcr: 14, cpr:  3.875, div:     2
+> r:   460800, a:   460829.49, d:  0.0064%, tcr:  7, cpr:  3.875, div:     5
+> r:   230400, a:   230414.75, d:  0.0064%, tcr: 14, cpr:  3.875, div:     5
+> r:   115200, a:   115207.37, d:  0.0064%, tcr: 14, cpr:  1.250, div:    31
+> r:    57600, a:    57603.69, d:  0.0064%, tcr:  8, cpr:  3.875, div:    35
+> r:    38400, a:    38402.46, d:  0.0064%, tcr: 14, cpr:  3.875, div:    30
+> r:    19200, a:    19201.23, d:  0.0064%, tcr:  8, cpr:  3.875, div:   105
+> r:     9600, a:     9600.06, d:  0.0006%, tcr:  9, cpr:  1.125, div:   643
+> r:     4800, a:     4799.98, d: -0.0004%, tcr:  7, cpr:  2.875, div:   647
+> r:     2400, a:     2400.02, d:  0.0008%, tcr:  9, cpr:  2.250, div:  1286
+> r:     1200, a:     1200.00, d:  0.0000%, tcr: 14, cpr:  2.875, div:  1294
+> r:      300, a:      300.00, d:  0.0000%, tcr: 11, cpr:  2.625, div:  7215
+> r:      200, a:      200.00, d:  0.0000%, tcr: 16, cpr:  1.250, div: 15625
+> r:      150, a:      150.00, d:  0.0000%, tcr: 13, cpr:  2.250, div: 14245
+> r:      134, a:      134.00, d:  0.0000%, tcr: 11, cpr:  2.625, div: 16153
+> r:      110, a:      110.00, d:  0.0000%, tcr: 12, cpr:  1.000, div: 47348
+> r:       75, a:       75.00, d:  0.0000%, tcr:  4, cpr:  5.875, div: 35461
+> r:       50, a:       50.00, d:  0.0000%, tcr: 16, cpr:  1.250, div: 62500
+> r:       25, a:       25.00, d:  0.0000%, tcr: 16, cpr:  2.500, div: 62500
+> r:        4, a:        4.00, d:  0.0000%, tcr: 16, cpr: 20.000, div: 48828
+> r:        2, a:        2.00, d:  0.0000%, tcr: 16, cpr: 40.000, div: 48828
+> r:        1, a:        1.00, d:  0.0000%, tcr: 16, cpr: 63.875, div: 61154
+> 
+> References:
+> 
+> [1] "OXPCIe200 PCI Express Multi-Port Bridge", Oxford Semiconductor,
+>     Inc., DS-0045, 10 Nov 2008, Section "950 Mode", pp. 64-65
+> 
+> [2] "OXPCIe952 PCI Express Bridge to Dual Serial & Parallel Port",
+>     Oxford Semiconductor, Inc., DS-0046, Mar 06 08, Section "950 Mode", 
+>     p. 20
+> 
+> [3] "OXPCIe954 PCI Express Bridge to Quad Serial Port", Oxford
+>     Semiconductor, Inc., DS-0047, Feb 08, Section "950 Mode", p. 20
+> 
+> [4] "OXPCIe958 PCI Express Bridge to Octal Serial Port", Oxford
+>     Semiconductor, Inc., DS-0048, Feb 08, Section "950 Mode", p. 20
+
+Is it possible to reduce a commit message by shifting some stuff to the
+dedicated documentation?
+
+...
+
+>  drivers/tty/serial/8250/8250_pci.c  |  331 ++++++++++++++++++++++++++++--------
+
+Can we, please, split the quirk driver first as it's done in a lot of examples
+(_exar, _mid, _lpss, _...) and then modify it?
+
+...
+
+> +/* Tornado-specific constants for the TCR and CPR registers; see below.  */
+> +#define OXSEMI_TORNADO_TCR_MASK	0xf
+> +#define OXSEMI_TORNADO_CPR_MASK	0x1ff
+> +#define OXSEMI_TORNADO_CPR_MIN	8
+> +
+> +/*
+> + * Determine the oversampling rate, the clock prescaler, and the clock
+> + * divisor for the requested baud rate.  The clock rate is 62.5 MHz,
+> + * which is four times the baud base, and the prescaler increments in
+> + * steps of 1/8.  Therefore to make calculations on integers we need
+> + * to use a scaled clock rate, which is the baud base multiplied by 32
+> + * (or our assumed UART clock rate multiplied by 2).
+> + *
+> + * The allowed oversampling rates are from 4 up to 16 inclusive (values
+> + * from 0 to 3 inclusive map to 16).  Likewise the clock prescaler allows
+> + * values between 1.000 and 63.875 inclusive (operation for values from
+> + * 0.000 to 0.875 has not been specified).  The clock divisor is the usual
+> + * unsigned 16-bit integer.
+> + *
+> + * For the most accurate baud rate we use a table of predetermined
+> + * oversampling rates and clock prescalers that records all possible
+> + * products of the two parameters in the range from 4 up to 255 inclusive,
+> + * and additionally 335 for the 1500000bps rate, with the prescaler scaled
+> + * by 8.  The table is sorted by the decreasing value of the oversampling
+> + * rate and ties are resolved by sorting by the decreasing value of the
+> + * product.  This way preference is given to higher oversampling rates.
+> + *
+> + * We iterate over the table and choose the product of an oversampling
+> + * rate and a clock prescaler that gives the lowest integer division
+> + * result deviation, or if an exact integer divider is found we stop
+> + * looking for right away.  We do some fixup if the resulting clock
+> + * divisor required would be out of its unsigned 16-bit integer range.
+> + *
+> + * Finally we abuse the supposed fractional part returned to encode the
+> + * 4-bit value of the oversampling rate and the 9-bit value of the clock
+> + * prescaler which will end up in the TCR and CPR/CPR2 registers.
+> + */
+> +static unsigned int pci_oxsemi_tornado_get_divisor(struct uart_port *port,
+> +						   unsigned int baud,
+> +						   unsigned int *frac)
+> +{
+> +	static u8 p[][2] = {
+> +		{ 16, 14, }, { 16, 13, }, { 16, 12, }, { 16, 11, },
+> +		{ 16, 10, }, { 16,  9, }, { 16,  8, }, { 15, 17, },
+> +		{ 15, 16, }, { 15, 15, }, { 15, 14, }, { 15, 13, },
+> +		{ 15, 12, }, { 15, 11, }, { 15, 10, }, { 15,  9, },
+> +		{ 15,  8, }, { 14, 18, }, { 14, 17, }, { 14, 14, },
+> +		{ 14, 13, }, { 14, 12, }, { 14, 11, }, { 14, 10, },
+> +		{ 14,  9, }, { 14,  8, }, { 13, 19, }, { 13, 18, },
+> +		{ 13, 17, }, { 13, 13, }, { 13, 12, }, { 13, 11, },
+> +		{ 13, 10, }, { 13,  9, }, { 13,  8, }, { 12, 19, },
+> +		{ 12, 18, }, { 12, 17, }, { 12, 11, }, { 12,  9, },
+> +		{ 12,  8, }, { 11, 23, }, { 11, 22, }, { 11, 21, },
+> +		{ 11, 20, }, { 11, 19, }, { 11, 18, }, { 11, 17, },
+> +		{ 11, 11, }, { 11, 10, }, { 11,  9, }, { 11,  8, },
+> +		{ 10, 25, }, { 10, 23, }, { 10, 20, }, { 10, 19, },
+> +		{ 10, 17, }, { 10, 10, }, { 10,  9, }, { 10,  8, },
+> +		{  9, 27, }, {  9, 23, }, {  9, 21, }, {  9, 19, },
+> +		{  9, 18, }, {  9, 17, }, {  9,  9, }, {  9,  8, },
+> +		{  8, 31, }, {  8, 29, }, {  8, 23, }, {  8, 19, },
+> +		{  8, 17, }, {  8,  8, }, {  7, 35, }, {  7, 31, },
+> +		{  7, 29, }, {  7, 25, }, {  7, 23, }, {  7, 21, },
+> +		{  7, 19, }, {  7, 17, }, {  7, 15, }, {  7, 14, },
+> +		{  7, 13, }, {  7, 12, }, {  7, 11, }, {  7, 10, },
+> +		{  7,  9, }, {  7,  8, }, {  6, 41, }, {  6, 37, },
+> +		{  6, 31, }, {  6, 29, }, {  6, 23, }, {  6, 19, },
+> +		{  6, 17, }, {  6, 13, }, {  6, 11, }, {  6, 10, },
+> +		{  6,  9, }, {  6,  8, }, {  5, 67, }, {  5, 47, },
+> +		{  5, 43, }, {  5, 41, }, {  5, 37, }, {  5, 31, },
+> +		{  5, 29, }, {  5, 25, }, {  5, 23, }, {  5, 19, },
+> +		{  5, 17, }, {  5, 15, }, {  5, 13, }, {  5, 11, },
+> +		{  5, 10, }, {  5,  9, }, {  5,  8, }, {  4, 61, },
+> +		{  4, 59, }, {  4, 53, }, {  4, 47, }, {  4, 43, },
+> +		{  4, 41, }, {  4, 37, }, {  4, 31, }, {  4, 29, },
+> +		{  4, 23, }, {  4, 19, }, {  4, 17, }, {  4, 13, },
+> +		{  4,  9, }, {  4,  8, },
+> +	};
+
+Oh là là! Please, use rational best approximation algorithm instead (check CONFIG_RATIONAL).
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
