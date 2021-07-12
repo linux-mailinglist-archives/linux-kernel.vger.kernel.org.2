@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF5AF3C561B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 386643C4E7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353659AbhGLIOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:14:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44206 "EHLO mail.kernel.org"
+        id S245015AbhGLHTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:19:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53800 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343834AbhGLH2y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:28:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F6FF61351;
-        Mon, 12 Jul 2021 07:24:40 +0000 (UTC)
+        id S240984AbhGLGyY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:54:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F929611C2;
+        Mon, 12 Jul 2021 06:51:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074681;
-        bh=ZRMDoZWoA2P8hiekASzkXbUfXYZp2iQhJ1y5qwSSpA8=;
+        s=korg; t=1626072694;
+        bh=RtWuVmcFlAjsPSFFHOaPn9GmQSPNvNq00+3sAYldAJE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f+h4fiP0LUpLKeD+CYJKLmzcIOyyMV3eq7We6LHjXCY8PSgPsiEKS43PbuafAtwQT
-         FOHHnqWMVR5C3CTjbR6Oz8ZOIrt+qkdP/4wCK67mb2KXsQAVldIv24BI4AASz+NxVj
-         7IkCLlfNowjAd/mMzHALT+0hyCmz8olUi4NKCOp0=
+        b=oGbbJBzXiRzXiYmsBNZAAgeT9/iwWDPZbx+xd6cW+h1drNL3T5++w9HtcjF7VLM7R
+         WR7vXR+3KLd46oLgtasgvaJ8k0hm2gX19rM9TjLsDv4P6APHbIwVFw7oANUiWWv17K
+         hLGUEvbbxMTHtVB+JOjFYRVZC/w1EwtSi79KBovE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 660/700] serial: mvebu-uart: do not allow changing baudrate when uartclk is not available
-Date:   Mon, 12 Jul 2021 08:12:23 +0200
-Message-Id: <20210712061046.117911207@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Biggers <ebiggers@google.com>
+Subject: [PATCH 5.10 584/593] fscrypt: dont ignore minor_hash when hash is 0
+Date:   Mon, 12 Jul 2021 08:12:24 +0200
+Message-Id: <20210712060959.572089895@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +38,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Eric Biggers <ebiggers@google.com>
 
-[ Upstream commit ecd6b010d81f97b06b2f64d2d4f50ebf5acddaa9 ]
+commit 77f30bfcfcf484da7208affd6a9e63406420bf91 upstream.
 
-Testing mvuart->clk for non-error is not enough as mvuart->clk may contain
-valid clk pointer but when clk_prepare_enable(mvuart->clk) failed then
-port->uartclk is zero.
+When initializing a no-key name, fscrypt_fname_disk_to_usr() sets the
+minor_hash to 0 if the (major) hash is 0.
 
-When mvuart->clk is not available then port->uartclk is zero too.
+This doesn't make sense because 0 is a valid hash code, so we shouldn't
+ignore the filesystem-provided minor_hash in that case.  Fix this by
+removing the special case for 'hash == 0'.
 
-Parent clock rate port->uartclk is needed to calculate UART clock divisor
-and without it is not possible to change baudrate.
+This is an old bug that appears to have originated when the encryption
+code in ext4 and f2fs was moved into fs/crypto/.  The original ext4 and
+f2fs code passed the hash by pointer instead of by value.  So
+'if (hash)' actually made sense then, as it was checking whether a
+pointer was NULL.  But now the hashes are passed by value, and
+filesystems just pass 0 for any hashes they don't have.  There is no
+need to handle this any differently from the hashes actually being 0.
 
-So fix test condition when it is possible to change baudrate.
+It is difficult to reproduce this bug, as it only made a difference in
+the case where a filename's 32-bit major hash happened to be 0.
+However, it probably had the largest chance of causing problems on
+ubifs, since ubifs uses minor_hash to do lookups of no-key names, in
+addition to using it as a readdir cookie.  ext4 only uses minor_hash as
+a readdir cookie, and f2fs doesn't use minor_hash at all.
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Fixes: 68a0db1d7da2 ("serial: mvebu-uart: add function to change baudrate")
-Link: https://lore.kernel.org/r/20210624224909.6350-3-pali@kernel.org
+Fixes: 0b81d0779072 ("fs crypto: move per-file encryption from f2fs tree to fs/crypto")
+Cc: <stable@vger.kernel.org> # v4.6+
+Link: https://lore.kernel.org/r/20210527235236.2376556-1-ebiggers@kernel.org
+Signed-off-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+
 ---
- drivers/tty/serial/mvebu-uart.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ fs/crypto/fname.c |   10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/tty/serial/mvebu-uart.c b/drivers/tty/serial/mvebu-uart.c
-index 908a4ac6b5a7..9638ae6aae79 100644
---- a/drivers/tty/serial/mvebu-uart.c
-+++ b/drivers/tty/serial/mvebu-uart.c
-@@ -445,12 +445,11 @@ static void mvebu_uart_shutdown(struct uart_port *port)
+--- a/fs/crypto/fname.c
++++ b/fs/crypto/fname.c
+@@ -344,13 +344,9 @@ int fscrypt_fname_disk_to_usr(const stru
+ 		     offsetof(struct fscrypt_nokey_name, sha256));
+ 	BUILD_BUG_ON(BASE64_CHARS(FSCRYPT_NOKEY_NAME_MAX) > NAME_MAX);
  
- static int mvebu_uart_baud_rate_set(struct uart_port *port, unsigned int baud)
- {
--	struct mvebu_uart *mvuart = to_mvuart(port);
- 	unsigned int d_divisor, m_divisor;
- 	u32 brdv, osamp;
- 
--	if (IS_ERR(mvuart->clk))
--		return -PTR_ERR(mvuart->clk);
-+	if (!port->uartclk)
-+		return -EOPNOTSUPP;
- 
- 	/*
- 	 * The baudrate is derived from the UART clock thanks to two divisors:
--- 
-2.30.2
-
+-	if (hash) {
+-		nokey_name.dirhash[0] = hash;
+-		nokey_name.dirhash[1] = minor_hash;
+-	} else {
+-		nokey_name.dirhash[0] = 0;
+-		nokey_name.dirhash[1] = 0;
+-	}
++	nokey_name.dirhash[0] = hash;
++	nokey_name.dirhash[1] = minor_hash;
++
+ 	if (iname->len <= sizeof(nokey_name.bytes)) {
+ 		memcpy(nokey_name.bytes, iname->name, iname->len);
+ 		size = offsetof(struct fscrypt_nokey_name, bytes[iname->len]);
 
 
