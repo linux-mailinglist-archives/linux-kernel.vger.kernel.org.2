@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFF033C5886
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC72C3C4CE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377179AbhGLIti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:49:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42268 "EHLO mail.kernel.org"
+        id S244178AbhGLHK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:10:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345628AbhGLHxV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:53:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7397C6113A;
-        Mon, 12 Jul 2021 07:50:32 +0000 (UTC)
+        id S236064AbhGLGsd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:48:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68A686101E;
+        Mon, 12 Jul 2021 06:44:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076232;
-        bh=ZL5Q8pohPiQN2uC1e9praetNI+pdFRZsXuwFqo1dL90=;
+        s=korg; t=1626072252;
+        bh=osEe53rcdbRdc77matoHXJOjQFg4acVBYqv9Yb7VUY8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rS8SwalB+skctRGJW6UvgVtdkvB9isaJxE+AJCm7fJxybATUnNnwwEfRD312UVaQF
-         a3M26qiFXTvj61g4lgEKLQrUU0rTJFo1eOJtgXcX4gsPnP1BXzl6zv49BFjnX9DhfA
-         cYT8ITpsa3JX+jLmHXa7PhcnsZfJ7NOeuYC4RSyM=
+        b=gCKnhUMNNAoG/4fgZmU2/o6rTwyZBxDAlNsAiUKkKZgL0l0OKKg7J0ip+XA6AIyPX
+         yX6RB2w2jJdcgYRBW0WW3Es+ws6tlZHzIH1Gmy3kS1m4T82LQcK48DAtKH5gSselxM
+         HquEI/3eaL8zvngSmy7PlsJ5vtkiIT6qmFqDK0Ok=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Tom Herbert <tom@quantonium.net>,
-        Coco Li <lixiaoyan@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 554/800] ipv6: exthdrs: do not blindly use init_net
-Date:   Mon, 12 Jul 2021 08:09:37 +0200
-Message-Id: <20210712061026.323954153@linuxfoundation.org>
+Subject: [PATCH 5.10 418/593] clk: actions: Fix SD clocks factor table on Owl S500 SoC
+Date:   Mon, 12 Jul 2021 08:09:38 +0200
+Message-Id: <20210712060934.134950796@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,59 +42,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 
-[ Upstream commit bcc3f2a829b9edbe3da5fb117ee5a63686d31834 ]
+[ Upstream commit fe1f71e338d77814da3ef44e9f64d32981a6ccdf ]
 
-I see no reason why max_dst_opts_cnt and max_hbh_opts_cnt
-are fetched from the initial net namespace.
+Drop the unsupported entries in the factor table used for the SD[0-2]
+clocks definitions on the Actions Semi Owl S500 SoC.
 
-The other sysctls (max_dst_opts_len & max_hbh_opts_len)
-are in fact already using the current ns.
-
-Note: it is not clear why ipv6_destopt_rcv() use two ways to
-get to the netns :
-
- 1) dev_net(dst->dev)
-    Originally used to increment IPSTATS_MIB_INHDRERRORS
-
- 2) dev_net(skb->dev)
-     Tom used this variant in his patch.
-
-Maybe this calls to use ipv6_skb_net() instead ?
-
-Fixes: 47d3d7ac656a ("ipv6: Implement limits on Hop-by-Hop and Destination options")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Tom Herbert <tom@quantonium.net>
-Cc: Coco Li <lixiaoyan@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: ed6b4795ece4 ("clk: actions: Add clock driver for S500 SoC")
+Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Link: https://lore.kernel.org/r/196c948d708a22b8198c95f064a0f6b6820f9980.1623354574.git.cristian.ciocaltea@gmail.com
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv6/exthdrs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/clk/actions/owl-s500.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/net/ipv6/exthdrs.c b/net/ipv6/exthdrs.c
-index 56e479d158b7..6f7da8f3e2e5 100644
---- a/net/ipv6/exthdrs.c
-+++ b/net/ipv6/exthdrs.c
-@@ -306,7 +306,7 @@ fail_and_free:
- #endif
+diff --git a/drivers/clk/actions/owl-s500.c b/drivers/clk/actions/owl-s500.c
+index 75b7186185b0..42abdf964044 100644
+--- a/drivers/clk/actions/owl-s500.c
++++ b/drivers/clk/actions/owl-s500.c
+@@ -127,8 +127,7 @@ static struct clk_factor_table sd_factor_table[] = {
+ 	{ 12, 1, 13 }, { 13, 1, 14 }, { 14, 1, 15 }, { 15, 1, 16 },
+ 	{ 16, 1, 17 }, { 17, 1, 18 }, { 18, 1, 19 }, { 19, 1, 20 },
+ 	{ 20, 1, 21 }, { 21, 1, 22 }, { 22, 1, 23 }, { 23, 1, 24 },
+-	{ 24, 1, 25 }, { 25, 1, 26 }, { 26, 1, 27 }, { 27, 1, 28 },
+-	{ 28, 1, 29 }, { 29, 1, 30 }, { 30, 1, 31 }, { 31, 1, 32 },
++	{ 24, 1, 25 },
  
- 	if (ip6_parse_tlv(tlvprocdestopt_lst, skb,
--			  init_net.ipv6.sysctl.max_dst_opts_cnt)) {
-+			  net->ipv6.sysctl.max_dst_opts_cnt)) {
- 		skb->transport_header += extlen;
- 		opt = IP6CB(skb);
- #if IS_ENABLED(CONFIG_IPV6_MIP6)
-@@ -1037,7 +1037,7 @@ fail_and_free:
+ 	/* bit8: /128 */
+ 	{ 256, 1, 1 * 128 }, { 257, 1, 2 * 128 }, { 258, 1, 3 * 128 }, { 259, 1, 4 * 128 },
+@@ -137,8 +136,7 @@ static struct clk_factor_table sd_factor_table[] = {
+ 	{ 268, 1, 13 * 128 }, { 269, 1, 14 * 128 }, { 270, 1, 15 * 128 }, { 271, 1, 16 * 128 },
+ 	{ 272, 1, 17 * 128 }, { 273, 1, 18 * 128 }, { 274, 1, 19 * 128 }, { 275, 1, 20 * 128 },
+ 	{ 276, 1, 21 * 128 }, { 277, 1, 22 * 128 }, { 278, 1, 23 * 128 }, { 279, 1, 24 * 128 },
+-	{ 280, 1, 25 * 128 }, { 281, 1, 26 * 128 }, { 282, 1, 27 * 128 }, { 283, 1, 28 * 128 },
+-	{ 284, 1, 29 * 128 }, { 285, 1, 30 * 128 }, { 286, 1, 31 * 128 }, { 287, 1, 32 * 128 },
++	{ 280, 1, 25 * 128 },
+ 	{ 0, 0, 0 },
+ };
  
- 	opt->flags |= IP6SKB_HOPBYHOP;
- 	if (ip6_parse_tlv(tlvprochopopt_lst, skb,
--			  init_net.ipv6.sysctl.max_hbh_opts_cnt)) {
-+			  net->ipv6.sysctl.max_hbh_opts_cnt)) {
- 		skb->transport_header += extlen;
- 		opt = IP6CB(skb);
- 		opt->nhoff = sizeof(struct ipv6hdr);
 -- 
 2.30.2
 
