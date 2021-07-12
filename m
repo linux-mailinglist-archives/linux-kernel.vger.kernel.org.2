@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A168D3C4D03
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:39:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F833C5327
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245322AbhGLHLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:11:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48248 "EHLO mail.kernel.org"
+        id S1346421AbhGLHxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:53:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239189AbhGLGta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:49:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6013610E5;
-        Mon, 12 Jul 2021 06:46:34 +0000 (UTC)
+        id S1343967AbhGLHUO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:20:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F20261166;
+        Mon, 12 Jul 2021 07:17:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072395;
-        bh=oKGTv/+PZn0kbg/Fp9P2DxsFCRvl9SzCqxXU/N/6o6Y=;
+        s=korg; t=1626074246;
+        bh=Q24hn74DSG3DcYlvrFfEOEIsZ208c90wgAIS+AXHEcI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Nycpq3H7Va/uKBbwJrPiymFU2A0APsgCoOm7OCp2INGl2xIAXQtHx9s7cFBYCMoC1
-         GIpEd1a8NuOiENQXhcNDvo/LXZleMpcnkd4ZoYBOr43giKH0gOS1XbIbRZIR0ISoi4
-         M8PD18KvYVsAsC7ugnniCocJsxBtauK4cCm195tY=
+        b=dehXqkpfER3ywkRLYJlvtxPSojZmRXpp/Fr+4mWNocH5FqESBMQ8fX3E1PEcTeFnv
+         O9ibsGRA5jxseT9JYEoVnY+dAdcN2mmeKKyG7sQ0jIc4PWd/R785Gx0xhMXr5sTiI+
+         xlT0b5/XmCJEkN+QCFw8KHR2kyaDeYifGma3laOc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 437/593] serial: fsl_lpuart: dont modify arbitrary data on lpuart32
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>,
+        syzbot+1071ad60cd7df39fdadb@syzkaller.appspotmail.com
+Subject: [PATCH 5.12 514/700] net: sched: fix warning in tcindex_alloc_perfect_hash
 Date:   Mon, 12 Jul 2021 08:09:57 +0200
-Message-Id: <20210712060936.777103067@linuxfoundation.org>
+Message-Id: <20210712061031.219924821@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,35 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Walle <michael@walle.cc>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit ccf08fd1204bcb5311cc10aea037c71c6e74720a ]
+[ Upstream commit 3f2db250099f46988088800052cdf2332c7aba61 ]
 
-lpuart_rx_dma_startup() is used for both the 8 bit and the 32 bit
-version of the LPUART. Modify the UARTCR only for the 8 bit version.
+Syzbot reported warning in tcindex_alloc_perfect_hash. The problem
+was in too big cp->hash, which triggers warning in kmalloc. Since
+cp->hash comes from userspace, there is no need to warn if value
+is not correct
 
-Fixes: f4eef224a09f ("serial: fsl_lpuart: add sysrq support when using dma")
-Signed-off-by: Michael Walle <michael@walle.cc>
-Link: https://lore.kernel.org/r/20210512141255.18277-2-michael@walle.cc
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: b9a24bb76bf6 ("net_sched: properly handle failure case of tcf_exts_init()")
+Reported-and-tested-by: syzbot+1071ad60cd7df39fdadb@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Acked-by: Cong Wang <cong.wang@bytedance.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/fsl_lpuart.c | 2 +-
+ net/sched/cls_tcindex.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/tty/serial/fsl_lpuart.c b/drivers/tty/serial/fsl_lpuart.c
-index bd047e1f9bea..6b8e638c2389 100644
---- a/drivers/tty/serial/fsl_lpuart.c
-+++ b/drivers/tty/serial/fsl_lpuart.c
-@@ -1625,7 +1625,7 @@ static void lpuart_rx_dma_startup(struct lpuart_port *sport)
- 	sport->lpuart_dma_rx_use = true;
- 	rx_dma_timer_init(sport);
+diff --git a/net/sched/cls_tcindex.c b/net/sched/cls_tcindex.c
+index c4007b9cd16d..5b274534264c 100644
+--- a/net/sched/cls_tcindex.c
++++ b/net/sched/cls_tcindex.c
+@@ -304,7 +304,7 @@ static int tcindex_alloc_perfect_hash(struct net *net, struct tcindex_data *cp)
+ 	int i, err = 0;
  
--	if (sport->port.has_sysrq) {
-+	if (sport->port.has_sysrq && !lpuart_is_32(sport)) {
- 		cr3 = readb(sport->port.membase + UARTCR3);
- 		cr3 |= UARTCR3_FEIE;
- 		writeb(cr3, sport->port.membase + UARTCR3);
+ 	cp->perfect = kcalloc(cp->hash, sizeof(struct tcindex_filter_result),
+-			      GFP_KERNEL);
++			      GFP_KERNEL | __GFP_NOWARN);
+ 	if (!cp->perfect)
+ 		return -ENOMEM;
+ 
 -- 
 2.30.2
 
