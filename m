@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8278B3C5731
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5618F3C4A04
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376403AbhGLIaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:30:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51044 "EHLO mail.kernel.org"
+        id S237861AbhGLGsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:48:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349515AbhGLHmm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:42:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EA86610FB;
-        Mon, 12 Jul 2021 07:39:54 +0000 (UTC)
+        id S235908AbhGLGhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:37:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5748461166;
+        Mon, 12 Jul 2021 06:33:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075594;
-        bh=lhSUyfx1HIhRhgF9zHh20QkHHTRW5v1gVt8eWUHhGao=;
+        s=korg; t=1626071614;
+        bh=n/WkJqG640sU3Rw25PR1ZhW2yBejxV5O1AiUCuchfeg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DXar7hx4gyiF3eeA5M7LCeEkXoRtldB0O+ZQUBaxn9mU+m27abKho9/W4R8S0QMvK
-         5/u5hGSNb7V8GhWWPprD2cERatVvJTeu7PObDbpGLPmergTWf+aUUy94mDFmjm5+se
-         BUyjfhryUWMC9qX5R+gT6JABMp1MGbK5uWuNjHeg=
+        b=ya7gGQbMAsPbeo0SriTuKGnwT8b4mJbdqMDHoGiaPQvfSWFYcKQtIfVx11GfcFYIf
+         7+QpXsZ2xceDYkziQf+v7BgWs8CKNs+ujMcwYJwuv3p4DcMp3Aihh5NYcp4oC4uig3
+         jC2OVNLT4U4eg6g20avl0dmadP0UOAa1iCdZCm94=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Quentin Perret <qperret@google.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 280/800] sched/uclamp: Fix locking around cpu_util_update_eff()
-Date:   Mon, 12 Jul 2021 08:05:03 +0200
-Message-Id: <20210712060954.334380689@linuxfoundation.org>
+Subject: [PATCH 5.10 144/593] mmc: sdhci-sprd: use sdhci_sprd_writew
+Date:   Mon, 12 Jul 2021 08:05:04 +0200
+Message-Id: <20210712060858.894961451@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,59 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qais Yousef <qais.yousef@arm.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-[ Upstream commit 93b73858701fd01de26a4a874eb95f9b7156fd4b ]
+[ Upstream commit 961470820021e6f9d74db4837bd6831a1a30341b ]
 
-cpu_cgroup_css_online() calls cpu_util_update_eff() without holding the
-uclamp_mutex or rcu_read_lock() like other call sites, which is
-a mistake.
+The sdhci_sprd_writew() was defined by never used in sdhci_ops:
 
-The uclamp_mutex is required to protect against concurrent reads and
-writes that could update the cgroup hierarchy.
+    drivers/mmc/host/sdhci-sprd.c:134:20: warning: unused function 'sdhci_sprd_writew'
 
-The rcu_read_lock() is required to traverse the cgroup data structures
-in cpu_util_update_eff().
-
-Surround the caller with the required locks and add some asserts to
-better document the dependency in cpu_util_update_eff().
-
-Fixes: 7226017ad37a ("sched/uclamp: Fix a bug in propagating uclamp value in new cgroups")
-Reported-by: Quentin Perret <qperret@google.com>
-Signed-off-by: Qais Yousef <qais.yousef@arm.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210510145032.1934078-3-qais.yousef@arm.com
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Link: https://lore.kernel.org/r/20210601095403.236007-2-krzysztof.kozlowski@canonical.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/core.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/mmc/host/sdhci-sprd.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 49b713da023d..94002cb551c4 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -8702,7 +8702,11 @@ static int cpu_cgroup_css_online(struct cgroup_subsys_state *css)
- 
- #ifdef CONFIG_UCLAMP_TASK_GROUP
- 	/* Propagate the effective uclamp value for the new group */
-+	mutex_lock(&uclamp_mutex);
-+	rcu_read_lock();
- 	cpu_util_update_eff(css);
-+	rcu_read_unlock();
-+	mutex_unlock(&uclamp_mutex);
- #endif
- 
- 	return 0;
-@@ -8792,6 +8796,9 @@ static void cpu_util_update_eff(struct cgroup_subsys_state *css)
- 	enum uclamp_id clamp_id;
- 	unsigned int clamps;
- 
-+	lockdep_assert_held(&uclamp_mutex);
-+	SCHED_WARN_ON(!rcu_read_lock_held());
-+
- 	css_for_each_descendant_pre(css, top_css) {
- 		uc_parent = css_tg(css)->parent
- 			? css_tg(css)->parent->uclamp : NULL;
+diff --git a/drivers/mmc/host/sdhci-sprd.c b/drivers/mmc/host/sdhci-sprd.c
+index 19cbb6171b35..9cd8862e6cbd 100644
+--- a/drivers/mmc/host/sdhci-sprd.c
++++ b/drivers/mmc/host/sdhci-sprd.c
+@@ -393,6 +393,7 @@ static void sdhci_sprd_request_done(struct sdhci_host *host,
+ static struct sdhci_ops sdhci_sprd_ops = {
+ 	.read_l = sdhci_sprd_readl,
+ 	.write_l = sdhci_sprd_writel,
++	.write_w = sdhci_sprd_writew,
+ 	.write_b = sdhci_sprd_writeb,
+ 	.set_clock = sdhci_sprd_set_clock,
+ 	.get_max_clock = sdhci_sprd_get_max_clock,
 -- 
 2.30.2
 
