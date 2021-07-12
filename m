@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 032583C5788
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CE5F3C5169
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377025AbhGLIfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:35:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51190 "EHLO mail.kernel.org"
+        id S1348216AbhGLHku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:40:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241718AbhGLHrX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:47:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CCAC61427;
-        Mon, 12 Jul 2021 07:42:36 +0000 (UTC)
+        id S244140AbhGLHK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:10:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A53AF613B6;
+        Mon, 12 Jul 2021 07:06:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075757;
-        bh=XoYj5fhINhNpIdEDgjtheWTTZEuJBpJiCzs98xY8jtw=;
+        s=korg; t=1626073591;
+        bh=vdtF+omV7OLYAa/FCSoY7v45LfrG1AYg+8i89VthYI0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U59YQfSPGNdBTFlH9zOXhCgoyNHfLuCaji7lj2eIXWQl4RIJI3mW9F5aBKZ2TM2hB
-         wrYEmjxWK8x6mQOWWkuyT6b7TX0BYv+ym6llGXrMo7lkFl01t1DT4uBtXsOeW2uMmC
-         g7AMFcM6z5rcHIfLzBDqtkMR9k+D4YC9NDrD4xzk=
+        b=BmQBCa8JGFczB9oqelTmT6zkVt1X6pAjIwfk2Q0pfNqXuwwu/EpANScpwuOZUJ3I3
+         zwp+R4OjmLdq/zky60mS+ejWEo4uttpNLI/U6Dd/Hx/HjRc/FynbvJwS5wAreGGePU
+         VENpFe/7J3UUqIz1T51d3imUP4YjniyhenQkKmQo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Philipp Zabel <p.zabel@pengutronix.de>,
+        stable@vger.kernel.org, Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 352/800] media: video-mux: Skip dangling endpoints
+Subject: [PATCH 5.12 292/700] media: i2c: rdacm21: Fix OV10640 powerup
 Date:   Mon, 12 Jul 2021 08:06:15 +0200
-Message-Id: <20210712061004.532551945@linuxfoundation.org>
+Message-Id: <20210712061007.313438248@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +43,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Philipp Zabel <p.zabel@pengutronix.de>
+From: Jacopo Mondi <jacopo+renesas@jmondi.org>
 
-[ Upstream commit 95778c2d0979618e3349b1d2324ec282a5a6adbf ]
+[ Upstream commit ff75332b260cd33cc19000fdb5d256d9db4470d1 ]
 
-i.MX6 device tree include files contain dangling endpoints for the
-board device tree writers' convenience. These are still included in
-many existing device trees.
-Treat dangling endpoints as non-existent to support them.
+The OV10640 image sensor powerdown signal is controlled by the first
+line of the OV490 GPIO pad #1, but the pad #0 identifier
+OV490_GPIO_OUTPUT_VALUE0 was erroneously used. As a result the image
+sensor powerdown signal was never asserted but was left floating and
+kept high by an internal pull-up resistor, causing sporadic failures
+during the image sensor startup phase.
 
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+Fix this by using the correct GPIO pad identifier and wait the mandatory
+1.5 millisecond delay after the powerup lane is asserted. The reset
+delay is not characterized in the chip manual if not as "255 XVCLK +
+initialization". Wait for at least 3 milliseconds to guarantee the SCCB
+bus is available.
+
+While at it also fix the reset sequence, as the reset line was released
+before the powerdown one, and the line was not cycled.
+
+This commit fixes a sporadic start-up error triggered by a failure to
+read the OV10640 chip ID:
+rdacm21 8-0054: OV10640 ID mismatch: (0x01)
+
+Fixes: a59f853b3b4b ("media: i2c: Add driver for RDACM21 camera module")
+Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Fixes: 612b385efb1e ("media: video-mux: Create media links in bound notifier")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/video-mux.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/media/i2c/rdacm21.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/video-mux.c b/drivers/media/platform/video-mux.c
-index 133122e38515..9bc0b4d8de09 100644
---- a/drivers/media/platform/video-mux.c
-+++ b/drivers/media/platform/video-mux.c
-@@ -362,7 +362,7 @@ static int video_mux_async_register(struct video_mux *vmux,
+diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
+index 179d107f494c..4b0dfd0a75e1 100644
+--- a/drivers/media/i2c/rdacm21.c
++++ b/drivers/media/i2c/rdacm21.c
+@@ -333,13 +333,19 @@ static int ov10640_initialize(struct rdacm21_device *dev)
+ {
+ 	u8 val;
  
- 	for (i = 0; i < num_input_pads; i++) {
- 		struct v4l2_async_subdev *asd;
--		struct fwnode_handle *ep;
-+		struct fwnode_handle *ep, *remote_ep;
- 
- 		ep = fwnode_graph_get_endpoint_by_id(
- 			dev_fwnode(vmux->subdev.dev), i, 0,
-@@ -370,6 +370,14 @@ static int video_mux_async_register(struct video_mux *vmux,
- 		if (!ep)
- 			continue;
- 
-+		/* Skip dangling endpoints for backwards compatibility */
-+		remote_ep = fwnode_graph_get_remote_endpoint(ep);
-+		if (!remote_ep) {
-+			fwnode_handle_put(ep);
-+			continue;
-+		}
-+		fwnode_handle_put(remote_ep);
+-	/* Power-up OV10640 by setting RESETB and PWDNB pins high. */
++	/* Enable GPIO0#0 (reset) and GPIO1#0 (pwdn) as output lines. */
+ 	ov490_write_reg(dev, OV490_GPIO_SEL0, OV490_GPIO0);
+ 	ov490_write_reg(dev, OV490_GPIO_SEL1, OV490_SPWDN0);
+ 	ov490_write_reg(dev, OV490_GPIO_DIRECTION0, OV490_GPIO0);
+ 	ov490_write_reg(dev, OV490_GPIO_DIRECTION1, OV490_SPWDN0);
 +
- 		asd = v4l2_async_notifier_add_fwnode_remote_subdev(
- 			&vmux->notifier, ep, struct v4l2_async_subdev);
++	/* Power up OV10640 and then reset it. */
++	ov490_write_reg(dev, OV490_GPIO_OUTPUT_VALUE1, OV490_SPWDN0);
++	usleep_range(1500, 3000);
++
++	ov490_write_reg(dev, OV490_GPIO_OUTPUT_VALUE0, 0x00);
++	usleep_range(1500, 3000);
+ 	ov490_write_reg(dev, OV490_GPIO_OUTPUT_VALUE0, OV490_GPIO0);
+-	ov490_write_reg(dev, OV490_GPIO_OUTPUT_VALUE0, OV490_SPWDN0);
+ 	usleep_range(3000, 5000);
  
+ 	/* Read OV10640 ID to test communications. */
 -- 
 2.30.2
 
