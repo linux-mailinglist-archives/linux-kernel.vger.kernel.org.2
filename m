@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E79C03C4D81
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:40:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEC283C588E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239162AbhGLHNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:13:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42444 "EHLO mail.kernel.org"
+        id S1379043AbhGLIuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:50:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238372AbhGLGsj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:48:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 696B161154;
-        Mon, 12 Jul 2021 06:44:26 +0000 (UTC)
+        id S1347602AbhGLHxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:53:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ABEC26113A;
+        Mon, 12 Jul 2021 07:50:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072266;
-        bh=MGEh1O1qKzCFtLhgi4S3slEZspl1zlmNDy1nhzEn1FY=;
+        s=korg; t=1626076249;
+        bh=ZbOD45fwJVoU5DMT/VyWyJZkTaRCfSEj8eOcmrVZQ74=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kPztWdCbFl7KTmr+xWssYdeC2D4GoG/V6i699i8KvYYtPRyJ1JXAP4T7P1V8PdJoY
-         uH+0fI6Fwz5vRK7OGDPePE3emUhBip0ddhbmKthF81HWQMhggGUBr5IoIO10E4RThQ
-         fqosSnMjUNBEgm5BXbJ+SkplN0yXCSifviPgbb1A=
+        b=rmUhxMsXeIgNbq86dEQIuT3pyHJTxVVvOx55CWRniOJmKDWaWbc0lVKQTIyRocpnv
+         5sYMLEZyjKnH3EP+ePYv9ST+QtAhzE4COqmZmzj4MjkP2FeyQogWfE8EZI11EDlr5Q
+         Gdlddh9gUi4KYJZLTl8iSVFL12DetggJFtA8aIbQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robert Hancock <robert.hancock@calian.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 423/593] clk: si5341: Avoid divide errors due to bogus register contents
+Subject: [PATCH 5.13 560/800] RDMA/hns: Add a check to ensure integer mtu is positive
 Date:   Mon, 12 Jul 2021 08:09:43 +0200
-Message-Id: <20210712060934.818218476@linuxfoundation.org>
+Message-Id: <20210712061026.998610978@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,68 +41,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robert Hancock <robert.hancock@calian.com>
+From: Weihang Li <liweihang@huawei.com>
 
-[ Upstream commit 78f6f406026d688868223d5dbeb197a4f7e9a9fd ]
+[ Upstream commit fe331da0f210c60342b042a03fe53f1b564b412b ]
 
-If the Si5341 is being initially programmed and has no stored NVM
-configuration, some of the register contents may contain unexpected
-values, such as zeros, which could cause divide by zero errors during
-driver initialization. Trap errors caused by zero registers or zero clock
-rates which could result in divide errors later in the code.
+GCC may reports an running time assert error when a value calculated from
+ib_mtu_enum_to_int() is using as 'val' in FIELD_PREDP:
 
-Fixes: 3044a860fd ("clk: Add Si5341/Si5340 driver")
-Signed-off-by: Robert Hancock <robert.hancock@calian.com>
-Link: https://lore.kernel.org/r/20210325192643.2190069-4-robert.hancock@calian.com
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+include/linux/compiler_types.h:328:38: error: call to
+'__compiletime_assert_1524' declared with attribute error: FIELD_PREP:
+value too large for the field
+
+So a check is added about whether integer mtu from ib_mtu_enum_to_int() is
+negative to avoid this warning.
+
+Link: https://lore.kernel.org/r/1624262443-24528-3-git-send-email-liweihang@huawei.com
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Weihang Li <liweihang@huawei.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/clk-si5341.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/clk/clk-si5341.c b/drivers/clk/clk-si5341.c
-index b8a960e927bc..ac1ccec2b681 100644
---- a/drivers/clk/clk-si5341.c
-+++ b/drivers/clk/clk-si5341.c
-@@ -624,6 +624,9 @@ static unsigned long si5341_synth_clk_recalc_rate(struct clk_hw *hw,
- 			SI5341_SYNTH_N_NUM(synth->index), &n_num, &n_den);
- 	if (err < 0)
- 		return err;
-+	/* Check for bogus/uninitialized settings */
-+	if (!n_num || !n_den)
-+		return 0;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index cd58becf1baf..f074e2e5a5c8 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -4499,12 +4499,13 @@ static int modify_qp_init_to_rtr(struct ib_qp *ibqp,
+ 	struct ib_device *ibdev = &hr_dev->ib_dev;
+ 	dma_addr_t trrl_ba;
+ 	dma_addr_t irrl_ba;
+-	enum ib_mtu mtu;
++	enum ib_mtu ib_mtu;
+ 	u8 lp_pktn_ini;
+ 	u64 *mtts;
+ 	u8 *dmac;
+ 	u8 *smac;
+ 	u32 port;
++	int mtu;
+ 	int ret;
  
- 	/*
- 	 * n_num and n_den are shifted left as much as possible, so to prevent
-@@ -807,6 +810,9 @@ static long si5341_output_clk_round_rate(struct clk_hw *hw, unsigned long rate,
- {
- 	unsigned long r;
+ 	ret = config_qp_rq_buf(hr_dev, hr_qp, context, qpc_mask);
+@@ -4588,19 +4589,23 @@ static int modify_qp_init_to_rtr(struct ib_qp *ibqp,
+ 	roce_set_field(qpc_mask->byte_52_udpspn_dmac, V2_QPC_BYTE_52_DMAC_M,
+ 		       V2_QPC_BYTE_52_DMAC_S, 0);
  
-+	if (!rate)
-+		return 0;
+-	mtu = get_mtu(ibqp, attr);
+-	hr_qp->path_mtu = mtu;
++	ib_mtu = get_mtu(ibqp, attr);
++	hr_qp->path_mtu = ib_mtu;
 +
- 	r = *parent_rate >> 1;
- 
- 	/* If rate is an even divisor, no changes to parent required */
-@@ -835,11 +841,16 @@ static int si5341_output_clk_set_rate(struct clk_hw *hw, unsigned long rate,
- 		unsigned long parent_rate)
- {
- 	struct clk_si5341_output *output = to_clk_si5341_output(hw);
--	/* Frequency divider is (r_div + 1) * 2 */
--	u32 r_div = (parent_rate / rate) >> 1;
-+	u32 r_div;
- 	int err;
- 	u8 r[3];
- 
-+	if (!rate)
++	mtu = ib_mtu_enum_to_int(ib_mtu);
++	if (WARN_ON(mtu < 0))
 +		return -EINVAL;
-+
-+	/* Frequency divider is (r_div + 1) * 2 */
-+	r_div = (parent_rate / rate) >> 1;
-+
- 	if (r_div <= 1)
- 		r_div = 0;
- 	else if (r_div >= BIT(24))
+ 
+ 	if (attr_mask & IB_QP_PATH_MTU) {
+ 		roce_set_field(context->byte_24_mtu_tc, V2_QPC_BYTE_24_MTU_M,
+-			       V2_QPC_BYTE_24_MTU_S, mtu);
++			       V2_QPC_BYTE_24_MTU_S, ib_mtu);
+ 		roce_set_field(qpc_mask->byte_24_mtu_tc, V2_QPC_BYTE_24_MTU_M,
+ 			       V2_QPC_BYTE_24_MTU_S, 0);
+ 	}
+ 
+ #define MAX_LP_MSG_LEN 65536
+ 	/* MTU * (2 ^ LP_PKTN_INI) shouldn't be bigger than 64KB */
+-	lp_pktn_ini = ilog2(MAX_LP_MSG_LEN / ib_mtu_enum_to_int(mtu));
++	lp_pktn_ini = ilog2(MAX_LP_MSG_LEN / mtu);
+ 
+ 	roce_set_field(context->byte_56_dqpn_err, V2_QPC_BYTE_56_LP_PKTN_INI_M,
+ 		       V2_QPC_BYTE_56_LP_PKTN_INI_S, lp_pktn_ini);
 -- 
 2.30.2
 
