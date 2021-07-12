@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F370C3C49BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15A723C56EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237707AbhGLGq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:46:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55500 "EHLO mail.kernel.org"
+        id S1358633AbhGLI0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:26:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236953AbhGLGfj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:35:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA31761004;
-        Mon, 12 Jul 2021 06:32:43 +0000 (UTC)
+        id S1349379AbhGLHl5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:41:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57EF660FF3;
+        Mon, 12 Jul 2021 07:39:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071564;
-        bh=UP4NVnaV6TahKYzkSvQfpMg9+VdQvMocKGAKxZKRlTA=;
+        s=korg; t=1626075548;
+        bh=BAFU7XVbOgmnXzHVElnLhdiGFbJEgWoDgMv0T85c/Ls=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XyXh2IJ12A5J3XQdDR8vsjkcL66JFHRZAos20xmKbH4uRPRYsMpnZd5BhBYKIS0TP
-         hrg7RwxH9icK5io3tYTZz7jV6Z6KQuKmzPU43AjuUklWeeHqZlwWzkWy6l4XdwAhnu
-         6tb5YudaQjTjrg5QWEe0VgGkmvAvzFPgiBQdryro=
+        b=Guzmoo1mUVEeHOaYirFqKQ4j3BOSLCsgrZG1O2pPICqjpzr4CP+HhcagCaFzzNaLh
+         3Dqlp866momXmrqvDulBwTLY2rJ+MUkHtpGU1cGQOQ9UxgdZ9x6FhSvJDXpHEYJeEn
+         3dx1Q0sa4Le7WT8M3xsd3F1gsUxbNCYW1t1Mh5jQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com,
-        Anirudh Rayabharam <mail@anirudhrb.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tejun Heo <tj@kernel.org>, Minchan Kim <minchan@google.com>,
+        jenhaochen@google.com, Martin Liu <liumartin@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 125/593] media: pvrusb2: fix warning in pvr2_i2c_core_done
+Subject: [PATCH 5.13 262/800] kthread_worker: fix return value when kthread_mod_delayed_work() races with kthread_cancel_delayed_work_sync()
 Date:   Mon, 12 Jul 2021 08:04:45 +0200
-Message-Id: <20210712060856.917148024@linuxfoundation.org>
+Message-Id: <20210712060951.429492452@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,58 +46,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anirudh Rayabharam <mail@anirudhrb.com>
+From: Petr Mladek <pmladek@suse.com>
 
-[ Upstream commit f8194e5e63fdcb349e8da9eef9e574d5b1d687cb ]
+[ Upstream commit d71ba1649fa3c464c51ec7163e4b817345bff2c7 ]
 
-syzbot has reported the following warning in pvr2_i2c_done:
+kthread_mod_delayed_work() might race with
+kthread_cancel_delayed_work_sync() or another kthread_mod_delayed_work()
+call.  The function lets the other operation win when it sees
+work->canceling counter set.  And it returns @false.
 
-	sysfs group 'power' not found for kobject '1-0043'
+But it should return @true as it is done by the related workqueue API, see
+mod_delayed_work_on().
 
-When the device is disconnected (pvr_hdw_disconnect), the i2c adapter is
-not unregistered along with the USB and v4l2 teardown. As part of the USB
-device disconnect, the sysfs files of the subdevices are also deleted.
-So, by the time pvr_i2c_core_done is called by pvr_context_destroy, the
-sysfs files have been deleted.
+The reason is that the return value might be used for reference counting.
+It has to distinguish the case when the number of queued works has changed
+or stayed the same.
 
-To fix this, unregister the i2c adapter too in pvr_hdw_disconnect. Make
-the device deregistration code shared by calling pvr_hdw_disconnect from
-pvr2_hdw_destroy.
+The change is safe.  kthread_mod_delayed_work() return value is not
+checked anywhere at the moment.
 
-Reported-by: syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com
-Tested-by: syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Link: https://lore.kernel.org/r/20210521163526.GA17916@redhat.com
+Link: https://lkml.kernel.org/r/20210610133051.15337-4-pmladek@suse.com
+Signed-off-by: Petr Mladek <pmladek@suse.com>
+Reported-by: Oleg Nesterov <oleg@redhat.com>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Minchan Kim <minchan@google.com>
+Cc: <jenhaochen@google.com>
+Cc: Martin Liu <liumartin@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/pvrusb2/pvrusb2-hdw.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/kthread.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-index f4a727918e35..d38dee1792e4 100644
---- a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-+++ b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-@@ -2676,9 +2676,8 @@ void pvr2_hdw_destroy(struct pvr2_hdw *hdw)
- 		pvr2_stream_destroy(hdw->vid_stream);
- 		hdw->vid_stream = NULL;
- 	}
--	pvr2_i2c_core_done(hdw);
- 	v4l2_device_unregister(&hdw->v4l2_dev);
--	pvr2_hdw_remove_usb_stuff(hdw);
-+	pvr2_hdw_disconnect(hdw);
- 	mutex_lock(&pvr2_unit_mtx);
- 	do {
- 		if ((hdw->unit_number >= 0) &&
-@@ -2705,6 +2704,7 @@ void pvr2_hdw_disconnect(struct pvr2_hdw *hdw)
+diff --git a/kernel/kthread.c b/kernel/kthread.c
+index 6e02094849d3..08931e525dd9 100644
+--- a/kernel/kthread.c
++++ b/kernel/kthread.c
+@@ -1162,14 +1162,14 @@ static bool __kthread_cancel_work(struct kthread_work *work)
+  * modify @dwork's timer so that it expires after @delay. If @delay is zero,
+  * @work is guaranteed to be queued immediately.
+  *
+- * Return: %true if @dwork was pending and its timer was modified,
+- * %false otherwise.
++ * Return: %false if @dwork was idle and queued, %true otherwise.
+  *
+  * A special case is when the work is being canceled in parallel.
+  * It might be caused either by the real kthread_cancel_delayed_work_sync()
+  * or yet another kthread_mod_delayed_work() call. We let the other command
+- * win and return %false here. The caller is supposed to synchronize these
+- * operations a reasonable way.
++ * win and return %true here. The return value can be used for reference
++ * counting and the number of queued works stays the same. Anyway, the caller
++ * is supposed to synchronize these operations a reasonable way.
+  *
+  * This function is safe to call from any context including IRQ handler.
+  * See __kthread_cancel_work() and kthread_delayed_work_timer_fn()
+@@ -1181,13 +1181,15 @@ bool kthread_mod_delayed_work(struct kthread_worker *worker,
  {
- 	pvr2_trace(PVR2_TRACE_INIT,"pvr2_hdw_disconnect(hdw=%p)",hdw);
- 	LOCK_TAKE(hdw->big_lock);
-+	pvr2_i2c_core_done(hdw);
- 	LOCK_TAKE(hdw->ctl_lock);
- 	pvr2_hdw_remove_usb_stuff(hdw);
- 	LOCK_GIVE(hdw->ctl_lock);
+ 	struct kthread_work *work = &dwork->work;
+ 	unsigned long flags;
+-	int ret = false;
++	int ret;
+ 
+ 	raw_spin_lock_irqsave(&worker->lock, flags);
+ 
+ 	/* Do not bother with canceling when never queued. */
+-	if (!work->worker)
++	if (!work->worker) {
++		ret = false;
+ 		goto fast_queue;
++	}
+ 
+ 	/* Work must not be used with >1 worker, see kthread_queue_work() */
+ 	WARN_ON_ONCE(work->worker != worker);
+@@ -1205,8 +1207,11 @@ bool kthread_mod_delayed_work(struct kthread_worker *worker,
+ 	 * be used for reference counting.
+ 	 */
+ 	kthread_cancel_delayed_work_timer(work, &flags);
+-	if (work->canceling)
++	if (work->canceling) {
++		/* The number of works in the queue does not change. */
++		ret = true;
+ 		goto out;
++	}
+ 	ret = __kthread_cancel_work(work);
+ 
+ fast_queue:
 -- 
 2.30.2
 
