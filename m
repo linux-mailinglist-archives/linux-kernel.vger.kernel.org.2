@@ -2,115 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13BD13C5B50
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F05FD3C5B6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234360AbhGLLNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 07:13:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234064AbhGLLNH (ORCPT
+        id S241717AbhGLLV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 07:21:27 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3381 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238043AbhGLLTm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 07:13:07 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCC1FC0613E8
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 04:10:19 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id 37so17865936pgq.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 04:10:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mOkBIZLIeAFbFCMFR/viBqHY84MUzJTBfuuK1u/iBTY=;
-        b=yWo6g9kq4FtQt5BFXBVAv6l81+P0WtMWep5RJ49fykxTBmL+1nfy2nSUNO8c08Hksl
-         8AsvQaUQwH5kl3PHJjb3+HirKXGjpHBkPEUZTjl0rpYqJafV+rrSouhm12vGLCEI5BYq
-         aaEB8hgwcwXX7Hatwz9TLW72LTyPdqHv5PuZHkq697fJ4mfBS1HmWOClb/lUBYPgpGRj
-         VcBm/k+IbWTGZsSDyF7eKUYi+viUh8phbUmEJUGVGxH/Nb9c/nI/eYOLLPXZvB7o/mWW
-         +cSsb7DMbsQ2CFrQRO4c/JmFms7CVExM4H2hsfI8kOB5qiRV5GNSDJsy7TIhtYDs8l9U
-         pxDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mOkBIZLIeAFbFCMFR/viBqHY84MUzJTBfuuK1u/iBTY=;
-        b=f0rRn+KfOj/2kuNFyPd65NVBx97z5hoOBjnLUh3/XTPvBfZSfGvFjo/0fUcZuFTyE9
-         kLh6B+AWQQ+tTl9dIY/B6FlSEZBEGa/9a983bcJuyhMgaHWptqQdk/GxqJ2y6GBkfpVM
-         FmW7LQqdQgWMfD5y5tJZ8yAWnssvmH7YQ8uCOETuKtg9YWx65hOcJo8AJv9m6wgVqfTC
-         wWBoH3oDPum2vhhPvGMY35QOY5ggUIDmLH4mY0dE9WIfuMLLZ+fc2R3ljsTA51IpU05l
-         ge9Oek7vALZUjgaF9g8bDaj202hNc8alIXChjSrwsMgeJZzJhNCufClo40+JvnN+Oboi
-         mN3Q==
-X-Gm-Message-State: AOAM530rCXj8z7ho8ioUCVM3XJOwT6g/RGsvJFRJBQDfK3f7yuC+4qNY
-        iSdMag4/eNr6e/2exOP88YhlUA==
-X-Google-Smtp-Source: ABdhPJwo9OUfj5vfhm9oKgftct1A0S8rMDCPBIwMSm1BjNLOM0PUqGq4oY3OLpyzHtR0LgzMz+vsfg==
-X-Received: by 2002:a65:5648:: with SMTP id m8mr53749684pgs.93.1626088219352;
-        Mon, 12 Jul 2021 04:10:19 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([202.155.204.36])
-        by smtp.gmail.com with ESMTPSA id h11sm2008521pjv.57.2021.07.12.04.10.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 04:10:18 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 19:10:14 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] coresight: tmc-etr: Correct memory sync ranges in SG
- mode
-Message-ID: <20210712111014.GC704210@leoy-ThinkPad-X240s>
-References: <20210710070206.462875-1-leo.yan@linaro.org>
- <3038eb59-155c-5c3d-18e3-e45e56b52523@arm.com>
+        Mon, 12 Jul 2021 07:19:42 -0400
+Received: from fraeml743-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GNgt56Nh4z6GFcV;
+        Mon, 12 Jul 2021 19:05:49 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml743-chm.china.huawei.com (10.206.15.224) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 12 Jul 2021 13:16:52 +0200
+Received: from localhost.localdomain (10.69.192.58) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 12 Jul 2021 12:16:48 +0100
+From:   John Garry <john.garry@huawei.com>
+To:     <joro@8bytes.org>, <will@kernel.org>, <dwmw2@infradead.org>,
+        <baolu.lu@linux.intel.com>, <robin.murphy@arm.com>,
+        <corbet@lwn.net>
+CC:     <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
+        <linuxarm@huawei.com>, <thunder.leizhen@huawei.com>,
+        <chenxiang66@hisilicon.com>, <linux-doc@vger.kernel.org>,
+        <dianders@chromium.org>, John Garry <john.garry@huawei.com>
+Subject: [PATCH v15 0/6] iommu: Enhance IOMMU default DMA mode build options
+Date:   Mon, 12 Jul 2021 19:12:14 +0800
+Message-ID: <1626088340-5838-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3038eb59-155c-5c3d-18e3-e45e56b52523@arm.com>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 11:25:54AM +0100, Suzuki Kuruppassery Poulose wrote:
-> Hi Leo,
-> 
-> On 10/07/2021 08:02, Leo Yan wrote:
-> > Current code syncs the buffer range is [offset, offset+len), it doesn't
-> > consider the case when the trace data is wrapped around, in this case
-> > 'offset+len' is bigger than 'etr_buf->size'.  Thus it syncs buffer out
-> > of the memory buffer, and it also misses to sync buffer from the start
-> > of the memory.
-> > 
-> 
-> I doubt this claim is valid. We do the sync properly, taking the page
-> corresponding to the "offset" wrapping it around in "page" index.
-> 
-> Here is the code :
-> 
-> 
-> 
-> void tmc_sg_table_sync_data_range(struct tmc_sg_table *table,
->                                   u64 offset, u64 size)
-> {
->         int i, index, start;
->         int npages = DIV_ROUND_UP(size, PAGE_SIZE);
->         struct device *real_dev = table->dev->parent;
->         struct tmc_pages *data = &table->data_pages;
-> 
->         start = offset >> PAGE_SHIFT;
->         for (i = start; i < (start + npages); i++) {
->                 index = i % data->nr_pages;
->                 dma_sync_single_for_cpu(real_dev, data->daddrs[index],
->                                         PAGE_SIZE, DMA_FROM_DEVICE);
->         }
-> }
-> 
-> 
-> See that the npages accounts for the "size" requested and we wrap the
-> "index" by the total number of pages in the buffer and pick the right
-> page.
-> 
-> So, I think this fix is not needed.
+This is a reboot of Zhen Lei's series from a couple of years ago, which
+never made it across the line.
 
-Ouch, you are right :)  Let's drop these two patches.
+I still think that it has some value, so taking up the mantle.
 
-Thanks,
-Leo
+Motivation:
+Allow lazy mode be default mode for DMA domains for all ARCHs, and not
+only those who hardcode it (to be lazy). For ARM64, currently we must use
+a kernel command line parameter to use lazy mode, which is less than
+ideal.
+
+I have now included the print for strict/lazy mode, which I originally
+sent in:
+https://lore.kernel.org/linux-iommu/72eb3de9-1d1c-ae46-c5a9-95f26525d435@huawei.com/
+
+There was some concern there about drivers and their custom prints
+conflicting with the print in that patch, but I think that it
+should be ok.
+
+Based on v5.14-rc1
+
+Differences to v14:
+- Add RB tags (Thanks!)
+- Rebase
+
+Differences to v13:
+- Improve strict mode deprecation messages and cut out some
+  kernel-parameters.txt legacy description
+- Add tag in 1/6
+- use pr_info_once() for vt-d message about VM and caching
+
+Differences to v12:
+- Add Robin's RB tags (thanks!)
+- Add a patch to mark x86 strict cmdline params as deprecated
+- Improve wording in Kconfig change and tweak iommu_dma_strict declaration
+
+John Garry (3):
+  iommu: Deprecate Intel and AMD cmdline methods to enable strict mode
+  iommu: Print strict or lazy mode at init time
+  iommu: Remove mode argument from iommu_set_dma_strict()
+
+Zhen Lei (3):
+  iommu: Enhance IOMMU default DMA mode build options
+  iommu/vt-d: Add support for IOMMU default DMA mode build options
+  iommu/amd: Add support for IOMMU default DMA mode build options
+
+ .../admin-guide/kernel-parameters.txt         | 12 ++----
+ drivers/iommu/Kconfig                         | 41 +++++++++++++++++++
+ drivers/iommu/amd/amd_iommu_types.h           |  6 ---
+ drivers/iommu/amd/init.c                      |  7 ++--
+ drivers/iommu/amd/iommu.c                     |  6 ---
+ drivers/iommu/intel/iommu.c                   | 16 ++++----
+ drivers/iommu/iommu.c                         | 12 ++++--
+ include/linux/iommu.h                         |  2 +-
+ 8 files changed, 65 insertions(+), 37 deletions(-)
+
+-- 
+2.26.2
+
