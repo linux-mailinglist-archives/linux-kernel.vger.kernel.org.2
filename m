@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D518C3C5953
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB473C5956
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382752AbhGLJCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:02:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55948 "EHLO mail.kernel.org"
+        id S1382838AbhGLJCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:02:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352891AbhGLIAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:00:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A521161A36;
-        Mon, 12 Jul 2021 07:53:52 +0000 (UTC)
+        id S1352941AbhGLIAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:00:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BCCC619AB;
+        Mon, 12 Jul 2021 07:53:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076433;
-        bh=/XH8VHetpeGGKDyF4zoCyzPHBVjcwLilhPt4VCDmUkI=;
+        s=korg; t=1626076435;
+        bh=uDSGNbL8k/NbeguoVn9XbQ/6gbY4OE3sqXBGJc9U9Rw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rRGmWPcppoKfqJqjUCyFxS0V8SegdjEODLMhNz2oIvbiGmYpca0KQx3q3xFgGfRa7
-         mcSlu5G+E3jF6PKkO7lm8h+4jSDESAcTjV4/M3fddLZm2IWXvmubUhiiMp1c2EzA/z
-         JKTkIDkEfBxMxCMllucbrSv/jfBZXYuVn/N4Ucxs=
+        b=oGjgAEuJ8i5pnPO/VVgPgUNSTu85oy54+o8mSt3L1gqxg8vU3SVvQyX8yesTfkcf5
+         1xHvK1hB80rDl3c28B9fXnjissjWCbq6v+JlZNyY9uvR8bAVL9pX0+WzI9Z3hRi+JU
+         ENxlFFXHG/4ycFfFM9Mjgf51uxgqYvtpAdFrLIZ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brian Masney <masneyb@onstation.org>,
-        Dan Murphy <dmurphy@ti.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Badhri Jagan Sridharan <badhri@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 640/800] backlight: lm3630a_bl: Put fwnode in error case during ->probe()
-Date:   Mon, 12 Jul 2021 08:11:03 +0200
-Message-Id: <20210712061035.192005277@linuxfoundation.org>
+Subject: [PATCH 5.13 641/800] usb: typec: tcpm: Fix up PR_SWAP when vsafe0v is signalled
+Date:   Mon, 12 Jul 2021 08:11:04 +0200
+Message-Id: <20210712061035.288489009@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -43,41 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
+From: Badhri Jagan Sridharan <badhri@google.com>
 
-[ Upstream commit 6d1c32dbedd7d7e7372aa38033ec8782c39f6379 ]
+[ Upstream commit d112efbe6dbf7d4c482e2a3f381fa315aabfe63b ]
 
-device_for_each_child_node() bumps a reference counting of a returned variable.
-We have to balance it whenever we return to the caller.
+During PR_SWAP, When TCPM is in PR_SWAP_SNK_SRC_SINK_OFF, vbus is
+expected to reach VSAFE0V when source turns off vbus. Do not move
+to SNK_UNATTACHED state when this happens.
 
-Cc: Brian Masney <masneyb@onstation.org>
-Cc: Dan Murphy <dmurphy@ti.com>
-Fixes: 8fbce8efe15cd ("backlight: lm3630a: Add firmware node support")
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Reviewed-by: Brian Masney <masneyb@onstation.org>
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Fixes: 28b43d3d746b ("usb: typec: tcpm: Introduce vsafe0v for vbus")
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+Link: https://lore.kernel.org/r/20210517192112.40934-1-badhri@google.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/backlight/lm3630a_bl.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/usb/typec/tcpm/tcpm.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/video/backlight/lm3630a_bl.c b/drivers/video/backlight/lm3630a_bl.c
-index e88a2b0e5904..662029d6a3dc 100644
---- a/drivers/video/backlight/lm3630a_bl.c
-+++ b/drivers/video/backlight/lm3630a_bl.c
-@@ -482,8 +482,10 @@ static int lm3630a_parse_node(struct lm3630a_chip *pchip,
- 
- 	device_for_each_child_node(pchip->dev, node) {
- 		ret = lm3630a_parse_bank(pdata, node, &seen_led_sources);
--		if (ret)
-+		if (ret) {
-+			fwnode_handle_put(node);
- 			return ret;
-+		}
- 	}
- 
- 	return ret;
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index c67533191091..1b7f18d35df4 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -5225,6 +5225,9 @@ static void _tcpm_pd_vbus_vsafe0v(struct tcpm_port *port)
+ 				tcpm_set_state(port, SNK_UNATTACHED, 0);
+ 		}
+ 		break;
++	case PR_SWAP_SNK_SRC_SINK_OFF:
++		/* Do nothing, vsafe0v is expected during transition */
++		break;
+ 	default:
+ 		if (port->pwr_role == TYPEC_SINK && port->auto_vbus_discharge_enabled)
+ 			tcpm_set_state(port, SNK_UNATTACHED, 0);
 -- 
 2.30.2
 
