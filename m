@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3C623C5490
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 886353C4EA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352970AbhGLIAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:00:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33590 "EHLO mail.kernel.org"
+        id S1344323AbhGLHU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:20:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241456AbhGLHWh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:22:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2875261167;
-        Mon, 12 Jul 2021 07:19:48 +0000 (UTC)
+        id S239318AbhGLGtk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:49:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28E5460FD8;
+        Mon, 12 Jul 2021 06:46:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074389;
-        bh=sPibL6mmZB96dURXwzcDpgE9/GwXMbOuMLhYsqDbWvU=;
+        s=korg; t=1626072411;
+        bh=Xy/OpXRxL8o1UuMoLqHsX5InLEBzzRccFAQ8JSrOGto=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l3iaD0uMf/peE1ctimBiEhyiQYnNEuFwFokv8mMK5ExRcXSiWgHjs9wZ9FmFBYOSR
-         043kCtsaqPPKdYQYk6aVZvLO0ZyXHCEx0gn0U+rRLG3hrXSTovn2fpXEh6dn+oypmP
-         +WiyuwAEqBvdlHBc+COhcOrpq2ChDvBZ6WwZu0PA=
+        b=T3PprdzPhDrHg7xQ4YjhVe453rdRZEufwmfUR+YGQkO4+Vu7avyZCMeFOGRwgVA3g
+         tXP3TLs9g4nvHs5WwNaPqHMbX//5b8OyE9I0S6rHV8/5AWnucRm+bhg534M+14p+I6
+         hO/QdWTqdsiAluwi4IqljZYE1arpNUXZylXVM1WQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Lee Jones <lee.jones@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 563/700] mtd: rawnand: arasan: Ensure proper configuration for the asserted target
-Date:   Mon, 12 Jul 2021 08:10:46 +0200
-Message-Id: <20210712061036.105983370@linuxfoundation.org>
+Subject: [PATCH 5.10 487/593] mfd: mp2629: Select MFD_CORE to fix build error
+Date:   Mon, 12 Jul 2021 08:10:47 +0200
+Message-Id: <20210712060944.693397503@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,157 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit b5437c7b682c9a505065b4ab4716cdc951dc3c7c ]
+[ Upstream commit a933272041d852a1ef1c85f0c18b93e9999a41fa ]
 
-The controller being always asserting one CS or the other, there is no
-need to actually select the right target before doing a page read/write.
-However, the anfc_select_target() helper actually also changes the
-timing configuration and clock in the case were two different NAND chips
-with different timing requirements would be used. In this situation, we
-must ensure proper configuration of the controller by calling it.
+MFD_MP2629 should select MFD_CORE to a prevent build error:
 
-As a consequence of this change, the anfc_select_target() helper is
-being moved earlier in the driver.
+ERROR: modpost: "devm_mfd_add_devices" [drivers/mfd/mp2629.ko] undefined!
 
-Fixes: 88ffef1b65cf ("mtd: rawnand: arasan: Support the hardware BCH ECC engine")
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20210526093242.183847-4-miquel.raynal@bootlin.com
+Fixes: 06081646450e ("mfd: mp2629: Add support for mps battery charger")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/nand/raw/arasan-nand-controller.c | 90 ++++++++++++-------
- 1 file changed, 57 insertions(+), 33 deletions(-)
+ drivers/mfd/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/nand/raw/arasan-nand-controller.c b/drivers/mtd/nand/raw/arasan-nand-controller.c
-index 549aac00228e..390f8d719c25 100644
---- a/drivers/mtd/nand/raw/arasan-nand-controller.c
-+++ b/drivers/mtd/nand/raw/arasan-nand-controller.c
-@@ -273,6 +273,37 @@ static int anfc_pkt_len_config(unsigned int len, unsigned int *steps,
- 	return 0;
- }
- 
-+static int anfc_select_target(struct nand_chip *chip, int target)
-+{
-+	struct anand *anand = to_anand(chip);
-+	struct arasan_nfc *nfc = to_anfc(chip->controller);
-+	int ret;
-+
-+	/* Update the controller timings and the potential ECC configuration */
-+	writel_relaxed(anand->timings, nfc->base + DATA_INTERFACE_REG);
-+
-+	/* Update clock frequency */
-+	if (nfc->cur_clk != anand->clk) {
-+		clk_disable_unprepare(nfc->controller_clk);
-+		ret = clk_set_rate(nfc->controller_clk, anand->clk);
-+		if (ret) {
-+			dev_err(nfc->dev, "Failed to change clock rate\n");
-+			return ret;
-+		}
-+
-+		ret = clk_prepare_enable(nfc->controller_clk);
-+		if (ret) {
-+			dev_err(nfc->dev,
-+				"Failed to re-enable the controller clock\n");
-+			return ret;
-+		}
-+
-+		nfc->cur_clk = anand->clk;
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * When using the embedded hardware ECC engine, the controller is in charge of
-  * feeding the engine with, first, the ECC residue present in the data array.
-@@ -401,6 +432,18 @@ static int anfc_read_page_hw_ecc(struct nand_chip *chip, u8 *buf,
- 	return 0;
- }
- 
-+static int anfc_sel_read_page_hw_ecc(struct nand_chip *chip, u8 *buf,
-+				     int oob_required, int page)
-+{
-+	int ret;
-+
-+	ret = anfc_select_target(chip, chip->cur_cs);
-+	if (ret)
-+		return ret;
-+
-+	return anfc_read_page_hw_ecc(chip, buf, oob_required, page);
-+};
-+
- static int anfc_write_page_hw_ecc(struct nand_chip *chip, const u8 *buf,
- 				  int oob_required, int page)
- {
-@@ -461,6 +504,18 @@ static int anfc_write_page_hw_ecc(struct nand_chip *chip, const u8 *buf,
- 	return ret;
- }
- 
-+static int anfc_sel_write_page_hw_ecc(struct nand_chip *chip, const u8 *buf,
-+				      int oob_required, int page)
-+{
-+	int ret;
-+
-+	ret = anfc_select_target(chip, chip->cur_cs);
-+	if (ret)
-+		return ret;
-+
-+	return anfc_write_page_hw_ecc(chip, buf, oob_required, page);
-+};
-+
- /* NAND framework ->exec_op() hooks and related helpers */
- static int anfc_parse_instructions(struct nand_chip *chip,
- 				   const struct nand_subop *subop,
-@@ -753,37 +808,6 @@ static const struct nand_op_parser anfc_op_parser = NAND_OP_PARSER(
- 		NAND_OP_PARSER_PAT_WAITRDY_ELEM(false)),
- 	);
- 
--static int anfc_select_target(struct nand_chip *chip, int target)
--{
--	struct anand *anand = to_anand(chip);
--	struct arasan_nfc *nfc = to_anfc(chip->controller);
--	int ret;
--
--	/* Update the controller timings and the potential ECC configuration */
--	writel_relaxed(anand->timings, nfc->base + DATA_INTERFACE_REG);
--
--	/* Update clock frequency */
--	if (nfc->cur_clk != anand->clk) {
--		clk_disable_unprepare(nfc->controller_clk);
--		ret = clk_set_rate(nfc->controller_clk, anand->clk);
--		if (ret) {
--			dev_err(nfc->dev, "Failed to change clock rate\n");
--			return ret;
--		}
--
--		ret = clk_prepare_enable(nfc->controller_clk);
--		if (ret) {
--			dev_err(nfc->dev,
--				"Failed to re-enable the controller clock\n");
--			return ret;
--		}
--
--		nfc->cur_clk = anand->clk;
--	}
--
--	return 0;
--}
--
- static int anfc_check_op(struct nand_chip *chip,
- 			 const struct nand_operation *op)
- {
-@@ -1007,8 +1031,8 @@ static int anfc_init_hw_ecc_controller(struct arasan_nfc *nfc,
- 	if (!anand->bch)
- 		return -EINVAL;
- 
--	ecc->read_page = anfc_read_page_hw_ecc;
--	ecc->write_page = anfc_write_page_hw_ecc;
-+	ecc->read_page = anfc_sel_read_page_hw_ecc;
-+	ecc->write_page = anfc_sel_write_page_hw_ecc;
- 
- 	return 0;
- }
+diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+index 4789507f325b..b8847ae04d93 100644
+--- a/drivers/mfd/Kconfig
++++ b/drivers/mfd/Kconfig
+@@ -465,6 +465,7 @@ config MFD_MP2629
+ 	tristate "Monolithic Power Systems MP2629 ADC and Battery charger"
+ 	depends on I2C
+ 	select REGMAP_I2C
++	select MFD_CORE
+ 	help
+ 	  Select this option to enable support for Monolithic Power Systems
+ 	  battery charger. This provides ADC, thermal and battery charger power
 -- 
 2.30.2
 
