@@ -2,96 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FD503C6181
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:06:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07C9F3C6185
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234953AbhGLRI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 13:08:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234728AbhGLRIz (ORCPT
+        id S234990AbhGLRJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 13:09:40 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:62342 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234561AbhGLRJj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 13:08:55 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBEDBC0613DD;
-        Mon, 12 Jul 2021 10:06:05 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id x16so16964340pfa.13;
-        Mon, 12 Jul 2021 10:06:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=x9V9SPELmsLpmwvtG8zXzGzO1op9evPXLNAl9MK5WD0=;
-        b=U+V1Tt74Zb29UZ5gZh8F1PCt03cpDSuokdYWV/yWI9PTvS7qwQLlRj0wUHzzjnSHkd
-         I+PWGz3DKSJEU/7EdMgQ8wCmSZbsPsr7NHl5zmRyLCpcm2u3diB5Iio3OmfUHPt+avyc
-         v8K0wkP59QPnqZ1CQp2MxGwiIBnrllvzx39MmIWUTHClN0KXMVW2Ru12KtO5Zm2Ur0yB
-         qPJ74/7xSQqvwsqDAxyd5qn0DvoUnNoD+vCNOwrS0OyXbizN8UxcHIrxbL5o5meB9qSo
-         jZXeG+STK6TNn3cpwhTuhWqgtQseKBoPn6CQ/oQF09oVL90SoYRAFX2Q1AQAs5nNsY/w
-         sC8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=x9V9SPELmsLpmwvtG8zXzGzO1op9evPXLNAl9MK5WD0=;
-        b=aVwL4pAyCG9N6+6bGMpsdZuGFd0ST1mjnrg9Haf3X8Zd6v8B28Fpk3yWGzgDuq+sto
-         71VaxCZtJ0hZXsx7gBH4BF7GH25Z6zdgnjRxd/45v66dCju7sDtoGTYPX58c8tSysnJP
-         1tLju1HYxtC3P+THuOgOIca2yhlnR90sh+G394TtB5J0vRpgsWUUFOsvILqga4uaNUoN
-         BRnz3HvKdTZFQ3trqsdYlV30IityC80fRhiCUHUQYCQv0/EDZwh9ldO9G48j+TXwiZkj
-         OYhLhfPnZOluq980YbIJp46oBBJw88kOos2tJoQI8oFATsQ1KmoTD1Hp2Ld/n89/fcY2
-         alrQ==
-X-Gm-Message-State: AOAM533kUx1ypLCObUHNh5T4LuVWL0CGMOjcDu6JUBoaBIifgztYnkJG
-        doKIA+/tB3r0e2as5E+gqQopmVn4L+EowA==
-X-Google-Smtp-Source: ABdhPJyAaijT/dH1cyStY8IhG1E1drKWZTh6M9w/JEYQ7GlEshjSK4F/mlBDuMP+tL4MNzYU+CGk7A==
-X-Received: by 2002:a65:5b0f:: with SMTP id y15mr100351pgq.263.1626109565071;
-        Mon, 12 Jul 2021 10:06:05 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id a5sm17036414pff.143.2021.07.12.10.06.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Jul 2021 10:06:04 -0700 (PDT)
-Subject: Re: [PATCH 5.10 000/593] 5.10.50-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210712060843.180606720@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <7e0ea175-75bf-4ec2-23c7-2a038344c380@gmail.com>
-Date:   Mon, 12 Jul 2021 10:05:57 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 12 Jul 2021 13:09:39 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.1.0)
+ id 1126075ed0e12430; Mon, 12 Jul 2021 19:06:48 +0200
+Received: from kreacher.localnet (89-64-82-45.dynamic.chello.pl [89.64.82.45])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 9E3C7669C07;
+        Mon, 12 Jul 2021 19:06:47 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PCI <linux-pci@vger.kernel.org>
+Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Utkarsh H Patel <utkarsh.h.patel@intel.com>,
+        Koba Ko <koba.ko@canonical.com>
+Subject: [RFT][PATCH] PCI: PM: Add special case handling for PCIe device wakeup
+Date:   Mon, 12 Jul 2021 19:06:47 +0200
+Message-ID: <5475468.DvuYhMxLoT@kreacher>
 MIME-Version: 1.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 89.64.82.45
+X-CLIENT-HOSTNAME: 89-64-82-45.dynamic.chello.pl
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddruddvgddutdeiucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvvefgteeuteehkeduuedvudetleevffdtffdtjeejueekffetieekgfeigfehudenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeekledrieegrdekvddrgeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedvrdeghedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdhptghisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghp
+ thhtohepmhhikhgrrdifvghsthgvrhgsvghrgheslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehhvghlghgrrghssehkvghrnhgvlhdrohhrghdprhgtphhtthhopehkrghirdhhvghnghdrfhgvnhhgsegtrghnohhnihgtrghlrdgtohhmpdhrtghpthhtohepuhhtkhgrrhhshhdrhhdrphgrthgvlhesihhnthgvlhdrtghomhdprhgtphhtthhopehkohgsrgdrkhhosegtrghnohhnihgtrghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=9 Fuz1=9 Fuz2=9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/11/21 11:02 PM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.50 release.
-> There are 593 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 14 Jul 2021 06:02:46 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.50-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+Some PCIe devices only support PME (Power Management Event) from
+D3cold.  One example is the ASMedia xHCI controller:
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+ 11:00.0 USB controller: ASMedia Technology Inc. ASM1042A USB 3.0 Host Controller (prog-if 30 [XHCI])
+   ...
+   Capabilities: [78] Power Management version 3
+           Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA PME(D0-,D1-,D2-,D3hot-,D3cold+)
+           Status: D0 NoSoftRst+ PME-Enable- DSel=0 DScale=0 PME-
+
+In those cases, if the device is expected to generate wakeup events
+from its final power state, pci_target_state() returns D0, which
+prevents the PCIe port the device is connected to from entering any
+low-power states too.  However, if the device were allowed to go into
+D3hot, its parent PCIe port would also be able to go into D3 and if
+it goes into D3cold, it would cause the endpoint device to end up in
+D3cold too (as per the PCI PM spec v1.2, Table 6-1), in which case
+the endpoint would be able to signal PME.  This means that the system
+could be put into a lower-power configuration without sacrificing the
+the given device's ability to generate PME.
+
+In order to avoid missing that opportunity, extend pci_pme_capable()
+to check the device's parent in the special case when the target
+state is D3hot and the device can only signal PME from D3cold and
+update pci_target_state() to return the current target state if
+pci_pme_capable() returns 'true' for it.
+
+Link: https://lore.kernel.org/linux-pm/20210617123653.58640-1-mika.westerberg@linux.intel.com
+Reported-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Reported-by: Utkarsh H Patel <utkarsh.h.patel@intel.com>
+Reported-by: Koba Ko <koba.ko@canonical.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+
+Hi,
+
+Anyone who can reproduce the problem described in the changelog,
+please test the patch and let me know the result.
+
+Thanks!
+
+---
+ drivers/pci/pci.c |   38 ++++++++++++++++++++++++++------------
+ 1 file changed, 26 insertions(+), 12 deletions(-)
+
+Index: linux-pm/drivers/pci/pci.c
+===================================================================
+--- linux-pm.orig/drivers/pci/pci.c
++++ linux-pm/drivers/pci/pci.c
+@@ -2298,10 +2298,29 @@ void pci_pme_wakeup_bus(struct pci_bus *
+  */
+ bool pci_pme_capable(struct pci_dev *dev, pci_power_t state)
+ {
++	struct pci_dev *parent;
++
+ 	if (!dev->pm_cap)
+ 		return false;
+ 
+-	return !!(dev->pme_support & (1 << state));
++	if (dev->pme_support & (1 << state))
++		return true;
++
++	/*
++	 * Special case: The target state is D3hot and the device only supports
++	 * signaling PME from D3cold, but it is a PCIe device whose parent port
++	 * can go into D3cold.  In that case, if the device is allowed to go
++	 * into D3hot, the parent port can go into D3cold which will cause the
++	 * device to end up in D3cold, so it will be able to signal PME from the
++	 * final state.
++	 */
++	if (state != PCI_D3hot || !(dev->pme_support & (1 << PCI_D3cold)))
++		return false;
++
++	parent = dev->bus->self;
++	return pci_bridge_d3_possible(parent) &&
++		platform_pci_power_manageable(parent) &&
++		platform_pci_choose_state(parent) == PCI_D3cold;
+ }
+ EXPORT_SYMBOL(pci_pme_capable);
+ 
+@@ -2595,17 +2614,12 @@ static pci_power_t pci_target_state(stru
+ 	if (dev->current_state == PCI_D3cold)
+ 		target_state = PCI_D3cold;
+ 
+-	if (wakeup) {
+-		/*
+-		 * Find the deepest state from which the device can generate
+-		 * PME#.
+-		 */
+-		if (dev->pme_support) {
+-			while (target_state
+-			      && !(dev->pme_support & (1 << target_state)))
+-				target_state--;
+-		}
+-	}
++	if (!wakeup || !dev->pme_support || pci_pme_capable(dev, target_state))
++		return target_state;
++
++	/* Find the deepest state from which the device can generate PME#. */
++	while (target_state && !(dev->pme_support & (1 << target_state)))
++		target_state--;
+ 
+ 	return target_state;
+ }
+
+
+
