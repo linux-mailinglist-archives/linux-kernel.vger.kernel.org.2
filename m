@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FA2E3C4965
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C14AF3C4FEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238995AbhGLGoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:44:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55100 "EHLO mail.kernel.org"
+        id S1344126AbhGLH3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:29:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231904AbhGLGdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:33:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7AB261132;
-        Mon, 12 Jul 2021 06:30:05 +0000 (UTC)
+        id S242584AbhGLHBY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:01:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 27ADC61156;
+        Mon, 12 Jul 2021 06:58:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071406;
-        bh=z5VRbbWNybw2ttXzklqy2Sxj+2945EHm6KYK4IhX+Fw=;
+        s=korg; t=1626073116;
+        bh=ju547HHSoJneoZh4O62JWafGwz9NI9kYJ8MtTLOeHjg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Hzj40Oni0MOsogwddqfinCxBrsqZLkv/GWivPG2SGBaojUgyvJCi/yHfAhK1QGGDi
-         ra/mE/JRdow+A+IeOvOUQFjQH5IGpBhe26SGDljrAYUTDxKPrNEf328Dy0HFC/fKSH
-         uESDcPgNdremRx6ddxG4NHO8pQjSpf9whOqOLeZ0=
+        b=cKvXYutIdX/jAofo0B1TeDKad65KKf9aPQkPo7/xqDjAPgTIEZNCR/VaZhjirZMDJ
+         Gw1ESRNRMFsBIWUV4cGNy8flV2gJw+fARSFycOx6XNgK9tSMbbm/uvdjOyPDxVRz4f
+         qaXquFUVToJqxAai0mlp3Nux73f/SlFge3wItfHQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 5.10 055/593] mac80211: remove iwlwifi specific workaround that broke sta NDP tx
-Date:   Mon, 12 Jul 2021 08:03:35 +0200
-Message-Id: <20210712060849.158307734@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 133/700] media: exynos-gsc: fix pm_runtime_get_sync() usage count
+Date:   Mon, 12 Jul 2021 08:03:36 +0200
+Message-Id: <20210712060944.172556598@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,62 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felix Fietkau <nbd@nbd.name>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-commit e41eb3e408de27982a5f8f50b2dd8002bed96908 upstream.
+[ Upstream commit 59087b66ea6730c130c57d23bd9fd139b78c1ba5 ]
 
-Sending nulldata packets is important for sw AP link probing and detecting
-4-address mode links. The checks that dropped these packets were apparently
-added to work around an iwlwifi firmware bug with multi-TID aggregation.
+The pm_runtime_get_sync() internally increments the
+dev->power.usage_count without decrementing it, even on errors.
+Replace it by the new pm_runtime_resume_and_get(), introduced by:
+commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+in order to properly decrement the usage counter, avoiding
+a potential PM usage counter leak.
 
-Fixes: 41cbb0f5a295 ("mac80211: add support for HE")
-Cc: stable@vger.kernel.org
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Link: https://lore.kernel.org/r/20210619101517.90806-1-nbd@nbd.name
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+As a bonus, as pm_runtime_get_sync() always return 0 on
+success, the logic can be simplified.
 
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/mvm/tx.c |    3 +++
- net/mac80211/mlme.c                         |    9 ---------
- 2 files changed, 3 insertions(+), 9 deletions(-)
+ drivers/media/platform/exynos-gsc/gsc-m2m.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/drivers/net/wireless/intel/iwlwifi/mvm/tx.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/tx.c
-@@ -1085,6 +1085,9 @@ static int iwl_mvm_tx_mpdu(struct iwl_mv
- 	if (WARN_ON_ONCE(mvmsta->sta_id == IWL_MVM_INVALID_STA))
- 		return -1;
+diff --git a/drivers/media/platform/exynos-gsc/gsc-m2m.c b/drivers/media/platform/exynos-gsc/gsc-m2m.c
+index 27a3c92c73bc..f1cf847d1cc2 100644
+--- a/drivers/media/platform/exynos-gsc/gsc-m2m.c
++++ b/drivers/media/platform/exynos-gsc/gsc-m2m.c
+@@ -56,10 +56,8 @@ static void __gsc_m2m_job_abort(struct gsc_ctx *ctx)
+ static int gsc_m2m_start_streaming(struct vb2_queue *q, unsigned int count)
+ {
+ 	struct gsc_ctx *ctx = q->drv_priv;
+-	int ret;
  
-+	if (unlikely(ieee80211_is_any_nullfunc(fc)) && sta->he_cap.has_he)
-+		return -1;
-+
- 	if (unlikely(ieee80211_is_probe_resp(fc)))
- 		iwl_mvm_probe_resp_set_noa(mvm, skb);
+-	ret = pm_runtime_get_sync(&ctx->gsc_dev->pdev->dev);
+-	return ret > 0 ? 0 : ret;
++	return pm_runtime_resume_and_get(&ctx->gsc_dev->pdev->dev);
+ }
  
---- a/net/mac80211/mlme.c
-+++ b/net/mac80211/mlme.c
-@@ -1094,11 +1094,6 @@ void ieee80211_send_nullfunc(struct ieee
- 	struct ieee80211_hdr_3addr *nullfunc;
- 	struct ieee80211_if_managed *ifmgd = &sdata->u.mgd;
- 
--	/* Don't send NDPs when STA is connected HE */
--	if (sdata->vif.type == NL80211_IFTYPE_STATION &&
--	    !(ifmgd->flags & IEEE80211_STA_DISABLE_HE))
--		return;
--
- 	skb = ieee80211_nullfunc_get(&local->hw, &sdata->vif,
- 		!ieee80211_hw_check(&local->hw, DOESNT_SUPPORT_QOS_NDP));
- 	if (!skb)
-@@ -1130,10 +1125,6 @@ static void ieee80211_send_4addr_nullfun
- 	if (WARN_ON(sdata->vif.type != NL80211_IFTYPE_STATION))
- 		return;
- 
--	/* Don't send NDPs when connected HE */
--	if (!(sdata->u.mgd.flags & IEEE80211_STA_DISABLE_HE))
--		return;
--
- 	skb = dev_alloc_skb(local->hw.extra_tx_headroom + 30);
- 	if (!skb)
- 		return;
+ static void __gsc_m2m_cleanup_queue(struct gsc_ctx *ctx)
+-- 
+2.30.2
+
 
 
