@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DB8E3C5086
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:46:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E593C4957
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245364AbhGLHd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:33:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40594 "EHLO mail.kernel.org"
+        id S238432AbhGLGoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:44:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243904AbhGLHGC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:06:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 13EB3611C2;
-        Mon, 12 Jul 2021 07:02:39 +0000 (UTC)
+        id S237806AbhGLGex (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:34:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2B58610E6;
+        Mon, 12 Jul 2021 06:31:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073360;
-        bh=ehz4wRZJTq5WtUVqNeuBwjXjAL4ZYS58kSqK78k9AMM=;
+        s=korg; t=1626071501;
+        bh=cDTbJhtT1KZywLOqfgUcrky/28iSPtnpqMoS9+aEOuk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=icO9+uMK82e2oFJi9rtjmAJO1WfLxH5km4unKyQsQRRlnx9YH/EnP7iiCKSWlgCXT
-         BZTSHLjwLU0do6PFgfgTXUC5s+jdEarPmkfqeChJ8/Tqe3XV04hhN+9jOrhQVhQTco
-         WSgTCgc141mETfxAVnOIRX0c+XgKKMqWSxzWF2Xw=
+        b=HuVxzixkzJQgUAoM5EebQhrv9A4MPCdXXBrhk/+gD9dnxlemN/E26VIL+qu0bXQF9
+         fKgx4gQHgaxKuv9tG7Bt6Is3Fr0/7dMvIqSqxkT8qjf9/jnHGnaHpBpg75TKxfnHqd
+         BpizP6nIlgiq2nwv4/VIe+1W0Ij+qeitqVUlxoPE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 173/700] media: dvb_net: avoid speculation from net slot
+        Thomas Lindroth <thomas.lindroth@gmail.com>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Subject: [PATCH 5.10 096/593] fuse: ignore PG_workingset after stealing
 Date:   Mon, 12 Jul 2021 08:04:16 +0200
-Message-Id: <20210712060950.762712580@linuxfoundation.org>
+Message-Id: <20210712060853.774648843@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,89 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: Miklos Szeredi <mszeredi@redhat.com>
 
-[ Upstream commit abc0226df64dc137b48b911c1fe4319aec5891bb ]
+commit b89ecd60d38ec042d63bdb376c722a16f92bcb88 upstream.
 
-The risk of especulation is actually almost-non-existing here,
-as there are very few users of TCP/IP using the DVB stack,
-as, this is mainly used with DVB-S/S2 cards, and only by people
-that receives TCP/IP from satellite connections, which limits
-a lot the number of users of such feature(*).
+Fix the "fuse: trying to steal weird page" warning.
 
-(*) In thesis, DVB-C cards could also benefit from it, but I'm
-yet to see a hardware that supports it.
+Description from Johannes Weiner:
 
-Yet, fixing it is trivial.
+  "Think of it as similar to PG_active. It's just another usage/heat
+   indicator of file and anon pages on the reclaim LRU that, unlike
+   PG_active, persists across deactivation and even reclaim (we store it in
+   the page cache / swapper cache tree until the page refaults).
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+   So if fuse accepts pages that can legally have PG_active set,
+   PG_workingset is fine too."
+
+Reported-by: Thomas Lindroth <thomas.lindroth@gmail.com>
+Fixes: 1899ad18c607 ("mm: workingset: tell cache transitions from workingset thrashing")
+Cc: <stable@vger.kernel.org> # v4.20
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/media/dvb-core/dvb_net.c | 25 +++++++++++++++++++------
- 1 file changed, 19 insertions(+), 6 deletions(-)
+ fs/fuse/dev.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/media/dvb-core/dvb_net.c b/drivers/media/dvb-core/dvb_net.c
-index 89620da983ba..dddebea644bb 100644
---- a/drivers/media/dvb-core/dvb_net.c
-+++ b/drivers/media/dvb-core/dvb_net.c
-@@ -45,6 +45,7 @@
- #include <linux/module.h>
- #include <linux/kernel.h>
- #include <linux/netdevice.h>
-+#include <linux/nospec.h>
- #include <linux/etherdevice.h>
- #include <linux/dvb/net.h>
- #include <linux/uio.h>
-@@ -1462,14 +1463,20 @@ static int dvb_net_do_ioctl(struct file *file,
- 		struct net_device *netdev;
- 		struct dvb_net_priv *priv_data;
- 		struct dvb_net_if *dvbnetif = parg;
-+		int if_num = dvbnetif->if_num;
- 
--		if (dvbnetif->if_num >= DVB_NET_DEVICES_MAX ||
--		    !dvbnet->state[dvbnetif->if_num]) {
-+		if (if_num >= DVB_NET_DEVICES_MAX) {
- 			ret = -EINVAL;
- 			goto ioctl_error;
- 		}
-+		if_num = array_index_nospec(if_num, DVB_NET_DEVICES_MAX);
- 
--		netdev = dvbnet->device[dvbnetif->if_num];
-+		if (!dvbnet->state[if_num]) {
-+			ret = -EINVAL;
-+			goto ioctl_error;
-+		}
-+
-+		netdev = dvbnet->device[if_num];
- 
- 		priv_data = netdev_priv(netdev);
- 		dvbnetif->pid=priv_data->pid;
-@@ -1522,14 +1529,20 @@ static int dvb_net_do_ioctl(struct file *file,
- 		struct net_device *netdev;
- 		struct dvb_net_priv *priv_data;
- 		struct __dvb_net_if_old *dvbnetif = parg;
-+		int if_num = dvbnetif->if_num;
-+
-+		if (if_num >= DVB_NET_DEVICES_MAX) {
-+			ret = -EINVAL;
-+			goto ioctl_error;
-+		}
-+		if_num = array_index_nospec(if_num, DVB_NET_DEVICES_MAX);
- 
--		if (dvbnetif->if_num >= DVB_NET_DEVICES_MAX ||
--		    !dvbnet->state[dvbnetif->if_num]) {
-+		if (!dvbnet->state[if_num]) {
- 			ret = -EINVAL;
- 			goto ioctl_error;
- 		}
- 
--		netdev = dvbnet->device[dvbnetif->if_num];
-+		netdev = dvbnet->device[if_num];
- 
- 		priv_data = netdev_priv(netdev);
- 		dvbnetif->pid=priv_data->pid;
--- 
-2.30.2
-
+--- a/fs/fuse/dev.c
++++ b/fs/fuse/dev.c
+@@ -783,6 +783,7 @@ static int fuse_check_page(struct page *
+ 	       1 << PG_uptodate |
+ 	       1 << PG_lru |
+ 	       1 << PG_active |
++	       1 << PG_workingset |
+ 	       1 << PG_reclaim |
+ 	       1 << PG_waiters))) {
+ 		dump_page(page, "fuse: trying to steal weird page");
 
 
