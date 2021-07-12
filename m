@@ -2,175 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ACB43C4172
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 05:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EB113C4169
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 05:10:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232912AbhGLDN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 23:13:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232850AbhGLDN4 (ORCPT
+        id S229907AbhGLDMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 23:12:49 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:6912 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232783AbhGLDMr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 23:13:56 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE9ADC0613DD
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 20:11:08 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id w15-20020a056830144fb02904af2a0d96f3so17400207otp.6
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 20:11:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version;
-        bh=rW1zjeWytPoYSJ40qDYC+bDE3SJVtauEVGMHk7JHx7Q=;
-        b=GH0fIXaJ7JlQrOMD+qRd9KSrlldoEV5wJtHO4+/GN8S3BuOhe7U3Oc2f3bHz2zosHM
-         AVdKqfHClq46SSHc3Z1Z5idqU9esgfztT2zaStLGasb6mEv+6L/Goj9r82q0Pw6HK7kd
-         Se4iKBuKW2o1q2SykjSbEmd5fAEFq8ck2SQEKtCvDPnvE3XbptnStu+RiiCm7/XRIRPx
-         D53CwCcGodj+HuYcgdyg53Ybe0nfKtd6M0nVBLdhVl/ZSSMp73RzdDrXR+lsG4QbgTui
-         joRLDloxQFjri0XsXgc6YXM1kmdSjdyVXmvytyiUhV0WWUZ9GbB3G9nB5B01RW1zZlW0
-         BMog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version;
-        bh=rW1zjeWytPoYSJ40qDYC+bDE3SJVtauEVGMHk7JHx7Q=;
-        b=RQ7TT56DHkI0fY1JibyOhykJp0twzzxQpsPLfVVBKh+PQjb+LY3fMdUS26Tpak29ZA
-         caIHBmaQvv3lPXuX34OEzBRLEPBKqmjHNlU6S54rcnWpROtfdnGLqMwnCAowmZ13M6ZT
-         J//RdIaFYgJVXrLMzWOdvTBVahefN+sTEgsB8qX4RwFtTCFGlpNYiqUf/jRHQC6E5ExQ
-         O70Qx0GiL27KuQZMlwFYAP8wolxzJG21gzjXhhlDXBkikqtfLvLr+PN2TeXEoHQmVovf
-         DmqrlHiFl4UEWgZtHeAeHzXf9Sc5GQwzLN5hAU9KIEWwD6W85gXNnNWnCDq8eR+z/uqv
-         EI4A==
-X-Gm-Message-State: AOAM532G7mko5vnJqGv2rVsvMXxo/d4vljLzE+uREfbRp9p087Yvn+ha
-        G9klyhJwQit+5deWL7wCh6+PKQ==
-X-Google-Smtp-Source: ABdhPJy3F/F7jKHrUzEaWcTrPNBN3wOK2PB4rBXEhvJ/i83LVYBAtnoCSY3M+BB9TTAeYMQJjnDhXQ==
-X-Received: by 2002:a05:6830:2316:: with SMTP id u22mr35286026ote.90.1626059467933;
-        Sun, 11 Jul 2021 20:11:07 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id y26sm785217oot.7.2021.07.11.20.11.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Jul 2021 20:11:07 -0700 (PDT)
-Date:   Sun, 11 Jul 2021 20:10:49 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.anvils
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>, Yang Shi <shy828301@gmail.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Hugh Dickins <hughd@google.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH 5.14-rc1] mm/rmap: fix munlocking Anon THP with mlocked
- ptes
-Message-ID: <5a98cd9-6965-6379-37a-33448ba62a31@google.com>
+        Sun, 11 Jul 2021 23:12:47 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GNTDy4wVNz72FR;
+        Mon, 12 Jul 2021 11:06:26 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 12 Jul 2021 11:09:58 +0800
+Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
+ (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 12
+ Jul 2021 11:09:57 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <axboe@kernel.dk>, <ming.lei@redhat.com>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yukuai3@huawei.com>, <yi.zhang@huawei.com>
+Subject: [PATCH] blk-mq: allow hardware queue to get more tag while sharing a tag set
+Date:   Mon, 12 Jul 2021 11:18:18 +0800
+Message-ID: <20210712031818.31918-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Many thanks to Kirill for reminding that PageDoubleMap cannot be relied on
-to warn of pte mappings in the Anon THP case; and a scan of subpages does
-not seem appropriate here.  Note how follow_trans_huge_pmd() does not even
-mark an Anon THP as mlocked when compound_mapcount != 1: multiple mlocking
-of Anon THP is avoided, so simply return from page_mlock() in this case.
+If there are multiple active queues while sharing a tag set, it's not
+necessary to limit the available tags as same share for each active queue
+if no one ever failed to get driver tag. And fall back to same share if
+someone do failed to get driver tag.
 
-Link: https://lore.kernel.org/lkml/cfa154c-d595-406-eb7d-eb9df730f944@google.com/
-Fixes: d9770fcc1c0c ("mm/rmap: fix old bug: munlocking THP missed other mlocks")
-Reported-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Signed-off-by: Hugh Dickins <hughd@google.com>
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Alistair Popple <apopple@nvidia.com>
-Cc: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Ralph Campbell <rcampbell@nvidia.com>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Yang Shi <shy828301@gmail.com>
-Cc: Shakeel Butt <shakeelb@google.com>
+This modification will be beneficial if total queue_depth of disks
+on the same host is less than total tags.
+
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
-Linus, thanks a lot for last-minute hoovering up those four mm/rmap
-patches, with 3/4 fixing the syzbot and 0day reports on munlocking ...
+ block/blk-mq-debugfs.c |  2 ++
+ block/blk-mq-tag.c     | 43 +++++++++++++++++++++++++++++++++++++++++-
+ block/blk-mq-tag.h     | 27 ++++++++++++++++++++++++--
+ block/blk-mq.c         | 13 ++++++++++---
+ block/blk-mq.h         |  8 ++++++++
+ include/linux/blk-mq.h |  4 ++++
+ include/linux/blkdev.h |  1 +
+ 7 files changed, 92 insertions(+), 6 deletions(-)
 
-BUT
-
-... the version of 2/4 in 5.14-rc1 is defective (PageDoubleMap is a
-confusing flag which behaves differently on anon and file), Kirill had
-spotted that, and what he Acked was the v2 which went into mmotm, rather
-than the first version I posted.  This patch here converts the v1 in rc1
-into the v2 Acked by Kirill.
-
-What will go wrong with v1 in?  I don't actually know: nothing terrible,
-can only affect people splitting and mlocking anon THPs, maybe nobody and
-nobot will notice, maybe some VM_BUG_ONs or "Bad page"s will turn up.
-I'll be on the lookout to point reporters to this fix (more lines than
-strictly necessary, because it removes a level of indentation).
-
-And sorry for putting 2/4 before the more urgent 3/4, but I couldn't
-tell what to do in 3/4, without first fixing the older bug in 2/4.
-
-Hugh
-
- mm/rmap.c |   39 ++++++++++++++++++++++-----------------
- 1 file changed, 22 insertions(+), 17 deletions(-)
-
---- 5.14-rc1/mm/rmap.c
-+++ linux/mm/rmap.c
-@@ -1440,21 +1440,20 @@ static bool try_to_unmap_one(struct page *page, struct vm_area_struct *vma,
- 		/*
- 		 * If the page is mlock()d, we cannot swap it out.
- 		 */
--		if (!(flags & TTU_IGNORE_MLOCK)) {
--			if (vma->vm_flags & VM_LOCKED) {
--				/* PTE-mapped THP are never marked as mlocked */
--				if (!PageTransCompound(page) ||
--				    (PageHead(page) && !PageDoubleMap(page))) {
--					/*
--					 * Holding pte lock, we do *not* need
--					 * mmap_lock here
--					 */
--					mlock_vma_page(page);
--				}
--				ret = false;
--				page_vma_mapped_walk_done(&pvmw);
--				break;
--			}
-+		if (!(flags & TTU_IGNORE_MLOCK) &&
-+		    (vma->vm_flags & VM_LOCKED)) {
-+			/*
-+			 * PTE-mapped THP are never marked as mlocked: so do
-+			 * not set it on a DoubleMap THP, nor on an Anon THP
-+			 * (which may still be PTE-mapped after DoubleMap was
-+			 * cleared).  But stop unmapping even in those cases.
-+			 */
-+			if (!PageTransCompound(page) || (PageHead(page) &&
-+			     !PageDoubleMap(page) && !PageAnon(page)))
-+				mlock_vma_page(page);
-+			page_vma_mapped_walk_done(&pvmw);
-+			ret = false;
-+			break;
- 		}
+diff --git a/block/blk-mq-debugfs.c b/block/blk-mq-debugfs.c
+index 4b66d2776eda..35f1f01d93ae 100644
+--- a/block/blk-mq-debugfs.c
++++ b/block/blk-mq-debugfs.c
+@@ -450,6 +450,8 @@ static void blk_mq_debugfs_tags_show(struct seq_file *m,
+ 	seq_printf(m, "nr_reserved_tags=%u\n", tags->nr_reserved_tags);
+ 	seq_printf(m, "active_queues=%d\n",
+ 		   atomic_read(&tags->active_queues));
++	seq_printf(m, "pending_queues=%d\n",
++		   atomic_read(&tags->pending_queues));
  
- 		/* Unexpected PMD-mapped THP? */
-@@ -1986,8 +1985,10 @@ static bool page_mlock_one(struct page *page, struct vm_area_struct *vma,
- 		 */
- 		if (vma->vm_flags & VM_LOCKED) {
- 			/*
--			 * PTE-mapped THP are never marked as mlocked, but
--			 * this function is never called when PageDoubleMap().
-+			 * PTE-mapped THP are never marked as mlocked; but
-+			 * this function is never called on a DoubleMap THP,
-+			 * nor on an Anon THP (which may still be PTE-mapped
-+			 * after DoubleMap was cleared).
- 			 */
- 			mlock_vma_page(page);
- 			/*
-@@ -2022,6 +2023,10 @@ void page_mlock(struct page *page)
- 	VM_BUG_ON_PAGE(!PageLocked(page) || PageLRU(page), page);
- 	VM_BUG_ON_PAGE(PageCompound(page) && PageDoubleMap(page), page);
- 
-+	/* Anon THP are only marked as mlocked when singly mapped */
-+	if (PageTransCompound(page) && PageAnon(page))
-+		return;
-+
- 	rmap_walk(page, &rwc);
+ 	seq_puts(m, "\nbitmap_tags:\n");
+ 	sbitmap_queue_show(tags->bitmap_tags, m);
+diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+index 86f87346232a..618624b359d6 100644
+--- a/block/blk-mq-tag.c
++++ b/block/blk-mq-tag.c
+@@ -40,6 +40,22 @@ bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+ 	return true;
  }
  
++void __blk_mq_dtag_busy(struct blk_mq_hw_ctx *hctx)
++{
++	if (blk_mq_is_sbitmap_shared(hctx->flags)) {
++		struct request_queue *q = hctx->queue;
++		struct blk_mq_tag_set *set = q->tag_set;
++
++		if (!test_bit(QUEUE_FLAG_HCTX_WAIT, &q->queue_flags) &&
++		    !test_and_set_bit(QUEUE_FLAG_HCTX_WAIT, &q->queue_flags))
++			atomic_inc(&set->pending_queues_shared_sbitmap);
++	} else {
++		if (!test_bit(BLK_MQ_S_DTAG_WAIT, &hctx->state) &&
++		    !test_and_set_bit(BLK_MQ_S_DTAG_WAIT, &hctx->state))
++			atomic_inc(&hctx->tags->pending_queues);
++	}
++}
++
+ /*
+  * Wakeup all potentially sleeping on tags
+  */
+@@ -74,6 +90,24 @@ void __blk_mq_tag_idle(struct blk_mq_hw_ctx *hctx)
+ 	blk_mq_tag_wakeup_all(tags, false);
+ }
+ 
++void __blk_mq_dtag_idle(struct blk_mq_hw_ctx *hctx)
++{
++	struct blk_mq_tags *tags = hctx->tags;
++	struct request_queue *q = hctx->queue;
++	struct blk_mq_tag_set *set = q->tag_set;
++
++	if (blk_mq_is_sbitmap_shared(hctx->flags)) {
++		if (!test_and_clear_bit(QUEUE_FLAG_HCTX_WAIT,
++					&q->queue_flags))
++			return;
++		atomic_dec(&set->pending_queues_shared_sbitmap);
++	} else {
++		if (!test_and_clear_bit(BLK_MQ_S_DTAG_WAIT, &hctx->state))
++			return;
++		atomic_dec(&tags->pending_queues);
++	}
++}
++
+ static int __blk_mq_get_tag(struct blk_mq_alloc_data *data,
+ 			    struct sbitmap_queue *bt)
+ {
+@@ -112,8 +146,12 @@ unsigned int blk_mq_get_tag(struct blk_mq_alloc_data *data)
+ 	if (tag != BLK_MQ_NO_TAG)
+ 		goto found_tag;
+ 
+-	if (data->flags & BLK_MQ_REQ_NOWAIT)
++	if (data->flags & BLK_MQ_REQ_NOWAIT) {
++		if (!data->q->elevator)
++			blk_mq_dtag_busy(data->hctx);
++
+ 		return BLK_MQ_NO_TAG;
++	}
+ 
+ 	ws = bt_wait_ptr(bt, data->hctx);
+ 	do {
+@@ -140,6 +178,9 @@ unsigned int blk_mq_get_tag(struct blk_mq_alloc_data *data)
+ 		if (tag != BLK_MQ_NO_TAG)
+ 			break;
+ 
++		if (!data->q->elevator)
++			blk_mq_dtag_busy(data->hctx);
++
+ 		bt_prev = bt;
+ 		io_schedule();
+ 
+diff --git a/block/blk-mq-tag.h b/block/blk-mq-tag.h
+index 8ed55af08427..badcf3693749 100644
+--- a/block/blk-mq-tag.h
++++ b/block/blk-mq-tag.h
+@@ -10,6 +10,11 @@ struct blk_mq_tags {
+ 	unsigned int nr_reserved_tags;
+ 
+ 	atomic_t active_queues;
++	/*
++	 * if multiple queues share a tag set, pending_queues record the
++	 * number of queues that can't get driver tag.
++	 */
++	atomic_t pending_queues;
+ 
+ 	struct sbitmap_queue *bitmap_tags;
+ 	struct sbitmap_queue *breserved_tags;
+@@ -69,8 +74,10 @@ enum {
+ 	BLK_MQ_TAG_MAX		= BLK_MQ_NO_TAG - 1,
+ };
+ 
+-extern bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *);
+-extern void __blk_mq_tag_idle(struct blk_mq_hw_ctx *);
++extern bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx);
++extern void __blk_mq_tag_idle(struct blk_mq_hw_ctx *hctx);
++extern void __blk_mq_dtag_busy(struct blk_mq_hw_ctx *hctx);
++extern void __blk_mq_dtag_idle(struct blk_mq_hw_ctx *hctx);
+ 
+ static inline bool blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+ {
+@@ -88,6 +95,22 @@ static inline void blk_mq_tag_idle(struct blk_mq_hw_ctx *hctx)
+ 	__blk_mq_tag_idle(hctx);
+ }
+ 
++static inline void blk_mq_dtag_busy(struct blk_mq_hw_ctx *hctx)
++{
++	if (!(hctx->flags & BLK_MQ_F_TAG_QUEUE_SHARED))
++		return;
++
++	__blk_mq_dtag_busy(hctx);
++}
++
++static inline void blk_mq_dtag_idle(struct blk_mq_hw_ctx *hctx)
++{
++	if (!(hctx->flags & BLK_MQ_F_TAG_QUEUE_SHARED))
++		return;
++
++	__blk_mq_dtag_idle(hctx);
++}
++
+ static inline bool blk_mq_tag_is_reserved(struct blk_mq_tags *tags,
+ 					  unsigned int tag)
+ {
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 2c4ac51e54eb..1bb52bd71da8 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -991,8 +991,10 @@ static void blk_mq_timeout_work(struct work_struct *work)
+ 		 */
+ 		queue_for_each_hw_ctx(q, hctx, i) {
+ 			/* the hctx may be unmapped, so check it here */
+-			if (blk_mq_hw_queue_mapped(hctx))
++			if (blk_mq_hw_queue_mapped(hctx)) {
+ 				blk_mq_tag_idle(hctx);
++				blk_mq_dtag_idle(hctx);
++			}
+ 		}
+ 	}
+ 	blk_queue_exit(q);
+@@ -1097,8 +1099,10 @@ static bool __blk_mq_get_driver_tag(struct request *rq)
+ 	}
+ 
+ 	tag = __sbitmap_queue_get(bt);
+-	if (tag == BLK_MQ_NO_TAG)
++	if (tag == BLK_MQ_NO_TAG) {
++		blk_mq_dtag_busy(rq->mq_hctx);
+ 		return false;
++	}
+ 
+ 	rq->tag = tag + tag_offset;
+ 	return true;
+@@ -2676,8 +2680,10 @@ static void blk_mq_exit_hctx(struct request_queue *q,
+ {
+ 	struct request *flush_rq = hctx->fq->flush_rq;
+ 
+-	if (blk_mq_hw_queue_mapped(hctx))
++	if (blk_mq_hw_queue_mapped(hctx)) {
+ 		blk_mq_tag_idle(hctx);
++		blk_mq_dtag_idle(hctx);
++	}
+ 
+ 	blk_mq_clear_flush_rq_mapping(set->tags[hctx_idx],
+ 			set->queue_depth, flush_rq);
+@@ -3536,6 +3542,7 @@ int blk_mq_alloc_tag_set(struct blk_mq_tag_set *set)
+ 
+ 	if (blk_mq_is_sbitmap_shared(set->flags)) {
+ 		atomic_set(&set->active_queues_shared_sbitmap, 0);
++		atomic_set(&set->pending_queues_shared_sbitmap, 0);
+ 
+ 		if (blk_mq_init_shared_sbitmap(set)) {
+ 			ret = -ENOMEM;
+diff --git a/block/blk-mq.h b/block/blk-mq.h
+index d08779f77a26..9e646ade81a8 100644
+--- a/block/blk-mq.h
++++ b/block/blk-mq.h
+@@ -337,10 +337,18 @@ static inline bool hctx_may_queue(struct blk_mq_hw_ctx *hctx,
+ 
+ 		if (!test_bit(QUEUE_FLAG_HCTX_ACTIVE, &q->queue_flags))
+ 			return true;
++
++		if (!atomic_read(&set->pending_queues_shared_sbitmap))
++			return true;
++
+ 		users = atomic_read(&set->active_queues_shared_sbitmap);
+ 	} else {
+ 		if (!test_bit(BLK_MQ_S_TAG_ACTIVE, &hctx->state))
+ 			return true;
++
++		if (!atomic_read(&hctx->tags->pending_queues))
++			return true;
++
+ 		users = atomic_read(&hctx->tags->active_queues);
+ 	}
+ 
+diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
+index 1d18447ebebc..3bc0faf0e2cf 100644
+--- a/include/linux/blk-mq.h
++++ b/include/linux/blk-mq.h
+@@ -256,6 +256,7 @@ struct blk_mq_tag_set {
+ 	unsigned int		flags;
+ 	void			*driver_data;
+ 	atomic_t		active_queues_shared_sbitmap;
++	atomic_t		pending_queues_shared_sbitmap;
+ 
+ 	struct sbitmap_queue	__bitmap_tags;
+ 	struct sbitmap_queue	__breserved_tags;
+@@ -415,6 +416,9 @@ enum {
+ 	/* hw queue is inactive after all its CPUs become offline */
+ 	BLK_MQ_S_INACTIVE	= 3,
+ 
++	/* hw queue is waiting for driver tag */
++	BLK_MQ_S_DTAG_WAIT	= 1,
++
+ 	BLK_MQ_MAX_DEPTH	= 10240,
+ 
+ 	BLK_MQ_CPU_WORK_BATCH	= 8,
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 3177181c4326..55e0965c9c3c 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -603,6 +603,7 @@ struct request_queue {
+ #define QUEUE_FLAG_RQ_ALLOC_TIME 27	/* record rq->alloc_time_ns */
+ #define QUEUE_FLAG_HCTX_ACTIVE	28	/* at least one blk-mq hctx is active */
+ #define QUEUE_FLAG_NOWAIT       29	/* device supports NOWAIT */
++#define QUEUE_FLAG_HCTX_WAIT	30	/* at least one blk-mq hctx can't get driver tag */
+ 
+ #define QUEUE_FLAG_MQ_DEFAULT	((1 << QUEUE_FLAG_IO_STAT) |		\
+ 				 (1 << QUEUE_FLAG_SAME_COMP) |		\
+-- 
+2.31.1
+
