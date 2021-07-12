@@ -2,43 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 282A13C549C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FAA23C4E40
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:41:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353216AbhGLIBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:01:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33304 "EHLO mail.kernel.org"
+        id S244432AbhGLHRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:17:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49944 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239792AbhGLHXU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:23:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95B13613C7;
-        Mon, 12 Jul 2021 07:20:31 +0000 (UTC)
+        id S240000AbhGLGub (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:50:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31C3E60233;
+        Mon, 12 Jul 2021 06:47:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074432;
-        bh=/BCBtkl7NaXw4UWFMgInzPb/9KET5CMUWWPO3DFYbP8=;
+        s=korg; t=1626072444;
+        bh=DUgcB785XMcpeEq5Yt6WrbqQKAkHFMhqCwGsYbSv/5w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=quREimK4EeDAulggVaC/KTQ4EGqQYZruanm2+a7TIDyeFqsoVgt2rNyD5RDXfvuVD
-         m2i+8Zz4kjh2ctb15NJ++IM19/SivUFpXtBRKST/Gnmzz2IZ4rQWBPtYbG5qmjNvEh
-         gXhtmkvZdEVPMlltTrri8xP5vqcIcdwBDAcaDnoQ=
+        b=BQRXBj3FTYXNydEAHs68LElIsLjrHSvPXUPXm496EB3gRTCibYAjCOciOUNIK7FDJ
+         ICwlQ9g5wKtjGYTYj4JGpO+j5I6NRnFY08w9C/rNaqmcKxCBjwq1b6U6yKL3izz10b
+         68YdZDGly74u9/v3hhNXdKhORhqBlgImmh+g07DI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Hannes Reinecke <hare@suse.de>,
-        Khalid Aziz <khalid.aziz@oracle.com>,
-        Khalid Aziz <khalid@gonehiking.org>,
-        kernel test robot <lkp@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
+        stable@vger.kernel.org, kernel test robot <rong.a.chen@intel.com>,
+        Christoph Hellwig <hch@lst.de>, Shuah Khan <shuah@kernel.org>,
+        linux-kselftest@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 576/700] scsi: FlashPoint: Rename si_flags field
+Subject: [PATCH 5.10 499/593] selftests: splice: Adjust for handler fallback removal
 Date:   Mon, 12 Jul 2021 08:10:59 +0200
-Message-Id: <20210712061037.320621053@linuxfoundation.org>
+Message-Id: <20210712060946.416271738@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,161 +42,186 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit 4d431153e751caa93f3b7e6f6313446974e92253 ]
+[ Upstream commit 6daf076b717d189f4d02a303d45edd5732341ec1 ]
 
-The BusLogic driver has build errors on ia64 due to a name collision (in
-the #included FlashPoint.c file). Rename the struct field in struct
-sccb_mgr_info from si_flags to si_mflags (manager flags) to mend the build.
+Some pseudo-filesystems do not have an explicit splice fops since adding
+commit 36e2c7421f02 ("fs: don't allow splice read/write without explicit ops"),
+and now will reject attempts to use splice() in those filesystem paths.
 
-This is the first problem. There are 50+ others after this one:
-
-In file included from ../include/uapi/linux/signal.h:6,
-                 from ../include/linux/signal_types.h:10,
-                 from ../include/linux/sched.h:29,
-                 from ../include/linux/hardirq.h:9,
-                 from ../include/linux/interrupt.h:11,
-                 from ../drivers/scsi/BusLogic.c:27:
-../arch/ia64/include/uapi/asm/siginfo.h:15:27: error: expected ':', ',', ';', '}' or '__attribute__' before '.' token
-   15 | #define si_flags _sifields._sigfault._flags
-      |                           ^
-../drivers/scsi/FlashPoint.c:43:6: note: in expansion of macro 'si_flags'
-   43 |  u16 si_flags;
-      |      ^~~~~~~~
-In file included from ../drivers/scsi/BusLogic.c:51:
-../drivers/scsi/FlashPoint.c: In function 'FlashPoint_ProbeHostAdapter':
-../drivers/scsi/FlashPoint.c:1076:11: error: 'struct sccb_mgr_info' has no member named '_sifields'
- 1076 |  pCardInfo->si_flags = 0x0000;
-      |           ^~
-../drivers/scsi/FlashPoint.c:1079:12: error: 'struct sccb_mgr_info' has no member named '_sifields'
-
-Link: https://lore.kernel.org/r/20210529234857.6870-1-rdunlap@infradead.org
-Fixes: 391e2f25601e ("[SCSI] BusLogic: Port driver to 64-bit.")
-Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
-Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+Reported-by: kernel test robot <rong.a.chen@intel.com>
+Link: https://lore.kernel.org/lkml/202009181443.C2179FB@keescook/
+Fixes: 36e2c7421f02 ("fs: don't allow splice read/write without explicit ops")
 Cc: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: Hannes Reinecke <hare@suse.de>
-Cc: Khalid Aziz <khalid.aziz@oracle.com>
-Cc: Khalid Aziz <khalid@gonehiking.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: linux-kselftest@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/FlashPoint.c | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+ .../selftests/splice/short_splice_read.sh     | 119 ++++++++++++++----
+ 1 file changed, 98 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/scsi/FlashPoint.c b/drivers/scsi/FlashPoint.c
-index 24ace1824048..ec8a621d232d 100644
---- a/drivers/scsi/FlashPoint.c
-+++ b/drivers/scsi/FlashPoint.c
-@@ -40,7 +40,7 @@ struct sccb_mgr_info {
- 	u16 si_per_targ_ultra_nego;
- 	u16 si_per_targ_no_disc;
- 	u16 si_per_targ_wide_nego;
--	u16 si_flags;
-+	u16 si_mflags;
- 	unsigned char si_card_family;
- 	unsigned char si_bustype;
- 	unsigned char si_card_model[3];
-@@ -1073,22 +1073,22 @@ static int FlashPoint_ProbeHostAdapter(struct sccb_mgr_info *pCardInfo)
- 		ScamFlg =
- 		    (unsigned char)FPT_utilEERead(ioport, SCAM_CONFIG / 2);
+diff --git a/tools/testing/selftests/splice/short_splice_read.sh b/tools/testing/selftests/splice/short_splice_read.sh
+index 7810d3589d9a..22b6c8910b18 100755
+--- a/tools/testing/selftests/splice/short_splice_read.sh
++++ b/tools/testing/selftests/splice/short_splice_read.sh
+@@ -1,21 +1,87 @@
+ #!/bin/sh
+ # SPDX-License-Identifier: GPL-2.0
++#
++# Test for mishandling of splice() on pseudofilesystems, which should catch
++# bugs like 11990a5bd7e5 ("module: Correctly truncate sysfs sections output")
++#
++# Since splice fallback was removed as part of the set_fs() rework, many of these
++# tests expect to fail now. See https://lore.kernel.org/lkml/202009181443.C2179FB@keescook/
+ set -e
  
--	pCardInfo->si_flags = 0x0000;
-+	pCardInfo->si_mflags = 0x0000;
++DIR=$(dirname "$0")
++
+ ret=0
  
- 	if (i & 0x01)
--		pCardInfo->si_flags |= SCSI_PARITY_ENA;
-+		pCardInfo->si_mflags |= SCSI_PARITY_ENA;
++expect_success()
++{
++	title="$1"
++	shift
++
++	echo "" >&2
++	echo "$title ..." >&2
++
++	set +e
++	"$@"
++	rc=$?
++	set -e
++
++	case "$rc" in
++	0)
++		echo "ok: $title succeeded" >&2
++		;;
++	1)
++		echo "FAIL: $title should work" >&2
++		ret=$(( ret + 1 ))
++		;;
++	*)
++		echo "FAIL: something else went wrong" >&2
++		ret=$(( ret + 1 ))
++		;;
++	esac
++}
++
++expect_failure()
++{
++	title="$1"
++	shift
++
++	echo "" >&2
++	echo "$title ..." >&2
++
++	set +e
++	"$@"
++	rc=$?
++	set -e
++
++	case "$rc" in
++	0)
++		echo "FAIL: $title unexpectedly worked" >&2
++		ret=$(( ret + 1 ))
++		;;
++	1)
++		echo "ok: $title correctly failed" >&2
++		;;
++	*)
++		echo "FAIL: something else went wrong" >&2
++		ret=$(( ret + 1 ))
++		;;
++	esac
++}
++
+ do_splice()
+ {
+ 	filename="$1"
+ 	bytes="$2"
+ 	expected="$3"
++	report="$4"
  
- 	if (!(i & 0x02))
--		pCardInfo->si_flags |= SOFT_RESET;
-+		pCardInfo->si_mflags |= SOFT_RESET;
+-	out=$(./splice_read "$filename" "$bytes" | cat)
++	out=$("$DIR"/splice_read "$filename" "$bytes" | cat)
+ 	if [ "$out" = "$expected" ] ; then
+-		echo "ok: $filename $bytes"
++		echo "      matched $report" >&2
++		return 0
+ 	else
+-		echo "FAIL: $filename $bytes"
+-		ret=1
++		echo "      no match: '$out' vs $report" >&2
++		return 1
+ 	fi
+ }
  
- 	if (i & 0x10)
--		pCardInfo->si_flags |= EXTENDED_TRANSLATION;
-+		pCardInfo->si_mflags |= EXTENDED_TRANSLATION;
+@@ -23,34 +89,45 @@ test_splice()
+ {
+ 	filename="$1"
  
- 	if (ScamFlg & SCAM_ENABLED)
--		pCardInfo->si_flags |= FLAG_SCAM_ENABLED;
-+		pCardInfo->si_mflags |= FLAG_SCAM_ENABLED;
++	echo "  checking $filename ..." >&2
++
+ 	full=$(cat "$filename")
++	rc=$?
++	if [ $rc -ne 0 ] ; then
++		return 2
++	fi
++
+ 	two=$(echo "$full" | grep -m1 . | cut -c-2)
  
- 	if (ScamFlg & SCAM_LEVEL2)
--		pCardInfo->si_flags |= FLAG_SCAM_LEVEL2;
-+		pCardInfo->si_mflags |= FLAG_SCAM_LEVEL2;
+ 	# Make sure full splice has the same contents as a standard read.
+-	do_splice "$filename" 4096 "$full"
++	echo "    splicing 4096 bytes ..." >&2
++	if ! do_splice "$filename" 4096 "$full" "full read" ; then
++		return 1
++	fi
  
- 	j = (RD_HARPOON(ioport + hp_bm_ctrl) & ~SCSI_TERM_ENA_L);
- 	if (i & 0x04) {
-@@ -1104,7 +1104,7 @@ static int FlashPoint_ProbeHostAdapter(struct sccb_mgr_info *pCardInfo)
+ 	# Make sure a partial splice see the first two characters.
+-	do_splice "$filename" 2 "$two"
++	echo "    splicing 2 bytes ..." >&2
++	if ! do_splice "$filename" 2 "$two" "'$two'" ; then
++		return 1
++	fi
++
++	return 0
+ }
  
- 	if (!(RD_HARPOON(ioport + hp_page_ctrl) & NARROW_SCSI_CARD))
+-# proc_single_open(), seq_read()
+-test_splice /proc/$$/limits
+-# special open, seq_read()
+-test_splice /proc/$$/comm
++### /proc/$pid/ has no splice interface; these should all fail.
++expect_failure "proc_single_open(), seq_read() splice" test_splice /proc/$$/limits
++expect_failure "special open(), seq_read() splice" test_splice /proc/$$/comm
  
--		pCardInfo->si_flags |= SUPPORT_16TAR_32LUN;
-+		pCardInfo->si_mflags |= SUPPORT_16TAR_32LUN;
+-# proc_handler, proc_dointvec_minmax
+-test_splice /proc/sys/fs/nr_open
+-# proc_handler, proc_dostring
+-test_splice /proc/sys/kernel/modprobe
+-# proc_handler, special read
+-test_splice /proc/sys/kernel/version
++### /proc/sys/ has a splice interface; these should all succeed.
++expect_success "proc_handler: proc_dointvec_minmax() splice" test_splice /proc/sys/fs/nr_open
++expect_success "proc_handler: proc_dostring() splice" test_splice /proc/sys/kernel/modprobe
++expect_success "proc_handler: special read splice" test_splice /proc/sys/kernel/version
  
- 	pCardInfo->si_card_family = HARPOON_FAMILY;
- 	pCardInfo->si_bustype = BUSTYPE_PCI;
-@@ -1140,15 +1140,15 @@ static int FlashPoint_ProbeHostAdapter(struct sccb_mgr_info *pCardInfo)
++### /sys/ has no splice interface; these should all fail.
+ if ! [ -d /sys/module/test_module/sections ] ; then
+-	modprobe test_module
++	expect_success "test_module kernel module load" modprobe test_module
+ fi
+-# kernfs, attr
+-test_splice /sys/module/test_module/coresize
+-# kernfs, binattr
+-test_splice /sys/module/test_module/sections/.init.text
++expect_failure "kernfs attr splice" test_splice /sys/module/test_module/coresize
++expect_failure "kernfs binattr splice" test_splice /sys/module/test_module/sections/.init.text
  
- 	if (pCardInfo->si_card_model[1] == '3') {
- 		if (RD_HARPOON(ioport + hp_ee_ctrl) & BIT(7))
--			pCardInfo->si_flags |= LOW_BYTE_TERM;
-+			pCardInfo->si_mflags |= LOW_BYTE_TERM;
- 	} else if (pCardInfo->si_card_model[2] == '0') {
- 		temp = RD_HARPOON(ioport + hp_xfer_pad);
- 		WR_HARPOON(ioport + hp_xfer_pad, (temp & ~BIT(4)));
- 		if (RD_HARPOON(ioport + hp_ee_ctrl) & BIT(7))
--			pCardInfo->si_flags |= LOW_BYTE_TERM;
-+			pCardInfo->si_mflags |= LOW_BYTE_TERM;
- 		WR_HARPOON(ioport + hp_xfer_pad, (temp | BIT(4)));
- 		if (RD_HARPOON(ioport + hp_ee_ctrl) & BIT(7))
--			pCardInfo->si_flags |= HIGH_BYTE_TERM;
-+			pCardInfo->si_mflags |= HIGH_BYTE_TERM;
- 		WR_HARPOON(ioport + hp_xfer_pad, temp);
- 	} else {
- 		temp = RD_HARPOON(ioport + hp_ee_ctrl);
-@@ -1166,9 +1166,9 @@ static int FlashPoint_ProbeHostAdapter(struct sccb_mgr_info *pCardInfo)
- 		WR_HARPOON(ioport + hp_ee_ctrl, temp);
- 		WR_HARPOON(ioport + hp_xfer_pad, temp2);
- 		if (!(temp3 & BIT(7)))
--			pCardInfo->si_flags |= LOW_BYTE_TERM;
-+			pCardInfo->si_mflags |= LOW_BYTE_TERM;
- 		if (!(temp3 & BIT(6)))
--			pCardInfo->si_flags |= HIGH_BYTE_TERM;
-+			pCardInfo->si_mflags |= HIGH_BYTE_TERM;
- 	}
- 
- 	ARAM_ACCESS(ioport);
-@@ -1275,7 +1275,7 @@ static void *FlashPoint_HardwareResetHostAdapter(struct sccb_mgr_info
- 	WR_HARPOON(ioport + hp_arb_id, pCardInfo->si_id);
- 	CurrCard->ourId = pCardInfo->si_id;
- 
--	i = (unsigned char)pCardInfo->si_flags;
-+	i = (unsigned char)pCardInfo->si_mflags;
- 	if (i & SCSI_PARITY_ENA)
- 		WR_HARPOON(ioport + hp_portctrl_1, (HOST_MODE8 | CHK_SCSI_P));
- 
-@@ -1289,14 +1289,14 @@ static void *FlashPoint_HardwareResetHostAdapter(struct sccb_mgr_info
- 		j |= SCSI_TERM_ENA_H;
- 	WR_HARPOON(ioport + hp_ee_ctrl, j);
- 
--	if (!(pCardInfo->si_flags & SOFT_RESET)) {
-+	if (!(pCardInfo->si_mflags & SOFT_RESET)) {
- 
- 		FPT_sresb(ioport, thisCard);
- 
- 		FPT_scini(thisCard, pCardInfo->si_id, 0);
- 	}
- 
--	if (pCardInfo->si_flags & POST_ALL_UNDERRRUNS)
-+	if (pCardInfo->si_mflags & POST_ALL_UNDERRRUNS)
- 		CurrCard->globalFlags |= F_NO_FILTER;
- 
- 	if (pCurrNvRam) {
+ exit $ret
 -- 
 2.30.2
 
