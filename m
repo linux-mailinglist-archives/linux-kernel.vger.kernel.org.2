@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 988253C499E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 732FB3C4FFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236809AbhGLGpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:45:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54932 "EHLO mail.kernel.org"
+        id S1345632AbhGLHaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:30:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236436AbhGLGfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:35:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D6D260FE3;
-        Mon, 12 Jul 2021 06:32:13 +0000 (UTC)
+        id S237880AbhGLHCG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:02:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FC6C6141F;
+        Mon, 12 Jul 2021 06:59:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071534;
-        bh=dV9evPm4c2ZbaBBpgB8FzfTBMxhDUnAlW3rio1MYS8Q=;
+        s=korg; t=1626073157;
+        bh=UP4NVnaV6TahKYzkSvQfpMg9+VdQvMocKGAKxZKRlTA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BdGI3jb2TZ+9mRuNMwARZw7UazRfJ5acR+TZqPzU0ZrxY43gfQckuHgnsLNXp0hCd
-         wj7Np+DAWeZNg+GMaxzsB5Xh9hfODKd2FlpX6BWU+KMH3TjwrSHW0flei3SVVRT0Qo
-         LjYyr5/m3XiwXqSwdx3Z9HsL5mxdJC+WGkom8NrA=
+        b=kmoUlaMPeetFH23wZAVym2kKnAu+ItYjUk4u/Wkas57NW5HUT0b4bKXu/rwRbi/Eo
+         jNFqQ/kZn6MJ/UgepoAwYc0f+vscJIgEmVXONWQ39fuuSRobC3jDCgFuVROTmcPLIO
+         qSc0/+oaiZvH6fNo086XCkl8Y647YmFN1cLvV4TE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Subject: [PATCH 5.10 068/593] clk: agilex/stratix10/n5x: fix how the bypass_reg is handled
-Date:   Mon, 12 Jul 2021 08:03:48 +0200
-Message-Id: <20210712060850.646680444@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com,
+        Anirudh Rayabharam <mail@anirudhrb.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 146/700] media: pvrusb2: fix warning in pvr2_i2c_core_done
+Date:   Mon, 12 Jul 2021 08:03:49 +0200
+Message-Id: <20210712060946.187157822@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,54 +43,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinh Nguyen <dinguyen@kernel.org>
+From: Anirudh Rayabharam <mail@anirudhrb.com>
 
-commit dfd1427c3769ba51297777dbb296f1802d72dbf6 upstream.
+[ Upstream commit f8194e5e63fdcb349e8da9eef9e574d5b1d687cb ]
 
-If the bypass_reg is set, then we can return the bypass parent, however,
-if there is not a bypass_reg, we need to figure what the correct parent
-mux is.
+syzbot has reported the following warning in pvr2_i2c_done:
 
-The previous code never handled the parent mux if there was a
-bypass_reg.
+	sysfs group 'power' not found for kobject '1-0043'
 
-Fixes: 80c6b7a0894f ("clk: socfpga: agilex: add clock driver for the Agilex platform")
-Cc: stable@vger.kernel.org
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
-Link: https://lore.kernel.org/r/20210611025201.118799-4-dinguyen@kernel.org
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+When the device is disconnected (pvr_hdw_disconnect), the i2c adapter is
+not unregistered along with the USB and v4l2 teardown. As part of the USB
+device disconnect, the sysfs files of the subdevices are also deleted.
+So, by the time pvr_i2c_core_done is called by pvr_context_destroy, the
+sysfs files have been deleted.
 
+To fix this, unregister the i2c adapter too in pvr_hdw_disconnect. Make
+the device deregistration code shared by calling pvr_hdw_disconnect from
+pvr2_hdw_destroy.
+
+Reported-by: syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com
+Tested-by: syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/socfpga/clk-periph-s10.c |   11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ drivers/media/usb/pvrusb2/pvrusb2-hdw.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/clk/socfpga/clk-periph-s10.c
-+++ b/drivers/clk/socfpga/clk-periph-s10.c
-@@ -49,16 +49,21 @@ static u8 clk_periclk_get_parent(struct
- {
- 	struct socfpga_periph_clk *socfpgaclk = to_periph_clk(hwclk);
- 	u32 clk_src, mask;
--	u8 parent;
-+	u8 parent = 0;
- 
-+	/* handle the bypass first */
- 	if (socfpgaclk->bypass_reg) {
- 		mask = (0x1 << socfpgaclk->bypass_shift);
- 		parent = ((readl(socfpgaclk->bypass_reg) & mask) >>
- 			   socfpgaclk->bypass_shift);
--	} else {
-+		if (parent)
-+			return parent;
-+	}
-+
-+	if (socfpgaclk->hw.reg) {
- 		clk_src = readl(socfpgaclk->hw.reg);
- 		parent = (clk_src >> CLK_MGR_FREE_SHIFT) &
--			CLK_MGR_FREE_MASK;
-+			  CLK_MGR_FREE_MASK;
+diff --git a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
+index f4a727918e35..d38dee1792e4 100644
+--- a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
++++ b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
+@@ -2676,9 +2676,8 @@ void pvr2_hdw_destroy(struct pvr2_hdw *hdw)
+ 		pvr2_stream_destroy(hdw->vid_stream);
+ 		hdw->vid_stream = NULL;
  	}
- 	return parent;
- }
+-	pvr2_i2c_core_done(hdw);
+ 	v4l2_device_unregister(&hdw->v4l2_dev);
+-	pvr2_hdw_remove_usb_stuff(hdw);
++	pvr2_hdw_disconnect(hdw);
+ 	mutex_lock(&pvr2_unit_mtx);
+ 	do {
+ 		if ((hdw->unit_number >= 0) &&
+@@ -2705,6 +2704,7 @@ void pvr2_hdw_disconnect(struct pvr2_hdw *hdw)
+ {
+ 	pvr2_trace(PVR2_TRACE_INIT,"pvr2_hdw_disconnect(hdw=%p)",hdw);
+ 	LOCK_TAKE(hdw->big_lock);
++	pvr2_i2c_core_done(hdw);
+ 	LOCK_TAKE(hdw->ctl_lock);
+ 	pvr2_hdw_remove_usb_stuff(hdw);
+ 	LOCK_GIVE(hdw->ctl_lock);
+-- 
+2.30.2
+
 
 
