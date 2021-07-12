@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C6C3C4B8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 833E93C52C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241598AbhGLG6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:58:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34676 "EHLO mail.kernel.org"
+        id S1347371AbhGLHtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:49:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238669AbhGLGlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:41:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D63661166;
-        Mon, 12 Jul 2021 06:38:47 +0000 (UTC)
+        id S240770AbhGLHPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:15:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D75A3611CB;
+        Mon, 12 Jul 2021 07:11:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071927;
-        bh=3MAqpF/9SWuEGiSjf2Mm6Jmve9x6pUdqIRnr5vEv3Ow=;
+        s=korg; t=1626073906;
+        bh=2acFx/bocHz/BY6z/Ky0/gyfY/VmjF3xWOK7UBhn3pE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RTPnhxcv5LAk5ZiIA28nVoMCsPFWEVpVzZLWkQJbpQ9iWgLumYPDPYHvmjVoTrGgX
-         5OGctOeyGIRYrNwl1YjUtFojPeRA4/raHt/n/jwQ0A9O24MT1RfFIeU70YpyGFVTMy
-         bE8rBEzSI7z+AuZeai4aEg6824LDF6D0y2OPAC2I=
+        b=DSjMMNzelrHm8ZINL9/3r/ainzupdVRbKhrmH831JAuK0h01aPRy+8lMwc1H/Bufi
+         Sznsz6dPsyfQsQ+0kHn9/xCbKsEDgFaw1xvh/645Skm/KIS1DUfa7CkQWRqSHYnrUN
+         btoz8+4VxQToMCZq59XAF5Q+4qXWJS+MdX11mhg4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 279/593] mark pstore-blk as broken
+        stable@vger.kernel.org,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 356/700] video: fbdev: imxfb: Fix an error message
 Date:   Mon, 12 Jul 2021 08:07:19 +0200
-Message-Id: <20210712060914.729174211@linuxfoundation.org>
+Message-Id: <20210712061014.221887990@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit d07f3b081ee632268786601f55e1334d1f68b997 ]
+[ Upstream commit 767d724a160eb1cd00c86fb8c2e21fa1ab3c37ac ]
 
-pstore-blk just pokes directly into the pagecache for the block
-device without going through the file operations for that by faking
-up it's own file operations that do not match the block device ones.
+'ret' is known to be 0 here.
+No error code is available, so just remove it from the error message.
 
-As this breaks the control of the block layer of it's page cache,
-and even now just works by accident only the best thing is to just
-disable this driver.
-
-Fixes: 17639f67c1d6 ("pstore/blk: Introduce backend for block devices")
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Link: https://lore.kernel.org/r/20210608161327.1537919-1-hch@lst.de
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: 72330b0eeefc ("i.MX Framebuffer: Use readl/writel instead of direct pointer deref")
+Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/d7b25026f82659da3c6f7159eea480faa9d738be.1620327302.git.christophe.jaillet@wanadoo.fr
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/pstore/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/video/fbdev/imxfb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/pstore/Kconfig b/fs/pstore/Kconfig
-index e16a49ebfe54..8efe60487b48 100644
---- a/fs/pstore/Kconfig
-+++ b/fs/pstore/Kconfig
-@@ -165,6 +165,7 @@ config PSTORE_BLK
- 	tristate "Log panic/oops to a block device"
- 	depends on PSTORE
- 	depends on BLOCK
-+	depends on BROKEN
- 	select PSTORE_ZONE
- 	default n
- 	help
+diff --git a/drivers/video/fbdev/imxfb.c b/drivers/video/fbdev/imxfb.c
+index 7f8debd2da06..ad598257ab38 100644
+--- a/drivers/video/fbdev/imxfb.c
++++ b/drivers/video/fbdev/imxfb.c
+@@ -992,7 +992,7 @@ static int imxfb_probe(struct platform_device *pdev)
+ 	info->screen_buffer = dma_alloc_wc(&pdev->dev, fbi->map_size,
+ 					   &fbi->map_dma, GFP_KERNEL);
+ 	if (!info->screen_buffer) {
+-		dev_err(&pdev->dev, "Failed to allocate video RAM: %d\n", ret);
++		dev_err(&pdev->dev, "Failed to allocate video RAM\n");
+ 		ret = -ENOMEM;
+ 		goto failed_map;
+ 	}
 -- 
 2.30.2
 
