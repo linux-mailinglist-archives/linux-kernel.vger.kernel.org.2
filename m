@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA153C516C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C007B3C578D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348346AbhGLHk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:40:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42016 "EHLO mail.kernel.org"
+        id S1377135AbhGLIfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:35:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244160AbhGLHK2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:10:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 286A2613CC;
-        Mon, 12 Jul 2021 07:06:46 +0000 (UTC)
+        id S244817AbhGLHsl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:48:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5942861955;
+        Mon, 12 Jul 2021 07:42:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073606;
-        bh=sUDcBnWAoNpaVZalSL2yTvcf7M8ILQVPIhuBIBrn36w=;
+        s=korg; t=1626075770;
+        bh=gXplEzUOyCMiNyG6N2ZSavNxAt8N4u+N6We5ranqKsA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=neIExjNobQNRuI7+aMikCIlkEVT6X3tRGm4Es88cI6Esna3cHm5MQP/IF0fGwk2fw
-         GK7IPvxcq7iyx6gWvEqme4VhZ6Vs5xvJw+Efvrl3MNzdP6UipK0jjeOeOlQubF2mw7
-         X8LUL248/Ia4ABxGJ9u0D7BHj8g6yxQiOBFb1lfY=
+        b=vbALuFmga9/vfgDwTO8K8/rsf5gQTRmb+b9GUm3q5+cAcUz5XQkNKW/uIBSQStVbG
+         urXgJB8SX9DGpdMZVuHQ9muFnN2CWlO55GbJuwaAlAA62QQAsAIKhEsdLvgI5ZaXGG
+         YxctwAkLFnSsnObk7f6GcfreRLRYosq+JOAn1/4k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Jan=20Kundr=C3=A1t?= <jan.kundrat@cesnet.cz>,
-        =?UTF-8?q?V=C3=A1clav=20Kubern=C3=A1t?= <kubernat@cesnet.cz>,
-        Guenter Roeck <linux@roeck-us.net>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 296/700] hwmon: (max31790) Fix fan speed reporting for fan7..12
-Date:   Mon, 12 Jul 2021 08:06:19 +0200
-Message-Id: <20210712061007.792827210@linuxfoundation.org>
+Subject: [PATCH 5.13 357/800] ACPI: PM / fan: Put fan device IDs into separate header file
+Date:   Mon, 12 Jul 2021 08:06:20 +0200
+Message-Id: <20210712061005.077238128@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,45 +40,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-[ Upstream commit cbbf244f0515af3472084f22b6213121b4a63835 ]
+[ Upstream commit b9370dceabb7841c5e65ce4ee4405b9db5231fc4 ]
 
-Fans 7..12 do not have their own set of configuration registers.
-So far the code ignored that and read beyond the end of the configuration
-register range to get the tachometer period. This resulted in more or less
-random fan speed values for those fans.
+The ACPI fan device IDs are shared between the fan driver and the
+device power management code.  The former is modular, so it needs
+to include the table of device IDs for module autoloading and the
+latter needs that list to avoid attaching the generic ACPI PM domain
+to fan devices (which doesn't make sense) possibly before the fan
+driver module is loaded.
 
-The datasheet is quite vague when it comes to defining the tachometer
-period for fans 7..12. Experiments confirm that the period is the same
-for both fans associated with a given set of configuration registers.
+Unfortunately, that requires the list of fan device IDs to be
+updated in two places which is prone to mistakes, so put it into
+a symbol definition in a separate header file so there is only one
+copy of it in case it needs to be updated again in the future.
 
-Fixes: 54187ff9d766 ("hwmon: (max31790) Convert to use new hwmon registration API")
-Fixes: 195a4b4298a7 ("hwmon: Driver for Maxim MAX31790")
-Cc: Jan Kundrát <jan.kundrat@cesnet.cz>
-Reviewed-by: Jan Kundrát <jan.kundrat@cesnet.cz>
-Cc: Václav Kubernát <kubernat@cesnet.cz>
-Reviewed-by: Jan Kundrát <jan.kundrat@cesnet.cz>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/20210526154022.3223012-2-linux@roeck-us.net
+Fixes: b9ea0bae260f ("ACPI: PM: Avoid attaching ACPI PM domain to certain devices")
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/max31790.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/acpi/device_pm.c |  6 ++----
+ drivers/acpi/fan.c       |  7 +++----
+ drivers/acpi/fan.h       | 13 +++++++++++++
+ 3 files changed, 18 insertions(+), 8 deletions(-)
+ create mode 100644 drivers/acpi/fan.h
 
-diff --git a/drivers/hwmon/max31790.c b/drivers/hwmon/max31790.c
-index 76aa96f5b984..67677c437768 100644
---- a/drivers/hwmon/max31790.c
-+++ b/drivers/hwmon/max31790.c
-@@ -171,7 +171,7 @@ static int max31790_read_fan(struct device *dev, u32 attr, int channel,
+diff --git a/drivers/acpi/device_pm.c b/drivers/acpi/device_pm.c
+index d260bc1f3e6e..9d2d3b9bb8b5 100644
+--- a/drivers/acpi/device_pm.c
++++ b/drivers/acpi/device_pm.c
+@@ -20,6 +20,7 @@
+ #include <linux/pm_runtime.h>
+ #include <linux/suspend.h>
  
- 	switch (attr) {
- 	case hwmon_fan_input:
--		sr = get_tach_period(data->fan_dynamics[channel]);
-+		sr = get_tach_period(data->fan_dynamics[channel % NR_CHANNEL]);
- 		rpm = RPM_FROM_REG(data->tach[channel], sr);
- 		*val = rpm;
- 		return 0;
++#include "fan.h"
+ #include "internal.h"
+ 
+ /**
+@@ -1310,10 +1311,7 @@ int acpi_dev_pm_attach(struct device *dev, bool power_on)
+ 	 * with the generic ACPI PM domain.
+ 	 */
+ 	static const struct acpi_device_id special_pm_ids[] = {
+-		{"PNP0C0B", }, /* Generic ACPI fan */
+-		{"INT3404", }, /* Fan */
+-		{"INTC1044", }, /* Fan for Tiger Lake generation */
+-		{"INTC1048", }, /* Fan for Alder Lake generation */
++		ACPI_FAN_DEVICE_IDS,
+ 		{}
+ 	};
+ 	struct acpi_device *adev = ACPI_COMPANION(dev);
+diff --git a/drivers/acpi/fan.c b/drivers/acpi/fan.c
+index 66c3983f0ccc..5cd0ceb50bc8 100644
+--- a/drivers/acpi/fan.c
++++ b/drivers/acpi/fan.c
+@@ -16,6 +16,8 @@
+ #include <linux/platform_device.h>
+ #include <linux/sort.h>
+ 
++#include "fan.h"
++
+ MODULE_AUTHOR("Paul Diefenbaugh");
+ MODULE_DESCRIPTION("ACPI Fan Driver");
+ MODULE_LICENSE("GPL");
+@@ -24,10 +26,7 @@ static int acpi_fan_probe(struct platform_device *pdev);
+ static int acpi_fan_remove(struct platform_device *pdev);
+ 
+ static const struct acpi_device_id fan_device_ids[] = {
+-	{"PNP0C0B", 0},
+-	{"INT3404", 0},
+-	{"INTC1044", 0},
+-	{"INTC1048", 0},
++	ACPI_FAN_DEVICE_IDS,
+ 	{"", 0},
+ };
+ MODULE_DEVICE_TABLE(acpi, fan_device_ids);
+diff --git a/drivers/acpi/fan.h b/drivers/acpi/fan.h
+new file mode 100644
+index 000000000000..dc9a6efa514b
+--- /dev/null
++++ b/drivers/acpi/fan.h
+@@ -0,0 +1,13 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++
++/*
++ * ACPI fan device IDs are shared between the fan driver and the device power
++ * management code.
++ *
++ * Add new device IDs before the generic ACPI fan one.
++ */
++#define ACPI_FAN_DEVICE_IDS	\
++	{"INT3404", }, /* Fan */ \
++	{"INTC1044", }, /* Fan for Tiger Lake generation */ \
++	{"INTC1048", }, /* Fan for Alder Lake generation */ \
++	{"PNP0C0B", } /* Generic ACPI fan */
 -- 
 2.30.2
 
