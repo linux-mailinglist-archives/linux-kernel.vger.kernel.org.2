@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A876D3C5498
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C6403C58B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353144AbhGLIBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:01:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32988 "EHLO mail.kernel.org"
+        id S1380323AbhGLIv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:51:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244849AbhGLHXC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:23:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D998610D0;
-        Mon, 12 Jul 2021 07:20:13 +0000 (UTC)
+        id S1347692AbhGLH4M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:56:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE18661288;
+        Mon, 12 Jul 2021 07:52:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074413;
-        bh=VXHNpa0DIna+CtM2nDV4dIAglrYxx4J4Gk0eC6pCLhw=;
+        s=korg; t=1626076328;
+        bh=B3lNGwo/ZF03czrP9NfGoOasizPshcsUrs8LiKSeI9s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JA/OHgZjIASMoLGtOWq6aOGlwhyerY40N/3czMzLnr8pFDy8ZI6whbgLYcGl9PNn2
-         i7tnvdCzjAA4uxZunES98AXWvI/EKcAye1FrgubYY19v+BumqFErcor1elskEvR2yx
-         Idgl4T1TzyZOjES3V/sqk69bkVxbx6muqHqeiQnw=
+        b=RLEOkto5Gzzk83kCcpg4K19nO8md88Yu05DwGznRLYltTcU5fJsorbsAlUBFJnL0r
+         6HfwKltoPOtvHKd0lSrHZDMPvgTAJYALmsK25WQarG8QWHW2qea+Fl4fgf7jCqjv+u
+         lqO/b/7HC23aKh1J9glgUOpQmPDna53loZCv/mIw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 535/700] iio: accel: kxcjk-1013: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
+        stable@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
+        Michal Hocko <mhocko@suse.com>, Tejun Heo <tj@kernel.org>,
+        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 595/800] writeback: fix obtain a reference to a freeing memcg css
 Date:   Mon, 12 Jul 2021 08:10:18 +0200
-Message-Id: <20210712061033.360891218@linuxfoundation.org>
+Message-Id: <20210712061030.626023150@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,85 +40,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Muchun Song <songmuchun@bytedance.com>
 
-[ Upstream commit 3ab3aa2e7bd57497f9a7c6275c00dce237d2c9ba ]
+[ Upstream commit 8b0ed8443ae6458786580d36b7d5f8125535c5d4 ]
 
-To make code more readable, use a structure to express the channel
-layout and ensure the timestamp is 8 byte aligned.
+The caller of wb_get_create() should pin the memcg, because
+wb_get_create() relies on this guarantee. The rcu read lock
+only can guarantee that the memcg css returned by css_from_id()
+cannot be released, but the reference of the memcg can be zero.
 
-Found during an audit of all calls of this function.
+  rcu_read_lock()
+  memcg_css = css_from_id()
+  wb_get_create(memcg_css)
+      cgwb_create(memcg_css)
+          // css_get can change the ref counter from 0 back to 1
+          css_get(memcg_css)
+  rcu_read_unlock()
 
-Fixes: 1a4fbf6a9286 ("iio: accel: kxcjk1013 3-axis accelerometer driver")
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20210501170121.512209-5-jic23@kernel.org
+Fix it by holding a reference to the css before calling
+wb_get_create(). This is not a problem I encountered in the
+real world. Just the result of a code review.
+
+Fixes: 682aa8e1a6a1 ("writeback: implement unlocked_inode_to_wb transaction and use it for stat updates")
+Link: https://lore.kernel.org/r/20210402091145.80635-1-songmuchun@bytedance.com
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Acked-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/accel/kxcjk-1013.c | 24 ++++++++++++++----------
- 1 file changed, 14 insertions(+), 10 deletions(-)
+ fs/fs-writeback.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/iio/accel/kxcjk-1013.c b/drivers/iio/accel/kxcjk-1013.c
-index 2fadafc860fd..5a19b5041e28 100644
---- a/drivers/iio/accel/kxcjk-1013.c
-+++ b/drivers/iio/accel/kxcjk-1013.c
-@@ -133,6 +133,13 @@ enum kx_acpi_type {
- 	ACPI_KIOX010A,
- };
- 
-+enum kxcjk1013_axis {
-+	AXIS_X,
-+	AXIS_Y,
-+	AXIS_Z,
-+	AXIS_MAX
-+};
+diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+index d684f541af48..8d4130b01423 100644
+--- a/fs/fs-writeback.c
++++ b/fs/fs-writeback.c
+@@ -510,9 +510,14 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
+ 	/* find and pin the new wb */
+ 	rcu_read_lock();
+ 	memcg_css = css_from_id(new_wb_id, &memory_cgrp_subsys);
+-	if (memcg_css)
+-		isw->new_wb = wb_get_create(bdi, memcg_css, GFP_ATOMIC);
++	if (memcg_css && !css_tryget(memcg_css))
++		memcg_css = NULL;
+ 	rcu_read_unlock();
++	if (!memcg_css)
++		goto out_free;
 +
- struct kxcjk1013_data {
- 	struct regulator_bulk_data regulators[2];
- 	struct i2c_client *client;
-@@ -140,7 +147,11 @@ struct kxcjk1013_data {
- 	struct iio_trigger *motion_trig;
- 	struct iio_mount_matrix orientation;
- 	struct mutex mutex;
--	s16 buffer[8];
-+	/* Ensure timestamp naturally aligned */
-+	struct {
-+		s16 chans[AXIS_MAX];
-+		s64 timestamp __aligned(8);
-+	} scan;
- 	u8 odr_bits;
- 	u8 range;
- 	int wake_thres;
-@@ -154,13 +165,6 @@ struct kxcjk1013_data {
- 	enum kx_acpi_type acpi_type;
- };
++	isw->new_wb = wb_get_create(bdi, memcg_css, GFP_ATOMIC);
++	css_put(memcg_css);
+ 	if (!isw->new_wb)
+ 		goto out_free;
  
--enum kxcjk1013_axis {
--	AXIS_X,
--	AXIS_Y,
--	AXIS_Z,
--	AXIS_MAX,
--};
--
- enum kxcjk1013_mode {
- 	STANDBY,
- 	OPERATION,
-@@ -1094,12 +1098,12 @@ static irqreturn_t kxcjk1013_trigger_handler(int irq, void *p)
- 	ret = i2c_smbus_read_i2c_block_data_or_emulated(data->client,
- 							KXCJK1013_REG_XOUT_L,
- 							AXIS_MAX * 2,
--							(u8 *)data->buffer);
-+							(u8 *)data->scan.chans);
- 	mutex_unlock(&data->mutex);
- 	if (ret < 0)
- 		goto err;
- 
--	iio_push_to_buffers_with_timestamp(indio_dev, data->buffer,
-+	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
- 					   data->timestamp);
- err:
- 	iio_trigger_notify_done(indio_dev->trig);
 -- 
 2.30.2
 
