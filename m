@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E643C3C5321
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:51:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E79C03C4D81
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345170AbhGLHxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:53:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57726 "EHLO mail.kernel.org"
+        id S239162AbhGLHNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:13:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245335AbhGLHTa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:19:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 06C5C610A6;
-        Mon, 12 Jul 2021 07:16:41 +0000 (UTC)
+        id S238372AbhGLGsj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:48:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 696B161154;
+        Mon, 12 Jul 2021 06:44:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074202;
-        bh=d76Nba8OGNFNuSlOSe5Byv95i7Vx6q1q/eWWBeOcAmk=;
+        s=korg; t=1626072266;
+        bh=MGEh1O1qKzCFtLhgi4S3slEZspl1zlmNDy1nhzEn1FY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jIze8omDJiUkDQyJgqMBxHV5YK2e1uCfn6OvPyIpflpmU2ZI5nFaielIGzvWHveKc
-         p+1RXH+oYUXHLRtnLn1enMMTZsdbzMKUUIm0c45Y2+qP925GqGqcBQcuIfN4VbX6BL
-         kHIsEygkLnve7N89bSLMpFx76qJnoZr68uI40DRM=
+        b=kPztWdCbFl7KTmr+xWssYdeC2D4GoG/V6i699i8KvYYtPRyJ1JXAP4T7P1V8PdJoY
+         uH+0fI6Fwz5vRK7OGDPePE3emUhBip0ddhbmKthF81HWQMhggGUBr5IoIO10E4RThQ
+         fqosSnMjUNBEgm5BXbJ+SkplN0yXCSifviPgbb1A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        stable@vger.kernel.org, Robert Hancock <robert.hancock@calian.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 500/700] Bluetooth: Fix handling of HCI_LE_Advertising_Set_Terminated event
+Subject: [PATCH 5.10 423/593] clk: si5341: Avoid divide errors due to bogus register contents
 Date:   Mon, 12 Jul 2021 08:09:43 +0200
-Message-Id: <20210712061029.678372237@linuxfoundation.org>
+Message-Id: <20210712060934.818218476@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,54 +40,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+From: Robert Hancock <robert.hancock@calian.com>
 
-[ Upstream commit 23837a6d7a1a61818ed94a6b8af552d6cf7d32d5 ]
+[ Upstream commit 78f6f406026d688868223d5dbeb197a4f7e9a9fd ]
 
-Error status of this event means that it has ended due reasons other
-than a connection:
+If the Si5341 is being initially programmed and has no stored NVM
+configuration, some of the register contents may contain unexpected
+values, such as zeros, which could cause divide by zero errors during
+driver initialization. Trap errors caused by zero registers or zero clock
+rates which could result in divide errors later in the code.
 
- 'If advertising has terminated as a result of the advertising duration
- elapsing, the Status parameter shall be set to the error code
- Advertising Timeout (0x3C).'
-
- 'If advertising has terminated because the
- Max_Extended_Advertising_Events was reached, the Status parameter
- shall be set to the error code Limit Reached (0x43).'
-
-Fixes: acf0aeae431a0 ("Bluetooth: Handle ADv set terminated event")
-Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Fixes: 3044a860fd ("clk: Add Si5341/Si5340 driver")
+Signed-off-by: Robert Hancock <robert.hancock@calian.com>
+Link: https://lore.kernel.org/r/20210325192643.2190069-4-robert.hancock@calian.com
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/hci_event.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ drivers/clk/clk-si5341.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index 03245ab74e67..c6f400b108d9 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -5271,8 +5271,19 @@ static void hci_le_ext_adv_term_evt(struct hci_dev *hdev, struct sk_buff *skb)
+diff --git a/drivers/clk/clk-si5341.c b/drivers/clk/clk-si5341.c
+index b8a960e927bc..ac1ccec2b681 100644
+--- a/drivers/clk/clk-si5341.c
++++ b/drivers/clk/clk-si5341.c
+@@ -624,6 +624,9 @@ static unsigned long si5341_synth_clk_recalc_rate(struct clk_hw *hw,
+ 			SI5341_SYNTH_N_NUM(synth->index), &n_num, &n_den);
+ 	if (err < 0)
+ 		return err;
++	/* Check for bogus/uninitialized settings */
++	if (!n_num || !n_den)
++		return 0;
  
- 	BT_DBG("%s status 0x%2.2x", hdev->name, ev->status);
+ 	/*
+ 	 * n_num and n_den are shifted left as much as possible, so to prevent
+@@ -807,6 +810,9 @@ static long si5341_output_clk_round_rate(struct clk_hw *hw, unsigned long rate,
+ {
+ 	unsigned long r;
  
--	if (ev->status)
-+	if (ev->status) {
-+		struct adv_info *adv;
++	if (!rate)
++		return 0;
 +
-+		adv = hci_find_adv_instance(hdev, ev->handle);
-+		if (!adv)
-+			return;
-+
-+		/* Remove advertising as it has been terminated */
-+		hci_remove_adv_instance(hdev, ev->handle);
-+		mgmt_advertising_removed(NULL, hdev, ev->handle);
-+
- 		return;
-+	}
+ 	r = *parent_rate >> 1;
  
- 	conn = hci_conn_hash_lookup_handle(hdev, __le16_to_cpu(ev->conn_handle));
- 	if (conn) {
+ 	/* If rate is an even divisor, no changes to parent required */
+@@ -835,11 +841,16 @@ static int si5341_output_clk_set_rate(struct clk_hw *hw, unsigned long rate,
+ 		unsigned long parent_rate)
+ {
+ 	struct clk_si5341_output *output = to_clk_si5341_output(hw);
+-	/* Frequency divider is (r_div + 1) * 2 */
+-	u32 r_div = (parent_rate / rate) >> 1;
++	u32 r_div;
+ 	int err;
+ 	u8 r[3];
+ 
++	if (!rate)
++		return -EINVAL;
++
++	/* Frequency divider is (r_div + 1) * 2 */
++	r_div = (parent_rate / rate) >> 1;
++
+ 	if (r_div <= 1)
+ 		r_div = 0;
+ 	else if (r_div >= BIT(24))
 -- 
 2.30.2
 
