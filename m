@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4531F3C49EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7283A3C572B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236116AbhGLGrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:47:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55268 "EHLO mail.kernel.org"
+        id S1376272AbhGLI3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:29:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235461AbhGLGgp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:36:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A44B61108;
-        Mon, 12 Jul 2021 06:33:17 +0000 (UTC)
+        id S245121AbhGLHmb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:42:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFE1761153;
+        Mon, 12 Jul 2021 07:39:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071598;
-        bh=LYo60E9hzNfnIeU6O7W5VONI9WogMKheLf5JCQtvhwA=;
+        s=korg; t=1626075583;
+        bh=xqLbUWE0Glgdkr+prAfvahE76PW29P/frvM5EFO9vLk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uwI3hcjzbkvOE1A/N5vRo6ncNPVDrNbSRbmF0fv+fS0YbWo2kZaQQhz9IOOJLylgE
-         hK9Wjmn9iLSNuSZrNtBzsJrpSYsIL+T7r9hni+j54aWetNxJKYQnT0ect+KDO0WrHa
-         qZiDKBIailKnsTx9R3JcHKjfKZWy1H6dUx9PRWT4=
+        b=n2XJLNijcjPwUxMFZggx7bBUo0+yfJF2A/SUGGt6sj/BolJspVfsu8R28VC/ODEL2
+         L8hfTqXCgCmQfNIfc1bYVvNSw/Wz2FRVq9Lz7M0dZzSbDiEDmqI/d3/IGeDHN6XBBj
+         bgiTrP+r6hQUQuiYVw2qjBFF+G4TdjxtpihNx1ws=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 137/593] media: v4l2-core: Avoid the dangling pointer in v4l2_fh_release
-Date:   Mon, 12 Jul 2021 08:04:57 +0200
-Message-Id: <20210712060858.170150148@linuxfoundation.org>
+Subject: [PATCH 5.13 275/800] crypto: ux500 - Fix error return code in hash_hw_final()
+Date:   Mon, 12 Jul 2021 08:04:58 +0200
+Message-Id: <20210712060953.587176499@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 7dd0c9e547b6924e18712b6b51aa3cba1896ee2c ]
+[ Upstream commit b01360384009ab066940b45f34880991ea7ccbfb ]
 
-A use after free bug caused by the dangling pointer
-filp->privitate_data in v4l2_fh_release.
-See https://lore.kernel.org/patchwork/patch/1419058/.
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-My patch sets the dangling pointer to NULL to provide
-robust.
-
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 8a63b1994c50 ("crypto: ux500 - Add driver for HASH hardware")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/v4l2-core/v4l2-fh.c | 1 +
+ drivers/crypto/ux500/hash/hash_core.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/media/v4l2-core/v4l2-fh.c b/drivers/media/v4l2-core/v4l2-fh.c
-index 684574f58e82..90eec79ee995 100644
---- a/drivers/media/v4l2-core/v4l2-fh.c
-+++ b/drivers/media/v4l2-core/v4l2-fh.c
-@@ -96,6 +96,7 @@ int v4l2_fh_release(struct file *filp)
- 		v4l2_fh_del(fh);
- 		v4l2_fh_exit(fh);
- 		kfree(fh);
-+		filp->private_data = NULL;
- 	}
- 	return 0;
- }
+diff --git a/drivers/crypto/ux500/hash/hash_core.c b/drivers/crypto/ux500/hash/hash_core.c
+index ecb7412e84e3..51a6e1a42434 100644
+--- a/drivers/crypto/ux500/hash/hash_core.c
++++ b/drivers/crypto/ux500/hash/hash_core.c
+@@ -1011,6 +1011,7 @@ static int hash_hw_final(struct ahash_request *req)
+ 			goto out;
+ 		}
+ 	} else if (req->nbytes == 0 && ctx->keylen > 0) {
++		ret = -EPERM;
+ 		dev_err(device_data->dev, "%s: Empty message with keylength > 0, NOT supported\n",
+ 			__func__);
+ 		goto out;
 -- 
 2.30.2
 
