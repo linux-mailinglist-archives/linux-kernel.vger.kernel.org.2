@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10C123C58C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0EC73C4E01
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380899AbhGLIwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:52:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44678 "EHLO mail.kernel.org"
+        id S242401AbhGLHQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:16:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351848AbhGLH6F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:58:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E3D361958;
-        Mon, 12 Jul 2021 07:52:56 +0000 (UTC)
+        id S240401AbhGLGvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:51:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 451D961106;
+        Mon, 12 Jul 2021 06:48:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076377;
-        bh=Oi3y2yBBGcFt18P/vBki8jMUCr2akmA3mbKlUS3X1l8=;
+        s=korg; t=1626072524;
+        bh=YLpnRZwbYrMs34c6jbdfXkIubDmJKgkXjrhsClIoAN0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z0jDxmyWuq1QKrKcmSkV3VtFXNiNMsFvbXplk8LVNJNgrpjnuc743NlpgELOIVv9+
-         7KDopsi1AnQcqTKmHr2J6Ti+gCtjdTxYBHc057Mg1sYWbbL7nyq1zOm9V3ZVTbkAa4
-         we6Df7clbgOVzrtYM9MQbPfp4/08ysOuhuw1sztk=
+        b=ji3CJIhDQ2dcQHfcM0SK7KqaIh9c62TiQD28LGI93wl0R1OZOxFWsWtxg5h29chkz
+         OmlexgUyjSBCfu7FGw2BGWFcFrqUb4ATO8CuxNdoQK/3uIb11SbFfWD5Z8vqY1aRjM
+         qeglxpUrpdARcL7TJycYuakOTsGW0CeK4SqjSuxw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        stable@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 610/800] tty: nozomi: Fix a resource leak in an error handling function
+Subject: [PATCH 5.10 473/593] mtd: partitions: redboot: seek fis-index-block in the right node
 Date:   Mon, 12 Jul 2021 08:10:33 +0200
-Message-Id: <20210712061032.148203729@linuxfoundation.org>
+Message-Id: <20210712060942.123257052@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Corentin Labbe <clabbe@baylibre.com>
 
-[ Upstream commit 31a9a318255960d32ae183e95d0999daf2418608 ]
+[ Upstream commit 237960880960863fb41888763d635b384cffb104 ]
 
-A 'request_irq()' call is not balanced by a corresponding 'free_irq()' in
-the error handling path, as already done in the remove function.
+fis-index-block is seeked in the master node and not in the partitions node.
+For following binding and current usage, the driver need to check the
+partitions subnode.
 
-Add it.
-
-Fixes: 9842c38e9176 ("kfifo: fix warn_unused_result")
-Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/4f0d2b3038e82f081d370ccb0cade3ad88463fe7.1620580838.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: c0e118c8a1a3 ("mtd: partitions: Add OF support to RedBoot partitions")
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20210520114851.1274609-1-clabbe@baylibre.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/nozomi.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/parsers/redboot.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/tty/nozomi.c b/drivers/tty/nozomi.c
-index 9a2d78ace49b..b270e137ef9b 100644
---- a/drivers/tty/nozomi.c
-+++ b/drivers/tty/nozomi.c
-@@ -1420,6 +1420,7 @@ err_free_tty:
- 		tty_unregister_device(ntty_driver, dc->index_start + i);
- 		tty_port_destroy(&dc->port[i].port);
- 	}
-+	free_irq(pdev->irq, dc);
- err_free_kfifo:
- 	for (i = 0; i < MAX_PORT; i++)
- 		kfifo_free(&dc->port[i].fifo_ul);
+diff --git a/drivers/mtd/parsers/redboot.c b/drivers/mtd/parsers/redboot.c
+index 91146bdc4713..3ccd6363ee8c 100644
+--- a/drivers/mtd/parsers/redboot.c
++++ b/drivers/mtd/parsers/redboot.c
+@@ -45,6 +45,7 @@ static inline int redboot_checksum(struct fis_image_desc *img)
+ static void parse_redboot_of(struct mtd_info *master)
+ {
+ 	struct device_node *np;
++	struct device_node *npart;
+ 	u32 dirblock;
+ 	int ret;
+ 
+@@ -52,7 +53,11 @@ static void parse_redboot_of(struct mtd_info *master)
+ 	if (!np)
+ 		return;
+ 
+-	ret = of_property_read_u32(np, "fis-index-block", &dirblock);
++	npart = of_get_child_by_name(np, "partitions");
++	if (!npart)
++		return;
++
++	ret = of_property_read_u32(npart, "fis-index-block", &dirblock);
+ 	if (ret)
+ 		return;
+ 
 -- 
 2.30.2
 
