@@ -2,161 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07BC33C628B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 20:21:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8A7A3C6285
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 20:21:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235872AbhGLSYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 14:24:45 -0400
-Received: from mga17.intel.com ([192.55.52.151]:17337 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230477AbhGLSYo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 14:24:44 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10043"; a="190413164"
-X-IronPort-AV: E=Sophos;i="5.84,234,1620716400"; 
-   d="scan'208";a="190413164"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 11:21:49 -0700
-X-IronPort-AV: E=Sophos;i="5.84,234,1620716400"; 
-   d="scan'208";a="569602150"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 11:21:45 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1m30Yl-00CK2l-Lr; Mon, 12 Jul 2021 21:21:39 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-efi@vger.kernel.org, linux-media@vger.kernel.org,
-        devel@acpica.org
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>
-Subject: [PATCH v2 1/1] ACPI: utils: Fix reference counting in for_each_acpi_dev_match()
-Date:   Mon, 12 Jul 2021 21:21:21 +0300
-Message-Id: <20210712182121.2936794-1-andy.shevchenko@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        id S235833AbhGLSYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 14:24:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56317 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235102AbhGLSY3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 14:24:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626114100;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iBcVkDvKJUcpSWfS1OGM7iDUYY1I1Z8V1aL86DTsiBY=;
+        b=Ol7mPRnEs20OCAPG3YgcVsSzBIMurWAC/ktwlnsfcy98tu6EUt5iKpiEv45ed88IC+fr7L
+        j4HNPq82VkvCrcjFSUbUzn+0siWUH0padD/70ZAxbci8pz8md69hGwCUlcNtDN9nenmPn2
+        Di6UlaTSTeFV8TyuyBV3GqpJv/j7k5I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-262-t8XrEjjCNKC4cb2W_00D1A-1; Mon, 12 Jul 2021 14:21:39 -0400
+X-MC-Unique: t8XrEjjCNKC4cb2W_00D1A-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7992936254;
+        Mon, 12 Jul 2021 18:21:38 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-114-176.rdu2.redhat.com [10.10.114.176])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BF09560871;
+        Mon, 12 Jul 2021 18:21:30 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 3464222054F; Mon, 12 Jul 2021 14:21:30 -0400 (EDT)
+Date:   Mon, 12 Jul 2021 14:21:30 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org, virtio-fs@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Virtio-fs] [PATCH 3/2] fs: simplify get_filesystem_list /
+ get_all_fs_names
+Message-ID: <20210712182130.GC502004@redhat.com>
+References: <20210621062657.3641879-1-hch@lst.de>
+ <20210622081217.GA2975@lst.de>
+ <YNGhERcnLuzjn8j9@stefanha-x1.localdomain>
+ <20210629205048.GE5231@redhat.com>
+ <20210630053601.GA29241@lst.de>
+ <20210707210404.GB244500@redhat.com>
+ <20210707210636.GC244500@redhat.com>
+ <20210708125936.GA319010@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210708125936.GA319010@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently it's possible to iterate over the dangling pointer in case the device
-suddenly disappears. This may happen becase callers put it at the end of a loop.
+On Thu, Jul 08, 2021 at 08:59:36AM -0400, Vivek Goyal wrote:
+> On Wed, Jul 07, 2021 at 05:06:36PM -0400, Vivek Goyal wrote:
+> > On Wed, Jul 07, 2021 at 05:04:04PM -0400, Vivek Goyal wrote:
+> > > On Wed, Jun 30, 2021 at 07:36:01AM +0200, Christoph Hellwig wrote:
+> > > > On Tue, Jun 29, 2021 at 04:50:48PM -0400, Vivek Goyal wrote:
+> > > > > May be we should modify mount_block_root() code so that it does not
+> > > > > require that extra "\0". Possibly zero initialize page and that should
+> > > > > make sure list_bdev_fs_names() does not have to worry about it.
+> > > > > 
+> > > > > It is possible that a page gets full from the list of filesystems, and
+> > > > > last byte on page is terminating null. In that case just zeroing page
+> > > > > will not help. We can keep track of some sort of end pointer and make
+> > > > > sure we are not searching beyond that for valid filesystem types.
+> > > > > 
+> > > > > end = page + PAGE_SIZE - 1;
+> > > > > 
+> > > > > mount_block_root()
+> > > > > {
+> > > > > 	for (p = fs_names; p < end && *p; p += strlen(p)+1) {
+> > > > > 	}
+> > > > > }
+> > > > 
+> > > > Maybe.  To honest I'd prefer to not even touch this unrelated code given
+> > > > how full of landmines it is :)
+> > > 
+> > > Hi Christoph,
+> > > 
+> > > How about following patch. This applies on top of your patches. I noticed
+> > > that Al had suggested to return number of filesystems from helper
+> > > functions. I just did that and used that to iterate in the loop.
+> > > 
+> > > I tested it with a virtual block device (root=/dev/vda1) and it works.
+> > > I also filled page with garbage after allocation to make sure natually
+> > > occurring null is not there in the middle of page to terminate string.
+> > > 
+> > > If you like it, can you please incorporate it in your patches.
+> > 
+> > I noticed this will break with "root_fs_names=". Sorry, will have to
+> > fix split_fs_names() as well. Will do.
+> 
+> Hi Christoph,
+> 
+> I fixed it. Now both split_fs_names() and list_bdev_fs_names() return
+> count of fstype strings it placed in the buffer. And callers now
+> use that count to loop (instead of relying on extra null byte at the
+> end of the buffer).
+> 
+> I tested both nodev (virtiofs, 9p) and block dev rootfs (ext4) and
+> it works for me. Please have a look.
 
-Instead, let's move that call inside acpi_dev_get_next_match_dev().
+Hi Christoph,
 
-Fixes: 803abec64ef9 ("media: ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver")
-Fixes: bf263f64e804 ("media: ACPI / bus: Add acpi_dev_get_next_match_dev() and helper macro")
-Fixes: edbd1bc4951e ("efi/dev-path-parser: Switch to use for_each_acpi_dev_match()")
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
----
-v2:
-- rebased on top of v5.14-rc1 and hence added fix for EFI code
-- added kernel documentation update to point out that
-  acpi_dev_get_next_match_dev() drops a reference on the given
-  ACPI device (Rafael)
+In case you are finding it hard to spend some time on these patches, I 
+can take those patches, merge my changes and repost them.
 
- drivers/acpi/utils.c                       | 7 +++----
- drivers/firmware/efi/dev-path-parser.c     | 1 -
- drivers/media/pci/intel/ipu3/cio2-bridge.c | 6 ++----
- include/acpi/acpi_bus.h                    | 5 -----
- 4 files changed, 5 insertions(+), 14 deletions(-)
+Vivek
 
-diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
-index e7ddd281afff..d5cedffeeff9 100644
---- a/drivers/acpi/utils.c
-+++ b/drivers/acpi/utils.c
-@@ -860,11 +860,9 @@ EXPORT_SYMBOL(acpi_dev_present);
-  * Return the next match of ACPI device if another matching device was present
-  * at the moment of invocation, or NULL otherwise.
-  *
-- * FIXME: The function does not tolerate the sudden disappearance of @adev, e.g.
-- * in the case of a hotplug event. That said, the caller should ensure that
-- * this will never happen.
-- *
-  * The caller is responsible for invoking acpi_dev_put() on the returned device.
-+ * On the other hand the function invokes  acpi_dev_put() on the given @adev
-+ * assuming that its reference counter had been increased beforehand.
-  *
-  * See additional information in acpi_dev_present() as well.
-  */
-@@ -880,6 +878,7 @@ acpi_dev_get_next_match_dev(struct acpi_device *adev, const char *hid, const cha
- 	match.hrv = hrv;
- 
- 	dev = bus_find_device(&acpi_bus_type, start, &match, acpi_dev_match_cb);
-+	acpi_dev_put(adev);
- 	return dev ? to_acpi_device(dev) : NULL;
- }
- EXPORT_SYMBOL(acpi_dev_get_next_match_dev);
-diff --git a/drivers/firmware/efi/dev-path-parser.c b/drivers/firmware/efi/dev-path-parser.c
-index 10d4457417a4..eb9c65f97841 100644
---- a/drivers/firmware/efi/dev-path-parser.c
-+++ b/drivers/firmware/efi/dev-path-parser.c
-@@ -34,7 +34,6 @@ static long __init parse_acpi_path(const struct efi_dev_path *node,
- 			break;
- 		if (!adev->pnp.unique_id && node->acpi.uid == 0)
- 			break;
--		acpi_dev_put(adev);
- 	}
- 	if (!adev)
- 		return -ENODEV;
-diff --git a/drivers/media/pci/intel/ipu3/cio2-bridge.c b/drivers/media/pci/intel/ipu3/cio2-bridge.c
-index 4657e99df033..59a36f922675 100644
---- a/drivers/media/pci/intel/ipu3/cio2-bridge.c
-+++ b/drivers/media/pci/intel/ipu3/cio2-bridge.c
-@@ -173,10 +173,8 @@ static int cio2_bridge_connect_sensor(const struct cio2_sensor_config *cfg,
- 	int ret;
- 
- 	for_each_acpi_dev_match(adev, cfg->hid, NULL, -1) {
--		if (!adev->status.enabled) {
--			acpi_dev_put(adev);
-+		if (!adev->status.enabled)
- 			continue;
--		}
- 
- 		if (bridge->n_sensors >= CIO2_NUM_PORTS) {
- 			acpi_dev_put(adev);
-@@ -185,7 +183,6 @@ static int cio2_bridge_connect_sensor(const struct cio2_sensor_config *cfg,
- 		}
- 
- 		sensor = &bridge->sensors[bridge->n_sensors];
--		sensor->adev = adev;
- 		strscpy(sensor->name, cfg->hid, sizeof(sensor->name));
- 
- 		ret = cio2_bridge_read_acpi_buffer(adev, "SSDB",
-@@ -215,6 +212,7 @@ static int cio2_bridge_connect_sensor(const struct cio2_sensor_config *cfg,
- 			goto err_free_swnodes;
- 		}
- 
-+		sensor->adev = acpi_dev_get(adev);
- 		adev->fwnode.secondary = fwnode;
- 
- 		dev_info(&cio2->dev, "Found supported sensor %s\n",
-diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index 1ae993fee4a5..b9d434a93632 100644
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -707,11 +707,6 @@ acpi_dev_get_first_match_dev(const char *hid, const char *uid, s64 hrv);
-  * @hrv: Hardware Revision of the device, pass -1 to not check _HRV
-  *
-  * The caller is responsible for invoking acpi_dev_put() on the returned device.
-- *
-- * FIXME: Due to above requirement there is a window that may invalidate @adev
-- * and next iteration will use a dangling pointer, e.g. in the case of a
-- * hotplug event. That said, the caller should ensure that this will never
-- * happen.
-  */
- #define for_each_acpi_dev_match(adev, hid, uid, hrv)			\
- 	for (adev = acpi_dev_get_first_match_dev(hid, uid, hrv);	\
--- 
-2.32.0
+> 
+> 
+> ---
+>  fs/filesystems.c   |    5 ++++-
+>  include/linux/fs.h |    2 +-
+>  init/do_mounts.c   |   35 +++++++++++++++++++++++------------
+>  3 files changed, 28 insertions(+), 14 deletions(-)
+> 
+> Index: redhat-linux/fs/filesystems.c
+> ===================================================================
+> --- redhat-linux.orig/fs/filesystems.c	2021-07-08 08:02:09.772766786 -0400
+> +++ redhat-linux/fs/filesystems.c	2021-07-08 08:02:12.044860918 -0400
+> @@ -209,10 +209,11 @@ SYSCALL_DEFINE3(sysfs, int, option, unsi
+>  }
+>  #endif
+>  
+> -void __init list_bdev_fs_names(char *buf, size_t size)
+> +int __init list_bdev_fs_names(char *buf, size_t size)
+>  {
+>  	struct file_system_type *p;
+>  	size_t len;
+> +	int count = 0;
+>  
+>  	read_lock(&file_systems_lock);
+>  	for (p = file_systems; p; p = p->next) {
+> @@ -226,8 +227,10 @@ void __init list_bdev_fs_names(char *buf
+>  		memcpy(buf, p->name, len);
+>  		buf += len;
+>  		size -= len;
+> +		count++;
+>  	}
+>  	read_unlock(&file_systems_lock);
+> +	return count;
+>  }
+>  
+>  #ifdef CONFIG_PROC_FS
+> Index: redhat-linux/include/linux/fs.h
+> ===================================================================
+> --- redhat-linux.orig/include/linux/fs.h	2021-07-08 08:02:09.774766869 -0400
+> +++ redhat-linux/include/linux/fs.h	2021-07-08 08:02:12.046861001 -0400
+> @@ -3622,7 +3622,7 @@ int proc_nr_dentry(struct ctl_table *tab
+>  		  void *buffer, size_t *lenp, loff_t *ppos);
+>  int proc_nr_inodes(struct ctl_table *table, int write,
+>  		   void *buffer, size_t *lenp, loff_t *ppos);
+> -void __init list_bdev_fs_names(char *buf, size_t size);
+> +int __init list_bdev_fs_names(char *buf, size_t size);
+>  
+>  #define __FMODE_EXEC		((__force int) FMODE_EXEC)
+>  #define __FMODE_NONOTIFY	((__force int) FMODE_NONOTIFY)
+> Index: redhat-linux/init/do_mounts.c
+> ===================================================================
+> --- redhat-linux.orig/init/do_mounts.c	2021-07-08 08:02:09.774766869 -0400
+> +++ redhat-linux/init/do_mounts.c	2021-07-08 08:02:12.046861001 -0400
+> @@ -338,14 +338,22 @@ __setup("rootflags=", root_data_setup);
+>  __setup("rootfstype=", fs_names_setup);
+>  __setup("rootdelay=", root_delay_setup);
+>  
+> -static void __init split_fs_names(char *page, char *names)
+> +static int __init split_fs_names(char *page, char *names)
+>  {
+> -	strcpy(page, root_fs_names);
+> -	while (*page++) {
+> -		if (page[-1] == ',')
+> -			page[-1] = '\0';
+> +	int count = 0;
+> +	char *p = page;
+> +
+> +	strcpy(p, root_fs_names);
+> +	while (*p++) {
+> +		if (p[-1] == ',')
+> +			p[-1] = '\0';
+>  	}
+> -	*page = '\0';
+> +	*p = '\0';
+> +
+> +	for (p = page; *p; p += strlen(p)+1)
+> +		count++;
+> +
+> +	return count;
+>  }
+>  
+>  static int __init do_mount_root(const char *name, const char *fs,
+> @@ -391,15 +399,16 @@ void __init mount_block_root(char *name,
+>  	char *fs_names = page_address(page);
+>  	char *p;
+>  	char b[BDEVNAME_SIZE];
+> +	int num_fs, i;
+>  
+>  	scnprintf(b, BDEVNAME_SIZE, "unknown-block(%u,%u)",
+>  		  MAJOR(ROOT_DEV), MINOR(ROOT_DEV));
+>  	if (root_fs_names)
+> -		split_fs_names(fs_names, root_fs_names);
+> +		num_fs = split_fs_names(fs_names, root_fs_names);
+>  	else
+> -		list_bdev_fs_names(fs_names, PAGE_SIZE);
+> +		num_fs = list_bdev_fs_names(fs_names, PAGE_SIZE);
+>  retry:
+> -	for (p = fs_names; *p; p += strlen(p)+1) {
+> +	for (p = fs_names, i = 0; i < num_fs; p += strlen(p)+1, i++) {
+>  		int err = do_mount_root(name, p, flags, root_mount_data);
+>  		switch (err) {
+>  			case 0:
+> @@ -432,7 +441,7 @@ retry:
+>  	printk("List of all partitions:\n");
+>  	printk_all_partitions();
+>  	printk("No filesystem could mount root, tried: ");
+> -	for (p = fs_names; *p; p += strlen(p)+1)
+> +	for (p = fs_names, i = 0; i < num_fs; p += strlen(p)+1, i++)
+>  		printk(" %s", p);
+>  	printk("\n");
+>  	panic("VFS: Unable to mount root fs on %s", b);
+> @@ -533,13 +542,15 @@ static int __init mount_nodev_root(void)
+>  {
+>  	char *fs_names, *fstype;
+>  	int err = -EINVAL;
+> +	int num_fs, i;
+>  
+>  	fs_names = (void *)__get_free_page(GFP_KERNEL);
+>  	if (!fs_names)
+>  		return -EINVAL;
+> -	split_fs_names(fs_names, root_fs_names);
+> +	num_fs = split_fs_names(fs_names, root_fs_names);
+>  
+> -	for (fstype = fs_names; *fstype; fstype += strlen(fstype) + 1) {
+> +	for (fstype = fs_names, i = 0; i < num_fs;
+> +	     fstype += strlen(fstype) + 1, i++) {
+>  		if (!fs_is_nodev(fstype))
+>  			continue;
+>  		err = do_mount_root(root_device_name, fstype, root_mountflags,
 
