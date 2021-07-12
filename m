@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9213C5921
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48E8D3C5976
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356192AbhGLI6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:58:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56498 "EHLO mail.kernel.org"
+        id S1384142AbhGLJDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:03:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353826AbhGLIDB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1353828AbhGLIDB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Jul 2021 04:03:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3426961D0A;
-        Mon, 12 Jul 2021 07:57:43 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CFEAC61D0D;
+        Mon, 12 Jul 2021 07:57:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076663;
-        bh=ODSX4AsV71GYIEJkrpectteUS/7MNtoeUiO8xhs3kWs=;
+        s=korg; t=1626076668;
+        bh=dvT+46BeYcIweLUBtLz0tP8R4ak/r69IrFhf05nTBFo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BAtXPISIH0ce+Gd4Scr+C2fdL6F5bii2BYPGg2DBYK9CHKs2HwEZ6iwIyhm6V8A5K
-         LWeo7Rwaha31JY97A+0C2qxJ5rpTrVgu7h+8Ph2iiDzvfyXhUycn33oP4FpWC00h3U
-         uAVwovZMShFGUgT5Y6qyhwv+jDGkcys9WzluTMP0=
+        b=B+v4ySPOJUFim32kUAZf0RV2mERaOiD5wplyBtXZVC8Z2Js3hbXf2V1x2PMjeNOg4
+         TLdK0S6pru3ZJGhhud15Fhh0IfVnKo+ORvfLMoxPQyqSFi4cNSoIpGhmgxKDgpBlo1
+         mDq8fplJy5tdblOT+TyQOcZ8I1LjRMmBbNozcw3Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        stable@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 739/800] ASoC: atmel-i2s: Fix usage of capture and playback at the same time
-Date:   Mon, 12 Jul 2021 08:12:42 +0200
-Message-Id: <20210712061045.378019679@linuxfoundation.org>
+Subject: [PATCH 5.13 740/800] ASoC: fsl_xcvr: disable all interrupts when suspend happens
+Date:   Mon, 12 Jul 2021 08:12:43 +0200
+Message-Id: <20210712061045.508332979@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -41,98 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-[ Upstream commit 3b7961a326f8a7e03f54a19f02fedae8d488b80f ]
+[ Upstream commit ea837090b388245744988083313f6e9c7c9b9699 ]
 
-For both capture and playback streams to work at the same time, only the
-needed values from a register need to be updated. Also, clocks should be
-enabled only when the first stream is started and stopped when there is no
-running stream.
+There is an unhandled interrupt after suspend, which cause endless
+interrupt when system resume, so system may hang.
 
-Fixes: b543e467d1a9 ("ASoC: atmel-i2s: add driver for the new Atmel I2S controller")
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Link: https://lore.kernel.org/r/20210618150741.401739-2-codrin.ciubotariu@microchip.com
+Disable all interrupts in runtime suspend callback to avoid above
+issue.
+
+Fixes: 28564486866f ("ASoC: fsl_xcvr: Add XCVR ASoC CPU DAI driver")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Link: https://lore.kernel.org/r/1624019913-3380-1-git-send-email-shengjiu.wang@nxp.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/atmel/atmel-i2s.c | 34 ++++++++++++++++++++++++++--------
- 1 file changed, 26 insertions(+), 8 deletions(-)
+ sound/soc/fsl/fsl_xcvr.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/sound/soc/atmel/atmel-i2s.c b/sound/soc/atmel/atmel-i2s.c
-index 48c158535ff6..e5c4625b7771 100644
---- a/sound/soc/atmel/atmel-i2s.c
-+++ b/sound/soc/atmel/atmel-i2s.c
-@@ -200,6 +200,7 @@ struct atmel_i2s_dev {
- 	unsigned int				fmt;
- 	const struct atmel_i2s_gck_param	*gck_param;
- 	const struct atmel_i2s_caps		*caps;
-+	int					clk_use_no;
- };
- 
- static irqreturn_t atmel_i2s_interrupt(int irq, void *dev_id)
-@@ -321,9 +322,16 @@ static int atmel_i2s_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct atmel_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
- 	bool is_playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
--	unsigned int mr = 0;
-+	unsigned int mr = 0, mr_mask;
+diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
+index 6cb558165848..46f3f2c68756 100644
+--- a/sound/soc/fsl/fsl_xcvr.c
++++ b/sound/soc/fsl/fsl_xcvr.c
+@@ -1233,6 +1233,16 @@ static __maybe_unused int fsl_xcvr_runtime_suspend(struct device *dev)
+ 	struct fsl_xcvr *xcvr = dev_get_drvdata(dev);
  	int ret;
  
-+	mr_mask = ATMEL_I2SC_MR_FORMAT_MASK | ATMEL_I2SC_MR_MODE_MASK |
-+		ATMEL_I2SC_MR_DATALENGTH_MASK;
-+	if (is_playback)
-+		mr_mask |= ATMEL_I2SC_MR_TXMONO;
-+	else
-+		mr_mask |= ATMEL_I2SC_MR_RXMONO;
++	/*
++	 * Clear interrupts, when streams starts or resumes after
++	 * suspend, interrupts are enabled in prepare(), so no need
++	 * to enable interrupts in resume().
++	 */
++	ret = regmap_update_bits(xcvr->regmap, FSL_XCVR_EXT_IER0,
++				 FSL_XCVR_IRQ_EARC_ALL, 0);
++	if (ret < 0)
++		dev_err(dev, "Failed to clear IER0: %d\n", ret);
 +
- 	switch (dev->fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
- 		mr |= ATMEL_I2SC_MR_FORMAT_I2S;
-@@ -402,7 +410,7 @@ static int atmel_i2s_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
- 
--	return regmap_write(dev->regmap, ATMEL_I2SC_MR, mr);
-+	return regmap_update_bits(dev->regmap, ATMEL_I2SC_MR, mr_mask, mr);
- }
- 
- static int atmel_i2s_switch_mck_generator(struct atmel_i2s_dev *dev,
-@@ -495,18 +503,28 @@ static int atmel_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 	is_master = (mr & ATMEL_I2SC_MR_MODE_MASK) == ATMEL_I2SC_MR_MODE_MASTER;
- 
- 	/* If master starts, enable the audio clock. */
--	if (is_master && mck_enabled)
--		err = atmel_i2s_switch_mck_generator(dev, true);
--	if (err)
--		return err;
-+	if (is_master && mck_enabled) {
-+		if (!dev->clk_use_no) {
-+			err = atmel_i2s_switch_mck_generator(dev, true);
-+			if (err)
-+				return err;
-+		}
-+		dev->clk_use_no++;
-+	}
- 
- 	err = regmap_write(dev->regmap, ATMEL_I2SC_CR, cr);
- 	if (err)
- 		return err;
- 
- 	/* If master stops, disable the audio clock. */
--	if (is_master && !mck_enabled)
--		err = atmel_i2s_switch_mck_generator(dev, false);
-+	if (is_master && !mck_enabled) {
-+		if (dev->clk_use_no == 1) {
-+			err = atmel_i2s_switch_mck_generator(dev, false);
-+			if (err)
-+				return err;
-+		}
-+		dev->clk_use_no--;
-+	}
- 
- 	return err;
- }
+ 	/* Assert M0+ reset */
+ 	ret = regmap_update_bits(xcvr->regmap, FSL_XCVR_EXT_CTRL,
+ 				 FSL_XCVR_EXT_CTRL_CORE_RESET,
 -- 
 2.30.2
 
