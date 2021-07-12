@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80CCE3C591C
+	by mail.lfdr.de (Postfix) with ESMTP id CB46F3C591D
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356950AbhGLI5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:57:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56278 "EHLO mail.kernel.org"
+        id S1356985AbhGLI5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:57:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353761AbhGLICu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:02:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A93AD61930;
-        Mon, 12 Jul 2021 07:57:24 +0000 (UTC)
+        id S1353767AbhGLICv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:02:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0B1C6194D;
+        Mon, 12 Jul 2021 07:57:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076645;
-        bh=hqfDGKAdTtoWtw7NqFsuUYlVAcVneAVmKwumWSlcGzg=;
+        s=korg; t=1626076647;
+        bh=Qm8zjPYDkF0MvTmHL/h5CYK5WESemM4MC6ED+yLTkeE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sdl2ElwtfjL5nP6c86R8cm20ByUgYu9BTBA34f2CKW7HCJBgmzSGS6mV9XfRurS3t
-         0Yp9K5dpnZJlPzoTmpapTx/3xYjjKoS4nb0KGX6oFti0nisAIRBx/6V1S4MC/N/FTy
-         UtU4W4QwsrsEJOiAal+42SgEM1k45GJW63zzVJTE=
+        b=eSIj8yirzeUGjOt78QmPfI7+7TcEBF1JRI7fuDYG0Zuy8LgkCRd0Ub+EDBwtMaFmL
+         k1VFsHjIH/P4bsTZRltNaiZAQUAsIYCR2cvNPOtWBtcsBtyCqOP0SLX3JeRrRZb7p2
+         gLc96azntKGZGsgZ7f2oze3ih2miIstwn/0rtXyI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 731/800] scsi: mpt3sas: Fix error return value in _scsih_expander_add()
-Date:   Mon, 12 Jul 2021 08:12:34 +0200
-Message-Id: <20210712061044.551240391@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 732/800] soundwire: stream: Fix test for DP prepare complete
+Date:   Mon, 12 Jul 2021 08:12:35 +0200
+Message-Id: <20210712061044.659619039@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -41,41 +41,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-[ Upstream commit d6c2ce435ffe23ef7f395ae76ec747414589db46 ]
+[ Upstream commit 3d3e88e336338834086278236d42039f3cde50e1 ]
 
-When an expander does not contain any 'phys', an appropriate error code -1
-should be returned, as done elsewhere in this function. However, we
-currently do not explicitly assign this error code to 'rc'. As a result, 0
-was incorrectly returned.
+In sdw_prep_deprep_slave_ports(), after the wait_for_completion()
+the DP prepare status register is read. If this indicates that the
+port is now prepared, the code should continue with the port setup.
+It is irrelevant whether the wait_for_completion() timed out if the
+port is now ready.
 
-Link: https://lore.kernel.org/r/20210514081300.6650-1-thunder.leizhen@huawei.com
-Fixes: f92363d12359 ("[SCSI] mpt3sas: add new driver supporting 12GB SAS")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+The previous implementation would always fail if the
+wait_for_completion() timed out, even if the port was reporting
+successful prepare.
+
+This patch also fixes a minor bug where the return from sdw_read()
+was not checked for error - any error code with LSBits clear could
+be misinterpreted as a successful port prepare.
+
+Fixes: 79df15b7d37c ("soundwire: Add helpers for ports operations")
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20210618144745.30629-1-rf@opensource.cirrus.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/mpt3sas/mpt3sas_scsih.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/soundwire/stream.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_scsih.c b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
-index d00aca3c77ce..a5f70f0e0287 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_scsih.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
-@@ -6884,8 +6884,10 @@ _scsih_expander_add(struct MPT3SAS_ADAPTER *ioc, u16 handle)
- 		 handle, parent_handle,
- 		 (u64)sas_expander->sas_address, sas_expander->num_phys);
+diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+index 1eaedaaba094..1a18308f4ef4 100644
+--- a/drivers/soundwire/stream.c
++++ b/drivers/soundwire/stream.c
+@@ -422,7 +422,6 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
+ 	struct completion *port_ready;
+ 	struct sdw_dpn_prop *dpn_prop;
+ 	struct sdw_prepare_ch prep_ch;
+-	unsigned int time_left;
+ 	bool intr = false;
+ 	int ret = 0, val;
+ 	u32 addr;
+@@ -479,15 +478,15 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
  
--	if (!sas_expander->num_phys)
-+	if (!sas_expander->num_phys) {
-+		rc = -1;
- 		goto out_fail;
-+	}
- 	sas_expander->phy = kcalloc(sas_expander->num_phys,
- 	    sizeof(struct _sas_phy), GFP_KERNEL);
- 	if (!sas_expander->phy) {
+ 		/* Wait for completion on port ready */
+ 		port_ready = &s_rt->slave->port_ready[prep_ch.num];
+-		time_left = wait_for_completion_timeout(port_ready,
+-				msecs_to_jiffies(dpn_prop->ch_prep_timeout));
++		wait_for_completion_timeout(port_ready,
++			msecs_to_jiffies(dpn_prop->ch_prep_timeout));
+ 
+ 		val = sdw_read(s_rt->slave, SDW_DPN_PREPARESTATUS(p_rt->num));
+-		val &= p_rt->ch_mask;
+-		if (!time_left || val) {
++		if ((val < 0) || (val & p_rt->ch_mask)) {
++			ret = (val < 0) ? val : -ETIMEDOUT;
+ 			dev_err(&s_rt->slave->dev,
+-				"Chn prep failed for port:%d\n", prep_ch.num);
+-			return -ETIMEDOUT;
++				"Chn prep failed for port %d: %d\n", prep_ch.num, ret);
++			return ret;
+ 		}
+ 	}
+ 
 -- 
 2.30.2
 
