@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 172593C4AF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2DDA3C4AF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:36:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241495AbhGLGzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:55:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33150 "EHLO mail.kernel.org"
+        id S241465AbhGLGzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:55:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238453AbhGLGkN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238451AbhGLGkN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Jul 2021 02:40:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90B6761106;
-        Mon, 12 Jul 2021 06:37:21 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7F106113A;
+        Mon, 12 Jul 2021 06:37:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071842;
-        bh=G2cBt0lFw3ggo19O0ZymoPiNsPUYW3oO44bMKFgrsY0=;
+        s=korg; t=1626071844;
+        bh=PwLa1igOKSV8BZprhQw0f1RZYwQaR324yKmmiYBmM44=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O5G02SdLq4JkSO1CTqXK1Tj/DvS90aLZNI3eR3h5hfFNyT8K+u+Bdfm3ufSqA9N8Y
-         IPTM+ea81/nBy2z2QLc+DD+/LbR9uXFxYFm/jPbxOdK48MaPKLmEAyadE2RYaq0It9
-         7QNZxQgqxv+CqXwnvGE7Uj6R68WL94V/rpkFnO+8=
+        b=nfoF/a1tRtBPMU+4N+HsyyakI/jR27nKwXa87PLPAJuCkZ0SYTqhFY6+VvDX/vyMq
+         NPYAyZ1SQwd0PUmJ/0o6hQU1RPyCbzA3y1ohRIMM9+yEnKY4lNUXh7604TicXM2J+m
+         0qw5BRTRblqxmi8A2ToPxTff8s/3j6jf5fcVeX/w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 241/593] crypto: omap-sham - Fix PM reference leak in omap sham ops
-Date:   Mon, 12 Jul 2021 08:06:41 +0200
-Message-Id: <20210712060909.414119090@linuxfoundation.org>
+Subject: [PATCH 5.10 242/593] crypto: x86/curve25519 - fix cpu feature checking logic in mod_exit
+Date:   Mon, 12 Jul 2021 08:06:42 +0200
+Message-Id: <20210712060909.519906289@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
 References: <20210712060843.180606720@linuxfoundation.org>
@@ -40,46 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Hangbin Liu <liuhangbin@gmail.com>
 
-[ Upstream commit ca323b2c61ec321eb9f2179a405b9c34cdb4f553 ]
+[ Upstream commit 1b82435d17774f3eaab35dce239d354548aa9da2 ]
 
-pm_runtime_get_sync will increment pm usage counter
-even it failed. Forgetting to putting operation will
-result in reference leak here. We fix it by replacing
-it with pm_runtime_resume_and_get to keep usage counter
-balanced.
+In curve25519_mod_init() the curve25519_alg will be registered only when
+(X86_FEATURE_BMI2 && X86_FEATURE_ADX). But in curve25519_mod_exit()
+it still checks (X86_FEATURE_BMI2 || X86_FEATURE_ADX) when do crypto
+unregister. This will trigger a BUG_ON in crypto_unregister_alg() as
+alg->cra_refcnt is 0 if the cpu only supports one of X86_FEATURE_BMI2
+and X86_FEATURE_ADX.
 
-Fixes: 604c31039dae4 ("crypto: omap-sham - Check for return value from pm_runtime_get_sync")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Fixes: 07b586fe0662 ("crypto: x86/curve25519 - replace with formally verified implementation")
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+Reviewed-by: Jason A. Donenfeld <Jason@zx2c4.com>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/omap-sham.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/crypto/curve25519-x86_64.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/omap-sham.c b/drivers/crypto/omap-sham.c
-index a3b38d2c92e7..39d17ed1db2f 100644
---- a/drivers/crypto/omap-sham.c
-+++ b/drivers/crypto/omap-sham.c
-@@ -371,7 +371,7 @@ static int omap_sham_hw_init(struct omap_sham_dev *dd)
+diff --git a/arch/x86/crypto/curve25519-x86_64.c b/arch/x86/crypto/curve25519-x86_64.c
+index 5af8021b98ce..11b4c83c715e 100644
+--- a/arch/x86/crypto/curve25519-x86_64.c
++++ b/arch/x86/crypto/curve25519-x86_64.c
+@@ -1500,7 +1500,7 @@ static int __init curve25519_mod_init(void)
+ static void __exit curve25519_mod_exit(void)
  {
- 	int err;
+ 	if (IS_REACHABLE(CONFIG_CRYPTO_KPP) &&
+-	    (boot_cpu_has(X86_FEATURE_BMI2) || boot_cpu_has(X86_FEATURE_ADX)))
++	    static_branch_likely(&curve25519_use_bmi2_adx))
+ 		crypto_unregister_kpp(&curve25519_alg);
+ }
  
--	err = pm_runtime_get_sync(dd->dev);
-+	err = pm_runtime_resume_and_get(dd->dev);
- 	if (err < 0) {
- 		dev_err(dd->dev, "failed to get sync: %d\n", err);
- 		return err;
-@@ -2243,7 +2243,7 @@ static int omap_sham_suspend(struct device *dev)
- 
- static int omap_sham_resume(struct device *dev)
- {
--	int err = pm_runtime_get_sync(dev);
-+	int err = pm_runtime_resume_and_get(dev);
- 	if (err < 0) {
- 		dev_err(dev, "failed to get sync: %d\n", err);
- 		return err;
 -- 
 2.30.2
 
