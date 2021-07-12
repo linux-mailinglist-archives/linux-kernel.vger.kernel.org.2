@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 034C33C53AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2245D3C4CDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348374AbhGLHze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:55:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54762 "EHLO mail.kernel.org"
+        id S243953AbhGLHKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:10:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243048AbhGLHTO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:19:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 596506145A;
-        Mon, 12 Jul 2021 07:16:24 +0000 (UTC)
+        id S237116AbhGLGr6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:47:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E1EA7610E5;
+        Mon, 12 Jul 2021 06:43:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074185;
-        bh=kKo82JbQhrOpPRUGgosE3k7PE3su9KEwqP3z4tw5qeA=;
+        s=korg; t=1626072229;
+        bh=SqgqjwXJJX6J2I5vegfmJ0u8E68kgN5L3j4QWGbwvZY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eSg4c2UOdY2JbgUIQq800TcNC3504kDTlyV3VWl0GEil0VVG8bjptzjjR7TI4QAJV
-         v+PfLAulkelDFE/kb2YofBYxjMiMvMD9jJkXXdzPerosydBWLGc84u3UvA/PptKmUP
-         Ju9ujhqGvSB6p4IUgKYAM/RaZRTRPF+QLSMQV+jY=
+        b=eM3tzfpt9GeOnNPnsKoBCD+mUCSZdKd9Z8wfGDrzfXeS6ERBNmyV681YpbE4hF6xU
+         ieJnu1FhTOKMKPpmsfxJK6+Gp15oqxe6i+sE4S91fQHvr2H+rFpmUq9Jma5qGYagp2
+         sEHaEZ2XYUeWDgMlpkQpkoQBCg3VmS3vuslXsOy4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Martin Loviska <mloviska@suse.com>,
+        Gary Lin <glin@suse.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitrii Banshchikov <me@ubique.spb.ru>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 486/700] ibmvnic: free tx_pool if tso_pool alloc fails
+Subject: [PATCH 5.10 409/593] bpfilter: Specify the log level for the kmsg message
 Date:   Mon, 12 Jul 2021 08:09:29 +0200
-Message-Id: <20210712061028.282224407@linuxfoundation.org>
+Message-Id: <20210712060932.838154822@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +42,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
+From: Gary Lin <glin@suse.com>
 
-[ Upstream commit f6ebca8efa52e4ae770f0325d618e7bcf08ada0c ]
+[ Upstream commit a196fa78a26571359740f701cf30d774eb8a72cb ]
 
-Free tx_pool and clear it, if allocation of tso_pool fails.
+Per the kmsg document [0], if we don't specify the log level with a
+prefix "<N>" in the message string, the default log level will be
+applied to the message. Since the default level could be warning(4),
+this would make the log utility such as journalctl treat the message,
+"Started bpfilter", as a warning. To avoid confusion, this commit
+adds the prefix "<5>" to make the message always a notice.
 
-release_tx_pools() assumes we have both tx and tso_pools if ->tx_pool is
-non-NULL. If allocation of tso_pool fails in init_tx_pools(), the assumption
-will not be true and we would end up dereferencing ->tx_buff, ->free_map
-fields from a NULL pointer.
+  [0] https://www.kernel.org/doc/Documentation/ABI/testing/dev-kmsg
 
-Fixes: 3205306c6b8d ("ibmvnic: Update TX pool initialization routine")
-Signed-off-by: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 36c4357c63f3 ("net: bpfilter: print umh messages to /dev/kmsg")
+Reported-by: Martin Loviska <mloviska@suse.com>
+Signed-off-by: Gary Lin <glin@suse.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Dmitrii Banshchikov <me@ubique.spb.ru>
+Link: https://lore.kernel.org/bpf/20210623040918.8683-1-glin@suse.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ net/bpfilter/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-index accf362193f8..3c77897b3f31 100644
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -778,8 +778,11 @@ static int init_tx_pools(struct net_device *netdev)
- 
- 	adapter->tso_pool = kcalloc(tx_subcrqs,
- 				    sizeof(struct ibmvnic_tx_pool), GFP_KERNEL);
--	if (!adapter->tso_pool)
-+	if (!adapter->tso_pool) {
-+		kfree(adapter->tx_pool);
-+		adapter->tx_pool = NULL;
- 		return -1;
-+	}
- 
- 	adapter->num_active_tx_pools = tx_subcrqs;
- 
+diff --git a/net/bpfilter/main.c b/net/bpfilter/main.c
+index 05e1cfc1e5cd..291a92546246 100644
+--- a/net/bpfilter/main.c
++++ b/net/bpfilter/main.c
+@@ -57,7 +57,7 @@ int main(void)
+ {
+ 	debug_f = fopen("/dev/kmsg", "w");
+ 	setvbuf(debug_f, 0, _IOLBF, 0);
+-	fprintf(debug_f, "Started bpfilter\n");
++	fprintf(debug_f, "<5>Started bpfilter\n");
+ 	loop();
+ 	fclose(debug_f);
+ 	return 0;
 -- 
 2.30.2
 
