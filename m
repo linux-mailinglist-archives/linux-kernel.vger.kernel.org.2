@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE71F3C514E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F7173C579F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346360AbhGLHje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:39:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42548 "EHLO mail.kernel.org"
+        id S1377496AbhGLIgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:36:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244254AbhGLHKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:10:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A1B6E613D9;
-        Mon, 12 Jul 2021 07:07:30 +0000 (UTC)
+        id S1349994AbhGLHuU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:50:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1871161879;
+        Mon, 12 Jul 2021 07:43:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073651;
-        bh=khWwxZN4Q9keLfsKl4AnOJt4up4F52KZlZIRb/onXjM=;
+        s=korg; t=1626075817;
+        bh=rNG5DcWA9KDHMgAglAzkWJWc5snz95lOb8j/k4helOw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YvloNJSV/MQhbsHShNrlpF5p8DXw9DeL2T7ZHwN4Mjm0MRJNFKc3K3tDUwCB2qsdw
-         LSwBXS3TioEyvu1kIULIkYAxYm4TmVVyYl01uN57ZINED99p8dgQZJ7euHLXux181N
-         npP6bWeo1w5xv3cadHF7YJZdsAAzdXNKFW3xZhh0=
+        b=vA4+DHV4MNgN0jkM4r6dnE/IIaPYw2vseRj5QmPe03dbTnr0VhpmlDhGHNvW4aVqf
+         UIgpbfLBu24ST+x/0rqVkU24a5w4aCZnQVYIzxK+D1nxh4AqZBKZ0qdy7dVjtHCy1h
+         Mxg2WIHrwAlQK9mz/0f8eLvQKsm6ngoDHcVSHDSQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 314/700] lockdep/selftests: Fix selftests vs PROVE_RAW_LOCK_NESTING
-Date:   Mon, 12 Jul 2021 08:06:37 +0200
-Message-Id: <20210712061009.749925429@linuxfoundation.org>
+        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 375/800] ACPI: bgrt: Fix CFI violation
+Date:   Mon, 12 Jul 2021 08:06:38 +0200
+Message-Id: <20210712061006.967584970@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +41,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Nathan Chancellor <nathan@kernel.org>
 
-[ Upstream commit c0c2c0dad6a06e0c05e9a52d65f932bd54364c97 ]
+[ Upstream commit f37ccf8fce155d08ae2a4fb3db677911ced0c21a ]
 
-When PROVE_RAW_LOCK_NESTING=y many of the selftests FAILED because
-HARDIRQ context is out-of-bounds for spinlocks. Instead make the
-default hardware context the threaded hardirq context, which preserves
-the old locking rules.
+clang's Control Flow Integrity requires that every indirect call has a
+valid target, which is based on the type of the function pointer. The
+*_show() functions in this file are written as if they will be called
+from dev_attr_show(); however, they will be called from
+sysfs_kf_seq_show() because the files were created by
+sysfs_create_group() and the sysfs ops are based on kobj_sysfs_ops
+because of kobject_add_and_create(). Because the *_show() functions do
+not match the type of the show() member in struct kobj_attribute, there
+is a CFI violation.
 
-The wait-type specific locking selftests will have a non-threaded
-HARDIRQ variant.
+$ cat /sys/firmware/acpi/bgrt/{status,type,version,{x,y}offset}}
+1
+0
+1
+522
+307
 
-Fixes: de8f5e4f2dc1 ("lockdep: Introduce wait-type checks")
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Tested-by: Joerg Roedel <jroedel@suse.de>
-Link: https://lore.kernel.org/r/20210617190313.322096283@infradead.org
+$ dmesg | grep "CFI failure"
+[  267.761825] CFI failure (target: type_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
+[  267.762246] CFI failure (target: xoffset_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
+[  267.762584] CFI failure (target: status_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
+[  267.762973] CFI failure (target: yoffset_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
+[  267.763330] CFI failure (target: version_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
+
+Convert these functions to the type of the show() member in struct
+kobj_attribute so that there is no more CFI violation. Because these
+functions are all so similar, combine them into a macro.
+
+Fixes: d1ff4b1cdbab ("ACPI: Add support for exposing BGRT data")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1406
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/locking-selftest.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/acpi/bgrt.c | 57 ++++++++++++++-------------------------------
+ 1 file changed, 18 insertions(+), 39 deletions(-)
 
-diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
-index 2d85abac1744..0f6b262e0964 100644
---- a/lib/locking-selftest.c
-+++ b/lib/locking-selftest.c
-@@ -194,6 +194,7 @@ static void init_shared_classes(void)
- #define HARDIRQ_ENTER()				\
- 	local_irq_disable();			\
- 	__irq_enter();				\
-+	lockdep_hardirq_threaded();		\
- 	WARN_ON(!in_irq());
+diff --git a/drivers/acpi/bgrt.c b/drivers/acpi/bgrt.c
+index 19bb7f870204..e0d14017706e 100644
+--- a/drivers/acpi/bgrt.c
++++ b/drivers/acpi/bgrt.c
+@@ -15,40 +15,19 @@
+ static void *bgrt_image;
+ static struct kobject *bgrt_kobj;
  
- #define HARDIRQ_EXIT()				\
+-static ssize_t version_show(struct device *dev,
+-			    struct device_attribute *attr, char *buf)
+-{
+-	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.version);
+-}
+-static DEVICE_ATTR_RO(version);
+-
+-static ssize_t status_show(struct device *dev,
+-			   struct device_attribute *attr, char *buf)
+-{
+-	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.status);
+-}
+-static DEVICE_ATTR_RO(status);
+-
+-static ssize_t type_show(struct device *dev,
+-			 struct device_attribute *attr, char *buf)
+-{
+-	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.image_type);
+-}
+-static DEVICE_ATTR_RO(type);
+-
+-static ssize_t xoffset_show(struct device *dev,
+-			    struct device_attribute *attr, char *buf)
+-{
+-	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.image_offset_x);
+-}
+-static DEVICE_ATTR_RO(xoffset);
+-
+-static ssize_t yoffset_show(struct device *dev,
+-			    struct device_attribute *attr, char *buf)
+-{
+-	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.image_offset_y);
+-}
+-static DEVICE_ATTR_RO(yoffset);
++#define BGRT_SHOW(_name, _member) \
++	static ssize_t _name##_show(struct kobject *kobj,			\
++				    struct kobj_attribute *attr, char *buf)	\
++	{									\
++		return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab._member);	\
++	}									\
++	struct kobj_attribute bgrt_attr_##_name = __ATTR_RO(_name)
++
++BGRT_SHOW(version, version);
++BGRT_SHOW(status, status);
++BGRT_SHOW(type, image_type);
++BGRT_SHOW(xoffset, image_offset_x);
++BGRT_SHOW(yoffset, image_offset_y);
+ 
+ static ssize_t image_read(struct file *file, struct kobject *kobj,
+ 	       struct bin_attribute *attr, char *buf, loff_t off, size_t count)
+@@ -60,11 +39,11 @@ static ssize_t image_read(struct file *file, struct kobject *kobj,
+ static BIN_ATTR_RO(image, 0);	/* size gets filled in later */
+ 
+ static struct attribute *bgrt_attributes[] = {
+-	&dev_attr_version.attr,
+-	&dev_attr_status.attr,
+-	&dev_attr_type.attr,
+-	&dev_attr_xoffset.attr,
+-	&dev_attr_yoffset.attr,
++	&bgrt_attr_version.attr,
++	&bgrt_attr_status.attr,
++	&bgrt_attr_type.attr,
++	&bgrt_attr_xoffset.attr,
++	&bgrt_attr_yoffset.attr,
+ 	NULL,
+ };
+ 
 -- 
 2.30.2
 
