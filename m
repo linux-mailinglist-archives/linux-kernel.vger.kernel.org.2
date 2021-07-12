@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 259E53C585C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9EA63C52A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355898AbhGLIqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:46:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37842 "EHLO mail.kernel.org"
+        id S1346730AbhGLHsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:48:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350558AbhGLHvI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:51:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 93C1E61205;
-        Mon, 12 Jul 2021 07:46:15 +0000 (UTC)
+        id S240351AbhGLHOJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:14:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56ED361206;
+        Mon, 12 Jul 2021 07:11:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075976;
-        bh=JaEEkSWd8TPseL/G8wxu4i/rEARwjJTc5tQFmUBi95Y=;
+        s=korg; t=1626073866;
+        bh=MKCKZ5s1LJJY5u7B2RWgKfUwYZugg517Q0Vn0DZY+j4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Vr6cJ+Rsv3eMoq/OMyDxuyOVcBBqnEJPl53eNjOyyHOT19BT3qJcqfw30YU1WLlZd
-         Li2Jt9vxJ/Ovv6hkIityoZbd53Sgnl7LIXgHqPQ6oMpJ7Jvn3fyw2n6JKLje5NvSS+
-         1F+mpZH5jgpnuxJvH7g8sprYexZQlAJIYSgCgKRQ=
+        b=q8Rp4l9g+OSNpJ4z0MfdweAjBx4DytYrDMl/g81KuCazIczCUG7n+BwR2HmqFLsDJ
+         zzyUQVSRXwU2RpRHTv7UOtOGSITYoRH8jyPgMF5auIjRqSBo4w/Rj1p/d/i9rF3qko
+         u+AurV35e+VV0aabPq21ygwBsaTHpKJQgWKUY8yI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yi Zhang <yi.zhang@redhat.com>,
-        Kamal Heib <kamalheib1@gmail.com>,
+        stable@vger.kernel.org, Gioh Kim <gi-oh.kim@ionos.com>,
+        Md Haris Iqbal <haris.iqbal@ionos.com>,
+        Jack Wang <jinpu.wang@ionos.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 445/800] RDMA/rxe: Fix failure during driver load
+Subject: [PATCH 5.12 385/700] RDMA/rtrs-srv: Fix memory leak of unfreed rtrs_srv_stats object
 Date:   Mon, 12 Jul 2021 08:07:48 +0200
-Message-Id: <20210712061014.467472154@linuxfoundation.org>
+Message-Id: <20210712061017.332475096@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,56 +42,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kamal Heib <kamalheib1@gmail.com>
+From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
 
-[ Upstream commit 32a25f2ea690dfaace19f7a3a916f5d7e1ddafe8 ]
+[ Upstream commit 2371c40354509746e4a4dad09a752e027a30f148 ]
 
-To avoid the following failure when trying to load the rdma_rxe module
-while IPv6 is disabled, add a check for EAFNOSUPPORT and ignore the
-failure, also delete the needless debug print from rxe_setup_udp_tunnel().
+When closing a session, currently the rtrs_srv_stats object in the
+closing session is freed by kobject release. But if it failed
+to create a session by various reasons, it must free the rtrs_srv_stats
+object directly because kobject is not created yet.
 
-$ modprobe rdma_rxe
-modprobe: ERROR: could not insert 'rdma_rxe': Operation not permitted
+This problem is found by kmemleak as below:
 
-Fixes: dfdd6158ca2c ("IB/rxe: Fix kernel panic in udp_setup_tunnel")
-Link: https://lore.kernel.org/r/20210603090112.36341-1-kamalheib1@gmail.com
-Reported-by: Yi Zhang <yi.zhang@redhat.com>
-Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+1. One client machine maps /dev/nullb0 with session name 'bla':
+root@test1:~# echo "sessname=bla path=ip:192.168.122.190 \
+device_path=/dev/nullb0" > /sys/devices/virtual/rnbd-client/ctl/map_device
+
+2. Another machine failed to create a session with the same name 'bla':
+root@test2:~# echo "sessname=bla path=ip:192.168.122.190 \
+device_path=/dev/nullb1" > /sys/devices/virtual/rnbd-client/ctl/map_device
+-bash: echo: write error: Connection reset by peer
+
+3. The kmemleak on server machine reported an error:
+unreferenced object 0xffff888033cdc800 (size 128):
+  comm "kworker/2:1", pid 83, jiffies 4295086585 (age 2508.680s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000a72903b2>] __alloc_sess+0x1d4/0x1250 [rtrs_server]
+    [<00000000d1e5321e>] rtrs_srv_rdma_cm_handler+0xc31/0xde0 [rtrs_server]
+    [<00000000bb2f6e7e>] cma_ib_req_handler+0xdc5/0x2b50 [rdma_cm]
+    [<00000000e896235d>] cm_process_work+0x2d/0x100 [ib_cm]
+    [<00000000b6866c5f>] cm_req_handler+0x11bc/0x1c40 [ib_cm]
+    [<000000005f5dd9aa>] cm_work_handler+0xe65/0x3cf2 [ib_cm]
+    [<00000000610151e7>] process_one_work+0x4bc/0x980
+    [<00000000541e0f77>] worker_thread+0x78/0x5c0
+    [<00000000423898ca>] kthread+0x191/0x1e0
+    [<000000005a24b239>] ret_from_fork+0x3a/0x50
+
+Fixes: 39c2d639ca183 ("RDMA/rtrs-srv: Set .release function for rtrs srv device during device init")
+Link: https://lore.kernel.org/r/20210528113018.52290-18-jinpu.wang@ionos.com
+Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
+Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
+Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/sw/rxe/rxe_net.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-index 01662727dca0..fc1ba4904279 100644
---- a/drivers/infiniband/sw/rxe/rxe_net.c
-+++ b/drivers/infiniband/sw/rxe/rxe_net.c
-@@ -207,10 +207,8 @@ static struct socket *rxe_setup_udp_tunnel(struct net *net, __be16 port,
- 
- 	/* Create UDP socket */
- 	err = udp_sock_create(net, &udp_cfg, &sock);
--	if (err < 0) {
--		pr_err("failed to create udp socket. err = %d\n", err);
-+	if (err < 0)
- 		return ERR_PTR(err);
--	}
- 
- 	tnl_cfg.encap_type = 1;
- 	tnl_cfg.encap_rcv = rxe_udp_encap_recv;
-@@ -619,6 +617,12 @@ static int rxe_net_ipv6_init(void)
- 
- 	recv_sockets.sk6 = rxe_setup_udp_tunnel(&init_net,
- 						htons(ROCE_V2_UDP_DPORT), true);
-+	if (PTR_ERR(recv_sockets.sk6) == -EAFNOSUPPORT) {
-+		recv_sockets.sk6 = NULL;
-+		pr_warn("IPv6 is not supported, can not create a UDPv6 socket\n");
-+		return 0;
-+	}
-+
- 	if (IS_ERR(recv_sockets.sk6)) {
- 		recv_sockets.sk6 = NULL;
- 		pr_err("Failed to create IPv6 UDP tunnel\n");
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+index d071809e3ed2..8c0acfc48392 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+@@ -1477,6 +1477,7 @@ static void free_sess(struct rtrs_srv_sess *sess)
+ 		kobject_del(&sess->kobj);
+ 		kobject_put(&sess->kobj);
+ 	} else {
++		kfree(sess->stats);
+ 		kfree(sess);
+ 	}
+ }
 -- 
 2.30.2
 
