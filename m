@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C94A3C57D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC2A3C4C2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355339AbhGLIix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:38:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35406 "EHLO mail.kernel.org"
+        id S241077AbhGLHCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:02:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350725AbhGLHvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:51:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EAA561975;
-        Mon, 12 Jul 2021 07:47:48 +0000 (UTC)
+        id S236777AbhGLGpf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:45:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E635610CD;
+        Mon, 12 Jul 2021 06:41:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076069;
-        bh=gUzq2IjmFBRj8Bn3SaMRAvX7FiAS7IiS1R+qQzJnQVI=;
+        s=korg; t=1626072085;
+        bh=3Ame5mAbHVT7+zjKqVsURnRRLE/UlmfH3QxEbGObC9c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C8m48/dM0Ty4UKdbrSSlPRXZLLPaDFV1PDfaBboX6dLN06Fx4bYvcU+yceWv1Ytoh
-         lo9MJhY8L4JqrzrIkP76FhBn0beRYGhiZZMXvFDJrySQ5+JwiTD7EnSxUYCSjwLh+I
-         wGHcfgldbUz76qWUE9mlecM6BuGo1caMFE512t5E=
+        b=jT0duqcOQKhpKLaH08Lt1E2z1ozDJ00dCarVORsVncNHd9P7I97h/k8EQc9ipBE9u
+         WTlf3p5AdijFyfP199CRKUx9OqLfwf87/KmaKYZwrKHmdp+m+01OX22j3k6VQHj35E
+         RO6ffSo3Af5gw+WJqnIyfvEh5A6WOe7Nxm4XC0lU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wang Hai <wanghai38@huawei.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        stable@vger.kernel.org, Tong Tiangen <tongtiangen@huawei.com>,
+        Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 486/800] samples/bpf: Fix the error return code of xdp_redirects main()
+Subject: [PATCH 5.10 349/593] brcmfmac: Fix a double-free in brcmf_sdio_bus_reset
 Date:   Mon, 12 Jul 2021 08:08:29 +0200
-Message-Id: <20210712061018.875040917@linuxfoundation.org>
+Message-Id: <20210712060924.584376808@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Tong Tiangen <tongtiangen@huawei.com>
 
-[ Upstream commit 7c6090ee2a7b3315410cfc83a94c3eb057407b25 ]
+[ Upstream commit 7ea7a1e05c7ff5ffc9f9ec1f0849f6ceb7fcd57c ]
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+brcmf_sdiod_remove has been called inside brcmf_sdiod_probe when fails,
+so there's no need to call another one. Otherwise, sdiodev->freezer
+would be double freed.
 
-If bpf_map_update_elem() failed, main() should return a negative error.
-
-Fixes: 832622e6bd18 ("xdp: sample program for new bpf_redirect helper")
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20210616042534.315097-1-wanghai38@huawei.com
+Fixes: 7836102a750a ("brcmfmac: reset SDIO bus on a firmware crash")
+Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+Reviewed-by: Arend van Spriel <arend.vanspriel@broadcom.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210601100128.69561-1-tongtiangen@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- samples/bpf/xdp_redirect_user.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/samples/bpf/xdp_redirect_user.c b/samples/bpf/xdp_redirect_user.c
-index eb876629109a..93854e135134 100644
---- a/samples/bpf/xdp_redirect_user.c
-+++ b/samples/bpf/xdp_redirect_user.c
-@@ -213,5 +213,5 @@ int main(int argc, char **argv)
- 	poll_stats(2, ifindex_out);
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+index 59c2b2b6027d..6d5d5c39c635 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+@@ -4157,7 +4157,6 @@ static int brcmf_sdio_bus_reset(struct device *dev)
+ 	if (ret) {
+ 		brcmf_err("Failed to probe after sdio device reset: ret %d\n",
+ 			  ret);
+-		brcmf_sdiod_remove(sdiodev);
+ 	}
  
- out:
--	return 0;
-+	return ret;
- }
+ 	return ret;
 -- 
 2.30.2
 
