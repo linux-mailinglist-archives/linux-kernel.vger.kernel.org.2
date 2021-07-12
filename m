@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA213C4FA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D1F13C56AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238813AbhGLH05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:26:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35158 "EHLO mail.kernel.org"
+        id S1350481AbhGLIWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:22:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239044AbhGLHAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:00:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0822B60233;
-        Mon, 12 Jul 2021 06:57:47 +0000 (UTC)
+        id S1347570AbhGLHju (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:39:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADE4561411;
+        Mon, 12 Jul 2021 07:35:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073068;
-        bh=or+btZn9+aTZ/4lEwHOGcgaG5cjaF5ouSCshgtB6UeU=;
+        s=korg; t=1626075306;
+        bh=lJ3hh8R41P8DiijbBEOO6KYz41OVlnc6F8l5msauMoA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IW1IAqemiQm00QTs84wLEqiaF8e6yVBQvI3e9/HzEBCcTN9fU6MZQmPaWAtLYFdoz
-         Lzzmk9LSw8GQQ4hTg80fiQMjJ8PDCEdJLLZKcco4rdY78XCv8M5JfPACmV//6mMgDu
-         FXUjoCTOncYqCeno8a1emThXkM9G9inqKeyiinx8=
+        b=injJnHwaaYhVNYoCeuFQsPX9uVSYYnulTycbEFjHe/RkH9LmZoyvpYC52hBitgDUl
+         QUrm5tjcO1sj1kl6QZhJ6gm7x3YRyHwcPEWtqClaQzIFeA8QnoLB9z7i46ak+mSU2C
+         lvsa3vIHiNFJY1vTVcRXHRz7JsIB/u/CuSGO12Lo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Greg Kurz <groug@kaod.org>,
-        Max Reitz <mreitz@redhat.com>,
-        Miklos Szeredi <mszeredi@redhat.com>
-Subject: [PATCH 5.12 114/700] fuse: Fix infinite loop in sget_fc()
-Date:   Mon, 12 Jul 2021 08:03:17 +0200
-Message-Id: <20210712060941.019322442@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+e1de8986786b3722050e@syzkaller.appspotmail.com,
+        Dongliang Mu <mudongliangabcd@gmail.com>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 175/800] media: dvd_usb: memory leak in cinergyt2_fe_attach
+Date:   Mon, 12 Jul 2021 08:03:18 +0200
+Message-Id: <20210712060937.579603516@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,58 +43,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kurz <groug@kaod.org>
+From: Dongliang Mu <mudongliangabcd@gmail.com>
 
-commit e4a9ccdd1c03b3dc58214874399d24331ea0a3ab upstream.
+[ Upstream commit 9ad1efee086e0e913914fa2b2173efb830bad68c ]
 
-We don't set the SB_BORN flag on submounts. This is wrong as these
-superblocks are then considered as partially constructed or dying
-in the rest of the code and can break some assumptions.
+When the driver fails to talk with the hardware with dvb_usb_generic_rw,
+it will return an error to dvb_usb_adapter_frontend_init. However, the
+driver forgets to free the resource (e.g., struct cinergyt2_fe_state),
+which leads to a memory leak.
 
-One such case is when you have a virtiofs filesystem with submounts
-and you try to mount it again : virtio_fs_get_tree() tries to obtain
-a superblock with sget_fc(). The logic in sget_fc() is to loop until
-it has either found an existing matching superblock with SB_BORN set
-or to create a brand new one. It is assumed that a superblock without
-SB_BORN is transient and the loop is restarted. Forgetting to set
-SB_BORN on submounts hence causes sget_fc() to retry forever.
+Fix this by freeing struct cinergyt2_fe_state when dvb_usb_generic_rw
+fails in cinergyt2_frontend_attach.
 
-Setting SB_BORN requires special care, i.e. a write barrier for
-super_cache_count() which can check SB_BORN without taking any lock.
-We should call vfs_get_tree() to deal with that but this requires
-to have a proper ->get_tree() implementation for submounts, which
-is a bigger piece of work. Go for a simple bug fix in the meatime.
+backtrace:
+  [<0000000056e17b1a>] kmalloc include/linux/slab.h:552 [inline]
+  [<0000000056e17b1a>] kzalloc include/linux/slab.h:682 [inline]
+  [<0000000056e17b1a>] cinergyt2_fe_attach+0x21/0x80 drivers/media/usb/dvb-usb/cinergyT2-fe.c:271
+  [<00000000ae0b1711>] cinergyt2_frontend_attach+0x21/0x70 drivers/media/usb/dvb-usb/cinergyT2-core.c:74
+  [<00000000d0254861>] dvb_usb_adapter_frontend_init+0x11b/0x1b0 drivers/media/usb/dvb-usb/dvb-usb-dvb.c:290
+  [<0000000002e08ac6>] dvb_usb_adapter_init drivers/media/usb/dvb-usb/dvb-usb-init.c:84 [inline]
+  [<0000000002e08ac6>] dvb_usb_init drivers/media/usb/dvb-usb/dvb-usb-init.c:173 [inline]
+  [<0000000002e08ac6>] dvb_usb_device_init.cold+0x4d0/0x6ae drivers/media/usb/dvb-usb/dvb-usb-init.c:287
 
-Fixes: bf109c64040f ("fuse: implement crossmounts")
-Cc: stable@vger.kernel.org # v5.10+
-Signed-off-by: Greg Kurz <groug@kaod.org>
-Reviewed-by: Max Reitz <mreitz@redhat.com>
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reported-by: syzbot+e1de8986786b3722050e@syzkaller.appspotmail.com
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/fuse/dir.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/media/usb/dvb-usb/cinergyT2-core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/fs/fuse/dir.c
-+++ b/fs/fuse/dir.c
-@@ -352,6 +352,17 @@ static struct vfsmount *fuse_dentry_auto
+diff --git a/drivers/media/usb/dvb-usb/cinergyT2-core.c b/drivers/media/usb/dvb-usb/cinergyT2-core.c
+index 969a7ec71dff..4116ba5c45fc 100644
+--- a/drivers/media/usb/dvb-usb/cinergyT2-core.c
++++ b/drivers/media/usb/dvb-usb/cinergyT2-core.c
+@@ -78,6 +78,8 @@ static int cinergyt2_frontend_attach(struct dvb_usb_adapter *adap)
  
- 	sb->s_flags |= SB_ACTIVE;
- 	fsc->root = dget(sb->s_root);
-+
-+	/*
-+	 * FIXME: setting SB_BORN requires a write barrier for
-+	 *        super_cache_count(). We should actually come
-+	 *        up with a proper ->get_tree() implementation
-+	 *        for submounts and call vfs_get_tree() to take
-+	 *        care of the write barrier.
-+	 */
-+	smp_wmb();
-+	sb->s_flags |= SB_BORN;
-+
- 	/* We are done configuring the superblock, so unlock it */
- 	up_write(&sb->s_umount);
- 
+ 	ret = dvb_usb_generic_rw(d, st->data, 1, st->data, 3, 0);
+ 	if (ret < 0) {
++		if (adap->fe_adap[0].fe)
++			adap->fe_adap[0].fe->ops.release(adap->fe_adap[0].fe);
+ 		deb_rc("cinergyt2_power_ctrl() Failed to retrieve sleep state info\n");
+ 	}
+ 	mutex_unlock(&d->data_mutex);
+-- 
+2.30.2
+
 
 
