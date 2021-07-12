@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2696C3C5474
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A143C5877
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348815AbhGLH60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:58:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56872 "EHLO mail.kernel.org"
+        id S1356669AbhGLIsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:48:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244773AbhGLHSm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:18:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 259C4613EE;
-        Mon, 12 Jul 2021 07:15:50 +0000 (UTC)
+        id S243006AbhGLHwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:52:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8732960200;
+        Mon, 12 Jul 2021 07:49:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074151;
-        bh=xkGllKoaY66oRynwa8j7ngC6+/CNoLaKwCnjQYV6ceE=;
+        s=korg; t=1626076198;
+        bh=LSsML+qzbF1/RX6SUZAS8YjF4K/KOhywRNIJuKiEklo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sM9SBhmiI5aVm5v+0YkhiOoPCy+HNOs/xkgADzZ2ItDtlIcIuXnFYe+pQuCInCik9
-         S8V/+kx+QyxwAeLL8axNJvBG7sODhryp4imol3wpvy5ruhi+9zgYv+8rodlogqVeRQ
-         kUE9S+IXCgCYkq76NDGf9p9bKqXJV6V2t9C9J3Ik=
+        b=V+drDrvmsONBzUANwQpYqXRan5AYEy/6vhXEvFdwm1C7rmqNxUQTcAhc9fcV9yTxk
+         LCLhHf/gA4uYlqrO5DYzUbXBEkPHFWR4fgFssiNk3gzBaeb9gAKn/IynEji7w7rkAZ
+         1BPMw9POU7XGb5DWTwMLMeCJrDKV0+s9aCF9Rsc0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Sokolowski <jan.sokolowski@intel.com>,
-        Mateusz Palczewski <mateusz.palczewski@intel.com>,
-        Tony Brelinski <tonyx.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 480/700] i40e: Fix missing rtnl locking when setting up pf switch
+Subject: [PATCH 5.13 540/800] net: broadcom: bcm4908_enet: reset DMA rings sw indexes properly
 Date:   Mon, 12 Jul 2021 08:09:23 +0200
-Message-Id: <20210712061027.678605038@linuxfoundation.org>
+Message-Id: <20210712061024.824400895@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,88 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Sokolowski <jan.sokolowski@intel.com>
+From: Rafał Miłecki <rafal@milecki.pl>
 
-[ Upstream commit 956e759d5f8e0859e86b951a8779c60af633aafd ]
+[ Upstream commit ddeacc4f6494e07cbb6f033627926623f3e7a9d0 ]
 
-A recent change that made i40e use new udp_tunnel infrastructure
-uses a method that expects to be called under rtnl lock.
+Resetting software indexes in bcm4908_dma_alloc_buf_descs() is not
+enough as it's called during device probe only. Driver resets DMA on
+every .ndo_open callback and it's required to reset indexes then.
 
-However, not all codepaths do the lock prior to calling
-i40e_setup_pf_switch.
+This fixes inconsistent rings state and stalled traffic after interface
+down & up sequence.
 
-Fix that by adding additional rtnl locking and unlocking.
-
-Fixes: 40a98cb6f01f ("i40e: convert to new udp_tunnel infrastructure")
-Signed-off-by: Jan Sokolowski <jan.sokolowski@intel.com>
-Signed-off-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: 4feffeadbcb2 ("net: broadcom: bcm4908enet: add BCM4908 controller driver")
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_main.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/broadcom/bcm4908_enet.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 2dbc03cd1769..d5106a6afb45 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -31,7 +31,7 @@ static void i40e_vsi_reinit_locked(struct i40e_vsi *vsi);
- static void i40e_handle_reset_warning(struct i40e_pf *pf, bool lock_acquired);
- static int i40e_add_vsi(struct i40e_vsi *vsi);
- static int i40e_add_veb(struct i40e_veb *veb, struct i40e_vsi *vsi);
--static int i40e_setup_pf_switch(struct i40e_pf *pf, bool reinit);
-+static int i40e_setup_pf_switch(struct i40e_pf *pf, bool reinit, bool lock_acquired);
- static int i40e_setup_misc_vector(struct i40e_pf *pf);
- static void i40e_determine_queue_usage(struct i40e_pf *pf);
- static int i40e_setup_pf_filter_control(struct i40e_pf *pf);
-@@ -10570,7 +10570,7 @@ static void i40e_rebuild(struct i40e_pf *pf, bool reinit, bool lock_acquired)
- #endif /* CONFIG_I40E_DCB */
- 	if (!lock_acquired)
- 		rtnl_lock();
--	ret = i40e_setup_pf_switch(pf, reinit);
-+	ret = i40e_setup_pf_switch(pf, reinit, true);
- 	if (ret)
- 		goto end_unlock;
+diff --git a/drivers/net/ethernet/broadcom/bcm4908_enet.c b/drivers/net/ethernet/broadcom/bcm4908_enet.c
+index 60d908507f51..02a569500234 100644
+--- a/drivers/net/ethernet/broadcom/bcm4908_enet.c
++++ b/drivers/net/ethernet/broadcom/bcm4908_enet.c
+@@ -174,9 +174,6 @@ static int bcm4908_dma_alloc_buf_descs(struct bcm4908_enet *enet,
+ 	if (!ring->slots)
+ 		goto err_free_buf_descs;
  
-@@ -14623,10 +14623,11 @@ int i40e_fetch_switch_configuration(struct i40e_pf *pf, bool printconfig)
-  * i40e_setup_pf_switch - Setup the HW switch on startup or after reset
-  * @pf: board private structure
-  * @reinit: if the Main VSI needs to re-initialized.
-+ * @lock_acquired: indicates whether or not the lock has been acquired
-  *
-  * Returns 0 on success, negative value on failure
-  **/
--static int i40e_setup_pf_switch(struct i40e_pf *pf, bool reinit)
-+static int i40e_setup_pf_switch(struct i40e_pf *pf, bool reinit, bool lock_acquired)
- {
- 	u16 flags = 0;
- 	int ret;
-@@ -14728,9 +14729,15 @@ static int i40e_setup_pf_switch(struct i40e_pf *pf, bool reinit)
+-	ring->read_idx = 0;
+-	ring->write_idx = 0;
+-
+ 	return 0;
  
- 	i40e_ptp_init(pf);
+ err_free_buf_descs:
+@@ -304,6 +301,9 @@ static void bcm4908_enet_dma_ring_init(struct bcm4908_enet *enet,
  
-+	if (!lock_acquired)
-+		rtnl_lock();
+ 	enet_write(enet, ring->st_ram_block + ENET_DMA_CH_STATE_RAM_BASE_DESC_PTR,
+ 		   (uint32_t)ring->dma_addr);
 +
- 	/* repopulate tunnel port filters */
- 	udp_tunnel_nic_reset_ntf(pf->vsi[pf->lan_vsi]->netdev);
- 
-+	if (!lock_acquired)
-+		rtnl_unlock();
-+
- 	return ret;
++	ring->read_idx = 0;
++	ring->write_idx = 0;
  }
  
-@@ -15511,7 +15518,7 @@ static int i40e_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 			pf->flags |= I40E_FLAG_VEB_MODE_ENABLED;
- 	}
- #endif
--	err = i40e_setup_pf_switch(pf, false);
-+	err = i40e_setup_pf_switch(pf, false, false);
- 	if (err) {
- 		dev_info(&pdev->dev, "setup_pf_switch failed: %d\n", err);
- 		goto err_vsis;
+ static void bcm4908_enet_dma_uninit(struct bcm4908_enet *enet)
 -- 
 2.30.2
 
