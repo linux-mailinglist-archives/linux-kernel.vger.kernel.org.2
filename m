@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6373C56C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BDDE3C4FB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352155AbhGLIYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:24:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46876 "EHLO mail.kernel.org"
+        id S245510AbhGLH1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:27:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347844AbhGLHkP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:40:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EA996191B;
-        Mon, 12 Jul 2021 07:36:28 +0000 (UTC)
+        id S241694AbhGLG7W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:59:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C22D61132;
+        Mon, 12 Jul 2021 06:56:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075389;
-        bh=nP61IyDwMKPULtKhpyhNvfOHA4ogTEHHQM3vW2uT22k=;
+        s=korg; t=1626072995;
+        bh=Ru1cFwAisZX2OkWc/Qtz8kW4OtZkqIpfQozWMLIy3CE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jMIZdj0So8dgCMaOPqrVNvG8QoCG7lm5YrGG6M2QF2h1qkEBABPc/kk4bzWrHANjk
-         5c0EcQEMub2gJVUGeWpE5JvaGZKaYgb0oYlEvLV1PnKJ48y8Hs+WHlFj3Nm5OTXmLC
-         T9SZXjUpaxbQeJlcV0zQpJtmznF0cPd9A2kbeDK8=
+        b=YcloIH/N+YwqXbftaeao9iJ561QIbUcaPwPL7Qiuy3Jc1asC+0dhqUGsHmLDQUcte
+         JwztzkTqkw4i9ATuzg8JxYmEhpZLOC4/oUjjSKtwDVE1gWEF6mtWjhCnPDtm7+F7L0
+         DscbLT/GMk8HIC5Ja0jlQPn7Kd5Oz+qSMeRn2qX0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+d1e69c888f0d3866ead4@syzkaller.appspotmail.com,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 151/800] media: cpia2: fix memory leak in cpia2_usb_probe
-Date:   Mon, 12 Jul 2021 08:02:54 +0200
-Message-Id: <20210712060934.273832674@linuxfoundation.org>
+        stable@vger.kernel.org, Jeremy Cline <jeremy@jcline.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.12 092/700] iio: accel: bmc150: Fix dereferencing the wrong pointer in bmc150_get/set_second_device
+Date:   Mon, 12 Jul 2021 08:02:55 +0200
+Message-Id: <20210712060937.764803550@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,104 +42,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit be8656e62e9e791837b606a027802b504a945c97 ]
+commit f2bf22dc9ea8ead180fc0221874bd556bf1d2685 upstream.
 
-syzbot reported leak in cpia2 usb driver. The problem was
-in invalid error handling.
+The drvdata for iio-parent devices points to the struct iio_dev for
+the iio-device. So by directly casting the return from i2c_get_clientdata()
+to struct bmc150_accel_data * the code was ending up storing the second_dev
+pointer in (and retrieving it from) some semi-random offset inside
+struct iio_dev, rather then storing it in the second_dev member of the
+bmc150_accel_data struct.
 
-v4l2_device_register() is called in cpia2_init_camera_struct(), but
-all error cases after cpia2_init_camera_struct() did not call the
-v4l2_device_unregister()
+Fix the code to get the struct bmc150_accel_data * pointer to call
+iio_priv() on the struct iio_dev * returned by i2c_get_clientdata(),
+so that the correct pointer gets dereferenced.
 
-Reported-by: syzbot+d1e69c888f0d3866ead4@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This fixes the following oops on rmmod, caused by trying to
+dereference the wrong return of bmc150_get_second_device():
+
+[  238.980737] BUG: unable to handle page fault for address: 0000000000004710
+[  238.980755] #PF: supervisor read access in kernel mode
+[  238.980760] #PF: error_code(0x0000) - not-present page
+...
+[  238.980841]  i2c_unregister_device.part.0+0x19/0x60
+[  238.980856]  0xffffffffc0815016
+[  238.980863]  i2c_device_remove+0x25/0xb0
+[  238.980869]  __device_release_driver+0x180/0x240
+[  238.980876]  driver_detach+0xd4/0x120
+[  238.980882]  bus_remove_driver+0x5b/0xd0
+[  238.980888]  i2c_del_driver+0x44/0x70
+
+While at it also remove the now no longer sensible checks for data
+being NULL, iio_priv never returns NULL for an iio_dev with non 0
+sized private-data.
+
+Fixes: 5bfb3a4bd8f6 ("iio: accel: bmc150: Check for a second ACPI device for BOSC0200")
+Cc: Jeremy Cline <jeremy@jcline.org>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/media/usb/cpia2/cpia2.h      |  1 +
- drivers/media/usb/cpia2/cpia2_core.c | 12 ++++++++++++
- drivers/media/usb/cpia2/cpia2_usb.c  | 13 +++++++------
- 3 files changed, 20 insertions(+), 6 deletions(-)
+ drivers/iio/accel/bmc150-accel-core.c |   10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/media/usb/cpia2/cpia2.h b/drivers/media/usb/cpia2/cpia2.h
-index 50835f5f7512..57b7f1ea68da 100644
---- a/drivers/media/usb/cpia2/cpia2.h
-+++ b/drivers/media/usb/cpia2/cpia2.h
-@@ -429,6 +429,7 @@ int cpia2_send_command(struct camera_data *cam, struct cpia2_command *cmd);
- int cpia2_do_command(struct camera_data *cam,
- 		     unsigned int command,
- 		     unsigned char direction, unsigned char param);
-+void cpia2_deinit_camera_struct(struct camera_data *cam, struct usb_interface *intf);
- struct camera_data *cpia2_init_camera_struct(struct usb_interface *intf);
- int cpia2_init_camera(struct camera_data *cam);
- int cpia2_allocate_buffers(struct camera_data *cam);
-diff --git a/drivers/media/usb/cpia2/cpia2_core.c b/drivers/media/usb/cpia2/cpia2_core.c
-index e747548ab286..b5a2d06fb356 100644
---- a/drivers/media/usb/cpia2/cpia2_core.c
-+++ b/drivers/media/usb/cpia2/cpia2_core.c
-@@ -2163,6 +2163,18 @@ static void reset_camera_struct(struct camera_data *cam)
- 	cam->height = cam->params.roi.height;
+--- a/drivers/iio/accel/bmc150-accel-core.c
++++ b/drivers/iio/accel/bmc150-accel-core.c
+@@ -1805,10 +1805,7 @@ EXPORT_SYMBOL_GPL(bmc150_accel_core_prob
+ 
+ struct i2c_client *bmc150_get_second_device(struct i2c_client *client)
+ {
+-	struct bmc150_accel_data *data = i2c_get_clientdata(client);
+-
+-	if (!data)
+-		return NULL;
++	struct bmc150_accel_data *data = iio_priv(i2c_get_clientdata(client));
+ 
+ 	return data->second_device;
  }
+@@ -1816,10 +1813,9 @@ EXPORT_SYMBOL_GPL(bmc150_get_second_devi
  
-+/******************************************************************************
-+ *
-+ *  cpia2_init_camera_struct
-+ *
-+ *  Deinitialize camera struct
-+ *****************************************************************************/
-+void cpia2_deinit_camera_struct(struct camera_data *cam, struct usb_interface *intf)
-+{
-+	v4l2_device_unregister(&cam->v4l2_dev);
-+	kfree(cam);
-+}
-+
- /******************************************************************************
-  *
-  *  cpia2_init_camera_struct
-diff --git a/drivers/media/usb/cpia2/cpia2_usb.c b/drivers/media/usb/cpia2/cpia2_usb.c
-index 3ab80a7b4498..76aac06f9fb8 100644
---- a/drivers/media/usb/cpia2/cpia2_usb.c
-+++ b/drivers/media/usb/cpia2/cpia2_usb.c
-@@ -844,15 +844,13 @@ static int cpia2_usb_probe(struct usb_interface *intf,
- 	ret = set_alternate(cam, USBIF_CMDONLY);
- 	if (ret < 0) {
- 		ERR("%s: usb_set_interface error (ret = %d)\n", __func__, ret);
--		kfree(cam);
--		return ret;
-+		goto alt_err;
- 	}
+ void bmc150_set_second_device(struct i2c_client *client)
+ {
+-	struct bmc150_accel_data *data = i2c_get_clientdata(client);
++	struct bmc150_accel_data *data = iio_priv(i2c_get_clientdata(client));
  
- 
- 	if((ret = cpia2_init_camera(cam)) < 0) {
- 		ERR("%s: failed to initialize cpia2 camera (ret = %d)\n", __func__, ret);
--		kfree(cam);
--		return ret;
-+		goto alt_err;
- 	}
- 	LOG("  CPiA Version: %d.%02d (%d.%d)\n",
- 	       cam->params.version.firmware_revision_hi,
-@@ -872,11 +870,14 @@ static int cpia2_usb_probe(struct usb_interface *intf,
- 	ret = cpia2_register_camera(cam);
- 	if (ret < 0) {
- 		ERR("%s: Failed to register cpia2 camera (ret = %d)\n", __func__, ret);
--		kfree(cam);
--		return ret;
-+		goto alt_err;
- 	}
- 
- 	return 0;
-+
-+alt_err:
-+	cpia2_deinit_camera_struct(cam, intf);
-+	return ret;
+-	if (data)
+-		data->second_device = client;
++	data->second_device = client;
  }
+ EXPORT_SYMBOL_GPL(bmc150_set_second_device);
  
- /******************************************************************************
--- 
-2.30.2
-
 
 
