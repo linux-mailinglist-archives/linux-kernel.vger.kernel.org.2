@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 094B03C54D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 761533C58F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355020AbhGLIFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:05:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34536 "EHLO mail.kernel.org"
+        id S1355948AbhGLIyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:54:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245470AbhGLH1I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:27:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16816616E8;
-        Mon, 12 Jul 2021 07:23:16 +0000 (UTC)
+        id S1353628AbhGLICi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:02:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCDA46141A;
+        Mon, 12 Jul 2021 07:55:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074597;
-        bh=W5kU1XcWgxRaDRxCbFe9zScjPF+vQzfjiV7Ifd/voYs=;
+        s=korg; t=1626076559;
+        bh=ltdWVT6jllalnp0WWQxqbavgaYqE5bB1QLzV0T48/Z4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lK0Mz9d4pi54Jffr10GwyeyyMlWaUiOkCuQZPliqXxw//IB3IVO9NqvMUVjIu4QpN
-         Usfjgg5k1rK+BrvqhLhmWmPuiNBVFClvtYbe9fRAGL+bczGjGSvvweudbfHqq8Xyq9
-         DrfXi8EvjMoNw3mCsMiSTpkna8glKW2XHiE1egAg=
+        b=f2/vrDR0z+m+DuCJvxuRhzY8wV+gNN5bL1DTx+Q1z4w6jMjb3G8W4RY4RqB+7G795
+         yju+qsp5Y7tGWul+Thgm/1j53LOC50tiahwIImPog96mSmJx+zy76ZXGUXq0JpEdqJ
+         NO9LNSxo4iI8AK6X/DPiZCbM9d5HxWz3+/d2btqA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Oded Gabbay <ogabbay@kernel.org>,
+        stable@vger.kernel.org, Bard Liao <bard.liao@intel.com>,
+        Oder Chiou <oder_chiou@realtek.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 634/700] habanalabs: Fix an error handling path in hl_pci_probe()
+Subject: [PATCH 5.13 694/800] ASoC: rt5682: Fix a problem with error handling in the io init function of the soundwire
 Date:   Mon, 12 Jul 2021 08:11:57 +0200
-Message-Id: <20210712061043.281077296@linuxfoundation.org>
+Message-Id: <20210712061040.681497300@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +42,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Oder Chiou <oder_chiou@realtek.com>
 
-[ Upstream commit 3002f467a0b0a70aec01d9f446da4ac8c6fda10b ]
+[ Upstream commit 9266d95405ae0c078f188ec8bca3a004631be429 ]
 
-If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
-must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
-call, as already done in the remove function.
+The device checking error should be a jump to pm_runtime_put_autosuspend()
+as done before returning value.
 
-Fixes: 2e5eda4681f9 ("habanalabs: PCIe Advanced Error Reporting support")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+Fixes: 867f8d18df4f ('ASoC: rt5682: fix getting the wrong device id when the suspend_stress_test')
+Reviewed-by: Bard Liao <bard.liao@intel.com>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20210607222239.582139-13-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/habanalabs/common/habanalabs_drv.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/rt5682-sdw.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/common/habanalabs_drv.c b/drivers/misc/habanalabs/common/habanalabs_drv.c
-index 032d114f01ea..827140626244 100644
---- a/drivers/misc/habanalabs/common/habanalabs_drv.c
-+++ b/drivers/misc/habanalabs/common/habanalabs_drv.c
-@@ -437,6 +437,7 @@ static int hl_pci_probe(struct pci_dev *pdev,
- 	return 0;
+diff --git a/sound/soc/codecs/rt5682-sdw.c b/sound/soc/codecs/rt5682-sdw.c
+index 8e4bb9dd194e..529a85fd0a00 100644
+--- a/sound/soc/codecs/rt5682-sdw.c
++++ b/sound/soc/codecs/rt5682-sdw.c
+@@ -408,9 +408,11 @@ static int rt5682_io_init(struct device *dev, struct sdw_slave *slave)
+ 		usleep_range(30000, 30005);
+ 		loop--;
+ 	}
++
+ 	if (val != DEVICE_ID) {
+ 		dev_err(dev, "Device with ID register %x is not rt5682\n", val);
+-		return -ENODEV;
++		ret = -ENODEV;
++		goto err_nodev;
+ 	}
  
- disable_device:
-+	pci_disable_pcie_error_reporting(pdev);
- 	pci_set_drvdata(pdev, NULL);
- 	destroy_hdev(hdev);
+ 	if (rt5682->first_hw_init) {
+@@ -486,10 +488,11 @@ reinit:
+ 	rt5682->hw_init = true;
+ 	rt5682->first_hw_init = true;
  
++err_nodev:
+ 	pm_runtime_mark_last_busy(&slave->dev);
+ 	pm_runtime_put_autosuspend(&slave->dev);
+ 
+-	dev_dbg(&slave->dev, "%s hw_init complete\n", __func__);
++	dev_dbg(&slave->dev, "%s hw_init complete: %d\n", __func__, ret);
+ 
+ 	return ret;
+ }
 -- 
 2.30.2
 
