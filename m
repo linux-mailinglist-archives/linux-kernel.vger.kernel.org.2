@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D6313C49A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 546143C50C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237052AbhGLGqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:46:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55302 "EHLO mail.kernel.org"
+        id S1347515AbhGLHfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:35:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236714AbhGLGf2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:35:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 896FF610CC;
-        Mon, 12 Jul 2021 06:32:34 +0000 (UTC)
+        id S243179AbhGLHEl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:04:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2DEC611C2;
+        Mon, 12 Jul 2021 07:01:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071555;
-        bh=EKY1OlRJO93TJiFmqfgVZB3HH1bgpwa6v7NyZcI16Qg=;
+        s=korg; t=1626073313;
+        bh=F0ZOtPaLg7ZLUv7+BtbmeLGwPX6I3v75FrJSUcAv5ag=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QUXm6etrK2iO0esrCcGBqoxQzFE/nUL4789gUqEZ74wmW6Ytw9uKCYygXH6fktGYn
-         XMpH3aGRvhc3dUSIyH9U3j56TghBKOH5SH6LP7uWtUYtVAQlvkywpTHQVpmMgf6W5S
-         HcU0mmtpIqd8yFSs5B0lIKoeFj2IG+B6USf2I6x0=
+        b=AvzXfex61AbWbuRjQ8oJ/dWt1eKNQJ/oWqoTGqsZ4y6xu41PHIJDUmy1XQY0nOp6d
+         FTZlcBe4AH7eIrnHhOsuZkEgNnZ0ch97A1916ZWcMYoxsKhmEb6mH+7v9vZVJXK0pu
+         7usnCnucJs1xLtUqtTYAAoqxRGs0jnbDfu+AxRJM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 121/593] media: sti: fix obj-$(config) targets
+Subject: [PATCH 5.12 198/700] ACPI: PM: s2idle: Add missing LPS0 functions for AMD
 Date:   Mon, 12 Jul 2021 08:04:41 +0200
-Message-Id: <20210712060856.461874391@linuxfoundation.org>
+Message-Id: <20210712060954.856229429@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,56 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: Alex Deucher <alexander.deucher@amd.com>
 
-[ Upstream commit 56c1f0876293888f686e31278d183d4af2cac3c3 ]
+[ Upstream commit f59a905b962c34642e862b5edec35c0eda72d70d ]
 
-The right thing to do is to add a new object to the building
-system when a certain config option is selected, and *not*
-override them.
+These are supposedly not required for AMD platforms,
+but at least some HP laptops seem to require it to
+properly turn off the keyboard backlight.
 
-So, fix obj-$(config) logic at sti makefiles, using "+=",
-instead of ":=".
+Based on a patch from Marcin Bachry <hegel666@gmail.com>.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Bug: https://gitlab.freedesktop.org/drm/amd/-/issues/1230
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/sti/bdisp/Makefile | 2 +-
- drivers/media/platform/sti/delta/Makefile | 2 +-
- drivers/media/platform/sti/hva/Makefile   | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/acpi/x86/s2idle.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/media/platform/sti/bdisp/Makefile b/drivers/media/platform/sti/bdisp/Makefile
-index caf7ccd193ea..39ade0a34723 100644
---- a/drivers/media/platform/sti/bdisp/Makefile
-+++ b/drivers/media/platform/sti/bdisp/Makefile
-@@ -1,4 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0-only
--obj-$(CONFIG_VIDEO_STI_BDISP) := bdisp.o
-+obj-$(CONFIG_VIDEO_STI_BDISP) += bdisp.o
+diff --git a/drivers/acpi/x86/s2idle.c b/drivers/acpi/x86/s2idle.c
+index 2b69536cdccb..2d7ddb8a8cb6 100644
+--- a/drivers/acpi/x86/s2idle.c
++++ b/drivers/acpi/x86/s2idle.c
+@@ -42,6 +42,8 @@ static const struct acpi_device_id lps0_device_ids[] = {
  
- bdisp-objs := bdisp-v4l2.o bdisp-hw.o bdisp-debug.o
-diff --git a/drivers/media/platform/sti/delta/Makefile b/drivers/media/platform/sti/delta/Makefile
-index 92b37e216f00..32412fa4c632 100644
---- a/drivers/media/platform/sti/delta/Makefile
-+++ b/drivers/media/platform/sti/delta/Makefile
-@@ -1,5 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0-only
--obj-$(CONFIG_VIDEO_STI_DELTA_DRIVER) := st-delta.o
-+obj-$(CONFIG_VIDEO_STI_DELTA_DRIVER) += st-delta.o
- st-delta-y := delta-v4l2.o delta-mem.o delta-ipc.o delta-debug.o
+ /* AMD */
+ #define ACPI_LPS0_DSM_UUID_AMD      "e3f32452-febc-43ce-9039-932122d37721"
++#define ACPI_LPS0_ENTRY_AMD         2
++#define ACPI_LPS0_EXIT_AMD          3
+ #define ACPI_LPS0_SCREEN_OFF_AMD    4
+ #define ACPI_LPS0_SCREEN_ON_AMD     5
  
- # MJPEG support
-diff --git a/drivers/media/platform/sti/hva/Makefile b/drivers/media/platform/sti/hva/Makefile
-index 74b41ec52f97..b5a5478bdd01 100644
---- a/drivers/media/platform/sti/hva/Makefile
-+++ b/drivers/media/platform/sti/hva/Makefile
-@@ -1,4 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0-only
--obj-$(CONFIG_VIDEO_STI_HVA) := st-hva.o
-+obj-$(CONFIG_VIDEO_STI_HVA) += st-hva.o
- st-hva-y := hva-v4l2.o hva-hw.o hva-mem.o hva-h264.o
- st-hva-$(CONFIG_VIDEO_STI_HVA_DEBUGFS) += hva-debugfs.o
+@@ -408,6 +410,7 @@ int acpi_s2idle_prepare_late(void)
+ 
+ 	if (acpi_s2idle_vendor_amd()) {
+ 		acpi_sleep_run_lps0_dsm(ACPI_LPS0_SCREEN_OFF_AMD);
++		acpi_sleep_run_lps0_dsm(ACPI_LPS0_ENTRY_AMD);
+ 	} else {
+ 		acpi_sleep_run_lps0_dsm(ACPI_LPS0_SCREEN_OFF);
+ 		acpi_sleep_run_lps0_dsm(ACPI_LPS0_ENTRY);
+@@ -422,6 +425,7 @@ void acpi_s2idle_restore_early(void)
+ 		return;
+ 
+ 	if (acpi_s2idle_vendor_amd()) {
++		acpi_sleep_run_lps0_dsm(ACPI_LPS0_EXIT_AMD);
+ 		acpi_sleep_run_lps0_dsm(ACPI_LPS0_SCREEN_ON_AMD);
+ 	} else {
+ 		acpi_sleep_run_lps0_dsm(ACPI_LPS0_EXIT);
 -- 
 2.30.2
 
