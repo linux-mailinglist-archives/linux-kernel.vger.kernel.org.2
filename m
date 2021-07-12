@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E88CB3C574A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 777063C4981
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376912AbhGLIbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:31:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52930 "EHLO mail.kernel.org"
+        id S236090AbhGLGpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:45:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54744 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343532AbhGLHne (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:43:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6580961185;
-        Mon, 12 Jul 2021 07:40:26 +0000 (UTC)
+        id S237885AbhGLGe4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:34:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B03D0601FC;
+        Mon, 12 Jul 2021 06:32:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075626;
-        bh=UjwFXX3T+Hb0fCkcc/G0mlQuGqcAz2UCHejWJTH1wFo=;
+        s=korg; t=1626071527;
+        bh=ciBwS34z1dq/lTAjlwP2hlPO44Gt0j7asqfs2Y6atOY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qjx5ZSdHSau6ucIO4AwVbjl+WwmalUb6UjAFK89SrqnjOh1qaX8cy96/xWr5N70U3
-         PRw87EyUHkPpPkxx3GdZ1Dz0wiFTIw1ApBerW+euWfIVDYB1CK1puDwsFqd9M/L20f
-         3AdM4Kp+iJSFhoGpCCWYb2IXqdrim6kTpHPPjXK4=
+        b=nwJk1o+6j4x+mNeaID2VagqYNRJil43ph/qO2Vrq/mkgBHXxvAKSOj7+jsk/t8q2u
+         9FssWi9ajtq/zBanlZQBNTCBSHEGv4Ftle1+0VGqxm/AdMlGKdGLbdLxcG5H+rM7d3
+         ColunvmmATX99ighrsKGWE1jrxZyAGDOosgnYAJI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 243/800] tools/power/x86/intel-speed-select: Fix uncore memory frequency display
+Subject: [PATCH 5.10 106/593] media: am437x: fix pm_runtime_get_sync() usage count
 Date:   Mon, 12 Jul 2021 08:04:26 +0200
-Message-Id: <20210712060947.971866161@linuxfoundation.org>
+Message-Id: <20210712060854.882264452@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,111 +41,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-[ Upstream commit 159f130f60f402273b235801d1fde3fc115c6795 ]
+[ Upstream commit c41e02493334985cca1a22efd5ca962ce3abb061 ]
 
-The uncore memory frequency value from the mailbox command
-CONFIG_TDP_GET_MEM_FREQ needs to be scaled based on the platform for
-display. There is no single constant multiplier.
+The pm_runtime_get_sync() internally increments the
+dev->power.usage_count without decrementing it, even on errors.
+Replace it by the new pm_runtime_resume_and_get(), introduced by:
+commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+in order to properly decrement the usage counter, avoiding
+a potential PM usage counter leak.
 
-This change introduces CPU model specific memory frequency multiplier.
+While here, ensure that the driver will check if PM runtime
+resumed at vpfe_initialize_device().
 
-Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/power/x86/intel-speed-select/isst-config.c | 16 ++++++++++++++++
- tools/power/x86/intel-speed-select/isst-core.c   | 15 +++++++++++++++
- .../power/x86/intel-speed-select/isst-display.c  |  2 +-
- tools/power/x86/intel-speed-select/isst.h        |  2 ++
- 4 files changed, 34 insertions(+), 1 deletion(-)
+ drivers/media/platform/am437x/am437x-vpfe.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/tools/power/x86/intel-speed-select/isst-config.c b/tools/power/x86/intel-speed-select/isst-config.c
-index ab940c508ef0..d4f0a7872e49 100644
---- a/tools/power/x86/intel-speed-select/isst-config.c
-+++ b/tools/power/x86/intel-speed-select/isst-config.c
-@@ -106,6 +106,22 @@ int is_skx_based_platform(void)
- 	return 0;
- }
+diff --git a/drivers/media/platform/am437x/am437x-vpfe.c b/drivers/media/platform/am437x/am437x-vpfe.c
+index 0fb9f9ba1219..31cee69adbe1 100644
+--- a/drivers/media/platform/am437x/am437x-vpfe.c
++++ b/drivers/media/platform/am437x/am437x-vpfe.c
+@@ -1021,7 +1021,9 @@ static int vpfe_initialize_device(struct vpfe_device *vpfe)
+ 	if (ret)
+ 		return ret;
  
-+int is_spr_platform(void)
-+{
-+	if (cpu_model == 0x8F)
-+		return 1;
-+
-+	return 0;
-+}
-+
-+int is_icx_platform(void)
-+{
-+	if (cpu_model == 0x6A || cpu_model == 0x6C)
-+		return 1;
-+
-+	return 0;
-+}
-+
- static int update_cpu_model(void)
- {
- 	unsigned int ebx, ecx, edx;
-diff --git a/tools/power/x86/intel-speed-select/isst-core.c b/tools/power/x86/intel-speed-select/isst-core.c
-index 6a26d5769984..4431c8a0d40a 100644
---- a/tools/power/x86/intel-speed-select/isst-core.c
-+++ b/tools/power/x86/intel-speed-select/isst-core.c
-@@ -201,6 +201,7 @@ void isst_get_uncore_mem_freq(int cpu, int config_index,
- {
- 	unsigned int resp;
- 	int ret;
-+
- 	ret = isst_send_mbox_command(cpu, CONFIG_TDP, CONFIG_TDP_GET_MEM_FREQ,
- 				     0, config_index, &resp);
- 	if (ret) {
-@@ -209,6 +210,20 @@ void isst_get_uncore_mem_freq(int cpu, int config_index,
- 	}
+-	pm_runtime_get_sync(vpfe->pdev);
++	ret = pm_runtime_resume_and_get(vpfe->pdev);
++	if (ret < 0)
++		return ret;
  
- 	ctdp_level->mem_freq = resp & GENMASK(7, 0);
-+	if (is_spr_platform()) {
-+		ctdp_level->mem_freq *= 200;
-+	} else if (is_icx_platform()) {
-+		if (ctdp_level->mem_freq < 7) {
-+			ctdp_level->mem_freq = (12 - ctdp_level->mem_freq) * 133.33 * 2 * 10;
-+			ctdp_level->mem_freq /= 10;
-+			if (ctdp_level->mem_freq % 10 > 5)
-+				ctdp_level->mem_freq++;
-+		} else {
-+			ctdp_level->mem_freq = 0;
-+		}
-+	} else {
-+		ctdp_level->mem_freq = 0;
+ 	vpfe_config_enable(&vpfe->ccdc, 1);
+ 
+@@ -2443,7 +2445,11 @@ static int vpfe_probe(struct platform_device *pdev)
+ 	pm_runtime_enable(&pdev->dev);
+ 
+ 	/* for now just enable it here instead of waiting for the open */
+-	pm_runtime_get_sync(&pdev->dev);
++	ret = pm_runtime_resume_and_get(&pdev->dev);
++	if (ret < 0) {
++		vpfe_err(vpfe, "Unable to resume device.\n");
++		goto probe_out_v4l2_unregister;
 +	}
- 	debug_printf(
- 		"cpu:%d ctdp:%d CONFIG_TDP_GET_MEM_FREQ resp:%x uncore mem_freq:%d\n",
- 		cpu, config_index, resp, ctdp_level->mem_freq);
-diff --git a/tools/power/x86/intel-speed-select/isst-display.c b/tools/power/x86/intel-speed-select/isst-display.c
-index 3bf1820c0da1..f97d8859ada7 100644
---- a/tools/power/x86/intel-speed-select/isst-display.c
-+++ b/tools/power/x86/intel-speed-select/isst-display.c
-@@ -446,7 +446,7 @@ void isst_ctdp_display_information(int cpu, FILE *outf, int tdp_level,
- 		if (ctdp_level->mem_freq) {
- 			snprintf(header, sizeof(header), "mem-frequency(MHz)");
- 			snprintf(value, sizeof(value), "%d",
--				 ctdp_level->mem_freq * DISP_FREQ_MULTIPLIER);
-+				 ctdp_level->mem_freq);
- 			format_and_print(outf, level + 2, header, value);
- 		}
  
-diff --git a/tools/power/x86/intel-speed-select/isst.h b/tools/power/x86/intel-speed-select/isst.h
-index 0cac6c54be87..1aa15d5ea57c 100644
---- a/tools/power/x86/intel-speed-select/isst.h
-+++ b/tools/power/x86/intel-speed-select/isst.h
-@@ -257,5 +257,7 @@ extern int get_cpufreq_base_freq(int cpu);
- extern int isst_read_pm_config(int cpu, int *cp_state, int *cp_cap);
- extern void isst_display_error_info_message(int error, char *msg, int arg_valid, int arg);
- extern int is_skx_based_platform(void);
-+extern int is_spr_platform(void);
-+extern int is_icx_platform(void);
- extern void isst_trl_display_information(int cpu, FILE *outf, unsigned long long trl);
- #endif
+ 	vpfe_ccdc_config_defaults(ccdc);
+ 
+@@ -2530,6 +2536,11 @@ static int vpfe_suspend(struct device *dev)
+ 
+ 	/* only do full suspend if streaming has started */
+ 	if (vb2_start_streaming_called(&vpfe->buffer_queue)) {
++		/*
++		 * ignore RPM resume errors here, as it is already too late.
++		 * A check like that should happen earlier, either at
++		 * open() or just before start streaming.
++		 */
+ 		pm_runtime_get_sync(dev);
+ 		vpfe_config_enable(ccdc, 1);
+ 
 -- 
 2.30.2
 
