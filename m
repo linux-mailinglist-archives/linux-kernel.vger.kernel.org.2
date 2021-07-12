@@ -2,117 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 661A43C61E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:28:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F5C63C61D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:24:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235750AbhGLRbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 13:31:32 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:52404 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235721AbhGLRbb (ORCPT
+        id S235373AbhGLR1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 13:27:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233887AbhGLR1a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 13:31:31 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.1.0)
- id 570fb929db1951ce; Mon, 12 Jul 2021 19:28:41 +0200
-Received: from kreacher.localnet (89-64-82-45.dynamic.chello.pl [89.64.82.45])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 65377669C37;
-        Mon, 12 Jul 2021 19:28:40 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>
-Subject: [PATCH v1 2/6] ACPI: glue: Change return type of two functions to void
-Date:   Mon, 12 Jul 2021 19:23:37 +0200
-Message-ID: <21118671.EfDdHjke4D@kreacher>
-In-Reply-To: <2780027.e9J7NaK4W3@kreacher>
-References: <2780027.e9J7NaK4W3@kreacher>
+        Mon, 12 Jul 2021 13:27:30 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A437CC0613DD;
+        Mon, 12 Jul 2021 10:24:41 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id p22so4099296pfh.8;
+        Mon, 12 Jul 2021 10:24:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=bQLyPAi8R6ObnBNw0JvkyaT5QRGtNynnb0GtY60cgIA=;
+        b=jWjFxAzmIhh51jU7LuzO6yqSbYW9dIShinNo85R7JhEuSgW+nHApq7ybXj+C16iycd
+         De5KLFsl6m2I3EDx15RtWIOlIK68Py0UY6LaML3rBxNVIrBfXTPjW2silGUE9TJXqqdg
+         vuCh14CwIfmjK0Mpx96EGJCUw9062nocGU3oEm2EuY70XAjX9uQnfC9zhkvG3CLlBr49
+         pxd289auR/JaxkG/h210M0h32iBadKrQGw4I6wlrm5nbu+PhWOy1M7i7MCSGtc3QUAsu
+         IunQt7Sg++xMDpiPMGDLLY20HHKB1yAizkJ1SGj+eR+fww+H9x4GqUrxICjFIIwTsuLc
+         2P6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bQLyPAi8R6ObnBNw0JvkyaT5QRGtNynnb0GtY60cgIA=;
+        b=l4yubW8hbMGTY56e8UrXKrXfuZ5+9bYZsv120SlLfZTfzGrifAWQJcX2E+VtFtpD7Y
+         /XhVLsnR1IjJGrbyL2HG8+m7WnxqZmnUCBnlxxm1N1SnKalp5zoK1oDE8ITDHx8+PrnV
+         wMuNYwdQhDeQ6liyMWIiI8PliUanM/+s27uf1C5kXoIVcBso53DMna4FmUB7PkNiMOjY
+         cvOGfNvZD+g1uybikhuXA4NOkAQk+ghRJSyKIF9zCMkEWpqUwEOsLCGyrxWNgFY/B26p
+         4bDhuTJBc6C0dzFWwP1FYRB33wovQpxfaAI4/NaypkR6chnGalmOJVVKneM9SAUAP084
+         M/fQ==
+X-Gm-Message-State: AOAM533WowrlUSy/q1wyGVtePl58gCUCjMSGk8GomeKfskRUuyrmcy0a
+        IGCeN/4EY3cGW629FKIqdHVSo2lYeB4afg==
+X-Google-Smtp-Source: ABdhPJxuZhQBVgJqKHkQo/ebXqauxxMDWNfnu+rr1qS0fRdoQY+lZWlDTGucXYK8MBj4AdFvc8IitQ==
+X-Received: by 2002:a63:f54f:: with SMTP id e15mr226793pgk.64.1626110680672;
+        Mon, 12 Jul 2021 10:24:40 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id j2sm16284453pfi.111.2021.07.12.10.24.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Jul 2021 10:24:40 -0700 (PDT)
+Subject: Re: [PATCH 5.13 000/800] 5.13.2-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210712060912.995381202@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <f5a7bd6e-8242-c16d-ac4b-6ac8d77a51de@gmail.com>
+Date:   Mon, 12 Jul 2021 10:24:32 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 89.64.82.45
-X-CLIENT-HOSTNAME: 89-64-82-45.dynamic.chello.pl
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddruddvgdduudduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvjeelgffhiedukedtleekkedvudfggefhgfegjefgueekjeelvefggfdvledutdenucfkphepkeelrdeigedrkedvrdegheenucevlhhushhtvghrufhiiigvpedvnecurfgrrhgrmhepihhnvghtpeekledrieegrdekvddrgeehpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtohepghhrvghgkhhhsehlihhnuhigfhhouhhnuggrthhiohhnrdhorhhgpdhrtghpthhtoheprhgrfhgrvghlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrnhgurhhihidrshhhvghvtghhvghnkhhosehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehv
- ghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhgvihhkkhhirdhkrhhoghgvrhhusheslhhinhhugidrihhnthgvlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On 7/11/21 11:00 PM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.13.2 release.
+> There are 800 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 14 Jul 2021 06:02:46 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.2-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Since the return values of acpi_device_notify() and
-acpi_device_notify_remove() are discarded by their only caller,
-change their return type to void.
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
 
-No functional impact.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/acpi/glue.c |   12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
-
-Index: linux-pm/drivers/acpi/glue.c
-===================================================================
---- linux-pm.orig/drivers/acpi/glue.c
-+++ linux-pm/drivers/acpi/glue.c
-@@ -285,7 +285,7 @@ int acpi_unbind_one(struct device *dev)
- }
- EXPORT_SYMBOL_GPL(acpi_unbind_one);
- 
--static int acpi_device_notify(struct device *dev)
-+static void acpi_device_notify(struct device *dev)
- {
- 	struct acpi_bus_type *type = acpi_get_bus_type(dev);
- 	struct acpi_device *adev;
-@@ -299,7 +299,6 @@ static int acpi_device_notify(struct dev
- 		adev = type->find_companion(dev);
- 		if (!adev) {
- 			dev_dbg(dev, "ACPI companion not found\n");
--			ret = -ENODEV;
- 			goto err;
- 		}
- 		ret = acpi_bind_one(dev, adev);
-@@ -319,21 +318,19 @@ static int acpi_device_notify(struct dev
- 	acpi_handle_debug(ACPI_HANDLE(dev), "Bound to device %s\n",
- 			  dev_name(dev));
- 
--	return 0;
-+	return;
- 
- err:
- 	dev_dbg(dev, "No ACPI support\n");
--
--	return ret;
- }
- 
--static int acpi_device_notify_remove(struct device *dev)
-+static void acpi_device_notify_remove(struct device *dev)
- {
- 	struct acpi_device *adev = ACPI_COMPANION(dev);
- 	struct acpi_bus_type *type;
- 
- 	if (!adev)
--		return 0;
-+		return;
- 
- 	type = acpi_get_bus_type(dev);
- 	if (type && type->cleanup)
-@@ -342,7 +339,6 @@ static int acpi_device_notify_remove(str
- 		adev->handler->unbind(dev);
- 
- 	acpi_unbind_one(dev);
--	return 0;
- }
- 
- int acpi_platform_notify(struct device *dev, enum kobject_action action)
-
-
-
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
