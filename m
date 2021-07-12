@@ -2,89 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEB303C60D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 18:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99A463C60D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 18:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234657AbhGLQxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 12:53:42 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:56116 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232710AbhGLQxl (ORCPT
+        id S234619AbhGLQxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 12:53:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232710AbhGLQxO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 12:53:41 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 33622CC;
-        Mon, 12 Jul 2021 18:50:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1626108651;
-        bh=+t8lSKMlrb/3E4DhDYLs266oy4TOU8BHEmxESYaNt8I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pieGt0ks0vsh7tOXCU6EM+lcz8G3MzzFccBJJnT/b5ufqCCDusGqc2R5SuqS5//29
-         pHi/RuF7RFsy5Kk37tHBmOO25wApXpjMXrepmesbJpg8L9UV+eMlx6Opni6mcpNKIB
-         WHpc0Eb8LZOJgfZ4tpeSrSIY4PB0jwf/T5qW8Dj4=
-Date:   Mon, 12 Jul 2021 19:50:04 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Subject: Re: [PATCH] drm/of: free the iterator object on failure
-Message-ID: <YOxyvIoJcZFAgUz5@pendragon.ideasonboard.com>
-References: <20210712155758.48286-1-steven.price@arm.com>
+        Mon, 12 Jul 2021 12:53:14 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D3B3C0613DD
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 09:50:25 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id b40so25262880ljf.12
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 09:50:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=wirenboard-com.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:references:subject:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=o8W1dNWyc77g/GhN9T2NWTwNOeLb+k1LmC+rbhxkZPc=;
+        b=MLL2y6mGJpe2v3dc+r2DITIyOSOUsd0A923QC4WmFqRpZJDdsZKUMuo0+xRo5BQCgg
+         Skpt2ZwNTKiCfEqYAFRARwHuin4Wp4kjXCUDc/UgWe90g+GnmT/+asoMQVk9Mazdi82n
+         J4VnCL3umFyyDSdAs9763NTJjn0VPVU/u+vE9rhoN2DJI1Y6ty3cKHtK2TW7PeMEvqEa
+         2Ooz2+tKUpQoBnoMZzOIJEzHJMZvbgQ9k5V2Yth/mmADEmOnDVQK1E2ryeasONwlZc5l
+         SvT9sw5FLV7l66C82YWQKpfMKQGr02hASm4GbfRCzYyAS+CnBM/VWvlwvhl7JsF3EpuJ
+         PkyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:subject:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=o8W1dNWyc77g/GhN9T2NWTwNOeLb+k1LmC+rbhxkZPc=;
+        b=FFWvwUpvj4KVtKzXqdRbeYWwHmDQDHsgwFHo9uTyvmf9lpEZCidCJN6MbgPxM6jQSz
+         W7NKzSms9vbj9o8ngKP8fMYL7JSF86sPLdnxmtE3aepgjFSFzMYUJtvaoP7piE75kZro
+         eNAEoch3rwLSly6A9Zmizu2mw0xeb5bFQyRJ1VFuS5CY3gnL7mv/PpUNJG6Fv8lCWhO5
+         KR/lVE1fT2rO5vhF3o6XsO9mnncNhxJLVHP7QJqfnE2+Bc34nw7zjgvpj9JJz/RS5LLm
+         1tVHCarhsVZpwDyG2D0XRg5Ay5FpW7nucWxXE9K+yEcakIXU64i+vsU4UhRFvXp7hbaw
+         yxsQ==
+X-Gm-Message-State: AOAM53105KtajOrRPn+FdC3btyl8aQPtjsRNuTZFgZW3WZX1pEWMxbrw
+        xneJicLHQwJhSmzZfhYnNihPRg==
+X-Google-Smtp-Source: ABdhPJzRmjg4ige4Q76R9GfUzKH6Q22fEzHtFe8dsyFLremmfKDTEGCbOYwPjkmdRfug1Ybfd1mC+A==
+X-Received: by 2002:a2e:9059:: with SMTP id n25mr130746ljg.314.1626108623325;
+        Mon, 12 Jul 2021 09:50:23 -0700 (PDT)
+Received: from [192.168.1.213] (81.5.110.226.dhcp.mipt-telecom.ru. [81.5.110.226])
+        by smtp.googlemail.com with ESMTPSA id f14sm1627141ljk.42.2021.07.12.09.50.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Jul 2021 09:50:22 -0700 (PDT)
+To:     andre.przywara@arm.com
+Cc:     icenowy@aosc.io, jernej.skrabec@gmail.com, kishon@ti.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org, linux-sunxi@googlegroups.com,
+        linux-sunxi@lists.linux.dev, linux-usb@vger.kernel.org,
+        megous@megous.com, mripard@kernel.org, robh@kernel.org,
+        samuel@sholland.org, vkoul@kernel.org, wens@csie.org
+References: <20210615110636.23403-16-andre.przywara@arm.com>
+Subject: Re: [PATCH v7 15/19] phy: sun4i-usb: Add support for the H616 USB PHY
+From:   Evgeny Boger <boger@wirenboard.com>
+Message-ID: <880c62ea-4844-04f7-7b40-a9e8a14de202@wirenboard.com>
+Date:   Mon, 12 Jul 2021 19:50:22 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210712155758.48286-1-steven.price@arm.com>
+In-Reply-To: <20210615110636.23403-16-andre.przywara@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steven,
+Hi Andre!
 
-Thank you for the patch.
-
-On Mon, Jul 12, 2021 at 04:57:58PM +0100, Steven Price wrote:
-> When bailing out due to the sanity check the iterator value needs to be
-> freed because the early return prevents for_each_child_of_node() from
-> doing the dereference itself.
-> 
-> Fixes: 4ee48cc5586b ("drm: of: Fix double-free bug")
-
-I don't think the Fixes tag is correct, the issue was already present
-before 4ee48cc5586b. The fix looks right though.
-
-> Signed-off-by: Steven Price <steven.price@arm.com>
+> The USB PHY used in the Allwinner H616 SoC inherits some traits from its
+> various predecessors: it has four full PHYs like the H3, needs some
+> extra bits to be set like the H6, and puts SIDDQ on a different bit like
+> the A100. Plus it needs this weird PHY2 quirk.
+>
+> Name all those properties in a new config struct and assign a new
+> compatible name to it.
+>
+> Signed-off-by: Andre Przywara<andre.przywara@arm.com>
 > ---
->  drivers/gpu/drm/drm_of.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> Daniel's email[1] made me take a look at this function and it appears
-> that for_each_child_of_node()'s interface had caused a bad bug fix due
-> to the hidden reference counting in the iterator.
-> 
-> [1] https://lore.kernel.org/r/YOxQ5TbkNrqCGBDJ%40phenom.ffwll.local
-> 
-> diff --git a/drivers/gpu/drm/drm_of.c b/drivers/gpu/drm/drm_of.c
-> index 197c57477344..997b8827fed2 100644
-> --- a/drivers/gpu/drm/drm_of.c
-> +++ b/drivers/gpu/drm/drm_of.c
-> @@ -331,8 +331,10 @@ static int drm_of_lvds_get_remote_pixels_type(
->  		 * configurations by passing the endpoints explicitly to
->  		 * drm_of_lvds_get_dual_link_pixel_order().
->  		 */
-> -		if (!current_pt || pixels_type != current_pt)
-> +		if (!current_pt || pixels_type != current_pt) {
-> +			of_node_put(endpoint);
->  			return -EINVAL;
-> +		}
->  	}
->  
->  	return pixels_type;
+>   drivers/phy/allwinner/phy-sun4i-usb.c  <https://lore.kernel.org/linux-sunxi/20210615110636.23403-16-andre.przywara@arm.com/#Z30drivers:phy:allwinner:phy-sun4i-usb.c>  | 12 ++++++++++++
+>   1 file changed, 12 insertions(+)
+>
+> diff 
+> <https://lore.kernel.org/linux-sunxi/20210615110636.23403-16-andre.przywara@arm.com/#iZ30drivers:phy:allwinner:phy-sun4i-usb.c> 
+> --git a/drivers/phy/allwinner/phy-sun4i-usb.c 
+> b/drivers/phy/allwinner/phy-sun4i-usb.c index 
+> 316ef5fca831..85a9771280b7 100644 --- 
+> a/drivers/phy/allwinner/phy-sun4i-usb.c +++ 
+> b/drivers/phy/allwinner/phy-sun4i-usb.c @@ -1024,6 +1024,17 @@ static 
+> const struct sun4i_usb_phy_cfg sun50i_h6_cfg = {   	.missing_phys = BIT(1) | BIT(2),
+>   };
+>   
+> +static const struct sun4i_usb_phy_cfg sun50i_h616_cfg = { + .num_phys 
+> = 4, + .type = sun50i_h6_phy,
 
--- 
-Regards,
+Since this usb phy is considerable different from the one in H6, 
+wouldn't it better to define a new phy type here? The way the driver is 
+designed, I would expect the type to be shared by more or less identical 
+parts.
 
-Laurent Pinchart
+Honestly, I think it would be better to get rid of .type in the 
+sun4i_usb_phy_cfg completely replacing it by a couple more traits in 
+.cfg. It's impossible to know for sure which Allwinner parts really 
+share the identical revision of this hardware.
+
+> + .disc_thresh = 3, + .phyctl_offset = REG_PHYCTL_A33, + 
+> .dedicated_clocks = true, + .phy0_dual_route = true, + 
+> .hci_phy_ctl_clear = PHY_CTL_SIDDQ, + .needs_phy2_siddq = true, +}; +   static const struct of_device_id sun4i_usb_phy_of_match[] = {
+>   	{ .compatible = "allwinner,sun4i-a10-usb-phy", .data = &sun4i_a10_cfg },
+>   	{ .compatible = "allwinner,sun5i-a13-usb-phy", .data = &sun5i_a13_cfg },
+> @@ -1038,6 +1049,7 @@ static const struct of_device_id 
+> sun4i_usb_phy_of_match[] = {   	{ .compatible = "allwinner,sun50i-a64-usb-phy",
+>   	  .data = &sun50i_a64_cfg},
+>   	{ .compatible = "allwinner,sun50i-h6-usb-phy", .data = &sun50i_h6_cfg },
+> + { .compatible = "allwinner,sun50i-h616-usb-phy", .data = 
+> &sun50i_h616_cfg },   	{ },
+>   };
+>   MODULE_DEVICE_TABLE(of, sun4i_usb_phy_of_match);
+> -- 
+> 2.17.5
+>
+
