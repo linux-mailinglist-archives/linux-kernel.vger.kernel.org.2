@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8325E3C5784
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 959323C516A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376598AbhGLIey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:34:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51704 "EHLO mail.kernel.org"
+        id S1348283AbhGLHkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:40:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239930AbhGLHrQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:47:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4036F613E8;
-        Mon, 12 Jul 2021 07:42:27 +0000 (UTC)
+        id S244132AbhGLHK0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:10:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B0CA61107;
+        Mon, 12 Jul 2021 07:06:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075747;
-        bh=C7yM1rCc6c5fY5xJxIRKLHhsb2lu0bDEcYCq30oc7bg=;
+        s=korg; t=1626073577;
+        bh=e6MK2jsGWoD0XBWHwwKu4MHpih1TgeMFmpbHGInaer0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x6+Ay0ay3mnQ9lrMzNrcX2J/gXdff6i4GP9cEkRs3rgCjm9oAq6p0ZcfJAVHnvKJ5
-         D8/wNlGE0ZLYY3lGcx3T/tYCf5K4e2YMRlBI2q9WBJKI9senuh9bPFe4itHiMRBFAe
-         cFjRVuFlp9O8QeXfSDvy6c6fozA6Z6S9fi5uT0+o=
+        b=gD7zSXKYlvOIXKNlH2BZaT7jPzGtm06lRV72658jsOu3HjyJpWYYlL4pvxAj7qFDB
+         bsfZjBTvdjLXGaFnhFSbHfpuWPKb6rMrpv7z5Vy2dXYleuNV/35eXLmZ9p9Z0ncpO8
+         6Q2hxg6qow7KMhDDqKp4bXeNqEP82QPKrXymyqFI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joe Lawrence <joe.lawrence@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 348/800] objtool: Dont make .altinstructions writable
+        stable@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 288/700] arm64/mm: Fix ttbr0 values stored in struct thread_info for software-pan
 Date:   Mon, 12 Jul 2021 08:06:11 +0200
-Message-Id: <20210712061004.066851395@linuxfoundation.org>
+Message-Id: <20210712061006.862869089@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +44,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josh Poimboeuf <jpoimboe@redhat.com>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
 
-[ Upstream commit e31694e0a7a709293319475d8001e05e31f2178c ]
+[ Upstream commit 9163f01130304fab1f74683d7d44632da7bda637 ]
 
-When objtool creates the .altinstructions section, it sets the SHF_WRITE
-flag to make the section writable -- unless the section had already been
-previously created by the kernel.  The mismatch between kernel-created
-and objtool-created section flags can cause failures with external
-tooling (kpatch-build).  And the section doesn't need to be writable
-anyway.
+When using CONFIG_ARM64_SW_TTBR0_PAN, a task's thread_info::ttbr0 must be
+the TTBR0_EL1 value used to run userspace. With 52-bit PAs, the PA must be
+packed into the TTBR using phys_to_ttbr(), but we forget to do this in some
+of the SW PAN code. Thus, if the value is installed into TTBR0_EL1 (as may
+happen in the uaccess routines), this could result in UNPREDICTABLE
+behaviour.
 
-Make the section flags consistent with the kernel's.
+Since hardware with 52-bit PA support almost certainly has HW PAN, which
+will be used in preference, this shouldn't be a practical issue, but let's
+fix this for consistency.
 
-Fixes: 9bc0bb50727c ("objtool/x86: Rewrite retpoline thunk calls")
-Reported-by: Joe Lawrence <joe.lawrence@redhat.com>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/6c284ae89717889ea136f9f0064d914cd8329d31.1624462939.git.jpoimboe@redhat.com
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: James Morse <james.morse@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Fixes: 529c4b05a3cb ("arm64: handle 52-bit addresses in TTBR")
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+Link: https://lore.kernel.org/r/1623749578-11231-1-git-send-email-anshuman.khandual@arm.com
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/objtool/arch/x86/decode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/include/asm/mmu_context.h | 4 ++--
+ arch/arm64/kernel/setup.c            | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
-index 523aa4157f80..bc821056aba9 100644
---- a/tools/objtool/arch/x86/decode.c
-+++ b/tools/objtool/arch/x86/decode.c
-@@ -684,7 +684,7 @@ static int elf_add_alternative(struct elf *elf,
- 	sec = find_section_by_name(elf, ".altinstructions");
- 	if (!sec) {
- 		sec = elf_create_section(elf, ".altinstructions",
--					 SHF_WRITE, size, 0);
-+					 SHF_ALLOC, size, 0);
+diff --git a/arch/arm64/include/asm/mmu_context.h b/arch/arm64/include/asm/mmu_context.h
+index bd02e99b1a4c..44dceac442fc 100644
+--- a/arch/arm64/include/asm/mmu_context.h
++++ b/arch/arm64/include/asm/mmu_context.h
+@@ -177,9 +177,9 @@ static inline void update_saved_ttbr0(struct task_struct *tsk,
+ 		return;
  
- 		if (!sec) {
- 			WARN_ELF("elf_create_section");
+ 	if (mm == &init_mm)
+-		ttbr = __pa_symbol(reserved_pg_dir);
++		ttbr = phys_to_ttbr(__pa_symbol(reserved_pg_dir));
+ 	else
+-		ttbr = virt_to_phys(mm->pgd) | ASID(mm) << 48;
++		ttbr = phys_to_ttbr(virt_to_phys(mm->pgd)) | ASID(mm) << 48;
+ 
+ 	WRITE_ONCE(task_thread_info(tsk)->ttbr0, ttbr);
+ }
+diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
+index 61845c0821d9..68b30e8c22db 100644
+--- a/arch/arm64/kernel/setup.c
++++ b/arch/arm64/kernel/setup.c
+@@ -381,7 +381,7 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
+ 	 * faults in case uaccess_enable() is inadvertently called by the init
+ 	 * thread.
+ 	 */
+-	init_task.thread_info.ttbr0 = __pa_symbol(reserved_pg_dir);
++	init_task.thread_info.ttbr0 = phys_to_ttbr(__pa_symbol(reserved_pg_dir));
+ #endif
+ 
+ 	if (boot_args[1] || boot_args[2] || boot_args[3]) {
 -- 
 2.30.2
 
