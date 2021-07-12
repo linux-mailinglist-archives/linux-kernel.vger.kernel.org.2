@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 765143C58A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1A903C533A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379666AbhGLIuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:50:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45108 "EHLO mail.kernel.org"
+        id S1352153AbhGLHyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:54:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352296AbhGLHyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:54:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17AC5611CC;
-        Mon, 12 Jul 2021 07:51:32 +0000 (UTC)
+        id S1344547AbhGLHUj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:20:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7D5E613EE;
+        Mon, 12 Jul 2021 07:17:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076293;
-        bh=xWrZFeubD/OpOmCxUaMlADscuRZ4kZSPE7bfQ0O4AuY=;
+        s=korg; t=1626074270;
+        bh=eX4oCGx2MCHjUvDY1DlMOq6WjNHKlId38b/8R0XyqrU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LnwvqsSjxtd2MRdaxk9ahQdmrsCBRvMVty8c0P1xiWWMYSZubqvlf2QRfTvMCJ+X0
-         Y6iV+/gZHa9hIHEvcz8bfOlCosLMTrirM1u8HTW26hCPIrol9BX8DfeF4ZK7WqD106
-         xxTYM05H/JspJidjoOAKeU8LcrGMzBOVcRGpNQ8Y=
+        b=P3+4zU/shzsOq7w9uQE2CvtCOF5jCf8f1o4TaaT3XL3TC8bls95YLoJdtC1w3B77J
+         SHrM2AOMEGaXNnbdYmKjeFYXRvraE8UoVqmjimDSWxxjHDaxXYJ6pjIjNHjYuNI52h
+         TMaAjsYeHa2q/vT6Ui/1Hi/Rp/FZoWj8CM4lXxbc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        stable@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 582/800] Bluetooth: Fix Set Extended (Scan Response) Data
+Subject: [PATCH 5.12 522/700] rcu: Invoke rcu_spawn_core_kthreads() from rcu_spawn_gp_kthread()
 Date:   Mon, 12 Jul 2021 08:10:05 +0200
-Message-Id: <20210712061029.232357925@linuxfoundation.org>
+Message-Id: <20210712061031.995908101@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,174 +39,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+From: Paul E. McKenney <paulmck@kernel.org>
 
-[ Upstream commit c9ed0a7077306f9d41d74fb006ab5dbada8349c5 ]
+[ Upstream commit 8e4b1d2bc198e34b48fc7cc3a3c5a2fcb269e271 ]
 
-These command do have variable length and the length can go up to 251,
-so this changes the struct to not use a fixed size and then when
-creating the PDU only the actual length of the data send to the
-controller.
+Currently, rcu_spawn_core_kthreads() is invoked via an early_initcall(),
+which works, except that rcu_spawn_gp_kthread() is also invoked via an
+early_initcall() and rcu_spawn_core_kthreads() relies on adjustments to
+kthread_prio that are carried out by rcu_spawn_gp_kthread().  There is
+no guaranttee of ordering among early_initcall() handlers, and thus no
+guarantee that kthread_prio will be properly checked and range-limited
+at the time that rcu_spawn_core_kthreads() needs it.
 
-Fixes: a0fb3726ba551 ("Bluetooth: Use Set ext adv/scan rsp data if controller supports")
-Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+In most cases, this bug is harmless.  After all, the only reason that
+rcu_spawn_gp_kthread() adjusts the value of kthread_prio is if the user
+specified a nonsensical value for this boot parameter, which experience
+indicates is rare.
+
+Nevertheless, a bug is a bug.  This commit therefore causes the
+rcu_spawn_core_kthreads() function to be invoked directly from
+rcu_spawn_gp_kthread() after any needed adjustments to kthread_prio have
+been carried out.
+
+Fixes: 48d07c04b4cc ("rcu: Enable elimination of Tree-RCU softirq processing")
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/bluetooth/hci.h      |  6 ++--
- include/net/bluetooth/hci_core.h |  8 ++---
- net/bluetooth/hci_request.c      | 51 ++++++++++++++++++--------------
- 3 files changed, 37 insertions(+), 28 deletions(-)
+ kernel/rcu/tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
-index ea4ae551c426..18b135dc968b 100644
---- a/include/net/bluetooth/hci.h
-+++ b/include/net/bluetooth/hci.h
-@@ -1774,13 +1774,15 @@ struct hci_cp_ext_adv_set {
- 	__u8  max_events;
- } __packed;
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 7356764e49a0..a274622ed6fa 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2911,7 +2911,6 @@ static int __init rcu_spawn_core_kthreads(void)
+ 		  "%s: Could not start rcuc kthread, OOM is now expected behavior\n", __func__);
+ 	return 0;
+ }
+-early_initcall(rcu_spawn_core_kthreads);
  
-+#define HCI_MAX_EXT_AD_LENGTH	251
-+
- #define HCI_OP_LE_SET_EXT_ADV_DATA		0x2037
- struct hci_cp_le_set_ext_adv_data {
- 	__u8  handle;
- 	__u8  operation;
- 	__u8  frag_pref;
- 	__u8  length;
--	__u8  data[HCI_MAX_AD_LENGTH];
-+	__u8  data[];
- } __packed;
- 
- #define HCI_OP_LE_SET_EXT_SCAN_RSP_DATA		0x2038
-@@ -1789,7 +1791,7 @@ struct hci_cp_le_set_ext_scan_rsp_data {
- 	__u8  operation;
- 	__u8  frag_pref;
- 	__u8  length;
--	__u8  data[HCI_MAX_AD_LENGTH];
-+	__u8  data[];
- } __packed;
- 
- #define LE_SET_ADV_DATA_OP_COMPLETE	0x03
-diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
-index c73ac52af186..89c8406dddb4 100644
---- a/include/net/bluetooth/hci_core.h
-+++ b/include/net/bluetooth/hci_core.h
-@@ -228,9 +228,9 @@ struct adv_info {
- 	__u16	remaining_time;
- 	__u16	duration;
- 	__u16	adv_data_len;
--	__u8	adv_data[HCI_MAX_AD_LENGTH];
-+	__u8	adv_data[HCI_MAX_EXT_AD_LENGTH];
- 	__u16	scan_rsp_len;
--	__u8	scan_rsp_data[HCI_MAX_AD_LENGTH];
-+	__u8	scan_rsp_data[HCI_MAX_EXT_AD_LENGTH];
- 	__s8	tx_power;
- 	__u32   min_interval;
- 	__u32   max_interval;
-@@ -550,9 +550,9 @@ struct hci_dev {
- 	DECLARE_BITMAP(dev_flags, __HCI_NUM_FLAGS);
- 
- 	__s8			adv_tx_power;
--	__u8			adv_data[HCI_MAX_AD_LENGTH];
-+	__u8			adv_data[HCI_MAX_EXT_AD_LENGTH];
- 	__u8			adv_data_len;
--	__u8			scan_rsp_data[HCI_MAX_AD_LENGTH];
-+	__u8			scan_rsp_data[HCI_MAX_EXT_AD_LENGTH];
- 	__u8			scan_rsp_data_len;
- 
- 	struct list_head	adv_instances;
-diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
-index fa9125b782f8..b069f640394d 100644
---- a/net/bluetooth/hci_request.c
-+++ b/net/bluetooth/hci_request.c
-@@ -1697,30 +1697,33 @@ void __hci_req_update_scan_rsp_data(struct hci_request *req, u8 instance)
- 		return;
- 
- 	if (ext_adv_capable(hdev)) {
--		struct hci_cp_le_set_ext_scan_rsp_data cp;
-+		struct {
-+			struct hci_cp_le_set_ext_scan_rsp_data cp;
-+			u8 data[HCI_MAX_EXT_AD_LENGTH];
-+		} pdu;
- 
--		memset(&cp, 0, sizeof(cp));
-+		memset(&pdu, 0, sizeof(pdu));
- 
- 		if (instance)
- 			len = create_instance_scan_rsp_data(hdev, instance,
--							    cp.data);
-+							    pdu.data);
- 		else
--			len = create_default_scan_rsp_data(hdev, cp.data);
-+			len = create_default_scan_rsp_data(hdev, pdu.data);
- 
- 		if (hdev->scan_rsp_data_len == len &&
--		    !memcmp(cp.data, hdev->scan_rsp_data, len))
-+		    !memcmp(pdu.data, hdev->scan_rsp_data, len))
- 			return;
- 
--		memcpy(hdev->scan_rsp_data, cp.data, sizeof(cp.data));
-+		memcpy(hdev->scan_rsp_data, pdu.data, len);
- 		hdev->scan_rsp_data_len = len;
- 
--		cp.handle = instance;
--		cp.length = len;
--		cp.operation = LE_SET_ADV_DATA_OP_COMPLETE;
--		cp.frag_pref = LE_SET_ADV_DATA_NO_FRAG;
-+		pdu.cp.handle = instance;
-+		pdu.cp.length = len;
-+		pdu.cp.operation = LE_SET_ADV_DATA_OP_COMPLETE;
-+		pdu.cp.frag_pref = LE_SET_ADV_DATA_NO_FRAG;
- 
--		hci_req_add(req, HCI_OP_LE_SET_EXT_SCAN_RSP_DATA, sizeof(cp),
--			    &cp);
-+		hci_req_add(req, HCI_OP_LE_SET_EXT_SCAN_RSP_DATA,
-+			    sizeof(pdu.cp) + len, &pdu.cp);
- 	} else {
- 		struct hci_cp_le_set_scan_rsp_data cp;
- 
-@@ -1843,26 +1846,30 @@ void __hci_req_update_adv_data(struct hci_request *req, u8 instance)
- 		return;
- 
- 	if (ext_adv_capable(hdev)) {
--		struct hci_cp_le_set_ext_adv_data cp;
-+		struct {
-+			struct hci_cp_le_set_ext_adv_data cp;
-+			u8 data[HCI_MAX_EXT_AD_LENGTH];
-+		} pdu;
- 
--		memset(&cp, 0, sizeof(cp));
-+		memset(&pdu, 0, sizeof(pdu));
- 
--		len = create_instance_adv_data(hdev, instance, cp.data);
-+		len = create_instance_adv_data(hdev, instance, pdu.data);
- 
- 		/* There's nothing to do if the data hasn't changed */
- 		if (hdev->adv_data_len == len &&
--		    memcmp(cp.data, hdev->adv_data, len) == 0)
-+		    memcmp(pdu.data, hdev->adv_data, len) == 0)
- 			return;
- 
--		memcpy(hdev->adv_data, cp.data, sizeof(cp.data));
-+		memcpy(hdev->adv_data, pdu.data, len);
- 		hdev->adv_data_len = len;
- 
--		cp.length = len;
--		cp.handle = instance;
--		cp.operation = LE_SET_ADV_DATA_OP_COMPLETE;
--		cp.frag_pref = LE_SET_ADV_DATA_NO_FRAG;
-+		pdu.cp.length = len;
-+		pdu.cp.handle = instance;
-+		pdu.cp.operation = LE_SET_ADV_DATA_OP_COMPLETE;
-+		pdu.cp.frag_pref = LE_SET_ADV_DATA_NO_FRAG;
- 
--		hci_req_add(req, HCI_OP_LE_SET_EXT_ADV_DATA, sizeof(cp), &cp);
-+		hci_req_add(req, HCI_OP_LE_SET_EXT_ADV_DATA,
-+			    sizeof(pdu.cp) + len, &pdu.cp);
- 	} else {
- 		struct hci_cp_le_set_adv_data cp;
- 
+ /*
+  * Handle any core-RCU processing required by a call_rcu() invocation.
+@@ -4392,6 +4391,7 @@ static int __init rcu_spawn_gp_kthread(void)
+ 	wake_up_process(t);
+ 	rcu_spawn_nocb_kthreads();
+ 	rcu_spawn_boost_kthreads();
++	rcu_spawn_core_kthreads();
+ 	return 0;
+ }
+ early_initcall(rcu_spawn_gp_kthread);
 -- 
 2.30.2
 
