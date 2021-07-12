@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDFA33C4E54
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C5B73C54DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244069AbhGLHSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:18:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53362 "EHLO mail.kernel.org"
+        id S1355071AbhGLIFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:05:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239879AbhGLGxJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:53:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF6746120F;
-        Mon, 12 Jul 2021 06:50:19 +0000 (UTC)
+        id S245498AbhGLH1J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:27:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B514061221;
+        Mon, 12 Jul 2021 07:23:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072620;
-        bh=RUgYJU9lVBC2ICShtr/4xi1A1kUmM72HxXtGzTEXXgk=;
+        s=korg; t=1626074600;
+        bh=tqny+4dDP+UDnNDW3XHLKCXwa3ZCi57AIDTxHNSfd0c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2hZZYqLm5X8KmVUHBwveV4nfAxOeYDYkcp/fHFiYjBqw2D7PiKMh51jgHI6MB54rL
-         zF29tJGSwHvXkBiH5ufml7+lKD1q3LqQ2keyEC0C9KVUgo9r7/wG8ziDCrJx6YBD0b
-         7ogGEjsZsOezzwTf1txJaNCRxmgsjWGPArKKpnOk=
+        b=quP1xfwoXuAuAbZrGr/EHMfTWXKf1hFXHLDylB8PgKpZOio7P0Owr7ysQzx/fZwEk
+         CWWYWi7KA7m6TiVZk6eSpKPLHFUMV9tCxpnexFhPs8zHAeH8amviSZFz6VZrGy3xgW
+         6wMW1dgZlXdeSB7bc6o4bRzXDcl7RvhRLOubK7Zg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 557/593] ALSA: firewire-lib: Fix amdtp_domain_start() when no AMDTP_OUT_STREAM stream is found
-Date:   Mon, 12 Jul 2021 08:11:57 +0200
-Message-Id: <20210712060955.806133690@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 635/700] scsi: mpt3sas: Fix error return value in _scsih_expander_add()
+Date:   Mon, 12 Jul 2021 08:11:58 +0200
+Message-Id: <20210712061043.398508643@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,50 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 0cbbeaf370221fc469c95945dd3c1198865c5fe4 ]
+[ Upstream commit d6c2ce435ffe23ef7f395ae76ec747414589db46 ]
 
-The intent here is to return an error code if we don't find what we are
-looking for in the 'list_for_each_entry()' loop.
+When an expander does not contain any 'phys', an appropriate error code -1
+should be returned, as done elsewhere in this function. However, we
+currently do not explicitly assign this error code to 'rc'. As a result, 0
+was incorrectly returned.
 
-'s' is not NULL if the list is empty or if we scan the complete list.
-Introduce a new 'found' variable to handle such cases.
-
-Fixes: 60dd49298ec5 ("ALSA: firewire-lib: handle several AMDTP streams in callback handler of IRQ target")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Acked-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Link: https://lore.kernel.org/r/9c9a53a4905984a570ba5672cbab84f2027dedc1.1624560484.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20210514081300.6650-1-thunder.leizhen@huawei.com
+Fixes: f92363d12359 ("[SCSI] mpt3sas: add new driver supporting 12GB SAS")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/firewire/amdtp-stream.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/scsi/mpt3sas/mpt3sas_scsih.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index 5805c5de39fb..7a282d8e7148 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -1404,14 +1404,17 @@ int amdtp_domain_start(struct amdtp_domain *d, unsigned int ir_delay_cycle)
- 	unsigned int queue_size;
- 	struct amdtp_stream *s;
- 	int cycle;
-+	bool found = false;
- 	int err;
+diff --git a/drivers/scsi/mpt3sas/mpt3sas_scsih.c b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
+index ae1973878cc7..7824e77bc6e2 100644
+--- a/drivers/scsi/mpt3sas/mpt3sas_scsih.c
++++ b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
+@@ -6883,8 +6883,10 @@ _scsih_expander_add(struct MPT3SAS_ADAPTER *ioc, u16 handle)
+ 		 handle, parent_handle,
+ 		 (u64)sas_expander->sas_address, sas_expander->num_phys);
  
- 	// Select an IT context as IRQ target.
- 	list_for_each_entry(s, &d->streams, list) {
--		if (s->direction == AMDTP_OUT_STREAM)
-+		if (s->direction == AMDTP_OUT_STREAM) {
-+			found = true;
- 			break;
-+		}
- 	}
--	if (!s)
-+	if (!found)
- 		return -ENXIO;
- 	d->irq_target = s;
- 
+-	if (!sas_expander->num_phys)
++	if (!sas_expander->num_phys) {
++		rc = -1;
+ 		goto out_fail;
++	}
+ 	sas_expander->phy = kcalloc(sas_expander->num_phys,
+ 	    sizeof(struct _sas_phy), GFP_KERNEL);
+ 	if (!sas_expander->phy) {
 -- 
 2.30.2
 
