@@ -2,228 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0DDA3C5B12
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:05:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0B203C5B15
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235061AbhGLKvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 06:51:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234956AbhGLKvV (ORCPT
+        id S234590AbhGLKzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 06:55:03 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:19502 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233422AbhGLKy7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 06:51:21 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48AE1C06139F;
-        Mon, 12 Jul 2021 03:48:25 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id t9so17805433pgn.4;
-        Mon, 12 Jul 2021 03:48:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ESPXz5y1c2khlg1Rn0L9i5TuNerGKV1irqF9zD9bF5M=;
-        b=YLFo7K+Y5jNmz3M7zsM6opHRT/H1FDsq+SeD+U7kY0BOrONZ6GTK0Zu6dXJcbzhn4m
-         eAWls7qlyNxlKoydExwKxmwLMIyuz2uweBUogCV2Qz5VQxh7c+B52OBLDl9tgzk69ept
-         ubgwme4jvZMOYxm7s1soZwQtKTRkwkU7QTWCiuefmW/heZjJVOtPc+StMQCetsyKkDCr
-         lGirw8hTQzQIqH8OSy5HQQkoiviRFdVKm+EdVXz7heKsBHGfhibopwrX7IMNluCfx+up
-         5UcrLy6Sh0Olx/LfkvU+8vt10Nyn5sto2U1nitQDN/ngqj5lsOdsoYWsFvd2UXm+oQlt
-         Pfqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ESPXz5y1c2khlg1Rn0L9i5TuNerGKV1irqF9zD9bF5M=;
-        b=atdgZQ1x1BsfgxBy0wrNWY3xVkPSmVYbWM2d5bGy70xCNXCxfw6R6RziQv/kQBL7BT
-         /oSoakKT3xHi9F7niAStbVgmrJBRDm0LR0Oo/BRZwL+Iiy7OMVE9BwJx8bkAqISNr+4O
-         5K6hO6hjJd3fzD7UTqUepkXERGCJgdOt0/tyKRWEw05J+6h6oIyhpsGMgYCbBhFexLw3
-         0cvas7VpOe0zzLAP8uwqU/KP3vqE3/XLINWBv2UHI1CpvNS6SwndEGVZqRhhEi8bm9Uu
-         MOGdnkiyz5Wno5QSl3b/tFFNyiHJj4xTYbqGbikyGmVMKzp0oAhQvPmdeSVlhD76QKWE
-         IGdw==
-X-Gm-Message-State: AOAM533ChREU6XPVIJJNGfQIVajBf5koIrDS0JNvLpRQX+5Iwhp1BSiG
-        zJ2sIry/750xrajXVzxPK2k=
-X-Google-Smtp-Source: ABdhPJwlgRt1pAolTWnhq4aL43Ac7wLCqMdkczwSCzNih0XOJ1UaeY22kjHwxod3K1Fi0SG+mXGs3w==
-X-Received: by 2002:a62:bd1a:0:b029:2fe:eaf8:8012 with SMTP id a26-20020a62bd1a0000b02902feeaf88012mr51314180pff.45.1626086904813;
-        Mon, 12 Jul 2021 03:48:24 -0700 (PDT)
-Received: from shinobu ([156.146.35.76])
-        by smtp.gmail.com with ESMTPSA id i8sm15269574pfo.154.2021.07.12.03.48.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 03:48:24 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 19:48:17 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        david@lechnology.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, o.rempel@pengutronix.de,
-        jarkko.nikula@linux.intel.com
-Subject: Re: [PATCH v12 00/17] Introduce the Counter character device
- interface
-Message-ID: <YOwd8aL+K+U+9GXz@shinobu>
-References: <cover.1625471640.git.vilhelm.gray@gmail.com>
- <20210711144828.795ca342@jic23-huawei>
+        Mon, 12 Jul 2021 06:54:59 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16CAXsmt092999;
+        Mon, 12 Jul 2021 06:51:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : subject :
+ date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=7R6IFKv6+T2NNxsIFHbeE25v9lDPCieFlU0e+MJUxKA=;
+ b=XsZub7AqV6lWzVECNx+D58Cf+4LkHBs9S1NA1s+xzWPjpZebW+wGcwmYenpX4HdrQd4a
+ d3kNtHYnDltRnoz01amv++P7nE/vhjihQmrjUdQJ/tx3GmAYRtHf0CmLh9/9YF5MHyXJ
+ 5P6s8TNVCTCG20LlXd+u2D7j6Vu7cC94XXePi1oVXHrb6/ztthmIB+J4k5N1ZZD0Pkx0
+ Ux1a8RcYgzwHY7gD1tr0n38w9L5kDAZf1LIf2RwLjkl/HASgLmnKxl1//21s1zcktqaJ
+ ZznmSw/PjP59Kgt5JrAUlplwHzJ631d12A1WD3pK1xT/w6j0gNj9j2QAFnfzUlXLtkI0 4Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39qrkvnutx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 12 Jul 2021 06:51:49 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16CAZ0PV095882;
+        Mon, 12 Jul 2021 06:51:49 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39qrkvnutb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 12 Jul 2021 06:51:48 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16CAm2sx022672;
+        Mon, 12 Jul 2021 10:51:46 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04ams.nl.ibm.com with ESMTP id 39q3688qhf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 12 Jul 2021 10:51:46 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16CAphCg18940194
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 12 Jul 2021 10:51:43 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8C657A4062;
+        Mon, 12 Jul 2021 10:51:43 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C32D7A4069;
+        Mon, 12 Jul 2021 10:51:41 +0000 (GMT)
+Received: from pratiks-thinkpad.ibmuc.com (unknown [9.85.69.159])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 12 Jul 2021 10:51:41 +0000 (GMT)
+From:   "Pratik R. Sampat" <psampat@linux.ibm.com>
+To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-ppc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, psampat@linux.ibm.com,
+        pratik.r.sampat@gmail.com
+Subject: [PATCH v3 0/1] Interface to represent PAPR firmware attributes
+Date:   Mon, 12 Jul 2021 16:21:39 +0530
+Message-Id: <20210712105140.33388-1-psampat@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: wD84fng1mXXAMQmcmuxF743CGh0KxfZA
+X-Proofpoint-ORIG-GUID: eSSSBgfKzdBE3WGwwoZawLdwUTz0hr0t
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4C9OArlWXnF+XzXG"
-Content-Disposition: inline
-In-Reply-To: <20210711144828.795ca342@jic23-huawei>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-12_05:2021-07-12,2021-07-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 malwarescore=0 suspectscore=0
+ impostorscore=0 phishscore=0 priorityscore=1501 spamscore=0
+ mlxlogscore=999 bulkscore=0 adultscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107120082
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+RFC: https://lkml.org/lkml/2021/6/4/791
+PATCH v1: https://lkml.org/lkml/2021/6/16/805
+PATCH v2: https://lkml.org/lkml/2021/7/6/138
 
---4C9OArlWXnF+XzXG
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Changelog v2 --> v3
+Based on a comment from Guatham:
+1. Added a versioning check after the H_CALL is made to bail out when
+   the version from the firmware is inconsistent with that in the kernel
 
-On Sun, Jul 11, 2021 at 02:48:28PM +0100, Jonathan Cameron wrote:
-> On Mon,  5 Jul 2021 17:18:48 +0900
-> William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
->=20
-> > Changes in v12:
-> >  - Move unlock to after register set in quad8_count_ceiling_write()
-> >  - Add locking protection to counter_set_event_node()
-> >  - Fix sparse warning by using {} instead of {0}
-> >  - Clean up and organize comments for clarity
-> >  - Reduce boilerplate by utilizing devm_add_action_or_reset()
-> >  - Use switch statements in ti_eqep_action_read() to make possible cases
-> >    more obvious
-> >=20
-> > I pulled out a lot of bits and pieces to their own patches; hopefully
-> > that makes reviewing this patchset much simpler than before. This
-> > patchset is also available on my personal git repo for convenience:
-> > https://gitlab.com/vilhelmgray/iio/-/tree/counter_chrdev_v12
-> >=20
-> > The patches preceding "counter: Internalize sysfs interface code" are
-> > primarily cleanup and fixes that can be picked up and applied now to the
-> > IIO tree if so desired. The "counter: Internalize sysfs interface code"
-> > patch as well may be considered for pickup because it is relatively safe
-> > and makes no changes to the userspace interface.
-> >=20
-> > To summarize the main points of this patchset: there are no changes to
-> > the existing Counter sysfs userspace interface; a Counter character
-> > device interface is introduced that allows Counter events and associated
-> > data to be read() by userspace; the events_configure() and
-> > watch_validate() driver callbacks are introduced to support Counter
-> > events; and IRQ support is added to the 104-QUAD-8 driver, serving as an
-> > example of how to support the new Counter events functionality.
-> >=20
-> > Something that should still be discussed: should the struct
-> > counter_event "status" member be 8 bits or 32 bits wide? This member
-> > will provide the return status (system error number) of an event
-> > operation.
->=20
-> Hi william,
->=20
-> I've looked through the lot and where I haven't commented, I had nothing
-> much to add to David's comments.
->=20
-> I'm not planning to go through the whole thing again unless major changes
-> occur. Fingers crossed for v13.
->=20
-> If it looks like there are still some unresolved issues after that, perha=
-ps
-> applying up to patch 8 or so makes sense to reduced the volume of code you
-> are carrying.  Let me know if you'd like me to do that.
->=20
-> Thanks,
->=20
-> Jonathan
+Also, have implemented a POC using this interface for the powerpc-utils'
+ppc64_cpu --frequency command-line tool to utilize this information
+in userspace.
+The POC for the new interface has been hosted here:
+https://github.com/pratiksampat/powerpc-utils/tree/H_GET_ENERGY_SCALE_INFO_v2
 
-Yes, much of the code has remained stable for some months now so I think
-we're pretty close. If we do need a v14, then applying up to patch 8
-would help me a lot (most of the merge conflicts I encounter when I
-rebase are due to the large subsystem refactor in patch 06).
+Sample output from the powerpc-utils tool is as follows:
 
-William Breathitt Gray
+# ppc64_cpu --frequency
+Power and Performance Mode: XXXX
+Idle Power Saver Status   : XXXX
+Processor Folding Status  : XXXX --> Printed if Idle power save status is supported
 
-> >=20
-> > William Breathitt Gray (17):
-> >   counter: 104-quad-8: Return error when invalid mode during
-> >     ceiling_write
-> >   counter: Return error code on invalid modes
-> >   counter: Standardize to ERANGE for limit exceeded errors
-> >   counter: Rename counter_signal_value to counter_signal_level
-> >   counter: Rename counter_count_function to counter_function
-> >   counter: Internalize sysfs interface code
-> >   counter: Update counter.h comments to reflect sysfs internalization
-> >   docs: counter: Update to reflect sysfs internalization
-> >   counter: Move counter enums to uapi header
-> >   counter: Add character device interface
-> >   docs: counter: Document character device interface
-> >   tools/counter: Create Counter tools
-> >   counter: Implement signalZ_action_component_id sysfs attribute
-> >   counter: Implement *_component_id sysfs attributes
-> >   counter: Implement events_queue_size sysfs attribute
-> >   counter: 104-quad-8: Replace mutex with spinlock
-> >   counter: 104-quad-8: Add IRQ support for the ACCES 104-QUAD-8
-> >=20
-> >  Documentation/ABI/testing/sysfs-bus-counter   |   38 +-
-> >  Documentation/driver-api/generic-counter.rst  |  366 +++-
-> >  .../userspace-api/ioctl/ioctl-number.rst      |    1 +
-> >  MAINTAINERS                                   |    3 +-
-> >  drivers/counter/104-quad-8.c                  |  728 ++++----
-> >  drivers/counter/Kconfig                       |    6 +-
-> >  drivers/counter/Makefile                      |    1 +
-> >  drivers/counter/counter-chrdev.c              |  498 ++++++
-> >  drivers/counter/counter-chrdev.h              |   14 +
-> >  drivers/counter/counter-core.c                |  182 ++
-> >  drivers/counter/counter-sysfs.c               |  953 +++++++++++
-> >  drivers/counter/counter-sysfs.h               |   13 +
-> >  drivers/counter/counter.c                     | 1496 -----------------
-> >  drivers/counter/ftm-quaddec.c                 |   59 +-
-> >  drivers/counter/intel-qep.c                   |  150 +-
-> >  drivers/counter/interrupt-cnt.c               |   73 +-
-> >  drivers/counter/microchip-tcb-capture.c       |  103 +-
-> >  drivers/counter/stm32-lptimer-cnt.c           |  176 +-
-> >  drivers/counter/stm32-timer-cnt.c             |  147 +-
-> >  drivers/counter/ti-eqep.c                     |  205 ++-
-> >  include/linux/counter.h                       |  716 ++++----
-> >  include/linux/counter_enum.h                  |   45 -
-> >  include/uapi/linux/counter.h                  |  133 ++
-> >  tools/Makefile                                |   13 +-
-> >  tools/counter/Build                           |    1 +
-> >  tools/counter/Makefile                        |   53 +
-> >  tools/counter/counter_example.c               |   95 ++
-> >  27 files changed, 3501 insertions(+), 2767 deletions(-)
-> >  create mode 100644 drivers/counter/counter-chrdev.c
-> >  create mode 100644 drivers/counter/counter-chrdev.h
-> >  create mode 100644 drivers/counter/counter-core.c
-> >  create mode 100644 drivers/counter/counter-sysfs.c
-> >  create mode 100644 drivers/counter/counter-sysfs.h
-> >  delete mode 100644 drivers/counter/counter.c
-> >  delete mode 100644 include/linux/counter_enum.h
-> >  create mode 100644 include/uapi/linux/counter.h
-> >  create mode 100644 tools/counter/Build
-> >  create mode 100644 tools/counter/Makefile
-> >  create mode 100644 tools/counter/counter_example.c
-> >=20
-> >=20
-> > base-commit: 6cbb3aa0f9d5d23221df787cf36f74d3866fdb78
->=20
+Platform reported frequencies --> Frequencies reported from the platform's H_CALL i.e PAPR interface
+min        :    NNNN GHz
+max        :    NNNN GHz
+static     :    NNNN GHz
 
---4C9OArlWXnF+XzXG
-Content-Type: application/pgp-signature; name="signature.asc"
+Tool Computed frequencies
+min        :    NNNN GHz (cpu XX)
+max        :    NNNN GHz (cpu XX)
+avg        :    NNNN GHz
 
------BEGIN PGP SIGNATURE-----
+Pratik R. Sampat (1):
+  powerpc/pseries: Interface to represent PAPR firmware attributes
 
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmDsHfEACgkQhvpINdm7
-VJLk+g//YfH/GBLnKtICCwZQ2UF4svFlAv69fbT+wssz23VkBOpKtx9UVvy+rsMo
-B4gkt3ipqYDwJC+tLMBl2KvXVqgrIlMP0vLOzEWz/PzKZinJMbRS1wMsuGPOWkxn
-PNZJ+rrcmsgQzTRoJlrx9szsEz4kGepvCpbrYmTxWaY/8RxeSNUMWPgOndrQ89Cp
-bFCRddrZ2tjEbuY+88OSBCAFzIvN1/fgXRxt6JhRBB79dEdtBz1xAIHZFBsLPWeC
-3eKYjOc5dUhuFlcEFLg9SiH317VbNF7SMzJUzWrIr+hBBms1eZvLJ8RQbu80FcPu
-T01R9iZcOiNFDbAsnhtUstF/8WrMwBeAEe0aIh70H/Pu9cCAtWucJEO87GrFmSfC
-iGZYZPlvaWXi55nU4aNbz3QViiLlu3JQV2L2fNTXSvvdWGFNgWXetu770CtbOXSE
-I23l6ixwWUnuRFEn/Dh2xbpDY3i41LQhVjXtuvxrVOusjjmB4uesuV3yyfvGYN37
-fvNWdiE8GBJ0DeLbIkwTUBUuhhRjJFF12qvNvtuJxZSDZ764uvqoTsKAqhWot9df
-16uF/hAD3dAOo6nSvCFqS8Nj+bB+E/YCbGuuRP5PyfVoOK5YikQ7gUU/SZMdO5tv
-M50D6TdabsoKWNrJTJgAqmfOWwMxq9I8yNY+MpPIDK4U+ykDoM8=
-=Ud8E
------END PGP SIGNATURE-----
+ .../sysfs-firmware-papr-energy-scale-info     |  26 ++
+ arch/powerpc/include/asm/hvcall.h             |  24 +-
+ arch/powerpc/kvm/trace_hv.h                   |   1 +
+ arch/powerpc/platforms/pseries/Makefile       |   3 +-
+ .../pseries/papr_platform_attributes.c        | 320 ++++++++++++++++++
+ 5 files changed, 372 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-firmware-papr-energy-scale-info
+ create mode 100644 arch/powerpc/platforms/pseries/papr_platform_attributes.c
 
---4C9OArlWXnF+XzXG--
+-- 
+2.31.1
+
