@@ -2,40 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B1C3C4B71
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:36:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC953C52C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238397AbhGLG5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:57:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34266 "EHLO mail.kernel.org"
+        id S1347421AbhGLHtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:49:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238625AbhGLGlX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:41:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 512336101E;
-        Mon, 12 Jul 2021 06:38:26 +0000 (UTC)
+        id S240764AbhGLHPR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:15:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 971A16140A;
+        Mon, 12 Jul 2021 07:11:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071906;
-        bh=G8AU0m0yqo4371zcdR+GugWcnl5LAl1GfyHckj4CfRs=;
+        s=korg; t=1626073912;
+        bh=bSWK8wU7FX6faaFnh137nVGMdgTSppAImlz6drdSNmU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nM1wraaes1VaBjlzvFDJS/cRLvJFYSJsQbktC05Pq/yqffNkqWqVh5XHOgZjJ2KGI
-         G5aNyvXtKOl+mmbSDSI//Uc3FdGRwEHD4lHEFxBFWMk6l/A+JvkxvA4a9mNqa6sjUV
-         vexqiTjXxs/Fb+3K7SnqoJ7sBwKKPf9HxYlzSSaY=
+        b=Etke5UF97eQgDbvRYDWsHp/UEX32VrtTNVdEolNjrjnYP4Fkvb5QZ5jWJCA9LONSr
+         lJHRFTSVHeXCJU/4IRZosjBAwn3Vz+/2gJ91IjpLNRF35ihurv1xai4LackELT5HXj
+         eM8ocqbmxswdx3MI+5NKpEz0xXGUctYUZ7NtNivc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "ziwei.dai" <ziwei.dai@unisoc.com>,
-        "ke.wang" <ke.wang@unisoc.com>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Suren Baghdasaryan <surenb@google.com>,
+        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Hugh Dickins <hughd@google.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Alex Shi <alexs@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Yang Shi <shy828301@gmail.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 271/593] psi: Fix race between psi_trigger_create/destroy
+Subject: [PATCH 5.12 348/700] mm/shmem: fix shmem_swapin() race with swapoff
 Date:   Mon, 12 Jul 2021 08:07:11 +0200
-Message-Id: <20210712060913.448341561@linuxfoundation.org>
+Message-Id: <20210712061013.325433186@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,110 +55,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+From: Miaohe Lin <linmiaohe@huawei.com>
 
-[ Upstream commit 8f91efd870ea5d8bc10b0fcc9740db51cd4c0c83 ]
+[ Upstream commit 2efa33fc7f6ec94a3a538c1a264273c889be2b36 ]
 
-Race detected between psi_trigger_destroy/create as shown below, which
-cause panic by accessing invalid psi_system->poll_wait->wait_queue_entry
-and psi_system->poll_timer->entry->next. Under this modification, the
-race window is removed by initialising poll_wait and poll_timer in
-group_init which are executed only once at beginning.
+When I was investigating the swap code, I found the below possible race
+window:
 
-  psi_trigger_destroy()                   psi_trigger_create()
+CPU 1                                         CPU 2
+-----                                         -----
+shmem_swapin
+  swap_cluster_readahead
+    if (likely(si->flags & (SWP_BLKDEV | SWP_FS_OPS))) {
+                                              swapoff
+                                                ..
+                                                si->swap_file = NULL;
+                                                ..
+    struct inode *inode = si->swap_file->f_mapping->host;[oops!]
 
-  mutex_lock(trigger_lock);
-  rcu_assign_pointer(poll_task, NULL);
-  mutex_unlock(trigger_lock);
-					  mutex_lock(trigger_lock);
-					  if (!rcu_access_pointer(group->poll_task)) {
-					    timer_setup(poll_timer, poll_timer_fn, 0);
-					    rcu_assign_pointer(poll_task, task);
-					  }
-					  mutex_unlock(trigger_lock);
+Close this race window by using get/put_swap_device() to guard against
+concurrent swapoff.
 
-  synchronize_rcu();
-  del_timer_sync(poll_timer); <-- poll_timer has been reinitialized by
-                                  psi_trigger_create()
-
-So, trigger_lock/RCU correctly protects destruction of
-group->poll_task but misses this race affecting poll_timer and
-poll_wait.
-
-Fixes: 461daba06bdc ("psi: eliminate kthread_worker from psi trigger scheduling mechanism")
-Co-developed-by: ziwei.dai <ziwei.dai@unisoc.com>
-Signed-off-by: ziwei.dai <ziwei.dai@unisoc.com>
-Co-developed-by: ke.wang <ke.wang@unisoc.com>
-Signed-off-by: ke.wang <ke.wang@unisoc.com>
-Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Suren Baghdasaryan <surenb@google.com>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-Link: https://lkml.kernel.org/r/1623371374-15664-1-git-send-email-huangzhaoyang@gmail.com
+Link: https://lkml.kernel.org/r/20210426123316.806267-5-linmiaohe@huawei.com
+Fixes: 8fd2e0b505d1 ("mm: swap: check if swap backing device is congested or not")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
+Cc: Dennis Zhou <dennis@kernel.org>
+Cc: Tim Chen <tim.c.chen@linux.intel.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Alex Shi <alexs@kernel.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Wei Yang <richard.weiyang@gmail.com>
+Cc: Yang Shi <shy828301@gmail.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Yu Zhao <yuzhao@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/psi.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ mm/shmem.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index 651218ded981..d50a31ecedee 100644
---- a/kernel/sched/psi.c
-+++ b/kernel/sched/psi.c
-@@ -179,6 +179,8 @@ struct psi_group psi_system = {
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 6e99a4ad6e1f..1a03744240e7 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -1696,7 +1696,8 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
+ 	struct address_space *mapping = inode->i_mapping;
+ 	struct shmem_inode_info *info = SHMEM_I(inode);
+ 	struct mm_struct *charge_mm = vma ? vma->vm_mm : current->mm;
+-	struct page *page;
++	struct swap_info_struct *si;
++	struct page *page = NULL;
+ 	swp_entry_t swap;
+ 	int error;
  
- static void psi_avgs_work(struct work_struct *work);
+@@ -1704,6 +1705,12 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
+ 	swap = radix_to_swp_entry(*pagep);
+ 	*pagep = NULL;
  
-+static void poll_timer_fn(struct timer_list *t);
++	/* Prevent swapoff from happening to us. */
++	si = get_swap_device(swap);
++	if (!si) {
++		error = EINVAL;
++		goto failed;
++	}
+ 	/* Look it up and read it in.. */
+ 	page = lookup_swap_cache(swap, NULL, 0);
+ 	if (!page) {
+@@ -1765,6 +1772,8 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
+ 	swap_free(swap);
+ 
+ 	*pagep = page;
++	if (si)
++		put_swap_device(si);
+ 	return 0;
+ failed:
+ 	if (!shmem_confirm_swap(mapping, index, swap))
+@@ -1775,6 +1784,9 @@ unlock:
+ 		put_page(page);
+ 	}
+ 
++	if (si)
++		put_swap_device(si);
 +
- static void group_init(struct psi_group *group)
- {
- 	int cpu;
-@@ -198,6 +200,8 @@ static void group_init(struct psi_group *group)
- 	memset(group->polling_total, 0, sizeof(group->polling_total));
- 	group->polling_next_update = ULLONG_MAX;
- 	group->polling_until = 0;
-+	init_waitqueue_head(&group->poll_wait);
-+	timer_setup(&group->poll_timer, poll_timer_fn, 0);
- 	rcu_assign_pointer(group->poll_task, NULL);
+ 	return error;
  }
  
-@@ -1126,9 +1130,7 @@ struct psi_trigger *psi_trigger_create(struct psi_group *group,
- 			return ERR_CAST(task);
- 		}
- 		atomic_set(&group->poll_wakeup, 0);
--		init_waitqueue_head(&group->poll_wait);
- 		wake_up_process(task);
--		timer_setup(&group->poll_timer, poll_timer_fn, 0);
- 		rcu_assign_pointer(group->poll_task, task);
- 	}
- 
-@@ -1180,6 +1182,7 @@ static void psi_trigger_destroy(struct kref *ref)
- 					group->poll_task,
- 					lockdep_is_held(&group->trigger_lock));
- 			rcu_assign_pointer(group->poll_task, NULL);
-+			del_timer(&group->poll_timer);
- 		}
- 	}
- 
-@@ -1192,17 +1195,14 @@ static void psi_trigger_destroy(struct kref *ref)
- 	 */
- 	synchronize_rcu();
- 	/*
--	 * Destroy the kworker after releasing trigger_lock to prevent a
-+	 * Stop kthread 'psimon' after releasing trigger_lock to prevent a
- 	 * deadlock while waiting for psi_poll_work to acquire trigger_lock
- 	 */
- 	if (task_to_destroy) {
- 		/*
- 		 * After the RCU grace period has expired, the worker
- 		 * can no longer be found through group->poll_task.
--		 * But it might have been already scheduled before
--		 * that - deschedule it cleanly before destroying it.
- 		 */
--		del_timer_sync(&group->poll_timer);
- 		kthread_stop(task_to_destroy);
- 	}
- 	kfree(t);
 -- 
 2.30.2
 
