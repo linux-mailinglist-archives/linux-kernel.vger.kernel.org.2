@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A193C515B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEC073C4B4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347823AbhGLHkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:40:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45756 "EHLO mail.kernel.org"
+        id S239196AbhGLG4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:56:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245255AbhGLHLc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:11:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3663C6052B;
-        Mon, 12 Jul 2021 07:08:44 +0000 (UTC)
+        id S233279AbhGLGkt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:40:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 83A3E6115A;
+        Mon, 12 Jul 2021 06:37:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073724;
-        bh=mhfIjdyyEKu1F94mOcMqOS9kKuWphU9Cs+1XKnA2PeE=;
+        s=korg; t=1626071879;
+        bh=+T3T32pRV5cdKCPUZQOH1EjPZLywNUXkjRyqIJN4Nx0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EDo0peE1XEOyL891sncoF7DrMWJxzIc50H++5ZxQK8S32zeO/e7LjpxUGZKK1RIJh
-         ytt9Bbfl46p2ThR77m28Dm4B2WCd30pF48vF76k5qTK2C06LY8i+PPh8VyXONqgzSn
-         oQJypkY6yRCsrikGVoHr2iLSwjoHp/pmEEuG3hFI=
+        b=fFyifuJhtl1vsBvZ9vYyKrfDMpTrgwjSJBy7BcTpOpKsDlMwuLGhsrASBkIVUh3Sj
+         WAw6QuSUPp7b5i6U6yWIbJBrUeJv5nBkA2GKiGg85cVbeFixGw9EgP6xP4TQa9/th4
+         ZGBSEOHEyyGwTiO0RM7tmEcXsFjCW6dnN6n/EIEY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Yi <yi.zhang@huawei.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 337/700] blk-wbt: make sure throttle is enabled properly
+        stable@vger.kernel.org, Axel Lin <axel.lin@ingics.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 260/593] regulator: hi655x: Fix pass wrong pointer to config.driver_data
 Date:   Mon, 12 Jul 2021 08:07:00 +0200
-Message-Id: <20210712061012.185636822@linuxfoundation.org>
+Message-Id: <20210712060911.828641052@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,43 +40,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Yi <yi.zhang@huawei.com>
+From: Axel Lin <axel.lin@ingics.com>
 
-[ Upstream commit 76a8040817b4b9c69b53f9b326987fa891b4082a ]
+[ Upstream commit 61eb1b24f9e4f4e0725aa5f8164a932c933f3339 ]
 
-After commit a79050434b45 ("blk-rq-qos: refactor out common elements of
-blk-wbt"), if throttle was disabled by wbt_disable_default(), we could
-not enable again, fix this by set enable_state back to
-WBT_STATE_ON_DEFAULT.
+Current code sets config.driver_data to a zero initialized regulator
+which is obviously wrong. Fix it.
 
-Fixes: a79050434b45 ("blk-rq-qos: refactor out common elements of blk-wbt")
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-Link: https://lore.kernel.org/r/20210619093700.920393-3-yi.zhang@huawei.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: 4618119b9be5 ("regulator: hi655x: enable regulator for hi655x PMIC")
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Link: https://lore.kernel.org/r/20210620132715.60215-1-axel.lin@ingics.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-wbt.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/regulator/hi655x-regulator.c | 16 +++++-----------
+ 1 file changed, 5 insertions(+), 11 deletions(-)
 
-diff --git a/block/blk-wbt.c b/block/blk-wbt.c
-index b098ac6a84f0..f5e5ac915bf7 100644
---- a/block/blk-wbt.c
-+++ b/block/blk-wbt.c
-@@ -637,9 +637,13 @@ void wbt_set_write_cache(struct request_queue *q, bool write_cache_on)
- void wbt_enable_default(struct request_queue *q)
+diff --git a/drivers/regulator/hi655x-regulator.c b/drivers/regulator/hi655x-regulator.c
+index ac2ee2030211..b44f492a2b83 100644
+--- a/drivers/regulator/hi655x-regulator.c
++++ b/drivers/regulator/hi655x-regulator.c
+@@ -72,7 +72,7 @@ enum hi655x_regulator_id {
+ static int hi655x_is_enabled(struct regulator_dev *rdev)
  {
- 	struct rq_qos *rqos = wbt_rq_qos(q);
-+
- 	/* Throttling already enabled? */
--	if (rqos)
-+	if (rqos) {
-+		if (RQWB(rqos)->enable_state == WBT_STATE_OFF_DEFAULT)
-+			RQWB(rqos)->enable_state = WBT_STATE_ON_DEFAULT;
- 		return;
-+	}
+ 	unsigned int value = 0;
+-	struct hi655x_regulator *regulator = rdev_get_drvdata(rdev);
++	const struct hi655x_regulator *regulator = rdev_get_drvdata(rdev);
  
- 	/* Queue not registered? Maybe shutting down... */
- 	if (!blk_queue_registered(q))
+ 	regmap_read(rdev->regmap, regulator->status_reg, &value);
+ 	return (value & rdev->desc->enable_mask);
+@@ -80,7 +80,7 @@ static int hi655x_is_enabled(struct regulator_dev *rdev)
+ 
+ static int hi655x_disable(struct regulator_dev *rdev)
+ {
+-	struct hi655x_regulator *regulator = rdev_get_drvdata(rdev);
++	const struct hi655x_regulator *regulator = rdev_get_drvdata(rdev);
+ 
+ 	return regmap_write(rdev->regmap, regulator->disable_reg,
+ 			    rdev->desc->enable_mask);
+@@ -169,7 +169,6 @@ static const struct hi655x_regulator regulators[] = {
+ static int hi655x_regulator_probe(struct platform_device *pdev)
+ {
+ 	unsigned int i;
+-	struct hi655x_regulator *regulator;
+ 	struct hi655x_pmic *pmic;
+ 	struct regulator_config config = { };
+ 	struct regulator_dev *rdev;
+@@ -180,22 +179,17 @@ static int hi655x_regulator_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	}
+ 
+-	regulator = devm_kzalloc(&pdev->dev, sizeof(*regulator), GFP_KERNEL);
+-	if (!regulator)
+-		return -ENOMEM;
+-
+-	platform_set_drvdata(pdev, regulator);
+-
+ 	config.dev = pdev->dev.parent;
+ 	config.regmap = pmic->regmap;
+-	config.driver_data = regulator;
+ 	for (i = 0; i < ARRAY_SIZE(regulators); i++) {
++		config.driver_data = (void *) &regulators[i];
++
+ 		rdev = devm_regulator_register(&pdev->dev,
+ 					       &regulators[i].rdesc,
+ 					       &config);
+ 		if (IS_ERR(rdev)) {
+ 			dev_err(&pdev->dev, "failed to register regulator %s\n",
+-				regulator->rdesc.name);
++				regulators[i].rdesc.name);
+ 			return PTR_ERR(rdev);
+ 		}
+ 	}
 -- 
 2.30.2
 
