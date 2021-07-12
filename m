@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3C5A3C4E57
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AD633C550A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244210AbhGLHSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:18:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53144 "EHLO mail.kernel.org"
+        id S229650AbhGLIJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:09:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239719AbhGLGw7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:52:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ACE5E60FDB;
-        Mon, 12 Jul 2021 06:50:10 +0000 (UTC)
+        id S1344476AbhGLH3e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:29:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3752761463;
+        Mon, 12 Jul 2021 07:25:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072611;
-        bh=B1AECimhgtZobjOkyJSuFEf7xLqjXr/PlRwatGwfCPY=;
+        s=korg; t=1626074722;
+        bh=kybzrNSYF+idEMHoERr7rzSo4OflBjxjU3TOYCtIBQY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q7B/coz3/I+A+ASPgOol4wpOPfX6vjCSB12chAaDNXb+LyPj1uURy2K8Wa637TI36
-         A3NIjS2o1usicrGuICo96KNG0c4iP6rjIxEO769sUwYU5bq7oZyYDV/pVYYbMzRGg4
-         j2nIjoYaon3UgwCkhBRidrWW7lYp6XMnwS8kGVIk=
+        b=nSr8UPnUgtDlLM4MwEWpR0UuwBxdxIzsUi7ODG95zScuhF6WzmP9SouwNREGvW/gA
+         0STDxi0TZ7zlELWXVOceocKodnfDN4N04KU7g6sbWCFQJ/9ULUEPyM1SRE40xrRS9s
+         ADlzt/o/ePQaOxXqLeDjO4yZC2zsfIgDF9t4XSZ8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 554/593] powerpc/papr_scm: Properly handle UUID types and API
-Date:   Mon, 12 Jul 2021 08:11:54 +0200
-Message-Id: <20210712060955.395063837@linuxfoundation.org>
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 632/700] of: Fix truncation of memory sizes on 32-bit platforms
+Date:   Mon, 12 Jul 2021 08:11:55 +0200
+Message-Id: <20210712061043.089866840@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,80 +41,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-[ Upstream commit 0e8554b5d7801b0aebc6c348a0a9f7706aa17b3b ]
+[ Upstream commit 2892d8a00d23d511a0591ac4b2ff3f050ae1f004 ]
 
-Parse to and export from UUID own type, before dereferencing.
-This also fixes wrong comment (Little Endian UUID is something else)
-and should eliminate the direct strict types assignments.
+Variable "size" has type "phys_addr_t", which can be either 32-bit or
+64-bit on 32-bit systems, while "unsigned long" is always 32-bit on
+32-bit systems.  Hence the cast in
 
-Fixes: 43001c52b603 ("powerpc/papr_scm: Use ibm,unit-guid as the iset cookie")
-Fixes: 259a948c4ba1 ("powerpc/pseries/scm: Use a specific endian format for storing uuid from the device tree")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210616134303.58185-1-andriy.shevchenko@linux.intel.com
+    (unsigned long)size / SZ_1M
+
+may truncate a 64-bit size to 32-bit, as casts have a higher operator
+precedence than divisions.
+
+Fix this by inverting the order of the cast and division, which should
+be safe for memory blocks smaller than 4 PiB.  Note that the division is
+actually a shift, as SZ_1M is a power-of-two constant, hence there is no
+need to use div_u64().
+
+While at it, use "%lu" to format "unsigned long".
+
+Fixes: e8d9d1f5485b52ec ("drivers: of: add initialization code for static reserved memory")
+Fixes: 3f0c8206644836e4 ("drivers: of: add initialization code for dynamic reserved memory")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Link: https://lore.kernel.org/r/4a1117e72d13d26126f57be034c20dac02f1e915.1623835273.git.geert+renesas@glider.be
+Signed-off-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/pseries/papr_scm.c | 27 +++++++++++++++--------
- 1 file changed, 18 insertions(+), 9 deletions(-)
+ drivers/of/fdt.c             | 8 ++++----
+ drivers/of/of_reserved_mem.c | 8 ++++----
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/platforms/pseries/papr_scm.c
-index 835163f54244..0693bc8d70ac 100644
---- a/arch/powerpc/platforms/pseries/papr_scm.c
-+++ b/arch/powerpc/platforms/pseries/papr_scm.c
-@@ -18,6 +18,7 @@
- #include <asm/plpar_wrappers.h>
- #include <asm/papr_pdsm.h>
- #include <asm/mce.h>
-+#include <asm/unaligned.h>
+diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+index adb26aff481d..c485b2c7720d 100644
+--- a/drivers/of/fdt.c
++++ b/drivers/of/fdt.c
+@@ -511,11 +511,11 @@ static int __init __reserved_mem_reserve_reg(unsigned long node,
  
- #define BIND_ANY_ADDR (~0ul)
+ 		if (size &&
+ 		    early_init_dt_reserve_memory_arch(base, size, nomap) == 0)
+-			pr_debug("Reserved memory: reserved region for node '%s': base %pa, size %ld MiB\n",
+-				uname, &base, (unsigned long)size / SZ_1M);
++			pr_debug("Reserved memory: reserved region for node '%s': base %pa, size %lu MiB\n",
++				uname, &base, (unsigned long)(size / SZ_1M));
+ 		else
+-			pr_info("Reserved memory: failed to reserve memory for node '%s': base %pa, size %ld MiB\n",
+-				uname, &base, (unsigned long)size / SZ_1M);
++			pr_info("Reserved memory: failed to reserve memory for node '%s': base %pa, size %lu MiB\n",
++				uname, &base, (unsigned long)(size / SZ_1M));
  
-@@ -1047,8 +1048,9 @@ static int papr_scm_probe(struct platform_device *pdev)
- 	u32 drc_index, metadata_size;
- 	u64 blocks, block_size;
- 	struct papr_scm_priv *p;
-+	u8 uuid_raw[UUID_SIZE];
- 	const char *uuid_str;
--	u64 uuid[2];
-+	uuid_t uuid;
- 	int rc;
+ 		len -= t_len;
+ 		if (first) {
+diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
+index a7fbc5e37e19..6c95bbdf9265 100644
+--- a/drivers/of/of_reserved_mem.c
++++ b/drivers/of/of_reserved_mem.c
+@@ -134,9 +134,9 @@ static int __init __reserved_mem_alloc_size(unsigned long node,
+ 			ret = early_init_dt_alloc_reserved_memory_arch(size,
+ 					align, start, end, nomap, &base);
+ 			if (ret == 0) {
+-				pr_debug("allocated memory for '%s' node: base %pa, size %ld MiB\n",
++				pr_debug("allocated memory for '%s' node: base %pa, size %lu MiB\n",
+ 					uname, &base,
+-					(unsigned long)size / SZ_1M);
++					(unsigned long)(size / SZ_1M));
+ 				break;
+ 			}
+ 			len -= t_len;
+@@ -146,8 +146,8 @@ static int __init __reserved_mem_alloc_size(unsigned long node,
+ 		ret = early_init_dt_alloc_reserved_memory_arch(size, align,
+ 							0, 0, nomap, &base);
+ 		if (ret == 0)
+-			pr_debug("allocated memory for '%s' node: base %pa, size %ld MiB\n",
+-				uname, &base, (unsigned long)size / SZ_1M);
++			pr_debug("allocated memory for '%s' node: base %pa, size %lu MiB\n",
++				uname, &base, (unsigned long)(size / SZ_1M));
+ 	}
  
- 	/* check we have all the required DT properties */
-@@ -1090,16 +1092,23 @@ static int papr_scm_probe(struct platform_device *pdev)
- 	p->is_volatile = !of_property_read_bool(dn, "ibm,cache-flush-required");
- 
- 	/* We just need to ensure that set cookies are unique across */
--	uuid_parse(uuid_str, (uuid_t *) uuid);
-+	uuid_parse(uuid_str, &uuid);
-+
- 	/*
--	 * cookie1 and cookie2 are not really little endian
--	 * we store a little endian representation of the
--	 * uuid str so that we can compare this with the label
--	 * area cookie irrespective of the endian config with which
--	 * the kernel is built.
-+	 * The cookie1 and cookie2 are not really little endian.
-+	 * We store a raw buffer representation of the
-+	 * uuid string so that we can compare this with the label
-+	 * area cookie irrespective of the endian configuration
-+	 * with which the kernel is built.
-+	 *
-+	 * Historically we stored the cookie in the below format.
-+	 * for a uuid string 72511b67-0b3b-42fd-8d1d-5be3cae8bcaa
-+	 *	cookie1 was 0xfd423b0b671b5172
-+	 *	cookie2 was 0xaabce8cae35b1d8d
- 	 */
--	p->nd_set.cookie1 = cpu_to_le64(uuid[0]);
--	p->nd_set.cookie2 = cpu_to_le64(uuid[1]);
-+	export_uuid(uuid_raw, &uuid);
-+	p->nd_set.cookie1 = get_unaligned_le64(&uuid_raw[0]);
-+	p->nd_set.cookie2 = get_unaligned_le64(&uuid_raw[8]);
- 
- 	/* might be zero */
- 	p->metadata_size = metadata_size;
+ 	if (base == 0) {
 -- 
 2.30.2
 
