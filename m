@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B843C50C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:46:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A5C73C56E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240724AbhGLHfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:35:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40100 "EHLO mail.kernel.org"
+        id S1358432AbhGLI0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:26:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243096AbhGLHEa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:04:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E051161107;
-        Mon, 12 Jul 2021 07:01:41 +0000 (UTC)
+        id S1349154AbhGLHlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:41:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 15B46601FE;
+        Mon, 12 Jul 2021 07:38:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073302;
-        bh=YVJukNQFMmciva0G0vYcP3V0SxYJ+N3HSDg3G7Zy4bA=;
+        s=korg; t=1626075532;
+        bh=761t1zXnjurAJ1ZBS0hQIuMAU+ku6cdTBBfoofqupX8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U1FXuosl5sF4/cgfPeWWEZuG+B7wmezQEgQ4xW/x3GcMlcHcZqocstBe4h0VzR56T
-         kYyelmyxLS7uFx/xeF9N7MynO66tADqZEhFq7CA7ysD+T5HNdgNFd//Zk6fH+WhBv8
-         E6ptEoe69khXc0hrFHqyTKWWhx0MbR676x1GJtKA=
+        b=atEwyMAGsXifV+ah6fpb32zGLHgGkQlnoOXOXc1BWsF1LrA1b72fMXlH/dvHQO/rm
+         XEPtgKp/uiiOiSW8TatgWzsrKbx7xUC/Cy82qYnXMbLX4OuSeOvmi4Ualax8pi4/L5
+         V0Ug48+EQJ6pZkHzttzM00nezljXbdis/3mxDrJw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Luke D. Jones" <luke@ljones.dev>,
+        stable@vger.kernel.org,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
         "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 195/700] ACPI: video: use native backlight for GA401/GA502/GA503
+Subject: [PATCH 5.13 255/800] ACPI: tables: Add custom DSDT file as makefile prerequisite
 Date:   Mon, 12 Jul 2021 08:04:38 +0200
-Message-Id: <20210712060954.435018217@linuxfoundation.org>
+Message-Id: <20210712060950.042569034@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luke D Jones <luke@ljones.dev>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-[ Upstream commit 2dfbacc65d1d2eae587ccb6b93f6280542641858 ]
+[ Upstream commit d1059c1b1146870c52f3dac12cb7b6cbf39ed27f ]
 
-Force backlight control in these models to use the native interface
-at /sys/class/backlight/amdgpu_bl0.
+A custom DSDT file is mostly used during development or debugging,
+and in that case it is quite likely to want to rebuild the kernel
+after changing ONLY the content of the DSDT.
 
-Signed-off-by: Luke D. Jones <luke@ljones.dev>
+This patch adds the custom DSDT as a prerequisite to tables.o
+to ensure a rebuild if the DSDT file is updated. Make will merge
+the prerequisites from multiple rules for the same target.
+
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/video_detect.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+ drivers/acpi/Makefile | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/acpi/video_detect.c b/drivers/acpi/video_detect.c
-index 83cd4c95faf0..33474fd96991 100644
---- a/drivers/acpi/video_detect.c
-+++ b/drivers/acpi/video_detect.c
-@@ -385,6 +385,30 @@ static const struct dmi_system_id video_detect_dmi_table[] = {
- 		DMI_MATCH(DMI_BOARD_NAME, "BA51_MV"),
- 		},
- 	},
-+	{
-+	.callback = video_detect_force_native,
-+	.ident = "ASUSTeK COMPUTER INC. GA401",
-+	.matches = {
-+		DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-+		DMI_MATCH(DMI_PRODUCT_NAME, "GA401"),
-+		},
-+	},
-+	{
-+	.callback = video_detect_force_native,
-+	.ident = "ASUSTeK COMPUTER INC. GA502",
-+	.matches = {
-+		DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-+		DMI_MATCH(DMI_PRODUCT_NAME, "GA502"),
-+		},
-+	},
-+	{
-+	.callback = video_detect_force_native,
-+	.ident = "ASUSTeK COMPUTER INC. GA503",
-+	.matches = {
-+		DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-+		DMI_MATCH(DMI_PRODUCT_NAME, "GA503"),
-+		},
-+	},
+diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile
+index 700b41adf2db..9aa82d527272 100644
+--- a/drivers/acpi/Makefile
++++ b/drivers/acpi/Makefile
+@@ -8,6 +8,11 @@ ccflags-$(CONFIG_ACPI_DEBUG)	+= -DACPI_DEBUG_OUTPUT
+ #
+ # ACPI Boot-Time Table Parsing
+ #
++ifeq ($(CONFIG_ACPI_CUSTOM_DSDT),y)
++tables.o: $(src)/../../include/$(subst $\",,$(CONFIG_ACPI_CUSTOM_DSDT_FILE)) ;
++
++endif
++
+ obj-$(CONFIG_ACPI)		+= tables.o
+ obj-$(CONFIG_X86)		+= blacklist.o
  
- 	/*
- 	 * Desktops which falsely report a backlight and which our heuristics
 -- 
 2.30.2
 
