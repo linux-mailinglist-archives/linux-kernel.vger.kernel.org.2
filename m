@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ABC03C4A15
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D2263C50B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238265AbhGLGsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:48:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34338 "EHLO mail.kernel.org"
+        id S1347206AbhGLHeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:34:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236792AbhGLGhq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:37:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 48C8361154;
-        Mon, 12 Jul 2021 06:33:55 +0000 (UTC)
+        id S241933AbhGLHGI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:06:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D30EB61279;
+        Mon, 12 Jul 2021 07:03:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071635;
-        bh=VuBZkuYORyCKJqQ3ug2x8UyRbKpNijoZunM6p8muHn4=;
+        s=korg; t=1626073397;
+        bh=cGwUjEPu6GVrJ4vuw2Vln/bkM7M4tBAEK+eA5D8vZi0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Sd91AbZuPgYU3OTMWa3j+Kfd3RhMrYf0Mi9wyFMru8A+T1Aa81KIOvcTKiirXJ34n
-         gHPjpVSZVnsE62gBic0BopBdMAoWR1YhEBrkUJHXj040wXvxck3m8wB8DeR8QJxMkS
-         LfdpbkLv4s3TzZ/Y+yoy+b/YaNox7aRSaRBsBuWc=
+        b=GyPcvX1tgIUfTLuXARti7DdUbn2TZe/BTPNuFUBnfwKND2tSvTPU1IECiXjPC3DFV
+         wTJgOUGPLjlwqWAJABdL5OHlrb/TUCR+24FR/xeJkA4D8xhMUNZlfccpLBd5txo2bC
+         fFuhPmiOylfmZPF2fCNJ8O5x+dQWh5gjHAO0NiZg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Jan=20Kundr=C3=A1t?= <jan.kundrat@cesnet.cz>,
-        =?UTF-8?q?V=C3=A1clav=20Kubern=C3=A1t?= <kubernat@cesnet.cz>,
-        Guenter Roeck <linux@roeck-us.net>,
-        =?UTF-8?q?V=C3=A1clav=20Kubern=C3=A1t?= <kubernat@ceesnet.cz>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 152/593] hwmon: (max31790) Report correct current pwm duty cycles
+        stable@vger.kernel.org, Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        Mohammad Alqayeem <mohammad.alqyeem@nutanix.com>
+Subject: [PATCH 5.12 229/700] PCI: hv: Add check for hyperv_initialized in init_hv_pci_drv()
 Date:   Mon, 12 Jul 2021 08:05:12 +0200
-Message-Id: <20210712060859.750703061@linuxfoundation.org>
+Message-Id: <20210712060959.209095778@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,71 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Haiyang Zhang <haiyangz@microsoft.com>
 
-[ Upstream commit 897f6339893b741a5d68ae8e2475df65946041c2 ]
+[ Upstream commit 7d815f4afa87f2032b650ae1bba7534b550a6b8b ]
 
-The MAX31790 has two sets of registers for pwm duty cycles, one to request
-a duty cycle and one to read the actual current duty cycle. Both do not
-have to be the same.
+Add check for hv_is_hyperv_initialized() at the top of
+init_hv_pci_drv(), so if the pci-hyperv driver is force-loaded on non
+Hyper-V platforms, the init_hv_pci_drv() will exit immediately, without
+any side effects, like assignments to hvpci_block_ops, etc.
 
-When reporting the pwm duty cycle to the user, the actual pwm duty cycle
-from pwm duty cycle registers needs to be reported. When setting it, the
-pwm target duty cycle needs to be written. Since we don't know the actual
-pwm duty cycle after a target pwm duty cycle has been written, set the
-valid flag to false to indicate that actual pwm duty cycle should be read
-from the chip instead of using cached values.
-
-Cc: Jan Kundrát <jan.kundrat@cesnet.cz>
-Cc: Václav Kubernát <kubernat@cesnet.cz>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Tested-by: Václav Kubernát <kubernat@ceesnet.cz>
-Reviewed-by: Jan Kundrát <jan.kundrat@cesnet.cz>
-Link: https://lore.kernel.org/r/20210526154022.3223012-3-linux@roeck-us.net
+Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+Reported-and-tested-by: Mohammad Alqayeem <mohammad.alqyeem@nutanix.com>
+Reviewed-by: Wei Liu <wei.liu@kernel.org>
+Link: https://lore.kernel.org/r/1621984653-1210-1-git-send-email-haiyangz@microsoft.com
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Documentation/hwmon/max31790.rst | 3 ++-
- drivers/hwmon/max31790.c         | 6 +++---
- 2 files changed, 5 insertions(+), 4 deletions(-)
+ drivers/pci/controller/pci-hyperv.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/hwmon/max31790.rst b/Documentation/hwmon/max31790.rst
-index f301385d8cef..54ff0f49e28f 100644
---- a/Documentation/hwmon/max31790.rst
-+++ b/Documentation/hwmon/max31790.rst
-@@ -39,5 +39,6 @@ fan[1-12]_input    RO  fan tachometer speed in RPM
- fan[1-12]_fault    RO  fan experienced fault
- fan[1-6]_target    RW  desired fan speed in RPM
- pwm[1-6]_enable    RW  regulator mode, 0=disabled, 1=manual mode, 2=rpm mode
--pwm[1-6]           RW  fan target duty cycle (0-255)
-+pwm[1-6]           RW  read: current pwm duty cycle,
-+                       write: target pwm duty cycle (0-255)
- ================== === =======================================================
-diff --git a/drivers/hwmon/max31790.c b/drivers/hwmon/max31790.c
-index 86e6c71db685..8ad7a45bfe68 100644
---- a/drivers/hwmon/max31790.c
-+++ b/drivers/hwmon/max31790.c
-@@ -104,7 +104,7 @@ static struct max31790_data *max31790_update_device(struct device *dev)
- 				data->tach[NR_CHANNEL + i] = rv;
- 			} else {
- 				rv = i2c_smbus_read_word_swapped(client,
--						MAX31790_REG_PWMOUT(i));
-+						MAX31790_REG_PWM_DUTY_CYCLE(i));
- 				if (rv < 0)
- 					goto abort;
- 				data->pwm[i] = rv;
-@@ -299,10 +299,10 @@ static int max31790_write_pwm(struct device *dev, u32 attr, int channel,
- 			err = -EINVAL;
- 			break;
- 		}
--		data->pwm[channel] = val << 8;
-+		data->valid = false;
- 		err = i2c_smbus_write_word_swapped(client,
- 						   MAX31790_REG_PWMOUT(channel),
--						   data->pwm[channel]);
-+						   val << 8);
- 		break;
- 	case hwmon_pwm_enable:
- 		fan_config = data->fan_config[channel];
+diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
+index 27a17a1e4a7c..7479edf3676c 100644
+--- a/drivers/pci/controller/pci-hyperv.c
++++ b/drivers/pci/controller/pci-hyperv.c
+@@ -3480,6 +3480,9 @@ static void __exit exit_hv_pci_drv(void)
+ 
+ static int __init init_hv_pci_drv(void)
+ {
++	if (!hv_is_hyperv_initialized())
++		return -ENODEV;
++
+ 	/* Set the invalid domain number's bit, so it will not be used */
+ 	set_bit(HVPCI_DOM_INVALID, hvpci_dom_map);
+ 
 -- 
 2.30.2
 
