@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 203803C5767
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5523C4A34
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354121AbhGLIcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:32:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53250 "EHLO mail.kernel.org"
+        id S238930AbhGLGtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:49:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349823AbhGLHos (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:44:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8DEF613BF;
-        Mon, 12 Jul 2021 07:41:26 +0000 (UTC)
+        id S237370AbhGLGjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:39:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2135761179;
+        Mon, 12 Jul 2021 06:35:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075687;
-        bh=ebzmUuZU3p4ooSnA9888JXX4EL3/ee/C4zDSG9vNCFo=;
+        s=korg; t=1626071705;
+        bh=m3zx+ceVEdckWgNJJueuh3O9BRsErHXlMTL9Bs9H3U8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AIMU59lKBUrsWopVCFRzk3Tj+EQRcZAfC6PMcTpSRQ0Y8H/A3BKOqEj14FhUiYnQ9
-         83/exbbrPuiWo4GpBsCfuI1+fVqLnPeOFdrN7tcVBdAy4WiI/rugq1lJTWHb1KDZ0w
-         u6XJ0rJzofju99Uj8+YZlpZC3KLccKWd2//XtN2k=
+        b=fp9dSWiNL0fSDteD4eKjRzggOd+Wlp22Ycwg/3q9vxh3ShxAMpx7pV6WSa4vxykr0
+         n+PfG8Fb5zUro6kgxksvS2LwRHtSn8QEx5c2n88od3nihrZQqZIhBL2xwDoisiqHmN
+         6kymeAtYgDQ1W8CZ1whvY0NBfifkwpb3KdavofM0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 320/800] hwmon: (pmbus/bpa-rs600) Handle Vin readings >= 256V
+        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 183/593] drivers: hv: Fix missing error code in vmbus_connect()
 Date:   Mon, 12 Jul 2021 08:05:43 +0200
-Message-Id: <20210712061000.048528747@linuxfoundation.org>
+Message-Id: <20210712060903.155930625@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,72 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-[ Upstream commit 6e9ef8ca687e69e9d4cc89033d98e06350b0f3e0 ]
+[ Upstream commit 9de6655cc5a6a1febc514465c87c24a0e96d8dba ]
 
-The BPA-RS600 doesn't follow the PMBus spec for linear data.
-Specifically it treats the mantissa as an unsigned 11-bit value instead
-of a two's complement 11-bit value. At this point it's unclear whether
-this only affects Vin or if Pin/Pout1 are affected as well. Erring on
-the side of caution only Vin is dealt with here.
+Eliminate the follow smatch warning:
 
-Fixes: 15b2703e5e02 ("hwmon: (pmbus) Add driver for BluTek BPA-RS600")
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Link: https://lore.kernel.org/r/20210616034218.25821-1-chris.packham@alliedtelesis.co.nz
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+drivers/hv/connection.c:236 vmbus_connect() warn: missing error code
+'ret'.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+Link: https://lore.kernel.org/r/1621940321-72353-1-git-send-email-jiapeng.chong@linux.alibaba.com
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/pmbus/bpa-rs600.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ drivers/hv/connection.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/hwmon/pmbus/bpa-rs600.c b/drivers/hwmon/pmbus/bpa-rs600.c
-index f6558ee9dec3..2be69fedfa36 100644
---- a/drivers/hwmon/pmbus/bpa-rs600.c
-+++ b/drivers/hwmon/pmbus/bpa-rs600.c
-@@ -46,6 +46,32 @@ static int bpa_rs600_read_byte_data(struct i2c_client *client, int page, int reg
- 	return ret;
- }
+diff --git a/drivers/hv/connection.c b/drivers/hv/connection.c
+index 11170d9a2e1a..bfd7f00a59ec 100644
+--- a/drivers/hv/connection.c
++++ b/drivers/hv/connection.c
+@@ -229,8 +229,10 @@ int vmbus_connect(void)
+ 	 */
  
-+/*
-+ * The BPA-RS600 violates the PMBus spec. Specifically it treats the
-+ * mantissa as unsigned. Deal with this here to allow the PMBus core
-+ * to work with correctly encoded data.
-+ */
-+static int bpa_rs600_read_vin(struct i2c_client *client)
-+{
-+	int ret, exponent, mantissa;
-+
-+	ret = pmbus_read_word_data(client, 0, 0xff, PMBUS_READ_VIN);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (ret & BIT(10)) {
-+		exponent = ret >> 11;
-+		mantissa = ret & 0x7ff;
-+
-+		exponent++;
-+		mantissa >>= 1;
-+
-+		ret = (exponent << 11) | mantissa;
-+	}
-+
-+	return ret;
-+}
-+
- static int bpa_rs600_read_word_data(struct i2c_client *client, int page, int phase, int reg)
- {
- 	int ret;
-@@ -85,6 +111,9 @@ static int bpa_rs600_read_word_data(struct i2c_client *client, int page, int pha
- 		/* These commands return data but it is invalid/un-documented */
- 		ret = -ENXIO;
- 		break;
-+	case PMBUS_READ_VIN:
-+		ret = bpa_rs600_read_vin(client);
-+		break;
- 	default:
- 		if (reg >= PMBUS_VIRT_BASE)
- 			ret = -ENXIO;
+ 	for (i = 0; ; i++) {
+-		if (i == ARRAY_SIZE(vmbus_versions))
++		if (i == ARRAY_SIZE(vmbus_versions)) {
++			ret = -EDOM;
+ 			goto cleanup;
++		}
+ 
+ 		version = vmbus_versions[i];
+ 		if (version > max_version)
 -- 
 2.30.2
 
