@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ED203C5005
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C706C3C490C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345910AbhGLHaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:30:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34608 "EHLO mail.kernel.org"
+        id S238657AbhGLGlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:41:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242408AbhGLHAI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:00:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B62AF611C1;
-        Mon, 12 Jul 2021 06:57:18 +0000 (UTC)
+        id S237171AbhGLGeL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:34:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 032B86115C;
+        Mon, 12 Jul 2021 06:30:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073039;
-        bh=Gjqxoy6zuCsX3PmidEoy9VJ+NjivXFTAkQdGcmPjcR0=;
+        s=korg; t=1626071429;
+        bh=u1kBf21BtJq7DPqJw+4p5bl8KyOcfXfSz94Zj0QySc4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0qL9Qc8IsY793H67k3vPtG0o3ztZp47YOraP7EWEyN2afHaNmWin28bcuQzq5wmxJ
-         OWRMqqkcoozk7EUmPQegGrakd3dF1SGcJlD5fuf7Fge1gDW6p2mCoKpcoVQe7vIaSi
-         JR6EciwhdTteLGcSvvc22M+F3J8f+yWf65pVfYwI=
+        b=zMgl3KpJlKaoBgZ3R0CTFAAbGkH421oTXuNV6KLrE/X9GT3BVKz1x5RYV8g6DGF68
+         jG5XBJ7VNm/AKodUp7dlAP1UnCdV86DzuKgDjPvl1w4oSJLAMRThbL3Z+oY7+kX1at
+         RzKkQfz4iYum4micH3pMN/GcoxEpS+CLP1rUfEnw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Lynch <nathanl@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.12 105/700] powerpc/stacktrace: Fix spurious "stale" traces in raise_backtrace_ipi()
+        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Subject: [PATCH 5.10 028/593] gfs2: Fix error handling in init_statfs
 Date:   Mon, 12 Jul 2021 08:03:08 +0200
-Message-Id: <20210712060939.672046740@linuxfoundation.org>
+Message-Id: <20210712060846.282306392@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,96 +39,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Andreas Gruenbacher <agruenba@redhat.com>
 
-commit 7c6986ade69e3c81bac831645bc72109cd798a80 upstream.
+commit 5d49d3508b3c67201bd3e1bf7f4ef049111b7051 upstream.
 
-In raise_backtrace_ipi() we iterate through the cpumask of CPUs, sending
-each an IPI asking them to do a backtrace, but we don't wait for the
-backtrace to happen.
+On an error path, init_statfs calls iput(pn) after pn has already been put.
+Fix that by setting pn to NULL after the initial iput.
 
-We then iterate through the CPU mask again, and if any CPU hasn't done
-the backtrace and cleared itself from the mask, we print a trace on its
-behalf, noting that the trace may be "stale".
-
-This works well enough when a CPU is not responding, because in that
-case it doesn't receive the IPI and the sending CPU is left to print the
-trace. But when all CPUs are responding we are left with a race between
-the sending and receiving CPUs, if the sending CPU wins the race then it
-will erroneously print a trace.
-
-This leads to spurious "stale" traces from the sending CPU, which can
-then be interleaved messily with the receiving CPU, note the CPU
-numbers, eg:
-
-  [ 1658.929157][    C7] rcu: Stack dump where RCU GP kthread last ran:
-  [ 1658.929223][    C7] Sending NMI from CPU 7 to CPUs 1:
-  [ 1658.929303][    C1] NMI backtrace for cpu 1
-  [ 1658.929303][    C7] CPU 1 didn't respond to backtrace IPI, inspecting paca.
-  [ 1658.929362][    C1] CPU: 1 PID: 325 Comm: kworker/1:1H Tainted: G        W   E     5.13.0-rc2+ #46
-  [ 1658.929405][    C7] irq_soft_mask: 0x01 in_mce: 0 in_nmi: 0 current: 325 (kworker/1:1H)
-  [ 1658.929465][    C1] Workqueue: events_highpri test_work_fn [test_lockup]
-  [ 1658.929549][    C7] Back trace of paca->saved_r1 (0xc0000000057fb400) (possibly stale):
-  [ 1658.929592][    C1] NIP:  c00000000002cf50 LR: c008000000820178 CTR: c00000000002cfa0
-
-To fix it, change the logic so that the sending CPU waits 5s for the
-receiving CPU to print its trace. If the receiving CPU prints its trace
-successfully then the sending CPU just continues, avoiding any spurious
-"stale" trace.
-
-This has the added benefit of allowing all CPUs to print their traces in
-order and avoids any interleaving of their output.
-
-Fixes: 5cc05910f26e ("powerpc/64s: Wire up arch_trigger_cpumask_backtrace()")
-Cc: stable@vger.kernel.org # v4.18+
-Reported-by: Nathan Lynch <nathanl@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210625140408.3351173-1-mpe@ellerman.id.au
+Fixes: 97fd734ba17e ("gfs2: lookup local statfs inodes prior to journal recovery")
+Cc: stable@vger.kernel.org # v5.10+
+Reported-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/kernel/stacktrace.c |   26 ++++++++++++++++++++------
- 1 file changed, 20 insertions(+), 6 deletions(-)
+ fs/gfs2/ops_fstype.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/powerpc/kernel/stacktrace.c
-+++ b/arch/powerpc/kernel/stacktrace.c
-@@ -230,17 +230,31 @@ static void handle_backtrace_ipi(struct
+--- a/fs/gfs2/ops_fstype.c
++++ b/fs/gfs2/ops_fstype.c
+@@ -670,6 +670,7 @@ static int init_statfs(struct gfs2_sbd *
+ 	}
  
- static void raise_backtrace_ipi(cpumask_t *mask)
- {
-+	struct paca_struct *p;
- 	unsigned int cpu;
-+	u64 delay_us;
- 
- 	for_each_cpu(cpu, mask) {
--		if (cpu == smp_processor_id())
-+		if (cpu == smp_processor_id()) {
- 			handle_backtrace_ipi(NULL);
--		else
--			smp_send_safe_nmi_ipi(cpu, handle_backtrace_ipi, 5 * USEC_PER_SEC);
--	}
-+			continue;
-+		}
- 
--	for_each_cpu(cpu, mask) {
--		struct paca_struct *p = paca_ptrs[cpu];
-+		delay_us = 5 * USEC_PER_SEC;
-+
-+		if (smp_send_safe_nmi_ipi(cpu, handle_backtrace_ipi, delay_us)) {
-+			// Now wait up to 5s for the other CPU to do its backtrace
-+			while (cpumask_test_cpu(cpu, mask) && delay_us) {
-+				udelay(1);
-+				delay_us--;
-+			}
-+
-+			// Other CPU cleared itself from the mask
-+			if (delay_us)
-+				continue;
-+		}
-+
-+		p = paca_ptrs[cpu];
- 
- 		cpumask_clear_cpu(cpu, mask);
- 
+ 	iput(pn);
++	pn = NULL;
+ 	ip = GFS2_I(sdp->sd_sc_inode);
+ 	error = gfs2_glock_nq_init(ip->i_gl, LM_ST_EXCLUSIVE, 0,
+ 				   &sdp->sd_sc_gh);
 
 
