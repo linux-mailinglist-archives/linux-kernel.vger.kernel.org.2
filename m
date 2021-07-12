@@ -2,195 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41ACE3C63B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 21:27:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 267373C63B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 21:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236207AbhGLTaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 15:30:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41126 "EHLO
+        id S236378AbhGLTaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 15:30:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233090AbhGLTaC (ORCPT
+        with ESMTP id S236190AbhGLTaG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 15:30:02 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59401C0613DD
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 12:27:12 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id t3so29643835edc.7
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 12:27:12 -0700 (PDT)
+        Mon, 12 Jul 2021 15:30:06 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20382C0613DD;
+        Mon, 12 Jul 2021 12:27:16 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id r11so21872641wro.9;
+        Mon, 12 Jul 2021 12:27:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mihalicyn.com; s=mihalicyn;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=H0SY2i5T1uLLAwEBIZLwQwYm4iQHs9xRAcgGeCt9wm0=;
-        b=d2i8zhWU+ABwbaJYLb0m14Y/YxocoioWmFCc0dl/kvA4WR1l/q13Xy7Uuh/UJ4zwBL
-         p9ToZOjUSLeJq7ZfmTikTPUfuLrmyIRtXiaPVqHZ6/BLdI1bCR0iQ+NcvMjZNmireEpd
-         CqJmkqaR248eK3RPTCMfUTCTlE0NK83DrGBmg=
+        bh=KeQt73O3VXbfqdlM8EsBq9NtPQpTs/6ziHoXHq4rzJM=;
+        b=rzI1K02hyVSUIVCycQePR82p3C9PZZBfw+wtJ0R4z+yiNUq4v1DOhtfQSh4Q9VJQ9f
+         ZvcYE858jUbcqqR8UaCNzverlVnqbGVe+2LWF6yKtm3wGp8Gj7lOb7pg2W0dK0+9BkFO
+         PuMUC0vxvmL5gsvuq4dCzI2ukioVMhY32SH4WW055fEcmA/obcUw+I0KUM9+IWO6yrlb
+         t4ec0uTMiGAwC49xj5PgE3OM/09RKR2o9eZm38ahTyMXSAiDEHJqCNPFc9qt53TjIAFa
+         ZQccrZj1jvsCek59U7Y95HDM7KMd1gNpPmTXBa+HZcfn58abzlbEeO7g+kpp5bLGfpRz
+         pdQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=H0SY2i5T1uLLAwEBIZLwQwYm4iQHs9xRAcgGeCt9wm0=;
-        b=h94sPHw9QG/QhIAvPuttjJbNsY/ya/l/fFkzB1djXYP2+H6+MkryK4j6Rpp3jIEFtu
-         V58hkW7D/DYorYeSs9gp46hFa03hiJ8y42f9qYVkKqLLbXWRMteQTNN1nVoEHb/BB/D4
-         2DrH6DbWPO2xkZANFl4c4P8DhttER2zf50ESdXrjhKGJJk+GhsiIZR106fK3zaQK/l0o
-         kBAG9KNhLno2L5VS/Sx+SA7Q9DeTLBNfDSMf4SCzwpX+wHZSyBFmGFSyfa4Mdy94tWps
-         k3z4RQckwlqklHul7bOn1tQ9NBstwwht5yq6Eh0bcathfWxQbi7SugM1MAETzoiaGAx8
-         2Aiw==
-X-Gm-Message-State: AOAM530bKnTIO5c2pZnsoB6jj1LoPepZWw0LYs/Kujdx+CYSVRofn2YT
-        HEJS/ZGRyZx7xM5M+mr66u6M9uO9NFTcGlDbl2jCoA==
-X-Google-Smtp-Source: ABdhPJzBTlCjnE0Boj137sr2XNOzYq7UmZhmd29OYyEVxs/Rvi+S37nfo42yC3p503T4yhsk9aeQPKknMWMv6HNiWKw=
-X-Received: by 2002:a05:6402:498:: with SMTP id k24mr536302edv.25.1626118030895;
- Mon, 12 Jul 2021 12:27:10 -0700 (PDT)
+        bh=KeQt73O3VXbfqdlM8EsBq9NtPQpTs/6ziHoXHq4rzJM=;
+        b=XPYraoRPm+fU+MMITlPB+3UKBzukLcRUlIReGrr0fpqWV4ErnGIDNPqf1QOptLdTE+
+         6AUER57p/0itARzXI2q/53tCTmHhMuiBKQwYdZbgmPIh5jyGQ7IzDnWpzyefvy5ipyFq
+         sfsL+fUK/4uC+bWagpJLUIe4t54rcSZrU9pJWQg3FUtCrxjZ26YBIa5J82WqXObPHyvx
+         yObjUDW89vyIPj5WZaX4WB9CngMIR3pE+hBoJnmVJD5l5LLUSmseBOcejtLIusTsFi5f
+         4hAor2QgeCRf0G6OVFdgSQb6uT3I1UEYG2TPaCTVb7AfYn1LmAxVs+NyafbNNZM1rg6F
+         oYww==
+X-Gm-Message-State: AOAM531Ob6++g7y70HFN63ji9X/21xMdb51kY3Osj5E/uX+AuNsgQSKU
+        jjoTnN3gc/yWt8QQbdCtgCU4tZRyfElk0WCzmKw=
+X-Google-Smtp-Source: ABdhPJxzXgN6PZ5+rRefURGC3bO+IpQg4KjJT5nLqMBwzJuExxcZdMOBtc6mki036n1avg8nvnne0OOx7w3r3DnB79s=
+X-Received: by 2002:a5d:6caf:: with SMTP id a15mr662342wra.313.1626118034752;
+ Mon, 12 Jul 2021 12:27:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210706132259.71740-1-alexander.mikhalitsyn@virtuozzo.com>
- <20210709181241.cca57cf83c52964b2cd0dcf0@linux-foundation.org>
- <CAJqdLrpx+xEMGQLZo7jS5BTAw-k2sWPrv9fCt0x8t=6Nbn7u+w@mail.gmail.com>
- <CALgW_8VUk0us_umLncUv2DUMkOi3qixmT+YkHV4Dhpt_nNMZHw@mail.gmail.com>
- <CAJqdLrofd76x_hziq7F3wY3jqZfE1LNZbQ8sD6MUFXbPHVcdVw@mail.gmail.com>
- <CALgW_8WHq051ifcYPta5reoVZ10=fA5Rb1EZuyaievK+OUw99Q@mail.gmail.com>
- <CAJqdLrpxnMThqersqiVsTNr1Y25V8jmDcW_sKWi0ziJXCsi2gw@mail.gmail.com> <87y2ab9w8u.fsf@disp2133>
-In-Reply-To: <87y2ab9w8u.fsf@disp2133>
-From:   Alexander Mihalicyn <alexander@mihalicyn.com>
-Date:   Mon, 12 Jul 2021 22:27:00 +0300
-Message-ID: <CAJqdLrov0VBzHamSvMRKBHSJX+NROUx0TUsRD9U0zEWUn5XxDA@mail.gmail.com>
-Subject: Re: [PATCH 0/2] shm: omit forced shm destroy if task IPC namespace
- was changed
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Manfred Spraul <manfred@colorfullife.com>,
+References: <162610726011.3408253.2771348573083023654.stgit@warthog.procyon.org.uk>
+ <162610726860.3408253.445207609466288531.stgit@warthog.procyon.org.uk>
+In-Reply-To: <162610726860.3408253.445207609466288531.stgit@warthog.procyon.org.uk>
+From:   Marc Dionne <marc.c.dionne@gmail.com>
+Date:   Mon, 12 Jul 2021 16:27:03 -0300
+Message-ID: <CAB9dFdt5P-6nB0D_nMb-PT+Uv+FtAy811PA_W2fXPZAvPRo0sQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] afs: Fix tracepoint string placement with built-in AFS
+To:     David Howells <dhowells@redhat.com>
+Cc:     linux-afs@lists.infradead.org,
+        "Alexey Dobriyan (SK hynix)" <adobriyan@gmail.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        Christian Brauner <christian@brauner.io>
+        linux-fsdevel@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
+On Mon, Jul 12, 2021 at 1:28 PM David Howells <dhowells@redhat.com> wrote:
+>
+> To quote Alexey[1]:
+>
+>     I was adding custom tracepoint to the kernel, grabbed full F34 kernel
+>     .config, disabled modules and booted whole shebang as VM kernel.
+>
+>     Then did
+>
+>         perf record -a -e ...
+>
+>     It crashed:
+>
+>         general protection fault, probably for non-canonical address 0x435f5346592e4243: 0000 [#1] SMP PTI
+>         CPU: 1 PID: 842 Comm: cat Not tainted 5.12.6+ #26
+>         Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1.fc33 04/01/2014
+>         RIP: 0010:t_show+0x22/0xd0
+>
+>     Then reproducer was narrowed to
+>
+>         # cat /sys/kernel/tracing/printk_formats
+>
+>     Original F34 kernel with modules didn't crash.
+>
+>     So I started to disable options and after disabling AFS everything
+>     started working again.
+>
+>     The root cause is that AFS was placing char arrays content into a
+>     section full of _pointers_ to strings with predictable consequences.
+>
+>     Non canonical address 435f5346592e4243 is "CB.YFS_" which came from
+>     CM_NAME macro.
+>
+>     Steps to reproduce:
+>
+>         CONFIG_AFS=y
+>         CONFIG_TRACING=y
+>
+>         # cat /sys/kernel/tracing/printk_formats
+>
+> Fix this by the following means:
+>
+>  (1) Add enum->string translation tables in the event header with the AFS
+>      and YFS cache/callback manager operations listed by RPC operation ID.
+>
+>  (2) Modify the afs_cb_call tracepoint to print the string from the
+>      translation table rather than using the string at the afs_call name
+>      pointer.
+>
+>  (3) Switch translation table depending on the service we're being accessed
+>      as (AFS or YFS) in the tracepoint print clause.  Will this cause
+>      problems to userspace utilities?
+>
+>      Note that the symbolic representation of the YFS service ID isn't
+>      available to this header, so I've put it in as a number.  I'm not sure
+>      if this is the best way to do this.
+>
+>  (4) Remove the name wrangling (CM_NAME) macro and put the names directly
+>      into the afs_call_type structs in cmservice.c.
+>
+> Fixes: 8e8d7f13b6d5a9 ("afs: Add some tracepoints")
+> Reported-by: Alexey Dobriyan (SK hynix) <adobriyan@gmail.com>
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> cc: Andrew Morton <akpm@linux-foundation.org>
+> cc: linux-afs@lists.infradead.org
+> Link: https://lore.kernel.org/r/YLAXfvZ+rObEOdc%2F@localhost.localdomain/ [1]
+> Link: https://lore.kernel.org/r/643721.1623754699@warthog.procyon.org.uk/
+> Link: https://lore.kernel.org/r/162430903582.2896199.6098150063997983353.stgit@warthog.procyon.org.uk/ # v1
+> Link: https://lore.kernel.org/r/162609463957.3133237.15916579353149746363.stgit@warthog.procyon.org.uk/ # v1 (repost)
+> ---
+>
+>  fs/afs/cmservice.c         |   25 +++++-----------
+>  include/trace/events/afs.h |   67 +++++++++++++++++++++++++++++++++++++++++---
+>  2 files changed, 69 insertions(+), 23 deletions(-)
+>
+> diff --git a/fs/afs/cmservice.c b/fs/afs/cmservice.c
+> index d3c6bb22c5f4..a3f5de28be79 100644
+> --- a/fs/afs/cmservice.c
+> +++ b/fs/afs/cmservice.c
+> @@ -29,16 +29,11 @@ static void SRXAFSCB_TellMeAboutYourself(struct work_struct *);
+>
+>  static int afs_deliver_yfs_cb_callback(struct afs_call *);
+>
+> -#define CM_NAME(name) \
+> -       char afs_SRXCB##name##_name[] __tracepoint_string =     \
+> -               "CB." #name
+> -
+>  /*
+>   * CB.CallBack operation type
+>   */
+> -static CM_NAME(CallBack);
+>  static const struct afs_call_type afs_SRXCBCallBack = {
+> -       .name           = afs_SRXCBCallBack_name,
+> +       .name           = "CB.CallBack",
+>         .deliver        = afs_deliver_cb_callback,
+>         .destructor     = afs_cm_destructor,
+>         .work           = SRXAFSCB_CallBack,
+> @@ -47,9 +42,8 @@ static const struct afs_call_type afs_SRXCBCallBack = {
+>  /*
+>   * CB.InitCallBackState operation type
+>   */
+> -static CM_NAME(InitCallBackState);
+>  static const struct afs_call_type afs_SRXCBInitCallBackState = {
+> -       .name           = afs_SRXCBInitCallBackState_name,
+> +       .name           = "CB.InitCallBackState",
+>         .deliver        = afs_deliver_cb_init_call_back_state,
+>         .destructor     = afs_cm_destructor,
+>         .work           = SRXAFSCB_InitCallBackState,
+> @@ -58,9 +52,8 @@ static const struct afs_call_type afs_SRXCBInitCallBackState = {
+>  /*
+>   * CB.InitCallBackState3 operation type
+>   */
+> -static CM_NAME(InitCallBackState3);
+>  static const struct afs_call_type afs_SRXCBInitCallBackState3 = {
+> -       .name           = afs_SRXCBInitCallBackState3_name,
+> +       .name           = "CB.InitCallBackState3",
+>         .deliver        = afs_deliver_cb_init_call_back_state3,
+>         .destructor     = afs_cm_destructor,
+>         .work           = SRXAFSCB_InitCallBackState,
+> @@ -69,9 +62,8 @@ static const struct afs_call_type afs_SRXCBInitCallBackState3 = {
+>  /*
+>   * CB.Probe operation type
+>   */
+> -static CM_NAME(Probe);
+>  static const struct afs_call_type afs_SRXCBProbe = {
+> -       .name           = afs_SRXCBProbe_name,
+> +       .name           = "CB.Probe",
+>         .deliver        = afs_deliver_cb_probe,
+>         .destructor     = afs_cm_destructor,
+>         .work           = SRXAFSCB_Probe,
+> @@ -80,9 +72,8 @@ static const struct afs_call_type afs_SRXCBProbe = {
+>  /*
+>   * CB.ProbeUuid operation type
+>   */
+> -static CM_NAME(ProbeUuid);
+>  static const struct afs_call_type afs_SRXCBProbeUuid = {
+> -       .name           = afs_SRXCBProbeUuid_name,
+> +       .name           = "CB.ProbeUuid",
+>         .deliver        = afs_deliver_cb_probe_uuid,
+>         .destructor     = afs_cm_destructor,
+>         .work           = SRXAFSCB_ProbeUuid,
+> @@ -91,9 +82,8 @@ static const struct afs_call_type afs_SRXCBProbeUuid = {
+>  /*
+>   * CB.TellMeAboutYourself operation type
+>   */
+> -static CM_NAME(TellMeAboutYourself);
+>  static const struct afs_call_type afs_SRXCBTellMeAboutYourself = {
+> -       .name           = afs_SRXCBTellMeAboutYourself_name,
+> +       .name           = "CB.TellMeAboutYourself",
+>         .deliver        = afs_deliver_cb_tell_me_about_yourself,
+>         .destructor     = afs_cm_destructor,
+>         .work           = SRXAFSCB_TellMeAboutYourself,
+> @@ -102,9 +92,8 @@ static const struct afs_call_type afs_SRXCBTellMeAboutYourself = {
+>  /*
+>   * YFS CB.CallBack operation type
+>   */
+> -static CM_NAME(YFS_CallBack);
+>  static const struct afs_call_type afs_SRXYFSCB_CallBack = {
+> -       .name           = afs_SRXCBYFS_CallBack_name,
+> +       .name           = "YFSCB.CallBack",
+>         .deliver        = afs_deliver_yfs_cb_callback,
+>         .destructor     = afs_cm_destructor,
+>         .work           = SRXAFSCB_CallBack,
+> diff --git a/include/trace/events/afs.h b/include/trace/events/afs.h
+> index 3ccf591b2374..9f73ed2cf061 100644
+> --- a/include/trace/events/afs.h
+> +++ b/include/trace/events/afs.h
+> @@ -174,6 +174,34 @@ enum afs_vl_operation {
+>         afs_VL_GetCapabilities  = 65537,        /* AFS Get VL server capabilities */
+>  };
+>
+> +enum afs_cm_operation {
+> +       afs_CB_CallBack                 = 204,  /* AFS break callback promises */
+> +       afs_CB_InitCallBackState        = 205,  /* AFS initialise callback state */
+> +       afs_CB_Probe                    = 206,  /* AFS probe client */
+> +       afs_CB_GetLock                  = 207,  /* AFS get contents of CM lock table */
+> +       afs_CB_GetCE                    = 208,  /* AFS get cache file description */
+> +       afs_CB_GetXStatsVersion         = 209,  /* AFS get version of extended statistics */
+> +       afs_CB_GetXStats                = 210,  /* AFS get contents of extended statistics data */
+> +       afs_CB_InitCallBackState3       = 213,  /* AFS initialise callback state, version 3 */
+> +       afs_CB_ProbeUuid                = 214,  /* AFS check the client hasn't rebooted */
+> +};
+> +
+> +enum yfs_cm_operation {
+> +       yfs_CB_Probe                    = 206,  /* YFS probe client */
+> +       yfs_CB_GetLock                  = 207,  /* YFS get contents of CM lock table */
+> +       yfs_CB_XStatsVersion            = 209,  /* YFS get version of extended statistics */
+> +       yfs_CB_GetXStats                = 210,  /* YFS get contents of extended statistics data */
+> +       yfs_CB_InitCallBackState3       = 213,  /* YFS initialise callback state, version 3 */
+> +       yfs_CB_ProbeUuid                = 214,  /* YFS check the client hasn't rebooted */
+> +       yfs_CB_GetServerPrefs           = 215,
+> +       yfs_CB_GetCellServDV            = 216,
+> +       yfs_CB_GetLocalCell             = 217,
+> +       yfs_CB_GetCacheConfig           = 218,
+> +       yfs_CB_GetCellByNum             = 65537,
+> +       yfs_CB_TellMeAboutYourself      = 65538, /* get client capabilities */
+> +       yfs_CB_CallBack                 = 64204,
+> +};
+> +
+>  enum afs_edit_dir_op {
+>         afs_edit_dir_create,
+>         afs_edit_dir_create_error,
+> @@ -436,6 +464,32 @@ enum afs_cb_break_reason {
+>         EM(afs_YFSVL_GetCellName,               "YFSVL.GetCellName") \
+>         E_(afs_VL_GetCapabilities,              "VL.GetCapabilities")
+>
+> +#define afs_cm_operations \
+> +       EM(afs_CB_CallBack,                     "CB.CallBack") \
+> +       EM(afs_CB_InitCallBackState,            "CB.InitCallBackState") \
+> +       EM(afs_CB_Probe,                        "CB.Probe") \
+> +       EM(afs_CB_GetLock,                      "CB.GetLock") \
+> +       EM(afs_CB_GetCE,                        "CB.GetCE") \
+> +       EM(afs_CB_GetXStatsVersion,             "CB.GetXStatsVersion") \
+> +       EM(afs_CB_GetXStats,                    "CB.GetXStats") \
+> +       EM(afs_CB_InitCallBackState3,           "CB.InitCallBackState3") \
+> +       E_(afs_CB_ProbeUuid,                    "CB.ProbeUuid")
+> +
+> +#define yfs_cm_operations \
+> +       EM(yfs_CB_Probe,                        "YFSCB.Probe") \
+> +       EM(yfs_CB_GetLock,                      "YFSCB.GetLock") \
+> +       EM(yfs_CB_XStatsVersion,                "YFSCB.XStatsVersion") \
+> +       EM(yfs_CB_GetXStats,                    "YFSCB.GetXStats") \
+> +       EM(yfs_CB_InitCallBackState3,           "YFSCB.InitCallBackState3") \
+> +       EM(yfs_CB_ProbeUuid,                    "YFSCB.ProbeUuid") \
+> +       EM(yfs_CB_GetServerPrefs,               "YFSCB.GetServerPrefs") \
+> +       EM(yfs_CB_GetCellServDV,                "YFSCB.GetCellServDV") \
+> +       EM(yfs_CB_GetLocalCell,                 "YFSCB.GetLocalCell") \
+> +       EM(yfs_CB_GetCacheConfig,               "YFSCB.GetCacheConfig") \
+> +       EM(yfs_CB_GetCellByNum,                 "YFSCB.GetCellByNum") \
+> +       EM(yfs_CB_TellMeAboutYourself,          "YFSCB.TellMeAboutYourself") \
+> +       E_(yfs_CB_CallBack,                     "YFSCB.CallBack")
+> +
+>  #define afs_edit_dir_ops                                 \
+>         EM(afs_edit_dir_create,                 "create") \
+>         EM(afs_edit_dir_create_error,           "c_fail") \
+> @@ -569,6 +623,8 @@ afs_server_traces;
+>  afs_cell_traces;
+>  afs_fs_operations;
+>  afs_vl_operations;
+> +afs_cm_operations;
+> +yfs_cm_operations;
+>  afs_edit_dir_ops;
+>  afs_edit_dir_reasons;
+>  afs_eproto_causes;
+> @@ -649,20 +705,21 @@ TRACE_EVENT(afs_cb_call,
+>
+>             TP_STRUCT__entry(
+>                     __field(unsigned int,               call            )
+> -                   __field(const char *,               name            )
+>                     __field(u32,                        op              )
+> +                   __field(u16,                        service_id      )
+>                              ),
+>
+>             TP_fast_assign(
+>                     __entry->call       = call->debug_id;
+> -                   __entry->name       = call->type->name;
+>                     __entry->op         = call->operation_ID;
+> +                   __entry->service_id = call->service_id;
+>                            ),
+>
+> -           TP_printk("c=%08x %s o=%u",
+> +           TP_printk("c=%08x %s",
+>                       __entry->call,
+> -                     __entry->name,
+> -                     __entry->op)
+> +                     __entry->service_id == 2501 ?
+> +                     __print_symbolic(__entry->op, yfs_cm_operations) :
+> +                     __print_symbolic(__entry->op, afs_cm_operations))
+>             );
+>
+>  TRACE_EVENT(afs_call,
+>
+>
 
-On Mon, Jul 12, 2021 at 10:18 PM Eric W. Biederman
-<ebiederm@xmission.com> wrote:
->
-> Alexander Mihalicyn <alexander@mihalicyn.com> writes:
->
-> > Hello Manfred,
-> >
-> > On Sun, Jul 11, 2021 at 2:47 PM Manfred Spraul <manfred@colorfullife.com> wrote:
-> >>
-> >> Hi Alex,
-> >>
-> >>
-> >> Am Sonntag, 11. Juli 2021 schrieb Alexander Mihalicyn <alexander@mihalicyn.com>:
-> >> >
-> >> > Hi, Manfred,
-> >> >
-> >> > On Sun, Jul 11, 2021 at 12:13 PM Manfred Spraul
-> >> > <manfred@colorfullife.com> wrote:
-> >> > >
-> >> > > Hi,
-> >> > >
-> >> > >
-> >> > > Am Samstag, 10. Juli 2021 schrieb Alexander Mihalicyn <alexander@mihalicyn.com>:
-> >> > >>
-> >> > >>
-> >> > >> Now, using setns() syscall, we can construct situation when on
-> >> > >> task->sysvshm.shm_clist list
-> >> > >> we have shm items from several (!) IPC namespaces.
-> >> > >>
-> >> > >>
-> >> > > Does this imply that locking ist affected as well? According to the initial patch, accesses to shm_clist are protected by "the" IPC shm namespace rwsem. This can't work if the list contains objects from several namespaces.
-> >> >
-> >> > Of course, you are right. I've to rework this part -> I can add check into
-> >> > static int newseg(struct ipc_namespace *ns, struct ipc_params *params)
-> >> > function and before adding new shm into task list check that list is empty OR
-> >> > an item which is present on the list from the same namespace as
-> >> > current->nsproxy->ipc_ns.
-> >> >
-> >> Ok. (Sorry, I have only smartphone internet, thus I could not check
-> >> the patch fully)
-> >>
-> >> > >> I've proposed a change which keeps the old behaviour of setns() but
-> >> > >> fixes double free.
-> >> > >>
-> >> > > Assuming that locking works, I would consider this as a namespace design question: Do we want to support that a task contains shm objects from several ipc namespaces?
-> >> >
-> >> > This depends on what we mean by "task contains shm objects from
-> >> > several ipc namespaces". There are two meanings:
-> >> >
-> >> > 1. Task has attached shm object from different ipc namespaces
-> >> >
-> >> > We already support that by design. When we doing a change of namespace
-> >> > using unshare(CLONE_NEWIPC) even with
-> >> > sysctl shm_rmid_forced=1 we not detach all ipc's from task!
-> >>
-> >> OK. Thus shm and sem have different behavior anyways.
-> >>
-> >> >
-> >> > 2. Task task->sysvshm.shm_clist list has items from different IPC namespaces.
-> >> >
-> >> > I'm not sure, do we need that or not. But I'm ready to prepare a patch
-> >> > for any of the options which we choose:
-> >> > a) just add exit_shm(current)+shm_init_task(current);
-> >> > b) prepare PATCHv2 with appropriate check in the newseg() to prevent
-> >> > adding new items from different namespace to the list
-> >> > c) rework algorithm so we can safely have items from different
-> >> > namespaces in task->sysvshm.shm_clist
-> >> >
-> >> Before you write something, let's wait what the others say. I don't
-> >> qualify AS shm expert
-> >>
-> >> a) is user space visible, without any good excuse
-> >
-> > yes, but maybe we decide that this is not so critical?
-> > We need more people here :)
->
-> It is barely visible.  You have to do something very silly
-> to see this happening.  It is probably ok, but the work to
-> verify that nothing cares so that we can safely backport
-> the change is probably much more work than just updating
-> the list to handle shmid's for multiple namespaces.
->
->
-> >> c) is probably highest amount of Changes
-> >
-> > yep. but ok, I will prepare patches fast.
->
-> Given that this is a bug I think c) is the safest option.
->
-> A couple of suggestions.
-> 1) We can replace the test "shm_creator != NULL" with
->    "list_empty(&shp->shm_clist)" and remove shm_creator.
->
->    Along with replacing "shm_creator = NULL" with
->    "list_del_init(&shp->shm_clist)".
->
-> 2) We can update shmat to do "list_del_init(&shp->shm_clist)"
->    upon shmat.  The last unmap will still shm_destroy the
->    shm segment as ns->shm_rmid_forced is set.
->
->    For a multi-threaded process I think this will nicely clean up
->    the clist, and make it clear that the clist only cares about
->    those segments that have been created but never attached.
->
-> 3) Put a non-reference counted struct ipc_namespace in struct
->    shmid_kernel, and use it to remove the namespace parameter
->    from shm_destroy.
+Reviewed-by: Marc Dionne <marc.dionne@auristor.com>
 
-Thanks for your detailed suggestions! ;)
-I will prepare a patch tomorrow for kernel + test what's happening with
-CRIU and will prepare a fix for it.
+If you wanted to avoid having the hard coded yfs service ID there, you
+could pass in a boolean "is yfs" value and let the caller set it based
+on the service ID, or even have two separate trace events.  But seems
+fine as is.
 
->
-> I think that is enough to fix this bug with no changes in semantics,
-> no additional memory consumed, and an implementation that is easier
-> to read and perhaps a little faster.
->
-> Eric
-
-Regards,
-Alex
+Marc
