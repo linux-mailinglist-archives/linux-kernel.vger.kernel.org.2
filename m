@@ -2,91 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC3153C5ABD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE3D3C5AC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232710AbhGLKSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 06:18:30 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3378 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234050AbhGLKS2 (ORCPT
+        id S230259AbhGLKV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 06:21:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229471AbhGLKVX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 06:18:28 -0400
-Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GNfZV4d0Vz6K5sn;
-        Mon, 12 Jul 2021 18:07:14 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 12 Jul 2021 12:15:37 +0200
-Received: from localhost (10.47.25.8) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 12 Jul
- 2021 11:15:37 +0100
-Date:   Mon, 12 Jul 2021 11:15:19 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Andreas Kemnade <andreas@kemnade.info>
-CC:     Jonathan Cameron <jic23@kernel.org>, <lars@metafoo.de>,
-        <sre@kernel.org>, <linux-iio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <letux-kernel@openphoenux.org>
-Subject: Re: [PATCH v2 2/2] power: supply: rn5t618: Add voltage_now property
-Message-ID: <20210712111519.00000ef7@Huawei.com>
-In-Reply-To: <20210712091130.2096cf23@aktux>
-References: <20210705113637.28908-1-andreas@kemnade.info>
-        <20210705113637.28908-3-andreas@kemnade.info>
-        <20210711112039.43c4af7b@jic23-huawei>
-        <20210712091130.2096cf23@aktux>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Mon, 12 Jul 2021 06:21:23 -0400
+Received: from nbd.name (nbd.name [IPv6:2a01:4f8:221:3d45::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E75C0613DD;
+        Mon, 12 Jul 2021 03:18:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
+         s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Lh1rljUNYbSH9uKLOmZ6nltPUrZDF5cP6bgaWb+JYl0=; b=tM3pEyh9XfYwXE8hPqqu7i4OFm
+        yU0O24XVPSa9z9lpNvziOR5qHyH13B8yJ9SAXRBKCN6mYWnvLoleRRP7KTda3Jg+P/y3MgHNiOugT
+        QdDY8BWZiyi/h109SQHTqcmNnAZFS/cVtUy06dXI2cvhEmOnuDHkT9IqGXsY9ScAvR8c=;
+Received: from p54ae93f7.dip0.t-ipconnect.de ([84.174.147.247] helo=nf.local)
+        by ds12 with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <nbd@nbd.name>)
+        id 1m2t1A-0004Fq-9D; Mon, 12 Jul 2021 12:18:28 +0200
+Subject: Re: [PATCH nf] Revert "netfilter: flowtable: Remove redundant hw
+ refresh bit"
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
+        kadlec@netfilter.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, olek2@wp.pl, roid@nvidia.com
+References: <20210614215351.GA734@salvia>
+ <20210711010244.1709329-1-martin.blumenstingl@googlemail.com>
+ <20210712094652.GA6320@salvia>
+From:   Felix Fietkau <nbd@nbd.name>
+Message-ID: <f9f01b3b-f6ab-ef82-6604-5dd8e925abea@nbd.name>
+Date:   Mon, 12 Jul 2021 12:18:26 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+In-Reply-To: <20210712094652.GA6320@salvia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.25.8]
-X-ClientProxiedBy: lhreml727-chm.china.huawei.com (10.201.108.78) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Jul 2021 09:11:30 +0200
-Andreas Kemnade <andreas@kemnade.info> wrote:
 
-> On Sun, 11 Jul 2021 11:20:39 +0100
-> Jonathan Cameron <jic23@kernel.org> wrote:
+On 2021-07-12 11:46, Pablo Neira Ayuso wrote:
+> Maybe the user reporting this issue is enabling the --hw option?
+> As I said, the patch that is being proposed to be revert is just
+> amplifying.
 > 
-> > On Mon,  5 Jul 2021 13:36:37 +0200
-> > Andreas Kemnade <andreas@kemnade.info> wrote:
-> >   
-> > > Read voltage_now via IIO and provide the property.
-> > > 
-> > > Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-> > > Reported-by: kernel test robot <lkp@intel.com>    
-> > Huh?  Seems unlikely it pointed out that this patch was necessary in general.
-> > If highlighting a particular fix in an earlier version, then state what it was
-> > in the commit message. Note for fixes that get rolled into patches, it's
-> > often just mentioned in the change log and we skip the tag because it can
-> > cause confusion.
-> >   
-> The robot found a problem in v1 (missing depends on IIO). It is fixed
-> now. The message from the bot tells to add a tag. It seems not to make
-> sense. But probably the bot is also running on public branches (which
-> will not be rebase) and uses the same message where it actually makes
-> sense.
-
-Yup. It might be helpful if they modified that message to suggest
-commented format if the fix is rolled into an existing patch.  I've seen
-things like.
-
-Reported-by: kernel test robot <lkp@intel.com> # Fix something interesting.
-
-Which makes it clear what is going on.
-
-Jonathan
+> The only way to trigger this bug that I can find is:
 > 
-> I will send a v3 with that tag removed and the other comment addressed.
+> - NF_FLOWTABLE_HW_OFFLOAD is enabled.
+> - packets are following the software path.
 > 
-> Regards,
-> Andreas
+> I don't see yet how this can happen with upstream codebase, nftables
+> enables NF_FLOWTABLE_HW_OFFLOAD at configuration time, if the driver
+> does not support for hardware offload, then NF_FLOWTABLE_HW_OFFLOAD is
+> not set.
+> 
+> Is xt_flowoffload rejecting the rule load if user specifies --hw and
+> the hardware does not support for hardware offload?
+> 
+> By reading Felix's discussion on the IRC, it seems to me he does not
+> like that the packet path retries to offload flows. If so, it should
+> be possible to add a driver flag to disable this behaviour, so driver
+> developers select what they prefer that flowtable core retries to
+> offload entries. I can have a look into adding such flag and use it
+> from the mtk driver.
+I'd prefer making the retry behavior depend on the error code during
+setup. For example, if we get -ENOMEM, -EAGAIN or something like that,
+we should definitely retry.
+If we get -EOPNOTSUPP or -EINVAL, I don't think a retry makes any sense
+on any driver.
 
+- Felix
