@@ -2,111 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B50F3C6201
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC0823C61FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235746AbhGLRfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 13:35:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60768 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235721AbhGLRfb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 13:35:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78517606A5;
-        Mon, 12 Jul 2021 17:32:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626111163;
-        bh=VtGEF+ZZROmXiAjI6Vgr8SHZ3R5D6D8GlzKCE5P9jNo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gU5DP/H6vV/hR98Y71TuN3Sf5Lc4/CFIim5CLt2kqn/gVAuVkJdTi80w56phLHXi/
-         vvoht6AyduTE13L4uvzrEdGc5O9JnnTltLyOC7wj9xsKDbBWNzqseHNN1fNbP+31Ax
-         hoh92BovgXHy9AvlleHw9KXX5tkru6ekx8W4MRomclMoqLyRXPfUP7EP391yHjVWaw
-         43uOhGIHZqOGz9+4ORtbP1oJRPHKhMlzTrSHjTBqMZkR3xkE4EVbByWv2ADzhCtOOd
-         hbUN6Vx+hj6l66SNffZxot+EOJU9L0JoTUKZKzNao2SaFNpvFuEjjo5gJQYIt5gUlN
-         U+JcXeqWryCWg==
-Date:   Mon, 12 Jul 2021 18:32:06 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Daniel Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, hdegoede@redhat.com,
-        mgross@linux.intel.com, luzmaximilian@gmail.com,
-        lgirdwood@gmail.com, andy.shevchenko@gmail.com,
-        kieran.bingham@ideasonboard.com
-Subject: Re: [RFC PATCH 0/2] Add software node support to regulator framework
-Message-ID: <20210712173206.GH4435@sirena.org.uk>
-References: <20210708224226.457224-1-djrscally@gmail.com>
- <20210709170426.GC4112@sirena.org.uk>
- <c95da883-581b-d1f4-4c8a-2162b8b58b64@gmail.com>
- <20210712141528.GE4435@sirena.org.uk>
- <YOxz+b/giZTKoJkk@pendragon.ideasonboard.com>
+        id S235602AbhGLRfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 13:35:13 -0400
+Received: from mail-io1-f43.google.com ([209.85.166.43]:47072 "EHLO
+        mail-io1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233887AbhGLRfK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 13:35:10 -0400
+Received: by mail-io1-f43.google.com with SMTP id y8so23669534iop.13;
+        Mon, 12 Jul 2021 10:32:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=f7BUFs0FlI3Hj4UaAhqIjPZ08b65CDzd+MMh8k0ttO8=;
+        b=U9OLr2J+u3FHtd+6c4ggPLZtx2JH+i7LDo/EVVcim9Lc4l5nAaTtSo9cRc1Z1unNC/
+         NaLjjSF0LfXzQYLvVFXfhul4Hz7IKJ9WZHw6wiZDymT/3r8pN+bvbIkyuv6GuUS2/q7N
+         PcyYL4maM0g9m5kgv6fG8XiAbrYmnI916r6D3ZVWrJamBEtAyQdpz7W1KlPuOUAylmIl
+         p+8gY3VHYzp6urdW6KNP42EBsyyrm3LvxkstnZZyw1U3Rw4AQlrM+B1glrDLdN1oZueO
+         DpFNQLJ6Zf6tq26JZ1PSvEMboe9JXTZvpslZBFSy9M5Mu7xVepLtwwb2S9wWXfmd4DT1
+         tyFQ==
+X-Gm-Message-State: AOAM53187fz3cSRXF/YrA+znnvpIE0l0uNay8W6mxhOmLQ2seBw3lF6k
+        hFxQl5RBGrtriP8NPxsPzQ==
+X-Google-Smtp-Source: ABdhPJwG2c51hutmWd6VMKfsFj8MIYs0Zb7FuppHgPDObOEZufjTBVDkWQdC4Xux/LgL+gZJGOe4eQ==
+X-Received: by 2002:a05:6638:d4d:: with SMTP id d13mr171938jak.140.1626111140345;
+        Mon, 12 Jul 2021 10:32:20 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id g1sm7711422ilq.13.2021.07.12.10.32.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jul 2021 10:32:19 -0700 (PDT)
+Received: (nullmailer pid 2158356 invoked by uid 1000);
+        Mon, 12 Jul 2021 17:32:16 -0000
+Date:   Mon, 12 Jul 2021 11:32:16 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
+        rjw@rjwysocki.net, tdas@codeaurora.org, mka@chromium.org,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [Patch v3 6/6] dt-bindings: thermal: Add dt binding for QCOM LMh
+Message-ID: <20210712173216.GA2150396@robh.at.kernel.org>
+References: <20210708120656.663851-1-thara.gopinath@linaro.org>
+ <20210708120656.663851-7-thara.gopinath@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Uu2n37VG4rOBDVuR"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YOxz+b/giZTKoJkk@pendragon.ideasonboard.com>
-X-Cookie: Hailing frequencies open, Captain.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210708120656.663851-7-thara.gopinath@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 08, 2021 at 08:06:56AM -0400, Thara Gopinath wrote:
+> Add dt binding documentation to describe Qualcomm
+> Limits Management Hardware node.
+> 
+> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+> ---
+>  .../devicetree/bindings/thermal/qcom-lmh.yaml | 100 ++++++++++++++++++
+>  1 file changed, 100 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/thermal/qcom-lmh.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/thermal/qcom-lmh.yaml b/Documentation/devicetree/bindings/thermal/qcom-lmh.yaml
+> new file mode 100644
+> index 000000000000..7f62bd3d543d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/thermal/qcom-lmh.yaml
+> @@ -0,0 +1,100 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright 2021 Linaro Ltd.
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/thermal/qcom-lmh.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Limits Management Hardware(LMh)
+> +
+> +maintainers:
+> +  - Thara Gopinath <thara.gopinath@linaro.org>
+> +
+> +description:
+> +  Limits Management Hardware(LMh) is a hardware infrastructure on some
+> +  Qualcomm SoCs that can enforce temperature and current limits as
+> +  programmed by software for certain IPs like CPU.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,sdm845-lmh
+> +
+> +  reg:
+> +    items:
+> +      - description: core registers
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  '#interrupt-cells':
+> +    const: 1
+> +
+> +  interrupt-controller: true
+> +
+> +  qcom,lmh-cpu-id:
+> +    description:
+> +      CPU id of the first cpu in the LMh cluster
+> +    $ref: /schemas/types.yaml#/definitions/uint32
 
---Uu2n37VG4rOBDVuR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The way we reference other nodes in DT is phandles. 'cpus' is already 
+somewhat established for this case.
 
-On Mon, Jul 12, 2021 at 07:55:21PM +0300, Laurent Pinchart wrote:
-> On Mon, Jul 12, 2021 at 03:15:28PM +0100, Mark Brown wrote:
+> +
+> +  qcom,lmh-temperature-arm:
+> +    description:
+> +      An integer expressing temperature threshold in millicelsius at which
 
-> > Like I said elsewhere it seems a lot easier to just have the I2C driver
-> > set platform data based on parsing DMI information like we do elsewhere.
-> > I really don't see any benefit to introducing an additional layer of
-> > abstraction and binding here, it just seems to be making things more
-> > fragile.
+Use unit suffix when you have units.
 
-> The idea behind software nodes is that individual device drivers
-> shouldn't care about where platform-specific data come from. They can
-> use the same fwnode API, regardless of whether the device is described
-> through OF, ACPI, or software nodes created by a board file in the
+> +      the LMh thermal FSM is engaged.
+> +    $ref: /schemas/types.yaml#/definitions/int32
+> +
+> +  qcom,lmh-temperature-low:
+> +    description:
+> +      An integer expressing temperature threshold in millicelsius at which
+> +      the LMh thermal FSM is engaged.
+> +    $ref: /schemas/types.yaml#/definitions/int32
+> +
+> +  qcom,lmh-temperature-high:
+> +    description:
+> +      An integer expressing temperature threshold in millicelsius at which
+> +      the LMh thermal FSM is engaged.
 
-That's much more fwnode than swnode.  fwnode is a cute hack for letting
-ACPI based systems that don't fit the ACPI model reuse DT bindings which
-can work well for some things which are just outside the scope of ACPI
-completely but is a really bad idea for things where there's specific
-firmware modelling for the thing being handled, in those cases it should
-be avoided and firmware specific handling used instead.  Power handling
-(including regulators) is one of those areas - ACPI has really strong
-opinions on how it should be done and we don't want to be encouraging
-systems to go against that model.  AFAICT swnode is mostly just a way of
-patching up firmware that could be getting away with fwnode but didn't
-for some reason, in this case we don't want to ever see ACPI systems
-trying to use the DT regulator bindings in their firmware descriptions.
+What's the difference in the 3 properties because the description is the 
+same.
 
-> kernel. It allows grouping all platform data that should be provided by
-> firmware in a single place, conditioned by a DMI match, instead of
-> distributing DMI matches to lots of drivers.
+> +    $ref: /schemas/types.yaml#/definitions/int32
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - #interrupt-cells
+> +  - interrupt-controller
+> +  - qcom,lmh-cpu-id
+> +  - qcom,lmh-temperature-arm
+> +  - qcom,lmh-temperature-low
+> +  - qcom,lmh-temperature-high
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/clock/qcom,rpmh.h>
+> +    #include <dt-bindings/interconnect/qcom,sdm845.h>
+> +
+> +    lmh_cluster1: lmh@17d70800 {
+> +      compatible = "qcom,sdm845-lmh";
+> +      reg = <0 0x17d70800 0 0x401>;
+> +      interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
+> +      qcom,lmh-cpu-id = <0x4>;
+> +      qcom,lmh-temperature-arm = <65000>;
+> +      qcom,lmh-temperature-low = <94500>;
+> +      qcom,lmh-temperature-high = <95000>;
+> +      interrupt-controller;
 
-Like I said in reply to Andy's mail if we're essentially filling in a C
-struct through a massive pile of indirection involving writing C code
-containing a bunch of static initialisations of less specific structs
-that doesn't seem great.  We can probably arrange to pass the init_data
-=66rom different files rather than putting the quirks in the driver,
-that'd be fine if a bit more work, but swnodes only seem to be adding
-problems here.
+What devices is this an interrupt controller for?
 
---Uu2n37VG4rOBDVuR
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDsfJUACgkQJNaLcl1U
-h9Abjgf/Vk3i0rqEkOhCAV+ivVYXecph/yluBT06Xil1LFQhiK9prVwCfZJ93k0S
-D6dkPcnM1RZKmFQq3uRBfDY/5SNQlka3uoCrZqJuNhMnphjOviUgOp6HxTXVnalQ
-Fsx3Pp/khYOcwjmt7Me3i8xKcIrvphG2FddKYqGTrH3R5MuDDVRvFmtF9Ay74BMG
-6+g2XUmTLF8G4MhVMHH3SS9U0bzkbhNaFzFrShf/aVtjgZVo5RL858KqsQZ2PSr7
-H4h7d0nJxvjqMQUo0pkH5VB+tiX+tUvo52nnAIYpo3gi1abz6IpuhXIAfY0vNoCD
-WTNUTLOqkY4/N7AOKj8dvfFlOft15Q==
-=BBO2
------END PGP SIGNATURE-----
-
---Uu2n37VG4rOBDVuR--
+> +      #interrupt-cells = <1>;
+> +    };
+> +  - |
+> +    lmh_cluster0: lmh@17d78800 {
+> +      compatible = "qcom,sdm845-lmh";
+> +      reg = <0 0x17d78800 0 0x401>;
+> +      interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
+> +      qcom,lmh-cpu-id = <0x0>;
+> +      qcom,lmh-temperature-arm = <65000>;
+> +      qcom,lmh-temperature-low = <94500>;
+> +      qcom,lmh-temperature-high = <95000>;
+> +      interrupt-controller;
+> +      #interrupt-cells = <1>;
+> +    };
+> +  - |
+> -- 
+> 2.25.1
+> 
+> 
