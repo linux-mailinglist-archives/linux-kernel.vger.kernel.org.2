@@ -2,150 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B47563C64B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 22:05:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9743C64B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 22:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236298AbhGLUIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 16:08:07 -0400
-Received: from mail-co1nam11on2081.outbound.protection.outlook.com ([40.107.220.81]:45344
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231693AbhGLUIF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 16:08:05 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GgT656WVTYbSzrWfcpN8hvWhZVzHLoBpBVdOFV5/NoCadohRbyHar2flZR9kBiuBOzIwz1ten4bVrhHZG7EzBSzSgKFClS1nz0JvCLrkGohJLf2GGBtNe4BGEZ5/k51qjGsisYqQ2WuVI5Klaat+uCCydJb/dVLcX6CmPCo6VTTnuvkvbIAz+gAmTC8LZGQxEM9B6gJ3wPQ6XJFAJ0+I8nQQZKADb2XErtA4WRtYp+iRTl5jaO50YwRz9r6vizDuWQm3JGGtGa1kOoXljiTwTQXcfRaDeE197r0P33SNYfZw3A55/VmlcnTIyNkJnQLtjdeBLjaOSdCatSibuqQtFA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qD3eMhZaPQW9rr3sgBBOmZjvmp2gUxke6MHYHu3/B3U=;
- b=L6mT1Mo2pdgzL1ndvy6TQ6OmLCAO6/GCeFaeW9IxC75DJcqUduVLwAY3jKPFmYh3yX/r38mLfd0kSHqm7VYSbXnh4qlWLaV6BOaFZxGTS7J1NqEk/3P57aeHWv5PGm8iRcxTLDIFMeS3mm4Gf8feyfE72Uj0FHRdIWw3LaJxOiVFiFOCHZMSaWEGrdcl7rKW95Df2fY2mrZVas3moqk85YWAjYs8cROV04BxugDk6rfvS24QbTj7Jk+KP5ZDlDVA0GaJuZYDPMQYDsuQl3T7fUhfo+PunNpodWY3Miwp9vEEsGOqkp3h+cjWGLfzBZIJ2+FAQMFRAa01wMHCLQiGeQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qD3eMhZaPQW9rr3sgBBOmZjvmp2gUxke6MHYHu3/B3U=;
- b=OsVJd5qoH+81sbFAMu1QviFoL7Nkcf6FW06QAXc6RymqTsHgFA2GMb5ujXVCkQ1/V6iYQmZQ+qOoGByLOMn0vtjUwVf8NYIT4pAJgRzCpGb+ILTDV+j4b51ReEjAiJRKsYvTNm5Kr28JbSopmT7SmKYukF76SiZBzswK23eyqa0=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
- by SN1PR12MB2543.namprd12.prod.outlook.com (2603:10b6:802:2a::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.21; Mon, 12 Jul
- 2021 20:05:15 +0000
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::a8a9:2aac:4fd1:88fa]) by SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::a8a9:2aac:4fd1:88fa%3]) with mapi id 15.20.4308.026; Mon, 12 Jul 2021
- 20:05:15 +0000
-Cc:     brijesh.singh@amd.com, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        David Rientjes <rientjes@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] KVM, SEV: Refactor out function for unregistering
- encrypted regions
-To:     Peter Gonda <pgonda@google.com>, kvm@vger.kernel.org
-References: <20210621163118.1040170-1-pgonda@google.com>
- <20210621163118.1040170-2-pgonda@google.com>
-From:   Brijesh Singh <brijesh.singh@amd.com>
-Message-ID: <11c371de-88d0-32a9-a262-45e62c623b4d@amd.com>
-Date:   Mon, 12 Jul 2021 15:05:14 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210621163118.1040170-2-pgonda@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN6PR01CA0036.prod.exchangelabs.com (2603:10b6:805:b6::49)
- To SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
+        id S236420AbhGLUIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 16:08:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231693AbhGLUIM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 16:08:12 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B06C0613DD
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 13:05:24 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id s18so19459587pgg.8
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 13:05:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=gFiQIMdbMlGiV4kNbAs8pfFngiJ6QhnK3Hudjk2XiOU=;
+        b=SK++E2Zrabb9y24MNbsqgpf5V9FrMpggUlk9wC5vd7xfg1lLfLcJKNzdWVFHmIVrxM
+         +MBMMeIz4XkqO2EKkpXz04sPF+JQ7je9mpilzkCKfS8n3j4lDqgAtfcArwbycRCv+IzH
+         bbGykPzDaHBAogdGlGSv8CyULO7rjGUookBWyZBmaYv+nO3qWoYyX6lOrYCgKbdkt7d3
+         F85DFhO/zv3Malp4LqnML+D8Y18E2MECcss5TZjHFGPZVLoOvydbWe+2uhT+4J4q/T4U
+         mdCyLOX2eDX5AcNcag1QkW1p9cx3f2GgI4yzIrDlfeC7y7zDpr2+3xd+WdQilqYjsnYG
+         NOsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=gFiQIMdbMlGiV4kNbAs8pfFngiJ6QhnK3Hudjk2XiOU=;
+        b=iotwlzzZnAUu0pfxN4gnDnB6fSpJILVU/2vghTTdfAr4Zp6Pz9fnPaJ57l5vFA77eu
+         2JUdBV40anPdR+GddNoteC7jIkNKjxeKwoo4Sbov2ZUuWAH8Z2O+Jncn/be/W+Dqw+7A
+         SQJUbnY8/BgO6w+DcXdRH0VTTg0uvmOxYJifdamX9vdWcdB0ghAalUDIAKhypaIFPyGq
+         zuJz0kCP7tMAENjytMOZP2uBx7PrGtmaKafJeUY1b4oaYnm0igJiGWupX1AhgFY5oqCw
+         ZfhQ7oIsMKKfWTAA6cabzEnqoLI/MH3RvClDIfdtm3objG+us1bAVCBuwKFiCEMgh1fs
+         R0bg==
+X-Gm-Message-State: AOAM53133GHP7FiuT/0nHBNq7hEH0jaPbw5WXWSU1LoDP6J230pX8DgW
+        7Hbc3Qs8jg0QchB1zukmat5jzQ==
+X-Google-Smtp-Source: ABdhPJzriLGXnQ37c8bvZnrfu5DlMt6tQKsjaPZcm40N4NMtTsgw75jNUkxFv5acnZULsUz1oSMJhw==
+X-Received: by 2002:a62:442:0:b029:31d:2e52:f1c4 with SMTP id 63-20020a6204420000b029031d2e52f1c4mr772777pfe.14.1626120323694;
+        Mon, 12 Jul 2021 13:05:23 -0700 (PDT)
+Received: from hermes.local (204-195-33-123.wavecable.com. [204.195.33.123])
+        by smtp.gmail.com with ESMTPSA id fv8sm14557493pjb.21.2021.07.12.13.05.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jul 2021 13:05:23 -0700 (PDT)
+Date:   Mon, 12 Jul 2021 13:05:20 -0700
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     Salah Triki <salah.triki@gmail.com>
+Cc:     kevin.curtis@farsite.co.uk, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] replace for loop with array initializer
+Message-ID: <20210712130520.748b6e3a@hermes.local>
+In-Reply-To: <20210712192450.GA1153790@pc>
+References: <20210712192450.GA1153790@pc>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.236.31.95] (165.204.77.1) by SN6PR01CA0036.prod.exchangelabs.com (2603:10b6:805:b6::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend Transport; Mon, 12 Jul 2021 20:05:15 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b5c33b7c-2a76-4d0c-fe54-08d945705d5c
-X-MS-TrafficTypeDiagnostic: SN1PR12MB2543:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN1PR12MB2543E6CB835EFAF5468E7668E5159@SN1PR12MB2543.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:843;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RX7Tz+MJWmWdL270hU0PfjmKf30d0z/0+qAxc0GN0NRb3dzSFWajE1hFH4It+1M3maK2fPYbsyuWef7tN6ii2TFvTrKzKSgzOnVR2CeoWyKgTUEGbzEWCe2oH0xfm6rNwzW54VUX0cTYNLBEyfB8qtmK/FLVJeqwzm/ozukMyc00480leS0tTwRUlP8ZLaCCcB2iY3D863YOxvIAVoSpnUqKfR0bKCUoMRI4lPDuT0hLsEY0dCij5i9xfoFpas3MRPm/dJbe62iV+8xwJvtqmqovr4wbOfbMdqw7zD0ac7lwgcornRKZoKTj7Geql8e5S2bjZcLnOioDkR1I6eF3DGjG1xpvGK9NQZcgF0cbplrJxBoTgI+lJYw0hEcg9FVmJyCQtUi8qA/ef9DbxlQNvhYGh6briXNEWo2z5vWKraYKzxhOLm41lNyVtVdnH9qA4v18dKNkxR4hrenwvLqGCPrZBFYtxveJVgl8ZB0GMhklo9SWNCne20z2b9wfuqRjRVVGAxRvlhNvZbjjLyFUzDFnFAUlbjGDIawtgZueFWB1uuttFx9R6SILEIwGKENkoSv1a3B6riyJBPTcaWfP0iQkC8+Tlb12hu6p0rnBdaLgvJR92pHxzx6yTCqYeUvwpZpsuqF30hCEJ9KyugaAwii11OkUFp2DDiZJ+NYm9Iyaj04xcuPOaBprwFax+Wg2gDrB75v+Z4Pqwd+1gRr1xYrobKLCT072tASPBhQNUow=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(346002)(39860400002)(376002)(396003)(478600001)(53546011)(316002)(16576012)(186003)(52116002)(7416002)(8936002)(38350700002)(54906003)(38100700002)(2906002)(26005)(36756003)(6486002)(2616005)(31686004)(44832011)(8676002)(66476007)(4326008)(5660300002)(31696002)(66946007)(956004)(66556008)(86362001)(4744005)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aHBGaHlMSnhLMFRaSndpd0pJMU9qVldtV3NiMGZ2V0dLRlRlVUtjK0tqRFRs?=
- =?utf-8?B?L1hUSXMzNjhHWUR4YmU0TTRCWCtzcG9jRWlzOEh2Y3JzeXBNRGpiZ0U3bTdu?=
- =?utf-8?B?LzFteFJOL0FXR3JtRG9mdWZxVXRvVDh3clh6UWV0TnBkV3JVa3VsN0R5S0c3?=
- =?utf-8?B?SmFBZ2R4RnBoMklFNWJTM0twUStReGRuNjBFZEczZDA5UWxrdjBKZDVYeXFz?=
- =?utf-8?B?aDZHNFlqdUYza2M0TTlCbGwzdlhMajMxcVFsMzdNVlBid0xYTTZLQmxvcFZl?=
- =?utf-8?B?a1hKUSsvV2pVU0xnU2xUalI4SWpldU9nayt0MzFwOTZNYmFxQ0YwVHhUOUtR?=
- =?utf-8?B?STBqQUdweS9DMzEwRVh4YVQxS3daYWJ4Wmk2WnlPaUN3dExvMlk4TlRqcnNH?=
- =?utf-8?B?NkRMeWNoL2o2MS9IdjdzcEhxL0N4OVpGMTlMOTlFSHBTeUlsdXdDYUdZeXZU?=
- =?utf-8?B?eXBMckZybDQ1eTY3VTZHUEZIQ3AxeG9uZWdTa0pUcXkrY2N0aG9CZ3M1aUNn?=
- =?utf-8?B?T0Z2N0Y3SmF3UE1wYWNKVmRTMGhhaWpXVTNqbldiRnd5R0E2NFRUdEFsN2xv?=
- =?utf-8?B?SG5hWkErSndMMHlPQzBtYTI2UHlvTWlKdDBXK3YrVkd5T0dWZ2JpUXhHRk4v?=
- =?utf-8?B?MG80Zm12R3pKOXRYR1RnM3poZ1EvMk94djIzRVVNRkRVVEJZdHJSWFNaVDdt?=
- =?utf-8?B?dWF0SDFvVFJteFJ6bkxaeU1MeVp0OVJGWWtjRXdCYjF6d1pWTE5pK0xUQnd6?=
- =?utf-8?B?UFpFWEMvRWxsYXYybXU4b01UNVpGR3haVWtUSzFmTkpjaFBTWHFPYnd3M3Zu?=
- =?utf-8?B?eWJjTkQ3K0M5bjdTYzRZKzdPYTd6Zk5HeDZXb0F4bjFML01pSFNwS3VLYkZR?=
- =?utf-8?B?YzB6eXZRTUdBS3FyY2wrSTRsNzhpUHhFS2d4MjJtR21jOEVsV3d1Y1Q3K3dv?=
- =?utf-8?B?YkM0TXJ5ekQ5TlVpR2IxM3RHLzUxdS9pc0c4dXh5bXNTeXVnUm90eFRScEFU?=
- =?utf-8?B?RW9MenFxQlZYNzBsUHBXREpqVzJTc0Y3dWQ2aENPd3Y1T3lSZER2dFY1Rnlu?=
- =?utf-8?B?U3dKV21iVHQ0Kzk4YmpvUjhXOG1CK3dMbXNKSVZyRk4wNUJzSldOaXJWb1lF?=
- =?utf-8?B?UStRQW5hV3piQ2pUNjF2YWU4SGk3a3hXRk0wUWZ0N1hteVIrczJoZW9CNThh?=
- =?utf-8?B?TnhQVlFjUnpVZjdQSkl4MFBkRldIU0kzQjh5bHlJN0NCL3RWZ2x3RG42RzVX?=
- =?utf-8?B?Y0JreU1xdE1uQXNpUHFkY3VtT3cvQU42QmFrckZjRFdZbVh4Zm1MbzdEZjNE?=
- =?utf-8?B?TVpMVGY1aTRGODZXRHlTYXp3L0VuZ2VKcTlXMndFVUZ1Wm12VktSSmhMVTFy?=
- =?utf-8?B?eTNJaHBPbHlCMzVabWpyU1ZiL2JQZFVLSmRSOTljSUlUZkNnQnFXUWdLbFVq?=
- =?utf-8?B?RGpvZHhmWHZ3SWE1YkJENTcwaGs2Wm90S0JNeEZkSUJISGlZNGtYbElLMmx3?=
- =?utf-8?B?YTJjc0ZLVlBCQTFrdGJJWEV2WVBwTVVnZ2VyeFBZTDVTTFpGZVVGMkErWEU1?=
- =?utf-8?B?djJqV0JzUy9yaFgxTVBybWNJT29QVktZbGxqRVViZHFGajRoNzFvR3dzbEdD?=
- =?utf-8?B?WDZZanNrYzltTlRSRkFPSXFla2lGR2dkTkpaTXBkM3RKTG5hek40RTZISnlM?=
- =?utf-8?B?cnZmLzhXSU05TDZvSk9BSWNpdmhRaUpTUTdBendyelZ2MU9HU3ZhNXV5aENV?=
- =?utf-8?Q?hju78GHrLq3oNm3+/nKuoG2DXQFjilYNVAPyzdF?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b5c33b7c-2a76-4d0c-fe54-08d945705d5c
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jul 2021 20:05:15.6284
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: m32Fmw+uaV8/v/bpxvONUCtYSNjGTiMzHHu3LwAokmlb5/mcarDUvXnSqUvrYXEu5j3PVILFORhWOg7cqCdZbQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2543
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 12 Jul 2021 20:24:50 +0100
+Salah Triki <salah.triki@gmail.com> wrote:
 
+> diff --git a/drivers/net/wan/farsync.c b/drivers/net/wan/farsync.c
+> index b3466e084e84..a90d3b9a8170 100644
+> --- a/drivers/net/wan/farsync.c
+> +++ b/drivers/net/wan/farsync.c
+> @@ -567,7 +567,7 @@ static void fst_process_int_work_q(struct tasklet_struct *unused);
+>  static DECLARE_TASKLET(fst_tx_task, fst_process_tx_work_q);
+>  static DECLARE_TASKLET(fst_int_task, fst_process_int_work_q);
+>  
+> -static struct fst_card_info *fst_card_array[FST_MAX_CARDS];
+> +static struct fst_card_info *fst_card_array[FST_MAX_CARDS] = { [0 ... FST_MAX_CARDS-1] = NULL };
 
-On 6/21/21 11:31 AM, Peter Gonda wrote:
-> Factor out helper function for freeing the encrypted region list.
-> 
-> Signed-off-by: Peter Gonda <pgonda@google.com>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Sean Christopherson <seanjc@google.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Dr. David Alan Gilbert <dgilbert@redhat.com>
-> Cc: Brijesh Singh <brijesh.singh@amd.com>
-> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-> Cc: Wanpeng Li <wanpengli@tencent.com>
-> Cc: Jim Mattson <jmattson@google.com>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: kvm@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> 
-
-Reviewed-by: Brijesh Singh <brijesh.singh@amd.com>
-
-thanks
+Why bother, the default initialization in C is 0 (ie. NULL).
+In fact, checkpatch should complain about useless array initialization for this.
