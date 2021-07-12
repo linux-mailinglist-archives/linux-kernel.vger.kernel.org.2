@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AF113C4A46
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 118E43C5797
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240017AbhGLGue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:50:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35158 "EHLO mail.kernel.org"
+        id S1377320AbhGLIfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:35:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238285AbhGLGkE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:40:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D7AFE610A7;
-        Mon, 12 Jul 2021 06:36:53 +0000 (UTC)
+        id S244770AbhGLHtQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:49:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19B2461995;
+        Mon, 12 Jul 2021 07:43:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071814;
-        bh=y5VGwTrzuQwT2plzHSrl2/5rCfn4r0bcXrI0UDrKkDk=;
+        s=korg; t=1626075796;
+        bh=QTl3lypdgIKQWU7PRoO3Sni6CNBBYi6P/RQfj2V9BCw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SSD9y2eryhAnpyzsuCBbznUSftOfH++hycoSzc7WvtHeFjbI6Vu3hkMwTENFvYYBQ
-         uYXix81YGcEOARhVVV0BLKtrDFV+XhQ2XLjx4wf8zzTuHYmGva7cvbFVL++IvCLcB5
-         jlSK3AjpJR0AzYvQExQHmFIl+nbsyrT+azzka8Ac=
+        b=s4i6FLrNEviFrzWyPRGM2XRes7PKfrUG8rjM9Fk3liRu+6xeAf9Qfv0hE3mL2+b5c
+         4BK5cEf4HB7sbEJxWcEKeQxZrYLhnmbTHcGQI5DR9gOuAj+vgLA2fSGzmfqTyBVXTG
+         SVVJ/OzOjI58puP8u/BwvzDCbjuX+iB7eWp0N5dY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 230/593] pata_ep93xx: fix deferred probing
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 367/800] nvme-tcp: fix error codes in nvme_tcp_setup_ctrl()
 Date:   Mon, 12 Jul 2021 08:06:30 +0200
-Message-Id: <20210712060908.230036067@linuxfoundation.org>
+Message-Id: <20210712061006.095195458@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,37 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 5c8121262484d99bffb598f39a0df445cecd8efb ]
+[ Upstream commit 522af60cb2f8e3658bda1902fb7f200dcf888a5c ]
 
-The driver overrides the error codes returned by platform_get_irq() to
--ENXIO, so if it returns -EPROBE_DEFER, the driver would fail the probe
-permanently instead of the deferred probing.  Propagate the error code
-upstream, as it should have been done from the start...
+These error paths currently return success but they should return
+-EOPNOTSUPP.
 
-Fixes: 2fff27512600 ("PATA host controller driver for ep93xx")
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
-Link: https://lore.kernel.org/r/509fda88-2e0d-2cc7-f411-695d7e94b136@omprussia.ru
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: 73ffcefcfca0 ("nvme-tcp: check sgl supported by target")
+Fixes: 3f2304f8c6d6 ("nvme-tcp: add NVMe over TCP host driver")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ata/pata_ep93xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nvme/host/tcp.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/ata/pata_ep93xx.c b/drivers/ata/pata_ep93xx.c
-index badab6708893..46208ececbb6 100644
---- a/drivers/ata/pata_ep93xx.c
-+++ b/drivers/ata/pata_ep93xx.c
-@@ -928,7 +928,7 @@ static int ep93xx_pata_probe(struct platform_device *pdev)
- 	/* INT[3] (IRQ_EP93XX_EXT3) line connected as pull down */
- 	irq = platform_get_irq(pdev, 0);
- 	if (irq < 0) {
--		err = -ENXIO;
-+		err = irq;
- 		goto err_rel_gpio;
+diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
+index 34f4b3402f7c..79a463090dd3 100644
+--- a/drivers/nvme/host/tcp.c
++++ b/drivers/nvme/host/tcp.c
+@@ -1973,11 +1973,13 @@ static int nvme_tcp_setup_ctrl(struct nvme_ctrl *ctrl, bool new)
+ 		return ret;
+ 
+ 	if (ctrl->icdoff) {
++		ret = -EOPNOTSUPP;
+ 		dev_err(ctrl->device, "icdoff is not supported!\n");
+ 		goto destroy_admin;
  	}
  
+ 	if (!(ctrl->sgls & ((1 << 0) | (1 << 1)))) {
++		ret = -EOPNOTSUPP;
+ 		dev_err(ctrl->device, "Mandatory sgls are not supported!\n");
+ 		goto destroy_admin;
+ 	}
 -- 
 2.30.2
 
