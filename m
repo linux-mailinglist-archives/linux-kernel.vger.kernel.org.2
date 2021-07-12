@@ -2,326 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C1CD3C59AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7193F3C59A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351113AbhGLJH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:07:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53154 "EHLO
+        id S1356917AbhGLJHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:07:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358847AbhGLI0T (ORCPT
+        with ESMTP id S1358999AbhGLI0Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:26:19 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE1BC0A88DD
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 01:18:23 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id f17so24382686wrt.6
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 01:18:23 -0700 (PDT)
+        Mon, 12 Jul 2021 04:26:24 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F528C00666B
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 01:19:04 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id e20so22793865ljn.8
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 01:19:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kPH1IzeOGDJWRvF+hQvSOgoifVXeHmaKHK5lulTS72A=;
-        b=KRkNysoeVgE24fFmaqYZ1rHqLCyO0W0DYhux+1Rht5aHbchzjL+Dwo97xcbAW7Hmr8
-         DEOguzOiL3i6M/NAHpjvWdONY2mnqFwJ7E+BYlW4zFHWyYkeQe0YUkqIjpQ+CqE+s5vv
-         2dwQQxv3K/ZOa0eiQlU2x03lf0ZKBwZczhznGKtpQ0b2+dM7rK1A9pYCaOThmtq2hyaH
-         jSRcx5S5MycS/Bv1oeWe125/thAOQsPYVJo96zy7GgMN4XUcZuAlNjUdId9pZUGvtM5U
-         GBB2FwTH0tox6Zo4hdJvNFlNh477mr5+OBNicFPaNFe1+g/i8RZ6rhY2KbQcdDg+d/0o
-         FCFg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4Vqms0vy9lHt4dorTNB1riLmavTf8tDwGAT9NwU4T/8=;
+        b=PtrvR9Kd0oTwy1FIWXsIc9PflVmbJ33VfTS6zTYe8usXpRn2Oz6qIfuiLoFkhlU3yN
+         LGekOUjbPkeZ1EBicgj3xxbRuzaXwKPnQj+hvYd4ouV7COrE68LoWNxb3+MnqY2ne/UZ
+         a+cmirTHV5hmfTmTy3jcSn+azCOGBiNVLcOsub2VH5im/uKMQMP7ngGProM6mt0m9/IU
+         K/jawWf2oSsqcxlxyHkmtO5GPgoUPSXwmZHnegYVSHXZ9jKh4ZOA9xqDBdPAq02QfrI9
+         fSV5NOZfD9krCwPQDkhw8jj4O7y3ZVcOHhCd6L8W+cb4nLeSGjs65cspOaHnNXFBx/0G
+         qqog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kPH1IzeOGDJWRvF+hQvSOgoifVXeHmaKHK5lulTS72A=;
-        b=feHehphM2sdchGNcAipojTrwq+DY/jlwDZq16O5NDvTkwlSD2fASR3Ys2mpQ/CIr/Z
-         vtzdq3excOoygM3W1XsqWijkPdtBdJiHZIDA6Wut+a4bak7b1mrnD3KVmszpb8whXyjo
-         vRBnOFCYn39xX/GNyLmQnDCLoIoD2TnbrGyHY908sjfrhwDF/L3auEKc5Udss4uLURs3
-         0wjDsp3Zww+vvORZtuR6wDLvZjcMd08yv/vtMmdsZlHqIrHrMp3HbAH+xUW43s9Ct30O
-         rwbmZut1rNmjSgAHwaEimnHrMOAXcF95bjnzf7o+qQ8p+BAh/ucyu/DA5r7/uqbvG/cv
-         g6/w==
-X-Gm-Message-State: AOAM532TfMBJ8FZihc5x2TRa3A526hsFD9Mh3jxlcTS1cvBe5oOpZH1e
-        1IgtNBtS+XqIzbxnzEbaUQyqYA==
-X-Google-Smtp-Source: ABdhPJw3eLakDx8YWXrA04CxC2ibj9EVmdwKTPTmTlExbDqvqJeykvBhTN4HqbH3oWcuFf9fHaCnlw==
-X-Received: by 2002:a05:6000:108:: with SMTP id o8mr19045739wrx.154.1626077902152;
-        Mon, 12 Jul 2021 01:18:22 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id p5sm13969585wrd.25.2021.07.12.01.18.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 12 Jul 2021 01:18:21 -0700 (PDT)
-Subject: Re: [RFC PATCH 05/13] ASoC: qcom: audioreach: add q6apm support
-To:     Rob Herring <robh@kernel.org>
-Cc:     bjorn.andersson@linaro.org, broonie@kernel.org,
-        plai@codeaurora.org, tiwai@suse.de, devicetree@vger.kernel.org,
-        perex@perex.cz, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
-        bgoswami@codeaurora.org
-References: <20210607152836.17154-1-srinivas.kandagatla@linaro.org>
- <20210607152836.17154-6-srinivas.kandagatla@linaro.org>
- <20210618201718.GA2807622@robh.at.kernel.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <e7f2fcdd-31e2-2cb1-2f94-257c723c6436@linaro.org>
-Date:   Mon, 12 Jul 2021 09:18:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4Vqms0vy9lHt4dorTNB1riLmavTf8tDwGAT9NwU4T/8=;
+        b=awyqJMv/iKNrNAuWeq37RGAclt06LOHrMDpqKBmSAeWirzANwHDb9Vj7RNAJd8iObg
+         EaeFDeqF3058hI0iaBacc/Vxbdc3vd89MIsKT3ggTj1bD7YuNKsYTeaRnjghjlbSSEH3
+         VHR1X/yTUIrjnKlyREF1gRE8/zoStMRpZSKOvXBbSUNq+etLoSQlw1RnnG1cfgASWPmJ
+         bbFjmBuPvjEz5vy4V+9wCvcR+YP43zXp7aRlUFVpBxU9twCXAdfYrdiHTRl5yAziwyAb
+         EQD8WnYLXNKy6I6123IqkvtSUwEr3nxTb5apWWxbD24c0eBBy2UlsS3D2n0IjZ0jAjGD
+         nQ7A==
+X-Gm-Message-State: AOAM5312SCOpm+T6Kg8kOxrEU7lJvp25issC44bx5X0HUNeiLaeR5La8
+        PDFvyTIshoD3e3ufAiK9IJBecNBOAmpy9qAK4k4=
+X-Google-Smtp-Source: ABdhPJwk70WeOuOVOSkWg66e6yGCjIhizpb8YpQ5Eb535M2yh/P4Fcz8HMfkRmQ3zH/i8I9zraQqNmi5l8EOx1x6O9U=
+X-Received: by 2002:a2e:a596:: with SMTP id m22mr12809050ljp.86.1626077942658;
+ Mon, 12 Jul 2021 01:19:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210618201718.GA2807622@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210711141430.896595-1-sxwjean@me.com> <07878d21-fa4d-fbf5-a292-b71c48847a5e@redhat.com>
+In-Reply-To: <07878d21-fa4d-fbf5-a292-b71c48847a5e@redhat.com>
+From:   Xiongwei Song <sxwjean@gmail.com>
+Date:   Mon, 12 Jul 2021 16:18:36 +0800
+Message-ID: <CAEVVKH_95TMa8RRChzG0ZzMdzx3gp7wWmbPnbUst3+mi8wFnBg@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 1/3] locking/lockdep: Fix false warning of check_wait_context()
+To:     Waiman Long <llong@redhat.com>
+Cc:     Xiongwei Song <sxwjean@me.com>, peterz@infradead.org,
+        mingo@redhat.com, will@kernel.org,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jul 12, 2021 at 12:43 AM Waiman Long <llong@redhat.com> wrote:
+>
+> On 7/11/21 10:14 AM, Xiongwei Song wrote:
+> > From: Xiongwei Song <sxwjean@gmail.com>
+> >
+> > We now always get a "Invalid wait context" warning with
+> > CONFIG_PROVE_RAW_LOCK_NESTING=y, see the full warning below:
+> >
+> >       [    0.705900] =============================
+> >       [    0.706002] [ BUG: Invalid wait context ]
+> >       [    0.706180] 5.13.0+ #4 Not tainted
+> >       [    0.706349] -----------------------------
+>
+> I believe the purpose of CONFIG_PROVE_RAW_LOCK_NESTING is experimental
+> and it is turned off by default. Turning it on can cause problem as
+> shown in your lockdep splat. Limiting it to just PREEMPT_RT will defeat
+> its purpose to find potential spinlock nesting problem in non-PREEMPT_RT
+> kernel.
+As far as I know, a spinlock can nest another spinlock. In
+non-PREEMPT_RT kernel
+spin_lock and raw_spin_lock are same , so here acquiring a spin_lock in hardirq
+context is acceptable, the warning is not needed. My knowledge on this
+is not enough,
+Will dig into this.
 
+> The point is to fix the issue found,
+Agree. I thought there was a spinlock usage issue, but by checking
+deactivate_slab context,
+looks like the spinlock usage is well. Maybe I'm missing something?
 
-On 18/06/2021 21:17, Rob Herring wrote:
-> On Mon, Jun 07, 2021 at 04:28:28PM +0100, Srinivas Kandagatla wrote:
->> Add support to q6apm (Audio Process Manager) component which is
->> core Audioreach service running in the DSP.
->>
->> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> ---
->>   include/dt-bindings/sound/qcom,q6apm.h | 215 ++++++++
-> 
-> This goes in the binding patch.
-> 
+> not hiding it from appearing.
+I'm not trying to hiding it, according to the code context, the fix is
+reasonable from my point of
+view. Let me check again.
 
-Thanks Rob for review,
-Yes, I agree I will move this to bindings.
+Thank  you for the comments.
 
---srini
->>   sound/soc/qcom/audioreach/Makefile     |   2 +-
->>   sound/soc/qcom/audioreach/audioreach.c | 252 +++++++++
->>   sound/soc/qcom/audioreach/audioreach.h |   6 +
->>   sound/soc/qcom/audioreach/q6apm.c      | 695 +++++++++++++++++++++++++
->>   sound/soc/qcom/audioreach/q6apm.h      | 171 ++++++
->>   6 files changed, 1340 insertions(+), 1 deletion(-)
->>   create mode 100644 include/dt-bindings/sound/qcom,q6apm.h
->>   create mode 100644 sound/soc/qcom/audioreach/q6apm.c
->>   create mode 100644 sound/soc/qcom/audioreach/q6apm.h
->>
->> diff --git a/include/dt-bindings/sound/qcom,q6apm.h b/include/dt-bindings/sound/qcom,q6apm.h
->> new file mode 100644
->> index 000000000000..38e3a426b15a
->> --- /dev/null
->> +++ b/include/dt-bindings/sound/qcom,q6apm.h
->> @@ -0,0 +1,215 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
-> 
-> Dual license.
-> 
->> +#ifndef __DT_BINDINGS_Q6_APM_H__
->> +#define __DT_BINDINGS_Q6_APM_H__
->> +
->> +#define	MSM_FRONTEND_DAI_MULTIMEDIA1	1
->> +#define	MSM_FRONTEND_DAI_MULTIMEDIA2	2
->> +#define	MSM_FRONTEND_DAI_MULTIMEDIA3	3
->> +#define	MSM_FRONTEND_DAI_MULTIMEDIA4	4
->> +#define	MSM_FRONTEND_DAI_MULTIMEDIA5	5
->> +#define	MSM_FRONTEND_DAI_MULTIMEDIA6	6
->> +#define	MSM_FRONTEND_DAI_MULTIMEDIA7	7
->> +#define	MSM_FRONTEND_DAI_MULTIMEDIA8	8
->> +
->> +/* Audio Process Manager (APM) virtual ports IDs */
->> +#define HDMI_RX		1
->> +#define SLIMBUS_0_RX    2
->> +#define SLIMBUS_0_TX    3
->> +#define SLIMBUS_1_RX    4
->> +#define SLIMBUS_1_TX    5
->> +#define SLIMBUS_2_RX    6
->> +#define SLIMBUS_2_TX    7
->> +#define SLIMBUS_3_RX    8
->> +#define SLIMBUS_3_TX    9
->> +#define SLIMBUS_4_RX    10
->> +#define SLIMBUS_4_TX    11
->> +#define SLIMBUS_5_RX    12
->> +#define SLIMBUS_5_TX    13
->> +#define SLIMBUS_6_RX    14
->> +#define SLIMBUS_6_TX    15
->> +#define PRIMARY_MI2S_RX		16
->> +#define PRIMARY_MI2S_TX		17
->> +#define SECONDARY_MI2S_RX	18
->> +#define SECONDARY_MI2S_TX	19
->> +#define TERTIARY_MI2S_RX	20
->> +#define TERTIARY_MI2S_TX	21
->> +#define QUATERNARY_MI2S_RX	22
->> +#define QUATERNARY_MI2S_TX	23
->> +#define PRIMARY_TDM_RX_0	24
->> +#define PRIMARY_TDM_TX_0	25
->> +#define PRIMARY_TDM_RX_1	26
->> +#define PRIMARY_TDM_TX_1	27
->> +#define PRIMARY_TDM_RX_2	28
->> +#define PRIMARY_TDM_TX_2	29
->> +#define PRIMARY_TDM_RX_3	30
->> +#define PRIMARY_TDM_TX_3	31
->> +#define PRIMARY_TDM_RX_4	32
->> +#define PRIMARY_TDM_TX_4	33
->> +#define PRIMARY_TDM_RX_5	34
->> +#define PRIMARY_TDM_TX_5	35
->> +#define PRIMARY_TDM_RX_6	36
->> +#define PRIMARY_TDM_TX_6	37
->> +#define PRIMARY_TDM_RX_7	38
->> +#define PRIMARY_TDM_TX_7	39
->> +#define SECONDARY_TDM_RX_0	40
->> +#define SECONDARY_TDM_TX_0	41
->> +#define SECONDARY_TDM_RX_1	42
->> +#define SECONDARY_TDM_TX_1	43
->> +#define SECONDARY_TDM_RX_2	44
->> +#define SECONDARY_TDM_TX_2	45
->> +#define SECONDARY_TDM_RX_3	46
->> +#define SECONDARY_TDM_TX_3	47
->> +#define SECONDARY_TDM_RX_4	48
->> +#define SECONDARY_TDM_TX_4	49
->> +#define SECONDARY_TDM_RX_5	50
->> +#define SECONDARY_TDM_TX_5	51
->> +#define SECONDARY_TDM_RX_6	52
->> +#define SECONDARY_TDM_TX_6	53
->> +#define SECONDARY_TDM_RX_7	54
->> +#define SECONDARY_TDM_TX_7	55
->> +#define TERTIARY_TDM_RX_0	56
->> +#define TERTIARY_TDM_TX_0	57
->> +#define TERTIARY_TDM_RX_1	58
->> +#define TERTIARY_TDM_TX_1	59
->> +#define TERTIARY_TDM_RX_2	60
->> +#define TERTIARY_TDM_TX_2	61
->> +#define TERTIARY_TDM_RX_3	62
->> +#define TERTIARY_TDM_TX_3	63
->> +#define TERTIARY_TDM_RX_4	64
->> +#define TERTIARY_TDM_TX_4	65
->> +#define TERTIARY_TDM_RX_5	66
->> +#define TERTIARY_TDM_TX_5	67
->> +#define TERTIARY_TDM_RX_6	68
->> +#define TERTIARY_TDM_TX_6	69
->> +#define TERTIARY_TDM_RX_7	70
->> +#define TERTIARY_TDM_TX_7	71
->> +#define QUATERNARY_TDM_RX_0	72
->> +#define QUATERNARY_TDM_TX_0	73
->> +#define QUATERNARY_TDM_RX_1	74
->> +#define QUATERNARY_TDM_TX_1	75
->> +#define QUATERNARY_TDM_RX_2	76
->> +#define QUATERNARY_TDM_TX_2	77
->> +#define QUATERNARY_TDM_RX_3	78
->> +#define QUATERNARY_TDM_TX_3	79
->> +#define QUATERNARY_TDM_RX_4	80
->> +#define QUATERNARY_TDM_TX_4	81
->> +#define QUATERNARY_TDM_RX_5	82
->> +#define QUATERNARY_TDM_TX_5	83
->> +#define QUATERNARY_TDM_RX_6	84
->> +#define QUATERNARY_TDM_TX_6	85
->> +#define QUATERNARY_TDM_RX_7	86
->> +#define QUATERNARY_TDM_TX_7	87
->> +#define QUINARY_TDM_RX_0	88
->> +#define QUINARY_TDM_TX_0	89
->> +#define QUINARY_TDM_RX_1	90
->> +#define QUINARY_TDM_TX_1	91
->> +#define QUINARY_TDM_RX_2	92
->> +#define QUINARY_TDM_TX_2	93
->> +#define QUINARY_TDM_RX_3	94
->> +#define QUINARY_TDM_TX_3	95
->> +#define QUINARY_TDM_RX_4	96
->> +#define QUINARY_TDM_TX_4	97
->> +#define QUINARY_TDM_RX_5	98
->> +#define QUINARY_TDM_TX_5	99
->> +#define QUINARY_TDM_RX_6	100
->> +#define QUINARY_TDM_TX_6	101
->> +#define QUINARY_TDM_RX_7	102
->> +#define QUINARY_TDM_TX_7	103
->> +#define DISPLAY_PORT_RX		104
->> +#define WSA_CODEC_DMA_RX_0	105
->> +#define WSA_CODEC_DMA_TX_0	106
->> +#define WSA_CODEC_DMA_RX_1	107
->> +#define WSA_CODEC_DMA_TX_1	108
->> +#define WSA_CODEC_DMA_TX_2	109
->> +#define VA_CODEC_DMA_TX_0	110
->> +#define VA_CODEC_DMA_TX_1	111
->> +#define VA_CODEC_DMA_TX_2	112
->> +#define RX_CODEC_DMA_RX_0	113
->> +#define TX_CODEC_DMA_TX_0	114
->> +#define RX_CODEC_DMA_RX_1	115
->> +#define TX_CODEC_DMA_TX_1	116
->> +#define RX_CODEC_DMA_RX_2	117
->> +#define TX_CODEC_DMA_TX_2	118
->> +#define RX_CODEC_DMA_RX_3	119
->> +#define TX_CODEC_DMA_TX_3	120
->> +#define RX_CODEC_DMA_RX_4	121
->> +#define TX_CODEC_DMA_TX_4	122
->> +#define RX_CODEC_DMA_RX_5	123
->> +#define TX_CODEC_DMA_TX_5	124
->> +#define RX_CODEC_DMA_RX_6	125
->> +#define RX_CODEC_DMA_RX_7	126
->> +
->> +#define LPASS_CLK_ID_PRI_MI2S_IBIT	1
->> +#define LPASS_CLK_ID_PRI_MI2S_EBIT	2
->> +#define LPASS_CLK_ID_SEC_MI2S_IBIT	3
->> +#define LPASS_CLK_ID_SEC_MI2S_EBIT	4
->> +#define LPASS_CLK_ID_TER_MI2S_IBIT	5
->> +#define LPASS_CLK_ID_TER_MI2S_EBIT	6
->> +#define LPASS_CLK_ID_QUAD_MI2S_IBIT	7
->> +#define LPASS_CLK_ID_QUAD_MI2S_EBIT	8
->> +#define LPASS_CLK_ID_SPEAKER_I2S_IBIT	9
->> +#define LPASS_CLK_ID_SPEAKER_I2S_EBIT	10
->> +#define LPASS_CLK_ID_SPEAKER_I2S_OSR	11
->> +#define LPASS_CLK_ID_QUI_MI2S_IBIT	12
->> +#define LPASS_CLK_ID_QUI_MI2S_EBIT	13
->> +#define LPASS_CLK_ID_SEN_MI2S_IBIT	14
->> +#define LPASS_CLK_ID_SEN_MI2S_EBIT	15
->> +#define LPASS_CLK_ID_INT0_MI2S_IBIT	16
->> +#define LPASS_CLK_ID_INT1_MI2S_IBIT	17
->> +#define LPASS_CLK_ID_INT2_MI2S_IBIT	18
->> +#define LPASS_CLK_ID_INT3_MI2S_IBIT	19
->> +#define LPASS_CLK_ID_INT4_MI2S_IBIT	20
->> +#define LPASS_CLK_ID_INT5_MI2S_IBIT	21
->> +#define LPASS_CLK_ID_INT6_MI2S_IBIT	22
->> +#define LPASS_CLK_ID_QUI_MI2S_OSR	23
->> +#define LPASS_CLK_ID_PRI_PCM_IBIT	24
->> +#define LPASS_CLK_ID_PRI_PCM_EBIT	25
->> +#define LPASS_CLK_ID_SEC_PCM_IBIT	26
->> +#define LPASS_CLK_ID_SEC_PCM_EBIT	27
->> +#define LPASS_CLK_ID_TER_PCM_IBIT	28
->> +#define LPASS_CLK_ID_TER_PCM_EBIT	29
->> +#define LPASS_CLK_ID_QUAD_PCM_IBIT	30
->> +#define LPASS_CLK_ID_QUAD_PCM_EBIT	31
->> +#define LPASS_CLK_ID_QUIN_PCM_IBIT	32
->> +#define LPASS_CLK_ID_QUIN_PCM_EBIT	33
->> +#define LPASS_CLK_ID_QUI_PCM_OSR	34
->> +#define LPASS_CLK_ID_PRI_TDM_IBIT	35
->> +#define LPASS_CLK_ID_PRI_TDM_EBIT	36
->> +#define LPASS_CLK_ID_SEC_TDM_IBIT	37
->> +#define LPASS_CLK_ID_SEC_TDM_EBIT	38
->> +#define LPASS_CLK_ID_TER_TDM_IBIT	39
->> +#define LPASS_CLK_ID_TER_TDM_EBIT	40
->> +#define LPASS_CLK_ID_QUAD_TDM_IBIT	41
->> +#define LPASS_CLK_ID_QUAD_TDM_EBIT	42
->> +#define LPASS_CLK_ID_QUIN_TDM_IBIT	43
->> +#define LPASS_CLK_ID_QUIN_TDM_EBIT	44
->> +#define LPASS_CLK_ID_QUIN_TDM_OSR	45
->> +#define LPASS_CLK_ID_MCLK_1		46
->> +#define LPASS_CLK_ID_MCLK_2		47
->> +#define LPASS_CLK_ID_MCLK_3		48
->> +#define LPASS_CLK_ID_MCLK_4		49
->> +#define LPASS_CLK_ID_INTERNAL_DIGITAL_CODEC_CORE	50
->> +#define LPASS_CLK_ID_INT_MCLK_0		51
->> +#define LPASS_CLK_ID_INT_MCLK_1		52
->> +#define LPASS_CLK_ID_MCLK_5		53
->> +#define LPASS_CLK_ID_WSA_CORE_MCLK	54
->> +#define LPASS_CLK_ID_WSA_CORE_NPL_MCLK	55
->> +#define LPASS_CLK_ID_VA_CORE_MCLK	56
->> +#define LPASS_CLK_ID_TX_CORE_MCLK	57
->> +#define LPASS_CLK_ID_TX_CORE_NPL_MCLK	58
->> +#define LPASS_CLK_ID_RX_CORE_MCLK	59
->> +#define LPASS_CLK_ID_RX_CORE_NPL_MCLK	60
->> +#define LPASS_CLK_ID_VA_CORE_2X_MCLK	61
->> +
->> +#define LPASS_HW_AVTIMER_VOTE		101
->> +#define LPASS_HW_MACRO_VOTE		102
->> +#define LPASS_HW_DCODEC_VOTE		103
->> +
->> +#define Q6APM_MAX_CLK_ID			104
->> +
->> +#define LPASS_CLK_ATTRIBUTE_INVALID		0x0
->> +#define LPASS_CLK_ATTRIBUTE_COUPLE_NO		0x1
->> +#define LPASS_CLK_ATTRIBUTE_COUPLE_DIVIDEND	0x2
->> +#define LPASS_CLK_ATTRIBUTE_COUPLE_DIVISOR	0x3
->> +
->> +#endif /* __DT_BINDINGS_Q6_APM_H__ */
+Regards,
+Xiongwei
+>
+> Cheers,
+> Longman
+>
