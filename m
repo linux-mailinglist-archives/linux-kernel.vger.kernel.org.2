@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6ACD3C4A4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38AD63C50B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240284AbhGLGuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:50:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34844 "EHLO mail.kernel.org"
+        id S1347275AbhGLHen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:34:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237949AbhGLGjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:39:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DEE90611C0;
-        Mon, 12 Jul 2021 06:35:55 +0000 (UTC)
+        id S241961AbhGLHGJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:06:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED5476143B;
+        Mon, 12 Jul 2021 07:03:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071756;
-        bh=eTrAhuEnhf1jwS563QR50Re9w5Dovg9QzGL1lL+ozPY=;
+        s=korg; t=1626073400;
+        bh=WPen+QcfEg5rD05vfZEKogtVnBkHoP+LMHTI+oXPI3s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qZZAqq7DTiazJ/UJXQO6vZGCH2lkdq33UxyoLVK6iJ9PeD8LbduKOF1BwYsMHdtCU
-         UvX/8IDZMPgJRkDGQUH+haYJSUwg4hVYhhbuHBLsOSL6Xeh9GxXeIvohITjE6veTUG
-         a605EnPRANIROe+PaoFv7binVN20q3zIG16x4NFw=
+        b=UXwK3Jt3vL/4UsciCC46WDCAkwlpF8nVFDlrtElge/Uqyq7SXcKaToz3zkQ7V9fof
+         Wlx88AUASSMYgxB61NIg7tHDCFQmUSFxm0ncZKCGt1zqh1rYPDCll4ZbtYkODfLLt1
+         PcEcnjkhgxkzhrlBjkR1h94eMeHbOuCcvWHNvY1M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Jan=20Kundr=C3=A1t?= <jan.kundrat@cesnet.cz>,
-        =?UTF-8?q?V=C3=A1clav=20Kubern=C3=A1t?= <kubernat@cesnet.cz>,
-        Guenter Roeck <linux@roeck-us.net>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Aurelien Aptel <aaptel@suse.com>,
+        "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
+        Steve French <stfrench@microsoft.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 153/593] hwmon: (max31790) Fix pwmX_enable attributes
+Subject: [PATCH 5.12 230/700] cifs: improve fallocate emulation
 Date:   Mon, 12 Jul 2021 08:05:13 +0200
-Message-Id: <20210712060859.875041721@linuxfoundation.org>
+Message-Id: <20210712060959.362105911@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,135 +43,189 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Ronnie Sahlberg <lsahlber@redhat.com>
 
-[ Upstream commit 148c847c9e5a54b99850617bf9c143af9a344f92 ]
+[ Upstream commit 966a3cb7c7db786452a87afdc3b48858fc4d4d6b ]
 
-pwmX_enable supports three possible values:
+RHBZ: 1866684
 
-0: Fan control disabled. Duty cycle is fixed to 0%
-1: Fan control enabled, pwm mode. Duty cycle is determined by
-   values written into Target Duty Cycle registers.
-2: Fan control enabled, rpm mode
-   Duty cycle is adjusted such that fan speed matches
-   the values in Target Count registers
+We don't have a real fallocate in the SMB2 protocol so we used to emulate fallocate
+by simply switching the file to become non-sparse. But as that could potantially consume
+a lot more data than we intended to fallocate (large sparse file and fallocating a thin
+slice in the middle) we would only do this IFF the fallocate request was for virtually
+the entire file.
 
-The current code does not do this; instead, it mixes pwm control
-configuration with fan speed monitoring configuration. Worse, it
-reports that pwm control would be disabled (pwmX_enable==0) when
-it is in fact enabled in pwm mode. Part of the problem may be that
-the chip sets the "TACH input enable" bit on its own whenever the
-mode bit is set to RPM mode, but that doesn't mean that "TACH input
-enable" accurately reflects the pwm mode.
+This patch improves this and starts allowing us to fallocate smaller chunks of a file by
+overwriting the region with 0, for the parts that are unallocated.
 
-Fix it up and only handle pwm control with the pwmX_enable attributes.
-In the documentation, clarify that disabling pwm control (pwmX_enable=0)
-sets the pwm duty cycle to 0%. In the code, explain why TACH_INPUT_EN
-is set together with RPM_MODE.
+The method used is to first query the server for FSCTL_QUERY_ALLOCATED_RANGES to find what
+is unallocated in the fallocate range and then to only overwrite-with-zero the unallocated
+ranges to fill in the holes.
 
-While at it, only update the configuration register if the configuration
-has changed, and only update the cached configuration if updating the
-chip configuration was successful.
+As overwriting-with-zero is different from just allocating blocks, and potentially much
+more expensive, we limit this to only allow fallocate ranges up to 1Mb in size.
 
-Cc: Jan Kundrát <jan.kundrat@cesnet.cz>
-Cc: Václav Kubernát <kubernat@cesnet.cz>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Tested-by: Václav Kubernát <kubernat@cesnet.cz>
-Reviewed-by: Jan Kundrát <jan.kundrat@cesnet.cz>
-Link: https://lore.kernel.org/r/20210526154022.3223012-4-linux@roeck-us.net
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Ronnie Sahlberg <lsahlber@redhat.com>
+Acked-by: Aurelien Aptel <aaptel@suse.com>
+Acked-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Documentation/hwmon/max31790.rst |  2 +-
- drivers/hwmon/max31790.c         | 41 ++++++++++++++++++++------------
- 2 files changed, 27 insertions(+), 16 deletions(-)
+ fs/cifs/smb2ops.c | 133 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 133 insertions(+)
 
-diff --git a/Documentation/hwmon/max31790.rst b/Documentation/hwmon/max31790.rst
-index 54ff0f49e28f..7b097c3b9b90 100644
---- a/Documentation/hwmon/max31790.rst
-+++ b/Documentation/hwmon/max31790.rst
-@@ -38,7 +38,7 @@ Sysfs entries
- fan[1-12]_input    RO  fan tachometer speed in RPM
- fan[1-12]_fault    RO  fan experienced fault
- fan[1-6]_target    RW  desired fan speed in RPM
--pwm[1-6]_enable    RW  regulator mode, 0=disabled, 1=manual mode, 2=rpm mode
-+pwm[1-6]_enable    RW  regulator mode, 0=disabled (duty cycle=0%), 1=manual mode, 2=rpm mode
- pwm[1-6]           RW  read: current pwm duty cycle,
-                        write: target pwm duty cycle (0-255)
- ================== === =======================================================
-diff --git a/drivers/hwmon/max31790.c b/drivers/hwmon/max31790.c
-index 8ad7a45bfe68..76aa96f5b984 100644
---- a/drivers/hwmon/max31790.c
-+++ b/drivers/hwmon/max31790.c
-@@ -27,6 +27,7 @@
+diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
+index e9a530da4255..ea5e958fd6b0 100644
+--- a/fs/cifs/smb2ops.c
++++ b/fs/cifs/smb2ops.c
+@@ -3561,6 +3561,119 @@ static long smb3_punch_hole(struct file *file, struct cifs_tcon *tcon,
+ 	return rc;
+ }
  
- /* Fan Config register bits */
- #define MAX31790_FAN_CFG_RPM_MODE	0x80
-+#define MAX31790_FAN_CFG_CTRL_MON	0x10
- #define MAX31790_FAN_CFG_TACH_INPUT_EN	0x08
- #define MAX31790_FAN_CFG_TACH_INPUT	0x01
- 
-@@ -271,12 +272,12 @@ static int max31790_read_pwm(struct device *dev, u32 attr, int channel,
- 		*val = data->pwm[channel] >> 8;
- 		return 0;
- 	case hwmon_pwm_enable:
--		if (fan_config & MAX31790_FAN_CFG_RPM_MODE)
-+		if (fan_config & MAX31790_FAN_CFG_CTRL_MON)
-+			*val = 0;
-+		else if (fan_config & MAX31790_FAN_CFG_RPM_MODE)
- 			*val = 2;
--		else if (fan_config & MAX31790_FAN_CFG_TACH_INPUT_EN)
--			*val = 1;
- 		else
--			*val = 0;
-+			*val = 1;
- 		return 0;
- 	default:
- 		return -EOPNOTSUPP;
-@@ -307,23 +308,33 @@ static int max31790_write_pwm(struct device *dev, u32 attr, int channel,
- 	case hwmon_pwm_enable:
- 		fan_config = data->fan_config[channel];
- 		if (val == 0) {
--			fan_config &= ~(MAX31790_FAN_CFG_TACH_INPUT_EN |
--					MAX31790_FAN_CFG_RPM_MODE);
-+			fan_config |= MAX31790_FAN_CFG_CTRL_MON;
-+			/*
-+			 * Disable RPM mode; otherwise disabling fan speed
-+			 * monitoring is not possible.
-+			 */
-+			fan_config &= ~MAX31790_FAN_CFG_RPM_MODE;
- 		} else if (val == 1) {
--			fan_config = (fan_config |
--				      MAX31790_FAN_CFG_TACH_INPUT_EN) &
--				     ~MAX31790_FAN_CFG_RPM_MODE;
-+			fan_config &= ~(MAX31790_FAN_CFG_CTRL_MON | MAX31790_FAN_CFG_RPM_MODE);
- 		} else if (val == 2) {
--			fan_config |= MAX31790_FAN_CFG_TACH_INPUT_EN |
--				      MAX31790_FAN_CFG_RPM_MODE;
-+			fan_config &= ~MAX31790_FAN_CFG_CTRL_MON;
-+			/*
-+			 * The chip sets MAX31790_FAN_CFG_TACH_INPUT_EN on its
-+			 * own if MAX31790_FAN_CFG_RPM_MODE is set.
-+			 * Do it here as well to reflect the actual register
-+			 * value in the cache.
-+			 */
-+			fan_config |= (MAX31790_FAN_CFG_RPM_MODE | MAX31790_FAN_CFG_TACH_INPUT_EN);
- 		} else {
- 			err = -EINVAL;
- 			break;
- 		}
--		data->fan_config[channel] = fan_config;
--		err = i2c_smbus_write_byte_data(client,
--					MAX31790_REG_FAN_CONFIG(channel),
--					fan_config);
-+		if (fan_config != data->fan_config[channel]) {
-+			err = i2c_smbus_write_byte_data(client, MAX31790_REG_FAN_CONFIG(channel),
-+							fan_config);
-+			if (!err)
-+				data->fan_config[channel] = fan_config;
++static int smb3_simple_fallocate_write_range(unsigned int xid,
++					     struct cifs_tcon *tcon,
++					     struct cifsFileInfo *cfile,
++					     loff_t off, loff_t len,
++					     char *buf)
++{
++	struct cifs_io_parms io_parms = {0};
++	int nbytes;
++	struct kvec iov[2];
++
++	io_parms.netfid = cfile->fid.netfid;
++	io_parms.pid = current->tgid;
++	io_parms.tcon = tcon;
++	io_parms.persistent_fid = cfile->fid.persistent_fid;
++	io_parms.volatile_fid = cfile->fid.volatile_fid;
++	io_parms.offset = off;
++	io_parms.length = len;
++
++	/* iov[0] is reserved for smb header */
++	iov[1].iov_base = buf;
++	iov[1].iov_len = io_parms.length;
++	return SMB2_write(xid, &io_parms, &nbytes, iov, 1);
++}
++
++static int smb3_simple_fallocate_range(unsigned int xid,
++				       struct cifs_tcon *tcon,
++				       struct cifsFileInfo *cfile,
++				       loff_t off, loff_t len)
++{
++	struct file_allocated_range_buffer in_data, *out_data = NULL, *tmp_data;
++	u32 out_data_len;
++	char *buf = NULL;
++	loff_t l;
++	int rc;
++
++	in_data.file_offset = cpu_to_le64(off);
++	in_data.length = cpu_to_le64(len);
++	rc = SMB2_ioctl(xid, tcon, cfile->fid.persistent_fid,
++			cfile->fid.volatile_fid,
++			FSCTL_QUERY_ALLOCATED_RANGES, true,
++			(char *)&in_data, sizeof(in_data),
++			1024 * sizeof(struct file_allocated_range_buffer),
++			(char **)&out_data, &out_data_len);
++	if (rc)
++		goto out;
++	/*
++	 * It is already all allocated
++	 */
++	if (out_data_len == 0)
++		goto out;
++
++	buf = kzalloc(1024 * 1024, GFP_KERNEL);
++	if (buf == NULL) {
++		rc = -ENOMEM;
++		goto out;
++	}
++
++	tmp_data = out_data;
++	while (len) {
++		/*
++		 * The rest of the region is unmapped so write it all.
++		 */
++		if (out_data_len == 0) {
++			rc = smb3_simple_fallocate_write_range(xid, tcon,
++					       cfile, off, len, buf);
++			goto out;
 +		}
- 		break;
- 	default:
- 		err = -EOPNOTSUPP;
++
++		if (out_data_len < sizeof(struct file_allocated_range_buffer)) {
++			rc = -EINVAL;
++			goto out;
++		}
++
++		if (off < le64_to_cpu(tmp_data->file_offset)) {
++			/*
++			 * We are at a hole. Write until the end of the region
++			 * or until the next allocated data,
++			 * whichever comes next.
++			 */
++			l = le64_to_cpu(tmp_data->file_offset) - off;
++			if (len < l)
++				l = len;
++			rc = smb3_simple_fallocate_write_range(xid, tcon,
++					       cfile, off, l, buf);
++			if (rc)
++				goto out;
++			off = off + l;
++			len = len - l;
++			if (len == 0)
++				goto out;
++		}
++		/*
++		 * We are at a section of allocated data, just skip forward
++		 * until the end of the data or the end of the region
++		 * we are supposed to fallocate, whichever comes first.
++		 */
++		l = le64_to_cpu(tmp_data->length);
++		if (len < l)
++			l = len;
++		off += l;
++		len -= l;
++
++		tmp_data = &tmp_data[1];
++		out_data_len -= sizeof(struct file_allocated_range_buffer);
++	}
++
++ out:
++	kfree(out_data);
++	kfree(buf);
++	return rc;
++}
++
++
+ static long smb3_simple_falloc(struct file *file, struct cifs_tcon *tcon,
+ 			    loff_t off, loff_t len, bool keep_size)
+ {
+@@ -3621,6 +3734,26 @@ static long smb3_simple_falloc(struct file *file, struct cifs_tcon *tcon,
+ 	}
+ 
+ 	if ((keep_size == true) || (i_size_read(inode) >= off + len)) {
++		/*
++		 * At this point, we are trying to fallocate an internal
++		 * regions of a sparse file. Since smb2 does not have a
++		 * fallocate command we have two otions on how to emulate this.
++		 * We can either turn the entire file to become non-sparse
++		 * which we only do if the fallocate is for virtually
++		 * the whole file,  or we can overwrite the region with zeroes
++		 * using SMB2_write, which could be prohibitevly expensive
++		 * if len is large.
++		 */
++		/*
++		 * We are only trying to fallocate a small region so
++		 * just write it with zero.
++		 */
++		if (len <= 1024 * 1024) {
++			rc = smb3_simple_fallocate_range(xid, tcon, cfile,
++							 off, len);
++			goto out;
++		}
++
+ 		/*
+ 		 * Check if falloc starts within first few pages of file
+ 		 * and ends within a few pages of the end of file to
 -- 
 2.30.2
 
