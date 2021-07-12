@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E3DC3C565C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C95AD3C4EBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357475AbhGLIRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:17:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56948 "EHLO mail.kernel.org"
+        id S241125AbhGLHVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:21:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245390AbhGLHdi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:33:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 169D661436;
-        Mon, 12 Jul 2021 07:30:49 +0000 (UTC)
+        id S235787AbhGLGz4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:55:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EC7961263;
+        Mon, 12 Jul 2021 06:53:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075050;
-        bh=/2BtdF8/XA6MOb8mLNBXedhNMM9rq+4hL5hTGmF9pFI=;
+        s=korg; t=1626072788;
+        bh=xET+Qh1BEwM+kOZpMUJLhJanoXL7XBuBzswcNMI63Hg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AVUuOJ9ElHWIPvTr6/jTXBRePK34NTWtnipLzi8Yf9o4PaLYRsEEcsN96Bjbnxe/O
-         7Qs1hDx77b6XQLJMO4lOgb18VlAh/A9gd39CP3Z/qknmEi7nCqBoA1qO/AJCt1LgyQ
-         GwgeRmI1es+GCW9Q72c+C4Aeqg59JKK9+Id7KW+4=
+        b=UCdcT2eFjvmym6g6P71Fi2XxSmHbuOJJI4nqq6TWEi2YpQXsmqGvleM7dMO5rQ589
+         MDwDNdg/VxcLwUlH9iD6z3gvS8lZbIUHcwGfU6bjBmYKN4HL02eX+yHmk6rHvLImrM
+         m59irJ1+66O+lY4mMl3eS+5QeUplemYIjTjWUV3k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.13 080/800] KVM: x86: Force all MMUs to reinitialize if guest CPUID is modified
-Date:   Mon, 12 Jul 2021 08:01:43 +0200
-Message-Id: <20210712060924.396778441@linuxfoundation.org>
+        stable@vger.kernel.org, Linyu Yuan <linyyuan@codeaurora.com>
+Subject: [PATCH 5.12 021/700] usb: gadget: eem: fix echo command packet response issue
+Date:   Mon, 12 Jul 2021 08:01:44 +0200
+Message-Id: <20210712060927.716703695@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,106 +38,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Linyu Yuan <linyyuan@codeaurora.com>
 
-commit 49c6f8756cdffeb9af1fbcb86bacacced26465d7 upstream.
+commit 4249d6fbc10fd997abdf8a1ea49c0389a0edf706 upstream.
 
-Invalidate all MMUs' roles after a CPUID update to force reinitizliation
-of the MMU context/helpers.  Despite the efforts of commit de3ccd26fafc
-("KVM: MMU: record maximum physical address width in kvm_mmu_extended_role"),
-there are still a handful of CPUID-based properties that affect MMU
-behavior but are not incorporated into mmu_role.  E.g. 1gb hugepage
-support, AMD vs. Intel handling of bit 8, and SEV's C-Bit location all
-factor into the guest's reserved PTE bits.
+when receive eem echo command, it will send a response,
+but queue this response to the usb request which allocate
+from gadget device endpoint zero,
+and transmit the request to IN endpoint of eem interface.
 
-The obvious alternative would be to add all such properties to mmu_role,
-but doing so provides no benefit over simply forcing a reinitialization
-on every CPUID update, as setting guest CPUID is a rare operation.
+on dwc3 gadget, it will trigger following warning in function
+__dwc3_gadget_ep_queue(),
 
-Note, reinitializing all MMUs after a CPUID update does not fix all of
-KVM's woes.  Specifically, kvm_mmu_page_role doesn't track the CPUID
-properties, which means that a vCPU can reuse shadow pages that should
-not exist for the new vCPU model, e.g. that map GPAs that are now illegal
-(due to MAXPHYADDR changes) or that set bits that are now reserved
-(PAGE_SIZE for 1gb pages), etc...
+	if (WARN(req->dep != dep, "request %pK belongs to '%s'\n",
+				&req->request, req->dep->name))
+		return -EINVAL;
 
-Tracking the relevant CPUID properties in kvm_mmu_page_role would address
-the majority of problems, but fully tracking that much state in the
-shadow page role comes with an unpalatable cost as it would require a
-non-trivial increase in KVM's memory footprint.  The GBPAGES case is even
-worse, as neither Intel nor AMD provides a way to disable 1gb hugepage
-support in the hardware page walker, i.e. it's a virtualization hole that
-can't be closed when using TDP.
+fix it by allocating a usb request from IN endpoint of eem interface,
+and transmit the usb request to same IN endpoint of eem interface.
 
-In other words, resetting the MMU after a CPUID update is largely a
-superficial fix.  But, it will allow reverting the tracking of MAXPHYADDR
-in the mmu_role, and that case in particular needs to mostly work because
-KVM's shadow_root_level depends on guest MAXPHYADDR when 5-level paging
-is supported.  For cases where KVM botches guest behavior, the damage is
-limited to that guest.  But for the shadow_root_level, a misconfigured
-MMU can cause KVM to incorrectly access memory, e.g. due to walking off
-the end of its shadow page tables.
-
-Fixes: 7dcd57552008 ("x86/kvm/mmu: check if tdp/shadow MMU reconfiguration is needed")
-Cc: Yu Zhang <yu.c.zhang@linux.intel.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210622175739.3610207-7-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Linyu Yuan <linyyuan@codeaurora.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210616115142.34075-1-linyyuan@codeaurora.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/include/asm/kvm_host.h |    1 +
- arch/x86/kvm/cpuid.c            |    6 +++---
- arch/x86/kvm/mmu/mmu.c          |   12 ++++++++++++
- 3 files changed, 16 insertions(+), 3 deletions(-)
+ drivers/usb/gadget/function/f_eem.c |   43 ++++++++++++++++++++++++++++++++----
+ 1 file changed, 39 insertions(+), 4 deletions(-)
 
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1464,6 +1464,7 @@ int kvm_mmu_create(struct kvm_vcpu *vcpu
- void kvm_mmu_init_vm(struct kvm *kvm);
- void kvm_mmu_uninit_vm(struct kvm *kvm);
+--- a/drivers/usb/gadget/function/f_eem.c
++++ b/drivers/usb/gadget/function/f_eem.c
+@@ -30,6 +30,11 @@ struct f_eem {
+ 	u8				ctrl_id;
+ };
  
-+void kvm_mmu_after_set_cpuid(struct kvm_vcpu *vcpu);
- void kvm_mmu_reset_context(struct kvm_vcpu *vcpu);
- void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
- 				      struct kvm_memory_slot *memslot,
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -202,10 +202,10 @@ static void kvm_vcpu_after_set_cpuid(str
- 	static_call(kvm_x86_vcpu_after_set_cpuid)(vcpu);
- 
- 	/*
--	 * Except for the MMU, which needs to be reset after any vendor
--	 * specific adjustments to the reserved GPA bits.
-+	 * Except for the MMU, which needs to do its thing any vendor specific
-+	 * adjustments to the reserved GPA bits.
- 	 */
--	kvm_mmu_reset_context(vcpu);
-+	kvm_mmu_after_set_cpuid(vcpu);
- }
- 
- static int is_efer_nx(void)
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -4859,6 +4859,18 @@ kvm_mmu_calc_root_page_role(struct kvm_v
- 	return role.base;
- }
- 
-+void kvm_mmu_after_set_cpuid(struct kvm_vcpu *vcpu)
-+{
-+	/*
-+	 * Invalidate all MMU roles to force them to reinitialize as CPUID
-+	 * information is factored into reserved bit calculations.
-+	 */
-+	vcpu->arch.root_mmu.mmu_role.ext.valid = 0;
-+	vcpu->arch.guest_mmu.mmu_role.ext.valid = 0;
-+	vcpu->arch.nested_mmu.mmu_role.ext.valid = 0;
-+	kvm_mmu_reset_context(vcpu);
-+}
++struct in_context {
++	struct sk_buff	*skb;
++	struct usb_ep	*ep;
++};
 +
- void kvm_mmu_reset_context(struct kvm_vcpu *vcpu)
+ static inline struct f_eem *func_to_eem(struct usb_function *f)
  {
- 	kvm_mmu_unload(vcpu);
+ 	return container_of(f, struct f_eem, port.func);
+@@ -320,9 +325,12 @@ fail:
+ 
+ static void eem_cmd_complete(struct usb_ep *ep, struct usb_request *req)
+ {
+-	struct sk_buff *skb = (struct sk_buff *)req->context;
++	struct in_context *ctx = req->context;
+ 
+-	dev_kfree_skb_any(skb);
++	dev_kfree_skb_any(ctx->skb);
++	kfree(req->buf);
++	usb_ep_free_request(ctx->ep, req);
++	kfree(ctx);
+ }
+ 
+ /*
+@@ -410,7 +418,9 @@ static int eem_unwrap(struct gether *por
+ 		 * b15:		bmType (0 == data, 1 == command)
+ 		 */
+ 		if (header & BIT(15)) {
+-			struct usb_request	*req = cdev->req;
++			struct usb_request	*req;
++			struct in_context	*ctx;
++			struct usb_ep		*ep;
+ 			u16			bmEEMCmd;
+ 
+ 			/* EEM command packet format:
+@@ -439,11 +449,36 @@ static int eem_unwrap(struct gether *por
+ 				skb_trim(skb2, len);
+ 				put_unaligned_le16(BIT(15) | BIT(11) | len,
+ 							skb_push(skb2, 2));
++
++				ep = port->in_ep;
++				req = usb_ep_alloc_request(ep, GFP_ATOMIC);
++				if (!req) {
++					dev_kfree_skb_any(skb2);
++					goto next;
++				}
++
++				req->buf = kmalloc(skb2->len, GFP_KERNEL);
++				if (!req->buf) {
++					usb_ep_free_request(ep, req);
++					dev_kfree_skb_any(skb2);
++					goto next;
++				}
++
++				ctx = kmalloc(sizeof(*ctx), GFP_KERNEL);
++				if (!ctx) {
++					kfree(req->buf);
++					usb_ep_free_request(ep, req);
++					dev_kfree_skb_any(skb2);
++					goto next;
++				}
++				ctx->skb = skb2;
++				ctx->ep = ep;
++
+ 				skb_copy_bits(skb2, 0, req->buf, skb2->len);
+ 				req->length = skb2->len;
+ 				req->complete = eem_cmd_complete;
+ 				req->zero = 1;
+-				req->context = skb2;
++				req->context = ctx;
+ 				if (usb_ep_queue(port->in_ep, req, GFP_ATOMIC))
+ 					DBG(cdev, "echo response queue fail\n");
+ 				break;
 
 
