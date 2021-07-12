@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E37503C501E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E98343C4962
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346860AbhGLHbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:31:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38624 "EHLO mail.kernel.org"
+        id S238922AbhGLGo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:44:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239988AbhGLHDb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:03:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 223B561185;
-        Mon, 12 Jul 2021 07:00:42 +0000 (UTC)
+        id S237852AbhGLGez (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:34:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01E316112D;
+        Mon, 12 Jul 2021 06:31:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073243;
-        bh=zFz17kTz0q/RoXuxwTOaqF4XgovTxUeA4x4QhxkyBZQ=;
+        s=korg; t=1626071508;
+        bh=bzbaR6zHyOg6xGHCETQ8JeXmpT3Bz2gN55FB7i7Rvsg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HVbbmdJozsb+bLXom1fttQ5vliyiZ7wJI1JJk9ZOocXqRe4kJfeRl3adFtSxuEGS6
-         USuChpX9KAMV/a/qneUTVp22scx8ZN00ysVewgbN3PhJ3SsVnDwDsYBxZqguvMUu4z
-         0AtHJTpAABKuJSsnbgiXpsg0LuxSa+vSzfxmSEkQ=
+        b=PqVxmR4SVx6/KHa+6U1YqF2Cplkj4Fuc1BoxDD/LOxBhKcEUKGVmfdiyJm8MFk2fu
+         SbiXwjPJeSrPfVw574ZHQ0yegqv99yVKTLiITmZ84QkeKVieRl7H3OjvpofepRdHqe
+         AB0LfCNwwKifpG6iC8WCZ3P5OR4Mj6kmstiyp5X4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Steve Longerbeam <slongerbeam@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Tim Harvey <tharvey@gateworks.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Lukasz Luba <lukasz.luba@arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 176/700] media: imx-csi: Skip first few frames from a BT.656 source
+Subject: [PATCH 5.10 099/593] thermal/cpufreq_cooling: Update offline CPUs per-cpu thermal_pressure
 Date:   Mon, 12 Jul 2021 08:04:19 +0200
-Message-Id: <20210712060951.264770648@linuxfoundation.org>
+Message-Id: <20210712060854.110003059@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,61 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steve Longerbeam <slongerbeam@gmail.com>
+From: Lukasz Luba <lukasz.luba@arm.com>
 
-[ Upstream commit e198be37e52551bb863d07d2edc535d0932a3c4f ]
+[ Upstream commit 2ad8ccc17d1e4270cf65a3f2a07a7534aa23e3fb ]
 
-Some BT.656 sensors (e.g. ADV718x) transmit frames with unstable BT.656
-sync codes after initial power on. This confuses the imx CSI,resulting
-in vertical and/or horizontal sync issues. Skip the first 20 frames
-to avoid the unstable sync codes.
+The thermal pressure signal gives information to the scheduler about
+reduced CPU capacity due to thermal. It is based on a value stored in
+a per-cpu 'thermal_pressure' variable. The online CPUs will get the
+new value there, while the offline won't. Unfortunately, when the CPU
+is back online, the value read from per-cpu variable might be wrong
+(stale data).  This might affect the scheduler decisions, since it
+sees the CPU capacity differently than what is actually available.
 
-[fabio: fixed checkpatch warning and increased the frame skipping to 20]
+Fix it by making sure that all online+offline CPUs would get the
+proper value in their per-cpu variable when thermal framework sets
+capping.
 
-Signed-off-by: Steve Longerbeam <slongerbeam@gmail.com>
-Signed-off-by: Fabio Estevam <festevam@gmail.com>
-Reviewed-by: Tim Harvey <tharvey@gateworks.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: f12e4f66ab6a3 ("thermal/cpu-cooling: Update thermal pressure in case of a maximum frequency capping")
+Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Link: https://lore.kernel.org/r/20210614191030.22241-1-lukasz.luba@arm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/media/imx/imx-media-csi.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ drivers/thermal/cpufreq_cooling.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/media/imx/imx-media-csi.c b/drivers/staging/media/imx/imx-media-csi.c
-index ef5add079774..7f4b967646d9 100644
---- a/drivers/staging/media/imx/imx-media-csi.c
-+++ b/drivers/staging/media/imx/imx-media-csi.c
-@@ -753,9 +753,10 @@ static int csi_setup(struct csi_priv *priv)
- 
- static int csi_start(struct csi_priv *priv)
- {
--	struct v4l2_fract *output_fi;
-+	struct v4l2_fract *input_fi, *output_fi;
- 	int ret;
- 
-+	input_fi = &priv->frame_interval[CSI_SINK_PAD];
- 	output_fi = &priv->frame_interval[priv->active_output_pad];
- 
- 	/* start upstream */
-@@ -764,6 +765,17 @@ static int csi_start(struct csi_priv *priv)
- 	if (ret)
- 		return ret;
- 
-+	/* Skip first few frames from a BT.656 source */
-+	if (priv->upstream_ep.bus_type == V4L2_MBUS_BT656) {
-+		u32 delay_usec, bad_frames = 20;
-+
-+		delay_usec = DIV_ROUND_UP_ULL((u64)USEC_PER_SEC *
-+			input_fi->numerator * bad_frames,
-+			input_fi->denominator);
-+
-+		usleep_range(delay_usec, delay_usec + 1000);
-+	}
-+
- 	if (priv->dest == IPU_CSI_DEST_IDMAC) {
- 		ret = csi_idmac_start(priv);
- 		if (ret)
+diff --git a/drivers/thermal/cpufreq_cooling.c b/drivers/thermal/cpufreq_cooling.c
+index 3f6a69ccc173..6e1d6a31ee4f 100644
+--- a/drivers/thermal/cpufreq_cooling.c
++++ b/drivers/thermal/cpufreq_cooling.c
+@@ -443,7 +443,7 @@ static int cpufreq_set_cur_state(struct thermal_cooling_device *cdev,
+ 	ret = freq_qos_update_request(&cpufreq_cdev->qos_req, frequency);
+ 	if (ret >= 0) {
+ 		cpufreq_cdev->cpufreq_state = state;
+-		cpus = cpufreq_cdev->policy->cpus;
++		cpus = cpufreq_cdev->policy->related_cpus;
+ 		max_capacity = arch_scale_cpu_capacity(cpumask_first(cpus));
+ 		capacity = frequency * max_capacity;
+ 		capacity /= cpufreq_cdev->policy->cpuinfo.max_freq;
 -- 
 2.30.2
 
