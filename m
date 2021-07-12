@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D808A3C589B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A8263C4EC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379554AbhGLIuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:50:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44444 "EHLO mail.kernel.org"
+        id S1344877AbhGLHVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:21:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350779AbhGLHyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:54:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2FD0611AF;
-        Mon, 12 Jul 2021 07:51:16 +0000 (UTC)
+        id S237223AbhGLGtH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:49:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A061261158;
+        Mon, 12 Jul 2021 06:44:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076277;
-        bh=SqgqjwXJJX6J2I5vegfmJ0u8E68kgN5L3j4QWGbwvZY=;
+        s=korg; t=1626072295;
+        bh=xZxb+JLYWPTPq9mxT4Q+78VR5QNQlMOF73PpEPQe5Zw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OXiEKrUMDQvJka6jCYtZgtSt+sUxpem0QmBoxFb6U+W+/KNxu79ziuQWd1rtfTDwT
-         MA+FiY0NiCqW43gWTNxizJFawI/9TVbDxGbhjkyLqot1KD9Y0NmB4ELx6C3TrdzhYv
-         DZLjCb4ftallVgtcXBwLliKyvfEYiX6+JwbEALLc=
+        b=EPksAAD0rsUnJNNljZsy8RgHizyrGA38KVFJ5xhXEEUTcx+3389XNBbQ09J3HvcTx
+         /Meg+qfu30LycwAaYFMMXYGUkvs2KHetARujf9ces04E4KrU5q8xpC7TrOa8o/wy+O
+         sCS7NFutahjTHJf7c33N6A7lvpT+Qp7e9bRmqxFg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Martin Loviska <mloviska@suse.com>,
-        Gary Lin <glin@suse.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitrii Banshchikov <me@ubique.spb.ru>,
+        stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 575/800] bpfilter: Specify the log level for the kmsg message
+Subject: [PATCH 5.10 438/593] serial: fsl_lpuart: remove RTSCTS handling from get_mctrl()
 Date:   Mon, 12 Jul 2021 08:09:58 +0200
-Message-Id: <20210712061028.544350514@linuxfoundation.org>
+Message-Id: <20210712060936.920774316@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,43 +39,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gary Lin <glin@suse.com>
+From: Michael Walle <michael@walle.cc>
 
-[ Upstream commit a196fa78a26571359740f701cf30d774eb8a72cb ]
+[ Upstream commit e60c2991f18bf221fa9908ff10cb24eaedaa9bae ]
 
-Per the kmsg document [0], if we don't specify the log level with a
-prefix "<N>" in the message string, the default log level will be
-applied to the message. Since the default level could be warning(4),
-this would make the log utility such as journalctl treat the message,
-"Started bpfilter", as a warning. To avoid confusion, this commit
-adds the prefix "<5>" to make the message always a notice.
+The wrong code in set_mctrl() was already removed in commit 2b30efe2e88a
+("tty: serial: lpuart: Remove unnecessary code from set_mctrl"), but the
+code in get_mctrl() wasn't removed. It will not return the state of the
+RTS or CTS line but whether automatic flow control is enabled, which is
+wrong for the get_mctrl(). Thus remove it.
 
-  [0] https://www.kernel.org/doc/Documentation/ABI/testing/dev-kmsg
-
-Fixes: 36c4357c63f3 ("net: bpfilter: print umh messages to /dev/kmsg")
-Reported-by: Martin Loviska <mloviska@suse.com>
-Signed-off-by: Gary Lin <glin@suse.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Dmitrii Banshchikov <me@ubique.spb.ru>
-Link: https://lore.kernel.org/bpf/20210623040918.8683-1-glin@suse.com
+Fixes: 2b30efe2e88a ("tty: serial: lpuart: Remove unnecessary code from set_mctrl")
+Signed-off-by: Michael Walle <michael@walle.cc>
+Link: https://lore.kernel.org/r/20210512141255.18277-7-michael@walle.cc
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bpfilter/main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/serial/fsl_lpuart.c | 12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
 
-diff --git a/net/bpfilter/main.c b/net/bpfilter/main.c
-index 05e1cfc1e5cd..291a92546246 100644
---- a/net/bpfilter/main.c
-+++ b/net/bpfilter/main.c
-@@ -57,7 +57,7 @@ int main(void)
+diff --git a/drivers/tty/serial/fsl_lpuart.c b/drivers/tty/serial/fsl_lpuart.c
+index 6b8e638c2389..de5ee4aad9f3 100644
+--- a/drivers/tty/serial/fsl_lpuart.c
++++ b/drivers/tty/serial/fsl_lpuart.c
+@@ -1408,17 +1408,7 @@ static unsigned int lpuart_get_mctrl(struct uart_port *port)
+ 
+ static unsigned int lpuart32_get_mctrl(struct uart_port *port)
  {
- 	debug_f = fopen("/dev/kmsg", "w");
- 	setvbuf(debug_f, 0, _IOLBF, 0);
--	fprintf(debug_f, "Started bpfilter\n");
-+	fprintf(debug_f, "<5>Started bpfilter\n");
- 	loop();
- 	fclose(debug_f);
- 	return 0;
+-	unsigned int temp = 0;
+-	unsigned long reg;
+-
+-	reg = lpuart32_read(port, UARTMODIR);
+-	if (reg & UARTMODIR_TXCTSE)
+-		temp |= TIOCM_CTS;
+-
+-	if (reg & UARTMODIR_RXRTSE)
+-		temp |= TIOCM_RTS;
+-
+-	return temp;
++	return 0;
+ }
+ 
+ static void lpuart_set_mctrl(struct uart_port *port, unsigned int mctrl)
 -- 
 2.30.2
 
