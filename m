@@ -2,170 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 626833C595A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EE3B3C5958
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382960AbhGLJCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:02:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353287AbhGLIBs (ORCPT
+        id S1382885AbhGLJC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:02:28 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:11257 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352915AbhGLIAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:01:48 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB570C0610E0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 00:53:07 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id 62so17447729pgf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 00:53:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=8H0yUJOEvi3zZTuxDoA57QDVjTfFiJnGcoqqzbwxmVs=;
-        b=ZG5p7Tqp7gaCXtfqcGueAgC03BaZ6tkCjgmLL+HntOiwhJVqLV6P6FH1PU6ijigIwa
-         2D4aHrU2WxmK0t/cVP5bhnfA6Hkfog08BhnyIsOcgCOM9FnYRcvnd7v6hZUq3SbkC8p8
-         drICwrUijHqS3WKlo2GtM6VUvreUSiSm45XYaSrDodqEoAdcJwkF91hPc2NmPEe2cBy8
-         Ln6qOoZO1+4J3z+jn4vMSOYSxCAI7XrZrZj0PRJtLPs4Ww9EUDq+huGj459Y7BO1sr9d
-         e2PNoPqExJBslLp/TZZ8xwXSDQ/72n1gP1FAu2OXrZICejo4aQ5No5TQFgZsULmFensl
-         vafw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8H0yUJOEvi3zZTuxDoA57QDVjTfFiJnGcoqqzbwxmVs=;
-        b=F4UVE5AaK4TPejvIz062PitxRZALdyQj35P4E4rDr5BGLnUK9k4aGjU1XOJwIw3rdc
-         eY/RwYQz+SBXoRa/l4XUpJLVygwlUJm/r5VtluuEP2ud5x7PMbQDB2uhD7C0fT8iW3D4
-         gmFmnO3d3ROtXb2o5blVRZkvdd8luDqTfe/EXZJGnY4y5M+z578xTOvROdztNkdcLE8E
-         0EENpefhOj9L66ve6zTehibsql73Su5NkKN1pQY/vgNwyF+FZSTZcPYAs/PSgmRyIoL1
-         /06Er+W4h6SVPtvkR2i/AhMcK/WNY1OKAemoYIOEFnVYyj6sBHBvnKN3KvakoLkiJIpD
-         zUng==
-X-Gm-Message-State: AOAM532WzE24ocJYHp+ztZT8p/svg2A0sV8939b7a08Dg5+OAB+VGHlI
-        BiylOvhzkbUzZ1hkB2cwMGci
-X-Google-Smtp-Source: ABdhPJwSTnl9VFCmFcSRDus9OJnYbw708x25bRrEGojoECLrgUODo4vjpCMqB2mk+hCd78dAXbA+kw==
-X-Received: by 2002:a62:1d86:0:b029:32a:311a:9595 with SMTP id d128-20020a621d860000b029032a311a9595mr10855485pfd.74.1626076387347;
-        Mon, 12 Jul 2021 00:53:07 -0700 (PDT)
-Received: from workstation ([120.138.12.18])
-        by smtp.gmail.com with ESMTPSA id z3sm16409753pgl.77.2021.07.12.00.53.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 12 Jul 2021 00:53:07 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 13:23:02 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        devicetree@vger.kernel.org, PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        hemantk@codeaurora.org,
-        Siddartha Mohanadoss <smohanad@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sriharsha Allenki <sallenki@codeaurora.org>,
-        skananth@codeaurora.org, vpernami@codeaurora.org,
-        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-Subject: Re: [PATCH v5 0/3] Add Qualcomm PCIe Endpoint driver support
-Message-ID: <20210712075302.GA8113@workstation>
-References: <20210630034653.10260-1-manivannan.sadhasivam@linaro.org>
- <CAL_JsqLHp3kBc1VtGVRxVr_k69GqSC_JX88jo3stdM4W9Qq6AQ@mail.gmail.com>
+        Mon, 12 Jul 2021 04:00:45 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GNbZg4LxNz1CJ01;
+        Mon, 12 Jul 2021 15:52:11 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 12 Jul 2021 15:57:46 +0800
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Mon, 12 Jul
+ 2021 15:57:46 +0800
+Subject: Re: [PATCH rfc v2 4/5] page_pool: support page frag API for page pool
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+CC:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Marcin Wojtas <mw@semihalf.com>, <linuxarm@openeuler.org>,
+        <yisen.zhuang@huawei.com>, "Salil Mehta" <salil.mehta@huawei.com>,
+        <thomas.petazzoni@bootlin.com>, <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "John Fastabend" <john.fastabend@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Will Deacon" <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Vlastimil Babka" <vbabka@suse.cz>, <fenghua.yu@intel.com>,
+        <guro@fb.com>, Peter Xu <peterx@redhat.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "Alexander Lobakin" <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>, <wenxu@ucloud.cn>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Kevin Hao <haokexin@gmail.com>, <nogikh@google.com>,
+        Marco Elver <elver@google.com>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+References: <1625903002-31619-1-git-send-email-linyunsheng@huawei.com>
+ <1625903002-31619-5-git-send-email-linyunsheng@huawei.com>
+ <CAKgT0UeDf1+-CjzsCo0Chtd2kn_mFV7=my1ygeKMBHBSdjrAHQ@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <2d31020f-2b94-e4ad-1100-378778424b12@huawei.com>
+Date:   Mon, 12 Jul 2021 15:57:45 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqLHp3kBc1VtGVRxVr_k69GqSC_JX88jo3stdM4W9Qq6AQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAKgT0UeDf1+-CjzsCo0Chtd2kn_mFV7=my1ygeKMBHBSdjrAHQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme720-chm.china.huawei.com (10.1.199.116) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 01, 2021 at 09:25:01AM -0600, Rob Herring wrote:
-> On Tue, Jun 29, 2021 at 9:47 PM Manivannan Sadhasivam
-> <manivannan.sadhasivam@linaro.org> wrote:
-> >
-> > Hello,
-> >
-> > This series adds support for Qualcomm PCIe Endpoint controller found
-> > in platforms like SDX55. The Endpoint controller is based on the designware
-> > core with additional Qualcomm wrappers around the core.
-> >
-> > The driver is added separately unlike other Designware based drivers that
-> > combine RC and EP in a single driver. This is done to avoid complexity and
-> > to maintain this driver autonomously.
-> >
-> > The driver has been validated with an out of tree MHI function driver on
-> > SDX55 based Telit FN980 EVB connected to x86 host machine over PCIe.
-> >
-> > Thanks,
-> > Mani
-> >
-> > Changes in v5:
-> >
-> > * Removed the DBI register settings that are not needed
-> > * Used the standard definitions available in pci_regs.h
-> > * Added defines for all the register fields
-> > * Removed the left over code from previous iteration
-> >
-> > Changes in v4:
-> >
-> > * Removed the active_config settings needed for IPA integration
-> > * Switched to writel for couple of relaxed versions that sneaked in
+On 2021/7/11 1:43, Alexander Duyck wrote:
+> On Sat, Jul 10, 2021 at 12:44 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>
+>> Currently each desc use a whole page to do ping-pong page
+>> reusing in most driver. As the page pool has support page
+>> recycling based on elevated refcnt, it makes sense to add
+>> a page frag API in page pool to split a page to different
+>> frag to serve multi descriptions.
+>>
+>> This means a huge memory saving for kernel with page size of
+>> 64K, as a page can be used by 32 descriptions with 2k buffer
+>> size, comparing to each desc using one page currently.
+>>
+>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+>> ---
+>>  include/net/page_pool.h | 14 ++++++++++++++
+>>  net/core/page_pool.c    | 49 +++++++++++++++++++++++++++++++++++++++++++++++++
+>>  2 files changed, 63 insertions(+)
+>>
+>> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+>> index f0e708d..06a5e43 100644
+>> --- a/include/net/page_pool.h
+>> +++ b/include/net/page_pool.h
+>> @@ -80,6 +80,7 @@ struct page_pool_params {
+>>         enum dma_data_direction dma_dir; /* DMA mapping direction */
+>>         unsigned int    max_len; /* max DMA sync memory size */
+>>         unsigned int    offset;  /* DMA addr offset */
+>> +       unsigned int    frag_size;
+>>  };
+>>
+>>  struct page_pool {
+>> @@ -91,6 +92,8 @@ struct page_pool {
+>>         unsigned long defer_warn;
+>>
+>>         u32 pages_state_hold_cnt;
+>> +       unsigned int frag_offset;
+>> +       struct page *frag_page;
+>>
+>>         /*
+>>          * Data structure for allocation side
+>> @@ -140,6 +143,17 @@ static inline struct page *page_pool_dev_alloc_pages(struct page_pool *pool)
+>>         return page_pool_alloc_pages(pool, gfp);
+>>  }
+>>
+>> +struct page *page_pool_alloc_frag(struct page_pool *pool,
+>> +                                 unsigned int *offset, gfp_t gfp);
+>> +
+>> +static inline struct page *page_pool_dev_alloc_frag(struct page_pool *pool,
+>> +                                                   unsigned int *offset)
+>> +{
+>> +       gfp_t gfp = (GFP_ATOMIC | __GFP_NOWARN);
+>> +
+>> +       return page_pool_alloc_frag(pool, offset, gfp);
+>> +}
+>> +
+>>  /* get the stored dma direction. A driver might decide to treat this locally and
+>>   * avoid the extra cache line from page_pool to determine the direction
+>>   */
+>> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+>> index a87cbe1..b787033 100644
+>> --- a/net/core/page_pool.c
+>> +++ b/net/core/page_pool.c
+>> @@ -350,6 +350,53 @@ struct page *page_pool_alloc_pages(struct page_pool *pool, gfp_t gfp)
+>>  }
+>>  EXPORT_SYMBOL(page_pool_alloc_pages);
+>>
+>> +struct page *page_pool_alloc_frag(struct page_pool *pool,
+>> +                                 unsigned int *offset, gfp_t gfp)
+>> +{
+>> +       unsigned int frag_offset = pool->frag_offset;
+>> +       unsigned int frag_size = pool->p.frag_size;
+>> +       struct page *frag_page = pool->frag_page;
+>> +       unsigned int max_len = pool->p.max_len;
+>> +
+>> +       if (!frag_page || frag_offset + frag_size > max_len) {
+>> +               frag_page = page_pool_alloc_pages(pool, gfp);
+>> +               if (unlikely(!frag_page)) {
+>> +                       pool->frag_page = NULL;
+>> +                       return NULL;
+>> +               }
+>> +
+>> +               pool->frag_page = frag_page;
+>> +               frag_offset = 0;
+>> +
+>> +               page_pool_sub_bias(pool, frag_page,
+>> +                                  max_len / frag_size - 1);
+>> +       }
+>> +
+>> +       *offset = frag_offset;
+>> +       pool->frag_offset = frag_offset + frag_size;
+>> +
+>> +       return frag_page;
+>> +}
+>> +EXPORT_SYMBOL(page_pool_alloc_frag);
 > 
-> I thought we resolved this discussion. Use _relaxed variants unless
-> you need the stronger ones.
+> I'm still not a fan of the fixed implementation. For the cost of the
+> division as I said before you could make this flexible like
+> page_frag_alloc_align and just decrement the bias by one per
+> allocation instead of trying to batch it.
 > 
+> I'm sure there would likely be implementations that might need to
+> operate at two different sizes, for example a header and payload size.
 
-I thought the discussion was resolved in favor of using read/writel. Here
-is the last reply from Bjorn:
+Will try to implement the frag allocation of different sizes
+in new version.
 
-"I think we came to the conclusion that writel() was better
-than incorrect use of writel_relaxed() followed by wmb(). And in this
-particular case it's definitely not happening in a hot code path..."
-
-IMO, it is safer to use readl/writel calls than the relaxed variants.
-And so far the un-written rule I assumed is, only consider using the
-relaxed variants if the code is in hot path (but somehow I used the
-relaxed version in v1 :P )
-
-Thanks,
-Mani
-
-> Rob
 > 
-> >
-> > Changes in v3:
-> >
-> > * Lot of minor cleanups to the driver patch based on review from Bjorn and Stan.
-> > * Noticeable changes are:
-> >   - Got rid of _relaxed calls and used readl/writel
-> >   - Got rid of separate TCSR memory region and used syscon for getting the
-> >     register offsets for Perst registers
-> >   - Changed the wake gpio handling logic
-> >   - Added remove() callback and removed "suppress_bind_attrs"
-> >   - stop_link() callback now just disables PERST IRQ
-> > * Added MMIO region and doorbell interrupt to the binding
-> > * Added logic to write MMIO physicall address to MHI base address as it is
-> >   for the function driver to work
-> >
-> > Changes in v2:
-> >
-> > * Addressed the comments from Rob on bindings patch
-> > * Modified the driver as per binding change
-> > * Fixed the warnings reported by Kbuild bot
-> > * Removed the PERST# "enable_irq" call from probe()
-> >
-> > Manivannan Sadhasivam (3):
-> >   dt-bindings: pci: Add devicetree binding for Qualcomm PCIe EP
-> >     controller
-> >   PCI: dwc: Add Qualcomm PCIe Endpoint controller driver
-> >   MAINTAINERS: Add entry for Qualcomm PCIe Endpoint driver and binding
-> >
-> >  .../devicetree/bindings/pci/qcom,pcie-ep.yaml | 160 ++++
-> >  MAINTAINERS                                   |  10 +-
-> >  drivers/pci/controller/dwc/Kconfig            |  10 +
-> >  drivers/pci/controller/dwc/Makefile           |   1 +
-> >  drivers/pci/controller/dwc/pcie-qcom-ep.c     | 742 ++++++++++++++++++
-> >  5 files changed, 922 insertions(+), 1 deletion(-)
-> >  create mode 100644 Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
-> >  create mode 100644 drivers/pci/controller/dwc/pcie-qcom-ep.c
-> >
-> > --
-> > 2.25.1
-> >
+>> +static void page_pool_empty_frag(struct page_pool *pool)
+>> +{
+>> +       unsigned int frag_offset = pool->frag_offset;
+>> +       unsigned int frag_size = pool->p.frag_size;
+>> +       struct page *frag_page = pool->frag_page;
+>> +       unsigned int max_len = pool->p.max_len;
+>> +
+>> +       if (!frag_page)
+>> +               return;
+>> +
+>> +       while (frag_offset + frag_size <= max_len) {
+>> +               page_pool_put_full_page(pool, frag_page, false);
+>> +               frag_offset += frag_size;
+>> +       }
+>> +
+> 
+> Having to call this to free the page seems confusing. Rather than
+> reserving multiple and having to free the page multiple times I really
+> think you would be better off just holding one bias reservation on the
+> page at a time.
+
+will remove the above freeing the page multiple times.
+
+> 
+>> +       pool->frag_page = NULL;
+>> +}
+>> +
+>>  /* Calculate distance between two u32 values, valid if distance is below 2^(31)
+>>   *  https://en.wikipedia.org/wiki/Serial_number_arithmetic#General_Solution
+>>   */
+>> @@ -670,6 +717,8 @@ void page_pool_destroy(struct page_pool *pool)
+>>         if (!page_pool_put(pool))
+>>                 return;
+>>
+>> +       page_pool_empty_frag(pool);
+>> +
+>>         if (!page_pool_release(pool))
+>>                 return;
+>>
+>> --
+>> 2.7.4
+>>
+> .
+> 
