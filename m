@@ -2,433 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E3D43C5EB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 17:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 150833C5EC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 17:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235297AbhGLPFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 11:05:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35796 "EHLO
+        id S235344AbhGLPFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 11:05:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232254AbhGLPFZ (ORCPT
+        with ESMTP id S232254AbhGLPFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 11:05:25 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A60B7C0613DD
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 08:02:36 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id a2so18535241pgi.6
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 08:02:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1EiqwrFbAMC+WM0P1LwoK+J9YeDNOguiRSLerh/NyWY=;
-        b=Iny8CrsgnU1wx5pUyb0EvnTtVzlwvwmmPJiuy7HzlsJEnYbhqQijZuH4lZNjr/8alL
-         4qauRMzKkXgn9wQ09wxILHW21F4IOcvmUY33lESiB+QpcaqtEOq1Oy8a8sZtk5Ek+iAD
-         eiD41qs6dJcLlgZ2+gb6o8jfAecWHH38bcxt0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1EiqwrFbAMC+WM0P1LwoK+J9YeDNOguiRSLerh/NyWY=;
-        b=Gmjtqcda2dJenHXofCTb4RMolQ7aD68tTmNa6Ist5M9zXO1HhaSohbR1GgCDyOCucT
-         oQF+OsnjLxH5z+rFDmzfp6nf+6rs61/eooeYt3STZit/qkpsEdZzWdAZGgnHGg70dwgM
-         80bUIqWYaXikUTcV7mRGrLmIUTszYyusGlZcy8IN2wL4sKXV4KunbiuSqHy6hkznziSd
-         A3kjbci4JvsJPwhxj7AfQtrYkQmopFELxmoXTayvNuWiS4nBK3U5ssJg96yqUv56x8Vw
-         qB8bz/OkFJuXgp6Mmgqj6Ws1zC+HeDK+NIKQzLcvb13BRhauFt889t046atVu6v6YMmu
-         SLpA==
-X-Gm-Message-State: AOAM533VMCaU5ZyRi3k39ClO+kQ+JzTsIXIk1yDeAwp3HbBEQLYtbgqw
-        djV/f7O4lLbNna0VnN3jh1tTbkwagLm01WVU
-X-Google-Smtp-Source: ABdhPJyT+4k7h3jTyC14wjvMQr3i1OvntIE4JGIjQYlGyUTznJ9fA6mpG2AQcrycAjU0iakBoyLi/w==
-X-Received: by 2002:aa7:943b:0:b029:321:809a:f0b with SMTP id y27-20020aa7943b0000b0290321809a0f0bmr40725673pfo.32.1626102156019;
-        Mon, 12 Jul 2021 08:02:36 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:9def:1cc6:9639:1dff])
-        by smtp.gmail.com with ESMTPSA id v7sm17984509pgv.81.2021.07.12.08.02.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 08:02:35 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Lyude Paul <lyude@redhat.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Robert Foss <robert.foss@linaro.org>
-Cc:     Rajeev Nandan <rajeevny@codeaurora.org>,
-        ville.syrjala@linux.intel.com,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Douglas Anderson <dianders@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] drm/dp: Move panel DP AUX backlight support to drm_dp_helper
-Date:   Mon, 12 Jul 2021 08:00:44 -0700
-Message-Id: <20210712075933.v2.1.I23eb4cc5a680341e7b3e791632a635566fa5806a@changeid>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+        Mon, 12 Jul 2021 11:05:36 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33ED5C0613E5;
+        Mon, 12 Jul 2021 08:02:48 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 77B9A1F425BC
+Received: by jupiter.universe (Postfix, from userid 1000)
+        id 404164800C6; Mon, 12 Jul 2021 17:02:44 +0200 (CEST)
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>, Ian Ray <ian.ray@ge.com>,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, kernel@collabora.com,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+Subject: [PATCHv6 0/3] GE Healthcare PPD firmware upgrade driver for ACHC
+Date:   Mon, 12 Jul 2021 17:02:39 +0200
+Message-Id: <20210712150242.146545-1-sebastian.reichel@collabora.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We were getting a depmod error:
-  depmod: ERROR: Cycle detected: drm_kms_helper -> drm -> drm_kms_helper
+Hi,
 
-It looks like the rule is that drm_kms_helper can call into drm, but
-drm can't call into drm_kms_helper. That means we've got to move the
-DP AUX backlight support into drm_dp_helper.
+The PPD has a secondary processor (NXP Kinetis K20), which can be
+programmed from the main system. It is connected to the main processor
+by having it's EzPort interface connected to the SPI bus. Currently
+both (normal and EzPort) interfaces are simply exposed to userspace.
+This does not work for the EzPort, since EzPort usage requires a device
+reset. The proper solution is to do the flashing from kernel space
+with properly timed toggling of EzPort chip-select and reset line. In
+PATCHv2 it was suggested, that this should happen via an SPI ancillary
+device, so this is how it has been implemented now. The SPI core
+changes have been applied in PATCHv5 and are part of v5.14-rc1.
 
-NOTE: as part of this, I didn't try to do any renames of the main
-registration function. Even though it's in the drm_dp_helper, it still
-feels very parallel to drm_panel_of_backlight().
+Changes since PATCHv5:
+ * https://lore.kernel.org/lkml/20210621175359.126729-1-sebastian.reichel@collabora.com/
+ * Rebased to v5.14-rc1
+ * Fixed compilation as module
+ * Dropped no longer needed module.h include from ezport code
 
-Fixes: 10f7b40e4f30 ("drm/panel: add basic DP AUX backlight support")
-Reported-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Reported-by: Thomas Zimmermann <tzimmermann@suse.de>
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-Note that I've compile tested this, but I don't have a device setup
-yet that uses this code. Since the code is basically the same as it
-was this should be OK, but if Rajeev could confirm that nothing is
-broken that'd be nice.
+Changes since PATCHv4:
+ * https://lore.kernel.org/lkml/20210609151235.48964-1-sebastian.reichel@collabora.com/
+ * Add Rob's Acked-by to ge-achc binding update
+ * Don't use of_property_read_u32_index() in of_spi_parse_dt()
+ * Don't build separate module for EzPort code
+ * Use GPL2-only for the header
+ * ACHC_MAX_FREQ -> ACHC_MAX_FREQ_HZ
+ * Only accept '1' for the sysfs files, not any data
+ * Update sysfs file documentation
+ * Rebased to spi-next tree (b8f9dce0f4eb)
 
-Changes in v2:
-- Guard new functions by the proper configs.
+Changes since PATCHv3:
+ * https://lore.kernel.org/lkml/20210528113346.37137-1-sebastian.reichel@collabora.com/
+ * Add Rob's Acked-by to 2nd patch
+ * use GPL-2-only instead of GPL-2+
+ * use %zu for printing a size_t
+ * use driver's .dev_groups to register sysfs group
+ * Add sysfs property documentation
+ * split EzPort and ACHC drivers into separate patches
+ * drop minItems/maxItems from achc binding, which seems to fix the problems
+   reported by dt_binding_check. The information of two items being required
+   is implied by the explicit item list.
+ * drop spidev functionality for the main SPI interface. The current firmware
+   communicates via UART and adding spidev support is complex. If future firmware
+   releases start using it, spidev support for the main interface can be added
+   later.
 
- drivers/gpu/drm/drm_dp_helper.c | 113 ++++++++++++++++++++++++++++++++
- drivers/gpu/drm/drm_panel.c     | 108 ------------------------------
- include/drm/drm_dp_helper.h     |  16 +++++
- include/drm/drm_panel.h         |   8 ---
- 4 files changed, 129 insertions(+), 116 deletions(-)
+Changes since PATCHv2:
+ * https://lore.kernel.org/lkml/20180327135259.30890-1-sebastian.reichel@collabora.co.uk/
+ * add SPI core support for ancillary devices
+ * modify ACHC binding to make use of ancillary device
+ * rewrite driver to use ancillary device
+ * rebased to 5.13-rc1
 
-diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
-index 24bbc710c825..e8eec20ab364 100644
---- a/drivers/gpu/drm/drm_dp_helper.c
-+++ b/drivers/gpu/drm/drm_dp_helper.c
-@@ -33,9 +33,17 @@
- #include <drm/drm_print.h>
- #include <drm/drm_vblank.h>
- #include <drm/drm_dp_mst_helper.h>
-+#include <drm/drm_panel.h>
- 
- #include "drm_crtc_helper_internal.h"
- 
-+struct dp_aux_backlight {
-+	struct backlight_device *base;
-+	struct drm_dp_aux *aux;
-+	struct drm_edp_backlight_info info;
-+	bool enabled;
-+};
-+
- /**
-  * DOC: dp helpers
-  *
-@@ -3462,3 +3470,108 @@ drm_edp_backlight_init(struct drm_dp_aux *aux, struct drm_edp_backlight_info *bl
- 	return 0;
- }
- EXPORT_SYMBOL(drm_edp_backlight_init);
-+
-+#if IS_BUILTIN(CONFIG_BACKLIGHT_CLASS_DEVICE) || \
-+	(IS_MODULE(CONFIG_DRM_KMS_HELPER) && IS_MODULE(CONFIG_BACKLIGHT_CLASS_DEVICE))
-+
-+static int dp_aux_backlight_update_status(struct backlight_device *bd)
-+{
-+	struct dp_aux_backlight *bl = bl_get_data(bd);
-+	u16 brightness = backlight_get_brightness(bd);
-+	int ret = 0;
-+
-+	if (!backlight_is_blank(bd)) {
-+		if (!bl->enabled) {
-+			drm_edp_backlight_enable(bl->aux, &bl->info, brightness);
-+			bl->enabled = true;
-+			return 0;
-+		}
-+		ret = drm_edp_backlight_set_level(bl->aux, &bl->info, brightness);
-+	} else {
-+		if (bl->enabled) {
-+			drm_edp_backlight_disable(bl->aux, &bl->info);
-+			bl->enabled = false;
-+		}
-+	}
-+
-+	return ret;
-+}
-+
-+static const struct backlight_ops dp_aux_bl_ops = {
-+	.update_status = dp_aux_backlight_update_status,
-+};
-+
-+/**
-+ * drm_panel_dp_aux_backlight - create and use DP AUX backlight
-+ * @panel: DRM panel
-+ * @aux: The DP AUX channel to use
-+ *
-+ * Use this function to create and handle backlight if your panel
-+ * supports backlight control over DP AUX channel using DPCD
-+ * registers as per VESA's standard backlight control interface.
-+ *
-+ * When the panel is enabled backlight will be enabled after a
-+ * successful call to &drm_panel_funcs.enable()
-+ *
-+ * When the panel is disabled backlight will be disabled before the
-+ * call to &drm_panel_funcs.disable().
-+ *
-+ * A typical implementation for a panel driver supporting backlight
-+ * control over DP AUX will call this function at probe time.
-+ * Backlight will then be handled transparently without requiring
-+ * any intervention from the driver.
-+ *
-+ * drm_panel_dp_aux_backlight() must be called after the call to drm_panel_init().
-+ *
-+ * Return: 0 on success or a negative error code on failure.
-+ */
-+int drm_panel_dp_aux_backlight(struct drm_panel *panel, struct drm_dp_aux *aux)
-+{
-+	struct dp_aux_backlight *bl;
-+	struct backlight_properties props = { 0 };
-+	u16 current_level;
-+	u8 current_mode;
-+	u8 edp_dpcd[EDP_DISPLAY_CTL_CAP_SIZE];
-+	int ret;
-+
-+	if (!panel || !panel->dev || !aux)
-+		return -EINVAL;
-+
-+	ret = drm_dp_dpcd_read(aux, DP_EDP_DPCD_REV, edp_dpcd,
-+			       EDP_DISPLAY_CTL_CAP_SIZE);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (!drm_edp_backlight_supported(edp_dpcd)) {
-+		DRM_DEV_INFO(panel->dev, "DP AUX backlight is not supported\n");
-+		return 0;
-+	}
-+
-+	bl = devm_kzalloc(panel->dev, sizeof(*bl), GFP_KERNEL);
-+	if (!bl)
-+		return -ENOMEM;
-+
-+	bl->aux = aux;
-+
-+	ret = drm_edp_backlight_init(aux, &bl->info, 0, edp_dpcd,
-+				     &current_level, &current_mode);
-+	if (ret < 0)
-+		return ret;
-+
-+	props.type = BACKLIGHT_RAW;
-+	props.brightness = current_level;
-+	props.max_brightness = bl->info.max;
-+
-+	bl->base = devm_backlight_device_register(panel->dev, "dp_aux_backlight",
-+						  panel->dev, bl,
-+						  &dp_aux_bl_ops, &props);
-+	if (IS_ERR(bl->base))
-+		return PTR_ERR(bl->base);
-+
-+	panel->backlight = bl->base;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(drm_panel_dp_aux_backlight);
-+
-+#endif
-diff --git a/drivers/gpu/drm/drm_panel.c b/drivers/gpu/drm/drm_panel.c
-index 4fa1e3bb1b78..f634371c717a 100644
---- a/drivers/gpu/drm/drm_panel.c
-+++ b/drivers/gpu/drm/drm_panel.c
-@@ -26,20 +26,12 @@
- #include <linux/module.h>
- 
- #include <drm/drm_crtc.h>
--#include <drm/drm_dp_helper.h>
- #include <drm/drm_panel.h>
- #include <drm/drm_print.h>
- 
- static DEFINE_MUTEX(panel_lock);
- static LIST_HEAD(panel_list);
- 
--struct dp_aux_backlight {
--	struct backlight_device *base;
--	struct drm_dp_aux *aux;
--	struct drm_edp_backlight_info info;
--	bool enabled;
--};
--
- /**
-  * DOC: drm panel
-  *
-@@ -350,106 +342,6 @@ int drm_panel_of_backlight(struct drm_panel *panel)
- 	return 0;
- }
- EXPORT_SYMBOL(drm_panel_of_backlight);
--
--static int dp_aux_backlight_update_status(struct backlight_device *bd)
--{
--	struct dp_aux_backlight *bl = bl_get_data(bd);
--	u16 brightness = backlight_get_brightness(bd);
--	int ret = 0;
--
--	if (!backlight_is_blank(bd)) {
--		if (!bl->enabled) {
--			drm_edp_backlight_enable(bl->aux, &bl->info, brightness);
--			bl->enabled = true;
--			return 0;
--		}
--		ret = drm_edp_backlight_set_level(bl->aux, &bl->info, brightness);
--	} else {
--		if (bl->enabled) {
--			drm_edp_backlight_disable(bl->aux, &bl->info);
--			bl->enabled = false;
--		}
--	}
--
--	return ret;
--}
--
--static const struct backlight_ops dp_aux_bl_ops = {
--	.update_status = dp_aux_backlight_update_status,
--};
--
--/**
-- * drm_panel_dp_aux_backlight - create and use DP AUX backlight
-- * @panel: DRM panel
-- * @aux: The DP AUX channel to use
-- *
-- * Use this function to create and handle backlight if your panel
-- * supports backlight control over DP AUX channel using DPCD
-- * registers as per VESA's standard backlight control interface.
-- *
-- * When the panel is enabled backlight will be enabled after a
-- * successful call to &drm_panel_funcs.enable()
-- *
-- * When the panel is disabled backlight will be disabled before the
-- * call to &drm_panel_funcs.disable().
-- *
-- * A typical implementation for a panel driver supporting backlight
-- * control over DP AUX will call this function at probe time.
-- * Backlight will then be handled transparently without requiring
-- * any intervention from the driver.
-- *
-- * drm_panel_dp_aux_backlight() must be called after the call to drm_panel_init().
-- *
-- * Return: 0 on success or a negative error code on failure.
-- */
--int drm_panel_dp_aux_backlight(struct drm_panel *panel, struct drm_dp_aux *aux)
--{
--	struct dp_aux_backlight *bl;
--	struct backlight_properties props = { 0 };
--	u16 current_level;
--	u8 current_mode;
--	u8 edp_dpcd[EDP_DISPLAY_CTL_CAP_SIZE];
--	int ret;
--
--	if (!panel || !panel->dev || !aux)
--		return -EINVAL;
--
--	ret = drm_dp_dpcd_read(aux, DP_EDP_DPCD_REV, edp_dpcd,
--			       EDP_DISPLAY_CTL_CAP_SIZE);
--	if (ret < 0)
--		return ret;
--
--	if (!drm_edp_backlight_supported(edp_dpcd)) {
--		DRM_DEV_INFO(panel->dev, "DP AUX backlight is not supported\n");
--		return 0;
--	}
--
--	bl = devm_kzalloc(panel->dev, sizeof(*bl), GFP_KERNEL);
--	if (!bl)
--		return -ENOMEM;
--
--	bl->aux = aux;
--
--	ret = drm_edp_backlight_init(aux, &bl->info, 0, edp_dpcd,
--				     &current_level, &current_mode);
--	if (ret < 0)
--		return ret;
--
--	props.type = BACKLIGHT_RAW;
--	props.brightness = current_level;
--	props.max_brightness = bl->info.max;
--
--	bl->base = devm_backlight_device_register(panel->dev, "dp_aux_backlight",
--						  panel->dev, bl,
--						  &dp_aux_bl_ops, &props);
--	if (IS_ERR(bl->base))
--		return PTR_ERR(bl->base);
--
--	panel->backlight = bl->base;
--
--	return 0;
--}
--EXPORT_SYMBOL(drm_panel_dp_aux_backlight);
- #endif
- 
- MODULE_AUTHOR("Thierry Reding <treding@nvidia.com>");
-diff --git a/include/drm/drm_dp_helper.h b/include/drm/drm_dp_helper.h
-index 729d5d82475e..a1b2d945def6 100644
---- a/include/drm/drm_dp_helper.h
-+++ b/include/drm/drm_dp_helper.h
-@@ -30,6 +30,7 @@
- 
- struct drm_device;
- struct drm_dp_aux;
-+struct drm_panel;
- 
- /*
-  * Unless otherwise noted, all values are from the DP 1.1a spec.  Note that
-@@ -2200,6 +2201,21 @@ int drm_edp_backlight_enable(struct drm_dp_aux *aux, const struct drm_edp_backli
- 			     u16 level);
- int drm_edp_backlight_disable(struct drm_dp_aux *aux, const struct drm_edp_backlight_info *bl);
- 
-+#if IS_ENABLED(CONFIG_DRM_KMS_HELPER) && (IS_BUILTIN(CONFIG_BACKLIGHT_CLASS_DEVICE) || \
-+	(IS_MODULE(CONFIG_DRM_KMS_HELPER) && IS_MODULE(CONFIG_BACKLIGHT_CLASS_DEVICE)))
-+
-+int drm_panel_dp_aux_backlight(struct drm_panel *panel, struct drm_dp_aux *aux);
-+
-+#else
-+
-+static inline int drm_panel_dp_aux_backlight(struct drm_panel *panel,
-+					     struct drm_dp_aux *aux)
-+{
-+	return 0;
-+}
-+
-+#endif
-+
- #ifdef CONFIG_DRM_DP_CEC
- void drm_dp_cec_irq(struct drm_dp_aux *aux);
- void drm_dp_cec_register_connector(struct drm_dp_aux *aux,
-diff --git a/include/drm/drm_panel.h b/include/drm/drm_panel.h
-index 71aac751a032..4602f833eb51 100644
---- a/include/drm/drm_panel.h
-+++ b/include/drm/drm_panel.h
-@@ -32,7 +32,6 @@ struct backlight_device;
- struct device_node;
- struct drm_connector;
- struct drm_device;
--struct drm_dp_aux;
- struct drm_panel;
- struct display_timing;
- 
-@@ -209,18 +208,11 @@ static inline int of_drm_get_panel_orientation(const struct device_node *np,
- #if IS_ENABLED(CONFIG_DRM_PANEL) && (IS_BUILTIN(CONFIG_BACKLIGHT_CLASS_DEVICE) || \
- 	(IS_MODULE(CONFIG_DRM) && IS_MODULE(CONFIG_BACKLIGHT_CLASS_DEVICE)))
- int drm_panel_of_backlight(struct drm_panel *panel);
--int drm_panel_dp_aux_backlight(struct drm_panel *panel, struct drm_dp_aux *aux);
- #else
- static inline int drm_panel_of_backlight(struct drm_panel *panel)
- {
- 	return 0;
- }
--
--static inline int drm_panel_dp_aux_backlight(struct drm_panel *panel,
--					     struct drm_dp_aux *aux)
--{
--	return 0;
--}
- #endif
- 
- #endif
+Changes since PATCHv1:
+ * https://lore.kernel.org/lkml/20180320172201.2065-1-sebastian.reichel@collabora.co.uk/
+ * split DT binding update into its own patch
+ * add sysfs attribute documentation
+ * fix problem reported by kbuild test robot
+
+-- Sebastian
+
+Sebastian Reichel (3):
+  dt-bindings: misc: ge-achc: Convert to DT schema format
+  ARM: dts: imx53-ppd: Fix ACHC entry
+  misc: gehc-achc: new driver
+
+ .../ABI/testing/sysfs-driver-ge-achc          |  14 +
+ .../devicetree/bindings/misc/ge-achc.txt      |  26 -
+ .../devicetree/bindings/misc/ge-achc.yaml     |  65 +++
+ arch/arm/boot/dts/imx53-ppd.dts               |  23 +-
+ drivers/misc/Kconfig                          |  11 +
+ drivers/misc/Makefile                         |   2 +
+ drivers/misc/gehc-achc.c                      | 136 +++++
+ drivers/misc/nxp-ezport.c                     | 468 ++++++++++++++++++
+ drivers/misc/nxp-ezport.h                     |   9 +
+ drivers/spi/spidev.c                          |   1 -
+ 10 files changed, 718 insertions(+), 37 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-driver-ge-achc
+ delete mode 100644 Documentation/devicetree/bindings/misc/ge-achc.txt
+ create mode 100644 Documentation/devicetree/bindings/misc/ge-achc.yaml
+ create mode 100644 drivers/misc/gehc-achc.c
+ create mode 100644 drivers/misc/nxp-ezport.c
+ create mode 100644 drivers/misc/nxp-ezport.h
+
 -- 
-2.32.0.93.g670b81a890-goog
+2.30.2
 
