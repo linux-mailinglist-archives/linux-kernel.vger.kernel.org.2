@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B93B3C518B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:48:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 100B33C4AB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349435AbhGLHmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:42:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42016 "EHLO mail.kernel.org"
+        id S240281AbhGLGxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:53:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243783AbhGLHIv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:08:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C64B610CA;
-        Mon, 12 Jul 2021 07:04:40 +0000 (UTC)
+        id S236674AbhGLGjR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:39:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC53161182;
+        Mon, 12 Jul 2021 06:34:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073480;
-        bh=3QfwCBcj+yOjmfhAXvWnFApagzbAw4npL+OpFY5r9N8=;
+        s=korg; t=1626071689;
+        bh=Dm5FERpTokaavMtGbevl3le87m0VgQenSY4KRvvRPYU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dH7cQ1b6mFmWbMNsPK12B/w6sX3u6WaId1kqKm3XbYEKz0LIcH296nL30s3euGQyU
-         xYnx/rYm6CqK2+L+hnoTHaLY/DLmXbvj3UbI+arIz0PLrj07fnC+L2SQ7+mpG37QWV
-         K2kedAV6konKi20iYA0Ri9Tilujld5Sire8RrpO8=
+        b=QGyejU6Oboqmn21chKyBK/kUoFhrsY+KfkxaTMqWUgF0rlI1HzDJtGmURm9E44ShA
+         HjCYjpdbewk978nRly63xG2Um18OnP///vCfKjwvzIu6IziFXbOTSuQWQaqxOrDiYE
+         wZN9lXvQW6hUI4KRY8Cjv2HKnyGJvZNKvZtBJAXk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 254/700] crypto: ixp4xx - dma_unmap the correct address
+        stable@vger.kernel.org, "zhangyi (F)" <yi.zhang@huawei.com>,
+        Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 177/593] block_dump: remove block_dump feature in mark_inode_dirty()
 Date:   Mon, 12 Jul 2021 08:05:37 +0200
-Message-Id: <20210712061002.950068789@linuxfoundation.org>
+Message-Id: <20210712060902.484863512@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +40,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Corentin Labbe <clabbe@baylibre.com>
+From: zhangyi (F) <yi.zhang@huawei.com>
 
-[ Upstream commit 9395c58fdddd79cdd3882132cdd04e8ac7ad525f ]
+[ Upstream commit 12e0613715e1cf305fffafaf0e89d810d9a85cc0 ]
 
-Testing ixp4xx_crypto with CONFIG_DMA_API_DEBUG lead to the following error:
-DMA-API: platform ixp4xx_crypto.0: device driver tries to free DMA memory it has not allocated [device address=0x0000000000000000] [size=24 bytes]
+block_dump is an old debugging interface, one of it's functions is used
+to print the information about who write which file on disk. If we
+enable block_dump through /proc/sys/vm/block_dump and turn on debug log
+level, we can gather information about write process name, target file
+name and disk from kernel message. This feature is realized in
+block_dump___mark_inode_dirty(), it print above information into kernel
+message directly when marking inode dirty, so it is noisy and can easily
+trigger log storm. At the same time, get the dentry refcount is also not
+safe, we found it will lead to deadlock on ext4 file system with
+data=journal mode.
 
-This is due to dma_unmap using the wrong address.
+After tracepoints has been introduced into the kernel, we got a
+tracepoint in __mark_inode_dirty(), which is a better replacement of
+block_dump___mark_inode_dirty(). The only downside is that it only trace
+the inode number and not a file name, but it probably doesn't matter
+because the original printed file name in block_dump is not accurate in
+some cases, and we can still find it through the inode number and device
+id. So this patch delete the dirting inode part of block_dump feature.
 
-Fixes: 0d44dc59b2b4 ("crypto: ixp4xx - Fix handling of chained sg buffers")
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Link: https://lore.kernel.org/r/20210313030146.2882027-2-yi.zhang@huawei.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/ixp4xx_crypto.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/fs-writeback.c | 25 -------------------------
+ 1 file changed, 25 deletions(-)
 
-diff --git a/drivers/crypto/ixp4xx_crypto.c b/drivers/crypto/ixp4xx_crypto.c
-index 8b0f17fc09fb..9e330e93e340 100644
---- a/drivers/crypto/ixp4xx_crypto.c
-+++ b/drivers/crypto/ixp4xx_crypto.c
-@@ -330,7 +330,7 @@ static void free_buf_chain(struct device *dev, struct buffer_desc *buf,
+diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+index 90dddb507e4a..0d0f014b09ec 100644
+--- a/fs/fs-writeback.c
++++ b/fs/fs-writeback.c
+@@ -2196,28 +2196,6 @@ int dirtytime_interval_handler(struct ctl_table *table, int write,
+ 	return ret;
+ }
  
- 		buf1 = buf->next;
- 		phys1 = buf->phys_next;
--		dma_unmap_single(dev, buf->phys_next, buf->buf_len, buf->dir);
-+		dma_unmap_single(dev, buf->phys_addr, buf->buf_len, buf->dir);
- 		dma_pool_free(buffer_pool, buf, phys);
- 		buf = buf1;
- 		phys = phys1;
+-static noinline void block_dump___mark_inode_dirty(struct inode *inode)
+-{
+-	if (inode->i_ino || strcmp(inode->i_sb->s_id, "bdev")) {
+-		struct dentry *dentry;
+-		const char *name = "?";
+-
+-		dentry = d_find_alias(inode);
+-		if (dentry) {
+-			spin_lock(&dentry->d_lock);
+-			name = (const char *) dentry->d_name.name;
+-		}
+-		printk(KERN_DEBUG
+-		       "%s(%d): dirtied inode %lu (%s) on %s\n",
+-		       current->comm, task_pid_nr(current), inode->i_ino,
+-		       name, inode->i_sb->s_id);
+-		if (dentry) {
+-			spin_unlock(&dentry->d_lock);
+-			dput(dentry);
+-		}
+-	}
+-}
+-
+ /**
+  * __mark_inode_dirty -	internal function
+  *
+@@ -2277,9 +2255,6 @@ void __mark_inode_dirty(struct inode *inode, int flags)
+ 	    (dirtytime && (inode->i_state & I_DIRTY_INODE)))
+ 		return;
+ 
+-	if (unlikely(block_dump))
+-		block_dump___mark_inode_dirty(inode);
+-
+ 	spin_lock(&inode->i_lock);
+ 	if (dirtytime && (inode->i_state & I_DIRTY_INODE))
+ 		goto out_unlock_inode;
 -- 
 2.30.2
 
