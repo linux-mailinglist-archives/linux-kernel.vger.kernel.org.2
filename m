@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0956A3C50C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A3F73C577E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347492AbhGLHfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:35:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41792 "EHLO mail.kernel.org"
+        id S1359329AbhGLIeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:34:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242206AbhGLHG0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:06:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FE6061364;
-        Mon, 12 Jul 2021 07:03:36 +0000 (UTC)
+        id S1346776AbhGLHql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:46:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CEE5461166;
+        Mon, 12 Jul 2021 07:42:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073417;
-        bh=B37Q4EGZIFXctDgiV/27vmJqvuDRGMCCBOzqnROCSUw=;
+        s=korg; t=1626075724;
+        bh=R3ZpydeS6PxatrGUmM2BtuVbxAACD8oFk5ZMkqCNFcQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wBzcWYasbG69MgDadQnzFFZcwGn6aicel4m5pKZ+G1OVmuiCMhsKq+8iGV3HdR0jz
-         UMIyDMdANRztVkHmwGZi2y5Zox92qOAcRylpUX33AbnHAUmFq0RX1ETYleh3JaR1nC
-         lhDUftEqxN4Jq90QnCUlvBOM5Ft/OMU/6Uq9xDho=
+        b=rB57wUOaE5ERM0u/NdYPkql/6UhkyUUx2q2UVImAQWx9ZiuK2aS5QpYAgFRdJbGa0
+         NDk3p1l8OEqfmGBMgz7mx4BxtK0Dw+6Xn9HhYkV1nkppCArNp90rxJ3H8zcE8uF0xV
+         2MVso5aVHg8rLSCLadoT2kXLPVhhzaSSNGrA2YaA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Mason <clm@fb.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Feng Tang <feng.tang@intel.com>,
+        stable@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 235/700] clocksource: Check per-CPU clock synchronization when marked unstable
+Subject: [PATCH 5.13 295/800] sched: Dont defer CPU pick to migration_cpu_stop()
 Date:   Mon, 12 Jul 2021 08:05:18 +0200
-Message-Id: <20210712061000.167178447@linuxfoundation.org>
+Message-Id: <20210712060956.492699043@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,140 +41,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul E. McKenney <paulmck@kernel.org>
+From: Valentin Schneider <valentin.schneider@arm.com>
 
-[ Upstream commit 7560c02bdffb7c52d1457fa551b9e745d4b9e754 ]
+[ Upstream commit 475ea6c60279e9f2ddf7e4cf2648cd8ae0608361 ]
 
-Some sorts of per-CPU clock sources have a history of going out of
-synchronization with each other.  However, this problem has purportedy been
-solved in the past ten years.  Except that it is all too possible that the
-problem has instead simply been made less likely, which might mean that
-some of the occasional "Marking clocksource 'tsc' as unstable" messages
-might be due to desynchronization.  How would anyone know?
+Will reported that the 'XXX __migrate_task() can fail' in migration_cpu_stop()
+can happen, and it *is* sort of a big deal. Looking at it some more, one
+will note there is a glaring hole in the deferred CPU selection:
 
-Therefore apply CPU-to-CPU synchronization checking to newly unstable
-clocksource that are marked with the new CLOCK_SOURCE_VERIFY_PERCPU flag.
-Lists of desynchronized CPUs are printed, with the caveat that if it
-is the reporting CPU that is itself desynchronized, it will appear that
-all the other clocks are wrong.  Just like in real life.
+  (w/ CONFIG_CPUSET=n, so that the affinity mask passed via taskset doesn't
+  get AND'd with cpu_online_mask)
 
-Reported-by: Chris Mason <clm@fb.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Feng Tang <feng.tang@intel.com>
-Link: https://lore.kernel.org/r/20210527190124.440372-2-paulmck@kernel.org
+  $ taskset -pc 0-2 $PID
+  # offline CPUs 3-4
+  $ taskset -pc 3-5 $PID
+    `\
+      $PID may stay on 0-2 due to the cpumask_any_distribute() picking an
+      offline CPU and __migrate_task() refusing to do anything due to
+      cpu_is_allowed().
+
+set_cpus_allowed_ptr() goes to some length to pick a dest_cpu that matches
+the right constraints vs affinity and the online/active state of the
+CPUs. Reuse that instead of discarding it in the affine_move_task() case.
+
+Fixes: 6d337eab041d ("sched: Fix migrate_disable() vs set_cpus_allowed_ptr()")
+Reported-by: Will Deacon <will@kernel.org>
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20210526205751.842360-2-valentin.schneider@arm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/tsc.c       |  3 +-
- include/linux/clocksource.h |  2 +-
- kernel/time/clocksource.c   | 60 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 63 insertions(+), 2 deletions(-)
+ kernel/sched/core.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
-index f70dffc2771f..56289170753c 100644
---- a/arch/x86/kernel/tsc.c
-+++ b/arch/x86/kernel/tsc.c
-@@ -1151,7 +1151,8 @@ static struct clocksource clocksource_tsc = {
- 	.mask			= CLOCKSOURCE_MASK(64),
- 	.flags			= CLOCK_SOURCE_IS_CONTINUOUS |
- 				  CLOCK_SOURCE_VALID_FOR_HRES |
--				  CLOCK_SOURCE_MUST_VERIFY,
-+				  CLOCK_SOURCE_MUST_VERIFY |
-+				  CLOCK_SOURCE_VERIFY_PERCPU,
- 	.vdso_clock_mode	= VDSO_CLOCKMODE_TSC,
- 	.enable			= tsc_cs_enable,
- 	.resume			= tsc_resume,
-diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
-index 86d143db6523..83a3ebff7456 100644
---- a/include/linux/clocksource.h
-+++ b/include/linux/clocksource.h
-@@ -131,7 +131,7 @@ struct clocksource {
- #define CLOCK_SOURCE_UNSTABLE			0x40
- #define CLOCK_SOURCE_SUSPEND_NONSTOP		0x80
- #define CLOCK_SOURCE_RESELECT			0x100
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 94002cb551c4..6e0ebc0781d1 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1929,7 +1929,6 @@ static int migration_cpu_stop(void *data)
+ 	struct migration_arg *arg = data;
+ 	struct set_affinity_pending *pending = arg->pending;
+ 	struct task_struct *p = arg->task;
+-	int dest_cpu = arg->dest_cpu;
+ 	struct rq *rq = this_rq();
+ 	bool complete = false;
+ 	struct rq_flags rf;
+@@ -1967,19 +1966,15 @@ static int migration_cpu_stop(void *data)
+ 		if (pending) {
+ 			p->migration_pending = NULL;
+ 			complete = true;
+-		}
+ 
+-		if (dest_cpu < 0) {
+ 			if (cpumask_test_cpu(task_cpu(p), &p->cpus_mask))
+ 				goto out;
 -
-+#define CLOCK_SOURCE_VERIFY_PERCPU		0x200
- /* simplify initialization of mask field */
- #define CLOCKSOURCE_MASK(bits) GENMASK_ULL((bits) - 1, 0)
+-			dest_cpu = cpumask_any_distribute(&p->cpus_mask);
+ 		}
  
-diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index 49b25f1cc344..242997b71f2d 100644
---- a/kernel/time/clocksource.c
-+++ b/kernel/time/clocksource.c
-@@ -224,6 +224,60 @@ static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
- 	return false;
- }
+ 		if (task_on_rq_queued(p))
+-			rq = __migrate_task(rq, &rf, p, dest_cpu);
++			rq = __migrate_task(rq, &rf, p, arg->dest_cpu);
+ 		else
+-			p->wake_cpu = dest_cpu;
++			p->wake_cpu = arg->dest_cpu;
  
-+static u64 csnow_mid;
-+static cpumask_t cpus_ahead;
-+static cpumask_t cpus_behind;
-+
-+static void clocksource_verify_one_cpu(void *csin)
-+{
-+	struct clocksource *cs = (struct clocksource *)csin;
-+
-+	csnow_mid = cs->read(cs);
-+}
-+
-+static void clocksource_verify_percpu(struct clocksource *cs)
-+{
-+	int64_t cs_nsec, cs_nsec_max = 0, cs_nsec_min = LLONG_MAX;
-+	u64 csnow_begin, csnow_end;
-+	int cpu, testcpu;
-+	s64 delta;
-+
-+	cpumask_clear(&cpus_ahead);
-+	cpumask_clear(&cpus_behind);
-+	preempt_disable();
-+	testcpu = smp_processor_id();
-+	pr_warn("Checking clocksource %s synchronization from CPU %d.\n", cs->name, testcpu);
-+	for_each_online_cpu(cpu) {
-+		if (cpu == testcpu)
-+			continue;
-+		csnow_begin = cs->read(cs);
-+		smp_call_function_single(cpu, clocksource_verify_one_cpu, cs, 1);
-+		csnow_end = cs->read(cs);
-+		delta = (s64)((csnow_mid - csnow_begin) & cs->mask);
-+		if (delta < 0)
-+			cpumask_set_cpu(cpu, &cpus_behind);
-+		delta = (csnow_end - csnow_mid) & cs->mask;
-+		if (delta < 0)
-+			cpumask_set_cpu(cpu, &cpus_ahead);
-+		delta = clocksource_delta(csnow_end, csnow_begin, cs->mask);
-+		cs_nsec = clocksource_cyc2ns(delta, cs->mult, cs->shift);
-+		if (cs_nsec > cs_nsec_max)
-+			cs_nsec_max = cs_nsec;
-+		if (cs_nsec < cs_nsec_min)
-+			cs_nsec_min = cs_nsec;
-+	}
-+	preempt_enable();
-+	if (!cpumask_empty(&cpus_ahead))
-+		pr_warn("        CPUs %*pbl ahead of CPU %d for clocksource %s.\n",
-+			cpumask_pr_args(&cpus_ahead), testcpu, cs->name);
-+	if (!cpumask_empty(&cpus_behind))
-+		pr_warn("        CPUs %*pbl behind CPU %d for clocksource %s.\n",
-+			cpumask_pr_args(&cpus_behind), testcpu, cs->name);
-+	if (!cpumask_empty(&cpus_ahead) || !cpumask_empty(&cpus_behind))
-+		pr_warn("        CPU %d check durations %lldns - %lldns for clocksource %s.\n",
-+			testcpu, cs_nsec_min, cs_nsec_max, cs->name);
-+}
-+
- static void clocksource_watchdog(struct timer_list *unused)
- {
- 	u64 csnow, wdnow, cslast, wdlast, delta;
-@@ -448,6 +502,12 @@ static int __clocksource_watchdog_kthread(void)
- 	unsigned long flags;
- 	int select = 0;
+ 		/*
+ 		 * XXX __migrate_task() can fail, at which point we might end
+@@ -2262,7 +2257,7 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
+ 			init_completion(&my_pending.done);
+ 			my_pending.arg = (struct migration_arg) {
+ 				.task = p,
+-				.dest_cpu = -1,		/* any */
++				.dest_cpu = dest_cpu,
+ 				.pending = &my_pending,
+ 			};
  
-+	/* Do any required per-CPU skew verification. */
-+	if (curr_clocksource &&
-+	    curr_clocksource->flags & CLOCK_SOURCE_UNSTABLE &&
-+	    curr_clocksource->flags & CLOCK_SOURCE_VERIFY_PERCPU)
-+		clocksource_verify_percpu(curr_clocksource);
-+
- 	spin_lock_irqsave(&watchdog_lock, flags);
- 	list_for_each_entry_safe(cs, tmp, &watchdog_list, wd_list) {
- 		if (cs->flags & CLOCK_SOURCE_UNSTABLE) {
+@@ -2270,6 +2265,15 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
+ 		} else {
+ 			pending = p->migration_pending;
+ 			refcount_inc(&pending->refs);
++			/*
++			 * Affinity has changed, but we've already installed a
++			 * pending. migration_cpu_stop() *must* see this, else
++			 * we risk a completion of the pending despite having a
++			 * task on a disallowed CPU.
++			 *
++			 * Serialized by p->pi_lock, so this is safe.
++			 */
++			pending->arg.dest_cpu = dest_cpu;
+ 		}
+ 	}
+ 	pending = p->migration_pending;
 -- 
 2.30.2
 
