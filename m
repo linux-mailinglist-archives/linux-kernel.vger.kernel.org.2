@@ -2,42 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F4913C4E71
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D813C4E74
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244840AbhGLHSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:18:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55538 "EHLO mail.kernel.org"
+        id S244855AbhGLHS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:18:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241359AbhGLGy7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:54:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14F59608FE;
-        Mon, 12 Jul 2021 06:52:09 +0000 (UTC)
+        id S241411AbhGLGzB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:55:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89F7660233;
+        Mon, 12 Jul 2021 06:52:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072730;
-        bh=6iy8O0B+SMbd8vfWmHYMquyJzN3tVl3wtZ6sgaYTYc4=;
+        s=korg; t=1626072733;
+        bh=+y2FYAQDGWMOnGr6OWX7nbIYxbvWgNq8PmZJg5fExgI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Crz4se6EvqSnN8BsS0IPKPJ7UjTzM8cqVwxM/tKpnSrl3yiqAkcP+gKTQBavxP7wX
-         fTlCR92DqZg6YglTfBBuscjMWbRvumVW/BNk9/FjcRtFzhtVxaiLIHVLRuLFlgxFmA
-         ZAbz3EHAnJG3+Xa8TC8ohyLvJXXeWD9lapAw029U=
+        b=VL/jV3i5DyH7ZK8GOmSfEzomd96FV5nsqnd0eMLEUW1iBAGX03dy63KqAqYcjtiF/
+         D2rtYOmN9C+Z/JSuoz6NGvud4lsW2ZTnG1nbknOU8H/B1xQkZ/DmPrI9MAmyl1QN7P
+         eLWaEvs/2jPBclTIqmvvDcjVIHxUzazISymDI48g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mike Kravetz <mike.kravetz@oracle.com>,
-        Jann Horn <jannh@google.com>,
-        Youquan Song <youquan.song@intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jan Kara <jack@suse.cz>, John Hubbard <jhubbard@nvidia.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>,
+        stable@vger.kernel.org, Ralph Campbell <rcampbell@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 569/593] hugetlb: address ref count racing in prep_compound_gigantic_page
-Date:   Mon, 12 Jul 2021 08:12:09 +0200
-Message-Id: <20210712060957.472489781@linuxfoundation.org>
+Subject: [PATCH 5.10 570/593] include/linux/huge_mm.h: remove extern keyword
+Date:   Mon, 12 Jul 2021 08:12:10 +0200
+Message-Id: <20210712060957.628614519@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
 References: <20210712060843.180606720@linuxfoundation.org>
@@ -49,210 +42,164 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Kravetz <mike.kravetz@oracle.com>
+From: Ralph Campbell <rcampbell@nvidia.com>
 
-[ Upstream commit 7118fc2906e2925d7edb5ed9c8a57f2a5f23b849 ]
+[ Upstream commit ebfe1b8f6ea5d83d8c1aa18ddd8ede432a7414e7 ]
 
-In [1], Jann Horn points out a possible race between
-prep_compound_gigantic_page and __page_cache_add_speculative.  The root
-cause of the possible race is prep_compound_gigantic_page uncondittionally
-setting the ref count of pages to zero.  It does this because
-prep_compound_gigantic_page is handed a 'group' of pages from an allocator
-and needs to convert that group of pages to a compound page.  The ref
-count of each page in this 'group' is one as set by the allocator.
-However, the ref count of compound page tail pages must be zero.
+The external function definitions don't need the "extern" keyword.  Remove
+them so future changes don't copy the function definition style.
 
-The potential race comes about when ref counted pages are returned from
-the allocator.  When this happens, other mm code could also take a
-reference on the page.  __page_cache_add_speculative is one such example.
-Therefore, prep_compound_gigantic_page can not just set the ref count of
-pages to zero as it does today.  Doing so would lose the reference taken
-by any other code.  This would lead to BUGs in code checking ref counts
-and could possibly even lead to memory corruption.
-
-There are two possible ways to address this issue.
-
-1) Make all allocators of gigantic groups of pages be able to return a
-   properly constructed compound page.
-
-2) Make prep_compound_gigantic_page be more careful when constructing a
-   compound page.
-
-This patch takes approach 2.
-
-In prep_compound_gigantic_page, use cmpxchg to only set ref count to zero
-if it is one.  If the cmpxchg fails, call synchronize_rcu() in the hope
-that the extra ref count will be driopped during a rcu grace period.  This
-is not a performance critical code path and the wait should be
-accceptable.  If the ref count is still inflated after the grace period,
-then undo any modifications made and return an error.
-
-Currently prep_compound_gigantic_page is type void and does not return
-errors.  Modify the two callers to check for and handle error returns.  On
-error, the caller must free the 'group' of pages as they can not be used
-to form a gigantic page.  After freeing pages, the runtime caller
-(alloc_fresh_huge_page) will retry the allocation once.  Boot time
-allocations can not be retried.
-
-The routine prep_compound_page also unconditionally sets the ref count of
-compound page tail pages to zero.  However, in this case the buddy
-allocator is constructing a compound page from freshly allocated pages.
-The ref count on those freshly allocated pages is already zero, so the
-set_page_count(p, 0) is unnecessary and could lead to confusion.  Just
-remove it.
-
-[1] https://lore.kernel.org/linux-mm/CAG48ez23q0Jy9cuVnwAe7t_fdhMk2S7N5Hdi-GLcCeq5bsfLxw@mail.gmail.com/
-
-Link: https://lkml.kernel.org/r/20210622021423.154662-3-mike.kravetz@oracle.com
-Fixes: 58a84aa92723 ("thp: set compound tail page _count to zero")
-Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-Reported-by: Jann Horn <jannh@google.com>
-Cc: Youquan Song <youquan.song@intel.com>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Jan Kara <jack@suse.cz>
-Cc: John Hubbard <jhubbard@nvidia.com>
-Cc: "Kirill A . Shutemov" <kirill@shutemov.name>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Muchun Song <songmuchun@bytedance.com>
+Link: https://lkml.kernel.org/r/20201106235135.32109-1-rcampbell@nvidia.com
+Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/hugetlb.c    | 72 +++++++++++++++++++++++++++++++++++++++++++------
- mm/page_alloc.c |  1 -
- 2 files changed, 64 insertions(+), 9 deletions(-)
+ include/linux/huge_mm.h | 93 ++++++++++++++++++-----------------------
+ 1 file changed, 41 insertions(+), 52 deletions(-)
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index fa6b0ac6c280..2c29f9b426a5 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1552,9 +1552,9 @@ static void prep_new_huge_page(struct hstate *h, struct page *page, int nid)
- 	spin_unlock(&hugetlb_lock);
- }
+diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+index 42dc994c8897..e72787731a5b 100644
+--- a/include/linux/huge_mm.h
++++ b/include/linux/huge_mm.h
+@@ -7,43 +7,37 @@
  
--static void prep_compound_gigantic_page(struct page *page, unsigned int order)
-+static bool prep_compound_gigantic_page(struct page *page, unsigned int order)
+ #include <linux/fs.h> /* only for vma_is_dax() */
+ 
+-extern vm_fault_t do_huge_pmd_anonymous_page(struct vm_fault *vmf);
+-extern int copy_huge_pmd(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+-			 pmd_t *dst_pmd, pmd_t *src_pmd, unsigned long addr,
+-			 struct vm_area_struct *vma);
+-extern void huge_pmd_set_accessed(struct vm_fault *vmf, pmd_t orig_pmd);
+-extern int copy_huge_pud(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+-			 pud_t *dst_pud, pud_t *src_pud, unsigned long addr,
+-			 struct vm_area_struct *vma);
++vm_fault_t do_huge_pmd_anonymous_page(struct vm_fault *vmf);
++int copy_huge_pmd(struct mm_struct *dst_mm, struct mm_struct *src_mm,
++		  pmd_t *dst_pmd, pmd_t *src_pmd, unsigned long addr,
++		  struct vm_area_struct *vma);
++void huge_pmd_set_accessed(struct vm_fault *vmf, pmd_t orig_pmd);
++int copy_huge_pud(struct mm_struct *dst_mm, struct mm_struct *src_mm,
++		  pud_t *dst_pud, pud_t *src_pud, unsigned long addr,
++		  struct vm_area_struct *vma);
+ 
+ #ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
+-extern void huge_pud_set_accessed(struct vm_fault *vmf, pud_t orig_pud);
++void huge_pud_set_accessed(struct vm_fault *vmf, pud_t orig_pud);
+ #else
+ static inline void huge_pud_set_accessed(struct vm_fault *vmf, pud_t orig_pud)
  {
--	int i;
-+	int i, j;
- 	int nr_pages = 1 << order;
- 	struct page *p = page + 1;
- 
-@@ -1576,11 +1576,48 @@ static void prep_compound_gigantic_page(struct page *page, unsigned int order)
- 		 * after get_user_pages().
- 		 */
- 		__ClearPageReserved(p);
-+		/*
-+		 * Subtle and very unlikely
-+		 *
-+		 * Gigantic 'page allocators' such as memblock or cma will
-+		 * return a set of pages with each page ref counted.  We need
-+		 * to turn this set of pages into a compound page with tail
-+		 * page ref counts set to zero.  Code such as speculative page
-+		 * cache adding could take a ref on a 'to be' tail page.
-+		 * We need to respect any increased ref count, and only set
-+		 * the ref count to zero if count is currently 1.  If count
-+		 * is not 1, we call synchronize_rcu in the hope that a rcu
-+		 * grace period will cause ref count to drop and then retry.
-+		 * If count is still inflated on retry we return an error and
-+		 * must discard the pages.
-+		 */
-+		if (!page_ref_freeze(p, 1)) {
-+			pr_info("HugeTLB unexpected inflated ref count on freshly allocated page\n");
-+			synchronize_rcu();
-+			if (!page_ref_freeze(p, 1))
-+				goto out_error;
-+		}
- 		set_page_count(p, 0);
- 		set_compound_head(p, page);
- 	}
- 	atomic_set(compound_mapcount_ptr(page), -1);
- 	atomic_set(compound_pincount_ptr(page), 0);
-+	return true;
-+
-+out_error:
-+	/* undo tail page modifications made above */
-+	p = page + 1;
-+	for (j = 1; j < i; j++, p = mem_map_next(p, page, j)) {
-+		clear_compound_head(p);
-+		set_page_refcounted(p);
-+	}
-+	/* need to clear PG_reserved on remaining tail pages  */
-+	for (; j < nr_pages; j++, p = mem_map_next(p, page, j))
-+		__ClearPageReserved(p);
-+	set_compound_order(page, 0);
-+	page[1].compound_nr = 0;
-+	__ClearPageHead(page);
-+	return false;
  }
+ #endif
  
- /*
-@@ -1700,7 +1737,9 @@ static struct page *alloc_fresh_huge_page(struct hstate *h,
- 		nodemask_t *node_alloc_noretry)
+-extern vm_fault_t do_huge_pmd_wp_page(struct vm_fault *vmf, pmd_t orig_pmd);
+-extern struct page *follow_trans_huge_pmd(struct vm_area_struct *vma,
+-					  unsigned long addr,
+-					  pmd_t *pmd,
+-					  unsigned int flags);
+-extern bool madvise_free_huge_pmd(struct mmu_gather *tlb,
+-			struct vm_area_struct *vma,
+-			pmd_t *pmd, unsigned long addr, unsigned long next);
+-extern int zap_huge_pmd(struct mmu_gather *tlb,
+-			struct vm_area_struct *vma,
+-			pmd_t *pmd, unsigned long addr);
+-extern int zap_huge_pud(struct mmu_gather *tlb,
+-			struct vm_area_struct *vma,
+-			pud_t *pud, unsigned long addr);
+-extern bool move_huge_pmd(struct vm_area_struct *vma, unsigned long old_addr,
+-			 unsigned long new_addr,
+-			 pmd_t *old_pmd, pmd_t *new_pmd);
+-extern int change_huge_pmd(struct vm_area_struct *vma, pmd_t *pmd,
+-			unsigned long addr, pgprot_t newprot,
+-			unsigned long cp_flags);
++vm_fault_t do_huge_pmd_wp_page(struct vm_fault *vmf, pmd_t orig_pmd);
++struct page *follow_trans_huge_pmd(struct vm_area_struct *vma,
++				   unsigned long addr, pmd_t *pmd,
++				   unsigned int flags);
++bool madvise_free_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
++			   pmd_t *pmd, unsigned long addr, unsigned long next);
++int zap_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma, pmd_t *pmd,
++		 unsigned long addr);
++int zap_huge_pud(struct mmu_gather *tlb, struct vm_area_struct *vma, pud_t *pud,
++		 unsigned long addr);
++bool move_huge_pmd(struct vm_area_struct *vma, unsigned long old_addr,
++		   unsigned long new_addr, pmd_t *old_pmd, pmd_t *new_pmd);
++int change_huge_pmd(struct vm_area_struct *vma, pmd_t *pmd, unsigned long addr,
++		    pgprot_t newprot, unsigned long cp_flags);
+ vm_fault_t vmf_insert_pfn_pmd_prot(struct vm_fault *vmf, pfn_t pfn,
+ 				   pgprot_t pgprot, bool write);
+ 
+@@ -101,13 +95,13 @@ enum transparent_hugepage_flag {
+ struct kobject;
+ struct kobj_attribute;
+ 
+-extern ssize_t single_hugepage_flag_store(struct kobject *kobj,
+-				 struct kobj_attribute *attr,
+-				 const char *buf, size_t count,
+-				 enum transparent_hugepage_flag flag);
+-extern ssize_t single_hugepage_flag_show(struct kobject *kobj,
+-				struct kobj_attribute *attr, char *buf,
+-				enum transparent_hugepage_flag flag);
++ssize_t single_hugepage_flag_store(struct kobject *kobj,
++				   struct kobj_attribute *attr,
++				   const char *buf, size_t count,
++				   enum transparent_hugepage_flag flag);
++ssize_t single_hugepage_flag_show(struct kobject *kobj,
++				  struct kobj_attribute *attr, char *buf,
++				  enum transparent_hugepage_flag flag);
+ extern struct kobj_attribute shmem_enabled_attr;
+ 
+ #define HPAGE_PMD_ORDER (HPAGE_PMD_SHIFT-PAGE_SHIFT)
+@@ -187,12 +181,11 @@ bool transparent_hugepage_active(struct vm_area_struct *vma);
+ 	(transparent_hugepage_flags &					\
+ 	 (1<<TRANSPARENT_HUGEPAGE_USE_ZERO_PAGE_FLAG))
+ 
+-extern unsigned long thp_get_unmapped_area(struct file *filp,
+-		unsigned long addr, unsigned long len, unsigned long pgoff,
+-		unsigned long flags);
++unsigned long thp_get_unmapped_area(struct file *filp, unsigned long addr,
++		unsigned long len, unsigned long pgoff, unsigned long flags);
+ 
+-extern void prep_transhuge_page(struct page *page);
+-extern void free_transhuge_page(struct page *page);
++void prep_transhuge_page(struct page *page);
++void free_transhuge_page(struct page *page);
+ bool is_transparent_hugepage(struct page *page);
+ 
+ bool can_split_huge_page(struct page *page, int *pextra_pins);
+@@ -230,16 +223,12 @@ void __split_huge_pud(struct vm_area_struct *vma, pud_t *pud,
+ 			__split_huge_pud(__vma, __pud, __address);	\
+ 	}  while (0)
+ 
+-extern int hugepage_madvise(struct vm_area_struct *vma,
+-			    unsigned long *vm_flags, int advice);
+-extern void vma_adjust_trans_huge(struct vm_area_struct *vma,
+-				    unsigned long start,
+-				    unsigned long end,
+-				    long adjust_next);
+-extern spinlock_t *__pmd_trans_huge_lock(pmd_t *pmd,
+-		struct vm_area_struct *vma);
+-extern spinlock_t *__pud_trans_huge_lock(pud_t *pud,
+-		struct vm_area_struct *vma);
++int hugepage_madvise(struct vm_area_struct *vma, unsigned long *vm_flags,
++		     int advice);
++void vma_adjust_trans_huge(struct vm_area_struct *vma, unsigned long start,
++			   unsigned long end, long adjust_next);
++spinlock_t *__pmd_trans_huge_lock(pmd_t *pmd, struct vm_area_struct *vma);
++spinlock_t *__pud_trans_huge_lock(pud_t *pud, struct vm_area_struct *vma);
+ 
+ static inline int is_swap_pmd(pmd_t pmd)
  {
- 	struct page *page;
-+	bool retry = false;
+@@ -302,7 +291,7 @@ struct page *follow_devmap_pmd(struct vm_area_struct *vma, unsigned long addr,
+ struct page *follow_devmap_pud(struct vm_area_struct *vma, unsigned long addr,
+ 		pud_t *pud, int flags, struct dev_pagemap **pgmap);
  
-+retry:
- 	if (hstate_is_gigantic(h))
- 		page = alloc_gigantic_page(h, gfp_mask, nid, nmask);
- 	else
-@@ -1709,8 +1748,21 @@ static struct page *alloc_fresh_huge_page(struct hstate *h,
- 	if (!page)
- 		return NULL;
+-extern vm_fault_t do_huge_pmd_numa_page(struct vm_fault *vmf, pmd_t orig_pmd);
++vm_fault_t do_huge_pmd_numa_page(struct vm_fault *vmf, pmd_t orig_pmd);
  
--	if (hstate_is_gigantic(h))
--		prep_compound_gigantic_page(page, huge_page_order(h));
-+	if (hstate_is_gigantic(h)) {
-+		if (!prep_compound_gigantic_page(page, huge_page_order(h))) {
-+			/*
-+			 * Rare failure to convert pages to compound page.
-+			 * Free pages and try again - ONCE!
-+			 */
-+			free_gigantic_page(page, huge_page_order(h));
-+			if (!retry) {
-+				retry = true;
-+				goto retry;
-+			}
-+			pr_warn("HugeTLB page can not be used due to unexpected inflated ref count\n");
-+			return NULL;
-+		}
-+	}
- 	prep_new_huge_page(h, page, page_to_nid(page));
- 
- 	return page;
-@@ -2490,10 +2542,14 @@ static void __init gather_bootmem_prealloc(void)
- 
- 		VM_BUG_ON(!hstate_is_gigantic(h));
- 		WARN_ON(page_count(page) != 1);
--		prep_compound_gigantic_page(page, huge_page_order(h));
--		WARN_ON(PageReserved(page));
--		prep_new_huge_page(h, page, page_to_nid(page));
--		put_page(page); /* free it into the hugepage allocator */
-+		if (prep_compound_gigantic_page(page, huge_page_order(h))) {
-+			WARN_ON(PageReserved(page));
-+			prep_new_huge_page(h, page, page_to_nid(page));
-+			put_page(page); /* add to the hugepage allocator */
-+		} else {
-+			free_gigantic_page(page, huge_page_order(h));
-+			pr_warn("HugeTLB page can not be used due to unexpected inflated ref count\n");
-+		}
- 
- 		/*
- 		 * We need to restore the 'stolen' pages to totalram_pages
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index e30d88efd7fb..3fd7f82d6f7f 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -701,7 +701,6 @@ void prep_compound_page(struct page *page, unsigned int order)
- 	__SetPageHead(page);
- 	for (i = 1; i < nr_pages; i++) {
- 		struct page *p = page + i;
--		set_page_count(p, 0);
- 		p->mapping = TAIL_MAPPING;
- 		set_compound_head(p, page);
- 	}
+ extern struct page *huge_zero_page;
+ extern unsigned long huge_zero_pfn;
 -- 
 2.30.2
 
