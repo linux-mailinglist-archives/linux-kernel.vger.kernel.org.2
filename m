@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FC023C4912
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A3D53C4F97
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237543AbhGLGlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:41:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54638 "EHLO mail.kernel.org"
+        id S243786AbhGLH02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:26:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237160AbhGLGeK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:34:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A909461004;
-        Mon, 12 Jul 2021 06:30:26 +0000 (UTC)
+        id S242378AbhGLHAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:00:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A50F761004;
+        Mon, 12 Jul 2021 06:57:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071427;
-        bh=5o2n+l26Ib9tNFL6BDYO0UlE95HGon5XJz3BxCal8Kg=;
+        s=korg; t=1626073036;
+        bh=WLRr2AH/ukP99VXx1bgtGviXADj4uW/c0+gMLB3GQNM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b+foaZcqN9YLdVrJ565z0IZaOsydgV9rfkyUg98Hwl+GD6OAroOjt5BieFhBXuCbb
-         UyOlvTmKi2Rroht6YJ5KTxLqmHK7dRxnAyHOQKplHgC4gCHgebH6Bb0Hj9Uqpn9uzO
-         sDatr+KbvEZr+ISCykZjrWbH8lnqbavq7DQsASDg=
+        b=Eud5RfTIB8qOLohR8kXYfy27DAcK+t6vME8NRFpu8c5iJIQnqbusuuafdfbN12DrX
+         CTD7Q4v1Ihd69kLYpUWGnKSgPdyEnRFcxuNWBdMQ8xYNUUFpLA1RCUT6XutVKc65NH
+         hgLtverbAEmCzq7lpYO9Gw0/IS32PMxPFv0H9vw4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Subject: [PATCH 5.10 027/593] gfs2: Fix underflow in gfs2_page_mkwrite
+        stable@vger.kernel.org, Yun Zhou <yun.zhou@windriver.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.12 104/700] seq_buf: Make trace_seq_putmem_hex() support data longer than 8
 Date:   Mon, 12 Jul 2021 08:03:07 +0200
-Message-Id: <20210712060846.174195369@linuxfoundation.org>
+Message-Id: <20210712060939.525028505@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,37 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andreas Gruenbacher <agruenba@redhat.com>
+From: Yun Zhou <yun.zhou@windriver.com>
 
-commit d3c51c55cb9274dd43c156f1f26b5eb4d5f2d58c upstream.
+commit 6a2cbc58d6c9d90cd74288cc497c2b45815bc064 upstream.
 
-On filesystems with a block size smaller than PAGE_SIZE and non-empty
-files smaller then PAGE_SIZE, gfs2_page_mkwrite could end up allocating
-excess blocks beyond the end of the file, similar to fallocate.  This
-doesn't make sense; fix it.
+Since the raw memory 'data' does not go forward, it will dump repeated
+data if the data length is more than 8. If we want to dump longer data
+blocks, we need to repeatedly call macro SEQ_PUT_HEX_FIELD. I think it
+is a bit redundant, and multiple function calls also affect the performance.
 
-Reported-by: Bob Peterson <rpeterso@redhat.com>
-Fixes: 184b4e60853d ("gfs2: Fix end-of-file handling in gfs2_page_mkwrite")
-Cc: stable@vger.kernel.org # v5.5+
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Link: https://lore.kernel.org/lkml/20210625122453.5e2fe304@oasis.local.home/
+Link: https://lkml.kernel.org/r/20210626032156.47889-2-yun.zhou@windriver.com
+
+Cc: stable@vger.kernel.org
+Fixes: 6d2289f3faa7 ("tracing: Make trace_seq_putmem_hex() more robust")
+Signed-off-by: Yun Zhou <yun.zhou@windriver.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/gfs2/file.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ lib/seq_buf.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/fs/gfs2/file.c
-+++ b/fs/gfs2/file.c
-@@ -474,8 +474,8 @@ static vm_fault_t gfs2_page_mkwrite(stru
- 	file_update_time(vmf->vma->vm_file);
+--- a/lib/seq_buf.c
++++ b/lib/seq_buf.c
+@@ -243,12 +243,14 @@ int seq_buf_putmem_hex(struct seq_buf *s
+ 			break;
  
- 	/* page is wholly or partially inside EOF */
--	if (offset > size - PAGE_SIZE)
--		length = offset_in_page(size);
-+	if (size - offset < PAGE_SIZE)
-+		length = size - offset;
- 	else
- 		length = PAGE_SIZE;
+ 		/* j increments twice per loop */
+-		len -= j / 2;
+ 		hex[j++] = ' ';
  
+ 		seq_buf_putmem(s, hex, j);
+ 		if (seq_buf_has_overflowed(s))
+ 			return -1;
++
++		len -= start_len;
++		data += start_len;
+ 	}
+ 	return 0;
+ }
 
 
