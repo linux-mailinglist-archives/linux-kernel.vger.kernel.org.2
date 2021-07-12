@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60E913C4963
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AEE43C56DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238943AbhGLGoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:44:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55532 "EHLO mail.kernel.org"
+        id S1358117AbhGLIZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:25:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237854AbhGLGez (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:34:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 655E461004;
-        Mon, 12 Jul 2021 06:31:57 +0000 (UTC)
+        id S1348587AbhGLHlH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:41:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2AA9360FF3;
+        Mon, 12 Jul 2021 07:38:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071517;
-        bh=VcFcH5ns65QNQL6Uh4A/eiq75KTpr/4XR8S+9m8uuIU=;
+        s=korg; t=1626075498;
+        bh=6ZrR1ymv8LTmt10RCYBoPgMQIITczbUgsWc1rlMEc7w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZUciRvjZ+SuXCoETx9P5GXEU2VBey+UG0UsIgTAGeqkDPW0sLM4SERIaaygkwg3Ex
-         Siw5N1P/mPWMVG4TKiFnRb3Vmd7JvS5mF3cb5l/KLq5AtVmQFXw2EUXC5vG7uBdp1G
-         QvNX/vMa80ftg52PnA04rDmm3LPPrCy8eQ4J6Lj0=
+        b=vfoY6UQ+tjw7dSjwYcYZoAYtNAkJkTrXlfMhA7va+jp/s3637cGu7DrC1omM03yIV
+         Re8JX3GCTlX8b4rn7kqjXi6ScpdLsd+g06kUqkEon0nuM8/wArI/1NDUxhJ/UpgbGr
+         FCbGKgjr5XGoGe+z08+paYgcJR8wJMgv0L+IdTNk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ezequiel Garcia <ezequiel@collabora.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 102/593] staging: media: rkvdec: fix pm_runtime_get_sync() usage count
+Subject: [PATCH 5.13 239/800] platform/x86: toshiba_acpi: Fix missing error code in toshiba_acpi_setup_keyboard()
 Date:   Mon, 12 Jul 2021 08:04:22 +0200
-Message-Id: <20210712060854.436514257@linuxfoundation.org>
+Message-Id: <20210712060947.389083663@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-[ Upstream commit e90812c47b958407b54d05780dc483fdc1b57a93 ]
+[ Upstream commit 28e367127718a9cb85d615a71e152f7acee41bfc ]
 
-The pm_runtime_get_sync() internally increments the
-dev->power.usage_count without decrementing it, even on errors.
-Replace it by the new pm_runtime_resume_and_get(), introduced by:
-commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-in order to properly decrement the usage counter, avoiding
-a potential PM usage counter leak.
+The error code is missing in this code scenario, add the error code
+'-EINVAL' to the return value 'error'.
 
-Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Eliminate the follow smatch warning:
+
+drivers/platform/x86/toshiba_acpi.c:2834 toshiba_acpi_setup_keyboard()
+warn: missing error code 'error'.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Link: https://lore.kernel.org/r/1622628348-87035-1-git-send-email-jiapeng.chong@linux.alibaba.com
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/media/rkvdec/rkvdec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/platform/x86/toshiba_acpi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/media/rkvdec/rkvdec.c
-index 1263991de76f..b630e161d4ce 100644
---- a/drivers/staging/media/rkvdec/rkvdec.c
-+++ b/drivers/staging/media/rkvdec/rkvdec.c
-@@ -691,7 +691,7 @@ static void rkvdec_device_run(void *priv)
- 	if (WARN_ON(!desc))
- 		return;
+diff --git a/drivers/platform/x86/toshiba_acpi.c b/drivers/platform/x86/toshiba_acpi.c
+index fa7232ad8c39..352508d30467 100644
+--- a/drivers/platform/x86/toshiba_acpi.c
++++ b/drivers/platform/x86/toshiba_acpi.c
+@@ -2831,6 +2831,7 @@ static int toshiba_acpi_setup_keyboard(struct toshiba_acpi_dev *dev)
  
--	ret = pm_runtime_get_sync(rkvdec->dev);
-+	ret = pm_runtime_resume_and_get(rkvdec->dev);
- 	if (ret < 0) {
- 		rkvdec_job_finish_no_pm(ctx, VB2_BUF_STATE_ERROR);
- 		return;
+ 	if (!dev->info_supported && !dev->system_event_supported) {
+ 		pr_warn("No hotkey query interface found\n");
++		error = -EINVAL;
+ 		goto err_remove_filter;
+ 	}
+ 
 -- 
 2.30.2
 
