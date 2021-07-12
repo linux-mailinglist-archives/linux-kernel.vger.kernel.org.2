@@ -2,131 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E95C63C4358
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 06:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB6983C435B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 06:56:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230455AbhGLEz1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 12 Jul 2021 00:55:27 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:56122 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229477AbhGLEz0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 00:55:26 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=zhaoyan.liao@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UfRdTTt_1626065556;
-Received: from 30.43.41.248(mailfrom:zhaoyan.liao@linux.alibaba.com fp:SMTPD_---0UfRdTTt_1626065556)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 12 Jul 2021 12:52:37 +0800
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.32\))
-Subject: Re: [PATCH] use 64bit timer for hpet
-From:   Linux <zhaoyan.liao@linux.alibaba.com>
-In-Reply-To: <87o8bdoy11.ffs@nanos.tec.linutronix.de>
-Date:   Mon, 12 Jul 2021 12:52:36 +0800
-Cc:     mingo@redhat.com, hpa@zytor.com, dwmw@amazon.co.uk,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        songmuchun@bytedance.com, likunkun@bytedance.com,
-        guancheng.rjk@alibaba-inc.com, duanxiongchun@bytedance.com,
-        wenan.mao@linux.alibaba.com
-Content-Transfer-Encoding: 8BIT
-Message-Id: <2CC6F5DA-B186-4A06-92B4-B763386F0D0A@linux.alibaba.com>
-References: <1625213625-25745-1-git-send-email-zhaoyan.liao@linux.alibaba.com>
- <875yxmqw2s.ffs@nanos.tec.linutronix.de>
- <8A96C0F7-FBE4-4B23-8565-E814401BF927@linux.alibaba.com>
- <87o8bdoy11.ffs@nanos.tec.linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-X-Mailer: Apple Mail (2.3654.40.0.2.32)
+        id S230212AbhGLE6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 00:58:50 -0400
+Received: from mga11.intel.com ([192.55.52.93]:13679 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229466AbhGLE6t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 00:58:49 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10042"; a="206908220"
+X-IronPort-AV: E=Sophos;i="5.84,232,1620716400"; 
+   d="scan'208";a="206908220"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jul 2021 21:56:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,232,1620716400"; 
+   d="scan'208";a="648109673"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 11 Jul 2021 21:55:59 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1m2nz5-000GpG-1T; Mon, 12 Jul 2021 04:55:59 +0000
+Date:   Mon, 12 Jul 2021 12:55:18 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ 5ee9d54dbe0c9b897ecd090207da14476a3e0814
+Message-ID: <60ebcb36.IGl4RPMBHrf74LZh%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gleixner,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: 5ee9d54dbe0c9b897ecd090207da14476a3e0814  Merge branch 'irq/urgent'
 
-> Sorry, keeping the softirq from running for 3 minutes is simply out of
-> spec. If the sysadmin decides to do so, then he can keep the pieces.
+elapsed time: 721m
 
-It is because the kernel thread is busy that the clocksource_watchdog 
-thread is not scheduled, not softirq.
+configs tested: 126
+configs skipped: 3
 
->   4) For any system which actually has to use HPET the 64bit HPET is
->      overhead. HPET access is slow enough already.
-I agree with your opinion. If it is unreasonable to use a 64-bit HPET timer, 
-is there any other more reasonable method to avoid misjudgment of the 
-tsc clock?
-I will also try to switch to other methods.
-Thanks
-           Zhaoyan Liao
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+ia64                             allmodconfig
+sh                           se7206_defconfig
+mips                      bmips_stb_defconfig
+powerpc                         wii_defconfig
+arm                         assabet_defconfig
+mips                        vocore2_defconfig
+nios2                               defconfig
+powerpc                 mpc8313_rdb_defconfig
+xtensa                          iss_defconfig
+sh                           se7343_defconfig
+sh                ecovec24-romimage_defconfig
+ia64                         bigsur_defconfig
+mips                          ath79_defconfig
+arm                        spear3xx_defconfig
+sh                          lboxre2_defconfig
+powerpc                     akebono_defconfig
+ia64                                defconfig
+m68k                        mvme16x_defconfig
+mips                    maltaup_xpa_defconfig
+arm                        clps711x_defconfig
+powerpc                    klondike_defconfig
+arm                           omap1_defconfig
+arm                           spitz_defconfig
+sh                   rts7751r2dplus_defconfig
+powerpc                     powernv_defconfig
+powerpc                     ep8248e_defconfig
+powerpc                      arches_defconfig
+powerpc                      cm5200_defconfig
+x86_64                            allnoconfig
+xtensa                  cadence_csp_defconfig
+m68k                       m5208evb_defconfig
+powerpc                      walnut_defconfig
+sh                   sh7770_generic_defconfig
+csky                                defconfig
+arm                           viper_defconfig
+sh                     magicpanelr2_defconfig
+powerpc                   motionpro_defconfig
+powerpc                     pq2fads_defconfig
+parisc                           alldefconfig
+powerpc                   lite5200b_defconfig
+mips                          rb532_defconfig
+m68k                        mvme147_defconfig
+powerpc                     rainier_defconfig
+powerpc                     asp8347_defconfig
+arm                         lubbock_defconfig
+powerpc                     kilauea_defconfig
+powerpc                      ppc44x_defconfig
+m68k                             allyesconfig
+i386                             alldefconfig
+powerpc                 mpc8540_ads_defconfig
+m68k                         apollo_defconfig
+sh                               j2_defconfig
+arm                          pcm027_defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20210712
+i386                 randconfig-a004-20210712
+i386                 randconfig-a006-20210712
+i386                 randconfig-a001-20210712
+i386                 randconfig-a002-20210712
+i386                 randconfig-a003-20210712
+i386                 randconfig-a014-20210711
+i386                 randconfig-a015-20210711
+i386                 randconfig-a011-20210711
+i386                 randconfig-a013-20210711
+i386                 randconfig-a012-20210711
+i386                 randconfig-a016-20210711
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
+clang tested configs:
+x86_64               randconfig-b001-20210712
+x86_64               randconfig-b001-20210711
+x86_64               randconfig-a005-20210711
+x86_64               randconfig-a004-20210711
+x86_64               randconfig-a002-20210711
+x86_64               randconfig-a003-20210711
+x86_64               randconfig-a006-20210711
+x86_64               randconfig-a001-20210711
+x86_64               randconfig-a013-20210712
+x86_64               randconfig-a014-20210712
+x86_64               randconfig-a015-20210712
+x86_64               randconfig-a012-20210712
+x86_64               randconfig-a016-20210712
+x86_64               randconfig-a011-20210712
 
-> 2021年7月8日 下午7:17，Thomas Gleixner <tglx@linutronix.de> 写道：
-> 
-> Liao!
-> 
-> On Thu, Jul 08 2021 at 11:11, Linux wrote:
->>> 2021年7月7日 下午6:04，Thomas Gleixner <tglx@linutronix.de> 写道：
->>> Seriously? The wrap-around time for 32bit HPET @24MHz is ~3 minutes.
->> 
->> In some cases, our system will be very busy, and the timeout of 3 minutes 
->> is not an exaggeration. Then, the system considers that the tsc clock is 
->> inaccurate and switches the tsc clock to the hpet clock, which brings 
->> greater performance overhead.
-> 
-> Sorry, keeping the softirq from running for 3 minutes is simply out of
-> spec. If the sysadmin decides to do so, then he can keep the pieces.
-> 
->>> Aside of that the reason why the kernel does not support 64bit HPET is
->>> that there are HPETs which advertise 64bit support, but the
->>> implementation is buggy.
->> 
->> Can you tell me what is the buggy with the 64-bit hpet clock?
-> 
-> I forgot the details, but when I tried moving HPET to 64bit it did not
-> work on one of my machines due to an erratum and other people reported
-> similar issues on different CPUs/chipsets.
-> 
-> TBH, I'm not interested at all to chase down these buggy implementations
-> and have yet another pile of quirks.
-> 
->> In my opinion, it is unreasonable to use a lower-bit width clock to
->> calibrate a higher-bit width clock, and the hardware already supports
->> the higher-bit width.
-> 
-> There is nothing unreasonable with that, really:
-> 
->   1) This is not about calibration. It's a sanity check to catch
->      broken TSC implementations.
-> 
->      Aside of that it _IS_ very reasonable for calibration. We even
->      calibrate TSC via the PIT if we can't get the frequency from
->      the firmware.
-> 
->   2) Expecting that the softirq runs within 3 minutes is very
->      reasonable.
-> 
->   3) On modern machines this is usually not longer necessary. If you
->      are confident that the TSC on your system is stable then you
->      can disable the watchdog via the kernel command line.
-> 
->      There is also effort underway to come up with reasonable
->      conditions to avoid the watchdog on those CPUs in the first place.
-> 
->   4) For any system which actually has to use HPET the 64bit HPET is
->      overhead. HPET access is slow enough already.
-> 
->   5) 32bit HPET has to be supported as well and just claiming that a
->      64bit access on 32bit HPET does not matter is just wishful
->      thinking. Aside of breaking 32bit kernels along the way which
->      is just a NONO.
-> 
-> #4 and #5 were the main reason why I gave up on it - aside of the
-> discovery that there are broken implementations out there.
-> 
-> So no, there is really no compelling reason to support 64bit HPETs.
-> 
-> Thanks,
-> 
->        tglx
-> ---
-> P.S: Please trim your replies.
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
