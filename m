@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C71D3C4C32
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A82DA3C5852
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240893AbhGLHCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:02:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41192 "EHLO mail.kernel.org"
+        id S1351066AbhGLIpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:45:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236596AbhGLGqI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:46:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2F4F6113C;
-        Mon, 12 Jul 2021 06:41:34 +0000 (UTC)
+        id S1350742AbhGLHvP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:51:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 98A5C61993;
+        Mon, 12 Jul 2021 07:47:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072095;
-        bh=Kp+1xGUgv/CiBoWsPqgHBz5hTIJJRLcPsGhwhCzHy8c=;
+        s=korg; t=1626076079;
+        bh=WTEvsIAmrpllBbfXHPbAVYkA9Jbt/USLULqXoBvrepQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oKGwzF0YrFm3rj8+wdFvIxFq8+gZVv/OkRDmKeHECFDJdJI1xHh4cxqm/woevb+RY
-         jGBJ2JwBmyudVQViZ8RrFGj2vHnqcOhCDixRs+DX5gaL+sN/NNMlgQ7ptpP/fAZm3g
-         9PXXNbRF5eQ9dcQslfmsBVfiKSnziGF4fGuj1ha8=
+        b=z0AMqbEPZQ73ggYytoW3fmti7CyV4SgNESpF8sg0kBoVjbhmH5UYFyS+aFfXnjVp8
+         rMAikdWMs269sMAreOJVAbzQuFIjSn4ldIcTQa6iD76MjN9OdxzIWVt6Cb6Ppxqe3g
+         dFqKEGlY/4S974/PQO22K7DKnQV8HDLrjX6w6z0k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 353/593] ath10k: Fix an error code in ath10k_add_interface()
+        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 490/800] mt76: mt7615: fix NULL pointer dereference in tx_prepare_skb()
 Date:   Mon, 12 Jul 2021 08:08:33 +0200
-Message-Id: <20210712060925.090843801@linuxfoundation.org>
+Message-Id: <20210712061019.277449146@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,41 +39,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Li <yang.lee@linux.alibaba.com>
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-[ Upstream commit e9ca70c735ce66fc6a0e02c8b6958434f74ef8de ]
+[ Upstream commit 8d3cdc1bbb1d355f0ebef973175ae5fd74286feb ]
 
-When the code execute this if statement, the value of ret is 0.
-However, we can see from the ath10k_warn() log that the value of
-ret should be -EINVAL.
+Fix theoretical NULL pointer dereference in mt7615_tx_prepare_skb and
+mt7663_usb_sdio_tx_prepare_skb routines. This issue has been identified
+by code analysis.
 
-Clean up smatch warning:
-
-drivers/net/wireless/ath/ath10k/mac.c:5596 ath10k_add_interface() warn:
-missing error code 'ret'
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Fixes: ccec9038c721 ("ath10k: enable raw encap mode and software crypto engine")
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1621939577-62218-1-git-send-email-yang.lee@linux.alibaba.com
+Fixes: 6aa4ed7927f11 ("mt76: mt7615: implement DMA support for MT7622")
+Fixes: 4bb586bc33b98 ("mt76: mt7663u: sync probe sampling with rate configuration")
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/mediatek/mt76/mt7615/pci_mac.c  | 5 +++--
+ drivers/net/wireless/mediatek/mt76/mt7615/usb_sdio.c | 5 +++--
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index f5c0f9bac840..36183fdfb7f0 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -5482,6 +5482,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/pci_mac.c b/drivers/net/wireless/mediatek/mt76/mt7615/pci_mac.c
+index d7cbef752f9f..cc278d8cb888 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7615/pci_mac.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7615/pci_mac.c
+@@ -131,20 +131,21 @@ int mt7615_tx_prepare_skb(struct mt76_dev *mdev, void *txwi_ptr,
+ 			  struct mt76_tx_info *tx_info)
+ {
+ 	struct mt7615_dev *dev = container_of(mdev, struct mt7615_dev, mt76);
+-	struct mt7615_sta *msta = container_of(wcid, struct mt7615_sta, wcid);
+ 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(tx_info->skb);
+ 	struct ieee80211_key_conf *key = info->control.hw_key;
+ 	int pid, id;
+ 	u8 *txwi = (u8 *)txwi_ptr;
+ 	struct mt76_txwi_cache *t;
++	struct mt7615_sta *msta;
+ 	void *txp;
  
- 	if (arvif->nohwcrypt &&
- 	    !test_bit(ATH10K_FLAG_RAW_MODE, &ar->dev_flags)) {
-+		ret = -EINVAL;
- 		ath10k_warn(ar, "cryptmode module param needed for sw crypto\n");
- 		goto err;
- 	}
++	msta = wcid ? container_of(wcid, struct mt7615_sta, wcid) : NULL;
+ 	if (!wcid)
+ 		wcid = &dev->mt76.global_wcid;
+ 
+ 	pid = mt76_tx_status_skb_add(mdev, wcid, tx_info->skb);
+ 
+-	if (info->flags & IEEE80211_TX_CTL_RATE_CTRL_PROBE) {
++	if ((info->flags & IEEE80211_TX_CTL_RATE_CTRL_PROBE) && msta) {
+ 		struct mt7615_phy *phy = &dev->phy;
+ 
+ 		if ((info->hw_queue & MT_TX_HW_QUEUE_EXT_PHY) && mdev->phy2)
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/usb_sdio.c b/drivers/net/wireless/mediatek/mt76/mt7615/usb_sdio.c
+index f8d3673c2cae..7010101f6b14 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7615/usb_sdio.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7615/usb_sdio.c
+@@ -191,14 +191,15 @@ int mt7663_usb_sdio_tx_prepare_skb(struct mt76_dev *mdev, void *txwi_ptr,
+ 				   struct ieee80211_sta *sta,
+ 				   struct mt76_tx_info *tx_info)
+ {
+-	struct mt7615_sta *msta = container_of(wcid, struct mt7615_sta, wcid);
+ 	struct mt7615_dev *dev = container_of(mdev, struct mt7615_dev, mt76);
+ 	struct sk_buff *skb = tx_info->skb;
+ 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
++	struct mt7615_sta *msta;
+ 	int pad;
+ 
++	msta = wcid ? container_of(wcid, struct mt7615_sta, wcid) : NULL;
+ 	if ((info->flags & IEEE80211_TX_CTL_RATE_CTRL_PROBE) &&
+-	    !msta->rate_probe) {
++	    msta && !msta->rate_probe) {
+ 		/* request to configure sampling rate */
+ 		spin_lock_bh(&dev->mt76.lock);
+ 		mt7615_mac_set_rates(&dev->phy, msta, &info->control.rates[0],
 -- 
 2.30.2
 
