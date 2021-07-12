@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC5FC3C56BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 515AB3C492A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348450AbhGLIXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:23:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46908 "EHLO mail.kernel.org"
+        id S237784AbhGLGmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:42:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54744 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347703AbhGLHkB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:40:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA2F961482;
-        Mon, 12 Jul 2021 07:35:36 +0000 (UTC)
+        id S236014AbhGLGdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:33:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 32FC361006;
+        Mon, 12 Jul 2021 06:29:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075337;
-        bh=Oc/muHyp/WkHhV5wU9XuA3AaY1FnzFrQ4sTl6k/RmDA=;
+        s=korg; t=1626071389;
+        bh=DCoDh/6bdPNhMbB3ZzcvusrmCO/G5PZDLJG3xZaJw1w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VjYEEhTDY+JP+a0IbmGdSJpo1hc19pE+unQAHieELgypy+v0NfwUs8DkvtO9hRNor
-         Ota6eafNTEPQKUKYqr9JhBzTdNjwvTdd2GmgQYE4EqS3mQJ2AMhxhMm/WAlWxP8Uzs
-         pCTkPgUUlvPBf3R5NKwkMG1wZ0pP6y1/B5ehmEvE=
+        b=ICpAth+yRdGBc3mL+qziZwQUq26J9gZU3bIDxi0WFVP9b33pd2BT64mjCVuqP7jgO
+         wgxOLOxVlqvdePJ90o6MSAewCV6szwvwp5/oW6wwcV2kmTw0z/KC7b2y5Q6ImOnh5w
+         U1Z4+j0OEPtmLbQVW4KOMbLRAoCPb2oQRS+vPIkk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 185/800] media: dvbdev: fix error logic at dvb_register_device()
-Date:   Mon, 12 Jul 2021 08:03:28 +0200
-Message-Id: <20210712060939.065588098@linuxfoundation.org>
+        Stephen Brennan <stephen.s.brennan@oracle.com>,
+        Lukas Czerner <lczerner@redhat.com>,
+        Junxiao Bi <junxiao.bi@oracle.com>,
+        Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 5.10 049/593] ext4: use ext4_grp_locked_error in mb_find_extent
+Date:   Mon, 12 Jul 2021 08:03:29 +0200
+Message-Id: <20210712060848.526119111@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: Stephen Brennan <stephen.s.brennan@oracle.com>
 
-[ Upstream commit 1fec2ecc252301110e4149e6183fa70460d29674 ]
+commit cd84bbbac12a173a381a64c6ec8b76a5277b87b5 upstream.
 
-As reported by smatch:
+Commit 5d1b1b3f492f ("ext4: fix BUG when calling ext4_error with locked
+block group") introduces ext4_grp_locked_error to handle unlocking a
+group in error cases. Otherwise, there is a possibility of a sleep while
+atomic. However, since 43c73221b3b1 ("ext4: replace BUG_ON with WARN_ON
+in mb_find_extent()"), mb_find_extent() has contained a ext4_error()
+call while a group spinlock is held. Replace this with
+ext4_grp_locked_error.
 
-	drivers/media/dvb-core/dvbdev.c: drivers/media/dvb-core/dvbdev.c:510 dvb_register_device() warn: '&dvbdev->list_head' not removed from list
-	drivers/media/dvb-core/dvbdev.c: drivers/media/dvb-core/dvbdev.c:530 dvb_register_device() warn: '&dvbdev->list_head' not removed from list
-	drivers/media/dvb-core/dvbdev.c: drivers/media/dvb-core/dvbdev.c:545 dvb_register_device() warn: '&dvbdev->list_head' not removed from list
+Fixes: 43c73221b3b1 ("ext4: replace BUG_ON with WARN_ON in mb_find_extent()")
+Cc: <stable@vger.kernel.org> # 4.14+
+Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
+Reviewed-by: Lukas Czerner <lczerner@redhat.com>
+Reviewed-by: Junxiao Bi <junxiao.bi@oracle.com>
+Link: https://lore.kernel.org/r/20210623232114.34457-1-stephen.s.brennan@oracle.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-The error logic inside dvb_register_device() doesn't remove
-devices from the dvb_adapter_list in case of errors.
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/dvb-core/dvbdev.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/ext4/mballoc.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/dvb-core/dvbdev.c b/drivers/media/dvb-core/dvbdev.c
-index 3862ddc86ec4..795d9bfaba5c 100644
---- a/drivers/media/dvb-core/dvbdev.c
-+++ b/drivers/media/dvb-core/dvbdev.c
-@@ -506,6 +506,7 @@ int dvb_register_device(struct dvb_adapter *adap, struct dvb_device **pdvbdev,
- 			break;
- 
- 	if (minor == MAX_DVB_MINORS) {
-+		list_del (&dvbdev->list_head);
- 		kfree(dvbdevfops);
- 		kfree(dvbdev);
- 		up_write(&minor_rwsem);
-@@ -526,6 +527,7 @@ int dvb_register_device(struct dvb_adapter *adap, struct dvb_device **pdvbdev,
- 		      __func__);
- 
- 		dvb_media_device_free(dvbdev);
-+		list_del (&dvbdev->list_head);
- 		kfree(dvbdevfops);
- 		kfree(dvbdev);
- 		mutex_unlock(&dvbdev_register_lock);
-@@ -541,6 +543,7 @@ int dvb_register_device(struct dvb_adapter *adap, struct dvb_device **pdvbdev,
- 		pr_err("%s: failed to create device dvb%d.%s%d (%ld)\n",
- 		       __func__, adap->num, dnames[type], id, PTR_ERR(clsdev));
- 		dvb_media_device_free(dvbdev);
-+		list_del (&dvbdev->list_head);
- 		kfree(dvbdevfops);
- 		kfree(dvbdev);
- 		return PTR_ERR(clsdev);
--- 
-2.30.2
-
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -1597,10 +1597,11 @@ static int mb_find_extent(struct ext4_bu
+ 	if (ex->fe_start + ex->fe_len > EXT4_CLUSTERS_PER_GROUP(e4b->bd_sb)) {
+ 		/* Should never happen! (but apparently sometimes does?!?) */
+ 		WARN_ON(1);
+-		ext4_error(e4b->bd_sb, "corruption or bug in mb_find_extent "
+-			   "block=%d, order=%d needed=%d ex=%u/%d/%d@%u",
+-			   block, order, needed, ex->fe_group, ex->fe_start,
+-			   ex->fe_len, ex->fe_logical);
++		ext4_grp_locked_error(e4b->bd_sb, e4b->bd_group, 0, 0,
++			"corruption or bug in mb_find_extent "
++			"block=%d, order=%d needed=%d ex=%u/%d/%d@%u",
++			block, order, needed, ex->fe_group, ex->fe_start,
++			ex->fe_len, ex->fe_logical);
+ 		ex->fe_len = 0;
+ 		ex->fe_start = 0;
+ 		ex->fe_group = 0;
 
 
