@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BFA73C5768
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A8F3C5765
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354573AbhGLIcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:32:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53604 "EHLO mail.kernel.org"
+        id S1352607AbhGLIc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:32:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349825AbhGLHos (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1349826AbhGLHos (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Jul 2021 03:44:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 49674613D8;
-        Mon, 12 Jul 2021 07:41:29 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96DB6613E0;
+        Mon, 12 Jul 2021 07:41:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075689;
-        bh=WF1o1BNDVfyRUhkdNwe1t1ceJv4yBBYYlDm+gtp63fY=;
+        s=korg; t=1626075692;
+        bh=4ZFQWM60tEvQKLbT6TdHu5+XbApjP44VhT8H+V9pRf4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IWPerlh+4Imnxhrh7NFqlfDoGI9oDGBLD1AZ59+NMenGcPkM1Y9UX6zI+7iNU63oJ
-         7KmRTQDnKhogVqnk59t0+MnQ+Zo3oiqPB6YqWpA0tLUvhO0/HSk8Gp++lT22aiyZ0S
-         DF+0dqTADSBbrr3SFmGAv9+dH2Vi0fJhYNHYRh8s=
+        b=XB4ThPXjX9BTpDQ3K5BKzk0etopC4pjvcvVWiFS8LOc9LpVdp1wwkmLvBsI/f8UpB
+         ONggTfjlMm6BV4n2X5G2mHKTmrbMjgVwV7RPDg5mvb94x8jetfhbJpiIrrX9aS5Smj
+         /kCppk201bE9Xoxee/k3N1+aU0YIBskm9DXOg7nk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrej Picej <andpicej@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 321/800] hwmon: (lm70) Revert "hwmon: (lm70) Add support for ACPI"
-Date:   Mon, 12 Jul 2021 08:05:44 +0200
-Message-Id: <20210712061000.209357245@linuxfoundation.org>
+Subject: [PATCH 5.13 322/800] hwmon: (max31722) Remove non-standard ACPI device IDs
+Date:   Mon, 12 Jul 2021 08:05:45 +0200
+Message-Id: <20210712061000.363077544@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -42,76 +41,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Guenter Roeck <linux@roeck-us.net>
 
-[ Upstream commit ac61c8aae446b9c0fe18981fe721d4a43e283ad6 ]
+[ Upstream commit 97387c2f06bcfd79d04a848d35517b32ee6dca7c ]
 
-This reverts commit b58bd4c6dfe709646ed9efcbba2a70643f9bc873.
+Valid Maxim Integrated ACPI device IDs would start with MXIM,
+not with MAX1. On top of that, ACPI device IDs reflecting chip names
+are almost always invalid.
 
-None of the ACPI IDs introduced with the reverted patch is a valid ACPI
-device ID. Any ACPI users of this driver are advised to use PRP0001 and
-a devicetree-compatible device identification.
+Remove the invalid ACPI IDs.
 
-Fixes: b58bd4c6dfe7 ("hwmon: (lm70) Add support for ACPI")
-Cc: Andrej Picej <andpicej@gmail.com>
+Fixes: 04e1e70afec6 ("hwmon: (max31722) Add support for MAX31722/MAX31723 temperature sensors")
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/lm70.c | 26 +-------------------------
- 1 file changed, 1 insertion(+), 25 deletions(-)
+ drivers/hwmon/max31722.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-diff --git a/drivers/hwmon/lm70.c b/drivers/hwmon/lm70.c
-index 40eab3349904..6b884ea00987 100644
---- a/drivers/hwmon/lm70.c
-+++ b/drivers/hwmon/lm70.c
-@@ -22,10 +22,10 @@
- #include <linux/hwmon.h>
- #include <linux/mutex.h>
- #include <linux/mod_devicetable.h>
-+#include <linux/of.h>
- #include <linux/property.h>
- #include <linux/spi/spi.h>
- #include <linux/slab.h>
+diff --git a/drivers/hwmon/max31722.c b/drivers/hwmon/max31722.c
+index 062eceb7be0d..613338cbcb17 100644
+--- a/drivers/hwmon/max31722.c
++++ b/drivers/hwmon/max31722.c
+@@ -6,7 +6,6 @@
+  * Copyright (c) 2016, Intel Corporation.
+  */
+ 
 -#include <linux/acpi.h>
- 
- #define DRVNAME		"lm70"
- 
-@@ -148,29 +148,6 @@ static const struct of_device_id lm70_of_ids[] = {
- MODULE_DEVICE_TABLE(of, lm70_of_ids);
- #endif
- 
--#ifdef CONFIG_ACPI
--static const struct acpi_device_id lm70_acpi_ids[] = {
--	{
--		.id = "LM000070",
--		.driver_data = LM70_CHIP_LM70,
--	},
--	{
--		.id = "TMP00121",
--		.driver_data = LM70_CHIP_TMP121,
--	},
--	{
--		.id = "LM000071",
--		.driver_data = LM70_CHIP_LM71,
--	},
--	{
--		.id = "LM000074",
--		.driver_data = LM70_CHIP_LM74,
--	},
--	{},
--};
--MODULE_DEVICE_TABLE(acpi, lm70_acpi_ids);
--#endif
+ #include <linux/hwmon.h>
+ #include <linux/hwmon-sysfs.h>
+ #include <linux/kernel.h>
+@@ -133,20 +132,12 @@ static const struct spi_device_id max31722_spi_id[] = {
+ 	{"max31723", 0},
+ 	{}
+ };
 -
- static int lm70_probe(struct spi_device *spi)
- {
- 	struct device *hwmon_dev;
-@@ -217,7 +194,6 @@ static struct spi_driver lm70_driver = {
+-static const struct acpi_device_id __maybe_unused max31722_acpi_id[] = {
+-	{"MAX31722", 0},
+-	{"MAX31723", 0},
+-	{}
+-};
+-
+ MODULE_DEVICE_TABLE(spi, max31722_spi_id);
+ 
+ static struct spi_driver max31722_driver = {
  	.driver = {
- 		.name	= "lm70",
- 		.of_match_table	= of_match_ptr(lm70_of_ids),
--		.acpi_match_table = ACPI_PTR(lm70_acpi_ids),
+ 		.name = "max31722",
+ 		.pm = &max31722_pm_ops,
+-		.acpi_match_table = ACPI_PTR(max31722_acpi_id),
  	},
- 	.id_table = lm70_ids,
- 	.probe	= lm70_probe,
+ 	.probe =            max31722_probe,
+ 	.remove =           max31722_remove,
 -- 
 2.30.2
 
