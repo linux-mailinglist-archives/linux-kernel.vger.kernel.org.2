@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1FF3C561D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE073C4E6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353898AbhGLIPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:15:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44518 "EHLO mail.kernel.org"
+        id S243769AbhGLHSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:18:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343963AbhGLH3G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:29:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0CE5613D8;
-        Mon, 12 Jul 2021 07:24:43 +0000 (UTC)
+        id S241025AbhGLGya (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:54:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8876C61004;
+        Mon, 12 Jul 2021 06:51:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074684;
-        bh=/4WK8nKUvEkJpigdG4z2qQ+j88Y6mH6qhSyZT5i4Rt0=;
+        s=korg; t=1626072700;
+        bh=JiV23D7s319bQuMgVN3/RSbx9xSUP3/IuO9DjcHrKo4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wS466X/8CPTqp8oIpmBfl2jx1vlhS582zCwzYj8jtL1Hr1m8oRMcZrXXcGt7U5/TA
-         tXBxRKZk1Jy1n1AaqQ2GQxGc8XrlLIrtCbN1yzJaHcmxttwPkTaCPfcjdVR+anSTQ8
-         5hopRB6ozQHto8WZnKh6huvtq5KR5Y00CXC6B0Hk=
+        b=wRtZSMaFmOYVkn2KmqEjS20RfN5XMFNTq3u/662Hfj7/7v5j8yCHpkMOv5ovWb8Sa
+         C4jEGuScB/37LmcPsO5c+hindQZ9r8WgDz37AKURjdxU/OLrkc5aS73hPUpp+730XY
+         /uU3DG4vAtY0Zvzl14PENpAc6VmNByswySXGTtlo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 661/700] serial: mvebu-uart: correctly calculate minimal possible baudrate
-Date:   Mon, 12 Jul 2021 08:12:24 +0200
-Message-Id: <20210712061046.225539114@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Biggers <ebiggers@google.com>
+Subject: [PATCH 5.10 585/593] fscrypt: fix derivation of SipHash keys on big endian CPUs
+Date:   Mon, 12 Jul 2021 08:12:25 +0200
+Message-Id: <20210712060959.756747733@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,63 +38,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Eric Biggers <ebiggers@google.com>
 
-[ Upstream commit deeaf963569a0d9d1b08babb771f61bb501a5704 ]
+commit 2fc2b430f559fdf32d5d1dd5ceaa40e12fb77bdf upstream.
 
-For default (x16) scheme which is currently used by mvebu-uart.c driver,
-maximal divisor of UART base clock is 1023*16. Therefore there is limit for
-minimal supported baudrate. This change calculate it correctly and prevents
-setting invalid divisor 0 into hardware registers.
+Typically, the cryptographic APIs that fscrypt uses take keys as byte
+arrays, which avoids endianness issues.  However, siphash_key_t is an
+exception.  It is defined as 'u64 key[2];', i.e. the 128-bit key is
+expected to be given directly as two 64-bit words in CPU endianness.
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Fixes: 68a0db1d7da2 ("serial: mvebu-uart: add function to change baudrate")
-Link: https://lore.kernel.org/r/20210624224909.6350-4-pali@kernel.org
+fscrypt_derive_dirhash_key() and fscrypt_setup_iv_ino_lblk_32_key()
+forgot to take this into account.  Therefore, the SipHash keys used to
+index encrypted+casefolded directories differ on big endian vs. little
+endian platforms, as do the SipHash keys used to hash inode numbers for
+IV_INO_LBLK_32-encrypted directories.  This makes such directories
+non-portable between these platforms.
+
+Fix this by always using the little endian order.  This is a breaking
+change for big endian platforms, but this should be fine in practice
+since these features (encrypt+casefold support, and the IV_INO_LBLK_32
+flag) aren't known to actually be used on any big endian platforms yet.
+
+Fixes: aa408f835d02 ("fscrypt: derive dirhash key for casefolded directories")
+Fixes: e3b1078bedd3 ("fscrypt: add support for IV_INO_LBLK_32 policies")
+Cc: <stable@vger.kernel.org> # v5.6+
+Link: https://lore.kernel.org/r/20210605075033.54424-1-ebiggers@kernel.org
+Signed-off-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+
 ---
- drivers/tty/serial/mvebu-uart.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ fs/crypto/keysetup.c |   40 ++++++++++++++++++++++++++++++++--------
+ 1 file changed, 32 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/tty/serial/mvebu-uart.c b/drivers/tty/serial/mvebu-uart.c
-index 9638ae6aae79..1e26220c7852 100644
---- a/drivers/tty/serial/mvebu-uart.c
-+++ b/drivers/tty/serial/mvebu-uart.c
-@@ -481,7 +481,7 @@ static void mvebu_uart_set_termios(struct uart_port *port,
- 				   struct ktermios *old)
- {
- 	unsigned long flags;
--	unsigned int baud;
-+	unsigned int baud, min_baud, max_baud;
+--- a/fs/crypto/keysetup.c
++++ b/fs/crypto/keysetup.c
+@@ -210,15 +210,40 @@ out_unlock:
+ 	return err;
+ }
  
- 	spin_lock_irqsave(&port->lock, flags);
- 
-@@ -500,16 +500,21 @@ static void mvebu_uart_set_termios(struct uart_port *port,
- 		port->ignore_status_mask |= STAT_RX_RDY(port) | STAT_BRK_ERR;
- 
- 	/*
-+	 * Maximal divisor is 1023 * 16 when using default (x16) scheme.
- 	 * Maximum achievable frequency with simple baudrate divisor is 230400.
- 	 * Since the error per bit frame would be of more than 15%, achieving
- 	 * higher frequencies would require to implement the fractional divisor
- 	 * feature.
- 	 */
--	baud = uart_get_baud_rate(port, termios, old, 0, 230400);
-+	min_baud = DIV_ROUND_UP(port->uartclk, 1023 * 16);
-+	max_baud = 230400;
++/*
++ * Derive a SipHash key from the given fscrypt master key and the given
++ * application-specific information string.
++ *
++ * Note that the KDF produces a byte array, but the SipHash APIs expect the key
++ * as a pair of 64-bit words.  Therefore, on big endian CPUs we have to do an
++ * endianness swap in order to get the same results as on little endian CPUs.
++ */
++static int fscrypt_derive_siphash_key(const struct fscrypt_master_key *mk,
++				      u8 context, const u8 *info,
++				      unsigned int infolen, siphash_key_t *key)
++{
++	int err;
 +
-+	baud = uart_get_baud_rate(port, termios, old, min_baud, max_baud);
- 	if (mvebu_uart_baud_rate_set(port, baud)) {
- 		/* No clock available, baudrate cannot be changed */
- 		if (old)
--			baud = uart_get_baud_rate(port, old, NULL, 0, 230400);
-+			baud = uart_get_baud_rate(port, old, NULL,
-+						  min_baud, max_baud);
- 	} else {
- 		tty_termios_encode_baud_rate(termios, baud, baud);
- 		uart_update_timeout(port, termios->c_cflag, baud);
--- 
-2.30.2
-
++	err = fscrypt_hkdf_expand(&mk->mk_secret.hkdf, context, info, infolen,
++				  (u8 *)key, sizeof(*key));
++	if (err)
++		return err;
++
++	BUILD_BUG_ON(sizeof(*key) != 16);
++	BUILD_BUG_ON(ARRAY_SIZE(key->key) != 2);
++	le64_to_cpus(&key->key[0]);
++	le64_to_cpus(&key->key[1]);
++	return 0;
++}
++
+ int fscrypt_derive_dirhash_key(struct fscrypt_info *ci,
+ 			       const struct fscrypt_master_key *mk)
+ {
+ 	int err;
+ 
+-	err = fscrypt_hkdf_expand(&mk->mk_secret.hkdf, HKDF_CONTEXT_DIRHASH_KEY,
+-				  ci->ci_nonce, FSCRYPT_FILE_NONCE_SIZE,
+-				  (u8 *)&ci->ci_dirhash_key,
+-				  sizeof(ci->ci_dirhash_key));
++	err = fscrypt_derive_siphash_key(mk, HKDF_CONTEXT_DIRHASH_KEY,
++					 ci->ci_nonce, FSCRYPT_FILE_NONCE_SIZE,
++					 &ci->ci_dirhash_key);
+ 	if (err)
+ 		return err;
+ 	ci->ci_dirhash_key_initialized = true;
+@@ -253,10 +278,9 @@ static int fscrypt_setup_iv_ino_lblk_32_
+ 		if (mk->mk_ino_hash_key_initialized)
+ 			goto unlock;
+ 
+-		err = fscrypt_hkdf_expand(&mk->mk_secret.hkdf,
+-					  HKDF_CONTEXT_INODE_HASH_KEY, NULL, 0,
+-					  (u8 *)&mk->mk_ino_hash_key,
+-					  sizeof(mk->mk_ino_hash_key));
++		err = fscrypt_derive_siphash_key(mk,
++						 HKDF_CONTEXT_INODE_HASH_KEY,
++						 NULL, 0, &mk->mk_ino_hash_key);
+ 		if (err)
+ 			goto unlock;
+ 		/* pairs with smp_load_acquire() above */
 
 
