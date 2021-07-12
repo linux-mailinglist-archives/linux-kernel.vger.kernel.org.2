@@ -2,239 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6DB3C5A64
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEE5F3C5A35
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241343AbhGLJyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:54:50 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:32809 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241285AbhGLJyp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 05:54:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1626083518; x=1657619518;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=OYn10sGIjvUeP/VOinw0S9ZPw0l5lGzPAWp1xmE7ti8=;
-  b=HEfH1AzX0Km0sQ33hjK7/iHF/vUZlWi1e0I1dxBR1ZBdsuDp1cnJjNex
-   bZyJ1YWF45cX8ZrLEWiAGyqUbIGFTRjySxM/uD0l9rs0RqlrOPtCK/wDq
-   B8UMxcsN8yLQ+JyHYBUDdTfHQwopHcLEUPs8bdO3wWPmtvjlFQhM3qiz+
-   2ocY90f9xSPVPdS2F6BfR9323JsT/2jT2ofEJcgKbZt61KUJjrdnlnPPn
-   8iGScA1+unzhlE1GtI/3QnujiHMSIKEuNKYiPbEooc47g0/Un4i5PlzJZ
-   tndeElpArjwVyxVPeecxHR5+mjM6HJTo7elrZYVLIA1Burl7o4adPN4CQ
-   w==;
-IronPort-SDR: 2ycqrcX/3xRFGHoxv2znYDoV8Tant6ecJCNmripqiEAyBmU5mvVsNZlP2+uME45x4cHW9EBFoQ
- 7y03CgpzwfwqIAIRMo9wltVL+3mrITVeTcxo9DaDFQRvlk4GdutjLkEi7W+UTrSPvFe0T3rgIS
- SHroSkDN7uetYj2N2QIjkHroclI1k0GgNKk5vfpzRGZLUx4XxS716mxDMcmcifUeWBs8JxMBaQ
- keAKeQ7ZwUY8PgCYVnfT93bHWvOTaTKu6WwG5qgZrB+5xTHjUgNg3ErFj5JWqvDgMSq+AHX7nk
- 11s=
-X-IronPort-AV: E=Sophos;i="5.84,232,1620662400"; 
-   d="scan'208";a="174920201"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 12 Jul 2021 17:51:57 +0800
-IronPort-SDR: Y/oe6eMbhBEb55P/NpCns6E6b3Sx+7jnGmo4irqmD/2XFrbzAYxSrTqK+xcO054nSDeefHr83j
- p3TD2V5kWQrgmgWlW9k6zlYDhpQYw8pPTEC7MWZBJLzR9PnPBRd8ZTIXTORjAUVxmnrql5esZ5
- KaPzs8Wgbo1KjMelfr9OgoBObMXzuZfNCy93ykGF7nNqxpgU9xtsZ71vIl/fNjE3Lo5G+ze7sx
- YGgSzuhy05j/ywH0S5vq4EvEdxc8OAgUphZk1hmTsUtne0O4ZlSog6lXeFk/N4tjsrttIIdx22
- HhGcObmw1wJOq6dMjSqjfbgh
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 02:30:04 -0700
-IronPort-SDR: pIaf8R13+lBggPE2a4HPzjhM8UYXPkzazqjiNQtktrCm215Es6guBCTiqrNAMOj+alQnhmD9EL
- dMaNobQARn7STaa+9kUzs3OcDcP2+RK8/ehLO3uZHfIkm4IoirAP7J/yIirg5ImVmKwY2RZq7a
- lxCpp26tka1v2Blnbu2bW5I6oTsj0MnaYjvp7XS8jyt8hO11TL/uanuoC90D6cOlywU4ErBHn6
- dXFUbOoUx8wH0ZhDINrub8fVqSrEOVxmtQEeDCyWlNXnnypnPNas3zpwyb4wv1CDZNJj/lPuDn
- jYs=
-WDCIronportException: Internal
-Received: from bxygm33.sdcorp.global.sandisk.com ([10.0.231.247])
-  by uls-op-cesaip02.wdc.com with ESMTP; 12 Jul 2021 02:51:53 -0700
-From:   Avri Altman <avri.altman@wdc.com>
-To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <avi.shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>, cang@codeaurora.org,
-        stanley.chu@mediatek.com, Avri Altman <avri.altman@wdc.com>
-Subject: [PATCH v12 06/12] scsi: ufshpb: Region inactivation in host mode
-Date:   Mon, 12 Jul 2021 12:50:33 +0300
-Message-Id: <20210712095039.8093-7-avri.altman@wdc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210712095039.8093-1-avri.altman@wdc.com>
-References: <20210712095039.8093-1-avri.altman@wdc.com>
+        id S237660AbhGLJmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:42:36 -0400
+Received: from mga17.intel.com ([192.55.52.151]:12193 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237631AbhGLJjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 05:39:20 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10042"; a="190332116"
+X-IronPort-AV: E=Sophos;i="5.84,232,1620716400"; 
+   d="scan'208";a="190332116"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 02:36:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,232,1620716400"; 
+   d="scan'208";a="491957343"
+Received: from michael-optiplex-9020.sh.intel.com (HELO localhost) ([10.239.159.182])
+  by FMSMGA003.fm.intel.com with ESMTP; 12 Jul 2021 02:36:30 -0700
+Date:   Mon, 12 Jul 2021 17:50:34 +0800
+From:   Yang Weijiang <weijiang.yang@intel.com>
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Yang Weijiang <weijiang.yang@intel.com>, pbonzini@redhat.com,
+        seanjc@google.com, vkuznets@redhat.com, wei.w.wang@intel.com,
+        like.xu.linux@gmail.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 06/13] KVM: x86/vmx: Save/Restore host
+ MSR_ARCH_LBR_CTL state
+Message-ID: <20210712095034.GD12162@intel.com>
+References: <1625825111-6604-1-git-send-email-weijiang.yang@intel.com>
+ <1625825111-6604-7-git-send-email-weijiang.yang@intel.com>
+ <CALMp9eQEs9pUyy1PpwLPG0_PtF07tR2Opw+1b=w4-knOwYPvvg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALMp9eQEs9pUyy1PpwLPG0_PtF07tR2Opw+1b=w4-knOwYPvvg@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In host mode, the host is expected to send HPB-WRITE-BUFFER with
-buffer-id = 0x1 when it inactivates a region.
-
-Use the map-requests pool as there is no point in assigning a
-designated cache for umap-requests.
-
-Signed-off-by: Avri Altman <avri.altman@wdc.com>
-Reviewed-by: Daejun Park <daejun7.park@samsung.com>
----
- drivers/scsi/ufs/ufshpb.c | 47 +++++++++++++++++++++++++++++++++------
- drivers/scsi/ufs/ufshpb.h |  1 +
- 2 files changed, 41 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-index 1eadfc12b6a7..7b48a9ab1534 100644
---- a/drivers/scsi/ufs/ufshpb.c
-+++ b/drivers/scsi/ufs/ufshpb.c
-@@ -692,7 +692,8 @@ int ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
- }
- 
- static struct ufshpb_req *ufshpb_get_req(struct ufshpb_lu *hpb,
--					 int rgn_idx, enum req_opf dir)
-+					 int rgn_idx, enum req_opf dir,
-+					 bool atomic)
- {
- 	struct ufshpb_req *rq;
- 	struct request *req;
-@@ -706,7 +707,7 @@ static struct ufshpb_req *ufshpb_get_req(struct ufshpb_lu *hpb,
- 	req = blk_get_request(hpb->sdev_ufs_lu->request_queue, dir,
- 			      BLK_MQ_REQ_NOWAIT);
- 
--	if ((PTR_ERR(req) == -EWOULDBLOCK) && (--retries > 0)) {
-+	if (!atomic && (PTR_ERR(req) == -EWOULDBLOCK) && (--retries > 0)) {
- 		usleep_range(3000, 3100);
- 		goto retry;
- 	}
-@@ -737,7 +738,7 @@ static struct ufshpb_req *ufshpb_get_map_req(struct ufshpb_lu *hpb,
- 	struct ufshpb_req *map_req;
- 	struct bio *bio;
- 
--	map_req = ufshpb_get_req(hpb, srgn->rgn_idx, REQ_OP_SCSI_IN);
-+	map_req = ufshpb_get_req(hpb, srgn->rgn_idx, REQ_OP_SCSI_IN, false);
- 	if (!map_req)
- 		return NULL;
- 
-@@ -914,6 +915,8 @@ static void ufshpb_execute_umap_req(struct ufshpb_lu *hpb,
- 	rq->cmd_len = HPB_WRITE_BUFFER_CMD_LENGTH;
- 
- 	blk_execute_rq_nowait(NULL, req, 1, ufshpb_umap_req_compl_fn);
-+
-+	hpb->stats.umap_req_cnt++;
- }
- 
- static int ufshpb_execute_map_req(struct ufshpb_lu *hpb,
-@@ -1090,12 +1093,13 @@ static void ufshpb_purge_active_subregion(struct ufshpb_lu *hpb,
- }
- 
- static int ufshpb_issue_umap_req(struct ufshpb_lu *hpb,
--				 struct ufshpb_region *rgn)
-+				 struct ufshpb_region *rgn,
-+				 bool atomic)
- {
- 	struct ufshpb_req *umap_req;
- 	int rgn_idx = rgn ? rgn->rgn_idx : 0;
- 
--	umap_req = ufshpb_get_req(hpb, rgn_idx, REQ_OP_SCSI_OUT);
-+	umap_req = ufshpb_get_req(hpb, rgn_idx, REQ_OP_SCSI_OUT, atomic);
- 	if (!umap_req)
- 		return -ENOMEM;
- 
-@@ -1104,13 +1108,19 @@ static int ufshpb_issue_umap_req(struct ufshpb_lu *hpb,
- 	return 0;
- }
- 
-+static int ufshpb_issue_umap_single_req(struct ufshpb_lu *hpb,
-+					struct ufshpb_region *rgn)
-+{
-+	return ufshpb_issue_umap_req(hpb, rgn, true);
-+}
-+
- static int ufshpb_issue_umap_all_req(struct ufshpb_lu *hpb)
- {
--	return ufshpb_issue_umap_req(hpb, NULL);
-+	return ufshpb_issue_umap_req(hpb, NULL, false);
- }
- 
- static void __ufshpb_evict_region(struct ufshpb_lu *hpb,
--				  struct ufshpb_region *rgn)
-+				 struct ufshpb_region *rgn)
- {
- 	struct victim_select_info *lru_info;
- 	struct ufshpb_subregion *srgn;
-@@ -1145,6 +1155,14 @@ static int ufshpb_evict_region(struct ufshpb_lu *hpb, struct ufshpb_region *rgn)
- 			goto out;
- 		}
- 
-+		if (hpb->is_hcm) {
-+			spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
-+			ret = ufshpb_issue_umap_single_req(hpb, rgn);
-+			spin_lock_irqsave(&hpb->rgn_state_lock, flags);
-+			if (ret)
-+				goto out;
-+		}
-+
- 		__ufshpb_evict_region(hpb, rgn);
- 	}
- out:
-@@ -1279,6 +1297,18 @@ static int ufshpb_add_region(struct ufshpb_lu *hpb, struct ufshpb_region *rgn)
- 				"LRU full (%d), choose victim %d\n",
- 				atomic_read(&lru_info->active_cnt),
- 				victim_rgn->rgn_idx);
-+
-+			if (hpb->is_hcm) {
-+				spin_unlock_irqrestore(&hpb->rgn_state_lock,
-+						       flags);
-+				ret = ufshpb_issue_umap_single_req(hpb,
-+								victim_rgn);
-+				spin_lock_irqsave(&hpb->rgn_state_lock,
-+						  flags);
-+				if (ret)
-+					goto out;
-+			}
-+
- 			__ufshpb_evict_region(hpb, victim_rgn);
- 		}
- 
-@@ -1848,6 +1878,7 @@ ufshpb_sysfs_attr_show_func(rb_noti_cnt);
- ufshpb_sysfs_attr_show_func(rb_active_cnt);
- ufshpb_sysfs_attr_show_func(rb_inactive_cnt);
- ufshpb_sysfs_attr_show_func(map_req_cnt);
-+ufshpb_sysfs_attr_show_func(umap_req_cnt);
- 
- static struct attribute *hpb_dev_stat_attrs[] = {
- 	&dev_attr_hit_cnt.attr,
-@@ -1856,6 +1887,7 @@ static struct attribute *hpb_dev_stat_attrs[] = {
- 	&dev_attr_rb_active_cnt.attr,
- 	&dev_attr_rb_inactive_cnt.attr,
- 	&dev_attr_map_req_cnt.attr,
-+	&dev_attr_umap_req_cnt.attr,
- 	NULL,
- };
- 
-@@ -1981,6 +2013,7 @@ static void ufshpb_stat_init(struct ufshpb_lu *hpb)
- 	hpb->stats.rb_active_cnt = 0;
- 	hpb->stats.rb_inactive_cnt = 0;
- 	hpb->stats.map_req_cnt = 0;
-+	hpb->stats.umap_req_cnt = 0;
- }
- 
- static void ufshpb_param_init(struct ufshpb_lu *hpb)
-diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
-index 33d163e76d41..0204e4fec6bc 100644
---- a/drivers/scsi/ufs/ufshpb.h
-+++ b/drivers/scsi/ufs/ufshpb.h
-@@ -191,6 +191,7 @@ struct ufshpb_stats {
- 	u64 rb_inactive_cnt;
- 	u64 map_req_cnt;
- 	u64 pre_req_cnt;
-+	u64 umap_req_cnt;
- };
- 
- struct ufshpb_lu {
--- 
-2.25.1
-
+On Fri, Jul 09, 2021 at 03:54:53PM -0700, Jim Mattson wrote:
+> On Fri, Jul 9, 2021 at 2:51 AM Yang Weijiang <weijiang.yang@intel.com> wrote:
+> >
+> > If host is using MSR_ARCH_LBR_CTL then save it before vm-entry
+> > and reload it after vm-exit.
+> 
+> I don't see anything being done here "before VM-entry" or "after
+> VM-exit." This code seems to be invoked on vcpu_load and vcpu_put.
+> 
+> In any case, I don't see why this one MSR is special. It seems that if
+> the host is using the architectural LBR MSRs, then *all* of the host
+> architectural LBR MSRs have to be saved on vcpu_load and restored on
+> vcpu_put. Shouldn't  kvm_load_guest_fpu() and kvm_put_guest_fpu() do
+> that via the calls to kvm_save_current_fpu(vcpu->arch.user_fpu) and
+> restore_fpregs_from_fpstate(&vcpu->arch.user_fpu->state)?
+I looked back on the discussion thread:
+https://patchwork.kernel.org/project/kvm/patch/20210303135756.1546253-8-like.xu@linux.intel.com/
+not sure why this code is added, but IMO, although fpu save/restore in outer loop
+covers this LBR MSR, but the operation points are far away from vm-entry/exit
+point, i.e., the guest MSR setting could leak to host side for a signicant
+long of time, it may cause host side profiling accuracy. if we save/restore it
+manually, it'll mitigate the issue signifcantly.
