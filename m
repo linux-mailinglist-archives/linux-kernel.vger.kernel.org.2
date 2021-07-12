@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 150D13C587C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89DF63C4CCE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357020AbhGLIs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:48:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41422 "EHLO mail.kernel.org"
+        id S240101AbhGLHIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:08:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243759AbhGLHw4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:52:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD3ED60200;
-        Mon, 12 Jul 2021 07:50:06 +0000 (UTC)
+        id S237074AbhGLGr6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:47:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3583D61006;
+        Mon, 12 Jul 2021 06:43:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076207;
-        bh=IidLABSP/cvQqAYnVF1bmFpl/Ddrb1rDg7hFz5bvJJE=;
+        s=korg; t=1626072224;
+        bh=h+lgG8+4wcrAD5i1gON8eiuOg9ZmPnR9YhqQqe5PkRo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V4bjeEjFNPQoSgJ1I0ggTvuTLylkWPoKRQT8Na6FMSWFG+ZH3YNGESFDB/nIYunbL
-         ICHS9UFBBu0urz1YGp5DLYbFUnyNMQ/1lKUz+6tJAprmnc63prpvz58QbQ1W9bNqvd
-         2VOogLcOJYtUW/0rPNEc6wOvg3ChUlZA3Ea8tyV8=
+        b=HDwsEBfh0AjjMJiIJfFhR9tiPtfyOJ+RtxS8Dn+bUXKIslDezn70o4aMody201wPY
+         B9WBHJvHY7qJKewIRwAiTD0HCBtvTu4aGjl5N/SwYlX5DhcLRcIjOGClgTZsprbumb
+         rjhYBHyFHDGrurGSGXlikbzhmC5CLID0AAlFGeFo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yixing Liu <liuyixing1@huawei.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Sasha Neftin <sasha.neftin@intel.com>,
+        Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 544/800] RDMA/hns: Fix uninitialized variable
+Subject: [PATCH 5.10 407/593] e1000e: Check the PCIm state
 Date:   Mon, 12 Jul 2021 08:09:27 +0200
-Message-Id: <20210712061025.222445991@linuxfoundation.org>
+Message-Id: <20210712060932.572623407@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +42,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yixing Liu <liuyixing1@huawei.com>
+From: Sasha Neftin <sasha.neftin@intel.com>
 
-[ Upstream commit 2a38c0f10e6d7d28e06ff1eb1f350804c4850275 ]
+[ Upstream commit 2e7256f12cdb16eaa2515b6231d665044a07c51a ]
 
-A random value will be returned if the condition below is not met, so it
-needs to be initialized.
+Complete to commit def4ec6dce393e ("e1000e: PCIm function state support")
+Check the PCIm state only on CSME systems. There is no point to do this
+check on non CSME systems.
+This patch fixes a generation a false-positive warning:
+"Error in exiting dmoff"
 
-Fixes: 9ea9a53ea93b ("RDMA/hns: Add mapped page count checking for MTR")
-Link: https://lore.kernel.org/r/1624011020-16992-3-git-send-email-liweihang@huawei.com
-Signed-off-by: Yixing Liu <liuyixing1@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: def4ec6dce39 ("e1000e: PCIm function state support")
+Signed-off-by: Sasha Neftin <sasha.neftin@intel.com>
+Tested-by: Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/hns/hns_roce_mr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/intel/e1000e/netdev.c | 24 ++++++++++++----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
-index 79b3c3023fe7..b8454dcb0318 100644
---- a/drivers/infiniband/hw/hns/hns_roce_mr.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
-@@ -776,7 +776,7 @@ int hns_roce_mtr_map(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr,
- 	struct ib_device *ibdev = &hr_dev->ib_dev;
- 	struct hns_roce_buf_region *r;
- 	unsigned int i, mapped_cnt;
--	int ret;
-+	int ret = 0;
+diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
+index a0948002ddf8..b3ad95ac3d85 100644
+--- a/drivers/net/ethernet/intel/e1000e/netdev.c
++++ b/drivers/net/ethernet/intel/e1000e/netdev.c
+@@ -5222,18 +5222,20 @@ static void e1000_watchdog_task(struct work_struct *work)
+ 			pm_runtime_resume(netdev->dev.parent);
  
- 	/*
- 	 * Only use the first page address as root ba when hopnum is 0, this
+ 			/* Checking if MAC is in DMoff state*/
+-			pcim_state = er32(STATUS);
+-			while (pcim_state & E1000_STATUS_PCIM_STATE) {
+-				if (tries++ == dmoff_exit_timeout) {
+-					e_dbg("Error in exiting dmoff\n");
+-					break;
+-				}
+-				usleep_range(10000, 20000);
++			if (er32(FWSM) & E1000_ICH_FWSM_FW_VALID) {
+ 				pcim_state = er32(STATUS);
+-
+-				/* Checking if MAC exited DMoff state */
+-				if (!(pcim_state & E1000_STATUS_PCIM_STATE))
+-					e1000_phy_hw_reset(&adapter->hw);
++				while (pcim_state & E1000_STATUS_PCIM_STATE) {
++					if (tries++ == dmoff_exit_timeout) {
++						e_dbg("Error in exiting dmoff\n");
++						break;
++					}
++					usleep_range(10000, 20000);
++					pcim_state = er32(STATUS);
++
++					/* Checking if MAC exited DMoff state */
++					if (!(pcim_state & E1000_STATUS_PCIM_STATE))
++						e1000_phy_hw_reset(&adapter->hw);
++				}
+ 			}
+ 
+ 			/* update snapshot of PHY registers on LSC */
 -- 
 2.30.2
 
