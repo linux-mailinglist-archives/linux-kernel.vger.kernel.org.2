@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E513C4677
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:25:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5A513C46DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235191AbhGLG0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:26:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38964 "EHLO mail.kernel.org"
+        id S236045AbhGLG3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:29:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234927AbhGLGYS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:24:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 49FF86101E;
-        Mon, 12 Jul 2021 06:20:38 +0000 (UTC)
+        id S235062AbhGLGZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:25:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21BC96112D;
+        Mon, 12 Jul 2021 06:22:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626070838;
-        bh=4sFPbBuQ5IRBCCq/SxeCYLyFVNI3DnTMInot2pPyprw=;
+        s=korg; t=1626070959;
+        bh=U2hnAXVGH7qKphcmLp2nGecuXZQb4Qdzm8rghmgSN7k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2RGEMIf7Dm0/m6LSd0hagGCIv+9ghwLMtMqkx6VPYmX67MqwitwPMgmbynJIaiIeY
-         M/jjfPiyBxaaRen9lEkY/k/GYXEVDosoxhdvByJ/9PkIc5INd94vCom4wGtSP9CciE
-         eBAEW3OL0CqNSkr17egc08AXvOhWgo86AZA4o9VQ=
+        b=tHzsNy1MA6gLo7fyKSTFwNXIhfdEJzrhuU3UjB3c/rpxSZpC6QZdYYVoBsE6eWcjs
+         3rVV/HWaNrEE3NfeLlqQs1dQ4RZhyES1a+KjoBnvb3qADaeN+iI89/CKDguRXRK/I3
+         HneM3MPOv0AHP/aZd25Z0GdPwcNvplz2lw9YopYc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 160/348] crypto: omap-sham - Fix PM reference leak in omap sham ops
-Date:   Mon, 12 Jul 2021 08:09:04 +0200
-Message-Id: <20210712060722.214241935@linuxfoundation.org>
+Subject: [PATCH 5.4 161/348] mmc: usdhi6rol0: fix error return code in usdhi6_probe()
+Date:   Mon, 12 Jul 2021 08:09:05 +0200
+Message-Id: <20210712060722.323145472@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060659.886176320@linuxfoundation.org>
 References: <20210712060659.886176320@linuxfoundation.org>
@@ -40,46 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit ca323b2c61ec321eb9f2179a405b9c34cdb4f553 ]
+[ Upstream commit 2f9ae69e5267f53e89e296fccee291975a85f0eb ]
 
-pm_runtime_get_sync will increment pm usage counter
-even it failed. Forgetting to putting operation will
-result in reference leak here. We fix it by replacing
-it with pm_runtime_resume_and_get to keep usage counter
-balanced.
+Fix to return a negative error code from the error handling case instead
+of 0, as done elsewhere in this function.
 
-Fixes: 604c31039dae4 ("crypto: omap-sham - Check for return value from pm_runtime_get_sync")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: 75fa9ea6e3c0 ("mmc: add a driver for the Renesas usdhi6rol0 SD/SDIO host controller")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Link: https://lore.kernel.org/r/20210508020321.1677-1-thunder.leizhen@huawei.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/omap-sham.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mmc/host/usdhi6rol0.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/crypto/omap-sham.c b/drivers/crypto/omap-sham.c
-index d7c0c982ba43..f80db1eb2994 100644
---- a/drivers/crypto/omap-sham.c
-+++ b/drivers/crypto/omap-sham.c
-@@ -364,7 +364,7 @@ static int omap_sham_hw_init(struct omap_sham_dev *dd)
- {
- 	int err;
+diff --git a/drivers/mmc/host/usdhi6rol0.c b/drivers/mmc/host/usdhi6rol0.c
+index 6eba2441c7ef..96b0f81a2032 100644
+--- a/drivers/mmc/host/usdhi6rol0.c
++++ b/drivers/mmc/host/usdhi6rol0.c
+@@ -1803,6 +1803,7 @@ static int usdhi6_probe(struct platform_device *pdev)
  
--	err = pm_runtime_get_sync(dd->dev);
-+	err = pm_runtime_resume_and_get(dd->dev);
- 	if (err < 0) {
- 		dev_err(dd->dev, "failed to get sync: %d\n", err);
- 		return err;
-@@ -2236,7 +2236,7 @@ static int omap_sham_suspend(struct device *dev)
- 
- static int omap_sham_resume(struct device *dev)
- {
--	int err = pm_runtime_get_sync(dev);
-+	int err = pm_runtime_resume_and_get(dev);
- 	if (err < 0) {
- 		dev_err(dev, "failed to get sync: %d\n", err);
- 		return err;
+ 	version = usdhi6_read(host, USDHI6_VERSION);
+ 	if ((version & 0xfff) != 0xa0d) {
++		ret = -EPERM;
+ 		dev_err(dev, "Version not recognized %x\n", version);
+ 		goto e_clk_off;
+ 	}
 -- 
 2.30.2
 
