@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79BF83C48EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F16F93C4FCB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:44:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238631AbhGLGlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:41:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55424 "EHLO mail.kernel.org"
+        id S245454AbhGLH2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:28:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236300AbhGLGcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:32:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1271610D0;
-        Mon, 12 Jul 2021 06:29:32 +0000 (UTC)
+        id S242012AbhGLHAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:00:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BEEAC61156;
+        Mon, 12 Jul 2021 06:58:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071373;
-        bh=VjnYI8xQUXJW6z2gqk3m3e5NP29u+x/ApUeMkI2A5sM=;
+        s=korg; t=1626073083;
+        bh=ftsgTyNN8YwqA/D2EcpGk7SRYHQtXEe5bADHUUVDX+g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ocbygljvn6JXXZjT2JIs7Afn2jXB+yBIZ5pcfbPmBrFJH+ElAYV6y0GQ5x4YscS+2
-         Xrbvxbfqn6JeHfADMszGZgnkaR9XAVpA+2aN0YUiNEJ6BABAZl9nDqT7gzX9u8dknW
-         1IG1xeA+CkRXVz8RTvLrqwiESDn3+XNil681OCV4=
+        b=O8Ou2mRcBIMUIL5Cw6VdbQZbYhsdxrO6DwnL5ZcaxNR5UUL2CWdJMKnTfK3TQwBu5
+         tf4uPC1dloOXIWTBrDSxQeSqU59AivEhF/Wrq40tq4HNxwE7CowWkGtxILBIQDoY9s
+         lJE7+C/Qog5l4mH6v/aM0pfl5NyFHwzgMN3P39+M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org,
-        Zhang Yi <yi.zhang@huawei.com>, Jan Kara <jack@suse.cz>,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.10 042/593] ext4: cleanup in-core orphan list if ext4_truncate() failed to get a transaction handle
+        stable@vger.kernel.org,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 119/700] spi: Make of_register_spi_device also set the fwnode
 Date:   Mon, 12 Jul 2021 08:03:22 +0200
-Message-Id: <20210712060847.797932241@linuxfoundation.org>
+Message-Id: <20210712060941.761194157@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,54 +41,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Yi <yi.zhang@huawei.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-commit b9a037b7f3c401d3c63e0423e56aef606b1ffaaf upstream.
+[ Upstream commit 0e793ba77c18382f08e440260fe72bc6fce2a3cb ]
 
-In ext4_orphan_cleanup(), if ext4_truncate() failed to get a transaction
-handle, it didn't remove the inode from the in-core orphan list, which
-may probably trigger below error dump in ext4_destroy_inode() during the
-final iput() and could lead to memory corruption on the later orphan
-list changes.
+Currently, the SPI core doesn't set the struct device fwnode pointer
+when it creates a new SPI device. This means when the device is
+registered the fwnode is NULL and the check in device_add which sets
+the fwnode->dev pointer is skipped. This wasn't previously an issue,
+however these two patches:
 
- EXT4-fs (sda): Inode 6291467 (00000000b8247c67): orphan list check failed!
- 00000000b8247c67: 0001f30a 00000004 00000000 00000023  ............#...
- 00000000e24cde71: 00000006 014082a3 00000000 00000000  ......@.........
- 0000000072c6a5ee: 00000000 00000000 00000000 00000000  ................
- ...
+commit 4731210c09f5 ("gpiolib: Bind gpio_device to a driver to enable
+fw_devlink=on by default")
+commit ced2af419528 ("gpiolib: Don't probe gpio_device if it's not the
+primary device")
 
-This patch fix this by cleanup in-core orphan list manually if
-ext4_truncate() return error.
+Added some code to the GPIO core which relies on using that
+fwnode->dev pointer to determine if a driver is bound to the fwnode
+and if not bind a stub GPIO driver. This means the GPIO providers
+behind SPI will get both the expected driver and this stub driver
+causing the stub driver to fail if it attempts to request any pin
+configuration. For example on my system:
 
-Cc: stable@kernel.org
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20210507071904.160808-1-yi.zhang@huawei.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+madera-pinctrl madera-pinctrl: pin gpio5 already requested by madera-pinctrl; cannot claim for gpiochip3
+madera-pinctrl madera-pinctrl: pin-4 (gpiochip3) status -22
+madera-pinctrl madera-pinctrl: could not request pin 4 (gpio5) from group aif1  on device madera-pinctrl
+gpio_stub_drv gpiochip3: Error applying setting, reverse things back
+gpio_stub_drv: probe of gpiochip3 failed with error -22
 
+The firmware node on the device created by the GPIO framework is set
+through the of_node pointer hence things generally actually work,
+however that fwnode->dev is never set, as the check was skipped at
+device_add time. This fix appears to match how the I2C subsystem
+handles the same situation.
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20210421101402.8468-1-ckeepax@opensource.cirrus.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/super.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/spi/spi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -3099,8 +3099,15 @@ static void ext4_orphan_cleanup(struct s
- 			inode_lock(inode);
- 			truncate_inode_pages(inode->i_mapping, inode->i_size);
- 			ret = ext4_truncate(inode);
--			if (ret)
-+			if (ret) {
-+				/*
-+				 * We need to clean up the in-core orphan list
-+				 * manually if ext4_truncate() failed to get a
-+				 * transaction handle.
-+				 */
-+				ext4_orphan_del(NULL, inode);
- 				ext4_std_error(inode->i_sb, ret);
-+			}
- 			inode_unlock(inode);
- 			nr_truncates++;
- 		} else {
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index e067c54e87dd..789354ee6a11 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -2066,6 +2066,7 @@ of_register_spi_device(struct spi_controller *ctlr, struct device_node *nc)
+ 	/* Store a pointer to the node in the device structure */
+ 	of_node_get(nc);
+ 	spi->dev.of_node = nc;
++	spi->dev.fwnode = of_fwnode_handle(nc);
+ 
+ 	/* Register the new device */
+ 	rc = spi_add_device(spi);
+-- 
+2.30.2
+
 
 
