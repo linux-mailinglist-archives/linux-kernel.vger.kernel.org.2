@@ -2,104 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2609E3C63C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 21:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 365A13C63C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 21:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236276AbhGLTdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 15:33:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235402AbhGLTdV (ORCPT
+        id S236442AbhGLTd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 15:33:29 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:44400 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236431AbhGLTd1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 15:33:21 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF75C0613DD
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 12:30:31 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id u13so6244075lfs.11
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 12:30:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=r3C0MNcdPuaQMoy2DZLesW5CVXpDYfQzTqrwGXdHaRg=;
-        b=MJrdQt/xj/X89L2akDuRIxLQO4djMTLLgU8eBvU6YVC8dUlC07Y6kHh4rBlkT1q7MV
-         Ea7nnfbhd2stzRZFtdTC0KqSjngvfVy93JncJKAiLwNmjmfcozdphfyI2xTiy3uOptFv
-         Vhn12vpbGZd8c3Bo7seoaaiJzsRoQUlb47+hA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r3C0MNcdPuaQMoy2DZLesW5CVXpDYfQzTqrwGXdHaRg=;
-        b=MHqROs3reMyc7ki0+MKYVndS6tdJDCO815CZG2+kB2nzBqzDId0i5THIhswb8AnL/q
-         riNqTkfwpJ2nP8jZY76ro6Hm19ufK++Vx1VhhJRf5gQ/XbT1ED5MrgXyLES0MqQnoVxG
-         v6FM8W9vdVY/VBldqSqz2+M1mLWkgGhKqAr9ECe/hgBc0UEKDYt+Huh/1PIWJK+xEelL
-         G+rJ8ySkw/wReKS8c/bmfg8I982l/8gCCnAJtNLIHDvyoyZnXJdqNxEBEfbsXLGqJBhU
-         ijiWEI3qAlJCMzUbX+8cqZGTjBIfKq1z9qkZcMRnlfv1gRR2J32fOTpEp3uiQErHEAJB
-         SQ8Q==
-X-Gm-Message-State: AOAM531Vf6IEOT7uKMQt1rYoIBKcJBqXfsOTMpoGdZRJmIt+i3I5Q5Cb
-        wye5cjNOlOKiOIzrTfdZ/RdBMwvO8/g3O/GnBWE=
-X-Google-Smtp-Source: ABdhPJzK3K4yU3M7GNsFsmZJDQzHlCeQwR8zte1PzcPwoiFaWonczTSSfeFIgF69CPrCFt2uL+IB5w==
-X-Received: by 2002:a19:c38b:: with SMTP id t133mr250342lff.329.1626118229457;
-        Mon, 12 Jul 2021 12:30:29 -0700 (PDT)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id v8sm1679841ljg.137.2021.07.12.12.30.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Jul 2021 12:30:29 -0700 (PDT)
-Received: by mail-lf1-f42.google.com with SMTP id a12so386520lfb.7
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 12:30:29 -0700 (PDT)
-X-Received: by 2002:a2e:9241:: with SMTP id v1mr639513ljg.48.1626117867421;
- Mon, 12 Jul 2021 12:24:27 -0700 (PDT)
+        Mon, 12 Jul 2021 15:33:27 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id DD9741FFF7;
+        Mon, 12 Jul 2021 19:30:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1626118237; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=RW3R9SeQHG8573gc/MkdHYTv9cHBSypiXesl5DLdgYQ=;
+        b=Zwu5Smxc/qWODS0Ga/WJGVeHEiO76SZwDdN05sq6vX1XZCBgpcCkyQRPMVVwMjpdLg0VrL
+        n7KrV4Hl8plDkieVR/wYwmlF5hkJl9NMwpLYaQs/Cs0kNvEVUnT732RpAm9zhMo6ayvq0x
+        OGL7wAOZ0tS2LdKgENsqsit3KvMjSGs=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id D59C2A3B85;
+        Mon, 12 Jul 2021 19:30:37 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 66A02DA790; Mon, 12 Jul 2021 21:28:01 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 5.14-rc2
+Date:   Mon, 12 Jul 2021 21:28:00 +0200
+Message-Id: <cover.1626115408.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210712060928.4161649-1-hch@lst.de>
-In-Reply-To: <20210712060928.4161649-1-hch@lst.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 12 Jul 2021 12:24:11 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whd0GaAH7gHuEiuKjOeD6JGKY1q5ydG1TCKjVBFNBUEJA@mail.gmail.com>
-Message-ID: <CAHk-=whd0GaAH7gHuEiuKjOeD6JGKY1q5ydG1TCKjVBFNBUEJA@mail.gmail.com>
-Subject: Re: flush_kernel_dcache_page fixes and removal
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Guo Ren <guoren@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Helge Deller <deller@gmx.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Geoff Levand <geoff@infradead.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Alex Shi <alexs@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-csky@vger.kernel.org,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-parisc@vger.kernel.org,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        linux-mmc@vger.kernel.org, linux-scsi <linux-scsi@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 11, 2021 at 11:09 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> I think we should just remove it and eat the very minor overhead in
-> exec rather than confusing poor driver writers.
+Hi,
 
-Ack.
+please pull the following fixes, all are for the zoned mode support.
+Thanks.
 
-I think architectures that have virtual caches might want to think
-about this patch a bit more, but on the whole I can't argue against
-the "it's badly documented and misused".
+- fix deadlock when allocating system chunk
 
-No sane architecture will care, since dcache will be coherent (there
-are more issues on the I$ side, but that's a different issue)
+- fix wrong mutex unlock on an error path
 
-              Linus
+- fix extent map splitting for append operation
+
+- update and fix message reporting unusable chunk space
+
+- don't block when background zone reclaim runs with balance in parallel
+
+----------------------------------------------------------------
+The following changes since commit 629e33a16809ae0274e1f5fc3d22b92b9bd0fdf1:
+
+  btrfs: remove unused btrfs_fs_info::total_pinned (2021-06-22 19:58:26 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.14-rc1-tag
+
+for you to fetch changes up to ea32af47f00a046a1f953370514d6d946efe0152:
+
+  btrfs: zoned: fix wrong mutex unlock on failure to allocate log root tree (2021-07-07 18:27:44 +0200)
+
+----------------------------------------------------------------
+David Sterba (1):
+      btrfs: zoned: fix types for u64 division in btrfs_reclaim_bgs_work
+
+Filipe Manana (3):
+      btrfs: fix deadlock with concurrent chunk allocations involving system chunks
+      btrfs: rework chunk allocation to avoid exhaustion of the system chunk array
+      btrfs: zoned: fix wrong mutex unlock on failure to allocate log root tree
+
+Johannes Thumshirn (2):
+      btrfs: zoned: print unusable percentage when reclaiming block groups
+      btrfs: don't block if we can't acquire the reclaim lock
+
+Naohiro Aota (1):
+      btrfs: properly split extent_map for REQ_OP_ZONE_APPEND
+
+ fs/btrfs/block-group.c | 367 ++++++++++++++++++++++++++++++++++++-------------
+ fs/btrfs/block-group.h |   6 +-
+ fs/btrfs/ctree.c       |  67 ++-------
+ fs/btrfs/inode.c       | 147 ++++++++++++++++----
+ fs/btrfs/transaction.c |  15 +-
+ fs/btrfs/transaction.h |   9 +-
+ fs/btrfs/tree-log.c    |   2 +-
+ fs/btrfs/volumes.c     | 355 +++++++++++++++++++++++++++++++++++------------
+ fs/btrfs/volumes.h     |   5 +-
+ 9 files changed, 687 insertions(+), 286 deletions(-)
