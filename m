@@ -2,85 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 337173C408D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 02:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D6A23C409D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 02:51:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231166AbhGLAmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 20:42:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34234 "EHLO
+        id S231864AbhGLAyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 20:54:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhGLAmR (ORCPT
+        with ESMTP id S229598AbhGLAyF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 20:42:17 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9003C0613DD;
-        Sun, 11 Jul 2021 17:39:28 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id f30so39331041lfj.1;
-        Sun, 11 Jul 2021 17:39:28 -0700 (PDT)
+        Sun, 11 Jul 2021 20:54:05 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9432C0613DD
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 17:51:17 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id z12so12676814qtj.3
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 17:51:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=61+xx73wTFO0lW6riCG7quy16olfucwKxe3/aiVqHfU=;
-        b=eDu52mTd38fMdQdbGFA05eudpvkr+4USIug9Y0XV2tG6mGNeszwQ04ffOm0iZRO1+s
-         /84mQRM2YfJ7LF6lSRrmSZi1oOrbg+LkD48omsonuNAr1x1liuad562QfGJWQ4GmAMWk
-         3F9NLdOYyGaldHC49xSDK4xHS89tqalDCr4tiOPRM2UPRDTJQNFgU8fbL2J4FaVNHTEm
-         eX71/uynB0udOVqXD4zOltrV/2zvkH0OcVXCLOlv2zl32Utgx+qiYHPSDXBuwiTfYDcd
-         C+C+CfHA7r0BtLU2q5H8rfDUtFoWBY3ksDu4pYbVzNJXb/qP976UhaL7wVPNqrsWSAZw
-         fECw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ntp2N+FnF9cu5TY3c6BDZ2BT3tHEvf2ZI4kcZulyHTY=;
+        b=uHRAjl4KstuBPiKhxZ/W2fwEeSj+KSOWzTOs7yoFGqBCagx4RutvdyTA4i9jzSxs6r
+         qMeTPktyK+HLKWxe1tFIbZ4vEica8vJqrKnuk5vh98okN7K1OOxKmYWXFdBpsYrv11aL
+         VSYymD+OdKs74nc6yPT6P/mGeINh0QMJebIj5hZblC47OyGHWJpJhVRjKr+MuLYStI2J
+         PPwNdB6fvbSHB8YAgkX7hJwhpi+z/beYQKDkqY7U5I3hzLBVW4hw5PHsB1nyIcLxweCu
+         6IvG0Y4jVRSFUwMTxoqjC7B/MrI23J1jDv6YUQkefqj8hCpDuKkYE8iGZGxL0k25+urj
+         GIdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=61+xx73wTFO0lW6riCG7quy16olfucwKxe3/aiVqHfU=;
-        b=gX4sOowklVzal9XNn5Ty/Ifx5A9uROP1D0ocD7oCyt76X0BWLm0V5lThF7XOl5tITQ
-         dcuBCWI0wUrPwl73bAjhXBLlFmLxH5BuYYbafadd1t6yY5ykSMvAta8L61wkNFm5+env
-         4MwuMCKn+MsV5jrak00JIFgKU305ASjJu5YoPj0t6iVjokUD629qFLRmnKqoGzQ2UT26
-         yVURIqZiAQ8ItIpbohXsb7Xc42hYndCIwAQegkeQx3IV5aFCWMDo7iGF8gvXGidWJyLe
-         OyGcc9UgymlosgeSBEiJw3fBSzytPpU05xOe6nKjsbx9dCy3/dURwF4IWaxmfKKMsIcy
-         gCKQ==
-X-Gm-Message-State: AOAM531KLZpa9RnZUoLmvZ0j09nEL5Juwa+V4QfS6qOjcYdPMtkbPRd7
-        h/zcZrp76AuU3HJ8qagPNi4/EUJLkdo=
-X-Google-Smtp-Source: ABdhPJz4SsFAxZHY6MbqeUWpHBpulOIpzY7R/0KttPzAnUs/IemURrELGQQqTUwSt4hxNpcPaM2FkQ==
-X-Received: by 2002:a05:6512:2186:: with SMTP id b6mr37693873lft.490.1626050367019;
-        Sun, 11 Jul 2021 17:39:27 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-37-113.dynamic.spd-mgts.ru. [94.29.37.113])
-        by smtp.googlemail.com with ESMTPSA id y7sm287169lfg.256.2021.07.11.17.39.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Jul 2021 17:39:26 -0700 (PDT)
-Subject: Re: [PATCH v1] soc/tegra: Make regulator couplers depend on
- CONFIG_REGULATOR
+        bh=Ntp2N+FnF9cu5TY3c6BDZ2BT3tHEvf2ZI4kcZulyHTY=;
+        b=NqBsEBi4zPxRZGveBEXR42V+YO0a3ST8zNBUHX3kMZft0xS9JHecqT43TTOLI9TW3Q
+         of5/IgG6F0IqKhonmljRKq6FHRBh6dfz7VuEWTjCf+7dpF7VXt5AtalT3Iv69aShL+Hn
+         G8Z3M3uokhJ/y0DrM7Ls0q+iRHjWcKcNMQs5k/3oAnJg3eDDDHHCpW0sSks54Ib5Jz9W
+         qbHdy4NkI7LDAjeqsChRjh2H9snJln7dS1Nfs9g+G5Nd9WVz5yaDcYYT0A620/+mM4Ve
+         d84FY9Sv1pRoX2H3ZtPOZ6Ag5E0Dk0k2mbJwFbxP8vdUJiaeVBSr3vq7R4yZRKVNPsBK
+         lOAw==
+X-Gm-Message-State: AOAM532FUSmk7opnL7QaWZzx9+drBoVJtLWRTRqBTYYCQwurc2fpBKsX
+        M4X/EXWbtmpXQ77EIclVlbI=
+X-Google-Smtp-Source: ABdhPJzNcone+ITVv7tkPYfnB6EEZgMOxjj87y/qt9w5WIUrmXKgrsDgfl4sb4P2cLPSiGqztPWqmg==
+X-Received: by 2002:ac8:7c85:: with SMTP id y5mr43954762qtv.376.1626051076421;
+        Sun, 11 Jul 2021 17:51:16 -0700 (PDT)
+Received: from localhost.localdomain (94-29-37-113.dynamic.spd-mgts.ru. [94.29.37.113])
+        by smtp.gmail.com with ESMTPSA id x15sm5783823qkm.66.2021.07.11.17.51.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Jul 2021 17:51:16 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-References: <20210621160739.22448-1-digetx@gmail.com>
-Message-ID: <a690cb76-217f-91cf-0198-f232e3ce7536@gmail.com>
-Date:   Mon, 12 Jul 2021 03:39:26 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+To:     Oder Chiou <oder_chiou@realtek.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1] ASoC: rt5631: Fix regcache sync errors on resume
+Date:   Mon, 12 Jul 2021 03:50:11 +0300
+Message-Id: <20210712005011.28536-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20210621160739.22448-1-digetx@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-21.06.2021 19:07, Dmitry Osipenko пишет:
-> The regulator coupler drivers now use regulator-driver API function that
-> isn't available during compile-testing. Make regulator coupler drivers
-> depend on CONFIG_REGULATOR in Kconfig.
-> 
-> Fixes: 03978d42ed0d ("soc/tegra: regulators: Bump voltages on system reboot")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/soc/tegra/Kconfig | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+From: Maxim Schwalm <maxim.schwalm@gmail.com>
 
-Thierry, should this patch go into 5.14-rc2 fixes? Please take care of
-it if yes.
+The ALC5631 does not like multi-write accesses, avoid them. This fixes:
+
+rt5631 4-001a: Unable to sync registers 0x3a-0x3c. -121
+
+errors on resume from suspend (and all registers after the registers in
+the error not being synced).
+
+Inspired by commit 2d30e9494f1e ("ASoC: rt5651: Fix regcache sync errors
+on resume") from Hans de Geode, which fixed the same errors on ALC5651.
+
+Signed-off-by: Maxim Schwalm <maxim.schwalm@gmail.com>
+---
+ sound/soc/codecs/rt5631.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/soc/codecs/rt5631.c b/sound/soc/codecs/rt5631.c
+index 3000bc128b5b..38356ea2bd6e 100644
+--- a/sound/soc/codecs/rt5631.c
++++ b/sound/soc/codecs/rt5631.c
+@@ -1695,6 +1695,8 @@ static const struct regmap_config rt5631_regmap_config = {
+ 	.reg_defaults = rt5631_reg,
+ 	.num_reg_defaults = ARRAY_SIZE(rt5631_reg),
+ 	.cache_type = REGCACHE_RBTREE,
++	.use_single_read = true,
++	.use_single_write = true,
+ };
+ 
+ static int rt5631_i2c_probe(struct i2c_client *i2c,
+-- 
+2.32.0
+
