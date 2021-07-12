@@ -2,90 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D04D33C55C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 329163C56DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344725AbhGLILw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:11:52 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:34020 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346856AbhGLHbK (ORCPT
+        id S1358090AbhGLIZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:25:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348593AbhGLHlH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:31:10 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 1CE101FF47;
-        Mon, 12 Jul 2021 07:28:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1626074902; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GsR+/kf2MQIKkT4AEOPSXhgaTzxJXolcASGv+64IaZE=;
-        b=qYasrGN+M6vKCQgO5rEVQBAy7nJOyNX9lj1oOpP+05lX43oLlldaxRrhw9Ya7bmCVq/M5v
-        Mwjn0JomVMxNyZsNm3j4eMpVZdr4L/5M+4pl/k2ni44DeZtFziXBO1r6gSeKv+oMxurUYt
-        bk5Il6CrvsJIl52nan2ZuBnnvd5OALI=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id DE557A4725;
-        Mon, 12 Jul 2021 07:28:21 +0000 (UTC)
-Date:   Mon, 12 Jul 2021 09:28:21 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org, vbabka@suse.cz,
-        axboe@kernel.dk, iamjoonsoo.kim@lge.com, alexs@kernel.org,
-        apopple@nvidia.com, willy@infradead.org, minchan@kernel.org,
-        david@redhat.com, shli@fb.com, hillf.zj@alibaba-inc.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/5] mm/vmscan: fix misleading comment in
- isolate_lru_pages()
-Message-ID: <YOvvFaYMBhISeGEI@dhcp22.suse.cz>
-References: <20210710100329.49174-1-linmiaohe@huawei.com>
- <20210710100329.49174-6-linmiaohe@huawei.com>
+        Mon, 12 Jul 2021 03:41:07 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DAC3C022593;
+        Mon, 12 Jul 2021 00:32:52 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id z12so13273584qtj.3;
+        Mon, 12 Jul 2021 00:32:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=7516QFKCbONFu1K4UM0Mfb3rZBvmchK7pEHlv8tiP/s=;
+        b=mszEFKbKWeSyvVifSeriXR9rZ/pP1xKlJ1f9aqWHLsS9QilBHOzMbxSVcxTYO/ORTX
+         fKW3ZRa2hH9EoQETxAARImaA5+BbHDOQcsTyfTd8PiOZyCi4oo17USOvj1Dhu/ECKj4C
+         7JokpZHgNdsGD5h3SkvSfmsAZ94tNbr1DYbNcCLc+PHMkllsCaRrEa5A3BcMUs1HfziK
+         64rckuHCtvBWsAZfMhIiT8cA61vvdAI+81JcE6hRnYqzEJmERECBFI8sb+kYvNF30WW8
+         l+Sxfj7224hfw66/kMH9fhkjt34rtKmufNox/qCDdf/KQ2x1fK4Fmpz5ud6EOHKOFlG1
+         Md6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=7516QFKCbONFu1K4UM0Mfb3rZBvmchK7pEHlv8tiP/s=;
+        b=kcOL52n0GASLnG4YJt33cpVho87MhbiM0CEWg4ESrYXIcC0JH4is+pKShXI0R5iztd
+         jurNpxU/H9mY3sewpQ2o+WQ4DAac1xUhj0k5LsYvgO+59NzPs2yWULM0ZTGk/u1FcAnL
+         bISjYag7hOE6yFyInuxHNYhdMZ7gqbQl3+MUXTG+GkrVBn47nxtU6jrFjRsuQi/Bfy3i
+         dp5Y0LboLmptmsQU4VbNfh80LL8CwanFm7T4Za6RCpoGMhteSYKg/cPGBrM1YScb0b3m
+         mZEzFpDrTMr0AvJeKaxvqF/Q8xPcik0Pa8CR8TzrlqW+PKRIOgckA+/cgGpWih4eWAi0
+         6Qlg==
+X-Gm-Message-State: AOAM532j6ZD4TN53aRpTRS6M3hCECvrlnMRmZfTag1gaIkTU9F78X33G
+        yHk2Sm6QQgsrmIil59BGKI3Fi1ZTvcN9RA==
+X-Google-Smtp-Source: ABdhPJztwwA6gBbpAgnr9bsX/jzhs+KGYK2+qzRHsVjmFIVLg5t6C11wlA9R8SRUWkhQNIzXIiaSgQ==
+X-Received: by 2002:ac8:74b:: with SMTP id k11mr19647039qth.19.1626075171270;
+        Mon, 12 Jul 2021 00:32:51 -0700 (PDT)
+Received: from localhost.localdomain ([194.110.112.30])
+        by smtp.gmail.com with ESMTPSA id o18sm1654750qko.63.2021.07.12.00.32.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jul 2021 00:32:50 -0700 (PDT)
+From:   Forest Crossman <cyrozap@gmail.com>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        matthias.bgg@gmail.com
+Cc:     Forest Crossman <cyrozap@gmail.com>,
+        linux-bluetooth@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] Bluetooth: btusb: Add support for LG LGSBWAC92/TWCM-K505D
+Date:   Mon, 12 Jul 2021 02:32:20 -0500
+Message-Id: <20210712073220.200414-1-cyrozap@gmail.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20201021030521.1121268-1-cyrozap@gmail.com>
+References: <20201021030521.1121268-1-cyrozap@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210710100329.49174-6-linmiaohe@huawei.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 10-07-21 18:03:29, Miaohe Lin wrote:
-> We couldn't know whether the page is being freed elsewhere until we failed
-> to increase the page count.
+The LG LGSBWAC92/TWCM-K505D/EAT64454801/EAT64454802 (it goes by many
+names) is a combo WiFi/Bluetooth module that's used in several models of
+LG TVs. It uses the MediaTek MT7668AUN, which is already supported in
+btusb, but this device has a non-MediaTek VID:PID pair so to get it to
+work we just need to add it to the list of devices to probe.
 
-This is moving a hard to understand comment from one place to another.
-If anything this would benefit from what that elsewhere might be
-typically or simply drop the comment altogether.
+Device from /sys/kernel/debug/usb/devices:
 
-> 
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->  mm/vmscan.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index a74760c48bd8..6e26b3c93242 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -1891,7 +1891,6 @@ static unsigned long isolate_lru_pages(unsigned long nr_to_scan,
->  		 */
->  		scan += nr_pages;
->  		if (!__isolate_lru_page_prepare(page, mode)) {
-> -			/* It is being freed elsewhere */
->  			list_move(&page->lru, src);
->  			continue;
->  		}
-> @@ -1901,6 +1900,7 @@ static unsigned long isolate_lru_pages(unsigned long nr_to_scan,
->  		 * page release code relies on it.
->  		 */
->  		if (unlikely(!get_page_unless_zero(page))) {
-> +			/* It is being freed elsewhere. */
->  			list_move(&page->lru, src);
->  			continue;
->  		}
-> -- 
-> 2.23.0
+T:  Bus=09 Lev=02 Prnt=02 Port=00 Cnt=01 Dev#=  6 Spd=480  MxCh= 0
+D:  Ver= 2.10 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
+P:  Vendor=043e ProdID=3109 Rev= 1.00
+S:  Manufacturer=MediaTek Inc.
+S:  Product=Wireless_Device
+S:  SerialNumber=000000000
+C:* #Ifs= 3 Cfg#= 1 Atr=a0 MxPwr=100mA
+A:  FirstIf#= 0 IfCount= 2 Cls=e0(wlcon) Sub=01 Prot=01
+I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=125us
+E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
+I:* If#= 2 Alt= 0 #EPs= 8 Cls=ff(vend.) Sub=ff Prot=ff Driver=(none)
+E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=85(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=08(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=06(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=07(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=09(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
 
+Signed-off-by: Forest Crossman <cyrozap@gmail.com>
+---
+
+Changes from v2:
+ - Specify device with USB_DEVICE again, to match the other "Additional
+   MediaTek Bluetooth devices".
+ - Add BTUSB_WIDEBAND_SPEECH and BTUSB_VALID_LE_STATES flags to the
+   driver_info, since this device would otherwise have them applied were
+   it not for the non-MediaTek vendor ID.
+
+Changes from v1:
+ - Added /sys/kernel/debug/usb/devices info.
+ - Specify device with USB_DEVICE_AND_INTERFACE_INFO instead of just
+   USB_DEVICE.
+
+---
+ drivers/bluetooth/btusb.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index a9855a2dd561..d644e704a460 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -410,6 +410,11 @@ static const struct usb_device_id blacklist_table[] = {
+ 	/* Additional MediaTek MT7615E Bluetooth devices */
+ 	{ USB_DEVICE(0x13d3, 0x3560), .driver_info = BTUSB_MEDIATEK},
+ 
++	/* Additional MediaTek MT7668 Bluetooth devices */
++	{ USB_DEVICE(0x043e, 0x3109), .driver_info = BTUSB_MEDIATEK |
++						     BTUSB_WIDEBAND_SPEECH |
++						     BTUSB_VALID_LE_STATES },
++
+ 	/* Additional MediaTek MT7921 Bluetooth devices */
+ 	{ USB_DEVICE(0x04ca, 0x3802), .driver_info = BTUSB_MEDIATEK |
+ 						     BTUSB_WIDEBAND_SPEECH |
 -- 
-Michal Hocko
-SUSE Labs
+2.20.1
+
