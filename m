@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B25A3C4ADF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEBE93C4A39
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240874AbhGLGyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:54:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34266 "EHLO mail.kernel.org"
+        id S239257AbhGLGtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:49:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237761AbhGLGji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:39:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 971BD610D1;
-        Mon, 12 Jul 2021 06:35:23 +0000 (UTC)
+        id S237792AbhGLGjj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:39:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E1D226113E;
+        Mon, 12 Jul 2021 06:35:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071724;
-        bh=6ZrR1ymv8LTmt10RCYBoPgMQIITczbUgsWc1rlMEc7w=;
+        s=korg; t=1626071726;
+        bh=P1wCF5MjMasoUsUhzJZ3trQHMHTl86FvkoaoOo0K928=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F6traqRGBcDDqqp0v9QJsdbKI4qKc+Ot757W8neLByGtId5J/8kQL3dkjAvK/vsCa
-         shgxnjhCfvAevXMQRrFT4iCx7uiQY5odm9o8QDC0zfb8RTHJujADgB6YEGFbYEWrfe
-         u4wbXtjzS8bbd4nt2+5JHqixBMRJpFgGc6npo/58=
+        b=l0XEfV0NqBkXaoUjQBrG+AwoVhs0JZs/TszJwyfV9nxWs+eD0NwMSCi5WhWuL76yh
+         8v67lZmQh8OFkwsNJBgu1CHZQpt+TFhVGQLuW+6AyWh9pEnh44WGUSeUUAXvl2bSwL
+         kh+LBAC2j8aXUVgGilD15RVw7oU3MLzOEOVJeVlQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 191/593] platform/x86: toshiba_acpi: Fix missing error code in toshiba_acpi_setup_keyboard()
-Date:   Mon, 12 Jul 2021 08:05:51 +0200
-Message-Id: <20210712060904.039004723@linuxfoundation.org>
+        stable@vger.kernel.org, JK Kim <jongkang.kim2@gmail.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 192/593] nvme-pci: fix var. type for increasing cq_head
+Date:   Mon, 12 Jul 2021 08:05:52 +0200
+Message-Id: <20210712060904.133790591@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
 References: <20210712060843.180606720@linuxfoundation.org>
@@ -41,39 +39,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+From: JK Kim <jongkang.kim2@gmail.com>
 
-[ Upstream commit 28e367127718a9cb85d615a71e152f7acee41bfc ]
+[ Upstream commit a0aac973a26d1ac814b9e131e209eb39472a67ce ]
 
-The error code is missing in this code scenario, add the error code
-'-EINVAL' to the return value 'error'.
+nvmeq->cq_head is compared with nvmeq->q_depth and changed the value
+and cq_phase for handling the next cq db.
 
-Eliminate the follow smatch warning:
+but, nvmeq->q_depth's type is u32 and max. value is 0x10000 when
+CQP.MSQE is 0xffff and io_queue_depth is 0x10000.
 
-drivers/platform/x86/toshiba_acpi.c:2834 toshiba_acpi_setup_keyboard()
-warn: missing error code 'error'.
+current temp. variable for comparing with nvmeq->q_depth is overflowed
+when previous nvmeq->cq_head is 0xffff.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Link: https://lore.kernel.org/r/1622628348-87035-1-git-send-email-jiapeng.chong@linux.alibaba.com
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+in this case, nvmeq->cq_phase is not updated.
+so, fix data type for temp. variable to u32.
+
+Signed-off-by: JK Kim <jongkang.kim2@gmail.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/toshiba_acpi.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/nvme/host/pci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/platform/x86/toshiba_acpi.c b/drivers/platform/x86/toshiba_acpi.c
-index fa7232ad8c39..352508d30467 100644
---- a/drivers/platform/x86/toshiba_acpi.c
-+++ b/drivers/platform/x86/toshiba_acpi.c
-@@ -2831,6 +2831,7 @@ static int toshiba_acpi_setup_keyboard(struct toshiba_acpi_dev *dev)
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index c1f3446216c5..56263214ea06 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -1027,7 +1027,7 @@ static inline void nvme_handle_cqe(struct nvme_queue *nvmeq, u16 idx)
  
- 	if (!dev->info_supported && !dev->system_event_supported) {
- 		pr_warn("No hotkey query interface found\n");
-+		error = -EINVAL;
- 		goto err_remove_filter;
- 	}
+ static inline void nvme_update_cq_head(struct nvme_queue *nvmeq)
+ {
+-	u16 tmp = nvmeq->cq_head + 1;
++	u32 tmp = nvmeq->cq_head + 1;
  
+ 	if (tmp == nvmeq->q_depth) {
+ 		nvmeq->cq_head = 0;
 -- 
 2.30.2
 
