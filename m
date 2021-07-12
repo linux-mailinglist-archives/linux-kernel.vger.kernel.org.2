@@ -2,174 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 267EA3C663C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 00:12:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 529083C65FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 00:07:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233452AbhGLWOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 18:14:51 -0400
-Received: from mga04.intel.com ([192.55.52.120]:34416 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232163AbhGLWOu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 18:14:50 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10043"; a="208244010"
-X-IronPort-AV: E=Sophos;i="5.84,235,1620716400"; 
-   d="scan'208";a="208244010"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 15:12:01 -0700
-X-IronPort-AV: E=Sophos;i="5.84,235,1620716400"; 
-   d="scan'208";a="464414983"
-Received: from jzloch-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.136.11])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 15:11:55 -0700
-From:   Iwona Winiarska <iwona.winiarska@intel.com>
-To:     linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
-Cc:     x86@kernel.org, devicetree@vger.kernel.org,
-        linux-aspeed@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Yazen Ghannam <yazen.ghannam@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
-        Iwona Winiarska <iwona.winiarska@intel.com>
-Subject: [PATCH 14/14] docs: Add PECI documentation
-Date:   Tue, 13 Jul 2021 00:04:47 +0200
-Message-Id: <20210712220447.957418-15-iwona.winiarska@intel.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210712220447.957418-1-iwona.winiarska@intel.com>
-References: <20210712220447.957418-1-iwona.winiarska@intel.com>
+        id S231868AbhGLWKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 18:10:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45416 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231252AbhGLWKh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 18:10:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626127667;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rC1yUGWBvIID360PWaPb4pUccgpGiNBVKC/0HCxB0ds=;
+        b=MjQO2+Jp8Ah08jSRxzsQgdN0aSxDN2DpMYdUxFiDNgf60VKQjMIhnZgNaKRKirfj+kNuQV
+        34FV8/ZM7TeS33oiA3Rw1XIQM243bKiatbJE8t9TIinZMjzjoHxxl7A9wdRufPlPrZwqXu
+        mYtfEA71iE9qbIVpr/5IBluOPmMbcRg=
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
+ [209.85.167.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-158-sjmKSQbZPkOXeO8_Cmhfzw-1; Mon, 12 Jul 2021 18:07:46 -0400
+X-MC-Unique: sjmKSQbZPkOXeO8_Cmhfzw-1
+Received: by mail-oi1-f199.google.com with SMTP id l189-20020acabbc60000b02901f566a77bb8so14016287oif.7
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 15:07:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=rC1yUGWBvIID360PWaPb4pUccgpGiNBVKC/0HCxB0ds=;
+        b=PYCgjaIyU5WwLZcAgOBdKF+8svCzV5Pf6OflxEGky/mMctQhwbHXaaJnV9Sz59MVM+
+         1GNep6BXCHucqufo8lB6+uY35wPMtzqDDodNPg4O9DYmJpor3VP3LS6KBj4xnVNZa4dC
+         y3m74vkBBExB5doNDPQWG0DJ94wLFwqQBReHtgnLPMclB2pfMMLADmeww0gVlsGXQhvX
+         kkIvUbHTk6/8ZRy5/zdA3DGLJimBsXp84Wkckk2CbYZRLqnRZW9yKx/igSx6ncyN31S+
+         BF7oxnqN9yguYA3KU8E3xANGHNhr6DG4+gWIaQAt0QTzTXCu8XEkVXjIf0wzDH9MoUqa
+         XtAg==
+X-Gm-Message-State: AOAM533cZ7IEa8ZazL1ncKbnVsZStZGXbgXj4IHU/Y9nX6dW/XNweBcJ
+        8fCcy4pKuBznblB73Tm8YFjx6nk9irHTOCaUPnEY9hHkPxYsBllA+t05kTqyQeCKLpfmCcY/DIj
+        /D5YTTSTY6jchbKDkSRW7irpM
+X-Received: by 2002:a05:6808:2024:: with SMTP id q36mr713306oiw.130.1626127665778;
+        Mon, 12 Jul 2021 15:07:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwom3gaAzIAzvPzYLLUu/UBp7QXOHYRTrnaYNmrGEcq8p2L2vUeBMc2AmGqe/dErID5t0VTsw==
+X-Received: by 2002:a05:6808:2024:: with SMTP id q36mr713289oiw.130.1626127665590;
+        Mon, 12 Jul 2021 15:07:45 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id o63sm3483664oih.32.2021.07.12.15.07.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jul 2021 15:07:45 -0700 (PDT)
+Date:   Mon, 12 Jul 2021 16:07:44 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Amey Narkhede <ameynarkhede03@gmail.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v10 1/8] PCI: Add pcie_reset_flr to follow calling
+ convention of other reset methods
+Message-ID: <20210712160744.0a651364.alex.williamson@redhat.com>
+In-Reply-To: <20210709123813.8700-2-ameynarkhede03@gmail.com>
+References: <20210709123813.8700-1-ameynarkhede03@gmail.com>
+        <20210709123813.8700-2-ameynarkhede03@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a brief overview of PECI and PECI wire interface.
-The documentation also contains kernel-doc for PECI subsystem internals
-and PECI CPU Driver API.
+On Fri,  9 Jul 2021 18:08:06 +0530
+Amey Narkhede <ameynarkhede03@gmail.com> wrote:
 
-Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- Documentation/index.rst      |  1 +
- Documentation/peci/index.rst | 16 ++++++++++++
- Documentation/peci/peci.rst  | 48 ++++++++++++++++++++++++++++++++++++
- MAINTAINERS                  |  1 +
- 4 files changed, 66 insertions(+)
- create mode 100644 Documentation/peci/index.rst
- create mode 100644 Documentation/peci/peci.rst
+> Add has_pcie_flr bitfield in struct pci_dev to indicate support for PCIe
+> FLR to avoid reading PCI_EXP_DEVCAP multiple times.
+> 
+> Currently there is separate function pcie_has_flr() to probe if PCIe FLR
+> is supported by the device which does not match the calling convention
+> followed by reset methods which use second function argument to decide
+> whether to probe or not. Add new function pcie_reset_flr() that follows
+> the calling convention of reset methods.
+> 
+> Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+> ---
+>  drivers/crypto/cavium/nitrox/nitrox_main.c |  4 +-
+>  drivers/pci/pci.c                          | 59 +++++++++++-----------
+>  drivers/pci/pcie/aer.c                     | 12 ++---
+>  drivers/pci/probe.c                        |  6 ++-
+>  drivers/pci/quirks.c                       |  9 ++--
+>  include/linux/pci.h                        |  3 +-
+>  6 files changed, 45 insertions(+), 48 deletions(-)
 
-diff --git a/Documentation/index.rst b/Documentation/index.rst
-index 54ce34fd6fbd..7671f2cd474f 100644
---- a/Documentation/index.rst
-+++ b/Documentation/index.rst
-@@ -137,6 +137,7 @@ needed).
-    misc-devices/index
-    scheduler/index
-    mhi/index
-+   peci/index
- 
- Architecture-agnostic documentation
- -----------------------------------
-diff --git a/Documentation/peci/index.rst b/Documentation/peci/index.rst
-new file mode 100644
-index 000000000000..989de10416e7
---- /dev/null
-+++ b/Documentation/peci/index.rst
-@@ -0,0 +1,16 @@
-+.. SPDX-License-Identifier: GPL-2.0-only
-+
-+====================
-+Linux PECI Subsystem
-+====================
-+
-+.. toctree::
-+
-+   peci
-+
-+.. only::  subproject and html
-+
-+   Indices
-+   =======
-+
-+   * :ref:`genindex`
-diff --git a/Documentation/peci/peci.rst b/Documentation/peci/peci.rst
-new file mode 100644
-index 000000000000..a12c8e10c4a9
---- /dev/null
-+++ b/Documentation/peci/peci.rst
-@@ -0,0 +1,48 @@
-+.. SPDX-License-Identifier: GPL-2.0-only
-+
-+========
-+Overview
-+========
-+
-+The Platform Environment Control Interface (PECI) is a communication
-+interface between Intel processor and management controllers
-+(e.g. Baseboard Management Controller, BMC).
-+PECI provides services that allow the management controller to
-+configure, monitor and debug platform by accessing various registers.
-+It defines a dedicated command protocol, where the management
-+controller is acting as a PECI originator and the processor - as
-+a PECI responder.
-+PECI can be used in both single processor and multiple-processor based
-+systems.
-+
-+NOTE:
-+Intel PECI specification is not released as a dedicated document,
-+instead it is a part of External Design Specification (EDS) for given
-+Intel CPU. External Design Specifications are usually not publicly
-+available.
-+
-+PECI Wire
-+---------
-+
-+PECI Wire interface uses a single wire for self-clocking and data
-+transfer. It does not require any additional control lines - the
-+physical layer is a self-clocked one-wire bus signal that begins each
-+bit with a driven, rising edge from an idle near zero volts. The
-+duration of the signal driven high allows to determine whether the bit
-+value is logic '0' or logic '1'. PECI Wire also includes variable data
-+rate established with every message.
-+
-+For PECI Wire, each processor package will utilize unique, fixed
-+addresses within a defined range and that address should
-+have a fixed relationship with the processor socket ID - if one of the
-+processors is removed, it does not affect addresses of remaining
-+processors.
-+
-+PECI subsystem internals
-+------------------------
-+
-+.. kernel-doc:: include/linux/peci.h
-+
-+PECI CPU Driver API
-+-------------------
-+.. kernel-doc:: include/linux/peci-cpu.h
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d16da127bbdc..a596453db003 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14519,6 +14519,7 @@ R:	Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
- L:	openbmc@lists.ozlabs.org (moderated for non-subscribers)
- S:	Supported
- F:	Documentation/devicetree/bindings/peci/
-+F:	Documentation/peci/
- F:	drivers/peci/
- F:	include/linux/peci-cpu.h
- F:	include/linux/peci.h
--- 
-2.31.1
+Looks good to me,
+
+Reviewed-by: Alex Williamson <alex.williamson@redhat.com>
 
