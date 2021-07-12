@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C42D3C4975
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 177163C56E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235651AbhGLGpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:45:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54638 "EHLO mail.kernel.org"
+        id S1358193AbhGLIZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:25:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237865AbhGLGez (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:34:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 06757610A7;
-        Mon, 12 Jul 2021 06:32:01 +0000 (UTC)
+        id S1348646AbhGLHlO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:41:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2892E60724;
+        Mon, 12 Jul 2021 07:38:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071522;
-        bh=pvaZu1fBmzhI5AQc1EG1dbL8CdZjLLTQkMdhxpOCUmM=;
+        s=korg; t=1626075504;
+        bh=US1hJ2G3OSXq4i3pt6pdZkmGAzaPlgomDJpyu+3aiJ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0WC+yJPd8YpE9gGadeSE0d+WP+qFjxaiDbMh6mYLGvLkLeL/67yr+xryXNc9NbINM
-         CAAPBWRzqDM6BA+SZJSYA+pTmNygmy+62N8fX3GnvMtkDoI7N2gJdZjagY9VbjZs7Z
-         qedy5Xf3GB3237rHUMWy7lKCZSnFMvbvbTVqLQiI=
+        b=XrMriaWZzfnf8RJnAHxiFa5JWqsFTdCvlpdgyR0QU3J0l15q8/lRhMrL7gO9NKhFS
+         szuuMO30czq5F67B6BR8ZYYTLcxDr5KF2K9sBLRajEZMFKhtVzf/thahKFLWNEes8N
+         cg1ydy2iQPLofPjviS8dEcwVva0KFg9ASYqQ4GGo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 104/593] media: mdk-mdp: fix pm_runtime_get_sync() usage count
+        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+        James Smart <jsmart2021@gmail.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 241/800] nvmet-fc: do not check for invalid target port in nvmet_fc_handle_fcp_rqst()
 Date:   Mon, 12 Jul 2021 08:04:24 +0200
-Message-Id: <20210712060854.660843450@linuxfoundation.org>
+Message-Id: <20210712060947.693631497@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: Hannes Reinecke <hare@suse.de>
 
-[ Upstream commit d07bb9702cf5f5ccf3fb661e6cab54bbc33cd23f ]
+[ Upstream commit 2a4a910aa4f0acc428dc8d10227c42e14ed21d10 ]
 
-The pm_runtime_get_sync() internally increments the
-dev->power.usage_count without decrementing it, even on errors.
-Replace it by the new pm_runtime_resume_and_get(), introduced by:
-commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-in order to properly decrement the usage counter, avoiding
-a potential PM usage counter leak.
+When parsing a request in nvmet_fc_handle_fcp_rqst() we should not
+check for invalid target ports; if we do the command is aborted
+from the fcp layer, causing the host to assume a transport error.
+Rather we should still forward this request to the nvmet layer, which
+will then correctly fail the command with an appropriate error status.
 
-While here, fix the return contition of mtk_mdp_m2m_start_streaming(),
-as it doesn't make any sense to return 0 if the PM runtime failed
-to resume.
-
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Hannes Reinecke <hare@suse.de>
+Reviewed-by: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/mtk-mdp/mtk_mdp_m2m.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/nvme/target/fc.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_m2m.c b/drivers/media/platform/mtk-mdp/mtk_mdp_m2m.c
-index 724c7333b6e5..45fc741c5541 100644
---- a/drivers/media/platform/mtk-mdp/mtk_mdp_m2m.c
-+++ b/drivers/media/platform/mtk-mdp/mtk_mdp_m2m.c
-@@ -394,12 +394,12 @@ static int mtk_mdp_m2m_start_streaming(struct vb2_queue *q, unsigned int count)
- 	struct mtk_mdp_ctx *ctx = q->drv_priv;
+diff --git a/drivers/nvme/target/fc.c b/drivers/nvme/target/fc.c
+index 19e113240fff..22b5108168a6 100644
+--- a/drivers/nvme/target/fc.c
++++ b/drivers/nvme/target/fc.c
+@@ -2510,13 +2510,6 @@ nvmet_fc_handle_fcp_rqst(struct nvmet_fc_tgtport *tgtport,
+ 	u32 xfrlen = be32_to_cpu(cmdiu->data_len);
  	int ret;
  
--	ret = pm_runtime_get_sync(&ctx->mdp_dev->pdev->dev);
-+	ret = pm_runtime_resume_and_get(&ctx->mdp_dev->pdev->dev);
- 	if (ret < 0)
--		mtk_mdp_dbg(1, "[%d] pm_runtime_get_sync failed:%d",
-+		mtk_mdp_dbg(1, "[%d] pm_runtime_resume_and_get failed:%d",
- 			    ctx->id, ret);
+-	/*
+-	 * if there is no nvmet mapping to the targetport there
+-	 * shouldn't be requests. just terminate them.
+-	 */
+-	if (!tgtport->pe)
+-		goto transport_error;
+-
+ 	/*
+ 	 * Fused commands are currently not supported in the linux
+ 	 * implementation.
+@@ -2544,7 +2537,8 @@ nvmet_fc_handle_fcp_rqst(struct nvmet_fc_tgtport *tgtport,
  
--	return 0;
-+	return ret;
- }
+ 	fod->req.cmd = &fod->cmdiubuf.sqe;
+ 	fod->req.cqe = &fod->rspiubuf.cqe;
+-	fod->req.port = tgtport->pe->port;
++	if (tgtport->pe)
++		fod->req.port = tgtport->pe->port;
  
- static void *mtk_mdp_m2m_buf_remove(struct mtk_mdp_ctx *ctx,
+ 	/* clear any response payload */
+ 	memset(&fod->rspiubuf, 0, sizeof(fod->rspiubuf));
 -- 
 2.30.2
 
