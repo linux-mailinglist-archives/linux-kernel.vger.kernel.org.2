@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B7D3C5857
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71E473C4BEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354752AbhGLIqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:46:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35406 "EHLO mail.kernel.org"
+        id S242521AbhGLHAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:00:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350654AbhGLHvM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:51:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1008A61C34;
-        Mon, 12 Jul 2021 07:47:13 +0000 (UTC)
+        id S239150AbhGLGot (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:44:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B9E960FD8;
+        Mon, 12 Jul 2021 06:40:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076034;
-        bh=d2tuwCrxgQbdvyq1qFQqBsST9Y/jzHW45UtqE3lYI3k=;
+        s=korg; t=1626072051;
+        bh=uqv8mcvuAL0IiTE5LBvoOhLWHQTLzapLqUNAu/erNP4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=shyRx8OErc75hZPH/PwROxvgKWgpAnuer42dER2MEIkj4zNgenGUbRUUNOP0vGq0P
-         ATrWnGYCPMYJWMvWNtxf73fIrYwN/bKhZawoKMXI6epXRVYv0S1cDZ/diihNEtenXU
-         eHBO+GXgzHDoy/ZDyYbTparAq5QC0lzbCEuSe7Ps=
+        b=xzi0Ci4CC2rLxH4S8bHK5SEk64sit7bdhj7V+xAx6G+1h0xJXnaDrTkVA3QYr9kyp
+         v6rJU/V43n41oaN+gCiVBpdDOUOHLoRc074KgC1u3hWNcMu8teE+NLgbadWvWkyww7
+         LOqQ18tC9+7HhQk1mG4cGqzGVAvIbAsn94qyIuVU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        Boris Sukholitko <boris.sukholitko@broadcom.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 468/800] ath11k: Fix an error handling path in ath11k_core_fetch_board_data_api_n()
+Subject: [PATCH 5.10 331/593] net/sched: act_vlan: Fix modify to allow 0
 Date:   Mon, 12 Jul 2021 08:08:11 +0200
-Message-Id: <20210712061016.958098688@linuxfoundation.org>
+Message-Id: <20210712060922.228844724@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +41,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Boris Sukholitko <boris.sukholitko@broadcom.com>
 
-[ Upstream commit 515bda1d1e51c64edf2a384a58801f85a80a3f2d ]
+[ Upstream commit 9c5eee0afca09cbde6bd00f77876754aaa552970 ]
 
-All error paths but this one 'goto err' in order to release some
-resources.
-Fix this.
+Currently vlan modification action checks existence of vlan priority by
+comparing it to 0. Therefore it is impossible to modify existing vlan
+tag to have priority 0.
 
-Fixes: d5c65159f289 ("ath11k: driver for Qualcomm IEEE 802.11ax devices")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/e959eb544f3cb04258507d8e25a6f12eab126bde.1621676864.git.christophe.jaillet@wanadoo.fr
+For example, the following tc command will change the vlan id but will
+not affect vlan priority:
+
+tc filter add dev eth1 ingress matchall action vlan modify id 300 \
+        priority 0 pipe mirred egress redirect dev eth2
+
+The incoming packet on eth1:
+
+ethertype 802.1Q (0x8100), vlan 200, p 4, ethertype IPv4
+
+will be changed to:
+
+ethertype 802.1Q (0x8100), vlan 300, p 4, ethertype IPv4
+
+although the user has intended to have p == 0.
+
+The fix is to add tcfv_push_prio_exists flag to struct tcf_vlan_params
+and rely on it when deciding to set the priority.
+
+Fixes: 45a497f2d149a4a8061c (net/sched: act_vlan: Introduce TCA_VLAN_ACT_MODIFY vlan action)
+Signed-off-by: Boris Sukholitko <boris.sukholitko@broadcom.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath11k/core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/net/tc_act/tc_vlan.h | 1 +
+ net/sched/act_vlan.c         | 7 +++++--
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath11k/core.c b/drivers/net/wireless/ath/ath11k/core.c
-index 77ce3347ab86..595e83fe0990 100644
---- a/drivers/net/wireless/ath/ath11k/core.c
-+++ b/drivers/net/wireless/ath/ath11k/core.c
-@@ -488,7 +488,8 @@ static int ath11k_core_fetch_board_data_api_n(struct ath11k_base *ab,
- 		if (len < ALIGN(ie_len, 4)) {
- 			ath11k_err(ab, "invalid length for board ie_id %d ie_len %zu len %zu\n",
- 				   ie_id, ie_len, len);
--			return -EINVAL;
-+			ret = -EINVAL;
-+			goto err;
+diff --git a/include/net/tc_act/tc_vlan.h b/include/net/tc_act/tc_vlan.h
+index f051046ba034..f94b8bc26f9e 100644
+--- a/include/net/tc_act/tc_vlan.h
++++ b/include/net/tc_act/tc_vlan.h
+@@ -16,6 +16,7 @@ struct tcf_vlan_params {
+ 	u16               tcfv_push_vid;
+ 	__be16            tcfv_push_proto;
+ 	u8                tcfv_push_prio;
++	bool              tcfv_push_prio_exists;
+ 	struct rcu_head   rcu;
+ };
+ 
+diff --git a/net/sched/act_vlan.c b/net/sched/act_vlan.c
+index 1cac3c6fbb49..a108469c664f 100644
+--- a/net/sched/act_vlan.c
++++ b/net/sched/act_vlan.c
+@@ -70,7 +70,7 @@ static int tcf_vlan_act(struct sk_buff *skb, const struct tc_action *a,
+ 		/* replace the vid */
+ 		tci = (tci & ~VLAN_VID_MASK) | p->tcfv_push_vid;
+ 		/* replace prio bits, if tcfv_push_prio specified */
+-		if (p->tcfv_push_prio) {
++		if (p->tcfv_push_prio_exists) {
+ 			tci &= ~VLAN_PRIO_MASK;
+ 			tci |= p->tcfv_push_prio << VLAN_PRIO_SHIFT;
+ 		}
+@@ -121,6 +121,7 @@ static int tcf_vlan_init(struct net *net, struct nlattr *nla,
+ 	struct tc_action_net *tn = net_generic(net, vlan_net_id);
+ 	struct nlattr *tb[TCA_VLAN_MAX + 1];
+ 	struct tcf_chain *goto_ch = NULL;
++	bool push_prio_exists = false;
+ 	struct tcf_vlan_params *p;
+ 	struct tc_vlan *parm;
+ 	struct tcf_vlan *v;
+@@ -189,7 +190,8 @@ static int tcf_vlan_init(struct net *net, struct nlattr *nla,
+ 			push_proto = htons(ETH_P_8021Q);
  		}
  
- 		switch (ie_id) {
+-		if (tb[TCA_VLAN_PUSH_VLAN_PRIORITY])
++		push_prio_exists = !!tb[TCA_VLAN_PUSH_VLAN_PRIORITY];
++		if (push_prio_exists)
+ 			push_prio = nla_get_u8(tb[TCA_VLAN_PUSH_VLAN_PRIORITY]);
+ 		break;
+ 	case TCA_VLAN_ACT_POP_ETH:
+@@ -241,6 +243,7 @@ static int tcf_vlan_init(struct net *net, struct nlattr *nla,
+ 	p->tcfv_action = action;
+ 	p->tcfv_push_vid = push_vid;
+ 	p->tcfv_push_prio = push_prio;
++	p->tcfv_push_prio_exists = push_prio_exists || action == TCA_VLAN_ACT_PUSH;
+ 	p->tcfv_push_proto = push_proto;
+ 
+ 	if (action == TCA_VLAN_ACT_PUSH_ETH) {
 -- 
 2.30.2
 
