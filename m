@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA9A73C57A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3275B3C4AF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:36:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377576AbhGLIgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:36:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35484 "EHLO mail.kernel.org"
+        id S241407AbhGLGzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:55:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349986AbhGLHuT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:50:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7387C61629;
-        Mon, 12 Jul 2021 07:43:39 +0000 (UTC)
+        id S238423AbhGLGkM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:40:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EFEEE6112D;
+        Mon, 12 Jul 2021 06:37:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075819;
-        bh=rJpacrTHF9rbvkfmzJB52Ucw/1YvzpEHCxOE11g1EBU=;
+        s=korg; t=1626071837;
+        bh=TYvHY0Nd+78uOboMF2XfNFz13DUaUYEErLtDj5rRiI0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o2qz83HXQedSbDkQPGz/P4Ah1lS9uFtvIomufvAq3soFAWRFjnOjcf5ch5zewhlIr
-         CnDhmHOI77umcszF53kz+pRk2WwrxMYwHHl9iGl0zPGSuQ9uqId5spG6fZLhUPuRGS
-         I0lEe/+pLCdeezA8zQ6OWAIFsybFry5Y1nIVdVmA=
+        b=qx5LIvknVunR1frBCCGivC7NbXQND4vTUkso/YAM6isreolhesk0XJn3eeZbwu1jh
+         p7JOhaymhrezORJL6GprbQ4v3+/8Njtqh8QHRUMv4UT56c6qrvvoxIWANf39SJPBS7
+         3gyUExAaUEtdyp1CZ7ylSK0Hs1vcX+dqwtxsqHIE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
+        stable@vger.kernel.org, Axel Lin <axel.lin@ingics.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 376/800] cpufreq: Make cpufreq_online() call driver->offline() on errors
+Subject: [PATCH 5.10 239/593] regulator: fan53880: Fix vsel_mask setting for FAN53880_BUCK
 Date:   Mon, 12 Jul 2021 08:06:39 +0200
-Message-Id: <20210712061007.089131798@linuxfoundation.org>
+Message-Id: <20210712060909.182577776@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,60 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Axel Lin <axel.lin@ingics.com>
 
-[ Upstream commit 3b7180573c250eb6e2a7eec54ae91f27472332ea ]
+[ Upstream commit 2e11737a772b95c6587df73f216eec1762431432 ]
 
-In the CPU removal path the ->offline() callback provided by the
-driver is always invoked before ->exit(), but in the cpufreq_online()
-error path it is not, so ->exit() is expected to somehow know the
-context in which it has been called and act accordingly.
+According to the datasheet:
+REGISTER DETAILS − 0x02 BUCK, BUCK_OUT is BIT0 ~ BIT7.
 
-That is less than straightforward, so make cpufreq_online() invoke
-the driver's ->offline() callback, if present, on errors before
-->exit() too.
+So vsel_mask for FAN53880_BUCK should be 0xFF.
 
-This only potentially affects intel_pstate.
-
-Fixes: 91a12e91dc39 ("cpufreq: Allow light-weight tear down and bring up of CPUs")
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Fixes: e6dea51e2d41 ("regulator: fan53880: Add initial support")
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Link: https://lore.kernel.org/r/20210607142907.1599905-1-axel.lin@ingics.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/cpufreq.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ drivers/regulator/fan53880.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index 802abc925b2a..cbab834c37a0 100644
---- a/drivers/cpufreq/cpufreq.c
-+++ b/drivers/cpufreq/cpufreq.c
-@@ -1367,9 +1367,14 @@ static int cpufreq_online(unsigned int cpu)
- 			goto out_free_policy;
- 		}
- 
-+		/*
-+		 * The initialization has succeeded and the policy is online.
-+		 * If there is a problem with its frequency table, take it
-+		 * offline and drop it.
-+		 */
- 		ret = cpufreq_table_validate_and_sort(policy);
- 		if (ret)
--			goto out_exit_policy;
-+			goto out_offline_policy;
- 
- 		/* related_cpus should at least include policy->cpus. */
- 		cpumask_copy(policy->related_cpus, policy->cpus);
-@@ -1515,6 +1520,10 @@ out_destroy_policy:
- 
- 	up_write(&policy->rwsem);
- 
-+out_offline_policy:
-+	if (cpufreq_driver->offline)
-+		cpufreq_driver->offline(policy);
-+
- out_exit_policy:
- 	if (cpufreq_driver->exit)
- 		cpufreq_driver->exit(policy);
+diff --git a/drivers/regulator/fan53880.c b/drivers/regulator/fan53880.c
+index 1684faf82ed2..94f02f3099dd 100644
+--- a/drivers/regulator/fan53880.c
++++ b/drivers/regulator/fan53880.c
+@@ -79,7 +79,7 @@ static const struct regulator_desc fan53880_regulators[] = {
+ 		.n_linear_ranges = 2,
+ 		.n_voltages =	   0xf8,
+ 		.vsel_reg =	   FAN53880_BUCKVOUT,
+-		.vsel_mask =	   0x7f,
++		.vsel_mask =	   0xff,
+ 		.enable_reg =	   FAN53880_ENABLE,
+ 		.enable_mask =	   0x10,
+ 		.enable_time =	   480,
 -- 
 2.30.2
 
