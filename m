@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 427BB3C5090
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB9743C495E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245406AbhGLHdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:33:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40632 "EHLO mail.kernel.org"
+        id S238812AbhGLGoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:44:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243901AbhGLHF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:05:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7708E6120D;
-        Mon, 12 Jul 2021 07:02:45 +0000 (UTC)
+        id S237836AbhGLGey (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:34:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A505E6113A;
+        Mon, 12 Jul 2021 06:31:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073365;
-        bh=BlGq8KKuCkSpLMk5NR9JZxmkyEyOdfvm0EvyJwhVNFY=;
+        s=korg; t=1626071506;
+        bh=cK8RGsdzqMM1KoPrczJlL3o8bR3oqky7KKjatgIB5Co=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1zYXmeoa8Xrr8wYf+ccD+uFskKQYJvlrJwFylZSTlub+ZjQjAnuyAtYs/Kl5rGV+R
-         z2uU1hbiKw+jDM1DLWL92mtTvUDRxbhCdXiA0GZaQNM1bWmjnAFq6qyBSxu+VL4IEx
-         Wi3gzwJ922GN4CPSI0eTEy1v+E/7LgmnoK8Pd1fQ=
+        b=b9lTfYKNrMLoIUGWqydhagODvtb/Y2G2AF9Qp6Ww8BAFwCIPnAO3jplPJY3JuBgFi
+         XuHnOYOnx2DOkUYQaIA9EKRBE6UFsQ0jMZONMGE3KQnm9Yr7s6A74nGk8yHu25n+QC
+         8nh453eb26/zif+jf0GS1ek6mFNMGvy7pqkTmROU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 175/700] media: siano: fix device register error path
+        Anatoly Trosinenko <anatoly.trosinenko@gmail.com>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Subject: [PATCH 5.10 098/593] fuse: reject internal errno
 Date:   Mon, 12 Jul 2021 08:04:18 +0200
-Message-Id: <20210712060951.102078176@linuxfoundation.org>
+Message-Id: <20210712060853.995798156@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +40,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: Miklos Szeredi <mszeredi@redhat.com>
 
-[ Upstream commit 5368b1ee2939961a16e74972b69088433fc52195 ]
+commit 49221cf86d18bb66fe95d3338cb33bd4b9880ca5 upstream.
 
-As reported by smatch:
-	drivers/media/common/siano/smsdvb-main.c:1231 smsdvb_hotplug() warn: '&client->entry' not removed from list
+Don't allow userspace to report errors that could be kernel-internal.
 
-If an error occur at the end of the registration logic, it won't
-drop the device from the list.
+Reported-by: Anatoly Trosinenko <anatoly.trosinenko@gmail.com>
+Fixes: 334f485df85a ("[PATCH] FUSE - device functions")
+Cc: <stable@vger.kernel.org> # v2.6.14
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/common/siano/smsdvb-main.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ fs/fuse/dev.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/common/siano/smsdvb-main.c b/drivers/media/common/siano/smsdvb-main.c
-index ae17407e477a..7cc654bc52d3 100644
---- a/drivers/media/common/siano/smsdvb-main.c
-+++ b/drivers/media/common/siano/smsdvb-main.c
-@@ -1176,6 +1176,10 @@ static int smsdvb_hotplug(struct smscore_device_t *coredev,
- 	return 0;
+--- a/fs/fuse/dev.c
++++ b/fs/fuse/dev.c
+@@ -1871,7 +1871,7 @@ static ssize_t fuse_dev_do_write(struct
+ 	}
  
- media_graph_error:
-+	mutex_lock(&g_smsdvb_clientslock);
-+	list_del(&client->entry);
-+	mutex_unlock(&g_smsdvb_clientslock);
-+
- 	smsdvb_debugfs_release(client);
+ 	err = -EINVAL;
+-	if (oh.error <= -1000 || oh.error > 0)
++	if (oh.error <= -512 || oh.error > 0)
+ 		goto copy_finish;
  
- client_error:
--- 
-2.30.2
-
+ 	spin_lock(&fpq->lock);
 
 
