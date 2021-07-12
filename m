@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EE393C588A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37DE73C5892
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378303AbhGLItw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:49:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42406 "EHLO mail.kernel.org"
+        id S1379360AbhGLIuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:50:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346044AbhGLHx3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:53:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D18B610D1;
-        Mon, 12 Jul 2021 07:50:39 +0000 (UTC)
+        id S1350374AbhGLHxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:53:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B2D3A611AD;
+        Mon, 12 Jul 2021 07:50:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076239;
-        bh=/z640fdBqXxJe4JlU9EgY4pp1lNDXbmylcXcbdX5eaY=;
+        s=korg; t=1626076256;
+        bh=Hc/E9IuVRpBfnbrWELVhw9Pk5eBDJ5/3oYpkfh0CZic=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FZ24yqSzMev1bBG2DCPyPcGBZUfMq7l0fP6t4F0WZBOtdYB7JU34gSrngb50yo4kh
-         DsIhrY5Idmr6/12nc/8deYxfxeUnjtopB5Lcl9HFjkNHX9o0ZInepb5VOVLq1/JJtw
-         Moj2WGdwAaQORwpovYIGhIfrUqiE63hdf9Zdo6w4=
+        b=Tux24vL7zFZs3i8IscE9s7lK2tyrKS78i89iu/xLkOPywrlPAIPjblKnu83Qpasgr
+         3eTWmYg2bvfvI7zEcnh/LaE4nQ3czX99bibM53qugeYQM/r023Tlub39Zdq2bAaQmv
+         aYRXzNXZYSKMXLLCwO/CGMY8VsUqjW7lAie5Idd8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vadim Fedorenko <vfedorenko@novek.ru>,
-        Seth Forshee <seth.forshee@canonical.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 521/800] tls: prevent oversized sendfile() hangs by ignoring MSG_MORE
-Date:   Mon, 12 Jul 2021 08:09:04 +0200
-Message-Id: <20210712061022.671726640@linuxfoundation.org>
+Subject: [PATCH 5.13 522/800] netfilter: nf_tables: memleak in hw offload abort path
+Date:   Mon, 12 Jul 2021 08:09:05 +0200
+Message-Id: <20210712061022.782550786@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -42,59 +39,225 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jakub Kicinski <kuba@kernel.org>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-[ Upstream commit d452d48b9f8b1a7f8152d33ef52cfd7fe1735b0a ]
+[ Upstream commit 3c5e44622011b9ea21bd425875dcccfc9a158f5f ]
 
-We got multiple reports that multi_chunk_sendfile test
-case from tls selftest fails. This was sort of expected,
-as the original fix was never applied (see it in the first
-Link:). The test in question uses sendfile() with count
-larger than the size of the underlying file. This will
-make splice set MSG_MORE on all sendpage calls, meaning
-TLS will never close and flush the last partial record.
+Release flow from the abort path, this is easy to reproduce since
+b72920f6e4a9 ("netfilter: nftables: counter hardware offload support").
+If the preparation phase fails, then the abort path is exercised without
+releasing the flow rule object.
 
-Eric seem to have addressed a similar problem in
-commit 35f9c09fe9c7 ("tcp: tcp_sendpages() should call tcp_push() once")
-by introducing MSG_SENDPAGE_NOTLAST. Unlike MSG_MORE
-MSG_SENDPAGE_NOTLAST is not set on the last call
-of a "pipefull" of data (PIPE_DEF_BUFFERS == 16,
-so every 16 pages or whenever we run out of data).
+unreferenced object 0xffff8881f0fa7700 (size 128):
+  comm "nft", pid 1335, jiffies 4294931120 (age 4163.740s)
+  hex dump (first 32 bytes):
+    08 e4 de 13 82 88 ff ff 98 e4 de 13 82 88 ff ff  ................
+    48 e4 de 13 82 88 ff ff 01 00 00 00 00 00 00 00  H...............
+  backtrace:
+    [<00000000634547e7>] flow_rule_alloc+0x26/0x80
+    [<00000000c8426156>] nft_flow_rule_create+0xc9/0x3f0 [nf_tables]
+    [<0000000075ff8e46>] nf_tables_newrule+0xc79/0x10a0 [nf_tables]
+    [<00000000ba65e40e>] nfnetlink_rcv_batch+0xaac/0xf90 [nfnetlink]
+    [<00000000505c614a>] nfnetlink_rcv+0x1bb/0x1f0 [nfnetlink]
+    [<00000000eb78e1fe>] netlink_unicast+0x34b/0x480
+    [<00000000a8f72c94>] netlink_sendmsg+0x3af/0x690
+    [<000000009cb1ddf4>] sock_sendmsg+0x96/0xa0
+    [<0000000039d06e44>] ____sys_sendmsg+0x3fe/0x440
+    [<00000000137e82ca>] ___sys_sendmsg+0xd8/0x140
+    [<000000000c6bf6a6>] __sys_sendmsg+0xb3/0x130
+    [<0000000043bd6268>] do_syscall_64+0x40/0xb0
+    [<00000000afdebc2d>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Having a break every 16 pages should be fine, TLS
-can pack exactly 4 pages into a record, so for
-aligned reads there should be no difference,
-unaligned may see one extra record per sendpage().
+Remove flow rule release from the offload commit path, otherwise error
+from the offload commit phase might trigger a double-free due to the
+execution of the abort_offload -> abort. After this patch, the abort
+path takes care of releasing the flow rule.
 
-Sticking to TCP semantics seems preferable to modifying
-splice, but we can revisit it if real life scenarios
-show a regression.
+This fix also needs to move the nft_flow_rule_create() call before the
+transaction object is added otherwise the abort path might find a NULL
+pointer to the flow rule object for the NFT_CHAIN_HW_OFFLOAD case.
 
-Reported-by: Vadim Fedorenko <vfedorenko@novek.ru>
-Reported-by: Seth Forshee <seth.forshee@canonical.com>
-Link: https://lore.kernel.org/netdev/1591392508-14592-1-git-send-email-pooja.trivedi@stackpath.com/
-Fixes: 3c4d7559159b ("tls: kernel TLS support")
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Tested-by: Seth Forshee <seth.forshee@canonical.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+While at it, rename BASIC-like goto tags to slightly more meaningful
+names rather than adding a new "err3" tag.
+
+Fixes: 63b48c73ff56 ("netfilter: nf_tables_offload: undo updates if transaction fails")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/tls/tls_sw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/netfilter/nf_tables_api.c     | 51 +++++++++++++++++++------------
+ net/netfilter/nf_tables_offload.c | 17 -----------
+ 2 files changed, 31 insertions(+), 37 deletions(-)
 
-diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
-index 694de024d0ee..74e5701034aa 100644
---- a/net/tls/tls_sw.c
-+++ b/net/tls/tls_sw.c
-@@ -1153,7 +1153,7 @@ static int tls_sw_do_sendpage(struct sock *sk, struct page *page,
- 	int ret = 0;
- 	bool eor;
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index bf4d6ec9fc55..ca9ec8721e6c 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -3243,9 +3243,9 @@ static int nf_tables_newrule(struct sk_buff *skb, const struct nfnl_info *info,
+ 	u8 genmask = nft_genmask_next(info->net);
+ 	struct nft_rule *rule, *old_rule = NULL;
+ 	struct nft_expr_info *expr_info = NULL;
++	struct nft_flow_rule *flow = NULL;
+ 	int family = nfmsg->nfgen_family;
+ 	struct net *net = info->net;
+-	struct nft_flow_rule *flow;
+ 	struct nft_userdata *udata;
+ 	struct nft_table *table;
+ 	struct nft_chain *chain;
+@@ -3340,13 +3340,13 @@ static int nf_tables_newrule(struct sk_buff *skb, const struct nfnl_info *info,
+ 		nla_for_each_nested(tmp, nla[NFTA_RULE_EXPRESSIONS], rem) {
+ 			err = -EINVAL;
+ 			if (nla_type(tmp) != NFTA_LIST_ELEM)
+-				goto err1;
++				goto err_release_expr;
+ 			if (n == NFT_RULE_MAXEXPRS)
+-				goto err1;
++				goto err_release_expr;
+ 			err = nf_tables_expr_parse(&ctx, tmp, &expr_info[n]);
+ 			if (err < 0) {
+ 				NL_SET_BAD_ATTR(extack, tmp);
+-				goto err1;
++				goto err_release_expr;
+ 			}
+ 			size += expr_info[n].ops->size;
+ 			n++;
+@@ -3355,7 +3355,7 @@ static int nf_tables_newrule(struct sk_buff *skb, const struct nfnl_info *info,
+ 	/* Check for overflow of dlen field */
+ 	err = -EFBIG;
+ 	if (size >= 1 << 12)
+-		goto err1;
++		goto err_release_expr;
  
--	eor = !(flags & (MSG_MORE | MSG_SENDPAGE_NOTLAST));
-+	eor = !(flags & MSG_SENDPAGE_NOTLAST);
- 	sk_clear_bit(SOCKWQ_ASYNC_NOSPACE, sk);
+ 	if (nla[NFTA_RULE_USERDATA]) {
+ 		ulen = nla_len(nla[NFTA_RULE_USERDATA]);
+@@ -3366,7 +3366,7 @@ static int nf_tables_newrule(struct sk_buff *skb, const struct nfnl_info *info,
+ 	err = -ENOMEM;
+ 	rule = kzalloc(sizeof(*rule) + size + usize, GFP_KERNEL);
+ 	if (rule == NULL)
+-		goto err1;
++		goto err_release_expr;
  
- 	/* Call the sk_stream functions to manage the sndbuf mem. */
+ 	nft_activate_next(net, rule);
+ 
+@@ -3385,7 +3385,7 @@ static int nf_tables_newrule(struct sk_buff *skb, const struct nfnl_info *info,
+ 		err = nf_tables_newexpr(&ctx, &expr_info[i], expr);
+ 		if (err < 0) {
+ 			NL_SET_BAD_ATTR(extack, expr_info[i].attr);
+-			goto err2;
++			goto err_release_rule;
+ 		}
+ 
+ 		if (expr_info[i].ops->validate)
+@@ -3395,16 +3395,24 @@ static int nf_tables_newrule(struct sk_buff *skb, const struct nfnl_info *info,
+ 		expr = nft_expr_next(expr);
+ 	}
+ 
++	if (chain->flags & NFT_CHAIN_HW_OFFLOAD) {
++		flow = nft_flow_rule_create(net, rule);
++		if (IS_ERR(flow)) {
++			err = PTR_ERR(flow);
++			goto err_release_rule;
++		}
++	}
++
+ 	if (info->nlh->nlmsg_flags & NLM_F_REPLACE) {
+ 		trans = nft_trans_rule_add(&ctx, NFT_MSG_NEWRULE, rule);
+ 		if (trans == NULL) {
+ 			err = -ENOMEM;
+-			goto err2;
++			goto err_destroy_flow_rule;
+ 		}
+ 		err = nft_delrule(&ctx, old_rule);
+ 		if (err < 0) {
+ 			nft_trans_destroy(trans);
+-			goto err2;
++			goto err_destroy_flow_rule;
+ 		}
+ 
+ 		list_add_tail_rcu(&rule->list, &old_rule->list);
+@@ -3412,7 +3420,7 @@ static int nf_tables_newrule(struct sk_buff *skb, const struct nfnl_info *info,
+ 		trans = nft_trans_rule_add(&ctx, NFT_MSG_NEWRULE, rule);
+ 		if (!trans) {
+ 			err = -ENOMEM;
+-			goto err2;
++			goto err_destroy_flow_rule;
+ 		}
+ 
+ 		if (info->nlh->nlmsg_flags & NLM_F_APPEND) {
+@@ -3430,21 +3438,19 @@ static int nf_tables_newrule(struct sk_buff *skb, const struct nfnl_info *info,
+ 	kvfree(expr_info);
+ 	chain->use++;
+ 
++	if (flow)
++		nft_trans_flow_rule(trans) = flow;
++
+ 	if (nft_net->validate_state == NFT_VALIDATE_DO)
+ 		return nft_table_validate(net, table);
+ 
+-	if (chain->flags & NFT_CHAIN_HW_OFFLOAD) {
+-		flow = nft_flow_rule_create(net, rule);
+-		if (IS_ERR(flow))
+-			return PTR_ERR(flow);
+-
+-		nft_trans_flow_rule(trans) = flow;
+-	}
+-
+ 	return 0;
+-err2:
++
++err_destroy_flow_rule:
++	nft_flow_rule_destroy(flow);
++err_release_rule:
+ 	nf_tables_rule_release(&ctx, rule);
+-err1:
++err_release_expr:
+ 	for (i = 0; i < n; i++) {
+ 		if (expr_info[i].ops) {
+ 			module_put(expr_info[i].ops->type->owner);
+@@ -8839,11 +8845,16 @@ static int __nf_tables_abort(struct net *net, enum nfnl_abort_action action)
+ 			nft_rule_expr_deactivate(&trans->ctx,
+ 						 nft_trans_rule(trans),
+ 						 NFT_TRANS_ABORT);
++			if (trans->ctx.chain->flags & NFT_CHAIN_HW_OFFLOAD)
++				nft_flow_rule_destroy(nft_trans_flow_rule(trans));
+ 			break;
+ 		case NFT_MSG_DELRULE:
+ 			trans->ctx.chain->use++;
+ 			nft_clear(trans->ctx.net, nft_trans_rule(trans));
+ 			nft_rule_expr_activate(&trans->ctx, nft_trans_rule(trans));
++			if (trans->ctx.chain->flags & NFT_CHAIN_HW_OFFLOAD)
++				nft_flow_rule_destroy(nft_trans_flow_rule(trans));
++
+ 			nft_trans_destroy(trans);
+ 			break;
+ 		case NFT_MSG_NEWSET:
+diff --git a/net/netfilter/nf_tables_offload.c b/net/netfilter/nf_tables_offload.c
+index a48c5fd53a80..ec701b84844f 100644
+--- a/net/netfilter/nf_tables_offload.c
++++ b/net/netfilter/nf_tables_offload.c
+@@ -594,23 +594,6 @@ int nft_flow_rule_offload_commit(struct net *net)
+ 		}
+ 	}
+ 
+-	list_for_each_entry(trans, &nft_net->commit_list, list) {
+-		if (trans->ctx.family != NFPROTO_NETDEV)
+-			continue;
+-
+-		switch (trans->msg_type) {
+-		case NFT_MSG_NEWRULE:
+-		case NFT_MSG_DELRULE:
+-			if (!(trans->ctx.chain->flags & NFT_CHAIN_HW_OFFLOAD))
+-				continue;
+-
+-			nft_flow_rule_destroy(nft_trans_flow_rule(trans));
+-			break;
+-		default:
+-			break;
+-		}
+-	}
+-
+ 	return err;
+ }
+ 
 -- 
 2.30.2
 
