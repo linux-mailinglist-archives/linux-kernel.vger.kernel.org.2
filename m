@@ -2,92 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8523C5C6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 14:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B015C3C5C73
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 14:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233853AbhGLMmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 08:42:12 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:40661 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230361AbhGLMmL (ORCPT
+        id S233933AbhGLMoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 08:44:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39745 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230361AbhGLMoR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 08:42:11 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16CCWAMR004125;
-        Mon, 12 Jul 2021 14:39:20 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=selector1;
- bh=/eCSMC2RUgrd+lVsRJOiXmgkxD0dt0fqr8pKy1Y7rHs=;
- b=F1u2yO+vNfMD1XUNE+ehsDr53KID6V6gA7SVIlR3bb+Cw79vLbMgo7cnTYQlfDrcLPjF
- 8yZWmm7G/rpdSPrccL4+B9Tyv9063Y/wbNWzH2mOMI6fQjHDqMogR8zp7ONwfm2h6V9/
- yzmr/yad0QC7F6fjze01jF/0sAhL5MbXDU+eZg7kP9epFQMS2nTjdb7FNQt/wwFVJwSj
- wpqRsfxgDzztuJLmk5dDbm1K5zJunFfNulKtqvUJvr+mtIdzjRkT8drW/Gb3o4qsRRU6
- ZnMFPOId8WAxyXQBKsuwtbr2P1mDKR1hkWzEhjyzt5+nd93BZ/gLCqFOQi8AT0IVZKij Sg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 39rk1vgw1k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 12 Jul 2021 14:39:20 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6844F10002A;
-        Mon, 12 Jul 2021 14:39:19 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 572E02248B4;
-        Mon, 12 Jul 2021 14:39:19 +0200 (CEST)
-Received: from localhost (10.75.127.49) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 12 Jul 2021 14:39:18
- +0200
-From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <arnaud.pouliquen@foss.st.com>
-Subject: [PATCH v2] rpmsg: Fix rpmsg_create_ept return when RPMSG config is not defined
-Date:   Mon, 12 Jul 2021 14:39:12 +0200
-Message-ID: <20210712123912.10672-1-arnaud.pouliquen@foss.st.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 12 Jul 2021 08:44:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626093687;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=qEbDQXGhHEIQfXJJ1NDA7WskESqj8IOu7J2/Cf7/u6Q=;
+        b=Fs9CXKbGTKina7mFGIErfcSJizxtVYM/EAiaRIGse6BQP2OcL+UNviTMEKgOYl17mMcoF2
+        xZKaj8KjV45vyXdzvpbJXD0Y4yaEsu6gLbTD9OXVDTNqgKiFZPCKxYeY/cup5OLxzqqwSb
+        kei8JGwPG1iwLTcC5bbrRGm1tePS4yY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-421-VADwkUjmOYKhbpMmcyul4g-1; Mon, 12 Jul 2021 08:41:26 -0400
+X-MC-Unique: VADwkUjmOYKhbpMmcyul4g-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8A5AB802C87;
+        Mon, 12 Jul 2021 12:41:18 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-113-111.rdu2.redhat.com [10.10.113.111])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 285555C1D1;
+        Mon, 12 Jul 2021 12:40:53 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-acpi@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Anton Blanchard <anton@ozlabs.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Baoquan He <bhe@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Dave Jiang <dave.jiang@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jia He <justin.he@arm.com>, Joe Perches <joe@perches.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Michel Lespinasse <michel@lespinasse.org>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Rich Felker <dalias@libc.org>,
+        Scott Cheloha <cheloha@linux.ibm.com>,
+        Sergei Trofimovich <slyfox@gentoo.org>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: mm/memory_hotplug: preparatory patches for new online policy and memory
+Date:   Mon, 12 Jul 2021 14:40:48 +0200
+Message-Id: <20210712124052.26491-1-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-12_07:2021-07-12,2021-07-12 signatures=0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a minor fix.
+Hi,
 
-According to the description of the rpmsg_create_ept in rpmsg_core.c
-the function should return NULL on error.
+these are all cleanups and one fix previously sent as part of [1]:
+	[PATCH v1 00/12] mm/memory_hotplug: "auto-movable" online policy
+	and memory groups
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
----
+These patches make sense even without the other series, therefore I pulled
+them out to make the other series easier to digest.
 
-update from V1:
-- add Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-- rebased on kernel V.14-rc1. 
+[1] https://lkml.kernel.org/r/20210607195430.48228-1-david@redhat.com
 
----
- include/linux/rpmsg.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Len Brown <lenb@kernel.org>
+Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: virtualization@lists.linux-foundation.org
+Cc: linux-mm@kvack.org
+Cc: linux-acpi@vger.kernel.org
 
-diff --git a/include/linux/rpmsg.h b/include/linux/rpmsg.h
-index d97dcd049f18..a8dcf8a9ae88 100644
---- a/include/linux/rpmsg.h
-+++ b/include/linux/rpmsg.h
-@@ -231,7 +231,7 @@ static inline struct rpmsg_endpoint *rpmsg_create_ept(struct rpmsg_device *rpdev
- 	/* This shouldn't be possible */
- 	WARN_ON(1);
- 
--	return ERR_PTR(-ENXIO);
-+	return NULL;
- }
- 
- static inline int rpmsg_send(struct rpmsg_endpoint *ept, void *data, int len)
+David Hildenbrand (4):
+  mm/memory_hotplug: use "unsigned long" for PFN in zone_for_pfn_range()
+  mm/memory_hotplug: remove nid parameter from arch_remove_memory()
+  mm/memory_hotplug: remove nid parameter from remove_memory() and
+    friends
+  ACPI: memhotplug: memory resources cannot be enabled yet
+
+ arch/arm64/mm/mmu.c                           |  3 +-
+ arch/ia64/mm/init.c                           |  3 +-
+ arch/powerpc/mm/mem.c                         |  3 +-
+ .../platforms/pseries/hotplug-memory.c        |  9 +++--
+ arch/s390/mm/init.c                           |  3 +-
+ arch/sh/mm/init.c                             |  3 +-
+ arch/x86/mm/init_32.c                         |  3 +-
+ arch/x86/mm/init_64.c                         |  3 +-
+ drivers/acpi/acpi_memhotplug.c                | 11 +-----
+ drivers/dax/kmem.c                            |  3 +-
+ drivers/virtio/virtio_mem.c                   |  4 +--
+ include/linux/memory_hotplug.h                | 17 +++++----
+ mm/memory_hotplug.c                           | 36 +++++++++++--------
+ mm/memremap.c                                 |  5 +--
+ 14 files changed, 45 insertions(+), 61 deletions(-)
+
+
+base-commit: e73f0f0ee7541171d89f2e2491130c7771ba58d3
 -- 
-2.17.1
+2.31.1
 
