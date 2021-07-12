@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E0103C4FCD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:44:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E06353C4FD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245439AbhGLH2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:28:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35698 "EHLO mail.kernel.org"
+        id S245746AbhGLH2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:28:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239457AbhGLHA6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:00:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E184E61132;
-        Mon, 12 Jul 2021 06:58:08 +0000 (UTC)
+        id S239878AbhGLHBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:01:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C12246142B;
+        Mon, 12 Jul 2021 06:58:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073089;
-        bh=H7iqm+NQ4y2X2+Gx7MVopqODNNQ0ttsLJOZX2Qcms0I=;
+        s=korg; t=1626073092;
+        bh=RrEZ3nvMz/eRzmsim55IcWFIrNUkgGhypRTju5JW/SM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y45v70weiMCX8Cz9a/plnOo/jQu6mgf6nIQFErMxlBUmKDY2VrzuXFC2iBYl9h4EC
-         0Cpu+0As1rNPh2GM+MhAYjS9sKV8q8EKEBslynz3AS6gQcjvFnv8GUMMgy4u5pCpAa
-         gmVuJtgARkIrbEEMJIdZVaR7euVaHtsGtbWfS6Ts=
+        b=LANnnMD9r/BQr/ppBgTkh35g5Lz66dSjiUPTFFuEyydFmq7gs2WgEmF1/SgqdREX5
+         m2Ue0OXA5UakHEFklEdyG7kFdXQFbPQjFswscb9N2Vzp3Cfqk44kv1tCs0MMr2NTLA
+         esZvCmsFIpbB16Hl4uhQPNbkPcq5lkRvaaFc5a3Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Damien Le Moal <damien.lemoal@wdc.com>,
+        stable@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>,
         Stephen Boyd <sboyd@kernel.org>
-Subject: [PATCH 5.12 080/700] clk: k210: Fix k210_clk_set_parent()
-Date:   Mon, 12 Jul 2021 08:02:43 +0200
-Message-Id: <20210712060935.997867660@linuxfoundation.org>
+Subject: [PATCH 5.12 081/700] clk: agilex/stratix10/n5x: fix how the bypass_reg is handled
+Date:   Mon, 12 Jul 2021 08:02:44 +0200
+Message-Id: <20210712060936.138706154@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
 References: <20210712060924.797321836@linuxfoundation.org>
@@ -39,34 +39,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Damien Le Moal <damien.lemoal@wdc.com>
+From: Dinh Nguyen <dinguyen@kernel.org>
 
-commit faa0e307948594b4379a86fff7fb2409067aed6f upstream.
+commit dfd1427c3769ba51297777dbb296f1802d72dbf6 upstream.
 
-In k210_clk_set_parent(), add missing writel() call to update the mux
-register of a clock to change its parent. This also fixes a compilation
-warning with clang when compiling with W=1.
+If the bypass_reg is set, then we can return the bypass parent, however,
+if there is not a bypass_reg, we need to figure what the correct parent
+mux is.
 
-Fixes: c6ca7616f7d5 ("clk: Add RISC-V Canaan Kendryte K210 clock driver")
+The previous code never handled the parent mux if there was a
+bypass_reg.
+
+Fixes: 80c6b7a0894f ("clk: socfpga: agilex: add clock driver for the Agilex platform")
 Cc: stable@vger.kernel.org
-Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
-Link: https://lore.kernel.org/r/20210622064502.14841-1-damien.lemoal@wdc.com
+Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+Link: https://lore.kernel.org/r/20210611025201.118799-4-dinguyen@kernel.org
 Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/clk/clk-k210.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/clk/socfpga/clk-periph-s10.c |   11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
---- a/drivers/clk/clk-k210.c
-+++ b/drivers/clk/clk-k210.c
-@@ -722,6 +722,7 @@ static int k210_clk_set_parent(struct cl
- 		reg |= BIT(cfg->mux_bit);
- 	else
- 		reg &= ~BIT(cfg->mux_bit);
-+	writel(reg, ksc->regs + cfg->mux_reg);
- 	spin_unlock_irqrestore(&ksc->clk_lock, flags);
+--- a/drivers/clk/socfpga/clk-periph-s10.c
++++ b/drivers/clk/socfpga/clk-periph-s10.c
+@@ -64,16 +64,21 @@ static u8 clk_periclk_get_parent(struct
+ {
+ 	struct socfpga_periph_clk *socfpgaclk = to_periph_clk(hwclk);
+ 	u32 clk_src, mask;
+-	u8 parent;
++	u8 parent = 0;
  
- 	return 0;
++	/* handle the bypass first */
+ 	if (socfpgaclk->bypass_reg) {
+ 		mask = (0x1 << socfpgaclk->bypass_shift);
+ 		parent = ((readl(socfpgaclk->bypass_reg) & mask) >>
+ 			   socfpgaclk->bypass_shift);
+-	} else {
++		if (parent)
++			return parent;
++	}
++
++	if (socfpgaclk->hw.reg) {
+ 		clk_src = readl(socfpgaclk->hw.reg);
+ 		parent = (clk_src >> CLK_MGR_FREE_SHIFT) &
+-			CLK_MGR_FREE_MASK;
++			  CLK_MGR_FREE_MASK;
+ 	}
+ 	return parent;
+ }
 
 
