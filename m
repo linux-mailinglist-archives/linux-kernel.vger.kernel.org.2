@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB0C83C4C73
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F19DF3C5844
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243104AbhGLHEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:04:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41760 "EHLO mail.kernel.org"
+        id S1377351AbhGLIo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:44:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238089AbhGLGqx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:46:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 225A261165;
-        Mon, 12 Jul 2021 06:42:49 +0000 (UTC)
+        id S1351689AbhGLHwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:52:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D2BC610D1;
+        Mon, 12 Jul 2021 07:49:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072170;
-        bh=br3pXyvGPs1GFamn1zJyi1MEcHGeylciNRI8Y/GIw58=;
+        s=korg; t=1626076153;
+        bh=oIpkgF5zKPuWySBMSL7DEgixamOeY1hF/x7WHWlEGXs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C7wRlTFLART8sIiPjwjhIjtFOeDQAH1B73UefAl3c+iT0+7x411PMNPx6cwT3Px+a
-         F2OGHs356wxlecYol5B/Jxv8NA2d2Ju4d7ZHDdF+UYmYIcePfCiSW39o47Fbpf+oMs
-         GhVd1tWdgigiPHVOSWHImcNYJcw+LSD93mNOlpYQ=
+        b=EABdFiu6LEQhepglqpHIrwVPZJKPST5Op8c0JnPWle12uQwI7cE61fRK8qgFicaaI
+         ZvXikHIa9qy4sBnbaBws7CasNTGDlFcbJuG98ksxa8jgxSRi1TOduitmmpqT1wI11M
+         h+4VjSbeNOFkLVJ9jSG/LAYSpcZQMxgSAW+u6JNU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Daniel Xu <dxu@dxuuu.xyz>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 341/593] ath10k: add missing error return code in ath10k_pci_probe()
+Subject: [PATCH 5.13 478/800] selftests/bpf: Whitelist test_progs.h from .gitignore
 Date:   Mon, 12 Jul 2021 08:08:21 +0200
-Message-Id: <20210712060923.534994216@linuxfoundation.org>
+Message-Id: <20210712061018.038069655@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,62 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Daniel Xu <dxu@dxuuu.xyz>
 
-[ Upstream commit e2783e2f39ba99178dedfc1646d5cc0979d1bab3 ]
+[ Upstream commit 809ed84de8b3f2fd7b1d06efb94bf98fd318a7d7 ]
 
-When chip_id is not supported, the resources will be freed
-on path err_unsupported, these resources will also be freed
-when calling ath10k_pci_remove(), it will cause double free,
-so return -ENODEV when it doesn't support the device with wrong
-chip_id.
+Somehow test_progs.h was being included by the existing rule:
 
-Fixes: c0c378f9907c ("ath10k: remove target soc ps code")
-Fixes: 7505f7c3ec1d ("ath10k: create a chip revision whitelist")
-Fixes: f8914a14623a ("ath10k: restore QCA9880-AR1A (v1) detection")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210522105822.1091848-3-yangyingliang@huawei.com
+    /test_progs*
+
+This is bad because:
+
+    1) test_progs.h is a checked in file
+    2) grep-like tools like ripgrep[0] respect gitignore and
+       test_progs.h was being hidden from searches
+
+[0]: https://github.com/BurntSushi/ripgrep
+
+Fixes: 74b5a5968fe8 ("selftests/bpf: Replace test_progs and test_maps w/ general rule")
+Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/a46f64944bf678bc652410ca6028d3450f4f7f4b.1623880296.git.dxu@dxuuu.xyz
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/pci.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ tools/testing/selftests/bpf/.gitignore | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 55f483d22b6d..86f52bcb3e4d 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -3684,8 +3684,10 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 			ath10k_pci_soc_read32(ar, SOC_CHIP_ID_ADDRESS);
- 		if (bus_params.chip_id != 0xffffffff) {
- 			if (!ath10k_pci_chip_is_supported(pdev->device,
--							  bus_params.chip_id))
-+							  bus_params.chip_id)) {
-+				ret = -ENODEV;
- 				goto err_unsupported;
-+			}
- 		}
- 	}
- 
-@@ -3696,11 +3698,15 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 	}
- 
- 	bus_params.chip_id = ath10k_pci_soc_read32(ar, SOC_CHIP_ID_ADDRESS);
--	if (bus_params.chip_id == 0xffffffff)
-+	if (bus_params.chip_id == 0xffffffff) {
-+		ret = -ENODEV;
- 		goto err_unsupported;
-+	}
- 
--	if (!ath10k_pci_chip_is_supported(pdev->device, bus_params.chip_id))
-+	if (!ath10k_pci_chip_is_supported(pdev->device, bus_params.chip_id)) {
-+		ret = -ENODEV;
- 		goto err_unsupported;
-+	}
- 
- 	ret = ath10k_core_register(ar, &bus_params);
- 	if (ret) {
+diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
+index 4866f6a21901..d89efd9785d8 100644
+--- a/tools/testing/selftests/bpf/.gitignore
++++ b/tools/testing/selftests/bpf/.gitignore
+@@ -10,6 +10,7 @@ FEATURE-DUMP.libbpf
+ fixdep
+ test_dev_cgroup
+ /test_progs*
++!test_progs.h
+ test_verifier_log
+ feature
+ test_sock
 -- 
 2.30.2
 
