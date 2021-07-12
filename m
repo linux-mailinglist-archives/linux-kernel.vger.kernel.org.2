@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 110513C5205
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AF113C4A46
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349697AbhGLHoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:44:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46682 "EHLO mail.kernel.org"
+        id S240017AbhGLGue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:50:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242718AbhGLHMK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:12:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B32461182;
-        Mon, 12 Jul 2021 07:09:19 +0000 (UTC)
+        id S238285AbhGLGkE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:40:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7AFE610A7;
+        Mon, 12 Jul 2021 06:36:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073759;
-        bh=+txGNKHuBI2EjIrq8yvLg/OPpBDV2Qd4ke6uIMoKZ90=;
+        s=korg; t=1626071814;
+        bh=y5VGwTrzuQwT2plzHSrl2/5rCfn4r0bcXrI0UDrKkDk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xCUQaDiZ3xiU71cfDbokywiJimnn7dvLxv6N8d2Kmp/JWcmQOKJxYmrAy4rbTbr+y
-         9007ofu1tHjRlvGMqSMYS21dqbuV0dL39V1rkPrYCy5q6HJkdLuvRgBvkooUpKrzHV
-         v3iNAxIkGys9aKcNcdjHFIdyzDK/M5gy8yNUCfq8=
+        b=SSD9y2eryhAnpyzsuCBbznUSftOfH++hycoSzc7WvtHeFjbI6Vu3hkMwTENFvYYBQ
+         uYXix81YGcEOARhVVV0BLKtrDFV+XhQ2XLjx4wf8zzTuHYmGva7cvbFVL++IvCLcB5
+         jlSK3AjpJR0AzYvQExQHmFIl+nbsyrT+azzka8Ac=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 307/700] btrfs: clear log tree recovering status if starting transaction fails
+        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 230/593] pata_ep93xx: fix deferred probing
 Date:   Mon, 12 Jul 2021 08:06:30 +0200
-Message-Id: <20210712061009.047053514@linuxfoundation.org>
+Message-Id: <20210712060908.230036067@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +39,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Sterba <dsterba@suse.com>
+From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 
-[ Upstream commit 1aeb6b563aea18cd55c73cf666d1d3245a00f08c ]
+[ Upstream commit 5c8121262484d99bffb598f39a0df445cecd8efb ]
 
-When a log recovery is in progress, lots of operations have to take that
-into account, so we keep this status per tree during the operation. Long
-time ago error handling revamp patch 79787eaab461 ("btrfs: replace many
-BUG_ONs with proper error handling") removed clearing of the status in
-an error branch. Add it back as was intended in e02119d5a7b4 ("Btrfs:
-Add a write ahead tree log to optimize synchronous operations").
+The driver overrides the error codes returned by platform_get_irq() to
+-ENXIO, so if it returns -EPROBE_DEFER, the driver would fail the probe
+permanently instead of the deferred probing.  Propagate the error code
+upstream, as it should have been done from the start...
 
-There are probably no visible effects, log replay is done only during
-mount and if it fails all structures are cleared so the stale status
-won't be kept.
-
-Fixes: 79787eaab461 ("btrfs: replace many BUG_ONs with proper error handling")
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Fixes: 2fff27512600 ("PATA host controller driver for ep93xx")
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+Link: https://lore.kernel.org/r/509fda88-2e0d-2cc7-f411-695d7e94b136@omprussia.ru
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/tree-log.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/ata/pata_ep93xx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 276b5511ff80..f4b0aecdaac7 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -6365,6 +6365,7 @@ next:
- error:
- 	if (wc.trans)
- 		btrfs_end_transaction(wc.trans);
-+	clear_bit(BTRFS_FS_LOG_RECOVERING, &fs_info->flags);
- 	btrfs_free_path(path);
- 	return ret;
- }
+diff --git a/drivers/ata/pata_ep93xx.c b/drivers/ata/pata_ep93xx.c
+index badab6708893..46208ececbb6 100644
+--- a/drivers/ata/pata_ep93xx.c
++++ b/drivers/ata/pata_ep93xx.c
+@@ -928,7 +928,7 @@ static int ep93xx_pata_probe(struct platform_device *pdev)
+ 	/* INT[3] (IRQ_EP93XX_EXT3) line connected as pull down */
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq < 0) {
+-		err = -ENXIO;
++		err = irq;
+ 		goto err_rel_gpio;
+ 	}
+ 
 -- 
 2.30.2
 
