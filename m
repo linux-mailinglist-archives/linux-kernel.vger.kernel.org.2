@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 984063C5822
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8133C5239
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379096AbhGLIly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:41:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35404 "EHLO mail.kernel.org"
+        id S1349976AbhGLHpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:45:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350433AbhGLHvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:51:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E512616EA;
-        Mon, 12 Jul 2021 07:45:13 +0000 (UTC)
+        id S241946AbhGLHM2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:12:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C8F1610D1;
+        Mon, 12 Jul 2021 07:09:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075913;
-        bh=Zm90f/uoWZTXOY8epm/7gbhy/aUd5DY2r0s+gfdl/04=;
+        s=korg; t=1626073779;
+        bh=j7z8Yc+lgjfOdQQig3VLMguQL2lfa3TQ/zG18pUkpSo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UCzMMgcEcrrAGt4In6Wb/2i+YRs44+wCs2GLM3ljr3uadHfJJH2ApdY0vaGRkseb3
-         VDNsAe89PCvbdy39jb747ktFRGG32s2uM+stOf/dd34ZDufRvp0phPduxVBU8F1bCk
-         vEeMuyb8g1aPJ35l13Ht5ry4Vx5PB6I/S5XcZaJM=
+        b=MWyDZeeme/LV0MuC3s9azmS6vy5O/6r8ND/Z1XJiGbsXkkaL66DbTkXQqBWOhUjgg
+         oBMmR0lGfUh5OHtn02hyHTYs98s2VwKHA9/MBpuY5zAt0fcC6o5c/kWuKMnSHWJJNy
+         tE4IQVvpmtVciug6sbx4+cTMhCDZnChXdFCSS8CE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        stable@vger.kernel.org, Lucas Stach <l.stach@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 417/800] drm/vc4: crtc: Fix vc4_get_crtc_encoder logic
-Date:   Mon, 12 Jul 2021 08:07:20 +0200
-Message-Id: <20210712061011.563686927@linuxfoundation.org>
+Subject: [PATCH 5.12 358/700] drm/imx: ipuv3-plane: fix PRG modifiers after drm managed resource conversion
+Date:   Mon, 12 Jul 2021 08:07:21 +0200
+Message-Id: <20210712061014.432461059@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,93 +40,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxime Ripard <maxime@cerno.tech>
+From: Lucas Stach <l.stach@pengutronix.de>
 
-[ Upstream commit 5a184d959d5a5a66b377cb5cd4c95a80388e0c88 ]
+[ Upstream commit 17b9a94656fe19aef3647c4f93d93be51697ceb1 ]
 
-The vc4_get_crtc_encoder function currently only works when the
-connector->state->crtc pointer is set, which is only true when the
-connector is currently enabled.
+The conversion to drm managed resources introduced two bugs: the plane is now
+always initialized with the linear-only list, while the list with the Vivante
+GPU modifiers should have been used when the PRG/PRE engines are present. This
+masked another issue, as ipu_plane_format_mod_supported() is now called before
+the private plane data is set up, so if a non-linear modifier is supplied in
+the plane modifier list, we run into a NULL pointer dereference checking for
+the PRG presence. To fix this just remove the check from this function, as we
+know that it will only be called with a non-linear modifier, if the plane init
+code has already determined that the PRG/PRE is present.
 
-However, we use it as part of the disable path as well, and our lookup
-will fail in that case, resulting in it returning a null pointer we
-can't act on.
-
-We can access the connector that used to be connected to that crtc
-though using the old connector state in the disable path.
-
-Since we want to support both the enable and disable path, we can
-support it by passing the state accessor variant as a function pointer,
-together with the atomic state.
-
-Fixes: 792c3132bc1b ("drm/vc4: encoder: Add finer-grained encoder callbacks")
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210507150515.257424-5-maxime@cerno.tech
+Fixes: 699e7e543f1a ("drm/imx: ipuv3-plane: use drm managed resources")
+Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+Link: https://lore.kernel.org/r/20210510145927.988661-1-l.stach@pengutronix.de
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/vc4/vc4_crtc.c | 21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/imx/ipuv3-plane.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4/vc4_crtc.c
-index d079303cc426..1733add20498 100644
---- a/drivers/gpu/drm/vc4/vc4_crtc.c
-+++ b/drivers/gpu/drm/vc4/vc4_crtc.c
-@@ -279,14 +279,22 @@ static u32 vc4_crtc_get_fifo_full_level_bits(struct vc4_crtc *vc4_crtc,
-  * allows drivers to push pixels to more than one encoder from the
-  * same CRTC.
-  */
--static struct drm_encoder *vc4_get_crtc_encoder(struct drm_crtc *crtc)
-+static struct drm_encoder *vc4_get_crtc_encoder(struct drm_crtc *crtc,
-+						struct drm_atomic_state *state,
-+						struct drm_connector_state *(*get_state)(struct drm_atomic_state *state,
-+											 struct drm_connector *connector))
- {
- 	struct drm_connector *connector;
- 	struct drm_connector_list_iter conn_iter;
+diff --git a/drivers/gpu/drm/imx/ipuv3-plane.c b/drivers/gpu/drm/imx/ipuv3-plane.c
+index c5ff966e2ceb..8c08c8b36074 100644
+--- a/drivers/gpu/drm/imx/ipuv3-plane.c
++++ b/drivers/gpu/drm/imx/ipuv3-plane.c
+@@ -345,10 +345,11 @@ static bool ipu_plane_format_mod_supported(struct drm_plane *plane,
+ 	if (modifier == DRM_FORMAT_MOD_LINEAR)
+ 		return true;
  
- 	drm_connector_list_iter_begin(crtc->dev, &conn_iter);
- 	drm_for_each_connector_iter(connector, &conn_iter) {
--		if (connector->state->crtc == crtc) {
-+		struct drm_connector_state *conn_state = get_state(state, connector);
-+
-+		if (!conn_state)
-+			continue;
-+
-+		if (conn_state->crtc == crtc) {
- 			drm_connector_list_iter_end(&conn_iter);
- 			return connector->encoder;
- 		}
-@@ -309,7 +317,8 @@ static void vc4_crtc_config_pv(struct drm_crtc *crtc, struct drm_atomic_state *s
- {
- 	struct drm_device *dev = crtc->dev;
- 	struct vc4_dev *vc4 = to_vc4_dev(dev);
--	struct drm_encoder *encoder = vc4_get_crtc_encoder(crtc);
-+	struct drm_encoder *encoder = vc4_get_crtc_encoder(crtc, state,
-+							   drm_atomic_get_new_connector_state);
- 	struct vc4_encoder *vc4_encoder = to_vc4_encoder(encoder);
- 	struct vc4_crtc *vc4_crtc = to_vc4_crtc(crtc);
- 	const struct vc4_pv_data *pv_data = vc4_crtc_to_vc4_pv_data(vc4_crtc);
-@@ -424,7 +433,8 @@ static int vc4_crtc_disable(struct drm_crtc *crtc,
- 			    struct drm_atomic_state *state,
- 			    unsigned int channel)
- {
--	struct drm_encoder *encoder = vc4_get_crtc_encoder(crtc);
-+	struct drm_encoder *encoder = vc4_get_crtc_encoder(crtc, state,
-+							   drm_atomic_get_old_connector_state);
- 	struct vc4_encoder *vc4_encoder = to_vc4_encoder(encoder);
- 	struct vc4_crtc *vc4_crtc = to_vc4_crtc(crtc);
- 	struct drm_device *dev = crtc->dev;
-@@ -524,7 +534,8 @@ static void vc4_crtc_atomic_enable(struct drm_crtc *crtc,
- {
- 	struct drm_device *dev = crtc->dev;
- 	struct vc4_crtc *vc4_crtc = to_vc4_crtc(crtc);
--	struct drm_encoder *encoder = vc4_get_crtc_encoder(crtc);
-+	struct drm_encoder *encoder = vc4_get_crtc_encoder(crtc, state,
-+							   drm_atomic_get_new_connector_state);
- 	struct vc4_encoder *vc4_encoder = to_vc4_encoder(encoder);
+-	/* without a PRG there are no supported modifiers */
+-	if (!ipu_prg_present(ipu))
+-		return false;
+-
++	/*
++	 * Without a PRG the possible modifiers list only includes the linear
++	 * modifier, so we always take the early return from this function and
++	 * only end up here if the PRG is present.
++	 */
+ 	return ipu_prg_format_supported(ipu, format, modifier);
+ }
  
- 	require_hvs_enabled(dev);
+@@ -861,6 +862,10 @@ struct ipu_plane *ipu_plane_init(struct drm_device *dev, struct ipu_soc *ipu,
+ 		formats = ipu_plane_rgb_formats;
+ 		format_count = ARRAY_SIZE(ipu_plane_rgb_formats);
+ 	}
++
++	if (ipu_prg_present(ipu))
++		modifiers = pre_format_modifiers;
++
+ 	ipu_plane = drmm_universal_plane_alloc(dev, struct ipu_plane, base,
+ 					       possible_crtcs, &ipu_plane_funcs,
+ 					       formats, format_count, modifiers,
+@@ -875,9 +880,6 @@ struct ipu_plane *ipu_plane_init(struct drm_device *dev, struct ipu_soc *ipu,
+ 	ipu_plane->dma = dma;
+ 	ipu_plane->dp_flow = dp;
+ 
+-	if (ipu_prg_present(ipu))
+-		modifiers = pre_format_modifiers;
+-
+ 	drm_plane_helper_add(&ipu_plane->base, &ipu_plane_helper_funcs);
+ 
+ 	if (dp == IPU_DP_FLOW_SYNC_BG || dp == IPU_DP_FLOW_SYNC_FG)
 -- 
 2.30.2
 
