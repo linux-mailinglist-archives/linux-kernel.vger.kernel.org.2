@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35FB73C52A4
+	by mail.lfdr.de (Postfix) with ESMTP id A1DEC3C52A5
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346656AbhGLHsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:48:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48022 "EHLO mail.kernel.org"
+        id S1346697AbhGLHsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:48:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240067AbhGLHOA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:14:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CA0D61151;
-        Mon, 12 Jul 2021 07:11:00 +0000 (UTC)
+        id S241496AbhGLHOC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:14:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61540610CA;
+        Mon, 12 Jul 2021 07:11:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073861;
-        bh=ZHPtdMtLw+LRQMoNHxOGGo1Ztxl6VU7JJPy7gPvtOSA=;
+        s=korg; t=1626073864;
+        bh=Norb7IlOk35PWp24tVSLNV3ZuTQpAbU8Ohm1mZUsxRU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cm8cKMckuf2PgEad02UpJ/gJmRoN6BwxKVHL77AOqk35k0lO/EoA7+6mw9nh2xvl0
-         GxRLmCr491TFmTsGM8R8PfAs7K3R/YeM+WFYxjFV7ILe8Ojkup2KtdJ2BL3MrCn60L
-         lo50biayHLvs2M7hOulsDr0Y4H/ddXar8hDxx4VU=
+        b=2c2tgy3xce+23dcKFh1GjR45hdbI2EGtWJK96zWeP2TyEVc75w1E8hG5vpYH4qj5W
+         r7/9AHGDLu1LbUNYjAAAajkRf5xsGUWE/44B3LXyXElDVuqZRF3nUjAcElcBCcqZEi
+         94eC+YuYQykgVsdnDHETwJfHcjLhRf7Q1V/5FM/c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Md Haris Iqbal <haris.iqbal@ionos.com>,
-        Gioh Kim <gi-oh.kim@ionos.com>,
+        stable@vger.kernel.org, Gioh Kim <gi-oh.kim@ionos.com>,
+        Jack Wang <jinpu.wang@ionos.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 383/700] RDMA/rtrs-clt: Check state of the rtrs_clt_sess before reading its stats
-Date:   Mon, 12 Jul 2021 08:07:46 +0200
-Message-Id: <20210712061017.119323222@linuxfoundation.org>
+Subject: [PATCH 5.12 384/700] RDMA/rtrs: Do not reset hb_missed_max after re-connection
+Date:   Mon, 12 Jul 2021 08:07:47 +0200
+Message-Id: <20210712061017.215739470@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
 References: <20210712060924.797321836@linuxfoundation.org>
@@ -41,55 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
 
-[ Upstream commit 41db63a7efe1c8c2dd282c1849a6ebfbbedbaf67 ]
+[ Upstream commit 64bce1ee978491a779eb31098b21c57d4e431d6a ]
 
-When get_next_path_min_inflight is called to select the next path, it
-iterates over the list of available rtrs_clt_sess (paths). It then reads
-the number of inflight IOs for that path to select one which has the least
-inflight IO.
+When re-connecting, it resets hb_missed_max to 0.
+Before the first re-connecting, client will trigger re-connection
+when it gets hb-ack more than 5 times. But after the first
+re-connecting, clients will do re-connection whenever it does
+not get hb-ack because hb_missed_max is 0.
 
-But it may so happen that rtrs_clt_sess (path) is no longer in the
-connected state because closing or error recovery paths can change the status
-of the rtrs_clt_Sess.
+There is no need to reset hb_missed_max when re-connecting.
+hb_missed_max should be kept until closing the session.
 
-For example, the client sent the heart-beat and did not get the
-response, it would change the session status and stop IO processing.
-The added checking of this patch can prevent accessing the broken path
-and generating duplicated error messages.
-
-It is ok if the status is changed after checking the status because
-the error recovery path does not free memory and only tries to
-reconnection. And also it is ok if the session is closed after checking
-the status because closing the session changes the session status and
-flush all IO beforing free memory. If the session is being accessed for
-IO processing, the closing session will wait.
-
-Fixes: 6a98d71daea18 ("RDMA/rtrs: client: main functionality")
-Link: https://lore.kernel.org/r/20210528113018.52290-13-jinpu.wang@ionos.com
-Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
-Reviewed-by: Gioh Kim <gi-oh.kim@ionos.com>
+Fixes: c0894b3ea69d3 ("RDMA/rtrs: core: lib functions shared between client and server modules")
+Link: https://lore.kernel.org/r/20210528113018.52290-16-jinpu.wang@ionos.com
 Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
+Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/infiniband/ulp/rtrs/rtrs.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index 959ba0462ef0..cb6f5c7610a0 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -805,6 +805,9 @@ static struct rtrs_clt_sess *get_next_path_min_inflight(struct path_it *it)
- 	int inflight;
- 
- 	list_for_each_entry_rcu(sess, &clt->paths_list, s.entry) {
-+		if (unlikely(READ_ONCE(sess->state) != RTRS_CLT_CONNECTED))
-+			continue;
-+
- 		if (unlikely(!list_empty(raw_cpu_ptr(sess->mp_skip_entry))))
- 			continue;
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs.c b/drivers/infiniband/ulp/rtrs/rtrs.c
+index d13aff0aa816..4629bb758126 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs.c
+@@ -373,7 +373,6 @@ void rtrs_stop_hb(struct rtrs_sess *sess)
+ {
+ 	cancel_delayed_work_sync(&sess->hb_dwork);
+ 	sess->hb_missed_cnt = 0;
+-	sess->hb_missed_max = 0;
+ }
+ EXPORT_SYMBOL_GPL(rtrs_stop_hb);
  
 -- 
 2.30.2
