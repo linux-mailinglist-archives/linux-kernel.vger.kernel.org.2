@@ -2,120 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB9E63C6225
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 985763C6228
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235741AbhGLRsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 13:48:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234728AbhGLRsL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 13:48:11 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A8B5C0613E5
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 10:45:22 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id o17-20020a9d76510000b02903eabfc221a9so19761099otl.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 10:45:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=f5dWuORs6KCnd0V1Z5DOk+p+49s/w8Htm+2uXk9ECuc=;
-        b=q+5j/qHZjMMGvYA2NBvrIxVDwWt+AT46/ShbrWHNKFdOuxq3L0jzpZmkdg97loiATk
-         5L8DoPhlG/Eloi/M7j57lKkemqfPZ1b300qAcU/vMF0/eMtjYATHWk56GJJxoVhDNU/s
-         MeimQ3vooWBA5HGIUCANcpinA1PS+vE/08aBy7vG7fVVE+7YtzHXjpJXhXbNi8nP5i5p
-         R5B2ZoKQULtypz7PHQ/eZ0Cjw+ArP8qkxLCtdn4buddle6EusHrtRBlNr0IwmaaNJ9rk
-         NsNN1jYATcm3M2veD5v/domkVIcGrvaSbpDGiMUWM9WNg6A33Zt/C5kFL7MCXhBVC6mu
-         qJ4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=f5dWuORs6KCnd0V1Z5DOk+p+49s/w8Htm+2uXk9ECuc=;
-        b=Y2babp+8VaKDzsFutmxGH9qc3WjaAY8u8WVkTD0s01GxHceYPqlcnPfBx9cH/uXEcW
-         +IhtZwx22sz5thMITFUwAI3raidSVwEg1StD9KKuNyTnYN3NxHfXPv5VLuuCPYWFyV4b
-         TfrgdSa+kd+9Ufd0Cc658JhwW1V2EDJjqascAlTyKyHdzOP7/DxLuNEr6DpvTFKleKSC
-         VGG0ve+c44tj2O2PGnSRRrY0ihTGF7nyRI8/TT0pfFogDHWoYX5qNxqGBKKr10coO3jy
-         WMXsoF1a4KsMo83ZXCUIjk73t177KdA+zS38yxHDLvryd3bwJHYzkg3CxRj/CAY5lnNx
-         bFVg==
-X-Gm-Message-State: AOAM530C2K2XxDZ+g80s9R2xZzkVfOwPnsfFvnXP7ceAiXCV04InZLCk
-        N9cGtRKhMUTNh7oZQkY6f9C/R4IYllQsjJfciDtM/g==
-X-Google-Smtp-Source: ABdhPJyHVCIJC5KQts3p+sus6xBqXFh72vhLVqLQJFGn9DnjIqr34KLRUCbCqE4TKBeLUcbiIbBm3JadKJWlCXjuEic=
-X-Received: by 2002:a9d:550e:: with SMTP id l14mr130156oth.241.1626111921557;
- Mon, 12 Jul 2021 10:45:21 -0700 (PDT)
+        id S235231AbhGLRs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 13:48:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34366 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232979AbhGLRs4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 13:48:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 834636120A;
+        Mon, 12 Jul 2021 17:46:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626111968;
+        bh=L61h2k2oAGTx75ubJ5kFKZdwVu8/ushydQdlQZU8N9o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rNy211GMX4+vx/p65l03JNPm9LStEdW6nmZuVRmio/2HVeSGV/SBVN2tZIi8xsjN6
+         orJk/1hYVp1bO+Y4AbV687CLkqdgYeq7SHHhgf/e/j31XAKnYrh8QHXuW0qVK998Yb
+         qiHcr04Irpx1zx57IhXu2j4NTtxHrKxSDh0PHm/I=
+Date:   Mon, 12 Jul 2021 19:46:05 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>, Ian Ray <ian.ray@ge.com>,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, kernel@collabora.com
+Subject: Re: [PATCHv6 3/3] misc: gehc-achc: new driver
+Message-ID: <YOx/3YaIg24Tx+OQ@kroah.com>
+References: <20210712150242.146545-1-sebastian.reichel@collabora.com>
+ <20210712150242.146545-4-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
-References: <1625825111-6604-1-git-send-email-weijiang.yang@intel.com>
- <1625825111-6604-7-git-send-email-weijiang.yang@intel.com>
- <CALMp9eQEs9pUyy1PpwLPG0_PtF07tR2Opw+1b=w4-knOwYPvvg@mail.gmail.com>
- <CALMp9eQ+9czB0ayBFR3-nW-ynKuH0v9uHAGeV4wgkXYJMSs1=w@mail.gmail.com>
- <20210712095305.GE12162@intel.com> <d73eb316-4e09-a924-5f60-e3778db91df4@gmail.com>
- <CALMp9eQmK+asv7fXeUpF2UiRKL7VmZx44HMGj67aSqm0k9nKVg@mail.gmail.com>
-In-Reply-To: <CALMp9eQmK+asv7fXeUpF2UiRKL7VmZx44HMGj67aSqm0k9nKVg@mail.gmail.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Mon, 12 Jul 2021 10:45:10 -0700
-Message-ID: <CALMp9eSWDmWerj5CaxRyMiNqnBf1akHHaWV2Cfq_66Xjg-0MEw@mail.gmail.com>
-Subject: Re: [PATCH v5 06/13] KVM: x86/vmx: Save/Restore host MSR_ARCH_LBR_CTL state
-To:     Like Xu <like.xu.linux@gmail.com>
-Cc:     Yang Weijiang <weijiang.yang@intel.com>, pbonzini@redhat.com,
-        seanjc@google.com, vkuznets@redhat.com, wei.w.wang@intel.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "kan.liang@linux.intel.com" <kan.liang@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210712150242.146545-4-sebastian.reichel@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 10:20 AM Jim Mattson <jmattson@google.com> wrote:
->
-> On Mon, Jul 12, 2021 at 3:19 AM Like Xu <like.xu.linux@gmail.com> wrote:
-> >
-> > On 12/7/2021 5:53 pm, Yang Weijiang wrote:
-> > > On Fri, Jul 09, 2021 at 04:41:30PM -0700, Jim Mattson wrote:
-> > >> On Fri, Jul 9, 2021 at 3:54 PM Jim Mattson <jmattson@google.com> wro=
-te:
-> > >>>
-> > >>> On Fri, Jul 9, 2021 at 2:51 AM Yang Weijiang <weijiang.yang@intel.c=
-om> wrote:
-> > >>>>
-> > >>>> If host is using MSR_ARCH_LBR_CTL then save it before vm-entry
-> > >>>> and reload it after vm-exit.
-> > >>>
-> > >>> I don't see anything being done here "before VM-entry" or "after
-> > >>> VM-exit." This code seems to be invoked on vcpu_load and vcpu_put.
-> > >>>
-> > >>> In any case, I don't see why this one MSR is special. It seems that=
- if
-> > >>> the host is using the architectural LBR MSRs, then *all* of the hos=
-t
-> > >>> architectural LBR MSRs have to be saved on vcpu_load and restored o=
-n
-> > >>> vcpu_put. Shouldn't  kvm_load_guest_fpu() and kvm_put_guest_fpu() d=
-o
-> > >>> that via the calls to kvm_save_current_fpu(vcpu->arch.user_fpu) and
-> > >>> restore_fpregs_from_fpstate(&vcpu->arch.user_fpu->state)?
-> > >>
-> > >> It does seem like there is something special about IA32_LBR_DEPTH, t=
-hough...
-> > >>
-> > >> Section 7.3.1 of the Intel=C2=AE Architecture Instruction Set Extens=
-ions
-> > >> and Future Features Programming Reference
-> > >> says, "IA32_LBR_DEPTH is saved by XSAVES, but it is not written by
-> > >> XRSTORS in any circumstance." It seems like that would require some
-> > >> special handling if the host depth and the guest depth do not match.
-> > > In our vPMU design, guest depth is alway kept the same as that of hos=
-t,
-> > > so this won't be a problem. But I'll double check the code again, tha=
-nks!
-> >
-> > KVM only exposes the host's depth value to the user space
-> > so the guest can only use the same depth as the host.
->
-> The allowed depth supplied by KVM_GET_SUPPORTED_CPUID isn't enforced,
-> though, is it?
+On Mon, Jul 12, 2021 at 05:02:42PM +0200, Sebastian Reichel wrote:
+> General Electric Healthcare's PPD has a secondary processor from
+> NXP's Kinetis K20 series. That device has two SPI chip selects:
+> 
+> The main interface's behaviour depends on the loaded firmware
+> and is currently unused.
+> 
+> The secondary interface can be used to update the firmware using
+> EzPort protocol. This is implemented by this driver using the
+> kernel's firmware API. It's not done during probe time, since
+> the device has non-volatile memory and flashing lasts almost 3
+> minutes.
 
-Also, doesn't this end up being a major constraint on future
-platforms? Every host that this vCPU will ever run on will have to use
-the same LBR depth as the host on which it was started.
+In thinking about this some more, why does it matter?  Spin up a
+workqueue when probing and do the firmware loading then.  That way you
+do not end up creating yet another custom user/kernel api just to do
+something as trivial as loading the firmware for a device.
+
+And I think the firmware loader even handles async loading, or at least
+it used to, maybe not anymore, it's a complex api, I recommend reading
+the docs...
+
+
+
+> 
+> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> ---
+>  .../ABI/testing/sysfs-driver-ge-achc          |  14 +
+>  drivers/misc/Kconfig                          |  11 +
+>  drivers/misc/Makefile                         |   2 +
+>  drivers/misc/gehc-achc.c                      | 136 +++++
+>  drivers/misc/nxp-ezport.c                     | 468 ++++++++++++++++++
+>  drivers/misc/nxp-ezport.h                     |   9 +
+
+Why is there two different modules here for the same piece of hardware?
+
+
+>  drivers/spi/spidev.c                          |   1 -
+>  7 files changed, 640 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/ABI/testing/sysfs-driver-ge-achc
+>  create mode 100644 drivers/misc/gehc-achc.c
+>  create mode 100644 drivers/misc/nxp-ezport.c
+>  create mode 100644 drivers/misc/nxp-ezport.h
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-driver-ge-achc b/Documentation/ABI/testing/sysfs-driver-ge-achc
+> new file mode 100644
+> index 000000000000..f02812731082
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-driver-ge-achc
+> @@ -0,0 +1,14 @@
+> +What:		/sys/bus/spi/<dev>/update_firmware
+> +Date:		Jul 2021
+> +Contact:	sebastian.reichel@collabora.com
+> +Description:	Write 1 to this file to update the ACHC microcontroller
+> +		firmware via the EzPort interface. For this the kernel
+> +		will load "achc.bin" via the firmware API (so usually
+> +		from /lib/firmware). The write will block until the FW
+> +		has either been flashed successfully or an error occured.
+> +
+> +What:		/sys/bus/spi/<dev>/reset
+> +Date:		Jul 2021
+> +Contact:	sebastian.reichel@collabora.com
+> +Description:	Write 1 to this file to reset the microcontroller via the
+> +		reset GPIO. The write will block until the reset completes.
+> diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+> index f4fb5c52b863..1ebf7000671d 100644
+> --- a/drivers/misc/Kconfig
+> +++ b/drivers/misc/Kconfig
+> @@ -208,6 +208,17 @@ config CS5535_CLOCK_EVENT_SRC
+>  	  MFGPTs have a better resolution and max interval than the
+>  	  generic PIT, and are suitable for use as high-res timers.
+>  
+> +config GEHC_ACHC
+> +	tristate "GEHC ACHC support"
+> +	depends on SPI && SYSFS
+> +	select FW_LOADER
+> +	help
+> +	  Support for GE ACHC microcontroller, that is part of the GE
+> +	  PPD device.
+> +
+> +	  To compile this driver as a module, choose M here: the
+> +	  module will be called gehc-achc.
+> +
+>  config HP_ILO
+>  	tristate "Channel interface driver for the HP iLO processor"
+>  	depends on PCI
+> diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
+> index e92a56d4442f..b50180796931 100644
+> --- a/drivers/misc/Makefile
+> +++ b/drivers/misc/Makefile
+> @@ -24,6 +24,8 @@ obj-$(CONFIG_KGDB_TESTS)	+= kgdbts.o
+>  obj-$(CONFIG_SGI_XP)		+= sgi-xp/
+>  obj-$(CONFIG_SGI_GRU)		+= sgi-gru/
+>  obj-$(CONFIG_CS5535_MFGPT)	+= cs5535-mfgpt.o
+> +obj-$(CONFIG_GEHC_ACHC)		+= gehc-achc-mod.o
+> +gehc-achc-mod-objs		:= gehc-achc.o nxp-ezport.o
+
+Yeah, you are creating 2 modules for one Kconfig option, why not put
+these together into 1?  Makes the code smaller.
+
+
+
+
+>  obj-$(CONFIG_HP_ILO)		+= hpilo.o
+>  obj-$(CONFIG_APDS9802ALS)	+= apds9802als.o
+>  obj-$(CONFIG_ISL29003)		+= isl29003.o
+> diff --git a/drivers/misc/gehc-achc.c b/drivers/misc/gehc-achc.c
+> new file mode 100644
+> index 000000000000..893940e7ca4e
+> --- /dev/null
+> +++ b/drivers/misc/gehc-achc.c
+> @@ -0,0 +1,136 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * datasheet: https://www.nxp.com/docs/en/data-sheet/K20P144M120SF3.pdf
+> + *
+> + * Copyright (C) 2018-2021 Collabora
+> + * Copyright (C) 2018-2021 GE Healthcare
+> + */
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/spi/spi.h>
+> +#include <linux/of.h>
+> +#include "nxp-ezport.h"
+> +
+> +#define ACHC_MAX_FREQ_HZ 300000
+> +
+> +struct achc_data {
+> +	struct spi_device *main;
+> +	struct spi_device *ezport;
+> +	struct gpio_desc *reset;
+> +
+> +	struct mutex device_lock; /* avoid concurrent device access */
+> +};
+> +
+> +static ssize_t update_firmware_store(struct device *dev, struct device_attribute *attr,
+> +				     const char *buf, size_t count)
+> +{
+> +	struct achc_data *achc = dev_get_drvdata(dev);
+> +	int ret;
+> +
+> +	if (count != 1 || buf[0] != '1')
+> +		return -EINVAL;
+
+There a core kernel call to see if the data written to a sysfs file is
+"true/false" I would recommend, if you stick with this, to use that
+instead.
+
+thanks,
+
+greg k-h
