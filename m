@@ -2,87 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 162C73C63D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 21:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 815873C63D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 21:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236395AbhGLTpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 15:45:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44512 "EHLO
+        id S236440AbhGLTp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 15:45:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230199AbhGLTo7 (ORCPT
+        with ESMTP id S236414AbhGLTp0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 15:44:59 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F673C0613DD
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 12:42:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=V7+FGrqCE97oONDoHC8Zj/lJXxDhp+XiIcFymDp6zkc=; b=fmgfD2OZAc4ss68kfVkZ5H9h7c
-        udmWGMs2sqNQGSK3Cy+rNrOKrkQvJzaKQwXrAafRFSIcFOz3WeTmhkx+UjF4V9/8QrSJ+RUt3RkjJ
-        D5gxwQce3gN6EXUXOnuQ/soa0oIWR1M4BW5NQ9ITvfMCf6A1LCZWT5KKLiP2LwM4kJ6AFy9iED4gh
-        C74UORY7jBC+2L9xHwRT+1ofjze0GsWIJCZ3FkSRqSqiocMw2MAeI2qeq8URziFFtR+SdQK58QbzE
-        qxoUAmYwCyjn825+os/3JqWCSLUoD60FHN793oH8FNCrO6Bioi028RMr9SfDWN8icbRhm2mdPIMNr
-        omi8j1ww==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m31oH-000Nh9-Qk; Mon, 12 Jul 2021 19:41:49 +0000
-Date:   Mon, 12 Jul 2021 20:41:45 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Mike Rapoport <rppt@linux.ibm.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: Re: mm/sparse.c:145:2: warning: int result is returned as long
- value. If the return value is long to avoid loss of information, then you
- have loss of information. [truncLongCastReturn]
-Message-ID: <YOya+aBZFFmC476e@casper.infradead.org>
-References: <202107130348.6LsVT9Nc-lkp@intel.com>
+        Mon, 12 Jul 2021 15:45:26 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C53C0613E5
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 12:42:36 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id o8so9991839ilf.4
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 12:42:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=miTV5hqnW4EPZWVXufx2n/PRXkTcJW4p7CWdR36CIew=;
+        b=LMSzFCaiR4GD3YI1boTGrHQJHxKnm8Ougeao4dN2yHS0QKhB4xUL1ZCfjic3q2Lv2V
+         w+OTnd6oxZJdqe0O+uu9DnqfLndb0oPX6nMefi/FkHZgthaj5lM1/w8YBCl5smhTu5hS
+         fQEO2g4RSJNMfwMs90sdR2uFF+MEAAVoi+P48=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=miTV5hqnW4EPZWVXufx2n/PRXkTcJW4p7CWdR36CIew=;
+        b=Dy4gtxpSY3TmsUPVlxVIgZTdsJIyRBY8o6uhPT3ymw5OCq6IHoaEx+d447ZYwDB2mW
+         Cnd4lPC+DbDu54Qb5LCkM5fnhqtfF4FRpUaNq+yN8EjoRLlQCHVUymTcTHPMkQeFWNrO
+         +ykJ8rQ8SHZBoENXP11tRfTWBhWYvK9DAbiONMehpxunoHE4o8xiRCUdD1r5JAmQu2AK
+         xf1cdpkjnzTyaEX3Ga3emFcBBOBQdYMP55LlF02Ds23Y9WssfADLhprAxGbiLi9xqJeu
+         qFnZX1NXvhZz+HblZOxfjTKXpJ3l8BMICHQdLWoqA22fvlL+YRITnkjZDdpo7IROfd6E
+         njmw==
+X-Gm-Message-State: AOAM531HwycyHt+5I0696FuZnEW2xAgq8K5A2y9Q6ZEJKdP7Oh2VLDyN
+        X41/iZwezoCVa9Dza0Rzl8ZMIA==
+X-Google-Smtp-Source: ABdhPJw+D9Y0t0uSlGkP9VzCV9UbbIM3ffohaXASpJ/ygzivQ+RnraMTivofQpig2E8WneA/SSmY4A==
+X-Received: by 2002:a92:360e:: with SMTP id d14mr361226ila.106.1626118955879;
+        Mon, 12 Jul 2021 12:42:35 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id e14sm8606044ile.2.2021.07.12.12.42.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Jul 2021 12:42:35 -0700 (PDT)
+Subject: Re: [PATCH v2] kunit: tool: Assert the version requirement
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        SeongJae Park <sj38.park@gmail.com>
+Cc:     dlatypov@google.com, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        SeongJae Park <sjpark@amazon.de>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210617073937.16281-1-sjpark@amazon.de>
+ <20210617074638.16583-1-sjpark@amazon.de>
+ <CAFd5g44Y0a6HneG+RA-brhJSG+S7GEJSuwGgHCkFssy9vbmuzg@mail.gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <6fb4706b-ce58-a397-d777-10338c2a8d4e@linuxfoundation.org>
+Date:   Mon, 12 Jul 2021 13:42:34 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202107130348.6LsVT9Nc-lkp@intel.com>
+In-Reply-To: <CAFd5g44Y0a6HneG+RA-brhJSG+S7GEJSuwGgHCkFssy9vbmuzg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 03:19:06AM +0800, kernel test robot wrote:
-> cppcheck warnings: (new ones prefixed by >>)
-> >> mm/sparse.c:145:2: warning: int result is returned as long value. If the return value is long to avoid loss of information, then you have loss of information. [truncLongCastReturn]
->     return (nid << SECTION_NID_SHIFT);
+On 6/28/21 1:41 PM, Brendan Higgins wrote:
+> On Thu, Jun 17, 2021 at 12:46 AM SeongJae Park <sj38.park@gmail.com> wrote:
+>>
+>> Commit 87c9c1631788 ("kunit: tool: add support for QEMU") on the 'next'
+>> tree adds 'from __future__ import annotations' in 'kunit_kernel.py'.
+>> Because it is supported on only >=3.7 Python, people using older Python
+>> will get below error:
+>>
+>>      Traceback (most recent call last):
+>>        File "./tools/testing/kunit/kunit.py", line 20, in <module>
+>>          import kunit_kernel
+>>        File "/home/sjpark/linux/tools/testing/kunit/kunit_kernel.py", line 9
+>>          from __future__ import annotations
+>>          ^
+>>      SyntaxError: future feature annotations is not defined
+>>
+>> This commit adds a version assertion in 'kunit.py', so that people get
+>> more explicit error message like below:
+>>
+>>      Traceback (most recent call last):
+>>        File "./tools/testing/kunit/kunit.py", line 15, in <module>
+>>          assert sys.version_info >= (3, 7), "Python version is too old"
+>>      AssertionError: Python version is too old
+>>
+>> Signed-off-by: SeongJae Park <sjpark@amazon.de>
 
-Hrm.
+Your from and Signed-off-by email addresses don't match.
 
-include/linux/mmzone.h:#define SECTION_NID_SHIFT                3
+Please resend the patch with the correction.
 
-I'm going to suggest that we don't allow for 2^29 node IDs in a single
-system, so this doesn't actually represent a bug that needs to be fixed.
-On the other hand, this type of bug continually bites us, and it would
-be good to warn about this kind of thing.  So in the spirit of silencing
-the warning by doing the promotion that C should have specified in
-the first place ...
-
---- 8< ---
-
-[PATCH] Avoid a warning in sparse memory support
-
-cppcheck warns that we're possibly losing information by shifting an int.
-It's a false positive, because we don't allow for a NUMA node ID that
-large, but if we ever change SECTION_NID_SHIFT, it could become a problem,
-and in any case this is usually a legitimate warning.  Fix it by adding
-the necessary cast, which makes the compiler generate the right code.
-
-diff --git a/mm/sparse.c b/mm/sparse.c
-index 6326cdf36c4f..f17bd4f7caaa 100644
---- a/mm/sparse.c
-+++ b/mm/sparse.c
-@@ -143,7 +143,7 @@ unsigned long __section_nr(struct mem_section *ms)
-  */
- static inline unsigned long sparse_encode_early_nid(int nid)
- {
--	return (nid << SECTION_NID_SHIFT);
-+	return ((unsigned long)nid << SECTION_NID_SHIFT);
- }
- 
- static inline int sparse_early_nid(struct mem_section *section)
+thanks,
+-- Shuah
