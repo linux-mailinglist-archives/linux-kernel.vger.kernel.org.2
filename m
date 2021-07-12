@@ -2,31 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 653C73C4F3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC30E3C4F3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:43:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245367AbhGLHXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:23:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59302 "EHLO mail.kernel.org"
+        id S234345AbhGLHXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:23:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238403AbhGLG5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:57:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E2E4B61361;
-        Mon, 12 Jul 2021 06:54:18 +0000 (UTC)
+        id S240182AbhGLG5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:57:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C245861380;
+        Mon, 12 Jul 2021 06:54:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072859;
-        bh=Vz/8nZG8zcT/Di9vwI6Q5i3RZv9Eig3ce4H3Fe2Gr2Y=;
+        s=korg; t=1626072862;
+        bh=jGten1cWvzLfM6mFzTFKn+V5L+ZTdXYO71Ro5lrhq9g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2NczqGdAvF5ldHovSiv1UKgD1gbUa+5AXYwGiH2O89SGyYU0cyjmXF7k/sifyRiOq
-         7pgWR4yBZ1Ilo+GJN7a3j8feRNs43wRencQ1qRuZqxIt9rzj4+8hMWVTWCIl8Qh30d
-         3U6GSkEtATF9YXuzJHelaRiH5loipQptYQcEZvnE=
+        b=LR75LjfBOJpIURzNZvzhujDOyYnX1s/++9CaQ7L3PL8A2HOcoNDPt7DbJacF7xlqj
+         v26o0HC8SAVHxONmxoSwbfoJ3maQTHlxGPR9PGn8FdVG30RTQmNQ6ums3pa7KIb6HO
+         arCngKxUu5oj4pxS+wSOwlkNDCnNDybMzkm2qOBk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.12 046/700] btrfs: compression: dont try to compress if we dont have enough pages
-Date:   Mon, 12 Jul 2021 08:02:09 +0200
-Message-Id: <20210712060931.196287208@linuxfoundation.org>
+        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.12 047/700] btrfs: fix unbalanced unlock in qgroup_account_snapshot()
+Date:   Mon, 12 Jul 2021 08:02:10 +0200
+Message-Id: <20210712060931.339469794@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
 References: <20210712060924.797321836@linuxfoundation.org>
@@ -38,38 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Sterba <dsterba@suse.com>
+From: Naohiro Aota <naohiro.aota@wdc.com>
 
-commit f2165627319ffd33a6217275e5690b1ab5c45763 upstream.
+commit 44365827cccc1441d4187509257e5276af133a49 upstream.
 
-The early check if we should attempt compression does not take into
-account the number of input pages. It can happen that there's only one
-page, eg. a tail page after some ranges of the BTRFS_MAX_UNCOMPRESSED
-have been processed, or an isolated page that won't be converted to an
-inline extent.
+qgroup_account_snapshot() is trying to unlock the not taken
+tree_log_mutex in a error path. Since ret != 0 in this case, we can
+just return from here.
 
-The single page would be compressed but a later check would drop it
-again because the result size must be at least one block shorter than
-the input. That can never work with just one page.
-
-CC: stable@vger.kernel.org # 4.4+
+Fixes: 2a4d84c11a87 ("btrfs: move delayed ref flushing for qgroup into qgroup helper")
+CC: stable@vger.kernel.org # 5.12+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/inode.c |    2 +-
+ fs/btrfs/transaction.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -598,7 +598,7 @@ again:
- 	 * inode has not been flagged as nocompress.  This flag can
- 	 * change at any time if we discover bad compression ratios.
- 	 */
--	if (inode_need_compress(BTRFS_I(inode), start, end)) {
-+	if (nr_pages > 1 && inode_need_compress(BTRFS_I(inode), start, end)) {
- 		WARN_ON(pages);
- 		pages = kcalloc(nr_pages, sizeof(struct page *), GFP_NOFS);
- 		if (!pages) {
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -1461,7 +1461,7 @@ static int qgroup_account_snapshot(struc
+ 	ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
+ 	if (ret) {
+ 		btrfs_abort_transaction(trans, ret);
+-		goto out;
++		return ret;
+ 	}
+ 
+ 	/*
 
 
