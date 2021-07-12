@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB003C594E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66D433C594A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382675AbhGLJB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:01:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47256 "EHLO mail.kernel.org"
+        id S1382603AbhGLJBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:01:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352535AbhGLH71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:59:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EBDC611AF;
-        Mon, 12 Jul 2021 07:53:22 +0000 (UTC)
+        id S1352401AbhGLH7R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:59:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A9246142C;
+        Mon, 12 Jul 2021 07:53:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076403;
-        bh=Z0m2Yw9jLVmJyXxPFqhdbgSTKj9AKhBF2Iw2GY95ewI=;
+        s=korg; t=1626076396;
+        bh=X+AzNBzypkTI4UL+yf7a6yWTtFpnSXjYup9S4nb2Qd0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SdANxSm/vtO3o9YFj5E7o1i8ND1D71heO2SzygH99gc8Ds3fuKUeosZRwNq2k5+U2
-         aikHenC2D4M/uCz8xLuAAIuc5FKJQI8HpuYf+upVEqUPEVdRDglFvSKfE+R/qv8q/t
-         h8XoTGz+uzA54OTIG6zBy2TD3PGZPxSt6Dth6SWU=
+        b=s3X+vWXXPjOdXJmawyXMsRXyY/Kjokv0tD3LUr1XsKzh8dDEoUaD/CPFl2P7xMBI8
+         ezs3X+H/Iof1Gd+AB+7yOtdibUocYLXWaozR+2DQp6YE3FWRcGWsxcGpxoXXvCxJ9L
+         tCYMmHuTxrePelH1uCN4ZV+UX/5bDUWb/nOqKq0c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 611/800] phy: ralink: phy-mt7621-pci: properly print pointer address
-Date:   Mon, 12 Jul 2021 08:10:34 +0200
-Message-Id: <20210712061032.245489441@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 626/800] iio: humidity: am2315: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
+Date:   Mon, 12 Jul 2021 08:10:49 +0200
+Message-Id: <20210712061033.839895539@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -40,42 +41,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit 652a6a2e3824ce2ebf79a2d5326940d05c4db036 ]
+[ Upstream commit f4ca2e2595d9fee65d5ce0d218b22ce00e5b2915 ]
 
-The way of printing the pointer address for the 'port_base'
-address got into compile warnings on some architectures
-[-Wpointer-to-int-cast]. Instead of use '%08x' and cast
-to an 'unsigned int' just make use of '%px' and avoid the
-cast. To avoid not really needed driver verbosity on normal
-behaviour change also from 'dev_info' to 'dev_dbg'.
+To make code more readable, use a structure to express the channel
+layout and ensure the timestamp is 8 byte aligned.
 
-Fixes: d87da32372a0 ("phy: ralink: Add PHY driver for MT7621 PCIe PHY")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Link: https://lore.kernel.org/r/20210508070930.5290-7-sergio.paracuellos@gmail.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Found during an audit of all calls of uses of
+iio_push_to_buffers_with_timestamp()
+
+Fixes: 0d96d5ead3f7 ("iio: humidity: Add triggered buffer support for AM2315")
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Link: https://lore.kernel.org/r/20210501170121.512209-12-jic23@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/phy/ralink/phy-mt7621-pci.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/iio/humidity/am2315.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/phy/ralink/phy-mt7621-pci.c b/drivers/phy/ralink/phy-mt7621-pci.c
-index 2a9465f4bb3a..3b1245fc5a02 100644
---- a/drivers/phy/ralink/phy-mt7621-pci.c
-+++ b/drivers/phy/ralink/phy-mt7621-pci.c
-@@ -272,8 +272,8 @@ static struct phy *mt7621_pcie_phy_of_xlate(struct device *dev,
+diff --git a/drivers/iio/humidity/am2315.c b/drivers/iio/humidity/am2315.c
+index 23bc9c784ef4..248d0f262d60 100644
+--- a/drivers/iio/humidity/am2315.c
++++ b/drivers/iio/humidity/am2315.c
+@@ -33,7 +33,11 @@
+ struct am2315_data {
+ 	struct i2c_client *client;
+ 	struct mutex lock;
+-	s16 buffer[8]; /* 2x16-bit channels + 2x16 padding + 4x16 timestamp */
++	/* Ensure timestamp is naturally aligned */
++	struct {
++		s16 chans[2];
++		s64 timestamp __aligned(8);
++	} scan;
+ };
  
- 	mt7621_phy->has_dual_port = args->args[0];
+ struct am2315_sensor_data {
+@@ -167,20 +171,20 @@ static irqreturn_t am2315_trigger_handler(int irq, void *p)
  
--	dev_info(dev, "PHY for 0x%08x (dual port = %d)\n",
--		 (unsigned int)mt7621_phy->port_base, mt7621_phy->has_dual_port);
-+	dev_dbg(dev, "PHY for 0x%px (dual port = %d)\n",
-+		mt7621_phy->port_base, mt7621_phy->has_dual_port);
+ 	mutex_lock(&data->lock);
+ 	if (*(indio_dev->active_scan_mask) == AM2315_ALL_CHANNEL_MASK) {
+-		data->buffer[0] = sensor_data.hum_data;
+-		data->buffer[1] = sensor_data.temp_data;
++		data->scan.chans[0] = sensor_data.hum_data;
++		data->scan.chans[1] = sensor_data.temp_data;
+ 	} else {
+ 		i = 0;
+ 		for_each_set_bit(bit, indio_dev->active_scan_mask,
+ 				 indio_dev->masklength) {
+-			data->buffer[i] = (bit ? sensor_data.temp_data :
+-						 sensor_data.hum_data);
++			data->scan.chans[i] = (bit ? sensor_data.temp_data :
++					       sensor_data.hum_data);
+ 			i++;
+ 		}
+ 	}
+ 	mutex_unlock(&data->lock);
  
- 	return mt7621_phy->phy;
- }
+-	iio_push_to_buffers_with_timestamp(indio_dev, data->buffer,
++	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
+ 					   pf->timestamp);
+ err:
+ 	iio_trigger_notify_done(indio_dev->trig);
 -- 
 2.30.2
 
