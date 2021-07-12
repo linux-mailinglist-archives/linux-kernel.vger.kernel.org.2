@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCAB83C5648
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 857FD3C4E8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356727AbhGLIQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:16:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52296 "EHLO mail.kernel.org"
+        id S245728AbhGLHTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:19:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240534AbhGLHcg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:32:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ADDBA60E0B;
-        Mon, 12 Jul 2021 07:29:31 +0000 (UTC)
+        id S238523AbhGLGzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:55:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2593A6102A;
+        Mon, 12 Jul 2021 06:52:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074972;
-        bh=FvwUpQ2nmy72RY4rak7jDjupjX9dGsTCsai5zJ8RPPE=;
+        s=korg; t=1626072749;
+        bh=Si0aqkRlcpt/5vIXevP3KMlH3OOfkInen91brP6T8Ik=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wMlykFJcfuddOOhEN8BgdEAQBIsQbzU/WnnW7t5WC8CL3mjerMtF4xe9NOYcWpp8s
-         xxz1YGnr0Mgwm1sl/s8TvbgBcGVb67KDIJ46nS+jvQnmaf9DHe3wKp+M9bJlVlmU5z
-         LXo4X+E6ya7z7NHOhx+bEYL1k9YSogTXfjcciASY=
+        b=Tqx3DMwAE8QagvVCqhwgLjQlbtGPVGTWdKf90jm3fYQbqHTYR9/HiQ4catNtfi+ul
+         HRhusJvLqhmLh+UWiYnFjZYTbUdwm917F6GITTXtASp7ta6qiyhFgrm4OwjiBOIE6V
+         OPKkH3U/KS162uD3Qo5J4FT3OH0/nmGBL1/o7C3A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+0f7e7e5e2f4f40fa89c0@syzkaller.appspotmail.com,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 5.13 060/800] can: bcm: delay release of struct bcm_op after synchronize_rcu()
-Date:   Mon, 12 Jul 2021 08:01:23 +0200
-Message-Id: <20210712060921.807259639@linuxfoundation.org>
+        stable@vger.kernel.org, Rocky Liao <rjliao@codeaurora.org>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Johan Hovold <johan@kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>
+Subject: [PATCH 5.12 001/700] Bluetooth: hci_qca: fix potential GPF
+Date:   Mon, 12 Jul 2021 08:01:24 +0200
+Message-Id: <20210712060925.004978662@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,64 +43,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit d5f9023fa61ee8b94f37a93f08e94b136cf1e463 upstream.
+commit 59f90f1351282ea2dbd0c59098fd9bb2634e920e upstream.
 
-can_rx_register() callbacks may be called concurrently to the call to
-can_rx_unregister(). The callbacks and callback data, though, are
-protected by RCU and the struct sock reference count.
+In qca_power_shutdown() qcadev local variable is
+initialized by hu->serdev.dev private data, but
+hu->serdev can be NULL and there is a check for it.
 
-So the callback data is really attached to the life of sk, meaning
-that it should be released on sk_destruct. However, bcm_remove_op()
-calls tasklet_kill(), and RCU callbacks may be called under RCU
-softirq, so that cannot be used on kernels before the introduction of
-HRTIMER_MODE_SOFT.
+Since, qcadev is not used before
 
-However, bcm_rx_handler() is called under RCU protection, so after
-calling can_rx_unregister(), we may call synchronize_rcu() in order to
-wait for any RCU read-side critical sections to finish. That is,
-bcm_rx_handler() won't be called anymore for those ops. So, we only
-free them, after we do that synchronize_rcu().
+	if (!hu->serdev)
+		return;
 
-Fixes: ffd980f976e7 ("[CAN]: Add broadcast manager (bcm) protocol")
-Link: https://lore.kernel.org/r/20210619161813.2098382-1-cascardo@canonical.com
-Cc: linux-stable <stable@vger.kernel.org>
-Reported-by: syzbot+0f7e7e5e2f4f40fa89c0@syzkaller.appspotmail.com
-Reported-by: Norbert Slusarek <nslusarek@gmx.net>
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+we can move its initialization after this "if" to
+prevent GPF.
+
+Fixes: 5559904ccc08 ("Bluetooth: hci_qca: Add QCA Rome power off support to the qca_power_shutdown()")
+Cc: stable@vger.kernel.org # v5.6+
+Cc: Rocky Liao <rjliao@codeaurora.org>
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Reviewed-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/can/bcm.c |    7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/bluetooth/hci_qca.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -785,6 +785,7 @@ static int bcm_delete_rx_op(struct list_
- 						  bcm_rx_handler, op);
+--- a/drivers/bluetooth/hci_qca.c
++++ b/drivers/bluetooth/hci_qca.c
+@@ -1820,8 +1820,6 @@ static void qca_power_shutdown(struct hc
+ 	unsigned long flags;
+ 	enum qca_btsoc_type soc_type = qca_soc_type(hu);
  
- 			list_del(&op->list);
-+			synchronize_rcu();
- 			bcm_remove_op(op);
- 			return 1; /* done */
- 		}
-@@ -1533,9 +1534,13 @@ static int bcm_release(struct socket *so
- 					  REGMASK(op->can_id),
- 					  bcm_rx_handler, op);
+-	qcadev = serdev_device_get_drvdata(hu->serdev);
+-
+ 	/* From this point we go into power off state. But serial port is
+ 	 * still open, stop queueing the IBS data and flush all the buffered
+ 	 * data in skb's.
+@@ -1837,6 +1835,8 @@ static void qca_power_shutdown(struct hc
+ 	if (!hu->serdev)
+ 		return;
  
--		bcm_remove_op(op);
- 	}
- 
-+	synchronize_rcu();
++	qcadev = serdev_device_get_drvdata(hu->serdev);
 +
-+	list_for_each_entry_safe(op, next, &bo->rx_ops, list)
-+		bcm_remove_op(op);
-+
- #if IS_ENABLED(CONFIG_PROC_FS)
- 	/* remove procfs entry */
- 	if (net->can.bcmproc_dir && bo->bcm_proc_read)
+ 	if (qca_is_wcn399x(soc_type)) {
+ 		host_set_baudrate(hu, 2400);
+ 		qca_send_power_pulse(hu, false);
 
 
