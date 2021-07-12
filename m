@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBEF43C52F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4139B3C52F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:51:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351273AbhGLHvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:51:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48022 "EHLO mail.kernel.org"
+        id S1351306AbhGLHvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:51:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243698AbhGLHRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:17:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9728F61351;
-        Mon, 12 Jul 2021 07:13:59 +0000 (UTC)
+        id S241689AbhGLHRE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:17:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 54C4D61447;
+        Mon, 12 Jul 2021 07:14:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074040;
-        bh=xLYV4apqV4LLWjiyNx9glDFt4ET/31YO6roVMfISxW4=;
+        s=korg; t=1626074042;
+        bh=z8sR5TYSANk89jvS8OEPzj3aw9pG3htfJnr50LS1+nU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X9nipJatXPEmTXWITQs5cOomWhWq6w1JVSdwvcxlkb8cDI90LkQ9bKb7yxm+Yp9sG
-         yWsREH9f78hf/5D3gyHYdJ1UYv0QZ/2OTdc47LYlDcw1ilWN2B/f5ptG15REj8Gu+0
-         yplqyzO0XSQABUa0/3unZBm9u2Tu6ND1LLJJCo8A=
+        b=Nzc0XOdnf6uIOqVvEMnkvJiScQPcz49NdaLH8kG6tOEWxzkZCB4bqpD9lbktG/5Kr
+         GQRWDQxcnw5AzPpkicavU21EAgejS6dnpDR3Mxiv0s2lhhRJiTFkWX9+UbqGyasDbM
+         HOLAUm6mlQyhg1d1Cbmkm9EwCeOEVslmtb8zGrW8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
         Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 401/700] ath10k: go to path err_unsupported when chip id is not supported
-Date:   Mon, 12 Jul 2021 08:08:04 +0200
-Message-Id: <20210712061019.049808061@linuxfoundation.org>
+Subject: [PATCH 5.12 402/700] ath10k: add missing error return code in ath10k_pci_probe()
+Date:   Mon, 12 Jul 2021 08:08:05 +0200
+Message-Id: <20210712061019.135346471@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
 References: <20210712060924.797321836@linuxfoundation.org>
@@ -42,30 +43,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 9e88dd431d2345acdb7a549f3e88aaf4c2a307a1 ]
+[ Upstream commit e2783e2f39ba99178dedfc1646d5cc0979d1bab3 ]
 
-When chip id is not supported, it go to path err_unsupported
-to print the error message.
+When chip_id is not supported, the resources will be freed
+on path err_unsupported, these resources will also be freed
+when calling ath10k_pci_remove(), it will cause double free,
+so return -ENODEV when it doesn't support the device with wrong
+chip_id.
 
+Fixes: c0c378f9907c ("ath10k: remove target soc ps code")
+Fixes: 7505f7c3ec1d ("ath10k: create a chip revision whitelist")
 Fixes: f8914a14623a ("ath10k: restore QCA9880-AR1A (v1) detection")
+Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210522105822.1091848-2-yangyingliang@huawei.com
+Link: https://lore.kernel.org/r/20210522105822.1091848-3-yangyingliang@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/pci.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/pci.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index e7fde635e0ee..463cf3f8f8a5 100644
+index 463cf3f8f8a5..71878ab35b93 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -3701,7 +3701,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 		goto err_unsupported;
+@@ -3685,8 +3685,10 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 			ath10k_pci_soc_read32(ar, SOC_CHIP_ID_ADDRESS);
+ 		if (bus_params.chip_id != 0xffffffff) {
+ 			if (!ath10k_pci_chip_is_supported(pdev->device,
+-							  bus_params.chip_id))
++							  bus_params.chip_id)) {
++				ret = -ENODEV;
+ 				goto err_unsupported;
++			}
+ 		}
+ 	}
  
- 	if (!ath10k_pci_chip_is_supported(pdev->device, bus_params.chip_id))
--		goto err_free_irq;
-+		goto err_unsupported;
+@@ -3697,11 +3699,15 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 	}
+ 
+ 	bus_params.chip_id = ath10k_pci_soc_read32(ar, SOC_CHIP_ID_ADDRESS);
+-	if (bus_params.chip_id == 0xffffffff)
++	if (bus_params.chip_id == 0xffffffff) {
++		ret = -ENODEV;
+ 		goto err_unsupported;
++	}
+ 
+-	if (!ath10k_pci_chip_is_supported(pdev->device, bus_params.chip_id))
++	if (!ath10k_pci_chip_is_supported(pdev->device, bus_params.chip_id)) {
++		ret = -ENODEV;
+ 		goto err_unsupported;
++	}
  
  	ret = ath10k_core_register(ar, &bus_params);
  	if (ret) {
