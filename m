@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8BD3C4A79
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90DA03C580F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238988AbhGLGwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:52:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34598 "EHLO mail.kernel.org"
+        id S1378743AbhGLIlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:41:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238397AbhGLGkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:40:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0114A610FA;
-        Mon, 12 Jul 2021 06:37:09 +0000 (UTC)
+        id S1349860AbhGLHuT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:50:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B4A616147E;
+        Mon, 12 Jul 2021 07:43:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071830;
-        bh=7gfdEJhHUedbdgeOCWVpkdWcnvfrcovE8dg4Qj0+j6Q=;
+        s=korg; t=1626075815;
+        bh=qXNh1/Rl1JTG2UeSz/CwiwVyGA9YZ8IA4pSLYJBgW8Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y1iP0N4YmMOendWPBbcmW3E/Y2l9FgXoGuc1C7OxIHu9GNtPnErJa/k8Ngs1JZqtS
-         z7WQPQujeVBmyg3g2Mc7sGxAw0achiKHZ6qbeWhtSSyI/q5jUapOfD4+cZMUWgaIG1
-         YE8d3NSbIfXHNqK1wUZPlpLNXKxfGbhkYXtzQyXI=
+        b=uCHDSdBAry7gPMNIe+QtV76Vs3RxtZPCYmMXkuej9o0nwkEfE50FjIkm26OXoii05
+         lRQLiEUM9LFk6tnyC4QoWmeLQU2MHOpm8CcfeoXZrSjbi3b/RSOme4al9ToKm1H8at
+         1Ag5zonkExUwMSoxlw6l39gRXVgzpzqMk+Gi3mZw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 237/593] m68k: atari: Fix ATARI_KBD_CORE kconfig unmet dependency warning
+        stable@vger.kernel.org, Paolo Valente <paolo.valente@linaro.org>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 374/800] block, bfq: reset waker pointer with shared queues
 Date:   Mon, 12 Jul 2021 08:06:37 +0200
-Message-Id: <20210712060908.960720913@linuxfoundation.org>
+Message-Id: <20210712061006.872749843@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,62 +39,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Paolo Valente <paolo.valente@linaro.org>
 
-[ Upstream commit c1367ee016e3550745315fb9a2dd1e4ce02cdcf6 ]
+[ Upstream commit 9a2ac41b13c573703d6689f51f3e27dd658324be ]
 
-Since the code for ATARI_KBD_CORE does not use drivers/input/keyboard/
-code, just move ATARI_KBD_CORE to arch/m68k/Kconfig.machine to remove
-the dependency on INPUT_KEYBOARD.
+Commit 85686d0dc194 ("block, bfq: keep shared queues out of the waker
+mechanism") leaves shared bfq_queues out of the waker-detection
+mechanism. It attains this goal by not updating the pointer
+last_completed_rq_bfqq, if the last request completed belongs to a
+shared bfq_queue (so that the pointer will not point to the shared
+bfq_queue).
 
-Removes this kconfig warning:
+Yet this has a side effect: the pointer last_completed_rq_bfqq keeps
+pointing, deceptively, to a bfq_queue that actually is not the last
+one to have had a request completed. As a consequence, such a
+bfq_queue may deceptively be considered as a waker of some bfq_queue,
+even of some shared bfq_queue.
 
-    WARNING: unmet direct dependencies detected for ATARI_KBD_CORE
-      Depends on [n]: !UML && INPUT [=y] && INPUT_KEYBOARD [=n]
-      Selected by [y]:
-      - MOUSE_ATARI [=y] && !UML && INPUT [=y] && INPUT_MOUSE [=y] && ATARI [=y]
+To address this issue, reset last_completed_rq_bfqq if the last
+request completed belongs to a shared queue.
 
-Fixes: c04cb856e20a ("m68k: Atari keyboard and mouse support.")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Suggested-by: Michael Schmitz <schmitzmic@gmail.com>
-Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Link: https://lore.kernel.org/r/20210527001251.8529-1-rdunlap@infradead.org
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Fixes: 85686d0dc194 ("block, bfq: keep shared queues out of the waker mechanism")
+Signed-off-by: Paolo Valente <paolo.valente@linaro.org>
+Link: https://lore.kernel.org/r/20210619140948.98712-8-paolo.valente@linaro.org
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/m68k/Kconfig.machine      | 3 +++
- drivers/input/keyboard/Kconfig | 3 ---
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ block/bfq-iosched.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
-index 17e8c3a292d7..e161a4e1493b 100644
---- a/arch/m68k/Kconfig.machine
-+++ b/arch/m68k/Kconfig.machine
-@@ -23,6 +23,9 @@ config ATARI
- 	  this kernel on an Atari, say Y here and browse the material
- 	  available in <file:Documentation/m68k>; otherwise say N.
+diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+index 7c62bf093199..2a2e6e4ff0b4 100644
+--- a/block/bfq-iosched.c
++++ b/block/bfq-iosched.c
+@@ -6143,11 +6143,13 @@ static void bfq_completed_request(struct bfq_queue *bfqq, struct bfq_data *bfqd)
+ 	 * of other queues. But a false waker will unjustly steal
+ 	 * bandwidth to its supposedly woken queue. So considering
+ 	 * also shared queues in the waking mechanism may cause more
+-	 * control troubles than throughput benefits. Then do not set
+-	 * last_completed_rq_bfqq to bfqq if bfqq is a shared queue.
++	 * control troubles than throughput benefits. Then reset
++	 * last_completed_rq_bfqq if bfqq is a shared queue.
+ 	 */
+ 	if (!bfq_bfqq_coop(bfqq))
+ 		bfqd->last_completed_rq_bfqq = bfqq;
++	else
++		bfqd->last_completed_rq_bfqq = NULL;
  
-+config ATARI_KBD_CORE
-+	bool
-+
- config MAC
- 	bool "Macintosh support"
- 	depends on MMU
-diff --git a/drivers/input/keyboard/Kconfig b/drivers/input/keyboard/Kconfig
-index 793ecbbda32c..9f60f1559e49 100644
---- a/drivers/input/keyboard/Kconfig
-+++ b/drivers/input/keyboard/Kconfig
-@@ -67,9 +67,6 @@ config KEYBOARD_AMIGA
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called amikbd.
- 
--config ATARI_KBD_CORE
--	bool
--
- config KEYBOARD_APPLESPI
- 	tristate "Apple SPI keyboard and trackpad"
- 	depends on ACPI && EFI
+ 	/*
+ 	 * If we are waiting to discover whether the request pattern
 -- 
 2.30.2
 
