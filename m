@@ -2,168 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F5053C655A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 23:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C133C6561
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 23:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232060AbhGLVXh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 12 Jul 2021 17:23:37 -0400
-Received: from aposti.net ([89.234.176.197]:58580 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230087AbhGLVXg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 17:23:36 -0400
-Date:   Mon, 12 Jul 2021 22:20:33 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH] MIPS: Ingenic: Add system type for new Ingenic SoCs.
-To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-Cc:     tsbogend@alpha.franken.de, paulburton@kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cand@gmx.com, git@xen0n.name, chenhuacai@kernel.org,
-        maoxiaochuan@loongson.cn, f.fainelli@gmail.com,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, sihui.liu@ingenic.com,
-        jun.jiang@ingenic.com, sernia.zhou@foxmail.com
-Message-Id: <9YH5WQ.JHPWOQWG7E3R@crapouillou.net>
-In-Reply-To: <1625764602-67310-1-git-send-email-zhouyanjie@wanyeetech.com>
-References: <1625764602-67310-1-git-send-email-zhouyanjie@wanyeetech.com>
+        id S234207AbhGLVYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 17:24:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230087AbhGLVYL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 17:24:11 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62482C0613DD;
+        Mon, 12 Jul 2021 14:21:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=PxpFtOyzlVJwPX/Mfz8sm41CAFc+8w5BTtrBNBBTbO0=; b=RkeMbERVOlWyXvvEQJR0hu0o2H
+        1UQRc/oYXO18tQDZFyrUD9+1Nm9ZpEup+tgWUMNEEUTQXtG2vHPfYG9R6llzRnc4hRAj78lMtqaRO
+        iG/5e0QkVCSXDcv8vCRNMRWGlYsGlezCaE+pZ99byk56oy+USv++VDUTsH9KcAhMofyc=;
+Received: from p200300ccff0a76001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff0a:7600:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1m33Mb-0001dI-2U; Mon, 12 Jul 2021 23:21:18 +0200
+Received: from andi by aktux with local (Exim 4.92)
+        (envelope-from <andreas@kemnade.info>)
+        id 1m33Ma-0004vb-Nh; Mon, 12 Jul 2021 23:21:16 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     jic23@kernel.org, lars@metafoo.de, sre@kernel.org,
+        andreas@kemnade.info, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        letux-kernel@openphoenux.org
+Subject: [PATCH v3 0/2] mfd: rn5t618: Extend ADC support
+Date:   Mon, 12 Jul 2021 23:21:09 +0200
+Message-Id: <20210712212111.18896-1-andreas@kemnade.info>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhou,
+Add iio map to make voltage_now related channels accessible to power
+driver.
 
-Le ven., juil. 9 2021 at 01:16:42 +0800, 周琰杰 (Zhou Yanjie) 
-<zhouyanjie@wanyeetech.com> a écrit :
-> Add JZ4730, JZ4760, JZ4760B, X2000H, and X2100 system type for
-> cat /proc/cpuinfo to give out JZ4730, JZ4760, JZ4760B, X2000H,
-> and X2100.
-> 
-> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+Changes in v3:
+- use scale functions
+- add acks
 
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+Changes in v2:
+- use iio_map instead of devicetree to allow mapping which does not
+  block future extension by devicetree.
 
-You could add JZ4750 and JZ4755 too, while you're at it. (Or not, I'm 
-fine with both).
 
-Cheers,
--Paul
+*** BLURB HERE ***
 
-> ---
->  arch/mips/generic/board-ingenic.c | 15 +++++++++++++++
->  arch/mips/include/asm/bootinfo.h  |  3 +++
->  arch/mips/include/asm/cpu.h       |  4 ++--
->  3 files changed, 20 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/mips/generic/board-ingenic.c 
-> b/arch/mips/generic/board-ingenic.c
-> index 0cec0be..303bee6 100644
-> --- a/arch/mips/generic/board-ingenic.c
-> +++ b/arch/mips/generic/board-ingenic.c
-> @@ -21,6 +21,10 @@
->  static __init char *ingenic_get_system_type(unsigned long machtype)
->  {
->  	switch (machtype) {
-> +	case MACH_INGENIC_X2100:
-> +		return "X2100";
-> +	case MACH_INGENIC_X2000H:
-> +		return "X2000H";
->  	case MACH_INGENIC_X2000E:
->  		return "X2000E";
->  	case MACH_INGENIC_X2000:
-> @@ -37,8 +41,14 @@ static __init char 
-> *ingenic_get_system_type(unsigned long machtype)
->  		return "JZ4775";
->  	case MACH_INGENIC_JZ4770:
->  		return "JZ4770";
-> +	case MACH_INGENIC_JZ4760B:
-> +		return "JZ4760B";
-> +	case MACH_INGENIC_JZ4760:
-> +		return "JZ4760";
->  	case MACH_INGENIC_JZ4725B:
->  		return "JZ4725B";
-> +	case MACH_INGENIC_JZ4730:
-> +		return "JZ4730";
->  	default:
->  		return "JZ4740";
->  	}
-> @@ -61,8 +71,11 @@ static __init const void *ingenic_fixup_fdt(const 
-> void *fdt, const void *match_d
->  }
-> 
->  static const struct of_device_id ingenic_of_match[] __initconst = {
-> +	{ .compatible = "ingenic,jz4730", .data = (void 
-> *)MACH_INGENIC_JZ4730 },
->  	{ .compatible = "ingenic,jz4740", .data = (void 
-> *)MACH_INGENIC_JZ4740 },
->  	{ .compatible = "ingenic,jz4725b", .data = (void 
-> *)MACH_INGENIC_JZ4725B },
-> +	{ .compatible = "ingenic,jz4760", .data = (void 
-> *)MACH_INGENIC_JZ4760 },
-> +	{ .compatible = "ingenic,jz4760b", .data = (void 
-> *)MACH_INGENIC_JZ4760B },
->  	{ .compatible = "ingenic,jz4770", .data = (void 
-> *)MACH_INGENIC_JZ4770 },
->  	{ .compatible = "ingenic,jz4775", .data = (void 
-> *)MACH_INGENIC_JZ4775 },
->  	{ .compatible = "ingenic,jz4780", .data = (void 
-> *)MACH_INGENIC_JZ4780 },
-> @@ -71,6 +84,8 @@ static const struct of_device_id ingenic_of_match[] 
-> __initconst = {
->  	{ .compatible = "ingenic,x1830", .data = (void *)MACH_INGENIC_X1830 
-> },
->  	{ .compatible = "ingenic,x2000", .data = (void *)MACH_INGENIC_X2000 
-> },
->  	{ .compatible = "ingenic,x2000e", .data = (void 
-> *)MACH_INGENIC_X2000E },
-> +	{ .compatible = "ingenic,x2000h", .data = (void 
-> *)MACH_INGENIC_X2000H },
-> +	{ .compatible = "ingenic,x2100", .data = (void *)MACH_INGENIC_X2100 
-> },
->  	{}
->  };
-> 
-> diff --git a/arch/mips/include/asm/bootinfo.h 
-> b/arch/mips/include/asm/bootinfo.h
-> index 4c2e817..2128ba9 100644
-> --- a/arch/mips/include/asm/bootinfo.h
-> +++ b/arch/mips/include/asm/bootinfo.h
-> @@ -75,6 +75,7 @@ enum ingenic_machine_type {
->  	MACH_INGENIC_JZ4750,
->  	MACH_INGENIC_JZ4755,
->  	MACH_INGENIC_JZ4760,
-> +	MACH_INGENIC_JZ4760B,
->  	MACH_INGENIC_JZ4770,
->  	MACH_INGENIC_JZ4775,
->  	MACH_INGENIC_JZ4780,
-> @@ -83,6 +84,8 @@ enum ingenic_machine_type {
->  	MACH_INGENIC_X1830,
->  	MACH_INGENIC_X2000,
->  	MACH_INGENIC_X2000E,
-> +	MACH_INGENIC_X2000H,
-> +	MACH_INGENIC_X2100,
->  };
-> 
->  extern char *system_type;
-> diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
-> index 9e6211e..c70cac7 100644
-> --- a/arch/mips/include/asm/cpu.h
-> +++ b/arch/mips/include/asm/cpu.h
-> @@ -46,8 +46,8 @@
->  #define PRID_COMP_NETLOGIC	0x0c0000
->  #define PRID_COMP_CAVIUM	0x0d0000
->  #define PRID_COMP_LOONGSON	0x140000
-> -#define PRID_COMP_INGENIC_13	0x130000	/* X2000 */
-> -#define PRID_COMP_INGENIC_D0	0xd00000	/* JZ4740, JZ4750, X1830 */
-> +#define PRID_COMP_INGENIC_13	0x130000	/* X2000, X2100 */
-> +#define PRID_COMP_INGENIC_D0	0xd00000	/* JZ4730, JZ4740, JZ4750, 
-> JZ4760, X1830 */
->  #define PRID_COMP_INGENIC_D1	0xd10000	/* JZ4770, JZ4775, X1000 */
->  #define PRID_COMP_INGENIC_E1	0xe10000	/* JZ4780 */
-> 
-> --
-> 2.7.4
-> 
+Andreas Kemnade (2):
+  iio: adc: rn5t618: Add iio map
+  power: supply: rn5t618: Add voltage_now property
 
+ drivers/iio/adc/rn5t618-adc.c        | 23 +++++++++++++++++
+ drivers/power/supply/Kconfig         |  2 ++
+ drivers/power/supply/rn5t618_power.c | 38 ++++++++++++++++++++++++++++
+ 3 files changed, 63 insertions(+)
+
+-- 
+2.30.2
 
