@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD8E23C5110
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35F4A3C49F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242713AbhGLHg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:36:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42086 "EHLO mail.kernel.org"
+        id S236791AbhGLGrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:47:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243780AbhGLHIv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:08:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B26C7610D1;
-        Mon, 12 Jul 2021 07:04:45 +0000 (UTC)
+        id S235593AbhGLGgv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:36:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B4C7561132;
+        Mon, 12 Jul 2021 06:33:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073486;
-        bh=gg5h5lXBXeF2yN98tkTNtp6fmsB1jEPgZngd+iNITuY=;
+        s=korg; t=1626071603;
+        bh=ics9+4LFLEdVrg/TAATc/op/qasecKi+weli1DrdSsI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ds4xJto9tWl1OJ281bJQZYCyGPN0MMzFIgPLEs/+ApmoeWmUWt++Hg3SDwnCNTYJl
-         z1ALSULNjkqYc/Aen9s5ABXLjprcpxGtVGaFQH3mwf1J2eHj0ofapk8ZAL7QTo+vqp
-         LczXfxatUtiZ4PzQ047+RkC8HdL29DdemRyI07L8=
+        b=fBYLnIorfbWucix2PYdyeFR+MLmHxWuE0BxCoK5B3K7mE8JUi48rkeBCP1cJN7czN
+         HKo03ui9T2n6wT9+Yf/G6u2fepSXJs5bWWKqeZaZ0ZG7DhwF9bFrlOIpzfsiAuqs1y
+         p65LD/Mg1l9HS8gLCn1+FC1q4jTK67agbuv8Cjyw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Bob Moore <robert.moore@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Evgeny Novikov <novikov@ispras.ru>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 216/700] ACPICA: Fix memory leak caused by _CID repair function
+Subject: [PATCH 5.10 139/593] media: st-hva: Fix potential NULL pointer dereferences
 Date:   Mon, 12 Jul 2021 08:04:59 +0200
-Message-Id: <20210712060957.422525286@linuxfoundation.org>
+Message-Id: <20210712060858.376830631@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,53 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Erik Kaneda <erik.kaneda@intel.com>
+From: Evgeny Novikov <novikov@ispras.ru>
 
-[ Upstream commit c27bac0314131b11bccd735f7e8415ac6444b667 ]
+[ Upstream commit b7fdd208687ba59ebfb09b2199596471c63b69e3 ]
 
-ACPICA commit 180cb53963aa876c782a6f52cc155d951b26051a
+When ctx_id >= HVA_MAX_INSTANCES in hva_hw_its_irq_thread() it tries to
+access fields of ctx that is NULL at that point. The patch gets rid of
+these accesses.
 
-According to the ACPI spec, _CID returns a package containing
-hardware ID's. Each element of an ASL package contains a reference
-count from the parent package as well as the element itself.
+Found by Linux Driver Verification project (linuxtesting.org).
 
-Name (TEST, Package() {
-    "String object" // this package element has a reference count of 2
-})
-
-A memory leak was caused in the _CID repair function because it did
-not decrement the reference count created by the package. Fix the
-memory leak by calling acpi_ut_remove_reference on _CID package elements
-that represent a hardware ID (_HID).
-
-Link: https://github.com/acpica/acpica/commit/180cb539
-Tested-by: Shawn Guo <shawn.guo@linaro.org>
-Signed-off-by: Erik Kaneda <erik.kaneda@intel.com>
-Signed-off-by: Bob Moore <robert.moore@intel.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/acpica/nsrepair2.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/media/platform/sti/hva/hva-hw.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/acpi/acpica/nsrepair2.c b/drivers/acpi/acpica/nsrepair2.c
-index 14b71b41e845..38e10ab976e6 100644
---- a/drivers/acpi/acpica/nsrepair2.c
-+++ b/drivers/acpi/acpica/nsrepair2.c
-@@ -379,6 +379,13 @@ acpi_ns_repair_CID(struct acpi_evaluate_info *info,
+diff --git a/drivers/media/platform/sti/hva/hva-hw.c b/drivers/media/platform/sti/hva/hva-hw.c
+index 43f279e2a6a3..cf4c891bf619 100644
+--- a/drivers/media/platform/sti/hva/hva-hw.c
++++ b/drivers/media/platform/sti/hva/hva-hw.c
+@@ -130,8 +130,7 @@ static irqreturn_t hva_hw_its_irq_thread(int irq, void *arg)
+ 	ctx_id = (hva->sts_reg & 0xFF00) >> 8;
+ 	if (ctx_id >= HVA_MAX_INSTANCES) {
+ 		dev_err(dev, "%s     %s: bad context identifier: %d\n",
+-			ctx->name, __func__, ctx_id);
+-		ctx->hw_err = true;
++			HVA_PREFIX, __func__, ctx_id);
+ 		goto out;
+ 	}
  
- 			(*element_ptr)->common.reference_count =
- 			    original_ref_count;
-+
-+			/*
-+			 * The original_element holds a reference from the package object
-+			 * that represents _HID. Since a new element was created by _HID,
-+			 * remove the reference from the _CID package.
-+			 */
-+			acpi_ut_remove_reference(original_element);
- 		}
- 
- 		element_ptr++;
 -- 
 2.30.2
 
