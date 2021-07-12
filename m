@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70BFD3C5736
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A00A3C4A07
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376533AbhGLIaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:30:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51704 "EHLO mail.kernel.org"
+        id S238005AbhGLGsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:48:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33552 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244821AbhGLHm6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:42:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E20C661167;
-        Mon, 12 Jul 2021 07:40:05 +0000 (UTC)
+        id S236081AbhGLGhK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:37:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A602661159;
+        Mon, 12 Jul 2021 06:33:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075606;
-        bh=wKPmjVSd0l6rTsRpiThpRzRbZtI2FSF9n8vONKwncIQ=;
+        s=korg; t=1626071624;
+        bh=FWdpgeLZjTV3yUDS9DmJf5529C3/nxBDlPw9YGo3gao=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gZAw0nrsqA8ETcTeetYp0AuKWvDEIyP8YXCxMZ6sr0w891d1XIYmMafnlhLFff6tj
-         I7jHHB7ZMwn9rFpOaJFz7IVexVBaXU15y6Zt9HQw8CHxNpmXBF/RdqzxY/Rdqxctpw
-         4H2RSHPD98Alb0dCX2NxdKQztPBeOJHCWkmEoQy0=
+        b=h4UWeaFLGQtAsRNT642a2Y+IVM8I1HitJfZSvTYYstJY7rq5a81ngYIfflXrv4YkI
+         d7X8fMlMIAa35xUMPyBznHm5sIZFDnwDvzh5h4X17Io4z8/98uUt7jDaPQWzTYumEA
+         oDiRC5rnsX8MHLBDa+jfwlIh2J+C1T8mkc5hm17A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hui Tang <tanghui20@huawei.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, zpershuai <zpershuai@gmail.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 284/800] crypto: testmgr - fix initialization of secret_size
+Subject: [PATCH 5.10 147/593] spi: meson-spicc: fix memory leak in meson_spicc_probe
 Date:   Mon, 12 Jul 2021 08:05:07 +0200
-Message-Id: <20210712060954.926561831@linuxfoundation.org>
+Message-Id: <20210712060859.211875373@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,56 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Tang <tanghui20@huawei.com>
+From: zpershuai <zpershuai@gmail.com>
 
-[ Upstream commit 2d016672528a592ada5188e53ac746e1b8b7a978 ]
+[ Upstream commit b2d501c13470409ee7613855b17e5e5ec4111e1c ]
 
-Actual data length of the 'secret' is not equal to the 'secret_size'.
+when meson_spicc_clk_init returns failed, it should goto the
+out_clk label.
 
-Since the 'curve_id' has removed in the 'secret', the 'secret_size'
-should subtract the length of the 'curve_id'.
-
-Fixes: 6763f5ea2d9a ("crypto: ecdh - move curve_id of ECDH from ...")
-Signed-off-by: Hui Tang <tanghui20@huawei.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: zpershuai <zpershuai@gmail.com>
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+Link: https://lore.kernel.org/r/1623562156-21995-1-git-send-email-zpershuai@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- crypto/testmgr.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/spi/spi-meson-spicc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/crypto/testmgr.h b/crypto/testmgr.h
-index fe1e59da59ff..b9cf5b815532 100644
---- a/crypto/testmgr.h
-+++ b/crypto/testmgr.h
-@@ -2718,7 +2718,7 @@ static const struct kpp_testvec ecdh_p192_tv_template[] = {
- 	"\xf4\x57\xcc\x4f\x1f\x4e\x31\xcc"
- 	"\xe3\x40\x60\xc8\x06\x93\xc6\x2e"
- 	"\x99\x80\x81\x28\xaf\xc5\x51\x74",
--	.secret_size = 32,
-+	.secret_size = 30,
- 	.b_public_size = 48,
- 	.expected_a_public_size = 48,
- 	.expected_ss_size = 24
-@@ -2764,7 +2764,7 @@ static const struct kpp_testvec ecdh_p256_tv_template[] = {
- 	"\x9f\x4a\x38\xcc\xc0\x2c\x49\x2f"
- 	"\xb1\x32\xbb\xaf\x22\x61\xda\xcb"
- 	"\x6f\xdb\xa9\xaa\xfc\x77\x81\xf3",
--	.secret_size = 40,
-+	.secret_size = 38,
- 	.b_public_size = 64,
- 	.expected_a_public_size = 64,
- 	.expected_ss_size = 32
-@@ -2802,8 +2802,8 @@ static const struct kpp_testvec ecdh_p256_tv_template[] = {
- 	"\x37\x08\xcc\x40\x5e\x7a\xfd\x6a"
- 	"\x6a\x02\x6e\x41\x87\x68\x38\x77"
- 	"\xfa\xa9\x44\x43\x2d\xef\x09\xdf",
--	.secret_size = 8,
--	.b_secret_size = 40,
-+	.secret_size = 6,
-+	.b_secret_size = 38,
- 	.b_public_size = 64,
- 	.expected_a_public_size = 64,
- 	.expected_ss_size = 32,
+diff --git a/drivers/spi/spi-meson-spicc.c b/drivers/spi/spi-meson-spicc.c
+index 51aef2c6e966..b2c4621db34d 100644
+--- a/drivers/spi/spi-meson-spicc.c
++++ b/drivers/spi/spi-meson-spicc.c
+@@ -752,7 +752,7 @@ static int meson_spicc_probe(struct platform_device *pdev)
+ 	ret = meson_spicc_clk_init(spicc);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "clock registration failed\n");
+-		goto out_master;
++		goto out_clk;
+ 	}
+ 
+ 	ret = devm_spi_register_master(&pdev->dev, master);
 -- 
 2.30.2
 
