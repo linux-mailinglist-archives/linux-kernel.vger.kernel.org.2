@@ -2,132 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D933C5CEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 15:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FF8A3C5CD9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 15:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232544AbhGLNHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 09:07:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27214 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229779AbhGLNHe (ORCPT
+        id S234812AbhGLNBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 09:01:22 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:58296 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233737AbhGLNBK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 09:07:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626095086;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6Xzr/PxJTHli7gStkLTvKYZ4Bn0EjRlrcWIQGxurGYk=;
-        b=WB5ONaE5ZFVWEzUJWt+CBYqhYwYqKsU1Jmn0NNT0wf5UO2coL/kAlMP3ExV6tRMDybh0Ny
-        HCPIY41FSgJdHyjFfx2Y574h3EZdY9scvGoxD9OZpFh+x2T9fY1BwpBf2KIuXZ5+nnPTgh
-        8QHeQxUTqfWP+LMXvGYZFsH/dGvZErI=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-258-Aua7yD7QMcqb80qhrI2enQ-1; Mon, 12 Jul 2021 09:04:45 -0400
-X-MC-Unique: Aua7yD7QMcqb80qhrI2enQ-1
-Received: by mail-qk1-f197.google.com with SMTP id 81-20020a370b540000b02903b854c43335so3431819qkl.21
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 06:04:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=6Xzr/PxJTHli7gStkLTvKYZ4Bn0EjRlrcWIQGxurGYk=;
-        b=JVjncaOQ0Q+rsI+97MgPQtZTTCB8Xjs4A7BJmiHz7/4SIicoliHxuJ4hHR5C1h4F3f
-         0UPQDs0vydQgrqaxb2Fcszp1NxJuCRC4M4AVQg2c7ObJmVrxADnO/t3stF0QddXB2XLQ
-         qJum7kJciIfaK5AqHiqJ8fzdEdz4BcVjVak5O3Dt+5U0LntInDt9Y6GEM1SDDufprnDW
-         7xopcX1NMEeCqn0tod4c27Dha3ZQRkQ5lwfQFa2yTMBrGSEMeQnzoK5079mJvn+o+3BQ
-         fFyTDrm0JrY8vKupBulqCEBjGXwKbdB9DYr9C4wiecld3JDkhFxnljpBO7fvXcN6n255
-         ToCg==
-X-Gm-Message-State: AOAM531HLUafycEHxYP80GfhVTfmubQ5y4wrbhcKjjkmYcd5SYDVs2aG
-        WB1HwNt8XEvieFUCfVhsEjQmR5EXBOg3hKY7NoA1vHueIBOFoQmzuTQsM5EslTpgnvL2fkfVc42
-        6xg3BdqcATq99rMG/73aoMe1Kcvd4F1EDoRHTCxggWopwxTNLRty5wTbyX/2qv1vYA+Xh1VXS
-X-Received: by 2002:a0c:db01:: with SMTP id d1mr36806364qvk.38.1626095084084;
-        Mon, 12 Jul 2021 06:04:44 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz/CrRvK7+Bje8dTwwkykiBc4zZEKrfFb1NjO2pUVQnlbhrNI0tyU5UePJC6g5QN9qRV0qCVw==
-X-Received: by 2002:a0c:db01:: with SMTP id d1mr36806333qvk.38.1626095083830;
-        Mon, 12 Jul 2021 06:04:43 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id z22sm2996262qki.54.2021.07.12.06.04.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Jul 2021 06:04:42 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [RFC PATCH v1 1/3] locking/lockdep: Fix false warning of
- check_wait_context()
-To:     Xiongwei Song <sxwjean@gmail.com>, Waiman Long <llong@redhat.com>
-Cc:     Xiongwei Song <sxwjean@me.com>, peterz@infradead.org,
-        mingo@redhat.com, will@kernel.org,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210711141430.896595-1-sxwjean@me.com>
- <07878d21-fa4d-fbf5-a292-b71c48847a5e@redhat.com>
- <CAEVVKH_95TMa8RRChzG0ZzMdzx3gp7wWmbPnbUst3+mi8wFnBg@mail.gmail.com>
-Message-ID: <1c4c058b-3745-5586-4961-79d83fb5b049@redhat.com>
-Date:   Mon, 12 Jul 2021 09:04:41 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Mon, 12 Jul 2021 09:01:10 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16CCpXMN014668;
+        Mon, 12 Jul 2021 08:58:06 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 39r4982tua-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 12 Jul 2021 08:58:06 -0400
+Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 16CCw4jQ040615
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 12 Jul 2021 08:58:05 -0400
+Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
+ SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
+ Mon, 12 Jul 2021 05:58:03 -0700
+Received: from zeus.spd.analog.com (10.66.68.11) by scsqmbx11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server id 15.2.858.5 via Frontend
+ Transport; Mon, 12 Jul 2021 05:58:03 -0700
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 16CCvx09018858;
+        Mon, 12 Jul 2021 08:57:59 -0400
+From:   <alexandru.tachici@analog.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+CC:     <robh+dt@kernel.org>, <andrew@lunn.ch>, <hkallweit1@gmail.com>,
+        <linux@armlinux.org.uk>, <davem@davemloft.net>, <kuba@kernel.org>,
+        Alexandru Tachici <alexandru.tachici@analog.com>
+Subject: [PATCH v2 0/7] net: phy: adin1100: Add initial support for ADIN1100 industrial PHY
+Date:   Mon, 12 Jul 2021 16:06:24 +0300
+Message-ID: <20210712130631.38153-1-alexandru.tachici@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <CAEVVKH_95TMa8RRChzG0ZzMdzx3gp7wWmbPnbUst3+mi8wFnBg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-GUID: QCqkTfX_Nu-Y2LYv_YguK4XFUADAkWRk
+X-Proofpoint-ORIG-GUID: QCqkTfX_Nu-Y2LYv_YguK4XFUADAkWRk
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-12_07:2021-07-12,2021-07-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 lowpriorityscore=0 malwarescore=0 mlxscore=0
+ priorityscore=1501 bulkscore=0 clxscore=1011 suspectscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107120101
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/12/21 4:18 AM, Xiongwei Song wrote:
-> On Mon, Jul 12, 2021 at 12:43 AM Waiman Long <llong@redhat.com> wrote:
->> On 7/11/21 10:14 AM, Xiongwei Song wrote:
->>> From: Xiongwei Song <sxwjean@gmail.com>
->>>
->>> We now always get a "Invalid wait context" warning with
->>> CONFIG_PROVE_RAW_LOCK_NESTING=y, see the full warning below:
->>>
->>>        [    0.705900] =============================
->>>        [    0.706002] [ BUG: Invalid wait context ]
->>>        [    0.706180] 5.13.0+ #4 Not tainted
->>>        [    0.706349] -----------------------------
->> I believe the purpose of CONFIG_PROVE_RAW_LOCK_NESTING is experimental
->> and it is turned off by default. Turning it on can cause problem as
->> shown in your lockdep splat. Limiting it to just PREEMPT_RT will defeat
->> its purpose to find potential spinlock nesting problem in non-PREEMPT_RT
->> kernel.
-> As far as I know, a spinlock can nest another spinlock. In
-> non-PREEMPT_RT kernel
-> spin_lock and raw_spin_lock are same , so here acquiring a spin_lock in hardirq
-> context is acceptable, the warning is not needed. My knowledge on this
-> is not enough,
-> Will dig into this.
->
->> The point is to fix the issue found,
-> Agree. I thought there was a spinlock usage issue, but by checking
-> deactivate_slab context,
-> looks like the spinlock usage is well. Maybe I'm missing something?
+From: Alexandru Tachici <alexandru.tachici@analog.com>
 
-Yes, spinlock and raw spinlock are the same in non-RT kernel. They are 
-only different in RT kernel. However, non-RT kernel is also more heavily 
-tested than the RT kernel counterpart. The purpose of this config option 
-is to expose spinlock nesting problem in more areas of the code. If you 
-look at the config help text of PROVE_RAW_LOCK_NESTING:
+The ADIN1100 is a low power single port 10BASE-T1L transceiver designed for
+industrial Ethernet applications and is compliant with the IEEE 802.3cg
+Ethernet standard for long reach 10 Mb/s Single Pair Ethernet.
 
-         help
-          Enable the raw_spinlock vs. spinlock nesting checks which ensure
-          that the lock nesting rules for PREEMPT_RT enabled kernels are
-          not violated.
+Ethtool output:
+        Settings for eth1:
+        Supported ports: [ TP	 MII ]
+        Supported link modes:   10baseT1L/Full
+                                2400mv
+                                1000mv
+        Supported pause frame use: Transmit-only
+        Supports auto-negotiation: Yes
+        Supported FEC modes: Not reported
+        Advertised link modes:  10baseT1L/Full
+                                2400mv
+                                1000mv
+        Advertised pause frame use: Transmit-only
+        Advertised auto-negotiation: Yes
+        Advertised FEC modes: Not reported
+        Link partner advertised link modes:  10baseT1L/Full
+                                             2400mv
+        Link partner advertised pause frame use: No
+        Link partner advertised auto-negotiation: Yes
+        Link partner advertised FEC modes: Not reported
+        Speed: 10Mb/s
+        Duplex: Full
+        Auto-negotiation: on
+        master-slave cfg: preferred master
+        master-slave status: master
+        Port: MII
+        PHYAD: 0
+        Transceiver: external
+        Link detected: yes
+SQI: 7/7
 
-          NOTE: There are known nesting problems. So if you enable this
-          option expect lockdep splats until these problems have been fully
-          addressed which is work in progress. This config switch allows to
-          identify and analyze these problems. It will be removed and the
-          check permanentely enabled once the main issues have been fixed.
+1. Add basic support for ADIN1100.
 
-          If unsure, select N.
+Alexandru Ardelean (1):
+  net: phy: adin1100: Add initial support for ADIN1100 industrial PHY
 
-So lockdep splat is expected. It will take time to address all the 
-issues found.
+1. Added 10baset-T1L link modes.
 
-Cheers,
-Longman
+2. Added 10base-T1L voltage levels link modes. 1v is the default TX level.
+2.4 V support depends on pin configuration and power supply.
 
+3. Allow user to access error and frame counters through ethtool.
+
+4. Allow user to set the master-slave configuration of ADIN1100.
+
+5. Convert MSE to SQI using a predefined table and allow user access
+through ethtool.
+
+6. DT bindings for ADIN1100.
+
+Alexandru Tachici (6):
+  ethtool: Add 10base-T1L link mode entries
+  ethtool: Add 10base-T1L voltage levels link mode entries
+  net: phy: adin1100: Add ethtool get_stats support
+  net: phy: adin1100: Add ethtool master-slave support
+  net: phy: adin1100: Add SQI support
+  dt-bindings: adin1100: Add binding for ADIN1100 Ethernet PHY
+
+Changelog v1 -> v2:
+  - Added ETHTOOL_LINK_MODE_10baseT1L_Full_BIT and ETHTOOL_LINK_MODE_10baseT1L_Half_BIT.
+  Using only full duplex here as chip supports full duplex only
+  - removed .match_phy_device
+  - removed link partner advertising of modes not present in the kernel
+  - enable/disable only the PCS loopback
+  - replaced custom timeout implementations with phy_read_mmd_poll_timeout
+  - added link modes for 1.0 V and 2.4 V TX levels
+  - removed link change notify
+  - check if 2.4v TX level is supported in adin_get_features call and set
+  corresponding link mode
+
+ .../devicetree/bindings/net/adi,adin1100.yaml |  45 ++
+ drivers/net/phy/Kconfig                       |   7 +
+ drivers/net/phy/Makefile                      |   1 +
+ drivers/net/phy/adin1100.c                    | 533 ++++++++++++++++++
+ drivers/net/phy/phy-core.c                    |   4 +-
+ include/uapi/linux/ethtool.h                  |   4 +
+ net/ethtool/common.c                          |   6 +
+ 7 files changed, 599 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/net/adi,adin1100.yaml
+ create mode 100644 drivers/net/phy/adin1100.c
+
+--
+2.25.1
