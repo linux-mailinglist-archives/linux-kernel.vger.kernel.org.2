@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA953C55FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A115C3C54EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351099AbhGLINB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:13:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43946 "EHLO mail.kernel.org"
+        id S1355178AbhGLIGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:06:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343708AbhGLH2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:28:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD2B56052B;
-        Mon, 12 Jul 2021 07:24:28 +0000 (UTC)
+        id S1343732AbhGLH2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:28:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CD2761283;
+        Mon, 12 Jul 2021 07:24:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074669;
-        bh=ZBnETahcEzDe114zWt58kNq+jk1cxqTLk0Vx9wYDjGs=;
+        s=korg; t=1626074672;
+        bh=YKAMSYzA1036o9x61Hxa0VrxHLMVvLdRs/KNHYKJQgc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ox6mDeyJT/TWI+rtYohTyZ92NqiEf7wzziECKWKK4bcySDboNhonzURXsm0UU8+Ag
-         xwuIF7IXaM8MU3P3t8gUPDVfe2PV5w37ynYjVw0oy4d/mf4iv01/ca0A3a06TYLMWr
-         du4sC2hPAY30QpvBwixMWXf1xyYSnWdaBcJ5iDA4=
+        b=uQwaXofO24psKrQII5l+YWRCwcG0C5eeZWXsathJ3S3/KzFBB7wJ7OtIU1jourO4q
+         cVSw38TwWZWT2nnXCgZVy35+FAgqv09rtMs8CyK5kJVUIQAtNYG29XGFfpFMIbN1ei
+         BWb0R0E0lpFdWmUXfFTC/8p50GHk6NnDPf8xdNyQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
+        stable@vger.kernel.org, Vaibhav Jain <vaibhav@linux.ibm.com>,
+        Dan Williams <dan.j.williams@intel.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 656/700] powerpc/64s: Fix copy-paste data exposure into newly created tasks
-Date:   Mon, 12 Jul 2021 08:12:19 +0200
-Message-Id: <20210712061045.661663925@linuxfoundation.org>
+Subject: [PATCH 5.12 657/700] powerpc/papr_scm: Make perf_stats invisible if perf-stats unavailable
+Date:   Mon, 12 Jul 2021 08:12:20 +0200
+Message-Id: <20210712061045.771901555@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
 References: <20210712060924.797321836@linuxfoundation.org>
@@ -40,106 +41,141 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Vaibhav Jain <vaibhav@linux.ibm.com>
 
-[ Upstream commit f35d2f249ef05b9671e7898f09ad89aa78f99122 ]
+[ Upstream commit ed78f56e1271f108e8af61baeba383dcd77adbec ]
 
-copy-paste contains implicit "copy buffer" state that can contain
-arbitrary user data (if the user process executes a copy instruction).
-This could be snooped by another process if a context switch hits while
-the state is live. So cp_abort is executed on context switch to clear
-out possible sensitive data and prevent the leak.
+In case performance stats for an nvdimm are not available, reading the
+'perf_stats' sysfs file returns an -ENOENT error. A better approach is
+to make the 'perf_stats' file entirely invisible to indicate that
+performance stats for an nvdimm are unavailable.
 
-cp_abort is done after the low level _switch(), which means it is never
-reached by newly created tasks, so they could snoop on this buffer
-between their first and second context switch.
+So this patch updates 'papr_nd_attribute_group' to add a 'is_visible'
+callback implemented as newly introduced 'papr_nd_attribute_visible()'
+that returns an appropriate mode in case performance stats aren't
+supported in a given nvdimm.
 
-Fix this by doing the cp_abort before calling _switch. Add some
-comments which should make the issue harder to miss.
+Also the initialization of 'papr_scm_priv.stat_buffer_len' is moved
+from papr_scm_nvdimm_init() to papr_scm_probe() so that it value is
+available when 'papr_nd_attribute_visible()' is called during nvdimm
+initialization.
 
-Fixes: 07d2a628bc000 ("powerpc/64s: Avoid cpabort in context switch when possible")
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Even though 'perf_stats' attribute is available since v5.9, there are
+no known user-space tools/scripts that are dependent on presence of its
+sysfs file. Hence I dont expect any user-space breakage with this
+patch.
+
+Fixes: 2d02bf835e57 ("powerpc/papr_scm: Fetch nvdimm performance stats from PHYP")
+Signed-off-by: Vaibhav Jain <vaibhav@linux.ibm.com>
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210622053036.474678-1-npiggin@gmail.com
+Link: https://lore.kernel.org/r/20210513092349.285021-1-vaibhav@linux.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/process.c | 48 +++++++++++++++++++++++------------
- 1 file changed, 32 insertions(+), 16 deletions(-)
+ Documentation/ABI/testing/sysfs-bus-papr-pmem |  8 +++--
+ arch/powerpc/platforms/pseries/papr_scm.c     | 35 +++++++++++++------
+ 2 files changed, 29 insertions(+), 14 deletions(-)
 
-diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
-index 3231c2df9e26..03d7261e1492 100644
---- a/arch/powerpc/kernel/process.c
-+++ b/arch/powerpc/kernel/process.c
-@@ -1212,6 +1212,19 @@ struct task_struct *__switch_to(struct task_struct *prev,
- 			__flush_tlb_pending(batch);
- 		batch->active = 0;
- 	}
+diff --git a/Documentation/ABI/testing/sysfs-bus-papr-pmem b/Documentation/ABI/testing/sysfs-bus-papr-pmem
+index 8316c33862a0..0aa02bf2bde5 100644
+--- a/Documentation/ABI/testing/sysfs-bus-papr-pmem
++++ b/Documentation/ABI/testing/sysfs-bus-papr-pmem
+@@ -39,9 +39,11 @@ KernelVersion:	v5.9
+ Contact:	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-nvdimm@lists.01.org,
+ Description:
+ 		(RO) Report various performance stats related to papr-scm NVDIMM
+-		device.  Each stat is reported on a new line with each line
+-		composed of a stat-identifier followed by it value. Below are
+-		currently known dimm performance stats which are reported:
++		device. This attribute is only available for NVDIMM devices
++		that support reporting NVDIMM performance stats. Each stat is
++		reported on a new line with each line composed of a
++		stat-identifier followed by it value. Below are currently known
++		dimm performance stats which are reported:
+ 
+ 		* "CtlResCt" : Controller Reset Count
+ 		* "CtlResTm" : Controller Reset Elapsed Time
+diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/platforms/pseries/papr_scm.c
+index 0693bc8d70ac..057acbb9116d 100644
+--- a/arch/powerpc/platforms/pseries/papr_scm.c
++++ b/arch/powerpc/platforms/pseries/papr_scm.c
+@@ -868,6 +868,20 @@ static ssize_t flags_show(struct device *dev,
+ }
+ DEVICE_ATTR_RO(flags);
+ 
++static umode_t papr_nd_attribute_visible(struct kobject *kobj,
++					 struct attribute *attr, int n)
++{
++	struct device *dev = kobj_to_dev(kobj);
++	struct nvdimm *nvdimm = to_nvdimm(dev);
++	struct papr_scm_priv *p = nvdimm_provider_data(nvdimm);
 +
-+	/*
-+	 * On POWER9 the copy-paste buffer can only paste into
-+	 * foreign real addresses, so unprivileged processes can not
-+	 * see the data or use it in any way unless they have
-+	 * foreign real mappings. If the new process has the foreign
-+	 * real address mappings, we must issue a cp_abort to clear
-+	 * any state and prevent snooping, corruption or a covert
-+	 * channel. ISA v3.1 supports paste into local memory.
-+	 */
-+	if (new->mm && (cpu_has_feature(CPU_FTR_ARCH_31) ||
-+			atomic_read(&new->mm->context.vas_windows)))
-+		asm volatile(PPC_CP_ABORT);
- #endif /* CONFIG_PPC_BOOK3S_64 */
- 
- #ifdef CONFIG_PPC_ADV_DEBUG_REGS
-@@ -1257,30 +1270,33 @@ struct task_struct *__switch_to(struct task_struct *prev,
- 
- 	last = _switch(old_thread, new_thread);
- 
-+	/*
-+	 * Nothing after _switch will be run for newly created tasks,
-+	 * because they switch directly to ret_from_fork/ret_from_kernel_thread
-+	 * etc. Code added here should have a comment explaining why that is
-+	 * okay.
-+	 */
++	/* For if perf-stats not available remove perf_stats sysfs */
++	if (attr == &dev_attr_perf_stats.attr && p->stat_buffer_len == 0)
++		return 0;
 +
- #ifdef CONFIG_PPC_BOOK3S_64
-+	/*
-+	 * This applies to a process that was context switched while inside
-+	 * arch_enter_lazy_mmu_mode(), to re-activate the batch that was
-+	 * deactivated above, before _switch(). This will never be the case
-+	 * for new tasks.
-+	 */
- 	if (current_thread_info()->local_flags & _TLF_LAZY_MMU) {
- 		current_thread_info()->local_flags &= ~_TLF_LAZY_MMU;
- 		batch = this_cpu_ptr(&ppc64_tlb_batch);
- 		batch->active = 1;
- 	}
++	return attr->mode;
++}
++
+ /* papr_scm specific dimm attributes */
+ static struct attribute *papr_nd_attributes[] = {
+ 	&dev_attr_flags.attr,
+@@ -877,6 +891,7 @@ static struct attribute *papr_nd_attributes[] = {
  
--	if (current->thread.regs) {
-+	/*
-+	 * Math facilities are masked out of the child MSR in copy_thread.
-+	 * A new task does not need to restore_math because it will
-+	 * demand fault them.
-+	 */
-+	if (current->thread.regs)
- 		restore_math(current->thread.regs);
--
--		/*
--		 * On POWER9 the copy-paste buffer can only paste into
--		 * foreign real addresses, so unprivileged processes can not
--		 * see the data or use it in any way unless they have
--		 * foreign real mappings. If the new process has the foreign
--		 * real address mappings, we must issue a cp_abort to clear
--		 * any state and prevent snooping, corruption or a covert
--		 * channel. ISA v3.1 supports paste into local memory.
--		 */
--		if (current->mm &&
--			(cpu_has_feature(CPU_FTR_ARCH_31) ||
--			atomic_read(&current->mm->context.vas_windows)))
--			asm volatile(PPC_CP_ABORT);
+ static struct attribute_group papr_nd_attribute_group = {
+ 	.name = "papr",
++	.is_visible = papr_nd_attribute_visible,
+ 	.attrs = papr_nd_attributes,
+ };
+ 
+@@ -892,7 +907,6 @@ static int papr_scm_nvdimm_init(struct papr_scm_priv *p)
+ 	struct nd_region_desc ndr_desc;
+ 	unsigned long dimm_flags;
+ 	int target_nid, online_nid;
+-	ssize_t stat_size;
+ 
+ 	p->bus_desc.ndctl = papr_scm_ndctl;
+ 	p->bus_desc.module = THIS_MODULE;
+@@ -963,16 +977,6 @@ static int papr_scm_nvdimm_init(struct papr_scm_priv *p)
+ 	list_add_tail(&p->region_list, &papr_nd_regions);
+ 	mutex_unlock(&papr_ndr_lock);
+ 
+-	/* Try retriving the stat buffer and see if its supported */
+-	stat_size = drc_pmem_query_stats(p, NULL, 0);
+-	if (stat_size > 0) {
+-		p->stat_buffer_len = stat_size;
+-		dev_dbg(&p->pdev->dev, "Max perf-stat size %lu-bytes\n",
+-			p->stat_buffer_len);
+-	} else {
+-		dev_info(&p->pdev->dev, "Dimm performance stats unavailable\n");
 -	}
- #endif /* CONFIG_PPC_BOOK3S_64 */
+-
+ 	return 0;
  
- 	return last;
+ err:	nvdimm_bus_unregister(p->bus);
+@@ -1050,6 +1054,7 @@ static int papr_scm_probe(struct platform_device *pdev)
+ 	struct papr_scm_priv *p;
+ 	u8 uuid_raw[UUID_SIZE];
+ 	const char *uuid_str;
++	ssize_t stat_size;
+ 	uuid_t uuid;
+ 	int rc;
+ 
+@@ -1133,6 +1138,14 @@ static int papr_scm_probe(struct platform_device *pdev)
+ 	p->res.name  = pdev->name;
+ 	p->res.flags = IORESOURCE_MEM;
+ 
++	/* Try retrieving the stat buffer and see if its supported */
++	stat_size = drc_pmem_query_stats(p, NULL, 0);
++	if (stat_size > 0) {
++		p->stat_buffer_len = stat_size;
++		dev_dbg(&p->pdev->dev, "Max perf-stat size %lu-bytes\n",
++			p->stat_buffer_len);
++	}
++
+ 	rc = papr_scm_nvdimm_init(p);
+ 	if (rc)
+ 		goto err2;
 -- 
 2.30.2
 
