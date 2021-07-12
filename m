@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC863C495C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 969583C5041
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238763AbhGLGoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:44:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54420 "EHLO mail.kernel.org"
+        id S1344482AbhGLHbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:31:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237832AbhGLGey (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:34:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5240461008;
-        Mon, 12 Jul 2021 06:31:50 +0000 (UTC)
+        id S239846AbhGLHDh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:03:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F98A610E5;
+        Mon, 12 Jul 2021 07:00:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071510;
-        bh=M4lXD5PdoEOae9tXQkmDAL0otB9pq6xK1O5bsCfdOwo=;
+        s=korg; t=1626073249;
+        bh=eTrAhuEnhf1jwS563QR50Re9w5Dovg9QzGL1lL+ozPY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jif3f6kqHH8R0ioaRmVy0pv6E+bOi4Az+nux3iO1dURFkkpJjnPWoTSp+GSMf0sLT
-         mdwieC9VpoEzZmqtd6rXNlhuSxcjLDv5cn+LTFojVerYRp5ZHur+LaEO8v+QEXaIIa
-         PVOIUMqyGjy/g8jmSUKgo/iWq0xRa4P1m4aQI6RA=
+        b=So2OtvuSLZ9RP/LEiNV6kIgSJFvjPj5Br+7R5D8Uc8VEanpqxy3lo0U4F3S/cGoxZ
+         oJLIgPaeVEslzlYmSMt9Uv8O+M1JqlXgxxH4Z++uIE+OSvKQKdaM4gQMSqh7wSxaht
+         qOTfF2D7TU5MRuNMVHUUyLojCKS3HUWDxcHI6eDU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>,
+        =?UTF-8?q?Jan=20Kundr=C3=A1t?= <jan.kundrat@cesnet.cz>,
+        =?UTF-8?q?V=C3=A1clav=20Kubern=C3=A1t?= <kubernat@cesnet.cz>,
+        Guenter Roeck <linux@roeck-us.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 100/593] spi: Make of_register_spi_device also set the fwnode
-Date:   Mon, 12 Jul 2021 08:04:20 +0200
-Message-Id: <20210712060854.215385548@linuxfoundation.org>
+Subject: [PATCH 5.12 178/700] hwmon: (max31790) Fix pwmX_enable attributes
+Date:   Mon, 12 Jul 2021 08:04:21 +0200
+Message-Id: <20210712060951.682995314@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,60 +42,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
+From: Guenter Roeck <linux@roeck-us.net>
 
-[ Upstream commit 0e793ba77c18382f08e440260fe72bc6fce2a3cb ]
+[ Upstream commit 148c847c9e5a54b99850617bf9c143af9a344f92 ]
 
-Currently, the SPI core doesn't set the struct device fwnode pointer
-when it creates a new SPI device. This means when the device is
-registered the fwnode is NULL and the check in device_add which sets
-the fwnode->dev pointer is skipped. This wasn't previously an issue,
-however these two patches:
+pwmX_enable supports three possible values:
 
-commit 4731210c09f5 ("gpiolib: Bind gpio_device to a driver to enable
-fw_devlink=on by default")
-commit ced2af419528 ("gpiolib: Don't probe gpio_device if it's not the
-primary device")
+0: Fan control disabled. Duty cycle is fixed to 0%
+1: Fan control enabled, pwm mode. Duty cycle is determined by
+   values written into Target Duty Cycle registers.
+2: Fan control enabled, rpm mode
+   Duty cycle is adjusted such that fan speed matches
+   the values in Target Count registers
 
-Added some code to the GPIO core which relies on using that
-fwnode->dev pointer to determine if a driver is bound to the fwnode
-and if not bind a stub GPIO driver. This means the GPIO providers
-behind SPI will get both the expected driver and this stub driver
-causing the stub driver to fail if it attempts to request any pin
-configuration. For example on my system:
+The current code does not do this; instead, it mixes pwm control
+configuration with fan speed monitoring configuration. Worse, it
+reports that pwm control would be disabled (pwmX_enable==0) when
+it is in fact enabled in pwm mode. Part of the problem may be that
+the chip sets the "TACH input enable" bit on its own whenever the
+mode bit is set to RPM mode, but that doesn't mean that "TACH input
+enable" accurately reflects the pwm mode.
 
-madera-pinctrl madera-pinctrl: pin gpio5 already requested by madera-pinctrl; cannot claim for gpiochip3
-madera-pinctrl madera-pinctrl: pin-4 (gpiochip3) status -22
-madera-pinctrl madera-pinctrl: could not request pin 4 (gpio5) from group aif1  on device madera-pinctrl
-gpio_stub_drv gpiochip3: Error applying setting, reverse things back
-gpio_stub_drv: probe of gpiochip3 failed with error -22
+Fix it up and only handle pwm control with the pwmX_enable attributes.
+In the documentation, clarify that disabling pwm control (pwmX_enable=0)
+sets the pwm duty cycle to 0%. In the code, explain why TACH_INPUT_EN
+is set together with RPM_MODE.
 
-The firmware node on the device created by the GPIO framework is set
-through the of_node pointer hence things generally actually work,
-however that fwnode->dev is never set, as the check was skipped at
-device_add time. This fix appears to match how the I2C subsystem
-handles the same situation.
+While at it, only update the configuration register if the configuration
+has changed, and only update the cached configuration if updating the
+chip configuration was successful.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20210421101402.8468-1-ckeepax@opensource.cirrus.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: Jan Kundrát <jan.kundrat@cesnet.cz>
+Cc: Václav Kubernát <kubernat@cesnet.cz>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Tested-by: Václav Kubernát <kubernat@cesnet.cz>
+Reviewed-by: Jan Kundrát <jan.kundrat@cesnet.cz>
+Link: https://lore.kernel.org/r/20210526154022.3223012-4-linux@roeck-us.net
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi.c | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/hwmon/max31790.rst |  2 +-
+ drivers/hwmon/max31790.c         | 41 ++++++++++++++++++++------------
+ 2 files changed, 27 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 0cf67de741e7..bd8b1f79dce2 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -2050,6 +2050,7 @@ of_register_spi_device(struct spi_controller *ctlr, struct device_node *nc)
- 	/* Store a pointer to the node in the device structure */
- 	of_node_get(nc);
- 	spi->dev.of_node = nc;
-+	spi->dev.fwnode = of_fwnode_handle(nc);
+diff --git a/Documentation/hwmon/max31790.rst b/Documentation/hwmon/max31790.rst
+index 54ff0f49e28f..7b097c3b9b90 100644
+--- a/Documentation/hwmon/max31790.rst
++++ b/Documentation/hwmon/max31790.rst
+@@ -38,7 +38,7 @@ Sysfs entries
+ fan[1-12]_input    RO  fan tachometer speed in RPM
+ fan[1-12]_fault    RO  fan experienced fault
+ fan[1-6]_target    RW  desired fan speed in RPM
+-pwm[1-6]_enable    RW  regulator mode, 0=disabled, 1=manual mode, 2=rpm mode
++pwm[1-6]_enable    RW  regulator mode, 0=disabled (duty cycle=0%), 1=manual mode, 2=rpm mode
+ pwm[1-6]           RW  read: current pwm duty cycle,
+                        write: target pwm duty cycle (0-255)
+ ================== === =======================================================
+diff --git a/drivers/hwmon/max31790.c b/drivers/hwmon/max31790.c
+index 8ad7a45bfe68..76aa96f5b984 100644
+--- a/drivers/hwmon/max31790.c
++++ b/drivers/hwmon/max31790.c
+@@ -27,6 +27,7 @@
  
- 	/* Register the new device */
- 	rc = spi_add_device(spi);
+ /* Fan Config register bits */
+ #define MAX31790_FAN_CFG_RPM_MODE	0x80
++#define MAX31790_FAN_CFG_CTRL_MON	0x10
+ #define MAX31790_FAN_CFG_TACH_INPUT_EN	0x08
+ #define MAX31790_FAN_CFG_TACH_INPUT	0x01
+ 
+@@ -271,12 +272,12 @@ static int max31790_read_pwm(struct device *dev, u32 attr, int channel,
+ 		*val = data->pwm[channel] >> 8;
+ 		return 0;
+ 	case hwmon_pwm_enable:
+-		if (fan_config & MAX31790_FAN_CFG_RPM_MODE)
++		if (fan_config & MAX31790_FAN_CFG_CTRL_MON)
++			*val = 0;
++		else if (fan_config & MAX31790_FAN_CFG_RPM_MODE)
+ 			*val = 2;
+-		else if (fan_config & MAX31790_FAN_CFG_TACH_INPUT_EN)
+-			*val = 1;
+ 		else
+-			*val = 0;
++			*val = 1;
+ 		return 0;
+ 	default:
+ 		return -EOPNOTSUPP;
+@@ -307,23 +308,33 @@ static int max31790_write_pwm(struct device *dev, u32 attr, int channel,
+ 	case hwmon_pwm_enable:
+ 		fan_config = data->fan_config[channel];
+ 		if (val == 0) {
+-			fan_config &= ~(MAX31790_FAN_CFG_TACH_INPUT_EN |
+-					MAX31790_FAN_CFG_RPM_MODE);
++			fan_config |= MAX31790_FAN_CFG_CTRL_MON;
++			/*
++			 * Disable RPM mode; otherwise disabling fan speed
++			 * monitoring is not possible.
++			 */
++			fan_config &= ~MAX31790_FAN_CFG_RPM_MODE;
+ 		} else if (val == 1) {
+-			fan_config = (fan_config |
+-				      MAX31790_FAN_CFG_TACH_INPUT_EN) &
+-				     ~MAX31790_FAN_CFG_RPM_MODE;
++			fan_config &= ~(MAX31790_FAN_CFG_CTRL_MON | MAX31790_FAN_CFG_RPM_MODE);
+ 		} else if (val == 2) {
+-			fan_config |= MAX31790_FAN_CFG_TACH_INPUT_EN |
+-				      MAX31790_FAN_CFG_RPM_MODE;
++			fan_config &= ~MAX31790_FAN_CFG_CTRL_MON;
++			/*
++			 * The chip sets MAX31790_FAN_CFG_TACH_INPUT_EN on its
++			 * own if MAX31790_FAN_CFG_RPM_MODE is set.
++			 * Do it here as well to reflect the actual register
++			 * value in the cache.
++			 */
++			fan_config |= (MAX31790_FAN_CFG_RPM_MODE | MAX31790_FAN_CFG_TACH_INPUT_EN);
+ 		} else {
+ 			err = -EINVAL;
+ 			break;
+ 		}
+-		data->fan_config[channel] = fan_config;
+-		err = i2c_smbus_write_byte_data(client,
+-					MAX31790_REG_FAN_CONFIG(channel),
+-					fan_config);
++		if (fan_config != data->fan_config[channel]) {
++			err = i2c_smbus_write_byte_data(client, MAX31790_REG_FAN_CONFIG(channel),
++							fan_config);
++			if (!err)
++				data->fan_config[channel] = fan_config;
++		}
+ 		break;
+ 	default:
+ 		err = -EOPNOTSUPP;
 -- 
 2.30.2
 
