@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9603C4689
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:25:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E513C4677
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234585AbhGLG0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:26:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37428 "EHLO mail.kernel.org"
+        id S235191AbhGLG0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:26:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233375AbhGLGXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:23:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3C5861182;
-        Mon, 12 Jul 2021 06:20:19 +0000 (UTC)
+        id S234927AbhGLGYS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:24:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 49FF86101E;
+        Mon, 12 Jul 2021 06:20:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626070820;
-        bh=ec0DTRDZZoP7Xk1QIlbZvNssTM/fA4eBhV6oX6O5bR8=;
+        s=korg; t=1626070838;
+        bh=4sFPbBuQ5IRBCCq/SxeCYLyFVNI3DnTMInot2pPyprw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Nw0BFCLF1o9N6wwrtk4wX15MCrHjyYeIBKVx+7iYZYYn1AFKApcEhGedH/9EKceZ/
-         a2r0/1UKM0PIm+6K7jXSBX26126L4yvOENtfMQvIbPkLN8JJ6bNqe7yv7OzCgXISgc
-         xC36PvuBqGtuXv39UH0SM9Kotlqjong+E/yHpPn8=
+        b=2RGEMIf7Dm0/m6LSd0hagGCIv+9ghwLMtMqkx6VPYmX67MqwitwPMgmbynJIaiIeY
+         M/jjfPiyBxaaRen9lEkY/k/GYXEVDosoxhdvByJ/9PkIc5INd94vCom4wGtSP9CciE
+         eBAEW3OL0CqNSkr17egc08AXvOhWgo86AZA4o9VQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 153/348] media: exynos4-is: Fix a use after free in isp_video_release
-Date:   Mon, 12 Jul 2021 08:08:57 +0200
-Message-Id: <20210712060721.375488725@linuxfoundation.org>
+Subject: [PATCH 5.4 160/348] crypto: omap-sham - Fix PM reference leak in omap sham ops
+Date:   Mon, 12 Jul 2021 08:09:04 +0200
+Message-Id: <20210712060722.214241935@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060659.886176320@linuxfoundation.org>
 References: <20210712060659.886176320@linuxfoundation.org>
@@ -41,55 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit 01fe904c9afd26e79c1f73aa0ca2e3d785e5e319 ]
+[ Upstream commit ca323b2c61ec321eb9f2179a405b9c34cdb4f553 ]
 
-In isp_video_release, file->private_data is freed via
-_vb2_fop_release()->v4l2_fh_release(). But the freed
-file->private_data is still used in v4l2_fh_is_singular_file()
-->v4l2_fh_is_singular(file->private_data), which is a use
-after free bug.
+pm_runtime_get_sync will increment pm usage counter
+even it failed. Forgetting to putting operation will
+result in reference leak here. We fix it by replacing
+it with pm_runtime_resume_and_get to keep usage counter
+balanced.
 
-My patch uses a variable 'is_singular_file' to avoid the uaf.
-v3: https://lore.kernel.org/patchwork/patch/1419058/
-
-Fixes: 34947b8aebe3f ("[media] exynos4-is: Add the FIMC-IS ISP capture DMA driver")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 604c31039dae4 ("crypto: omap-sham - Check for return value from pm_runtime_get_sync")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/exynos4-is/fimc-isp-video.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/crypto/omap-sham.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/exynos4-is/fimc-isp-video.c b/drivers/media/platform/exynos4-is/fimc-isp-video.c
-index d2cbcdca0463..370cdf007012 100644
---- a/drivers/media/platform/exynos4-is/fimc-isp-video.c
-+++ b/drivers/media/platform/exynos4-is/fimc-isp-video.c
-@@ -305,17 +305,20 @@ static int isp_video_release(struct file *file)
- 	struct fimc_is_video *ivc = &isp->video_capture;
- 	struct media_entity *entity = &ivc->ve.vdev.entity;
- 	struct media_device *mdev = entity->graph_obj.mdev;
-+	bool is_singular_file;
+diff --git a/drivers/crypto/omap-sham.c b/drivers/crypto/omap-sham.c
+index d7c0c982ba43..f80db1eb2994 100644
+--- a/drivers/crypto/omap-sham.c
++++ b/drivers/crypto/omap-sham.c
+@@ -364,7 +364,7 @@ static int omap_sham_hw_init(struct omap_sham_dev *dd)
+ {
+ 	int err;
  
- 	mutex_lock(&isp->video_lock);
+-	err = pm_runtime_get_sync(dd->dev);
++	err = pm_runtime_resume_and_get(dd->dev);
+ 	if (err < 0) {
+ 		dev_err(dd->dev, "failed to get sync: %d\n", err);
+ 		return err;
+@@ -2236,7 +2236,7 @@ static int omap_sham_suspend(struct device *dev)
  
--	if (v4l2_fh_is_singular_file(file) && ivc->streaming) {
-+	is_singular_file = v4l2_fh_is_singular_file(file);
-+
-+	if (is_singular_file && ivc->streaming) {
- 		media_pipeline_stop(entity);
- 		ivc->streaming = 0;
- 	}
- 
- 	_vb2_fop_release(file, NULL);
- 
--	if (v4l2_fh_is_singular_file(file)) {
-+	if (is_singular_file) {
- 		fimc_pipeline_call(&ivc->ve, close);
- 
- 		mutex_lock(&mdev->graph_mutex);
+ static int omap_sham_resume(struct device *dev)
+ {
+-	int err = pm_runtime_get_sync(dev);
++	int err = pm_runtime_resume_and_get(dev);
+ 	if (err < 0) {
+ 		dev_err(dev, "failed to get sync: %d\n", err);
+ 		return err;
 -- 
 2.30.2
 
