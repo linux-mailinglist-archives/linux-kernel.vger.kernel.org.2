@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 079363C57E4
+	by mail.lfdr.de (Postfix) with ESMTP id BB7E13C57E6
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377897AbhGLIjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:39:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39560 "EHLO mail.kernel.org"
+        id S1377954AbhGLIjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:39:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351400AbhGLHvq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:51:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EDF36610D1;
-        Mon, 12 Jul 2021 07:48:56 +0000 (UTC)
+        id S1351440AbhGLHvs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:51:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E13960FF1;
+        Mon, 12 Jul 2021 07:48:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076137;
-        bh=+RzFM+rthSAvLTTRDDU15Kk30txzb6o8uc9cRcG6qII=;
+        s=korg; t=1626076139;
+        bh=8hL99on/kGHd9SZ0FmxTqw28CrZ+V5Ar0rZUUs7ffcU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D2IjvR/mYfgZWt0UOk4GqQla7yunvDlq0DwVoA8L9/gh3DN+g8yfE/FouNMS8LZsX
-         oV581PAebPZGsxnlOCUB1XqYQoPpfGQx9yKyKiedqoEUAldmLHm0Jt76uLItHRJGKM
-         fhOBMg/Ff/t+7abZ7A5bRjtyQ7LHsqpy1Z8lXjMQ=
+        b=XBkdgbpXIMSmWJuyI8V49MtkQoPdNHVNiMHbK50LCaRMhQWtMENncSLchyO6r5odt
+         VynkChzz/gtMetxSihF5estoDpCaoJXDQ8GioegpTnRfr2sCssLAvHZouIZV2PupQo
+         Ul9TmBh1Z7d+J4BP9ehb5WJRtIvZnbJIT0IWSmAY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiang Wang <jiang.wang@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
+        stable@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         John Fastabend <john.fastabend@gmail.com>,
         Jakub Sitnicki <jakub@cloudflare.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 512/800] selftests/bpf: Retry for EAGAIN in udp_redir_to_connected()
-Date:   Mon, 12 Jul 2021 08:08:55 +0200
-Message-Id: <20210712061021.664437716@linuxfoundation.org>
+Subject: [PATCH 5.13 513/800] udp: Fix a memory leak in udp_read_sock()
+Date:   Mon, 12 Jul 2021 08:08:56 +0200
+Message-Id: <20210712061021.794224665@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -45,60 +44,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Cong Wang <cong.wang@bytedance.com>
 
-[ Upstream commit a7e65fe7d8201527129206754db1a2db6a6b2fde ]
+[ Upstream commit e00a5c331bf57f41fcfdc5da4f5caeafe5e54c1d ]
 
-We use non-blocking sockets for testing sockmap redirections,
-and got some random EAGAIN errors from UDP tests.
+sk_psock_verdict_recv() clones the skb and uses the clone
+afterward, so udp_read_sock() should free the skb after using
+it, regardless of error or not.
 
-There is no guarantee the packet would be immediately available
-to receive as soon as it is sent out, even on the local host.
-For UDP, this is especially true because it does not lock the
-sock during BH (unlike the TCP path). This is probably why we
-only saw this error in UDP cases.
+This fixes a real kmemleak.
 
-No matter how hard we try to make the queue empty check accurate,
-it is always possible for recvmsg() to beat ->sk_data_ready().
-Therefore, we should just retry in case of EAGAIN.
-
-Fixes: d6378af615275 ("selftests/bpf: Add a test case for udp sockmap")
-Reported-by: Jiang Wang <jiang.wang@bytedance.com>
+Fixes: d7f571188ecf ("udp: Implement ->read_sock() for sockmap")
 Signed-off-by: Cong Wang <cong.wang@bytedance.com>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Acked-by: John Fastabend <john.fastabend@gmail.com>
 Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
-Link: https://lore.kernel.org/bpf/20210615021342.7416-3-xiyou.wangcong@gmail.com
+Link: https://lore.kernel.org/bpf/20210615021342.7416-4-xiyou.wangcong@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/prog_tests/sockmap_listen.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ net/ipv4/udp.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-index 648d9ae898d2..01ab11259809 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-@@ -1610,6 +1610,7 @@ static void udp_redir_to_connected(int family, int sotype, int sock_mapfd,
- 	struct sockaddr_storage addr;
- 	int c0, c1, p0, p1;
- 	unsigned int pass;
-+	int retries = 100;
- 	socklen_t len;
- 	int err, n;
- 	u64 value;
-@@ -1686,9 +1687,13 @@ static void udp_redir_to_connected(int family, int sotype, int sock_mapfd,
- 	if (pass != 1)
- 		FAIL("%s: want pass count 1, have %d", log_prefix, pass);
+diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+index 1307ad0d3b9e..8091276cb85b 100644
+--- a/net/ipv4/udp.c
++++ b/net/ipv4/udp.c
+@@ -1798,11 +1798,13 @@ int udp_read_sock(struct sock *sk, read_descriptor_t *desc,
+ 		if (used <= 0) {
+ 			if (!copied)
+ 				copied = used;
++			kfree_skb(skb);
+ 			break;
+ 		} else if (used <= skb->len) {
+ 			copied += used;
+ 		}
  
-+again:
- 	n = read(mode == REDIR_INGRESS ? p0 : c0, &b, 1);
--	if (n < 0)
-+	if (n < 0) {
-+		if (errno == EAGAIN && retries--)
-+			goto again;
- 		FAIL_ERRNO("%s: read", log_prefix);
-+	}
- 	if (n == 0)
- 		FAIL("%s: incomplete read", log_prefix);
- 
++		kfree_skb(skb);
+ 		if (!desc->count)
+ 			break;
+ 	}
 -- 
 2.30.2
 
