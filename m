@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91A573C50BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 861CB3C4A4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347475AbhGLHfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:35:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41690 "EHLO mail.kernel.org"
+        id S240453AbhGLGvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:51:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242187AbhGLHGY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:06:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A611613AE;
-        Mon, 12 Jul 2021 07:03:34 +0000 (UTC)
+        id S237919AbhGLGjp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:39:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B4A161175;
+        Mon, 12 Jul 2021 06:35:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073414;
-        bh=XR77LswdWdzTUuNp1JmRiE979f+bTM2bdOLVaFBFXI4=;
+        s=korg; t=1626071744;
+        bh=iXWUN98jx3JLlOGPuVyKL7wiVdseHkC2hZfUoaHLIZk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zdfuRzpzb0XQAjVaczllxmoobsdF3ewDz73xcu3wu/+AHDSBp9DfVdhjMxQCm+iyH
-         xgsAIWw4+eYEoZuGpyBZucCvhnlMOGswQrHAJ9oRropoWqcIAMUXOnxd8R53kov9Kj
-         BNVKF5aL4lRjhesl/HTD2hPPZwYGyvpKAgiuwxBQ=
+        b=XGngb5DSJ7HcTs4pkjUbJrnpeTX/0x1ftr0Iv73INtRtTgjvjigtzrLmEFr/lqj/T
+         RjCH1moF2YvZPR5BZwugj+o1XTsisfp3iSiMdGc8AAr/mqxlio6k9zrcWq0J+TRxuA
+         Yi8d1gS2yvyBeMTUuZOa143fMVYget68aIuKFzqQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Mason <clm@fb.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Feng Tang <feng.tang@intel.com>,
+        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 234/700] clocksource: Retry clock read if long delays detected
-Date:   Mon, 12 Jul 2021 08:05:17 +0200
-Message-Id: <20210712061000.007586240@linuxfoundation.org>
+Subject: [PATCH 5.10 158/593] btrfs: sysfs: fix format string for some discard stats
+Date:   Mon, 12 Jul 2021 08:05:18 +0200
+Message-Id: <20210712060900.432885025@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,142 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul E. McKenney <paulmck@kernel.org>
+From: David Sterba <dsterba@suse.com>
 
-[ Upstream commit db3a34e17433de2390eb80d436970edcebd0ca3e ]
+[ Upstream commit 8c5ec995616f1202ab92e195fd75d6f60d86f85c ]
 
-When the clocksource watchdog marks a clock as unstable, this might be due
-to that clock being unstable or it might be due to delays that happen to
-occur between the reads of the two clocks.  Yes, interrupts are disabled
-across those two reads, but there are no shortage of things that can delay
-interrupts-disabled regions of code ranging from SMI handlers to vCPU
-preemption.  It would be good to have some indication as to why the clock
-was marked unstable.
+The type of discard_bitmap_bytes and discard_extent_bytes is u64 so the
+format should be %llu, though the actual values would hardly ever
+overflow to negative values.
 
-Therefore, re-read the watchdog clock on either side of the read from the
-clock under test.  If the watchdog clock shows an excessive time delta
-between its pair of reads, the reads are retried.
-
-The maximum number of retries is specified by a new kernel boot parameter
-clocksource.max_cswd_read_retries, which defaults to three, that is, up to
-four reads, one initial and up to three retries.  If more than one retry
-was required, a message is printed on the console (the occasional single
-retry is expected behavior, especially in guest OSes).  If the maximum
-number of retries is exceeded, the clock under test will be marked
-unstable.  However, the probability of this happening due to various sorts
-of delays is quite small.  In addition, the reason (clock-read delays) for
-the unstable marking will be apparent.
-
-Reported-by: Chris Mason <clm@fb.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Feng Tang <feng.tang@intel.com>
-Link: https://lore.kernel.org/r/20210527190124.440372-1-paulmck@kernel.org
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../admin-guide/kernel-parameters.txt         |  6 +++
- kernel/time/clocksource.c                     | 53 ++++++++++++++++---
- 2 files changed, 53 insertions(+), 6 deletions(-)
+ fs/btrfs/sysfs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 835f810f2f26..c08e174e6ff4 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -583,6 +583,12 @@
- 			loops can be debugged more effectively on production
- 			systems.
- 
-+	clocksource.max_cswd_read_retries= [KNL]
-+			Number of clocksource_watchdog() retries due to
-+			external delays before the clock will be marked
-+			unstable.  Defaults to three retries, that is,
-+			four attempts to read the clock under test.
-+
- 	clearcpuid=BITNUM[,BITNUM...] [X86]
- 			Disable CPUID feature X for the kernel. See
- 			arch/x86/include/asm/cpufeatures.h for the valid bit
-diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index cce484a2cc7c..49b25f1cc344 100644
---- a/kernel/time/clocksource.c
-+++ b/kernel/time/clocksource.c
-@@ -124,6 +124,13 @@ static void __clocksource_change_rating(struct clocksource *cs, int rating);
- #define WATCHDOG_INTERVAL (HZ >> 1)
- #define WATCHDOG_THRESHOLD (NSEC_PER_SEC >> 4)
- 
-+/*
-+ * Maximum permissible delay between two readouts of the watchdog
-+ * clocksource surrounding a read of the clocksource being validated.
-+ * This delay could be due to SMIs, NMIs, or to VCPU preemptions.
-+ */
-+#define WATCHDOG_MAX_SKEW (100 * NSEC_PER_USEC)
-+
- static void clocksource_watchdog_work(struct work_struct *work)
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index 279d9262b676..3bb6b688ece5 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -382,7 +382,7 @@ static ssize_t btrfs_discard_bitmap_bytes_show(struct kobject *kobj,
  {
- 	/*
-@@ -184,12 +191,45 @@ void clocksource_mark_unstable(struct clocksource *cs)
- 	spin_unlock_irqrestore(&watchdog_lock, flags);
+ 	struct btrfs_fs_info *fs_info = discard_to_fs_info(kobj);
+ 
+-	return scnprintf(buf, PAGE_SIZE, "%lld\n",
++	return scnprintf(buf, PAGE_SIZE, "%llu\n",
+ 			fs_info->discard_ctl.discard_bitmap_bytes);
  }
- 
-+static ulong max_cswd_read_retries = 3;
-+module_param(max_cswd_read_retries, ulong, 0644);
-+
-+static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
-+{
-+	unsigned int nretries;
-+	u64 wd_end, wd_delta;
-+	int64_t wd_delay;
-+
-+	for (nretries = 0; nretries <= max_cswd_read_retries; nretries++) {
-+		local_irq_disable();
-+		*wdnow = watchdog->read(watchdog);
-+		*csnow = cs->read(cs);
-+		wd_end = watchdog->read(watchdog);
-+		local_irq_enable();
-+
-+		wd_delta = clocksource_delta(wd_end, *wdnow, watchdog->mask);
-+		wd_delay = clocksource_cyc2ns(wd_delta, watchdog->mult,
-+					      watchdog->shift);
-+		if (wd_delay <= WATCHDOG_MAX_SKEW) {
-+			if (nretries > 1 || nretries >= max_cswd_read_retries) {
-+				pr_warn("timekeeping watchdog on CPU%d: %s retried %d times before success\n",
-+					smp_processor_id(), watchdog->name, nretries);
-+			}
-+			return true;
-+		}
-+	}
-+
-+	pr_warn("timekeeping watchdog on CPU%d: %s read-back delay of %lldns, attempt %d, marking unstable\n",
-+		smp_processor_id(), watchdog->name, wd_delay, nretries);
-+	return false;
-+}
-+
- static void clocksource_watchdog(struct timer_list *unused)
+ BTRFS_ATTR(discard, discard_bitmap_bytes, btrfs_discard_bitmap_bytes_show);
+@@ -404,7 +404,7 @@ static ssize_t btrfs_discard_extent_bytes_show(struct kobject *kobj,
  {
--	struct clocksource *cs;
- 	u64 csnow, wdnow, cslast, wdlast, delta;
--	int64_t wd_nsec, cs_nsec;
- 	int next_cpu, reset_pending;
-+	int64_t wd_nsec, cs_nsec;
-+	struct clocksource *cs;
+ 	struct btrfs_fs_info *fs_info = discard_to_fs_info(kobj);
  
- 	spin_lock(&watchdog_lock);
- 	if (!watchdog_running)
-@@ -206,10 +246,11 @@ static void clocksource_watchdog(struct timer_list *unused)
- 			continue;
- 		}
- 
--		local_irq_disable();
--		csnow = cs->read(cs);
--		wdnow = watchdog->read(watchdog);
--		local_irq_enable();
-+		if (!cs_watchdog_read(cs, &csnow, &wdnow)) {
-+			/* Clock readout unreliable, so give it up. */
-+			__clocksource_unstable(cs);
-+			continue;
-+		}
- 
- 		/* Clocksource initialized ? */
- 		if (!(cs->flags & CLOCK_SOURCE_WATCHDOG) ||
+-	return scnprintf(buf, PAGE_SIZE, "%lld\n",
++	return scnprintf(buf, PAGE_SIZE, "%llu\n",
+ 			fs_info->discard_ctl.discard_extent_bytes);
+ }
+ BTRFS_ATTR(discard, discard_extent_bytes, btrfs_discard_extent_bytes_show);
 -- 
 2.30.2
 
