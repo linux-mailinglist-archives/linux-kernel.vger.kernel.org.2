@@ -2,121 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C4A03C6462
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 21:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D499C3C6468
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 22:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236709AbhGLT7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 15:59:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38888 "EHLO mail.kernel.org"
+        id S235639AbhGLUCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 16:02:52 -0400
+Received: from mga03.intel.com ([134.134.136.65]:13786 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234152AbhGLT7O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 15:59:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F0B061248;
-        Mon, 12 Jul 2021 19:56:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626119786;
-        bh=1/iV0tWnFbbXO0GEHBAo7CuxKn/rRuPYJSACK0eLi3Y=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dQfSsq1jx3lPxRdhODpiKgtXXpCGYxn7qC7Mp6Qgn9xJMpqM7nyemeJpfKs2Q57Vo
-         GtZsmsqTa2/1W0MjFg2D3M4LmiYHFOWnRikS8R0iq8MpMoE2NU78hsgZfql/OyAyU0
-         s/OSvAhCsvY5bs5x3cE+wvD4ujHlTSJ4imynk8zcG5eFybGJbkqo5sYqc5w9UgDjnV
-         PU933Js1WfIABFGPFg9jvh5Sd750+2vO9p8N5Maf1nvDmnXMd0wtUJQQ4RQiavownL
-         puxNnd78xJitKg4Lo4ErrYooveUSMSVETo9JVilH/lxlWnIfY2Q37vbFjZw1ASBdr7
-         mJMxypxtJw/IA==
-Received: by mail-ej1-f43.google.com with SMTP id dt7so7078571ejc.12;
-        Mon, 12 Jul 2021 12:56:26 -0700 (PDT)
-X-Gm-Message-State: AOAM533DyzXIDJyZufyWEIzOqya6l51g1u5NEcFHfgc4HUDABt8GGeM/
-        yI//I552HnjlHw/mcwYtUmkVb+h+hT9htzHywg==
-X-Google-Smtp-Source: ABdhPJzQP4XLVaKnqd28Ulh5L6F8VcTh8R/AfPyMs7r6K12YgTls+lWlluw/s3Hp7usHqSXhQeJH8grhlH9YOxbSMiM=
-X-Received: by 2002:a17:906:b18d:: with SMTP id w13mr816201ejy.341.1626119784749;
- Mon, 12 Jul 2021 12:56:24 -0700 (PDT)
+        id S231693AbhGLUCv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 16:02:51 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10043"; a="210090380"
+X-IronPort-AV: E=Sophos;i="5.84,234,1620716400"; 
+   d="scan'208";a="210090380"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 13:00:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,234,1620716400"; 
+   d="scan'208";a="653092397"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 12 Jul 2021 13:00:00 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1m325v-000HDw-KP; Mon, 12 Jul 2021 19:59:59 +0000
+Date:   Tue, 13 Jul 2021 03:59:32 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ 7bfa422eb6befc7d334f7ec47d89b45877886a64
+Message-ID: <60ec9f24.NOGqiaXf6ArqSJc5%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20210630034653.10260-1-manivannan.sadhasivam@linaro.org>
- <CAL_JsqLHp3kBc1VtGVRxVr_k69GqSC_JX88jo3stdM4W9Qq6AQ@mail.gmail.com> <20210712075302.GA8113@workstation>
-In-Reply-To: <20210712075302.GA8113@workstation>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 12 Jul 2021 13:56:12 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJ4R3+mx9bT4WsKRx4fS5UFbe8en+fRq65HTGcfxaxaNQ@mail.gmail.com>
-Message-ID: <CAL_JsqJ4R3+mx9bT4WsKRx4fS5UFbe8en+fRq65HTGcfxaxaNQ@mail.gmail.com>
-Subject: Re: [PATCH v5 0/3] Add Qualcomm PCIe Endpoint driver support
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        devicetree@vger.kernel.org, PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        hemantk@codeaurora.org,
-        Siddartha Mohanadoss <smohanad@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sriharsha Allenki <sallenki@codeaurora.org>,
-        skananth@codeaurora.org, vpernami@codeaurora.org,
-        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 1:53 AM Manivannan Sadhasivam
-<manivannan.sadhasivam@linaro.org> wrote:
->
-> On Thu, Jul 01, 2021 at 09:25:01AM -0600, Rob Herring wrote:
-> > On Tue, Jun 29, 2021 at 9:47 PM Manivannan Sadhasivam
-> > <manivannan.sadhasivam@linaro.org> wrote:
-> > >
-> > > Hello,
-> > >
-> > > This series adds support for Qualcomm PCIe Endpoint controller found
-> > > in platforms like SDX55. The Endpoint controller is based on the designware
-> > > core with additional Qualcomm wrappers around the core.
-> > >
-> > > The driver is added separately unlike other Designware based drivers that
-> > > combine RC and EP in a single driver. This is done to avoid complexity and
-> > > to maintain this driver autonomously.
-> > >
-> > > The driver has been validated with an out of tree MHI function driver on
-> > > SDX55 based Telit FN980 EVB connected to x86 host machine over PCIe.
-> > >
-> > > Thanks,
-> > > Mani
-> > >
-> > > Changes in v5:
-> > >
-> > > * Removed the DBI register settings that are not needed
-> > > * Used the standard definitions available in pci_regs.h
-> > > * Added defines for all the register fields
-> > > * Removed the left over code from previous iteration
-> > >
-> > > Changes in v4:
-> > >
-> > > * Removed the active_config settings needed for IPA integration
-> > > * Switched to writel for couple of relaxed versions that sneaked in
-> >
-> > I thought we resolved this discussion. Use _relaxed variants unless
-> > you need the stronger ones.
-> >
->
-> I thought the discussion was resolved in favor of using read/writel. Here
-> is the last reply from Bjorn:
->
-> "I think we came to the conclusion that writel() was better
-> than incorrect use of writel_relaxed() followed by wmb(). And in this
-> particular case it's definitely not happening in a hot code path..."
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: 7bfa422eb6befc7d334f7ec47d89b45877886a64  Merge branch 'WIP/fixes'
 
-Certainly if you're needing wmb(), then you shouldn't be using
-_relaxed() variants.
+elapsed time: 724m
 
-> IMO, it is safer to use readl/writel calls than the relaxed variants.
+configs tested: 145
+configs skipped: 3
 
-Sure, and it's safer to have one big lock than it is to have no locks
-or lots of small locks.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> And so far the un-written rule I assumed is, only consider using the
-> relaxed variants if the code is in hot path (but somehow I used the
-> relaxed version in v1 :P )
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                 mpc8313_rdb_defconfig
+xtensa                          iss_defconfig
+sh                           se7343_defconfig
+arc                 nsimosci_hs_smp_defconfig
+xtensa                    smp_lx200_defconfig
+mips                        jmr3927_defconfig
+mips                      maltasmvp_defconfig
+mips                     cu1830-neo_defconfig
+m68k                        mvme16x_defconfig
+powerpc                      ppc40x_defconfig
+ia64                             alldefconfig
+s390                                defconfig
+xtensa                  nommu_kc705_defconfig
+powerpc                    adder875_defconfig
+arm                        vexpress_defconfig
+arm                        magician_defconfig
+arm                        spear3xx_defconfig
+mips                   sb1250_swarm_defconfig
+powerpc                    ge_imp3a_defconfig
+sh                          polaris_defconfig
+sparc                            alldefconfig
+i386                                defconfig
+arm                  colibri_pxa270_defconfig
+sh                   sh7724_generic_defconfig
+nios2                         10m50_defconfig
+mips                        bcm47xx_defconfig
+m68k                        mvme147_defconfig
+powerpc                      pmac32_defconfig
+powerpc                 mpc85xx_cds_defconfig
+arm                        clps711x_defconfig
+powerpc                    klondike_defconfig
+arm                           omap1_defconfig
+arm                           spitz_defconfig
+sh                   rts7751r2dplus_defconfig
+powerpc                      tqm8xx_defconfig
+sh                         apsh4a3a_defconfig
+arc                        nsim_700_defconfig
+alpha                            allyesconfig
+powerpc                     ppa8548_defconfig
+m68k                            q40_defconfig
+sh                               j2_defconfig
+arm                        realview_defconfig
+xtensa                           allyesconfig
+powerpc                 mpc836x_rdk_defconfig
+openrisc                            defconfig
+xtensa                  audio_kc705_defconfig
+mips                          rb532_defconfig
+powerpc                     kilauea_defconfig
+sh                          kfr2r09_defconfig
+sh                           se7712_defconfig
+sh                            hp6xx_defconfig
+sh                           se7721_defconfig
+i386                             alldefconfig
+powerpc                 mpc8540_ads_defconfig
+m68k                         apollo_defconfig
+arm                          pcm027_defconfig
+csky                                defconfig
+powerpc                        fsp2_defconfig
+arm                             rpc_defconfig
+mips                           ip32_defconfig
+m68k                          multi_defconfig
+nds32                             allnoconfig
+mips                           mtx1_defconfig
+powerpc                      arches_defconfig
+powerpc                 mpc8315_rdb_defconfig
+powerpc                  iss476-smp_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a005-20210712
+x86_64               randconfig-a004-20210712
+x86_64               randconfig-a003-20210712
+x86_64               randconfig-a002-20210712
+x86_64               randconfig-a006-20210712
+x86_64               randconfig-a001-20210712
+i386                 randconfig-a005-20210712
+i386                 randconfig-a004-20210712
+i386                 randconfig-a006-20210712
+i386                 randconfig-a001-20210712
+i386                 randconfig-a002-20210712
+i386                 randconfig-a003-20210712
+i386                 randconfig-a015-20210712
+i386                 randconfig-a014-20210712
+i386                 randconfig-a011-20210712
+i386                 randconfig-a013-20210712
+i386                 randconfig-a012-20210712
+i386                 randconfig-a016-20210712
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-If you want any real conclusion, then best to fix the 'un-written' part.
+clang tested configs:
+x86_64               randconfig-b001-20210712
+x86_64               randconfig-b001-20210711
+x86_64               randconfig-a005-20210711
+x86_64               randconfig-a004-20210711
+x86_64               randconfig-a002-20210711
+x86_64               randconfig-a003-20210711
+x86_64               randconfig-a006-20210711
+x86_64               randconfig-a001-20210711
+x86_64               randconfig-a013-20210712
+x86_64               randconfig-a014-20210712
+x86_64               randconfig-a015-20210712
+x86_64               randconfig-a012-20210712
+x86_64               randconfig-a016-20210712
+x86_64               randconfig-a011-20210712
 
-But what I say for every PCI review, is use the _relaxed() variants.
-
-Rob
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
