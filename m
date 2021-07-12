@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C533C4DBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:40:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58CF13C5494
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239546AbhGLHOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:14:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49586 "EHLO mail.kernel.org"
+        id S1353062AbhGLIBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:01:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239451AbhGLGts (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:49:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 46FFB60241;
-        Mon, 12 Jul 2021 06:46:58 +0000 (UTC)
+        id S239366AbhGLHWx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:22:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD8FB6052B;
+        Mon, 12 Jul 2021 07:20:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072418;
-        bh=vn/VPJBysEMnVybQe14G/wmQ9C23wb6BVbVn/IuU1J0=;
+        s=korg; t=1626074402;
+        bh=JtG1JLljfS8M88vlJnnVTirxk2SkKYS2fizuKzP7JAk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JlRGk11w8dWdDaAuCkHx7rxfelB76QmLBKAJ14TWgBjA91Dmc/HT8ecZZqcssbUXK
-         qLh2jmGbI34IbwOYTyYkk0y1mbCdpOw3QneSkFKIsJh9s3fiJk4Odp1qj7l/oBAwa7
-         SPYiXcZAK30E4zbMWZMX+dy7Ly5ZsJwL1SZQU8yE=
+        b=KrCtB0AnT+AICPdTlgUJ2GpcVrETvYL3iCxnA/8/ciPgYXLHd86Gha5Qd4bAOcmoh
+         3124Ds/DWlbhYKVpnFlp80JOdkIxxurFuvqYr9TbtRaXWEQWGh9xbmfqNdlDgTXa/t
+         p/7UMcBfO+xUjkS2qFRF7ihkOLvbPbXND0jjU5Bg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eddie James <eajames@linux.ibm.com>,
-        Joel Stanley <joel@jms.id.au>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 490/593] fsi: scom: Reset the FSI2PIB engine for any error
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 567/700] tty: nozomi: Fix the error handling path of nozomi_card_init()
 Date:   Mon, 12 Jul 2021 08:10:50 +0200
-Message-Id: <20210712060945.152341220@linuxfoundation.org>
+Message-Id: <20210712061036.463413432@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,61 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eddie James <eajames@linux.ibm.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit a5c317dac5567206ca7b6bc9d008dd6890c8bced ]
+[ Upstream commit 6ae7d0f5a92b9619f6e3c307ce56b2cefff3f0e9 ]
 
-The error bits in the FSI2PIB status are only cleared by a reset. So
-the driver needs to perform a reset after seeing any of the FSI2PIB
-errors, otherwise subsequent operations will also look like failures.
+The error handling path is broken and we may un-register things that have
+never been registered.
 
-Fixes: 6b293258cded ("fsi: scom: Major overhaul")
-Signed-off-by: Eddie James <eajames@linux.ibm.com>
-Reviewed-by: Joel Stanley <joel@jms.id.au>
-Link: https://lore.kernel.org/r/20210329151344.14246-1-eajames@linux.ibm.com
-Signed-off-by: Joel Stanley <joel@jms.id.au>
+Update the loops index accordingly.
+
+Fixes: 9842c38e9176 ("kfifo: fix warn_unused_result")
+Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/e28c2e92c7475da25b03d022ea2d6dcf1ba807a2.1621968629.git.christophe.jaillet@wanadoo.fr
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/fsi/fsi-scom.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ drivers/tty/nozomi.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/fsi/fsi-scom.c b/drivers/fsi/fsi-scom.c
-index b45bfab7b7f5..75d1389e2626 100644
---- a/drivers/fsi/fsi-scom.c
-+++ b/drivers/fsi/fsi-scom.c
-@@ -38,9 +38,10 @@
- #define SCOM_STATUS_PIB_RESP_MASK	0x00007000
- #define SCOM_STATUS_PIB_RESP_SHIFT	12
+diff --git a/drivers/tty/nozomi.c b/drivers/tty/nozomi.c
+index 0b10c2da4364..1076f884d9f9 100644
+--- a/drivers/tty/nozomi.c
++++ b/drivers/tty/nozomi.c
+@@ -1391,7 +1391,7 @@ static int nozomi_card_init(struct pci_dev *pdev,
+ 			NOZOMI_NAME, dc);
+ 	if (unlikely(ret)) {
+ 		dev_err(&pdev->dev, "can't request irq %d\n", pdev->irq);
+-		goto err_free_kfifo;
++		goto err_free_all_kfifo;
+ 	}
  
--#define SCOM_STATUS_ANY_ERR		(SCOM_STATUS_PROTECTION | \
--					 SCOM_STATUS_PARITY |	  \
--					 SCOM_STATUS_PIB_ABORT | \
-+#define SCOM_STATUS_FSI2PIB_ERROR	(SCOM_STATUS_PROTECTION |	\
-+					 SCOM_STATUS_PARITY |		\
-+					 SCOM_STATUS_PIB_ABORT)
-+#define SCOM_STATUS_ANY_ERR		(SCOM_STATUS_FSI2PIB_ERROR |	\
- 					 SCOM_STATUS_PIB_RESP_MASK)
- /* SCOM address encodings */
- #define XSCOM_ADDR_IND_FLAG		BIT_ULL(63)
-@@ -240,13 +241,14 @@ static int handle_fsi2pib_status(struct scom_device *scom, uint32_t status)
- {
- 	uint32_t dummy = -1;
+ 	DBG1("base_addr: %p", dc->base_addr);
+@@ -1429,13 +1429,15 @@ static int nozomi_card_init(struct pci_dev *pdev,
+ 	return 0;
  
--	if (status & SCOM_STATUS_PROTECTION)
--		return -EPERM;
--	if (status & SCOM_STATUS_PARITY) {
-+	if (status & SCOM_STATUS_FSI2PIB_ERROR)
- 		fsi_device_write(scom->fsi_dev, SCOM_FSI2PIB_RESET_REG, &dummy,
- 				 sizeof(uint32_t));
-+
-+	if (status & SCOM_STATUS_PROTECTION)
-+		return -EPERM;
-+	if (status & SCOM_STATUS_PARITY)
- 		return -EIO;
--	}
- 	/* Return -EBUSY on PIB abort to force a retry */
- 	if (status & SCOM_STATUS_PIB_ABORT)
- 		return -EBUSY;
+ err_free_tty:
+-	for (i = 0; i < MAX_PORT; ++i) {
++	for (i--; i >= 0; i--) {
+ 		tty_unregister_device(ntty_driver, dc->index_start + i);
+ 		tty_port_destroy(&dc->port[i].port);
+ 	}
+ 	free_irq(pdev->irq, dc);
++err_free_all_kfifo:
++	i = MAX_PORT;
+ err_free_kfifo:
+-	for (i = 0; i < MAX_PORT; i++)
++	for (i--; i >= PORT_MDM; i--)
+ 		kfifo_free(&dc->port[i].fifo_ul);
+ err_free_sbuf:
+ 	kfree(dc->send_buf);
 -- 
 2.30.2
 
