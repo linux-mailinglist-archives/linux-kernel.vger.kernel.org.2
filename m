@@ -2,66 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEE5F3C5A35
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CBF43C5A66
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237660AbhGLJmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:42:36 -0400
-Received: from mga17.intel.com ([192.55.52.151]:12193 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237631AbhGLJjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 05:39:20 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10042"; a="190332116"
-X-IronPort-AV: E=Sophos;i="5.84,232,1620716400"; 
-   d="scan'208";a="190332116"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 02:36:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,232,1620716400"; 
-   d="scan'208";a="491957343"
-Received: from michael-optiplex-9020.sh.intel.com (HELO localhost) ([10.239.159.182])
-  by FMSMGA003.fm.intel.com with ESMTP; 12 Jul 2021 02:36:30 -0700
-Date:   Mon, 12 Jul 2021 17:50:34 +0800
-From:   Yang Weijiang <weijiang.yang@intel.com>
-To:     Jim Mattson <jmattson@google.com>
-Cc:     Yang Weijiang <weijiang.yang@intel.com>, pbonzini@redhat.com,
-        seanjc@google.com, vkuznets@redhat.com, wei.w.wang@intel.com,
-        like.xu.linux@gmail.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 06/13] KVM: x86/vmx: Save/Restore host
- MSR_ARCH_LBR_CTL state
-Message-ID: <20210712095034.GD12162@intel.com>
-References: <1625825111-6604-1-git-send-email-weijiang.yang@intel.com>
- <1625825111-6604-7-git-send-email-weijiang.yang@intel.com>
- <CALMp9eQEs9pUyy1PpwLPG0_PtF07tR2Opw+1b=w4-knOwYPvvg@mail.gmail.com>
+        id S241416AbhGLJy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:54:59 -0400
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:38088 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238441AbhGLJy4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 05:54:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1626083527; x=1657619527;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=ONFhG70nHN8i1/Ll5W+qGDPxvqrDNBO3fKKi64/sBIo=;
+  b=JzpW0Bgmk1bjCJS3vTfMYIoYr5syGCzcg7WcgHhd/4jfyxtg7ktWhqIo
+   dZv91OaZXyypuVxwegmN6BPTppk4UuQ6XmEVHtj+QPCaoERg2/vmm931Q
+   KT15mMDnSjss5LStIkiQkHDsw/2IwywIyjxrddiknF/2D/mSv4HoAe80t
+   9+aNVL836+AJO8Bxf0vVzx7PeiXZtutXOOW6FSSHGHkCRqrCdPjgjo42C
+   u8RIs2XlJWENLDRSf89v9jk28qvQzDAe9bmNFznols4Slw81PEgRX4+IM
+   gZH6epkGzcnpfrIoHtO1So7LcutMhZgSURwtR7AqKEb1Gl0eRJ5QitFrR
+   A==;
+IronPort-SDR: tILLnrbJimE5Q6h0KQ1UfpPhmA8bVwE3Sfr1mdIQllGewPEf0v+d9V+hq6rbxTVsHbzxvPIr0q
+ Wv8v7JsFWjd0SMBe3VsZrVYj0TyJ97RAkJ8IrFe/z7Sw1v2KcYCkh5LmNE5zY3x7VGHDBzl4h6
+ 0hrKcUmoSexmrhvEtngYNtb+2S7GYzAhRzTBMsYsi+MzyjJT4id6SOwk4nbejWZ8/WFqf9QR0X
+ zFhTvx3xzWQb3nhWWtgLArMOsqsySFcYEEjEc6Ide3JshxJqUWsi8OkM5y67RuKem7yTQogrJz
+ mpk=
+X-IronPort-AV: E=Sophos;i="5.84,232,1620662400"; 
+   d="scan'208";a="179153737"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 12 Jul 2021 17:52:06 +0800
+IronPort-SDR: +mYSENp7hen1SPbNIrT/cCVvCglCURfvz2u7r2Uh5znaoCIHhaf1b/1hi9WiGYufyNKnt2l9Y4
+ SXYtA7ki2tVxjRkhH9g9UzKXIzBkIwxp8gjY0GF7ctczIzzwy0ajeNa+PFJ+KY7hGfL/5SVJJY
+ ESN/pqTs4Scsgjc8kfGg3YJkuVJvyspxUDRLu5msqi0vVDiJxDYVp4Z2mdQuE3nDbCoLMRtOHG
+ hIUH6FNghB+T6ZN/QyDNU47e2XlAfhlw9RENws9jSJS7n73ciggZD7dVxIQE7On78KzTbAZGC2
+ Jh4/ogV2iIwhEyubtJH+mJ9T
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 02:30:13 -0700
+IronPort-SDR: wkZW2gjRVxDNjrYqJZqyrndvZMO2Dmxgy6kqSYMyHUXtUfTz3dzONCoUfusY1sPXeQ7Qjiwdlm
+ S4hVf+WDXjQZSd5zHTUCPU22rIzfSstcqvO4uSDUbzQF8zrx2HnN3kfuKMVyMnDIST+76mn5Vg
+ QF9/BKmbtWjPEjF/YzGzWvfPpSGeYIIBcwvGibpK2r39zqL7ZnsMugwiofZW9Q3fbkanyyijap
+ WnVixTcxInRu/qnSPj4P3T1E56YyER9gn81XXbyyy7eiBwd51Dydwg0q4pbagUr3F8LTo7YY9I
+ +QE=
+WDCIronportException: Internal
+Received: from bxygm33.sdcorp.global.sandisk.com ([10.0.231.247])
+  by uls-op-cesaip02.wdc.com with ESMTP; 12 Jul 2021 02:52:02 -0700
+From:   Avri Altman <avri.altman@wdc.com>
+To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <avi.shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>, cang@codeaurora.org,
+        stanley.chu@mediatek.com, Avri Altman <avri.altman@wdc.com>
+Subject: [PATCH v12 07/12] scsi: ufshpb: Add hpb dev reset response
+Date:   Mon, 12 Jul 2021 12:50:34 +0300
+Message-Id: <20210712095039.8093-8-avri.altman@wdc.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210712095039.8093-1-avri.altman@wdc.com>
+References: <20210712095039.8093-1-avri.altman@wdc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALMp9eQEs9pUyy1PpwLPG0_PtF07tR2Opw+1b=w4-knOwYPvvg@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 09, 2021 at 03:54:53PM -0700, Jim Mattson wrote:
-> On Fri, Jul 9, 2021 at 2:51 AM Yang Weijiang <weijiang.yang@intel.com> wrote:
-> >
-> > If host is using MSR_ARCH_LBR_CTL then save it before vm-entry
-> > and reload it after vm-exit.
-> 
-> I don't see anything being done here "before VM-entry" or "after
-> VM-exit." This code seems to be invoked on vcpu_load and vcpu_put.
-> 
-> In any case, I don't see why this one MSR is special. It seems that if
-> the host is using the architectural LBR MSRs, then *all* of the host
-> architectural LBR MSRs have to be saved on vcpu_load and restored on
-> vcpu_put. Shouldn't  kvm_load_guest_fpu() and kvm_put_guest_fpu() do
-> that via the calls to kvm_save_current_fpu(vcpu->arch.user_fpu) and
-> restore_fpregs_from_fpstate(&vcpu->arch.user_fpu->state)?
-I looked back on the discussion thread:
-https://patchwork.kernel.org/project/kvm/patch/20210303135756.1546253-8-like.xu@linux.intel.com/
-not sure why this code is added, but IMO, although fpu save/restore in outer loop
-covers this LBR MSR, but the operation points are far away from vm-entry/exit
-point, i.e., the guest MSR setting could leak to host side for a signicant
-long of time, it may cause host side profiling accuracy. if we save/restore it
-manually, it'll mitigate the issue signifcantly.
+The spec does not define what is the host's recommended response when
+the device send hpb dev reset response (oper 0x2).
+
+We will update all active hpb regions: mark them and do that on the next
+read.
+
+Signed-off-by: Avri Altman <avri.altman@wdc.com>
+Reviewed-by: Daejun Park <daejun7.park@samsung.com>
+---
+ drivers/scsi/ufs/ufshpb.c | 32 +++++++++++++++++++++++++++++++-
+ drivers/scsi/ufs/ufshpb.h |  1 +
+ 2 files changed, 32 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+index 7b48a9ab1534..5b473f1800ca 100644
+--- a/drivers/scsi/ufs/ufshpb.c
++++ b/drivers/scsi/ufs/ufshpb.c
+@@ -196,7 +196,8 @@ static void ufshpb_iterate_rgn(struct ufshpb_lu *hpb, int rgn_idx, int srgn_idx,
+ 		}
+ 		spin_unlock(&rgn->rgn_lock);
+ 
+-		if (activate) {
++		if (activate ||
++		    test_and_clear_bit(RGN_FLAG_UPDATE, &rgn->rgn_flags)) {
+ 			spin_lock_irqsave(&hpb->rsp_list_lock, flags);
+ 			ufshpb_update_active_info(hpb, rgn_idx, srgn_idx);
+ 			spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
+@@ -1412,6 +1413,20 @@ static void ufshpb_rsp_req_region_update(struct ufshpb_lu *hpb,
+ 		queue_work(ufshpb_wq, &hpb->map_work);
+ }
+ 
++static void ufshpb_dev_reset_handler(struct ufshpb_lu *hpb)
++{
++	struct victim_select_info *lru_info = &hpb->lru_info;
++	struct ufshpb_region *rgn;
++	unsigned long flags;
++
++	spin_lock_irqsave(&hpb->rgn_state_lock, flags);
++
++	list_for_each_entry(rgn, &lru_info->lh_lru_rgn, list_lru_rgn)
++		set_bit(RGN_FLAG_UPDATE, &rgn->rgn_flags);
++
++	spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
++}
++
+ /*
+  * This function will parse recommended active subregion information in sense
+  * data field of response UPIU with SAM_STAT_GOOD state.
+@@ -1486,6 +1501,18 @@ void ufshpb_rsp_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
+ 	case HPB_RSP_DEV_RESET:
+ 		dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
+ 			 "UFS device lost HPB information during PM.\n");
++
++		if (hpb->is_hcm) {
++			struct scsi_device *sdev;
++
++			__shost_for_each_device(sdev, hba->host) {
++				struct ufshpb_lu *h = sdev->hostdata;
++
++				if (h)
++					ufshpb_dev_reset_handler(h);
++			}
++		}
++
+ 		break;
+ 	default:
+ 		dev_notice(&hpb->sdev_ufs_lu->sdev_dev,
+@@ -1811,6 +1838,8 @@ static int ufshpb_alloc_region_tbl(struct ufs_hba *hba, struct ufshpb_lu *hpb)
+ 		} else {
+ 			rgn->rgn_state = HPB_RGN_INACTIVE;
+ 		}
++
++		rgn->rgn_flags = 0;
+ 	}
+ 
+ 	return 0;
+@@ -2138,6 +2167,7 @@ static void ufshpb_cancel_jobs(struct ufshpb_lu *hpb)
+ {
+ 	if (hpb->is_hcm)
+ 		cancel_work_sync(&hpb->ufshpb_normalization_work);
++
+ 	cancel_work_sync(&hpb->map_work);
+ }
+ 
+diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
+index 0204e4fec6bc..43a95c670763 100644
+--- a/drivers/scsi/ufs/ufshpb.h
++++ b/drivers/scsi/ufs/ufshpb.h
+@@ -127,6 +127,7 @@ struct ufshpb_region {
+ 	struct list_head list_lru_rgn;
+ 	unsigned long rgn_flags;
+ #define RGN_FLAG_DIRTY 0
++#define RGN_FLAG_UPDATE 1
+ 
+ 	/* region reads - for host mode */
+ 	spinlock_t rgn_lock;
+-- 
+2.25.1
+
