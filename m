@@ -2,73 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE4B3C6353
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 21:11:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A013C635A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 21:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235744AbhGLTNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 15:13:55 -0400
-Received: from mail-il1-f172.google.com ([209.85.166.172]:42616 "EHLO
-        mail-il1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233504AbhGLTNx (ORCPT
+        id S236183AbhGLTOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 15:14:33 -0400
+Received: from mail-io1-f48.google.com ([209.85.166.48]:37560 "EHLO
+        mail-io1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236103AbhGLTOb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 15:13:53 -0400
-Received: by mail-il1-f172.google.com with SMTP id h3so20627703ilc.9;
-        Mon, 12 Jul 2021 12:11:04 -0700 (PDT)
+        Mon, 12 Jul 2021 15:14:31 -0400
+Received: by mail-io1-f48.google.com with SMTP id l18so19063123iow.4;
+        Mon, 12 Jul 2021 12:11:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=KDeCEh+D/0pr2XfzfVAb7hT42m+8aaWxMNpNgHC5hY8=;
-        b=OsTLrovMvPLOL/pguYjlluLXDrA9Bbl4CgXGVDvxjiLzO7eZ9uKAU1e8OLokmP9IaT
-         sLAs+q6VhkWBe5nas7d2Xkx+fNfBgFySTemNWHjRFf5ycSBp3W9x3CcwTQ9ZLgbJZdYx
-         Z9oIJXJ4KdMwj9djpYbUOXhN9rrcVl4ymqcC+qnFmfg2wUXP2WFn9UINJgsU24qPXZmk
-         bhsm204396M/d+uBFLvpVTU6U9B8j9y1AqRT8oWttAf7iuJmtv/4JIFNv3E4nPYtuoC4
-         FDEFzbVdWYYLcxy21TKd9CgDC6TdKvyDXXonSoPZmEGnl1ULdMuVO9zr3N4JmgXk+TYO
-         uK7w==
-X-Gm-Message-State: AOAM531AxO+wE9EU1qTXQ1dkFRXX+WQg6G7qrAOe5uxx/NUFgqfZ4z3N
-        xDDKkq0YfsfXPBP6EG7/vQ==
-X-Google-Smtp-Source: ABdhPJxINxOQbkOPSUeTHrh+j560TiyF4+WVEtfyHKvmJlOXN+oa6fjedFHors7KConAc0zn96SOSw==
-X-Received: by 2002:a92:c805:: with SMTP id v5mr221476iln.293.1626117064532;
-        Mon, 12 Jul 2021 12:11:04 -0700 (PDT)
+        bh=KOmLVKcyfUfw4sFtGCEdraGx+y/kkHEhOVZCxdXTIGw=;
+        b=rohYj6iSShUh3Rd8oUydEsOpoL4Oa9/GVRCg0F4EtjQDuUU9Cq6IB7HHpf8PTS3ofM
+         R11agW9bgkJFO4l9Y3VY+BTTRjxXBzf7XxfYggUHUPrJVXekr5xhiSLeea7Cqy4kkKuJ
+         RLuIAEBL9TBkON7NasZQWfw83oW3Q1s64ya08WAPo2bqJNodNJR5uM+FcKtbReYyC7W0
+         mmilVWpmcGyxZFFJAWmIqrdVXgVIrepPrCx6sYnREya1ZlcOtf413XA8vUdl+ohjcniX
+         WaobHsT95F+D/TbGZs9LvR8yeO/DdKv7LB804i/FGjJbH0yI2nXX6mJKcYmTHgrwR8u9
+         FtQA==
+X-Gm-Message-State: AOAM532F8Z8nP5APtWTKbirWJqPd1ZVDbCu+j8Sl5g0UoJrWaG73Alqs
+        MxO72Gc/dYT9iuPwEF06Vd58HU7kzQ==
+X-Google-Smtp-Source: ABdhPJwAJrnM6h0Nr/OHl17yaP9PCMn0WdmXxwOOMqDUDjozUnbYhx/sv1LVBcYsd2wZOutFTkZLpQ==
+X-Received: by 2002:a6b:6209:: with SMTP id f9mr328318iog.147.1626117101619;
+        Mon, 12 Jul 2021 12:11:41 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id d8sm5312716ilq.88.2021.07.12.12.11.02
+        by smtp.gmail.com with ESMTPSA id r6sm8469043ioh.27.2021.07.12.12.11.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 12:11:03 -0700 (PDT)
-Received: (nullmailer pid 2316421 invoked by uid 1000);
-        Mon, 12 Jul 2021 19:11:00 -0000
-Date:   Mon, 12 Jul 2021 13:11:00 -0600
+        Mon, 12 Jul 2021 12:11:41 -0700 (PDT)
+Received: (nullmailer pid 2317495 invoked by uid 1000);
+        Mon, 12 Jul 2021 19:11:36 -0000
+Date:   Mon, 12 Jul 2021 13:11:36 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     festevam@gmail.com, kernel@pengutronix.de,
-        devicetree@vger.kernel.org, linux-media@vger.kernel.org,
-        phone-devel@vger.kernel.org, kernel@puri.sm,
-        laurent.pinchart@ideasonboard.com, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev, shawnguo@kernel.org,
-        linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
-        mchehab@kernel.org, slongerbeam@gmail.com, krzk@kernel.org,
-        m.felsch@pengutronix.de
-Subject: Re: [PATCH v5 1/3] dt-bindings: media: document the
- nxp,imx8mq-mipi-csi2 receiver phy and controller
-Message-ID: <20210712191100.GA2316363@robh.at.kernel.org>
-References: <20210618095753.114557-1-martin.kepplinger@puri.sm>
- <20210618095753.114557-2-martin.kepplinger@puri.sm>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Jeffrey Hugo <jhugo@codeaurora.org>, linux-clk@vger.kernel.org,
+        martin.botka@somainline.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        marijn.suijten@somainline.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+        jamipkettunen@somainline.org, Taniya Das <tdas@codeaurora.org>,
+        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
+        angelogioacchino.delregno@somainline.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] dt-bindings: clock: Add support for MSM8992/4 MMCC
+Message-ID: <20210712191136.GA2317441@robh.at.kernel.org>
+References: <20210618111435.595689-1-konrad.dybcio@somainline.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210618095753.114557-2-martin.kepplinger@puri.sm>
+In-Reply-To: <20210618111435.595689-1-konrad.dybcio@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Jun 2021 11:57:51 +0200, Martin Kepplinger wrote:
-> The i.MX8MQ SoC integrates a different MIPI CSI receiver as the i.MX8MM so
-> describe the DT bindings for it.
+On Fri, 18 Jun 2021 13:14:32 +0200, Konrad Dybcio wrote:
+> Document the multimedia clock controller found on MSM8992/4.
 > 
-> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 > ---
->  .../bindings/media/nxp,imx8mq-mipi-csi2.yaml  | 173 ++++++++++++++++++
->  1 file changed, 173 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/nxp,imx8mq-mipi-csi2.yaml
+>  Documentation/devicetree/bindings/clock/qcom,mmcc.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
