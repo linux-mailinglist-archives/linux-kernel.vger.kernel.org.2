@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB9B3C5014
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A312B3C4947
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346424AbhGLHat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:30:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38670 "EHLO mail.kernel.org"
+        id S237904AbhGLGn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:43:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238765AbhGLHDD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:03:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E85761152;
-        Mon, 12 Jul 2021 07:00:13 +0000 (UTC)
+        id S237656AbhGLGen (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:34:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 70C1361183;
+        Mon, 12 Jul 2021 06:31:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073214;
-        bh=jOEpjn/hcpJuviilCQ2NuBdzL8OTNwywGwIyGeUQPOk=;
+        s=korg; t=1626071475;
+        bh=BeB+0SJu7eQWjDDNzQut1WWX6Ive+aysT5ziMqnmH+I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GX3vr+3MtxRfNMS004lsAcTtQuddeT0BQWOE/J5WTy2BhFvGyB79J6eTHoiAr2dDW
-         8EMuOpaGQzN8dWw9DPH7vL/DxmzOdAzqDMZLz2oiFEyvblEaQXnJomIo4WiGcglufS
-         0yqD70L9pCYWlVrsagxQUMYMQ7L6nDnSnLh4ny6E=
+        b=gl/DjnrMoK+a94agC2B5xrj1Tn4R3FPtZRMaxL5zym/SCvYIYKtG+yN2LpDYnkt5W
+         pbkSjhiH3aG9xpWq4bViCKUDYTf+BTL8e+2UvCKJeYS33OeyOCQzB33FUU47OAqCmR
+         wfaN4M/cd7GqUFxU8dAJNXlJ1XxGC1k0jgPsG8s8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Collingbourne <pcc@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 163/700] Makefile: fix GDB warning with CONFIG_RELR
+        stable@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.10 086/593] tracing/histograms: Fix parsing of "sym-offset" modifier
 Date:   Mon, 12 Jul 2021 08:04:06 +0200
-Message-Id: <20210712060948.672879435@linuxfoundation.org>
+Message-Id: <20210712060852.628702165@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,65 +44,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Desaulniers <ndesaulniers@google.com>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-[ Upstream commit 27f2a4db76e8d8a8b601fc1c6a7a17f88bd907ab ]
+commit 26c563731056c3ee66f91106c3078a8c36bb7a9e upstream.
 
-GDB produces the following warning when debugging kernels built with
-CONFIG_RELR:
+With the addition of simple mathematical operations (plus and minus), the
+parsing of the "sym-offset" modifier broke, as it took the '-' part of the
+"sym-offset" as a minus, and tried to break it up into a mathematical
+operation of "field.sym - offset", in which case it failed to parse
+(unless the event had a field called "offset").
 
-BFD: /android0/linux-next/vmlinux: unknown type [0x13] section `.relr.dyn'
+Both .sym and .sym-offset modifiers should not be entered into
+mathematical calculations anyway. If ".sym-offset" is found in the
+modifier, then simply make it not an operation that can be calculated on.
 
-when loading a kernel built with CONFIG_RELR into GDB. It can also
-prevent debugging symbols using such relocations.
+Link: https://lkml.kernel.org/r/20210707110821.188ae255@oasis.local.home
 
-Peter sugguests:
-  [That flag] means that lld will use dynamic tags and section type
-  numbers in the OS-specific range rather than the generic range. The
-  kernel itself doesn't care about these numbers; it determines the
-  location of the RELR section using symbols defined by a linker script.
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc: stable@vger.kernel.org
+Fixes: 100719dcef447 ("tracing: Add simple expression support to hist triggers")
+Reviewed-by: Tom Zanussi <zanussi@kernel.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/1057
-Suggested-by: Peter Collingbourne <pcc@google.com>
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Link: https://lore.kernel.org/r/20210522012626.2811297-1-ndesaulniers@google.com
-Signed-off-by: Will Deacon <will@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Makefile                      | 2 +-
- scripts/tools-support-relr.sh | 3 ++-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ kernel/trace/trace_events_hist.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/Makefile b/Makefile
-index bf6accb2328c..6682790891df 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1006,7 +1006,7 @@ LDFLAGS_vmlinux	+= $(call ld-option, -X,)
- endif
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -1539,6 +1539,13 @@ static int contains_operator(char *str)
  
- ifeq ($(CONFIG_RELR),y)
--LDFLAGS_vmlinux	+= --pack-dyn-relocs=relr
-+LDFLAGS_vmlinux	+= --pack-dyn-relocs=relr --use-android-relr-tags
- endif
- 
- # We never want expected sections to be placed heuristically by the
-diff --git a/scripts/tools-support-relr.sh b/scripts/tools-support-relr.sh
-index 45e8aa360b45..cb55878bd5b8 100755
---- a/scripts/tools-support-relr.sh
-+++ b/scripts/tools-support-relr.sh
-@@ -7,7 +7,8 @@ trap "rm -f $tmp_file.o $tmp_file $tmp_file.bin" EXIT
- cat << "END" | $CC -c -x c - -o $tmp_file.o >/dev/null 2>&1
- void *p = &p;
- END
--$LD $tmp_file.o -shared -Bsymbolic --pack-dyn-relocs=relr -o $tmp_file
-+$LD $tmp_file.o -shared -Bsymbolic --pack-dyn-relocs=relr \
-+  --use-android-relr-tags -o $tmp_file
- 
- # Despite printing an error message, GNU nm still exits with exit code 0 if it
- # sees a relr section. So we need to check that nothing is printed to stderr.
--- 
-2.30.2
-
+ 	switch (*op) {
+ 	case '-':
++		/*
++		 * Unfortunately, the modifier ".sym-offset"
++		 * can confuse things.
++		 */
++		if (op - str >= 4 && !strncmp(op - 4, ".sym-offset", 11))
++			return FIELD_OP_NONE;
++
+ 		if (*str == '-')
+ 			field_op = FIELD_OP_UNARY_MINUS;
+ 		else
 
 
