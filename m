@@ -2,210 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D741A3C41E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 05:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E48063C4161
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 05:08:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233221AbhGLDdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 23:33:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233163AbhGLDdS (ORCPT
+        id S232507AbhGLDKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 23:10:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41109 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230022AbhGLDKo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 23:33:18 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7D6AC0613DD;
-        Sun, 11 Jul 2021 20:30:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=QppBEjJOd9S9i24W0jyMfnkJ2MJcu4xUr4PtAGp1vD8=; b=h7IbbDCdGALRz0YRIiUhteZ4Y2
-        ldgUNMvyEKxBNTI4zLIwp72kZRnIokrUcKT219qgLqKjd+RcXZEwyEpdrdjxtQd+iarLr3XjuU6hc
-        023B4jeB2KV4CZOv172QggyBTxhC4SD7FOYUbgb/JxYtwkpgb+8e3tk7uSPywSPKF+RPLYmFEjZl1
-        qWHB+JixACrsnhVrVAPFuzOV/eIFhlXDygd+mTVk2oJBOMOJ7iVKJzKj0hdOZbR4K89Iy74fJMDFP
-        +QH/1baPQRZzfg1hpY4VR6Jk4f2fuLkTaZv+gSKvMraNJTOzIIoPZ323AYSANY839p/HNuxabXJfe
-        2xAZsgcA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m2mdU-00GoNq-Oq; Mon, 12 Jul 2021 03:29:41 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH v13 042/137] mm/memcg: Convert mem_cgroup_uncharge() to take a folio
-Date:   Mon, 12 Jul 2021 04:05:26 +0100
-Message-Id: <20210712030701.4000097-43-willy@infradead.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210712030701.4000097-1-willy@infradead.org>
-References: <20210712030701.4000097-1-willy@infradead.org>
+        Sun, 11 Jul 2021 23:10:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626059275;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DigXiH/LTULD0RvNd551qqlSUUAL5xHAN7DKU/yDOVs=;
+        b=QPXxG3OyZXCbZI8aUNQ0sU+1eQG2yB8FZ4MnKwvOpkJLmCfQcjiE4lTiiN4cqYlF3AoA85
+        m8D8HIo0PU2TYYQ9S/5WERlc20BQrjE4aEQ2VdS3pMv/Cl8KX0Xq5aiHl9HO6889psQkdP
+        sETKkWZkh9kpEfjH9tvk15k28msHAJM=
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
+ [209.85.215.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-512-NKfHzTfxNDyTSDekY_3r5A-1; Sun, 11 Jul 2021 23:07:54 -0400
+X-MC-Unique: NKfHzTfxNDyTSDekY_3r5A-1
+Received: by mail-pg1-f197.google.com with SMTP id y1-20020a655b410000b02902235977d00cso13637708pgr.21
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 20:07:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=DigXiH/LTULD0RvNd551qqlSUUAL5xHAN7DKU/yDOVs=;
+        b=Z7uajVHZWgGX7nv1OqBr5gXuNvklCLG2selAl+nQ9+cpIjR4FvyZNT7UsVwZ0ltMpS
+         BoscUO9yUEsq4zzTNwFJqIQrifk0Vpn4ZXXXnw3dc+GiJI0mKfAOtLgDwYUh3bOjQRgL
+         H682GKYKmLoUbd/tyWXfk4MMgmwQiSASZj0vnUH6eErNutz/QFjnWoNK/lO9wW+/YIX/
+         Q0tgrhla/1IvyfY4GlItd8E76bP41tnBeWY8//22bN5QDo/Skx0yU/kNWg3ZVbN4/sGa
+         p9VmZVbmnuB5nhh1JBYUMFP3PeySuo2OVCJf3bfEUGbwv7nkcQJ3sQhnj21jzTf/C2Dv
+         kEgg==
+X-Gm-Message-State: AOAM533r1XCOFcjJJ2ftwB80MmdIdWGYsowJzGbJscEdW1R6ynREoWpi
+        Cshx9oSwYBQLLpvvbjQ31Bj/zuECgFWIoz0wvSY0CcE9qOoRDH9iRqaoo2Wp04I23kcz+IMc8Ww
+        jd+X5FDZEkG/dZKwTi342y5O5
+X-Received: by 2002:a17:902:7489:b029:129:c0d3:96ca with SMTP id h9-20020a1709027489b0290129c0d396camr23766930pll.46.1626059273335;
+        Sun, 11 Jul 2021 20:07:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxESf9PbVdwF/2IJoYJMIgdbQYf4I6nxhfXcDxjtsXifXfkOeknetHp4Hd3RPbbf5QVI0UF5A==
+X-Received: by 2002:a17:902:7489:b029:129:c0d3:96ca with SMTP id h9-20020a1709027489b0290129c0d396camr23766914pll.46.1626059273074;
+        Sun, 11 Jul 2021 20:07:53 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id j15sm11693382pjl.15.2021.07.11.20.07.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 11 Jul 2021 20:07:52 -0700 (PDT)
+Subject: Re: [RFC PATCH V2 0/7] Do not read from descripto ring
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, xieyongji@bytedance.com,
+        stefanha@redhat.com, file@sect.tu-berlin.de, ashish.kalra@amd.com,
+        konrad.wilk@oracle.com, kvm@vger.kernel.org
+References: <20210423080942.2997-1-jasowang@redhat.com>
+ <0e9d70b7-6c8a-4ff5-1fa9-3c4f04885bb8@redhat.com>
+ <20210506041057-mutt-send-email-mst@kernel.org>
+ <20210506123829.GA403858@infradead.org>
+ <20210514063516-mutt-send-email-mst@kernel.org>
+ <8bf22db2-97d4-9f88-8b6b-d685fd63ac8b@redhat.com>
+ <20210711120627-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <e2b4c614-746f-e81b-bb0b-d84f0efd381f@redhat.com>
+Date:   Mon, 12 Jul 2021 11:07:44 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210711120627-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert all the callers to call page_folio().  Most of them were already
-using a head page, but a few of them I can't prove were, so this may
-actually fix a bug.
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
----
- include/linux/memcontrol.h |  4 ++--
- mm/filemap.c               |  2 +-
- mm/khugepaged.c            |  4 ++--
- mm/memcontrol.c            | 14 +++++++-------
- mm/memory-failure.c        |  2 +-
- mm/memremap.c              |  2 +-
- mm/page_alloc.c            |  2 +-
- mm/swap.c                  |  2 +-
- 8 files changed, 16 insertions(+), 16 deletions(-)
+在 2021/7/12 上午12:08, Michael S. Tsirkin 写道:
+> On Fri, Jun 04, 2021 at 01:38:01PM +0800, Jason Wang wrote:
+>> 在 2021/5/14 下午7:13, Michael S. Tsirkin 写道:
+>>> On Thu, May 06, 2021 at 01:38:29PM +0100, Christoph Hellwig wrote:
+>>>> On Thu, May 06, 2021 at 04:12:17AM -0400, Michael S. Tsirkin wrote:
+>>>>> Let's try for just a bit, won't make this window anyway:
+>>>>>
+>>>>> I have an old idea. Add a way to find out that unmap is a nop
+>>>>> (or more exactly does not use the address/length).
+>>>>> Then in that case even with DMA API we do not need
+>>>>> the extra data. Hmm?
+>>>> So we actually do have a check for that from the early days of the DMA
+>>>> API, but it only works at compile time: CONFIG_NEED_DMA_MAP_STATE.
+>>>>
+>>>> But given how rare configs without an iommu or swiotlb are these days
+>>>> it has stopped to be very useful.  Unfortunately a runtime-version is
+>>>> not entirely trivial, but maybe if we allow for false positives we
+>>>> could do something like this
+>>>>
+>>>> bool dma_direct_need_state(struct device *dev)
+>>>> {
+>>>> 	/* some areas could not be covered by any map at all */
+>>>> 	if (dev->dma_range_map)
+>>>> 		return false;
+>>>> 	if (force_dma_unencrypted(dev))
+>>>> 		return false;
+>>>> 	if (dma_direct_need_sync(dev))
+>>>> 		return false;
+>>>> 	return *dev->dma_mask == DMA_BIT_MASK(64);
+>>>> }
+>>>>
+>>>> bool dma_need_state(struct device *dev)
+>>>> {
+>>>> 	const struct dma_map_ops *ops = get_dma_ops(dev);
+>>>>
+>>>> 	if (dma_map_direct(dev, ops))
+>>>> 		return dma_direct_need_state(dev);
+>>>> 	return ops->unmap_page ||
+>>>> 		ops->sync_single_for_cpu || ops->sync_single_for_device;
+>>>> }
+>>> Yea that sounds like a good idea. We will need to document that.
+>>>
+>>>
+>>> Something like:
+>>>
+>>> /*
+>>>    * dma_need_state - report whether unmap calls use the address and length
+>>>    * @dev: device to guery
+>>>    *
+>>>    * This is a runtime version of CONFIG_NEED_DMA_MAP_STATE.
+>>>    *
+>>>    * Return the value indicating whether dma_unmap_* and dma_sync_* calls for the device
+>>>    * use the DMA state parameters passed to them.
+>>>    * The DMA state parameters are: scatter/gather list/table, address and
+>>>    * length.
+>>>    *
+>>>    * If dma_need_state returns false then DMA state parameters are
+>>>    * ignored by all dma_unmap_* and dma_sync_* calls, so it is safe to pass 0 for
+>>>    * address and length, and DMA_UNMAP_SG_TABLE_INVALID and
+>>>    * DMA_UNMAP_SG_LIST_INVALID for s/g table and length respectively.
+>>>    * If dma_need_state returns true then DMA state might
+>>>    * be used and so the actual values are required.
+>>>    */
+>>>
+>>> And we will need DMA_UNMAP_SG_TABLE_INVALID and
+>>> DMA_UNMAP_SG_LIST_INVALID as pointers to an empty global table and list
+>>> for calls such as dma_unmap_sgtable that dereference pointers before checking
+>>> they are used.
+>>>
+>>>
+>>> Does this look good?
+>>>
+>>> The table/length variants are for consistency, virtio specifically does
+>>> not use s/g at the moment, but it seems nicer than leaving
+>>> users wonder what to do about these.
+>>>
+>>> Thoughts? Jason want to try implementing?
+>>
+>> I can add it in my todo list other if other people are interested in this,
+>> please let us know.
+>>
+>> But this is just about saving the efforts of unmap and it doesn't eliminate
+>> the necessary of using private memory (addr, length) for the metadata for
+>> validating the device inputs.
+>
+> Besides unmap, why do we need to validate address?
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index ce250303d3a5..11486ef4776e 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -709,7 +709,7 @@ int mem_cgroup_swapin_charge_page(struct page *page, struct mm_struct *mm,
- 				  gfp_t gfp, swp_entry_t entry);
- void mem_cgroup_swapin_uncharge_swap(swp_entry_t entry);
- 
--void mem_cgroup_uncharge(struct page *page);
-+void mem_cgroup_uncharge(struct folio *folio);
- void mem_cgroup_uncharge_list(struct list_head *page_list);
- 
- void mem_cgroup_migrate(struct page *oldpage, struct page *newpage);
-@@ -1201,7 +1201,7 @@ static inline void mem_cgroup_swapin_uncharge_swap(swp_entry_t entry)
- {
- }
- 
--static inline void mem_cgroup_uncharge(struct page *page)
-+static inline void mem_cgroup_uncharge(struct folio *folio)
- {
- }
- 
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 44498bfe7b45..b8be62793316 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -923,7 +923,7 @@ noinline int __add_to_page_cache_locked(struct page *page,
- 	if (xas_error(&xas)) {
- 		error = xas_error(&xas);
- 		if (charged)
--			mem_cgroup_uncharge(page);
-+			mem_cgroup_uncharge(page_folio(page));
- 		goto error;
- 	}
- 
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 8f6d7fdea9f4..6b9c98ddcd09 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -1211,7 +1211,7 @@ static void collapse_huge_page(struct mm_struct *mm,
- 	mmap_write_unlock(mm);
- out_nolock:
- 	if (!IS_ERR_OR_NULL(*hpage))
--		mem_cgroup_uncharge(*hpage);
-+		mem_cgroup_uncharge(page_folio(*hpage));
- 	trace_mm_collapse_huge_page(mm, isolated, result);
- 	return;
- }
-@@ -1975,7 +1975,7 @@ static void collapse_file(struct mm_struct *mm,
- out:
- 	VM_BUG_ON(!list_empty(&pagelist));
- 	if (!IS_ERR_OR_NULL(*hpage))
--		mem_cgroup_uncharge(*hpage);
-+		mem_cgroup_uncharge(page_folio(*hpage));
- 	/* TODO: tracepoints */
- }
- 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 2436ad3841d8..c787a87a54ff 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -6897,24 +6897,24 @@ static void uncharge_folio(struct folio *folio, struct uncharge_gather *ug)
- }
- 
- /**
-- * mem_cgroup_uncharge - uncharge a page
-- * @page: page to uncharge
-+ * mem_cgroup_uncharge - Uncharge a folio.
-+ * @folio: Folio to uncharge.
-  *
-- * Uncharge a page previously charged with mem_cgroup_charge().
-+ * Uncharge a folio previously charged with folio_charge_cgroup().
-  */
--void mem_cgroup_uncharge(struct page *page)
-+void mem_cgroup_uncharge(struct folio *folio)
- {
- 	struct uncharge_gather ug;
- 
- 	if (mem_cgroup_disabled())
- 		return;
- 
--	/* Don't touch page->lru of any random page, pre-check: */
--	if (!page_memcg(page))
-+	/* Don't touch folio->lru of any random page, pre-check: */
-+	if (!folio_memcg(folio))
- 		return;
- 
- 	uncharge_gather_clear(&ug);
--	uncharge_folio(page_folio(page), &ug);
-+	uncharge_folio(folio, &ug);
- 	uncharge_batch(&ug);
- }
- 
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index eefd823deb67..9ae7a57a4cc0 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -763,7 +763,7 @@ static int delete_from_lru_cache(struct page *p)
- 		 * Poisoned page might never drop its ref count to 0 so we have
- 		 * to uncharge it manually from its memcg.
- 		 */
--		mem_cgroup_uncharge(p);
-+		mem_cgroup_uncharge(page_folio(p));
- 
- 		/*
- 		 * drop the page count elevated by isolate_lru_page()
-diff --git a/mm/memremap.c b/mm/memremap.c
-index 15a074ffb8d7..6eac40f9f62a 100644
---- a/mm/memremap.c
-+++ b/mm/memremap.c
-@@ -508,7 +508,7 @@ void free_devmap_managed_page(struct page *page)
- 
- 	__ClearPageWaiters(page);
- 
--	mem_cgroup_uncharge(page);
-+	mem_cgroup_uncharge(page_folio(page));
- 
- 	/*
- 	 * When a device_private page is freed, the page->mapping field
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 3b97e17806be..d72a0d9d4184 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -726,7 +726,7 @@ static inline void free_the_page(struct page *page, unsigned int order)
- 
- void free_compound_page(struct page *page)
- {
--	mem_cgroup_uncharge(page);
-+	mem_cgroup_uncharge(page_folio(page));
- 	free_the_page(page, compound_order(page));
- }
- 
-diff --git a/mm/swap.c b/mm/swap.c
-index 6d4696eb2d43..b28c76a2e955 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -94,7 +94,7 @@ static void __page_cache_release(struct page *page)
- static void __put_single_page(struct page *page)
- {
- 	__page_cache_release(page);
--	mem_cgroup_uncharge(page);
-+	mem_cgroup_uncharge(page_folio(page));
- 	free_unref_page(page, 0);
- }
- 
--- 
-2.30.2
+
+Sorry, it's not validating actually, the driver doesn't do any 
+validation. As the subject, the driver will just use the metadata stored 
+in the desc_state instead of the one stored in the descriptor ring.
+
+
+>   length can be
+> typically validated by specific drivers - not all of them even use it ..
+>
+>> And just to clarify, the slight regression we see is testing without
+>> VIRTIO_F_ACCESS_PLATFORM which means DMA API is not used.
+> I guess this is due to extra cache pressure?
+
+
+Yes.
+
+
+> Maybe create yet another
+> array just for DMA state ...
+
+
+I'm not sure I get this, we use this basically:
+
+struct vring_desc_extra {
+         dma_addr_t addr;                /* Buffer DMA addr. */
+         u32 len;                        /* Buffer length. */
+         u16 flags;                      /* Descriptor flags. */
+         u16 next;                       /* The next desc state in a 
+list. */
+};
+
+Except for the "next" the rest are all DMA state.
+
+Thanks
+
+
+>
+>> So I will go to post a formal version of this series and we can start from
+>> there.
+>>
+>> Thanks
+>>
+>>
 
