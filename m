@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FE113C517B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 285053C4BA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348911AbhGLHl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:41:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45272 "EHLO mail.kernel.org"
+        id S236822AbhGLG6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:58:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37274 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244490AbhGLHKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:10:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B5046052B;
-        Mon, 12 Jul 2021 07:08:05 +0000 (UTC)
+        id S236432AbhGLGm7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:42:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2427861156;
+        Mon, 12 Jul 2021 06:39:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073685;
-        bh=+i3+4hrDKdKfcpUgVB4gwBBcbk7Iyuv/9hrJvYtkh6g=;
+        s=korg; t=1626071955;
+        bh=kWOfd1N3ui5svEipl7oe2E1XKOu/gCzc/HLJLKwaHe4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LwbXPbBNrRHIhg2dquHqf7DnQXIy3B0W3+DrjAusNgb3Izf+b11jEFVUbVfUKxbG1
-         1GE7B33yvLLVImCO7qrJQrKl2xaAHYoKZMCeJjiqmTz9ti37P6w1ehp2KG41HMevMi
-         SIiUW5Gh0ipqy7OyjMXY2PxeAawcbWpMD57wh030=
+        b=Pj4FMzN6YBmv71dASA0hC9aHMgXCCWX+m1bto/cpm68rdiI3Y7NnN9Up9EkElqzXR
+         VgloXemUsQVSR1sCYTo9vZ+yBQEJ+RQY+lTU4mUVAjzLu+hWhg42v9+XGlhhHtZx2W
+         oR8VJKg9xX3JdlW1JCeNzGQd0jp19hbtlsXW3T2M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Christoph Hellwig <hch@lst.de>,
-        John Garry <john.garry@huawei.com>,
-        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org, Dillon Min <dillon.minfei@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 325/700] block: avoid double io accounting for flush request
-Date:   Mon, 12 Jul 2021 08:06:48 +0200
-Message-Id: <20210712061010.954587872@linuxfoundation.org>
+Subject: [PATCH 5.10 249/593] media: s5p-g2d: Fix a memory leak on ctx->fh.m2m_ctx
+Date:   Mon, 12 Jul 2021 08:06:49 +0200
+Message-Id: <20210712060910.316402495@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,50 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ming Lei <ming.lei@redhat.com>
+From: Dillon Min <dillon.minfei@gmail.com>
 
-[ Upstream commit 84da7acc3ba53af26f15c4b0ada446127b7a7836 ]
+[ Upstream commit 5d11e6aad1811ea293ee2996cec9124f7fccb661 ]
 
-For flush request, rq->end_io() may be called two times, one is from
-timeout handling(blk_mq_check_expired()), another is from normal
-completion(__blk_mq_end_request()).
+The m2m_ctx resources was allocated by v4l2_m2m_ctx_init() in g2d_open()
+should be freed from g2d_release() when it's not used.
 
-Move blk_account_io_flush() after flush_rq->ref drops to zero, so
-io accounting can be done just once for flush request.
+Fix it
 
-Fixes: b68663186577 ("block: add iostat counters for flush requests")
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Tested-by: John Garry <john.garry@huawei.com>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Link: https://lore.kernel.org/r/20210511152236.763464-2-ming.lei@redhat.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: 918847341af0 ("[media] v4l: add G2D driver for s5p device family")
+Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-flush.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/media/platform/s5p-g2d/g2d.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/block/blk-flush.c b/block/blk-flush.c
-index 7942ca6ed321..1002f6c58181 100644
---- a/block/blk-flush.c
-+++ b/block/blk-flush.c
-@@ -219,8 +219,6 @@ static void flush_end_io(struct request *flush_rq, blk_status_t error)
- 	unsigned long flags = 0;
- 	struct blk_flush_queue *fq = blk_get_flush_queue(q, flush_rq->mq_ctx);
+diff --git a/drivers/media/platform/s5p-g2d/g2d.c b/drivers/media/platform/s5p-g2d/g2d.c
+index 15bcb7f6e113..1cb5eaabf340 100644
+--- a/drivers/media/platform/s5p-g2d/g2d.c
++++ b/drivers/media/platform/s5p-g2d/g2d.c
+@@ -276,6 +276,9 @@ static int g2d_release(struct file *file)
+ 	struct g2d_dev *dev = video_drvdata(file);
+ 	struct g2d_ctx *ctx = fh2ctx(file->private_data);
  
--	blk_account_io_flush(flush_rq);
--
- 	/* release the tag's ownership to the req cloned from */
- 	spin_lock_irqsave(&fq->mq_flush_lock, flags);
- 
-@@ -230,6 +228,7 @@ static void flush_end_io(struct request *flush_rq, blk_status_t error)
- 		return;
- 	}
- 
-+	blk_account_io_flush(flush_rq);
- 	/*
- 	 * Flush request has to be marked as IDLE when it is really ended
- 	 * because its .end_io() is called from timeout code path too for
++	mutex_lock(&dev->mutex);
++	v4l2_m2m_ctx_release(ctx->fh.m2m_ctx);
++	mutex_unlock(&dev->mutex);
+ 	v4l2_ctrl_handler_free(&ctx->ctrl_handler);
+ 	v4l2_fh_del(&ctx->fh);
+ 	v4l2_fh_exit(&ctx->fh);
 -- 
 2.30.2
 
