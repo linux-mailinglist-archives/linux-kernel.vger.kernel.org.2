@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60BB13C5719
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC863C495C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352552AbhGLI2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:28:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48780 "EHLO mail.kernel.org"
+        id S238763AbhGLGoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:44:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348440AbhGLHlB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:41:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9273B60FF3;
-        Mon, 12 Jul 2021 07:38:12 +0000 (UTC)
+        id S237832AbhGLGey (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:34:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5240461008;
+        Mon, 12 Jul 2021 06:31:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075493;
-        bh=Uh8Cx8R6eJK7PKWsCYdNNZ/zeqIELNIHsJ1mw2YVby4=;
+        s=korg; t=1626071510;
+        bh=M4lXD5PdoEOae9tXQkmDAL0otB9pq6xK1O5bsCfdOwo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bv1+OLLvxDAdF5mCGEi6shV49eUaW/SxRvVtLklEcBMu5ULBg0P2Bvx/hKkPqW7zC
-         ROA2WH71Aq23v08J688jhXNFzhm+hql1Xqzgn9grxWBOq1KD302PsRb8vZDWNtlbPy
-         U9w9MHkmkHJv1APjZ2ijKCt5mysTjFYwWEhpa8DM=
+        b=Jif3f6kqHH8R0ioaRmVy0pv6E+bOi4Az+nux3iO1dURFkkpJjnPWoTSp+GSMf0sLT
+         mdwieC9VpoEzZmqtd6rXNlhuSxcjLDv5cn+LTFojVerYRp5ZHur+LaEO8v+QEXaIIa
+         PVOIUMqyGjy/g8jmSUKgo/iWq0xRa4P1m4aQI6RA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Luke D. Jones" <luke@ljones.dev>,
-        Hans de Goede <hdegoede@redhat.com>,
+        stable@vger.kernel.org,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 237/800] platform/x86: asus-nb-wmi: Revert "Drop duplicate DMI quirk structures"
+Subject: [PATCH 5.10 100/593] spi: Make of_register_spi_device also set the fwnode
 Date:   Mon, 12 Jul 2021 08:04:20 +0200
-Message-Id: <20210712060947.116012165@linuxfoundation.org>
+Message-Id: <20210712060854.215385548@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,113 +41,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luke D. Jones <luke@ljones.dev>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-[ Upstream commit 98c0c85b1040db24f0d04d3e1d315c6c7b05cc07 ]
+[ Upstream commit 0e793ba77c18382f08e440260fe72bc6fce2a3cb ]
 
-This is a preparation revert for reverting the "add support for ASUS ROG
-Zephyrus G14 and G15" change. This reverts
-commit 67186653c903 ("platform/x86: asus-nb-wmi: Drop duplicate DMI quirk
-structures")
+Currently, the SPI core doesn't set the struct device fwnode pointer
+when it creates a new SPI device. This means when the device is
+registered the fwnode is NULL and the check in device_add which sets
+the fwnode->dev pointer is skipped. This wasn't previously an issue,
+however these two patches:
 
-Signed-off-by: Luke D. Jones <luke@ljones.dev>
-Link: https://lore.kernel.org/r/20210419074915.393433-2-luke@ljones.dev
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+commit 4731210c09f5 ("gpiolib: Bind gpio_device to a driver to enable
+fw_devlink=on by default")
+commit ced2af419528 ("gpiolib: Don't probe gpio_device if it's not the
+primary device")
+
+Added some code to the GPIO core which relies on using that
+fwnode->dev pointer to determine if a driver is bound to the fwnode
+and if not bind a stub GPIO driver. This means the GPIO providers
+behind SPI will get both the expected driver and this stub driver
+causing the stub driver to fail if it attempts to request any pin
+configuration. For example on my system:
+
+madera-pinctrl madera-pinctrl: pin gpio5 already requested by madera-pinctrl; cannot claim for gpiochip3
+madera-pinctrl madera-pinctrl: pin-4 (gpiochip3) status -22
+madera-pinctrl madera-pinctrl: could not request pin 4 (gpio5) from group aif1  on device madera-pinctrl
+gpio_stub_drv gpiochip3: Error applying setting, reverse things back
+gpio_stub_drv: probe of gpiochip3 failed with error -22
+
+The firmware node on the device created by the GPIO framework is set
+through the of_node pointer hence things generally actually work,
+however that fwnode->dev is never set, as the check was skipped at
+device_add time. This fix appears to match how the I2C subsystem
+handles the same situation.
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20210421101402.8468-1-ckeepax@opensource.cirrus.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/asus-nb-wmi.c | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+ drivers/spi/spi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/platform/x86/asus-nb-wmi.c b/drivers/platform/x86/asus-nb-wmi.c
-index d41d7ad14be0..b07b1288346e 100644
---- a/drivers/platform/x86/asus-nb-wmi.c
-+++ b/drivers/platform/x86/asus-nb-wmi.c
-@@ -110,7 +110,12 @@ static struct quirk_entry quirk_asus_forceals = {
- 	.wmi_force_als_set = true,
- };
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 0cf67de741e7..bd8b1f79dce2 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -2050,6 +2050,7 @@ of_register_spi_device(struct spi_controller *ctlr, struct device_node *nc)
+ 	/* Store a pointer to the node in the device structure */
+ 	of_node_get(nc);
+ 	spi->dev.of_node = nc;
++	spi->dev.fwnode = of_fwnode_handle(nc);
  
--static struct quirk_entry quirk_asus_vendor_backlight = {
-+static struct quirk_entry quirk_asus_ga401i = {
-+	.wmi_backlight_power = true,
-+	.wmi_backlight_set_devstate = true,
-+};
-+
-+static struct quirk_entry quirk_asus_ga502i = {
- 	.wmi_backlight_power = true,
- 	.wmi_backlight_set_devstate = true,
- };
-@@ -432,7 +437,7 @@ static const struct dmi_system_id asus_quirks[] = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "GA401IH"),
- 		},
--		.driver_data = &quirk_asus_vendor_backlight,
-+		.driver_data = &quirk_asus_ga401i,
- 	},
- 	{
- 		.callback = dmi_matched,
-@@ -441,7 +446,7 @@ static const struct dmi_system_id asus_quirks[] = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "GA401II"),
- 		},
--		.driver_data = &quirk_asus_vendor_backlight,
-+		.driver_data = &quirk_asus_ga401i,
- 	},
- 	{
- 		.callback = dmi_matched,
-@@ -450,7 +455,7 @@ static const struct dmi_system_id asus_quirks[] = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "GA401IU"),
- 		},
--		.driver_data = &quirk_asus_vendor_backlight,
-+		.driver_data = &quirk_asus_ga401i,
- 	},
- 	{
- 		.callback = dmi_matched,
-@@ -459,7 +464,7 @@ static const struct dmi_system_id asus_quirks[] = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "GA401IV"),
- 		},
--		.driver_data = &quirk_asus_vendor_backlight,
-+		.driver_data = &quirk_asus_ga401i,
- 	},
- 	{
- 		.callback = dmi_matched,
-@@ -468,7 +473,7 @@ static const struct dmi_system_id asus_quirks[] = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "GA401IVC"),
- 		},
--		.driver_data = &quirk_asus_vendor_backlight,
-+		.driver_data = &quirk_asus_ga401i,
- 	},
- 		{
- 		.callback = dmi_matched,
-@@ -477,7 +482,7 @@ static const struct dmi_system_id asus_quirks[] = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "GA502II"),
- 		},
--		.driver_data = &quirk_asus_vendor_backlight,
-+		.driver_data = &quirk_asus_ga502i,
- 	},
- 	{
- 		.callback = dmi_matched,
-@@ -486,7 +491,7 @@ static const struct dmi_system_id asus_quirks[] = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "GA502IU"),
- 		},
--		.driver_data = &quirk_asus_vendor_backlight,
-+		.driver_data = &quirk_asus_ga502i,
- 	},
- 	{
- 		.callback = dmi_matched,
-@@ -495,7 +500,7 @@ static const struct dmi_system_id asus_quirks[] = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "GA502IV"),
- 		},
--		.driver_data = &quirk_asus_vendor_backlight,
-+		.driver_data = &quirk_asus_ga502i,
- 	},
- 	{
- 		.callback = dmi_matched,
+ 	/* Register the new device */
+ 	rc = spi_add_device(spi);
 -- 
 2.30.2
 
