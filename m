@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50F913C4C22
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:38:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 927E63C5846
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242505AbhGLHBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:01:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41512 "EHLO mail.kernel.org"
+        id S1378773AbhGLIof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:44:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239166AbhGLGov (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:44:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B551E610FA;
-        Mon, 12 Jul 2021 06:40:57 +0000 (UTC)
+        id S1351850AbhGLHwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:52:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3894061152;
+        Mon, 12 Jul 2021 07:49:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072058;
-        bh=mBgzwyj7ZM5WmEEeakFaGA+cOsdmdVf8D7zkY4u8UqE=;
+        s=korg; t=1626076160;
+        bh=cFUBcCT2mkVPvTne/BvjoYfPQ7E242JQG1yRU1Typcw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KWxQBHmRZ9dIVLx1zfWBkXf+Lo/amA8mgZKxosljbceGlKUfmerym9o+3Wbpj2TF1
-         2duawdf4BtTasGFj1w6EGDMPM4QhbJIXjdwuW7utb0a5YJiS0Owo8kVe/a1MZmzNlo
-         HHzcwqRF8/aYaRDg8QdqfnFve6afQEm3AH4IJVWs=
+        b=MQz884MT7KstR8+DJ2VxndrgvTqN+zGj3cwn1i3O3pqIJ4JG9yXbhgjD1idGtkbvE
+         lvevBitlMxliOdbndBDD8Ao+s1E3TbUVSTDi5Xrv5Qn/QovQ2ddgOsiESPEPx2QVhQ
+         yJ1jaDiHIi1IwPa+d8HO2DnlFCma09MebGGJFJnw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yi Zhang <yi.zhang@redhat.com>,
-        Kamal Heib <kamalheib1@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 334/593] RDMA/rxe: Fix failure during driver load
+Subject: [PATCH 5.13 471/800] wil6210: remove erroneous wiphy locking
 Date:   Mon, 12 Jul 2021 08:08:14 +0200
-Message-Id: <20210712060922.615631773@linuxfoundation.org>
+Message-Id: <20210712061017.276696191@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,56 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kamal Heib <kamalheib1@gmail.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 32a25f2ea690dfaace19f7a3a916f5d7e1ddafe8 ]
+[ Upstream commit 8f78caa2264ece71c2e207cba023f28ab6665138 ]
 
-To avoid the following failure when trying to load the rdma_rxe module
-while IPv6 is disabled, add a check for EAFNOSUPPORT and ignore the
-failure, also delete the needless debug print from rxe_setup_udp_tunnel().
+We already hold the wiphy lock in all cases when we get
+here, so this would deadlock, remove the erroneous locking.
 
-$ modprobe rdma_rxe
-modprobe: ERROR: could not insert 'rdma_rxe': Operation not permitted
-
-Fixes: dfdd6158ca2c ("IB/rxe: Fix kernel panic in udp_setup_tunnel")
-Link: https://lore.kernel.org/r/20210603090112.36341-1-kamalheib1@gmail.com
-Reported-by: Yi Zhang <yi.zhang@redhat.com>
-Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: a05829a7222e ("cfg80211: avoid holding the RTNL when calling the driver")
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210426212929.83f1de07c2cd.I630a2a00eff185ba0452324b3d3f645e01128a95@changeid
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/sw/rxe/rxe_net.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/wil6210/cfg80211.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-index bce44502ab0e..c071d5b1b85a 100644
---- a/drivers/infiniband/sw/rxe/rxe_net.c
-+++ b/drivers/infiniband/sw/rxe/rxe_net.c
-@@ -212,10 +212,8 @@ static struct socket *rxe_setup_udp_tunnel(struct net *net, __be16 port,
- 
- 	/* Create UDP socket */
- 	err = udp_sock_create(net, &udp_cfg, &sock);
--	if (err < 0) {
--		pr_err("failed to create udp socket. err = %d\n", err);
-+	if (err < 0)
- 		return ERR_PTR(err);
--	}
- 
- 	tnl_cfg.encap_type = 1;
- 	tnl_cfg.encap_rcv = rxe_udp_encap_recv;
-@@ -616,6 +614,12 @@ static int rxe_net_ipv6_init(void)
- 
- 	recv_sockets.sk6 = rxe_setup_udp_tunnel(&init_net,
- 						htons(ROCE_V2_UDP_DPORT), true);
-+	if (PTR_ERR(recv_sockets.sk6) == -EAFNOSUPPORT) {
-+		recv_sockets.sk6 = NULL;
-+		pr_warn("IPv6 is not supported, can not create a UDPv6 socket\n");
-+		return 0;
-+	}
-+
- 	if (IS_ERR(recv_sockets.sk6)) {
- 		recv_sockets.sk6 = NULL;
- 		pr_err("Failed to create IPv6 UDP tunnel\n");
+diff --git a/drivers/net/wireless/ath/wil6210/cfg80211.c b/drivers/net/wireless/ath/wil6210/cfg80211.c
+index 6746fd206d2a..1ff2679963f0 100644
+--- a/drivers/net/wireless/ath/wil6210/cfg80211.c
++++ b/drivers/net/wireless/ath/wil6210/cfg80211.c
+@@ -2842,9 +2842,7 @@ void wil_p2p_wdev_free(struct wil6210_priv *wil)
+ 	wil->radio_wdev = wil->main_ndev->ieee80211_ptr;
+ 	mutex_unlock(&wil->vif_mutex);
+ 	if (p2p_wdev) {
+-		wiphy_lock(wil->wiphy);
+ 		cfg80211_unregister_wdev(p2p_wdev);
+-		wiphy_unlock(wil->wiphy);
+ 		kfree(p2p_wdev);
+ 	}
+ }
 -- 
 2.30.2
 
