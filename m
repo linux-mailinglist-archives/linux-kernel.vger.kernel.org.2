@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA5743C4AF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:36:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F22D83C5163
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241370AbhGLGy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:54:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34676 "EHLO mail.kernel.org"
+        id S1348032AbhGLHkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:40:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238418AbhGLGkM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:40:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A05A061006;
-        Mon, 12 Jul 2021 06:37:14 +0000 (UTC)
+        id S244026AbhGLHKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:10:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21DDF61364;
+        Mon, 12 Jul 2021 07:05:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071835;
-        bh=x4q9kmvq9nqyUlYiOSJrp5tB/OT/G8mhZiC8JTjfEGA=;
+        s=korg; t=1626073550;
+        bh=cPpVpS6dsP0jzT29/RcnOppK5dDvUL+nBE4EfowLhxg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kdHZtYQuWZAIqQTA5TO3G8Hu7NgQZNw5OheYxGqJDoqV4BvEcK+Kc3NGaYyHV9S/k
-         cjkvbHlaloipJ1P1YIzL5TUJApk3JtnoYB4pdQEl98YYloNWm3poPMEL3BfOeaiVDx
-         thsUrqv9i5EtlII+uJCnEBoyllkaVAEHcd+vj6kU=
+        b=Gz2WmGRGmIjooD8glps6S/1ZcGhBWT2ueAFrINuAHoQvkU1dqklPefQHx6awS/jRu
+         kT9VGVObJqWdembCrgFnPwN4j9LmhmsisbirUPTJnM6vhca1hJvYQ2MRCKGCsnlcSz
+         obu+CkHn0H8xTTdqtOOmAUf5gTzOhy5QSx5pG0yY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Steve French <stfrench@microsoft.com>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 203/593] cifs: fix missing spinlock around update to ses->status
+Subject: [PATCH 5.12 280/700] m68k: atari: Fix ATARI_KBD_CORE kconfig unmet dependency warning
 Date:   Mon, 12 Jul 2021 08:06:03 +0200
-Message-Id: <20210712060905.339334582@linuxfoundation.org>
+Message-Id: <20210712061006.031743048@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,61 +42,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steve French <stfrench@microsoft.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 0060a4f28a9ef45ae8163c0805e944a2b1546762 ]
+[ Upstream commit c1367ee016e3550745315fb9a2dd1e4ce02cdcf6 ]
 
-In the other places where we update ses->status we protect the
-updates via GlobalMid_Lock. So to be consistent add the same
-locking around it in cifs_put_smb_ses where it was missing.
+Since the code for ATARI_KBD_CORE does not use drivers/input/keyboard/
+code, just move ATARI_KBD_CORE to arch/m68k/Kconfig.machine to remove
+the dependency on INPUT_KEYBOARD.
 
-Addresses-Coverity: 1268904 ("Data race condition")
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Removes this kconfig warning:
+
+    WARNING: unmet direct dependencies detected for ATARI_KBD_CORE
+      Depends on [n]: !UML && INPUT [=y] && INPUT_KEYBOARD [=n]
+      Selected by [y]:
+      - MOUSE_ATARI [=y] && !UML && INPUT [=y] && INPUT_MOUSE [=y] && ATARI [=y]
+
+Fixes: c04cb856e20a ("m68k: Atari keyboard and mouse support.")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Suggested-by: Michael Schmitz <schmitzmic@gmail.com>
+Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Link: https://lore.kernel.org/r/20210527001251.8529-1-rdunlap@infradead.org
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/cifsglob.h | 3 ++-
- fs/cifs/connect.c  | 5 ++++-
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ arch/m68k/Kconfig.machine      | 3 +++
+ drivers/input/keyboard/Kconfig | 3 ---
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/cifs/cifsglob.h b/fs/cifs/cifsglob.h
-index 248ee81e0151..6599069be690 100644
---- a/fs/cifs/cifsglob.h
-+++ b/fs/cifs/cifsglob.h
-@@ -979,7 +979,7 @@ struct cifs_ses {
- 	struct mutex session_mutex;
- 	struct TCP_Server_Info *server;	/* pointer to server info */
- 	int ses_count;		/* reference counter */
--	enum statusEnum status;
-+	enum statusEnum status;  /* updates protected by GlobalMid_Lock */
- 	unsigned overrideSecFlg;  /* if non-zero override global sec flags */
- 	char *serverOS;		/* name of operating system underlying server */
- 	char *serverNOS;	/* name of network operating system of server */
-@@ -1863,6 +1863,7 @@ require use of the stronger protocol */
-  *	list operations on pending_mid_q and oplockQ
-  *      updates to XID counters, multiplex id  and SMB sequence numbers
-  *      list operations on global DnotifyReqList
-+ *      updates to ses->status
-  *  tcp_ses_lock protects:
-  *	list operations on tcp and SMB session lists
-  *  tcon->open_file_lock protects the list of open files hanging off the tcon
-diff --git a/fs/cifs/connect.c b/fs/cifs/connect.c
-index aabaebd1535f..fb7088d57e46 100644
---- a/fs/cifs/connect.c
-+++ b/fs/cifs/connect.c
-@@ -2829,9 +2829,12 @@ void cifs_put_smb_ses(struct cifs_ses *ses)
- 		spin_unlock(&cifs_tcp_ses_lock);
- 		return;
- 	}
-+	spin_unlock(&cifs_tcp_ses_lock);
+diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
+index 4d59ec2f5b8d..d964c1f27399 100644
+--- a/arch/m68k/Kconfig.machine
++++ b/arch/m68k/Kconfig.machine
+@@ -25,6 +25,9 @@ config ATARI
+ 	  this kernel on an Atari, say Y here and browse the material
+ 	  available in <file:Documentation/m68k>; otherwise say N.
+ 
++config ATARI_KBD_CORE
++	bool
 +
-+	spin_lock(&GlobalMid_Lock);
- 	if (ses->status == CifsGood)
- 		ses->status = CifsExiting;
--	spin_unlock(&cifs_tcp_ses_lock);
-+	spin_unlock(&GlobalMid_Lock);
+ config MAC
+ 	bool "Macintosh support"
+ 	depends on MMU
+diff --git a/drivers/input/keyboard/Kconfig b/drivers/input/keyboard/Kconfig
+index 32d15809ae58..40a070a2e7f5 100644
+--- a/drivers/input/keyboard/Kconfig
++++ b/drivers/input/keyboard/Kconfig
+@@ -67,9 +67,6 @@ config KEYBOARD_AMIGA
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called amikbd.
  
- 	cifs_free_ipc(ses);
- 
+-config ATARI_KBD_CORE
+-	bool
+-
+ config KEYBOARD_APPLESPI
+ 	tristate "Apple SPI keyboard and trackpad"
+ 	depends on ACPI && EFI
 -- 
 2.30.2
 
