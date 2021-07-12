@@ -2,101 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 529083C65FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 00:07:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 002AB3C6654
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Jul 2021 00:21:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231868AbhGLWKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 18:10:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45416 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231252AbhGLWKh (ORCPT
+        id S230200AbhGLWY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 18:24:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229725AbhGLWY2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 18:10:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626127667;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rC1yUGWBvIID360PWaPb4pUccgpGiNBVKC/0HCxB0ds=;
-        b=MjQO2+Jp8Ah08jSRxzsQgdN0aSxDN2DpMYdUxFiDNgf60VKQjMIhnZgNaKRKirfj+kNuQV
-        34FV8/ZM7TeS33oiA3Rw1XIQM243bKiatbJE8t9TIinZMjzjoHxxl7A9wdRufPlPrZwqXu
-        mYtfEA71iE9qbIVpr/5IBluOPmMbcRg=
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
- [209.85.167.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-158-sjmKSQbZPkOXeO8_Cmhfzw-1; Mon, 12 Jul 2021 18:07:46 -0400
-X-MC-Unique: sjmKSQbZPkOXeO8_Cmhfzw-1
-Received: by mail-oi1-f199.google.com with SMTP id l189-20020acabbc60000b02901f566a77bb8so14016287oif.7
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 15:07:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rC1yUGWBvIID360PWaPb4pUccgpGiNBVKC/0HCxB0ds=;
-        b=PYCgjaIyU5WwLZcAgOBdKF+8svCzV5Pf6OflxEGky/mMctQhwbHXaaJnV9Sz59MVM+
-         1GNep6BXCHucqufo8lB6+uY35wPMtzqDDodNPg4O9DYmJpor3VP3LS6KBj4xnVNZa4dC
-         y3m74vkBBExB5doNDPQWG0DJ94wLFwqQBReHtgnLPMclB2pfMMLADmeww0gVlsGXQhvX
-         kkIvUbHTk6/8ZRy5/zdA3DGLJimBsXp84Wkckk2CbYZRLqnRZW9yKx/igSx6ncyN31S+
-         BF7oxnqN9yguYA3KU8E3xANGHNhr6DG4+gWIaQAt0QTzTXCu8XEkVXjIf0wzDH9MoUqa
-         XtAg==
-X-Gm-Message-State: AOAM533cZ7IEa8ZazL1ncKbnVsZStZGXbgXj4IHU/Y9nX6dW/XNweBcJ
-        8fCcy4pKuBznblB73Tm8YFjx6nk9irHTOCaUPnEY9hHkPxYsBllA+t05kTqyQeCKLpfmCcY/DIj
-        /D5YTTSTY6jchbKDkSRW7irpM
-X-Received: by 2002:a05:6808:2024:: with SMTP id q36mr713306oiw.130.1626127665778;
-        Mon, 12 Jul 2021 15:07:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwom3gaAzIAzvPzYLLUu/UBp7QXOHYRTrnaYNmrGEcq8p2L2vUeBMc2AmGqe/dErID5t0VTsw==
-X-Received: by 2002:a05:6808:2024:: with SMTP id q36mr713289oiw.130.1626127665590;
-        Mon, 12 Jul 2021 15:07:45 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id o63sm3483664oih.32.2021.07.12.15.07.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 15:07:45 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 16:07:44 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Amey Narkhede <ameynarkhede03@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
-        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH v10 1/8] PCI: Add pcie_reset_flr to follow calling
- convention of other reset methods
-Message-ID: <20210712160744.0a651364.alex.williamson@redhat.com>
-In-Reply-To: <20210709123813.8700-2-ameynarkhede03@gmail.com>
-References: <20210709123813.8700-1-ameynarkhede03@gmail.com>
-        <20210709123813.8700-2-ameynarkhede03@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Mon, 12 Jul 2021 18:24:28 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCF64C0613DD;
+        Mon, 12 Jul 2021 15:21:39 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 520EA1F42053
+Message-ID: <043580ca84a9f3bf38ee633eda910a19781e9e76.camel@collabora.com>
+Subject: Re: [PATCH v4 8/9] media: hevc: Add scaling matrix control
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        hverkuil@xs4all.nl, p.zabel@pengutronix.de, mchehab@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, emil.l.velikov@gmail.com,
+        andrzej.p@collabora.com, jc@kynesim.co.uk,
+        jernej.skrabec@gmail.com, nicolas@ndufresne.ca, cphealy@gmail.com
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Date:   Mon, 12 Jul 2021 19:21:25 -0300
+In-Reply-To: <20210625141143.577998-9-benjamin.gaignard@collabora.com>
+References: <20210625141143.577998-1-benjamin.gaignard@collabora.com>
+         <20210625141143.577998-9-benjamin.gaignard@collabora.com>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  9 Jul 2021 18:08:06 +0530
-Amey Narkhede <ameynarkhede03@gmail.com> wrote:
+Hi Benjamin,
 
-> Add has_pcie_flr bitfield in struct pci_dev to indicate support for PCIe
-> FLR to avoid reading PCI_EXP_DEVCAP multiple times.
+I believe the scaling matrix uAPI patch(es) and the support
+in Hantro G2 could be moved to its own series and maybe
+merged sooner than the rest (which may need more discussion).
+
+Couple remarks below.
+ 
+On Fri, 2021-06-25 at 16:11 +0200, Benjamin Gaignard wrote:
+> HEVC scaling lists are used for the scaling process for transform
+> coefficients.
+> V4L2_HEVC_SPS_FLAG_SCALING_LIST_ENABLED has to set when they are
+> encoded in the bitstream.
 > 
-> Currently there is separate function pcie_has_flr() to probe if PCIe FLR
-> is supported by the device which does not match the calling convention
-> followed by reset methods which use second function argument to decide
-> whether to probe or not. Add new function pcie_reset_flr() that follows
-> the calling convention of reset methods.
-> 
-> Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 > ---
->  drivers/crypto/cavium/nitrox/nitrox_main.c |  4 +-
->  drivers/pci/pci.c                          | 59 +++++++++++-----------
->  drivers/pci/pcie/aer.c                     | 12 ++---
->  drivers/pci/probe.c                        |  6 ++-
->  drivers/pci/quirks.c                       |  9 ++--
->  include/linux/pci.h                        |  3 +-
->  6 files changed, 45 insertions(+), 48 deletions(-)
+> Note: V4L2_HEVC_SPS_FLAG_SCALING_LIST_ENABLED is not change by this
+> patch. There is a thread about the naming/usage of this flag here:
+> https://lore.kernel.org/linux-arm-kernel/20210610154442.806107-8-benjamin.gaignard@collabora.com/
+> but that doesn't concern the scaling matrix control by itself.
+> 
 
-Looks good to me,
+If I am reading the spec correctly, we have fields in
+SPS (scaling_list_enabled_flag, scaling_list_data_present_flag)
+and PPS (scaling_list_data_present_flag).
 
-Reviewed-by: Alex Williamson <alex.williamson@redhat.com>
+We don't need all that, since all a driver needs to know
+is whether a scaling list is to be applied for the current frame.
+  
+Would you mind adding a patch moving the flag to the PPS?
+
+> version 2:
+>  - Fix structure name in ext-ctrls-codec.rst
+> 
+>  .../media/v4l/ext-ctrls-codec.rst             | 45 +++++++++++++++++++
+>  .../media/v4l/vidioc-queryctrl.rst            |  6 +++
+>  drivers/media/v4l2-core/v4l2-ctrls-core.c     |  6 +++
+>  drivers/media/v4l2-core/v4l2-ctrls-defs.c     |  4 ++
+>  include/media/hevc-ctrls.h                    | 11 +++++
+>  5 files changed, 72 insertions(+)
+> 
+> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> index dc096a5562cd..3865acb9e0fd 100644
+> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> @@ -3071,6 +3071,51 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
+>  
+>      \normalsize
+>  
+> +``V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX (struct)``
+> +    Specifies the HEVC scaling matrix parameters used for the scaling process
+> +    for transform coefficients.
+> +    These matrix and parameters are defined according to :ref:`hevc`.
+> +    They are described in section 7.4.5 "Scaling list data semantics" of
+> +    the specification.
+> +
+
+This needs some additional documentation about the order of the lists.
+See the docs that we've added for the scaling_list_{} fields in
+V4L2_CID_STATELESS_H264_SCALING_MATRIX.
+
+Thanks!
+-- 
+Kindly,
+Ezequiel
+
 
