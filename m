@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C3923C4D87
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D281D3C5896
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240864AbhGLHNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:13:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48056 "EHLO mail.kernel.org"
+        id S1379454AbhGLIu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:50:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238050AbhGLGtG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:49:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D643D61186;
-        Mon, 12 Jul 2021 06:44:42 +0000 (UTC)
+        id S1350545AbhGLHxy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:53:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CFF06142F;
+        Mon, 12 Jul 2021 07:51:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072283;
-        bh=Fgcqlh07d0WQ60Zn9ogwcPJ8AZBY3gyRBXAYr2Ty8Ag=;
+        s=korg; t=1626076265;
+        bh=uaZ0FqznXkgtH9TsE5H5Mtjlkk2oHewTm7iMVEhkEos=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ICiEGmlU4RwBXGOYbDOwqEnY8SsSYuW2vkp9D0ZpSVwCrlIQM5BhEWCWii0+j5BEr
-         N0uCccLPkbnWf0IGuyuyGWaDvH7/Gqfln1UaHqCIgbDmjOwRe44VK5e2/COO6Z2hvA
-         R4peX5Zri81EOBn8QfEbiEmFgtMBbofqmNfVStpg=
+        b=sfp/j1IwGykk2kb2BZosFX2WfkINwAzm2Egqi70gmlpeElU6fYXka8/KghyzmHNC9
+         1YTsayZh01xmecs9N3/r88xQZBsDgFLpF4v1BpKqr1Jg/kaoU/NVjvvvhocrZt36wo
+         e5c0jXZWdwtDbu8B9BosAylxt46Sy+FNvXBkvy/U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@chromium.org>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Dexuan Cui <decui@microsoft.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 389/593] drm/msm: Fix error return code in msm_drm_init()
+Subject: [PATCH 5.13 526/800] net: mana: Fix a memory leak in an error handling path in mana_create_txq()
 Date:   Mon, 12 Jul 2021 08:09:09 +0200
-Message-Id: <20210712060929.992228424@linuxfoundation.org>
+Message-Id: <20210712061023.250756630@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,37 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit a1c9b1e3bdd6d8dc43c18699772fb6cf4497d45a ]
+[ Upstream commit b90788459cd6d140171b046f0b37fad341ade0a3 ]
 
-Fix to return a negative error code from the error handling case instead
-of 0, as done elsewhere in this function.
+If this test fails we must free some resources as in all the other error
+handling paths of this function.
 
-Fixes: 7f9743abaa79 ("drm/msm: validate display and event threads")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Link: https://lore.kernel.org/r/20210508022836.1777-1-thunder.leizhen@huawei.com
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Fixes: ca9c54d2d6a5 ("net: mana: Add a driver for Microsoft Azure Network Adapter (MANA)")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Dexuan Cui <decui@microsoft.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/msm_drv.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-index 0aacc43faefa..edee4c2a76ce 100644
---- a/drivers/gpu/drm/msm/msm_drv.c
-+++ b/drivers/gpu/drm/msm/msm_drv.c
-@@ -505,6 +505,7 @@ static int msm_drm_init(struct device *dev, struct drm_driver *drv)
- 		priv->event_thread[i].worker = kthread_create_worker(0,
- 			"crtc_event:%d", priv->event_thread[i].crtc_id);
- 		if (IS_ERR(priv->event_thread[i].worker)) {
-+			ret = PTR_ERR(priv->event_thread[i].worker);
- 			DRM_DEV_ERROR(dev, "failed to create crtc_event kthread\n");
- 			goto err_msm_uninit;
- 		}
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index 04d067243457..1ed25e48f616 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -1230,8 +1230,10 @@ static int mana_create_txq(struct mana_port_context *apc,
+ 
+ 		cq->gdma_id = cq->gdma_cq->id;
+ 
+-		if (WARN_ON(cq->gdma_id >= gc->max_num_cqs))
+-			return -EINVAL;
++		if (WARN_ON(cq->gdma_id >= gc->max_num_cqs)) {
++			err = -EINVAL;
++			goto out;
++		}
+ 
+ 		gc->cq_table[cq->gdma_id] = cq->gdma_cq;
+ 
 -- 
 2.30.2
 
