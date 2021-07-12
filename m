@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A908D3C4CE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:39:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B97AD3C5409
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244334AbhGLHKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:10:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48266 "EHLO mail.kernel.org"
+        id S1350507AbhGLH4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:56:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238197AbhGLGsf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:48:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 12D2F6115A;
-        Mon, 12 Jul 2021 06:44:23 +0000 (UTC)
+        id S245250AbhGLHT2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:19:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 598D661153;
+        Mon, 12 Jul 2021 07:16:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072264;
-        bh=OCif2ZsNIOhHAWJltQSZzdH7Ucun+7oFwwXTFZNaHWo=;
+        s=korg; t=1626074199;
+        bh=luZ4RVLTbQC6wvR6/LSs0OJJvuBKLexijjsoDxxgoCQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lvkAi2e+lZmW8lj8IVRdAo8oUZ3MpwlNwPaluAHEEq/PPgASa7JEsbTG1LiDxbnSL
-         dl/BU/GfAQApIrSKmmgJWBYcgFKYR3wVnyi7CaoFWhZVGbk5ooiKl35wVY8B94jf1y
-         20zgulQgH48XGfUPCmAawa3Vypsw2sZawzo2WSnM=
+        b=SSR30cFuHvUUEwQFOVNEWtXsO0gU6tDWPBZcltlVisgVa2xxuSprKT1a6ChAV5t2F
+         xE9eYGIq+52DuEKLO1Zt6Ow4d7x3vbpJBxmXAUoYuPbTuUOCRyMkjAZBogYMERM2VV
+         x7qy5ZJVqIWA98b4tjMBT7iN2Q1Dt6iM6yEaCpWc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robert Hancock <robert.hancock@calian.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 422/593] clk: si5341: Wait for DEVICE_READY on startup
+Subject: [PATCH 5.12 499/700] Bluetooth: Fix Set Extended (Scan Response) Data
 Date:   Mon, 12 Jul 2021 08:09:42 +0200
-Message-Id: <20210712060934.679964885@linuxfoundation.org>
+Message-Id: <20210712061029.576613480@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,84 +41,174 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robert Hancock <robert.hancock@calian.com>
+From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 
-[ Upstream commit 6e7d2de1e000d36990923ed80d2e78dfcb545cee ]
+[ Upstream commit c9ed0a7077306f9d41d74fb006ab5dbada8349c5 ]
 
-The Si5341 datasheet warns that before accessing any other registers,
-including the PAGE register, we need to wait for the DEVICE_READY register
-to indicate the device is ready, or the process of the device loading its
-state from NVM can be corrupted. Wait for DEVICE_READY on startup before
-continuing initialization. This is done using a raw I2C register read
-prior to setting up regmap to avoid any potential unwanted automatic PAGE
-register accesses from regmap at this stage.
+These command do have variable length and the length can go up to 251,
+so this changes the struct to not use a fixed size and then when
+creating the PDU only the actual length of the data send to the
+controller.
 
-Fixes: 3044a860fd ("clk: Add Si5341/Si5340 driver")
-Signed-off-by: Robert Hancock <robert.hancock@calian.com>
-Link: https://lore.kernel.org/r/20210325192643.2190069-3-robert.hancock@calian.com
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Fixes: a0fb3726ba551 ("Bluetooth: Use Set ext adv/scan rsp data if controller supports")
+Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/clk-si5341.c | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+ include/net/bluetooth/hci.h      |  6 ++--
+ include/net/bluetooth/hci_core.h |  8 ++---
+ net/bluetooth/hci_request.c      | 51 ++++++++++++++++++--------------
+ 3 files changed, 37 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/clk/clk-si5341.c b/drivers/clk/clk-si5341.c
-index e0446e66fa64..b8a960e927bc 100644
---- a/drivers/clk/clk-si5341.c
-+++ b/drivers/clk/clk-si5341.c
-@@ -94,6 +94,7 @@ struct clk_si5341_output_config {
- #define SI5341_STATUS		0x000C
- #define SI5341_SOFT_RST		0x001C
- #define SI5341_IN_SEL		0x0021
-+#define SI5341_DEVICE_READY	0x00FE
- #define SI5341_XAXB_CFG		0x090E
- #define SI5341_IN_EN		0x0949
- #define SI5341_INX_TO_PFD_EN	0x094A
-@@ -1189,6 +1190,32 @@ static const struct regmap_range_cfg si5341_regmap_ranges[] = {
- 	},
- };
+diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
+index ba2f439bc04d..46d99c2778c3 100644
+--- a/include/net/bluetooth/hci.h
++++ b/include/net/bluetooth/hci.h
+@@ -1773,13 +1773,15 @@ struct hci_cp_ext_adv_set {
+ 	__u8  max_events;
+ } __packed;
  
-+static int si5341_wait_device_ready(struct i2c_client *client)
-+{
-+	int count;
++#define HCI_MAX_EXT_AD_LENGTH	251
 +
-+	/* Datasheet warns: Any attempt to read or write any register other
-+	 * than DEVICE_READY before DEVICE_READY reads as 0x0F may corrupt the
-+	 * NVM programming and may corrupt the register contents, as they are
-+	 * read from NVM. Note that this includes accesses to the PAGE register.
-+	 * Also: DEVICE_READY is available on every register page, so no page
-+	 * change is needed to read it.
-+	 * Do this outside regmap to avoid automatic PAGE register access.
-+	 * May take up to 300ms to complete.
-+	 */
-+	for (count = 0; count < 15; ++count) {
-+		s32 result = i2c_smbus_read_byte_data(client,
-+						      SI5341_DEVICE_READY);
-+		if (result < 0)
-+			return result;
-+		if (result == 0x0F)
-+			return 0;
-+		msleep(20);
-+	}
-+	dev_err(&client->dev, "timeout waiting for DEVICE_READY\n");
-+	return -EIO;
-+}
-+
- static const struct regmap_config si5341_regmap_config = {
- 	.reg_bits = 8,
- 	.val_bits = 8,
-@@ -1385,6 +1412,11 @@ static int si5341_probe(struct i2c_client *client,
+ #define HCI_OP_LE_SET_EXT_ADV_DATA		0x2037
+ struct hci_cp_le_set_ext_adv_data {
+ 	__u8  handle;
+ 	__u8  operation;
+ 	__u8  frag_pref;
+ 	__u8  length;
+-	__u8  data[HCI_MAX_AD_LENGTH];
++	__u8  data[];
+ } __packed;
  
- 	data->i2c_client = client;
+ #define HCI_OP_LE_SET_EXT_SCAN_RSP_DATA		0x2038
+@@ -1788,7 +1790,7 @@ struct hci_cp_le_set_ext_scan_rsp_data {
+ 	__u8  operation;
+ 	__u8  frag_pref;
+ 	__u8  length;
+-	__u8  data[HCI_MAX_AD_LENGTH];
++	__u8  data[];
+ } __packed;
  
-+	/* Must be done before otherwise touching hardware */
-+	err = si5341_wait_device_ready(client);
-+	if (err)
-+		return err;
-+
- 	for (i = 0; i < SI5341_NUM_INPUTS; ++i) {
- 		input = devm_clk_get(&client->dev, si5341_input_clock_names[i]);
- 		if (IS_ERR(input)) {
+ #define LE_SET_ADV_DATA_OP_COMPLETE	0x03
+diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
+index ca4ac6603b9a..8674141337b7 100644
+--- a/include/net/bluetooth/hci_core.h
++++ b/include/net/bluetooth/hci_core.h
+@@ -228,9 +228,9 @@ struct adv_info {
+ 	__u16	remaining_time;
+ 	__u16	duration;
+ 	__u16	adv_data_len;
+-	__u8	adv_data[HCI_MAX_AD_LENGTH];
++	__u8	adv_data[HCI_MAX_EXT_AD_LENGTH];
+ 	__u16	scan_rsp_len;
+-	__u8	scan_rsp_data[HCI_MAX_AD_LENGTH];
++	__u8	scan_rsp_data[HCI_MAX_EXT_AD_LENGTH];
+ 	__s8	tx_power;
+ 	__u32   min_interval;
+ 	__u32   max_interval;
+@@ -550,9 +550,9 @@ struct hci_dev {
+ 	DECLARE_BITMAP(dev_flags, __HCI_NUM_FLAGS);
+ 
+ 	__s8			adv_tx_power;
+-	__u8			adv_data[HCI_MAX_AD_LENGTH];
++	__u8			adv_data[HCI_MAX_EXT_AD_LENGTH];
+ 	__u8			adv_data_len;
+-	__u8			scan_rsp_data[HCI_MAX_AD_LENGTH];
++	__u8			scan_rsp_data[HCI_MAX_EXT_AD_LENGTH];
+ 	__u8			scan_rsp_data_len;
+ 
+ 	struct list_head	adv_instances;
+diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
+index 805ce546b813..e5d6b1d12764 100644
+--- a/net/bluetooth/hci_request.c
++++ b/net/bluetooth/hci_request.c
+@@ -1685,30 +1685,33 @@ void __hci_req_update_scan_rsp_data(struct hci_request *req, u8 instance)
+ 		return;
+ 
+ 	if (ext_adv_capable(hdev)) {
+-		struct hci_cp_le_set_ext_scan_rsp_data cp;
++		struct {
++			struct hci_cp_le_set_ext_scan_rsp_data cp;
++			u8 data[HCI_MAX_EXT_AD_LENGTH];
++		} pdu;
+ 
+-		memset(&cp, 0, sizeof(cp));
++		memset(&pdu, 0, sizeof(pdu));
+ 
+ 		if (instance)
+ 			len = create_instance_scan_rsp_data(hdev, instance,
+-							    cp.data);
++							    pdu.data);
+ 		else
+-			len = create_default_scan_rsp_data(hdev, cp.data);
++			len = create_default_scan_rsp_data(hdev, pdu.data);
+ 
+ 		if (hdev->scan_rsp_data_len == len &&
+-		    !memcmp(cp.data, hdev->scan_rsp_data, len))
++		    !memcmp(pdu.data, hdev->scan_rsp_data, len))
+ 			return;
+ 
+-		memcpy(hdev->scan_rsp_data, cp.data, sizeof(cp.data));
++		memcpy(hdev->scan_rsp_data, pdu.data, len);
+ 		hdev->scan_rsp_data_len = len;
+ 
+-		cp.handle = instance;
+-		cp.length = len;
+-		cp.operation = LE_SET_ADV_DATA_OP_COMPLETE;
+-		cp.frag_pref = LE_SET_ADV_DATA_NO_FRAG;
++		pdu.cp.handle = instance;
++		pdu.cp.length = len;
++		pdu.cp.operation = LE_SET_ADV_DATA_OP_COMPLETE;
++		pdu.cp.frag_pref = LE_SET_ADV_DATA_NO_FRAG;
+ 
+-		hci_req_add(req, HCI_OP_LE_SET_EXT_SCAN_RSP_DATA, sizeof(cp),
+-			    &cp);
++		hci_req_add(req, HCI_OP_LE_SET_EXT_SCAN_RSP_DATA,
++			    sizeof(pdu.cp) + len, &pdu.cp);
+ 	} else {
+ 		struct hci_cp_le_set_scan_rsp_data cp;
+ 
+@@ -1831,26 +1834,30 @@ void __hci_req_update_adv_data(struct hci_request *req, u8 instance)
+ 		return;
+ 
+ 	if (ext_adv_capable(hdev)) {
+-		struct hci_cp_le_set_ext_adv_data cp;
++		struct {
++			struct hci_cp_le_set_ext_adv_data cp;
++			u8 data[HCI_MAX_EXT_AD_LENGTH];
++		} pdu;
+ 
+-		memset(&cp, 0, sizeof(cp));
++		memset(&pdu, 0, sizeof(pdu));
+ 
+-		len = create_instance_adv_data(hdev, instance, cp.data);
++		len = create_instance_adv_data(hdev, instance, pdu.data);
+ 
+ 		/* There's nothing to do if the data hasn't changed */
+ 		if (hdev->adv_data_len == len &&
+-		    memcmp(cp.data, hdev->adv_data, len) == 0)
++		    memcmp(pdu.data, hdev->adv_data, len) == 0)
+ 			return;
+ 
+-		memcpy(hdev->adv_data, cp.data, sizeof(cp.data));
++		memcpy(hdev->adv_data, pdu.data, len);
+ 		hdev->adv_data_len = len;
+ 
+-		cp.length = len;
+-		cp.handle = instance;
+-		cp.operation = LE_SET_ADV_DATA_OP_COMPLETE;
+-		cp.frag_pref = LE_SET_ADV_DATA_NO_FRAG;
++		pdu.cp.length = len;
++		pdu.cp.handle = instance;
++		pdu.cp.operation = LE_SET_ADV_DATA_OP_COMPLETE;
++		pdu.cp.frag_pref = LE_SET_ADV_DATA_NO_FRAG;
+ 
+-		hci_req_add(req, HCI_OP_LE_SET_EXT_ADV_DATA, sizeof(cp), &cp);
++		hci_req_add(req, HCI_OP_LE_SET_EXT_ADV_DATA,
++			    sizeof(pdu.cp) + len, &pdu.cp);
+ 	} else {
+ 		struct hci_cp_le_set_adv_data cp;
+ 
 -- 
 2.30.2
 
