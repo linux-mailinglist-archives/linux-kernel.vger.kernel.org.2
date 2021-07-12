@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54DD13C58CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B9683C4E9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381205AbhGLIwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:52:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54816 "EHLO mail.kernel.org"
+        id S1343995AbhGLHUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:20:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49538 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352429AbhGLH7R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:59:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFF6E613D6;
-        Mon, 12 Jul 2021 07:53:12 +0000 (UTC)
+        id S239359AbhGLGtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:49:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8243F60233;
+        Mon, 12 Jul 2021 06:46:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076393;
-        bh=HJtyBbowZ8yR61CU1kIwhtfWAHhQF0Ef5X+1SRF6nR8=;
+        s=korg; t=1626072414;
+        bh=0+OH/vI1Bevi7igOYXquW2fiV3TYkeCHp/4v3vimOZg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WSO5GTcFM08X0a3EcQBoq7oqSksrOMmzNC7C9lI327ujcL/Kvz33ansxKOSK8e70c
-         IA+RlpNFMFDeML9IRDxLbgW5BonTDzF/nNtCrwpcMzXLEE7HrbXEsNw301cXtnBcXT
-         fvKTBuCKqVYBRh/sMoLHDNNDDuk6OE+588mJ74a0=
+        b=VvFKEBXwthL7ovWUQk6ouU+S8qpnzz53gz/QR+ZPuUXNZWhTQwKhOAZ8to4voWmP0
+         ttMuuYyK5ft0GTPq/pgK1znomT8VoKY59gXyaFv+29kWOv7P7AbCTwpQbuKhPBgkNj
+         i8Gq37NfIUP9z3nlXIr4Meby+yEwPKKWFah5kllk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        stable@vger.kernel.org, Andreas Kemnade <andreas@kemnade.info>,
+        Lee Jones <lee.jones@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 625/800] iio: gyro: bmg160: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
+Subject: [PATCH 5.10 488/593] mfd: rn5t618: Fix IRQ trigger by changing it to level mode
 Date:   Mon, 12 Jul 2021 08:10:48 +0200
-Message-Id: <20210712061033.735195814@linuxfoundation.org>
+Message-Id: <20210712060944.865747590@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,58 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Andreas Kemnade <andreas@kemnade.info>
 
-[ Upstream commit 06778d881f3798ce93ffbbbf801234292250b598 ]
+[ Upstream commit a1649a5260631979c68e5b2012f60f90300e646f ]
 
-To make code more readable, use a structure to express the channel
-layout and ensure the timestamp is 8 byte aligned.
+During more massive generation of interrupts, the IRQ got stuck,
+and the subdevices did not see any new interrupts. That happens
+especially at wonky USB supply in combination with ADC reads.
+To fix that trigger the IRQ at level low instead of falling edge.
 
-Found during an audit of all calls of uses of
-iio_push_to_buffers_with_timestamp()
-
-Fixes: 13426454b649 ("iio: bmg160: Separate i2c and core driver")
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Stephan Gerhold <stephan@gerhold.net>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20210501170121.512209-11-jic23@kernel.org
+Fixes: 0c81604516af ("mfd: rn5t618: Add IRQ support")
+Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/gyro/bmg160_core.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/mfd/rn5t618.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/iio/gyro/bmg160_core.c b/drivers/iio/gyro/bmg160_core.c
-index b11ebd9bb7a4..7bc13ff2c3ac 100644
---- a/drivers/iio/gyro/bmg160_core.c
-+++ b/drivers/iio/gyro/bmg160_core.c
-@@ -98,7 +98,11 @@ struct bmg160_data {
- 	struct iio_trigger *motion_trig;
- 	struct iio_mount_matrix orientation;
- 	struct mutex mutex;
--	s16 buffer[8];
-+	/* Ensure naturally aligned timestamp */
-+	struct {
-+		s16 chans[3];
-+		s64 timestamp __aligned(8);
-+	} scan;
- 	u32 dps_range;
- 	int ev_enable_state;
- 	int slope_thres;
-@@ -882,12 +886,12 @@ static irqreturn_t bmg160_trigger_handler(int irq, void *p)
+diff --git a/drivers/mfd/rn5t618.c b/drivers/mfd/rn5t618.c
+index dc452df1f1bf..652a5e60067f 100644
+--- a/drivers/mfd/rn5t618.c
++++ b/drivers/mfd/rn5t618.c
+@@ -104,7 +104,7 @@ static int rn5t618_irq_init(struct rn5t618 *rn5t618)
  
- 	mutex_lock(&data->mutex);
- 	ret = regmap_bulk_read(data->regmap, BMG160_REG_XOUT_L,
--			       data->buffer, AXIS_MAX * 2);
-+			       data->scan.chans, AXIS_MAX * 2);
- 	mutex_unlock(&data->mutex);
- 	if (ret < 0)
- 		goto err;
- 
--	iio_push_to_buffers_with_timestamp(indio_dev, data->buffer,
-+	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
- 					   pf->timestamp);
- err:
- 	iio_trigger_notify_done(indio_dev->trig);
+ 	ret = devm_regmap_add_irq_chip(rn5t618->dev, rn5t618->regmap,
+ 				       rn5t618->irq,
+-				       IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
++				       IRQF_TRIGGER_LOW | IRQF_ONESHOT,
+ 				       0, irq_chip, &rn5t618->irq_data);
+ 	if (ret)
+ 		dev_err(rn5t618->dev, "Failed to register IRQ chip\n");
 -- 
 2.30.2
 
