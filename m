@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B39C03C5216
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9D533C4A6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:35:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349791AbhGLHoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:44:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46854 "EHLO mail.kernel.org"
+        id S238203AbhGLGwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:52:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245383AbhGLHMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:12:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE2EC60C40;
-        Mon, 12 Jul 2021 07:09:27 +0000 (UTC)
+        id S238393AbhGLGkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:40:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 14FAD610F7;
+        Mon, 12 Jul 2021 06:37:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073768;
-        bh=ZEf5bbSSXo3CDVXgfzGXaIxQqQTFuxtf50ZzYxxmL6c=;
+        s=korg; t=1626071823;
+        bh=Kfq4+vFQ/+PIcxjEuUir11AQzB6rvxUK1mBV1FAM6gw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oGZ5zQmiJ4sVarWUonuWVndiIvY50yUMdjTY+HtxGEE2C0pBwW0n9joiYDgmuofJs
-         uC6lCcqurYaeIPxOx0T8D6eBGqC0B/rSRz9WHBg5yk4830Z84DpWCFdcfqJpsh/OBS
-         ELwbDJ70AH32JJx3HSWXT2KlFOKKUFlpM4a/FkmY=
+        b=vA/xsIqoHr8ob5AD3AexqeO+4PHaqRq2O/7q8xPuQiD1Ifl6G+bycBX9HxM2cHGcE
+         gKUYMO7b5JAVRRX5NBT93OPWWSTesFxK5V6f/49q8keX/maTE/xiNN5JQZxdtefYBl
+         iPAJsrxRYMpTg2s08Z7CptVloBchbzuYUup8kdwY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 310/700] sched/rt: Fix RT utilization tracking during policy change
-Date:   Mon, 12 Jul 2021 08:06:33 +0200
-Message-Id: <20210712061009.353140419@linuxfoundation.org>
+Subject: [PATCH 5.10 234/593] media: au0828: fix a NULL vs IS_ERR() check
+Date:   Mon, 12 Jul 2021 08:06:34 +0200
+Message-Id: <20210712060908.644758127@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,68 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Donnefort <vincent.donnefort@arm.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit fecfcbc288e9f4923f40fd23ca78a6acdc7fdf6c ]
+[ Upstream commit 8f2e452730d2bcd59fe05246f0e19a4c52e0012d ]
 
-RT keeps track of the utilization on a per-rq basis with the structure
-avg_rt. This utilization is updated during task_tick_rt(),
-put_prev_task_rt() and set_next_task_rt(). However, when the current
-running task changes its policy, set_next_task_rt() which would usually
-take care of updating the utilization when the rq starts running RT tasks,
-will not see a such change, leaving the avg_rt structure outdated. When
-that very same task will be dequeued later, put_prev_task_rt() will then
-update the utilization, based on a wrong last_update_time, leading to a
-huge spike in the RT utilization signal.
+The media_device_usb_allocate() function returns error pointers when
+it's enabled and something goes wrong.  It can return NULL as well, but
+only if CONFIG_MEDIA_CONTROLLER is disabled so that doesn't apply here.
 
-The signal would eventually recover from this issue after few ms. Even if
-no RT tasks are run, avg_rt is also updated in __update_blocked_others().
-But as the CPU capacity depends partly on the avg_rt, this issue has
-nonetheless a significant impact on the scheduler.
-
-Fix this issue by ensuring a load update when a running task changes
-its policy to RT.
-
-Fixes: 371bf427 ("sched/rt: Add rt_rq utilization tracking")
-Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lore.kernel.org/r/1624271872-211872-2-git-send-email-vincent.donnefort@arm.com
+Fixes: 812658d88d26 ("media: change au0828 to use Media Device Allocator API")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/rt.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ drivers/media/usb/au0828/au0828-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 8f720b71d13d..e617287052d5 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -2331,13 +2331,20 @@ void __init init_sched_rt_class(void)
- static void switched_to_rt(struct rq *rq, struct task_struct *p)
- {
- 	/*
--	 * If we are already running, then there's nothing
--	 * that needs to be done. But if we are not running
--	 * we may need to preempt the current running task.
--	 * If that current running task is also an RT task
-+	 * If we are running, update the avg_rt tracking, as the running time
-+	 * will now on be accounted into the latter.
-+	 */
-+	if (task_current(rq, p)) {
-+		update_rt_rq_load_avg(rq_clock_pelt(rq), rq, 0);
-+		return;
-+	}
-+
-+	/*
-+	 * If we are not running we may need to preempt the current
-+	 * running task. If that current running task is also an RT task
- 	 * then see if we can move to another run queue.
- 	 */
--	if (task_on_rq_queued(p) && rq->curr != p) {
-+	if (task_on_rq_queued(p)) {
- #ifdef CONFIG_SMP
- 		if (p->nr_cpus_allowed > 1 && rq->rt.overloaded)
- 			rt_queue_push_tasks(rq);
+diff --git a/drivers/media/usb/au0828/au0828-core.c b/drivers/media/usb/au0828/au0828-core.c
+index a8a72d5fbd12..caefac07af92 100644
+--- a/drivers/media/usb/au0828/au0828-core.c
++++ b/drivers/media/usb/au0828/au0828-core.c
+@@ -199,8 +199,8 @@ static int au0828_media_device_init(struct au0828_dev *dev,
+ 	struct media_device *mdev;
+ 
+ 	mdev = media_device_usb_allocate(udev, KBUILD_MODNAME, THIS_MODULE);
+-	if (!mdev)
+-		return -ENOMEM;
++	if (IS_ERR(mdev))
++		return PTR_ERR(mdev);
+ 
+ 	dev->media_dev = mdev;
+ #endif
 -- 
 2.30.2
 
