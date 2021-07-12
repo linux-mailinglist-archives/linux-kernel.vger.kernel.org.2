@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 754E33C5991
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D56F3C598F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384914AbhGLJFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:05:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55666 "EHLO mail.kernel.org"
+        id S1357124AbhGLJFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:05:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354063AbhGLID1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:03:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9462A611CE;
-        Mon, 12 Jul 2021 07:59:51 +0000 (UTC)
+        id S1354089AbhGLID2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:03:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E865161206;
+        Mon, 12 Jul 2021 07:59:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076792;
-        bh=AEqm8AS5P0KkNxUWVVv9nQbUkA1UYLugWvt+e1Oa/HI=;
+        s=korg; t=1626076794;
+        bh=X0xY592CK8hmSdR4MPJG8U3Xd2vw57Z5QwLWDaFYgcs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E4iVApB/huQDKcvJYqHxiskiiEkE/6E6QQLrhJvJ2JJD4fd+51xwmVuQ5zHm/9y5w
-         X6y6w5d6Hx1eC+8rs1Gfv2gXMAuOBzuzPoJrPmpm+xqt41v5zFMN0VEwybeZDTGs8+
-         obG9uji/tlsXpeUfNuERui/K4bJSokoYyQ29lVuI=
+        b=lQjsBLUkW2j3fFEhjmfL2XN8E3smxCa0WfzXyNGPw302zbYB0Vb4sGVTTduGGIQ7k
+         TZYnOeEgDp89eGbneLed9ShgBqZoQyFob2dZThSG2xrMNMVUCMAlBrNTZZp/mfLkmP
+         qS/aNCNgN4Pna1UqgP/tZpwIZaFDtfrxToi0A8KQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 753/800] powerpc/papr_scm: Properly handle UUID types and API
-Date:   Mon, 12 Jul 2021 08:12:56 +0200
-Message-Id: <20210712061046.912978852@linuxfoundation.org>
+Subject: [PATCH 5.13 754/800] powerpc/64s: Fix copy-paste data exposure into newly created tasks
+Date:   Mon, 12 Jul 2021 08:12:57 +0200
+Message-Id: <20210712061047.018641697@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -42,80 +40,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-[ Upstream commit 0e8554b5d7801b0aebc6c348a0a9f7706aa17b3b ]
+[ Upstream commit f35d2f249ef05b9671e7898f09ad89aa78f99122 ]
 
-Parse to and export from UUID own type, before dereferencing.
-This also fixes wrong comment (Little Endian UUID is something else)
-and should eliminate the direct strict types assignments.
+copy-paste contains implicit "copy buffer" state that can contain
+arbitrary user data (if the user process executes a copy instruction).
+This could be snooped by another process if a context switch hits while
+the state is live. So cp_abort is executed on context switch to clear
+out possible sensitive data and prevent the leak.
 
-Fixes: 43001c52b603 ("powerpc/papr_scm: Use ibm,unit-guid as the iset cookie")
-Fixes: 259a948c4ba1 ("powerpc/pseries/scm: Use a specific endian format for storing uuid from the device tree")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+cp_abort is done after the low level _switch(), which means it is never
+reached by newly created tasks, so they could snoop on this buffer
+between their first and second context switch.
+
+Fix this by doing the cp_abort before calling _switch. Add some
+comments which should make the issue harder to miss.
+
+Fixes: 07d2a628bc000 ("powerpc/64s: Avoid cpabort in context switch when possible")
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210616134303.58185-1-andriy.shevchenko@linux.intel.com
+Link: https://lore.kernel.org/r/20210622053036.474678-1-npiggin@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/pseries/papr_scm.c | 27 +++++++++++++++--------
- 1 file changed, 18 insertions(+), 9 deletions(-)
+ arch/powerpc/kernel/process.c | 48 +++++++++++++++++++++++------------
+ 1 file changed, 32 insertions(+), 16 deletions(-)
 
-diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/platforms/pseries/papr_scm.c
-index ef26fe40efb0..8335e13836db 100644
---- a/arch/powerpc/platforms/pseries/papr_scm.c
-+++ b/arch/powerpc/platforms/pseries/papr_scm.c
-@@ -18,6 +18,7 @@
- #include <asm/plpar_wrappers.h>
- #include <asm/papr_pdsm.h>
- #include <asm/mce.h>
-+#include <asm/unaligned.h>
- 
- #define BIND_ANY_ADDR (~0ul)
- 
-@@ -1094,8 +1095,9 @@ static int papr_scm_probe(struct platform_device *pdev)
- 	u32 drc_index, metadata_size;
- 	u64 blocks, block_size;
- 	struct papr_scm_priv *p;
-+	u8 uuid_raw[UUID_SIZE];
- 	const char *uuid_str;
--	u64 uuid[2];
-+	uuid_t uuid;
- 	int rc;
- 
- 	/* check we have all the required DT properties */
-@@ -1138,16 +1140,23 @@ static int papr_scm_probe(struct platform_device *pdev)
- 	p->hcall_flush_required = of_property_read_bool(dn, "ibm,hcall-flush-required");
- 
- 	/* We just need to ensure that set cookies are unique across */
--	uuid_parse(uuid_str, (uuid_t *) uuid);
-+	uuid_parse(uuid_str, &uuid);
+diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
+index 89e34aa273e2..1138f035ce74 100644
+--- a/arch/powerpc/kernel/process.c
++++ b/arch/powerpc/kernel/process.c
+@@ -1213,6 +1213,19 @@ struct task_struct *__switch_to(struct task_struct *prev,
+ 			__flush_tlb_pending(batch);
+ 		batch->active = 0;
+ 	}
 +
- 	/*
--	 * cookie1 and cookie2 are not really little endian
--	 * we store a little endian representation of the
--	 * uuid str so that we can compare this with the label
--	 * area cookie irrespective of the endian config with which
--	 * the kernel is built.
-+	 * The cookie1 and cookie2 are not really little endian.
-+	 * We store a raw buffer representation of the
-+	 * uuid string so that we can compare this with the label
-+	 * area cookie irrespective of the endian configuration
-+	 * with which the kernel is built.
-+	 *
-+	 * Historically we stored the cookie in the below format.
-+	 * for a uuid string 72511b67-0b3b-42fd-8d1d-5be3cae8bcaa
-+	 *	cookie1 was 0xfd423b0b671b5172
-+	 *	cookie2 was 0xaabce8cae35b1d8d
- 	 */
--	p->nd_set.cookie1 = cpu_to_le64(uuid[0]);
--	p->nd_set.cookie2 = cpu_to_le64(uuid[1]);
-+	export_uuid(uuid_raw, &uuid);
-+	p->nd_set.cookie1 = get_unaligned_le64(&uuid_raw[0]);
-+	p->nd_set.cookie2 = get_unaligned_le64(&uuid_raw[8]);
++	/*
++	 * On POWER9 the copy-paste buffer can only paste into
++	 * foreign real addresses, so unprivileged processes can not
++	 * see the data or use it in any way unless they have
++	 * foreign real mappings. If the new process has the foreign
++	 * real address mappings, we must issue a cp_abort to clear
++	 * any state and prevent snooping, corruption or a covert
++	 * channel. ISA v3.1 supports paste into local memory.
++	 */
++	if (new->mm && (cpu_has_feature(CPU_FTR_ARCH_31) ||
++			atomic_read(&new->mm->context.vas_windows)))
++		asm volatile(PPC_CP_ABORT);
+ #endif /* CONFIG_PPC_BOOK3S_64 */
  
- 	/* might be zero */
- 	p->metadata_size = metadata_size;
+ #ifdef CONFIG_PPC_ADV_DEBUG_REGS
+@@ -1261,30 +1274,33 @@ struct task_struct *__switch_to(struct task_struct *prev,
+ #endif
+ 	last = _switch(old_thread, new_thread);
+ 
++	/*
++	 * Nothing after _switch will be run for newly created tasks,
++	 * because they switch directly to ret_from_fork/ret_from_kernel_thread
++	 * etc. Code added here should have a comment explaining why that is
++	 * okay.
++	 */
++
+ #ifdef CONFIG_PPC_BOOK3S_64
++	/*
++	 * This applies to a process that was context switched while inside
++	 * arch_enter_lazy_mmu_mode(), to re-activate the batch that was
++	 * deactivated above, before _switch(). This will never be the case
++	 * for new tasks.
++	 */
+ 	if (current_thread_info()->local_flags & _TLF_LAZY_MMU) {
+ 		current_thread_info()->local_flags &= ~_TLF_LAZY_MMU;
+ 		batch = this_cpu_ptr(&ppc64_tlb_batch);
+ 		batch->active = 1;
+ 	}
+ 
+-	if (current->thread.regs) {
++	/*
++	 * Math facilities are masked out of the child MSR in copy_thread.
++	 * A new task does not need to restore_math because it will
++	 * demand fault them.
++	 */
++	if (current->thread.regs)
+ 		restore_math(current->thread.regs);
+-
+-		/*
+-		 * On POWER9 the copy-paste buffer can only paste into
+-		 * foreign real addresses, so unprivileged processes can not
+-		 * see the data or use it in any way unless they have
+-		 * foreign real mappings. If the new process has the foreign
+-		 * real address mappings, we must issue a cp_abort to clear
+-		 * any state and prevent snooping, corruption or a covert
+-		 * channel. ISA v3.1 supports paste into local memory.
+-		 */
+-		if (current->mm &&
+-			(cpu_has_feature(CPU_FTR_ARCH_31) ||
+-			atomic_read(&current->mm->context.vas_windows)))
+-			asm volatile(PPC_CP_ABORT);
+-	}
+ #endif /* CONFIG_PPC_BOOK3S_64 */
+ 
+ 	return last;
 -- 
 2.30.2
 
