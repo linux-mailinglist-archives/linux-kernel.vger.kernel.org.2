@@ -2,132 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 080973C6568
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 23:22:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF2E33C656C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 23:24:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234793AbhGLVZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 17:25:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39478 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234689AbhGLVZC (ORCPT
+        id S234615AbhGLV1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 17:27:38 -0400
+Received: from imap2.colo.codethink.co.uk ([78.40.148.184]:59968 "EHLO
+        imap2.colo.codethink.co.uk" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233998AbhGLV1h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 17:25:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626124933;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NqyKWbYzvJesNMAyFevO8Qmaq3myoLJAWjEns6F9EMg=;
-        b=TkgfgjvktB5BGudWqku6UiDm1GrddpJ3wkd1lRmTiPT0xc2W3KJ0FoCGCsjffBCiyGkpv2
-        jVWhdHmEWER7S15je/z0jF/jBi/PA3ZjvdXack0+Wup8kSNhzXjRVSvmWpr0waMv1n11Oc
-        9MQhkXVFGiJtZSS+Pfhg3QWYaZ5T/Z4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-325-iiQpJbZiMg2bmALGrPHg3A-1; Mon, 12 Jul 2021 17:22:09 -0400
-X-MC-Unique: iiQpJbZiMg2bmALGrPHg3A-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D649A8042DE;
-        Mon, 12 Jul 2021 21:22:07 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-114-176.rdu2.redhat.com [10.10.114.176])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0469E5D9CA;
-        Mon, 12 Jul 2021 21:22:01 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 6A25522054F; Mon, 12 Jul 2021 17:22:01 -0400 (EDT)
-Date:   Mon, 12 Jul 2021 17:22:01 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     "J. Bruce Fields" <bfields@fieldses.org>
-Cc:     Bruce Fields <bfields@redhat.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, virtio-fs@redhat.com, dwalsh@redhat.com,
-        dgilbert@redhat.com, casey.schaufler@intel.com,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        tytso@mit.edu, miklos@szeredi.hu, gscrivan@redhat.com,
-        jack@suse.cz, Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH v2 1/1] xattr: Allow user.* xattr on symlink and special
- files
-Message-ID: <20210712212201.GD502004@redhat.com>
-References: <20210708175738.360757-2-vgoyal@redhat.com>
- <20210709091915.2bd4snyfjndexw2b@wittgenstein>
- <20210709152737.GA398382@redhat.com>
- <710d1c6f-d477-384f-0cc1-8914258f1fb1@schaufler-ca.com>
- <20210709175947.GB398382@redhat.com>
- <CAPL3RVGKg4G5qiiHo7KYPcsWWgeoW=qNPOSQpd3Sv329jrWrLQ@mail.gmail.com>
- <20210712140247.GA486376@redhat.com>
- <20210712154106.GB18679@fieldses.org>
- <20210712174759.GA502004@redhat.com>
- <20210712193139.GA22997@fieldses.org>
+        Mon, 12 Jul 2021 17:27:37 -0400
+Received: from cpc152649-stkp13-2-0-cust121.10-2.cable.virginm.net ([86.15.83.122] helo=[192.168.0.18])
+        by imap2.colo.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
+        id 1m33Ps-0004zD-6N; Mon, 12 Jul 2021 22:24:40 +0100
+Subject: Re: [PATCH v2 0/5] riscv: improving uaccess with logs from network
+ bench
+To:     Akira Tsukamoto <akira.tsukamoto@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+References: <5a5c07ac-8c11-79d3-46a3-a255d4148f76@gmail.com>
+From:   Ben Dooks <ben.dooks@codethink.co.uk>
+Organization: Codethink Limited.
+Message-ID: <1934063a-8973-932a-6029-58593bd5fa3a@codethink.co.uk>
+Date:   Mon, 12 Jul 2021 22:24:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210712193139.GA22997@fieldses.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <5a5c07ac-8c11-79d3-46a3-a255d4148f76@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 03:31:39PM -0400, J. Bruce Fields wrote:
-> On Mon, Jul 12, 2021 at 01:47:59PM -0400, Vivek Goyal wrote:
-> > On Mon, Jul 12, 2021 at 11:41:06AM -0400, J. Bruce Fields wrote:
-> > > Looks like 0xd is what the server returns to access on a device node
-> > > with mode bits rw- for the caller.
-> > > 
-> > > Commit c11d7fd1b317 "nfsd: take xattr bits into account for permission
-> > > checks" added the ACCESS_X* bits for regular files and directories but
-> > > not others.
-> > > 
-> > > But you don't want to determine permission from the mode bits anyway,
-> > > you want it to depend on the owner,
-> > 
-> > Thinking more about this part. Current implementation of my patch is
-> > effectively doing both the checks. It checks that you are owner or
-> > have CAP_FOWNER in xattr_permission() and then goes on to call
-> > inode_permission(). And that means file mode bits will also play a
-> > role. If caller does not have write permission on the file, it will
-> > be denied setxattr().
-> > 
-> > If I don't call inode_permission(), and just return 0 right away for
-> > file owner (for symlinks and special files), then just being owner
-> > is enough to write user.* xattr. And then even security modules will
-> > not get a chance to block that operation. IOW, if you are owner of
-> > a symlink or special file, you can write as many user.* xattr as you
-> > like and except quota does not look like anything else can block
-> > it. I am wondering if this approach is ok?
+On 19/06/2021 12:21, Akira Tsukamoto wrote:
+> Optimizing copy_to_user and copy_from_user.
 > 
-> Yeah, I'd expect security modules to get a say, and I wouldn't expect
-> mode bits on device nodes to be useful for deciding whether it makes
-> sense for xattrs to be readable or writeable.
+> I rewrote the functions in v2, heavily influenced by Garry's memcpy
+> function [1].
+> The functions must be written in assembler to handle page faults manually
+> inside the function.
+> 
+> With the changes, improves in the percentage usage and some performance
+> of network speed in UDP packets.
+> Only patching copy_user. Using the original memcpy.
+> 
+> All results are from the same base kernel, same rootfs and same
+> BeagleV beta board.
+> 
+> Comparison by "perf top -Ue task-clock" while running iperf3.
+> 
+> --- TCP recv ---
+>   * Before
+>    40.40%  [kernel]  [k] memcpy
+>    33.09%  [kernel]  [k] __asm_copy_to_user
+>   * After
+>    50.35%  [kernel]  [k] memcpy
+>    13.76%  [kernel]  [k] __asm_copy_to_user
+> 
+> --- TCP send ---
+>   * Before
+>    19.96%  [kernel]  [k] memcpy
+>     9.84%  [kernel]  [k] __asm_copy_to_user
+>   * After
+>    14.27%  [kernel]  [k] memcpy
+>     7.37%  [kernel]  [k] __asm_copy_to_user
+> 
+> --- UDP send ---
+>   * Before
+>    25.18%  [kernel]  [k] memcpy
+>    22.50%  [kernel]  [k] __asm_copy_to_user
+>   * After
+>    28.90%  [kernel]  [k] memcpy
+>     9.49%  [kernel]  [k] __asm_copy_to_user
+> 
+> --- UDP recv ---
+>   * Before
+>    44.45%  [kernel]  [k] memcpy
+>    31.04%  [kernel]  [k] __asm_copy_to_user
+>   * After
+>    55.62%  [kernel]  [k] memcpy
+>    11.22%  [kernel]  [k] __asm_copy_to_user
+> 
+> Processing network packets require a lot of unaligned access for the packet
+> header, which is not able to change the design of the header format to be
+> aligned.
+> And user applications call system calls with a large buffer for send/recf()
+> and sendto/recvfrom() to repeat less function calls for the optimization.
+> 
+> v1 -> v2:
+> - Added shift copy
+> - Separated patches for readability of changes in assembler
+> - Using perf results
+> 
+> [1] https://lkml.org/lkml/2021/2/16/778
+> 
+> Akira Tsukamoto (5):
+>    riscv: __asm_to/copy_from_user: delete existing code
+>    riscv: __asm_to/copy_from_user: Adding byte copy first
+>    riscv: __asm_to/copy_from_user: Copy until dst is aligned address
+>    riscv: __asm_to/copy_from_user: Bulk copy while shifting misaligned
+>      data
+>    riscv: __asm_to/copy_from_user: Bulk copy when both src dst are
+>      aligned
+> 
+>   arch/riscv/lib/uaccess.S | 181 +++++++++++++++++++++++++++++++--------
+>   1 file changed, 146 insertions(+), 35 deletions(-)
+> 
 
-Actually, calling inode_permission() for symlinks probably should be
-fine.
+I'm doing some work on allow benchmarking and testing the uaccess code.
 
-Its the device node which is problematic. Because we started with the
-assumption that mode bits there represent access writes for read/writing
-to device (and not to the filesystem). 
+So far the initial results are:
 
 > 
-> But, I don't really know.
+> copy routine 1: original
+> test 1: copier 1: offset 0, size 8192: took 43.394000 ms, 1800.364106 MiB/sec
+> test 1: copier 1: offset 1, size 8191: took 343.767000 ms, 227.233746 MiB/sec
+> test 1: copier 1: offset 2, size 8190: took 343.727000 ms, 227.232445 MiB/sec
+> test 1: copier 1: offset 3, size 8189: took 343.664000 ms, 227.246350 MiB/sec
+> test 1: copier 1: offset 4, size 8188: took 343.751000 ms, 227.161093 MiB/sec
+> test 1: copier 1: offset 5, size 8187: took 343.620000 ms, 227.219941 MiB/sec
+> test 1: copier 1: offset 6, size 8186: took 343.540000 ms, 227.245094 MiB/sec
+> test 1: copier 1: offset 7, size 8185: took 343.640000 ms, 227.151213 MiB/sec
+> copy routine 2: new
+> test 1: copier 2: offset 0, size 8192: took 18.819000 ms, 4151.389553 MiB/sec
+> test 1: copier 2: offset 1, size 8191: took 43.770000 ms, 1784.680449 MiB/sec
+> test 1: copier 2: offset 2, size 8190: took 43.727000 ms, 1786.217360 MiB/sec
+> test 1: copier 2: offset 3, size 8189: took 43.679000 ms, 1787.961944 MiB/sec
+> test 1: copier 2: offset 4, size 8188: took 43.620000 ms, 1790.161693 MiB/sec
+> test 1: copier 2: offset 5, size 8187: took 43.577000 ms, 1791.709303 MiB/sec
+> test 1: copier 2: offset 6, size 8186: took 43.533000 ms, 1793.301163 MiB/sec
+> test 1: copier 2: offset 7, size 8185: took 43.471000 ms, 1795.639456 MiB/sec
+> write tests:
+> copy routine 1: original
+> test 2: copier 1: offset 0, size 8192: took 43.443000 ms, 1798.333448 MiB/sec
+> test 2: copier 1: offset 1, size 8191: took 344.281000 ms, 226.894494 MiB/sec
+> test 2: copier 1: offset 2, size 8190: took 343.788000 ms, 227.192126 MiB/sec
+> test 2: copier 1: offset 3, size 8189: took 343.735000 ms, 227.199412 MiB/sec
+> test 2: copier 1: offset 4, size 8188: took 343.695000 ms, 227.198106 MiB/sec
+> test 2: copier 1: offset 5, size 8187: took 343.626000 ms, 227.215974 MiB/sec
+> test 2: copier 1: offset 6, size 8186: took 343.597000 ms, 227.207396 MiB/sec
+> test 2: copier 1: offset 7, size 8185: took 343.823000 ms, 227.030312 MiB/sec
+> copy routine 2: new
+> test 2: copier 2: offset 0, size 8192: took 18.999000 ms, 4112.058529 MiB/sec
+> test 2: copier 2: offset 1, size 8191: took 43.897000 ms, 1779.517125 MiB/sec
+> test 2: copier 2: offset 2, size 8190: took 43.784000 ms, 1783.891981 MiB/sec
+> test 2: copier 2: offset 3, size 8189: took 43.803000 ms, 1782.900481 MiB/sec
+> test 2: copier 2: offset 4, size 8188: took 43.768000 ms, 1784.108322 MiB/sec
+> test 2: copier 2: offset 5, size 8187: took 43.739000 ms, 1785.073191 MiB/sec
+> test 2: copier 2: offset 6, size 8186: took 43.620000 ms, 1789.724428 MiB/sec
+> test 2: copier 2: offset 7, size 8185: took 43.573000 ms, 1791.436045 MiB/sec
+> read tests:
+> copy routine 1: original
+> test 1: copier 1: offset 0, size 16384: took 87.173000 ms, 1792.412788 MiB/sec
+> test 1: copier 1: offset 1, size 16383: took 689.480000 ms, 226.606230 MiB/sec
+> test 1: copier 1: offset 2, size 16382: took 689.251000 ms, 226.667682 MiB/sec
+> test 1: copier 1: offset 3, size 16381: took 689.203000 ms, 226.669631 MiB/sec
+> test 1: copier 1: offset 4, size 16380: took 689.385000 ms, 226.595956 MiB/sec
+> test 1: copier 1: offset 5, size 16379: took 689.201000 ms, 226.642614 MiB/sec
+> test 1: copier 1: offset 6, size 16378: took 689.158000 ms, 226.642917 MiB/sec
+> test 1: copier 1: offset 7, size 16377: took 689.038000 ms, 226.668548 MiB/sec
+> copy routine 2: new
+> test 1: copier 2: offset 0, size 16384: took 38.825000 ms, 4024.468770 MiB/sec
+> test 1: copier 2: offset 1, size 16383: took 88.706000 ms, 1761.329146 MiB/sec
+> test 1: copier 2: offset 2, size 16382: took 88.663000 ms, 1762.075798 MiB/sec
+> test 1: copier 2: offset 3, size 16381: took 88.614000 ms, 1762.942535 MiB/sec
+> test 1: copier 2: offset 4, size 16380: took 88.592000 ms, 1763.272677 MiB/sec
+> test 1: copier 2: offset 5, size 16379: took 88.518000 ms, 1764.639014 MiB/sec
+> test 1: copier 2: offset 6, size 16378: took 88.481000 ms, 1765.269149 MiB/sec
+> test 1: copier 2: offset 7, size 16377: took 88.437000 ms, 1766.039585 MiB/sec
+> write tests:
+> copy routine 1: original
+> test 2: copier 1: offset 0, size 16384: took 87.150000 ms, 1792.885829 MiB/sec
+> test 2: copier 1: offset 1, size 16383: took 689.470000 ms, 226.609516 MiB/sec
+> test 2: copier 1: offset 2, size 16382: took 689.242000 ms, 226.670642 MiB/sec
+> test 2: copier 1: offset 3, size 16381: took 689.165000 ms, 226.682129 MiB/sec
+> test 2: copier 1: offset 4, size 16380: took 689.697000 ms, 226.493450 MiB/sec
+> test 2: copier 1: offset 5, size 16379: took 689.070000 ms, 226.685701 MiB/sec
+> test 2: copier 1: offset 6, size 16378: took 689.018000 ms, 226.688968 MiB/sec
+> test 2: copier 1: offset 7, size 16377: took 689.009000 ms, 226.678088 MiB/sec
+> copy routine 2: new
+> test 2: copier 2: offset 0, size 16384: took 38.871000 ms, 4019.706208 MiB/sec
+> test 2: copier 2: offset 1, size 16383: took 88.732000 ms, 1760.813047 MiB/sec
+> test 2: copier 2: offset 2, size 16382: took 88.672000 ms, 1761.896952 MiB/sec
+> test 2: copier 2: offset 3, size 16381: took 88.642000 ms, 1762.385661 MiB/sec
+> test 2: copier 2: offset 4, size 16380: took 88.730000 ms, 1760.530294 MiB/sec
+> test 2: copier 2: offset 5, size 16379: took 88.670000 ms, 1761.614033 MiB/sec
+> test 2: copier 2: offset 6, size 16378: took 88.627000 ms, 1762.361126 MiB/sec
+> test 2: copier 2: offset 7, size 16377: took 88.543000 ms, 1763.925356 MiB/sec
+> read tests:
+> copy routine 1: original
+> test 1: copier 1: offset 0, size 32768: took 243.592000 ms, 1282.882853 MiB/sec
+> test 1: copier 1: offset 1, size 32767: took 1426.538000 ms, 219.055127 MiB/sec
+> test 1: copier 1: offset 2, size 32766: took 1426.340000 ms, 219.078850 MiB/sec
+> test 1: copier 1: offset 3, size 32765: took 1426.297000 ms, 219.078768 MiB/sec
+> test 1: copier 1: offset 4, size 32764: took 1426.069000 ms, 219.107107 MiB/sec
+> test 1: copier 1: offset 5, size 32763: took 1425.970000 ms, 219.115631 MiB/sec
+> test 1: copier 1: offset 6, size 32762: took 1425.975000 ms, 219.108175 MiB/sec
+> test 1: copier 1: offset 7, size 32761: took 1425.906000 ms, 219.112089 MiB/sec
+> copy routine 2: new
+> test 1: copier 2: offset 0, size 32768: took 205.966000 ms, 1517.240710 MiB/sec
+> test 1: copier 2: offset 1, size 32767: took 304.295000 ms, 1026.932625 MiB/sec
+> test 1: copier 2: offset 2, size 32766: took 304.219000 ms, 1027.157825 MiB/sec
+> test 1: copier 2: offset 3, size 32765: took 304.114000 ms, 1027.481108 MiB/sec
+> test 1: copier 2: offset 4, size 32764: took 304.102000 ms, 1027.490293 MiB/sec
+> test 1: copier 2: offset 5, size 32763: took 304.032000 ms, 1027.695494 MiB/sec
+> test 1: copier 2: offset 6, size 32762: took 304.012000 ms, 1027.731733 MiB/sec
+> test 1: copier 2: offset 7, size 32761: took 304.250000 ms, 1026.896443 MiB/sec
+> write tests:
+> copy routine 1: original
+> test 2: copier 1: offset 0, size 32768: took 269.605000 ms, 1159.103132 MiB/sec
+> test 2: copier 1: offset 1, size 32767: took 1438.271000 ms, 217.268139 MiB/sec
+> test 2: copier 1: offset 2, size 32766: took 1438.197000 ms, 217.272687 MiB/sec
+> test 2: copier 1: offset 3, size 32765: took 1438.157000 ms, 217.272099 MiB/sec
+> test 2: copier 1: offset 4, size 32764: took 1438.121000 ms, 217.270906 MiB/sec
+> test 2: copier 1: offset 5, size 32763: took 1438.085000 ms, 217.269714 MiB/sec
+> test 2: copier 1: offset 6, size 32762: took 1438.012000 ms, 217.274111 MiB/sec
+> test 2: copier 1: offset 7, size 32761: took 1437.998000 ms, 217.269595 MiB/sec
+> copy routine 2: new
+> test 2: copier 2: offset 0, size 32768: took 237.597000 ms, 1315.252297 MiB/sec
+> test 2: copier 2: offset 1, size 32767: took 340.638000 ms, 917.368183 MiB/sec
+> test 2: copier 2: offset 2, size 32766: took 340.669000 ms, 917.256711 MiB/sec
+> test 2: copier 2: offset 3, size 32765: took 340.615000 ms, 917.374131 MiB/sec
+> test 2: copier 2: offset 4, size 32764: took 340.542000 ms, 917.542779 MiB/sec
+> test 2: copier 2: offset 5, size 32763: took 340.543000 ms, 917.512080 MiB/sec
+> test 2: copier 2: offset 6, size 32762: took 340.775000 ms, 916.859451 MiB/sec
+> test 2: copier 2: offset 7, size 32761: took 343.885000 ms, 908.539898 MiB/sec
 
-> 
-> Do we have any other use cases besides this case of storing security
-> labels in user xattrs?
+It looks like the aligned is about 2.2 faster on the aligned and 7.8
+times faster for the unalgined tests. I'll try and get this published
+some time this week.
 
-Storing security label was one example. In case of virtiofs, there is
-a good chance that we will end up remapping all the guest xattrs and
-prefix these with "user.virtiofsd".
 
-fuse-overlay is another use case. They are storing real uid/gid in 
-user.* xattrs for files over NFS.
+-- 
+Ben Dooks				http://www.codethink.co.uk/
+Senior Engineer				Codethink - Providing Genius
 
-I think overlayfs can be another benefeciary in some form. Now there
-is support for unpriviliged mouting of overlayfs from inside a user
-namespace. And that uses xattrs "user.overlay" on upper files for
-overlayfs specific metadata. Device nodes are not copied up. But
-they might have an issue with symlinks. Miklos, will know more.
-
-Thanks
-Vivek
-
+https://www.codethink.co.uk/privacy.html
