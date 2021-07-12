@@ -2,93 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63DED3C59A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16F413C59A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350650AbhGLJHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:07:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359261AbhGLI0i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:26:38 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DC1DC04FB17
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 01:20:00 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 11so18776735ljv.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 01:20:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/jiw5cL5EfxnhrPe9bNG359WYG9lcXsKRuTKlfua2dE=;
-        b=meFVtSyiW2AWPZBqOtdfVFHLwrhpAOxU/rwLZEdnH0EQYpFMYK1I2olti/az549KEV
-         R2z0O56zqPW5yedvMaABQJkfybUJCX39+q22IV5/gUdmumoNjStNizeB7MEyfK/V+qZO
-         laycdanmitH3Iauwpl60D1Xtq70TBYNQniL4HgUM3h/eNr4EB2fuH5EMJYKOmsgbo8kT
-         bm5qeSXZkiqvt6k9LLxgPxaBCyVDnZquBx+35bVkotZ1kfA4/rxLzeaNa3VA3No3gVgy
-         tBKQDPrQu0yqJqOwjE+b9Q8HcxEC+foslS0Ydv9m24fgqcrUwQBt/LUIo/pWERiX/bmQ
-         OhSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/jiw5cL5EfxnhrPe9bNG359WYG9lcXsKRuTKlfua2dE=;
-        b=QMtAXFxla7oTyLxXKhrJ0iM/Uwa0V3YGVIpc1XPbcJGAf9fR9+KD4zZFjWOcY/kpJl
-         bwDiQvNx0vWA2f17WJJ1nBsQeFG77ChOM9jtXgRYI0131M4qtSXo9hBaJYbCm77E7A+Q
-         fWs22qHo/lQGoWQOlBbphFNjRUdMrZNgfMuDWyHQnRYEmyovqFMfNdu2ODlyCCBjjuF0
-         VCsfeg8rN/RnQwdMfyWBsAGv9FmFDx0eTQdgCNHanw5bj4TUiWVlmTor3Ou32Ea+6X7s
-         v+CjzSMSj97NCNR2pi3iU6T9kXrwjKB8lo3ATJGB6cE+OJHvVqrnR6tgMtZ/0ej7fPIQ
-         8GNA==
-X-Gm-Message-State: AOAM533mfs7HvZdQwlRe7W6DSqgG8u1+5z/xcEQKGx3BZ0KPSS2kMNZP
-        o2SlcHSiOD/VyPh3bPsokPp2RIGYNbjKv3KkTCE=
-X-Google-Smtp-Source: ABdhPJx+IhMrRG7L8Tj5eHnJv2KShx75n3prxkK6CP5VuW7qW4rJSmVBWSHqjmedOdtOfcWbayKjLU0RTblRtlqwVy8=
-X-Received: by 2002:a05:651c:1684:: with SMTP id bd4mr25138675ljb.287.1626077997583;
- Mon, 12 Jul 2021 01:19:57 -0700 (PDT)
+        id S1350361AbhGLJG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:06:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47048 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350529AbhGLIWk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:22:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 192B56115A;
+        Mon, 12 Jul 2021 08:19:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626077992;
+        bh=oiAKFE0F6sF9YhyTJBg+1E7QA8xdjUhbMNjBvBqhUp8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=H9jyRPsSgBpbzr0U7ugKnFGzSoeoZh5NLAuVVLjzojjgZMF9Bi7QDBe63AvxT6u1Q
+         I26ah/GCPI4ObdZlhUbfZsw2J48Uv6FHO/57yuvvkf1iqhzFqkDJ0ZYWtFTOzpfRct
+         fXjUl2cqjppSFPFC645Ij1uroFqSCsRaowmOiiOcgg2q2Chml5QMW3eT4LXyqWNxcm
+         lfBvRHbUZ9U4pQzokko9yBubUmZNweaq6btX9sIpLoqPBuUcp87VAAMrtfGygEhYUb
+         jtzdtZg6HZdC+EMQsLx5b3WGiinShYyUoq2Js3uYe5CNiRgL+yZSq9kJ1Sf++HbRMj
+         7hMLbk6aSYnpg==
+Date:   Mon, 12 Jul 2021 13:49:44 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-phy@lists.infradead.org
+Subject: Re: [PATCH v3 0/9] Add support for Hikey 970 PCIe
+Message-ID: <20210712081944.GC8113@workstation>
+References: <cover.1625826353.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-References: <20210618145534.438816-1-sxwjean@me.com>
-In-Reply-To: <20210618145534.438816-1-sxwjean@me.com>
-From:   Xiongwei Song <sxwjean@gmail.com>
-Date:   Mon, 12 Jul 2021 16:19:31 +0800
-Message-ID: <CAEVVKH9W=O7aCfmkx=hwqHJ+-4wM_zSB0uG8n3PaXXbPptTPuw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] some improvements for lockdep
-To:     Xiongwei Song <sxwjean@me.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        longman@redhat.com, Boqun Feng <boqun.feng@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1625826353.git.mchehab+huawei@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+Hi Mauro,
 
-Will  you pick up this series?
+On Fri, Jul 09, 2021 at 12:41:36PM +0200, Mauro Carvalho Chehab wrote:
+> As requested by Rob Herring, this series split the PHY part into a separate driver.
+> Then, it adds support for Kirin 970 on a single patch.
+> 
+> With this change, the PHY-specific device tree bindings for Kirin 960 moved
+> to its own PHY properties.
+> 
+> Manivannan,
+> 
+> Please notice that the last two patches are marked as co-developed:
+> 
+> 	phy: hisilicon: add driver for Kirin 970 PCIe PHY
+> 	arm64: dts: hisilicon: Add support for HiKey 970 PCIe controller hardware
+> 
+> The first one contains the code you submitted in the past adding
+> support for Kirin 970 at the pcie-kirin driver, modified by me and
+> moved to a separate driver.
+> 
+> The second one is the DTS file, also modified by me in order to split the PHY
+> properties from the PCIe ones.
+> 
+> Please send your SoB to confirm that both changes are OK for you.
+> 
 
-Regards,
-Xiongwei
+I'm fine with the changes. The dts patch already has my s-o-b as you
+preserved my authorship and I've sent my s-o-b for the driver patch.
+I used my korg address for the driver patch but that's fine as all these
+efforts were done in my spare time.
 
-On Fri, Jun 18, 2021 at 10:55 PM Xiongwei Song <sxwjean@me.com> wrote:
->
-> From: Xiongwei Song <sxwjean@gmail.com>
->
-> Unlikely the checks of return values of graph walk will improve the
-> performance to some degree, patch 1 and patch 2 are for this.
->
-> The patch 3 will print a warning after counting lock deps when hitting
-> bfs errors.
->
-> v2:
-> * For patch 3, avoid to call lockdep_unlock() twice after counting deps.
->   Please see https://lkml.org/lkml/2021/6/17/741.
->
-> Xiongwei Song (3):
->   locking/lockdep: Unlikely bfs_error() inside
->   locking/lockdep: Unlikely conditons about BFS_RMATCH
->   locking/lockdep: Print possible warning after counting deps
->
->  kernel/locking/lockdep.c | 55 +++++++++++++++++++---------------------
->  1 file changed, 26 insertions(+), 29 deletions(-)
->
-> --
-> 2.30.2
->
+Thanks,
+Mani
+
+> Tested on Hikey970:
+> 
+>   $ lspci
+>   00:00.0 PCI bridge: Huawei Technologies Co., Ltd. Device 3670 (rev 01)
+>   01:00.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
+>   02:01.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
+>   02:04.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
+>   02:05.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
+>   02:07.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
+>   02:09.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI Express Gen 2 (5.0 GT/s) Switch (rev ba)
+>   06:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller (rev 07)
+> 
+>   $ ethtool enp6s0
+>   Settings for enp6s0:
+> 	Supported ports: [ TP	 MII ]
+> 	Supported link modes:   10baseT/Half 10baseT/Full
+> 	                        100baseT/Half 100baseT/Full
+> 	                        1000baseT/Half 1000baseT/Full
+> 	Supported pause frame use: Symmetric Receive-only
+> 	Supports auto-negotiation: Yes
+> 	Supported FEC modes: Not reported
+> 	Advertised link modes:  10baseT/Half 10baseT/Full
+> 	                        100baseT/Half 100baseT/Full
+> 	                        1000baseT/Half 1000baseT/Full
+> 	Advertised pause frame use: Symmetric Receive-only
+> 	Advertised auto-negotiation: Yes
+> 	Advertised FEC modes: Not reported
+> 	Link partner advertised link modes:  10baseT/Half 10baseT/Full
+> 	                                     100baseT/Half 100baseT/Full
+> 	Link partner advertised pause frame use: Symmetric Receive-only
+> 	Link partner advertised auto-negotiation: Yes
+> 	Link partner advertised FEC modes: Not reported
+> 	Speed: 100Mb/s
+> 	Duplex: Full
+> 	Auto-negotiation: on
+> 	master-slave cfg: preferred slave
+> 	master-slave status: slave
+> 	Port: Twisted Pair
+> 	PHYAD: 0
+> 	Transceiver: external
+> 	MDI-X: Unknown
+>   netlink error: Operation not permitted
+> 	Link detected: yes
+> 
+> Partially tested on Hikey 960[1]:
+> 
+>   $ lspci
+>   00:00.0 PCI bridge: Huawei Technologies Co., Ltd. Device 3660 (rev 01)
+> 
+> [1] The Hikey 960 doesn't come with any internal PCIe device.
+>     Its hardware supports just an external device via a M.2 slot that
+>     doesn't support SATA. I ordered a NVMe device to test, but the vendor
+>     is currently out of supply. It should take 4-5 weeks to arrive here. I'll
+>     run an extra test on it once it arrives.
+> 
+> Manivannan Sadhasivam (1):
+>   arm64: dts: hisilicon: Add support for HiKey 970 PCIe controller
+>     hardware
+> 
+> Mauro Carvalho Chehab (8):
+>   dt-bindings: phy: add bindings for Hikey 960 PCIe PHY
+>   dt-bindings: phy: add bindings for Hikey 970 PCIe PHY
+>   dt-bindings: PCI: kirin: fix compatible string
+>   dt-bindings: PCI: kirin: drop PHY properties
+>   phy: hisilicon: add a PHY driver for Kirin 960
+>   PCI: kirin: drop the PHY logic from the driver
+>   PCI: kirin: use regmap for APB registers
+>   phy: hisilicon: add driver for Kirin 970 PCIe PHY
+> 
+>  .../devicetree/bindings/pci/kirin-pcie.txt    |  21 +-
+>  .../phy/hisilicon,phy-hi3660-pcie.yaml        |  82 ++
+>  .../phy/hisilicon,phy-hi3670-pcie.yaml        | 101 ++
+>  arch/arm64/boot/dts/hisilicon/hi3660.dtsi     |  29 +-
+>  arch/arm64/boot/dts/hisilicon/hi3670.dtsi     |  72 ++
+>  .../boot/dts/hisilicon/hikey970-pmic.dtsi     |   1 -
+>  drivers/pci/controller/dwc/pcie-kirin.c       | 298 ++----
+>  drivers/phy/hisilicon/Kconfig                 |  20 +
+>  drivers/phy/hisilicon/Makefile                |   2 +
+>  drivers/phy/hisilicon/phy-hi3660-pcie.c       | 325 +++++++
+>  drivers/phy/hisilicon/phy-hi3670-pcie.c       | 892 ++++++++++++++++++
+>  11 files changed, 1572 insertions(+), 271 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/phy/hisilicon,phy-hi3660-pcie.yaml
+>  create mode 100644 Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
+>  create mode 100644 drivers/phy/hisilicon/phy-hi3660-pcie.c
+>  create mode 100644 drivers/phy/hisilicon/phy-hi3670-pcie.c
+> 
+> -- 
+> 2.31.1
+> 
+> 
