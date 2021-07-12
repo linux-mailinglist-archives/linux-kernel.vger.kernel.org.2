@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E20473C58A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8E43C4CF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379697AbhGLIux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:50:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43404 "EHLO mail.kernel.org"
+        id S244637AbhGLHLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:11:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352295AbhGLHyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:54:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8069611AC;
-        Mon, 12 Jul 2021 07:51:30 +0000 (UTC)
+        id S238720AbhGLGtP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:49:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADF0561208;
+        Mon, 12 Jul 2021 06:45:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076291;
-        bh=9bM4eR3WnkxVDh5fa0q5W9B2scDrp7xta1a0/wkQ29I=;
+        s=korg; t=1626072312;
+        bh=DUaKgKu5pIGNyRSdMOAvwoAjyDMFvJrYVonQ4ehYsm8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zC40UlfQxVZQpcCLSTrMBshnuDL6utd8UTIcve0/W+voc5IiKUSq/FmaYYA0i6zgH
-         rokMm1cGGpWTEidKEzR0KxVvuhjpiNAXTY368J0avXy0tL3GlKbCoGvfB2J1wPHeOf
-         WIhUUg+NsP8q5fk9q5NVhJtQc8K3UMPMoza1/OnY=
+        b=kWzXL3zK19Yk8qj8Z5FtgakQ519a+9H9H8P5rxwR9xW8Q3/C+wC5dKqVybtP+LdiK
+         34Ai8SHlLnoF1As1Jz0RpKFj8CJAVGTyv7gE1DODBgJFRDeVz+lK3iak/cNfU3uCT+
+         BE/S37yCMJwwvrKkdAjRovX/n4yrKnS9WV3dRsAw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Peter Meerwald <pmeerw@pmeerw.net>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 581/800] Bluetooth: mgmt: Fix slab-out-of-bounds in tlv_data_is_valid
-Date:   Mon, 12 Jul 2021 08:10:04 +0200
-Message-Id: <20210712061029.129894074@linuxfoundation.org>
+Subject: [PATCH 5.10 445/593] iio: accel: bma180: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
+Date:   Mon, 12 Jul 2021 08:10:05 +0200
+Message-Id: <20210712060937.972502398@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,63 +42,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit 799acb9347915bfe4eac0ff2345b468f0a1ca207 ]
+[ Upstream commit fc36da3131a747a9367a05caf06de19be1bcc972 ]
 
-This fixes parsing of LTV entries when the length is 0.
+To make code more readable, use a structure to express the channel
+layout and ensure the timestamp is 8 byte aligned.
 
-Found with:
+Found during an audit of all calls of this function.
 
-tools/mgmt-tester -s "Add Advertising - Success (ScRsp only)"
-
-Add Advertising - Success (ScRsp only) - run
-  Sending Add Advertising (0x003e)
-  Test condition added, total 1
-[   11.004577] ==================================================================
-[   11.005292] BUG: KASAN: slab-out-of-bounds in tlv_data_is_valid+0x87/0xe0
-[   11.005984] Read of size 1 at addr ffff888002c695b0 by task mgmt-tester/87
-[   11.006711]
-[   11.007176]
-[   11.007429] Allocated by task 87:
-[   11.008151]
-[   11.008438] The buggy address belongs to the object at ffff888002c69580
-[   11.008438]  which belongs to the cache kmalloc-64 of size 64
-[   11.010526] The buggy address is located 48 bytes inside of
-[   11.010526]  64-byte region [ffff888002c69580, ffff888002c695c0)
-[   11.012423] The buggy address belongs to the page:
-[   11.013291]
-[   11.013544] Memory state around the buggy address:
-[   11.014359]  ffff888002c69480: fa fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-[   11.015453]  ffff888002c69500: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-[   11.016232] >ffff888002c69580: 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc fc
-[   11.017010]                                      ^
-[   11.017547]  ffff888002c69600: 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc fc
-[   11.018296]  ffff888002c69680: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-[   11.019116] ==================================================================
-
-Fixes: 2bb36870e8cb2 ("Bluetooth: Unify advertising instance flags check")
-Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Fixes: b9a6a237ffc9 ("iio:bma180: Drop _update_scan_mode()")
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: Peter Meerwald <pmeerw@pmeerw.net>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Link: https://lore.kernel.org/r/20210501170121.512209-2-jic23@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/mgmt.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/iio/accel/bma180.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
-index f9be7f9084d6..023a98f7c992 100644
---- a/net/bluetooth/mgmt.c
-+++ b/net/bluetooth/mgmt.c
-@@ -7585,6 +7585,9 @@ static bool tlv_data_is_valid(struct hci_dev *hdev, u32 adv_flags, u8 *data,
- 	for (i = 0, cur_len = 0; i < len; i += (cur_len + 1)) {
- 		cur_len = data[i];
+diff --git a/drivers/iio/accel/bma180.c b/drivers/iio/accel/bma180.c
+index 2309bdd00a31..da56488182d0 100644
+--- a/drivers/iio/accel/bma180.c
++++ b/drivers/iio/accel/bma180.c
+@@ -164,7 +164,11 @@ struct bma180_data {
+ 	int scale;
+ 	int bw;
+ 	bool pmode;
+-	u8 buff[16]; /* 3x 16-bit + 8-bit + padding + timestamp */
++	/* Ensure timestamp is naturally aligned */
++	struct {
++		s16 chan[4];
++		s64 timestamp __aligned(8);
++	} scan;
+ };
  
-+		if (!cur_len)
-+			continue;
-+
- 		if (data[i + 1] == EIR_FLAGS &&
- 		    (!is_adv_data || flags_managed(adv_flags)))
- 			return false;
+ enum bma180_chan {
+@@ -943,12 +947,12 @@ static irqreturn_t bma180_trigger_handler(int irq, void *p)
+ 			mutex_unlock(&data->mutex);
+ 			goto err;
+ 		}
+-		((s16 *)data->buff)[i++] = ret;
++		data->scan.chan[i++] = ret;
+ 	}
+ 
+ 	mutex_unlock(&data->mutex);
+ 
+-	iio_push_to_buffers_with_timestamp(indio_dev, data->buff, time_ns);
++	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan, time_ns);
+ err:
+ 	iio_trigger_notify_done(indio_dev->trig);
+ 
 -- 
 2.30.2
 
