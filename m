@@ -2,46 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F39FD3C4C1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 193BC3C583C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241976AbhGLHBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:01:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41506 "EHLO mail.kernel.org"
+        id S1343799AbhGLInb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:43:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239167AbhGLGov (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:44:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D786611F1;
-        Mon, 12 Jul 2021 06:41:04 +0000 (UTC)
+        id S1350680AbhGLHvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:51:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03A40616E9;
+        Mon, 12 Jul 2021 07:47:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072065;
-        bh=X7N+hfWzZ01ntgSwiLLeppKf3NllJCroZW0ac6LKqIU=;
+        s=korg; t=1626076048;
+        bh=ku/sqwX/+BwqlH/1g7STkp/ar7P0nBgRAAwnfOmy/FY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ousYRLvT024PrKZSzj+mk3ow23r2EnnbWZeI6Zg6gvXs0K6TWrdv6sGqpRsIeB8aC
-         Uns4J8EpSAV4R0vd+NFNTFQmC8SmVY+4F30aGPHD/B2NGf+NFv3BuFEGr1AFT/pq1a
-         U4hKSPmthGBHaPrseL05poKgwiZIie90MovCSj1Q=
+        b=g2UHl5rCs448XhkNfAymmjQzMJffy65DfY6knoDV1GZRki67JiX8o529medEtNZ3U
+         apWvMgrfrkVDdDvroZvmntIoBEV3MITT+9qWPaeedmf3UdN39o2Ln/4GfG01sXnjcM
+         hTWGYaNr5K4FLnAubMPNVxEjoY0jMRV2zy4Gh7kA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Waiman Long <longman@redhat.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Md Haris Iqbal <haris.iqbal@ionos.com>,
+        Gioh Kim <gi-oh.kim@ionos.com>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 296/593] mm: memcg/slab: properly set up gfp flags for objcg pointer array
+Subject: [PATCH 5.13 433/800] RDMA/rtrs-clt: Check if the queue_depth has changed during a reconnection
 Date:   Mon, 12 Jul 2021 08:07:36 +0200
-Message-Id: <20210712060917.202126218@linuxfoundation.org>
+Message-Id: <20210712061013.148029507@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,114 +42,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Waiman Long <longman@redhat.com>
+From: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
 
-[ Upstream commit 41eb5df1cbc9b302fc263ad7c9f38cfc38b4df61 ]
+[ Upstream commit 5b73b799c25c68a4703cd6c5ac4518006d9865b8 ]
 
-Patch series "mm: memcg/slab: Fix objcg pointer array handling problem", v4.
+The queue_depth is a module parameter for rtrs_server. It is used on the
+client side to determing the queue_depth of the request queue for the RNBD
+virtual block device.
 
-Since the merging of the new slab memory controller in v5.9, the page
-structure stores a pointer to objcg pointer array for slab pages.  When
-the slab has no used objects, it can be freed in free_slab() which will
-call kfree() to free the objcg pointer array in
-memcg_alloc_page_obj_cgroups().  If it happens that the objcg pointer
-array is the last used object in its slab, that slab may then be freed
-which may caused kfree() to be called again.
+During a reconnection event for an already mapped device, in case the
+rtrs_server module queue_depth has changed, fail the reconnect attempt.
 
-With the right workload, the slab cache may be set up in a way that allows
-the recursive kfree() calling loop to nest deep enough to cause a kernel
-stack overflow and panic the system.  In fact, we have a reproducer that
-can cause kernel stack overflow on a s390 system involving kmalloc-rcl-256
-and kmalloc-rcl-128 slabs with the following kfree() loop recursively
-called 74 times:
+Also stop further auto reconnection attempts. A manual reconnect via
+sysfs has to be triggerred.
 
-  [ 285.520739] [<000000000ec432fc>] kfree+0x4bc/0x560 [ 285.520740]
-[<000000000ec43466>] __free_slab+0xc6/0x228 [ 285.520741]
-[<000000000ec41fc2>] __slab_free+0x3c2/0x3e0 [ 285.520742]
-[<000000000ec432fc>] kfree+0x4bc/0x560 : While investigating this issue, I
-also found an issue on the allocation side.  If the objcg pointer array
-happen to come from the same slab or a circular dependency linkage is
-formed with multiple slabs, those affected slabs can never be freed again.
-
-This patch series addresses these two issues by introducing a new set of
-kmalloc-cg-<n> caches split from kmalloc-<n> caches.  The new set will
-only contain non-reclaimable and non-dma objects that are accounted in
-memory cgroups whereas the old set are now for unaccounted objects only.
-By making this split, all the objcg pointer arrays will come from the
-kmalloc-<n> caches, but those caches will never hold any objcg pointer
-array.  As a result, deeply nested kfree() call and the unfreeable slab
-problems are now gone.
-
-This patch (of 4):
-
-Since the merging of the new slab memory controller in v5.9, the page
-structure may store a pointer to obj_cgroup pointer array for slab pages.
-Currently, only the __GFP_ACCOUNT bit is masked off.  However, the array
-is not readily reclaimable and doesn't need to come from the DMA buffer.
-So those GFP bits should be masked off as well.
-
-Do the flag bit clearing at memcg_alloc_page_obj_cgroups() to make sure
-that it is consistently applied no matter where it is called.
-
-Link: https://lkml.kernel.org/r/20210505200610.13943-1-longman@redhat.com
-Link: https://lkml.kernel.org/r/20210505200610.13943-2-longman@redhat.com
-Fixes: 286e04b8ed7a ("mm: memcg/slab: allocate obj_cgroups for non-root slab pages")
-Signed-off-by: Waiman Long <longman@redhat.com>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
-Acked-by: Roman Gushchin <guro@fb.com>
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc: Christoph Lameter <cl@linux.com>
-Cc: Pekka Enberg <penberg@kernel.org>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 6a98d71daea18 ("RDMA/rtrs: client: main functionality")
+Link: https://lore.kernel.org/r/20210528113018.52290-20-jinpu.wang@ionos.com
+Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
+Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
+Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/memcontrol.c | 8 ++++++++
- mm/slab.h       | 1 -
- 2 files changed, 8 insertions(+), 1 deletion(-)
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 8d9f5fa4c6d3..92bf987d0a41 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2898,12 +2898,20 @@ static void commit_charge(struct page *page, struct mem_cgroup *memcg)
- }
- 
- #ifdef CONFIG_MEMCG_KMEM
-+/*
-+ * The allocated objcg pointers array is not accounted directly.
-+ * Moreover, it should not come from DMA buffer and is not readily
-+ * reclaimable. So those GFP bits should be masked off.
-+ */
-+#define OBJCGS_CLEAR_MASK	(__GFP_DMA | __GFP_RECLAIMABLE | __GFP_ACCOUNT)
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+index a563c9b9d52c..d4d54189c878 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+@@ -1791,7 +1791,19 @@ static int rtrs_rdma_conn_established(struct rtrs_clt_con *con,
+ 				  queue_depth);
+ 			return -ECONNRESET;
+ 		}
+-		if (!sess->rbufs || sess->queue_depth < queue_depth) {
++		if (sess->queue_depth > 0 && queue_depth != sess->queue_depth) {
++			rtrs_err(clt, "Error: queue depth changed\n");
 +
- int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
- 				 gfp_t gfp)
- {
- 	unsigned int objects = objs_per_slab_page(s, page);
- 	void *vec;
++			/*
++			 * Stop any more reconnection attempts
++			 */
++			sess->reconnect_attempts = -1;
++			rtrs_err(clt,
++				"Disabling auto-reconnect. Trigger a manual reconnect after issue is resolved\n");
++			return -ECONNRESET;
++		}
++
++		if (!sess->rbufs) {
+ 			kfree(sess->rbufs);
+ 			sess->rbufs = kcalloc(queue_depth, sizeof(*sess->rbufs),
+ 					      GFP_KERNEL);
+@@ -1805,7 +1817,7 @@ static int rtrs_rdma_conn_established(struct rtrs_clt_con *con,
+ 		sess->chunk_size = sess->max_io_size + sess->max_hdr_size;
  
-+	gfp &= ~OBJCGS_CLEAR_MASK;
- 	vec = kcalloc_node(objects, sizeof(struct obj_cgroup *), gfp,
- 			   page_to_nid(page));
- 	if (!vec)
-diff --git a/mm/slab.h b/mm/slab.h
-index e258ffcfb0ef..944e8b2040ae 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -326,7 +326,6 @@ static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
- 	if (!memcg_kmem_enabled() || !objcg)
- 		return;
- 
--	flags &= ~__GFP_ACCOUNT;
- 	for (i = 0; i < size; i++) {
- 		if (likely(p[i])) {
- 			page = virt_to_head_page(p[i]);
+ 		/*
+-		 * Global queue depth and IO size is always a minimum.
++		 * Global IO size is always a minimum.
+ 		 * If while a reconnection server sends us a value a bit
+ 		 * higher - client does not care and uses cached minimum.
+ 		 *
+@@ -1813,8 +1825,7 @@ static int rtrs_rdma_conn_established(struct rtrs_clt_con *con,
+ 		 * connections in parallel, use lock.
+ 		 */
+ 		mutex_lock(&clt->paths_mutex);
+-		clt->queue_depth = min_not_zero(sess->queue_depth,
+-						clt->queue_depth);
++		clt->queue_depth = sess->queue_depth;
+ 		clt->max_io_size = min_not_zero(sess->max_io_size,
+ 						clt->max_io_size);
+ 		mutex_unlock(&clt->paths_mutex);
 -- 
 2.30.2
 
