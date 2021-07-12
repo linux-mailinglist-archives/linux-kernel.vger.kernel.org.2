@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26AD3C4E89
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B72173C5902
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245574AbhGLHTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:19:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55776 "EHLO mail.kernel.org"
+        id S1382015AbhGLIzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:55:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237708AbhGLGzK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:55:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86ECE60FD8;
-        Mon, 12 Jul 2021 06:52:20 +0000 (UTC)
+        id S1353667AbhGLICo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:02:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ACD716145E;
+        Mon, 12 Jul 2021 07:56:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072741;
-        bh=fob3s5mDsTJVZqnRf2jvmECc0ABXF+X68QEkJbejXo4=;
+        s=korg; t=1626076594;
+        bh=sENWkQ5uR0IMnAxF0xKSzpMQnClAuWfwxn0h+ba6SMU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k8rqnD4/7Fo1W9h44PmFUUxWR886SjfEz+gtwPNhaA7VtJjLEOz+qgUrEJBYw0SO7
-         2m6ZLku9DocgG++H/nLncd+dxfykK09Nsxo3BQ7d7tfuLjE9FMkKYDd/6nAijlZfQL
-         6Z7LO/BIp/qyTxysssFTvAiERcKgt1bAPIJ3UwIw=
+        b=otjsAVtqfzI03rEJNhA6tPSzbW9BRZG9miCX5up0YlroUX8CTIckIQeXZr+x8P0vP
+         JH9y7V6EVH38oGqkOQ9w2hhnDq72MTw9gSJiKBKhtBDudgu67gEzJp3RgBwXkYbkfZ
+         lsV7tNEOdZ5vmTgDJh+qOMsirHTHbvijLiIAbW+M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Trent Piepho <tpiepho@gmail.com>,
-        Yiyuan Guo <yguoaz@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Oskar Schirmer <oskar@scara.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andreas Klinger <ak@it-klinger.de>,
+        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 573/593] lib/math/rational.c: fix divide by zero
-Date:   Mon, 12 Jul 2021 08:12:13 +0200
-Message-Id: <20210712060958.032686275@linuxfoundation.org>
+Subject: [PATCH 5.13 711/800] iio: adc: mxs-lradc: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
+Date:   Mon, 12 Jul 2021 08:12:14 +0200
+Message-Id: <20210712061042.366401833@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,76 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trent Piepho <tpiepho@gmail.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit 65a0d3c14685663ba111038a35db70f559e39336 ]
+[ Upstream commit 6a6be221b8bd561b053f0701ec752a5ed9007f69 ]
 
-If the input is out of the range of the allowed values, either larger than
-the largest value or closer to zero than the smallest non-zero allowed
-value, then a division by zero would occur.
+To make code more readable, use a structure to express the channel
+layout and ensure the timestamp is 8 byte aligned.
+Add a comment on why the buffer is the size it is as not immediately
+obvious.
 
-In the case of input too large, the division by zero will occur on the
-first iteration.  The best result (largest allowed value) will be found by
-always choosing the semi-convergent and excluding the denominator based
-limit when finding it.
+Found during an audit of all calls of this function.
 
-In the case of the input too small, the division by zero will occur on the
-second iteration.  The numerator based semi-convergent should not be
-calculated to avoid the division by zero.  But the semi-convergent vs
-previous convergent test is still needed, which effectively chooses
-between 0 (the previous convergent) vs the smallest allowed fraction (best
-semi-convergent) as the result.
-
-Link: https://lkml.kernel.org/r/20210525144250.214670-1-tpiepho@gmail.com
-Fixes: 323dd2c3ed0 ("lib/math/rational.c: fix possible incorrect result from rational fractions helper")
-Signed-off-by: Trent Piepho <tpiepho@gmail.com>
-Reported-by: Yiyuan Guo <yguoaz@gmail.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Oskar Schirmer <oskar@scara.com>
-Cc: Daniel Latypov <dlatypov@google.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 6dd112b9f85e ("iio: adc: mxs-lradc: Add support for ADC driver")
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: Andreas Klinger <ak@it-klinger.de>
+Reviewed-by: Nuno Sá <nuno.sa@analog.com>
+Link: https://lore.kernel.org/r/20210613152301.571002-4-jic23@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/math/rational.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ drivers/iio/adc/mxs-lradc-adc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/lib/math/rational.c b/lib/math/rational.c
-index 9781d521963d..c0ab51d8fbb9 100644
---- a/lib/math/rational.c
-+++ b/lib/math/rational.c
-@@ -12,6 +12,7 @@
- #include <linux/compiler.h>
- #include <linux/export.h>
- #include <linux/minmax.h>
-+#include <linux/limits.h>
+diff --git a/drivers/iio/adc/mxs-lradc-adc.c b/drivers/iio/adc/mxs-lradc-adc.c
+index 30e29f44ebd2..c480cb489c1a 100644
+--- a/drivers/iio/adc/mxs-lradc-adc.c
++++ b/drivers/iio/adc/mxs-lradc-adc.c
+@@ -115,7 +115,8 @@ struct mxs_lradc_adc {
+ 	struct device		*dev;
  
- /*
-  * calculate best rational approximation for a given fraction
-@@ -78,13 +79,18 @@ void rational_best_approximation(
- 		 * found below as 't'.
- 		 */
- 		if ((n2 > max_numerator) || (d2 > max_denominator)) {
--			unsigned long t = min((max_numerator - n0) / n1,
--					      (max_denominator - d0) / d1);
-+			unsigned long t = ULONG_MAX;
- 
--			/* This tests if the semi-convergent is closer
--			 * than the previous convergent.
-+			if (d1)
-+				t = (max_denominator - d0) / d1;
-+			if (n1)
-+				t = min(t, (max_numerator - n0) / n1);
-+
-+			/* This tests if the semi-convergent is closer than the previous
-+			 * convergent.  If d1 is zero there is no previous convergent as this
-+			 * is the 1st iteration, so always choose the semi-convergent.
- 			 */
--			if (2u * t > a || (2u * t == a && d0 * dp > d1 * d)) {
-+			if (!d1 || 2u * t > a || (2u * t == a && d0 * dp > d1 * d)) {
- 				n1 = n0 + t * n1;
- 				d1 = d0 + t * d1;
- 			}
+ 	void __iomem		*base;
+-	u32			buffer[10];
++	/* Maximum of 8 channels + 8 byte ts */
++	u32			buffer[10] __aligned(8);
+ 	struct iio_trigger	*trig;
+ 	struct completion	completion;
+ 	spinlock_t		lock;
 -- 
 2.30.2
 
