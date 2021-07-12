@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56ACF3C5816
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1709E3C5184
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378864AbhGLIl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:41:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35404 "EHLO mail.kernel.org"
+        id S1349210AbhGLHlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:41:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350308AbhGLHut (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:50:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E14A6198B;
-        Mon, 12 Jul 2021 07:44:21 +0000 (UTC)
+        id S245307AbhGLHLg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:11:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C169760FF0;
+        Mon, 12 Jul 2021 07:08:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075861;
-        bh=/7Aazw9y9rIjsnZ1DU2aSYlJczfHRqMOr7MkK05i3xk=;
+        s=korg; t=1626073727;
+        bh=rNG5DcWA9KDHMgAglAzkWJWc5snz95lOb8j/k4helOw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G+qofZr2za9dcRWU/76pLgzSJjM8yuc5egMrGMpsYRNqSZGsR9N6RPv9yw7wJtuUY
-         93Snv32n4DU3LV3rRXVeAAxetHRZ8rSrqUWDphaU068HHxgIo5GZ5Y89aIonvS2r1M
-         hNpiQJaMFtZyf6HJA9bKEOYTNdHWKLfbQVOtXIec=
+        b=fPDHvCAbzSd09Yu0qFZtFklqCIDgA9ngSBrOg0qsh+teG9PpN5ef4GhnJpn6k6rUE
+         bw0Bu/KyDrMYnFkP640vqClkXWN+/aRNRDqksZDTlf1+OwLb67lFTs2eUzQPorHDvs
+         kOIZcxAqJkDtMzmhlJHkgVvuzrBqLqKQLhURe7mw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lucas Stach <l.stach@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
+        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 397/800] drm/imx: ipuv3-plane: fix PRG modifiers after drm managed resource conversion
-Date:   Mon, 12 Jul 2021 08:07:00 +0200
-Message-Id: <20210712061009.399934792@linuxfoundation.org>
+Subject: [PATCH 5.12 338/700] ACPI: bgrt: Fix CFI violation
+Date:   Mon, 12 Jul 2021 08:07:01 +0200
+Message-Id: <20210712061012.281177073@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,70 +41,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lucas Stach <l.stach@pengutronix.de>
+From: Nathan Chancellor <nathan@kernel.org>
 
-[ Upstream commit 17b9a94656fe19aef3647c4f93d93be51697ceb1 ]
+[ Upstream commit f37ccf8fce155d08ae2a4fb3db677911ced0c21a ]
 
-The conversion to drm managed resources introduced two bugs: the plane is now
-always initialized with the linear-only list, while the list with the Vivante
-GPU modifiers should have been used when the PRG/PRE engines are present. This
-masked another issue, as ipu_plane_format_mod_supported() is now called before
-the private plane data is set up, so if a non-linear modifier is supplied in
-the plane modifier list, we run into a NULL pointer dereference checking for
-the PRG presence. To fix this just remove the check from this function, as we
-know that it will only be called with a non-linear modifier, if the plane init
-code has already determined that the PRG/PRE is present.
+clang's Control Flow Integrity requires that every indirect call has a
+valid target, which is based on the type of the function pointer. The
+*_show() functions in this file are written as if they will be called
+from dev_attr_show(); however, they will be called from
+sysfs_kf_seq_show() because the files were created by
+sysfs_create_group() and the sysfs ops are based on kobj_sysfs_ops
+because of kobject_add_and_create(). Because the *_show() functions do
+not match the type of the show() member in struct kobj_attribute, there
+is a CFI violation.
 
-Fixes: 699e7e543f1a ("drm/imx: ipuv3-plane: use drm managed resources")
-Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
-Link: https://lore.kernel.org/r/20210510145927.988661-1-l.stach@pengutronix.de
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+$ cat /sys/firmware/acpi/bgrt/{status,type,version,{x,y}offset}}
+1
+0
+1
+522
+307
+
+$ dmesg | grep "CFI failure"
+[  267.761825] CFI failure (target: type_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
+[  267.762246] CFI failure (target: xoffset_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
+[  267.762584] CFI failure (target: status_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
+[  267.762973] CFI failure (target: yoffset_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
+[  267.763330] CFI failure (target: version_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
+
+Convert these functions to the type of the show() member in struct
+kobj_attribute so that there is no more CFI violation. Because these
+functions are all so similar, combine them into a macro.
+
+Fixes: d1ff4b1cdbab ("ACPI: Add support for exposing BGRT data")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1406
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/imx/ipuv3-plane.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ drivers/acpi/bgrt.c | 57 ++++++++++++++-------------------------------
+ 1 file changed, 18 insertions(+), 39 deletions(-)
 
-diff --git a/drivers/gpu/drm/imx/ipuv3-plane.c b/drivers/gpu/drm/imx/ipuv3-plane.c
-index fc8f4834ed7b..233310712deb 100644
---- a/drivers/gpu/drm/imx/ipuv3-plane.c
-+++ b/drivers/gpu/drm/imx/ipuv3-plane.c
-@@ -345,10 +345,11 @@ static bool ipu_plane_format_mod_supported(struct drm_plane *plane,
- 	if (modifier == DRM_FORMAT_MOD_LINEAR)
- 		return true;
+diff --git a/drivers/acpi/bgrt.c b/drivers/acpi/bgrt.c
+index 19bb7f870204..e0d14017706e 100644
+--- a/drivers/acpi/bgrt.c
++++ b/drivers/acpi/bgrt.c
+@@ -15,40 +15,19 @@
+ static void *bgrt_image;
+ static struct kobject *bgrt_kobj;
  
--	/* without a PRG there are no supported modifiers */
--	if (!ipu_prg_present(ipu))
--		return false;
+-static ssize_t version_show(struct device *dev,
+-			    struct device_attribute *attr, char *buf)
+-{
+-	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.version);
+-}
+-static DEVICE_ATTR_RO(version);
 -
-+	/*
-+	 * Without a PRG the possible modifiers list only includes the linear
-+	 * modifier, so we always take the early return from this function and
-+	 * only end up here if the PRG is present.
-+	 */
- 	return ipu_prg_format_supported(ipu, format, modifier);
- }
- 
-@@ -869,6 +870,10 @@ struct ipu_plane *ipu_plane_init(struct drm_device *dev, struct ipu_soc *ipu,
- 		formats = ipu_plane_rgb_formats;
- 		format_count = ARRAY_SIZE(ipu_plane_rgb_formats);
- 	}
-+
-+	if (ipu_prg_present(ipu))
-+		modifiers = pre_format_modifiers;
-+
- 	ipu_plane = drmm_universal_plane_alloc(dev, struct ipu_plane, base,
- 					       possible_crtcs, &ipu_plane_funcs,
- 					       formats, format_count, modifiers,
-@@ -883,9 +888,6 @@ struct ipu_plane *ipu_plane_init(struct drm_device *dev, struct ipu_soc *ipu,
- 	ipu_plane->dma = dma;
- 	ipu_plane->dp_flow = dp;
- 
--	if (ipu_prg_present(ipu))
--		modifiers = pre_format_modifiers;
+-static ssize_t status_show(struct device *dev,
+-			   struct device_attribute *attr, char *buf)
+-{
+-	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.status);
+-}
+-static DEVICE_ATTR_RO(status);
 -
- 	drm_plane_helper_add(&ipu_plane->base, &ipu_plane_helper_funcs);
+-static ssize_t type_show(struct device *dev,
+-			 struct device_attribute *attr, char *buf)
+-{
+-	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.image_type);
+-}
+-static DEVICE_ATTR_RO(type);
+-
+-static ssize_t xoffset_show(struct device *dev,
+-			    struct device_attribute *attr, char *buf)
+-{
+-	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.image_offset_x);
+-}
+-static DEVICE_ATTR_RO(xoffset);
+-
+-static ssize_t yoffset_show(struct device *dev,
+-			    struct device_attribute *attr, char *buf)
+-{
+-	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.image_offset_y);
+-}
+-static DEVICE_ATTR_RO(yoffset);
++#define BGRT_SHOW(_name, _member) \
++	static ssize_t _name##_show(struct kobject *kobj,			\
++				    struct kobj_attribute *attr, char *buf)	\
++	{									\
++		return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab._member);	\
++	}									\
++	struct kobj_attribute bgrt_attr_##_name = __ATTR_RO(_name)
++
++BGRT_SHOW(version, version);
++BGRT_SHOW(status, status);
++BGRT_SHOW(type, image_type);
++BGRT_SHOW(xoffset, image_offset_x);
++BGRT_SHOW(yoffset, image_offset_y);
  
- 	if (dp == IPU_DP_FLOW_SYNC_BG || dp == IPU_DP_FLOW_SYNC_FG)
+ static ssize_t image_read(struct file *file, struct kobject *kobj,
+ 	       struct bin_attribute *attr, char *buf, loff_t off, size_t count)
+@@ -60,11 +39,11 @@ static ssize_t image_read(struct file *file, struct kobject *kobj,
+ static BIN_ATTR_RO(image, 0);	/* size gets filled in later */
+ 
+ static struct attribute *bgrt_attributes[] = {
+-	&dev_attr_version.attr,
+-	&dev_attr_status.attr,
+-	&dev_attr_type.attr,
+-	&dev_attr_xoffset.attr,
+-	&dev_attr_yoffset.attr,
++	&bgrt_attr_version.attr,
++	&bgrt_attr_status.attr,
++	&bgrt_attr_type.attr,
++	&bgrt_attr_xoffset.attr,
++	&bgrt_attr_yoffset.attr,
+ 	NULL,
+ };
+ 
 -- 
 2.30.2
 
