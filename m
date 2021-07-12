@@ -2,43 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA2A3C5876
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C9523C4AF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352897AbhGLIrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:47:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36234 "EHLO mail.kernel.org"
+        id S237985AbhGLGzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:55:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350188AbhGLHun (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:50:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C509611ED;
-        Mon, 12 Jul 2021 07:44:00 +0000 (UTC)
+        id S238470AbhGLGkO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:40:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 44DC060238;
+        Mon, 12 Jul 2021 06:37:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075840;
-        bh=tvrW9tHGUSb1V+PTUYp3OEQtAB+taDs2wzg+TwVxSa8=;
+        s=korg; t=1626071846;
+        bh=z7k6hZxpghgA0HTAKvvdpq0jUkfYmU0Cp8/Xt6fw0Js=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DorK/aXt8prXQ2T9WRkIyBb+kt0sCes6kQ9bCfFnBAXpQeqIx91OmR+x2sQZiYirW
-         AHx/4bVoiYO0XYgm/RoGsWbNUz8uUDProJdsU9ZY0yqtowRsXzdrMVJnREc8YG22R4
-         EtAmYjOaTNYQ5m0Ux2WCThy6Luj05OyRrBxf+7Ec=
+        b=pQqtKYl9HRrVwkm64D0rVXVFtTC/BN5UQu5Vj1NrtdOja4bwUxUIVlQxb1QrvWgKB
+         cmWWFQbHfz29iSrXLOzYT7vpPLpRLTAolsL/+KPrf/FO3zCAZ//eI11RPPjMfIvNNm
+         jym+R7LQZ0CS50FxAdIbq/0omXaE4tiAmb+rQCFk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Junxiao Bi <junxiao.bi@oracle.com>,
-        Changwei Ge <gechangwei@live.cn>, Gang He <ghe@suse.com>,
-        Jun Piao <piaojun@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 380/800] ocfs2: fix snprintf() checking
+Subject: [PATCH 5.10 243/593] crypto: sm2 - remove unnecessary reset operations
 Date:   Mon, 12 Jul 2021 08:06:43 +0200
-Message-Id: <20210712061007.581873982@linuxfoundation.org>
+Message-Id: <20210712060909.626305937@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,83 +41,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-[ Upstream commit 54e948c60cc843b6e84dc44496edc91f51d2a28e ]
+[ Upstream commit 1bc608b4655b8b1491fb100f4cf4f15ae64a8698 ]
 
-The snprintf() function returns the number of bytes which would have been
-printed if the buffer was large enough.  In other words it can return ">=
-remain" but this code assumes it returns "== remain".
+This is an algorithm optimization. The reset operation when
+setting the public key is repeated and redundant, so remove it.
+At the same time, `sm2_ecc_os2ec()` is optimized to make the
+function more simpler and more in line with the Linux code style.
 
-The run time impact of this bug is not very severe.  The next iteration
-through the loop would trigger a WARN() when we pass a negative limit to
-snprintf().  We would then return success instead of -E2BIG.
-
-The kernel implementation of snprintf() will never return negatives so
-there is no need to check and I have deleted that dead code.
-
-Link: https://lkml.kernel.org/r/20210511135350.GV1955@kadam
-Fixes: a860f6eb4c6a ("ocfs2: sysfile interfaces for online file check")
-Fixes: 74ae4e104dfc ("ocfs2: Create stack glue sysfs files.")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-Cc: Mark Fasheh <mark@fasheh.com>
-Cc: Joel Becker <jlbec@evilplan.org>
-Cc: Junxiao Bi <junxiao.bi@oracle.com>
-Cc: Changwei Ge <gechangwei@live.cn>
-Cc: Gang He <ghe@suse.com>
-Cc: Jun Piao <piaojun@huawei.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ocfs2/filecheck.c | 6 +-----
- fs/ocfs2/stackglue.c | 8 ++------
- 2 files changed, 3 insertions(+), 11 deletions(-)
+ crypto/sm2.c | 75 ++++++++++++++++++++--------------------------------
+ 1 file changed, 29 insertions(+), 46 deletions(-)
 
-diff --git a/fs/ocfs2/filecheck.c b/fs/ocfs2/filecheck.c
-index 90b8d300c1ee..de56e6231af8 100644
---- a/fs/ocfs2/filecheck.c
-+++ b/fs/ocfs2/filecheck.c
-@@ -326,11 +326,7 @@ static ssize_t ocfs2_filecheck_attr_show(struct kobject *kobj,
- 		ret = snprintf(buf + total, remain, "%lu\t\t%u\t%s\n",
- 			       p->fe_ino, p->fe_done,
- 			       ocfs2_filecheck_error(p->fe_status));
--		if (ret < 0) {
--			total = ret;
--			break;
--		}
--		if (ret == remain) {
-+		if (ret >= remain) {
- 			/* snprintf() didn't fit */
- 			total = -E2BIG;
- 			break;
-diff --git a/fs/ocfs2/stackglue.c b/fs/ocfs2/stackglue.c
-index d50e8b8dfea4..16f1bfc407f2 100644
---- a/fs/ocfs2/stackglue.c
-+++ b/fs/ocfs2/stackglue.c
-@@ -500,11 +500,7 @@ static ssize_t ocfs2_loaded_cluster_plugins_show(struct kobject *kobj,
- 	list_for_each_entry(p, &ocfs2_stack_list, sp_list) {
- 		ret = snprintf(buf, remain, "%s\n",
- 			       p->sp_name);
--		if (ret < 0) {
--			total = ret;
--			break;
--		}
--		if (ret == remain) {
-+		if (ret >= remain) {
- 			/* snprintf() didn't fit */
- 			total = -E2BIG;
- 			break;
-@@ -531,7 +527,7 @@ static ssize_t ocfs2_active_cluster_plugin_show(struct kobject *kobj,
- 	if (active_stack) {
- 		ret = snprintf(buf, PAGE_SIZE, "%s\n",
- 			       active_stack->sp_name);
--		if (ret == PAGE_SIZE)
-+		if (ret >= PAGE_SIZE)
- 			ret = -E2BIG;
- 	}
- 	spin_unlock(&ocfs2_stack_lock);
+diff --git a/crypto/sm2.c b/crypto/sm2.c
+index 767e160333f6..b21addc3ac06 100644
+--- a/crypto/sm2.c
++++ b/crypto/sm2.c
+@@ -119,12 +119,6 @@ static void sm2_ec_ctx_deinit(struct mpi_ec_ctx *ec)
+ 	memset(ec, 0, sizeof(*ec));
+ }
+ 
+-static int sm2_ec_ctx_reset(struct mpi_ec_ctx *ec)
+-{
+-	sm2_ec_ctx_deinit(ec);
+-	return sm2_ec_ctx_init(ec);
+-}
+-
+ /* RESULT must have been initialized and is set on success to the
+  * point given by VALUE.
+  */
+@@ -132,55 +126,48 @@ static int sm2_ecc_os2ec(MPI_POINT result, MPI value)
+ {
+ 	int rc;
+ 	size_t n;
+-	const unsigned char *buf;
+-	unsigned char *buf_memory;
++	unsigned char *buf;
+ 	MPI x, y;
+ 
+-	n = (mpi_get_nbits(value)+7)/8;
+-	buf_memory = kmalloc(n, GFP_KERNEL);
+-	rc = mpi_print(GCRYMPI_FMT_USG, buf_memory, n, &n, value);
+-	if (rc) {
+-		kfree(buf_memory);
+-		return rc;
+-	}
+-	buf = buf_memory;
++	n = MPI_NBYTES(value);
++	buf = kmalloc(n, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
+ 
+-	if (n < 1) {
+-		kfree(buf_memory);
+-		return -EINVAL;
+-	}
+-	if (*buf != 4) {
+-		kfree(buf_memory);
+-		return -EINVAL; /* No support for point compression.  */
+-	}
+-	if (((n-1)%2)) {
+-		kfree(buf_memory);
+-		return -EINVAL;
+-	}
+-	n = (n-1)/2;
++	rc = mpi_print(GCRYMPI_FMT_USG, buf, n, &n, value);
++	if (rc)
++		goto err_freebuf;
++
++	rc = -EINVAL;
++	if (n < 1 || ((n - 1) % 2))
++		goto err_freebuf;
++	/* No support for point compression */
++	if (*buf != 0x4)
++		goto err_freebuf;
++
++	rc = -ENOMEM;
++	n = (n - 1) / 2;
+ 	x = mpi_read_raw_data(buf + 1, n);
+-	if (!x) {
+-		kfree(buf_memory);
+-		return -ENOMEM;
+-	}
++	if (!x)
++		goto err_freebuf;
+ 	y = mpi_read_raw_data(buf + 1 + n, n);
+-	kfree(buf_memory);
+-	if (!y) {
+-		mpi_free(x);
+-		return -ENOMEM;
+-	}
++	if (!y)
++		goto err_freex;
+ 
+ 	mpi_normalize(x);
+ 	mpi_normalize(y);
+-
+ 	mpi_set(result->x, x);
+ 	mpi_set(result->y, y);
+ 	mpi_set_ui(result->z, 1);
+ 
+-	mpi_free(x);
+-	mpi_free(y);
++	rc = 0;
+ 
+-	return 0;
++	mpi_free(y);
++err_freex:
++	mpi_free(x);
++err_freebuf:
++	kfree(buf);
++	return rc;
+ }
+ 
+ struct sm2_signature_ctx {
+@@ -399,10 +386,6 @@ static int sm2_set_pub_key(struct crypto_akcipher *tfm,
+ 	MPI a;
+ 	int rc;
+ 
+-	rc = sm2_ec_ctx_reset(ec);
+-	if (rc)
+-		return rc;
+-
+ 	ec->Q = mpi_point_new(0);
+ 	if (!ec->Q)
+ 		return -ENOMEM;
 -- 
 2.30.2
 
