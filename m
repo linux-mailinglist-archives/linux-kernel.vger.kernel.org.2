@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EBAE3C5962
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E1D3C590D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383255AbhGLJCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:02:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55676 "EHLO mail.kernel.org"
+        id S1356293AbhGLI4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:56:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353477AbhGLICV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:02:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51D3861CAD;
-        Mon, 12 Jul 2021 07:55:19 +0000 (UTC)
+        id S1353493AbhGLIC1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:02:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0671613C8;
+        Mon, 12 Jul 2021 07:55:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076519;
-        bh=AIOPfH24hhUJkgG8XEbKVrO6oMG2vKVXkiAziocDX9M=;
+        s=korg; t=1626076522;
+        bh=GZc5QVdPl7a9qD96XshCqXjerR4gdZP2yFYtXNr4CiU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1yr5WXeoyAWMzHutrKhP/6xyDyDRhdHP//EcmqSXkr6g1o1mW6i6/RwKI7onkEiMA
-         tq977/vh6wcrD2YwhJgUE/1DdHCPZkH8nQzNykgUFj68sAHM3uwtfoIMiOTaz7c9hb
-         +qTWk2fMiz5oDPdFcVbJZNFVBO3YXjISa58AaCv0=
+        b=O14/oZPgNp8HEpf0/mpEzoW2SfCwI+Baw3tU6R46mXR5L/F/yjt/2MfTXc0BUR9zT
+         uiN5WPkGPFJGV+WesAhKMjJ5bWNbotyi8xjJGwo3T/ylV1icYpukHbCoInu5urzLAf
+         UKn0Qd+h05U2bZ/2NK44aP88vvgZSh7mlRyU4/4c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jussi Maki <joamaki@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 678/800] iommu/amd: Tidy up DMA ops init
-Date:   Mon, 12 Jul 2021 08:11:41 +0200
-Message-Id: <20210712061039.025767783@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 679/800] s390: enable HAVE_IOREMAP_PROT
+Date:   Mon, 12 Jul 2021 08:11:42 +0200
+Message-Id: <20210712061039.119245019@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -40,128 +42,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robin Murphy <robin.murphy@arm.com>
+From: Niklas Schnelle <schnelle@linux.ibm.com>
 
-[ Upstream commit be227f8e99a663d097536e9f9bc935fb26bdbc41 ]
+[ Upstream commit d460bb6c6417588dd8b0907d34f69b237918812a ]
 
-Now that DMA ops are part of the core API via iommu-dma, fold the
-vestigial remains of the IOMMU_DMA_OPS init state into the IOMMU API
-phase, and clean up a few other leftovers. This should also close the
-race window wherein bus_set_iommu() effectively makes the DMA ops state
-visible before its nominal initialisation - it seems this was previously
-fairly benign, but since commit a250c23f15c2 ("iommu: remove
-DOMAIN_ATTR_DMA_USE_FLUSH_QUEUE") it can now lead to the strict flush
-queue policy inadvertently being picked for default domains allocated
-during that window, with a corresponding unexpected perfomance impact.
+In commit b02002cc4c0f ("s390/pci: Implement ioremap_wc/prot() with
+MIO") we implemented both ioremap_wc() and ioremap_prot() however until
+now we had not set HAVE_IOREMAP_PROT in Kconfig, do so now.
 
-Reported-by: Jussi Maki <joamaki@gmail.com>
-Tested-by: Jussi Maki <joamaki@gmail.com>
-Signed-off-by: Robin Murphy <robin.murphy@arm.com>
-Fixes: a250c23f15c2 ("iommu: remove DOMAIN_ATTR_DMA_USE_FLUSH_QUEUE")
-Link: https://lore.kernel.org/r/665db61e23ff8d54ac5eb391bef520b3a803fcb9.1622727974.git.robin.murphy@arm.com
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+This also requires implementing pte_pgprot() as this is used in the
+generic_access_phys() code enabled by CONFIG_HAVE_IOREMAP_PROT. As with
+ioremap_wc() we need to take the MMIO Write Back bit index into account.
+
+Moreover since the pgprot value returned from pte_pgprot() is to be used
+for mappings into kernel address space we must make sure that it uses
+appropriate kernel page table protection bits. In particular a pgprot
+value originally coming from userspace could have the _PAGE_PROTECT
+bit set to enable fault based dirty bit accounting which would then make
+the mapping inaccessible when used in kernel address space.
+
+Fixes: b02002cc4c0f ("s390/pci: Implement ioremap_wc/prot() with MIO")
+Reviewed-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/amd/amd_iommu.h |  2 --
- drivers/iommu/amd/init.c      |  5 -----
- drivers/iommu/amd/iommu.c     | 31 +++++++++++++------------------
- 3 files changed, 13 insertions(+), 25 deletions(-)
+ arch/s390/Kconfig               |  1 +
+ arch/s390/include/asm/pgtable.h | 19 +++++++++++++++++++
+ 2 files changed, 20 insertions(+)
 
-diff --git a/drivers/iommu/amd/amd_iommu.h b/drivers/iommu/amd/amd_iommu.h
-index 55dd38d814d9..416815a525d6 100644
---- a/drivers/iommu/amd/amd_iommu.h
-+++ b/drivers/iommu/amd/amd_iommu.h
-@@ -11,8 +11,6 @@
- 
- #include "amd_iommu_types.h"
- 
--extern int amd_iommu_init_dma_ops(void);
--extern int amd_iommu_init_passthrough(void);
- extern irqreturn_t amd_iommu_int_thread(int irq, void *data);
- extern irqreturn_t amd_iommu_int_handler(int irq, void *data);
- extern void amd_iommu_apply_erratum_63(u16 devid);
-diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
-index 1ded8a69c246..5ff7e5364ef4 100644
---- a/drivers/iommu/amd/init.c
-+++ b/drivers/iommu/amd/init.c
-@@ -231,7 +231,6 @@ enum iommu_init_state {
- 	IOMMU_ENABLED,
- 	IOMMU_PCI_INIT,
- 	IOMMU_INTERRUPTS_EN,
--	IOMMU_DMA_OPS,
- 	IOMMU_INITIALIZED,
- 	IOMMU_NOT_FOUND,
- 	IOMMU_INIT_ERROR,
-@@ -2895,10 +2894,6 @@ static int __init state_next(void)
- 		init_state = ret ? IOMMU_INIT_ERROR : IOMMU_INTERRUPTS_EN;
- 		break;
- 	case IOMMU_INTERRUPTS_EN:
--		ret = amd_iommu_init_dma_ops();
--		init_state = ret ? IOMMU_INIT_ERROR : IOMMU_DMA_OPS;
--		break;
--	case IOMMU_DMA_OPS:
- 		init_state = IOMMU_INITIALIZED;
- 		break;
- 	case IOMMU_INITIALIZED:
-diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-index 3ac42bbdefc6..c46dde88a132 100644
---- a/drivers/iommu/amd/iommu.c
-+++ b/drivers/iommu/amd/iommu.c
-@@ -30,7 +30,6 @@
- #include <linux/msi.h>
- #include <linux/irqdomain.h>
- #include <linux/percpu.h>
--#include <linux/iova.h>
- #include <linux/io-pgtable.h>
- #include <asm/irq_remapping.h>
- #include <asm/io_apic.h>
-@@ -1773,13 +1772,22 @@ void amd_iommu_domain_update(struct protection_domain *domain)
- 	amd_iommu_domain_flush_complete(domain);
+diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+index b4c7c34069f8..d6582f57e0a1 100644
+--- a/arch/s390/Kconfig
++++ b/arch/s390/Kconfig
+@@ -164,6 +164,7 @@ config S390
+ 	select HAVE_FUTEX_CMPXCHG if FUTEX
+ 	select HAVE_GCC_PLUGINS
+ 	select HAVE_GENERIC_VDSO
++	select HAVE_IOREMAP_PROT if PCI
+ 	select HAVE_IRQ_EXIT_ON_IRQ_STACK
+ 	select HAVE_KERNEL_BZIP2
+ 	select HAVE_KERNEL_GZIP
+diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
+index b38f7b781564..adea53f69bfd 100644
+--- a/arch/s390/include/asm/pgtable.h
++++ b/arch/s390/include/asm/pgtable.h
+@@ -863,6 +863,25 @@ static inline int pte_unused(pte_t pte)
+ 	return pte_val(pte) & _PAGE_UNUSED;
  }
  
-+static void __init amd_iommu_init_dma_ops(void)
++/*
++ * Extract the pgprot value from the given pte while at the same time making it
++ * usable for kernel address space mappings where fault driven dirty and
++ * young/old accounting is not supported, i.e _PAGE_PROTECT and _PAGE_INVALID
++ * must not be set.
++ */
++static inline pgprot_t pte_pgprot(pte_t pte)
 +{
-+	swiotlb = (iommu_default_passthrough() || sme_me_mask) ? 1 : 0;
++	unsigned long pte_flags = pte_val(pte) & _PAGE_CHG_MASK;
 +
-+	if (amd_iommu_unmap_flush)
-+		pr_info("IO/TLB flush on unmap enabled\n");
++	if (pte_write(pte))
++		pte_flags |= pgprot_val(PAGE_KERNEL);
 +	else
-+		pr_info("Lazy IO/TLB flushing enabled\n");
-+	iommu_set_dma_strict(amd_iommu_unmap_flush);
++		pte_flags |= pgprot_val(PAGE_KERNEL_RO);
++	pte_flags |= pte_val(pte) & mio_wb_bit_mask;
++
++	return __pgprot(pte_flags);
 +}
 +
- int __init amd_iommu_init_api(void)
- {
--	int ret, err = 0;
-+	int err = 0;
- 
--	ret = iova_cache_get();
--	if (ret)
--		return ret;
-+	amd_iommu_init_dma_ops();
- 
- 	err = bus_set_iommu(&pci_bus_type, &amd_iommu_ops);
- 	if (err)
-@@ -1796,19 +1804,6 @@ int __init amd_iommu_init_api(void)
- 	return 0;
- }
- 
--int __init amd_iommu_init_dma_ops(void)
--{
--	swiotlb        = (iommu_default_passthrough() || sme_me_mask) ? 1 : 0;
--
--	if (amd_iommu_unmap_flush)
--		pr_info("IO/TLB flush on unmap enabled\n");
--	else
--		pr_info("Lazy IO/TLB flushing enabled\n");
--	iommu_set_dma_strict(amd_iommu_unmap_flush);
--	return 0;
--
--}
--
- /*****************************************************************************
-  *
-  * The following functions belong to the exported interface of AMD IOMMU
+ /*
+  * pgd/pmd/pte modification functions
+  */
 -- 
 2.30.2
 
