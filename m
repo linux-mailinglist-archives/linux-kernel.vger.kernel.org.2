@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48C153C54E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 530153C4E6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349544AbhGLIGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:06:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43902 "EHLO mail.kernel.org"
+        id S244772AbhGLHSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:18:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53294 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343692AbhGLH2q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:28:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BBD0760230;
-        Mon, 12 Jul 2021 07:24:25 +0000 (UTC)
+        id S240839AbhGLGyD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:54:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99B5760FDB;
+        Mon, 12 Jul 2021 06:51:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074666;
-        bh=B1AECimhgtZobjOkyJSuFEf7xLqjXr/PlRwatGwfCPY=;
+        s=korg; t=1626072676;
+        bh=0Mhtj2ALqFzzEzlMYegUNK373szXjXHWvZKnVqs60so=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z6comhsBAbpAt1UmSGgBvfng7+fFfPLcIR7dVucdxiX2+xLn/slE068xP8aH7j4SU
-         OTG4hgOI6xvX5bHf/P/GQeXzHZe55HGsLxLyvrpXNvmA9J/V+0VQ59vyGLnrRXwSlD
-         wrlvs9FTymdAeBBNlqUNcQGae4FJj5VaFmDHXlkE=
+        b=CLKKeQ2yxHty2ldd7ythW0aKH/gTuX1mIbyw1ZFjIXKf4LytwBpdBTRK4lHCGRk3A
+         v+uoKT/DRiELwHGXl80jiJB+JpdPuGKiACcjadtMi/NJqtBxbcjWPrk+VHLjE8o3K+
+         ALU9brEn45AfhhcKDGIg2oBFD81cd/FART6PR7bo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 655/700] powerpc/papr_scm: Properly handle UUID types and API
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Guo Ren <guoren@kernel.org>, linux-csky@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 578/593] csky: fix syscache.c fallthrough warning
 Date:   Mon, 12 Jul 2021 08:12:18 +0200
-Message-Id: <20210712061045.548252543@linuxfoundation.org>
+Message-Id: <20210712060958.712874417@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,80 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 0e8554b5d7801b0aebc6c348a0a9f7706aa17b3b ]
+[ Upstream commit 0679d29d3e2351a1c3049c26a63ce1959cad5447 ]
 
-Parse to and export from UUID own type, before dereferencing.
-This also fixes wrong comment (Little Endian UUID is something else)
-and should eliminate the direct strict types assignments.
+This case of the switch statement falls through to the following case.
+This appears to be on purpose, so declare it as OK.
 
-Fixes: 43001c52b603 ("powerpc/papr_scm: Use ibm,unit-guid as the iset cookie")
-Fixes: 259a948c4ba1 ("powerpc/pseries/scm: Use a specific endian format for storing uuid from the device tree")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210616134303.58185-1-andriy.shevchenko@linux.intel.com
+../arch/csky/mm/syscache.c: In function '__do_sys_cacheflush':
+../arch/csky/mm/syscache.c:17:3: warning: this statement may fall through [-Wimplicit-fallthrough=]
+   17 |   flush_icache_mm_range(current->mm,
+      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   18 |     (unsigned long)addr,
+      |     ~~~~~~~~~~~~~~~~~~~~
+   19 |     (unsigned long)addr + bytes);
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../arch/csky/mm/syscache.c:20:2: note: here
+   20 |  case DCACHE:
+      |  ^~~~
+
+Fixes: 997153b9a75c ("csky: Add flush_icache_mm to defer flush icache all")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Guo Ren <guoren@kernel.org>
+Cc: linux-csky@vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/pseries/papr_scm.c | 27 +++++++++++++++--------
- 1 file changed, 18 insertions(+), 9 deletions(-)
+ arch/csky/mm/syscache.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/platforms/pseries/papr_scm.c
-index 835163f54244..0693bc8d70ac 100644
---- a/arch/powerpc/platforms/pseries/papr_scm.c
-+++ b/arch/powerpc/platforms/pseries/papr_scm.c
-@@ -18,6 +18,7 @@
- #include <asm/plpar_wrappers.h>
- #include <asm/papr_pdsm.h>
- #include <asm/mce.h>
-+#include <asm/unaligned.h>
- 
- #define BIND_ANY_ADDR (~0ul)
- 
-@@ -1047,8 +1048,9 @@ static int papr_scm_probe(struct platform_device *pdev)
- 	u32 drc_index, metadata_size;
- 	u64 blocks, block_size;
- 	struct papr_scm_priv *p;
-+	u8 uuid_raw[UUID_SIZE];
- 	const char *uuid_str;
--	u64 uuid[2];
-+	uuid_t uuid;
- 	int rc;
- 
- 	/* check we have all the required DT properties */
-@@ -1090,16 +1092,23 @@ static int papr_scm_probe(struct platform_device *pdev)
- 	p->is_volatile = !of_property_read_bool(dn, "ibm,cache-flush-required");
- 
- 	/* We just need to ensure that set cookies are unique across */
--	uuid_parse(uuid_str, (uuid_t *) uuid);
-+	uuid_parse(uuid_str, &uuid);
-+
- 	/*
--	 * cookie1 and cookie2 are not really little endian
--	 * we store a little endian representation of the
--	 * uuid str so that we can compare this with the label
--	 * area cookie irrespective of the endian config with which
--	 * the kernel is built.
-+	 * The cookie1 and cookie2 are not really little endian.
-+	 * We store a raw buffer representation of the
-+	 * uuid string so that we can compare this with the label
-+	 * area cookie irrespective of the endian configuration
-+	 * with which the kernel is built.
-+	 *
-+	 * Historically we stored the cookie in the below format.
-+	 * for a uuid string 72511b67-0b3b-42fd-8d1d-5be3cae8bcaa
-+	 *	cookie1 was 0xfd423b0b671b5172
-+	 *	cookie2 was 0xaabce8cae35b1d8d
- 	 */
--	p->nd_set.cookie1 = cpu_to_le64(uuid[0]);
--	p->nd_set.cookie2 = cpu_to_le64(uuid[1]);
-+	export_uuid(uuid_raw, &uuid);
-+	p->nd_set.cookie1 = get_unaligned_le64(&uuid_raw[0]);
-+	p->nd_set.cookie2 = get_unaligned_le64(&uuid_raw[8]);
- 
- 	/* might be zero */
- 	p->metadata_size = metadata_size;
+diff --git a/arch/csky/mm/syscache.c b/arch/csky/mm/syscache.c
+index ffade2f9a4c8..4e51d63850c4 100644
+--- a/arch/csky/mm/syscache.c
++++ b/arch/csky/mm/syscache.c
+@@ -17,6 +17,7 @@ SYSCALL_DEFINE3(cacheflush,
+ 		flush_icache_mm_range(current->mm,
+ 				(unsigned long)addr,
+ 				(unsigned long)addr + bytes);
++		fallthrough;
+ 	case DCACHE:
+ 		dcache_wb_range((unsigned long)addr,
+ 				(unsigned long)addr + bytes);
 -- 
 2.30.2
 
