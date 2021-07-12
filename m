@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF5BD3C581B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F193C52C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378964AbhGLIlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:41:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35480 "EHLO mail.kernel.org"
+        id S1347304AbhGLHta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:49:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350398AbhGLHu7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:50:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B5C62617ED;
-        Mon, 12 Jul 2021 07:45:03 +0000 (UTC)
+        id S243006AbhGLHPA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:15:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 561CC613EF;
+        Mon, 12 Jul 2021 07:11:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075904;
-        bh=AE7jIRAG/tse4Br2mzz5ghbxOdMVAeBxJs/3J4GaXMk=;
+        s=korg; t=1626073900;
+        bh=H93qxK1mGa5qkIddCW6hBogGRco3qzeThEOLLFJZCY8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2RcRtZUf+yz+GO90AOQI5pribUdCQJ3Bjr+lqUiHdRqk3hB924gYmV6XSizAkWRBm
-         5xXlBKFz1+8fLe3BxKXFuS43Sh4TZMQFK7TsYMuWbDSF6nPU3jkofoeKWCBKogonGQ
-         B9Hw2h53VCzB413acauW22KWFo9oPVMDEkvEheAY=
+        b=a+S5C3MBA4mnQCdj62a4MSCLIUS49ojy07OAd+ii/vBPerB3OKk2/eNSFpHUQJeX2
+         +M/bITF5mZne/t5p7ye9rMjTlpYf0V8sU/HwpcKBrFXUhRL6nP6wTVehQtAkBwdf+N
+         ZsVtKLCZu5ufqMVHQcxpXNoirOyym/U1N6NPuML0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Yingjie Wang <wangyingjie55@126.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 413/800] net: ftgmac100: add missing error return code in ftgmac100_probe()
-Date:   Mon, 12 Jul 2021 08:07:16 +0200
-Message-Id: <20210712061011.114832071@linuxfoundation.org>
+Subject: [PATCH 5.12 354/700] drm/amd/dc: Fix a missing check bug in dm_dp_mst_detect()
+Date:   Mon, 12 Jul 2021 08:07:17 +0200
+Message-Id: <20210712061014.015820518@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Yingjie Wang <wangyingjie55@126.com>
 
-[ Upstream commit 52af13a41489d7bbc1932d17583eff6e5fffc820 ]
+[ Upstream commit 655c0ed19772d92c9665ed08bdc5202acc096dda ]
 
-The variables will be free on path err_phy_connect, it should
-return error code, or it will cause double free when calling
-ftgmac100_remove().
+In dm_dp_mst_detect(), We should check whether or not @connector
+has been unregistered from userspace. If the connector is unregistered,
+we should return disconnected status.
 
-Fixes: bd466c3fb5a4 ("net/faraday: Support NCSI mode")
-Fixes: 39bfab8844a0 ("net: ftgmac100: Add support for DT phy-handle property")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 4562236b3bc0 ("drm/amd/dc: Add dc display driver (v2)")
+Signed-off-by: Yingjie Wang <wangyingjie55@126.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/faraday/ftgmac100.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/ethernet/faraday/ftgmac100.c b/drivers/net/ethernet/faraday/ftgmac100.c
-index 04421aec2dfd..11dbbfd38770 100644
---- a/drivers/net/ethernet/faraday/ftgmac100.c
-+++ b/drivers/net/ethernet/faraday/ftgmac100.c
-@@ -1830,14 +1830,17 @@ static int ftgmac100_probe(struct platform_device *pdev)
- 	if (np && of_get_property(np, "use-ncsi", NULL)) {
- 		if (!IS_ENABLED(CONFIG_NET_NCSI)) {
- 			dev_err(&pdev->dev, "NCSI stack not enabled\n");
-+			err = -EINVAL;
- 			goto err_phy_connect;
- 		}
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
+index 41b09ab22233..b478129a7477 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
+@@ -270,6 +270,9 @@ dm_dp_mst_detect(struct drm_connector *connector,
+ 	struct amdgpu_dm_connector *aconnector = to_amdgpu_dm_connector(connector);
+ 	struct amdgpu_dm_connector *master = aconnector->mst_port;
  
- 		dev_info(&pdev->dev, "Using NCSI interface\n");
- 		priv->use_ncsi = true;
- 		priv->ndev = ncsi_register_dev(netdev, ftgmac100_ncsi_handler);
--		if (!priv->ndev)
-+		if (!priv->ndev) {
-+			err = -EINVAL;
- 			goto err_phy_connect;
-+		}
- 	} else if (np && of_get_property(np, "phy-handle", NULL)) {
- 		struct phy_device *phy;
- 
-@@ -1856,6 +1859,7 @@ static int ftgmac100_probe(struct platform_device *pdev)
- 					     &ftgmac100_adjust_link);
- 		if (!phy) {
- 			dev_err(&pdev->dev, "Failed to connect to phy\n");
-+			err = -EINVAL;
- 			goto err_phy_connect;
- 		}
- 
++	if (drm_connector_is_unregistered(connector))
++		return connector_status_disconnected;
++
+ 	return drm_dp_mst_detect_port(connector, ctx, &master->mst_mgr,
+ 				      aconnector->port);
+ }
 -- 
 2.30.2
 
