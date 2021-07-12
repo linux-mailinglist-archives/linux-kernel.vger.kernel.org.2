@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9783C5910
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 981323C590F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356482AbhGLI41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:56:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55672 "EHLO mail.kernel.org"
+        id S1356445AbhGLI4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:56:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353703AbhGLICr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:02:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D9BD16142F;
-        Mon, 12 Jul 2021 07:56:42 +0000 (UTC)
+        id S1353684AbhGLICq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:02:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BCD361351;
+        Mon, 12 Jul 2021 07:56:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076603;
-        bh=6goBKYCxXDesPc88ecFa8J1E8KMZ+jhFDyRaPcWVJ18=;
+        s=korg; t=1626076605;
+        bh=Iqvn7ZXyhwLb+to3C2EGC2YNWh49EeXgJRaOWtLVBQM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DUjBxeedlzmoQGF88Lcwf7lszEzhluLitnFv6BsQRarpqmXlanmoilzVnoG7ZZEg9
-         l3fRCmavdhOt2Lh4a6OWDW5fCJNiL35sxp0ae3PRoKgKjy8k9PTfLwYeZGxK3Zb0fV
-         4mo5+1C8ma9a2IwlcwuCqH73Wf8vMNXL3zu0BHkY=
+        b=0e0DeuLaXHa5TY+9Bj0dMl+AIZ0DdewN3+v5h/gdT/hh34dixPWD5zrbyjHfAZu6t
+         8MCZtE46kqxcw3ibtZbdgzKagJjT0Y5UoZlB5RrTIE8+2AWJ77EGEPz58v9kvls2LT
+         ZNLQbWUh0TsbePi1/lygv0veSUOh9LqoXtP+FqAo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 715/800] ASoC: fsl_spdif: Fix error handler with pm_runtime_enable
-Date:   Mon, 12 Jul 2021 08:12:18 +0200
-Message-Id: <20210712061042.823613200@linuxfoundation.org>
+Subject: [PATCH 5.13 716/800] staging: gdm724x: check for buffer overflow in gdm_lte_multi_sdu_pkt()
+Date:   Mon, 12 Jul 2021 08:12:19 +0200
+Message-Id: <20210712061042.932179653@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -40,71 +39,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 28108d71ee11a7232e1102effab3361049dcd3b8 ]
+[ Upstream commit 4a36e160856db8a8ddd6a3d2e5db5a850ab87f82 ]
 
-There is error message when defer probe happens:
+There needs to be a check to verify that we don't read beyond the end
+of "buf".  This function is called from do_rx().  The "buf" is the USB
+transfer_buffer and "len" is "urb->actual_length".
 
-fsl-spdif-dai 2dab0000.spdif: Unbalanced pm_runtime_enable!
-
-Fix the error handler with pm_runtime_enable and add
-fsl_spdif_remove() for pm_runtime_disable.
-
-Fixes: 9cb2b3796e08 ("ASoC: fsl_spdif: Add pm runtime function")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Link: https://lore.kernel.org/r/1623392318-26304-1-git-send-email-shengjiu.wang@nxp.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 61e121047645 ("staging: gdm7240: adding LTE USB driver")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/YMcnl4zCwGWGDVMG@mwanda
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/fsl/fsl_spdif.c | 20 +++++++++++++++++---
- 1 file changed, 17 insertions(+), 3 deletions(-)
+ drivers/staging/gdm724x/gdm_lte.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index c631de325a6e..5636837eb511 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -1375,16 +1375,29 @@ static int fsl_spdif_probe(struct platform_device *pdev)
- 					      &spdif_priv->cpu_dai_drv, 1);
- 	if (ret) {
- 		dev_err(&pdev->dev, "failed to register DAI: %d\n", ret);
--		return ret;
-+		goto err_pm_disable;
- 	}
+diff --git a/drivers/staging/gdm724x/gdm_lte.c b/drivers/staging/gdm724x/gdm_lte.c
+index 571f47d39484..a41af7aa74ec 100644
+--- a/drivers/staging/gdm724x/gdm_lte.c
++++ b/drivers/staging/gdm724x/gdm_lte.c
+@@ -677,6 +677,7 @@ static void gdm_lte_multi_sdu_pkt(struct phy_dev *phy_dev, char *buf, int len)
+ 	struct sdu *sdu = NULL;
+ 	u8 endian = phy_dev->get_endian(phy_dev->priv_dev);
+ 	u8 *data = (u8 *)multi_sdu->data;
++	int copied;
+ 	u16 i = 0;
+ 	u16 num_packet;
+ 	u16 hci_len;
+@@ -688,6 +689,12 @@ static void gdm_lte_multi_sdu_pkt(struct phy_dev *phy_dev, char *buf, int len)
+ 	num_packet = gdm_dev16_to_cpu(endian, multi_sdu->num_packet);
  
- 	ret = imx_pcm_dma_init(pdev, IMX_SPDIF_DMABUF_SIZE);
--	if (ret && ret != -EPROBE_DEFER)
--		dev_err(&pdev->dev, "imx_pcm_dma_init failed: %d\n", ret);
-+	if (ret) {
-+		dev_err_probe(&pdev->dev, ret, "imx_pcm_dma_init failed\n");
-+		goto err_pm_disable;
-+	}
+ 	for (i = 0; i < num_packet; i++) {
++		copied = data - multi_sdu->data;
++		if (len < copied + sizeof(*sdu)) {
++			pr_err("rx prevent buffer overflow");
++			return;
++		}
 +
-+	return ret;
+ 		sdu = (struct sdu *)data;
  
-+err_pm_disable:
-+	pm_runtime_disable(&pdev->dev);
- 	return ret;
- }
- 
-+static int fsl_spdif_remove(struct platform_device *pdev)
-+{
-+	pm_runtime_disable(&pdev->dev);
-+
-+	return 0;
-+}
-+
- #ifdef CONFIG_PM
- static int fsl_spdif_runtime_suspend(struct device *dev)
- {
-@@ -1487,6 +1500,7 @@ static struct platform_driver fsl_spdif_driver = {
- 		.pm = &fsl_spdif_pm,
- 	},
- 	.probe = fsl_spdif_probe,
-+	.remove = fsl_spdif_remove,
- };
- 
- module_platform_driver(fsl_spdif_driver);
+ 		cmd_evt  = gdm_dev16_to_cpu(endian, sdu->cmd_evt);
+@@ -698,7 +705,8 @@ static void gdm_lte_multi_sdu_pkt(struct phy_dev *phy_dev, char *buf, int len)
+ 			pr_err("rx sdu wrong hci %04x\n", cmd_evt);
+ 			return;
+ 		}
+-		if (hci_len < 12) {
++		if (hci_len < 12 ||
++		    len < copied + sizeof(*sdu) + (hci_len - 12)) {
+ 			pr_err("rx sdu invalid len %d\n", hci_len);
+ 			return;
+ 		}
 -- 
 2.30.2
 
