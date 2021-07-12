@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 865B83C4AA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:35:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 723623C576A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239952AbhGLGxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:53:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34399 "EHLO mail.kernel.org"
+        id S1354770AbhGLIct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:32:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236822AbhGLGjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:39:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F1F46112D;
-        Mon, 12 Jul 2021 06:34:46 +0000 (UTC)
+        id S1349783AbhGLHoq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:44:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D21F561351;
+        Mon, 12 Jul 2021 07:41:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071687;
-        bh=dXXVnySI/CpXWxQ8VvGu2yX/iHzyHAWviakPv4O1TGs=;
+        s=korg; t=1626075668;
+        bh=nJBxJgmRFblp5PtPkGY4cKuHKRQqMekKlQh+2VtKUzE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tO5HAkinAqlQp0ZDb0CeZp2QkgGueVAhuyl/B7dand1e/5/CXPjaeYUGnWQLFVRDJ
-         UwWYONm2Bqfb3JIQraKIqEmj0Amf0XmBs4BhIsG8r3vsNKvIsGdce4EeaoXFlIVmBa
-         nV1yRMkULdpR3nZkgBQ92GqZd9B2oj7h8HorJuuk=
+        b=cJp7rocx6iZrtBOXHv6BtlBe4mKJKvZIAGXyRbJFb8dKAsPVnSVrZL1FDHv775Qsl
+         jc5FzFvANMuzeT/JXv/7zwokBEGrl6PgUBe2Am3eefXIfbsa57dSANN3XICl2klqfr
+         tVO8HBqcHwh+/iRVTVuYYqPaViwF0O0XhP6NEOvk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Chiu <chris.chiu@canonical.com>,
-        Jian-Hong Pan <jhp@endlessos.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 176/593] ACPI: EC: Make more Asus laptops use ECDT _GPE
+Subject: [PATCH 5.13 313/800] mmc: usdhi6rol0: fix error return code in usdhi6_probe()
 Date:   Mon, 12 Jul 2021 08:05:36 +0200
-Message-Id: <20210712060902.379634679@linuxfoundation.org>
+Message-Id: <20210712060958.909196959@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Chiu <chris.chiu@canonical.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 6306f0431914beaf220634ad36c08234006571d5 ]
+[ Upstream commit 2f9ae69e5267f53e89e296fccee291975a85f0eb ]
 
-More ASUS laptops have the _GPE define in the DSDT table with a
-different value than the _GPE number in the ECDT.
+Fix to return a negative error code from the error handling case instead
+of 0, as done elsewhere in this function.
 
-This is causing media keys not working on ASUS X505BA/BP, X542BA/BP
-
-Add model info to the quirks list.
-
-Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
-Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fixes: 75fa9ea6e3c0 ("mmc: add a driver for the Renesas usdhi6rol0 SD/SDIO host controller")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Link: https://lore.kernel.org/r/20210508020321.1677-1-thunder.leizhen@huawei.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/ec.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ drivers/mmc/host/usdhi6rol0.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/acpi/ec.c b/drivers/acpi/ec.c
-index e0cb1bcfffb2..32f3b6d268f5 100644
---- a/drivers/acpi/ec.c
-+++ b/drivers/acpi/ec.c
-@@ -1859,6 +1859,22 @@ static const struct dmi_system_id ec_dmi_table[] __initconst = {
- 	DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
- 	DMI_MATCH(DMI_PRODUCT_NAME, "GL702VMK"),}, NULL},
- 	{
-+	ec_honor_ecdt_gpe, "ASUSTeK COMPUTER INC. X505BA", {
-+	DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-+	DMI_MATCH(DMI_PRODUCT_NAME, "X505BA"),}, NULL},
-+	{
-+	ec_honor_ecdt_gpe, "ASUSTeK COMPUTER INC. X505BP", {
-+	DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-+	DMI_MATCH(DMI_PRODUCT_NAME, "X505BP"),}, NULL},
-+	{
-+	ec_honor_ecdt_gpe, "ASUSTeK COMPUTER INC. X542BA", {
-+	DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-+	DMI_MATCH(DMI_PRODUCT_NAME, "X542BA"),}, NULL},
-+	{
-+	ec_honor_ecdt_gpe, "ASUSTeK COMPUTER INC. X542BP", {
-+	DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-+	DMI_MATCH(DMI_PRODUCT_NAME, "X542BP"),}, NULL},
-+	{
- 	ec_honor_ecdt_gpe, "ASUS X550VXK", {
- 	DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
- 	DMI_MATCH(DMI_PRODUCT_NAME, "X550VXK"),}, NULL},
+diff --git a/drivers/mmc/host/usdhi6rol0.c b/drivers/mmc/host/usdhi6rol0.c
+index 615f3d008af1..b9b79b1089a0 100644
+--- a/drivers/mmc/host/usdhi6rol0.c
++++ b/drivers/mmc/host/usdhi6rol0.c
+@@ -1801,6 +1801,7 @@ static int usdhi6_probe(struct platform_device *pdev)
+ 
+ 	version = usdhi6_read(host, USDHI6_VERSION);
+ 	if ((version & 0xfff) != 0xa0d) {
++		ret = -EPERM;
+ 		dev_err(dev, "Version not recognized %x\n", version);
+ 		goto e_clk_off;
+ 	}
 -- 
 2.30.2
 
