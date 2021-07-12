@@ -2,44 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70A213C493D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B27013C5012
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237374AbhGLGnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:43:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55424 "EHLO mail.kernel.org"
+        id S1346345AbhGLHap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:30:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237632AbhGLGem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:34:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C3EEC61182;
-        Mon, 12 Jul 2021 06:31:10 +0000 (UTC)
+        id S241065AbhGLHDB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:03:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B08E861156;
+        Mon, 12 Jul 2021 07:00:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071471;
-        bh=VxsMsNEiiHntLXbNFK2z5oizrRdubsB1rGTW5mKr68U=;
+        s=korg; t=1626073208;
+        bh=b+dbzik4gF/bptX3LTN5yD5r59X5tqhaXyxGi2QAB1k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HAARXLGZzuCqggyOtFIKgwLnuXNSIgTkTdCwNleCgkZ6TOPvp5OpbHdtv9NXKIr+R
-         PlPnupB9+/FwjQHrCT22juqc8F0btGWz/EQFz+3opoHxfgGr0vCaYBzBE8x5tdWF+f
-         72X+bNSZY1ZMIo2lXU5xZfpWBZ5DP/DxFzP+phII=
+        b=iYKBGDVDElrZ/l1ZH5Awp6YrQKmvmGSZ9ko7hkZVNk0HFcXfA03jd/KiQcpldoRsj
+         RdnLiEGQeVQQ9k0XOQ0m9ebDTcTme4xvM6GI3TAHO+UcBYSJBVt0cyZmdo0IP2YWUn
+         m5zpdRZdI0g7Py5rE19xMtUMBwR+QzMVr3/fLXk4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
-        Amitkumar Karwar <amit.karwar@redpinesignals.com>,
-        Angus Ainslie <angus@akkea.ca>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Karun Eagalapati <karun256@gmail.com>,
-        Martin Kepplinger <martink@posteo.de>,
-        Prameela Rani Garnepudi <prameela.j04cs@gmail.com>,
-        Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>,
-        Siva Rebbagondla <siva8118@gmail.com>, netdev@vger.kernel.org
-Subject: [PATCH 5.10 084/593] rsi: Assign beacon rate settings to the correct rate_info descriptor field
+        stable@vger.kernel.org, Evgeny Novikov <novikov@ispras.ru>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 161/700] media: st-hva: Fix potential NULL pointer dereferences
 Date:   Mon, 12 Jul 2021 08:04:04 +0200
-Message-Id: <20210712060852.394062888@linuxfoundation.org>
+Message-Id: <20210712060948.397648296@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,51 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Vasut <marex@denx.de>
+From: Evgeny Novikov <novikov@ispras.ru>
 
-commit b1c3a24897bd528f2f4fda9fea7da08a84ae25b6 upstream.
+[ Upstream commit b7fdd208687ba59ebfb09b2199596471c63b69e3 ]
 
-The RSI_RATE_x bits must be assigned to struct rsi_data_desc rate_info
-field. The rest of the driver does it correctly, except this one place,
-so fix it. This is also aligned with the RSI downstream vendor driver.
-Without this patch, an AP operating at 5 GHz does not transmit any
-beacons at all, this patch fixes that.
+When ctx_id >= HVA_MAX_INSTANCES in hva_hw_its_irq_thread() it tries to
+access fields of ctx that is NULL at that point. The patch gets rid of
+these accesses.
 
-Fixes: d26a9559403c ("rsi: add beacon changes for AP mode")
-Signed-off-by: Marek Vasut <marex@denx.de>
-Cc: Amitkumar Karwar <amit.karwar@redpinesignals.com>
-Cc: Angus Ainslie <angus@akkea.ca>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Cc: Karun Eagalapati <karun256@gmail.com>
-Cc: Martin Kepplinger <martink@posteo.de>
-Cc: Prameela Rani Garnepudi <prameela.j04cs@gmail.com>
-Cc: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
-Cc: Siva Rebbagondla <siva8118@gmail.com>
-Cc: netdev@vger.kernel.org
-Cc: stable@vger.kernel.org
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210507213105.140138-1-marex@denx.de
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Found by Linux Driver Verification project (linuxtesting.org).
 
+Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/rsi/rsi_91x_hal.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/media/platform/sti/hva/hva-hw.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/drivers/net/wireless/rsi/rsi_91x_hal.c
-+++ b/drivers/net/wireless/rsi/rsi_91x_hal.c
-@@ -470,9 +470,9 @@ int rsi_prepare_beacon(struct rsi_common
+diff --git a/drivers/media/platform/sti/hva/hva-hw.c b/drivers/media/platform/sti/hva/hva-hw.c
+index f59811e27f51..6eeee5017fac 100644
+--- a/drivers/media/platform/sti/hva/hva-hw.c
++++ b/drivers/media/platform/sti/hva/hva-hw.c
+@@ -130,8 +130,7 @@ static irqreturn_t hva_hw_its_irq_thread(int irq, void *arg)
+ 	ctx_id = (hva->sts_reg & 0xFF00) >> 8;
+ 	if (ctx_id >= HVA_MAX_INSTANCES) {
+ 		dev_err(dev, "%s     %s: bad context identifier: %d\n",
+-			ctx->name, __func__, ctx_id);
+-		ctx->hw_err = true;
++			HVA_PREFIX, __func__, ctx_id);
+ 		goto out;
  	}
  
- 	if (common->band == NL80211_BAND_2GHZ)
--		bcn_frm->bbp_info |= cpu_to_le16(RSI_RATE_1);
-+		bcn_frm->rate_info |= cpu_to_le16(RSI_RATE_1);
- 	else
--		bcn_frm->bbp_info |= cpu_to_le16(RSI_RATE_6);
-+		bcn_frm->rate_info |= cpu_to_le16(RSI_RATE_6);
- 
- 	if (mac_bcn->data[tim_offset + 2] == 0)
- 		bcn_frm->frame_info |= cpu_to_le16(RSI_DATA_DESC_DTIM_BEACON);
+-- 
+2.30.2
+
 
 
