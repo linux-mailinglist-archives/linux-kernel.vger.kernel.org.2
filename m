@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EAE33C4CF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:39:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1E8E3C535F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:51:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244920AbhGLHLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:11:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45554 "EHLO mail.kernel.org"
+        id S1352345AbhGLHyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:54:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238970AbhGLGtZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:49:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF3336124C;
-        Mon, 12 Jul 2021 06:45:25 +0000 (UTC)
+        id S1344823AbhGLHUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:20:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED5F0613EE;
+        Mon, 12 Jul 2021 07:18:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072326;
-        bh=SuJWx5aikfgjLPsi/izRltDjym6hqrl6MuXVSfVMQVA=;
+        s=korg; t=1626074287;
+        bh=bT4EosgojYYWWfe1LE0k8EGOtS8u7HuIbVZ8jzUJbsQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PzHAAejNS9UvpTRF9E2fN/6TYOe70Hz5mJsRyKw8O7gvaebNLzjz7WCZ3kdfDXo0p
-         0AZdeAHu5yQEPRS/byiOZWNNB+GE9vtTcjZuVpcVAgzI1XHiwkRVo6kfs9YjqbkXoq
-         quGTwQfSS3Be/P7Tp7YIhYvU8e8SLLJOhp8Un5y0=
+        b=JxrsB4a49b7wYJPLiOyDC/FUmNjq9QIf0Xwh+BD/WrYduTRqqk2BrPz4luTtwbQ8h
+         nxbH7a41J8BQuT6T/nj57G1UqpXpew3hLUKaRZdUjXvSsKQy0nSP8JRdaVlx+t0ndr
+         I2mZwuxE/4cXaLpIIGmamg091r+1nICZ2SUVGeZc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 450/593] iio: accel: stk8312: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 527/700] phy: ralink: phy-mt7621-pci: properly print pointer address
 Date:   Mon, 12 Jul 2021 08:10:10 +0200
-Message-Id: <20210712060938.753729611@linuxfoundation.org>
+Message-Id: <20210712061032.609923379@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,65 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 
-[ Upstream commit f40a71ffec808e7e51848f63f0c0d3c32d65081b ]
+[ Upstream commit 652a6a2e3824ce2ebf79a2d5326940d05c4db036 ]
 
-To make code more readable, use a structure to express the channel
-layout and ensure the timestamp is 8 byte aligned.
+The way of printing the pointer address for the 'port_base'
+address got into compile warnings on some architectures
+[-Wpointer-to-int-cast]. Instead of use '%08x' and cast
+to an 'unsigned int' just make use of '%px' and avoid the
+cast. To avoid not really needed driver verbosity on normal
+behaviour change also from 'dev_info' to 'dev_dbg'.
 
-Found during an audit of all calls of this function.
-
-Fixes: 95c12bba51c3 ("iio: accel: Add buffer mode for Sensortek STK8312")
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20210501170121.512209-7-jic23@kernel.org
+Fixes: d87da32372a0 ("phy: ralink: Add PHY driver for MT7621 PCIe PHY")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Link: https://lore.kernel.org/r/20210508070930.5290-7-sergio.paracuellos@gmail.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/accel/stk8312.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ drivers/phy/ralink/phy-mt7621-pci.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/iio/accel/stk8312.c b/drivers/iio/accel/stk8312.c
-index 3b59887a8581..7d24801e8aa7 100644
---- a/drivers/iio/accel/stk8312.c
-+++ b/drivers/iio/accel/stk8312.c
-@@ -103,7 +103,11 @@ struct stk8312_data {
- 	u8 mode;
- 	struct iio_trigger *dready_trig;
- 	bool dready_trigger_on;
--	s8 buffer[16]; /* 3x8-bit channels + 5x8 padding + 64-bit timestamp */
-+	/* Ensure timestamp is naturally aligned */
-+	struct {
-+		s8 chans[3];
-+		s64 timestamp __aligned(8);
-+	} scan;
- };
+diff --git a/drivers/phy/ralink/phy-mt7621-pci.c b/drivers/phy/ralink/phy-mt7621-pci.c
+index 753cb5bab930..88e82ab81b61 100644
+--- a/drivers/phy/ralink/phy-mt7621-pci.c
++++ b/drivers/phy/ralink/phy-mt7621-pci.c
+@@ -272,8 +272,8 @@ static struct phy *mt7621_pcie_phy_of_xlate(struct device *dev,
  
- static IIO_CONST_ATTR(in_accel_scale_available, STK8312_SCALE_AVAIL);
-@@ -438,7 +442,7 @@ static irqreturn_t stk8312_trigger_handler(int irq, void *p)
- 		ret = i2c_smbus_read_i2c_block_data(data->client,
- 						    STK8312_REG_XOUT,
- 						    STK8312_ALL_CHANNEL_SIZE,
--						    data->buffer);
-+						    data->scan.chans);
- 		if (ret < STK8312_ALL_CHANNEL_SIZE) {
- 			dev_err(&data->client->dev, "register read failed\n");
- 			mutex_unlock(&data->lock);
-@@ -452,12 +456,12 @@ static irqreturn_t stk8312_trigger_handler(int irq, void *p)
- 				mutex_unlock(&data->lock);
- 				goto err;
- 			}
--			data->buffer[i++] = ret;
-+			data->scan.chans[i++] = ret;
- 		}
- 	}
- 	mutex_unlock(&data->lock);
+ 	mt7621_phy->has_dual_port = args->args[0];
  
--	iio_push_to_buffers_with_timestamp(indio_dev, data->buffer,
-+	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
- 					   pf->timestamp);
- err:
- 	iio_trigger_notify_done(indio_dev->trig);
+-	dev_info(dev, "PHY for 0x%08x (dual port = %d)\n",
+-		 (unsigned int)mt7621_phy->port_base, mt7621_phy->has_dual_port);
++	dev_dbg(dev, "PHY for 0x%px (dual port = %d)\n",
++		mt7621_phy->port_base, mt7621_phy->has_dual_port);
+ 
+ 	return mt7621_phy->phy;
+ }
 -- 
 2.30.2
 
