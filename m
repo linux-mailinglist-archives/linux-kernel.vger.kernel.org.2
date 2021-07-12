@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 415B83C596B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F9783C5910
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383720AbhGLJDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:03:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56518 "EHLO mail.kernel.org"
+        id S1356482AbhGLI41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:56:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353651AbhGLICo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:02:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 05AB461582;
-        Mon, 12 Jul 2021 07:56:35 +0000 (UTC)
+        id S1353703AbhGLICr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:02:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9BD16142F;
+        Mon, 12 Jul 2021 07:56:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076596;
-        bh=vBbUJ1KOM+k1JuZjtSVaPmtW/lBhC0FJdTVBRm1SK3k=;
+        s=korg; t=1626076603;
+        bh=6goBKYCxXDesPc88ecFa8J1E8KMZ+jhFDyRaPcWVJ18=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cr/LKji+VFwBlshs32HT8+7hcQXcUCDLHMZeIcFRNRpjZix4v4qg9GwrtDvN2R/iH
-         3ZzqhNmkA26Reb51YB4NwGLI2uJLPw7ad16KeYMp24enPUt8pItQkFfzlQuEX12djn
-         296gq684iisJURiAIQHGmFX+ZTnHL4dAE3jhYJcw=
+        b=DUjBxeedlzmoQGF88Lcwf7lszEzhluLitnFv6BsQRarpqmXlanmoilzVnoG7ZZEg9
+         l3fRCmavdhOt2Lh4a6OWDW5fCJNiL35sxp0ae3PRoKgKjy8k9PTfLwYeZGxK3Zb0fV
+         4mo5+1C8ma9a2IwlcwuCqH73Wf8vMNXL3zu0BHkY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
+        stable@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 712/800] iio: adc: ti-ads8688: Fix alignment of buffer in iio_push_to_buffers_with_timestamp()
-Date:   Mon, 12 Jul 2021 08:12:15 +0200
-Message-Id: <20210712061042.467086738@linuxfoundation.org>
+Subject: [PATCH 5.13 715/800] ASoC: fsl_spdif: Fix error handler with pm_runtime_enable
+Date:   Mon, 12 Jul 2021 08:12:18 +0200
+Message-Id: <20210712061042.823613200@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -41,37 +40,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-[ Upstream commit 61fa5dfa5f52806f5ce37a0ba5712c271eb22f98 ]
+[ Upstream commit 28108d71ee11a7232e1102effab3361049dcd3b8 ]
 
-Add __aligned(8) to ensure the buffer passed to
-iio_push_to_buffers_with_timestamp() is suitable for the naturally
-aligned timestamp that will be inserted.
+There is error message when defer probe happens:
 
-Fixes: f214ff521fb1 ("iio: ti-ads8688: Update buffer allocation for timestamps")
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Nuno Sá <nuno.sa@analog.com>
-Link: https://lore.kernel.org/r/20210613152301.571002-5-jic23@kernel.org
+fsl-spdif-dai 2dab0000.spdif: Unbalanced pm_runtime_enable!
+
+Fix the error handler with pm_runtime_enable and add
+fsl_spdif_remove() for pm_runtime_disable.
+
+Fixes: 9cb2b3796e08 ("ASoC: fsl_spdif: Add pm runtime function")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Link: https://lore.kernel.org/r/1623392318-26304-1-git-send-email-shengjiu.wang@nxp.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/adc/ti-ads8688.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/fsl/fsl_spdif.c | 20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/iio/adc/ti-ads8688.c b/drivers/iio/adc/ti-ads8688.c
-index 16bcb37eebb7..79c803537dc4 100644
---- a/drivers/iio/adc/ti-ads8688.c
-+++ b/drivers/iio/adc/ti-ads8688.c
-@@ -383,7 +383,8 @@ static irqreturn_t ads8688_trigger_handler(int irq, void *p)
- {
- 	struct iio_poll_func *pf = p;
- 	struct iio_dev *indio_dev = pf->indio_dev;
--	u16 buffer[ADS8688_MAX_CHANNELS + sizeof(s64)/sizeof(u16)];
-+	/* Ensure naturally aligned timestamp */
-+	u16 buffer[ADS8688_MAX_CHANNELS + sizeof(s64)/sizeof(u16)] __aligned(8);
- 	int i, j = 0;
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index c631de325a6e..5636837eb511 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -1375,16 +1375,29 @@ static int fsl_spdif_probe(struct platform_device *pdev)
+ 					      &spdif_priv->cpu_dai_drv, 1);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "failed to register DAI: %d\n", ret);
+-		return ret;
++		goto err_pm_disable;
+ 	}
  
- 	for (i = 0; i < indio_dev->masklength; i++) {
+ 	ret = imx_pcm_dma_init(pdev, IMX_SPDIF_DMABUF_SIZE);
+-	if (ret && ret != -EPROBE_DEFER)
+-		dev_err(&pdev->dev, "imx_pcm_dma_init failed: %d\n", ret);
++	if (ret) {
++		dev_err_probe(&pdev->dev, ret, "imx_pcm_dma_init failed\n");
++		goto err_pm_disable;
++	}
++
++	return ret;
+ 
++err_pm_disable:
++	pm_runtime_disable(&pdev->dev);
+ 	return ret;
+ }
+ 
++static int fsl_spdif_remove(struct platform_device *pdev)
++{
++	pm_runtime_disable(&pdev->dev);
++
++	return 0;
++}
++
+ #ifdef CONFIG_PM
+ static int fsl_spdif_runtime_suspend(struct device *dev)
+ {
+@@ -1487,6 +1500,7 @@ static struct platform_driver fsl_spdif_driver = {
+ 		.pm = &fsl_spdif_pm,
+ 	},
+ 	.probe = fsl_spdif_probe,
++	.remove = fsl_spdif_remove,
+ };
+ 
+ module_platform_driver(fsl_spdif_driver);
 -- 
 2.30.2
 
