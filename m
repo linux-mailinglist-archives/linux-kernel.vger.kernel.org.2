@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C60933C52E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C71D3C4C32
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350495AbhGLHvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:51:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47058 "EHLO mail.kernel.org"
+        id S240893AbhGLHCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:02:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243089AbhGLHQe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:16:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AC196142F;
-        Mon, 12 Jul 2021 07:13:17 +0000 (UTC)
+        id S236596AbhGLGqI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:46:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2F4F6113C;
+        Mon, 12 Jul 2021 06:41:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073998;
-        bh=zpmlP8jBOI/3XJMSmYUQUg/+DOSOOVgo9OAB8w9mgdY=;
+        s=korg; t=1626072095;
+        bh=Kp+1xGUgv/CiBoWsPqgHBz5hTIJJRLcPsGhwhCzHy8c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uWb+ah8LItjh457e1SNZ/dLGNgJdgovQrPNZUHhePzpHqy6LIdG7P/ZPpGYFfzcQo
-         W3Rc5csXBfRHdTUjH45UExDM5KNbzD1HRMGH6TJmt7fc2gICXXypm2bT6P1yG5dHJO
-         luq8C2Ka4LgaQF+2n/h5uo1cJZxeLufIOp22ZXgQ=
+        b=oKGwzF0YrFm3rj8+wdFvIxFq8+gZVv/OkRDmKeHECFDJdJI1xHh4cxqm/woevb+RY
+         jGBJ2JwBmyudVQViZ8RrFGj2vHnqcOhCDixRs+DX5gaL+sN/NNMlgQ7ptpP/fAZm3g
+         9PXXNbRF5eQ9dcQslfmsBVfiKSnziGF4fGuj1ha8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wang Hai <wanghai38@huawei.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 429/700] samples/bpf: Fix Segmentation fault for xdp_redirect command
-Date:   Mon, 12 Jul 2021 08:08:32 +0200
-Message-Id: <20210712061022.074705071@linuxfoundation.org>
+Subject: [PATCH 5.10 353/593] ath10k: Fix an error code in ath10k_add_interface()
+Date:   Mon, 12 Jul 2021 08:08:33 +0200
+Message-Id: <20210712060925.090843801@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Yang Li <yang.lee@linux.alibaba.com>
 
-[ Upstream commit 85102ba58b4125ebad941d7555c3c248b23efd16 ]
+[ Upstream commit e9ca70c735ce66fc6a0e02c8b6958434f74ef8de ]
 
-A Segmentation fault error is caused when the following command
-is executed.
+When the code execute this if statement, the value of ret is 0.
+However, we can see from the ath10k_warn() log that the value of
+ret should be -EINVAL.
 
-$ sudo ./samples/bpf/xdp_redirect lo
-Segmentation fault
+Clean up smatch warning:
 
-This command is missing a device <IFNAME|IFINDEX> as an argument, resulting
-in out-of-bounds access from argv.
+drivers/net/wireless/ath/ath10k/mac.c:5596 ath10k_add_interface() warn:
+missing error code 'ret'
 
-If the number of devices for the xdp_redirect parameter is not 2,
-we should report an error and exit.
-
-Fixes: 24251c264798 ("samples/bpf: add option for native and skb mode for redirect apps")
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20210616042324.314832-1-wanghai38@huawei.com
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Fixes: ccec9038c721 ("ath10k: enable raw encap mode and software crypto engine")
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/1621939577-62218-1-git-send-email-yang.lee@linux.alibaba.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- samples/bpf/xdp_redirect_user.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/samples/bpf/xdp_redirect_user.c b/samples/bpf/xdp_redirect_user.c
-index 41d705c3a1f7..eb876629109a 100644
---- a/samples/bpf/xdp_redirect_user.c
-+++ b/samples/bpf/xdp_redirect_user.c
-@@ -130,7 +130,7 @@ int main(int argc, char **argv)
- 	if (!(xdp_flags & XDP_FLAGS_SKB_MODE))
- 		xdp_flags |= XDP_FLAGS_DRV_MODE;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index f5c0f9bac840..36183fdfb7f0 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -5482,6 +5482,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
  
--	if (optind == argc) {
-+	if (optind + 2 != argc) {
- 		printf("usage: %s <IFNAME|IFINDEX>_IN <IFNAME|IFINDEX>_OUT\n", argv[0]);
- 		return 1;
+ 	if (arvif->nohwcrypt &&
+ 	    !test_bit(ATH10K_FLAG_RAW_MODE, &ar->dev_flags)) {
++		ret = -EINVAL;
+ 		ath10k_warn(ar, "cryptmode module param needed for sw crypto\n");
+ 		goto err;
  	}
 -- 
 2.30.2
