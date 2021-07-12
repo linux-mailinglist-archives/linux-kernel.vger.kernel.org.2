@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8981F3C529C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 126953C5862
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343791AbhGLHrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:47:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46542 "EHLO mail.kernel.org"
+        id S1351733AbhGLIrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:47:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242575AbhGLHNd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:13:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80A3A61153;
-        Mon, 12 Jul 2021 07:10:39 +0000 (UTC)
+        id S1350516AbhGLHvF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:51:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 944B661152;
+        Mon, 12 Jul 2021 07:45:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073840;
-        bh=5NTxDvKb2VWUSZrZE7MZDD9+AG0I9OzUGnP3AVsQbAg=;
+        s=korg; t=1626075955;
+        bh=T1wAeuWT7+y5rbqoxQHr4a1GsyCW465NMBfjnELrFLY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E2ILdOW/8rjAXCBQt+Knt6tknwV9pPT/OIj64tTii/hOCXnicVUD4X9SLiFaegWxt
-         kYmN8k373XsU4Z9I/7/u1OVj+kT7a1Eg6kZOWZk99LV1qT/SH7YeNIVTPXkB83yOqf
-         96a5RNzSbsPzR4UtXP2VozBcVtbLs2CGKM/blHMw=
+        b=zLDswTdHuUBSiyLK0z8NiVNaunIRwV+YwU8yjLZcebKx7zb6RTHf+jytKUrDP2n5g
+         tFPXChRrQpQMifk7xGHk6oXjPGkexbYmpmbBVfpCa2UhFF0NYeLUwsyl/ZSMs8Z8Me
+         LofL1NqZ+JkR1c/X14Q8HTnExs1+RWtGH9oJsnJ0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Hebb <tommyhebb@gmail.com>,
-        Jonathan Liu <net147@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
+        stable@vger.kernel.org, Xiumei Mu <xmu@redhat.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 377/700] drm/rockchip: dsi: move all lane config except LCDC mux to bind()
+Subject: [PATCH 5.13 437/800] xfrm: remove the fragment check for ipv6 beet mode
 Date:   Mon, 12 Jul 2021 08:07:40 +0200
-Message-Id: <20210712061016.440236957@linuxfoundation.org>
+Message-Id: <20210712061013.558299360@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,118 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Hebb <tommyhebb@gmail.com>
+From: Xin Long <lucien.xin@gmail.com>
 
-[ Upstream commit 43c2de1002d2b70fb5941fa14e97a34e3dc214d4 ]
+[ Upstream commit eebd49a4ffb420a991c606e54aa3c9f02857a334 ]
 
-When we first enable the DSI encoder, we currently program some per-chip
-configuration that we look up in rk3399_chip_data based on the device
-tree compatible we match. This data configures various parameters of the
-MIPI lanes, including on RK3399 whether DSI1 is slaved to DSI0 in a
-dual-mode configuration. It also selects which LCDC (i.e. VOP) to scan
-out from.
+In commit 68dc022d04eb ("xfrm: BEET mode doesn't support fragments
+for inner packets"), it tried to fix the issue that in TX side the
+packet is fragmented before the ESP encapping while in the RX side
+the fragments always get reassembled before decapping with ESP.
 
-This causes a problem in RK3399 dual-mode configurations, though: panel
-prepare() callbacks run before the encoder gets enabled and expect to be
-able to write commands to the DSI bus, but the bus isn't fully
-functional until the lane and master/slave configuration have been
-programmed. As a result, dual-mode panels (and possibly others too) fail
-to turn on when the rockchipdrm driver is initially loaded.
+This is not true for IPv6. IPv6 is different, and it's using exthdr
+to save fragment info, as well as the ESP info. Exthdrs are added
+in TX and processed in RX both in order. So in the above case, the
+ESP decapping will be done earlier than the fragment reassembling
+in TX side.
 
-Because the LCDC mux is the only thing we don't know until enable time
-(and is the only thing that can ever change), we can actually move most
-of the initialization to bind() and get it out of the way early. That's
-what this change does. (Rockchip's 4.4 BSP kernel does it in mode_set(),
-which also avoids the issue, but bind() seems like the more correct
-place to me.)
+Here just remove the fragment check for the IPv6 inner packets to
+recover the fragments support for BEET mode.
 
-Tested on a Google Scarlet board (Acer Chromebook Tab 10), which has a
-Kingdisplay KD097D04 dual-mode panel. Prior to this change, the panel's
-backlight would turn on but no image would appear when initially loading
-rockchipdrm. If I kept rockchipdrm loaded and reloaded the panel driver,
-it would come on. With this change, the panel successfully turns on
-during initial rockchipdrm load as expected.
-
-Fixes: 2d4f7bdafd70 ("drm/rockchip: dsi: migrate to use dw-mipi-dsi bridge driver")
-Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
-Tested-by: Jonathan Liu <net147@gmail.com>
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-Link: https://patchwork.freedesktop.org/patch/msgid/55fe7f3454d8c91dc3837ba5aa741d4a0e67378f.1618797813.git.tommyhebb@gmail.com
+Fixes: 68dc022d04eb ("xfrm: BEET mode doesn't support fragments for inner packets")
+Reported-by: Xiumei Mu <xmu@redhat.com>
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../gpu/drm/rockchip/dw-mipi-dsi-rockchip.c   | 36 ++++++++++++++-----
- 1 file changed, 28 insertions(+), 8 deletions(-)
+ net/xfrm/xfrm_output.c | 7 -------
+ 1 file changed, 7 deletions(-)
 
-diff --git a/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c b/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
-index 24a71091759c..d8c47ee3cad3 100644
---- a/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
-+++ b/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
-@@ -692,13 +692,8 @@ static const struct dw_mipi_dsi_phy_ops dw_mipi_dsi_rockchip_phy_ops = {
- 	.get_timing = dw_mipi_dsi_phy_get_timing,
- };
- 
--static void dw_mipi_dsi_rockchip_config(struct dw_mipi_dsi_rockchip *dsi,
--					int mux)
-+static void dw_mipi_dsi_rockchip_config(struct dw_mipi_dsi_rockchip *dsi)
+diff --git a/net/xfrm/xfrm_output.c b/net/xfrm/xfrm_output.c
+index e4cb0ff4dcf4..ac907b9d32d1 100644
+--- a/net/xfrm/xfrm_output.c
++++ b/net/xfrm/xfrm_output.c
+@@ -711,15 +711,8 @@ out:
+ static int xfrm6_extract_output(struct xfrm_state *x, struct sk_buff *skb)
  {
--	if (dsi->cdata->lcdsel_grf_reg)
--		regmap_write(dsi->grf_regmap, dsi->cdata->lcdsel_grf_reg,
--			mux ? dsi->cdata->lcdsel_lit : dsi->cdata->lcdsel_big);
+ #if IS_ENABLED(CONFIG_IPV6)
+-	unsigned int ptr = 0;
+ 	int err;
+ 
+-	if (x->outer_mode.encap == XFRM_MODE_BEET &&
+-	    ipv6_find_hdr(skb, &ptr, NEXTHDR_FRAGMENT, NULL, NULL) >= 0) {
+-		net_warn_ratelimited("BEET mode doesn't support inner IPv6 fragments\n");
+-		return -EAFNOSUPPORT;
+-	}
 -
- 	if (dsi->cdata->lanecfg1_grf_reg)
- 		regmap_write(dsi->grf_regmap, dsi->cdata->lanecfg1_grf_reg,
- 					      dsi->cdata->lanecfg1);
-@@ -712,6 +707,13 @@ static void dw_mipi_dsi_rockchip_config(struct dw_mipi_dsi_rockchip *dsi,
- 					      dsi->cdata->enable);
- }
- 
-+static void dw_mipi_dsi_rockchip_set_lcdsel(struct dw_mipi_dsi_rockchip *dsi,
-+					    int mux)
-+{
-+	regmap_write(dsi->grf_regmap, dsi->cdata->lcdsel_grf_reg,
-+		mux ? dsi->cdata->lcdsel_lit : dsi->cdata->lcdsel_big);
-+}
-+
- static int
- dw_mipi_dsi_encoder_atomic_check(struct drm_encoder *encoder,
- 				 struct drm_crtc_state *crtc_state,
-@@ -767,9 +769,9 @@ static void dw_mipi_dsi_encoder_enable(struct drm_encoder *encoder)
- 		return;
- 	}
- 
--	dw_mipi_dsi_rockchip_config(dsi, mux);
-+	dw_mipi_dsi_rockchip_set_lcdsel(dsi, mux);
- 	if (dsi->slave)
--		dw_mipi_dsi_rockchip_config(dsi->slave, mux);
-+		dw_mipi_dsi_rockchip_set_lcdsel(dsi->slave, mux);
- 
- 	clk_disable_unprepare(dsi->grf_clk);
- }
-@@ -923,6 +925,24 @@ static int dw_mipi_dsi_rockchip_bind(struct device *dev,
- 		return ret;
- 	}
- 
-+	/*
-+	 * With the GRF clock running, write lane and dual-mode configurations
-+	 * that won't change immediately. If we waited until enable() to do
-+	 * this, things like panel preparation would not be able to send
-+	 * commands over DSI.
-+	 */
-+	ret = clk_prepare_enable(dsi->grf_clk);
-+	if (ret) {
-+		DRM_DEV_ERROR(dsi->dev, "Failed to enable grf_clk: %d\n", ret);
-+		return ret;
-+	}
-+
-+	dw_mipi_dsi_rockchip_config(dsi);
-+	if (dsi->slave)
-+		dw_mipi_dsi_rockchip_config(dsi->slave);
-+
-+	clk_disable_unprepare(dsi->grf_clk);
-+
- 	ret = rockchip_dsi_drm_create_encoder(dsi, drm_dev);
- 	if (ret) {
- 		DRM_DEV_ERROR(dev, "Failed to create drm encoder\n");
+ 	err = xfrm6_tunnel_check_size(skb);
+ 	if (err)
+ 		return err;
 -- 
 2.30.2
 
