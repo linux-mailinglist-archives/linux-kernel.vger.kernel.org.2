@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AC333C492C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED7B3C5003
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237921AbhGLGm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:42:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55814 "EHLO mail.kernel.org"
+        id S1345830AbhGLHaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:30:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235459AbhGLGcg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:32:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 451566113A;
-        Mon, 12 Jul 2021 06:29:42 +0000 (UTC)
+        id S240999AbhGLHCS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:02:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 63A1760FED;
+        Mon, 12 Jul 2021 06:59:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071382;
-        bh=G88GN/b6G29KCom/8h32drPqH0lUvw+z2gj6kNG03No=;
+        s=korg; t=1626073169;
+        bh=IaLWchXqtwge6yNl+R9qPP2VlfBnURJKq1vPQED7chQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uMxhH/YpDaXMf44zaKLCRJg98Y9vAHQkmAkeBi+EzYk8wRQpkq761vpuZ2InCNDhy
-         oaYlqwIEmK0qRWj0TIRFKAZ4si2XVgtLH5x4tfwC4ohn1gEic4NYa/FByJ7ilGPcKV
-         5wY+xDxjPZi+EnRE/Tt/HrTYbsuhXURyqgDqbmAc=
+        b=jiMsp5MxInZxQWFHkICj5Ne7mGOAq6J01hStpPYtFOLa7uDtp/2VbF0/zZXbB9LGT
+         9nocFN54b0mesXaZeIeKynrOVguOQaUbmw7ZQKTYE3H9fTmIr9HaCouMkZ0cDORfiq
+         uysU+hrqvOyrx6H8xve0B/8fuLl4aH0zghkPqRmo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Yi <yi.zhang@huawei.com>,
-        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.10 046/593] ext4: correct the cache_nr in tracepoint ext4_es_shrink_exit
+        stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 123/700] media: marvel-ccic: fix some issues when getting pm_runtime
 Date:   Mon, 12 Jul 2021 08:03:26 +0200
-Message-Id: <20210712060848.200272861@linuxfoundation.org>
+Message-Id: <20210712060942.331186977@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,35 +41,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Yi <yi.zhang@huawei.com>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-commit 4fb7c70a889ead2e91e184895ac6e5354b759135 upstream.
+[ Upstream commit e7c617cab7a522fba5b20f9033ee98565b6f3546 ]
 
-The cache_cnt parameter of tracepoint ext4_es_shrink_exit means the
-remaining cache count after shrink, but now it is the cache count before
-shrink, fix it by read sbi->s_extent_cache_cnt again.
+Calling pm_runtime_get_sync() is bad, since even when it
+returns an error, pm_runtime_put*() should be called.
+So, use instead pm_runtime_resume_and_get().
 
-Fixes: 1ab6c4997e04 ("fs: convert fs shrinkers to new scan/count API")
-Cc: stable@vger.kernel.org # 3.12+
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20210522103045.690103-3-yi.zhang@huawei.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+While here, ensure that the error condition will be checked
+during clock enable an media open() calls.
 
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/extents_status.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/media/platform/marvell-ccic/mcam-core.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
---- a/fs/ext4/extents_status.c
-+++ b/fs/ext4/extents_status.c
-@@ -1579,6 +1579,7 @@ static unsigned long ext4_es_scan(struct
+diff --git a/drivers/media/platform/marvell-ccic/mcam-core.c b/drivers/media/platform/marvell-ccic/mcam-core.c
+index 141bf5d97a04..ea87110d9073 100644
+--- a/drivers/media/platform/marvell-ccic/mcam-core.c
++++ b/drivers/media/platform/marvell-ccic/mcam-core.c
+@@ -918,6 +918,7 @@ static int mclk_enable(struct clk_hw *hw)
+ 	struct mcam_camera *cam = container_of(hw, struct mcam_camera, mclk_hw);
+ 	int mclk_src;
+ 	int mclk_div;
++	int ret;
  
- 	nr_shrunk = __es_shrink(sbi, nr_to_scan, NULL);
+ 	/*
+ 	 * Clock the sensor appropriately.  Controller clock should
+@@ -931,7 +932,9 @@ static int mclk_enable(struct clk_hw *hw)
+ 		mclk_div = 2;
+ 	}
  
-+	ret = percpu_counter_read_positive(&sbi->s_es_stats.es_stats_shk_cnt);
- 	trace_ext4_es_shrink_scan_exit(sbi->s_sb, nr_shrunk, ret);
- 	return nr_shrunk;
- }
+-	pm_runtime_get_sync(cam->dev);
++	ret = pm_runtime_resume_and_get(cam->dev);
++	if (ret < 0)
++		return ret;
+ 	clk_enable(cam->clk[0]);
+ 	mcam_reg_write(cam, REG_CLKCTRL, (mclk_src << 29) | mclk_div);
+ 	mcam_ctlr_power_up(cam);
+@@ -1611,7 +1614,9 @@ static int mcam_v4l_open(struct file *filp)
+ 		ret = sensor_call(cam, core, s_power, 1);
+ 		if (ret)
+ 			goto out;
+-		pm_runtime_get_sync(cam->dev);
++		ret = pm_runtime_resume_and_get(cam->dev);
++		if (ret < 0)
++			goto out;
+ 		__mcam_cam_reset(cam);
+ 		mcam_set_config_needed(cam, 1);
+ 	}
+-- 
+2.30.2
+
 
 
