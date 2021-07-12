@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 478B93C4A48
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB4063C5796
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240089AbhGLGup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:50:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33904 "EHLO mail.kernel.org"
+        id S1377303AbhGLIfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:35:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238329AbhGLGkH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:40:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3392C610FB;
-        Mon, 12 Jul 2021 06:36:56 +0000 (UTC)
+        id S245372AbhGLHtW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:49:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C84EC6199B;
+        Mon, 12 Jul 2021 07:43:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071816;
-        bh=eBswLedJYx/ZLEIT8tcmKoRHn3htzjnt1RXCAbktCrk=;
+        s=korg; t=1626075801;
+        bh=k3kZ2VEBrJ7CdTD5g3GNvFDitEJ7OpDfeIsF0NqydwM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TIHq1u9Kxk8udv3McrRcP/j18VRv8WKwpuFIIQiQK9aP1AdMsp/ZL819dkjR2vl3+
-         DZ7RClSiSofg+n66DtnDgiH5t8Co1A/23q+qRE+mRx2+pehbROw4H9ieZqzDvAbeEy
-         XpzoOCahUATl75xxAEIRwoSPC5kSouJp3ISoLA+M=
+        b=x/KQXbUOQ4/bh56Mly0ly7p1GSDpbBvt8w0kmAiuRl99hacE17LSDxCaZ74lCLwDO
+         ZlM7+0RAzUafsb9v8D1zY7RCl5hjFaO8i6mEQkEi0vcJfkPSF6wuh1PAUngRAwAJiG
+         KZGeQT/iLFF2HBnNcQM0P7EP/U9syQ7T+sFDbkvo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Waiman Long <longman@redhat.com>,
+        stable@vger.kernel.org, Xiaofei Tan <tanxiaofei@huawei.com>,
+        James Morse <james.morse@arm.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 231/593] locking/lockdep: Reduce LOCKDEP dependency list
-Date:   Mon, 12 Jul 2021 08:06:31 +0200
-Message-Id: <20210712060908.330626233@linuxfoundation.org>
+Subject: [PATCH 5.13 369/800] ACPI: APEI: fix synchronous external aborts in user-mode
+Date:   Mon, 12 Jul 2021 08:06:32 +0200
+Message-Id: <20210712061006.309999361@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,59 +41,157 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Xiaofei Tan <tanxiaofei@huawei.com>
 
-[ Upstream commit b8e00abe7d9fe21dd13609e2e3a707e38902b105 ]
+[ Upstream commit ccb5ecdc2ddeaff744ee075b54cdff8a689e8fa7 ]
 
-Some arches (um, sparc64, riscv, xtensa) cause a Kconfig warning for
-LOCKDEP.
-These arch-es select LOCKDEP_SUPPORT but they are not listed as one
-of the arch-es that LOCKDEP depends on.
+Before commit 8fcc4ae6faf8 ("arm64: acpi: Make apei_claim_sea()
+synchronise with APEI's irq work"), do_sea() would unconditionally
+signal the affected task from the arch code. Since that change,
+the GHES driver sends the signals.
 
-Since (16) arch-es define the Kconfig symbol LOCKDEP_SUPPORT if they
-intend to have LOCKDEP support, replace the awkward list of
-arch-es that LOCKDEP depends on with the LOCKDEP_SUPPORT symbol.
+This exposes a problem as errors the GHES driver doesn't understand
+or doesn't handle effectively are silently ignored. It will cause
+the errors get taken again, and circulate endlessly. User-space task
+get stuck in this loop.
 
-But wait. LOCKDEP_SUPPORT is included in LOCK_DEBUGGING_SUPPORT,
-which is already a dependency here, so LOCKDEP_SUPPORT is redundant
-and not needed.
-That leaves the FRAME_POINTER dependency, but it is part of an
-expression like this:
-	depends on (A && B) && (FRAME_POINTER || B')
-where B' is a dependency of B so if B is true then B' is true
-and the value of FRAME_POINTER does not matter.
-Thus we can also delete the FRAME_POINTER dependency.
+Existing firmware on Kunpeng9xx systems reports cache errors with the
+'ARM Processor Error' CPER records.
 
-Fixes this kconfig warning: (for um, sparc64, riscv, xtensa)
+Do memory failure handling for ARM Processor Error Section just like
+for Memory Error Section.
 
-WARNING: unmet direct dependencies detected for LOCKDEP
-  Depends on [n]: DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y] && (FRAME_POINTER [=n] || MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86)
-  Selected by [y]:
-  - PROVE_LOCKING [=y] && DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y]
-  - LOCK_STAT [=y] && DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y]
-  - DEBUG_LOCK_ALLOC [=y] && DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y]
-
-Fixes: 7d37cb2c912d ("lib: fix kconfig dependency on ARCH_WANT_FRAME_POINTERS")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Waiman Long <longman@redhat.com>
-Link: https://lkml.kernel.org/r/20210524224150.8009-1-rdunlap@infradead.org
+Fixes: 8fcc4ae6faf8 ("arm64: acpi: Make apei_claim_sea() synchronise with APEI's irq work")
+Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
+Reviewed-by: James Morse <james.morse@arm.com>
+[ rjw: Subject edit ]
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/Kconfig.debug | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/acpi/apei/ghes.c | 81 +++++++++++++++++++++++++++++++---------
+ 1 file changed, 64 insertions(+), 17 deletions(-)
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index dcf4a9028e16..5b7f88a2876d 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -1302,7 +1302,6 @@ config LOCKDEP
- 	bool
- 	depends on DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT
- 	select STACKTRACE
--	depends on FRAME_POINTER || MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86
- 	select KALLSYMS
- 	select KALLSYMS_ALL
+diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+index fce7ade2aba9..0c8330ed1ffd 100644
+--- a/drivers/acpi/apei/ghes.c
++++ b/drivers/acpi/apei/ghes.c
+@@ -441,28 +441,35 @@ static void ghes_kick_task_work(struct callback_head *head)
+ 	gen_pool_free(ghes_estatus_pool, (unsigned long)estatus_node, node_len);
+ }
+ 
+-static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
+-				       int sev)
++static bool ghes_do_memory_failure(u64 physical_addr, int flags)
+ {
+ 	unsigned long pfn;
+-	int flags = -1;
+-	int sec_sev = ghes_severity(gdata->error_severity);
+-	struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
+ 
+ 	if (!IS_ENABLED(CONFIG_ACPI_APEI_MEMORY_FAILURE))
+ 		return false;
+ 
+-	if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
+-		return false;
+-
+-	pfn = mem_err->physical_addr >> PAGE_SHIFT;
++	pfn = PHYS_PFN(physical_addr);
+ 	if (!pfn_valid(pfn)) {
+ 		pr_warn_ratelimited(FW_WARN GHES_PFX
+ 		"Invalid address in generic error data: %#llx\n",
+-		mem_err->physical_addr);
++		physical_addr);
+ 		return false;
+ 	}
+ 
++	memory_failure_queue(pfn, flags);
++	return true;
++}
++
++static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
++				       int sev)
++{
++	int flags = -1;
++	int sec_sev = ghes_severity(gdata->error_severity);
++	struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
++
++	if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
++		return false;
++
+ 	/* iff following two events can be handled properly by now */
+ 	if (sec_sev == GHES_SEV_CORRECTED &&
+ 	    (gdata->flags & CPER_SEC_ERROR_THRESHOLD_EXCEEDED))
+@@ -470,14 +477,56 @@ static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
+ 	if (sev == GHES_SEV_RECOVERABLE && sec_sev == GHES_SEV_RECOVERABLE)
+ 		flags = 0;
+ 
+-	if (flags != -1) {
+-		memory_failure_queue(pfn, flags);
+-		return true;
+-	}
++	if (flags != -1)
++		return ghes_do_memory_failure(mem_err->physical_addr, flags);
+ 
+ 	return false;
+ }
+ 
++static bool ghes_handle_arm_hw_error(struct acpi_hest_generic_data *gdata, int sev)
++{
++	struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
++	bool queued = false;
++	int sec_sev, i;
++	char *p;
++
++	log_arm_hw_error(err);
++
++	sec_sev = ghes_severity(gdata->error_severity);
++	if (sev != GHES_SEV_RECOVERABLE || sec_sev != GHES_SEV_RECOVERABLE)
++		return false;
++
++	p = (char *)(err + 1);
++	for (i = 0; i < err->err_info_num; i++) {
++		struct cper_arm_err_info *err_info = (struct cper_arm_err_info *)p;
++		bool is_cache = (err_info->type == CPER_ARM_CACHE_ERROR);
++		bool has_pa = (err_info->validation_bits & CPER_ARM_INFO_VALID_PHYSICAL_ADDR);
++		const char *error_type = "unknown error";
++
++		/*
++		 * The field (err_info->error_info & BIT(26)) is fixed to set to
++		 * 1 in some old firmware of HiSilicon Kunpeng920. We assume that
++		 * firmware won't mix corrected errors in an uncorrected section,
++		 * and don't filter out 'corrected' error here.
++		 */
++		if (is_cache && has_pa) {
++			queued = ghes_do_memory_failure(err_info->physical_fault_addr, 0);
++			p += err_info->length;
++			continue;
++		}
++
++		if (err_info->type < ARRAY_SIZE(cper_proc_error_type_strs))
++			error_type = cper_proc_error_type_strs[err_info->type];
++
++		pr_warn_ratelimited(FW_WARN GHES_PFX
++				    "Unhandled processor error type: %s\n",
++				    error_type);
++		p += err_info->length;
++	}
++
++	return queued;
++}
++
+ /*
+  * PCIe AER errors need to be sent to the AER driver for reporting and
+  * recovery. The GHES severities map to the following AER severities and
+@@ -605,9 +654,7 @@ static bool ghes_do_proc(struct ghes *ghes,
+ 			ghes_handle_aer(gdata);
+ 		}
+ 		else if (guid_equal(sec_type, &CPER_SEC_PROC_ARM)) {
+-			struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
+-
+-			log_arm_hw_error(err);
++			queued = ghes_handle_arm_hw_error(gdata, sev);
+ 		} else {
+ 			void *err = acpi_hest_get_payload(gdata);
  
 -- 
 2.30.2
