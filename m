@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B5713C4966
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E56B03C4FE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:44:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239016AbhGLGog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:44:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55054 "EHLO mail.kernel.org"
+        id S1343746AbhGLH2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:28:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237036AbhGLGdn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:33:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 61AE66113C;
-        Mon, 12 Jul 2021 06:30:03 +0000 (UTC)
+        id S240823AbhGLHBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:01:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0427B6142F;
+        Mon, 12 Jul 2021 06:58:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071403;
-        bh=isnSSOi9t/7E3k0sfD83D9sSb2OIubB7DPFcAezP1fU=;
+        s=korg; t=1626073110;
+        bh=GS4HYO8RAoaqM24bOqToIKV1uzxOx5AOdFP2Shpm7f4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pJ5FHjOnYTcvDdcCEcrFSJTL0m0vClR+OyaghBM+RrJ11xEPE6SPUfFbG9hWUYvSR
-         bfH82c79WS4i+oGqn3xaCPQgEowAV4V88SPraVF21Z42x3n7HXBUVVEmaYQy2QrtDP
-         IV1n8w6GdrPo1Gk+Z0sNJSmVy2AWmGiTyoLdnl3Q=
+        b=IrizM2DBFvxUuuNmrwRrfnYgOtVZ7RKx53KLYQetBuqm5wziHyAyRTmVeCa8UaT35
+         qvUAHLj3VhyMMprykA1MPAh8i7h2ElnFus6JkIHzZLZKlJVrMKuq4hnDTxVCxbXUDC
+         M3aSSxbHqFjh+aWFfBR1IzIgl1PkRKDJ8nsFWM78=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Stephane Grosjean <s.grosjean@peak-system.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 5.10 054/593] can: peak_pciefd: pucan_handle_status(): fix a potential starvation issue in TX path
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 131/700] media: sti/bdisp: fix pm_runtime_get_sync() usage count
 Date:   Mon, 12 Jul 2021 08:03:34 +0200
-Message-Id: <20210712060849.059650419@linuxfoundation.org>
+Message-Id: <20210712060943.830189204@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +41,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephane Grosjean <s.grosjean@peak-system.com>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-commit b17233d385d0b6b43ecf81d43008cb1bbb008166 upstream.
+[ Upstream commit c44eac5b72e23c31eefc0e10a71d9650036b8341 ]
 
-Rather than just indicating that transmission can start, this patch
-requires the explicit flushing of the network TX queue when the driver
-is informed by the device that it can transmit, next to its
-configuration.
+The pm_runtime_get_sync() internally increments the
+dev->power.usage_count without decrementing it, even on errors.
 
-In this way, if frames have already been written by the application,
-they will actually be transmitted.
+The bdisp_start_streaming() doesn't take it into account, which
+would unbalance PM usage counter at bdisp_stop_streaming().
 
-Fixes: ffd137f7043c ("can: peak/pcie_fd: remove useless code when interface starts")
-Link: https://lore.kernel.org/r/20210623142600.149904-1-s.grosjean@peak-system.com
-Cc: linux-stable <stable@vger.kernel.org>
-Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The logic at bdisp_probe() is correct, but the best is to use
+the same call along the driver.
 
+So, replace it by the new pm_runtime_resume_and_get(), introduced by:
+commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+in order to properly decrement the usage counter, avoiding
+a potential PM usage counter leak.
+
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/peak_canfd/peak_canfd.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/media/platform/sti/bdisp/bdisp-v4l2.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/drivers/net/can/peak_canfd/peak_canfd.c
-+++ b/drivers/net/can/peak_canfd/peak_canfd.c
-@@ -351,8 +351,8 @@ static int pucan_handle_status(struct pe
- 				return err;
- 		}
+diff --git a/drivers/media/platform/sti/bdisp/bdisp-v4l2.c b/drivers/media/platform/sti/bdisp/bdisp-v4l2.c
+index 060ca85f64d5..85288da9d2ae 100644
+--- a/drivers/media/platform/sti/bdisp/bdisp-v4l2.c
++++ b/drivers/media/platform/sti/bdisp/bdisp-v4l2.c
+@@ -499,7 +499,7 @@ static int bdisp_start_streaming(struct vb2_queue *q, unsigned int count)
+ {
+ 	struct bdisp_ctx *ctx = q->drv_priv;
+ 	struct vb2_v4l2_buffer *buf;
+-	int ret = pm_runtime_get_sync(ctx->bdisp_dev->dev);
++	int ret = pm_runtime_resume_and_get(ctx->bdisp_dev->dev);
  
--		/* start network queue (echo_skb array is empty) */
--		netif_start_queue(ndev);
-+		/* wake network queue up (echo_skb array is empty) */
-+		netif_wake_queue(ndev);
+ 	if (ret < 0) {
+ 		dev_err(ctx->bdisp_dev->dev, "failed to set runtime PM\n");
+@@ -1364,10 +1364,10 @@ static int bdisp_probe(struct platform_device *pdev)
  
- 		return 0;
+ 	/* Power management */
+ 	pm_runtime_enable(dev);
+-	ret = pm_runtime_get_sync(dev);
++	ret = pm_runtime_resume_and_get(dev);
+ 	if (ret < 0) {
+ 		dev_err(dev, "failed to set PM\n");
+-		goto err_pm;
++		goto err_remove;
  	}
+ 
+ 	/* Filters */
+@@ -1395,6 +1395,7 @@ err_filter:
+ 	bdisp_hw_free_filters(bdisp->dev);
+ err_pm:
+ 	pm_runtime_put(dev);
++err_remove:
+ 	bdisp_debugfs_remove(bdisp);
+ 	v4l2_device_unregister(&bdisp->v4l2_dev);
+ err_clk:
+-- 
+2.30.2
+
 
 
