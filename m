@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 383023C5685
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B66C63C4F55
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357676AbhGLITk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:19:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55014 "EHLO mail.kernel.org"
+        id S1344994AbhGLHYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:24:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347501AbhGLHfD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:35:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C09761132;
-        Mon, 12 Jul 2021 07:32:00 +0000 (UTC)
+        id S239307AbhGLG5c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:57:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45D4F61248;
+        Mon, 12 Jul 2021 06:54:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075121;
-        bh=WLRr2AH/ukP99VXx1bgtGviXADj4uW/c0+gMLB3GQNM=;
+        s=korg; t=1626072876;
+        bh=DwHXodav4ShwyZ/zm5t4mBkvd/xVCgOhbEi9L4KjvmU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AgOo7nrE/CeZIOsdffmGleJeB7uGGzJKCnA1QVy5UxwgtAzIKWIA/KMwSMAAVZ5gf
-         yjjErlSUjWOk5ScRHnM3oScL9h9Sgo7KBiNOf/kbq93r7a7mX1ujpvs/ha1rSjJZr5
-         lPea39KEiAQd5O9ENjx1hTMyDp4kRiMEYJmqPxgA=
+        b=FxsMMJux5wLdrK6WZUTiAg6hZt5YoVgFPT+v08K4IDmuID0EMFOvcgTS4jqCh0s4Y
+         U1GkBjOcqFJCYj+ty0qzFFiIyzLur86WAI3aSqWaMp/kW8cc3mitUsaKliG7gtt2kG
+         yQawCYjNKQiRD5V20sUjuo4ByO6MMFwiMVFr/x0Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yun Zhou <yun.zhou@windriver.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 5.13 111/800] seq_buf: Make trace_seq_putmem_hex() support data longer than 8
+        stable@vger.kernel.org, stable@kernel.org, Jan Kara <jack@suse.cz>,
+        Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 5.12 051/700] ext4: fix overflow in ext4_iomap_alloc()
 Date:   Mon, 12 Jul 2021 08:02:14 +0200
-Message-Id: <20210712060928.607821884@linuxfoundation.org>
+Message-Id: <20210712060931.899255522@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,45 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yun Zhou <yun.zhou@windriver.com>
+From: Jan Kara <jack@suse.cz>
 
-commit 6a2cbc58d6c9d90cd74288cc497c2b45815bc064 upstream.
+commit d0b040f5f2557b2f507c01e88ad8cff424fdc6a9 upstream.
 
-Since the raw memory 'data' does not go forward, it will dump repeated
-data if the data length is more than 8. If we want to dump longer data
-blocks, we need to repeatedly call macro SEQ_PUT_HEX_FIELD. I think it
-is a bit redundant, and multiple function calls also affect the performance.
+A code in iomap alloc may overflow block number when converting it to
+byte offset. Luckily this is mostly harmless as we will just use more
+expensive method of writing using unwritten extents even though we are
+writing beyond i_size.
 
-Link: https://lore.kernel.org/lkml/20210625122453.5e2fe304@oasis.local.home/
-Link: https://lkml.kernel.org/r/20210626032156.47889-2-yun.zhou@windriver.com
-
-Cc: stable@vger.kernel.org
-Fixes: 6d2289f3faa7 ("tracing: Make trace_seq_putmem_hex() more robust")
-Signed-off-by: Yun Zhou <yun.zhou@windriver.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Cc: stable@kernel.org
+Fixes: 378f32bab371 ("ext4: introduce direct I/O write using iomap infrastructure")
+Signed-off-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20210412102333.2676-4-jack@suse.cz
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- lib/seq_buf.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/ext4/inode.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/lib/seq_buf.c
-+++ b/lib/seq_buf.c
-@@ -243,12 +243,14 @@ int seq_buf_putmem_hex(struct seq_buf *s
- 			break;
- 
- 		/* j increments twice per loop */
--		len -= j / 2;
- 		hex[j++] = ' ';
- 
- 		seq_buf_putmem(s, hex, j);
- 		if (seq_buf_has_overflowed(s))
- 			return -1;
-+
-+		len -= start_len;
-+		data += start_len;
- 	}
- 	return 0;
- }
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -3420,7 +3420,7 @@ retry:
+ 	 * i_disksize out to i_size. This could be beyond where direct I/O is
+ 	 * happening and thus expose allocated blocks to direct I/O reads.
+ 	 */
+-	else if ((map->m_lblk * (1 << blkbits)) >= i_size_read(inode))
++	else if (((loff_t)map->m_lblk << blkbits) >= i_size_read(inode))
+ 		m_flags = EXT4_GET_BLOCKS_CREATE;
+ 	else if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
+ 		m_flags = EXT4_GET_BLOCKS_IO_CREATE_EXT;
 
 
