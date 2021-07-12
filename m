@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74EA03C5919
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5A13C5916
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356496AbhGLI5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:57:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55674 "EHLO mail.kernel.org"
+        id S1348849AbhGLI5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:57:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353743AbhGLICt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:02:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 642A261D06;
-        Mon, 12 Jul 2021 07:57:15 +0000 (UTC)
+        id S1353748AbhGLICu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:02:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8D6761D07;
+        Mon, 12 Jul 2021 07:57:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076635;
-        bh=M5cELWOCOfWzIgwHaTKOHBHljuuaZ28F1EZg6kJGlic=;
+        s=korg; t=1626076638;
+        bh=MzcVnk7j7klw9ysB1/XTXRHnTGtWQ8B46+wPGYtzlUI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z+dT2qVTg8mAZLBr53B/hbVE5cfc8IdGyv5T6rcZkffuKBi9AE/yk10OCBh8z5HZF
-         l1FG+LueD/N1HwjCKZeUh188KWepmKa2Wos8BvO9+FT4WiypbCTPlAsoPvCE62NMdp
-         XzkpriXWeFL+YWQy4aKSNB6cyxLSst8PEc/yslnY=
+        b=RALCZa8AclVaFWpDt8Sqi8mwCeUtrdyB4gNq+qswiul6GihHfgMId7IRNTtRCmwwp
+         1o0qrsDfFwI5i/dHhBp9NFZsZwox9OpY+zh3mn0YbA8ofHjzt3qgIARGOVM2h4U+gG
+         IvVpogcZk+/am4KXvnk/f+JGkmi+ZjWYzf1ZJEOI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 728/800] of: Fix truncation of memory sizes on 32-bit platforms
-Date:   Mon, 12 Jul 2021 08:12:31 +0200
-Message-Id: <20210712061044.254165775@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 729/800] mtd: rawnand: marvell: add missing clk_disable_unprepare() on error in marvell_nfc_resume()
+Date:   Mon, 12 Jul 2021 08:12:32 +0200
+Message-Id: <20210712061044.351472413@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -41,85 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 2892d8a00d23d511a0591ac4b2ff3f050ae1f004 ]
+[ Upstream commit ae94c49527aa9bd3b563349adc4b5617747ca6bd ]
 
-Variable "size" has type "phys_addr_t", which can be either 32-bit or
-64-bit on 32-bit systems, while "unsigned long" is always 32-bit on
-32-bit systems.  Hence the cast in
+Add clk_disable_unprepare() on error path in marvell_nfc_resume().
 
-    (unsigned long)size / SZ_1M
-
-may truncate a 64-bit size to 32-bit, as casts have a higher operator
-precedence than divisions.
-
-Fix this by inverting the order of the cast and division, which should
-be safe for memory blocks smaller than 4 PiB.  Note that the division is
-actually a shift, as SZ_1M is a power-of-two constant, hence there is no
-need to use div_u64().
-
-While at it, use "%lu" to format "unsigned long".
-
-Fixes: e8d9d1f5485b52ec ("drivers: of: add initialization code for static reserved memory")
-Fixes: 3f0c8206644836e4 ("drivers: of: add initialization code for dynamic reserved memory")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Link: https://lore.kernel.org/r/4a1117e72d13d26126f57be034c20dac02f1e915.1623835273.git.geert+renesas@glider.be
-Signed-off-by: Rob Herring <robh@kernel.org>
+Fixes: bd9c3f9b3c00 ("mtd: rawnand: marvell: add suspend and resume hooks")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20210601125814.3260364-1-yangyingliang@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/of/fdt.c             | 8 ++++----
- drivers/of/of_reserved_mem.c | 8 ++++----
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/mtd/nand/raw/marvell_nand.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-index ba17a80b8c79..cc71e0b3eed9 100644
---- a/drivers/of/fdt.c
-+++ b/drivers/of/fdt.c
-@@ -510,11 +510,11 @@ static int __init __reserved_mem_reserve_reg(unsigned long node,
+diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+index 79da6b02e209..f83525a1ab0e 100644
+--- a/drivers/mtd/nand/raw/marvell_nand.c
++++ b/drivers/mtd/nand/raw/marvell_nand.c
+@@ -3030,8 +3030,10 @@ static int __maybe_unused marvell_nfc_resume(struct device *dev)
+ 		return ret;
  
- 		if (size &&
- 		    early_init_dt_reserve_memory_arch(base, size, nomap) == 0)
--			pr_debug("Reserved memory: reserved region for node '%s': base %pa, size %ld MiB\n",
--				uname, &base, (unsigned long)size / SZ_1M);
-+			pr_debug("Reserved memory: reserved region for node '%s': base %pa, size %lu MiB\n",
-+				uname, &base, (unsigned long)(size / SZ_1M));
- 		else
--			pr_info("Reserved memory: failed to reserve memory for node '%s': base %pa, size %ld MiB\n",
--				uname, &base, (unsigned long)size / SZ_1M);
-+			pr_info("Reserved memory: failed to reserve memory for node '%s': base %pa, size %lu MiB\n",
-+				uname, &base, (unsigned long)(size / SZ_1M));
+ 	ret = clk_prepare_enable(nfc->reg_clk);
+-	if (ret < 0)
++	if (ret < 0) {
++		clk_disable_unprepare(nfc->core_clk);
+ 		return ret;
++	}
  
- 		len -= t_len;
- 		if (first) {
-diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
-index 15e2417974d6..3502ba522c39 100644
---- a/drivers/of/of_reserved_mem.c
-+++ b/drivers/of/of_reserved_mem.c
-@@ -134,9 +134,9 @@ static int __init __reserved_mem_alloc_size(unsigned long node,
- 			ret = early_init_dt_alloc_reserved_memory_arch(size,
- 					align, start, end, nomap, &base);
- 			if (ret == 0) {
--				pr_debug("allocated memory for '%s' node: base %pa, size %ld MiB\n",
-+				pr_debug("allocated memory for '%s' node: base %pa, size %lu MiB\n",
- 					uname, &base,
--					(unsigned long)size / SZ_1M);
-+					(unsigned long)(size / SZ_1M));
- 				break;
- 			}
- 			len -= t_len;
-@@ -146,8 +146,8 @@ static int __init __reserved_mem_alloc_size(unsigned long node,
- 		ret = early_init_dt_alloc_reserved_memory_arch(size, align,
- 							0, 0, nomap, &base);
- 		if (ret == 0)
--			pr_debug("allocated memory for '%s' node: base %pa, size %ld MiB\n",
--				uname, &base, (unsigned long)size / SZ_1M);
-+			pr_debug("allocated memory for '%s' node: base %pa, size %lu MiB\n",
-+				uname, &base, (unsigned long)(size / SZ_1M));
- 	}
- 
- 	if (base == 0) {
+ 	/*
+ 	 * Reset nfc->selected_chip so the next command will cause the timing
 -- 
 2.30.2
 
