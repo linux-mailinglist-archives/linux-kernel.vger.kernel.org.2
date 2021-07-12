@@ -2,168 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0573A3C6070
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 18:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E529C3C6078
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 18:26:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233776AbhGLQ2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 12:28:01 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36276 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233719AbhGLQ17 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 12:27:59 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16CG3m2t172344;
-        Mon, 12 Jul 2021 12:25:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : content-transfer-encoding : mime-version; s=pp1;
- bh=UROfSqQwvdh21eBG4v+9kqE03iACV/yRY/pRhj07gTU=;
- b=RBENKBE1nduXCNo5kVKcr/rf3w5EQTp+o9E21ubvz4aO1WBWQsEOD6ZXYYpZ1sRSXSNt
- YtP/wnNOJgkXVtLoj6rAmqeqFjC5kRJyXcrkDehA7H2MBDpCT7Ut9PUHIA5DvUBAPdzg
- GR7B/7RQPChWmjlLO5xF4vcyA3NIQLOym37rQg5yRz3rHRoe1ZpeW9u0DEMO8ohIGXfg
- ssNV1xdwdESG1vlNiXsQribi9cRfKF2cyM2lkBdHKP2CFW3+O2Ao5LIg7HxXulhEv1Tj
- dK5hzU2yVv12SBKtzQ7vKMzIVIXjE8zwCo5QegelkJD/lJTTUtOdufvLclMVWuClCUvc kA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39qrf78259-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 12 Jul 2021 12:25:10 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16CG4Djs174082;
-        Mon, 12 Jul 2021 12:25:09 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39qrf7824g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 12 Jul 2021 12:25:09 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16CGHOBb015811;
-        Mon, 12 Jul 2021 16:25:08 GMT
-Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
-        by ppma05wdc.us.ibm.com with ESMTP id 39q36b97y4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 12 Jul 2021 16:25:08 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16CGP7Pv40632654
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 12 Jul 2021 16:25:07 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9C429112065;
-        Mon, 12 Jul 2021 16:25:07 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8CFEB112062;
-        Mon, 12 Jul 2021 16:25:07 +0000 (GMT)
-Received: from sbct-2.. (unknown [9.47.158.152])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon, 12 Jul 2021 16:25:07 +0000 (GMT)
-From:   Stefan Berger <stefanb@linux.vnet.ibm.com>
-To:     peterhuewe@gmx.de, jarkko@kernel.org
-Cc:     jgg@ziepe.ca, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        George Wilson <gcwilson@linux.ibm.com>,
-        Nageswara R Sastry <rnsastry@linux.ibm.com>
-Subject: [PATCH] tpm: ibmvtpm: Avoid error message when process gets signal while waiting
-Date:   Mon, 12 Jul 2021 12:25:05 -0400
-Message-Id: <20210712162505.205943-1-stefanb@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.31.1
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: KqhbcAIHfhqht3bpdAe-BA8-bSBCTZLz
-X-Proofpoint-GUID: -xxLZQg3vsEtGn4ehvzhCPK2AVYLno5t
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-12_09:2021-07-12,2021-07-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxscore=0
- adultscore=0 mlxlogscore=999 phishscore=0 lowpriorityscore=0 spamscore=0
- impostorscore=0 bulkscore=0 suspectscore=0 priorityscore=1501
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107120122
+        id S233639AbhGLQ3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 12:29:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:57926 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232122AbhGLQ3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 12:29:35 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 93DA91FB;
+        Mon, 12 Jul 2021 09:26:46 -0700 (PDT)
+Received: from e120937-lin.home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CD90B3F774;
+        Mon, 12 Jul 2021 09:26:44 -0700 (PDT)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
+        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
+        etienne.carriere@linaro.org, vincent.guittot@linaro.org,
+        souvik.chakravarty@arm.com, cristian.marussi@arm.com
+Subject: [PATCH v3 0/8] Introduce atomic support for SCMI transports
+Date:   Mon, 12 Jul 2021 17:26:17 +0100
+Message-Id: <20210712162626.34705-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Berger <stefanb@linux.ibm.com>
+Hi all,
 
-When rngd is run as root then lots of these types of message will appear
-in the kernel log if the TPM has been configure to provide random bytes:
+This series mainly aims to introduce atomic support for transports
+that can support it.
 
-[ 7406.275163] tpm tpm0: tpm_transmit: tpm_recv: error -4
+At first in [1/8], as a closely related addition, it is introduced a
+common way for a transport to signal to the SCMI core that it does not
+offer completion interrupts, so that the usual polling behaviour based
+on .poll_done() will be required: this can be done enabling statically
+a global polling behaviour for the whole transport with flag
+scmi_desc.force_polling OR dynamically enabling at runtime such polling
+behaviour on a per-channel basis with scmi_chan_info.needs_polling,
+typically during .chan_setup(). The usual per-command polling selection
+behaviour based on hdr.poll_completion is preserved as before.
 
-The issue is caused by the following call that is interrupted while
-waiting for the TPM's response.
+Then in [2/8], a transport that supports atomic operations on its TX path
+can now declare itself as .atomic_capable and as a consequence the SCMI
+core will refrain itself from sleeping on the correspondent RX-path.
 
-sig = wait_event_interruptible(ibmvtpm->wq,
-                               !ibmvtpm->tpm_processing_cmd);
+In [5/8] a simple method is introduced so that an SCMI driver can easily
+query the core to check if the currently used transport is configured to
+behave in an atomic manner: in this way, interested SCMI driver users, like
+Clock framework [6/8], can optionally support atomic operations when
+operating on an atomically configured transport.
 
-The solution is to use wait_event() instead.
+Finally there are 2 *tentative" RFC patch for SMC transport: at first [7/8]
+ports SMC to use the common core completions when completion interrupt is
+available or otherwise revert to use common core polling mechanism above
+introduced; then in [8/8] SMC is converted to be .atomic_capable by
+substituting the mutexes with busy-waiting to keep the channel 'locked'.
 
-To recreat the issue start rngd like this:
+SMC changes have NOT been tested so far (I cannot), AND they are just a
+proposal at this stage to try to better abstract and unify behaviour with
+the SCMI core; both patches are completely intended as RFCs, though, not
+only regarding their implementation but even their mere existence is RFC:
+I mean maybe we just don't want to do such kind of unification/abstraction,
+and I can just drop those SMC patches if unwanted; any feedback welcome.
 
-sudo rngd -r /dev/hwrng -t
+Atomic support has been minimally tested against the upcoming virtio
+transport V6 series, while polling has been tested with mailbox transports.
 
-Link: https://bugzilla.redhat.com/show_bug.cgi?id=1981473
-Fixes: 6674ff145eef ("tpm_ibmvtpm: properly handle interrupted packet receptions")
-Cc: Nayna Jain <nayna@linux.ibm.com>
-Cc: George Wilson <gcwilson@linux.ibm.com>
-Reported-by: Nageswara R Sastry <rnsastry@linux.ibm.com>
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+The series is based on SCMI VirtIO Transport support V6 [1] (since it will
+be the main prospective user of atomic mode) and, as such, it is also
+publicly available on top of SCMI VirtIO V6 from ARM GitLab [2].
+(Note that in order to use/test atomic mode on virtio you'll have to enable
+ it setting .atomic_capable = true in virtio.c::scmi_virtio_desc)
+
+Given I'm still gathering feedback on this, I still not have CCed any
+maintainer out of SCMI subsystem.
+
+Any feedback welcome.
+
+Thanks,
+
+Cristian
+
 ---
- drivers/char/tpm/tpm_ibmvtpm.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/char/tpm/tpm_ibmvtpm.c b/drivers/char/tpm/tpm_ibmvtpm.c
-index 903604769de9..99b0442a5fdf 100644
---- a/drivers/char/tpm/tpm_ibmvtpm.c
-+++ b/drivers/char/tpm/tpm_ibmvtpm.c
-@@ -106,16 +106,13 @@ static int tpm_ibmvtpm_recv(struct tpm_chip *chip, u8 *buf, size_t count)
- {
- 	struct ibmvtpm_dev *ibmvtpm = dev_get_drvdata(&chip->dev);
- 	u16 len;
--	int sig;
- 
- 	if (!ibmvtpm->rtce_buf) {
- 		dev_err(ibmvtpm->dev, "ibmvtpm device is not ready\n");
- 		return 0;
- 	}
- 
--	sig = wait_event_interruptible(ibmvtpm->wq, !ibmvtpm->tpm_processing_cmd);
--	if (sig)
--		return -EINTR;
-+	wait_event(ibmvtpm->wq, !ibmvtpm->tpm_processing_cmd);
- 
- 	len = ibmvtpm->res_len;
- 
-@@ -206,7 +203,7 @@ static int tpm_ibmvtpm_send(struct tpm_chip *chip, u8 *buf, size_t count)
- {
- 	struct ibmvtpm_dev *ibmvtpm = dev_get_drvdata(&chip->dev);
- 	bool retry = true;
--	int rc, sig;
-+	int rc;
- 
- 	if (!ibmvtpm->rtce_buf) {
- 		dev_err(ibmvtpm->dev, "ibmvtpm device is not ready\n");
-@@ -224,9 +221,7 @@ static int tpm_ibmvtpm_send(struct tpm_chip *chip, u8 *buf, size_t count)
- 		dev_info(ibmvtpm->dev,
- 		         "Need to wait for TPM to finish\n");
- 		/* wait for previous command to finish */
--		sig = wait_event_interruptible(ibmvtpm->wq, !ibmvtpm->tpm_processing_cmd);
--		if (sig)
--			return -EINTR;
-+		wait_event(ibmvtpm->wq, !ibmvtpm->tpm_processing_cmd);
- 	}
- 
- 	spin_lock(&ibmvtpm->rtce_lock);
-@@ -551,7 +546,7 @@ static void ibmvtpm_crq_process(struct ibmvtpm_crq *crq,
- 			/* len of the data in rtce buffer */
- 			ibmvtpm->res_len = be16_to_cpu(crq->len);
- 			ibmvtpm->tpm_processing_cmd = false;
--			wake_up_interruptible(&ibmvtpm->wq);
-+			wake_up(&ibmvtpm->wq);
- 			return;
- 		default:
- 			return;
+[1]:https://lore.kernel.org/linux-arm-kernel/20210712141833.6628-1-cristian.marussi@arm.com/
+[2]:https://gitlab.arm.com/linux-arm/linux-cm/-/commits/scmi_atomic_transport_V3_on_virtio_V6
+
+V2 --> v3
+- rebased on SCMI VirtIO V6 which in turn is based on v5.14-rc1
+
+
+Cristian Marussi (8):
+  firmware: arm_scmi: Add configurable polling mode for transports
+  firmware: arm_scmi: Add support for atomic transports
+  include: trace: Add new scmi_xfer_response_wait event
+  firmware: arm_scmi: Use new trace event scmi_xfer_response_wait
+  firmware: arm_scmi: Add is_transport_atomic() handle method
+  clk: scmi: Support atomic enable/disable API
+  [RFC] firmware: arm_scmi: Make smc transport use common completions
+  [RFC] firmware: arm_scmi: Make smc transport atomic
+
+ drivers/clk/clk-scmi.c             |  44 ++++--
+ drivers/firmware/arm_scmi/common.h |  13 ++
+ drivers/firmware/arm_scmi/driver.c | 223 ++++++++++++++++++++++-------
+ drivers/firmware/arm_scmi/smc.c    |  61 +++++---
+ include/linux/scmi_protocol.h      |   8 ++
+ include/trace/events/scmi.h        |  28 ++++
+ 6 files changed, 297 insertions(+), 80 deletions(-)
+
 -- 
-2.31.1
+2.17.1
 
