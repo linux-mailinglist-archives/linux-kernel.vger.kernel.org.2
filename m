@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6983C4959
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 727D93C56E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238547AbhGLGoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:44:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55158 "EHLO mail.kernel.org"
+        id S1358464AbhGLI0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:26:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46858 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237804AbhGLGex (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:34:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50F5C610D1;
-        Mon, 12 Jul 2021 06:31:36 +0000 (UTC)
+        id S1348106AbhGLHkl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:40:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C532460724;
+        Mon, 12 Jul 2021 07:37:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071496;
-        bh=g39a+9144TT9EJR5P0Pu/0vGnFAWftgmV3cV/o7Hmro=;
+        s=korg; t=1626075472;
+        bh=gg5h5lXBXeF2yN98tkTNtp6fmsB1jEPgZngd+iNITuY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2KUrWQI0HSf5ad6PilJcXCygn2F1iWyGigU5vRz4nVRIsJjcO1HasiyNZTdQavdYZ
-         5yE5w5U7t815h/1AlofGxn6uYACg/UKa2MQP1qn7rk/vWIHj4u719fP1cMeesMmK6l
-         BYCOzQG+iUgW0fdUQhqcbaXt9zCYwcQdCXr6UycM=
+        b=IfHQprXjLfIGO2Ju5zAvKCw511d29qQEjPoKqngxFXfn/EBDB5+e3FDJhc9NsxC2f
+         drFKRbVf5ZHNU0tccw/OiwwxDKkGn3knL9B0a8ZBaQC7WlgEWzENUh1fYvR1gkbXxU
+         jZBvpd2U30oYWO0HGLl5LsquxMO33BtV0QVQfC4U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Greg Kurz <groug@kaod.org>,
-        Max Reitz <mreitz@redhat.com>,
-        Miklos Szeredi <mszeredi@redhat.com>
-Subject: [PATCH 5.10 094/593] fuse: Fix crash if superblock of submount gets killed early
+        stable@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Bob Moore <robert.moore@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 231/800] ACPICA: Fix memory leak caused by _CID repair function
 Date:   Mon, 12 Jul 2021 08:04:14 +0200
-Message-Id: <20210712060853.549495636@linuxfoundation.org>
+Message-Id: <20210712060946.299334471@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +42,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kurz <groug@kaod.org>
+From: Erik Kaneda <erik.kaneda@intel.com>
 
-commit e3a43f2a95393000778f8f302d48795add2fc4a8 upstream.
+[ Upstream commit c27bac0314131b11bccd735f7e8415ac6444b667 ]
 
-As soon as fuse_dentry_automount() does up_write(&sb->s_umount), the
-superblock can theoretically be killed. If this happens before the
-submount was added to the &fc->mounts list, fuse_mount_remove() later
-crashes in list_del_init() because it assumes the submount to be
-already there.
+ACPICA commit 180cb53963aa876c782a6f52cc155d951b26051a
 
-Add the submount before dropping sb->s_umount to fix the inconsistency.
-It is okay to nest fc->killsb under sb->s_umount, we already do this
-on the ->kill_sb() path.
+According to the ACPI spec, _CID returns a package containing
+hardware ID's. Each element of an ASL package contains a reference
+count from the parent package as well as the element itself.
 
-Signed-off-by: Greg Kurz <groug@kaod.org>
-Fixes: bf109c64040f ("fuse: implement crossmounts")
-Cc: stable@vger.kernel.org # v5.10+
-Reviewed-by: Max Reitz <mreitz@redhat.com>
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Name (TEST, Package() {
+    "String object" // this package element has a reference count of 2
+})
 
+A memory leak was caused in the _CID repair function because it did
+not decrement the reference count created by the package. Fix the
+memory leak by calling acpi_ut_remove_reference on _CID package elements
+that represent a hardware ID (_HID).
+
+Link: https://github.com/acpica/acpica/commit/180cb539
+Tested-by: Shawn Guo <shawn.guo@linaro.org>
+Signed-off-by: Erik Kaneda <erik.kaneda@intel.com>
+Signed-off-by: Bob Moore <robert.moore@intel.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/fuse/dir.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/acpi/acpica/nsrepair2.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/fs/fuse/dir.c
-+++ b/fs/fuse/dir.c
-@@ -347,15 +347,15 @@ static struct vfsmount *fuse_dentry_auto
- 		goto out_put_sb;
- 	}
+diff --git a/drivers/acpi/acpica/nsrepair2.c b/drivers/acpi/acpica/nsrepair2.c
+index 14b71b41e845..38e10ab976e6 100644
+--- a/drivers/acpi/acpica/nsrepair2.c
++++ b/drivers/acpi/acpica/nsrepair2.c
+@@ -379,6 +379,13 @@ acpi_ns_repair_CID(struct acpi_evaluate_info *info,
  
-+	down_write(&fc->killsb);
-+	list_add_tail(&fm->fc_entry, &fc->mounts);
-+	up_write(&fc->killsb);
+ 			(*element_ptr)->common.reference_count =
+ 			    original_ref_count;
 +
- 	sb->s_flags |= SB_ACTIVE;
- 	fsc->root = dget(sb->s_root);
- 	/* We are done configuring the superblock, so unlock it */
- 	up_write(&sb->s_umount);
++			/*
++			 * The original_element holds a reference from the package object
++			 * that represents _HID. Since a new element was created by _HID,
++			 * remove the reference from the _CID package.
++			 */
++			acpi_ut_remove_reference(original_element);
+ 		}
  
--	down_write(&fc->killsb);
--	list_add_tail(&fm->fc_entry, &fc->mounts);
--	up_write(&fc->killsb);
--
- 	/* Create the submount */
- 	mnt = vfs_create_mount(fsc);
- 	if (IS_ERR(mnt)) {
+ 		element_ptr++;
+-- 
+2.30.2
+
 
 
