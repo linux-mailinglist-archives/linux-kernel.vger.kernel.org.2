@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858033C4A4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B20DA3C5165
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240207AbhGLGux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:50:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34936 "EHLO mail.kernel.org"
+        id S1348080AbhGLHkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:40:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237984AbhGLGjs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:39:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A5CC611CB;
-        Mon, 12 Jul 2021 06:35:58 +0000 (UTC)
+        id S244024AbhGLHKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:10:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 094B66136D;
+        Mon, 12 Jul 2021 07:05:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071758;
-        bh=I8wdIfFGfFwk8ZHmzi/UfXFOalguRc+26UAZKv1x+2I=;
+        s=korg; t=1626073541;
+        bh=K0RB13v0alRNHwX75C8a5XcddkCCjo9XD092qfbXoss=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h7UuH0YUKpfc8RiQGKO19i4Rr4Xu2zPHXlqzC7VZBmTXwnGYubbdMShBYZxG9Hcws
-         szIphbkm3JZwEnMKywKXgANpkYUWNlZiPWNjWJEw9tVaBCV8orPfdsePpiOlKV4pn7
-         Us0ulwkofC2OFwxgHwn4LNkDrh9ZHU3S6bKurGt4=
+        b=JOhSDB8PGwRr9R3GBS4zDLCb6nzWpUwnRu1X4J0ksLdR5AKxV3i3Gick675tODIVU
+         xKzkhDQKqPpKUYNVR34RUhORTdGM7jx7ZdU4JxqioozUPFFFLBiAMDp294L0K3KGKt
+         8f26QZmc3VNoxJsPT6GTzGzBbi61whPzDGCEDPFw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Wellbrock <a.wellbrock@mailbox.org>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 200/593] tpm_tis_spi: add missing SPI device ID entries
+Subject: [PATCH 5.12 277/700] media: tc358743: Fix error return code in tc358743_probe_of()
 Date:   Mon, 12 Jul 2021 08:06:00 +0200
-Message-Id: <20210712060905.025811362@linuxfoundation.org>
+Message-Id: <20210712061005.723675350@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,57 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Javier Martinez Canillas <javierm@redhat.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit c46ed2281bbe4b84e6f3d4bdfb0e4e9ab813fa9d ]
+[ Upstream commit a6b1e7093f0a099571fc8836ab4a589633f956a8 ]
 
-The SPI core always reports a "MODALIAS=spi:<foo>", even if the device was
-registered via OF. This means that this module won't auto-load if a DT has
-for example has a node with a compatible "infineon,slb9670" string.
+When the CSI bps per lane is not in the valid range, an appropriate error
+code -EINVAL should be returned. However, we currently do not explicitly
+assign this error code to 'ret'. As a result, 0 was incorrectly returned.
 
-In that case kmod will expect a "MODALIAS=of:N*T*Cinfineon,slb9670" uevent
-but instead will get a "MODALIAS=spi:slb9670", which is not present in the
-kernel module aliases:
-
-$ modinfo drivers/char/tpm/tpm_tis_spi.ko | grep alias
-alias:          of:N*T*Cgoogle,cr50C*
-alias:          of:N*T*Cgoogle,cr50
-alias:          of:N*T*Ctcg,tpm_tis-spiC*
-alias:          of:N*T*Ctcg,tpm_tis-spi
-alias:          of:N*T*Cinfineon,slb9670C*
-alias:          of:N*T*Cinfineon,slb9670
-alias:          of:N*T*Cst,st33htpm-spiC*
-alias:          of:N*T*Cst,st33htpm-spi
-alias:          spi:cr50
-alias:          spi:tpm_tis_spi
-alias:          acpi*:SMO0768:*
-
-To workaround this issue, add in the SPI device ID table all the entries
-that are present in the OF device ID table.
-
-Reported-by: Alexander Wellbrock <a.wellbrock@mailbox.org>
-Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
-Tested-by: Peter Robinson <pbrobinson@gmail.com>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+Fixes: 256148246852 ("[media] tc358743: support probe from device tree")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/char/tpm/tpm_tis_spi_main.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/media/i2c/tc358743.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/char/tpm/tpm_tis_spi_main.c b/drivers/char/tpm/tpm_tis_spi_main.c
-index 3856f6ebcb34..de4209003a44 100644
---- a/drivers/char/tpm/tpm_tis_spi_main.c
-+++ b/drivers/char/tpm/tpm_tis_spi_main.c
-@@ -260,6 +260,8 @@ static int tpm_tis_spi_remove(struct spi_device *dev)
- }
+diff --git a/drivers/media/i2c/tc358743.c b/drivers/media/i2c/tc358743.c
+index 1b309bb743c7..f21da11caf22 100644
+--- a/drivers/media/i2c/tc358743.c
++++ b/drivers/media/i2c/tc358743.c
+@@ -1974,6 +1974,7 @@ static int tc358743_probe_of(struct tc358743_state *state)
+ 	bps_pr_lane = 2 * endpoint.link_frequencies[0];
+ 	if (bps_pr_lane < 62500000U || bps_pr_lane > 1000000000U) {
+ 		dev_err(dev, "unsupported bps per lane: %u bps\n", bps_pr_lane);
++		ret = -EINVAL;
+ 		goto disable_clk;
+ 	}
  
- static const struct spi_device_id tpm_tis_spi_id[] = {
-+	{ "st33htpm-spi", (unsigned long)tpm_tis_spi_probe },
-+	{ "slb9670", (unsigned long)tpm_tis_spi_probe },
- 	{ "tpm_tis_spi", (unsigned long)tpm_tis_spi_probe },
- 	{ "cr50", (unsigned long)cr50_spi_probe },
- 	{}
 -- 
 2.30.2
 
