@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 551173C5971
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 231363C591E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383941AbhGLJDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:03:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55670 "EHLO mail.kernel.org"
+        id S1350494AbhGLI6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:58:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353677AbhGLIDA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:03:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CD9F6193D;
-        Mon, 12 Jul 2021 07:57:29 +0000 (UTC)
+        id S1353785AbhGLIC7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:02:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E87761958;
+        Mon, 12 Jul 2021 07:57:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076649;
-        bh=KlMGQ3e8uTVoH70/r1i913wVeQy3pNxxandWLFVh+yw=;
+        s=korg; t=1626076652;
+        bh=LKyRcNWlFavaMgK+ergxadt35UXMZPV1wl7Y6RSbYsk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bmCqVkkI7bU4aROfxIcKKM1g+sb5OIjFHI92YNeUWZX53BbGwusb91GEOKuTcXXGZ
-         oJL9f5P88yv6CTuHny6hpUmWMGp6ezlaSF8c0cEYaFopvWlh7LFJElpKreenxgqFOR
-         FIeSJgTZ8Cu4gBTZ6X0O3eOl85lYPGW/CDRlSbNg=
+        b=PPwxvabh/roUz4NDqrkUHjnrIdU7jNISWRaVk6HMsPi8TjHHTW37BeMyuDe5gKQ0k
+         SUWec8x2jxNRCJ+lz4/vklkoyMTnlnFeyKgCB865qsh2q8LFSEICpquux11nsgNynl
+         jhg5Q5odl+n/at4D+d8Q+yd56Z/5BE6ri4RwCChw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 733/800] phy: uniphier-pcie: Fix updating phy parameters
-Date:   Mon, 12 Jul 2021 08:12:36 +0200
-Message-Id: <20210712061044.763426816@linuxfoundation.org>
+Subject: [PATCH 5.13 734/800] phy: ti: dm816x: Fix the error handling path in dm816x_usb_phy_probe()
+Date:   Mon, 12 Jul 2021 08:12:37 +0200
+Message-Id: <20210712061044.868488680@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -40,61 +40,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 4a90bbb478dbf18ecdec9dcf8eb708e319d24264 ]
+[ Upstream commit f7eedcb8539ddcbb6fe7791f1b4ccf43f905c72f ]
 
-The current driver uses a value from register TEST_O as the original
-value for register TEST_I, though, the value is overwritten by "param",
-so there is a bug that the original value isn't no longer used.
+Add an error handling path in the probe to release some resources, as
+already done in the remove function.
 
-The value of TEST_O[7:0] should be masked with "mask", replaced with
-"param", and placed in the bitfield TESTI_DAT_MASK as new TEST_I value.
-
-Fixes: c6d9b1324159 ("phy: socionext: add PCIe PHY driver support")
-Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Link: https://lore.kernel.org/r/1623037842-19363-1-git-send-email-hayashi.kunihiko@socionext.com
+Fixes: 609adde838f4 ("phy: Add a driver for dm816x USB PHY")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/ac5136881f6bdec50be19b3bf73b3bc1b15ef1f1.1622898974.git.christophe.jaillet@wanadoo.fr
 Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/phy/socionext/phy-uniphier-pcie.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/phy/ti/phy-dm816x-usb.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/phy/socionext/phy-uniphier-pcie.c b/drivers/phy/socionext/phy-uniphier-pcie.c
-index e4adab375c73..6bdbd1f214dd 100644
---- a/drivers/phy/socionext/phy-uniphier-pcie.c
-+++ b/drivers/phy/socionext/phy-uniphier-pcie.c
-@@ -24,11 +24,13 @@
- #define PORT_SEL_1		FIELD_PREP(PORT_SEL_MASK, 1)
+diff --git a/drivers/phy/ti/phy-dm816x-usb.c b/drivers/phy/ti/phy-dm816x-usb.c
+index 57adc08a89b2..9fe6ea6fdae5 100644
+--- a/drivers/phy/ti/phy-dm816x-usb.c
++++ b/drivers/phy/ti/phy-dm816x-usb.c
+@@ -242,19 +242,28 @@ static int dm816x_usb_phy_probe(struct platform_device *pdev)
  
- #define PCL_PHY_TEST_I		0x2000
--#define PCL_PHY_TEST_O		0x2004
- #define TESTI_DAT_MASK		GENMASK(13, 6)
- #define TESTI_ADR_MASK		GENMASK(5, 1)
- #define TESTI_WR_EN		BIT(0)
+ 	pm_runtime_enable(phy->dev);
+ 	generic_phy = devm_phy_create(phy->dev, NULL, &ops);
+-	if (IS_ERR(generic_phy))
+-		return PTR_ERR(generic_phy);
++	if (IS_ERR(generic_phy)) {
++		error = PTR_ERR(generic_phy);
++		goto clk_unprepare;
++	}
  
-+#define PCL_PHY_TEST_O		0x2004
-+#define TESTO_DAT_MASK		GENMASK(7, 0)
+ 	phy_set_drvdata(generic_phy, phy);
+ 
+ 	phy_provider = devm_of_phy_provider_register(phy->dev,
+ 						     of_phy_simple_xlate);
+-	if (IS_ERR(phy_provider))
+-		return PTR_ERR(phy_provider);
++	if (IS_ERR(phy_provider)) {
++		error = PTR_ERR(phy_provider);
++		goto clk_unprepare;
++	}
+ 
+ 	usb_add_phy_dev(&phy->phy);
+ 
+ 	return 0;
 +
- #define PCL_PHY_RESET		0x200c
- #define PCL_PHY_RESET_N_MNMODE	BIT(8)	/* =1:manual */
- #define PCL_PHY_RESET_N		BIT(0)	/* =1:deasssert */
-@@ -77,11 +79,12 @@ static void uniphier_pciephy_set_param(struct uniphier_pciephy_priv *priv,
- 	val  = FIELD_PREP(TESTI_DAT_MASK, 1);
- 	val |= FIELD_PREP(TESTI_ADR_MASK, reg);
- 	uniphier_pciephy_testio_write(priv, val);
--	val = readl(priv->base + PCL_PHY_TEST_O);
-+	val = readl(priv->base + PCL_PHY_TEST_O) & TESTO_DAT_MASK;
++clk_unprepare:
++	pm_runtime_disable(phy->dev);
++	clk_unprepare(phy->refclk);
++	return error;
+ }
  
- 	/* update value */
--	val &= ~FIELD_PREP(TESTI_DAT_MASK, mask);
--	val  = FIELD_PREP(TESTI_DAT_MASK, mask & param);
-+	val &= ~mask;
-+	val |= mask & param;
-+	val = FIELD_PREP(TESTI_DAT_MASK, val);
- 	val |= FIELD_PREP(TESTI_ADR_MASK, reg);
- 	uniphier_pciephy_testio_write(priv, val);
- 	uniphier_pciephy_testio_write(priv, val | TESTI_WR_EN);
+ static int dm816x_usb_phy_remove(struct platform_device *pdev)
 -- 
 2.30.2
 
