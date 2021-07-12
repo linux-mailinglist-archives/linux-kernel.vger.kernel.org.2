@@ -2,168 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9BD3C5B82
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:44:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 221C53C5B84
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230302AbhGLLjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 07:39:01 -0400
-Received: from david.siemens.de ([192.35.17.14]:54379 "EHLO david.siemens.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230144AbhGLLi7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 07:38:59 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by david.siemens.de (8.15.2/8.15.2) with ESMTPS id 16CBZkZ8021112
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 12 Jul 2021 13:35:46 +0200
-Received: from md1za8fc.ad001.siemens.net ([139.25.0.120])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 16CBZjto003872;
-        Mon, 12 Jul 2021 13:35:45 +0200
-Date:   Mon, 12 Jul 2021 13:35:43 +0200
-From:   Henning Schild <henning.schild@siemens.com>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Pavel Machek <pavel@ucw.cz>, Enrico Weigelt <lkml@metux.net>
-Subject: Re: [PATCH v3 0/4] add device drivers for Siemens Industrial PCs
-Message-ID: <20210712133543.074aad80@md1za8fc.ad001.siemens.net>
-In-Reply-To: <857d6cd4-839d-c42a-0aa7-8d45243981ee@redhat.com>
-References: <20210329174928.18816-1-henning.schild@siemens.com>
-        <857d6cd4-839d-c42a-0aa7-8d45243981ee@redhat.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231202AbhGLLjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 07:39:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230144AbhGLLjG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 07:39:06 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F55CC0613DD;
+        Mon, 12 Jul 2021 04:36:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=D5qx3dVKgrH7eIQyjcDlzzDy7QOQdnxbowoXaJPlgMg=; b=iblrGfKdeb6Ro1mum0SxNGam0d
+        omVYWRsSb97CvbeOIJvvAlaDSBTMePy5R9s/R4m5pUq4MFYqa+WPxpSHStpTmiCaWOQUpmJL2FrlT
+        d8yEVAcmAeiik2gIVICzs+BMVab1AVPku6G1jjkYwF3Az6+bjtrGfjbDV4ICBtV0Lh3DNv/29dPnH
+        nofbAeZ+HSKFzkDxOAy9OcN7uyjGm3LN7WukrdmYul2G5ed44zzN/ucmvq65RG2hz2SH7WaHYKJ9U
+        SBv8crZhOC4WA0PjOPwOY+j3oud3NG4H0QgW+wZYzAk5rgBpesPt2Xc3ErC8eN7BnD6CpRCZ046w5
+        oyPCjVxQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m2uE7-00HYKa-C6; Mon, 12 Jul 2021 11:36:01 +0000
+Date:   Mon, 12 Jul 2021 12:35:55 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v13 000/137] Memory folios
+Message-ID: <YOwpG1fuEJt8hS+U@casper.infradead.org>
+References: <20210712030701.4000097-1-willy@infradead.org>
+ <YOvXHZ7tCxV2Ex2m@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YOvXHZ7tCxV2Ex2m@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series is basically stuck because people rightfully want me to use
-the GPIO subsystem for the LEDs and the watchdog bits that are
-connected to GPIO.
-
-Problem is that the GPIO subsystem does not initialize on the machines
-in question. It is a combination of hidden P2SB and missing ACPI table
-entries. The GPIO subsystem (intel pinctrl) needs either P2SB or ACPI do
-come up ...
-
-Andy proposed some patches for initializing the intel pinctrl stuff for
-one of the machines by falling back to SoC detection in case there is
-no ACPI or visible P2SB. While that works it would need to be done for
-any Intel SoC to be consistent and discussions seem to go nowhere.
-
-I would be willing to port over to "intel pintctl" and help with
-testing, but not so much with actual coding. Andy is that moving at all?
-
-Since my drivers do reserve the mmio regions properly and the intel
-pinctrl will never come up anyways, i do not see a conflict merging my
-proposed drivers in the current codebase. The wish to use the pinctrl
-infrastructure can not be fulfilled if that infra is not in place. Once
-intel pinctrl works, we can change those drivers to work with that.
-
-I do not want to take shortcuts ... but also do not want to get stuck
-here. So maybe one way to serialize the merge is to allow my changes
-like proposed and rebase on intel pinctrl once that subsystem actually
-initializes on these machines. We could even have two code paths ... if
-region can not be reserved, try gpio ... or the other way around.
-
-regards,
-Henning
-
-Am Wed, 7 Apr 2021 13:36:40 +0200
-schrieb Hans de Goede <hdegoede@redhat.com>:
-
-> Hi,
+On Mon, Jul 12, 2021 at 06:46:05AM +0100, Christoph Hellwig wrote:
+> On Mon, Jul 12, 2021 at 04:04:44AM +0100, Matthew Wilcox (Oracle) wrote:
+> > Managing memory in 4KiB pages is a serious overhead.  Many benchmarks
+> > benefit from a larger "page size".  As an example, an earlier iteration
+> > of this idea which used compound pages (and wasn't particularly tuned)
+> > got a 7% performance boost when compiling the kernel.
+> > 
+> > Using compound pages or THPs exposes a weakness of our type system.
+> > Functions are often unprepared for compound pages to be passed to them,
+> > and may only act on PAGE_SIZE chunks.  Even functions which are aware of
+> > compound pages may expect a head page, and do the wrong thing if passed
+> > a tail page.
+> > 
+> > We also waste a lot of instructions ensuring that we're not looking at
+> > a tail page.  Almost every call to PageFoo() contains one or more hidden
+> > calls to compound_head().  This also happens for get_page(), put_page()
+> > and many more functions.
+> > 
+> > This patch series uses a new type, the struct folio, to manage memory.
+> > It converts enough of the page cache, iomap and XFS to use folios instead
+> > of pages, and then adds support for multi-page folios.  It passes xfstests
+> > (running on XFS) with no regressions compared to v5.14-rc1.
 > 
-> On 3/29/21 7:49 PM, Henning Schild wrote:
-> > changes since v2:
-> > 
-> > - remove "simatic-ipc" prefix from LED names
-> > - fix style issues found in v2, mainly LED driver
-> > - fix OEM specific dmi code, and remove magic numbers
-> > - more "simatic_ipc" name prefixing
-> > - improved pmc quirk code using callbacks
-> > 
-> > changes since v1:
-> > 
-> > - fixed lots of style issues found in v1
-> >   - (debug) printing
-> >   - header ordering
-> > - fixed license issues GPLv2 and SPDX in all files
-> > - module_platform_driver instead of __init __exit
-> > - wdt simplifications cleanup
-> > - lots of fixes in wdt driver, all that was found in v1
-> > - fixed dmi length in dmi helper
-> > - changed LED names to allowed ones
-> > - move led driver to simple/
-> > - switched pmc_atom to dmi callback with global variable
-> > 
-> > --
-> > 
-> > This series adds support for watchdogs and leds of several x86
-> > devices from Siemens.
-> > 
-> > It is structured with a platform driver that mainly does
-> > identification of the machines. It might trigger loading of the
-> > actual device drivers by attaching devices to the platform bus.
-> > 
-> > The identification is vendor specific, parsing a special binary DMI
-> > entry. The implementation of that platform identification is
-> > applied on pmc_atom clock quirks in the final patch.
-> > 
-> > It is all structured in a way that we can easily add more devices
-> > and more platform drivers later. Internally we have some more code
-> > for hardware monitoring, more leds, watchdogs etc. This will follow
-> > some day.  
-> 
-> IT seems there still is significant discussion surrounding the LED
-> and watchdog drivers which use patch 1/4 as parent-driver.
-> 
-> I'm going to hold of on merging 1/4 and 4/4 until there is more
-> consensus surrounding this series.
-> 
-> Regards,
-> 
-> Hans
-> 
-> 
-> > 
-> > Henning Schild (4):
-> >   platform/x86: simatic-ipc: add main driver for Siemens devices
-> >   leds: simatic-ipc-leds: add new driver for Siemens Industial PCs
-> >   watchdog: simatic-ipc-wdt: add new driver for Siemens Industrial
-> > PCs platform/x86: pmc_atom: improve critclk_systems matching for
-> > Siemens PCs
-> > 
-> >  drivers/leds/Kconfig                          |   3 +
-> >  drivers/leds/Makefile                         |   3 +
-> >  drivers/leds/simple/Kconfig                   |  11 +
-> >  drivers/leds/simple/Makefile                  |   2 +
-> >  drivers/leds/simple/simatic-ipc-leds.c        | 202
-> > ++++++++++++++++ drivers/platform/x86/Kconfig                  |
-> > 12 + drivers/platform/x86/Makefile                 |   3 +
-> >  drivers/platform/x86/pmc_atom.c               |  57 +++--
-> >  drivers/platform/x86/simatic-ipc.c            | 169 ++++++++++++++
-> >  drivers/watchdog/Kconfig                      |  11 +
-> >  drivers/watchdog/Makefile                     |   1 +
-> >  drivers/watchdog/simatic-ipc-wdt.c            | 215
-> > ++++++++++++++++++ .../platform_data/x86/simatic-ipc-base.h      |
-> > 29 +++ include/linux/platform_data/x86/simatic-ipc.h |  72 ++++++
-> >  14 files changed, 769 insertions(+), 21 deletions(-)
-> >  create mode 100644 drivers/leds/simple/Kconfig
-> >  create mode 100644 drivers/leds/simple/Makefile
-> >  create mode 100644 drivers/leds/simple/simatic-ipc-leds.c
-> >  create mode 100644 drivers/platform/x86/simatic-ipc.c
-> >  create mode 100644 drivers/watchdog/simatic-ipc-wdt.c
-> >  create mode 100644
-> > include/linux/platform_data/x86/simatic-ipc-base.h create mode
-> > 100644 include/linux/platform_data/x86/simatic-ipc.h 
-> 
+> This seems to miss a changelog vs the previous version.  It also
+> includes a lot of the follow ups.  I think reviewing a series gets
+> rather hard at more than 30-ish patches, so chunking it up a little
+> more would be useful.
 
+I'm not seriously expecting anybody to review 137 patches.  It's more
+for the bots to chew on (which they have done and I'm about to look
+at their output).  I'll be sending mergable subsets (three rounds; the
+base code, the memcg series and the pagecache series) later this week,
+once I've addressed the build bot complaints.  You've seen all those
+patches individually by now.
+
+My plan is that once those are merged, the rest can proceed in parallel.
+The block + iomap series is independent, then there's the second pagecache
+series.  The last dozen or so patches still need a bit of work as they
+were pulled across from the THP tree and at least need better changelogs.
+
+Since this works for me, I'm hoping some people will also test and
+confirm it works for them, and maybe post their own performance numbers
+to justify all this.
