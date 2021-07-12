@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9A03C5B0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 947773C5B0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234830AbhGLKvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 06:51:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35606 "EHLO mail.kernel.org"
+        id S234999AbhGLKvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 06:51:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234382AbhGLKud (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 06:50:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6D99610FA;
-        Mon, 12 Jul 2021 10:47:44 +0000 (UTC)
+        id S234541AbhGLKuf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 06:50:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68DBD61106;
+        Mon, 12 Jul 2021 10:47:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626086865;
-        bh=p+qLz+HhOqEFcAKXAJHCu8puLmOSYZop39X5dZG07EY=;
+        s=k20201202; t=1626086867;
+        bh=uRqilg7CCTiXiMk2e657oj18CYOzh/zfcgwLHSndPMQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rU49web7RUua2IMfaM//7+M8yiIKwUXhdv/e9Lsl0tVAtN/EQj9BVMhbCL8YKua1j
-         8nqoKs2sXd54M4LPlV1bq1W1VKT9dKMeRyT0E2wMNN/7JA24+0XwLvO9tTEnOJHP+c
-         oBVojxFrYQ9Un5iayEwV6932dPiboBqfLQJc+3K3fEr4K+/hh8ofXz9kz/Ofx8ENti
-         Mvz9XizXA8pcuNqnrWLaP0P/gSaNyMNfrGgRBKdMQC6dvc51jb7Sib1xtw3NkH9dfw
-         2MS6M/Rx4rAAmiyXXO7OUf2KCWmSJzYSKe256pA3Ntsct+etX7uKAi16h0mq5WeZjw
-         ZE7Nhg7tdikPQ==
+        b=PKOxR9gVyRb/aKDarMb/OT2NEcDK9yFr2DEwpzFEDPFyQ/aQJAcIyCICNQRs/e8EV
+         0SmE0cWC5yYdSb98+kyVV4/H9Xs9pycosczh12IikVberE9L3J20FbituhvfHI238v
+         GzrkpG69UOm1Bes627oVpbIgkGJganlb7bdEwE7qLK5D4GLoR9a9qE4+rgU+fvoXxt
+         u7JoTitIAku8r99u35O2Ncp2+Q5pT97h/QRE/sjYF1yWw/cyUP3lOjr4TUPy2iTenC
+         kPv/gu3q2lZlTYv5YpRqIo2Lx0b2XiGq8lG4SPxdPb0QH1eaFiImLDfLcetDUNIVtm
+         LJB7cHe0GukcQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     timur@kernel.org, nicoleotsuka@gmail.com,
-        Tang Bin <tangbin@cmss.chinamobile.com>, Xiubo.Lee@gmail.com,
-        tiwai@suse.com, lgirdwood@gmail.com, perex@perex.cz
-Cc:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: fsl_xcvr: Omit superfluous error message in fsl_xcvr_probe()
-Date:   Mon, 12 Jul 2021 11:45:59 +0100
-Message-Id: <162608623153.3192.455683453441836535.b4-ty@kernel.org>
+To:     linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        alsa-devel@alsa-project.org,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
+Subject: Re: [PATCH v3] ASoC: atmel: ATMEL drivers don't need HAS_DMA
+Date:   Mon, 12 Jul 2021 11:46:00 +0100
+Message-Id: <162608623152.3192.2676358338088676059.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210624104505.13680-1-tangbin@cmss.chinamobile.com>
-References: <20210624104505.13680-1-tangbin@cmss.chinamobile.com>
+In-Reply-To: <20210707214752.3831-1-rdunlap@infradead.org>
+References: <20210707214752.3831-1-rdunlap@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,10 +44,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Jun 2021 18:45:05 +0800, Tang Bin wrote:
-> In the function fsl_xcvr__probe(), when get irq failed,
-> the function platform_get_irq() logs an error message, so remove
-> redundant message here.
+On Wed, 7 Jul 2021 14:47:52 -0700, Randy Dunlap wrote:
+> On a config (such as arch/sh/) which does not set HAS_DMA when MMU
+> is not set, several ATMEL ASoC drivers select symbols that cause
+> kconfig warnings. There is one "depends on HAS_DMA" which is no longer
+> needed. Dropping it eliminates the kconfig warnings and still builds
+> with no problems reported.
+> 
+> Fix the following kconfig warnings:
+> 
+> [...]
 
 Applied to
 
@@ -53,8 +61,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsl_xcvr: Omit superfluous error message in fsl_xcvr_probe()
-      commit: 8620c40002db9679279546cc3be2aceb8c5e5e76
+[1/1] ASoC: atmel: ATMEL drivers don't need HAS_DMA
+      commit: 6c5c659dfe3f02e08054a6c20019e3886618b512
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
