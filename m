@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FCD73C52D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8DEF3C57E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350105AbhGLHuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:50:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46542 "EHLO mail.kernel.org"
+        id S1377990AbhGLIj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:39:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243328AbhGLHQI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:16:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 262A561151;
-        Mon, 12 Jul 2021 07:12:39 +0000 (UTC)
+        id S1351630AbhGLHv7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:51:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 020F460FF1;
+        Mon, 12 Jul 2021 07:49:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073960;
-        bh=cFUBcCT2mkVPvTne/BvjoYfPQ7E242JQG1yRU1Typcw=;
+        s=korg; t=1626076151;
+        bh=poVeK7EhLVcgvfNqEIIt69ZyXMeYgV+XWonfX+8FZEk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vjX8nflMg8uNSMhjzr/ho2z1u2d58FOzZxN2PO91JAD2PdQjDX3QtLlJ7aBKZy6dQ
-         TRLAkISdyZKyCuWfj5Af8IwXpBxUleoRBB96G9ambQVlj/I+R3QJ452nGCerHg0lsf
-         SZ7Hrvjb+IKvwkfgEMu7NxbShAfYuhDkePUgNJYc=
+        b=hvHkdB6EVM3p0Q1xRwPxD49CR0ZDfE6OTs2qHbd0k7beH261lUK05Im3255MK/KL2
+         8uEBEdFI8xMDH+sQFj0OM0PHa261hBbVXVnayF0QIJh/nSngyB6l/my2Xhs424crBp
+         h3SFPZUbR41+VRft3sBR8HaWGSWREVKL2LoQNSoQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Bob Pearson <rpearsonhpe@gmail.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 417/700] wil6210: remove erroneous wiphy locking
+Subject: [PATCH 5.13 477/800] RDMA/rxe: Fix qp reference counting for atomic ops
 Date:   Mon, 12 Jul 2021 08:08:20 +0200
-Message-Id: <20210712061020.735451219@linuxfoundation.org>
+Message-Id: <20210712061017.924060338@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Bob Pearson <rpearsonhpe@gmail.com>
 
-[ Upstream commit 8f78caa2264ece71c2e207cba023f28ab6665138 ]
+[ Upstream commit 15ae1375ea91ae2dee6f12d71a79d8c0a10a30bf ]
 
-We already hold the wiphy lock in all cases when we get
-here, so this would deadlock, remove the erroneous locking.
+Currently the rdma_rxe driver attempts to protect atomic responder
+resources by taking a reference to the qp which is only freed when the
+resource is recycled for a new read or atomic operation. This means that
+in normal circumstances there is almost always an extra qp reference once
+an atomic operation has been executed which prevents cleaning up the qp
+and associated pd and cqs when the qp is destroyed.
 
-Fixes: a05829a7222e ("cfg80211: avoid holding the RTNL when calling the driver")
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210426212929.83f1de07c2cd.I630a2a00eff185ba0452324b3d3f645e01128a95@changeid
+This patch removes the call to rxe_add_ref() in send_atomic_ack() and the
+call to rxe_drop_ref() in free_rd_atomic_resource(). If the qp is
+destroyed while a peer is retrying an atomic op it will cause the
+operation to fail which is acceptable.
+
+Link: https://lore.kernel.org/r/20210604230558.4812-1-rpearsonhpe@gmail.com
+Reported-by: Zhu Yanjun <zyjzyj2000@gmail.com>
+Fixes: 86af61764151 ("IB/rxe: remove unnecessary skb_clone")
+Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/wil6210/cfg80211.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_qp.c   | 1 -
+ drivers/infiniband/sw/rxe/rxe_resp.c | 2 --
+ 2 files changed, 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/wil6210/cfg80211.c b/drivers/net/wireless/ath/wil6210/cfg80211.c
-index 6746fd206d2a..1ff2679963f0 100644
---- a/drivers/net/wireless/ath/wil6210/cfg80211.c
-+++ b/drivers/net/wireless/ath/wil6210/cfg80211.c
-@@ -2842,9 +2842,7 @@ void wil_p2p_wdev_free(struct wil6210_priv *wil)
- 	wil->radio_wdev = wil->main_ndev->ieee80211_ptr;
- 	mutex_unlock(&wil->vif_mutex);
- 	if (p2p_wdev) {
--		wiphy_lock(wil->wiphy);
- 		cfg80211_unregister_wdev(p2p_wdev);
--		wiphy_unlock(wil->wiphy);
- 		kfree(p2p_wdev);
+diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+index b0f350d674fd..93a41ebda1a8 100644
+--- a/drivers/infiniband/sw/rxe/rxe_qp.c
++++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+@@ -136,7 +136,6 @@ static void free_rd_atomic_resources(struct rxe_qp *qp)
+ void free_rd_atomic_resource(struct rxe_qp *qp, struct resp_res *res)
+ {
+ 	if (res->type == RXE_ATOMIC_MASK) {
+-		rxe_drop_ref(qp);
+ 		kfree_skb(res->atomic.skb);
+ 	} else if (res->type == RXE_READ_MASK) {
+ 		if (res->read.mr)
+diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+index 2b220659bddb..39dc39be586e 100644
+--- a/drivers/infiniband/sw/rxe/rxe_resp.c
++++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+@@ -966,8 +966,6 @@ static int send_atomic_ack(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
+ 		goto out;
  	}
- }
+ 
+-	rxe_add_ref(qp);
+-
+ 	res = &qp->resp.resources[qp->resp.res_head];
+ 	free_rd_atomic_resource(qp, res);
+ 	rxe_advance_resp_resource(qp);
 -- 
 2.30.2
 
