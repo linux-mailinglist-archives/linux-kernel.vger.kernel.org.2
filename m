@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10BCD3C5748
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBCD03C4A25
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376877AbhGLIbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:31:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51582 "EHLO mail.kernel.org"
+        id S238608AbhGLGs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:48:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344170AbhGLHnq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:43:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 539D0611AF;
-        Mon, 12 Jul 2021 07:40:47 +0000 (UTC)
+        id S237053AbhGLGiT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:38:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A967D6052B;
+        Mon, 12 Jul 2021 06:34:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075647;
-        bh=cbgs1SGUcedEgEdkW/yzwtzqbt3aTxMQlZTcNFUyT6g=;
+        s=korg; t=1626071666;
+        bh=rrd+/5m+XlZ0KDdlO/QC2mj8cTFCxMABq/dve2gKSus=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I7Phqz95fJHOE6wuhLy4agADBXKVb1glQbe+7FPFnN7weYHKFDs5gR0KasKw/dvPC
-         FpWyfBtq3Mfrdh/40Bl12Zzbju4Mg5AqGiJYjki+CyW/b4QacXKoP2a16jibtFYr6k
-         uix4tdXM7YWbXQY5kEfDM1TnPtsp/AF0u6MK/a1A=
+        b=H1vDCl+3C4z72o3hDkT26sSiGiEgbD3fGZAK+oaV+O1NavkepZgZuaDKde53zY5zJ
+         NLRPLHhukHlZhAREvQmtTbPY6UHRMTdrNL6ijExNhjOdMPmiwa/XEBPlxAI+7K13eS
+         5A9T6YfvCZw6t+dk8tZqJO0eUDQvCcX9GJpzlhFQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Shaokun Zhang <zhangshaokun@hisilicon.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 305/800] drivers/perf: hisi: Fix data source control
+        stable@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 168/593] HID: do not use down_interruptible() when unbinding devices
 Date:   Mon, 12 Jul 2021 08:05:28 +0200
-Message-Id: <20210712060957.856300353@linuxfoundation.org>
+Message-Id: <20210712060901.520477586@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,50 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shaokun Zhang <zhangshaokun@hisilicon.com>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-[ Upstream commit 814be609baae62aaa6c02fa6f3ad66cff32a6d15 ]
+[ Upstream commit f2145f8dc566c4f3b5a8deb58dcd12bed4e20194 ]
 
-'Data source' is a new function for HHA PMU and config / clear
-interface was wrong by mistake. 'HHA_DATSRC_CTRL' register is
-mainly used for data source configuration, if we enable bit0
-as driver, it will go on count the event and we didn't check
-it carefully. So fix the issue and do as the initial purpose.
+Action of unbinding driver from a device is not cancellable and should not
+fail, and driver core does not pay attention to the result of "remove"
+method, therefore using down_interruptible() in hid_device_remove() does
+not make sense.
 
-Fixes: 932f6a99f9b0 ("drivers/perf: hisi: Add new functions for HHA PMU")
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
-Link: https://lore.kernel.org/r/1622709291-37996-1-git-send-email-zhangshaokun@hisilicon.com
-Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/perf/hisilicon/hisi_uncore_hha_pmu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/hid/hid-core.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/perf/hisilicon/hisi_uncore_hha_pmu.c b/drivers/perf/hisilicon/hisi_uncore_hha_pmu.c
-index 0316fabe32f1..acc864bded2b 100644
---- a/drivers/perf/hisilicon/hisi_uncore_hha_pmu.c
-+++ b/drivers/perf/hisilicon/hisi_uncore_hha_pmu.c
-@@ -90,7 +90,7 @@ static void hisi_hha_pmu_config_ds(struct perf_event *event)
+diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
+index 0f69f35f2957..5550c943f985 100644
+--- a/drivers/hid/hid-core.c
++++ b/drivers/hid/hid-core.c
+@@ -2306,12 +2306,8 @@ static int hid_device_remove(struct device *dev)
+ {
+ 	struct hid_device *hdev = to_hid_device(dev);
+ 	struct hid_driver *hdrv;
+-	int ret = 0;
  
- 		val = readl(hha_pmu->base + HHA_DATSRC_CTRL);
- 		val |= HHA_DATSRC_SKT_EN;
--		writel(ds_skt, hha_pmu->base + HHA_DATSRC_CTRL);
-+		writel(val, hha_pmu->base + HHA_DATSRC_CTRL);
- 	}
+-	if (down_interruptible(&hdev->driver_input_lock)) {
+-		ret = -EINTR;
+-		goto end;
+-	}
++	down(&hdev->driver_input_lock);
+ 	hdev->io_started = false;
+ 
+ 	hdrv = hdev->driver;
+@@ -2326,8 +2322,8 @@ static int hid_device_remove(struct device *dev)
+ 
+ 	if (!hdev->io_started)
+ 		up(&hdev->driver_input_lock);
+-end:
+-	return ret;
++
++	return 0;
  }
  
-@@ -104,7 +104,7 @@ static void hisi_hha_pmu_clear_ds(struct perf_event *event)
- 
- 		val = readl(hha_pmu->base + HHA_DATSRC_CTRL);
- 		val &= ~HHA_DATSRC_SKT_EN;
--		writel(ds_skt, hha_pmu->base + HHA_DATSRC_CTRL);
-+		writel(val, hha_pmu->base + HHA_DATSRC_CTRL);
- 	}
- }
- 
+ static ssize_t modalias_show(struct device *dev, struct device_attribute *a,
 -- 
 2.30.2
 
