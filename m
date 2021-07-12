@@ -2,145 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BF3D3C6573
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 23:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5611C3C6577
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 23:29:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234828AbhGLVaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 17:30:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39456 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233663AbhGLVaJ (ORCPT
+        id S234693AbhGLVby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 17:31:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231837AbhGLVby (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 17:30:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626125240;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=50O7XoIosnaTFvNclTBE2xrsoJwPx7yETNcoEdpke38=;
-        b=F9a2vVjJoBp/q7ULwV97nPFogI780NA5wiy4Zsx2/4wfi97ES/UVypkx4FD9fVrdgCKdwX
-        W9zFLW2qGLPQQmUPgdlJcFFkBh7tW4+QBIG3spohSPp3Lvvv9KwU3IkK/jZNChFcNA3SvT
-        HXlSat2NOnIwOX54vDBtXH97Tpu4AKk=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-255-GeJbwfWFOSCVoIez43RAIQ-1; Mon, 12 Jul 2021 17:27:19 -0400
-X-MC-Unique: GeJbwfWFOSCVoIez43RAIQ-1
-Received: by mail-lj1-f197.google.com with SMTP id y7-20020a2e97870000b029018bc821fd31so2882123lji.11
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 14:27:18 -0700 (PDT)
+        Mon, 12 Jul 2021 17:31:54 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93D84C0613E5
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 14:29:05 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d1so4741871plg.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 14:29:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BkrEyH8mx/bHbUobUw8cYQvGucPnsXvj9PS56zkSVhs=;
+        b=i86YDTFrzCB8hKMQLuztVM4IusV7JV7AaSwYHZ+aEweXflP4cc43CdY27Su2zLewUQ
+         +U6QNy+rkr4apla529EPqkEN+6fSW4CjZE2ATIBrHN+TYcGXy0oXtmvtyGywGViYO3s9
+         8VHlNR4DghsQIqknI4wlrSquEuXpHr6Hu1tdVAnqOZv12yfM0Z7ItkOH+hd69AsCuyr6
+         3bJ+BG9pVaiYgwBvvpeFoRZxmeMKeyMHw+Gy6Uf09I+yANMzw+mXxDObIcqbbqbxMHuu
+         V6PXQiLcBuQrypfTuLNtaotbtfRrumV9nu8zLWCotFefk9W3p2r0ktYzpEDulg2kKJ63
+         sFsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=50O7XoIosnaTFvNclTBE2xrsoJwPx7yETNcoEdpke38=;
-        b=JMEaXvo9QGjq4/QEhccXbXJdSlDTjlhf3wNpy0Kw39RL2GHgOceLcvW2YH/RqoraNa
-         EikndLvCSnFZ3g8+WDiZaR0mSsI0pW9DKo0uu/MWlYsNhwGXD5/0KOFrUyNSKg0QVldR
-         bNQyFgyvq/UThgjtniZ4aZVRUCJK1MwtrjJ7sPpqAAtUmeD1Z9uNwBaDBAhEdiU4r8Ex
-         Of9BzXSwfXbd8OIj2/p61DW/ZOMsJHrs8T/9kODs//oXj8GX7WJU4S7A/iXXbNPPizSQ
-         lLq0K+emsDUtNtIqfHOpH25QeC5LAHqYAmwaSAsEnIu48L0ejOKylCgzKOgicMUXfcDO
-         JaGQ==
-X-Gm-Message-State: AOAM533HJsyyG0/WEs6hWrRnBAaTA8DI0hV+z902lWdDuwqiB0e1NZ8O
-        4vHqLVvu4zgJX/kvZWJCSMNjmaT9nzgRNcLmCSqrPaBd8cYgbM5CtgJa7ow6WgjQj79BlQd4lP+
-        w+M/1cXmjmYIUiMX3fgzlymEx+w8exBYxf3FphcmR
-X-Received: by 2002:a05:6512:33d3:: with SMTP id d19mr632518lfg.114.1626125237455;
-        Mon, 12 Jul 2021 14:27:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxMir1sZ9GqMa7WvPLCmNlPEblioxslUn0DyeGBQ95oerEYIFyQhf9KJgWR3Td5whCmT13/5lNHXg0IXQuMJlU=
-X-Received: by 2002:a05:6512:33d3:: with SMTP id d19mr632454lfg.114.1626125237173;
- Mon, 12 Jul 2021 14:27:17 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BkrEyH8mx/bHbUobUw8cYQvGucPnsXvj9PS56zkSVhs=;
+        b=EfhbCMJ2712BcN6IcQdQAQvjLJQMItwECbRckmdQFT2AMXEiSV8asmJ3OxHwthkoze
+         2UQAAe5ycj6XvYPhEDmkRdiGsMXDTWtv8li6s5LqYBTeM/POu5VDksDjoPs/cOImTpzD
+         rl1qqMAETs9JC52VVD4/pL3nj7ifOmPag+V0dpJSZeWGDh9+usYyIida7pYnGglp7/ek
+         hp3QRebaSZXviQJC3CEHMX+lkCFuhhr6bK/UIjA3fIjwMG2aWkZWUFHosjlJX6yr8IUX
+         73zdx1oLRz4mBliPl7937oBciBjNNCCwA/Ay7I3sPhlbbTPkrQyVpeeyOJp3ovW1iCyy
+         fVfA==
+X-Gm-Message-State: AOAM530bKRFBzfLtBGgjnvM1RIS7fhYMazwzRSQdr/MoOnXiAUuqhaB/
+        9v7BTdC/r6GXze6f2PvghDBekg==
+X-Google-Smtp-Source: ABdhPJzM5mRK5WKvI7tk2x+HHSfWaCY9yOC0KVUP5/4gSTGmva0r7029DXc44BBlofnA+O9mlULWaA==
+X-Received: by 2002:a17:902:8c81:b029:129:a9a8:67f9 with SMTP id t1-20020a1709028c81b0290129a9a867f9mr835809plo.79.1626125344703;
+        Mon, 12 Jul 2021 14:29:04 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id a6sm15660458pfn.1.2021.07.12.14.29.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jul 2021 14:29:04 -0700 (PDT)
+Date:   Mon, 12 Jul 2021 21:29:00 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     syzbot <syzbot+a3fcd59df1b372066f5a@syzkaller.appspotmail.com>,
+        akpm@linux-foundation.org, bp@alien8.de, hpa@zytor.com,
+        jmattson@google.com, joro@8bytes.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        mark.rutland@arm.com, masahiroy@kernel.org, mingo@redhat.com,
+        pbonzini@redhat.com, peterz@infradead.org,
+        rafael.j.wysocki@intel.com, rostedt@goodmis.org,
+        sedat.dilek@gmail.com, syzkaller-bugs@googlegroups.com,
+        vitor@massaru.org, vkuznets@redhat.com, wanpengli@tencent.com,
+        will@kernel.org, x86@kernel.org
+Subject: Re: [syzbot] general protection fault in try_grab_compound_head
+Message-ID: <YOy0HAnhsXJ4W210@google.com>
+References: <0000000000009e89e205c63dda94@google.com>
+ <87fswpot3i.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20210629152746.2953364-1-nitesh@redhat.com> <CAFki+LnUGiEE-7Uf-x8-TQZYZ+3Migrr=81gGLYszxaK-6A9WQ@mail.gmail.com>
- <YOrWqPYPkZp6nRLS@unreal>
-In-Reply-To: <YOrWqPYPkZp6nRLS@unreal>
-From:   Nitesh Lal <nilal@redhat.com>
-Date:   Mon, 12 Jul 2021 17:27:05 -0400
-Message-ID: <CAFki+L=FYOTQ1+-MHWmTuA6ZxTUcZA9t41HRL2URYgv03oFbDg@mail.gmail.com>
-Subject: Re: [PATCH v2 00/14] genirq: Cleanup the usage of irq_set_affinity_hint
-To:     Leon Romanovsky <leonro@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        netdev@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-pci@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, jbrandeb@kernel.org,
-        frederic@kernel.org, Juri Lelli <juri.lelli@redhat.com>,
-        Alex Belits <abelits@marvell.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, rostedt@goodmis.org,
-        peterz@infradead.org, davem@davemloft.net,
-        akpm@linux-foundation.org, sfr@canb.auug.org.au,
-        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
-        chris.friesen@windriver.com, Marc Zyngier <maz@kernel.org>,
-        Neil Horman <nhorman@tuxdriver.com>, pjwaskiewicz@gmail.com,
-        Stefan Assmann <sassmann@redhat.com>,
-        Tomas Henzl <thenzl@redhat.com>, kashyap.desai@broadcom.com,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        shivasharan.srikanteshwara@broadcom.com,
-        sathya.prakash@broadcom.com,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        suganath-prabu.subramani@broadcom.com, james.smart@broadcom.com,
-        dick.kennedy@broadcom.com, Ken Cox <jkc@redhat.com>,
-        faisal.latif@intel.com, shiraz.saleem@intel.com, tariqt@nvidia.com,
-        Alaa Hleihel <ahleihel@redhat.com>,
-        Kamal Heib <kheib@redhat.com>, borisp@nvidia.com,
-        saeedm@nvidia.com, benve@cisco.com, govind@gmx.com,
-        jassisinghbrar@gmail.com, ajit.khaparde@broadcom.com,
-        sriharsha.basavapatna@broadcom.com, somnath.kotur@broadcom.com,
-        "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        Al Stone <ahs3@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87fswpot3i.ffs@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leon,
-
-On Sun, Jul 11, 2021 at 7:32 AM Leon Romanovsky <leonro@nvidia.com> wrote:
->
-> On Thu, Jul 08, 2021 at 03:24:20PM -0400, Nitesh Lal wrote:
-> > On Tue, Jun 29, 2021 at 11:28 AM Nitesh Narayan Lal <nitesh@redhat.com> wrote:
->
-> <...>
->
-> > >
-> > >  drivers/infiniband/hw/i40iw/i40iw_main.c      |  4 +-
-> > >  drivers/mailbox/bcm-flexrm-mailbox.c          |  4 +-
-> > >  drivers/net/ethernet/cisco/enic/enic_main.c   |  8 +--
-> > >  drivers/net/ethernet/emulex/benet/be_main.c   |  4 +-
-> > >  drivers/net/ethernet/huawei/hinic/hinic_rx.c  |  4 +-
-> > >  drivers/net/ethernet/intel/i40e/i40e_main.c   |  8 +--
-> > >  drivers/net/ethernet/intel/iavf/iavf_main.c   |  8 +--
-> > >  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 10 ++--
-> > >  drivers/net/ethernet/mellanox/mlx4/eq.c       |  8 ++-
-> > >  .../net/ethernet/mellanox/mlx5/core/pci_irq.c |  6 +--
-> > >  drivers/scsi/lpfc/lpfc_init.c                 |  4 +-
-> > >  drivers/scsi/megaraid/megaraid_sas_base.c     | 27 +++++-----
-> > >  drivers/scsi/mpt3sas/mpt3sas_base.c           | 21 ++++----
-> > >  include/linux/interrupt.h                     | 53 ++++++++++++++++++-
-> > >  kernel/irq/manage.c                           |  8 +--
-> > >  15 files changed, 113 insertions(+), 64 deletions(-)
-> > >
-> > > --
-> > >
-> > >
+On Thu, Jul 08, 2021, Thomas Gleixner wrote:
+> On Sat, Jul 03 2021 at 13:24, syzbot wrote:
+> > syzbot has bisected this issue to:
 > >
-> > Gentle ping.
-> > Any comments or suggestions on any of the patches included in this series?
->
-> Please wait for -rc1, rebase and resend.
-> At least i40iw was deleted during merge window.
->
+> > commit 997acaf6b4b59c6a9c259740312a69ea549cc684
+> > Author: Mark Rutland <mark.rutland@arm.com>
+> > Date:   Mon Jan 11 15:37:07 2021 +0000
+> >
+> >     lockdep: report broken irq restoration
+> 
+> That's the commit which makes the underlying problem visible:
+> 
+>        raw_local_irq_restore() called with IRQs enabled
+> 
+> and is triggered by this call chain:
+> 
+>  kvm_wait arch/x86/kernel/kvm.c:860 [inline]
+>  kvm_wait+0xc3/0xe0 arch/x86/kernel/kvm.c:837
 
-In -rc1 some non-trivial mlx5 changes also went in.  I was going through
-these changes and it seems after your patch
-
-e4e3f24b822f: ("net/mlx5: Provide cpumask at EQ creation phase")
-
-we do want to control the affinity for the mlx5 interrupts from the driver.
-Is that correct? This would mean that we should use
-irq_set_affinity_and_hint() instead
-of irq_update_affinity_hint().
-
--- 
-Thanks
-Nitesh
-
+And the bug in kvm_wait() was fixed by commit f4e61f0c9add ("x86/kvm: Fix broken
+irq restoration in kvm_wait").  The bisection is bad, syzbot happened into the
+kvm_wait() WARN and got distracted.  The original #GP looks stable, if someone
+from mm land has bandwidth.
