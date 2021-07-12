@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0AC33C494F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 686F13C56CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238293AbhGLGnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:43:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55158 "EHLO mail.kernel.org"
+        id S1357339AbhGLIYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:24:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237578AbhGLGej (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:34:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9695960238;
-        Mon, 12 Jul 2021 06:30:54 +0000 (UTC)
+        id S1347884AbhGLHkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:40:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2477B611F1;
+        Mon, 12 Jul 2021 07:36:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071455;
-        bh=KuJU28+Nk0j1uhAYcQWyZwB8EM40lYnI9HZRqQErR6g=;
+        s=korg; t=1626075418;
+        bh=+Klb3H2JXmu8TWZqMs7JTF0kUys4BvGnTeWBBCwIDCY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RDp4iYSzIOAWw7YrGKfDKwHNA91Hck8tiPx2aKJmlRpnJDgMlOP6KyjX8WRtH7Y+x
-         l6caDlueCcy2wFPXh7Pxd60SV/vjRZzlmjfKKWkiHapeIv8lw59iveWJZbeXWbZ+Dl
-         lb8Hv8DVexNyxGz+vDRdkmG1+NNj1U5xr13WHMGs=
+        b=iirzKHSmjOPTUjnyV+nA1PT5ecIliVLUHe0y4NNP3iYwt+7VSnIEsKrblX0CNnvhd
+         +2lUdMCpg+8poBa41D3CZKSNduZRC+OfiEkxhhvoKgM+U4lwb2n3VPJyb7i9g7jYIe
+         eCoIfejiPCsJQOJW8Q03vClG3Jhn6sWC9biVHZoM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-Subject: [PATCH 5.10 078/593] serial: mvebu-uart: fix calculation of clock divisor
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 215/800] Input: goodix - platform/x86: touchscreen_dmi - Move upside down quirks to touchscreen_dmi.c
 Date:   Mon, 12 Jul 2021 08:03:58 +0200
-Message-Id: <20210712060851.727514774@linuxfoundation.org>
+Message-Id: <20210712060943.891778237@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,32 +39,191 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit 9078204ca5c33ba20443a8623a41a68a9995a70d upstream.
+[ Upstream commit 5a6f0dbe621a5c20dc912ac474debf9f11129e03 ]
 
-The clock divisor should be rounded to the closest value.
+Move the DMI quirks for upside-down mounted Goodix touchscreens from
+drivers/input/touchscreen/goodix.c to
+drivers/platform/x86/touchscreen_dmi.c,
+where all the other x86 touchscreen quirks live.
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Fixes: 68a0db1d7da2 ("serial: mvebu-uart: add function to change baudrate")
-Cc: stable@vger.kernel.org # 0e4cf69ede87 ("serial: mvebu-uart: clarify the baud rate derivation")
-Link: https://lore.kernel.org/r/20210624224909.6350-2-pali@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Note the touchscreen_dmi.c code attaches standard touchscreen
+device-properties to an i2c-client device based on a combination of a
+DMI match + a device-name match. I've verified that the: Teclast X98 Pro,
+WinBook TW100 and WinBook TW700 uses an ACPI devicename of "GDIX1001:00"
+based on acpidumps and/or dmesg output available on the web.
 
+This patch was tested on a Teclast X89 tablet.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20210504185746.175461-2-hdegoede@redhat.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/mvebu-uart.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/input/touchscreen/goodix.c     | 52 ------------------------
+ drivers/platform/x86/touchscreen_dmi.c | 56 ++++++++++++++++++++++++++
+ 2 files changed, 56 insertions(+), 52 deletions(-)
 
---- a/drivers/tty/serial/mvebu-uart.c
-+++ b/drivers/tty/serial/mvebu-uart.c
-@@ -463,7 +463,7 @@ static int mvebu_uart_baud_rate_set(stru
- 	 * makes use of D to configure the desired baudrate.
- 	 */
- 	m_divisor = OSAMP_DEFAULT_DIVISOR;
--	d_divisor = DIV_ROUND_UP(port->uartclk, baud * m_divisor);
-+	d_divisor = DIV_ROUND_CLOSEST(port->uartclk, baud * m_divisor);
+diff --git a/drivers/input/touchscreen/goodix.c b/drivers/input/touchscreen/goodix.c
+index c682b028f0a2..4f53d3c57e69 100644
+--- a/drivers/input/touchscreen/goodix.c
++++ b/drivers/input/touchscreen/goodix.c
+@@ -178,51 +178,6 @@ static const unsigned long goodix_irq_flags[] = {
+ 	IRQ_TYPE_LEVEL_HIGH,
+ };
  
- 	brdv = readl(port->membase + UART_BRDV);
- 	brdv &= ~BRDV_BAUD_MASK;
+-/*
+- * Those tablets have their coordinates origin at the bottom right
+- * of the tablet, as if rotated 180 degrees
+- */
+-static const struct dmi_system_id rotated_screen[] = {
+-#if defined(CONFIG_DMI) && defined(CONFIG_X86)
+-	{
+-		.ident = "Teclast X89",
+-		.matches = {
+-			/* tPAD is too generic, also match on bios date */
+-			DMI_MATCH(DMI_BOARD_VENDOR, "TECLAST"),
+-			DMI_MATCH(DMI_BOARD_NAME, "tPAD"),
+-			DMI_MATCH(DMI_BIOS_DATE, "12/19/2014"),
+-		},
+-	},
+-	{
+-		.ident = "Teclast X98 Pro",
+-		.matches = {
+-			/*
+-			 * Only match BIOS date, because the manufacturers
+-			 * BIOS does not report the board name at all
+-			 * (sometimes)...
+-			 */
+-			DMI_MATCH(DMI_BOARD_VENDOR, "TECLAST"),
+-			DMI_MATCH(DMI_BIOS_DATE, "10/28/2015"),
+-		},
+-	},
+-	{
+-		.ident = "WinBook TW100",
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "WinBook"),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "TW100")
+-		}
+-	},
+-	{
+-		.ident = "WinBook TW700",
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "WinBook"),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "TW700")
+-		},
+-	},
+-#endif
+-	{}
+-};
+-
+ static const struct dmi_system_id nine_bytes_report[] = {
+ #if defined(CONFIG_DMI) && defined(CONFIG_X86)
+ 	{
+@@ -1123,13 +1078,6 @@ static int goodix_configure_dev(struct goodix_ts_data *ts)
+ 				  ABS_MT_POSITION_Y, ts->prop.max_y);
+ 	}
+ 
+-	if (dmi_check_system(rotated_screen)) {
+-		ts->prop.invert_x = true;
+-		ts->prop.invert_y = true;
+-		dev_dbg(&ts->client->dev,
+-			"Applying '180 degrees rotated screen' quirk\n");
+-	}
+-
+ 	if (dmi_check_system(nine_bytes_report)) {
+ 		ts->contact_size = 9;
+ 
+diff --git a/drivers/platform/x86/touchscreen_dmi.c b/drivers/platform/x86/touchscreen_dmi.c
+index bde740d6120e..b452865da2a1 100644
+--- a/drivers/platform/x86/touchscreen_dmi.c
++++ b/drivers/platform/x86/touchscreen_dmi.c
+@@ -299,6 +299,23 @@ static const struct ts_dmi_data estar_beauty_hd_data = {
+ 	.properties	= estar_beauty_hd_props,
+ };
+ 
++/* Generic props + data for upside-down mounted GDIX1001 touchscreens */
++static const struct property_entry gdix1001_upside_down_props[] = {
++	PROPERTY_ENTRY_BOOL("touchscreen-inverted-x"),
++	PROPERTY_ENTRY_BOOL("touchscreen-inverted-y"),
++	{ }
++};
++
++static const struct ts_dmi_data gdix1001_00_upside_down_data = {
++	.acpi_name	= "GDIX1001:00",
++	.properties	= gdix1001_upside_down_props,
++};
++
++static const struct ts_dmi_data gdix1001_01_upside_down_data = {
++	.acpi_name	= "GDIX1001:01",
++	.properties	= gdix1001_upside_down_props,
++};
++
+ static const struct property_entry gp_electronic_t701_props[] = {
+ 	PROPERTY_ENTRY_U32("touchscreen-size-x", 960),
+ 	PROPERTY_ENTRY_U32("touchscreen-size-y", 640),
+@@ -1330,6 +1347,16 @@ const struct dmi_system_id touchscreen_dmi_table[] = {
+ 			DMI_MATCH(DMI_BOARD_NAME, "X3 Plus"),
+ 		},
+ 	},
++	{
++		/* Teclast X89 (Windows version / BIOS) */
++		.driver_data = (void *)&gdix1001_01_upside_down_data,
++		.matches = {
++			/* tPAD is too generic, also match on bios date */
++			DMI_MATCH(DMI_BOARD_VENDOR, "TECLAST"),
++			DMI_MATCH(DMI_BOARD_NAME, "tPAD"),
++			DMI_MATCH(DMI_BIOS_DATE, "12/19/2014"),
++		},
++	},
+ 	{
+ 		/* Teclast X98 Plus II */
+ 		.driver_data = (void *)&teclast_x98plus2_data,
+@@ -1338,6 +1365,19 @@ const struct dmi_system_id touchscreen_dmi_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "X98 Plus II"),
+ 		},
+ 	},
++	{
++		/* Teclast X98 Pro */
++		.driver_data = (void *)&gdix1001_00_upside_down_data,
++		.matches = {
++			/*
++			 * Only match BIOS date, because the manufacturers
++			 * BIOS does not report the board name at all
++			 * (sometimes)...
++			 */
++			DMI_MATCH(DMI_BOARD_VENDOR, "TECLAST"),
++			DMI_MATCH(DMI_BIOS_DATE, "10/28/2015"),
++		},
++	},
+ 	{
+ 		/* Trekstor Primebook C11 */
+ 		.driver_data = (void *)&trekstor_primebook_c11_data,
+@@ -1413,6 +1453,22 @@ const struct dmi_system_id touchscreen_dmi_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "VINGA Twizzle J116"),
+ 		},
+ 	},
++	{
++		/* "WinBook TW100" */
++		.driver_data = (void *)&gdix1001_00_upside_down_data,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "WinBook"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "TW100")
++		}
++	},
++	{
++		/* WinBook TW700 */
++		.driver_data = (void *)&gdix1001_00_upside_down_data,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "WinBook"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "TW700")
++		},
++	},
+ 	{
+ 		/* Yours Y8W81, same case and touchscreen as Chuwi Vi8 */
+ 		.driver_data = (void *)&chuwi_vi8_data,
+-- 
+2.30.2
+
 
 
