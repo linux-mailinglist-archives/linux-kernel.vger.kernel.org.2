@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5493C4B81
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D9663C52B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239389AbhGLG5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:57:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34412 "EHLO mail.kernel.org"
+        id S243258AbhGLHsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:48:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237217AbhGLGlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:41:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED56B6113B;
-        Mon, 12 Jul 2021 06:38:37 +0000 (UTC)
+        id S240636AbhGLHOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:14:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B5BD61156;
+        Mon, 12 Jul 2021 07:11:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071918;
-        bh=a9kzWLdK1Chrk08dQMjjiRJg44Lp5Bq/ezAfsZR5vj8=;
+        s=korg; t=1626073876;
+        bh=cusb80SVg9uwUePCU225a3Ul2PXc6xnepetc54GZeHw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r+g1S+WInKpgYTi681BCuolMc/qymUCV+dJTtYmctxWjjEOGtPiDlGPO8BYS/wLFU
-         hUdPyu4V1lSbHtj3s4H349BEg7QjfieKCh7NMgaEIJ2aFV19y6tVN4wZo7aPMcdcFD
-         80GcAfyiMmIZh27N9I2XfumVK+P1rtaFwop3C6k8=
+        b=xo8KFSJ0e38W1hdvWQATaA1P+0OWsDMg3WquG9SqDlhDgaJETSnZ1K+qMpCw7yNcJ
+         g92DWpViie8Pi4mHrOEyZS8cv2ElB3Edib//MjbyhXjWo+wQHca7FKSu91A5yuOFQQ
+         HTRTa/LTqRVYn8B23LS1uIiqono5572t418ZaUrk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 275/593] ACPI: PM / fan: Put fan device IDs into separate header file
+Subject: [PATCH 5.12 352/700] drm/bridge/sii8620: fix dependency on extcon
 Date:   Mon, 12 Jul 2021 08:07:15 +0200
-Message-Id: <20210712060914.137289652@linuxfoundation.org>
+Message-Id: <20210712061013.781058023@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,100 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Robert Foss <robert.foss@linaro.org>
 
-[ Upstream commit b9370dceabb7841c5e65ce4ee4405b9db5231fc4 ]
+[ Upstream commit 08319adbdde15ef7cee1970336f63461254baa2a ]
 
-The ACPI fan device IDs are shared between the fan driver and the
-device power management code.  The former is modular, so it needs
-to include the table of device IDs for module autoloading and the
-latter needs that list to avoid attaching the generic ACPI PM domain
-to fan devices (which doesn't make sense) possibly before the fan
-driver module is loaded.
+The DRM_SIL_SII8620 kconfig has a weak `imply` dependency
+on EXTCON, which causes issues when sii8620 is built
+as a builtin and EXTCON is built as a module.
 
-Unfortunately, that requires the list of fan device IDs to be
-updated in two places which is prone to mistakes, so put it into
-a symbol definition in a separate header file so there is only one
-copy of it in case it needs to be updated again in the future.
+The symptoms are 'undefined reference' errors caused
+by the symbols in EXTCON not being available
+to the sii8620 driver.
 
-Fixes: b9ea0bae260f ("ACPI: PM: Avoid attaching ACPI PM domain to certain devices")
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fixes: 688838442147 ("drm/bridge/sii8620: use micro-USB cable detection logic to detect MHL")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Robert Foss <robert.foss@linaro.org>
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210419090124.153560-1-robert.foss@linaro.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/device_pm.c |  6 ++----
- drivers/acpi/fan.c       |  7 +++----
- drivers/acpi/fan.h       | 13 +++++++++++++
- 3 files changed, 18 insertions(+), 8 deletions(-)
- create mode 100644 drivers/acpi/fan.h
+ drivers/gpu/drm/bridge/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/acpi/device_pm.c b/drivers/acpi/device_pm.c
-index 48ff6821a83d..ecd2ddc2215f 100644
---- a/drivers/acpi/device_pm.c
-+++ b/drivers/acpi/device_pm.c
-@@ -18,6 +18,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/suspend.h>
- 
-+#include "fan.h"
- #include "internal.h"
- 
- #define _COMPONENT	ACPI_POWER_COMPONENT
-@@ -1298,10 +1299,7 @@ int acpi_dev_pm_attach(struct device *dev, bool power_on)
- 	 * with the generic ACPI PM domain.
- 	 */
- 	static const struct acpi_device_id special_pm_ids[] = {
--		{"PNP0C0B", }, /* Generic ACPI fan */
--		{"INT3404", }, /* Fan */
--		{"INTC1044", }, /* Fan for Tiger Lake generation */
--		{"INTC1048", }, /* Fan for Alder Lake generation */
-+		ACPI_FAN_DEVICE_IDS,
- 		{}
- 	};
- 	struct acpi_device *adev = ACPI_COMPANION(dev);
-diff --git a/drivers/acpi/fan.c b/drivers/acpi/fan.c
-index 66c3983f0ccc..5cd0ceb50bc8 100644
---- a/drivers/acpi/fan.c
-+++ b/drivers/acpi/fan.c
-@@ -16,6 +16,8 @@
- #include <linux/platform_device.h>
- #include <linux/sort.h>
- 
-+#include "fan.h"
-+
- MODULE_AUTHOR("Paul Diefenbaugh");
- MODULE_DESCRIPTION("ACPI Fan Driver");
- MODULE_LICENSE("GPL");
-@@ -24,10 +26,7 @@ static int acpi_fan_probe(struct platform_device *pdev);
- static int acpi_fan_remove(struct platform_device *pdev);
- 
- static const struct acpi_device_id fan_device_ids[] = {
--	{"PNP0C0B", 0},
--	{"INT3404", 0},
--	{"INTC1044", 0},
--	{"INTC1048", 0},
-+	ACPI_FAN_DEVICE_IDS,
- 	{"", 0},
- };
- MODULE_DEVICE_TABLE(acpi, fan_device_ids);
-diff --git a/drivers/acpi/fan.h b/drivers/acpi/fan.h
-new file mode 100644
-index 000000000000..dc9a6efa514b
---- /dev/null
-+++ b/drivers/acpi/fan.h
-@@ -0,0 +1,13 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+
-+/*
-+ * ACPI fan device IDs are shared between the fan driver and the device power
-+ * management code.
-+ *
-+ * Add new device IDs before the generic ACPI fan one.
-+ */
-+#define ACPI_FAN_DEVICE_IDS	\
-+	{"INT3404", }, /* Fan */ \
-+	{"INTC1044", }, /* Fan for Tiger Lake generation */ \
-+	{"INTC1048", }, /* Fan for Alder Lake generation */ \
-+	{"PNP0C0B", } /* Generic ACPI fan */
+diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
+index bc60fc4728d7..8d5bae9e745b 100644
+--- a/drivers/gpu/drm/bridge/Kconfig
++++ b/drivers/gpu/drm/bridge/Kconfig
+@@ -143,7 +143,7 @@ config DRM_SIL_SII8620
+ 	tristate "Silicon Image SII8620 HDMI/MHL bridge"
+ 	depends on OF
+ 	select DRM_KMS_HELPER
+-	imply EXTCON
++	select EXTCON
+ 	depends on RC_CORE || !RC_CORE
+ 	help
+ 	  Silicon Image SII8620 HDMI/MHL bridge chip driver.
 -- 
 2.30.2
 
