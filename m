@@ -2,64 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 272253C5DD9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 15:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 115FD3C5DDD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 15:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234886AbhGLOAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 10:00:31 -0400
-Received: from mga01.intel.com ([192.55.52.88]:1072 "EHLO mga01.intel.com"
+        id S233634AbhGLOCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 10:02:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57380 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234125AbhGLOAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 10:00:30 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10042"; a="231774443"
-X-IronPort-AV: E=Sophos;i="5.84,234,1620716400"; 
-   d="scan'208";a="231774443"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 06:57:41 -0700
-X-IronPort-AV: E=Sophos;i="5.84,234,1620716400"; 
-   d="scan'208";a="502176636"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 06:57:40 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1m2wRD-00CFZc-3k; Mon, 12 Jul 2021 16:57:35 +0300
-Date:   Mon, 12 Jul 2021 16:57:35 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexander Gordeev <lasaine@lvk.cs.msu.su>
-Cc:     linux-kernel@vger.kernel.org,
-        Rodolfo Giometti <giometti@enneenne.com>
-Subject: Re: [PATCH v1 1/1] pps: generators: pps_gen_parport: Switch to use
- module_parport_driver()
-Message-ID: <YOxKT9FnFPd+491W@smile.fi.intel.com>
-References: <20210616143121.46059-1-andriy.shevchenko@linux.intel.com>
- <YMoOVrJ1ETVhRr4F@kroah.com>
+        id S229644AbhGLOCM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 10:02:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D27A761003;
+        Mon, 12 Jul 2021 13:59:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626098364;
+        bh=CVa9mOdD4iVXL47LeMVBbUqVDOCPCuh6G06o/IBjVAA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eJHp1t8b22M7dLCIWLFl17xaWR15lVo7pZYTSPilqbsKK3p20ZKV5cZOpNiFrE8EA
+         dJvqwhFEHtJOti1SFV/srwm7dqfSTSTnsnadZaj20J7dAyxsb84Cthp2dTLPutvSub
+         09q5U1ZT0VrlVrGqUwOInsQGubij6R/78hVJxjzeOTpEqHMtyVqGTzskdEAUFJqxR4
+         jVX/yLUzQfszVTV2eRpCfxRnSaSeLBhhZ/u2dlP9VQmzsywn9aecO0Iqx49AxBIfGR
+         h9vvcK6IM+SsRQUi1zH5jyXbvRsUQpReIcv9YYx6YDZlxVrUuK9cdX/Z6+FOxLtF/E
+         rYPfjJa3EKWzQ==
+Received: by wens.tw (Postfix, from userid 1000)
+        id B0BF15FBF5; Mon, 12 Jul 2021 21:59:21 +0800 (CST)
+From:   Chen-Yu Tsai <wens@kernel.org>
+To:     Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     Chen-Yu Tsai <wens@csie.org>, devicetree@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] arm64: dts: meson-gxbb: nanopi-k2: Enable Bluetooth
+Date:   Mon, 12 Jul 2021 21:59:19 +0800
+Message-Id: <20210712135919.32059-1-wens@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YMoOVrJ1ETVhRr4F@kroah.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 04:44:38PM +0200, Greg Kroah-Hartman wrote:
-> On Wed, Jun 16, 2021 at 05:31:21PM +0300, Andy Shevchenko wrote:
-> > Switch to use module_parport_driver() to reduce boilerplate code.
+From: Chen-Yu Tsai <wens@csie.org>
 
-> > +	pr_info("hrtimer avg error is %ldns\n", hrtimer_error);
-> 
-> Why is this line needed?  When drivers work properly, they are quiet.
-> 
-> I know the existing code has it, no reason it needs to stay here, that's
-> why we created these macros, to remove the ability for drivers to be
-> printing junk like this that they do not need to be printing.
+The NanoPi K2 has a AP6212 WiFi+BT combo module. The WiFi portion is
+already enabled. The BT part is connected via UART and I2S.
 
-Seems the original authors keeps silent. What do you suggest in this case?
-Remove the line and resubmit?
+Enable the UART and add a device node describing the Bluetooth portion
+of the module.
 
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+---
+Changes since v2:
+  - dropped alias for uart_A
+  - added Martin's reviewed-by
+
+Changes since v1:
+  - added uart-has-rtscts property
+  - added alias for uart_A
+---
+ .../arm64/boot/dts/amlogic/meson-gxbb-nanopi-k2.dts | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxbb-nanopi-k2.dts b/arch/arm64/boot/dts/amlogic/meson-gxbb-nanopi-k2.dts
+index 7273eed5292c..7d94160f5802 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxbb-nanopi-k2.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxbb-nanopi-k2.dts
+@@ -385,9 +385,20 @@ &uart_AO {
+ 
+ /* Bluetooth on AP6212 */
+ &uart_A {
+-	status = "disabled";
++	status = "okay";
+ 	pinctrl-0 = <&uart_a_pins>, <&uart_a_cts_rts_pins>;
+ 	pinctrl-names = "default";
++	uart-has-rtscts;
++
++	bluetooth {
++		compatible = "brcm,bcm43438-bt";
++		clocks = <&wifi_32k>;
++		clock-names = "lpo";
++		vbat-supply = <&vddio_ao3v3>;
++		vddio-supply = <&vddio_ao18>;
++		host-wakeup-gpios = <&gpio GPIOX_21 GPIO_ACTIVE_HIGH>;
++		shutdown-gpios = <&gpio GPIOX_20 GPIO_ACTIVE_HIGH>;
++	};
+ };
+ 
+ /* 40-pin CON1 */
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.31.1
 
