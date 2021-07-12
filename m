@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DBDB3C4F59
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:43:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAFF43C5689
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345083AbhGLHYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:24:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59236 "EHLO mail.kernel.org"
+        id S1351101AbhGLITx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:19:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56274 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239586AbhGLG6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:58:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37585613EC;
-        Mon, 12 Jul 2021 06:55:14 +0000 (UTC)
+        id S244448AbhGLHgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:36:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D85D6145B;
+        Mon, 12 Jul 2021 07:32:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072914;
-        bh=Kuh6woRRTHxGDo2eMaqmBi9aEAcP8QHgJop9o5uz9Ak=;
+        s=korg; t=1626075155;
+        bh=UKL06wvXO3538xb+FDZ9uGdySxRC3q9rHRHGC0tZ+1A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aqi0PD5NpMyiAyt+y+tIxlVnTvg3xZmAN467J03kqOxHHxRdEdDR3xaO7x2iyYfhB
-         jgPxNUOcA9G2vI4LPHVO+NJavtXbDAcamnjqD4T5N5uQPC30jJ4VzVh5sb9PUO9wyq
-         IVowiGWfMO4IwIaRwFAnJmy2aIziRE0B3z/hGU4w=
+        b=VgEhUB4aiRdtsTPRrdlylKgMhZFfOQOTXra/wwZzldzykJMfEqMt4BT6VyUy/Cfzj
+         l+y1bCEIebj8t8Kw7QZpLP9uaMEGipCvzh8BFiRDlZjVk9eKErO44FsYWmxj28dFWY
+         gWQkWYgle4vGqeXOZ5p0CoZ0Z/i5n1py30GavDt0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Abinaya Kalaiselvan <akalaise@codeaurora.org>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 5.12 063/700] mac80211: fix NULL ptr dereference during mesh peer connection for non HE devices
-Date:   Mon, 12 Jul 2021 08:02:26 +0200
-Message-Id: <20210712060933.646898965@linuxfoundation.org>
+        stable@vger.kernel.org, Pradeep P V K <pragalla@codeaurora.org>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Subject: [PATCH 5.13 124/800] fuse: check connected before queueing on fpq->io
+Date:   Mon, 12 Jul 2021 08:02:27 +0200
+Message-Id: <20210712060930.408339785@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,45 +39,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Abinaya Kalaiselvan <akalaise@codeaurora.org>
+From: Miklos Szeredi <mszeredi@redhat.com>
 
-commit 95f83ee8d857f006813755e89a126f1048b001e8 upstream.
+commit 80ef08670d4c28a06a3de954bd350368780bcfef upstream.
 
-"sband->iftype_data" is not assigned with any value for non HE supported
-devices, which causes NULL pointer access during mesh peer connection
-in those devices. Fix this by accessing the pointer after HE
-capabilities condition check.
+A request could end up on the fpq->io list after fuse_abort_conn() has
+reset fpq->connected and aborted requests on that list:
 
-Cc: stable@vger.kernel.org
-Fixes: 7f7aa94bcaf0 (mac80211: reduce peer HE MCS/NSS to own capabilities)
-Signed-off-by: Abinaya Kalaiselvan <akalaise@codeaurora.org>
-Link: https://lore.kernel.org/r/1624459244-4497-1-git-send-email-akalaise@codeaurora.org
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Thread-1			  Thread-2
+========			  ========
+->fuse_simple_request()           ->shutdown
+  ->__fuse_request_send()
+    ->queue_request()		->fuse_abort_conn()
+->fuse_dev_do_read()                ->acquire(fpq->lock)
+  ->wait_for(fpq->lock) 	  ->set err to all req's in fpq->io
+				  ->release(fpq->lock)
+  ->acquire(fpq->lock)
+  ->add req to fpq->io
+
+After the userspace copy is done the request will be ended, but
+req->out.h.error will remain uninitialized.  Also the copy might block
+despite being already aborted.
+
+Fix both issues by not allowing the request to be queued on the fpq->io
+list after fuse_abort_conn() has processed this list.
+
+Reported-by: Pradeep P V K <pragalla@codeaurora.org>
+Fixes: fd22d62ed0c3 ("fuse: no fc->lock for iqueue parts")
+Cc: <stable@vger.kernel.org> # v4.2
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/mac80211/he.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/fuse/dev.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---- a/net/mac80211/he.c
-+++ b/net/mac80211/he.c
-@@ -111,7 +111,7 @@ ieee80211_he_cap_ie_to_sta_he_cap(struct
- 				  struct sta_info *sta)
- {
- 	struct ieee80211_sta_he_cap *he_cap = &sta->sta.he_cap;
--	struct ieee80211_sta_he_cap own_he_cap = sband->iftype_data->he_cap;
-+	struct ieee80211_sta_he_cap own_he_cap;
- 	struct ieee80211_he_cap_elem *he_cap_ie_elem = (void *)he_cap_ie;
- 	u8 he_ppe_size;
- 	u8 mcs_nss_size;
-@@ -123,6 +123,8 @@ ieee80211_he_cap_ie_to_sta_he_cap(struct
- 	if (!he_cap_ie || !ieee80211_get_he_sta_cap(sband))
- 		return;
- 
-+	own_he_cap = sband->iftype_data->he_cap;
+--- a/fs/fuse/dev.c
++++ b/fs/fuse/dev.c
+@@ -1272,6 +1272,15 @@ static ssize_t fuse_dev_do_read(struct f
+ 		goto restart;
+ 	}
+ 	spin_lock(&fpq->lock);
++	/*
++	 *  Must not put request on fpq->io queue after having been shut down by
++	 *  fuse_abort_conn()
++	 */
++	if (!fpq->connected) {
++		req->out.h.error = err = -ECONNABORTED;
++		goto out_end;
 +
- 	/* Make sure size is OK */
- 	mcs_nss_size = ieee80211_he_mcs_nss_size(he_cap_ie_elem);
- 	he_ppe_size =
++	}
+ 	list_add(&req->list, &fpq->io);
+ 	spin_unlock(&fpq->lock);
+ 	cs->req = req;
 
 
