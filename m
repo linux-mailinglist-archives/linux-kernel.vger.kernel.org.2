@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 349753C5925
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCEDD3C5942
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357501AbhGLI7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:59:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55048 "EHLO mail.kernel.org"
+        id S1382462AbhGLJB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:01:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353845AbhGLIDC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:03:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 845D96197B;
-        Mon, 12 Jul 2021 07:57:59 +0000 (UTC)
+        id S1354106AbhGLID3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:03:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9640361221;
+        Mon, 12 Jul 2021 07:59:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076680;
-        bh=9HLm1UMd4ET5mv916NAy10z2QUCLqQIwFit+BsH9Jyg=;
+        s=korg; t=1626076799;
+        bh=wpxCS1/3GvN2YASU2eStpfTsM2QfVP03V9ChL91BU10=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Th31q7oX+jpL4Z/RIKf5CcelKv2v/P0GPjbXCVdeTRSRJ9OdHRE0GSKZ6NCNtOlV9
-         TYjKtgs/Np+Y2/Usgld45g51Rdbl4VS/UzsqY30yFY1F46jqFyhfxNWrr935GHovBq
-         oZlERRrtJpD0hLaINPZaus7bnYUL/uPplvOJOavQ=
+        b=kYhXLx4Qi1U9ZCgKZt+qHn9xzltNVLaCIBopjfvydq6wKAs92xRhFilk/YMncuSad
+         kDN1zHr8gXrng/W9IdO35m1TmkN4vYeDbi0mHcD87LVJalKqfU1/h0xZA9lXIsebXv
+         FiOigf4Vg1hZ9rzhLxchA5FbpaN4Esuph6wbnHCc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 745/800] ASoC: fsl_spdif: Fix unexpected interrupt after suspend
-Date:   Mon, 12 Jul 2021 08:12:48 +0200
-Message-Id: <20210712061046.052141841@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Pavel Machek <pavel@ucw.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 746/800] leds: as3645a: Fix error return code in as3645a_parse_node()
+Date:   Mon, 12 Jul 2021 08:12:49 +0200
+Message-Id: <20210712061046.164628408@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -41,47 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit a7a0a2feb957e446b2bcf732f245ba04fc8b6314 ]
+[ Upstream commit 96a30960a2c5246c8ffebe8a3c9031f9df094d97 ]
 
-When system enter suspend, the machine driver suspend callback
-function will be called, then the cpu driver trigger callback
-(SNDRV_PCM_TRIGGER_SUSPEND) be called, it would disable the
-interrupt.
+Return error code -ENODEV rather than '0' when the indicator node can not
+be found.
 
-But the machine driver suspend and cpu dai driver suspend order
-maybe changed, the cpu dai driver's suspend callback is called before
-machine driver's suppend callback, then the interrupt is not cleared
-successfully in trigger callback.
-
-So need to clear interrupts in cpu dai driver's suspend callback
-to avoid such issue.
-
-Fixes: 9cb2b3796e08 ("ASoC: fsl_spdif: Add pm runtime function")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
-Link: https://lore.kernel.org/r/1624365084-7934-1-git-send-email-shengjiu.wang@nxp.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: a56ba8fbcb55 ("media: leds: as3645a: Add LED flash class driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Pavel Machek <pavel@ucw.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/fsl/fsl_spdif.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/leds/leds-as3645a.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 5636837eb511..53499bc71fa9 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -1404,6 +1404,9 @@ static int fsl_spdif_runtime_suspend(struct device *dev)
- 	struct fsl_spdif_priv *spdif_priv = dev_get_drvdata(dev);
- 	int i;
+diff --git a/drivers/leds/leds-as3645a.c b/drivers/leds/leds-as3645a.c
+index e8922fa03379..80411d41e802 100644
+--- a/drivers/leds/leds-as3645a.c
++++ b/drivers/leds/leds-as3645a.c
+@@ -545,6 +545,7 @@ static int as3645a_parse_node(struct as3645a *flash,
+ 	if (!flash->indicator_node) {
+ 		dev_warn(&flash->client->dev,
+ 			 "can't find indicator node\n");
++		rval = -ENODEV;
+ 		goto out_err;
+ 	}
  
-+	/* Disable all the interrupts */
-+	regmap_update_bits(spdif_priv->regmap, REG_SPDIF_SIE, 0xffffff, 0);
-+
- 	regmap_read(spdif_priv->regmap, REG_SPDIF_SRPC,
- 			&spdif_priv->regcache_srpc);
- 	regcache_cache_only(spdif_priv->regmap, true);
 -- 
 2.30.2
 
