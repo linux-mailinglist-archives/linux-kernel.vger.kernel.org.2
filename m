@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C5B73C54DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28F0F3C58F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355071AbhGLIFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:05:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32988 "EHLO mail.kernel.org"
+        id S1355858AbhGLIyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:54:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245498AbhGLH1J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:27:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B514061221;
-        Mon, 12 Jul 2021 07:23:19 +0000 (UTC)
+        id S1353627AbhGLICi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:02:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 87E8F61CEF;
+        Mon, 12 Jul 2021 07:56:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074600;
-        bh=tqny+4dDP+UDnNDW3XHLKCXwa3ZCi57AIDTxHNSfd0c=;
+        s=korg; t=1626076564;
+        bh=dFYZ40fLAP93EqZ/Dx4nY9108HnGjYbbeC1MUrT/pYw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=quP1xfwoXuAuAbZrGr/EHMfTWXKf1hFXHLDylB8PgKpZOio7P0Owr7ysQzx/fZwEk
-         CWWYWi7KA7m6TiVZk6eSpKPLHFUMV9tCxpnexFhPs8zHAeH8amviSZFz6VZrGy3xgW
-         6wMW1dgZlXdeSB7bc6o4bRzXDcl7RvhRLOubK7Zg=
+        b=vVXB04OJLLovd2Ypsf2LvQzC5nZvWkWqCVI9aOd3bIkFpmeEIm4Bb3VwA/UNrAR1f
+         xgCAEFCK7kJ/FlnMgS2Q5pR/C2Qs3UECVxDeWtogBNCTGpMlElD+JbqEFPmlZm/Ixp
+         3eWYi8I6KsRwLMwqvHgsLHFN6QqZscUTYUS79Zz8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 635/700] scsi: mpt3sas: Fix error return value in _scsih_expander_add()
+Subject: [PATCH 5.13 695/800] ASoC: rt5682-sdw: set regcache_cache_only false before reading RT5682_DEVICE_ID
 Date:   Mon, 12 Jul 2021 08:11:58 +0200
-Message-Id: <20210712061043.398508643@linuxfoundation.org>
+Message-Id: <20210712061040.797755370@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,41 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-[ Upstream commit d6c2ce435ffe23ef7f395ae76ec747414589db46 ]
+[ Upstream commit c0372bc873dd29f325ee908351e0bd5b08d4d608 ]
 
-When an expander does not contain any 'phys', an appropriate error code -1
-should be returned, as done elsewhere in this function. However, we
-currently do not explicitly assign this error code to 'rc'. As a result, 0
-was incorrectly returned.
+RT5682_DEVICE_ID is a volatile register, we can not read it in cache
+only mode.
 
-Link: https://lore.kernel.org/r/20210514081300.6650-1-thunder.leizhen@huawei.com
-Fixes: f92363d12359 ("[SCSI] mpt3sas: add new driver supporting 12GB SAS")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 03f6fc6de919 ("ASoC: rt5682: Add the soundwire support")
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20210607222239.582139-14-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/mpt3sas/mpt3sas_scsih.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt5682-sdw.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_scsih.c b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
-index ae1973878cc7..7824e77bc6e2 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_scsih.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
-@@ -6883,8 +6883,10 @@ _scsih_expander_add(struct MPT3SAS_ADAPTER *ioc, u16 handle)
- 		 handle, parent_handle,
- 		 (u64)sas_expander->sas_address, sas_expander->num_phys);
+diff --git a/sound/soc/codecs/rt5682-sdw.c b/sound/soc/codecs/rt5682-sdw.c
+index 529a85fd0a00..54873730bec5 100644
+--- a/sound/soc/codecs/rt5682-sdw.c
++++ b/sound/soc/codecs/rt5682-sdw.c
+@@ -400,6 +400,11 @@ static int rt5682_io_init(struct device *dev, struct sdw_slave *slave)
  
--	if (!sas_expander->num_phys)
-+	if (!sas_expander->num_phys) {
-+		rc = -1;
- 		goto out_fail;
+ 	pm_runtime_get_noresume(&slave->dev);
+ 
++	if (rt5682->first_hw_init) {
++		regcache_cache_only(rt5682->regmap, false);
++		regcache_cache_bypass(rt5682->regmap, true);
 +	}
- 	sas_expander->phy = kcalloc(sas_expander->num_phys,
- 	    sizeof(struct _sas_phy), GFP_KERNEL);
- 	if (!sas_expander->phy) {
++
+ 	while (loop > 0) {
+ 		regmap_read(rt5682->regmap, RT5682_DEVICE_ID, &val);
+ 		if (val == DEVICE_ID)
+@@ -415,11 +420,6 @@ static int rt5682_io_init(struct device *dev, struct sdw_slave *slave)
+ 		goto err_nodev;
+ 	}
+ 
+-	if (rt5682->first_hw_init) {
+-		regcache_cache_only(rt5682->regmap, false);
+-		regcache_cache_bypass(rt5682->regmap, true);
+-	}
+-
+ 	rt5682_calibrate(rt5682);
+ 
+ 	if (rt5682->first_hw_init) {
 -- 
 2.30.2
 
