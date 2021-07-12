@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF5B83C57AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 201953C4B84
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377746AbhGLIgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:36:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35410 "EHLO mail.kernel.org"
+        id S239448AbhGLG5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:57:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34399 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350414AbhGLHvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:51:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE48661927;
-        Mon, 12 Jul 2021 07:44:58 +0000 (UTC)
+        id S238646AbhGLGlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:41:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E8ED61222;
+        Mon, 12 Jul 2021 06:38:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075899;
-        bh=K4ou+PM/SCBQL9R1mcuAm8Z40Qri2W2yPvNi/GyPaOo=;
+        s=korg; t=1626071916;
+        bh=en3uzinHV0P8ELRKNb6rjvhp/kN19UWM9oVHuyPwvBE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D4o03ggIIQ+6KPs4mcEHg4U1t10Gexm/kAfLmhLenmS81t6mAfMtPlzlZO81bilPb
-         F8LG76DCs/0+4l4qorG8pMFWIZDGzVsICEFk9JcXn1/+Iw2G3rB3njYF+h9kjOaVDz
-         IVB5vi32dCAwAji1bKZ9AnyRUY2SykNYQxJvIbck=
+        b=bj6+WdMV2VQ9pf5f+0PFUd3fhiz8rTi+6rfpmA7Chkfki33qLUiYR38rdJgjN4c6N
+         QI8OYJOAeingANvixTOYpOz8e/YuzkUwvPg6satOQkv6A8OGsqlZeNgHC7jhMoFES8
+         lPnCL6F7XO1R1BO+ZyOcLScDhRvcpWjvHnPC+kU0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhan Liu <zhan.liu@amd.com>,
-        Nikola Cornij <nikola.cornij@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 411/800] drm/amd/display: Avoid HPD IRQ in GPU reset state
+Subject: [PATCH 5.10 274/593] PM / devfreq: Add missing error code in devfreq_add_device()
 Date:   Mon, 12 Jul 2021 08:07:14 +0200
-Message-Id: <20210712061010.887315997@linuxfoundation.org>
+Message-Id: <20210712060913.970370095@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +40,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhan Liu <zhan.liu@amd.com>
+From: YueHaibing <yuehaibing@huawei.com>
 
-[ Upstream commit 509b9a5b4865dee723296f143695a7774fc96c4a ]
+[ Upstream commit 18b380ed61f892ed06838d1f1a5124d966292ed3 ]
 
-[Why]
-If GPU is in reset state, force enabling link will cause
-unexpected behaviour.
+Set err code in the error path before jumping to the end of the function.
 
-[How]
-Avoid handling HPD IRQ when GPU is in reset state.
-
-Signed-off-by: Zhan Liu <zhan.liu@amd.com>
-Reviewed-by: Nikola Cornij <nikola.cornij@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Fixes: 4dc3bab8687f ("PM / devfreq: Add support delayed timer for polling mode")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/devfreq/devfreq.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index 875fd187463e..dcb4e585c270 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -2726,15 +2726,15 @@ static void handle_hpd_rx_irq(void *param)
- 		}
+diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+index 98f03a02d112..829128c0cc68 100644
+--- a/drivers/devfreq/devfreq.c
++++ b/drivers/devfreq/devfreq.c
+@@ -789,6 +789,7 @@ struct devfreq *devfreq_add_device(struct device *dev,
+ 	if (devfreq->profile->timer < 0
+ 		|| devfreq->profile->timer >= DEVFREQ_TIMER_NUM) {
+ 		mutex_unlock(&devfreq->lock);
++		err = -EINVAL;
+ 		goto err_dev;
  	}
  
--	if (!amdgpu_in_reset(adev))
-+	if (!amdgpu_in_reset(adev)) {
- 		mutex_lock(&adev->dm.dc_lock);
- #ifdef CONFIG_DRM_AMD_DC_HDCP
- 	result = dc_link_handle_hpd_rx_irq(dc_link, &hpd_irq_data, NULL);
- #else
- 	result = dc_link_handle_hpd_rx_irq(dc_link, NULL, NULL);
- #endif
--	if (!amdgpu_in_reset(adev))
- 		mutex_unlock(&adev->dm.dc_lock);
-+	}
- 
- out:
- 	if (result && !is_mst_root_connector) {
 -- 
 2.30.2
 
