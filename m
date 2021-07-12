@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D7F3C4682
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86E523C468C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:25:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235343AbhGLG0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:26:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41280 "EHLO mail.kernel.org"
+        id S234608AbhGLG0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:26:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234995AbhGLGY0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:24:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6633061167;
-        Mon, 12 Jul 2021 06:21:01 +0000 (UTC)
+        id S235027AbhGLGY1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:24:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F104611C2;
+        Mon, 12 Jul 2021 06:21:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626070861;
-        bh=LjeavIVDuUT8GZy4PXD7XhVGklbogZs1tTHwV88Muc0=;
+        s=korg; t=1626070866;
+        bh=qu/ppItBccLaob3ba9bYAsnux2IVsD9fzTfShQCVPB8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N6tIhb6MJR+xMt8frSVk9DPe4nYatpgkQdscWNdEu7N7g7qj4f3g910cKbZKJ4Vz0
-         9ztT2CsO2PpSXd/RLRjdqrYJBoR/OPOCiH0hopugLTiSSpu/pPW5CK38SpzVcXLwRB
-         FyKn1LT4pA6Ro1/Mrb9OQqCkiGov8G5MI70wdDKc=
+        b=aWMWlWghDeQ76H4n9NanrnBORGMpofi8od2VmZeog89wSo9RJJEGDABLgy9meTuSZ
+         zK2K7mKVtkGdZQGwwXQu7i/Srci0JAV+9vIepjUUqkdzcyLSjqgjjQg09x8sPtrwoD
+         qH0mx95IsKqxWCXVVrPHbx11weRhXCIY0Zh+Ifd4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mirko Vogt <mirko-dev|linux@nanl.de>,
-        Ralf Schlatterbeck <rsc@runtux.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 173/348] spi: spi-sun6i: Fix chipselect/clock bug
-Date:   Mon, 12 Jul 2021 08:09:17 +0200
-Message-Id: <20210712060723.846339293@linuxfoundation.org>
+Subject: [PATCH 5.4 175/348] ACPI: sysfs: Fix a buffer overrun problem with description_show()
+Date:   Mon, 12 Jul 2021 08:09:19 +0200
+Message-Id: <20210712060724.127031157@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060659.886176320@linuxfoundation.org>
 References: <20210712060659.886176320@linuxfoundation.org>
@@ -41,53 +42,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mirko Vogt <mirko-dev|linux@nanl.de>
+From: Krzysztof Wilczyński <kw@linux.com>
 
-[ Upstream commit 0d7993b234c9fad8cb6bec6adfaa74694ba85ecb ]
+[ Upstream commit 888be6067b97132c3992866bbcf647572253ab3f ]
 
-The current sun6i SPI implementation initializes the transfer too early,
-resulting in SCK going high before the transfer. When using an additional
-(gpio) chipselect with sun6i, the chipselect is asserted at a time when
-clock is high, making the SPI transfer fail.
+Currently, a device description can be obtained using ACPI, if the _STR
+method exists for a particular device, and then exposed to the userspace
+via a sysfs object as a string value.
 
-This is due to SUN6I_GBL_CTL_BUS_ENABLE being written into
-SUN6I_GBL_CTL_REG at an early stage. Moving that to the transfer
-function, hence, right before the transfer starts, mitigates that
-problem.
+If the _STR method is available for a given device then the data
+(usually a Unicode string) is read and stored in a buffer (of the
+ACPI_TYPE_BUFFER type) with a pointer to said buffer cached in the
+struct acpi_device_pnp for later access.
 
-Fixes: 3558fe900e8af (spi: sunxi: Add Allwinner A31 SPI controller driver)
-Signed-off-by: Mirko Vogt <mirko-dev|linux@nanl.de>
-Signed-off-by: Ralf Schlatterbeck <rsc@runtux.com>
-Link: https://lore.kernel.org/r/20210614144507.y3udezjfbko7eavv@runtux.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+The description_show() function is responsible for exposing the device
+description to the userspace via a corresponding sysfs object and
+internally calls the utf16s_to_utf8s() function with a pointer to the
+buffer that contains the Unicode string so that it can be converted from
+UTF16 encoding to UTF8 and thus allowing for the value to be safely
+stored and later displayed.
+
+When invoking the utf16s_to_utf8s() function, the description_show()
+function also sets a limit of the data that can be saved into a provided
+buffer as a result of the character conversion to be a total of
+PAGE_SIZE, and upon completion, the utf16s_to_utf8s() function returns
+an integer value denoting the number of bytes that have been written
+into the provided buffer.
+
+Following the execution of the utf16s_to_utf8s() a newline character
+will be added at the end of the resulting buffer so that when the value
+is read in the userspace through the sysfs object then it would include
+newline making it more accessible when working with the sysfs file
+system in the shell, etc.  Normally, this wouldn't be a problem, but if
+the function utf16s_to_utf8s() happens to return the number of bytes
+written to be precisely PAGE_SIZE, then we would overrun the buffer and
+write the newline character outside the allotted space which can have
+undefined consequences or result in a failure.
+
+To fix this buffer overrun, ensure that there always is enough space
+left for the newline character to be safely appended.
+
+Fixes: d1efe3c324ea ("ACPI: Add new sysfs interface to export device description")
+Signed-off-by: Krzysztof Wilczyński <kw@linux.com>
+Reviewed-by: Bjorn Helgaas <bhelgaas@google.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-sun6i.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/acpi/device_sysfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-sun6i.c b/drivers/spi/spi-sun6i.c
-index 956df79035d5..3a8acd78308f 100644
---- a/drivers/spi/spi-sun6i.c
-+++ b/drivers/spi/spi-sun6i.c
-@@ -297,6 +297,10 @@ static int sun6i_spi_transfer_one(struct spi_master *master,
- 	}
+diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
+index bfca116482b8..75e412b2b660 100644
+--- a/drivers/acpi/device_sysfs.c
++++ b/drivers/acpi/device_sysfs.c
+@@ -446,7 +446,7 @@ static ssize_t description_show(struct device *dev,
+ 		(wchar_t *)acpi_dev->pnp.str_obj->buffer.pointer,
+ 		acpi_dev->pnp.str_obj->buffer.length,
+ 		UTF16_LITTLE_ENDIAN, buf,
+-		PAGE_SIZE);
++		PAGE_SIZE - 1);
  
- 	sun6i_spi_write(sspi, SUN6I_CLK_CTL_REG, reg);
-+	/* Finally enable the bus - doing so before might raise SCK to HIGH */
-+	reg = sun6i_spi_read(sspi, SUN6I_GBL_CTL_REG);
-+	reg |= SUN6I_GBL_CTL_BUS_ENABLE;
-+	sun6i_spi_write(sspi, SUN6I_GBL_CTL_REG, reg);
- 
- 	/* Setup the transfer now... */
- 	if (sspi->tx_buf)
-@@ -405,7 +409,7 @@ static int sun6i_spi_runtime_resume(struct device *dev)
- 	}
- 
- 	sun6i_spi_write(sspi, SUN6I_GBL_CTL_REG,
--			SUN6I_GBL_CTL_BUS_ENABLE | SUN6I_GBL_CTL_MASTER | SUN6I_GBL_CTL_TP);
-+			SUN6I_GBL_CTL_MASTER | SUN6I_GBL_CTL_TP);
- 
- 	return 0;
+ 	buf[result++] = '\n';
  
 -- 
 2.30.2
