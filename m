@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E91DC3C4FC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5B53C492D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242246AbhGLH14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:27:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35486 "EHLO mail.kernel.org"
+        id S235940AbhGLGmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:42:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241958AbhGLHAs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:00:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD1D5611C2;
-        Mon, 12 Jul 2021 06:57:59 +0000 (UTC)
+        id S233564AbhGLGcT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:32:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CB41610CC;
+        Mon, 12 Jul 2021 06:29:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073080;
-        bh=G3HkHgxYvSNq/jgCvcqsDicGxcTj7bqjdex/ftaUcKk=;
+        s=korg; t=1626071371;
+        bh=Uafy6yI/KrnOmUrVF3V+DbgcJ8VbSGLH4NJww2oNCQs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VuLEvR2q/WVm8ntIH3jST4ONcIyEKrSDIqX+41PRa6e8J285u399dlv5nRj12YZZx
-         +4pb2OOtE7lGw2wJfEqkYYZefbIetk96AtwyJtN2cljT48tMm9BcQWxIpIl0h+s8Wc
-         /3FVCQxnMvYMFQ51Cle/djy2JUZcxExsRekbVOAQ=
+        b=fDcf2kihFPhkvbHg4s9sRqipsiaaxZdnLdNrqL4TIyL1VARA31YxOAPMCsZ+xmEHf
+         jRMuH2e+fWEwHTjCKtXYb2E1wtoGKRQI/S1whOOe9VMkSnTWFvnmSzJFMoqgPwlum0
+         RaaWh67qZy2g0Ie22SPZ86rfz1FNB0fJHqXqDn14=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukasz Luba <lukasz.luba@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 118/700] thermal/cpufreq_cooling: Update offline CPUs per-cpu thermal_pressure
+        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.10 041/593] btrfs: clear defrag status of a root if starting transaction fails
 Date:   Mon, 12 Jul 2021 08:03:21 +0200
-Message-Id: <20210712060941.622648144@linuxfoundation.org>
+Message-Id: <20210712060847.700601407@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukasz Luba <lukasz.luba@arm.com>
+From: David Sterba <dsterba@suse.com>
 
-[ Upstream commit 2ad8ccc17d1e4270cf65a3f2a07a7534aa23e3fb ]
+commit 6819703f5a365c95488b07066a8744841bf14231 upstream.
 
-The thermal pressure signal gives information to the scheduler about
-reduced CPU capacity due to thermal. It is based on a value stored in
-a per-cpu 'thermal_pressure' variable. The online CPUs will get the
-new value there, while the offline won't. Unfortunately, when the CPU
-is back online, the value read from per-cpu variable might be wrong
-(stale data).  This might affect the scheduler decisions, since it
-sees the CPU capacity differently than what is actually available.
+The defrag loop processes leaves in batches and starting transaction for
+each. The whole defragmentation on a given root is protected by a bit
+but in case the transaction fails, the bit is not cleared
 
-Fix it by making sure that all online+offline CPUs would get the
-proper value in their per-cpu variable when thermal framework sets
-capping.
+In case the transaction fails the bit would prevent starting
+defragmentation again, so make sure it's cleared.
 
-Fixes: f12e4f66ab6a3 ("thermal/cpu-cooling: Update thermal pressure in case of a maximum frequency capping")
-Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-Link: https://lore.kernel.org/r/20210614191030.22241-1-lukasz.luba@arm.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+CC: stable@vger.kernel.org # 4.4+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/thermal/cpufreq_cooling.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/transaction.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/thermal/cpufreq_cooling.c b/drivers/thermal/cpufreq_cooling.c
-index 6956581ed7a4..b8ded3aef371 100644
---- a/drivers/thermal/cpufreq_cooling.c
-+++ b/drivers/thermal/cpufreq_cooling.c
-@@ -487,7 +487,7 @@ static int cpufreq_set_cur_state(struct thermal_cooling_device *cdev,
- 	ret = freq_qos_update_request(&cpufreq_cdev->qos_req, frequency);
- 	if (ret >= 0) {
- 		cpufreq_cdev->cpufreq_state = state;
--		cpus = cpufreq_cdev->policy->cpus;
-+		cpus = cpufreq_cdev->policy->related_cpus;
- 		max_capacity = arch_scale_cpu_capacity(cpumask_first(cpus));
- 		capacity = frequency * max_capacity;
- 		capacity /= cpufreq_cdev->policy->cpuinfo.max_freq;
--- 
-2.30.2
-
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -1382,8 +1382,10 @@ int btrfs_defrag_root(struct btrfs_root
+ 
+ 	while (1) {
+ 		trans = btrfs_start_transaction(root, 0);
+-		if (IS_ERR(trans))
+-			return PTR_ERR(trans);
++		if (IS_ERR(trans)) {
++			ret = PTR_ERR(trans);
++			break;
++		}
+ 
+ 		ret = btrfs_defrag_leaves(trans, root);
+ 
 
 
