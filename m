@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B4E3C5173
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA9A73C57A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348612AbhGLHlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:41:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42596 "EHLO mail.kernel.org"
+        id S1377576AbhGLIgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:36:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244239AbhGLHKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:10:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 098BC610D1;
-        Mon, 12 Jul 2021 07:07:32 +0000 (UTC)
+        id S1349986AbhGLHuT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:50:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7387C61629;
+        Mon, 12 Jul 2021 07:43:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073653;
-        bh=8Yp9lNsy+iOakIq3cbwUDGisQWV9MqX/9kzDmE0CePE=;
+        s=korg; t=1626075819;
+        bh=rJpacrTHF9rbvkfmzJB52Ucw/1YvzpEHCxOE11g1EBU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i4X7e7Nah8tnrslFDTvOrVZWL0lRIZV8UOIzHL6tcS+DPPu4bAhwRtFB2bemwA33e
-         F2svJXeJfC6swAktlEoHAUpxPxw+QXkzqrxlyT8FtImVHnA9iY3TtsgZj3xLLCzx+7
-         CRCS10/WoFf3/qmFJZJ/sLOXt+QSSedjq22FpkbA=
+        b=o2qz83HXQedSbDkQPGz/P4Ah1lS9uFtvIomufvAq3soFAWRFjnOjcf5ch5zewhlIr
+         CnDhmHOI77umcszF53kz+pRk2WwrxMYwHHl9iGl0zPGSuQ9uqId5spG6fZLhUPuRGS
+         I0lEe/+pLCdeezA8zQ6OWAIFsybFry5Y1nIVdVmA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mirko Vogt <mirko-dev|linux@nanl.de>,
-        Ralf Schlatterbeck <rsc@runtux.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 315/700] spi: spi-sun6i: Fix chipselect/clock bug
-Date:   Mon, 12 Jul 2021 08:06:38 +0200
-Message-Id: <20210712061009.864386497@linuxfoundation.org>
+Subject: [PATCH 5.13 376/800] cpufreq: Make cpufreq_online() call driver->offline() on errors
+Date:   Mon, 12 Jul 2021 08:06:39 +0200
+Message-Id: <20210712061007.089131798@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,54 +41,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mirko Vogt <mirko-dev|linux@nanl.de>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-[ Upstream commit 0d7993b234c9fad8cb6bec6adfaa74694ba85ecb ]
+[ Upstream commit 3b7180573c250eb6e2a7eec54ae91f27472332ea ]
 
-The current sun6i SPI implementation initializes the transfer too early,
-resulting in SCK going high before the transfer. When using an additional
-(gpio) chipselect with sun6i, the chipselect is asserted at a time when
-clock is high, making the SPI transfer fail.
+In the CPU removal path the ->offline() callback provided by the
+driver is always invoked before ->exit(), but in the cpufreq_online()
+error path it is not, so ->exit() is expected to somehow know the
+context in which it has been called and act accordingly.
 
-This is due to SUN6I_GBL_CTL_BUS_ENABLE being written into
-SUN6I_GBL_CTL_REG at an early stage. Moving that to the transfer
-function, hence, right before the transfer starts, mitigates that
-problem.
+That is less than straightforward, so make cpufreq_online() invoke
+the driver's ->offline() callback, if present, on errors before
+->exit() too.
 
-Fixes: 3558fe900e8af (spi: sunxi: Add Allwinner A31 SPI controller driver)
-Signed-off-by: Mirko Vogt <mirko-dev|linux@nanl.de>
-Signed-off-by: Ralf Schlatterbeck <rsc@runtux.com>
-Link: https://lore.kernel.org/r/20210614144507.y3udezjfbko7eavv@runtux.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+This only potentially affects intel_pstate.
+
+Fixes: 91a12e91dc39 ("cpufreq: Allow light-weight tear down and bring up of CPUs")
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-sun6i.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/cpufreq/cpufreq.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-sun6i.c b/drivers/spi/spi-sun6i.c
-index cc8401980125..23ad052528db 100644
---- a/drivers/spi/spi-sun6i.c
-+++ b/drivers/spi/spi-sun6i.c
-@@ -379,6 +379,10 @@ static int sun6i_spi_transfer_one(struct spi_master *master,
- 	}
+diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+index 802abc925b2a..cbab834c37a0 100644
+--- a/drivers/cpufreq/cpufreq.c
++++ b/drivers/cpufreq/cpufreq.c
+@@ -1367,9 +1367,14 @@ static int cpufreq_online(unsigned int cpu)
+ 			goto out_free_policy;
+ 		}
  
- 	sun6i_spi_write(sspi, SUN6I_CLK_CTL_REG, reg);
-+	/* Finally enable the bus - doing so before might raise SCK to HIGH */
-+	reg = sun6i_spi_read(sspi, SUN6I_GBL_CTL_REG);
-+	reg |= SUN6I_GBL_CTL_BUS_ENABLE;
-+	sun6i_spi_write(sspi, SUN6I_GBL_CTL_REG, reg);
++		/*
++		 * The initialization has succeeded and the policy is online.
++		 * If there is a problem with its frequency table, take it
++		 * offline and drop it.
++		 */
+ 		ret = cpufreq_table_validate_and_sort(policy);
+ 		if (ret)
+-			goto out_exit_policy;
++			goto out_offline_policy;
  
- 	/* Setup the transfer now... */
- 	if (sspi->tx_buf)
-@@ -504,7 +508,7 @@ static int sun6i_spi_runtime_resume(struct device *dev)
- 	}
+ 		/* related_cpus should at least include policy->cpus. */
+ 		cpumask_copy(policy->related_cpus, policy->cpus);
+@@ -1515,6 +1520,10 @@ out_destroy_policy:
  
- 	sun6i_spi_write(sspi, SUN6I_GBL_CTL_REG,
--			SUN6I_GBL_CTL_BUS_ENABLE | SUN6I_GBL_CTL_MASTER | SUN6I_GBL_CTL_TP);
-+			SUN6I_GBL_CTL_MASTER | SUN6I_GBL_CTL_TP);
+ 	up_write(&policy->rwsem);
  
- 	return 0;
- 
++out_offline_policy:
++	if (cpufreq_driver->offline)
++		cpufreq_driver->offline(policy);
++
+ out_exit_policy:
+ 	if (cpufreq_driver->exit)
+ 		cpufreq_driver->exit(policy);
 -- 
 2.30.2
 
