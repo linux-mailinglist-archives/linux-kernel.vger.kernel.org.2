@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85F253C4B00
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F15993C4B09
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:36:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238645AbhGLGzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:55:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36654 "EHLO mail.kernel.org"
+        id S239502AbhGLGz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:55:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36538 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238504AbhGLGkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:40:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A6F86052B;
-        Mon, 12 Jul 2021 06:37:28 +0000 (UTC)
+        id S238545AbhGLGkU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:40:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8FA761004;
+        Mon, 12 Jul 2021 06:37:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071849;
-        bh=8sHLODwNgxAOO6mCyft9rWozkeNFZT2RKo4VMIWnhQM=;
+        s=korg; t=1626071851;
+        bh=c3SFVdmEk6tJ/l3rcpQazKWLZA/z4lJGSSec1g2FU14=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2m6Lnxv3EL0FWLu9sfPjMQ6ohW70oppqcJjTbr4K+4ckp5TNM9GKtvn/3bUqfSbEl
-         J6hoxBI1huQfCFe5CJH/T/otBvtpdcODGgHY3xiKzdMpbTOfMklpfOYJCx4D4F70pU
-         2OZlqY5wFaPyLcizPgPiMZHgac9dyq3dBd/5j4Es=
+        b=MnLjxzreh0H5tCbak4f6nIqRRqIY9IOqV6wo98ywlJgYa6Fphze1KOVUgaDzxUpZ6
+         pDXejsd6UC1afxcnchRj05gvqYeFkP+nRdKgAdsLdHDSssSvKezQf859r1GIu75HvF
+         Z75maaTaUMb3IdPTMsoFdUeO3r+CsOUCUqV/0wzg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Wang Shanker <shankerwangmiao@gmail.com>,
+        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 204/593] mailbox: qcom: Use PLATFORM_DEVID_AUTO to register platform device
-Date:   Mon, 12 Jul 2021 08:06:04 +0200
-Message-Id: <20210712060905.449972659@linuxfoundation.org>
+Subject: [PATCH 5.10 205/593] block: fix discard request merge
+Date:   Mon, 12 Jul 2021 08:06:05 +0200
+Message-Id: <20210712060905.546106797@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
 References: <20210712060843.180606720@linuxfoundation.org>
@@ -41,46 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shawn Guo <shawn.guo@linaro.org>
+From: Ming Lei <ming.lei@redhat.com>
 
-[ Upstream commit 96e39e95c01283ff5695dafe659df88ada802159 ]
+[ Upstream commit 2705dfb2094777e405e065105e307074af8965c1 ]
 
-In adding APCS clock support for MSM8939, the second clock registration
-fails due to duplicate device name like below.
+ll_new_hw_segment() is reached only in case of single range discard
+merge, and we don't have max discard segment size limit actually, so
+it is wrong to run the following check:
 
-[    0.519657] sysfs: cannot create duplicate filename '/bus/platform/devices/qcom-apcs-msm8916-clk'
-...
-[    0.661158] qcom_apcs_ipc b111000.mailbox: failed to register APCS clk
+if (req->nr_phys_segments + nr_phys_segs > blk_rq_get_max_segments(req))
 
-This is because MSM8939 has 3 APCS instances for Cluster0 (little cores),
-Cluster1 (big cores) and CCI (Cache Coherent Interconnect).  Although
-only APCS of Cluster0 and Cluster1 have IPC bits, each of 3 APCS has
-A53PLL clock control bits.  That said, 3 'qcom-apcs-msm8916-clk' devices
-need to be registered to instantiate all 3 clocks.  Use PLATFORM_DEVID_AUTO
-rather than PLATFORM_DEVID_NONE for platform_device_register_data() call
-to fix the issue above.
+it may be always false since req->nr_phys_segments is initialized as
+one, and bio's segment count is still 1, blk_rq_get_max_segments(reg)
+is 1 too.
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Jassi Brar <jaswinder.singh@linaro.org>
+Fix the issue by not doing the check and bypassing the calculation of
+discard request's nr_phys_segments.
+
+Based on analysis from Wang Shanker.
+
+Cc: Christoph Hellwig <hch@lst.de>
+Reported-by: Wang Shanker <shankerwangmiao@gmail.com>
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Link: https://lore.kernel.org/r/20210628023312.1903255-1-ming.lei@redhat.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mailbox/qcom-apcs-ipc-mailbox.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ block/blk-merge.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mailbox/qcom-apcs-ipc-mailbox.c b/drivers/mailbox/qcom-apcs-ipc-mailbox.c
-index 077e5c6a9ef7..3d100a004760 100644
---- a/drivers/mailbox/qcom-apcs-ipc-mailbox.c
-+++ b/drivers/mailbox/qcom-apcs-ipc-mailbox.c
-@@ -128,7 +128,7 @@ static int qcom_apcs_ipc_probe(struct platform_device *pdev)
- 	if (apcs_data->clk_name) {
- 		apcs->clk = platform_device_register_data(&pdev->dev,
- 							  apcs_data->clk_name,
--							  PLATFORM_DEVID_NONE,
-+							  PLATFORM_DEVID_AUTO,
- 							  NULL, 0);
- 		if (IS_ERR(apcs->clk))
- 			dev_err(&pdev->dev, "failed to register APCS clk\n");
+diff --git a/block/blk-merge.c b/block/blk-merge.c
+index 7cdd56696647..349cd7d3af81 100644
+--- a/block/blk-merge.c
++++ b/block/blk-merge.c
+@@ -552,10 +552,14 @@ static inline unsigned int blk_rq_get_max_segments(struct request *rq)
+ static inline int ll_new_hw_segment(struct request *req, struct bio *bio,
+ 		unsigned int nr_phys_segs)
+ {
+-	if (req->nr_phys_segments + nr_phys_segs > blk_rq_get_max_segments(req))
++	if (blk_integrity_merge_bio(req->q, req, bio) == false)
+ 		goto no_merge;
+ 
+-	if (blk_integrity_merge_bio(req->q, req, bio) == false)
++	/* discard request merge won't add new segment */
++	if (req_op(req) == REQ_OP_DISCARD)
++		return 1;
++
++	if (req->nr_phys_segments + nr_phys_segs > blk_rq_get_max_segments(req))
+ 		goto no_merge;
+ 
+ 	/*
 -- 
 2.30.2
 
