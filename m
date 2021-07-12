@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62CBF3C588D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E643C3C5321
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:51:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378875AbhGLIuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:50:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42268 "EHLO mail.kernel.org"
+        id S1345170AbhGLHxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:53:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347586AbhGLHxg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:53:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B079611C0;
-        Mon, 12 Jul 2021 07:50:46 +0000 (UTC)
+        id S245335AbhGLHTa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:19:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06C5C610A6;
+        Mon, 12 Jul 2021 07:16:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076246;
-        bh=RPtgB6hd6GPkVdmVs3PWCRmqLp7B+c7kXEELL8Fs2Fs=;
+        s=korg; t=1626074202;
+        bh=d76Nba8OGNFNuSlOSe5Byv95i7Vx6q1q/eWWBeOcAmk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aaSpOiRk9CZMf/hc/jqOe4FQqYWmJfuSUWUooYolBj8EBy3PI30bfJ70ql0nfNHAJ
-         Uf+E2Prl33QWJ4dNr3bF3Nd71vlYk3mzlC6W2MMh8/dGrVlWn9jQ63uUzeClsoLAUh
-         lEuGnTgD1Fs6SUCmQiZ+wutEgLRf9vwQOEruaelY=
+        b=jIze8omDJiUkDQyJgqMBxHV5YK2e1uCfn6OvPyIpflpmU2ZI5nFaielIGzvWHveKc
+         p+1RXH+oYUXHLRtnLn1enMMTZsdbzMKUUIm0c45Y2+qP925GqGqcBQcuIfN4VbX6BL
+         kHIsEygkLnve7N89bSLMpFx76qJnoZr68uI40DRM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Sokolowski <jan.sokolowski@intel.com>,
-        Mateusz Palczewski <mateusz.palczewski@intel.com>,
-        Tony Brelinski <tonyx.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 559/800] i40e: Fix missing rtnl locking when setting up pf switch
-Date:   Mon, 12 Jul 2021 08:09:42 +0200
-Message-Id: <20210712061026.888520647@linuxfoundation.org>
+Subject: [PATCH 5.12 500/700] Bluetooth: Fix handling of HCI_LE_Advertising_Set_Terminated event
+Date:   Mon, 12 Jul 2021 08:09:43 +0200
+Message-Id: <20210712061029.678372237@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,88 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Sokolowski <jan.sokolowski@intel.com>
+From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 
-[ Upstream commit 956e759d5f8e0859e86b951a8779c60af633aafd ]
+[ Upstream commit 23837a6d7a1a61818ed94a6b8af552d6cf7d32d5 ]
 
-A recent change that made i40e use new udp_tunnel infrastructure
-uses a method that expects to be called under rtnl lock.
+Error status of this event means that it has ended due reasons other
+than a connection:
 
-However, not all codepaths do the lock prior to calling
-i40e_setup_pf_switch.
+ 'If advertising has terminated as a result of the advertising duration
+ elapsing, the Status parameter shall be set to the error code
+ Advertising Timeout (0x3C).'
 
-Fix that by adding additional rtnl locking and unlocking.
+ 'If advertising has terminated because the
+ Max_Extended_Advertising_Events was reached, the Status parameter
+ shall be set to the error code Limit Reached (0x43).'
 
-Fixes: 40a98cb6f01f ("i40e: convert to new udp_tunnel infrastructure")
-Signed-off-by: Jan Sokolowski <jan.sokolowski@intel.com>
-Signed-off-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: acf0aeae431a0 ("Bluetooth: Handle ADv set terminated event")
+Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_main.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ net/bluetooth/hci_event.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 526fa0a791ea..f9fe500d4ec4 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -32,7 +32,7 @@ static void i40e_vsi_reinit_locked(struct i40e_vsi *vsi);
- static void i40e_handle_reset_warning(struct i40e_pf *pf, bool lock_acquired);
- static int i40e_add_vsi(struct i40e_vsi *vsi);
- static int i40e_add_veb(struct i40e_veb *veb, struct i40e_vsi *vsi);
--static int i40e_setup_pf_switch(struct i40e_pf *pf, bool reinit);
-+static int i40e_setup_pf_switch(struct i40e_pf *pf, bool reinit, bool lock_acquired);
- static int i40e_setup_misc_vector(struct i40e_pf *pf);
- static void i40e_determine_queue_usage(struct i40e_pf *pf);
- static int i40e_setup_pf_filter_control(struct i40e_pf *pf);
-@@ -10571,7 +10571,7 @@ static void i40e_rebuild(struct i40e_pf *pf, bool reinit, bool lock_acquired)
- #endif /* CONFIG_I40E_DCB */
- 	if (!lock_acquired)
- 		rtnl_lock();
--	ret = i40e_setup_pf_switch(pf, reinit);
-+	ret = i40e_setup_pf_switch(pf, reinit, true);
- 	if (ret)
- 		goto end_unlock;
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index 03245ab74e67..c6f400b108d9 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -5271,8 +5271,19 @@ static void hci_le_ext_adv_term_evt(struct hci_dev *hdev, struct sk_buff *skb)
  
-@@ -14629,10 +14629,11 @@ int i40e_fetch_switch_configuration(struct i40e_pf *pf, bool printconfig)
-  * i40e_setup_pf_switch - Setup the HW switch on startup or after reset
-  * @pf: board private structure
-  * @reinit: if the Main VSI needs to re-initialized.
-+ * @lock_acquired: indicates whether or not the lock has been acquired
-  *
-  * Returns 0 on success, negative value on failure
-  **/
--static int i40e_setup_pf_switch(struct i40e_pf *pf, bool reinit)
-+static int i40e_setup_pf_switch(struct i40e_pf *pf, bool reinit, bool lock_acquired)
- {
- 	u16 flags = 0;
- 	int ret;
-@@ -14734,9 +14735,15 @@ static int i40e_setup_pf_switch(struct i40e_pf *pf, bool reinit)
+ 	BT_DBG("%s status 0x%2.2x", hdev->name, ev->status);
  
- 	i40e_ptp_init(pf);
- 
-+	if (!lock_acquired)
-+		rtnl_lock();
+-	if (ev->status)
++	if (ev->status) {
++		struct adv_info *adv;
 +
- 	/* repopulate tunnel port filters */
- 	udp_tunnel_nic_reset_ntf(pf->vsi[pf->lan_vsi]->netdev);
- 
-+	if (!lock_acquired)
-+		rtnl_unlock();
++		adv = hci_find_adv_instance(hdev, ev->handle);
++		if (!adv)
++			return;
 +
- 	return ret;
- }
++		/* Remove advertising as it has been terminated */
++		hci_remove_adv_instance(hdev, ev->handle);
++		mgmt_advertising_removed(NULL, hdev, ev->handle);
++
+ 		return;
++	}
  
-@@ -15530,7 +15537,7 @@ static int i40e_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 			pf->flags |= I40E_FLAG_VEB_MODE_ENABLED;
- 	}
- #endif
--	err = i40e_setup_pf_switch(pf, false);
-+	err = i40e_setup_pf_switch(pf, false, false);
- 	if (err) {
- 		dev_info(&pdev->dev, "setup_pf_switch failed: %d\n", err);
- 		goto err_vsis;
+ 	conn = hci_conn_hash_lookup_handle(hdev, __le16_to_cpu(ev->conn_handle));
+ 	if (conn) {
 -- 
 2.30.2
 
