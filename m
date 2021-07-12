@@ -2,179 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A10643C5F53
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 17:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B4363C5F4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 17:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235533AbhGLPfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 11:35:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232203AbhGLPfr (ORCPT
+        id S235480AbhGLPfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 11:35:23 -0400
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:33368 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229987AbhGLPfW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 11:35:47 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9558C0613DD
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 08:32:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=UqSBiPBWvQkGsGddLuJ6EsC6uCAofX3Z25Dzx+ZuAPY=; b=Srh+X3DLaZJN5Y7FvaOnwLbMk+
-        DeGu7savhf57frJ2AAhxLbNs4E6ZyI8VGiZTKTh8Kns51ibLDbC5j/9TqF+K960SE8QGdCJtuV7h9
-        +Yqea28Bnsx3/ntEzFOA408r20SzRqXfhTnBZ0a16yXSd3DyI09fChAxU402+EyPNf8MTqnoygUwd
-        Jkq7D5puU4yOwGeo5453rMKL3WG6dNR9dGeNeiwgpuUZHWUWJTaXJbmckByijWn7Bwy0aUnRqkAie
-        bYvxI0b1/CALh+NXv9pt4pypFuVd3DEP1IzkXnpL8dZwbdSnnc/4l8P2EpNMXlAVUxTVGGN6Rv9pF
-        +8ydItig==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m2xuk-000AEd-B2; Mon, 12 Jul 2021 15:32:13 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mm: Make copy_huge_page() always available
-Date:   Mon, 12 Jul 2021 16:32:07 +0100
-Message-Id: <20210712153207.39302-1-willy@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Mon, 12 Jul 2021 11:35:22 -0400
+Received: by mail-oi1-f170.google.com with SMTP id s23so10115282oij.0;
+        Mon, 12 Jul 2021 08:32:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eoSbY0l2R7T8Dp+6SHfm2nWBKshC7xSCH+2ackq8X5c=;
+        b=XVw0bM9zvtZGN7to/lrXOgyFkKq9XhLilh2KJ0A70wWP/EYKTy71djTVhLOjzRKWTJ
+         DnCyfofcxdn2VwVFD9GpoUqDynIDjP2f7qBZ7AL/rR0MoE0NA480HJtDoXOMqnkYkBT9
+         P3f+UH5ON0SF++8Cbm2DKUT02rXoErf/8WHtEkHgfnSgfGkXb7px0HOmD9+2wSa9NL3N
+         5E2+vHWj3IEG8EuTgsE0c6nRt0L2/kYxVMexI059nsRtC62XSGpO/jkxi+H642tm49uv
+         c6OW1nbYaWBdOMstra1fXgDrRGJXuwnbeVz4qgsI4y3pJKNrFRTmaFrx9jLzUfMEEgd+
+         fQ+Q==
+X-Gm-Message-State: AOAM532f8hTZsk5iRbdmFLT+yIzjtC0xK0YUxF7xexhu2uEqVSownPlA
+        SR2aq3xaWT+InTPqzTf6k+JsTC3spRJ9sgY70pY=
+X-Google-Smtp-Source: ABdhPJxClNJyjoaMQqdJXvZAOQo95mnJXirXCuszMI5IbtvGcJQtRRqPY44SqSd1Pty6j/tp4+bw2nCBh/u4v/O0hQI=
+X-Received: by 2002:a05:6808:10d0:: with SMTP id s16mr5729607ois.69.1626103952819;
+ Mon, 12 Jul 2021 08:32:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <4327888.LvFx2qVVIh@kreacher> <5327028b-6e0b-e83c-b147-da083a23634c@gmail.com>
+ <CAJZ5v0iCyLircAL928bA4-+Pd1UtaBcZ-PVRNk3qJScSybzwCQ@mail.gmail.com> <CAJZ5v0iw==AbxPR9P=SBWYWKi8PVwp9DafoXe3MTuqA8BVmAsw@mail.gmail.com>
+In-Reply-To: <CAJZ5v0iw==AbxPR9P=SBWYWKi8PVwp9DafoXe3MTuqA8BVmAsw@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 12 Jul 2021 17:32:21 +0200
+Message-ID: <CAJZ5v0goZPRD24Wdd0HoqAFF9HYKifd_=e02FNCm2EmMGLEj8Q@mail.gmail.com>
+Subject: Re: [PATCH][RFT] PCI: Use pci_update_current_state() in pci_enable_device_flags()
+To:     Michael <phyre@rogers.com>,
+        Salvatore Bonaccorso <carnil@debian.org>
+Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rewrite copy_huge_page() and move it into mm/util.c so it's always
-available.  Fixes an exposure of uninitialised memory on configurations
-with HUGETLB and UFFD enabled and MIGRATION disabled.
+On Mon, Jul 12, 2021 at 5:30 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Fri, Jul 9, 2021 at 1:21 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> >
+> > On Thu, Jul 8, 2021 at 10:34 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
+> > >
+> > > On 7/8/21 3:25 PM, Rafael J. Wysocki wrote:
+> > > > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > > >
+> > > > Updating the current_state field of struct pci_dev the way it is done
+> > > > in pci_enable_device_flags() before calling do_pci_enable_device() may
+> > > > not work.  For example, if the given PCI device depends on an ACPI
+> > > > power resource whose _STA method initially returns 0 ("off"), but the
+> > > > config space of the PCI device is accessible and the power state
+> > > > retrieved from the PCI_PM_CTRL register is D0, the current_state
+> > > > field in the struct pci_dev representing that device will get out of
+> > > > sync with the power.state of its ACPI companion object and that will
+> > > > lead to power management issues going forward.
+> > > >
+> > > > To avoid such issues, make pci_enable_device_flags() call
+> > > > pci_update_current_state() which takes ACPI device power management
+> > > > into account, if present, to retrieve the current power state of the
+> > > > device.
+> > > >
+> > > > Link: https://lore.kernel.org/lkml/20210314000439.3138941-1-luzmaximilian@gmail.com/
+> > > > Reported-by: Maximilian Luz <luzmaximilian@gmail.com>
+> > > > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > > > ---
+> > > >
+> > > > Hi Maximilian,
+> > > >
+> > > > Because commit 4514d991d992 ("PCI: PM: Do not read power state in
+> > > > pci_enable_device_flags()"), the issue addressed by it is back, so
+> > > > we need an alternative way to address it.
+> > > >
+> > > > Can you please check if this patch makes that issue go away?
+> > >
+> > > Hi,
+> > >
+> > > just tested this on v5.13 and it works, thanks! Feel free to add
+> > >
+> > > Tested-by: Maximilian Luz <luzmaximilian@gmail.com>
 
-Fixes: 8cc5fcbb5be8 ("mm, hugetlb: fix racy resv_huge_pages underflow on UFFDIO_COPY")
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- include/linux/migrate.h |  5 -----
- include/linux/mm.h      |  1 +
- mm/migrate.c            | 48 -----------------------------------------
- mm/util.c               | 10 +++++++++
- 4 files changed, 11 insertions(+), 53 deletions(-)
+Gmail decided to drop Salvatore's address from the To list for me,
+sorry about that.
 
-diff --git a/include/linux/migrate.h b/include/linux/migrate.h
-index 9b7b7cd3bae9..23dadf7aeba8 100644
---- a/include/linux/migrate.h
-+++ b/include/linux/migrate.h
-@@ -51,7 +51,6 @@ extern int migrate_huge_page_move_mapping(struct address_space *mapping,
- 				  struct page *newpage, struct page *page);
- extern int migrate_page_move_mapping(struct address_space *mapping,
- 		struct page *newpage, struct page *page, int extra_count);
--extern void copy_huge_page(struct page *dst, struct page *src);
- #else
- 
- static inline void putback_movable_pages(struct list_head *l) {}
-@@ -77,10 +76,6 @@ static inline int migrate_huge_page_move_mapping(struct address_space *mapping,
- {
- 	return -ENOSYS;
- }
--
--static inline void copy_huge_page(struct page *dst, struct page *src)
--{
--}
- #endif /* CONFIG_MIGRATION */
- 
- #ifdef CONFIG_COMPACTION
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 8f8e9d8a8489..629df6a24527 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -874,6 +874,7 @@ void __put_page(struct page *page);
- void put_pages_list(struct list_head *pages);
- 
- void split_page(struct page *page, unsigned int order);
-+void copy_huge_page(struct page *dst, struct page *src);
- 
- /*
-  * Compound pages have a destructor function.  Provide a
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 23cbd9de030b..34a9ad3e0a4f 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -536,54 +536,6 @@ int migrate_huge_page_move_mapping(struct address_space *mapping,
- 	return MIGRATEPAGE_SUCCESS;
- }
- 
--/*
-- * Gigantic pages are so large that we do not guarantee that page++ pointer
-- * arithmetic will work across the entire page.  We need something more
-- * specialized.
-- */
--static void __copy_gigantic_page(struct page *dst, struct page *src,
--				int nr_pages)
--{
--	int i;
--	struct page *dst_base = dst;
--	struct page *src_base = src;
--
--	for (i = 0; i < nr_pages; ) {
--		cond_resched();
--		copy_highpage(dst, src);
--
--		i++;
--		dst = mem_map_next(dst, dst_base, i);
--		src = mem_map_next(src, src_base, i);
--	}
--}
--
--void copy_huge_page(struct page *dst, struct page *src)
--{
--	int i;
--	int nr_pages;
--
--	if (PageHuge(src)) {
--		/* hugetlbfs page */
--		struct hstate *h = page_hstate(src);
--		nr_pages = pages_per_huge_page(h);
--
--		if (unlikely(nr_pages > MAX_ORDER_NR_PAGES)) {
--			__copy_gigantic_page(dst, src, nr_pages);
--			return;
--		}
--	} else {
--		/* thp page */
--		BUG_ON(!PageTransHuge(src));
--		nr_pages = thp_nr_pages(src);
--	}
--
--	for (i = 0; i < nr_pages; i++) {
--		cond_resched();
--		copy_highpage(dst + i, src + i);
--	}
--}
--
- /*
-  * Copy the page to its new location
-  */
-diff --git a/mm/util.c b/mm/util.c
-index 99c6cc77de9e..9043d03750a7 100644
---- a/mm/util.c
-+++ b/mm/util.c
-@@ -731,6 +731,16 @@ int __page_mapcount(struct page *page)
- }
- EXPORT_SYMBOL_GPL(__page_mapcount);
- 
-+void copy_huge_page(struct page *dst, struct page *src)
-+{
-+	unsigned i, nr = compound_nr(src);
-+
-+	for (i = 0; i < nr; i++) {
-+		cond_resched();
-+		copy_highpage(nth_page(dst, i), nth_page(src, i));
-+	}
-+}
-+
- int sysctl_overcommit_memory __read_mostly = OVERCOMMIT_GUESS;
- int sysctl_overcommit_ratio __read_mostly = 50;
- unsigned long sysctl_overcommit_kbytes __read_mostly;
--- 
-2.30.2
-
+> Michael, Salvatore, since this alternative to commit 4514d991d992
+> works for Maximilian, I'm going to queue it up for 5.15 (barring any
+> objections from Bjorn), so I would appreciate it if you could test it
+> and let me know whether or not there were any problems with it.
+>
+> The patch can be downloaded from
+> https://patchwork.kernel.org/project/linux-pm/patch/4327888.LvFx2qVVIh@kreacher
+>
+> Thanks!
