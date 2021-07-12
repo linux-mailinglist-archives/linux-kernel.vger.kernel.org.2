@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7E13C57E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F56F3C4C72
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377954AbhGLIjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:39:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39608 "EHLO mail.kernel.org"
+        id S243045AbhGLHEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:04:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351440AbhGLHvs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:51:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E13960FF1;
-        Mon, 12 Jul 2021 07:48:59 +0000 (UTC)
+        id S238084AbhGLGqx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:46:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F41CF6128E;
+        Mon, 12 Jul 2021 06:42:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076139;
-        bh=8hL99on/kGHd9SZ0FmxTqw28CrZ+V5Ar0rZUUs7ffcU=;
+        s=korg; t=1626072156;
+        bh=5RBP4naidKyQUpt3TyGxsn7mo6o5fz5Qv0pQJM67Sd8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XBkdgbpXIMSmWJuyI8V49MtkQoPdNHVNiMHbK50LCaRMhQWtMENncSLchyO6r5odt
-         VynkChzz/gtMetxSihF5estoDpCaoJXDQ8GioegpTnRfr2sCssLAvHZouIZV2PupQo
-         Ul9TmBh1Z7d+J4BP9ehb5WJRtIvZnbJIT0IWSmAY=
+        b=oq8si7rWkX6p9V6T9KVjBoMa3YccL5t5h0snui7L/XCMWj0B/6vZKyqHSA/jqiiEa
+         M/2H20DyCVoqAJA/ct9hqRblHNcFtACl/S/Fldl/iGkSOXbCSycI3nBjKCoCdo1dWG
+         n3HKrbRyZgiS6zOULptYK3Z3ZPlicxNqsp3jH9oY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
+        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 513/800] udp: Fix a memory leak in udp_read_sock()
+Subject: [PATCH 5.10 376/593] netfilter: nf_tables_offload: check FLOW_DISSECTOR_KEY_BASIC in VLAN transfer logic
 Date:   Mon, 12 Jul 2021 08:08:56 +0200
-Message-Id: <20210712061021.794224665@linuxfoundation.org>
+Message-Id: <20210712060928.209744794@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,45 +39,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cong Wang <cong.wang@bytedance.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-[ Upstream commit e00a5c331bf57f41fcfdc5da4f5caeafe5e54c1d ]
+[ Upstream commit ea45fdf82cc90430bb7c280e5e53821e833782c5 ]
 
-sk_psock_verdict_recv() clones the skb and uses the clone
-afterward, so udp_read_sock() should free the skb after using
-it, regardless of error or not.
+The VLAN transfer logic should actually check for
+FLOW_DISSECTOR_KEY_BASIC, not FLOW_DISSECTOR_KEY_CONTROL. Moreover, do
+not fallback to case 2) .n_proto is set to 802.1q or 802.1ad, if
+FLOW_DISSECTOR_KEY_BASIC is unset.
 
-This fixes a real kmemleak.
-
-Fixes: d7f571188ecf ("udp: Implement ->read_sock() for sockmap")
-Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
-Link: https://lore.kernel.org/bpf/20210615021342.7416-4-xiyou.wangcong@gmail.com
+Fixes: 783003f3bb8a ("netfilter: nftables_offload: special ethertype handling for VLAN")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/udp.c | 2 ++
- 1 file changed, 2 insertions(+)
+ net/netfilter/nf_tables_offload.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index 1307ad0d3b9e..8091276cb85b 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -1798,11 +1798,13 @@ int udp_read_sock(struct sock *sk, read_descriptor_t *desc,
- 		if (used <= 0) {
- 			if (!copied)
- 				copied = used;
-+			kfree_skb(skb);
- 			break;
- 		} else if (used <= skb->len) {
- 			copied += used;
- 		}
+diff --git a/net/netfilter/nf_tables_offload.c b/net/netfilter/nf_tables_offload.c
+index 2b00f7f47693..9ce776175214 100644
+--- a/net/netfilter/nf_tables_offload.c
++++ b/net/netfilter/nf_tables_offload.c
+@@ -54,15 +54,10 @@ static void nft_flow_rule_transfer_vlan(struct nft_offload_ctx *ctx,
+ 					struct nft_flow_rule *flow)
+ {
+ 	struct nft_flow_match *match = &flow->match;
+-	struct nft_offload_ethertype ethertype;
+-
+-	if (match->dissector.used_keys & BIT(FLOW_DISSECTOR_KEY_CONTROL) &&
+-	    match->key.basic.n_proto != htons(ETH_P_8021Q) &&
+-	    match->key.basic.n_proto != htons(ETH_P_8021AD))
+-		return;
+-
+-	ethertype.value = match->key.basic.n_proto;
+-	ethertype.mask = match->mask.basic.n_proto;
++	struct nft_offload_ethertype ethertype = {
++		.value	= match->key.basic.n_proto,
++		.mask	= match->mask.basic.n_proto,
++	};
  
-+		kfree_skb(skb);
- 		if (!desc->count)
- 			break;
- 	}
+ 	if (match->dissector.used_keys & BIT(FLOW_DISSECTOR_KEY_VLAN) &&
+ 	    (match->key.vlan.vlan_tpid == htons(ETH_P_8021Q) ||
+@@ -76,7 +71,9 @@ static void nft_flow_rule_transfer_vlan(struct nft_offload_ctx *ctx,
+ 		match->dissector.offset[FLOW_DISSECTOR_KEY_CVLAN] =
+ 			offsetof(struct nft_flow_key, cvlan);
+ 		match->dissector.used_keys |= BIT(FLOW_DISSECTOR_KEY_CVLAN);
+-	} else {
++	} else if (match->dissector.used_keys & BIT(FLOW_DISSECTOR_KEY_BASIC) &&
++		   (match->key.basic.n_proto == htons(ETH_P_8021Q) ||
++		    match->key.basic.n_proto == htons(ETH_P_8021AD))) {
+ 		match->key.basic.n_proto = match->key.vlan.vlan_tpid;
+ 		match->mask.basic.n_proto = match->mask.vlan.vlan_tpid;
+ 		match->key.vlan.vlan_tpid = ethertype.value;
 -- 
 2.30.2
 
