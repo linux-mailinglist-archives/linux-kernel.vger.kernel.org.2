@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7E193C5912
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6069B3C5913
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356539AbhGLI4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:56:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55668 "EHLO mail.kernel.org"
+        id S1356620AbhGLI4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:56:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353699AbhGLICr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:02:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D0946162D;
-        Mon, 12 Jul 2021 07:56:52 +0000 (UTC)
+        id S1353730AbhGLICs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:02:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C9B8461CFE;
+        Mon, 12 Jul 2021 07:56:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076612;
-        bh=QIcrSoPAStZLEydIq7pJN/J5TiFrrMuUZPmEuxKOUuQ=;
+        s=korg; t=1626076617;
+        bh=x3X8Qd2GQ7oKmQkuJSd/9owtp2AJ54zXV29Fyj9r1Uk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g0Xx9x4zkLTupMYW26drFr1xNhLryEjcLi9MnaOYDiXU2L3EputaFlG0B5ZhI6kMh
-         kGkXLvoZlGLodITCIeG/RmbXnwZab0xpviouMd7o92JPqvi8YArZt+Ejk13pW4oPHC
-         ei1gNAl+61Lv32TVzHM/1n0Miibiq1M0dOMuS3Bc=
+        b=ghl0bGX3fbKch/+Jf1ykta82y2XLRQ5mea+j6eLJExTpwNjnZrYqUCAo8JMJJEh40
+         3exPlGaQPOKpxFWIJvVXAnSipZoIfWos+EXe0sTPup+7p82uDaH/Sn+ltv7nTE0eEB
+         DwKkg0597Ddrno3D5Adgkd9pZQFCUXifqSEdGJRs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        stable@vger.kernel.org, Junhao He <hejunhao2@hisilicon.com>,
+        Qi Liu <liuqi115@huawei.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 719/800] staging: rtl8712: fix memory leak in rtl871x_load_fw_cb
-Date:   Mon, 12 Jul 2021 08:12:22 +0200
-Message-Id: <20210712061043.232523837@linuxfoundation.org>
+Subject: [PATCH 5.13 720/800] coresight: core: Fix use of uninitialized pointer
+Date:   Mon, 12 Jul 2021 08:12:23 +0200
+Message-Id: <20210712061043.337746564@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -39,81 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Junhao He <hejunhao2@hisilicon.com>
 
-[ Upstream commit e02a3b945816a77702a2769a70ef5f9b06e49d54 ]
+[ Upstream commit d777a8991847729ec4e2a13fcad58c2b00bb19dc ]
 
-There is a leak in rtl8712 driver.
-The problem was in non-freed adapter data if
-firmware load failed.
+Currently the pointer "sink" might be checked before initialized. Fix
+this by initializing this pointer.
 
-This leak can be reproduced with this code:
-https://syzkaller.appspot.com/text?tag=ReproC&x=16612f02d00000,
-Autoload must fail (to not hit memory leak reported by syzkaller)
-
-There are 2 possible ways how rtl871x_load_fw_cb() and
-r871xu_dev_remove() can be called (in case of fw load error).
-
-1st case:
-	r871xu_dev_remove() then rtl871x_load_fw_cb()
-
-	In this case r871xu_dev_remove() will wait for
-	completion and then will jump to the end, because
-	rtl871x_load_fw_cb() set intfdata to NULL:
-
-	if (pnetdev) {
-		struct _adapter *padapter = netdev_priv(pnetdev);
-
-		/* never exit with a firmware callback pending */
-		wait_for_completion(&padapter->rtl8712_fw_ready);
-		pnetdev = usb_get_intfdata(pusb_intf);
-		usb_set_intfdata(pusb_intf, NULL);
-		if (!pnetdev)
-			goto firmware_load_fail;
-
-		... clean up code here ...
-	}
-
-2nd case:
-	rtl871x_load_fw_cb() then r871xu_dev_remove()
-
-	In this case pnetdev (from code snippet above) will
-	be zero (because rtl871x_load_fw_cb() set it to NULL)
-	And clean up code won't be executed again.
-
-So, in all cases we need to free adapted data in rtl871x_load_fw_cb(),
-because disconnect function cannot take care of it. And there won't be
-any race conditions, because complete() call happens after setting
-intfdata to NULL.
-
-In previous patch I moved out free_netdev() from r8712_free_drv_sw()
-and that's why now it's possible to free adapter data and then call
-complete.
-
-Fixes: 8c213fa59199 ("staging: r8712u: Use asynchronous firmware loading")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Link: https://lore.kernel.org/r/81e68fe0194499cc2e7692d35bc4dcf167827d8f.1623620630.git.paskripkin@gmail.com
+Link: https://lore.kernel.org/r/1620912469-52222-2-git-send-email-liuqi115@huawei.com
+Fixes: 6d578258b955 ("coresight: Make sysfs functional on topologies with per core sink")
+Signed-off-by: Junhao He <hejunhao2@hisilicon.com>
+Signed-off-by: Qi Liu <liuqi115@huawei.com>
+Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Link: https://lore.kernel.org/r/20210614175901.532683-3-mathieu.poirier@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/rtl8712/hal_init.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/hwtracing/coresight/coresight-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/rtl8712/hal_init.c b/drivers/staging/rtl8712/hal_init.c
-index 715f1fe8b472..22974277afa0 100644
---- a/drivers/staging/rtl8712/hal_init.c
-+++ b/drivers/staging/rtl8712/hal_init.c
-@@ -40,7 +40,10 @@ static void rtl871x_load_fw_cb(const struct firmware *firmware, void *context)
- 		dev_err(&udev->dev, "r8712u: Firmware request failed\n");
- 		usb_put_dev(udev);
- 		usb_set_intfdata(usb_intf, NULL);
-+		r8712_free_drv_sw(adapter);
-+		adapter->dvobj_deinit(adapter);
- 		complete(&adapter->rtl8712_fw_ready);
-+		free_netdev(adapter->pnetdev);
- 		return;
- 	}
- 	adapter->fw = firmware;
+diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
+index 6c68d34d956e..4ddf3d233844 100644
+--- a/drivers/hwtracing/coresight/coresight-core.c
++++ b/drivers/hwtracing/coresight/coresight-core.c
+@@ -608,7 +608,7 @@ static struct coresight_device *
+ coresight_find_enabled_sink(struct coresight_device *csdev)
+ {
+ 	int i;
+-	struct coresight_device *sink;
++	struct coresight_device *sink = NULL;
+ 
+ 	if ((csdev->type == CORESIGHT_DEV_TYPE_SINK ||
+ 	     csdev->type == CORESIGHT_DEV_TYPE_LINKSINK) &&
 -- 
 2.30.2
 
