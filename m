@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBF933C5445
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:53:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8383C4EBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348255AbhGLH5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:57:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58216 "EHLO mail.kernel.org"
+        id S240797AbhGLHVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:21:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344112AbhGLHUU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:20:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E2548610A6;
-        Mon, 12 Jul 2021 07:17:30 +0000 (UTC)
+        id S238665AbhGLGtJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:49:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02B65610D0;
+        Mon, 12 Jul 2021 06:44:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074251;
-        bh=yHX5871xvMpf6sTfEo3jmWZZ7ROJNaQ43WdKczIs6IE=;
+        s=korg; t=1626072297;
+        bh=B4modiCHNILEbjx7vHdMmuC7bKCSL9wWF9zJsy2tG9s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Pz1b9XPRPHf382mTR5+tcpFoaEC1wEo99Jh1MJTPYKuZebVTRfor7HDWyC/D8pet9
-         i3P2KhCc6elaTZt9Pu9Tj6wgMOWj7lrGSZxCRr+wlDBbNkUJE6aXMbwRm/mECI75N1
-         d9h+SVbBfAw13gLTyMcrbqBOGomL1trJUz2LQqO8=
+        b=0vGvSaZmU9J4Mb3gXB5+XAO2Kxa+Iqktv0PDJs7pe52k8w6qEOTzC21MmDdvdW/AM
+         IHJYCNSvfe+JMQ9KulBmhfCxxkx/ocQcm514zpF5ESS+H6JZnlW6kEe5hXitlkPM4C
+         V8EAgtOAFjHDOPOAkTg2/5qP7EDyDPdzQAyUrj48=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Menglong Dong <dong.menglong@zte.com.cn>,
-        Jon Maloy <jmaloy@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 515/700] net: tipc: fix FB_MTU eat two pages
-Date:   Mon, 12 Jul 2021 08:09:58 +0200
-Message-Id: <20210712061031.302106538@linuxfoundation.org>
+Subject: [PATCH 5.10 439/593] serial: 8250_omap: fix a timeout loop condition
+Date:   Mon, 12 Jul 2021 08:09:59 +0200
+Message-Id: <20210712060937.076064465@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,116 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 0c6de0c943dbb42831bf7502eb5c007f71e752d2 ]
+[ Upstream commit d7e325aaa8c3593b5a572b583ecad79e95f32e7f ]
 
-FB_MTU is used in 'tipc_msg_build()' to alloc smaller skb when memory
-allocation fails, which can avoid unnecessary sending failures.
+This loop ends on -1 so the error message will never be printed.
 
-The value of FB_MTU now is 3744, and the data size will be:
-
-  (3744 + SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) + \
-    SKB_DATA_ALIGN(BUF_HEADROOM + BUF_TAILROOM + 3))
-
-which is larger than one page(4096), and two pages will be allocated.
-
-To avoid it, replace '3744' with a calculation:
-
-  (PAGE_SIZE - SKB_DATA_ALIGN(BUF_OVERHEAD) - \
-    SKB_DATA_ALIGN(sizeof(struct skb_shared_info)))
-
-What's more, alloc_skb_fclone() will call SKB_DATA_ALIGN for data size,
-and it's not necessary to make alignment for buf_size in
-tipc_buf_acquire(). So, just remove it.
-
-Fixes: 4c94cc2d3d57 ("tipc: fall back to smaller MTU if allocation of local send skb fails")
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 4bcf59a5dea0 ("serial: 8250: 8250_omap: Account for data in flight during DMA teardown")
+Reviewed-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/YIpd+kOpXKMpEXPf@mwanda
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/tipc/bcast.c |  2 +-
- net/tipc/msg.c   | 17 ++++++++---------
- net/tipc/msg.h   |  3 ++-
- 3 files changed, 11 insertions(+), 11 deletions(-)
+ drivers/tty/serial/8250/8250_omap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/tipc/bcast.c b/net/tipc/bcast.c
-index d4beca895992..593846d25214 100644
---- a/net/tipc/bcast.c
-+++ b/net/tipc/bcast.c
-@@ -699,7 +699,7 @@ int tipc_bcast_init(struct net *net)
- 	spin_lock_init(&tipc_net(net)->bclock);
+diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
+index 0cc6d35a0815..f284c6f77a6c 100644
+--- a/drivers/tty/serial/8250/8250_omap.c
++++ b/drivers/tty/serial/8250/8250_omap.c
+@@ -784,7 +784,7 @@ static void __dma_rx_do_complete(struct uart_8250_port *p)
+ 			       poll_count--)
+ 				cpu_relax();
  
- 	if (!tipc_link_bc_create(net, 0, 0, NULL,
--				 FB_MTU,
-+				 one_page_mtu,
- 				 BCLINK_WIN_DEFAULT,
- 				 BCLINK_WIN_DEFAULT,
- 				 0,
-diff --git a/net/tipc/msg.c b/net/tipc/msg.c
-index d0fc5fadbc68..b7943da9d095 100644
---- a/net/tipc/msg.c
-+++ b/net/tipc/msg.c
-@@ -44,12 +44,15 @@
- #define MAX_FORWARD_SIZE 1024
- #ifdef CONFIG_TIPC_CRYPTO
- #define BUF_HEADROOM ALIGN(((LL_MAX_HEADER + 48) + EHDR_MAX_SIZE), 16)
--#define BUF_TAILROOM (TIPC_AES_GCM_TAG_SIZE)
-+#define BUF_OVERHEAD (BUF_HEADROOM + TIPC_AES_GCM_TAG_SIZE)
- #else
- #define BUF_HEADROOM (LL_MAX_HEADER + 48)
--#define BUF_TAILROOM 16
-+#define BUF_OVERHEAD BUF_HEADROOM
- #endif
- 
-+const int one_page_mtu = PAGE_SIZE - SKB_DATA_ALIGN(BUF_OVERHEAD) -
-+			 SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
-+
- static unsigned int align(unsigned int i)
- {
- 	return (i + 3) & ~3u;
-@@ -69,13 +72,8 @@ static unsigned int align(unsigned int i)
- struct sk_buff *tipc_buf_acquire(u32 size, gfp_t gfp)
- {
- 	struct sk_buff *skb;
--#ifdef CONFIG_TIPC_CRYPTO
--	unsigned int buf_size = (BUF_HEADROOM + size + BUF_TAILROOM + 3) & ~3u;
--#else
--	unsigned int buf_size = (BUF_HEADROOM + size + 3) & ~3u;
--#endif
- 
--	skb = alloc_skb_fclone(buf_size, gfp);
-+	skb = alloc_skb_fclone(BUF_OVERHEAD + size, gfp);
- 	if (skb) {
- 		skb_reserve(skb, BUF_HEADROOM);
- 		skb_put(skb, size);
-@@ -395,7 +393,8 @@ int tipc_msg_build(struct tipc_msg *mhdr, struct msghdr *m, int offset,
- 		if (unlikely(!skb)) {
- 			if (pktmax != MAX_MSG_SIZE)
- 				return -ENOMEM;
--			rc = tipc_msg_build(mhdr, m, offset, dsz, FB_MTU, list);
-+			rc = tipc_msg_build(mhdr, m, offset, dsz,
-+					    one_page_mtu, list);
- 			if (rc != dsz)
- 				return rc;
- 			if (tipc_msg_assemble(list))
-diff --git a/net/tipc/msg.h b/net/tipc/msg.h
-index 5d64596ba987..64ae4c4c44f8 100644
---- a/net/tipc/msg.h
-+++ b/net/tipc/msg.h
-@@ -99,9 +99,10 @@ struct plist;
- #define MAX_H_SIZE                60	/* Largest possible TIPC header size */
- 
- #define MAX_MSG_SIZE (MAX_H_SIZE + TIPC_MAX_USER_MSG_SIZE)
--#define FB_MTU                  3744
- #define TIPC_MEDIA_INFO_OFFSET	5
- 
-+extern const int one_page_mtu;
-+
- struct tipc_skb_cb {
- 	union {
- 		struct {
+-			if (!poll_count)
++			if (poll_count == -1)
+ 				dev_err(p->port.dev, "teardown incomplete\n");
+ 		}
+ 	}
 -- 
 2.30.2
 
