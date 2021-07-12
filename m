@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BECB43C52EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08D6D3C4C57
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350829AbhGLHvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:51:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47502 "EHLO mail.kernel.org"
+        id S238478AbhGLHDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:03:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241857AbhGLHQr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:16:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 480AA61433;
-        Mon, 12 Jul 2021 07:13:39 +0000 (UTC)
+        id S237308AbhGLGqJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:46:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47698601FC;
+        Mon, 12 Jul 2021 06:41:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074019;
-        bh=biAv0i4XISWoTi52YpFEH/up43Dvx/gkfCSemWaZs1c=;
+        s=korg; t=1626072111;
+        bh=zahtD687+Ll74wZJeYeEIZFDsSwTvuxbIqfd9NQdSDo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v5BgIFqfNwGm3mEEsmiLeViPArDMupwuggQYam0nL5GQhbajDXHnBOX6g+vFaCVan
-         79BZJwGnt0BEGgOVmHBPxenTib5Bk7WK+FyyL8hHUW7pX3eoZlsnKSqEVWPrufW3lb
-         n4b/SjESXGIz8JEBN8qNID3eT4R3gCY9Bj2UiNhs=
+        b=gr97eC+x7a5/HbxlgXJ46i+d/N+FNgIZEr6sO7f+eA1B/q40ZqWgW8ZrG9GNCxyOh
+         fk9nKdoH2C4zqtGOnv9iqFySywcs8Mja1ai5yu0EOAM6d8xy/T7HlaX9S8m1thEYUM
+         yu1Ek+5ZeQG+wpMGaMetdwWKltsxZsG/R0jGWi54=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
-        YN Chen <yn.chen@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 435/700] mt76: connac: fix WoW with disconnetion and bitmap pattern
-Date:   Mon, 12 Jul 2021 08:08:38 +0200
-Message-Id: <20210712061022.726935853@linuxfoundation.org>
+        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 359/593] netfilter: nft_tproxy: restrict support to TCP and UDP transport protocols
+Date:   Mon, 12 Jul 2021 08:08:39 +0200
+Message-Id: <20210712060925.931661269@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,77 +39,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YN Chen <yn.chen@mediatek.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-[ Upstream commit 193e5f22eeb2a9661bff8bc0d8519e6ded48c807 ]
+[ Upstream commit 52f0f4e178c757b3d356087376aad8bd77271828 ]
 
-Update MCU command usage to fix WoW configuration with disconnection
-and bitmap pattern and to avoid magic number.
+Add unfront check for TCP and UDP packets before performing further
+processing.
 
-Fixes: ffa1bf97425b ("mt76: mt7921: introduce PM support")
-Reviewed-by: Lorenzo Bianconi <lorenzo@kernel.org>
-Signed-off-by: YN Chen <yn.chen@mediatek.com>
-Signed-off-by: Sean Wang <sean.wang@mediatek.com>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Fixes: 4ed8eb6570a4 ("netfilter: nf_tables: Add native tproxy support")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c | 11 +++++++----
- drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.h |  8 ++++++++
- 2 files changed, 15 insertions(+), 4 deletions(-)
+ net/netfilter/nft_tproxy.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c b/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
-index cefd33b74a87..280aee1aa299 100644
---- a/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
-@@ -1732,7 +1732,7 @@ mt76_connac_mcu_set_wow_pattern(struct mt76_dev *dev,
- 	ptlv->index = index;
+diff --git a/net/netfilter/nft_tproxy.c b/net/netfilter/nft_tproxy.c
+index d67f83a0958d..242222dc52c3 100644
+--- a/net/netfilter/nft_tproxy.c
++++ b/net/netfilter/nft_tproxy.c
+@@ -30,6 +30,12 @@ static void nft_tproxy_eval_v4(const struct nft_expr *expr,
+ 	__be16 tport = 0;
+ 	struct sock *sk;
  
- 	memcpy(ptlv->pattern, pattern->pattern, pattern->pattern_len);
--	memcpy(ptlv->mask, pattern->mask, pattern->pattern_len / 8);
-+	memcpy(ptlv->mask, pattern->mask, DIV_ROUND_UP(pattern->pattern_len, 8));
- 
- 	return mt76_mcu_skb_send_msg(dev, skb, MCU_UNI_CMD_SUSPEND, true);
- }
-@@ -1767,14 +1767,17 @@ mt76_connac_mcu_set_wow_ctrl(struct mt76_phy *phy, struct ieee80211_vif *vif,
- 	};
- 
- 	if (wowlan->magic_pkt)
--		req.wow_ctrl_tlv.trigger |= BIT(0);
-+		req.wow_ctrl_tlv.trigger |= UNI_WOW_DETECT_TYPE_MAGIC;
- 	if (wowlan->disconnect)
--		req.wow_ctrl_tlv.trigger |= BIT(2);
-+		req.wow_ctrl_tlv.trigger |= (UNI_WOW_DETECT_TYPE_DISCONNECT |
-+					     UNI_WOW_DETECT_TYPE_BCN_LOST);
- 	if (wowlan->nd_config) {
- 		mt76_connac_mcu_sched_scan_req(phy, vif, wowlan->nd_config);
--		req.wow_ctrl_tlv.trigger |= BIT(5);
-+		req.wow_ctrl_tlv.trigger |= UNI_WOW_DETECT_TYPE_SCH_SCAN_HIT;
- 		mt76_connac_mcu_sched_scan_enable(phy, vif, suspend);
- 	}
-+	if (wowlan->n_patterns)
-+		req.wow_ctrl_tlv.trigger |= UNI_WOW_DETECT_TYPE_BITMAP;
- 
- 	if (mt76_is_mmio(dev))
- 		req.wow_ctrl_tlv.wakeup_hif = WOW_PCIE;
-diff --git a/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.h b/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.h
-index c1e1df5f7cd7..eea121101b5e 100644
---- a/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.h
-+++ b/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.h
-@@ -589,6 +589,14 @@ enum {
- 	UNI_OFFLOAD_OFFLOAD_BMC_RPY_DETECT,
- };
- 
-+#define UNI_WOW_DETECT_TYPE_MAGIC		BIT(0)
-+#define UNI_WOW_DETECT_TYPE_ANY			BIT(1)
-+#define UNI_WOW_DETECT_TYPE_DISCONNECT		BIT(2)
-+#define UNI_WOW_DETECT_TYPE_GTK_REKEY_FAIL	BIT(3)
-+#define UNI_WOW_DETECT_TYPE_BCN_LOST		BIT(4)
-+#define UNI_WOW_DETECT_TYPE_SCH_SCAN_HIT	BIT(5)
-+#define UNI_WOW_DETECT_TYPE_BITMAP		BIT(6)
++	if (pkt->tprot != IPPROTO_TCP &&
++	    pkt->tprot != IPPROTO_UDP) {
++		regs->verdict.code = NFT_BREAK;
++		return;
++	}
 +
- enum {
- 	UNI_SUSPEND_MODE_SETTING,
- 	UNI_SUSPEND_WOW_CTRL,
+ 	hp = skb_header_pointer(skb, ip_hdrlen(skb), sizeof(_hdr), &_hdr);
+ 	if (!hp) {
+ 		regs->verdict.code = NFT_BREAK;
+@@ -91,7 +97,8 @@ static void nft_tproxy_eval_v6(const struct nft_expr *expr,
+ 
+ 	memset(&taddr, 0, sizeof(taddr));
+ 
+-	if (!pkt->tprot_set) {
++	if (pkt->tprot != IPPROTO_TCP &&
++	    pkt->tprot != IPPROTO_UDP) {
+ 		regs->verdict.code = NFT_BREAK;
+ 		return;
+ 	}
 -- 
 2.30.2
 
