@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8DEF3C57E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB0C83C4C73
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377990AbhGLIj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:39:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39696 "EHLO mail.kernel.org"
+        id S243104AbhGLHEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:04:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351630AbhGLHv7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:51:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 020F460FF1;
-        Mon, 12 Jul 2021 07:49:10 +0000 (UTC)
+        id S238089AbhGLGqx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:46:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 225A261165;
+        Mon, 12 Jul 2021 06:42:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076151;
-        bh=poVeK7EhLVcgvfNqEIIt69ZyXMeYgV+XWonfX+8FZEk=;
+        s=korg; t=1626072170;
+        bh=br3pXyvGPs1GFamn1zJyi1MEcHGeylciNRI8Y/GIw58=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hvHkdB6EVM3p0Q1xRwPxD49CR0ZDfE6OTs2qHbd0k7beH261lUK05Im3255MK/KL2
-         8uEBEdFI8xMDH+sQFj0OM0PHa261hBbVXVnayF0QIJh/nSngyB6l/my2Xhs424crBp
-         h3SFPZUbR41+VRft3sBR8HaWGSWREVKL2LoQNSoQ=
+        b=C7wRlTFLART8sIiPjwjhIjtFOeDQAH1B73UefAl3c+iT0+7x411PMNPx6cwT3Px+a
+         F2OGHs356wxlecYol5B/Jxv8NA2d2Ju4d7ZHDdF+UYmYIcePfCiSW39o47Fbpf+oMs
+         GhVd1tWdgigiPHVOSWHImcNYJcw+LSD93mNOlpYQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 477/800] RDMA/rxe: Fix qp reference counting for atomic ops
-Date:   Mon, 12 Jul 2021 08:08:20 +0200
-Message-Id: <20210712061017.924060338@linuxfoundation.org>
+Subject: [PATCH 5.10 341/593] ath10k: add missing error return code in ath10k_pci_probe()
+Date:   Mon, 12 Jul 2021 08:08:21 +0200
+Message-Id: <20210712060923.534994216@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,58 +41,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Pearson <rpearsonhpe@gmail.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 15ae1375ea91ae2dee6f12d71a79d8c0a10a30bf ]
+[ Upstream commit e2783e2f39ba99178dedfc1646d5cc0979d1bab3 ]
 
-Currently the rdma_rxe driver attempts to protect atomic responder
-resources by taking a reference to the qp which is only freed when the
-resource is recycled for a new read or atomic operation. This means that
-in normal circumstances there is almost always an extra qp reference once
-an atomic operation has been executed which prevents cleaning up the qp
-and associated pd and cqs when the qp is destroyed.
+When chip_id is not supported, the resources will be freed
+on path err_unsupported, these resources will also be freed
+when calling ath10k_pci_remove(), it will cause double free,
+so return -ENODEV when it doesn't support the device with wrong
+chip_id.
 
-This patch removes the call to rxe_add_ref() in send_atomic_ack() and the
-call to rxe_drop_ref() in free_rd_atomic_resource(). If the qp is
-destroyed while a peer is retrying an atomic op it will cause the
-operation to fail which is acceptable.
-
-Link: https://lore.kernel.org/r/20210604230558.4812-1-rpearsonhpe@gmail.com
-Reported-by: Zhu Yanjun <zyjzyj2000@gmail.com>
-Fixes: 86af61764151 ("IB/rxe: remove unnecessary skb_clone")
-Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: c0c378f9907c ("ath10k: remove target soc ps code")
+Fixes: 7505f7c3ec1d ("ath10k: create a chip revision whitelist")
+Fixes: f8914a14623a ("ath10k: restore QCA9880-AR1A (v1) detection")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210522105822.1091848-3-yangyingliang@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/sw/rxe/rxe_qp.c   | 1 -
- drivers/infiniband/sw/rxe/rxe_resp.c | 2 --
- 2 files changed, 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/pci.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-index b0f350d674fd..93a41ebda1a8 100644
---- a/drivers/infiniband/sw/rxe/rxe_qp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-@@ -136,7 +136,6 @@ static void free_rd_atomic_resources(struct rxe_qp *qp)
- void free_rd_atomic_resource(struct rxe_qp *qp, struct resp_res *res)
- {
- 	if (res->type == RXE_ATOMIC_MASK) {
--		rxe_drop_ref(qp);
- 		kfree_skb(res->atomic.skb);
- 	} else if (res->type == RXE_READ_MASK) {
- 		if (res->read.mr)
-diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index 2b220659bddb..39dc39be586e 100644
---- a/drivers/infiniband/sw/rxe/rxe_resp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -966,8 +966,6 @@ static int send_atomic_ack(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
- 		goto out;
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 55f483d22b6d..86f52bcb3e4d 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -3684,8 +3684,10 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 			ath10k_pci_soc_read32(ar, SOC_CHIP_ID_ADDRESS);
+ 		if (bus_params.chip_id != 0xffffffff) {
+ 			if (!ath10k_pci_chip_is_supported(pdev->device,
+-							  bus_params.chip_id))
++							  bus_params.chip_id)) {
++				ret = -ENODEV;
+ 				goto err_unsupported;
++			}
+ 		}
  	}
  
--	rxe_add_ref(qp);
--
- 	res = &qp->resp.resources[qp->resp.res_head];
- 	free_rd_atomic_resource(qp, res);
- 	rxe_advance_resp_resource(qp);
+@@ -3696,11 +3698,15 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 	}
+ 
+ 	bus_params.chip_id = ath10k_pci_soc_read32(ar, SOC_CHIP_ID_ADDRESS);
+-	if (bus_params.chip_id == 0xffffffff)
++	if (bus_params.chip_id == 0xffffffff) {
++		ret = -ENODEV;
+ 		goto err_unsupported;
++	}
+ 
+-	if (!ath10k_pci_chip_is_supported(pdev->device, bus_params.chip_id))
++	if (!ath10k_pci_chip_is_supported(pdev->device, bus_params.chip_id)) {
++		ret = -ENODEV;
+ 		goto err_unsupported;
++	}
+ 
+ 	ret = ath10k_core_register(ar, &bus_params);
+ 	if (ret) {
 -- 
 2.30.2
 
