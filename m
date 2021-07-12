@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABEF63C5898
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 391403C58A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379490AbhGLIud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:50:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44020 "EHLO mail.kernel.org"
+        id S1379730AbhGLIu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:50:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350629AbhGLHx7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:53:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C4CAC613CF;
-        Mon, 12 Jul 2021 07:51:09 +0000 (UTC)
+        id S1352427AbhGLHyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:54:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E27C611AD;
+        Mon, 12 Jul 2021 07:51:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076270;
-        bh=A9ulKfd3LQ0ZGp6Gy15FHDLuLq4sOC7clxUAqlQItbE=;
+        s=korg; t=1626076295;
+        bh=c/5O6VMFqRkdIb4xZ3AOpLOa8tC8c0b/yN8bNbwlByQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uW7nijOYigz+4+kOJ8BNqW+S8MsiaG+c89XFcxpyEqtSxFKAlPeEOlnzS65FTA1p5
-         RfNK6zgfVyXwiyRKQVeztTMr5WwQo/c5KEdvbL7/hMxlScUNhS2Sv+R6lD/MhdctyB
-         6RZptDsV7Dq0Ce2/yAOHq6cf3vLX+QkNm+PL0XyU=
+        b=XOUI4MSVlYlnvHl4Ja5pkrXLHWfBjDHWbO5VZ4u5o3s+7fC2g6KgPpIP8Byt+MTxE
+         C8cR77y+qTM08G7wn6z3bNlw9+ahhZeTbSnFUFmtISRHyc5S/qu/KZiHOrA7luCLQh
+         QnYrElowUP4Y7kSTrU8F+RUY1dDlfQZENoAnqU8U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 564/800] ibmvnic: clean pending indirect buffs during reset
-Date:   Mon, 12 Jul 2021 08:09:47 +0200
-Message-Id: <20210712061027.453060788@linuxfoundation.org>
+Subject: [PATCH 5.13 565/800] ibmvnic: account for bufs already saved in indir_buf
+Date:   Mon, 12 Jul 2021 08:09:48 +0200
+Message-Id: <20210712061027.567141165@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -43,79 +43,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
 
-[ Upstream commit 65d6470d139a6c1655fccb5cbacbeaba8e8ad2f8 ]
+[ Upstream commit 72368f8b2b9e4106072a2728bed3367d54641c22 ]
 
-We batch subordinate command response queue (scrq) descriptors that we
-need to send to the VIOS using an "indirect" buffer. If after we queue
-one or more scrqs in the indirect buffer encounter an error (say fail
-to allocate an skb), we leave the queued scrq descriptors in the
-indirect buffer until the next call to ibmvnic_xmit().
+This fixes a crash in replenish_rx_pool() when called from ibmvnic_poll()
+after a previous call to replenish_rx_pool() encountered an error when
+allocating a socket buffer.
 
-On the next call to ibmvnic_xmit(), it is possible that the adapter is
-going through a reset and it is possible that the long term  buffers
-have been unmapped on the VIOS side. If we proceed to flush (send) the
-packets that are in the indirect buffer, we will end up using the old
-map ids and this can cause the VIOS to trigger an unnecessary FATAL
-error reset.
+Thanks to Rick Lindsley and Dany Madden for helping debug the crash.
 
-Instead of flushing packets remaining on the indirect_buff, discard
-(clean) them instead.
-
-Fixes: 0d973388185d4 ("ibmvnic: Introduce xmit_more support using batched subCRQ hcalls")
+Fixes: 4f0b6812e9b9 ("ibmvnic: Introduce batched RX buffer descriptor transmission")
 Signed-off-by: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/ibm/ibmvnic.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-index 8b2f6eb8eb21..2d15b446ceb3 100644
+index 2d15b446ceb3..779de81a54a6 100644
 --- a/drivers/net/ethernet/ibm/ibmvnic.c
 +++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -106,6 +106,8 @@ static void release_crq_queue(struct ibmvnic_adapter *);
- static int __ibmvnic_set_mac(struct net_device *, u8 *);
- static int init_crq_queue(struct ibmvnic_adapter *adapter);
- static int send_query_phys_parms(struct ibmvnic_adapter *adapter);
-+static void ibmvnic_tx_scrq_clean_buffer(struct ibmvnic_adapter *adapter,
-+					 struct ibmvnic_sub_crq_queue *tx_scrq);
+@@ -328,7 +328,14 @@ static void replenish_rx_pool(struct ibmvnic_adapter *adapter,
  
- struct ibmvnic_stat {
- 	char name[ETH_GSTRING_LEN];
-@@ -668,6 +670,7 @@ static int reset_tx_pools(struct ibmvnic_adapter *adapter)
- 
- 	tx_scrqs = adapter->num_active_tx_pools;
- 	for (i = 0; i < tx_scrqs; i++) {
-+		ibmvnic_tx_scrq_clean_buffer(adapter, adapter->tx_scrq[i]);
- 		rc = reset_one_tx_pool(adapter, &adapter->tso_pool[i]);
- 		if (rc)
- 			return rc;
-@@ -1618,7 +1621,8 @@ static void ibmvnic_tx_scrq_clean_buffer(struct ibmvnic_adapter *adapter,
- 	ind_bufp->index = 0;
- 	if (atomic_sub_return(entries, &tx_scrq->used) <=
- 	    (adapter->req_tx_entries_per_subcrq / 2) &&
--	    __netif_subqueue_stopped(adapter->netdev, queue_num)) {
-+	    __netif_subqueue_stopped(adapter->netdev, queue_num) &&
-+	    !test_bit(0, &adapter->resetting)) {
- 		netif_wake_subqueue(adapter->netdev, queue_num);
- 		netdev_dbg(adapter->netdev, "Started queue %d\n",
- 			   queue_num);
-@@ -1711,7 +1715,6 @@ static netdev_tx_t ibmvnic_xmit(struct sk_buff *skb, struct net_device *netdev)
- 		tx_send_failed++;
- 		tx_dropped++;
- 		ret = NETDEV_TX_OK;
--		ibmvnic_tx_scrq_flush(adapter, tx_scrq);
- 		goto out;
- 	}
- 
-@@ -3175,6 +3178,7 @@ static void release_sub_crqs(struct ibmvnic_adapter *adapter, bool do_h_free)
- 
- 			netdev_dbg(adapter->netdev, "Releasing tx_scrq[%d]\n",
- 				   i);
-+			ibmvnic_tx_scrq_clean_buffer(adapter, adapter->tx_scrq[i]);
- 			if (adapter->tx_scrq[i]->irq) {
- 				free_irq(adapter->tx_scrq[i]->irq,
- 					 adapter->tx_scrq[i]);
+ 	rx_scrq = adapter->rx_scrq[pool->index];
+ 	ind_bufp = &rx_scrq->ind_buf;
+-	for (i = 0; i < count; ++i) {
++
++	/* netdev_skb_alloc() could have failed after we saved a few skbs
++	 * in the indir_buf and we would not have sent them to VIOS yet.
++	 * To account for them, start the loop at ind_bufp->index rather
++	 * than 0. If we pushed all the skbs to VIOS, ind_bufp->index will
++	 * be 0.
++	 */
++	for (i = ind_bufp->index; i < count; ++i) {
+ 		skb = netdev_alloc_skb(adapter->netdev, pool->buff_size);
+ 		if (!skb) {
+ 			dev_err(dev, "Couldn't replenish rx buff\n");
 -- 
 2.30.2
 
