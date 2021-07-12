@@ -2,36 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D89013C49C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADCD23C56F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237652AbhGLGqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:46:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53518 "EHLO mail.kernel.org"
+        id S1358843AbhGLI0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:26:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50224 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235969AbhGLGfo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:35:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E82B6101E;
-        Mon, 12 Jul 2021 06:32:56 +0000 (UTC)
+        id S1349500AbhGLHmI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:42:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EA4A6112D;
+        Mon, 12 Jul 2021 07:39:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071577;
-        bh=6qvfVHz8Ivbu+S8FtkH8bJH6LL/dj1fkRbuXihqrtqk=;
+        s=korg; t=1626075560;
+        bh=/cFXXgNJwnh0heA08mwM0Etc/e7GsfXEwFPCw/mcvlw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v5ECzWjq600kR8a2fadVWyPKNhCr5wdfL3Ink/DUbtxq36udEQJ+0f/PiJzS6tH+n
-         PlATGUpPxMUSUoBWWGM/M/RxovIRoEmlqttzxBMXdX3zdbcsutjBWBKjrfMzHojAj7
-         sJYqQ6iurN1gkY5I7ljPXsoK+V+LSwJvQKIx420A=
+        b=VCfT+YQRHy6+CP1RjnS6x0P4+WZHIFygw+YWKWG0yYx4XhZcks0/9eAHq8OejjgMN
+         NKXLiOgWZdQZ0MG2uQUipb9X+nr5sty3i6Q6HAls3DgG/VW7nlkWGQUPK0GD1jfRZL
+         TIVl8lwS00WsEpKgvNZNWeKEqKsXQ4b0U3FRLjXo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thara Gopinath <thara.gopinath@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Hao Luo <haoluo@google.com>,
+        Michal Suchanek <msuchanek@suse.de>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 129/593] crypto: qce: skcipher: Fix incorrect sg count for dma transfers
+Subject: [PATCH 5.13 266/800] kbuild: skip per-CPU BTF generation for pahole v1.18-v1.21
 Date:   Mon, 12 Jul 2021 08:04:49 +0200
-Message-Id: <20210712060857.335221127@linuxfoundation.org>
+Message-Id: <20210712060952.148978306@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,68 +46,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thara Gopinath <thara.gopinath@linaro.org>
+From: Andrii Nakryiko <andrii@kernel.org>
 
-[ Upstream commit 1339a7c3ba05137a2d2fe75f602311bbfc6fab33 ]
+[ Upstream commit a0b8200d06ad6450c179407baa5f0f52f8cfcc97 ]
 
-Use the sg count returned by dma_map_sg to call into
-dmaengine_prep_slave_sg rather than using the original sg count. dma_map_sg
-can merge consecutive sglist entries, thus making the original sg count
-wrong. This is a fix for memory coruption issues observed while testing
-encryption/decryption of large messages using libkcapi framework.
+Commit "mm/page_alloc: convert per-cpu list protection to local_lock" will
+introduce a zero-sized per-CPU variable, which causes pahole to generate
+invalid BTF.  Only pahole versions 1.18 through 1.21 are impacted, as
+before 1.18 pahole doesn't know anything about per-CPU variables, and 1.22
+contains the proper fix for the issue.
 
-Patch has been tested further by running full suite of tcrypt.ko tests
-including fuzz tests.
+Luckily, pahole 1.18 got --skip_encoding_btf_vars option disabling BTF
+generation for per-CPU variables in anticipation of some unanticipated
+problems.  So use this escape hatch to disable per-CPU var BTF info on
+those problematic pahole versions.  Users relying on availability of
+per-CPU var BTFs would need to upgrade to pahole 1.22+, but everyone won't
+notice any regressions.
 
-Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Link: https://lkml.kernel.org/r/20210530002536.3193829-1-andrii@kernel.org
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Mel Gorman <mgorman@techsingularity.net>
+Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: Hao Luo <haoluo@google.com>
+Cc: Michal Suchanek <msuchanek@suse.de>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/qce/skcipher.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ scripts/link-vmlinux.sh | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/crypto/qce/skcipher.c b/drivers/crypto/qce/skcipher.c
-index a2d3da0ad95f..5a6559131eac 100644
---- a/drivers/crypto/qce/skcipher.c
-+++ b/drivers/crypto/qce/skcipher.c
-@@ -71,7 +71,7 @@ qce_skcipher_async_req_handle(struct crypto_async_request *async_req)
- 	struct scatterlist *sg;
- 	bool diff_dst;
- 	gfp_t gfp;
--	int ret;
-+	int dst_nents, src_nents, ret;
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index 0e0f6466b18d..475faa15854e 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -235,6 +235,10 @@ gen_btf()
  
- 	rctx->iv = req->iv;
- 	rctx->ivsize = crypto_skcipher_ivsize(skcipher);
-@@ -122,21 +122,22 @@ qce_skcipher_async_req_handle(struct crypto_async_request *async_req)
- 	sg_mark_end(sg);
- 	rctx->dst_sg = rctx->dst_tbl.sgl;
+ 	vmlinux_link ${1}
  
--	ret = dma_map_sg(qce->dev, rctx->dst_sg, rctx->dst_nents, dir_dst);
--	if (ret < 0)
-+	dst_nents = dma_map_sg(qce->dev, rctx->dst_sg, rctx->dst_nents, dir_dst);
-+	if (dst_nents < 0)
- 		goto error_free;
- 
- 	if (diff_dst) {
--		ret = dma_map_sg(qce->dev, req->src, rctx->src_nents, dir_src);
--		if (ret < 0)
-+		src_nents = dma_map_sg(qce->dev, req->src, rctx->src_nents, dir_src);
-+		if (src_nents < 0)
- 			goto error_unmap_dst;
- 		rctx->src_sg = req->src;
- 	} else {
- 		rctx->src_sg = rctx->dst_sg;
-+		src_nents = dst_nents - 1;
- 	}
- 
--	ret = qce_dma_prep_sgs(&qce->dma, rctx->src_sg, rctx->src_nents,
--			       rctx->dst_sg, rctx->dst_nents,
-+	ret = qce_dma_prep_sgs(&qce->dma, rctx->src_sg, src_nents,
-+			       rctx->dst_sg, dst_nents,
- 			       qce_skcipher_done, async_req);
- 	if (ret)
- 		goto error_unmap_src;
++	if [ "${pahole_ver}" -ge "118" ] && [ "${pahole_ver}" -le "121" ]; then
++		# pahole 1.18 through 1.21 can't handle zero-sized per-CPU vars
++		extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_vars"
++	fi
+ 	if [ "${pahole_ver}" -ge "121" ]; then
+ 		extra_paholeopt="${extra_paholeopt} --btf_gen_floats"
+ 	fi
 -- 
 2.30.2
 
