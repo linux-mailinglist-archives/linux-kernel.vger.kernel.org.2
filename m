@@ -2,49 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D4A73C5824
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95C1F3C4B7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379132AbhGLIl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:41:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36140 "EHLO mail.kernel.org"
+        id S240052AbhGLG5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:57:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350458AbhGLHvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:51:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E5FA0619D2;
-        Mon, 12 Jul 2021 07:45:33 +0000 (UTC)
+        id S237724AbhGLGl2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:41:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 50419610CA;
+        Mon, 12 Jul 2021 06:38:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075934;
-        bh=FZVIKbfqn5v0+fS+hgGROgxGQihCkEp3K8KHL1reOYQ=;
+        s=korg; t=1626071913;
+        bh=5SoCWH5JaG4EXaEbh41gL2yVFEpy/H4SD+E5JGSjuCI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xs/PVwtxrlAJpx5gyjENpcfLoEW0j9K7zXVkgqZUEe+tGf3ksbuEQxRd85HZiJQsO
-         VTEz0/ryV2pWjtx+J1BdahNJIfFNpZgVpUVcy4FPQ6ETELDrdEzlcMyEJbUkw9MR/6
-         5P8gJ3FkuBMNNDwoM6fJkJ2ho3yS5Io6XEyJmB8A=
+        b=ksmYqP1llZNJjUl784fVzw8RfrLTOM2qFUJDv8dkkcb01FoEEn+cL7GZA79WaHUJ7
+         0z/Bi4dwFYOzl8Wj5m0asnGwowClsSg84F4hfywNP3q2Dp4RZOfh7TQx1vh5+F1ECb
+         BcMKQgEXjJeLw6hPh0o+IQ7aGGcsOWYayGsniG8I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Alex Shi <alexs@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Yang Shi <shy828301@gmail.com>, Yu Zhao <yuzhao@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 384/800] swap: fix do_swap_page() race with swapoff
+Subject: [PATCH 5.10 247/593] arm64/mm: Fix ttbr0 values stored in struct thread_info for software-pan
 Date:   Mon, 12 Jul 2021 08:06:47 +0200
-Message-Id: <20210712061008.051697451@linuxfoundation.org>
+Message-Id: <20210712060910.080337535@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,128 +44,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miaohe Lin <linmiaohe@huawei.com>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
 
-[ Upstream commit 2799e77529c2a25492a4395db93996e3dacd762d ]
+[ Upstream commit 9163f01130304fab1f74683d7d44632da7bda637 ]
 
-When I was investigating the swap code, I found the below possible race
-window:
+When using CONFIG_ARM64_SW_TTBR0_PAN, a task's thread_info::ttbr0 must be
+the TTBR0_EL1 value used to run userspace. With 52-bit PAs, the PA must be
+packed into the TTBR using phys_to_ttbr(), but we forget to do this in some
+of the SW PAN code. Thus, if the value is installed into TTBR0_EL1 (as may
+happen in the uaccess routines), this could result in UNPREDICTABLE
+behaviour.
 
-CPU 1                                   	CPU 2
------                                   	-----
-do_swap_page
-  if (data_race(si->flags & SWP_SYNCHRONOUS_IO)
-  swap_readpage
-    if (data_race(sis->flags & SWP_FS_OPS)) {
-                                        	swapoff
-					  	  ..
-					  	  p->swap_file = NULL;
-					  	  ..
-    struct file *swap_file = sis->swap_file;
-    struct address_space *mapping = swap_file->f_mapping;[oops!]
+Since hardware with 52-bit PA support almost certainly has HW PAN, which
+will be used in preference, this shouldn't be a practical issue, but let's
+fix this for consistency.
 
-Note that for the pages that are swapped in through swap cache, this isn't
-an issue. Because the page is locked, and the swap entry will be marked
-with SWAP_HAS_CACHE, so swapoff() can not proceed until the page has been
-unlocked.
-
-Fix this race by using get/put_swap_device() to guard against concurrent
-swapoff.
-
-Link: https://lkml.kernel.org/r/20210426123316.806267-3-linmiaohe@huawei.com
-Fixes: 0bcac06f27d7 ("mm,swap: skip swapcache for swapin of synchronous device")
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
-Cc: Alex Shi <alexs@kernel.org>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Dennis Zhou <dennis@kernel.org>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Minchan Kim <minchan@kernel.org>
-Cc: Tim Chen <tim.c.chen@linux.intel.com>
-Cc: Wei Yang <richard.weiyang@gmail.com>
-Cc: Yang Shi <shy828301@gmail.com>
-Cc: Yu Zhao <yuzhao@google.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: James Morse <james.morse@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Fixes: 529c4b05a3cb ("arm64: handle 52-bit addresses in TTBR")
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+Link: https://lore.kernel.org/r/1623749578-11231-1-git-send-email-anshuman.khandual@arm.com
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/swap.h |  9 +++++++++
- mm/memory.c          | 11 +++++++++--
- 2 files changed, 18 insertions(+), 2 deletions(-)
+ arch/arm64/include/asm/mmu_context.h | 4 ++--
+ arch/arm64/kernel/setup.c            | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index 144727041e78..a84f76db5070 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -526,6 +526,15 @@ static inline struct swap_info_struct *swp_swap_info(swp_entry_t entry)
- 	return NULL;
+diff --git a/arch/arm64/include/asm/mmu_context.h b/arch/arm64/include/asm/mmu_context.h
+index 68028de06d18..5a54a5ab5f92 100644
+--- a/arch/arm64/include/asm/mmu_context.h
++++ b/arch/arm64/include/asm/mmu_context.h
+@@ -192,9 +192,9 @@ static inline void update_saved_ttbr0(struct task_struct *tsk,
+ 		return;
+ 
+ 	if (mm == &init_mm)
+-		ttbr = __pa_symbol(reserved_pg_dir);
++		ttbr = phys_to_ttbr(__pa_symbol(reserved_pg_dir));
+ 	else
+-		ttbr = virt_to_phys(mm->pgd) | ASID(mm) << 48;
++		ttbr = phys_to_ttbr(virt_to_phys(mm->pgd)) | ASID(mm) << 48;
+ 
+ 	WRITE_ONCE(task_thread_info(tsk)->ttbr0, ttbr);
  }
+diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
+index c28a9ec76b11..eb4b24652c10 100644
+--- a/arch/arm64/kernel/setup.c
++++ b/arch/arm64/kernel/setup.c
+@@ -366,7 +366,7 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
+ 	 * faults in case uaccess_enable() is inadvertently called by the init
+ 	 * thread.
+ 	 */
+-	init_task.thread_info.ttbr0 = __pa_symbol(reserved_pg_dir);
++	init_task.thread_info.ttbr0 = phys_to_ttbr(__pa_symbol(reserved_pg_dir));
+ #endif
  
-+static inline struct swap_info_struct *get_swap_device(swp_entry_t entry)
-+{
-+	return NULL;
-+}
-+
-+static inline void put_swap_device(struct swap_info_struct *si)
-+{
-+}
-+
- #define swap_address_space(entry)		(NULL)
- #define get_nr_swap_pages()			0L
- #define total_swap_pages			0L
-diff --git a/mm/memory.c b/mm/memory.c
-index 486f4a2874e7..b15367c285bd 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -3353,6 +3353,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- {
- 	struct vm_area_struct *vma = vmf->vma;
- 	struct page *page = NULL, *swapcache;
-+	struct swap_info_struct *si = NULL;
- 	swp_entry_t entry;
- 	pte_t pte;
- 	int locked;
-@@ -3380,14 +3381,16 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 		goto out;
- 	}
- 
-+	/* Prevent swapoff from happening to us. */
-+	si = get_swap_device(entry);
-+	if (unlikely(!si))
-+		goto out;
- 
- 	delayacct_set_flag(current, DELAYACCT_PF_SWAPIN);
- 	page = lookup_swap_cache(entry, vma, vmf->address);
- 	swapcache = page;
- 
- 	if (!page) {
--		struct swap_info_struct *si = swp_swap_info(entry);
--
- 		if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
- 		    __swap_count(entry) == 1) {
- 			/* skip swapcache */
-@@ -3556,6 +3559,8 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- unlock:
- 	pte_unmap_unlock(vmf->pte, vmf->ptl);
- out:
-+	if (si)
-+		put_swap_device(si);
- 	return ret;
- out_nomap:
- 	pte_unmap_unlock(vmf->pte, vmf->ptl);
-@@ -3567,6 +3572,8 @@ out_release:
- 		unlock_page(swapcache);
- 		put_page(swapcache);
- 	}
-+	if (si)
-+		put_swap_device(si);
- 	return ret;
- }
- 
+ 	if (boot_args[1] || boot_args[2] || boot_args[3]) {
 -- 
 2.30.2
 
