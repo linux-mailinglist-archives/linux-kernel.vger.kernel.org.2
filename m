@@ -2,133 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 201A33C658E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 23:44:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8E063C65B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 23:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234924AbhGLVrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 17:47:13 -0400
-Received: from esa.hc503-62.ca.iphmx.com ([216.71.131.47]:55736 "EHLO
-        esa.hc503-62.ca.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbhGLVrM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 17:47:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=uwaterloo.ca; i=@uwaterloo.ca; q=dns/txt; s=default;
-  t=1626126263; x=1657662263;
-  h=to:cc:references:subject:in-reply-to:from:message-id:
-   date:mime-version:content-transfer-encoding;
-  bh=seij5sVjCpiZ5ThWMz7niqAvKuxJMkBdQqYc7ftubO4=;
-  b=C30j/v9CzCtrUJvxKP1sQN4vMa3ayY0szBvfzDXZSDhnWJaB33cA8AbH
-   QIpDfEZ0M8OAmFde95AnFao8E4Z1D5TM3qt+iwX0b5OsY0Jac21hceMrA
-   HshPYpdguDOlC6G1gqi77wGst92/QaN4+/DUhn2Dd1tRrfk1phA+V/AMQ
-   k=;
-Received: from connect.uwaterloo.ca (HELO connhm04.connect.uwaterloo.ca) ([129.97.208.43])
-  by ob1.hc503-62.ca.iphmx.com with ESMTP/TLS/AES256-GCM-SHA384; 12 Jul 2021 17:44:19 -0400
-Received: from [10.42.0.123] (10.32.139.159) by connhm04.connect.uwaterloo.ca
- (172.16.137.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 12
- Jul 2021 17:44:18 -0400
-To:     <posk@google.com>
-CC:     <avagin@google.com>, <bsegall@google.com>, <jannh@google.com>,
-        <jnewsome@torproject.org>, <joel@joelfernandes.org>,
-        <linux-api@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <mingo@redhat.com>, <mkarsten@uwaterloo.ca>, <pabuhr@uwaterloo.ca>,
-        <peterz@infradead.org>, <pjt@google.com>, <posk@posk.io>,
-        <tdelisle@uwaterloo.ca>, <tglx@linutronix.de>
-References: <CAPNVh5f3H7Gor-Dph7=2jAdme-4mRfCCb0gv=wjgHQtd7Cad=Q@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/3 v0.2] sched/umcg: RFC: implement UMCG syscalls
-In-Reply-To: <CAPNVh5f3H7Gor-Dph7=2jAdme-4mRfCCb0gv=wjgHQtd7Cad=Q@mail.gmail.com>
-From:   Thierry Delisle <tdelisle@uwaterloo.ca>
-Message-ID: <acad5960-30b2-3693-9117-e0b054ee97a7@uwaterloo.ca>
-Date:   Mon, 12 Jul 2021 17:44:18 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229726AbhGLVyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 17:54:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53304 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229477AbhGLVyG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 17:54:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E1F860232;
+        Mon, 12 Jul 2021 21:51:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626126677;
+        bh=5vqH/9WMlx5qlNWbJyIbS33BMltJ59roYjI/NA3A8zc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=nabIYQH1RzcFAg09o1rTJxVWITUxILIHB5/Luu5fGL4rmO7LU2ZLz+GihxhLh/k//
+         W9sHG23QF5gW6mjfP68OpjQUxu5resqOGeEpCuEmyZPmZwONDMkDXCTgf2rXDuD31Z
+         Yqi+EJqqoHsyoEqJs4JLYcty8ZnXe9Mfe0I2gsELyqy9B89Qsr3HVJxfAfCSd/XaNs
+         p29kCtsmU0zDiFMjdSGNcyR5bY1TnQsZyyTNPEVB60ond0PvmWdGtfowQsOyrKluLy
+         VZOLzI+oKzNuaQf+/QX6sGU/9KbdtYY5BoMcgcl07Dg6BhbL3bhDPiklTxRxdbYSER
+         hqd59j6HnPFjg==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH v2] arm64: Restrict ARM64_BTI_KERNEL to clang 12.0.0 and newer
+Date:   Mon, 12 Jul 2021 14:46:37 -0700
+Message-Id: <20210712214636.3134425-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.32.0.93.g670b81a890
+In-Reply-To: <20210709000627.3183718-1-nathan@kernel.org>
+References: <20210709000627.3183718-1-nathan@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
+X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.32.139.159]
-X-ClientProxiedBy: connhm04.connect.uwaterloo.ca (172.16.137.68) To
- connhm04.connect.uwaterloo.ca (172.16.137.68)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- > sys_umcg_wait without next_tid puts the task in UMCG_IDLE state; wake
- > wakes it. These are standard sched operations. If they are emulated
- > via futexes, fast context switching will require something like
- > FUTEX_SWAP that was NACKed last year.
+Commit 97fed779f2a6 ("arm64: bti: Provide Kconfig for kernel mode BTI")
+disabled CONFIG_ARM64_BTI_KERNEL when CONFIG_GCOV_KERNEL was enabled and
+compiling with clang because of warnings that were seen with
+allmodconfig because LLVM was not emitting PAC/BTI instructions for
+compiler generated functions:
 
-I understand these wait and wake semantics and the need for the fast
-context-switch(swap). As I see it, you need 3 operations:
+warning: some functions compiled with BTI and some compiled without BTI
+warning: not setting BTI in feature flags
 
-- SWAP: context-switch directly to a different thread, no scheduler involved
-- WAIT: block current thread, go back to server thread
-- WAKE: unblock target thread, add it to scheduler, e.g. through
-         idle_workers_ptr
+This depedency was fine for avoiding the warnings with allmodconfig
+until commit 51c2ee6d121c ("Kconfig: Introduce ARCH_WANTS_NO_INSTR and
+CC_HAS_NO_PROFILE_FN_ATTR"), which prevents CONFIG_GCOV_KERNEL from
+being enabled with clang 12.0.0 or older because those versions do not
+support the no_profile_instrument_function attribute.
 
-There is no existing syscalls to handle SWAP, so I agree sys_umcg_wait is
-needed for this to work.
+As a result, CONFIG_ARM64_BTI_KERNEL gets enabled with allmodconfig and
+there are more warnings like the ones above due to CONFIG_KASAN, which
+suffers from the same problem as CONFIG_GCOV_KERNEL. This was most
+likely not noticed at the time because allmodconfig +
+CONFIG_GCOV_KERNEL=n was not tested. defconfig + CONFIG_KASAN=y is
+enough to reproduce the same warnings as above.
 
-However, there already exists sys_futex to handle WAIT and WAKE. When a 
-worker
-calls either sys_futex WAIT or sys_umcg_wait next_tid == NULL, in both case
-the worker will block, SWAP to the server and wait for FUTEX_WAKE,
-UMCG_WAIT_WAKE_ONLY respectively. It's not obvious to me that there 
-would be
-performance difference and the semantics seem to be the same to me.
+The root cause of the warnings was resolved in LLVM during the 12.0.0
+release so rather than play whack-a-mole with the dependencies, just
+update CONFIG_ARM64_BTI_KERNEL to require clang 12.0.0, which will have
+all of the issues ironed out.
 
-So what I am asking is: is UMCG_WAIT_WAKE_ONLY needed?
+Link: https://github.com/ClangBuiltLinux/linux/issues/1428
+Link: https://github.com/ClangBuiltLinux/continuous-integration2/runs/3010034706?check_suite_focus=true
+Link: https://github.com/ClangBuiltLinux/continuous-integration2/runs/3010035725?check_suite_focus=true
+Link: https://github.com/llvm/llvm-project/commit/a88c722e687e6780dcd6a58718350dc76fcc4cc9
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
 
-Is the idea to support workers directly context-switching among each other,
-without involving server threads and without going through idle_servers_ptr?
+v1 -> v2:
 
-If so, can you explain some of the intended state transitions in this case.
+* Fix typo ("compilign" to "compiling") per Will.
 
+* Clarify that these warnings are reproducible back at the time of
+  97fed779f2a6 with allmodconfig + CONFIG_GCOV_KERNEL=n but that
+  configuration was most likely not tested.
 
- > > However, I do not understand how the userspace is expected to use 
-it. I also
- > > do not understand if these link fields form a stack or a queue and 
-where is
- > > the head.
- >
- > When a server has nothing to do (no work to run), it is put into IDLE
- > state and added to the list. The kernel wakes an IDLE server if a
- > blocked worker unblocks.
+* Clarify that the warnings come from CONFIG_KASAN, which suffers from
+  the same issue at CONFIG_GCOV_KERNEL because there are compiler
+  generated functions.
 
- From the code in umcg_wq_worker_running (Step 3), I am guessing users are
-expected to provide a global head somewhere in memory and
-umcg_task.idle_servers_ptr points to the head of the list for all workers.
-Servers are then added in user space using atomic_stack_push_user. Is this
-correct? I did not find any documentation on the list head.
+* Clarify that the root cause of the warnings is resolved in 12.0.0 and
+  link to the GitHub commit rather than the Phabricator instance, in
+  case LLVM moves to GitHub reviews in the future.
 
-I like the idea that each worker thread points to a given list, it 
-allows the
-possibility for separate containers with their own independent servers, 
-workers
-and scheduling. However, it seems that the list itself could be implemented
-using existing kernel APIs, for example a futex or an event fd. Like so:
+Hopefully this is adequate explanation for what is going on, thanks to
+Will and Nick for providing input on the commit message.
 
-struct umcg_task {
-      [...]
+ arch/arm64/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-      /**
-       * @idle_futex_ptr: pointer to a futex user for idle server threads.
-       *
-       * When waking a worker, the kernel decrements the pointed to 
-futex value
-       * if it is non-zero and wakes a server if the decrement occurred.
-       *
-       * Server threads that have no work to do should increment the futex
-       * value and FUTEX_WAIT
-       */
-      uint64_t    idle_futex_ptr;    /* r/w */
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index e07e7de9ac49..b5b13a932561 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -1605,7 +1605,8 @@ config ARM64_BTI_KERNEL
+ 	depends on CC_HAS_BRANCH_PROT_PAC_RET_BTI
+ 	# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=94697
+ 	depends on !CC_IS_GCC || GCC_VERSION >= 100100
+-	depends on !(CC_IS_CLANG && GCOV_KERNEL)
++	# https://github.com/llvm/llvm-project/commit/a88c722e687e6780dcd6a58718350dc76fcc4cc9
++	depends on !CC_IS_CLANG || CLANG_VERSION >= 120000
+ 	depends on (!FUNCTION_GRAPH_TRACER || DYNAMIC_FTRACE_WITH_REGS)
+ 	help
+ 	  Build the kernel with Branch Target Identification annotations
 
-      [...]
-} __attribute__((packed, aligned(8 * sizeof(__u64))));
-
-I believe the futex approach, like the list, has the advantage that when 
-there
-are no idle servers, checking the list requires no locking. I don't know if
-that can be achieved with eventfd.
+base-commit: e73f0f0ee7541171d89f2e2491130c7771ba58d3
+-- 
+2.32.0.93.g670b81a890
 
