@@ -2,102 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC99F3C5F79
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 17:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5108D3C5F78
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 17:41:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235636AbhGLPoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 11:44:14 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:20811 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235400AbhGLPoM (ORCPT
+        id S235582AbhGLPn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 11:43:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235563AbhGLPn5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 11:44:12 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1626104483; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To:
- Subject: From: Sender; bh=HfDY19Td7Yb6LP09Ydf7zDiMxK8u7WGqFqG3C/QOekU=;
- b=mQoyrfqbeQkjeBvHuaOcVWMh8H5O0uHb419TZfz+ErC8s6RZA0YOCukmOsFfpHuzpDo8CL10
- 33BW5fs85ckDFg6fl2voUtL7SXD1Ztpd/7Mdeo3ehpD4H7Qnpq80PvhQ2BimREKUp+uUg0JJ
- NnU/vxvXcVbUN0PuVSr2OvflwiA=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 60ec62941938941955eb8ed1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 12 Jul 2021 15:41:08
- GMT
-Sender: mdtipton=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id F393FC43460; Mon, 12 Jul 2021 15:41:07 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-4.4 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.12] (pool-96-253-99-54.rcmdva.fios.verizon.net [96.253.99.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mdtipton)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 05E4DC433D3;
-        Mon, 12 Jul 2021 15:41:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 05E4DC433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mdtipton@codeaurora.org
-From:   Mike Tipton <mdtipton@codeaurora.org>
-Subject: Re: [PATCH 1/4] interconnect: Zero initial BW after sync-state
-To:     okukatla@codeaurora.org
-Cc:     djakov@kernel.org, bjorn.andersson@linaro.org, agross@kernel.org,
-        saravanak@google.com, linux-arm-msm@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mdtipton=codeaurora.org@codeaurora.org
-References: <20210625212839.24155-1-mdtipton@codeaurora.org>
- <20210625212839.24155-2-mdtipton@codeaurora.org>
- <14c52b496918900c9cb3bef662a9e833@codeaurora.org>
-Message-ID: <86e76352-1199-0fc6-9e5d-b7d45db37636@codeaurora.org>
-Date:   Mon, 12 Jul 2021 08:41:03 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 12 Jul 2021 11:43:57 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE6C3C0613DD;
+        Mon, 12 Jul 2021 08:41:08 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id A55F76210; Mon, 12 Jul 2021 11:41:06 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org A55F76210
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1626104466;
+        bh=58qsbxGOldmXglP0XTIWP5zPM6bP3vD1mti24yWL6p4=;
+        h=Date:To:Cc:Subject:References:In-Reply-To:From:From;
+        b=b3KfNWYgyy+7ug+X4mtbJ0nB2zxIsoueTBluDdvJYz0EI9qtCIkfTUMMjALSXuG6g
+         XiLxIJUyUJ22hrnsxgWppVUz4b6S7c298HXKfUzu3VWtfh2+aWa3Uit6V1x6nKwiMq
+         CvCFga8AvZbqMbjlkCqsDKWZH3QGbznmDh5jMAPg=
+Date:   Mon, 12 Jul 2021 11:41:06 -0400
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     Bruce Fields <bfields@redhat.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, virtio-fs@redhat.com, dwalsh@redhat.com,
+        dgilbert@redhat.com, casey.schaufler@intel.com,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        tytso@mit.edu, miklos@szeredi.hu, gscrivan@redhat.com,
+        jack@suse.cz, Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH v2 1/1] xattr: Allow user.* xattr on symlink and special
+ files
+Message-ID: <20210712154106.GB18679@fieldses.org>
+References: <20210708175738.360757-1-vgoyal@redhat.com>
+ <20210708175738.360757-2-vgoyal@redhat.com>
+ <20210709091915.2bd4snyfjndexw2b@wittgenstein>
+ <20210709152737.GA398382@redhat.com>
+ <710d1c6f-d477-384f-0cc1-8914258f1fb1@schaufler-ca.com>
+ <20210709175947.GB398382@redhat.com>
+ <CAPL3RVGKg4G5qiiHo7KYPcsWWgeoW=qNPOSQpd3Sv329jrWrLQ@mail.gmail.com>
+ <20210712140247.GA486376@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <14c52b496918900c9cb3bef662a9e833@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210712140247.GA486376@redhat.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+From:   bfields@fieldses.org (J. Bruce Fields)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/1/2021 9:56 AM, okukatla@codeaurora.org wrote:
-> On 2021-06-26 02:58, Mike Tipton wrote:
->> The initial BW values may be used by providers to enforce floors. Zero
->> these values after sync-state so that providers know when to stop
->> enforcing them.
->>
->> Fixes: b1d681d8d324 ("interconnect: Add sync state support")
->> Signed-off-by: Mike Tipton <mdtipton@codeaurora.org>
->> ---
->>  drivers/interconnect/core.c | 2 ++
->>  1 file changed, 2 insertions(+)
->>
->> diff --git a/drivers/interconnect/core.c b/drivers/interconnect/core.c
->> index 8a1e70e00876..945121e18b5c 100644
->> --- a/drivers/interconnect/core.c
->> +++ b/drivers/interconnect/core.c
->> @@ -1106,6 +1106,8 @@ void icc_sync_state(struct device *dev)
->>          dev_dbg(p->dev, "interconnect provider is in synced state\n");
->>          list_for_each_entry(n, &p->nodes, node_list) {
->>              if (n->init_avg || n->init_peak) {
->> +                n->init_avg = 0;
->> +                n->init_peak = 0;
-> nit: It is good to reset init/floor levels back to zero, but we don't 
-> need to do this as we have sync_state flag to let providers know when to 
-> stop enforcing.
+On Mon, Jul 12, 2021 at 10:02:47AM -0400, Vivek Goyal wrote:
+> On Fri, Jul 09, 2021 at 04:10:16PM -0400, Bruce Fields wrote:
+> > On Fri, Jul 9, 2021 at 1:59 PM Vivek Goyal <vgoyal@redhat.com> wrote:
+> > > nfs seems to have some issues.
+> > 
+> > I'm not sure what the expected behavior is for nfs.  All I have for
+> > now is some generic troubleshooting ideas, sorry:
+> > 
+> > > - I can set user.foo xattr on symlink and query it back using xattr name.
+> > >
+> > >   getfattr -h -n user.foo foo-link.txt
+> > >
+> > >   But when I try to dump all xattrs on this file, user.foo is being
+> > >   filtered out it looks like. Not sure why.
+> > 
+> > Logging into the server and seeing what's set there could help confirm
+> > whether it's the client or server that's at fault.  (Or watching the
+> > traffic in wireshark; there are GET/SET/LISTXATTR ops that should be
+> > easy to spot.)
+> > 
+> > > - I can't set "user.foo" xattr on a device node on nfs and I get
+> > >   "Permission denied". I am assuming nfs server is returning this.
+> > 
+> > Wireshark should tell you whether it's the server or client doing that.
+> > 
+> > The RFC is https://datatracker.ietf.org/doc/html/rfc8276, and I don't
+> > see any explicit statement about what the server should do in the case
+> > of symlinks or device nodes, but I do see "Any regular file or
+> > directory may have a set of extended attributes", so that was clearly
+> > the assumption.  Also, NFS4ERR_WRONG_TYPE is listed as a possible
+> > error return for the xattr ops.  But on a quick skim I don't see any
+> > explicit checks in the nfsd code, so I *think* it's just relying on
+> > the vfs for any file type checks.
+> 
+> Hi Bruce,
+> 
+> Thanks for the response. I am just trying to do set a user.foo xattr on
+> a device node on nfs.
+> 
+> setfattr -n "user.foo" -v "bar" /mnt/nfs/test-dev
+> 
+> and I get -EACCESS.
+> 
+> I put some printk() statements and EACCESS is being returned from here.
+> 
+> nfs4_xattr_set_nfs4_user() {
+>         if (!nfs_access_get_cached(inode, current_cred(), &cache, true)) {
+>                 if (!(cache.mask & NFS_ACCESS_XAWRITE)) {
+>                         return -EACCES;
+>                 }
+>         }
+> }
+> 
+> Value of cache.mask=0xd at the time of error.
 
-The synced_state variable is static to this file. It's not exposed to 
-providers. In fact, we could entirely remove synced_state with this 
-patch since it's unnecessary after zeroing the initial floors.
+Looks like 0xd is what the server returns to access on a device node
+with mode bits rw- for the caller.
 
->>                  aggregate_requests(n);
->>                  p->set(n, n);
->>              }
+Commit c11d7fd1b317 "nfsd: take xattr bits into account for permission
+checks" added the ACCESS_X* bits for regular files and directories but
+not others.
+
+But you don't want to determine permission from the mode bits anyway,
+you want it to depend on the owner, so I guess we should be calling
+xattr_permission somewhere if we want that behavior.
+
+The RFC assumes user xattrs are for regular files and directories,
+without, as far as I can tell, actually explicitly forbidding them on
+other objects.  We should also raise this with the working group if we
+want to increase the chances that you'll get the behavior you want on
+non-Linux servers.
+
+The "User extended attributes" section of the xattr(7) man page will
+need updating.
+
+--b.
