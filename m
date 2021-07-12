@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CBFB3C4B8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C38763C57B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239526AbhGLG6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:58:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33544 "EHLO mail.kernel.org"
+        id S1346776AbhGLIgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:36:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237516AbhGLGlu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:41:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04BF56113E;
-        Mon, 12 Jul 2021 06:38:51 +0000 (UTC)
+        id S1350443AbhGLHvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:51:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 271C4619C4;
+        Mon, 12 Jul 2021 07:45:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071932;
-        bh=jLagBNkpwz2CdsX2bpqc1aEG1+0SE3pWJkgr5G3y5Pw=;
+        s=korg; t=1626075920;
+        bh=nbskVuz7TMGpYfcP8knuOHbtPWW+zS/sVAug0/2Wg5A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lQREinMrwuzBvftVdQHJjdk5OS0g6dmyyRSfr/o0DOCvNh1p6nXinu0wrN7g/QN1m
-         b/Po7mGSLXuIuYVXRjyNXJjbsjUbdDai5TNdIDPLxpZo64Xuviy7HOke3aWKpghzPg
-         UWKozCGtkVUm0vueHQBkX2zw93DFzt83MgxG09aw=
+        b=AXTiUMqYKPx5yOYsVkiWIOPGep146vNJqlKjR2iyUHJFvI/y5jK9V5aFShl0LiW7D
+         QsuOXoszMowhY4v7sqodicbTsry2Wy+saS8X9XzpvDis1r9NdvFbzHzlk/XomuXVOW
+         vYxMVI94OTmt4Lt+QbGGSOc8dfbYonCnXgJoXb1c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
+        stable@vger.kernel.org, Alex Bee <knaerzche@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 281/593] extcon: extcon-max8997: Fix IRQ freeing at error path
-Date:   Mon, 12 Jul 2021 08:07:21 +0200
-Message-Id: <20210712060915.029735625@linuxfoundation.org>
+Subject: [PATCH 5.13 419/800] drm: rockchip: set alpha_en to 0 if it is not used
+Date:   Mon, 12 Jul 2021 08:07:22 +0200
+Message-Id: <20210712061011.791034175@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+From: Alex Bee <knaerzche@gmail.com>
 
-[ Upstream commit 610bdc04830a864115e6928fc944f1171dfff6f3 ]
+[ Upstream commit 046e0db975695540c9d9898cdbf0b60533d28afb ]
 
-If reading MAX8997_MUIC_REG_STATUS1 fails at probe the driver exits
-without freeing the requested IRQs.
+alpha_en should be set to 0 if it is not used, i.e. to disable alpha
+blending if it was enabled before and should be disabled now.
 
-Free the IRQs prior returning if reading the status fails.
-
-Fixes: 3e34c8198960 ("extcon: max8997: Avoid forcing UART path on drive probe")
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
-Link: https://lore.kernel.org/r/27ee4a48ee775c3f8c9d90459c18b6f2b15edc76.1623146580.git.matti.vaittinen@fi.rohmeurope.com
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Fixes: 2aae8ed1f390 ("drm/rockchip: Add per-pixel alpha support for the PX30 VOP")
+Signed-off-by: Alex Bee <knaerzche@gmail.com>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210528130554.72191-6-knaerzche@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/extcon/extcon-max8997.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/rockchip/rockchip_drm_vop.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/extcon/extcon-max8997.c b/drivers/extcon/extcon-max8997.c
-index 337b0eea4e62..5c4f7746cbee 100644
---- a/drivers/extcon/extcon-max8997.c
-+++ b/drivers/extcon/extcon-max8997.c
-@@ -729,7 +729,7 @@ static int max8997_muic_probe(struct platform_device *pdev)
- 				2, info->status);
- 	if (ret) {
- 		dev_err(info->dev, "failed to read MUIC register\n");
--		return ret;
-+		goto err_irq;
+diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+index 64469439ddf2..f5b9028a16a3 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
++++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+@@ -1022,6 +1022,7 @@ static void vop_plane_atomic_update(struct drm_plane *plane,
+ 		VOP_WIN_SET(vop, win, alpha_en, 1);
+ 	} else {
+ 		VOP_WIN_SET(vop, win, src_alpha_ctl, SRC_ALPHA_EN(0));
++		VOP_WIN_SET(vop, win, alpha_en, 0);
  	}
- 	cable_type = max8997_muic_get_cable_type(info,
- 					   MAX8997_CABLE_GROUP_ADC, &attached);
+ 
+ 	VOP_WIN_SET(vop, win, enable, 1);
 -- 
 2.30.2
 
