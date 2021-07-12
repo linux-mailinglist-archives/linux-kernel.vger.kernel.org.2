@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E93EC3C4E97
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D14583C54BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343824AbhGLHUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:20:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54228 "EHLO mail.kernel.org"
+        id S1354076AbhGLID2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:03:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234094AbhGLGxx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:53:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65CDD608FE;
-        Mon, 12 Jul 2021 06:50:49 +0000 (UTC)
+        id S1345094AbhGLHYx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:24:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD55F610D0;
+        Mon, 12 Jul 2021 07:21:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072649;
-        bh=QIcrSoPAStZLEydIq7pJN/J5TiFrrMuUZPmEuxKOUuQ=;
+        s=korg; t=1626074504;
+        bh=dCI38lEOlqxPqmLj1MleU5qnHUyLQT7tCIFNa9o6p2U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=08eKXfoM4I9gPDk5ncMgIZ1yEhmA+SxqknUF4Sd8QpeIDbpiEpVX35TDMuT1Qh1cj
-         chlQ2MedtSoZhkXZ6bvTyKzQ3GlPYBQ85SI/3T63krajM4/m4vDOxgApg9u0Y5GiIY
-         BQm1KpD7zOEZVBRnShkKK0hiMd8i9T/kfP4/7aHw=
+        b=fiyucjNWecqnRc81ZAZxdyCYKbzDlpGmjswESjvEmZGU/xQxF2QdI08SNQ45a1bwj
+         pk+l5gHvRMFwYjizVaC+GfmnWK3cFUteNCBSvQBdxEnvTlhxtjTcJOkzDWMuCdKT0f
+         0XMtb7f6IafVG+jX5RHrK1cw4AXBt5fhGCpT7Oi0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        stable@vger.kernel.org,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Bard Liao <bard.liao@intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 525/593] staging: rtl8712: fix memory leak in rtl871x_load_fw_cb
+Subject: [PATCH 5.12 602/700] ASoC: rt715-sdw: use first_hw_init flag on resume
 Date:   Mon, 12 Jul 2021 08:11:25 +0200
-Message-Id: <20210712060950.816933289@linuxfoundation.org>
+Message-Id: <20210712061039.962453435@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,81 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit e02a3b945816a77702a2769a70ef5f9b06e49d54 ]
+[ Upstream commit dbc07517ab173688ef11234d1099bc1e24e4f14b ]
 
-There is a leak in rtl8712 driver.
-The problem was in non-freed adapter data if
-firmware load failed.
+The intent of the status check on resume was to verify if a SoundWire
+peripheral reported ATTACHED before waiting for the initialization to
+complete. This is required to avoid timeouts that will happen with
+'ghost' devices that are exposed in the platform firmware but are not
+populated in hardware.
 
-This leak can be reproduced with this code:
-https://syzkaller.appspot.com/text?tag=ReproC&x=16612f02d00000,
-Autoload must fail (to not hit memory leak reported by syzkaller)
+Unfortunately we used 'hw_init' instead of 'first_hw_init'. Due to
+another error, the resume operation never timed out, but the volume
+settings were not properly restored.
 
-There are 2 possible ways how rtl871x_load_fw_cb() and
-r871xu_dev_remove() can be called (in case of fw load error).
-
-1st case:
-	r871xu_dev_remove() then rtl871x_load_fw_cb()
-
-	In this case r871xu_dev_remove() will wait for
-	completion and then will jump to the end, because
-	rtl871x_load_fw_cb() set intfdata to NULL:
-
-	if (pnetdev) {
-		struct _adapter *padapter = netdev_priv(pnetdev);
-
-		/* never exit with a firmware callback pending */
-		wait_for_completion(&padapter->rtl8712_fw_ready);
-		pnetdev = usb_get_intfdata(pusb_intf);
-		usb_set_intfdata(pusb_intf, NULL);
-		if (!pnetdev)
-			goto firmware_load_fail;
-
-		... clean up code here ...
-	}
-
-2nd case:
-	rtl871x_load_fw_cb() then r871xu_dev_remove()
-
-	In this case pnetdev (from code snippet above) will
-	be zero (because rtl871x_load_fw_cb() set it to NULL)
-	And clean up code won't be executed again.
-
-So, in all cases we need to free adapted data in rtl871x_load_fw_cb(),
-because disconnect function cannot take care of it. And there won't be
-any race conditions, because complete() call happens after setting
-intfdata to NULL.
-
-In previous patch I moved out free_netdev() from r8712_free_drv_sw()
-and that's why now it's possible to free adapter data and then call
-complete.
-
-Fixes: 8c213fa59199 ("staging: r8712u: Use asynchronous firmware loading")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Link: https://lore.kernel.org/r/81e68fe0194499cc2e7692d35bc4dcf167827d8f.1623620630.git.paskripkin@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+BugLink: https://github.com/thesofproject/linux/issues/2908
+BugLink: https://github.com/thesofproject/linux/issues/2637
+Fixes: d1ede0641b05e ('ASoC: rt715: add RT715 codec driver')
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Bard Liao <bard.liao@intel.com>
+Link: https://lore.kernel.org/r/20210607222239.582139-11-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/rtl8712/hal_init.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/codecs/rt715-sdw.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/rtl8712/hal_init.c b/drivers/staging/rtl8712/hal_init.c
-index 715f1fe8b472..22974277afa0 100644
---- a/drivers/staging/rtl8712/hal_init.c
-+++ b/drivers/staging/rtl8712/hal_init.c
-@@ -40,7 +40,10 @@ static void rtl871x_load_fw_cb(const struct firmware *firmware, void *context)
- 		dev_err(&udev->dev, "r8712u: Firmware request failed\n");
- 		usb_put_dev(udev);
- 		usb_set_intfdata(usb_intf, NULL);
-+		r8712_free_drv_sw(adapter);
-+		adapter->dvobj_deinit(adapter);
- 		complete(&adapter->rtl8712_fw_ready);
-+		free_netdev(adapter->pnetdev);
- 		return;
- 	}
- 	adapter->fw = firmware;
+diff --git a/sound/soc/codecs/rt715-sdw.c b/sound/soc/codecs/rt715-sdw.c
+index 71dd3b97a459..157a97acc6c2 100644
+--- a/sound/soc/codecs/rt715-sdw.c
++++ b/sound/soc/codecs/rt715-sdw.c
+@@ -541,7 +541,7 @@ static int __maybe_unused rt715_dev_resume(struct device *dev)
+ 	struct rt715_priv *rt715 = dev_get_drvdata(dev);
+ 	unsigned long time;
+ 
+-	if (!rt715->hw_init)
++	if (!rt715->first_hw_init)
+ 		return 0;
+ 
+ 	if (!slave->unattach_request)
 -- 
 2.30.2
 
