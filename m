@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE793C507B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:46:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E9B93C4958
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243840AbhGLHdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:33:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40526 "EHLO mail.kernel.org"
+        id S238506AbhGLGoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:44:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243888AbhGLHFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:05:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 54EA561179;
-        Mon, 12 Jul 2021 07:02:34 +0000 (UTC)
+        id S237805AbhGLGex (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:34:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0877610F7;
+        Mon, 12 Jul 2021 06:31:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073354;
-        bh=raElE/LTi6RdTWtu6Qz0VjOIA0GIV9i4FphLeAtxHu8=;
+        s=korg; t=1626071499;
+        bh=UuLPKepBpPFqNqTZWn8KjjNrCtSL8QWA/rx9s6gkB7I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OuHP8xpR0BHS+QUUnsrbipAnZBcZwZM2Ky4a3Jk0rrWmz2oYW/9N/K9LRT/oVbp2O
-         edUi4rBPIZXA1o1++d6hGIaynZmwrZOs64YBR803eDk7xU0UjgDG6nJb/0hDNcxjAK
-         fpGezvF2u+B7EGt+AyoqPF9XQx6KBnJzmrvUe7eQ=
+        b=vHbgk0VlrtBsC/Ntszx5EaLyYnom11V28MUqZjWjenm0q3F1h41Xq8lzeIZgUsmCA
+         KC2v65TQ3obqwIttUVwusBldIYl2fcA8mryvNfvGbzrxoCV2S37GOUpXehA2l3gJMP
+         TBHS7AcCLrSwKDQ2fo82+hD5WxmGCZzQvZpLaJdk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Axel Lin <axel.lin@ingics.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 171/700] regulator: mt6315: Fix checking return value of devm_regmap_init_spmi_ext
-Date:   Mon, 12 Jul 2021 08:04:14 +0200
-Message-Id: <20210712060950.305327231@linuxfoundation.org>
+        stable@vger.kernel.org, Greg Kurz <groug@kaod.org>,
+        Max Reitz <mreitz@redhat.com>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Subject: [PATCH 5.10 095/593] fuse: Fix infinite loop in sget_fc()
+Date:   Mon, 12 Jul 2021 08:04:15 +0200
+Message-Id: <20210712060853.662098246@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +40,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Axel Lin <axel.lin@ingics.com>
+From: Greg Kurz <groug@kaod.org>
 
-[ Upstream commit 70d654ea3de937d7754c107bb8eeb20e30262c89 ]
+commit e4a9ccdd1c03b3dc58214874399d24331ea0a3ab upstream.
 
-devm_regmap_init_spmi_ext() returns ERR_PTR() on error.
+We don't set the SB_BORN flag on submounts. This is wrong as these
+superblocks are then considered as partially constructed or dying
+in the rest of the code and can break some assumptions.
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Link: https://lore.kernel.org/r/20210615132934.3453965-1-axel.lin@ingics.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+One such case is when you have a virtiofs filesystem with submounts
+and you try to mount it again : virtio_fs_get_tree() tries to obtain
+a superblock with sget_fc(). The logic in sget_fc() is to loop until
+it has either found an existing matching superblock with SB_BORN set
+or to create a brand new one. It is assumed that a superblock without
+SB_BORN is transient and the loop is restarted. Forgetting to set
+SB_BORN on submounts hence causes sget_fc() to retry forever.
+
+Setting SB_BORN requires special care, i.e. a write barrier for
+super_cache_count() which can check SB_BORN without taking any lock.
+We should call vfs_get_tree() to deal with that but this requires
+to have a proper ->get_tree() implementation for submounts, which
+is a bigger piece of work. Go for a simple bug fix in the meatime.
+
+Fixes: bf109c64040f ("fuse: implement crossmounts")
+Cc: stable@vger.kernel.org # v5.10+
+Signed-off-by: Greg Kurz <groug@kaod.org>
+Reviewed-by: Max Reitz <mreitz@redhat.com>
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/regulator/mt6315-regulator.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/fuse/dir.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/regulator/mt6315-regulator.c b/drivers/regulator/mt6315-regulator.c
-index 6b8be52c3772..7514702f78cf 100644
---- a/drivers/regulator/mt6315-regulator.c
-+++ b/drivers/regulator/mt6315-regulator.c
-@@ -223,8 +223,8 @@ static int mt6315_regulator_probe(struct spmi_device *pdev)
- 	int i;
+--- a/fs/fuse/dir.c
++++ b/fs/fuse/dir.c
+@@ -353,6 +353,17 @@ static struct vfsmount *fuse_dentry_auto
  
- 	regmap = devm_regmap_init_spmi_ext(pdev, &mt6315_regmap_config);
--	if (!regmap)
--		return -ENODEV;
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
+ 	sb->s_flags |= SB_ACTIVE;
+ 	fsc->root = dget(sb->s_root);
++
++	/*
++	 * FIXME: setting SB_BORN requires a write barrier for
++	 *        super_cache_count(). We should actually come
++	 *        up with a proper ->get_tree() implementation
++	 *        for submounts and call vfs_get_tree() to take
++	 *        care of the write barrier.
++	 */
++	smp_wmb();
++	sb->s_flags |= SB_BORN;
++
+ 	/* We are done configuring the superblock, so unlock it */
+ 	up_write(&sb->s_umount);
  
- 	chip = devm_kzalloc(dev, sizeof(struct mt6315_chip), GFP_KERNEL);
- 	if (!chip)
--- 
-2.30.2
-
 
 
