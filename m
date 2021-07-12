@@ -2,87 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 244103C5DB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 15:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62CD93C5D92
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 15:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234795AbhGLNw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 09:52:27 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:14070 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhGLNw0 (ORCPT
+        id S234630AbhGLNrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 09:47:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229503AbhGLNre (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 09:52:26 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GNlRH37M7zYrMm;
-        Mon, 12 Jul 2021 21:46:19 +0800 (CST)
-Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 12 Jul 2021 21:49:35 +0800
-Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
- (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 12
- Jul 2021 21:49:34 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <alex.aring@gmail.com>, <stefan@datenfreihafen.org>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <marcel@holtmann.org>
-CC:     <linux-wpan@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH] nl802154: Fix type check in nl802154_new_interface()
-Date:   Mon, 12 Jul 2021 21:44:30 +0800
-Message-ID: <20210712134430.19372-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        Mon, 12 Jul 2021 09:47:34 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04209C0613DD;
+        Mon, 12 Jul 2021 06:44:46 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id 75-20020a9d08510000b02904acfe6bcccaso18860803oty.12;
+        Mon, 12 Jul 2021 06:44:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JDiXV3i3rqyi++006FiTx4duGk4ywrBq3HXjBhSboQ4=;
+        b=PYueBqCpoOt/mdHGyjusUbfdIJwqsO2X2VfGBUlExTVIJh0Zd/bS54K/n7poIOW7kz
+         f/aSQt8bDlFtjfu7r2BPqOJHma0b9d57yRD2IUe61FnHLMOhugbFtX7e/bWb9FyddAne
+         mqGPyCcBOW8M29thZ8C9Hl+/6u0Rfq1j8Hsl23PxdyG5owe4LvvJAmA2+emfvLAOpn+C
+         bvyWvI4Mf1LrNvi09dm66bc8AjqJcC/8XIr6Bq3PBnZxuBjiPjVMHBmdWPBXJ9JQbu9k
+         BSsw5xCmupARKl2PO3yyp0t6Cp4dN5yJ017jiWrZMUiFoT8acJYjXpyyXxHPsJSL/eS4
+         EcXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JDiXV3i3rqyi++006FiTx4duGk4ywrBq3HXjBhSboQ4=;
+        b=glPfhqbB3mwlBmQWO3oow+buVjJtxLCET/TrGk1T4O8sK/H1Kh9+3Aw/TRnPCCAton
+         iwSlyVegzLTapeSf/iUEfBnDvZDJsswzV8UVQ7hbCxThEiYXDHQ7b51kWvE1lNVURZpP
+         opjm5Jiy4jFEQhlLOvRFnClKaBcg8cIMDWkAS6pFjxalccKlUiYOuCRcaO7WwkyIQ6bT
+         cpqYY6G/3TzrwszGoWFAsa3oow1revNo+6Qez1rVgAaHKR+jTkwds6s6I4MpcKrbOyao
+         XEEFIWX3FMV9bDWt4P0q3L2/Xpod+xGR94R13G32/97PVHdn4lbFaDOg2kAgtojZzecZ
+         QVRg==
+X-Gm-Message-State: AOAM532AfQPfpAaPuaGhA8UNUCzPzSQ1yvCuNbxXjNNOupI5r8aLC1Jp
+        j5eDlZriJyYYJIu1+ofFZVelQEvcP3o=
+X-Google-Smtp-Source: ABdhPJwP67e+bpOuiQ9Bh+LPaiqtH3djt/TdWug7UpC50CgXUm83jWsPL4nerj+zzWVQXPjTF6DeZA==
+X-Received: by 2002:a9d:7457:: with SMTP id p23mr36834448otk.85.1626097485173;
+        Mon, 12 Jul 2021 06:44:45 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id n26sm2515960oos.14.2021.07.12.06.44.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Jul 2021 06:44:44 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 5.4 000/348] 5.4.132-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+References: <20210712060659.886176320@linuxfoundation.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <806c2ec9-9e2e-f151-9873-6c53e20cd509@roeck-us.net>
+Date:   Mon, 12 Jul 2021 06:44:41 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema769-chm.china.huawei.com (10.1.198.211)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210712060659.886176320@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We got this UBSAN warning:
+On 7/11/21 11:06 PM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.132 release.
+> There are 348 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 14 Jul 2021 06:02:46 +0000.
+> Anything received after that time might be too late.
+> 
 
-UBSAN: shift-out-of-bounds in net/ieee802154/nl802154.c:920:44
-shift exponent -1 is negative
-CPU: 3 PID: 8258 Comm: repro Not tainted 5.13.0+ #222
-Call Trace:
- dump_stack_lvl+0x8d/0xcf
- ubsan_epilogue+0xa/0x4e
- __ubsan_handle_shift_out_of_bounds+0x161/0x182
- nl802154_new_interface+0x3bf/0x3d0
- genl_family_rcv_msg_doit.isra.15+0x12d/0x170
- genl_rcv_msg+0x11a/0x240
- netlink_rcv_skb+0x69/0x160
- genl_rcv+0x24/0x40
+Build results:
+	total: 157 pass: 153 fail: 4
+Failed builds:
+	powerpc:defconfig
+	powerpc:allmodconfig
+	powerpc:cell_defconfig
+	powerpc:maple_defconfig
+Qemu test results:
+	total: 428 pass: 404 fail: 24
+Failed tests:
+	<almost all ppc64 tests>
 
-NL802154_IFTYPE_UNSPEC is -1, so enum nl802154_iftype type now
-is a signed integer, which is assigned by nla_get_u32 in
-nl802154_new_interface(), this may cause type is negative and trigger
-this warning.
+Error log:
+arch/powerpc/kernel/stacktrace.c: In function 'raise_backtrace_ipi':
+arch/powerpc/kernel/stacktrace.c:248:33: error: implicit declaration of function 'udelay'
 
-Fixes: 65318680c97c ("ieee802154: add iftypes capability")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- net/ieee802154/nl802154.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/net/ieee802154/nl802154.c b/net/ieee802154/nl802154.c
-index 0cf2374..aab7ed4 100644
---- a/net/ieee802154/nl802154.c
-+++ b/net/ieee802154/nl802154.c
-@@ -915,7 +915,9 @@ static int nl802154_new_interface(struct sk_buff *skb, struct genl_info *info)
- 
- 	if (info->attrs[NL802154_ATTR_IFTYPE]) {
- 		type = nla_get_u32(info->attrs[NL802154_ATTR_IFTYPE]);
--		if (type > NL802154_IFTYPE_MAX ||
-+		if (type < NL802154_IFTYPE_UNSPEC || type > NL802154_IFTYPE_MAX)
-+			return -EINVAL;
-+		if (type != NL802154_IFTYPE_UNSPEC &&
- 		    !(rdev->wpan_phy.supported.iftypes & BIT(type)))
- 			return -EINVAL;
- 	}
--- 
-1.8.3.1
-
+Guenter
