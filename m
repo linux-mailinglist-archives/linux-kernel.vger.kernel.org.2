@@ -2,197 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F1D3C6261
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 20:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A92A13C625F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 20:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235813AbhGLSLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 14:11:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230477AbhGLSK6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 14:10:58 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2726FC0613E8
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 11:08:09 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id p8so26851916wrr.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 11:08:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=i6hQVPx+EWsErV36SN8DcoM1K7uuDP9qwuJ95kliV9o=;
-        b=Lw4n++onOoSV9FKzYyWsw0MLXqGOzg1r0P8KtwpssCbT+WVi0+v7xtjysRltf3FHOQ
-         w/gk/KS/RULvIeAGu69CKBqJC+4tZRBcVBgkKjTtRmQ4WZhKOvU/5IJmecpcnRp/3d7R
-         hddgIU6qcSSGu4p986kNsnHUq4aUmugE2ifhp5aRCcc+4Vo8FBNdeunHuf8FBJ6Rkfha
-         h9HHTIWxON4CXzhBepf1D2nyh89wo97V9eWzX/QU4wWCIn99/AiLKt8qxZbv6V4MByWK
-         dnsDc9eb1yPGLI7VhPuGcMhdbnjHgxpipyCICkSiKRBmkZ3c/B4shABsOCPpaV/lOl3L
-         PFuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=i6hQVPx+EWsErV36SN8DcoM1K7uuDP9qwuJ95kliV9o=;
-        b=ggng1qadtXGjECNBAujxgTVib6NAuOCSfr+ibI1fCVzZOj/4gDV8F0jUiM1qHi/XZw
-         cD0XpXQ1nB7Q3FNrH5GTFm1cwmlemaCSFR+S9IDIkHNLHoybt+8wvV74xrAluQPZB9mI
-         yICADiG26WaxjxHQe7ylqI0Q1q/IwghKWePZ3g7YuvF6wc7+XG9BmxGUHs69RaHKSDn0
-         5d/ncFNAJGeSQQ/TnuCq8W2WnuERD8fHU+TEGlg0H2KRsELr+5MJh5KfETlEjwRoTCe8
-         TVdERq7uSYjUsZzFYyRVWnAJ9jSLxMxTGvCOVyVMFuNpcLYQ+1ZBp4zhR/h5XPH2JlFO
-         A+ng==
-X-Gm-Message-State: AOAM533xDufF+9czfr1riPKxBAqDh9hepsvvU/PMzZWBRW+cAuQpzSvg
-        ew7InNEq3cgQczv4+CKIUrhmzg==
-X-Google-Smtp-Source: ABdhPJyPH98FymxmjebpmtQJ8yqxAa2EiK7GzTfVWNSBbPGYsXlw0+Y3Gyv5pP0tZ1prnKSZ7UTDnA==
-X-Received: by 2002:a5d:5989:: with SMTP id n9mr329096wri.8.1626113287568;
-        Mon, 12 Jul 2021 11:08:07 -0700 (PDT)
-Received: from enceladus (athedsl-417902.home.otenet.gr. [79.131.184.108])
-        by smtp.gmail.com with ESMTPSA id w22sm171693wmc.4.2021.07.12.11.08.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 11:08:07 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 21:08:02 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     Alexander Duyck <alexander.duyck@gmail.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>, brouer@redhat.com,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
-        yisen.zhuang@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
-        thomas.petazzoni@bootlin.com, hawk@kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, fenghua.yu@intel.com,
-        guro@fb.com, Peter Xu <peterx@redhat.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>, wenxu@ucloud.cn,
-        Cong Wang <cong.wang@bytedance.com>,
-        Kevin Hao <haokexin@gmail.com>, nogikh@google.com,
-        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
-        kpsingh@kernel.org, andrii@kernel.org,
-        Martin KaFai Lau <kafai@fb.com>, songliubraving@fb.com,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH rfc v3 2/4] page_pool: add interface for getting and
- setting pagecnt_bias
-Message-ID: <YOyFAkahxxMKNeGb@enceladus>
-References: <1626092196-44697-1-git-send-email-linyunsheng@huawei.com>
- <1626092196-44697-3-git-send-email-linyunsheng@huawei.com>
- <CAKgT0Uf1W1H_0jK+zTDHdQnpa-dFSfcAtANqhPTJyZ21VeGmjg@mail.gmail.com>
- <2d9a3d29-8e6b-8462-c410-6b7fd4518c9d@redhat.com>
+        id S235375AbhGLSKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 14:10:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36488 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230477AbhGLSKy (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 14:10:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59D6C61186;
+        Mon, 12 Jul 2021 18:08:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626113285;
+        bh=np4JNT0BJpCZ4vvOwewfHbchj+ZJLJ/rTIO40POtAFg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HFHh6VAczXldBn2wZnYsfbfubpt9RTVtEJoAyUvA0Q1JBxhWDAiH7Yij8BPTMN6xZ
+         3uzhQ52Zunoxksl9ye5Kadokq9qo0prBxf0vl/MHep0d8FXqFl5qI42YDC3+VUv4HU
+         4mOWTG6QxPotlguT6ThlvN0cIEde5PLwDEOejtIYp63xEQbfLdLDbrS8nOGqUs1TGF
+         dKVmvMNEIgqkX7DiPqpP3BOh5ijW7kzKsDEerooDhBqlK2OcQmc6UOWE04ghx6IQM+
+         7cBSSPN1d6ER6U8ctibSqPr7MfcpV8IMz4Y3L+sQ4hi9MVTuHjGd1dpGTw8wiQGlCW
+         zfy0VzbLxNLpA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id AFCF5403F2; Mon, 12 Jul 2021 15:08:02 -0300 (-03)
+Date:   Mon, 12 Jul 2021 15:08:02 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jin Yao <yao.jin@linux.intel.com>, jolsa@kernel.org,
+        peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v2 0/4] perf tool: Skip invalid hybrid PMU
+Message-ID: <YOyFAtElgSVbWU6t@kernel.org>
+References: <20210708013701.20347-1-yao.jin@linux.intel.com>
+ <YOsT0NFC53WIku2k@krava>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2d9a3d29-8e6b-8462-c410-6b7fd4518c9d@redhat.com>
+In-Reply-To: <YOsT0NFC53WIku2k@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[...]
-> > > +static inline bool page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
-> > >   {
-> > > +       if (WARN_ON(addr & ~PAGE_MASK))
-> > > +               return false;
-> > > +
-> > >          page->dma_addr[0] = addr;
-> > >          if (sizeof(dma_addr_t) > sizeof(unsigned long))
-> > >                  page->dma_addr[1] = upper_32_bits(addr);
-> > > +
-> > > +       return true;
-> > > +}
-> > > +
+Em Sun, Jul 11, 2021 at 05:52:48PM +0200, Jiri Olsa escreveu:
+> On Thu, Jul 08, 2021 at 09:36:57AM +0800, Jin Yao wrote:
+> > On hybrid platform, such as Alderlake, if atom CPUs are offlined,
+> > the kernel still exports the sysfs path '/sys/devices/cpu_atom/' for
+> > 'cpu_atom' pmu but the file '/sys/devices/cpu_atom/cpus' is empty,
+> > which indicates this is an invalid pmu. So we need to check and skip
+> > the invalid hybrid pmu.
 > > 
-> > Rather than making this a part of the check here it might make more
-> > sense to pull this out and perform the WARN_ON after the check for
-> > dma_mapping_error.
-> 
-> I need to point out that I don't like WARN_ON and BUG_ON code in fast-path
-> code, because compiler adds 'ud2' assembler instructions that influences the
-> instruction-cache fetching in the CPU.  Yes, I have seen a measuresable
-> impact from this before.
-> 
-> 
-> > Also it occurs to me that we only really have to do this in the case
-> > where dma_addr_t is larger than the size of a long. Otherwise we could
-> > just have the code split things so that dma_addr[0] is the dma_addr
-> > and dma_addr[1] is our pagecnt_bias value in which case we could
-> > probably just skip the check.
-> 
-> The dance to get 64-bit DMA addr on 32-bit systems is rather ugly and
-> confusing, sadly.  We could take advantage of this, I just hope this will
-> not make it uglier.
-
-Note here that we can only use this because dma_addr is not aliased to
-compound page anymore (after the initial page_pool recycling patchset). 
-We must keep this in mind if we even restructure struct page.
-
-Can we do something more radical for this? The 64/32 bit dance is only
-there for 32 bit systems with 64 bit dma.  Since the last time we asked
-about this no one seemed to care about these, and I really doubt we'll get
-an ethernet driver for them (that needs recycling....), can we *only* support 
-frag allocation and recycling for 'normal' systems? We could always just r
-e-purpose dma_addr[1] for those.
-
-Regards
-/Ilias
-
-> 
-> 
-> > > +static inline int page_pool_get_pagecnt_bias(struct page *page)
-> > > +{
-> > > +       return READ_ONCE(page->dma_addr[0]) & ~PAGE_MASK;
-> > > +}
-> > > +
-> > > +static inline unsigned long *page_pool_pagecnt_bias_ptr(struct page *page)
-> > > +{
-> > > +       return page->dma_addr;
-> > > +}
-> > > +
-> > > +static inline void page_pool_set_pagecnt_bias(struct page *page, int bias)
-> > > +{
-> > > +       unsigned long dma_addr_0 = READ_ONCE(page->dma_addr[0]);
-> > > +
-> > > +       dma_addr_0 &= PAGE_MASK;
-> > > +       dma_addr_0 |= bias;
-> > > +
-> > > +       WRITE_ONCE(page->dma_addr[0], dma_addr_0);
-> > >   }
-> > > 
-> > >   static inline bool is_page_pool_compiled_in(void)
-> > > diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> > > index 78838c6..1abefc6 100644
-> > > --- a/net/core/page_pool.c
-> > > +++ b/net/core/page_pool.c
-> > > @@ -198,7 +198,13 @@ static bool page_pool_dma_map(struct page_pool *pool, struct page *page)
-> > >          if (dma_mapping_error(pool->p.dev, dma))
-> > >                  return false;
-> > > 
+> > Also we need to update some perf test cases for core-only system.
 > > 
-> > So instead of adding to the function below you could just add your
-> > WARN_ON check here with the unmapping call.
-> > 
-> > > -       page_pool_set_dma_addr(page, dma);
-> > > +       if (unlikely(!page_pool_set_dma_addr(page, dma))) {
-> > > +               dma_unmap_page_attrs(pool->p.dev, dma,
-> > > +                                    PAGE_SIZE << pool->p.order,
-> > > +                                    pool->p.dma_dir,
-> > > +                                    DMA_ATTR_SKIP_CPU_SYNC);
-> > > +               return false;
-> > > +       }
-> > > 
-> > >          if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
-> > >                  page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
-> > > --
-> > > 2.7.4
-> > > 
-> > 
+> > Jin Yao (4):
+> >   perf pmu: Skip invalid hybrid pmu
+> >   perf tests: Fix 'Parse event definition strings' on core-only system
+> >   perf tests: Fix 'Roundtrip evsel->name' on core-only system
+> >   perf tests: Fix 'Convert perf time to TSC' on core-only system
 > 
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
+
+Thanks, applied to perf/urgent.
+
+- Arnaldo
+
