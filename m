@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5633C584F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 142AD3C52F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350246AbhGLIpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:45:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37770 "EHLO mail.kernel.org"
+        id S1351205AbhGLHvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:51:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350772AbhGLHvS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:51:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0152D61156;
-        Mon, 12 Jul 2021 07:48:14 +0000 (UTC)
+        id S240077AbhGLHQ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:16:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 484F6613EE;
+        Mon, 12 Jul 2021 07:13:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076095;
-        bh=U/8ID9shn4XfjgQGe/5x+Qq7N4XKfmmwuXChBBj+SyA=;
+        s=korg; t=1626074025;
+        bh=zpDaxQf98VqPDv6c/Fj7pPDmQNEEYxGEpe1S3mMl9ms=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RbVVvps/4IqLTiwL5YpZFvAnXifyL5fEBH0tMuTro8Y14ahOKICa2EXWHQ3hxSCtp
-         IWOAwNb0LvgvhzMSSpEourVkHTZd81y6/DHYt7ffc4AZ9w+yTgNC0C+A/xjl4DOwUV
-         uuaFtmxuB6KIMX6hazsaZAYMA2ojeqDgvaAwb9fM=
+        b=NwbfJlit/VV2J8gF34d67wRw4ZDH4Te7gaHBpuJYxOBh9z4tTpNXIImWsFJdXbxvZ
+         FkTpFjMqnxkm40dxM7og6CH5jYwMltMN8Jwx4+STdSJ2Lsd/cKyVA/eFsN5BRylXLY
+         j2crtNEfgI4Gcdf7IAh0x9OGkEsuPZ7Ye7o1O9rM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
-        Deren Wu <deren.wu@mediatek.com>,
-        YN Chen <yn.chen@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
         Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 496/800] mt76: mt7921: add back connection monitor support
-Date:   Mon, 12 Jul 2021 08:08:39 +0200
-Message-Id: <20210712061019.969103096@linuxfoundation.org>
+Subject: [PATCH 5.12 437/700] mt76: connac: alaways wake the device before scanning
+Date:   Mon, 12 Jul 2021 08:08:40 +0200
+Message-Id: <20210712061022.938945820@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,124 +39,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Wang <sean.wang@mediatek.com>
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-[ Upstream commit 10de032a31683585292cd10b598d896d7bcf276f ]
+[ Upstream commit a61826203ba8806b4cdffd36bafdce3e9ad35c24 ]
 
-Hw beacon cmd to the mt7921 firmware doesn't only filter out the beacon,
-but also performs its own connection monitoring, including periodic
-keep-alives to the AP and probing the AP on beacon loss. Will indicate
-the host with the event when the firmware detects the connection is lost.
+move scanning check from mt76_connac_power_save_sched routine
+to mt7921_pm_power_save_work/mt7615_pm_power_save_work ones
 
-Fixes: 1d8efc741df8 ("mt76: mt7921: introduce Runtime PM support")
-Reviewed-by: Lorenzo Bianconi <lorenzo@kernel.org>
-Signed-off-by: Deren Wu <deren.wu@mediatek.com>
-Signed-off-by: YN Chen <yn.chen@mediatek.com>
-Signed-off-by: Sean Wang <sean.wang@mediatek.com>
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/wireless/mediatek/mt76/mt7921/init.c  |  4 +++
- .../net/wireless/mediatek/mt76/mt7921/mcu.c   | 32 +++++++++++++------
- 2 files changed, 27 insertions(+), 9 deletions(-)
+ drivers/net/wireless/mediatek/mt76/mt7615/mac.c      | 4 ++++
+ drivers/net/wireless/mediatek/mt76/mt76_connac_mac.c | 8 --------
+ drivers/net/wireless/mediatek/mt76/mt7921/mac.c      | 4 ++++
+ 3 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/init.c b/drivers/net/wireless/mediatek/mt76/mt7921/init.c
-index b85e46f5820f..2cb0252e63b2 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/init.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/init.c
-@@ -73,6 +73,7 @@ static void
- mt7921_init_wiphy(struct ieee80211_hw *hw)
- {
- 	struct mt7921_phy *phy = mt7921_hw_phy(hw);
-+	struct mt7921_dev *dev = phy->dev;
- 	struct wiphy *wiphy = hw->wiphy;
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/mac.c b/drivers/net/wireless/mediatek/mt76/mt7615/mac.c
+index 8dccb589b756..d06e61cadc41 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7615/mac.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7615/mac.c
+@@ -1890,6 +1890,10 @@ void mt7615_pm_power_save_work(struct work_struct *work)
+ 						pm.ps_work.work);
  
- 	hw->queues = 4;
-@@ -110,6 +111,9 @@ mt7921_init_wiphy(struct ieee80211_hw *hw)
- 	ieee80211_hw_set(hw, SUPPORTS_PS);
- 	ieee80211_hw_set(hw, SUPPORTS_DYNAMIC_PS);
- 
-+	if (dev->pm.enable)
-+		ieee80211_hw_set(hw, CONNECTION_MONITOR);
+ 	delta = dev->pm.idle_timeout;
++	if (test_bit(MT76_HW_SCANNING, &dev->mphy.state) ||
++	    test_bit(MT76_HW_SCHED_SCANNING, &dev->mphy.state))
++		goto out;
 +
- 	hw->max_tx_fragments = 4;
+ 	if (time_is_after_jiffies(dev->pm.last_activity + delta)) {
+ 		delta = dev->pm.last_activity + delta - jiffies;
+ 		goto out;
+diff --git a/drivers/net/wireless/mediatek/mt76/mt76_connac_mac.c b/drivers/net/wireless/mediatek/mt76/mt76_connac_mac.c
+index c5f5037f5757..cff60b699e31 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt76_connac_mac.c
++++ b/drivers/net/wireless/mediatek/mt76/mt76_connac_mac.c
+@@ -16,10 +16,6 @@ int mt76_connac_pm_wake(struct mt76_phy *phy, struct mt76_connac_pm *pm)
+ 	if (!test_bit(MT76_STATE_PM, &phy->state))
+ 		return 0;
+ 
+-	if (test_bit(MT76_HW_SCANNING, &phy->state) ||
+-	    test_bit(MT76_HW_SCHED_SCANNING, &phy->state))
+-		return 0;
+-
+ 	if (queue_work(dev->wq, &pm->wake_work))
+ 		reinit_completion(&pm->wake_cmpl);
+ 
+@@ -45,10 +41,6 @@ void mt76_connac_power_save_sched(struct mt76_phy *phy,
+ 
+ 	pm->last_activity = jiffies;
+ 
+-	if (test_bit(MT76_HW_SCANNING, &phy->state) ||
+-	    test_bit(MT76_HW_SCHED_SCANNING, &phy->state))
+-		return;
+-
+ 	if (!test_bit(MT76_STATE_PM, &phy->state))
+ 		queue_delayed_work(dev->wq, &pm->ps_work, pm->idle_timeout);
  }
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/mac.c b/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
+index 39be2e396269..c4b144391a8e 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
+@@ -1524,6 +1524,10 @@ void mt7921_pm_power_save_work(struct work_struct *work)
+ 						pm.ps_work.work);
  
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
-index 67dc4b4cc094..7c68182cad55 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
-@@ -450,22 +450,33 @@ mt7921_mcu_scan_event(struct mt7921_dev *dev, struct sk_buff *skb)
- }
- 
- static void
--mt7921_mcu_beacon_loss_event(struct mt7921_dev *dev, struct sk_buff *skb)
-+mt7921_mcu_connection_loss_iter(void *priv, u8 *mac,
-+				struct ieee80211_vif *vif)
-+{
-+	struct mt76_vif *mvif = (struct mt76_vif *)vif->drv_priv;
-+	struct mt76_connac_beacon_loss_event *event = priv;
+ 	delta = dev->pm.idle_timeout;
++	if (test_bit(MT76_HW_SCANNING, &dev->mphy.state) ||
++	    test_bit(MT76_HW_SCHED_SCANNING, &dev->mphy.state))
++		goto out;
 +
-+	if (mvif->idx != event->bss_idx)
-+		return;
-+
-+	if (!(vif->driver_flags & IEEE80211_VIF_BEACON_FILTER))
-+		return;
-+
-+	ieee80211_connection_loss(vif);
-+}
-+
-+static void
-+mt7921_mcu_connection_loss_event(struct mt7921_dev *dev, struct sk_buff *skb)
- {
- 	struct mt76_connac_beacon_loss_event *event;
--	struct mt76_phy *mphy;
--	u8 band_idx = 0; /* DBDC support */
-+	struct mt76_phy *mphy = &dev->mt76.phy;
- 
- 	skb_pull(skb, sizeof(struct mt7921_mcu_rxd));
- 	event = (struct mt76_connac_beacon_loss_event *)skb->data;
--	if (band_idx && dev->mt76.phy2)
--		mphy = dev->mt76.phy2;
--	else
--		mphy = &dev->mt76.phy;
- 
- 	ieee80211_iterate_active_interfaces_atomic(mphy->hw,
- 					IEEE80211_IFACE_ITER_RESUME_ALL,
--					mt76_connac_mcu_beacon_loss_iter, event);
-+					mt7921_mcu_connection_loss_iter, event);
- }
- 
- static void
-@@ -530,7 +541,7 @@ mt7921_mcu_rx_unsolicited_event(struct mt7921_dev *dev, struct sk_buff *skb)
- 
- 	switch (rxd->eid) {
- 	case MCU_EVENT_BSS_BEACON_LOSS:
--		mt7921_mcu_beacon_loss_event(dev, skb);
-+		mt7921_mcu_connection_loss_event(dev, skb);
- 		break;
- 	case MCU_EVENT_SCHED_SCAN_DONE:
- 	case MCU_EVENT_SCAN_DONE:
-@@ -1368,6 +1379,7 @@ mt7921_pm_interface_iter(void *priv, u8 *mac, struct ieee80211_vif *vif)
- {
- 	struct mt7921_phy *phy = priv;
- 	struct mt7921_dev *dev = phy->dev;
-+	struct ieee80211_hw *hw = mt76_hw(dev);
- 	int ret;
- 
- 	if (dev->pm.enable)
-@@ -1380,9 +1392,11 @@ mt7921_pm_interface_iter(void *priv, u8 *mac, struct ieee80211_vif *vif)
- 
- 	if (dev->pm.enable) {
- 		vif->driver_flags |= IEEE80211_VIF_BEACON_FILTER;
-+		ieee80211_hw_set(hw, CONNECTION_MONITOR);
- 		mt76_set(dev, MT_WF_RFCR(0), MT_WF_RFCR_DROP_OTHER_BEACON);
- 	} else {
- 		vif->driver_flags &= ~IEEE80211_VIF_BEACON_FILTER;
-+		__clear_bit(IEEE80211_HW_CONNECTION_MONITOR, hw->flags);
- 		mt76_clear(dev, MT_WF_RFCR(0), MT_WF_RFCR_DROP_OTHER_BEACON);
- 	}
- }
+ 	if (time_is_after_jiffies(dev->pm.last_activity + delta)) {
+ 		delta = dev->pm.last_activity + delta - jiffies;
+ 		goto out;
 -- 
 2.30.2
 
