@@ -2,33 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 359063C5460
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:53:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC6B3C534C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348335AbhGLH5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:57:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58388 "EHLO mail.kernel.org"
+        id S1352267AbhGLHy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:54:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344421AbhGLHUd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:20:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CA9C611ED;
-        Mon, 12 Jul 2021 07:17:44 +0000 (UTC)
+        id S1344471AbhGLHUg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:20:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D6381613C7;
+        Mon, 12 Jul 2021 07:17:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074265;
-        bh=4e+JVFy4guMVI0ZXAniUTbQQ+amjAC/XsZ6KqLr9Jh8=;
+        s=korg; t=1626074267;
+        bh=1ngdc0xFKuW9eIhg8qbvrnn31GJhOOAefnCBuqDfHLg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eA9ENt2LHajsJjQaZhcGTKd9TxwaPvwaQbUgHj51BAUd73xY7WgEFa/EoBCJwL6Or
-         s7qozM5OQ3hZaEH/wsWPiRbL4yhKah/A5sfXJUtYFByjgPj7exNUJ5CZIZV+QB8g6C
-         J5iH4ECuVMlpXlyW9ip57gEtaHKys60+QTG7q/Kg=
+        b=rmGZ1iLlU4TeRtno2XDoOsg0uI2bXEtRkguMEjkOf4PdNZCVgWiXb8R3EVDHO0uOk
+         tuCqCXY52j62zTRO24+/qjM6wfHBBaNvU9QcFWNq50vzvLqzJsVxMr3YcXueh17d8K
+         BkgphtbUbqMa6ghZcDTV0jVSyCb1M7XceV8rQ0Jw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nishad Kamdar <nishadkamdar@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        stable@vger.kernel.org, Jairaj Arava <jairaj.arava@intel.com>,
+        Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@intel.com>,
+        Shuming Fan <shumingf@realtek.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 520/700] staging: fbtft: Dont spam logs when probe is deferred
-Date:   Mon, 12 Jul 2021 08:10:03 +0200
-Message-Id: <20210712061031.799311026@linuxfoundation.org>
+Subject: [PATCH 5.12 521/700] ASoC: rt5682: Disable irq on shutdown
+Date:   Mon, 12 Jul 2021 08:10:04 +0200
+Message-Id: <20210712061031.898858812@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
 References: <20210712060924.797321836@linuxfoundation.org>
@@ -40,53 +45,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Stephen Boyd <swboyd@chromium.org>
 
-[ Upstream commit 37667f6e57712cef5652fa67f1cbd1299e204d94 ]
+[ Upstream commit 47bcb1c7108363418cd578283333d72e310dfeaa ]
 
-When requesting GPIO line the probe can be deferred.
-In such case don't spam logs with an error message.
-This can be achieved by switching to dev_err_probe().
+We cancel the work queues, and reset the device on shutdown, but the irq
+isn't disabled so the work queues could be queued again. Let's disable
+the irq during shutdown so that we don't have to worry about this device
+trying to do anything anymore. This fixes a problem seen where the i2c
+bus is shutdown at reboot but this device irq still comes in and tries
+to make another i2c transaction when the bus doesn't work.
 
-Fixes: c440eee1a7a1 ("Staging: fbtft: Switch to the gpio descriptor interface")
-Cc: Nishad Kamdar <nishadkamdar@gmail.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Link: https://lore.kernel.org/r/20210503172114.27891-3-andriy.shevchenko@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jairaj Arava <jairaj.arava@intel.com>
+Cc: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
+Cc: Shuming Fan <shumingf@realtek.com>
+Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Fixes: 45a2702ce109 ("ASoC: rt5682: Fix panic in rt5682_jack_detect_handler happening during system shutdown")
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+Link: https://lore.kernel.org/r/20210508075151.1626903-1-swboyd@chromium.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/fbtft/fbtft-core.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ sound/soc/codecs/rt5682-i2c.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/staging/fbtft/fbtft-core.c b/drivers/staging/fbtft/fbtft-core.c
-index 67c3b1975a4d..3723269890d5 100644
---- a/drivers/staging/fbtft/fbtft-core.c
-+++ b/drivers/staging/fbtft/fbtft-core.c
-@@ -75,20 +75,16 @@ static int fbtft_request_one_gpio(struct fbtft_par *par,
- 				  struct gpio_desc **gpiop)
+diff --git a/sound/soc/codecs/rt5682-i2c.c b/sound/soc/codecs/rt5682-i2c.c
+index 93c1603b42f1..8265b537ff4f 100644
+--- a/sound/soc/codecs/rt5682-i2c.c
++++ b/sound/soc/codecs/rt5682-i2c.c
+@@ -273,6 +273,7 @@ static void rt5682_i2c_shutdown(struct i2c_client *client)
  {
- 	struct device *dev = par->info->device;
--	int ret = 0;
+ 	struct rt5682_priv *rt5682 = i2c_get_clientdata(client);
  
- 	*gpiop = devm_gpiod_get_index_optional(dev, name, index,
- 					       GPIOD_OUT_LOW);
--	if (IS_ERR(*gpiop)) {
--		ret = PTR_ERR(*gpiop);
--		dev_err(dev,
--			"Failed to request %s GPIO: %d\n", name, ret);
--		return ret;
--	}
-+	if (IS_ERR(*gpiop))
-+		return dev_err_probe(dev, PTR_ERR(*gpiop), "Failed to request %s GPIO\n", name);
-+
- 	fbtft_par_dbg(DEBUG_REQUEST_GPIOS, par, "%s: '%s' GPIO\n",
- 		      __func__, name);
++	disable_irq(client->irq);
+ 	cancel_delayed_work_sync(&rt5682->jack_detect_work);
+ 	cancel_delayed_work_sync(&rt5682->jd_check_work);
  
--	return ret;
-+	return 0;
- }
- 
- static int fbtft_request_gpios(struct fbtft_par *par)
 -- 
 2.30.2
 
