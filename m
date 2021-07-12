@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 155C33C577B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF85B3C511F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359222AbhGLIeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:34:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53656 "EHLO mail.kernel.org"
+        id S1343794AbhGLHh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:37:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346683AbhGLHql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:46:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97AF661183;
-        Mon, 12 Jul 2021 07:42:15 +0000 (UTC)
+        id S244033AbhGLHKU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:10:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE6AB610E5;
+        Mon, 12 Jul 2021 07:06:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075736;
-        bh=khWwxZN4Q9keLfsKl4AnOJt4up4F52KZlZIRb/onXjM=;
+        s=korg; t=1626073562;
+        bh=mnRYRODX2g7er1tqw8vcCWPLTh7bVw7/p8chobbMU7E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DI8RhYPCB5NA5xXUjOgnDnK/hOtJvFoyZXIoRDX/+zHx9YRIUi20fQkJznZIYc32F
-         998uJtaEfCyRq8happ4ekOMBYlOThfOSiVOnjB44OGAol90vcC7UQsb5IbIAhjekNB
-         joZPbVjNrENzXrVh/VXwl7aG8rf1cg+P5eJmCARw=
+        b=ViS9IuHjobXkMXF+x05VEs7Aq1bWQ2G/TtuNZRfEPhNXeKR/NwWzTnWuUCsQS7tOp
+         eGWc06ojVtH+w+lE6Kl6puP2cDJhY/1EPXjmAhAQSQ4EozUhVN+J+yT+rGx9WJSblH
+         5oETLFyNQ0G9EBgO16ac2HrUA6JHO4bmg2sK1nsU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 343/800] lockdep/selftests: Fix selftests vs PROVE_RAW_LOCK_NESTING
-Date:   Mon, 12 Jul 2021 08:06:06 +0200
-Message-Id: <20210712061003.385713224@linuxfoundation.org>
+        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 284/700] crypto: omap-sham - Fix PM reference leak in omap sham ops
+Date:   Mon, 12 Jul 2021 08:06:07 +0200
+Message-Id: <20210712061006.441652922@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit c0c2c0dad6a06e0c05e9a52d65f932bd54364c97 ]
+[ Upstream commit ca323b2c61ec321eb9f2179a405b9c34cdb4f553 ]
 
-When PROVE_RAW_LOCK_NESTING=y many of the selftests FAILED because
-HARDIRQ context is out-of-bounds for spinlocks. Instead make the
-default hardware context the threaded hardirq context, which preserves
-the old locking rules.
+pm_runtime_get_sync will increment pm usage counter
+even it failed. Forgetting to putting operation will
+result in reference leak here. We fix it by replacing
+it with pm_runtime_resume_and_get to keep usage counter
+balanced.
 
-The wait-type specific locking selftests will have a non-threaded
-HARDIRQ variant.
-
-Fixes: de8f5e4f2dc1 ("lockdep: Introduce wait-type checks")
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Tested-by: Joerg Roedel <jroedel@suse.de>
-Link: https://lore.kernel.org/r/20210617190313.322096283@infradead.org
+Fixes: 604c31039dae4 ("crypto: omap-sham - Check for return value from pm_runtime_get_sync")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/locking-selftest.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/crypto/omap-sham.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
-index 2d85abac1744..0f6b262e0964 100644
---- a/lib/locking-selftest.c
-+++ b/lib/locking-selftest.c
-@@ -194,6 +194,7 @@ static void init_shared_classes(void)
- #define HARDIRQ_ENTER()				\
- 	local_irq_disable();			\
- 	__irq_enter();				\
-+	lockdep_hardirq_threaded();		\
- 	WARN_ON(!in_irq());
+diff --git a/drivers/crypto/omap-sham.c b/drivers/crypto/omap-sham.c
+index ae0d320d3c60..dd53ad9987b0 100644
+--- a/drivers/crypto/omap-sham.c
++++ b/drivers/crypto/omap-sham.c
+@@ -372,7 +372,7 @@ static int omap_sham_hw_init(struct omap_sham_dev *dd)
+ {
+ 	int err;
  
- #define HARDIRQ_EXIT()				\
+-	err = pm_runtime_get_sync(dd->dev);
++	err = pm_runtime_resume_and_get(dd->dev);
+ 	if (err < 0) {
+ 		dev_err(dd->dev, "failed to get sync: %d\n", err);
+ 		return err;
+@@ -2244,7 +2244,7 @@ static int omap_sham_suspend(struct device *dev)
+ 
+ static int omap_sham_resume(struct device *dev)
+ {
+-	int err = pm_runtime_get_sync(dev);
++	int err = pm_runtime_resume_and_get(dev);
+ 	if (err < 0) {
+ 		dev_err(dev, "failed to get sync: %d\n", err);
+ 		return err;
 -- 
 2.30.2
 
