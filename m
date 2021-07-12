@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 443083C4E9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 731923C4EA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344071AbhGLHUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:20:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56844 "EHLO mail.kernel.org"
+        id S1344201AbhGLHUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:20:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56954 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239765AbhGLGzf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:55:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE192611BF;
-        Mon, 12 Jul 2021 06:52:46 +0000 (UTC)
+        id S239865AbhGLGzi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:55:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AB6A6102A;
+        Mon, 12 Jul 2021 06:52:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072767;
-        bh=XKQ7PddeWqOUTtxv6hvVS3NyeUSWTYVdVkn/LXHTfLc=;
+        s=korg; t=1626072770;
+        bh=rFLuTibT9ebRR2z6fAajRhW8qZPM5+WS+djmPUD4AU0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SFAjVqem74hJTCByts0LHGfpmqsx5tjLKpvfBihR1aE/e+Hp7xF7a8dgW+t+7VMW5
-         uppVqROwBFtBLTME7Hq0Hntcocyli6D1awdAIrnqoNVoj4t/Wimim1Sh1ZUiUqduGd
-         Z+Hvim2iXOj1BF632Xyg2QlweHfMQYRJlqgkBl0c=
+        b=PukH6skP4PlHxYWaI0VtIyUBXfcEH9FW9tpigPspY6PTk+Box5s144tgTb0pwf/q4
+         oF7zsJZOrWKwxnJ2iXrZ4HPtahqKP0zxdgaOPH+9KakG0xRZR99pQxD7JlYEu8ANLg
+         HIa7TcHr7nxRUdkrJgdf74FWXBgyxg2+egmC/r3k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.12 015/700] ALSA: hda/realtek: Fix bass speaker DAC mapping for Asus UM431D
-Date:   Mon, 12 Jul 2021 08:01:38 +0200
-Message-Id: <20210712060926.932917306@linuxfoundation.org>
+Subject: [PATCH 5.12 016/700] ALSA: hda/realtek: Apply LED fixup for HP Dragonfly G1, too
+Date:   Mon, 12 Jul 2021 08:01:39 +0200
+Message-Id: <20210712060927.066269259@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
 References: <20210712060924.797321836@linuxfoundation.org>
@@ -40,40 +40,30 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Takashi Iwai <tiwai@suse.de>
 
-commit f8fbcdfb0665de60997d9746809e1704ed782bbc upstream.
+commit 0ac05b25c3dd8299204ae9d50c1c2f7f05eef08f upstream.
 
-Asus Zenbook 14 UM431D has two speaker pins and a headphone pin, and
-the auto-parser ends up assigning the bass to the third DAC 0x06.
-Although the tone comes out, it's inconvenient because this DAC has no
-volume control unlike two other DACs.
+HP Dragonfly G1 (SSID 103c:861f) also requires the same quirk for the
+mute and mic-mute LED just as Dragonfly G2 model.
 
-For obtaining the volume control for the bass speaker, this patch
-enforces the mapping to let both front and bass speaker pins sharing
-the same DAC.  It's not ideal but a little bit of improvement.
-
-Since we've already applied the same workaround for another ASUS
-machine, we just need to hook the chain to the existing quirk.
-
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=212547
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=213329
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210620065952.18948-1-tiwai@suse.de
+Link: https://lore.kernel.org/r/20210623122022.26179-1-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/patch_realtek.c |    2 ++
- 1 file changed, 2 insertions(+)
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
 
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -7831,6 +7831,8 @@ static const struct hda_fixup alc269_fix
- 			{ 0x20, AC_VERB_SET_PROC_COEF, 0x4e4b },
- 			{ }
- 		},
-+		.chained = true,
-+		.chain_id = ALC289_FIXUP_ASUS_GA401,
- 	},
- 	[ALC285_FIXUP_HP_GPIO_LED] = {
- 		.type = HDA_FIXUP_FUNC,
+@@ -8331,6 +8331,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x103c, 0x84da, "HP OMEN dc0019-ur", ALC295_FIXUP_HP_OMEN),
+ 	SND_PCI_QUIRK(0x103c, 0x84e7, "HP Pavilion 15", ALC269_FIXUP_HP_MUTE_LED_MIC3),
+ 	SND_PCI_QUIRK(0x103c, 0x8519, "HP Spectre x360 15-df0xxx", ALC285_FIXUP_HP_SPECTRE_X360),
++	SND_PCI_QUIRK(0x103c, 0x861f, "HP Elite Dragonfly G1", ALC285_FIXUP_HP_GPIO_AMP_INIT),
+ 	SND_PCI_QUIRK(0x103c, 0x869d, "HP", ALC236_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x86c7, "HP Envy AiO 32", ALC274_FIXUP_HP_ENVY_GPIO),
+ 	SND_PCI_QUIRK(0x103c, 0x8716, "HP Elite Dragonfly G2 Notebook PC", ALC285_FIXUP_HP_GPIO_AMP_INIT),
 
 
