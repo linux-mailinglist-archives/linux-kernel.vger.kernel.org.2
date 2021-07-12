@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D9923C4E5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D40D73C54DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239106AbhGLHSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:18:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53698 "EHLO mail.kernel.org"
+        id S1355055AbhGLIFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:05:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240056AbhGLGxV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:53:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91CE761004;
-        Mon, 12 Jul 2021 06:50:31 +0000 (UTC)
+        id S245505AbhGLH1J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:27:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CAA066146B;
+        Mon, 12 Jul 2021 07:23:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072632;
-        bh=pmtnz6MIjj39BetVLpShnJUpGwxTRKr+uZNaQ2FPXiM=;
+        s=korg; t=1626074606;
+        bh=KlMGQ3e8uTVoH70/r1i913wVeQy3pNxxandWLFVh+yw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iJFfcaFxUt+RIJADPvCtlZnLQ+XlXQXcJgIPoB8tCziHPY6idZQeFcyLHmQbSXOAI
-         3QLvaW+1S6lE05/FvOgmot9MvEL2Oli5bNWuA2LQBdDDM/D82rD2NuAddnw7WsAZTB
-         pW6kdgIXp08Rr37dNn/KmEB10K6o+XLPA8QcXRYo=
+        b=y8hutWGkiKnLwrssomic2vOjS7xT0C66/3dM6yMRnZks+/cZtramKxevhaUOdCrXl
+         +iSEHIrMSvCmTcq8gS+mxeztItMdxEruYzwpfrYIo/abGOGnoXJ8I6HIq3a4L9YLW9
+         71R2kO3zMwibURG5TqloT0gV7oB2+mozCsO6JgnY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 560/593] arm64: dts: marvell: armada-37xx: Fix reg for standard variant of UART
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 637/700] phy: uniphier-pcie: Fix updating phy parameters
 Date:   Mon, 12 Jul 2021 08:12:00 +0200
-Message-Id: <20210712060956.216333165@linuxfoundation.org>
+Message-Id: <20210712061043.614925570@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +40,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
 
-[ Upstream commit 2cbfdedef39fb5994b8f1e1df068eb8440165975 ]
+[ Upstream commit 4a90bbb478dbf18ecdec9dcf8eb708e319d24264 ]
 
-UART1 (standard variant with DT node name 'uart0') has register space
-0x12000-0x12018 and not whole size 0x200. So fix also this in example.
+The current driver uses a value from register TEST_O as the original
+value for register TEST_I, though, the value is overwritten by "param",
+so there is a bug that the original value isn't no longer used.
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Fixes: c737abc193d1 ("arm64: dts: marvell: Fix A37xx UART0 register size")
-Link: https://lore.kernel.org/r/20210624224909.6350-6-pali@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The value of TEST_O[7:0] should be masked with "mask", replaced with
+"param", and placed in the bitfield TESTI_DAT_MASK as new TEST_I value.
+
+Fixes: c6d9b1324159 ("phy: socionext: add PCIe PHY driver support")
+Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Link: https://lore.kernel.org/r/1623037842-19363-1-git-send-email-hayashi.kunihiko@socionext.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/marvell/armada-37xx.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/phy/socionext/phy-uniphier-pcie.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-index a89e47d95eef..879115dfdf82 100644
---- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-+++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-@@ -134,7 +134,7 @@
+diff --git a/drivers/phy/socionext/phy-uniphier-pcie.c b/drivers/phy/socionext/phy-uniphier-pcie.c
+index e4adab375c73..6bdbd1f214dd 100644
+--- a/drivers/phy/socionext/phy-uniphier-pcie.c
++++ b/drivers/phy/socionext/phy-uniphier-pcie.c
+@@ -24,11 +24,13 @@
+ #define PORT_SEL_1		FIELD_PREP(PORT_SEL_MASK, 1)
  
- 			uart0: serial@12000 {
- 				compatible = "marvell,armada-3700-uart";
--				reg = <0x12000 0x200>;
-+				reg = <0x12000 0x18>;
- 				clocks = <&xtalclk>;
- 				interrupts =
- 				<GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>,
+ #define PCL_PHY_TEST_I		0x2000
+-#define PCL_PHY_TEST_O		0x2004
+ #define TESTI_DAT_MASK		GENMASK(13, 6)
+ #define TESTI_ADR_MASK		GENMASK(5, 1)
+ #define TESTI_WR_EN		BIT(0)
+ 
++#define PCL_PHY_TEST_O		0x2004
++#define TESTO_DAT_MASK		GENMASK(7, 0)
++
+ #define PCL_PHY_RESET		0x200c
+ #define PCL_PHY_RESET_N_MNMODE	BIT(8)	/* =1:manual */
+ #define PCL_PHY_RESET_N		BIT(0)	/* =1:deasssert */
+@@ -77,11 +79,12 @@ static void uniphier_pciephy_set_param(struct uniphier_pciephy_priv *priv,
+ 	val  = FIELD_PREP(TESTI_DAT_MASK, 1);
+ 	val |= FIELD_PREP(TESTI_ADR_MASK, reg);
+ 	uniphier_pciephy_testio_write(priv, val);
+-	val = readl(priv->base + PCL_PHY_TEST_O);
++	val = readl(priv->base + PCL_PHY_TEST_O) & TESTO_DAT_MASK;
+ 
+ 	/* update value */
+-	val &= ~FIELD_PREP(TESTI_DAT_MASK, mask);
+-	val  = FIELD_PREP(TESTI_DAT_MASK, mask & param);
++	val &= ~mask;
++	val |= mask & param;
++	val = FIELD_PREP(TESTI_DAT_MASK, val);
+ 	val |= FIELD_PREP(TESTI_ADR_MASK, reg);
+ 	uniphier_pciephy_testio_write(priv, val);
+ 	uniphier_pciephy_testio_write(priv, val | TESTI_WR_EN);
 -- 
 2.30.2
 
