@@ -2,55 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EDE13C4156
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 04:51:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 653FA3C415D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 05:02:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232527AbhGLCyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 22:54:06 -0400
-Received: from mail-m176216.qiye.163.com ([59.111.176.216]:34180 "EHLO
-        mail-m176216.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhGLCyF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 22:54:05 -0400
-DKIM-Signature: a=rsa-sha256;
-        b=f6VNzGGLW9RFKIBYIe7Tx3IPWQZzPUB3X3EfSIzmwfbog+IqXVkzQtwHivmNg+oLwtMkNZObqchM9zahB6o/EG5IMMF7AIiX481PWozXt1ExyGHZZaV4fN91EY37vuaZgq2Osqfb9HgmUnZzkrZvNOMw8qYDyucMk5/R63gf93U=;
-        c=relaxed/relaxed; s=default; d=vivo.com; v=1;
-        bh=uBHOgmrlRNudJLzFYkkAN7h6x3/PG1Wa0llQ8TDzABs=;
-        h=date:mime-version:subject:message-id:from;
-Received: from vivo.com (localhost [127.0.0.1])
-        by mail-m176216.qiye.163.com (Hmail) with ESMTP id 91108C20131;
-        Mon, 12 Jul 2021 10:51:16 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <AJUATgAyD3QlUlWGCE0F74q8.3.1626058276577.Hmail.link@vivo.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Mel Gorman <mgorman@techsingularity.net>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@vivo.com,
-        Uladzislau Rezki <urezki@gmail.com>
-Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSF0gbW0vdm1hbGxvYzogdHJ5IGFsbG9jX3BhZ2VzX2J1bGsgZmlyc3QgdG8gZ2V0IG9yZGVyIDAgcGFnZXMgZmFzdA==?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 36.152.145.182
-In-Reply-To: <20210709152945.f2c373e8834d4b8488fd027f@linux-foundation.org>
-MIME-Version: 1.0
-Received: from link@vivo.com( [36.152.145.182) ] by ajax-webmail ( [127.0.0.1] ) ; Mon, 12 Jul 2021 10:51:16 +0800 (GMT+08:00)
-From:   =?UTF-8?B?5p2o5qyi?= <link@vivo.com>
-Date:   Mon, 12 Jul 2021 10:51:16 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGk1LSVYeGEsaTU0YGh0YSE5VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKTFVLWQY+
-X-HM-Sender-Digest: e1kJHlYWEh9ZQU1OS0lLSElIQ0lIN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6MS46Lxw6Aj9IKhcuFyw8OD5LPUxPCkNVSFVKTUlNS05DSUxNQ01NVTMWGhIXVRcSFRA7DRIN
-        FFUYFBZFWVdZEgtZQVlITVVKTklVSk9OVUpDSVlXWQgBWUFJT0tMNwY+
-X-HM-Tid: 0a7a98a03f01d976kuws91108c20131
+        id S232580AbhGLDFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 23:05:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:44322 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230022AbhGLDFF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Jul 2021 23:05:05 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8872A6D;
+        Sun, 11 Jul 2021 20:02:16 -0700 (PDT)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.65.188])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 898B53F694;
+        Sun, 11 Jul 2021 20:02:14 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64/kexec: Test page size support with new TGRAN range values
+Date:   Mon, 12 Jul 2021 08:32:49 +0530
+Message-Id: <1626058969-14847-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cj4KPj7CoD5UaGFua3MuwqBJwqBzdWdnZXN0wqB5b3XCoHRha2XCoGHCoGxvb2vCoGF0wqB0aGXC
-oGN1cnJlbnTCoG1lcmdlwqB3aW5kb3fCoGFuZMKgY2hlY2sKPj7CoD5pZsKgYW55dGhpbmfCoGFk
-ZGl0aW9uYWzCoG5lZWRzwqB0b8KgYmXCoGRvbmXCoGFmdGVywqB0aGXCoHZtYWxsb2PCoGJ1bGvC
-oGFsbG9jYXRpb24KPj7CoFNvcnJ5wqBmb3LCoHRoYXQswqBJwqB3aWxswqB3b3JrwqBpbsKgbGlu
-dXgtbmV4dAo+Cj5UaGF0wqBtYXRlcmlhbMKgaXPCoG5vd8KgaW7CoG1haW5saW5lLMKgc2/CoHdv
-cmvCoGFnYWluc3TCoExpbnVzJ3PCoDUuMTQtcmMxwqBwbGVhc2UuCk9LLCB0aGFua3MKCgoKCgoK
-Cg0KDQo=
+The commit 26f55386f964 ("arm64/mm: Fix __enable_mmu() for new TGRAN range
+values") had already switched into testing ID_AA64MMFR0_TGRAN range values.
+This just changes system_supports_[4|16|64]kb_granule() helpers to perform
+similar range tests as well. While here, it standardizes page size specific
+supported min and max TGRAN values.
+
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: James Morse <james.morse@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+This applies on 5.14-rc1.
+
+ arch/arm64/include/asm/cpufeature.h |  9 ++++++---
+ arch/arm64/include/asm/sysreg.h     | 28 ++++++++++++++++------------
+ 2 files changed, 22 insertions(+), 15 deletions(-)
+
+diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
+index 9bb9d11750d7..2395527a1bba 100644
+--- a/arch/arm64/include/asm/cpufeature.h
++++ b/arch/arm64/include/asm/cpufeature.h
+@@ -657,7 +657,8 @@ static inline bool system_supports_4kb_granule(void)
+ 	val = cpuid_feature_extract_unsigned_field(mmfr0,
+ 						ID_AA64MMFR0_TGRAN4_SHIFT);
+ 
+-	return val == ID_AA64MMFR0_TGRAN4_SUPPORTED;
++	return (val >= ID_AA64MMFR0_TGRAN4_SUPPORTED_MIN) &&
++	       (val <= ID_AA64MMFR0_TGRAN4_SUPPORTED_MAX);
+ }
+ 
+ static inline bool system_supports_64kb_granule(void)
+@@ -669,7 +670,8 @@ static inline bool system_supports_64kb_granule(void)
+ 	val = cpuid_feature_extract_unsigned_field(mmfr0,
+ 						ID_AA64MMFR0_TGRAN64_SHIFT);
+ 
+-	return val == ID_AA64MMFR0_TGRAN64_SUPPORTED;
++	return (val >= ID_AA64MMFR0_TGRAN64_SUPPORTED_MIN) &&
++	       (val <= ID_AA64MMFR0_TGRAN64_SUPPORTED_MAX);
+ }
+ 
+ static inline bool system_supports_16kb_granule(void)
+@@ -681,7 +683,8 @@ static inline bool system_supports_16kb_granule(void)
+ 	val = cpuid_feature_extract_unsigned_field(mmfr0,
+ 						ID_AA64MMFR0_TGRAN16_SHIFT);
+ 
+-	return val == ID_AA64MMFR0_TGRAN16_SUPPORTED;
++	return (val >= ID_AA64MMFR0_TGRAN16_SUPPORTED_MIN) &&
++	       (val <= ID_AA64MMFR0_TGRAN16_SUPPORTED_MAX);
+ }
+ 
+ static inline bool system_supports_mixed_endian_el0(void)
+diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+index 7b9c3acba684..e4a69ea8d886 100644
+--- a/arch/arm64/include/asm/sysreg.h
++++ b/arch/arm64/include/asm/sysreg.h
+@@ -847,12 +847,16 @@
+ #define ID_AA64MMFR0_ASID_SHIFT		4
+ #define ID_AA64MMFR0_PARANGE_SHIFT	0
+ 
+-#define ID_AA64MMFR0_TGRAN4_NI		0xf
+-#define ID_AA64MMFR0_TGRAN4_SUPPORTED	0x0
+-#define ID_AA64MMFR0_TGRAN64_NI		0xf
+-#define ID_AA64MMFR0_TGRAN64_SUPPORTED	0x0
+-#define ID_AA64MMFR0_TGRAN16_NI		0x0
+-#define ID_AA64MMFR0_TGRAN16_SUPPORTED	0x1
++#define ID_AA64MMFR0_TGRAN4_NI			0xf
++#define ID_AA64MMFR0_TGRAN4_SUPPORTED_MIN	0x0
++#define ID_AA64MMFR0_TGRAN4_SUPPORTED_MAX	0x7
++#define ID_AA64MMFR0_TGRAN64_NI			0xf
++#define ID_AA64MMFR0_TGRAN64_SUPPORTED_MIN	0x0
++#define ID_AA64MMFR0_TGRAN64_SUPPORTED_MAX	0x7
++#define ID_AA64MMFR0_TGRAN16_NI			0x0
++#define ID_AA64MMFR0_TGRAN16_SUPPORTED_MIN	0x1
++#define ID_AA64MMFR0_TGRAN16_SUPPORTED_MAX	0xf
++
+ #define ID_AA64MMFR0_PARANGE_48		0x5
+ #define ID_AA64MMFR0_PARANGE_52		0x6
+ 
+@@ -1028,16 +1032,16 @@
+ 
+ #if defined(CONFIG_ARM64_4K_PAGES)
+ #define ID_AA64MMFR0_TGRAN_SHIFT		ID_AA64MMFR0_TGRAN4_SHIFT
+-#define ID_AA64MMFR0_TGRAN_SUPPORTED_MIN	ID_AA64MMFR0_TGRAN4_SUPPORTED
+-#define ID_AA64MMFR0_TGRAN_SUPPORTED_MAX	0x7
++#define ID_AA64MMFR0_TGRAN_SUPPORTED_MIN	ID_AA64MMFR0_TGRAN4_SUPPORTED_MIN
++#define ID_AA64MMFR0_TGRAN_SUPPORTED_MAX	ID_AA64MMFR0_TGRAN4_SUPPORTED_MAX
+ #elif defined(CONFIG_ARM64_16K_PAGES)
+ #define ID_AA64MMFR0_TGRAN_SHIFT		ID_AA64MMFR0_TGRAN16_SHIFT
+-#define ID_AA64MMFR0_TGRAN_SUPPORTED_MIN	ID_AA64MMFR0_TGRAN16_SUPPORTED
+-#define ID_AA64MMFR0_TGRAN_SUPPORTED_MAX	0xF
++#define ID_AA64MMFR0_TGRAN_SUPPORTED_MIN	ID_AA64MMFR0_TGRAN16_SUPPORTED_MIN
++#define ID_AA64MMFR0_TGRAN_SUPPORTED_MAX	ID_AA64MMFR0_TGRAN16_SUPPORTED_MAX
+ #elif defined(CONFIG_ARM64_64K_PAGES)
+ #define ID_AA64MMFR0_TGRAN_SHIFT		ID_AA64MMFR0_TGRAN64_SHIFT
+-#define ID_AA64MMFR0_TGRAN_SUPPORTED_MIN	ID_AA64MMFR0_TGRAN64_SUPPORTED
+-#define ID_AA64MMFR0_TGRAN_SUPPORTED_MAX	0x7
++#define ID_AA64MMFR0_TGRAN_SUPPORTED_MIN	ID_AA64MMFR0_TGRAN64_SUPPORTED_MIN
++#define ID_AA64MMFR0_TGRAN_SUPPORTED_MAX	ID_AA64MMFR0_TGRAM64_SUPPORTED_MAX
+ #endif
+ 
+ #define MVFR2_FPMISC_SHIFT		4
+-- 
+2.20.1
+
