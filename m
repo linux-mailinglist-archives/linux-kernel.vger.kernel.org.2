@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E3AB3C52D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62FC43C5854
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349946AbhGLHuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:50:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48598 "EHLO mail.kernel.org"
+        id S1351227AbhGLIpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:45:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243486AbhGLHPr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:15:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EAB261404;
-        Mon, 12 Jul 2021 07:12:21 +0000 (UTC)
+        id S1350738AbhGLHvP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:51:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E50A061995;
+        Mon, 12 Jul 2021 07:48:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073942;
-        bh=JPumWHByocJG/TWBWyn5M3Gey+kEc0Ve584L7PsGIYs=;
+        s=korg; t=1626076081;
+        bh=FjBcx9eWxOcGtvH4L/LqhAqcDpaOezm7zlaJ5HaWvE8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jdv0EPac+i+qDfzJHFCZZ+BZ/Sk91wPAe1yU4P3Ih5v+OF6JvdWswKGkCKd1RB75+
-         9X8f3GF+ShffoIA95zX0w9PjyB9tmUO/PdxavtDg4O9h4wiIp08aLkNktwHMRPm017
-         yv3SkoEGvXNBVC5iemplR732nx9/UWPKVuNWV5PM=
+        b=W/RxM85gbqQqrplhjq4+9no31QMPYHwZhdHYdOpviVE2HWLAEMTsrFuVprFhzTkQp
+         vtmu1NfG1lrOt89hC1ctESdtwJGDF2xlhmlw0/ifDhzxOxy9wBRibMrB+L80eP4FFn
+         QxMRi3LUlodgXDpqVSTa3GFCruaRHGmEVubpB/F8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Arend van Spriel <arend.vanspriel@broadcom.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 412/700] brcmsmac: mac80211_if: Fix a resource leak in an error handling path
-Date:   Mon, 12 Jul 2021 08:08:15 +0200
-Message-Id: <20210712061020.217805259@linuxfoundation.org>
+Subject: [PATCH 5.13 473/800] RDMA/mlx5: Dont add slave port to unaffiliated list
+Date:   Mon, 12 Jul 2021 08:08:16 +0200
+Message-Id: <20210712061017.509789580@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,53 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-[ Upstream commit 9a25344d5177c2b9285532236dc3d10a091f39a8 ]
+[ Upstream commit 7ce6095e3bff8e20ce018b050960b527e298f7df ]
 
-If 'brcms_attach()' fails, we must undo the previous 'ieee80211_alloc_hw()'
-as already done in the remove function.
+The mlx5_ib_bind_slave_port() doesn't remove multiport device from the
+unaffiliated list, but mlx5_ib_unbind_slave_port() did it. This unbalanced
+flow caused to the situation where mlx5_ib_unaffiliated_port_list was
+changed during iteration.
 
-Fixes: 5b435de0d786 ("net: wireless: add brcm80211 drivers")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Acked-by: Arend van Spriel <arend.vanspriel@broadcom.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/8fbc171a1a493b38db5a6f0873c6021fca026a6c.1620852921.git.christophe.jaillet@wanadoo.fr
+Fixes: 32f69e4be269 ("{net, IB}/mlx5: Manage port association for multiport RoCE")
+Link: https://lore.kernel.org/r/2726e6603b1e6ecfe76aa5a12a063af72173bcf7.1622477058.git.leonro@nvidia.com
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../wireless/broadcom/brcm80211/brcmsmac/mac80211_if.c    | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/mlx5/main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/mac80211_if.c b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/mac80211_if.c
-index 39f3af2d0439..eadac0f5590f 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/mac80211_if.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/mac80211_if.c
-@@ -1220,6 +1220,7 @@ static int brcms_bcma_probe(struct bcma_device *pdev)
- {
- 	struct brcms_info *wl;
- 	struct ieee80211_hw *hw;
-+	int ret;
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index 644d5d0ac544..3f347515a38d 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -3178,8 +3178,6 @@ static void mlx5_ib_unbind_slave_port(struct mlx5_ib_dev *ibdev,
  
- 	dev_info(&pdev->dev, "mfg %x core %x rev %d class %d irq %d\n",
- 		 pdev->id.manuf, pdev->id.id, pdev->id.rev, pdev->id.class,
-@@ -1244,11 +1245,16 @@ static int brcms_bcma_probe(struct bcma_device *pdev)
- 	wl = brcms_attach(pdev);
- 	if (!wl) {
- 		pr_err("%s: brcms_attach failed!\n", __func__);
--		return -ENODEV;
-+		ret = -ENODEV;
-+		goto err_free_ieee80211;
+ 	port->mp.mpi = NULL;
+ 
+-	list_add_tail(&mpi->list, &mlx5_ib_unaffiliated_port_list);
+-
+ 	spin_unlock(&port->mp.mpi_lock);
+ 
+ 	err = mlx5_nic_vport_unaffiliate_multiport(mpi->mdev);
+@@ -3328,6 +3326,8 @@ static void mlx5_ib_cleanup_multiport_master(struct mlx5_ib_dev *dev)
+ 				mlx5_ib_dbg(dev, "unbinding port_num: %u\n",
+ 					    i + 1);
+ 				mlx5_ib_unbind_slave_port(dev, dev->port[i].mp.mpi);
++				list_add_tail(&dev->port[i].mp.mpi->list,
++					      &mlx5_ib_unaffiliated_port_list);
+ 			}
+ 		}
  	}
- 	brcms_led_register(wl);
- 
- 	return 0;
-+
-+err_free_ieee80211:
-+	ieee80211_free_hw(hw);
-+	return ret;
- }
- 
- static int brcms_suspend(struct bcma_device *pdev)
 -- 
 2.30.2
 
