@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D1993C50B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3466B3C5738
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347150AbhGLHec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:34:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41176 "EHLO mail.kernel.org"
+        id S1376570AbhGLIah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:30:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241904AbhGLHGI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:06:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8673061260;
-        Mon, 12 Jul 2021 07:03:08 +0000 (UTC)
+        id S1344298AbhGLHnD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:43:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BFB961208;
+        Mon, 12 Jul 2021 07:40:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073389;
-        bh=CreSF3836YFQf5SepfjQHNe1Dhiejoa7yZUMT0fJ9dA=;
+        s=korg; t=1626075611;
+        bh=LzbG7fXZjrsaRA8HcC06b775tF3WKW6YxniWQfninkg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qHReHg5RbEhYf8o3LxeewO7yt0zX89VIDG8e4QXLhjqjuynKu4e5GiwaXpBe5WB+Z
-         3LXub1i7PJw/hH/tmFmYtffLEtsTMv4AyEcrvHkALHNA+TXXUvJsoHLz9fmupYK74p
-         cHcvlZ1AyVXGBkqhPDb/+Lo1L7UksBi4duLQrQRo=
+        b=BQO0NCssbatKFj8qrRPi5V45x0bM0LCibeLCgUa5A3Q7rGyRPDJtds5vc79Gl/BCv
+         nlI8v99z0CjLzi+OYTgHkD8HEO6o1jQvd3yqY8pYSpZ0LF0MVG1iHvbjDmDv2ubPTz
+         1xFUTWmQZ+a+26S9ga8Ngpq8NRl2McZafUrJgVGw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
-        James Smart <jsmart2021@gmail.com>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 226/700] nvmet-fc: do not check for invalid target port in nvmet_fc_handle_fcp_rqst()
+        stable@vger.kernel.org, Joe Richey <joerichey@google.com>,
+        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 286/800] x86/elf: Use _BITUL() macro in UAPI headers
 Date:   Mon, 12 Jul 2021 08:05:09 +0200
-Message-Id: <20210712060958.786344246@linuxfoundation.org>
+Message-Id: <20210712060955.225706519@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hannes Reinecke <hare@suse.de>
+From: Joe Richey <joerichey@google.com>
 
-[ Upstream commit 2a4a910aa4f0acc428dc8d10227c42e14ed21d10 ]
+[ Upstream commit d06aca989c243dd9e5d3e20aa4e5c2ecfdd07050 ]
 
-When parsing a request in nvmet_fc_handle_fcp_rqst() we should not
-check for invalid target ports; if we do the command is aborted
-from the fcp layer, causing the host to assume a transport error.
-Rather we should still forward this request to the nvmet layer, which
-will then correctly fail the command with an appropriate error status.
+Replace BIT() in x86's UAPI header with _BITUL(). BIT() is not defined
+in the UAPI headers and its usage may cause userspace build errors.
 
-Signed-off-by: Hannes Reinecke <hare@suse.de>
-Reviewed-by: James Smart <jsmart2021@gmail.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Fixes: 742c45c3ecc9 ("x86/elf: Enumerate kernel FSGSBASE capability in AT_HWCAP2")
+Signed-off-by: Joe Richey <joerichey@google.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20210521085849.37676-2-joerichey94@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/target/fc.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ arch/x86/include/uapi/asm/hwcap2.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/nvme/target/fc.c b/drivers/nvme/target/fc.c
-index d375745fc4ed..b81db5270018 100644
---- a/drivers/nvme/target/fc.c
-+++ b/drivers/nvme/target/fc.c
-@@ -2494,13 +2494,6 @@ nvmet_fc_handle_fcp_rqst(struct nvmet_fc_tgtport *tgtport,
- 	u32 xfrlen = be32_to_cpu(cmdiu->data_len);
- 	int ret;
+diff --git a/arch/x86/include/uapi/asm/hwcap2.h b/arch/x86/include/uapi/asm/hwcap2.h
+index 5fdfcb47000f..054604aba9f0 100644
+--- a/arch/x86/include/uapi/asm/hwcap2.h
++++ b/arch/x86/include/uapi/asm/hwcap2.h
+@@ -2,10 +2,12 @@
+ #ifndef _ASM_X86_HWCAP2_H
+ #define _ASM_X86_HWCAP2_H
  
--	/*
--	 * if there is no nvmet mapping to the targetport there
--	 * shouldn't be requests. just terminate them.
--	 */
--	if (!tgtport->pe)
--		goto transport_error;
--
- 	/*
- 	 * Fused commands are currently not supported in the linux
- 	 * implementation.
-@@ -2528,7 +2521,8 @@ nvmet_fc_handle_fcp_rqst(struct nvmet_fc_tgtport *tgtport,
++#include <linux/const.h>
++
+ /* MONITOR/MWAIT enabled in Ring 3 */
+-#define HWCAP2_RING3MWAIT		(1 << 0)
++#define HWCAP2_RING3MWAIT		_BITUL(0)
  
- 	fod->req.cmd = &fod->cmdiubuf.sqe;
- 	fod->req.cqe = &fod->rspiubuf.cqe;
--	fod->req.port = tgtport->pe->port;
-+	if (tgtport->pe)
-+		fod->req.port = tgtport->pe->port;
+ /* Kernel allows FSGSBASE instructions available in Ring 3 */
+-#define HWCAP2_FSGSBASE			BIT(1)
++#define HWCAP2_FSGSBASE			_BITUL(1)
  
- 	/* clear any response payload */
- 	memset(&fod->rspiubuf, 0, sizeof(fod->rspiubuf));
+ #endif
 -- 
 2.30.2
 
