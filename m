@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32CDB3C4EA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB45A3C4EA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344263AbhGLHU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:20:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56688 "EHLO mail.kernel.org"
+        id S1344231AbhGLHUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:20:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239650AbhGLGz3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:55:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A058608FE;
-        Mon, 12 Jul 2021 06:52:41 +0000 (UTC)
+        id S239717AbhGLGzc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:55:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19E036115C;
+        Mon, 12 Jul 2021 06:52:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072761;
-        bh=GnB4KeXtWPppq64yqH50Y8Bo1PUxTe2YbZ6eiE5A8Bc=;
+        s=korg; t=1626072764;
+        bh=9eg694XLKpvRDaXwvpcVUzljX/dmzemI9GuS2cW6vdI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VADe727uz4zc1cabLfmZ7X0c6D1f5i+Ag0pDkY+W6mFEsAY5PARasS0BV/isqpglM
-         MqFUCgfopKjOolDnngJRolLPj9We2xPpKwpGhXjWoJy9zjeIe7wYKi0yOp7viJ6H5i
-         nuWnHwFZ+6aLfD0bR474k+0PQhK8s9ZI7bVxF2NA=
+        b=XrY4GPigXn3nUUtNsAvsXs2/MbPLiub6mR4jIMFhaQ6/WwaoCW1qXCApj8CYrDnuG
+         rSDR9jwgzWIGkJGokIaF8i5QuTlg1vYVciURapTEsTk478AzMWUmgmWz1LfKujTmE5
+         koytmgWJ+Cduvt4BbK62HlfizLKozZobUZP5BDTA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeremy Szu <jeremy.szu@canonical.com>,
+        stable@vger.kernel.org, Elia Devito <eliadevito@gmail.com>,
         Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.12 013/700] ALSA: hda/realtek: fix mute/micmute LEDs for HP EliteBook x360 830 G8
-Date:   Mon, 12 Jul 2021 08:01:36 +0200
-Message-Id: <20210712060926.656140317@linuxfoundation.org>
+Subject: [PATCH 5.12 014/700] ALSA: hda/realtek: Improve fixup for HP Spectre x360 15-df0xxx
+Date:   Mon, 12 Jul 2021 08:01:37 +0200
+Message-Id: <20210712060926.791421612@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
 References: <20210712060924.797321836@linuxfoundation.org>
@@ -39,33 +39,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeremy Szu <jeremy.szu@canonical.com>
+From: Elia Devito <eliadevito@gmail.com>
 
-commit c3d2c88209e85045a364e80fe12a6cde16745b72 upstream.
+commit 434591b2a77def0e78abfa38e5d7c4bca954e68a upstream.
 
-The HP EliteBook x360 830 G8 using ALC285 codec which using 0x04 to
-control mute LED and 0x01 to control micmute LED.
-Therefore, add a quirk to make it works.
+On HP Spectre x360 15-df0xxx, after system boot with plugged headset, the
+headset mic are not detected.
+Moving pincfg and DAC's config to single fixup function fix this.
 
-Signed-off-by: Jeremy Szu <jeremy.szu@canonical.com>
+[ The actual bug in the original code was that it used a chain to
+  ALC286_FIXUP_SPEAKER2_TO_DAC1, and it contains not only the DAC1
+  route fix but also another chain to ALC269_FIXUP_THINKPAD_ACPI.
+  I thought the latter one is harmless for non-Thinkpad, but it
+  doesn't seem so; it contains again yet another chain to
+  ALC269_FIXUP_SKI_IGNORE, and this might be bad for some machines,
+  including this HP machine.  -- tiwai ]
+
+Signed-off-by: Elia Devito <eliadevito@gmail.com>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210617171422.16652-1-jeremy.szu@canonical.com
+Link: https://lore.kernel.org/r/20210619204105.5682-1-eliadevito@gmail.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+ sound/pci/hda/patch_realtek.c |   27 ++++++++++++++++++++-------
+ 1 file changed, 20 insertions(+), 7 deletions(-)
 
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -8340,6 +8340,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x103c, 0x87f5, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87f7, "HP Spectre x360 14", ALC245_FIXUP_HP_X360_AMP),
- 	SND_PCI_QUIRK(0x103c, 0x8846, "HP EliteBook 850 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8847, "HP EliteBook x360 830 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x884b, "HP EliteBook 840 Aero G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x884c, "HP EliteBook 840 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8862, "HP ProBook 445 G8 Notebook PC", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
+@@ -6347,6 +6347,24 @@ static void alc_fixup_no_int_mic(struct
+ 	}
+ }
+ 
++static void alc285_fixup_hp_spectre_x360(struct hda_codec *codec,
++					  const struct hda_fixup *fix, int action)
++{
++	static const hda_nid_t conn[] = { 0x02 };
++	static const struct hda_pintbl pincfgs[] = {
++		{ 0x14, 0x90170110 },  /* rear speaker */
++		{ }
++	};
++
++	switch (action) {
++	case HDA_FIXUP_ACT_PRE_PROBE:
++		snd_hda_apply_pincfgs(codec, pincfgs);
++		/* force front speaker to DAC1 */
++		snd_hda_override_conn_list(codec, 0x17, ARRAY_SIZE(conn), conn);
++		break;
++	}
++}
++
+ /* for hda_fixup_thinkpad_acpi() */
+ #include "thinkpad_helper.c"
+ 
+@@ -8124,13 +8142,8 @@ static const struct hda_fixup alc269_fix
+ 		.chain_id = ALC269_FIXUP_HP_LINE1_MIC1_LED,
+ 	},
+ 	[ALC285_FIXUP_HP_SPECTRE_X360] = {
+-		.type = HDA_FIXUP_PINS,
+-		.v.pins = (const struct hda_pintbl[]) {
+-			{ 0x14, 0x90170110 }, /* enable top speaker */
+-			{}
+-		},
+-		.chained = true,
+-		.chain_id = ALC285_FIXUP_SPEAKER2_TO_DAC1,
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc285_fixup_hp_spectre_x360,
+ 	},
+ 	[ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP] = {
+ 		.type = HDA_FIXUP_FUNC,
 
 
