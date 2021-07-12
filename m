@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B39B03C4DEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4ADB3C54AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243515AbhGLHPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:15:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51436 "EHLO mail.kernel.org"
+        id S1353611AbhGLICh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:02:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240751AbhGLGwK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:52:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 438BD60FE3;
-        Mon, 12 Jul 2021 06:49:20 +0000 (UTC)
+        id S1344183AbhGLHY2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:24:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C90B361221;
+        Mon, 12 Jul 2021 07:21:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072560;
-        bh=qGnIMxTlyW37AFv9vA1hjkpK0wuINS+XfDTYg+/xTZs=;
+        s=korg; t=1626074492;
+        bh=rT08U/FPIup2idCnowpyZrlo2Naoyv/qPZWHmJioUiA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wln3ebHe2iPGeWot9/gJQD7DopRb0pfmiQ9V7BeryDi2fCy+Dp1smksL1dWdBuvnp
-         WCStFiHDycITDs3mvf0o/ura7Nv5zqXvOh+jzE/ihXUuqW8DxzOCYz/PjiZqZGM5JD
-         oF17bAUqdTCRKOprqh4AtcSCFL6IlpBDadU3fvXI=
+        b=nv4VJU/F6FN/J0W4CwFUqDyBOklwoSt7SF1lQ5Yg69zwVcF/pj8tdGRL6yNHalXZp
+         Rfm3pD34fy64kFhq+tlJgFh6DgBDYzcNcHaVw6cRe1MQGo8iLZW6nBdYI5k6ZQ2q5y
+         Qg0oyZhL2lPLlSdYE7ghzTNOyobmLgTnTFsQaEA0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
+        stable@vger.kernel.org,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Bard Liao <bard.liao@intel.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 521/593] ASoC: fsl_spdif: Fix error handler with pm_runtime_enable
+Subject: [PATCH 5.12 598/700] ASoC: rt1308-sdw: use first_hw_init flag on resume
 Date:   Mon, 12 Jul 2021 08:11:21 +0200
-Message-Id: <20210712060949.972787526@linuxfoundation.org>
+Message-Id: <20210712061039.564118402@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,71 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit 28108d71ee11a7232e1102effab3361049dcd3b8 ]
+[ Upstream commit 30e102dab5fad1db71684f8ac5e1ac74e49da06d ]
 
-There is error message when defer probe happens:
+The intent of the status check on resume was to verify if a SoundWire
+peripheral reported ATTACHED before waiting for the initialization to
+complete. This is required to avoid timeouts that will happen with
+'ghost' devices that are exposed in the platform firmware but are not
+populated in hardware.
 
-fsl-spdif-dai 2dab0000.spdif: Unbalanced pm_runtime_enable!
+Unfortunately we used 'hw_init' instead of 'first_hw_init'. Due to
+another error, the resume operation never timed out, but the volume
+settings were not properly restored.
 
-Fix the error handler with pm_runtime_enable and add
-fsl_spdif_remove() for pm_runtime_disable.
-
-Fixes: 9cb2b3796e08 ("ASoC: fsl_spdif: Add pm runtime function")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Link: https://lore.kernel.org/r/1623392318-26304-1-git-send-email-shengjiu.wang@nxp.com
+BugLink: https://github.com/thesofproject/linux/issues/2908
+BugLink: https://github.com/thesofproject/linux/issues/2637
+Fixes: a87a6653a28c0 ('ASoC: rt1308-sdw: add rt1308 SdW amplifier driver')
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Bard Liao <bard.liao@intel.com>
+Link: https://lore.kernel.org/r/20210607222239.582139-4-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/fsl/fsl_spdif.c | 20 +++++++++++++++++---
- 1 file changed, 17 insertions(+), 3 deletions(-)
+ sound/soc/codecs/rt1308-sdw.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index b0f643fefe1e..1fbc6d780700 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -1358,16 +1358,29 @@ static int fsl_spdif_probe(struct platform_device *pdev)
- 					      &spdif_priv->cpu_dai_drv, 1);
- 	if (ret) {
- 		dev_err(&pdev->dev, "failed to register DAI: %d\n", ret);
--		return ret;
-+		goto err_pm_disable;
- 	}
+diff --git a/sound/soc/codecs/rt1308-sdw.c b/sound/soc/codecs/rt1308-sdw.c
+index afd2c3b687cc..0ec741cf70fc 100644
+--- a/sound/soc/codecs/rt1308-sdw.c
++++ b/sound/soc/codecs/rt1308-sdw.c
+@@ -709,7 +709,7 @@ static int __maybe_unused rt1308_dev_resume(struct device *dev)
+ 	struct rt1308_sdw_priv *rt1308 = dev_get_drvdata(dev);
+ 	unsigned long time;
  
- 	ret = imx_pcm_dma_init(pdev, IMX_SPDIF_DMABUF_SIZE);
--	if (ret && ret != -EPROBE_DEFER)
--		dev_err(&pdev->dev, "imx_pcm_dma_init failed: %d\n", ret);
-+	if (ret) {
-+		dev_err_probe(&pdev->dev, ret, "imx_pcm_dma_init failed\n");
-+		goto err_pm_disable;
-+	}
-+
-+	return ret;
+-	if (!rt1308->hw_init)
++	if (!rt1308->first_hw_init)
+ 		return 0;
  
-+err_pm_disable:
-+	pm_runtime_disable(&pdev->dev);
- 	return ret;
- }
- 
-+static int fsl_spdif_remove(struct platform_device *pdev)
-+{
-+	pm_runtime_disable(&pdev->dev);
-+
-+	return 0;
-+}
-+
- #ifdef CONFIG_PM
- static int fsl_spdif_runtime_suspend(struct device *dev)
- {
-@@ -1469,6 +1482,7 @@ static struct platform_driver fsl_spdif_driver = {
- 		.pm = &fsl_spdif_pm,
- 	},
- 	.probe = fsl_spdif_probe,
-+	.remove = fsl_spdif_remove,
- };
- 
- module_platform_driver(fsl_spdif_driver);
+ 	if (!slave->unattach_request)
 -- 
 2.30.2
 
