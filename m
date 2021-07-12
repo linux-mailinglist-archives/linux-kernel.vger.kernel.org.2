@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6522E3C58DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B68A3C5486
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381628AbhGLIw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:52:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55676 "EHLO mail.kernel.org"
+        id S1352664AbhGLH7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:59:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353302AbhGLIBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:01:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A5C7611AB;
-        Mon, 12 Jul 2021 07:54:32 +0000 (UTC)
+        id S242338AbhGLHWM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:22:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3283661949;
+        Mon, 12 Jul 2021 07:19:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076473;
-        bh=zwTDJUCRaaO70KfVw4yQixagA5gSHB7Xx4+fbRnnHUg=;
+        s=korg; t=1626074363;
+        bh=bwRteTtT9gexEzgA33yurM3tSPxiHhwE1Fg4A9bl0uI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hcKJTVVVAUSs7uuYRXsp+RiNBfL2ZjnNdohXzrFfM6LK75VaYrymXOzcm6RGz4NKU
-         m/fvGFGar5Wi0QDFvwdlJ5skyd6uVOK4akJ0Rs75JvjL4RJPT6NNs4YwT5t8g5+eTB
-         YS00Ap0exkKtsmY0x44Qg0J3bHAPGNHHJPXuwDRc=
+        b=CGLvWjDx22j/GU0fD4JcECA1SHEvmKdAukKItDwTqBVkQGM72sXC2lJI7LpFfDf4J
+         sCsuGxkVfF6/eJqIBH9BhhrZ/gGgTDLXmIa2kbEbllrveVh9BbAM8fG6c8Y/329E6P
+         fvnM+WvbTYpeoxFNzM4pjFAYBQUVUdlPZW54+rH0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Nuno Sa <nuno.sa@analog.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 615/800] iio: adis16475: do not return ints in irq handlers
+Subject: [PATCH 5.12 555/700] ASoC: hisilicon: fix missing clk_disable_unprepare() on error in hi6210_i2s_startup()
 Date:   Mon, 12 Jul 2021 08:10:38 +0200
-Message-Id: <20210712061032.794885642@linuxfoundation.org>
+Message-Id: <20210712061035.294249844@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,41 +41,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nuno Sa <nuno.sa@analog.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 00a72db718fa198da3946286dcad222399ccd4fb ]
+[ Upstream commit 375904e3931955fcf0a847f029b2492a117efc43 ]
 
-On an IRQ handler we should not return normal error codes as 'irqreturn_t'
-is expected.
+After calling clk_prepare_enable(), clk_disable_unprepare() need
+be called when calling clk_set_rate() failed.
 
-This is done by jumping to the 'check_burst32' label where we return
-'IRQ_HANDLED'. Note that it is fine to do the burst32 check in this
-error path. If we have proper settings to apply burst32, we might just
-do the setup now so that the next sample already uses it.
-
-Fixes: fff7352bf7a3c ("iio: imu: Add support for adis16475")
-Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
-Signed-off-by: Nuno Sa <nuno.sa@analog.com>
-Link: https://lore.kernel.org/r/20210427085454.30616-2-nuno.sa@analog.com
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Fixes: 0bf750f4cbe1 ("ASoC: hisilicon: Add hi6210 i2s audio driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Link: https://lore.kernel.org/r/20210518044514.607010-1-yangyingliang@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/imu/adis16475.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/hisilicon/hi6210-i2s.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/iio/imu/adis16475.c b/drivers/iio/imu/adis16475.c
-index 1de62fc79e0f..51b76444db0b 100644
---- a/drivers/iio/imu/adis16475.c
-+++ b/drivers/iio/imu/adis16475.c
-@@ -1068,7 +1068,7 @@ static irqreturn_t adis16475_trigger_handler(int irq, void *p)
+diff --git a/sound/soc/hisilicon/hi6210-i2s.c b/sound/soc/hisilicon/hi6210-i2s.c
+index 907f5f1f7b44..ff05b9779e4b 100644
+--- a/sound/soc/hisilicon/hi6210-i2s.c
++++ b/sound/soc/hisilicon/hi6210-i2s.c
+@@ -102,18 +102,15 @@ static int hi6210_i2s_startup(struct snd_pcm_substream *substream,
  
- 	ret = spi_sync(adis->spi, &adis->msg);
- 	if (ret)
+ 	for (n = 0; n < i2s->clocks; n++) {
+ 		ret = clk_prepare_enable(i2s->clk[n]);
+-		if (ret) {
+-			while (n--)
+-				clk_disable_unprepare(i2s->clk[n]);
+-			return ret;
+-		}
++		if (ret)
++			goto err_unprepare_clk;
+ 	}
+ 
+ 	ret = clk_set_rate(i2s->clk[CLK_I2S_BASE], 49152000);
+ 	if (ret) {
+ 		dev_err(i2s->dev, "%s: setting 49.152MHz base rate failed %d\n",
+ 			__func__, ret);
 -		return ret;
-+		goto check_burst32;
++		goto err_unprepare_clk;
+ 	}
  
- 	adis->spi->max_speed_hz = cached_spi_speed_hz;
- 	buffer = adis->buffer;
+ 	/* enable clock before frequency division */
+@@ -165,6 +162,11 @@ static int hi6210_i2s_startup(struct snd_pcm_substream *substream,
+ 	hi6210_write_reg(i2s, HII2S_SW_RST_N, val);
+ 
+ 	return 0;
++
++err_unprepare_clk:
++	while (n--)
++		clk_disable_unprepare(i2s->clk[n]);
++	return ret;
+ }
+ 
+ static void hi6210_i2s_shutdown(struct snd_pcm_substream *substream,
 -- 
 2.30.2
 
