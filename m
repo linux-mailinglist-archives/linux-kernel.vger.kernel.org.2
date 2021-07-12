@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB7243C5130
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1490C3C4A3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344900AbhGLHiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:38:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43022 "EHLO mail.kernel.org"
+        id S239479AbhGLGtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:49:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244133AbhGLHK0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:10:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E64261186;
-        Mon, 12 Jul 2021 07:06:20 +0000 (UTC)
+        id S238018AbhGLGju (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:39:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A03C361206;
+        Mon, 12 Jul 2021 06:36:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073580;
-        bh=BtWqfh2M0s3HQoGaomlcmC8sxmlBexek3yVLfsONMas=;
+        s=korg; t=1626071768;
+        bh=U0O14NrXACBSK7rFxbwEOy4mIvgVCNB8sB5mzb6xcBg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m3U5bpdF9Y5wyzL+CSP1UesvwWfIEnOEQPwTg7Ygk8rr8pE5qB8hNK/eBkv06lRMl
-         PtQ+9Z2xyETtQSzEwcMiDNULLr8d2UlvVUy6yd7WGsK8SC1TeyneWDDHhwM8b/Lynj
-         t4IbQ4mpxqR4TlcGfgHNvjsftpWYFM21xTUKI8Sw=
+        b=iH4s6nH2wZqp8E652EDNX3IbskIxxZmeSvvD/IrbeezTnrdwfZsBUpDYRMr0M1WyP
+         JPFZMWQwZwxLF0HcS6Tolfvb+GKEDBYUybwIWYzUrN79PZFWse+UzRUCUSjpx+/gS4
+         LP2KMd2B9a6nKo/Q+uZPKLXCkeoPJ8fDLK7TSs98=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+142888ffec98ab194028@syzkaller.appspotmail.com,
-        Arnd Bergmann <arnd@arndb.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 289/700] media: v4l2-core: ignore native time32 ioctls on 64-bit
+Subject: [PATCH 5.10 212/593] media: s5p_cec: decrement usage count if disabled
 Date:   Mon, 12 Jul 2021 08:06:12 +0200
-Message-Id: <20210712061006.977668145@linuxfoundation.org>
+Message-Id: <20210712060906.242341141@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,126 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-[ Upstream commit c344f07aa1b4ba38ca8fabe407a2afe2f436323c ]
+[ Upstream commit 747bad54a677d8633ec14b39dfbeb859c821d7f2 ]
 
-Syzbot found that passing ioctl command 0xc0505609 into a 64-bit
-kernel from a 32-bit process causes uninitialized kernel memory to
-get passed to drivers instead of the user space data:
+There's a bug at s5p_cec_adap_enable(): if called to
+disable the device, it should call pm_runtime_put()
+instead of pm_runtime_disable(), as the goal here is to
+decrement the usage_count and not to disable PM runtime.
 
-BUG: KMSAN: uninit-value in check_array_args drivers/media/v4l2-core/v4l2-ioctl.c:3041 [inline]
-BUG: KMSAN: uninit-value in video_usercopy+0x1631/0x3d30 drivers/media/v4l2-core/v4l2-ioctl.c:3315
-CPU: 0 PID: 19595 Comm: syz-executor.4 Not tainted 5.11.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x21c/0x280 lib/dump_stack.c:120
- kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
- __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
- check_array_args drivers/media/v4l2-core/v4l2-ioctl.c:3041 [inline]
- video_usercopy+0x1631/0x3d30 drivers/media/v4l2-core/v4l2-ioctl.c:3315
- video_ioctl2+0x9f/0xb0 drivers/media/v4l2-core/v4l2-ioctl.c:3391
- v4l2_ioctl+0x255/0x290 drivers/media/v4l2-core/v4l2-dev.c:360
- v4l2_compat_ioctl32+0x2c6/0x370 drivers/media/v4l2-core/v4l2-compat-ioctl32.c:1248
- __do_compat_sys_ioctl fs/ioctl.c:842 [inline]
- __se_compat_sys_ioctl+0x53d/0x1100 fs/ioctl.c:793
- __ia32_compat_sys_ioctl+0x4a/0x70 fs/ioctl.c:793
- do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
- __do_fast_syscall_32+0x102/0x160 arch/x86/entry/common.c:141
- do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:166
- do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:209
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-
-The time32 commands are defined but were never meant to be called on
-64-bit machines, as those have always used time64 interfaces.  I missed
-this in my patch that introduced the time64 handling on 32-bit platforms.
-
-The problem in this case is the mismatch of one function checking for
-the numeric value of the command and another function checking for the
-type of process (native vs compat) instead, with the result being that
-for this combination, nothing gets copied into the buffer at all.
-
-Avoid this by only trying to convert the time32 commands when running
-on a 32-bit kernel where these are defined in a meaningful way.
-
-[hverkuil: fix 3 warnings: switch with no cases]
-
-Fixes: 577c89b0ce72 ("media: v4l2-core: fix v4l2_buffer handling for time64 ABI")
-Reported-by: syzbot+142888ffec98ab194028@syzkaller.appspotmail.com
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Reported-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Fixes: 1bcbf6f4b6b0 ("[media] cec: s5p-cec: Add s5p-cec driver")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/v4l2-core/v4l2-ioctl.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/media/cec/platform/s5p/s5p_cec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index 31d1342e61e8..7e8bf4b1ab2e 100644
---- a/drivers/media/v4l2-core/v4l2-ioctl.c
-+++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-@@ -3114,8 +3114,8 @@ static int check_array_args(unsigned int cmd, void *parg, size_t *array_size,
- 
- static unsigned int video_translate_cmd(unsigned int cmd)
- {
-+#if !defined(CONFIG_64BIT) && defined(CONFIG_COMPAT_32BIT_TIME)
- 	switch (cmd) {
--#ifdef CONFIG_COMPAT_32BIT_TIME
- 	case VIDIOC_DQEVENT_TIME32:
- 		return VIDIOC_DQEVENT;
- 	case VIDIOC_QUERYBUF_TIME32:
-@@ -3126,8 +3126,8 @@ static unsigned int video_translate_cmd(unsigned int cmd)
- 		return VIDIOC_DQBUF;
- 	case VIDIOC_PREPARE_BUF_TIME32:
- 		return VIDIOC_PREPARE_BUF;
--#endif
- 	}
-+#endif
- 	if (in_compat_syscall())
- 		return v4l2_compat_translate_cmd(cmd);
- 
-@@ -3168,8 +3168,8 @@ static int video_get_user(void __user *arg, void *parg,
- 	} else if (in_compat_syscall()) {
- 		err = v4l2_compat_get_user(arg, parg, cmd);
+diff --git a/drivers/media/cec/platform/s5p/s5p_cec.c b/drivers/media/cec/platform/s5p/s5p_cec.c
+index 2250c1cbc64e..028a09a7531e 100644
+--- a/drivers/media/cec/platform/s5p/s5p_cec.c
++++ b/drivers/media/cec/platform/s5p/s5p_cec.c
+@@ -54,7 +54,7 @@ static int s5p_cec_adap_enable(struct cec_adapter *adap, bool enable)
  	} else {
-+#if !defined(CONFIG_64BIT) && defined(CONFIG_COMPAT_32BIT_TIME)
- 		switch (cmd) {
--#ifdef CONFIG_COMPAT_32BIT_TIME
- 		case VIDIOC_QUERYBUF_TIME32:
- 		case VIDIOC_QBUF_TIME32:
- 		case VIDIOC_DQBUF_TIME32:
-@@ -3197,8 +3197,8 @@ static int video_get_user(void __user *arg, void *parg,
- 			};
- 			break;
- 		}
--#endif
- 		}
-+#endif
+ 		s5p_cec_mask_tx_interrupts(cec);
+ 		s5p_cec_mask_rx_interrupts(cec);
+-		pm_runtime_disable(cec->dev);
++		pm_runtime_put(cec->dev);
  	}
- 
- 	/* zero out anything we don't copy from userspace */
-@@ -3223,8 +3223,8 @@ static int video_put_user(void __user *arg, void *parg,
- 	if (in_compat_syscall())
- 		return v4l2_compat_put_user(arg, parg, cmd);
- 
-+#if !defined(CONFIG_64BIT) && defined(CONFIG_COMPAT_32BIT_TIME)
- 	switch (cmd) {
--#ifdef CONFIG_COMPAT_32BIT_TIME
- 	case VIDIOC_DQEVENT_TIME32: {
- 		struct v4l2_event *ev = parg;
- 		struct v4l2_event_time32 ev32;
-@@ -3272,8 +3272,8 @@ static int video_put_user(void __user *arg, void *parg,
- 			return -EFAULT;
- 		break;
- 	}
--#endif
- 	}
-+#endif
  
  	return 0;
- }
 -- 
 2.30.2
 
