@@ -2,204 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 846F93C6030
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 18:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BDAE3C603E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 18:15:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233112AbhGLQOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 12:14:54 -0400
-Received: from mail-il1-f181.google.com ([209.85.166.181]:36580 "EHLO
-        mail-il1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231463AbhGLQOt (ORCPT
+        id S233282AbhGLQRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 12:17:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233049AbhGLQRx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 12:14:49 -0400
-Received: by mail-il1-f181.google.com with SMTP id j5so2511346ilk.3;
-        Mon, 12 Jul 2021 09:11:59 -0700 (PDT)
+        Mon, 12 Jul 2021 12:17:53 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96624C0613E8
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 09:15:04 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id u15so6401928oiw.3
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 09:15:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nQBfcP6oCKq0X5PB40wsxkaY2AyI2mZMPM6ogzszKIQ=;
+        b=AbpB9NFkivLNuosYIWvKL71WOfuPwi8YqR7L8+G4VIKzwgw0I0TZzvktCDfen0QAk4
+         b6S6jvJu20o1MOKm38nzot3ALqyqfbf4T5qQ421/2iNWqN16E2KzlznryHqFZzZqDhkd
+         MK3LM9ULwa+hjaLJsqTSUh0y3qh2FXEA+otUK2pfqnlvMjUSziU8e8kIU1CsqqxsrtNW
+         HMq6L55484zxw4NAnGspGoB6DmwVXXdNwbDoYUNpw8C4SVHiIT4OjNDaRzXW4Jcu0CLS
+         DQzMXSpmQwszFg/DWghgxEt5MYq5eFh+ULV90B+oPIvp6cvx2l8SguSbo7qEo+jvfi+O
+         8obQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9HMN5LJZVuVA0FOK0FGkM8nqyj4ld2XA2G0Cc8q6SD0=;
-        b=rXnWrTUHQLMDfQ3t+E8/EpEZTn4bcgscmBoQbBNe92o0p0lt+jihzfQwLDOwocRQS+
-         mFHrH+AVAefRQmv5M9EbTqIeN9GaSguVGAWP46c+alxH1E2iSs4noC9VnITi6YXDkUog
-         ZuzyLLO4I9Rcw7v71zD5zIeePmZyRmhodMjYOYWDG8ydZcc7bKaCJBeCkepMULDWTWbv
-         BhZC0E+oINNiVu5EsFN9kOlCTK+3NmWP1UwgASP6XcigBeO4C2ocQb5wt0CdEJZnqQHt
-         f3ko5oYwvjFReetOq1kYBMXEJUm1NPlgQqCVt4FskTJTe9BeM2tnuu4HNGzo8RTf6fSq
-         hDhw==
-X-Gm-Message-State: AOAM5320v8QZc6DkTsQM27h2Siwh3K3C9GdB49imZUUMFs245my7fS1K
-        U0cMGAVspCcUl4eYCKmfaQ==
-X-Google-Smtp-Source: ABdhPJzexgPf2jnfJFGtPKXhUglMRagL0lC++MIZgyNXUnpXfQx4WcWjb5+OQAj2GmyFY1KFtUj8cw==
-X-Received: by 2002:a05:6e02:602:: with SMTP id t2mr13857344ils.118.1626106318750;
-        Mon, 12 Jul 2021 09:11:58 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id l8sm8740446iok.26.2021.07.12.09.11.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 09:11:58 -0700 (PDT)
-Received: (nullmailer pid 2034482 invoked by uid 1000);
-        Mon, 12 Jul 2021 16:11:56 -0000
-Date:   Mon, 12 Jul 2021 10:11:56 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Liam Beguin <liambeguin@gmail.com>
-Cc:     peda@axentia.se, jic23@kernel.org, lars@metafoo.de,
-        pmeerw@pmeerw.net, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 10/10] dt-bindings: iio: afe: add bindings for
- temperature transducers
-Message-ID: <20210712161156.GA2029104@robh.at.kernel.org>
-References: <20210706160942.3181474-1-liambeguin@gmail.com>
- <20210706160942.3181474-11-liambeguin@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nQBfcP6oCKq0X5PB40wsxkaY2AyI2mZMPM6ogzszKIQ=;
+        b=LhAZFZjjfnxhGaqqUJieoJ+F2udzq5+LumpqaikxeCzOiYOX2f7b+3jjJrNnJQICNy
+         B8IewNtf8JyGxttlEfc61CU+ZkSJm95LC5WuyD9pZpffAX3jc74M5q4CtPN8czbuvg+i
+         kydS1r45MhScLuvElel2H3OAu+5wLoS8UFPeXK8iDkDtpkfnyOEV6aHGuXmldANXu1xJ
+         QQ8lqUEWLCKmBPB0QZbGGmmPc8T27UKU/FYLi/hgPcrtm6OblV3y5Afuyp7x6/LtEDt8
+         WOBttqtwbuoXj6nFEdaTfyyPY59XAxZHr96XkzNR7G4uJlB8AHBCTpHslJwKinxfqxfn
+         05Xw==
+X-Gm-Message-State: AOAM530HrshlqoIkF3HTzDzb15MuXpRtier/6yByWFpEHsIetxDvc9/k
+        /MLA2nZIW3PaS0mZlsHSuOxgDP3Chw5JpKtq2m46pw==
+X-Google-Smtp-Source: ABdhPJyLF+HJKYz9ORQ3Boka9gZdd71uRQq9T6PQLP7dSPLRKMAB1YdJqaaUiHwCFm6SnBVl0V43xixkVYB1KdKJYWE=
+X-Received: by 2002:a05:6808:284:: with SMTP id z4mr5073375oic.70.1626106503239;
+ Mon, 12 Jul 2021 09:15:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210706160942.3181474-11-liambeguin@gmail.com>
+References: <00000000000080403805c6ef586d@google.com>
+In-Reply-To: <00000000000080403805c6ef586d@google.com>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 12 Jul 2021 18:14:37 +0200
+Message-ID: <CANpmjNPx2b+W2OZxNROTWfGcU92bwqyDe-=vxgnV9MEurjyqzQ@mail.gmail.com>
+Subject: Re: [syzbot] KCSAN: data-race in call_rcu / rcu_gp_kthread
+To:     syzbot <syzbot+e08a83a1940ec3846cd5@syzkaller.appspotmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 12:09:42PM -0400, Liam Beguin wrote:
-> From: Liam Beguin <lvb@xiphos.com>
-> 
-> An ADC is often used to measure other quantities indirectly.
-> This binding describe one case, the measurement of a temperature
-> through a temperature transducer (either voltage or current).
-> 
-> Signed-off-by: Liam Beguin <lvb@xiphos.com>
+[-Bcc: fsdevel]
+[+Cc: Paul, rcu@vger.kernel.org]
+
+On Mon, 12 Jul 2021 at 18:09, syzbot
+<syzbot+e08a83a1940ec3846cd5@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    e73f0f0e Linux 5.14-rc1
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=172196d2300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=f5e73542d774430b
+> dashboard link: https://syzkaller.appspot.com/bug?extid=e08a83a1940ec3846cd5
+> compiler:       Debian clang version 11.0.1-2
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+e08a83a1940ec3846cd5@syzkaller.appspotmail.com
+>
+> ==================================================================
+> BUG: KCSAN: data-race in call_rcu / rcu_gp_kthread
+>
+> write to 0xffffffff837328a0 of 8 bytes by task 11 on cpu 0:
+>  rcu_gp_fqs kernel/rcu/tree.c:1949 [inline]
+>  rcu_gp_fqs_loop kernel/rcu/tree.c:2010 [inline]
+>  rcu_gp_kthread+0xd78/0xec0 kernel/rcu/tree.c:2169
+>  kthread+0x262/0x280 kernel/kthread.c:319
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+>
+> read to 0xffffffff837328a0 of 8 bytes by task 30193 on cpu 1:
+>  __call_rcu_core kernel/rcu/tree.c:2946 [inline]
+>  __call_rcu kernel/rcu/tree.c:3062 [inline]
+>  call_rcu+0x4b0/0x6c0 kernel/rcu/tree.c:3109
+>  file_free fs/file_table.c:58 [inline]
+>  __fput+0x43e/0x4e0 fs/file_table.c:298
+>  ____fput+0x11/0x20 fs/file_table.c:313
+>  task_work_run+0xae/0x130 kernel/task_work.c:164
+>  get_signal+0x156c/0x15e0 kernel/signal.c:2581
+>  arch_do_signal_or_restart+0x2a/0x220 arch/x86/kernel/signal.c:865
+>  handle_signal_work kernel/entry/common.c:148 [inline]
+>  exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+>  exit_to_user_mode_prepare+0x109/0x190 kernel/entry/common.c:209
+>  __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+>  syscall_exit_to_user_mode+0x20/0x40 kernel/entry/common.c:302
+>  do_syscall_64+0x49/0x90 arch/x86/entry/common.c:86
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+>
+> value changed: 0x0000000000000f57 -> 0x0000000000000f58
+>
+> Reported by Kernel Concurrency Sanitizer on:
+> CPU: 1 PID: 30193 Comm: syz-executor.5 Tainted: G        W         5.14.0-rc1-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> ==================================================================
+>
+>
 > ---
->  .../iio/afe/temperature-transducer.yaml       | 111 ++++++++++++++++++
->  1 file changed, 111 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/afe/temperature-transducer.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/afe/temperature-transducer.yaml b/Documentation/devicetree/bindings/iio/afe/temperature-transducer.yaml
-> new file mode 100644
-> index 000000000000..b5a4fbfe75e4
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/afe/temperature-transducer.yaml
-> @@ -0,0 +1,111 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/afe/temperature-transducer.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Temperature Transducer
-> +
-> +maintainers:
-> +  - Liam Beguin <lvb@xiphos.com>
-> +
-> +description: |
-> +  A temperature transducer is a device that converts a thermal quantity
-> +  into any other physical quantity. This binding applies to temperature to
-> +  voltage (like the LTC2997), and temperature to current (like the AD590)
-> +  linear transducers.
-> +  In both cases these are assumed to be connected to a voltage ADC.
-> +
-> +  When an io-channel measures the output voltage of a temperature analog front
-> +  end such as a temperature transducer, the interesting measurement is almost
-> +  always the corresponding temperature, not the voltage output. This binding
-> +  describes such a circuit.
-> +
-> +  The general transfer function here is (using SI units)
-> +    V(T) = Rsense * Isense(T)
-> +    T = (Isense(T) / alpha) + offset
-> +    T = 1 / (Rsense * alpha) * (V + offset * Rsense * alpha)
-> +
-> +  When using a temperature to voltage transducer, Rsense is set to 1.
-> +
-> +  The following circuits show a temperature to current and a temperature to
-> +  voltage transducer that can be used with this binding.
-> +
-> +           VCC
-> +          -----
-> +            |
-> +        +---+---+
-> +        | AD590 |                               VCC
-> +        +---+---+                              -----
-> +            |                                    |
-> +            V proportional to T             +----+----+
-> +            |                          D+ --+         |
-> +            +---- Vout                      | LTC2997 +--- Vout
-> +            |                          D- --+         |
-> +        +---+----+                          +---------+
-> +        | Rsense |                               |
-> +        +---+----+                             -----
-> +            |                                   GND
-> +          -----
-> +           GND
-> +
-> +properties:
-> +  compatible:
-> +    const: temperature-transducer
-> +
-> +  io-channels:
-> +    maxItems: 1
-> +    description: |
-> +      Channel node of a voltage io-channel.
-> +
-> +  '#io-channel-cells':
-> +    const: 0
-
-This is a io-channel consumer and producer?
-
-> +
-> +  sense-offset-millicelsius:
-> +    description: |
-> +      Temperature offset. The default is <0>.
-> +      This offset is commonly used to convert from Kelvins to degrees Celsius.
-> +      In that case, sense-offset-millicelsius would be set to <(-273150)>.
-
-default: 0
-
-> +
-> +  sense-resistor-ohms:
-> +    description: |
-> +      The sense resistor. Defaults to <1>.
-> +      Set sense-resistor-ohms to <1> when using a temperature to voltage
-> +      transducer.
-
-default: 1
-
-Though why would we set the value to 1 if the default is 1?
-
-> +
-> +  alpha-ppm-per-celsius:
-> +    description: |
-> +      Sometimes referred to as output gain, slope, or temperature coefficient.
-> +
-> +      alpha is expressed in parts per million which can be micro-amps per
-> +      degrees Celsius or micro-volts per degrees Celsius. The is the main
-> +      characteristic of a temperature transducer and should be stated in the
-> +      datasheet.
-> +
-> +additionalProperties: false
-
-Blank line here.
-
-> +required:
-> +  - compatible
-> +  - io-channels
-> +  - alpha-ppm-per-celsius
-> +
-> +examples:
-> +  - |
-> +    ad950: temperature-sensor-0 {
-> +        compatible = "temperature-transducer";
-> +        #io-channel-cells = <0>;
-> +        io-channels = <&temp_adc 3>;
-> +
-> +        sense-offset-millicelsius = <(-273150)>; /* Kelvin to degrees Celsius */
-> +        sense-resistor-ohms = <8060>;
-> +        alpha-ppm-per-celsius = <1>; /* 1 uA/K */
-> +    };
-> +  - |
-> +    znq_tmp: temperature-sensor-1 {
-> +        compatible = "temperature-transducer";
-> +        #io-channel-cells = <0>;
-> +        io-channels = <&temp_adc 2>;
-> +
-> +        sense-offset-millicelsius = <(-273150)>; /* Kelvin to degrees Celsius */
-> +        alpha-ppm-per-celsius = <4000>; /* 4 mV/K */
-> +    };
-> +...
-> -- 
-> 2.30.1.489.g328c10930387
-> 
-> 
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/00000000000080403805c6ef586d%40google.com.
