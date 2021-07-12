@@ -2,38 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B4F3C5948
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB003C594E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382568AbhGLJBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:01:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43766 "EHLO mail.kernel.org"
+        id S1382675AbhGLJB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:01:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348167AbhGLH5Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:57:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34C6F61607;
-        Mon, 12 Jul 2021 07:52:33 +0000 (UTC)
+        id S1352535AbhGLH71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:59:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EBDC611AF;
+        Mon, 12 Jul 2021 07:53:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076353;
-        bh=Tm/Kr15OKNH1TWq7wpEgEYaVrXjfqE72GlYD6OmU2E8=;
+        s=korg; t=1626076403;
+        bh=Z0m2Yw9jLVmJyXxPFqhdbgSTKj9AKhBF2Iw2GY95ewI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ve+aVV+8Ee6VBxw7vYztUi86KqFTXAScCybRS8OjCFXh81/b9G0ZEO1hbl7WV7+IJ
-         /YJNcS3c105L5MOde3M9m74m2A5a9iLsUJpWJP5jHkjeISTN8TG6WkacR56jyTpM32
-         ezgRY50zts6f3awDqIGxdwxkwaymwS5uCCT+LgeE=
+        b=SdANxSm/vtO3o9YFj5E7o1i8ND1D71heO2SzygH99gc8Ds3fuKUeosZRwNq2k5+U2
+         aikHenC2D4M/uCz8xLuAAIuc5FKJQI8HpuYf+upVEqUPEVdRDglFvSKfE+R/qv8q/t
+         h8XoTGz+uzA54OTIG6zBy2TD3PGZPxSt6Dth6SWU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jairaj Arava <jairaj.arava@intel.com>,
-        Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@intel.com>,
-        Shuming Fan <shumingf@realtek.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 605/800] ASoC: rt5682: Disable irq on shutdown
-Date:   Mon, 12 Jul 2021 08:10:28 +0200
-Message-Id: <20210712061031.675610639@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 611/800] phy: ralink: phy-mt7621-pci: properly print pointer address
+Date:   Mon, 12 Jul 2021 08:10:34 +0200
+Message-Id: <20210712061032.245489441@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -45,43 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephen Boyd <swboyd@chromium.org>
+From: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 
-[ Upstream commit 47bcb1c7108363418cd578283333d72e310dfeaa ]
+[ Upstream commit 652a6a2e3824ce2ebf79a2d5326940d05c4db036 ]
 
-We cancel the work queues, and reset the device on shutdown, but the irq
-isn't disabled so the work queues could be queued again. Let's disable
-the irq during shutdown so that we don't have to worry about this device
-trying to do anything anymore. This fixes a problem seen where the i2c
-bus is shutdown at reboot but this device irq still comes in and tries
-to make another i2c transaction when the bus doesn't work.
+The way of printing the pointer address for the 'port_base'
+address got into compile warnings on some architectures
+[-Wpointer-to-int-cast]. Instead of use '%08x' and cast
+to an 'unsigned int' just make use of '%px' and avoid the
+cast. To avoid not really needed driver verbosity on normal
+behaviour change also from 'dev_info' to 'dev_dbg'.
 
-Cc: Jairaj Arava <jairaj.arava@intel.com>
-Cc: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
-Cc: Shuming Fan <shumingf@realtek.com>
-Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Fixes: 45a2702ce109 ("ASoC: rt5682: Fix panic in rt5682_jack_detect_handler happening during system shutdown")
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-Link: https://lore.kernel.org/r/20210508075151.1626903-1-swboyd@chromium.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: d87da32372a0 ("phy: ralink: Add PHY driver for MT7621 PCIe PHY")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Link: https://lore.kernel.org/r/20210508070930.5290-7-sergio.paracuellos@gmail.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5682-i2c.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/phy/ralink/phy-mt7621-pci.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5682-i2c.c b/sound/soc/codecs/rt5682-i2c.c
-index 8ea9f1d9fec0..cd964e023d96 100644
---- a/sound/soc/codecs/rt5682-i2c.c
-+++ b/sound/soc/codecs/rt5682-i2c.c
-@@ -273,6 +273,7 @@ static void rt5682_i2c_shutdown(struct i2c_client *client)
- {
- 	struct rt5682_priv *rt5682 = i2c_get_clientdata(client);
+diff --git a/drivers/phy/ralink/phy-mt7621-pci.c b/drivers/phy/ralink/phy-mt7621-pci.c
+index 2a9465f4bb3a..3b1245fc5a02 100644
+--- a/drivers/phy/ralink/phy-mt7621-pci.c
++++ b/drivers/phy/ralink/phy-mt7621-pci.c
+@@ -272,8 +272,8 @@ static struct phy *mt7621_pcie_phy_of_xlate(struct device *dev,
  
-+	disable_irq(client->irq);
- 	cancel_delayed_work_sync(&rt5682->jack_detect_work);
- 	cancel_delayed_work_sync(&rt5682->jd_check_work);
+ 	mt7621_phy->has_dual_port = args->args[0];
  
+-	dev_info(dev, "PHY for 0x%08x (dual port = %d)\n",
+-		 (unsigned int)mt7621_phy->port_base, mt7621_phy->has_dual_port);
++	dev_dbg(dev, "PHY for 0x%px (dual port = %d)\n",
++		mt7621_phy->port_base, mt7621_phy->has_dual_port);
+ 
+ 	return mt7621_phy->phy;
+ }
 -- 
 2.30.2
 
