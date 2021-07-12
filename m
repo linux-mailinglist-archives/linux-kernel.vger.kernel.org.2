@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 731AE3C5189
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEC3F3C49FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349363AbhGLHl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:41:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41908 "EHLO mail.kernel.org"
+        id S236998AbhGLGrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:47:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243750AbhGLHIv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:08:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC59761132;
-        Mon, 12 Jul 2021 07:04:51 +0000 (UTC)
+        id S235803AbhGLGhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:37:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7CC76113E;
+        Mon, 12 Jul 2021 06:33:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073492;
-        bh=EtMTpQ8I4EdC0xibPZD+ySQyMUcReeDYMDHNjgDRpWk=;
+        s=korg; t=1626071610;
+        bh=lJ3hh8R41P8DiijbBEOO6KYz41OVlnc6F8l5msauMoA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RC+DEGBmt4yqC2E4jJZVofG1ktVFsKCYDbXkDfSUKZSIOfa2wv5tW9oQACTvk4Ahy
-         fHFJynYEyTZjtx7s92BEOeIFrd2qaG9sUidtiTpAFBdss5FU4lHorLulMUymu96i+l
-         nPGNeR6TUNqryoZEKuhg6UGjxMsdyNDaRTIqDMQA=
+        b=rx96JuF87w0uNjM8hYpmtqSOzMp20ebGG+6gS2hG84OLRyvdy4CVKfqm93+oLBm64
+         0KjEcBTBDuMt4HrsLyCPMWZbCCl8F9vRjO9gIUdUhUAu89VAQQt7xXgXzXDE7zeGOF
+         XAcGiAEEz2Yj/HbFhVMaSZSPriUnuILjry1sNlHc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Manuel Krause <manuelkrause@netscape.net>,
-        Hui Wang <hui.wang@canonical.com>,
+        syzbot+e1de8986786b3722050e@syzkaller.appspotmail.com,
+        Dongliang Mu <mudongliangabcd@gmail.com>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 218/700] ACPI: resources: Add checks for ACPI IRQ override
-Date:   Mon, 12 Jul 2021 08:05:01 +0200
-Message-Id: <20210712060957.681512893@linuxfoundation.org>
+Subject: [PATCH 5.10 142/593] media: dvd_usb: memory leak in cinergyt2_fe_attach
+Date:   Mon, 12 Jul 2021 08:05:02 +0200
+Message-Id: <20210712060858.692491509@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,80 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Wang <hui.wang@canonical.com>
+From: Dongliang Mu <mudongliangabcd@gmail.com>
 
-[ Upstream commit 0ec4e55e9f571f08970ed115ec0addc691eda613 ]
+[ Upstream commit 9ad1efee086e0e913914fa2b2173efb830bad68c ]
 
-The laptop keyboard doesn't work on many MEDION notebooks, but the
-keyboard works well under Windows and Unix.
+When the driver fails to talk with the hardware with dvb_usb_generic_rw,
+it will return an error to dvb_usb_adapter_frontend_init. However, the
+driver forgets to free the resource (e.g., struct cinergyt2_fe_state),
+which leads to a memory leak.
 
-Through debugging, we found this log in the dmesg:
+Fix this by freeing struct cinergyt2_fe_state when dvb_usb_generic_rw
+fails in cinergyt2_frontend_attach.
 
- ACPI: IRQ 1 override to edge, high
- pnp 00:03: Plug and Play ACPI device, IDs PNP0303 (active)
+backtrace:
+  [<0000000056e17b1a>] kmalloc include/linux/slab.h:552 [inline]
+  [<0000000056e17b1a>] kzalloc include/linux/slab.h:682 [inline]
+  [<0000000056e17b1a>] cinergyt2_fe_attach+0x21/0x80 drivers/media/usb/dvb-usb/cinergyT2-fe.c:271
+  [<00000000ae0b1711>] cinergyt2_frontend_attach+0x21/0x70 drivers/media/usb/dvb-usb/cinergyT2-core.c:74
+  [<00000000d0254861>] dvb_usb_adapter_frontend_init+0x11b/0x1b0 drivers/media/usb/dvb-usb/dvb-usb-dvb.c:290
+  [<0000000002e08ac6>] dvb_usb_adapter_init drivers/media/usb/dvb-usb/dvb-usb-init.c:84 [inline]
+  [<0000000002e08ac6>] dvb_usb_init drivers/media/usb/dvb-usb/dvb-usb-init.c:173 [inline]
+  [<0000000002e08ac6>] dvb_usb_device_init.cold+0x4d0/0x6ae drivers/media/usb/dvb-usb/dvb-usb-init.c:287
 
- And we checked the IRQ definition in the DSDT, it is:
-
-    IRQ (Level, ActiveLow, Exclusive, )
-        {1}
-
-So the BIOS defines the keyboard IRQ to Level_Low, but the Linux
-kernel override it to Edge_High. If the Linux kernel is modified
-to skip the IRQ override, the keyboard will work normally.
-
->From the existing comment in acpi_dev_get_irqresource(), the override
-function only needs to be called when IRQ() or IRQNoFlags() is used
-to populate the resource descriptor, and according to Section 6.4.2.1
-of ACPI 6.4 [1], if IRQ() is empty or IRQNoFlags() is used, the IRQ
-is High true, edge sensitive and non-shareable. ACPICA also assumes
-that to be the case (see acpi_rs_set_irq[] in rsirq.c).
-
-In accordance with the above, check 3 additional conditions
-(EdgeSensitive, ActiveHigh and Exclusive) when deciding whether or
-not to treat an ACPI_RESOURCE_TYPE_IRQ resource as "legacy", in which
-case the IRQ override is applicable to it.
-
-Link: https://uefi.org/specs/ACPI/6.4/06_Device_Configuration/Device_Configuration.html#irq-descriptor # [1]
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=213031
-BugLink: http://bugs.launchpad.net/bugs/1909814
-Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Reported-by: Manuel Krause <manuelkrause@netscape.net>
-Tested-by: Manuel Krause <manuelkrause@netscape.net>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
-[ rjw: Subject rewrite, changelog edits ]
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reported-by: syzbot+e1de8986786b3722050e@syzkaller.appspotmail.com
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/resource.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/media/usb/dvb-usb/cinergyT2-core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/acpi/resource.c b/drivers/acpi/resource.c
-index 20a7892c6d3f..f0b2c3791253 100644
---- a/drivers/acpi/resource.c
-+++ b/drivers/acpi/resource.c
-@@ -423,6 +423,13 @@ static void acpi_dev_get_irqresource(struct resource *res, u32 gsi,
- 	}
- }
+diff --git a/drivers/media/usb/dvb-usb/cinergyT2-core.c b/drivers/media/usb/dvb-usb/cinergyT2-core.c
+index 969a7ec71dff..4116ba5c45fc 100644
+--- a/drivers/media/usb/dvb-usb/cinergyT2-core.c
++++ b/drivers/media/usb/dvb-usb/cinergyT2-core.c
+@@ -78,6 +78,8 @@ static int cinergyt2_frontend_attach(struct dvb_usb_adapter *adap)
  
-+static bool irq_is_legacy(struct acpi_resource_irq *irq)
-+{
-+	return irq->triggering == ACPI_EDGE_SENSITIVE &&
-+		irq->polarity == ACPI_ACTIVE_HIGH &&
-+		irq->shareable == ACPI_EXCLUSIVE;
-+}
-+
- /**
-  * acpi_dev_resource_interrupt - Extract ACPI interrupt resource information.
-  * @ares: Input ACPI resource object.
-@@ -461,7 +468,7 @@ bool acpi_dev_resource_interrupt(struct acpi_resource *ares, int index,
- 		}
- 		acpi_dev_get_irqresource(res, irq->interrupts[index],
- 					 irq->triggering, irq->polarity,
--					 irq->shareable, true);
-+					 irq->shareable, irq_is_legacy(irq));
- 		break;
- 	case ACPI_RESOURCE_TYPE_EXTENDED_IRQ:
- 		ext_irq = &ares->data.extended_irq;
+ 	ret = dvb_usb_generic_rw(d, st->data, 1, st->data, 3, 0);
+ 	if (ret < 0) {
++		if (adap->fe_adap[0].fe)
++			adap->fe_adap[0].fe->ops.release(adap->fe_adap[0].fe);
+ 		deb_rc("cinergyt2_power_ctrl() Failed to retrieve sleep state info\n");
+ 	}
+ 	mutex_unlock(&d->data_mutex);
 -- 
 2.30.2
 
