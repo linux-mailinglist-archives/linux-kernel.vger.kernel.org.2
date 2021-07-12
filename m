@@ -2,127 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D153C5BE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 14:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 765FB3C5BE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 14:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233729AbhGLMMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 08:12:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230074AbhGLMMi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 08:12:38 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9EBDC0613DD;
-        Mon, 12 Jul 2021 05:09:49 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id c17so34036543ejk.13;
-        Mon, 12 Jul 2021 05:09:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LWC9vWw5LFhroZhy6pnYOxWW9Jdfs8ytgrsX7MK/bic=;
-        b=AMdymw1m28Ue43yTNsnrtX/Xp7WScZz8ab++pF3FqYYrnYXjPoes39z/eRBwnBCQvn
-         MQd2F7w4LSmb9h4SxIZFmQzgqGU+HjO1eqLnHqFb8He88LSuQ0yerZR+irSAzh4/ojyF
-         gJMa4iQAdscNaRGsUKue6WMrCP6RFOOpkFHFXv1hntgmclOanPptt+o3t+fvxtldK3C5
-         ql/2ZnNb+3a6jFz56l9ZpQZKpmd3qR7LIaoHA8gOS5RNhQPs1DHvR8qR5yu5PzDPUI1U
-         obSdyYOelxHdBlvRMiqrAv6xE5BWTjtZRRZ3i6Yf6DBiP6dYnJwti4kOBvgix25kWLHZ
-         Ov1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LWC9vWw5LFhroZhy6pnYOxWW9Jdfs8ytgrsX7MK/bic=;
-        b=YfpeGP2pyH4QJb8PYSKbjdsHLOTwtpYpRTQCp1pZOQ+CN7an2CZAdSE03e5+JjAhSa
-         HIHWtMlvQznkb8YwqJvcOpAyI/rxiN4jzeYeXIcOusttPQ5UGEtzmG8f6qq7R/2l4fyz
-         cqLysvTrkyPUUbEI9qy83imBw7G5Uh7U7K+1xyECR0wYZj7x69Hynf0RD366YIie7gmt
-         N2UUhbAgGCIVaE4zHAdMuNsfTH9uR2nuRuyljt0BLUOLFHCzRKMxyMu31CrEdn3wfW1Q
-         MRXvZcHYezI2FDxqyvrp7mz5wOTnyqMQxqKueL7ezy7Bi4MXMg10r4T9Qg6x/K4j5Kau
-         zX4Q==
-X-Gm-Message-State: AOAM533Cs6VFPgcxAsBR7b/BIs9sGnH/eive0qRPPzoXfLcnznDcQFtz
-        ooCBl7WVMmLFq7tTYCK4Kxg=
-X-Google-Smtp-Source: ABdhPJzoaBRIltWR3pH1Ao00DXwI0zgNKavD2cac/UUKczGIdMDMg8ua5eWWa/X5TGRHqTyfnh4sDA==
-X-Received: by 2002:a17:906:3cc:: with SMTP id c12mr50622142eja.268.1626091788363;
-        Mon, 12 Jul 2021 05:09:48 -0700 (PDT)
-Received: from pc ([196.235.212.194])
-        by smtp.gmail.com with ESMTPSA id br4sm6403609ejb.110.2021.07.12.05.09.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 05:09:47 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 13:09:45 +0100
-From:   Salah Triki <salah.triki@gmail.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     bp@alien8.de, mchehab@kernel.org, tony.luck@intel.com,
-        james.morse@arm.com, rric@kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RESEND] edac: replace sprintf() by scnprintf()
-Message-ID: <20210712120945.GA777994@pc>
-References: <20210710163505.GA689509@pc>
- <d95595021eb8da542960fff9b40dc7c308661c9e.camel@perches.com>
+        id S233762AbhGLMOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 08:14:54 -0400
+Received: from mga14.intel.com ([192.55.52.115]:52381 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230074AbhGLMOw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 08:14:52 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10042"; a="209785552"
+X-IronPort-AV: E=Sophos;i="5.84,232,1620716400"; 
+   d="scan'208";a="209785552"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 05:12:03 -0700
+X-IronPort-AV: E=Sophos;i="5.84,232,1620716400"; 
+   d="scan'208";a="652927011"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 05:12:00 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1m2umv-00CDOQ-W1; Mon, 12 Jul 2021 15:11:53 +0300
+Date:   Mon, 12 Jul 2021 15:11:53 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Henning Schild <henning.schild@siemens.com>
+Cc:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Jean Delvare <jdelvare@suse.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Tan Jui Nee <jui.nee.tan@intel.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Jonathan Yong <jonathan.yong@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pci@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Peter Tyser <ptyser@xes-inc.com>, hdegoede@redhat.com
+Subject: Re: [PATCH v1 3/7] PCI: New Primary to Sideband (P2SB) bridge
+ support library
+Message-ID: <YOwxidwFKL9fS9gr@smile.fi.intel.com>
+References: <YEZ4IitUa+I9HM5F@smile.fi.intel.com>
+ <20210309014221.GA1831206@bjorn-Precision-5520>
+ <20210309094252.396b7f2d@md1za8fc.ad001.siemens.net>
+ <3f33a178-3002-e93e-89f1-8cf05097da25@metux.net>
+ <20210406154001.3eec0698@md1za8fc.ad001.siemens.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d95595021eb8da542960fff9b40dc7c308661c9e.camel@perches.com>
+In-Reply-To: <20210406154001.3eec0698@md1za8fc.ad001.siemens.net>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 10, 2021 at 09:58:46AM -0700, Joe Perches wrote:
-> On Sat, 2021-07-10 at 17:35 +0100, Salah Triki wrote:
-> > Replace sprintf() by scnprintf() in order to avoid buffer overflows.
+On Tue, Apr 06, 2021 at 03:40:01PM +0200, Henning Schild wrote:
+> Am Fri, 2 Apr 2021 15:09:12 +0200
+> schrieb "Enrico Weigelt, metux IT consult" <lkml@metux.net>:
 > 
-> While of course safe, this is not strictly necessary as the
-> maximum length of any edac_layer_name is 8 bytes.
+> > On 09.03.21 09:42, Henning Schild wrote:
+> > 
+> > > The device will respond to MMIO while being hidden. I am afraid
+> > > nothing stops a collision, except for the assumption that the BIOS
+> > > is always right and PCI devices never get remapped. But just
+> > > guessing here.  
+> > 
+> > What could go wrong if it is remapped, except that this driver would
+> > write to the wrong mmio space ?
+> > 
+> > If it's unhidden, pci-core should see it and start the usual probing,
+> > right ?
 > 
-> drivers/edac/edac_mc.c:const char *edac_layer_name[] = {
-> drivers/edac/edac_mc.c- [EDAC_MC_LAYER_BRANCH] = "branch",
-> drivers/edac/edac_mc.c- [EDAC_MC_LAYER_CHANNEL] = "channel",
-> drivers/edac/edac_mc.c- [EDAC_MC_LAYER_SLOT] = "slot",
-> drivers/edac/edac_mc.c- [EDAC_MC_LAYER_CHIP_SELECT] = "csrow",
-> drivers/edac/edac_mc.c- [EDAC_MC_LAYER_ALL_MEM] = "memory",
-> drivers/edac/edac_mc.c-};
-> 
-> And name is:
-> 
-> 		char name[80];
-> 
-> I suppose name[80] could be changed to name[32] or so
-> at the same time to reduce stack usage.
-> 
-> Maybe name should be moved into the loop too.
-> 
-> ---
->  drivers/edac/debugfs.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/edac/debugfs.c b/drivers/edac/debugfs.c
-> index 4804332d99465..a41071f2ad428 100644
-> --- a/drivers/edac/debugfs.c
-> +++ b/drivers/edac/debugfs.c
-> @@ -55,14 +55,15 @@ void edac_debugfs_exit(void)
->  void edac_create_debugfs_nodes(struct mem_ctl_info *mci)
->  {
->  	struct dentry *parent;
-> -	char name[80];
->  	int i;
->  
->  	parent = debugfs_create_dir(mci->dev.kobj.name, edac_debugfs);
->  
->  	for (i = 0; i < mci->n_layers; i++) {
-> -		sprintf(name, "fake_inject_%s",
-> -			     edac_layer_name[mci->layers[i].type]);
-> +		char name[32];
-> +
-> +		scnprintf(name, sizeof(name), "fake_inject_%s",
-> +			  edac_layer_name[mci->layers[i].type]);
->  		debugfs_create_u8(name, S_IRUGO | S_IWUSR, parent,
->  				  &mci->fake_inject_layer[i]);
->  	}
-> 
-> 
+> I have seen this guy exposed to Linux on coreboot machines. No issues.
+> But i can imagine BIOSs that somehow make use of the device and assume
+> it wont move. So we would at least need a parameter to allow keeping
+> that device hidden, or "fixed" in memory.
 
-I think name should be [20] since len("fake_inject_") is 12 and maximum 
-length of any edac_layer_name is 7 bytes. In addition, for moving the
-declaration of name inside the loop we need to compile the source in 
-C99 mode.
+I'm wondering if they have pin control device described in the ACPI.
+If so, how in that case you prevent double initialisation?
 
-Thanx
+We would need to check both: P2SB and ACPI tables. Basically if we enable P2SB
+as a PCI device we may create a corresponding driver (somewhere under
+drivers/pci or PDx86) and check in its probe that ACPI device is also present
+and functional.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
