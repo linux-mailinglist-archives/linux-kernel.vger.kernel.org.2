@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EE463C574C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A47A93C50BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376946AbhGLIbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:31:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51704 "EHLO mail.kernel.org"
+        id S1347302AbhGLHep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:34:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345722AbhGLHoI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:44:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 22B9E611F1;
-        Mon, 12 Jul 2021 07:40:53 +0000 (UTC)
+        id S242109AbhGLHGP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:06:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 27BA861205;
+        Mon, 12 Jul 2021 07:03:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075654;
-        bh=13W/oWj5gz5cu8Ueim6ZFf/pSWtuKM8PboyUgGy7j0A=;
+        s=korg; t=1626073406;
+        bh=nn2wZwDQ4zJF/JdNFxRsoTgZDjGu7g+pmHIAsJijf1c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qudk8DQRuQeNFWx7OC+Wjf6uvO5tgUZ1lUDv11OpvLCdmsgS6UQDvfZQkhWmGyExp
-         3u103InpPG4j2pJWosCdBbYdcjr6fQJv6KMqHVf/JZG3/xPe+qQLLBfoMBLGyxEI+D
-         yQmT+IGzlNXqppidklWk46BVWa4hGlS78jFAoezo=
+        b=GlCbUU20LQ9zxhXvaDlHyILTRQEkDjYriNdOBau2DI/KcL6XyqBDC1Ed48BdCFLbX
+         RN35SHRtQraw7uUqhexJFwohgmeMw4KTVs/tnxiISRiTa59iocqdrwp0hRd3KIiV8g
+         J3dYAzEpvDimKXijpwz9A8IPFKK8jl8id9JPKpvM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        John Allen <john.allen@amd.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
+        Aurelien Aptel <aaptel@suse.com>,
+        Steve French <stfrench@microsoft.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 290/800] crypto: ccp - Fix a resource leak in an error handling path
-Date:   Mon, 12 Jul 2021 08:05:13 +0200
-Message-Id: <20210712060955.797764530@linuxfoundation.org>
+Subject: [PATCH 5.12 231/700] cifs: fix check of dfs interlinks
+Date:   Mon, 12 Jul 2021 08:05:14 +0200
+Message-Id: <20210712060959.495900905@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,49 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Paulo Alcantara <pc@cjr.nz>
 
-[ Upstream commit a6f8e68e238a15bb15f1726b35c695136c64eaba ]
+[ Upstream commit 889c2a700799f3b6f82210925e1faf4a9b833c4a ]
 
-If an error occurs after calling 'sp_get_irqs()', 'sp_free_irqs()' must be
-called as already done in the error handling path.
+Interlink is a special type of DFS link that resolves to a different
+DFS domain-based namespace.  To determine whether it is an interlink
+or not, check if ReferralServers and StorageServers bits are set to 1
+and 0 respectively in ReferralHeaderFlags, as specified in MS-DFSC
+3.1.5.4.5 Determining Whether a Referral Response is an Interlink.
 
-Fixes: f4d18d656f88 ("crypto: ccp - Abstract interrupt registeration")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Acked-by: John Allen <john.allen@amd.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
+Reviewed-by: Aurelien Aptel <aaptel@suse.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/ccp/sp-pci.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ fs/cifs/dfs_cache.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/crypto/ccp/sp-pci.c b/drivers/crypto/ccp/sp-pci.c
-index f468594ef8af..6fb6ba35f89d 100644
---- a/drivers/crypto/ccp/sp-pci.c
-+++ b/drivers/crypto/ccp/sp-pci.c
-@@ -222,7 +222,7 @@ static int sp_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 		if (ret) {
- 			dev_err(dev, "dma_set_mask_and_coherent failed (%d)\n",
- 				ret);
--			goto e_err;
-+			goto free_irqs;
- 		}
- 	}
+diff --git a/fs/cifs/dfs_cache.c b/fs/cifs/dfs_cache.c
+index 098b4bc8da59..d2d686ee10a3 100644
+--- a/fs/cifs/dfs_cache.c
++++ b/fs/cifs/dfs_cache.c
+@@ -25,8 +25,7 @@
+ #define CACHE_HTABLE_SIZE 32
+ #define CACHE_MAX_ENTRIES 64
  
-@@ -230,10 +230,12 @@ static int sp_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+-#define IS_INTERLINK_SET(v) ((v) & (DFSREF_REFERRAL_SERVER | \
+-				    DFSREF_STORAGE_SERVER))
++#define IS_DFS_INTERLINK(v) (((v) & DFSREF_REFERRAL_SERVER) && !((v) & DFSREF_STORAGE_SERVER))
  
- 	ret = sp_init(sp);
- 	if (ret)
--		goto e_err;
-+		goto free_irqs;
+ struct cache_dfs_tgt {
+ 	char *name;
+@@ -170,7 +169,7 @@ static int dfscache_proc_show(struct seq_file *m, void *v)
+ 				   "cache entry: path=%s,type=%s,ttl=%d,etime=%ld,hdr_flags=0x%x,ref_flags=0x%x,interlink=%s,path_consumed=%d,expired=%s\n",
+ 				   ce->path, ce->srvtype == DFS_TYPE_ROOT ? "root" : "link",
+ 				   ce->ttl, ce->etime.tv_nsec, ce->ref_flags, ce->hdr_flags,
+-				   IS_INTERLINK_SET(ce->hdr_flags) ? "yes" : "no",
++				   IS_DFS_INTERLINK(ce->hdr_flags) ? "yes" : "no",
+ 				   ce->path_consumed, cache_entry_expired(ce) ? "yes" : "no");
  
- 	return 0;
- 
-+free_irqs:
-+	sp_free_irqs(sp);
- e_err:
- 	dev_notice(dev, "initialization failed\n");
- 	return ret;
+ 			list_for_each_entry(t, &ce->tlist, list) {
+@@ -239,7 +238,7 @@ static inline void dump_ce(const struct cache_entry *ce)
+ 		 ce->srvtype == DFS_TYPE_ROOT ? "root" : "link", ce->ttl,
+ 		 ce->etime.tv_nsec,
+ 		 ce->hdr_flags, ce->ref_flags,
+-		 IS_INTERLINK_SET(ce->hdr_flags) ? "yes" : "no",
++		 IS_DFS_INTERLINK(ce->hdr_flags) ? "yes" : "no",
+ 		 ce->path_consumed,
+ 		 cache_entry_expired(ce) ? "yes" : "no");
+ 	dump_tgts(ce);
 -- 
 2.30.2
 
