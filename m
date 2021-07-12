@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A4203C571C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 553F23C4986
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348266AbhGLI2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:28:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49180 "EHLO mail.kernel.org"
+        id S235436AbhGLGpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:45:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348753AbhGLHlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:41:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB8BB60724;
-        Mon, 12 Jul 2021 07:38:32 +0000 (UTC)
+        id S237899AbhGLGe5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:34:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A8EC60551;
+        Mon, 12 Jul 2021 06:32:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075513;
-        bh=mqd9n6vs1xgm7ByR8C/nW5XpQdznqzFjhFlNcwkIRYM=;
+        s=korg; t=1626071529;
+        bh=wWJRJTiR/yYrM97bNtwEoMlpAdV7hfKPseOeLbgd8po=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pNiPqysGwarFWOjPYw6/RbetPpBz+cVbnElM3KK4szN1NMA7qtOcFg8ICJcfby1Nv
-         ikPEwHMaJ/LZXh+JB1FWzBCpcofBPkJHzocQsf5T+mQzv2WwnfmmL9VtGW3SgXfoBV
-         AsVPhROBpeBQNecKs9XXPvgrYSgcuuUhcaZYb7oU=
+        b=mG1XH5pMQWQa+pouSHEaEaD1UGdBszkS2GtEX6ctOYDTZh3T5QAiy9seYkHFlqFU5
+         +ZOrD/cyLF9ZNxknkGZ6v5Ww9KzV9f4sSab40OY2mPYum3Is/pigYYZobb/1+fhGox
+         bxY1yXvDTiG3ShPDrW2OywLkAZlLv0VXSWKqAQjA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        stable@vger.kernel.org, Janosch Frank <frankja@linux.ibm.com>,
         Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas Huth <thuth@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 203/800] KVM: s390: get rid of register asm usage
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: [PATCH 5.10 066/593] s390: mm: Fix secure storage access exception handling
 Date:   Mon, 12 Jul 2021 08:03:46 +0200
-Message-Id: <20210712060941.778494085@linuxfoundation.org>
+Message-Id: <20210712060850.429885157@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,78 +40,134 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Carstens <hca@linux.ibm.com>
+From: Janosch Frank <frankja@linux.ibm.com>
 
-[ Upstream commit 4fa3b91bdee1b08348c82660668ca0ca34e271ad ]
+commit 85b18d7b5e7ffefb2f076186511d39c4990aa005 upstream.
 
-Using register asm statements has been proven to be very error prone,
-especially when using code instrumentation where gcc may add function
-calls, which clobbers register contents in an unexpected way.
+Turns out that the bit 61 in the TEID is not always 1 and if that's
+the case the address space ID and the address are
+unpredictable. Without an address and its address space ID we can't
+export memory and hence we can only send a SIGSEGV to the process or
+panic the kernel depending on who caused the exception.
 
-Therefore get rid of register asm statements in kvm code, even though
-there is currently nothing wrong with them. This way we know for sure
-that this bug class won't be introduced here.
+Unfortunately bit 61 is only reliable if we have the "misc" UV feature
+bit.
 
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Janosch Frank <frankja@linux.ibm.com>
 Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Reviewed-by: Thomas Huth <thuth@redhat.com>
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Link: https://lore.kernel.org/r/20210621140356.1210771-1-hca@linux.ibm.com
-[borntraeger@de.ibm.com: checkpatch strict fix]
-Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 084ea4d611a3d ("s390/mm: add (non)secure page access exceptions handlers")
+Cc: stable@vger.kernel.org
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/s390/kvm/kvm-s390.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ arch/s390/boot/uv.c        |    1 +
+ arch/s390/include/asm/uv.h |    8 +++++++-
+ arch/s390/kernel/uv.c      |   10 ++++++++++
+ arch/s390/mm/fault.c       |   26 ++++++++++++++++++++++++++
+ 4 files changed, 44 insertions(+), 1 deletion(-)
 
-diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-index 1296fc10f80c..876fc1f7282a 100644
---- a/arch/s390/kvm/kvm-s390.c
-+++ b/arch/s390/kvm/kvm-s390.c
-@@ -329,31 +329,31 @@ static void allow_cpu_feat(unsigned long nr)
+--- a/arch/s390/boot/uv.c
++++ b/arch/s390/boot/uv.c
+@@ -36,6 +36,7 @@ void uv_query_info(void)
+ 		uv_info.max_sec_stor_addr = ALIGN(uvcb.max_guest_stor_addr, PAGE_SIZE);
+ 		uv_info.max_num_sec_conf = uvcb.max_num_sec_conf;
+ 		uv_info.max_guest_cpu_id = uvcb.max_guest_cpu_id;
++		uv_info.uv_feature_indications = uvcb.uv_feature_indications;
+ 	}
  
- static inline int plo_test_bit(unsigned char nr)
+ #ifdef CONFIG_PROTECTED_VIRTUALIZATION_GUEST
+--- a/arch/s390/include/asm/uv.h
++++ b/arch/s390/include/asm/uv.h
+@@ -73,6 +73,10 @@ enum uv_cmds_inst {
+ 	BIT_UVC_CMD_UNPIN_PAGE_SHARED = 22,
+ };
+ 
++enum uv_feat_ind {
++	BIT_UV_FEAT_MISC = 0,
++};
++
+ struct uv_cb_header {
+ 	u16 len;
+ 	u16 cmd;	/* Command Code */
+@@ -97,7 +101,8 @@ struct uv_cb_qui {
+ 	u64 max_guest_stor_addr;
+ 	u8  reserved88[158 - 136];
+ 	u16 max_guest_cpu_id;
+-	u8  reserveda0[200 - 160];
++	u64 uv_feature_indications;
++	u8  reserveda0[200 - 168];
+ } __packed __aligned(8);
+ 
+ /* Initialize Ultravisor */
+@@ -274,6 +279,7 @@ struct uv_info {
+ 	unsigned long max_sec_stor_addr;
+ 	unsigned int max_num_sec_conf;
+ 	unsigned short max_guest_cpu_id;
++	unsigned long uv_feature_indications;
+ };
+ 
+ extern struct uv_info uv_info;
+--- a/arch/s390/kernel/uv.c
++++ b/arch/s390/kernel/uv.c
+@@ -364,6 +364,15 @@ static ssize_t uv_query_facilities(struc
+ static struct kobj_attribute uv_query_facilities_attr =
+ 	__ATTR(facilities, 0444, uv_query_facilities, NULL);
+ 
++static ssize_t uv_query_feature_indications(struct kobject *kobj,
++					    struct kobj_attribute *attr, char *buf)
++{
++	return sysfs_emit(buf, "%lx\n", uv_info.uv_feature_indications);
++}
++
++static struct kobj_attribute uv_query_feature_indications_attr =
++	__ATTR(feature_indications, 0444, uv_query_feature_indications, NULL);
++
+ static ssize_t uv_query_max_guest_cpus(struct kobject *kobj,
+ 				       struct kobj_attribute *attr, char *page)
  {
--	register unsigned long r0 asm("0") = (unsigned long) nr | 0x100;
-+	unsigned long function = (unsigned long)nr | 0x100;
- 	int cc;
+@@ -396,6 +405,7 @@ static struct kobj_attribute uv_query_ma
  
- 	asm volatile(
-+		"	lgr	0,%[function]\n"
- 		/* Parameter registers are ignored for "test bit" */
- 		"	plo	0,0,0,0(0)\n"
- 		"	ipm	%0\n"
- 		"	srl	%0,28\n"
- 		: "=d" (cc)
--		: "d" (r0)
--		: "cc");
-+		: [function] "d" (function)
-+		: "cc", "0");
- 	return cc == 0;
- }
+ static struct attribute *uv_query_attrs[] = {
+ 	&uv_query_facilities_attr.attr,
++	&uv_query_feature_indications_attr.attr,
+ 	&uv_query_max_guest_cpus_attr.attr,
+ 	&uv_query_max_guest_vms_attr.attr,
+ 	&uv_query_max_guest_addr_attr.attr,
+--- a/arch/s390/mm/fault.c
++++ b/arch/s390/mm/fault.c
+@@ -805,6 +805,32 @@ void do_secure_storage_access(struct pt_
+ 	struct page *page;
+ 	int rc;
  
- static __always_inline void __insn32_query(unsigned int opcode, u8 *query)
- {
--	register unsigned long r0 asm("0") = 0;	/* query function */
--	register unsigned long r1 asm("1") = (unsigned long) query;
--
- 	asm volatile(
--		/* Parameter regs are ignored */
-+		"	lghi	0,0\n"
-+		"	lgr	1,%[query]\n"
-+		/* Parameter registers are ignored */
- 		"	.insn	rrf,%[opc] << 16,2,4,6,0\n"
- 		:
--		: "d" (r0), "a" (r1), [opc] "i" (opcode)
--		: "cc", "memory");
-+		: [query] "d" ((unsigned long)query), [opc] "i" (opcode)
-+		: "cc", "memory", "0", "1");
- }
- 
- #define INSN_SORTL 0xb938
--- 
-2.30.2
-
++	/*
++	 * bit 61 tells us if the address is valid, if it's not we
++	 * have a major problem and should stop the kernel or send a
++	 * SIGSEGV to the process. Unfortunately bit 61 is not
++	 * reliable without the misc UV feature so we need to check
++	 * for that as well.
++	 */
++	if (test_bit_inv(BIT_UV_FEAT_MISC, &uv_info.uv_feature_indications) &&
++	    !test_bit_inv(61, &regs->int_parm_long)) {
++		/*
++		 * When this happens, userspace did something that it
++		 * was not supposed to do, e.g. branching into secure
++		 * memory. Trigger a segmentation fault.
++		 */
++		if (user_mode(regs)) {
++			send_sig(SIGSEGV, current, 0);
++			return;
++		}
++
++		/*
++		 * The kernel should never run into this case and we
++		 * have no way out of this situation.
++		 */
++		panic("Unexpected PGM 0x3d with TEID bit 61=0");
++	}
++
+ 	switch (get_fault_type(regs)) {
+ 	case USER_FAULT:
+ 		mm = current->mm;
 
 
