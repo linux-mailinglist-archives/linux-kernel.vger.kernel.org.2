@@ -2,145 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 945FE3C4340
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 06:41:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA5B83C4346
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 06:44:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230028AbhGLEoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 00:44:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbhGLEoD (ORCPT
+        id S230158AbhGLErF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 00:47:05 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:37710 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229379AbhGLErE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 00:44:03 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB132C0613E5
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 21:41:15 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id o3-20020a17090a6783b0290173ce472b8aso880034pjj.2
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 21:41:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ZL0bec2agHsc0j6ce/Gb5bsSghII65P7kEsioPLg7/I=;
-        b=WPci+XbTcvjEfOXEze65WR/kHiJj7UnotldAAu3YV5QxlaYIadepyymWghBbbGgVhR
-         S9Lezk9hED0qIXMmE07/fHAeTk0Tu+2zzWJa38fGbKb1jvqBRxN26Nl4R8cmK9EO/NbE
-         O7HFlaT8Vh2s0HQL0mutd3aGJcZW969KDbu7cVK84yZDtn+lQutF8Ap2xKeLMxmjiYkk
-         SSR4D7i5jnaRKH6bwcidT5MLu7HqcW20j6GW7w/qG3Pba1DyV0zt14wq7xnpEbugEHvk
-         Gx8kbYIY4/bOsIg7wfcutupfK46FJeJ38nH3mTO2r2SrSgfzBg/rjZdu2VCInk47K0k+
-         Ma/A==
+        Mon, 12 Jul 2021 00:47:04 -0400
+Received: by mail-io1-f72.google.com with SMTP id p7-20020a6b63070000b029050017e563a6so10945615iog.4
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 21:44:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ZL0bec2agHsc0j6ce/Gb5bsSghII65P7kEsioPLg7/I=;
-        b=pxFVFJ1Li1MqejgssChWevBSDNTUZ+ceuYvPmerharPjnGU7qXqRFJk9SCwB13BCYG
-         NwYRs3ggkq5kkVln4s9+1Lynjxf9nwRaELGf+ui6j38duX5qcR2znVI+DqP+TzDtXY4x
-         q8dXOEtZBlThJyZjgx3HmggDyKACMxeW4wgBYv+ibDHBQzUC4BQBN0NDQBnHjCdF6Mt7
-         Ht1KpbPoVIHwUlboaoxwHGEd9n0vQ5zYsSAOtuGqrCZUDsu2xsf0GwyTB9yW0Ce3CJ48
-         emyVpZB/tQ4I0v8iywWXhgiOSMA8BBzX7JmavnfMb0PM7csgyIxvocAR4RB6bKsZJyAS
-         OPBQ==
-X-Gm-Message-State: AOAM533i2ZYoa0mE2FHZU7ti59Fp7zJvmBaE4Gh7dmrzitLkoqB6y6gi
-        U00SRb3lEoV7QnX8Cyamhzb2Ww==
-X-Google-Smtp-Source: ABdhPJwyJwbbVUxFVSM9rN48hfrK7Ghw5kZUYF+Hhou78UTmm5hOddVf9Ch77a6a3nYY5Vr3tBDR9w==
-X-Received: by 2002:a17:90a:db98:: with SMTP id h24mr23092454pjv.156.1626064875097;
-        Sun, 11 Jul 2021 21:41:15 -0700 (PDT)
-Received: from localhost ([106.201.108.2])
-        by smtp.gmail.com with ESMTPSA id s36sm6810167pgk.64.2021.07.11.21.41.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Jul 2021 21:41:14 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 10:11:12 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org, rjw@rjwysocki.net, robh+dt@kernel.org,
-        tdas@codeaurora.org, mka@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [Patch v3 3/6] cpufreq: qcom-cpufreq-hw: Add dcvs interrupt
- support
-Message-ID: <20210712044112.svhlagrktcfvyj35@vireshk-i7>
-References: <20210708120656.663851-1-thara.gopinath@linaro.org>
- <20210708120656.663851-4-thara.gopinath@linaro.org>
- <20210709064646.7vjgiba2o7beudly@vireshk-i7>
- <5a98ef2a-d170-f52d-cc48-b838cddaa5c2@linaro.org>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=escPaiYQMKQoo4fDKLaDrY4/ndjEorVwOX4C4DbfMdM=;
+        b=tl4Hr1rOS86COxuNABsJJGO6Gqn/aH5ZAeKsA3Ge2mByc9R+xb3N6NpQ65mSENDHBL
+         ZYUOJOIcB3mOto7Z1YoenUc+kQziKgl069xlS+SHwPdoP3wy99gSQhY4FfOH12tLga5l
+         75HEmYWz3k5N/j1c7/NsEbS9FF7mIObYE0S80WccFckKYO73lQzpWEcD85FWdnJTr0Hu
+         am0Dd38xB3rNIzkC3sq55bbqC5uYcf6xN1E6s7+ahxh4FOguud2pJAX+epZMEbtFa5Ve
+         XSt/uSfgBzskIQhFbud88k2ny4aqvU/99780o4N4AC5PdlDdAWCXdQgzy4fSNxM4o8X0
+         3hYw==
+X-Gm-Message-State: AOAM533sizMyJ2i3fWFAv2q5q5FrX3k6uvDeS3DPWKYTMr/hy3WJ+saW
+        avuCJ6xSHZkzOzFdphoI8Rrkdp+Ei/XzXMD0S8PNE+LtlbJm
+X-Google-Smtp-Source: ABdhPJz96PjZLikPBG31OEuF0Quze9PPeFlrMd5iEgQnpQf6GCLbDyb8bCBNqaRQKLqHkOQEr4YE6RPVu3nMLeZZpSgFnWf138DF
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5a98ef2a-d170-f52d-cc48-b838cddaa5c2@linaro.org>
-User-Agent: NeoMutt/20180716-391-311a52
+X-Received: by 2002:a05:6638:3291:: with SMTP id f17mr11170365jav.143.1626065055617;
+ Sun, 11 Jul 2021 21:44:15 -0700 (PDT)
+Date:   Sun, 11 Jul 2021 21:44:15 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000005966505c6e5c637@google.com>
+Subject: [syzbot] KASAN: use-after-free Write in ext4_stop_mmpd
+From:   syzbot <syzbot+2ab2ee3b98cc853e6ee2@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09-07-21, 11:37, Thara Gopinath wrote:
-> On 7/9/21 2:46 AM, Viresh Kumar wrote:
-> > > @@ -389,6 +503,10 @@ static int qcom_cpufreq_hw_cpu_exit(struct cpufreq_policy *policy)
-> > >   	dev_pm_opp_remove_all_dynamic(cpu_dev);
-> > >   	dev_pm_opp_of_cpumask_remove_table(policy->related_cpus);
-> > > +	if (data->lmh_dcvs_irq > 0) {
-> > > +		devm_free_irq(cpu_dev, data->lmh_dcvs_irq, data);
-> > 
-> > Why using devm variants here and while requesting the irq ?
+Hello,
 
-Missed this one ?
+syzbot found the following issue on:
 
-> > 
-> > > +		cancel_delayed_work_sync(&data->lmh_dcvs_poll_work);
-> > > +	}
-> > 
-> > Please move this to qcom_cpufreq_hw_lmh_exit() or something.
-> 
-> Ok.
-> 
-> > 
-> > Now with sequence of disabling interrupt, etc, I see a potential
-> > problem.
-> > 
-> > CPU0                                    CPU1
-> > 
-> > qcom_cpufreq_hw_cpu_exit()
-> > -> devm_free_irq();
-> >                                          qcom_lmh_dcvs_poll()
-> >                                          -> qcom_lmh_dcvs_notify()
-> >                                            -> enable_irq()
-> > 
-> > -> cancel_delayed_work_sync();
-> > 
-> > 
-> > What will happen if enable_irq() gets called after freeing the irq ?
-> > Not sure, but it looks like you will hit this then from manage.c:
-> > 
-> > WARN(!desc->irq_data.chip, KERN_ERR "enable_irq before
-> >                                       setup/request_irq: irq %u\n", irq))
-> > 
-> > ?
-> > 
-> > You got a chicken n egg problem :)
-> 
-> Yes indeed! But also it is a very rare chicken and egg problem.
-> The scenario here is that the cpus are busy and running load causing a
-> thermal overrun and lmh is engaged. At the same time for this issue to be
-> hit the cpu is trying to exit/disable cpufreq.
+HEAD commit:    3dbdb38e Merge branch 'for-5.14' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=156a39c2300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a1fcf15a09815757
+dashboard link: https://syzkaller.appspot.com/bug?extid=2ab2ee3b98cc853e6ee2
 
-Yes, it is a very specific case but it needs to be resolved anyway. You don't
-want to get this ever :)
+Unfortunately, I don't have any reproducer for this issue yet.
 
-> Calling
-> cancel_delayed_work_sync first could solve this issue, right ?
-> cancel_delayed_work_sync guarantees the work not to be pending even if
-> it requeues itself on return. So once the delayed work is cancelled, the
-> interrupts can be safely disabled. Thoughts ?
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+2ab2ee3b98cc853e6ee2@syzkaller.appspotmail.com
 
-I don't think even that would provide such guarantees to you here, as there is
-a chance the work gets queued again because of an interrupt that triggers right
-after you cancel the work.
+==================================================================
+BUG: KASAN: use-after-free in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+BUG: KASAN: use-after-free in atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:111 [inline]
+BUG: KASAN: use-after-free in __refcount_add include/linux/refcount.h:193 [inline]
+BUG: KASAN: use-after-free in __refcount_inc include/linux/refcount.h:250 [inline]
+BUG: KASAN: use-after-free in refcount_inc include/linux/refcount.h:267 [inline]
+BUG: KASAN: use-after-free in get_task_struct include/linux/sched/task.h:104 [inline]
+BUG: KASAN: use-after-free in kthread_stop+0x90/0x720 kernel/kthread.c:643
+Write of size 4 at addr ffff88801bf51c68 by task syz-executor.4/8462
 
-The basic way of solving such issues is that once you cancel something, you need
-to guarantee that it doesn't get triggered again, no matter what.
+CPU: 1 PID: 8462 Comm: syz-executor.4 Tainted: G        W         5.13.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:96
+ print_address_description.constprop.0.cold+0x6c/0x309 mm/kasan/report.c:233
+ __kasan_report mm/kasan/report.c:419 [inline]
+ kasan_report.cold+0x83/0xdf mm/kasan/report.c:436
+ check_region_inline mm/kasan/generic.c:183 [inline]
+ kasan_check_range+0x13d/0x180 mm/kasan/generic.c:189
+ instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+ atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:111 [inline]
+ __refcount_add include/linux/refcount.h:193 [inline]
+ __refcount_inc include/linux/refcount.h:250 [inline]
+ refcount_inc include/linux/refcount.h:267 [inline]
+ get_task_struct include/linux/sched/task.h:104 [inline]
+ kthread_stop+0x90/0x720 kernel/kthread.c:643
+ ext4_stop_mmpd+0x47/0xd0 fs/ext4/mmp.c:254
+ ext4_put_super+0x918/0x10b0 fs/ext4/super.c:1251
+ generic_shutdown_super+0x14c/0x370 fs/super.c:465
+ kill_block_super+0x97/0xf0 fs/super.c:1395
+ deactivate_locked_super+0x94/0x160 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3a2/0x540 fs/namespace.c:1136
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
+ exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:209
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x467a37
+Code: ff d0 48 89 c7 b8 3c 00 00 00 0f 05 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffff6ba5618 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000467a37
+RDX: 00007ffff6ba56ec RSI: 0000000000000002 RDI: 00007ffff6ba56e0
+RBP: 00007ffff6ba56e0 R08: 00000000ffffffff R09: 00007ffff6ba54b0
+R10: 0000000002bd48e3 R11: 0000000000000246 R12: 00000000004bee70
+R13: 00007ffff6ba67b0 R14: 0000000002bd4810 R15: 00007ffff6ba67f0
 
-The problem here I see is with your design itself, both delayed work and irq can
-enable each other, so no matter which one you disable first, won't be
-sufficient. You need to fix that design somehow.
+Allocated by task 2:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:434 [inline]
+ __kasan_slab_alloc+0x84/0xa0 mm/kasan/common.c:467
+ kasan_slab_alloc include/linux/kasan.h:253 [inline]
+ slab_post_alloc_hook mm/slab.h:512 [inline]
+ slab_alloc_node mm/slub.c:2970 [inline]
+ kmem_cache_alloc_node+0x266/0x3e0 mm/slub.c:3006
+ alloc_task_struct_node kernel/fork.c:171 [inline]
+ dup_task_struct kernel/fork.c:871 [inline]
+ copy_process+0x5c8/0x74c0 kernel/fork.c:1952
+ kernel_clone+0xe7/0xab0 kernel/fork.c:2509
+ kernel_thread+0xb5/0xf0 kernel/fork.c:2561
+ create_kthread kernel/kthread.c:342 [inline]
+ kthreadd+0x4ea/0x750 kernel/kthread.c:685
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
 
--- 
-viresh
+Freed by task 19:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:360
+ ____kasan_slab_free mm/kasan/common.c:366 [inline]
+ ____kasan_slab_free mm/kasan/common.c:328 [inline]
+ __kasan_slab_free+0xfb/0x130 mm/kasan/common.c:374
+ kasan_slab_free include/linux/kasan.h:229 [inline]
+ slab_free_hook mm/slub.c:1639 [inline]
+ slab_free_freelist_hook+0xdf/0x240 mm/slub.c:1664
+ slab_free mm/slub.c:3224 [inline]
+ kmem_cache_free+0x8e/0x5a0 mm/slub.c:3240
+ __put_task_struct+0x26f/0x400 kernel/fork.c:748
+ put_task_struct include/linux/sched/task.h:113 [inline]
+ delayed_put_task_struct+0x1f6/0x340 kernel/exit.c:173
+ rcu_do_batch kernel/rcu/tree.c:2558 [inline]
+ rcu_core+0x7ab/0x1380 kernel/rcu/tree.c:2793
+ __do_softirq+0x29b/0x9bd kernel/softirq.c:558
+
+Last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:348
+ __call_rcu kernel/rcu/tree.c:3038 [inline]
+ call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
+ put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:179
+ context_switch kernel/sched/core.c:4686 [inline]
+ __schedule+0x93c/0x2710 kernel/sched/core.c:5940
+ schedule+0xd3/0x270 kernel/sched/core.c:6019
+ freezable_schedule include/linux/freezer.h:172 [inline]
+ do_nanosleep+0x24e/0x690 kernel/time/hrtimer.c:1896
+ hrtimer_nanosleep+0x1f9/0x4a0 kernel/time/hrtimer.c:1949
+ common_nsleep+0xa2/0xc0 kernel/time/posix-timers.c:1227
+ __do_sys_clock_nanosleep kernel/time/posix-timers.c:1267 [inline]
+ __se_sys_clock_nanosleep kernel/time/posix-timers.c:1245 [inline]
+ __x64_sys_clock_nanosleep+0x2f4/0x430 kernel/time/posix-timers.c:1245
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Second to last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:348
+ __call_rcu kernel/rcu/tree.c:3038 [inline]
+ call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
+ put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:179
+ context_switch kernel/sched/core.c:4686 [inline]
+ __schedule+0x93c/0x2710 kernel/sched/core.c:5940
+ schedule+0xd3/0x270 kernel/sched/core.c:6019
+ exit_to_user_mode_loop kernel/entry/common.c:163 [inline]
+ exit_to_user_mode_prepare+0x14a/0x290 kernel/entry/common.c:209
+ irqentry_exit_to_user_mode+0x5/0x40 kernel/entry/common.c:315
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
+
+The buggy address belongs to the object at ffff88801bf51c40
+ which belongs to the cache task_struct of size 6976
+The buggy address is located 40 bytes inside of
+ 6976-byte region [ffff88801bf51c40, ffff88801bf53780)
+The buggy address belongs to the page:
+page:ffffea00006fd400 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1bf50
+head:ffffea00006fd400 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+raw: 00fff00000010200 0000000000000000 0000000100000001 ffff888140006280
+raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 2, ts 6232954027, free_ts 0
+ prep_new_page mm/page_alloc.c:2445 [inline]
+ get_page_from_freelist+0xa72/0x2f80 mm/page_alloc.c:4178
+ __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5386
+ alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
+ alloc_slab_page mm/slub.c:1702 [inline]
+ allocate_slab+0x32b/0x4c0 mm/slub.c:1842
+ new_slab mm/slub.c:1905 [inline]
+ new_slab_objects mm/slub.c:2651 [inline]
+ ___slab_alloc+0x4ba/0x820 mm/slub.c:2814
+ __slab_alloc.constprop.0+0xa7/0xf0 mm/slub.c:2854
+ slab_alloc_node mm/slub.c:2936 [inline]
+ kmem_cache_alloc_node+0x12c/0x3e0 mm/slub.c:3006
+ alloc_task_struct_node kernel/fork.c:171 [inline]
+ dup_task_struct kernel/fork.c:871 [inline]
+ copy_process+0x5c8/0x74c0 kernel/fork.c:1952
+ kernel_clone+0xe7/0xab0 kernel/fork.c:2509
+ kernel_thread+0xb5/0xf0 kernel/fork.c:2561
+ create_kthread kernel/kthread.c:342 [inline]
+ kthreadd+0x4ea/0x750 kernel/kthread.c:685
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+page_owner free stack trace missing
+
+Memory state around the buggy address:
+ ffff88801bf51b00: 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc
+ ffff88801bf51b80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff88801bf51c00: fc fc fc fc fc fc fc fc fa fb fb fb fb fb fb fb
+                                                          ^
+ ffff88801bf51c80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88801bf51d00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
