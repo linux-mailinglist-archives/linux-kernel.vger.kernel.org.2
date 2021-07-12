@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D5013C4C8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E63643C53E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242058AbhGLHGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:06:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41894 "EHLO mail.kernel.org"
+        id S1348980AbhGLH4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:56:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236151AbhGLGri (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:47:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A96F610F7;
-        Mon, 12 Jul 2021 06:43:25 +0000 (UTC)
+        id S244664AbhGLHSe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:18:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BBAF961166;
+        Mon, 12 Jul 2021 07:15:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072205;
-        bh=WJJL3Ul7RmUo+3DBvprBYGqS18+SvRU3ae3N1cIHDFE=;
+        s=korg; t=1626074140;
+        bh=LjQZrFx2p3kyZJSJE3DeZ4beMhOZcFL+ELNJqiA6KKE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v4qS3rvhr+XOpuejEGClwNQY4jbndE4SeQLxrZyY1+2+OFYSEVNSfsmqPl/4Dknw+
-         OL0YgOWQ0agqMNGWH7X/AVoGXwzaFE9TGTQ91d88Bik5AfwzK4LspFDSQk15jm0Y++
-         V7GZ6KCNeKpTv0Xvk8Q6/S8LoxePOucxpEujizJc=
+        b=WF3H912HMA6RX2p8/QuE+/pe2rs4bqyTSuz7lvsPVFW6P7whOzWj38Jj1g+PHmlml
+         dNtWyhFGiTyqXyldwhICOLdxZlY43OI2bKCmTs3eCLygoWekBHei8pb4vdZ+exZMbC
+         W/rXSj5hrmo3utCbEu1oACcMCIRn7WBPf23jwGmw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dongseok Yi <dseok.yi@samsung.com>,
+        Willem de Bruijn <willemb@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 400/593] ibmvnic: set ltb->buff to NULL after freeing
+Subject: [PATCH 5.12 477/700] bpf: Do not change gso_size during bpf_skb_change_proto()
 Date:   Mon, 12 Jul 2021 08:09:20 +0200
-Message-Id: <20210712060931.603422327@linuxfoundation.org>
+Message-Id: <20210712061027.340428243@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,82 +43,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
+From: Maciej Żenczykowski <maze@google.com>
 
-[ Upstream commit 552a33729f1a7cc5115d0752064fe9abd6e3e336 ]
+[ Upstream commit 364745fbe981a4370f50274475da4675661104df ]
 
-free_long_term_buff() checks ltb->buff to decide whether we have a long
-term buffer to free. So set ltb->buff to NULL afer freeing. While here,
-also clear ->map_id, fix up some coding style and log an error.
+This is technically a backwards incompatible change in behaviour, but I'm
+going to argue that it is very unlikely to break things, and likely to fix
+*far* more then it breaks.
 
-Fixes: 9c4eaabd1bb39 ("Check CRQ command return codes")
-Signed-off-by: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+In no particular order, various reasons follow:
+
+(a) I've long had a bug assigned to myself to debug a super rare kernel crash
+on Android Pixel phones which can (per stacktrace) be traced back to BPF clat
+IPv6 to IPv4 protocol conversion causing some sort of ugly failure much later
+on during transmit deep in the GSO engine, AFAICT precisely because of this
+change to gso_size, though I've never been able to manually reproduce it. I
+believe it may be related to the particular network offload support of attached
+USB ethernet dongle being used for tethering off of an IPv6-only cellular
+connection. The reason might be we end up with more segments than max permitted,
+or with a GSO packet with only one segment... (either way we break some
+assumption and hit a BUG_ON)
+
+(b) There is no check that the gso_size is > 20 when reducing it by 20, so we
+might end up with a negative (or underflowing) gso_size or a gso_size of 0.
+This can't possibly be good. Indeed this is probably somehow exploitable (or
+at least can result in a kernel crash) by delivering crafted packets and perhaps
+triggering an infinite loop or a divide by zero... As a reminder: gso_size (MSS)
+is related to MTU, but not directly derived from it: gso_size/MSS may be
+significantly smaller then one would get by deriving from local MTU. And on
+some NICs (which do loose MTU checking on receive, it may even potentially be
+larger, for example my work pc with 1500 MTU can receive 1520 byte frames [and
+sometimes does due to bugs in a vendor plat46 implementation]). Indeed even just
+going from 21 to 1 is potentially problematic because it increases the number
+of segments by a factor of 21 (think DoS, or some other crash due to too many
+segments).
+
+(c) It's always safe to not increase the gso_size, because it doesn't result in
+the max packet size increasing.  So the skb_increase_gso_size() call was always
+unnecessary for correctness (and outright undesirable, see later). As such the
+only part which is potentially dangerous (ie. could cause backwards compatibility
+issues) is the removal of the skb_decrease_gso_size() call.
+
+(d) If the packets are ultimately destined to the local device, then there is
+absolutely no benefit to playing around with gso_size. It only matters if the
+packets will egress the device. ie. we're either forwarding, or transmitting
+from the device.
+
+(e) This logic only triggers for packets which are GSO. It does not trigger for
+skbs which are not GSO. It will not convert a non-GSO MTU sized packet into a
+GSO packet (and you don't even know what the MTU is, so you can't even fix it).
+As such your transmit path must *already* be able to handle an MTU 20 bytes
+larger then your receive path (for IPv4 to IPv6 translation) - and indeed 28
+bytes larger due to IPv4 fragments. Thus removing the skb_decrease_gso_size()
+call doesn't actually increase the size of the packets your transmit side must
+be able to handle. ie. to handle non-GSO max-MTU packets, the IPv4/IPv6 device/
+route MTUs must already be set correctly. Since for example with an IPv4 egress
+MTU of 1500, IPv4 to IPv6 translation will already build 1520 byte IPv6 frames,
+so you need a 1520 byte device MTU. This means if your IPv6 device's egress
+MTU is 1280, your IPv4 route must be 1260 (and actually 1252, because of the
+need to handle fragments). This is to handle normal non-GSO packets. Thus the
+reduction is simply not needed for GSO packets, because when they're correctly
+built, they will already be the right size.
+
+(f) TSO/GSO should be able to exactly undo GRO: the number of packets (TCP
+segments) should not be modified, so that TCP's MSS counting works correctly
+(this matters for congestion control). If protocol conversion changes the
+gso_size, then the number of TCP segments may increase or decrease. Packet loss
+after protocol conversion can result in partial loss of MSS segments that the
+sender sent. How's the sending TCP stack going to react to receiving ACKs/SACKs
+in the middle of the segments it sent?
+
+(g) skb_{decrease,increase}_gso_size() are already no-ops for GSO_BY_FRAGS
+case (besides triggering WARN_ON_ONCE). This means you already cannot guarantee
+that gso_size (and thus resulting packet MTU) is changed. ie. you must assume
+it won't be changed.
+
+(h) changing gso_size is outright buggy for UDP GSO packets, where framing
+matters (I believe that's also the case for SCTP, but it's already excluded
+by [g]).  So the only remaining case is TCP, which also doesn't want it
+(see [f]).
+
+(i) see also the reasoning on the previous attempt at fixing this
+(commit fa7b83bf3b156c767f3e4a25bbf3817b08f3ff8e) which shows that the current
+behaviour causes TCP packet loss:
+
+  In the forwarding path GRO -> BPF 6 to 4 -> GSO for TCP traffic, the
+  coalesced packet payload can be > MSS, but < MSS + 20.
+
+  bpf_skb_proto_6_to_4() will upgrade the MSS and it can be > the payload
+  length. After then tcp_gso_segment checks for the payload length if it
+  is <= MSS. The condition is causing the packet to be dropped.
+
+  tcp_gso_segment():
+    [...]
+    mss = skb_shinfo(skb)->gso_size;
+    if (unlikely(skb->len <= mss)) goto out;
+    [...]
+
+Thus changing the gso_size is simply a very bad idea. Increasing is unnecessary
+and buggy, and decreasing can go negative.
+
+Fixes: 6578171a7ff0 ("bpf: add bpf_skb_change_proto helper")
+Signed-off-by: Maciej Żenczykowski <maze@google.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Dongseok Yi <dseok.yi@samsung.com>
+Cc: Willem de Bruijn <willemb@google.com>
+Link: https://lore.kernel.org/bpf/CANP3RGfjLikQ6dg=YpBU0OeHvyv7JOki7CyOUS9modaXAi-9vQ@mail.gmail.com
+Link: https://lore.kernel.org/bpf/20210617000953.2787453-2-zenczykowski@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c | 26 +++++++++++++++-----------
- 1 file changed, 15 insertions(+), 11 deletions(-)
+ net/core/filter.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-index 765b38c8b252..458619aa84f4 100644
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -212,12 +212,11 @@ static int alloc_long_term_buff(struct ibmvnic_adapter *adapter,
- 	mutex_lock(&adapter->fw_lock);
- 	adapter->fw_done_rc = 0;
- 	reinit_completion(&adapter->fw_done);
--	rc = send_request_map(adapter, ltb->addr,
--			      ltb->size, ltb->map_id);
-+
-+	rc = send_request_map(adapter, ltb->addr, ltb->size, ltb->map_id);
- 	if (rc) {
--		dma_free_coherent(dev, ltb->size, ltb->buff, ltb->addr);
--		mutex_unlock(&adapter->fw_lock);
--		return rc;
-+		dev_err(dev, "send_request_map failed, rc = %d\n", rc);
-+		goto out;
- 	}
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 52f4359efbd2..0d1273d40fcf 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -3266,8 +3266,6 @@ static int bpf_skb_proto_4_to_6(struct sk_buff *skb)
+ 			shinfo->gso_type |=  SKB_GSO_TCPV6;
+ 		}
  
- 	rc = ibmvnic_wait_for_completion(adapter, &adapter->fw_done, 10000);
-@@ -225,20 +224,23 @@ static int alloc_long_term_buff(struct ibmvnic_adapter *adapter,
- 		dev_err(dev,
- 			"Long term map request aborted or timed out,rc = %d\n",
- 			rc);
--		dma_free_coherent(dev, ltb->size, ltb->buff, ltb->addr);
--		mutex_unlock(&adapter->fw_lock);
--		return rc;
-+		goto out;
- 	}
+-		/* Due to IPv6 header, MSS needs to be downgraded. */
+-		skb_decrease_gso_size(shinfo, len_diff);
+ 		/* Header must be checked, and gso_segs recomputed. */
+ 		shinfo->gso_type |= SKB_GSO_DODGY;
+ 		shinfo->gso_segs = 0;
+@@ -3307,8 +3305,6 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
+ 			shinfo->gso_type |=  SKB_GSO_TCPV4;
+ 		}
  
- 	if (adapter->fw_done_rc) {
- 		dev_err(dev, "Couldn't map long term buffer,rc = %d\n",
- 			adapter->fw_done_rc);
-+		rc = -1;
-+		goto out;
-+	}
-+	rc = 0;
-+out:
-+	if (rc) {
- 		dma_free_coherent(dev, ltb->size, ltb->buff, ltb->addr);
--		mutex_unlock(&adapter->fw_lock);
--		return -1;
-+		ltb->buff = NULL;
- 	}
- 	mutex_unlock(&adapter->fw_lock);
--	return 0;
-+	return rc;
- }
- 
- static void free_long_term_buff(struct ibmvnic_adapter *adapter,
-@@ -258,6 +260,8 @@ static void free_long_term_buff(struct ibmvnic_adapter *adapter,
- 	    adapter->reset_reason != VNIC_RESET_TIMEOUT)
- 		send_request_unmap(adapter, ltb->map_id);
- 	dma_free_coherent(dev, ltb->size, ltb->buff, ltb->addr);
-+	ltb->buff = NULL;
-+	ltb->map_id = 0;
- }
- 
- static int reset_long_term_buff(struct ibmvnic_adapter *adapter,
+-		/* Due to IPv4 header, MSS can be upgraded. */
+-		skb_increase_gso_size(shinfo, len_diff);
+ 		/* Header must be checked, and gso_segs recomputed. */
+ 		shinfo->gso_type |= SKB_GSO_DODGY;
+ 		shinfo->gso_segs = 0;
 -- 
 2.30.2
 
