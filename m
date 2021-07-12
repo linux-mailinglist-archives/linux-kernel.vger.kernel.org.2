@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE5253C4FF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 830293C4901
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:31:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344565AbhGLH3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:29:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36278 "EHLO mail.kernel.org"
+        id S236662AbhGLGli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:41:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242549AbhGLHBg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:01:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AD03613CA;
-        Mon, 12 Jul 2021 06:58:47 +0000 (UTC)
+        id S237105AbhGLGeJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:34:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B1BEA61152;
+        Mon, 12 Jul 2021 06:30:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073128;
-        bh=L84IKwINJa6zxkGcFITCnz9nOjuWJ1IN5joGhHT235s=;
+        s=korg; t=1626071420;
+        bh=Mc2o0mKA+e5b0/Jg87QMiGwTum9UxfWN2g2j+WJ9h+U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nfzsXoou+ZE2tIk1RKRT41gpNebnIR+EvBRXO1tSaR2zjMwcWtWwFi25TFvSW5nGf
-         BU2kJ5F48GX0S0CzuQ1ALI5m05LtpG9RQI/B2GgUk2oeVlRxErZw0mL1sqUSytyHdW
-         vM2Pv3D09SOa1YCjSnM1yc/E645xStqDIzj39YzE=
+        b=kABtg5/MnFXf2Nlp72NJpXYBh/KvmyRQpHY4C5onLC4C7MOqvzpNESNCjZdSVLW+J
+         G3Yjdgf6VX5H0/8KQl8/XKYmJYc1Xuav2fDgE3Xl9sEDTxwb4Q7ICAw4t2sAx03s4s
+         s1kizCisMZLzagn4/1mQfkLlFeb0aJoCb7BEV5Ro=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zou Wei <zou_wei@huawei.com>, Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 137/700] regulator: uniphier: Add missing MODULE_DEVICE_TABLE
+        stable@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH 5.10 060/593] perf/smmuv3: Dont trample existing events with global filter
 Date:   Mon, 12 Jul 2021 08:03:40 +0200
-Message-Id: <20210712060944.901256811@linuxfoundation.org>
+Message-Id: <20210712060849.751800106@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +39,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Robin Murphy <robin.murphy@arm.com>
 
-[ Upstream commit d019f38a1af3c6015cde6a47951a3ec43beeed80 ]
+commit 4c1daba15c209b99d192f147fea3dade30f72ed2 upstream.
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this driver when it is built
-as an external module.
+With global filtering, we only allow an event to be scheduled if its
+filter settings exactly match those of any existing events, therefore
+it is pointless to reapply the filter in that case. Much worse, though,
+is that in doing that we trample the event type of counter 0 if it's
+already active, and never touch the appropriate PMEVTYPERn so the new
+event is likely not counting the right thing either. Don't do that.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Link: https://lore.kernel.org/r/1620705198-104566-1-git-send-email-zou_wei@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+CC: stable@vger.kernel.org
+Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+Link: https://lore.kernel.org/r/32c80c0e46237f49ad8da0c9f8864e13c4a803aa.1623153312.git.robin.murphy@arm.com
+Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/regulator/uniphier-regulator.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/perf/arm_smmuv3_pmu.c |   18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/regulator/uniphier-regulator.c b/drivers/regulator/uniphier-regulator.c
-index 2e02e26b516c..e75b0973e325 100644
---- a/drivers/regulator/uniphier-regulator.c
-+++ b/drivers/regulator/uniphier-regulator.c
-@@ -201,6 +201,7 @@ static const struct of_device_id uniphier_regulator_match[] = {
- 	},
- 	{ /* Sentinel */ },
- };
-+MODULE_DEVICE_TABLE(of, uniphier_regulator_match);
+--- a/drivers/perf/arm_smmuv3_pmu.c
++++ b/drivers/perf/arm_smmuv3_pmu.c
+@@ -275,7 +275,7 @@ static int smmu_pmu_apply_event_filter(s
+ 				       struct perf_event *event, int idx)
+ {
+ 	u32 span, sid;
+-	unsigned int num_ctrs = smmu_pmu->num_counters;
++	unsigned int cur_idx, num_ctrs = smmu_pmu->num_counters;
+ 	bool filter_en = !!get_filter_enable(event);
  
- static struct platform_driver uniphier_regulator_driver = {
- 	.probe = uniphier_regulator_probe,
--- 
-2.30.2
-
+ 	span = filter_en ? get_filter_span(event) :
+@@ -283,17 +283,19 @@ static int smmu_pmu_apply_event_filter(s
+ 	sid = filter_en ? get_filter_stream_id(event) :
+ 			   SMMU_PMCG_DEFAULT_FILTER_SID;
+ 
+-	/* Support individual filter settings */
+-	if (!smmu_pmu->global_filter) {
++	cur_idx = find_first_bit(smmu_pmu->used_counters, num_ctrs);
++	/*
++	 * Per-counter filtering, or scheduling the first globally-filtered
++	 * event into an empty PMU so idx == 0 and it works out equivalent.
++	 */
++	if (!smmu_pmu->global_filter || cur_idx == num_ctrs) {
+ 		smmu_pmu_set_event_filter(event, idx, span, sid);
+ 		return 0;
+ 	}
+ 
+-	/* Requested settings same as current global settings*/
+-	idx = find_first_bit(smmu_pmu->used_counters, num_ctrs);
+-	if (idx == num_ctrs ||
+-	    smmu_pmu_check_global_filter(smmu_pmu->events[idx], event)) {
+-		smmu_pmu_set_event_filter(event, 0, span, sid);
++	/* Otherwise, must match whatever's currently scheduled */
++	if (smmu_pmu_check_global_filter(smmu_pmu->events[cur_idx], event)) {
++		smmu_pmu_set_evtyper(smmu_pmu, idx, get_event(event));
+ 		return 0;
+ 	}
+ 
 
 
