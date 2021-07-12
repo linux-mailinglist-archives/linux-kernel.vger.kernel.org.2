@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA9603C54CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4613D3C4E17
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354746AbhGLIE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:04:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35324 "EHLO mail.kernel.org"
+        id S243556AbhGLHQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:16:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52294 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241069AbhGLHZv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:25:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5648D61464;
-        Mon, 12 Jul 2021 07:22:47 +0000 (UTC)
+        id S238732AbhGLGw3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:52:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 54FBD6102A;
+        Mon, 12 Jul 2021 06:49:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074568;
-        bh=SUyU+GE1uT4cL5sO7tDyoPTBA/b+FFqdbKYcxb7qfm4=;
+        s=korg; t=1626072578;
+        bh=R56nexJ50c1g/+/yiqHA9rIQh+nevdNhStN7n3KpBo4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DIq8HhNKi+5DeFaIz3Gy5DygfOUH/XB/J3VnVwbMK/0wZ5cmzhV5sq0oR7xwg2Ob6
-         cWSes1CzBedBA9Nxmcl7Y/lb0DKRewnty1uKAk+SB1c45Ymeqp97m2mK1J35gsOSFm
-         WsHyO/zMM6mxiCOLOU2JE1+fbPP6QEZL/mxNe+l4=
+        b=goDhAxDU9ANXeGGo3OCtkJsm2IBiCdDd84Z91sO7VOPmX0A1ymh/0qjawlDEeN4Me
+         1d6cU2G+4adXXjlcyAPBVOPo+k75C8ecIenqNIIlgoNLtwQCId8/8ojDCKYTA1n0P+
+         JDwqc+WyyuJhy1WQAN2sj9wdn/sExQmLYs3qdxBM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        stable@vger.kernel.org, Bard Liao <bard.liao@intel.com>,
+        Libin Yang <libin.yang@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 621/700] staging: gdm724x: check for overflow in gdm_lte_netif_rx()
+Subject: [PATCH 5.10 544/593] ASoC: Intel: sof_sdw: add SOF_RT715_DAI_ID_FIX for AlderLake
 Date:   Mon, 12 Jul 2021 08:11:44 +0200
-Message-Id: <20210712061041.893919221@linuxfoundation.org>
+Message-Id: <20210712060953.914998420@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,43 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Libin Yang <libin.yang@intel.com>
 
-[ Upstream commit 7002b526f4ff1f6da34356e67085caafa6be383a ]
+[ Upstream commit 81cd42e5174ba7918edd3d006406ce21ebaa8507 ]
 
-This code assumes that "len" is at least 62 bytes, but we need a check
-to prevent a read overflow.
+AlderLake needs the flag SOF_RT715_DAI_ID_FIX if it is using the
+rt715 DMIC.
 
-Fixes: 61e121047645 ("staging: gdm7240: adding LTE USB driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/YMcoTPsCYlhh2TQo@mwanda
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Bard Liao <bard.liao@intel.com>
+Signed-off-by: Libin Yang <libin.yang@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20210505163705.305616-11-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/gdm724x/gdm_lte.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ sound/soc/intel/boards/sof_sdw.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/staging/gdm724x/gdm_lte.c b/drivers/staging/gdm724x/gdm_lte.c
-index a41af7aa74ec..bd5f87433404 100644
---- a/drivers/staging/gdm724x/gdm_lte.c
-+++ b/drivers/staging/gdm724x/gdm_lte.c
-@@ -611,10 +611,12 @@ static void gdm_lte_netif_rx(struct net_device *dev, char *buf,
- 						  * bytes (99,130,83,99 dec)
- 						  */
- 			} __packed;
--			void *addr = buf + sizeof(struct iphdr) +
--				sizeof(struct udphdr) +
--				offsetof(struct dhcp_packet, chaddr);
--			ether_addr_copy(nic->dest_mac_addr, addr);
-+			int offset = sizeof(struct iphdr) +
-+				     sizeof(struct udphdr) +
-+				     offsetof(struct dhcp_packet, chaddr);
-+			if (offset + ETH_ALEN > len)
-+				return;
-+			ether_addr_copy(nic->dest_mac_addr, buf + offset);
- 		}
- 	}
- 
+diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
+index 9dc982c2c776..75a0bfedb449 100644
+--- a/sound/soc/intel/boards/sof_sdw.c
++++ b/sound/soc/intel/boards/sof_sdw.c
+@@ -196,6 +196,7 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
+ 		},
+ 		.driver_data = (void *)(SOF_RT711_JD_SRC_JD1 |
+ 					SOF_SDW_TGL_HDMI |
++					SOF_RT715_DAI_ID_FIX |
+ 					SOF_SDW_PCH_DMIC),
+ 	},
+ 	{}
 -- 
 2.30.2
 
