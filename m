@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7175B3C498B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 214FC3C571B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236312AbhGLGpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:45:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55814 "EHLO mail.kernel.org"
+        id S1359820AbhGLI2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:28:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237888AbhGLGe4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:34:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EB23610CA;
-        Mon, 12 Jul 2021 06:32:04 +0000 (UTC)
+        id S1348668AbhGLHlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:41:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0870A610D1;
+        Mon, 12 Jul 2021 07:38:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071524;
-        bh=Lz+/JlLUf0y6vdpM5zzN5Pg+5vyv1ERRqgWrhzFUI5w=;
+        s=korg; t=1626075507;
+        bh=YjqY58vLbJulwVN1zKTvM6mUZHaqMT+0DFI+1p8t4Bs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ag0LdVq8fMlx1G9/oHXNnaJd1aciwTKHipISoT544OL8FKHmoPNohYWkiqs0u54Az
-         jN3Fn7EfkIHp3mRclLCJ/ef08xMS4C0PS/LzqbWiACNIqhAa32/5tIBLVq2i+skM7u
-         EGSoagVix94TVk4D5FFl+MDdaj4nXV3ekxlDL118=
+        b=AoOSAtLjbI5EjTD7Gpdj9Ue6SA5anwCYz/nL4sBPa+cEzWADG/buVGGzqJ/30pYT2
+         L8VEXvYa7xm9svrX+K0TOz0wgZdiVhgmHrSAa9oHlsF9sfgjU2DGDljZXt2O22oYoQ
+         tmFf0lRmAz6l+vmfQKf/OHWIdJhfSw0SniYAmRTc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        Tony Luck <tony.luck@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 105/593] media: s5p: fix pm_runtime_get_sync() usage count
+Subject: [PATCH 5.13 242/800] EDAC/Intel: Do not load EDAC driver when running as a guest
 Date:   Mon, 12 Jul 2021 08:04:25 +0200
-Message-Id: <20210712060854.770175643@linuxfoundation.org>
+Message-Id: <20210712060947.832557988@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,48 +40,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: Luck, Tony <tony.luck@intel.com>
 
-[ Upstream commit fdc34e82c0f968ac4c157bd3d8c299ebc24c9c63 ]
+[ Upstream commit f0a029fff4a50eb01648810a77ba1873e829fdd4 ]
 
-The pm_runtime_get_sync() internally increments the
-dev->power.usage_count without decrementing it, even on errors.
-Replace it by the new pm_runtime_resume_and_get(), introduced by:
-commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-in order to properly decrement the usage counter, avoiding
-a potential PM usage counter leak.
+There's little to no point in loading an EDAC driver running in a guest:
+1) The CPU model reported by CPUID may not represent actual h/w
+2) The hypervisor likely does not pass in access to memory controller devices
+3) Hypervisors generally do not pass corrected error details to guests
 
-While here, check if the PM runtime error was caught at
-s5p_cec_adap_enable().
+Add a check in each of the Intel EDAC drivers for X86_FEATURE_HYPERVISOR
+and simply return -ENODEV in the init routine.
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Acked-by: Borislav Petkov <bp@suse.de>
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Link: https://lore.kernel.org/r/20210615174419.GA1087688@agluck-desk2.amr.corp.intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/cec/platform/s5p/s5p_cec.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/edac/i10nm_base.c | 3 +++
+ drivers/edac/pnd2_edac.c  | 3 +++
+ drivers/edac/sb_edac.c    | 3 +++
+ drivers/edac/skx_base.c   | 3 +++
+ 4 files changed, 12 insertions(+)
 
-diff --git a/drivers/media/cec/platform/s5p/s5p_cec.c b/drivers/media/cec/platform/s5p/s5p_cec.c
-index 2a3e7ffefe0a..2250c1cbc64e 100644
---- a/drivers/media/cec/platform/s5p/s5p_cec.c
-+++ b/drivers/media/cec/platform/s5p/s5p_cec.c
-@@ -35,10 +35,13 @@ MODULE_PARM_DESC(debug, "debug level (0-2)");
+diff --git a/drivers/edac/i10nm_base.c b/drivers/edac/i10nm_base.c
+index 238a4ad1e526..37b4e875420e 100644
+--- a/drivers/edac/i10nm_base.c
++++ b/drivers/edac/i10nm_base.c
+@@ -278,6 +278,9 @@ static int __init i10nm_init(void)
+ 	if (owner && strncmp(owner, EDAC_MOD_STR, sizeof(EDAC_MOD_STR)))
+ 		return -EBUSY;
  
- static int s5p_cec_adap_enable(struct cec_adapter *adap, bool enable)
- {
-+	int ret;
- 	struct s5p_cec_dev *cec = cec_get_drvdata(adap);
++	if (cpu_feature_enabled(X86_FEATURE_HYPERVISOR))
++		return -ENODEV;
++
+ 	id = x86_match_cpu(i10nm_cpuids);
+ 	if (!id)
+ 		return -ENODEV;
+diff --git a/drivers/edac/pnd2_edac.c b/drivers/edac/pnd2_edac.c
+index 928f63a374c7..c94ca1f790c4 100644
+--- a/drivers/edac/pnd2_edac.c
++++ b/drivers/edac/pnd2_edac.c
+@@ -1554,6 +1554,9 @@ static int __init pnd2_init(void)
+ 	if (owner && strncmp(owner, EDAC_MOD_STR, sizeof(EDAC_MOD_STR)))
+ 		return -EBUSY;
  
- 	if (enable) {
--		pm_runtime_get_sync(cec->dev);
-+		ret = pm_runtime_resume_and_get(cec->dev);
-+		if (ret < 0)
-+			return ret;
++	if (cpu_feature_enabled(X86_FEATURE_HYPERVISOR))
++		return -ENODEV;
++
+ 	id = x86_match_cpu(pnd2_cpuids);
+ 	if (!id)
+ 		return -ENODEV;
+diff --git a/drivers/edac/sb_edac.c b/drivers/edac/sb_edac.c
+index 93daa4297f2e..4c626fcd4dcb 100644
+--- a/drivers/edac/sb_edac.c
++++ b/drivers/edac/sb_edac.c
+@@ -3510,6 +3510,9 @@ static int __init sbridge_init(void)
+ 	if (owner && strncmp(owner, EDAC_MOD_STR, sizeof(EDAC_MOD_STR)))
+ 		return -EBUSY;
  
- 		s5p_cec_reset(cec);
++	if (cpu_feature_enabled(X86_FEATURE_HYPERVISOR))
++		return -ENODEV;
++
+ 	id = x86_match_cpu(sbridge_cpuids);
+ 	if (!id)
+ 		return -ENODEV;
+diff --git a/drivers/edac/skx_base.c b/drivers/edac/skx_base.c
+index 6a4f0b27c654..4dbd46575bfb 100644
+--- a/drivers/edac/skx_base.c
++++ b/drivers/edac/skx_base.c
+@@ -656,6 +656,9 @@ static int __init skx_init(void)
+ 	if (owner && strncmp(owner, EDAC_MOD_STR, sizeof(EDAC_MOD_STR)))
+ 		return -EBUSY;
  
++	if (cpu_feature_enabled(X86_FEATURE_HYPERVISOR))
++		return -ENODEV;
++
+ 	id = x86_match_cpu(skx_cpuids);
+ 	if (!id)
+ 		return -ENODEV;
 -- 
 2.30.2
 
