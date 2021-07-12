@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 723623C576A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B93B3C518B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354770AbhGLIct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:32:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52932 "EHLO mail.kernel.org"
+        id S1349435AbhGLHmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:42:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349783AbhGLHoq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:44:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D21F561351;
-        Mon, 12 Jul 2021 07:41:07 +0000 (UTC)
+        id S243783AbhGLHIv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:08:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C64B610CA;
+        Mon, 12 Jul 2021 07:04:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075668;
-        bh=nJBxJgmRFblp5PtPkGY4cKuHKRQqMekKlQh+2VtKUzE=;
+        s=korg; t=1626073480;
+        bh=3QfwCBcj+yOjmfhAXvWnFApagzbAw4npL+OpFY5r9N8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cJp7rocx6iZrtBOXHv6BtlBe4mKJKvZIAGXyRbJFb8dKAsPVnSVrZL1FDHv775Qsl
-         jc5FzFvANMuzeT/JXv/7zwokBEGrl6PgUBe2Am3eefXIfbsa57dSANN3XICl2klqfr
-         tVO8HBqcHwh+/iRVTVuYYqPaViwF0O0XhP6NEOvk=
+        b=dH7cQ1b6mFmWbMNsPK12B/w6sX3u6WaId1kqKm3XbYEKz0LIcH296nL30s3euGQyU
+         xYnx/rYm6CqK2+L+hnoTHaLY/DLmXbvj3UbI+arIz0PLrj07fnC+L2SQ7+mpG37QWV
+         K2kedAV6konKi20iYA0Ri9Tilujld5Sire8RrpO8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 313/800] mmc: usdhi6rol0: fix error return code in usdhi6_probe()
-Date:   Mon, 12 Jul 2021 08:05:36 +0200
-Message-Id: <20210712060958.909196959@linuxfoundation.org>
+Subject: [PATCH 5.12 254/700] crypto: ixp4xx - dma_unmap the correct address
+Date:   Mon, 12 Jul 2021 08:05:37 +0200
+Message-Id: <20210712061002.950068789@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Corentin Labbe <clabbe@baylibre.com>
 
-[ Upstream commit 2f9ae69e5267f53e89e296fccee291975a85f0eb ]
+[ Upstream commit 9395c58fdddd79cdd3882132cdd04e8ac7ad525f ]
 
-Fix to return a negative error code from the error handling case instead
-of 0, as done elsewhere in this function.
+Testing ixp4xx_crypto with CONFIG_DMA_API_DEBUG lead to the following error:
+DMA-API: platform ixp4xx_crypto.0: device driver tries to free DMA memory it has not allocated [device address=0x0000000000000000] [size=24 bytes]
 
-Fixes: 75fa9ea6e3c0 ("mmc: add a driver for the Renesas usdhi6rol0 SD/SDIO host controller")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Link: https://lore.kernel.org/r/20210508020321.1677-1-thunder.leizhen@huawei.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+This is due to dma_unmap using the wrong address.
+
+Fixes: 0d44dc59b2b4 ("crypto: ixp4xx - Fix handling of chained sg buffers")
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/usdhi6rol0.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/crypto/ixp4xx_crypto.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/host/usdhi6rol0.c b/drivers/mmc/host/usdhi6rol0.c
-index 615f3d008af1..b9b79b1089a0 100644
---- a/drivers/mmc/host/usdhi6rol0.c
-+++ b/drivers/mmc/host/usdhi6rol0.c
-@@ -1801,6 +1801,7 @@ static int usdhi6_probe(struct platform_device *pdev)
+diff --git a/drivers/crypto/ixp4xx_crypto.c b/drivers/crypto/ixp4xx_crypto.c
+index 8b0f17fc09fb..9e330e93e340 100644
+--- a/drivers/crypto/ixp4xx_crypto.c
++++ b/drivers/crypto/ixp4xx_crypto.c
+@@ -330,7 +330,7 @@ static void free_buf_chain(struct device *dev, struct buffer_desc *buf,
  
- 	version = usdhi6_read(host, USDHI6_VERSION);
- 	if ((version & 0xfff) != 0xa0d) {
-+		ret = -EPERM;
- 		dev_err(dev, "Version not recognized %x\n", version);
- 		goto e_clk_off;
- 	}
+ 		buf1 = buf->next;
+ 		phys1 = buf->phys_next;
+-		dma_unmap_single(dev, buf->phys_next, buf->buf_len, buf->dir);
++		dma_unmap_single(dev, buf->phys_addr, buf->buf_len, buf->dir);
+ 		dma_pool_free(buffer_pool, buf, phys);
+ 		buf = buf1;
+ 		phys = phys1;
 -- 
 2.30.2
 
