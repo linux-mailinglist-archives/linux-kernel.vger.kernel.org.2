@@ -2,182 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2B73C5AA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ED323C5AA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234690AbhGLKIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 06:08:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60696 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231153AbhGLKIK (ORCPT
+        id S240263AbhGLKN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 06:13:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238459AbhGLKNa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 06:08:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626084321;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=X19mW+ZyTd9qQRM8Dsor2I88r2OdnUUiSY5B7Ckj4fA=;
-        b=TC9upR1o6n+sS/lAMVp8OggsNCcj9gjPcnBE9lECEsKF8apQI1euv3aQhD9JwqA0/lZuEb
-        /5CIrh09zUtKCY7CoFk3+QOWmgsAEq2TaasbNxhkgkbQ0YmfdOR2WKPbj9/WUYRFPUYcd7
-        F0L/365lOsX1D/jDJY10Obzoq8S26go=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-181-IY5gXIXyOcO9Ju-VHPa1jg-1; Mon, 12 Jul 2021 06:05:18 -0400
-X-MC-Unique: IY5gXIXyOcO9Ju-VHPa1jg-1
-Received: by mail-wr1-f71.google.com with SMTP id j6-20020adff5460000b029013c7749ad05so4599263wrp.8
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 03:05:17 -0700 (PDT)
+        Mon, 12 Jul 2021 06:13:30 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 503F6C0613DD;
+        Mon, 12 Jul 2021 03:10:40 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id a2so17707390pgi.6;
+        Mon, 12 Jul 2021 03:10:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=iEk/ir9/c5kSFxMDMVhuyjD1jxHThSmk1Tkskkir1rU=;
+        b=qqUoJbLgzwxcX4qaTCPtUubntnRMo4Vgt1/AK90kCTwnlF+r6vfCJAGfGrOQ7+7kLV
+         eL0vgadXeOt3waCA8JqCWLMabNjAocZjePvEW3lSDXTf8UJD8SBLxi5S1B5amaXko1um
+         +7lhS5imt0lIAbec/vN+K5ugke7Vai7AKAh6cLU42JsAX5e01rmuYT0fdrkEUzK/76mU
+         Ge5vpzKCtZUlfUuUtbMnEEH+mHqVWP7vgZ7oVdgIzMLW7hcY6tWqUkg81gWPbLA4BrmL
+         Ev7hjolxznPvBHPZZT58AIbHxXJOuQogNkrW21XTTlJytr3cFGUrmc79OSNGLVg3nLdm
+         Vzaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=X19mW+ZyTd9qQRM8Dsor2I88r2OdnUUiSY5B7Ckj4fA=;
-        b=HiCgISGfdl+O256Hw4q2hYeYN3Bu7NyNjgC460SL2ukxLuhwQboGfSJsj0YMcoSH7C
-         DUYk2YSrIB6hqBQPAZpEy6F+yBReFSQXkkaGN3YrgKM7iX+drL3fHL2Z2UB9QUmCxl/D
-         xsJWrQucOQtAAxdgS/bhhLNT8WP4EuuFYQ6WmMFad6DhuZBi/nV6U+xsqMMsQ19/WFAc
-         Sys6ZgNL7O58HweuxplGDdPE93ioEiFpbRNeHGrUn8e169ljXDUzIITede7REtFoP1ut
-         QVZ4x4UU5Bq/7pVWRPuy3m+ME1uWWXT83QlYUdggYb+qqYOwf7dIWyjD2y4l+Z0oND0a
-         84CA==
-X-Gm-Message-State: AOAM533PCp3+eG4s7PZZO5rvjAgLwIJMLLOszP3DpflY9slFK1zR7X3s
-        pl4x8wKLhbPt+CarC6YZSdUfIEsWGZLmLmKCBi7rS43io5OHTxgfEInfAJEdtcHKZM8S6B7iSIa
-        KlI13S2tBOwBHYtBQiHonQEfQAIvIUn1DckWw28RRXfUJJxoQvH4uo5ectIFdUfD5+rqAmSdW
-X-Received: by 2002:a7b:c7cb:: with SMTP id z11mr6527305wmk.102.1626084316952;
-        Mon, 12 Jul 2021 03:05:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyrXPeiamMLpTXMwJ301Lg2JUMHHqWIMLI5c5Sqw48VV42Z0KzUHpIcgWfFLtHjCHir8DNoUQ==
-X-Received: by 2002:a7b:c7cb:: with SMTP id z11mr6527281wmk.102.1626084316738;
-        Mon, 12 Jul 2021 03:05:16 -0700 (PDT)
-Received: from ?IPv6:2003:d8:2f0a:7f00:fad7:3bc9:69d:31f? (p200300d82f0a7f00fad73bc9069d031f.dip0.t-ipconnect.de. [2003:d8:2f0a:7f00:fad7:3bc9:69d:31f])
-        by smtp.gmail.com with ESMTPSA id h10sm14373933wmb.46.2021.07.12.03.05.15
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iEk/ir9/c5kSFxMDMVhuyjD1jxHThSmk1Tkskkir1rU=;
+        b=bGa2b/xUJCf+95sqjaZYVOkw8etOOz1PIHoiq4UiPNC4Ct2DpKnS8tuDL4QJyu1cVA
+         rVneLDchAJ49R6rqcCxXJmCtVXSh2FCr13loG2/lbG3u8EDe87zhhpec7bZ4B2uDBoc/
+         apEs0jNKQMuxbyQadRtj7VUXZRMAG0WBQJupbTyWkzh5O6YM9iX8vo3IOR7OpzRSB4ok
+         zHGoYKKyWUG9qsCNUTZul845MTUddGMmnr33kVHgnLes5ac+DW+EWO863cWpfKtHtCbZ
+         b3uxZpugNJAgsuFtApI0ZtTz663gTK/Swt9eALqp8RLqneHrx/7oMFphvJhc3DZO3V60
+         JzOg==
+X-Gm-Message-State: AOAM5332nwmzpVSzjDiakltX9sioYzByAqvIfd6goUeCGrSkI0EuAXe/
+        hBPtZgWsBLtM7ORgqdKUSss=
+X-Google-Smtp-Source: ABdhPJzXCINaueh7u8MBAcqVETylU6Tc2av30BJoHPIU+k0H57txwsmCcHe/7/KIPAmNm6a2xskU9g==
+X-Received: by 2002:a65:6489:: with SMTP id e9mr24110978pgv.409.1626084639845;
+        Mon, 12 Jul 2021 03:10:39 -0700 (PDT)
+Received: from Likes-MacBook-Pro.local ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id j19sm17051700pgm.44.2021.07.12.03.10.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Jul 2021 03:05:16 -0700 (PDT)
-Subject: Re: [PATCH] memblock: make for_each_mem_range() traverse
- MEMBLOCK_HOTPLUG regions
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Greg Kurz <gkurz@redhat.com>, Mike Rapoport <rppt@linux.ibm.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210712071132.20902-1-rppt@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <7c9bd547-5687-e9b1-817e-f7afab09afb4@redhat.com>
-Date:   Mon, 12 Jul 2021 12:05:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 12 Jul 2021 03:10:39 -0700 (PDT)
+Subject: Re: [PATCH v5 05/13] KVM: vmx/pmu: Emulate MSR_ARCH_LBR_CTL for guest
+ Arch LBR
+To:     Yang Weijiang <weijiang.yang@intel.com>,
+        Jim Mattson <jmattson@google.com>
+Cc:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        wei.w.wang@intel.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Like Xu <like.xu@linux.intel.com>
+References: <1625825111-6604-1-git-send-email-weijiang.yang@intel.com>
+ <1625825111-6604-6-git-send-email-weijiang.yang@intel.com>
+ <CALMp9eR8mbVXS5E6sB7TwEocytpWcG_6w-ijmfxAd4ciHPtfmw@mail.gmail.com>
+ <20210712093626.GC12162@intel.com>
+From:   Like Xu <like.xu.linux@gmail.com>
+Message-ID: <bd386ed1-69d8-39ab-8bee-6e3aed8d2ee2@gmail.com>
+Date:   Mon, 12 Jul 2021 18:10:30 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210712071132.20902-1-rppt@kernel.org>
+In-Reply-To: <20210712093626.GC12162@intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.07.21 09:11, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
+On 12/7/2021 5:36 pm, Yang Weijiang wrote:
+> On Fri, Jul 09, 2021 at 02:55:35PM -0700, Jim Mattson wrote:
+>> On Fri, Jul 9, 2021 at 2:51 AM Yang Weijiang <weijiang.yang@intel.com> wrote:
+>>>
+>>> From: Like Xu <like.xu@linux.intel.com>
+>>>
+>>> Arch LBRs are enabled by setting MSR_ARCH_LBR_CTL.LBREn to 1. A new guest
+>>> state field named "Guest IA32_LBR_CTL" is added to enhance guest LBR usage.
+>>> When guest Arch LBR is enabled, a guest LBR event will be created like the
+>>> model-specific LBR does. Clear guest LBR enable bit on host PMI handling so
+>>> guest can see expected config.
+>>>
+>>> On processors that support Arch LBR, MSR_IA32_DEBUGCTLMSR[bit 0] has no
+>>> meaning. It can be written to 0 or 1, but reads will always return 0.
+>>> Like IA32_DEBUGCTL, IA32_ARCH_LBR_CTL msr is also reserved on INIT.
+>>
+>> I suspect you mean "preserved" rather than "reserved."
+> Yes, should be preserved.
 > 
-> Commit b10d6bca8720 ("arch, drivers: replace for_each_membock() with
-> for_each_mem_range()") didn't take into account that when there is
-> movable_node parameter in the kernel command line, for_each_mem_range()
-> would skip ranges marked with MEMBLOCK_HOTPLUG.
+>>
+>>> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+>>> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+>>> ---
+>>>   arch/x86/events/intel/lbr.c      |  2 --
+>>>   arch/x86/include/asm/msr-index.h |  1 +
+>>>   arch/x86/include/asm/vmx.h       |  2 ++
+>>>   arch/x86/kvm/vmx/pmu_intel.c     | 31 ++++++++++++++++++++++++++-----
+>>>   arch/x86/kvm/vmx/vmx.c           |  9 +++++++++
+>>>   5 files changed, 38 insertions(+), 7 deletions(-)
+>>>
+>>
+>>> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+>>> index da68f0e74702..4500c564c63a 100644
+>>> --- a/arch/x86/kvm/vmx/pmu_intel.c
+>>> +++ b/arch/x86/kvm/vmx/pmu_intel.c
+>>> @@ -19,6 +19,11 @@
+>>>   #include "pmu.h"
+>>>
+>>>   #define MSR_PMC_FULL_WIDTH_BIT      (MSR_IA32_PMC0 - MSR_IA32_PERFCTR0)
+>>> +/*
+>>> + * Regardless of the Arch LBR or legacy LBR, when the LBR_EN bit 0 of the
+>>> + * corresponding control MSR is set to 1, LBR recording will be enabled.
+>>> + */
+>>
+>> Is this comment misplaced? It doesn't seem to have anything to do with
+>> the macro being defined below.
+> Agree, will put this in commit message.
+>>
+>>> @@ -458,6 +467,14 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>>>                  lbr_desc->records.nr = data;
+>>>                  lbr_desc->arch_lbr_reset = true;
+>>>                  return 0;
+>>> +       case MSR_ARCH_LBR_CTL:
+>>> +               if (data & ~KVM_ARCH_LBR_CTL_MASK)
+>>
+>> Is a static mask sufficient? Per the Intel® Architecture Instruction
+>> Set Extensions and Future Features Programming Reference, some of
+>> these bits may not be supported on all microarchitectures. See Table
+>> 7-8. CPUID Leaf 01CH Enumeration of Architectural LBR Capabilities.
+> Yes, more sanity checks are required, thanks!
 > 
-> The page table setup code in POWER uses for_each_mem_range() to create the
-> linear mapping of the physical memory and since the regions marked as
-> MEMORY_HOTPLUG are skipped, they never make it to the linear map.
-> 
-> A later access to the memory in those ranges will fail:
-> 
-> [    2.271743] BUG: Unable to handle kernel data access on write at 0xc000000400000000
-> [    2.271984] Faulting instruction address: 0xc00000000008a3c0
-> [    2.272568] Oops: Kernel access of bad area, sig: 11 [#1]
-> [    2.272683] LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=2048 NUMA pSeries
-> [    2.273063] Modules linked in:
-> [    2.273435] CPU: 0 PID: 53 Comm: kworker/u2:0 Not tainted 5.13.0 #7
-> [    2.273832] NIP:  c00000000008a3c0 LR: c0000000003c1ed8 CTR: 0000000000000040
-> [    2.273918] REGS: c000000008a57770 TRAP: 0300   Not tainted  (5.13.0)
-> [    2.274036] MSR:  8000000002009033 <SF,VEC,EE,ME,IR,DR,RI,LE>  CR: 84222202  XER: 20040000
-> [    2.274454] CFAR: c0000000003c1ed4 DAR: c000000400000000 DSISR: 42000000 IRQMASK: 0
-> [    2.274454] GPR00: c0000000003c1ed8 c000000008a57a10 c0000000019da700 c000000400000000
-> [    2.274454] GPR04: 0000000000000280 0000000000000180 0000000000000400 0000000000000200
-> [    2.274454] GPR08: 0000000000000100 0000000000000080 0000000000000040 0000000000000300
-> [    2.274454] GPR12: 0000000000000380 c000000001bc0000 c0000000001660c8 c000000006337e00
-> [    2.274454] GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-> [    2.274454] GPR20: 0000000040000000 0000000020000000 c000000001a81990 c000000008c30000
-> [    2.274454] GPR24: c000000008c20000 c000000001a81998 000fffffffff0000 c000000001a819a0
-> [    2.274454] GPR28: c000000001a81908 c00c000001000000 c000000008c40000 c000000008a64680
-> [    2.275520] NIP [c00000000008a3c0] clear_user_page+0x50/0x80
-> [    2.276333] LR [c0000000003c1ed8] __handle_mm_fault+0xc88/0x1910
-> [    2.276688] Call Trace:
-> [    2.276839] [c000000008a57a10] [c0000000003c1e94] __handle_mm_fault+0xc44/0x1910 (unreliable)
-> [    2.277142] [c000000008a57af0] [c0000000003c2c90] handle_mm_fault+0x130/0x2a0
-> [    2.277331] [c000000008a57b40] [c0000000003b5f08] __get_user_pages+0x248/0x610
-> [    2.277541] [c000000008a57c40] [c0000000003b848c] __get_user_pages_remote+0x12c/0x3e0
-> [    2.277768] [c000000008a57cd0] [c000000000473f24] get_arg_page+0x54/0xf0
-> [    2.277959] [c000000008a57d10] [c000000000474a7c] copy_string_kernel+0x11c/0x210
-> [    2.278159] [c000000008a57d80] [c00000000047663c] kernel_execve+0x16c/0x220
-> [    2.278361] [c000000008a57dd0] [c000000000166270] call_usermodehelper_exec_async+0x1b0/0x2f0
-> [    2.278543] [c000000008a57e10] [c00000000000d5ec] ret_from_kernel_thread+0x5c/0x70
-> [    2.278870] Instruction dump:
-> [    2.279214] 79280fa4 79271764 79261f24 794ae8e2 7ca94214 7d683a14 7c893a14 7d893050
-> [    2.279416] 7d4903a6 60000000 60000000 60000000 <7c001fec> 7c091fec 7c081fec 7c051fec
-> [    2.280193] ---[ end trace 490b8c67e6075e09 ]---
-> 
-> Making for_each_mem_range() include MEMBLOCK_HOTPLUG regions in the
-> traversal fixes this issue.
-> 
-> Link: https://bugzilla.redhat.com/show_bug.cgi?id=1976100
-> Fixes: b10d6bca8720 ("arch, drivers: replace for_each_membock() with for_each_mem_range()")
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> ---
->   include/linux/memblock.h | 4 ++--
->   mm/memblock.c            | 3 ++-
->   2 files changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-> index cbf46f56d105..4a53c3ca86bd 100644
-> --- a/include/linux/memblock.h
-> +++ b/include/linux/memblock.h
-> @@ -209,7 +209,7 @@ static inline void __next_physmem_range(u64 *idx, struct memblock_type *type,
->    */
->   #define for_each_mem_range(i, p_start, p_end) \
->   	__for_each_mem_range(i, &memblock.memory, NULL, NUMA_NO_NODE,	\
-> -			     MEMBLOCK_NONE, p_start, p_end, NULL)
-> +			     MEMBLOCK_HOTPLUG, p_start, p_end, NULL)
->   
->   /**
->    * for_each_mem_range_rev - reverse iterate through memblock areas from
-> @@ -220,7 +220,7 @@ static inline void __next_physmem_range(u64 *idx, struct memblock_type *type,
->    */
->   #define for_each_mem_range_rev(i, p_start, p_end)			\
->   	__for_each_mem_range_rev(i, &memblock.memory, NULL, NUMA_NO_NODE, \
-> -				 MEMBLOCK_NONE, p_start, p_end, NULL)
-> +				 MEMBLOCK_HOTPLUG, p_start, p_end, NULL)
->   
->   /**
->    * for_each_reserved_mem_range - iterate over all reserved memblock areas
-> diff --git a/mm/memblock.c b/mm/memblock.c
-> index 0041ff62c584..de7b553baa50 100644
-> --- a/mm/memblock.c
-> +++ b/mm/memblock.c
-> @@ -947,7 +947,8 @@ static bool should_skip_region(struct memblock_type *type,
->   		return true;
->   
->   	/* skip hotpluggable memory regions if needed */
-> -	if (movable_node_is_enabled() && memblock_is_hotpluggable(m))
-> +	if (movable_node_is_enabled() && memblock_is_hotpluggable(m) &&
-> +	    !(flags & MEMBLOCK_HOTPLUG))
->   		return true;
->   
->   	/* if we want mirror memory skip non-mirror memory regions */
-> 
-> base-commit: e73f0f0ee7541171d89f2e2491130c7771ba58d3
-> 
+>>
+>>> +                       break;
+>>> +               vmcs_write64(GUEST_IA32_LBR_CTL, data);
+>>> +               if (intel_pmu_lbr_is_enabled(vcpu) && !lbr_desc->event &&
+>>> +                   (data & ARCH_LBR_CTL_LBREN))
+>>> +                       intel_pmu_create_guest_lbr_event(vcpu);
+>>
+>> Nothing has to be done when the LBREN bit goes from 1 to 0?
+> Need to release the event and reset related flag when the bit goes from
+> 1 to 0. Thanks!
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+No need to release the LBR event and it will be lazily released.
 
--- 
-Thanks,
+>>
+>>> +               return 0;
+>>>          default:
+>>>                  if ((pmc = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0)) ||
+>>>                      (pmc = get_gp_pmc(pmu, msr, MSR_IA32_PMC0))) {
+>>
+>> Per the Intel® Architecture Instruction Set Extensions and Future
+>> Features Programming Reference, "IA32_LBR_CTL.LBREn is saved and
+>> cleared on #SMI, and restored on RSM." I don't see that happening
+>> anywhere. That manual also says, "On a warm reset...IA32_LBR_CTL.LBREn
+>> is cleared to 0, disabling LBRs." I don't see that happening either.
+> 
+> Yes, I'll add related code to make it consistent with spec, thanks!
+>>
+>> I have a question about section 7.1.4.4 in that manual. It says, "On a
+>> debug breakpoint event (#DB), IA32_LBR_CTL.LBREn is cleared." When,
+>> exactly, does that happen? In particular, if kvm synthesizes such an
+>> event (for example, in kvm_vcpu_do_singlestep), does
+>> IA32_LBR_CTL.LBREn automatically get cleared (after loading the guest
+>> IA32_LBR_CTL value from the VMCS)? Or does kvm need to explicitly
+>> clear that bit in the VMCS before injecting the #DB?
+> OK, I don't have answer now, will ask the Arch to get clear answer on this,
+> thanks for raising the question!
 
-David / dhildenb
+I think we also need a kvm-unit-tests to cover it (as well as the legacy 
+LBR).
 
+> 
