@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70DE83C4A2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9930E3C5747
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237768AbhGLGs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:48:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33552 "EHLO mail.kernel.org"
+        id S1376859AbhGLIbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:31:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53656 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236790AbhGLGiX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:38:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A4746101E;
-        Mon, 12 Jul 2021 06:34:27 +0000 (UTC)
+        id S1344209AbhGLHnq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:43:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A24E61130;
+        Mon, 12 Jul 2021 07:40:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071668;
-        bh=SQQGPPye12kX22cjIWmNRAfoJrfFV/8baIFuMBw2IsY=;
+        s=korg; t=1626075650;
+        bh=cPpVpS6dsP0jzT29/RcnOppK5dDvUL+nBE4EfowLhxg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NAealszhnAs9y4HgEKmRdLdvAHR63D2IXmDkrjC3rEAkZ0oHroonTlMK4GilFSiA9
-         1H7fvTnm5K8e47b4qKGp1vVufUskSfGupGNdBRHa0jZG72fDACT41+HlNcxHB7SQc2
-         gRHTkUZXaIpjWJ8yd8Ytu4PyutykWzH/o4HM6c80=
+        b=ufDi/LOeShdkq2x1IMf3OvIioz5ZFzhM3cxh4CmVXt5BhdSgqJJwD2XendB/eMnIa
+         65g9uilfsx1i7xL0CgeXFnAket5kwSrhkBbnsGzsE2LDT3+BpO0HJjUV8Sj6SCpb22
+         Nd0XX4mmAThoxKxLi9gLldvEEc18NM7Ik1doiWwY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Bixuan Cui <cuibixuan@huawei.com>,
-        Borislav Petkov <bp@suse.de>, Tero Kristo <kristo@kernel.org>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 169/593] EDAC/ti: Add missing MODULE_DEVICE_TABLE
+Subject: [PATCH 5.13 306/800] m68k: atari: Fix ATARI_KBD_CORE kconfig unmet dependency warning
 Date:   Mon, 12 Jul 2021 08:05:29 +0200
-Message-Id: <20210712060901.633968966@linuxfoundation.org>
+Message-Id: <20210712060957.988900887@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +42,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bixuan Cui <cuibixuan@huawei.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 0a37f32ba5272b2d4ec8c8d0f6b212b81b578f7e ]
+[ Upstream commit c1367ee016e3550745315fb9a2dd1e4ce02cdcf6 ]
 
-The module misses MODULE_DEVICE_TABLE() for of_device_id tables and thus
-never autoloads on ID matches.
+Since the code for ATARI_KBD_CORE does not use drivers/input/keyboard/
+code, just move ATARI_KBD_CORE to arch/m68k/Kconfig.machine to remove
+the dependency on INPUT_KEYBOARD.
 
-Add the missing declaration.
+Removes this kconfig warning:
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: Tero Kristo <kristo@kernel.org>
-Link: https://lkml.kernel.org/r/20210512033727.26701-1-cuibixuan@huawei.com
+    WARNING: unmet direct dependencies detected for ATARI_KBD_CORE
+      Depends on [n]: !UML && INPUT [=y] && INPUT_KEYBOARD [=n]
+      Selected by [y]:
+      - MOUSE_ATARI [=y] && !UML && INPUT [=y] && INPUT_MOUSE [=y] && ATARI [=y]
+
+Fixes: c04cb856e20a ("m68k: Atari keyboard and mouse support.")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Suggested-by: Michael Schmitz <schmitzmic@gmail.com>
+Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Link: https://lore.kernel.org/r/20210527001251.8529-1-rdunlap@infradead.org
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/edac/ti_edac.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/m68k/Kconfig.machine      | 3 +++
+ drivers/input/keyboard/Kconfig | 3 ---
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/edac/ti_edac.c b/drivers/edac/ti_edac.c
-index e7eae20f83d1..169f96e51c29 100644
---- a/drivers/edac/ti_edac.c
-+++ b/drivers/edac/ti_edac.c
-@@ -197,6 +197,7 @@ static const struct of_device_id ti_edac_of_match[] = {
- 	{ .compatible = "ti,emif-dra7xx", .data = (void *)EMIF_TYPE_DRA7 },
- 	{},
- };
-+MODULE_DEVICE_TABLE(of, ti_edac_of_match);
+diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
+index 4d59ec2f5b8d..d964c1f27399 100644
+--- a/arch/m68k/Kconfig.machine
++++ b/arch/m68k/Kconfig.machine
+@@ -25,6 +25,9 @@ config ATARI
+ 	  this kernel on an Atari, say Y here and browse the material
+ 	  available in <file:Documentation/m68k>; otherwise say N.
  
- static int _emif_get_id(struct device_node *node)
- {
++config ATARI_KBD_CORE
++	bool
++
+ config MAC
+ 	bool "Macintosh support"
+ 	depends on MMU
+diff --git a/drivers/input/keyboard/Kconfig b/drivers/input/keyboard/Kconfig
+index 32d15809ae58..40a070a2e7f5 100644
+--- a/drivers/input/keyboard/Kconfig
++++ b/drivers/input/keyboard/Kconfig
+@@ -67,9 +67,6 @@ config KEYBOARD_AMIGA
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called amikbd.
+ 
+-config ATARI_KBD_CORE
+-	bool
+-
+ config KEYBOARD_APPLESPI
+ 	tristate "Apple SPI keyboard and trackpad"
+ 	depends on ACPI && EFI
 -- 
 2.30.2
 
