@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1ACC3C56D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B65883C4926
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357891AbhGLIZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:25:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45458 "EHLO mail.kernel.org"
+        id S238166AbhGLGmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:42:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348015AbhGLHkc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:40:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 40F37611AC;
-        Mon, 12 Jul 2021 07:37:37 +0000 (UTC)
+        id S237629AbhGLGem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:34:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 923FA610A6;
+        Mon, 12 Jul 2021 06:31:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075457;
-        bh=9brvtHm5P1xX4on/zdIiSZ+3b4pLzhJ4IaEBj2zRwds=;
+        s=korg; t=1626071462;
+        bh=/TVaHVcHZcvaaIlw/BKSTFLWJXxQwafAJaqeoYu64xY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AzW+7xzR61Nru2UVHTaLtijEgtH6lYwBCI0adCQgAjjaHDYhgusrM9NBqo5TTd2xt
-         tFMTGD6bVsE0bd1xfskH0fLGpE41k/iG5bWjmyIq5qwuX/2t0xxbJmLd5r2yBYhm2j
-         1QgId4NDLQP0mETh984pADh3T269YVKNnXIUWJVg=
+        b=pPlYMJ6tQ6pAC0vJzAnccXSKienSO9B9fW1JC5tuHCpfCk+wKDICa5H6GiJLo9tJ1
+         f+1BZSL1ppmUGqRZl2y5Q7N9ZpdcNA/K0fCTu7GiSRVemzssN1DtomRMqavH1069iK
+         gsoIcKTygC/d+MhzSzQU34wKwcuXhbS8j3f3Z1kk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 200/800] btrfs: disable build on platforms having page size 256K
+        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.10 063/593] KVM: x86/mmu: Treat NX as used (not reserved) for all !TDP shadow MMUs
 Date:   Mon, 12 Jul 2021 08:03:43 +0200
-Message-Id: <20210712060941.350402508@linuxfoundation.org>
+Message-Id: <20210712060850.113581613@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,54 +39,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Sean Christopherson <seanjc@google.com>
 
-[ Upstream commit b05fbcc36be1f8597a1febef4892053a0b2f3f60 ]
+commit 112022bdb5bc372e00e6e43cb88ee38ea67b97bd upstream.
 
-With a config having PAGE_SIZE set to 256K, BTRFS build fails
-with the following message
+Mark NX as being used for all non-nested shadow MMUs, as KVM will set the
+NX bit for huge SPTEs if the iTLB mutli-hit mitigation is enabled.
+Checking the mitigation itself is not sufficient as it can be toggled on
+at any time and KVM doesn't reset MMU contexts when that happens.  KVM
+could reset the contexts, but that would require purging all SPTEs in all
+MMUs, for no real benefit.  And, KVM already forces EFER.NX=1 when TDP is
+disabled (for WP=0, SMEP=1, NX=0), so technically NX is never reserved
+for shadow MMUs.
 
-  include/linux/compiler_types.h:326:38: error: call to
-  '__compiletime_assert_791' declared with attribute error:
-  BUILD_BUG_ON failed: (BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0
+Fixes: b8e8c8303ff2 ("kvm: mmu: ITLB_MULTIHIT mitigation")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <20210622175739.3610207-3-seanjc@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-BTRFS_MAX_COMPRESSED being 128K, BTRFS cannot support platforms with
-256K pages at the time being.
-
-There are two platforms that can select 256K pages:
- - hexagon
- - powerpc
-
-Disable BTRFS when 256K page size is selected. Supporting this would
-require changes to the subpage mode that's currently being developed.
-Given that 256K is many times larger than page sizes commonly used and
-for what the algorithms and structures have been tuned, it's out of
-scope and disabling build is a reasonable option.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-[ update changelog ]
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/Kconfig | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/kvm/mmu/mmu.c |   10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
-index 68b95ad82126..520a0f6a7d9e 100644
---- a/fs/btrfs/Kconfig
-+++ b/fs/btrfs/Kconfig
-@@ -18,6 +18,8 @@ config BTRFS_FS
- 	select RAID6_PQ
- 	select XOR_BLOCKS
- 	select SRCU
-+	depends on !PPC_256K_PAGES	# powerpc
-+	depends on !PAGE_SIZE_256KB	# hexagon
- 
- 	help
- 	  Btrfs is a general purpose copy-on-write filesystem with extents,
--- 
-2.30.2
-
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -4133,7 +4133,15 @@ static void reset_rsvds_bits_mask_ept(st
+ void
+ reset_shadow_zero_bits_mask(struct kvm_vcpu *vcpu, struct kvm_mmu *context)
+ {
+-	bool uses_nx = context->nx ||
++	/*
++	 * KVM uses NX when TDP is disabled to handle a variety of scenarios,
++	 * notably for huge SPTEs if iTLB multi-hit mitigation is enabled and
++	 * to generate correct permissions for CR0.WP=0/CR4.SMEP=1/EFER.NX=0.
++	 * The iTLB multi-hit workaround can be toggled at any time, so assume
++	 * NX can be used by any non-nested shadow MMU to avoid having to reset
++	 * MMU contexts.  Note, KVM forces EFER.NX=1 when TDP is disabled.
++	 */
++	bool uses_nx = context->nx || !tdp_enabled ||
+ 		context->mmu_role.base.smep_andnot_wp;
+ 	struct rsvd_bits_validate *shadow_zero_check;
+ 	int i;
 
 
