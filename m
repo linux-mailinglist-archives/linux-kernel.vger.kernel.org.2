@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E0BC3C58C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E19C73C4D01
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380824AbhGLIv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:51:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44020 "EHLO mail.kernel.org"
+        id S245272AbhGLHLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:11:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348257AbhGLH5f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:57:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FF0F6162D;
-        Mon, 12 Jul 2021 07:52:40 +0000 (UTC)
+        id S239190AbhGLGta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:49:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FEAB60241;
+        Mon, 12 Jul 2021 06:46:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076360;
-        bh=zlCbgnpyDeBSQsLOPKs0LGmUdYmEeL/3/jJvNrZIKw8=;
+        s=korg; t=1626072380;
+        bh=rQGy8cqcvQFQWXICBxVU7vxBghpZ8ulbRgzAOF6P3BY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sxl3bMsT3lsA0jo3OzROaE47Vx0NsfhbJFeKYLyhmgavPRx3QiWs733nhFXVxWINe
-         ayK47qp5VLDvBaMDx5OpJnkAKKybpNmHJfFTzVHjrPtL5i23+lhnznEQ5EC6hPl2uA
-         5BlALByfkJadhEqK+//6nQQJlHJ2erGLttjll3gA=
+        b=Ek29nBaQXUGrJ3/kujW1AqehmwOI7Y5NDgZNZTpif1i75F1mGJREl6E0x1dIp+rLL
+         BDb2EA6jl4kA9kf0KRfyM9gEm8PW+zXjc+PnTXo7f/glk8U9VEPGJoGxgpn6Dn6lj1
+         oapJBA4lf2Ypbojhy5A22gwjhOB5qbWEIhkUi/rU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 608/800] serial: fsl_lpuart: remove RTSCTS handling from get_mctrl()
+Subject: [PATCH 5.10 471/593] Input: hil_kbd - fix error return code in hil_dev_connect()
 Date:   Mon, 12 Jul 2021 08:10:31 +0200
-Message-Id: <20210712061031.964396520@linuxfoundation.org>
+Message-Id: <20210712060941.845440927@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,48 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Walle <michael@walle.cc>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit e60c2991f18bf221fa9908ff10cb24eaedaa9bae ]
+[ Upstream commit d9b576917a1d0efa293801a264150a1b37691617 ]
 
-The wrong code in set_mctrl() was already removed in commit 2b30efe2e88a
-("tty: serial: lpuart: Remove unnecessary code from set_mctrl"), but the
-code in get_mctrl() wasn't removed. It will not return the state of the
-RTS or CTS line but whether automatic flow control is enabled, which is
-wrong for the get_mctrl(). Thus remove it.
+Return error code -EINVAL rather than '0' when the combo devices are not
+supported.
 
-Fixes: 2b30efe2e88a ("tty: serial: lpuart: Remove unnecessary code from set_mctrl")
-Signed-off-by: Michael Walle <michael@walle.cc>
-Link: https://lore.kernel.org/r/20210512141255.18277-7-michael@walle.cc
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: fa71c605c2bb ("Input: combine hil_kbd and hil_ptr drivers")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Link: https://lore.kernel.org/r/20210515030053.6824-1-thunder.leizhen@huawei.com
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/fsl_lpuart.c | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
+ drivers/input/keyboard/hil_kbd.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/tty/serial/fsl_lpuart.c b/drivers/tty/serial/fsl_lpuart.c
-index fbf2e4d2d22b..9c78e43e669d 100644
---- a/drivers/tty/serial/fsl_lpuart.c
-+++ b/drivers/tty/serial/fsl_lpuart.c
-@@ -1408,17 +1408,7 @@ static unsigned int lpuart_get_mctrl(struct uart_port *port)
+diff --git a/drivers/input/keyboard/hil_kbd.c b/drivers/input/keyboard/hil_kbd.c
+index bb29a7c9a1c0..54afb38601b9 100644
+--- a/drivers/input/keyboard/hil_kbd.c
++++ b/drivers/input/keyboard/hil_kbd.c
+@@ -512,6 +512,7 @@ static int hil_dev_connect(struct serio *serio, struct serio_driver *drv)
+ 		    HIL_IDD_NUM_AXES_PER_SET(*idd)) {
+ 			printk(KERN_INFO PREFIX
+ 				"combo devices are not supported.\n");
++			error = -EINVAL;
+ 			goto bail1;
+ 		}
  
- static unsigned int lpuart32_get_mctrl(struct uart_port *port)
- {
--	unsigned int temp = 0;
--	unsigned long reg;
--
--	reg = lpuart32_read(port, UARTMODIR);
--	if (reg & UARTMODIR_TXCTSE)
--		temp |= TIOCM_CTS;
--
--	if (reg & UARTMODIR_RXRTSE)
--		temp |= TIOCM_RTS;
--
--	return temp;
-+	return 0;
- }
- 
- static void lpuart_set_mctrl(struct uart_port *port, unsigned int mctrl)
 -- 
 2.30.2
 
