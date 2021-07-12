@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5D0D3C4DE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B42163C58EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243322AbhGLHPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:15:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51168 "EHLO mail.kernel.org"
+        id S1381801AbhGLIxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:53:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240474AbhGLGvy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:51:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2990560233;
-        Mon, 12 Jul 2021 06:49:04 +0000 (UTC)
+        id S1353403AbhGLICI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:02:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BEA4261C8E;
+        Mon, 12 Jul 2021 07:55:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072545;
-        bh=2p0LV09DU4XBRi4be1oKdxfsnEJBokTocuSadVmwvNk=;
+        s=korg; t=1626076501;
+        bh=/MDQwBPu25sWYyJOfvgD8JgN3k4F4npfdpPyF70b98g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yp7HDiqcgIhjyMDIcoJoSTESolH41eWgHjfv/Xp1nJy/bNCbbo2ZJnTeWpoxSkAJz
-         nK37BvxxvR/XdZ/daJFjH15zETgUKk6VUhSE7++IlTe9T0DYRp5vyC+m/nv81dLySc
-         iufPVnItVp/9I4uIKH0JJpP5fTloitqLLAHKY3d8=
+        b=HziwunCAFUHiM65pag8U912GCtzaIjJ86A8lmdYLL18JjbCtMB9QkgntwmSRcQ2sl
+         d+QjFMB9ENrLzG1kIVqrDY80QqFMaGvjL4xTRV+H5HUK06iH+7x+BwrHO7dM9W9Cuk
+         +Ynxh6uXwKD0Pyf9b945udyzFuR4DjetiWCfSu44=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Oded Gabbay <ogabbay@kernel.org>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Jeremy Kerr <jk@ozlabs.org>, Joel Stanley <joel@jms.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 534/593] habanalabs: Fix an error handling path in hl_pci_probe()
+Subject: [PATCH 5.13 671/800] fsi: core: Fix return of error values on failures
 Date:   Mon, 12 Jul 2021 08:11:34 +0200
-Message-Id: <20210712060952.354346341@linuxfoundation.org>
+Message-Id: <20210712061038.341922495@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 3002f467a0b0a70aec01d9f446da4ac8c6fda10b ]
+[ Upstream commit 910810945707fe9877ca86a0dca4e585fd05e37b ]
 
-If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
-must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
-call, as already done in the remove function.
+Currently the cfam_read and cfam_write functions return the provided
+number of bytes given in the count parameter and not the error return
+code in variable rc, hence all failures of read/writes are being
+silently ignored. Fix this by returning the error code in rc.
 
-Fixes: 2e5eda4681f9 ("habanalabs: PCIe Advanced Error Reporting support")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+Addresses-Coverity: ("Unused value")
+Fixes: d1dcd6782576 ("fsi: Add cfam char devices")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Reviewed-by: Jeremy Kerr <jk@ozlabs.org>
+Link: https://lore.kernel.org/r/20210603122812.83587-1-colin.king@canonical.com
+Signed-off-by: Joel Stanley <joel@jms.id.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/habanalabs/common/habanalabs_drv.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/fsi/fsi-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/common/habanalabs_drv.c b/drivers/misc/habanalabs/common/habanalabs_drv.c
-index 3bcef64a677a..ded92b3cbdb2 100644
---- a/drivers/misc/habanalabs/common/habanalabs_drv.c
-+++ b/drivers/misc/habanalabs/common/habanalabs_drv.c
-@@ -421,6 +421,7 @@ static int hl_pci_probe(struct pci_dev *pdev,
- 	return 0;
+diff --git a/drivers/fsi/fsi-core.c b/drivers/fsi/fsi-core.c
+index 4e60e84cd17a..59ddc9fd5bca 100644
+--- a/drivers/fsi/fsi-core.c
++++ b/drivers/fsi/fsi-core.c
+@@ -724,7 +724,7 @@ static ssize_t cfam_read(struct file *filep, char __user *buf, size_t count,
+ 	rc = count;
+  fail:
+ 	*offset = off;
+-	return count;
++	return rc;
+ }
  
- disable_device:
-+	pci_disable_pcie_error_reporting(pdev);
- 	pci_set_drvdata(pdev, NULL);
- 	destroy_hdev(hdev);
+ static ssize_t cfam_write(struct file *filep, const char __user *buf,
+@@ -761,7 +761,7 @@ static ssize_t cfam_write(struct file *filep, const char __user *buf,
+ 	rc = count;
+  fail:
+ 	*offset = off;
+-	return count;
++	return rc;
+ }
  
+ static loff_t cfam_llseek(struct file *file, loff_t offset, int whence)
 -- 
 2.30.2
 
