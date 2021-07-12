@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 895463C4A42
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 791F23C580C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239745AbhGLGuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:50:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34842 "EHLO mail.kernel.org"
+        id S1378689AbhGLIlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:41:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238233AbhGLGkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:40:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F15D560238;
-        Mon, 12 Jul 2021 06:36:39 +0000 (UTC)
+        id S1346589AbhGLHsm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:48:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 09F5F61981;
+        Mon, 12 Jul 2021 07:43:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071800;
-        bh=LzbG7fXZjrsaRA8HcC06b775tF3WKW6YxniWQfninkg=;
+        s=korg; t=1626075782;
+        bh=j+GtFqtGR55boX5kMUkFtq8WHnLmerb80h6JcZhwzu0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=een+kdCkwNaHaDUGhYiMetXkuewyZdFP0GxpdDg79GJXMfcaXgFwjyhIPp3Fwrpql
-         ZnjxsTt/9206SZfeHq/XjMSOjMwthIQRx47arcN8vVkCSdmLQKLAbE8wEciTeSQsBl
-         z8sv8LpsPeA/2zwi3IwyarFo7zo0YdLQVoBULorQ=
+        b=ndapd1WQFh2hV6TYDHpeGu+mjVOH8BIvLMvS3SrbhemUnv20a3WEiHaGl0r7WkHRq
+         knOMgNB8eGky7POmOdD9AvkvpfO+0jBs3gcwomMcqdGZWTZ2Bi1pxdnAZOBOz9c3oF
+         YYQg/D72BKJPLbF4IpfnE30JeHKukqkOdFB/nwFQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joe Richey <joerichey@google.com>,
-        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 225/593] x86/elf: Use _BITUL() macro in UAPI headers
+        stable@vger.kernel.org,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 362/800] ACPI: sysfs: Fix a buffer overrun problem with description_show()
 Date:   Mon, 12 Jul 2021 08:06:25 +0200
-Message-Id: <20210712060907.699381877@linuxfoundation.org>
+Message-Id: <20210712061005.596410067@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,41 +42,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joe Richey <joerichey@google.com>
+From: Krzysztof Wilczyński <kw@linux.com>
 
-[ Upstream commit d06aca989c243dd9e5d3e20aa4e5c2ecfdd07050 ]
+[ Upstream commit 888be6067b97132c3992866bbcf647572253ab3f ]
 
-Replace BIT() in x86's UAPI header with _BITUL(). BIT() is not defined
-in the UAPI headers and its usage may cause userspace build errors.
+Currently, a device description can be obtained using ACPI, if the _STR
+method exists for a particular device, and then exposed to the userspace
+via a sysfs object as a string value.
 
-Fixes: 742c45c3ecc9 ("x86/elf: Enumerate kernel FSGSBASE capability in AT_HWCAP2")
-Signed-off-by: Joe Richey <joerichey@google.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210521085849.37676-2-joerichey94@gmail.com
+If the _STR method is available for a given device then the data
+(usually a Unicode string) is read and stored in a buffer (of the
+ACPI_TYPE_BUFFER type) with a pointer to said buffer cached in the
+struct acpi_device_pnp for later access.
+
+The description_show() function is responsible for exposing the device
+description to the userspace via a corresponding sysfs object and
+internally calls the utf16s_to_utf8s() function with a pointer to the
+buffer that contains the Unicode string so that it can be converted from
+UTF16 encoding to UTF8 and thus allowing for the value to be safely
+stored and later displayed.
+
+When invoking the utf16s_to_utf8s() function, the description_show()
+function also sets a limit of the data that can be saved into a provided
+buffer as a result of the character conversion to be a total of
+PAGE_SIZE, and upon completion, the utf16s_to_utf8s() function returns
+an integer value denoting the number of bytes that have been written
+into the provided buffer.
+
+Following the execution of the utf16s_to_utf8s() a newline character
+will be added at the end of the resulting buffer so that when the value
+is read in the userspace through the sysfs object then it would include
+newline making it more accessible when working with the sysfs file
+system in the shell, etc.  Normally, this wouldn't be a problem, but if
+the function utf16s_to_utf8s() happens to return the number of bytes
+written to be precisely PAGE_SIZE, then we would overrun the buffer and
+write the newline character outside the allotted space which can have
+undefined consequences or result in a failure.
+
+To fix this buffer overrun, ensure that there always is enough space
+left for the newline character to be safely appended.
+
+Fixes: d1efe3c324ea ("ACPI: Add new sysfs interface to export device description")
+Signed-off-by: Krzysztof Wilczyński <kw@linux.com>
+Reviewed-by: Bjorn Helgaas <bhelgaas@google.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/include/uapi/asm/hwcap2.h | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/acpi/device_sysfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/include/uapi/asm/hwcap2.h b/arch/x86/include/uapi/asm/hwcap2.h
-index 5fdfcb47000f..054604aba9f0 100644
---- a/arch/x86/include/uapi/asm/hwcap2.h
-+++ b/arch/x86/include/uapi/asm/hwcap2.h
-@@ -2,10 +2,12 @@
- #ifndef _ASM_X86_HWCAP2_H
- #define _ASM_X86_HWCAP2_H
+diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
+index fa2c1c93072c..a393e0e09381 100644
+--- a/drivers/acpi/device_sysfs.c
++++ b/drivers/acpi/device_sysfs.c
+@@ -448,7 +448,7 @@ static ssize_t description_show(struct device *dev,
+ 		(wchar_t *)acpi_dev->pnp.str_obj->buffer.pointer,
+ 		acpi_dev->pnp.str_obj->buffer.length,
+ 		UTF16_LITTLE_ENDIAN, buf,
+-		PAGE_SIZE);
++		PAGE_SIZE - 1);
  
-+#include <linux/const.h>
-+
- /* MONITOR/MWAIT enabled in Ring 3 */
--#define HWCAP2_RING3MWAIT		(1 << 0)
-+#define HWCAP2_RING3MWAIT		_BITUL(0)
+ 	buf[result++] = '\n';
  
- /* Kernel allows FSGSBASE instructions available in Ring 3 */
--#define HWCAP2_FSGSBASE			BIT(1)
-+#define HWCAP2_FSGSBASE			_BITUL(1)
- 
- #endif
 -- 
 2.30.2
 
