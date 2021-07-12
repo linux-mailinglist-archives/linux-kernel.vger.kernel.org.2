@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB1343C5720
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B423C49B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352585AbhGLI2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:28:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49642 "EHLO mail.kernel.org"
+        id S237465AbhGLGqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:46:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349197AbhGLHln (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:41:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B6A4610D1;
-        Mon, 12 Jul 2021 07:38:54 +0000 (UTC)
+        id S236249AbhGLGf1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:35:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 417D26115A;
+        Mon, 12 Jul 2021 06:32:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075534;
-        bh=yZ4l5Fiz8Q2jhqFawudcOpO7DnpOWy1/I8cMjkE1W5Q=;
+        s=korg; t=1626071552;
+        bh=Da050tis89NjJusNn/tyP2Jxv0QPnmJ1/hwd8rD8adE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ywohz9SYwIAhtHeNqnNnV1NTi+YrBqM+wRs7Mw8hcCCQOgO61ronP1wACLR309OIE
-         ZKtH1MTjleLkAwHdmrefpkyhZ85VZOlw3qPZbMtz6Ni3u1kjBFtddVTX9UicesVr01
-         fkPYJIKES1IVKX4t2q9zjQfkdshAnq77BE+V0R20=
+        b=oXzOCjn4EqQQjedfTP2Y6COe7iU4DJSM9iCaHiALpNl1w5F1spyxtAYFQoVYefEBk
+         dl4iecCgp/pK262QIEqqtHnBDe9/t/Wl0wFcA1DNzd0KiXwUa7LwNCMtmEhHb2nUHK
+         AWcxS6O3m01QVSxbl/myd7kbMHtGY7fKGPUi7XOc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Steve French <stfrench@microsoft.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Bixuan Cui <cuibixuan@huawei.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 256/800] smb3: fix possible access to uninitialized pointer to DACL
-Date:   Mon, 12 Jul 2021 08:04:39 +0200
-Message-Id: <20210712060950.259509464@linuxfoundation.org>
+Subject: [PATCH 5.10 120/593] crypto: nx - add missing MODULE_DEVICE_TABLE
+Date:   Mon, 12 Jul 2021 08:04:40 +0200
+Message-Id: <20210712060856.359673519@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,33 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steve French <stfrench@microsoft.com>
+From: Bixuan Cui <cuibixuan@huawei.com>
 
-[ Upstream commit a5628263a9f8d47d9a1548fe9d5d75ba4423a735 ]
+[ Upstream commit 06676aa1f455c74e3ad1624cea3acb9ed2ef71ae ]
 
-dacl_ptr can be null so we must check for it everywhere it is
-used in build_sec_desc.
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-Addresses-Coverity: 1475598 ("Explicit null dereference")
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/cifsacl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/crypto/nx/nx-842-pseries.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/cifs/cifsacl.c b/fs/cifs/cifsacl.c
-index 784407f9280f..a18dee071fcd 100644
---- a/fs/cifs/cifsacl.c
-+++ b/fs/cifs/cifsacl.c
-@@ -1308,7 +1308,7 @@ static int build_sec_desc(struct cifs_ntsd *pntsd, struct cifs_ntsd *pnntsd,
- 		ndacl_ptr = (struct cifs_acl *)((char *)pnntsd + ndacloffset);
- 		ndacl_ptr->revision =
- 			dacloffset ? dacl_ptr->revision : cpu_to_le16(ACL_REVISION);
--		ndacl_ptr->num_aces = dacl_ptr->num_aces;
-+		ndacl_ptr->num_aces = dacl_ptr ? dacl_ptr->num_aces : 0;
+diff --git a/drivers/crypto/nx/nx-842-pseries.c b/drivers/crypto/nx/nx-842-pseries.c
+index 2de5e3672e42..258c5e38a551 100644
+--- a/drivers/crypto/nx/nx-842-pseries.c
++++ b/drivers/crypto/nx/nx-842-pseries.c
+@@ -1071,6 +1071,7 @@ static const struct vio_device_id nx842_vio_driver_ids[] = {
+ 	{"ibm,compression-v1", "ibm,compression"},
+ 	{"", ""},
+ };
++MODULE_DEVICE_TABLE(vio, nx842_vio_driver_ids);
  
- 		if (uid_valid(uid)) { /* chown */
- 			uid_t id;
+ static struct vio_driver nx842_vio_driver = {
+ 	.name = KBUILD_MODNAME,
 -- 
 2.30.2
 
