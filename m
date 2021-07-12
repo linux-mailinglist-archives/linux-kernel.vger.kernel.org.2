@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE8E3C58FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB1F3C54E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381923AbhGLIy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:54:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54952 "EHLO mail.kernel.org"
+        id S240071AbhGLIGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:06:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353650AbhGLICo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:02:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0665E61437;
-        Mon, 12 Jul 2021 07:56:28 +0000 (UTC)
+        id S245309AbhGLH1d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:27:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F3D06191E;
+        Mon, 12 Jul 2021 07:23:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076589;
-        bh=AoS07RgjTi3ijqRjXt5Qt0J7M7/4IUlk3SGXWrQDLEU=;
+        s=korg; t=1626074621;
+        bh=UQIVo70ZbsShv+zHR3rejdXAT6MmymE00uMqykh+ce0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kngUmtsTiVXZQKMiDo6bRKezY5R7r32WT0Pov1d8PjPOwD1u6zHzmhQWz63TuVc5t
-         Hk0M0xGkLQRF0Umls0muSZogNbSO2f8oH7lTQKAAlvxvx3TJc8UAtNAS6Hl8g6mP77
-         84bO+n+xPpYoL0ZXrt6eLCQuyRG8rIvIr4wBnp2w=
+        b=A/QfL5q0+ZCb/7oq0UefZ9lHQ1SDEd3U3RtKmsB8UILuaflfJO08bdYU23nd4OoOe
+         CoUpdfbwKB8h5zDyde/Y1+Dj4SFqLH2FvNIzM/iNp0GzdDBlEMpyDMnxvWTxsGj2kV
+         3ivOwL/xIyDFeEpcpUk4CPYQf04JCPTEW1dxmmSw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Huy Duong <qhuyduong@hotmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        stable@vger.kernel.org,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 701/800] eeprom: idt_89hpesx: Put fwnode in matching case during ->probe()
-Date:   Mon, 12 Jul 2021 08:12:04 +0200
-Message-Id: <20210712061041.372473654@linuxfoundation.org>
+Subject: [PATCH 5.12 642/700] ASoC: atmel-i2s: Set symmetric sample bits
+Date:   Mon, 12 Jul 2021 08:12:05 +0200
+Message-Id: <20210712061044.193935081@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 
-[ Upstream commit 3f6ee1c095156a74ab2df605af13020f1ce3e600 ]
+[ Upstream commit 489a830a25e1730aebf7ff53430c170db9a1771b ]
 
-device_get_next_child_node() bumps a reference counting of a returned variable.
-We have to balance it whenever we return to the caller.
+The I2S needs to have the same sample bits for both capture and playback
+streams.
 
-Fixes: db15d73e5f0e ("eeprom: idt_89hpesx: Support both ACPI and OF probing")
-Cc: Huy Duong <qhuyduong@hotmail.com>
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20210607221757.81465-1-andy.shevchenko@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: b543e467d1a9 ("ASoC: atmel-i2s: add driver for the new Atmel I2S controller")
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Link: https://lore.kernel.org/r/20210618150741.401739-1-codrin.ciubotariu@microchip.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/eeprom/idt_89hpesx.c | 1 +
+ sound/soc/atmel/atmel-i2s.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/misc/eeprom/idt_89hpesx.c b/drivers/misc/eeprom/idt_89hpesx.c
-index 81c70e5bc168..45a61a1f9e98 100644
---- a/drivers/misc/eeprom/idt_89hpesx.c
-+++ b/drivers/misc/eeprom/idt_89hpesx.c
-@@ -1161,6 +1161,7 @@ static void idt_get_fw_data(struct idt_89hpesx_dev *pdev)
- 	else /* if (!fwnode_property_read_bool(node, "read-only")) */
- 		pdev->eero = false;
+diff --git a/sound/soc/atmel/atmel-i2s.c b/sound/soc/atmel/atmel-i2s.c
+index 7c6187e41f2b..e43acb54296b 100644
+--- a/sound/soc/atmel/atmel-i2s.c
++++ b/sound/soc/atmel/atmel-i2s.c
+@@ -542,6 +542,7 @@ static struct snd_soc_dai_driver atmel_i2s_dai = {
+ 	},
+ 	.ops = &atmel_i2s_dai_ops,
+ 	.symmetric_rate = 1,
++	.symmetric_sample_bits = 1,
+ };
  
-+	fwnode_handle_put(fwnode);
- 	dev_info(dev, "EEPROM of %d bytes found by 0x%x",
- 		pdev->eesize, pdev->eeaddr);
- }
+ static const struct snd_soc_component_driver atmel_i2s_component = {
 -- 
 2.30.2
 
