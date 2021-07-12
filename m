@@ -2,117 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE6EF3C5F57
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 17:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E07C3C5F5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 17:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235527AbhGLPgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 11:36:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45282 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232203AbhGLPgo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 11:36:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B8BF61221;
-        Mon, 12 Jul 2021 15:33:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626104036;
-        bh=5X2UURg25rMrNoAilDfJ7k5RncDDoVLvR+Fw5b9WLPE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dN9t5tWJoXIcqxJmju4K9H9qiofOopREzVIeKkjPOyRWSxyMPc5+lr+BWCkfl61Qy
-         eTun6f4aOQ5xKTiU6IpCRyY4dgvh5uTE3rvyCazU9lR82vjAk65hNQTbF0fLhXDHX6
-         BOPT3DwNCG4hkcAhXIe/NJ3k4AkJbRRC6RC34HbTcRgMHKJef/UyEGSdz6KwGHOfFI
-         aR2nqk3nPXYzYeude33hsHbYwOJ00nZjplGbhRvSu2UbzKir3Vdj1DZZdzTR3vQBct
-         4lcXjW5m4VCZU498cPGilAvzWtBqM/qU2n6q3rrGhwxKvt1gczZBAw4oebh658ugz1
-         pwQyWSbW/96sw==
-Received: by mail-ej1-f51.google.com with SMTP id i20so35399150ejw.4;
-        Mon, 12 Jul 2021 08:33:56 -0700 (PDT)
-X-Gm-Message-State: AOAM532ntn8SSOJ4tem1Y/U1bHxHIvLvT9OXk8Yq+lP4ovi30Q3uiyRh
-        2oFZWuy1wzvW05p0uYh52ef3jdiOoAkUoiAkHw==
-X-Google-Smtp-Source: ABdhPJwj+mU1GvCIh7UbOfcTMRsKzqq4SbbuuVJj57Xk+j0+HYYnALX6tsQE/1bSkimd2ZH7rSzVXRe5CtlOJPmpo1I=
-X-Received: by 2002:a17:906:7e4f:: with SMTP id z15mr49606241ejr.194.1626104034975;
- Mon, 12 Jul 2021 08:33:54 -0700 (PDT)
+        id S235553AbhGLPhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 11:37:25 -0400
+Received: from forward4-smtp.messagingengine.com ([66.111.4.238]:55359 "EHLO
+        forward4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232203AbhGLPhX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 11:37:23 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailforward.nyi.internal (Postfix) with ESMTP id 1260319406BA;
+        Mon, 12 Jul 2021 11:34:35 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Mon, 12 Jul 2021 11:34:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=hgaeow
+        vD5YYnNfnHdGdhp3KwY7X+hWI4Kx7Q+UzNECU=; b=dg+b1FTlWz9KAyECRyLoGM
+        nP7PbKf3a1fKO0urd7hHw9OSQIrVz/4Bwz+s/357wgFvM+o+ewVyuYMAA5KeW7Sj
+        Gj+n1v9POiZg9Hu7Ety/LH0fvvQ++BJ++h9peK51X3ML9Pk4vZSTmNcGxZlv+tE6
+        +JUVKh2eFylW8DkDuvox4q/L6DtGFWgntUS3DyDzkcgH9LbJbMI2xvsQYt7qj7U0
+        h8l80UYZ0vAReizLHTZhW9XVDYCZ5EKure9zV8lSq4IAPYqtHnzMR+f2w26Q7UW0
+        /IhE86nyHB0noK2W89KN320HonQesT9UM1VC4ikM137K9moBuNEZ+ANv85B1M6zg
+        ==
+X-ME-Sender: <xms:AWHsYEIqMFj65Qep5BZc-1XMDKHKIWG8sqby99bmMQWCdNni8c2NvA>
+    <xme:AWHsYEJmR0vDZ7wwGKRzDjrybvIgi_FwCApjrlAw9Peb-C0_VuuDhpT1smVNMaDEP
+    D8V7SXb9AMsjMtSz7o>
+X-ME-Received: <xmr:AWHsYEsufqsG-vDfT3S5297WA87xHyEhDMQAcbfJzZqVtWqfUiNDwLnj1QEIeBf6jAnvphzupYyjpslkgkDVkoLODxlfEJje2BSr3RvBFO8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvgdekkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefvufgjfhfhfffkgggtsehttdertddttddtnecuhfhrohhmpeffrghvihguucfg
+    ughmohhnughsohhnuceouggrvhhiugdrvggumhhonhgushhonhesohhrrggtlhgvrdgtoh
+    hmqeenucggtffrrghtthgvrhhnpeehleeffeduiedugedulefgteegteekleevueeitedu
+    leehjeekieelkeevueektdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
+    grihhlfhhrohhmpegurghvihgurdgvughmohhnughsohhnsehorhgrtghlvgdrtghomh
+X-ME-Proxy: <xmx:AWHsYBaEWF6QPzj2Bv_3hnZvUcPe3aYa03-tbqJSYyCUliYlyj1lxg>
+    <xmx:AWHsYLbF58Z4MEBsDnmJrNaRyXSoxQYSvVylhi_Bii17LbiHp9ht3Q>
+    <xmx:AWHsYNBO_4Rw2PRcWWxoO7RoN97AafGqyC7ARkGepiL6c7zdkipvDg>
+    <xmx:C2HsYBxfjeoAFkM7Cx8wRw3QSkvrbkDbMxwsi-lNtZsZUIjXp4wFMvFZevU>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 12 Jul 2021 11:34:24 -0400 (EDT)
+Received: from localhost (disaster-area.hh.sledj.net [local])
+        by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id 156d48ed;
+        Mon, 12 Jul 2021 15:34:23 +0000 (UTC)
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     linux-kernel@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Matlack <dmatlack@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Joao Martins <joao.m.martins@oracle.com>
+Subject: Re: [PATCH v2 2/2] KVM: x86: On emulation failure, convey the exit
+ reason to userspace
+In-Reply-To: <YOhvfDfqypLCRZuO@google.com>
+References: <20210706101207.2993686-1-david.edmondson@oracle.com>
+ <20210706101207.2993686-3-david.edmondson@oracle.com>
+ <YOhvfDfqypLCRZuO@google.com>
+X-HGTTG: heart-of-gold
+From:   David Edmondson <david.edmondson@oracle.com>
+Date:   Mon, 12 Jul 2021 16:34:22 +0100
+Message-ID: <m2pmvn35s1.fsf@oracle.com>
 MIME-Version: 1.0
-References: <1626051778-13577-1-git-send-email-yongqiang.niu@mediatek.com> <1626051778-13577-3-git-send-email-yongqiang.niu@mediatek.com>
-In-Reply-To: <1626051778-13577-3-git-send-email-yongqiang.niu@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Mon, 12 Jul 2021 23:33:43 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_-W-wm2X5PPSzRjQ0LSFEQaDZvsC4bW_Q58NXX-PpBe+Q@mail.gmail.com>
-Message-ID: <CAAOTY_-W-wm2X5PPSzRjQ0LSFEQaDZvsC4bW_Q58NXX-PpBe+Q@mail.gmail.com>
-Subject: Re: [PATCH v2, 2/3] drm/mediatek: add mt8183 aal support
-To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Hsin-Yi Wang <hsinyi@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Yongqiang:
+On Friday, 2021-07-09 at 15:47:08 UTC, Sean Christopherson wrote:
 
-Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2021=E5=B9=B47=E6=9C=
-=8812=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8A=E5=8D=889:03=E5=AF=AB=E9=81=93=
-=EF=BC=9A
+> On Tue, Jul 06, 2021, David Edmondson wrote:
+>> Should instruction emulation fail, include the VM exit reason in the
+>> emulation_failure data passed to userspace, in order that the VMM can
+>> report it as a debugging aid when describing the failure.
 >
-> This patch add mt8183 private data
-
-Applied to mediatek-drm-next [1], thanks.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
-log/?h=3Dmediatek-drm-next
-
-Regards,
-Chun-Kuang.
-
+> ...
 >
-> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-> ---
->  drivers/gpu/drm/mediatek/mtk_disp_aal.c | 1 +
->  drivers/gpu/drm/mediatek/mtk_drm_drv.c  | 2 ++
->  2 files changed, 3 insertions(+)
+>> @@ -7473,7 +7474,14 @@ static void prepare_emulation_failure_exit(struct kvm_vcpu *vcpu)
+>>  		memcpy(run->emulation_failure.insn_bytes,
+>>  		       ctxt->fetch.data, insn_size);
+>>  	}
+>> +
+>> +	run->emulation_failure.ndata = 4;
+>> +	run->emulation_failure.flags |=
+>> +		KVM_INTERNAL_ERROR_EMULATION_FLAG_EXIT_REASON;
+>> +	run->emulation_failure.exit_reason =
+>> +		static_call(kvm_x86_get_exit_reason)(vcpu);
+>>  }
 >
-> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_aal.c b/drivers/gpu/drm/me=
-diatek/mtk_disp_aal.c
-> index fb212e96..64b4528 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_disp_aal.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_disp_aal.c
-> @@ -151,6 +151,7 @@ static int mtk_disp_aal_remove(struct platform_device=
- *pdev)
->  static const struct of_device_id mtk_disp_aal_driver_dt_match[] =3D {
->         { .compatible =3D "mediatek,mt8173-disp-aal",
->           .data =3D &mt8173_aal_driver_data},
-> +       { .compatible =3D "mediatek,mt8183-disp-aal"},
->         {},
->  };
->  MODULE_DEVICE_TABLE(of, mtk_disp_aal_driver_dt_match);
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/med=
-iatek/mtk_drm_drv.c
-> index 67a585e..143ba24 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-> @@ -420,6 +420,8 @@ static void mtk_drm_unbind(struct device *dev)
->           .data =3D (void *)MTK_DISP_COLOR },
->         { .compatible =3D "mediatek,mt8173-disp-aal",
->           .data =3D (void *)MTK_DISP_AAL},
-> +       { .compatible =3D "mediatek,mt8183-disp-aal",
-> +         .data =3D (void *)MTK_DISP_AAL},
->         { .compatible =3D "mediatek,mt8173-disp-gamma",
->           .data =3D (void *)MTK_DISP_GAMMA, },
->         { .compatible =3D "mediatek,mt8183-disp-gamma",
-> --
-> 1.8.1.1.dirty
+> ...
 >
+>> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+>> index d9e4aabcb31a..863195371272 100644
+>> --- a/include/uapi/linux/kvm.h
+>> +++ b/include/uapi/linux/kvm.h
+>> @@ -282,6 +282,7 @@ struct kvm_xen_exit {
+>>  
+>>  /* Flags that describe what fields in emulation_failure hold valid data. */
+>>  #define KVM_INTERNAL_ERROR_EMULATION_FLAG_INSTRUCTION_BYTES (1ULL << 0)
+>> +#define KVM_INTERNAL_ERROR_EMULATION_FLAG_EXIT_REASON       (1ULL << 1)
+>>  
+>>  /* for KVM_RUN, returned by mmap(vcpu_fd, offset=0) */
+>>  struct kvm_run {
+>> @@ -404,6 +405,12 @@ struct kvm_run {
+>>  			__u64 flags;
+>>  			__u8  insn_size;
+>>  			__u8  insn_bytes[15];
+>> +			/*
+>> +			 * The "exit reason" extracted from the
+>> +			 * VMCS/VMCB that was the cause of attempted
+>> +			 * emulation.
+>> +			 */
+>> +			__u64 exit_reason;
+>
+> Rather than providing just the exit reason and adding another kvm_x86_ops hook,
+> I would prefer to extend kvm_x86_get_exit_info() to also provide the exit reason
+> and use that.  E.g. on VMX, all exceptions funnel through a single exit reason.
+> Dumping exit_info_{1,2} and error_code in addition to intr_info might not be all
+> that useful, but I can't see in harm either, and more info is generally a good
+> thing.
+>
+> The only other user of kvm_x86_get_exit_info() is for tracepoints, those could
+> be modified to not pass in the exit reason.
+
+Okay.
+
+>>  		} emulation_failure;
+>>  		/* KVM_EXIT_OSI */
+>>  		struct {
+>> -- 
+>> 2.30.2
+>> 
+
+dme.
+-- 
+What did you learn today? I learnt nothing.
