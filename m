@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 204053C5872
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 551153C4BA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356472AbhGLIrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:47:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36488 "EHLO mail.kernel.org"
+        id S239923AbhGLG6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:58:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350221AbhGLHuq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:50:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C43F761208;
-        Mon, 12 Jul 2021 07:44:02 +0000 (UTC)
+        id S237560AbhGLGnO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:43:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53BC1610E6;
+        Mon, 12 Jul 2021 06:39:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075843;
-        bh=ea2noNCGIKPBDwwjDB9aRc1ui7ZuE3NI5eDzr4BZv2I=;
+        s=korg; t=1626071964;
+        bh=sUDcBnWAoNpaVZalSL2yTvcf7M8ILQVPIhuBIBrn36w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fRyEACeBYhPuDK1DlLxiVZvRD6TI2qMJlVIm4gZWf5JSOiDFnqdb8ygZR/bfCLxSN
-         sy2LAl5d8lzWs4QPdd9gTCZBtJT5+smi9urpxxDE8CZc+NI61jMSuBA3PNfISgu121
-         A7y85+u2+7RpayrcVPq9JEBh5shMTbrorhFcTWsk=
+        b=rYnKajeFEvAnWnSLQoQRz/NxDbO2sfT/aMldW9bYtONma3NlOS81EAevupQklumkg
+         BIjrqLP7eF5nv0NTS3FmUAqA2ML4SFFkDZgb1pKL6ueO8J3fGkMAzN++uBphyCXTum
+         C8MKB0JmLEdmV6FvMaZ5kZ2vWDG4UDMHwd6Sb4Qs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Jan=20Kundr=C3=A1t?= <jan.kundrat@cesnet.cz>,
+        =?UTF-8?q?V=C3=A1clav=20Kubern=C3=A1t?= <kubernat@cesnet.cz>,
+        Guenter Roeck <linux@roeck-us.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 389/800] drm/bridge/sii8620: fix dependency on extcon
-Date:   Mon, 12 Jul 2021 08:06:52 +0200
-Message-Id: <20210712061008.608695943@linuxfoundation.org>
+Subject: [PATCH 5.10 253/593] hwmon: (max31790) Fix fan speed reporting for fan7..12
+Date:   Mon, 12 Jul 2021 08:06:53 +0200
+Message-Id: <20210712060910.803341382@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,41 +42,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robert Foss <robert.foss@linaro.org>
+From: Guenter Roeck <linux@roeck-us.net>
 
-[ Upstream commit 08319adbdde15ef7cee1970336f63461254baa2a ]
+[ Upstream commit cbbf244f0515af3472084f22b6213121b4a63835 ]
 
-The DRM_SIL_SII8620 kconfig has a weak `imply` dependency
-on EXTCON, which causes issues when sii8620 is built
-as a builtin and EXTCON is built as a module.
+Fans 7..12 do not have their own set of configuration registers.
+So far the code ignored that and read beyond the end of the configuration
+register range to get the tachometer period. This resulted in more or less
+random fan speed values for those fans.
 
-The symptoms are 'undefined reference' errors caused
-by the symbols in EXTCON not being available
-to the sii8620 driver.
+The datasheet is quite vague when it comes to defining the tachometer
+period for fans 7..12. Experiments confirm that the period is the same
+for both fans associated with a given set of configuration registers.
 
-Fixes: 688838442147 ("drm/bridge/sii8620: use micro-USB cable detection logic to detect MHL")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Robert Foss <robert.foss@linaro.org>
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210419090124.153560-1-robert.foss@linaro.org
+Fixes: 54187ff9d766 ("hwmon: (max31790) Convert to use new hwmon registration API")
+Fixes: 195a4b4298a7 ("hwmon: Driver for Maxim MAX31790")
+Cc: Jan Kundrát <jan.kundrat@cesnet.cz>
+Reviewed-by: Jan Kundrát <jan.kundrat@cesnet.cz>
+Cc: Václav Kubernát <kubernat@cesnet.cz>
+Reviewed-by: Jan Kundrát <jan.kundrat@cesnet.cz>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20210526154022.3223012-2-linux@roeck-us.net
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/bridge/Kconfig | 2 +-
+ drivers/hwmon/max31790.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
-index 400193e38d29..eb3eebab4f27 100644
---- a/drivers/gpu/drm/bridge/Kconfig
-+++ b/drivers/gpu/drm/bridge/Kconfig
-@@ -172,7 +172,7 @@ config DRM_SIL_SII8620
- 	tristate "Silicon Image SII8620 HDMI/MHL bridge"
- 	depends on OF
- 	select DRM_KMS_HELPER
--	imply EXTCON
-+	select EXTCON
- 	depends on RC_CORE || !RC_CORE
- 	help
- 	  Silicon Image SII8620 HDMI/MHL bridge chip driver.
+diff --git a/drivers/hwmon/max31790.c b/drivers/hwmon/max31790.c
+index 76aa96f5b984..67677c437768 100644
+--- a/drivers/hwmon/max31790.c
++++ b/drivers/hwmon/max31790.c
+@@ -171,7 +171,7 @@ static int max31790_read_fan(struct device *dev, u32 attr, int channel,
+ 
+ 	switch (attr) {
+ 	case hwmon_fan_input:
+-		sr = get_tach_period(data->fan_dynamics[channel]);
++		sr = get_tach_period(data->fan_dynamics[channel % NR_CHANNEL]);
+ 		rpm = RPM_FROM_REG(data->tach[channel], sr);
+ 		*val = rpm;
+ 		return 0;
 -- 
 2.30.2
 
