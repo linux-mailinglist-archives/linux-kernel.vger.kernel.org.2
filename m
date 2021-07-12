@@ -2,139 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2B973C6314
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 21:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 831883C6318
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 21:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235982AbhGLTDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 15:03:05 -0400
-Received: from mga04.intel.com ([192.55.52.120]:21259 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230409AbhGLTDA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 15:03:00 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10043"; a="208220245"
-X-IronPort-AV: E=Sophos;i="5.84,234,1620716400"; 
-   d="scan'208";a="208220245"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 12:00:06 -0700
-X-IronPort-AV: E=Sophos;i="5.84,234,1620716400"; 
-   d="scan'208";a="459287635"
-Received: from kpurma-mobl.amr.corp.intel.com (HELO [10.212.163.17]) ([10.212.163.17])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2021 12:00:04 -0700
-Subject: Re: [PATCH Part2 RFC v4 06/40] x86/sev: Add helper functions for
- RMPUPDATE and PSMASH instruction
-To:     Peter Gonda <pgonda@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        kvm list <kvm@vger.kernel.org>, linux-efi@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-coco@lists.linux.dev,
-        linux-mm@kvack.org, linux-crypto@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        brijesh.ksingh@gmail.com
-References: <20210707183616.5620-1-brijesh.singh@amd.com>
- <20210707183616.5620-7-brijesh.singh@amd.com>
- <CAMkAt6quzRMiEJ=iYDocRvpaYuNcV5vm=swbowK+KG=j7FjyKA@mail.gmail.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <8ab309cd-8465-d543-55c8-5f6529fe74fd@intel.com>
-Date:   Mon, 12 Jul 2021 12:00:01 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S235981AbhGLTFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 15:05:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230409AbhGLTFj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 15:05:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1FF8C0613DD;
+        Mon, 12 Jul 2021 12:02:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=IVmHYOAXTI19qlhMZur37PZfYtnXt/URUV67Hwi1f7M=; b=ljsTVykPu0NKoRx0Qif/upo39b
+        pNyoxZap3Z9yUs1ArecBeTCy3qU2LiRB3UVIYeKa9gzqw+FiAuGeAXYgVzNQOZV5DRaEhGboQayve
+        EDOh1c8k3pZfGz4EW/KqRShUYCNbFYuEnhsCePUPhDuqCYi0REvJAv1CHexcxmt+lkboX3vpKhvnm
+        gcQ3WNdKmFkRr7G6OniTRWjtgzsY9X/dMFjCLX5LYUzJWKAFcdeHPLwioR7HOy3jbSGAEp0U2fqsH
+        cDHH1GU+10nj20nsAKwy46ak5AYLUK3XNbFDZezhANy1wXnsu/+d0dfEHfPIK0bPKfTBX5u4p0vmC
+        2G0LhAOQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m31Bt-000L5O-U5; Mon, 12 Jul 2021 19:02:10 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     akpm@linux-foundation.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH v13a 00/32] Memory folios
+Date:   Mon, 12 Jul 2021 20:01:32 +0100
+Message-Id: <20210712190204.80979-1-willy@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <CAMkAt6quzRMiEJ=iYDocRvpaYuNcV5vm=swbowK+KG=j7FjyKA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/12/21 11:44 AM, Peter Gonda wrote:
->> +int psmash(struct page *page)
->> +{
->> +       unsigned long spa = page_to_pfn(page) << PAGE_SHIFT;
->> +       int ret;
->> +
->> +       if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
->> +               return -ENXIO;
->> +
->> +       /* Retry if another processor is modifying the RMP entry. */
->> +       do {
->> +               /* Binutils version 2.36 supports the PSMASH mnemonic. */
->> +               asm volatile(".byte 0xF3, 0x0F, 0x01, 0xFF"
->> +                             : "=a"(ret)
->> +                             : "a"(spa)
->> +                             : "memory", "cc");
->> +       } while (ret == FAIL_INUSE);
-> Should there be some retry limit here for safety? Or do we know that
-> we'll never be stuck in this loop? Ditto for the loop in rmpupdate.
+Managing memory in 4KiB pages is a serious overhead.  Many benchmarks
+benefit from managing memory in larger chunks.  As an example, an earlier
+iteration of this idea which used compound pages (and wasn't particularly
+tuned) got a 7% performance boost when compiling the kernel.
 
-It's probably fine to just leave this.  While you could *theoretically*
-lose this race forever, it's unlikely to happen in practice.  If it
-does, you'll get an easy-to-understand softlockup backtrace which should
-point here pretty quickly.
+Using compound pages or THPs exposes a weakness of our type system.
+Functions are often unprepared for compound pages to be passed to them,
+and may only act on PAGE_SIZE chunks.  Even functions which are aware of
+compound pages may expect a head page, and do the wrong thing if passed
+a tail page.
 
-I think TDX has a few of these as well.  Most of the "SEAMCALL"s from
-host to the firmware doing the security enforcement have something like
-an -EBUSY as well.  I believe they just retry forever too.
+We also waste a lot of instructions ensuring that we're not looking at
+a tail page.  Almost every call to PageFoo() contains one or more hidden
+calls to compound_head().  This also happens for get_page(), put_page()
+and many more functions.
+
+This patch series uses a new type, the struct folio, to manage memory.
+It provides some basic infrastructure that's worthwhile in its own right,
+shrinking the kernel by about 6kB of text.
+
+-- 8< --
+
+This is the first batch of patches for the next merge window.  They are
+identical to the ones sent yesterday to linux-kernel and the build bots
+didn't complain about any of these.  They have been extensively reviewed.
+Please apply.
+
+Matthew Wilcox (Oracle) (32):
+  mm: Convert get_page_unless_zero() to return bool
+  mm: Introduce struct folio
+  mm: Add folio_pgdat(), folio_zone() and folio_zonenum()
+  mm/vmstat: Add functions to account folio statistics
+  mm/debug: Add VM_BUG_ON_FOLIO() and VM_WARN_ON_ONCE_FOLIO()
+  mm: Add folio reference count functions
+  mm: Add folio_put()
+  mm: Add folio_get()
+  mm: Add folio_try_get_rcu()
+  mm: Add folio flag manipulation functions
+  mm/lru: Add folio LRU functions
+  mm: Handle per-folio private data
+  mm/filemap: Add folio_index(), folio_file_page() and folio_contains()
+  mm/filemap: Add folio_next_index()
+  mm/filemap: Add folio_pos() and folio_file_pos()
+  mm/util: Add folio_mapping() and folio_file_mapping()
+  mm/filemap: Add folio_unlock()
+  mm/filemap: Add folio_lock()
+  mm/filemap: Add folio_lock_killable()
+  mm/filemap: Add __folio_lock_async()
+  mm/filemap: Add folio_wait_locked()
+  mm/filemap: Add __folio_lock_or_retry()
+  mm/swap: Add folio_rotate_reclaimable()
+  mm/filemap: Add folio_end_writeback()
+  mm/writeback: Add folio_wait_writeback()
+  mm/writeback: Add folio_wait_stable()
+  mm/filemap: Add folio_wait_bit()
+  mm/filemap: Add folio_wake_bit()
+  mm/filemap: Convert page wait queues to be folios
+  mm/filemap: Add folio private_2 functions
+  fs/netfs: Add folio fscache functions
+  mm: Add folio_mapped()
+
+ Documentation/core-api/mm-api.rst           |   4 +
+ Documentation/filesystems/netfs_library.rst |   2 +
+ fs/afs/write.c                              |   9 +-
+ fs/cachefiles/rdwr.c                        |  16 +-
+ fs/io_uring.c                               |   2 +-
+ include/linux/huge_mm.h                     |  15 -
+ include/linux/mm.h                          | 165 +++++++--
+ include/linux/mm_inline.h                   |  85 +++--
+ include/linux/mm_types.h                    |  77 ++++
+ include/linux/mmdebug.h                     |  20 +
+ include/linux/netfs.h                       |  77 ++--
+ include/linux/page-flags.h                  | 247 +++++++++----
+ include/linux/page_ref.h                    | 158 +++++++-
+ include/linux/pagemap.h                     | 390 +++++++++++---------
+ include/linux/swap.h                        |   7 +-
+ include/linux/vmstat.h                      | 107 ++++++
+ mm/Makefile                                 |   2 +-
+ mm/filemap.c                                | 329 +++++++++--------
+ mm/folio-compat.c                           |  43 +++
+ mm/internal.h                               |   1 +
+ mm/memory.c                                 |   8 +-
+ mm/page-writeback.c                         |  72 ++--
+ mm/page_io.c                                |   4 +-
+ mm/swap.c                                   |  30 +-
+ mm/swapfile.c                               |   8 +-
+ mm/util.c                                   |  59 +--
+ 26 files changed, 1356 insertions(+), 581 deletions(-)
+ create mode 100644 mm/folio-compat.c
+
+-- 
+2.30.2
+
