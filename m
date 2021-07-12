@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D58F3C4F56
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 763FA3C56FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345017AbhGLHYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:24:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58974 "EHLO mail.kernel.org"
+        id S1359374AbhGLI0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:26:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239817AbhGLG6B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:58:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 45C68613EB;
-        Mon, 12 Jul 2021 06:55:08 +0000 (UTC)
+        id S1346031AbhGLHjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:39:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9729261374;
+        Mon, 12 Jul 2021 07:34:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072908;
-        bh=isnSSOi9t/7E3k0sfD83D9sSb2OIubB7DPFcAezP1fU=;
+        s=korg; t=1626075251;
+        bh=or+btZn9+aTZ/4lEwHOGcgaG5cjaF5ouSCshgtB6UeU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QmOjvRc14JcDBP4jDe0d23yoPAcRxFes68rb8M3rg3CznlbVB+8QjdNZzntGWuEuF
-         5xZOKf63zlGouwDqdPiFys8Ot9nhguDcBhpzn31zSjel/30ReSVbZyTipDRNmGSaJt
-         pYCjxNVVc2x+rZcK7kBOT7qQS3oTvDUwuDKAFuqs=
+        b=B7kotcwCsJjCFuWvmArtXWw9SwRcmJq0Ja2sMf7eREDqhWrUUOeEYJL5lxXSekg+/
+         0d6+VvkMIVgC92tMDzy91D8ilsVAqGEwDrdnzzzBttVqn1C8qM5r8Dfj9Snc6uiFmW
+         br9oY6I3RfJrfzbmt2BsyuOIzGHzkHnnPP59EP7A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Stephane Grosjean <s.grosjean@peak-system.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 5.12 061/700] can: peak_pciefd: pucan_handle_status(): fix a potential starvation issue in TX path
-Date:   Mon, 12 Jul 2021 08:02:24 +0200
-Message-Id: <20210712060933.362297811@linuxfoundation.org>
+        stable@vger.kernel.org, Greg Kurz <groug@kaod.org>,
+        Max Reitz <mreitz@redhat.com>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Subject: [PATCH 5.13 122/800] fuse: Fix infinite loop in sget_fc()
+Date:   Mon, 12 Jul 2021 08:02:25 +0200
+Message-Id: <20210712060930.118024466@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +40,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephane Grosjean <s.grosjean@peak-system.com>
+From: Greg Kurz <groug@kaod.org>
 
-commit b17233d385d0b6b43ecf81d43008cb1bbb008166 upstream.
+commit e4a9ccdd1c03b3dc58214874399d24331ea0a3ab upstream.
 
-Rather than just indicating that transmission can start, this patch
-requires the explicit flushing of the network TX queue when the driver
-is informed by the device that it can transmit, next to its
-configuration.
+We don't set the SB_BORN flag on submounts. This is wrong as these
+superblocks are then considered as partially constructed or dying
+in the rest of the code and can break some assumptions.
 
-In this way, if frames have already been written by the application,
-they will actually be transmitted.
+One such case is when you have a virtiofs filesystem with submounts
+and you try to mount it again : virtio_fs_get_tree() tries to obtain
+a superblock with sget_fc(). The logic in sget_fc() is to loop until
+it has either found an existing matching superblock with SB_BORN set
+or to create a brand new one. It is assumed that a superblock without
+SB_BORN is transient and the loop is restarted. Forgetting to set
+SB_BORN on submounts hence causes sget_fc() to retry forever.
 
-Fixes: ffd137f7043c ("can: peak/pcie_fd: remove useless code when interface starts")
-Link: https://lore.kernel.org/r/20210623142600.149904-1-s.grosjean@peak-system.com
-Cc: linux-stable <stable@vger.kernel.org>
-Signed-off-by: Stephane Grosjean <s.grosjean@peak-system.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Setting SB_BORN requires special care, i.e. a write barrier for
+super_cache_count() which can check SB_BORN without taking any lock.
+We should call vfs_get_tree() to deal with that but this requires
+to have a proper ->get_tree() implementation for submounts, which
+is a bigger piece of work. Go for a simple bug fix in the meatime.
+
+Fixes: bf109c64040f ("fuse: implement crossmounts")
+Cc: stable@vger.kernel.org # v5.10+
+Signed-off-by: Greg Kurz <groug@kaod.org>
+Reviewed-by: Max Reitz <mreitz@redhat.com>
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/can/peak_canfd/peak_canfd.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/fuse/dir.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
---- a/drivers/net/can/peak_canfd/peak_canfd.c
-+++ b/drivers/net/can/peak_canfd/peak_canfd.c
-@@ -351,8 +351,8 @@ static int pucan_handle_status(struct pe
- 				return err;
- 		}
+--- a/fs/fuse/dir.c
++++ b/fs/fuse/dir.c
+@@ -352,6 +352,17 @@ static struct vfsmount *fuse_dentry_auto
  
--		/* start network queue (echo_skb array is empty) */
--		netif_start_queue(ndev);
-+		/* wake network queue up (echo_skb array is empty) */
-+		netif_wake_queue(ndev);
+ 	sb->s_flags |= SB_ACTIVE;
+ 	fsc->root = dget(sb->s_root);
++
++	/*
++	 * FIXME: setting SB_BORN requires a write barrier for
++	 *        super_cache_count(). We should actually come
++	 *        up with a proper ->get_tree() implementation
++	 *        for submounts and call vfs_get_tree() to take
++	 *        care of the write barrier.
++	 */
++	smp_wmb();
++	sb->s_flags |= SB_BORN;
++
+ 	/* We are done configuring the superblock, so unlock it */
+ 	up_write(&sb->s_umount);
  
- 		return 0;
- 	}
 
 
