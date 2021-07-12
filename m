@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEBE93C4A39
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F115A3C5772
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239257AbhGLGtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:49:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34338 "EHLO mail.kernel.org"
+        id S1358489AbhGLIdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:33:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237792AbhGLGjj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:39:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1D226113E;
-        Mon, 12 Jul 2021 06:35:25 +0000 (UTC)
+        id S1346067AbhGLHpq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:45:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 15861613DB;
+        Mon, 12 Jul 2021 07:41:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071726;
-        bh=P1wCF5MjMasoUsUhzJZ3trQHMHTl86FvkoaoOo0K928=;
+        s=korg; t=1626075710;
+        bh=+Tz/rXInQc51XqYA3blowg3jBoRAtHYIoA8tPYksn7I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l0XEfV0NqBkXaoUjQBrG+AwoVhs0JZs/TszJwyfV9nxWs+eD0NwMSCi5WhWuL76yh
-         8v67lZmQh8OFkwsNJBgu1CHZQpt+TFhVGQLuW+6AyWh9pEnh44WGUSeUUAXvl2bSwL
-         kh+LBAC2j8aXUVgGilD15RVw7oU3MLzOEOVJeVlQ=
+        b=ynhoP1G9JoE3OaNLIT8EHtRli0kn7vTutN/bSRzJPyFvblADkvqHdpCNfyfWDt0WR
+         m7XmY1Fnn/1Wa5OQ2qYL+Hq+1XMtpYI+hmDj2xQsCVzDcS5ivkZ1ucPhqVLlW5YeTp
+         +25oCmZClIFy7k77UfTuQ08Az2d6ANRshzuMtQ1k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, JK Kim <jongkang.kim2@gmail.com>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 192/593] nvme-pci: fix var. type for increasing cq_head
+        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 329/800] KVM: x86/mmu: Fix pf_fixed count in tdp_mmu_map_handle_target_level()
 Date:   Mon, 12 Jul 2021 08:05:52 +0200
-Message-Id: <20210712060904.133790591@linuxfoundation.org>
+Message-Id: <20210712061001.382207167@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,42 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: JK Kim <jongkang.kim2@gmail.com>
+From: Kai Huang <kai.huang@intel.com>
 
-[ Upstream commit a0aac973a26d1ac814b9e131e209eb39472a67ce ]
+[ Upstream commit 857f84743e4b78500afae010d866675642e18e90 ]
 
-nvmeq->cq_head is compared with nvmeq->q_depth and changed the value
-and cq_phase for handling the next cq db.
+Currently pf_fixed is not increased when prefault is true.  This is not
+correct, since prefault here really means "async page fault completed".
+In that case, the original page fault from the guest was morphed into as
+async page fault and pf_fixed was not increased.  So when prefault
+indicates async page fault is completed, pf_fixed should be increased.
 
-but, nvmeq->q_depth's type is u32 and max. value is 0x10000 when
-CQP.MSQE is 0xffff and io_queue_depth is 0x10000.
+Additionally, currently pf_fixed is also increased even when page fault
+is spurious, while legacy MMU increases pf_fixed when page fault returns
+RET_PF_EMULATE or RET_PF_FIXED.
 
-current temp. variable for comparing with nvmeq->q_depth is overflowed
-when previous nvmeq->cq_head is 0xffff.
+To fix above two issues, change to increase pf_fixed when return value
+is not RET_PF_SPURIOUS (RET_PF_RETRY has already been ruled out by
+reaching here).
 
-in this case, nvmeq->cq_phase is not updated.
-so, fix data type for temp. variable to u32.
+More information:
+https://lore.kernel.org/kvm/cover.1620200410.git.kai.huang@intel.com/T/#mbb5f8083e58a2cd262231512b9211cbe70fc3bd5
 
-Signed-off-by: JK Kim <jongkang.kim2@gmail.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Fixes: bb18842e2111 ("kvm: x86/mmu: Add TDP MMU PF handler")
+Reviewed-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Kai Huang <kai.huang@intel.com>
+Message-Id: <2ea8b7f5d4f03c99b32bc56fc982e1e4e3d3fc6b.1623717884.git.kai.huang@intel.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/pci.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kvm/mmu/tdp_mmu.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index c1f3446216c5..56263214ea06 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -1027,7 +1027,7 @@ static inline void nvme_handle_cqe(struct nvme_queue *nvmeq, u16 idx)
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index 35b0ece7beff..8773bd5287da 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -949,7 +949,11 @@ static int tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu, int write,
+ 				       rcu_dereference(iter->sptep));
+ 	}
  
- static inline void nvme_update_cq_head(struct nvme_queue *nvmeq)
- {
--	u16 tmp = nvmeq->cq_head + 1;
-+	u32 tmp = nvmeq->cq_head + 1;
+-	if (!prefault)
++	/*
++	 * Increase pf_fixed in both RET_PF_EMULATE and RET_PF_FIXED to be
++	 * consistent with legacy MMU behavior.
++	 */
++	if (ret != RET_PF_SPURIOUS)
+ 		vcpu->stat.pf_fixed++;
  
- 	if (tmp == nvmeq->q_depth) {
- 		nvmeq->cq_head = 0;
+ 	return ret;
 -- 
 2.30.2
 
