@@ -2,197 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E84C03C5F74
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 17:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC99F3C5F79
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 17:41:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235555AbhGLPnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 11:43:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235400AbhGLPni (ORCPT
+        id S235636AbhGLPoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 11:44:14 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:20811 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235400AbhGLPoM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 11:43:38 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B933FC0613E5
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 08:40:49 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id s18so24943105ljg.7
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 08:40:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Sx2IKaIgugKwjbZh4RK43caAuNdf4BXBJqmTld2/qA0=;
-        b=NEWvAFhouQ4e7j5ggnmprP9PikemmsFblqPRXXAHQZV2IEIy9r/NIHTZHWwR3+w77y
-         vytETyqX23fY+KxY7hbkIW7ORnFbbomjiXm0CyBp5YoOi9dNBaU6aUVX2eTtAvoaiJpx
-         88pP7V9XkV+SohNlwuz01hbF1qLbIHmyj6WUFPWI77r8LDVuhnT6p041rK4ltWjCS0nq
-         DXM2Ykt0fnh9y3KnlZ10Mh/jnN2aG0C3JSDjAgqWoAxmI7nsT8R8YMrVBounYpCSVSgs
-         ztiUoIhd6z0DW/FxaNp7+ewQWz7vmPmJUaE/BvdIOIaV0ZvOzYBkDBVlxCdDxgvu9kTF
-         2ssg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Sx2IKaIgugKwjbZh4RK43caAuNdf4BXBJqmTld2/qA0=;
-        b=F5URx3pR4wzgyn9/7WTo04Gjr8/sp5rycQ7ef5IvPIRcCQpEpqlUzkA+I4rFFaHjz2
-         7hWuDDseck6jGwBntHoQ61GkAxVlJ6fnLTvnpEIQogbp8ZOUrkUVK6SH3Nzyj3vXLNI6
-         LqMh1ExmisJUWT+uBCQyANpTEvq+JlpsyP74hP3ucSrxwGBPUff6x/5/I0Ld9M5uQ1Vy
-         22e66rKCqYXWNcr6rewof2Xo2w9ANgNs4KoE1Vr966yLxgwWqjV7projpaBdgbNcojWH
-         jUSgMdvKmkwblxf3lUE2rQeDnqUPZmOb8mKSeIq8+7+r9AI9auf55sWijxi09Qpnr8oZ
-         aKkQ==
-X-Gm-Message-State: AOAM530C620DvF6EqRcJQSb0onjWWEt6jWJq9htNIqPb9JLImM6AD+N3
-        xRJ0S3kiJ3bFgOMsocXLLXGth4IPYjo6puLxf8UULg==
-X-Google-Smtp-Source: ABdhPJx7ptjXxjNKzZ0q3xfM3GMwdaBnal/nB7DdO8AnH1LjuIVERQ2StOYIo3Yb7v9EfaXpMrpJ4b6ar3kDLpO6qG0=
-X-Received: by 2002:a05:651c:1684:: with SMTP id bd4mr26670952ljb.287.1626104447709;
- Mon, 12 Jul 2021 08:40:47 -0700 (PDT)
+        Mon, 12 Jul 2021 11:44:12 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1626104483; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To:
+ Subject: From: Sender; bh=HfDY19Td7Yb6LP09Ydf7zDiMxK8u7WGqFqG3C/QOekU=;
+ b=mQoyrfqbeQkjeBvHuaOcVWMh8H5O0uHb419TZfz+ErC8s6RZA0YOCukmOsFfpHuzpDo8CL10
+ 33BW5fs85ckDFg6fl2voUtL7SXD1Ztpd/7Mdeo3ehpD4H7Qnpq80PvhQ2BimREKUp+uUg0JJ
+ NnU/vxvXcVbUN0PuVSr2OvflwiA=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 60ec62941938941955eb8ed1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 12 Jul 2021 15:41:08
+ GMT
+Sender: mdtipton=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F393FC43460; Mon, 12 Jul 2021 15:41:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.4 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.12] (pool-96-253-99-54.rcmdva.fios.verizon.net [96.253.99.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mdtipton)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 05E4DC433D3;
+        Mon, 12 Jul 2021 15:41:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 05E4DC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mdtipton@codeaurora.org
+From:   Mike Tipton <mdtipton@codeaurora.org>
+Subject: Re: [PATCH 1/4] interconnect: Zero initial BW after sync-state
+To:     okukatla@codeaurora.org
+Cc:     djakov@kernel.org, bjorn.andersson@linaro.org, agross@kernel.org,
+        saravanak@google.com, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mdtipton=codeaurora.org@codeaurora.org
+References: <20210625212839.24155-1-mdtipton@codeaurora.org>
+ <20210625212839.24155-2-mdtipton@codeaurora.org>
+ <14c52b496918900c9cb3bef662a9e833@codeaurora.org>
+Message-ID: <86e76352-1199-0fc6-9e5d-b7d45db37636@codeaurora.org>
+Date:   Mon, 12 Jul 2021 08:41:03 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210708194638.128950-4-posk@google.com> <bb30216c-4339-2703-9d87-9326af86a7b0@uwaterloo.ca>
-In-Reply-To: <bb30216c-4339-2703-9d87-9326af86a7b0@uwaterloo.ca>
-From:   Peter Oskolkov <posk@google.com>
-Date:   Mon, 12 Jul 2021 08:40:36 -0700
-Message-ID: <CAPNVh5f3H7Gor-Dph7=2jAdme-4mRfCCb0gv=wjgHQtd7Cad=Q@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/3 v0.2] sched/umcg: RFC: implement UMCG syscalls
-To:     Thierry Delisle <tdelisle@uwaterloo.ca>
-Cc:     posk@posk.io, avagin@google.com, bsegall@google.com,
-        jannh@google.com, jnewsome@torproject.org, joel@joelfernandes.org,
-        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, peterz@infradead.org, pjt@google.com,
-        tglx@linutronix.de, Peter Buhr <pabuhr@uwaterloo.ca>,
-        Martin Karsten <mkarsten@uwaterloo.ca>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <14c52b496918900c9cb3bef662a9e833@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 11, 2021 at 11:29 AM Thierry Delisle <tdelisle@uwaterloo.ca> wrote:
->
->  > Let's move the discussion to the new thread.
->
-> I'm happy to start a new thread. I'm re-responding to my last post
-> because many
-> of my questions are still unanswered.
->
->  > + * State transitions:
->  > + *
->  > + * RUNNING => IDLE:   the current RUNNING task becomes IDLE by calling
->  > + *                    sys_umcg_wait();
->  >
->  > [...]
->  >
->  > +/**
->  > + * enum umcg_wait_flag - flags to pass to sys_umcg_wait
->  > + * @UMCG_WAIT_WAKE_ONLY: wake @self->next_tid, don't put @self to sleep;
->  > + * @UMCG_WF_CURRENT_CPU: wake @self->next_tid on the current CPU
->  > + *                       (use WF_CURRENT_CPU); @UMCG_WAIT_WAKE_ONLY
-> must be set.
->  > + */
->  > +enum umcg_wait_flag {
->  > +    UMCG_WAIT_WAKE_ONLY = 1,
->  > +    UMCG_WF_CURRENT_CPU = 2,
->  > +};
->
-> What is the purpose of using sys_umcg_wait without next_tid or with
-> UMCG_WAIT_WAKE_ONLY? It looks like Java's park/unpark semantics to me,
-> that is
-> worker threads can use this for synchronization and mutual exclusion. In
-> this
-> case, how do these compare to using FUTEX_WAIT/FUTEX_WAKE?
+On 7/1/2021 9:56 AM, okukatla@codeaurora.org wrote:
+> On 2021-06-26 02:58, Mike Tipton wrote:
+>> The initial BW values may be used by providers to enforce floors. Zero
+>> these values after sync-state so that providers know when to stop
+>> enforcing them.
+>>
+>> Fixes: b1d681d8d324 ("interconnect: Add sync state support")
+>> Signed-off-by: Mike Tipton <mdtipton@codeaurora.org>
+>> ---
+>>  drivers/interconnect/core.c | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/drivers/interconnect/core.c b/drivers/interconnect/core.c
+>> index 8a1e70e00876..945121e18b5c 100644
+>> --- a/drivers/interconnect/core.c
+>> +++ b/drivers/interconnect/core.c
+>> @@ -1106,6 +1106,8 @@ void icc_sync_state(struct device *dev)
+>>          dev_dbg(p->dev, "interconnect provider is in synced state\n");
+>>          list_for_each_entry(n, &p->nodes, node_list) {
+>>              if (n->init_avg || n->init_peak) {
+>> +                n->init_avg = 0;
+>> +                n->init_peak = 0;
+> nit: It is good to reset init/floor levels back to zero, but we don't 
+> need to do this as we have sync_state flag to let providers know when to 
+> stop enforcing.
 
-sys_umcg_wait without next_tid puts the task in UMCG_IDLE state; wake
-wakes it. These are standard sched operations. If they are emulated
-via futexes, fast context switching will require something like
-FUTEX_SWAP that was NACKed last year.
+The synced_state variable is static to this file. It's not exposed to 
+providers. In fact, we could entirely remove synced_state with this 
+patch since it's unnecessary after zeroing the initial floors.
 
->
->
->  > +struct umcg_task {
->  > [...]
->  > +    /**
->  > +     * @server_tid: the TID of the server UMCG task that should be
->  > +     *              woken when this WORKER becomes BLOCKED. Can be zero.
->  > +     *
->  > +     *              If this is a UMCG server, @server_tid should
->  > +     *              contain the TID of @self - it will be used to find
->  > +     *              the task_struct to wake when pulled from
->  > +     *              @idle_servers.
->  > +     *
->  > +     * Read-only for the kernel, read/write for the userspace.
->  > +     */
->  > +    uint32_t    server_tid;        /* r   */
->  > [...]
->  > +    /**
->  > +     * @idle_servers_ptr: a single-linked list pointing to the list
->  > +     *                    of idle servers. Can be NULL.
->  > +     *
->  > +     * Readable/writable by both the kernel and the userspace: the
->  > +     * userspace adds items to the list, the kernel removes them.
->  > +     *
->  > +     * TODO: describe how the list works.
->  > +     */
->  > +    uint64_t    idle_servers_ptr;    /* r/w */
->  > [...]
->  > +} __attribute__((packed, aligned(8 * sizeof(__u64))));
->
->  From the comments and by elimination, I'm guessing that idle_servers_ptr is
-> somehow used by servers to block until some worker threads become idle.
-> However,
-> I do not understand how the userspace is expected to use it. I also do not
-> understand if these link fields form a stack or a queue and where is the
-> head.
-
-When a server has nothing to do (no work to run), it is put into IDLE
-state and added to the list. The kernel wakes an IDLE server if a
-blocked worker unblocks.
-
->
->
->  > +/**
->  > + * sys_umcg_ctl: (un)register a task as a UMCG task.
->  > + * @flags:       ORed values from enum umcg_ctl_flag; see below;
->  > + * @self:        a pointer to struct umcg_task that describes this
->  > + *               task and governs the behavior of sys_umcg_wait if
->  > + *               registering; must be NULL if unregistering.
->  > + *
->  > + * @flags & UMCG_CTL_REGISTER: register a UMCG task:
->  > + *         UMCG workers:
->  > + *              - self->state must be UMCG_TASK_IDLE
->  > + *              - @flags & UMCG_CTL_WORKER
->  > + *
->  > + *         If the conditions above are met, sys_umcg_ctl()
-> immediately returns
->  > + *         if the registered task is a RUNNING server or basic task;
-> an IDLE
->  > + *         worker will be added to idle_workers_ptr, and the worker
-> put to
->  > + *         sleep; an idle server from idle_servers_ptr will be
-> woken, if any.
->
-> This approach to creating UMCG workers concerns me a little. My
-> understanding
-> is that in general, the number of servers controls the amount of parallelism
-> in the program. But in the case of creating new UMCG workers, the new
-> threads
-> only respect the M:N threading model after sys_umcg_ctl has blocked.
-> What does
-> this mean for applications that create thousands of short lived tasks? Are
-> users expcted to create pools of reusable UMCG workers?
-
-Yes: task/thread creation is not as lightweight as just posting work
-items onto a preexisting pool of workers.
-
->
->
-> I would suggest adding at least one uint64_t field to the struct
-> umcg_task that
-> is left as-is by the kernel. This allows implementers of user-space
-> schedulers to add scheduler specific data structures to the threads without
-> needing some kind of table on the side.
-
-This is usually achieved by embedding the kernel struct into a larger
-userspace/TLS struct. For example:
-
-struct umcg_task_user {
-  struct umcg_task umcg_task;
-  extra_user_data d1;
-  extra_user_ptr p1;
-  /* etc. */
-} __aligned(...);
+>>                  aggregate_requests(n);
+>>                  p->set(n, n);
+>>              }
