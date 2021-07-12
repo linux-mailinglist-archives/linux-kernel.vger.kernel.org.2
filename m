@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A143C5877
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C4E3C531C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356669AbhGLIsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:48:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41236 "EHLO mail.kernel.org"
+        id S238090AbhGLHwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:52:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243006AbhGLHwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:52:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8732960200;
-        Mon, 12 Jul 2021 07:49:57 +0000 (UTC)
+        id S244812AbhGLHSt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:18:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A99961153;
+        Mon, 12 Jul 2021 07:15:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076198;
-        bh=LSsML+qzbF1/RX6SUZAS8YjF4K/KOhywRNIJuKiEklo=;
+        s=korg; t=1626074154;
+        bh=nnbaz8Yfi3PCtZtlmiSX2StMsnPRe/+TSWMllL/PZpU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V+drDrvmsONBzUANwQpYqXRan5AYEy/6vhXEvFdwm1C7rmqNxUQTcAhc9fcV9yTxk
-         LCLhHf/gA4uYlqrO5DYzUbXBEkPHFWR4fgFssiNk3gzBaeb9gAKn/IynEji7w7rkAZ
-         1BPMw9POU7XGb5DWTwMLMeCJrDKV0+s9aCF9Rsc0=
+        b=b+UnCEX2qnlBlPrg9BlZzHUPpPQFYf3NibLLWMWD7d8S+ZuEPKFMU2m+YojYVHdM8
+         pQJr+d5iaqXjWb55OxehQCN4ho2ysHA4MJM+5BifUcAcgX2ZXHZBsfEi0PV8Xnwdzd
+         iYZFATP7aoaGCElYRnG/kK5/osoJd7U3weWqBUuE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 540/800] net: broadcom: bcm4908_enet: reset DMA rings sw indexes properly
-Date:   Mon, 12 Jul 2021 08:09:23 +0200
-Message-Id: <20210712061024.824400895@linuxfoundation.org>
+Subject: [PATCH 5.12 481/700] Revert "ibmvnic: simplify reset_long_term_buff function"
+Date:   Mon, 12 Jul 2021 08:09:24 +0200
+Message-Id: <20210712061027.789641483@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,49 +41,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafał Miłecki <rafal@milecki.pl>
+From: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
 
-[ Upstream commit ddeacc4f6494e07cbb6f033627926623f3e7a9d0 ]
+[ Upstream commit 0ec13aff058a82426c8d44b688c804cc4a5a0a3d ]
 
-Resetting software indexes in bcm4908_dma_alloc_buf_descs() is not
-enough as it's called during device probe only. Driver resets DMA on
-every .ndo_open callback and it's required to reset indexes then.
+This reverts commit 1c7d45e7b2c29080bf6c8cd0e213cc3cbb62a054.
 
-This fixes inconsistent rings state and stalled traffic after interface
-down & up sequence.
+We tried to optimize the number of hcalls we send and skipped sending
+the REQUEST_MAP calls for some maps. However during resets, we need to
+resend all the maps to the VIOS since the VIOS does not remember the
+old values. In fact we may have failed over to a new VIOS which will
+not have any of the mappings.
 
-Fixes: 4feffeadbcb2 ("net: broadcom: bcm4908enet: add BCM4908 controller driver")
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+When we send packets with map ids the VIOS does not know about, it
+triggers a FATAL reset. While the client does recover from the FATAL
+error reset, we are seeing a large number of such resets. Handling
+FATAL resets is lot more unnecessary work than issuing a few more
+hcalls so revert the commit and resend the maps to the VIOS.
+
+Fixes: 1c7d45e7b2c ("ibmvnic: simplify reset_long_term_buff function")
+Signed-off-by: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bcm4908_enet.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/ibm/ibmvnic.c | 46 ++++++++++++++++++++++++------
+ 1 file changed, 38 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bcm4908_enet.c b/drivers/net/ethernet/broadcom/bcm4908_enet.c
-index 60d908507f51..02a569500234 100644
---- a/drivers/net/ethernet/broadcom/bcm4908_enet.c
-+++ b/drivers/net/ethernet/broadcom/bcm4908_enet.c
-@@ -174,9 +174,6 @@ static int bcm4908_dma_alloc_buf_descs(struct bcm4908_enet *enet,
- 	if (!ring->slots)
- 		goto err_free_buf_descs;
- 
--	ring->read_idx = 0;
--	ring->write_idx = 0;
--
- 	return 0;
- 
- err_free_buf_descs:
-@@ -304,6 +301,9 @@ static void bcm4908_enet_dma_ring_init(struct bcm4908_enet *enet,
- 
- 	enet_write(enet, ring->st_ram_block + ENET_DMA_CH_STATE_RAM_BASE_DESC_PTR,
- 		   (uint32_t)ring->dma_addr);
-+
-+	ring->read_idx = 0;
-+	ring->write_idx = 0;
+diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
+index ffb2a91750c7..b920132d4940 100644
+--- a/drivers/net/ethernet/ibm/ibmvnic.c
++++ b/drivers/net/ethernet/ibm/ibmvnic.c
+@@ -257,12 +257,40 @@ static void free_long_term_buff(struct ibmvnic_adapter *adapter,
+ 	dma_free_coherent(dev, ltb->size, ltb->buff, ltb->addr);
  }
  
- static void bcm4908_enet_dma_uninit(struct bcm4908_enet *enet)
+-static int reset_long_term_buff(struct ibmvnic_long_term_buff *ltb)
++static int reset_long_term_buff(struct ibmvnic_adapter *adapter,
++				struct ibmvnic_long_term_buff *ltb)
+ {
+-	if (!ltb->buff)
+-		return -EINVAL;
++	struct device *dev = &adapter->vdev->dev;
++	int rc;
+ 
+ 	memset(ltb->buff, 0, ltb->size);
++
++	mutex_lock(&adapter->fw_lock);
++	adapter->fw_done_rc = 0;
++
++	reinit_completion(&adapter->fw_done);
++	rc = send_request_map(adapter, ltb->addr, ltb->size, ltb->map_id);
++	if (rc) {
++		mutex_unlock(&adapter->fw_lock);
++		return rc;
++	}
++
++	rc = ibmvnic_wait_for_completion(adapter, &adapter->fw_done, 10000);
++	if (rc) {
++		dev_info(dev,
++			 "Reset failed, long term map request timed out or aborted\n");
++		mutex_unlock(&adapter->fw_lock);
++		return rc;
++	}
++
++	if (adapter->fw_done_rc) {
++		dev_info(dev,
++			 "Reset failed, attempting to free and reallocate buffer\n");
++		free_long_term_buff(adapter, ltb);
++		mutex_unlock(&adapter->fw_lock);
++		return alloc_long_term_buff(adapter, ltb, ltb->size);
++	}
++	mutex_unlock(&adapter->fw_lock);
+ 	return 0;
+ }
+ 
+@@ -484,7 +512,8 @@ static int reset_rx_pools(struct ibmvnic_adapter *adapter)
+ 						  rx_pool->size *
+ 						  rx_pool->buff_size);
+ 		} else {
+-			rc = reset_long_term_buff(&rx_pool->long_term_buff);
++			rc = reset_long_term_buff(adapter,
++						  &rx_pool->long_term_buff);
+ 		}
+ 
+ 		if (rc)
+@@ -607,11 +636,12 @@ static int init_rx_pools(struct net_device *netdev)
+ 	return 0;
+ }
+ 
+-static int reset_one_tx_pool(struct ibmvnic_tx_pool *tx_pool)
++static int reset_one_tx_pool(struct ibmvnic_adapter *adapter,
++			     struct ibmvnic_tx_pool *tx_pool)
+ {
+ 	int rc, i;
+ 
+-	rc = reset_long_term_buff(&tx_pool->long_term_buff);
++	rc = reset_long_term_buff(adapter, &tx_pool->long_term_buff);
+ 	if (rc)
+ 		return rc;
+ 
+@@ -638,10 +668,10 @@ static int reset_tx_pools(struct ibmvnic_adapter *adapter)
+ 
+ 	tx_scrqs = adapter->num_active_tx_pools;
+ 	for (i = 0; i < tx_scrqs; i++) {
+-		rc = reset_one_tx_pool(&adapter->tso_pool[i]);
++		rc = reset_one_tx_pool(adapter, &adapter->tso_pool[i]);
+ 		if (rc)
+ 			return rc;
+-		rc = reset_one_tx_pool(&adapter->tx_pool[i]);
++		rc = reset_one_tx_pool(adapter, &adapter->tx_pool[i]);
+ 		if (rc)
+ 			return rc;
+ 	}
 -- 
 2.30.2
 
