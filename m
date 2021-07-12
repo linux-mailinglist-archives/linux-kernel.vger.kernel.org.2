@@ -2,96 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 365A13C63C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 21:32:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B837E3C63C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 21:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236442AbhGLTd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 15:33:29 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:44400 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236431AbhGLTd1 (ORCPT
+        id S236446AbhGLTec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 15:34:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236190AbhGLTe2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 15:33:27 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id DD9741FFF7;
-        Mon, 12 Jul 2021 19:30:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1626118237; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=RW3R9SeQHG8573gc/MkdHYTv9cHBSypiXesl5DLdgYQ=;
-        b=Zwu5Smxc/qWODS0Ga/WJGVeHEiO76SZwDdN05sq6vX1XZCBgpcCkyQRPMVVwMjpdLg0VrL
-        n7KrV4Hl8plDkieVR/wYwmlF5hkJl9NMwpLYaQs/Cs0kNvEVUnT732RpAm9zhMo6ayvq0x
-        OGL7wAOZ0tS2LdKgENsqsit3KvMjSGs=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id D59C2A3B85;
-        Mon, 12 Jul 2021 19:30:37 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 66A02DA790; Mon, 12 Jul 2021 21:28:01 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 5.14-rc2
-Date:   Mon, 12 Jul 2021 21:28:00 +0200
-Message-Id: <cover.1626115408.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.31.1
+        Mon, 12 Jul 2021 15:34:28 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C29C0613DD;
+        Mon, 12 Jul 2021 12:31:40 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 485F269D6; Mon, 12 Jul 2021 15:31:39 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 485F269D6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1626118299;
+        bh=Zn3SvcMF3FFO49+WTI8pt7ML3V5uhGmeYXXeqsXQrcY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=v8DlyIayyg8yDjwJfuxsFYTJvh+t9cDW+Uz+VYzSDSXEbEke0mosrcMLlzmpjVmDX
+         06wu4GYGB/ZF34UAZkd7LRQK1LLMfmlqQkWptRk7aDVwFxxNO8dF2uGtyK7jm+7Tbu
+         RIR8atVX3reEl7AA0HxjsvEmxSoIIB5kZMNxDEwg=
+Date:   Mon, 12 Jul 2021 15:31:39 -0400
+From:   "J. Bruce Fields" <bfields@fieldses.org>
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     Bruce Fields <bfields@redhat.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, virtio-fs@redhat.com, dwalsh@redhat.com,
+        dgilbert@redhat.com, casey.schaufler@intel.com,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        tytso@mit.edu, miklos@szeredi.hu, gscrivan@redhat.com,
+        jack@suse.cz, Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH v2 1/1] xattr: Allow user.* xattr on symlink and special
+ files
+Message-ID: <20210712193139.GA22997@fieldses.org>
+References: <20210708175738.360757-1-vgoyal@redhat.com>
+ <20210708175738.360757-2-vgoyal@redhat.com>
+ <20210709091915.2bd4snyfjndexw2b@wittgenstein>
+ <20210709152737.GA398382@redhat.com>
+ <710d1c6f-d477-384f-0cc1-8914258f1fb1@schaufler-ca.com>
+ <20210709175947.GB398382@redhat.com>
+ <CAPL3RVGKg4G5qiiHo7KYPcsWWgeoW=qNPOSQpd3Sv329jrWrLQ@mail.gmail.com>
+ <20210712140247.GA486376@redhat.com>
+ <20210712154106.GB18679@fieldses.org>
+ <20210712174759.GA502004@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210712174759.GA502004@redhat.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Jul 12, 2021 at 01:47:59PM -0400, Vivek Goyal wrote:
+> On Mon, Jul 12, 2021 at 11:41:06AM -0400, J. Bruce Fields wrote:
+> > Looks like 0xd is what the server returns to access on a device node
+> > with mode bits rw- for the caller.
+> > 
+> > Commit c11d7fd1b317 "nfsd: take xattr bits into account for permission
+> > checks" added the ACCESS_X* bits for regular files and directories but
+> > not others.
+> > 
+> > But you don't want to determine permission from the mode bits anyway,
+> > you want it to depend on the owner,
+> 
+> Thinking more about this part. Current implementation of my patch is
+> effectively doing both the checks. It checks that you are owner or
+> have CAP_FOWNER in xattr_permission() and then goes on to call
+> inode_permission(). And that means file mode bits will also play a
+> role. If caller does not have write permission on the file, it will
+> be denied setxattr().
+> 
+> If I don't call inode_permission(), and just return 0 right away for
+> file owner (for symlinks and special files), then just being owner
+> is enough to write user.* xattr. And then even security modules will
+> not get a chance to block that operation. IOW, if you are owner of
+> a symlink or special file, you can write as many user.* xattr as you
+> like and except quota does not look like anything else can block
+> it. I am wondering if this approach is ok?
 
-please pull the following fixes, all are for the zoned mode support.
-Thanks.
+Yeah, I'd expect security modules to get a say, and I wouldn't expect
+mode bits on device nodes to be useful for deciding whether it makes
+sense for xattrs to be readable or writeable.
 
-- fix deadlock when allocating system chunk
+But, I don't really know.
 
-- fix wrong mutex unlock on an error path
+Do we have any other use cases besides this case of storing security
+labels in user xattrs?
 
-- fix extent map splitting for append operation
-
-- update and fix message reporting unusable chunk space
-
-- don't block when background zone reclaim runs with balance in parallel
-
-----------------------------------------------------------------
-The following changes since commit 629e33a16809ae0274e1f5fc3d22b92b9bd0fdf1:
-
-  btrfs: remove unused btrfs_fs_info::total_pinned (2021-06-22 19:58:26 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.14-rc1-tag
-
-for you to fetch changes up to ea32af47f00a046a1f953370514d6d946efe0152:
-
-  btrfs: zoned: fix wrong mutex unlock on failure to allocate log root tree (2021-07-07 18:27:44 +0200)
-
-----------------------------------------------------------------
-David Sterba (1):
-      btrfs: zoned: fix types for u64 division in btrfs_reclaim_bgs_work
-
-Filipe Manana (3):
-      btrfs: fix deadlock with concurrent chunk allocations involving system chunks
-      btrfs: rework chunk allocation to avoid exhaustion of the system chunk array
-      btrfs: zoned: fix wrong mutex unlock on failure to allocate log root tree
-
-Johannes Thumshirn (2):
-      btrfs: zoned: print unusable percentage when reclaiming block groups
-      btrfs: don't block if we can't acquire the reclaim lock
-
-Naohiro Aota (1):
-      btrfs: properly split extent_map for REQ_OP_ZONE_APPEND
-
- fs/btrfs/block-group.c | 367 ++++++++++++++++++++++++++++++++++++-------------
- fs/btrfs/block-group.h |   6 +-
- fs/btrfs/ctree.c       |  67 ++-------
- fs/btrfs/inode.c       | 147 ++++++++++++++++----
- fs/btrfs/transaction.c |  15 +-
- fs/btrfs/transaction.h |   9 +-
- fs/btrfs/tree-log.c    |   2 +-
- fs/btrfs/volumes.c     | 355 +++++++++++++++++++++++++++++++++++------------
- fs/btrfs/volumes.h     |   5 +-
- 9 files changed, 687 insertions(+), 286 deletions(-)
+--b.
