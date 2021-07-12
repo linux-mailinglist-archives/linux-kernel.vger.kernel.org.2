@@ -2,146 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E07C3C5F5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 17:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 498C63C5F63
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 17:37:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235553AbhGLPhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 11:37:25 -0400
-Received: from forward4-smtp.messagingengine.com ([66.111.4.238]:55359 "EHLO
-        forward4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232203AbhGLPhX (ORCPT
+        id S235463AbhGLPjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 11:39:52 -0400
+Received: from mail-il1-f175.google.com ([209.85.166.175]:37527 "EHLO
+        mail-il1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232203AbhGLPjv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 11:37:23 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailforward.nyi.internal (Postfix) with ESMTP id 1260319406BA;
-        Mon, 12 Jul 2021 11:34:35 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Mon, 12 Jul 2021 11:34:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=hgaeow
-        vD5YYnNfnHdGdhp3KwY7X+hWI4Kx7Q+UzNECU=; b=dg+b1FTlWz9KAyECRyLoGM
-        nP7PbKf3a1fKO0urd7hHw9OSQIrVz/4Bwz+s/357wgFvM+o+ewVyuYMAA5KeW7Sj
-        Gj+n1v9POiZg9Hu7Ety/LH0fvvQ++BJ++h9peK51X3ML9Pk4vZSTmNcGxZlv+tE6
-        +JUVKh2eFylW8DkDuvox4q/L6DtGFWgntUS3DyDzkcgH9LbJbMI2xvsQYt7qj7U0
-        h8l80UYZ0vAReizLHTZhW9XVDYCZ5EKure9zV8lSq4IAPYqtHnzMR+f2w26Q7UW0
-        /IhE86nyHB0noK2W89KN320HonQesT9UM1VC4ikM137K9moBuNEZ+ANv85B1M6zg
-        ==
-X-ME-Sender: <xms:AWHsYEIqMFj65Qep5BZc-1XMDKHKIWG8sqby99bmMQWCdNni8c2NvA>
-    <xme:AWHsYEJmR0vDZ7wwGKRzDjrybvIgi_FwCApjrlAw9Peb-C0_VuuDhpT1smVNMaDEP
-    D8V7SXb9AMsjMtSz7o>
-X-ME-Received: <xmr:AWHsYEsufqsG-vDfT3S5297WA87xHyEhDMQAcbfJzZqVtWqfUiNDwLnj1QEIeBf6jAnvphzupYyjpslkgkDVkoLODxlfEJje2BSr3RvBFO8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvgdekkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefvufgjfhfhfffkgggtsehttdertddttddtnecuhfhrohhmpeffrghvihguucfg
-    ughmohhnughsohhnuceouggrvhhiugdrvggumhhonhgushhonhesohhrrggtlhgvrdgtoh
-    hmqeenucggtffrrghtthgvrhhnpeehleeffeduiedugedulefgteegteekleevueeitedu
-    leehjeekieelkeevueektdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
-    grihhlfhhrohhmpegurghvihgurdgvughmohhnughsohhnsehorhgrtghlvgdrtghomh
-X-ME-Proxy: <xmx:AWHsYBaEWF6QPzj2Bv_3hnZvUcPe3aYa03-tbqJSYyCUliYlyj1lxg>
-    <xmx:AWHsYLbF58Z4MEBsDnmJrNaRyXSoxQYSvVylhi_Bii17LbiHp9ht3Q>
-    <xmx:AWHsYNBO_4Rw2PRcWWxoO7RoN97AafGqyC7ARkGepiL6c7zdkipvDg>
-    <xmx:C2HsYBxfjeoAFkM7Cx8wRw3QSkvrbkDbMxwsi-lNtZsZUIjXp4wFMvFZevU>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 12 Jul 2021 11:34:24 -0400 (EDT)
-Received: from localhost (disaster-area.hh.sledj.net [local])
-        by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id 156d48ed;
-        Mon, 12 Jul 2021 15:34:23 +0000 (UTC)
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Matlack <dmatlack@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Joao Martins <joao.m.martins@oracle.com>
-Subject: Re: [PATCH v2 2/2] KVM: x86: On emulation failure, convey the exit
- reason to userspace
-In-Reply-To: <YOhvfDfqypLCRZuO@google.com>
-References: <20210706101207.2993686-1-david.edmondson@oracle.com>
- <20210706101207.2993686-3-david.edmondson@oracle.com>
- <YOhvfDfqypLCRZuO@google.com>
-X-HGTTG: heart-of-gold
-From:   David Edmondson <david.edmondson@oracle.com>
-Date:   Mon, 12 Jul 2021 16:34:22 +0100
-Message-ID: <m2pmvn35s1.fsf@oracle.com>
+        Mon, 12 Jul 2021 11:39:51 -0400
+Received: by mail-il1-f175.google.com with SMTP id o8so9162903ilf.4;
+        Mon, 12 Jul 2021 08:37:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+v/C3HhVpzVh+emkYtSgeszTQ+6xKMpx5E3RKEB3iPM=;
+        b=r9SWYg+Q7CkYIQyDKlB759YE8hC9YndXNltax7Ktd5et3CkwGf+Tikn2U9J6qCRiYu
+         RozpZ22u4QF/m3E9YFashQvGZ4oCm2/q9TDedZTk265b9EB5BovjQtU7IlTRHBwlRGcM
+         lmD2OrPKWSnb/s5txRwszeYw/vGshizHn2szc1/dyk0Bs8TMZN4KeSDau9iGSx0KB/+/
+         jOEMY6bo5sirk2wazYlGwskHoMcjUCEzg1EKdugKvxpAXxAbRmpI9O13pdYLmttnZ3Oj
+         e2eQeCN2oCEENYOPl7E9GUyOB+F8ykvHm8xLodrbKQycq+sr0NxS+kfkb6a6MgY3UAiA
+         Q1SQ==
+X-Gm-Message-State: AOAM530bjLdgiA3T0mui8Bhjd+MR6mPM5aI0UQh/kYgJ6zuIJpRjdgGW
+        4mfumley1Fxo/fS6BZTfhw==
+X-Google-Smtp-Source: ABdhPJzmc51CTY7qWur4uyZR4os11C6oex2SMvWqW2cYkTp5LM+cb9uBLblf3Ze6b3tN+PPkmiJSiQ==
+X-Received: by 2002:a92:d083:: with SMTP id h3mr13387917ilh.157.1626104222749;
+        Mon, 12 Jul 2021 08:37:02 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id t3sm5039256ilm.87.2021.07.12.08.37.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jul 2021 08:37:02 -0700 (PDT)
+Received: (nullmailer pid 1980098 invoked by uid 1000);
+        Mon, 12 Jul 2021 15:36:59 -0000
+Date:   Mon, 12 Jul 2021 09:36:59 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Felipe Balbi <balbi@kernel.org>, linux-usb@vger.kernel.org,
+        Thierry Reding <treding@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, David Heidelberg <david@ixit.cz>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 01/12] dt-bindings: phy: tegra20-usb-phy: Convert to
+ schema
+Message-ID: <20210712153659.GA1980043@robh.at.kernel.org>
+References: <20210704225433.32029-1-digetx@gmail.com>
+ <20210704225433.32029-2-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210704225433.32029-2-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, 2021-07-09 at 15:47:08 UTC, Sean Christopherson wrote:
+On Mon, 05 Jul 2021 01:54:22 +0300, Dmitry Osipenko wrote:
+> Convert NVIDIA Tegra20 USB PHY binding to schema.
+> 
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  .../bindings/phy/nvidia,tegra20-usb-phy.txt   |  74 ----
+>  .../bindings/phy/nvidia,tegra20-usb-phy.yaml  | 357 ++++++++++++++++++
+>  2 files changed, 357 insertions(+), 74 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/phy/nvidia,tegra20-usb-phy.txt
+>  create mode 100644 Documentation/devicetree/bindings/phy/nvidia,tegra20-usb-phy.yaml
+> 
 
-> On Tue, Jul 06, 2021, David Edmondson wrote:
->> Should instruction emulation fail, include the VM exit reason in the
->> emulation_failure data passed to userspace, in order that the VMM can
->> report it as a debugging aid when describing the failure.
->
-> ...
->
->> @@ -7473,7 +7474,14 @@ static void prepare_emulation_failure_exit(struct kvm_vcpu *vcpu)
->>  		memcpy(run->emulation_failure.insn_bytes,
->>  		       ctxt->fetch.data, insn_size);
->>  	}
->> +
->> +	run->emulation_failure.ndata = 4;
->> +	run->emulation_failure.flags |=
->> +		KVM_INTERNAL_ERROR_EMULATION_FLAG_EXIT_REASON;
->> +	run->emulation_failure.exit_reason =
->> +		static_call(kvm_x86_get_exit_reason)(vcpu);
->>  }
->
-> ...
->
->> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
->> index d9e4aabcb31a..863195371272 100644
->> --- a/include/uapi/linux/kvm.h
->> +++ b/include/uapi/linux/kvm.h
->> @@ -282,6 +282,7 @@ struct kvm_xen_exit {
->>  
->>  /* Flags that describe what fields in emulation_failure hold valid data. */
->>  #define KVM_INTERNAL_ERROR_EMULATION_FLAG_INSTRUCTION_BYTES (1ULL << 0)
->> +#define KVM_INTERNAL_ERROR_EMULATION_FLAG_EXIT_REASON       (1ULL << 1)
->>  
->>  /* for KVM_RUN, returned by mmap(vcpu_fd, offset=0) */
->>  struct kvm_run {
->> @@ -404,6 +405,12 @@ struct kvm_run {
->>  			__u64 flags;
->>  			__u8  insn_size;
->>  			__u8  insn_bytes[15];
->> +			/*
->> +			 * The "exit reason" extracted from the
->> +			 * VMCS/VMCB that was the cause of attempted
->> +			 * emulation.
->> +			 */
->> +			__u64 exit_reason;
->
-> Rather than providing just the exit reason and adding another kvm_x86_ops hook,
-> I would prefer to extend kvm_x86_get_exit_info() to also provide the exit reason
-> and use that.  E.g. on VMX, all exceptions funnel through a single exit reason.
-> Dumping exit_info_{1,2} and error_code in addition to intr_info might not be all
-> that useful, but I can't see in harm either, and more info is generally a good
-> thing.
->
-> The only other user of kvm_x86_get_exit_info() is for tracepoints, those could
-> be modified to not pass in the exit reason.
-
-Okay.
-
->>  		} emulation_failure;
->>  		/* KVM_EXIT_OSI */
->>  		struct {
->> -- 
->> 2.30.2
->> 
-
-dme.
--- 
-What did you learn today? I learnt nothing.
+Reviewed-by: Rob Herring <robh@kernel.org>
