@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3102A3C5943
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76A653C5929
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382482AbhGLJBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:01:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56498 "EHLO mail.kernel.org"
+        id S1380627AbhGLI7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:59:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354104AbhGLID3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:03:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 409C76121F;
-        Mon, 12 Jul 2021 07:59:56 +0000 (UTC)
+        id S1353867AbhGLIDF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:03:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 386CB61455;
+        Mon, 12 Jul 2021 07:58:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076796;
-        bh=IGDrdWNMGFL6/Ea3KjF9TUrKERhVsI3YCU4AasiDGHA=;
+        s=korg; t=1626076698;
+        bh=J0yhbvdUKMr+Yfgzy+EhEC+S0VN0f6BTmz0TGKluGmE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wj5X16KG3S/hASAs83vOBMQNn+bpbv05/zyW9/BCpSUaZL2xocNX1cuxbnnRRgVUf
-         VXFYKd3IbT3q48C1CqH4fK4RCn4oUGhVPFBVoPs+nBPCrp3+M9CioLANZeS9WGjxdS
-         hGun77PFPUJo22BAuC/MtjBBTlM4Cr7ZgKwlmEGw=
+        b=LlOAwMiY7JyWAOAlk7AwzfeLhVIU7EGy2AESZaadcPslzgWaMTL8Vv9cma+Om3ngs
+         7ledkeqETXJ2Jg8msWDKC0q/OwrZR65GRDTloUaX6qGW6FRA2ECNZOxoVk5K62/qZN
+         INRWsx7aLvqqVA2+00+2Fs7na1Romf85PZCe8eno=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vaibhav Jain <vaibhav@linux.ibm.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 755/800] powerpc/papr_scm: Make perf_stats invisible if perf-stats unavailable
-Date:   Mon, 12 Jul 2021 08:12:58 +0200
-Message-Id: <20210712061047.134189250@linuxfoundation.org>
+Subject: [PATCH 5.13 756/800] powerpc: Fix is_kvm_guest() / kvm_para_available()
+Date:   Mon, 12 Jul 2021 08:12:59 +0200
+Message-Id: <20210712061047.232369763@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -41,141 +39,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vaibhav Jain <vaibhav@linux.ibm.com>
+From: Michael Ellerman <mpe@ellerman.id.au>
 
-[ Upstream commit ed78f56e1271f108e8af61baeba383dcd77adbec ]
+[ Upstream commit 95839225639ba7c3d8d7231b542728dcf222bf2d ]
 
-In case performance stats for an nvdimm are not available, reading the
-'perf_stats' sysfs file returns an -ENOENT error. A better approach is
-to make the 'perf_stats' file entirely invisible to indicate that
-performance stats for an nvdimm are unavailable.
+Commit a21d1becaa3f ("powerpc: Reintroduce is_kvm_guest() as a fast-path
+check") added is_kvm_guest() and changed kvm_para_available() to use it.
 
-So this patch updates 'papr_nd_attribute_group' to add a 'is_visible'
-callback implemented as newly introduced 'papr_nd_attribute_visible()'
-that returns an appropriate mode in case performance stats aren't
-supported in a given nvdimm.
+is_kvm_guest() checks a static key, kvm_guest, and that static key is
+set in check_kvm_guest().
 
-Also the initialization of 'papr_scm_priv.stat_buffer_len' is moved
-from papr_scm_nvdimm_init() to papr_scm_probe() so that it value is
-available when 'papr_nd_attribute_visible()' is called during nvdimm
-initialization.
+The problem is check_kvm_guest() is only called on pseries, and even
+then only in some configurations. That means is_kvm_guest() always
+returns false on all non-pseries and some pseries depending on
+configuration. That's a bug.
 
-Even though 'perf_stats' attribute is available since v5.9, there are
-no known user-space tools/scripts that are dependent on presence of its
-sysfs file. Hence I dont expect any user-space breakage with this
-patch.
+For PR KVM guests this is noticable because they no longer do live
+patching of themselves, which can be detected by the omission of a
+message in dmesg such as:
 
-Fixes: 2d02bf835e57 ("powerpc/papr_scm: Fetch nvdimm performance stats from PHYP")
-Signed-off-by: Vaibhav Jain <vaibhav@linux.ibm.com>
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+  KVM: Live patching for a fast VM worked
+
+To fix it make check_kvm_guest() an initcall, to ensure it's always
+called at boot. It needs to be core so that it runs before
+kvm_guest_init() which is postcore. To be an initcall it needs to return
+int, where 0 means success, so update that.
+
+We still call it manually in pSeries_smp_probe(), because that runs
+before init calls are run.
+
+Fixes: a21d1becaa3f ("powerpc: Reintroduce is_kvm_guest() as a fast-path check")
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210513092349.285021-1-vaibhav@linux.ibm.com
+Link: https://lore.kernel.org/r/20210623130514.2543232-1-mpe@ellerman.id.au
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Documentation/ABI/testing/sysfs-bus-papr-pmem |  8 +++--
- arch/powerpc/platforms/pseries/papr_scm.c     | 35 +++++++++++++------
- 2 files changed, 29 insertions(+), 14 deletions(-)
+ arch/powerpc/include/asm/kvm_guest.h |  4 ++--
+ arch/powerpc/kernel/firmware.c       | 10 ++++++----
+ arch/powerpc/platforms/pseries/smp.c |  4 +++-
+ 3 files changed, 11 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-papr-pmem b/Documentation/ABI/testing/sysfs-bus-papr-pmem
-index 92e2db0e2d3d..95254cec92bf 100644
---- a/Documentation/ABI/testing/sysfs-bus-papr-pmem
-+++ b/Documentation/ABI/testing/sysfs-bus-papr-pmem
-@@ -39,9 +39,11 @@ KernelVersion:	v5.9
- Contact:	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, nvdimm@lists.linux.dev,
- Description:
- 		(RO) Report various performance stats related to papr-scm NVDIMM
--		device.  Each stat is reported on a new line with each line
--		composed of a stat-identifier followed by it value. Below are
--		currently known dimm performance stats which are reported:
-+		device. This attribute is only available for NVDIMM devices
-+		that support reporting NVDIMM performance stats. Each stat is
-+		reported on a new line with each line composed of a
-+		stat-identifier followed by it value. Below are currently known
-+		dimm performance stats which are reported:
- 
- 		* "CtlResCt" : Controller Reset Count
- 		* "CtlResTm" : Controller Reset Elapsed Time
-diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/platforms/pseries/papr_scm.c
-index 8335e13836db..d34e6eb4be0d 100644
---- a/arch/powerpc/platforms/pseries/papr_scm.c
-+++ b/arch/powerpc/platforms/pseries/papr_scm.c
-@@ -901,6 +901,20 @@ static ssize_t flags_show(struct device *dev,
+diff --git a/arch/powerpc/include/asm/kvm_guest.h b/arch/powerpc/include/asm/kvm_guest.h
+index 2fca299f7e19..c63105d2c9e7 100644
+--- a/arch/powerpc/include/asm/kvm_guest.h
++++ b/arch/powerpc/include/asm/kvm_guest.h
+@@ -16,10 +16,10 @@ static inline bool is_kvm_guest(void)
+ 	return static_branch_unlikely(&kvm_guest);
  }
- DEVICE_ATTR_RO(flags);
  
-+static umode_t papr_nd_attribute_visible(struct kobject *kobj,
-+					 struct attribute *attr, int n)
-+{
-+	struct device *dev = kobj_to_dev(kobj);
-+	struct nvdimm *nvdimm = to_nvdimm(dev);
-+	struct papr_scm_priv *p = nvdimm_provider_data(nvdimm);
-+
-+	/* For if perf-stats not available remove perf_stats sysfs */
-+	if (attr == &dev_attr_perf_stats.attr && p->stat_buffer_len == 0)
+-bool check_kvm_guest(void);
++int check_kvm_guest(void);
+ #else
+ static inline bool is_kvm_guest(void) { return false; }
+-static inline bool check_kvm_guest(void) { return false; }
++static inline int check_kvm_guest(void) { return 0; }
+ #endif
+ 
+ #endif /* _ASM_POWERPC_KVM_GUEST_H_ */
+diff --git a/arch/powerpc/kernel/firmware.c b/arch/powerpc/kernel/firmware.c
+index c9e2819b095a..c7022c41cc31 100644
+--- a/arch/powerpc/kernel/firmware.c
++++ b/arch/powerpc/kernel/firmware.c
+@@ -23,18 +23,20 @@ EXPORT_SYMBOL_GPL(powerpc_firmware_features);
+ 
+ #if defined(CONFIG_PPC_PSERIES) || defined(CONFIG_KVM_GUEST)
+ DEFINE_STATIC_KEY_FALSE(kvm_guest);
+-bool check_kvm_guest(void)
++int __init check_kvm_guest(void)
+ {
+ 	struct device_node *hyper_node;
+ 
+ 	hyper_node = of_find_node_by_path("/hypervisor");
+ 	if (!hyper_node)
+-		return false;
 +		return 0;
+ 
+ 	if (!of_device_is_compatible(hyper_node, "linux,kvm"))
+-		return false;
++		return 0;
+ 
+ 	static_branch_enable(&kvm_guest);
+-	return true;
 +
-+	return attr->mode;
-+}
++	return 0;
+ }
++core_initcall(check_kvm_guest); // before kvm_guest_init()
+ #endif
+diff --git a/arch/powerpc/platforms/pseries/smp.c b/arch/powerpc/platforms/pseries/smp.c
+index c70b4be9f0a5..096629f54576 100644
+--- a/arch/powerpc/platforms/pseries/smp.c
++++ b/arch/powerpc/platforms/pseries/smp.c
+@@ -211,7 +211,9 @@ static __init void pSeries_smp_probe(void)
+ 	if (!cpu_has_feature(CPU_FTR_SMT))
+ 		return;
+ 
+-	if (check_kvm_guest()) {
++	check_kvm_guest();
 +
- /* papr_scm specific dimm attributes */
- static struct attribute *papr_nd_attributes[] = {
- 	&dev_attr_flags.attr,
-@@ -910,6 +924,7 @@ static struct attribute *papr_nd_attributes[] = {
- 
- static struct attribute_group papr_nd_attribute_group = {
- 	.name = "papr",
-+	.is_visible = papr_nd_attribute_visible,
- 	.attrs = papr_nd_attributes,
- };
- 
-@@ -925,7 +940,6 @@ static int papr_scm_nvdimm_init(struct papr_scm_priv *p)
- 	struct nd_region_desc ndr_desc;
- 	unsigned long dimm_flags;
- 	int target_nid, online_nid;
--	ssize_t stat_size;
- 
- 	p->bus_desc.ndctl = papr_scm_ndctl;
- 	p->bus_desc.module = THIS_MODULE;
-@@ -1010,16 +1024,6 @@ static int papr_scm_nvdimm_init(struct papr_scm_priv *p)
- 	list_add_tail(&p->region_list, &papr_nd_regions);
- 	mutex_unlock(&papr_ndr_lock);
- 
--	/* Try retriving the stat buffer and see if its supported */
--	stat_size = drc_pmem_query_stats(p, NULL, 0);
--	if (stat_size > 0) {
--		p->stat_buffer_len = stat_size;
--		dev_dbg(&p->pdev->dev, "Max perf-stat size %lu-bytes\n",
--			p->stat_buffer_len);
--	} else {
--		dev_info(&p->pdev->dev, "Dimm performance stats unavailable\n");
--	}
--
- 	return 0;
- 
- err:	nvdimm_bus_unregister(p->bus);
-@@ -1097,6 +1101,7 @@ static int papr_scm_probe(struct platform_device *pdev)
- 	struct papr_scm_priv *p;
- 	u8 uuid_raw[UUID_SIZE];
- 	const char *uuid_str;
-+	ssize_t stat_size;
- 	uuid_t uuid;
- 	int rc;
- 
-@@ -1181,6 +1186,14 @@ static int papr_scm_probe(struct platform_device *pdev)
- 	p->res.name  = pdev->name;
- 	p->res.flags = IORESOURCE_MEM;
- 
-+	/* Try retrieving the stat buffer and see if its supported */
-+	stat_size = drc_pmem_query_stats(p, NULL, 0);
-+	if (stat_size > 0) {
-+		p->stat_buffer_len = stat_size;
-+		dev_dbg(&p->pdev->dev, "Max perf-stat size %lu-bytes\n",
-+			p->stat_buffer_len);
-+	}
-+
- 	rc = papr_scm_nvdimm_init(p);
- 	if (rc)
- 		goto err2;
++	if (is_kvm_guest()) {
+ 		/*
+ 		 * KVM emulates doorbells by disabling FSCR[MSGP] so msgsndp
+ 		 * faults to the hypervisor which then reads the instruction
 -- 
 2.30.2
 
