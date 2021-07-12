@@ -2,129 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E243C6584
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 23:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17EC43C658B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 23:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233852AbhGLVkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 17:40:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42316 "EHLO
+        id S234699AbhGLVoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 17:44:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbhGLVkG (ORCPT
+        with ESMTP id S229842AbhGLVoF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 17:40:06 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4508CC0613DD
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 14:37:17 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id y16so1450858iol.12
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 14:37:17 -0700 (PDT)
+        Mon, 12 Jul 2021 17:44:05 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 809ECC0613DD;
+        Mon, 12 Jul 2021 14:41:15 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id k16so24471629ios.10;
+        Mon, 12 Jul 2021 14:41:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1pWHLTVi/seYJklLFaD8uR16Mpsf9bybDbOoEox28Wk=;
-        b=betyJUHVcpTHSCBSeD07sN0K8C6tPSmZfCoDPfxQES5lDAfQVYaMfIA26BViacjgf2
-         5X0L1rehs/mU2fK8En0euAyLpE7ibLO34iDwprIyh72moTtkvExMovhrF5ZLsG1El0Hx
-         /fmZtmDd1tR5l9VwGr4CsUWbFoCLTz5D2Ijlc=
+        d=gmail.com; s=20161025;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=X5i1/kqUZXq4rUGHBXIKFx1uya/lDQJNsM/Vo4wuzkw=;
+        b=HfRbaSIcVNjnaBRSMLR/d+1QmuqnGPfdwa3m3aYVdrgFQ02ZhnmbuUGRnNLGljr+RM
+         cPXC6vqV2uscjiFEt2apAASHUTt/G7tcQy6HumzLEbGW5nLYRJnCMuFnl4r/zOs44t9I
+         lMM2HE80FCxKh2CoD7r/iRr/PFuZHVoo4e0xhkuQtRbc0KJfYC2HHWW9xHWu5PBu9zls
+         ABjTQ0bVupHhCpOJlHxy8wG6iTqG+q2WF160rWqT5F5iyfeTA7uN/2gdRNZFFx93WYK1
+         tncl29BwzCmoIVYLcTRBZfGGZP9M4YCY2tqYwOkYS/S54OXR6j326GDvwrjPJyAs1jJB
+         UCdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1pWHLTVi/seYJklLFaD8uR16Mpsf9bybDbOoEox28Wk=;
-        b=dngLsgHUiowCHoRV6VQP8jbSVdCD1s077jCL1rrJM25xQS0YHuoDGx0zbcnOEmn4Mu
-         NZiHv/5NQ1DTw2LnXsbTOS9wl+wXbT9RNSzSXoUsTc6Op7wxvRXS18o0h4htsjXAVMNd
-         a7JdzfO44qZ2qos4t2UTAY8QD58R7XSkFwDpxMJSYS2IRaDujbBBrdmw8gKvjORcearK
-         mGAn6DtOFJIYGfC7ByYiulqceGZHlu0NbuiH0BokB8TFuFeL7YvNSV4Q6mMtHwVjXcBT
-         UUHuugcAqHnj54LLqYPSo/InTdGlGhDhC04r9F6K9qOwyVXNzdn0uV3nZb04Yz2UiCv9
-         xxOg==
-X-Gm-Message-State: AOAM533oOgn9Kt0gu5q3gullUa45JI/AH6eq6xvB3V67xeR6wsFkmLKf
-        tZ3W1sFfn/qme2Vw4uQqmQeWs9ipEPhzSw==
-X-Google-Smtp-Source: ABdhPJwcx91dUE0KBGR34Zf8nz1GxPZ5BTvZAQVOHxnAsEy/Az3GfTzon0fEEDdQRMRLP9Pm7PmSug==
-X-Received: by 2002:a5d:9cd9:: with SMTP id w25mr714212iow.36.1626125836431;
-        Mon, 12 Jul 2021 14:37:16 -0700 (PDT)
-Received: from mail-io1-f42.google.com (mail-io1-f42.google.com. [209.85.166.42])
-        by smtp.gmail.com with ESMTPSA id i5sm9048870ilc.16.2021.07.12.14.37.15
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Jul 2021 14:37:15 -0700 (PDT)
-Received: by mail-io1-f42.google.com with SMTP id x10so5712936ion.9
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 14:37:15 -0700 (PDT)
-X-Received: by 2002:a02:2a07:: with SMTP id w7mr911188jaw.96.1626125835291;
- Mon, 12 Jul 2021 14:37:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210709105012.v2.1.I09866d90c6de14f21223a03e9e6a31f8a02ecbaf@changeid>
- <20210709152024.36f650dfec4c66ef3a60a845@linux-foundation.org>
- <CAE=gft48qBiq_cbdf2AZa_Ap1eB3BBvrLLD3m2cBwkYPy3b8Nw@mail.gmail.com> <20210709163328.16fcdd3601d1ba0b93baad65@linux-foundation.org>
-In-Reply-To: <20210709163328.16fcdd3601d1ba0b93baad65@linux-foundation.org>
-From:   Evan Green <evgreen@chromium.org>
-Date:   Mon, 12 Jul 2021 14:36:39 -0700
-X-Gmail-Original-Message-ID: <CAE=gft5qdEvi=xtQEUwvCH=M_82daY-TRsosMMQ0SHVRCsr2JQ@mail.gmail.com>
-Message-ID: <CAE=gft5qdEvi=xtQEUwvCH=M_82daY-TRsosMMQ0SHVRCsr2JQ@mail.gmail.com>
-Subject: Re: [PATCH v2] mm: Enable suspend-only swap spaces
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     David Hildenbrand <david@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Alex Shi <alexs@kernel.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=X5i1/kqUZXq4rUGHBXIKFx1uya/lDQJNsM/Vo4wuzkw=;
+        b=Zun/gaSRIdtqCF4AS5DfVa8Bx/oYdpzrTUti48NNauV6RmMFMBoZac/DHioPUpeRYK
+         kbudUuJurIb3d4SR42Ro8/QA1Xw/uOh2eSDbxuSV8OdCwpafqQ6WJ6d9MeuAMOh4VDPN
+         TrJVfMMBMsDL+Gc3OLugQcXdkUFKdO4FrX3d5YHm8uTb4+9685bm+N4LdrW/6Vz5aKtC
+         w4z03hwNn6oJkPfeNFm6HtGt7eSyC1+Kpz02maAtrWA+Xjido50uYsC+U50BshrBByve
+         UgVG4vZGgk6GlD5R1A1tmMlYuDqic4Wpmtqzk+wboEhSSfu1qfi14pQjvVbXSWSqCeCa
+         OzYA==
+X-Gm-Message-State: AOAM532+QJYmzFCesZI6Vn/vTYBNZ3BLawc1tzWgqZmdm7JZ0azcK51n
+        ea6gZ1v8VsovCThPqgNF0m8QompfwlttNbrKJFSAqA==
+X-Google-Smtp-Source: ABdhPJwRqbOKfXeF3nxsdXILTxHFJkqj6AOhP8Rfctll8lhv8z+9XRXQrWLSWw4bbINQqXw4RMII7w==
+X-Received: by 2002:a02:2b21:: with SMTP id h33mr878237jaa.31.1626126074471;
+        Mon, 12 Jul 2021 14:41:14 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id n10sm8818223ilk.37.2021.07.12.14.41.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jul 2021 14:41:13 -0700 (PDT)
+Message-ID: <60ecb6f9.1c69fb81.2bd00.0fce@mx.google.com>
+Date:   Mon, 12 Jul 2021 14:41:13 -0700 (PDT)
+X-Google-Original-Date: Mon, 12 Jul 2021 21:41:11 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210712184832.376480168@linuxfoundation.org>
+Subject: RE: [PATCH 5.10 000/598] 5.10.50-rc2 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 9, 2021 at 4:33 PM Andrew Morton <akpm@linux-foundation.org> wrote:
->
-> On Fri, 9 Jul 2021 16:23:18 -0700 Evan Green <evgreen@chromium.org> wrote:
->
-> > On Fri, Jul 9, 2021 at 3:20 PM Andrew Morton <akpm@linux-foundation.org> wrote:
-> > >
-> > > On Fri,  9 Jul 2021 10:50:48 -0700 Evan Green <evgreen@chromium.org> wrote:
-> > >
-> > > > Currently it's not possible to enable hibernation without also enabling
-> > > > generic swap for a given swap area. These two use cases are not the
-> > > > same. For example there may be users who want to enable hibernation,
-> > > > but whose drives don't have the write endurance for generic swap
-> > > > activities.
-> > > >
-> > > > Add a new SWAP_FLAG_NOSWAP that adds a swap region but refuses to allow
-> > > > generic swapping to it. This region can still be wired up for use in
-> > > > suspend-to-disk activities, but will never have regular pages swapped to
-> > > > it.
-> > > >
-> > > > Swap regions with SWAP_FLAG_NOSWAP set will not appear in /proc/meminfo
-> > > > under SwapTotal and SwapFree, since they are not usable as general swap.
-> > > >
-> > >
-> > > This patch doesn't appear to set SWAP_FLAG_NOSWAP anywhere.  Perhaps
-> > > there's another patch somewhere which changes the hibernation code?  If
-> > > so, can we please have both patches in a series?
-> >
-> > There's no other patch, in the kernel at least. SWAP_FLAG_* is exposed
-> > to usermode, which would set it when calling swapon(2). Once this
-> > patch is accepted, I'll have to add the option into util-linux [1], so
-> > that I can use it in my init scripts.
-> >
-> > Said a different way, this patch isn't about altering how hibernate
-> > behaves, but about giving usermode the freedom to set up hibernate and
-> > swap independently.
->
-> OK, can we please get this into the changelog?  And it would be helpful
-> to describe how this will be invoked via swapon(8).
+On Mon, 12 Jul 2021 20:49:35 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.10.50 release.
+> There are 598 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 14 Jul 2021 18:45:43 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.50-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Sure, I can augment the commit text to include some of this, and what
-it would likely look like from the commandline. I'll send a v3 for
-that.
+5.10.50-rc2 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
->
-> And I expect an update to the swapon syscall's manpage will be in order.
->
-
-Yes! I was originally planning to do that once this was accepted, but
-can also spin it up in parallel if requested.
--Evan
