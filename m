@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C703C4EF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD183C4EFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:43:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241170AbhGLHWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:22:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58276 "EHLO mail.kernel.org"
+        id S243479AbhGLHWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:22:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240644AbhGLG4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:56:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 476EB61283;
-        Mon, 12 Jul 2021 06:53:43 +0000 (UTC)
+        id S240593AbhGLG4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:56:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD1016124B;
+        Mon, 12 Jul 2021 06:53:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072823;
-        bh=lxWKkhWvx7weg2HTlJ+Tg5ExhWIeVZT0LJuJjQ5AMro=;
+        s=korg; t=1626072826;
+        bh=i/l8hnjPXjzTgBIgw422ut4SJGuTieAQh2X3SPAM6bg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZSS7kskohkHgaWb+0QGtlggRLEa/3jZY/XgrjJ5RMuMPM7D84sGShcewJERms80n+
-         /XWWqJm4/30p18ojZaDzUVevDD3qGuJOYM379GeBXwgXSmR7mgYUhwAvwqHv8whGea
-         NHTXKVKhqcquXwg4hodQfc1TwsVlITtjD+MrR9fo=
+        b=BjY7ItXGvkgTKCejhFvMz6CboUVWcX7DIbACITiEe5IUVw/f3MWP78jvoFN2K/F+1
+         gGHh4YoUlPWkefyMXVUom6N9kujDOG5uoevbjpI4oiCBQtaVavwmlxul95pG7n9GuJ
+         zYxKUavXhvAa4aF58K2GJSdjZYQG0OTAdtAdBYVo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Takashi Iwai <tiwai@suse.de>, Max Filippov <jcmvbkbc@gmail.com>
-Subject: [PATCH 5.12 008/700] ALSA: intel8x0: Fix breakage at ac97 clock measurement
-Date:   Mon, 12 Jul 2021 08:01:31 +0200
-Message-Id: <20210712060925.926727570@linuxfoundation.org>
+        stable@vger.kernel.org, Andy Chi <andy.chi@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.12 009/700] ALSA: hda/realtek: fix mute/micmute LEDs for HP ProBook 450 G8
+Date:   Mon, 12 Jul 2021 08:01:32 +0200
+Message-Id: <20210712060926.056996611@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
 References: <20210712060924.797321836@linuxfoundation.org>
@@ -40,39 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Andy Chi <andy.chi@canonical.com>
 
-commit 24d1e49415be546470b20429d748e240d0518b7e upstream.
+commit 2b70b264d34d398c77a5936e317336f00cf5badb upstream.
 
-The recent workaround for the wild interrupts in commit c1f0616124c4
-("ALSA: intel8x0: Don't update period unless prepared") leaded to a
-regression, causing the interrupt storm during ac97 clock measurement
-at the driver probe.  We need to handle the interrupt while the clock
-measurement as well as the proper PCM streams.
+The HP ProBook 450 G8 using ALC236 codec which using 0x02 to
+control mute LED and 0x01 to control micmute LED.
+Therefore, add a quirk to make it works.
 
-Fixes: c1f0616124c4 ("ALSA: intel8x0: Don't update period unless prepared")
-Reported-and-tested-by: Max Filippov <jcmvbkbc@gmail.com>
-Tested-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+Signed-off-by: Andy Chi <andy.chi@canonical.com>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/CAMo8BfKKMQkcsbOQaeEjq_FsJhdK=fn598dvh7YOcZshUSOH=g@mail.gmail.com
-Link: https://lore.kernel.org/r/20210708090738.1569-1-tiwai@suse.de
+Link: https://lore.kernel.org/r/20210701091417.9696-1-andy.chi@canonical.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/intel8x0.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/sound/pci/intel8x0.c
-+++ b/sound/pci/intel8x0.c
-@@ -692,7 +692,7 @@ static inline void snd_intel8x0_update(s
- 	int status, civ, i, step;
- 	int ack = 0;
- 
--	if (!ichdev->prepared || ichdev->suspended)
-+	if (!(ichdev->prepared || chip->in_measurement) || ichdev->suspended)
- 		return;
- 
- 	spin_lock_irqsave(&chip->reg_lock, flags);
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8322,6 +8322,7 @@ static const struct snd_pci_quirk alc269
+ 		      ALC285_FIXUP_HP_GPIO_AMP_INIT),
+ 	SND_PCI_QUIRK(0x103c, 0x87c8, "HP", ALC287_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87e5, "HP ProBook 440 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
++	SND_PCI_QUIRK(0x103c, 0x87e7, "HP ProBook 450 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87f2, "HP ProBook 640 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87f4, "HP", ALC287_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87f5, "HP", ALC287_FIXUP_HP_GPIO_LED),
 
 
