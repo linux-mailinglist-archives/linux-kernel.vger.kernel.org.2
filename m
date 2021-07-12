@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7023C5969
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12BA43C5964
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383617AbhGLJDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:03:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56556 "EHLO mail.kernel.org"
+        id S1383321AbhGLJCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:02:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353561AbhGLICf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:02:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D89161CAF;
-        Mon, 12 Jul 2021 07:55:42 +0000 (UTC)
+        id S1353584AbhGLICg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:02:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 81AFC61CDC;
+        Mon, 12 Jul 2021 07:55:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076543;
-        bh=jYoq0x8B3QNzxakajfTCm9/bKO7RGGHi6zhJQH4HHUQ=;
+        s=korg; t=1626076550;
+        bh=YlYi8QaqvNICf8ZtZdRgwZCDmLC4RAYVU4qEmwgUXY0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZlOsybgfjrBqUFbIh9Q52aRj17Ki2qV/CdChjpRyOZ8Yu7VPIEJNFtHX9QIXU8cf3
-         kIolzVBNSr7cfFOra7vHmc592Bt84ZkMSUpI8Nzjl+LFdQsXCeNWakC4UCRUzaU1Ju
-         HKd/oJvU4pNro5V8CqAJ3/B7E0mAnCOpDrRoedz0=
+        b=suUInhcgE0yM7byioRcK6W0qZF6f514qKfIEogJFPf8kk0LmEQ9iZUyfYjEK2cdyj
+         ZFxSHV03Donbje9RBxE0q3M9cSM1knf3CHGBVzOmZx3a0vsQUM0XvL6u6TdFaY5rhE
+         WqrCHV52qLlODIJaGil2qc5e7SYDzhcNfv/6L+Yk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -29,9 +29,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Bard Liao <bard.liao@intel.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 687/800] ASoC: rt5682-sdw: use first_hw_init flag on resume
-Date:   Mon, 12 Jul 2021 08:11:50 +0200
-Message-Id: <20210712061039.916609800@linuxfoundation.org>
+Subject: [PATCH 5.13 690/800] ASoC: rt711-sdw: use first_hw_init flag on resume
+Date:   Mon, 12 Jul 2021 08:11:53 +0200
+Message-Id: <20210712061040.221559132@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -45,7 +45,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit 5361a42114689f875a9748299cadb4b1adbee6f4 ]
+[ Upstream commit a0897ebca669f09a2e02206a9c48a738af655329 ]
 
 The intent of the status check on resume was to verify if a SoundWire
 peripheral reported ATTACHED before waiting for the initialization to
@@ -59,27 +59,27 @@ settings were not properly restored.
 
 BugLink: https://github.com/thesofproject/linux/issues/2908
 BugLink: https://github.com/thesofproject/linux/issues/2637
-Fixes: 03f6fc6de9192 ('ASoC: rt5682: Add the soundwire support')
+Fixes: 320b8b0d13b81 ('ASoC: rt711: add rt711 codec driver')
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Reviewed-by: Bard Liao <bard.liao@intel.com>
-Link: https://lore.kernel.org/r/20210607222239.582139-6-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20210607222239.582139-9-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5682-sdw.c | 2 +-
+ sound/soc/codecs/rt711-sdw.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5682-sdw.c b/sound/soc/codecs/rt5682-sdw.c
-index e78ba3b064c4..8e4bb9dd194e 100644
---- a/sound/soc/codecs/rt5682-sdw.c
-+++ b/sound/soc/codecs/rt5682-sdw.c
-@@ -743,7 +743,7 @@ static int __maybe_unused rt5682_dev_resume(struct device *dev)
- 	struct rt5682_priv *rt5682 = dev_get_drvdata(dev);
+diff --git a/sound/soc/codecs/rt711-sdw.c b/sound/soc/codecs/rt711-sdw.c
+index 8f5ebe92d407..15299084429f 100644
+--- a/sound/soc/codecs/rt711-sdw.c
++++ b/sound/soc/codecs/rt711-sdw.c
+@@ -501,7 +501,7 @@ static int __maybe_unused rt711_dev_resume(struct device *dev)
+ 	struct rt711_priv *rt711 = dev_get_drvdata(dev);
  	unsigned long time;
  
--	if (!rt5682->hw_init)
-+	if (!rt5682->first_hw_init)
+-	if (!rt711->hw_init)
++	if (!rt711->first_hw_init)
  		return 0;
  
  	if (!slave->unattach_request)
