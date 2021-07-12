@@ -2,213 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E48063C4161
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 05:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ACB43C4172
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 05:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232507AbhGLDKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 23:10:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41109 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230022AbhGLDKo (ORCPT
+        id S232912AbhGLDN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 23:13:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232850AbhGLDN4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 23:10:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626059275;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DigXiH/LTULD0RvNd551qqlSUUAL5xHAN7DKU/yDOVs=;
-        b=QPXxG3OyZXCbZI8aUNQ0sU+1eQG2yB8FZ4MnKwvOpkJLmCfQcjiE4lTiiN4cqYlF3AoA85
-        m8D8HIo0PU2TYYQ9S/5WERlc20BQrjE4aEQ2VdS3pMv/Cl8KX0Xq5aiHl9HO6889psQkdP
-        sETKkWZkh9kpEfjH9tvk15k28msHAJM=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-512-NKfHzTfxNDyTSDekY_3r5A-1; Sun, 11 Jul 2021 23:07:54 -0400
-X-MC-Unique: NKfHzTfxNDyTSDekY_3r5A-1
-Received: by mail-pg1-f197.google.com with SMTP id y1-20020a655b410000b02902235977d00cso13637708pgr.21
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 20:07:54 -0700 (PDT)
+        Sun, 11 Jul 2021 23:13:56 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE9ADC0613DD
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 20:11:08 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id w15-20020a056830144fb02904af2a0d96f3so17400207otp.6
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Jul 2021 20:11:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version;
+        bh=rW1zjeWytPoYSJ40qDYC+bDE3SJVtauEVGMHk7JHx7Q=;
+        b=GH0fIXaJ7JlQrOMD+qRd9KSrlldoEV5wJtHO4+/GN8S3BuOhe7U3Oc2f3bHz2zosHM
+         AVdKqfHClq46SSHc3Z1Z5idqU9esgfztT2zaStLGasb6mEv+6L/Goj9r82q0Pw6HK7kd
+         Se4iKBuKW2o1q2SykjSbEmd5fAEFq8ck2SQEKtCvDPnvE3XbptnStu+RiiCm7/XRIRPx
+         D53CwCcGodj+HuYcgdyg53Ybe0nfKtd6M0nVBLdhVl/ZSSMp73RzdDrXR+lsG4QbgTui
+         joRLDloxQFjri0XsXgc6YXM1kmdSjdyVXmvytyiUhV0WWUZ9GbB3G9nB5B01RW1zZlW0
+         BMog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=DigXiH/LTULD0RvNd551qqlSUUAL5xHAN7DKU/yDOVs=;
-        b=Z7uajVHZWgGX7nv1OqBr5gXuNvklCLG2selAl+nQ9+cpIjR4FvyZNT7UsVwZ0ltMpS
-         BoscUO9yUEsq4zzTNwFJqIQrifk0Vpn4ZXXXnw3dc+GiJI0mKfAOtLgDwYUh3bOjQRgL
-         H682GKYKmLoUbd/tyWXfk4MMgmwQiSASZj0vnUH6eErNutz/QFjnWoNK/lO9wW+/YIX/
-         Q0tgrhla/1IvyfY4GlItd8E76bP41tnBeWY8//22bN5QDo/Skx0yU/kNWg3ZVbN4/sGa
-         p9VmZVbmnuB5nhh1JBYUMFP3PeySuo2OVCJf3bfEUGbwv7nkcQJ3sQhnj21jzTf/C2Dv
-         kEgg==
-X-Gm-Message-State: AOAM533r1XCOFcjJJ2ftwB80MmdIdWGYsowJzGbJscEdW1R6ynREoWpi
-        Cshx9oSwYBQLLpvvbjQ31Bj/zuECgFWIoz0wvSY0CcE9qOoRDH9iRqaoo2Wp04I23kcz+IMc8Ww
-        jd+X5FDZEkG/dZKwTi342y5O5
-X-Received: by 2002:a17:902:7489:b029:129:c0d3:96ca with SMTP id h9-20020a1709027489b0290129c0d396camr23766930pll.46.1626059273335;
-        Sun, 11 Jul 2021 20:07:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxESf9PbVdwF/2IJoYJMIgdbQYf4I6nxhfXcDxjtsXifXfkOeknetHp4Hd3RPbbf5QVI0UF5A==
-X-Received: by 2002:a17:902:7489:b029:129:c0d3:96ca with SMTP id h9-20020a1709027489b0290129c0d396camr23766914pll.46.1626059273074;
-        Sun, 11 Jul 2021 20:07:53 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id j15sm11693382pjl.15.2021.07.11.20.07.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Jul 2021 20:07:52 -0700 (PDT)
-Subject: Re: [RFC PATCH V2 0/7] Do not read from descripto ring
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, xieyongji@bytedance.com,
-        stefanha@redhat.com, file@sect.tu-berlin.de, ashish.kalra@amd.com,
-        konrad.wilk@oracle.com, kvm@vger.kernel.org
-References: <20210423080942.2997-1-jasowang@redhat.com>
- <0e9d70b7-6c8a-4ff5-1fa9-3c4f04885bb8@redhat.com>
- <20210506041057-mutt-send-email-mst@kernel.org>
- <20210506123829.GA403858@infradead.org>
- <20210514063516-mutt-send-email-mst@kernel.org>
- <8bf22db2-97d4-9f88-8b6b-d685fd63ac8b@redhat.com>
- <20210711120627-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <e2b4c614-746f-e81b-bb0b-d84f0efd381f@redhat.com>
-Date:   Mon, 12 Jul 2021 11:07:44 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version;
+        bh=rW1zjeWytPoYSJ40qDYC+bDE3SJVtauEVGMHk7JHx7Q=;
+        b=RQ7TT56DHkI0fY1JibyOhykJp0twzzxQpsPLfVVBKh+PQjb+LY3fMdUS26Tpak29ZA
+         caIHBmaQvv3lPXuX34OEzBRLEPBKqmjHNlU6S54rcnWpROtfdnGLqMwnCAowmZ13M6ZT
+         J//RdIaFYgJVXrLMzWOdvTBVahefN+sTEgsB8qX4RwFtTCFGlpNYiqUf/jRHQC6E5ExQ
+         O70Qx0GiL27KuQZMlwFYAP8wolxzJG21gzjXhhlDXBkikqtfLvLr+PN2TeXEoHQmVovf
+         DmqrlHiFl4UEWgZtHeAeHzXf9Sc5GQwzLN5hAU9KIEWwD6W85gXNnNWnCDq8eR+z/uqv
+         EI4A==
+X-Gm-Message-State: AOAM532G7mko5vnJqGv2rVsvMXxo/d4vljLzE+uREfbRp9p087Yvn+ha
+        G9klyhJwQit+5deWL7wCh6+PKQ==
+X-Google-Smtp-Source: ABdhPJy3F/F7jKHrUzEaWcTrPNBN3wOK2PB4rBXEhvJ/i83LVYBAtnoCSY3M+BB9TTAeYMQJjnDhXQ==
+X-Received: by 2002:a05:6830:2316:: with SMTP id u22mr35286026ote.90.1626059467933;
+        Sun, 11 Jul 2021 20:11:07 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id y26sm785217oot.7.2021.07.11.20.11.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Jul 2021 20:11:07 -0700 (PDT)
+Date:   Sun, 11 Jul 2021 20:10:49 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alistair Popple <apopple@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>, Yang Shi <shy828301@gmail.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Hugh Dickins <hughd@google.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH 5.14-rc1] mm/rmap: fix munlocking Anon THP with mlocked
+ ptes
+Message-ID: <5a98cd9-6965-6379-37a-33448ba62a31@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210711120627-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Many thanks to Kirill for reminding that PageDoubleMap cannot be relied on
+to warn of pte mappings in the Anon THP case; and a scan of subpages does
+not seem appropriate here.  Note how follow_trans_huge_pmd() does not even
+mark an Anon THP as mlocked when compound_mapcount != 1: multiple mlocking
+of Anon THP is avoided, so simply return from page_mlock() in this case.
 
-在 2021/7/12 上午12:08, Michael S. Tsirkin 写道:
-> On Fri, Jun 04, 2021 at 01:38:01PM +0800, Jason Wang wrote:
->> 在 2021/5/14 下午7:13, Michael S. Tsirkin 写道:
->>> On Thu, May 06, 2021 at 01:38:29PM +0100, Christoph Hellwig wrote:
->>>> On Thu, May 06, 2021 at 04:12:17AM -0400, Michael S. Tsirkin wrote:
->>>>> Let's try for just a bit, won't make this window anyway:
->>>>>
->>>>> I have an old idea. Add a way to find out that unmap is a nop
->>>>> (or more exactly does not use the address/length).
->>>>> Then in that case even with DMA API we do not need
->>>>> the extra data. Hmm?
->>>> So we actually do have a check for that from the early days of the DMA
->>>> API, but it only works at compile time: CONFIG_NEED_DMA_MAP_STATE.
->>>>
->>>> But given how rare configs without an iommu or swiotlb are these days
->>>> it has stopped to be very useful.  Unfortunately a runtime-version is
->>>> not entirely trivial, but maybe if we allow for false positives we
->>>> could do something like this
->>>>
->>>> bool dma_direct_need_state(struct device *dev)
->>>> {
->>>> 	/* some areas could not be covered by any map at all */
->>>> 	if (dev->dma_range_map)
->>>> 		return false;
->>>> 	if (force_dma_unencrypted(dev))
->>>> 		return false;
->>>> 	if (dma_direct_need_sync(dev))
->>>> 		return false;
->>>> 	return *dev->dma_mask == DMA_BIT_MASK(64);
->>>> }
->>>>
->>>> bool dma_need_state(struct device *dev)
->>>> {
->>>> 	const struct dma_map_ops *ops = get_dma_ops(dev);
->>>>
->>>> 	if (dma_map_direct(dev, ops))
->>>> 		return dma_direct_need_state(dev);
->>>> 	return ops->unmap_page ||
->>>> 		ops->sync_single_for_cpu || ops->sync_single_for_device;
->>>> }
->>> Yea that sounds like a good idea. We will need to document that.
->>>
->>>
->>> Something like:
->>>
->>> /*
->>>    * dma_need_state - report whether unmap calls use the address and length
->>>    * @dev: device to guery
->>>    *
->>>    * This is a runtime version of CONFIG_NEED_DMA_MAP_STATE.
->>>    *
->>>    * Return the value indicating whether dma_unmap_* and dma_sync_* calls for the device
->>>    * use the DMA state parameters passed to them.
->>>    * The DMA state parameters are: scatter/gather list/table, address and
->>>    * length.
->>>    *
->>>    * If dma_need_state returns false then DMA state parameters are
->>>    * ignored by all dma_unmap_* and dma_sync_* calls, so it is safe to pass 0 for
->>>    * address and length, and DMA_UNMAP_SG_TABLE_INVALID and
->>>    * DMA_UNMAP_SG_LIST_INVALID for s/g table and length respectively.
->>>    * If dma_need_state returns true then DMA state might
->>>    * be used and so the actual values are required.
->>>    */
->>>
->>> And we will need DMA_UNMAP_SG_TABLE_INVALID and
->>> DMA_UNMAP_SG_LIST_INVALID as pointers to an empty global table and list
->>> for calls such as dma_unmap_sgtable that dereference pointers before checking
->>> they are used.
->>>
->>>
->>> Does this look good?
->>>
->>> The table/length variants are for consistency, virtio specifically does
->>> not use s/g at the moment, but it seems nicer than leaving
->>> users wonder what to do about these.
->>>
->>> Thoughts? Jason want to try implementing?
->>
->> I can add it in my todo list other if other people are interested in this,
->> please let us know.
->>
->> But this is just about saving the efforts of unmap and it doesn't eliminate
->> the necessary of using private memory (addr, length) for the metadata for
->> validating the device inputs.
->
-> Besides unmap, why do we need to validate address?
+Link: https://lore.kernel.org/lkml/cfa154c-d595-406-eb7d-eb9df730f944@google.com/
+Fixes: d9770fcc1c0c ("mm/rmap: fix old bug: munlocking THP missed other mlocks")
+Reported-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Ralph Campbell <rcampbell@nvidia.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Yang Shi <shy828301@gmail.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+---
+Linus, thanks a lot for last-minute hoovering up those four mm/rmap
+patches, with 3/4 fixing the syzbot and 0day reports on munlocking ...
 
+BUT
 
-Sorry, it's not validating actually, the driver doesn't do any 
-validation. As the subject, the driver will just use the metadata stored 
-in the desc_state instead of the one stored in the descriptor ring.
+... the version of 2/4 in 5.14-rc1 is defective (PageDoubleMap is a
+confusing flag which behaves differently on anon and file), Kirill had
+spotted that, and what he Acked was the v2 which went into mmotm, rather
+than the first version I posted.  This patch here converts the v1 in rc1
+into the v2 Acked by Kirill.
 
+What will go wrong with v1 in?  I don't actually know: nothing terrible,
+can only affect people splitting and mlocking anon THPs, maybe nobody and
+nobot will notice, maybe some VM_BUG_ONs or "Bad page"s will turn up.
+I'll be on the lookout to point reporters to this fix (more lines than
+strictly necessary, because it removes a level of indentation).
 
->   length can be
-> typically validated by specific drivers - not all of them even use it ..
->
->> And just to clarify, the slight regression we see is testing without
->> VIRTIO_F_ACCESS_PLATFORM which means DMA API is not used.
-> I guess this is due to extra cache pressure?
+And sorry for putting 2/4 before the more urgent 3/4, but I couldn't
+tell what to do in 3/4, without first fixing the older bug in 2/4.
 
+Hugh
 
-Yes.
+ mm/rmap.c |   39 ++++++++++++++++++++++-----------------
+ 1 file changed, 22 insertions(+), 17 deletions(-)
 
-
-> Maybe create yet another
-> array just for DMA state ...
-
-
-I'm not sure I get this, we use this basically:
-
-struct vring_desc_extra {
-         dma_addr_t addr;                /* Buffer DMA addr. */
-         u32 len;                        /* Buffer length. */
-         u16 flags;                      /* Descriptor flags. */
-         u16 next;                       /* The next desc state in a 
-list. */
-};
-
-Except for the "next" the rest are all DMA state.
-
-Thanks
-
-
->
->> So I will go to post a formal version of this series and we can start from
->> there.
->>
->> Thanks
->>
->>
-
+--- 5.14-rc1/mm/rmap.c
++++ linux/mm/rmap.c
+@@ -1440,21 +1440,20 @@ static bool try_to_unmap_one(struct page *page, struct vm_area_struct *vma,
+ 		/*
+ 		 * If the page is mlock()d, we cannot swap it out.
+ 		 */
+-		if (!(flags & TTU_IGNORE_MLOCK)) {
+-			if (vma->vm_flags & VM_LOCKED) {
+-				/* PTE-mapped THP are never marked as mlocked */
+-				if (!PageTransCompound(page) ||
+-				    (PageHead(page) && !PageDoubleMap(page))) {
+-					/*
+-					 * Holding pte lock, we do *not* need
+-					 * mmap_lock here
+-					 */
+-					mlock_vma_page(page);
+-				}
+-				ret = false;
+-				page_vma_mapped_walk_done(&pvmw);
+-				break;
+-			}
++		if (!(flags & TTU_IGNORE_MLOCK) &&
++		    (vma->vm_flags & VM_LOCKED)) {
++			/*
++			 * PTE-mapped THP are never marked as mlocked: so do
++			 * not set it on a DoubleMap THP, nor on an Anon THP
++			 * (which may still be PTE-mapped after DoubleMap was
++			 * cleared).  But stop unmapping even in those cases.
++			 */
++			if (!PageTransCompound(page) || (PageHead(page) &&
++			     !PageDoubleMap(page) && !PageAnon(page)))
++				mlock_vma_page(page);
++			page_vma_mapped_walk_done(&pvmw);
++			ret = false;
++			break;
+ 		}
+ 
+ 		/* Unexpected PMD-mapped THP? */
+@@ -1986,8 +1985,10 @@ static bool page_mlock_one(struct page *page, struct vm_area_struct *vma,
+ 		 */
+ 		if (vma->vm_flags & VM_LOCKED) {
+ 			/*
+-			 * PTE-mapped THP are never marked as mlocked, but
+-			 * this function is never called when PageDoubleMap().
++			 * PTE-mapped THP are never marked as mlocked; but
++			 * this function is never called on a DoubleMap THP,
++			 * nor on an Anon THP (which may still be PTE-mapped
++			 * after DoubleMap was cleared).
+ 			 */
+ 			mlock_vma_page(page);
+ 			/*
+@@ -2022,6 +2023,10 @@ void page_mlock(struct page *page)
+ 	VM_BUG_ON_PAGE(!PageLocked(page) || PageLRU(page), page);
+ 	VM_BUG_ON_PAGE(PageCompound(page) && PageDoubleMap(page), page);
+ 
++	/* Anon THP are only marked as mlocked when singly mapped */
++	if (PageTransCompound(page) && PageAnon(page))
++		return;
++
+ 	rmap_walk(page, &rwc);
+ }
+ 
