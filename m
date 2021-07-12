@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A20A03C4A2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC23B3C518A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238063AbhGLGtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:49:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34598 "EHLO mail.kernel.org"
+        id S1349393AbhGLHl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:41:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237223AbhGLGjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:39:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E0D461184;
-        Mon, 12 Jul 2021 06:34:51 +0000 (UTC)
+        id S242589AbhGLHIv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:08:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B4DB61159;
+        Mon, 12 Jul 2021 07:04:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071691;
-        bh=+GLCrOlqm+ecTRN01ebH+RNaYpzSgm+wgO5kZtnb/hY=;
+        s=korg; t=1626073483;
+        bh=eK9HQy0g5omNXrc+8kXgcax56YIb/RHqKqbcPH67zuo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cFtSpdcLnethd2WRByppd+XKZGyCb1uTm52lnmjcZJMLiklz4TrzsWEjylqHVqQn+
-         H+NnEaNIyV0GlASn0nykHHnUWM533bCSHhYSKHBlLDKwZ7sxuqGRLCxSsTsJoJFX7T
-         5v9Xi6a4N2A815dpyJccrC5ieTVkXHuYdFqqA5gE=
+        b=iy3cYkmC3NWVkNa6hoIFFe0hS3vYsAt1CZ1Dkixk+QsdVg7KNnJZpOD6XN/hoPI6M
+         h3PS/MjMTI/YaruaSoO8z0HIpUYZ8ZUs7zLWRY/bf+LJsXI3P4Yi194fT0fJH3mqBc
+         3w7Ca0cODQC2xA+10JCBuRlBBjFrIxZQjX9IAKVE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Garry <john.garry@huawei.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 178/593] blk-mq: grab rq->refcount before calling ->fn in blk_mq_tagset_busy_iter
+Subject: [PATCH 5.12 255/700] crypto: ixp4xx - update IV after requests
 Date:   Mon, 12 Jul 2021 08:05:38 +0200
-Message-Id: <20210712060902.600525746@linuxfoundation.org>
+Message-Id: <20210712061003.102629429@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,177 +40,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ming Lei <ming.lei@redhat.com>
+From: Corentin Labbe <clabbe@baylibre.com>
 
-[ Upstream commit 2e315dc07df009c3e29d6926871f62a30cfae394 ]
+[ Upstream commit e8acf011f2e7e21a7e2fae47cbaa06598e533d40 ]
 
-Grab rq->refcount before calling ->fn in blk_mq_tagset_busy_iter(), and
-this way will prevent the request from being re-used when ->fn is
-running. The approach is same as what we do during handling timeout.
+Crypto selftests fail on ixp4xx since it do not update IV after skcipher
+requests.
 
-Fix request use-after-free(UAF) related with completion race or queue
-releasing:
-
-- If one rq is referred before rq->q is frozen, then queue won't be
-frozen before the request is released during iteration.
-
-- If one rq is referred after rq->q is frozen, refcount_inc_not_zero()
-will return false, and we won't iterate over this request.
-
-However, still one request UAF not covered: refcount_inc_not_zero() may
-read one freed request, and it will be handled in next patch.
-
-Tested-by: John Garry <john.garry@huawei.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Link: https://lore.kernel.org/r/20210511152236.763464-3-ming.lei@redhat.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: 81bef0150074 ("crypto: ixp4xx - Hardware crypto support for IXP4xx CPUs")
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-mq-tag.c | 44 +++++++++++++++++++++++++++++++++-----------
- block/blk-mq.c     | 14 +++++++++-----
- block/blk-mq.h     |  1 +
- 3 files changed, 43 insertions(+), 16 deletions(-)
+ drivers/crypto/ixp4xx_crypto.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
-index 9c92053e704d..6772c3728865 100644
---- a/block/blk-mq-tag.c
-+++ b/block/blk-mq-tag.c
-@@ -199,6 +199,16 @@ struct bt_iter_data {
- 	bool reserved;
+diff --git a/drivers/crypto/ixp4xx_crypto.c b/drivers/crypto/ixp4xx_crypto.c
+index 9e330e93e340..7567456a21a0 100644
+--- a/drivers/crypto/ixp4xx_crypto.c
++++ b/drivers/crypto/ixp4xx_crypto.c
+@@ -149,6 +149,8 @@ struct crypt_ctl {
+ struct ablk_ctx {
+ 	struct buffer_desc *src;
+ 	struct buffer_desc *dst;
++	u8 iv[MAX_IVLEN];
++	bool encrypt;
  };
  
-+static struct request *blk_mq_find_and_get_req(struct blk_mq_tags *tags,
-+		unsigned int bitnr)
-+{
-+	struct request *rq = tags->rqs[bitnr];
+ struct aead_ctx {
+@@ -381,6 +383,20 @@ static void one_packet(dma_addr_t phys)
+ 	case CTL_FLAG_PERFORM_ABLK: {
+ 		struct skcipher_request *req = crypt->data.ablk_req;
+ 		struct ablk_ctx *req_ctx = skcipher_request_ctx(req);
++		struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
++		unsigned int ivsize = crypto_skcipher_ivsize(tfm);
++		unsigned int offset;
 +
-+	if (!rq || !refcount_inc_not_zero(&rq->ref))
-+		return NULL;
-+	return rq;
-+}
-+
- static bool bt_iter(struct sbitmap *bitmap, unsigned int bitnr, void *data)
- {
- 	struct bt_iter_data *iter_data = data;
-@@ -206,18 +216,22 @@ static bool bt_iter(struct sbitmap *bitmap, unsigned int bitnr, void *data)
- 	struct blk_mq_tags *tags = hctx->tags;
- 	bool reserved = iter_data->reserved;
- 	struct request *rq;
-+	bool ret = true;
++		if (ivsize > 0) {
++			offset = req->cryptlen - ivsize;
++			if (req_ctx->encrypt) {
++				scatterwalk_map_and_copy(req->iv, req->dst,
++							 offset, ivsize, 0);
++			} else {
++				memcpy(req->iv, req_ctx->iv, ivsize);
++				memzero_explicit(req_ctx->iv, ivsize);
++			}
++		}
  
- 	if (!reserved)
- 		bitnr += tags->nr_reserved_tags;
--	rq = tags->rqs[bitnr];
--
- 	/*
- 	 * We can hit rq == NULL here, because the tagging functions
- 	 * test and set the bit before assigning ->rqs[].
- 	 */
--	if (rq && rq->q == hctx->queue && rq->mq_hctx == hctx)
--		return iter_data->fn(hctx, rq, iter_data->data, reserved);
--	return true;
-+	rq = blk_mq_find_and_get_req(tags, bitnr);
-+	if (!rq)
-+		return true;
-+
-+	if (rq->q == hctx->queue && rq->mq_hctx == hctx)
-+		ret = iter_data->fn(hctx, rq, iter_data->data, reserved);
-+	blk_mq_put_rq_ref(rq);
-+	return ret;
- }
+ 		if (req_ctx->dst) {
+ 			free_buf_chain(dev, req_ctx->dst, crypt->dst_buf);
+@@ -876,6 +892,7 @@ static int ablk_perform(struct skcipher_request *req, int encrypt)
+ 	struct ablk_ctx *req_ctx = skcipher_request_ctx(req);
+ 	struct buffer_desc src_hook;
+ 	struct device *dev = &pdev->dev;
++	unsigned int offset;
+ 	gfp_t flags = req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP ?
+ 				GFP_KERNEL : GFP_ATOMIC;
  
- /**
-@@ -264,6 +278,8 @@ static bool bt_tags_iter(struct sbitmap *bitmap, unsigned int bitnr, void *data)
- 	struct blk_mq_tags *tags = iter_data->tags;
- 	bool reserved = iter_data->flags & BT_TAG_ITER_RESERVED;
- 	struct request *rq;
-+	bool ret = true;
-+	bool iter_static_rqs = !!(iter_data->flags & BT_TAG_ITER_STATIC_RQS);
+@@ -885,6 +902,7 @@ static int ablk_perform(struct skcipher_request *req, int encrypt)
+ 		return -EAGAIN;
  
- 	if (!reserved)
- 		bitnr += tags->nr_reserved_tags;
-@@ -272,16 +288,19 @@ static bool bt_tags_iter(struct sbitmap *bitmap, unsigned int bitnr, void *data)
- 	 * We can hit rq == NULL here, because the tagging functions
- 	 * test and set the bit before assigning ->rqs[].
- 	 */
--	if (iter_data->flags & BT_TAG_ITER_STATIC_RQS)
-+	if (iter_static_rqs)
- 		rq = tags->static_rqs[bitnr];
- 	else
--		rq = tags->rqs[bitnr];
-+		rq = blk_mq_find_and_get_req(tags, bitnr);
- 	if (!rq)
- 		return true;
--	if ((iter_data->flags & BT_TAG_ITER_STARTED) &&
--	    !blk_mq_request_started(rq))
--		return true;
--	return iter_data->fn(rq, iter_data->data, reserved);
-+
-+	if (!(iter_data->flags & BT_TAG_ITER_STARTED) ||
-+	    blk_mq_request_started(rq))
-+		ret = iter_data->fn(rq, iter_data->data, reserved);
-+	if (!iter_static_rqs)
-+		blk_mq_put_rq_ref(rq);
-+	return ret;
- }
+ 	dir = encrypt ? &ctx->encrypt : &ctx->decrypt;
++	req_ctx->encrypt = encrypt;
  
- /**
-@@ -348,6 +367,9 @@ void blk_mq_all_tag_iter(struct blk_mq_tags *tags, busy_tag_iter_fn *fn,
-  *		indicates whether or not @rq is a reserved request. Return
-  *		true to continue iterating tags, false to stop.
-  * @priv:	Will be passed as second argument to @fn.
-+ *
-+ * We grab one request reference before calling @fn and release it after
-+ * @fn returns.
-  */
- void blk_mq_tagset_busy_iter(struct blk_mq_tag_set *tagset,
- 		busy_tag_iter_fn *fn, void *priv)
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 4bf9449b4586..50d3527a5d97 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -927,6 +927,14 @@ static bool blk_mq_req_expired(struct request *rq, unsigned long *next)
- 	return false;
- }
+ 	crypt = get_crypt_desc();
+ 	if (!crypt)
+@@ -900,6 +918,10 @@ static int ablk_perform(struct skcipher_request *req, int encrypt)
  
-+void blk_mq_put_rq_ref(struct request *rq)
-+{
-+	if (is_flush_rq(rq, rq->mq_hctx))
-+		rq->end_io(rq, 0);
-+	else if (refcount_dec_and_test(&rq->ref))
-+		__blk_mq_free_request(rq);
-+}
-+
- static bool blk_mq_check_expired(struct blk_mq_hw_ctx *hctx,
- 		struct request *rq, void *priv, bool reserved)
- {
-@@ -960,11 +968,7 @@ static bool blk_mq_check_expired(struct blk_mq_hw_ctx *hctx,
- 	if (blk_mq_req_expired(rq, next))
- 		blk_mq_rq_timed_out(rq, reserved);
- 
--	if (is_flush_rq(rq, hctx))
--		rq->end_io(rq, 0);
--	else if (refcount_dec_and_test(&rq->ref))
--		__blk_mq_free_request(rq);
--
-+	blk_mq_put_rq_ref(rq);
- 	return true;
- }
- 
-diff --git a/block/blk-mq.h b/block/blk-mq.h
-index d2359f7cfd5f..f792a0920ebb 100644
---- a/block/blk-mq.h
-+++ b/block/blk-mq.h
-@@ -47,6 +47,7 @@ void blk_mq_add_to_requeue_list(struct request *rq, bool at_head,
- void blk_mq_flush_busy_ctxs(struct blk_mq_hw_ctx *hctx, struct list_head *list);
- struct request *blk_mq_dequeue_from_ctx(struct blk_mq_hw_ctx *hctx,
- 					struct blk_mq_ctx *start);
-+void blk_mq_put_rq_ref(struct request *rq);
- 
- /*
-  * Internal helpers for allocating/freeing the request map
+ 	BUG_ON(ivsize && !req->iv);
+ 	memcpy(crypt->iv, req->iv, ivsize);
++	if (ivsize > 0 && !encrypt) {
++		offset = req->cryptlen - ivsize;
++		scatterwalk_map_and_copy(req_ctx->iv, req->src, offset, ivsize, 0);
++	}
+ 	if (req->src != req->dst) {
+ 		struct buffer_desc dst_hook;
+ 		crypt->mode |= NPE_OP_NOT_IN_PLACE;
 -- 
 2.30.2
 
