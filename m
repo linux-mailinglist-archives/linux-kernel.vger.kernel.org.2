@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E91D3C5150
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9583C3C5777
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346732AbhGLHjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:39:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42642 "EHLO mail.kernel.org"
+        id S1359041AbhGLIeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:34:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243803AbhGLHKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:10:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AF9F61289;
-        Mon, 12 Jul 2021 07:05:14 +0000 (UTC)
+        id S1346503AbhGLHqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:46:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 361ED613FA;
+        Mon, 12 Jul 2021 07:41:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073514;
-        bh=8Y+8ynbx2OCSKfxB71y/b0xJs0zIgHjnEj/SFWeN/FU=;
+        s=korg; t=1626075712;
+        bh=kRiago927HFg+ZHkm+g4t8aU2H8KxprrSkJHgBpdzM4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EioYxrbll2q4rTDIkq8bxHxz6RJGzdRKwYESJ0E3qX+n2Yw2pZs7OEmc3igOPO9FY
-         jTqhZZqZjdH10f5sT4TM6wdMBcYG+m2hfQlnHnhGY/mGyVgqduziYp/Rg+HVnh1Gf9
-         2mFNtjFwYjluauPFeNdiPZGs3vVoxV7OdjwTsdMs=
+        b=sv0Qyh5M6WoiiVcu+ZtNGfHMTDYbOeKq7iKWY0p/jWQybNkUuUY8oJnaJKmMYHBj6
+         82L/DZOmNnOxWG5PG9fRLpaMVCpz1pDn+Z9Yn8geuRdyj3KLQYNjqJ41M8S6xqKPqR
+         1MLuIVgYIgiDlKJYkUDAPk7c4VRmG2qgyDJx5WqM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 269/700] media: rc: i2c: Fix an error message
-Date:   Mon, 12 Jul 2021 08:05:52 +0200
-Message-Id: <20210712061004.862003774@linuxfoundation.org>
+        Tuan Phan <tuanphan@os.amperecomputing.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 330/800] perf/arm-cmn: Fix invalid pointer when access dtc object sharing the same IRQ number
+Date:   Mon, 12 Jul 2021 08:05:53 +0200
+Message-Id: <20210712061001.527925982@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Tuan Phan <tuanphan@os.amperecomputing.com>
 
-[ Upstream commit 9c87ae1a0dbeb5794957421157fd266d38a869b4 ]
+[ Upstream commit 4e16f283edc289820e9b2d6f617ed8e514ee8396 ]
 
-'ret' is known to be 1 here. In fact 'i' is expected instead.
-Store the return value of 'i2c_master_recv()' in 'ret' so that the error
-message print the correct error code.
+When multiple dtcs share the same IRQ number, the irq_friend which
+used to refer to dtc object gets calculated incorrect which leads
+to invalid pointer.
 
-Fixes: acaa34bf06e9 ("media: rc: implement zilog transmitter")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 0ba64770a2f2 ("perf: Add Arm CMN-600 PMU driver")
+
+Signed-off-by: Tuan Phan <tuanphan@os.amperecomputing.com>
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+Link: https://lore.kernel.org/r/1623946129-3290-1-git-send-email-tuanphan@os.amperecomputing.com
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/ir-kbd-i2c.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/perf/arm-cmn.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/i2c/ir-kbd-i2c.c b/drivers/media/i2c/ir-kbd-i2c.c
-index e8119ad0bc71..92376592455e 100644
---- a/drivers/media/i2c/ir-kbd-i2c.c
-+++ b/drivers/media/i2c/ir-kbd-i2c.c
-@@ -678,8 +678,8 @@ static int zilog_tx(struct rc_dev *rcdev, unsigned int *txbuf,
- 		goto out_unlock;
- 	}
- 
--	i = i2c_master_recv(ir->tx_c, buf, 1);
--	if (i != 1) {
-+	ret = i2c_master_recv(ir->tx_c, buf, 1);
-+	if (ret != 1) {
- 		dev_err(&ir->rc->dev, "i2c_master_recv failed with %d\n", ret);
- 		ret = -EIO;
- 		goto out_unlock;
+diff --git a/drivers/perf/arm-cmn.c b/drivers/perf/arm-cmn.c
+index 56a5c355701d..49016f2f505e 100644
+--- a/drivers/perf/arm-cmn.c
++++ b/drivers/perf/arm-cmn.c
+@@ -1212,7 +1212,7 @@ static int arm_cmn_init_irqs(struct arm_cmn *cmn)
+ 		irq = cmn->dtc[i].irq;
+ 		for (j = i; j--; ) {
+ 			if (cmn->dtc[j].irq == irq) {
+-				cmn->dtc[j].irq_friend = j - i;
++				cmn->dtc[j].irq_friend = i - j;
+ 				goto next;
+ 			}
+ 		}
 -- 
 2.30.2
 
