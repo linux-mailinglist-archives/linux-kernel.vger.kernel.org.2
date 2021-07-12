@@ -2,243 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF2E33C656C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 23:24:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BF3D3C6573
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 23:27:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234615AbhGLV1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 17:27:38 -0400
-Received: from imap2.colo.codethink.co.uk ([78.40.148.184]:59968 "EHLO
-        imap2.colo.codethink.co.uk" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233998AbhGLV1h (ORCPT
+        id S234828AbhGLVaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 17:30:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39456 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233663AbhGLVaJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 17:27:37 -0400
-Received: from cpc152649-stkp13-2-0-cust121.10-2.cable.virginm.net ([86.15.83.122] helo=[192.168.0.18])
-        by imap2.colo.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
-        id 1m33Ps-0004zD-6N; Mon, 12 Jul 2021 22:24:40 +0100
-Subject: Re: [PATCH v2 0/5] riscv: improving uaccess with logs from network
- bench
-To:     Akira Tsukamoto <akira.tsukamoto@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-References: <5a5c07ac-8c11-79d3-46a3-a255d4148f76@gmail.com>
-From:   Ben Dooks <ben.dooks@codethink.co.uk>
-Organization: Codethink Limited.
-Message-ID: <1934063a-8973-932a-6029-58593bd5fa3a@codethink.co.uk>
-Date:   Mon, 12 Jul 2021 22:24:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 12 Jul 2021 17:30:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626125240;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=50O7XoIosnaTFvNclTBE2xrsoJwPx7yETNcoEdpke38=;
+        b=F9a2vVjJoBp/q7ULwV97nPFogI780NA5wiy4Zsx2/4wfi97ES/UVypkx4FD9fVrdgCKdwX
+        W9zFLW2qGLPQQmUPgdlJcFFkBh7tW4+QBIG3spohSPp3Lvvv9KwU3IkK/jZNChFcNA3SvT
+        HXlSat2NOnIwOX54vDBtXH97Tpu4AKk=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-255-GeJbwfWFOSCVoIez43RAIQ-1; Mon, 12 Jul 2021 17:27:19 -0400
+X-MC-Unique: GeJbwfWFOSCVoIez43RAIQ-1
+Received: by mail-lj1-f197.google.com with SMTP id y7-20020a2e97870000b029018bc821fd31so2882123lji.11
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 14:27:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=50O7XoIosnaTFvNclTBE2xrsoJwPx7yETNcoEdpke38=;
+        b=JMEaXvo9QGjq4/QEhccXbXJdSlDTjlhf3wNpy0Kw39RL2GHgOceLcvW2YH/RqoraNa
+         EikndLvCSnFZ3g8+WDiZaR0mSsI0pW9DKo0uu/MWlYsNhwGXD5/0KOFrUyNSKg0QVldR
+         bNQyFgyvq/UThgjtniZ4aZVRUCJK1MwtrjJ7sPpqAAtUmeD1Z9uNwBaDBAhEdiU4r8Ex
+         Of9BzXSwfXbd8OIj2/p61DW/ZOMsJHrs8T/9kODs//oXj8GX7WJU4S7A/iXXbNPPizSQ
+         lLq0K+emsDUtNtIqfHOpH25QeC5LAHqYAmwaSAsEnIu48L0ejOKylCgzKOgicMUXfcDO
+         JaGQ==
+X-Gm-Message-State: AOAM533HJsyyG0/WEs6hWrRnBAaTA8DI0hV+z902lWdDuwqiB0e1NZ8O
+        4vHqLVvu4zgJX/kvZWJCSMNjmaT9nzgRNcLmCSqrPaBd8cYgbM5CtgJa7ow6WgjQj79BlQd4lP+
+        w+M/1cXmjmYIUiMX3fgzlymEx+w8exBYxf3FphcmR
+X-Received: by 2002:a05:6512:33d3:: with SMTP id d19mr632518lfg.114.1626125237455;
+        Mon, 12 Jul 2021 14:27:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxMir1sZ9GqMa7WvPLCmNlPEblioxslUn0DyeGBQ95oerEYIFyQhf9KJgWR3Td5whCmT13/5lNHXg0IXQuMJlU=
+X-Received: by 2002:a05:6512:33d3:: with SMTP id d19mr632454lfg.114.1626125237173;
+ Mon, 12 Jul 2021 14:27:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <5a5c07ac-8c11-79d3-46a3-a255d4148f76@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+References: <20210629152746.2953364-1-nitesh@redhat.com> <CAFki+LnUGiEE-7Uf-x8-TQZYZ+3Migrr=81gGLYszxaK-6A9WQ@mail.gmail.com>
+ <YOrWqPYPkZp6nRLS@unreal>
+In-Reply-To: <YOrWqPYPkZp6nRLS@unreal>
+From:   Nitesh Lal <nilal@redhat.com>
+Date:   Mon, 12 Jul 2021 17:27:05 -0400
+Message-ID: <CAFki+L=FYOTQ1+-MHWmTuA6ZxTUcZA9t41HRL2URYgv03oFbDg@mail.gmail.com>
+Subject: Re: [PATCH v2 00/14] genirq: Cleanup the usage of irq_set_affinity_hint
+To:     Leon Romanovsky <leonro@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        netdev@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-pci@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, jbrandeb@kernel.org,
+        frederic@kernel.org, Juri Lelli <juri.lelli@redhat.com>,
+        Alex Belits <abelits@marvell.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, rostedt@goodmis.org,
+        peterz@infradead.org, davem@davemloft.net,
+        akpm@linux-foundation.org, sfr@canb.auug.org.au,
+        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
+        chris.friesen@windriver.com, Marc Zyngier <maz@kernel.org>,
+        Neil Horman <nhorman@tuxdriver.com>, pjwaskiewicz@gmail.com,
+        Stefan Assmann <sassmann@redhat.com>,
+        Tomas Henzl <thenzl@redhat.com>, kashyap.desai@broadcom.com,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        shivasharan.srikanteshwara@broadcom.com,
+        sathya.prakash@broadcom.com,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        suganath-prabu.subramani@broadcom.com, james.smart@broadcom.com,
+        dick.kennedy@broadcom.com, Ken Cox <jkc@redhat.com>,
+        faisal.latif@intel.com, shiraz.saleem@intel.com, tariqt@nvidia.com,
+        Alaa Hleihel <ahleihel@redhat.com>,
+        Kamal Heib <kheib@redhat.com>, borisp@nvidia.com,
+        saeedm@nvidia.com, benve@cisco.com, govind@gmx.com,
+        jassisinghbrar@gmail.com, ajit.khaparde@broadcom.com,
+        sriharsha.basavapatna@broadcom.com, somnath.kotur@broadcom.com,
+        "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        Al Stone <ahs3@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/06/2021 12:21, Akira Tsukamoto wrote:
-> Optimizing copy_to_user and copy_from_user.
-> 
-> I rewrote the functions in v2, heavily influenced by Garry's memcpy
-> function [1].
-> The functions must be written in assembler to handle page faults manually
-> inside the function.
-> 
-> With the changes, improves in the percentage usage and some performance
-> of network speed in UDP packets.
-> Only patching copy_user. Using the original memcpy.
-> 
-> All results are from the same base kernel, same rootfs and same
-> BeagleV beta board.
-> 
-> Comparison by "perf top -Ue task-clock" while running iperf3.
-> 
-> --- TCP recv ---
->   * Before
->    40.40%  [kernel]  [k] memcpy
->    33.09%  [kernel]  [k] __asm_copy_to_user
->   * After
->    50.35%  [kernel]  [k] memcpy
->    13.76%  [kernel]  [k] __asm_copy_to_user
-> 
-> --- TCP send ---
->   * Before
->    19.96%  [kernel]  [k] memcpy
->     9.84%  [kernel]  [k] __asm_copy_to_user
->   * After
->    14.27%  [kernel]  [k] memcpy
->     7.37%  [kernel]  [k] __asm_copy_to_user
-> 
-> --- UDP send ---
->   * Before
->    25.18%  [kernel]  [k] memcpy
->    22.50%  [kernel]  [k] __asm_copy_to_user
->   * After
->    28.90%  [kernel]  [k] memcpy
->     9.49%  [kernel]  [k] __asm_copy_to_user
-> 
-> --- UDP recv ---
->   * Before
->    44.45%  [kernel]  [k] memcpy
->    31.04%  [kernel]  [k] __asm_copy_to_user
->   * After
->    55.62%  [kernel]  [k] memcpy
->    11.22%  [kernel]  [k] __asm_copy_to_user
-> 
-> Processing network packets require a lot of unaligned access for the packet
-> header, which is not able to change the design of the header format to be
-> aligned.
-> And user applications call system calls with a large buffer for send/recf()
-> and sendto/recvfrom() to repeat less function calls for the optimization.
-> 
-> v1 -> v2:
-> - Added shift copy
-> - Separated patches for readability of changes in assembler
-> - Using perf results
-> 
-> [1] https://lkml.org/lkml/2021/2/16/778
-> 
-> Akira Tsukamoto (5):
->    riscv: __asm_to/copy_from_user: delete existing code
->    riscv: __asm_to/copy_from_user: Adding byte copy first
->    riscv: __asm_to/copy_from_user: Copy until dst is aligned address
->    riscv: __asm_to/copy_from_user: Bulk copy while shifting misaligned
->      data
->    riscv: __asm_to/copy_from_user: Bulk copy when both src dst are
->      aligned
-> 
->   arch/riscv/lib/uaccess.S | 181 +++++++++++++++++++++++++++++++--------
->   1 file changed, 146 insertions(+), 35 deletions(-)
-> 
+Hi Leon,
 
-I'm doing some work on allow benchmarking and testing the uaccess code.
+On Sun, Jul 11, 2021 at 7:32 AM Leon Romanovsky <leonro@nvidia.com> wrote:
+>
+> On Thu, Jul 08, 2021 at 03:24:20PM -0400, Nitesh Lal wrote:
+> > On Tue, Jun 29, 2021 at 11:28 AM Nitesh Narayan Lal <nitesh@redhat.com> wrote:
+>
+> <...>
+>
+> > >
+> > >  drivers/infiniband/hw/i40iw/i40iw_main.c      |  4 +-
+> > >  drivers/mailbox/bcm-flexrm-mailbox.c          |  4 +-
+> > >  drivers/net/ethernet/cisco/enic/enic_main.c   |  8 +--
+> > >  drivers/net/ethernet/emulex/benet/be_main.c   |  4 +-
+> > >  drivers/net/ethernet/huawei/hinic/hinic_rx.c  |  4 +-
+> > >  drivers/net/ethernet/intel/i40e/i40e_main.c   |  8 +--
+> > >  drivers/net/ethernet/intel/iavf/iavf_main.c   |  8 +--
+> > >  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 10 ++--
+> > >  drivers/net/ethernet/mellanox/mlx4/eq.c       |  8 ++-
+> > >  .../net/ethernet/mellanox/mlx5/core/pci_irq.c |  6 +--
+> > >  drivers/scsi/lpfc/lpfc_init.c                 |  4 +-
+> > >  drivers/scsi/megaraid/megaraid_sas_base.c     | 27 +++++-----
+> > >  drivers/scsi/mpt3sas/mpt3sas_base.c           | 21 ++++----
+> > >  include/linux/interrupt.h                     | 53 ++++++++++++++++++-
+> > >  kernel/irq/manage.c                           |  8 +--
+> > >  15 files changed, 113 insertions(+), 64 deletions(-)
+> > >
+> > > --
+> > >
+> > >
+> >
+> > Gentle ping.
+> > Any comments or suggestions on any of the patches included in this series?
+>
+> Please wait for -rc1, rebase and resend.
+> At least i40iw was deleted during merge window.
+>
 
-So far the initial results are:
+In -rc1 some non-trivial mlx5 changes also went in.  I was going through
+these changes and it seems after your patch
 
-> 
-> copy routine 1: original
-> test 1: copier 1: offset 0, size 8192: took 43.394000 ms, 1800.364106 MiB/sec
-> test 1: copier 1: offset 1, size 8191: took 343.767000 ms, 227.233746 MiB/sec
-> test 1: copier 1: offset 2, size 8190: took 343.727000 ms, 227.232445 MiB/sec
-> test 1: copier 1: offset 3, size 8189: took 343.664000 ms, 227.246350 MiB/sec
-> test 1: copier 1: offset 4, size 8188: took 343.751000 ms, 227.161093 MiB/sec
-> test 1: copier 1: offset 5, size 8187: took 343.620000 ms, 227.219941 MiB/sec
-> test 1: copier 1: offset 6, size 8186: took 343.540000 ms, 227.245094 MiB/sec
-> test 1: copier 1: offset 7, size 8185: took 343.640000 ms, 227.151213 MiB/sec
-> copy routine 2: new
-> test 1: copier 2: offset 0, size 8192: took 18.819000 ms, 4151.389553 MiB/sec
-> test 1: copier 2: offset 1, size 8191: took 43.770000 ms, 1784.680449 MiB/sec
-> test 1: copier 2: offset 2, size 8190: took 43.727000 ms, 1786.217360 MiB/sec
-> test 1: copier 2: offset 3, size 8189: took 43.679000 ms, 1787.961944 MiB/sec
-> test 1: copier 2: offset 4, size 8188: took 43.620000 ms, 1790.161693 MiB/sec
-> test 1: copier 2: offset 5, size 8187: took 43.577000 ms, 1791.709303 MiB/sec
-> test 1: copier 2: offset 6, size 8186: took 43.533000 ms, 1793.301163 MiB/sec
-> test 1: copier 2: offset 7, size 8185: took 43.471000 ms, 1795.639456 MiB/sec
-> write tests:
-> copy routine 1: original
-> test 2: copier 1: offset 0, size 8192: took 43.443000 ms, 1798.333448 MiB/sec
-> test 2: copier 1: offset 1, size 8191: took 344.281000 ms, 226.894494 MiB/sec
-> test 2: copier 1: offset 2, size 8190: took 343.788000 ms, 227.192126 MiB/sec
-> test 2: copier 1: offset 3, size 8189: took 343.735000 ms, 227.199412 MiB/sec
-> test 2: copier 1: offset 4, size 8188: took 343.695000 ms, 227.198106 MiB/sec
-> test 2: copier 1: offset 5, size 8187: took 343.626000 ms, 227.215974 MiB/sec
-> test 2: copier 1: offset 6, size 8186: took 343.597000 ms, 227.207396 MiB/sec
-> test 2: copier 1: offset 7, size 8185: took 343.823000 ms, 227.030312 MiB/sec
-> copy routine 2: new
-> test 2: copier 2: offset 0, size 8192: took 18.999000 ms, 4112.058529 MiB/sec
-> test 2: copier 2: offset 1, size 8191: took 43.897000 ms, 1779.517125 MiB/sec
-> test 2: copier 2: offset 2, size 8190: took 43.784000 ms, 1783.891981 MiB/sec
-> test 2: copier 2: offset 3, size 8189: took 43.803000 ms, 1782.900481 MiB/sec
-> test 2: copier 2: offset 4, size 8188: took 43.768000 ms, 1784.108322 MiB/sec
-> test 2: copier 2: offset 5, size 8187: took 43.739000 ms, 1785.073191 MiB/sec
-> test 2: copier 2: offset 6, size 8186: took 43.620000 ms, 1789.724428 MiB/sec
-> test 2: copier 2: offset 7, size 8185: took 43.573000 ms, 1791.436045 MiB/sec
-> read tests:
-> copy routine 1: original
-> test 1: copier 1: offset 0, size 16384: took 87.173000 ms, 1792.412788 MiB/sec
-> test 1: copier 1: offset 1, size 16383: took 689.480000 ms, 226.606230 MiB/sec
-> test 1: copier 1: offset 2, size 16382: took 689.251000 ms, 226.667682 MiB/sec
-> test 1: copier 1: offset 3, size 16381: took 689.203000 ms, 226.669631 MiB/sec
-> test 1: copier 1: offset 4, size 16380: took 689.385000 ms, 226.595956 MiB/sec
-> test 1: copier 1: offset 5, size 16379: took 689.201000 ms, 226.642614 MiB/sec
-> test 1: copier 1: offset 6, size 16378: took 689.158000 ms, 226.642917 MiB/sec
-> test 1: copier 1: offset 7, size 16377: took 689.038000 ms, 226.668548 MiB/sec
-> copy routine 2: new
-> test 1: copier 2: offset 0, size 16384: took 38.825000 ms, 4024.468770 MiB/sec
-> test 1: copier 2: offset 1, size 16383: took 88.706000 ms, 1761.329146 MiB/sec
-> test 1: copier 2: offset 2, size 16382: took 88.663000 ms, 1762.075798 MiB/sec
-> test 1: copier 2: offset 3, size 16381: took 88.614000 ms, 1762.942535 MiB/sec
-> test 1: copier 2: offset 4, size 16380: took 88.592000 ms, 1763.272677 MiB/sec
-> test 1: copier 2: offset 5, size 16379: took 88.518000 ms, 1764.639014 MiB/sec
-> test 1: copier 2: offset 6, size 16378: took 88.481000 ms, 1765.269149 MiB/sec
-> test 1: copier 2: offset 7, size 16377: took 88.437000 ms, 1766.039585 MiB/sec
-> write tests:
-> copy routine 1: original
-> test 2: copier 1: offset 0, size 16384: took 87.150000 ms, 1792.885829 MiB/sec
-> test 2: copier 1: offset 1, size 16383: took 689.470000 ms, 226.609516 MiB/sec
-> test 2: copier 1: offset 2, size 16382: took 689.242000 ms, 226.670642 MiB/sec
-> test 2: copier 1: offset 3, size 16381: took 689.165000 ms, 226.682129 MiB/sec
-> test 2: copier 1: offset 4, size 16380: took 689.697000 ms, 226.493450 MiB/sec
-> test 2: copier 1: offset 5, size 16379: took 689.070000 ms, 226.685701 MiB/sec
-> test 2: copier 1: offset 6, size 16378: took 689.018000 ms, 226.688968 MiB/sec
-> test 2: copier 1: offset 7, size 16377: took 689.009000 ms, 226.678088 MiB/sec
-> copy routine 2: new
-> test 2: copier 2: offset 0, size 16384: took 38.871000 ms, 4019.706208 MiB/sec
-> test 2: copier 2: offset 1, size 16383: took 88.732000 ms, 1760.813047 MiB/sec
-> test 2: copier 2: offset 2, size 16382: took 88.672000 ms, 1761.896952 MiB/sec
-> test 2: copier 2: offset 3, size 16381: took 88.642000 ms, 1762.385661 MiB/sec
-> test 2: copier 2: offset 4, size 16380: took 88.730000 ms, 1760.530294 MiB/sec
-> test 2: copier 2: offset 5, size 16379: took 88.670000 ms, 1761.614033 MiB/sec
-> test 2: copier 2: offset 6, size 16378: took 88.627000 ms, 1762.361126 MiB/sec
-> test 2: copier 2: offset 7, size 16377: took 88.543000 ms, 1763.925356 MiB/sec
-> read tests:
-> copy routine 1: original
-> test 1: copier 1: offset 0, size 32768: took 243.592000 ms, 1282.882853 MiB/sec
-> test 1: copier 1: offset 1, size 32767: took 1426.538000 ms, 219.055127 MiB/sec
-> test 1: copier 1: offset 2, size 32766: took 1426.340000 ms, 219.078850 MiB/sec
-> test 1: copier 1: offset 3, size 32765: took 1426.297000 ms, 219.078768 MiB/sec
-> test 1: copier 1: offset 4, size 32764: took 1426.069000 ms, 219.107107 MiB/sec
-> test 1: copier 1: offset 5, size 32763: took 1425.970000 ms, 219.115631 MiB/sec
-> test 1: copier 1: offset 6, size 32762: took 1425.975000 ms, 219.108175 MiB/sec
-> test 1: copier 1: offset 7, size 32761: took 1425.906000 ms, 219.112089 MiB/sec
-> copy routine 2: new
-> test 1: copier 2: offset 0, size 32768: took 205.966000 ms, 1517.240710 MiB/sec
-> test 1: copier 2: offset 1, size 32767: took 304.295000 ms, 1026.932625 MiB/sec
-> test 1: copier 2: offset 2, size 32766: took 304.219000 ms, 1027.157825 MiB/sec
-> test 1: copier 2: offset 3, size 32765: took 304.114000 ms, 1027.481108 MiB/sec
-> test 1: copier 2: offset 4, size 32764: took 304.102000 ms, 1027.490293 MiB/sec
-> test 1: copier 2: offset 5, size 32763: took 304.032000 ms, 1027.695494 MiB/sec
-> test 1: copier 2: offset 6, size 32762: took 304.012000 ms, 1027.731733 MiB/sec
-> test 1: copier 2: offset 7, size 32761: took 304.250000 ms, 1026.896443 MiB/sec
-> write tests:
-> copy routine 1: original
-> test 2: copier 1: offset 0, size 32768: took 269.605000 ms, 1159.103132 MiB/sec
-> test 2: copier 1: offset 1, size 32767: took 1438.271000 ms, 217.268139 MiB/sec
-> test 2: copier 1: offset 2, size 32766: took 1438.197000 ms, 217.272687 MiB/sec
-> test 2: copier 1: offset 3, size 32765: took 1438.157000 ms, 217.272099 MiB/sec
-> test 2: copier 1: offset 4, size 32764: took 1438.121000 ms, 217.270906 MiB/sec
-> test 2: copier 1: offset 5, size 32763: took 1438.085000 ms, 217.269714 MiB/sec
-> test 2: copier 1: offset 6, size 32762: took 1438.012000 ms, 217.274111 MiB/sec
-> test 2: copier 1: offset 7, size 32761: took 1437.998000 ms, 217.269595 MiB/sec
-> copy routine 2: new
-> test 2: copier 2: offset 0, size 32768: took 237.597000 ms, 1315.252297 MiB/sec
-> test 2: copier 2: offset 1, size 32767: took 340.638000 ms, 917.368183 MiB/sec
-> test 2: copier 2: offset 2, size 32766: took 340.669000 ms, 917.256711 MiB/sec
-> test 2: copier 2: offset 3, size 32765: took 340.615000 ms, 917.374131 MiB/sec
-> test 2: copier 2: offset 4, size 32764: took 340.542000 ms, 917.542779 MiB/sec
-> test 2: copier 2: offset 5, size 32763: took 340.543000 ms, 917.512080 MiB/sec
-> test 2: copier 2: offset 6, size 32762: took 340.775000 ms, 916.859451 MiB/sec
-> test 2: copier 2: offset 7, size 32761: took 343.885000 ms, 908.539898 MiB/sec
+e4e3f24b822f: ("net/mlx5: Provide cpumask at EQ creation phase")
 
-It looks like the aligned is about 2.2 faster on the aligned and 7.8
-times faster for the unalgined tests. I'll try and get this published
-some time this week.
-
+we do want to control the affinity for the mlx5 interrupts from the driver.
+Is that correct? This would mean that we should use
+irq_set_affinity_and_hint() instead
+of irq_update_affinity_hint().
 
 -- 
-Ben Dooks				http://www.codethink.co.uk/
-Senior Engineer				Codethink - Providing Genius
+Thanks
+Nitesh
 
-https://www.codethink.co.uk/privacy.html
