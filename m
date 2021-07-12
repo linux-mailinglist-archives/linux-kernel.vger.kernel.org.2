@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC3F3C49FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B90FA3C518C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236998AbhGLGrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:47:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55328 "EHLO mail.kernel.org"
+        id S1349462AbhGLHmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:42:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235803AbhGLGhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:37:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7CC76113E;
-        Mon, 12 Jul 2021 06:33:29 +0000 (UTC)
+        id S243737AbhGLHIv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:08:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE34F611BF;
+        Mon, 12 Jul 2021 07:04:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071610;
-        bh=lJ3hh8R41P8DiijbBEOO6KYz41OVlnc6F8l5msauMoA=;
+        s=korg; t=1626073495;
+        bh=Y4dQMYFhm95GjcowETDtuXSFX9tZyDZ2F+uM++JTHrw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rx96JuF87w0uNjM8hYpmtqSOzMp20ebGG+6gS2hG84OLRyvdy4CVKfqm93+oLBm64
-         0KjEcBTBDuMt4HrsLyCPMWZbCCl8F9vRjO9gIUdUhUAu89VAQQt7xXgXzXDE7zeGOF
-         XAcGiAEEz2Yj/HbFhVMaSZSPriUnuILjry1sNlHc=
+        b=aCcw5k9mj9RLBICQcLtZpXGtkaVt9NvHK57SbtZpxEfMGSsqpVzDWTngWalcCP1iR
+         EaGDF4r1jI3aKVpZkaALcadsWq38ct30XFwmpbnwdeOQNd8JE2P6LWqvkkzGDL8Gcz
+         QVj0p4X1MCNlD449Gx70sIEDiSpuXUO5ouGhRtn4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+e1de8986786b3722050e@syzkaller.appspotmail.com,
-        Dongliang Mu <mudongliangabcd@gmail.com>,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 142/593] media: dvd_usb: memory leak in cinergyt2_fe_attach
+        Zoltan Tamas Vajda <zoltan.tamas.vajda@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 219/700] HID: hid-input: add Surface Go battery quirk
 Date:   Mon, 12 Jul 2021 08:05:02 +0200
-Message-Id: <20210712060858.692491509@linuxfoundation.org>
+Message-Id: <20210712060957.835277227@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,50 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongliang Mu <mudongliangabcd@gmail.com>
+From: Zoltan Tamas Vajda <zoltan.tamas.vajda@gmail.com>
 
-[ Upstream commit 9ad1efee086e0e913914fa2b2173efb830bad68c ]
+[ Upstream commit b5539722eb832441f309642fe5102cc3536f92b8 ]
 
-When the driver fails to talk with the hardware with dvb_usb_generic_rw,
-it will return an error to dvb_usb_adapter_frontend_init. However, the
-driver forgets to free the resource (e.g., struct cinergyt2_fe_state),
-which leads to a memory leak.
+The Elantech touchscreen/digitizer in the Surface Go mistakenly reports
+having a battery. This results in a low battery message every time you
+try to use the pen.
 
-Fix this by freeing struct cinergyt2_fe_state when dvb_usb_generic_rw
-fails in cinergyt2_frontend_attach.
+This patch adds a quirk to ignore the non-existent battery and
+gets rid of the false low battery messages.
 
-backtrace:
-  [<0000000056e17b1a>] kmalloc include/linux/slab.h:552 [inline]
-  [<0000000056e17b1a>] kzalloc include/linux/slab.h:682 [inline]
-  [<0000000056e17b1a>] cinergyt2_fe_attach+0x21/0x80 drivers/media/usb/dvb-usb/cinergyT2-fe.c:271
-  [<00000000ae0b1711>] cinergyt2_frontend_attach+0x21/0x70 drivers/media/usb/dvb-usb/cinergyT2-core.c:74
-  [<00000000d0254861>] dvb_usb_adapter_frontend_init+0x11b/0x1b0 drivers/media/usb/dvb-usb/dvb-usb-dvb.c:290
-  [<0000000002e08ac6>] dvb_usb_adapter_init drivers/media/usb/dvb-usb/dvb-usb-init.c:84 [inline]
-  [<0000000002e08ac6>] dvb_usb_init drivers/media/usb/dvb-usb/dvb-usb-init.c:173 [inline]
-  [<0000000002e08ac6>] dvb_usb_device_init.cold+0x4d0/0x6ae drivers/media/usb/dvb-usb/dvb-usb-init.c:287
-
-Reported-by: syzbot+e1de8986786b3722050e@syzkaller.appspotmail.com
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Zoltan Tamas Vajda <zoltan.tamas.vajda@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/dvb-usb/cinergyT2-core.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/hid/hid-ids.h   | 1 +
+ drivers/hid/hid-input.c | 2 ++
+ 2 files changed, 3 insertions(+)
 
-diff --git a/drivers/media/usb/dvb-usb/cinergyT2-core.c b/drivers/media/usb/dvb-usb/cinergyT2-core.c
-index 969a7ec71dff..4116ba5c45fc 100644
---- a/drivers/media/usb/dvb-usb/cinergyT2-core.c
-+++ b/drivers/media/usb/dvb-usb/cinergyT2-core.c
-@@ -78,6 +78,8 @@ static int cinergyt2_frontend_attach(struct dvb_usb_adapter *adap)
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index 03978111d944..06168f485722 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -397,6 +397,7 @@
+ #define USB_DEVICE_ID_HP_X2_10_COVER	0x0755
+ #define I2C_DEVICE_ID_HP_SPECTRE_X360_15	0x2817
+ #define USB_DEVICE_ID_ASUS_UX550_TOUCHSCREEN	0x2706
++#define I2C_DEVICE_ID_SURFACE_GO_TOUCHSCREEN	0x261A
  
- 	ret = dvb_usb_generic_rw(d, st->data, 1, st->data, 3, 0);
- 	if (ret < 0) {
-+		if (adap->fe_adap[0].fe)
-+			adap->fe_adap[0].fe->ops.release(adap->fe_adap[0].fe);
- 		deb_rc("cinergyt2_power_ctrl() Failed to retrieve sleep state info\n");
- 	}
- 	mutex_unlock(&d->data_mutex);
+ #define USB_VENDOR_ID_ELECOM		0x056e
+ #define USB_DEVICE_ID_ELECOM_BM084	0x0061
+diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+index e982d8173c9c..bf5e728258c1 100644
+--- a/drivers/hid/hid-input.c
++++ b/drivers/hid/hid-input.c
+@@ -326,6 +326,8 @@ static const struct hid_device_id hid_battery_quirks[] = {
+ 	  HID_BATTERY_QUIRK_IGNORE },
+ 	{ HID_I2C_DEVICE(USB_VENDOR_ID_ELAN, I2C_DEVICE_ID_HP_SPECTRE_X360_15),
+ 	  HID_BATTERY_QUIRK_IGNORE },
++	{ HID_I2C_DEVICE(USB_VENDOR_ID_ELAN, I2C_DEVICE_ID_SURFACE_GO_TOUCHSCREEN),
++	  HID_BATTERY_QUIRK_IGNORE },
+ 	{}
+ };
+ 
 -- 
 2.30.2
 
