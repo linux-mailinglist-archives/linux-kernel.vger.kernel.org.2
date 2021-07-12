@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FA1C3C5310
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA603C5847
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352018AbhGLHwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:52:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55716 "EHLO mail.kernel.org"
+        id S1379214AbhGLIoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:44:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243879AbhGLHRx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:17:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD22F6144A;
-        Mon, 12 Jul 2021 07:15:03 +0000 (UTC)
+        id S1351939AbhGLHwO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:52:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E05FE61152;
+        Mon, 12 Jul 2021 07:49:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074104;
-        bh=IidLABSP/cvQqAYnVF1bmFpl/Ddrb1rDg7hFz5bvJJE=;
+        s=korg; t=1626076165;
+        bh=8v9OtDlpT/UoExlBOMXA8VZCfU0I5rzZYjcbN0lDoTQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UMVPSSF00TgH1Bjv0opbR03FZwPCmzxhtXEvmWEGoBU18xu/yEfNCJDZBvcTiL2Hv
-         Uf6fEnFCQSA+IBPmDA7dLD2T1NylYxC4HQc3viVEsM93GqR8SfibY8xNmSd+e8nmOw
-         8jj8t6SG8KUWtI3YVRNRmbc7cq2tieJOjl8Ib0Tw=
+        b=MtpsYB9u8IYeLn9I6mJjCUz59k79WfaWpa72xxo+YUvKNZp0gHtYvvmC7KZURXUov
+         H6X1k8iBpQbsdsRY8VzfQ0elHORhCg4xxDEcUhpP+ccZSwxKqmnPgD/SNIDCxShN/A
+         Sikj7igIP7zaP/Ch7YaIZbGc0pdhQPirLyNs6zlY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yixing Liu <liuyixing1@huawei.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Eldar Gasanov <eldargasanov2@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 466/700] RDMA/hns: Fix uninitialized variable
-Date:   Mon, 12 Jul 2021 08:09:09 +0200
-Message-Id: <20210712061026.167312548@linuxfoundation.org>
+Subject: [PATCH 5.13 527/800] net: dsa: mv88e6xxx: Fix adding vlan 0
+Date:   Mon, 12 Jul 2021 08:09:10 +0200
+Message-Id: <20210712061023.361727055@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yixing Liu <liuyixing1@huawei.com>
+From: Eldar Gasanov <eldargasanov2@gmail.com>
 
-[ Upstream commit 2a38c0f10e6d7d28e06ff1eb1f350804c4850275 ]
+[ Upstream commit b8b79c414eca4e9bcab645e02cb92c48db974ce9 ]
 
-A random value will be returned if the condition below is not met, so it
-needs to be initialized.
+8021q module adds vlan 0 to all interfaces when it starts.
+When 8021q module is loaded it isn't possible to create bond
+with mv88e6xxx interfaces, bonding module dipslay error
+"Couldn't add bond vlan ids", because it tries to add vlan 0
+to slave interfaces.
 
-Fixes: 9ea9a53ea93b ("RDMA/hns: Add mapped page count checking for MTR")
-Link: https://lore.kernel.org/r/1624011020-16992-3-git-send-email-liweihang@huawei.com
-Signed-off-by: Yixing Liu <liuyixing1@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+There is unexpected behavior in the switch. When a PVID
+is assigned to a port the switch changes VID to PVID
+in ingress frames with VID 0 on the port. Expected
+that the switch doesn't assign PVID to tagged frames
+with VID 0. But there isn't a way to change this behavior
+in the switch.
+
+Fixes: 57e661aae6a8 ("net: dsa: mv88e6xxx: Link aggregation support")
+Signed-off-by: Eldar Gasanov <eldargasanov2@gmail.com>
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/hns/hns_roce_mr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/dsa/mv88e6xxx/chip.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
-index 79b3c3023fe7..b8454dcb0318 100644
---- a/drivers/infiniband/hw/hns/hns_roce_mr.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
-@@ -776,7 +776,7 @@ int hns_roce_mtr_map(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr,
- 	struct ib_device *ibdev = &hr_dev->ib_dev;
- 	struct hns_roce_buf_region *r;
- 	unsigned int i, mapped_cnt;
--	int ret;
-+	int ret = 0;
+diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
+index eca285aaf72f..961fa6b75cad 100644
+--- a/drivers/net/dsa/mv88e6xxx/chip.c
++++ b/drivers/net/dsa/mv88e6xxx/chip.c
+@@ -1618,9 +1618,6 @@ static int mv88e6xxx_port_check_hw_vlan(struct dsa_switch *ds, int port,
+ 	struct mv88e6xxx_vtu_entry vlan;
+ 	int i, err;
  
- 	/*
- 	 * Only use the first page address as root ba when hopnum is 0, this
+-	if (!vid)
+-		return -EOPNOTSUPP;
+-
+ 	/* DSA and CPU ports have to be members of multiple vlans */
+ 	if (dsa_is_dsa_port(ds, port) || dsa_is_cpu_port(ds, port))
+ 		return 0;
+@@ -2109,6 +2106,9 @@ static int mv88e6xxx_port_vlan_add(struct dsa_switch *ds, int port,
+ 	u8 member;
+ 	int err;
+ 
++	if (!vlan->vid)
++		return 0;
++
+ 	err = mv88e6xxx_port_vlan_prepare(ds, port, vlan);
+ 	if (err)
+ 		return err;
 -- 
 2.30.2
 
