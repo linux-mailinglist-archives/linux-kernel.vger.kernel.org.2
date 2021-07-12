@@ -2,77 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3BD83C5B75
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CB113C5B7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:44:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230002AbhGLLZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 07:25:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230148AbhGLLZo (ORCPT
+        id S233384AbhGLL1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 07:27:22 -0400
+Received: from mail-vk1-f180.google.com ([209.85.221.180]:46009 "EHLO
+        mail-vk1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229644AbhGLL1U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 07:25:44 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D197FC0613E5;
-        Mon, 12 Jul 2021 04:22:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=R1bDTEiXqtXpyrbQHqtEVr9M9V6VmpOGvNF7p83EW/U=; b=KR7gN3dPpayrdOqoboOmpNssM
-        x6B9tl7MCmiLi1hdEE6Cid+zaaWV7l9prKwwQk32omDJ+dHqeN/XmFBqDEyE7+WhelX4oFFqnF/km
-        6CbZo8UvXhPTvKbSdn+OBpZXNIEAi9C6v/ILX56XPGekvcEHV11t2/RpINuwaiGGdLESAH0PtnuOk
-        NxHwttx7tb87ixKM+5w2G2Is8ProVewwEW40gPCJpn19iNiRQtP0ebXbUBLrBMBvyNtp05rocxIuA
-        JdJONF//VSYGqdKippGqRRRmbynfQ6HLcCI6QMFfHsT9Ip8zh0hRo1HvKBfTiEkdtJDRBfMaCtuQs
-        wEDtMsVlg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46004)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1m2u1N-0004eU-43; Mon, 12 Jul 2021 12:22:45 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1m2u1J-0007jR-Ou; Mon, 12 Jul 2021 12:22:41 +0100
-Date:   Mon, 12 Jul 2021 12:22:41 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Martin Schiller <ms@dev.tdt.de>
-Cc:     hauke@hauke-m.de, martin.blumenstingl@googlemail.com,
-        f.fainelli@gmail.com, andrew@lunn.ch, hkallweit1@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v5] net: phy: intel-xway: Add RGMII internal
- delay configuration
-Message-ID: <20210712112241.GC22278@shell.armlinux.org.uk>
-References: <20210712072413.11490-1-ms@dev.tdt.de>
+        Mon, 12 Jul 2021 07:27:20 -0400
+Received: by mail-vk1-f180.google.com with SMTP id j190so3897419vkg.12;
+        Mon, 12 Jul 2021 04:24:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wSI56+0wl/8uoFZkYYEX3Cn5WjSYU9NFzgAm+bp0lBU=;
+        b=TZAcxELme0KH+lXKl+7Iw9ntlmy0E2d0LvO0n4Q5956NBZbClvqIt3eL73mH46ec2f
+         p9ieGyiVbYdMJnNJUwcl/eMh0it5+nCHZHbu8yZDT7b7qGVrtFq5rmzJlwfEfefe4HVk
+         meFtdsSJXrb9YC/Q0ehQrevA1v2ldY38A0oE4cTyEsVugFuiwcpVAsAXSrYm77MP4jdZ
+         ePonhYopbSFc3yv+14Wxl7UidVi5W3K+u5FwKB3dQp21UFb9e7QMwyceDybgLbDtVXfp
+         BJM6GRWarNg+krn5r6z+RjMf0wb5I1Xiq0RxT0IVYGzRXtTKdN/eqnPmlf4UuXBLTezu
+         gmmA==
+X-Gm-Message-State: AOAM5310kBt1QV2bfIZ2hr/5QbtjB51O15ZfAJRMi01PSSpu8DEYXfu4
+        3Sv+k8zWxhUj3awhy5PSrwws2mTKlc0mA+3Pf3XykiNgCkQ=
+X-Google-Smtp-Source: ABdhPJzl+b8ID+5NtPNSzacYozt9cW/uQxXEYZQYcG4NKJ5aeR9N2kMo9YCHMcaHTF4gY4uSOKuGr5NU+gxzNe5ovNo=
+X-Received: by 2002:a1f:1a41:: with SMTP id a62mr42439346vka.5.1626089070907;
+ Mon, 12 Jul 2021 04:24:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210712072413.11490-1-ms@dev.tdt.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+References: <20210709201603.2625664-1-drew@beagleboard.org>
+In-Reply-To: <20210709201603.2625664-1-drew@beagleboard.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 12 Jul 2021 13:24:19 +0200
+Message-ID: <CAMuHMdVBVAzy3cZtR1pOTNq3wTgGx+0_dvUXU118XfT+rCOSrw@mail.gmail.com>
+Subject: Re: [PATCH v3] dt-bindings: riscv: add starfive jh7100 bindings
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Wei Fu <tekkamanninja@gmail.com>,
+        Jack Zhu <jack.zhu@starfivetech.com>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 09:24:13AM +0200, Martin Schiller wrote:
-> This adds the possibility to configure the RGMII RX/TX clock skew via
-> devicetree.
-> 
-> Simply set phy mode to "rgmii-id", "rgmii-rxid" or "rgmii-txid" and add
-> the "rx-internal-delay-ps" or "tx-internal-delay-ps" property to the
-> devicetree.
-> 
-> Furthermore, a warning is now issued if the phy mode is configured to
-> "rgmii" and an internal delay is set in the phy (e.g. by pin-strapping),
-> as in the dp83867 driver.
-> 
-> Signed-off-by: Martin Schiller <ms@dev.tdt.de>
+Hi Drew,
 
-Acked-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+On Fri, Jul 9, 2021 at 10:17 PM Drew Fustini <drew@beagleboard.org> wrote:
+> Add DT binding documentation for the StarFive JH7100 Soc [1] and the
+> BeagleV Starlight JH7100 board [2].
+>
+> [1] https://github.com/starfive-tech/beaglev_doc
+> [2] https://github.com/beagleboard/beaglev-starlight
+>
+> Signed-off-by: Drew Fustini <drew@beagleboard.org>
+> ---
+> v3 changes:
+> - added revision number for the board and soc after question from Palmer
 
-Thanks.
+Thanks for the update!
+
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/riscv/starfive.yaml
+> @@ -0,0 +1,27 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/riscv/starfive.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: StarFive SoC-based boards
+> +
+> +maintainers:
+> +  - Michael Zhu <michael.zhu@starfivetech.com>
+> +  - Drew Fustini <drew@beagleboard.org>
+> +
+> +description:
+> +  StarFive SoC-based boards
+> +
+> +properties:
+> +  $nodename:
+> +    const: '/'
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - const: beagle,beaglev-starlight-jh7100-r0
+> +          - const: starfive,jh7100-r0
+
+While I can be convinced about the board revision number (probably you
+know better if there will be different board revisions that matter),
+I'm wondering if the revision number makes sense for the SoC part.
+Will there be a new revision of jh7100, or will the next revision
+be jh7110, which will use a different compatible value anyway?
+Is there an on-chip register that allows the kernel to find out the
+revision info? Might be better to use that with soc_device_register()
+and soc_device_match().
+
+> +
+> +additionalProperties: true
+> +
+> +...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
