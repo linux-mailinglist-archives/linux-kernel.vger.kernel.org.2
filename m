@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C28F3C4EE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBE083C564D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241361AbhGLHWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:22:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57966 "EHLO mail.kernel.org"
+        id S1356901AbhGLIQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:16:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53990 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240671AbhGLG4W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:56:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 972D460FD8;
-        Mon, 12 Jul 2021 06:53:31 +0000 (UTC)
+        id S242074AbhGLHcw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:32:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 015306101D;
+        Mon, 12 Jul 2021 07:29:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072812;
-        bh=564gqs7cSvVVtf2TdRvrgZNJPnKPrfMkMOOu0nDGAS4=;
+        s=korg; t=1626074989;
+        bh=TdbwWf8n7PchFOwJ9TV/tdbvKG9kcmqkVMKqSn9mlf4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D0ARVhkoTeqeM3CXRAwVpPRO5QTadWqoYKPGrZvbuNGSP/XzO5MirepECGsDHLyAV
-         qfE4HSY8ZaB6dCc8G+gm49U37J6QWNqRs6vryiyCrOp4GwWKmLlPuMTOTHafvtgXmw
-         29Z6RqrVbDCHcKYO5EXkPvRe+8a7oGn9pfoMXagk=
+        b=v6Mo7elX9dUQkxL4Zk5kdFtCzVeQybu7UjJmpksKaEWm8P2uxOWMxwxsSSZWzkDQy
+         H3o+PwLxbl9siStX6OT+oF9kxNrxVNfxNOOLOb+WNSiJrJNaky2qvsNO4tuD+8TtAi
+         ip1DQf9/KCG6pbfx+NIDbFBpnoOrYHL86YGGMILE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daehwan Jung <dh10.jung@samsung.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.12 004/700] ALSA: usb-audio: fix rate on Ozone Z90 USB headset
-Date:   Mon, 12 Jul 2021 08:01:27 +0200
-Message-Id: <20210712060925.406301050@linuxfoundation.org>
+        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 5.13 065/800] mac80211: remove iwlwifi specific workaround that broke sta NDP tx
+Date:   Mon, 12 Jul 2021 08:01:28 +0200
+Message-Id: <20210712060922.437705787@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,35 +39,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daehwan Jung <dh10.jung@samsung.com>
+From: Felix Fietkau <nbd@nbd.name>
 
-commit aecc19ec404bdc745c781058ac97a373731c3089 upstream.
+commit e41eb3e408de27982a5f8f50b2dd8002bed96908 upstream.
 
-It mislabels its 96 kHz altsetting and that's why it causes some noise
+Sending nulldata packets is important for sw AP link probing and detecting
+4-address mode links. The checks that dropped these packets were apparently
+added to work around an iwlwifi firmware bug with multi-TID aggregation.
 
-Signed-off-by: Daehwan Jung <dh10.jung@samsung.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/1623836097-61918-1-git-send-email-dh10.jung@samsung.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 41cbb0f5a295 ("mac80211: add support for HE")
+Cc: stable@vger.kernel.org
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Link: https://lore.kernel.org/r/20210619101517.90806-1-nbd@nbd.name
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/usb/format.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/wireless/intel/iwlwifi/mvm/tx.c |    3 +++
+ net/mac80211/mlme.c                         |    9 ---------
+ 2 files changed, 3 insertions(+), 9 deletions(-)
 
---- a/sound/usb/format.c
-+++ b/sound/usb/format.c
-@@ -223,9 +223,11 @@ static int parse_audio_format_rates_v1(s
- 				continue;
- 			/* C-Media CM6501 mislabels its 96 kHz altsetting */
- 			/* Terratec Aureon 7.1 USB C-Media 6206, too */
-+			/* Ozone Z90 USB C-Media, too */
- 			if (rate == 48000 && nr_rates == 1 &&
- 			    (chip->usb_id == USB_ID(0x0d8c, 0x0201) ||
- 			     chip->usb_id == USB_ID(0x0d8c, 0x0102) ||
-+			     chip->usb_id == USB_ID(0x0d8c, 0x0078) ||
- 			     chip->usb_id == USB_ID(0x0ccd, 0x00b1)) &&
- 			    fp->altsetting == 5 && fp->maxpacksize == 392)
- 				rate = 96000;
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/tx.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/tx.c
+@@ -1032,6 +1032,9 @@ static int iwl_mvm_tx_mpdu(struct iwl_mv
+ 	if (WARN_ON_ONCE(mvmsta->sta_id == IWL_MVM_INVALID_STA))
+ 		return -1;
+ 
++	if (unlikely(ieee80211_is_any_nullfunc(fc)) && sta->he_cap.has_he)
++		return -1;
++
+ 	if (unlikely(ieee80211_is_probe_resp(fc)))
+ 		iwl_mvm_probe_resp_set_noa(mvm, skb);
+ 
+--- a/net/mac80211/mlme.c
++++ b/net/mac80211/mlme.c
+@@ -1094,11 +1094,6 @@ void ieee80211_send_nullfunc(struct ieee
+ 	struct ieee80211_hdr_3addr *nullfunc;
+ 	struct ieee80211_if_managed *ifmgd = &sdata->u.mgd;
+ 
+-	/* Don't send NDPs when STA is connected HE */
+-	if (sdata->vif.type == NL80211_IFTYPE_STATION &&
+-	    !(ifmgd->flags & IEEE80211_STA_DISABLE_HE))
+-		return;
+-
+ 	skb = ieee80211_nullfunc_get(&local->hw, &sdata->vif,
+ 		!ieee80211_hw_check(&local->hw, DOESNT_SUPPORT_QOS_NDP));
+ 	if (!skb)
+@@ -1130,10 +1125,6 @@ static void ieee80211_send_4addr_nullfun
+ 	if (WARN_ON(sdata->vif.type != NL80211_IFTYPE_STATION))
+ 		return;
+ 
+-	/* Don't send NDPs when connected HE */
+-	if (!(sdata->u.mgd.flags & IEEE80211_STA_DISABLE_HE))
+-		return;
+-
+ 	skb = dev_alloc_skb(local->hw.extra_tx_headroom + 30);
+ 	if (!skb)
+ 		return;
 
 
