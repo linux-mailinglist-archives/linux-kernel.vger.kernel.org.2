@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB6343C5053
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45DED3C5027
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347053AbhGLHcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:32:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39838 "EHLO mail.kernel.org"
+        id S1347022AbhGLHbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:31:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241614AbhGLHEB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:04:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DA46611AD;
-        Mon, 12 Jul 2021 07:01:12 +0000 (UTC)
+        id S243121AbhGLHEe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:04:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9D1261167;
+        Mon, 12 Jul 2021 07:01:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073273;
-        bh=Pq4EhHKMvQqR0dTi44tWCX6DB7KbvPxZSq5FW7Mm8F4=;
+        s=korg; t=1626073305;
+        bh=svsv6M47GusGxdoHHlZTnG/iyReb7Lr39eIxDeEHyp8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M5P3VjxoXh8yuhKrYgycGVxu3INTAsE5hYheMy1ygRTzqLbIH4WHq8d8EXctHr1Ce
-         1e2ZECOLyylt3RqIW7O4nEj8AT6m8o29ppem3sFbOfQmCyR16Z1/1+KylJmYzo5v9g
-         fHYNJZJz20UK400gICo3KpnTHdNiKiSZb+92/GPc=
+        b=2e1uTxESmpiL9H/yPNzYwB/SoSXa6eWKtRtSIU3R1F18j7dn6ADDyW6wxhVtjBUS3
+         PDG+NH9zseDLw5QZ+rMjVMpoAQXHfCn+ehw9sFmQ7yS7mYCbAw+hzrvcqD8m5l4tLJ
+         MfWetsgR/CfsJ3+qyNJqu8hrnK77JWXFQgjstJsM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, zpershuai <zpershuai@gmail.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 168/700] mmc: sdhci-of-aspeed: Turn down a phase correction warning
-Date:   Mon, 12 Jul 2021 08:04:11 +0200
-Message-Id: <20210712060949.659222662@linuxfoundation.org>
+Subject: [PATCH 5.12 169/700] spi: meson-spicc: fix a wrong goto jump for avoiding memory leak.
+Date:   Mon, 12 Jul 2021 08:04:12 +0200
+Message-Id: <20210712060949.885001620@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
 References: <20210712060924.797321836@linuxfoundation.org>
@@ -41,43 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrew Jeffery <andrew@aj.id.au>
+From: zpershuai <zpershuai@gmail.com>
 
-[ Upstream commit a7ab186f60785850b5af1be183867000485ad491 ]
+[ Upstream commit 95730d5eb73170a6d225a9998c478be273598634 ]
 
-The card timing and the bus frequency are not changed atomically with
-respect to calls to the set_clock() callback in the driver. The result
-is the driver sees a transient state where there's a mismatch between
-the two and thus the inputs to the phase correction calculation
-formula are garbage.
+In meson_spifc_probe function, when enable the device pclk clock is
+error, it should use clk_disable_unprepare to release the core clock.
 
-Switch from dev_warn() to dev_dbg() to avoid noise in the normal case,
-though the change does make bad configurations less likely to be
-noticed.
-
-Reported-by: Joel Stanley <joel@jms.id.au>
-Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
-Reviewed-by: Joel Stanley <joel@jms.id.au>
-Link: https://lore.kernel.org/r/20210607013020.85885-1-andrew@aj.id.au
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: zpershuai <zpershuai@gmail.com>
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+Link: https://lore.kernel.org/r/1623562172-22056-1-git-send-email-zpershuai@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/sdhci-of-aspeed.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/spi/spi-meson-spicc.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mmc/host/sdhci-of-aspeed.c b/drivers/mmc/host/sdhci-of-aspeed.c
-index 7d8692e90996..b6ac2af199b8 100644
---- a/drivers/mmc/host/sdhci-of-aspeed.c
-+++ b/drivers/mmc/host/sdhci-of-aspeed.c
-@@ -150,7 +150,7 @@ static int aspeed_sdhci_phase_to_tap(struct device *dev, unsigned long rate_hz,
+diff --git a/drivers/spi/spi-meson-spicc.c b/drivers/spi/spi-meson-spicc.c
+index ecba6b4a5d85..51aef2c6e966 100644
+--- a/drivers/spi/spi-meson-spicc.c
++++ b/drivers/spi/spi-meson-spicc.c
+@@ -725,7 +725,7 @@ static int meson_spicc_probe(struct platform_device *pdev)
+ 	ret = clk_prepare_enable(spicc->pclk);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "pclk clock enable failed\n");
+-		goto out_master;
++		goto out_core_clk;
+ 	}
  
- 	tap = div_u64(phase_period_ps, prop_delay_ps);
- 	if (tap > ASPEED_SDHCI_NR_TAPS) {
--		dev_warn(dev,
-+		dev_dbg(dev,
- 			 "Requested out of range phase tap %d for %d degrees of phase compensation at %luHz, clamping to tap %d\n",
- 			 tap, phase_deg, rate_hz, ASPEED_SDHCI_NR_TAPS);
- 		tap = ASPEED_SDHCI_NR_TAPS;
+ 	device_reset_optional(&pdev->dev);
+@@ -764,9 +764,11 @@ static int meson_spicc_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ out_clk:
+-	clk_disable_unprepare(spicc->core);
+ 	clk_disable_unprepare(spicc->pclk);
+ 
++out_core_clk:
++	clk_disable_unprepare(spicc->core);
++
+ out_master:
+ 	spi_master_put(master);
+ 
 -- 
 2.30.2
 
