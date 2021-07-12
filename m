@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED503C49C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED0613C56EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235762AbhGLGqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:46:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54744 "EHLO mail.kernel.org"
+        id S1358726AbhGLI0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:26:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236073AbhGLGfn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:35:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4658061008;
-        Mon, 12 Jul 2021 06:32:51 +0000 (UTC)
+        id S1349471AbhGLHmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:42:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 378A060FF3;
+        Mon, 12 Jul 2021 07:39:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071571;
-        bh=StU3+YxyCMgAjgU/RgVVZ0TNoIT68/UIFVHvrc/DOuU=;
+        s=korg; t=1626075555;
+        bh=d1t6qlQFsNj9feQpwGEAoLiNV2nbZ8D1xq3GbYpYHCM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dQRf/sqSX85CBeP0dNei6nfYdxId0lyeL67UGitAtnmIwlW/d2+6KteS3gQhRrIjr
-         e0G2qgVgfAAKcWV0/6glebeTpBEveN5I5hDEtqPEmgtY/Q6sWeCsbhv38mEuEL9nAo
-         IbZxpBAIZdJe9q4LiPwX0sKOvKMZU6ndqIBYywX8=
+        b=TxiHMEqOKedEQrNyb8GJzSkKKuhvkKPDAlNsoHGiowWvSc5k6cdO6pdn13uFd0HmX
+         Nw/NcsVktef1d3KEMQL9dmBYZyX3FOx+Q2DYIG/nUAWLrGvhfwjHx/T09JC2B8KyIo
+         PVVu0JfYYL1MVrA+xXAlxKEU50/HJF/biy2Q+XVs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jack Xu <jack.xu@intel.com>,
-        Zhehui Xiang <zhehui.xiang@intel.com>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, Roman Gushchin <guro@fb.com>,
+        Jan Kara <jack@suse.com>, Jan Kara <jack@suse.cz>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Dave Chinner <dchinner@redhat.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 127/593] crypto: qat - check return code of qat_hal_rd_rel_reg()
+Subject: [PATCH 5.13 264/800] writeback, cgroup: increment isw_nr_in_flight before grabbing an inode
 Date:   Mon, 12 Jul 2021 08:04:47 +0200
-Message-Id: <20210712060857.122029465@linuxfoundation.org>
+Message-Id: <20210712060951.822691015@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,45 +46,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Xu <jack.xu@intel.com>
+From: Roman Gushchin <guro@fb.com>
 
-[ Upstream commit 96b57229209490c8bca4335b01a426a96173dc56 ]
+[ Upstream commit 8826ee4fe75051f8cbfa5d4a9aa70565938e724c ]
 
-Check the return code of the function qat_hal_rd_rel_reg() and return it
-to the caller.
+isw_nr_in_flight is used to determine whether the inode switch queue
+should be flushed from the umount path.  Currently it's increased after
+grabbing an inode and even scheduling the switch work.  It means the
+umount path can walk past cleanup_offline_cgwb() with active inode
+references, which can result in a "Busy inodes after unmount." message and
+use-after-free issues (with inode->i_sb which gets freed).
 
-This is to fix the following warning when compiling the driver with
-clang scan-build:
+Fix it by incrementing isw_nr_in_flight before doing anything with the
+inode and decrementing in the case when switching wasn't scheduled.
 
-    drivers/crypto/qat/qat_common/qat_hal.c:1436:2: warning: 6th function call argument is an uninitialized value
+The problem hasn't yet been seen in the real life and was discovered by
+Jan Kara by looking into the code.
 
-Signed-off-by: Jack Xu <jack.xu@intel.com>
-Co-developed-by: Zhehui Xiang <zhehui.xiang@intel.com>
-Signed-off-by: Zhehui Xiang <zhehui.xiang@intel.com>
-Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Link: https://lkml.kernel.org/r/20210608230225.2078447-4-guro@fb.com
+Signed-off-by: Roman Gushchin <guro@fb.com>
+Suggested-by: Jan Kara <jack@suse.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Dave Chinner <dchinner@redhat.com>
+Cc: Dennis Zhou <dennis@kernel.org>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/qat/qat_common/qat_hal.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ fs/fs-writeback.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/qat/qat_common/qat_hal.c b/drivers/crypto/qat/qat_common/qat_hal.c
-index 52ef80efeddc..b40e81e0088f 100644
---- a/drivers/crypto/qat/qat_common/qat_hal.c
-+++ b/drivers/crypto/qat/qat_common/qat_hal.c
-@@ -1213,7 +1213,11 @@ static int qat_hal_put_rel_wr_xfer(struct icp_qat_fw_loader_handle *handle,
- 		pr_err("QAT: bad xfrAddr=0x%x\n", xfr_addr);
- 		return -EINVAL;
- 	}
--	qat_hal_rd_rel_reg(handle, ae, ctx, ICP_GPB_REL, gprnum, &gprval);
-+	status = qat_hal_rd_rel_reg(handle, ae, ctx, ICP_GPB_REL, gprnum, &gprval);
-+	if (status) {
-+		pr_err("QAT: failed to read register");
-+		return status;
-+	}
- 	gpr_addr = qat_hal_get_reg_addr(ICP_GPB_REL, gprnum);
- 	data16low = 0xffff & data;
- 	data16hi = 0xffff & (data >> 0x10);
+diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+index 7c46d1588a19..d684f541af48 100644
+--- a/fs/fs-writeback.c
++++ b/fs/fs-writeback.c
+@@ -505,6 +505,8 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
+ 	if (!isw)
+ 		return;
+ 
++	atomic_inc(&isw_nr_in_flight);
++
+ 	/* find and pin the new wb */
+ 	rcu_read_lock();
+ 	memcg_css = css_from_id(new_wb_id, &memory_cgrp_subsys);
+@@ -535,11 +537,10 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
+ 	 * Let's continue after I_WB_SWITCH is guaranteed to be visible.
+ 	 */
+ 	call_rcu(&isw->rcu_head, inode_switch_wbs_rcu_fn);
+-
+-	atomic_inc(&isw_nr_in_flight);
+ 	return;
+ 
+ out_free:
++	atomic_dec(&isw_nr_in_flight);
+ 	if (isw->new_wb)
+ 		wb_put(isw->new_wb);
+ 	kfree(isw);
 -- 
 2.30.2
 
