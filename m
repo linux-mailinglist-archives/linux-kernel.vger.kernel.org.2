@@ -2,91 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 673863C6370
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 21:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07FA53C6372
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 21:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236287AbhGLTRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 15:17:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38068 "EHLO
+        id S236306AbhGLTRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 15:17:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234064AbhGLTRM (ORCPT
+        with ESMTP id S234302AbhGLTRc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 15:17:12 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B33F0C0613DD;
-        Mon, 12 Jul 2021 12:14:23 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id y4so17311816pfi.9;
-        Mon, 12 Jul 2021 12:14:23 -0700 (PDT)
+        Mon, 12 Jul 2021 15:17:32 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E6B9C0613DD
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 12:14:43 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id u25so25959488ljj.11
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 12:14:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=xQvtw5BQf/3kAW/eFbKgr2fiCmuQc191adEeBK2hePw=;
-        b=eNBV0ICwCVFGpcm7tSWWgFWFUHnMCITihDB8RJFuzUxgwXLHQZMit1uHfA5Lg/tW61
-         7vxah2zaVY6XmNcrUYcuHlnS9jpG537GhJD/A8MXn3h4MjD7lgYBvgWI+8wIJ2gJ7hRv
-         CZ3BgNPBAxzzczLp7nmNq3s+eaJdqqAIWJxiyFbJErNU6Zx95rH0KqVQLYmkps90u9Uw
-         8IV63D8CT+uiPMx88EPr4Z1Y+JnPiXZLu1LXPJqoYFPKgeV2Md2MRCTVpQnSZlrTJB/7
-         t7K0Hwm635Wasi0UxlZzL1B0gtTRbIuL+BIuRrWyMvcHfIlhDuESn0bv33nto/xnBaYx
-         gpIQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/rM+aoSbmTqJDqFPwIB6NFP4YePrQAdzLRW/vT9PMLI=;
+        b=R5bRUKi0sBMrWMFjTDrfEVpFQCedcMn2pFztQ0BTYyXRN1kiL63+eWT1lMJ9Vdg/Mi
+         PfNutfK/HGWPYbqAx8LPAIFLPl+yTLxfqZ0NccuCqSljXZZ3T+iv0mpXMxfLkBKcKuxb
+         uwplwVJ+fi/9Y3oHlYYo/pJ8JQZPRqdkmLln8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=xQvtw5BQf/3kAW/eFbKgr2fiCmuQc191adEeBK2hePw=;
-        b=AeJ3CXpm3yG5JtFrnAzI96LBsHdDtscW1makSYvPqlW3x0xWd9Ewfh75LE7vR8mpLT
-         2ar6fMQV+XwIBVO67V3NkWYxIZ4lR8QNo92hiX9eYUBOykgIOJa5lQ6VBTq+/NsYYP9n
-         Ny8ICWfv3WtVD34VbDLHPC+nUF1kC2v82xTznQf1NBqYgwe+xwLFW51cwuDfUl97RJ/X
-         1vUpbLQY9YKkLePDTrww4mqxJ+oV/0DKUDuMSaiqGQzLUulzUMNtDPVaNEvJyPokOgLn
-         IuxTCjUW2EQCSE9Ha1dBJiqEtRmZi3H0GrzhetVOPEKzWku4vKIvfopuKA/J0M9L5LnI
-         6WiA==
-X-Gm-Message-State: AOAM530ZbwjXsBSc68Pn1FVrJzvT2ml6BEFQe83H8bOXGO40+FKigGJG
-        pN4VZneShwdgIMOLhxSSObKESPBT4IGq2O5k8Uj2Yg==
-X-Google-Smtp-Source: ABdhPJyI47PxQeCsPWJFfn42kHk+FxtsGqTM7jkDgp/9QSBK/bzzWo3Qw1WDicFjYQC3GC8ifvFPiQ==
-X-Received: by 2002:a63:170b:: with SMTP id x11mr571913pgl.253.1626117262712;
-        Mon, 12 Jul 2021 12:14:22 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [71.19.144.195])
-        by smtp.gmail.com with ESMTPSA id j2sm16471589pfi.111.2021.07.12.12.14.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 12:14:22 -0700 (PDT)
-Message-ID: <60ec948e.1c69fb81.4148b.0f92@mx.google.com>
-Date:   Mon, 12 Jul 2021 12:14:22 -0700 (PDT)
-X-Google-Original-Date: Mon, 12 Jul 2021 19:14:16 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-Subject: RE: [PATCH 5.10 000/593] 5.10.50-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/rM+aoSbmTqJDqFPwIB6NFP4YePrQAdzLRW/vT9PMLI=;
+        b=K7/0l3vJ2ygUYYaDMZPOvOzbE1zJ688n4X3VFhdNhVH/siYY7a7VhUMZ1TfpVSpqFM
+         5pEmbPKAy3++VFya/8jspWVqK6sEJEu1CpVz+T5qvJIaBS2gC721R9tWqhha+bvqJdT1
+         /uCJEVJNaKbhRBEemb4m/p7e3VDiVO8GS/vknlQDUhPc3q1BK9XPUMSypd2p450Kceg+
+         xmfjEOKEzuHSYMZ6njs2o/ju2elRBSNcUs0gQMjNHgoyHFXxxDGiE2Orjcb44fN2imrJ
+         i2SU/+ZMn70qGyq7iKwjgsYBBRpTKTYztBdqsw1ezLtPmMVoAZiYZkOwX+InIIDbUlsB
+         dBQw==
+X-Gm-Message-State: AOAM533E1h7vJrwt1WFt7JXxCvq6rfJPHu1UnU52T8x+w9rxJWuYBtaf
+        FGwCxWYMLkLPqIltLz6YllAqqquN2Qjd73lF
+X-Google-Smtp-Source: ABdhPJyXPZYNxn1eWuE6edtA1mrOnY1fwknDrjXTzjr9AG9e0MUVGx2RznYFWcy5lWgBpZMnp9g8SQ==
+X-Received: by 2002:a2e:8215:: with SMTP id w21mr602217ljg.160.1626117281334;
+        Mon, 12 Jul 2021 12:14:41 -0700 (PDT)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id s21sm1277312lfi.166.2021.07.12.12.14.40
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Jul 2021 12:14:41 -0700 (PDT)
+Received: by mail-lf1-f47.google.com with SMTP id n14so45373986lfu.8
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 12:14:40 -0700 (PDT)
+X-Received: by 2002:ac2:42d6:: with SMTP id n22mr217501lfl.41.1626117280288;
+ Mon, 12 Jul 2021 12:14:40 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAHk-=wjB5XBk4obhMPfrU3mnOakV9VgHAYOo-ZGJnB2X0DnBWA@mail.gmail.com>
+ <a9473821-1d53-0037-7590-aeaf8e85e72a@jonmasters.org>
+In-Reply-To: <a9473821-1d53-0037-7590-aeaf8e85e72a@jonmasters.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 12 Jul 2021 12:14:24 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh0mRAyL9GNVjhw2ki7vRevvUnovCzawn2FO7e_dOfU-w@mail.gmail.com>
+Message-ID: <CAHk-=wh0mRAyL9GNVjhw2ki7vRevvUnovCzawn2FO7e_dOfU-w@mail.gmail.com>
+Subject: Re: Linux 5.14-rc1
+To:     Jon Masters <jcm@jonmasters.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Matthew Auld <matthew.auld@intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Jul 2021 08:02:40 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.10.50 release.
-> There are 593 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 14 Jul 2021 06:02:46 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.50-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Mon, Jul 12, 2021 at 12:08 AM Jon Masters <jcm@jonmasters.org> wrote:
+>
+> I happened to be installing a Fedora 34 (x86) VM for something and did a
+> test kernel compile that hung on boot. Setting up a serial console I get
+> the below backtrace from ttm but I have not had chance to look at it.
 
-5.10.50-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+It's a NULL pointer in qxl_bo_delete_mem_notify(), with the code
+disassembling to
 
+  16: 55                    push   %rbp
+  17: 48 89 fd              mov    %rdi,%rbp
+  1a: e8 a2 02 00 00        callq  0x2c1
+  1f: 84 c0                test   %al,%al
+  21: 74 0d                je     0x30
+  23: 48 8b 85 68 01 00 00 mov    0x168(%rbp),%rax
+  2a:* 83 78 10 03          cmpl   $0x3,0x10(%rax) <-- trapping instruction
+  2e: 74 02                je     0x32
+  30: 5d                    pop    %rbp
+  31: c3                    retq
+
+and that "cmpl $3" looks exactly like that
+
+        if (bo->resource->mem_type == TTM_PL_PRIV
+
+and the bug is almost certainly from commit d3116756a710 ("drm/ttm:
+rename bo->mem and make it a pointer"), which did
+
+-       if (bo->mem.mem_type == TTM_PL_PRIV ...
++       if (bo->resource->mem_type == TTM_PL_PRIV ...
+
+and claimed "No functional change".
+
+But clearly the "bo->resource" pointer is NULL.
+
+Added guilty parties and dri-devel mailing list.
+
+Christian? Full report at
+
+   https://lore.kernel.org/lkml/a9473821-1d53-0037-7590-aeaf8e85e72a@jonmasters.org/
+
+but there's not a whole lot else there that is interesting except for
+the call trace:
+
+  ttm_bo_cleanup_memtype_use+0x22/0x60 [ttm]
+  ttm_bo_release+0x1a1/0x300 [ttm]
+  ttm_bo_delayed_delete+0x1be/0x220 [ttm]
+  ttm_device_delayed_workqueue+0x18/0x40 [ttm]
+  process_one_work+0x1ec/0x390
+  worker_thread+0x53/0x3e0
+
+so it's presumably the cleanup phase and perhaps "bo->resource" has
+been deallocated and cleared?
+
+                  Linus
