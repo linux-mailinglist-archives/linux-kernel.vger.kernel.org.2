@@ -2,46 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 495B73C57BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 423F73C5155
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354324AbhGLIhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:37:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36234 "EHLO mail.kernel.org"
+        id S1347625AbhGLHjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:39:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350473AbhGLHvC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:51:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 42439619B7;
-        Mon, 12 Jul 2021 07:45:38 +0000 (UTC)
+        id S244541AbhGLHK4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:10:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5086960FE7;
+        Mon, 12 Jul 2021 07:08:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075938;
-        bh=P9ppjSFsBICvCkz3u2clqd3OZkBGtmH3RXn3E8O3Fjo=;
+        s=korg; t=1626073688;
+        bh=we2D75WmFEcQ++fhRR6kDIkOvwt4QaL3qwlHB6+6MO0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CWGC16xNKlRpfniEZHZwh63wLYMGMdPSp7u1Ij4IaXUfIivlgC/lTg6HwErvc9MBV
-         RIrGPeLTUV7c5hXJzv35kELyjMdpO6jPjykU5yMISZ3wA1U40h24BtjCFaOkyGv8Xw
-         FKO+y9z7O+Odof2doZRA2qzixvkuJD3kX75jEh3w=
+        b=vOXLYLcKeKL+c3bqq5IgpjUvBIL5ePSsuYYtOVi6voeoOXFgn7uH8Ia8dmlFFNrVJ
+         EhBZ3S19X9fSTJTgiPZI4Fz1urIBsDPmIebsZ5dcbK55v3+HWpymgptEkvQ1bNzZy+
+         9/K/cSaOYh4o6Fdit6GODyCLx78fHcRCRnB78IXk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Waiman Long <longman@redhat.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 386/800] mm: memcg/slab: properly set up gfp flags for objcg pointer array
+        stable@vger.kernel.org,
+        Praveen Kumar <kumarpraveen@linux.microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 326/700] x86/hyperv: fix logical processor creation
 Date:   Mon, 12 Jul 2021 08:06:49 +0200
-Message-Id: <20210712061008.292760109@linuxfoundation.org>
+Message-Id: <20210712061011.054825762@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,115 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Waiman Long <longman@redhat.com>
+From: Praveen Kumar <kumarpraveen@linux.microsoft.com>
 
-[ Upstream commit 41eb5df1cbc9b302fc263ad7c9f38cfc38b4df61 ]
+[ Upstream commit 450605c28d571eddca39a65fdbc1338add44c6d9 ]
 
-Patch series "mm: memcg/slab: Fix objcg pointer array handling problem", v4.
+Microsoft Hypervisor expects the logical processor index to be the same
+as CPU's index during logical processor creation. Using cpu_physical_id
+confuses hypervisor's scheduler. That causes the root partition not boot
+when core scheduler is used.
 
-Since the merging of the new slab memory controller in v5.9, the page
-structure stores a pointer to objcg pointer array for slab pages.  When
-the slab has no used objects, it can be freed in free_slab() which will
-call kfree() to free the objcg pointer array in
-memcg_alloc_page_obj_cgroups().  If it happens that the objcg pointer
-array is the last used object in its slab, that slab may then be freed
-which may caused kfree() to be called again.
+This patch removes the call to cpu_physical_id and uses the CPU index
+directly for bringing up logical processor. This scheme works for both
+classic scheduler and core scheduler.
 
-With the right workload, the slab cache may be set up in a way that allows
-the recursive kfree() calling loop to nest deep enough to cause a kernel
-stack overflow and panic the system.  In fact, we have a reproducer that
-can cause kernel stack overflow on a s390 system involving kmalloc-rcl-256
-and kmalloc-rcl-128 slabs with the following kfree() loop recursively
-called 74 times:
-
-  [ 285.520739] [<000000000ec432fc>] kfree+0x4bc/0x560 [ 285.520740]
-[<000000000ec43466>] __free_slab+0xc6/0x228 [ 285.520741]
-[<000000000ec41fc2>] __slab_free+0x3c2/0x3e0 [ 285.520742]
-[<000000000ec432fc>] kfree+0x4bc/0x560 : While investigating this issue, I
-also found an issue on the allocation side.  If the objcg pointer array
-happen to come from the same slab or a circular dependency linkage is
-formed with multiple slabs, those affected slabs can never be freed again.
-
-This patch series addresses these two issues by introducing a new set of
-kmalloc-cg-<n> caches split from kmalloc-<n> caches.  The new set will
-only contain non-reclaimable and non-dma objects that are accounted in
-memory cgroups whereas the old set are now for unaccounted objects only.
-By making this split, all the objcg pointer arrays will come from the
-kmalloc-<n> caches, but those caches will never hold any objcg pointer
-array.  As a result, deeply nested kfree() call and the unfreeable slab
-problems are now gone.
-
-This patch (of 4):
-
-Since the merging of the new slab memory controller in v5.9, the page
-structure may store a pointer to obj_cgroup pointer array for slab pages.
-Currently, only the __GFP_ACCOUNT bit is masked off.  However, the array
-is not readily reclaimable and doesn't need to come from the DMA buffer.
-So those GFP bits should be masked off as well.
-
-Do the flag bit clearing at memcg_alloc_page_obj_cgroups() to make sure
-that it is consistently applied no matter where it is called.
-
-Link: https://lkml.kernel.org/r/20210505200610.13943-1-longman@redhat.com
-Link: https://lkml.kernel.org/r/20210505200610.13943-2-longman@redhat.com
-Fixes: 286e04b8ed7a ("mm: memcg/slab: allocate obj_cgroups for non-root slab pages")
-Signed-off-by: Waiman Long <longman@redhat.com>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
-Acked-by: Roman Gushchin <guro@fb.com>
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc: Christoph Lameter <cl@linux.com>
-Cc: Pekka Enberg <penberg@kernel.org>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 333abaf5abb3 (x86/hyperv: implement and use hv_smp_prepare_cpus)
+Signed-off-by: Praveen Kumar <kumarpraveen@linux.microsoft.com>
+Link: https://lore.kernel.org/r/20210531074046.113452-1-kumarpraveen@linux.microsoft.com
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/memcontrol.c | 8 ++++++++
- mm/slab.h       | 1 -
- 2 files changed, 8 insertions(+), 1 deletion(-)
+ arch/x86/kernel/cpu/mshyperv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 64ada9e650a5..f4f2d05c8c7b 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2739,6 +2739,13 @@ retry:
- }
+diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
+index e88bc296afca..a803fc423cb7 100644
+--- a/arch/x86/kernel/cpu/mshyperv.c
++++ b/arch/x86/kernel/cpu/mshyperv.c
+@@ -245,7 +245,7 @@ static void __init hv_smp_prepare_cpus(unsigned int max_cpus)
+ 	for_each_present_cpu(i) {
+ 		if (i == 0)
+ 			continue;
+-		ret = hv_call_add_logical_proc(numa_cpu_node(i), i, cpu_physical_id(i));
++		ret = hv_call_add_logical_proc(numa_cpu_node(i), i, i);
+ 		BUG_ON(ret);
+ 	}
  
- #ifdef CONFIG_MEMCG_KMEM
-+/*
-+ * The allocated objcg pointers array is not accounted directly.
-+ * Moreover, it should not come from DMA buffer and is not readily
-+ * reclaimable. So those GFP bits should be masked off.
-+ */
-+#define OBJCGS_CLEAR_MASK	(__GFP_DMA | __GFP_RECLAIMABLE | __GFP_ACCOUNT)
-+
- int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
- 				 gfp_t gfp, bool new_page)
- {
-@@ -2746,6 +2753,7 @@ int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
- 	unsigned long memcg_data;
- 	void *vec;
- 
-+	gfp &= ~OBJCGS_CLEAR_MASK;
- 	vec = kcalloc_node(objects, sizeof(struct obj_cgroup *), gfp,
- 			   page_to_nid(page));
- 	if (!vec)
-diff --git a/mm/slab.h b/mm/slab.h
-index 18c1927cd196..b3294712a686 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -309,7 +309,6 @@ static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
- 	if (!memcg_kmem_enabled() || !objcg)
- 		return;
- 
--	flags &= ~__GFP_ACCOUNT;
- 	for (i = 0; i < size; i++) {
- 		if (likely(p[i])) {
- 			page = virt_to_head_page(p[i]);
 -- 
 2.30.2
 
