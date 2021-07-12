@@ -2,122 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69F723C408A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 02:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 337173C408D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 02:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232307AbhGLAkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Jul 2021 20:40:09 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:34651 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229660AbhGLAkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Jul 2021 20:40:08 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GNPwr6GXQz9sV8;
-        Mon, 12 Jul 2021 10:37:16 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1626050239;
-        bh=U048ebzJE4FLKmIjv0zcGUtfyQKWWElJJmfx/ZZ/poA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=CsfsAdt77vOqemjgps5YiHT6AZJiUOmCvarRzHSfP5/T5HZPEmtnh87+fom4rII5d
-         ++TWRm4Yer1LQ3EWe2kFNi8Zyr1owNoHIMe0oa928t7fWhsyC41l9ylDhjJpqhHrXn
-         kx7wJfFjCnhytHITXejtqIZe5ssFwkKoXQJ7k+MlVaIEyXKx7KDXmJTgkmBIwTNcI4
-         nVDiVlDS5NYmoyzyxjQOPfszUQS8A+tkLGnKlQMPAjnT43covGAzK3m9/vmnQ2hC5C
-         NEr/NMnDYJ0U8/epGBv/nqwi+/w8RIKCiGMGj4UgI28iqemr9kJeK+XSOF3vLDMzBk
-         Z2jxqz7SaLJQg==
-Date:   Mon, 12 Jul 2021 10:37:15 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Bixuan Cui <cuibixuan@huawei.com>, Finn Behrens <me@kloenk.de>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Wedson Almeida Filho <wedsonaf@google.com>
-Subject: linux-next: manual merge of the rust tree with Linus' tree
-Message-ID: <20210712103715.0993fdf2@canb.auug.org.au>
+        id S231166AbhGLAmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Jul 2021 20:42:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhGLAmR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Jul 2021 20:42:17 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9003C0613DD;
+        Sun, 11 Jul 2021 17:39:28 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id f30so39331041lfj.1;
+        Sun, 11 Jul 2021 17:39:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=61+xx73wTFO0lW6riCG7quy16olfucwKxe3/aiVqHfU=;
+        b=eDu52mTd38fMdQdbGFA05eudpvkr+4USIug9Y0XV2tG6mGNeszwQ04ffOm0iZRO1+s
+         /84mQRM2YfJ7LF6lSRrmSZi1oOrbg+LkD48omsonuNAr1x1liuad562QfGJWQ4GmAMWk
+         3F9NLdOYyGaldHC49xSDK4xHS89tqalDCr4tiOPRM2UPRDTJQNFgU8fbL2J4FaVNHTEm
+         eX71/uynB0udOVqXD4zOltrV/2zvkH0OcVXCLOlv2zl32Utgx+qiYHPSDXBuwiTfYDcd
+         C+C+CfHA7r0BtLU2q5H8rfDUtFoWBY3ksDu4pYbVzNJXb/qP976UhaL7wVPNqrsWSAZw
+         fECw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=61+xx73wTFO0lW6riCG7quy16olfucwKxe3/aiVqHfU=;
+        b=gX4sOowklVzal9XNn5Ty/Ifx5A9uROP1D0ocD7oCyt76X0BWLm0V5lThF7XOl5tITQ
+         dcuBCWI0wUrPwl73bAjhXBLlFmLxH5BuYYbafadd1t6yY5ykSMvAta8L61wkNFm5+env
+         4MwuMCKn+MsV5jrak00JIFgKU305ASjJu5YoPj0t6iVjokUD629qFLRmnKqoGzQ2UT26
+         yVURIqZiAQ8ItIpbohXsb7Xc42hYndCIwAQegkeQx3IV5aFCWMDo7iGF8gvXGidWJyLe
+         OyGcc9UgymlosgeSBEiJw3fBSzytPpU05xOe6nKjsbx9dCy3/dURwF4IWaxmfKKMsIcy
+         gCKQ==
+X-Gm-Message-State: AOAM531KLZpa9RnZUoLmvZ0j09nEL5Juwa+V4QfS6qOjcYdPMtkbPRd7
+        h/zcZrp76AuU3HJ8qagPNi4/EUJLkdo=
+X-Google-Smtp-Source: ABdhPJz4SsFAxZHY6MbqeUWpHBpulOIpzY7R/0KttPzAnUs/IemURrELGQQqTUwSt4hxNpcPaM2FkQ==
+X-Received: by 2002:a05:6512:2186:: with SMTP id b6mr37693873lft.490.1626050367019;
+        Sun, 11 Jul 2021 17:39:27 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-37-113.dynamic.spd-mgts.ru. [94.29.37.113])
+        by smtp.googlemail.com with ESMTPSA id y7sm287169lfg.256.2021.07.11.17.39.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 11 Jul 2021 17:39:26 -0700 (PDT)
+Subject: Re: [PATCH v1] soc/tegra: Make regulator couplers depend on
+ CONFIG_REGULATOR
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+References: <20210621160739.22448-1-digetx@gmail.com>
+Message-ID: <a690cb76-217f-91cf-0198-f232e3ce7536@gmail.com>
+Date:   Mon, 12 Jul 2021 03:39:26 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/R6_yau2ETXRxwIh2NJ4ZVyx";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20210621160739.22448-1-digetx@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/R6_yau2ETXRxwIh2NJ4ZVyx
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+21.06.2021 19:07, Dmitry Osipenko пишет:
+> The regulator coupler drivers now use regulator-driver API function that
+> isn't available during compile-testing. Make regulator coupler drivers
+> depend on CONFIG_REGULATOR in Kconfig.
+> 
+> Fixes: 03978d42ed0d ("soc/tegra: regulators: Bump voltages on system reboot")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/soc/tegra/Kconfig | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 
-Hi all,
-
-Today's linux-next merge of the rust tree got a conflict in:
-
-  include/linux/kallsyms.h
-
-between commit:
-
-  9294523e3768 ("module: add printk formats to add module build ID to stack=
-traces")
-
-from Linus' tree and commit:
-
-  f2f6175186f4 ("kallsyms: increase maximum kernel symbol length to 512")
-
-from the rust tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc include/linux/kallsyms.h
-index a1d6fc82d7f0,5cdc6903abca..000000000000
---- a/include/linux/kallsyms.h
-+++ b/include/linux/kallsyms.h
-@@@ -15,11 -14,9 +15,11 @@@
- =20
-  #include <asm/sections.h>
- =20
-- #define KSYM_NAME_LEN 128
-+ #define KSYM_NAME_LEN 512
- -#define KSYM_SYMBOL_LEN (sizeof("%s+%#lx/%#lx [%s]") + (KSYM_NAME_LEN - 1=
-) + \
- -			 2*(BITS_PER_LONG*3/10) + (MODULE_NAME_LEN - 1) + 1)
- +#define KSYM_SYMBOL_LEN (sizeof("%s+%#lx/%#lx [%s %s]") + \
- +			(KSYM_NAME_LEN - 1) + \
- +			2*(BITS_PER_LONG*3/10) + (MODULE_NAME_LEN - 1) + \
- +			(BUILD_ID_SIZE_MAX * 2) + 1)
- =20
-  struct cred;
-  struct module;
-
---Sig_/R6_yau2ETXRxwIh2NJ4ZVyx
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDrjrsACgkQAVBC80lX
-0Gz8Xwf/aMcjVj9OpLfmwu0SYAFbjitFfXU16zIGdhkxzWIxrga4H4ZxE9Uh4GkV
-fngSCR0bpTM2qi2sprca20yakxvr5AeFH4diihOXUbHIGfoH9IMsWy5FoAHwXT9F
-h9kuZ+Xt25lQnoqDPablGmp7n3BRnlQz9WPx74dKa14u+SEWxFQVC3BdMWCBcCG7
-ux2DBGafp03/4Buh2jccCx9V4aINpmfZsBvAnETzs8GvWW+2Ytc/4mno4NmEbTbz
-bzQJiXVmoZ106zNK1vgEPtnb9IgW4sqEqWgi+vu9CNqwCfCRQOj1XOquKbKUIcfh
-cqUDXa4o1vippYZ8IOuUcxywyk59lQ==
-=FA7C
------END PGP SIGNATURE-----
-
---Sig_/R6_yau2ETXRxwIh2NJ4ZVyx--
+Thierry, should this patch go into 5.14-rc2 fixes? Please take care of
+it if yes.
