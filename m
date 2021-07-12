@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE6263C4A50
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29C833C5166
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240509AbhGLGvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:51:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34676 "EHLO mail.kernel.org"
+        id S1348107AbhGLHkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:40:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237274AbhGLGjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:39:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 375C7610E5;
-        Mon, 12 Jul 2021 06:34:58 +0000 (UTC)
+        id S243938AbhGLHKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:10:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C9F161380;
+        Mon, 12 Jul 2021 07:05:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071698;
-        bh=GsM7kTT8tLZRHnd8pH8qOql2SjIfQ9+HXrYJLfJFeGU=;
+        s=korg; t=1626073535;
+        bh=ZXY77PLvDVu3MEhWCd9R7fCDGiXD1+satb3QJr4c/vE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AnwlNfU1piA4zfhjox0LNPCxeFQYuUc6+KuSEVyKP1knBWmDg2Q5O7h2Q+fbnLkuo
-         0ar8i1SPtvA1ngJ+iA67TC6JHp0RwiojGpvVjttNoKXc5vDNV7EPl7OQ4Sj8brNyXI
-         /79Sbko4crAIJhFeL4CDGrBvifKo+ttVkzt0SBj8=
+        b=l9TECeKBcDOb7rEws4ie9im3Sl1TV1Wn3/T4eoNrMhRlTwFseEq8BvZpnBPcNYQUK
+         LtyfgCm+Cv+jKcjnKaKQJ+dBBEOa6YJAuz3a0HYW58xYHRxJQ97lGw5gQ7qNw4rlDV
+         DQw6oJF6QEWsWXcFwQjhru/mkXbMxQ4Nyeg87xGk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Petr Mladek <pmladek@suse.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 181/593] random32: Fix implicit truncation warning in prandom_seed_state()
+        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 258/700] pata_rb532_cf: fix deferred probing
 Date:   Mon, 12 Jul 2021 08:05:41 +0200
-Message-Id: <20210712060902.942060657@linuxfoundation.org>
+Message-Id: <20210712061003.547047140@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 
-[ Upstream commit d327ea15a305024ef0085252fa3657bbb1ce25f5 ]
+[ Upstream commit 2d3a62fbae8e5badc2342388f65ab2191c209cc0 ]
 
-sparse generates the following warning:
+The driver overrides the error codes returned by platform_get_irq() to
+-ENOENT, so if it returns -EPROBE_DEFER, the driver would fail the probe
+permanently instead of the deferred probing. Switch to propagating the
+error code upstream, still checking/overriding IRQ0 as libata regards it
+as "no IRQ" (thus polling) anyway...
 
- include/linux/prandom.h:114:45: sparse: sparse: cast truncates bits from
- constant value
-
-This is because the 64-bit seed value is manipulated and then placed in a
-u32, causing an implicit cast and truncation. A forced cast to u32 doesn't
-prevent this warning, which is reasonable because a typecast doesn't prove
-that truncation was expected.
-
-Logical-AND the value with 0xffffffff to make explicit that truncation to
-32-bit is intended.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-Signed-off-by: Petr Mladek <pmladek@suse.com>
-Link: https://lore.kernel.org/r/20210525122012.6336-3-rf@opensource.cirrus.com
+Fixes: 9ec36cafe43b ("of/irq: do irq resolution in platform_get_irq")
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+Link: https://lore.kernel.org/r/771ced55-3efb-21f5-f21c-b99920aae611@omprussia.ru
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/prandom.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/ata/pata_rb532_cf.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/prandom.h b/include/linux/prandom.h
-index bbf4b4ad61df..056d31317e49 100644
---- a/include/linux/prandom.h
-+++ b/include/linux/prandom.h
-@@ -111,7 +111,7 @@ static inline u32 __seed(u32 x, u32 m)
-  */
- static inline void prandom_seed_state(struct rnd_state *state, u64 seed)
- {
--	u32 i = (seed >> 32) ^ (seed << 10) ^ seed;
-+	u32 i = ((seed >> 32) ^ (seed << 10) ^ seed) & 0xffffffffUL;
+diff --git a/drivers/ata/pata_rb532_cf.c b/drivers/ata/pata_rb532_cf.c
+index 479c4b29b856..303f8c375b3a 100644
+--- a/drivers/ata/pata_rb532_cf.c
++++ b/drivers/ata/pata_rb532_cf.c
+@@ -115,10 +115,12 @@ static int rb532_pata_driver_probe(struct platform_device *pdev)
+ 	}
  
- 	state->s1 = __seed(i,   2U);
- 	state->s2 = __seed(i,   8U);
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq <= 0) {
++	if (irq < 0) {
+ 		dev_err(&pdev->dev, "no IRQ resource found\n");
+-		return -ENOENT;
++		return irq;
+ 	}
++	if (!irq)
++		return -EINVAL;
+ 
+ 	gpiod = devm_gpiod_get(&pdev->dev, NULL, GPIOD_IN);
+ 	if (IS_ERR(gpiod)) {
 -- 
 2.30.2
 
