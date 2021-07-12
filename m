@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E62E3C58A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9F1A3C4D98
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379832AbhGLIvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:51:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43598 "EHLO mail.kernel.org"
+        id S241483AbhGLHNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:13:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49252 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348091AbhGLHzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:55:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 12814611ED;
-        Mon, 12 Jul 2021 07:51:39 +0000 (UTC)
+        id S238817AbhGLGtS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:49:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B3B06120D;
+        Mon, 12 Jul 2021 06:45:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076300;
-        bh=3F6qmRmyIN/K05SUsQVNDln8SdtbOFvww75CHlcxg5g=;
+        s=korg; t=1626072316;
+        bh=COx7KGEwyBUGakUkzfRySLpuKRMns13vFF5+zf6Cogc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mEUM37PBzMOHUZGUsniOLKp3n8Jzait4xzvQCcP1DMiBfcIyGV7rfojRlYpYTgV/9
-         wwRP9FyBjrb15Ks7uJpgdsEMSyBkVquEYNfM6qXu7Ifr0VFoPXletKtpoL3FVD0ZkT
-         okpIm66AK4EYLWJy1Y35TvRQunJ+uQHAuMJ54go8=
+        b=nuLr4rpKfK/pIAfCNk3qbrGTFqi4I0kMsfe3B1xF3yx0FGbsifO3XnbX3UQoFtgVd
+         Mw1Q6OOALF1jFUWxOcH+HDr5y6dvhmmfq9qlr/1e4dPqowh4+DIu3bTH59yR00kBHn
+         0hEZODFH4KGoCDD4gaYwB4vM+faStWxMHiIVHCEo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Taniya Das <tdas@codeaurora.org>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 584/800] clk: qcom: gcc: Add support for a new frequency for SC7280
+Subject: [PATCH 5.10 447/593] iio: accel: hid: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
 Date:   Mon, 12 Jul 2021 08:10:07 +0200
-Message-Id: <20210712061029.424025430@linuxfoundation.org>
+Message-Id: <20210712060938.272326983@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +42,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Taniya Das <tdas@codeaurora.org>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit ca1c667f4be935825fffb232a106c9d3f1c09b0b ]
+[ Upstream commit c6559bf796ccdb3a0c79db846af96c8f7046880b ]
 
-There is a requirement to support 52MHz for qup clocks for bluetooth
-usecase, thus update the frequency table to support the frequency.
+To make code more readable, use a structure to express the channel
+layout and ensure the timestamp is 8 byte aligned.
+Note this matches what was done in all the other hid sensor drivers.
+This one was missed previously due to an extra level of indirection.
 
-Fixes: a3cc092196ef ("clk: qcom: Add Global Clock controller (GCC) driver for SC7280")
-Signed-off-by: Taniya Das <tdas@codeaurora.org>
-Link: https://lore.kernel.org/r/1624449471-9984-1-git-send-email-tdas@codeaurora.org
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Found during an audit of all calls of this function.
+
+Fixes: a96cd0f901ee ("iio: accel: hid-sensor-accel-3d: Add timestamp")
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Link: https://lore.kernel.org/r/20210501170121.512209-4-jic23@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/qcom/gcc-sc7280.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/iio/accel/hid-sensor-accel-3d.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/clk/qcom/gcc-sc7280.c b/drivers/clk/qcom/gcc-sc7280.c
-index ef734db316df..6cefcdc86990 100644
---- a/drivers/clk/qcom/gcc-sc7280.c
-+++ b/drivers/clk/qcom/gcc-sc7280.c
-@@ -716,6 +716,7 @@ static const struct freq_tbl ftbl_gcc_qupv3_wrap0_s2_clk_src[] = {
- 	F(29491200, P_GCC_GPLL0_OUT_EVEN, 1, 1536, 15625),
- 	F(32000000, P_GCC_GPLL0_OUT_EVEN, 1, 8, 75),
- 	F(48000000, P_GCC_GPLL0_OUT_EVEN, 1, 4, 25),
-+	F(52174000, P_GCC_GPLL0_OUT_MAIN, 1, 2, 23),
- 	F(64000000, P_GCC_GPLL0_OUT_EVEN, 1, 16, 75),
- 	F(75000000, P_GCC_GPLL0_OUT_EVEN, 4, 0, 0),
- 	F(80000000, P_GCC_GPLL0_OUT_EVEN, 1, 4, 15),
+diff --git a/drivers/iio/accel/hid-sensor-accel-3d.c b/drivers/iio/accel/hid-sensor-accel-3d.c
+index 4c5e594024f8..f05840d17fb7 100644
+--- a/drivers/iio/accel/hid-sensor-accel-3d.c
++++ b/drivers/iio/accel/hid-sensor-accel-3d.c
+@@ -27,8 +27,11 @@ struct accel_3d_state {
+ 	struct hid_sensor_hub_callbacks callbacks;
+ 	struct hid_sensor_common common_attributes;
+ 	struct hid_sensor_hub_attribute_info accel[ACCEL_3D_CHANNEL_MAX];
+-	/* Reserve for 3 channels + padding + timestamp */
+-	u32 accel_val[ACCEL_3D_CHANNEL_MAX + 3];
++	/* Ensure timestamp is naturally aligned */
++	struct {
++		u32 accel_val[3];
++		s64 timestamp __aligned(8);
++	} scan;
+ 	int scale_pre_decml;
+ 	int scale_post_decml;
+ 	int scale_precision;
+@@ -239,8 +242,8 @@ static int accel_3d_proc_event(struct hid_sensor_hub_device *hsdev,
+ 			accel_state->timestamp = iio_get_time_ns(indio_dev);
+ 
+ 		hid_sensor_push_data(indio_dev,
+-				     accel_state->accel_val,
+-				     sizeof(accel_state->accel_val),
++				     &accel_state->scan,
++				     sizeof(accel_state->scan),
+ 				     accel_state->timestamp);
+ 
+ 		accel_state->timestamp = 0;
+@@ -265,7 +268,7 @@ static int accel_3d_capture_sample(struct hid_sensor_hub_device *hsdev,
+ 	case HID_USAGE_SENSOR_ACCEL_Y_AXIS:
+ 	case HID_USAGE_SENSOR_ACCEL_Z_AXIS:
+ 		offset = usage_id - HID_USAGE_SENSOR_ACCEL_X_AXIS;
+-		accel_state->accel_val[CHANNEL_SCAN_INDEX_X + offset] =
++		accel_state->scan.accel_val[CHANNEL_SCAN_INDEX_X + offset] =
+ 						*(u32 *)raw_data;
+ 		ret = 0;
+ 	break;
 -- 
 2.30.2
 
