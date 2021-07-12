@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE633C4FEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AD243C4960
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344036AbhGLH3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:29:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36642 "EHLO mail.kernel.org"
+        id S238868AbhGLGoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:44:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241338AbhGLHBb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:01:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19C7F6145A;
-        Mon, 12 Jul 2021 06:58:41 +0000 (UTC)
+        id S236804AbhGLGeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:34:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B2BB361151;
+        Mon, 12 Jul 2021 06:30:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073122;
-        bh=XfvWU0UloXk9czUVI1GErEJUmqIoEjk1o7MmrbHOmdw=;
+        s=korg; t=1626071413;
+        bh=UtCAsljQ+Djj+UjaXl/mUqLAIRtUYcla61Rch2fxNTg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vfpCg88MKQXzu96Hs1/mRZI+BV2xSykjEVCSxKDc0wwulgfjqmZz11a/O8gcOJNBZ
-         OhKJFKzyNt9FNb4ST18vNCQeQhrjyOWxPhhFUx4z0eskZ7s/D3HIw/Mq22CG3UaMNE
-         80gy99oX/138WYJ6deSY926HI7JfVGvNuej5FBPk=
+        b=c9UlE2t0OV/soZ5OU3XQupDxH6BQLUq1U67UWRDvYSj33pTQ33fAA84542Hq+mN15
+         qdODOU4B0DUpGjEMJPgHXE3wPjFZ3H7Ra81yrnOkbu82fpYNukhgZodvtLZa+pdmsM
+         wr+DaQs0LFReWu35TSL/DQGMfxfgQu8eWAUKkh+c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jay Fang <f.fangjian@huawei.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 135/700] spi: spi-topcliff-pch: Fix potential double free in pch_spi_process_messages()
+        stable@vger.kernel.org, Baochen Qiang <bqiang@codeaurora.org>,
+        Hemant Kumar <hemantk@codeaurora.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 5.10 058/593] bus: mhi: Wait for M2 state during system resume
 Date:   Mon, 12 Jul 2021 08:03:38 +0200
-Message-Id: <20210712060944.566160788@linuxfoundation.org>
+Message-Id: <20210712060849.494682847@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +40,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jay Fang <f.fangjian@huawei.com>
+From: Baochen Qiang <bqiang@codeaurora.org>
 
-[ Upstream commit 026a1dc1af52742c5897e64a3431445371a71871 ]
+commit 02b49cd1174527e611768fc2ce0f75a74dfec7ae upstream.
 
-pch_spi_set_tx() frees data->pkt_tx_buff on failure of kzalloc() for
-data->pkt_rx_buff, but its caller, pch_spi_process_messages(), will
-free data->pkt_tx_buff again. Set data->pkt_tx_buff to NULL after
-kfree() to avoid double free.
+During system resume, MHI host triggers M3->M0 transition and then waits
+for target device to enter M0 state. Once done, the device queues a state
+change event into ctrl event ring and notifies MHI host by raising an
+interrupt, where a tasklet is scheduled to process this event. In most
+cases, the tasklet is served timely and wait operation succeeds.
 
-Signed-off-by: Jay Fang <f.fangjian@huawei.com>
-Link: https://lore.kernel.org/r/1620284888-65215-1-git-send-email-f.fangjian@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+However, there are cases where CPU is busy and cannot serve this tasklet
+for some time. Once delay goes long enough, the device moves itself to M1
+state and also interrupts MHI host after inserting a new state change
+event to ctrl ring. Later when CPU finally has time to process the ring,
+there will be two events:
+
+1. For M3->M0 event, which is the first event to be processed queued first.
+   The tasklet handler serves the event, updates device state to M0 and
+   wakes up the task.
+
+2. For M0->M1 event, which is processed later, the tasklet handler
+   triggers M1->M2 transition and updates device state to M2 directly,
+   then wakes up the MHI host (if it is still sleeping on this wait queue).
+
+Note that although MHI host has been woken up while processing the first
+event, it may still has no chance to run before the second event is
+processed. In other words, MHI host has to keep waiting till timeout
+causing the M0 state to be missed.
+
+kernel log here:
+...
+Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4247.911251] mhi 0000:06:00.0: Entered with PM state: M3, MHI state: M3
+Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4247.917762] mhi 0000:06:00.0: State change event to state: M0
+Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4247.917767] mhi 0000:06:00.0: State change event to state: M1
+Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4338.788231] mhi 0000:06:00.0: Did not enter M0 state, MHI state: M2, PM state: M2
+...
+
+Fix this issue by simply adding M2 as a valid state for resume.
+
+Tested-on: WCN6855 hw2.0 PCI WLAN.HSP.1.1-01720.1-QCAHSPSWPL_V1_V2_SILICONZ_LITE-1
+
+Cc: stable@vger.kernel.org
+Fixes: 0c6b20a1d720 ("bus: mhi: core: Add support for MHI suspend and resume")
+Signed-off-by: Baochen Qiang <bqiang@codeaurora.org>
+Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Link: https://lore.kernel.org/r/20210524040312.14409-1-bqiang@codeaurora.org
+[mani: slightly massaged the commit message]
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Link: https://lore.kernel.org/r/20210621161616.77524-4-manivannan.sadhasivam@linaro.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/spi/spi-topcliff-pch.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/bus/mhi/core/pm.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/spi/spi-topcliff-pch.c b/drivers/spi/spi-topcliff-pch.c
-index b459e369079f..7fb020a1d66a 100644
---- a/drivers/spi/spi-topcliff-pch.c
-+++ b/drivers/spi/spi-topcliff-pch.c
-@@ -580,8 +580,10 @@ static void pch_spi_set_tx(struct pch_spi_data *data, int *bpw)
- 	data->pkt_tx_buff = kzalloc(size, GFP_KERNEL);
- 	if (data->pkt_tx_buff != NULL) {
- 		data->pkt_rx_buff = kzalloc(size, GFP_KERNEL);
--		if (!data->pkt_rx_buff)
-+		if (!data->pkt_rx_buff) {
- 			kfree(data->pkt_tx_buff);
-+			data->pkt_tx_buff = NULL;
-+		}
- 	}
+--- a/drivers/bus/mhi/core/pm.c
++++ b/drivers/bus/mhi/core/pm.c
+@@ -809,6 +809,7 @@ int mhi_pm_resume(struct mhi_controller
  
- 	if (!data->pkt_rx_buff) {
--- 
-2.30.2
-
+ 	ret = wait_event_timeout(mhi_cntrl->state_event,
+ 				 mhi_cntrl->dev_state == MHI_STATE_M0 ||
++				 mhi_cntrl->dev_state == MHI_STATE_M2 ||
+ 				 MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state),
+ 				 msecs_to_jiffies(mhi_cntrl->timeout_ms));
+ 
 
 
