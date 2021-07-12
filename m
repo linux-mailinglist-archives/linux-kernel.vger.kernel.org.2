@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22E313C5AF5
+	by mail.lfdr.de (Postfix) with ESMTP id A49EE3C5AF7
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234388AbhGLKuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 06:50:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34908 "EHLO mail.kernel.org"
+        id S234512AbhGLKuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 06:50:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234167AbhGLKts (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 06:49:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C58C61106;
-        Mon, 12 Jul 2021 10:47:00 +0000 (UTC)
+        id S234186AbhGLKtv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 06:49:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D6054610FA;
+        Mon, 12 Jul 2021 10:47:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626086820;
-        bh=ZYpcfcf7qgIM+Qx1cNCzTr/iRgF5v3a7dsuOCWZerQI=;
+        s=k20201202; t=1626086823;
+        bh=K8JA+GZIR0moqPsbr68M2IZNchJumbNEl/vGc6yfXnY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IqcY7kabzCOe/xumC/yEPj+39L0m9zh4Y1QLct1cLj3pAq2sT8QHX8GWDYGDCeSdr
-         sxrFVI3WeeWaSwKMaPfubJg0bHl/C78i+luF5jkQo4rGWBazJ1d8kGFi/2p4/rpEU4
-         VnngVKoZuaGqdrZNau1NDR0gl1EIUWMvIftaZ4RZlyB3K4dYo425Z7ltrJhnno9u/O
-         6z80yyGci6U5/fvp7OgpcigzdRpEWaYKF6qJSY93oUNCnQEZBrFEeQi50d1hv5H1FZ
-         FaRf3PPRCGo7hq3m9BR9IeHjZowaxtPgfHiOm05e6+sqwwrjHg0DCT9h1y3hHcgYtw
-         G74jBB5+G306w==
+        b=nS5EZcGhtv/iBMcjpUkCIwtjS0SEgAJDRkeN0i4c4PWb8vliL31g1pmsWvyk0Mdue
+         mJlUtyS1Yh+NbdQy+of6iCHBvTtoIVBuOxxp2r6ba1tHRoaNFMQEiliYA8yVzZlQM1
+         Wc5mWIcIqWWqIrQZBa1KhUW1kM83jvZ5Z90IkKfj9R2ox9SVffGCjTUeu08FsJ60sW
+         pc+h7YEf2QImBQ6aWhwu73YGA1EKVm7VMKGY+yytNQVtujEBdnISGolujeaEWengyw
+         4+My0khk72Cfungk/XAfstBsb4Ua50eOZHLqI10pY8T5GNlA+puiyLy3D6RxXy2j6D
+         z22t6fOKdmzBA==
 From:   Mark Brown <broonie@kernel.org>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Mason Zhang <mason.zhang@mediatek.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mason Zhang <Mason.Zhang@mediatek.com>,
-        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com,
-        linux-spi@vger.kernel.org, leilk.liu@mediatek.com
-Subject: Re: [PATCH 1/2] spi: mediatek: add no_need_unprepare support
-Date:   Mon, 12 Jul 2021 11:45:43 +0100
-Message-Id: <162608669456.4543.1877349027408478150.b4-ty@kernel.org>
+To:     Matt Merhar <mattmerhar@protonmail.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] regulator: tps65910: Silence deferred probe error
+Date:   Mon, 12 Jul 2021 11:45:44 +0100
+Message-Id: <162608654079.4419.957906590754593944.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210629100814.21402-1-mason.zhang@mediatek.com>
-References: <20210629100814.21402-1-mason.zhang@mediatek.com>
+In-Reply-To: <20210705201211.16082-1-digetx@gmail.com>
+References: <20210705201211.16082-1-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -44,23 +41,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Jun 2021 18:08:15 +0800, Mason Zhang wrote:
-> This patch add no_need_unprepare support for spi, if spi src clk is
-> MAIN PLL, it can keep the clk_prepare and will not cause low power
-> issue. So we no need do clk_prepare/clk_unprepare in runtime pm,
-> and it will get better performance, because clk_prepare has called
-> mutex lock.
-> In the same way,
-> clk_get_rate also has called mutex lock, so we moved it to spi_probe.
+On Mon, 5 Jul 2021 23:12:11 +0300, Dmitry Osipenko wrote:
+> The TPS65910 regulator now gets a deferred probe until supply regulator is
+> registered. Silence noisy error message about the deferred probe.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[1/2] spi: mediatek: add no_need_unprepare support
-      commit: 162a31effc4182dd5a0675d9fd0336d5096e0ad3
+[1/1] regulator: tps65910: Silence deferred probe error
+      commit: e301df76472cc929fa62d923bc3892931f7ad71d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
