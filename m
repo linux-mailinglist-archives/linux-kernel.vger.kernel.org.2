@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E3973C56EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F370C3C49BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358559AbhGLI0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:26:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49730 "EHLO mail.kernel.org"
+        id S237707AbhGLGq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:46:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349338AbhGLHlz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:41:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 304AC601FE;
-        Mon, 12 Jul 2021 07:39:06 +0000 (UTC)
+        id S236953AbhGLGfj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:35:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA31761004;
+        Mon, 12 Jul 2021 06:32:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075546;
-        bh=QWCbIG7iV9V4z4yd1CkxChUNr4DihwCdfMDmJ+sYQts=;
+        s=korg; t=1626071564;
+        bh=UP4NVnaV6TahKYzkSvQfpMg9+VdQvMocKGAKxZKRlTA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KN8a9rdBOD5YKvHWyXr36mqtEB2t0aj2J190C6GOuGKSZVoMLZzcvWfTmm+6ufQ2C
-         lJ+AXsBsYhotemcMrYljlSVfaniHoX8QbV7FWRTRiytBFNNh8egbsJkdvPiAzNo7ZZ
-         /xoleJ7s6LAVXyVk+QFxYqnxvFI/RhUl8DQLr2MA=
+        b=XyXh2IJ12A5J3XQdDR8vsjkcL66JFHRZAos20xmKbH4uRPRYsMpnZd5BhBYKIS0TP
+         hrg7RwxH9icK5io3tYTZz7jV6Z6KQuKmzPU43AjuUklWeeHqZlwWzkWy6l4XdwAhnu
+         6tb5YudaQjTjrg5QWEe0VgGkmvAvzFPgiBQdryro=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Wang Shanker <shankerwangmiao@gmail.com>,
-        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org,
+        syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com,
+        Anirudh Rayabharam <mail@anirudhrb.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 261/800] block: fix discard request merge
-Date:   Mon, 12 Jul 2021 08:04:44 +0200
-Message-Id: <20210712060951.229329096@linuxfoundation.org>
+Subject: [PATCH 5.10 125/593] media: pvrusb2: fix warning in pvr2_i2c_core_done
+Date:   Mon, 12 Jul 2021 08:04:45 +0200
+Message-Id: <20210712060856.917148024@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,56 +43,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ming Lei <ming.lei@redhat.com>
+From: Anirudh Rayabharam <mail@anirudhrb.com>
 
-[ Upstream commit 2705dfb2094777e405e065105e307074af8965c1 ]
+[ Upstream commit f8194e5e63fdcb349e8da9eef9e574d5b1d687cb ]
 
-ll_new_hw_segment() is reached only in case of single range discard
-merge, and we don't have max discard segment size limit actually, so
-it is wrong to run the following check:
+syzbot has reported the following warning in pvr2_i2c_done:
 
-if (req->nr_phys_segments + nr_phys_segs > blk_rq_get_max_segments(req))
+	sysfs group 'power' not found for kobject '1-0043'
 
-it may be always false since req->nr_phys_segments is initialized as
-one, and bio's segment count is still 1, blk_rq_get_max_segments(reg)
-is 1 too.
+When the device is disconnected (pvr_hdw_disconnect), the i2c adapter is
+not unregistered along with the USB and v4l2 teardown. As part of the USB
+device disconnect, the sysfs files of the subdevices are also deleted.
+So, by the time pvr_i2c_core_done is called by pvr_context_destroy, the
+sysfs files have been deleted.
 
-Fix the issue by not doing the check and bypassing the calculation of
-discard request's nr_phys_segments.
+To fix this, unregister the i2c adapter too in pvr_hdw_disconnect. Make
+the device deregistration code shared by calling pvr_hdw_disconnect from
+pvr2_hdw_destroy.
 
-Based on analysis from Wang Shanker.
-
-Cc: Christoph Hellwig <hch@lst.de>
-Reported-by: Wang Shanker <shankerwangmiao@gmail.com>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Link: https://lore.kernel.org/r/20210628023312.1903255-1-ming.lei@redhat.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Reported-by: syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com
+Tested-by: syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-merge.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/media/usb/pvrusb2/pvrusb2-hdw.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/block/blk-merge.c b/block/blk-merge.c
-index 4d97fb6dd226..bcdff1879c34 100644
---- a/block/blk-merge.c
-+++ b/block/blk-merge.c
-@@ -559,10 +559,14 @@ static inline unsigned int blk_rq_get_max_segments(struct request *rq)
- static inline int ll_new_hw_segment(struct request *req, struct bio *bio,
- 		unsigned int nr_phys_segs)
+diff --git a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
+index f4a727918e35..d38dee1792e4 100644
+--- a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
++++ b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
+@@ -2676,9 +2676,8 @@ void pvr2_hdw_destroy(struct pvr2_hdw *hdw)
+ 		pvr2_stream_destroy(hdw->vid_stream);
+ 		hdw->vid_stream = NULL;
+ 	}
+-	pvr2_i2c_core_done(hdw);
+ 	v4l2_device_unregister(&hdw->v4l2_dev);
+-	pvr2_hdw_remove_usb_stuff(hdw);
++	pvr2_hdw_disconnect(hdw);
+ 	mutex_lock(&pvr2_unit_mtx);
+ 	do {
+ 		if ((hdw->unit_number >= 0) &&
+@@ -2705,6 +2704,7 @@ void pvr2_hdw_disconnect(struct pvr2_hdw *hdw)
  {
--	if (req->nr_phys_segments + nr_phys_segs > blk_rq_get_max_segments(req))
-+	if (blk_integrity_merge_bio(req->q, req, bio) == false)
- 		goto no_merge;
- 
--	if (blk_integrity_merge_bio(req->q, req, bio) == false)
-+	/* discard request merge won't add new segment */
-+	if (req_op(req) == REQ_OP_DISCARD)
-+		return 1;
-+
-+	if (req->nr_phys_segments + nr_phys_segs > blk_rq_get_max_segments(req))
- 		goto no_merge;
- 
- 	/*
+ 	pvr2_trace(PVR2_TRACE_INIT,"pvr2_hdw_disconnect(hdw=%p)",hdw);
+ 	LOCK_TAKE(hdw->big_lock);
++	pvr2_i2c_core_done(hdw);
+ 	LOCK_TAKE(hdw->ctl_lock);
+ 	pvr2_hdw_remove_usb_stuff(hdw);
+ 	LOCK_GIVE(hdw->ctl_lock);
 -- 
 2.30.2
 
