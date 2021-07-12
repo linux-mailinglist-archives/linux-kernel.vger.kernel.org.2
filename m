@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 955853C5955
+	by mail.lfdr.de (Postfix) with ESMTP id 4CEBC3C5954
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382819AbhGLJCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:02:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55110 "EHLO mail.kernel.org"
+        id S1382801AbhGLJCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:02:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353133AbhGLIBg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:01:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37C6E61C50;
-        Mon, 12 Jul 2021 07:54:19 +0000 (UTC)
+        id S1353174AbhGLIBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:01:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 888C561C5B;
+        Mon, 12 Jul 2021 07:54:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076459;
-        bh=Q2FOvnjICuD6VGslWPL85LRcJm03rb1WO9PQ2VacMHA=;
+        s=korg; t=1626076462;
+        bh=/lN2fWxcCbM2ueVg8x2tduzU/IwP2pVDd++oc6O4Lkk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BUq/zmCJJkTZCrwGiP+sQn+8mdaz2a6deBwjFAJaK+V/k9FMNZrSPBVQv+C0fRVWU
-         j39h4rFrSE87waIFtbZ0RZ02Bcq4y9OUGhb9REyMkbWnBaFqRiTkkmRDbO/WHpTnrL
-         z8VXaYsRDw8R0Jd55C5NlMfgZs85H8rxOC0ZTarg=
+        b=MK1FDJZZFZOKEDahnMyTDIyN/Oi21wNcfHut0Nbq9dDnEdBk6z9h7ZBZrMbDHS55U
+         QDo8W+704Rsvvt6Lnh9uCbZYJopAaJWHPA6BOIyNjtym9vWytO9qVp0AZ177XbupW4
+         WzlR3seqZl1VcgvhkKsqp9xmxKhctp5WwqykKvY4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 650/800] misc/pvpanic-pci: Fix error handling in pvpanic_pci_probe()
-Date:   Mon, 12 Jul 2021 08:11:13 +0200
-Message-Id: <20210712061036.174665211@linuxfoundation.org>
+Subject: [PATCH 5.13 651/800] misc/pvpanic-mmio: Fix error handling in pvpanic_mmio_probe()
+Date:   Mon, 12 Jul 2021 08:11:14 +0200
+Message-Id: <20210712061036.264064328@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -43,55 +43,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 372dae89972594393b57f29ec44e351fa7eedbbe ]
+[ Upstream commit 9a3c72ee6ffcd461bae1bbdf4e71dca6d5bc160c ]
 
 There is no error handling path in the probe function.
 Switch to managed resource so that errors in the probe are handled easily
 and simplify the remove function accordingly.
 
-Fixes: db3a4f0abefd ("misc/pvpanic: add PCI driver")
+Fixes: b3c0f8774668 ("misc/pvpanic: probe multiple instances")
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/ab071b1f4ed6e1174f9199095fb16a58bb406090.1621665058.git.christophe.jaillet@wanadoo.fr
+Link: https://lore.kernel.org/r/2a5dab18f10db783b27e0579ba66cc38d610734a.1621665058.git.christophe.jaillet@wanadoo.fr
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/pvpanic/pvpanic-pci.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ drivers/misc/pvpanic/pvpanic-mmio.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/misc/pvpanic/pvpanic-pci.c b/drivers/misc/pvpanic/pvpanic-pci.c
-index 9ecc4e8559d5..046ce4ecc195 100644
---- a/drivers/misc/pvpanic/pvpanic-pci.c
-+++ b/drivers/misc/pvpanic/pvpanic-pci.c
-@@ -78,15 +78,15 @@ static int pvpanic_pci_probe(struct pci_dev *pdev,
- 	void __iomem *base;
- 	int ret;
- 
--	ret = pci_enable_device(pdev);
-+	ret = pcim_enable_device(pdev);
- 	if (ret < 0)
- 		return ret;
- 
--	base = pci_iomap(pdev, 0, 0);
-+	base = pcim_iomap(pdev, 0, 0);
- 	if (!base)
- 		return -ENOMEM;
+diff --git a/drivers/misc/pvpanic/pvpanic-mmio.c b/drivers/misc/pvpanic/pvpanic-mmio.c
+index 4c0841776087..69b31f7adf4f 100644
+--- a/drivers/misc/pvpanic/pvpanic-mmio.c
++++ b/drivers/misc/pvpanic/pvpanic-mmio.c
+@@ -93,7 +93,7 @@ static int pvpanic_mmio_probe(struct platform_device *pdev)
+ 		return -EINVAL;
+ 	}
  
 -	pi = kmalloc(sizeof(*pi), GFP_ATOMIC);
-+	pi = devm_kmalloc(&pdev->dev, sizeof(*pi), GFP_ATOMIC);
++	pi = devm_kmalloc(dev, sizeof(*pi), GFP_ATOMIC);
  	if (!pi)
  		return -ENOMEM;
  
-@@ -107,9 +107,6 @@ static void pvpanic_pci_remove(struct pci_dev *pdev)
+@@ -114,7 +114,6 @@ static int pvpanic_mmio_remove(struct platform_device *pdev)
  	struct pvpanic_instance *pi = dev_get_drvdata(&pdev->dev);
  
  	pvpanic_remove(pi);
--	iounmap(pi->base);
 -	kfree(pi);
--	pci_disable_device(pdev);
- }
  
- static struct pci_driver pvpanic_pci_driver = {
+ 	return 0;
+ }
 -- 
 2.30.2
 
