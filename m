@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D843C56B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DDB63C48D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350925AbhGLIW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:22:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46794 "EHLO mail.kernel.org"
+        id S238571AbhGLGlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:41:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55532 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347664AbhGLHj7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:39:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B2C76143D;
-        Mon, 12 Jul 2021 07:35:25 +0000 (UTC)
+        id S236998AbhGLGc0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:32:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96B2E60551;
+        Mon, 12 Jul 2021 06:29:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075326;
-        bh=FWdpgeLZjTV3yUDS9DmJf5529C3/nxBDlPw9YGo3gao=;
+        s=korg; t=1626071378;
+        bh=wmqnq9Vp+80gBd6WB5AOLCgk5SyK0FIL3EKx9C//Qxk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YL9ycaXgnFyY35qRnZR33bg7DlI8jlWJhJ8yb0M21FYn9EogPBe6qb82V0cx9Iuri
-         N9Ks7hjEmUG8db/cdz5zhNH7pehsxURvd26LRtTDzSrW1GHAcwyIqlpazy2GPzPKyK
-         vL+4SUtdgxWBJ+kRUdl71W1JpaH0CHCHlG2fiAHQ=
+        b=JdaZMs6xDGqQNno0ij0W4Jt1TlZyZyJJ4w943TZsBN18F7HobhWPlQFtRvBGGbq6B
+         xclqTZ0LiRIKSI2ka5yQzNyXEe4CUG/ElbCS8mUMSNW9EvG5GZsyeVRbG6LQy/mcOy
+         v2xg/axOFRztQAV4qbbfHZRJ4sDDRxRzvJlT6sL8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, zpershuai <zpershuai@gmail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 181/800] spi: meson-spicc: fix memory leak in meson_spicc_probe
+        stable@vger.kernel.org, stable@kernel.org, Jan Kara <jack@suse.cz>,
+        Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 5.10 044/593] ext4: fix overflow in ext4_iomap_alloc()
 Date:   Mon, 12 Jul 2021 08:03:24 +0200
-Message-Id: <20210712060938.502661250@linuxfoundation.org>
+Message-Id: <20210712060847.998655270@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zpershuai <zpershuai@gmail.com>
+From: Jan Kara <jack@suse.cz>
 
-[ Upstream commit b2d501c13470409ee7613855b17e5e5ec4111e1c ]
+commit d0b040f5f2557b2f507c01e88ad8cff424fdc6a9 upstream.
 
-when meson_spicc_clk_init returns failed, it should goto the
-out_clk label.
+A code in iomap alloc may overflow block number when converting it to
+byte offset. Luckily this is mostly harmless as we will just use more
+expensive method of writing using unwritten extents even though we are
+writing beyond i_size.
 
-Signed-off-by: zpershuai <zpershuai@gmail.com>
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
-Link: https://lore.kernel.org/r/1623562156-21995-1-git-send-email-zpershuai@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@kernel.org
+Fixes: 378f32bab371 ("ext4: introduce direct I/O write using iomap infrastructure")
+Signed-off-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20210412102333.2676-4-jack@suse.cz
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/spi/spi-meson-spicc.c | 2 +-
+ fs/ext4/inode.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-meson-spicc.c b/drivers/spi/spi-meson-spicc.c
-index 51aef2c6e966..b2c4621db34d 100644
---- a/drivers/spi/spi-meson-spicc.c
-+++ b/drivers/spi/spi-meson-spicc.c
-@@ -752,7 +752,7 @@ static int meson_spicc_probe(struct platform_device *pdev)
- 	ret = meson_spicc_clk_init(spicc);
- 	if (ret) {
- 		dev_err(&pdev->dev, "clock registration failed\n");
--		goto out_master;
-+		goto out_clk;
- 	}
- 
- 	ret = devm_spi_register_master(&pdev->dev, master);
--- 
-2.30.2
-
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -3419,7 +3419,7 @@ retry:
+ 	 * i_disksize out to i_size. This could be beyond where direct I/O is
+ 	 * happening and thus expose allocated blocks to direct I/O reads.
+ 	 */
+-	else if ((map->m_lblk * (1 << blkbits)) >= i_size_read(inode))
++	else if (((loff_t)map->m_lblk << blkbits) >= i_size_read(inode))
+ 		m_flags = EXT4_GET_BLOCKS_CREATE;
+ 	else if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
+ 		m_flags = EXT4_GET_BLOCKS_IO_CREATE_EXT;
 
 
