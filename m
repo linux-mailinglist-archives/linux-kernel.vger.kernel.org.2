@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 990003C53D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 225EA3C5476
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347759AbhGLH4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:56:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59464 "EHLO mail.kernel.org"
+        id S1349082AbhGLH6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:58:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344887AbhGLHV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:21:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A9A5613EE;
-        Mon, 12 Jul 2021 07:18:38 +0000 (UTC)
+        id S1344896AbhGLHVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:21:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FDF3611ED;
+        Mon, 12 Jul 2021 07:18:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074319;
-        bh=OFEpPVa1c0xmqHhP4EMGDdS7QiF8qyjTE0NYsve4vmk=;
+        s=korg; t=1626074322;
+        bh=ObxN3PxQho9jLulRk2KNDCkooGZl0fwjand2/1+2IHk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cv2VZnguh26gTCLOryZTmrVdYs1c7yt5iuVCLx+s9ofdZJaLIFU1gPuX99mIphksH
-         lSLEkC6DAh09gE5Vd1MoX3wwBsHMGVBhFfyZDyEBjUtrQpRVU416yuf4K/jG9lUQkc
-         rlmHaETgPf+BXhKL7U7FxU5bwXsDCgJzDvRfVweg=
+        b=e02w/Dua0YsEShD3F/eUSBXoB0/3bWPQRha/i6neYPFT53RsAGHgocsZKTrH51Y47
+         cl1+0Hw1fHohWj9yTyTgKQWwmMhjIx23SiDx1jqy4e7FZxvymwI6P8Iz8dixE7+Q5d
+         SEhxACwKylqj8chl0GG1D+63fYsDR9T7O5hmH6Yg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
         Andy Shevchenko <andy.shevchenko@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 541/700] iio: gyro: bmg160: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
-Date:   Mon, 12 Jul 2021 08:10:24 +0200
-Message-Id: <20210712061033.923406249@linuxfoundation.org>
+Subject: [PATCH 5.12 542/700] iio: humidity: am2315: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
+Date:   Mon, 12 Jul 2021 08:10:25 +0200
+Message-Id: <20210712061034.024122008@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
 References: <20210712060924.797321836@linuxfoundation.org>
@@ -44,7 +43,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit 06778d881f3798ce93ffbbbf801234292250b598 ]
+[ Upstream commit f4ca2e2595d9fee65d5ce0d218b22ce00e5b2915 ]
 
 To make code more readable, use a structure to express the channel
 layout and ensure the timestamp is 8 byte aligned.
@@ -52,42 +51,52 @@ layout and ensure the timestamp is 8 byte aligned.
 Found during an audit of all calls of uses of
 iio_push_to_buffers_with_timestamp()
 
-Fixes: 13426454b649 ("iio: bmg160: Separate i2c and core driver")
+Fixes: 0d96d5ead3f7 ("iio: humidity: Add triggered buffer support for AM2315")
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Stephan Gerhold <stephan@gerhold.net>
 Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20210501170121.512209-11-jic23@kernel.org
+Link: https://lore.kernel.org/r/20210501170121.512209-12-jic23@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/gyro/bmg160_core.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/iio/humidity/am2315.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/iio/gyro/bmg160_core.c b/drivers/iio/gyro/bmg160_core.c
-index 029ef4c34604..457fa8702d19 100644
---- a/drivers/iio/gyro/bmg160_core.c
-+++ b/drivers/iio/gyro/bmg160_core.c
-@@ -98,7 +98,11 @@ struct bmg160_data {
- 	struct iio_trigger *motion_trig;
- 	struct iio_mount_matrix orientation;
- 	struct mutex mutex;
--	s16 buffer[8];
-+	/* Ensure naturally aligned timestamp */
+diff --git a/drivers/iio/humidity/am2315.c b/drivers/iio/humidity/am2315.c
+index 02ad1767c845..3398fa413ec5 100644
+--- a/drivers/iio/humidity/am2315.c
++++ b/drivers/iio/humidity/am2315.c
+@@ -33,7 +33,11 @@
+ struct am2315_data {
+ 	struct i2c_client *client;
+ 	struct mutex lock;
+-	s16 buffer[8]; /* 2x16-bit channels + 2x16 padding + 4x16 timestamp */
++	/* Ensure timestamp is naturally aligned */
 +	struct {
-+		s16 chans[3];
++		s16 chans[2];
 +		s64 timestamp __aligned(8);
 +	} scan;
- 	u32 dps_range;
- 	int ev_enable_state;
- 	int slope_thres;
-@@ -882,12 +886,12 @@ static irqreturn_t bmg160_trigger_handler(int irq, void *p)
+ };
  
- 	mutex_lock(&data->mutex);
- 	ret = regmap_bulk_read(data->regmap, BMG160_REG_XOUT_L,
--			       data->buffer, AXIS_MAX * 2);
-+			       data->scan.chans, AXIS_MAX * 2);
- 	mutex_unlock(&data->mutex);
- 	if (ret < 0)
- 		goto err;
+ struct am2315_sensor_data {
+@@ -167,20 +171,20 @@ static irqreturn_t am2315_trigger_handler(int irq, void *p)
+ 
+ 	mutex_lock(&data->lock);
+ 	if (*(indio_dev->active_scan_mask) == AM2315_ALL_CHANNEL_MASK) {
+-		data->buffer[0] = sensor_data.hum_data;
+-		data->buffer[1] = sensor_data.temp_data;
++		data->scan.chans[0] = sensor_data.hum_data;
++		data->scan.chans[1] = sensor_data.temp_data;
+ 	} else {
+ 		i = 0;
+ 		for_each_set_bit(bit, indio_dev->active_scan_mask,
+ 				 indio_dev->masklength) {
+-			data->buffer[i] = (bit ? sensor_data.temp_data :
+-						 sensor_data.hum_data);
++			data->scan.chans[i] = (bit ? sensor_data.temp_data :
++					       sensor_data.hum_data);
+ 			i++;
+ 		}
+ 	}
+ 	mutex_unlock(&data->lock);
  
 -	iio_push_to_buffers_with_timestamp(indio_dev, data->buffer,
 +	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
