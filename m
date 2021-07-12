@@ -2,146 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2823C632D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 21:06:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BCD73C6334
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 21:07:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236141AbhGLTJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 15:09:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45886 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236056AbhGLTJl (ORCPT
+        id S236178AbhGLTKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 15:10:10 -0400
+Received: from mail-io1-f52.google.com ([209.85.166.52]:37378 "EHLO
+        mail-io1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236084AbhGLTKI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 15:09:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626116811;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RuvuU3GhSaqw/r7Yuommk/4GGO9Nhx9WohfFfrBNtSM=;
-        b=AtoFVQziX1VaHW9pkptl6mLZuTQLyq0ej/pRae3THL2h4npo+3OfW7XegRq6U7FUDKgmZA
-        p5AmnO17KqWbSil41GpAb55YFeHypjSTWBdJNrKRNFzFeNR9wW+mcRdLdCHmV2dtibTc3f
-        Lw8uIqog6AXs781JdELanbPG+2LaqmY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-202-gycIbtb7NTq2KdvSZ2VXyw-1; Mon, 12 Jul 2021 15:06:50 -0400
-X-MC-Unique: gycIbtb7NTq2KdvSZ2VXyw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 751E9A40C0;
-        Mon, 12 Jul 2021 19:06:49 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3D8A518B42;
-        Mon, 12 Jul 2021 19:06:49 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 16CJ6mnl010769;
-        Mon, 12 Jul 2021 15:06:48 -0400
-Received: from localhost (mpatocka@localhost)
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 16CJ6mLW010765;
-        Mon, 12 Jul 2021 15:06:48 -0400
-X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
-Date:   Mon, 12 Jul 2021 15:06:48 -0400 (EDT)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nico Schottelius <nico-linuxsetlocalversion@schottelius.org>,
-        linux-kernel@vger.kernel.org
-Subject:  [PATCH v2] scripts/setlocalversion: fix a bug when LOCALVERSION is
- empty
-In-Reply-To: <YOyGrUvA4LjydcP3@kroah.com>
-Message-ID: <alpine.LRH.2.02.2107121502380.8445@file01.intranet.prod.int.rdu2.redhat.com>
-References: <alpine.LRH.2.02.2107120957300.14207@file01.intranet.prod.int.rdu2.redhat.com> <YOyGrUvA4LjydcP3@kroah.com>
-User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
+        Mon, 12 Jul 2021 15:10:08 -0400
+Received: by mail-io1-f52.google.com with SMTP id l18so19047381iow.4;
+        Mon, 12 Jul 2021 12:07:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VmcRJht2x/uN0knUjln6QgNgSrdkyqiua1j8QRrNut0=;
+        b=bAc08CLT5ghs9XD6g4yjkvABYRJklS5rQrOLiOQNBWDh81ofLRsM1Nd+VDwSvbXf8t
+         7yGKb41L4t79dtrW6+JcxIyQqHASKVto7Lbq9i7OdUddsJ2HcmK37r3O6g9fJAVBpueK
+         tlQq/AE80OyjrslHYsUz5Ob5XdjnmXDDultLBYhgIqpWRmCicC7iwwf8OFpWqp/MF9VN
+         vDJOTGwKzy8l5FK1ngvJ2LeZPQ2uSbLKqbZnFkajQv0lG5iJziO52DiXDXtH676AmpCF
+         YQG3NoSyercPhxfkMsLH7/OT/QDCMpQ93OTER5iJSL0x4CIXHgLVhcufjszi5do5GtE5
+         vTiw==
+X-Gm-Message-State: AOAM532aoE8z7dowIPotmToitdheedtG57AvVOMSfJUG2ChHT4Ipxs4g
+        vDQoOXb9NL1K+4Jvy3AoeA==
+X-Google-Smtp-Source: ABdhPJwAC+XS9JfOz2h1JYILI1SxRdnRBCsJxMoNWOPCYSdzKKl0qZBUqROHqRvEsywCbKS7YHsZ3w==
+X-Received: by 2002:a5e:8e44:: with SMTP id r4mr332283ioo.124.1626116838853;
+        Mon, 12 Jul 2021 12:07:18 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id y22sm1553509ioy.50.2021.07.12.12.07.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jul 2021 12:07:18 -0700 (PDT)
+Received: (nullmailer pid 2310216 invoked by uid 1000);
+        Mon, 12 Jul 2021 19:07:14 -0000
+Date:   Mon, 12 Jul 2021 13:07:14 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH v2 01/13] dt-bindings: usb: mtu3: remove support VBUS
+ detection of extcon
+Message-ID: <20210712190714.GA2310182@robh.at.kernel.org>
+References: <1624008558-16949-1-git-send-email-chunfeng.yun@mediatek.com>
+ <1624008558-16949-2-git-send-email-chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1624008558-16949-2-git-send-email-chunfeng.yun@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Mon, 12 Jul 2021, Greg Kroah-Hartman wrote:
-
-> On Mon, Jul 12, 2021 at 10:00:59AM -0400, Mikulas Patocka wrote:
-> > The patch 042da426f8ebde012be9429ff705232af7ad7469 
-> > ("scripts/setlocalversion: simplify the short version part") reduces the 
-> > indentation. Unfortunatelly, it also changes behavior in a subtle way - if 
-> > the user has empty "LOCALVERSION" variable, the plus sign is appended to 
-> > the kernel version. It wasn't appended before.
-> > 
-> > This patch reverts to the old behavior - we append the plus sign only if
-> > the LOCALVERSION variable is not set.
-> > 
-> > Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-> > Fixes: 042da426f8eb ("scripts/setlocalversion: simplify the short version part")
-> > 
-> > ---
-> >  scripts/setlocalversion |    2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > Index: linux-2.6/scripts/setlocalversion
-> > ===================================================================
-> > --- linux-2.6.orig/scripts/setlocalversion	2021-07-12 15:29:07.000000000 +0200
-> > +++ linux-2.6/scripts/setlocalversion	2021-07-12 15:50:29.000000000 +0200
-> > @@ -131,7 +131,7 @@ res="${res}${CONFIG_LOCALVERSION}${LOCAL
-> >  if test "$CONFIG_LOCALVERSION_AUTO" = "y"; then
-> >  	# full scm version string
-> >  	res="$res$(scm_version)"
-> > -elif [ -z "${LOCALVERSION}" ]; then
-> > +elif [ "${LOCALVERSION+set}" != "set" ]; then
+On Fri, 18 Jun 2021 17:29:06 +0800, Chunfeng Yun wrote:
+> Due to no platforms use a multi-funtion pin to detect VBUS
+> status until now when support dual role mode, prefer not to
+> support it anymore;
+> Another reason is that the controller doesn't support idle status,
+> the dual role port works as device or as host, using an IDDIG pin
+> is good enough, this will help to save another multi-function pin;
+> And fix a typo of 'neede';
+> Last modify example using VBUS to turn on/off device, for device
+> only mode, the driver doesn't get extcon.
 > 
-> That's really subtle, can you add a comment here that this handles an
-> empty file?
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+> v2: no changes
+> ---
+>  .../bindings/usb/mediatek,mtu3.yaml           | 22 +++++++++++++++----
+>  1 file changed, 18 insertions(+), 4 deletions(-)
 > 
-> thanks,
-> 
-> greg k-h
 
-OK.
-
-
-From: Mikulas Patocka <mpatocka@redhat.com>
-
-The patch 042da426f8ebde012be9429ff705232af7ad7469
-("scripts/setlocalversion: simplify the short version part") reduces
-indentation. Unfortunatelly, it also changes behavior in a subtle way - if
-the user has empty "LOCALVERSION" variable, the plus sign is appended to
-the kernel version. It wasn't appended before.
-
-This patch reverts to the old behavior - we append the plus sign only if
-the LOCALVERSION variable is not set.
-
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Fixes: 042da426f8eb ("scripts/setlocalversion: simplify the short version part")
-
----
- scripts/setlocalversion |   13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
-
-Index: linux-2.6/scripts/setlocalversion
-===================================================================
---- linux-2.6.orig/scripts/setlocalversion	2021-07-12 15:29:07.000000000 +0200
-+++ linux-2.6/scripts/setlocalversion	2021-07-12 21:00:59.000000000 +0200
-@@ -131,11 +131,14 @@ res="${res}${CONFIG_LOCALVERSION}${LOCAL
- if test "$CONFIG_LOCALVERSION_AUTO" = "y"; then
- 	# full scm version string
- 	res="$res$(scm_version)"
--elif [ -z "${LOCALVERSION}" ]; then
--	# append a plus sign if the repository is not in a clean
--	# annotated or signed tagged state (as git describe only
--	# looks at signed or annotated tags - git tag -a/-s) and
--	# LOCALVERSION= is not specified
-+elif [ "${LOCALVERSION+set}" != "set" ]; then
-+	# If the variable LOCALVERSION is not set, append a plus
-+	# sign if the repository is not in a clean annotated or
-+	# signed tagged state (as git describe only looks at signed
-+	# or annotated tags - git tag -a/-s).
-+	#
-+	# If the variable LOCALVERSION is set (including being set
-+	# to an empty string), we don't want to append a plus sign.
- 	scm=$(scm_version --short)
- 	res="$res${scm:++}"
- fi
-
+Acked-by: Rob Herring <robh@kernel.org>
