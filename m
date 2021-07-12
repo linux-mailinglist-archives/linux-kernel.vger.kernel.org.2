@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D6833C5148
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2D993C5759
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345854AbhGLHjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:39:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41260 "EHLO mail.kernel.org"
+        id S1352144AbhGLIcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:32:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244186AbhGLHK3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:10:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AED52613D7;
-        Mon, 12 Jul 2021 07:07:06 +0000 (UTC)
+        id S1349849AbhGLHot (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:44:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E98C3613D9;
+        Mon, 12 Jul 2021 07:41:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073627;
-        bh=kDZcUNlg8Zo7TUb2wJFOiS67BH/jS2vB68YPXGZ4zbk=;
+        s=korg; t=1626075694;
+        bh=sUDcBnWAoNpaVZalSL2yTvcf7M8ILQVPIhuBIBrn36w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BTIwR89y6D23htOvfswrlL5fB/62377u3P4KUb2DFHiab07UDjtkmuGB44GX9hT6V
-         SzgoajuBNBoir8+AJOYqz/vhpAsXTNv+JlCip3OVNM3VnX1PfzDnRGuYNj35zAafyv
-         3uD1ZDViO5j7KkPPiPJ8UgR9wzJRxx/uNpb5haAM=
+        b=XpUUaN+Z8Qci1G9VUfCijg2pLHsnyEYZjxBOyUNWZej8zZKRIjLiMjcuvpeoaqkAC
+         rG8SanTdXluV0e6y3oVujokEXjM2JZIWYUlikkxnyytZL8y8eQgGcrWhwBnoYmsubq
+         48x9bDI2vK7lRYMg45XBUo9gCop2RswFpvd0Equs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Jan=20Kundr=C3=A1t?= <jan.kundrat@cesnet.cz>,
+        =?UTF-8?q?V=C3=A1clav=20Kubern=C3=A1t?= <kubernat@cesnet.cz>,
+        Guenter Roeck <linux@roeck-us.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 262/700] kbuild: Fix objtool dependency for OBJECT_FILES_NON_STANDARD_<obj> := n
-Date:   Mon, 12 Jul 2021 08:05:45 +0200
-Message-Id: <20210712061004.052317180@linuxfoundation.org>
+Subject: [PATCH 5.13 323/800] hwmon: (max31790) Fix fan speed reporting for fan7..12
+Date:   Mon, 12 Jul 2021 08:05:46 +0200
+Message-Id: <20210712061000.478574783@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,58 +42,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josh Poimboeuf <jpoimboe@redhat.com>
+From: Guenter Roeck <linux@roeck-us.net>
 
-[ Upstream commit 8852c552402979508fdc395ae07aa8761aa46045 ]
+[ Upstream commit cbbf244f0515af3472084f22b6213121b4a63835 ]
 
-"OBJECT_FILES_NON_STANDARD_vma.o := n" has a dependency bug.  When
-objtool source is updated, the affected object doesn't get re-analyzed
-by objtool.
+Fans 7..12 do not have their own set of configuration registers.
+So far the code ignored that and read beyond the end of the configuration
+register range to get the tachometer period. This resulted in more or less
+random fan speed values for those fans.
 
-Peter's new variable-sized jump label feature relies on objtool
-rewriting the object file.  Otherwise the system can fail to boot.  That
-effectively upgrades this minor dependency issue to a major bug.
+The datasheet is quite vague when it comes to defining the tachometer
+period for fans 7..12. Experiments confirm that the period is the same
+for both fans associated with a given set of configuration registers.
 
-The problem is that variables in prerequisites are expanded early,
-during the read-in phase.  The '$(objtool_dep)' variable indirectly uses
-'$@', which isn't yet available when the target prerequisites are
-evaluated.
-
-Use '.SECONDEXPANSION:' which causes '$(objtool_dep)' to be expanded in
-a later phase, after the target-specific '$@' variable has been defined.
-
-Fixes: b9ab5ebb14ec ("objtool: Add CONFIG_STACK_VALIDATION option")
-Fixes: ab3257042c26 ("jump_label, x86: Allow short NOPs")
-Reported-by: Matthew Wilcox <willy@infradead.org>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Fixes: 54187ff9d766 ("hwmon: (max31790) Convert to use new hwmon registration API")
+Fixes: 195a4b4298a7 ("hwmon: Driver for Maxim MAX31790")
+Cc: Jan Kundrát <jan.kundrat@cesnet.cz>
+Reviewed-by: Jan Kundrát <jan.kundrat@cesnet.cz>
+Cc: Václav Kubernát <kubernat@cesnet.cz>
+Reviewed-by: Jan Kundrát <jan.kundrat@cesnet.cz>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20210526154022.3223012-2-linux@roeck-us.net
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/Makefile.build | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/hwmon/max31790.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-index 1b6094a13034..73701d637ed5 100644
---- a/scripts/Makefile.build
-+++ b/scripts/Makefile.build
-@@ -267,7 +267,8 @@ define rule_as_o_S
- endef
+diff --git a/drivers/hwmon/max31790.c b/drivers/hwmon/max31790.c
+index 76aa96f5b984..67677c437768 100644
+--- a/drivers/hwmon/max31790.c
++++ b/drivers/hwmon/max31790.c
+@@ -171,7 +171,7 @@ static int max31790_read_fan(struct device *dev, u32 attr, int channel,
  
- # Built-in and composite module parts
--$(obj)/%.o: $(src)/%.c $(recordmcount_source) $(objtool_dep) FORCE
-+.SECONDEXPANSION:
-+$(obj)/%.o: $(src)/%.c $(recordmcount_source) $$(objtool_dep) FORCE
- 	$(call if_changed_rule,cc_o_c)
- 	$(call cmd,force_checksrc)
- 
-@@ -348,7 +349,7 @@ cmd_modversions_S =								\
- 	fi
- endif
- 
--$(obj)/%.o: $(src)/%.S $(objtool_dep) FORCE
-+$(obj)/%.o: $(src)/%.S $$(objtool_dep) FORCE
- 	$(call if_changed_rule,as_o_S)
- 
- targets += $(filter-out $(subdir-builtin), $(real-obj-y))
+ 	switch (attr) {
+ 	case hwmon_fan_input:
+-		sr = get_tach_period(data->fan_dynamics[channel]);
++		sr = get_tach_period(data->fan_dynamics[channel % NR_CHANNEL]);
+ 		rpm = RPM_FROM_REG(data->tach[channel], sr);
+ 		*val = rpm;
+ 		return 0;
 -- 
 2.30.2
 
