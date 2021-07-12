@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C4493C4922
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA22C3C56D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238029AbhGLGmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:42:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54744 "EHLO mail.kernel.org"
+        id S1357908AbhGLIZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:25:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237666AbhGLGep (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:34:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AF1B60551;
-        Mon, 12 Jul 2021 06:31:22 +0000 (UTC)
+        id S1348012AbhGLHkb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:40:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F5D161153;
+        Mon, 12 Jul 2021 07:37:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071482;
-        bh=Gjqxoy6zuCsX3PmidEoy9VJ+NjivXFTAkQdGcmPjcR0=;
+        s=korg; t=1626075454;
+        bh=GsM7kTT8tLZRHnd8pH8qOql2SjIfQ9+HXrYJLfJFeGU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BcGCLfkpPQG+1G0ONxytN1oUk6ZWFQX7TXdMd93fu2ThLPC85SbzBahjXaym2NZR8
-         nlVCCF2E8sdIZNpKgp8IXujoGfNGv76YDVGrlXpwD7BOzbFeKF9wr6cUnggifLkQ7C
-         fCqBcxcpCGGCen07/7lvggsJjoUCAkQLVlssynqs=
+        b=XO96PGtXgk8pIq08JEcAl5B69R4ldRSXD9qdLezWkLZ/R8kXoJdUhhBizIsAC8JPf
+         LMMsR1e/eByQrkcjveZ5e89eoExLOTg+2JMiU5ymbjro0rne4bxvAN1EmbAuLbceGJ
+         b0w+dA7xYsrbFQYpqVt400CfU7660NPwG5Sokm7s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Lynch <nathanl@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.10 089/593] powerpc/stacktrace: Fix spurious "stale" traces in raise_backtrace_ipi()
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Petr Mladek <pmladek@suse.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 226/800] random32: Fix implicit truncation warning in prandom_seed_state()
 Date:   Mon, 12 Jul 2021 08:04:09 +0200
-Message-Id: <20210712060853.000563414@linuxfoundation.org>
+Message-Id: <20210712060945.646455296@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,96 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-commit 7c6986ade69e3c81bac831645bc72109cd798a80 upstream.
+[ Upstream commit d327ea15a305024ef0085252fa3657bbb1ce25f5 ]
 
-In raise_backtrace_ipi() we iterate through the cpumask of CPUs, sending
-each an IPI asking them to do a backtrace, but we don't wait for the
-backtrace to happen.
+sparse generates the following warning:
 
-We then iterate through the CPU mask again, and if any CPU hasn't done
-the backtrace and cleared itself from the mask, we print a trace on its
-behalf, noting that the trace may be "stale".
+ include/linux/prandom.h:114:45: sparse: sparse: cast truncates bits from
+ constant value
 
-This works well enough when a CPU is not responding, because in that
-case it doesn't receive the IPI and the sending CPU is left to print the
-trace. But when all CPUs are responding we are left with a race between
-the sending and receiving CPUs, if the sending CPU wins the race then it
-will erroneously print a trace.
+This is because the 64-bit seed value is manipulated and then placed in a
+u32, causing an implicit cast and truncation. A forced cast to u32 doesn't
+prevent this warning, which is reasonable because a typecast doesn't prove
+that truncation was expected.
 
-This leads to spurious "stale" traces from the sending CPU, which can
-then be interleaved messily with the receiving CPU, note the CPU
-numbers, eg:
+Logical-AND the value with 0xffffffff to make explicit that truncation to
+32-bit is intended.
 
-  [ 1658.929157][    C7] rcu: Stack dump where RCU GP kthread last ran:
-  [ 1658.929223][    C7] Sending NMI from CPU 7 to CPUs 1:
-  [ 1658.929303][    C1] NMI backtrace for cpu 1
-  [ 1658.929303][    C7] CPU 1 didn't respond to backtrace IPI, inspecting paca.
-  [ 1658.929362][    C1] CPU: 1 PID: 325 Comm: kworker/1:1H Tainted: G        W   E     5.13.0-rc2+ #46
-  [ 1658.929405][    C7] irq_soft_mask: 0x01 in_mce: 0 in_nmi: 0 current: 325 (kworker/1:1H)
-  [ 1658.929465][    C1] Workqueue: events_highpri test_work_fn [test_lockup]
-  [ 1658.929549][    C7] Back trace of paca->saved_r1 (0xc0000000057fb400) (possibly stale):
-  [ 1658.929592][    C1] NIP:  c00000000002cf50 LR: c008000000820178 CTR: c00000000002cfa0
-
-To fix it, change the logic so that the sending CPU waits 5s for the
-receiving CPU to print its trace. If the receiving CPU prints its trace
-successfully then the sending CPU just continues, avoiding any spurious
-"stale" trace.
-
-This has the added benefit of allowing all CPUs to print their traces in
-order and avoids any interleaving of their output.
-
-Fixes: 5cc05910f26e ("powerpc/64s: Wire up arch_trigger_cpumask_backtrace()")
-Cc: stable@vger.kernel.org # v4.18+
-Reported-by: Nathan Lynch <nathanl@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210625140408.3351173-1-mpe@ellerman.id.au
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+Signed-off-by: Petr Mladek <pmladek@suse.com>
+Link: https://lore.kernel.org/r/20210525122012.6336-3-rf@opensource.cirrus.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/stacktrace.c |   26 ++++++++++++++++++++------
- 1 file changed, 20 insertions(+), 6 deletions(-)
+ include/linux/prandom.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/powerpc/kernel/stacktrace.c
-+++ b/arch/powerpc/kernel/stacktrace.c
-@@ -230,17 +230,31 @@ static void handle_backtrace_ipi(struct
- 
- static void raise_backtrace_ipi(cpumask_t *mask)
+diff --git a/include/linux/prandom.h b/include/linux/prandom.h
+index bbf4b4ad61df..056d31317e49 100644
+--- a/include/linux/prandom.h
++++ b/include/linux/prandom.h
+@@ -111,7 +111,7 @@ static inline u32 __seed(u32 x, u32 m)
+  */
+ static inline void prandom_seed_state(struct rnd_state *state, u64 seed)
  {
-+	struct paca_struct *p;
- 	unsigned int cpu;
-+	u64 delay_us;
+-	u32 i = (seed >> 32) ^ (seed << 10) ^ seed;
++	u32 i = ((seed >> 32) ^ (seed << 10) ^ seed) & 0xffffffffUL;
  
- 	for_each_cpu(cpu, mask) {
--		if (cpu == smp_processor_id())
-+		if (cpu == smp_processor_id()) {
- 			handle_backtrace_ipi(NULL);
--		else
--			smp_send_safe_nmi_ipi(cpu, handle_backtrace_ipi, 5 * USEC_PER_SEC);
--	}
-+			continue;
-+		}
- 
--	for_each_cpu(cpu, mask) {
--		struct paca_struct *p = paca_ptrs[cpu];
-+		delay_us = 5 * USEC_PER_SEC;
-+
-+		if (smp_send_safe_nmi_ipi(cpu, handle_backtrace_ipi, delay_us)) {
-+			// Now wait up to 5s for the other CPU to do its backtrace
-+			while (cpumask_test_cpu(cpu, mask) && delay_us) {
-+				udelay(1);
-+				delay_us--;
-+			}
-+
-+			// Other CPU cleared itself from the mask
-+			if (delay_us)
-+				continue;
-+		}
-+
-+		p = paca_ptrs[cpu];
- 
- 		cpumask_clear_cpu(cpu, mask);
- 
+ 	state->s1 = __seed(i,   2U);
+ 	state->s2 = __seed(i,   8U);
+-- 
+2.30.2
+
 
 
