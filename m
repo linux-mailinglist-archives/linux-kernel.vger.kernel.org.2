@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F26663C56D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E3D3C4956
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357958AbhGLIZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:25:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46904 "EHLO mail.kernel.org"
+        id S234648AbhGLGoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:44:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348046AbhGLHke (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:40:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D9C11611AD;
-        Mon, 12 Jul 2021 07:37:45 +0000 (UTC)
+        id S237786AbhGLGew (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:34:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB804610D0;
+        Mon, 12 Jul 2021 06:31:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075466;
-        bh=8elQxYq1HPPZFOtDMNr1juoBYQjgziwAnZkffRxeYxM=;
+        s=korg; t=1626071492;
+        bh=jOF2+mVU5Zoyesc5FztQrLVVkG6ddrANPmsqaU+DgXM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m4dURDkUShEufL9ZJrCBOj9WNoWnp1H4iayLFgL5cD90oJXqsdCTWrgLfB1YaC4m9
-         cxjEN/LjtHX55FWpWNlydBS4kU4rcNz6Ma/cf+Lzu9Mewa5FioAvjfN+g4DQBiIpB8
-         ByN+iue21wpDUlOzzps19Vk/BghIUNHNI6OCpNEg=
+        b=c47dz/dARBfE7FDJQdjtZGs3ukcePwTPJqgbmyQBF2Lth6QMvDGuxSM46tfg1lTiA
+         Oz3ObJ1b4nGWHrTmPJoSr/vthEpE45e1FywZv8cV22EFMeaP87D3fXl9/PU/IXkhec
+         EO3/FEQ0oXGSuqE9jI6iVhWDNL+k2p0i22EbwSyE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
-        David Teigland <teigland@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 229/800] fs: dlm: fix lowcomms_start error case
+        stable@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Mimi Zohar <zohar@linux.ibm.com>
+Subject: [PATCH 5.10 092/593] evm: Refuse EVM_ALLOW_METADATA_WRITES only if an HMAC key is loaded
 Date:   Mon, 12 Jul 2021 08:04:12 +0200
-Message-Id: <20210712060946.044243289@linuxfoundation.org>
+Message-Id: <20210712060853.320147055@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,72 +39,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Aring <aahringo@redhat.com>
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-[ Upstream commit fcef0e6c27ce109d2c617aa12f0bfd9f7ff47d38 ]
+commit 9acc89d31f0c94c8e573ed61f3e4340bbd526d0c upstream.
 
-This patch fixes the error path handling in lowcomms_start(). We need to
-cleanup some static allocated data structure and cleanup possible
-workqueue if these have started.
+EVM_ALLOW_METADATA_WRITES is an EVM initialization flag that can be set to
+temporarily disable metadata verification until all xattrs/attrs necessary
+to verify an EVM portable signature are copied to the file. This flag is
+cleared when EVM is initialized with an HMAC key, to avoid that the HMAC is
+calculated on unverified xattrs/attrs.
 
-Signed-off-by: Alexander Aring <aahringo@redhat.com>
-Signed-off-by: David Teigland <teigland@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Currently EVM unnecessarily denies setting this flag if EVM is initialized
+with a public key, which is not a concern as it cannot be used to trust
+xattrs/attrs updates. This patch removes this limitation.
+
+Fixes: ae1ba1676b88e ("EVM: Allow userland to permit modification of EVM-protected metadata")
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Cc: stable@vger.kernel.org # 4.16.x
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/dlm/lowcomms.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ Documentation/ABI/testing/evm      |   26 ++++++++++++++++++++++++--
+ security/integrity/evm/evm_secfs.c |    8 ++++----
+ 2 files changed, 28 insertions(+), 6 deletions(-)
 
-diff --git a/fs/dlm/lowcomms.c b/fs/dlm/lowcomms.c
-index b1dd850a4699..9bf920bee292 100644
---- a/fs/dlm/lowcomms.c
-+++ b/fs/dlm/lowcomms.c
-@@ -1666,10 +1666,15 @@ static void process_send_sockets(struct work_struct *work)
+--- a/Documentation/ABI/testing/evm
++++ b/Documentation/ABI/testing/evm
+@@ -49,8 +49,30 @@ Description:
+ 		modification of EVM-protected metadata and
+ 		disable all further modification of policy
  
- static void work_stop(void)
- {
--	if (recv_workqueue)
-+	if (recv_workqueue) {
- 		destroy_workqueue(recv_workqueue);
--	if (send_workqueue)
-+		recv_workqueue = NULL;
-+	}
+-		Note that once a key has been loaded, it will no longer be
+-		possible to enable metadata modification.
++		Echoing a value is additive, the new value is added to the
++		existing initialization flags.
 +
-+	if (send_workqueue) {
- 		destroy_workqueue(send_workqueue);
-+		send_workqueue = NULL;
-+	}
- }
++		For example, after::
++
++		  echo 2 ><securityfs>/evm
++
++		another echo can be performed::
++
++		  echo 1 ><securityfs>/evm
++
++		and the resulting value will be 3.
++
++		Note that once an HMAC key has been loaded, it will no longer
++		be possible to enable metadata modification. Signaling that an
++		HMAC key has been loaded will clear the corresponding flag.
++		For example, if the current value is 6 (2 and 4 set)::
++
++		  echo 1 ><securityfs>/evm
++
++		will set the new value to 3 (4 cleared).
++
++		Loading an HMAC key is the only way to disable metadata
++		modification.
  
- static int work_start(void)
-@@ -1686,6 +1691,7 @@ static int work_start(void)
- 	if (!send_workqueue) {
- 		log_print("can't start dlm_send");
- 		destroy_workqueue(recv_workqueue);
-+		recv_workqueue = NULL;
- 		return -ENOMEM;
- 	}
+ 		Until key loading has been signaled EVM can not create
+ 		or validate the 'security.evm' xattr, but returns
+--- a/security/integrity/evm/evm_secfs.c
++++ b/security/integrity/evm/evm_secfs.c
+@@ -80,12 +80,12 @@ static ssize_t evm_write_key(struct file
+ 	if (!i || (i & ~EVM_INIT_MASK) != 0)
+ 		return -EINVAL;
  
-@@ -1823,7 +1829,7 @@ int dlm_lowcomms_start(void)
+-	/* Don't allow a request to freshly enable metadata writes if
+-	 * keys are loaded.
++	/*
++	 * Don't allow a request to enable metadata writes if
++	 * an HMAC key is loaded.
+ 	 */
+ 	if ((i & EVM_ALLOW_METADATA_WRITES) &&
+-	    ((evm_initialized & EVM_KEY_MASK) != 0) &&
+-	    !(evm_initialized & EVM_ALLOW_METADATA_WRITES))
++	    (evm_initialized & EVM_INIT_HMAC) != 0)
+ 		return -EPERM;
  
- 	error = work_start();
- 	if (error)
--		goto fail;
-+		goto fail_local;
- 
- 	dlm_allow_conn = 1;
- 
-@@ -1840,6 +1846,9 @@ int dlm_lowcomms_start(void)
- fail_unlisten:
- 	dlm_allow_conn = 0;
- 	dlm_close_sock(&listen_con.sock);
-+	work_stop();
-+fail_local:
-+	deinit_local();
- fail:
- 	return error;
- }
--- 
-2.30.2
-
+ 	if (i & EVM_INIT_HMAC) {
 
 
