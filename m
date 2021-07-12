@@ -2,73 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85AFC3C5946
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B4293C59D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:03:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382534AbhGLJBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:01:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54816 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354134AbhGLIDf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:03:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 981766128C;
-        Mon, 12 Jul 2021 08:00:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076818;
-        bh=qrBYZQlbCN9ZVL6IR+5q/TQIt4gvOKBBQDwVqwLzC6E=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iUFSZBKGGWPpw4iCLjO6WuvQpppSA5j+U08ZduqtXXsFUtRzY2I4w+UnIo4SOuSZC
-         GBcFwk2DNTh4323fynDlyAWBrLUnSysSy5MempRJ43qV1sIZbW5PGhkj0paBq7BFsr
-         LCPuvm4VMaPqmIM0a6zRaD4qSsRMmSIPEO5D3Abk=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Quat Le <quat.le@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.13 800/800] scsi: core: Retry I/O for Notify (Enable Spinup) Required error
-Date:   Mon, 12 Jul 2021 08:13:43 +0200
-Message-Id: <20210712061051.699070725@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1351726AbhGLJJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:09:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1378855AbhGLIuB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 04:50:01 -0400
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33155C0613E9
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 01:42:13 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:f017:d84b:501f:cdd7])
+        by michel.telenet-ops.be with bizsmtp
+        id U8i9250043dzGBx068i9Kl; Mon, 12 Jul 2021 10:42:09 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1m2rVw-000VKL-Q6; Mon, 12 Jul 2021 10:42:08 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1m2qYB-008seM-Ui; Mon, 12 Jul 2021 09:40:23 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Christoph Hellwig <hch@lst.de>, Finn Thain <fthain@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: MAC should select HAVE_PATA_PLATFORM
+Date:   Mon, 12 Jul 2021 09:40:22 +0200
+Message-Id: <20210712074022.2116655-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quat Le <quat.le@oracle.com>
+The defconfigs switched Mac from the deprecated CONFIG_BLK_DEV_PLATFORM
+to CONFIG_PATA_PLATFORM.  However, the latter depends on
+CONFIG_HAVE_PATA_PLATFORM, which thus must be selected first.
 
-commit 104739aca4488909175e9e31d5cd7d75b82a2046 upstream.
-
-If the device is power-cycled, it takes time for the initiator to transmit
-the periodic NOTIFY (ENABLE SPINUP) SAS primitive, and for the device to
-respond to the primitive to become ACTIVE. Retry the I/O request to allow
-the device time to become ACTIVE.
-
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210629155826.48441-1-quat.le@oracle.com
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Quat Le <quat.le@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: b90257bfddbd01f3 ("m68k: use libata instead of the legacy ide driver")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+I thought I had sent this out before, but apparently I hadn't.
+To be queued in the m68k tree as a fix for v5.14.
 
 ---
- drivers/scsi/scsi_lib.c |    1 +
+ arch/m68k/Kconfig.machine | 1 +
  1 file changed, 1 insertion(+)
 
---- a/drivers/scsi/scsi_lib.c
-+++ b/drivers/scsi/scsi_lib.c
-@@ -728,6 +728,7 @@ static void scsi_io_completion_action(st
- 				case 0x07: /* operation in progress */
- 				case 0x08: /* Long write in progress */
- 				case 0x09: /* self test in progress */
-+				case 0x11: /* notify (enable spinup) required */
- 				case 0x14: /* space allocation in progress */
- 				case 0x1a: /* start stop unit in progress */
- 				case 0x1b: /* sanitize in progress */
-
+diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
+index 18107af0b7a368c0..142a6d208f580a5c 100644
+--- a/arch/m68k/Kconfig.machine
++++ b/arch/m68k/Kconfig.machine
+@@ -33,6 +33,7 @@ config MAC
+ 	depends on MMU
+ 	select MMU_MOTOROLA if MMU
+ 	select HAVE_ARCH_NVRAM_OPS
++	select HAVE_PATA_PLATFORM
+ 	select LEGACY_TIMER_TICK
+ 	help
+ 	  This option enables support for the Apple Macintosh series of
+-- 
+2.25.1
 
