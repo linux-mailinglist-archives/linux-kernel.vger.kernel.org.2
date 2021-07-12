@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 225EA3C5476
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0D823C58B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349082AbhGLH6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:58:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59502 "EHLO mail.kernel.org"
+        id S1380575AbhGLIvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:51:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344896AbhGLHVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:21:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FDF3611ED;
-        Mon, 12 Jul 2021 07:18:42 +0000 (UTC)
+        id S1349419AbhGLH4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:56:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07A796141A;
+        Mon, 12 Jul 2021 07:52:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074322;
-        bh=ObxN3PxQho9jLulRk2KNDCkooGZl0fwjand2/1+2IHk=;
+        s=korg; t=1626076344;
+        bh=jzC0v9JKSF4l/P/WOInLYdSCIDd+LtmQVxFu3bnYGVE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e02w/Dua0YsEShD3F/eUSBXoB0/3bWPQRha/i6neYPFT53RsAGHgocsZKTrH51Y47
-         cl1+0Hw1fHohWj9yTyTgKQWwmMhjIx23SiDx1jqy4e7FZxvymwI6P8Iz8dixE7+Q5d
-         SEhxACwKylqj8chl0GG1D+63fYsDR9T7O5hmH6Yg=
+        b=MLL/8b6nhBzhNaFOhpJsDrauNVKqT9ihYjz3YOdcdpq/EUBVSOrjMRC7nQQJGUXLr
+         PVLofN1xqV+EcKpAUBYSKOYzCPAQlKBk/4lBVC7GqsCIewhTjpdiCmY4K/o65ye+nU
+         ltReWAUhU6E0+bII7n0lnYO1RQ8P2pcCFepgz2ds=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 542/700] iio: humidity: am2315: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
+Subject: [PATCH 5.13 602/800] staging: rtl8712: Fix some tests against some data subtype frames
 Date:   Mon, 12 Jul 2021 08:10:25 +0200
-Message-Id: <20210712061034.024122008@linuxfoundation.org>
+Message-Id: <20210712061031.384894504@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,68 +40,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit f4ca2e2595d9fee65d5ce0d218b22ce00e5b2915 ]
+[ Upstream commit 116138c3bd34f92e550431d495db515f5ea19f13 ]
 
-To make code more readable, use a structure to express the channel
-layout and ensure the timestamp is 8 byte aligned.
+Commit 6e2baa44c6d1 ("staging: rtl8712: remove enum WIFI_FRAME_SUBTYPE")
+was wrong because:
+	WIFI_DATA_NULL != IEEE80211_STYPE_NULLFUNC
+	WIFI_DATA_CFACK != IEEE80211_STYPE_DATA_CFACK
+	WIFI_DATA_CFPOLL != IEEE80211_STYPE_DATA_CFPOLL
+	WIFI_DATA_CFACKPOLL != IEEE80211_STYPE_DATA_CFACKPOLL
 
-Found during an audit of all calls of uses of
-iio_push_to_buffers_with_timestamp()
+the WIFI_DATA_xxx definitions include WIFI_DATA_TYPE, which is 'BIT(3)'.
+Restore the previous behavior by adding the missing
+'IEEE80211_FTYPE_DATA |' (0x0008, that is to say BIT(3)) when these values
+are used.
 
-Fixes: 0d96d5ead3f7 ("iio: humidity: Add triggered buffer support for AM2315")
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Link: https://lore.kernel.org/r/20210501170121.512209-12-jic23@kernel.org
+Hopefully, the wrong commit was small enough and hand review is possible.
+
+Fixes: 6e2baa44c6d1 ("staging: rtl8712: remove enum WIFI_FRAME_SUBTYPE")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/44aebfa3c5ce8f45ae05369c73e9ff77c6d271f9.1619939806.git.christophe.jaillet@wanadoo.fr
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/humidity/am2315.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ drivers/staging/rtl8712/rtl871x_recv.c     |  2 +-
+ drivers/staging/rtl8712/rtl871x_security.c | 12 ++++++------
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/iio/humidity/am2315.c b/drivers/iio/humidity/am2315.c
-index 02ad1767c845..3398fa413ec5 100644
---- a/drivers/iio/humidity/am2315.c
-+++ b/drivers/iio/humidity/am2315.c
-@@ -33,7 +33,11 @@
- struct am2315_data {
- 	struct i2c_client *client;
- 	struct mutex lock;
--	s16 buffer[8]; /* 2x16-bit channels + 2x16 padding + 4x16 timestamp */
-+	/* Ensure timestamp is naturally aligned */
-+	struct {
-+		s16 chans[2];
-+		s64 timestamp __aligned(8);
-+	} scan;
- };
+diff --git a/drivers/staging/rtl8712/rtl871x_recv.c b/drivers/staging/rtl8712/rtl871x_recv.c
+index db2add576418..c23f6b376111 100644
+--- a/drivers/staging/rtl8712/rtl871x_recv.c
++++ b/drivers/staging/rtl8712/rtl871x_recv.c
+@@ -374,7 +374,7 @@ static sint ap2sta_data_frame(struct _adapter *adapter,
+ 	if (check_fwstate(pmlmepriv, WIFI_STATION_STATE) &&
+ 	    check_fwstate(pmlmepriv, _FW_LINKED)) {
+ 		/* if NULL-frame, drop packet */
+-		if ((GetFrameSubType(ptr)) == IEEE80211_STYPE_NULLFUNC)
++		if ((GetFrameSubType(ptr)) == (IEEE80211_FTYPE_DATA | IEEE80211_STYPE_NULLFUNC))
+ 			return _FAIL;
+ 		/* drop QoS-SubType Data, including QoS NULL,
+ 		 * excluding QoS-Data
+diff --git a/drivers/staging/rtl8712/rtl871x_security.c b/drivers/staging/rtl8712/rtl871x_security.c
+index 63d63f7be481..e0a1c30a8fe6 100644
+--- a/drivers/staging/rtl8712/rtl871x_security.c
++++ b/drivers/staging/rtl8712/rtl871x_security.c
+@@ -1045,9 +1045,9 @@ static void aes_cipher(u8 *key, uint hdrlen,
+ 	else
+ 		a4_exists = 1;
  
- struct am2315_sensor_data {
-@@ -167,20 +171,20 @@ static irqreturn_t am2315_trigger_handler(int irq, void *p)
- 
- 	mutex_lock(&data->lock);
- 	if (*(indio_dev->active_scan_mask) == AM2315_ALL_CHANNEL_MASK) {
--		data->buffer[0] = sensor_data.hum_data;
--		data->buffer[1] = sensor_data.temp_data;
-+		data->scan.chans[0] = sensor_data.hum_data;
-+		data->scan.chans[1] = sensor_data.temp_data;
- 	} else {
- 		i = 0;
- 		for_each_set_bit(bit, indio_dev->active_scan_mask,
- 				 indio_dev->masklength) {
--			data->buffer[i] = (bit ? sensor_data.temp_data :
--						 sensor_data.hum_data);
-+			data->scan.chans[i] = (bit ? sensor_data.temp_data :
-+					       sensor_data.hum_data);
- 			i++;
- 		}
- 	}
- 	mutex_unlock(&data->lock);
- 
--	iio_push_to_buffers_with_timestamp(indio_dev, data->buffer,
-+	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
- 					   pf->timestamp);
- err:
- 	iio_trigger_notify_done(indio_dev->trig);
+-	if ((frtype == IEEE80211_STYPE_DATA_CFACK) ||
+-	    (frtype == IEEE80211_STYPE_DATA_CFPOLL) ||
+-	    (frtype == IEEE80211_STYPE_DATA_CFACKPOLL)) {
++	if ((frtype == (IEEE80211_FTYPE_DATA | IEEE80211_STYPE_DATA_CFACK)) ||
++	    (frtype == (IEEE80211_FTYPE_DATA | IEEE80211_STYPE_DATA_CFPOLL)) ||
++	    (frtype == (IEEE80211_FTYPE_DATA | IEEE80211_STYPE_DATA_CFACKPOLL))) {
+ 		qc_exists = 1;
+ 		if (hdrlen !=  WLAN_HDR_A3_QOS_LEN)
+ 			hdrlen += 2;
+@@ -1225,9 +1225,9 @@ static void aes_decipher(u8 *key, uint hdrlen,
+ 		a4_exists = 0;
+ 	else
+ 		a4_exists = 1;
+-	if ((frtype == IEEE80211_STYPE_DATA_CFACK) ||
+-	    (frtype == IEEE80211_STYPE_DATA_CFPOLL) ||
+-	    (frtype == IEEE80211_STYPE_DATA_CFACKPOLL)) {
++	if ((frtype == (IEEE80211_FTYPE_DATA | IEEE80211_STYPE_DATA_CFACK)) ||
++	    (frtype == (IEEE80211_FTYPE_DATA | IEEE80211_STYPE_DATA_CFPOLL)) ||
++	    (frtype == (IEEE80211_FTYPE_DATA | IEEE80211_STYPE_DATA_CFACKPOLL))) {
+ 		qc_exists = 1;
+ 		if (hdrlen != WLAN_HDR_A3_QOS_LEN)
+ 			hdrlen += 2;
 -- 
 2.30.2
 
