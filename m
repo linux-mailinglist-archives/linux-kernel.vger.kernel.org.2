@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFEE93C5391
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:51:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF1113C5473
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:53:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348083AbhGLHzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:55:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59276 "EHLO mail.kernel.org"
+        id S1348907AbhGLH6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:58:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239650AbhGLHVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:21:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5EA461442;
-        Mon, 12 Jul 2021 07:18:24 +0000 (UTC)
+        id S240184AbhGLHVQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:21:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC920613EE;
+        Mon, 12 Jul 2021 07:18:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074305;
-        bh=h+lgG8+4wcrAD5i1gON8eiuOg9ZmPnR9YhqQqe5PkRo=;
+        s=korg; t=1626074308;
+        bh=syAVqQuSoIiuS7JHQ+4SXvTlNSBhSa1x9TSIYG6imP0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kQCjLj1yZryA613oNujA0GpuqUsxAWlmSVAomzKtjWWYk8hOCWyTa3pRdEjbj0KqJ
-         lDid434rgLt5Oh/DxJAt7EqkXF+j1fvrvEai32MTXr4/P2gBL2o3H6FQVjJ9/HnGJ9
-         3DHM0yNsH5O9Ble1GCyYDStMSEyzSKandVgkrgQE=
+        b=q20x5iuey4kBQJKt7PZEDsIvgsb6xPbQ0pqdl4gX0qmtKPrH0HC9sVcwh4Twq+Zn6
+         K2xk6aLRXPqneOCM3RI1w4toQIakK6xuroPOKPizQm6IDqR23XrVzFjCOB6E5JaeYE
+         EwpO51I5Ae8n09kLhcl8P8ghOiZ2dt8i7FqME4pw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sasha Neftin <sasha.neftin@intel.com>,
-        Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 492/700] e1000e: Check the PCIm state
-Date:   Mon, 12 Jul 2021 08:09:35 +0200
-Message-Id: <20210712061028.878692831@linuxfoundation.org>
+Subject: [PATCH 5.12 493/700] net: dsa: sja1105: fix NULL pointer dereference in sja1105_reload_cbs()
+Date:   Mon, 12 Jul 2021 08:09:36 +0200
+Message-Id: <20210712061028.979830367@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
 References: <20210712060924.797321836@linuxfoundation.org>
@@ -42,62 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sasha Neftin <sasha.neftin@intel.com>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-[ Upstream commit 2e7256f12cdb16eaa2515b6231d665044a07c51a ]
+[ Upstream commit be7f62eebaff2f86c1467a2d33930a0a7a87675b ]
 
-Complete to commit def4ec6dce393e ("e1000e: PCIm function state support")
-Check the PCIm state only on CSME systems. There is no point to do this
-check on non CSME systems.
-This patch fixes a generation a false-positive warning:
-"Error in exiting dmoff"
+priv->cbs is an array of priv->info->num_cbs_shapers elements of type
+struct sja1105_cbs_entry which only get allocated if CONFIG_NET_SCH_CBS
+is enabled.
 
-Fixes: def4ec6dce39 ("e1000e: PCIm function state support")
-Signed-off-by: Sasha Neftin <sasha.neftin@intel.com>
-Tested-by: Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+However, sja1105_reload_cbs() is called from sja1105_static_config_reload()
+which in turn is called for any of the items in sja1105_reset_reasons,
+therefore during the normal runtime of the driver and not just from a
+code path which can be triggered by the tc-cbs offload.
+
+The sja1105_reload_cbs() function does not contain a check whether the
+priv->cbs array is NULL or not, it just assumes it isn't and proceeds to
+iterate through the credit-based shaper elements. This leads to a NULL
+pointer dereference.
+
+The solution is to return success if the priv->cbs array has not been
+allocated, since sja1105_reload_cbs() has nothing to do.
+
+Fixes: 4d7525085a9b ("net: dsa: sja1105: offload the Credit-Based Shaper qdisc")
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/e1000e/netdev.c | 24 ++++++++++++----------
- 1 file changed, 13 insertions(+), 11 deletions(-)
+ drivers/net/dsa/sja1105/sja1105_main.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
-index a0948002ddf8..b3ad95ac3d85 100644
---- a/drivers/net/ethernet/intel/e1000e/netdev.c
-+++ b/drivers/net/ethernet/intel/e1000e/netdev.c
-@@ -5222,18 +5222,20 @@ static void e1000_watchdog_task(struct work_struct *work)
- 			pm_runtime_resume(netdev->dev.parent);
+diff --git a/drivers/net/dsa/sja1105/sja1105_main.c b/drivers/net/dsa/sja1105/sja1105_main.c
+index 926544440f02..42a0fb588f64 100644
+--- a/drivers/net/dsa/sja1105/sja1105_main.c
++++ b/drivers/net/dsa/sja1105/sja1105_main.c
+@@ -1798,6 +1798,12 @@ static int sja1105_reload_cbs(struct sja1105_private *priv)
+ {
+ 	int rc = 0, i;
  
- 			/* Checking if MAC is in DMoff state*/
--			pcim_state = er32(STATUS);
--			while (pcim_state & E1000_STATUS_PCIM_STATE) {
--				if (tries++ == dmoff_exit_timeout) {
--					e_dbg("Error in exiting dmoff\n");
--					break;
--				}
--				usleep_range(10000, 20000);
-+			if (er32(FWSM) & E1000_ICH_FWSM_FW_VALID) {
- 				pcim_state = er32(STATUS);
--
--				/* Checking if MAC exited DMoff state */
--				if (!(pcim_state & E1000_STATUS_PCIM_STATE))
--					e1000_phy_hw_reset(&adapter->hw);
-+				while (pcim_state & E1000_STATUS_PCIM_STATE) {
-+					if (tries++ == dmoff_exit_timeout) {
-+						e_dbg("Error in exiting dmoff\n");
-+						break;
-+					}
-+					usleep_range(10000, 20000);
-+					pcim_state = er32(STATUS);
++	/* The credit based shapers are only allocated if
++	 * CONFIG_NET_SCH_CBS is enabled.
++	 */
++	if (!priv->cbs)
++		return 0;
 +
-+					/* Checking if MAC exited DMoff state */
-+					if (!(pcim_state & E1000_STATUS_PCIM_STATE))
-+						e1000_phy_hw_reset(&adapter->hw);
-+				}
- 			}
+ 	for (i = 0; i < priv->info->num_cbs_shapers; i++) {
+ 		struct sja1105_cbs_entry *cbs = &priv->cbs[i];
  
- 			/* update snapshot of PHY registers on LSC */
 -- 
 2.30.2
 
