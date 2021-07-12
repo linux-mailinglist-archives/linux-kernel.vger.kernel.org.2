@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA903C52C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A5E63C4B7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245281AbhGLHtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:49:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49360 "EHLO mail.kernel.org"
+        id S240019AbhGLG5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:57:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241816AbhGLHOr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:14:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7651E613F4;
-        Mon, 12 Jul 2021 07:11:37 +0000 (UTC)
+        id S238647AbhGLGlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:41:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 512F461008;
+        Mon, 12 Jul 2021 06:38:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073897;
-        bh=cykE8PT6WlgINg+8kQuOxx/fDlyOW64asYjCQwdEUFA=;
+        s=korg; t=1626071920;
+        bh=O24PZaQC9+WmVpAnHZLud64EGWmN8B/X3stNANXkEpQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RG4+V2TgCKDctWk86ak+Rcd0o0XFHWr6zfTQy8a0tx4xBL7CgybbuTO7x8wCr8TZ8
-         b3UU+sKsekB0ZeQcBi4s9LD5kQpsecKbWnkO06u92/CTjYuj7emPuzaNxovu2q9HvV
-         geyM2lw7ymWrJ/hKePVa/6gRM7t1fBSlai3FHB7Y=
+        b=ITpRHXYDWTtJBeCrWv8+VsyrI5DyVGePVqa6uYjxyrlOidvccuIQh+dLRUf8IALCa
+         Z8SzMjG87vwvi4t8XqkO86OfwWurghiK1yyLdDp/MMB1SoyUtaGcrw1wluh3qqNJVI
+         hndO9RDXIJ/gVv+U3X6wbJ4MsJ96kz8//IQWsnLY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
+        Christoph Hellwig <hch@lst.de>,
+        John Garry <john.garry@huawei.com>,
+        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 353/700] drm/bridge: Fix the stop condition of drm_bridge_chain_pre_enable()
+Subject: [PATCH 5.10 276/593] block: avoid double io accounting for flush request
 Date:   Mon, 12 Jul 2021 08:07:16 +0200
-Message-Id: <20210712061013.894166049@linuxfoundation.org>
+Message-Id: <20210712060914.267900165@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +42,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Douglas Anderson <dianders@chromium.org>
+From: Ming Lei <ming.lei@redhat.com>
 
-[ Upstream commit bab5cca7e609952b069a550e39fe4893149fb658 ]
+[ Upstream commit 84da7acc3ba53af26f15c4b0ada446127b7a7836 ]
 
-The drm_bridge_chain_pre_enable() is not the proper opposite of
-drm_bridge_chain_post_disable(). It continues along the chain to
-_before_ the starting bridge. Let's fix that.
+For flush request, rq->end_io() may be called two times, one is from
+timeout handling(blk_mq_check_expired()), another is from normal
+completion(__blk_mq_end_request()).
 
-Fixes: 05193dc38197 ("drm/bridge: Make the bridge chain a double-linked list")
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210416153909.v4.1.If62a003f76a2bc4ccc6c53565becc05d2aad4430@changeid
+Move blk_account_io_flush() after flush_rq->ref drops to zero, so
+io accounting can be done just once for flush request.
+
+Fixes: b68663186577 ("block: add iostat counters for flush requests")
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Tested-by: John Garry <john.garry@huawei.com>
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Link: https://lore.kernel.org/r/20210511152236.763464-2-ming.lei@redhat.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_bridge.c | 3 +++
- 1 file changed, 3 insertions(+)
+ block/blk-flush.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
-index 64f0effb52ac..044acd07c153 100644
---- a/drivers/gpu/drm/drm_bridge.c
-+++ b/drivers/gpu/drm/drm_bridge.c
-@@ -522,6 +522,9 @@ void drm_bridge_chain_pre_enable(struct drm_bridge *bridge)
- 	list_for_each_entry_reverse(iter, &encoder->bridge_chain, chain_node) {
- 		if (iter->funcs->pre_enable)
- 			iter->funcs->pre_enable(iter);
-+
-+		if (iter == bridge)
-+			break;
+diff --git a/block/blk-flush.c b/block/blk-flush.c
+index fd5cee9f1a3b..7ee7e5e8905d 100644
+--- a/block/blk-flush.c
++++ b/block/blk-flush.c
+@@ -220,8 +220,6 @@ static void flush_end_io(struct request *flush_rq, blk_status_t error)
+ 	unsigned long flags = 0;
+ 	struct blk_flush_queue *fq = blk_get_flush_queue(q, flush_rq->mq_ctx);
+ 
+-	blk_account_io_flush(flush_rq);
+-
+ 	/* release the tag's ownership to the req cloned from */
+ 	spin_lock_irqsave(&fq->mq_flush_lock, flags);
+ 
+@@ -231,6 +229,7 @@ static void flush_end_io(struct request *flush_rq, blk_status_t error)
+ 		return;
  	}
- }
- EXPORT_SYMBOL(drm_bridge_chain_pre_enable);
+ 
++	blk_account_io_flush(flush_rq);
+ 	/*
+ 	 * Flush request has to be marked as IDLE when it is really ended
+ 	 * because its .end_io() is called from timeout code path too for
 -- 
 2.30.2
 
