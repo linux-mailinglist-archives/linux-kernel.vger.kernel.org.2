@@ -2,178 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3B1A3C61CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3597A3C61CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234995AbhGLRZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 13:25:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40428 "EHLO
+        id S235654AbhGLR0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 13:26:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230374AbhGLRZh (ORCPT
+        with ESMTP id S234856AbhGLR0C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 13:25:37 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F029C0613DD
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 10:22:49 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id a127so17027288pfa.10
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 10:22:49 -0700 (PDT)
+        Mon, 12 Jul 2021 13:26:02 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5316FC0613DD
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 10:23:14 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id f93-20020a9d03e60000b02904b1f1d7c5f4so18825103otf.9
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 10:23:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vJSus6xqz4Py/YBsR2PyDSFXECwi8SLf51Zt42z9NT4=;
-        b=Mmcvc7l5nHdDlEh0IVqZJc5w8y60uSbHCff6KeC5Jkl14UYWGJpRd6DGrn/7aSy0jH
-         /ppNubSXnDqrbctFIwoOwew8asmkJjWJJw8zZSLfC5cnx1Ol8I0j/BP+hoo39m4jPp/x
-         xrJ7JhwedpqtUTVCf02vJjcsV83MQAKp6+cmY=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BA8pDDOUvp6d/xPytywlLcoRhVoy9eZrqJDmTRrxqlQ=;
+        b=q1/slnPrL96kz9b2UR4Xvv++1BDjB7aaDsvPs4OKGMG7Am1SN7GGpB3iPZ2Llfj2CP
+         wcGSV7sAZ4/jkKgFpJ8yC053amfGf6wy+ZECpr69m0/gAR5ngLUmSGjnFagkLkNZJj8E
+         4IeFx9TSVRwT6igKIy8ivzOLl1iAF6Q7xTvG5jNZDQMPX1gyO7HaSoYkFiI60213FPHE
+         KCpep6I6PzmZA+zLWt/2Hvdija9vv8bIpA4LGem/h250OIHUhi5YaafYituQyKEYUHTj
+         AoBa2OWAkKLAkFqx3EcxVlWRddu0givKOoYujaRXGyAcpsDZzvAizAaIIyAquT+3u3SP
+         3RKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vJSus6xqz4Py/YBsR2PyDSFXECwi8SLf51Zt42z9NT4=;
-        b=gJkeo0jQt5g7rm2hSOsMkebYt+JsFCaV5K8cssbL967mig3VT0F16XG7oXrmNKzI8l
-         KaGd7ld6VCdmB06YhL9fumYfrrz8Cv2OWNoGxfb8/GWQJaM7macurCLZt4O2u7gmU4CU
-         jm6G0AvJYEs5wMRL8jCG9B4Do7tcqG7Jug6gWE+KBnnI7VHSZe+Fh8ED5MMHfw6Bgm4t
-         SdWUc1O5oTK++PW033yUYZ8D9yFFLmSqyNT9mSFT0CLbLtt6Z1WLB0li6fkHx2tlMXOv
-         /e2Yj7spUX719jV0SE9gRQpPGltJ8AoW15kA0Riz5yAQoFIcUbF4L8BsaTtk7MqeSjAE
-         4YtA==
-X-Gm-Message-State: AOAM531oXCOF6WfJE9yyzSI8B4v4owMYCYElYHk3Gk1/GSY3eSVzYw8Q
-        rNNVawLwBVDV5EMN9aC2T0BaIw==
-X-Google-Smtp-Source: ABdhPJwEK/MTOfB3M0UIkkrsItNGKnJCb+XUM5JvODCmpd9ql1wqJdZo6sDgmolg4Wk0Zsz+NGL4GQ==
-X-Received: by 2002:a63:1a12:: with SMTP id a18mr165366pga.269.1626110568824;
-        Mon, 12 Jul 2021 10:22:48 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id i8sm46529pjh.36.2021.07.12.10.22.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 10:22:48 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 10:22:47 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Tor Vic <torvic9@mailbox.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        masahiroy@kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        linux-kbuild@vger.kernel.org,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH 1/1] Kbuild, clang: add option for choosing a ThinLTO
- cache directory
-Message-ID: <202107121021.38F447EBE4@keescook>
-References: <b45b2430-3670-b310-b6ad-2d6db50c2d18@mailbox.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BA8pDDOUvp6d/xPytywlLcoRhVoy9eZrqJDmTRrxqlQ=;
+        b=hXdvV2YWUkqHgGMdGoeMUpC5ijm9Vef1Q3qA2k3iGPScQTXxfTdJvCvGTU6t2ZZ2Db
+         du1fxUAQFsXM+uliarQlZMWxl6WYAZgl29UfWGbrDi25rGyNZ82b87+f+OnVlkSccfCy
+         h40Rs2B8PI5+bxyY73jgStbywMsvIzFoSyIWqyOh20KaQga0LXBQ5oQ0KTqQ1n734pXq
+         IAUXeS1s2Avm+kANUKBrhwG6t6+OmNApbq0Nk+bcu88ZXxZ2mPn978z0wVT62LUygRRh
+         H55lhsvAKE5FwgpAHedQwtWAf4aYAugPnSUIzZM0neOTZFyjLOOxL+VcsQ1nrT44kvLM
+         5+Zg==
+X-Gm-Message-State: AOAM5306gaXMNRd8ADbPO+sMKqzmcmA/gfvxcbZ92PmXWXNgOocP4ggc
+        zJ1lsnQfB93vjX2PHb4m/dxvNBDAdiykdY4ZFdIFTw==
+X-Google-Smtp-Source: ABdhPJxYvGopP+Xl7pOuU5xiZGAIMBRw8f3dSjyb5D1cRCD9vbQYdGehGbtYXBjx8d7BEfgLlo+KSxhUfOuILcfUKR0=
+X-Received: by 2002:a9d:550e:: with SMTP id l14mr58035oth.241.1626110593467;
+ Mon, 12 Jul 2021 10:23:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b45b2430-3670-b310-b6ad-2d6db50c2d18@mailbox.org>
+References: <1625825111-6604-1-git-send-email-weijiang.yang@intel.com>
+ <1625825111-6604-7-git-send-email-weijiang.yang@intel.com>
+ <CALMp9eQEs9pUyy1PpwLPG0_PtF07tR2Opw+1b=w4-knOwYPvvg@mail.gmail.com> <20210712095034.GD12162@intel.com>
+In-Reply-To: <20210712095034.GD12162@intel.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Mon, 12 Jul 2021 10:23:02 -0700
+Message-ID: <CALMp9eQLHfXQwPCfqtc_y34sKGkZsCxEFL+BGx8wHgz7A8cOPA@mail.gmail.com>
+Subject: Re: [PATCH v5 06/13] KVM: x86/vmx: Save/Restore host MSR_ARCH_LBR_CTL state
+To:     Yang Weijiang <weijiang.yang@intel.com>
+Cc:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        wei.w.wang@intel.com, like.xu.linux@gmail.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 11:10:04AM +0000, Tor Vic wrote:
-> On some distros and configurations, it might be useful to allow for
-> specifying a directory where Clang stores its ThinLTO cache.
-> 
-> More specifically, when building the VirtualBox extramodules on Arch with
-> its proper 'makepkg' build system and DKMS, against an already installed
-> ThinLTO kernel, the build fails because it tries to create the ThinLTO
-> cache in a directory that is not user-writable.
-> 
-> A similar problem has been reported with openSUSE's OBS build system.
-> 
-> Add a Kconfig option that allows users to choose a directory in which
-> Clang's ThinLTO can store its cache.
+On Mon, Jul 12, 2021 at 2:36 AM Yang Weijiang <weijiang.yang@intel.com> wrote:
+>
+> On Fri, Jul 09, 2021 at 03:54:53PM -0700, Jim Mattson wrote:
+> > On Fri, Jul 9, 2021 at 2:51 AM Yang Weijiang <weijiang.yang@intel.com> wrote:
+> > >
+> > > If host is using MSR_ARCH_LBR_CTL then save it before vm-entry
+> > > and reload it after vm-exit.
+> >
+> > I don't see anything being done here "before VM-entry" or "after
+> > VM-exit." This code seems to be invoked on vcpu_load and vcpu_put.
+> >
+> > In any case, I don't see why this one MSR is special. It seems that if
+> > the host is using the architectural LBR MSRs, then *all* of the host
+> > architectural LBR MSRs have to be saved on vcpu_load and restored on
+> > vcpu_put. Shouldn't  kvm_load_guest_fpu() and kvm_put_guest_fpu() do
+> > that via the calls to kvm_save_current_fpu(vcpu->arch.user_fpu) and
+> > restore_fpregs_from_fpstate(&vcpu->arch.user_fpu->state)?
+> I looked back on the discussion thread:
+> https://patchwork.kernel.org/project/kvm/patch/20210303135756.1546253-8-like.xu@linux.intel.com/
+> not sure why this code is added, but IMO, although fpu save/restore in outer loop
+> covers this LBR MSR, but the operation points are far away from vm-entry/exit
+> point, i.e., the guest MSR setting could leak to host side for a signicant
+> long of time, it may cause host side profiling accuracy. if we save/restore it
+> manually, it'll mitigate the issue signifcantly.
 
-Ah-ha, good idea. Thanks! Question below...
-
-> 
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1104
-> Signed-off-by: Tor Vic <torvic9@mailbox.org>
-> ---
->  Makefile                  |  5 +++--
->  arch/Kconfig              | 10 ++++++++++
->  scripts/Makefile.lib      |  4 ++++
->  scripts/Makefile.modfinal |  4 ++++
->  4 files changed, 21 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Makefile b/Makefile
-> index c3f9bd191b89..472bc8bfff03 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -932,7 +932,8 @@ endif
->  ifdef CONFIG_LTO_CLANG
->  ifdef CONFIG_LTO_CLANG_THIN
->  CC_FLAGS_LTO	:= -flto=thin -fsplit-lto-unit
-> -KBUILD_LDFLAGS	+= --thinlto-cache-dir=$(extmod_prefix).thinlto-cache
-> +export thinlto-dir = $(if
-> $(CONFIG_LTO_CLANG_THIN_CACHEDIR),$(CONFIG_LTO_CLANG_THIN_CACHEDIR)/)
-> +KBUILD_LDFLAGS	+=
-> --thinlto-cache-dir=$(thinlto-dir)$(extmod_prefix).thinlto-cache
->  else
->  CC_FLAGS_LTO	:= -flto
->  endif
-> @@ -1728,7 +1729,7 @@ PHONY += compile_commands.json
-> 
->  clean-dirs := $(KBUILD_EXTMOD)
->  clean: rm-files := $(KBUILD_EXTMOD)/Module.symvers
-> $(KBUILD_EXTMOD)/modules.nsdeps \
-> -	$(KBUILD_EXTMOD)/compile_commands.json $(KBUILD_EXTMOD)/.thinlto-cache
-> +	$(KBUILD_EXTMOD)/compile_commands.json
-> $(thinlto-dir)$(KBUILD_EXTMOD)/.thinlto-cache
-> 
->  PHONY += help
->  help:
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index 129df498a8e1..19e4d140e12a 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -696,6 +696,16 @@ config LTO_CLANG_THIN
->  	    https://clang.llvm.org/docs/ThinLTO.html
-> 
->  	  If unsure, say Y.
-> +
-> +config LTO_CLANG_THIN_CACHEDIR
-> +	string "Clang ThinLTO cache directory"
-> +	depends on LTO_CLANG_THIN
-> +	default ""
-> +	help
-> +	  This option allows users to choose a directory that stores
-> +	  Clang's ThinLTO cache.
-> +	  Leave empty for default.
-> +
->  endchoice
-> 
->  config ARCH_SUPPORTS_CFI_CLANG
-> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-> index 10950559b223..bca87a6aa35b 100644
-> --- a/scripts/Makefile.lib
-> +++ b/scripts/Makefile.lib
-> @@ -197,6 +197,10 @@ endif
->  part-of-module = $(if $(filter $(basename $@).o, $(real-obj-m)),y)
->  quiet_modtag = $(if $(part-of-module),[M],   )
-> 
-> +ifdef CONFIG_LTO_CLANG_THIN
-> +KBUILD_LDFLAGS	+=
-> --thinlto-cache-dir=$(thinlto-dir)$(extmod-prefix).thinlto-cache
-> +endif
-> +
->  modkern_cflags =                                          \
->  	$(if $(part-of-module),                           \
->  		$(KBUILD_CFLAGS_MODULE) $(CFLAGS_MODULE), \
-> diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
-> index 5e9b8057fb24..ab0d72e21318 100644
-> --- a/scripts/Makefile.modfinal
-> +++ b/scripts/Makefile.modfinal
-> @@ -35,6 +35,10 @@ ifdef CONFIG_LTO_CLANG
->  # avoid a second slow LTO link
->  prelink-ext := .lto
-> 
-> +ifdef CONFIG_LTO_CLANG_THIN
-> +KBUILD_LDFLAGS	+=
-> --thinlto-cache-dir=$(thinlto-dir)$(extmod-prefix).thinlto-cache
-> +endif # CONFIG_LTO_CLANG_THIN
-> +
->  # ELF processing was skipped earlier because we didn't have native code,
->  # so let's now process the prelinked binary before we link the module.
-
-Why are these changes needed in Makefile.lib and Makefile.modfinal?
-Isn't KBUILD_LDFLAGS already populated from the top-level Makefile?
-
--- 
-Kees Cook
+I'll be interested to see how you distinguish the intermingled branch
+streams, if you allow the host to record LBRs while the LBR MSRs
+contain guest values!
