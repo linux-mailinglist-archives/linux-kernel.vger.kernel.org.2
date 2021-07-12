@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FCBD3C5879
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 148C03C4CB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356771AbhGLIsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:48:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41274 "EHLO mail.kernel.org"
+        id S242489AbhGLHGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:06:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243313AbhGLHwu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:52:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA88B610FB;
-        Mon, 12 Jul 2021 07:49:59 +0000 (UTC)
+        id S236538AbhGLGrj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:47:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 20A16611F1;
+        Mon, 12 Jul 2021 06:43:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076200;
-        bh=5DSScBJy1n1r6zP5ieb77l17qffqXelgxNaDpdKG61k=;
+        s=korg; t=1626072217;
+        bh=LJbD7DrUYPmRZAMlDFkz4WBP7lE88JkaDf4HFPrxDdw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yZEQdumBwS7MRpT9lyXWEVUPQMDyya5EiEwRQK0TvJlsmk3sLUrmTagUwAveIynI9
-         92UUWpzyuw2AzOjZyVALS9J0Oxv1oOqraAtj7py8+3Zq/N60WFJAvErjGmAHiMptoF
-         o7Kmuk/sanxSNPQLIrrUZXkLfWM17mZS5wDwQyJ4=
+        b=sNMXDPf52N79YsKJIRkVlfkqvAPpTsgcPRESiLx3xIMY+xNd84U8xutDGzkmUQusI
+         2+rshdkA0aqQLbHDAIIONaV1xX8DpXIcZd3jq23JPEW5eOeIcCTugyrI+imA/rj175
+         ewUnO0st2NWvnY17Uw3tgpT9Vam6BTY0Fkz5F8rY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
+        stable@vger.kernel.org, Lior Nahmanson <liorna@nvidia.com>,
+        Antoine Tenart <atenart@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 541/800] net: ti: am65-cpsw-nuss: Fix crash when changing number of TX queues
+Subject: [PATCH 5.10 404/593] net: phy: mscc: fix macsec key length
 Date:   Mon, 12 Jul 2021 08:09:24 +0200
-Message-Id: <20210712061024.913122569@linuxfoundation.org>
+Message-Id: <20210712060932.145829882@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,91 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vignesh Raghavendra <vigneshr@ti.com>
+From: Antoine Tenart <atenart@kernel.org>
 
-[ Upstream commit ce8eb4c728ef40b554b4f3d8963f11ed44502e00 ]
+[ Upstream commit c309217f91f2d2097c2a0a832d9bff50b88c81dc ]
 
-When changing number of TX queues using ethtool:
+The key length used to store the macsec key was set to MACSEC_KEYID_LEN
+(16), which is an issue as:
+- This was never meant to be the key length.
+- The key length can be > 16.
 
-	# ethtool -L eth0 tx 1
-	[  135.301047] Unable to handle kernel paging request at virtual address 00000000af5d0000
-	[...]
-	[  135.525128] Call trace:
-	[  135.525142]  dma_release_from_dev_coherent+0x2c/0xb0
-	[  135.525148]  dma_free_attrs+0x54/0xe0
-	[  135.525156]  k3_cppi_desc_pool_destroy+0x50/0xa0
-	[  135.525164]  am65_cpsw_nuss_remove_tx_chns+0x88/0xdc
-	[  135.525171]  am65_cpsw_set_channels+0x3c/0x70
-	[...]
+Fix this by using MACSEC_MAX_KEY_LEN instead (the max length accepted in
+uAPI).
 
-This is because k3_cppi_desc_pool_destroy() which is called after
-k3_udma_glue_release_tx_chn() in am65_cpsw_nuss_remove_tx_chns()
-references struct device that is unregistered at the end of
-k3_udma_glue_release_tx_chn()
-
-Therefore the right order is to call k3_cppi_desc_pool_destroy() and
-destroy desc pool before calling k3_udma_glue_release_tx_chn().
-Fix this throughout the driver.
-
-Fixes: 93a76530316a ("net: ethernet: ti: introduce am65x/j721e gigabit eth subsystem driver")
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+Fixes: 28c5107aa904 ("net: phy: mscc: macsec support")
+Reported-by: Lior Nahmanson <liorna@nvidia.com>
+Signed-off-by: Antoine Tenart <atenart@kernel.org>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ti/am65-cpsw-nuss.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ drivers/net/phy/mscc/mscc_macsec.c | 2 +-
+ drivers/net/phy/mscc/mscc_macsec.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-index 6a67b026df0b..718539cdd2f2 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-@@ -1506,12 +1506,12 @@ static void am65_cpsw_nuss_free_tx_chns(void *data)
- 	for (i = 0; i < common->tx_ch_num; i++) {
- 		struct am65_cpsw_tx_chn *tx_chn = &common->tx_chns[i];
- 
--		if (!IS_ERR_OR_NULL(tx_chn->tx_chn))
--			k3_udma_glue_release_tx_chn(tx_chn->tx_chn);
--
- 		if (!IS_ERR_OR_NULL(tx_chn->desc_pool))
- 			k3_cppi_desc_pool_destroy(tx_chn->desc_pool);
- 
-+		if (!IS_ERR_OR_NULL(tx_chn->tx_chn))
-+			k3_udma_glue_release_tx_chn(tx_chn->tx_chn);
-+
- 		memset(tx_chn, 0, sizeof(*tx_chn));
- 	}
- }
-@@ -1531,12 +1531,12 @@ void am65_cpsw_nuss_remove_tx_chns(struct am65_cpsw_common *common)
- 
- 		netif_napi_del(&tx_chn->napi_tx);
- 
--		if (!IS_ERR_OR_NULL(tx_chn->tx_chn))
--			k3_udma_glue_release_tx_chn(tx_chn->tx_chn);
--
- 		if (!IS_ERR_OR_NULL(tx_chn->desc_pool))
- 			k3_cppi_desc_pool_destroy(tx_chn->desc_pool);
- 
-+		if (!IS_ERR_OR_NULL(tx_chn->tx_chn))
-+			k3_udma_glue_release_tx_chn(tx_chn->tx_chn);
-+
- 		memset(tx_chn, 0, sizeof(*tx_chn));
- 	}
- }
-@@ -1624,11 +1624,11 @@ static void am65_cpsw_nuss_free_rx_chns(void *data)
- 
- 	rx_chn = &common->rx_chns;
- 
--	if (!IS_ERR_OR_NULL(rx_chn->rx_chn))
--		k3_udma_glue_release_rx_chn(rx_chn->rx_chn);
--
- 	if (!IS_ERR_OR_NULL(rx_chn->desc_pool))
- 		k3_cppi_desc_pool_destroy(rx_chn->desc_pool);
-+
-+	if (!IS_ERR_OR_NULL(rx_chn->rx_chn))
-+		k3_udma_glue_release_rx_chn(rx_chn->rx_chn);
+diff --git a/drivers/net/phy/mscc/mscc_macsec.c b/drivers/net/phy/mscc/mscc_macsec.c
+index 10be266e48e8..b7b2521c73fb 100644
+--- a/drivers/net/phy/mscc/mscc_macsec.c
++++ b/drivers/net/phy/mscc/mscc_macsec.c
+@@ -501,7 +501,7 @@ static u32 vsc8584_macsec_flow_context_id(struct macsec_flow *flow)
  }
  
- static int am65_cpsw_nuss_init_rx_chns(struct am65_cpsw_common *common)
+ /* Derive the AES key to get a key for the hash autentication */
+-static int vsc8584_macsec_derive_key(const u8 key[MACSEC_KEYID_LEN],
++static int vsc8584_macsec_derive_key(const u8 key[MACSEC_MAX_KEY_LEN],
+ 				     u16 key_len, u8 hkey[16])
+ {
+ 	const u8 input[AES_BLOCK_SIZE] = {0};
+diff --git a/drivers/net/phy/mscc/mscc_macsec.h b/drivers/net/phy/mscc/mscc_macsec.h
+index 9c6d25e36de2..453304bae778 100644
+--- a/drivers/net/phy/mscc/mscc_macsec.h
++++ b/drivers/net/phy/mscc/mscc_macsec.h
+@@ -81,7 +81,7 @@ struct macsec_flow {
+ 	/* Highest takes precedence [0..15] */
+ 	u8 priority;
+ 
+-	u8 key[MACSEC_KEYID_LEN];
++	u8 key[MACSEC_MAX_KEY_LEN];
+ 
+ 	union {
+ 		struct macsec_rx_sa *rx_sa;
 -- 
 2.30.2
 
