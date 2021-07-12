@@ -2,130 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BDAE3C603E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 18:15:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6BF03C603B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 18:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233282AbhGLQRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 12:17:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233049AbhGLQRx (ORCPT
+        id S231826AbhGLQRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 12:17:35 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:50365 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S230019AbhGLQRe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 12:17:53 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96624C0613E8
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 09:15:04 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id u15so6401928oiw.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 09:15:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nQBfcP6oCKq0X5PB40wsxkaY2AyI2mZMPM6ogzszKIQ=;
-        b=AbpB9NFkivLNuosYIWvKL71WOfuPwi8YqR7L8+G4VIKzwgw0I0TZzvktCDfen0QAk4
-         b6S6jvJu20o1MOKm38nzot3ALqyqfbf4T5qQ421/2iNWqN16E2KzlznryHqFZzZqDhkd
-         MK3LM9ULwa+hjaLJsqTSUh0y3qh2FXEA+otUK2pfqnlvMjUSziU8e8kIU1CsqqxsrtNW
-         HMq6L55484zxw4NAnGspGoB6DmwVXXdNwbDoYUNpw8C4SVHiIT4OjNDaRzXW4Jcu0CLS
-         DQzMXSpmQwszFg/DWghgxEt5MYq5eFh+ULV90B+oPIvp6cvx2l8SguSbo7qEo+jvfi+O
-         8obQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nQBfcP6oCKq0X5PB40wsxkaY2AyI2mZMPM6ogzszKIQ=;
-        b=LhAZFZjjfnxhGaqqUJieoJ+F2udzq5+LumpqaikxeCzOiYOX2f7b+3jjJrNnJQICNy
-         B8IewNtf8JyGxttlEfc61CU+ZkSJm95LC5WuyD9pZpffAX3jc74M5q4CtPN8czbuvg+i
-         kydS1r45MhScLuvElel2H3OAu+5wLoS8UFPeXK8iDkDtpkfnyOEV6aHGuXmldANXu1xJ
-         QQ8lqUEWLCKmBPB0QZbGGmmPc8T27UKU/FYLi/hgPcrtm6OblV3y5Afuyp7x6/LtEDt8
-         WOBttqtwbuoXj6nFEdaTfyyPY59XAxZHr96XkzNR7G4uJlB8AHBCTpHslJwKinxfqxfn
-         05Xw==
-X-Gm-Message-State: AOAM530HrshlqoIkF3HTzDzb15MuXpRtier/6yByWFpEHsIetxDvc9/k
-        /MLA2nZIW3PaS0mZlsHSuOxgDP3Chw5JpKtq2m46pw==
-X-Google-Smtp-Source: ABdhPJyLF+HJKYz9ORQ3Boka9gZdd71uRQq9T6PQLP7dSPLRKMAB1YdJqaaUiHwCFm6SnBVl0V43xixkVYB1KdKJYWE=
-X-Received: by 2002:a05:6808:284:: with SMTP id z4mr5073375oic.70.1626106503239;
- Mon, 12 Jul 2021 09:15:03 -0700 (PDT)
+        Mon, 12 Jul 2021 12:17:34 -0400
+Received: (qmail 321950 invoked by uid 1000); 12 Jul 2021 12:14:45 -0400
+Date:   Mon, 12 Jul 2021 12:14:45 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     syzbot <syzbot+72af3105289dcb4c055b@syzkaller.appspotmail.com>,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, mathias.nyman@linux.intel.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] WARNING in do_proc_control/usb_submit_urb
+Message-ID: <20210712161445.GA321728@rowland.harvard.edu>
+References: <20210711155345.GB293743@rowland.harvard.edu>
+ <00000000000068b24405c6db3249@google.com>
+ <20210712140004.GA316776@rowland.harvard.edu>
+ <YOxf0OvoGOvWf14m@hovoldconsulting.com>
+ <YOxk0URZrLYv8SNU@hovoldconsulting.com>
 MIME-Version: 1.0
-References: <00000000000080403805c6ef586d@google.com>
-In-Reply-To: <00000000000080403805c6ef586d@google.com>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 12 Jul 2021 18:14:37 +0200
-Message-ID: <CANpmjNPx2b+W2OZxNROTWfGcU92bwqyDe-=vxgnV9MEurjyqzQ@mail.gmail.com>
-Subject: Re: [syzbot] KCSAN: data-race in call_rcu / rcu_gp_kthread
-To:     syzbot <syzbot+e08a83a1940ec3846cd5@syzkaller.appspotmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YOxk0URZrLYv8SNU@hovoldconsulting.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[-Bcc: fsdevel]
-[+Cc: Paul, rcu@vger.kernel.org]
+On Mon, Jul 12, 2021 at 05:50:41PM +0200, Johan Hovold wrote:
+> On Mon, Jul 12, 2021 at 05:29:20PM +0200, Johan Hovold wrote:
+> > On Mon, Jul 12, 2021 at 10:00:04AM -0400, Alan Stern wrote:
+> > > On Sun, Jul 11, 2021 at 09:07:09AM -0700, syzbot wrote:
+> > > > Hello,
+> > > > 
+> > > > syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+> > > > WARNING in do_proc_control/usb_submit_urb
+> 
+> > > I don't get this.  It shouldn't be possible.  The fact that the 
+> > > direction bit is set in both bRequestType and pipe means that the URB 
+> > > was submitted as a control-IN but had length 0.  But the patch addresses 
+> > > exactly that case:
+> > > 
+> > > --- usb-devel.orig/drivers/usb/core/devio.c
+> > > +++ usb-devel/drivers/usb/core/devio.c
+> > > @@ -1133,7 +1133,7 @@ static int do_proc_control(struct usb_de
+> > >  		"wIndex=%04x wLength=%04x\n",
+> > >  		ctrl->bRequestType, ctrl->bRequest, ctrl->wValue,
+> > >  		ctrl->wIndex, ctrl->wLength);
+> > > -	if (ctrl->bRequestType & 0x80) {
+> > > +	if ((ctrl->bRequestType & USB_DIR_IN) && ctrl->wLength) {
+> > >  		pipe = usb_rcvctrlpipe(dev, 0);
+> > >  		snoop_urb(dev, NULL, pipe, ctrl->wLength, tmo, SUBMIT, NULL, 0);
+> > >  
+> > > and causes the kernel to handle it as a control-OUT instead.
+> > > 
+> > > Johan, any ideas?
+> > 
+> > Did syzbot actually test the patch? I can't see how the direction bit of
+> > the pipe argument can be set with the above applied either.
+> 
+> It looks like the second patch you submitted was hand-edited and still
+> quoted.
+> 
+> And looking at the dashboard it seems like no patch was applied for your
+> second test attempt:
+> 
+> 	https://syzkaller.appspot.com/bug?extid=72af3105289dcb4c055b
 
-On Mon, 12 Jul 2021 at 18:09, syzbot
-<syzbot+e08a83a1940ec3846cd5@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    e73f0f0e Linux 5.14-rc1
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=172196d2300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=f5e73542d774430b
-> dashboard link: https://syzkaller.appspot.com/bug?extid=e08a83a1940ec3846cd5
-> compiler:       Debian clang version 11.0.1-2
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+e08a83a1940ec3846cd5@syzkaller.appspotmail.com
->
-> ==================================================================
-> BUG: KCSAN: data-race in call_rcu / rcu_gp_kthread
->
-> write to 0xffffffff837328a0 of 8 bytes by task 11 on cpu 0:
->  rcu_gp_fqs kernel/rcu/tree.c:1949 [inline]
->  rcu_gp_fqs_loop kernel/rcu/tree.c:2010 [inline]
->  rcu_gp_kthread+0xd78/0xec0 kernel/rcu/tree.c:2169
->  kthread+0x262/0x280 kernel/kthread.c:319
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
->
-> read to 0xffffffff837328a0 of 8 bytes by task 30193 on cpu 1:
->  __call_rcu_core kernel/rcu/tree.c:2946 [inline]
->  __call_rcu kernel/rcu/tree.c:3062 [inline]
->  call_rcu+0x4b0/0x6c0 kernel/rcu/tree.c:3109
->  file_free fs/file_table.c:58 [inline]
->  __fput+0x43e/0x4e0 fs/file_table.c:298
->  ____fput+0x11/0x20 fs/file_table.c:313
->  task_work_run+0xae/0x130 kernel/task_work.c:164
->  get_signal+0x156c/0x15e0 kernel/signal.c:2581
->  arch_do_signal_or_restart+0x2a/0x220 arch/x86/kernel/signal.c:865
->  handle_signal_work kernel/entry/common.c:148 [inline]
->  exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
->  exit_to_user_mode_prepare+0x109/0x190 kernel/entry/common.c:209
->  __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
->  syscall_exit_to_user_mode+0x20/0x40 kernel/entry/common.c:302
->  do_syscall_64+0x49/0x90 arch/x86/entry/common.c:86
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
->
-> value changed: 0x0000000000000f57 -> 0x0000000000000f58
->
-> Reported by Kernel Concurrency Sanitizer on:
-> CPU: 1 PID: 30193 Comm: syz-executor.5 Tainted: G        W         5.14.0-rc1-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> ==================================================================
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/00000000000080403805c6ef586d%40google.com.
+Yes, that explains it.  Funny how easy it is to miss those "> " 
+markings -- you just get too used to them.
+
+> I've been bitten by something like this before when erroneously thinking
+> that a test command could be submitted as a reply to a patch.
+> 
+> Perhaps the report mail could include the patch tested or something so
+> we don't spend time investigating syzbot interface failures.
+
+Good idea.
+
+Anyway, here's the patch again, this time properly formatted.  Hopefully 
+now it will work.
+
+Alan Stern
+
+
+#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git ee268dee
+
+Index: usb-devel/drivers/usb/core/devio.c
+===================================================================
+--- usb-devel.orig/drivers/usb/core/devio.c
++++ usb-devel/drivers/usb/core/devio.c
+@@ -1133,7 +1133,7 @@ static int do_proc_control(struct usb_de
+ 		"wIndex=%04x wLength=%04x\n",
+ 		ctrl->bRequestType, ctrl->bRequest, ctrl->wValue,
+ 		ctrl->wIndex, ctrl->wLength);
+-	if (ctrl->bRequestType & 0x80) {
++	if ((ctrl->bRequestType & USB_DIR_IN) && ctrl->wLength) {
+ 		pipe = usb_rcvctrlpipe(dev, 0);
+ 		snoop_urb(dev, NULL, pipe, ctrl->wLength, tmo, SUBMIT, NULL, 0);
+ 
