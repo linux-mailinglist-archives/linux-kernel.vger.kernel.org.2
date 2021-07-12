@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74CBE3C4BC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAB573C57AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242264AbhGLG76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:59:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38480 "EHLO mail.kernel.org"
+        id S1377792AbhGLIg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:36:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235973AbhGLGmi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:42:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EFECF610CD;
-        Mon, 12 Jul 2021 06:39:05 +0000 (UTC)
+        id S1350446AbhGLHvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:51:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B02561883;
+        Mon, 12 Jul 2021 07:45:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071946;
-        bh=rNG5DcWA9KDHMgAglAzkWJWc5snz95lOb8j/k4helOw=;
+        s=korg; t=1626075929;
+        bh=wyMWFanJk4V0p8E7UCLTYW9/FtAYpGWdH2tr4Hp7hEM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w+dKWJU+Gs7Jd1Bsjkm4lVoUCgR83i+pVkX67l925QUqid5zBf+4gqM2qFrJGG1a/
-         v5Mcyl0cwgzz4XbkuMFiTflFwSQFhRaxCKJTIzj635mWKEpHvAJo+A86J17S3Sf4Oc
-         LtAiY3Z9NiGADBuu5ojhgY3MjVCJFck9DTey/IW4=
+        b=jaNOq0OgrnR4df2ZG7G7SdLEa+TzoENsrcuOkwT952p8MYu+Vrl3+ln5vPRT8jGOC
+         P+B8/H5Slwp7trHd3S9u/39k2Nb0P3unEEcSvyHuX+TUxn9GOZDi9fwiVEbglx1Zyz
+         TJLWqzSuAl5OtSOijGy23wLSENuRZUFqt1ZJZPq0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Heiko Stuebner <heiko@sntech.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 286/593] ACPI: bgrt: Fix CFI violation
+Subject: [PATCH 5.13 423/800] drm/rockchip: cdn-dp: fix sign extension on an int multiply for a u64 result
 Date:   Mon, 12 Jul 2021 08:07:26 +0200
-Message-Id: <20210712060915.748643252@linuxfoundation.org>
+Message-Id: <20210712061012.162101376@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,123 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <nathan@kernel.org>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit f37ccf8fce155d08ae2a4fb3db677911ced0c21a ]
+[ Upstream commit ce0cb93a5adb283f577cd4661f511047b5e39028 ]
 
-clang's Control Flow Integrity requires that every indirect call has a
-valid target, which is based on the type of the function pointer. The
-*_show() functions in this file are written as if they will be called
-from dev_attr_show(); however, they will be called from
-sysfs_kf_seq_show() because the files were created by
-sysfs_create_group() and the sysfs ops are based on kobj_sysfs_ops
-because of kobject_add_and_create(). Because the *_show() functions do
-not match the type of the show() member in struct kobj_attribute, there
-is a CFI violation.
+The variable bit_per_pix is a u8 and is promoted in the multiplication
+to an int type and then sign extended to a u64. If the result of the
+int multiplication is greater than 0x7fffffff then the upper 32 bits will
+be set to 1 as a result of the sign extension. Avoid this by casting
+tu_size_reg to u64 to avoid sign extension and also a potential overflow.
 
-$ cat /sys/firmware/acpi/bgrt/{status,type,version,{x,y}offset}}
-1
-0
-1
-522
-307
-
-$ dmesg | grep "CFI failure"
-[  267.761825] CFI failure (target: type_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
-[  267.762246] CFI failure (target: xoffset_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
-[  267.762584] CFI failure (target: status_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
-[  267.762973] CFI failure (target: yoffset_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
-[  267.763330] CFI failure (target: version_show.d5e1ad21498a5fd14edbc5c320906598.cfi_jt+0x0/0x8):
-
-Convert these functions to the type of the show() member in struct
-kobj_attribute so that there is no more CFI violation. Because these
-functions are all so similar, combine them into a macro.
-
-Fixes: d1ff4b1cdbab ("ACPI: Add support for exposing BGRT data")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1406
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fixes: 1a0f7ed3abe2 ("drm/rockchip: cdn-dp: add cdn DP support for rk3399")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Reviewed-by: Guenter Roeck <groeck@chromium.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200915162049.36434-1-colin.king@canonical.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/bgrt.c | 57 ++++++++++++++-------------------------------
- 1 file changed, 18 insertions(+), 39 deletions(-)
+ drivers/gpu/drm/rockchip/cdn-dp-reg.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/acpi/bgrt.c b/drivers/acpi/bgrt.c
-index 19bb7f870204..e0d14017706e 100644
---- a/drivers/acpi/bgrt.c
-+++ b/drivers/acpi/bgrt.c
-@@ -15,40 +15,19 @@
- static void *bgrt_image;
- static struct kobject *bgrt_kobj;
- 
--static ssize_t version_show(struct device *dev,
--			    struct device_attribute *attr, char *buf)
--{
--	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.version);
--}
--static DEVICE_ATTR_RO(version);
--
--static ssize_t status_show(struct device *dev,
--			   struct device_attribute *attr, char *buf)
--{
--	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.status);
--}
--static DEVICE_ATTR_RO(status);
--
--static ssize_t type_show(struct device *dev,
--			 struct device_attribute *attr, char *buf)
--{
--	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.image_type);
--}
--static DEVICE_ATTR_RO(type);
--
--static ssize_t xoffset_show(struct device *dev,
--			    struct device_attribute *attr, char *buf)
--{
--	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.image_offset_x);
--}
--static DEVICE_ATTR_RO(xoffset);
--
--static ssize_t yoffset_show(struct device *dev,
--			    struct device_attribute *attr, char *buf)
--{
--	return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab.image_offset_y);
--}
--static DEVICE_ATTR_RO(yoffset);
-+#define BGRT_SHOW(_name, _member) \
-+	static ssize_t _name##_show(struct kobject *kobj,			\
-+				    struct kobj_attribute *attr, char *buf)	\
-+	{									\
-+		return snprintf(buf, PAGE_SIZE, "%d\n", bgrt_tab._member);	\
-+	}									\
-+	struct kobj_attribute bgrt_attr_##_name = __ATTR_RO(_name)
-+
-+BGRT_SHOW(version, version);
-+BGRT_SHOW(status, status);
-+BGRT_SHOW(type, image_type);
-+BGRT_SHOW(xoffset, image_offset_x);
-+BGRT_SHOW(yoffset, image_offset_y);
- 
- static ssize_t image_read(struct file *file, struct kobject *kobj,
- 	       struct bin_attribute *attr, char *buf, loff_t off, size_t count)
-@@ -60,11 +39,11 @@ static ssize_t image_read(struct file *file, struct kobject *kobj,
- static BIN_ATTR_RO(image, 0);	/* size gets filled in later */
- 
- static struct attribute *bgrt_attributes[] = {
--	&dev_attr_version.attr,
--	&dev_attr_status.attr,
--	&dev_attr_type.attr,
--	&dev_attr_xoffset.attr,
--	&dev_attr_yoffset.attr,
-+	&bgrt_attr_version.attr,
-+	&bgrt_attr_status.attr,
-+	&bgrt_attr_type.attr,
-+	&bgrt_attr_xoffset.attr,
-+	&bgrt_attr_yoffset.attr,
- 	NULL,
- };
- 
+diff --git a/drivers/gpu/drm/rockchip/cdn-dp-reg.c b/drivers/gpu/drm/rockchip/cdn-dp-reg.c
+index 9d2163ef4d6e..33fb4d05c506 100644
+--- a/drivers/gpu/drm/rockchip/cdn-dp-reg.c
++++ b/drivers/gpu/drm/rockchip/cdn-dp-reg.c
+@@ -658,7 +658,7 @@ int cdn_dp_config_video(struct cdn_dp_device *dp)
+ 	 */
+ 	do {
+ 		tu_size_reg += 2;
+-		symbol = tu_size_reg * mode->clock * bit_per_pix;
++		symbol = (u64)tu_size_reg * mode->clock * bit_per_pix;
+ 		do_div(symbol, dp->max_lanes * link_rate * 8);
+ 		rem = do_div(symbol, 1000);
+ 		if (tu_size_reg > 64) {
 -- 
 2.30.2
 
