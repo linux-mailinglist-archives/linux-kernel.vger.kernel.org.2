@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD1ED3C50E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 344E23C573E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343761AbhGLHfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:35:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41186 "EHLO mail.kernel.org"
+        id S1376685AbhGLIat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:30:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242460AbhGLHGt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:06:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA558610A6;
-        Mon, 12 Jul 2021 07:04:00 +0000 (UTC)
+        id S1343944AbhGLHnp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:43:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ACB14611C2;
+        Mon, 12 Jul 2021 07:40:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073441;
-        bh=1O+RB0jGz8d34aGUcynhQQb25IT28EtM/dWmHEG+1f8=;
+        s=korg; t=1626075643;
+        bh=ZQFZCT/1GaOWG3E45wzTaTzlAdhXKypjkxuIrHodONA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JgGtK0GHR1kVRrxww1iEZNeoQD3OcOp0fKniQuV7iaHbFILoMLqoHj8n6x40c/7hb
-         ZBpSshKl0kVAOhgpHSFCMeoBGlC8GODDV8uwb8HvEOQRif2Kd0vGYJ1/73ieZCgqYQ
-         FznEciTXFVpxC4gQB78m4ldytoO5j7QzWIW5hOC8=
+        b=ZIROyMW63P3Gh26cx8RFpEGDiEYqmu82WA5MUNU23aFuMsmvyRv+VbNKkrYIkDMkN
+         2TLPVwzAgqY11aJ4U3B6eurB/oe1l+QPx7M4WoAP4pC6fbQUMMoG+s+2pKMFKj0CpT
+         51PtFElCbXKyS5cSDcK8/hUA0fBwxKOhQqYi1unU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 242/700] mailbox: qcom: Use PLATFORM_DEVID_AUTO to register platform device
-Date:   Mon, 12 Jul 2021 08:05:25 +0200
-Message-Id: <20210712061001.176815266@linuxfoundation.org>
+Subject: [PATCH 5.13 303/800] media: gspca/gl860: fix zero-length control requests
+Date:   Mon, 12 Jul 2021 08:05:26 +0200
+Message-Id: <20210712060957.547519639@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,46 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shawn Guo <shawn.guo@linaro.org>
+From: Johan Hovold <johan@kernel.org>
 
-[ Upstream commit 96e39e95c01283ff5695dafe659df88ada802159 ]
+[ Upstream commit 8ed339f23d41e21660a389adf2e7b2966d457ff6 ]
 
-In adding APCS clock support for MSM8939, the second clock registration
-fails due to duplicate device name like below.
+The direction of the pipe argument must match the request-type direction
+bit or control requests may fail depending on the host-controller-driver
+implementation.
 
-[    0.519657] sysfs: cannot create duplicate filename '/bus/platform/devices/qcom-apcs-msm8916-clk'
-...
-[    0.661158] qcom_apcs_ipc b111000.mailbox: failed to register APCS clk
+Control transfers without a data stage are treated as OUT requests by
+the USB stack and should be using usb_sndctrlpipe(). Failing to do so
+will now trigger a warning.
 
-This is because MSM8939 has 3 APCS instances for Cluster0 (little cores),
-Cluster1 (big cores) and CCI (Cache Coherent Interconnect).  Although
-only APCS of Cluster0 and Cluster1 have IPC bits, each of 3 APCS has
-A53PLL clock control bits.  That said, 3 'qcom-apcs-msm8916-clk' devices
-need to be registered to instantiate all 3 clocks.  Use PLATFORM_DEVID_AUTO
-rather than PLATFORM_DEVID_NONE for platform_device_register_data() call
-to fix the issue above.
+Fix the gl860_RTx() helper so that zero-length control reads fail with
+an error message instead. Note that there are no current callers that
+would trigger this.
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Jassi Brar <jaswinder.singh@linaro.org>
+Fixes: 4f7cb8837cec ("V4L/DVB (12954): gspca - gl860: Addition of GL860 based webcams")
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mailbox/qcom-apcs-ipc-mailbox.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/usb/gspca/gl860/gl860.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mailbox/qcom-apcs-ipc-mailbox.c b/drivers/mailbox/qcom-apcs-ipc-mailbox.c
-index f25324d03842..15236d729625 100644
---- a/drivers/mailbox/qcom-apcs-ipc-mailbox.c
-+++ b/drivers/mailbox/qcom-apcs-ipc-mailbox.c
-@@ -132,7 +132,7 @@ static int qcom_apcs_ipc_probe(struct platform_device *pdev)
- 	if (apcs_data->clk_name) {
- 		apcs->clk = platform_device_register_data(&pdev->dev,
- 							  apcs_data->clk_name,
--							  PLATFORM_DEVID_NONE,
-+							  PLATFORM_DEVID_AUTO,
- 							  NULL, 0);
- 		if (IS_ERR(apcs->clk))
- 			dev_err(&pdev->dev, "failed to register APCS clk\n");
+diff --git a/drivers/media/usb/gspca/gl860/gl860.c b/drivers/media/usb/gspca/gl860/gl860.c
+index 2c05ea2598e7..ce4ee8bc75c8 100644
+--- a/drivers/media/usb/gspca/gl860/gl860.c
++++ b/drivers/media/usb/gspca/gl860/gl860.c
+@@ -561,8 +561,8 @@ int gl860_RTx(struct gspca_dev *gspca_dev,
+ 					len, 400 + 200 * (len > 1));
+ 			memcpy(pdata, gspca_dev->usb_buf, len);
+ 		} else {
+-			r = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+-					req, pref, val, index, NULL, len, 400);
++			gspca_err(gspca_dev, "zero-length read request\n");
++			r = -EINVAL;
+ 		}
+ 	}
+ 
 -- 
 2.30.2
 
