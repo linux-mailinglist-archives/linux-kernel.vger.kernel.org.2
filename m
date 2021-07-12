@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4897F3C4CFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:39:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCFD63C5421
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245101AbhGLHLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:11:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46964 "EHLO mail.kernel.org"
+        id S245613AbhGLH5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:57:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57896 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239134AbhGLGta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:49:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C14860FE3;
-        Mon, 12 Jul 2021 06:46:36 +0000 (UTC)
+        id S245709AbhGLHTs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:19:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C4E4260FF1;
+        Mon, 12 Jul 2021 07:16:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072397;
-        bh=Q24hn74DSG3DcYlvrFfEOEIsZ208c90wgAIS+AXHEcI=;
+        s=korg; t=1626074220;
+        bh=ZivRLk3vTNtAwKZL3S42TJm2A9EcTEfHPTEK+8QwizA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZHFIZ7nGzCpXkv0Vsya7gbVSDq2mr6v9zdXpOAIVkTXYX+YgQma9idU5s3tHk5pgF
-         cqy4SDTDHvuu0FCwcN8Dn9tkNKKpRtmTIWVG3Kzs6tdM1Ske4z0ef8lFlEWFQb5bH4
-         YtFjIuBO0DYIYdwZkJR2d8cX9hcBoIgOtJAQLEXw=
+        b=kmr0GDiSxRY3x0rg3ZteuIRuAFbtSDvmk1uTp5z+zzQUkxJgpJUigEpuFZAmY/Qo9
+         ptH5g7h2NH2Q27F1SlRMipSPZe6O7si1CoBDMhyjLC07ZM7wLiYAS3O7HT39CfKaxN
+         6sog2Xqoue6i/+FZyEwUGmNjJ35g8dIb4QyLfdKQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+1071ad60cd7df39fdadb@syzkaller.appspotmail.com
-Subject: [PATCH 5.10 428/593] net: sched: fix warning in tcindex_alloc_perfect_hash
+        stable@vger.kernel.org,
+        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 505/700] clk: actions: Fix AHPPREDIV-H-AHB clock chain on Owl S500 SoC
 Date:   Mon, 12 Jul 2021 08:09:48 +0200
-Message-Id: <20210712060935.530971253@linuxfoundation.org>
+Message-Id: <20210712061030.227880294@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +42,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 
-[ Upstream commit 3f2db250099f46988088800052cdf2332c7aba61 ]
+[ Upstream commit fd90b5b9045274360b12cea0f2ce50f3bcfb25cc ]
 
-Syzbot reported warning in tcindex_alloc_perfect_hash. The problem
-was in too big cp->hash, which triggers warning in kmalloc. Since
-cp->hash comes from userspace, there is no need to warn if value
-is not correct
+There are a few issues with the setup of the Actions Semi Owl S500 SoC's
+clock chain involving AHPPREDIV, H and AHB clocks:
 
-Fixes: b9a24bb76bf6 ("net_sched: properly handle failure case of tcf_exts_init()")
-Reported-and-tested-by: syzbot+1071ad60cd7df39fdadb@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Acked-by: Cong Wang <cong.wang@bytedance.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+* AHBPREDIV clock is defined as a muxer only, although it also acts as
+  a divider.
+* H clock is using a wrong divider register offset
+* AHB is defined as a multi-rate factor clock, but it is actually just
+  a fixed pass clock.
+
+Let's provide the following fixes:
+
+* Change AHBPREDIV clock to an ungated OWL_COMP_DIV definition.
+* Use the correct register shift value in the OWL_DIVIDER definition
+  for H clock
+* Drop the unneeded 'ahb_factor_table[]' and change AHB clock to an
+  ungated OWL_COMP_FIXED_FACTOR definition.
+
+Fixes: ed6b4795ece4 ("clk: actions: Add clock driver for S500 SoC")
+Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Link: https://lore.kernel.org/r/21c1abd19a7089b65a34852ac6513961be88cbe1.1623354574.git.cristian.ciocaltea@gmail.com
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sched/cls_tcindex.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/clk/actions/owl-s500.c | 19 +++++++++++--------
+ 1 file changed, 11 insertions(+), 8 deletions(-)
 
-diff --git a/net/sched/cls_tcindex.c b/net/sched/cls_tcindex.c
-index c4007b9cd16d..5b274534264c 100644
---- a/net/sched/cls_tcindex.c
-+++ b/net/sched/cls_tcindex.c
-@@ -304,7 +304,7 @@ static int tcindex_alloc_perfect_hash(struct net *net, struct tcindex_data *cp)
- 	int i, err = 0;
+diff --git a/drivers/clk/actions/owl-s500.c b/drivers/clk/actions/owl-s500.c
+index 42d6899755e6..cbeb51c804eb 100644
+--- a/drivers/clk/actions/owl-s500.c
++++ b/drivers/clk/actions/owl-s500.c
+@@ -153,11 +153,6 @@ static struct clk_factor_table hde_factor_table[] = {
+ 	{ 0, 0, 0 },
+ };
  
- 	cp->perfect = kcalloc(cp->hash, sizeof(struct tcindex_filter_result),
--			      GFP_KERNEL);
-+			      GFP_KERNEL | __GFP_NOWARN);
- 	if (!cp->perfect)
- 		return -ENOMEM;
+-static struct clk_factor_table ahb_factor_table[] = {
+-	{ 1, 1, 2 }, { 2, 1, 3 },
+-	{ 0, 0, 0 },
+-};
+-
+ static struct clk_div_table rmii_ref_div_table[] = {
+ 	{ 0, 4 }, { 1, 10 },
+ 	{ 0, 0 },
+@@ -186,7 +181,6 @@ static struct clk_div_table nand_div_table[] = {
  
+ /* mux clock */
+ static OWL_MUX(dev_clk, "dev_clk", dev_clk_mux_p, CMU_DEVPLL, 12, 1, CLK_SET_RATE_PARENT);
+-static OWL_MUX(ahbprediv_clk, "ahbprediv_clk", ahbprediv_clk_mux_p, CMU_BUSCLK1, 8, 3, CLK_SET_RATE_PARENT);
+ 
+ /* gate clocks */
+ static OWL_GATE(gpio_clk, "gpio_clk", "apb_clk", CMU_DEVCLKEN0, 18, 0, 0);
+@@ -199,16 +193,25 @@ static OWL_GATE(timer_clk, "timer_clk", "hosc", CMU_DEVCLKEN1, 27, 0, 0);
+ static OWL_GATE(hdmi_clk, "hdmi_clk", "hosc", CMU_DEVCLKEN1, 3, 0, 0);
+ 
+ /* divider clocks */
+-static OWL_DIVIDER(h_clk, "h_clk", "ahbprediv_clk", CMU_BUSCLK1, 12, 2, NULL, 0, 0);
++static OWL_DIVIDER(h_clk, "h_clk", "ahbprediv_clk", CMU_BUSCLK1, 2, 2, NULL, 0, 0);
+ static OWL_DIVIDER(apb_clk, "apb_clk", "ahb_clk", CMU_BUSCLK1, 14, 2, NULL, 0, 0);
+ static OWL_DIVIDER(rmii_ref_clk, "rmii_ref_clk", "ethernet_pll_clk", CMU_ETHERNETPLL, 1, 1, rmii_ref_div_table, 0, 0);
+ 
+ /* factor clocks */
+-static OWL_FACTOR(ahb_clk, "ahb_clk", "h_clk", CMU_BUSCLK1, 2, 2, ahb_factor_table, 0, 0);
+ static OWL_FACTOR(de1_clk, "de_clk1", "de_clk", CMU_DECLK, 0, 4, de_factor_table, 0, 0);
+ static OWL_FACTOR(de2_clk, "de_clk2", "de_clk", CMU_DECLK, 4, 4, de_factor_table, 0, 0);
+ 
+ /* composite clocks */
++static OWL_COMP_DIV(ahbprediv_clk, "ahbprediv_clk", ahbprediv_clk_mux_p,
++			OWL_MUX_HW(CMU_BUSCLK1, 8, 3),
++			{ 0 },
++			OWL_DIVIDER_HW(CMU_BUSCLK1, 12, 2, 0, NULL),
++			CLK_SET_RATE_PARENT);
++
++static OWL_COMP_FIXED_FACTOR(ahb_clk, "ahb_clk", "h_clk",
++			{ 0 },
++			1, 1, 0);
++
+ static OWL_COMP_FACTOR(vce_clk, "vce_clk", hde_clk_mux_p,
+ 			OWL_MUX_HW(CMU_VCECLK, 4, 2),
+ 			OWL_GATE_HW(CMU_DEVCLKEN0, 26, 0),
 -- 
 2.30.2
 
