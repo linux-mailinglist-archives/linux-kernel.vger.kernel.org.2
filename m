@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3462F3C5649
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B39A3C4EEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356756AbhGLIQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:16:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51258 "EHLO mail.kernel.org"
+        id S242578AbhGLHWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:22:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240690AbhGLHcq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:32:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8BC161006;
-        Mon, 12 Jul 2021 07:29:40 +0000 (UTC)
+        id S235645AbhGLG4R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:56:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 861316102A;
+        Mon, 12 Jul 2021 06:53:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626074981;
-        bh=ObtccxhA6maFkNuGS8SVMVX4ToKpiiF2Cefv679MDRw=;
+        s=korg; t=1626072809;
+        bh=FGQZWijx7yrvwMhQHy6HcMcMeU6oKxJ9j9twvjjMCsY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UNFuGJ3To1qk3Y0Un6dFGhYyFKeL9mZARdDAzUlsFOSf2xjXjxYcbSz9nWog8XHvC
-         0RQmoAzzSl6LxDJKfHcFznQf0oGN/Ash9kIJCVtYnr9RWqQhLZvfdQNQsDDzsopZwA
-         0K0vaE5I6SJp7B+FxK6jKMI3Hkyeom/17y251Y4M=
+        b=0J1FXIkzrAR44VXWuIfX9SNEjBW560kJ43j8VzIMG5rmnxLS6y1aaOW1cNwE59/oI
+         z2i8yrSUovs+Yv16idbPiFK3iZo/htqVgRFO9s7aaEoRlK2K8Rlg21Dmib9DMoX/w/
+         sgPIsiBEVRVVlcrBr8daiyKeqU1sVX/hu3uZsJPY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        syzbot+bdf710cfc41c186fdff3@syzkaller.appspotmail.com,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 5.13 063/800] can: j1939: j1939_sk_init(): set SOCK_RCU_FREE to call sk_destruct() after RCU is done
+        stable@vger.kernel.org, Szymon Janc <szymon.janc@codecoup.pl>,
+        Marcel Holtmann <marcel@holtmann.org>
+Subject: [PATCH 5.12 003/700] Bluetooth: Remove spurious error message
 Date:   Mon, 12 Jul 2021 08:01:26 +0200
-Message-Id: <20210712060922.193661526@linuxfoundation.org>
+Message-Id: <20210712060925.279456632@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,52 +39,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
+From: Szymon Janc <szymon.janc@codecoup.pl>
 
-commit 22c696fed25c63c7f67508309820358b94a96b6d upstream.
+commit 1c58e933aba23f68c0d3f192f7cc6eed8fabd694 upstream.
 
-Set SOCK_RCU_FREE to let RCU to call sk_destruct() on completion.
-Without this patch, we will run in to j1939_can_recv() after priv was
-freed by j1939_sk_release()->j1939_sk_sock_destruct()
+Even with rate limited reporting this is very spammy and since
+it is remote device that is providing bogus data there is no
+need to report this as error.
 
-Fixes: 25fe97cb7620 ("can: j1939: move j1939_priv_put() into sk_destruct callback")
-Link: https://lore.kernel.org/r/20210617130623.12705-1-o.rempel@pengutronix.de
-Cc: linux-stable <stable@vger.kernel.org>
-Reported-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Reported-by: syzbot+bdf710cfc41c186fdff3@syzkaller.appspotmail.com
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Since real_len variable was used only to allow conditional error
+message it is now also removed.
+
+[72454.143336] bt_err_ratelimited: 10 callbacks suppressed
+[72454.143337] Bluetooth: hci0: advertising data len corrected
+[72454.296314] Bluetooth: hci0: advertising data len corrected
+[72454.892329] Bluetooth: hci0: advertising data len corrected
+[72455.051319] Bluetooth: hci0: advertising data len corrected
+[72455.357326] Bluetooth: hci0: advertising data len corrected
+[72455.663295] Bluetooth: hci0: advertising data len corrected
+[72455.787278] Bluetooth: hci0: advertising data len corrected
+[72455.942278] Bluetooth: hci0: advertising data len corrected
+[72456.094276] Bluetooth: hci0: advertising data len corrected
+[72456.249137] Bluetooth: hci0: advertising data len corrected
+[72459.416333] bt_err_ratelimited: 13 callbacks suppressed
+[72459.416334] Bluetooth: hci0: advertising data len corrected
+[72459.721334] Bluetooth: hci0: advertising data len corrected
+[72460.011317] Bluetooth: hci0: advertising data len corrected
+[72460.327171] Bluetooth: hci0: advertising data len corrected
+[72460.638294] Bluetooth: hci0: advertising data len corrected
+[72460.946350] Bluetooth: hci0: advertising data len corrected
+[72461.225320] Bluetooth: hci0: advertising data len corrected
+[72461.690322] Bluetooth: hci0: advertising data len corrected
+[72462.118318] Bluetooth: hci0: advertising data len corrected
+[72462.427319] Bluetooth: hci0: advertising data len corrected
+[72464.546319] bt_err_ratelimited: 7 callbacks suppressed
+[72464.546319] Bluetooth: hci0: advertising data len corrected
+[72464.857318] Bluetooth: hci0: advertising data len corrected
+[72465.163332] Bluetooth: hci0: advertising data len corrected
+[72465.278331] Bluetooth: hci0: advertising data len corrected
+[72465.432323] Bluetooth: hci0: advertising data len corrected
+[72465.891334] Bluetooth: hci0: advertising data len corrected
+[72466.045334] Bluetooth: hci0: advertising data len corrected
+[72466.197321] Bluetooth: hci0: advertising data len corrected
+[72466.340318] Bluetooth: hci0: advertising data len corrected
+[72466.498335] Bluetooth: hci0: advertising data len corrected
+[72469.803299] bt_err_ratelimited: 10 callbacks suppressed
+
+Signed-off-by: Szymon Janc <szymon.janc@codecoup.pl>
+Fixes: https://bugzilla.kernel.org/show_bug.cgi?id=203753
+Cc: stable@vger.kernel.org
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/can/j1939/main.c   |    4 ++++
- net/can/j1939/socket.c |    3 +++
- 2 files changed, 7 insertions(+)
+ net/bluetooth/hci_event.c |   14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
---- a/net/can/j1939/main.c
-+++ b/net/can/j1939/main.c
-@@ -193,6 +193,10 @@ static void j1939_can_rx_unregister(stru
- 	can_rx_unregister(dev_net(ndev), ndev, J1939_CAN_ID, J1939_CAN_MASK,
- 			  j1939_can_recv, priv);
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -5416,7 +5416,7 @@ static void process_adv_report(struct hc
+ 	struct hci_conn *conn;
+ 	bool match;
+ 	u32 flags;
+-	u8 *ptr, real_len;
++	u8 *ptr;
  
-+	/* The last reference of priv is dropped by the RCU deferred
-+	 * j1939_sk_sock_destruct() of the last socket, so we can
-+	 * safely drop this reference here.
+ 	switch (type) {
+ 	case LE_ADV_IND:
+@@ -5447,14 +5447,10 @@ static void process_adv_report(struct hc
+ 			break;
+ 	}
+ 
+-	real_len = ptr - data;
+-
+-	/* Adjust for actual length */
+-	if (len != real_len) {
+-		bt_dev_err_ratelimited(hdev, "advertising data len corrected %u -> %u",
+-				       len, real_len);
+-		len = real_len;
+-	}
++	/* Adjust for actual length. This handles the case when remote
++	 * device is advertising with incorrect data length.
 +	 */
- 	j1939_priv_put(priv);
- }
++	len = ptr - data;
  
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -398,6 +398,9 @@ static int j1939_sk_init(struct sock *sk
- 	atomic_set(&jsk->skb_pending, 0);
- 	spin_lock_init(&jsk->sk_session_queue_lock);
- 	INIT_LIST_HEAD(&jsk->sk_session_queue);
-+
-+	/* j1939_sk_sock_destruct() depends on SOCK_RCU_FREE flag */
-+	sock_set_flag(sk, SOCK_RCU_FREE);
- 	sk->sk_destruct = j1939_sk_sock_destruct;
- 	sk->sk_protocol = CAN_J1939;
- 
+ 	/* If the direct address is present, then this report is from
+ 	 * a LE Direct Advertising Report event. In that case it is
 
 
