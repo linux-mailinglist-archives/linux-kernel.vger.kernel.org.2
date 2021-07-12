@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 126D93C4A2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11F823C518E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237956AbhGLGtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:49:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58304 "EHLO mail.kernel.org"
+        id S1349481AbhGLHmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:42:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237150AbhGLGiY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:38:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A459061008;
-        Mon, 12 Jul 2021 06:34:32 +0000 (UTC)
+        id S243485AbhGLHHG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:07:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EEDBA613B6;
+        Mon, 12 Jul 2021 07:04:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071673;
-        bh=7g9jhVIr9Cc13wM4e9OXLZCfqQy3d5sLELCLtpInqeg=;
+        s=korg; t=1626073458;
+        bh=TK6R9Sn00wxee5dTU11HDuRB9a21Bio05lZ+Ll0oo2g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SpE7RIUIz9vpj/VUxNkQ0bF/Tctf0gLarq8Xutt1fN6ww24istfAyxJ5eJuElpyi+
-         Y1Tw2D44jJeRYrNhU2eRRNHlb2PffZ8ieP4n+HNaQyzyh5FDfFqoMV1pg/yH+cXqAw
-         1+6qlv8a4+qbYdJpnM0Zqnu4arUbB35zCWwXbLfE=
+        b=WJWdbra0vtq3GU6j2RjnKZI7CkNchsulx6WVWySGBRlGmtKDM5PofuEAEhDJbJg/7
+         mzSUCREU5e+goP7AEAv0NDYh9YXHqP1BYCASve4pMhsEAqDUT6hLDKCDDsUu/XSAuU
+         ZbWvpuINAYx+fc0zqTLHRBlyFLnqWsY0x7CwLyNY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
-        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 171/593] hv_utils: Fix passing zero to PTR_ERR warning
+        stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 248/700] spi: Allow to have all native CSs in use along with GPIOs
 Date:   Mon, 12 Jul 2021 08:05:31 +0200
-Message-Id: <20210712060901.846037162@linuxfoundation.org>
+Message-Id: <20210712061002.052906866@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,41 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit c6a8625fa4c6b0a97860d053271660ccedc3d1b3 ]
+[ Upstream commit dbaca8e56ea3f23fa215f48c2d46dd03ede06e02 ]
 
-Sparse warn this:
+The commit 7d93aecdb58d ("spi: Add generic support for unused native cs
+with cs-gpios") excludes the valid case for the controllers that doesn't
+need to switch native CS in order to perform the transfer, i.e. when
 
-drivers/hv/hv_util.c:753 hv_timesync_init() warn:
- passing zero to 'PTR_ERR'
+  0		native
+  ...		...
+  <n> - 1	native
+  <n>		GPIO
+  <n> + 1	GPIO
+  ...		...
 
-Use PTR_ERR_OR_ZERO instead of PTR_ERR to fix this.
+where <n> defines maximum of native CSs supported by the controller.
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/r/20210514070116.16800-1-yuehaibing@huawei.com
-[ wei: change %ld to %d ]
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
+To allow this, bail out from spi_get_gpio_descs() conditionally for
+the controllers which explicitly marked with SPI_MASTER_GPIO_SS.
+
+Fixes: 7d93aecdb58d ("spi: Add generic support for unused native cs with cs-gpios")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/r/20210420164425.40287-1-andriy.shevchenko@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hv/hv_util.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/spi/spi.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/hv/hv_util.c b/drivers/hv/hv_util.c
-index 05566ecdbe4b..1b914e418e41 100644
---- a/drivers/hv/hv_util.c
-+++ b/drivers/hv/hv_util.c
-@@ -696,8 +696,8 @@ static int hv_timesync_init(struct hv_util_service *srv)
- 	 */
- 	hv_ptp_clock = ptp_clock_register(&ptp_hyperv_info, NULL);
- 	if (IS_ERR_OR_NULL(hv_ptp_clock)) {
--		pr_err("cannot register PTP clock: %ld\n",
--		       PTR_ERR(hv_ptp_clock));
-+		pr_err("cannot register PTP clock: %d\n",
-+		       PTR_ERR_OR_ZERO(hv_ptp_clock));
- 		hv_ptp_clock = NULL;
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 789354ee6a11..af126053213f 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -2631,8 +2631,9 @@ static int spi_get_gpio_descs(struct spi_controller *ctlr)
  	}
  
+ 	ctlr->unused_native_cs = ffz(native_cs_mask);
+-	if (num_cs_gpios && ctlr->max_native_cs &&
+-	    ctlr->unused_native_cs >= ctlr->max_native_cs) {
++
++	if ((ctlr->flags & SPI_MASTER_GPIO_SS) && num_cs_gpios &&
++	    ctlr->max_native_cs && ctlr->unused_native_cs >= ctlr->max_native_cs) {
+ 		dev_err(dev, "No unused native chip select available\n");
+ 		return -EINVAL;
+ 	}
 -- 
 2.30.2
 
