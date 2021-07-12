@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69D613C5164
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8263C579B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348053AbhGLHkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:40:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42086 "EHLO mail.kernel.org"
+        id S1377394AbhGLIfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:35:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244025AbhGLHKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:10:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7796161260;
-        Mon, 12 Jul 2021 07:05:56 +0000 (UTC)
+        id S1350037AbhGLHu0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:50:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E156561182;
+        Mon, 12 Jul 2021 07:43:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073557;
-        bh=TYvHY0Nd+78uOboMF2XfNFz13DUaUYEErLtDj5rRiI0=;
+        s=korg; t=1626075836;
+        bh=gxEXDA3y9QRJt00z7VAongNUzHU2xSfttTJBVpM6X4g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VUr0PfYFuosJoa/Gwv18SjB1tmV8prQwEA0RvZbIoEQyqR2bZnrInII+Rd07dpuzl
-         sAfgw6ZekAbb3PCBvsn1oP8ZbnmC6a0YhgW7qgoNluOHcayKX98BdjsBzOitHT9SRM
-         N8AJLjLXkqyxNqXvDI+tK+3ljIH91pDucUTNZIVs=
+        b=jtYAhjNdcGCuNxxyP607oxKSe37SIXwweSDygwO+pXRTGsOB/sLIlGnngjdEXdLC/
+         dnuuxl+ULA2bg/v6Wd3wcfBO41sT82snO6AD2txLOpH4Xjcpcry+MObycEPoEAHfwi
+         bCfuIGLE2KP4YufXLD47X1+oNf6ctpD71vI6mXsI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Axel Lin <axel.lin@ingics.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 282/700] regulator: fan53880: Fix vsel_mask setting for FAN53880_BUCK
+        stable@vger.kernel.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 342/800] lockdep: Fix wait-type for empty stack
 Date:   Mon, 12 Jul 2021 08:06:05 +0200
-Message-Id: <20210712061006.224964381@linuxfoundation.org>
+Message-Id: <20210712061003.253564681@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Axel Lin <axel.lin@ingics.com>
+From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit 2e11737a772b95c6587df73f216eec1762431432 ]
+[ Upstream commit f8b298cc39f0619544c607eaef09fd0b2afd10f3 ]
 
-According to the datasheet:
-REGISTER DETAILS − 0x02 BUCK, BUCK_OUT is BIT0 ~ BIT7.
+Even the very first lock can violate the wait-context check, consider
+the various IRQ contexts.
 
-So vsel_mask for FAN53880_BUCK should be 0xFF.
-
-Fixes: e6dea51e2d41 ("regulator: fan53880: Add initial support")
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Link: https://lore.kernel.org/r/20210607142907.1599905-1-axel.lin@ingics.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: de8f5e4f2dc1 ("lockdep: Introduce wait-type checks")
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Tested-by: Joerg Roedel <jroedel@suse.de>
+Link: https://lore.kernel.org/r/20210617190313.256987481@infradead.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/fan53880.c | 2 +-
+ kernel/locking/lockdep.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/regulator/fan53880.c b/drivers/regulator/fan53880.c
-index 1684faf82ed2..94f02f3099dd 100644
---- a/drivers/regulator/fan53880.c
-+++ b/drivers/regulator/fan53880.c
-@@ -79,7 +79,7 @@ static const struct regulator_desc fan53880_regulators[] = {
- 		.n_linear_ranges = 2,
- 		.n_voltages =	   0xf8,
- 		.vsel_reg =	   FAN53880_BUCKVOUT,
--		.vsel_mask =	   0x7f,
-+		.vsel_mask =	   0xff,
- 		.enable_reg =	   FAN53880_ENABLE,
- 		.enable_mask =	   0x10,
- 		.enable_time =	   480,
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 39b6392b4826..9125bd419216 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -4693,7 +4693,7 @@ static int check_wait_context(struct task_struct *curr, struct held_lock *next)
+ 	u8 curr_inner;
+ 	int depth;
+ 
+-	if (!curr->lockdep_depth || !next_inner || next->trylock)
++	if (!next_inner || next->trylock)
+ 		return 0;
+ 
+ 	if (!next_outer)
 -- 
 2.30.2
 
