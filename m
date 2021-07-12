@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E30C33C5832
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEB9E3C52CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346400AbhGLImj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:42:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35482 "EHLO mail.kernel.org"
+        id S1349129AbhGLHuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:50:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350641AbhGLHvM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:51:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DBB361C2E;
-        Mon, 12 Jul 2021 07:47:09 +0000 (UTC)
+        id S243313AbhGLHPk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:15:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E970661407;
+        Mon, 12 Jul 2021 07:12:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076029;
-        bh=JPumWHByocJG/TWBWyn5M3Gey+kEc0Ve584L7PsGIYs=;
+        s=korg; t=1626073923;
+        bh=vxxzwghUPvKWL6mkxNTfK5I1Ix+Oc8iWfuFb8y6GI/o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1UhN/iPKflCsQUeY1paIhHpAWV8TKl76XyVj64R3kiDBvbpNodqqCDlXuQBoD6DCM
-         oMBfD/nFI9qR7HgKovT2g+V6GnxyNiP1KaxzrfBta1V3/rP9R77Ph5tmoyg9PnUt0+
-         gS8JRXT+m9xqbeFXeN46Ey93yWfwZgw+x5cyWfQ8=
+        b=IMpfHCZiJZNaCETdcPOc07azH70xR6n9E4OnofH655MgWEHKkSSamQhLq2SXuYom9
+         r1lt1y8VbaUB6T6eJnWiaY1tlJBraKB9d53+5E9qRPxuQMCLWV6GD/0cSY+kN1lDM+
+         Ey4XOGqY2tIGWPgsMC2nMV+iWcgPtoouZKdVwPXo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Bryan ODonoghue <bryan.odonoghue@linaro.org>,
         Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 466/800] brcmsmac: mac80211_if: Fix a resource leak in an error handling path
+Subject: [PATCH 5.12 406/700] wcn36xx: Move hal_buf allocation to devm_kmalloc in probe
 Date:   Mon, 12 Jul 2021 08:08:09 +0200
-Message-Id: <20210712061016.718626795@linuxfoundation.org>
+Message-Id: <20210712061019.570346768@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,53 +41,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
-[ Upstream commit 9a25344d5177c2b9285532236dc3d10a091f39a8 ]
+[ Upstream commit ef48667557c53d4b51a1ee3090eab7699324c9de ]
 
-If 'brcms_attach()' fails, we must undo the previous 'ieee80211_alloc_hw()'
-as already done in the remove function.
+Right now wcn->hal_buf is allocated in wcn36xx_start(). This is a problem
+since we should have setup all of the buffers we required by the time
+ieee80211_register_hw() is called.
 
-Fixes: 5b435de0d786 ("net: wireless: add brcm80211 drivers")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Acked-by: Arend van Spriel <arend.vanspriel@broadcom.com>
+struct ieee80211_ops callbacks may run prior to mac_start() and therefore
+wcn->hal_buf must be initialized.
+
+This is easily remediated by moving the allocation to probe() taking the
+opportunity to tidy up freeing memory by using devm_kmalloc().
+
+Fixes: 8e84c2582169 ("wcn36xx: mac80211 driver for Qualcomm WCN3660/WCN3680 hardware")
+Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/8fbc171a1a493b38db5a6f0873c6021fca026a6c.1620852921.git.christophe.jaillet@wanadoo.fr
+Link: https://lore.kernel.org/r/20210605173347.2266003-1-bryan.odonoghue@linaro.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../wireless/broadcom/brcm80211/brcmsmac/mac80211_if.c    | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/wcn36xx/main.c | 21 ++++++++-------------
+ 1 file changed, 8 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/mac80211_if.c b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/mac80211_if.c
-index 39f3af2d0439..eadac0f5590f 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/mac80211_if.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/mac80211_if.c
-@@ -1220,6 +1220,7 @@ static int brcms_bcma_probe(struct bcma_device *pdev)
- {
- 	struct brcms_info *wl;
- 	struct ieee80211_hw *hw;
-+	int ret;
- 
- 	dev_info(&pdev->dev, "mfg %x core %x rev %d class %d irq %d\n",
- 		 pdev->id.manuf, pdev->id.id, pdev->id.rev, pdev->id.class,
-@@ -1244,11 +1245,16 @@ static int brcms_bcma_probe(struct bcma_device *pdev)
- 	wl = brcms_attach(pdev);
- 	if (!wl) {
- 		pr_err("%s: brcms_attach failed!\n", __func__);
--		return -ENODEV;
-+		ret = -ENODEV;
-+		goto err_free_ieee80211;
+diff --git a/drivers/net/wireless/ath/wcn36xx/main.c b/drivers/net/wireless/ath/wcn36xx/main.c
+index afb4877eaad8..dabed4e3ca45 100644
+--- a/drivers/net/wireless/ath/wcn36xx/main.c
++++ b/drivers/net/wireless/ath/wcn36xx/main.c
+@@ -293,23 +293,16 @@ static int wcn36xx_start(struct ieee80211_hw *hw)
+ 		goto out_free_dxe_pool;
  	}
- 	brcms_led_register(wl);
  
- 	return 0;
-+
-+err_free_ieee80211:
-+	ieee80211_free_hw(hw);
-+	return ret;
+-	wcn->hal_buf = kmalloc(WCN36XX_HAL_BUF_SIZE, GFP_KERNEL);
+-	if (!wcn->hal_buf) {
+-		wcn36xx_err("Failed to allocate smd buf\n");
+-		ret = -ENOMEM;
+-		goto out_free_dxe_ctl;
+-	}
+-
+ 	ret = wcn36xx_smd_load_nv(wcn);
+ 	if (ret) {
+ 		wcn36xx_err("Failed to push NV to chip\n");
+-		goto out_free_smd_buf;
++		goto out_free_dxe_ctl;
+ 	}
+ 
+ 	ret = wcn36xx_smd_start(wcn);
+ 	if (ret) {
+ 		wcn36xx_err("Failed to start chip\n");
+-		goto out_free_smd_buf;
++		goto out_free_dxe_ctl;
+ 	}
+ 
+ 	if (!wcn36xx_is_fw_version(wcn, 1, 2, 2, 24)) {
+@@ -336,8 +329,6 @@ static int wcn36xx_start(struct ieee80211_hw *hw)
+ 
+ out_smd_stop:
+ 	wcn36xx_smd_stop(wcn);
+-out_free_smd_buf:
+-	kfree(wcn->hal_buf);
+ out_free_dxe_ctl:
+ 	wcn36xx_dxe_free_ctl_blks(wcn);
+ out_free_dxe_pool:
+@@ -372,8 +363,6 @@ static void wcn36xx_stop(struct ieee80211_hw *hw)
+ 
+ 	wcn36xx_dxe_free_mem_pools(wcn);
+ 	wcn36xx_dxe_free_ctl_blks(wcn);
+-
+-	kfree(wcn->hal_buf);
  }
  
- static int brcms_suspend(struct bcma_device *pdev)
+ static void wcn36xx_change_ps(struct wcn36xx *wcn, bool enable)
+@@ -1401,6 +1390,12 @@ static int wcn36xx_probe(struct platform_device *pdev)
+ 	mutex_init(&wcn->hal_mutex);
+ 	mutex_init(&wcn->scan_lock);
+ 
++	wcn->hal_buf = devm_kmalloc(wcn->dev, WCN36XX_HAL_BUF_SIZE, GFP_KERNEL);
++	if (!wcn->hal_buf) {
++		ret = -ENOMEM;
++		goto out_wq;
++	}
++
+ 	ret = dma_set_mask_and_coherent(wcn->dev, DMA_BIT_MASK(32));
+ 	if (ret < 0) {
+ 		wcn36xx_err("failed to set DMA mask: %d\n", ret);
 -- 
 2.30.2
 
