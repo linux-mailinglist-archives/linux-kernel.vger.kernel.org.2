@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8BD43C4FC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA573C56AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244366AbhGLH1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:27:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34476 "EHLO mail.kernel.org"
+        id S1347786AbhGLIWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:22:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242241AbhGLG74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:59:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C6EE56102A;
-        Mon, 12 Jul 2021 06:57:06 +0000 (UTC)
+        id S1346331AbhGLHjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:39:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 22193610D1;
+        Mon, 12 Jul 2021 07:34:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073027;
-        bh=BeB+0SJu7eQWjDDNzQut1WWX6Ive+aysT5ziMqnmH+I=;
+        s=korg; t=1626075268;
+        bh=LX8MytkC20dE/E1lNwDIxGB7QpmzBK0Wy9YYqWHXUwo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uWATJ8Ej1awGf10Dt5XBLWijK7GtdDEBhCjJp2YAr3l4/ozMyGDfF81LwDL7dxNyc
-         QJnX32OyMUioRUYZ4LAEp2dDFFiaiNSxLe+z4d/QBmtddO2MZvd37XYGmp1aCxmBRW
-         U0qe73uLYW+SVs9BU3FIRofOHmiGPqFz5WZMPV98=
+        b=gtozNg+WGQGh1kWh5xocWpiFXmb3KorSlXI2mvf2HLqZvWNLqK2t/OJsGDcTMC00J
+         y/uII4laO0VB4ZCn8RU8PlnYYRzcRIL/6fVYufRhRCsAlXgnLIBcUbkxwggZ+RLEU2
+         LV7ALs+nNQZJbvvZ5544dZHSPBhghVBNdb77Nx0o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 5.12 102/700] tracing/histograms: Fix parsing of "sym-offset" modifier
-Date:   Mon, 12 Jul 2021 08:03:05 +0200
-Message-Id: <20210712060939.233766621@linuxfoundation.org>
+        stable@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 163/800] ima: Dont remove security.ima if file must not be appraised
+Date:   Mon, 12 Jul 2021 08:03:06 +0200
+Message-Id: <20210712060935.924793830@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,52 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-commit 26c563731056c3ee66f91106c3078a8c36bb7a9e upstream.
+[ Upstream commit ed1b472fc15aeaa20ddeeb93fd25190014e50d17 ]
 
-With the addition of simple mathematical operations (plus and minus), the
-parsing of the "sym-offset" modifier broke, as it took the '-' part of the
-"sym-offset" as a minus, and tried to break it up into a mathematical
-operation of "field.sym - offset", in which case it failed to parse
-(unless the event had a field called "offset").
+Files might come from a remote source and might have xattrs, including
+security.ima. It should not be IMA task to decide whether security.ima
+should be kept or not. This patch removes the removexattr() system
+call in ima_inode_post_setattr().
 
-Both .sym and .sym-offset modifiers should not be entered into
-mathematical calculations anyway. If ".sym-offset" is found in the
-modifier, then simply make it not an operation that can be calculated on.
-
-Link: https://lkml.kernel.org/r/20210707110821.188ae255@oasis.local.home
-
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc: stable@vger.kernel.org
-Fixes: 100719dcef447 ("tracing: Add simple expression support to hist triggers")
-Reviewed-by: Tom Zanussi <zanussi@kernel.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/trace_events_hist.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ security/integrity/ima/ima_appraise.c | 2 --
+ 1 file changed, 2 deletions(-)
 
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -1539,6 +1539,13 @@ static int contains_operator(char *str)
+diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity/ima/ima_appraise.c
+index 4e5eb0236278..55dac618f2a1 100644
+--- a/security/integrity/ima/ima_appraise.c
++++ b/security/integrity/ima/ima_appraise.c
+@@ -522,8 +522,6 @@ void ima_inode_post_setattr(struct user_namespace *mnt_userns,
+ 		return;
  
- 	switch (*op) {
- 	case '-':
-+		/*
-+		 * Unfortunately, the modifier ".sym-offset"
-+		 * can confuse things.
-+		 */
-+		if (op - str >= 4 && !strncmp(op - 4, ".sym-offset", 11))
-+			return FIELD_OP_NONE;
-+
- 		if (*str == '-')
- 			field_op = FIELD_OP_UNARY_MINUS;
- 		else
+ 	action = ima_must_appraise(mnt_userns, inode, MAY_ACCESS, POST_SETATTR);
+-	if (!action)
+-		__vfs_removexattr(&init_user_ns, dentry, XATTR_NAME_IMA);
+ 	iint = integrity_iint_find(inode);
+ 	if (iint) {
+ 		set_bit(IMA_CHANGE_ATTR, &iint->atomic_flags);
+-- 
+2.30.2
+
 
 
