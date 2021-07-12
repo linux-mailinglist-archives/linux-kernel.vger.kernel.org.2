@@ -2,37 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 970C93C5B02
+	by mail.lfdr.de (Postfix) with ESMTP id DF2AA3C5B03
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234573AbhGLKuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 06:50:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35196 "EHLO mail.kernel.org"
+        id S234691AbhGLKus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 06:50:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234348AbhGLKuI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 06:50:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A582E610A7;
-        Mon, 12 Jul 2021 10:47:17 +0000 (UTC)
+        id S234375AbhGLKuM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 06:50:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B5C0610FA;
+        Mon, 12 Jul 2021 10:47:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626086838;
-        bh=mN7D9P4k746unRS5uALz6+b275Czv7Yz5sEt5ATJ3tw=;
+        s=k20201202; t=1626086841;
+        bh=RuKPHx+O+4BOwlwrD0zTvZ708pFfJgwaXqEb7eKGqpo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ho/C5ybnzpPNS8MM7sTsQV3nOVL+akTarE7Li26/rJgyM+5YSmzxY59PYB5C1y3pU
-         OrSPF432jdc60+ntuE1YLvpagFSYiHnB7K8Gwe4CNBrdX3Z02YNrYPx4nHpYE/E0Aw
-         4tWSHJnFCr0y9VjeKjaI7bXvW5/eZW2AmG3WzOeQz7G7EzgzexHPaL32+aqNDQdEBH
-         Y96WIoOYkvn89Iw8zHgv7CFj+JuH7axkzS4Acn3BElWDgsRLO0w8WqVKIS94cN5zEI
-         evzib6VkrOluS0r6Ow2ktIx/9RecbWPDzZSyc/77D1EjlCz0Gkxtvouwx7psYikbES
-         0d9KMf/hOh5xw==
+        b=jP6RSSuG/vZ7Kl2OdVKRlGJd4WgtkSUsefsR4D4IHXiYfel2iRansJgeEiIOi94xY
+         QAAxZjF1Z+DMGQr7w3cA9rU2EWvTZLYKhKXH8XBCRKSBfSnBS1tc4nbBvyCqCWESUZ
+         kZBNNW30MUCdJ/Y04iqh0m/kx7/q35tqjx0Yzb6n/eHF6+rsod93l7dEERVcZSkNgh
+         c1l3pWk3pVJDCyZ1XC0lzU+nnBpcGgAo9w0XowJErGObfJtO6bIhfA+27FDWwZzcZX
+         j0bj2aAdA0+YufNmNBGnD56GFlWTPr1GFEeiH+BjoumcKytyzOAYN9h8jgXeNe3Prc
+         hP7mV6HGYoQsw==
 From:   Mark Brown <broonie@kernel.org>
-To:     lee.jones@linaro.org, cy_huang <u0084500@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        cy_huang@richtek.com, axel.lin@ingics.com, lgirdwood@gmail.com
-Subject: Re: [PATCH v2] regulator: rt5033: Use linear ranges to map all voltage selection
-Date:   Mon, 12 Jul 2021 11:45:49 +0100
-Message-Id: <162608654079.4419.15869422318938555013.b4-ty@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        devicetree@vger.kernel.org, linuxarm@huawei.com,
+        linux-arm-kernel@lists.infradead.org, mauro.chehab@huawei.com,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Axel Lin <axel.lin@ingics.com>
+Subject: Re: (subset) [PATCH v11 0/8] Move Hisilicon 6421v600 SPMI and USB drivers out of staging
+Date:   Mon, 12 Jul 2021 11:45:50 +0100
+Message-Id: <162608654078.4419.5201416551567371403.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1625553939-9109-1-git-send-email-u0084500@gmail.com>
-References: <1625553939-9109-1-git-send-email-u0084500@gmail.com>
+In-Reply-To: <cover.1625211021.git.mchehab+huawei@kernel.org>
+References: <cover.1625211021.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -40,8 +47,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 6 Jul 2021 14:45:39 +0800, cy_huang wrote:
-> Instead of linear mapping, Use linear range to map all voltage selection.
+On Fri, 2 Jul 2021 09:37:15 +0200, Mauro Carvalho Chehab wrote:
+> As promised, that's the version 11, meant to be applied after -rc1.
+> 
+> It depends on a regression fix patch merged via the regulator's tree:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git/commit/?h=for-5.14&id=5db5dd5be70eaf808d9fd90174b957fc5c2912cb
+> 
+> (the dependence is just because of a trivial merge conflict)
+> 
+> [...]
 
 Applied to
 
@@ -49,8 +64,8 @@ Applied to
 
 Thanks!
 
-[1/1] regulator: rt5033: Use linear ranges to map all voltage selection
-      commit: 6eb891cf73bd2ecc877e9916951a19f3e4f3c493
+[2/8] regulator: hi6421v600-regulator: add a missing dot at copyright
+      commit: e8608f8956ff4015a206f75631a266d93e84bb2d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
