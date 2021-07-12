@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C003C5990
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 754E33C5991
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384895AbhGLJFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 05:05:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55670 "EHLO mail.kernel.org"
+        id S1384914AbhGLJFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 05:05:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354064AbhGLID1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1354063AbhGLID1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Jul 2021 04:03:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4379D61205;
-        Mon, 12 Jul 2021 07:59:49 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9462A611CE;
+        Mon, 12 Jul 2021 07:59:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076789;
-        bh=vp1sIG8WUp2wvcnggOR0LoQnTpnVjMoo91Frmq3K9U0=;
+        s=korg; t=1626076792;
+        bh=AEqm8AS5P0KkNxUWVVv9nQbUkA1UYLugWvt+e1Oa/HI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NTdSdJ2LcSC2zNZXjNjBTNDdZw0b9fLJL2omgcE1Ntd6WjSwRGe4GHnn5bBiDiFD9
-         6xlnncJzdiGmtBVUFY/ivOl6IwzPZjrH5nZGUxAvutvToR247Q3J2q9f5f8kX28ftd
-         UGh9atX+8eQ3SV/3kjGYjCxXsbQ5C65I2xH9A5Aw=
+        b=E4iVApB/huQDKcvJYqHxiskiiEkE/6E6QQLrhJvJ2JJD4fd+51xwmVuQ5zHm/9y5w
+         X6y6w5d6Hx1eC+8rs1Gfv2gXMAuOBzuzPoJrPmpm+xqt41v5zFMN0VEwybeZDTGs8+
+         obG9uji/tlsXpeUfNuERui/K4bJSokoYyQ29lVuI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
+        stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 752/800] powerpc: Offline CPU in stop_this_cpu()
-Date:   Mon, 12 Jul 2021 08:12:55 +0200
-Message-Id: <20210712061046.807164909@linuxfoundation.org>
+Subject: [PATCH 5.13 753/800] powerpc/papr_scm: Properly handle UUID types and API
+Date:   Mon, 12 Jul 2021 08:12:56 +0200
+Message-Id: <20210712061046.912978852@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
 References: <20210712060912.995381202@linuxfoundation.org>
@@ -40,59 +42,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit bab26238bbd44d5a4687c0a64fd2c7f2755ea937 ]
+[ Upstream commit 0e8554b5d7801b0aebc6c348a0a9f7706aa17b3b ]
 
-printk_safe_flush_on_panic() has special lock breaking code for the case
-where we panic()ed with the console lock held. It relies on panic IPI
-causing other CPUs to mark themselves offline.
+Parse to and export from UUID own type, before dereferencing.
+This also fixes wrong comment (Little Endian UUID is something else)
+and should eliminate the direct strict types assignments.
 
-Do as most other architectures do.
-
-This effectively reverts commit de6e5d38417e ("powerpc: smp_send_stop do
-not offline stopped CPUs"), unfortunately it may result in some false
-positive warnings, but the alternative is more situations where we can
-crash without getting messages out.
-
-Fixes: de6e5d38417e ("powerpc: smp_send_stop do not offline stopped CPUs")
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Fixes: 43001c52b603 ("powerpc/papr_scm: Use ibm,unit-guid as the iset cookie")
+Fixes: 259a948c4ba1 ("powerpc/pseries/scm: Use a specific endian format for storing uuid from the device tree")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210623041245.865134-1-npiggin@gmail.com
+Link: https://lore.kernel.org/r/20210616134303.58185-1-andriy.shevchenko@linux.intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/smp.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ arch/powerpc/platforms/pseries/papr_scm.c | 27 +++++++++++++++--------
+ 1 file changed, 18 insertions(+), 9 deletions(-)
 
-diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-index 6c6e4d934d86..df6b468976d5 100644
---- a/arch/powerpc/kernel/smp.c
-+++ b/arch/powerpc/kernel/smp.c
-@@ -619,6 +619,8 @@ static void nmi_stop_this_cpu(struct pt_regs *regs)
+diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/platforms/pseries/papr_scm.c
+index ef26fe40efb0..8335e13836db 100644
+--- a/arch/powerpc/platforms/pseries/papr_scm.c
++++ b/arch/powerpc/platforms/pseries/papr_scm.c
+@@ -18,6 +18,7 @@
+ #include <asm/plpar_wrappers.h>
+ #include <asm/papr_pdsm.h>
+ #include <asm/mce.h>
++#include <asm/unaligned.h>
+ 
+ #define BIND_ANY_ADDR (~0ul)
+ 
+@@ -1094,8 +1095,9 @@ static int papr_scm_probe(struct platform_device *pdev)
+ 	u32 drc_index, metadata_size;
+ 	u64 blocks, block_size;
+ 	struct papr_scm_priv *p;
++	u8 uuid_raw[UUID_SIZE];
+ 	const char *uuid_str;
+-	u64 uuid[2];
++	uuid_t uuid;
+ 	int rc;
+ 
+ 	/* check we have all the required DT properties */
+@@ -1138,16 +1140,23 @@ static int papr_scm_probe(struct platform_device *pdev)
+ 	p->hcall_flush_required = of_property_read_bool(dn, "ibm,hcall-flush-required");
+ 
+ 	/* We just need to ensure that set cookies are unique across */
+-	uuid_parse(uuid_str, (uuid_t *) uuid);
++	uuid_parse(uuid_str, &uuid);
++
  	/*
- 	 * IRQs are already hard disabled by the smp_handle_nmi_ipi.
+-	 * cookie1 and cookie2 are not really little endian
+-	 * we store a little endian representation of the
+-	 * uuid str so that we can compare this with the label
+-	 * area cookie irrespective of the endian config with which
+-	 * the kernel is built.
++	 * The cookie1 and cookie2 are not really little endian.
++	 * We store a raw buffer representation of the
++	 * uuid string so that we can compare this with the label
++	 * area cookie irrespective of the endian configuration
++	 * with which the kernel is built.
++	 *
++	 * Historically we stored the cookie in the below format.
++	 * for a uuid string 72511b67-0b3b-42fd-8d1d-5be3cae8bcaa
++	 *	cookie1 was 0xfd423b0b671b5172
++	 *	cookie2 was 0xaabce8cae35b1d8d
  	 */
-+	set_cpu_online(smp_processor_id(), false);
-+
- 	spin_begin();
- 	while (1)
- 		spin_cpu_relax();
-@@ -634,6 +636,15 @@ void smp_send_stop(void)
- static void stop_this_cpu(void *dummy)
- {
- 	hard_irq_disable();
-+
-+	/*
-+	 * Offlining CPUs in stop_this_cpu can result in scheduler warnings,
-+	 * (see commit de6e5d38417e), but printk_safe_flush_on_panic() wants
-+	 * to know other CPUs are offline before it breaks locks to flush
-+	 * printk buffers, in case we panic()ed while holding the lock.
-+	 */
-+	set_cpu_online(smp_processor_id(), false);
-+
- 	spin_begin();
- 	while (1)
- 		spin_cpu_relax();
+-	p->nd_set.cookie1 = cpu_to_le64(uuid[0]);
+-	p->nd_set.cookie2 = cpu_to_le64(uuid[1]);
++	export_uuid(uuid_raw, &uuid);
++	p->nd_set.cookie1 = get_unaligned_le64(&uuid_raw[0]);
++	p->nd_set.cookie2 = get_unaligned_le64(&uuid_raw[8]);
+ 
+ 	/* might be zero */
+ 	p->metadata_size = metadata_size;
 -- 
 2.30.2
 
