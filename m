@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB013C4CDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:39:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C58F83C5883
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244063AbhGLHKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:10:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48246 "EHLO mail.kernel.org"
+        id S1357385AbhGLItM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:49:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235637AbhGLGsc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:48:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CF3C61176;
-        Mon, 12 Jul 2021 06:44:00 +0000 (UTC)
+        id S245745AbhGLHxN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:53:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3575661158;
+        Mon, 12 Jul 2021 07:50:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072241;
-        bh=K0Ba+b9ShYxOT22LwJI8dfzdCnivQUcC+kz5zXEwsTk=;
+        s=korg; t=1626076223;
+        bh=kIZ60M1nZfkEOjXB8kpvTant4ngMp9YGmo5D06dDtss=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MV2whfzEwuqJWViUvQG5g/eokYGgZ72WBMaDZaVys5bPdM37AuOA0hps2v4rrxGz6
-         vwyjCPgw4daNYk01HFu4a7TFQfb9xLoXJ0DQd0vplu3r7HAyc4mWJbAGj4p736wFLH
-         eSduvbEnwn1rptpCrpmZxAhGu6X+vHWmXzeJ2GeA=
+        b=KFiuyQcksQOlrFF9wlCj7cihb9NKjzEDk/DrimXHfF1xxt6TG20m2dU05G0y0+yXe
+         KHd4SKAZrWqJPnEVkKnCn0R0n87P9rVS3S4UcEvLDBq0HzQD96Bo/3vXHLVN8xwGlS
+         O6wTL/u7cHVbxnldvF20y0zlt24HYuLXlsAaxKFw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 413/593] Bluetooth: mgmt: Fix slab-out-of-bounds in tlv_data_is_valid
+Subject: [PATCH 5.13 550/800] drm/msm: Fix error return code in msm_drm_init()
 Date:   Mon, 12 Jul 2021 08:09:33 +0200
-Message-Id: <20210712060933.424344766@linuxfoundation.org>
+Message-Id: <20210712061025.889215075@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,63 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 799acb9347915bfe4eac0ff2345b468f0a1ca207 ]
+[ Upstream commit a1c9b1e3bdd6d8dc43c18699772fb6cf4497d45a ]
 
-This fixes parsing of LTV entries when the length is 0.
+Fix to return a negative error code from the error handling case instead
+of 0, as done elsewhere in this function.
 
-Found with:
-
-tools/mgmt-tester -s "Add Advertising - Success (ScRsp only)"
-
-Add Advertising - Success (ScRsp only) - run
-  Sending Add Advertising (0x003e)
-  Test condition added, total 1
-[   11.004577] ==================================================================
-[   11.005292] BUG: KASAN: slab-out-of-bounds in tlv_data_is_valid+0x87/0xe0
-[   11.005984] Read of size 1 at addr ffff888002c695b0 by task mgmt-tester/87
-[   11.006711]
-[   11.007176]
-[   11.007429] Allocated by task 87:
-[   11.008151]
-[   11.008438] The buggy address belongs to the object at ffff888002c69580
-[   11.008438]  which belongs to the cache kmalloc-64 of size 64
-[   11.010526] The buggy address is located 48 bytes inside of
-[   11.010526]  64-byte region [ffff888002c69580, ffff888002c695c0)
-[   11.012423] The buggy address belongs to the page:
-[   11.013291]
-[   11.013544] Memory state around the buggy address:
-[   11.014359]  ffff888002c69480: fa fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-[   11.015453]  ffff888002c69500: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-[   11.016232] >ffff888002c69580: 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc fc
-[   11.017010]                                      ^
-[   11.017547]  ffff888002c69600: 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc fc
-[   11.018296]  ffff888002c69680: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-[   11.019116] ==================================================================
-
-Fixes: 2bb36870e8cb2 ("Bluetooth: Unify advertising instance flags check")
-Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Fixes: 7f9743abaa79 ("drm/msm: validate display and event threads")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Link: https://lore.kernel.org/r/20210508022836.1777-1-thunder.leizhen@huawei.com
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/mgmt.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/gpu/drm/msm/msm_drv.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
-index 12d7b368b428..13520c7b4f2f 100644
---- a/net/bluetooth/mgmt.c
-+++ b/net/bluetooth/mgmt.c
-@@ -7350,6 +7350,9 @@ static bool tlv_data_is_valid(struct hci_dev *hdev, u32 adv_flags, u8 *data,
- 	for (i = 0, cur_len = 0; i < len; i += (cur_len + 1)) {
- 		cur_len = data[i];
- 
-+		if (!cur_len)
-+			continue;
-+
- 		if (data[i + 1] == EIR_FLAGS &&
- 		    (!is_adv_data || flags_managed(adv_flags)))
- 			return false;
+diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+index fe7d17cd35ec..afd555b0c105 100644
+--- a/drivers/gpu/drm/msm/msm_drv.c
++++ b/drivers/gpu/drm/msm/msm_drv.c
+@@ -523,6 +523,7 @@ static int msm_drm_init(struct device *dev, const struct drm_driver *drv)
+ 		priv->event_thread[i].worker = kthread_create_worker(0,
+ 			"crtc_event:%d", priv->event_thread[i].crtc_id);
+ 		if (IS_ERR(priv->event_thread[i].worker)) {
++			ret = PTR_ERR(priv->event_thread[i].worker);
+ 			DRM_DEV_ERROR(dev, "failed to create crtc_event kthread\n");
+ 			goto err_msm_uninit;
+ 		}
 -- 
 2.30.2
 
