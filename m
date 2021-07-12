@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 570E63C572E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E80DA3C4A03
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376342AbhGLIaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:30:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51356 "EHLO mail.kernel.org"
+        id S235969AbhGLGsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:48:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346844AbhGLHmk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:42:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E32386115A;
-        Mon, 12 Jul 2021 07:39:51 +0000 (UTC)
+        id S235816AbhGLGhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:37:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 05B0361158;
+        Mon, 12 Jul 2021 06:33:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075592;
-        bh=0OFL4N10rEiwQSZSmGcXrtiPHmfuMmmN/yYuJSRHC0s=;
+        s=korg; t=1626071612;
+        bh=+0RmVVSDzLNt2nkptVlfGz2MqVzeDxn8hiCZHkPC86c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w1SEuap8yKTpawxg5tcTJrAwu9z2tqBihOmSAPufliInouSU6QADabjCwjm7bU7fi
-         TMMgLG/eahl7hltmH9YYNYBunbv3kAex8G0uJNrYfGMbOsiiekZPUhJgudmfIxTQyt
-         AeJJfafiCW5TShghTaXWpofN2CB5IOqZtqh8Jqhk=
+        b=kqD1fc6lZJQB9m7Rh19JQEi6JbnUsCyBdnNva74jXjt2sbIOCSqia55PCVP56mJKW
+         G3avHnfwjclje1QMOvz1iTwHIsjL0Gaj+HAgqYW+0p7TcTgg7NcnTko8rPb7R9nhmC
+         z7mPPpxAIEoEeHON1onpd7ZzIM/luAaBV22VJSvg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qais Yousef <qais.yousef@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        stable@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 279/800] sched/uclamp: Fix wrong implementation of cpu.uclamp.min
-Date:   Mon, 12 Jul 2021 08:05:02 +0200
-Message-Id: <20210712060954.179288697@linuxfoundation.org>
+Subject: [PATCH 5.10 143/593] memstick: rtsx_usb_ms: fix UAF
+Date:   Mon, 12 Jul 2021 08:05:03 +0200
+Message-Id: <20210712060858.795231132@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,114 +40,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qais Yousef <qais.yousef@arm.com>
+From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit 0c18f2ecfcc274a4bcc1d122f79ebd4001c3b445 ]
+[ Upstream commit 42933c8aa14be1caa9eda41f65cde8a3a95d3e39 ]
 
-cpu.uclamp.min is a protection as described in cgroup-v2 Resource
-Distribution Model
+This patch fixes the following issues:
+1. memstick_free_host() will free the host, so the use of ms_dev(host) after
+it will be a problem. To fix this, move memstick_free_host() after when we
+are done with ms_dev(host).
+2. In rtsx_usb_ms_drv_remove(), pm need to be disabled before we remove
+and free host otherwise memstick_check will be called and UAF will
+happen.
 
-	Documentation/admin-guide/cgroup-v2.rst
+[   11.351173] BUG: KASAN: use-after-free in rtsx_usb_ms_drv_remove+0x94/0x140 [rtsx_usb_ms]
+[   11.357077]  rtsx_usb_ms_drv_remove+0x94/0x140 [rtsx_usb_ms]
+[   11.357376]  platform_remove+0x2a/0x50
+[   11.367531] Freed by task 298:
+[   11.368537]  kfree+0xa4/0x2a0
+[   11.368711]  device_release+0x51/0xe0
+[   11.368905]  kobject_put+0xa2/0x120
+[   11.369090]  rtsx_usb_ms_drv_remove+0x8c/0x140 [rtsx_usb_ms]
+[   11.369386]  platform_remove+0x2a/0x50
 
-which means we try our best to preserve the minimum performance point of
-tasks in this group. See full description of cpu.uclamp.min in the
-cgroup-v2.rst.
+[   12.038408] BUG: KASAN: use-after-free in __mutex_lock.isra.0+0x3ec/0x7c0
+[   12.045432]  mutex_lock+0xc9/0xd0
+[   12.046080]  memstick_check+0x6a/0x578 [memstick]
+[   12.046509]  process_one_work+0x46d/0x750
+[   12.052107] Freed by task 297:
+[   12.053115]  kfree+0xa4/0x2a0
+[   12.053272]  device_release+0x51/0xe0
+[   12.053463]  kobject_put+0xa2/0x120
+[   12.053647]  rtsx_usb_ms_drv_remove+0xc4/0x140 [rtsx_usb_ms]
+[   12.053939]  platform_remove+0x2a/0x50
 
-But the current implementation makes it a limit, which is not what was
-intended.
-
-For example:
-
-	tg->cpu.uclamp.min = 20%
-
-	p0->uclamp[UCLAMP_MIN] = 0
-	p1->uclamp[UCLAMP_MIN] = 50%
-
-	Previous Behavior (limit):
-
-		p0->effective_uclamp = 0
-		p1->effective_uclamp = 20%
-
-	New Behavior (Protection):
-
-		p0->effective_uclamp = 20%
-		p1->effective_uclamp = 50%
-
-Which is inline with how protections should work.
-
-With this change the cgroup and per-task behaviors are the same, as
-expected.
-
-Additionally, we remove the confusing relationship between cgroup and
-!user_defined flag.
-
-We don't want for example RT tasks that are boosted by default to max to
-change their boost value when they attach to a cgroup. If a cgroup wants
-to limit the max performance point of tasks attached to it, then
-cpu.uclamp.max must be set accordingly.
-
-Or if they want to set different boost value based on cgroup, then
-sysctl_sched_util_clamp_min_rt_default must be used to NOT boost to max
-and set the right cpu.uclamp.min for each group to let the RT tasks
-obtain the desired boost value when attached to that group.
-
-As it stands the dependency on !user_defined flag adds an extra layer of
-complexity that is not required now cpu.uclamp.min behaves properly as
-a protection.
-
-The propagation model of effective cpu.uclamp.min in child cgroups as
-implemented by cpu_util_update_eff() is still correct. The parent
-protection sets an upper limit of what the child cgroups will
-effectively get.
-
-Fixes: 3eac870a3247 (sched/uclamp: Use TG's clamps to restrict TASK's clamps)
-Signed-off-by: Qais Yousef <qais.yousef@arm.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210510145032.1934078-2-qais.yousef@arm.com
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Co-developed-by: Ulf Hansson <ulf.hansson@linaro.org>
+Link: https://lore.kernel.org/r/20210511163944.1233295-1-ztong0001@gmail.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/core.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+ drivers/memstick/host/rtsx_usb_ms.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 9724dd30ad44..49b713da023d 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -1067,7 +1067,6 @@ uclamp_tg_restrict(struct task_struct *p, enum uclamp_id clamp_id)
- {
- 	struct uclamp_se uc_req = p->uclamp_req[clamp_id];
- #ifdef CONFIG_UCLAMP_TASK_GROUP
--	struct uclamp_se uc_max;
+diff --git a/drivers/memstick/host/rtsx_usb_ms.c b/drivers/memstick/host/rtsx_usb_ms.c
+index 102dbb8080da..29271ad4728a 100644
+--- a/drivers/memstick/host/rtsx_usb_ms.c
++++ b/drivers/memstick/host/rtsx_usb_ms.c
+@@ -799,9 +799,9 @@ static int rtsx_usb_ms_drv_probe(struct platform_device *pdev)
  
- 	/*
- 	 * Tasks in autogroups or root task group will be
-@@ -1078,9 +1077,23 @@ uclamp_tg_restrict(struct task_struct *p, enum uclamp_id clamp_id)
- 	if (task_group(p) == &root_task_group)
- 		return uc_req;
+ 	return 0;
+ err_out:
+-	memstick_free_host(msh);
+ 	pm_runtime_disable(ms_dev(host));
+ 	pm_runtime_put_noidle(ms_dev(host));
++	memstick_free_host(msh);
+ 	return err;
+ }
  
--	uc_max = task_group(p)->uclamp[clamp_id];
--	if (uc_req.value > uc_max.value || !uc_req.user_defined)
--		return uc_max;
-+	switch (clamp_id) {
-+	case UCLAMP_MIN: {
-+		struct uclamp_se uc_min = task_group(p)->uclamp[clamp_id];
-+		if (uc_req.value < uc_min.value)
-+			return uc_min;
-+		break;
-+	}
-+	case UCLAMP_MAX: {
-+		struct uclamp_se uc_max = task_group(p)->uclamp[clamp_id];
-+		if (uc_req.value > uc_max.value)
-+			return uc_max;
-+		break;
-+	}
-+	default:
-+		WARN_ON_ONCE(1);
-+		break;
-+	}
- #endif
+@@ -828,9 +828,6 @@ static int rtsx_usb_ms_drv_remove(struct platform_device *pdev)
+ 	}
+ 	mutex_unlock(&host->host_mutex);
  
- 	return uc_req;
+-	memstick_remove_host(msh);
+-	memstick_free_host(msh);
+-
+ 	/* Balance possible unbalanced usage count
+ 	 * e.g. unconditional module removal
+ 	 */
+@@ -838,10 +835,11 @@ static int rtsx_usb_ms_drv_remove(struct platform_device *pdev)
+ 		pm_runtime_put(ms_dev(host));
+ 
+ 	pm_runtime_disable(ms_dev(host));
+-	platform_set_drvdata(pdev, NULL);
+-
++	memstick_remove_host(msh);
+ 	dev_dbg(ms_dev(host),
+ 		": Realtek USB Memstick controller has been removed\n");
++	memstick_free_host(msh);
++	platform_set_drvdata(pdev, NULL);
+ 
+ 	return 0;
+ }
 -- 
 2.30.2
 
