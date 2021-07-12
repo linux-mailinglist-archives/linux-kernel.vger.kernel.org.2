@@ -2,138 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F12363C657F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 23:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E243C6584
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 23:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234758AbhGLVfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 17:35:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41338 "EHLO
+        id S233852AbhGLVkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 17:40:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbhGLVfc (ORCPT
+        with ESMTP id S229842AbhGLVkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 17:35:32 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5871C0613DD
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 14:32:43 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id k16so24445721ios.10
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 14:32:43 -0700 (PDT)
+        Mon, 12 Jul 2021 17:40:06 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4508CC0613DD
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 14:37:17 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id y16so1450858iol.12
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 14:37:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=p0UbOU0vjiqc719wOG0oZB7U04BfmrswCV40XldGFR0=;
-        b=YqAFiVSy2G1zBJfGO843I1ZiXvfaN9nxExGEz/h3bVNireLhXXg2m6/9qeSswhiRhE
-         lhzVRSRwgUVs6N7/VeOkw6PODsHmssoGDB+FgddHKZU+fKTC+AwQRhxO5+ERQCvIngg4
-         TVkXhlejoVbx4vliSkFmDszzwPHtef0K8odyM=
+        bh=1pWHLTVi/seYJklLFaD8uR16Mpsf9bybDbOoEox28Wk=;
+        b=betyJUHVcpTHSCBSeD07sN0K8C6tPSmZfCoDPfxQES5lDAfQVYaMfIA26BViacjgf2
+         5X0L1rehs/mU2fK8En0euAyLpE7ibLO34iDwprIyh72moTtkvExMovhrF5ZLsG1El0Hx
+         /fmZtmDd1tR5l9VwGr4CsUWbFoCLTz5D2Ijlc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=p0UbOU0vjiqc719wOG0oZB7U04BfmrswCV40XldGFR0=;
-        b=NOckEBwKYIqxPiHezRkX8C/N92Vy7yyqVA/0/zwMvuQWATGt3wlXTsz0/r4B0CofMc
-         9ZIOEFzxZP+oVQroIRPffrNlC0H++zMBvguIySNVvmZ1E5x4ufs4HoWBhVDlnK9d0yfo
-         /XgFUdjiHLeNQxaxNy/f/wFCbJYUWFqtRNnm2e28ELjp5MYSpUEsGlQZ2mKado3+iFsY
-         tZEW8HoMQQm4LP54UJycPOILDoD6ZLND10EO4PSfgxuu5odjRy+2nkETDbORPtq15DqX
-         /9iu5KhTLyKrAKiHqDom3LjHHOUyMvNc7UHTH0apyzhk/N0MLCRf8ZEvxQsCw3b7i/4t
-         LoDw==
-X-Gm-Message-State: AOAM533xWg5jFv9pjRl0h4xAKwUSPqEbIjw/R9m/Suoul3yufjlo0i5K
-        nKT5OXjV3yWGMsR8lWqpUE5aDfPsPI5Nfw==
-X-Google-Smtp-Source: ABdhPJx9ycb6IHix/xel7GFxu9OaZExX70MZPuyoXqX+/HiJiaSwxhbuGL8+0E0tS7VEmX4gw0GIAQ==
-X-Received: by 2002:a5e:dc45:: with SMTP id s5mr657978iop.159.1626125563108;
-        Mon, 12 Jul 2021 14:32:43 -0700 (PDT)
+        bh=1pWHLTVi/seYJklLFaD8uR16Mpsf9bybDbOoEox28Wk=;
+        b=dngLsgHUiowCHoRV6VQP8jbSVdCD1s077jCL1rrJM25xQS0YHuoDGx0zbcnOEmn4Mu
+         NZiHv/5NQ1DTw2LnXsbTOS9wl+wXbT9RNSzSXoUsTc6Op7wxvRXS18o0h4htsjXAVMNd
+         a7JdzfO44qZ2qos4t2UTAY8QD58R7XSkFwDpxMJSYS2IRaDujbBBrdmw8gKvjORcearK
+         mGAn6DtOFJIYGfC7ByYiulqceGZHlu0NbuiH0BokB8TFuFeL7YvNSV4Q6mMtHwVjXcBT
+         UUHuugcAqHnj54LLqYPSo/InTdGlGhDhC04r9F6K9qOwyVXNzdn0uV3nZb04Yz2UiCv9
+         xxOg==
+X-Gm-Message-State: AOAM533oOgn9Kt0gu5q3gullUa45JI/AH6eq6xvB3V67xeR6wsFkmLKf
+        tZ3W1sFfn/qme2Vw4uQqmQeWs9ipEPhzSw==
+X-Google-Smtp-Source: ABdhPJwcx91dUE0KBGR34Zf8nz1GxPZ5BTvZAQVOHxnAsEy/Az3GfTzon0fEEDdQRMRLP9Pm7PmSug==
+X-Received: by 2002:a5d:9cd9:: with SMTP id w25mr714212iow.36.1626125836431;
+        Mon, 12 Jul 2021 14:37:16 -0700 (PDT)
 Received: from mail-io1-f42.google.com (mail-io1-f42.google.com. [209.85.166.42])
-        by smtp.gmail.com with ESMTPSA id p10sm6247861ilh.57.2021.07.12.14.32.41
+        by smtp.gmail.com with ESMTPSA id i5sm9048870ilc.16.2021.07.12.14.37.15
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Jul 2021 14:32:42 -0700 (PDT)
-Received: by mail-io1-f42.google.com with SMTP id u7so24473903ion.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 14:32:41 -0700 (PDT)
-X-Received: by 2002:a6b:7719:: with SMTP id n25mr683754iom.37.1626125561291;
- Mon, 12 Jul 2021 14:32:41 -0700 (PDT)
+        Mon, 12 Jul 2021 14:37:15 -0700 (PDT)
+Received: by mail-io1-f42.google.com with SMTP id x10so5712936ion.9
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 14:37:15 -0700 (PDT)
+X-Received: by 2002:a02:2a07:: with SMTP id w7mr911188jaw.96.1626125835291;
+ Mon, 12 Jul 2021 14:37:15 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210709105012.v2.1.I09866d90c6de14f21223a03e9e6a31f8a02ecbaf@changeid>
- <YOvpVRSMJe8NQuS2@dhcp22.suse.cz>
-In-Reply-To: <YOvpVRSMJe8NQuS2@dhcp22.suse.cz>
+ <20210709152024.36f650dfec4c66ef3a60a845@linux-foundation.org>
+ <CAE=gft48qBiq_cbdf2AZa_Ap1eB3BBvrLLD3m2cBwkYPy3b8Nw@mail.gmail.com> <20210709163328.16fcdd3601d1ba0b93baad65@linux-foundation.org>
+In-Reply-To: <20210709163328.16fcdd3601d1ba0b93baad65@linux-foundation.org>
 From:   Evan Green <evgreen@chromium.org>
-Date:   Mon, 12 Jul 2021 14:32:05 -0700
-X-Gmail-Original-Message-ID: <CAE=gft7Qd3NSnoFYaXv=FkP0=Je85mNOKojuW5rhg6HkS=usLA@mail.gmail.com>
-Message-ID: <CAE=gft7Qd3NSnoFYaXv=FkP0=Je85mNOKojuW5rhg6HkS=usLA@mail.gmail.com>
+Date:   Mon, 12 Jul 2021 14:36:39 -0700
+X-Gmail-Original-Message-ID: <CAE=gft5qdEvi=xtQEUwvCH=M_82daY-TRsosMMQ0SHVRCsr2JQ@mail.gmail.com>
+Message-ID: <CAE=gft5qdEvi=xtQEUwvCH=M_82daY-TRsosMMQ0SHVRCsr2JQ@mail.gmail.com>
 Subject: Re: [PATCH v2] mm: Enable suspend-only swap spaces
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Pavel Machek <pavel@ucw.cz>, Alex Shi <alexs@kernel.org>,
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     David Hildenbrand <david@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Alex Shi <alexs@kernel.org>,
         Alistair Popple <apopple@nvidia.com>,
         Jens Axboe <axboe@kernel.dk>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Joonsoo Kim <iamjoonsoo.kim@lge.com>,
         "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         Miaohe Lin <linmiaohe@huawei.com>,
+        Michal Hocko <mhocko@suse.com>,
         Minchan Kim <minchan@kernel.org>,
         Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        linux-api@vger.kernel.org
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 12:03 AM Michal Hocko <mhocko@suse.com> wrote:
+On Fri, Jul 9, 2021 at 4:33 PM Andrew Morton <akpm@linux-foundation.org> wrote:
 >
-> [Cc linux-api]
+> On Fri, 9 Jul 2021 16:23:18 -0700 Evan Green <evgreen@chromium.org> wrote:
 >
-> On Fri 09-07-21 10:50:48, Evan Green wrote:
-> > Currently it's not possible to enable hibernation without also enabling
-> > generic swap for a given swap area. These two use cases are not the
-> > same. For example there may be users who want to enable hibernation,
-> > but whose drives don't have the write endurance for generic swap
-> > activities.
+> > On Fri, Jul 9, 2021 at 3:20 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+> > >
+> > > On Fri,  9 Jul 2021 10:50:48 -0700 Evan Green <evgreen@chromium.org> wrote:
+> > >
+> > > > Currently it's not possible to enable hibernation without also enabling
+> > > > generic swap for a given swap area. These two use cases are not the
+> > > > same. For example there may be users who want to enable hibernation,
+> > > > but whose drives don't have the write endurance for generic swap
+> > > > activities.
+> > > >
+> > > > Add a new SWAP_FLAG_NOSWAP that adds a swap region but refuses to allow
+> > > > generic swapping to it. This region can still be wired up for use in
+> > > > suspend-to-disk activities, but will never have regular pages swapped to
+> > > > it.
+> > > >
+> > > > Swap regions with SWAP_FLAG_NOSWAP set will not appear in /proc/meminfo
+> > > > under SwapTotal and SwapFree, since they are not usable as general swap.
+> > > >
+> > >
+> > > This patch doesn't appear to set SWAP_FLAG_NOSWAP anywhere.  Perhaps
+> > > there's another patch somewhere which changes the hibernation code?  If
+> > > so, can we please have both patches in a series?
 > >
-> > Add a new SWAP_FLAG_NOSWAP that adds a swap region but refuses to allow
-> > generic swapping to it. This region can still be wired up for use in
-> > suspend-to-disk activities, but will never have regular pages swapped to
-> > it.
+> > There's no other patch, in the kernel at least. SWAP_FLAG_* is exposed
+> > to usermode, which would set it when calling swapon(2). Once this
+> > patch is accepted, I'll have to add the option into util-linux [1], so
+> > that I can use it in my init scripts.
+> >
+> > Said a different way, this patch isn't about altering how hibernate
+> > behaves, but about giving usermode the freedom to set up hibernate and
+> > swap independently.
 >
-> Could you expand some more on why a strict exclusion is really
-> necessary? I do understand that one might not want to have swap storage
-> available all the time but considering that swapon is really a light
-> operation so something like the following should be a reasonable
-> workaround, no?
->         swapon storage/file
->         s2disk
->         swapoff storage
+> OK, can we please get this into the changelog?  And it would be helpful
+> to describe how this will be invoked via swapon(8).
 
-Broadly, it seemed like a reasonable thing for the kernel to be able
-to do. The workaround you suggest does work for some use cases, but it
-seems like a gap the kernel could more naturally fill.
+Sure, I can augment the commit text to include some of this, and what
+it would likely look like from the commandline. I'll send a v3 for
+that.
 
-Without getting too off into the weeds, there a handful of factors
-that make this change particularly useful to me:
+>
+> And I expect an update to the swapon syscall's manpage will be in order.
+>
 
- * Slicing off part of your SSD to be SLC (single level cell) is
-expensive. From what I understand you gain endurance and speed at the
-cost of 3-4x capacity. In other words for every 1GB of SLC space you
-need for swap, it costs you 3-4GB of storage space out of the primary
-namespace. So I'm incentivized to size this region as small as
-possible. Hibernate's speed/endurance requirements are not quite as
-harsh as regular swap. Steering them separately gives me the ability
-to put the hibernate image in regular storage, and not be forced to
-oversize expensive/fast swap space.
-
- * Even with the workaround, swap can end up in the hibernate region.
-Hibernate starts by allocating its giant 50%-of-memory region, which
-is often the forcing function for pushing things into swap. With the
-workaround, even if my hibernate region is in last priority, there's
-still a reasonable chance I'll end up swapping into it. If I have
-different security designs for swap space and hibernate, then even a
-chance of some swap leaking into this region is a problem.
-
- * I also want to limit the online attack surface that swap presents.
-I can make headway here by disallowing open() calls on active swap
-regions (via an LSM), and permanently disabling swapon/swapoff system
-calls after early init. The workaround isn't great for me because I
-want to set everything up at early init time and then not touch it. By
-suspend time, on my system I no longer have the ability to make
-swapon/swapoff calls.
-
+Yes! I was originally planning to do that once this was accepted, but
+can also spin it up in parallel if requested.
 -Evan
