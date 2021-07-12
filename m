@@ -2,190 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE663C600C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 18:03:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAC413C600E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 18:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230182AbhGLQGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 12:06:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229891AbhGLQGk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 12:06:40 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0880C0613DD
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 09:03:51 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id w194so1650494oie.5
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 09:03:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=VYQdhl8WGpNZn7IHwYKLRg9DV0FPfiQGFVFR4KPgX0c=;
-        b=XSGbCrKyqK3ndOMFIBRp2HQGP9z52L4aOKWsy8RvSGGGFh+fx3biWqeYIqZwHykyu+
-         Jcz6zYKUDqSUwEDhLxYnftrY/LDZX+WEpNDBmyv5I2nyjHXPMnqLTTSz3nxLEFV4QbBA
-         OzW8SlBs5mCHHjCVVZp+b4mYvXXm94EtBVfHm8v4IbrykDmgM3De6gIKrVvbt8W/A/V6
-         beYDXOsm92b/ca0dXkn3rruOtDznbLyGfWxJ+Sd15Rnj7dUS6BJDVG6yFhb5jqSr3Bk8
-         OmDrAWqDlaIC5k70/KHUtRyrmVlHJQjkgnK05uzjpXXYWEeIXFNV0SDmJaLPUVr5vAIX
-         131Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=VYQdhl8WGpNZn7IHwYKLRg9DV0FPfiQGFVFR4KPgX0c=;
-        b=kXQWUepUUputXM+83OUKXolhB4Vf3KvgNKkjI+HSOgh9dyAKC4GWEjcWi1AeFAhyFC
-         uMvaCGMsq6ND5HRvG5Nr9+eZcyNygeehUfsJVO3G0ym69CvxwwaIDh3RYqh8GATkSaee
-         AMaeJ/FaOHzWaZ32VnL4GZa9RXB8q58WGaQD9OSjQM7tLxqSo6GAQCwHIW0GRM2R9T1X
-         Y5N3umxXV0j6FzIGuxr+eudM0tcp6gkN+701lDIx4kBrW/sdQs7LCpwGj8Qwcbu8Ua68
-         PEYIaiNkhHuxPMAimzPr574CTE1viKmCjLTxp3cXWo1fPKvnefMlIHabD+ekZaZhLxiS
-         4p1Q==
-X-Gm-Message-State: AOAM533B1IX75b+GhpvqlnyaX+C6RpNvAXZBc7OvxFysDf/kkR2MNVBa
-        biq84dcZ/ZCZTs13a200qF+Bbg==
-X-Google-Smtp-Source: ABdhPJxWVvHGQqmw4XVHZ9oLKOii3peGSB6g8nki90kRoK68heA+KbKagj74e1DGjUmoUOwQsea0jA==
-X-Received: by 2002:aca:acc5:: with SMTP id v188mr10863888oie.167.1626105831020;
-        Mon, 12 Jul 2021 09:03:51 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id z5sm3229154oib.14.2021.07.12.09.03.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 09:03:50 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 11:03:48 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Prasad Malisetty <pmaliset@codeaurora.org>
-Cc:     agross@kernel.org, bhelgaas@google.com, robh+dt@kernel.org,
-        swboyd@chromium.org, lorenzo.pieralisi@arm.com,
-        svarbanov@mm-sol.com, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mgautam@codeaurora.org,
-        dianders@chromium.org, mka@chromium.org, sanm@codeaurora.org
-Subject: Re: [PATCH v3 4/4] PCIe: qcom: Add support to control pipe clk mux
-Message-ID: <YOxn5GWQsEH/+bSm@yoga>
-References: <1624377651-30604-1-git-send-email-pmaliset@codeaurora.org>
- <1624377651-30604-5-git-send-email-pmaliset@codeaurora.org>
+        id S231374AbhGLQGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 12:06:44 -0400
+Received: from ms.lwn.net ([45.79.88.28]:42330 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229891AbhGLQGm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 12:06:42 -0400
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 17CE636E;
+        Mon, 12 Jul 2021 16:03:54 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 17CE636E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1626105834; bh=kSSlmFnL7JyG3z3y9i9yDbtGXvvJ9JyuZRsfDWOwbYw=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=OXP10x44qcYIGcYQCUmPrz5EcR0O+HYo51nCKSAV42R0LgHj2dh0F+I0GFjDbhPnj
+         dbguVF7uuXCnNJVxHjMOBu0HZC7isKqpQAdEt4Gh4mXYIiTIb0k5QMIMHTW0V0oZJ4
+         wWNLjSq9We8tYc3Z6hy9/F6OuBwaogCb6PQjcUnvR5qC2AkI9fR8CYjVNaUTKtlWBr
+         5DmzSDIIepwIdaSHPGNUDzxIbQrPlPchfD0M6xMvEUCit797tWJh4p+cCyNvg7Nst6
+         TJCEdOu99FPWpLPht7NBaRdtY6Ok/9vu4kSh7L9VtoUpdQQwZZIDZIR/N8Cb+MXq2S
+         kIoWLBiLtZy2A==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Nishanth Menon <nm@ti.com>,
+        Thorsten Leemhuis <linux@leemhuis.info>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, linux-spdx@vger.kernel.org,
+        Nishanth Menon <nm@ti.com>, Christoph Hellwig <hch@lst.de>,
+        Rahul T R <r-ravikumar@ti.com>
+Subject: Re: [PATCH] LICENSES/dual/CC-BY-4.0: Lets switch to utf-8
+In-Reply-To: <20210703012931.30604-1-nm@ti.com>
+References: <20210703012931.30604-1-nm@ti.com>
+Date:   Mon, 12 Jul 2021 10:03:53 -0600
+Message-ID: <87tukzr02e.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1624377651-30604-5-git-send-email-pmaliset@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 22 Jun 11:00 CDT 2021, Prasad Malisetty wrote:
+Nishanth Menon <nm@ti.com> writes:
 
-> pipe-clk mux needs to switch between pipe_clk
-
-If you spell "pipe-clk mux" as "gcc_pcie_N_pipe_clk_src" there's no
-ambiguity in which clock you refer to.
-
-> and XO as part of LPM squence. This is done by setting
-> pipe_clk mux as parent of pipe_clk after phy init.
-
-I thought the two possible cases where:
-
-xo -> gcc_pcie_N_pipe_clk_src -> gcc_pcie_N_pipe_clk
-PHY::pipe_clk -> gcc_pcie_N_pipe_clk_src -> gcc_pcie_N_pipe_clk
-
-But here you're saying that you're setting the parent of PHY::pipe_clk
-to gcc_pcie_N_pipe_clk?
-
-> This is a new requirement for sc7280.
-> For accessing to DBI registers during L23,
-> need to switch the pipe clock with free-running
-> clock (TCXO) using GCC’s registers
-
-So in previous platforms we could access DBI registers, in L23, without
-any clock?
-
-What happens if we use xo as parent for the pipe clock
-
-> 
-> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
+> Lets drop the unicode characters that peeped in and replace with
+> equivalent utf-8 characters. This makes the CC-BY-4.0 file inline with
+> rest of license files.
+>
+> This messes up code such as scripts/spdxcheck.py which assumed utf-8
+> LICENSE files.
+>
+> Fixes: bc41a7f36469 ("LICENSES: Add the CC-BY-4.0 license")
+>
+> Cc: Thorsten Leemhuis <linux@leemhuis.info>
+> CC: Thomas Gleixner <tglx@linutronix.de>
+> CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> CC: Christoph Hellwig <hch@lst.de>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+>
+> Reported-by: Rahul T R <r-ravikumar@ti.com>
+> Signed-off-by: Nishanth Menon <nm@ti.com>
 > ---
->  drivers/pci/controller/dwc/pcie-qcom.c | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> index 8a7a300..80e9ee4 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> @@ -166,6 +166,9 @@ struct qcom_pcie_resources_2_7_0 {
->  	struct regulator_bulk_data supplies[2];
->  	struct reset_control *pci_reset;
->  	struct clk *pipe_clk;
-> +	struct clk *pipe_clk_mux;
-> +	struct clk *pipe_ext_src;
-> +	struct clk *ref_clk_src;
->  };
->  
->  union qcom_pcie_resources {
-> @@ -1167,6 +1170,20 @@ static int qcom_pcie_get_resources_2_7_0(struct qcom_pcie *pcie)
->  	if (ret < 0)
->  		return ret;
->  
-> +	if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280")) {
+> also see: https://lore.kernel.org/linux-spdx/20210703012128.27946-1-nm@ti=
+.com/T/#u
+>
+>  LICENSES/dual/CC-BY-4.0 | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/LICENSES/dual/CC-BY-4.0 b/LICENSES/dual/CC-BY-4.0
+> index 45a81b8e4669..869cad3d1643 100644
+> --- a/LICENSES/dual/CC-BY-4.0
+> +++ b/LICENSES/dual/CC-BY-4.0
+> @@ -392,7 +392,7 @@ Section 8 -- Interpretation.
+>  Creative Commons is not a party to its public
+>  licenses. Notwithstanding, Creative Commons may elect to apply one of
+>  its public licenses to material it publishes and in those instances
+> -will be considered the =E2=80=9CLicensor.=E2=80=9D The text of the Creat=
+ive Commons
+> +will be considered the "Licensor." The text of the Creative Commons
+>  public licenses is dedicated to the public domain under the CC0 Public
 
-So this is the first 2.7.0 that has this need? Are we just going to add
-more compatibles to this list going forward?
+...and I've applied this one as well.
 
-> +		res->pipe_clk_mux = devm_clk_get(dev, "pipe_mux");
-> +		if (IS_ERR(res->pipe_clk_mux))
-> +			return PTR_ERR(res->pipe_clk_mux);
+Thanks,
 
-So this is gcc_pcie_N_pipe_clk_src?
-
-> +
-> +		res->pipe_ext_src = devm_clk_get(dev, "phy_pipe");
-> +		if (IS_ERR(res->pipe_ext_src))
-> +			return PTR_ERR(res->pipe_ext_src);
-
-And this is the pipe_clk coming out of the PHY (What I call
-PHY::pipe_clk above)?
-
-> +
-> +		res->ref_clk_src = devm_clk_get(dev, "ref");
-> +		if (IS_ERR(res->ref_clk_src))
-> +			return PTR_ERR(res->ref_clk_src);
-
-And this is TCXO?
-
-> +	}
-> +
->  	res->pipe_clk = devm_clk_get(dev, "pipe");
->  	return PTR_ERR_OR_ZERO(res->pipe_clk);
->  }
-> @@ -1255,6 +1272,11 @@ static void qcom_pcie_deinit_2_7_0(struct qcom_pcie *pcie)
->  static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
->  {
->  	struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
-> +	struct dw_pcie *pci = pcie->pci;
-> +	struct device *dev = pci->dev;
-> +
-> +	if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280"))
-> +		clk_set_parent(res->pipe_clk_mux, res->pipe_ext_src);
->  
-
-So after phy_power_on() (not "phy init" as you say in the commit
-message, perhaps you don't mean phy_init() but in general terms "phy
-initialization") you need to make sure that gcc_pcie_N_pipe_clk_src is
-actually fed by PHY::pipe_clk?
-
-1) What's the gcc_pcie_N_pipe_clk_src parent before this?
-
-2) Will the PHY initialization really succeed if the pipe_clk feeding
-back from gcc isn't based on the PHY's pipe_clk? Is this a change in
-sc7280?
-
-3) In the commit message you're talking about the need to make XO the
-parent of gcc_pcie_N_pipe_clk_src during L23, where in this patch does
-that happen?
-
-Regards,
-Bjorn
-
->  	return clk_prepare_enable(res->pipe_clk);
->  }
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+jon
