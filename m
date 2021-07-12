@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B97523C4BD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:37:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD7F33C5839
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242761AbhGLHAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:00:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42444 "EHLO mail.kernel.org"
+        id S231451AbhGLInR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:43:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239026AbhGLGoh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:44:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 08FFF6113B;
-        Mon, 12 Jul 2021 06:40:31 +0000 (UTC)
+        id S1350649AbhGLHvM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:51:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7200661C28;
+        Mon, 12 Jul 2021 07:46:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072032;
-        bh=HTPa+tqTgJpTUBYHBOUC2tUBOtux1s3nTFCGRX/lke4=;
+        s=korg; t=1626076015;
+        bh=HH/oR1MAak1gZXBUdVPQsHiHbw5NhvczZv1qs8GQY2E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lcnSyzMZFAG02V75g7HrfbHWv31svy56DyHaJcbgS60uK5iMdusSLF/RKhelcYvoj
-         G7CDRuXTHljnStruo6HhBmy6wW7JD6JMWZmYwpInhAEcyzdjSm0HCzJKceF2xZRt56
-         9UFHBuahgtNYRhOzWr3BQBhAcii4AETkG/jfBVVc=
+        b=VVgwKIX1cKFUG/emqwFs/176f2DcVEAgws53lGYRZCjz57aebmW6o6ZrOgTqokwx5
+         dmKBToon9R6VGrJ2RVuD3oQUxo4r96ZdGYfu7G9Y+tSPYQBxVMCHPudeK0u4buyXhj
+         i4G0h+/5HE3Uqvl1TRLyl+WjRAlXDMZYE7/rfBj0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gioh Kim <gi-oh.kim@ionos.com>,
-        Md Haris Iqbal <haris.iqbal@ionos.com>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        =?UTF-8?q?Michael=20B=C3=BCsch?= <m@bues.ch>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 324/593] RDMA/rtrs-srv: Fix memory leak of unfreed rtrs_srv_stats object
+Subject: [PATCH 5.13 461/800] ssb: Fix error return code in ssb_bus_scan()
 Date:   Mon, 12 Jul 2021 08:08:04 +0200
-Message-Id: <20210712060921.308956335@linuxfoundation.org>
+Message-Id: <20210712061016.197375381@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,67 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 2371c40354509746e4a4dad09a752e027a30f148 ]
+[ Upstream commit 77a0989baa427dbd242c5784d05a53ca3d197d43 ]
 
-When closing a session, currently the rtrs_srv_stats object in the
-closing session is freed by kobject release. But if it failed
-to create a session by various reasons, it must free the rtrs_srv_stats
-object directly because kobject is not created yet.
+Fix to return -EINVAL from the error handling case instead of 0, as done
+elsewhere in this function.
 
-This problem is found by kmemleak as below:
-
-1. One client machine maps /dev/nullb0 with session name 'bla':
-root@test1:~# echo "sessname=bla path=ip:192.168.122.190 \
-device_path=/dev/nullb0" > /sys/devices/virtual/rnbd-client/ctl/map_device
-
-2. Another machine failed to create a session with the same name 'bla':
-root@test2:~# echo "sessname=bla path=ip:192.168.122.190 \
-device_path=/dev/nullb1" > /sys/devices/virtual/rnbd-client/ctl/map_device
--bash: echo: write error: Connection reset by peer
-
-3. The kmemleak on server machine reported an error:
-unreferenced object 0xffff888033cdc800 (size 128):
-  comm "kworker/2:1", pid 83, jiffies 4295086585 (age 2508.680s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000a72903b2>] __alloc_sess+0x1d4/0x1250 [rtrs_server]
-    [<00000000d1e5321e>] rtrs_srv_rdma_cm_handler+0xc31/0xde0 [rtrs_server]
-    [<00000000bb2f6e7e>] cma_ib_req_handler+0xdc5/0x2b50 [rdma_cm]
-    [<00000000e896235d>] cm_process_work+0x2d/0x100 [ib_cm]
-    [<00000000b6866c5f>] cm_req_handler+0x11bc/0x1c40 [ib_cm]
-    [<000000005f5dd9aa>] cm_work_handler+0xe65/0x3cf2 [ib_cm]
-    [<00000000610151e7>] process_one_work+0x4bc/0x980
-    [<00000000541e0f77>] worker_thread+0x78/0x5c0
-    [<00000000423898ca>] kthread+0x191/0x1e0
-    [<000000005a24b239>] ret_from_fork+0x3a/0x50
-
-Fixes: 39c2d639ca183 ("RDMA/rtrs-srv: Set .release function for rtrs srv device during device init")
-Link: https://lore.kernel.org/r/20210528113018.52290-18-jinpu.wang@ionos.com
-Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
-Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
-Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 61e115a56d1a ("[SSB]: add Sonics Silicon Backplane bus support")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Acked-by: Michael Büsch <m@bues.ch>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210515072949.7151-1-thunder.leizhen@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 1 +
+ drivers/ssb/scan.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index 43806180f85e..e1041023d143 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -1490,6 +1490,7 @@ static void free_sess(struct rtrs_srv_sess *sess)
- 		kobject_del(&sess->kobj);
- 		kobject_put(&sess->kobj);
- 	} else {
-+		kfree(sess->stats);
- 		kfree(sess);
+diff --git a/drivers/ssb/scan.c b/drivers/ssb/scan.c
+index f49ab1aa2149..4161e5d1f276 100644
+--- a/drivers/ssb/scan.c
++++ b/drivers/ssb/scan.c
+@@ -325,6 +325,7 @@ int ssb_bus_scan(struct ssb_bus *bus,
+ 	if (bus->nr_devices > ARRAY_SIZE(bus->devices)) {
+ 		pr_err("More than %d ssb cores found (%d)\n",
+ 		       SSB_MAX_NR_CORES, bus->nr_devices);
++		err = -EINVAL;
+ 		goto err_unmap;
  	}
- }
+ 	if (bus->bustype == SSB_BUSTYPE_SSB) {
 -- 
 2.30.2
 
