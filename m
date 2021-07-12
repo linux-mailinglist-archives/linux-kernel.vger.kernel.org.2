@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D39D13C495A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EA863C56DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238702AbhGLGoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:44:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54296 "EHLO mail.kernel.org"
+        id S1357993AbhGLIZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:25:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237787AbhGLGew (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:34:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 06498610CC;
-        Mon, 12 Jul 2021 06:31:33 +0000 (UTC)
+        id S1348082AbhGLHkh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:40:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9D8F60FF3;
+        Mon, 12 Jul 2021 07:37:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071494;
-        bh=8wEe6pPYayhsMqChzZqG9CLsksACtKrtM/ZsWywEUz0=;
+        s=korg; t=1626075469;
+        bh=ZmkX+OYTX8ndWco2Efv9dhKBErMVHquuUcJrOOdq8vY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r1qFFTCywpKbD/LlsUw7hfXGKJlWT5/KSWMhmdPrXsDnbgTxUeHnJ/GROxJsCQ6z+
-         ZXs1g1qKN9eAd+rGgZirx0G0aTj5bXxflDNP1faCVqTSJ8pdr19N11hx0U9lYp2yzt
-         WJLhsLkTRoDO6tdHMSFEzWc506a7Q4QG4p17qA5Y=
+        b=OwpDewfwXxVV/0/l4gMytriGVH/vXJkvPkFeSYSCjaBYQV038YdmwNW3z0xVl8m6v
+         h3qapQhuODIZNpxdQ5R7VWuNLfh9nzcUyDhzFKNHZ+zFkUtUyWPvSQHw+7xPGwcu/+
+         zPKVAA5sPG1vJjJwl+isQup5hSdrKz+3kj0O7ezo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Greg Kurz <groug@kaod.org>,
-        Max Reitz <mreitz@redhat.com>,
-        Miklos Szeredi <mszeredi@redhat.com>
-Subject: [PATCH 5.10 093/593] fuse: Fix crash in fuse_dentry_automount() error path
+        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
+        David Teigland <teigland@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 230/800] fs: dlm: fix memory leak when fenced
 Date:   Mon, 12 Jul 2021 08:04:13 +0200
-Message-Id: <20210712060853.436592806@linuxfoundation.org>
+Message-Id: <20210712060946.177177691@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,59 +40,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kurz <groug@kaod.org>
+From: Alexander Aring <aahringo@redhat.com>
 
-commit d92d88f0568e97c437eeb79d9c9609bd8277406f upstream.
+[ Upstream commit 700ab1c363c7b54c9ea3222379b33fc00ab02f7b ]
 
-If fuse_fill_super_submount() returns an error, the error path
-triggers a crash:
+I got some kmemleak report when a node was fenced. The user space tool
+dlm_controld will therefore run some rmdir() in dlm configfs which was
+triggering some memleaks. This patch stores the sps and cms attributes
+which stores some handling for subdirectories of the configfs cluster
+entry and free them if they get released as the parent directory gets
+freed.
 
-[   26.206673] BUG: kernel NULL pointer dereference, address: 0000000000000000
-[...]
-[   26.226362] RIP: 0010:__list_del_entry_valid+0x25/0x90
-[...]
-[   26.247938] Call Trace:
-[   26.248300]  fuse_mount_remove+0x2c/0x70 [fuse]
-[   26.248892]  virtio_kill_sb+0x22/0x160 [virtiofs]
-[   26.249487]  deactivate_locked_super+0x36/0xa0
-[   26.250077]  fuse_dentry_automount+0x178/0x1a0 [fuse]
+unreferenced object 0xffff88810d9e3e00 (size 192):
+  comm "dlm_controld", pid 342, jiffies 4294698126 (age 55438.801s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 73 70 61 63 65 73 00 00  ........spaces..
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000db8b640b>] make_cluster+0x5d/0x360
+    [<000000006a571db4>] configfs_mkdir+0x274/0x730
+    [<00000000b094501c>] vfs_mkdir+0x27e/0x340
+    [<0000000058b0adaf>] do_mkdirat+0xff/0x1b0
+    [<00000000d1ffd156>] do_syscall_64+0x40/0x80
+    [<00000000ab1408c8>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+unreferenced object 0xffff88810d9e3a00 (size 192):
+  comm "dlm_controld", pid 342, jiffies 4294698126 (age 55438.801s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 63 6f 6d 6d 73 00 00 00  ........comms...
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000a7ef6ad2>] make_cluster+0x82/0x360
+    [<000000006a571db4>] configfs_mkdir+0x274/0x730
+    [<00000000b094501c>] vfs_mkdir+0x27e/0x340
+    [<0000000058b0adaf>] do_mkdirat+0xff/0x1b0
+    [<00000000d1ffd156>] do_syscall_64+0x40/0x80
+    [<00000000ab1408c8>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-The crash happens because fuse_mount_remove() assumes that the FUSE
-mount was already added to list under the FUSE connection, but this
-only done after fuse_fill_super_submount() has returned success.
-
-This means that until fuse_fill_super_submount() has returned success,
-the FUSE mount isn't actually owned by the superblock. We should thus
-reclaim ownership by clearing sb->s_fs_info, which will skip the call
-to fuse_mount_remove(), and perform rollback, like virtio_fs_get_tree()
-already does for the root sb.
-
-Fixes: bf109c64040f ("fuse: implement crossmounts")
-Cc: stable@vger.kernel.org # v5.10+
-Signed-off-by: Greg Kurz <groug@kaod.org>
-Reviewed-by: Max Reitz <mreitz@redhat.com>
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Alexander Aring <aahringo@redhat.com>
+Signed-off-by: David Teigland <teigland@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/fuse/dir.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ fs/dlm/config.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---- a/fs/fuse/dir.c
-+++ b/fs/fuse/dir.c
-@@ -340,8 +340,12 @@ static struct vfsmount *fuse_dentry_auto
+diff --git a/fs/dlm/config.c b/fs/dlm/config.c
+index 88d95d96e36c..52bcda64172a 100644
+--- a/fs/dlm/config.c
++++ b/fs/dlm/config.c
+@@ -79,6 +79,9 @@ struct dlm_cluster {
+ 	unsigned int cl_new_rsb_count;
+ 	unsigned int cl_recover_callbacks;
+ 	char cl_cluster_name[DLM_LOCKSPACE_LEN];
++
++	struct dlm_spaces *sps;
++	struct dlm_comms *cms;
+ };
  
- 	/* Initialize superblock, making @mp_fi its root */
- 	err = fuse_fill_super_submount(sb, mp_fi);
--	if (err)
-+	if (err) {
-+		fuse_conn_put(fc);
-+		kfree(fm);
-+		sb->s_fs_info = NULL;
- 		goto out_put_sb;
-+	}
+ static struct dlm_cluster *config_item_to_cluster(struct config_item *i)
+@@ -409,6 +412,9 @@ static struct config_group *make_cluster(struct config_group *g,
+ 	if (!cl || !sps || !cms)
+ 		goto fail;
  
- 	sb->s_flags |= SB_ACTIVE;
- 	fsc->root = dget(sb->s_root);
++	cl->sps = sps;
++	cl->cms = cms;
++
+ 	config_group_init_type_name(&cl->group, name, &cluster_type);
+ 	config_group_init_type_name(&sps->ss_group, "spaces", &spaces_type);
+ 	config_group_init_type_name(&cms->cs_group, "comms", &comms_type);
+@@ -458,6 +464,9 @@ static void drop_cluster(struct config_group *g, struct config_item *i)
+ static void release_cluster(struct config_item *i)
+ {
+ 	struct dlm_cluster *cl = config_item_to_cluster(i);
++
++	kfree(cl->sps);
++	kfree(cl->cms);
+ 	kfree(cl);
+ }
+ 
+-- 
+2.30.2
+
 
 
