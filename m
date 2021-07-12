@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F843C5197
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18FCD3C4A21
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243888AbhGLHmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:42:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42086 "EHLO mail.kernel.org"
+        id S238583AbhGLGst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:48:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242372AbhGLHGn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:06:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C468610FA;
-        Mon, 12 Jul 2021 07:03:52 +0000 (UTC)
+        id S237092AbhGLGiG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:38:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3ACD61167;
+        Mon, 12 Jul 2021 06:34:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073432;
-        bh=Ky6Rv/816TnbKMyPZfariJoAXgkJyHCGWLh6Ik51jzA=;
+        s=korg; t=1626071654;
+        bh=EywfHatNm1SZCrBd4brLnFKJ2Kt742Eq5XgSccTvliA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zYXsbTASLDAlPoOD2R252Hbxn7KbXlGuhjd0UOtd2UhXlHflRAzFz3saYkUM6wIFl
-         m/UA73/ivhnaEAEJSPcYLBJwFugqWEt20rSq4Z/W6qIPx8/fAgZRPX5pHYYEgeXB1y
-         4f0RMttbYuD5Ci1XHKMQyVpW4/k3XTXhkxq5kTfc=
+        b=gt2GWvNgIXfnkJEoz3WaTu9zZtGt6+fsokBrUK5Fl/Np0yeCOEfQIbmTSGEC6zsa0
+         5svvRHZ3CAVDsWQZm7NcWrkIG2UwTTr41NFGMBjhZmvY6ci/vjzjvap9uLsfRkBMDJ
+         834bDdcRRymxw3uOJM4DKUzPH2t/t2s0MZlSboyw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Steve French <stfrench@microsoft.com>,
+        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Huth <thuth@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 240/700] cifs: fix missing spinlock around update to ses->status
+Subject: [PATCH 5.10 163/593] KVM: s390: get rid of register asm usage
 Date:   Mon, 12 Jul 2021 08:05:23 +0200
-Message-Id: <20210712061000.881215515@linuxfoundation.org>
+Message-Id: <20210712060900.983079764@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,61 +43,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steve French <stfrench@microsoft.com>
+From: Heiko Carstens <hca@linux.ibm.com>
 
-[ Upstream commit 0060a4f28a9ef45ae8163c0805e944a2b1546762 ]
+[ Upstream commit 4fa3b91bdee1b08348c82660668ca0ca34e271ad ]
 
-In the other places where we update ses->status we protect the
-updates via GlobalMid_Lock. So to be consistent add the same
-locking around it in cifs_put_smb_ses where it was missing.
+Using register asm statements has been proven to be very error prone,
+especially when using code instrumentation where gcc may add function
+calls, which clobbers register contents in an unexpected way.
 
-Addresses-Coverity: 1268904 ("Data race condition")
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Therefore get rid of register asm statements in kvm code, even though
+there is currently nothing wrong with them. This way we know for sure
+that this bug class won't be introduced here.
+
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Reviewed-by: Thomas Huth <thuth@redhat.com>
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Link: https://lore.kernel.org/r/20210621140356.1210771-1-hca@linux.ibm.com
+[borntraeger@de.ibm.com: checkpatch strict fix]
+Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/cifsglob.h | 3 ++-
- fs/cifs/connect.c  | 5 ++++-
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ arch/s390/kvm/kvm-s390.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/fs/cifs/cifsglob.h b/fs/cifs/cifsglob.h
-index ec824ab8c5ca..723b97002d8d 100644
---- a/fs/cifs/cifsglob.h
-+++ b/fs/cifs/cifsglob.h
-@@ -896,7 +896,7 @@ struct cifs_ses {
- 	struct mutex session_mutex;
- 	struct TCP_Server_Info *server;	/* pointer to server info */
- 	int ses_count;		/* reference counter */
--	enum statusEnum status;
-+	enum statusEnum status;  /* updates protected by GlobalMid_Lock */
- 	unsigned overrideSecFlg;  /* if non-zero override global sec flags */
- 	char *serverOS;		/* name of operating system underlying server */
- 	char *serverNOS;	/* name of network operating system of server */
-@@ -1783,6 +1783,7 @@ require use of the stronger protocol */
-  *	list operations on pending_mid_q and oplockQ
-  *      updates to XID counters, multiplex id  and SMB sequence numbers
-  *      list operations on global DnotifyReqList
-+ *      updates to ses->status
-  *  tcp_ses_lock protects:
-  *	list operations on tcp and SMB session lists
-  *  tcon->open_file_lock protects the list of open files hanging off the tcon
-diff --git a/fs/cifs/connect.c b/fs/cifs/connect.c
-index 3d62d52d730b..09a3939f25bf 100644
---- a/fs/cifs/connect.c
-+++ b/fs/cifs/connect.c
-@@ -1639,9 +1639,12 @@ void cifs_put_smb_ses(struct cifs_ses *ses)
- 		spin_unlock(&cifs_tcp_ses_lock);
- 		return;
- 	}
-+	spin_unlock(&cifs_tcp_ses_lock);
-+
-+	spin_lock(&GlobalMid_Lock);
- 	if (ses->status == CifsGood)
- 		ses->status = CifsExiting;
--	spin_unlock(&cifs_tcp_ses_lock);
-+	spin_unlock(&GlobalMid_Lock);
+diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+index 20afffd6b982..f94b4f78d4da 100644
+--- a/arch/s390/kvm/kvm-s390.c
++++ b/arch/s390/kvm/kvm-s390.c
+@@ -327,31 +327,31 @@ static void allow_cpu_feat(unsigned long nr)
  
- 	cifs_free_ipc(ses);
+ static inline int plo_test_bit(unsigned char nr)
+ {
+-	register unsigned long r0 asm("0") = (unsigned long) nr | 0x100;
++	unsigned long function = (unsigned long)nr | 0x100;
+ 	int cc;
  
+ 	asm volatile(
++		"	lgr	0,%[function]\n"
+ 		/* Parameter registers are ignored for "test bit" */
+ 		"	plo	0,0,0,0(0)\n"
+ 		"	ipm	%0\n"
+ 		"	srl	%0,28\n"
+ 		: "=d" (cc)
+-		: "d" (r0)
+-		: "cc");
++		: [function] "d" (function)
++		: "cc", "0");
+ 	return cc == 0;
+ }
+ 
+ static __always_inline void __insn32_query(unsigned int opcode, u8 *query)
+ {
+-	register unsigned long r0 asm("0") = 0;	/* query function */
+-	register unsigned long r1 asm("1") = (unsigned long) query;
+-
+ 	asm volatile(
+-		/* Parameter regs are ignored */
++		"	lghi	0,0\n"
++		"	lgr	1,%[query]\n"
++		/* Parameter registers are ignored */
+ 		"	.insn	rrf,%[opc] << 16,2,4,6,0\n"
+ 		:
+-		: "d" (r0), "a" (r1), [opc] "i" (opcode)
+-		: "cc", "memory");
++		: [query] "d" ((unsigned long)query), [opc] "i" (opcode)
++		: "cc", "memory", "0", "1");
+ }
+ 
+ #define INSN_SORTL 0xb938
 -- 
 2.30.2
 
