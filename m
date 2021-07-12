@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 412D63C4E59
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8CC03C58CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241767AbhGLHSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:18:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49726 "EHLO mail.kernel.org"
+        id S1381303AbhGLIw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 04:52:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239645AbhGLGt4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:49:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C4B0260241;
-        Mon, 12 Jul 2021 06:47:07 +0000 (UTC)
+        id S1352582AbhGLH7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:59:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C7CB61941;
+        Mon, 12 Jul 2021 07:53:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626072428;
-        bh=1MIAf3d4QGmYMvT3UMfZo+tSyjLWakCaiTgLJlb/o8M=;
+        s=korg; t=1626076407;
+        bh=Ktf0grcfzbxyC5USj04FzTLhNlEuNC8SKhMXtbgkEEs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DHm3w1xGTdZgx0xgn9Hr0JJiD2Ni14QWK/mwrK/Vh4+RFMkSUuYMxR3HJCgvlO0+X
-         b8zHBzg8hQoUVHsTQLwylwP+LknIwWjgsr2OQKOTfTbjxovJ4XOrfekGxEsjyapuZj
-         By/3L3D3qyyMkxM6jC71FzYkNFLdNdFZ/y0a1cLI=
+        b=wjc1Ma2OVabSlhTCeHEhg1/E90BC6tszL49TfwsnbiZ1cvFMhuRf56E5TyyZb/6Nw
+         RWqNMCpj4IBohLhdLmNyEPgfRH/Qr/n/3RG/gb6T8Pkxqra6guCRJLn/kh3v6kkWqA
+         zXmwPPmXhKeXStrXGpnZE5nvFvUR8pHFpXENsVUM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joachim Fenkes <fenkes@de.ibm.com>,
-        Joel Stanley <joel@jms.id.au>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 493/593] fsi/sbefifo: Fix reset timeout
+        stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 630/800] iio: magn: hmc5843: Fix buffer alignment in iio_push_to_buffers_with_timestamp()
 Date:   Mon, 12 Jul 2021 08:10:53 +0200
-Message-Id: <20210712060945.553155416@linuxfoundation.org>
+Message-Id: <20210712061034.219022879@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
+References: <20210712060912.995381202@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,58 +41,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joachim Fenkes <FENKES@de.ibm.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit 9ab1428dfe2c66b51e0b41337cd0164da0ab6080 ]
+[ Upstream commit 1ef2f51e9fe424ccecca5bb0373d71b900c2cd41 ]
 
-On BMCs with lower timer resolution than 1ms, msleep(1) will take
-way longer than 1ms, so looping 10k times won't wait for 10s but
-significantly longer.
+To make code more readable, use a structure to express the channel
+layout and ensure the timestamp is 8 byte aligned.
 
-Fix this by using jiffies like the rest of the code.
+Found during an audit of all calls of uses of
+iio_push_to_buffers_with_timestamp()
 
-Fixes: 9f4a8a2d7f9d ("fsi/sbefifo: Add driver for the SBE FIFO")
-Signed-off-by: Joachim Fenkes <fenkes@de.ibm.com>
-Link: https://lore.kernel.org/r/20200724071518.430515-3-joel@jms.id.au
-Signed-off-by: Joel Stanley <joel@jms.id.au>
+Fixes: 7247645f6865 ("iio: hmc5843: Move hmc5843 out of staging")
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Link: https://lore.kernel.org/r/20210501170121.512209-16-jic23@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/fsi/fsi-sbefifo.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/iio/magnetometer/hmc5843.h      | 8 ++++++--
+ drivers/iio/magnetometer/hmc5843_core.c | 4 ++--
+ 2 files changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/fsi/fsi-sbefifo.c b/drivers/fsi/fsi-sbefifo.c
-index de27c435d706..84cb965bfed5 100644
---- a/drivers/fsi/fsi-sbefifo.c
-+++ b/drivers/fsi/fsi-sbefifo.c
-@@ -325,7 +325,8 @@ static int sbefifo_up_write(struct sbefifo *sbefifo, __be32 word)
- static int sbefifo_request_reset(struct sbefifo *sbefifo)
- {
- 	struct device *dev = &sbefifo->fsi_dev->dev;
--	u32 status, timeout;
-+	unsigned long end_time;
-+	u32 status;
- 	int rc;
+diff --git a/drivers/iio/magnetometer/hmc5843.h b/drivers/iio/magnetometer/hmc5843.h
+index 3f6c0b662941..242f742f2643 100644
+--- a/drivers/iio/magnetometer/hmc5843.h
++++ b/drivers/iio/magnetometer/hmc5843.h
+@@ -33,7 +33,8 @@ enum hmc5843_ids {
+  * @lock:		update and read regmap data
+  * @regmap:		hardware access register maps
+  * @variant:		describe chip variants
+- * @buffer:		3x 16-bit channels + padding + 64-bit timestamp
++ * @scan:		buffer to pack data for passing to
++ *			iio_push_to_buffers_with_timestamp()
+  */
+ struct hmc5843_data {
+ 	struct device *dev;
+@@ -41,7 +42,10 @@ struct hmc5843_data {
+ 	struct regmap *regmap;
+ 	const struct hmc5843_chip_info *variant;
+ 	struct iio_mount_matrix orientation;
+-	__be16 buffer[8];
++	struct {
++		__be16 chans[3];
++		s64 timestamp __aligned(8);
++	} scan;
+ };
  
- 	dev_dbg(dev, "Requesting FIFO reset\n");
-@@ -341,7 +342,8 @@ static int sbefifo_request_reset(struct sbefifo *sbefifo)
+ int hmc5843_common_probe(struct device *dev, struct regmap *regmap,
+diff --git a/drivers/iio/magnetometer/hmc5843_core.c b/drivers/iio/magnetometer/hmc5843_core.c
+index 780faea61d82..221563e0c18f 100644
+--- a/drivers/iio/magnetometer/hmc5843_core.c
++++ b/drivers/iio/magnetometer/hmc5843_core.c
+@@ -446,13 +446,13 @@ static irqreturn_t hmc5843_trigger_handler(int irq, void *p)
  	}
  
- 	/* Wait for it to complete */
--	for (timeout = 0; timeout < SBEFIFO_RESET_TIMEOUT; timeout++) {
-+	end_time = jiffies + msecs_to_jiffies(SBEFIFO_RESET_TIMEOUT);
-+	while (!time_after(jiffies, end_time)) {
- 		rc = sbefifo_regr(sbefifo, SBEFIFO_UP | SBEFIFO_STS, &status);
- 		if (rc) {
- 			dev_err(dev, "Failed to read UP fifo status during reset"
-@@ -355,7 +357,7 @@ static int sbefifo_request_reset(struct sbefifo *sbefifo)
- 			return 0;
- 		}
+ 	ret = regmap_bulk_read(data->regmap, HMC5843_DATA_OUT_MSB_REGS,
+-			       data->buffer, 3 * sizeof(__be16));
++			       data->scan.chans, sizeof(data->scan.chans));
  
--		msleep(1);
-+		cond_resched();
- 	}
- 	dev_err(dev, "FIFO reset timed out\n");
+ 	mutex_unlock(&data->lock);
+ 	if (ret < 0)
+ 		goto done;
  
+-	iio_push_to_buffers_with_timestamp(indio_dev, data->buffer,
++	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
+ 					   iio_get_time_ns(indio_dev));
+ 
+ done:
 -- 
 2.30.2
 
