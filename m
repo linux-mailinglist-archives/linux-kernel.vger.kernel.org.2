@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B96A93C49DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE843C5072
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:46:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238309AbhGLGrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 02:47:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55076 "EHLO mail.kernel.org"
+        id S241600AbhGLHcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:32:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234139AbhGLGgV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 02:36:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CCD060551;
-        Mon, 12 Jul 2021 06:33:03 +0000 (UTC)
+        id S243837AbhGLHFT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:05:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2845261152;
+        Mon, 12 Jul 2021 07:02:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626071584;
-        bh=kzLbysrn0WTVXqGNPCytiyLqvBomL/QjZ69Hv/nPQ3Y=;
+        s=korg; t=1626073351;
+        bh=+7mU4Z0yAsxln+wq4nJ1jQzGwlMOiI8KrVghTM5I2dg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fFOev0J2jvk2eJ9G2fYXfpQHsuvsoywy423/I1Tj51q5F+Wcll0LhFyHV/fJKDLUP
-         kg1ig+a4Y7beYPFN7vT1V7yZpxt1v6PX1rtt3ry7ldsnNVnFrv8EOuMqWGn0QCuIVQ
-         GmwH/yYcJ6r0fhcA0BH5ebh8ohLEFBpvpTEj0Los=
+        b=GYrjHKAaAH3Lj5FVS8avD7fJ87PoWMizQyQCq1zp+cp1IxUUD8+MNP9PGNkPiqyb1
+         k3u8BPL3RFe+pHeNUPUnvZ2Pl3O337V9j6f7VQoMebNqkdS7ETnLBaVEzWQ8avqKWW
+         i+y98Vi1vYYWbiDxGAjHz6FEkHqU1Ti6UdXPVV6A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dillon Min <dillon.minfei@gmail.com>,
-        Lad Prabhakar <prabhakar.csengg@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
+        David Teigland <teigland@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 132/593] media: i2c: ov2659: Use clk_{prepare_enable,disable_unprepare}() to set xvclk on/off
-Date:   Mon, 12 Jul 2021 08:04:52 +0200
-Message-Id: <20210712060857.643925020@linuxfoundation.org>
+Subject: [PATCH 5.12 210/700] fs: dlm: cancel work sync othercon
+Date:   Mon, 12 Jul 2021 08:04:53 +0200
+Message-Id: <20210712060956.559252972@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
-References: <20210712060843.180606720@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,103 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dillon Min <dillon.minfei@gmail.com>
+From: Alexander Aring <aahringo@redhat.com>
 
-[ Upstream commit 24786ccd9c80fdb05494aa4d90fcb8f34295c193 ]
+[ Upstream commit c6aa00e3d20c2767ba3f57b64eb862572b9744b3 ]
 
-On some platform(imx6q), xvclk might not switch on in advance,
-also for power save purpose, xvclk should not be always on.
-so, add clk_prepare_enable(), clk_disable_unprepare() in driver
-side to set xvclk on/off at proper stage.
+These rx tx flags arguments are for signaling close_connection() from
+which worker they are called. Obviously the receive worker cannot cancel
+itself and vice versa for swork. For the othercon the receive worker
+should only be used, however to avoid deadlocks we should pass the same
+flags as the original close_connection() was called.
 
-Add following changes:
-- add 'struct clk *clk;' in 'struct ov2659 {}'
-- enable xvclk in ov2659_power_on()
-- disable xvclk in ov2659_power_off()
-
-Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
-Acked-by: Lad Prabhakar <prabhakar.csengg@gmail.com>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Alexander Aring <aahringo@redhat.com>
+Signed-off-by: David Teigland <teigland@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/ov2659.c | 24 ++++++++++++++++++------
- 1 file changed, 18 insertions(+), 6 deletions(-)
+ fs/dlm/lowcomms.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/i2c/ov2659.c b/drivers/media/i2c/ov2659.c
-index 42f64175a6df..fb78a1cedc03 100644
---- a/drivers/media/i2c/ov2659.c
-+++ b/drivers/media/i2c/ov2659.c
-@@ -204,6 +204,7 @@ struct ov2659 {
- 	struct i2c_client *client;
- 	struct v4l2_ctrl_handler ctrls;
- 	struct v4l2_ctrl *link_frequency;
-+	struct clk *clk;
- 	const struct ov2659_framesize *frame_size;
- 	struct sensor_register *format_ctrl_regs;
- 	struct ov2659_pll_ctrl pll;
-@@ -1270,6 +1271,8 @@ static int ov2659_power_off(struct device *dev)
+diff --git a/fs/dlm/lowcomms.c b/fs/dlm/lowcomms.c
+index 01b672cee783..7e6736c70e11 100644
+--- a/fs/dlm/lowcomms.c
++++ b/fs/dlm/lowcomms.c
+@@ -714,7 +714,7 @@ static void close_connection(struct connection *con, bool and_other,
  
- 	gpiod_set_value(ov2659->pwdn_gpio, 1);
+ 	if (con->othercon && and_other) {
+ 		/* Will only re-enter once. */
+-		close_connection(con->othercon, false, true, true);
++		close_connection(con->othercon, false, tx, rx);
+ 	}
  
-+	clk_disable_unprepare(ov2659->clk);
-+
- 	return 0;
- }
- 
-@@ -1278,9 +1281,17 @@ static int ov2659_power_on(struct device *dev)
- 	struct i2c_client *client = to_i2c_client(dev);
- 	struct v4l2_subdev *sd = i2c_get_clientdata(client);
- 	struct ov2659 *ov2659 = to_ov2659(sd);
-+	int ret;
- 
- 	dev_dbg(&client->dev, "%s:\n", __func__);
- 
-+	ret = clk_prepare_enable(ov2659->clk);
-+	if (ret) {
-+		dev_err(&client->dev, "%s: failed to enable clock\n",
-+			__func__);
-+		return ret;
-+	}
-+
- 	gpiod_set_value(ov2659->pwdn_gpio, 0);
- 
- 	if (ov2659->resetb_gpio) {
-@@ -1425,7 +1436,6 @@ static int ov2659_probe(struct i2c_client *client)
- 	const struct ov2659_platform_data *pdata = ov2659_get_pdata(client);
- 	struct v4l2_subdev *sd;
- 	struct ov2659 *ov2659;
--	struct clk *clk;
- 	int ret;
- 
- 	if (!pdata) {
-@@ -1440,11 +1450,11 @@ static int ov2659_probe(struct i2c_client *client)
- 	ov2659->pdata = pdata;
- 	ov2659->client = client;
- 
--	clk = devm_clk_get(&client->dev, "xvclk");
--	if (IS_ERR(clk))
--		return PTR_ERR(clk);
-+	ov2659->clk = devm_clk_get(&client->dev, "xvclk");
-+	if (IS_ERR(ov2659->clk))
-+		return PTR_ERR(ov2659->clk);
- 
--	ov2659->xvclk_frequency = clk_get_rate(clk);
-+	ov2659->xvclk_frequency = clk_get_rate(ov2659->clk);
- 	if (ov2659->xvclk_frequency < 6000000 ||
- 	    ov2659->xvclk_frequency > 27000000)
- 		return -EINVAL;
-@@ -1506,7 +1516,9 @@ static int ov2659_probe(struct i2c_client *client)
- 	ov2659->frame_size = &ov2659_framesizes[2];
- 	ov2659->format_ctrl_regs = ov2659_formats[0].format_ctrl_regs;
- 
--	ov2659_power_on(&client->dev);
-+	ret = ov2659_power_on(&client->dev);
-+	if (ret < 0)
-+		goto error;
- 
- 	ret = ov2659_detect(sd);
- 	if (ret < 0)
+ 	con->rx_leftover = 0;
 -- 
 2.30.2
 
