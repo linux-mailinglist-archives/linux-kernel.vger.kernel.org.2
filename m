@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 652323C56BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B293E3C4964
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347719AbhGLIYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:24:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46250 "EHLO mail.kernel.org"
+        id S238971AbhGLGoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:44:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347738AbhGLHkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:40:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BD6A6192A;
-        Mon, 12 Jul 2021 07:36:02 +0000 (UTC)
+        id S233634AbhGLGds (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:33:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 119876101E;
+        Mon, 12 Jul 2021 06:30:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075363;
-        bh=k4A9U8XSbpXM50WX2bk9eqfV52wvOpVIiCKt8c8gujg=;
+        s=korg; t=1626071408;
+        bh=H7K8QcNfcYG76IHBiBB1NtHUrfWLWgRNm3vfLuoBcwA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NALcIy05FTbpyOaP353b1ZOjC1QlYzqrIQJD9aOApWYddKNqrqGVROV5En+FqY29o
-         rW6D6wMxC5/15PnXOPUlmgrwGx0zkW9l9suuo2gtXLSZNSVCYGR4aU2CED34/go+Hz
-         AtHD2Xh6Me4bKEl4BCDqYE+x69wQlyK5rm0ER3S4=
+        b=M2l6lchDdPp0QouJj9gHLilXnOa2FKZWz8TUSIFj127GtankdL/X9iaFubk0edyES
+         PT9r9wtXfVWGBlrcoRYIA8jyv+oTGCfz1TkqL+vFSwG2NAVQTARMa8nL/AJiOS/GUn
+         Vhlwf4W60ckXyUKijzn/lfNu5soV96d6ppZvHwZE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jinank Jain <jinankj@amazon.de>,
-        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 193/800] KVM: arm64: Restore PMU configuration on first run
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhang Xiaoxu <zhangxiaoxu5@huawei.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Subject: [PATCH 5.10 056/593] SUNRPC: Fix the batch tasks count wraparound.
 Date:   Mon, 12 Jul 2021 08:03:36 +0200
-Message-Id: <20210712060940.201599492@linuxfoundation.org>
+Message-Id: <20210712060849.267058422@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,74 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
 
-[ Upstream commit d0c94c49792cf780cbfefe29f81bb8c3b73bc76b ]
+commit fcb170a9d825d7db4a3fb870b0300f5a40a8d096 upstream.
 
-Restoring a guest with an active virtual PMU results in no perf
-counters being instanciated on the host side. Not quite what
-you'd expect from a restore.
+The 'queue->nr' will wraparound from 0 to 255 when only current
+priority queue has tasks. This maybe lead a deadlock same as commit
+dfe1fe75e00e ("NFSv4: Fix deadlock between nfs4_evict_inode()
+and nfs4_opendata_get_inode()"):
 
-In order to fix this, force a writeback of PMCR_EL0 on the first
-run of a vcpu (using a new request so that it happens once the
-vcpu has been loaded). This will in turn create all the host-side
-counters that were missing.
+Privileged delegreturn task is queued to privileged list because all
+the slots are assigned. When non-privileged task complete and release
+the slot, a non-privileged maybe picked out. It maybe allocate slot
+failed when the session on draining.
 
-Reported-by: Jinank Jain <jinankj@amazon.de>
-Tested-by: Jinank Jain <jinankj@amazon.de>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/87wnrbylxv.wl-maz@kernel.org
-Link: https://lore.kernel.org/r/b53dfcf9bbc4db7f96154b1cd5188d72b9766358.camel@amazon.de
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+If the 'queue->nr' has wraparound to 255, and no enough slot to
+service it, then the privileged delegreturn will lost to wake up.
+
+So we should avoid the wraparound on 'queue->nr'.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: 5fcdfacc01f3 ("NFSv4: Return delegations synchronously in evict_inode")
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Cc: stable@vger.kernel.org
+Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/arm64/include/asm/kvm_host.h | 1 +
- arch/arm64/kvm/arm.c              | 4 ++++
- arch/arm64/kvm/pmu-emul.c         | 3 +++
- 3 files changed, 8 insertions(+)
+ net/sunrpc/sched.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-index 7cd7d5c8c4bc..6336b4309114 100644
---- a/arch/arm64/include/asm/kvm_host.h
-+++ b/arch/arm64/include/asm/kvm_host.h
-@@ -46,6 +46,7 @@
- #define KVM_REQ_VCPU_RESET	KVM_ARCH_REQ(2)
- #define KVM_REQ_RECORD_STEAL	KVM_ARCH_REQ(3)
- #define KVM_REQ_RELOAD_GICv4	KVM_ARCH_REQ(4)
-+#define KVM_REQ_RELOAD_PMU	KVM_ARCH_REQ(5)
- 
- #define KVM_DIRTY_LOG_MANUAL_CAPS   (KVM_DIRTY_LOG_MANUAL_PROTECT_ENABLE | \
- 				     KVM_DIRTY_LOG_INITIALLY_SET)
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index e720148232a0..facf4d41d32a 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -689,6 +689,10 @@ static void check_vcpu_requests(struct kvm_vcpu *vcpu)
- 			vgic_v4_load(vcpu);
- 			preempt_enable();
- 		}
-+
-+		if (kvm_check_request(KVM_REQ_RELOAD_PMU, vcpu))
-+			kvm_pmu_handle_pmcr(vcpu,
-+					    __vcpu_sys_reg(vcpu, PMCR_EL0));
+--- a/net/sunrpc/sched.c
++++ b/net/sunrpc/sched.c
+@@ -595,7 +595,8 @@ static struct rpc_task *__rpc_find_next_
+ 	 * Service a batch of tasks from a single owner.
+ 	 */
+ 	q = &queue->tasks[queue->priority];
+-	if (!list_empty(q) && --queue->nr) {
++	if (!list_empty(q) && queue->nr) {
++		queue->nr--;
+ 		task = list_first_entry(q, struct rpc_task, u.tk_wait.list);
+ 		goto out;
  	}
- }
- 
-diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
-index fd167d4f4215..a0bbb7111f57 100644
---- a/arch/arm64/kvm/pmu-emul.c
-+++ b/arch/arm64/kvm/pmu-emul.c
-@@ -850,6 +850,9 @@ int kvm_arm_pmu_v3_enable(struct kvm_vcpu *vcpu)
- 		   return -EINVAL;
- 	}
- 
-+	/* One-off reload of the PMU on first run */
-+	kvm_make_request(KVM_REQ_RELOAD_PMU, vcpu);
-+
- 	return 0;
- }
- 
--- 
-2.30.2
-
 
 
