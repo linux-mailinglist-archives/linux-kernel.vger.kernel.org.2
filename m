@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07D103C5029
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0542A3C49A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347034AbhGLHb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 03:31:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40152 "EHLO mail.kernel.org"
+        id S236656AbhGLGqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 02:46:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243135AbhGLHEf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:04:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B1CC61179;
-        Mon, 12 Jul 2021 07:01:47 +0000 (UTC)
+        id S236695AbhGLGf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:35:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4056611F1;
+        Mon, 12 Jul 2021 06:32:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626073307;
-        bh=rrd+/5m+XlZ0KDdlO/QC2mj8cTFCxMABq/dve2gKSus=;
+        s=korg; t=1626071550;
+        bh=f1Sjv0zlq9PsPdKWVEVw8yrJjikq6t9Q1LmNaHFmjHo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jtwKZRJJvG4WntJzlwTwz3ohToOhuUyzVlN+5TgatGXrtXcPIqAFo3LJfLeEhIrpy
-         Ypwl/PnYJo4Tey2Fu2IGyvEb+tjPOdPI+4tvgghnzKyug0e0PvADGuT01grTtsLN1u
-         V6+oRAjBNjOLdeBa0mH4QzZyYSA4yBFxnJwc7HnE=
+        b=hrhgNEn5xwI8sG74xiuaavNJFx5eRgfc8yZAqEfagS9kasMOBjTpNFUaCgUDHa8gB
+         AVbw3w7YV4MrXhNLbpN0MNkDl16NaTQiM5LTT9RmaW03I/k5AzvMFO6VA1cUrOhKva
+         6QqiE/k+71gTKJMQ7tCBg32TJe/vELWYsyczr7BI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 196/700] HID: do not use down_interruptible() when unbinding devices
+        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 119/593] hwrng: exynos - Fix runtime PM imbalance on error
 Date:   Mon, 12 Jul 2021 08:04:39 +0200
-Message-Id: <20210712060954.576261950@linuxfoundation.org>
+Message-Id: <20210712060856.263898501@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
-References: <20210712060924.797321836@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +42,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+From: Łukasz Stelmach <l.stelmach@samsung.com>
 
-[ Upstream commit f2145f8dc566c4f3b5a8deb58dcd12bed4e20194 ]
+[ Upstream commit 0cdbabf8bb7a6147f5adf37dbc251e92a1bbc2c7 ]
 
-Action of unbinding driver from a device is not cancellable and should not
-fail, and driver core does not pay attention to the result of "remove"
-method, therefore using down_interruptible() in hid_device_remove() does
-not make sense.
+pm_runtime_resume_and_get() wraps around pm_runtime_get_sync() and
+decrements the runtime PM usage counter in case the latter function
+fails and keeps the counter balanced.
 
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-core.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ drivers/char/hw_random/exynos-trng.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
-index 0f69f35f2957..5550c943f985 100644
---- a/drivers/hid/hid-core.c
-+++ b/drivers/hid/hid-core.c
-@@ -2306,12 +2306,8 @@ static int hid_device_remove(struct device *dev)
- {
- 	struct hid_device *hdev = to_hid_device(dev);
- 	struct hid_driver *hdrv;
--	int ret = 0;
+diff --git a/drivers/char/hw_random/exynos-trng.c b/drivers/char/hw_random/exynos-trng.c
+index 8e1fe3f8dd2d..c8db62bc5ff7 100644
+--- a/drivers/char/hw_random/exynos-trng.c
++++ b/drivers/char/hw_random/exynos-trng.c
+@@ -132,7 +132,7 @@ static int exynos_trng_probe(struct platform_device *pdev)
+ 		return PTR_ERR(trng->mem);
  
--	if (down_interruptible(&hdev->driver_input_lock)) {
--		ret = -EINTR;
--		goto end;
--	}
-+	down(&hdev->driver_input_lock);
- 	hdev->io_started = false;
+ 	pm_runtime_enable(&pdev->dev);
+-	ret = pm_runtime_get_sync(&pdev->dev);
++	ret = pm_runtime_resume_and_get(&pdev->dev);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "Could not get runtime PM.\n");
+ 		goto err_pm_get;
+@@ -165,7 +165,7 @@ err_register:
+ 	clk_disable_unprepare(trng->clk);
  
- 	hdrv = hdev->driver;
-@@ -2326,8 +2322,8 @@ static int hid_device_remove(struct device *dev)
+ err_clock:
+-	pm_runtime_put_sync(&pdev->dev);
++	pm_runtime_put_noidle(&pdev->dev);
  
- 	if (!hdev->io_started)
- 		up(&hdev->driver_input_lock);
--end:
--	return ret;
-+
-+	return 0;
- }
- 
- static ssize_t modalias_show(struct device *dev, struct device_attribute *a,
+ err_pm_get:
+ 	pm_runtime_disable(&pdev->dev);
 -- 
 2.30.2
 
