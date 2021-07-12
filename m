@@ -2,99 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48BE73C622D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:47:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63DD13C6233
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235790AbhGLRuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 13:50:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232979AbhGLRuM (ORCPT
+        id S235792AbhGLRu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 13:50:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40984 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235691AbhGLRu4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 13:50:12 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02D0CC0613DD;
-        Mon, 12 Jul 2021 10:47:23 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id w127so25428105oig.12;
-        Mon, 12 Jul 2021 10:47:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kEpFrpKP/UisosbyMZgD/6vFLvp/fZ7o1cKY0y9m4dI=;
-        b=pO3WQoj7aKiS/Yadr6bdJNC2OUf/ridqvY9WwECL+qZvWSyGcmZwF9at3k9j8y3h1t
-         2YWAJQ1M+f67ov1LOmwN/FHmzDnui+4r/hbaxX0jKNSKgxh6oNRmuyLIlVjhbjv1+CCv
-         df0IMudNBzPGiyOsQPMad8qjjc9x0f5o/a3rlcH3jR+gGOlqpOlKA61dDRkT30n5bsi5
-         RjjFEqrfkbvr76npVDh267bTxwD12tDWJkCHtIr5sgTCXssSG6IwEshxDcZEIyHRjrUU
-         uOhy1zN5z6tx2aA0KbfGRTJyRasUHR3qisU0mSesRasCys4pOUQlr/7cDKgGpqcPzXT1
-         e1WQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kEpFrpKP/UisosbyMZgD/6vFLvp/fZ7o1cKY0y9m4dI=;
-        b=S5nADQgXpRcadqfSladCtnBIjKSgKpCmRh4bOyeu1tVvhOjnIpVFggrOQoQV0MAXPd
-         CtFwME85ShihjOy3gfVkWJohklYojwZmsy0oveO9Z6c5L1devOEyeNEw7dhf+AporuAr
-         a/o9hN7RDV1uHRQGZtdQTOS3BE1fiPc4VJrf0nxBczu2Y33SPDzCOqEfSctY4rRrMNA1
-         A9B246KhocB34bohlDTeDqUavzpi4LoYiKI77JAWEOWsxHd/8YyWkOyGwEReYa0Yw38o
-         S5rSHwEfzaFLISjV7JYk83ui7GYz6XbyOSnjCG9psA2yztkp5iIIWimnLbJyrWLlz89Z
-         qPeQ==
-X-Gm-Message-State: AOAM532mzAhU00gs2BlmjT4H/uBnthffZJ9X3AdhFsv1QjN7OPN4KCiC
-        HElS0aac4WNvbXrpvxX0OU+dIqz7L4Y=
-X-Google-Smtp-Source: ABdhPJyOUZJWIBpuklFrhKl3z1nEBuE+p1vLxbeO+9fCmic+bF/KGnS6NNZtsXE0AUy5MR1AMXxx2w==
-X-Received: by 2002:a05:6808:2115:: with SMTP id r21mr11470453oiw.10.1626112042116;
-        Mon, 12 Jul 2021 10:47:22 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d3sm1906001otl.16.2021.07.12.10.47.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Jul 2021 10:47:21 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 5.13 000/800] 5.13.2-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-References: <20210712060912.995381202@linuxfoundation.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <9297ae2e-b7e7-3b11-28a5-4c7ab1db6a58@roeck-us.net>
-Date:   Mon, 12 Jul 2021 10:47:19 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 12 Jul 2021 13:50:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626112087;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vzg52++mO7FuBFg2G1M3tirnaHAcbmfTDOZeC6Dij6Q=;
+        b=fRlhhbaRYOzSfmO8OaB7bZRu2DsJxTrlTSxQb9GcyF58rnEdbSh51HaJ/t4HKDGfhEztq1
+        13T3LSYrsA5vWR/GaZN/McbkbDlZralZOuEHWcrHRYEW0n9QfxzO3L6rjpu9k+oU7L2J/u
+        6HE1YCC7ahwAS/oMCzuvdQ/jYDEC/2A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-126-SlEkTX5nMjasrgf2EMAxUw-1; Mon, 12 Jul 2021 13:48:05 -0400
+X-MC-Unique: SlEkTX5nMjasrgf2EMAxUw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 15B72800D62;
+        Mon, 12 Jul 2021 17:48:04 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-114-176.rdu2.redhat.com [10.10.114.176])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E04AF60CCC;
+        Mon, 12 Jul 2021 17:47:59 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 6A74722054F; Mon, 12 Jul 2021 13:47:59 -0400 (EDT)
+Date:   Mon, 12 Jul 2021 13:47:59 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     "J. Bruce Fields" <bfields@fieldses.org>
+Cc:     Bruce Fields <bfields@redhat.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, virtio-fs@redhat.com, dwalsh@redhat.com,
+        dgilbert@redhat.com, casey.schaufler@intel.com,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        tytso@mit.edu, miklos@szeredi.hu, gscrivan@redhat.com,
+        jack@suse.cz, Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH v2 1/1] xattr: Allow user.* xattr on symlink and special
+ files
+Message-ID: <20210712174759.GA502004@redhat.com>
+References: <20210708175738.360757-1-vgoyal@redhat.com>
+ <20210708175738.360757-2-vgoyal@redhat.com>
+ <20210709091915.2bd4snyfjndexw2b@wittgenstein>
+ <20210709152737.GA398382@redhat.com>
+ <710d1c6f-d477-384f-0cc1-8914258f1fb1@schaufler-ca.com>
+ <20210709175947.GB398382@redhat.com>
+ <CAPL3RVGKg4G5qiiHo7KYPcsWWgeoW=qNPOSQpd3Sv329jrWrLQ@mail.gmail.com>
+ <20210712140247.GA486376@redhat.com>
+ <20210712154106.GB18679@fieldses.org>
 MIME-Version: 1.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210712154106.GB18679@fieldses.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/11/21 11:00 PM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.13.2 release.
-> There are 800 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, Jul 12, 2021 at 11:41:06AM -0400, J. Bruce Fields wrote:
+> On Mon, Jul 12, 2021 at 10:02:47AM -0400, Vivek Goyal wrote:
+> > On Fri, Jul 09, 2021 at 04:10:16PM -0400, Bruce Fields wrote:
+> > > On Fri, Jul 9, 2021 at 1:59 PM Vivek Goyal <vgoyal@redhat.com> wrote:
+> > > > nfs seems to have some issues.
+> > > 
+> > > I'm not sure what the expected behavior is for nfs.  All I have for
+> > > now is some generic troubleshooting ideas, sorry:
+> > > 
+> > > > - I can set user.foo xattr on symlink and query it back using xattr name.
+> > > >
+> > > >   getfattr -h -n user.foo foo-link.txt
+> > > >
+> > > >   But when I try to dump all xattrs on this file, user.foo is being
+> > > >   filtered out it looks like. Not sure why.
+> > > 
+> > > Logging into the server and seeing what's set there could help confirm
+> > > whether it's the client or server that's at fault.  (Or watching the
+> > > traffic in wireshark; there are GET/SET/LISTXATTR ops that should be
+> > > easy to spot.)
+> > > 
+> > > > - I can't set "user.foo" xattr on a device node on nfs and I get
+> > > >   "Permission denied". I am assuming nfs server is returning this.
+> > > 
+> > > Wireshark should tell you whether it's the server or client doing that.
+> > > 
+> > > The RFC is https://datatracker.ietf.org/doc/html/rfc8276, and I don't
+> > > see any explicit statement about what the server should do in the case
+> > > of symlinks or device nodes, but I do see "Any regular file or
+> > > directory may have a set of extended attributes", so that was clearly
+> > > the assumption.  Also, NFS4ERR_WRONG_TYPE is listed as a possible
+> > > error return for the xattr ops.  But on a quick skim I don't see any
+> > > explicit checks in the nfsd code, so I *think* it's just relying on
+> > > the vfs for any file type checks.
+> > 
+> > Hi Bruce,
+> > 
+> > Thanks for the response. I am just trying to do set a user.foo xattr on
+> > a device node on nfs.
+> > 
+> > setfattr -n "user.foo" -v "bar" /mnt/nfs/test-dev
+> > 
+> > and I get -EACCESS.
+> > 
+> > I put some printk() statements and EACCESS is being returned from here.
+> > 
+> > nfs4_xattr_set_nfs4_user() {
+> >         if (!nfs_access_get_cached(inode, current_cred(), &cache, true)) {
+> >                 if (!(cache.mask & NFS_ACCESS_XAWRITE)) {
+> >                         return -EACCES;
+> >                 }
+> >         }
+> > }
+> > 
+> > Value of cache.mask=0xd at the time of error.
 > 
-> Responses should be made by Wed, 14 Jul 2021 06:02:46 +0000.
-> Anything received after that time might be too late.
+> Looks like 0xd is what the server returns to access on a device node
+> with mode bits rw- for the caller.
+> 
+> Commit c11d7fd1b317 "nfsd: take xattr bits into account for permission
+> checks" added the ACCESS_X* bits for regular files and directories but
+> not others.
+> 
+> But you don't want to determine permission from the mode bits anyway,
+> you want it to depend on the owner,
+
+Thinking more about this part. Current implementation of my patch is
+effectively doing both the checks. It checks that you are owner or
+have CAP_FOWNER in xattr_permission() and then goes on to call
+inode_permission(). And that means file mode bits will also play a
+role. If caller does not have write permission on the file, it will
+be denied setxattr().
+
+If I don't call inode_permission(), and just return 0 right away for
+file owner (for symlinks and special files), then just being owner
+is enough to write user.* xattr. And then even security modules will
+not get a chance to block that operation. IOW, if you are owner of
+a symlink or special file, you can write as many user.* xattr as you
+like and except quota does not look like anything else can block
+it. I am wondering if this approach is ok?
+
+
+
+> so I guess we should be calling
+> xattr_permission somewhere if we want that behavior.
+
+> 
+> The RFC assumes user xattrs are for regular files and directories,
+> without, as far as I can tell, actually explicitly forbidding them on
+> other objects.  We should also raise this with the working group if we
+> want to increase the chances that you'll get the behavior you want on
+> non-Linux servers.
+
+Ok. I am hoping once this patch merges in some form, then I can
+follow it up with relevant working group.
+
+> 
+> The "User extended attributes" section of the xattr(7) man page will
+> need updating.
+
+Agreed. I will take care of that in a separate patch.
+
+Right now, I am not too sure if being owner should be the only check
+and I should skip calling inode_permission() entirely or not.
+
+Thanks
+Vivek
+
+> 
+> --b.
 > 
 
-Build results:
-	total: 154 pass: 152 fail: 2
-Failed builds:
-	riscv32:allmodconfig
-	riscv:allmodconfig
-Qemu test results:
-	total: 462 pass: 462 fail: 0
-
-riscv build failures as before, inherited from mainline.
-
-Error log:
-cc1: error: '5904' is not a valid offset in '-mstack-protector-guard-offset='
-
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-
-Guenter
