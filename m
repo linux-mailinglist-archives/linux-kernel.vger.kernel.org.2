@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E74C3C584B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF6C3C4C81
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231172AbhGLIow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:44:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40446 "EHLO mail.kernel.org"
+        id S243724AbhGLHFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:05:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352040AbhGLHwX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:52:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D3B760200;
-        Mon, 12 Jul 2021 07:49:34 +0000 (UTC)
+        id S234748AbhGLGre (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:47:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 92E0461175;
+        Mon, 12 Jul 2021 06:43:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076174;
-        bh=2CZ+mR2HViOCOJjmAs1NnazTXsmiTyOWxT7u32UOBrI=;
+        s=korg; t=1626072194;
+        bh=vagD6VlWnbi9AAq3p0iwpkxFwoEuXgOZiXFHErDLWPk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PJ3q3DCsSkK0/Scv23zRboBBN2TXKO/G9NQ98831KtqT/Xor6dMmnTOsAohOwJ/Lq
-         SkxqE9feftiLy6TQM5Vl2yb7zK+gQlP54BfdhuSRyfMlVrW/kQ24a6bTWpDq3LZlNJ
-         vWvPpmnYMBvkp4JRu4bQLcsPiRsOLuzGec6MHQME=
+        b=2V+TwUizIGTCqwYSZvri3jsXg1MazhaI8rnDe3xMq2OkHw4gQc0bHWa80NqVP69V6
+         6NX/w44y64jdBctxJXKo+H0klHtEBEIJxHJcoXKLhl2HYsG5p510TD6YgHFFedAQ19
+         SP4udPI2XtkEHoFMXztUeeqi0E0cBy82JNrn2ngQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dongseok Yi <dseok.yi@samsung.com>,
+        Willem de Bruijn <willemb@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 531/800] netfilter: nf_tables: do not allow to delete table with owner by handle
-Date:   Mon, 12 Jul 2021 08:09:14 +0200
-Message-Id: <20210712061023.792533449@linuxfoundation.org>
+Subject: [PATCH 5.10 395/593] bpf: Do not change gso_size during bpf_skb_change_proto()
+Date:   Mon, 12 Jul 2021 08:09:15 +0200
+Message-Id: <20210712060930.893941357@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,58 +43,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Maciej Żenczykowski <maze@google.com>
 
-[ Upstream commit e31f072ffab0397a328b31a9589dcf9733dc9c72 ]
+[ Upstream commit 364745fbe981a4370f50274475da4675661104df ]
 
-nft_table_lookup_byhandle() also needs to validate the netlink PortID
-owner when deleting a table by handle.
+This is technically a backwards incompatible change in behaviour, but I'm
+going to argue that it is very unlikely to break things, and likely to fix
+*far* more then it breaks.
 
-Fixes: 6001a930ce03 ("netfilter: nftables: introduce table ownership")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+In no particular order, various reasons follow:
+
+(a) I've long had a bug assigned to myself to debug a super rare kernel crash
+on Android Pixel phones which can (per stacktrace) be traced back to BPF clat
+IPv6 to IPv4 protocol conversion causing some sort of ugly failure much later
+on during transmit deep in the GSO engine, AFAICT precisely because of this
+change to gso_size, though I've never been able to manually reproduce it. I
+believe it may be related to the particular network offload support of attached
+USB ethernet dongle being used for tethering off of an IPv6-only cellular
+connection. The reason might be we end up with more segments than max permitted,
+or with a GSO packet with only one segment... (either way we break some
+assumption and hit a BUG_ON)
+
+(b) There is no check that the gso_size is > 20 when reducing it by 20, so we
+might end up with a negative (or underflowing) gso_size or a gso_size of 0.
+This can't possibly be good. Indeed this is probably somehow exploitable (or
+at least can result in a kernel crash) by delivering crafted packets and perhaps
+triggering an infinite loop or a divide by zero... As a reminder: gso_size (MSS)
+is related to MTU, but not directly derived from it: gso_size/MSS may be
+significantly smaller then one would get by deriving from local MTU. And on
+some NICs (which do loose MTU checking on receive, it may even potentially be
+larger, for example my work pc with 1500 MTU can receive 1520 byte frames [and
+sometimes does due to bugs in a vendor plat46 implementation]). Indeed even just
+going from 21 to 1 is potentially problematic because it increases the number
+of segments by a factor of 21 (think DoS, or some other crash due to too many
+segments).
+
+(c) It's always safe to not increase the gso_size, because it doesn't result in
+the max packet size increasing.  So the skb_increase_gso_size() call was always
+unnecessary for correctness (and outright undesirable, see later). As such the
+only part which is potentially dangerous (ie. could cause backwards compatibility
+issues) is the removal of the skb_decrease_gso_size() call.
+
+(d) If the packets are ultimately destined to the local device, then there is
+absolutely no benefit to playing around with gso_size. It only matters if the
+packets will egress the device. ie. we're either forwarding, or transmitting
+from the device.
+
+(e) This logic only triggers for packets which are GSO. It does not trigger for
+skbs which are not GSO. It will not convert a non-GSO MTU sized packet into a
+GSO packet (and you don't even know what the MTU is, so you can't even fix it).
+As such your transmit path must *already* be able to handle an MTU 20 bytes
+larger then your receive path (for IPv4 to IPv6 translation) - and indeed 28
+bytes larger due to IPv4 fragments. Thus removing the skb_decrease_gso_size()
+call doesn't actually increase the size of the packets your transmit side must
+be able to handle. ie. to handle non-GSO max-MTU packets, the IPv4/IPv6 device/
+route MTUs must already be set correctly. Since for example with an IPv4 egress
+MTU of 1500, IPv4 to IPv6 translation will already build 1520 byte IPv6 frames,
+so you need a 1520 byte device MTU. This means if your IPv6 device's egress
+MTU is 1280, your IPv4 route must be 1260 (and actually 1252, because of the
+need to handle fragments). This is to handle normal non-GSO packets. Thus the
+reduction is simply not needed for GSO packets, because when they're correctly
+built, they will already be the right size.
+
+(f) TSO/GSO should be able to exactly undo GRO: the number of packets (TCP
+segments) should not be modified, so that TCP's MSS counting works correctly
+(this matters for congestion control). If protocol conversion changes the
+gso_size, then the number of TCP segments may increase or decrease. Packet loss
+after protocol conversion can result in partial loss of MSS segments that the
+sender sent. How's the sending TCP stack going to react to receiving ACKs/SACKs
+in the middle of the segments it sent?
+
+(g) skb_{decrease,increase}_gso_size() are already no-ops for GSO_BY_FRAGS
+case (besides triggering WARN_ON_ONCE). This means you already cannot guarantee
+that gso_size (and thus resulting packet MTU) is changed. ie. you must assume
+it won't be changed.
+
+(h) changing gso_size is outright buggy for UDP GSO packets, where framing
+matters (I believe that's also the case for SCTP, but it's already excluded
+by [g]).  So the only remaining case is TCP, which also doesn't want it
+(see [f]).
+
+(i) see also the reasoning on the previous attempt at fixing this
+(commit fa7b83bf3b156c767f3e4a25bbf3817b08f3ff8e) which shows that the current
+behaviour causes TCP packet loss:
+
+  In the forwarding path GRO -> BPF 6 to 4 -> GSO for TCP traffic, the
+  coalesced packet payload can be > MSS, but < MSS + 20.
+
+  bpf_skb_proto_6_to_4() will upgrade the MSS and it can be > the payload
+  length. After then tcp_gso_segment checks for the payload length if it
+  is <= MSS. The condition is causing the packet to be dropped.
+
+  tcp_gso_segment():
+    [...]
+    mss = skb_shinfo(skb)->gso_size;
+    if (unlikely(skb->len <= mss)) goto out;
+    [...]
+
+Thus changing the gso_size is simply a very bad idea. Increasing is unnecessary
+and buggy, and decreasing can go negative.
+
+Fixes: 6578171a7ff0 ("bpf: add bpf_skb_change_proto helper")
+Signed-off-by: Maciej Żenczykowski <maze@google.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Dongseok Yi <dseok.yi@samsung.com>
+Cc: Willem de Bruijn <willemb@google.com>
+Link: https://lore.kernel.org/bpf/CANP3RGfjLikQ6dg=YpBU0OeHvyv7JOki7CyOUS9modaXAi-9vQ@mail.gmail.com
+Link: https://lore.kernel.org/bpf/20210617000953.2787453-2-zenczykowski@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nf_tables_api.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ net/core/filter.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 1d62b1a83299..fcb15b8904e8 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -583,7 +583,7 @@ static struct nft_table *nft_table_lookup(const struct net *net,
+diff --git a/net/core/filter.c b/net/core/filter.c
+index ef6bdbb63ecb..7ea752af7894 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -3266,8 +3266,6 @@ static int bpf_skb_proto_4_to_6(struct sk_buff *skb)
+ 			shinfo->gso_type |=  SKB_GSO_TCPV6;
+ 		}
  
- static struct nft_table *nft_table_lookup_byhandle(const struct net *net,
- 						   const struct nlattr *nla,
--						   u8 genmask)
-+						   u8 genmask, u32 nlpid)
- {
- 	struct nftables_pernet *nft_net;
- 	struct nft_table *table;
-@@ -591,8 +591,13 @@ static struct nft_table *nft_table_lookup_byhandle(const struct net *net,
- 	nft_net = nft_pernet(net);
- 	list_for_each_entry(table, &nft_net->tables, list) {
- 		if (be64_to_cpu(nla_get_be64(nla)) == table->handle &&
--		    nft_active_genmask(table, genmask))
-+		    nft_active_genmask(table, genmask)) {
-+			if (nft_table_has_owner(table) &&
-+			    nlpid && table->nlpid != nlpid)
-+				return ERR_PTR(-EPERM);
-+
- 			return table;
-+		}
- 	}
+-		/* Due to IPv6 header, MSS needs to be downgraded. */
+-		skb_decrease_gso_size(shinfo, len_diff);
+ 		/* Header must be checked, and gso_segs recomputed. */
+ 		shinfo->gso_type |= SKB_GSO_DODGY;
+ 		shinfo->gso_segs = 0;
+@@ -3307,8 +3305,6 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
+ 			shinfo->gso_type |=  SKB_GSO_TCPV4;
+ 		}
  
- 	return ERR_PTR(-ENOENT);
-@@ -1279,7 +1284,8 @@ static int nf_tables_deltable(struct sk_buff *skb, const struct nfnl_info *info,
- 
- 	if (nla[NFTA_TABLE_HANDLE]) {
- 		attr = nla[NFTA_TABLE_HANDLE];
--		table = nft_table_lookup_byhandle(net, attr, genmask);
-+		table = nft_table_lookup_byhandle(net, attr, genmask,
-+						  NETLINK_CB(skb).portid);
- 	} else {
- 		attr = nla[NFTA_TABLE_NAME];
- 		table = nft_table_lookup(net, attr, family, genmask,
+-		/* Due to IPv4 header, MSS can be upgraded. */
+-		skb_increase_gso_size(shinfo, len_diff);
+ 		/* Header must be checked, and gso_segs recomputed. */
+ 		shinfo->gso_type |= SKB_GSO_DODGY;
+ 		shinfo->gso_segs = 0;
 -- 
 2.30.2
 
