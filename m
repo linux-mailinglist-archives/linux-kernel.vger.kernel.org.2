@@ -2,41 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9DB3C588C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A908D3C4CE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378632AbhGLIt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:49:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41928 "EHLO mail.kernel.org"
+        id S244334AbhGLHKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:10:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346637AbhGLHxd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:53:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CFEE6117A;
-        Mon, 12 Jul 2021 07:50:43 +0000 (UTC)
+        id S238197AbhGLGsf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 02:48:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 12D2F6115A;
+        Mon, 12 Jul 2021 06:44:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626076244;
-        bh=+w6zZEWtnix7IzEd5I6z6tOpqtGVzuDHeP+9F32X4SE=;
+        s=korg; t=1626072264;
+        bh=OCif2ZsNIOhHAWJltQSZzdH7Ucun+7oFwwXTFZNaHWo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GI17vxVK5fjxaeKIZCFDPsLQPBAYLvd0vvtL73qhT0PvyAVSUNk1g8692UuxefaVD
-         6rc3n9rEoAfnmnUapCtAHyGAR29a4n0GtMnBo8qlU2jPmZIxC06uIjf1d8hAAlzmb4
-         kiCZzPj/13K/aQf88sL4pshM8pd828dOHXE7bRO8=
+        b=lvkAi2e+lZmW8lj8IVRdAo8oUZ3MpwlNwPaluAHEEq/PPgASa7JEsbTG1LiDxbnSL
+         dl/BU/GfAQApIrSKmmgJWBYcgFKYR3wVnyi7CaoFWhZVGbk5ooiKl35wVY8B94jf1y
+         20zgulQgH48XGfUPCmAawa3Vypsw2sZawzo2WSnM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
-        Karen Sornek <karen.sornek@intel.com>,
-        Dawid Lukwinski <dawid.lukwinski@intel.com>,
-        Mateusz Palczewski <mateusz.palczewski@intel.com>,
-        Tony Brelinski <tonyx.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Robert Hancock <robert.hancock@calian.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 558/800] i40e: Fix autoneg disabling for non-10GBaseT links
-Date:   Mon, 12 Jul 2021 08:09:41 +0200
-Message-Id: <20210712061026.776818473@linuxfoundation.org>
+Subject: [PATCH 5.10 422/593] clk: si5341: Wait for DEVICE_READY on startup
+Date:   Mon, 12 Jul 2021 08:09:42 +0200
+Message-Id: <20210712060934.679964885@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060843.180606720@linuxfoundation.org>
+References: <20210712060843.180606720@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,39 +40,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mateusz Palczewski <mateusz.palczewski@intel.com>
+From: Robert Hancock <robert.hancock@calian.com>
 
-[ Upstream commit 9262793e59f0423437166a879a73d056b1fe6f9a ]
+[ Upstream commit 6e7d2de1e000d36990923ed80d2e78dfcb545cee ]
 
-Disabling autonegotiation was allowed only for 10GBaseT PHY.
-The condition was changed to check if link media type is BaseT.
+The Si5341 datasheet warns that before accessing any other registers,
+including the PAGE register, we need to wait for the DEVICE_READY register
+to indicate the device is ready, or the process of the device loading its
+state from NVM can be corrupted. Wait for DEVICE_READY on startup before
+continuing initialization. This is done using a raw I2C register read
+prior to setting up regmap to avoid any potential unwanted automatic PAGE
+register accesses from regmap at this stage.
 
-Fixes: 3ce12ee9d8f9 ("i40e: Fix order of checks when enabling/disabling autoneg in ethtool")
-Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-Reviewed-by: Karen Sornek <karen.sornek@intel.com>
-Signed-off-by: Dawid Lukwinski <dawid.lukwinski@intel.com>
-Signed-off-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: 3044a860fd ("clk: Add Si5341/Si5340 driver")
+Signed-off-by: Robert Hancock <robert.hancock@calian.com>
+Link: https://lore.kernel.org/r/20210325192643.2190069-3-robert.hancock@calian.com
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_ethtool.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/clk/clk-si5341.c | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-index ccd5b9486ea9..3e822bad4851 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-@@ -1262,8 +1262,7 @@ static int i40e_set_link_ksettings(struct net_device *netdev,
- 			if (ethtool_link_ksettings_test_link_mode(&safe_ks,
- 								  supported,
- 								  Autoneg) &&
--			    hw->phy.link_info.phy_type !=
--			    I40E_PHY_TYPE_10GBASE_T) {
-+			    hw->phy.media_type != I40E_MEDIA_TYPE_BASET) {
- 				netdev_info(netdev, "Autoneg cannot be disabled on this phy\n");
- 				err = -EINVAL;
- 				goto done;
+diff --git a/drivers/clk/clk-si5341.c b/drivers/clk/clk-si5341.c
+index e0446e66fa64..b8a960e927bc 100644
+--- a/drivers/clk/clk-si5341.c
++++ b/drivers/clk/clk-si5341.c
+@@ -94,6 +94,7 @@ struct clk_si5341_output_config {
+ #define SI5341_STATUS		0x000C
+ #define SI5341_SOFT_RST		0x001C
+ #define SI5341_IN_SEL		0x0021
++#define SI5341_DEVICE_READY	0x00FE
+ #define SI5341_XAXB_CFG		0x090E
+ #define SI5341_IN_EN		0x0949
+ #define SI5341_INX_TO_PFD_EN	0x094A
+@@ -1189,6 +1190,32 @@ static const struct regmap_range_cfg si5341_regmap_ranges[] = {
+ 	},
+ };
+ 
++static int si5341_wait_device_ready(struct i2c_client *client)
++{
++	int count;
++
++	/* Datasheet warns: Any attempt to read or write any register other
++	 * than DEVICE_READY before DEVICE_READY reads as 0x0F may corrupt the
++	 * NVM programming and may corrupt the register contents, as they are
++	 * read from NVM. Note that this includes accesses to the PAGE register.
++	 * Also: DEVICE_READY is available on every register page, so no page
++	 * change is needed to read it.
++	 * Do this outside regmap to avoid automatic PAGE register access.
++	 * May take up to 300ms to complete.
++	 */
++	for (count = 0; count < 15; ++count) {
++		s32 result = i2c_smbus_read_byte_data(client,
++						      SI5341_DEVICE_READY);
++		if (result < 0)
++			return result;
++		if (result == 0x0F)
++			return 0;
++		msleep(20);
++	}
++	dev_err(&client->dev, "timeout waiting for DEVICE_READY\n");
++	return -EIO;
++}
++
+ static const struct regmap_config si5341_regmap_config = {
+ 	.reg_bits = 8,
+ 	.val_bits = 8,
+@@ -1385,6 +1412,11 @@ static int si5341_probe(struct i2c_client *client,
+ 
+ 	data->i2c_client = client;
+ 
++	/* Must be done before otherwise touching hardware */
++	err = si5341_wait_device_ready(client);
++	if (err)
++		return err;
++
+ 	for (i = 0; i < SI5341_NUM_INPUTS; ++i) {
+ 		input = devm_clk_get(&client->dev, si5341_input_clock_names[i]);
+ 		if (IS_ERR(input)) {
 -- 
 2.30.2
 
