@@ -2,122 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7823C61A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D55F73C61B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 19:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235336AbhGLRPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 13:15:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235287AbhGLRPO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 13:15:14 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C26AC0613DD
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 10:12:26 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id a127so16999382pfa.10
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Jul 2021 10:12:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+MqNZFYMQBihL0ZnQ18LtV00/u+f9r0ZXvs1SjqWuz8=;
-        b=UOI+YQ1yAZu5INM6vP1vhH/OD5DCgJ9TYfw7jkklZkXHQJXqRXI6kJAQa6Y05PqSWr
-         IUccdQRDCEBq75qsy+M4v5Zsa9eUPJil19UGq8aTVV1P+ugZyfPmaFCG0iHjUMvX6zy2
-         cugkR2zOKIBfOxAUtpsv5m0vZ6GWUhB/AawNejyg5ncSMAh0aEE6oiQyRx9ZiBXcd8Yl
-         r7N4wcehP3oGxrLX8yaNxu1Zg5K6t3ER8ai2c7vx24Oo5vDQYHXCn1ZHei/5hLvOf3pc
-         EoOxvARt6Brj65wkUhRspI3A++vi59u2hCcCmQHXXtKR3jWxlMsJQf3ygdaeQf+7cgti
-         uPaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=+MqNZFYMQBihL0ZnQ18LtV00/u+f9r0ZXvs1SjqWuz8=;
-        b=faajsuFgTwTz90Vnl3B3tE0d1vvV5BPaRInc6M1dKnQbOErhYluyMdXTSxMsn8/JiM
-         0lzFtieQr8iNN1p+MrNmViRc05t70Nz2Vmnm1hdfIWjY0guOyCv34RbH5hKe3s6kBrOy
-         qLUMamtEdgEgtcO+bPBc1eEHOvLD11j6ubMtDSMUqfU8C1no8dfPeRzjuYFObIkMDzZv
-         4SeZhJI9sypULkkX8VTxv1K9Bc1Yn9ksBpyE89BDylP1GkO6pBvv9obI3iDyD6f7QfJG
-         AIP0hMYIxXfdI/F/w+BPrbrhpiNDtLYLgVjJcxyZw7grxI19DwEXVKqWAyUW+uyVyauo
-         MWFQ==
-X-Gm-Message-State: AOAM531/Prx2YSHU9CGu9n7WvAIqt4F1bFnxkdJBfaGAwPidaJNTuJwQ
-        jfRwhH4ffvZPo20LVVBbV3o=
-X-Google-Smtp-Source: ABdhPJyDLtGiKc/jvV5pIAf5hdHhyx0Yiw1NIfwLJNHR7yaBik6UNF9JtK3DAbEqFHxQU/HKd02w+w==
-X-Received: by 2002:a63:7949:: with SMTP id u70mr166943pgc.168.1626109945735;
-        Mon, 12 Jul 2021 10:12:25 -0700 (PDT)
-Received: from localhost (udp264798uds.hawaiiantel.net. [72.253.242.87])
-        by smtp.gmail.com with ESMTPSA id l3sm23098pju.57.2021.07.12.10.12.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 10:12:24 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 12 Jul 2021 07:12:23 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, jiangshanlai@gmail.com,
-        xuqiang36@huawei.com, paskripkin@gmail.com
-Subject: Re: [PATCH v2] workqueue: fix UAF in pwq_unbound_release_workfn()
-Message-ID: <YOx392cwdEHMMnD0@slm.duckdns.org>
-References: <20210709071100.4057639-1-yangyingliang@huawei.com>
+        id S234819AbhGLRTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 13:19:22 -0400
+Received: from mout.gmx.net ([212.227.15.18]:44189 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230142AbhGLRTV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 13:19:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1626110171;
+        bh=wmB0Rr9IQPBFqwimqWcf2igVM9vM9Uvnv61KwxUy1F0=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=kDJ6GpEThEucJ6kkIwvk3MbwBQ4M+BELrFJ4RmxfFiBt/ffm2yug8OcsiF3s966QM
+         Dv3qu3+eBUi9Fx0B/BOUgzxnkXVFfRKmfyVyMVKIWEKNhgPBBgYDNA8C/d3CLgD+/Q
+         Nwh3sNdT2YYE4AUugEv7dUea4D64QgkmygtbvOXk=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [157.180.225.139] ([157.180.225.139]) by web-mail.gmx.net
+ (3c-app-gmx-bs28.server.lan [172.19.170.80]) (via HTTP); Mon, 12 Jul 2021
+ 19:16:11 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210709071100.4057639-1-yangyingliang@huawei.com>
+Message-ID: <trinity-02bc17fc-b458-4d17-baca-8afe30e4c92c-1626110171249@3c-app-gmx-bs28>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Cc:     Frank Wunderlich <linux@fw-web.de>,
+        linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        CK Hu <ck.hu@mediatek.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Enric Balletbo Serra <eballetbo@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>
+Subject: Aw: Re: [PATCH] soc: mediatek: mmsys: fix HDMI output on
+ mt7623/bananapi-r2
+Content-Type: text/plain; charset=UTF-8
+Date:   Mon, 12 Jul 2021 19:16:11 +0200
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <456f0611-1fc7-75ac-ff45-9afd94190283@collabora.com>
+References: <20210710132431.265985-1-linux@fw-web.de>
+ <456f0611-1fc7-75ac-ff45-9afd94190283@collabora.com>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:3b3zuNuyYHAQu9Aq/AFNd3jBsrHOgzDw46MqypI0YOFxUQS6/rnXzfEUHUh5ESpFXzKOO
+ pD8jmMsdfLTDif/vZg/Sp51P6PqmxTJAtrm8ytcEfrP4r51/+IXGDezxKiy4wd3k5VXj6C5ol1RN
+ WJ7UdDAaaqyVmqpjv1sVSplsNFQFntB+8NDilMGEoRyPy2XOdNttOpNmgnpgKXSLMcUVp6jPtZpM
+ mxuLAGwRAQH291NEcQ3FGu0R9yBX58deSR0w7jJJ/6PFO6iFgY/UpYtU0S5t/xuwjZEJNthV2eV4
+ gs=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:eSKhF8PrMVA=:Z1dESeqor7vV5bK1IYE3ge
+ 42AW+RgtomeayWkMY57YT+JHjReiHY51YMVDORTwTKbJABWbFSnLdJqnSTk17PEujXIDIMsdM
+ q+vICb3ZTo7h9rMjq04RVvK8c6ZBVxohoFAOnIMchNMbQP19SendItVbb3q7yfaJkYKtawL0b
+ yXtbs2id09y6w1gWw8TwL7+57Dsy9c2JWVgaX94jkTIw+wxJLDx4SH4++6ig4BcwoeXxVnlZx
+ pEKHzkvNFIYMsebpwufypJmGkY3jdFhBJv04aWeho/TRBDKLuoY21U0eZhRBilhzpBI4QNXXe
+ 1Qren1Tob3rF191kW/IKvY996OiQOe7ISGFuRy+x4rjieYgeKObgzdge0gdEF5JbYlJ1hCmts
+ a2nz+z9Nc5ONbFlBiySoyuXPM2QJRu++PnkrYAaZ+uUOpTgW+23e4zqqxO6qYGJKwSnq92Atm
+ qsecxASir6b1lK1j5gy4Od02ZCDjenDohTZHTqhCg7i8vOMueFtd+CQzj8dzP68jJSqLrPo/i
+ 641ZTB4pCOCCB54py4R+F2cR8beJ6Tf8IJI6kTjq08mBwEyf1oOeX/uq0nzvQsy9Wg34K3Uh3
+ hYg67X728n0ZakdmgUsC+mFfF/NoQub/voGEWo1pF6uctgA5g0DAqd50PSpfAKbbF/mGPa05q
+ b2SVix7U+lhESJXw0gRR5YeqTjdEbz88HAFzgVXPlAdwE4jOXhmCgWzzFU5T3vr1AciEXqUTA
+ iEbjRcGNgm9m2aonqs6YXedL4QY6ubsKadknzDrqKYwmyQH2PYoL8Dw8kF7qbXBcFwRzE1QJr
+ JoXGrT3F0y4vubRbioeCvuB2b+GpNk6vUwceHs5SFra3XMXGY0=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Yang.
+Hi,
 
-> +static void free_pwq(struct pool_workqueue *pwq)
-> +{
-> +	if (!pwq || --pwq->refcnt)
-> +		return;
-> +
-> +	put_unbound_pool(pwq->pool);
-> +	kmem_cache_free(pwq_cache, pwq);
-> +}
-> +
-> +static void free_wqattrs_ctx(struct apply_wqattrs_ctx *ctx)
-> +{
-> +	int node;
-> +
-> +	if (!ctx)
-> +		return;
-> +
-> +	for_each_node(node)
-> +		free_pwq(ctx->pwq_tbl[node]);
-> +	free_pwq(ctx->dfl_pwq);
-> +
-> +	free_workqueue_attrs(ctx->attrs);
-> +
-> +	kfree(ctx);
-> +}
+it turns out that problem is the read+or of the new value
 
-It bothers me that we're partially replicating the free path including pwq
-refcnting. Does something like the following work?
+i reverted my patch and changed
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 104e3ef04e33..0c0ab363edeb 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -3693,7 +3693,7 @@ static void pwq_unbound_release_workfn(struct work_struct *work)
- 	 * If we're the last pwq going away, @wq is already dead and no one
- 	 * is gonna access it anymore.  Schedule RCU free.
- 	 */
--	if (is_last) {
-+	if (is_last && !list_empty(&wq->list)) {
- 		wq_unregister_lockdep(wq);
- 		call_rcu(&wq->rcu, rcu_free_wq);
- 	}
-@@ -4199,6 +4199,10 @@ static int alloc_and_link_pwqs(struct workqueue_struct *wq)
- 	}
- 	put_online_cpus();
- 
-+	if (ret) {
-+		flush_scheduled_work();
-+	}
-+
- 	return ret;
- }
- 
--- 
-tejun
+reg = readl_relaxed(mmsys->regs + routes[i].addr) | routes[i].val;
+writel_relaxed(reg, mmsys->regs + routes[i].addr);
+
+to
+
+writel_relaxed(routes[i].val, mmsys->regs + routes[i].addr);
+
+and it works too, but maybe it breaks other platforms
+
+regards Frank
