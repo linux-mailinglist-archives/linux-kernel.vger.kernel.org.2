@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A998F3C5817
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 13:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6313C5182
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378882AbhGLIl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:41:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35416 "EHLO mail.kernel.org"
+        id S1349150AbhGLHlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:41:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350273AbhGLHus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:50:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2250A619B0;
-        Mon, 12 Jul 2021 07:44:11 +0000 (UTC)
+        id S245078AbhGLHLY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:11:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0148760FF4;
+        Mon, 12 Jul 2021 07:08:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075852;
-        bh=8Pyhlzta0R1oh33oTbZE03B1+QL5sIRA3vAjLadz5OM=;
+        s=korg; t=1626073715;
+        bh=k3kZ2VEBrJ7CdTD5g3GNvFDitEJ7OpDfeIsF0NqydwM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XgDg4x25ULsmKQfQ76DAqDt3ZGQHIA/OEAAgCD8TGB9AgrpBwYclZQzrh8uliwFxl
-         JhrYPwboN0gofUnyYMTwi36hPkUETqXMCfV4ISCTZQojMmUSYpFIbkduxN7l+PoLJW
-         cTp6bRWbtlK01YARb+yRiSzwQiDmVdAN352yU2n8=
+        b=dTG3ctbOKXP3APrny11TOYbAMFv2GhCv2XWrbLAZjg7bcxlYonaiMft49QrWNonyY
+         cHXMVJEN8ziPFq4u9lt95xLbwbWczl15lVzh+nUh+0SnQT+bY3ETrp1uM0nye22v2d
+         HhREoyzRxfvgCrvmnyhzIPUBoMnBAApFRRNTJ1IA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hsin-Yi Wang <hsinyi@chromium.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
+        stable@vger.kernel.org, Xiaofei Tan <tanxiaofei@huawei.com>,
+        James Morse <james.morse@arm.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 393/800] drm/bridge: anx7625: Fix power on delay
-Date:   Mon, 12 Jul 2021 08:06:56 +0200
-Message-Id: <20210712061008.998929106@linuxfoundation.org>
+Subject: [PATCH 5.12 334/700] ACPI: APEI: fix synchronous external aborts in user-mode
+Date:   Mon, 12 Jul 2021 08:06:57 +0200
+Message-Id: <20210712061011.913506301@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +41,158 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hsin-Yi Wang <hsinyi@chromium.org>
+From: Xiaofei Tan <tanxiaofei@huawei.com>
 
-[ Upstream commit 1fcf24fb07e254ca69001ab14adc8cf567127c44 ]
+[ Upstream commit ccb5ecdc2ddeaff744ee075b54cdff8a689e8fa7 ]
 
->From anx7625 spec, the delay between powering on power supplies and gpio
-should be larger than 10ms.
+Before commit 8fcc4ae6faf8 ("arm64: acpi: Make apei_claim_sea()
+synchronise with APEI's irq work"), do_sea() would unconditionally
+signal the affected task from the arch code. Since that change,
+the GHES driver sends the signals.
 
-Fixes: 6c744983004e ("drm/bridge: anx7625: disable regulators when power off")
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
-Signed-off-by: Robert Foss <robert.foss@linaro.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210428115116.931328-1-hsinyi@chromium.org
+This exposes a problem as errors the GHES driver doesn't understand
+or doesn't handle effectively are silently ignored. It will cause
+the errors get taken again, and circulate endlessly. User-space task
+get stuck in this loop.
+
+Existing firmware on Kunpeng9xx systems reports cache errors with the
+'ARM Processor Error' CPER records.
+
+Do memory failure handling for ARM Processor Error Section just like
+for Memory Error Section.
+
+Fixes: 8fcc4ae6faf8 ("arm64: acpi: Make apei_claim_sea() synchronise with APEI's irq work")
+Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
+Reviewed-by: James Morse <james.morse@arm.com>
+[ rjw: Subject edit ]
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/bridge/analogix/anx7625.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/acpi/apei/ghes.c | 81 +++++++++++++++++++++++++++++++---------
+ 1 file changed, 64 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
-index 23283ba0c4f9..b4e349ca38fe 100644
---- a/drivers/gpu/drm/bridge/analogix/anx7625.c
-+++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-@@ -893,7 +893,7 @@ static void anx7625_power_on(struct anx7625_data *ctx)
- 		usleep_range(2000, 2100);
+diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+index fce7ade2aba9..0c8330ed1ffd 100644
+--- a/drivers/acpi/apei/ghes.c
++++ b/drivers/acpi/apei/ghes.c
+@@ -441,28 +441,35 @@ static void ghes_kick_task_work(struct callback_head *head)
+ 	gen_pool_free(ghes_estatus_pool, (unsigned long)estatus_node, node_len);
+ }
+ 
+-static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
+-				       int sev)
++static bool ghes_do_memory_failure(u64 physical_addr, int flags)
+ {
+ 	unsigned long pfn;
+-	int flags = -1;
+-	int sec_sev = ghes_severity(gdata->error_severity);
+-	struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
+ 
+ 	if (!IS_ENABLED(CONFIG_ACPI_APEI_MEMORY_FAILURE))
+ 		return false;
+ 
+-	if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
+-		return false;
+-
+-	pfn = mem_err->physical_addr >> PAGE_SHIFT;
++	pfn = PHYS_PFN(physical_addr);
+ 	if (!pfn_valid(pfn)) {
+ 		pr_warn_ratelimited(FW_WARN GHES_PFX
+ 		"Invalid address in generic error data: %#llx\n",
+-		mem_err->physical_addr);
++		physical_addr);
+ 		return false;
  	}
  
--	usleep_range(4000, 4100);
-+	usleep_range(11000, 12000);
++	memory_failure_queue(pfn, flags);
++	return true;
++}
++
++static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
++				       int sev)
++{
++	int flags = -1;
++	int sec_sev = ghes_severity(gdata->error_severity);
++	struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
++
++	if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
++		return false;
++
+ 	/* iff following two events can be handled properly by now */
+ 	if (sec_sev == GHES_SEV_CORRECTED &&
+ 	    (gdata->flags & CPER_SEC_ERROR_THRESHOLD_EXCEEDED))
+@@ -470,14 +477,56 @@ static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
+ 	if (sev == GHES_SEV_RECOVERABLE && sec_sev == GHES_SEV_RECOVERABLE)
+ 		flags = 0;
  
- 	/* Power on pin enable */
- 	gpiod_set_value(ctx->pdata.gpio_p_on, 1);
+-	if (flags != -1) {
+-		memory_failure_queue(pfn, flags);
+-		return true;
+-	}
++	if (flags != -1)
++		return ghes_do_memory_failure(mem_err->physical_addr, flags);
+ 
+ 	return false;
+ }
+ 
++static bool ghes_handle_arm_hw_error(struct acpi_hest_generic_data *gdata, int sev)
++{
++	struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
++	bool queued = false;
++	int sec_sev, i;
++	char *p;
++
++	log_arm_hw_error(err);
++
++	sec_sev = ghes_severity(gdata->error_severity);
++	if (sev != GHES_SEV_RECOVERABLE || sec_sev != GHES_SEV_RECOVERABLE)
++		return false;
++
++	p = (char *)(err + 1);
++	for (i = 0; i < err->err_info_num; i++) {
++		struct cper_arm_err_info *err_info = (struct cper_arm_err_info *)p;
++		bool is_cache = (err_info->type == CPER_ARM_CACHE_ERROR);
++		bool has_pa = (err_info->validation_bits & CPER_ARM_INFO_VALID_PHYSICAL_ADDR);
++		const char *error_type = "unknown error";
++
++		/*
++		 * The field (err_info->error_info & BIT(26)) is fixed to set to
++		 * 1 in some old firmware of HiSilicon Kunpeng920. We assume that
++		 * firmware won't mix corrected errors in an uncorrected section,
++		 * and don't filter out 'corrected' error here.
++		 */
++		if (is_cache && has_pa) {
++			queued = ghes_do_memory_failure(err_info->physical_fault_addr, 0);
++			p += err_info->length;
++			continue;
++		}
++
++		if (err_info->type < ARRAY_SIZE(cper_proc_error_type_strs))
++			error_type = cper_proc_error_type_strs[err_info->type];
++
++		pr_warn_ratelimited(FW_WARN GHES_PFX
++				    "Unhandled processor error type: %s\n",
++				    error_type);
++		p += err_info->length;
++	}
++
++	return queued;
++}
++
+ /*
+  * PCIe AER errors need to be sent to the AER driver for reporting and
+  * recovery. The GHES severities map to the following AER severities and
+@@ -605,9 +654,7 @@ static bool ghes_do_proc(struct ghes *ghes,
+ 			ghes_handle_aer(gdata);
+ 		}
+ 		else if (guid_equal(sec_type, &CPER_SEC_PROC_ARM)) {
+-			struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
+-
+-			log_arm_hw_error(err);
++			queued = ghes_handle_arm_hw_error(gdata, sev);
+ 		} else {
+ 			void *err = acpi_hest_get_payload(gdata);
+ 
 -- 
 2.30.2
 
