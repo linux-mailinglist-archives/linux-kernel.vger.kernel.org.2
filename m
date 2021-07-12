@@ -2,70 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA7A83C62A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 20:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE023C62A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 20:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235900AbhGLScy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 14:32:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40828 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230477AbhGLScw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 14:32:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 9FA5F61186;
-        Mon, 12 Jul 2021 18:30:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626114603;
-        bh=53oJ2AU+FZK9jxaEkJqYWcoLJ24v7HhvSVfykiOy/WU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=HgAIqQK5HpNgUX+zGdangvHWamccRH9KMGJnNwuQ8EEeTjnaqzyypXNOJ07xGm+As
-         m1s8cyoWCsXn1yALlZN+eDo15rgeQstzpyeMR0NT/Gis/Pc8GSE7s515YMMaZSbHDf
-         IQC75x7O9bMF3V6Bj5JbypOASJGurerrMt8wlCFDi+XDzvWL/FIxj/pprEJ3X7tacB
-         N0s9JgDnCu0ZkQKBnfj7k5Yj+RDsNHauqEorPn5dFM9XXWEiCbdz8xQhN6haKvFG6P
-         Rut7dgysuRsHQzV8LcQv6KsNiS7QF7qKeadmMJb0tjOJVLD2RUSue20Rzto/4DaePc
-         1zKs0obc4IBWA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 932A060A54;
-        Mon, 12 Jul 2021 18:30:03 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S235944AbhGLSdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 14:33:08 -0400
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:37736 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235928AbhGLSdG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 14:33:06 -0400
+Received: by mail-oi1-f169.google.com with SMTP id h9so25615139oih.4;
+        Mon, 12 Jul 2021 11:30:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=N4vzjKJtxHZvVFF3s8sjdimr+qBj5D1oqAlfvgwV2lg=;
+        b=b+65iMvs7ir2SzORXXkTLKv4t3qbhL2PES4Flh7V54MsyeSmjUOIknOmugnLV0Gzxg
+         LFvYMdLsqPQm7FtG0wAiB1AczRTU6XCuIG/IW9wyHv3cevRb5Cp3CuEIXnssslX1Dhpk
+         T7oc+7ESgz1A5mgvjtRYK5phD917M6VMRiBBEBtv6bl8+2t0oX4ytXyp1cIm+86gJJrG
+         AjSN4A4Vf2sbdvcGg+Kvoh3iKpoPb5Vq1VL4UeH/MZ03vWzndFjzS8K46wpz4PLWAwUo
+         UlVmHWfxOx8yD6i/ULIzBepYP1SEuIruOKFtZuOI4NgIheL2bq1l+LCiAqRPD2SKDAvU
+         eY7A==
+X-Gm-Message-State: AOAM533frXaqDIUaBSkGbZrc0e9Q9EbbngdZsaQyE6HzNCAbpHkkQT2x
+        LAYWf51/iSbNXlwfYW8bhwB9iZp1OVed3TPyIEo=
+X-Google-Smtp-Source: ABdhPJzW6BBe5Qog04PD4bUYTSSTk8kgB65cZpDKjMTgNlWUvfhT7KqN9EQO+0MSHuVGeMuupG5D89/fCF2qEHjrLuM=
+X-Received: by 2002:a05:6808:15a6:: with SMTP id t38mr11835566oiw.157.1626114617078;
+ Mon, 12 Jul 2021 11:30:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] octeontx2-pf: Fix uninitialized boolean variable pps
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162611460359.21721.179484108889864194.git-patchwork-notify@kernel.org>
-Date:   Mon, 12 Jul 2021 18:30:03 +0000
-References: <20210712143750.100890-1-colin.king@canonical.com>
-In-Reply-To: <20210712143750.100890-1-colin.king@canonical.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
-        hkelam@marvell.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <2780027.e9J7NaK4W3@kreacher> <5627033.MhkbZ0Pkbq@kreacher> <YOyD/4kdvd77PzLy@kroah.com>
+In-Reply-To: <YOyD/4kdvd77PzLy@kroah.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 12 Jul 2021 20:30:06 +0200
+Message-ID: <CAJZ5v0gJP1ywCwEgdGdx2A4ZPaSKc3utmXeO_geiGfA85axZOw@mail.gmail.com>
+Subject: Re: [PATCH v1 5/6] software nodes: Split software_node_notify()
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Mon, Jul 12, 2021 at 8:03 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Mon, Jul 12, 2021 at 07:27:12PM +0200, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > Split software_node_notify_remove) out of software_node_notify()
+> > and make device_platform_notify() call the latter on device addition
+> > and the former on device removal.
+> >
+> > While at it, put the headers of the above functions into base.h,
+> > because they don't need to be present in a global header file.
+> >
+> > No intentional functional impact.
+> >
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
+> >  drivers/base/base.h      |    3 ++
+> >  drivers/base/core.c      |    9 +++---
+> >  drivers/base/swnode.c    |   61 ++++++++++++++++++++++++-----------------------
+> >  include/linux/property.h |    2 -
+> >  4 files changed, 39 insertions(+), 36 deletions(-)
+> >
+> > Index: linux-pm/drivers/base/swnode.c
+> > ===================================================================
+> > --- linux-pm.orig/drivers/base/swnode.c
+> > +++ linux-pm/drivers/base/swnode.c
+> > @@ -11,6 +11,8 @@
+> >  #include <linux/property.h>
+> >  #include <linux/slab.h>
+> >
+> > +#include "base.h"
+> > +
+> >  struct swnode {
+> >       struct kobject kobj;
+> >       struct fwnode_handle fwnode;
+> > @@ -1053,7 +1055,7 @@ int device_add_software_node(struct devi
+> >        * balance.
+> >        */
+> >       if (device_is_registered(dev))
+> > -             software_node_notify(dev, KOBJ_ADD);
+> > +             software_node_notify(dev);
+>
+> Should this now be called "software_node_notify_add()" to match up with:
+>
+> >       if (device_is_registered(dev))
+> > -             software_node_notify(dev, KOBJ_REMOVE);
+> > +             software_node_notify_remove(dev);
+>
+> The other being called "_remove"?
+>
+> Makes it more obvious to me :)
 
-This patch was applied to netdev/net.git (refs/heads/master):
+The naming convention used here follows platform_notify() and
+platform_notify_remove(), and the analogous function names in ACPI for
+that matter.
 
-On Mon, 12 Jul 2021 15:37:50 +0100 you wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> In the case where act->id is FLOW_ACTION_POLICE and also
-> act->police.rate_bytes_ps > 0 or act->police.rate_pkt_ps is not > 0
-> the boolean variable pps contains an uninitialized value when
-> function otx2_tc_act_set_police is called. Fix this by initializing
-> pps to false.
-> 
-> [...]
+I thought that adding _add in just one case would be sort of odd, but
+of course I can do that, so please let me know what you want me to do.
 
-Here is the summary with links:
-  - octeontx2-pf: Fix uninitialized boolean variable pps
-    https://git.kernel.org/netdev/net/c/71ce9d92fc70
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Cheers!
