@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60AC33C5770
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7218A3C5167
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Jul 2021 12:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358369AbhGLIdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Jul 2021 04:33:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52088 "EHLO mail.kernel.org"
+        id S1348136AbhGLHkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Jul 2021 03:40:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345957AbhGLHpe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Jul 2021 03:45:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E055610D1;
-        Mon, 12 Jul 2021 07:41:42 +0000 (UTC)
+        id S243854AbhGLHKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Jul 2021 03:10:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B87A61222;
+        Mon, 12 Jul 2021 07:05:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626075703;
-        bh=2VbARFDfM1XEUpEXyfKNuUFXkGsPtAB8Xgvs2v5uuZc=;
+        s=korg; t=1626073512;
+        bh=cJD4Zy8NwK+Xqzz3Cf09Ey7hTH2b87Gh/fpA3himSoI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qj2azltaAKU4fMjr2U0JDbeDz4JqiowUWKOAnD9qWoDHd0S0uDvNjAej0Msop/utb
-         A7epqtyjXem8lohEO+pdTOp243n+/4I8mkEYGsAP4uidb5XEXUhrfPnVzSsLE22mEh
-         vBHGoFea2hQd7CMwmrpiZVXNGE8BfSwgz04aXcQ0=
+        b=WqRHYpvx0+DvdGkAaY2b1h5lYZAd2Y4HmxCkmkD/KHIPIfaZ0m7LaHTsf3jsmwnoe
+         /+Y2c5Bw5W5DsOiynD2Kewr9adrMsbGKMJTfMMWmU7LwDabBcFkUYKqgc/mDa11P0i
+         ivIPRFtsJGzL2bP6GXnHy8h7A8k22etg0BC0RjSw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        John Allen <john.allen@amd.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 327/800] KVM: nVMX: Dont clobber nested MMUs A/D status on EPTP switch
-Date:   Mon, 12 Jul 2021 08:05:50 +0200
-Message-Id: <20210712061001.084696313@linuxfoundation.org>
+Subject: [PATCH 5.12 268/700] crypto: ccp - Fix a resource leak in an error handling path
+Date:   Mon, 12 Jul 2021 08:05:51 +0200
+Message-Id: <20210712061004.748035426@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210712060912.995381202@linuxfoundation.org>
-References: <20210712060912.995381202@linuxfoundation.org>
+In-Reply-To: <20210712060924.797321836@linuxfoundation.org>
+References: <20210712060924.797321836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,68 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 272b0a998d084e7667284bdd2d0c675c6a2d11de ]
+[ Upstream commit a6f8e68e238a15bb15f1726b35c695136c64eaba ]
 
-Drop bogus logic that incorrectly clobbers the accessed/dirty enabling
-status of the nested MMU on an EPTP switch.  When nested EPT is enabled,
-walk_mmu points at L2's _legacy_ page tables, not L1's EPT for L2.
+If an error occurs after calling 'sp_get_irqs()', 'sp_free_irqs()' must be
+called as already done in the error handling path.
 
-This is likely a benign bug, as mmu->ept_ad is never consumed (since the
-MMU is not a nested EPT MMU), and stuffing mmu_role.base.ad_disabled will
-never propagate into future shadow pages since the nested MMU isn't used
-to map anything, just to walk L2's page tables.
-
-Note, KVM also does a full MMU reload, i.e. the guest_mmu will be
-recreated using the new EPTP, and thus any change in A/D enabling will be
-properly recognized in the relevant MMU.
-
-Fixes: 41ab93727467 ("KVM: nVMX: Emulate EPTP switching for the L1 hypervisor")
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210609234235.1244004-4-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Fixes: f4d18d656f88 ("crypto: ccp - Abstract interrupt registeration")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Acked-by: John Allen <john.allen@amd.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/vmx/nested.c | 7 -------
- 1 file changed, 7 deletions(-)
+ drivers/crypto/ccp/sp-pci.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index ba82b8563b07..2e63171864a7 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -5488,8 +5488,6 @@ static int nested_vmx_eptp_switching(struct kvm_vcpu *vcpu,
- {
- 	u32 index = kvm_rcx_read(vcpu);
- 	u64 new_eptp;
--	bool accessed_dirty;
--	struct kvm_mmu *mmu = vcpu->arch.walk_mmu;
+diff --git a/drivers/crypto/ccp/sp-pci.c b/drivers/crypto/ccp/sp-pci.c
+index f471dbaef1fb..7d346d842a39 100644
+--- a/drivers/crypto/ccp/sp-pci.c
++++ b/drivers/crypto/ccp/sp-pci.c
+@@ -222,7 +222,7 @@ static int sp_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		if (ret) {
+ 			dev_err(dev, "dma_set_mask_and_coherent failed (%d)\n",
+ 				ret);
+-			goto e_err;
++			goto free_irqs;
+ 		}
+ 	}
  
- 	if (!nested_cpu_has_eptp_switching(vmcs12) ||
- 	    !nested_cpu_has_ept(vmcs12))
-@@ -5498,13 +5496,10 @@ static int nested_vmx_eptp_switching(struct kvm_vcpu *vcpu,
- 	if (index >= VMFUNC_EPTP_ENTRIES)
- 		return 1;
+@@ -230,10 +230,12 @@ static int sp_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
  
--
- 	if (kvm_vcpu_read_guest_page(vcpu, vmcs12->eptp_list_address >> PAGE_SHIFT,
- 				     &new_eptp, index * 8, 8))
- 		return 1;
+ 	ret = sp_init(sp);
+ 	if (ret)
+-		goto e_err;
++		goto free_irqs;
  
--	accessed_dirty = !!(new_eptp & VMX_EPTP_AD_ENABLE_BIT);
--
- 	/*
- 	 * If the (L2) guest does a vmfunc to the currently
- 	 * active ept pointer, we don't have to do anything else
-@@ -5513,8 +5508,6 @@ static int nested_vmx_eptp_switching(struct kvm_vcpu *vcpu,
- 		if (!nested_vmx_check_eptp(vcpu, new_eptp))
- 			return 1;
+ 	return 0;
  
--		mmu->ept_ad = accessed_dirty;
--		mmu->mmu_role.base.ad_disabled = !accessed_dirty;
- 		vmcs12->ept_pointer = new_eptp;
- 
- 		kvm_make_request(KVM_REQ_MMU_RELOAD, vcpu);
++free_irqs:
++	sp_free_irqs(sp);
+ e_err:
+ 	dev_notice(dev, "initialization failed\n");
+ 	return ret;
 -- 
 2.30.2
 
